@@ -106,6 +106,7 @@ EXCEPTIONS = [
 # clamp is defensive in layout B (no supported screen squeezes the column: the left, centre and right blocks all scale
 # with the same k), so it has no mutation here; the column checks still run on every screen.
 MUTATIONS = [
+    ("potions stay away from the attack button without Q", "\tif hidden.q then\n", "\tif hidden.q and false then\n"),
     ("short desktop windows go to the phone sheet", "\tlocal sheet = touch\n",
      "\tlocal sheet = touch or (env.H or 0) * (env.Scale or 1) < 500\n"),
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),

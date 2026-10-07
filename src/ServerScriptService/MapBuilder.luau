@@ -745,6 +745,47 @@ local function ensureLandmarks(ctx, folder)
 	end
 end
 
+-- E11 job boards (Config.Board; image dev's BoardPanel opens the window with BoardAction(id, "Open")): at each board's
+-- spot (Config.StoryQuests.Landmarks[<Spot>]) the host part of "JobBoard_<id>" (the placed 3D board model of that name,
+-- else an invisible anchor) carries the ProximityPrompt "BoardPrompt" with the attribute Board = <id>. While
+-- Config.Board.Enabled is false the prompt is there but switched off.
+local function ensureJobBoards(ctx, folder)
+	local B = Config.Board
+	if type(B) ~= "table" or type(B.Boards) ~= "table" then return end
+	local spots = type(Config.StoryQuests) == "table" and type(Config.StoryQuests.Landmarks) == "table"
+		and Config.StoryQuests.Landmarks or {}
+	for id, def in B.Boards do
+		local spot = type(def) == "table" and spots[def.Spot] or nil
+		if typeof(spot) == "Vector3" then
+			local name = "JobBoard_" .. tostring(id)
+			local holder = folder:FindFirstChild(name)
+			local host = nil
+			if holder and holder:IsA("Model") then
+				host = holder.PrimaryPart or holder:FindFirstChildWhichIsA("BasePart", true)
+			elseif holder and holder:IsA("BasePart") then
+				host = holder
+			end
+			if not host then
+				host = part(ctx, {
+					Name = name, Size = Vector3.new(4, 6, 1), Position = spot + Vector3.new(0, 3, 0),
+					Transparency = 1, CanCollide = false, CanTouch = false,
+				}, folder)
+				ctx.pieces += 1
+			end
+			local prompt = host:FindFirstChild("BoardPrompt")
+			if prompt and not prompt:IsA("ProximityPrompt") then retire(prompt, "_Old"); prompt = nil end
+			if not prompt then prompt = Instance.new("ProximityPrompt"); prompt.Name = "BoardPrompt" end
+			prompt.ActionText, prompt.ObjectText = "Look at jobs", "Job Board"
+			prompt.KeyboardKeyCode = Enum.KeyCode.E -- the standard interact key (the skill is Q)
+			prompt.HoldDuration, prompt.MaxActivationDistance = 0, math.min(12, tonumber(B.Range) or 14)
+			prompt.RequiresLineOfSight = false
+			prompt.Enabled = B.Enabled == true
+			prompt:SetAttribute("Board", tostring(id))
+			prompt.Parent = host
+		end
+	end
+end
+
 -- invisible, non-colliding SpawnLocation (PlayerService places characters; this only avoids spawning at the origin)
 local function buildPreviewSpawn(ctx, landmarks)
 	if landmarks:FindFirstChild("PreviewSpawn") then return end
@@ -1156,6 +1197,7 @@ function MapBuilder.Build()
 	ensureGates(ctx, folders.Gates)
 	ensurePads(ctx, folders.Pads)
 	ensureLandmarks(ctx, folders.Landmarks)
+	ensureJobBoards(ctx, folders.Landmarks)
 	ensurePotionMerchant(ctx, folders.NPCs)
 	local okPatch, errPatch = pcall(PATCH.ensure, ctx, folders) -- A23-30
 	if not okPatch then Util.Warn(TAG, "PumpkinPatch: " .. tostring(errPatch)) end

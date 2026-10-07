@@ -159,6 +159,42 @@ runGroup("cards", function()
 		"woods values: 192 gold, Goblin Brute x1, hunting gold 150", show(wp and wp.Cards[1]))
 end)
 
+-- A23-71 S11 (T5): the first skill comes at Lv5, so 'Hit 3 at once' (J4, NeedSkill) waits for it
+runGroup("a23-71 skill card", function()
+	local w = boardWorld()
+	local saw = false
+	for i = 1, 30 do
+		local q = atBoard(w, 1000 + i, nil, { Level = 4 })
+		w:Act(q, "Meadow", "Open")
+		for _, id in cardIds(w:LastBoard(q)) do if id == "J4" then saw = true end end
+		for _ = 1, 3 do
+			w:Advance(61)
+			w:Act(q, "Meadow", "Reroll", 1)
+			for _, id in cardIds(w:LastBoard(q)) do if id == "J4" then saw = true end end
+		end
+	end
+	check(not saw, "Lv4 (no skill yet): the meadow board never shows 'Hit 3 at once' (J4)")
+	-- a J4 card saved before the rule is swapped for another job; the other three stay where they were
+	local p = atBoard(w, 1100, { "J3", "J6", "J1", "J4" }, { Level = 4 })
+	w:Act(p, "Meadow", "Open")
+	local ids = cardIds(w:LastBoard(p))
+	check(#ids == 4 and ids[1] == "J3" and ids[2] == "J6" and ids[3] == "J1" and table.find(ids, "J4") == nil,
+		"a saved J4 card before the first skill is swapped (the other three stay)", show(ids))
+	-- a Lv4 who kept Q (saved slots 1 after a free class change took the level back) keeps it
+	local k = atBoard(w, 1101, { "J3", "J6", "J1", "J4" }, { Level = 4, Attrs = { SkillSlots = 1 } })
+	w:Act(k, "Meadow", "Open")
+	local kept = cardIds(w:LastBoard(k))
+	check(kept[4] == "J4", "a Lv4 who kept Q keeps the J4 card", show(kept))
+	-- Lv5 learns Q: J4 can show up again
+	local sawAt5 = false
+	for i = 1, 40 do
+		local q = atBoard(w, 1200 + i, nil, { Level = 5 })
+		w:Act(q, "Meadow", "Open")
+		for _, id in cardIds(w:LastBoard(q)) do if id == "J4" then sawAt5 = true end end
+	end
+	check(sawAt5, "Lv5: J4 shows up again")
+end)
+
 ------------------------------------------------------------------ 4. take, progress, pay
 runGroup("take and finish", function()
 	local w = boardWorld()

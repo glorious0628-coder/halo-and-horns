@@ -178,10 +178,14 @@ RECIPES = {
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
-    keys = sys.argv[1:] or list(RECIPES)
+    import sfx_recipes  # the sound_spec synthesis recipes (it imports helpers from this file)
+    allr = {k: dict(v) for k, v in RECIPES.items()}
+    for k, v in sfx_recipes.RECIPES.items():
+        allr.setdefault(k, {}).update(v)
+    keys = sys.argv[1:] or list(allr)
     report = json.load(open(CUT.REPORT, encoding="utf-8")) if os.path.exists(CUT.REPORT) else {}
     for key in keys:
-        for name, (note, make) in RECIPES[key].items():
+        for name, (note, make) in allr[key].items():
             y = make()
             v, s, checks, m = CUT.judge(key, y)
             out = f"{key}__{key}_{name}"

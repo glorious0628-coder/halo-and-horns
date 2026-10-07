@@ -7,7 +7,9 @@
 결과: build/window_audit/<dev>_<id>.png, art/review/window_audit_<dev>_2026-10-07.jpg,
 docs/art/verification_2026-10-07/window_audit_2026-10-07.json (표는 docs/design/window_art_audit_2026-10-07.md에 손으로)
 
-  py tools/window_audit_view.py [pc] [phone]
+  py tools/window_audit_view.py [pc] [phone] [--tag after]
+  --tag after: 공통 틀을 넣은 뒤 같은 창을 다시 찍는다(build/window_audit_after/, art/review/window_audit_after_<dev>_...,
+  숫자 window_audit_after_2026-10-07.json) + 보상 팝업(UIKit.RewardPopup 견본) 한 장
 연습 Studio 전용(device_view.sandbox): 끝나면(오류가 나도) Play를 멈추고 기기 흉내를 끈다. 마우스·키보드 입력 없음.
 """
 
@@ -25,6 +27,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "build", "window_audit")
 SHEET = os.path.join(ROOT, "art", "review", "window_audit_%s_2026-10-07.jpg")
 REPORT = os.path.join(ROOT, "docs", "art", "verification_2026-10-07", "window_audit_2026-10-07.json")
+
+
+def use_tag(tag):
+    """--tag after: separate folders / sheets / report, so the 'before' evidence stays"""
+    global RAW, SHEET, REPORT
+    RAW = os.path.join(ROOT, "build", f"window_audit_{tag}")
+    SHEET = os.path.join(ROOT, "art", "review", f"window_audit_{tag}_%s_2026-10-07.jpg")
+    REPORT = os.path.join(ROOT, "docs", "art", "verification_2026-10-07", f"window_audit_{tag}_2026-10-07.json")
 
 # Panels windows (BUILDERS + Panels.Register); Story first (it waits while another window is open)
 WINDOWS = ["Story", "Welcome", "Menu", "Travel", "Class", "Rebirth", "Altar", "Items", "WeaponShop", "PotionShop",
@@ -75,6 +85,57 @@ local kit = require(p:WaitForChild("PlayerScripts"):WaitForChild("UIKit"))
 kit.Gui = main
 local ok, err = pcall(kit.Confirm, "Change class?", "Your level and items stay. You can change again later.", "Change", nil)
 return "confirm " .. tostring(ok) .. " " .. tostring(err)
+'''
+
+# --tag after: a vacation bonus to claim (2 days), so "Vacation" opens the shared reward popup (Panels FRAME.VacationPopup)
+VACATION_SET = r'''
+local p = game.Players:GetPlayers()[1]
+p:SetAttribute("VacationDays", 2)
+p:SetAttribute("VacationGold", 1200)
+p:SetAttribute("VacationXP", 850)
+return "vacation set"
+'''
+
+# --tag after: A23-71 (no skills before Lv5) - the SkillBar buttons off screen, so the HUD closes the potions up to the
+# attack button (HudLayout Hidden.q). The bar only repaints on attribute changes (full MP: none), so this holds for the photo
+SKILLS = r'''
+local main = game.Players.LocalPlayer:FindFirstChildOfClass("PlayerGui"):FindFirstChild("MainGui")
+local bar = main and main:FindFirstChild("SkillBar")
+local n = 0
+for _, slot in { "Q", "Z", "X" } do
+	local b = bar and bar:FindFirstChild("Skill" .. slot)
+	if b then
+		if %s then
+			-- put back what the bar showed (Z / X stay hidden while their flags are off)
+			b.Visible = b:GetAttribute("AuditWasVisible") == true
+		else
+			b:SetAttribute("AuditWasVisible", b.Visible)
+			b.Visible = false
+		end
+		n += 1
+	end
+end
+return "skill buttons visible=%s: " .. n
+'''
+
+# 창 꾸미기 ③: the reward popup with a sample (a UIKit copy, like the confirm box)
+REWARD = r'''
+local p = game.Players.LocalPlayer
+local main = p:FindFirstChildOfClass("PlayerGui"):FindFirstChild("MainGui")
+local kit = require(p:WaitForChild("PlayerScripts"):WaitForChild("UIKit"))
+kit.Gui = main
+if type(kit.RewardPopup) ~= "function" then return "no RewardPopup" end
+local ok, err = pcall(kit.RewardPopup, { Title = "Rest Bonus", Lines = { "You were away for 2 days.", "Here is your rest bonus!" },
+	Rewards = { { Icon = "IconCoin", Amount = 1200 }, { Icon = "IconExp", Amount = 850 } }, Button = "Claim!",
+	Faction = p:GetAttribute("Faction") })
+return "reward " .. tostring(ok) .. " " .. tostring(err)
+'''
+
+CLOSE_REWARD = r'''
+local main = game.Players.LocalPlayer:FindFirstChildOfClass("PlayerGui"):FindFirstChild("MainGui")
+local r = main and main:FindFirstChild("RewardPopup")
+if r then r:Destroy() end
+return "closed reward"
 '''
 
 CLOSE_CONFIRM = r'''
@@ -156,7 +217,7 @@ def probe(c, root_name):
         return {"raw": raw[:300]}
 
 
-def capture(devices):
+def capture(devices, reward=False, only=None):
     os.makedirs(RAW, exist_ok=True)
     rows = []
     with dv.sandbox() as c:
@@ -172,16 +233,44 @@ def capture(devices):
             time.sleep(6)
             print(dev, "pick:", dv.luau(c, dv.PICK % "Halo", "Server").strip())
             time.sleep(5)
-            for wid in WINDOWS:
+            if reward:
+                print(dev, dv.luau(c, SKILLS % ("false", "false"), "Client").strip())
+                time.sleep(1.0)
+                img = qv.grab(c, f"wa_{dev}_NoSkills")
+                path = os.path.join(RAW, f"{dev}_NoSkills.png")
+                if img:
+                    img.save(path)
+                rows.append({"device": dev, "id": "NoSkills", "probe": {},
+                             "file": os.path.relpath(path, ROOT).replace("\\", "/")})
+                print(dev, dv.luau(c, SKILLS % ("true", "true"), "Client").strip())
+                time.sleep(0.5)
+            for wid in (only or WINDOWS):
+                if reward and wid == "Vacation":
+                    print(dev, dv.luau(c, VACATION_SET, "Server").strip())
+                    time.sleep(0.5)
                 print(dev, dv.luau(c, OPEN % wid, "Server").strip())
                 time.sleep(2.2)
                 img = qv.grab(c, f"wa_{dev}_{wid}")
                 path = os.path.join(RAW, f"{dev}_{wid}.png")
                 if img:
                     img.save(path)
-                p = probe(c, "PanelsModal")
+                p = probe(c, "RewardPopup" if (reward and wid == "Vacation") else "PanelsModal")
                 rows.append({"device": dev, "id": wid, "probe": p, "file": os.path.relpath(path, ROOT).replace("\\", "/")})
                 print(dev, wid, json.dumps(p, ensure_ascii=False)[:300])
+                if reward and wid == "Vacation":
+                    print(dev, dv.luau(c, CLOSE_REWARD, "Client").strip())  # the popup would cover the next windows
+            if only:  # a quick re-check of a few windows (+ the reward sample): no confirm box / notices
+                if reward:
+                    print(dev, dv.luau(c, REWARD, "Client").strip())
+                    time.sleep(2.0)
+                    img = qv.grab(c, f"wa_{dev}_Reward")
+                    path = os.path.join(RAW, f"{dev}_Reward.png")
+                    if img:
+                        img.save(path)
+                    rows.append({"device": dev, "id": "Reward", "probe": probe(c, "RewardPopup"),
+                                 "file": os.path.relpath(path, ROOT).replace("\\", "/")})
+                    print(dev, dv.luau(c, CLOSE_REWARD, "Client").strip())
+                continue
             # popups: the confirm box (over the last window), then the notices without a window
             print(dev, dv.luau(c, POPUPS, "Client").strip())
             time.sleep(1.2)
@@ -192,6 +281,16 @@ def capture(devices):
             rows.append({"device": dev, "id": "Confirm", "probe": probe(c, "ConfirmDialog"),
                          "file": os.path.relpath(path, ROOT).replace("\\", "/")})
             print(dev, dv.luau(c, CLOSE_CONFIRM, "Client").strip())
+            if reward:
+                print(dev, dv.luau(c, REWARD, "Client").strip())
+                time.sleep(2.0)  # the pop and the count-up
+                img = qv.grab(c, f"wa_{dev}_Reward")
+                path = os.path.join(RAW, f"{dev}_Reward.png")
+                if img:
+                    img.save(path)
+                rows.append({"device": dev, "id": "Reward", "probe": probe(c, "RewardPopup"),
+                             "file": os.path.relpath(path, ROOT).replace("\\", "/")})
+                print(dev, dv.luau(c, CLOSE_REWARD, "Client").strip())
             print(dev, dv.luau(c, NOTICES, "Server").strip())
             time.sleep(1.5)
             img = qv.grab(c, f"wa_{dev}_Notices")
@@ -243,10 +342,23 @@ def sheets(rows):
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     devices = [a for a in sys.argv[1:] if a in dv.DEVICES] or ["pc", "phone"]
-    rows = capture(devices)
+    tag = None
+    if "--tag" in sys.argv:
+        tag = sys.argv[sys.argv.index("--tag") + 1]
+        use_tag(tag)
+    only = None
+    if "--only" in sys.argv:
+        only = sys.argv[sys.argv.index("--only") + 1].split(",")
+    rows = capture(devices, reward=tag is not None, only=only)
+    if only:  # keep the full run's report / sheets: the quick re-check goes to its own file
+        global REPORT
+        REPORT = REPORT.replace(".json", "_recheck.json")
     os.makedirs(os.path.dirname(REPORT), exist_ok=True)
     with open(REPORT, "w", encoding="utf-8", newline="\n") as f:
         json.dump({"tool": "tools/window_audit_view.py", "rows": rows}, f, ensure_ascii=False, indent=2)
+    if only:
+        print("recheck files:", [r["file"] for r in rows])
+        return
     print("sheets:", sheets(rows))
 
 

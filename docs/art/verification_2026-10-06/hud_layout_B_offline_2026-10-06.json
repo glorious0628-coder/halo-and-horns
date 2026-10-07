@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9645,
+  "checks": 9887,
   "failedChecks": 0,
-  "namedChecks": 9073,
+  "namedChecks": 9315,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
@@ -631,10 +631,25 @@
     "DesktopScaleMax": 1.0
   },
   "mutations": {
-    "total": 49,
-    "applied": 49,
-    "caught": 49,
+    "total": 50,
+    "applied": 50,
+    "caught": 50,
     "results": [
+      {
+        "mutation": "potions stay away from the attack button without Q",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: q hidden: potions close up to attack",
+          "pc_1024x768 :: q hidden: potions close up to attack",
+          "pc_1280x1024 :: q hidden: potions close up to attack",
+          "pc_1280x240_short :: q hidden: potions close up to attack",
+          "pc_1280x720 :: q hidden: potions close up to attack",
+          "pc_1280x720_inset36 :: q hidden: potions close up to attack"
+        ],
+        "newFailingCount": 22
+      },
       {
         "mutation": "short desktop windows go to the phone sheet",
         "applied": true,
@@ -845,14 +860,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_1024x600 :: q hidden: potions close up to attack",
           "pc_1024x768 :: face group centred or stepped aside",
           "pc_1024x768 :: press gap tiles/potions",
+          "pc_1024x768 :: q hidden: potions close up to attack",
           "pc_1280x1024 :: face group centred or stepped aside",
-          "pc_1280x1024 :: press gap tiles/potions",
-          "pc_1280x720_unibar_wide :: in the top bar war_meter",
-          "pc_573x354_small :: face group centred or stepped aside"
+          "pc_1280x1024 :: press gap tiles/potions"
         ],
-        "newFailingCount": 31
+        "newFailingCount": 53
       },
       {
         "mutation": "PC face group never steps aside",
@@ -4769,10 +4784,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "f9717bf6d94d1ac9734528828aed212b9b548ceaf07ae4eab5e10caf694c5ee5",
-    "tools/fixtures/hud_layout_offline.luau": "253b9f87efdd26de5d6c4d8503b1aea2e0fd7aad38fc18e1caed0d1ac05899d2",
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "32ac3e123d433bf967e9b17cda1b5740bd76200e187000989f8fd509008a18a3",
+    "tools/fixtures/hud_layout_offline.luau": "4e36305a70beaa43763eb2afcc5053cf935d778a30500f1f79c43a53d56bec11",
     "docs/design/hud_layout_B_imgdev_2026-10-06.json": "8c65195f6ed4f34c690eadf8815910cf396ba7ceb302757a3766b1e17fa0463b",
-    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485"
+    "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

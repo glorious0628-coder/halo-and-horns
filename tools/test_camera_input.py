@@ -73,7 +73,8 @@ HUD_MUTATIONS = [
 
 # A23-65 (user 2026-10-07): the follow turn (tools/fixtures/camera_follow_offline.luau); each must make it fail
 FOLLOW_MUTATIONS = [
-    ("spins while backing up", "BackDot = -0.25,", "BackDot = -1.1,"),
+    ("spins while backing up", "MinDot = 0.5,", "MinDot = -1.1,"),
+    ("circles on sidesteps", "MinDot = 0.5,", "MinDot = 0,"),
     ("no hold after a hand turn", "if now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack",
      "if now - FOLLOW.LastAttack"),
     ("no hold after my swing", " or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end", " then return end"),

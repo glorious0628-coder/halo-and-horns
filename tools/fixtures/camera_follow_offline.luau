@@ -96,20 +96,24 @@ local function reset()
 	W.Clock += 10 -- past every hold
 end
 local function dist() return (camera.CFrame.Position - camera.Focus.Position).Magnitude end
+-- forward and to the right of the camera look (-Z): dot 0.8 >= MinDot 0.5; its yaw is -36.87 deg
+local FWD_RIGHT = vec(0.6, 0, -0.8)
+local FWD_YAW = -math.deg(math.atan2(0.6, 0.8))
 
--- 1. walking to my right (+X): the camera turns toward it, capped at 110 deg/s, orbiting the focus
+-- 1. walking forward and to my right (36.87 deg right of the camera look): the camera turns toward it, capped,
+-- orbiting the focus (A23-65 follow, forward walks only since 검수 2026-10-07)
 reset()
 local d0, y0 = dist(), yaw(camera.CFrame.LookVector)
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 frame(1)
 local y1 = yaw(camera.CFrame.LookVector)
-check(y1 < y0 and math.abs(y1 - y0) <= 45 / 60 + 1e-6 and math.abs(y1 - y0) > 0.5, "walking right turns the camera right, at most 45 deg/s",
+check(y1 < y0 and math.abs(y1 - y0) <= 45 / 60 + 1e-6 and math.abs(y1 - y0) > 0.5, "walking forward-right turns the camera right, at most 45 deg/s",
 	{ y0, y1 })
 check(math.abs(dist() - d0) < 1e-6 and math.abs(camera.CFrame.LookVector.Y - lookAt(vec(0, 9, 12), focus).LookVector.Y) < 1e-6,
 	"it orbits the focus: same distance, same downward tilt", { dist(), d0 })
 frame(480)
 local y2 = yaw(camera.CFrame.LookVector)
-check(math.abs(y2 - (-90)) <= 6 + 1e-6 and y2 >= -90 - 1e-6, "after a while it settles behind me (within the 6 deg dead zone, no overshoot)", y2)
+check(math.abs(y2 - FWD_YAW) <= 6 + 1e-6 and y2 >= FWD_YAW - 1e-6, "after a while it settles behind me (within the 6 deg dead zone, no overshoot)", y2)
 -- 2. standing / walking toward the camera: never turns
 reset()
 frame(60)
@@ -117,12 +121,18 @@ check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "standing still: the camer
 humanoid.MoveDirection = vec(0, 0, 1)
 frame(60)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "walking toward the camera (backing up): never spins", yaw(camera.CFrame.LookVector))
-humanoid.MoveDirection = vec(0.97, 0, 0.2) -- mostly sideways, a bit toward the camera (102 deg from the camera look): still follows
+humanoid.MoveDirection = vec(1, 0, 0) -- a plain sidestep (90 deg from the camera look)
+frame(60)
+check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "a sidestep never turns it (no circling)", yaw(camera.CFrame.LookVector))
+humanoid.MoveDirection = vec(0.97, 0, -0.24) -- mostly sideways, a little forward (dot 0.24 < 0.5)
+frame(60)
+check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "mostly sideways (a little forward) does not turn it either", yaw(camera.CFrame.LookVector))
+humanoid.MoveDirection = FWD_RIGHT
 frame(1)
-check(yaw(camera.CFrame.LookVector) < -0.2, "walking sideways (a little toward the camera) still follows", yaw(camera.CFrame.LookVector))
+check(yaw(camera.CFrame.LookVector) < -0.2, "a forward walk turns it again", yaw(camera.CFrame.LookVector))
 -- 3. a hand turn holds it for 1.5 s
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 input.RightDown = true
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "while the right button is down: no follow (Roblox's right drag owns the camera)")
@@ -132,14 +142,14 @@ check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "1.0 s after the right dra
 frame(36) -- 1.6 s
 check(yaw(camera.CFrame.LookVector) < -0.2, "1.5 s after the right drag: the follow comes back", yaw(camera.CFrame.LookVector))
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 local right = { UserInputType = "Touch", Position = vec(800, 300, 0) }
 input.InputBegan:Fire(right, false)
 input.InputChanged:Fire(right, false)
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "a finger drag on the camera side holds the follow")
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 local left = { UserInputType = "Touch", Position = vec(150, 450, 0) }
 input.InputBegan:Fire(left, false)
 input.InputChanged:Fire(left, false)
@@ -147,13 +157,13 @@ frame(1)
 check(yaw(camera.CFrame.LookVector) < -0.2, "a finger on the move stick (left side) does not hold the follow", yaw(camera.CFrame.LookVector))
 input.InputEnded:Fire(left, false)
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 input.InputChanged:Fire({ UserInputType = "Pad", KeyCode = "Thumb2", Position = vec(0.8, 0, 0) }, false)
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "the right stick holds the follow")
 -- 4. my own swing / skill holds it 0.5 s; another player's never
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 fxSignal:Fire("Swing", { UserId = 7 })
 frame(24) -- 0.4 s
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "0.4 s after my swing: no follow (FaceTarget never whips the camera)")
@@ -161,46 +171,46 @@ frame(9) -- 0.55 s
 check(yaw(camera.CFrame.LookVector) < -0.2, "0.5 s after my swing: follows again", yaw(camera.CFrame.LookVector))
 for _, kind in { "Release", "Skill" } do
 	reset()
-	humanoid.MoveDirection = vec(1, 0, 0)
+	humanoid.MoveDirection = FWD_RIGHT
 	fxSignal:Fire(kind, { UserId = 7 })
 	frame(12)
 	check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "my " .. kind .. " holds the follow too")
 end
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 fxSignal:Fire("Swing", { UserId = 99 })
 frame(1)
 check(yaw(camera.CFrame.LookVector) < -0.2, "another player's swing does not hold my camera")
 -- 5. switches and states
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 W.Settings.Cam = "Free"
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "Settings Camera = Free: no follow")
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 W.Settings.Shake = false
 frame(1)
 local slowStep = math.abs(yaw(camera.CFrame.LookVector))
 check(slowStep > 0.2 and slowStep <= 25 / 60 + 1e-6, "'Screen shake' off: the follow turns slower (25 deg/s)", slowStep)
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 registry.Panels.Open = true
 frame(30)
 registry.Panels.Open = false
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "a window open: no follow")
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 camera.CameraType = "Scriptable"
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "a scripted camera (the opening): no follow")
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 input.MouseBehavior = "LockCenter"
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "shift lock: no follow (it turns me itself)")
 reset()
-humanoid.MoveDirection = vec(1, 0, 0)
+humanoid.MoveDirection = FWD_RIGHT
 camera.Focus.Position = camera.CFrame.Position + vec(0, 0, -0.5)
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "first person: no follow")

@@ -1,0 +1,8 @@
+loaded: DataLoaded=true Class=false Level=1 SkillSlots=0 Faction=None
+class: DataLoaded=true Class=true Level=1 SkillSlots=0 Faction=Halo
+Lv1 bar: SkillQ=false SkillZ=false SkillX=false | 
+debug level: ok
+after Lv5: DataLoaded=true Class=true Level=5 SkillSlots=0 Faction=Halo
+Lv5 bar: SkillQ=true SkillZ=false SkillX=false | Text:New skill! Shockwave ; Text:Press Q
+console errors: 
+play stopped (my own test Play)

@@ -60,6 +60,11 @@ MUTATIONS = [
     ("no Default fallback", "panels", "(step.LinesBy[var] or step.LinesBy.Default)", "step.LinesBy[var]"),
     ("the faction row ignored", "panels", "(src[f] or src.All)", "src.All"),
     ("the hint ignores the faction line", "panels", 'type(own) == "string" and own or TXT.ChoiceHint', "TXT.ChoiceHint"),
+    # round 3 #5
+    ("the hint shows the full minus at 0 points", "panels",
+     "\tif f == \"Halo\" then evil = math.min(evil, have) else good = math.min(good, have) end\n", ""),
+    ("no '(you have N)'", "panels", " .. string.format(STORY.Text.HintHave, have)", ""),
+    ("the window passes no points", "panels", "STORY.Hint(obj, f, STORY.Points(f))", "STORY.Hint(obj, f)"),
     ("0-point picks show +0 / -0", "panels", "\tif good <= 0 and evil <= 0 then return STORY.Text.HintLean end\n", ""),
     ("the guild sees score numbers", "panels", 'if f ~= "Halo" and f ~= "Horns" then return TXT.ChoiceHintNeutral end',
      "if false then return TXT.ChoiceHintNeutral end"),
@@ -98,15 +103,16 @@ def lua_long(text: str) -> str:
 def cut_story(panels: str) -> tuple[str, str]:
     """STORY.Lines + STORY.Hint source and the HintLean literal (raises when the shape changed)."""
     parts = []
-    for head in (r"function STORY\.Lines\(step, f, var\)", r"function STORY\.Hint\(obj, f\)"):
+    for head in (r"function STORY\.Lines\(step, f, var\)", r"function STORY\.Hint\(obj, f, have\)"):
         m = re.search(r"\n(" + head + r"\n.*?\nend)\n", panels, re.S)
         if not m:
             raise ValueError(f"Panels.luau: {head} missing; update the extractor")
         parts.append(m.group(1))
     lean = re.search(r'\bHintLean = ("(?:[^"\\]|\\.)*")', panels)
-    if not lean:
-        raise ValueError("Panels.luau: STORY.Text.HintLean missing")
-    return "\n".join(parts) + "\n", lean.group(1)
+    have = re.search(r'\bHintHave = ("(?:[^"\\]|\\.)*")', panels)
+    if not lean or not have:
+        raise ValueError("Panels.luau: STORY.Text.HintLean / HintHave missing")
+    return "\n".join(parts) + "\n", lean.group(1) + ", " + have.group(1)
 
 
 def cut_metric(panels: str) -> str:
@@ -145,7 +151,7 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
          "STORY.Pending = { Id = arg.Id, St = arg.St, Var = arg.Var }" in panels),
         ("the Story window takes its lines from STORY.Lines(step, f, arg.Var) and its hint from STORY.Hint(obj, f)",
          story is not None and "local lines = STORY.Lines(step, f, arg.Var)" in story.group(1)
-         and "STORY.Hint(obj, f)" in story.group(1) and "step.Lines" not in story.group(1)),
+         and "STORY.Hint(obj, f, STORY.Points(f))" in story.group(1) and "step.Lines" not in story.group(1)),
         ("ClientMain ORDER ends with Audio, every module once, every module file exists",
          bool(names) and names[-1] == "Audio" and len(names) == len(set(names))
          and all((SPS / f"{n}.luau").is_file() for n in names)),
@@ -173,7 +179,7 @@ def run(src: dict[str, str], directory: Path, name: str) -> dict:
     type_src = cut_type(src["panels"])
     metric_src = cut_metric(src["panels"])
     text = (f"local CONFIG_SOURCE = {lua_long(src['config'])}\nlocal ANNOUNCE_SOURCE = {lua_long(src['announce'])}\n"
-            f"local STORY_SOURCE = {lua_long(story)}\nlocal HINT_LEAN = {lean}\nlocal TYPE_SOURCE = {lua_long(type_src)}\n"
+            f"local STORY_SOURCE = {lua_long(story)}\nlocal HINT_LEAN, HINT_HAVE = {lean}\nlocal TYPE_SOURCE = {lua_long(type_src)}\n"
             f"local METRIC_SOURCE = {lua_long(metric_src)}\n"
             + FIXTURE.read_text(encoding="utf-8"))
     path = directory / name

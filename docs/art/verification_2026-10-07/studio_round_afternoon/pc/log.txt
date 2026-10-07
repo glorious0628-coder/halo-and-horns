@@ -1,0 +1,44 @@
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 IntroSeen=false ZoneId=Crossroads
+saved 01_opening_crown
+saved 02_opening_crown_b
+fired faction
+fired class
+chosen: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=0 IntroSeen=true ZoneId=Crossroads
+fired tutorial
+saved 03_crossroads_beam
+tp 300,-60
+cam behind
+custom walk right: cam (0.0, 0.0, 0.0) -> (-177.1, 106.9, 0.0)
+saved custom_walk_right
+tp 300,-60
+cam behind
+custom back up: cam (0.0, 0.0, 0.0) -> (0.0, 180.0, 0.0)
+tp 300,-60
+cam behind
+custom attack while walking: cam (0.0, -0.0, 0.0) -> (0.0, -1.8, 0.0)
+cam setting Free
+Follow
+tp 300,-60
+cam behind
+roblox walk right: cam (-178.5, 0.0, 0.0) -> (26.3, -49.2, 0.0)
+saved roblox_walk_right
+tp 300,-60
+cam behind
+roblox back up: cam (-173.9, 0.0, 0.0) -> (-173.9, 6.1, 0.0)
+tp 300,-60
+cam behind
+roblox attack while walking: cam (-173.9, -0.0, 0.0) -> (-173.9, -173.8, 0.0)
+UserChoice
+cam setting Follow
+tp 300,-60
+cam behind
+tp 300,-60
+minimap: 2 PotionMerchant rot=0 text=- img=192030084262 | Me rot=90 text=- img=236026912773
+saved 04_minimap_side
+cam behind
+bark on BigSlime 4 studs
+bubbles 1
+saved 05_bark_bubble
+saved 06_damage_numbers
+console: 
+play stopped (my own test Play)

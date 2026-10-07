@@ -224,6 +224,15 @@ function HudLayout.Compute(env)
 		if minX < pot.X then pot.X, pot.W = minX, potRight - minX end
 	end
 
+	-- A23-71 (user 2026-10-07 "스킬도 처음에는 없어야 돼"): before Lv5 the skill buttons are not on screen. While Q is
+	-- hidden the potions close up to the attack button (the hole Q leaves read as a missing button); Z / X leave their
+	-- room above the attack button empty
+	if hidden.q then
+		local pot, atk = out.potions, out.attack
+		local want = atk.X - GAP - pot.W
+		if want > pot.X then pot.X = want end
+	end
+
 	-- tile row: square tiles as tall as the row (>= MIN_TAP on touch), Count = how many fit with the least gap
 	local tiles = out.tiles
 	local size = touch and math.max(tiles.H, MIN_TAP) or tiles.H

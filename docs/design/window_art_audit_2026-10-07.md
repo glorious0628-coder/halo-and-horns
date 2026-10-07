@@ -63,3 +63,24 @@ Toast·BannerAlert는 승인 그림이 올라가 있는데 안 쓰고 있다.
 5. 확인 상자 → DialogBox 판 + 승인 버튼 2개.
 6. 알림: Toast 그림, 큰 알림 BannerAlert.
 7. 보상 팝업 하나(휴가 보너스·일일 상자·이벤트 보상·레벨업): BannerGold 제목 + RewardRays + 숫자 굴러 올라감 + 큰 Claim(BtnConfirm).
+
+## 고친 뒤 (공통 틀, 2026-10-07 저녁)
+
+- 사진: `art/review/window_audit_after_pc_2026-10-07.jpg`, `art/review/window_audit_after_phone_2026-10-07.jpg`
+  (`py tools/window_audit_view.py pc phone --tag after`: 같은 창 16개 + 확인 상자 + 보상 팝업 견본 + 스킬 없는 전투 버튼,
+  Vacation은 보너스 2일로 열어 새 보상 팝업; 숫자 `docs/art/verification_2026-10-07/window_audit_after_2026-10-07.json`)
+- **공통 틀(Panels 껍데기):** 남색 PanelCard 판(9조각) + 위 테두리에 걸친 RibbonHeader 제목(왼쪽 동그라미에 창 아이콘:
+  IconTravel·IconBag·IconHammer·IconPotionHP·IconSettings …) + 오른쪽 위 BtnRound + GlyphClose X(늘 같은 자리), 다른 창에서
+  열었으면 왼쪽 위 BtnRound + GlyphBack. 창 높이 = 내용 높이(내용이 늘거나 줄면 다시 맞춤, 화면보다 길면 스크롤).
+  그림이 없으면 예전 코드 모양(IMG-R4).
+- **버튼:** makeButton이 승인 캡슐(UIKit.ArtTextButton): 초록(Free·Good) = BtnConfirm, 금(Buy·선택·켜짐) = BtnPrimary,
+  나머지 = BtnSecondary(파랑). 글자는 버튼 안에 맞춰 12px까지 줄어듦. btn.Text 대입·꺼짐(흐리게)은 그대로 동작.
+- **확인 상자:** 크림 DialogBox 판 + 남색 글 + Cancel(파랑)·OK(초록).
+- **보상 팝업 하나(UIKit.RewardPopup):** BannerGold 제목 + 뒤에서 도는 RewardRays + SlotCommon 칸(코인·XP 아이콘, 숫자가 0부터
+  굴러 올라감) + 큰 Claim(BtnConfirm) + 선택 Later. 화면보다 크면 맞게 줄임(폰). 진영 보상 판·띠(이미지 생성 2 고급)가
+  오면 Config 키(RewardPanelHalo/Horns, RewardRibbonHalo/Horns, RewardSlot)만 채우면 바뀜. **Vacation Bonus**가 첫 사용처.
+- **같이 고친 것(검수):** 장인 진영 숨김(Rebirth 버튼·Altar 카드: Config.Pickable = Features.NeutralFaction), 메뉴의 티켓
+  상점 숨김(상품 id가 생기면 다시 보임), 창·팝업 그림 미리 불러오기(첫 확인 상자가 빈 판으로 1초 보이던 것).
+- **남은 것:** 카드·줄(makeCard·Row)은 아직 코드 모양(남색 판 위라 읽기는 됨) → ListRow 그림은 창별로. 작은 알림(Toast)·
+  큰 알림(BannerAlert) 그림 입히기, '창이 열려 있으면 알림이 창 위 한 줄로'(UI 2회차 #4).
+

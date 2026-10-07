@@ -113,14 +113,18 @@ local function countFor(job, boardId)
 	return math.max(1, math.floor(num(c, 1)))
 end
 
+-- a template this player can do at all: Auto Battle unlocked for NeedAuto, A23-71 a skill learned for NeedSkill (the
+-- first skill comes at Lv5)
+local function canDo(player, job)
+	if job.NeedAuto and player:GetAttribute("AutoCombatUnlocked") ~= true then return false end
+	return not job.NeedSkill or Config.SkillLearned(player:GetAttribute("SkillSlots"), player:GetAttribute("Level"),
+		player:GetAttribute("Rebirths"))
+end
+
 -- a template this player can do on this board, not shown already and not one of its last two
 local function eligible(player, job, boardId, avoid)
 	if avoid[job.Id] then return false end
-	if job.NeedAuto and player:GetAttribute("AutoCombatUnlocked") ~= true then return false end
-	if job.NeedSkill and not Config.SkillLearned(player:GetAttribute("SkillSlots"), player:GetAttribute("Level"),
-		player:GetAttribute("Rebirths")) then
-		return false -- A23-71: the first skill comes at Lv5
-	end
+	if not canDo(player, job) then return false end
 	local only = job.Boards
 	return only == nil or only[boardId] == true
 end
@@ -179,9 +183,12 @@ end
 local function cardsOf(player, st, boardId)
 	local cards = st.Cards[boardId]
 	if type(cards) ~= "table" then cards = {} end
+	-- saved cards stay while the player can do them (A23-71 S11: a 'Hit 3 at once' card saved before the first skill is
+	-- swapped for another job)
 	local valid = {}
 	for _, id in cards do
-		if jobDef(id) and #valid < num(B.Cards, 4) then table.insert(valid, id) end
+		local job = jobDef(id)
+		if job and canDo(player, job) and #valid < num(B.Cards, 4) then table.insert(valid, id) end
 	end
 	cards = valid
 	while #cards < num(B.Cards, 4) do

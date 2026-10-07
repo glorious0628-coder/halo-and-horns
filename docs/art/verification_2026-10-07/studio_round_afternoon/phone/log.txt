@@ -1,0 +1,26 @@
+device phone ok=true nil
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 IntroSeen=false ZoneId=Crossroads
+saved 01_opening_crown
+saved 02_opening_crown_b
+fired faction
+fired class
+chosen: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=0 IntroSeen=true ZoneId=HaloTown
+fired tutorial
+saved 03_crossroads_beam
+menu button: LocalPlayer.PlayerGui.MainGui.HUD.Buttons.TileMenu
+fold before: MenuFold=true visible=false size=333, 156 pos=263.25, -54.25; shown 0: 
+fold after tap: MenuFold=true visible=false size=333, 156 pos=263.25, -54.25; shown 0: 
+saved 04_phone_menu
+tp 300,-60
+cam behind
+phone walk right: cam (-141.1, 0.0, 0.0) -> (146.7, 62.1, 0.0)
+saved phone_walk_right
+tp 300,-60
+cam behind
+phone back up: cam (0.0, -0.0, 0.0) -> (0.0, 180.0, 0.0)
+tp 300,-60
+cam behind
+phone attack while walking: cam (0.0, -0.0, 0.0) -> (0.0, -0.0, 0.0)
+console: 
+play stopped (my own test Play)
+device default ok=true nil

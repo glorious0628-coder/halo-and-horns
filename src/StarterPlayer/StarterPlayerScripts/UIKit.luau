@@ -215,8 +215,26 @@ local NOTIFY = {
 	-- height is taller than the measurement and the last line was dropped for "..." (UiSandbox 655x340, 2026-10-06)
 	WrapSlack = 0.15,
 	TrimQueued = false,
+	-- UI round 2 #4 (검수 2026-10-07: "창이 열려 있으면 알림은 창 위 한 줄로"): the open window's rect (MainGui du, its title
+	-- ribbon included; UIKit.SetNotifyAvoid from Panels) - toasts then show one line, one at a time, just above the window
+	-- (else just below it; else in the column as before) and big banners come as that one line
+	Avoid = nil,
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
 	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4 },
+	-- 창 꾸미기 ③ the reward popup (UIKit.RewardPopup), du: plate width, banner (BannerGold 512 x 178, text box
+	-- 0.254 / 0.225 / 0.492 / 0.365), slots, rays (one turn in RayTurn s), the count-up time
+	-- 창 꾸미기: the parts the windows / popups use, loaded once at start (UIKit.Start) so the first confirm box or reward
+	-- popup never shows an empty plate while its texture downloads (UiSandbox PC 2026-10-07: DialogBox still blank 1.2 s in)
+	PreloadArt = { "DialogBox", "PanelCard", "RibbonHeader", "BtnRound", "GlyphClose", "GlyphBack", "BtnPrimary",
+		"BtnSecondary", "BtnConfirm", "BannerGold", "RewardRays", "SlotCommon", "IconCoin", "IconExp", "Chip", "BarkBubble" },
+	-- Short screens (free height under CompactBelow du, phones): a wider plate, a smaller banner / slots / buttons and 16 du
+	-- lines, so it fits without shrinking (a shrunk popup kept its words at the real-px floor and grew tall and narrow)
+	Reward = { W = 440, BannerW = 340, BannerAspect = 512 / 178, TitleSize = 26, SlotSize = 76, SlotGap = 18,
+		CompactBelow = 560, WideW = 620, BannerCompact = 270, SlotCompact = 58, ButtonHCompact = 48, LineSize = 18,
+		LineCompact = 16,
+		RaySize = 600, RayTurn = 24, RayColor = Color3.fromRGB(255, 214, 96), RayAlpha = 0.3, Count = 0.9,
+		ButtonW = 230, ButtonH = 58, Panel = { Halo = "RewardPanelHalo", Horns = "RewardPanelHorns" },
+		Banner = { Halo = "RewardRibbonHalo", Horns = "RewardRibbonHorns" }, Slot = "RewardSlot", Glow = "RewardGlow" },
 }
 
 ----------------------------------------------------------------- helpers
@@ -1477,7 +1495,8 @@ end
 --    fixed TextSize is raised to it (the caller's own size comes back when the floor drops); a UIKit.FitText label
 --    gets it as its picker minimum instead. Floor and stroke re-run on TextSize / AbsoluteSize / TextBounds /
 --    TextScaled / parent changes and on every UIScale change (applyScale).
---  * Text and AutoLocalize are never touched, so Roblox auto-translation keeps working.
+--  * Text is never touched. AutoLocalize is switched off game-wide by ClientMain (A23-48 English only: Roblox's
+--    automatic translation would show the English text in the player's Roblox language).
 --  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
 --    StyleStroke.Transparency with TextTransparency.
 -- Families come from FONT.Sets (A23-48 English only, A23-63): Denk One (Face = "Head") + Montserrat (Face = "Body").
@@ -1979,6 +1998,94 @@ function UIKit.ArtButton(name, props, onClick, fallbackProps)
 	return btn, label, def ~= nil
 end
 
+-- 창 꾸미기 (검수 2026-10-07, user: the windows must look designed): a TextButton that wears an approved button part
+-- (the 9-sliced capsules BtnPrimary gold / BtnSecondary blue / BtnConfirm green ...) with its words in a styled child
+-- "Label" that mirrors the button's own Text and TextSize. The button keeps Text / TextSize / Activated, so callers that
+-- rewrite btn.Text keep working; its own text is hidden. Gold / parchment parts get navy words, the others white with
+-- the navy rim (UIKit text styles). Attribute Disabled = true dims the art and the words. UIKit.SetButtonArt swaps the
+-- part (Panels repaints its buttons by colour). Missing part (IMG-R4): UIKit.Button(props, onClick), the coloured code
+-- button, unchanged.
+function UIKit.ArtTextButton(part, props, onClick)
+	local def = artPart(part)
+	if not def then return UIKit.Button(props, onClick) end
+	props = props or {}
+	local p = {}
+	for key, value in props do
+		if key ~= "Parent" and key ~= "Color" and key ~= "TextColor" then p[key] = value end
+	end
+	p.BackgroundTransparency = 1
+	p.AutoButtonColor = false
+	p.TextTransparency = 1
+	p.TextStrokeTransparency = 1
+	if p.Text == nil then p.Text = "" end
+	if p.TextSize == nil then p.TextSize = 18 end
+	local btn = UIKit.Create("TextButton", p, { UIKit.Create("UIScale", { Name = "PressScale" }) })
+	local art = UIKit.ArtImage(part, {
+		Name = "Art",
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = btn.ZIndex,
+		Active = false,
+		Parent = btn,
+	})
+	local light = def.Tone == "Gold" or def.Tone == "Parchment"
+	-- the words fit the capsule: TextScaled up to the button's TextSize, down to 12 px for long ones (UiSandbox
+	-- 2026-10-07: 'My name in announcements and rankings: shown' was cut at the 16 px button floor)
+	local cap = UIKit.Create("UITextSizeConstraint", { MaxTextSize = btn.TextSize, MinTextSize = 1 })
+	local label = UIKit.Create("TextLabel", {
+		Name = "Label",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.48),
+		Size = UDim2.new(1, -20, 1, -8),
+		BackgroundTransparency = 1,
+		Text = btn.Text,
+		TextSize = btn.TextSize,
+		TextScaled = true,
+		TextWrapped = true,
+		ZIndex = btn.ZIndex + 1,
+	}, { cap })
+	label:SetAttribute("StyleMinPx", 12)
+	UIKit.StyleText(label, "Button", light)
+	label.Parent = btn
+	btn:SetAttribute("ArtButton", part)
+	btn:GetPropertyChangedSignal("Text"):Connect(function() label.Text = btn.Text end)
+	btn:GetPropertyChangedSignal("TextSize"):Connect(function() cap.MaxTextSize = btn.TextSize end)
+	btn:GetPropertyChangedSignal("ZIndex"):Connect(function()
+		art.ZIndex = btn.ZIndex
+		label.ZIndex = btn.ZIndex + 1
+	end)
+	btn:GetAttributeChangedSignal("Disabled"):Connect(function() UIKit.ButtonArtState(btn) end)
+	wirePress(btn, onClick)
+	UIKit.ButtonArtState(btn)
+	if props.Parent then btn.Parent = props.Parent end
+	return btn
+end
+
+-- the art button's look for its Disabled attribute: dimmed art and faded words while disabled
+function UIKit.ButtonArtState(btn)
+	local art, label = btn:FindFirstChild("Art"), btn:FindFirstChild("Label")
+	local off = btn:GetAttribute("Disabled") == true
+	if art and art:IsA("ImageLabel") then
+		art.ImageColor3 = off and Color3.fromRGB(150, 150, 160) or Color3.new(1, 1, 1)
+		art.ImageTransparency = off and 0.15 or 0
+	end
+	if label and label:IsA("TextLabel") then label.TextTransparency = off and 0.4 or 0 end
+end
+
+-- swaps an art button's part (e.g. Panels' paintButton: green Free -> BtnConfirm, gold Buy -> BtnPrimary); the words
+-- follow the new part's tone. A code button (no "Art" child) is left as it is. Returns true when it changed
+function UIKit.SetButtonArt(btn, part)
+	if typeof(btn) ~= "Instance" or btn:GetAttribute("ArtButton") == part then return false end
+	local def = artPart(part)
+	local art = btn:FindFirstChild("Art")
+	if not (def and art and art:IsA("ImageLabel")) then return false end
+	applyArt(art, def)
+	btn:SetAttribute("ArtButton", part)
+	local label = btn:FindFirstChild("Label")
+	if label then UIKit.StyleText(label, "Button", def.Tone == "Gold" or def.Tone == "Parchment") end
+	UIKit.ButtonArtState(btn)
+	return true
+end
+
 -- progress bar on the BarTrack art (navy capsule with a gold rim). Same props and returns as UIKit.Bar:
 -- (frame, setFraction(f, color?), textLabel); Color defaults to ArtColors.XPBlue, Track = another part name.
 -- The fill (frame.Inner.Fill) sits in the navy interior; the text is LightText in the Number font.
@@ -2151,6 +2258,7 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 end
 
 function NOTIFY.ToastCap()
+	if NOTIFY.Avoid then return 1 end -- a window is open: the newest line only
 	local rect = NOTIFY.Rect
 	if rect == nil then return toastMax end
 	local avail = rect.Y + rect.H - (NOTIFY.Y or rect.Y) - NOTIFY.BannerOffset()
@@ -2272,7 +2380,7 @@ function UIKit.Toast(text, kind, duration, icon)
 			label.Text = (string.gsub(text, " · ", "\n"))
 		end
 	end
-	UIKit.WrapHeight(label, NOTIFY.ToastLines, img and TOAST_ICON or nil)
+	UIKit.WrapHeight(label, NOTIFY.Avoid and 1 or NOTIFY.ToastLines, img and TOAST_ICON or nil)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
@@ -2361,10 +2469,44 @@ end
 
 function NOTIFY.PlaceToasts()
 	if not (NOTIFY.Rect and toastHolder) then return end
+	local av = NOTIFY.Avoid
+	if av and UIKit.Gui then
+		-- a window is open: one line just above it, else just below it (room for one line: NOTIFY.ToastEstimate)
+		local s = currentScale()
+		local top = insetY() / s + 4
+		local screenH = UIKit.Gui.AbsoluteSize.Y / s
+		local cx = math.floor(av.X + av.W / 2 + 0.5)
+		if av.Y - 6 - top >= NOTIFY.ToastEstimate then
+			toastHolder.AnchorPoint = Vector2.new(0.5, 1)
+			toastHolder.Position = UDim2.fromOffset(cx, math.floor(av.Y - 6))
+			NOTIFY.QueueTrim()
+			return
+		elseif screenH - (av.Y + av.H) - 6 >= NOTIFY.ToastEstimate then
+			toastHolder.AnchorPoint = Vector2.new(0.5, 0)
+			toastHolder.Position = UDim2.fromOffset(cx, math.floor(av.Y + av.H + 6))
+			NOTIFY.QueueTrim()
+			return
+		end
+		-- no room around it (phones, tall windows): the column as before, one line
+	end
 	local cx = math.floor(NOTIFY.Rect.X + NOTIFY.Rect.W / 2 + 0.5)
 	local ty = math.floor((NOTIFY.Y or NOTIFY.Rect.Y) + NOTIFY.BannerOffset() + 0.5)
+	toastHolder.AnchorPoint = Vector2.new(0.5, 0)
 	toastHolder.Position = UDim2.fromOffset(cx, ty)
 	NOTIFY.QueueTrim()
+end
+
+-- Panels tells where its open window is (nil = closed); the toasts move around it at once
+function UIKit.SetNotifyAvoid(rect)
+	local ok = type(rect) == "table" and NOTIFY.Num(rect.X) and NOTIFY.Num(rect.Y) and NOTIFY.Num(rect.W)
+		and NOTIFY.Num(rect.H)
+	local new = ok and { X = rect.X, Y = rect.Y, W = rect.W, H = rect.H } or nil
+	local old = NOTIFY.Avoid
+	if (old == nil) == (new == nil) and (new == nil or (math.abs(old.X - new.X) < 1 and math.abs(old.Y - new.Y) < 1
+		and math.abs(old.W - new.W) < 1 and math.abs(old.H - new.H) < 1)) then return end
+	NOTIFY.Avoid = new
+	NOTIFY.PlaceToasts()
+	NOTIFY.TrimToasts()
 end
 
 -- icon (optional, UIKit.ItemIcon): item / monster art left of the banner text
@@ -2412,6 +2554,11 @@ function UIKit.Announce(text, duration, icon)
 	if text == "" or not announceFrame then return end
 	duration = tonumber(duration) or DEFAULT_ANNOUNCE_SECONDS
 	if duration <= 0 then duration = DEFAULT_ANNOUNCE_SECONDS end
+	-- UI round 2 #4: a window is open - the big banner comes as the one line around it
+	if NOTIFY.Avoid then
+		UIKit.Toast(text, "reward", duration, icon)
+		return
+	end
 
 	if announceCurrent and related(announceCurrent.Text, text) then
 		if #text > #announceCurrent.Text then
@@ -2471,9 +2618,8 @@ function UIKit.PlaceNotify(rect, topY)
 	local cx = math.floor(x + w / 2 + 0.5)
 	local ty = math.floor(top + 0.5)
 	if toastHolder then
-		toastHolder.AnchorPoint = Vector2.new(0.5, 0)
-		toastHolder.Position = UDim2.fromOffset(cx, ty + NOTIFY.BannerOffset())
 		toastHolder.Size = UDim2.fromOffset(math.floor(w), 10)
+		NOTIFY.PlaceToasts() -- the column top, or around an open window (NOTIFY.Avoid)
 	end
 	if announceFrame then
 		local bannerH = math.max(math.min(NOTIFY.BannerH, y + h - top), NOTIFY.BannerMinH)
@@ -2527,24 +2673,22 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 	end
 	overlay.Activated:Connect(close)
 
-	local box = UIKit.Create("Frame", {
+	-- 창 꾸미기 (검수 2026-10-07): the cream DialogBox plate (navy words, UIKit text styles on light); missing art: the
+	-- old dark box with its gold line
+	local box, boxArt = UIKit.ArtFrame("DialogBox", {
 		Name = "Box",
 		Active = true,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromOffset(460, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
-		BackgroundColor3 = T.Bg,
-		BackgroundTransparency = 0.05,
-		Parent = overlay,
-	}, {
-		corner(UDim.new(0, 16)),
-		UIKit.Create("UIStroke", { Color = T.Gold, Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+	}, { BackgroundColor3 = T.Bg, BackgroundTransparency = 0.05, CornerRadius = UDim.new(0, 16), StrokeColor = T.Gold,
+		StrokeThickness = 2, StrokeTransparency = 0.2 }, {
 		UIKit.Create("UIPadding", {
-			PaddingTop = UDim.new(0, 18),
-			PaddingBottom = UDim.new(0, 18),
-			PaddingLeft = UDim.new(0, 18),
-			PaddingRight = UDim.new(0, 18),
+			PaddingTop = UDim.new(0, 24),
+			PaddingBottom = UDim.new(0, 22),
+			PaddingLeft = UDim.new(0, 26),
+			PaddingRight = UDim.new(0, 26),
 		}),
 		UIKit.Create("UIListLayout", {
 			FillDirection = Enum.FillDirection.Vertical,
@@ -2553,29 +2697,28 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 			Padding = UDim.new(0, 12),
 		}),
 	})
-	UIKit.Label({
+	box.Parent = overlay
+	UIKit.StyledLabel({
 		Name = "Title",
 		LayoutOrder = 1,
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		TextWrapped = true,
 		TextSize = 26,
-		TextColor = T.Gold,
 		Text = tostring(title or ""),
 		Parent = box,
-	})
+	}, "Title", boxArt)
 	if body ~= nil and tostring(body) ~= "" then
-		UIKit.Label({
+		UIKit.StyledLabel({
 			Name = "Body",
 			LayoutOrder = 2,
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
 			TextWrapped = true,
 			TextSize = 18,
-			TextColor = T.SubText,
 			Text = tostring(body),
 			Parent = box,
-		})
+		}, "Body", boxArt)
 	end
 	local row = UIKit.Create("Frame", {
 		Name = "Buttons",
@@ -2584,7 +2727,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 		BackgroundTransparency = 1,
 		Parent = box,
 	})
-	UIKit.Button({
+	UIKit.ArtTextButton("BtnSecondary", {
 		Name = "Cancel",
 		Text = "Cancel",
 		AnchorPoint = Vector2.new(1, 0),
@@ -2594,7 +2737,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 		TextSize = 20,
 		Parent = row,
 	}, close)
-	UIKit.Button({
+	UIKit.ArtTextButton("BtnConfirm", {
 		Name = "Confirm",
 		Text = tostring(confirmText or "OK"),
 		AnchorPoint = Vector2.new(0, 0),
@@ -2745,6 +2888,7 @@ function UIKit.Init(registry)
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, TOAST_Y + TOP_FALLBACK),
 		Size = UDim2.fromOffset(TOAST_WIDTH, 10),
+		AutomaticSize = Enum.AutomaticSize.Y, -- its height = the toasts: anchored at the bottom it grows upward (Avoid)
 		BackgroundTransparency = 1,
 		ZIndex = Z_TOASTS,
 		Parent = gui,
@@ -2878,6 +3022,243 @@ function UIKit.NewTag(target, text)
 	return tag
 end
 
+-- 창 꾸미기 ③ (검수 2026-10-07; user on the 'Vacation Bonus' window: "이런 화면도 멋있게"): ONE reward popup for the vacation
+-- bonus, the daily chest, event rewards and level ups. A dark backdrop; the white RewardRays turning slowly behind,
+-- tinted gold; the plate (the faction reward plate RewardPanelHalo / RewardPanelHorns once drawn, else the navy
+-- PanelCard); the BannerGold ribbon (the faction ribbons once drawn) over its top edge with the title; the lines; one
+-- row of reward slots (RewardSlot once drawn, else SlotCommon) with the icon and the amount counting up from 0; a big
+-- Claim capsule (BtnConfirm) and an optional blue second button. No pop / turn with ReducedMotion.
+-- opts = { Title, Lines = { string } | string, Rewards = { { Icon = UIArt key or Config.Loot item id, Amount = number,
+--   Label = string? } }, Button = "Claim!", OnClaim = fn?, Second = string?, OnSecond = fn?, Faction = "Halo" | "Horns"? }
+-- Returns { Close = fn(), Frame = the overlay }. The popup closes itself after either button.
+function UIKit.RewardPopup(opts)
+	if not UIKit.Gui then return nil end
+	opts = type(opts) == "table" and opts or {}
+	local cfg = NOTIFY.Reward
+	local reduced = UIKit.ReducedMotion()
+	local faction = opts.Faction == "Halo" and "Halo" or (opts.Faction == "Horns" and "Horns" or nil)
+	local overlay = UIKit.Create("TextButton", {
+		Name = "RewardPopup",
+		Text = "",
+		AutoButtonColor = false,
+		Modal = true,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(3, 3),
+		BackgroundColor3 = Color3.new(0, 0, 0),
+		BackgroundTransparency = 0.4,
+		ZIndex = Z_CONFIRM - 2,
+	})
+	local handle = { Frame = overlay }
+	local closed = false
+	-- the room under the top bar decides the size class (du)
+	local sc = currentScale()
+	local gsize = UIKit.Gui.AbsoluteSize
+	local compact = gsize.Y > 0 and (gsize.Y - insetY() - 16) / sc < cfg.CompactBelow
+	local plateW = compact and math.min(cfg.WideW, gsize.X / sc - 40) or cfg.W
+	local bannerW = compact and cfg.BannerCompact or cfg.BannerW
+	local slotSize = compact and cfg.SlotCompact or cfg.SlotSize
+	local buttonH = compact and cfg.ButtonHCompact or cfg.ButtonH
+
+	-- the rays behind the banner, turning
+	local rays = UIKit.ArtImage("RewardRays", {
+		Name = "Rays",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0.5, 0, 0.5, -60),
+		Size = UDim2.fromOffset(cfg.RaySize, cfg.RaySize),
+		ImageColor3 = cfg.RayColor,
+		ImageTransparency = cfg.RayAlpha,
+		ZIndex = overlay.ZIndex + 1,
+		Active = false,
+		Parent = overlay,
+	})
+	if rays and not reduced then
+		local turn = TweenService:Create(rays, TweenInfo.new(cfg.RayTurn, Enum.EasingStyle.Linear,
+			Enum.EasingDirection.InOut, -1), { Rotation = 360 })
+		turn:Play()
+		overlay.Destroying:Connect(function() turn:Cancel() end)
+	end
+
+	-- the plate: its height follows the body (AutomaticSize Y)
+	local panelKey = faction and artPart(cfg.Panel[faction]) and cfg.Panel[faction] or "PanelCard"
+	local panel = UIKit.ArtFrame(panelKey, {
+		Name = "Plate",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(plateW, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		ZIndex = overlay.ZIndex + 2,
+		Active = true,
+	}, { BackgroundColor3 = UIKit.Theme.Bg, BackgroundTransparency = 0.04, CornerRadius = UDim.new(0, 18),
+		StrokeColor = UIKit.Theme.Gold, StrokeThickness = 2 })
+	local pop = UIKit.Create("UIScale", { Name = "Pop", Scale = 1, Parent = panel })
+	panel.Parent = overlay
+
+	-- the banner over the plate's top edge, the title in its text box
+	local bannerH = bannerW / cfg.BannerAspect
+	local bannerKey = faction and artPart(cfg.Banner[faction]) and cfg.Banner[faction] or "BannerGold"
+	local banner = UIKit.ArtImage(bannerKey, {
+		Name = "Banner",
+		AnchorPoint = Vector2.new(0.5, 0.62),
+		Position = UDim2.fromScale(0.5, 0),
+		Size = UDim2.fromOffset(bannerW, bannerH),
+		ZIndex = panel.ZIndex + 3,
+		Active = false,
+		Parent = panel,
+	})
+	local titleParent = banner or panel
+	local title = UIKit.Create("TextLabel", {
+		Name = "Title",
+		BackgroundTransparency = 1,
+		Text = tostring(opts.Title or ""),
+		Position = banner and UDim2.fromScale(0.22, 0.2) or UDim2.fromOffset(0, -cfg.TitleSize - 10),
+		Size = banner and UDim2.fromScale(0.56, 0.42) or UDim2.new(1, 0, 0, cfg.TitleSize + 6),
+		TextScaled = true,
+		TextWrapped = false, -- one line that shrinks (phones showed "Vacation" with "Bonus" wrapped away)
+		ZIndex = panel.ZIndex + 4,
+	}, { UIKit.Create("UITextSizeConstraint", { MaxTextSize = cfg.TitleSize, MinTextSize = 1 }) })
+	-- the banner's text box is narrow: a long title ("Vacation Bonus" on phones) shrinks down to 12 px instead of losing words
+	title:SetAttribute("StyleMinPx", 12)
+	UIKit.StyleText(title, "Title", banner ~= nil)
+	title.Parent = titleParent
+
+	-- the body: lines, the reward slots, the buttons
+	local body = UIKit.Create("Frame", {
+		Name = "Body",
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		ZIndex = panel.ZIndex + 1,
+		Parent = panel,
+	}, {
+		UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, math.floor(bannerH * 0.42) + 10),
+			PaddingBottom = UDim.new(0, 24), PaddingLeft = UDim.new(0, 26), PaddingRight = UDim.new(0, 26) }),
+		UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Vertical,
+			HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 14) }),
+	})
+	local order = 0
+	local function nextOrder()
+		order += 1
+		return order
+	end
+	local lines = opts.Lines
+	if type(lines) == "string" then lines = { lines } end
+	lines = type(lines) == "table" and lines or {}
+	if compact then -- short screens: the first line(s) only, so the popup fits without shrinking
+		lines = table.move(lines, 1, math.min(#lines, math.max(1, tonumber(opts.CompactLines) or 1)), 1, {})
+	end
+	for _, line in lines do
+		UIKit.StyledLabel({ Name = "Line", Text = tostring(line), Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextSize = compact and cfg.LineCompact or cfg.LineSize,
+			LayoutOrder = nextOrder(),
+			ZIndex = body.ZIndex + 1, Parent = body }, "Body")
+	end
+	local counters = {}
+	local rewards = type(opts.Rewards) == "table" and opts.Rewards or {}
+	if #rewards > 0 then
+		local row = UIKit.Create("Frame", { Name = "Rewards", Size = UDim2.new(1, 0, 0, slotSize + 26),
+			BackgroundTransparency = 1, LayoutOrder = nextOrder(), ZIndex = body.ZIndex + 1, Parent = body }, {
+			UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal,
+				HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder,
+				Padding = UDim.new(0, cfg.SlotGap) }),
+		})
+		local slotKey = artPart(cfg.Slot) and cfg.Slot or "SlotCommon"
+		for i, r in rewards do
+			if i > 3 then break end
+			local cell = UIKit.Create("Frame", { Name = "Reward" .. i, Size = UDim2.fromOffset(slotSize, slotSize + 26),
+				BackgroundTransparency = 1, LayoutOrder = i, ZIndex = row.ZIndex + 1, Parent = row })
+			local slot = UIKit.ArtFrame(slotKey, { Name = "Slot", Size = UDim2.fromOffset(slotSize, slotSize),
+				ZIndex = cell.ZIndex + 1 }, { BackgroundColor3 = UIKit.Theme.Bg, CornerRadius = UDim.new(0, 12),
+				StrokeColor = UIKit.Theme.Gold, StrokeThickness = 2 })
+			slot.Parent = cell
+			UIKit.ItemIcon(tostring(r.Icon or "IconCoin"), { Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.62, 0.62), ZIndex = slot.ZIndex + 1,
+				Parent = slot })
+			local amount = UIKit.StyledLabel({ Name = "Amount", Text = "+0", AnchorPoint = Vector2.new(0.5, 1),
+				Position = UDim2.new(0.5, 0, 1, 0), Size = UDim2.new(1, 24, 0, 24), TextScaled = true,
+				ZIndex = cell.ZIndex + 2, Parent = cell }, "Number")
+			table.insert(counters, { Label = amount, Amount = math.max(0, math.floor(tonumber(r.Amount) or 0)) })
+		end
+	end
+	local buttons = UIKit.Create("Frame", { Name = "Buttons", Size = UDim2.new(1, 0, 0, buttonH + 4),
+		BackgroundTransparency = 1, LayoutOrder = nextOrder(), ZIndex = body.ZIndex + 1, Parent = body }, {
+		UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal,
+			HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 14) }),
+	})
+
+	function handle.Close()
+		if closed then return end
+		closed = true
+		if reduced then
+			overlay:Destroy()
+			return
+		end
+		local info = TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+		TweenService:Create(pop, info, { Scale = 0.85 * (handle.Fit or 1) }):Play()
+		TweenService:Create(overlay, info, { BackgroundTransparency = 1 }):Play()
+		task.delay(0.17, function() overlay:Destroy() end)
+	end
+	local function press(fn)
+		return function()
+			if closed then return end
+			if type(fn) == "function" then
+				local ok, err = pcall(fn)
+				if not ok then warnThrottled("reward popup handler: " .. tostring(err)) end
+			end
+			handle.Close()
+		end
+	end
+	UIKit.ArtTextButton("BtnConfirm", { Name = "Claim", Text = tostring(opts.Button or "Claim!"), LayoutOrder = 2,
+		Size = UDim2.fromOffset(cfg.ButtonW, buttonH), TextSize = 24, ZIndex = buttons.ZIndex + 1, Parent = buttons,
+		Color = UIKit.Theme.Good }, press(opts.OnClaim))
+	if type(opts.Second) == "string" and opts.Second ~= "" then
+		UIKit.ArtTextButton("BtnSecondary", { Name = "Second", Text = opts.Second, LayoutOrder = 1,
+			Size = UDim2.fromOffset(math.floor(cfg.ButtonW * 0.7), buttonH), TextSize = 20,
+			ZIndex = buttons.ZIndex + 1, Parent = buttons }, press(opts.OnSecond))
+	end
+
+	overlay.Parent = UIKit.Gui
+	-- the entrance: the plate pops (to the scale that fits the screen), then the amounts count up one after the other.
+	-- Fit (UiSandbox phone 749x361 2026-10-07: the banner hung above the screen): the plate + the banner's overhang stay
+	-- inside the space under the top bar, with a small margin
+	handle.Fit = 1
+	pop.Scale = reduced and 1 or 0.6
+	task.spawn(function()
+		task.wait() -- one frame: the plate's AutomaticSize has run
+		if closed or not panel.Parent then return end
+		local s = currentScale()
+		local free = (UIKit.Gui.AbsoluteSize.Y - insetY() - 16) / s -- du under the top bar
+		local need = panel.AbsoluteSize.Y / math.max(pop.Scale, 0.01) / s + bannerH * 0.62 + 8
+		handle.Fit = (free > 0 and need > free) and math.max(0.5, free / need) or 1
+		-- centred under the top bar (the banner's overhang counted)
+		panel.Position = UDim2.new(0.5, 0, 0.5, math.floor((insetY() / s + bannerH * 0.62 * handle.Fit) / 2))
+		if reduced then
+			pop.Scale = handle.Fit
+		else
+			TweenService:Create(pop, TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+				{ Scale = handle.Fit }):Play()
+		end
+	end)
+	for i, c in counters do
+		task.delay(reduced and 0 or 0.25 + (i - 1) * 0.15, function()
+			if closed or not c.Label.Parent then return end
+			if reduced or c.Amount <= 0 then
+				c.Label.Text = "+" .. Util.FormatNumber(c.Amount)
+				return
+			end
+			local v = Instance.new("NumberValue")
+			v.Changed:Connect(function(x) c.Label.Text = "+" .. Util.FormatNumber(math.floor(x + 0.5)) end)
+			local tw = TweenService:Create(v, TweenInfo.new(cfg.Count, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+				{ Value = c.Amount })
+			tw.Completed:Connect(function() v:Destroy() end)
+			tw:Play()
+		end)
+	end
+	return handle
+end
+
 -- show the held world banners (called when the first mission is accepted / the opening ends)
 function UIKit.FlushBanners()
 	if type(UIKit.HeldBanners) ~= "table" or #UIKit.HeldBanners == 0 or UIKit.ShouldHoldBanners() then return end
@@ -2899,6 +3280,14 @@ function UIKit.Start()
 	-- re-read the inset once the top bar has settled (it can be 0 during the first frames)
 	task.delay(1, applyScale)
 	FONT.Preload()
+	task.spawn(function()
+		local ids = {}
+		for _, key in NOTIFY.PreloadArt do
+			local def = artPart(key)
+			if def then table.insert(ids, def.Id) end
+		end
+		pcall(function() game:GetService("ContentProvider"):PreloadAsync(ids) end)
+	end)
 
 
 	UIKit.HeldBanners = {}

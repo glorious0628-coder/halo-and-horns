@@ -13,6 +13,8 @@ Report: docs/art/verification_2026-10-07/offline_dev2_metrics_2026-10-07.json
 """
 from __future__ import annotations
 
+import re
+
 from dev2_offline import ROOT, SHARED, SSS, Suite, between, function_block, read, run, strip_comments
 
 FILES = {
@@ -51,15 +53,26 @@ MUTATIONS = [
     ("the guide's meadow step does not count", T, "\t\tif num(v) >= 2 then Step(player, \"MeadowArrive\") end\n", ""),
     ("no first kill", T, "\tTelemetryService.Step(player, \"FirstKill\") -- A23-68 #5\n", ""),
     ("Config: the old 8 steps", C,
-     "\"FirstMissionAccept\", \"MeadowArrive\", \"FirstHit\", \"FirstKill\",\n\t\t\"FirstSkillHit\", \"FirstMissionDone\", \"ForgeArrive\",",
-     "\"FirstMissionAccept\", \"FirstMissionDone\","),
+     "\"FirstMissionAccept\", \"MeadowArrive\", \"FirstHit\", \"FirstKill\",\n\t\t\"FirstMissionDone\", \"ForgeArrive\", \"FirstWeapon\", \"FirstSkillHit\",",
+     "\"FirstMissionAccept\",\n\t\t\"FirstMissionDone\", \"FirstWeapon\","),
+    # --- A23-71 S13 (D5): the first skill comes at Lv5, after the first weapon and before Auto Battle
+    ("Config: FirstSkillHit back before the first mission", C,
+     "\"FirstKill\",\n\t\t\"FirstMissionDone\", \"ForgeArrive\", \"FirstWeapon\", \"FirstSkillHit\", \"AutoUnlocked\",",
+     "\"FirstKill\",\n\t\t\"FirstSkillHit\", \"FirstMissionDone\", \"ForgeArrive\", \"FirstWeapon\", \"AutoUnlocked\","),
+    ("an old save catches up the skill hit before the weapon", T,
+     "\tif num(data.WeaponOwnedMask) > 0 then Step(player, \"FirstWeapon\") end -- A23-34: any weapon owned\n"
+     "\tlocal done = type(data.Story) == \"table\" and type(data.Story.Done) == \"table\" and data.Story.Done or {}\n"
+     "\tif done.M1_3 or done.S0 then Step(player, \"FirstSkillHit\") end -- both need a manual skill that hit a monster\n",
+     "\tlocal done = type(data.Story) == \"table\" and type(data.Story.Done) == \"table\" and data.Story.Done or {}\n"
+     "\tif done.M1_3 or done.S0 then Step(player, \"FirstSkillHit\") end -- both need a manual skill that hit a monster\n"
+     "\tif num(data.WeaponOwnedMask) > 0 then Step(player, \"FirstWeapon\") end -- A23-34: any weapon owned\n"),
     # --- the funnel
     ("steps logged again on another server", T, "\tif tel.Funnel[name] then return end\n", ""),
     ("no Level10 step", T, "\twatch(player, \"Level\", function(v) if num(v, 1) >= 10 then Step(player, \"Level10\") end end)\n", ""),
     ("no catch-up for an old save", T, "\tif data.IntroSeen == true then Step(player, \"IntroDone\") end\n", ""),
     ("step numbers from 0", T, "pcall(svc.LogOnboardingFunnelStepEvent, svc, player, index, name)",
      "pcall(svc.LogOnboardingFunnelStepEvent, svc, player, index - 1, name)"),
-    ("the funnel misses a step", C, "\"ForgeArrive\", \"FirstWeapon\", \"AutoUnlocked\",", "\"ForgeArrive\", \"AutoUnlocked\","),
+    ("the funnel misses a step", C, "\"ForgeArrive\", \"FirstWeapon\", \"FirstSkillHit\",", "\"ForgeArrive\", \"FirstSkillHit\","),
     # --- events
     ("FirstDeath every KO", T, "\t\tif tel.FirstDeath then return end\n", ""),
     ("AutoOn / AutoOff not throttled", T, "if not throttled(player, \"auto\", 10) then", "if true then"),
@@ -145,6 +158,14 @@ def static() -> tuple[int, list[str]]:
     net = read(SHARED / "Net.luau")
     check(net.count('"UiMetric"') == 1, "Net.Names has UiMetric once")
     tel = read(SSS / "TelemetryService.luau")
+    # A23-71 S13: the fallback list (no Config.Analytics) keeps the same 13 steps in the same order
+    config = read(SHARED / "Config.luau")
+    names = re.compile(r'"(\w+)"')
+    cfg_steps = re.search(r"^Config\.Analytics = \{.*?\n\tSteps = \{(.*?)\}", config, re.S | re.M)
+    tel_steps = re.search(r"\tSteps = A\.Steps or \{(.*?)\}", tel, re.S)
+    check(bool(cfg_steps and tel_steps) and names.findall(cfg_steps.group(1)) == names.findall(tel_steps.group(1))
+          and len(names.findall(tel_steps.group(1))) == 13,
+          "TelemetryService's fallback funnel = Config.Analytics.Steps (13 steps, same order)")
     code = strip_comments(tel).replace("tostring(player.UserId)", "").replace("local x, y = a.UserId, b.UserId", "")
     check("UserId" not in code.replace("other.UserId", ""), "no UserId is ever logged (only throttle keys and the friend cache)")
     return count, failures
@@ -155,7 +176,9 @@ SUITE = Suite(
     fixture=ROOT / "tools/fixtures/metrics_offline.luau",
     out=ROOT / "docs/art/verification_2026-10-07/offline_dev2_metrics_2026-10-07.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="BB38: the onboarding funnel (Config.Analytics.Steps, 8 steps in order, once per account, old saves catch up), "
+    contract="BB38: the onboarding funnel (Config.Analytics.Steps, 13 steps in order with A23-68's first 3 minutes and "
+             "A23-71 S13's FirstSkillHit after FirstWeapon, before AutoUnlocked; once per account, old saves catch up in "
+             "that order), "
              "c->s UiMetric(id) -> WindowOpen_<id> (Config.Analytics.UiIds, one argument, ready, 2 s, once a session), "
              "KeyRebind (SettingsService.KeysChanged), AutoOn / AutoOff, FirstDeath_<By> (CombatService.KnockedOut, once "
              "per account), Plunder_Kept / _Avenged / _Returned, EnhanceFailLeave (a failed enhance then a leave within "

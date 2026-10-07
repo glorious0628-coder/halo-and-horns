@@ -5,7 +5,7 @@
 을 찍고, 화면에 보이는 글자 칸이 다 들어갔는지(TextFits)와 카드 크기를 잰다.
 결과: art/review/picker_view_2026-10-07.jpg + docs/art/verification_2026-10-07/picker_view_2026-10-07.json
 
-  py tools/picker_view.py [pc] [phone] [844]
+  py tools/picker_view.py [pc] [phone] [844] [--tag hq]   (--tag: its own sheet / report names)
 STUDIO_NAME은 UiSandbox로 고정(dv.sandbox가 먼저 확인). 끝나면(오류가 나도) Play를 멈추고 기기 흉내를 끈다.
 """
 
@@ -156,11 +156,17 @@ def sheet(rows):
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     devices = [a for a in sys.argv[1:] if a in dv.DEVICES] or ["pc", "phone"]
+    if "--tag" in sys.argv:  # a later check keeps the committed evidence: its own sheet / report / raw folder
+        global RAW, SHEET, REPORT
+        tag = sys.argv[sys.argv.index("--tag") + 1]
+        RAW = os.path.join(ROOT, "build", f"picker_view_{tag}")
+        SHEET = os.path.join(ROOT, "art", "review", f"picker_view_{tag}_2026-10-07.jpg")
+        REPORT = os.path.join(ROOT, "docs", "art", "verification_2026-10-07", f"picker_view_{tag}_2026-10-07.json")
     rows = []
     with dv.sandbox() as c:
         run(c, devices, rows)
     path = sheet(rows)
-    report = {"tool": "tools/picker_view.py", "sheet": "art/review/picker_view_2026-10-07.jpg", "rows": rows}
+    report = {"tool": "tools/picker_view.py", "sheet": os.path.relpath(SHEET, ROOT).replace("\\", "/"), "rows": rows}
     os.makedirs(os.path.dirname(REPORT), exist_ok=True)
     with open(REPORT, "w", encoding="utf-8", newline="\n") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
