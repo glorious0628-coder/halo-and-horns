@@ -4949,6 +4949,18 @@
    "account": "web ① (12516812)",
    "site": "studio.tripo3d.ai",
    "note": "'무료 재시도(×3)' under the HD view; looks almost the same as the first HD. 4K PBR source (meshopt GLB) fetched for the ① test: build/texcmp/src (not kept)"
+  },
+  {
+   "event": "web_texture",
+   "what": "② retexture test: 2D concept as reference, 4K, remove-lighting OFF, on the free-retry geometry",
+   "points": 20,
+   "task": "6e003ef8-0896-4416-b116-e51275704316",
+   "at": "2026-10-07 15:19",
+   "balance_after": 3345,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Halo_Fountain_HD_retex2d.glb",
+   "bytes": 669692
   }
  ],
  "Town_Horns_Brazier_web_smart": [
@@ -5054,6 +5066,240 @@
    "balance_after": 3365,
    "account": "web ① (12516812)",
    "note": "found in the account's 사용 내역 on 2026-10-07 14:35; done by the previous 이미지 생성 1 session while it wrote its handoff (13:35-13:40), not in records before"
+  }
+ ],
+ "Town_Halo_WallTower_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "39e53db9-348b-4617-8715-3a37c44fdba4",
+   "image": "art/out/hq/HQ_Town_Halo_WallTower.png",
+   "tris": 9599,
+   "verts": 6259,
+   "at": "2026-10-07 15:24",
+   "balance_after": 3290,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Halo_WallTower_HD.glb",
+   "bytes": 993460,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "Town_Horns_WallTower_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "071bee3f-80e2-431e-b7e2-9fd74f3b4c0f",
+   "image": "art/out/hq/HQ_Town_Horns_WallTower.png",
+   "tris": 9725,
+   "verts": 6663,
+   "at": "2026-10-07 15:27",
+   "balance_after": 3235,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Horns_WallTower_HD.glb",
+   "bytes": 1040792,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "Town_Halo_HouseC_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "6530fa52-87b7-4350-87b0-2b2aa1e726ca",
+   "image": "art/out/hq/HQ_Town_Halo_HouseC.png",
+   "tris": 9712,
+   "verts": 7984,
+   "at": "2026-10-07 15:31",
+   "balance_after": 3180,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Halo_HouseC_HD.glb",
+   "bytes": 1303072,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "Town_Horns_HouseC_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "5b196110-4d46-493f-a016-49635e146c9a",
+   "image": "art/out/hq/HQ_Town_Horns_HouseC.png",
+   "tris": 9886,
+   "verts": 6853,
+   "at": "2026-10-07 15:33",
+   "balance_after": 3125,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Horns_HouseC_HD.glb",
+   "bytes": 1048188,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "Town_Halo_Bridge_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "be98a236-1871-44cc-916c-6ebfe1cee33c",
+   "image": "art/out/hq/HQ_Town_Halo_Bridge.png",
+   "tris": 9135,
+   "verts": 6517,
+   "at": "2026-10-07 15:35",
+   "balance_after": 3070,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Halo_Bridge_HD.glb",
+   "bytes": 979856,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "Town_Horns_Bridge_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "e85273c9-1d83-47b7-971a-e49606d8f140",
+   "image": "art/out/hq/HQ_Town_Horns_Bridge.png",
+   "tris": 9350,
+   "verts": 7079,
+   "at": "2026-10-07 15:37",
+   "balance_after": 3015,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Horns_Bridge_HD.glb",
+   "bytes": 1116744,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "X_Altar_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "78c2ee3e-145f-49c2-9db7-b791ce5bd851",
+   "image": "art/out/hq/HQ_X_Altar.png",
+   "tris": 9674,
+   "verts": 6718,
+   "at": "2026-10-07 15:39",
+   "balance_after": 2960,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/X_Altar_HD.glb",
+   "bytes": 1086964,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "X_MarketArch_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "240fab55-0b82-4d26-a46e-32fbd72ef4fa",
+   "image": "art/out/hq/HQ_X_MarketArch.png",
+   "tris": 9576,
+   "verts": 6971,
+   "at": "2026-10-07 15:41",
+   "balance_after": 2905,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/X_MarketArch_HD.glb",
+   "bytes": 1153408,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "X_NoticeBoard_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "40ace62d-76ad-47b4-92a9-a0317ecea89f",
+   "image": "art/out/hq/HQ_X_NoticeBoard.png",
+   "tris": 8747,
+   "verts": 7389,
+   "at": "2026-10-07 15:43",
+   "balance_after": 2850,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/X_NoticeBoard_HD.glb",
+   "bytes": 1178988,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "X_GooseNest_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "3e2783ee-79ff-47d0-b675-d522b4b05f8b",
+   "image": "art/out/hq/HQ_X_GooseNest.png",
+   "tris": 9204,
+   "verts": 8113,
+   "at": "2026-10-07 15:45",
+   "balance_after": 2795,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/X_GooseNest_HD.glb",
+   "bytes": 1295772,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "X_TreeB_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "e646d7f7-b38e-4f59-99f8-651f560b6e38",
+   "image": "art/out/hq/HQ_X_TreeB.png",
+   "tris": 9817,
+   "verts": 7688,
+   "at": "2026-10-07 15:50",
+   "balance_after": 2740,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/X_TreeB_HD.glb",
+   "bytes": 1063176,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "X_HouseA_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "3d36667a-04ba-408c-8949-6e39d8457d48",
+   "image": "art/out/hq/HQ_X_HouseA.png",
+   "tris": 9558,
+   "verts": 7646,
+   "at": "2026-10-07 15:53",
+   "balance_after": 2685,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/X_HouseA_HD.glb",
+   "bytes": 1322924,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
+  }
+ ],
+ "X_HouseB_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "c1d4e979-32d9-4e89-b680-695d6e16fb78",
+   "image": "art/out/hq/HQ_X_HouseB.png",
+   "tris": 9487,
+   "verts": 7937,
+   "at": "2026-10-07 15:55",
+   "balance_after": 2630,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/X_HouseB_HD.glb",
+   "bytes": 1089056,
+   "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
   }
  ]
 }
