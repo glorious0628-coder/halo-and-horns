@@ -16,6 +16,8 @@
    - 반투명: **main 39ec154에 들어감**(살아 있는 몬스터 늘 불투명, 시험 통과). Studio 확인 필요.
    - 카메라 `origin/fix/a2374-camera3`(52a6ccb): **검증 통과**(방향키·쉼표·트랙패드 = 손 돌리기, 걸을 때 원 반지름 55 이상, 폰 Classic 카메라, 끊김 제한, 멈추면 1.2초 안에 등 뒤). main에 병합 → sync → **메인 Studio StarterPlayer.DevTouchCameraMovementMode = Classic**(개발 1) → PC·폰 사진.
    - 몬스터 겹침 `origin/fix/a2374-separation2`(2b07018): 고칠 4개는 맞음(걷는 플레이어 겹침 평균 1.94 → 0.04). 새로 찾은 것 2개: ① 구역 가장자리 선에 몬스터가 몰리면 안 떨어짐(SEP.CanSlide가 선을 따라 미끄러지기를 막음) ② 두 플레이어가 붙어 서면 사이 몬스터가 대상을 계속 바꿈. 이 2개를 고친 뒤 병합(검수 워크플로로 다시).
+3-1. **무기 먼저: main b882423 + 메인 Studio sync + PC·폰 사진 완료**(docs/art/verification_2026-10-07/weapon_first/). 남은 것: PC 착지 뒤 카메라가 모루 반대쪽(camera3 병합 뒤 다시), 'Forge' 간판이 고블린 숲 발판 글자를 가림.
+3-2. 말풍선 글자 칸 12개 다시 잼(e13980e, approved.json TextRect) → 이미지 개발이 Config 12줄 적용, 박쥐 고블린 대사 'Skree-eek!' → **'Skreek!'**(검수 결정, Config.Barks).
 4. 소리 57개 연결(`docs/design/sound_wiring_onepass_2026-10-07.md`) → Play → 옛 ogg 정리(소리 세션).
 5. 3D 가져오기: `build/import_all/1_first`(A 빛 성 9조각+분수 ②, E, H 뿔 성 ③) → 사용자 WorldKit '가져오기 시작'(검수 마우스로는 반응 없었음) → id 장부 → 메인 배치(분수·성·표지판·가로등·소품).
 6. **사용자 답 대기:** 뿔 성 ③(앞 ② + 새 뒷모습, `art/review/town5/horns_castle_mix_compare.jpg`)으로 할지. 다른 걸 고르면 `build/import_H/H_HornsCastle_B2.glb`.
