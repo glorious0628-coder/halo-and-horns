@@ -1,0 +1,32 @@
+{
+  "den_day": {
+    "mean": 0.323,
+    "ground": 0.315,
+    "groundRelL": 0.0926,
+    "skinContrast": 4.65
+  },
+  "den_side_day": {
+    "mean": 0.342,
+    "ground": 0.34,
+    "groundRelL": 0.1034,
+    "skinContrast": 4.78
+  },
+  "den_night": {
+    "mean": 0.312,
+    "ground": 0.327,
+    "groundRelL": 0.1215,
+    "skinContrast": 4.98
+  },
+  "den_side_night": {
+    "mean": 0.323,
+    "ground": 0.356,
+    "groundRelL": 0.1361,
+    "skinContrast": 5.11
+  },
+  "meadow_night": {
+    "mean": 0.277,
+    "ground": 0.274,
+    "groundRelL": 0.0689,
+    "skinContrast": 4.25
+  }
+}

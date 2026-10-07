@@ -1,0 +1,24 @@
+mark models: 10 Acc_HaloR1,Acc_HaloR2,Acc_HaloR3,Acc_HaloR4,Acc_HaloR5,Acc_HornsR1,Acc_HornsR2,Acc_HornsR3,Acc_HornsR4,Acc_HornsR5
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 WeaponTier=0 Level=1 Honor=0 Infamy=0
+== setup
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 WeaponTier=0 Level=1 Honor=0 Infamy=0
+fired AcceptTutorial
+ff
+== A23-61
+tp 300,0.015625,-30
+Attack
+behind_F_1: before[hp=1.000 bearing=172 look=-1.000,0.000] after[hp=0.800 bearing=0 look=0.991,0.137] hit=True turned=True
+Attack
+behind_F_2: before[hp=1.000 bearing=180 look=-1.000,0.000] after[hp=0.600 bearing=0 look=1.000,0.000] hit=True turned=True
+Attack
+behind_F_3: before[hp=1.000 bearing=180 look=-1.000,0.000] after[hp=0.800 bearing=0 look=1.000,0.000] hit=True turned=True
+behind_click_1: before[hp=1.000 bearing=180 look=-1.000,0.000] after[hp=0.800 bearing=0 look=1.000,0.000] hit=True turned=True
+behind_click_2: before[hp=1.000 bearing=180 look=-1.000,0.000] after[hp=1.000 bearing=1 look=1.000,0.020] hit=False turned=True
+behind_click_3: before[hp=1.000 bearing=180 look=-1.000,0.000] after[hp=0.800 bearing=0 look=1.000,0.000] hit=True turned=True
+hits: 5 / 6
+console: 
+play stopped (my own test Play)
+fresh off

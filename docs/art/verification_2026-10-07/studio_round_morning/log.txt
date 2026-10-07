@@ -1,0 +1,91 @@
+mark models: 10 Acc_HaloR1,Acc_HaloR2,Acc_HaloR3,Acc_HaloR4,Acc_HaloR5,Acc_HornsR1,Acc_HornsR2,Acc_HornsR3,Acc_HornsR4,Acc_HornsR5
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 WeaponTier=0 Level=1 Honor=0 Infamy=0
+== setup
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 WeaponTier=0 Level=1 Honor=0 Infamy=0
+fired AcceptTutorial
+ff
+== A23-61
+tp 300,0.015625,-30
+Attack
+side80 try0: before[hp=100.0 bearing=80 look=0.174,-0.985] after[hp=100.0 bearing=80 look=0.174,-0.985] hit=False turned=False
+Attack
+side80 try1: before[hp=100.0 bearing=80 look=0.174,-0.985] after[hp=100.0 bearing=80 look=0.174,-0.985] hit=False turned=False
+Attack
+side80 try2: before[hp=100.0 bearing=80 look=0.174,-0.985] after[hp=100.0 bearing=80 look=0.174,-0.985] hit=False turned=False
+saved docs\art\verification_2026-10-07\studio_round_morning\a23_61_side80.png
+Attack
+side-80 try0: before[hp=100.0 bearing=80 look=0.174,0.985] after[hp=100.0 bearing=80 look=0.174,0.985] hit=False turned=False
+Attack
+side-80 try1: before[hp=100.0 bearing=80 look=0.174,0.985] after[hp=100.0 bearing=80 look=0.174,0.985] hit=False turned=False
+Attack
+side-80 try2: before[hp=100.0 bearing=80 look=0.174,0.985] after[hp=100.0 bearing=80 look=0.174,0.985] hit=False turned=False
+saved docs\art\verification_2026-10-07\studio_round_morning\a23_61_side-80.png
+Attack
+behind try0: before[hp=100.0 bearing=180 look=-1.000,0.000] after[hp=100.0 bearing=0 look=1.000,0.000] hit=False turned=True
+Attack
+behind try1: before[hp=100.0 bearing=180 look=-1.000,0.000] after[hp=100.0 bearing=0 look=1.000,0.000] hit=False turned=True
+Attack
+behind try2: before[hp=100.0 bearing=180 look=-1.000,0.000] after[hp=100.0 bearing=0 look=1.000,0.000] hit=False turned=True
+== king
+hooked chat=true version=Enum.ChatVersion.LegacyChatService
+spawned
+announce: PumpkinKingAppear | banter=Pumpkin King: "Happy Halloween! Just so you know, the best king here is me."
+chat: 
+notices: 2 labels
+Text fits=true wrapped=true size=150x41 bounds=148x36 : The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!
+Text fits=false wrapped=false size=105x7 bounds=131x11 : Pumpkin King is here! 4:57 left
+saved docs\art\verification_2026-10-07\studio_round_morning\king_appear_banter.png
+== audio
+audio: AudioSfx=true sounds=0 playing=0 groups=SfxCombat,Sfx
+== shops
+open WeaponShop
+WeaponShop: 1 greeting true fits=true : Otto: Clang, clang… done. Cocoa time.
+saved docs\art\verification_2026-10-07\studio_round_morning\shop_WeaponShop.png
+closed window: none
+open PotionShop
+PotionShop: 1 greeting true fits=true : Fizzby: Glug, glug, feel better!
+saved docs\art\verification_2026-10-07\studio_round_morning\shop_PotionShop.png
+closed window: none
+== marks
+ok
+Halo R1: HaloModel MeshPart mesh=104382701229 size=1.34,0.09,1.34 up=0.94 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Halo_R1_front.png
+ok
+Halo R2: HaloModel MeshPart mesh=040139669596 size=1.37,0.31,1.39 up=1.06 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Halo_R2_front.png
+ok
+Halo R3: HaloModel MeshPart mesh=149994214402 size=2.10,0.79,1.48 up=1.30 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Halo_R3_front.png
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Halo_R3_34.png
+ok
+Halo R4: HaloModel MeshPart mesh=576912015977 size=2.35,0.90,1.40 up=1.35 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Halo_R4_front.png
+ok
+Halo R5: HaloModel MeshPart mesh=491609501733 size=2.98,1.58,1.48 up=1.69 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Halo_R5_front.png
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Halo_R5_34.png
+ok
+ff
+ok
+Horns R1: HornsModel MeshPart mesh=084887979756 size=0.98,0.43,0.30 up=0.76 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Horns_R1_front.png
+ok
+Horns R2: HornsModel MeshPart mesh=668444915202 size=1.20,0.60,0.30 up=0.84 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Horns_R2_front.png
+ok
+Horns R3: HornsModel MeshPart mesh=565000753203 size=1.42,1.19,0.63 up=1.14 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Horns_R3_front.png
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Horns_R3_34.png
+ok
+Horns R4: HornsModel MeshPart mesh=743513454193 size=1.40,1.12,0.51 up=1.10 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Horns_R4_front.png
+ok
+Horns R5: HornsModel MeshPart mesh=399318604457 size=1.50,1.42,0.98 up=1.25 faceDot=1.00
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Horns_R5_front.png
+saved docs\art\verification_2026-10-07\studio_round_morning\mark_Horns_R5_34.png
+console: 
+play stopped (my own test Play)
+fresh off
