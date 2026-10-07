@@ -719,11 +719,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "d19c7025232da63936b5439fc3eb231574205e9a1525fe390af6b04239a98f0e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1"
+    "src/ServerScriptService/DataService.luau": "188d6fbfa2d86795b8b005f3599f80edfe7e9c07119c2f4a0b701c53e7d53425"
   },
-  "fixtureSHA256": "f14f2363038aad4ede18f28abbf8a42ea5c3ce45c6742912c0187440c1bc69ac",
+  "fixtureSHA256": "0eb2604ca4d6547e345c1fe62b5ff27ee7f4c623a8a36fcb70a57b8d855da94d",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

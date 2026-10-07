@@ -409,7 +409,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d9b8fd3829d116065b1ee2a2499b003f986fe87f7cec3b89f1d7268b9d348e9d",
+    "src/ReplicatedStorage/Shared/Config.luau": "d19c7025232da63936b5439fc3eb231574205e9a1525fe390af6b04239a98f0e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/RankingService.luau": "9ed558f86eee6aca31d52301c7a04bf6f0fcbf00e2d2c255c0fa9e1e5a110a5c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",

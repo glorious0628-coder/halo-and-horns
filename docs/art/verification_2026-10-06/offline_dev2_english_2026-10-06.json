@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3256 strings)",
+      "check": "the walk reached the player strings (3271 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -327,7 +327,7 @@
     },
     {
       "group": "the five names",
-      "check": "Halo: page 1 = the mission card (fists now, the Blacksmith's first weapon next)",
+      "check": "Halo: page 1 = the mission card (the Blacksmith's weapon first, then 5 slimes)",
       "pass": 1,
       "fail": 0
     },
@@ -357,7 +357,7 @@
     },
     {
       "group": "the five names",
-      "check": "Horns: page 1 = the mission card (fists now, the Blacksmith's first weapon next)",
+      "check": "Horns: page 1 = the mission card (the Blacksmith's weapon first, then 5 slimes)",
       "pass": 1,
       "fail": 0
     },
@@ -387,7 +387,7 @@
     },
     {
       "group": "the five names",
-      "check": "Neutral: page 1 = the mission card (fists now, the Blacksmith's first weapon next)",
+      "check": "Neutral: page 1 = the mission card (the Blacksmith's weapon first, then 5 slimes)",
       "pass": 1,
       "fail": 0
     },
@@ -740,17 +740,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "af78e57d96c1eff74befc1c08b47a97a425e63053d70998cc56cc92f1dcc2464",
+    "src/ReplicatedStorage/Shared/Config.luau": "d19c7025232da63936b5439fc3eb231574205e9a1525fe390af6b04239a98f0e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
-    "src/ServerScriptService/BoardService.luau": "5942681f38e030b9923e1b5a228339c535354d715da0da66ebfd5b213e53d48f",
+    "src/ServerScriptService/BoardService.luau": "d3d7e1da653b52a330cab1d88f70b2b72cc1e4fb1614b1051c6c3e258b3953cb",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/ChatText.luau": "f7c4ed3a83ee0ce42baa5c1a0a9e16df28d25a90f4efd431c80d9a80a8e3c853",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005",
     "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ServerScriptService/DataService.luau": "188d6fbfa2d86795b8b005f3599f80edfe7e9c07119c2f4a0b701c53e7d53425",
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/GooseService.luau": "246f574eb1329a4d850f700d3cd9fcdc02effcfc98dbabbf8b91951b50ecd274",
     "src/ServerScriptService/GrudgeService.luau": "f8a2d050469709db7e10f107a6d2b51d1ebea269a6ff18c82b7e17c1410ba150",
@@ -759,7 +759,7 @@
     "src/ServerScriptService/KaijuService.luau": "c34d693e33c283026fa15495d1e8b4f065475dafa3775819f4862a531a2331e8",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/ServerScriptService/MapBuilder.luau": "51f1be6d9ced34776dabcb680fcc4a04af4b2d11ca16aa28c20e5615fd4ded05",
+    "src/ServerScriptService/MapBuilder.luau": "8542813e0a2da9bcd38591e09148b1ca2a9c06147fee45dbe9c824ff041e9473",
     "src/ServerScriptService/MonetizationService.luau": "db8f01abe47c1162686deb8aa3acf26858399cb4be898fc6511defa5997943a9",
     "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a",
     "src/ServerScriptService/NicknameService.luau": "bca3dc61198f467488a4bcc1f4ead32504642a566dc3c4870df933c1cf7de939",
@@ -767,19 +767,19 @@
     "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e",
     "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a",
     "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
-    "src/ServerScriptService/QuestService.luau": "61d8615d0b5f3d2ec64a5a402391177d6a66c7a45c815a328ae8d53213f268ba",
+    "src/ServerScriptService/QuestService.luau": "62d703f298d9df5ad68905637cdf881a0b9a363a80149c37e3293f60fedace25",
     "src/ServerScriptService/RankingService.luau": "9ed558f86eee6aca31d52301c7a04bf6f0fcbf00e2d2c255c0fa9e1e5a110a5c",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
-    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/SkillService.luau": "9e30e596b881e7348797ded6a4e06e958c3429594e8a26d5d8469b6f7df7bd47",
-    "src/ServerScriptService/StoryQuestService.luau": "ae2424c85059a2dc76b263e0124f24847164b6ecc9ce11b8b903b027643c0e1b",
-    "src/ServerScriptService/TelemetryService.luau": "db0aed3775e7820fa29edce620ba91f82352acf60d31f359f916a95686a5663f",
+    "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
+    "src/ServerScriptService/TelemetryService.luau": "76173be234b8c2cf8055a998aef6085fd7a86709d5f1cf80de026db4406d0261",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
     "src/ServerScriptService/WarService.luau": "70668f200901c82541abc734e47915b2a6da05ea39c8544d5cf86d124e7ebc58",
     "src/ServerScriptService/ZoneService.luau": "1a8b12bee2b4a2832349eb0cf9eb1b9062c688387d1cd2342507adf4daaecc53"
   },
-  "fixtureSHA256": "757ec067ab58bb8df7dc3a6049e70937abae938b29124e1d49ef058c1eb5423a",
+  "fixtureSHA256": "7eb3c8e8d0cae6b989916983a5bf9624b410b0fc182a9e3aaab4c76afbe56bf6",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

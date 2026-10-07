@@ -1107,7 +1107,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d9b8fd3829d116065b1ee2a2499b003f986fe87f7cec3b89f1d7268b9d348e9d",
+    "src/ReplicatedStorage/Shared/Config.luau": "d19c7025232da63936b5439fc3eb231574205e9a1525fe390af6b04239a98f0e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e"
   },

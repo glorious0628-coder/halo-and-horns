@@ -1,0 +1,1187 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 105,
+  "failedChecks": 0,
+  "namedChecks": 105,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Steps.Forge = 3, its own value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Forge: lands 8 studs in front of the anvil, 4 up; no trip within 24; the meadow trip 3 s after the gift",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the landing is inside the anvil prompt's reach (12 studs): the prompt is up at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Halo: page 1 = the weapon first, then 5 slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Horns: page 1 = the weapon first, then 5 slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Neutral: page 1 = the weapon first, then 5 slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Forge row: text + phone ShortName",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Otto hands it over in his own voice (his catchphrase)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the first mission's 150 gold = the tier-2 price, usable at Lv1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the claim lines point to the next weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "M1_1: the visit with the jelly, Gold 1, the gift kept as the safety net",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the funnel: accept -> Forge -> first weapon -> meadow -> first kill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "a new player: bare-handed at the welcome (the guide opens)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "[Accept] bare-handed -> the Forge step (3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the forge trip: Fx Travel { UserId, To = Crossroads, Spot = Forge, T = 3 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the fade's lock (now + 4.5), nobody moved yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the pinned Forge row (not claimable, no counter)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "every other row stays folded until the first claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "nobody moves before T",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "T s later: an instant Travel to the Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "then 8 studs in front of the anvil, 4 above its bottom",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "on the anvil's Crossroads-spawn side (the way players come)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "facing the anvil (level)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the jump is a server teleport (MarkTeleported)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "TravelDone and the lock lifted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "a meadow kill before the weapon counts nothing (still the Forge step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the gift: tier 1 owned and equipped, the visit counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "Otto's line, then 'You got your first weapon, [Twig]! Power 0 → N'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "no weapon window at the gift (the Stronger! moment)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the mission goes on: step 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "no meadow trip before Forge.TravelDelay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "then the meadow trip (Fx Travel To = SlimeMeadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "arrived: the hunt (step 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "5 slimes with the weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the claim: 150 gold, the forge visit cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the claim line: 150 buys a new weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "M1_1 waits for a new visit (the first one was before the claim)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the visit finishes M1_1, then the shop opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "Otto's jelly lines; no second weapon (the gift is only the safety net)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "M1_1 pays a little gold (Reward Gold 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "the 150 gold buy the tier-2 weapon right there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapon first",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "Landing 'Spawn': the Crossroads spawn only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "no anvil: the Crossroads spawn only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "15 studs from the anvil: the Forge step without a trip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "nothing moves later either",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "a respawned character is not moved; TravelDone, the lock lifted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "the gift before the trip ended",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "a trip for a step that moved on moves nobody",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "TravelDelay nil: no automatic meadow trip after the gift",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "a tap: one forge trip (a second tap during the fade does nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "a tap with arguments does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "the tap's trip lands at the anvil too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "at the anvil a tap does nothing (no trip, no welcome)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "step 1: a tap asks for nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "owns tier 1: [Accept] -> the meadow trip (step 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "the anvil before [Accept]: the shop window, no gift (the welcome step stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "the anvil after the first mission: the shop, the step kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "ForgeGift is false off the Forge step / for a non-player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "no class chosen: no gift",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "walking in after the gift starts the hunt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "then no meadow trip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "a running trip (lock ahead): no meadow trip on top",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "left before the delay: no trip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "a second press: the shop, no second gift",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 1 bare-handed: the gift at the join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 1: 'You got your first weapon' once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 1: never twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 2 bare-handed: the gift at the join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 2: 'You got your first weapon' once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 2: never twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 99 bare-handed: the gift at the join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 99: 'You got your first weapon' once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 99: never twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 0: no gift at the join (the Forge gives it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "step 3: no gift at the join (the Forge gives it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "armed with tier 2 (no tier 1): nothing at the join (M1_1 gives it later)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "no class chosen: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "a failed late gift is tried once a session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "and warned once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old saves",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "claim",
+      "check": "tier 1 only: 150 buys a new weapon (the visit cleared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "claim",
+      "check": "tier 2 owned: 'check the gear' (the visit cleared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "claim",
+      "check": "the jackpot owned: 'check the gear' (the visit cleared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "claim",
+      "check": "the auto claim: AutoClaimed (next weapon)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "claim",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "claim",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "TutorialStep 3 loads as 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "TutorialStep 0 loads as 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "TutorialStep 1 loads as 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "TutorialStep 2 loads as 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "TutorialStep 99 loads as 99",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "TutorialStep 4 loads as 99",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "TutorialStep -1 loads as 99",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 5,
+  "staticFailures": [],
+  "mutations": {
+    "total": 41,
+    "applied": 41,
+    "caught": 41,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Config: no Forge step",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Steps.Forge = 3, its own value",
+          "forge trip :: 15 studs from the anvil: the Forge step without a trip",
+          "forge trip :: Landing 'Spawn': the Crossroads spawn only",
+          "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
+          "forge trip :: a tap with arguments does nothing",
+          "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "Config: no meadow trip after the gift",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Forge: lands 8 studs in front of the anvil, 4 up; no trip within 24; the meadow trip 3 s after the gift",
+          "weapon first :: arrived: the hunt (step 2)",
+          "weapon first :: then the meadow trip (Fx Travel To = SlimeMeadow)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: the claim line promises the first weapon again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the claim lines point to the next weapon"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: M1_1 pays nothing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: M1_1: the visit with the jelly, Gold 1, the gift kept as the safety net",
+          "weapon first :: M1_1 pays a little gold (Reward Gold 1)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "accept: never the Forge",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: 15 studs from the anvil: the Forge step without a trip",
+          "forge trip :: Landing 'Spawn': the Crossroads spawn only",
+          "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
+          "forge trip :: a tap with arguments does nothing",
+          "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)",
+          "forge trip :: a trip for a step that moved on moves nobody"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "accept: the Forge even with the first weapon",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: owns tier 1: [Accept] -> the meadow trip (step 1)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "accept: no forge trip",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: Landing 'Spawn': the Crossroads spawn only",
+          "forge trip :: TravelDelay nil: no automatic meadow trip after the gift",
+          "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
+          "forge trip :: a respawned character is not moved; TravelDone, the lock lifted",
+          "forge trip :: no anvil: the Crossroads spawn only",
+          "weapon first :: T s later: an instant Travel to the Crossroads"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "accept: a trip even next to the anvil",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: 15 studs from the anvil: the Forge step without a trip",
+          "gift :: a running trip (lock ahead): no meadow trip on top"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "trip: no Spot in the Fx",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: the forge trip: Fx Travel { UserId, To = Crossroads, Spot = Forge, T = 3 }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: away from the Crossroads spawn",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: on the anvil's Crossroads-spawn side (the way players come)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: no lift (inside the floor)",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: then 8 studs in front of the anvil, 4 above its bottom"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: Landing 'Spawn' ignored",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: Landing 'Spawn': the Crossroads spawn only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: not facing the anvil",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: facing the anvil (level)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "move: no zone travel first",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: Landing 'Spawn': the Crossroads spawn only",
+          "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
+          "forge trip :: no anvil: the Crossroads spawn only",
+          "forge trip :: the tap's trip lands at the anvil too",
+          "weapon first :: T s later: an instant Travel to the Crossroads"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "move: a refused travel still lands at the anvil",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "move: a respawned character is moved",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: a respawned character is not moved; TravelDone, the lock lifted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "move: after the step moved on",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: a trip for a step that moved on moves nobody"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "move: no teleport grace",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: the jump is a server teleport (MarkTeleported)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "row: no Forge row",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: the pinned Forge row (not claimable, no counter)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tap: no forge trip on RequestTutorial",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: a tap with arguments does nothing",
+          "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)",
+          "forge trip :: the tap's trip lands at the anvil too"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "tap: a second trip during the fade",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: a tap with arguments does nothing",
+          "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "tap: a trip next to the anvil",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: at the anvil a tap does nothing (no trip, no welcome)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gift at any step",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: ForgeGift is false off the Forge step / for a non-player",
+          "gift :: a second press: the shop, no second gift",
+          "gift :: the anvil after the first mission: the shop, the step kept",
+          "gift :: the anvil before [Accept]: the shop window, no gift (the welcome step stays)",
+          "weapon first :: M1_1 pays a little gold (Reward Gold 1)",
+          "weapon first :: Otto's jelly lines; no second weapon (the gift is only the safety net)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "gift without a class",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: no class chosen: no gift"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gift: no weapon",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: a second press: the shop, no second gift",
+          "weapon first :: Otto's line, then 'You got your first weapon, [Twig]! Power 0 → N'",
+          "weapon first :: the gift: tier 1 owned and equipped, the visit counted"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "gift: no Otto line",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: Otto's line, then 'You got your first weapon, [Twig]! Power 0 → N'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gift: the mission stays at the Forge",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: a trip for a step that moved on moves nobody",
+          "forge trip :: the gift before the trip ended",
+          "gift :: a second press: the shop, no second gift",
+          "gift :: walking in after the gift starts the hunt",
+          "weapon first :: 5 slimes with the weapon",
+          "weapon first :: M1_1 pays a little gold (Reward Gold 1)"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "gift: the meadow trip at once",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: no meadow trip before Forge.TravelDelay"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gift: no meadow trip",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: arrived: the hunt (step 2)",
+          "weapon first :: then the meadow trip (Fx Travel To = SlimeMeadow)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gift: the meadow trip after the hunt began",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: then no meadow trip"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gift: the meadow trip over a running one",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: a running trip (lock ahead): no meadow trip on top"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "shop: the window opens at the gift",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapon first :: no weapon window at the gift (the Stronger! moment)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "shop: never asks for the gift",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: a second press: the shop, no second gift",
+          "gift :: walking in after the gift starts the hunt",
+          "weapon first :: 5 slimes with the weapon",
+          "weapon first :: M1_1 pays a little gold (Reward Gold 1)",
+          "weapon first :: M1_1 waits for a new visit (the first one was before the claim)",
+          "weapon first :: Otto's jelly lines; no second weapon (the gift is only the safety net)"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "claim: keeps the forge visit",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "claim :: the jackpot owned: 'check the gear' (the visit cleared)",
+          "claim :: tier 1 only: 150 buys a new weapon (the visit cleared)",
+          "claim :: tier 2 owned: 'check the gear' (the visit cleared)",
+          "weapon first :: M1_1 waits for a new visit (the first one was before the claim)",
+          "weapon first :: Otto's jelly lines; no second weapon (the gift is only the safety net)",
+          "weapon first :: the claim: 150 gold, the forge visit cleared"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "claim: 'armed' = owns the first weapon (the old rule)",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "claim :: the auto claim: AutoClaimed (next weapon)",
+          "claim :: tier 1 only: 150 buys a new weapon (the visit cleared)",
+          "weapon first :: the claim line: 150 buys a new weapon"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "late: no late gift",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old saves :: a failed late gift is tried once a session",
+          "old saves :: and warned once",
+          "old saves :: step 1 bare-handed: the gift at the join",
+          "old saves :: step 1: 'You got your first weapon' once",
+          "old saves :: step 1: never twice",
+          "old saves :: step 2 bare-handed: the gift at the join"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "late: at the welcome / Forge step too",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: 15 studs from the anvil: the Forge step without a trip",
+          "forge trip :: Landing 'Spawn': the Crossroads spawn only",
+          "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
+          "forge trip :: a tap with arguments does nothing",
+          "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)",
+          "forge trip :: a trip for a step that moved on moves nobody"
+        ],
+        "newFailingCount": 28
+      },
+      {
+        "mutation": "late: for an armed player",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old saves :: armed with tier 2 (no tier 1): nothing at the join (M1_1 gives it later)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "late: every tick",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old saves :: a failed late gift is tried once a session",
+          "old saves :: and warned once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "late: without a class",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old saves :: no class chosen: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "save: the Forge step reset at load",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save :: TutorialStep 3 loads as 3"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "d19c7025232da63936b5439fc3eb231574205e9a1525fe390af6b04239a98f0e",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
+    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
+    "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
+    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/DataService.luau": "188d6fbfa2d86795b8b005f3599f80edfe7e9c07119c2f4a0b701c53e7d53425",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
+    "src/ServerScriptService/QuestService.luau": "62d703f298d9df5ad68905637cdf881a0b9a363a80149c37e3293f60fedace25"
+  },
+  "fixtureSHA256": "074511bdc7fb2615fa332c1240c8b8d80c8d8127d19280bc1e2d648f1610e8ae",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-74 server: Config.Tutorial.Steps.Forge = 3. [Accept] (step 0, no tier 1 owned) -> step 3 + the forge trip (Fx Travel { UserId, To = 'Crossroads', Spot = 'Forge', T = 3 }, MoveLockUntil now + 4.5, 3 s later ZoneService.Travel('Crossroads', instant) then, with Forge.Landing 'Anvil', ZoneService.MarkTeleported + PivotTo Forge.Back 8 studs in front of the anvil toward the Crossroads spawn, Forge.Lift 4 above its bottom, facing it; then Fx TravelDone + lock 0; no trip within Forge.Near 24 studs; a refused travel or a new character moves nobody); a save owning tier 1 -> step 1 + the meadow trip as before. Step 3 row: Pinned, Text.Forge, ShortName 'To the Forge', not claimable; RequestTutorial at step 3 = the forge trip again (not during a fade, not next to the anvil); meadow kills before the gift count nothing. The anvil prompt at step 3 (ShopService -> QuestService.ForgeGift): Otto's ForgeGift line, LootService.GrantFirstWeapon (tier 1 equipped, 'Power 0 -> N'), step 1 (2 when standing in the meadow), no weapon window; Forge.TravelDelay 3 s later the meadow trip unless the hunt began or a trip runs. The claim always clears BlacksmithVisited (M1_1 = a new visit: Otto's lines, Gold 1, then the shop where the 150 gold buy tier 2) and says Claimed (next weapon) unless a better weapon is owned (ClaimedArmed). Old saves at steps 1 / 2 / 99, class chosen, bare-handed without tier 1 get the gift at the join (once a session; never at steps 0 / 3, never when armed). The Forge step survives a save / load.",
+  "limitations": "Offline doubles for Players, characters, the anvil part, ZoneService (Travel / MarkTeleported / ZoneChanged) and the services the combat world stubs; StoryQuestService runs without its 1 s loop (the test calls Refresh, as the anvil does). The client side (the forge beam, the row's tap, the fade's place name, the Stronger! moment) is game dev 1's contract; the landing spot is checked in the live map after the merge."
+}
