@@ -111,7 +111,9 @@ local function computeMaxHealth(player)
 	local level = tonumber(stat(player, "Level", 1)) or 1
 	local faction = stat(player, "Faction", "None")
 	local class = stat(player, "Class", "Warrior")
-	return math.max(1, math.floor(Config.MaxHealth(level, faction, class) * healthMult(player)))
+	-- A23-69: Health points (Config.StatMaxHealth = the plain max HP while Features.StatPoints is off)
+	local hp = Config.StatAllocOf(player).H
+	return math.max(1, math.floor(Config.StatMaxHealth(level, faction, class, hp) * healthMult(player)))
 end
 
 -- health/speed formula on a given humanoid (used on spawn and by RefreshCharacter)

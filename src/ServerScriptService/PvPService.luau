@@ -604,7 +604,9 @@ function PvPService.HandleKO(victim, killer, ctx)
 	-- 2. bully check (any faction pairing)
 	local weak = combatPower(victim) < B.WeakPowerRatio * combatPower(killer) -- CR-L5
 	-- CR-M15: bait = the victim dealt >= BaitMinPct of the killer's base MaxHealth to the killer within BaitWindow
-	local baitNeed = (B.BaitMinPct or 0.2) * Config.MaxHealth(num(killer, "Level", 1), fk, classOf(killer))
+	-- A23-69: with the killer's Health points (the hit base grows with them, so "two hits" keeps its meaning)
+	local baitNeed = (B.BaitMinPct or 0.2) * Config.StatMaxHealth(num(killer, "Level", 1), fk, classOf(killer),
+		Config.StatAllocOf(killer).H)
 	local baitDealt = recentDamage(victim, killer, now)
 	local baited = baitDealt > 0 and baitDealt >= baitNeed
 	if weak and baited then

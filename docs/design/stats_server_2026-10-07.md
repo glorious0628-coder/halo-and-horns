@@ -36,6 +36,48 @@
 - 새 `py tools/test_stats.py`: 표·스위치·저장 모양, 곡선, 점수·자동·직접(레벨 하락·재성장), 꺼짐이면 모든 숫자 같음, 켜짐 예시 숫자, 최대치 두 개, `CombatPowerOf` = Justice·PvP 대체식·Tab 칸(60명 무작위, 켜짐/꺼짐), CombatPower 속성이 StatAtk·StatHp를 따라감, 첫 무기 "Power X → Y", Stats 없는 v3·v1 기록에 기본값만 붙음(버전 3 그대로), 깨진 Stats 고치기, A–Z 보존, 두 번 불러도 같음.
 - 저장 쪽 기존 시험: onboarding(Stats는 기본값만 붙음, 찍은 빌드가 저장·복구됨, v4 기록은 v3 서버가 거부), keys_settings, ranking, tamer, unarmed_start, beta_basics(PvP 대체식 = CombatPowerOf), loot·names_columns 변이 문구.
 
-## 4. 2단계 (10/16–17 예정)
+## 5. 2단계 (2026-10-08, 가지 dev2-stats2): 스위치는 여전히 꺼짐
+- **새 `StatService.luau`**가 생겼어요. Main INIT/START에서 SkillService 다음이고, PlayerService는 계속 마지막이에요.
+  - 원격 `StatAction`은 Net.Names 끝에 있고, `RateLimits.StatAction = 0.15`예요.
+- **꺼져 있으면**(`Features.StatPoints = false`) 속성을 하나도 쓰지 않고 원격도 거절해요. 그래서 게임 숫자는 지금과 똑같아요.
+- **켜지면:**
+  - 속성 `StatAtk`·`StatHp`·`StatFree`·`AutoStat` = `Config.StatAlloc(data.Stats, 레벨, 직업)`이에요.
+    - 다시 쓰는 때: PlayerReady, LeveledUp(자동이면 서버가 찍음), LevelReset, Rebirthed, ClassChanged, 행동 뒤.
+  - `StatAction(op, arg)`(클라는 숫자를 보내지 않음):
+
+    | op | arg | 하는 일 |
+    |---|---|---|
+    | "add" | "A" / "H" | 1점. 자동 꺼짐이고 남은 점수가 있을 때 |
+    | "add5" | "A" / "H" | min(5, 남은 점수)점 |
+    | "reset" | 없음 | Order 비우기. 자동 꺼짐, 3초에 한 번(`Stats.ResetCooldown`) |
+    | "auto" | true / false | 끄면 자동이 찍은 글자를 Order로 옮겨요(숫자 그대로). 켜면 Order를 비워요(확인 창은 클라) |
+
+  - 막기:
+    - PvP 전투 태그·괴수·원한 자루면 알림 키 `TravelBlockedCombat`·`BlockedKaiju`·`BlockedSack`로 막아요.
+    - 쓰러짐·준비 전·직업 미선택·속도 제한·잘못된 인자면 조용히 무시해요.
+    - 레벨업 자동 배치는 늘 돼요.
+  - 바뀐 뒤 `RefreshCharacter(p, false)`를 불러요(HP 비율 유지, 꽉 채우지 않음). 그다음 'Power X → Y' 한 줄을 보내요(소리 None).
+  - 안내 줄은 첫 [Claim] 뒤에만 보내요:
+    - 첫 점수 1번: "New Stat Point! Auto placed it. Tap Power to see."
+    - 자동 레벨업: "+1 Health · Power X → Y". 여러 레벨이면 "+2 Attack +1 Health · …"
+    - 직접 모드: "+N Stat Points! Tap Power."(Config.Plural)
+    - 처음 자동을 끌 때 1번: "Tap + to pick. Reset is free!"
+    - 기록: `data.Story.First.StatPoint` / `StatManual`
+  - `Fx "Stat"` { Kind = "First" | "Level" | "Action", From, To, A, H, Free, Auto }을 보내요. 전투력 칩 빛남과 숫자 올라가기에 써요(개발 1).
+- **전투 연결:**
+  - 몬스터 피해: `ComputeMonsterHit` × (1 + f(Attack))
+  - PvP: 비율 = (공격 무기 × 공격 배율) / (맞는 무기 × HP 배율)이에요. 기존 상한 0.8(맨손 0.4)~1.5 안에서 셈해요.
+    - 기준 = `Config.StatMaxHealth(맞는 쪽 Health) × 0.1`이에요. 그래서 늘 6.67~12.5타예요. 맞는 쪽의 Health는 한 번만 들어가요.
+  - 최대 HP: `PlayerService.computeMaxHealth` = StatMaxHealth × Justice 배율
+  - 미끼 기준(PvPService)도 StatMaxHealth를 써요.
+- **Config:** `Stats.ResetCooldown`, `Stats.Text`, `StatMaxHealth`, `Power.Text.FormulaStats`("Set by your level, weapon and stats", 켜졌을 때 클라가 고름), `PluralWords["Stat Points"]`.
+- **클라(개발 1):** [Stats] 탭(StatUI), 빨간 점(직접 모드이고 StatFree ≥ 1), 칩 빛남, 확인 창 2개("Turn off Auto to pick yourself?", "Auto will replace your picks.")를 이 계약에 맞춰 붙여요.
+- **시험:** `py tools/test_stat_service.py`, 70검사, 변이 37/37.
+  - 꺼짐이면 그대로인지, 속성, add·add5·reset(3초)·auto, 거절 12가지와 막기 3종, 속도 제한을 봐요.
+  - 레벨업 줄·첫 안내·직접 모드 줄, 레벨 하락 뒤 다시 자람, 환생, 직업 바꿈도 봐요.
+  - 숫자: 피해 ×1.2, 최대 HP ×1.3 × Justice, PvP 무작위 300쌍이 6.67~12.5타인지 봐요. 맞는 쪽 Health가 버티는 타수를 늘리는지도 봐요.
+- **켜기 전(10/20 점검):** 저장 버전(3 유지 / 4)을 정하고, 스위치를 켠 채 2클라 PvP와 폰으로 확인해요.
+
+## 4. 2단계 (10/16–17 예정 → 위 §5에서 함)
 
 StatService(원격 `StatAction`: add/add5/reset/auto, 막기 3종, 레벨업 자동 배치, 속성 StatAtk·StatHp·StatFree·AutoStat), 피해(`ComputeMonsterHit` × atkMult), PvP(비율 안에서, 0.8–1.5 상한 그대로), 최대 HP(`Config.StatMaxHealth`), 미끼 기준, 처음 한 줄 안내. 그다음 10/20 점검에서 스위치 켜기.
