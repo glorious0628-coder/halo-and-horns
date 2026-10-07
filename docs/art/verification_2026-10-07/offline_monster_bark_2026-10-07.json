@@ -1,0 +1,85 @@
+{
+  "status": "passed",
+  "checks": 17,
+  "failedChecks": [],
+  "mutations": {
+    "total": 8,
+    "applied": 8,
+    "caught": 8,
+    "results": [
+      {
+        "mutation": "every tick shows the bubble again",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the same BarkAt on the next tick: no new bubble :: nil"
+        ]
+      },
+      {
+        "mutation": "old barks show when a monster streams in",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a bark already old when the monster streams in is not shown :: nil"
+        ]
+      },
+      {
+        "mutation": "far monsters bark at me",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a monster farther than Config.Barks.MaxDistance: no bubble :: nil"
+        ]
+      },
+      {
+        "mutation": "the switch is ignored",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Config.Barks.Enabled = false: no bubble :: nil",
+          "CHECK_FAIL an empty line: no bubble :: nil"
+        ]
+      },
+      {
+        "mutation": "the bubble never goes away",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the bubble goes after Config.Barks.Show seconds :: nil"
+        ]
+      },
+      {
+        "mutation": "the tail floats in the middle",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL bubble: MaxDistance from Config.Barks, tail corner at the head (SizeOffset 0.5), above the name tag :: 60"
+        ]
+      },
+      {
+        "mutation": "no code fallback without the art",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
+      {
+        "mutation": "two bubbles stack on one monster",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the same line with a new BarkAt shows again (one bubble) :: 2",
+          "CHECK_FAIL the first bubble's timer leaves the newer bubble :: nil",
+          "CHECK_FAIL without the art: a white rounded box with a rim (code fallback) :: nil"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "2c84ed81a6af70f52f516e3e16adbe880450533c9d7d3518f6fc6604851545ca",
+    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "bb51b61b678c5ce92439345ddfe834d3a5f5853eabcbd466616597f0cce454a8"
+  },
+  "fixtureSHA256": "7445b0cab46587309cca7b42886517e00302db4c1398a65910b50665a3d5fc94",
+  "studioCalls": 0,
+  "contract": "Monster bark bubble offline test (MonsterLabels; lines_pack 2, dev2 BarkService contract\ndocs/design/lines_pack_server_2026-10-07.md section 3): a new BarkAt on a monster model shows its Bark in a speech bubble\nover the head for Config.Barks.Show s within Config.Barks.MaxDistance studs (the same line with a new BarkAt shows\nagain; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); the\nBarkBubble art (9-slice, TextRect) or a white rounded box with a navy rim; a newer bark replaces the bubble (never two). Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.",
+  "limitations": "How the bubble looks over real monsters (size, overlap with the name tag, phones) is a Studio check."
+}
