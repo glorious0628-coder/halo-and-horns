@@ -388,7 +388,7 @@
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "f54d397395dbf7e6ae1d26dcb4fb6cca5da7d8c747075b785877323af7ac311a",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "74d5ac68726d5760da50b03633795cce85c29fe0bc15c4e71b924809c4fc4749",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "74eabe992844a85c4f447eec9d4ea0e6a102b583c81b92fddcfa5aa15db74426",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "2513851ad2c826356eb7bb9e6b76e6c80aba0682f915f9d8e752ced68257d2b8",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "7d507dcd88cd1fded519e93a3dc13827e9f1638251044463fb3597e29bdbcf29",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",

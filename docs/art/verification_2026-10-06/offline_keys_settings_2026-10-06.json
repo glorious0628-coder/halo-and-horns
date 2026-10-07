@@ -2543,7 +2543,7 @@
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "cd8018ed1598f29167c419c8e88132acc9cc5f478a794e75cda29065fddc8058",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "74d5ac68726d5760da50b03633795cce85c29fe0bc15c4e71b924809c4fc4749",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "74eabe992844a85c4f447eec9d4ea0e6a102b583c81b92fddcfa5aa15db74426",
     "src/ServerScriptService/StoryQuestService.luau": "3edf1cc5826336f97fbb408a319402ce2038e3a32aa1b2a64bc59bf9c621bc51",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "f47961ebe91be1478e2e4b7ba4b2ed6b6cc4837bb74406508ecae85a8438e268"
   },

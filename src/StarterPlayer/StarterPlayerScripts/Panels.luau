@@ -241,7 +241,11 @@ local scaleConn = nil
 local NICK = { UI = nil, Draft = nil, Message = "", Pending = false, Request = 0,
 	Rule = "2-20 letters · must be unique", Unavailable = "Please check the save connection." }
 local WSHOP = { Distance = 12, PromptName = "HHC_BlacksmithPrompt",
-	PendingTimeout = 5, SlowNoteSeconds = 4 } -- s: an unanswered trade unlocks the row, then T.WeaponSlow shows
+	PendingTimeout = 5, SlowNoteSeconds = 4, -- s: an unanswered trade unlocks the row, then T.WeaponSlow shows
+	-- UI ideas round 2 #8 (검수 2026-10-07): a weapon of ConfirmAt gold or more buys on a second press within
+	-- ConfirmSeconds (the first press turns the button into "Tap again to buy"); cheaper ones and equips stay one press
+	ConfirmAt = 100, ConfirmSeconds = 3,
+	AgainTouch = "Tap again to buy", AgainMouse = "Click again to buy" }
 local WELCOME = { PendingOpen = false }
 
 -- quality 2 (UIKit.Typewriter, image dev adc7311; 검수 2026-10-07): a dialogue line types in at Speed letters / s with the
@@ -2592,7 +2596,18 @@ BUILDERS.WeaponShop = function(parent)
 		}
 		local buttons = addRow(row, 60, 10)
 		ui.Buy = makeButton(buttons, "", PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
-			send(tier, ui.DisplayedAction)
+			local action = ui.DisplayedAction
+			if action == "Buy" and not session.Pending then
+				local info = WSHOP.Offer(tier)
+				if info and (tonumber(info.Price) or 0) >= WSHOP.ConfirmAt and os.clock() >= (ui.ArmedUntil or 0) then
+					ui.ArmedUntil = os.clock() + WSHOP.ConfirmSeconds -- first press: arm, the second one buys
+					update()
+					task.delay(WSHOP.ConfirmSeconds + 0.05, function() if live() then update() end end)
+					return
+				end
+			end
+			ui.ArmedUntil = nil
+			send(tier, action)
 		end)
 		ui.Buy.Name = "BuyOrEquipWeapon" .. tostring(tier)
 		ui.Sell = makeButton(buttons, "", PALETTE.Button, UDim2.new(0.5, -5, 0, 60), function()
@@ -2673,6 +2688,8 @@ BUILDERS.WeaponShop = function(parent)
 			end
 			if pending and pending.Tier == ui.Tier then
 				if pending.Action == "Sell" then ui.Sell.Text = T.WeaponPending else ui.Buy.Text = T.WeaponPending end
+			elseif ui.DisplayedAction == "Buy" and os.clock() < (ui.ArmedUntil or 0) then
+				ui.Buy.Text = UserInputService.TouchEnabled and WSHOP.AgainTouch or WSHOP.AgainMouse
 			end
 			ui.Reason.Text = (buyReason ~= T.WeaponEquipped and buyReason) or ""
 			ui.Reason.Visible = ui.Reason.Text ~= ""

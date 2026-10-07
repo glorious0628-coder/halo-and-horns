@@ -58,6 +58,11 @@ def main():
          and "later = makeButton(actions, T.WelcomeLater, PALETTE.Button, UDim2.new(0.25, -8, 0, 60)" in welcome),
         ("#2 short screens keep a 64 px face", "local face = short and 64 or 170" in welcome
          and "Size = UDim2.fromOffset(face, face)" in welcome and "portraitRow.Visible = not short" not in welcome),
+        ("UI round 2 #8: weapons of 100+ gold buy on a second press within 3 s",
+         "ConfirmAt = 100, ConfirmSeconds = 3," in panels
+         and "if info and (tonumber(info.Price) or 0) >= WSHOP.ConfirmAt and os.clock() >= (ui.ArmedUntil or 0) then" in panels
+         and "ui.Buy.Text = UserInputService.TouchEnabled and WSHOP.AgainTouch or WSHOP.AgainMouse" in panels
+         and 'AgainTouch = "Tap again to buy"' in panels),
     ]
     for name, good in checks:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)
