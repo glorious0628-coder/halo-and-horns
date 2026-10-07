@@ -9,6 +9,9 @@
 
 **main에 들어간 것(오늘):** 프롤로그 띠 없음, 팀 알림 영어, 지도 v2, 지형 타일 FF2, SunRays 끔, 새 HUD(PC·폰 같은 틀, 검사 55/55), 말풍선 12종 그림 + 몬스터별 키 + 의성어 대사(그림 없는 몬스터는 둥근 코드 말풍선), 감사 고침, place 한글 검사 도구 고침(한글 0 확인), push_paths 개선.
 
+**22:20 추가:** 카메라 camera3가 **main 5a97a5b**에 들어감(메인 Studio sync + StarterPlayer.DevTouchCameraMovementMode = Classic). 무기 먼저 PC: 모루 앞 순간 이동 뒤 카메라가 얼굴 쪽 → 내일 FirstSteps TravelDone 때 카메라를 등 뒤로 맞추기. 소리 연결 `sound-r5`(ab70833)는 전체 시험 전 → 내일 첫 일.
+**메인 Studio 저장:** 사용자 Ctrl+S가 23:00 전에 안 되면 파일은 21:22본. 그러면 내일 먼저 **main sync(0 0) → `py tools/map_v2_apply.py build` → `py tools/apply_studio_state.py`(몬스터 색 상수) → StarterPlayer.DevTouchCameraMovementMode = Classic(Studio 속성) → PC·폰 확인 사진 → 저장**.
+
 **내일 첫 순서:**
 1. 개발 1 밤 인계 확인 → 메인 Studio 저장·place 확인(build=place, 0 0).
 2. **무기 먼저 병합:** `weapon-sound-r1`(main + dev2-sound 892fa28 + wtc-weapon-client dd1d4135, 증거 518b4df, 전체 60개 결과 확인) → main → sync → `py tools/play_weapon_first.py pc|phone` 사진. 게시 때 모든 서버 종료(체크리스트).
