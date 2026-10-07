@@ -248,6 +248,14 @@ def static_checks(src: dict[str, str], values: dict | None) -> list[tuple[str, b
                 and 'elseif inst:IsA("Folder") or (inst:IsA("Model") and GROUPS[inst.Name]) then' in mv
                 and 'inst:SetAttribute("MapV2Ground", off)' in mv
                 and "if not hit or hit.Material == Enum.Material.Water then return nil end" in mv))
+    out.append(("the terrain pond is a round basin on the story's slime pond (no flat plate), jelly stones round it; "
+                "no grass blades, the A2_2 sea colour, no gold / red road stripes",
+                pond_v is not None and f"local PONDS = {{ {{ X = {pond_v[0]:g}, Z = {pond_v[2]:g}, R = 18, Rim = 7," in terr
+                and 'if plate and plate:IsA("BasePart") then stash(plate) end' in terr
+                and 'kit:FindFirstChild("Kit_M_JellyRock")' in terr
+                and "pcall(function() Terrain.Decoration = false end)" in terr
+                and "Terrain.WaterColor = RGB(8, 181, 214)" in terr
+                and 'Name = "TrimGold"' not in pv and 'Name = "TrimRed"' not in pv))
     out.append(("the runner's settle step lifts / lowers only noted pieces, once, never over water or by more than 60",
                 'local off = inst:GetAttribute("MapV2Ground")' in ap and 'inst:SetAttribute("MapV2Settled", true)' in ap
                 and "if math.abs(dy) > 60 then" in ap and "hit.Material == Enum.Material.Water then" in ap
