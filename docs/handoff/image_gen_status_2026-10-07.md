@@ -18,9 +18,15 @@
   도구 `tools/crown_back_fix.py`: 5방향 덤프(뒤·뒤 3/4 둘·옆 둘)를 각자 화면에서 판정 → 텍셀마다 "얼마나 정면으로 봤나"로 표를 모음. 금구슬은 3D 공으로 기억해 모든 방향에 같게. `castle_window_dump.py`는 이제 hit 점·법선(pos/nor)도 저장.
 - **숲 키트 목록** `docs/design/kit_woods.md`(5a1eec0) — 작은 것 15종 + 그림체 머리·꼬리 + 지킬 것(해골·얼굴·눈 없음, 주황은 PvP 말뚝만). 이미지 생성 2가 16장 생성 중.
 
+- **WorldKit 가져오기 1**(화면 제어 1번, 검수 OK): 뿔 성 v3N2·빛 성 고리 깃발·왕관 backfix → id 장부 `art/models/worldkit/import_next_assets_2026-10-07.json`(de7cfe2). 왕관 id → 개발 1(오프닝·하늘 왕관, ScaleTo 약 4).
+- **빛 성 색 고침**(텍스처만 0크레딧, 검수 통과 84ae50a): 금·파랑 채도를 시안에 맞춤, 새 텍스처 rbxassetid://81624750351092. 시트 `art/review/town3/halo_castle_color_fix.jpg`(Blender 전·후 + WorldKit 게임 조명 캡처). id·크기·피벗 → 개발 1. 도구 `tools/halo_castle_color_fix.py`.
+- **뿔 성 새 판 v4**(사용자: 빛 성보다 초라 → 처음부터): 4안×2 시트(837a818) → 사용자 B_1(계단식 산성) → 고급 5 → Tripo building 40(8e8d012, 검수 통과). 배치는 1.2배(84 × 65.6, 개발 1). v3N2는 안 씀.
+- **숲 작은 소품 8개 Tripo**(이미지 생성 2 고급 그림, 320, 96a0402 통과). 모닥불만 다시 그리는 중(이미지 생성 2) → 받으면 Tripo 다시(geometry detailed 가능).
+- **숲 큰 것**: 2D 11종×2(a42d8b8) → 10개 확정(우두머리 공터는 Tripo 대신 개발 1 조립 메모) → 나무 A는 다시(전나무 1, edc4b3d) → 고급 11장(B는 줄기 옹이가 눈 같아 한 번 더) → Tripo: building 4(고목·관문·천막 2) + prop 1(토템) + tree 3(나무 C·바위 2, 면 1,500 새 설정) 끝, 나무 A·B(tree)와 덩굴이 깨진 나무 C를 prop(3k)로 다시 도는 중.
+
 ## 대기 중
 - **조각 v2**(e52a883 시트) — 빛·뿔 조각 둘 다 쓸지 사용자 답(검수 경유) → 고급(5) → Tripo(약 40, 둘째 조각 +40은 승인 필요).
-- **다음 3D 가져오기 묶음** `build/import_next/WorldKit_ImportNext.glb`(뿔 성 70×67×58, 빛 성 70×55×66, 앞 -Z) + 왕관 B2 backfix(검수 OK 뒤) — 화면 제어라 다른 것과 모아서, 할 때 검수에 먼저. 만드는 법: `tools/worldkit_combine.py`(spec에 fit 크기) → WorldKit 가져오기 창 한 번 → `execute_luau`로 Model·피벗 정리 → id 기록.
+- **WorldKit 가져오기 2** `build/import_next2/WorldKit_ImportNext2.glb`(뿔 성 v4 84 폭 + 숲 소품 7개): 미리보기까지 열었는데 '가져오기' 버튼이 합성 클릭에 반응 안 함 → 사용자가 한 번 눌러 주기로(검수). 업로드되면 `build/import_next2/watch.py`가 MCP로 알아채고 → Model·피벗 정리 → id → 개발 1. 만드는 법은 `tools/worldkit_combine.py`(spec fit) 그대로.
 - **3b Tripo**(약 480): 3a를 게임에서 본 뒤.
 - **오프닝 콘티**(A23-55, 10/12~14): 욕심으로 왕관이 깨짐("If I can't have it, no one can!"), 얼굴 없는 그림자 손(무섭지 않게, 범인 진영 모름) → 조각이 흩어지며 빛·뿔이 서로 손가락질하는 귀여운 컷.
 
@@ -28,8 +34,10 @@
 - Firefly: 내장 브라우저에서 `preview_start`로 연 탭(tab-1)이 그려짐("seed" 탭은 빈 화면일 수 있음). 탭을 새로 열면 `tools/firefly_page_helpers.js`를 붙여 넣고 `__ready()` 확인 → `__runList([...])`. 고급은 승인 뒤만.
 - git: 다른 세션의 안 커밋한 파일과 겹치면 pull 하지 말고 임시 worktree에서 내 커밋만 cherry-pick 해 push(49fe94c 때처럼).
 - approved.json: 들여쓰기 1칸 그대로(`json.dumps(indent=1, ensure_ascii=False)`), 내 키만.
+- 화면 제어가 약속한 시간을 넘길 것 같으면 중간에 멈추고 바로 검수에 알리기(10/07, 2분 반). 가져오기 미리보기 버튼이 반응 없으면 열어 두고 사용자 한 번 클릭 부탁.
 - **computer-use 도구는 확인용으로도 부르지 않기**(`list_granted_applications` 한 번에 사용자 화면 주황 '제어 중'이 턴 끝까지 켜짐, 10/07). 승인된 제어 단계 뒤엔 Esc → 턴 끝 → 검수에 "끝".
 - push 거절 때 더 빠른 길: `git merge-tree --write-tree` + `git commit-tree -p origin/main` → `git push origin <새 커밋>:main`(공유 작업 트리를 안 건드림, 5a1eec0).
 
 ## 크레딧 (오늘)
-- Firefly 고급 10(뿔 성 v3N2 5 + 왕관 B 5), 중간 0크레딧. Tripo 80(뿔 성 40 + 왕관 40) → 남은 905. 왕관 뒤 고치기·숲 목록 0.
+- Firefly 고급 70(뿔 성 v3N2 5 + 왕관 B 5 + 뿔 성 v4 5 + 숲 큰 것 11장 55), 중간 0크레딧(숲 22 + 뿔 성 8 + 나무 A 6장). 웹 화면 숫자는 9700/10000으로 보였음(새로고침 전일 수 있음).
+- Tripo API: 945 → 왕관 40 → 숲 소품 320 → 뿔 성 v4 40 → 숲 큰 것 8개 320 → 나무 3개 120(도는 중) → 남은 105. 다 쓰면 웹 ①(3,550, Smart Mesh) — 검수에 '웹 ① 로그인 필요'.
