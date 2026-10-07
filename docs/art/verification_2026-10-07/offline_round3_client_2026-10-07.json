@@ -64,7 +64,7 @@
   ],
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "c17555215c33cedc024f6c21b4a9440b3d22f447184ace13c8b19afa5c623ad7",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "ce8da78e16d4a2644a4acda014d9a433e9bd25f20fdd22e76f68a685164bfad0"
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "bd041d14cdb03a206df7b5c4c3714a0790e3cf12a88feb3c044a4dfd1b26ca22"
   },
   "studioCalls": 0,
   "contract": "Round 3 'first 10 minutes' client pieces in HUD.luau (docs/design/ideas_first10_2026-10-07.md §3-4, game dev 1):\n#1 line 2 after the pinned row = the waiting story -> a claim -> the S0 shard story (until auto combat is unlocked) ->\nthe first daily, in both the phone header line and the two quest lines; the PC list has no daily header before the\nfirst mission is accepted (step 0); a seconds row's ProgressUnit follows the target ('5/10 s', dev2 2c5e84e).\n#3 one tap on the phone quest block whose line 1 is the step-0 pinned row ('Tap here: first quest from Hallie') opens\nthe guide (L.PinnedTap) instead of the list.\n#2 the guide's first window (Panels BUILDERS.Welcome): [I'm In!] is the one wide button (half the row), Next / Later a\nquarter each; short phone screens (height < 520) keep a 64 px guide face instead of none.",

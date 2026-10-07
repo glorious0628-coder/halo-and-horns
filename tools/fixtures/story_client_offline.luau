@@ -197,7 +197,49 @@ end
 
 ----------------------------------------------------------------- Panels STORY.Lines / STORY.Hint
 local STORY = { Text = { HintLean = HINT_LEAN, HintHave = HINT_HAVE } }
-execute("STORY", STORY_SOURCE, { STORY = STORY, Config = Config, string = string, type = type, math = math })
+local storyEnv = { STORY = STORY, Config = Config, string = string, type = type, math = math, UIKit = nil }
+execute("STORY", STORY_SOURCE, storyEnv)
+
+----------------------------------------------------------------- Panels STORY.PortraitKey (검수 2026-10-07)
+do
+	local g = "story speaker portrait"
+	local parts = Config.UIArt and Config.UIArt.Parts or {}
+	local function validId(id) return type(id) == "string" and string.match(id, "^rbxassetid://%d+$") ~= nil end
+	local function artPart(name)
+		local def = parts[name]
+		return (type(def) == "table" and validId(def.Id)) and def or nil
+	end
+	check(g, "Panels has STORY.PortraitKey", type(STORY.PortraitKey) == "function", type(STORY.PortraitKey))
+	storyEnv.UIKit = { Portrait = function() end, ArtPart = artPart }
+	-- 검수's table: Otto, Fizzby, the three town NPCs, Kit and the two faction guides (no Speaker = my guide)
+	local want = { Smith = "PortraitMerchantC", Potion = "PortraitPotionMerchant", Bright = "PTR_TownBright",
+		Smokey = "PTR_TownSmokey", Tiny = "PTR_TownTiny", Guild = "PortraitGuideArtisan", Halo = "PortraitGuideHalo",
+		Horns = "PortraitGuideHorns" }
+	for voice, key in want do
+		local got = STORY.PortraitKey(voice)
+		check(g, "a speaker with art shows its own face (검수 table)", got == key, voice .. " -> " .. show(got))
+	end
+	for _, voice in { "Shard", "Fountain", "Kids", "Pip", "Dibs", "Grabbo", "Gleam", "Rex", "Nobody" } do
+		local got = STORY.PortraitKey(voice)
+		check(g, "a speaker without art (shards, kids, goblins, Gleam, Rex) gets no portrait slot", got == nil,
+			voice .. " -> " .. show(got))
+	end
+	local sq = Config.StoryQuests or {}
+	for voice, key in (sq.Portraits or {}) do
+		local known = (sq.Speakers and sq.Speakers[voice] ~= nil) or voice == "Halo" or voice == "Horns"
+		check(g, "every Portraits row is a speaker (or the Halo / Horns guide) with a real art id",
+			known and artPart(key) ~= nil, voice .. " " .. show(key))
+	end
+	-- the id goes empty while a picture is redrawn: no slot (never a blank frame)
+	storyEnv.UIKit = { Portrait = function() end, ArtPart = function() return nil end }
+	check(g, "an art id that is empty / invalid: no portrait slot", STORY.PortraitKey("Smith") == nil,
+		show(STORY.PortraitKey("Smith")))
+	storyEnv.UIKit = { ArtPart = artPart }
+	check(g, "no UIKit.Portrait: no portrait slot", STORY.PortraitKey("Smith") == nil, show(STORY.PortraitKey("Smith")))
+	storyEnv.UIKit = nil
+	check(g, "no UIKit: no portrait slot", STORY.PortraitKey("Smith") == nil, show(STORY.PortraitKey("Smith")))
+end
+
 do
 	local g = "story lines by Var"
 	check(g, "Panels has STORY.Lines and STORY.Hint", type(STORY.Lines) == "function" and type(STORY.Hint) == "function",
