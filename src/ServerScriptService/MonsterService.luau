@@ -115,21 +115,30 @@ local NATURAL = { WanderPace = 0.5, RampStart = 0.45, RampStep = 0.3, ArriveSlow
 -- A23-74 (user 2026-10-07 "점점 합쳐지겠다"): monsters keep a natural distance. No monster part collides (TECH_SPEC:
 -- CanCollide = false, players walk through them), so the AI spaces them: a chaser walks to its own slot on a ring around
 -- its target (body radius + PlayerRadius + RingGap, at most AttackRange - RingInside; one player's chasers get angles
--- spread so neighbours stand rA + rB apart, the farthest wait on an outer ring when the ring is full), two monsters
--- closer than (rA + rB) x Overlap (or a monster that close to a player body) slide apart at most Speed studs/s (the
--- smaller one moves more, a boss never), and a new monster spawns at least rA + rB + SpawnGap from every living one.
+-- spread so neighbours stand rA + rB apart; a full ring moves out to AttackRange - RingInside so more can attack, the
+-- rest wait on further rings outside reach; the ring is centred Lead s ahead of a walking player), in reach it stands
+-- for its swing and steps on to its slot between swings, and after every AI tick the end points of the coming tick's
+-- walks are pushed apart where two bodies would overlap (closer than (rA + rB) x Overlap) or a body would be inside a
+-- player: each push becomes a slide over the next tick (a deeper push slides faster, at most Speed studs/s; the
+-- smaller one moves more, a boss never). A new monster (a boss too) spawns at least rA + rB + SpawnGap from every
+-- living one.
 -- Body radius = Radius[Def.Shape] x Def.Scale (a slime ball 1.5 x s: the Tripo meshes measure 3.0 / 3.5 / 5.4 studs).
--- Neighbours come from a Cell-stud grid rebuilt every AI tick (never every pair of the world).
+-- Neighbours come from a Cell-stud grid rebuilt every AI tick (never every pair of the world). Review 2026-10-07: with
+-- these, a player walking at 3 / 5 / 8 studs/s keeps 4 Shard + 2 King Slimes apart (tools/test_monster_spacing.py).
 local SEP = {
 	Radius = { Slime = 1.5, Humanoid = 1.25 },
 	PlayerRadius = 1,
 	RingGap = 1,
 	RingInside = 0.5,
-	Overlap = 0.9,
-	Speed = 3,
+	Overlap = 1, -- review 2026-10-07: bodies touch at rA + rB (0.9 left a 10% overlap standing)
+	Speed = 8, -- review 2026-10-07: was 3 (a pile behind a walking player outgrew the slides)
+	Passes = 3, -- push rounds per AI tick (a push into a third monster is fixed the next round)
 	MinPush = 0.05,
+	Settle = 0.5, -- in reach: closer than this to its slot it stands
+	Lead = 0.25, -- s: the chase ring and the player body are taken where a walking player will be (one AI tick on)
+	LeadMax = 4, -- studs
 	SpawnGap = 1.5,
-	Cell = 8, -- >= the largest pair distance (two Pumpkin Kings: 2 x 3.75 x 0.9)
+	Cell = 8, -- >= the largest pair distance (two Pumpkin Kings: 2 x 3.75 x Overlap)
 	Grid = {}, -- [cell key] = { rec, ... } this AI tick
 	Live = {}, -- every movable living rec this AI tick
 	Slots = {}, -- [rec] = { Player, Angle, Ring } this AI tick
@@ -1474,6 +1483,9 @@ function MonsterService.SpawnEvent(kind, opts)
 	local near = opts.Near
 	if typeof(near) == "Vector3" then
 		local radius = math.max(0, tonumber(opts.Radius) or 30)
+		-- A23-74 review: a boss keeps the spawn clearance too (SEP.Clear); when every try is crowded the first crowded
+		-- point is used and SEP.Resolve slides the smaller monsters off it (a boss itself never slides)
+		local body, crowded = SEP.RadiusOf(def), nil
 		for i = 1, SPAWN_TRIES * 2 do
 			local a = Util.Random:NextNumber(0, math.pi * 2)
 			local d = (i == 1) and 0 or Util.Random:NextNumber(0, radius)
@@ -1481,10 +1493,14 @@ function MonsterService.SpawnEvent(kind, opts)
 			local g, noHit = groundPoint(x, z)
 			if noHit then g = Vector3.new(x, 0, z) end -- bare test place: legacy flat ground
 			if g and Config.ZoneAt(g).Id == def.Zone then
-				pos = g
-				break
+				if SEP.Clear(g, body) then
+					pos = g
+					break
+				end
+				crowded = crowded or g
 			end
 		end
+		pos = pos or crowded
 	end
 	if not pos then pos = pickSpawnPoint(def) end
 	if not pos then return nil end
@@ -1774,12 +1790,22 @@ local function landAttack(rec, token, target, waited)
 	end
 end
 
--- in reach: stand still, keep facing the target (FACE, every frame) and start a wind-up when the cooldown allows (the
--- cooldown counts from the wind-up start; one wind-up at a time, so a monster never hits twice for one attack). The
--- body turns during the wind-up; the hit waits until the target is in front (landAttack).
-local function attack(rec, info, now)
-	rec._goal = nil
-	rec.Humanoid:MoveTo(rec.Root.Position)
+-- in reach: stand still for a swing, keep facing the target (FACE, every frame) and start a wind-up when the cooldown
+-- allows (the cooldown counts from the wind-up start; one wind-up at a time, so a monster never hits twice for one
+-- attack). The body turns during the wind-up; the hit waits until the target is in front (landAttack). A23-74 (user
+-- 2026-10-07): between swings it steps on to `slot` (its ring slot, SEP.ReachGoal) still facing the target (SEP.Rotate
+-- turns AutoRotate off while it is in reach), so chasers of a walking player never pile up behind them.
+local function attack(rec, info, now, slot)
+	rec._goal = nil -- not "trying to move" (A11-R5): a blocked slot never counts as a stuck chase
+	local walk = SEP.ReachGoal(rec, now, rec.Root.Position, slot, info)
+	if walk then
+		NATURAL.Pace(rec, 1)
+		rec._walkTo = walk
+		rec.Humanoid:MoveTo(walk)
+	else
+		rec.Humanoid:MoveTo(rec.Root.Position)
+	end
+	rec._inReach = true
 	FACE.Active[rec] = { Target = info.Player, Until = os.clock() + FACE.Keep }
 	if rec._windup ~= nil or now < rec._nextAttackAt then return end
 	rec._nextAttackAt = now + MC.AttackCooldown
@@ -1884,6 +1910,7 @@ local function steer(rec, dest, pos, now, pace)
 	pace = pace or 1
 	NATURAL.Pace(rec, pace, pace < 1 and dest or nil) -- eases in; a wander also slows near its goal
 	rec._goal = dest
+	rec._walkTo = dest -- A23-74: SEP.Walk
 	rec.Humanoid:MoveTo(dest)
 end
 
@@ -2000,51 +2027,59 @@ function SEP.Spread(list)
 	end
 end
 
--- slots for the chasers of one player: the closest keep the inner ring (in reach), the rest wait on an outer ring
+-- slots for the chasers of one player, closest first. The inner ring (in reach) stands at each one's own ring (r + 1 + 1);
+-- A23-74 review: when they do not all fit there, it moves out to the widest ring still in reach (AttackRange -
+-- RingInside, more of them can attack). Whoever does not fit waits on the next ring, just outside the bodies of the ring
+-- before it (RingGap between), and so on: any number of chasers gets a slot that touches no other.
 function SEP.Surround(info, chasers)
 	local p = info.Pos
-	local inner, outer = {}, {}
+	local rest = {}
 	for _, rec in chasers do
 		local pos = rec._sepPos
 		local d = Util.FlatDistance(pos, p)
 		if rec.Owner ~= nil and d > PERSONAL_FOLLOW_RADIUS then continue end -- a personal monster too far: it stands
-		table.insert(inner, { Rec = rec, Id = rec.Id, D = d, A = math.atan2(pos.Z - p.Z, pos.X - p.X), R = SEP.Ring(rec),
+		table.insert(rest, { Rec = rec, Id = rec.Id, D = d, A = math.atan2(pos.Z - p.Z, pos.X - p.X), R = SEP.Ring(rec),
 			Rad = rec._radius or SEP.Radius.Slime })
 	end
-	table.sort(inner, function(a, b)
+	table.sort(rest, function(a, b)
 		if a.D ~= b.D then return a.D < b.D end
 		return a.Id < b.Id
 	end)
-	while #inner > 1 and SEP.Need(inner) > 2 * math.pi do
-		local e = table.remove(inner) -- the farthest waits outside reach
-		e.R += 2 * e.Rad + SEP.RingGap
-		table.insert(outer, e)
-	end
-	SEP.Spread(inner)
-	SEP.Spread(outer)
-	for _, list in { inner, outer } do
-		for _, e in list do
+	local tau, edge, inner = 2 * math.pi, 0, true
+	while #rest > 0 do
+		local ring = rest
+		rest = {}
+		if inner then
+			if SEP.Need(ring) > tau then
+				for _, e in ring do e.R = MC.AttackRange - SEP.RingInside end
+			end
+		else
+			for _, e in ring do e.R = edge + SEP.RingGap + e.Rad end
+		end
+		while #ring > 1 and SEP.Need(ring) > tau do
+			table.insert(rest, 1, table.remove(ring)) -- the farthest waits on the next ring (rest stays closest first)
+		end
+		SEP.Spread(ring)
+		for _, e in ring do
+			edge = math.max(edge, e.R + e.Rad)
 			SEP.Slots[e.Rec] = { Player = info.Player, Angle = e.A, Ring = e.R }
 		end
+		inner = false
 	end
 end
 
--- start of an AI tick: snapshot positions into the grid and give every player's chasers (last tick's targets, personal
--- monsters for their owner) their ring slots
+-- start of an AI tick: snapshot the living monsters' positions and give every player's chasers (last tick's targets,
+-- personal monsters for their owner) their ring slots
 function SEP.Begin(list, plist)
-	table.clear(SEP.Grid)
 	table.clear(SEP.Live)
 	table.clear(SEP.Slots)
 	local chasers = {}
 	for _, rec in list do
 		local root = rec.Alive and rec.Root or nil
 		if root and root.Parent and not root.Anchored then
-			local pos = root.Position
-			rec._sepPos = pos
+			rec._sepPos = root.Position
+			rec._walkTo = nil -- this tick's step sets it when it walks (SEP.Walk)
 			table.insert(SEP.Live, rec)
-			local key = SEP.Key(math.floor(pos.X / SEP.Cell), math.floor(pos.Z / SEP.Cell))
-			local cell = SEP.Grid[key]
-			if cell then table.insert(cell, rec) else SEP.Grid[key] = { rec } end
 			local target = rec.Owner or (not rec._returning and rec._target or nil)
 			if target ~= nil then
 				chasers[target] = chasers[target] or {}
@@ -2058,8 +2093,20 @@ function SEP.Begin(list, plist)
 	end
 end
 
--- where a chaser walks: its slot around info's player (else its own side of the player at its ring distance); a slot on
--- water / a ridge / in solid decor falls back to the player's position (the old chase)
+-- A23-74 review: where a walking player will be at the next AI tick (info.Vel x Lead s ahead, at most LeadMax studs;
+-- without Vel: where it stands). Chase rings and the push out of a player body are centred there, so slots and slides
+-- move with the player instead of trailing a tick behind (a pile behind them, the ones ahead walked into).
+function SEP.Ahead(info)
+	local p, v = info.Pos, info.Vel
+	if v == nil then return p.X, p.Z end
+	local lead = math.sqrt(v.X * v.X + v.Z * v.Z) * SEP.Lead
+	local k = lead > SEP.LeadMax and SEP.LeadMax / lead or 1
+	return p.X + v.X * SEP.Lead * k, p.Z + v.Z * SEP.Lead * k
+end
+
+-- where a chaser walks: its slot around info's player (else its own side of the player at its ring distance), on the
+-- ring centred at SEP.Ahead; a slot on water / a ridge / in solid decor falls back to the player's position (the old
+-- chase)
 function SEP.Goal(rec, info)
 	local p = info.Pos
 	local slot = SEP.Slots[rec]
@@ -2070,33 +2117,67 @@ function SEP.Goal(rec, info)
 		local pos = rec.Root.Position
 		angle, ring = math.atan2(pos.Z - p.Z, pos.X - p.X), SEP.Ring(rec)
 	end
-	local x, z = p.X + math.cos(angle) * ring, p.Z + math.sin(angle) * ring
+	local cx, cz = SEP.Ahead(info)
+	local x, z = cx + math.cos(angle) * ring, cz + math.sin(angle) * ring
 	local g, noHit = groundPoint(x, z)
 	if g then return g end
 	if noHit then return Vector3.new(x, p.Y, z) end
 	return p
 end
 
-function SEP.Add(push, rec, x, z)
-	local v = push[rec]
-	if v then
-		v.X += x
-		v.Z += z
-	else
-		push[rec] = { X = x, Z = z }
-	end
+-- A23-74 review: in reach of info's player, the spot it steps to this AI tick, or nil = stand still. It stands while a
+-- wind-up is pending, when the cooldown is up (a wind-up starts now), within Settle of its slot, and when the slot fell
+-- back into the player body (water / clamped at the zone edge; the body where the player will be, SEP.Ahead: a rear
+-- slot of a walking player is close to where it stands now); otherwise it steps on to its slot between swings.
+function SEP.ReachGoal(rec, now, pos, slot, info)
+	if slot == nil or rec._windup ~= nil or now >= rec._nextAttackAt then return nil end
+	if Util.FlatDistance(pos, slot) <= SEP.Settle then return nil end
+	local ax, az = SEP.Ahead(info)
+	local dx, dz = slot.X - ax, slot.Z - az
+	if dx * dx + dz * dz < ((rec._radius or SEP.Radius.Slime) + SEP.PlayerRadius) ^ 2 then return nil end
+	return slot
 end
 
--- a pair closer than (rA + rB) x Overlap: each gets its share of the overlap away from the other (the smaller moves more)
-function SEP.Pair(a, b, push)
-	local pa, pb = a._sepPos, b._sepPos
+-- after each AI step: AutoRotate is off only while the monster is in reach (attack() set _inReach this tick), so FACE
+-- alone turns the body to its target, also while it steps sideways to its slot; any other walk faces where it goes
+function SEP.Rotate(rec)
+	local hum = rec.Humanoid
+	local want = rec._inReach ~= true
+	rec._inReach = nil
+	if hum and hum.Parent and hum.AutoRotate ~= want then hum.AutoRotate = want end
+end
+
+-- moves rec's end point for this tick by (x, z) (a Resolve pass; the sum becomes its slide)
+function SEP.Add(rec, x, z)
+	local at = rec._sepAt
+	rec._sepAt = Vector3.new(at.X + x, at.Y, at.Z + z)
+end
+
+-- A23-74 review: where a monster's own walk takes it by the end of this AI tick (the point this tick's step sent it to,
+-- _walkTo, at its Humanoid's WalkSpeed; standing = where it is). Resolve separates these end points, so a chaser that
+-- walks into a monster standing for its swing is held back before the bodies meet, not a tick after.
+function SEP.Walk(rec)
+	local pos, goal = rec._sepPos, rec._walkTo
+	local hum = rec.Humanoid
+	if goal == nil or hum == nil then return pos end
+	local dx, dz = goal.X - pos.X, goal.Z - pos.Z
+	local d = math.sqrt(dx * dx + dz * dz)
+	local step = math.min(d, (tonumber(hum.WalkSpeed) or 0) * MC.AIInterval)
+	if d < 1e-6 or step <= 0 then return pos end
+	return Vector3.new(pos.X + dx * step / d, pos.Y, pos.Z + dz * step / d)
+end
+
+-- a pair whose end points are closer than (rA + rB) x Overlap: each end point moves its share of the overlap away from
+-- the other (the smaller moves more, a boss never); true when it moved them
+function SEP.Pair(a, b)
+	local pa, pb = a._sepAt, b._sepAt
 	local ra, rb = a._radius or SEP.Radius.Slime, b._radius or SEP.Radius.Slime
 	local need = (ra + rb) * SEP.Overlap
 	local dx, dz = pa.X - pb.X, pa.Z - pb.Z
 	local d = math.sqrt(dx * dx + dz * dz)
-	if d >= need then return end
+	if d >= need then return false end
 	local fa, fb = SEP.Fixed(a), SEP.Fixed(b)
-	if fa and fb then return end
+	if fa and fb then return false end
 	local o -- scale of (dx, dz) that covers the whole overlap
 	if d < 0.05 then -- on the same spot: a fixed direction per pair (golden angle of the lower id)
 		local ang = (math.min(a.Id, b.Id) * 2.39996) % (2 * math.pi)
@@ -2107,8 +2188,26 @@ function SEP.Pair(a, b, push)
 	end
 	local wa = fa and 0 or (fb and 1 or rb / (ra + rb))
 	local wb = fb and 0 or (fa and 1 or ra / (ra + rb))
-	SEP.Add(push, a, dx * o * wa, dz * o * wa)
-	SEP.Add(push, b, -dx * o * wb, -dz * o * wb)
+	SEP.Add(a, dx * o * wa, dz * o * wa)
+	SEP.Add(b, -dx * o * wb, -dz * o * wb)
+	return true
+end
+
+-- a monster whose end point is closer than (r + PlayerRadius) x Overlap to the player body at (ax, az) (where the
+-- player will be, SEP.Ahead) moves out, away from it (a boss never); true when it moved
+function SEP.Body(rec, ax, az, y)
+	local pr = rec._sepAt
+	local need = ((rec._radius or SEP.Radius.Slime) + SEP.PlayerRadius) * SEP.Overlap
+	local dx, dz = pr.X - ax, pr.Z - az
+	local d = math.sqrt(dx * dx + dz * dz)
+	if d >= need or math.abs(pr.Y - y) >= 8 or SEP.Fixed(rec) then return false end
+	if d < 0.05 then -- right on the player: a fixed direction per monster
+		local ang = (rec.Id * 2.39996) % (2 * math.pi)
+		SEP.Add(rec, math.cos(ang) * need, math.sin(ang) * need)
+	else
+		SEP.Add(rec, dx * (need - d) / d, dz * (need - d) / d)
+	end
+	return true
 end
 
 -- the slide may go there: same zone (a zone monster inside its own rect inset ZONE_MOVE_INSET), walkable ground, no
@@ -2127,63 +2226,74 @@ function SEP.CanSlide(rec, pos, delta)
 	return workspace:Raycast(pos, delta * ((m + 0.5) / m), getShoveParams()) == nil
 end
 
--- end of an AI tick: overlapping monsters (grid neighbours only) and monsters inside a player body get a light slide
--- apart (at most Speed x AIInterval studs, played smoothly by SEP.Step over the next AIInterval s)
+-- end of an AI tick: where every monster will be at the end of the coming tick (its walk end point, SEP.Walk), up to
+-- Passes rounds of moving overlapping end points apart (grid neighbours only; one move can push into a third monster,
+-- the next round fixes that) and out of player bodies (where the player will be, SEP.Ahead); each monster's total move
+-- becomes its slide, played smoothly by SEP.Step over that tick (at most Speed x AIInterval studs), so no pile builds
+-- up behind a walking player
 function SEP.Resolve(plist)
-	local push = {}
 	local cellSize = SEP.Cell
-	for _, a in SEP.Live do
-		local pa = a._sepPos
-		local cx, cz = math.floor(pa.X / cellSize), math.floor(pa.Z / cellSize)
-		for ox = -1, 1 do
-			for oz = -1, 1 do
-				local cell = SEP.Grid[SEP.Key(cx + ox, cz + oz)]
-				if cell then
-					for _, b in cell do
-						if b.Id > a.Id then SEP.Pair(a, b, push) end
-					end
-				end
-			end
-		end
+	local from = {}
+	table.clear(SEP.Grid)
+	for _, rec in SEP.Live do
+		local at = SEP.Walk(rec)
+		rec._sepAt, from[rec] = at, at
+		local key = SEP.Key(math.floor(at.X / cellSize), math.floor(at.Z / cellSize))
+		local cell = SEP.Grid[key]
+		if cell then table.insert(cell, rec) else SEP.Grid[key] = { rec } end
 	end
-	for _, info in plist do
-		local p = info.Pos
-		local cx, cz = math.floor(p.X / cellSize), math.floor(p.Z / cellSize)
-		for ox = -1, 1 do
-			for oz = -1, 1 do
-				local cell = SEP.Grid[SEP.Key(cx + ox, cz + oz)]
-				if cell then
-					for _, rec in cell do
-						local pr = rec._sepPos
-						local need = ((rec._radius or SEP.Radius.Slime) + SEP.PlayerRadius) * SEP.Overlap
-						local dx, dz = pr.X - p.X, pr.Z - p.Z
-						local d = math.sqrt(dx * dx + dz * dz)
-						if d < need and math.abs(pr.Y - p.Y) < 8 and not SEP.Fixed(rec) then
-							if d < 0.05 then -- right on the player: a fixed direction per monster
-								local ang = (rec.Id * 2.39996) % (2 * math.pi)
-								SEP.Add(push, rec, math.cos(ang) * need, math.sin(ang) * need)
-							else
-								SEP.Add(push, rec, dx * (need - d) / d, dz * (need - d) / d)
-							end
+	for _ = 1, SEP.Passes do
+		local moved = false
+		for _, a in SEP.Live do
+			local pa = from[a]
+			local cx, cz = math.floor(pa.X / cellSize), math.floor(pa.Z / cellSize)
+			for ox = -1, 1 do
+				for oz = -1, 1 do
+					local cell = SEP.Grid[SEP.Key(cx + ox, cz + oz)]
+					if cell then
+						for _, b in cell do
+							if b.Id > a.Id and SEP.Pair(a, b) then moved = true end
 						end
 					end
 				end
 			end
 		end
+		for _, info in plist do
+			local ax, az = SEP.Ahead(info) -- the body where the player will be when this slide ends
+			local cx, cz = math.floor(ax / cellSize), math.floor(az / cellSize)
+			for ox = -1, 1 do
+				for oz = -1, 1 do
+					local cell = SEP.Grid[SEP.Key(cx + ox, cz + oz)]
+					if cell then
+						for _, rec in cell do
+							if SEP.Body(rec, ax, az, info.Pos.Y) then moved = true end
+						end
+					end
+				end
+			end
+		end
+		if not moved then break end
 	end
-	local maxStep = SEP.Speed * MC.AIInterval
-	for rec, v in push do
-		local m = math.sqrt(v.X * v.X + v.Z * v.Z)
+	for _, rec in SEP.Live do
+		local q, at = from[rec], rec._sepAt
+		local vx, vz = at.X - q.X, at.Z - q.Z
+		local m = math.sqrt(vx * vx + vz * vz)
 		local root = rec.Root
 		if m >= SEP.MinPush and rec.Alive and root and root.Parent and not root.Anchored then
 			local pos = root.Position
 			if Util.FlatDistance(pos, rec._sepPos) <= 1 then -- not teleported home this tick
-				local k = math.min(1, maxStep / m)
-				local delta = Vector3.new(v.X * k, 0, v.Z * k)
+				local k = math.min(1, SEP.Speed * MC.AIInterval / m)
+				local delta = Vector3.new(vx * k, 0, vz * k)
 				for _, part in { 1, 0.5 } do
 					local step = delta * part
 					if SEP.CanSlide(rec, pos, step) then
 						SEP.Push[rec] = { Delta = step, Done = 0, Time = MC.AIInterval }
+						-- a walk ends at its MoveTo point wherever the slide put the body, so that point moves along
+						local goal = rec._walkTo
+						if goal ~= nil and rec.Humanoid and SEP.CanSlide(rec, Vector3.new(goal.X, pos.Y, goal.Z), step) then
+							rec._walkTo = goal + step
+							rec.Humanoid:MoveTo(rec._walkTo)
+						end
 						break
 					end
 				end
@@ -2227,9 +2337,10 @@ local function personalStep(rec, plist, now, pos)
 	if d > PERSONAL_FOLLOW_RADIUS then
 		rec.Humanoid:MoveTo(pos)
 	elseif d <= MC.AttackRange then
-		attack(rec, info, now)
+		attack(rec, info, now, SEP.Goal(rec, info)) -- A23-74: between swings it keeps to its ring slot
 	else
-		rec.Humanoid:MoveTo(SEP.Goal(rec, info)) -- A23-74: its ring slot, never into the player
+		rec._walkTo = SEP.Goal(rec, info) -- A23-74: its ring slot, never into the player
+		rec.Humanoid:MoveTo(rec._walkTo)
 	end
 end
 
@@ -2269,6 +2380,7 @@ local function aiStep(rec, plist, now)
 		local homeDest = clampToZone(zone, rec.Home)
 		NATURAL.Pace(rec, 1)
 		rec._goal = homeDest
+		rec._walkTo = homeDest -- A23-74: SEP.Walk
 		hum:MoveTo(homeDest)
 		return
 	end
@@ -2349,7 +2461,7 @@ local function aiStep(rec, plist, now)
 		if alerting then return end
 		if bestD <= MC.AttackRange then
 			rec._chaseStuck = 0
-			attack(rec, best, now)
+			attack(rec, best, now, clampToZone(zone, SEP.Goal(rec, best))) -- A23-74: between swings it keeps to its slot
 		else
 			-- A23-74: walk to its own ring slot around the player (A10-V3-2 b: clamped into the zone); waiting on the
 			-- outer ring (the inner one is full) it faces the player
@@ -2372,6 +2484,7 @@ local function aiStep(rec, plist, now)
 		end
 	elseif rec._goal and Util.FlatDistance(pos, rec._goal) > ARRIVE_DIST then
 		NATURAL.Pace(rec, NATURAL.WanderPace, rec._goal) -- NATURAL: keeps easing in, slows near the goal
+		rec._walkTo = rec._goal -- A23-74: SEP.Walk (still on its way)
 	else
 		NATURAL.Idle(rec, pos, plist, now) -- NATURAL: standing between wanders: look around / glance
 	end
@@ -2385,7 +2498,9 @@ local function aiTick()
 			local root = Util.GetRoot(p)
 			if root then
 				local pos = root.Position
-				table.insert(plist, { Player = p, Pos = pos, Town = isPlayerInTown(p, pos), Zone = Config.ZoneAt(pos).Id })
+				-- A23-74: Vel = where a walking player is headed (SEP.Goal centres the chase ring a tick ahead)
+				table.insert(plist, { Player = p, Pos = pos, Town = isPlayerInTown(p, pos), Zone = Config.ZoneAt(pos).Id,
+					Vel = root.AssemblyLinearVelocity })
 			end
 		end
 	end
@@ -2400,6 +2515,8 @@ local function aiTick()
 		if rec.Alive then
 			local ok, err = pcall(aiStep, rec, plist, now)
 			if not ok then warnThrottled("ai", err) end
+			ok, err = pcall(SEP.Rotate, rec) -- A23-74: AutoRotate off only while in reach
+			if not ok then warnThrottled("sep", err) end
 		end
 	end
 	if okSep then

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 101,
+  "checks": 171,
   "failedChecks": 0,
-  "namedChecks": 101,
+  "namedChecks": 171,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -21,7 +21,13 @@
     },
     {
       "group": "contract numbers",
-      "check": "slide apart below (rA + rB) x 0.9, at most 3 studs/s",
+      "check": "review 2026-10-07: bodies pushed apart where they touch (rA + rB), slides at most 8 studs/s, 3 push rounds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "contract numbers",
+      "check": "in reach it stands within 0.5 of its slot; rings 0.25 s (at most 4 studs) ahead of a walking player",
       "pass": 1,
       "fail": 0
     },
@@ -194,49 +200,73 @@
       "fail": 0
     },
     {
-      "group": "full ring",
-      "check": "7 on the ring in reach, 3 waiting outside",
+      "group": "ring capacity",
+      "check": "7 slimes: all on their own ring r + 2 = 3.5",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "full ring",
-      "check": "the 7 closest keep the inner ring",
+      "group": "ring capacity",
+      "check": "10 slimes: all ten in reach on the ring AttackRange - 0.5",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "full ring",
-      "check": "the full inner ring: every pair rA + rB apart",
+      "group": "ring capacity",
+      "check": "the widened ring: every pair rA + rB apart",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "full ring",
-      "check": "the waiting ring: every pair rA + rB apart",
+      "group": "ring capacity",
+      "check": "12 slimes: the 10 closest in reach, 2 waiting on the ring at 9 (outside reach)",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "full ring",
-      "check": "no waiting slime stands on a ring slime",
+      "group": "ring capacity",
+      "check": "12 slimes: no slot touches another (across rings too)",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "full ring",
+      "group": "ring capacity",
+      "check": "mixed: 5 King Slimes in reach, every waiting ring starts outside their bodies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ring capacity",
+      "check": "mixed: no slot touches another",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ring capacity",
+      "check": "30 slimes: rings of 10 (in reach), 18 and 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ring capacity",
+      "check": "30 slimes: no slot touches another",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ring capacity",
       "check": "the waiting ones stand outside AttackRange (they do not attack until a place frees)",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "full ring",
+      "group": "ring capacity",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "full ring",
+      "group": "ring capacity",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -278,26 +308,230 @@
       "fail": 0
     },
     {
-      "group": "slide apart",
-      "check": "two overlapping slimes slide apart, equally, in opposite directions",
+      "group": "lead",
+      "check": "no Vel: rings and the body push are centred on the player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lead",
+      "check": "walking 8 studs/s: centred 0.25 s (2 studs) ahead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lead",
+      "check": "running 40 studs/s and falling: at most 4 studs ahead, height ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lead",
+      "check": "the chase slot moves with a walking player (ring centred where it will be)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lead",
+      "check": "a slime in front of a walking player slides on before the player reaches it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lead",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lead",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "between swings (cooldown running, no wind-up): it steps to its slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "while its wind-up is pending it stands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "cooldown up (a wind-up starts this tick): it stands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "within Settle (0.5) of its slot it stands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "0.6 from its slot it still steps there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "a slot inside the player body (a water / zone-edge fallback): it stands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "a slot just outside the player body is fine",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "no slot: it stands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "a walking player's rear slot: it keeps stepping (the body is taken ahead)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "a slot inside where a walking player will be: it stands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "in reach: AutoRotate off, the mark used up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "out of reach the next tick: AutoRotate back on (it faces where it walks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "no Humanoid: nothing to turn, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reach walk",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "no walk this tick: it ends where it stands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "walking 10 studs/s: 2.5 studs on by the end of the tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "a MoveTo point closer than a tick's walk: it ends there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "every tick starts standing (this tick's step sets its walk again)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "a walker and the slime it walks into are held apart before the bodies meet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "the walker's MoveTo point moves along with its slide",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "a standing monster gets no MoveTo (it just slides)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "a MoveTo point that would slide into the water stays put",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "(its partner slides too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "three in a row: the push rounds clear the chain in one tick (< 0.1 left)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walk prediction",
+      "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "slide apart",
-      "check": "a slide is capped at 3 studs/s x AIInterval",
+      "check": "two overlapping slimes slide apart, equally, the whole overlap (1 each) in one tick",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "slide apart",
-      "check": "2.5 studs apart (need 2.7): each slides 0.1 (the pair is counted once)",
+      "check": "a deep push slides at most 8 studs/s (2 per tick)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "slide apart",
-      "check": "2.8 studs apart: no slide (only real overlaps move)",
+      "check": "2.8 studs apart (need 3): each slides 0.1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slide apart",
+      "check": "3.1 studs apart: no slide (only real overlaps move)",
       "pass": 1,
       "fail": 0
     },
@@ -321,7 +555,7 @@
     },
     {
       "group": "slide apart",
-      "check": "a slime inside the player body slides out, away from the player",
+      "check": "a slime inside the player body slides out, away from the player (to r + 1)",
       "pass": 1,
       "fail": 0
     },
@@ -447,7 +681,7 @@
     },
     {
       "group": "grid cost",
-      "check": "pair tests stay near n x neighbours (never every pair)",
+      "check": "pair tests stay near n x neighbours / 2 (never every pair, each pair once)",
       "pass": 1,
       "fail": 0
     },
@@ -489,7 +723,7 @@
     },
     {
       "group": "chase simulation",
-      "check": "after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
+      "check": "after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
       "pass": 1,
       "fail": 0
     },
@@ -501,7 +735,7 @@
     },
     {
       "group": "chase simulation",
-      "check": "most of them still reach the player (they surround it)",
+      "check": "a standing player: all six stand in reach (they surround it)",
       "pass": 1,
       "fail": 0
     },
@@ -513,6 +747,108 @@
     },
     {
       "group": "chase simulation",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 3 studs/s: mean deepest overlap < 0.3 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 3 studs/s: never a pile (worst < 1 stud)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 3 studs/s: the monsters keep up and attack (in reach > 50% of ticks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 5 studs/s: mean deepest overlap < 0.3 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 5 studs/s: never a pile (worst < 1 stud)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 5 studs/s: the monsters keep up and attack (in reach > 50% of ticks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 8 studs/s: mean deepest overlap < 0.3 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking 8 studs/s: never a pile (worst < 1 stud)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "walking a circle at 5 studs/s: mean < 0.3, worst < 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "control: the old rule piles them up behind a walking player (mean > 1 stud)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walking player",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd of 30",
+      "check": "all 30 chasers have a slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd of 30",
+      "check": "after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd of 30",
+      "check": "10 of them stand in reach (the widened ring), 20 wait outside",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd of 30",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd of 30",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -560,6 +896,54 @@
       "fail": 0
     },
     {
+      "group": "boss spawn",
+      "check": "a boss never spawns on a living monster: the next clear point within its spawn radius",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss spawn",
+      "check": "(no fallback to a zone spawn point, no warning)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss spawn",
+      "check": "every try crowded: the boss appears on its spot anyway (no lost spawn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss spawn",
+      "check": "the slime under a new boss is slid off within 3 AI ticks (0.75 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss spawn",
+      "check": "the boss itself never moves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss spawn",
+      "check": "a dead monster on the spot does not block a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss spawn",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss spawn",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "ai wiring",
       "check": "aiStep: a chaser walks to its slot (clamped into the zone), never at the player's position",
       "pass": 1,
@@ -573,13 +957,49 @@
     },
     {
       "group": "ai wiring",
-      "check": "personalStep: a personal monster walks to its slot, never into its owner",
+      "check": "aiStep: in reach, attack() gets its slot (clamped into the zone) for between swings",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ai wiring",
-      "check": "aiTick: SEP.Begin before the steps, SEP.Resolve after",
+      "check": "aiStep: the walk home and a wander still on its way tell SEP.Walk where they go",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ai wiring",
+      "check": "attack(): asks SEP.ReachGoal before a new wind-up starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ai wiring",
+      "check": "attack(): steps to its slot (SEP.Walk knows) or stands, marks itself in reach, never a stuck-check goal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ai wiring",
+      "check": "steer(): every walk tells SEP.Walk where it goes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ai wiring",
+      "check": "personalStep: a personal monster walks to its slot (also between swings), never into its owner",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ai wiring",
+      "check": "aiTick: SEP.Begin, then each step followed by SEP.Rotate, then SEP.Resolve",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ai wiring",
+      "check": "aiTick: every player entry carries its velocity (SEP.Ahead)",
       "pass": 1,
       "fail": 0
     },
@@ -614,43 +1034,83 @@
       "fail": 0
     }
   ],
-  "findings": [],
-  "staticChecks": 5,
+  "findings": [
+    {
+      "Group": "walking player",
+      "Text": "walking player, mean / review bar 0.3: 3 studs/s 0.035, 5 studs/s 0.010, 8 studs/s 0.036"
+    },
+    {
+      "Group": "walking player",
+      "Text": "walking 5 studs/s with the old rule: mean deepest overlap 1.942"
+    }
+  ],
+  "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 47,
-    "applied": 47,
-    "caught": 47,
+    "total": 79,
+    "applied": 79,
+    "caught": 79,
     "skipped": false,
     "results": [
       {
-        "mutation": "overlap factor 0.5",
+        "mutation": "overlap factor 0.9 again",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
-          "contract numbers :: slide apart below (rA + rB) x 0.9, at most 3 studs/s",
-          "slide apart :: 2.5 studs apart (need 2.7): each slides 0.1 (the pair is counted once)",
-          "slide apart :: Shard Slime vs King Slime: the small one slides 2.7 / 1.5 times as far",
-          "slide apart :: a boss never slides; the slime next to it takes the whole slide",
-          "slide apart :: a slide is capped at 3 studs/s x AIInterval"
+          "boss spawn :: the slime under a new boss is slid off within 3 AI ticks (0.75 s)",
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
+          "contract numbers :: review 2026-10-07: bodies pushed apart where they touch (rA + rB), slides at most 8 studs/s, 3 push rounds",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "lead :: a slime in front of a walking player slides on before the player reaches it",
+          "slide apart :: 2.8 studs apart (need 3): each slides 0.1"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 16
       },
       {
-        "mutation": "slides 10x faster",
+        "mutation": "slides at the old 3 studs/s",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "contract numbers :: slide apart below (rA + rB) x 0.9, at most 3 studs/s",
-          "slide apart :: a slide is capped at 3 studs/s x AIInterval",
-          "slide rules :: a blocked full slide falls back to half"
+          "boss spawn :: the slime under a new boss is slid off within 3 AI ticks (0.75 s)",
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
+          "contract numbers :: review 2026-10-07: bodies pushed apart where they touch (rA + rB), slides at most 8 studs/s, 3 push rounds",
+          "lead :: a slime in front of a walking player slides on before the player reaches it",
+          "slide apart :: a boss never slides; the slime next to it takes the whole slide",
+          "slide apart :: a deep push slides at most 8 studs/s (2 per tick)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "slides 4x faster",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "contract numbers :: review 2026-10-07: bodies pushed apart where they touch (rA + rB), slides at most 8 studs/s, 3 push rounds",
+          "slide apart :: a deep push slides at most 8 studs/s (2 per tick)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "one push round",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
+          "contract numbers :: review 2026-10-07: bodies pushed apart where they touch (rA + rB), slides at most 8 studs/s, 3 push rounds",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "walk prediction :: three in a row: the push rounds clear the chain in one tick (< 0.1 left)",
+          "walking player :: walking 8 studs/s: never a pile (worst < 1 stud)",
+          "walking player :: walking a circle at 5 studs/s: mean < 0.3, worst < 1"
+        ],
+        "newFailingCount": 6
       },
       {
         "mutation": "no spawn gap",
@@ -684,14 +1144,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
+          "boss spawn :: the slime under a new boss is slid off within 3 AI ticks (0.75 s)",
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
           "contract numbers :: RadiusOf BigSlime = 2.7",
           "contract numbers :: RadiusOf GoblinBrute = 1.875",
           "contract numbers :: RadiusOf PumpkinKing = 3.75",
-          "contract numbers :: RadiusOf PumpkinSlime = 1.65",
-          "slide apart :: Shard Slime vs King Slime: the small one slides 2.7 / 1.5 times as far"
+          "contract numbers :: RadiusOf PumpkinSlime = 1.65"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 10
       },
       {
         "mutation": "ring ignores the body",
@@ -700,14 +1160,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
-          "chase simulation :: most of them still reach the player (they surround it)",
-          "chase simulation :: no monster stands inside the player",
           "chase slots :: a monster without a slot walks to its own side at its ring distance",
-          "chase slots :: every slot is outside the player body, in reach, on the monsters' own side (no lap around)",
-          "chase slots :: nobody walks into the player any more (old chase: the player's position)"
+          "contract numbers :: every kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)",
+          "contract numbers :: rings: Shard Slime 3.5, King Slime 4.7, Pumpkin King capped at AttackRange - 0.5",
+          "lead :: the chase slot moves with a walking player (ring centred where it will be)",
+          "ring capacity :: 7 slimes: all on their own ring r + 2 = 3.5",
+          "ring packing :: enough feasible random rings"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 7
       },
       {
         "mutation": "ring not kept in reach",
@@ -719,9 +1179,10 @@
           "chase slots :: a monster without a slot walks to its own side at its ring distance",
           "contract numbers :: every kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)",
           "contract numbers :: rings: Shard Slime 3.5, King Slime 4.7, Pumpkin King capped at AttackRange - 0.5",
-          "full ring :: 7 on the ring in reach, 3 waiting outside"
+          "lead :: the chase slot moves with a walking player (ring centred where it will be)",
+          "ring capacity :: 7 slimes: all on their own ring r + 2 = 3.5"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "goal = the player's position",
@@ -730,12 +1191,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
           "chase slots :: Goal = the slot point on the ground",
           "chase slots :: a monster without a slot walks to its own side at its ring distance",
-          "chase slots :: nobody walks into the player any more (old chase: the player's position)"
+          "chase slots :: nobody walks into the player any more (old chase: the player's position)",
+          "crowd of 30 :: 10 of them stand in reach (the widened ring), 20 wait outside",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 9
       },
       {
         "mutation": "goal ignores its slot",
@@ -744,10 +1207,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
-          "chase slots :: Goal = the slot point on the ground"
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
+          "chase slots :: Goal = the slot point on the ground",
+          "crowd of 30 :: 10 of them stand in reach (the widened ring), 20 wait outside",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "goal walks into water",
@@ -767,14 +1232,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
           "chase slots :: their slots stand rA + rB apart (no body touches another)",
-          "full ring :: no waiting slime stands on a ring slime",
-          "full ring :: the full inner ring: every pair rA + rB apart",
-          "full ring :: the waiting ring: every pair rA + rB apart",
-          "ring packing :: every feasible ring: all slots rA + rB apart"
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "ring capacity :: 12 slimes: no slot touches another (across rings too)",
+          "ring capacity :: 30 slimes: no slot touches another",
+          "ring capacity :: mixed: no slot touches another"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "one pass only (seam left tight)",
@@ -794,10 +1259,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
           "ring packing :: every feasible ring: all slots rA + rB apart",
           "ring packing :: the order around the player never changes"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "gap ignores body size",
@@ -806,40 +1272,87 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
           "chase slots :: their slots stand rA + rB apart (no body touches another)",
-          "full ring :: 7 on the ring in reach, 3 waiting outside",
-          "full ring :: no waiting slime stands on a ring slime",
-          "full ring :: the full inner ring: every pair rA + rB apart",
-          "ring packing :: every feasible ring: all slots rA + rB apart"
+          "crowd of 30 :: 10 of them stand in reach (the widened ring), 20 wait outside",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "ring capacity :: 10 slimes: all ten in reach on the ring AttackRange - 0.5",
+          "ring capacity :: 12 slimes: no slot touches another (across rings too)",
+          "ring capacity :: 12 slimes: the 10 closest in reach, 2 waiting on the ring at 9 (outside reach)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 14
       },
       {
-        "mutation": "no outer ring",
+        "mutation": "full inner ring never widens",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "full ring :: 7 on the ring in reach, 3 waiting outside",
-          "full ring :: no waiting slime stands on a ring slime",
-          "full ring :: the full inner ring: every pair rA + rB apart"
+          "crowd of 30 :: 10 of them stand in reach (the widened ring), 20 wait outside",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "ring capacity :: 10 slimes: all ten in reach on the ring AttackRange - 0.5",
+          "ring capacity :: 12 slimes: the 10 closest in reach, 2 waiting on the ring at 9 (outside reach)",
+          "ring capacity :: 30 slimes: rings of 10 (in reach), 18 and 2",
+          "ring capacity :: mixed: 5 King Slimes in reach, every waiting ring starts outside their bodies"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 7
       },
       {
-        "mutation": "outer ring not moved out",
+        "mutation": "no waiting rings",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "full ring :: 7 on the ring in reach, 3 waiting outside",
-          "full ring :: no waiting slime stands on a ring slime",
-          "full ring :: the full inner ring: every pair rA + rB apart"
+          "crowd of 30 :: 10 of them stand in reach (the widened ring), 20 wait outside",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "ring capacity :: 12 slimes: no slot touches another (across rings too)",
+          "ring capacity :: 12 slimes: the 10 closest in reach, 2 waiting on the ring at 9 (outside reach)",
+          "ring capacity :: 30 slimes: no slot touches another",
+          "ring capacity :: 30 slimes: rings of 10 (in reach), 18 and 2"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "only one waiting ring",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "ring capacity :: 30 slimes: no slot touches another",
+          "ring capacity :: 30 slimes: rings of 10 (in reach), 18 and 2"
         ],
         "newFailingCount": 3
+      },
+      {
+        "mutation": "waiting ring ignores the ring before",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ring capacity :: mixed: 5 King Slimes in reach, every waiting ring starts outside their bodies",
+          "ring capacity :: mixed: no slot touches another"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ring edge not tracked",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd of 30 :: 10 of them stand in reach (the widened ring), 20 wait outside",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "ring capacity :: 12 slimes: no slot touches another (across rings too)",
+          "ring capacity :: 12 slimes: the 10 closest in reach, 2 waiting on the ring at 9 (outside reach)",
+          "ring capacity :: 30 slimes: no slot touches another",
+          "ring capacity :: 30 slimes: rings of 10 (in reach), 18 and 2"
+        ],
+        "newFailingCount": 9
       },
       {
         "mutation": "the closest do not keep the ring",
@@ -848,9 +1361,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "full ring :: the 7 closest keep the inner ring"
+          "crowd of 30 :: 10 of them stand in reach (the widened ring), 20 wait outside",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "ring capacity :: 12 slimes: the 10 closest in reach, 2 waiting on the ring at 9 (outside reach)",
+          "ring capacity :: mixed: 5 King Slimes in reach, every waiting ring starts outside their bodies"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "far personal monsters chase",
@@ -886,16 +1402,319 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "no lead",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "contract numbers :: in reach it stands within 0.5 of its slot; rings 0.25 s (at most 4 studs) ahead of a walking player",
+          "lead :: a slime in front of a walking player slides on before the player reaches it",
+          "lead :: running 40 studs/s and falling: at most 4 studs ahead, height ignored",
+          "lead :: the chase slot moves with a walking player (ring centred where it will be)",
+          "lead :: walking 8 studs/s: centred 0.25 s (2 studs) ahead",
+          "reach walk :: a slot inside where a walking player will be: it stands"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "lead not capped",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lead :: running 40 studs/s and falling: at most 4 studs ahead, height ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "goal ignores the lead",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lead :: the chase slot moves with a walking player (ring centred where it will be)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body push ignores the lead",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lead :: a slime in front of a walking player slides on before the player reaches it",
+          "walking player :: walking 5 studs/s: mean deepest overlap < 0.3 studs",
+          "walking player :: walking 5 studs/s: never a pile (worst < 1 stud)",
+          "walking player :: walking a circle at 5 studs/s: mean < 0.3, worst < 1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "stands still in reach",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
+          "reach walk :: 0.6 from its slot it still steps there",
+          "reach walk :: a slot just outside the player body is fine",
+          "reach walk :: a walking player's rear slot: it keeps stepping (the body is taken ahead)",
+          "reach walk :: between swings (cooldown running, no wind-up): it steps to its slot",
+          "walking player :: walking 3 studs/s: the monsters keep up and attack (in reach > 50% of ticks)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "walks during its wind-up",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reach walk :: while its wind-up is pending it stands"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walks when a wind-up starts",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reach walk :: cooldown up (a wind-up starts this tick): it stands"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no settle",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reach walk :: within Settle (0.5) of its slot it stands"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "steps into the player body",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reach walk :: a slot inside the player body (a water / zone-edge fallback): it stands",
+          "reach walk :: a slot inside where a walking player will be: it stands"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "in-reach body check where the player stands now",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reach walk :: a slot inside where a walking player will be: it stands",
+          "reach walk :: a walking player's rear slot: it keeps stepping (the body is taken ahead)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "attack() ignores ReachGoal",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: attack(): asks SEP.ReachGoal before a new wind-up starts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "attack() not marked in reach",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: attack(): steps to its slot (SEP.Walk knows) or stands, marks itself in reach, never a stuck-check goal"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "AutoRotate never off",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reach walk :: in reach: AutoRotate off, the mark used up"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "in-reach mark never cleared",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reach walk :: in reach: AutoRotate off, the mark used up",
+          "reach walk :: no Humanoid: nothing to turn, no error",
+          "reach walk :: out of reach the next tick: AutoRotate back on (it faces where it walks)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no Rotate after a step",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: aiTick: SEP.Begin, then each step followed by SEP.Rotate, then SEP.Resolve"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "aiStep: attack without a slot",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: aiStep: in reach, attack() gets its slot (clamped into the zone) for between swings"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "personalStep: attack without a slot",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: personalStep: a personal monster walks to its slot (also between swings), never into its owner"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no walk prediction",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "walk prediction :: a walker and the slime it walks into are held apart before the bodies meet",
+          "walk prediction :: the walker's MoveTo point moves along with its slide",
+          "walking player :: walking 3 studs/s: mean deepest overlap < 0.3 studs",
+          "walking player :: walking 3 studs/s: never a pile (worst < 1 stud)",
+          "walking player :: walking 5 studs/s: mean deepest overlap < 0.3 studs"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "walk ignores WalkSpeed",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "walk prediction :: (its partner slides too)",
+          "walk prediction :: a MoveTo point that would slide into the water stays put",
+          "walk prediction :: a walker and the slime it walks into are held apart before the bodies meet",
+          "walk prediction :: the walker's MoveTo point moves along with its slide",
+          "walk prediction :: walking 10 studs/s: 2.5 studs on by the end of the tick"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "last tick's walk kept",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "walk prediction :: every tick starts standing (this tick's step sets its walk again)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "MoveTo point not moved along",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "walk prediction :: the walker's MoveTo point moves along with its slide"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "MoveTo point moved into water",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "walk prediction :: a MoveTo point that would slide into the water stays put"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "steer() hides its walk",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: steer(): every walk tells SEP.Walk where it goes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "attack() hides its step",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: attack(): steps to its slot (SEP.Walk knows) or stands, marks itself in reach, never a stuck-check goal"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "personal walk hides its goal",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ai wiring :: personalStep: a personal monster walks to its slot (also between swings), never into its owner"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "equal shares (big ones move as much)",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
           "slide apart :: Shard Slime vs King Slime: the small one slides 2.7 / 1.5 times as far"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "a boss slides",
@@ -904,9 +1723,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "slide apart :: a boss never slides; the slime next to it takes the whole slide"
+          "boss spawn :: the boss itself never moves",
+          "slide apart :: a boss never slides; the slime next to it takes the whole slide",
+          "slide apart :: a deep push slides at most 8 studs/s (2 per tick)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "players do not push",
@@ -915,12 +1736,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
-          "chase simulation :: no monster stands inside the player",
           "grid cost :: a player across a cell border still pushes the slime out",
-          "slide apart :: a slime inside the player body slides out, away from the player"
+          "lead :: a slime in front of a walking player slides on before the player reaches it",
+          "slide apart :: a slime inside the player body slides out, away from the player (to r + 1)",
+          "walking player :: walking 5 studs/s: mean deepest overlap < 0.3 studs",
+          "walking player :: walking 5 studs/s: never a pile (worst < 1 stud)",
+          "walking player :: walking a circle at 5 studs/s: mean < 0.3, worst < 1"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "players push a boss",
@@ -940,7 +1763,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "slide apart :: 2.5 studs apart (need 2.7): each slides 0.1 (the pair is counted once)"
+          "grid cost :: pair tests stay near n x neighbours / 2 (never every pair, each pair once)"
         ],
         "newFailingCount": 1
       },
@@ -951,10 +1774,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
-          "grid cost :: two slimes on both sides of a cell border slide apart"
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
+          "crowd of 30 :: after 25 s: no two touch (deepest overlap < 0.05 now, < 0.1 over the last 5 s)",
+          "grid cost :: two slimes on both sides of a cell border slide apart",
+          "slide apart :: 2.8 studs apart (need 3): each slides 0.1",
+          "slide apart :: Shard Slime vs King Slime: the small one slides 2.7 / 1.5 times as far",
+          "slide apart :: a boss never slides; the slime next to it takes the whole slide"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 14
       },
       {
         "mutation": "same spot never separates",
@@ -963,9 +1790,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "boss spawn :: the slime under a new boss is slid off within 3 AI ticks (0.75 s)",
           "slide apart :: two slimes on the same spot slide apart (a fixed direction per pair)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "no speed cap",
@@ -974,10 +1802,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "slide apart :: a slide is capped at 3 studs/s x AIInterval",
-          "slide rules :: a blocked full slide falls back to half"
+          "slide apart :: a deep push slides at most 8 studs/s (2 per tick)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "jitter on tiny overlaps",
@@ -997,10 +1824,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "chase simulation :: after 20 s of chasing: no two monsters closer than (rA + rB) x 0.9",
           "slide rules :: a monster teleported during the tick is not slid"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "no half step",
@@ -1020,9 +1846,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "slide rules :: no slide into the water (the dry one still moves)"
+          "slide rules :: no slide into the water (the dry one still moves)",
+          "walk prediction :: a MoveTo point that would slide into the water stays put"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "slides past the zone inset",
@@ -1054,9 +1881,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "chase simulation :: after 20 s of chasing from one spot: no two monsters overlap (rA + rB)",
           "smooth slide :: half the tick: half the slide (smooth, not a snap)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "dead monsters keep sliding",
@@ -1109,7 +1937,30 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "boss spawn :: a dead monster on the spot does not block a boss",
           "spawn clear :: a dead monster does not block a spawn"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "boss spawns on a monster",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss spawn :: a boss never spawns on a living monster: the next clear point within its spawn radius"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "crowded boss spawn lost",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss spawn :: every try crowded: the boss appears on its spot anyway (no lost spawn)"
         ],
         "newFailingCount": 1
       },
@@ -1136,13 +1987,13 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "personal monsters walk into their owner",
+        "mutation": "no player velocity",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ai wiring :: personalStep: a personal monster walks to its slot, never into its owner"
+          "ai wiring :: aiTick: every player entry carries its velocity (SEP.Ahead)"
         ],
         "newFailingCount": 1
       },
@@ -1153,7 +2004,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ai wiring :: aiTick: SEP.Begin before the steps, SEP.Resolve after"
+          "ai wiring :: aiTick: SEP.Begin, then each step followed by SEP.Rotate, then SEP.Resolve"
         ],
         "newFailingCount": 1
       },
@@ -1164,7 +2015,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ai wiring :: aiTick: SEP.Begin before the steps, SEP.Resolve after"
+          "ai wiring :: aiTick: SEP.Begin, then each step followed by SEP.Rotate, then SEP.Resolve"
         ],
         "newFailingCount": 1
       },
@@ -1196,13 +2047,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "024fee7016e993de85ac23aa99a129a5d31a2e8cedd9cfec863b5d52424dbe25",
-    "src/ServerScriptService/MonsterService.luau": "7dd3d6b7c488f10cd8cd9282f072513d1c13af381ea0de5c7c7abae177ab77f3"
+    "src/ReplicatedStorage/Shared/Config.luau": "5b2acb6d8a7cb1dde585d48e71e8cb6565b9c2a75d1e9960d5c145a8fd4ed2e7",
+    "src/ServerScriptService/MonsterService.luau": "32d9ebcbddd19cf130362f32844873125c733cb3c54f70a60a188c3eb12695c8"
   },
-  "fixtureSHA256": "11b4d742f645c60e9c8d555f8328ef855bf1c00bfba54674adb7678157e7a4a5",
+  "fixtureSHA256": "b30045f4943db3b2d77ae521f1e7d2d0907c0cbeb2f01e7dee5b258ecb75796f",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-74 (user 2026-10-07 \"점점 합쳐지겠다\"): body radius = 1.5 x Scale (Slime shape) / 1.25 x Scale (Humanoid); a chaser's goal is its slot on a ring r + 1 + 1 (<= AttackRange - 0.5) around its target, slots of one player's chasers spread (order kept, least movement) so ring neighbours stand rA + rB apart, the farthest move to an outer ring (+ 2r + 1, outside reach) when the inner one is full; a slot on water falls back to the player's position; monsters closer than (rA + rB) x 0.9 (or within (r + 1) x 0.9 of a player) slide apart at most 3 studs/s over one AI tick, the smaller one moving more, a boss never, never into water / past the zone move inset / through a wall (half step tried); overlaps under 0.05 are ignored; neighbours come from an 8-stud grid; a new monster spawns at least rA + rB + 1.5 from every living one, else the first crowded ground point. Monster parts stay CanCollide = false.",
-  "limitations": "Roots, the ground ray, walls, Random and the player list are doubles; the chase simulation uses a stand-in for aiStep's walk (straight line at Def.Speed, stand in AttackRange) with the real SEP passes. Humanoid MoveTo, replication smoothness of the server slides and the Tripo mesh footprints are only checkable in Studio Play (game dev 1). SEP.Need sorting ties by id (like Spread) is asserted but has no mutation: Luau's table.sort happens to order the test ties the same way with an angle-only comparator."
+  "contract": "A23-74 (user 2026-10-07 \"점점 합쳐지겠다\"): body radius = 1.5 x Scale (Slime shape) / 1.25 x Scale (Humanoid); a chaser's goal is its slot on a ring r + 1 + 1 (<= AttackRange - 0.5) around its target, centred 0.25 s ahead of a walking player (at most 4 studs); slots of one player's chasers spread (order kept, least movement) so ring neighbours stand rA + rB apart; when they do not fit, the inner ring moves out to AttackRange - 0.5 (10 Shard Slimes in reach) and the rest wait on further rings outside reach, each RingGap outside the bodies of the ring before (30 slimes: 10 + 18 + 2); a slot on water falls back to the player's position. In reach a monster stands for its swing (pending wind-up or cooldown up), within 0.5 of its slot or when the slot is inside the player body, else it steps on to its slot (AutoRotate off while in reach). After every AI tick the end points of the coming walks (_walkTo at WalkSpeed) are pushed apart in up to 3 rounds where bodies would overlap (rA + rB, the smaller one moving more, a boss never) or a body would be inside a player (r + 1 around where the player will be); each push becomes a slide over that tick at most 8 studs/s, never into water / past the zone move inset / through a wall (half step tried), and a walking monster's MoveTo point moves along; pushes under 0.05 are ignored; neighbours come from an 8-stud grid; a new monster spawns at least rA + rB + 1.5 from every living one, else the first crowded ground point; SpawnEvent (bosses) keeps the same clearance within its radius, else its spot (the slides clear it). Review probe: walking 3 / 5 / 8 studs/s with 4 Shard + 2 King Slimes, mean deepest overlap per AI tick < 0.3 studs. Monster parts stay CanCollide = false.",
+  "limitations": "Roots, Humanoids (MoveTo / WalkSpeed / AutoRotate), the ground ray, walls, Random and the player list are doubles; the simulations use a stand-in for aiStep / attack (walk at Def.Speed x the NATURAL ramp, a wind-up of MonsterWindup s, a Humanoid that stops once it reached its MoveTo point) around the real SEP passes. Real Humanoid MoveTo / AutoRotate behaviour, replication smoothness of the server slides, the FACE turn while stepping sideways and the Tripo mesh footprints are only checkable in Studio Play (game dev 1). SEP.Need sorting ties by id (like Spread) is asserted but has no mutation: Luau's table.sort happens to order the test ties the same way with an angle-only comparator."
 }
