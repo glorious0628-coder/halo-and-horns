@@ -33,7 +33,8 @@ FRONT = opt("--front", "+x")
 YAW = {"-y": 0, "+x": 90, "+y": 180, "-x": 270}[FRONT]
 TEX = opt("--tex")
 VIEWS_ALL = {"front": (0, 8), "front34": (30, 12), "front34L": (-30, 12), "back34": (210, 12), "game": (20, 35),
-             "back": (180, 8), "back34L": (150, 12), "left": (-90, 8), "right": (90, 8)}
+             "back": (180, 8), "back34L": (150, 12), "left": (-90, 8), "right": (90, 8),
+             "low": (0, 2), "low34": (25, 3), "low34L": (-25, 3)}  # low = a player standing in front, looking up
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=IN_GLB)

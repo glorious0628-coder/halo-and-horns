@@ -1,0 +1,47 @@
+{
+ "made": "2026-10-07 이미지 생성 1 — WorldKit 3D 가져오기 1회(build/import_next/WorldKit_ImportNext.glb, 3개), 업로드 계정 = 새 계정",
+ "convention": "모두 MeshPart 1개 + 텍스처 1장(1024). 크기 = 스터드. 앞 = Roblox -Z(LookVector). 원점(피벗) = 밑면 가운데.",
+ "build": "py tools/build_kit_from_ids.py --list art/models/worldkit/import_next_assets_2026-10-07.json --parent ServerStorage/WorldKit3D --out build/kit_next_args.json → py tools/studio_mcp.py call execute_luau @build/kit_next_args.json",
+ "worldkit": "build/WorldKit.rbxlx workspace.Kit3D_ImportNext (3 Model, 피벗 밑면 가운데; WorldKit 파일은 저장 안 됨 — id가 원본)",
+ "items": [
+  {
+   "name": "Town_Horns_Castle",
+   "group": "town_castle",
+   "meshId": "rbxassetid://73515229285176",
+   "textureId": "rbxassetid://134109072790183",
+   "size_studs": [
+    70.0,
+    58.1,
+    67.04
+   ],
+   "source_glb": "art/models/tripo/Town_Horns_Castle_v3_raw.glb",
+   "note": "뿔 성 새 판 v3N2(사용자 고름, 49fe94c). 옛 Town_Horns_Castle_10k 대신."
+  },
+  {
+   "name": "Town_Halo_Castle",
+   "group": "town_castle",
+   "meshId": "rbxassetid://123075840109987",
+   "textureId": "rbxassetid://115923779729921",
+   "size_studs": [
+    70.0,
+    65.71,
+    55.38
+   ],
+   "source_glb": "art/models/tripo/town/Town_Halo_Castle_10k_ring.glb",
+   "note": "빛 성: 깃발 문양 → 금빛 고리(텍스처만, 사용자 OK '둘 다 넣어')."
+  },
+  {
+   "name": "Crown_Broken_B",
+   "group": "opening_crown",
+   "meshId": "rbxassetid://92557402817319",
+   "textureId": "rbxassetid://115747495711677",
+   "size_studs": [
+    40.0,
+    29.5,
+    36.38
+   ],
+   "source_glb": "art/models/tripo/Crown_Broken_B_backfix.glb",
+   "note": "부서진 균형의 왕관 B2 + 뒤쪽 고침(98c0d07, 검수 통과). 오프닝·하늘 왕관용: 개발 1이 Landmarks.CrownOfBalance 자리에 바꿔 넣음. 가져온 크기 40 → 하늘 왕관(반경 80)은 Model:ScaleTo(약 4). 링(후광 고리)도 같은 메시. CanCollide/CastShadow 끄기."
+  }
+ ]
+}
