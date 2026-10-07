@@ -5154,5 +5154,32 @@
   "preview": "art/review/s2/e11_job_board_sheet.jpg",
   "note": "E11 퀘스트 목록 'Job' 꼬리표(주황 + 금 테, 왼쪽 뾰족한 끝 + 투명 구멍). Text 칸에 'Job'(흰색 + 어두운 테두리). 퀘스트 줄 Badge 자리(아이콘 오른쪽)에 받은 의뢰만. 비율 유지, 게임 크기 약 44x18~84x34.",
   "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+ },
+ "BarkBubble": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BarkBubble_A.txt",
+  "original": "art/out/s2/UIP_BarkBubble_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BarkBubble.png",
+  "size": "512x190 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked on light/navy/magenta/green",
+  "layout": {
+   "Text": [
+    0.077,
+    0.181,
+    0.844,
+    0.448
+   ]
+  },
+  "slice": [
+   84,
+   65,
+   446,
+   89
+  ],
+  "preview": "art/review/s2/bark_bubble_sheet.jpg",
+  "note": "몬스터 한마디 말풍선(흰색 + 굵은 남색 테, 꼬리 왼쪽 아래 → 아래쪽 몬스터를 가리킴). 슬라임·고블린·해골·유령 공용, 개발 1 MonsterLabels BillboardGui. 글자 없음 — Text 칸에 짙은 남색 글자(예: 'Boing! Boing!'). slice는 꼬리를 왼쪽 아래 칸(x<84)에 넣어 옆으로 늘려도 꼬리가 안 찌그러짐. 시트 예시: 높이 52에 폭 110~300.",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 말풍선 A 흰색 + 남색 테)"
  }
 }
