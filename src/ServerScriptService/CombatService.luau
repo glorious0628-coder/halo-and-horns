@@ -345,6 +345,24 @@ local function playersNear(attacker, point, radius)
 	return out
 end
 
+-- A23-61 server aim (검수 2026-10-07): true when a swing of shape `w` has a target inside the real front half (AimCone)
+-- within Range: a monster, a player (manual swings) or the golden goose
+local function frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach)
+	if #aimed(monstersNear(player, pos, range), root, w.AimCone) > 0 then return true end
+	if isManual and #aimed(playersNear(player, pos, range), root, w.AimCone) > 0 then return true end
+	return goosePos ~= nil and Util.FlatDistance(goosePos, pos) <= range + gooseReach and inAim(root, goosePos, w.AimCone)
+end
+
+-- a facing toward `target` for the aim checks (inAim / aimed read Position and CFrame.LookVector), and the real root
+-- turned to it (pcall: the client owns its character; the turn only saves it from showing the late one)
+local function turnTo(root, pos, target)
+	local flat = Vector3.new(target.X - pos.X, 0, target.Z - pos.Z)
+	if flat.Magnitude < 1e-3 then return root end
+	local look = flat.Unit
+	pcall(function() root.CFrame = CFrame.lookAt(pos, pos + look) end)
+	return { Position = pos, CFrame = { LookVector = look } }
+end
+
 -- other alive Halo players within the party-aura radius of the attacker
 local function countAuraAllies(attacker, radius)
 	if type(radius) ~= "number" or radius <= 0 then
@@ -760,6 +778,20 @@ function CombatService.Swing(player, isManual)
 	local gooseReach = Config.Goose.HitRadius
 	local range = w.Range or 10
 
+	-- A23-61 server aim (검수 2026-10-07, game dev 1's Studio finding): the client turns the body to the nearest monster
+	-- before it sends Swing, but the server sees that turn 0.27-0.43 s late, so a monster behind was missed. With nothing
+	-- inside the real front half the swing aims at the nearest monster within Range in any direction (the client
+	-- FaceTarget rule) and turns the root to it; a turned swing hits monsters only (players and the goose keep the
+	-- front-half rule)
+	local aimRoot, turned = root, false
+	if not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then
+		local near = monstersNear(player, pos, range)[1]
+		if near then
+			aimRoot = turnTo(root, pos, near.Pos)
+			turned = aimRoot ~= root
+		end
+	end
+
 	-- 2. select targets by class pattern
 	local monsters = {} -- { { Rec, Pos, Dist } }
 	local victims = {} -- { { Player, Pos, Dist } }
@@ -771,17 +803,17 @@ function CombatService.Swing(player, isManual)
 	if w.Pattern == "Splash" then
 		radius = w.Splash or 0
 		local pickPos, pickDist, pickIsGoose = nil, math.huge, false
-		local nearMon = aimed(monstersNear(player, pos, range), root, w.AimCone)
+		local nearMon = aimed(monstersNear(player, pos, range), aimRoot, w.AimCone)
 		if nearMon[1] then
 			pickPos, pickDist = nearMon[1].Pos, nearMon[1].Dist
 		end
-		if isManual then
+		if isManual and not turned then
 			local nearPl = aimed(playersNear(player, pos, range), root, w.AimCone)
 			if nearPl[1] and nearPl[1].Dist < pickDist then
 				pickPos, pickDist = nearPl[1].Pos, nearPl[1].Dist
 			end
 		end
-		if goosePos and inAim(root, goosePos, w.AimCone) then
+		if goosePos and not turned and inAim(root, goosePos, w.AimCone) then
 			local d = Util.FlatDistance(goosePos, pos)
 			if d <= range + gooseReach and d < pickDist then
 				pickPos, pickDist, pickIsGoose = goosePos, d, true
@@ -790,10 +822,10 @@ function CombatService.Swing(player, isManual)
 		if pickPos then
 			center = pickPos
 			monsters = monstersNear(player, center, radius)
-			if isManual then
+			if isManual and not turned then
 				victims = playersNear(player, center, radius)
 			end
-			hitGoose = goosePos ~= nil
+			hitGoose = goosePos ~= nil and not turned
 				and (pickIsGoose or Util.FlatDistance(goosePos, center) <= radius + gooseReach)
 		else
 			center = forwardPoint(root, math.min(range, WHIFF_REACH)) -- whiff: the orb flies forward
@@ -803,15 +835,15 @@ function CombatService.Swing(player, isManual)
 		radius = 0
 		local maxTargets = w.Targets or 0
 		local candidates = {}
-		for _, m in aimed(monstersNear(player, pos, range), root, w.AimCone) do
+		for _, m in aimed(monstersNear(player, pos, range), aimRoot, w.AimCone) do
 			table.insert(candidates, { Kind = "M", Entry = m, Pos = m.Pos, Dist = m.Dist })
 		end
-		if isManual then
+		if isManual and not turned then
 			for _, v in aimed(playersNear(player, pos, range), root, w.AimCone) do
 				table.insert(candidates, { Kind = "P", Entry = v, Pos = v.Pos, Dist = v.Dist })
 			end
 		end
-		if goosePos and inAim(root, goosePos, w.AimCone) then
+		if goosePos and not turned and inAim(root, goosePos, w.AimCone) then
 			local d = Util.FlatDistance(goosePos, pos)
 			if d <= range + gooseReach then
 				table.insert(candidates, { Kind = "G", Pos = goosePos, Dist = d })
@@ -834,12 +866,12 @@ function CombatService.Swing(player, isManual)
 		if #targets == 0 then
 			targets = { forwardPoint(root, math.min(range, WHIFF_REACH)) } -- whiff: the arrow flies forward
 		end
-	else -- "Around" (default): everything within Range of self, in front of me (AimCone)
-		monsters = aimed(monstersNear(player, pos, range), root, w.AimCone)
-		if isManual then
-			victims = aimed(playersNear(player, pos, range), root, w.AimCone)
+	else -- "Around" (default): everything within Range of self, in front of me (AimCone; turned: the new front half)
+		monsters = aimed(monstersNear(player, pos, range), aimRoot, w.AimCone)
+		if isManual and not turned then
+			victims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)
 		end
-		hitGoose = goosePos ~= nil and Util.FlatDistance(goosePos, pos) <= range + gooseReach
+		hitGoose = goosePos ~= nil and not turned and Util.FlatDistance(goosePos, pos) <= range + gooseReach
 			and inAim(root, goosePos, w.AimCone)
 	end
 
@@ -1422,7 +1454,8 @@ local function autoTick(p)
 	if lm and os.clock() - lm < (w.SwingInterval or 1) + (Config.Combat.ManualYieldPad or 0.3) then return end
 	local pos = root.Position
 	local range = c.Range or 10 -- the class range: the skill Q reach below (Q is the class skill, bare-handed too)
-	if os.clock() >= (nextSwingAt[p] or 0) and #aimed(monstersNear(p, pos, w.Range or 10), root, w.AimCone) > 0 then
+	-- A23-61 server aim: a monster anywhere within reach (Swing turns to it when the front half is empty)
+	if os.clock() >= (nextSwingAt[p] or 0) and #monstersNear(p, pos, w.Range or 10) > 0 then
 		CombatService.Swing(p, false)
 	end
 	local skill = Config.BasicSkill or {}

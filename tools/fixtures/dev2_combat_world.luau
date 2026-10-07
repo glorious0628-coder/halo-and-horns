@@ -159,6 +159,15 @@ local function bareWorld(o)
 	-- the real services; CombatService's two forever-loops are captured (the auto-combat one is stepped by hand)
 	local cenv = w:Env()
 	cenv.task = setmetatable({ wait = function(t) return coroutine.yield(t) end }, { __index = cenv.task })
+	-- A23-61 server aim: CombatService turns a root with CFrame.lookAt; the double keeps Position / LookVector readable for
+	-- the next swing and marks the turn (Turned = true: tools/fixtures/swing_aim_offline.luau reads and clears it).
+	-- w.TurnFails = true: the turn throws (CombatService must still aim through its own facing)
+	cenv.CFrame = setmetatable({ lookAt = function(at, target)
+		if w.TurnFails then error("offline: this root cannot be turned") end
+		local d = vec(target.X - at.X, 0, target.Z - at.Z)
+		local m = math.sqrt(d.X * d.X + d.Z * d.Z)
+		return { Position = at, LookVector = m > 0 and vec(d.X / m, 0, d.Z / m) or vec(0, 0, -1), Turned = true }
+	end }, { __index = cenv.CFrame })
 	local combat = execute("CombatService", COMBAT_SOURCE, cenv)
 	reg.CombatService = combat
 	local loot = w:Load("LootService", LOOT_SOURCE)

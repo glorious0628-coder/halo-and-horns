@@ -18,6 +18,9 @@ local MonsterService = {}
 -- fired once PER CONTRIBUTOR: (player, info). info.WarPoints = personal war points, info.WarShare = this player's
 -- part of the faction pool points (WarPoints / same-faction contributors, CR-M18)
 MonsterService.MonsterKilled = Util.Signal.new()
+-- ③ monster barks (BarkService, Config.Barks): (rec, "Spot") when a monster picks a new target (a personal monster: the
+-- first time it goes for its owner), (rec, "Hit") when a hit leaves it alive. Synchronous; handlers must not yield.
+MonsterService.Moment = Util.Signal.new()
 
 ------------------------------------------------------------------ constants
 local TAG = "MonsterService"
@@ -1201,6 +1204,7 @@ function MonsterService.DamageMonster(record, amount, player, crit)
 		updateBar(record)
 		local okHurt, errHurt = pcall(markHurt, record, amount, crit)
 		if not okHurt then warnThrottled("hurt", errHurt) end
+		MonsterService.Moment:Fire(record, "Hit") -- ③ barks
 		return false
 	end
 	killRecord(record) -- the killing hit plays the death pop instead of a pain reaction
@@ -1745,6 +1749,10 @@ local function personalStep(rec, plist, now, pos)
 		return
 	end
 	local d = Util.FlatDistance(pos, info.Pos)
+	if d <= PERSONAL_FOLLOW_RADIUS and not rec._spotted then
+		rec._spotted = true
+		MonsterService.Moment:Fire(rec, "Spot") -- ③ barks: it goes for its owner (the tutorial golden slime's line)
+	end
 	if d > PERSONAL_FOLLOW_RADIUS then
 		rec.Humanoid:MoveTo(pos)
 	elseif d <= MC.AttackRange then
@@ -1861,7 +1869,10 @@ local function aiStep(rec, plist, now)
 	end
 
 	if best then
-		if rec._target ~= best.Player then rec._chaseStuck = 0 end
+		if rec._target ~= best.Player then
+			rec._chaseStuck = 0
+			MonsterService.Moment:Fire(rec, "Spot") -- ③ barks: a new target
+		end
 		local alerting = NATURAL.Alert(rec, best, bestD, now) -- a new target: stop with a '!' for a moment first
 		rec._target = best.Player
 		if alerting then return end

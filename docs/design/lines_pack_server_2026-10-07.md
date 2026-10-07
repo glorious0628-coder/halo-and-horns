@@ -27,3 +27,18 @@
   1. 대장간 창(WeaponShop) 맨 위에 `Config.Text.ForgeGreeting` "Otto: Clang, clang… done. Cocoa time.", 물약 창(PotionShop) 맨 위에 `Config.Text.PotionGreeting` "Fizzby: Glug, glug, feel better!" 한 줄(재촉하는 말 없음).
   2. 안내자 창 제목은 지금처럼 `Welcome[f].Name`(이제 이름). 이름표 둘째 줄이 필요하면 `Welcome[f].Title`(역할).
 - 아직 안 한 것(검수 몫): glossary_en 추가 줄, story_depth M5_7·H2 줄(정식).
+
+## 3. ③ 몬스터 한마디 (lines_pack §2)
+- `Config.Barks` = lines_pack §2-2 코드 블록 그대로(머리 주석만 "BarkService가 고름"으로). 거위 줄(`Lines.Goose`)은 들어 있지만 **아직 안 씀**(선택 일, GooseService).
+- **MonsterService(개발 1 파일, 신호 + 세 줄):** `MonsterService.Moment = Util.Signal.new()`.
+  - `Moment:Fire(rec, "Spot")` — aiStep에서 **목표가 바뀔 때**(새 목표, `rec._target ~= best.Player`), 개인 몬스터는 personalStep에서 **처음 주인 가까이(80칸) 올 때 한 번**(`rec._spotted`, 튜토리얼 황금 슬라임의 "So much sparkle! Not sharing!").
+  - `Moment:Fire(rec, "Hit")` — DamageMonster에서 **맞고 살아남을 때만**(죽이는 맞음·거절된 맞음은 없음). 자동 공격 맞음도 똑같이.
+- **새 `BarkService.luau`(Main INIT·START에 MonsterService 뒤, PlayerService 앞):**
+  - Hit인데 HP가 LowAt(30%) **아래**면 그 목숨에 한 번 Low. 쿨다운에 막히면 다음 맞을 때 다시.
+  - 몬스터마다 12초, 지역마다 6초(지역 몬스터 모두 같이). 막힌 한마디는 버림(대기열 없음, 주사위도 안 굴림).
+  - 확률 Spot 50%·Hit 20%·Low 100%·Idle 15%(확률과 같은 값이 나오면 말 안 함).
+  - 줄: 황금 몬스터는 모든 순간에 `Golden` 먼저 → 자기 종류 → `Config.QuestKind` 종류. 종류·순간마다 같은 줄 연달아 없음.
+  - Idle: 10초마다 플레이어 40칸 안, 그 플레이어가 때릴 수 있는 몬스터(`GetMonstersInRadius(pos, 40, player)`) 중 목표 없는 몬스터가 틱마다 한 번 굴림.
+  - 점수·보상·채팅 없음. 몬스터 모델 속성 **`Bark`(줄) 다음 `BarkAt`(서버 시각)**만 씀.
+- **게임성 개발 1에게(MonsterLabels, 약 0.15일):** 몬스터 모델의 `BarkAt`이 바뀌면(같은 줄이 다시 와도 바뀜) `Bark`를 머리 위 말풍선(BillboardGui)으로 `Config.Barks.Show`(3)초, `MaxDistance`(60)칸 안에서만. 플레이어 이름 없음, 채팅 꺼 둔 아이도 봄. 글자는 Builder Sans/Fredoka One(A23-48), 8단어 이하.
+- 검사: `py tools/test_barks.py`(128검사, 정적 11, 변이 31/31) — 쿨다운·확률 경계·Low 한 번/다시 시도·황금·QuestKind·연달아 없음·Idle 거리/목표/한 번·끔, 진짜 DamageMonster 조각(Hit만, 죽음·거절 없음), aiStep/personalStep 줄, Main 목록.

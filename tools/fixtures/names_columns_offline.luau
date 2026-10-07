@@ -121,7 +121,7 @@ runGroup("announce-lines", function()
 	local lines = {
 		{ "MostWanted", "%s is now the Most Wanted", { "1,200" } },
 		{ "BountyAnnounce", "] %s got a", { "300" } },
-		{ "GrudgeAvengedAll", "%s took the grudge sack back from %s", nil },
+		{ "GrudgeAvengedAll", "%s took the Grudge Sack back from %s", nil }, -- glossary case (검수 2026-10-07)
 		{ "RebirthAnnounce", "%s was reborn", { 2 } },
 		{ "RareAnnounce", "%s got a rare", nil },
 	}

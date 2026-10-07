@@ -1,0 +1,860 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 128,
+  "failedChecks": 0,
+  "namedChecks": 76,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Barks: 12 s a monster, 6 s a zone, 3 s bubble, 60 studs, Low below 30%, Idle every 10 s within 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "chances: Spot 50%, Hit 20%, Low 100%, Idle 15%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "priority Low > Spot > Hit > Idle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every Config.MonsterTypes kind has Spot / Hit / Low / Idle lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no lines for a kind that does not exist (Golden, Goose extra)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a known moment: Spot",
+      "pass": 14,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a known moment: Low",
+      "pass": 14,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a known moment: Idle",
+      "pass": 14,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a known moment: Hit",
+      "pass": 14,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "lines_pack §2-2 pasted (60+ lines), each 8 words or fewer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no kill / die / dead / blood / scary, the one-glyph ellipsis only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "lines as written (lines_pack §2-2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "Start queues exactly one loop (the Idle roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "a slime spots you: 'Blub?' with BarkAt = server time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "the same monster within 12 s says nothing (no roll used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "after 12 s it speaks again (a Hit line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "another monster of the zone within 6 s says nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "at 6 s the King Slime speaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "a goblin in the woods speaks at once (zones are separate), roll 0.49 < 0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "a Spot roll of exactly 0.5 says nothing (one draw used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "a Hit roll of exactly 0.2 says nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "a Hit roll of 0.19 speaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "an unknown moment or a record without a model says nothing (no error)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "a dead monster says nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot and hit",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "Start queues exactly one loop (the Idle roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "a hit below 30%: the Low line (only the line pick drawn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "Low once a life: the next lucky hit says a Hit line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "exactly 30% HP is not low (a Hit line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "a Low blocked by the zone's 6 s says nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "the next hit after the cooldown says the Low line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "HP 0 (the killing hit is not a Hit moment anyway) is not 'low'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "low",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "Start queues exactly one loop (the Idle roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "a golden slime: 'So much sparkle! Not sharing!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "a golden goblin low on HP: 'Share the sparkle!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "a bat goblin without lines says a goblin line (Config.QuestKind)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "a kind with no lines and no QuestAs stays quiet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "a golden slime's Idle without Golden.Idle: the slime's own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "golden and fallback",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no repeats",
+      "check": "Start queues exactly one loop (the Idle roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no repeats",
+      "check": "a King Slime's Spot line never repeats back to back (both lines used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no repeats",
+      "check": "Slime Hit alternates its two lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no repeats",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no repeats",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "Start queues exactly one loop (the Idle roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "the Idle loop waits IdleEvery (10 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "a skeleton 20 studs away with no target: an Idle line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "90 studs away or chasing someone: no Idle line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "asks MonsterService for the player's monsters within IdleNear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "an Idle roll of exactly 0.15 says nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "an Idle roll of 0.14 speaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "two players near one monster: one Idle roll a tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "idle",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "Start queues exactly one loop (the Idle roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "Enabled = false: nothing, no roll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "MonsterService.Moment is a top-level signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "aiStep fires Spot when a monster picks a new target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "aiStep fires one moment only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "personalStep fires Spot once (first time near its owner)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "DamageMonster found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "a hit that leaves it alive fires Hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "a killing hit fires no Hit (the pop instead)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "a refused hit (someone else's personal monster, a hitter outside the zone) fires nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "Main: BarkService in INIT_ORDER and START_ORDER after MonsterService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "Main: PlayerService still starts last",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service hooks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 11,
+  "staticFailures": [],
+  "mutations": {
+    "total": 31,
+    "applied": 31,
+    "caught": 31,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no per-monster cooldown",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot and hit :: another monster of the zone within 6 s says nothing",
+          "spot and hit :: the same monster within 12 s says nothing (no roll used)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no per-zone cooldown",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "low :: a Low blocked by the zone's 6 s says nothing",
+          "spot and hit :: another monster of the zone within 6 s says nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the chance never rolled (always speaks)",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "idle :: an Idle roll of exactly 0.15 says nothing",
+          "idle :: two players near one monster: one Idle roll a tick",
+          "spot and hit :: a Hit roll of 0.19 speaks",
+          "spot and hit :: a Hit roll of exactly 0.2 says nothing",
+          "spot and hit :: a Spot roll of exactly 0.5 says nothing (one draw used)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a roll equal to the chance speaks",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "idle :: an Idle roll of exactly 0.15 says nothing",
+          "spot and hit :: a Hit roll of 0.19 speaks",
+          "spot and hit :: a Hit roll of exactly 0.2 says nothing",
+          "spot and hit :: a Spot roll of exactly 0.5 says nothing (one draw used)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Low never said",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "golden and fallback :: a golden goblin low on HP: 'Share the sparkle!'",
+          "low :: a hit below 30%: the Low line (only the line pick drawn)",
+          "low :: the next hit after the cooldown says the Low line"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Low on every low hit (never marked)",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "low :: Low once a life: the next lucky hit says a Hit line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Low blocked by a cooldown is never retried",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "low :: the next hit after the cooldown says the Low line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "exactly 30% counts as low",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "low :: exactly 30% HP is not low (a Hit line)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "golden lines ignored",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "golden and fallback :: a golden goblin low on HP: 'Share the sparkle!'",
+          "golden and fallback :: a golden slime: 'So much sparkle! Not sharing!'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no QuestKind fallback",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "golden and fallback :: a bat goblin without lines says a goblin line (Config.QuestKind)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "lines repeat back to back",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no repeats :: Slime Hit alternates its two lines",
+          "no repeats :: a King Slime's Spot line never repeats back to back (both lines used)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "idle while chasing someone",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "idle :: an Idle roll of 0.14 speaks"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "idle rolls once per nearby player",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "idle :: two players near one monster: one Idle roll a tick"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "idle ignores the distance",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "idle :: an Idle roll of 0.14 speaks",
+          "idle :: asks MonsterService for the player's monsters within IdleNear"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "idle asks for every monster (no forPlayer)",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "idle :: asks MonsterService for the player's monsters within IdleNear"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Enabled ignored",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: Enabled = false: nothing, no roll"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no BarkAt",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot and hit :: a slime spots you: 'Blub?' with BarkAt = server time"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a dead monster barks",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot and hit :: a dead monster says nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Spot moments ignored",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "golden and fallback :: a bat goblin without lines says a goblin line (Config.QuestKind)",
+          "golden and fallback :: a golden slime: 'So much sparkle! Not sharing!'",
+          "no repeats :: a King Slime's Spot line never repeats back to back (both lines used)",
+          "spot and hit :: a Spot roll of exactly 0.5 says nothing (one draw used)",
+          "spot and hit :: a goblin in the woods speaks at once (zones are separate), roll 0.49 < 0.5",
+          "spot and hit :: a slime spots you: 'Blub?' with BarkAt = server time"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "the idle loop ignores IdleEvery",
+        "file": "src/ServerScriptService/BarkService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "idle :: the Idle loop waits IdleEvery (10 s)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Hit moment",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service hooks :: a hit that leaves it alive fires Hit",
+          "monster service hooks :: a killing hit fires no Hit (the pop instead)",
+          "monster service hooks :: a refused hit (someone else's personal monster, a hitter outside the zone) fires nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a Hit moment on the killing hit too",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service hooks :: a killing hit fires no Hit (the pop instead)",
+          "monster service hooks :: a refused hit (someone else's personal monster, a hitter outside the zone) fires nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Spot moment in aiStep",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service hooks :: aiStep fires Spot when a monster picks a new target",
+          "monster service hooks :: aiStep fires one moment only"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Spot on every AI tick",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service hooks :: aiStep fires Spot when a monster picks a new target"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a personal monster spots on every tick",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service hooks :: personalStep fires Spot once (first time near its owner)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "BarkService never started",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service hooks :: Main: BarkService in INIT_ORDER and START_ORDER after MonsterService",
+          "monster service hooks :: Main: PlayerService still starts last"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "BarkService never loaded",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service hooks :: Main: BarkService in INIT_ORDER and START_ORDER after MonsterService"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Hit chance 50%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: chances: Spot 50%, Hit 20%, Low 100%, Idle 15%",
+          "spot and hit :: a Hit roll of exactly 0.2 says nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a nine-word line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: lines_pack §2-2 pasted (60+ lines), each 8 words or fewer"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a three-dot ellipsis",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: no kill / die / dead / blood / scary, the one-glyph ellipsis only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a scary word",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: no kill / die / dead / blood / scary, the one-glyph ellipsis only"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "63bd0bba0d984c1689443ee602e9a0386ef3c092bfb2159dedf70a6236ac123f",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
+    "src/ServerScriptService/MonsterService.luau": "ffb705bcd2c0f35d97bbf061d1b132a53dbd466038f07ae5bef3f1818df4c3fc",
+    "src/ServerScriptService/Main.server.luau": "ba208b5f81b4d443c3b1514430090b0ce89f96694951d025297cb5641c984261"
+  },
+  "fixtureSHA256": "a74e752c11ad3cd633784f81083c6be2b7928e86889b8e7cb5f0e03d6054f9d1",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "③ (lines_pack §2): MonsterService fires Moment(rec, \"Spot\") when a monster picks a new target (a personal monster once, when it first goes for its owner) and Moment(rec, \"Hit\") when a hit leaves it alive. BarkService (Config.Barks) turns a Hit below LowAt (30%) into Low once a life, drops a moment blocked by PerMonster (12 s) or PerZone (6 s, all monsters of a zone) with no roll (a blocked Low tries again at the next hit), rolls Chance (Spot 50%, Hit 20%, Low 100%, Idle 15%; a roll equal to the chance stays quiet), picks the golden set first for a golden monster, else its kind's, else Config.QuestKind's, never the same line twice in a row, and writes model attributes Bark, then BarkAt (server time). Every IdleEvery (10) s a monster with no target within IdleNear (40) of a player (the monsters that player may hit) rolls Idle once. Lines never change a score.",
+  "limitations": "The bubble is game dev 1's (MonsterLabels: watch BarkAt, show Bark for Show s within MaxDistance). The real aiStep / personalStep are checked as source text (the AI needs the engine); DamageMonster runs as a cut chunk. The optional goose barks (Lines.Goose, GooseService) are not wired."
+}
