@@ -6320,5 +6320,44 @@
   "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
   "note": "몬스터 말풍선 해골 기사(쇠 테 + 리벳 + 보라 보석): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleSkeletonKnight = Id + Size 512x409 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.998."
+ },
+ "Tex_MonsterSlimeCube_colorfix": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "review": "검수 OK (시트 a2a97be: 'art/review/monsters/monster_tex_fix_sheet.jpg')",
+  "tool": "texture colour fix A23-73 ④ + AO, 0 credits — tools/img2/mon_tex.py (shared tools/tex_color_match.py --value-mix 0 + tools/img2/bake_ao_ground.py ground AO 0.45 + headroom)",
+  "preview": "art/review/monsters/monster_tex_fix_sheet.jpg",
+  "size": "1024x1024 RGB (same UVs as the model's texture)",
+  "file": "art/models/tripo/MonsterSlimeCube_tex_colorfix.png",
+  "source": "art/models/tripo/MonsterSlimeCube_tex_noback.png (in game now: rbxassetid://103903037538863, back face erased)",
+  "settings": "fix Slime --bands green --value-mix 0 --ao-strength 0.45 --headroom 0.78 --base game_base_nb.png --ao ao_ground_nb.png (label nb0.78; noback: no AO + specks inpainted where the back face was erased)",
+  "use": "Slime (cube) MeshPart.TextureID — replaces the noback texture",
+  "note": "형광 연두·그림자 없음 → 시안 연두 + 아래쪽 그늘. 게임 카메라 렌더 몸 밝기 0.96 → 0.82(시안 0.80). 앞 얼굴 그대로, 뒤통수 자국 정리."
+ },
+ "Tex_BigSlimeCube_blue_colorfix": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "review": "검수 OK (시트 a2a97be: 'art/review/monsters/monster_tex_fix_sheet.jpg')",
+  "tool": "texture colour fix A23-73 ④ + AO, 0 credits — tools/img2/mon_tex.py (shared tools/tex_color_match.py --value-mix 0 + tools/img2/bake_ao_ground.py ground AO 0.45 + headroom)",
+  "preview": "art/review/monsters/monster_tex_fix_sheet.jpg",
+  "size": "1024x1024 RGB (same UVs as the model's texture)",
+  "file": "art/models/tripo/BigSlimeCube_tex_blue_colorfix.png",
+  "source": "art/models/tripo/BigSlimeCube_tex_blue_noback.png (in game now: rbxassetid://103583212016878)",
+  "settings": "fix BigSlime --bands blue --value-mix 0 --ao-strength 0.45 --headroom 0.92 --sat 0.95 --base game_base_nb.png --ao ao_ground_nb.png (label nb0.92s0.95; concept = art/out/IconMonBigSlime_src.png)",
+  "use": "BigSlime (king slime cube) MeshPart.TextureID — replaces the blue noback texture",
+  "note": "진한 청록 → 아이콘 같은 하늘 파랑(색상 193°→202°, 채도 ×0.95) + 아래 그늘. 뒤통수 정리 같음."
+ },
+ "Tex_MonsterPumpkinSlime_colorfix": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "review": "검수 OK (시트 a2a97be: 'art/review/monsters/monster_tex_fix_sheet.jpg')",
+  "tool": "texture colour fix A23-73 ④ + AO, 0 credits — tools/img2/mon_tex.py (shared tools/tex_color_match.py --value-mix 0 + tools/img2/bake_ao_ground.py ground AO 0.45 + headroom)",
+  "preview": "art/review/monsters/monster_tex_fix_sheet.jpg",
+  "size": "1024x1024 RGB (same UVs as the model's texture)",
+  "file": "art/models/tripo/MonsterPumpkinSlime_tex_colorfix.png",
+  "source": "base colour texture inside art/models/tripo/MonsterPumpkinSlime_raw.glb (4096; the imported model's colour map in game now)",
+  "settings": "fix PumpkinSlime --bands gold,green --value-mix 0 --ao-strength 0.45 --headroom 0.86 (label v0h0.86)",
+  "use": "PumpkinSlime model colour map (SurfaceAppearance.ColorMap or MeshPart.TextureID, whichever the imported model uses)",
+  "note": "빨강이 255로 잘려 골·명암이 흐리던 것 → 밝기 여유 0.86 + 골 사이 그늘. 색은 시안과 같아 그대로."
  }
 }
