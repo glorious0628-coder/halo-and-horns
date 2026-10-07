@@ -2,7 +2,8 @@
 
 A23-51 (user 2026-10-06): the camera turns with the right mouse drag only (Roblox's default camera, which CameraFollow
 never touches); a left drag never turns it; a left press on the world = one attack on the press, never repeated.
-A23-65 + A23-74 (user 2026-10-07): the follow turn behind me while walking (forward and sideways; never backing up).
+A23-65 + A23-74 (user 2026-10-07): the follow turn behind me while walking (forward, diagonal and sideways in wide arcs;
+never backing up) and the recenter behind my facing once I stop (never after a backpedal or my own hand turn).
 Does not inject physical mouse input, call Studio, or validate Roblox camera collision.
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-06/offline_camera_input_a23_51_2026-10-06.json
@@ -72,26 +73,68 @@ HUD_MUTATIONS = [
 ]
 
 
-# A23-65 + A23-74 (user 2026-10-07): the follow turn (tools/fixtures/camera_follow_offline.luau); each must make it fail
+# A23-65 + A23-74 (user 2026-10-07): the follow turn and the recenter (tools/fixtures/camera_follow_offline.luau); each
+# must make it fail. (a) D then stop -> behind me in 1.2 s, (b) W+D then stop, (c) no recenter in the holds / Free /
+# blocked, (d) W+D arc radius, (e) backing up never turns.
+STOP_BOOK = ("\tif walking then\n\t\tFOLLOW.StopAt = math.huge\n\telseif FOLLOW.StopAt == math.huge then\n"
+             "\t\tFOLLOW.StopAt = now\n\tend\n")
+FREE_LINE = '\tif setting("Cam", "Follow") == "Free" or blocked() then return end\n'
+HOLD_LINE = ("\tif now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end\n")
 FOLLOW_MUTATIONS = [
-    ("spins while backing up", "BackDot = -0.35,", "BackDot = -1.1,"),
+    # walking
+    ("(e) spins while backing up", "BackDot = -0.35,", "BackDot = -1.1,"),
     ("sidesteps never turn again (the old A23-65 forward-only rule)", "BackDot = -0.35,", "BackDot = 0.5,"),
-    ("a held side key circles tightly (side cap = forward cap)", "SideRate = math.rad(20),", "SideRate = math.rad(45),"),
-    ("forward walks lose the full cap", "math.clamp(dot / FOLLOW.FwdDot, 0, 1)", "0"),
+    ("(d) a held side key circles tightly (side cap = forward cap)", "SideRate = math.rad(16),", "SideRate = math.rad(45),"),
+    ("(d) a linear fade (W+D circles at ~43 studs)", "(1 - t) ^ FOLLOW.Fade * (1 + FOLLOW.Fade * t)", "(1 - t)"),
+    ("(d) the old dot-based cap (full 45 deg/s up to 60 deg: 25-stud circles)",
+     "local t = math.clamp((off - FOLLOW.FullAngle) / (FOLLOW.SideAngle - FOLLOW.FullAngle), 0, 1)",
+     "local t = math.clamp((off - FOLLOW.SideAngle) / math.rad(30), 0, 1)"),
+    ("a hard switch instead of a smooth fade", "(1 - t) ^ FOLLOW.Fade * (1 + FOLLOW.Fade * t)", "(t < 0.4 and 1 or 0)"),
+    ("forward walks lose the full cap", "return side + (full - side) * (1 - t)", "return side + 0 * (1 - t)"),
     ("'Screen shake' off ignored sideways", "slow and FOLLOW.SlowSideRate or FOLLOW.SideRate", "FOLLOW.SideRate"),
     ("Reduced Motion ignored", "or FOLLOW.Reduced()", "or false"),
     ("no hold after a hand turn", "if now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack",
      "if now - FOLLOW.LastAttack"),
-    ("no hold after my swing", " or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end", " then return end"),
-    ("no turn-speed cap", "local a = math.clamp(angle * math.min(1, ease * dt), -rate * dt, rate * dt)",
-     "local a = angle * math.min(1, ease * dt)"),
-    ("Settings Free ignored", 'if setting("Cam", "Follow") == "Free" or blocked() then return end', "if blocked() then return end"),
+    ("(c) no hold after my swing (walk and recenter)", " or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end",
+     " then return end"),
+    ("no turn-speed cap while walking", "return math.clamp(angle * math.min(1, ease * dt), -rate * dt, rate * dt)",
+     "return angle * math.min(1, ease * dt)"),
+    ("(c) Settings Free ignored (walk and recenter)", 'if setting("Cam", "Follow") == "Free" or blocked() then return end',
+     "if blocked() then return end"),
+    ("(c) windows / scripted camera no longer block", 'if setting("Cam", "Follow") == "Free" or blocked() then return end',
+     'if setting("Cam", "Follow") == "Free" then return end'),
     ("'Screen shake' off ignored", 'local slow = setting("Shake", true) == false', "local slow = false"),
     ("other players' swings hold my camera", "\t\tand data.UserId == LocalPlayer.UserId then\n", "\t\tthen\n"),
     ("the move stick holds it", "if width > 0 and input.Position.X > width * FOLLOW.CameraSide then", "if true then"),
     ("turns the wrong way", "local angle = math.atan2(cz * mx - cx * mz, dot)", "local angle = math.atan2(cx * mz - cz * mx, dot)"),
     ("follows in shift lock", "if UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then return end -- shift lock turns me itself",
      "-- (shift lock check removed)"),
+    # A23-74 standing recenter
+    ("(a)(b) no recenter on the stop (f3ab1f1: a side view forever)",
+     "else FOLLOW.CenterTurn(cx, cz, humanoid, now, dt, slow, was)", "else nil"),
+    ("(a) the recenter turns the wrong way", "local angle = math.atan2(cz * fx - cx * fz, dot)",
+     "local angle = math.atan2(cx * fz - cz * fx, dot)"),
+    ("(a) the recenter too slow (30 deg/s)", "CenterRate = math.rad(120),", "CenterRate = math.rad(30),"),
+    ("(a) the recenter snaps round (no speed cap)", "-FOLLOW.CenterSpeed * dt, FOLLOW.CenterSpeed * dt)", "-math.huge, math.huge)"),
+    ("(a) no ease in (top speed at once)", "(was and FOLLOW.CenterSpeed or 0) +", "math.huge +"),
+    ("(a) no wait after the stop (recenters while switching keys)", "if now - FOLLOW.StopAt < FOLLOW.StopDelay\n\t\tor ",
+     "if "),
+    ("(a) never settles (stops at the dead zone edge)", "(was and FOLLOW.Settle or FOLLOW.DeadZone)", "FOLLOW.DeadZone"),
+    ("the dead zone ignored (nudges after every small body turn)", "(was and FOLLOW.Settle or FOLLOW.DeadZone)", "FOLLOW.Settle"),
+    ("(b) the recenter starts only past 50 deg (W+D stays a side view)", "(was and FOLLOW.Settle or FOLLOW.DeadZone)",
+     "(was and FOLLOW.Settle or math.rad(50))"),
+    ("(c) a hand turn no longer keeps my view after the stop", "\n\t\tor FOLLOW.LastManual >= FOLLOW.StopAt - FOLLOW.ManualHold then",
+     " then"),
+    ("a hand turn blocks the recenter for good (no new walk re-arms it)", "FOLLOW.LastManual >= FOLLOW.StopAt - FOLLOW.ManualHold",
+     "FOLLOW.LastManual > -math.huge"),
+    ("(e) the recenter spins 180 deg after backing up",
+     "if dot < FOLLOW.BackDot then return nil end -- I face the camera (a backpedal ended): no 180 deg spin", "-- (removed)"),
+    ("the recenter ignores 'Screen shake' off", "math.min(slow and FOLLOW.SlowCenterRate or FOLLOW.CenterRate,",
+     "math.min(FOLLOW.CenterRate,"),
+    ("the recenter runs for a dead character", "if not root or humanoid.Health <= 0 then return nil end",
+     "if not root then return nil end"),
+    ("(c) the stop is only counted after the hand-turn hold (a right drag before the stop is forgotten)",
+     STOP_BOOK + FREE_LINE + HOLD_LINE, FREE_LINE + HOLD_LINE + STOP_BOOK),
 ]
 
 
@@ -174,20 +217,26 @@ def main():
               "fixtureSHA256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),
               "studioCalls": 0, "physicalInputTested": False,
               "contract": "A23-51 (user 2026-10-06): the camera turns with the RIGHT mouse drag only, owned by Roblox's "
-                          "default camera (CameraFollow's only render step is the A23-65 follow turn, which never moves the "
-                          "camera while standing / dragging and never takes over the right drag); a left drag never turns "
+                          "default camera (CameraFollow's only render step is the A23-65 / A23-74 follow turn, which "
+                          "never moves the camera while dragging and never takes over the right drag); a left drag never turns "
                           "the camera; a left press on the world fires "
                           "PrimaryClick once on the press (HUD -> one Swing), never on the release, never repeated while "
                           "held or dragged, never for a processed (GUI) press, an open picker / Panels / WorldMap / Roblox "
                           "menu, a focused text box, loading, a scripted camera or a missing character; touch is left to "
                           "Roblox; the camera subject follows the new humanoid after a costume swap / respawn and a "
                           "scripted camera keeps its own subject. A23-65 + A23-74 (user 2026-10-07): while walking in any "
-                          "direction but a backpedal toward the camera (walk . look < -0.35) the camera turns behind me "
-                          "(eased; 45 deg/s cap forward, 20 deg/s sideways so a held side key makes a wide arc, radius "
-                          ">= 55 studs; 25 / 12 deg/s with 'Screen shake' off or Reduced Motion); the phone thumbstick "
-                          "drives it too; never while standing, backing up, 1.5 s after a right drag / camera-side finger "
-                          "drag / right stick, 0.5 s after my own Swing / Release / Skill Fx, in shift lock, first person, "
-                          "a window / scripted camera, or with Settings Camera = Free.",
+                          "direction but a backpedal toward the camera (walk . look < -0.35) the camera turns toward the "
+                          "walk (eased; the cap is 45 deg/s within 20 deg of the camera look, fading smoothly to 16 deg/s "
+                          "by 60 deg, so camera-relative W+D / D / a 37-100 deg stick walk wide arcs, radius >= 55 studs "
+                          "at WalkSpeed 20; 25 / 10 deg/s with 'Screen shake' off or Reduced Motion); 0.25 s after the walk "
+                          "ends the camera eases round behind the HumanoidRootPart's facing (ease in, <= 120 deg/s, ease "
+                          "out; D or W+D let go -> within 8 deg in 1.2 s, then within 1 deg, no overshoot; a 6 deg dead "
+                          "zone keeps it still once behind; 60 deg/s with 'Screen shake' off or Reduced Motion); never "
+                          "after a backpedal (no 180 deg spin), for a dead character, or after a hand turn within 1.5 s "
+                          "before the stop or any time after it (kept until the next walk); the phone thumbstick drives "
+                          "it, its touch never holds it; neither turn 1.5 s after a right drag / camera-side finger drag / "
+                          "right stick, 0.5 s after my own Swing / Release / Skill Fx (the recenter resumes after it), in "
+                          "shift lock, first person, a window / scripted camera, or with Settings Camera = Free.",
               "limitations": "Engine input propagation, the default camera's right-drag orbit itself and real mouse/touch "
                              "need runtime validation (Studio own test Play)."}
     OUT.parent.mkdir(parents=True, exist_ok=True)
