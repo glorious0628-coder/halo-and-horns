@@ -22,8 +22,8 @@
 | 반투명·겹침 | fix/a2374-translucent, fix/a2374-separation | 워크플로 진행 중이었음(가지가 없으면 다시) |
 | 한국어 자동 번역("아야!") | fix/a2374-english(AutoLocalize=false) | 진행 중이었음. Creator Dashboard 자동 번역 끄기는 사용자 몫 |
 | 3D 배치 도구 + 성 원인 | tool/a2374-kit-place | 진행 중이었음 |
-| 무기 먼저(서버) | origin/dev2-weapon 49d2744 | 검수 검토 워크플로 진행 중 → 통과하면 개발 1 병합·반영(클라 = wtc-weapon-client) |
-| 지도 v2 지형 | mapv2-p1(main 아님), mapv2-p2(개발 1, Game-wtc2) | **진행 중(17:30경)**: 백업 = Studio 자동 복구본 → build/GoodEvil_before_v2.rbxl(WorldKit3D·MeadowKit 포함). move 285개 → 새 지형(둥근 해안·모래·둥근 산·3D 바다 바위 26) → 높이 맞춤 294개 끝. 남은 것: 연못·노란 줄 빼기·물 색·풀잎 끄기·산 경사 → main push → sync → build → kits → PC·폰 Play → 저장. 이미지 생성 1 '튀는 곳' 16곳(art/review/terrain/terrain_standout_2026-10-07.jpg) 반영, SunRays 끄기(빛살 규칙) |
+| 무기 먼저(서버) + 스탯 1단계 + 소리 서버 + 고칠 것 4개 | **origin/dev2-sound bde2715d**(dev2-weapon 49d2744 포함, 저장 v3 유지) — 개발 2가 최신 main 합치고 CI 다시 → 검수 검토 OK → 개발 1 병합 | 클라 = wtc-weapon-client. 예전 줄: origin/dev2-weapon 49d2744 | 검수 검토 워크플로 진행 중 → 통과하면 개발 1 병합·반영(클라 = wtc-weapon-client) |
+| 지도 v2 지형 | **main 9ae686e**, build/GoodEvil.rbxlx 17:55 사용자 저장(새 지형 포함) | 남은 것: Studio 다시 열기 → sync → MapBuilder.Build → kits → PC·폰 Play → 저장. (예전 기록: 진행 중(17:30경): 백업 = Studio 자동 복구본 → build/GoodEvil_before_v2.rbxl(WorldKit3D·MeadowKit 포함). move 285개 → 새 지형(둥근 해안·모래·둥근 산·3D 바다 바위 26) → 높이 맞춤 294개 끝. 남은 것: 연못·노란 줄 빼기·물 색·풀잎 끄기·산 경사 → main push → sync → build → kits → PC·폰 Play → 저장. 이미지 생성 1 '튀는 곳' 16곳(art/review/terrain/terrain_standout_2026-10-07.jpg) 반영, SunRays 끄기(빛살 규칙) |
 | 스탯 1단계 + 소리 서버 | dev2 a698787 / dev2-sound 43c491f | 고칠 것 4개(KingDefeat Contributors 비어 있음, 환불 Thief, 장판 늦은 Released 수, **저장 v3 유지**) 개발 2 진행 중 |
 
 **그림·3D:**
