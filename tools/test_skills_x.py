@@ -96,6 +96,9 @@ MUTATIONS = [
      "local mult = num(def.TickMult, 1.5)"),
     ("the burst slows like a tick", SK, "local slowSec = burst and TUNE.BurstSlow or tick + TUNE.SlowPad", "local slowSec = tick + TUNE.SlowPad"),
     ("no slow pad", SK, "SlowPad = 0.5,", "SlowPad = 0,"),
+    # 검수 2026-10-07: a field that hits only from its second tick still counts once
+    ("a late-hitting field never counts", SK, "\tif not f.HitOnce and n > 0 then fieldReleased(f, total, n) end\n", ""),
+    ("a field counts every hitting tick", SK, "\tif n > 0 then f.HitOnce = true end\n", ""),
     # --- Hop
     ("a hop with the grudge sack", SK, "if sack or TUNE.Kaiju[kit.Kaiju(player)] then return nil, \"TooHeavy\" end",
      "if TUNE.Kaiju[kit.Kaiju(player)] then return nil, \"TooHeavy\" end"),

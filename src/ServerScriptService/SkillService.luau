@@ -548,16 +548,26 @@ local function fieldHit(f, mult, slowSec, guardSec)
 	return hits, shown, total, n, st
 end
 
+-- CombatService.Released for a field (the quests, the board, the kaiju and the funnel read it): at the first tick, and
+-- (검수 2026-10-07) once more at the first later tick that hits when the first one hit nothing - a field laid ahead of
+-- the monsters still counts as a skill that hit (every reader counts only MonstersHit >= 1)
+local function fieldReleased(f, total, n)
+	if n > 0 then f.HitOnce = true end
+	S.CombatService.Released:Fire(f.Player, { Slot = f.Ctx.Slot, Stacks = 0, Auto = f.Ctx.Auto, Perfect = false,
+		Center = f.Center, Radius = f.Radius, Total = total, MonstersHit = n, PlayersHit = 0, Healed = f.Healed or {} })
+end
+
 local function fieldTick(player, f)
 	if fields[player] ~= f then return end
 	if not fieldHolds(player, f) then
 		endField(player, "Stop")
 		return
 	end
-	local hits, shown, _, _, st = fieldHit(f, num(f.Ctx.Def.TickMult, 1.5), f.Tick + TUNE.SlowPad, f.Tick + 0.1)
+	local hits, shown, total, n, st = fieldHit(f, num(f.Ctx.Def.TickMult, 1.5), f.Tick + TUNE.SlowPad, f.Tick + 0.1)
 	local ok, err = pcall(S.CombatService.Kit.FxNear, player, "SkillTick", f.Center, f.Radius,
 		{ UserId = player.UserId, Slot = "X", Center = f.Center, Radius = f.Radius, Hits = hits, Total = shown, Statuses = st })
 	if not ok then Util.Warn(TAG, "field tick: " .. tostring(err)) end
+	if not f.HitOnce and n > 0 then fieldReleased(f, total, n) end
 	f.Left -= 1
 	if f.Left <= 0 then
 		fields[player] = nil -- the clients' circle ends with its Life
@@ -588,8 +598,7 @@ local function startField(ctx, plan)
 		Radius = plan.Radius, Craft = def.Craft, Life = burst and TUNE.FxLife or count * tick, Tick = tick,
 		Auto = ctx.Auto, Total = shown, Hits = hits, Statuses = st,
 	})
-	CS.Released:Fire(player, { Slot = ctx.Slot, Stacks = 0, Auto = ctx.Auto, Perfect = false, Center = plan.Center,
-		Radius = plan.Radius, Total = total, MonstersHit = n, PlayersHit = 0, Healed = f.Healed or {} })
+	fieldReleased(f, total, n)
 	if burst or f.Left <= 0 then return end
 	fields[player] = f
 	task.delay(tick, fieldTick, player, f)

@@ -434,6 +434,16 @@ runGroup("x field", function()
 	local ska = wa:FxTo("Skill", pa, 0)[1]
 	check(wa:Count("X") == 1 and ska and ska.Center.X == 0 and ska.Center.Z == -10, "nothing in reach: the circle 10 studs ahead",
 		show(ska and ska.Center))
+	-- 검수 2026-10-07: a field that hits nothing at its first tick counts once more at the first tick that hits (quests,
+	-- board and funnel count only MonstersHit >= 1), never again after that
+	check(wa:Last("X").MonstersHit == 0, "setup: the first tick hit nothing (Released with 0)", wa:Last("X").MonstersHit)
+	local walker = wa:Monster("Slime", 12, 0, 99999) -- walks into the circle (2 studs from its center)
+	wa:Advance(1)
+	check(wa:Count("X") == 2 and wa:Last("X").MonstersHit == 1 and wa:Last("X").Auto == false and wa:Last("X").Slot == "X"
+		and hitOf(wa, walker) > 0, "the first tick that hits: one more Released { Slot X, MonstersHit 1 } for that cast",
+		show({ wa:Count("X"), wa:Last("X").MonstersHit }))
+	for _ = 1, 3 do wa:Advance(1) end
+	check(wa:Count("X") == 2, "later hitting ticks add no more Released", wa:Count("X"))
 	-- §10 Fields off: one burst of all 5 ticks, a 3 s slow, the short mark, no ticks
 	local wb = xWorld({ Fields = false })
 	local pb = wb:Hero(1, { Class = "Mage", Faction = "Halo" })
