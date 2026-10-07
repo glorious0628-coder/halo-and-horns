@@ -145,7 +145,8 @@ Config.Data = {
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
-		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default" },
+		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default",
+			Cam = "Follow" },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -3142,7 +3143,7 @@ end
 -- BB2 saved settings: value rules (defaults: Config.Data.Defaults.Settings). Text = the settings window (BB3) + toasts.
 Config.Settings = {
 	Version = 1, -- Settings.V
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the seven values, Seq)
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 		Shake = { Type = "Bool" },
@@ -3151,8 +3152,9 @@ Config.Settings = {
 		KeyBadges = { Type = "Bool" },
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
+		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: the camera turns behind me while I walk
 	},
-	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort" },
+	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
 		Shake = "Screen shake", ShakeEn = "Screen shake",
@@ -3161,10 +3163,12 @@ Config.Settings = {
 		KeyBadges = "Key hints", KeyBadgesEn = "Key hints",
 		Lang = "Language", LangEn = "Language",
 		BagSort = "Bag order", BagSortEn = "Bag order",
+		Cam = "Camera", CamEn = "Camera",
 		Options = {
 			All = "All", AllEn = "All", Off = "Off", OffEn = "Off", Near = "Nearby only", NearEn = "Nearby only",
 			Auto = "Auto", AutoEn = "Auto", ko = "한국어", koEn = "한국어", en = "English", enEn = "English",
 			Default = "Default", DefaultEn = "Default", Grade = "By grade", GradeEn = "By grade", Count = "By count", CountEn = "By count",
+			Follow = "Follow", FollowEn = "Follow", Free = "Free", FreeEn = "Free",
 		},
 		On = "On", OnEn = "On",
 		Off = "Off", OffEn = "Off",

@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau"
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
 FIXTURE = ROOT / "tools/fixtures/camera_input_offline.luau"
+FOLLOW_FIXTURE = ROOT / "tools/fixtures/camera_follow_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-06/offline_camera_input_a23_51_2026-10-06.json"
 
@@ -70,6 +71,38 @@ HUD_MUTATIONS = [
 ]
 
 
+# A23-65 (user 2026-10-07): the follow turn (tools/fixtures/camera_follow_offline.luau); each must make it fail
+FOLLOW_MUTATIONS = [
+    ("spins while backing up", "BackDot = -0.25,", "BackDot = -1.1,"),
+    ("no hold after a hand turn", "if now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack",
+     "if now - FOLLOW.LastAttack"),
+    ("no hold after my swing", " or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end", " then return end"),
+    ("no turn-speed cap", "local a = math.clamp(angle * math.min(1, ease * dt), -rate * dt, rate * dt)",
+     "local a = angle * math.min(1, ease * dt)"),
+    ("Settings Free ignored", 'if setting("Cam", "Follow") == "Free" or blocked() then return end', "if blocked() then return end"),
+    ("'Screen shake' off ignored", 'local slow = setting("Shake", true) == false', "local slow = false"),
+    ("other players' swings hold my camera", "\t\tand data.UserId == LocalPlayer.UserId then\n", "\t\tthen\n"),
+    ("the move stick holds it", "if width > 0 and input.Position.X > width * FOLLOW.CameraSide then", "if true then"),
+    ("turns the wrong way", "local angle = math.atan2(cz * mx - cx * mz, dot)", "local angle = math.atan2(cx * mz - cz * mx, dot)"),
+    ("follows in shift lock", "if UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then return end -- shift lock turns me itself",
+     "-- (shift lock check removed)"),
+]
+
+
+def run_follow(source: str, name: str):
+    harness = ROOT / f"build/camera_follow_offline{name}.luau"
+    harness.write_text("local SOURCE = [====[" + source + "]====]\n" + FOLLOW_FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
+    result = subprocess.run([str(BINARY), str(harness)], cwd=ROOT, capture_output=True, text=True,
+                            encoding="utf-8", errors="replace", timeout=60)
+    match = re.search(r"CAMERA_FOLLOW_SUMMARY checks=(\d+) failed=(\d+)", result.stdout)
+    ok = result.returncode == 0 and match is not None and match[2] == "0"
+    fail = ""
+    if not ok:
+        lines = [ln for ln in (result.stdout + result.stderr).splitlines() if ln.strip()]
+        fail = lines[0][:240] if lines else "no output"
+    return ok, (int(match[1]) if match else 0), fail, result
+
+
 def run(source: str, name: str):
     harness = ROOT / f"build/camera_input_offline{name}.luau"
     harness.write_text("local SOURCE = [====[" + source + "]====]\n" + FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
@@ -101,6 +134,18 @@ def main():
             caught = not m_ok
         rows.append({"mutation": name, "applied": applied, "caught": caught, "failure": why})
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
+    f_ok, f_checks, f_fail, f_result = run_follow(source, "")
+    print(f_result.stdout, end="")
+    print(f_result.stderr, end="")
+    for name, old, new in FOLLOW_MUTATIONS:
+        applied = source.count(old) == 1
+        caught = False
+        why = ""
+        if applied:
+            m_ok, _, why, _ = run_follow(source.replace(old, new), "_mut")
+            caught = not m_ok
+        rows.append({"mutation": name, "fixture": "camera_follow", "applied": applied, "caught": caught, "failure": why})
+        print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
     hud = HUD.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     static = hud_checks(hud)
     for name, good in static:
@@ -111,8 +156,10 @@ def main():
         rows.append({"mutation": name, "file": "HUD.luau", "applied": applied, "caught": caught, "failure": "static"})
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
     all_caught = all(r["applied"] and r["caught"] for r in rows)
-    passed = compile_run.returncode == 0 and ok and all_caught and all(g for _, g in static)
+    passed = compile_run.returncode == 0 and ok and f_ok and all_caught and all(g for _, g in static)
     report = {"status": "passed" if passed else "failed", "checks": checks, "failed": 0 if ok else 1,
+              "follow": {"checks": f_checks, "ok": f_ok, "failure": f_fail,
+                         "fixtureSHA256": hashlib.sha256(FOLLOW_FIXTURE.read_bytes()).hexdigest()},
               "mutations": {"total": len(rows), "applied": sum(r["applied"] for r in rows),
                             "caught": sum(r["caught"] for r in rows), "results": rows},
               "sourceSHA256": hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
@@ -121,13 +168,18 @@ def main():
               "fixtureSHA256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),
               "studioCalls": 0, "physicalInputTested": False,
               "contract": "A23-51 (user 2026-10-06): the camera turns with the RIGHT mouse drag only, owned by Roblox's "
-                          "default camera (CameraFollow binds no render step, never writes Camera.CFrame and ignores "
-                          "MouseButton2); a left drag never turns the camera; a left press on the world fires "
+                          "default camera (CameraFollow's only render step is the A23-65 follow turn, which never moves the "
+                          "camera while standing / dragging and never takes over the right drag); a left drag never turns "
+                          "the camera; a left press on the world fires "
                           "PrimaryClick once on the press (HUD -> one Swing), never on the release, never repeated while "
                           "held or dragged, never for a processed (GUI) press, an open picker / Panels / WorldMap / Roblox "
                           "menu, a focused text box, loading, a scripted camera or a missing character; touch is left to "
                           "Roblox; the camera subject follows the new humanoid after a costume swap / respawn and a "
-                          "scripted camera keeps its own subject.",
+                          "scripted camera keeps its own subject. A23-65 (user 2026-10-07): while walking the camera turns "
+                          "slowly behind me (110 deg/s cap, eased; 55 deg/s with 'Screen shake' off), never while standing, "
+                          "walking toward the camera, 1.5 s after a right drag / camera-side finger drag / right stick, 0.5 "
+                          "s after my own Swing / Release / Skill Fx, in shift lock, first person, a window / scripted "
+                          "camera, or with Settings Camera = Free.",
               "limitations": "Engine input propagation, the default camera's right-drag orbit itself and real mouse/touch "
                              "need runtime validation (Studio own test Play)."}
     OUT.parent.mkdir(parents=True, exist_ok=True)

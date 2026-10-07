@@ -249,6 +249,16 @@ local function buildMain(kit, frame)
 	local sb = button(kit, hk, W.On, nil, function() settingsSet("Shake", settingsGet("Shake", true) == false) end)
 	table.insert(refresh, function() paintToggle(kit, sb, settingsGet("Shake", true) ~= false) end)
 
+	-- A23-65: Camera Follow (turns behind me while I walk) / Free; one button switches
+	local _, hc = row(kit, frame, ST.CamEn or ST.Cam)
+	local cb = button(kit, hc, "", nil, function()
+		settingsSet("Cam", settingsGet("Cam", "Follow") == "Free" and "Follow" or "Free")
+	end)
+	table.insert(refresh, function()
+		local v = settingsGet("Cam", "Follow") == "Free" and "Free" or "Follow"
+		cb.Text = ST.Options[v .. "En"] or ST.Options[v] or v
+	end)
+
 	if UserInputService.KeyboardEnabled then
 		local _, hb = row(kit, frame, ST.KeyBadgesEn or ST.KeyBadges)
 		local kb = button(kit, hb, W.On, nil, function() settingsSet("KeyBadges", settingsGet("KeyBadges", true) == false) end)

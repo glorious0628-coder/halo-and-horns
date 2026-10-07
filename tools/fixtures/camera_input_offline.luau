@@ -35,7 +35,8 @@ local function fixture()
 	end
 	local run = {}
 	function run:BindToRenderStep(name, priority, fn) frameSteps[name] = { Priority = priority, Fn = fn } end
-	local services = { Players = { LocalPlayer = player }, UserInputService = input, GuiService = gui, RunService = run }
+	local services = { Players = { LocalPlayer = player }, UserInputService = input, GuiService = gui, RunService = run,
+		ReplicatedStorage = { WaitForChild = function() return nil end } } -- the Fx hookup (A23-65) quietly fails here
 	local registry = {}
 	for _, name in { "FactionPicker", "ClassPicker", "Panels", "WorldMap" } do
 		local module = { Open = false }; module.IsOpen = function() return module.Open end; registry[name] = module
@@ -53,10 +54,10 @@ local function fixture()
 		game = { GetService = function(_, name) return assert(services[name]) end }, workspace = workspace,
 		Instance = { new = function() local s = signal(); return { Event = s, Fire = function() s:Fire() end } end },
 		Vector3 = { zero = vec(0, 0, 0) }, Vector2 = { new = function(x, y) return { X = x, Y = y } end },
-		task = { defer = function(cb) table.insert(q, cb) end },
+		task = { defer = function(cb) table.insert(q, cb) end, spawn = function(cb) cb() end },
 		Enum = { CameraType = { Custom = "Custom" }, UserInputType = { MouseButton1 = "LMB", MouseButton2 = "RMB", MouseMovement = "Move", Touch = "Touch" },
 			MouseBehavior = { Default = "Default", LockCenter = "LockCenter", LockCurrentPosition = "LockCurrentPosition" },
-			RenderPriority = { Camera = { Value = 200 } } },
+			RenderPriority = { Camera = { Value = 200 } }, KeyCode = { Thumbstick2 = "Thumb2" } },
 	}, { __index = getfenv() }))
 	local module = fn(); module.Init(registry); module.Start()
 	local f = { Module = module, Input = input, Gui = gui, Registry = registry, Camera = camera, Player = player, Workspace = workspace,
@@ -88,7 +89,10 @@ end
 
 local f = fixture()
 check(f.Camera.CameraSubject == f.Humanoid, "initial subject attaches")
-check(next(f.Steps) == nil, "no render step: CameraFollow never drives the camera each frame")
+local stepNames = {}
+for name in f.Steps do table.insert(stepNames, name) end
+check(#stepNames == 1 and f.Steps.HHC_CameraFollow ~= nil and f.Steps.HHC_CameraFollow.Priority == 201,
+	"one render step only: the A23-65 follow turn (after the camera); no left-mouse camera step")
 -- left press = one attack, on the press
 f:Begin(); check(f.Clicks == 1, "a left press attacks on the press (before the release)")
 f:End(); check(f.Clicks == 1, "the release adds no second attack")
