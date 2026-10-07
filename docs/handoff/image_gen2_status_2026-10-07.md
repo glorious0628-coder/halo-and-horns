@@ -22,3 +22,9 @@
 - **ffe806d** 게시판 고급(High, 약 10크레딧) 2D: 원본 `art/out/hq/HQ_{Meadow,Woods}_JobBoard.png`(Tripo용, 회색 바탕), 누끼 `art/out/kit/{meadow,woods}/JobBoard.png`(고리 구멍 회색·빛 번짐 정리), 시트 `art/review/s2/kit_jobboard_hq_sheet.jpg` → 이미지 생성 1에 경로 전달. Tripo 비용은 검수가 사용자에게.
 - **ffe806d** 진영별 지도 화살표 후보 4장(검수 요청: 사용자 "화살표 더 멋있게, 진영 따라 색·분위기"): 시트 `art/review/s2/faction_map_arrow_sheet.jpg`, 누끼 `art/out/s2/UIP_MapArrow{Halo,Horns}_{A,B}_cut.png`(512 정사각, 로컬). 추천 빛 A(날개) + 뿔 A(위쪽 뿔). 고르면 키 MapArrowHalo / MapArrowHorns → 이미지 개발.
 - push 요령: 갈라졌을 때 체크아웃 없이 `git merge-tree --write-tree --merge-base=<c>^ origin/main <c>` → `git commit-tree` → `git push origin <new>:main`(198bdd6 → ffe806d).
+
+## 오후
+- **17817e6** 지도 화살표 확정(사용자: 빛 A + 뿔 C1 = 뿔 뺀 빨간 화살표, 검수: 크림 테 추가): `art/ui/MapArrowHalo.png`·`MapArrowHorns.png` 512 정사각(몸통 높이 같음, 가운데 = 회전 중심, 남색 테 바깥 크림 테 20px 4배 그리기), approved.json 2키 → 이미지 개발(칠하지 말고 그대로). 대비 5곳 모두 3:1↑. 스크립트 scratchpad `final_arrows.py`.
+- **c51be3f** 게시판 버튼 아이콘 확정(검수, 사용자에게 결과로): `art/ui/GlyphKindWing(.png 256, _64)`·`GlyphSneakyHorns`(뿔 A를 로컬로 흰 라일락 + 남색 테 4px 더 → 날개와 같은 두께) → 이미지 개발. 색약 흉내 시트 `board_btn_icon_sheet.jpg`·`board_btn_horns_fix_sheet.jpg`(scratchpad `btn_icon_sheet.py`·`horns_fix_sheet.py`).
+- **5bbfbcc** 고블린 숲 작은 소품 16장 + 빛 버섯 B(`kit_woods.md`, 이미지 생성 1 5a1eec0): `art/out/kit/woods/<이름>.png`(+ _src), 시트 `art/review/s2/kit_woods16_sheet.jpg` → 검수 대기. 빛 버섯 첫 안은 통나무 옹이가 눈처럼 보여 이끼 흙더미로 다시(B 추천). 3D 후보 8종은 고르면 High.
+- 브라우저: 사용자 요청으로 Firefly 탭 열어 둠(생성 끝나면 보기 크기 원래대로).
