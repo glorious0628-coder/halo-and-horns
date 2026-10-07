@@ -4968,5 +4968,24 @@
    "file": null,
    "note_file": "GLB not downloaded yet (download needs user OK)"
   }
+ ],
+ "Kit_W_Campfire_Fire": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c159bc5b-8773-4d67-b753-533810cad686",
+   "image": "art\\out\\hq\\HQ_Woods_Campfire_FB2.png",
+   "recipe": "prop",
+   "seed": 41552
+  },
+  {
+   "task_id": "c159bc5b-8773-4d67-b753-533810cad686",
+   "image": "art\\out\\hq\\HQ_Woods_Campfire_FB2.png",
+   "recipe": "prop",
+   "seed": 41552,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_Campfire_Fire_raw.glb",
+   "bytes": 2992056,
+   "at": "2026-10-07 14:24:24"
+  }
  ]
 }

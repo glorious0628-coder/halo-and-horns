@@ -1,0 +1,18 @@
+{
+ "label": "Campfire_Fire",
+ "front": "+x",
+ "file": "art/models/tripo/Kit_W_Campfire_Fire_raw.glb",
+ "bytes": 2992056,
+ "objects": 1,
+ "tris": 2839,
+ "verts": 2389,
+ "materials": 1,
+ "images": [
+  "4096x4096"
+ ],
+ "size_wdh_norm": [
+  2.352,
+  2.415,
+  2.0
+ ]
+}
