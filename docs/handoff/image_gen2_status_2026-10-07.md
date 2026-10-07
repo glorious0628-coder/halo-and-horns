@@ -28,3 +28,6 @@
 - **c51be3f** 게시판 버튼 아이콘 확정(검수, 사용자에게 결과로): `art/ui/GlyphKindWing(.png 256, _64)`·`GlyphSneakyHorns`(뿔 A를 로컬로 흰 라일락 + 남색 테 4px 더 → 날개와 같은 두께) → 이미지 개발. 색약 흉내 시트 `board_btn_icon_sheet.jpg`·`board_btn_horns_fix_sheet.jpg`(scratchpad `btn_icon_sheet.py`·`horns_fix_sheet.py`).
 - **5bbfbcc** 고블린 숲 작은 소품 16장 + 빛 버섯 B(`kit_woods.md`, 이미지 생성 1 5a1eec0): `art/out/kit/woods/<이름>.png`(+ _src), 시트 `art/review/s2/kit_woods16_sheet.jpg` → 검수 대기. 빛 버섯 첫 안은 통나무 옹이가 눈처럼 보여 이끼 흙더미로 다시(B 추천). 3D 후보 8종은 고르면 High.
 - 브라우저: 사용자 요청으로 Firefly 탭 열어 둠(생성 끝나면 보기 크기 원래대로).
+- **a8d7bb3** 숲 3D 후보 8개 고급(40크레딧, 사용자 Tripo 320 승인 — Tripo는 이미지 생성 1): `art/out/kit/woods/<이름>_HQ_src.png`(Tripo 입력) + `<이름>_HQ.png`, 시트 `art/review/s2/kit_woods_hq8_sheet.jpg` → 검수 대기. 통나무 의자 B·고사리 B(중간) 고침. 크레딧: 이 세션 고급 오늘 10장 = 50.
+- **새 규칙(사용자, SPEC A23-47 보강 3, 4e65f16):** 고르기용 시안 = 중간, 고른 최종 = 종류와 관계없이 전부 고급(5). 시트마다 쓴 크레딧 + 웹 남은 크레딧. 이미 중간으로 게임에 들어간 것(지도 화살표·버튼 아이콘 등)은 검수가 따로 정할 때까지 손대지 않기.
+- 누끼 주의: `cut_kit.py`의 '회색 틈 지우기'는 쇠(통 쇠테·등불 쇠지붕) 반사도 지움 → **쇠가 있으면 `--no-pockets`**, 틈은 좁은 창으로만 지우고 4배로 확인. 숨은 창에서 Firefly를 새로고침하면 화면이 안 그려져 크레딧 숫자를 못 읽음(새로고침은 창이 보일 때만).
