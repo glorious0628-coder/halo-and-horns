@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 84,
+  "checks": 85,
   "failedChecks": 0,
-  "namedChecks": 75,
+  "namedChecks": 76,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -33,7 +33,7 @@
     },
     {
       "group": "config",
-      "check": "save Data v4 (an older v3 server refuses these records)",
+      "check": "save Data stays v3 (검수 2026-10-07: Stats is an additive field)",
       "pass": 1,
       "fail": 0
     },
@@ -207,7 +207,13 @@
     },
     {
       "group": "mults and sanitize",
-      "check": "Order: only text, only the known letters",
+      "check": "Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "a kept letter that is no stat yet (X) counts nothing: its point stays free",
       "pass": 1,
       "fail": 0
     },
@@ -410,49 +416,49 @@
       "fail": 0
     },
     {
-      "group": "data v4",
-      "check": "a v3 save loads as v4: Stats = { Auto ON, nothing picked }, nothing else changes",
+      "group": "data",
+      "check": "a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "data v4",
-      "check": "loading the v4 save again changes nothing (idempotent)",
+      "group": "data",
+      "check": "loading it again changes nothing (idempotent)",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "data v4",
-      "check": "a v4 save's picks are repaired, not reset",
+      "group": "data",
+      "check": "a save's picks are repaired, not reset",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "data v4",
+      "group": "data",
       "check": "a broken Stats becomes the default",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "data v4",
-      "check": "a v1 save runs every step to v4",
+      "group": "data",
+      "check": "a v1 save runs every step to v3 and gains the default Stats",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "data v4",
-      "check": "a brand-new save is v4 with the default Stats",
+      "group": "data",
+      "check": "a brand-new save is v3 with the default Stats",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "data v4",
+      "group": "data",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
     },
     {
-      "group": "data v4",
+      "group": "data",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -462,9 +468,9 @@
   "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 44,
-    "applied": 44,
-    "caught": 44,
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
     "skipped": false,
     "results": [
       {
@@ -514,10 +520,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: a new save: Stats = { Auto = true, Order = '' }",
-          "data v4 :: a brand-new save is v4 with the default Stats",
-          "data v4 :: a broken Stats becomes the default",
-          "data v4 :: a v1 save runs every step to v4",
-          "data v4 :: a v3 save loads as v4: Stats = { Auto ON, nothing picked }, nothing else changes"
+          "data :: a brand-new save is v3 with the default Stats",
+          "data :: a broken Stats becomes the default",
+          "data :: a v1 save runs every step to v3 and gains the default Stats",
+          "data :: a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes"
         ],
         "newFailingCount": 5
       },
@@ -533,15 +539,40 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "Config: Data Version back to 3",
+        "mutation": "Config: the save version bumped to 4",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: save Data v4 (an older v3 server refuses these records)"
+          "config :: save Data stays v3 (검수 2026-10-07: Stats is an additive field)"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeStats: only the known letters (the old rule)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a save's picks are repaired, not reset",
+          "mults and sanitize :: Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "SanitizeStats: lowercase kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a save's picks are repaired, not reset",
+          "mults and sanitize :: Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped",
+          "mults and sanitize :: a huge broken Order is cut (only its first 4096 characters are read)"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "StatBonus without a cap",
@@ -588,14 +619,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "mults and sanitize :: a kept letter that is no stat yet (X) counts nothing: its point stays free",
           "points and alloc :: Lv1: nothing; an unknown class uses the Warrior pattern",
           "points and alloc :: a level reset keeps Order: Lv3 counts its first 2 letters, Lv2 its first 1",
           "points and alloc :: auto Lv10 Archer: A5 H4 (AH)",
           "points and alloc :: auto Lv10 Warrior / Mage: H5 A4 (HA repeated), nothing free, Order ignored",
-          "points and alloc :: by hand Lv10, Order AAAH: A3 H1, 5 free",
-          "points and alloc :: by hand with nothing picked: all 9 free"
+          "points and alloc :: by hand Lv10, Order AAAH: A3 H1, 5 free"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 11
       },
       {
         "mutation": "StatPoints without the cap",
@@ -639,11 +670,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "mults and sanitize :: a kept letter that is no stat yet (X) counts nothing: its point stays free",
           "points and alloc :: a level reset keeps Order: Lv3 counts its first 2 letters, Lv2 its first 1",
           "points and alloc :: by hand Lv10, Order AAAH: A3 H1, 5 free",
           "points and alloc :: by hand with nothing picked: all 9 free"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "free points never counted",
@@ -652,10 +684,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "mults and sanitize :: a kept letter that is no stat yet (X) counts nothing: its point stays free",
           "points and alloc :: by hand Lv10, Order AAAH: A3 H1, 5 free",
           "points and alloc :: by hand with nothing picked: all 9 free"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "StatMults ignores the switch",
@@ -708,14 +741,14 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "SanitizeStats keeps unknown letters",
+        "mutation": "SanitizeStats keeps every character",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "data v4 :: a v4 save's picks are repaired, not reset",
-          "mults and sanitize :: Order: only text, only the known letters",
+          "data :: a save's picks are repaired, not reset",
+          "mults and sanitize :: Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped",
           "mults and sanitize :: a huge broken Order is cut (only its first 4096 characters are read)"
         ],
         "newFailingCount": 3
@@ -738,7 +771,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "data v4 :: a v4 save's picks are repaired, not reset",
+          "data :: a save's picks are repaired, not reset",
           "mults and sanitize :: Auto: only a real boolean counts (else ON)",
           "mults and sanitize :: a good save stays as it is"
         ],
@@ -888,16 +921,18 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "DataService: no v4 step",
+        "mutation": "DataService: a v4 step again",
         "file": "src/ServerScriptService/DataService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "data v4 :: a v1 save runs every step to v4",
-          "data v4 :: a v3 save loads as v4: Stats = { Auto ON, nothing picked }, nothing else changes"
+          "data :: a brand-new save is v3 with the default Stats",
+          "data :: a save's picks are repaired, not reset",
+          "data :: a v1 save runs every step to v3 and gains the default Stats",
+          "data :: a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "DataService: Stats never repaired",
@@ -906,7 +941,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "data v4 :: a v4 save's picks are repaired, not reset"
+          "data :: a save's picks are repaired, not reset"
         ],
         "newFailingCount": 1
       },
@@ -1017,18 +1052,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
     "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1"
   },
-  "fixtureSHA256": "aac274b2e8607bd3e46a131e36befbf182ba8d84853ee35d201f6109e01c859e",
+  "fixtureSHA256": "50b1b399b429867aca96ef37f8ca2a0f98791e60749b0a077e64c64cbbe7cbd4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-69 stage 1 (switch Config.Features.StatPoints OFF): Config.Stats { MaxPoints 99, Letters A / H, Curve 1% to 20 / 0.5% to 40 / 0.25% after, AutoPattern Warrior HA / Mage HA / Archer AH }; StatPoints(L) = L - 1 (0..99, no points from rebirths); StatAlloc = the class pattern (Auto) or Order's first points (by hand, the rest free; a level reset keeps Order); StatMults = (1, 1) while off; SanitizeStats (boolean Auto, known letters, at most 99); PowerOf / CombatPower take alloc { A, H } (sqrt of attack x health with both mults); MaxCombatPower 25,488 off / 33,740 on (the even split), cached apart; Config.CombatPowerOf(player, tier?, +N?) reads Level / WeaponTier / WeaponEnhance / StatAtk / StatHp and is the one formula of JusticeService (GetCombatPower, GetPower with the rebirth bonus, the CombatPower attribute watching StatAtk / StatHp), PvPService's fallback, the Tab list column and LootService's 'Power X -> Y'; Data v4 adds Stats = { Auto true, Order '' } (migrate v4 step, fillDefaults repairs it, idempotent).",
+  "contract": "A23-69 stage 1 (switch Config.Features.StatPoints OFF): Config.Stats { MaxPoints 99, Letters A / H, Curve 1% to 20 / 0.5% to 40 / 0.25% after, AutoPattern Warrior HA / Mage HA / Archer AH }; StatPoints(L) = L - 1 (0..99, no points from rebirths); StatAlloc = the class pattern (Auto) or Order's first points (by hand, the rest free; a level reset keeps Order); StatMults = (1, 1) while off; SanitizeStats (boolean Auto, letters A-Z kept for later stats, the rest dropped, at most 99); PowerOf / CombatPower take alloc { A, H } (sqrt of attack x health with both mults); MaxCombatPower 25,488 off / 33,740 on (the even split), cached apart; Config.CombatPowerOf(player, tier?, +N?) reads Level / WeaponTier / WeaponEnhance / StatAtk / StatHp and is the one formula of JusticeService (GetCombatPower, GetPower with the rebirth bonus, the CombatPower attribute watching StatAtk / StatHp), PvPService's fallback, the Tab list column and LootService's 'Power X -> Y'; the save gains Stats = { Auto true, Order '' } as an additive field (검수 2026-10-07: Version stays 3; fillDefaults adds / repairs it, idempotent).",
   "limitations": "Stage 2 (10/16-17) adds StatService (the StatAction remote, auto placement, the blocks, StatAtk / StatHp / StatFree / AutoStat attributes), the hits (ComputeMonsterHit, ComputePvPHit inside the 0.8-1.5 caps), max HP (Config.StatMaxHealth) and the bait threshold; game dev 1 builds the [Stats] tab and switches the HUD fallback to Config.CombatPowerOf. The real DataStore load (the CR-L3 refusal of a newer record) is in tools/test_onboarding.py."
 }

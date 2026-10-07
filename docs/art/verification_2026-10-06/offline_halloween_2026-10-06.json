@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7241,
+  "checks": 7242,
   "failedChecks": 0,
-  "namedChecks": 587,
+  "namedChecks": 588,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1714,6 +1714,12 @@
     {
       "group": "king-rewards",
       "check": "the defeat line adds no second payout",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
       "pass": 1,
       "fail": 0
     },
@@ -3554,10 +3560,32 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 110,
-    "applied": 110,
-    "caught": 110,
+    "total": 112,
+    "applied": 112,
+    "caught": 112,
     "results": [
+      {
+        "mutation": "the kill keeps no paid list (KingDefeat Contributors empty)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KingDefeat reads nothing (the cleared tallies)",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
@@ -3947,7 +3975,7 @@
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
           "king-rewards :: A23-27: the king pays >= 3 own hits AND >= 0.5% of MaxHP (45 of 9000)"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 10
       },
       {
         "mutation": "king scroll row back to 0.5 (Enh70)",
@@ -3993,10 +4021,11 @@
           "config-kinds :: number / text field = design value",
           "king-rewards :: 2 hits are not enough for the king (RewardMinHits 3), however much damage",
           "king-rewards :: A23-27: the king pays >= 3 own hits AND >= 0.5% of MaxHP (45 of 9000)",
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "king safe only below Lv4 (SafeBelowLevel)",
@@ -4096,7 +4125,7 @@
           "ghost-king-schedule :: no ghost king before 16:00",
           "ghost-king-schedule :: server start: the pumpkin king is due at 6:00, the ghost king at 16:00 (10 minutes later)"
         ],
-        "newFailingCount": 45
+        "newFailingCount": 46
       },
       {
         "mutation": "next king 10 min after an appearance",
@@ -4301,10 +4330,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "king pays one-hit contributors (RewardMinHits ignored)",
@@ -4314,10 +4344,11 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 2 hits are not enough for the king (RewardMinHits 3), however much damage",
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "king pays chip damage (RewardMinDamageFrac ignored)",
@@ -4327,11 +4358,12 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: overkill does not count: 1 + 1 + (1e9 on 30 HP) = 32 damage, not paid",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "overkill counted as damage",
@@ -4352,13 +4384,13 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: every accepted hit adds +1 hit and its damage",
           "king-rewards :: hit / damage tallies per player",
-          "king-rewards :: the defeat line adds no second payout",
-          "king-rewards :: the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid"
+          "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "3 hits not enough (> RewardMinHits)",
@@ -4368,11 +4400,12 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout",
           "king-rewards :: the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "exactly 0.5% of MaxHP not enough (> minDamage)",
@@ -4382,11 +4415,12 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
+          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout",
           "king-rewards :: the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "every monster spares new players (Boss check dropped)",
@@ -5032,21 +5066,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
-    "src/ServerScriptService/QuestService.luau": "9568b5d8dfeb0454bbf4f42662fecfb6f5f6d9e14858992c5d343bad9edc2c4b",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/QuestService.luau": "2646440bb5c9b0339c3fe1ea8b5ec5d5d55ce6fc45cbe35d951e8e6748a4b4f4",
     "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/HalloweenService.luau": "00bb6d4b9a99355d11e9aef9ba81851da1d3ea0e3963975b62451b6f04058a7c",
+    "src/ServerScriptService/HalloweenService.luau": "eea6f3f80ca035d754fd598d8ef295c52b1cef5c651b4e624a501431ba4100c3",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/ServerScriptService/MonsterService.luau": "2294ede7730ed958434e78ceb434ac6f86cf3b8256b1f173430917ac4f2cada7",
-    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "f54d397395dbf7e6ae1d26dcb4fb6cca5da7d8c747075b785877323af7ac311a",
+    "src/ServerScriptService/MonsterService.luau": "3fd4239c739a3c7dde26d1e98e5845da3f00d4e0b2ed6d95843063ca8f6194df",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "507e5c4432316d825fbaffb3961f02eac1fdb896510ad618598776cde0421e8c",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "cbe5046ae65283c9d2fcc1ddd0fe75d3f5d76ea12d664b9beed9bf225f041020",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "83d4f4a4421832b97d43fc682f0ffe8956660b9964a8127eb56404258e346730",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "bd041d14cdb03a206df7b5c4c3714a0790e3cf12a88feb3c044a4dfd1b26ca22",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "29044dbfc398a1a998873099a317265b5e6b27fe2fc47d8fec21ca0226093a02",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "a2c2b18fcaf4a0f1024c57da5dd4b28a47c16ae57ddf61a9815114641c73baaa",
@@ -5058,7 +5092,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "b07c621f388ba04e0c3e0800ac3fd451a69c979c8abc6f573776962903d18b7d",
+  "fixtureSHA256": "7419be6b6257e6339a2d59b6b707e311455a7960b1f186c493d9180cdd3bffeb",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

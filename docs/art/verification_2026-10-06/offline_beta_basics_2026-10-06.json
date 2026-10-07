@@ -807,7 +807,7 @@
     },
     {
       "group": "title-config",
-      "check": "Data.Version 4 (A23-69 stat points; the title fields were additive)",
+      "check": "Data.Version stays 3 (the title fields and A23-69's Stats are additive)",
       "pass": 1,
       "fail": 0
     },
@@ -1801,15 +1801,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce"
   },
-  "fixtureSHA256": "eacb8ac3568cf6e602e9bbfe5febc25b3aded65fadc54736c357fd3aac33461a",
+  "fixtureSHA256": "8fb5336b52c74658a41b282e47648d701ede89ea6ff449a0766ea62c70554cc1",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

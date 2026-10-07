@@ -4,9 +4,9 @@
   "srcBugs": [],
   "patches": [],
   "real": {
-    "checks": 276,
+    "checks": 277,
     "failedChecks": 0,
-    "namedChecks": 236,
+    "namedChecks": 237,
     "namedChecksFailing": 0,
     "failing": []
   },
@@ -489,6 +489,12 @@
     {
       "group": "sack-avenged",
       "check": "Plunder Fx flies from the thief to the victim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "the refund Fx: Refund, Victim = the robbed, Thief = the thief (not the avenger)",
       "pass": 1,
       "fail": 0
     },
@@ -1436,10 +1442,21 @@
   "analyzerUnknownGlobals": [],
   "mutations": {
     "baseline": "real",
-    "total": 68,
-    "applied": 68,
-    "caught": 68,
+    "total": 69,
+    "applied": 69,
+    "caught": 69,
     "results": [
+      {
+        "mutation": "the refund Fx names the avenger as the thief",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-avenged :: the refund Fx: Refund, Victim = the robbed, Thief = the thief (not the avenger)"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "avenge always pays 100%",
         "file": "src/ServerScriptService/GrudgeService.luau",
@@ -2378,13 +2395,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/GrudgeService.luau": "643a5e2549f1328eeb0a3441eeea03e9a5a6155e4d09332ae0fd2354f30f1958",
+    "src/ServerScriptService/GrudgeService.luau": "c4b055e8466eeb2f275b294fd0611c45d5a892711ad2bf9d6f88f545471ff531",
     "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360"
   },
-  "fixtureSHA256": "024beaa46fffc82d9f60c64021caf548d8c962b10ae962f5f8f2d92119b94255",
+  "fixtureSHA256": "cdc039bc35a024d2c6fc727554666e1628a6afef8809ad1a29d3e3f7b33fb858",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

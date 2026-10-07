@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 158,
+  "checks": 164,
   "failedChecks": 0,
-  "namedChecks": 158,
+  "namedChecks": 164,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -399,13 +399,49 @@
     },
     {
       "group": "x field",
-      "check": "the first tick that hits: one more Released { Slot X, MonstersHit 1 } for that cast",
+      "check": "a later tick that hits reports nothing yet (the field goes on)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "x field",
-      "check": "later hitting ticks add no more Released",
+      "check": "still nothing before the end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "its Total = the damage of all the field's ticks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "nothing after the end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "setup: a late field that hit two",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "ended early: the late report then (2 at once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "and only once",
       "pass": 1,
       "fail": 0
     },
@@ -960,9 +996,9 @@
   "staticChecks": 10,
   "staticFailures": [],
   "mutations": {
-    "total": 88,
-    "applied": 88,
-    "caught": 88,
+    "total": 92,
+    "applied": 92,
+    "caught": 92,
     "skipped": false,
     "results": [
       {
@@ -1200,9 +1236,12 @@
         "crashed": false,
         "newFailingChecks": [
           "x field :: after 5 ticks the field is gone (no 6th)",
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+          "x field :: its Total = the damage of all the field's ticks",
+          "x field :: nothing after the end",
           "x field :: the friend's Guard ends 1.1 s after the last tick"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       },
       {
         "mutation": "one tick only",
@@ -1428,29 +1467,78 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "a late-hitting field never counts",
+        "mutation": "a late field never reports at its end",
         "file": "src/ServerScriptService/SkillService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "x field :: later hitting ticks add no more Released",
-          "x field :: the first tick that hits: one more Released { Slot X, MonstersHit 1 } for that cast"
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+          "x field :: its Total = the damage of all the field's ticks",
+          "x field :: nothing after the end"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "an early end drops the late report",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: and only once",
+          "x field :: ended early: the late report then (2 at once)"
         ],
         "newFailingCount": 2
       },
       {
-        "mutation": "a field counts every hitting tick",
+        "mutation": "the late report = the first hitting tick (the old rule)",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a later tick that hits reports nothing yet (the field goes on)",
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+          "x field :: its Total = the damage of all the field's ticks",
+          "x field :: setup: a late field that hit two",
+          "x field :: still nothing before the end"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the late report = the last tick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the late Total = the last tick's damage",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: its Total = the damage of all the field's ticks"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a field that hit at once reports again at its end",
         "file": "src/ServerScriptService/SkillService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
           "x field :: a new field ends the old one (SkillEnd New)",
-          "x field :: later hitting ticks add no more Released",
           "x field :: still one Released; the living monsters are slowed again on every tick"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 2
       },
       {
         "mutation": "a hop with the grudge sack",
@@ -2021,23 +2109,23 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
     "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
-    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/SkillService.luau": "00b3dcaf6a23d2f37022f8edb6d9af3ece669bce1d38375228795399699d59e9",
-    "src/ServerScriptService/MonsterService.luau": "2294ede7730ed958434e78ceb434ac6f86cf3b8256b1f173430917ac4f2cada7",
+    "src/ServerScriptService/SkillService.luau": "3a11db855624b8f07a2c1cd36693e3e914e766228c6fcce0cfebaad10a8ffdf6",
+    "src/ServerScriptService/MonsterService.luau": "3fd4239c739a3c7dde26d1e98e5845da3f00d4e0b2ed6d95843063ca8f6194df",
     "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",
     "src/ServerScriptService/ZoneService.luau": "a48dc0e0395518962081690f147bba2337755f027a7181ba3dcd6698288d45f0"
   },
-  "fixtureSHA256": "66ef68c14c9cb6b84ea5a9bbaddc0797325bd87f02dbc54e14aeec0ddca6714a",
+  "fixtureSHA256": "5c56e9413e0984352751e6a389fbee44a3b3215b112402b238326e713d26361b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

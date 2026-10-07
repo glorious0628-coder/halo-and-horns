@@ -23,7 +23,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL another player's Travel shows nothing :: ",
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x00000239420ffe00 closed 2"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001d6d6b2c290 closed 2"
         ]
       },
       {
@@ -31,7 +31,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000002c9d541ca90 closed 0"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001c774ed86e0 closed 0"
         ]
       },
       {
@@ -50,7 +50,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TravelDone lifts the black at once :: 0",
-          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000001e2c25eeaa0"
+          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000001eb0089f1f0"
         ]
       },
       {
@@ -119,7 +119,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x000001f7b45218a0"
+          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000024f11660fd0"
         ]
       },
       {
@@ -127,13 +127,13 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my first kill clears the marker :: table: 0x000001cd38654880"
+          "CHECK_FAIL my first kill clears the marker :: table: 0x000002466c202fe0"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "fa6bb2d48ecf24b14a6ee637afdc80a581354eb3ba2e6654222d9f097ccce839",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "c0137c9cc4d887e85d146d631e8cb83939addd9ebe99ac120a61081b83bf78ee"
   },

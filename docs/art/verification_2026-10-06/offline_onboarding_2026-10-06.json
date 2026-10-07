@@ -1,15 +1,15 @@
 {
   "status": "passed",
-  "checks": 822,
+  "checks": 871,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
-    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
-    "src/ServerScriptService/QuestService.luau": "9568b5d8dfeb0454bbf4f42662fecfb6f5f6d9e14858992c5d343bad9edc2c4b",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/QuestService.luau": "2646440bb5c9b0339c3fe1ea8b5ec5d5d55ce6fc45cbe35d951e8e6748a4b4f4",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360"
   },
-  "fixtureSHA256": "4b723da70d4f527ad6de2fc1e8482a45eb59c1335babc07a545dea00b760e29c",
+  "fixtureSHA256": "308f78da5cfa57f47d4214e1a05feaf8eac07fa95203e0c98fa7bea6c1996d01",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,
@@ -61,9 +61,10 @@
     "legacy tier4 preserved without inventing earlier purchases",
     "invalid/nonfinite mask, tier and visit repair",
     "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
-    "B4 / A23-69 Data Version 4: fresh/v3/v2/v1 records load and save as Version 4 (v3 -> v4 adds only Stats = { Auto ON, nothing picked }; a picked build saves and comes back repaired) with no other field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
+    "B4 Data Version 3 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a picked build saves and comes back repaired, A-Z kept): fresh/v2/v1 records load and save as Version 3 with no other field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
     "finite-value save serialization guard and migration idempotence",
-    "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more"
+    "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
+    "A23-74 weapon first (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 (the Forge row, Fx Travel To = Crossroads / Spot = Forge, the instant Crossroads travel); meadow kills before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 (2 in the meadow), once; Forge.TravelDelay later the meadow trip -> the hunt; a save owning tier 1 -> step 1 as before; every claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial at step 3 = the forge trip; a KO at step 3 respawns at home"
   ],
   "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); 'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again)."
 }

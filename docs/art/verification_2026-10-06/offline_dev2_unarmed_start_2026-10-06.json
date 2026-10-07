@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 227,
+  "checks": 228,
   "failedChecks": 0,
-  "namedChecks": 220,
+  "namedChecks": 221,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -15,7 +15,7 @@
     },
     {
       "group": "config",
-      "check": "save Version 4 (A23-69; A23-34 itself was additive)",
+      "check": "save Version stays 3 (A23-34 and A23-69's Stats are additive)",
       "pass": 1,
       "fail": 0
     },
@@ -339,7 +339,13 @@
     },
     {
       "group": "config",
-      "check": "first-mission line points to the free first weapon",
+      "check": "first-mission line points to the next weapon (its reward = the tier-2 price)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the tier-1 refusal says the gift comes with the Guide's first quest",
       "pass": 1,
       "fail": 0
     },
@@ -375,7 +381,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 bare-handed save kept (no bit forced) (idempotent, Version 4)",
+      "check": "load again: v3 bare-handed save kept (no bit forced) (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -387,7 +393,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 stored tier 0 is valid: kept even with a weapon owned (idempotent, Version 4)",
+      "check": "load again: v3 stored tier 0 is valid: kept even with a weapon owned (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -399,7 +405,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 save that bought T2 first keeps only T2 (idempotent, Version 4)",
+      "check": "load again: v3 save that bought T2 first keeps only T2 (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -411,7 +417,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 legacy save with T1 unchanged (idempotent, Version 4)",
+      "check": "load again: v3 legacy save with T1 unchanged (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -423,7 +429,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 save with T1-T3 unchanged (idempotent, Version 4)",
+      "check": "load again: v3 save with T1-T3 unchanged (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -435,7 +441,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 equipped tier is owned (bit added) (idempotent, Version 4)",
+      "check": "load again: v3 equipped tier is owned (bit added) (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -447,7 +453,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 save without a mask keeps its T1 (A23-4) + the equipped T2 (idempotent, Version 4)",
+      "check": "load again: v2 save without a mask keeps its T1 (A23-4) + the equipped T2 (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -459,7 +465,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 save without weapon fields = T1 (pre-A23-34 saves always had it) (idempotent, Version 4)",
+      "check": "load again: v2 save without weapon fields = T1 (pre-A23-34 saves always had it) (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -471,7 +477,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 tier 0 = its T1 (idempotent, Version 4)",
+      "check": "load again: v2 tier 0 = its T1 (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -483,7 +489,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 mask without T1 gets T1 back (idempotent, Version 4)",
+      "check": "load again: v2 mask without T1 gets T1 back (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -495,7 +501,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v1 SwordTier 3 -> T3 + T1 (idempotent, Version 4)",
+      "check": "load again: v1 SwordTier 3 -> T3 + T1 (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -507,7 +513,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 NaN mask -> nothing owned (idempotent, Version 4)",
+      "check": "load again: v3 NaN mask -> nothing owned (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -519,7 +525,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 negative mask -> nothing owned (idempotent, Version 4)",
+      "check": "load again: v3 negative mask -> nothing owned (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -531,7 +537,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 fraction mask -> only the equipped bit (idempotent, Version 4)",
+      "check": "load again: v3 fraction mask -> only the equipped bit (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -543,7 +549,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 0xFFFFFFFF -> only the equipped bit (idempotent, Version 4)",
+      "check": "load again: v3 0xFFFFFFFF -> only the equipped bit (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -555,7 +561,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier 9 with nothing owned -> bare hands (idempotent, Version 4)",
+      "check": "load again: v3 tier 9 with nothing owned -> bare hands (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -567,7 +573,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier -1, owns T2+T3 at Lv1 -> T2 (idempotent, Version 4)",
+      "check": "load again: v3 tier -1, owns T2+T3 at Lv1 -> T2 (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -579,7 +585,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 NaN tier, owns T2+T3 at Lv5 -> T3 (idempotent, Version 4)",
+      "check": "load again: v3 NaN tier, owns T2+T3 at Lv5 -> T3 (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -591,7 +597,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier 1.5 with T1 -> T1 (idempotent, Version 4)",
+      "check": "load again: v3 tier 1.5 with T1 -> T1 (idempotent, Version 3)",
       "pass": 1,
       "fail": 0
     },
@@ -2281,21 +2287,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
     "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
-    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e"
   },
-  "fixtureSHA256": "b36f1e05caeadc9c8d59b69c197d3ad379fcad440460ba83bc23253cb6354327",
+  "fixtureSHA256": "b272dc9137a221b662a2541a77592751ba875242625af29c0494e4f071a1ed08",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-34 server: Config.Data.Defaults WeaponTier 0 / WeaponOwnedMask 0; v1 / v2 records get tier 1 + its bit in migrate, v3 records keep what they own, fillDefaults accepts 0 and forces no bit, a corrupted tier = Config.BestUsableWeapon (0 = bare hands). Config.WeaponDamage(0) = Combat.Unarmed.Damage (4, no +N); Config.CombatPower counts bare hands from 0 (Lv1 = 0, Lv2 = 12) and leaves armed numbers unchanged; BestUsableWeapon -> 0 when nothing owned is usable; WeaponName(0) = Text.BareHands, WeaponArtKey(0) = nil; Config.AttackProfile(class, tier, faction) = the class row armed, the shared punch bare-handed (Style Punch, 1 nearest target within 7 in a 75 deg cone, 0.8 s, class multiplier 1, not ranged, no Mage MP). CombatService.Swing / auto combat use it (Fx Swing Style = 'Punch', From = right hand, Contact 0.15, no launch / flight); skill Q stays the class skill (class range / multiplier). ShopService sells tier 2-3 to a bare-handed player, refuses tier 1 with Text.WeaponFromQuest, selling the equipped weapon equips BestUsableWeapon (0 = bare hands); the anvil prompt runs StoryQuestService.Refresh before opening the shop. M1_1 (GiveWeapon = 1) -> LootService.GrantFirstWeapon: tier 1 owned, equipped only when bare-handed (notice FirstWeapon '전투력 X → Y'), else the bag line; nothing for a save that owns it; the join safety net pays a finished M1_1 that never paid. A weapon found bare-handed is equipped when its level allows. CharacterVisuals: tier 0 = no WeaponModel. JusticeService / PvP power read tier 0.",
+  "contract": "A23-34 server: Config.Data.Defaults WeaponTier 0 / WeaponOwnedMask 0; v1 / v2 records get tier 1 + its bit in migrate, v3 records keep what they own, fillDefaults accepts 0 and forces no bit, a corrupted tier = Config.BestUsableWeapon (0 = bare hands). Config.WeaponDamage(0) = Combat.Unarmed.Damage (4, no +N); Config.CombatPower counts bare hands from 0 (Lv1 = 0, Lv2 = 12) and leaves armed numbers unchanged; BestUsableWeapon -> 0 when nothing owned is usable; WeaponName(0) = Text.BareHands, WeaponArtKey(0) = nil; Config.AttackProfile(class, tier, faction) = the class row armed, the shared punch bare-handed (Style Punch, 1 nearest target within 7 in a 75 deg cone, 0.8 s, class multiplier 1, not ranged, no Mage MP). CombatService.Swing / auto combat use it (Fx Swing Style = 'Punch', From = right hand, Contact 0.15, no launch / flight); skill Q stays the class skill (class range / multiplier). ShopService sells tier 2-3 to a bare-handed player, refuses tier 1 with Text.WeaponFromQuest, selling the equipped weapon equips BestUsableWeapon (0 = bare hands); the anvil prompt runs StoryQuestService.Refresh before opening the shop. M1_1 (GiveWeapon = 1) -> LootService.GrantFirstWeapon: tier 1 owned, equipped only when bare-handed (notice FirstWeapon '전투력 X → Y'), else the bag line; nothing for a save that owns it; the join safety net pays a finished M1_1 that never paid (A23-74: the gift itself now comes at the Forge step, QuestService.ForgeGift, before the hunt; M1_1's is the safety net). A weapon found bare-handed is equipped when its level allows. CharacterVisuals: tier 0 = no WeaponModel. JusticeService / PvP power read tier 0.",
   "limitations": "Offline doubles for Players, characters (a root facing -Z and a right hand), monsters (records with a root), Net and the other services. The client side (punch animation / Fx, blacksmith and item windows with tier 0, the class card text) is the 게임성 개발 1 contract; real play is checked after the merge."
 }

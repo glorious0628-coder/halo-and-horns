@@ -195,7 +195,7 @@
     },
     {
       "group": "config",
-      "check": "save defaults: no pet, TamerNotice false, Version 4 (A23-69)",
+      "check": "save defaults: no pet, TamerNotice false, Version 3",
       "pass": 1,
       "fail": 0
     },
@@ -1109,19 +1109,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
+    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
     "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
-    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/PetService.luau": "3682a4cacd6463e70c8e26b3c94d7919d22ee92add4c1db3b6e9fea9ac1e9170"
   },
-  "fixtureSHA256": "06d437a625781087bdc9eabc16f6cdef140ca1fa859a383f5047c098f9a4dda3",
+  "fixtureSHA256": "d6f176c7cbb88b16fb6e3fbaac4e2b9ebd183b07d7ab70803d4e1436376c3986",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
