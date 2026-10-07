@@ -1869,10 +1869,7 @@ Config.Tutorial = {
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
-	-- A23-3: enough for the wood weapon (150); buying stays optional. A23-74: the first weapon now comes before the hunt,
-	-- so these 150 gold are the NEXT weapon's price (tier 2 at Lv1): the Claimed line says so and the M1_1 visit (show the
-	-- jelly) opens the weapon shop right after it
-	QuestRewardGold = 150,
+	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
 	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
@@ -1935,8 +1932,8 @@ Config.Tutorial = {
 		-- "You got your first weapon" line with the power change)
 		Forge = "Get your first weapon · Crossroads Forge",
 		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road.",
-		-- A23-74: the first weapon is in hand already, so the 150 gold are the next weapon's price (M1_1 sends the player
-		-- back to the Forge)
+		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
+		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
 		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
 		ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
 		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
@@ -2088,7 +2085,7 @@ Config.StoryQuests = {
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
 		},
-		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon).
+		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		-- A23-74: the first weapon now comes before the hunt (Tutorial.Steps.Forge), so GiveWeapon is only the safety net
 		-- (owning tier 1 is the record: a no-op then). The visit is the next-weapon moment (the shop opens after the
 		-- lines; the first mission's 150 gold buy tier 2), and the quest pays like its chapter-1 siblings

@@ -69,16 +69,8 @@ def main() -> int:
                           "dialoguePagesPerFaction": 3, "worldNpcCreated": False,
                           "newArtOrUploads": 0, "clientPanelAndLiveEngineVerification": "pending_root"},
         "a23Facts": {"firstMissionRewardGold": 150, "nextGoalAfterBlacksmith": ["NextSkillIron", "NextIronLevel", "NextIronGold", "NextZone", "GuideDone"],
-                     "skillQuestCounts": "manual Released with MonstersHit >= 1 only (Auto ~= true)",
-                     "weaponFirst": "A23-74: a bare-handed [Accept] -> the Forge step 3 before the hunt (the mutations: "
-                                    "tools/test_weapon_first.py)"},
-        "coverage": ["A23-74: a bare-handed [Accept] -> step 3 (the Forge row, Fx Travel To = Crossroads / Spot = Forge, "
-                     "the instant Crossroads travel); meadow kills before the gift count nothing; QuestService.ForgeGift -> "
-                     "Otto's line + step 1 (2 in the meadow), once; Forge.TravelDelay later the meadow trip -> the hunt; a "
-                     "save owning tier 1 -> step 1 as before; every claim clears BlacksmithVisited, Claimed = the next "
-                     "weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); "
-                     "RequestTutorial at step 3 = the forge trip; a KO at step 3 respawns at home",
-                     "real Net registry includes unique RequestTutorial/AcceptTutorial names",
+                     "skillQuestCounts": "manual Released with MonstersHit >= 1 only (Auto ~= true)"},
+        "coverage": ["real Net registry includes unique RequestTutorial/AcceptTutorial names",
                      "faction guide three-page dialogue, once per session automatic open, explicit reopen/accept",
                      "no-argument remotes reject extra/nil payload, unready/dead/invalid choices and rate-limit denial",
                      "closed guide stays pending; zone/kill/respawn/watchdog cannot bypass acceptance",
@@ -105,7 +97,14 @@ def main() -> int:
                      "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly "
                      "Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the "
                      "Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; "
-                     "never outside step 2; the paid state saves and a late claim/rejoin pays nothing more"],
+                     "never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
+                     "A23-74 weapon first (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 "
+                     "(the Forge row, Fx Travel To = Crossroads / Spot = Forge, the instant Crossroads travel); meadow kills "
+                     "before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 (2 in the meadow), once; "
+                     "Forge.TravelDelay later the meadow trip -> the hunt; a save owning tier 1 -> step 1 as before; every "
+                     "claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned "
+                     "(ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial at step 3 = the "
+                     "forge trip; a KO at step 3 respawns at home"],
         "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. "
                        "F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); "
                        "'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again).",
