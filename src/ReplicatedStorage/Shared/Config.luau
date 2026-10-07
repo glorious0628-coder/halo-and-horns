@@ -1844,6 +1844,13 @@ Config.Tutorial = {
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
 	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
 	AutoClaimSeconds = 60,
+	-- A23-68 (user 2026-10-07, early churn): #1 the guide's [Accept] moves the player to the meadow entrance (GuideZone
+	-- spawn) after AcceptTravelSeconds (the client fades; Fx "MeadowTravel" { In }), 0 / nil = off; RespawnInMeadow:
+	-- while the first mission runs (accepted, not claimed) a KO respawns at the meadow entrance; #4 FoldOthers: until the
+	-- first [Claim] every other quest-list row is sent with Folded = true (kept, only its line is folded)
+	AcceptTravelSeconds = 3,
+	RespawnInMeadow = true,
+	FoldOthers = true,
 	WelcomeRate = 0.5,
 	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
 	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
@@ -2977,8 +2984,10 @@ Config.RateLimits = {
 -- note. ReturnActs = the first actions logged for a returning player. FriendCheckMax = IsFriendsWith calls per join.
 -- Debug = print every call (nil = Studio only).
 Config.Analytics = {
-	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "FirstMissionDone", "FirstWeapon", "AutoUnlocked",
-		"Level10" },
+	-- A23-68 #5 (the first 3 minutes; renumbered before the beta, nothing is public yet): MeadowArrive, FirstHit,
+	-- FirstKill, FirstSkillHit and ForgeArrive between the old steps
+	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "MeadowArrive", "FirstHit", "FirstKill",
+		"FirstSkillHit", "FirstMissionDone", "ForgeArrive", "FirstWeapon", "AutoUnlocked", "Level10" },
 	UiIds = { "Menu", "Items", "Bag", "Skills", "Character", "Ranking", "Journal", "Board", "Settings", "Help", "News",
 		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback" },
 	AwayAfter = 300,

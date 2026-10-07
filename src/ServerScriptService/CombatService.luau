@@ -22,6 +22,9 @@ CombatService.PlayerDamaged = Util.Signal.new()
 -- (victim, by) BB38 metrics: fired with the KO screen's cause (BB14 sendKO: "Player" | "Kaiju" | "Monster" | "Fall" |
 -- "Other") once per KO, from the death pipeline
 CombatService.KnockedOut = Util.Signal.new()
+-- (player, record, killed) A23-68 #5 funnel: a player's hit landed on a monster (a swing, Q or a skill; not a refused
+-- hit), fired right after the damage. Handlers must not yield.
+CombatService.MonsterHit = Util.Signal.new()
 
 local S = nil
 
@@ -211,6 +214,8 @@ end
 -- Swing / Release line below (at most once per AntiCheat.LogCooldown s) appears only when enforcing; `enforce` is
 -- re-checked so blocking stays gated on Config even if ZoneService ever returns false without it.
 local function attackBlocked(player, root, what)
+	-- A23-68 #1: no swing or skill while the screen fades for the move to the meadow (QuestService MoveLockUntil)
+	if numAttr(player, "MoveLockUntil", 0) > Util.Now() then return true end
 	local pos = root.Position
 	local zone = Config.ZoneAt(pos)
 	if (zone.MinLevel or 1) > numAttr(player, "Level", 1) then
@@ -636,6 +641,7 @@ local function damageMonster(rec, dealt, player, crit)
 	local hpBefore = math.max(0, tonumber(rec.HP) or 0)
 	local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit)
 	local applied = math.max(0, hpBefore - math.max(0, tonumber(rec.HP) or 0))
+	if player and (killed or applied > 0) then CombatService.MonsterHit:Fire(player, rec, killed) end
 	return killed, applied
 end
 

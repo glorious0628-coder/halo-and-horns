@@ -63,6 +63,7 @@ local function fixture(saved)
 		delay = function() end, defer = function(fn, ...) fn(...) end }
 	local util = { DeepCopy = copy, Warn = function(tag, msg) if tag ~= "DataService" then error(tag .. ": " .. msg) end end,
 		IsAlive = function() return f.Alive end, FormatNumber = tostring, Now = function() return 100 end,
+		GetCharacter = function() return nil end, -- A23-68 #1: the accept's delayed move (never run here: task.delay is a no-op)
 		RateLimit = function(p, key, interval) table.insert(f.RateCalls, { p, key, interval }); return f.RateAllowed end,
 		Random = { NextNumber = function(_, a, b) return a and (a + b) / 2 or 0.5 end, NextInteger = function(_, a) return a end } }
 	local net = { Get = function(name)

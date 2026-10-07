@@ -442,12 +442,40 @@ local function onIntroSeen(player, ...)
 	S.PlayerService.SetStat(player, "IntroSeen", true)
 end
 
+-- A23-68 #1: AcceptTravelSeconds after [Accept] the player is moved to the meadow entrance (an instant Travel: the
+-- usual level / kaiju / sack / stars / combat rules still refuse it, and the HUD guide beam stays the way there).
+-- Contract with game dev 1 (client fade): Fx "Travel" { UserId, To, T } at the accept, Fx "TravelDone" { UserId } when
+-- the move ran (or was skipped); MoveLockUntil (server time) refuses swings and skills in between (CombatService)
+local function travelToMeadow(player, character)
+	if player.Parent ~= Players or Util.GetCharacter(player) ~= character or not Util.IsAlive(player) then return end
+	if getStep(player) ~= STEP_GUIDE or S.ZoneService.GetZoneId(player) == TUT_ZONE then return end
+	local ok, err = pcall(S.ZoneService.Travel, player, TUT_ZONE, true)
+	if not ok then Util.Warn(TAG, "meadow travel: " .. tostring(err)) end
+end
+
+local function travelDone(player)
+	if player.Parent ~= Players then return end
+	player:SetAttribute("MoveLockUntil", 0)
+	pcall(Net.Fx, player, "TravelDone", { UserId = player.UserId })
+end
+
 local function onAcceptTutorial(player, ...)
 	if select("#", ...) ~= 0 or not canWelcome(player) then return end
 	if not Util.RateLimit(player, "AcceptTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
 	welcomeShown[player] = true
 	S.PlayerService.SetStat(player, "TutorialKills", 0) -- a fresh acceptance never inherits stale kills
 	setStep(player, STEP_GUIDE) -- acceptance in the meadow can enter step 2, without crediting any kill
+	local wait = tonumber(TUT_CFG.AcceptTravelSeconds) or 0
+	if wait > 0 and getStep(player) == STEP_GUIDE then
+		local character = Util.GetCharacter(player)
+		player:SetAttribute("MoveLockUntil", Util.Now() + wait + 1.5) -- the client's fade lasts at most T + 1.5 s
+		pcall(Net.Fx, player, "Travel", { UserId = player.UserId, To = TUT_ZONE, T = wait })
+		task.delay(wait, function()
+			local ok, err = pcall(travelToMeadow, player, character)
+			if not ok then Util.Warn(TAG, "meadow travel: " .. tostring(err)) end
+			travelDone(player)
+		end)
+	end
 end
 
 -- Restore existing accepted progress. Step 0 only opens dialogue; closing it never accepts a mission.
@@ -652,6 +680,12 @@ local function publish(player)
 					Slot = i, -- N1: clients address quests by Slot, never by array index
 				})
 			end
+		end
+	end
+	-- A23-68 #4: until the first [Claim] only the first mission's line shows; the others are kept but folded
+	if TUT_CFG.FoldOthers == true and getStep(player) ~= TUT_DONE then
+		for _, row in list do
+			if row.Id ~= TUT_ID then row.Folded = true end
 		end
 	end
 	local ok, json = pcall(HttpService.JSONEncode, HttpService, list)

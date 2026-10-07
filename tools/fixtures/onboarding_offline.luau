@@ -58,7 +58,8 @@ local function fixture(saved, opts)
 	serial += 1
 	-- Clock: os.clock() as QuestService sees it (F10-4 safety-net timer); the other services keep the real clock
 	local f = { Zone = "HaloTown", Alive = true, Ready = true, RateAllowed = true, Loops = {}, LoopOrder = {}, Delayed = {},
-		Notices = {}, NoticeLog = {}, Rows = {}, Remote = {}, Sends = 0, Spawned = {}, Panels = {}, Clock = 1000 }
+		Notices = {}, NoticeLog = {}, Rows = {}, Remote = {}, Sends = 0, Spawned = {}, Panels = {}, Clock = 1000,
+		Character = { Name = "Body1" }, FxLog = {}, Travels = {}, TravelOk = true }
 	local config = execute(CONFIG_SOURCE, configEnv)
 	f.Config = config
 	local players = {}
@@ -93,6 +94,7 @@ local function fixture(saved, opts)
 		delay = function(_, fn) table.insert(f.Delayed, fn) end, defer = function(fn, ...) fn(...) end }
 	local util = { DeepCopy = copy, Warn = function(tag, msg) if tag ~= "DataService" then error(tag .. ": " .. msg) end end,
 		IsAlive = function() return f.Alive end, FormatNumber = tostring, Now = function() return 100 end,
+		GetCharacter = function() return f.Character end,
 		RateLimit = function() return f.RateAllowed end,
 		Random = { NextNumber = function(_, a, b) return a and (a + b) / 2 or 0.5 end, NextInteger = function(_, a) return a end } }
 	local net = { Get = function(name)
@@ -103,6 +105,9 @@ local function fixture(saved, opts)
 			else error("unexpected server publication " .. name) end
 		end } end
 		return f.Remote[name]
+	end, Fx = function(p, kind, data)
+		check(p == f.Player, "Fx leaked to the wrong player")
+		table.insert(f.FxLog, { Kind = kind, Data = data })
 	end, Notify = function(p, message, kind, secs)
 		table.insert(f.Notices, message)
 		table.insert(f.NoticeLog, { Player = p, Text = message, Kind = kind, Secs = secs })
@@ -144,7 +149,15 @@ local function fixture(saved, opts)
 		AddXP = function(p, amount) ps.AddStat(p, "XP", amount) end }
 	local registry = { PlayerService = ps, DataService = dataService, MonsterService = monster, ProgressionService = prog,
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return dataService.Get(p).Faction end },
-		ClassService = { ClassChanged = signal() }, ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end },
+		ClassService = { ClassChanged = signal() }, ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end,
+			-- A23-68 #1: the accepted mission's move to the meadow (an instant Travel); arriving fires ZoneChanged
+			Travel = function(p, dest, instant)
+				table.insert(f.Travels, { Dest = dest, Instant = instant })
+				if not f.TravelOk then return false end
+				f.Zone = dest
+				f.Services.ZoneService.ZoneChanged:Fire(p, dest)
+				return true
+			end },
 		CombatService = { Released = signal() }, GooseService = { GooseFinished = signal() },
 		PvPService = { PlayerKO = signal(), IsRookie = function() return true end }, KaijuService = { KaijuEnded = signal() } }
 	local questEnv = table.clone(env)
@@ -769,6 +782,80 @@ do
 		check(g.Data.TutorialStep == step and g.Data.BankGold == bank and count(g, (lines(g))) == 0,
 			"F10-4 the safety net never pays outside step 2 (step " .. step .. ")" .. state(g))
 	end
+end
+-- A23-68 #1: [Accept] -> AcceptTravelSeconds -> an instant Travel to the meadow entrance (the client fades on Fx
+-- "MeadowTravel"); #4: until the first [Claim] every other quest row is folded
+do
+	local f = fixture(); f:Choose(); f:Publish()
+	local T = f.Config.Tutorial
+	check(T.AcceptTravelSeconds == 3 and T.RespawnInMeadow == true and T.FoldOthers == true,
+		"A23-68 Config.Tutorial: travel 3 s, respawn in the meadow, fold the other rows")
+	local before = #f.Delayed
+	f:Accept(); f:Publish()
+	check(f.Data.TutorialStep == 1 and #f.Travels == 0, "A23-68 accept: step 1, nobody moved yet")
+	check(#f.FxLog == 1 and f.FxLog[1].Kind == "Travel" and f.FxLog[1].Data.To == "SlimeMeadow" and f.FxLog[1].Data.T == 3
+		and f.FxLog[1].Data.UserId == f.Player.UserId, "A23-68 accept: Fx Travel { UserId, To = SlimeMeadow, T = 3 } (client fade)")
+	check(f.Player:GetAttribute("MoveLockUntil") == 100 + 3 + 1.5, "A23-68 accept: MoveLockUntil = now + T + 1.5 (no swing / skill)")
+	check(#f.Delayed == before + 1, "A23-68 accept: one delayed move")
+	local folded, open = 0, 0
+	for _, row in f.LastList do
+		if row.Id == "tutorial" then
+			if row.Folded ~= nil then open = -99 end
+		elseif row.Folded == true then
+			folded += 1
+		else
+			open += 1
+		end
+	end
+	check(folded == f.Config.Quests.Slots and open == 0, "A23-68 #4: before the first claim every other row is folded")
+	local job = table.remove(f.Delayed); job(); f:Publish()
+	check(#f.Travels == 1 and f.Travels[1].Dest == "SlimeMeadow" and f.Travels[1].Instant == true,
+		"A23-68: the delayed move is an instant Travel to the meadow")
+	check(#f.FxLog == 2 and f.FxLog[2].Kind == "TravelDone" and f.FxLog[2].Data.UserId == f.Player.UserId
+		and f.Player:GetAttribute("MoveLockUntil") == 0, "A23-68: after the move Fx TravelDone and the lock is lifted")
+	check(f.Data.TutorialStep == 2 and f.LastList[1].Target == 5, "A23-68: arriving starts the first mission's hunt (step 2)")
+	for _ = 1, 5 do f:Kill() end
+	f:Claim()
+	check(f.Data.TutorialStep == 99, "A23-68: the first mission is claimed")
+	local stillFolded = 0
+	for _, row in f.LastList do if row.Folded ~= nil then stillFolded += 1 end end
+	check(stillFolded == 0, "A23-68 #4: after the first claim nothing is folded")
+	-- a new character before the move (a KO), a move the zone rules refuse, accepting in the meadow: no move
+	local g = fixture(); g:Choose(); g:Publish(); g:Accept()
+	g.Character = { Name = "Body2" }
+	table.remove(g.Delayed)()
+	check(#g.Travels == 0 and g.Data.TutorialStep == 1, "A23-68: a respawned character is not moved (the guide beam stays)")
+	check(g.FxLog[#g.FxLog].Kind == "TravelDone" and g.Player:GetAttribute("MoveLockUntil") == 0,
+		"A23-68: no move still ends the fade (TravelDone) and lifts the lock")
+	local h = fixture(); h:Choose(); h:Publish(); h.TravelOk = false; h:Accept()
+	table.remove(h.Delayed)()
+	check(#h.Travels == 1 and h.Data.TutorialStep == 1, "A23-68: a refused Travel keeps step 1 (walk with the guide beam)")
+	local m = fixture(); m:Choose(); m.Zone = "SlimeMeadow"; m:Publish()
+	local mBefore = #m.Delayed
+	m:Accept(); m:Publish()
+	check(m.Data.TutorialStep == 2 and #m.Delayed == mBefore and #m.FxLog == 0 and m.Player:GetAttribute("MoveLockUntil") == nil,
+		"A23-68: accepting in the meadow moves nobody (no fade, no lock)")
+	-- PlayerService.respawnZoneId: the meadow entrance while the first mission runs, else home
+	local function cut(source, header)
+		local a = assert(string.find(source, header, 1, true), header)
+		local b = assert(string.find(source, "\nend\n", a, true), header .. " end")
+		return string.sub(source, a, b + 4)
+	end
+	local chunk = "local S, Config = ...\n" .. cut(PLAYER_SOURCE, "local function stat(")
+		.. cut(PLAYER_SOURCE, "local function respawnZoneId(") .. "\nreturn respawnZoneId\n"
+	local data = { Faction = "Halo" }
+	local who = { GetAttribute = function() return nil end }
+	local fn = assert(loadstring(chunk))
+	local respawnZoneId = fn({ DataService = { Get = function() return data end } }, f.Config)
+	local home = f.Config.HomeZoneId("Halo")
+	for _, case in { { 0, home }, { 1, "SlimeMeadow" }, { 2, "SlimeMeadow" }, { 99, home } } do
+		data.TutorialStep = case[1]
+		check(respawnZoneId(who) == case[2], "A23-68 respawn at step " .. case[1] .. " -> " .. tostring(case[2]))
+	end
+	data.TutorialStep = 2
+	f.Config.Tutorial.RespawnInMeadow = false
+	check(respawnZoneId(who) == home, "A23-68 RespawnInMeadow off: home again")
+	f.Config.Tutorial.RespawnInMeadow = true
 end
 if #failures > 0 then
 	for _, message in failures do print("CONTRACT_FAILURE " .. message) end

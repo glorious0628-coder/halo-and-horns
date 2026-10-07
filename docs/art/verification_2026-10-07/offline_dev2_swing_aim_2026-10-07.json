@@ -1,12 +1,36 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 30,
+  "checks": 34,
   "failedChecks": 0,
-  "namedChecks": 30,
+  "namedChecks": 34,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
+    {
+      "group": "move lock",
+      "check": "a swing during the move fade does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move lock",
+      "check": "after the move the swing hits again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move lock",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move lock",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
     {
       "group": "warrior around",
       "check": "a slime right behind me: the swing turns to it and hits",
@@ -192,11 +216,22 @@
   "staticChecks": 3,
   "staticFailures": [],
   "mutations": {
-    "total": 11,
-    "applied": 11,
-    "caught": 11,
+    "total": 12,
+    "applied": 12,
+    "caught": 12,
     "skipped": false,
     "results": [
+      {
+        "mutation": "the move-to-meadow lock is ignored",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "move lock :: a swing during the move fade does nothing"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "no turn to a monster behind",
         "file": "src/ServerScriptService/CombatService.luau",
@@ -336,18 +371,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "679ce350b44015a369c9b1632371f862fb0f3316f392ead81894a067e90bb214",
+    "src/ReplicatedStorage/Shared/Config.luau": "b9831794a39bdb5e1e0c4ce9e981180ae27db6326ca9d829d39849620429e914",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "7220d13ed782a980da989631fb98f4ed064550f46e6e81c26952883ce8a7fc46",
-    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
-    "src/ServerScriptService/StoryQuestService.luau": "b3fa4f85dc379a7f2b591287bffd92b8fe9b57eb88e9a08c5eadd5cc1d3593c5",
-    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
-    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
+    "src/ServerScriptService/LootService.luau": "e8c996a2e196bdaa750861c0431966be48b3dfceb1a5163860f14555c57a0c75",
+    "src/ServerScriptService/StoryQuestService.luau": "39dbd369c12b9bc6f919bcff054de2b9bf2ebea8cc2382603a06b9310d265c0c",
+    "src/ServerScriptService/PvPService.luau": "cd3ba05e927e40b348d2d2671992380cc41b6decfefc7c931a50f0ca6fae3826",
+    "src/ServerScriptService/ShopService.luau": "24cbcaf5cf4a13431ea1b5d3671c16238c6f4162712c0e3b5c82f0b1b4a3688c",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
-    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60"
+    "src/ServerScriptService/CharacterVisuals.luau": "fcfaec02dd563265306e73a3c9ec94846c110cb66ba17ba56c31719fec2a90f9"
   },
-  "fixtureSHA256": "f9084837c319bc4e276c06a2333b68f22e7564fc9561af368d9edd2c5f7c83a7",
+  "fixtureSHA256": "3190b7189bc5c77d537512b57b69f66a425691f85380475a436c6d1ab37f57b7",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

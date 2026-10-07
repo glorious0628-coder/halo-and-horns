@@ -19,6 +19,8 @@ from test_unarmed_start import FILES, bindings
 CO = "COMBAT_SOURCE"
 
 MUTATIONS = [
+    ("the move-to-meadow lock is ignored", "COMBAT_SOURCE",
+     "\tif numAttr(player, \"MoveLockUntil\", 0) > Util.Now() then return true end\n", ""),
     ("no turn to a monster behind", CO, "\tif not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then\n",
      "\tif false then\n"),
     ("always the nearest monster (the front ignored)", CO,

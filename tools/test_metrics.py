@@ -38,13 +38,28 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # --- A23-68 #5: the first 3 minutes
+    ("an auto skill counts as the first skill hit", T,
+     "if type(info) == \"table\" and info.Auto ~= true and num(info.MonstersHit) >= 1 then",
+     "if type(info) == \"table\" and num(info.MonstersHit) >= 1 then"),
+    ("a skill that hit nothing counts", T, "info.Auto ~= true and num(info.MonstersHit) >= 1 then", "info.Auto ~= true then"),
+    ("the smith visit is not watched", T,
+     "\twatch(player, \"BlacksmithVisited\", function(v) if v == true then Step(player, \"ForgeArrive\") end end)\n", ""),
+    ("old saves do not catch up kills", T, "\tif num(data.TotalKills) > 0 then\n", "\tif false then\n"),
+    ("walking into the meadow does not count", T,
+     "\t\tif newZone == \"SlimeMeadow\" then TelemetryService.Step(player, \"MeadowArrive\") end\n", ""),
+    ("the guide's meadow step does not count", T, "\t\tif num(v) >= 2 then Step(player, \"MeadowArrive\") end\n", ""),
+    ("no first kill", T, "\tTelemetryService.Step(player, \"FirstKill\") -- A23-68 #5\n", ""),
+    ("Config: the old 8 steps", C,
+     "\"FirstMissionAccept\", \"MeadowArrive\", \"FirstHit\", \"FirstKill\",\n\t\t\"FirstSkillHit\", \"FirstMissionDone\", \"ForgeArrive\",",
+     "\"FirstMissionAccept\", \"FirstMissionDone\","),
     # --- the funnel
     ("steps logged again on another server", T, "\tif tel.Funnel[name] then return end\n", ""),
     ("no Level10 step", T, "\twatch(player, \"Level\", function(v) if num(v, 1) >= 10 then Step(player, \"Level10\") end end)\n", ""),
     ("no catch-up for an old save", T, "\tif data.IntroSeen == true then Step(player, \"IntroDone\") end\n", ""),
     ("step numbers from 0", T, "pcall(svc.LogOnboardingFunnelStepEvent, svc, player, index, name)",
      "pcall(svc.LogOnboardingFunnelStepEvent, svc, player, index - 1, name)"),
-    ("the funnel misses a step", C, "\"FirstWeapon\", \"AutoUnlocked\",\n", "\"AutoUnlocked\",\n"),
+    ("the funnel misses a step", C, "\"ForgeArrive\", \"FirstWeapon\", \"AutoUnlocked\",", "\"ForgeArrive\", \"AutoUnlocked\","),
     # --- events
     ("FirstDeath every KO", T, "\t\tif tel.FirstDeath then return end\n", ""),
     ("AutoOn / AutoOff not throttled", T, "if not throttled(player, \"auto\", 10) then", "if true then"),
@@ -107,6 +122,10 @@ def static() -> tuple[int, list[str]]:
             failures.append(message)
 
     combat = read(SSS / "CombatService.luau")
+    hit = function_block(combat, "local function damageMonster(")
+    check("CombatService.MonsterHit = Util.Signal.new()" in combat
+          and hit.find("S.MonsterService.DamageMonster(") < hit.find("CombatService.MonsterHit:Fire(player, rec, killed)"),
+          "CombatService.damageMonster fires MonsterHit(player, rec, killed) after the damage (A23-68 #5)")
     ko = function_block(combat, "local function sendKO(")
     check(ko.find("Net.Fx(victim, \"KO\"") < ko.find("CombatService.KnockedOut:Fire(victim, by)"),
           "CombatService.sendKO fires KnockedOut(victim, by) with the KO screen's cause")

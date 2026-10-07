@@ -184,7 +184,8 @@ def static() -> tuple[int, list[str]]:
     check('game:GetService("CollectionService")' in function_block(story, "local function npcNear("),
           "CollectionService is looked up lazily inside npcNear (the module loads without it)")
     config = read(ROOT / "src/ReplicatedStorage/Shared/Config.luau")
-    check("Config.Features = { NeutralFaction = false }" in config, "A23-57 switch present and off")
+    features = next((ln for ln in config.splitlines() if ln.startswith("Config.Features = {")), "")
+    check("NeutralFaction = false" in features, "A23-57 switch present and off (other switches may share the line)")
     check('Config.FactionOrder = { "Halo", "Horns", "Neutral" }' in config,
           "Config.FactionOrder untouched (game dev 1's picker reads the switch, A23-57)")
     return count, failures

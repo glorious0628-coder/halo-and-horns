@@ -33,6 +33,20 @@ local function monsterAt(w, kind, deg, dist)
 	return w:Monster(kind, dz, dx, 99999)
 end
 
+-- A23-68 #1: while the screen fades for the move to the meadow (QuestService MoveLockUntil, server time) a swing does
+-- nothing and costs nothing; after it the next swing hits
+runGroup("move lock", function()
+	local w = bareWorld({ Hit = true })
+	local p = w:Join(1, { Class = "Warrior", Faction = "Halo", Level = 5, Tier = 1, Mask = 1 })
+	local m = monsterAt(w, "Slime", 0, w.Config.Classes.Warrior.Range * 0.5)
+	p:SetAttribute("MoveLockUntil", w.Time + 10)
+	swing(w, p)
+	check(w:Dealt(m) == 0, "a swing during the move fade does nothing", w:Dealt(m))
+	p:SetAttribute("MoveLockUntil", 0)
+	swing(w, p)
+	check(w:Dealt(m) > 0, "after the move the swing hits again", w:Dealt(m))
+end)
+
 runGroup("warrior around", function()
 	local w = bareWorld({ Hit = true })
 	local p = w:Join(1, { Class = "Warrior", Faction = "Halo", Level = 5, Tier = 1, Mask = 1 })
