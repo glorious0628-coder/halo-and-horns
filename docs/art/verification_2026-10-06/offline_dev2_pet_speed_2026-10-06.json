@@ -450,13 +450,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "1abf7d337bf4a8be2d2f720136b988b52b02b9066d1db10a3743f731a30f51d8",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
-    "src/ServerScriptService/ZoneService.luau": "e1b533e51193af35ee96c63145b7af18950ddbe728f15064dca9629c7de3bf73",
+    "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e",
+    "src/ServerScriptService/ZoneService.luau": "1a8b12bee2b4a2832349eb0cf9eb1b9062c688387d1cd2342507adf4daaecc53",
     "src/ServerScriptService/PetService.luau": "a9c800ce76799e177d0b3af6d5a62d73c0ca702376213ce7186aebdd2b4104ca"
   },
-  "fixtureSHA256": "bcd18de3819c7afe2406a7fb176b916b234b60c9112c5823d456ba1a2e1e1232",
+  "fixtureSHA256": "8cf9688a6f3e990bba850cf25010fef1e0d3a6f9a2d7cac3635b79cd7e906773",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

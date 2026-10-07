@@ -3949,7 +3949,8 @@ function L.SwingFaced()
 end
 
 -- story rows: a talk / choice step reopens its dialogue; otherwise travel + the guide beam to where it happens
-local STORY_SPOT = { SlimePond = Vector3.new(280, 3, -45) }
+-- = Config.StoryQuests.Landmarks.SlimePond, 3 studs up (QuestTarget pondSpot; tools/test_map_v2.py keeps them equal)
+local STORY_SPOT = { SlimePond = Vector3.new(290, 3, 150) }
 function L.StoryTap(st, zone, panels)
 	if st.Panel then
 		-- B15: my own tap: the server's reply opens the page even mid-fight (auto opens wait for a calm moment)

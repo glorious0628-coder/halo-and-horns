@@ -63,7 +63,7 @@
     }
   ],
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "c17555215c33cedc024f6c21b4a9440b3d22f447184ace13c8b19afa5c623ad7",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "371e337d021e94e53d0676a378c355d507a0df10d2db975791f7035431e56c2f",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "bd041d14cdb03a206df7b5c4c3714a0790e3cf12a88feb3c044a4dfd1b26ca22"
   },
   "studioCalls": 0,
