@@ -34,7 +34,7 @@ local function metricsWorld(o)
 	function ps.GetLastOwnActive(p) return ps.Own[p] or 0 end
 	local reg = { PlayerService = ps,
 		FactionService = { FactionChanged = Signal.new() },
-		CombatService = { KnockedOut = Signal.new() },
+		CombatService = { KnockedOut = Signal.new(), MonsterHit = Signal.new(), Released = Signal.new() },
 		GrudgeService = { SackResolved = Signal.new() },
 		LootService = { Enhanced = Signal.new() },
 		SettingsService = { KeysChanged = Signal.new() },
@@ -110,8 +110,9 @@ local function field(c, n) return c and c.F and c.F["CustomField0" .. n] end
 
 runGroup("config", function()
 	check(type(A0) == "table" and table.concat(A0.Steps, ",")
-		== "IntroDone,Faction,Class,FirstMissionAccept,FirstMissionDone,FirstWeapon,AutoUnlocked,Level10",
-		"the funnel = the BB38 contract's 8 steps in order", show(A0 and A0.Steps))
+		== "IntroDone,Faction,Class,FirstMissionAccept,MeadowArrive,FirstHit,FirstKill,FirstSkillHit,FirstMissionDone,"
+		.. "ForgeArrive,FirstWeapon,AutoUnlocked,Level10",
+		"the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order)", show(A0 and A0.Steps))
 	check(table.find(A0.UiIds, "Bag") and table.find(A0.UiIds, "Ranking") and table.find(A0.UiIds, "Settings")
 		and table.find(A0.UiIds, "PlayerList"), "window ids for the new windows + the Tab list", show(A0.UiIds))
 	check(C0.RateLimits.UiMetric == 2 and A0.AwayAfter == 300 and A0.EnhanceFailLeave == 300 and A0.SameKindStreak == 30
@@ -128,28 +129,69 @@ runGroup("funnel", function()
 	w.Reg.FactionService.FactionChanged:Fire(p, "Halo", "None", "Pick")
 	p:SetAttribute("ClassChosen", true)
 	p:SetAttribute("TutorialStep", 1)
-	p:SetAttribute("TutorialStep", 2)
+	p:SetAttribute("TutorialStep", 2) -- arrived in the meadow
+	local CS = w.Reg.CombatService
+	CS.MonsterHit:Fire(p, {}, false)
+	CS.MonsterHit:Fire(p, {}, false)
+	w.Reg.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime" })
+	CS.Released:Fire(p, { Slot = "Q", Auto = false, MonstersHit = 1 })
 	p:SetAttribute("TutorialStep", 99)
+	p:SetAttribute("BlacksmithVisited", true)
 	p:SetAttribute("WeaponOwnedMask", 1)
 	p:SetAttribute("AutoCombatUnlocked", true)
 	p:SetAttribute("Level", 9)
 	p:SetAttribute("Level", 10)
 	p:SetAttribute("Level", 11)
-	check(w:StepNames(p) == "1:IntroDone,2:Faction,3:Class,4:FirstMissionAccept,5:FirstMissionDone,6:FirstWeapon,7:AutoUnlocked,8:Level10",
-		"the 8 steps in order, each once (Level 10 at 10, not again at 11)", w:StepNames(p))
+	check(w:StepNames(p) == "1:IntroDone,2:Faction,3:Class,4:FirstMissionAccept,5:MeadowArrive,6:FirstHit,7:FirstKill,8:FirstSkillHit,9:FirstMissionDone,10:ForgeArrive,11:FirstWeapon,12:AutoUnlocked,13:Level10",
+		"the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)", w:StepNames(p))
 	local tel = w.Data[p].Telemetry
 	check(tel.Funnel.Level10 == true and tel.Sessions == 1, "saved: Funnel names + Sessions 1", show(tel.Funnel))
 	-- the same account on another server: nothing logged again
 	local w2 = metricsWorld()
 	local q = w2:Arrive(1, { Data = { Telemetry = deepCopy(tel), IntroSeen = true, Faction = "Halo", ClassChosen = true,
-		TutorialStep = 99, WeaponOwnedMask = 1, AutoCombatUnlocked = true, Level = 12 } })
+		TutorialStep = 99, WeaponOwnedMask = 1, AutoCombatUnlocked = true, Level = 12, TotalKills = 50, BlacksmithVisited = true,
+		Story = { Done = { M1_3 = true } } } })
 	check(w2:StepNames(q) == "" and w2.Data[q].Telemetry.Sessions == 2, "a returning account logs no step twice", w2:StepNames(q))
 	-- an old save (before BB38) catches up every step it already passed, at once
 	local w3 = metricsWorld()
 	local r = w3:Arrive(2, { Data = { IntroSeen = true, Faction = "Horns", ClassChosen = true, TutorialStep = 99,
-		WeaponOwnedMask = 3, AutoCombatUnlocked = false, Level = 10 } })
-	check(w3:StepNames(r) == "1:IntroDone,2:Faction,3:Class,4:FirstMissionAccept,5:FirstMissionDone,6:FirstWeapon,8:Level10",
+		WeaponOwnedMask = 3, AutoCombatUnlocked = false, Level = 10, TotalKills = 40, BlacksmithVisited = true,
+		Story = { Done = { M1_3 = true } } } })
+	check(w3:StepNames(r) == "1:IntroDone,2:Faction,3:Class,4:FirstMissionAccept,5:MeadowArrive,6:FirstHit,7:FirstKill,"
+		.. "8:FirstSkillHit,9:FirstMissionDone,10:ForgeArrive,11:FirstWeapon,13:Level10",
 		"an old save catches up the steps it passed (auto not yet)", w3:StepNames(r))
+	-- an old save that never killed, used a skill or met the smith: those steps wait for the real moment
+	local w4 = metricsWorld()
+	local s4 = w4:Arrive(3, { Data = { IntroSeen = true, Faction = "Halo", ClassChosen = true, TutorialStep = 1, Level = 1 } })
+	check(w4:StepNames(s4) == "1:IntroDone,2:Faction,3:Class,4:FirstMissionAccept", "accepted only: no meadow / hit / kill yet",
+		w4:StepNames(s4))
+end)
+
+-- A23-68 #5 (the first 3 minutes): which moments count
+runGroup("first 3 minutes", function()
+	local w = metricsWorld()
+	local p = w:Arrive(1)
+	local CS = w.Reg.CombatService
+	w.Reg.ZoneService.ZoneChanged:Fire(p, "Crossroads", "HaloTown")
+	check(w:StepNames(p) == "", "another zone is not the meadow", w:StepNames(p))
+	w.Reg.ZoneService.ZoneChanged:Fire(p, "SlimeMeadow", "Crossroads")
+	check(w:StepNames(p) == "5:MeadowArrive", "walking into the meadow (no guide step) counts as arriving", w:StepNames(p))
+	CS.Released:Fire(p, { Slot = "Q", Auto = true, MonstersHit = 4 })
+	CS.Released:Fire(p, { Slot = "Z", Auto = false, MonstersHit = 0 })
+	check(not string.find(w:StepNames(p), "FirstSkillHit"), "an auto skill, or a skill that hit nothing, is no skill hit",
+		w:StepNames(p))
+	CS.Released:Fire(p, { Slot = "Z", Auto = false, MonstersHit = 2 })
+	check(string.find(w:StepNames(p), "8:FirstSkillHit") ~= nil, "a manual skill that hit a monster: FirstSkillHit",
+		w:StepNames(p))
+	p:SetAttribute("BlacksmithVisited", true)
+	check(string.find(w:StepNames(p), "10:ForgeArrive") ~= nil, "the smith's prompt (BlacksmithVisited): ForgeArrive",
+		w:StepNames(p))
+	-- a later session: the first-hit shortcut was cleared at leave, the account still logs FirstHit once
+	CS.MonsterHit:Fire(p, {}, false)
+	local n = #w.Steps
+	CS.MonsterHit:Fire(p, {}, true)
+	check(#w.Steps == n and string.find(w:StepNames(p), "6:FirstHit") ~= nil, "FirstHit once; later hits log nothing",
+		w:StepNames(p))
 end)
 
 runGroup("events", function()

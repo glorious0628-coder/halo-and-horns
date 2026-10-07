@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3223 strings)",
+      "check": "the walk reached the player strings (3204 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -39,7 +39,7 @@
     },
     {
       "group": "X / XEn twins hold the same English",
-      "check": "twins found (164)",
+      "check": "twins found (161)",
       "pass": 1,
       "fail": 0
     },
@@ -447,7 +447,7 @@
     },
     {
       "group": "server scripts send English",
-      "check": "every server script was scanned (36 files)",
+      "check": "every server script was scanned (35 files)",
       "pass": 1,
       "fail": 0
     },
@@ -722,13 +722,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "7837354dc8772b80417a957ab06970b94c7304461919e42c46c66816462bfa0f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
     "src/ServerScriptService/BoardService.luau": "ee561cda6482159f55c2f6f8bc097b147520d67c50510e679b5b35b0dd3a47ab",
-    "src/ServerScriptService/CharacterVisuals.luau": "fcfaec02dd563265306e73a3c9ec94846c110cb66ba17ba56c31719fec2a90f9",
-    "src/ServerScriptService/ChatText.luau": "f7c4ed3a83ee0ce42baa5c1a0a9e16df28d25a90f4efd431c80d9a80a8e3c853",
+    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005",
     "src/ServerScriptService/CombatService.luau": "62fcbb61aacb2068d5adec21bc414338a91e341538c6e6f1db2d670b649334a8",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
@@ -740,7 +739,7 @@
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/KaijuService.luau": "2b542c7f8849b2c29089940789407116e3c13720bcb78812e7819fa17dd8111f",
     "src/ServerScriptService/LootService.luau": "e8c996a2e196bdaa750861c0431966be48b3dfceb1a5163860f14555c57a0c75",
-    "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
+    "src/ServerScriptService/Main.server.luau": "a7843efe05c70c4b78441bb61a50cd7f518b41e3c3b679a197745ca53122f09c",
     "src/ServerScriptService/MapBuilder.luau": "49e9d2789147f8b5b46b56087a2ebbd014a85d5b7b8349adec3edaea84bdc21a",
     "src/ServerScriptService/MonetizationService.luau": "db8f01abe47c1162686deb8aa3acf26858399cb4be898fc6511defa5997943a9",
     "src/ServerScriptService/MonsterService.luau": "cd4df07039f3eba18beef6f0121e31a84b617c0096a09a42f4d94efa9556c50b",

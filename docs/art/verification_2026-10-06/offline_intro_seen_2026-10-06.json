@@ -5,13 +5,13 @@
   "staticFailures": [],
   "failure": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "b9831794a39bdb5e1e0c4ce9e981180ae27db6326ca9d829d39849620429e914",
     "src/ReplicatedStorage/Shared/Net.luau": "b3d7092dba134f0b514a54f27c9f20fe69ba8894389e490cd96a4bb6866584e6",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
-    "src/ServerScriptService/QuestService.luau": "f096182e0ee5f9846d3a05ca5a2b3014703989da9143e41b283d8264185b258f"
+    "src/ServerScriptService/QuestService.luau": "6a7244f847858bae78abaf50471c5e5c704990facfab7ad69b1c1a3590328d18"
   },
   "introSHA256": "f47961ebe91be1478e2e4b7ba4b2ed6b6cc4837bb74406508ecae85a8438e268",
-  "fixtureSHA256": "28a43f54ffc3d5d41fd7605226c64cae39a484508deca61445b7e25d95a46aba",
+  "fixtureSHA256": "14b8f9761828d3d5b627a4e8ad1d9a55aad2d068c9657b0976a1a40f2384e1da",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,

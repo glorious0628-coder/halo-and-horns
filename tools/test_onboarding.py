@@ -17,6 +17,8 @@ FILES = {
     "DATA_SOURCE": ROOT / "src/ServerScriptService/DataService.luau",
     "QUEST_SOURCE": ROOT / "src/ServerScriptService/QuestService.luau",
     "NET_SOURCE": ROOT / "src/ReplicatedStorage/Shared/Net.luau",
+    # A23-68 #1: PlayerService's respawn zone (stat + respawnZoneId are cut out by the fixture)
+    "PLAYER_SOURCE": ROOT / "src/ServerScriptService/PlayerService.luau",
 }
 FIXTURE = ROOT / "tools/fixtures/onboarding_offline.luau"
 

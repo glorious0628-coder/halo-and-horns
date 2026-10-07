@@ -131,6 +131,19 @@ local function applyStats(player, humanoid, fullHeal)
 	humanoid.WalkSpeed = PlayerService.ComputeWalkSpeed(player)
 end
 
+-- A23-68 #1: while the first mission runs (accepted, not yet claimed: Tutorial.Steps.Guide / Quest) a respawn starts
+-- at the meadow entrance; otherwise at the faction's home
+local function respawnZoneId(player)
+	local tut = Config.Tutorial or {}
+	local steps = tut.Steps or {}
+	local step = stat(player, "TutorialStep", 0)
+	if tut.RespawnInMeadow == true and type(tut.GuideZone) == "string" and Config.Zones[tut.GuideZone]
+		and (step == steps.Guide or step == steps.Quest) then
+		return tut.GuideZone
+	end
+	return Config.HomeZoneId(stat(player, "Faction", "None"))
+end
+
 local function spawnCFrame(zoneId)
 	local zs = S.ZoneService
 	if zs and zs.GetSpawnCFrame then
@@ -429,8 +442,7 @@ local function onCharacterAdded(player, character)
 	applyStats(player, humanoid, true)
 	if context then humanoid.Health = math.min(context.Health, humanoid.MaxHealth) end
 	if not context then markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2) end -- CR-H2
-	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context)
-		or spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
+	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context) or spawnCFrame(respawnZoneId(player)))
 
 	PlayerService.CharacterSpawned:Fire(player, character, humanoid, context ~= nil)
 	if context and player.Character == character and character.Parent and humanoid.Health > 0 then

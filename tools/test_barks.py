@@ -63,7 +63,7 @@ MUTATIONS = [
      "\t\tMonsterService.Moment:Fire(rec, \"Spot\")\n\t\tif rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n\t\tend"),
     ("a personal monster spots on every tick", M, "\t\trec._spotted = true\n", ""),
     # Main order lists (the module file and the lists go in the same commit)
-    # (patterns stop before the list ends, so a module added after them does not break the mutation)
+    # anchors that do not lean on the end of the lists (game dev 1: "ChatText" came after them)
     ("BarkService never started", MAIN, "\"BarkService\", \"DamageWindow\",\n", "\"DamageWindow\",\n"),
     ("BarkService never loaded", MAIN, "\"BarkService\", \"DamageWindow\", \"SkillService\",", "\"DamageWindow\", \"SkillService\","),
     # Config.Barks as written (lines_pack §2-2)

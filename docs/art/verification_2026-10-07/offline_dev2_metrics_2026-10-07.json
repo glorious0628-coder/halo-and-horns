@@ -1,15 +1,15 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 81,
+  "checks": 92,
   "failedChecks": 0,
-  "namedChecks": 75,
+  "namedChecks": 85,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "config",
-      "check": "the funnel = the BB38 contract's 8 steps in order",
+      "check": "the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order)",
       "pass": 1,
       "fail": 0
     },
@@ -46,7 +46,7 @@
     {
       "group": "funnel",
       "check": "Start spawns the minute and the 5-minute loops",
-      "pass": 3,
+      "pass": 4,
       "fail": 0
     },
     {
@@ -57,7 +57,7 @@
     },
     {
       "group": "funnel",
-      "check": "the 8 steps in order, each once (Level 10 at 10, not again at 11)",
+      "check": "the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)",
       "pass": 1,
       "fail": 0
     },
@@ -81,12 +81,72 @@
     },
     {
       "group": "funnel",
+      "check": "accepted only: no meadow / hit / kill yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "funnel",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "Start spawns the minute and the 5-minute loops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "another zone is not the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "walking into the meadow (no guide step) counts as arriving",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "an auto skill, or a skill that hit nothing, is no skill hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "a manual skill that hit a monster: FirstSkillHit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "the smith's prompt (BlacksmithVisited): ForgeArrive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "FirstHit once; later hits log nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first 3 minutes",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -459,14 +519,111 @@
     }
   ],
   "findings": [],
-  "staticChecks": 8,
+  "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 38,
-    "applied": 38,
-    "caught": 38,
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
     "skipped": false,
     "results": [
+      {
+        "mutation": "an auto skill counts as the first skill hit",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "first 3 minutes :: an auto skill, or a skill that hit nothing, is no skill hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a skill that hit nothing counts",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "first 3 minutes :: an auto skill, or a skill that hit nothing, is no skill hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the smith visit is not watched",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
+          "funnel :: a returning account logs no step twice",
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "old saves do not catch up kills",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: an old save catches up the steps it passed (auto not yet)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walking into the meadow does not count",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "first 3 minutes :: walking into the meadow (no guide step) counts as arriving"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the guide's meadow step does not count",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: a returning account logs no step twice",
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no first kill",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: a returning account logs no step twice",
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: the old 8 steps",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order)",
+          "first 3 minutes :: FirstHit once; later hits log nothing",
+          "first 3 minutes :: a manual skill that hit a monster: FirstSkillHit",
+          "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
+          "first 3 minutes :: walking into the meadow (no guide step) counts as arriving",
+          "funnel :: an old save catches up the steps it passed (auto not yet)"
+        ],
+        "newFailingCount": 7
+      },
       {
         "mutation": "steps logged again on another server",
         "file": "src/ServerScriptService/TelemetryService.luau",
@@ -475,7 +632,7 @@
         "crashed": false,
         "newFailingChecks": [
           "funnel :: a returning account logs no step twice",
-          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 2
       },
@@ -488,7 +645,7 @@
         "newFailingChecks": [
           "funnel :: a returning account logs no step twice",
           "funnel :: saved: Funnel names + Sessions 1",
-          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 3
       },
@@ -499,9 +656,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "funnel :: accepted only: no meadow / hit / kill yet",
           "funnel :: an old save catches up the steps it passed (auto not yet)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "step numbers from 0",
@@ -510,10 +668,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "funnel :: an old save catches up the steps it passed (auto not yet)",
-          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+          "first 3 minutes :: FirstHit once; later hits log nothing",
+          "first 3 minutes :: a manual skill that hit a monster: FirstSkillHit",
+          "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
+          "first 3 minutes :: walking into the meadow (no guide step) counts as arriving",
+          "funnel :: accepted only: no meadow / hit / kill yet",
+          "funnel :: an old save catches up the steps it passed (auto not yet)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 7
       },
       {
         "mutation": "the funnel misses a step",
@@ -522,9 +684,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the funnel = the BB38 contract's 8 steps in order",
+          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order)",
           "funnel :: an old save catches up the steps it passed (auto not yet)",
-          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 3
       },
@@ -904,13 +1066,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "b9831794a39bdb5e1e0c4ce9e981180ae27db6326ca9d829d39849620429e914",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/TelemetryService.luau": "0e0c556289f19b3127204de449326e388827c55560611dc031291972cd616131",
+    "src/ServerScriptService/TelemetryService.luau": "db0aed3775e7820fa29edce620ba91f82352acf60d31f359f916a95686a5663f",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
   },
-  "fixtureSHA256": "2f3c5b333272ad461afe90109e90846b0d23065c21f515e27bf6c0b8591f2b8f",
+  "fixtureSHA256": "4806300314721b05cc5a801c39311b05633a66241971c23aecd9a39677f5e6d3",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
