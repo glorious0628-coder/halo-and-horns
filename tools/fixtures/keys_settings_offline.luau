@@ -294,7 +294,7 @@ local SETTINGS_DEFS = {
 }
 local SFX_GRID = {}
 for i = 0, 10 do SFX_GRID[i / 10] = true end
-local COLLISION_TEXT = "The new action [%s] has no key: its default key %s is already in use. Pick one in Settings."
+local COLLISION_TEXT = "New action [%s] has no key: %s is already used. Pick one in Settings." -- story text checker: <= 14 words (검수 2026-10-07)
 
 local function defaultOf(config, id) return config.Keybinds.ById[id] and config.Keybinds.ById[id].Key end
 local function liveAll(config, except)
@@ -1252,7 +1252,7 @@ runGroup("keybinds-collisions", function()
 	check(K.KeyName("Attack") == "J" and K.KeyName("Journal") == "" and deepEq(K.Collisions(), { "Journal" }),
 		"BB2: saved Attack = J keeps J; Journal = 없음 and is reported", show({ K.KeyName("Attack"), K.KeyName("Journal"), K.Collisions() }))
 	local want = string.format(w.Config.Settings.Text.KeyCollision, "Quest journal", "J")
-	check(#w.Toasts == 1 and w.Toasts[1].Text == want, "one toast: 'The new action [Quest journal] has no key: …'", show(w.Toasts))
+	check(#w.Toasts == 1 and w.Toasts[1].Text == want, "one toast: 'New action [Quest journal] has no key: …'", show(w.Toasts))
 	w:Echo(0, { Keys = { Attack = "J" } })
 	K.Refresh()
 	K.Apply({ Attack = "J" })

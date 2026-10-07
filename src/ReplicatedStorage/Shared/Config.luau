@@ -713,7 +713,7 @@ Config.Factions = {
 			"HP +20%, keeps healing",
 			"Your skill heals nearby allies",
 			"Half your pouch gold goes to the vault",
-			"Catch grudge sack thieves to win gold back",
+			"Catch Grudge Sack thieves to win gold back",
 		},
 		Pitch = "Guard, heal, and take it back!",
 	},
@@ -734,7 +734,7 @@ Config.Factions = {
 			"Gold +25% (get rich faster)",
 			"ATK +15%, your hits steal HP",
 			"Keep stolen gold safe and it is yours",
-			"Rob the Knights and guard the grudge sack",
+			"Rob the Knights and guard the Grudge Sack",
 			"5 Wanted stars = turn into a Kaiju!",
 		},
 		Pitch = "Steal, hold on, and become a Kaiju!",
@@ -761,7 +761,7 @@ Config.Factions = {
 		Perks = {
 			"No fight buffs (no XP, gold, HP or ATK bonus)",
 			"No PvP: you never attack or get attacked",
-			"No worries about loot, Wanted or grudge sacks",
+			"No worries about loot, Wanted or Grudge Sacks",
 			"The Crossroads is your home",
 			"Crafting expert (coming soon)",
 		},
@@ -1120,12 +1120,12 @@ Config.Goose = {
 	Text = {
 		NeedManual = "Only players who hit the Golden Goose themselves %d+ times get the reward! (Auto Battle hits don't count)", -- (MinManualHits)
 		CoopStart = { -- NotifyAll when the event becomes co-op (at start, or when the first faction player appears)
-			Halo = "The Golden Goose landed in the Crossroads! No Horn Legion here now, so it's a Team Rescue. Knights, fill the gauge together!",
-			Horns = "The Golden Goose landed in the Crossroads! No Knights here now, so it's a Team Poach. Horn Legion, fill the gauge together!",
+			Halo = "The Golden Goose is in the Crossroads!\nOnly Knights here: Team Rescue. Fill the gauge together!",
+			Horns = "The Golden Goose is in the Crossroads!\nOnly the Horn Legion here: Team Poach. Fill the gauge together!",
 		},
 		CoopFull = { -- NotifyAll once when the gauge is full (MinManualHits)
-			Halo = "Gauge full! Team Rescue done. Knights who hit it themselves %d+ times before the end get a reward!",
-			Horns = "Gauge full! Team Poach done. Horn Legion players who hit it themselves %d+ times before the end get a reward!",
+			Halo = "Gauge full! Team Rescue done.\nHit it yourself %d+ times before the end for a reward!",
+			Horns = "Gauge full! Team Poach done.\nHit it yourself %d+ times before the end for a reward!",
 		},
 		CoopResult = { -- NotifyAll at the end, gauge filled
 			Halo = "The Knights worked together and rescued the Golden Goose! The shard shines with light again.",
@@ -1815,8 +1815,8 @@ Config.Tutorial = {
 			Lines = {
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
-				"Since the Crown of Balance broke, slimes drawn to its shards have blocked the supply road in the Squishy Meadow.",
-				"Please defeat 5 slimes and free the road. Every hero who protects friends starts by opening a path for someone.",
+				"The Crown of Balance broke. Its shards drew slimes onto the Squishy Meadow road.",
+				"Please defeat 5 slimes and free the road. Heroes start by opening paths.",
 			},
 		},
 		Horns = {
@@ -1824,8 +1824,8 @@ Config.Tutorial = {
 			Lines = {
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
-				"Slimes drawn to the broken crown shards took the supply road in the Squishy Meadow. No food or gear can get through!",
-				"Beat 5 slimes and win the road back. A real leader isn't just strong. A real leader gets friends moving.",
+				"Slimes chasing Crown Shards took the Squishy Meadow road. No food gets through!",
+				"Beat 5 slimes and win the road back. Real leaders get friends moving.",
 			},
 		},
 		Neutral = {
@@ -1833,7 +1833,7 @@ Config.Tutorial = {
 			Lines = {
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
-				"Slimes drawn to the crown shards have blocked the supply road in the Squishy Meadow.",
+				"Slimes drawn to the Crown Shards have blocked the supply road in the Squishy Meadow.",
 				"Please defeat 5 slimes and free the road. It's your first step to helping everyone get their gear.",
 			},
 		},
@@ -1969,7 +1969,7 @@ Config.StoryQuests = {
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
-			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's crown shard dust! The King Slimes ate the most of it.",
+			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The King Slimes ate the most of it.",
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust",
@@ -2002,7 +2002,7 @@ Config.StoryQuests = {
 		},
 		M2_1 = {
 			Kind = "Main", Chapter = 2, Title = "The Crown in the Sky",
-			Start = "The sky crown glows in the color of the side with more shards. 1 monster = 1 point for your side!",
+			Start = "The sky crown glows for the side with more shards.\nEach monster you beat = 1 point for your side!",
 			Steps = { { Text = "Crown points %d/%d", Obj = { Type = "WarPoints", Count = 15 },
 				Neutral = { Text = "Supply gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 45 } } } },
 			Reward = { Gold = 1 },
@@ -2016,16 +2016,16 @@ Config.StoryQuests = {
 		},
 		M2_3 = {
 			Kind = "Main", Chapter = 2, Title = "The Fountain of Balance", Speaker = "Fountain",
-			Start = "They say a crown shard is stuck in the Crossroads fountain. Go to the fountain! (Tap the quest line for directions)",
+			Start = "They say a Crown Shard is stuck in the Crossroads fountain. Go look!\n(Tap the quest line for directions)",
 			Steps = {
 				-- user 2026-10-05 ("균형의 분수가 뭐야? 튜토리얼이 없어서 엥?"): walk up to the fountain, then talk
 				{ Text = "Go to the Crossroads fountain (tap for directions)", Guide = "Fountain",
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Talk to the Fountain Shard", Panel = true,
 					Lines = { All = {
-						"I'm a crown shard stuck in this fountain. I fell here when the crown in the sky broke.\nHalos and Horns tell the same story. Word for word. They just swap who did it.",
+						"I'm a Crown Shard, stuck in this fountain since the sky crown broke.\nHalos and Horns tell the same story. They just swap who did it.",
 						"The sparkly dust you got from the pond slimes? That's crown dust.",
-						"Give the dust to the fountain and the world leans to the light. Keep it and it leans to the dark. What will you do?",
+						"Give the dust to the fountain: the world leans to the light.\nKeep it: it leans to the dark. What will you do?",
 					} },
 					Obj = { Type = "Choice", Good = { Label = "Give it to the fountain", Points = 2 }, Evil = { Label = "Keep it", Points = 2 },
 						Neutral = { A = "Shape it and give it back", B = "Leave it with the guild" } } },
@@ -2059,16 +2059,16 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Lv10 · Goblin Woods (now Lv%d)", Obj = { Type = "Level", Level = 10 } },
 				{ Text = "Hear the Guide's warning", Panel = true, Obj = { Type = "Talk" }, Lines = {
-					All = { "A crown shard calls from beyond the woods. Watch out for thieves!",
+					All = { "A Crown Shard calls from beyond the woods. Watch out for thieves!",
 						"In the woods, others can steal the gold you carry. Put it in the town vault first!",
 						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe.",
 						"The goblins took the dust.\nBut why would a goblin need dust?" },
-					Horns = { "A crown shard calls from beyond the woods. Watch out for thieves!",
+					Horns = { "A Crown Shard calls from beyond the woods. Watch out for thieves!",
 						"In the woods, others can steal the gold you carry. Put it in the town vault first!",
 						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe.",
 						"Goblins grab for a boss. We grab for US. Big difference! …Right?",
 						"The goblins took the dust.\nBut why would a goblin need dust?" },
-					Neutral = { "A crown shard calls from beyond the woods. Watch out for thieves!", "The Artisan Guild can't be attacked in the woods either.",
+					Neutral = { "A Crown Shard calls from beyond the woods. Watch out for thieves!", "The Artisan Guild can't be attacked in the woods either.",
 						"The goblins took the dust.\nBut why would a goblin need dust?" },
 				} },
 				{ Text = "Go to the Goblin Woods", Guide = "GoblinWoods", Obj = { Type = "Enter", Zone = "GoblinWoods" } },
@@ -2110,7 +2110,7 @@ Config.StoryQuests = {
 		},
 		M3_4 = {
 			Kind = "Main", Chapter = 3, Title = "Whose Shard?", Claim = true,
-			Start = "A crown shard shines in the sack! Take it home.",
+			Start = "A Crown Shard shines in the sack! Take it home.",
 			Steps = {
 				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Whose shard is it?", Panel = true,
@@ -2453,7 +2453,7 @@ Config.StoryQuests = {
 		GW2 = {
 			Kind = "Sub", Title = "The Dark Path",
 			Requires = { Done = { "M2_7" }, Level = 11 },
-			Start = "The woods path is so dark. Kids are scared to walk it.",
+			Start = "The woods path has no light. Kids won't walk it in the dark.",
 			Steps = {
 				{ Text = "Watch the woods path %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
@@ -2540,12 +2540,12 @@ Config.StoryQuests = {
 						Evil = { Label = "Make her lay eggs faster!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
-			Finish = "Fountain Shard: Is more eggs ever enough?",
+			Finish = "Fountain Shard: Are more eggs ever enough?",
 		},
 		GW6 = {
 			Kind = "Sub", Title = "Nap Time",
 			Requires = { Done = { "M2_7" }, Level = 19 },
-			Start = "Beat a Brute and stay above half HP. He just wants a nap.",
+			Start = "Beat a Brute and stay above half HP. He wants a nap.",
 			Steps = {
 				{ Text = "Goblin Brute above half HP %d/%d", Guide = "GoblinWoods",
 					Obj = { Type = "SafeKill", Kind = "GoblinBrute", MinHP = 0.5, Count = 1 } },
@@ -2692,11 +2692,11 @@ Config.Board = {
 			Kind = { Meadow = "The pond is too crowded. Give the frogs room.", Woods = "The camp is too crowded. Give the little ones room." },
 			Sneaky = { Meadow = "Best spot in the meadow. Claim it!", Woods = "Best spot in the woods. Claim it!" } },
 		{ Id = "J3", Obj = { Type = "Kill", Kind = "$Big" }, Count = { Meadow = 2, Woods = 1 }, Goal = "{Big} %d/%d",
-			Kind = "A big one scares travelers. Stop it!", Sneaky = "Bonk the big one. Show who's boss!" },
+			Kind = "A big one blocks the road. Stop it!", Sneaky = "Bonk the big one. Show who's boss!" },
 		{ Id = "J4", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, Goal = "Hit 3 at once with a skill %d/%d",
 			Kind = "A swarm blocks a cart. Clear it at once!", Sneaky = "Hit three at once. Make everyone look!" },
 		{ Id = "J5", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic hits only · {Unit} %d/%d",
-			Kind = "Basic hits only. Don't scare the birds.", Sneaky = "No skills needed. Too easy!" },
+			Kind = "Basic hits only. Keep it quiet for the birds.", Sneaky = "No skills needed. Too easy!" },
 		{ Id = "J6", Obj = { Type = "EarnGold", Source = "Monster" }, Count = { Meadow = 40, Woods = 150 }, Goal = "Hunting gold %d/%d",
 			Kind = "Collect gold for the town road fund.", Sneaky = "Fill your pouch. Bigger pouch, bigger grin!" },
 		{ Id = "J7", Obj = { Type = "AutoKill" }, Count = { Meadow = 8, Woods = 6 }, NeedAuto = true, Goal = "Auto Battle defeats %d/%d",
@@ -2706,7 +2706,7 @@ Config.Board = {
 		{ Id = "J9", Obj = { Type = "SafeKill", Kind = "$Big", MinHP = 0.5 }, Count = 1, Goal = "{Big} above half HP %d/%d",
 			Kind = "Show the sprouts how to fight safely.", Sneaky = "Win without a scratch. Show off!" },
 		{ Id = "J10", Obj = { Type = "Near", Spot = "$Gate", Radius = 14 }, Count = 15, Goal = "Stand guard at the gate %d/%d s",
-			Kind = "Stand guard at the gate.", Sneaky = "Stand at the gate and look scary." },
+			Kind = "Stand guard at the gate.", Sneaky = "Stand at the gate and look tough." },
 	},
 	Text = {
 		Done = "Job done! +%s gold · +%s XP",
@@ -3140,8 +3140,8 @@ Config.Settings = {
 		On = "On", OnEn = "On",
 		Off = "Off", OffEn = "Off",
 		-- (action name, key) once per action per session: a new action's default key was already one of my keys
-		KeyCollision = "The new action [%s] has no key: its default key %s is already in use. Pick one in Settings.",
-		KeyCollisionEn = "The new action [%s] has no key: its default key %s is already in use. Pick one in Settings.",
+		KeyCollision = "New action [%s] has no key: %s is already used. Pick one in Settings.",
+		KeyCollisionEn = "New action [%s] has no key: %s is already used. Pick one in Settings.",
 		Reserved = "Roblox uses that key", ReservedEn = "Roblox uses that key",
 		NotAllowed = "That key can't be used", NotAllowedEn = "That key can't be used",
 		Swapped = "Swapped the keys %s and %s", SwappedEn = "Swapped the keys %s and %s", -- (key label, key label)
@@ -4270,11 +4270,11 @@ Config.Story = {
 	OpeningReplayUnsafe = "You can rewatch the opening inside a town.",
 	IntroNeutral = {},
 	FactionLore = {
-		Halo = "Their crown shards became halos. They guard the shards and fix the world.",
-		Horns = "Their crown shards became horns. They take the shards and rule the world.",
+		Halo = "Their Crown Shards became halos. They guard the shards and fix the world.",
+		Horns = "Their Crown Shards became horns. They take the shards and rule the world.",
 		Neutral = "Those who shape the shards instead of grabbing them.", -- addendum A6
 	},
-	MarkLore = "Halos and horns are the power of the crown shards. They grow as your rank goes up.",
+	MarkLore = "Halos and horns are the power of the Crown Shards. They grow as your rank goes up.",
 	ZoneLore = {
 		Crossroads = "Where the broken crown fell",
 		HaloTown = "The castle of those with halos",
@@ -4285,25 +4285,25 @@ Config.Story = {
 	},
 	-- format strings (always through string.format)
 	WarWin = {
-		Halo = "The Knights of Light won the crown this round! The sky glows crown gold. (Gold and XP +25%% for 10 minutes)",
-		Horns = "The Horn Legion won the crown this round! The sky glows crimson. (Gold and XP +25%% for 10 minutes)",
+		Halo = "The Knights of Light won the crown this round! The sky glows gold.\n(Gold and XP +25%% for 10 minutes)",
+		Horns = "The Horn Legion won the crown this round! The sky glows crimson.\n(Gold and XP +25%% for 10 minutes)",
 	},
 	WarDraw = "Nobody won the crown this round!",
-	GooseStart = "A Golden Goose with a crown shard landed in the Crossroads! Knights rescue it, the Horn Legion poaches it!",
+	GooseStart = "A Golden Goose with a Crown Shard landed in the Crossroads!\nKnights rescue it. The Horn Legion poaches it!",
 	GooseResult = {
 		Halo = "The Knights rescued the Golden Goose! The shard shines with light again.",
 		Horns = "The Horn Legion poached the Golden Goose! The shard turned dark.",
 		Tie = "The Golden Goose flew away! It's a tie.",
 	},
 	-- (GooseNoRival removed by A23-14: a goose with no rival is now a "Team Rescue", texts in Config.Goose.Text)
-	KaijuSiren = "Alert! %s is being swallowed by the crown shard's darkness! A Kaiju in 10 seconds!",
+	KaijuSiren = "Alert! %s is being swallowed by the Crown Shard's darkness! A Kaiju in 10 seconds!",
 	KaijuStart = "Kaiju %s is here! Knights can attack it anywhere!",
 	KaijuDefeated = "The Knights defeated the Kaiju %s! They share a %s gold reward.", -- (name, gold actually paid: CR-L19)
 	KaijuDefeatedNoReward = "The Kaiju %s was defeated.", -- CR-L19: (name) nobody was paid
-	KaijuSurvived = "The Kaiju %s survived to the end! A legendary villain is born!",
+	KaijuSurvived = "The Kaiju %s survived to the end! A Legendary Villain is born!",
 	SurviveTitle = "Legendary Villain",
 	GrayLegendTitle = "Gray Legend",
-	RebirthIntro = "Rebirth lets you pick your crown shard again. Which side will you be reborn on?",
+	RebirthIntro = "Rebirth lets you pick your Crown Shard again. Which side will you be reborn on?",
 	Fall = "Fall: the halo cracked and horns grew. (Gold +5%% forever · torn black cape)",
 	Redeem = "Redeem: the horns broke and a cracked halo rose. (XP +5%% forever)",
 	SackLore = "Stolen gold carries a grudge. If a knight catches the thief, it comes back at 120%%!",
@@ -4312,7 +4312,7 @@ Config.Story = {
 -- addendum A7-3: crown-shard one-liners (<= 30 chars, plain text, no format specifiers) shown only at the matching
 -- unlock moment (reaching that zone's MinLevel) and only while Rebirths == 0. Keyed by zone id.
 Config.StoryLines = {
-	GoblinWoods = "A crown shard calls from beyond the woods. Watch out for thieves!",
+	GoblinWoods = "A Crown Shard calls from beyond the woods. Watch out for thieves!",
 	SkeletonRuins = "A big shard sleeps in the old kingdom's tomb.",
 }
 
@@ -4365,8 +4365,8 @@ Config.Text = {
 	PotionStockFull = "You can hold up to %d of each potion.", -- (PotionInventoryCap)
 	PotionBought = "Bought %s potion ×%d!", -- (kind, amount)
 	-- PvP
-	Plundered = "%s stole %s gold from you! If a knight catches the thief within 45 s, you get 120%% back.",
-	PlunderGain = "Put %s gold in your grudge sack! Survive 45 s in a PvP zone to keep it! (Wanted stars: %d)",
+	Plundered = "%s stole %s gold from you!\nIf a knight catches the thief within 45 s, you get 120%% back.",
+	PlunderGain = "Put %s gold in your Grudge Sack!\nKeep it: survive 45 s in a PvP zone. (Wanted stars: %d)",
 	PlunderTooSoon = "You just robbed this player. You can't rob them again for 3 minutes.",
 	HonorGain = "Honor +%d",
 	AutoSleepy = "The shard is sleepy… Take a step? (Auto Battle rests in 30 s)", -- P2
@@ -4389,16 +4389,16 @@ Config.Text = {
 	BullyDecay = "Your bully level went down (level %d)",
 	BullyNoAuto = "No Auto Battle during a bully penalty. It comes back when your bully levels are gone.", -- A23-22
 	BullyAutoOff = "Unfair PvP penalty: Auto Battle is off. XP and drops are halved too.", -- A23-22 (auto was ON)
-	BullyPenaltyEnd = "Your bully penalty is over! You can turn Auto Battle on again. XP and drops are back to normal.", -- A23-22
-	BullyPenaltyEndEn = "Your bully penalty is over! You can turn Auto Battle on again. XP and drops are back to normal.",
+	BullyPenaltyEnd = "Your bully penalty is over! Auto Battle, XP and drops are back.", -- A23-22
+	BullyPenaltyEndEn = "Your bully penalty is over! Auto Battle, XP and drops are back.",
 	BullyPenaltyEndNoAuto = "Your bully penalty is over! XP and drops are back to normal.", -- auto combat not unlocked yet
 	BullyPenaltyEndNoAutoEn = "Your bully penalty is over! XP and drops are back to normal.",
 	Revenge = "Get revenge on %s! ATK +25%% for 90 s",
 	RevengeDone = "Revenge done!",
 	-- grudge sack
-	SackPaid = "You kept the grudge sack! Got %s gold",
-	SackLost = "You lost the grudge sack!",
-	GrudgeRefund = "%s got your grudge sack back! %s gold went to your vault!",
+	SackPaid = "You kept the Grudge Sack! Got %s gold",
+	SackLost = "You lost the Grudge Sack!",
+	GrudgeRefund = "%s got your Grudge Sack back! %s gold went to your vault!",
 	GrudgeReturned = "The thief went down, so your stolen %s gold came back to your vault.",
 	GrudgeMail = "Grudge mail! Your stolen %s gold came back to your vault.", -- P3
 	DailyAllDone = "All done for today! You can rest now without missing out. Want more? Enjoy story quests or hunting.", -- P8
@@ -4408,15 +4408,15 @@ Config.Text = {
 	GhostButton = "Ghost grab ({GhostHold})", -- BB1 key token: the key part shows only on keyboards
 	GhostWait = "Grab again in %d s",
 	AvengerBonus = "Avenger bonus +%s gold!",
-	GrudgeAvengedAll = "%s took the grudge sack back from %s!", -- BB37: PublicName(killer, true), PublicName(thief, true)
+	GrudgeAvengedAll = "%s took the Grudge Sack back from %s!", -- BB37: PublicName(killer, true), PublicName(thief, true)
 	-- travel / blocks
 	TravelBlockedStars = "With 3 or more Wanted stars, you have to run away on foot!",
 	TravelBlockedCombat = "You can't do that in combat.",
-	TravelBlockedSack = "You can't teleport while carrying a grudge sack!",
+	TravelBlockedSack = "You can't teleport while carrying a Grudge Sack!",
 	TravelBlockedKaiju = "A Kaiju can't teleport!",
 	Traveling = "Traveling...",
 	TravelCancelled = "Travel canceled.",
-	BlockedSack = "You can't do that while carrying a grudge sack.",
+	BlockedSack = "You can't do that while carrying a Grudge Sack.",
 	BlockedKaiju = "You can't do that during a Kaiju event.",
 	BlockedStars = "You need zero Wanted stars to do that.",
 	BlockedBully = "You can join the Artisan Guild after all your bully levels are gone.", -- CR-L9: altar / rebirth to Neutral with bully stacks
@@ -4432,7 +4432,7 @@ Config.Text = {
 	ClassChangedFree = "You changed your class to %s! You start again from Lv 1.", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "You changed your class to %s! (Level kept: under Lv%d)", -- A23-14 (className, FreeKeepLevelBelow)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
-	ClassChangeRuleF = "You can change your class later in Menu > Change Class (free: level kept under Lv%d, after that from Lv1 / ticket: level kept)", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
+	ClassChangeRuleF = "Change class later in Menu. Free: level kept below Lv%d. Ticket: level always kept.", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
 	ClassChangedTicket = "You changed your class to %s! (Ticket used, level kept)",
 	ClassSame = "You already have that class.",
 	ClassNeedSafe = "You can only change class in a safe zone.",
@@ -4583,8 +4583,8 @@ Config.Ranking = {
 		Empty = "No records yet", EmptyEn = "No records yet",
 		Unknown = "Player", UnknownEn = "Player",
 		Test = "Test", TestEn = "Test",
-		PvPTabNote = "Goes up when you KO weaker, idle or new players. Top 3 with 3+ points are outlaws next week.",
-		PvPTabNoteEn = "Goes up when you KO weaker, idle or new players. Top 3 with 3+ points are outlaws next week.",
+		PvPTabNote = "Rises when you KO weaker, idle or new players. Top 3 (3+ points) turn outlaw.",
+		PvPTabNoteEn = "Rises when you KO weaker, idle or new players. Top 3 (3+ points) turn outlaw.",
 		RewardTabNote = "Top 3: XP and drops +10% next week", RewardTabNoteEn = "Top 3: XP and drops +10% next week",
 		Ineligible = "New accounts join the global ranking after 3 days and 30 minutes of play",
 		IneligibleEn = "New accounts join the global ranking after 3 days and 30 minutes of play",
@@ -4594,8 +4594,8 @@ Config.Ranking = {
 		OutlawChipEn = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
 		RewardChip = "This week's %s #%d: XP and drops +10%% (until Monday)", -- (board name, rank)
 		RewardChipEn = "This week's %s #%d: XP and drops +10%% (until Monday)",
-		OutlawStart = "Last week's Unfair PvP #%d: you are an outlaw this week. No Auto Battle, half XP and drops, double bounty (until Monday)",
-		OutlawStartEn = "Last week's Unfair PvP #%d: you are an outlaw this week. No Auto Battle, half XP and drops, double bounty (until Monday)",
+		OutlawStart = "Last week's Unfair PvP #%d: you are an outlaw this week!\nNo Auto Battle, half XP and drops, double bounty (until Monday).",
+		OutlawStartEn = "Last week's Unfair PvP #%d: you are an outlaw this week!\nNo Auto Battle, half XP and drops, double bounty (until Monday).",
 		OutlawEnd = "Your outlaw week is over! Auto Battle is back.",
 		OutlawEndEn = "Your outlaw week is over! Auto Battle is back.",
 		OutlawEndNoAuto = "Your outlaw week is over! XP and drops are back to normal.", -- auto combat not unlocked yet
@@ -4608,8 +4608,8 @@ Config.Ranking = {
 		RewardStart = "Last week's %s #%d! XP and drops +10%% and a title this week (until Monday).", -- (board name, rank)
 		RewardStartEn = "Last week's %s #%d! XP and drops +10%% and a title this week (until Monday).",
 		-- a top-3 player who switched faction since: the title is given, the bonus waits for that faction
-		RewardStartOff = "Last week's %s #%d! You got the title. XP and drops +10%% only while in the %s (until Monday).", -- (board, rank, faction)
-		RewardStartOffEn = "Last week's %s #%d! You got the title. XP and drops +10%% only while in the %s (until Monday).",
+		RewardStartOff = "Last week's %s #%d! You got the title.\nXP and drops +10%% only while in the %s (until Monday).", -- (board, rank, faction)
+		RewardStartOffEn = "Last week's %s #%d! You got the title.\nXP and drops +10%% only while in the %s (until Monday).",
 		ArtisanGain = "+%d Artisan Fame", ArtisanGainEn = "+%d Artisan Fame",
 		-- BB11 town board (PvPService.updateBoard; 검수 2026-10-06): this server's weekly boards + one wanted line.
 		-- RichText: the red outlaw tag is fixed text, names are escaped. Row = (rank, name, value).
@@ -4734,7 +4734,7 @@ Config.Death = {
 		Other = "You were knocked out", OtherEn = "You were knocked out",
 		LostNone = "Nothing lost", LostNoneEn = "Nothing lost",
 		Lost = "Lost %s pouch gold", LostEn = "Lost %s pouch gold",
-		Sack = "You lost the grudge sack", SackEn = "You lost the grudge sack",
+		Sack = "You lost the Grudge Sack", SackEn = "You lost the Grudge Sack",
 		Respawn = "Back in %d s", RespawnEn = "Back in %d s",
 	},
 	-- one tip per situation (%s = the potion key name, or 'the potion button' on touch)
@@ -4815,8 +4815,8 @@ Config.Tamer = {
 		PetGot = "A Baby Slime became your pet! Now your pet fights for you.",
 		PetGotEn = "A Baby Slime became your pet! Now your pet fights for you.",
 		-- once, for a save that was the artisan hunter before A23-39 (with one free class change)
-		Became = "The hunter is now the Pet Tamer! To pick another class, use the free Class Change Ticket you got.",
-		BecameEn = "The hunter is now the Pet Tamer! To pick another class, use the free Class Change Ticket you got.",
+		Became = "The hunter is now the Pet Tamer!\nWant another class? Use the free Class Change Ticket you got.",
+		BecameEn = "The hunter is now the Pet Tamer!\nWant another class? Use the free Class Change Ticket you got.",
 		-- below Config.ClassChange.FreeKeepLevelBelow a free change keeps the level anyway (no ticket button there)
 		BecameFree = "The hunter is now the Pet Tamer! You can change your class for free.",
 		BecameFreeEn = "The hunter is now the Pet Tamer! You can change your class for free.",
