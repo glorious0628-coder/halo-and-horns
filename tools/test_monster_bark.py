@@ -1,8 +1,19 @@
 """Monster bark bubble offline test (MonsterLabels; lines_pack 2, dev2 BarkService contract
 docs/design/lines_pack_server_2026-10-07.md section 3): a new BarkAt on a monster model shows its Bark in a speech bubble
 over the head for Config.Barks.Show s within Config.Barks.MaxDistance studs (the same line with a new BarkAt shows
-again; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); the
-BarkBubble art (9-slice, TextRect) or a white rounded box with a navy rim; a newer bark replaces the bubble (never two). Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.
+again; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); a newer
+bark replaces the bubble (never two).
+A23-74 (user 2026-10-07 "not cute" / "몬스터마다 다른 말풍선 그려야지" / "말풍선 가로로 길쭉한 거 말고"): fixed-size round
+bubbles, never per letter. Art order: the kind's own BarkBubble<Kind> (12 keys, all uploaded since 270b9c3e: Id, Size,
+TextRect) -> its family's (Config.Barks.BubbleFamily / BubbleArt), each only once uploaded and round (no Slice), else a
+round white code bubble (about 96 x 70, fully round, soft rim, a small tail dot) - never the shared 9-slice BarkBubble
+(512 x 190: drawn 112 x 60 its body stays ~2.4 : 1, the wide pill the user turned down). A monster's own art: ~104 px
+wide, height from its Size (the 12 uploaded fit with no clamp, so Fit fills the box and the TextRect lines up; text box
+room for 2 lines at TextMin), ScaleType Fit, its TextRect. The line wraps (max 2 lines) and scales between TextMin and
+TextMax in the Head font
+(Fredoka One without UIKit); a jelly pop (UIScale Back + Size Elastic from the tail corner), a looping float, a shrink +
+fade in the last B.Out s, every tween cancelled when the bubble is destroyed or replaced, none with reduced motion.
+Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-07/offline_monster_bark_2026-10-07.json
 """
@@ -30,6 +41,31 @@ MUTATIONS = [
     ("the tail floats in the middle", "bb.SizeOffset = Vector2.new(0.5, 0.5)", "bb.SizeOffset = Vector2.new(0, 0)"),
     ("no code fallback without the art", "\tif not art then\n\t\tart = Instance.new(\"Frame\")", "\tif false then\n\t\tart = Instance.new(\"Frame\")"),
     ("two bubbles stack on one monster", "\tif old then old:Destroy() end\n", ""),
+    # A23-74 (user 2026-10-07): font, per-kind art, fixed round sizes, motion
+    ("the old GothamBold font", "label.Font = Enum.Font.FredokaOne", "label.Font = Enum.Font.GothamBold"),
+    ("the kind's own art is never used", '\t\tadd("BarkBubble" .. kind)\n', ""),
+    ("no family fallback", "\t\tadd(fam and arts[fam])\n", ""),
+    ("the family before the kind's own", '\t\tadd("BarkBubble" .. kind)\n\t\tadd(fam and arts[fam])\n',
+     '\t\tadd(fam and arts[fam])\n\t\tadd("BarkBubble" .. kind)\n'),
+    ("an un-uploaded key is used", 'def.Id ~= "" and typeof(def.Slice)', "typeof(def.Slice)"),
+    # the review finding (A23-74): a kind without its own / family art fell back to the wide 9-slice BarkBubble
+    ("the shared wide BarkBubble is the last fallback again", "\treturn keys\nend\n\n-- the first art key",
+     '\ttable.insert(keys, "BarkBubble")\n\treturn keys\nend\n\n-- the first art key'),
+    ("a 9-sliced key is used as a bark bubble", ' and typeof(def.Slice) ~= "Rect"\n', "\n"),
+    ("the own art is stretched (no Fit)", ", ScaleType = Enum.ScaleType.Fit }", " }"),
+    ("the own art ignores its shape", "and h / w or B.ArtAspect", "and w / h or B.ArtAspect"),
+    ("an uploaded bubble is letterboxed (height clamped)", "ArtHMin = 60,", "ArtHMin = 66,"),
+    ("the code bubble is a wide pill", "CodeW = 96, CodeH = 70", "CodeW = 172, CodeH = 44"),
+    ("the bubble grows with the letters", "\tlocal w, h = B.SizeOf(def)\n",
+     "\tlocal w, h = B.SizeOf(def)\n\tw += (utf8.len(text) or #text) * 4\n"),
+    ("the text never wraps", "\tlabel.TextWrapped = true\n", "\tlabel.TextWrapped = false\n"),
+    ("the fallback has square corners", "corner.CornerRadius = UDim.new(0.5, 0)", "corner.CornerRadius = UDim.new(0, 14)"),
+    ("no tail dot on the code bubble", "\t\ttail.Parent = art\n", ""),
+    ("the tail dot never fades", "\t\troundLook(tail, fades)\n", "\t\troundLook(tail, {})\n"),
+    ("reduced motion still wobbles", "\tif reduced then\n", "\tif false then\n"),
+    ("the bubble vanishes with no fade", "\tif fadeOut then task.delay(math.max(0, show - B.Out), fadeOut) end\n", ""),
+    ("a replaced bubble still fades", "\t\tif not bb.Parent then return end -- a newer bark already replaced it\n", ""),
+    ("the float loop never stops", "for _, tw in tweens do tw:Cancel() end", "local _ = tweens"),
 ]
 
 

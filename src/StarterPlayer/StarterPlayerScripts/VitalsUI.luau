@@ -171,16 +171,25 @@ function VitalsUI.BuildPotions(parent, touch)
 	return row
 end
 
--- HUD v2: the pair on Rects.potions (logical units): two square-sized cells split by rect.Gap, MP at the right edge
+-- HUD v2: the pair on Rects.potions (logical units). rect.Cells = { HP = rect, MP = rect } (HudLayout 2026-10-07: each
+-- button's own rect - phones put them on the thumb ring around the attack): each button centred in its cell; else two
+-- square-sized cells split by rect.Gap, MP at the right edge
 function VitalsUI.PlacePotions(rect)
 	if not ui.Row or not rect then return end
 	local gap = tonumber(rect.Gap) or 7.5
 	local d = math.min(rect.H, (rect.W - gap) / 2)
+	local cells = type(rect.Cells) == "table" and rect.Cells or nil
 	ui.Row.Position = UDim2.fromOffset(rect.X, rect.Y)
 	ui.Row.Size = UDim2.fromOffset(rect.W, rect.H)
 	for i, kind in { "HP", "MP" } do
 		local potion = ui.Potions[kind]
-		if potion then
+		local cell = cells and cells[kind]
+		if potion and cell then
+			local cd = math.min(cell.W, cell.H)
+			potion.Button.Position = UDim2.fromOffset(cell.X + cell.W / 2 - rect.X, cell.Y + cell.H / 2 - rect.Y)
+			potion.Button.Size = UDim2.fromOffset(cd, cd)
+			potion.Size = cd
+		elseif potion then
 			local cx = rect.W - d / 2 - (2 - i) * (d + gap)
 			potion.Button.Position = UDim2.fromOffset(cx, rect.H / 2)
 			potion.Button.Size = UDim2.fromOffset(d, d)
