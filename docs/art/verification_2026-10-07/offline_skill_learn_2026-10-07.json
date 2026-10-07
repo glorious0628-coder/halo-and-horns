@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 16,
+  "checks": 19,
   "failedChecks": [],
   "mutations": {
-    "total": 11,
-    "applied": 11,
-    "caught": 11,
+    "total": 13,
+    "applied": 13,
+    "caught": 13,
     "results": [
       {
         "mutation": "locked slots show again",
@@ -102,14 +102,31 @@
         "failures": [
           "CHECK_FAIL that toast is not spammed :: 2"
         ]
+      },
+      {
+        "mutation": "SkillSlots ignored (a rebirth at Lv1 looks locked)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL SkillSlots 3 at Lv1 (after a rebirth): all three shown :: ",
+          "CHECK_FAIL the server opening slot 1 (SkillSlots 1) shows Q with the learn moment, Z stays hidden :: 0"
+        ]
+      },
+      {
+        "mutation": "SkillSlots changes not watched",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the server opening slot 1 (SkillSlots 1) shows Q with the learn moment, Z stays hidden :: 0"
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485",
-    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "94ce9349b4823d8ea819da13950b5a40651fe3829d692355fd6bb6ff8d91a309"
+    "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
+    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "1d87b35b86b1b6ee18924f27c5b744ab7f38c7515759536e5a4c59533a7af823"
   },
-  "fixtureSHA256": "7f7a4537818fd1343fdc3ba4918f2b7ef1cd4b8fc5c894111b3b5c0760bfd4f0",
+  "fixtureSHA256": "0ee3992becb4d4b4c4b91510fe624c890e0f2735a018a39d826828d75a101042",
   "studioCalls": 0,
   "contract": "A23-71 skill learn offline test (SkillBar.luau; user 2026-10-07 \"스킬도 처음에는 없어야 돼! 레벨 5일 때 하나 배우는 걸로\n하자\", unlocks Q 5 / Z 15 / X 25): no skill button below its unlock level (a key press says \"Skills come at Lv N\",\nnot spammed); unlocking while playing -> \"New skill! <name>\" banner (UIKit.Announce), the button pops in, one line on it\n(C.HUD.Hint(slot, \"Press Q\") / phones \"Tap the new button\"), the SkillLearn sound with PowerUp until its file exists;\nonce per slot; a save loading past the level shows its skills without the moment; reduced motion: no pop.\nRuns the real SkillBar.luau + Config.luau (Config.Skills.Unlock set to the A23-71 numbers) in\ntools/fixtures/skill_learn_offline.luau.",
   "limitations": "The button layout without skill slots is image dev's (HudLayout); the real unlock numbers come with dev2's Config.Skills.Unlock change; the look of the moment is a Studio check."

@@ -170,7 +170,9 @@ local T = {
 	ProductPending = "Coming soon",
 	ProductBuyF = "Buy with Robux (%s R$)",
 	WeaponLocation = "Crossroads → Artisan Guild anvil · interact up close",
-	WeaponFar = "Come close to the Forge anvil to see the weapons.",
+	WeaponFar = "Come close to the Forge anvil to buy.", -- UI round 2 #3: the list still shows from afar (look only)
+	WeaponShowWay = "Show me the way",
+	WeaponWayLabel = "Forge",
 	WeaponLoading = "Check again once your character is ready.",
 	WeaponNote = "Pick a basic weapon to buy. Weapons you own can be equipped again for free.",
 	WeaponCurrentF = "Current weapon: %s",
@@ -2038,6 +2040,29 @@ function WSHOP.Access()
 	return nil
 end
 
+-- UI round 2 #3 (검수 2026-10-07): [Show me the way] in the forge window opened from afar: a guide beam to the anvil
+-- in the Crossroads, else to the way into the Crossroads (QuestTarget.Travel); the window closes so the beam shows
+function WSHOP.ShowWay()
+	local hud, qt = C and C.HUD, C and C.QuestTarget
+	if type(hud) ~= "table" or type(hud.ShowGuide) ~= "function" then return false end
+	local zone = attr("ZoneId", "")
+	local target = nil
+	if zone == "Crossroads" then
+		local map = workspace:FindFirstChild("Map")
+		local landmarks = map and map:FindFirstChild("Landmarks")
+		local guild = landmarks and landmarks:FindFirstChild("ArtisanGuild")
+		local anvil = guild and guild:FindFirstChild("Anvil")
+		if anvil and anvil:IsA("BasePart") then target = anvil end
+	elseif type(qt) == "table" and type(qt.Travel) == "function" then
+		local ok, part = pcall(qt.Travel, "Crossroads", zone)
+		if ok and typeof(part) == "Instance" and part:IsA("BasePart") then target = part end
+	end
+	if not target then return false end
+	local ok = pcall(hud.ShowGuide, target, T.WeaponWayLabel)
+	if ok then Panels.Close() end
+	return ok
+end
+
 function WSHOP.CatalogLimit()
 	local shop = Config.WeaponShop
 	local cap = type(shop) == "table" and shop.MaxSoldTier
@@ -2754,6 +2779,10 @@ BUILDERS.WeaponShop = function(parent)
 	if type(hello) == "string" and hello ~= "" then addText(parent, hello, { Name = "ShopGreeting", Size = 18 }) end
 	addText(parent, T.WeaponLocation, { Name = "BlacksmithLocation", Color = theme.SubText })
 	local accessLabel = addText(parent, "", { Name = "BlacksmithAccess", Color = theme.Bad })
+	local wayRow = addRow(parent, 60, 10) -- UI round 2 #3: shown while far from the anvil
+	wayRow.Name = "ForgeWay"
+	local wayButton = makeButton(wayRow, T.WeaponShowWay, PALETTE.Free, UDim2.new(1, 0, 0, 60), function() WSHOP.ShowWay() end)
+	wayButton.Name = "ForgeShowWay"
 	local details = addColumn(parent, 1, 0, 10)
 	details.Name = "WeaponCatalog"
 	addText(details, T.WeaponNote, { Size = 16, Color = theme.SubText })
@@ -2850,7 +2879,9 @@ BUILDERS.WeaponShop = function(parent)
 		end
 		local access = WSHOP.Access()
 		accessLabel.Text, accessLabel.Visible = access or "", access ~= nil
-		details.Visible = access == nil
+		local far = access == T.WeaponFar -- loaded, alive, class picked, just not at the anvil: look but do not buy
+		details.Visible = access == nil or far
+		wayRow.Visible = far
 		local first = WSHOP.Offer(1)
 		local enh = ITEMS.Data.Enhance -- B11: per-tier scroll +N from the owner's Inventory payload (A23-12)
 		current.Visible, gold.Visible = first ~= nil, first ~= nil

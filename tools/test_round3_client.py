@@ -37,6 +37,7 @@ def main():
     panels = PANELS.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     welcome = panels[panels.find("BUILDERS.Welcome = function(parent)"):]
     welcome = welcome[:welcome.find("\nBUILDERS.") if "\nBUILDERS." in welcome else len(welcome)]
+    vitals = (ROOT / "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau").read_text(encoding="utf-8-sig")
     checks = [
         ("#3 the step-0 pinned line opens the guide in one tap (before the claim / list paths)",
          "if e and e.Pinned and e.TutorialStep == 0 and L.PinnedTap then" in tap
@@ -63,6 +64,11 @@ def main():
          and "if info and (tonumber(info.Price) or 0) >= WSHOP.ConfirmAt and os.clock() >= (ui.ArmedUntil or 0) then" in panels
          and "ui.Buy.Text = UserInputService.TouchEnabled and WSHOP.AgainTouch or WSHOP.AgainMouse" in panels
          and 'AgainTouch = "Tap again to buy"' in panels),
+        ("UI round 2 #3: the forge window from afar lists the weapons and shows [Show me the way]",
+         "details.Visible = access == nil or far" in panels and "wayRow.Visible = far" in panels
+         and "function WSHOP.ShowWay()" in panels and 'pcall(qt.Travel, "Crossroads", zone)' in panels),
+        ("UI round 2 #3: no potions -> [Buy] shows the way to the merchant",
+         'if count <= 0 and label == "Buy" then WAY.Show() end' in vitals and "pcall(hud.ShowGuide, target, WAY.Label)" in vitals),
     ]
     for name, good in checks:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)

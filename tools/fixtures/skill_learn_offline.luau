@@ -168,6 +168,19 @@ set2("DataLoaded", true)
 check(holder2("Q").Visible == true and holder2("X").Visible == true, "a loaded Lv30 save shows its skills", "")
 check(#W2.Announced == 0 and #W2.Hints == 0, "a save load shows no learn moment", #W2.Announced)
 
+-- 3b. dev2 SkillSlots: a rebirth back at Lv1 keeps its skills (the slots never go down); slots open what the level does not
+local b4 = copy(base)
+b4.SkillSlots = 3
+local SB4, W4, set4, holder4 = run({ Attr = b4 })
+check(holder4("Q").Visible and holder4("Z").Visible and holder4("X").Visible, "SkillSlots 3 at Lv1 (after a rebirth): all three shown", "")
+check(#W4.Announced == 0, "no learn moment for skills I already had", #W4.Announced)
+local b5 = copy(base)
+b5.SkillSlots = 0
+local SB5, W5, set5, holder5 = run({ Attr = b5 })
+set5("SkillSlots", 1)
+check(holder5("Q").Visible == true and #W5.Announced == 1 and holder5("Z").Visible == false,
+	"the server opening slot 1 (SkillSlots 1) shows Q with the learn moment, Z stays hidden", #W5.Announced)
+
 -- 4. phones: 'Tap the new button'; reduced motion: no pop
 local SB3, W3, set3, holder3 = run({ Attr = copy(base), Touch = true, Reduced = true })
 set3("Level", 5)

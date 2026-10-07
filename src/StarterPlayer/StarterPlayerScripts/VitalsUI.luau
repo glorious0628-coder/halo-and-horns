@@ -15,6 +15,8 @@ local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, 
 } }
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245), Dim = Color3.fromRGB(150, 150, 160) }
 local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
+-- UI round 2 #3 (검수 2026-10-07): with no potions the [Buy] press shows the way to the merchant (HUD.ShowGuide)
+local WAY = { Label = "Potion shop", Gap = 1, At = -math.huge }
 
 local function canUse()
 	if player.Parent ~= Players or player:GetAttribute("DataLoaded") ~= true
@@ -55,9 +57,35 @@ local function potionState(kind)
 	return count, "Use", true
 end
 
+-- the beam to the potion merchant (workspace.Map.NPCs.<PotionMerchantName>) in the Crossroads, else to the way there
+function WAY.Show()
+	if os.clock() - WAY.At < WAY.Gap then return end
+	WAY.At = os.clock()
+	local hud, qt = C and C.HUD, C and C.QuestTarget
+	if type(hud) ~= "table" or type(hud.ShowGuide) ~= "function" then return end
+	local tune = Config.Vitals or {}
+	local zone = player:GetAttribute("ZoneId")
+	local target = nil
+	if zone == "Crossroads" then
+		local map = workspace:FindFirstChild("Map")
+		local npcs = map and map:FindFirstChild("NPCs")
+		local npc = npcs and npcs:FindFirstChild(tune.PotionMerchantName or "PotionMerchant")
+		if npc and npc:IsA("Model") then
+			target = npc.PrimaryPart or npc:FindFirstChild("HumanoidRootPart") or npc:FindFirstChildWhichIsA("BasePart", true)
+		end
+	elseif type(qt) == "table" and type(qt.Travel) == "function" then
+		local ok, part = pcall(qt.Travel, "Crossroads", zone)
+		if ok then target = part end
+	end
+	if typeof(target) == "Instance" and target:IsA("BasePart") then pcall(hud.ShowGuide, target, WAY.Label) end
+end
+
 local function requestPotion(kind)
-	local _, _, available = potionState(kind)
-	if not available then return end
+	local count, label, available = potionState(kind)
+	if not available then
+		if count <= 0 and label == "Buy" then WAY.Show() end -- no potions: show the way to the merchant
+		return
+	end
 	-- Display checks only: the server alone consumes stock, heals, charges MP and applies the deadline.
 	Net.Get("UsePotion"):FireServer(kind)
 end

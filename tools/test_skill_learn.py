@@ -34,6 +34,9 @@ MUTATIONS = [
     ("pops with reduced motion", "\tif not reduced then\n\t\tlocal scale", "\tif true then\n\t\tlocal scale"),
     ("a locked key press says nothing", "\t\tif st.On and st.Locked then LEARN.Tell(st.Unlock) end\n", ""),
     ("the toast is spammed", "\tif os.clock() - LEARN.TellAt < LEARN.TellGap then return end\n", ""),
+    ("SkillSlots ignored (a rebirth at Lv1 looks locked)",
+     "\tif locked and type(slots) == \"number\" and slots >= (T.SlotIndex[slot] or 99) then locked = false end\n", ""),
+    ("SkillSlots changes not watched", '"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }', '"SkillReadyAtX", "SkillBarPreview" }'),
 ]
 
 

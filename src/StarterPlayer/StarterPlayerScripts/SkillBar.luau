@@ -49,6 +49,9 @@ local T = {
 	Ready = { Q = "SkillReadyAt", Z = "SkillReadyAtZ", X = "SkillReadyAtX" }, -- server attributes (os time)
 	Flag = { Z = "ZEnabled", X = "XEnabled" }, -- Config.Skills flags (Q is always on)
 	Unlock = { Q = 1, Z = 5, X = 8 }, -- Config.Skills.Unlock wins when it is there
+	-- dev2 (A23-71): the server's SkillSlots attribute (0-3, never goes down: a rebirth / a free class change back to Lv1
+	-- keeps the skills) opens slot N when SkillSlots >= N; either it or the level opens a slot
+	SlotIndex = { Q = 1, Z = 2, X = 3 },
 	Action = { Q = "SkillQ", Z = "SkillZ", X = "SkillX" }, -- Keybinds actions
 	Gap = 0.5, -- s: the global gap between two casts (one press waits in line)
 	Tick = 0.1, -- s: cooldown sweep / seconds refresh
@@ -436,11 +439,14 @@ local function stateOf(slot)
 	local def = defOf(slot)
 	local unlock = unlockLevel(slot)
 	local level = math.floor(num("Level", 1))
+	local locked = level < unlock
+	local slots = attr("SkillSlots", nil)
+	if locked and type(slots) == "number" and slots >= (T.SlotIndex[slot] or 99) then locked = false end
 	local readyAt = num(T.Ready[slot], 0)
 	local left = math.max(0, readyAt - Util.Now())
 	return {
 		On = slotOn(slot),
-		Locked = level < unlock,
+		Locked = locked,
 		Unlock = unlock,
 		Left = left,
 		Frac = def.CD > 0 and math.clamp(left / def.CD, 0, 1) or 0,
@@ -768,7 +774,7 @@ function SkillBar.Start()
 		if ui.root.Visible ~= shown then ui.root.Visible = shown end
 	end
 	UIKit.OnAttr({ "Mana", "MaxMana", "Level", "Class", "ClassChosen", "Faction", "SkillReadyAt", "SkillReadyAtZ",
-		"SkillReadyAtX", "SkillBarPreview" }, refreshAll)
+		"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }, refreshAll)
 	RunService.Heartbeat:Connect(function(dt)
 		acc.Tick += dt
 		if acc.Tick < T.Tick then return end
