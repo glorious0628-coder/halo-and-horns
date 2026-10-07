@@ -2734,16 +2734,31 @@ L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, Ti
 	WobbleStep = 0.06, Breathe = 1.05 }
 L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0 }
 
--- the button a hint hangs on and its HudLayout rect: "Attack" -> 공격, "Q" -> SkillBar's Q (else HUD's own Q disc)
+-- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then closes the
+-- potions up to the attack button. A change of that button's Visible lays the HUD out again (connected once)
+function L.SkillHidden(slot)
+	local bar = C and C.SkillBar
+	if type(bar) ~= "table" or type(bar.Button) ~= "function" then return false end
+	local ok, b = pcall(bar.Button, slot)
+	if not ok or typeof(b) ~= "Instance" then return false end
+	L.SkillWatch = L.SkillWatch or {}
+	if not L.SkillWatch[slot] then
+		L.SkillWatch[slot] = b:GetPropertyChangedSignal("Visible"):Connect(requestLayout)
+	end
+	return not b.Visible
+end
+
+-- the button a hint hangs on and its HudLayout rect: "Attack" -> 공격, "Q" / "Z" / "X" -> SkillBar's button (Q: else
+-- HUD's own Q disc; game dev 1 calls them when a skill is learned, A23-71)
 function L.HintTarget(id)
 	if id == "Attack" then return ui.attack, "attack" end
-	if id == "Q" then
+	if id == "Q" or id == "Z" or id == "X" then
 		local bar = C and C.SkillBar
 		if type(bar) == "table" and type(bar.Button) == "function" then
-			local ok, b = pcall(bar.Button, "Q")
-			if ok and typeof(b) == "Instance" and b.Visible then return b, "q" end
+			local ok, b = pcall(bar.Button, id)
+			if ok and typeof(b) == "Instance" and b.Visible then return b, string.lower(id) end
 		end
-		return ui.release, "q"
+		if id == "Q" then return ui.release, "q" end -- before SkillBar: HUD's own Q disc
 	end
 	return nil, nil
 end
@@ -2870,7 +2885,7 @@ function HUD.Hint(id, text, opts)
 	local btn, rect = L.HintTarget(id)
 	if not (btn and rect) then return false end
 	opts = type(opts) == "table" and opts or {}
-	HUD.ClearHint(id)
+	HUD.ClearHint(nil) -- one hint at a time (검수 2026-10-07: "Try your skill!" over "Tap to hit!" on phones)
 	if type(text) ~= "string" or text == "" then
 		text = id == "Attack" and (IS_TOUCH and TXT.HintTap or TXT.HintClick) or TXT.HintSkill
 	end
@@ -4333,7 +4348,7 @@ applyLayout = function()
 		jump = { X = rel.X / s, Y = rel.Y / s, W = jb.AbsoluteSize.X / s, H = jb.AbsoluteSize.Y / s }
 	end
 	local R = L.HL.Compute({ W = W, H = H, Scale = s, Inset = insetY(), Touch = IS_TOUCH, Jump = jump,
-		Topbar = L.TopbarRect(gui, s), Hidden = { auto = not (ui.auto and ui.auto.Visible) } })
+		Topbar = L.TopbarRect(gui, s), Hidden = { auto = not (ui.auto and ui.auto.Visible), q = L.SkillHidden("Q") } })
 	L.Rects = R
 	L.LayoutPlate(R)
 	for label in ui.textFits or {} do
@@ -4654,7 +4669,7 @@ function HUD.Start()
 	if game:GetService("RunService"):IsStudio() then
 		LocalPlayer:GetAttributeChangedSignal("HintPreview"):Connect(function()
 			local v = LocalPlayer:GetAttribute("HintPreview")
-			if v == "Attack" or v == "Q" then HUD.Hint(v) else HUD.ClearHint(nil) end
+			if v == "Attack" or v == "Q" or v == "Z" or v == "X" then HUD.Hint(v) else HUD.ClearHint(nil) end
 		end)
 	end
 

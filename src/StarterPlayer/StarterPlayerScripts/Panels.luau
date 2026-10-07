@@ -26,6 +26,28 @@ local UPDATE_INTERVAL = 0.25
 local VACATION_DELAY = 2 -- seconds after both pickers are closed
 local WINDOW_MAX_W, WINDOW_MAX_H = 780, 600
 local ZINDEX = 50
+-- 창 꾸미기 (검수 2026-10-07, user: "이런 화면도 멋있게"): one frame for every window - the navy PanelCard plate (gold rim;
+-- the builders' white words stay readable), the RibbonHeader title hanging over its top edge (the window's icon in the
+-- ribbon's round disc), the round BtnRound + GlyphClose X always in the top-right corner, the round GlyphBack in the
+-- top-left one (only when the window was opened from another), approved button capsules (FRAME.Part) and a height that
+-- follows the content (no empty lower half; a long list still scrolls inside the screen). Every part falls back to the
+-- old code look when its art is missing (IMG-R4)
+local FRAME = {
+	Body = "PanelCard", Title = "RibbonHeader", Round = "BtnRound", CloseGlyph = "GlyphClose", BackGlyph = "GlyphBack",
+	TitleH = 46, -- du: the ribbon; half of it hangs above the plate
+	TitleSize = 24, -- du: its words ("Title" style, >= 16 real px)
+	TitleMinW = 220, -- du
+	Disc = 0.94, -- the ribbon's round disc + gap: the words start at RibbonHeader Inner 114 / 121 of the height
+	RoundSize = 46, -- du: the X / back discs (touch: >= GUARD.TouchTarget real px)
+	Pad = 18, -- du: from the plate's rim to the content
+	MinH = 190, -- du: the shortest window
+	Bottom = 16, -- du: under the content
+	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
+		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
+		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconScroll",
+		Story = "IconScroll" },
+	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
+}
 local BODY_FONT = Enum.Font.GothamMedium
 local WARN_INTERVAL = 10
 -- review R1 tunables
@@ -189,6 +211,8 @@ local T = {
 	VacationNoteF = "Even on breaks you get %d%% of a day's rewards. Playing gives 100%%!",
 	VacationClaim = "Claim",
 	VacationNone = "No vacation bonus to claim.",
+	VacationAwayF = "You were away for %d days, and that's okay.", -- the reward popup's first line (창 꾸미기 ③)
+	VacationLater = "Later",
 	-- fallbacks for Config.Text keys added in review R1
 	WaitRespawn = "You can do this after you respawn.", -- CR-L30
 	BlockedBully = "You can join the Artisan Guild after all your Bully stacks are gone.", -- CR-L9
@@ -593,8 +617,42 @@ local function addColumn(parent, scaleX, offsetX, padding)
 	return f
 end
 
+-- 검수 2026-10-07 (window audit): the factions a window offers - the ones a player may newly pick (A23-57: the artisan
+-- guild only while Config.Features.NeutralFaction is on) plus `keep` (my own, an old Neutral save keeps it)
+function FRAME.Factions(keep)
+	local list = {}
+	for _, id in FACTION_IDS do
+		if id == keep or type(Config.Pickable) ~= "function" or Config.Pickable(id) then table.insert(list, id) end
+	end
+	return list
+end
+
+-- the change tickets can be bought (a product id is set); until then the menu hides the ticket shop (no "Coming soon"
+-- for kids, 검수 2026-10-07)
+function FRAME.TicketsOnSale()
+	for _, kind in { "Class", "Faction" } do
+		local prod = Config.ProductByKind(kind)
+		if prod and tonumber(prod.Id) and prod.Id ~= 0 then return true end
+	end
+	return false
+end
+
+-- the approved capsule for a button colour: green Free / Good = BtnConfirm, purple Buy and gold = BtnPrimary (gold),
+-- the rest (blue Ticket, the default) = BtnSecondary
+function FRAME.Part(color)
+	if color == PALETTE.Free or color == theme.Good then return "BtnConfirm" end
+	-- gold = 'on' / selected / ready in the windows (Settings tabs and toggles, the ready rebirth) and Buy
+	if color == PALETTE.Buy or color == theme.Gold then return "BtnPrimary" end
+	return "BtnSecondary"
+end
+
 local function applyButtonState(btn)
 	local enabled = not disabledButtons[btn]
+	if btn:GetAttribute("ArtButton") then -- 창 꾸미기: UIKit.ButtonArtState dims the art and the words
+		btn.AutoButtonColor = false
+		btn:SetAttribute("Disabled", not enabled)
+		return
+	end
 	local base = baseColors[btn] or PALETTE.Button
 	btn.BackgroundColor3 = enabled and base or base:Lerp(PALETTE.Disabled, 0.75)
 	btn.TextColor3 = textColors[btn] or theme.Text
@@ -606,6 +664,12 @@ end
 local function paintButton(btn, color, textColor)
 	local tc = textColor or theme.Text
 	if baseColors[btn] == color and textColors[btn] == tc then return end
+	if btn:GetAttribute("ArtButton") and UIKit and type(UIKit.SetButtonArt) == "function" then
+		baseColors[btn], textColors[btn] = color, tc
+		pcall(UIKit.SetButtonArt, btn, FRAME.Part(color))
+		applyButtonState(btn)
+		return
+	end
 	baseColors[btn] = color
 	textColors[btn] = tc
 	applyButtonState(btn)
@@ -634,7 +698,14 @@ local function makeButton(parent, text, color, size, onClick, textColor)
 		local ok, err = pcall(onClick)
 		if not ok then Util.Warn(TAG, "button handler error: " .. tostring(err)) end
 	end
-	if UIKit and type(UIKit.Button) == "function" then
+	-- 창 꾸미기: the approved capsule for the colour (its words mirror btn.Text), else the coloured code button
+	if UIKit and type(UIKit.ArtTextButton) == "function" then
+		local ok, b = pcall(UIKit.ArtTextButton, FRAME.Part(color), {
+			Name = "Button", Text = text, Size = size, TextSize = 20, Parent = parent,
+		}, handler)
+		if ok and typeof(b) == "Instance" and b:IsA("GuiButton") then btn = b end
+	end
+	if not btn and UIKit and type(UIKit.Button) == "function" then
 		local ok, b = pcall(UIKit.Button, {
 			Name = "Button", Text = text, Size = size, Color = color,
 			TextColor = textColor or theme.Text, TextSize = 20, Parent = parent,
@@ -872,29 +943,135 @@ local function pickerOpen()
 	return false
 end
 
+------------------------------------------------------------------ 창 꾸미기 frame parts
+-- the title: the RibbonHeader art (navy capsule, the round disc on its left holds the window icon) as wide as its words
+-- (AutomaticSize X between FRAME.TitleMinW and the room between the corner discs), centred on the plate's top edge.
+-- titleLabel stays the words (render writes its Text). Missing art: the old gold title words in the plate's top left
+function FRAME.BuildTitle()
+	local th = FRAME.TitleH
+	local ribbon = UIKit and type(UIKit.ArtImage) == "function" and UIKit.ArtImage(FRAME.Title, {
+		Name = "TitleRibbon",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0),
+		Size = UDim2.fromOffset(0, th),
+		AutomaticSize = Enum.AutomaticSize.X,
+		ZIndex = 4,
+		Active = false,
+		Parent = window,
+	}) or nil
+	if not ribbon then
+		titleLabel = placeLabel(window, "", 26, theme.Gold, UDim2.fromOffset(18, 10), UDim2.new(1, -140, 0, 44))
+		return
+	end
+	FRAME.Ribbon = ribbon
+	-- [disc with the icon][words][rounded end] in a row: AutomaticSize X adds them up (RibbonHeader: the disc is ~0.8 of
+	-- the height wide, centred at 0.40; the words start at 114 / 121 = 0.94 of the height; the round end ~0.45)
+	UIKit.Create("UISizeConstraint", { MinSize = Vector2.new(FRAME.TitleMinW, th), MaxSize = Vector2.new(600, th),
+		Parent = ribbon })
+	UIKit.Create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal,
+		VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = ribbon })
+	local disc = UIKit.Create("Frame", { Name = "Disc", Size = UDim2.new(0, math.floor(th * FRAME.Disc), 1, 0),
+		BackgroundTransparency = 1, LayoutOrder = 1, Active = false, Parent = ribbon })
+	FRAME.Icon = UIKit.Create("ImageLabel", {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0, th * 0.40, 0.5, 0),
+		Size = UDim2.fromOffset(th * 0.52, th * 0.52),
+		BackgroundTransparency = 1,
+		ScaleType = Enum.ScaleType.Fit,
+		ZIndex = 5,
+		Active = false,
+		Parent = disc,
+	})
+	titleLabel = UIKit.StyledLabel({
+		Name = "Title",
+		Size = UDim2.new(0, 0, 1, 0),
+		AutomaticSize = Enum.AutomaticSize.X,
+		TextSize = FRAME.TitleSize,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		LayoutOrder = 2,
+		ZIndex = 5,
+		Parent = ribbon,
+	}, "Title")
+	FRAME.TitleCap = UIKit.Create("UISizeConstraint", { MaxSize = Vector2.new(400, th), Parent = titleLabel })
+	UIKit.Create("Frame", { Name = "End", Size = UDim2.new(0, math.floor(th * 0.45), 1, 0), BackgroundTransparency = 1,
+		LayoutOrder = 3, Active = false, Parent = ribbon })
+end
+
+-- the window's icon in the ribbon's disc (FRAME.Icons; hidden for a window without one)
+function FRAME.SetIcon(id)
+	local icon = FRAME.Icon
+	if not icon then return end
+	local key = FRAME.Icons[id or ""]
+	local art = key and UIKit and type(UIKit.ArtId) == "function" and UIKit.ArtId(key) or nil
+	icon.Image = art or ""
+	icon.Visible = art ~= nil
+end
+
+-- a round disc button (BtnRound) with a glyph (GlyphClose / GlyphBack) at 60 %; missing art: the old coloured words
+function FRAME.RoundButton(name, glyph, words, onClick)
+	local def = UIKit and type(UIKit.ArtPart) == "function" and UIKit.ArtPart(FRAME.Round) or nil
+	if def and type(UIKit.ArtButton) == "function" and UIKit.ArtId(FRAME.Round) then
+		local b = UIKit.ArtButton(FRAME.Round, { Name = name, Size = UDim2.fromOffset(FRAME.RoundSize, FRAME.RoundSize),
+			ZIndex = 6, Parent = window }, onClick)
+		UIKit.ArtImage(glyph, {
+			Name = "Glyph",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromScale(0.58, 0.58),
+			ZIndex = 7,
+			Active = false,
+			Parent = b,
+		})
+		return b
+	end
+	return makeButton(window, words, name == "Close" and PALETTE.Close or PALETTE.Button,
+		UDim2.fromOffset(52, 44), onClick)
+end
+
 ------------------------------------------------------------------ modal root
 -- title / back / X row and the content below it. CR-L41: on touch screens the buttons are >= 44 real px tall
 -- (canvas px = real px / UIScale) and kept apart, and the content moves down with them
+-- 창 꾸미기: the X / back discs sit on the plate's top corners (a quarter outside), the ribbon on the top edge's middle,
+-- the content under the ribbon inside the rim. CR-L41: on touch screens the discs are >= 44 real px
 local function layoutChrome(s)
 	if not (closeButton and backButton and titleLabel and content) then return end
-	local th, gap = 44, 10
-	if UserInputService.TouchEnabled then
-		th = math.max(44, math.ceil(GUARD.TouchTarget / s))
-		gap = math.max(10, math.ceil(GUARD.TouchGap / s))
+	local d = FRAME.RoundSize
+	if UserInputService.TouchEnabled then d = math.max(d, math.ceil(GUARD.TouchTarget / s)) end
+	closeButton.AnchorPoint = Vector2.new(0.5, 0.5)
+	closeButton.Size = UDim2.fromOffset(d, d)
+	closeButton.Position = UDim2.new(1, -d * 0.2, 0, d * 0.2)
+	backButton.AnchorPoint = Vector2.new(0.5, 0.5)
+	backButton.Size = UDim2.fromOffset(d, d)
+	backButton.Position = UDim2.new(0, d * 0.2, 0, d * 0.2)
+	local ribbon = FRAME.Ribbon
+	if ribbon then
+		local th = FRAME.TitleH
+		ribbon.Size = UDim2.fromOffset(0, th)
+		local cap = ribbon:FindFirstChildOfClass("UISizeConstraint")
+		-- never under the corner discs; long words end in "..." inside the ribbon
+		local maxW = math.max(FRAME.TitleMinW, window.Size.X.Offset - 2 * (d * 0.8 + 6))
+		if cap then cap.MaxSize = Vector2.new(maxW, th) end
+		if FRAME.TitleCap then
+			FRAME.TitleCap.MaxSize = Vector2.new(math.max(40, maxW - math.floor(th * FRAME.Disc) - math.floor(th * 0.45)), th)
+		end
 	end
-	local closeW, backW = math.max(52, th), 112
-	closeButton.Size = UDim2.fromOffset(closeW, th)
-	closeButton.Position = UDim2.new(1, -12, 0, 10)
-	backButton.Size = UDim2.fromOffset(backW, th)
-	backButton.Position = UDim2.new(1, -(12 + closeW + gap), 0, 10)
-	titleLabel.Size = UDim2.new(1, -(18 + 12 + closeW + gap + backW + 16), 0, th)
-	local contentTop = 10 + th + 10
-	content.Position = UDim2.fromOffset(14, contentTop)
-	content.Size = UDim2.new(1, -28, 1, -(contentTop + 12))
+	local contentTop = FRAME.TitleH / 2 + 8
+	content.Position = UDim2.fromOffset(FRAME.Pad, contentTop)
+	content.Size = UDim2.new(1, -2 * FRAME.Pad, 1, -(contentTop + FRAME.Bottom))
 	if REG.Fixed then
 		REG.Fixed.Position = content.Position
 		REG.Fixed.Size = content.Size
 	end
+end
+
+-- the content's height (du): the list plus its padding, nil before it was laid out
+function FRAME.ContentH(s)
+	local list = content and content:FindFirstChildOfClass("UIListLayout")
+	local pad = content and content:FindFirstChildOfClass("UIPadding")
+	if not list or list.AbsoluteContentSize.Y < 1 then return nil end
+	local extra = pad and (pad.PaddingTop.Offset + pad.PaddingBottom.Offset) or 0
+	return list.AbsoluteContentSize.Y / s + extra
 end
 
 local function layoutRoot()
@@ -906,12 +1083,20 @@ local function layoutRoot()
 		NICK.Layout(w, h, top, s)
 		return
 	end
-	local availH = math.max(220, h - top - 12)
+	-- the ribbon hangs half above the plate: keep it under the top bar
+	local hang = FRAME.TitleH / 2
+	local availH = math.max(220, h - top - 12 - hang)
 	local winW = math.max(280, math.min(WINDOW_MAX_W, w - 24))
-	-- a story page is a few lines + one row of buttons: a short window keeps the world visible around it
-	local winH = math.min(currentId == "Story" and 360 or WINDOW_MAX_H, availH)
+	-- 창 꾸미기: the plate is as tall as its content (a story page, a shop with two rows ... keeps the world visible
+	-- around it); registered fixed-body windows (tabs) keep the full height
+	local maxH = math.min(WINDOW_MAX_H, availH)
+	local winH = maxH
+	local fixed = currentId ~= nil and REG.Opts[currentId] ~= nil and REG.Opts[currentId].FixedBody == true
+	local ch = (not fixed) and FRAME.ContentH(s) or nil
+	if ch then winH = math.clamp(math.ceil(hang + 8 + ch + FRAME.Bottom), FRAME.MinH, maxH) end
+	FRAME.Fit.H = ch
 	window.Size = UDim2.fromOffset(winW, winH)
-	window.Position = UDim2.fromOffset(w / 2, top + availH / 2)
+	window.Position = UDim2.fromOffset(w / 2, top + hang + availH / 2)
 	layoutChrome(s)
 end
 
@@ -930,35 +1115,38 @@ local function ensureRoot()
 	root.ZIndex = ZINDEX
 	root.Visible = false
 
-	window = Instance.new("Frame")
-	window.Name = "Window"
-	window.AnchorPoint = Vector2.new(0.5, 0.5)
-	window.BackgroundColor3 = theme.Bg
-	window.BackgroundTransparency = 0.04
-	window.BorderSizePixel = 0
-	window.Active = true
-	corner(window, 16)
-	local st = Instance.new("UIStroke")
-	st.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	st.Color = theme.Gold
-	st.Thickness = 2
-	st.Transparency = 0.3
-	st.Parent = window
+	-- 창 꾸미기: the navy PanelCard plate (else the old dark code frame with its gold line)
+	if UIKit and type(UIKit.ArtFrame) == "function" then
+		window = UIKit.ArtFrame(FRAME.Body, { Name = "Window", AnchorPoint = Vector2.new(0.5, 0.5), Active = true },
+			{ BackgroundColor3 = theme.Bg, BackgroundTransparency = 0.04, CornerRadius = UDim.new(0, 16),
+				StrokeColor = theme.Gold, StrokeThickness = 2, StrokeTransparency = 0.3 })
+	else
+		window = Instance.new("Frame")
+		window.Name = "Window"
+		window.AnchorPoint = Vector2.new(0.5, 0.5)
+		window.BackgroundColor3 = theme.Bg
+		window.BackgroundTransparency = 0.04
+		window.BorderSizePixel = 0
+		window.Active = true
+		corner(window, 16)
+	end
 	window.Parent = root
 
-	titleLabel = placeLabel(window, "", 26, theme.Gold, UDim2.fromOffset(18, 10), UDim2.new(1, -220, 0, 44))
+	FRAME.BuildTitle()
 
-	closeButton = makeButton(window, T.Close, PALETTE.Close, UDim2.fromOffset(52, 44), function()
+	local function guarded(fn)
+		return function()
+			if os.clock() < inputGuardUntil then return end -- CR-L26
+			local ok, err = pcall(fn)
+			if not ok then Util.Warn(TAG, "button handler error: " .. tostring(err)) end
+		end
+	end
+	closeButton = FRAME.RoundButton("Close", FRAME.CloseGlyph, T.Close, guarded(function()
 		Panels.Close(true) -- only an explicit close gets the merchant's situational farewell
-	end)
-	closeButton.AnchorPoint = Vector2.new(1, 0)
-	closeButton.Position = UDim2.new(1, -12, 0, 10)
-
-	backButton = makeButton(window, T.Back, PALETTE.Button, UDim2.fromOffset(112, 44), function()
+	end))
+	backButton = FRAME.RoundButton("Back", FRAME.BackGlyph, T.Back, guarded(function()
 		Panels.Open(type(openedFromMenu) == "string" and openedFromMenu or "Menu") -- BB13: the window it came from
-	end)
-	backButton.AnchorPoint = Vector2.new(1, 0)
-	backButton.Position = UDim2.new(1, -74, 0, 10)
+	end))
 	backButton.Visible = false
 
 	content = Instance.new("ScrollingFrame")
@@ -978,6 +1166,17 @@ local function ensureRoot()
 	list.Padding = UDim.new(0, 10)
 	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	list.Parent = content
+	-- 창 꾸미기: the plate follows the content height (one relayout per frame at most; tiny changes ignored)
+	list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		if FRAME.Fit.Queued or not (root and root.Visible) then return end
+		FRAME.Fit.Queued = true
+		task.defer(function()
+			FRAME.Fit.Queued = false
+			local _, _, _, s = canvas(root.Parent)
+			local h = FRAME.ContentH(s)
+			if h and (FRAME.Fit.H == nil or math.abs(h - FRAME.Fit.H) > 2) then layoutRoot() end
+		end)
+	end)
 	local pad = Instance.new("UIPadding")
 	pad.PaddingTop = UDim.new(0, 4)
 	pad.PaddingBottom = UDim.new(0, 12)
@@ -1343,6 +1542,11 @@ BUILDERS.Menu = function(parent)
 		{ Text = attr("HideAnnounceName", false) == true and Config.Announce.Text.MenuHide or Config.Announce.Text.MenuShow,
 			Id = "AnnounceName" },
 	}
+	if not FRAME.TicketsOnSale() then -- 검수 2026-10-07: no "Coming soon" shop for kids until a ticket is on sale
+		for i = #entries, 1, -1 do
+			if entries[i].Id == "Shop" then table.remove(entries, i) end
+		end
+	end
 	if num("TutorialStep") == 0 and attr("ClassChosen", false) == true and type(WELCOME.Definition()) == "table" then
 		table.insert(entries, 1, { Text = T.MenuWelcome, Id = "Welcome" })
 	end
@@ -1504,10 +1708,11 @@ BUILDERS.Rebirth = function(parent)
 
 	local row = addRow(parent, 0, 10)
 	local cols = {}
-	for _, id in FACTION_IDS do
+	local offered = FRAME.Factions(mine)
+	for _, id in offered do
 		local def = factionDef(id)
 		local color = factionColor(id)
-		local col = addColumn(row, 1 / #FACTION_IDS, -7, 4)
+		local col = addColumn(row, 1 / #offered, -7, 4)
 		local btn = makeButton(col, def.Name, color, UDim2.new(1, 0, 0, 64), function()
 			confirmRebirth(id)
 		end, contrastText(color))
@@ -1605,7 +1810,7 @@ BUILDERS.Altar = function(parent)
 		return nil
 	end
 	local targets = {}
-	for _, id in FACTION_IDS do
+	for _, id in FRAME.Factions(nil) do
 		if id ~= cur then table.insert(targets, id) end
 	end
 	if not selectedTarget or not table.find(targets, selectedTarget) then selectedTarget = targets[1] end
@@ -3047,7 +3252,8 @@ local function render(keep)
 	titleLabel.Text = REG.Title(currentId)
 	local backTo = type(openedFromMenu) == "string" and openedFromMenu ~= currentId and openedFromMenu or nil
 	backButton.Visible = backTo ~= nil
-	if backTo then backButton.Text = "← " .. REG.Title(backTo) end
+	if backTo and backButton:IsA("TextButton") then backButton.Text = "← " .. REG.Title(backTo) end
+	FRAME.SetIcon(currentId)
 	if currentId == "Story" then titleLabel.Text = STORY.Title() end
 	local ok, result = pcall(BUILDERS[currentId], fixed and REG.Fixed or content)
 	if not ok then
@@ -3146,6 +3352,32 @@ function Panels.Register(id, opts)
 	return true
 end
 
+-- 창 꾸미기 ③ (검수 2026-10-07; user on the 'Vacation Bonus' window: "이런 화면도 멋있게"): a vacation bonus to claim
+-- shows in the shared reward popup (UIKit.RewardPopup: the banner, the turning rays, gold / XP counting up, a big
+-- Claim); without a bonus the plain window keeps its one line. Returns true when the popup took over
+function FRAME.VacationPopup()
+	if num("VacationDays") <= 0 or pickerOpen() then return false end
+	if not (UIKit and type(UIKit.RewardPopup) == "function") then return false end
+	local shown = FRAME.Reward
+	if shown and shown.Frame and shown.Frame.Parent then return true end -- already on screen
+	if currentId then Panels.Close() end
+	local days = math.max(1, math.ceil(num("VacationDays") - 1e-6)) -- CR-M21: a part day counts as a day
+	vacationShown = true
+	local ok, popup = pcall(UIKit.RewardPopup, {
+		Title = REG.Title("Vacation"),
+		Lines = { Config.Plural(string.format(T.VacationAwayF, days)),
+			string.format(T.VacationNoteF, math.floor(Config.Daily.VacationRate * 100 + 0.5)) },
+		Rewards = { { Icon = "IconCoin", Amount = num("VacationGold") }, { Icon = "IconExp", Amount = num("VacationXP") } },
+		Button = T.VacationClaim,
+		OnClaim = function() fire("ClaimVacation") end,
+		Second = T.VacationLater,
+		Faction = myFaction(),
+	})
+	FRAME.Reward = ok and popup or nil
+	if not ok then Util.Warn(TAG, "reward popup failed: " .. tostring(popup)) end
+	return FRAME.Reward ~= nil
+end
+
 function Panels.Open(id, arg)
 	local fromMenu = pendingFromMenu
 	pendingFromMenu = false
@@ -3153,6 +3385,7 @@ function Panels.Open(id, arg)
 		Util.Warn(TAG, "unknown panel id: " .. tostring(id))
 		return
 	end
+	if id == "Vacation" and FRAME.VacationPopup() then return end
 	if id == "Welcome" then
 		local step = player:GetAttribute("TutorialStep")
 		if type(step) == "number" and step ~= 0 then WELCOME.PendingOpen = false; return end
