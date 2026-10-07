@@ -2658,8 +2658,8 @@ BUILDERS.WeaponShop = function(parent)
 				local cls = currentClass()
 				local now = Config.SwingHitsToKill(info.EquippedTier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, info.EquippedTier))
 				local with = Config.SwingHitsToKill(ui.Tier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, ui.Tier))
-				ui.Effect.Text = (now and with) and (info.Equipped and string.format(T.WeaponEffectNowF, now)
-					or string.format(T.WeaponEffectF, now, with)) or ""
+				ui.Effect.Text = (now and with) and (info.Equipped and Config.Plural(string.format(T.WeaponEffectNowF, now))
+					or Config.Plural(string.format(T.WeaponEffectF, now, with))) or "" -- "1 hits" -> "1 hit"
 				ui.Effect.Visible = ui.Effect.Text ~= ""
 				ui.Buy.Text = info.Equipped and T.WeaponEquipped or (info.Owned and T.WeaponEquip
 					or (ui.Tier == 1 and T.WeaponFromSmith) or string.format(T.WeaponBuyF, exactNumber(info.Price)))
@@ -2966,7 +2966,7 @@ BUILDERS.Vacation = function(parent)
 	-- CR-M21: a partly played day adds a fraction of a day; show whole days rounded up (0.5 -> 1)
 	local days = math.max(1, math.ceil(rawDays - 1e-6))
 	vacationShown = true -- seen this session (manual open counts too)
-	addText(parent, string.format(T.VacationHeaderF, days), { Size = 24, Align = Enum.TextXAlignment.Center, Font = theme.Font })
+	addText(parent, Config.Plural(string.format(T.VacationHeaderF, days)), { Size = 24, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 	local reward = addText(parent, "", { Size = 22, Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 	addText(parent, string.format(T.VacationNoteF, math.floor(Config.Daily.VacationRate * 100 + 0.5)),
 		{ Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })

@@ -2951,7 +2951,7 @@ local function hudWorld(config, rs, isTouch, scale)
 	H.Root = root
 	H.ui.Strip = { AbsolutePosition = vec(460, 64, 0), AbsoluteSize = vec(360, 39, 0), Size = { Y = { Offset = 39 } }, Parent = root }
 	H.ui.KingChip = { Visible = false }
-	H.ui.KingChipText = { Text = "" }
+	H.ui.KingChipText = { Text = "", TextBounds = vec(0, 0, 0) } -- KING.drawn reads the rendered width (53db902)
 	H.ui.KaijuChip = { Visible = false }
 	function H.hudBottom(name) if name == "StatusChips" then return H.ChipsBottom end return nil end
 	function H.relayout() H.Relayouts += 1 end

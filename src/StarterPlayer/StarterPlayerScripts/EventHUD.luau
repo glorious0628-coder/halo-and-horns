@@ -972,8 +972,8 @@ local function updateGoose(now)
 				if total < target then
 					coopSub = safeFormat(type(gt.HudSub) == "table" and gt.HudSub[side] or nil, mine)
 				else
-					coopSub = safeFormat(type(gt.HudFull) == "table" and gt.HudFull[side] or nil, mine,
-						math.floor(num(Config.Goose.MinManualHits)))
+					coopSub = Config.Plural(safeFormat(type(gt.HudFull) == "table" and gt.HudFull[side] or nil, mine,
+						math.floor(num(Config.Goose.MinManualHits)))) -- "Hit it 1 time"
 				end
 			elseif faction == "Halo" or faction == "Horns" then
 				coopSub = type(gt.HudOther) == "table" and gt.HudOther[side] or ""

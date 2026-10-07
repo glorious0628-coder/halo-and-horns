@@ -63,9 +63,9 @@ MUTATIONS = [
      "\t\tMonsterService.Moment:Fire(rec, \"Spot\")\n\t\tif rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n\t\tend"),
     ("a personal monster spots on every tick", M, "\t\trec._spotted = true\n", ""),
     # Main order lists (the module file and the lists go in the same commit)
-    ("BarkService never started", MAIN, "\"BarkService\", \"DamageWindow\",\n\t\"SkillService\", \"PlayerService\",",
-     "\"DamageWindow\",\n\t\"SkillService\", \"PlayerService\","),
-    ("BarkService never loaded", MAIN, "\"BarkService\", \"DamageWindow\", \"SkillService\",\n}", "\"DamageWindow\", \"SkillService\",\n}"),
+    # (patterns stop before the list ends, so a module added after them does not break the mutation)
+    ("BarkService never started", MAIN, "\"BarkService\", \"DamageWindow\",\n", "\"DamageWindow\",\n"),
+    ("BarkService never loaded", MAIN, "\"BarkService\", \"DamageWindow\", \"SkillService\",", "\"DamageWindow\", \"SkillService\","),
     # Config.Barks as written (lines_pack §2-2)
     ("Hit chance 50%", C, "Chance = { Spot = 0.5, Hit = 0.2, Low = 1, Idle = 0.15 },",
      "Chance = { Spot = 0.5, Hit = 0.5, Low = 1, Idle = 0.15 },"),

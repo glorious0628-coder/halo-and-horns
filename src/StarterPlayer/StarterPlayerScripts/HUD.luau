@@ -3097,7 +3097,7 @@ refreshQuests = function()
 		elseif callIndex then
 			line = call.Label
 		elseif hot and not (se and se.Pinned and se.CanClaim and se.Progress >= se.Target) then
-			sub = string.format(TXT.QuestTouchClaim, claimable)
+			sub = Config.Plural(string.format(TXT.QuestTouchClaim, claimable)) -- "1 quests" -> "1 quest"
 		end
 		ui.questHeaderText.Text = line
 		if ui.questHeaderSub then
