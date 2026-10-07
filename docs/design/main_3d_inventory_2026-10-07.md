@@ -107,3 +107,4 @@
 | 이름 | 어디 | 왜 | 출처 |
 |---|---|---|---|
 | 덩굴 나무 아치(초원 입구) | 초원 입구 문(지금은 갈색 막대 문틀, 옛 파트) | 시안 Concept_SlimeMeadow 왼쪽 위의 덩굴·랜턴 나무 아치 | 튀는 곳 시트 ⑭ `art/review/terrain/terrain_standout_2026-10-07.jpg`(e39ba95), 검수 10/07 "목록에만" |
+| 파랑·초록 가판대(교차로) | 교차로 북서쪽 가판대 K_StallBlue (-22.4, -42.7)·K_StallGreen (-36.6, -34.5) | Tripo 3D는 빨강 가판대(Kit_X_StallRed)만 있음 — 시안 Concept_Crossroads의 파랑·초록 줄무늬 차양 | `docs/design/crossroads_3d_swap_2026-10-07.md`(a8f5cd8) |
