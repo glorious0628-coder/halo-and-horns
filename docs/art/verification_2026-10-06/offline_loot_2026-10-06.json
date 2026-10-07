@@ -5025,21 +5025,21 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "damage :: JusticeService.GetCombatPower passes the WeaponEnhance attribute (no rebirth bonus)",
           "damage :: JusticeService.GetPower passes the WeaponEnhance attribute (rebirth bonus included)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
-        "mutation": "PvP combatPower fallback ignores WeaponEnhance",
-        "file": "src/ServerScriptService/PvPService.luau",
+        "mutation": "the power formula ignores WeaponEnhance",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "damage :: JusticeService.GetCombatPower passes the WeaponEnhance attribute (no rebirth bonus)",
           "damage :: PvPService combatPower fallback reads the WeaponEnhance attribute (not the per-tier table)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "EnhanceMult not clamped",
@@ -5087,16 +5087,16 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b0758527b56419ed8c7aaa63ef0044965db5b16ee8204b0ec4e2656d92d01cd0",
+    "src/ReplicatedStorage/Shared/Config.luau": "f798aa2fd23436934bc0b3f3554841a71aefbdf300067f982ab950ffc3434774",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
-    "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e",
+    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
     "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a",
-    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
-    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
-    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
-    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
+    "src/ServerScriptService/CombatService.luau": "3e3c15e5ffc06dc3a2784d7b85d645cd3a2238043a8c8c3e5dfafe3124d4141c",
+    "src/ServerScriptService/LootService.luau": "ded7d2886bdf7da9a01c78a891486f3d9d9e6fb94dd904081289031d43ef777b",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/PvPService.luau": "467d49d9f96d0d035603e7ba651049c0e6da798ccfe3cc24f5a36bf874866938",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a"
   },
   "fixtureSHA256": "887f489d4023f79079bf4d28edd0485ab29f7719da750a4868ffd7308df70894",

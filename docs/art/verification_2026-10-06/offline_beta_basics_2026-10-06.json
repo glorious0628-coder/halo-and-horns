@@ -663,7 +663,7 @@
     },
     {
       "group": "pvp-power",
-      "check": "fallback = Config.CombatPower(data Level, data WeaponTier, WeaponEnhance attribute)",
+      "check": "fallback = Config.CombatPowerOf (the Level / WeaponTier / WeaponEnhance attributes, never the save table)",
       "pass": 1,
       "fail": 0
     },
@@ -807,7 +807,7 @@
     },
     {
       "group": "title-config",
-      "check": "Data.Version stays 3 (additive fields)",
+      "check": "Data.Version 4 (A23-69 stat points; the title fields were additive)",
       "pass": 1,
       "fail": 0
     },
@@ -1582,7 +1582,7 @@
         "newFailingCount": 4
       },
       {
-        "mutation": "PvP fallback compares the unrounded PowerOf",
+        "mutation": "PvP fallback is not the displayed number",
         "file": "src/ServerScriptService/PvPService.luau",
         "applied": true,
         "caught": true,
@@ -1590,7 +1590,7 @@
         "newFailingChecks": [
           "pvp-power :: a failing JusticeService.GetCombatPower falls back to Config.CombatPower",
           "pvp-power :: a non-number from JusticeService falls back",
-          "pvp-power :: fallback = Config.CombatPower(data Level, data WeaponTier, WeaponEnhance attribute)",
+          "pvp-power :: fallback = Config.CombatPowerOf (the Level / WeaponTier / WeaponEnhance attributes, never the save table)",
           "pvp-power :: fallback clamps level >= 1 and the tier",
           "pvp-power :: fallback without data reads the attributes"
         ],
@@ -1801,15 +1801,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0610bfcb1fc2f7f6d55a8abfaaa718bc70431fadfc7c42b330c1b39d92c7299b",
+    "src/ReplicatedStorage/Shared/Config.luau": "f798aa2fd23436934bc0b3f3554841a71aefbdf300067f982ab950ffc3434774",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
-    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
-    "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e",
-    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037"
+    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
+    "src/ServerScriptService/PvPService.luau": "467d49d9f96d0d035603e7ba651049c0e6da798ccfe3cc24f5a36bf874866938"
   },
-  "fixtureSHA256": "a381b428ba709fae97ceea8c8487794777989eb7c8724b84fca00ca9c51d0c65",
+  "fixtureSHA256": "eacb8ac3568cf6e602e9bbfe5febc25b3aded65fadc54736c357fd3aac33461a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

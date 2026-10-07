@@ -141,7 +141,7 @@
     },
     {
       "group": "config-contract",
-      "check": "Config.Data.Version stays 3",
+      "check": "Config.Data.Version 4 (A23-69 stat points; the settings blob stayed additive)",
       "pass": 1,
       "fail": 0
     },
@@ -615,7 +615,7 @@
     },
     {
       "group": "dataservice-settings",
-      "check": "Version stays 3",
+      "check": "a v3 save loads as v4 (A23-69)",
       "pass": 1,
       "fail": 0
     },
@@ -633,7 +633,7 @@
     },
     {
       "group": "dataservice-settings",
-      "check": "a v2 save migrates to v3 with default Settings",
+      "check": "a v2 save migrates to v4 with default Settings",
       "pass": 1,
       "fail": 0
     },
@@ -2530,10 +2530,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b0758527b56419ed8c7aaa63ef0044965db5b16ee8204b0ec4e2656d92d01cd0",
+    "src/ReplicatedStorage/Shared/Config.luau": "f798aa2fd23436934bc0b3f3554841a71aefbdf300067f982ab950ffc3434774",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "780b23fcf830fb004f52ccdb68e98a2229c8379464c52d4f31ef0bb93dc428f1",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
@@ -2544,10 +2544,10 @@
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "bd041d14cdb03a206df7b5c4c3714a0790e3cf12a88feb3c044a4dfd1b26ca22",
-    "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
+    "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "f47961ebe91be1478e2e4b7ba4b2ed6b6cc4837bb74406508ecae85a8438e268"
   },
-  "fixtureSHA256": "7d09a5a8a7f402bee13c3b5bc7291494024033a20500e5fdb0b589680110e04e",
+  "fixtureSHA256": "2abca7c3175a42b58359e3e2f5f104b2c4d38590cf6a33a74c5cd0bf521384df",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -1,15 +1,15 @@
 {
   "status": "passed",
-  "checks": 816,
+  "checks": 822,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "cd5355c621a3ab2f47b4645a190d0f99a09bb97125e7c9c30892999ffaa272c5",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ReplicatedStorage/Shared/Config.luau": "f798aa2fd23436934bc0b3f3554841a71aefbdf300067f982ab950ffc3434774",
+    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
     "src/ServerScriptService/QuestService.luau": "9568b5d8dfeb0454bbf4f42662fecfb6f5f6d9e14858992c5d343bad9edc2c4b",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
-    "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e"
+    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360"
   },
-  "fixtureSHA256": "ffcaacf6ffd2d54f9516cd5699d5798f92103ea55c0ec40e24fbb220fb7b0ca3",
+  "fixtureSHA256": "4b723da70d4f527ad6de2fc1e8482a45eb59c1335babc07a545dea00b760e29c",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,
@@ -61,7 +61,7 @@
     "legacy tier4 preserved without inventing earlier purchases",
     "invalid/nonfinite mask, tier and visit repair",
     "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
-    "B4 Data Version 3: fresh/v2/v1 records load and save as Version 3 with no field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
+    "B4 / A23-69 Data Version 4: fresh/v3/v2/v1 records load and save as Version 4 (v3 -> v4 adds only Stats = { Auto ON, nothing picked }; a picked build saves and comes back repaired) with no other field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
     "finite-value save serialization guard and migration idempotence",
     "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more"
   ],
