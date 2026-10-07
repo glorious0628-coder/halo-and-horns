@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 76,
-  "namedChecks": 30,
+  "checks": 161,
+  "namedChecks": 40,
   "failing": [],
   "static": [
     {
@@ -25,14 +25,22 @@
       "ok": true
     },
     {
+      "check": "the Welcome line types (TYPE.Show) with a tap button, [Next] finishes a typing line first",
+      "ok": true
+    },
+    {
+      "check": "the Story line types (TYPE.Show ... voice, page), [Next] and the answers finish a typing line first",
+      "ok": true
+    },
+    {
       "check": "Config has the two shop greetings (dev2 lines_pack 11)",
       "ok": true
     }
   ],
   "mutations": {
-    "total": 17,
-    "applied": 17,
-    "caught": 17,
+    "total": 23,
+    "applied": 23,
+    "caught": 23,
     "results": [
       {
         "mutation": "the banter is never shown",
@@ -212,6 +220,70 @@
         "newFailingChecks": [
           "ClientMain ORDER ends with Audio, every module once, every module file exists"
         ]
+      },
+      {
+        "mutation": "typing at UIKit's 38 / s",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dialogue typewriter :: a new line types in at 40 letters / s with the speaker's voice"
+        ]
+      },
+      {
+        "mutation": "every refresh retypes the line",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dialogue typewriter :: a tap while it types finishes the line (the tap is used up)",
+          "dialogue typewriter :: the next page types again",
+          "dialogue typewriter :: the same page on a refresh never retypes",
+          "dialogue typewriter :: the same words on another page still type (page in the key)"
+        ]
+      },
+      {
+        "mutation": "a tap never finishes the line",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dialogue typewriter :: a tap while it types finishes the line (the tap is used up)",
+          "dialogue typewriter :: tapping the line finishes it"
+        ]
+      },
+      {
+        "mutation": "Welcome [Next] skips a typing line",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Welcome line types (TYPE.Show) with a tap button, [Next] finishes a typing line first"
+        ]
+      },
+      {
+        "mutation": "an answer while typing is sent at once",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story line types (TYPE.Show ... voice, page), [Next] and the answers finish a typing line first"
+        ]
+      },
+      {
+        "mutation": "the Story line no longer types",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story line types (TYPE.Show ... voice, page), [Next] and the answers finish a typing line first"
+        ]
       }
     ]
   },
@@ -219,12 +291,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
+    "src/ReplicatedStorage/Shared/Config.luau": "5383eb6a2aeec4f0ac4f1d585e48c471098598a6bfbbcd589f00dc47ab51c3fb",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "74a2fb80d6414c355b485a60e7e01185266c2b69063615c16b6d8ae5016d4137",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "fae67f7c9535ad277d6d918a4366135ff8c5bc580cbe849e11c0604c4533c7bb",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "34659c2c4522f677b793244fc7f24b3c13172f5adf784c8ca3c9f669418927a8",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "acfed529a7be7f8bdf96fe0988d61d33d6f135b02e146c623d72bdc41686c57c",
     "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "2cf902976f0012fe5dd0b9249ba54eac409cbbebeb6886c7c5a8c7ea1f863dab",
-    "tools/fixtures/story_client_offline.luau": "52eda9e8c6396bebc0feab833853b34915b41f334d7cda37c726eced16b66bee"
+    "tools/fixtures/story_client_offline.luau": "28fe56519ca4c56982759ab5dd9735a7f68a06a67770c74058707099cf36c8fe"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

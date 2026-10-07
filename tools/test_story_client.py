@@ -7,6 +7,8 @@ tools/fixtures/story_client_offline.luau with the installed official Luau CLI (b
   chat too); drop lines, empty / non-string Banter: nothing new;
 - a story step's lines follow the server's Var (LinesBy[Var], else Default; no LinesBy: Lines; faction row over All),
   and every real LinesBy step has lines for each Var and both factions;
+- a dialogue line types in (UIKit.Typewriter, 40 letters / s, the speaker's voice), a refresh never retypes it, a tap
+  (the line, [Next] or an answer button) first shows the whole line; without UIKit.Typewriter it shows at once;
 - the choice hint is the faction's A23-58 line (Halo: Honor +Good / -Evil, Horns: Infamy -Good / +Evil), the guild's
   no-points line, the lean line for two 0-point picks (E5), ChoiceHint for an older Config; no "%" left on real cards.
 Static checks: the Forge / Potion windows put Config.Text.ForgeGreeting / PotionGreeting on top, a waiting story page
@@ -64,6 +66,15 @@ MUTATIONS = [
     ("no Forge greeting", "panels", "local hello = Config.Text and Config.Text.ForgeGreeting", "local hello = nil"),
     ("no Potion greeting", "panels", "local hello = Config.Text and Config.Text.PotionGreeting", "local hello = nil"),
     ("ClientMain never loads Audio", "client_main", '"SkillBar", "Audio" }', '"SkillBar" }'),
+    # quality 2: UIKit.Typewriter on the dialogue lines (검수 2026-10-07: 40 letters / s, a tap shows the whole line)
+    ("typing at UIKit's 38 / s", "panels", "local TYPE = { Speed = 40 }", "local TYPE = { Speed = 38 }"),
+    ("every refresh retypes the line", "panels", "\tif state.Key == key and state.Label == label then return end\n", ""),
+    ("a tap never finishes the line", "panels", "\t\th.Finish()\n\t\treturn true\n", "\t\treturn false\n"),
+    ("Welcome [Next] skips a typing line", "panels", "if pending or TYPE.Finish(typing) then return end", "if pending then return end"),
+    ("an answer while typing is sent at once", "panels",
+     "\t\tif TYPE.Finish(typing) then return end -- the first tap while the line types shows it whole\n", ""),
+    ("the Story line no longer types", "panels", 'TYPE.Show(typing, line, tostring(lines[page] or ""), voice, page)',
+     'line.Text = tostring(lines[page] or "")'),
 ]
 
 
@@ -88,12 +99,21 @@ def cut_story(panels: str) -> tuple[str, str]:
     return "\n".join(parts) + "\n", lean.group(1)
 
 
+def cut_type(panels: str) -> str:
+    """the TYPE helper block of Panels.luau (local TYPE ... the end of TYPE.Tap)"""
+    m = re.search(r"\n(local TYPE = \{.*?\nfunction TYPE\.Tap\(state, label\)\n.*?\nend)\n", panels, re.S)
+    if not m:
+        raise ValueError("Panels.luau: the TYPE helpers are missing; update the extractor")
+    return m.group(1)
+
+
 def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
     panels, main = src["panels"], src["client_main"]
     wshop = re.search(r"\nBUILDERS\.WeaponShop = function\(parent\)\n(.*?)addText\(parent, T\.WeaponLocation", panels, re.S)
     potion = re.search(r'The potion shop is coming soon\.".*?return nil\n\tend\n(.*?)local gold = addText\(parent, "", '
                        r'\{ Name = "PotionGold"', panels, re.S)
     story = re.search(r"\nBUILDERS\.Story = function\(parent\)\n(.*?)\nend\n", panels, re.S)
+    welcome = re.search(r"\nBUILDERS\.Welcome = function\(parent\)\n(.*?)\nend\n", panels, re.S)
     order = re.search(r"local ORDER = \{([^}]*)\}", main)
     names = re.findall(r'"(\w+)"', order.group(1)) if order else []
     return [
@@ -111,6 +131,14 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
         ("ClientMain ORDER ends with Audio, every module once, every module file exists",
          bool(names) and names[-1] == "Audio" and len(names) == len(set(names))
          and all((SPS / f"{n}.luau").is_file() for n in names)),
+        ("the Welcome line types (TYPE.Show) with a tap button, [Next] finishes a typing line first",
+         welcome is not None and "TYPE.Tap(typing, line)" in welcome.group(1)
+         and "TYPE.Show(typing, line, tostring(def.Lines[page])" in welcome.group(1)
+         and "if pending or TYPE.Finish(typing) then return end" in welcome.group(1)),
+        ("the Story line types (TYPE.Show ... voice, page), [Next] and the answers finish a typing line first",
+         story is not None and "TYPE.Tap(typing, line)" in story.group(1)
+         and 'TYPE.Show(typing, line, tostring(lines[page] or ""), voice, page)' in story.group(1)
+         and story.group(1).count("TYPE.Finish(typing)") >= 2),
         ("Config has the two shop greetings (dev2 lines_pack 11)",
          re.search(r'\n\tForgeGreeting = "[^"]+",', src["config"]) is not None
          and re.search(r'\n\tPotionGreeting = "[^"]+",', src["config"]) is not None),
@@ -119,8 +147,10 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
 
 def run(src: dict[str, str], directory: Path, name: str) -> dict:
     story, lean = cut_story(src["panels"])
+    type_src = cut_type(src["panels"])
     text = (f"local CONFIG_SOURCE = {lua_long(src['config'])}\nlocal ANNOUNCE_SOURCE = {lua_long(src['announce'])}\n"
-            f"local STORY_SOURCE = {lua_long(story)}\nlocal HINT_LEAN = {lean}\n" + FIXTURE.read_text(encoding="utf-8"))
+            f"local STORY_SOURCE = {lua_long(story)}\nlocal HINT_LEAN = {lean}\nlocal TYPE_SOURCE = {lua_long(type_src)}\n"
+            + FIXTURE.read_text(encoding="utf-8"))
     path = directory / name
     path.write_text(text, encoding="utf-8")
     proc = subprocess.run([str(BINARY), str(path)], cwd=ROOT, capture_output=True, text=True, encoding="utf-8",

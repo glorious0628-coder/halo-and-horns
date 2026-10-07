@@ -293,6 +293,59 @@ do
 	end
 end
 
+----------------------------------------------------------------- Panels TYPE (UIKit.Typewriter on dialogue lines)
+do
+	local g = "dialogue typewriter"
+	local calls = {}
+	local function fakeHandle()
+		local h = { State = "typing" }
+		h.Finish = function() h.State = "done" end
+		h.Done = function() return h.State ~= "typing" end
+		return h
+	end
+	local kit = { Typewriter = function(label, text, opts)
+		table.insert(calls, { Label = label, Text = text, Speed = opts and opts.Speed, Speaker = opts and opts.Speaker })
+		label.Text = text
+		local h = fakeHandle()
+		calls[#calls].Handle = h
+		return h
+	end }
+	local made = {}
+	local inst = { new = function(class)
+		local o = { ClassName = class, Activated = { Connect = function(_, fn) table.insert(made, fn) end } }
+		return o
+	end }
+	local env = { UIKit = kit, Instance = inst, UDim2 = { fromScale = function() return {} end }, tostring = tostring,
+		type = type, pcall = pcall }
+	local TYPE = execute("TYPE", TYPE_SOURCE .. "\nreturn TYPE", env)
+	check(g, "Panels has TYPE.Show / Finish / Tap", type(TYPE) == "table" and type(TYPE.Show) == "function"
+		and type(TYPE.Finish) == "function" and type(TYPE.Tap) == "function")
+	local label, state = { Text = "", ZIndex = 1 }, {}
+	TYPE.Show(state, label, "Hallie here!", "Halo", 1)
+	check(g, "a new line types in at 40 letters / s with the speaker's voice", #calls == 1 and calls[1].Speed == 40
+		and calls[1].Speaker == "Halo" and calls[1].Text == "Hallie here!", show(calls[1]))
+	TYPE.Show(state, label, "Hallie here!", "Halo", 1)
+	TYPE.Show(state, label, "Hallie here!", "Halo", 1)
+	check(g, "the same page on a refresh never retypes", #calls == 1, #calls)
+	check(g, "a tap while it types finishes the line (the tap is used up)", TYPE.Finish(state) == true and calls[1].Handle.Done())
+	check(g, "a tap after it finished is free (Next pages on)", TYPE.Finish(state) == false)
+	TYPE.Show(state, label, "Welcome to the Knights!", "Halo", 2)
+	check(g, "the next page types again", #calls == 2 and calls[2].Text == "Welcome to the Knights!", #calls)
+	TYPE.Show(state, label, "Welcome to the Knights!", "Halo", 3)
+	check(g, "the same words on another page still type (page in the key)", #calls == 3, #calls)
+	TYPE.Tap(state, label)
+	check(g, "Tap puts one invisible button over the line that finishes it", #made == 1)
+	made[1]()
+	check(g, "tapping the line finishes it", calls[3].Handle.Done())
+	-- no UIKit.Typewriter (older UIKit): the whole line at once
+	local env2 = { UIKit = {}, Instance = inst, UDim2 = { fromScale = function() return {} end }, tostring = tostring,
+		type = type, pcall = pcall }
+	local TYPE2 = execute("TYPE2", TYPE_SOURCE .. "\nreturn TYPE", env2)
+	local l2, st2 = { Text = "" }, {}
+	TYPE2.Show(st2, l2, "Fix first. Talk later.", "Guild", 1)
+	check(g, "without UIKit.Typewriter the line shows at once", l2.Text == "Fix first. Talk later." and TYPE2.Finish(st2) == false)
+end
+
 local named = {}
 for _, key in order do table.insert(named, Named[key]) end
 print("STORY_CLIENT_RESULT_JSON " .. encode({ Checks = checks, Failed = failed, Named = named }))
