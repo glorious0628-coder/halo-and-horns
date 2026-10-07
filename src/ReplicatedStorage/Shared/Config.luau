@@ -925,9 +925,10 @@ Config.Stats = {
 	AutoPattern = { Warrior = "HA", Mage = "HA", Archer = "AH" }, -- repeated: Lv100 = H50 / A49 (Archer A50 / H49)
 }
 
--- f(points): the bonus of `points` in one stat (0.1 at 10, 0.2 at 20, 0.25 at 30, 0.3 at 40, 0.4475 at 99)
+-- f(points): the bonus of `points` in one stat (0.1 at 10, 0.2 at 20, 0.25 at 30, 0.3 at 40, 0.4475 at 99; more points
+-- than MaxPoints count as MaxPoints, NaN / text as 0)
 function Config.StatBonus(points)
-	local r = math.max(0, math.floor(tonumber(points) or 0))
+	local r = math.clamp(math.floor(tonumber(points) or 0), 0, Config.Stats.MaxPoints)
 	if r ~= r then return 0 end
 	local bonus, from = 0, 0
 	for _, step in Config.Stats.Curve do
