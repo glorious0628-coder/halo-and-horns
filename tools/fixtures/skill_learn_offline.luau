@@ -58,7 +58,7 @@ end
 
 local function run(opts)
 	local W = { Announced = {}, Hints = {}, Played = {}, Toasts = {}, Attr = {}, AttrFns = {}, Now = 100, Reduced = opts.Reduced == true,
-		Tweens = {} }
+		Tweens = {}, Delays = {}, FxSounds = {}, SkillReadyOk = true }
 	local player = { UserId = 7, GetAttribute = function(_, k) return W.Attr[k] end }
 	local gui = inst("ScreenGui", { Name = "MainGui" })
 	local kit = {
@@ -77,7 +77,9 @@ local function run(opts)
 		UIKit = kit,
 		HUD = { Hint = function(id, text) table.insert(W.Hints, { id, text }) return true end, IsVisible = function() return true end,
 			Layout = nil, HintShown = function() return false end },
-		Audio = { Play = function(e) table.insert(W.Played, e) return e ~= "SkillLearn" end }, -- no SkillLearn file yet
+		-- no SkillLearn file yet; SkillReady's file comes and goes with W.SkillReadyOk
+		Audio = { Play = function(e) table.insert(W.Played, e) return e ~= "SkillLearn" and (e ~= "SkillReady" or W.SkillReadyOk) end },
+		Fx = { PlaySound = function(n) table.insert(W.FxSounds, n) end },
 		Keybinds = { Label = function(action) return ({ SkillQ = "Q", SkillZ = "Z", SkillX = "X" })[action] end,
 			IsLive = function() return true end },
 	}
@@ -108,7 +110,8 @@ local function run(opts)
 		TweenInfo = { new = function(...) return { ... } end }, Enum = enum,
 		Instance = { new = function(class) return inst(class) end },
 		typeof = function(v) return type(v) end,
-		task = { delay = function() end, spawn = function(f, ...) f(...) end, wait = function() end },
+		task = { delay = function(t, f, ...) table.insert(W.Delays, { T = t, F = f, A = table.pack(...) }) end,
+			spawn = function(f, ...) f(...) end, wait = function() end },
 		os = { clock = function() return W.Now end, time = os.time },
 		warn = function(...) print("WARN", ...) end, print = function() end,
 		require = function(m) if m.__module == "Config" then return Config end return util end,
@@ -129,7 +132,23 @@ local function run(opts)
 		for _, fn in W.AttrFns[k] or {} do fn() end
 	end
 	local function holder(slot) return gui:FindFirstChild("SkillBar") and gui:FindFirstChild("SkillBar"):FindFirstChild("Skill" .. slot) end
+	W.Beat = services.RunService.Heartbeat
 	return SB, W, set, holder
+end
+
+-- runs the queued task.delay calls whose delay is between lo and hi s (the rest stay queued)
+local function runDelays(W, lo, hi)
+	local list, ran = W.Delays, 0
+	W.Delays = {}
+	for _, d in list do
+		if d.T >= lo and d.T <= hi then
+			d.F(table.unpack(d.A, 1, d.A.n))
+			ran += 1
+		else
+			table.insert(W.Delays, d)
+		end
+	end
+	return ran
 end
 
 local base = { DataLoaded = true, ClassChosen = true, Class = "Warrior", Faction = "Halo", Level = 1, Mana = 100, MaxMana = 100 }
@@ -147,6 +166,8 @@ set("Level", 5)
 check(holder("Q").Visible == true, "Lv5: the Q button appears", tostring(holder("Q").Visible))
 check(#W.Announced == 1 and string.find(W.Announced[1], "^New skill! ") ~= nil, "a 'New skill! <name>' banner", W.Announced[1])
 check(#W.Hints == 1 and W.Hints[1][1] == "Q" and W.Hints[1][2] == "Press Q", "one line on the new button: 'Press Q'", W.Hints[1] and W.Hints[1][2])
+check(#W.Played == 0, "the learn sound waits for the level-up chime", table.concat(W.Played, ","))
+check(runDelays(W, 1.0, 1.2) == 1, "the learn sound comes about 1.1 s after the level up (sound_gaps A9)", #W.Delays)
 check(W.Played[1] == "SkillLearn" and W.Played[2] == "PowerUp", "the SkillLearn sound (PowerUp until its file exists)", table.concat(W.Played, ","))
 local popped = false
 for _, t in W.Tweens do
@@ -180,6 +201,29 @@ local SB5, W5, set5, holder5 = run({ Attr = b5 })
 set5("SkillSlots", 1)
 check(holder5("Q").Visible == true and #W5.Announced == 1 and holder5("Z").Visible == false,
 	"the server opening slot 1 (SkillSlots 1) shows Q with the learn moment, Z stays hidden", #W5.Announced)
+
+-- 3c. sound_gaps A10: a cooldown ending plays SkillReady (Fx's Click only while SkillReady has no file)
+do
+	local b6 = copy(base)
+	b6.Level = 5
+	local SB6, W6, set6 = run({ Attr = b6 })
+	local function beat() W6.Beat:Fire(0.2) end
+	set6("SkillReadyAt", W6.Now + 2)
+	beat()
+	W6.Now += 3
+	table.clear(W6.Played)
+	beat()
+	check(W6.Played[#W6.Played] == "SkillReady" and #W6.FxSounds == 0, "a cooldown end plays SkillReady, no extra click",
+		table.concat(W6.Played, ",") .. " / " .. table.concat(W6.FxSounds, ","))
+	W6.SkillReadyOk = false
+	set6("SkillReadyAt", W6.Now + 2)
+	beat()
+	W6.Now += 3
+	beat()
+	check(W6.FxSounds[1] == "Click", "no SkillReady file yet: Fx's Click stands in", table.concat(W6.FxSounds, ","))
+	beat()
+	check(#W6.FxSounds == 1, "a ready button stays quiet", #W6.FxSounds)
+end
 
 -- 4. phones: 'Tap the new button'; reduced motion: no pop
 local SB3, W3, set3, holder3 = run({ Attr = copy(base), Touch = true, Reduced = true })

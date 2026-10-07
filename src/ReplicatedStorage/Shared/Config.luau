@@ -1975,11 +1975,12 @@ Config.StoryQuests = {
 		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo", -- story_depth §4 goblins (beta: names only, no models)
 		Gleam = "Sir Gleam", Rex = "Rascal Rex" }, -- story_depth §4 (beta: names only)
 	-- 검수 2026-10-07: the Story window shows the speaker's face (a Config.UIArt.Parts key) in the PortraitFrame left of
-	-- the words. Halo / Horns / Guild = no Speaker, my faction's guide. A speaker missing here or whose art id is empty
-	-- (Shard, Fountain, Kids, the goblins, Gleam, Rex) gets no portrait slot.
+	-- the words. Halo / Horns / Guild = no Speaker, my faction's guide; the crown shard and the fountain shard share
+	-- PTR_CrownShard (94207f5). A speaker missing here or whose art id is empty (Kids, the goblins, Gleam, Rex) gets no
+	-- portrait slot.
 	Portraits = { Smith = "PortraitMerchantC", Potion = "PortraitPotionMerchant", Bright = "PTR_TownBright",
 		Smokey = "PTR_TownSmokey", Tiny = "PTR_TownTiny", Guild = "PortraitGuideArtisan", Halo = "PortraitGuideHalo",
-		Horns = "PortraitGuideHorns" },
+		Horns = "PortraitGuideHorns", Shard = "PTR_CrownShard", Fountain = "PTR_CrownShard" },
 	NpcTag = "StoryNpc",
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
@@ -3721,91 +3722,133 @@ Config.Audio = {
 	OthersRange = 40, -- ... and only within this many studs; UI sounds are mine only
 	MaxPlaying = 8, -- all sounds at once
 	-- these moments lower the combat sounds to Mul for Seconds
-	Duck = { Mul = 0.5, Seconds = 1.2, By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true } },
+	Duck = { Mul = 0.5, Seconds = 1.2,
+		By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true, GooseArrive = true } },
 	-- combo coin speed = Base x 2^(step / 12), steps of a major scale, held at Top from the 8th kill (phones: no shrill end)
 	Combo = { Base = 0.8, Top = 1.6, Steps = { 0, 2, 4, 5, 7, 9, 11, 12 } },
-	HitHeavyAt = 3, -- a swing that hits this many monsters plays the heavy hit
+	-- sound_spec §4-2 6: a swing that hits From+ monsters plays its material louder and a little lower (it stays
+	-- squishy on slimes); ghosts squish higher
+	HitMany = { From = 3, Volume = 1.25, Speed = 0.95 },
+	GhostSpeed = 1.15,
+	GhostKinds = { LittleGhost = true, GhostMinion = true, GhostKing = true },
+	-- §4-2 5: a bow shot that hits From+ targets plays a second arrow After s later (Speed x, Volume x)
+	ArrowDouble = { From = 2, After = 0.068, Speed = 1.10, Volume = 0.85 },
+	-- §4-2 3: the faction mage files are loudest PeakAt s into the file: they start that much before the launch
+	MagePeak = 0.20,
+	-- B13: a Z / X cast (Fx "Skill") has no launch / contact times: the cast at once, the hits right after
+	SkillContact = 0.12,
 	HurtBigFrac = 0.15, -- a hit taking at least this share of my max HP (or leaving me under 30 %) = HurtBig
-	Files = { -- uploaded 2026-10-07 (Creator Hub, Darugi_S2, Restricted; art/sfx/asset_ids.json)
+	-- uploaded 2026-10-07 (Creator Hub, Darugi_S2, Restricted; art/sfx/asset_ids.json): the round-4 picks (picks_r4.json)
+	-- where they are uploaded, the round-3 file otherwise. "" = not uploaded yet: the event stays silent or plays its
+	-- stand-in (Equip -> GoldPickup, GooseArrive -> GooseHonk, SkillReady -> Fx Click, SkillLearn -> PowerUp)
+	Files = {
 		SwingWarrior = "rbxassetid://100665788892468",
-		SwingMage = "rbxassetid://136838684864577",
-		SwingArcher = "", -- sound_spec §4-2 1 (검수 2026-10-07): no twang; silent until SwingArrow comes
+		SwingMage = "rbxassetid://136838684864577", -- the Guild's alchemist (no faction file)
+		SwingMageHalo = "rbxassetid://101498441090410",
+		SwingMageHorns = "rbxassetid://139514092831666",
+		SwingArrow = "rbxassetid://76900813038959", -- sound_gaps A1: one arrow, no twang
 		SwingTamer = "rbxassetid://126503879214394",
-		HitSoft1 = "rbxassetid://132253070570696",
-		HitSoft2 = "rbxassetid://138414840858825",
-		HitHeavy1 = "rbxassetid://88230015185148",
-		HitHeavy2 = "rbxassetid://129011812816837",
+		HitSoft = "rbxassetid://96440842663562",
+		HitHeavy = "rbxassetid://95463530376920",
+		HitCrit = "rbxassetid://78018534821425",
+		HitHeavy2 = "rbxassetid://129011812816837", -- round 3: HurtBig until its own file
 		KillPop = "rbxassetid://76243013610008",
-		ComboCoin = "rbxassetid://132118526896477",
+		ComboCoin = "rbxassetid://132925998560879",
 		ComboMilestone = "rbxassetid://120183624157841",
 		LevelUp = "rbxassetid://115723389387503",
+		PowerUp = "rbxassetid://118952858498086",
+		Jump = "rbxassetid://119789949243782",
 		WindowOpen = "rbxassetid://72025655652305",
-		WindowClose = "rbxassetid://96155752903162",
-		Deny = "rbxassetid://70560315563605",
-		AutoOn = "rbxassetid://91575528786721",
+		WindowClose = "rbxassetid://86085176622331",
+		Deny = "rbxassetid://124536292557880",
+		AutoOn = "rbxassetid://90300088723425",
 		AutoOff = "rbxassetid://87842131842953",
-		Purify = "rbxassetid://112385811106575",
-		Devour = "rbxassetid://89066730830142",
+		Purify = "rbxassetid://126260420453106",
+		Purify_b = "rbxassetid://75155843966047",
+		Devour = "rbxassetid://118262766439187",
 		KingBell = "rbxassetid://133609264734232",
 		GooseHonk = "rbxassetid://126013517999832",
-		QuestDone = "rbxassetid://125748535247961",
-		GoldPickup = "rbxassetid://74126067367127",
+		QuestDone = "rbxassetid://131457371135343",
+		GoldPickup = "rbxassetid://119243238199900",
 		ScrollSuccess = "rbxassetid://75617018211597",
-		ScrollFail = "rbxassetid://127201461836075",
+		ScrollFail = "rbxassetid://124525939049830",
 		Tap = "rbxassetid://101266273493121",
-		SkillHalo = "rbxassetid://94791750026317",
-		SkillHorns = "rbxassetid://98826164651498",
-		Potion = "rbxassetid://139764142335079",
-		QuestNew = "rbxassetid://113743171009116",
-		RankDown = "rbxassetid://73142353580905",
+		SkillHalo = "rbxassetid://75898672312875",
+		SkillHorns = "rbxassetid://110780992455213",
+		Potion = "rbxassetid://133789691162407",
+		QuestNew = "rbxassetid://123199271616228",
+		RankDown = "rbxassetid://81421593114766",
 		TalkBlip = "rbxassetid://72477911054987",
+		-- coming with the next uploads (sound_gaps A7-A10)
+		Equip = "",
+		Spend = "",
+		RankUp = "",
+		SkillLearn = "",
+		SkillReady = "",
+		GooseArrive = "",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
 		SwingMage = { File = "SwingMage", Volume = 0.28, Speed = { 1.00, 1.10 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
-		SwingArcher = { File = "SwingArcher", Volume = 0.28, Speed = { 0.85, 0.95 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
+		SwingMageHalo = { File = "SwingMageHalo", Volume = 0.28, Speed = { 0.98, 1.04 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
+		SwingMageHorns = { File = "SwingMageHorns", Volume = 0.28, Speed = { 0.98, 1.04 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
+		SwingArrow = { File = "SwingArrow", Volume = 0.25, Speed = { 0.97, 1.03 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		SwingTamer = { File = "SwingTamer", Volume = 0.28, Speed = { 0.95, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
-		HitSoft = { Files = { "HitSoft1", "HitSoft2" }, Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		HitHeavy = { Files = { "HitHeavy1", "HitHeavy2" }, Volume = 0.38, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		HitSoft = { File = "HitSoft", Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitHeavy = { File = "HitHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		-- §4-2 6: a layer over the material hit when the first target is a critical hit
+		HitCrit = { File = "HitCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		ComboCoin = { File = "ComboCoin", Volume = 0.30, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
+		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
-		-- A23-68 #3 the first weapon's big moment (HUD L.FirstWeapon). Until 소리 만들기 sends its own PowerUp file this
-		-- plays the level-up file a little higher
-		PowerUp = { File = "LevelUp", Volume = 0.8, Speed = { 1.12, 1.12 }, Max = 1, Gap = 2.0 },
+		-- A23-68 #3 the first weapon's big moment (HUD L.FirstWeapon); the stand-in when SkillLearn has no file
+		PowerUp = { File = "PowerUp", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
+		Jump = { File = "Jump", Volume = 0.25, Speed = { 0.96, 1.04 }, Max = 1, Gap = 0.25 }, -- sound_gaps A11 (user)
 		WindowOpen = { File = "WindowOpen", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.15 },
 		WindowClose = { File = "WindowClose", Volume = 0.42, Speed = { 1, 1 }, Max = 1, Gap = 0.15 },
 		Deny = { File = "Deny", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.5 },
 		-- two files (rising / falling blips) instead of one file at 1.1 / 0.9: on and off are told apart by ear
 		AutoOn = { File = "AutoOn", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
 		AutoOff = { File = "AutoOff", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
-		Purify = { File = "Purify", Volume = 0.55, Speed = { 1.00, 1.05 }, Max = 1, Gap = 1.0 },
+		-- sound_gaps A12: two purify files taken in turn
+		Purify = { Files = { "Purify", "Purify_b" }, Alternate = true, Volume = 0.55, Speed = { 1.00, 1.05 }, Max = 1, Gap = 1.0 },
 		Devour = { File = "Devour", Volume = 0.55, Speed = { 1.00, 1.05 }, Max = 1, Gap = 1.0 }, -- same size as Purify, a pleasant gulp
-		-- one file for both kings; never under 0.85x (lower turns scary)
+		-- one file for both kings until their own files come (sound_gaps A6); never under 0.85x (lower turns scary)
 		PumpkinKing = { File = "KingBell", Volume = 0.70, Speed = { 0.90, 0.95 }, Max = 1, Gap = 60 },
 		GhostKing = { File = "KingBell", Volume = 0.70, Speed = { 1.00, 1.05 }, Max = 1, Gap = 60 },
 		GooseHonk = { File = "GooseHonk", Volume = 0.55, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
+		GooseArrive = { File = "GooseArrive", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 3.0 }, -- A7: GooseActive turning on
 		QuestDone = { File = "QuestDone", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
 		GoldPickup = { File = "GoldPickup", Volume = 0.45, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.08 },
 		ScrollSuccess = { File = "ScrollSuccess", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 0.5 },
-		ScrollFail = { File = "ScrollFail", Volume = 0.45, Speed = { 0.90, 0.90 }, Max = 1, Gap = 0.5 },
+		ScrollFail = { File = "ScrollFail", Volume = 0.40, Speed = { 0.90, 0.90 }, Max = 1, Gap = 0.5 },
 		Tap = { File = "Tap", Volume = 0.42, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.05 },
 		-- the skill cast plays my class's swing file at 0.85x (the file comes from the class, not from here)
 		SkillCast = { Volume = 0.40, Speed = { 0.85, 0.85 }, Max = 2, Gap = 0.1, Auto = true, Combat = true },
 		SkillHalo = { File = "SkillHalo", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
 		SkillHorns = { File = "SkillHorns", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
 		HurtBig = { File = "HitHeavy2", Volume = 0.36, Speed = { 0.95, 1.05 }, Max = 1, Gap = 0.6 },
-		Potion = { File = "Potion", Volume = 0.42, Speed = { 1.00, 1.05 }, Max = 1, Gap = 0.3 },
+		Potion = { File = "Potion", Volume = 0.40, Speed = { 1.00, 1.05 }, Max = 1, Gap = 0.3 },
 		QuestNew = { File = "QuestNew", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
-		RankDown = { File = "RankDown", Volume = 0.35, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
+		RankDown = { File = "RankDown", Volume = 0.32, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
 		TalkBlip = { File = "TalkBlip", Volume = 0.25, Speed = { 1, 1 }, Max = 3, Gap = 0.045 }, -- quality ② typewriter
+		-- sound_gaps A8: the keys the server's Notify lines already send (LootService / ShopService Equip, ShopService
+		-- Spend, StoryQuestService RankUp) and SkillBar's A9 / A10 - silent until their files are uploaded
+		Equip = { File = "Equip", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
+		Spend = { File = "Spend", Volume = 0.35, Speed = { 1, 1 }, Max = 1, Gap = 0.2 },
+		RankUp = { File = "RankUp", Volume = 0.32, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
+		SkillLearn = { File = "SkillLearn", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
+		SkillReady = { File = "SkillReady", Volume = 0.25, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
 	},
-	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed)
-	Swing = { Warrior = "SwingWarrior", Mage = "SwingMage", Archer = "SwingArcher", Punch = "SwingWarrior", PetHeadbutt = "SwingTamer" },
+	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed); SwingFaction picks the
+	-- caster's faction file when it is uploaded (sound_gaps A2: Halo / Horns mages)
+	Swing = { Warrior = "SwingWarrior", Mage = "SwingMage", Archer = "SwingArrow", Punch = "SwingWarrior",
+		PetHeadbutt = "SwingTamer", PetDash = "SwingTamer" },
+	SwingFaction = { Mage = { Halo = "SwingMageHalo", Horns = "SwingMageHorns" } },
 	PunchSpeed = 1.3, -- bare hands: a short swish (volume x0.6)
 	NeutralSpeed = { Warrior = 0.85, Mage = 0.9 },
-	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else, players and crits = heavy
+	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else and players = heavy
 	SoftKinds = { Slime = true, BigSlime = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)

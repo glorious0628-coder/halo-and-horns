@@ -3,19 +3,23 @@
 -- Config.Audio). It only LISTENS - it never edits Fx or HUD (both sit near Luau's 200-local limit):
 --   "Fx" remote (the packets Fx draws):
 --     Swing   -> the class swing (Warrior / Mage / Archer, bare hands a short Warrior swish, the pet tamer's whistle;
---                Neutral Blacksmith / Alchemist pitched lower), then ONE hit sound when the hits land (ContactDelay):
---                HitSoft for slimes / ghosts / pumpkins, HitHeavy for everything else, players, crits and swings that
---                hit HitHeavyAt+ monsters; a golden goose hit honks. Other players' swings: x OthersMul within OthersRange.
---     Release -> SkillCast (my class swing file at 0.85x) + on the X skill my faction's layer (SkillHalo / SkillHorns),
---                then the hit sound; Fx's own skill sound is muted once our swing files exist
+--                Neutral Blacksmith / Alchemist pitched lower; Halo / Horns mages their faction file timed so its peak
+--                lands on the launch; the bow's arrow when it leaves, a second arrow for 2+ targets), then ONE hit sound
+--                when the hits land (ContactDelay): HitSoft for slimes / ghosts / pumpkins (ghosts higher), HitHeavy for
+--                everything else and players, louder / lower for HitMany.From+ monsters, + HitCrit when the first
+--                target is a critical hit; a golden goose hit honks. Other players' swings: x OthersMul within OthersRange.
+--     Release (Q) / Skill (Z, X: sound_gaps B13) -> SkillCast (my class swing file at 0.85x) at the launch + my
+--                faction's layer (SkillHalo / SkillHorns) on every slot, then the hit sound; Fx's own skill sound is
+--                muted once our swing files exist
 --     Reward (my kill) -> KillPop + ComboCoin one scale step higher per kill (Config.Audio.Combo, reset after
 --                Config.Combo.ResetSeconds) + ComboMilestone at Config.Combo.Milestones (x10 / 25 / 50 / 100)
---     Enhance -> ScrollSuccess / ScrollFail; Bank / Upgrade / Rare -> GoldPickup; LevelUp (mine) -> LevelUp;
---     Hurt (a hit taking HurtBigFrac of my max HP, or leaving me under 30 %) -> HurtBig
---   GameState: PumpkinKingActive / GhostKingActive turning on -> PumpkinKing / GhostKing; GooseActive -> GooseHonk
+--     Enhance -> ScrollSuccess / ScrollFail; Upgrade -> Equip (GoldPickup until its file); Bank / Rare -> GoldPickup;
+--     LevelUp (mine) -> LevelUp; Hurt (a hit taking HurtBigFrac of my max HP, or leaving me under 30 %) -> HurtBig
+--   GameState: PumpkinKingActive / GhostKingActive turning on -> PumpkinKing / GhostKing; GooseActive -> GooseArrive
+--     (GooseHonk until its file)
 --   my attributes: AutoCombatEnabled -> AutoOn / AutoOff; Honor up -> Purify, Infamy up -> Devour (GDD §0); my own
 --     faction's points going down (A23-58, not a faction change) -> RankDown; HP / MP potion count down -> Potion.
---     Values that arrive with the save never sound.
+--     Values that arrive with the save never sound. My humanoid jumping -> Jump (sound_gaps A11).
 --   "Notify" remote: payload.Sound (dev2 2c5e84e, sound_spec §4-1) = the Config.Audio key of that line, "None" = no
 --   sound; without it kind "bad" -> Deny, "reward" -> QuestDone; "Quests" remote: a new quest id -> QuestNew;
 --   Fx "Choice" { Option = "Good" | "Evil" } (the story choice itself, to the chooser) -> Purify / Devour
@@ -59,7 +63,12 @@ local T = {
 	OthersMul = tonumber(A.OthersMul) or 0.35,
 	OthersRange = tonumber(A.OthersRange) or 40,
 	MaxPlaying = tonumber(A.MaxPlaying) or 8,
-	HitHeavyAt = tonumber(A.HitHeavyAt) or 3,
+	HitMany = type(A.HitMany) == "table" and A.HitMany or { From = 3, Volume = 1.25, Speed = 0.95 },
+	GhostSpeed = tonumber(A.GhostSpeed) or 1.15,
+	GhostKinds = type(A.GhostKinds) == "table" and A.GhostKinds or {},
+	ArrowDouble = type(A.ArrowDouble) == "table" and A.ArrowDouble or { From = 2, After = 0.068, Speed = 1.10, Volume = 0.85 },
+	MagePeak = tonumber(A.MagePeak) or 0.20,
+	SkillContact = tonumber(A.SkillContact) or 0.12,
 	HurtBigFrac = tonumber(A.HurtBigFrac) or 0.15,
 	HurtLowFrac = 0.3,
 	Duck = type(A.Duck) == "table" and A.Duck or { Mul = 0.5, Seconds = 1.2, By = {} },
@@ -80,6 +89,13 @@ local T = {
 -- monster kinds whose hit is the soft one (slimes, ghosts, pumpkins); everything else is heavy
 local SOFT = type(A.SoftKinds) == "table" and A.SoftKinds or {}
 local SWING = type(A.Swing) == "table" and A.Swing or {}
+local SWING_FACTION = type(A.SwingFaction) == "table" and A.SwingFaction or {}
+local MAGE_FILES = {} -- the faction mage files (their peak comes MagePeak after the start)
+for _, byFaction in SWING_FACTION do
+	if type(byFaction) == "table" then
+		for _, f in byFaction do MAGE_FILES[f] = true end
+	end
+end
 local NEUTRAL_SPEED = type(A.NeutralSpeed) == "table" and A.NeutralSpeed or {}
 local TALK = type(A.Talk) == "table" and A.Talk or { Default = 1 }
 local MILESTONES = {}
@@ -98,12 +114,20 @@ local S = {
 	PlayToken = setmetatable({}, { __mode = "k" }), -- [Sound] = its latest play
 	FactionAt = -math.huge,
 	StartedAt = 0, WarnAt = {},
+	Turn = {}, -- [event] = plays so far of an Alternate event (its files taken in turn)
 }
 
 local function num(v, default)
 	v = tonumber(v)
 	if v == nil or v ~= v or math.abs(v) == math.huge then return default end
 	return v
+end
+
+-- a file's uploaded id (nil = not uploaded yet: the event stays silent or plays its stand-in)
+local function idOf(file)
+	local id = type(file) == "string" and FILES[file] or nil
+	if type(id) ~= "string" or id == "" then return nil end
+	return id
 end
 
 local function warnThrottled(key, msg)
@@ -121,43 +145,61 @@ local function add(out, event, at, extra)
 	return p
 end
 
--- the one hit sound of a swing / skill (nil = no hit). ctx.KindAt(pos) names the monster a "M" hit landed on
+-- what the hits of one swing / skill sound like. ctx.KindAt(pos) names the monster a "M" hit landed on. sound_spec
+-- §4-2 6: ONE material hit (HitSoft for slimes / ghosts / pumpkins, HitHeavy for everything else and players) -
+-- Many = HitMany.From+ monsters (louder, a little lower), Ghost = a soft hit whose first monster is a ghost (higher) -
+-- Crit = the first target is a critical hit (the HitCrit layer), Goose = a golden goose was hit; Targets = how many
+-- targets (monsters, players, the goose)
 local function hitEvent(hits, ctx)
-	if type(hits) ~= "table" then return nil end
-	local monsters, heavy, goose = 0, false, false
+	local r = { Event = nil, Crit = false, Many = false, Ghost = false, Goose = false, Targets = 0 }
+	if type(hits) ~= "table" then return r end
+	local monsters, heavy, firstKind = 0, false, nil
 	for i, h in hits do
 		if type(h) == "table" and i <= 16 then
+			if i == 1 and h.C == true then r.Crit = true end
 			if h.K == "G" then
-				goose = true
+				r.Goose = true
+				r.Targets += 1
 			elseif h.K == "P" then
 				heavy = true
+				r.Targets += 1
 			elseif h.K == "M" then
 				monsters += 1
-				if h.C == true then
-					heavy = true
-				else
-					local kind = nil
-					if type(ctx.KindAt) == "function" then
-						local ok, k = pcall(ctx.KindAt, h.P)
-						kind = ok and k or nil
-					end
-					if not (type(kind) == "string" and SOFT[kind]) then heavy = true end
+				r.Targets += 1
+				local kind = nil
+				if type(ctx.KindAt) == "function" then
+					local ok, k = pcall(ctx.KindAt, h.P)
+					kind = ok and k or nil
 				end
+				if monsters == 1 then firstKind = kind end
+				if not (type(kind) == "string" and SOFT[kind]) then heavy = true end
 			end
 		end
 	end
-	if heavy or monsters >= T.HitHeavyAt then return "HitHeavy", goose end
-	if monsters > 0 then return "HitSoft", goose end
-	return nil, goose
+	if heavy then
+		r.Event = "HitHeavy"
+	elseif monsters > 0 then
+		r.Event = "HitSoft"
+		r.Ghost = type(firstKind) == "string" and T.GhostKinds[firstKind] == true
+	end
+	r.Many = r.Event ~= nil and monsters >= num(T.HitMany.From, 3)
+	return r
 end
 
 local function planHits(out, data, at, extra, ctx)
-	local event, goose = hitEvent(data.Hits, ctx)
-	if event then add(out, event, at, extra) end
-	if goose then add(out, "GooseHonk", at, extra) end
+	local h = hitEvent(data.Hits, ctx)
+	if h.Event then
+		local p = add(out, h.Event, at, extra)
+		if h.Many then p.Volume, p.SpeedMul = num(T.HitMany.Volume, 1.25), num(T.HitMany.Speed, 0.95) end
+		if h.Ghost then p.SpeedMul = num(p.SpeedMul, 1) * T.GhostSpeed end
+		if h.Crit then add(out, "HitCrit", at, extra) end
+	end
+	if h.Goose then add(out, "GooseHonk", at, extra) end
+	return h
 end
 
--- the swing file and speed factor of a packet's class / weapon style (+ the bare-hands volume)
+-- the swing file and speed factor of a packet's class / weapon style (+ the bare-hands volume); a class with faction
+-- files (sound_gaps A2: Halo / Horns mages) uses the caster's file once it is uploaded
 local function swingOf(data, faction)
 	local style = type(data.Style) == "string" and data.Style or nil
 	local class = type(data.Class) == "string" and data.Class or "Warrior"
@@ -168,6 +210,9 @@ local function swingOf(data, faction)
 	elseif not style and faction == "Neutral" then
 		speedMul = num(NEUTRAL_SPEED[class], 1)
 	end
+	local byFaction = not style and SWING_FACTION[class] or nil
+	local own = type(byFaction) == "table" and type(faction) == "string" and byFaction[faction] or nil
+	if own and idOf(own) then file = own end
 	return file, speedMul, volume
 end
 
@@ -178,7 +223,7 @@ function Audio.Plan(kind, data, ctx)
 	if type(kind) ~= "string" or type(data) ~= "table" or type(ctx) ~= "table" then return out end
 	local uid = num(data.UserId, nil)
 	local own = uid ~= nil and uid == ctx.Me
-	if kind == "Swing" or kind == "Release" then
+	if kind == "Swing" or kind == "Release" or kind == "Skill" then
 		local others = false
 		if not own then
 			-- other players' combat: quieter, and only near me (UI sounds stay mine)
@@ -187,25 +232,36 @@ function Audio.Plan(kind, data, ctx)
 			if uid == nil or d == nil or d > T.OthersRange then return out end
 			others = true
 		end
-		local auto = (kind == "Swing" and data.Manual ~= true) or (kind == "Release" and data.Auto == true)
+		local auto = (kind == "Swing" and data.Manual ~= true) or (kind ~= "Swing" and data.Auto == true)
 		local extra = { Auto = auto, Others = others }
 		local file, speedMul, volume = swingOf(data, own and ctx.Faction or data.Faction)
+		local contact = kind == "Skill" and T.SkillContact or num(data.ContactDelay, T.ContactDefault)
 		if kind == "Swing" then
 			local at = 0
-			if file == SWING.Archer and data.Style == nil then
-				at = math.clamp(num(data.LaunchDelay, T.LaunchDefault), 0, 1) -- the bow twangs when the arrow leaves
+			if data.Style == nil and file == SWING.Archer then
+				at = math.clamp(num(data.LaunchDelay, T.LaunchDefault), 0, 1) -- the arrow sounds when it leaves the bow
+			elseif data.Style == nil and MAGE_FILES[file] then
+				at = math.clamp(num(data.LaunchDelay, T.LaunchDefault) - T.MagePeak, 0, 1) -- the file's peak on the launch
 			end
-			local event = (file == "SwingMage" and "SwingMage") or (file == "SwingArcher" and "SwingArcher")
-				or (file == "SwingTamer" and "SwingTamer") or "SwingWarrior"
+			local event = SOUNDS[file] and file or "SwingWarrior"
 			add(out, event, at, { Auto = auto, Others = others, SpeedMul = speedMul, Volume = volume })
+			-- sound_spec §4-2 5: a bow shot that hits 2+ targets lets a second arrow fly right after
+			local double = T.ArrowDouble
+			if data.Style == nil and file == SWING.Archer and hitEvent(data.Hits, ctx).Targets >= num(double.From, 2) then
+				add(out, event, at + num(double.After, 0.068), { Auto = auto, Others = others,
+					SpeedMul = speedMul * num(double.Speed, 1.1), Volume = volume * num(double.Volume, 0.85) })
+			end
 		else
-			add(out, "SkillCast", 0, { Auto = auto, Others = others, File = file })
-			if own and data.Slot == "X" then
+			-- Release = the Q skill, Skill = Z / X (SkillService; no launch time: at once). §4-2 4: the cast at the
+			-- launch, my faction's layer on every slot
+			local launch = kind == "Release" and math.clamp(num(data.LaunchDelay, 0), 0, 1) or 0
+			add(out, "SkillCast", launch, { Auto = auto, Others = others, File = file })
+			if own then
 				local layer = (ctx.Faction == "Halo" and "SkillHalo") or (ctx.Faction == "Horns" and "SkillHorns") or nil
-				if layer then add(out, layer, 0, { Auto = auto }) end
+				if layer then add(out, layer, launch, { Auto = auto }) end
 			end
 		end
-		planHits(out, data, math.clamp(num(data.ContactDelay, T.ContactDefault), 0, 1), extra, ctx)
+		planHits(out, data, math.clamp(contact, 0, 1), extra, ctx)
 	elseif kind == "Reward" then -- the server sends it to the killer only
 		local combo = math.max(1, math.floor(num(ctx.Combo, 1)))
 		local steps = T.Combo.Steps
@@ -222,7 +278,10 @@ function Audio.Plan(kind, data, ctx)
 		end
 	elseif kind == "Enhance" then
 		add(out, data.Success == true and "ScrollSuccess" or "ScrollFail", 0)
-	elseif kind == "Bank" or kind == "Upgrade" or kind == "Rare" then
+	elseif kind == "Upgrade" then -- sound_gaps C2: a weapon bought / equipped = Equip (GoldPickup until its file)
+		local equip = SOUNDS.Equip
+		add(out, (type(equip) == "table" and idOf(equip.File)) and "Equip" or "GoldPickup", 0)
+	elseif kind == "Bank" or kind == "Rare" then
 		add(out, "GoldPickup", 0)
 	elseif kind == "LevelUp" then
 		if own then add(out, "LevelUp", 0) end
@@ -246,14 +305,9 @@ local function sfxMult()
 	return 1
 end
 
-local function idOf(file)
-	local id = type(file) == "string" and FILES[file] or nil
-	if type(id) ~= "string" or id == "" then return nil end
-	return id
-end
-
--- the file an event plays this time (Files = variants: one at random); nil = no id yet
-local function fileOf(def, override)
+-- the file an event plays this time (Files = variants: one at random, or in turn with Alternate - the turn moves on
+-- only when the play really starts, Audio.Play); nil = no id yet
+local function fileOf(def, override, event)
 	if type(override) == "string" then return idOf(override) and override or nil end
 	if type(def.Files) == "table" and #def.Files > 0 then
 		local ready = {}
@@ -261,6 +315,7 @@ local function fileOf(def, override)
 			if idOf(f) then table.insert(ready, f) end
 		end
 		if #ready == 0 then return nil end
+		if def.Alternate == true then return ready[(S.Turn[event] or 0) % #ready + 1] end
 		return ready[math.random(1, #ready)]
 	end
 	return idOf(def.File) and def.File or nil
@@ -300,7 +355,7 @@ function Audio.Play(event, opts)
 	local def = SOUNDS[event]
 	if type(def) ~= "table" or not S.Folder then return false end
 	opts = type(opts) == "table" and opts or {}
-	local file = fileOf(def, opts.File)
+	local file = fileOf(def, opts.File, event)
 	if not file then return false end
 	local mult = sfxMult()
 	if mult <= 0 then return false end
@@ -311,6 +366,7 @@ function Audio.Play(event, opts)
 	local s = freeSound(event, def)
 	if not s then return false end
 	S.Last[event] = now
+	if def.Alternate == true then S.Turn[event] = (S.Turn[event] or 0) + 1 end
 	local speed = num(opts.Speed, nil)
 	if not speed then
 		local range = type(def.Speed) == "table" and def.Speed or { 1, 1 }
@@ -488,7 +544,17 @@ local function watchGame()
 		end)
 	end
 	watch(gs, "GooseActive", function(prev, v)
-		if v == true and prev ~= true and fresh() then Audio.Play("GooseHonk") end
+		-- sound_gaps A7: the goose arrives (its honk is for hitting it; it stands in until GooseArrive is uploaded)
+		if v == true and prev ~= true and fresh() and not Audio.Play("GooseArrive") then Audio.Play("GooseHonk") end
+	end)
+end
+
+-- sound_gaps A11 (user): my own jumps (the moment the humanoid leaves the ground by a jump)
+local function watchJump(char)
+	local ok, hum = pcall(function() return char:WaitForChild("Humanoid", 5) end)
+	if not (ok and hum and hum:IsA("Humanoid")) then return end
+	hum.StateChanged:Connect(function(_, new)
+		if new == Enum.HumanoidStateType.Jumping then Audio.Play("Jump") end
 	end)
 end
 
@@ -578,7 +644,13 @@ function Audio.Start()
 		for _, s in list do s:Destroy() end
 	end)
 
-	if LocalPlayer then watchMe() end
+	if LocalPlayer then
+		watchMe()
+		pcall(function()
+			LocalPlayer.CharacterAdded:Connect(function(char) task.spawn(watchJump, char) end)
+			if LocalPlayer.Character then task.spawn(watchJump, LocalPlayer.Character) end
+		end)
+	end
 	task.spawn(watchGame)
 	RunService.Heartbeat:Connect(function()
 		local ok, err = pcall(pollWindows)

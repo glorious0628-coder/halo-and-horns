@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 19,
+  "checks": 24,
   "failedChecks": [],
   "mutations": {
-    "total": 13,
-    "applied": 13,
-    "caught": 13,
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
     "results": [
       {
         "mutation": "locked slots show again",
@@ -32,7 +32,7 @@
         "failures": [
           "CHECK_FAIL a 'New skill! <name>' banner :: nil",
           "CHECK_FAIL one line on the new button: 'Press Q' :: nil",
-          "CHECK_FAIL the SkillLearn sound (PowerUp until its file exists) :: "
+          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 0"
         ]
       },
       {
@@ -119,14 +119,41 @@
         "failures": [
           "CHECK_FAIL the server opening slot 1 (SkillSlots 1) shows Q with the learn moment, Z stays hidden :: 0"
         ]
+      },
+      {
+        "mutation": "the learn sound plays with the banner",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the learn sound waits for the level-up chime :: SkillLearn,PowerUp",
+          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 0"
+        ]
+      },
+      {
+        "mutation": "no SkillReady at the cooldown end",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a cooldown end plays SkillReady, no extra click ::  / Click",
+          "CHECK_FAIL a ready button stays quiet :: 2"
+        ]
+      },
+      {
+        "mutation": "the click plays on top of SkillReady",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a cooldown end plays SkillReady, no extra click :: SkillReady / Click",
+          "CHECK_FAIL a ready button stays quiet :: 2"
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "af78e57d96c1eff74befc1c08b47a97a425e63053d70998cc56cc92f1dcc2464",
-    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "ce50074a197debff063633e3c94d9f23fdf7132971a0c23bd5b9f0ac7041e2cd"
+    "src/ReplicatedStorage/Shared/Config.luau": "7c432b8c4fb3d51a08fc698760a42358f25d6ad51a9311c0e8c9937550bd5407",
+    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "f429d7ad0e5827457ea419f8d557e737931de1f339b0f45261be89538b55c930"
   },
-  "fixtureSHA256": "0ee3992becb4d4b4c4b91510fe624c890e0f2735a018a39d826828d75a101042",
+  "fixtureSHA256": "7529ed9319468892c09cd5fa2d35d3e55062f1dcdb0e3253892f7479a59be6ec",
   "studioCalls": 0,
   "contract": "A23-71 skill learn offline test (SkillBar.luau; user 2026-10-07 \"스킬도 처음에는 없어야 돼! 레벨 5일 때 하나 배우는 걸로\n하자\", unlocks Q 5 / Z 15 / X 25): no skill button below its unlock level (a key press says \"Skills come at Lv N\",\nnot spammed); unlocking while playing -> \"New skill! <name>\" banner (UIKit.Announce), the button pops in, one line on it\n(C.HUD.Hint(slot, \"Press Q\") / phones \"Tap the new button\"), the SkillLearn sound with PowerUp until its file exists;\nonce per slot; a save loading past the level shows its skills without the moment; reduced motion: no pop.\nRuns the real SkillBar.luau + Config.luau (Config.Skills.Unlock set to the A23-71 numbers) in\ntools/fixtures/skill_learn_offline.luau.",
   "limitations": "The button layout without skill slots is image dev's (HudLayout); the real unlock numbers come with dev2's Config.Skills.Unlock change; the look of the moment is a Studio check."

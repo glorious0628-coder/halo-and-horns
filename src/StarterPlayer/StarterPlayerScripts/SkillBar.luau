@@ -93,7 +93,8 @@ local TXT = {
 	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
 }
 -- A23-71 learn moment tuning
-local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge }
+-- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
+local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1 }
 
 ----------------------------------------------------------------- state
 local S = {
@@ -527,8 +528,12 @@ local function tickButton(b)
 	if cooling then b.Seconds.Text = tostring(math.ceil(left)) end
 	if b.WasCooling and not cooling then
 		flash(b)
+		-- sound_gaps A10: the SkillReady blip (Fx's Click / our Tap until its file is uploaded)
+		local audio = C and C.Audio
+		local ok, played = false, false
+		if type(audio) == "table" and type(audio.Play) == "function" then ok, played = pcall(audio.Play, "SkillReady") end
 		local fx = C and C.Fx
-		if type(fx) == "table" and type(fx.PlaySound) == "function" then pcall(fx.PlaySound, "Click") end
+		if not (ok and played) and type(fx) == "table" and type(fx.PlaySound) == "function" then pcall(fx.PlaySound, "Click") end
 		guard(function() paintButton(b) end, "paint")
 	end
 	b.WasCooling = cooling
@@ -662,6 +667,11 @@ function LEARN.Show(b, st)
 	end
 	local hud = C and C.HUD
 	if type(hud) == "table" and type(hud.Hint) == "function" then pcall(hud.Hint, slot, line) end
+	task.delay(LEARN.SoundDelay, LEARN.Sound)
+end
+
+-- the SkillLearn sound (PowerUp until its file is uploaded)
+function LEARN.Sound()
 	local audio = C and C.Audio
 	if type(audio) == "table" and type(audio.Play) == "function" then
 		local ok, played = pcall(audio.Play, "SkillLearn")
