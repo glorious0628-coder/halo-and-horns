@@ -2,7 +2,12 @@
 docs/design/lines_pack_server_2026-10-07.md section 3): a new BarkAt on a monster model shows its Bark in a speech bubble
 over the head for Config.Barks.Show s within Config.Barks.MaxDistance studs (the same line with a new BarkAt shows
 again; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); the
-BarkBubble art (9-slice, TextRect) or a white rounded box with a navy rim; a newer bark replaces the bubble (never two). Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.
+BarkBubble art (9-slice, TextRect) or a white pill with a soft navy rim; a newer bark replaces the bubble (never two).
+A23-74 (user 2026-10-07 "not cute"): 150-172 x 44 px for one line, wider with more letters (utf8), two lines at H2 up to
+W2Max; the Head font (Fredoka One without UIKit); the family art (Config.Barks.BubbleFamily / BubbleArt) only once its
+Id is uploaded, else BarkBubble; a jelly pop (UIScale Back + Size Elastic from the tail corner), a looping float, a
+shrink + fade in the last B.Out s, every tween cancelled when the bubble is destroyed or replaced, none with reduced
+motion. Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-07/offline_monster_bark_2026-10-07.json
 """
@@ -30,6 +35,16 @@ MUTATIONS = [
     ("the tail floats in the middle", "bb.SizeOffset = Vector2.new(0.5, 0.5)", "bb.SizeOffset = Vector2.new(0, 0)"),
     ("no code fallback without the art", "\tif not art then\n\t\tart = Instance.new(\"Frame\")", "\tif false then\n\t\tart = Instance.new(\"Frame\")"),
     ("two bubbles stack on one monster", "\tif old then old:Destroy() end\n", ""),
+    # A23-74 (user 2026-10-07): size, font, family art, motion
+    ("letters counted as bytes", "local n = utf8.len(text) or #text", "local n = #text"),
+    ("the old GothamBold font", "label.Font = Enum.Font.FredokaOne", "label.Font = Enum.Font.GothamBold"),
+    ("the family art is never used", '{ B.ArtKey(kind), "BarkBubble" }', '{ "BarkBubble" }'),
+    ("an un-uploaded family key is used", 'and def.Id ~= "" then return key end', "then return key end"),
+    ("the fallback has square corners", "corner.CornerRadius = UDim.new(0.5, 0)", "corner.CornerRadius = UDim.new(0, 14)"),
+    ("reduced motion still wobbles", "\tif reduced then\n", "\tif false then\n"),
+    ("the bubble vanishes with no fade", "\tif fadeOut then task.delay(math.max(0, show - B.Out), fadeOut) end\n", ""),
+    ("a replaced bubble still fades", "\t\tif not bb.Parent then return end -- a newer bark already replaced it\n", ""),
+    ("the float loop never stops", "for _, tw in tweens do tw:Cancel() end", "local _ = tweens"),
 ]
 
 
