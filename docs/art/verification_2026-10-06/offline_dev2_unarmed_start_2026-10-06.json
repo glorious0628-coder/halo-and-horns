@@ -21,7 +21,7 @@
     },
     {
       "group": "config",
-      "check": "Combat.Unarmed = 4 / 7 / 0.8 s / 75 deg",
+      "check": "Combat.Unarmed = 4 / 7 / 0.8 s / 90 deg (A23-61 front half)",
       "pass": 1,
       "fail": 0
     },
@@ -1389,7 +1389,7 @@
           "auto :: auto skill Q fires at 20 studs bare-handed (class reach)",
           "auto :: no hidden whiff cooldown from the auto tick",
           "auto :: then auto punches",
-          "config :: Combat.Unarmed = 4 / 7 / 0.8 s / 75 deg",
+          "config :: Combat.Unarmed = 4 / 7 / 0.8 s / 90 deg (A23-61 front half)",
           "config :: Lv2 bare 12, Lv3 bare 23",
           "config :: SwingHitsToKill bare Archer/Halo = 5"
         ],
@@ -2273,7 +2273,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
+    "src/ReplicatedStorage/Shared/Config.luau": "e8e7bb2afe8982e72358de05e9a2f266460eaf2b8f263c6d256176266e15e685",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
@@ -2284,7 +2284,7 @@
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60"
   },
-  "fixtureSHA256": "c937d97a3d4bffea28127be138c180fc383c66225d4232fca2e10d1f717f9400",
+  "fixtureSHA256": "90b4dfe4e86706a24f577e3dc5c09821028566b31c29048c190cc64e8cc8ef76",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

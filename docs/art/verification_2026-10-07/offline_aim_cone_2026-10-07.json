@@ -1,0 +1,95 @@
+{
+  "status": "passed",
+  "checks": 56,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "client FaceTarget reads the swing profile's AimCone (Config.AttackProfile) as the same half-angle",
+      "ok": true
+    },
+    {
+      "check": "client FaceTarget does not turn me while a monster is inside that cone",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 6,
+    "applied": 6,
+    "caught": 6,
+    "results": [
+      {
+        "mutation": "the Warrior back to 75 (misses monsters right beside)",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Warrior class row AimCone = 90 (the front half) :: 75",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Warrior tier 1 Halo 75",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Warrior tier 1 Horns 75"
+        ]
+      },
+      {
+        "mutation": "bare hands back to 75",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL bare hands AimCone = 90 :: 75",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Warrior tier 0 Halo 75",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Warrior tier 0 Horns 75"
+        ]
+      },
+      {
+        "mutation": "bare hands hit behind me (180 = everything)",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL bare hands AimCone = 90 :: 180",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Warrior tier 0 Halo 180",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Warrior tier 0 Horns 180"
+        ]
+      },
+      {
+        "mutation": "the Mage at 120 (shots behind the side line)",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Mage class row AimCone = 90 (the front half) :: 120",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Mage tier 1 Halo 120",
+          "CHECK_FAIL AttackProfile AimCone = 90 for every class / weapon / side (tamer too) :: Mage tier 1 Horns 120"
+        ]
+      },
+      {
+        "mutation": "the skill cone pulled into A23-61",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL skill cones stay (Earth Cleave / Hook Chain 75) :: 90"
+        ]
+      },
+      {
+        "mutation": "inAim lets 90 hit everything",
+        "file": "combat",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Warrior bare: behind the side line (95 deg+) / behind me -> never hit :: nil",
+          "CHECK_FAIL Warrior armed: behind the side line (95 deg+) / behind me -> never hit :: nil",
+          "CHECK_FAIL Mage bare: behind the side line (95 deg+) / behind me -> never hit :: nil"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "e8e7bb2afe8982e72358de05e9a2f266460eaf2b8f263c6d256176266e15e685",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "2487b4652803b93f4dd298f615bf206c2244921df27b4be6a67ed05ebc41c925"
+  },
+  "fixtureSHA256": "24e31f74fce43e19e28881d242631fc480a6f2de00d18534c07281a415263aa9",
+  "studioCalls": 0,
+  "contract": "A23-61 offline test (user 2026-10-06 night): the basic attack hits the whole front half.\n\nAimCone is a half-angle (CombatService.inAim: dot(look, dir) >= cos(AimCone); 180+ = everything), so the SPEC's\n\"front semicircle, 90 deg left / right, nothing behind\" is AimCone = 90 on every class row and on bare hands; the SKL\nskill cones (Config.Skills.Defs) are not part of it. Runs the real Config.luau and the inAim function cut out of\nCombatService.luau in tools/fixtures/aim_cone_offline.luau (installed Luau CLI); static check: the client's\nFaceTarget turns me only when no monster is inside the same cone (HUD.luau). Mutations must each be caught.",
+  "limitations": "The feel in a real Play (SPEC: tune 120-180 deg total = AimCone 60-90 by playing) is a Studio check."
+}

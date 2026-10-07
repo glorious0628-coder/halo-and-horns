@@ -169,7 +169,7 @@ MUTATIONS = [
     ("bare-handed PvP keeps the weapon floor", CO,
      "local floor = Config.Weapons[aTier] and Config.PvP.PowerRatioMin or Config.Combat.Unarmed.PvPRatioMin",
      "local floor = Config.PvP.PowerRatioMin"),
-    ("bare PvP floor as high as the weapons'", C, "AimCone = 75, PvPRatioMin = 0.4 }", "AimCone = 75, PvPRatioMin = 0.8 }"),
+    ("bare PvP floor as high as the weapons'", C, "AimCone = 90, PvPRatioMin = 0.4 }", "AimCone = 90, PvPRatioMin = 0.8 }"),
     ("bought-first player gets no bag line", L,
      "\t\tnotify(player, string.format(TXT.FirstWeaponBag, name), \"reward\")\n", ""),
     ("a drop is not equipped bare-handed", L,

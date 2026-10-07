@@ -364,7 +364,9 @@ Config.Classes = {
 		HealthMult = 1.3, Damage = 1.0, SwingInterval = 1.0,
 		Pattern = "Around", -- every valid target within Range of self
 		Range = 10, Targets = 0, Splash = 0, -- Targets 0 = unlimited
-		AimCone = 75, -- user 2026-10-06: every class attacks where it faces (basic swing = a front sweep)
+		-- A23-61 (user 2026-10-06 night): the basic attack hits the whole front half - AimCone is the half-angle from where
+		-- I face, so 90 = left / right 90 deg each (180 in all); nothing behind me
+		AimCone = 90,
 		ReleaseCenter = "Self", -- shockwave on self (the skill stays an all-around blast)
 		ChargeAuto = 1, ChargeManual = 2,
 		Ranged = false, PvPMult = 1.0,
@@ -382,7 +384,7 @@ Config.Classes = {
 		HealthMult = 0.8, Damage = 1.3, SwingInterval = 1.1, -- 2026-10-06 user: mage a bit stronger (was 1.25)
 		Pattern = "Splash", -- nearest valid target within Range, then every valid target within Splash of it
 		Range = 35, Targets = 1, Splash = 7,
-		AimCone = 80, -- only targets within 80 degrees of where I face (2026-10-06: no shots behind / sideways)
+		AimCone = 90, -- A23-61: the front half (90 deg each side of where I face), nothing behind
 		ReleaseCenter = "Target", -- meteor on the nearest target within Range (self if none)
 		ChargeAuto = 1, ChargeManual = 2,
 		Ranged = true, PvPMult = 0.85,
@@ -401,7 +403,7 @@ Config.Classes = {
 		HealthMult = 1.0, Damage = 0.55, SwingInterval = 0.5,
 		Pattern = "Multi", -- the Targets nearest valid targets within Range
 		Range = 30, Targets = 2, Splash = 0,
-		AimCone = 80, -- only targets within 80 degrees of where I face (2026-10-06: no shots behind / sideways)
+		AimCone = 90, -- A23-61: the front half (90 deg each side of where I face), nothing behind
 		ReleaseCenter = "Target", -- arrow rain on the nearest target within Range (self if none)
 		ChargeAuto = 0.5, ChargeManual = 1, -- swings twice as often, so half the stacks per swing
 		Ranged = true, PvPMult = 0.85,
@@ -458,7 +460,7 @@ Config.Combat = {
 	-- no class multiplier, no MP, one nearest target within Range in front (AimCone). Range 7 > monster AttackRange 5.5.
 	-- PvPRatioMin (검수 2026-10-06): a bare-handed attacker's PvP weapon ratio floor (weapons: Config.PvP.PowerRatioMin
 	-- 0.8). With 0.4 a punch is weaker than every class's tier-1 basic attack against any opponent at the same level.
-	Unarmed = { Damage = 4, Range = 7, Interval = 0.8, AimCone = 75, PvPRatioMin = 0.4 },
+	Unarmed = { Damage = 4, Range = 7, Interval = 0.8, AimCone = 90, PvPRatioMin = 0.4 }, -- AimCone: A23-61 front half
 }
 
 -- A23-34: the basic attack's shape for a class holding `tier`. With a weapon it is the class row itself (Pattern, Range,

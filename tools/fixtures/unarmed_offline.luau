@@ -10,7 +10,7 @@ runGroup("config", function()
 	check(C.Data.Defaults.WeaponTier == 0 and C.Data.Defaults.WeaponOwnedMask == 0,
 		"a new save starts bare-handed: WeaponTier 0, nothing owned", show({ C.Data.Defaults.WeaponTier, C.Data.Defaults.WeaponOwnedMask }))
 	check(C.Data.Version == 3, "save Version stays 3 (A23-34 is additive)", C.Data.Version)
-	check(U.Damage == 4 and U.Range == 7 and U.Interval == 0.8 and U.AimCone == 75, "Combat.Unarmed = 4 / 7 / 0.8 s / 75 deg", show(U))
+	check(U.Damage == 4 and U.Range == 7 and U.Interval == 0.8 and U.AimCone == 90, "Combat.Unarmed = 4 / 7 / 0.8 s / 90 deg (A23-61 front half)", show(U))
 	check(U.Range > C.Monsters.AttackRange, "the punch reaches a slime that attacks me (Range 7 > monster reach 5.5)",
 		C.Monsters.AttackRange)
 	check(C.WeaponDamage(0, 1, 0) == 4 and C.WeaponDamage(0, 1, 5) == 4, "bare hands = Unarmed.Damage, no scroll +N",
@@ -59,7 +59,7 @@ runGroup("config", function()
 	for _, id in C.ClassOrder do
 		local p0 = C.AttackProfile(id, 0, "Halo")
 		check(p0.Style == "Punch" and p0.Unarmed == true and p0.Id == id and p0.Pattern == "Multi" and p0.Targets == 1
-			and p0.Range == 7 and p0.SwingInterval == 0.8 and p0.AimCone == 75 and p0.Damage == 1 and p0.Ranged == false
+			and p0.Range == 7 and p0.SwingInterval == 0.8 and p0.AimCone == 90 and p0.Damage == 1 and p0.Ranged == false
 			and (p0.PvPMult or 1) == 1, "AttackProfile(" .. id .. ", 0) = the shared punch", show(p0))
 		check(C.AttackProfile(id, 1, "Halo") == C.Classes[id] and C.AttackProfile(id, 8, "Horns") == C.Classes[id],
 			"AttackProfile(" .. id .. ", weapon) = the class row itself")
