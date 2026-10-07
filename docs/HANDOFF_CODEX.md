@@ -12,7 +12,10 @@
 **내일 첫 순서:**
 1. 개발 1 밤 인계 확인 → 메인 Studio 저장·place 확인(build=place, 0 0).
 2. **무기 먼저 병합:** `weapon-sound-r1`(main + dev2-sound 892fa28 + wtc-weapon-client dd1d4135, 증거 518b4df, 전체 60개 결과 확인) → main → sync → `py tools/play_weapon_first.py pc|phone` 사진. 게시 때 모든 서버 종료(체크리스트).
-3. **검수 워크플로 결과 확인(23:00에 끊겼을 수 있음):** `origin/fix/a2374-camera3`(카메라: 화살표 키·스틱 반경·폰 Follow 모드·dt), `fix/a2374-separation2`(몬스터 겹침, 없으면 separation 리뷰대로 다시), `merge/translucent`(반투명 — 검토 OK, main에 없으면 다시 병합). 각각 검증 → main → sync → PC·폰 사진.
+3. **검수 워크플로 결과(22:07 끝남):**
+   - 반투명: **main 39ec154에 들어감**(살아 있는 몬스터 늘 불투명, 시험 통과). Studio 확인 필요.
+   - 카메라 `origin/fix/a2374-camera3`(52a6ccb): **검증 통과**(방향키·쉼표·트랙패드 = 손 돌리기, 걸을 때 원 반지름 55 이상, 폰 Classic 카메라, 끊김 제한, 멈추면 1.2초 안에 등 뒤). main에 병합 → sync → **메인 Studio StarterPlayer.DevTouchCameraMovementMode = Classic**(개발 1) → PC·폰 사진.
+   - 몬스터 겹침 `origin/fix/a2374-separation2`(2b07018): 고칠 4개는 맞음(걷는 플레이어 겹침 평균 1.94 → 0.04). 새로 찾은 것 2개: ① 구역 가장자리 선에 몬스터가 몰리면 안 떨어짐(SEP.CanSlide가 선을 따라 미끄러지기를 막음) ② 두 플레이어가 붙어 서면 사이 몬스터가 대상을 계속 바꿈. 이 2개를 고친 뒤 병합(검수 워크플로로 다시).
 4. 소리 57개 연결(`docs/design/sound_wiring_onepass_2026-10-07.md`) → Play → 옛 ogg 정리(소리 세션).
 5. 3D 가져오기: `build/import_all/1_first`(A 빛 성 9조각+분수 ②, E, H 뿔 성 ③) → 사용자 WorldKit '가져오기 시작'(검수 마우스로는 반응 없었음) → id 장부 → 메인 배치(분수·성·표지판·가로등·소품).
 6. **사용자 답 대기:** 뿔 성 ③(앞 ② + 새 뒷모습, `art/review/town5/horns_castle_mix_compare.jpg`)으로 할지. 다른 걸 고르면 `build/import_H/H_HornsCastle_B2.glb`.
