@@ -141,6 +141,7 @@ local TXT = {
 	PouchLine = "%s %s", -- its own line under the XP bar when the power line is too narrow
 	CarriedTag = "Pouch",
 	PowerWord = "Power", -- A23-48 (Config.Power.Text.Label stays the Korean source)
+	Stronger = "Stronger!", -- A23-68 #3: the first weapon's big line
 	WarHalo = "Halo %s", -- the war bar's ends (were the Korean emblems)
 	WarHorns = "%s Horns",
 	Wanted = "Wanted %s", -- danger chip (Horns): the wanted stars
@@ -574,6 +575,10 @@ end
 -- number up (not when the level changed in the same moment: the level-up banner already celebrates). Drops are silent.
 -- Changes within 0.4 s merge; while the opening / a picker is open one pending popup waits. Tap -> "Character" window.
 L.Pow = { Shown = nil, Base = nil, Seq = 0, LevelAt = -10, MergeAt = 0, Pending = false, Merge = 0.4, Count = 0.6 }
+-- A23-68 #3 (user 2026-10-07: "슬라임 5대 > 2대 이런 거는 됐고 그냥 전투력이 올라야지"): the first weapon (WeaponTier
+-- 0 -> 1+, the M1_1 blacksmith's gift) gets one big moment: gold sparkles on me, the PowerUp sound, a big "Stronger!"
+-- banner and a slow count-up of the Power number. Seen live only (a save loading with a weapon shows nothing).
+L.First = { Tier = nil, Pop = false, Count = 1.6, Banner = 2.4, Wait = 1.2, Sparks = 36 }
 
 function L.PowerValue()
 	local v = tonumber(attr("CombatPower", nil))
@@ -675,6 +680,12 @@ end
 -- rise (from is only where the count-up starts; it may be mid-way through an earlier count-up).
 function L.PowerPopup(from, to, delta)
 	local label = ui.power
+	local count = L.Pow.Count
+	if L.First.Pop then -- the first weapon: the big moment + a slower count-up
+		L.First.Pop = false
+		L.FirstWeapon()
+		count = L.First.Count
+	end
 	if not label or not label.Parent or not ui.stats then L.PowerSet(to) return end
 	L.Pow.Seq += 1
 	local seq = L.Pow.Seq
@@ -703,7 +714,7 @@ function L.PowerPopup(from, to, delta)
 	task.spawn(function()
 		local t0 = os.clock()
 		while seq == L.Pow.Seq do
-			local k = math.clamp((os.clock() - t0) / L.Pow.Count, 0, 1)
+			local k = math.clamp((os.clock() - t0) / count, 0, 1)
 			L.PowerSet(math.floor(from + (to - from) * k + 0.5))
 			if k >= 1 then break end
 			task.wait(1 / 30)
@@ -728,6 +739,65 @@ function L.PowerSettle()
 	else
 		P.Seq += 1 -- stop a running count-up
 		L.PowerSet(n)
+	end
+end
+
+-- WeaponTier 0 -> 1+ after the save loaded and the class was picked = the first weapon. The power popup that follows
+-- (CombatPower rises in the same moment) shows the big moment; if no rise comes within First.Wait s it shows anyway.
+function L.TierChanged()
+	local F = L.First
+	local tier = math.floor(num("WeaponTier", 0))
+	if attr("DataLoaded", false) ~= true or attr("ClassChosen", false) ~= true then
+		F.Tier = nil -- not live yet (the save is loading / no class): no moment
+		return
+	end
+	if F.Tier == nil then F.Tier = tier return end -- the first live reading is the baseline
+	if F.Tier <= 0 and tier >= 1 then
+		F.Pop = true
+		task.delay(F.Wait + L.Pow.Merge, function()
+			if F.Pop then
+				F.Pop = false
+				L.FirstWeapon()
+			end
+		end)
+	end
+	F.Tier = tier
+end
+
+function L.FirstWeapon()
+	local F = L.First
+	if C and type(C.Audio) == "table" and type(C.Audio.Play) == "function" then pcall(C.Audio.Play, "PowerUp") end
+	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, TXT.Stronger, F.Banner) end
+	-- gold sparkles bursting from me (Roblox's own sparkle texture; no new art)
+	local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	if root then
+		local att = Instance.new("Attachment")
+		att.Name = "FirstWeaponSparks"
+		local e = Instance.new("ParticleEmitter")
+		e.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		e.Color = ColorSequence.new(Color3.fromRGB(255, 225, 120), Color3.fromRGB(255, 190, 60))
+		e.LightEmission, e.Rate, e.SpreadAngle = 0.7, 0, Vector2.new(180, 180)
+		e.Lifetime, e.Speed = NumberRange.new(0.6, 1.1), NumberRange.new(6, 12)
+		e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(1, 0) })
+		e.Acceleration = Vector3.new(0, 6, 0)
+		e.Parent = att
+		att.Parent = root
+		e:Emit(F.Sparks)
+		task.delay(1.6, function() att:Destroy() end)
+	end
+	-- the Power number grows for a moment (no bounce with 'Screen shake' off)
+	local label = ui.power
+	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
+	if label and label.Parent and not reduced then
+		local scale = label:FindFirstChild("FirstWeaponScale") or Instance.new("UIScale")
+		scale.Name = "FirstWeaponScale"
+		scale.Scale = 1
+		scale.Parent = label
+		local up = TweenService:Create(scale, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.35 })
+		up:Play()
+		task.delay(F.Count, function()
+			if scale.Parent then TweenService:Create(scale, TweenInfo.new(0.3), { Scale = 1 }):Play() end
+		end)
 	end
 end
 
@@ -4276,6 +4346,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "Faction", "Class", "ClassChosen", "CharacterGender", "SizeMult" }, L.RefreshPortrait)
 	UIKit.OnAttr({ "Level" }, function() L.Pow.LevelAt = os.clock() end) -- BB5: no "+N" next to a level-up banner
 	UIKit.OnAttr({ "CombatPower", "DataLoaded", "ClassChosen" }, L.PowerChanged)
+	UIKit.OnAttr({ "WeaponTier", "DataLoaded", "ClassChosen" }, L.TierChanged) -- A23-68 #3
 	UIKit.OnAttr({ "AutoCombatUnlocked", "AutoCombatEnabled", "ClassChosen" }, L.RefreshAuto)
 	-- user 2026-10-06 (A23-26 update): TextChatService chat keeps Roblox's own place and size (top-left, opened with the
 	-- top-bar chat bubble or '/'); this code no longer moves ChatWindowConfiguration. It starts closed on desktop too,

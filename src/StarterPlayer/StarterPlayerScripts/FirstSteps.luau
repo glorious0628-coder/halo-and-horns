@@ -1,0 +1,232 @@
+-- FirstSteps.luau : A23-68 (user 2026-10-07 "ㅇㅇ 모두 좋다 구현하자"; docs/design/early_churn_research_2026-10-07.md)
+-- the first minutes' helpers on this client.
+--   #1 after the guide's [Accept] the server sends Fx "Travel" { UserId, To, T } and moves me to the meadow entrance T s
+--      later, then always Fx "TravelDone" { UserId } (dev2 324055a, docs/design/early_churn_server_2026-10-07.md): a
+--      centre line "Off to Squishy Meadow! 3", 2, 1; the screen fades to black from T - Fade s and back in on
+--      TravelDone (T + MaxExtra s at the latest); open windows close. Input is never blocked here (the server ignores
+--      attacks until it moved me).
+--   #2 during the first mission (TutorialStep 1..98): Idle s within my reach of a monster without a swing of mine -> the
+--      attack button hint (C.HUD.Hint "Attack"); my first kill (my first Reward Fx) -> the Q hint (C.HUD.Hint "Q");
+--      in the meadow before that kill a small marker over the nearest monster (C.QuestMarker.Focus). Each at most once
+--      per session. The looks are image dev's: every call is pcall'd, so a missing function just skips the hint.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Config = require(Shared:WaitForChild("Config"))
+local Net = require(Shared:WaitForChild("Net"))
+
+local FirstSteps = {}
+local LocalPlayer = Players.LocalPlayer
+local C = nil
+
+local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow" }
+local TRAVEL = { Fade = 0.4, MaxExtra = 1.5, FadeIn = 0.5, Token = 0, Gui = nil, Black = nil, Line = nil, Done = false }
+local HINT = { Idle = 5, Tick = 0.25, Search = 120, MarkerGap = 0.5, NearSince = nil,
+	AttackShown = false, QShown = false, Killed = false, MarkerAt = -math.huge, Marked = nil }
+
+local function attr(key, default)
+	local v = LocalPlayer:GetAttribute(key)
+	if v == nil then return default end
+	return v
+end
+
+local function call(mod, fn, ...)
+	local m = C and C[mod]
+	local f = type(m) == "table" and m[fn] or nil
+	if type(f) ~= "function" then return false end
+	return pcall(f, ...)
+end
+
+local function mine(data)
+	return type(data) == "table" and data.UserId == LocalPlayer.UserId
+end
+
+------------------------------------------------------------------ #1 travel fade
+function TRAVEL.Build()
+	if TRAVEL.Gui and TRAVEL.Gui.Parent then return end
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "TravelFade"
+	gui.IgnoreGuiInset, gui.ResetOnSpawn, gui.DisplayOrder = true, false, 75
+	pcall(function() gui.ScreenInsets = Enum.ScreenInsets.None end)
+	local black = Instance.new("Frame")
+	black.Name = "Black"
+	black.BackgroundColor3, black.BorderSizePixel, black.BackgroundTransparency = Color3.new(0, 0, 0), 0, 1
+	black.Size = UDim2.fromScale(1, 1)
+	black.Parent = gui
+	local line = Instance.new("TextLabel")
+	line.Name = "Line"
+	line.AnchorPoint, line.Position, line.Size = Vector2.new(0.5, 0.5), UDim2.fromScale(0.5, 0.38), UDim2.new(0.8, 0, 0, 56)
+	line.BackgroundTransparency, line.TextScaled, line.Text = 1, true, ""
+	line.TextColor3, line.TextStrokeTransparency = Color3.fromRGB(255, 236, 170), 0.2
+	line.Font = Enum.Font.GothamBold
+	line.ZIndex = 2
+	line.Parent = gui
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.StyleText) == "function" then pcall(kit.StyleText, line, "Title") end
+	gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+	TRAVEL.Gui, TRAVEL.Black, TRAVEL.Line = gui, black, line
+end
+
+local function fade(to, seconds)
+	if not TRAVEL.Black then return end
+	TweenService:Create(TRAVEL.Black, TweenInfo.new(seconds, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
+		{ BackgroundTransparency = to }):Play()
+end
+
+-- back in (TravelDone or the time limit): the black lifts, then the gui goes
+function TRAVEL.Finish(token)
+	if token ~= TRAVEL.Token or TRAVEL.Done then return end
+	TRAVEL.Done = true
+	if TRAVEL.Line then TRAVEL.Line.Text = "" end
+	fade(1, TRAVEL.FadeIn)
+	task.delay(TRAVEL.FadeIn + 0.1, function()
+		if token == TRAVEL.Token and TRAVEL.Gui then
+			TRAVEL.Gui:Destroy()
+			TRAVEL.Gui, TRAVEL.Black, TRAVEL.Line = nil, nil, nil
+		end
+	end)
+end
+
+function TRAVEL.Start(data)
+	TRAVEL.Token += 1
+	local token = TRAVEL.Token
+	TRAVEL.Done = false
+	local t = math.clamp(tonumber(data.T) or 3, 0.5, 10)
+	local zone = type(data.To) == "string" and Config.Zones[data.To] or nil
+	local place = zone and zone.Name or TXT.Place
+	TRAVEL.Build()
+	call("Panels", "Close", false) -- the guide window: the walk is over before it could be read
+	local whole = math.floor(t + 0.5)
+	for i = 0, whole - 1 do
+		task.delay(i, function()
+			if token == TRAVEL.Token and not TRAVEL.Done and TRAVEL.Line then
+				TRAVEL.Line.Text = string.format(TXT.Count, string.format(TXT.Travel, place), whole - i)
+			end
+		end)
+	end
+	task.delay(math.max(0, t - TRAVEL.Fade), function()
+		if token == TRAVEL.Token and not TRAVEL.Done then fade(0, TRAVEL.Fade) end
+	end)
+	task.delay(t + TRAVEL.MaxExtra, function() TRAVEL.Finish(token) end)
+end
+
+------------------------------------------------------------------ #2 hints in place
+local function firstMission()
+	local step = tonumber(attr("TutorialStep", 0)) or 0
+	return step >= 1 and step < 99
+end
+
+local function myRoot()
+	local ch = LocalPlayer.Character
+	local root = ch and ch:FindFirstChild("HumanoidRootPart")
+	if root and root:IsA("BasePart") then return root end
+	return nil
+end
+
+-- the nearest live monster (mine first: the first mission's slimes are personal) within `limit` studs
+function HINT.Nearest(pos, limit)
+	local folder = workspace:FindFirstChild("Monsters")
+	if not folder then return nil, math.huge end
+	local best, bestD, bestMine = nil, limit, false
+	for _, m in folder:GetChildren() do
+		local r = m:IsA("Model") and (m.PrimaryPart or m:FindFirstChild("HumanoidRootPart")) or nil
+		local hum = m:FindFirstChildOfClass("Humanoid")
+		if r and (not hum or hum.Health > 0) then
+			local d = (r.Position - pos).Magnitude
+			local owner = m:GetAttribute("OwnerUserId")
+			local isMine = owner == LocalPlayer.UserId
+			if d <= limit and (best == nil or (isMine and not bestMine) or (isMine == bestMine and d < bestD)) then
+				best, bestD, bestMine = m, d, isMine
+			end
+		end
+	end
+	return best, best and bestD or math.huge
+end
+
+function HINT.Reach()
+	local p = Config.AttackProfile(attr("Class", "Warrior"), tonumber(attr("WeaponTier", 0)) or 0, attr("Faction", "None"))
+	return (type(p) == "table" and tonumber(p.Range) or 7) + 2 -- a little slack: standing at the edge counts
+end
+
+function HINT.Mark(model)
+	if HINT.Marked == model then return end
+	HINT.Marked = model
+	call("QuestMarker", "Focus", model)
+end
+
+function HINT.Step(now)
+	if not firstMission() then
+		HINT.NearSince = nil
+		if HINT.Marked then HINT.Mark(nil) end
+		return
+	end
+	local root = myRoot()
+	if not root then return end
+	-- the attack hint: Idle s within reach without a swing of mine (a swing restarts the wait)
+	if not HINT.AttackShown then
+		local _, d = HINT.Nearest(root.Position, HINT.Reach())
+		if d < math.huge then
+			HINT.NearSince = HINT.NearSince or now
+			if now - HINT.NearSince >= HINT.Idle then
+				HINT.AttackShown = true
+				call("HUD", "Hint", "Attack")
+			end
+		else
+			HINT.NearSince = nil
+		end
+	end
+	-- the marker over the nearest monster, in the meadow, until my first kill
+	if HINT.Killed or attr("ZoneId", "") ~= "SlimeMeadow" then
+		if HINT.Marked then HINT.Mark(nil) end
+	elseif now - HINT.MarkerAt >= HINT.MarkerGap then
+		HINT.MarkerAt = now
+		HINT.Mark((HINT.Nearest(root.Position, HINT.Search)))
+	end
+end
+
+function HINT.Kill()
+	if HINT.Killed then return end
+	HINT.Killed = true
+	if HINT.Marked then HINT.Mark(nil) end
+	if HINT.QShown or not firstMission() then return end
+	HINT.QShown = true
+	task.delay(0.8, function() call("HUD", "Hint", "Q") end) -- after the kill's own popups
+end
+
+------------------------------------------------------------------ wiring
+function FirstSteps.OnFx(kind, data)
+	if kind == "Travel" and mine(data) then
+		TRAVEL.Start(data)
+	elseif kind == "TravelDone" and mine(data) then
+		TRAVEL.Finish(TRAVEL.Token)
+	elseif (kind == "Swing" or kind == "Release" or kind == "Skill") and mine(data) then
+		HINT.NearSince = nil
+	elseif kind == "Reward" then -- sent only to the killer (ProgressionService)
+		HINT.Kill()
+	end
+end
+
+function FirstSteps.Init(registry)
+	C = registry
+end
+
+function FirstSteps.Start()
+	task.spawn(function()
+		local ok, err = pcall(function() Net.Get("Fx").OnClientEvent:Connect(FirstSteps.OnFx) end)
+		if not ok then warn("[FirstSteps] Fx hookup failed: " .. tostring(err)) end
+	end)
+	task.spawn(function()
+		while true do
+			task.wait(HINT.Tick)
+			local ok, err = pcall(HINT.Step, os.clock())
+			if not ok then warn("[FirstSteps] " .. tostring(err)) task.wait(5) end
+		end
+	end)
+end
+
+-- test aids
+FirstSteps.Travel, FirstSteps.Hint, FirstSteps.Text = TRAVEL, HINT, TXT
+
+return FirstSteps

@@ -1,0 +1,113 @@
+{
+  "status": "passed",
+  "checks": 15,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "Config.Audio.Sounds.PowerUp exists",
+      "ok": true
+    },
+    {
+      "check": "HUD watches WeaponTier for the first weapon",
+      "ok": true
+    },
+    {
+      "check": "the banner text is English",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 9,
+    "applied": 9,
+    "caught": 9,
+    "results": [
+      {
+        "mutation": "a save loading with a weapon pops",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL loading a save with a weapon shows nothing :: 1",
+          "CHECK_FAIL 1 -> 2 shows nothing :: 1",
+          "CHECK_FAIL an ordinary power rise shows no banner :: 1"
+        ]
+      },
+      {
+        "mutation": "every new weapon pops",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 1 -> 2 shows nothing :: 1",
+          "CHECK_FAIL an ordinary power rise shows no banner :: 1"
+        ]
+      },
+      {
+        "mutation": "the moment shows twice",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a big 'Stronger!' banner :: Stronger!",
+          "CHECK_FAIL gold sparkles burst from me :: 72",
+          "CHECK_FAIL the fallback does not show it a second time :: 2"
+        ]
+      },
+      {
+        "mutation": "no fallback without a power rise",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL without a power rise the moment still shows once :: 0"
+        ]
+      },
+      {
+        "mutation": "the normal fast count-up",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the count-up is the slow one (First.Count) :: 20"
+        ]
+      },
+      {
+        "mutation": "no banner",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a big 'Stronger!' banner :: nil",
+          "CHECK_FAIL the fallback does not show it a second time :: 0",
+          "CHECK_FAIL without a power rise the moment still shows once :: 0"
+        ]
+      },
+      {
+        "mutation": "no sound",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the PowerUp sound :: LevelUp"
+        ]
+      },
+      {
+        "mutation": "no sparkles",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL gold sparkles burst from me :: 0"
+        ]
+      },
+      {
+        "mutation": "grows with reduced motion",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL reduced motion: the banner, no growing number :: true"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "44822bcec7954b527b441f490f76f81fc9331f17830f97883c7472683a705e36",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "08ff80ab6164844d8bb6598a1270f9fd4daef7b71b2f0f0fc60a658cc4772b2d"
+  },
+  "fixtureSHA256": "369a5b586034d04ec326d85a9042f4f05c701eed98c1c25e715850388deac91f",
+  "studioCalls": 0,
+  "contract": "A23-68 #3 first weapon 'pop' offline test (HUD.luau; user 2026-10-07: \"슬라임 5대 > 2대 이런 거는 됐고 그냥 전투력이\n올라야지\"): the first weapon (WeaponTier 0 -> 1+, seen live after the save loaded and the class was picked) gets one big\nmoment: a 'Stronger!' banner (UIKit.Announce), the PowerUp sound, gold sparkles on me, the Power number growing and a slow\ncount-up (L.First.Count); without a power rise it still shows once (fallback); a save loading with a weapon, a later\nweapon (1 -> 2) and ordinary power rises show nothing; reduced motion keeps the banner but not the growing number.\nStatic: Config.Audio.Sounds.PowerUp exists; HUD watches WeaponTier.\nRuns the real HUD blocks (L.Pow / L.First / L.PowerPopup / L.TierChanged / L.FirstWeapon) in\ntools/fixtures/first_weapon_offline.luau.",
+  "limitations": "How big and where the banner and the sparkles look, and the real order of the server's WeaponTier / CombatPower updates, are a Studio check (M1_1 gift at the forge)."
+}

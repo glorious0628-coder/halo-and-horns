@@ -99,7 +99,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking right turns the camera right, at most 45 deg/s :: table: 0x000001dd09fde960"
+        "failure": "CHECK_FAIL walking right turns the camera right, at most 45 deg/s :: table: 0x0000023ea046a950"
       },
       {
         "mutation": "Settings Free ignored",
@@ -134,7 +134,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking right turns the camera right, at most 45 deg/s :: table: 0x000001bccc1ca950"
+        "failure": "CHECK_FAIL walking right turns the camera right, at most 45 deg/s :: table: 0x000001d56a436940"
       },
       {
         "mutation": "follows in shift lock",
@@ -167,7 +167,7 @@
     ]
   },
   "sourceSHA256": "c38cb9a7c8da557abf33ece570f4ad72e0287973042a2c84c9c3d481613aa09a",
-  "hudSHA256": "b8ca38265b535f8c2afd42e0e8749e9d8afb4615f050a55dda190ad6155d9e8d",
+  "hudSHA256": "08ff80ab6164844d8bb6598a1270f9fd4daef7b71b2f0f0fc60a658cc4772b2d",
   "hudStatic": [
     {
       "check": "L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",
