@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 174,
-  "namedChecks": 50,
+  "checks": 203,
+  "namedChecks": 57,
   "failing": [],
   "static": [
     {
@@ -18,6 +18,10 @@
     },
     {
       "check": "the Story window takes its lines from STORY.Lines(step, f, arg.Var) and its hint from STORY.Hint(obj, f)",
+      "ok": true
+    },
+    {
+      "check": "the Story line and page sit beside the speaker's portrait (STORY.Talk(parent, voice) builds the row with UIKit.Portrait; 검수 2026-10-07)",
       "ok": true
     },
     {
@@ -42,9 +46,9 @@
     }
   ],
   "mutations": {
-    "total": 31,
-    "applied": 31,
-    "caught": 31,
+    "total": 37,
+    "applied": 37,
+    "caught": 37,
     "results": [
       {
         "mutation": "the banter is never shown",
@@ -327,6 +331,66 @@
         ]
       },
       {
+        "mutation": "the Story window has no portrait",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story line and page sit beside the speaker's portrait (STORY.Talk(parent, voice) builds the row with UIKit.Portrait; 검수 2026-10-07)"
+        ]
+      },
+      {
+        "mutation": "the line stays outside the portrait row",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story line and page sit beside the speaker's portrait (STORY.Talk(parent, voice) builds the row with UIKit.Portrait; 검수 2026-10-07)"
+        ]
+      },
+      {
+        "mutation": "a speaker whose art id is empty still gets a slot",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story speaker portrait :: an art id that is empty / invalid: no portrait slot"
+        ]
+      },
+      {
+        "mutation": "Otto shows Fizzby's face",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story speaker portrait :: a speaker with art shows its own face (검수 table)"
+        ]
+      },
+      {
+        "mutation": "the crown shard gets the guide's face",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story speaker portrait :: a speaker without art (shards, kids, goblins, Gleam, Rex) gets no portrait slot"
+        ]
+      },
+      {
+        "mutation": "no guide face when a step has no speaker",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story speaker portrait :: a speaker with art shows its own face (검수 table)"
+        ]
+      },
+      {
         "mutation": "a window counts twice",
         "file": "panels",
         "applied": true,
@@ -386,18 +450,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "07e7ec63a5cd652a10908d0b7592da20836b9ee858829daf23a722fef096d5e9",
+    "src/ReplicatedStorage/Shared/Config.luau": "b0758527b56419ed8c7aaa63ef0044965db5b16ee8204b0ec4e2656d92d01cd0",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "f54d397395dbf7e6ae1d26dcb4fb6cca5da7d8c747075b785877323af7ac311a",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "03bce1cc6664d0fbac1d7d8518aeea2033d01d11be2d658825e39ce9cdcd1429",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "63b56754c3742389ecbcec26b4e867081b435b343d869cd628c85dc2f9039c34",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "bd041d14cdb03a206df7b5c4c3714a0790e3cf12a88feb3c044a4dfd1b26ca22",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "c0137c9cc4d887e85d146d631e8cb83939addd9ebe99ac120a61081b83bf78ee",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "c17555215c33cedc024f6c21b4a9440b3d22f447184ace13c8b19afa5c623ad7",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
     "src/StarterPlayer/StarterPlayerScripts/PlayerListUI.luau": "bf6757b177aa451ee934c3fdb527c9960204de753b0e4ce43c27d44bcdee9f41",
     "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "420e3ecd248423816c5430aac41bb975cfd0f170ec59f3f0bc505e17d181faa6",
-    "tools/fixtures/story_client_offline.luau": "508144338467ad1d8216839b3fd9a475c882711b6e55c8e930e0d8b8f535ff0b"
+    "tools/fixtures/story_client_offline.luau": "2441330974e8cbad04778344fcf5cf1c35bfc76df138571d8a0af653f50a3bca"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "contract": "town_quests_server_2026-10-07 section 8 (E2 LinesBy -> Var, A23-58 choice hints, E5 0-point picks) and lines_pack_server_2026-10-07 sections 1-2 (Args.Banter chat line, shop greetings); ClientMain loads Audio (6509895).",
-  "limitations": "The Story / shop windows themselves (layout, fonts, phone sizes) and the real chat need a Studio Play check; the Panels checks run the cut-out STORY functions and read the builders."
+  "limitations": "The Story / shop windows themselves (layout, fonts, phone sizes, the portrait's look) and the real chat need a Studio Play check; the Panels checks run the cut-out STORY functions and read the builders."
 }

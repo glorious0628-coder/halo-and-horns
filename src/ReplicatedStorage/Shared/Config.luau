@@ -2094,6 +2094,12 @@ Config.StoryQuests = {
 		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
 		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo", -- story_depth §4 goblins (beta: names only, no models)
 		Gleam = "Sir Gleam", Rex = "Rascal Rex" }, -- story_depth §4 (beta: names only)
+	-- 검수 2026-10-07: the Story window shows the speaker's face (a Config.UIArt.Parts key) in the PortraitFrame left of
+	-- the words. Halo / Horns / Guild = no Speaker, my faction's guide. A speaker missing here or whose art id is empty
+	-- (Shard, Fountain, Kids, the goblins, Gleam, Rex) gets no portrait slot.
+	Portraits = { Smith = "PortraitMerchantC", Potion = "PortraitPotionMerchant", Bright = "PTR_TownBright",
+		Smokey = "PTR_TownSmokey", Tiny = "PTR_TownTiny", Guild = "PortraitGuideArtisan", Halo = "PortraitGuideHalo",
+		Horns = "PortraitGuideHorns" },
 	NpcTag = "StoryNpc",
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },

@@ -10,9 +10,12 @@ tools/fixtures/story_client_offline.luau with the installed official Luau CLI (b
 - a dialogue line types in (UIKit.Typewriter, 40 letters / s, the speaker's voice), a refresh never retypes it, a tap
   (the line, [Next] or an answer button) first shows the whole line; without UIKit.Typewriter it shows at once;
 - the choice hint is the faction's A23-58 line (Halo: Honor +Good / -Evil, Horns: Infamy -Good / +Evil), the guild's
-  no-points line, the lean line for two 0-point picks (E5), ChoiceHint for an older Config; no "%" left on real cards.
+  no-points line, the lean line for two 0-point picks (E5), ChoiceHint for an older Config; no "%" left on real cards;
+- 검수 2026-10-07: the speaker's portrait (STORY.PortraitKey): Otto, Fizzby, Bright, Smokey, Tiny, Kit and the two
+  faction guides show their Config.UIArt face; shards, kids, goblins, Gleam, Rex, an empty art id or no UIKit: no slot.
 Static checks: the Forge / Potion windows put Config.Text.ForgeGreeting / PotionGreeting on top, a waiting story page
-keeps Var, the Story window uses STORY.Lines(step, f, arg.Var) / STORY.Hint, ClientMain ORDER ends with "Audio".
+keeps Var, the Story window uses STORY.Lines(step, f, arg.Var) / STORY.Hint, ClientMain ORDER ends with "Audio", the
+Story line and page sit in STORY.Talk's row beside the portrait.
 Mutations: in-memory copies with one rule broken each; each must fail a check that passes on the real sources. Status
 "passed" only when everything passes AND every mutation was applied and caught (--no-mutations: "passed-no-mutations").
 
@@ -83,6 +86,17 @@ MUTATIONS = [
      "\t\tif TYPE.Finish(typing) then return end -- the first tap while the line types shows it whole\n", ""),
     ("the Story line no longer types", "panels", 'TYPE.Show(typing, line, tostring(lines[page] or ""), voice, page)',
      'line.Text = tostring(lines[page] or "")'),
+    # 검수 2026-10-07: the speaker's portrait in the Story window
+    ("the Story window has no portrait", "panels", "local talk, align = STORY.Talk(parent, voice)",
+     "local talk, align = parent, Enum.TextXAlignment.Center"),
+    ("the line stays outside the portrait row", "panels", 'addText(talk, "", { Name = "StoryLine"',
+     'addText(parent, "", { Name = "StoryLine"'),
+    ("a speaker whose art id is empty still gets a slot", "panels",
+     '\tif type(UIKit.ArtPart) == "function" and not UIKit.ArtPart(key) then return nil end\n', ""),
+    ("Otto shows Fizzby's face", "config", 'Smith = "PortraitMerchantC"', 'Smith = "PortraitPotionMerchant"'),
+    ("the crown shard gets the guide's face", "config", "Portraits = { Smith = ",
+     'Portraits = { Shard = "PortraitGuideHalo", Smith = '),
+    ("no guide face when a step has no speaker", "config", ' Halo = "PortraitGuideHalo",\n', "\n"),
     # BB38 UiMetric (dev2 cfef90c): once per window per session, only UiIds, spaced Gap s apart
     ("a window counts twice", "panels", "or METRIC.Sent[id] or type(ids)", "or false or type(ids)"),
     ("any id is sent", "panels", 'or type(ids) ~= "table" or not table.find(ids, id) then return end', "then return end"),
@@ -101,9 +115,10 @@ def lua_long(text: str) -> str:
 
 
 def cut_story(panels: str) -> tuple[str, str]:
-    """STORY.Lines + STORY.Hint source and the HintLean literal (raises when the shape changed)."""
+    """STORY.Lines + STORY.Hint + STORY.PortraitKey source and the HintLean literal (raises when the shape changed)."""
     parts = []
-    for head in (r"function STORY\.Lines\(step, f, var\)", r"function STORY\.Hint\(obj, f, have\)"):
+    for head in (r"function STORY\.Lines\(step, f, var\)", r"function STORY\.Hint\(obj, f, have\)",
+                 r"function STORY\.PortraitKey\(voice\)"):
         m = re.search(r"\n(" + head + r"\n.*?\nend)\n", panels, re.S)
         if not m:
             raise ValueError(f"Panels.luau: {head} missing; update the extractor")
@@ -152,6 +167,13 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
         ("the Story window takes its lines from STORY.Lines(step, f, arg.Var) and its hint from STORY.Hint(obj, f)",
          story is not None and "local lines = STORY.Lines(step, f, arg.Var)" in story.group(1)
          and "STORY.Hint(obj, f, STORY.Points(f))" in story.group(1) and "step.Lines" not in story.group(1)),
+        ("the Story line and page sit beside the speaker's portrait (STORY.Talk(parent, voice) builds the row with "
+         "UIKit.Portrait; 검수 2026-10-07)",
+         story is not None and "local talk, align = STORY.Talk(parent, voice)" in story.group(1)
+         and 'addText(talk, "", { Name = "StoryLine", Size = 22, Align = align })' in story.group(1)
+         and 'addText(talk, "", { Name = "StoryPage"' in story.group(1)
+         and re.search(r"\nfunction STORY\.Talk\(parent, voice\)\n\tlocal key = STORY\.PortraitKey\(voice\)\n.*?"
+                       r"pcall\(UIKit\.Portrait, key, \{.*?\nend\n", panels, re.S) is not None),
         ("ClientMain ORDER ends with Audio, every module once, every module file exists",
          bool(names) and names[-1] == "Audio" and len(names) == len(set(names))
          and all((SPS / f"{n}.luau").is_file() for n in names)),
@@ -272,8 +294,9 @@ def main() -> int:
         "contract": "town_quests_server_2026-10-07 section 8 (E2 LinesBy -> Var, A23-58 choice hints, E5 0-point picks) "
                     "and lines_pack_server_2026-10-07 sections 1-2 (Args.Banter chat line, shop greetings); "
                     "ClientMain loads Audio (6509895).",
-        "limitations": "The Story / shop windows themselves (layout, fonts, phone sizes) and the real chat need a "
-                       "Studio Play check; the Panels checks run the cut-out STORY functions and read the builders.",
+        "limitations": "The Story / shop windows themselves (layout, fonts, phone sizes, the portrait's look) and the "
+                       "real chat need a Studio Play check; the Panels checks run the cut-out STORY functions and read "
+                       "the builders.",
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

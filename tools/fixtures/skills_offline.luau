@@ -276,12 +276,13 @@ runGroup("refusals", function()
 	b:Monster("Slime", -36, 0, 99999)
 	b:Use(mage2, "Z")
 	check(b:Count("Z") == 0 and b:Press(mage2) == "Z:NoTarget", "a monster behind beyond 35 studs is no target", b:Press(mage2))
-	-- X has no shape before SKL-3 (refused quietly, nothing spent)
+	-- SKL-3: with XEnabled the Warrior's X is Guardian Roar (MP 30); its rules are in tools/test_skills_x.py
 	local x = skillWorld({ Z = true, X = true })
 	local px = x:Hero(1, { Level = 9, Tier = 1, Mask = 1 })
 	x:Monster("Slime", 6, 0, 99999)
 	x:Use(px, "X")
-	check(x:Count("X") == 0 and x:ManaSpent(px) == 0, "X before SKL-3: nothing happens, nothing spent", x:Count("X"))
+	check(x:Count("X") == 1 and x:ManaSpent(px) == 30 and x:Last("X").MonstersHit == 1,
+		"SKL-3: X goes off with XEnabled (Guardian Roar, MP 30)", show({ x:Count("X"), x:ManaSpent(px) }))
 end)
 
 ------------------------------------------------------------------ Line

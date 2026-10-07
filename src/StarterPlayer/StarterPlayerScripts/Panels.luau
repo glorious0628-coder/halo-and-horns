@@ -2956,11 +2956,12 @@ end
 
 -- story quest dialogue (StoryQuestService): speaker + quest title, 1-2 short lines per page, then [알겠어요] for a
 -- Talk step or two choice buttons for a Choice step. Closing is never a choice; the quest row reopens it.
--- No portrait (old chibi art is being replaced); existing buttons only.
+-- 검수 2026-10-07: the speaker's portrait (STORY.Talk) sits left of the words when that speaker has art.
 -- B15: a server auto-open never covers a fight or another window. Then the page waits in STORY.Pending, the HUD quest
 -- row shows STORY.Text.Row* with a gentle pulse, and tapping that row (HUD → Panels.ExpectStory + StoryAction "Open")
 -- opens it even mid-fight. "Fight" = PvP combat tag, dead, or my own attack / hurt Fx within CalmSeconds.
 local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, CalmSeconds = 4, Toasted = nil,
+	Face = { Size = 104, Short = 68, Gap = 12 }, -- portrait width (px): PC / short phone screens (height < 520)
 	Text = {
 		RowShard = "A shard is talking to you — tap to see",
 		RowOther = "Someone wants to talk — tap to see",
@@ -3076,6 +3077,43 @@ function STORY.ChoiceButton(parent, side, text, size, onClick)
 	return btn
 end
 
+-- 검수 2026-10-07 (window audit: 'Story = code, no face'): the speaker's art key (Config.StoryQuests.Portraits) when its
+-- art is really there (UIKit.ArtPart: a valid id), else nil = no portrait slot
+function STORY.PortraitKey(voice)
+	local map = Config.StoryQuests.Portraits
+	local key = type(map) == "table" and map[voice] or nil
+	if type(key) ~= "string" or not UIKit or type(UIKit.Portrait) ~= "function" then return nil end
+	if type(UIKit.ArtPart) == "function" and not UIKit.ArtPart(key) then return nil end
+	return key
+end
+
+-- the row for the words: [PortraitFrame with the speaker | the words, left-aligned]. Returns the words' parent and
+-- their alignment; without a portrait it is the window itself with centred words, as before.
+function STORY.Talk(parent, voice)
+	local key = STORY.PortraitKey(voice)
+	if not key then return parent, Enum.TextXAlignment.Center end
+	local cam = workspace.CurrentCamera
+	local face = (cam ~= nil and cam.ViewportSize.Y < 520) and STORY.Face.Short or STORY.Face.Size
+	local row = addRow(parent, 0, STORY.Face.Gap)
+	row.Name = "StoryTalk"
+	local list = row:FindFirstChildOfClass("UIListLayout")
+	if list then list.VerticalAlignment = Enum.VerticalAlignment.Center end
+	local ok, holder = pcall(UIKit.Portrait, key, {
+		Name = "StoryPortrait", Size = UDim2.fromOffset(face, math.floor(face * 498 / 512)), Parent = row,
+	})
+	if not ok or not holder then
+		Util.Warn(TAG, "story portrait failed: " .. tostring(holder))
+		row:Destroy()
+		return parent, Enum.TextXAlignment.Center
+	end
+	holder.LayoutOrder = 0 -- left of the words (the column takes the next order)
+	local words = addColumn(row, 1, -(face + STORY.Face.Gap), 4)
+	words.Name = "StoryWords"
+	local wordsList = words:FindFirstChildOfClass("UIListLayout")
+	if wordsList then wordsList.HorizontalAlignment = Enum.HorizontalAlignment.Left end
+	return words, Enum.TextXAlignment.Left
+end
+
 -- my own side's points for STORY.Hint (nil before the save loads)
 function STORY.Points(f)
 	return tonumber(attr(f == "Halo" and "Honor" or "Infamy", nil))
@@ -3094,11 +3132,12 @@ BUILDERS.Story = function(parent)
 	local lines = STORY.Lines(step, f, arg.Var)
 	local TXT = Config.StoryQuests.Text
 	local page = 1
-	local line = addText(parent, "", { Name = "StoryLine", Size = 22, Align = Enum.TextXAlignment.Center })
+	local voice = def.Speaker or (f == "Neutral" and "Guild" or f) -- no speaker = my faction's guide
+	local talk, align = STORY.Talk(parent, voice)
+	local line = addText(talk, "", { Name = "StoryLine", Size = 22, Align = align })
 	local typing = {}
 	TYPE.Tap(typing, line)
-	local voice = def.Speaker or (f == "Neutral" and "Guild" or f) -- no speaker = my faction's guide
-	local pageLabel = addText(parent, "", { Name = "StoryPage", Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
+	local pageLabel = addText(talk, "", { Name = "StoryPage", Size = 15, Color = theme.SubText, Align = align })
 	local actions = addRow(parent, 64, 10)
 	-- what a pick does, shown with the choice buttons on the last page (user 2026-10-05: the flow must explain itself)
 	local hint = nil

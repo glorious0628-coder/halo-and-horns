@@ -1,15 +1,15 @@
 {
   "status": "passed",
-  "checks": 769,
+  "checks": 816,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0610bfcb1fc2f7f6d55a8abfaaa718bc70431fadfc7c42b330c1b39d92c7299b",
+    "src/ReplicatedStorage/Shared/Config.luau": "d888c85a40d47ede02d3aee99549622bb0116c89cda7022010f2aad14fecd6e5",
     "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
-    "src/ServerScriptService/QuestService.luau": "fdf1f780d43f841db4fdb4b13d8fe2c02dee62a16d05232ca5ec4bd205f23ae0",
+    "src/ServerScriptService/QuestService.luau": "9568b5d8dfeb0454bbf4f42662fecfb6f5f6d9e14858992c5d343bad9edc2c4b",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e"
   },
-  "fixtureSHA256": "c9e7bc556680e5adc7d46a9d36ed2d10e4b78aaa2e7ff34324e3ed1a62ea57ec",
+  "fixtureSHA256": "ffcaacf6ffd2d54f9516cd5699d5798f92103ea55c0ec40e24fbb220fb7b0ca3",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,
@@ -29,6 +29,7 @@
       "NextSkillIron",
       "NextIronLevel",
       "NextIronGold",
+      "NextSkill",
       "NextZone",
       "GuideDone"
     ],
@@ -48,7 +49,7 @@
     "legacy/corrupt counters",
     "death/respawn/faction/class changes retain progress",
     "A23-3 reward is 150 gold and covers the wood weapon price",
-    "A23-3 pinned next-goal row after the visit: NextSkillIron (A23-71 S16, no Q yet; NextIronLevel when Q was kept) -> NextIronGold (live gold) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel",
+    "A23-3 pinned next-goal row after the visit: NextSkillIron (A23-71 S16, no Q yet; NextIronLevel when Q was kept) -> NextIronGold (live gold) -> NextSkill (SKL-3: iron owned, the next skill before the next zone; Z / X only with their switch) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel / Skill",
     "next-goal row is never claimable, pays nothing, survives save/rejoin and keeps all ordinary quest slots",
     "A23-3 pre-acceptance quest completion is paid quietly and never accepts the first mission",
     "saved daily/extra Release quests migrate MinStacks50 to no stack gate and skill wording",
