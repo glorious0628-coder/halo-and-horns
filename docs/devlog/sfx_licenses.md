@@ -73,3 +73,19 @@
 - 공개 범위: 제한(본인·허락된 체험만). 크리에이터 상점 배포는 안 함.
 - id: `art/sfx/asset_ids.json`, 게임 코드 `Config.Audio.Files`. Studio(UiSandbox)에서 32개 모두 불러오기 성공(PreloadAsync Success, 길이 0.04~1.5초).
 - 이후 소리(새로 만들기·올리기·Audio.luau·크기 조절)는 게임성 개발 1 몫(사용자 결정 2026-10-07).
+
+## 게임 효과음 4차 — Firefly 생성 (소리 만들기, 2026-10-07)
+
+사용자 결정(A23-67): 소리 만들기 세션이 Adobe Firefly '효과음 생성'으로 만든다. 모든 소리를 다시 만든다(사용자 "그대로 두는 것도 다시 다!").
+- **만든 곳:** firefly.adobe.com 효과음 생성(사용자 Adobe 계정, 앱 안 브라우저). 1번 생성 = 10크레딧, 변형 4개, 길이 1초.
+  Adobe 안내: Firefly 모델로 만든 결과물은 상업용으로 써도 안전. 유명 게임·브랜드 이름은 프롬프트에 넣지 않았다.
+- **크레딧:** 17번 × 10 = 170 (9,640 → 9,470, 11/4 초기화). 사용자 "크레딧은 걱정마슈", 검수 묶음 OK(80 + 70 + 점프 20).
+- **프롬프트:** `art/prompts/SFX_<키>_<번호>.txt` (활 4 · 마법 4 · 퍽 4 · 치명타 3 · 점프 2).
+- **원본:** Firefly 생성 기록에서 내려받은 WAV 48 kHz 16비트 스테레오 1초 68개(`build/sfx_firefly/raw`, git 밖, 사용자 OK "이번 세션 계속 받아").
+  애셋 id·sha256·자른 곳은 `art/sfx/cand/firefly_r4.json`.
+- **우리 손질:** 자르기(소리마다 여러 자리를 시험해 목표 모양에 가장 가까운 자리), 48 kHz 모노, 고역 통과(활·마법 150 Hz, 퍽·치명타 45 Hz,
+  점프 120 Hz), 일부 저역 통과(마법·치명타 쨍 줄이기), 크기 맞춤(가장 큰 100 ms = -18 dBFS, 최고점 -3 dBFS 아래). 도구 `tools/sfx_firefly.py`.
+- **섞은 것:** 퍽 + Kenney Impact `impactGeneric_light_002`(CC0, 300 Hz 고역 통과, 폰 몸통용 한 겹), 치명타 = Firefly 퍽 + Firefly 쨍 한 겹.
+- **시트·듣기판:** `art/review/sfx_firefly_2026-10-07.png`(+ 줄마다 `_row1~5`, `.json`, 개발 2 3차 g·h·i 비교 칸 포함),
+  검수 듣기판 https://claude.ai/artifact/EEwW3ounewa6BWPrFMFD2P . 후보 파일 `art/sfx/cand/*.wav`.
+- 고른 소리를 올리면 이 절에 키·후보·id를 적는다.
