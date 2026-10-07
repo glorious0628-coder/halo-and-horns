@@ -1,5 +1,5 @@
 {
- "about": "검수 picks of round 4 (2026-10-07): batch 1 confirmed after the scene renders (efc2604), batches 2-3 = the 소리 만들기 recommendations (a5d9555), batch 4 = the recommendations (8efda17). Files are byte copies of art/sfx/cand/<candidate>.wav (mono 48 kHz 16-bit, K-weighted loudest 100 ms = -17 LUFS, peak <= -2.5 dBFS).",
+ "about": "검수 picks of round 4 (2026-10-07): batch 1 confirmed after the scene renders (efc2604), batches 2-3 = the 소리 만들기 recommendations (a5d9555), batch 4 = the recommendations (8efda17), batch 5 = SkillLearn sA (e351187). Files are byte copies of art/sfx/cand/<candidate>.wav (mono 48 kHz 16-bit, K-weighted loudest 100 ms = -17 LUFS, peak <= -2.5 dBFS).",
  "upload": "pending: the next account uploads these wav files (Creator Hub, 'HH SFX <key>', Restricted, no Creator Store), then writes the ids into asset_ids.json 'ids' and sends them to 게임성 개발 1",
  "picks": {
   "SwingArrow": {
@@ -791,6 +791,22 @@
    "volume": 0.4,
    "replaces": "new (someone else's Jackpot / FirstMax line)",
    "made": "our recipe (tools/sfx_recipes.py / sfx_make.py): confetti pop + rising glass ping 2.2 -> 2.9 kHz + sparkles",
+   "license": "our own synthesis"
+  },
+  "SkillLearn": {
+   "file": "art/sfx/SkillLearn.wav",
+   "candidate": "art/sfx/cand/SkillLearn_sA.wav",
+   "batch": 5,
+   "sha256": "9b55bb3952f739e40202c7bd79888fdb108dfd857b5c5cd824c87a65c613b694",
+   "bytes": 67244,
+   "verdict": "PASS",
+   "score": 100,
+   "durMs": 697.6,
+   "centroidHz": 2011,
+   "phoneDropDb": 0.23,
+   "volume": 0.6,
+   "replaces": "new (A23-71: a skill is learned at Lv5 / 15 / 25; play it about 1.1 s after LevelUp)",
+   "made": "our recipe (tools/sfx_recipes.py / sfx_make.py): button pop 700 -> 1600 Hz + glass run A6-C7-D7-E7-G7 22 ms apart + held A6+E7 chord, 7 Hz shimmer",
    "license": "our own synthesis"
   }
  }
