@@ -89,7 +89,7 @@ MUTATIONS = [
     ("power column reads the level", "PLAYER_SOURCE",
      'local v = p:GetAttribute("CombatPower")', 'local v = p:GetAttribute("Level")'),
     ("power column without the formula fallback", "PLAYER_SOURCE",
-     "\t\tif v == nil then\n\t\t\tv = Config.CombatPower(", "\t\tif false then\n\t\t\tv = Config.CombatPower("),
+     "\t\tif v == nil then\n\t\t\tv = Config.CombatPowerOf(", "\t\tif false then\n\t\t\tv = Config.CombatPowerOf("),
     ("Neutral fame stays 0", "PLAYER_SOURCE", '(f == "Neutral" and "WeekArtisan")', '(f == "Neutral" and nil)'),
     ("Horns fame reads Honor", "PLAYER_SOURCE", '(f == "Horns" and "Infamy")', '(f == "Horns" and "Honor")'),
     ("columns built in table order of a map", "PLAYER_SOURCE",

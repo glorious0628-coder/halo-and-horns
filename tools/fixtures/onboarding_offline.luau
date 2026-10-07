@@ -661,15 +661,18 @@ for _, value in { 1, 0, "true", {}, 0/0, math.huge } do
 	check(record.BlacksmithVisited == false and f.Data.BlacksmithVisited == false, "invalid visit survived serialization")
 end
 -- B4 (A23-12): save data Version 3. v2 -> v3 changes no fields; v1 -> v2 -> v3 runs every step; a record saved by a
--- newer server (Version > 3) is refused without a write or a session lock (CR-L3).
+-- newer server is refused without a write or a session lock (CR-L3). A23-69: Version 4 adds Stats = { Auto, Order }
+-- (the stat points): every older record gains the default (Auto ON, nothing picked) and nothing else changes.
 do
 	local cfg = execute(CONFIG_SOURCE, configEnv)
-	check(cfg.Data.Version == 3 and cfg.Data.Defaults.Version == 3, "Config.Data.Version / Defaults.Version is not 3")
+	check(cfg.Data.Version == 4 and cfg.Data.Defaults.Version == 4, "Config.Data.Version / Defaults.Version is not 4")
 	check(cfg.Data.Defaults.DailyLevel == 0, "additive DailyLevel default is not 0")
 	local fresh = fixture()
-	check(fresh.Data.Version == 3, "fresh record is not Version 3")
+	check(fresh.Data.Version == 4, "fresh record is not Version 4")
 	local record = fresh:SaveAndRejoin()
-	check(record.Version == 3 and fresh.Data.Version == 3, "fresh record did not save as Version 3")
+	check(record.Version == 4 and fresh.Data.Version == 4, "fresh record did not save as Version 4")
+	check(type(record.Stats) == "table" and record.Stats.Auto == true and record.Stats.Order == "",
+		"fresh record did not save the default Stats (A23-69)")
 	-- v2 record with a legendary, enhancement, items and loot flags: only Version changes
 	local v2 = saved(99, 5)
 	v2.Level, v2.WeaponTier, v2.WeaponOwnedMask, v2.CarriedGold, v2.BankGold = 7, 8, 135, 33, 444
@@ -677,25 +680,35 @@ do
 	v2.Items = { Jelly = 4, Enh70 = 2 }
 	v2.LootFlags = { FirstScroll = true }
 	local f = fixture(v2)
-	check(f.Data.Version == 3, "v2 record did not migrate to Version 3")
+	check(f.Data.Version == 4, "v2 record did not migrate to Version 4")
 	check(f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135 and f.Data.Level == 7
 		and f.Data.CarriedGold == 33 and f.Data.BankGold == 444, "v2 -> v3 changed weapon/level/gold fields")
 	check(encode(f.Data.WeaponEnhance) == encode(v2.WeaponEnhance) and encode(f.Data.Items) == encode(v2.Items)
 		and f.Data.LootFlags.FirstScroll == true, "v2 -> v3 changed enhancement/items/loot flags")
 	local stored = f:SaveAndRejoin()
-	check(stored.Version == 3 and stored.WeaponTier == 8 and stored.WeaponOwnedMask == 135, "v3 record serialized wrong")
-	check(f.Data.Version == 3 and f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135, "v3 reload not idempotent")
+	check(stored.Version == 4 and stored.WeaponTier == 8 and stored.WeaponOwnedMask == 135, "v4 record serialized wrong")
+	check(f.Data.Version == 4 and f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135, "v4 reload not idempotent")
+	-- A23-69: a v3 record (the last version before the stat points) gains Stats only; a picked build survives the round trip
+	local v3 = saved(99, 5)
+	v3.Version, v3.Level, v3.WeaponTier, v3.WeaponOwnedMask, v3.BankGold = 3, 12, 3, 7, 321
+	local s3 = fixture(v3)
+	check(s3.Data.Version == 4 and s3.Data.Stats.Auto == true and s3.Data.Stats.Order == "" and s3.Data.Level == 12
+		and s3.Data.WeaponTier == 3 and s3.Data.BankGold == 321, "v3 -> v4 did more than add the default Stats")
+	s3.Data.Stats = { Auto = false, Order = "AHAX" }
+	local kept = s3:SaveAndRejoin()
+	check(kept.Version == 4 and kept.Stats.Auto == false and s3.Data.Stats.Auto == false and s3.Data.Stats.Order == "AHA",
+		"a saved v4 build did not come back (repaired: only the known letters)")
 	-- v1 record (SwordTier) runs both steps
 	local v1 = { Version = 1, Level = 6, SwordTier = 3, Faction = "Halo", TutorialStep = 99 }
 	local g = fixture(v1)
-	check(g.Data.Version == 3 and g.Data.WeaponTier == 3 and g.Data.SwordTier == nil and g.Data.WeaponOwnedMask == 5,
-		"v1 -> v2 -> v3 migration lost the renamed weapon tier or the version")
+	check(g.Data.Version == 4 and g.Data.WeaponTier == 3 and g.Data.SwordTier == nil and g.Data.WeaponOwnedMask == 5,
+		"v1 -> v2 -> v3 -> v4 migration lost the renamed weapon tier or the version")
 	-- newer-than-this-server records are refused and never rewritten
-	for _, version in { 4, 99 } do
+	for _, version in { 5, 99 } do
 		local newer = saved(99, 5); newer.Version, newer.WeaponTier, newer.WeaponOwnedMask = version, 9, 511
 		local h = fixture(newer, { AllowRefused = true })
 		local row = h.Rows["P_" .. h.Player.UserId]
-		check(h.Refused == true, "Version " .. version .. " record was loaded by a Version 3 server")
+		check(h.Refused == true, "Version " .. version .. " record was loaded by a Version 4 server")
 		check(row.Version == version and row.WeaponTier == 9 and row.WeaponOwnedMask == 511 and row.SessionLock == nil
 			and row.SessionToken == nil, "Version " .. version .. " record was rewritten or locked")
 	end

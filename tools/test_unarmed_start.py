@@ -158,8 +158,8 @@ MUTATIONS = [
     ("bare equip ignores the level", L,
      "if math.floor(num(data.WeaponTier, 0)) ~= 0 or not Config.WeaponUsable(tier, level) then return nil end",
      "if math.floor(num(data.WeaponTier, 0)) ~= 0 then return nil end"),
-    ("power line from the new weapon's power", L, "return Config.CombatPower(level, 0, 0), Config.CombatPower",
-     "return Config.CombatPower(level, tier, 0), Config.CombatPower"),
+    ("power line from the new weapon's power", L, "return Config.CombatPowerOf(player, 0, 0), Config.CombatPowerOf",
+     "return Config.CombatPowerOf(player, tier, 0), Config.CombatPowerOf"),
     ("the gift is paid again to a legacy save", L,
      "if not data or not validTier(tier) or owns(data, tier) then return nil end", "if not data or not validTier(tier) then return nil end"),
     ("the gift is paid again while another weapon is held", L,
@@ -201,9 +201,10 @@ MUTATIONS = [
     # --- JusticeService / PvPService / CharacterVisuals
     ("power attribute clamps bare hands to tier 1", J,
      "or 0), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands", "or 1), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands"),
-    ("PvP power fallback clamps bare hands to tier 1", P,
-     "math.clamp(math.floor(num(p, \"WeaponTier\", 0)), 0, Config.MaxWeaponTier)",
-     "math.clamp(math.floor(num(p, \"WeaponTier\", 1)), 1, Config.MaxWeaponTier)"),
+    # A23-69: PvPService's fallback is Config.CombatPowerOf, which clamps the tier for every power number
+    ("the power formula clamps bare hands to tier 1", C,
+     "\t\ttier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands\n",
+     "\t\ttier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands\n"),
     ("bare hands draw a weapon", V,
      "\tif Config.Weapons[math.floor(attrNum(player, \"WeaponTier\", 0))] == nil then return end\n", ""),
 ]
@@ -224,14 +225,17 @@ def static() -> tuple[int, list[str]]:
           and 'watch(player, "WeaponOwnedMask", function(v) if num(v) > 0 then Step(player, "FirstWeapon") end end)' in tele,
           "Telemetry step FirstWeapon (BB38) = any weapon owned (the M1_1 gift counts)")
     player = read(SSS / "PlayerService.luau")
-    check("math.clamp(toInt(p:GetAttribute(\"WeaponTier\")), 0, Config.MaxWeaponTier)" in player,
+    config = read(SHARED / "Config.luau")
+    # A23-69: the Tab list falls back to Config.CombatPowerOf, which keeps bare hands (tier 0)
+    check("v = Config.CombatPowerOf(p)" in player
+          and "tier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands" in config,
           "Tab list Power fallback keeps bare hands (tier 0)")
     main = read(SSS / "Main.server.luau")
     check("S.LootService.DebugReset(player, tonumber(value) or 0)" in main, "debug LootReset defaults to the bare-handed start")
     data = strip_comments(read(SSS / "DataService.luau"))
     check("bit32.bor(owned, 1" not in data, "DataService never forces the tier-1 bit at load")
-    config = read(SHARED / "Config.luau")
-    check("Version = 3," in config, "save Version stays 3 (additive: older v3 records already hold their tier 1)")
+    check("Version = 4," in config,
+          "save Version 4 (A23-69 stat points; A23-34 was additive: older v3 records already hold their tier 1)")
     shop = strip_comments(read(SSS / "ShopService.luau"))
     check("bit32.band(ownedMask, 1) == 0" not in shop, "the shop never requires the tier-1 bit")
     combat = strip_comments(read(SSS / "CombatService.luau"))

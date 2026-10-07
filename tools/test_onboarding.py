@@ -92,7 +92,8 @@ def main() -> int:
                      "legacy tier4 preserved without inventing earlier purchases", "invalid/nonfinite mask, tier and visit repair",
                      "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any "
                      "bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
-                     "B4 Data Version 3: fresh/v2/v1 records load and save as Version 3 with no field changes (v2 legendary, "
+                     "B4 / A23-69 Data Version 4: fresh/v3/v2/v1 records load and save as Version 4 (v3 -> v4 adds only "
+                     "Stats = { Auto ON, nothing picked }; a picked build saves and comes back repaired) with no other field changes (v2 legendary, "
                      "enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
                      "finite-value save serialization guard and migration idempotence",
                      "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly "

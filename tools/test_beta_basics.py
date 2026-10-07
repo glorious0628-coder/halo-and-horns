@@ -56,10 +56,10 @@ MUTATIONS = [
      "return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))",
      "return math.max(0, math.floor(raw + 0.5))"),
     ("MaxCombatPower uses MaxWeaponTier only", "CONFIG_SOURCE",
-     "best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance))",
-     "best = Config.CombatPower(Config.Levels.MaxLevel, Config.MaxWeaponTier, Config.Loot.MaxEnhance)"),
+     "best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even))",
+     "best = Config.CombatPower(Config.Levels.MaxLevel, Config.MaxWeaponTier, Config.Loot.MaxEnhance, even)"),
     ("MaxCombatPower not cached", "CONFIG_SOURCE",
-     "if not Config.Power.MaxCache then", "if true then"),
+     "if not Config.Power[key] then", "if true then"),
     ("TitleSel not mirrored", "CONFIG_SOURCE",
      '"LuckEvents", "TitleSel",', '"LuckEvents",'),
     ("DisplayTitle puts selected above session", "CONFIG_SOURCE",
@@ -89,9 +89,10 @@ MUTATIONS = [
      '\ttostring(Config.PvP.PowerRatioMin), tostring(Config.PvP.PowerRatioMax))'),
     # JusticeService: GetCombatPower + the CombatPower attribute
     ("GetCombatPower includes the rebirth bonus", "JUSTICE_SOURCE",
-     "return Config.CombatPower(level, tier, enhance)",
-     "return math.floor(Config.PowerOf(level, tier, 1 + (tonumber(player:GetAttribute(\"RebirthBonus\")) or 0), enhance)"
-     " * Config.Power.DisplayScale + 0.5)"),
+     "\treturn Config.CombatPowerOf(player)\nend",
+     "\tlocal level, tier, enhance = levelAndTier(player)\n"
+     "\treturn math.floor(Config.PowerOf(level, tier, 1 + (tonumber(player:GetAttribute(\"RebirthBonus\")) or 0), enhance)"
+     " * Config.Power.DisplayScale + 0.5)\nend"),
     ("CombatPower refresh not deferred", "JUSTICE_SOURCE",
      "task.defer(POWER.Refresh, player)", "POWER.Refresh(player)"),
     ("watchers not dropped on PlayerLeaving", "JUSTICE_SOURCE",
@@ -99,11 +100,11 @@ MUTATIONS = [
     ("CombatPower not set on PlayerReady", "JUSTICE_SOURCE",
      "POWER.Conns[player] = list\n\tPOWER.Refresh(player)", "POWER.Conns[player] = list"),
     ("WeaponEnhance not watched", "JUSTICE_SOURCE",
-     '{ "Level", "WeaponTier", "WeaponEnhance" }', '{ "Level", "WeaponTier" }'),
+     '{ "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp" }', '{ "Level", "WeaponTier", "StatAtk", "StatHp" }'),
     # PvPService helpers
-    ("PvP fallback compares the unrounded PowerOf", "PVP_SOURCE",
-     'return Config.CombatPower(level, tier, tonumber(p:GetAttribute("WeaponEnhance")) or 0)',
-     'return Config.PowerOf(level, tier, 1, tonumber(p:GetAttribute("WeaponEnhance")) or 0)'),
+    # A23-69: the fallback is the one power formula (Config.CombatPowerOf, the attributes)
+    ("PvP fallback is not the displayed number", "PVP_SOURCE",
+     "\treturn Config.CombatPowerOf(p)\nend", "\treturn Config.CombatPowerOf(p) + 1\nend"),
     ("BoldMult x2 needs more than 120%", "PVP_SOURCE",
      "if ratio >= P.BoldStrongRatio then", "if ratio > P.BoldStrongRatio then"),
     ("BoldMult x0.5 at exactly 80%", "PVP_SOURCE",
