@@ -1,9 +1,15 @@
+ComboCoin       ComboCoin_kC             PASS 100  FAIL: -  |  WARN: -
+ComboCoin       ComboCoin_kA             WARN  98  FAIL: -  |  WARN: durMs=198 (want 200..260)
+ComboCoin       ComboCoin_kB             WARN  98  FAIL: -  |  WARN: durMs=199 (want 200..260)
 HitCrit         HitCrit_1-2              PASS 100  FAIL: -  |  WARN: -
 HitCrit         HitCrit_1-4              PASS 100  FAIL: -  |  WARN: -
-HitCrit         HitCrit_mix-3-2+2-1      PASS 100  FAIL: -  |  WARN: -
+HitCrit         HitCrit_sB3              PASS 100  FAIL: -  |  WARN: -
 HitHeavy        HitHeavy_1-2             WARN  97  FAIL: -  |  WARN: phoneDropDb=3.97 (want 0..3)
 HitHeavy        HitHeavy_3-2             WARN  97  FAIL: -  |  WARN: peakAtMs=5.50 (want 0..5)
 HitHeavy        HitHeavy_1-3             WARN  94  FAIL: -  |  WARN: attackMs=5.00 (want 0..3); peakAtMs=9.00 (want 0..5)
+HitSoft         HitSoft_kB               WARN  91  FAIL: -  |  WARN: lt150=0.143 (want 0..0.1); phoneDropDb=5.06 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
+HitSoft         HitSoft_kA               WARN  88  FAIL: -  |  WARN: lt150=0.133 (want 0..0.1); attackMs=6.50 (want 0..5); phoneDropDb=4.56 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
+HitSoft         HitSoft_kC               WARN  88  FAIL: -  |  WARN: effLufs=-28.6 (want -28.4..-23.5); attackMs=9.50 (want 0..5); phoneDropDb=3.26 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
 Jump            Jump_2-1                 PASS 100  FAIL: -  |  WARN: -
 Jump            Jump_2-2                 PASS 100  FAIL: -  |  WARN: -
 PowerUp         PowerUp_1-2              PASS 100  FAIL: -  |  WARN: -
@@ -14,7 +20,7 @@ SwingArcher     SwingArcher_3-1          PASS 100  FAIL: -  |  WARN: -
 SwingArcher     SwingArcher_2-4          WARN  94  FAIL: -  |  WARN: centroidHz=4876 (want 3200..4500); gt8k@1.08x=0.0693 (want 0..0.06); centroidHz@1.08x=5267 (want <= 4800)
 SwingArrow      SwingArrow_SwingArcher-2-1 PASS 100  FAIL: -  |  WARN: -
 SwingArrow      SwingArrow_SwingArcher-2-4 PASS 100  FAIL: -  |  WARN: -
-SwingArrow      SwingArrow_SwingArcher-3-1 WARN  98  FAIL: -  |  WARN: gt8k@1.1x=0.0821 (want 0..0.06)
+SwingArrow      SwingArrow_SwingArcher-3-1 WARN  98  FAIL: -  |  WARN: gt8k@1.1x=0.0819 (want 0..0.06)
 SwingMageHalo   SwingMageHalo_SwingMage-3-4 WARN  98  FAIL: -  |  WARN: flat=0.054 (want 0.1..0.5)
 SwingMageHalo   SwingMageHalo_SwingMage-2-2 WARN  95  FAIL: -  |  WARN: centroidHz=2348 (want 2800..4500); flat=0.0011 (want 0.1..0.5)
 SwingMageHalo   SwingMageHalo_1-1        WARN  93  FAIL: -  |  WARN: attackMs=42.5 (want 0..30); peakAtMs=67.0 (want 0..40); gt8k@1.08x=0.0679 (want 0..0.06)
@@ -31,15 +37,24 @@ distinct ok   SwingMageHalo_1-1 [SwingMageHalo] vs SwingMageHorns_2-2 [SwingMage
 distinct ok   SwingMageHalo_SwingMage-2-2 [SwingMageHalo] vs SwingMageHorns_1-1 [SwingMageHorns]: score 1.45 (>= 1.0) | the faction must be heard
 distinct ok   SwingMageHalo_SwingMage-2-2 [SwingMageHalo] vs SwingMageHorns_1-2 [SwingMageHorns]: score 1.55 (>= 1.0) | the faction must be heard
 distinct ok   SwingMageHalo_SwingMage-2-2 [SwingMageHalo] vs SwingMageHorns_2-2 [SwingMageHorns]: score 1.55 (>= 1.0) | the faction must be heard
+distinct ok   HitSoft_kB [HitSoft] vs HitHeavy_1-2 [HitHeavy]: score 1.04 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kB [HitSoft] vs HitHeavy_3-2 [HitHeavy]: score 2.1 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kB [HitSoft] vs HitHeavy_1-3 [HitHeavy]: score 1.74 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kA [HitSoft] vs HitHeavy_1-2 [HitHeavy]: score 1.15 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kA [HitSoft] vs HitHeavy_3-2 [HitHeavy]: score 2.17 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kA [HitSoft] vs HitHeavy_1-3 [HitHeavy]: score 1.81 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kC [HitSoft] vs HitHeavy_1-2 [HitHeavy]: score 1.83 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kC [HitSoft] vs HitHeavy_3-2 [HitHeavy]: score 1.67 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitSoft_kC [HitSoft] vs HitHeavy_1-3 [HitHeavy]: score 1.4 (>= 1.0) | 말랑 vs 퍽
 distinct ok   HitHeavy_1-2 [HitHeavy] vs HitCrit_1-2 [HitCrit]: score 3.65 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_1-2 [HitHeavy] vs HitCrit_1-4 [HitCrit]: score 3.23 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_1-2 [HitHeavy] vs HitCrit_mix-3-2+2-1 [HitCrit]: score 3.22 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_3-2 [HitHeavy] vs HitCrit_1-2 [HitCrit]: score 1.56 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_3-2 [HitHeavy] vs HitCrit_1-4 [HitCrit]: score 1.15 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_3-2 [HitHeavy] vs HitCrit_mix-3-2+2-1 [HitCrit]: score 1.14 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_1-2 [HitCrit]: score 1.92 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_1-4 [HitCrit]: score 1.51 (>= 1.0) | a crit must feel special
-distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_mix-3-2+2-1 [HitCrit]: score 1.49 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_1-2 [HitHeavy] vs HitCrit_1-4 [HitCrit]: score 3.71 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_1-2 [HitHeavy] vs HitCrit_sB3 [HitCrit]: score 4.1 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_3-2 [HitHeavy] vs HitCrit_1-2 [HitCrit]: score 1.99 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_3-2 [HitHeavy] vs HitCrit_1-4 [HitCrit]: score 1.8 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_3-2 [HitHeavy] vs HitCrit_sB3 [HitCrit]: score 2.05 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_1-2 [HitCrit]: score 1.99 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_1-4 [HitCrit]: score 1.99 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_sB3 [HitCrit]: score 2.38 (>= 1.0) | a crit must feel special
 match    ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_1-1 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
 match    ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_1-2 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
 match    ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_2-2 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
