@@ -403,6 +403,29 @@ do
 	ctx.Combo = 1
 	check(g, "enhance success = ScrollSuccess", events(Audio.Plan("Enhance", { Success = true }, ctx)) == "ScrollSuccess", "")
 	check(g, "enhance failure = ScrollFail", events(Audio.Plan("Enhance", { Success = false }, ctx)) == "ScrollFail", "")
+	-- sound_wiring_r4 / onepass: my drop (Loot), a plunder (Plunder / GoldPickup), a king falls (KingDefeat)
+	local lootPlan = Audio.Plan("Loot", { Items = { { Item = "Enh70", Name = "Enhance Scroll 70%", N = 1 } } }, ctx)
+	check(g, "an enhance scroll drop = Loot at its own pitch", events(lootPlan) == "Loot" and lootPlan[1].Speed == nil, events(lootPlan))
+	lootPlan = Audio.Plan("Loot", { Items = { { Item = "Move70", Name = "Transfer Scroll 70%", N = 1 } } }, ctx)
+	check(g, "a transfer scroll drop = Loot", events(lootPlan) == "Loot", events(lootPlan))
+	lootPlan = Audio.Plan("Loot", { Items = { { Item = "Jelly", Name = "Jelly", N = 2 }, { Weapon = 3, Name = "Iron Sword" } } }, ctx)
+	check(g, "a weapon drop = one Loot at 0.92x", events(lootPlan) == "Loot" and near(lootPlan[1].Speed, 0.92), events(lootPlan))
+	check(g, "materials and potions alone are silent",
+		#Audio.Plan("Loot", { Items = { { Item = "Jelly", Name = "Jelly", N = 3 }, { Potion = "HP", Name = "HP Potion", N = 1 } } }, ctx) == 0, "")
+	check(g, "a Loot packet without items is silent", #Audio.Plan("Loot", {}, ctx) == 0, "")
+	check(g, "my pocket taken = Plunder", events(Audio.Plan("Plunder", { Victim = ME, Thief = 222, Amount = 30 }, ctx)) == "Plunder", "")
+	check(g, "I took it = GoldPickup", events(Audio.Plan("Plunder", { Victim = 222, Thief = ME, Amount = 30 }, ctx)) == "GoldPickup", "")
+	check(g, "someone else's plunder is silent", #Audio.Plan("Plunder", { Victim = 222, Thief = 333, Amount = 30 }, ctx) == 0, "")
+	check(g, "the revenge refund = GoldPickup for the victim",
+		events(Audio.Plan("Plunder", { Victim = ME, Thief = 222, Amount = 30, Refund = true }, ctx)) == "GoldPickup", "")
+	check(g, "a king falls = KingDefeat for everyone", events(Audio.Plan("KingDefeat", { Key = "PumpkinKing", Contributors = { 222 } }, ctx)) == "KingDefeat", "")
+	local kd = Audio.Plan("KingDefeat", { Key = "GhostKing", Contributors = { 222, ME } }, ctx)
+	check(g, "a paid contributor also hears KillPop + coin 0.25 s later",
+		events(kd) == "KingDefeat,KillPop,ComboCoin" and near(kd[2].At, 0.25), events(kd))
+	check(g, "the onepass ids are wired (no empty file)",
+		A.Files.Loot ~= "" and A.Files.Spend ~= "" and A.Files.RankUp ~= "" and A.Files.SkillLearn ~= "" and A.Files.GooseArrive ~= ""
+			and A.Files.CrownHalo ~= "" and A.Files.KingDefeat ~= "" and A.Files.Plunder ~= ""
+			and type(A.Sounds.Loot) == "table" and type(A.Sounds.CrownHorns) == "table" and type(A.Sounds.Plunder) == "table", "")
 	for _, k in { "Bank", "Rare" } do
 		check(g, "gold outside kills = GoldPickup", events(Audio.Plan(k, { Amount = 9 }, ctx)) == "GoldPickup", k)
 	end

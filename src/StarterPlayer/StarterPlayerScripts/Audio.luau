@@ -71,6 +71,10 @@ local T = {
 	SkillContact = tonumber(A.SkillContact) or 0.12,
 	HurtBigFrac = tonumber(A.HurtBigFrac) or 0.15,
 	HurtLowFrac = 0.3,
+	LootKinds = type(A.LootKinds) == "table" and A.LootKinds or { Enhance = true, Transfer = true },
+	LootWeaponSpeed = tonumber(A.LootWeaponSpeed) or 0.92,
+	KingPrize = tonumber(A.KingPrize) or 0.25, -- s after KingDefeat: a contributor's KillPop + coin
+	LootItems = type(Config.Loot) == "table" and type(Config.Loot.Items) == "table" and Config.Loot.Items or {},
 	Duck = type(A.Duck) == "table" and A.Duck or { Mul = 0.5, Seconds = 1.2, By = {} },
 	Combo = type(A.Combo) == "table" and A.Combo or { Base = 0.8, Top = 1.6, Steps = { 0, 2, 4, 5, 7, 9, 11, 12 } },
 	ComboReset = tonumber(Config.Combo and Config.Combo.ResetSeconds) or 4,
@@ -281,6 +285,39 @@ function Audio.Plan(kind, data, ctx)
 	elseif kind == "Upgrade" then -- sound_gaps C2: a weapon bought / equipped = Equip (GoldPickup until its file)
 		local equip = SOUNDS.Equip
 		add(out, (type(equip) == "table" and idOf(equip.File)) and "Equip" or "GoldPickup", 0)
+	elseif kind == "Loot" then -- sound_wiring_r4: my drop rings only for a scroll or a weapon (the weapon a little lower)
+		local weapon, scroll = false, false
+		for _, g in (type(data) == "table" and type(data.Items) == "table") and data.Items or {} do
+			local def = type(g) == "table" and g.Item ~= nil and T.LootItems[g.Item] or nil
+			if type(g) == "table" and g.Weapon ~= nil then weapon = true end
+			if type(def) == "table" and T.LootKinds[def.Kind] then scroll = true end
+		end
+		if weapon then
+			add(out, "Loot", 0, { Speed = T.LootWeaponSpeed })
+		elseif scroll then
+			add(out, "Loot", 0)
+		end
+	elseif kind == "Plunder" then -- sound_gaps B2 (dev2 sound_server: to everyone { From, To, Amount, Victim, Thief, Refund? })
+		local me = ctx.Me
+		if me ~= nil and type(data) == "table" then
+			if data.Refund == true then
+				if data.Victim == me then add(out, "GoldPickup", 0) end -- the revenge refund (the victim only)
+			elseif data.Victim == me then
+				add(out, "Plunder", 0)
+			elseif data.Thief == me then
+				add(out, "GoldPickup", 0)
+			end
+		end
+	elseif kind == "KingDefeat" then -- sound_gaps B11 (to everyone { Key, Kind, Pos, Contributors }): the fall for all,
+		-- my KillPop + coin T.KingPrize s later when I was paid
+		add(out, "KingDefeat", 0)
+		for _, uid in (type(data) == "table" and type(data.Contributors) == "table") and data.Contributors or {} do
+			if uid == ctx.Me then
+				add(out, "KillPop", T.KingPrize)
+				add(out, "ComboCoin", T.KingPrize + 0.05)
+				break
+			end
+		end
 	elseif kind == "Bank" or kind == "Rare" then
 		add(out, "GoldPickup", 0)
 	elseif kind == "LevelUp" then

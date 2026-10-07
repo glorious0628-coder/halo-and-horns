@@ -3943,7 +3943,8 @@ Config.Audio = {
 	-- these moments lower the combat sounds to Mul for Seconds
 	-- (SecondsBy: sound_spec §4-2 10, the kings hold it a little longer)
 	Duck = { Mul = 0.5, Seconds = 1.2, SecondsBy = { PumpkinKing = 1.6, GhostKing = 1.6 },
-		By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true, GooseArrive = true } },
+		By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true, GooseArrive = true,
+			CrownHalo = true, CrownHorns = true, KaijuSiren = true } },
 	-- combo coin speed = Base x 2^(step / 12), steps of a major scale, held at Top from the 8th kill (phones: no shrill end)
 	Combo = { Base = 0.8, Top = 1.6, Steps = { 0, 2, 4, 5, 7, 9, 11, 12 } },
 	-- sound_spec §4-2 6: a swing that hits From+ monsters plays its material louder and a little lower (it stays
@@ -3958,11 +3959,16 @@ Config.Audio = {
 	-- B13: a Z / X cast (Fx "Skill") has no launch / contact times: the cast at once, the hits right after
 	SkillContact = 0.12,
 	HurtBigFrac = 0.15, -- a hit taking at least this share of my max HP (or leaving me under 30 %) = HurtBig
+	-- sound_wiring_r4 Loot: my drop rings only when it holds a scroll of these Config.Loot kinds or a weapon (a weapon at
+	-- LootWeaponSpeed); materials and potions stay silent. KingPrize: s after KingDefeat, a paid contributor's KillPop + coin
+	LootKinds = { Enhance = true, Transfer = true },
+	LootWeaponSpeed = 0.92,
+	KingPrize = 0.25,
 	-- uploaded 2026-10-07 (Creator Hub, Darugi_S2, Restricted; art/sfx/asset_ids.json): the round-4 picks (picks_r4.json)
 	-- where they are uploaded, the round-3 file otherwise. "" = not uploaded yet: the event stays silent or plays its
 	-- stand-in (Equip -> GoldPickup, GooseArrive -> GooseHonk, SkillReady -> Fx Click, SkillLearn -> PowerUp)
 	Files = {
-		SwingWarrior = "rbxassetid://100665788892468",
+		SwingWarrior = "rbxassetid://114585478722203",
 		SwingMage = "rbxassetid://136838684864577", -- the Guild's alchemist (no faction file)
 		SwingMageHalo = "rbxassetid://101498441090410",
 		SwingMageHorns = "rbxassetid://139514092831666",
@@ -3972,13 +3978,13 @@ Config.Audio = {
 		HitHeavy = "rbxassetid://95463530376920",
 		HitCrit = "rbxassetid://78018534821425",
 		HurtBig = "rbxassetid://73666772845621",
-		KillPop = "rbxassetid://76243013610008",
+		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
-		ComboMilestone = "rbxassetid://120183624157841",
-		LevelUp = "rbxassetid://115723389387503",
+		ComboMilestone = "rbxassetid://73147095978331",
+		LevelUp = "rbxassetid://108525821312554",
 		PowerUp = "rbxassetid://118952858498086",
 		Jump = "rbxassetid://119789949243782",
-		WindowOpen = "rbxassetid://72025655652305",
+		WindowOpen = "rbxassetid://129419018750436",
 		WindowClose = "rbxassetid://86085176622331",
 		Deny = "rbxassetid://124536292557880",
 		AutoOn = "rbxassetid://90300088723425",
@@ -3988,12 +3994,12 @@ Config.Audio = {
 		Devour = "rbxassetid://118262766439187",
 		PumpkinKing = "rbxassetid://112500082253148",
 		GhostKing = "rbxassetid://100319357258743",
-		GooseHonk = "rbxassetid://126013517999832",
+		GooseHonk = "rbxassetid://115693307820380",
 		QuestDone = "rbxassetid://131457371135343",
 		GoldPickup = "rbxassetid://119243238199900",
-		ScrollSuccess = "rbxassetid://75617018211597",
+		ScrollSuccess = "rbxassetid://116061752455414",
 		ScrollFail = "rbxassetid://124525939049830",
-		Tap = "rbxassetid://101266273493121",
+		Tap = "rbxassetid://118436931537673",
 		SkillHalo = "rbxassetid://75898672312875",
 		SkillHorns = "rbxassetid://110780992455213",
 		Potion = "rbxassetid://133789691162407",
@@ -4002,11 +4008,26 @@ Config.Audio = {
 		TalkBlip = "rbxassetid://94593126133806",
 		Equip = "rbxassetid://132294814566104",
 		SkillReady = "rbxassetid://99319219774246",
-		-- coming with the next uploads (sound_gaps A7-A9)
-		Spend = "",
-		RankUp = "",
-		SkillLearn = "",
-		GooseArrive = "",
+		Spend = "rbxassetid://80768400627761",
+		RankUp = "rbxassetid://84902463002053",
+		SkillLearn = "rbxassetid://113535664889883",
+		GooseArrive = "rbxassetid://113800368972766",
+		-- new events (sound_gaps B1-B14): wire their hooks below
+		CrownHalo = "rbxassetid://123752635254582",
+		CrownHorns = "rbxassetid://131150435186247",
+		KingDefeat = "rbxassetid://115530599858312",
+		WarFinal30 = "rbxassetid://102592807006385",
+		CountTick = "rbxassetid://96016194154678",
+		GooseEnd = "rbxassetid://103362677938359",
+		KaijuSiren = "rbxassetid://110447360461794",
+		KaijuStomp = "rbxassetid://82058880758348",
+		ZoneEnterPvP = "rbxassetid://104461336219672",
+		GoldenSpot = "rbxassetid://128057879317544",
+		KO = "rbxassetid://137556643487651",
+		Respawn = "rbxassetid://128867123359602",
+		Plunder = "rbxassetid://74602898707411",
+		JackpotOther = "rbxassetid://99814762304779",
+		Loot = "rbxassetid://114739645345413",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
@@ -4038,13 +4059,13 @@ Config.Audio = {
 		-- sound_gaps A6: each king its own file at 1.0x (never under 0.85x: lower turns scary)
 		PumpkinKing = { File = "PumpkinKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
 		GhostKing = { File = "GhostKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
-		GooseHonk = { File = "GooseHonk", Volume = 0.55, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
+		GooseHonk = { File = "GooseHonk", Volume = 0.40, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
 		GooseArrive = { File = "GooseArrive", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 3.0 }, -- A7: GooseActive turning on
 		QuestDone = { File = "QuestDone", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
 		GoldPickup = { File = "GoldPickup", Volume = 0.45, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.08 },
 		ScrollSuccess = { File = "ScrollSuccess", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 0.5 },
 		ScrollFail = { File = "ScrollFail", Volume = 0.40, Speed = { 0.90, 0.90 }, Max = 1, Gap = 0.5 },
-		Tap = { File = "Tap", Volume = 0.42, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.05 },
+		Tap = { File = "Tap", Volume = 0.46, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.05 },
 		-- the skill cast plays my class's swing file at 0.85x (the file comes from the class, not from here)
 		SkillCast = { Volume = 0.40, Speed = { 0.85, 0.85 }, Max = 2, Gap = 0.1, Auto = true, Combat = true },
 		SkillHalo = { File = "SkillHalo", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
@@ -4061,6 +4082,21 @@ Config.Audio = {
 		RankUp = { File = "RankUp", Volume = 0.32, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
 		SkillLearn = { File = "SkillLearn", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
 		SkillReady = { File = "SkillReady", Volume = 0.25, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
+		CrownHalo = { File = "CrownHalo", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B6 war round won by Halo (everyone; a draw has none); the chest reward 1.5 s later
+		CrownHorns = { File = "CrownHorns", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B6 war round won by Horns
+		KingDefeat = { File = "KingDefeat", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B11 a king is beaten; contributors' KillPop + coin 0.25 s later
+		WarFinal30 = { File = "WarFinal30", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B7 once per round at 30 s left (WarRoundEndsAt), faction set, joined > 30 s ago
+		CountTick = { File = "CountTick", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- B7 3-2-1 before a reveal: SpeedMul 1.0 / 1.12 / 1.26
+		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
+		KaijuSiren = { File = "KaijuSiren", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B5 KaijuPhase -> 'Siren'; CountTick follows
+		KaijuStomp = { File = "KaijuStomp", Volume = 0.45, Speed = { 0.97, 1.03 }, Max = 2, Gap = 1 }, -- B4 Fx Stomp: Volume x1 within 15 studs -> 0 at 60
+		ZoneEnterPvP = { File = "ZoneEnterPvP", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B9 ZonePvP false->true, not within 3 s of a spawn / teleport, nothing on leaving
+		GoldenSpot = { File = "GoldenSpot", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B8 a golden monster first in view within 50 studs (once per monster); GoldenKill = same file
+		KO = { File = "KO", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- B1 Fx KO (mine): cartoon dizzy, no death jingle
+		Respawn = { File = "Respawn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B1 my character comes back after a KO
+		Plunder = { File = "Plunder", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B2 my sack / pocket is taken (the victim only; the taker hears GoldPickup)
+		JackpotOther = { File = "JackpotOther", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B10 someone else's Jackpot / FirstMax line (not RareWeapon)
+		Loot = { File = "Loot", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- B14 Fx Loot with a scroll or a weapon (weapon SpeedMul 0.92); materials / potions silent
 	},
 	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed); SwingFaction picks the
 	-- caster's faction file when it is uploaded (sound_gaps A2: Halo / Horns mages)

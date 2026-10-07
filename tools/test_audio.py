@@ -40,6 +40,13 @@ OUT = ROOT / "docs/art/verification_2026-10-06/offline_audio_2026-10-06.json"
 
 # (name, exact text in Audio.luau, replacement): each must match exactly once
 MUTATIONS = [
+    ("every drop rings (materials too)", 'if type(def) == "table" and T.LootKinds[def.Kind] then scroll = true end', "scroll = true"),
+    ("the weapon drop at full pitch", 'add(out, "Loot", 0, { Speed = T.LootWeaponSpeed })', 'add(out, "Loot", 0)'),
+    ("the thief hears the victim's sound", "\t\t\telseif data.Thief == me then\n\t\t\t\tadd(out, \"GoldPickup\", 0)",
+     "\t\t\telseif data.Thief == me then\n\t\t\t\tadd(out, \"Plunder\", 0)"),
+    ("everyone hears a plunder", "\t\t\telseif data.Victim == me then\n\t\t\t\tadd(out, \"Plunder\", 0)",
+     "\t\t\telse\n\t\t\t\tadd(out, \"Plunder\", 0)"),
+    ("no prize sound for contributors", "\t\t\tif uid == ctx.Me then\n", "\t\t\tif false then\n"),
     ("auto sounds at full volume", "if opts.Auto == true and def.Auto == true then volume *= T.AutoMul end", ""),
     ("others at full volume", "if opts.Others == true then volume *= T.OthersMul end", ""),
     ("others heard from anywhere", "if uid == nil or d == nil or d > T.OthersRange then return out end",
