@@ -72,9 +72,14 @@ while o < len(b):
 j = json.loads(b[ch[0][1]:ch[0][1] + ch[0][2]])
 bs = next(c for c in ch if c[0] == 0x004E4942)[1]
 m = j["materials"][0]
-for key, ti in (("base", m["pbrMetallicRoughness"]["baseColorTexture"]["index"]),
-                ("mr", m["pbrMetallicRoughness"]["metallicRoughnessTexture"]["index"])):
-    bv = j["bufferViews"][j["images"][j["textures"][ti]["source"]]["bufferView"]]
+pbr = m["pbrMetallicRoughness"]
+for key in ("base", "mr"):
+    tk = {"base": "baseColorTexture", "mr": "metallicRoughnessTexture"}[key]
+    if tk not in pbr:  # e.g. Tripo web retexture: constant metal/rough factors only -> make a flat map
+        size = Image.open(os.path.join(W, "src_base.png")).size
+        Image.new("RGB", size, (255, round(255 * pbr.get("roughnessFactor", 1.0)), round(255 * pbr.get("metallicFactor", 1.0)))).save(os.path.join(W, "src_mr.png"))
+        continue
+    bv = j["bufferViews"][j["images"][j["textures"][pbr[tk]["index"]]["source"]]["bufferView"]]
     Image.open(io.BytesIO(b[bs + bv.get("byteOffset", 0):bs + bv.get("byteOffset", 0) + bv["byteLength"]])).convert("RGB").save(os.path.join(W, f"src_{key}.png"))
 print("1 textures", flush=True)
 

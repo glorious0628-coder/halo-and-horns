@@ -3,7 +3,7 @@
   위 줄: 2D 시안 | 3D 원본(시안 각도) | 3D 고친 판(시안 각도) | 고친 판 뒤 3/4 | 고친 판 게임 카메라
   아래 줄: 시안에서 가장 자세한 두 곳을 크게 — [2D | 원본 | 고친 판] × 2  (아래 작은 숫자 ΔE는 참고만)
 
-  py tools/tex_batch_sheet.py <out_prefix> <work_root> <name>[:<label>] ... [--per 5] [--title "..."]
+  py tools/tex_batch_sheet.py <out_prefix> <work_root> <dir>[:<label>[:<concept name>]] ... [--per 5] [--title "..."]
 
 - work_root/<name>/ 에 tex_fix.py 결과(cam.json, choice.json, r/<label>_orig_*.png, r/<label>_fixed_*.png)가 있어야 한다.
 - 시안 = art/out/hq/HQ_<name>.png. 크기·개수 메모 = build/tripo_3b_web.json(있으면).
@@ -96,12 +96,12 @@ def lab(img):
     return cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2LAB).astype(np.float32)
 
 
-def block(name, label):
+def block(name, label, cname=None):
     W = os.path.join(a.root, name)
     R = os.path.join(W, "r")
     cam = json.load(open(os.path.join(W, "cam.json")))
     choice = json.load(open(os.path.join(W, "choice.json"))) if os.path.exists(os.path.join(W, "choice.json")) else {}
-    con_img = Image.open(f"art/out/hq/HQ_{name}.png").convert("RGB")
+    con_img = Image.open(f"art/out/hq/HQ_{cname or name}.png").convert("RGB")
     con = np.asarray(con_img)
     bgc = bg_of(con.astype(np.int16))
     BG = tuple(int(v) for v in bgc)
@@ -115,7 +115,7 @@ def block(name, label):
     h = 40 + CELL + 30 + BIG + 50
     img = Image.new("RGB", (LAB + 6 * BIG + 40, h), (236, 238, 242))
     d = ImageDraw.Draw(img)
-    it = info.get(name, {})
+    it = info.get(cname or name, {})
     lines = [name, f"크기 {it.get('size_studs', '?')} · {it.get('count', '?')}개",
              "색: " + {"pair": "④' 앞면 짝", "band": "④ 색 띠"}.get(choice.get("colour_fix"), "?") + " + AO",
              "③ 앞면 투영" if choice.get("front_projection") else "③ 없음(사방에서 봄)",
@@ -145,9 +145,9 @@ def block(name, label):
 
 blocks = []
 for n in a.names:
-    name, label = (n.split(":") + [None])[:2]
+    name, label, cname = (n.split(":") + [None, None])[:3]
     try:
-        blocks.append(block(name, label or name))
+        blocks.append(block(name, label or name, cname))
         print("ok", name, flush=True)
     except Exception as e:
         print("SKIP", name, e, flush=True)

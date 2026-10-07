@@ -41,7 +41,17 @@ def replace(in_glb, out_glb, base=None, mr=None, normal=None):
     if base:
         want[m["pbrMetallicRoughness"]["baseColorTexture"]["index"]] = base
     if mr:
-        want[m["pbrMetallicRoughness"]["metallicRoughnessTexture"]["index"]] = mr
+        pbr = m["pbrMetallicRoughness"]
+        if "metallicRoughnessTexture" not in pbr:  # add a new image + texture slot, factors 1 so the map rules
+            binc += b"\0" * (-len(binc) % 4)
+            j["bufferViews"].append({"buffer": 0, "byteOffset": len(binc), "byteLength": 0})
+            j["images"].append({"bufferView": len(j["bufferViews"]) - 1, "mimeType": "image/png"})
+            samp = {"sampler": j["textures"][pbr["baseColorTexture"]["index"]]["sampler"]} if "sampler" in j["textures"][pbr["baseColorTexture"]["index"]] else {}
+            j["textures"].append(dict(source=len(j["images"]) - 1, **samp))
+            pbr["metallicRoughnessTexture"] = {"index": len(j["textures"]) - 1}
+            pbr["metallicFactor"] = 1.0
+            pbr["roughnessFactor"] = 1.0
+        want[pbr["metallicRoughnessTexture"]["index"]] = mr
     if normal:
         want[m["normalTexture"]["index"]] = normal
     new_bytes = {}  # bufferView index -> bytes
