@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 197,
-  "namedChecks": 141,
+  "checks": 201,
+  "namedChecks": 145,
   "failing": [],
   "mutations": {
-    "total": 49,
-    "caught": 49,
+    "total": 51,
+    "caught": 51,
     "results": [
       {
         "mutation": "auto sounds at full volume",
@@ -223,6 +223,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -369,7 +370,27 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a big moment ducks the combat sounds to 0.5"
+          "runtime :: a big moment ducks the combat sounds to 0.5",
+          "runtime :: a king holds the duck longer than 1.2 s (§4-2 10)",
+          "runtime :: a level up ducks for 1.2 s only"
+        ]
+      },
+      {
+        "mutation": "kings duck as short as the rest",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a king holds the duck longer than 1.2 s (§4-2 10)"
+        ]
+      },
+      {
+        "mutation": "every duck holds a king's time",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a level up ducks for 1.2 s only"
         ]
       },
       {
@@ -495,9 +516,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7c432b8c4fb3d51a08fc698760a42358f25d6ad51a9311c0e8c9937550bd5407",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "e7021437ae45c3a3c48dc5445f82dfd34f4078e7881648c6a3cfbc35ec13393c",
-    "tools/fixtures/audio_offline.luau": "16c597b0d3a31945086642f36215de8f93e513ca15dc118b86b4b56356b18379"
+    "src/ReplicatedStorage/Shared/Config.luau": "024fee7016e993de85ac23aa99a129a5d31a2e8cedd9cfec863b5d52424dbe25",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "1fa023045e861c77d97134e4d4d30d74efcc2b4ee45a8c5b5aebf224824abce6",
+    "tools/fixtures/audio_offline.luau": "1f97b8329cee25026a6d52af06bc9061cab88b82126be0caf7e030ca288c5224"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

@@ -451,7 +451,9 @@ do
 	check(g, "level up is the loudest (0.85)", near(vol("LevelUp"), 0.85) and near(biggest, 0.85), tostring(biggest))
 	check(g, "purify and devour are the same size", near(vol("Purify"), vol("Devour")), "")
 	check(g, "kings never under 0.85x", A.Sounds.PumpkinKing.Speed[1] >= 0.85 and A.Sounds.GhostKing.Speed[1] >= 0.85, "")
-	check(g, "both kings share one file", A.Sounds.PumpkinKing.File == A.Sounds.GhostKing.File, "")
+	check(g, "each king has its own file (sound_gaps A6)", A.Sounds.PumpkinKing.File == "PumpkinKing" and A.Sounds.GhostKing.File == "GhostKing", "")
+	check(g, "the kings hold the duck 1.6 s", near(A.Duck.SecondsBy.PumpkinKing, 1.6) and near(A.Duck.SecondsBy.GhostKing, 1.6), "")
+	check(g, "big hurts have their own file (sound_gaps A5)", A.Sounds.HurtBig.File == "HurtBig" and A.Files.HurtBig ~= "", "")
 	check(g, "duck: level up, both kings and scroll success", A.Duck.By.LevelUp and A.Duck.By.PumpkinKing
 		and A.Duck.By.GhostKing and A.Duck.By.ScrollSuccess and near(A.Duck.Mul, 0.5) and near(A.Duck.Seconds, 1.2), "")
 	check(g, "others 0.35x within 40 studs, 8 at once", near(A.OthersMul, 0.35) and A.OthersRange == 40 and A.MaxPlaying == 8, "")
@@ -529,8 +531,8 @@ do
 	table.clear(PLAYS)
 	Audio.Play("PumpkinKing")
 	p = PLAYS[1]
-	check(g, "the Pumpkin King rings the king bell at 0.90-0.95x", p and p.Id == "rbxassetid://KingBell" and p.Speed >= 0.9 - 1e-9
-		and p.Speed <= 0.95 + 1e-9, encode(p or {}))
+	check(g, "the Pumpkin King plays its own file at 1.0x (sound_gaps A6)", p and p.Id == "rbxassetid://PumpkinKing"
+		and near(p.Speed, 1), encode(p or {}))
 	local combatGroup = nil
 	for _, s in SOUNDS_MADE do
 		if s.SoundGroup and s.SoundGroup.Name == "SfxCombat" then combatGroup = s.SoundGroup end
@@ -538,7 +540,15 @@ do
 	check(g, "a big moment ducks the combat sounds to 0.5", combatGroup ~= nil and near(combatGroup.Volume, 0.5),
 		tostring(combatGroup and combatGroup.Volume))
 	runDelays(1.3)
-	check(g, "and they come back after 1.2 s", combatGroup ~= nil and near(combatGroup.Volume, 1), tostring(combatGroup and combatGroup.Volume))
+	check(g, "a king holds the duck longer than 1.2 s (§4-2 10)", combatGroup ~= nil and near(combatGroup.Volume, 0.5),
+		tostring(combatGroup and combatGroup.Volume))
+	runDelays(1.7)
+	check(g, "and they come back after 1.6 s", combatGroup ~= nil and near(combatGroup.Volume, 1), tostring(combatGroup and combatGroup.Volume))
+	endAll()
+	Audio.Play("LevelUp")
+	local ducked = combatGroup ~= nil and near(combatGroup.Volume, 0.5)
+	runDelays(1.3)
+	check(g, "a level up ducks for 1.2 s only", ducked and near(combatGroup.Volume, 1), tostring(combatGroup and combatGroup.Volume))
 	waitClock(0.55) -- Deny played in the 8-at-once check: past its 0.5 s cooldown
 	table.clear(PLAYS)
 	check(g, "'No' (SkillBar) plays Deny", Audio.Play("No") == true and PLAYS[1] and PLAYS[1].Id == "rbxassetid://Deny", encode(PLAYS[1] or {}))

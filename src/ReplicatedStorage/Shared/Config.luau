@@ -3722,7 +3722,8 @@ Config.Audio = {
 	OthersRange = 40, -- ... and only within this many studs; UI sounds are mine only
 	MaxPlaying = 8, -- all sounds at once
 	-- these moments lower the combat sounds to Mul for Seconds
-	Duck = { Mul = 0.5, Seconds = 1.2,
+	-- (SecondsBy: sound_spec §4-2 10, the kings hold it a little longer)
+	Duck = { Mul = 0.5, Seconds = 1.2, SecondsBy = { PumpkinKing = 1.6, GhostKing = 1.6 },
 		By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true, GooseArrive = true } },
 	-- combo coin speed = Base x 2^(step / 12), steps of a major scale, held at Top from the 8th kill (phones: no shrill end)
 	Combo = { Base = 0.8, Top = 1.6, Steps = { 0, 2, 4, 5, 7, 9, 11, 12 } },
@@ -3751,7 +3752,7 @@ Config.Audio = {
 		HitSoft = "rbxassetid://96440842663562",
 		HitHeavy = "rbxassetid://95463530376920",
 		HitCrit = "rbxassetid://78018534821425",
-		HitHeavy2 = "rbxassetid://129011812816837", -- round 3: HurtBig until its own file
+		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://76243013610008",
 		ComboCoin = "rbxassetid://132925998560879",
 		ComboMilestone = "rbxassetid://120183624157841",
@@ -3762,11 +3763,12 @@ Config.Audio = {
 		WindowClose = "rbxassetid://86085176622331",
 		Deny = "rbxassetid://124536292557880",
 		AutoOn = "rbxassetid://90300088723425",
-		AutoOff = "rbxassetid://87842131842953",
+		AutoOff = "rbxassetid://128226305896103",
 		Purify = "rbxassetid://126260420453106",
 		Purify_b = "rbxassetid://75155843966047",
 		Devour = "rbxassetid://118262766439187",
-		KingBell = "rbxassetid://133609264734232",
+		PumpkinKing = "rbxassetid://112500082253148",
+		GhostKing = "rbxassetid://100319357258743",
 		GooseHonk = "rbxassetid://126013517999832",
 		QuestDone = "rbxassetid://131457371135343",
 		GoldPickup = "rbxassetid://119243238199900",
@@ -3778,13 +3780,13 @@ Config.Audio = {
 		Potion = "rbxassetid://133789691162407",
 		QuestNew = "rbxassetid://123199271616228",
 		RankDown = "rbxassetid://81421593114766",
-		TalkBlip = "rbxassetid://72477911054987",
-		-- coming with the next uploads (sound_gaps A7-A10)
-		Equip = "",
+		TalkBlip = "rbxassetid://94593126133806",
+		Equip = "rbxassetid://132294814566104",
+		SkillReady = "rbxassetid://99319219774246",
+		-- coming with the next uploads (sound_gaps A7-A9)
 		Spend = "",
 		RankUp = "",
 		SkillLearn = "",
-		SkillReady = "",
 		GooseArrive = "",
 	},
 	Sounds = {
@@ -3814,9 +3816,9 @@ Config.Audio = {
 		-- sound_gaps A12: two purify files taken in turn
 		Purify = { Files = { "Purify", "Purify_b" }, Alternate = true, Volume = 0.55, Speed = { 1.00, 1.05 }, Max = 1, Gap = 1.0 },
 		Devour = { File = "Devour", Volume = 0.55, Speed = { 1.00, 1.05 }, Max = 1, Gap = 1.0 }, -- same size as Purify, a pleasant gulp
-		-- one file for both kings until their own files come (sound_gaps A6); never under 0.85x (lower turns scary)
-		PumpkinKing = { File = "KingBell", Volume = 0.70, Speed = { 0.90, 0.95 }, Max = 1, Gap = 60 },
-		GhostKing = { File = "KingBell", Volume = 0.70, Speed = { 1.00, 1.05 }, Max = 1, Gap = 60 },
+		-- sound_gaps A6: each king its own file at 1.0x (never under 0.85x: lower turns scary)
+		PumpkinKing = { File = "PumpkinKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
+		GhostKing = { File = "GhostKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
 		GooseHonk = { File = "GooseHonk", Volume = 0.55, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
 		GooseArrive = { File = "GooseArrive", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 3.0 }, -- A7: GooseActive turning on
 		QuestDone = { File = "QuestDone", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
@@ -3828,7 +3830,7 @@ Config.Audio = {
 		SkillCast = { Volume = 0.40, Speed = { 0.85, 0.85 }, Max = 2, Gap = 0.1, Auto = true, Combat = true },
 		SkillHalo = { File = "SkillHalo", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
 		SkillHorns = { File = "SkillHorns", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
-		HurtBig = { File = "HitHeavy2", Volume = 0.36, Speed = { 0.95, 1.05 }, Max = 1, Gap = 0.6 },
+		HurtBig = { File = "HurtBig", Volume = 0.36, Speed = { 0.95, 1.05 }, Max = 1, Gap = 0.6 }, -- sound_gaps A5: its own file
 		Potion = { File = "Potion", Volume = 0.40, Speed = { 1.00, 1.05 }, Max = 1, Gap = 0.3 },
 		QuestNew = { File = "QuestNew", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
 		RankDown = { File = "RankDown", Volume = 0.32, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },

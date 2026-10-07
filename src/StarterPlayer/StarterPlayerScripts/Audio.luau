@@ -401,7 +401,8 @@ function Audio.Play(event, opts)
 		S.DuckToken += 1
 		local token = S.DuckToken
 		S.Groups.Combat.Volume = num(T.Duck.Mul, 0.5)
-		task.delay(num(T.Duck.Seconds, 1.2), function()
+		local hold = type(T.Duck.SecondsBy) == "table" and num(T.Duck.SecondsBy[event], nil) or nil
+		task.delay(hold or num(T.Duck.Seconds, 1.2), function()
 			if S.DuckToken == token and S.Groups.Combat then S.Groups.Combat.Volume = 1 end
 		end)
 	end
