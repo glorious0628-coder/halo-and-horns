@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 105,
+  "checks": 115,
   "failedChecks": 0,
-  "namedChecks": 105,
+  "namedChecks": 115,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -285,7 +285,19 @@
     },
     {
       "group": "forge trip",
-      "check": "no anvil: the Crossroads spawn only",
+      "check": "setup: the Forge step with the anvil there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "the anvil gone before the move: the Crossroads spawn only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "forge trip",
+      "check": "no anvil at the Forge step: the first weapon at once (Power 0 → N), then step 1",
       "pass": 1,
       "fail": 0
     },
@@ -441,6 +453,54 @@
     },
     {
       "group": "gift",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
+      "check": "no anvil at [Accept]: the first weapon at once, step 1 (never stuck at the Forge step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
+      "check": "then the meadow trip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
+      "check": "a Forge-step save with no anvil: the weapon at the join, then step 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
+      "check": "holding tier 2 (no tier 1): [Accept] -> step 1 and the meadow trip, no Forge step, nothing given yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
+      "check": "and no late gift either (the same rule for both)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
+      "check": "owns tier 1, holds nothing: [Accept] -> step 1 and the meadow trip (no Forge step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no anvil / held weapon",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -642,9 +702,9 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 41,
-    "applied": 41,
-    "caught": 41,
+    "total": 47,
+    "applied": 47,
+    "caught": 47,
     "skipped": false,
     "results": [
       {
@@ -661,7 +721,7 @@
           "forge trip :: a tap with arguments does nothing",
           "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)"
         ],
-        "newFailingCount": 27
+        "newFailingCount": 31
       },
       {
         "mutation": "Config: no meadow trip after the gift",
@@ -713,7 +773,7 @@
           "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)",
           "forge trip :: a trip for a step that moved on moves nobody"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 28
       },
       {
         "mutation": "accept: the Forge even with the first weapon",
@@ -722,7 +782,32 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "gift :: owns tier 1: [Accept] -> the meadow trip (step 1)"
+          "gift :: owns tier 1: [Accept] -> the meadow trip (step 1)",
+          "no anvil / held weapon :: holding tier 2 (no tier 1): [Accept] -> step 1 and the meadow trip, no Forge step, nothing given yet",
+          "no anvil / held weapon :: owns tier 1, holds nothing: [Accept] -> step 1 and the meadow trip (no Forge step)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "needs the weapon: a held weapon ignored (only tier 1 checked)",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no anvil / held weapon :: holding tier 2 (no tier 1): [Accept] -> step 1 and the meadow trip, no Forge step, nothing given yet",
+          "old saves :: armed with tier 2 (no tier 1): nothing at the join (M1_1 gives it later)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "needs the weapon: tier 1 owned is not enough",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no anvil / held weapon :: owns tier 1, holds nothing: [Accept] -> step 1 and the meadow trip (no Forge step)"
         ],
         "newFailingCount": 1
       },
@@ -737,7 +822,7 @@
           "forge trip :: TravelDelay nil: no automatic meadow trip after the gift",
           "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
           "forge trip :: a respawned character is not moved; TravelDone, the lock lifted",
-          "forge trip :: no anvil: the Crossroads spawn only",
+          "forge trip :: the anvil gone before the move: the Crossroads spawn only",
           "weapon first :: T s later: an instant Travel to the Crossroads"
         ],
         "newFailingCount": 12
@@ -751,6 +836,53 @@
         "newFailingChecks": [
           "forge trip :: 15 studs from the anvil: the Forge step without a trip",
           "gift :: a running trip (lock ahead): no meadow trip on top"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no anvil at [Accept]: stuck at the Forge step (the old rule)",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no anvil / held weapon :: no anvil at [Accept]: the first weapon at once, step 1 (never stuck at the Forge step)",
+          "no anvil / held weapon :: then the meadow trip"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no anvil at [Accept]: no gift",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no anvil / held weapon :: no anvil at [Accept]: the first weapon at once, step 1 (never stuck at the Forge step)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no anvil at the Forge step: stuck",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: no anvil at the Forge step: the first weapon at once (Power 0 → N), then step 1",
+          "no anvil / held weapon :: a Forge-step save with no anvil: the weapon at the join, then step 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no anvil at the Forge step: moves on without the weapon",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "forge trip :: no anvil at the Forge step: the first weapon at once (Power 0 → N), then step 1",
+          "no anvil / held weapon :: a Forge-step save with no anvil: the weapon at the join, then step 1"
         ],
         "newFailingCount": 2
       },
@@ -818,7 +950,7 @@
         "newFailingChecks": [
           "forge trip :: Landing 'Spawn': the Crossroads spawn only",
           "forge trip :: a refused Travel: no jump to the anvil, still the Forge step (the beam leads)",
-          "forge trip :: no anvil: the Crossroads spawn only",
+          "forge trip :: the anvil gone before the move: the Crossroads spawn only",
           "forge trip :: the tap's trip lands at the anvil too",
           "weapon first :: T s later: an instant Travel to the Crossroads"
         ],
@@ -1113,18 +1245,19 @@
           "forge trip :: a tap: one forge trip (a second tap during the fade does nothing)",
           "forge trip :: a trip for a step that moved on moves nobody"
         ],
-        "newFailingCount": 28
+        "newFailingCount": 30
       },
       {
-        "mutation": "late: for an armed player",
+        "mutation": "late: for anyone (weapon or not)",
         "file": "src/ServerScriptService/QuestService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "no anvil / held weapon :: and no late gift either (the same rule for both)",
           "old saves :: armed with tier 2 (no tier 1): nothing at the join (M1_1 gives it later)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "late: every tick",
@@ -1166,19 +1299,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58",
+    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
-    "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
+    "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
-    "src/ServerScriptService/QuestService.luau": "2646440bb5c9b0339c3fe1ea8b5ec5d5d55ce6fc45cbe35d951e8e6748a4b4f4"
+    "src/ServerScriptService/QuestService.luau": "208bbcd7b1d1e3b7b9d4c354c797ffa65a717c9b117e5eb196c7e7ccc7c87df9"
   },
-  "fixtureSHA256": "98afc2453e781fc2f787c37a8d5935656dec9ad8d10871e7813c29d26bad0051",
+  "fixtureSHA256": "770b7d7df60a1c50a6bf3061302fb8d26d5af125e2db3ea21dc437e1820a844f",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

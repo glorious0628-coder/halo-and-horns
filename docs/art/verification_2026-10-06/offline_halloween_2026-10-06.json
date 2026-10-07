@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7242,
+  "checks": 7243,
   "failedChecks": 0,
-  "namedChecks": 588,
+  "namedChecks": 589,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1732,6 +1732,12 @@
     {
       "group": "king-rewards",
       "check": "the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)",
       "pass": 1,
       "fail": 0
     },
@@ -3560,9 +3566,9 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 112,
-    "applied": 112,
-    "caught": 112,
+    "total": 114,
+    "applied": 114,
+    "caught": 114,
     "results": [
       {
         "mutation": "the kill keeps no paid list (KingDefeat Contributors empty)",
@@ -3583,6 +3589,28 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "only the last cast remembered (a cast counts again)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-rewards :: one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every cast hit counts",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-rewards :: one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)"
         ],
         "newFailingCount": 1
       },
@@ -4388,9 +4416,9 @@
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: every accepted hit adds +1 hit and its damage",
           "king-rewards :: hit / damage tallies per player",
-          "king-rewards :: the defeat line adds no second payout"
+          "king-rewards :: one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "3 hits not enough (> RewardMinHits)",
@@ -5066,17 +5094,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58",
+    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/QuestService.luau": "2646440bb5c9b0339c3fe1ea8b5ec5d5d55ce6fc45cbe35d951e8e6748a4b4f4",
-    "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
+    "src/ServerScriptService/QuestService.luau": "208bbcd7b1d1e3b7b9d4c354c797ffa65a717c9b117e5eb196c7e7ccc7c87df9",
+    "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "eea6f3f80ca035d754fd598d8ef295c52b1cef5c651b4e624a501431ba4100c3",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/ServerScriptService/MonsterService.luau": "3fd4239c739a3c7dde26d1e98e5845da3f00d4e0b2ed6d95843063ca8f6194df",
+    "src/ServerScriptService/MonsterService.luau": "06bf0e1ebb61dd86226b35dca17e8d16de085c1e749d75dff728e773bbed3077",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "507e5c4432316d825fbaffb3961f02eac1fdb896510ad618598776cde0421e8c",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "cbe5046ae65283c9d2fcc1ddd0fe75d3f5d76ea12d664b9beed9bf225f041020",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "83d4f4a4421832b97d43fc682f0ffe8956660b9964a8127eb56404258e346730",
@@ -5092,7 +5120,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "232a1c4df6bd1cf705d2de08926dcfeea1c3372492c37a0f159ccfc65dea1066",
+  "fixtureSHA256": "67784a33238eeda364464d6cb001516025b58c0cb149927dbf6c82fdfda7e2bf",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

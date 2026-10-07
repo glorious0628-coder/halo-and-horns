@@ -4787,7 +4787,7 @@
     "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "32ac3e123d433bf967e9b17cda1b5740bd76200e187000989f8fd509008a18a3",
     "tools/fixtures/hud_layout_offline.luau": "4e36305a70beaa43763eb2afcc5053cf935d778a30500f1f79c43a53d56bec11",
     "docs/design/hud_layout_B_imgdev_2026-10-06.json": "8c65195f6ed4f34c690eadf8815910cf396ba7ceb302757a3766b1e17fa0463b",
-    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58"
+    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

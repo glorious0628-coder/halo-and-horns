@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 484,
+  "checks": 485,
   "failedChecks": 0,
-  "namedChecks": 481,
+  "namedChecks": 482,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1150,6 +1150,12 @@
     {
       "group": "skl3 subs",
       "check": "Halo 'Guard my friends': Pick Guard, Honor +1, then the X step",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skl3 subs",
+      "check": "SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one",
       "pass": 1,
       "fail": 0
     },
@@ -2895,12 +2901,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 4,
+  "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 96,
-    "applied": 96,
-    "caught": 96,
+    "total": 97,
+    "applied": 97,
+    "caught": 97,
     "skipped": false,
     "results": [
       {
@@ -2952,6 +2958,17 @@
           "skl3 subs :: the X switch on and slot 3: SK2 starts at the fountain step"
         ],
         "newFailingCount": 4
+      },
+      {
+        "mutation": "SK2 'Guard' has no side (no change of mind)",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skl3 subs :: SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "A23-71: no 'Skills come' tail",
@@ -3787,9 +3804,10 @@
         "crashed": false,
         "newFailingChecks": [
           "e2-changed-mind :: Good then Evil: 'You gave it last time…'",
-          "e2-changed-mind :: an artisan's A after B: 'You kept it last time…'"
+          "e2-changed-mind :: an artisan's A after B: 'You kept it last time…'",
+          "skl3 subs :: SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "E2: 0-point picks count as a change",
@@ -4125,11 +4143,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58",
+    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
-    "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
+    "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
@@ -4138,7 +4156,7 @@
     "src/ServerScriptService/FactionService.luau": "e4ba1e0bd8b6b1a4e027472d519fdd1b83ba999ecf7ee99ff84f510b8166e0d9",
     "src/ServerScriptService/ProgressionService.luau": "227961d963eb15c19e96eda039fc662a2220110a7020274397ed1ab69e078b94"
   },
-  "fixtureSHA256": "820c3d78f1e6228ca5cfa6696393914d63b0d529a414186b5c1ab5db3990c88c",
+  "fixtureSHA256": "75d686d233e814dd53b38dfd535b24fbee951af9bbb0c2a98a2a343185f375f2",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

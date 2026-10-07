@@ -515,7 +515,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58",
+    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
     "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "1fa023045e861c77d97134e4d4d30d74efcc2b4ee45a8c5b5aebf224824abce6",
     "tools/fixtures/audio_offline.luau": "1f97b8329cee25026a6d52af06bc9061cab88b82126be0caf7e030ca288c5224"
   },
