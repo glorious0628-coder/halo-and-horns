@@ -79,6 +79,9 @@ local BODY_PARTS = {
 	UpperTorso = true, Torso = true, HumanoidRootPart = true,
 }
 
+-- 3rd idea round #6: an accessory on these head slots (or of AccessoryType Hat / Hair) lifts the halo / horns
+local MARK_HEAD_SLOTS = { HatAttachment = true, HairAttachment = true }
+
 ------------------------------------------------------------------ state
 local S = nil
 local states = {} -- [Player] = { Conns, CharConns, Dirty, Queued, RefreshQueued }
@@ -405,14 +408,39 @@ local function markTemplate(f, rank)
 	return (t and t:IsA("BasePart")) and t or nil
 end
 
--- the clone on the head: x head height / HeadRef, its bottom HaloGap above (halo) / HornsDepth into (horns) the head top,
--- turned by Yaw; halos keep the old disc's light, the top rank sparkles
-local function buildMarkModel(f, rank, head, template)
+-- 3rd idea round #6 (검수 2026-10-07): where the mark stands (head-space Y) = the head top, or the top of a hat / hair
+-- accessory's handle when that is higher (an up-do or a cap hid R1 / R2), never more than MaxRise x k above the head top
+local function markFloor(character, head, k)
+	local top = head.Size.Y / 2
+	local floor = top
+	for _, acc in character:GetChildren() do
+		local handle = acc:IsA("Accessory") and acc:FindFirstChild("Handle") or nil
+		if handle and handle:IsA("BasePart") then
+			local onHead = false
+			for _, a in handle:GetChildren() do
+				if a:IsA("Attachment") and MARK_HEAD_SLOTS[a.Name] then onHead = true end
+			end
+			if not onHead then
+				local ok, kind = pcall(function() return acc.AccessoryType end)
+				onHead = ok and (kind == Enum.AccessoryType.Hat or kind == Enum.AccessoryType.Hair)
+			end
+			if onHead then
+				floor = math.max(floor, head.CFrame:PointToObjectSpace(handle.Position).Y + handle.Size.Y / 2)
+			end
+		end
+	end
+	return math.min(floor, top + (V.MarkModels.MaxRise or 1) * k)
+end
+
+-- the clone on the head: x head height / HeadRef (x RankScale), its bottom HaloGap above (halo) / HornsDepth into
+-- (horns) the head top or the hat / hair on it (markFloor), turned by Yaw; halos keep the old disc's light, the top
+-- rank sparkles
+local function buildMarkModel(f, rank, head, template, character)
 	local M = V.MarkModels
 	local k = math.max(0.25, head.Size.Y / (M.HeadRef or 1.2))
 	local part = template:Clone()
 	part.Name = f == "Halo" and "HaloModel" or "HornsModel"
-	part.Size = template.Size * k
+	part.Size = template.Size * k * (type(M.RankScale) == "table" and tonumber(M.RankScale[rank]) or 1)
 	part.Anchored = false
 	part.Massless = true
 	part.CanCollide = false
@@ -420,7 +448,7 @@ local function buildMarkModel(f, rank, head, template)
 	part.CanTouch = false
 	part.CastShadow = false
 	local lift = f == "Halo" and (M.HaloGap or 0.3) * k or -(M.HornsDepth or 0.06) * k
-	part.CFrame = head.CFrame * CFrame.new(0, head.Size.Y / 2 + lift + part.Size.Y / 2, 0)
+	part.CFrame = head.CFrame * CFrame.new(0, markFloor(character, head, k) + lift + part.Size.Y / 2, 0)
 		* CFrame.Angles(0, math.rad(M.Yaw or 0), 0)
 	if f == "Halo" and type(M.HaloLight) == "table" then
 		addLight(part, Config.Factions.Halo.Color, (M.HaloLight.Range or 8) * k, M.HaloLight.Brightness or 1.2)
@@ -447,7 +475,7 @@ local function buildFactionMark(player, character)
 	rank = math.max(1, rank or 1)
 	local template = markTemplate(f, rank)
 	if template then
-		mount(newPiece("FactionMark"), buildMarkModel(f, rank, head, template), character, head)
+		mount(newPiece("FactionMark"), buildMarkModel(f, rank, head, template, character), character, head)
 		return
 	end
 	local scale = 1 + V.MarkScalePerRank * (rank - 1)
@@ -1053,7 +1081,13 @@ local function onCharacterSpawned(player, character)
 	table.insert(st.CharConns, character.ChildAdded:Connect(function(child)
 		if child:IsA("BasePart") and BODY_PARTS[child.Name] then
 			requestRefresh(player)
+		elseif child:IsA("Accessory") then
+			-- 3rd idea round #6: a hat / hair that arrives later lifts the halo / horns (once its weld has settled)
+			task.delay(REFRESH_DEBOUNCE, markDirty, player, { "FactionMark" })
 		end
+	end))
+	table.insert(st.CharConns, character.ChildRemoved:Connect(function(child)
+		if child:IsA("Accessory") then markDirty(player, { "FactionMark" }) end
 	end))
 	refreshAll(player)
 end

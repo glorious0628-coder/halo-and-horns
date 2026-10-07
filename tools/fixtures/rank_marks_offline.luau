@@ -11,6 +11,8 @@ local M0 = C0.Visuals.MarkModels
 local cfm = {}
 local function cf(x, y, z, yaw) return setmetatable({ X = x or 0, Y = y or 0, Z = z or 0, Yaw = yaw or 0, Roll = 0 }, cfm) end
 cfm.__mul = function(a, b) local r = cf(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.Yaw + b.Yaw); r.Roll = a.Roll + b.Roll; return r end
+-- the head never turns here: head space = a plain shift
+cfm.__index = { PointToObjectSpace = function(self, v) return vec(v.X - self.X, v.Y - self.Y, v.Z - self.Z) end }
 local CF = {
 	new = function(x, y, z) return cf(x, y, z) end,
 	Angles = function(rx, ry, rz)
@@ -125,6 +127,24 @@ local function marksWorld(o)
 		p.Character = character
 		return p, character, head
 	end
+	-- 3rd idea round #6: an accessory whose handle top is `above` studs over the head top (Y 10.6), `height` tall, on
+	-- the attachment `slot` (nil = none) and of AccessoryType `kind` (nil = unset)
+	function w:Wear(character, slot, above, height, kind)
+		local acc = newInstance("Accessory", w)
+		acc.Name = "Acc" .. tostring(slot) .. tostring(above)
+		acc.AccessoryType = kind
+		local handle = newInstance("Part", w)
+		handle.Name, handle.Size = "Handle", vec(1.4, height, 1.4)
+		handle.Position = vec(0, 10.6 + above - height / 2, 0)
+		handle.Parent = acc
+		if slot then
+			local att = newInstance("Attachment", w)
+			att.Name = slot
+			att.Parent = handle
+		end
+		acc.Parent = character
+		return acc
+	end
 	return w
 end
 
@@ -135,6 +155,8 @@ local function rankPoints(f, rank)
 	return C0.Titles.Thresholds[rank]
 end
 local function near(a, b) return math.abs(a - b) < 1e-6 end
+local RANK_SCALE = { 1.4, 1.2 } -- 검수 2026-10-07 (3rd idea round #6): R1 x1.4, R2 x1.2, ranks 3-5 x1
+local MAX_RISE = 1.0 -- the highest a hat / hair lifts the mark above a 1.2 head (x head / 1.2)
 
 runGroup("config", function()
 	check(type(M0) == "table" and M0.Folder == "MarkModels" and #M0.Halo == 5 and #M0.Horns == 5,
@@ -160,7 +182,7 @@ runGroup("each rank wears its own model", function()
 			local mark = markOf(character)
 			local part = mark and mark._children[1]
 			local name = (f == "Halo" and "Acc_HaloR" or "Acc_HornsR") .. r
-			local size = SIZES[name]
+			local size = SIZES[name] * (RANK_SCALE[r] or 1)
 			check(mark ~= nil and #mark._children == 1 and part.MeshId == "rbxassetid://" .. name,
 				f .. " rank " .. r .. ": the " .. name .. " model", show(part and part.MeshId))
 			if part then
@@ -168,8 +190,8 @@ runGroup("each rank wears its own model", function()
 				local lift = f == "Halo" and 0.3 or -0.06
 				check(near(part.CFrame.Y, top + lift + size.Y / 2) and near(part.CFrame.X, 0) and near(part.CFrame.Z, 0),
 					f .. " rank " .. r .. ": bottom at head top " .. (f == "Halo" and "+0.3" or "-0.06"), show({ part.CFrame.Y, top + lift + size.Y / 2 }))
-				check(near(part.CFrame.Yaw, math.rad(M0.Yaw)) and part.Size.X == size.X and part.Size.Y == size.Y,
-					f .. " rank " .. r .. ": turned by Yaw, real size on a 1.2 head", show({ part.CFrame.Yaw, part.Size }))
+				check(near(part.CFrame.Yaw, math.rad(M0.Yaw)) and near(part.Size.X, size.X) and near(part.Size.Y, size.Y),
+					f .. " rank " .. r .. ": turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)", show({ part.CFrame.Yaw, part.Size }))
 				check(part.Anchored == false and part.CanCollide == false and part.Massless == true and part.CanQuery == false
 					and part.CanTouch == false, f .. " rank " .. r .. ": a weightless, non-colliding accessory",
 					show({ part.Anchored, part.CanCollide, part.Massless }))
@@ -190,8 +212,9 @@ runGroup("bigger heads, models, missing files", function()
 	w.Build(p, character)
 	local part = markOf(character)._children[1]
 	local k = 1.5 / 1.2
-	check(near(part.Size.Y, SIZES.Acc_HornsR2.Y * k) and near(part.CFrame.Y, 10.6 - 0.06 * k + SIZES.Acc_HornsR2.Y * k / 2),
-		"a 1.5 head: the horns x1.25 and sunk 0.06 x1.25", show({ part.Size.Y, part.CFrame.Y }))
+	local r2 = SIZES.Acc_HornsR2.Y * k * RANK_SCALE[2]
+	check(near(part.Size.Y, r2) and near(part.CFrame.Y, 10.6 - 0.06 * k + r2 / 2),
+		"a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25", show({ part.Size.Y, part.CFrame.Y }))
 	-- a template imported as a Model with one mesh inside
 	local q, qc = w:Hero(202, "Halo", rankPoints("Halo", 2))
 	w.Build(q, qc)
@@ -217,6 +240,57 @@ runGroup("bigger heads, models, missing files", function()
 	local marks = 0
 	for _, c in character._children do if c.Name == "FactionMark" then marks += 1 end end
 	check(marks == 1, "a rebuild leaves one mark", marks)
+end)
+
+-- 3rd idea round #6 (검수 2026-10-07): R1 / R2 were buried in hair. The mark stands on the head top or on the top of a
+-- hat / hair accessory (HatAttachment / HairAttachment, or AccessoryType Hat / Hair) when higher, at most 1.0 x k
+-- above the head top; the four avatar kinds the review asked for: bald, up-do, long hair, hat
+runGroup("on top of hair and hats", function()
+	local w = marksWorld()
+	check(type(M0.RankScale) == "table" and M0.RankScale[1] == RANK_SCALE[1] and M0.RankScale[2] == RANK_SCALE[2]
+		and M0.RankScale[3] == nil and M0.MaxRise == MAX_RISE, "Config: RankScale { 1.4, 1.2 }, MaxRise 1.0",
+		show({ M0.RankScale, M0.MaxRise }))
+	local id = 300
+	-- the R1 halo / horns bottom over the head top (Y 10.6) for one outfit
+	local function bottom(f, outfit, headY, rank)
+		id += 1
+		local p, character, head = w:Hero(id, f, rankPoints(f, rank or 1), headY)
+		for _, item in outfit do w:Wear(character, item[1], item[2], item[3], item[4]) end
+		w.Build(p, character)
+		local part = markOf(character)._children[1]
+		return part.CFrame.Y - part.Size.Y / 2 - 10.6, part, head
+	end
+	local HALO_GAP, HORNS_DEPTH = 0.3, 0.06
+	local cases = {
+		{ "bald: on the head", {}, 0 },
+		{ "up-do (a bun 0.8 over the head)", { { "HairAttachment", 0.8, 1.4 } }, 0.8 },
+		{ "long hair (0.25 over the head, hanging down)", { { "HairAttachment", 0.25, 2.6 } }, 0.25 },
+		{ "a cap (0.35 over the head)", { { "HatAttachment", 0.35, 0.6 } }, 0.35 },
+		{ "a top hat (1.6 over the head): capped at 1.0", { { "HatAttachment", 1.6, 1.7 } }, MAX_RISE },
+		{ "a cap on an up-do: the higher one", { { "HatAttachment", 0.35, 0.6 }, { "HairAttachment", 0.8, 1.4 } }, 0.8 },
+		{ "wings on the back (2.0 over the head): not a head slot", { { "BodyBackAttachment", 2.0, 3.0 } }, 0 },
+		{ "glasses (below the head top) change nothing", { { "FaceFrontAttachment", -0.3, 0.3 } }, 0 },
+		{ "hair with AccessoryType Hair and no slot name", { { nil, 0.5, 1.0, "AccessoryType.Hair" } }, 0.5 },
+		{ "a hat with AccessoryType Hat and no slot name", { { nil, 0.4, 0.8, "AccessoryType.Hat" } }, 0.4 },
+		{ "a waist item of another type: ignored", { { nil, 0.9, 1.0, "AccessoryType.Waist" } }, 0 },
+	}
+	for _, case in cases do
+		local halo = bottom("Halo", case[2])
+		check(near(halo, case[3] + HALO_GAP), "halo R1, " .. case[1], show({ halo, case[3] + HALO_GAP }))
+		local horns = bottom("Horns", case[2])
+		check(near(horns, case[3] - HORNS_DEPTH), "horns R1, " .. case[1], show({ horns, case[3] - HORNS_DEPTH }))
+	end
+	-- R2 on an up-do: x1.2 and on the bun
+	local b2, part2 = bottom("Halo", { { "HairAttachment", 0.8, 1.4 } }, nil, 2)
+	check(near(b2, 0.8 + HALO_GAP) and near(part2.Size.X, SIZES.Acc_HaloR2.X * RANK_SCALE[2]), "halo R2 on an up-do: x1.2, on the bun",
+		show({ b2, part2.Size.X }))
+	-- R5 keeps its own size
+	local _, part5 = bottom("Horns", {}, nil, 5)
+	check(near(part5.Size.Y, SIZES.Acc_HornsR5.Y), "rank 5: its real size (x1)", show(part5.Size.Y))
+	-- a 1.5-stud head under a giant hat: the cap grows with the head (1.0 x 1.25)
+	local k = 1.5 / 1.2
+	local big = bottom("Halo", { { "HatAttachment", 3.0, 3.2 } }, 1.5)
+	check(near(big, MAX_RISE * k + HALO_GAP * k), "a 1.5 head under a giant hat: at most 1.25 over the head", show({ big, MAX_RISE * k + HALO_GAP * k }))
 end)
 
 -- UI round 2 #7 (검수 2026-10-07): the name tag over a head uses the game's fonts (A23-63) from one Config place

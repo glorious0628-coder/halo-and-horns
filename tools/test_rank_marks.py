@@ -12,6 +12,8 @@ Report: docs/art/verification_2026-10-06/offline_dev2_rank_marks_2026-10-06.json
 """
 from __future__ import annotations
 
+import re
+
 from dev2_offline import ROOT, SHARED, SSS, Suite, function_block, read, run
 
 FILES = {
@@ -24,14 +26,20 @@ C, V = "CONFIG_SOURCE", "VISUALS_SOURCE"
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     visuals = sources[V]
+    slots = re.search(r"^local MARK_HEAD_SLOTS = .*$", visuals, re.M)
+    if not slots:
+        raise ValueError("CharacterVisuals MARK_HEAD_SLOTS missing; update the test extractor.")
+    head_slots = slots.group(0)
     return {
         "CONFIG_SOURCE": sources[C],
         "UTIL_SOURCE": sources["UTIL_SOURCE"],
         "MARKS_EXTRACT": (
             "local Config, Util, ServerStorage, newPiece, mount, accPart, addLight, sparkle, clearChild, getFaction, "
             "charScale, buildNeutralGear = ...\nlocal V = Config.Visuals\nlocal NEUTRAL_ID = \"Neutral\"\n"
+            + head_slots + "\n"
             + function_block(visuals, "local function attrNum(")
             + function_block(visuals, "local function markTemplate(")
+            + function_block(visuals, "local function markFloor(")
             + function_block(visuals, "local function buildMarkModel(")
             + function_block(visuals, "local function buildFactionMark(")
             + "\nreturn buildFactionMark\n"),
@@ -50,7 +58,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 MUTATIONS = [
     ("the rank model is never used", V, "\tlocal template = markTemplate(f, rank)\n", "\tlocal template = nil\n"),
     ("always the rank 1 model", V, "names[math.clamp(rank, 1, #names)]", "names[1]"),
-    ("no scale for bigger heads", V, "\tpart.Size = template.Size * k\n", "\tpart.Size = template.Size\n"),
+    ("no scale for bigger heads", V, "\tpart.Size = template.Size * k * (type(M.RankScale)",
+     "\tpart.Size = template.Size * (type(M.RankScale)"),
     ("the halo sits on the head", V, "(M.HaloGap or 0.3) * k", "0"),
     ("the horns float", V, "-(M.HornsDepth or 0.06) * k", "(M.HornsDepth or 0.06) * k"),
     ("the model ignores Config Yaw (faces its back)", V, "CFrame.Angles(0, math.rad(M.Yaw or 0), 0)",
@@ -63,6 +72,20 @@ MUTATIONS = [
      '\tif t and t:IsA("Model") then t = t:FindFirstChildWhichIsA("BasePart", true) end\n', ""),
     ("Config: no R5 glow", C, "Glow = { Rank = 5,", "Glow = { Rank = 6,"),
     ("Config: the halo on the head", C, "HaloGap = 0.3,", "HaloGap = 0,"),
+    # 3rd idea round #6: on top of hair and hats, R1 / R2 bigger
+    ("hair and hats are ignored", V,
+     "floor = math.max(floor, head.CFrame:PointToObjectSpace(handle.Position).Y + handle.Size.Y / 2)", "floor = floor"),
+    ("no cap for giant hats", V, "return math.min(floor, top + (V.MarkModels.MaxRise or 1) * k)", "return floor"),
+    ("the cap ignores the head size", V, "top + (V.MarkModels.MaxRise or 1) * k)", "top + (V.MarkModels.MaxRise or 1))"),
+    ("every accessory lifts the mark", V, 'if a:IsA("Attachment") and MARK_HEAD_SLOTS[a.Name] then onHead = true end',
+     'if a:IsA("Attachment") then onHead = true end'),
+    ("AccessoryType Hat / Hair is ignored", V,
+     "onHead = ok and (kind == Enum.AccessoryType.Hat or kind == Enum.AccessoryType.Hair)", "onHead = false"),
+    ("the mark ignores the floor", V, "markFloor(character, head, k) + lift", "head.Size.Y / 2 + lift"),
+    ("R1 / R2 keep the small size", V, " * (type(M.RankScale) == \"table\" and tonumber(M.RankScale[rank]) or 1)", ""),
+    ("Config: R1 not bigger", C, "RankScale = { 1.4, 1.2 },", "RankScale = { 1, 1.2 },"),
+    ("Config: R2 not bigger", C, "RankScale = { 1.4, 1.2 },", "RankScale = { 1.4, 1 },"),
+    ("Config: a high cap", C, "MaxRise = 1.0,", "MaxRise = 3.0,"),
     # UI round 2 #7: name tag fonts
     ("name tags keep GothamBold", V, "\tif ok and face then label.FontFace = face end\n", ""),
     ("no guard when Config.Fonts is missing", V, "\tlocal fonts = Config.Fonts or {}\n", "\tlocal fonts = Config.Fonts\n"),
@@ -86,6 +109,14 @@ def static() -> tuple[int, list[str]]:
     check('local ServerStorage = game:GetService("ServerStorage")' in visuals, "CharacterVisuals reads ServerStorage")
     mark = function_block(visuals, "local function buildFactionMark(")
     check(mark.find("markTemplate(f, rank)") < mark.find("HaloDisc"), "the rank model comes before the drawn fallback")
+    spawned = function_block(visuals, "local function onCharacterSpawned(")
+    added = spawned.find("character.ChildAdded:Connect")
+    removed = spawned.find("character.ChildRemoved:Connect")
+    check(added >= 0 and 'elseif child:IsA("Accessory") then' in spawned[added:removed]
+          and 'task.delay(REFRESH_DEBOUNCE, markDirty, player, { "FactionMark" })' in spawned[added:removed],
+          "3rd idea round #6: a hat / hair added later rebuilds the mark (after the weld settles)")
+    check(removed >= 0 and 'if child:IsA("Accessory") then markDirty(player, { "FactionMark" }) end' in spawned[removed:],
+          "3rd idea round #6: a removed hat / hair rebuilds the mark")
     for i in range(1, 6):
         for kind in ("Halo", "Horns"):
             check((ROOT / f"art/models/acc/Acc_{kind}R{i}.glb").is_file(), f"art/models/acc/Acc_{kind}R{i}.glb is on disk")

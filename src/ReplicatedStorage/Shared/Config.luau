@@ -2979,6 +2979,11 @@ Config.Visuals.MarkModels = {
 	HaloLight = { Range = 8, Brightness = 1.2 }, -- the old halo disc's light
 	-- R5: a soft gold glow / embers as an effect (이미지 생성 1: "금빛 번짐·불씨는 효과로")
 	Glow = { Rank = 5, Rate = 5, Size = 0.25, Halo = Color3.fromRGB(255, 225, 130), Horns = Color3.fromRGB(255, 140, 60) },
+	-- 3rd idea round #6 (검수 2026-10-07): R1 / R2 were lost in hair, so their clone is x1.4 / x1.2 (ranks 3-5 x1).
+	-- The mark stands on the head top, or on the top of a hat / hair accessory when that is higher, at most
+	-- MaxRise x (head height / HeadRef) above the head top (a giant hat keeps it near the head)
+	RankScale = { 1.4, 1.2 },
+	MaxRise = 1.0,
 }
 
 function Config.SackTier(gold, level)
