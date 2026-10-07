@@ -18,7 +18,7 @@
 |---|---|---|
 | 프롤로그 띠 / 팀 알림 | fix/a2374-letterbox, -teammsg | **main 완료(cf78a4d)** |
 | 카메라 등 뒤 | fix/a2374-camera(검사 탈락: 옆걸음에 영영 옆모습) → fix/a2374-camera2(멈추면 등 뒤로 되돌기 + 대각선 넓게) | camera2 워크플로 진행 중이었음. 없으면 같은 사양으로 다시 |
-| 말풍선 코드 | fix/a2374-bark(3종 가족 키) → fix/a2374-bark2(12종 BarkBubble<Kind>, 고정 크기 둥근 풍선, 대사 의성어·한 단어) | bark2 진행 중이었음 |
+| 말풍선 코드 | fix/a2374-bark(3종 가족 키) → fix/a2374-bark2(12종 BarkBubble<Kind>, 고정 크기 둥근 풍선, 대사 의성어·한 단어) | **bark2 9fa21ef 끝**(시험 통과, 대사 96줄 모두 의성어·2단어 이하). 남은 1개: 몬스터별 그림이 올라가기 전에는 공용 BarkBubble 9조각이 112x60(몸통 약 2.4:1)으로 여전히 길쭉함 → 공용 키를 건너뛰고 둥근 코드 말풍선(96x70)을 쓰게 고친 뒤 main |
 | 반투명·겹침 | fix/a2374-translucent, fix/a2374-separation | 워크플로 진행 중이었음(가지가 없으면 다시) |
 | 한국어 자동 번역("아야!") | fix/a2374-english(AutoLocalize=false) | 진행 중이었음. Creator Dashboard 자동 번역 끄기는 사용자 몫 |
 | 3D 배치 도구 + 성 원인 | tool/a2374-kit-place | 진행 중이었음 |
