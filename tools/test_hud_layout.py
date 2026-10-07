@@ -16,10 +16,10 @@ Roblox top bar row (A23-40 보강, user 2026-10-06): centred on the bar's middle
 lines, face group and combat buttons with the four menu tiles (+ the phone row's overflow) in one row (A23-40 정정); no
 two items overlap (circles as circles) on every supported screen and pressable items keep >= 2 logical units apart; touch
 targets >= 60 logical units (portrait, round combat buttons, both potion buttons, the quest lines block, every icon tile;
-the touch [메뉴] >= 45 real px in the bar); nothing pressable on the jump button or in the thumbstick zone (x < 0.4W,
+the touch [메뉴] >= 45 real px in the bar); nothing pressable on the jump button or in the thumbstick zone (x < 0.3W,
 y > 0.54H); blocks stay at their edges (minimap + quest lines under it top-left; PC face / bars / tiles / potions
-bottom-centre clear of the corner cluster; phone face / bars / tiles bottom-centre, centred between the thumbstick zone and
-the thumb ring, whose HP · MP · Q · Z · X buttons hug the attack disc in that order, 2026-10-07); the tile row fits 8 tiles
+bottom-centre clear of the corner cluster; phone face / bars / tiles bottom-centre, as wide as the room right of 0.4W and
+centred between the thumbstick's rest (0.2W) and the thumb ring (검수 2026-10-07), whose HP · MP · Q · Z · X buttons hug the attack disc in that order, 2026-10-07); the tile row fits 8 tiles
 on the PC reference, 4 on the phone reference and >= 2 on every phone; one centre column for the meter, the chip row, the
 next-event line and notify, clear of the left / right blocks; the two reference screens reproduce the sheet within 1 px
 (PC potion gap 6 px included); HudLayout stays a pure module.
@@ -108,10 +108,10 @@ EXCEPTIONS = [
      "A narrow desktop window (700x720 px, UIScale 0.8): the bottom block (face, bars, six tiles and the potion pair, "
      "634du) does not fit between the left margin and the corner cluster (571du), so its right end comes in: the potion "
      "pair keeps its size at the right end and the row keeps 5 tiles; the sixth folds out of [메뉴]."),
-    # 2026-10-07 phone layout: the bottom row sits between the thumbstick zone (x < 0.4 W) and the thumb ring, which
-    # never shrinks its smallest button below a thumb
+    # 2026-10-07 phone layout: the bottom row is as wide as the room right of 0.4 W (centred between the thumbstick's
+    # rest at 0.2 W and the thumb ring, which never shrinks its smallest button below a thumb)
     ("phone_568x320", "tiles at least 2 on phones",
-     "4-inch phone (568x320 px): the room between the thumbstick zone's edge (0.4 W = 227 px) and the thumb ring's MP "
+     "4-inch phone (568x320 px): the room between 0.4 W (227 px) and the thumb ring's MP "
      "potion (kept at thumb size) is 85 px, one 45 px tile with the face and bars above it; the other icon windows "
      "fold out of [메뉴]."),
     ("phone_592x360_navbar", "fold holds the menu tiles in one line",
@@ -125,8 +125,9 @@ EXCEPTIONS = [
 # clamp is defensive in layout B (no supported screen squeezes the column: the left, centre and right blocks all scale
 # with the same k), so it has no mutation here; the column checks still run on every screen. Defensive too since the
 # 2026-10-07 phone layout: the fold's thumbstick-zone blocker (the fold runs down from the top bar and its three lines end
-# above 0.54 H on every phone; "fold stick zone free" still runs) and the generic BR corner anchor of a touch screen
-# without a jump button.
+# above 0.54 H on every phone; "fold stick zone free" still runs), the generic BR corner anchor of a touch screen
+# without a jump button, and the phone group's thumbstick-zone floor (math.max(edge, ...): the group centred between the
+# thumbstick's rest and the ring starts at 0.3 W at the latest; "phone face group right of the stick zone" still runs).
 MUTATIONS = [
     # PC 2026-10-07: the potions belong to the bottom-centre group (right of the icon row), never to the corner cluster
     ("PC potions back in the corner cluster",
@@ -148,10 +149,11 @@ MUTATIONS = [
     ("top-left items ignore the real top bar",
      "X, Y = x * k, top + (y - ref.Inset) * k", "X, Y = x * k, y * k"),
     # 2026-10-07 phone layout: the bottom-centre group between the thumbstick zone and the thumb ring
-    ("phone group reaches into the stick zone", "local edge = W * STICK.X", "local edge = W * 0.3"),
+    ("phone group wider than the room right of 0.4 W", "local room = math.max(0, limit - W * STICK.Room)",
+     "local room = math.max(0, limit - W * 0.2)"),
     ("phone group ignores the thumb ring", "limit = math.min(limit, r.X - GAP)", "limit = limit"),
-    ("phone group not centred between the stick zone and the ring", "local left = edge + (room - gw) / 2",
-     "local left = edge"),
+    ("phone group not centred between the thumbstick and the ring",
+     "local left = math.max(edge, mid + (limit - mid - gw) / 2)", "local left = math.max(edge, limit - gw)"),
     ("phone group grows past six tiles", "local gw = math.min(room, ROW_MAX * rowH + (ROW_MAX - 1) * tileGap)",
      "local gw = room"),
     ("phone bars stop short of the row's end", "local bw = math.max(1, right - bx)", "local bw = math.max(1, right - bx - 20)"),
@@ -181,7 +183,7 @@ MUTATIONS = [
     ("phone X skill rect drifted", "{ 633, 215, 54, 54 }", "{ 633, 201, 54, 54 }"),
     ("desktop X skill rect drifted", "{ 1199, 540, 66, 66 }", "{ 1209, 540, 66, 66 }"),
     ("phone quest rect drifted", "{ 8, 146, 240, 45 }", "{ 8, 146, 260, 45 }"),
-    ("phone tile row rect drifted", "{ 300, 296, 190, 45 }", "{ 300, 300, 190, 45 }"),
+    ("phone tile row rect drifted", "{ 225, 296, 190, 45 }", "{ 225, 300, 190, 45 }"),
     ("potion gap drifted", "local POTION_GAP = 6", "local POTION_GAP = 2"),
     # A23-40 정정: [메뉴] top-right + its fold-out room
     ("menu not at the bar's right end", "menu.X = bar.X1 - TOPBAR.Edge / s - mSize", "menu.X = bar.X1 - 40 / s - mSize"),
@@ -366,8 +368,8 @@ def draw(result: dict) -> bool:
             bar = case.get("Bar")
             if bar:  # Roblox's own buttons (left of the bar's free part)
                 d.rectangle([x0, oy + bar["Y0"] * s * k, x0 + bar["X0"] * s * k, oy + bar["Y1"] * s * k], fill=(40, 40, 44))
-            if case.get("Touch"):  # the thumbstick zone (x < 0.4 W, y > 0.54 H)
-                d.rectangle([x0, oy + ph * 0.54 * k, x0 + 0.4 * pw * k, oy + ph * k], outline=(110, 110, 110))
+            if case.get("Touch"):  # the thumbstick zone (x < 0.3 W, y > 0.54 H)
+                d.rectangle([x0, oy + ph * 0.54 * k, x0 + 0.3 * pw * k, oy + ph * k], outline=(110, 110, 110))
             jump = case.get("Jump")
             if jump:
                 d.ellipse([x0 + jump["X"] * s * k, oy + jump["Y"] * s * k, x0 + (jump["X"] + jump["W"]) * s * k,

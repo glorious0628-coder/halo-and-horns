@@ -43,12 +43,12 @@ local ITEMS = {
 	-- king pill ("Pumpkin King is here! 4:54 left") was squeezed to 150 x 16 px with its words spilling out
 	event = { "TC", { 516, 88, 248, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
-	portrait = { "BC", { 387, 586, 50, 50 }, { 300, 248, 45, 45 } },
-	power_line = { "BC", { 445, 578, 449, 16 }, { 350, 250, 140, 14 } },
-	hp_bar = { "BC", { 445, 598, 220, 20 }, { 350, 267, 68, 12 } },
-	mp_bar = { "BC", { 673, 598, 221, 20 }, { 423, 267, 68, 12 } },
-	xp_bar = { "BC", { 445, 622, 449, 8 }, { 350, 282, 140, 5 } },
-	tiles = { "BC", { 445, 640, 327, 52 }, { 300, 296, 190, 45 } },
+	portrait = { "BC", { 387, 586, 50, 50 }, { 225, 248, 45, 45 } },
+	power_line = { "BC", { 445, 578, 449, 16 }, { 275, 250, 140, 14 } },
+	hp_bar = { "BC", { 445, 598, 220, 20 }, { 275, 267, 68, 12 } },
+	mp_bar = { "BC", { 673, 598, 221, 20 }, { 347, 267, 68, 12 } },
+	xp_bar = { "BC", { 445, 622, 449, 8 }, { 275, 282, 140, 5 } },
+	tiles = { "BC", { 445, 640, 327, 52 }, { 225, 296, 190, 45 } },
 	-- A23-40 정정 + 보강: [메뉴] in the top bar's right end (TB anchor; size and position come from TOPBAR, the rects are
 	-- the 1280x720 / 749x361 results). out.fold = its fold-out room
 	menu = { "TB", { 1224, 12, 44, 44 }, { 692, 12, 45, 45 } },
@@ -97,9 +97,11 @@ local ROUND_TAPS = { "ghost", "q", "z", "x", "auto", "attack", "potion_hp", "pot
 local POTION_GAP = 6 -- real px between the HP and MP buttons on the PC sheet (out.potions.Gap, in du)
 HudLayout.PotionGap = POTION_GAP
 local TILE_GAP = 3 -- real px: the least gap between two tiles of the icon row (out.tiles.Gap, in du)
--- touch thumbstick zone: x < 0.4 W and y > 0.54 H (2026-10-07 phone layout: the quest lines hang under the minimap above
--- the thumb's rest; Roblox's thumbstick appears where the thumb lands in the lower left)
-local STICK = { X = 0.4, Y = 0.54 }
+-- touch thumbstick zone: x < 0.3 W and y > 0.54 H, nothing pressable there (2026-10-07 phone layout: the quest lines hang
+-- under the minimap above the thumb's rest; Roblox's thumbstick appears where the thumb lands in the lower left and rests
+-- around Mid = 0.2 W). 검수 2026-10-07 ("폰 아래 묶음 가운데"): the bottom-centre group is as wide as the room right of
+-- Room = 0.4 W and sits centred between the thumbstick's rest and the thumb ring (left edge 0.3 W on the reference phones)
+local STICK = { X = 0.3, Y = 0.54, Mid = 0.2, Room = 0.4 }
 -- the bottom-centre group (face, power line, bars, XP, tiles; PCs: the potions right of the tiles) and the corner cluster
 -- it must stay clear of (touch: the thumb ring, potions included)
 local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles", "potion_hp", "potion_mp" }
@@ -231,19 +233,21 @@ function HudLayout.Compute(env)
 			local g = MIN_TAP - face.W
 			face.Y, face.W, face.H = face.Y - g, MIN_TAP, MIN_TAP
 		end
-		-- across: the room runs from the thumbstick zone's edge to a GAP left of the ring buttons level with the bars and
-		-- the row (the face may stand above the bars at the group's left end); the group fills it up to ROW_MAX tiles wide,
-		-- centred in it ("조이스틱과 전투 버튼 사이 가운데"). The tile row spans the group (tiles that do not fit go to
-		-- [메뉴]), the bars run from the face to the group's right end, HP and MP halves BAR_GAP apart
+		-- across: the group's width is the room from STICK.Room to a GAP left of the ring buttons level with the bars and
+		-- the row (the face may stand above the bars at the group's left end), up to ROW_MAX tiles wide; it sits centred
+		-- between the thumbstick's rest (STICK.Mid) and those buttons ("조이스틱과 전투 버튼 사이 가운데", 검수 2026-10-07),
+		-- never left of the thumbstick zone (STICK.X; defensive: the centred group starts there at the latest). The tile row
+		-- spans the group (tiles that do not fit go to [메뉴]), the bars run from the face to the group's right end, HP and
+		-- MP halves BAR_GAP apart
 		local limit = W
 		for _, id in RING do
 			local r = out[id]
 			if not hidden[id] and r.Y < rowBottom and r.Y + r.H > out.power_line.Y then limit = math.min(limit, r.X - GAP) end
 		end
-		local edge = W * STICK.X
-		local room = math.max(0, limit - edge)
+		local edge, mid = W * STICK.X, W * STICK.Mid
+		local room = math.max(0, limit - W * STICK.Room)
 		local gw = math.min(room, ROW_MAX * rowH + (ROW_MAX - 1) * tileGap)
-		local left = edge + (room - gw) / 2
+		local left = math.max(edge, mid + (limit - mid - gw) / 2)
 		local right = left + gw
 		local barGap = BAR_GAP * k
 		tl.X, tl.W = left, gw

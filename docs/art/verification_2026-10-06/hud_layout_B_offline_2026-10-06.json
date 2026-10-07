@@ -1,9 +1,9 @@
 {
-  "status": "passed-no-mutations",
-  "mutationsSkipped": true,
-  "checks": 12211,
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 12220,
   "failedChecks": 0,
-  "namedChecks": 11301,
+  "namedChecks": 11310,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
@@ -17,7 +17,7 @@
     {
       "screen": "phone_568x320",
       "check": "tiles at least 2 on phones",
-      "reason": "4-inch phone (568x320 px): the room between the thumbstick zone's edge (0.4 W = 227 px) and the thumb ring's MP potion (kept at thumb size) is 85 px, one 45 px tile with the face and bars above it; the other icon windows fold out of [메뉴].",
+      "reason": "4-inch phone (568x320 px): the room between 0.4 W (227 px) and the thumb ring's MP potion (kept at thumb size) is 85 px, one 45 px tile with the face and bars above it; the other icon windows fold out of [메뉴].",
       "measuredDu": 1,
       "neededDu": 2
     },
@@ -710,9 +710,774 @@
   },
   "mutations": {
     "total": 54,
-    "applied": 0,
-    "caught": 0,
-    "results": []
+    "applied": 54,
+    "caught": 54,
+    "results": [
+      {
+        "mutation": "PC potions back in the corner cluster",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x768 :: PC bars end with the potion pair",
+          "pc_1024x768 :: PC potions follow the icon row",
+          "pc_1024x768 :: face group centred or stepped aside",
+          "pc_1024x768 :: no overlap potion_mp/ghost",
+          "pc_1024x768 :: press gap potion_mp/ghost",
+          "pc_573x354_small :: PC bars end with the potion pair"
+        ],
+        "newFailingCount": 33
+      },
+      {
+        "mutation": "PC potions left behind when the block's right end comes in",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_700x720_narrow :: PC bars end with the potion pair",
+          "pc_700x720_narrow :: exception still needed: at least 6 tiles on every PC",
+          "pc_700x720_narrow :: face group centred or stepped aside",
+          "pc_700x720_narrow :: no overlap potion_mp/ghost",
+          "pc_700x720_narrow :: press gap potion_mp/ghost"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "PC bars keep their length when the block's right end comes in",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_700x720_narrow :: PC bars end with the potion pair",
+          "pc_700x720_narrow :: face group centred or stepped aside"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "potions box not published",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: PC potions side by side",
+          "pc_1024x600 :: potions box published",
+          "pc_1024x768 :: PC potions side by side",
+          "pc_1024x768 :: potions box published",
+          "pc_1280x1024 :: PC potions side by side",
+          "pc_1280x1024 :: potions box published"
+        ],
+        "newFailingCount": 39
+      },
+      {
+        "mutation": "short desktop windows go to the phone sheet",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_573x354_small :: PC bars end with the potion pair",
+          "pc_573x354_small :: PC potions follow the icon row",
+          "pc_573x354_small :: PC potions side by side",
+          "pc_573x354_small :: at least 6 tiles on every PC",
+          "pc_573x354_small :: attack in corner",
+          "pc_573x354_small :: face group centred or stepped aside"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "touch targets may shrink to 30",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tiles at least 2 on phones",
+          "phone_568x320 :: tap size auto",
+          "phone_568x320 :: tap size ghost",
+          "phone_568x320 :: tap size portrait",
+          "phone_568x320 :: tap size potion_hp",
+          "phone_568x320 :: tap size potion_mp"
+        ],
+        "newFailingCount": 45
+      },
+      {
+        "mutation": "round touch buttons never grow back",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size auto",
+          "phone_592x360_navbar :: tap size auto",
+          "phone_667x375 :: tap size auto",
+          "phone_749x361 :: tap size auto",
+          "phone_749x361_notch :: tap size auto",
+          "phone_844x390 :: tap size auto"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "touch face never grows back",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size portrait",
+          "phone_592x360_navbar :: tap size portrait",
+          "phone_667x375 :: tap size portrait",
+          "phone_749x361_notch :: tap size portrait",
+          "tablet_1024x768 :: tap size portrait"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "touch tile row may shrink below a thumb",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tiles at least 2 on phones",
+          "phone_568x320 :: tap size tiles",
+          "phone_592x360_navbar :: tap size tiles",
+          "phone_667x375 :: tap size tiles",
+          "phone_749x361_notch :: tap size tiles",
+          "tablet_1024x768 :: tap size tiles"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "tile count ignores the gap",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: tiles fit the row",
+          "pc_1024x768 :: tiles fit the row",
+          "pc_1280x1024 :: tiles fit the row",
+          "pc_1280x240_short :: tiles fit the row",
+          "pc_1280x720 :: reference tile count",
+          "pc_1280x720 :: tiles fit the row"
+        ],
+        "newFailingCount": 26
+      },
+      {
+        "mutation": "tiles touch",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: tile gap",
+          "pc_1024x768 :: tile gap",
+          "pc_1280x1024 :: tile gap",
+          "pc_1280x240_short :: tile gap",
+          "pc_1280x720 :: matches sheet tile gap",
+          "pc_1280x720 :: tile gap"
+        ],
+        "newFailingCount": 26
+      },
+      {
+        "mutation": "touch quest lines may shrink below a thumb",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size quest lines",
+          "phone_592x360_navbar :: tap size quest lines",
+          "phone_667x375 :: tap size quest lines",
+          "phone_749x361_notch :: tap size quest lines",
+          "tablet_1024x768 :: tap size quest lines"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "top-left items ignore the real top bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: top rows hug the top bar",
+          "pc_573x354_small :: no overlap minimap/quest",
+          "pc_573x354_small :: quest under the minimap",
+          "pc_573x354_small :: top rows hug the top bar",
+          "pc_655x340_small :: no overlap minimap/quest",
+          "pc_655x340_small :: quest under the minimap"
+        ],
+        "newFailingCount": 24
+      },
+      {
+        "mutation": "phone group wider than the room right of 0.4 W",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tiles at least 2 on phones",
+          "phone_568x320 :: no overlap mp_bar/potion_mp",
+          "phone_568x320 :: no overlap power_line/potion_mp",
+          "phone_568x320 :: no overlap tiles/potion_hp",
+          "phone_568x320 :: no overlap xp_bar/potion_mp",
+          "phone_568x320 :: phone group centred between the thumbstick and the ring"
+        ],
+        "newFailingCount": 100
+      },
+      {
+        "mutation": "phone group ignores the thumb ring",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tiles at least 2 on phones",
+          "phone_568x320 :: jump free tiles",
+          "phone_568x320 :: no overlap hp_bar/potion_mp",
+          "phone_568x320 :: no overlap mp_bar/attack",
+          "phone_568x320 :: no overlap power_line/attack",
+          "phone_568x320 :: no overlap power_line/potion_mp"
+        ],
+        "newFailingCount": 164
+      },
+      {
+        "mutation": "phone group not centred between the thumbstick and the ring",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: phone group centred between the thumbstick and the ring",
+          "phone_592x360_navbar :: phone group centred between the thumbstick and the ring",
+          "phone_667x375 :: phone group centred between the thumbstick and the ring",
+          "phone_749x361 :: matches sheet hp_bar",
+          "phone_749x361 :: matches sheet mp_bar",
+          "phone_749x361 :: matches sheet portrait"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "phone group grows past six tiles",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_926x428 :: phone row at most six tiles wide"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "phone bars stop short of the row's end",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: phone bars end with the tile row mp_bar",
+          "phone_568x320 :: phone bars end with the tile row power_line",
+          "phone_568x320 :: phone bars end with the tile row xp_bar",
+          "phone_592x360_navbar :: phone bars end with the tile row mp_bar",
+          "phone_592x360_navbar :: phone bars end with the tile row power_line",
+          "phone_592x360_navbar :: phone bars end with the tile row xp_bar"
+        ],
+        "newFailingCount": 31
+      },
+      {
+        "mutation": "phone potions off the thumb ring (bottom-centre like the PC)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap potion_hp/attack",
+          "phone_568x320 :: press gap potion_hp/attack",
+          "phone_568x320 :: ring order potion_hp",
+          "phone_592x360_navbar :: no overlap potion_hp/attack",
+          "phone_592x360_navbar :: press gap potion_hp/attack",
+          "phone_592x360_navbar :: ring order potion_hp"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "phone potion rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap potion_hp/potion_mp",
+          "phone_568x320 :: press gap potion_hp/potion_mp",
+          "phone_592x360_navbar :: no overlap potion_hp/potion_mp",
+          "phone_592x360_navbar :: press gap potion_hp/potion_mp",
+          "phone_667x375 :: no overlap potion_hp/potion_mp",
+          "phone_667x375 :: press gap potion_hp/potion_mp"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "narrow phone safe area not shrunk",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap chips/combo",
+          "phone_568x320 :: no overlap event/combo",
+          "phone_568x320 :: no overlap notify/ghost",
+          "phone_568x320 :: stick zone free quest",
+          "phone_749x361_notch :: stick zone free quest"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "centre column touches its neighbours",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x768 :: face group centred or stepped aside",
+          "pc_1024x768 :: press gap potion_mp/ghost",
+          "pc_1280x720_unibar_wide :: in the top bar war_meter",
+          "pc_573x354_small :: face group centred or stepped aside",
+          "pc_573x354_small :: in the top bar war_meter",
+          "pc_573x354_small :: press gap potion_mp/ghost"
+        ],
+        "newFailingCount": 43
+      },
+      {
+        "mutation": "PC face group never steps aside",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x768 :: no overlap potion_mp/ghost",
+          "pc_1024x768 :: press gap potion_mp/ghost",
+          "pc_573x354_small :: no overlap potion_mp/ghost",
+          "pc_573x354_small :: press gap potion_mp/ghost",
+          "pc_700x720_narrow :: exception still needed: at least 6 tiles on every PC",
+          "pc_700x720_narrow :: no overlap potion_hp/auto"
+        ],
+        "newFailingCount": 21
+      },
+      {
+        "mutation": "PC face group ignores the left margin",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_700x720_narrow :: exception still needed: at least 6 tiles on every PC",
+          "pc_700x720_narrow :: face group left margin",
+          "pc_700x720_narrow :: no overlap portrait/hp_bar",
+          "pc_700x720_narrow :: no overlap portrait/power_line",
+          "pc_700x720_narrow :: no overlap portrait/xp_bar"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "touch cluster ignores the jump button",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: attack left of jump",
+          "phone_568x320 :: exception still needed: tiles at least 2 on phones",
+          "phone_568x320 :: jump free attack",
+          "phone_568x320 :: jump free x",
+          "phone_568x320 :: no overlap potion_hp/potion_mp",
+          "phone_568x320 :: no overlap potion_mp/q"
+        ],
+        "newFailingCount": 33
+      },
+      {
+        "mutation": "attack measured from the jump's centre",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tablet_1024x768 :: attack left of jump",
+          "tablet_1024x768 :: jump free attack"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "thumb cluster shrinks with small phones",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tiles at least 2 on phones",
+          "phone_568x320 :: jump free x",
+          "phone_568x320 :: no overlap potion_hp/potion_mp",
+          "phone_568x320 :: no overlap potion_mp/q",
+          "phone_568x320 :: no overlap q/z",
+          "phone_568x320 :: press gap potion_hp/potion_mp"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "thumb cluster not rigid (sizes follow the screen, places the ring)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: ring hugs the attack potion_hp",
+          "phone_568x320 :: ring hugs the attack potion_mp",
+          "phone_568x320 :: ring hugs the attack q",
+          "phone_568x320 :: ring hugs the attack x",
+          "phone_568x320 :: ring hugs the attack z",
+          "phone_592x360_navbar :: ring hugs the attack potion_hp"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "combo line grows with the thumb cluster",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap chips/combo",
+          "phone_568x320 :: no overlap event/combo",
+          "phone_568x320 :: no overlap notify/combo"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "desktop attack rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet attack"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "desktop tiles rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet tiles"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PC row wider than its six tiles (the potions drift off)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: PC potions follow the icon row",
+          "pc_1024x600 :: PC potions right of the icon row",
+          "pc_1024x600 :: no overlap tiles/potion_hp",
+          "pc_1024x600 :: no overlap tiles/potion_mp",
+          "pc_1024x600 :: press gap tiles/potion_hp",
+          "pc_1024x600 :: press gap tiles/potion_mp"
+        ],
+        "newFailingCount": 87
+      },
+      {
+        "mutation": "phone skill Q rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap potion_mp/q",
+          "phone_568x320 :: no overlap q/attack",
+          "phone_568x320 :: press gap potion_mp/q",
+          "phone_568x320 :: press gap q/attack",
+          "phone_592x360_navbar :: no overlap potion_mp/q",
+          "phone_592x360_navbar :: no overlap q/attack"
+        ],
+        "newFailingCount": 37
+      },
+      {
+        "mutation": "phone X skill rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: press gap z/x",
+          "phone_592x360_navbar :: press gap z/x",
+          "phone_667x375 :: press gap z/x",
+          "phone_749x361 :: matches sheet x",
+          "phone_749x361 :: press gap z/x",
+          "phone_749x361_notch :: press gap z/x"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "desktop X skill rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet x"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "phone quest rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_749x361 :: matches sheet quest"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "phone tile row rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_749x361 :: matches sheet tiles"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "potion gap drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: PC potions side by side",
+          "pc_1024x768 :: PC potions side by side",
+          "pc_1280x1024 :: PC potions side by side",
+          "pc_1280x720 :: PC potions side by side",
+          "pc_1280x720 :: matches sheet potion gap",
+          "pc_1280x720_inset36 :: PC potions side by side"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "menu not at the bar's right end",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: menu at the top bar's right end",
+          "pc_1024x768 :: menu at the top bar's right end",
+          "pc_1280x1024 :: menu at the top bar's right end",
+          "pc_1280x720 :: matches sheet menu",
+          "pc_1280x720 :: menu at the top bar's right end",
+          "pc_1280x720_inset36 :: menu at the top bar's right end"
+        ],
+        "newFailingCount": 29
+      },
+      {
+        "mutation": "menu under the bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: on Roblox's button middle menu",
+          "pc_1024x768 :: on Roblox's button middle menu",
+          "pc_1280x1024 :: on Roblox's button middle menu",
+          "pc_1280x240_short :: on Roblox's button middle menu",
+          "pc_1280x720 :: matches sheet menu",
+          "pc_1280x720 :: on Roblox's button middle menu"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "touch menu may shrink below a thumb",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size menu",
+          "phone_592x360_navbar :: tap size menu",
+          "phone_667x375 :: tap size menu",
+          "phone_749x361 :: matches sheet chips",
+          "phone_749x361 :: matches sheet event",
+          "phone_749x361 :: matches sheet notify"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "menu bigger than a Roblox button",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: menu as big as a Roblox button",
+          "pc_1024x600 :: no taller than a Roblox button menu",
+          "pc_1024x600 :: on Roblox's button middle menu",
+          "pc_1024x600 :: on Roblox's button middle war_meter",
+          "pc_1024x768 :: menu as big as a Roblox button",
+          "pc_1024x768 :: no taller than a Roblox button menu"
+        ],
+        "newFailingCount": 94
+      },
+      {
+        "mutation": "war meter not in the top bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: column order chips",
+          "pc_1024x600 :: in the top bar war_meter",
+          "pc_1024x600 :: no overlap war_meter/chips",
+          "pc_1024x600 :: no overlap war_meter/event",
+          "pc_1024x600 :: on Roblox's button middle war_meter",
+          "pc_1024x768 :: column order chips"
+        ],
+        "newFailingCount": 128
+      },
+      {
+        "mutation": "top bar items follow the UIScale",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x768 :: no taller than a Roblox button war_meter",
+          "pc_1280x1024 :: no taller than a Roblox button war_meter",
+          "pc_1280x1024 :: on Roblox's button middle war_meter",
+          "pc_1280x720_inset36 :: column order chips",
+          "pc_1280x720_inset36 :: in the top bar war_meter",
+          "pc_1280x720_inset36 :: no overlap war_meter/chips"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "war meter not centred on the bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: on Roblox's button middle war_meter",
+          "pc_1024x768 :: on Roblox's button middle war_meter",
+          "pc_1280x1024 :: on Roblox's button middle war_meter",
+          "pc_1280x240_short :: on Roblox's button middle war_meter",
+          "pc_1280x720 :: matches sheet war_meter",
+          "pc_1280x720 :: on Roblox's button middle war_meter"
+        ],
+        "newFailingCount": 26
+      },
+      {
+        "mutation": "bar row on the bar's middle, not Roblox's buttons'",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: on Roblox's button middle menu",
+          "pc_1024x600 :: on Roblox's button middle war_meter",
+          "pc_1024x768 :: on Roblox's button middle menu",
+          "pc_1024x768 :: on Roblox's button middle war_meter",
+          "pc_1280x1024 :: on Roblox's button middle menu",
+          "pc_1280x1024 :: on Roblox's button middle war_meter"
+        ],
+        "newFailingCount": 50
+      },
+      {
+        "mutation": "Roblox's buttons not kept clear",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720_unibar_wide :: in the top bar war_meter",
+          "pc_573x354_small :: in the top bar war_meter",
+          "phone_568x320 :: exception still needed: fold holds the menu tiles in one line",
+          "phone_568x320 :: in the top bar war_meter",
+          "phone_592x360_navbar :: exception still needed: fold holds the menu tiles in one line",
+          "phone_592x360_navbar :: in the top bar war_meter"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "no fold room left beside [메뉴]",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_573x354_small :: fold holds the menu tiles in one line",
+          "pc_655x340_small :: fold holds the menu tiles in one line",
+          "phone_568x320 :: no overlap event/combo",
+          "phone_568x320 :: no overlap notify/combo",
+          "phone_592x360_navbar :: no overlap notify/combo",
+          "phone_667x375 :: fold holds the menu tiles in one line"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "info rows not under the bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: chips right under the bar",
+          "pc_1024x600 :: column order event",
+          "pc_1024x600 :: no overlap chips/notify",
+          "pc_1024x768 :: chips right under the bar",
+          "pc_1024x768 :: column order event",
+          "pc_1024x768 :: no overlap chips/notify"
+        ],
+        "newFailingCount": 43
+      },
+      {
+        "mutation": "fold may cover the war meter",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: fold clear of war_meter",
+          "pc_1024x768 :: fold clear of war_meter",
+          "pc_1280x1024 :: fold clear of war_meter",
+          "pc_1280x720 :: fold clear of war_meter",
+          "pc_1280x720_inset36 :: fold clear of war_meter",
+          "pc_1280x720_unibar_wide :: fold clear of war_meter"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "fold lines ignore every item",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: fold clear of minimap",
+          "pc_1024x600 :: fold clear of war_meter",
+          "pc_1024x600 :: fold first line in the top bar",
+          "pc_1024x768 :: fold clear of minimap",
+          "pc_1024x768 :: fold clear of war_meter",
+          "pc_1024x768 :: fold first line in the top bar"
+        ],
+        "newFailingCount": 81
+      },
+      {
+        "mutation": "fold one square too many",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: fold clear of minimap",
+          "pc_1024x768 :: fold clear of minimap",
+          "pc_1024x768 :: fold clear of war_meter",
+          "pc_1280x1024 :: fold clear of minimap",
+          "pc_1280x1024 :: fold clear of war_meter",
+          "pc_1280x720 :: fold clear of war_meter"
+        ],
+        "newFailingCount": 45
+      },
+      {
+        "mutation": "fold lines go up",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: fold lines go down",
+          "pc_1024x768 :: fold lines go down",
+          "pc_1280x1024 :: fold lines go down",
+          "pc_1280x720 :: fold lines go down",
+          "pc_1280x720_inset36 :: fold lines go down",
+          "pc_1280x720_unibar_wide :: fold lines go down"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "fold squares touch",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: fold gap",
+          "pc_1024x768 :: fold gap",
+          "pc_1280x1024 :: fold gap",
+          "pc_1280x720 :: fold gap",
+          "pc_1280x720_inset36 :: fold gap",
+          "pc_1280x720_unibar_wide :: fold gap"
+        ],
+        "newFailingCount": 23
+      }
+    ]
   },
   "compileOk": true,
   "compileErrors": "",
@@ -3351,7 +4116,7 @@
       "hp_bar": {
         "H": 12.1335,
         "W": 21.7676,
-        "X": 367.989,
+        "X": 292.2556,
         "Y": 317.1215
       },
       "menu": {
@@ -3369,7 +4134,7 @@
       "mp_bar": {
         "H": 12.1335,
         "W": 21.7676,
-        "X": 394.8122,
+        "X": 319.0788,
         "Y": 317.1215
       },
       "notify": {
@@ -3381,7 +4146,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 302.9333,
+        "X": 227.2,
         "Y": 283.4108
       },
       "potion_hp": {
@@ -3406,7 +4171,7 @@
       "power_line": {
         "H": 14.1558,
         "W": 48.5907,
-        "X": 367.989,
+        "X": 292.2556,
         "Y": 299.9324
       },
       "q": {
@@ -3427,7 +4192,7 @@
         "H": 60,
         "Size": 60,
         "W": 113.6464,
-        "X": 302.9333,
+        "X": 227.2,
         "Y": 346.4441
       },
       "war_meter": {
@@ -3445,7 +4210,7 @@
       "xp_bar": {
         "H": 5.0556,
         "W": 48.5907,
-        "X": 367.989,
+        "X": 292.2556,
         "Y": 332.2884
       },
       "z": {
@@ -3522,7 +4287,7 @@
       "hp_bar": {
         "H": 12.6462,
         "W": 31.1539,
-        "X": 381.0026,
+        "X": 302.0692,
         "Y": 368.3614
       },
       "menu": {
@@ -3540,7 +4305,7 @@
       "mp_bar": {
         "H": 12.6462,
         "W": 31.1539,
-        "X": 417.4258,
+        "X": 338.4924,
         "Y": 368.3614
       },
       "notify": {
@@ -3552,7 +4317,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 315.7333,
+        "X": 236.8,
         "Y": 335.7615
       },
       "potion_hp": {
@@ -3577,7 +4342,7 @@
       "power_line": {
         "H": 14.7539,
         "W": 67.5771,
-        "X": 381.0026,
+        "X": 302.0692,
         "Y": 350.4459
       },
       "q": {
@@ -3598,7 +4363,7 @@
         "H": 60,
         "Size": 60,
         "W": 132.8464,
-        "X": 315.7333,
+        "X": 236.8,
         "Y": 398.923
       },
       "war_meter": {
@@ -3616,7 +4381,7 @@
       "xp_bar": {
         "H": 5.2692,
         "W": 67.5771,
-        "X": 381.0026,
+        "X": 302.0692,
         "Y": 384.1691
       },
       "z": {
@@ -3693,7 +4458,7 @@
       "hp_bar": {
         "H": 14.2483,
         "W": 60.4864,
-        "X": 421.6701,
+        "X": 332.7368,
         "Y": 381.8193
       },
       "menu": {
@@ -3711,7 +4476,7 @@
       "mp_bar": {
         "H": 14.2483,
         "W": 60.4864,
-        "X": 488.0933,
+        "X": 399.16,
         "Y": 381.8193
       },
       "notify": {
@@ -3723,7 +4488,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 355.7333,
+        "X": 266.8,
         "Y": 352.6907
       },
       "potion_hp": {
@@ -3748,7 +4513,7 @@
       "power_line": {
         "H": 16.6231,
         "W": 126.9096,
-        "X": 421.6701,
+        "X": 332.7368,
         "Y": 361.6342
       },
       "q": {
@@ -3769,7 +4534,7 @@
         "H": 60,
         "Size": 60,
         "W": 192.8464,
-        "X": 355.7333,
+        "X": 266.8,
         "Y": 416.2528
       },
       "war_meter": {
@@ -3787,7 +4552,7 @@
       "xp_bar": {
         "H": 5.9368,
         "W": 126.9096,
-        "X": 421.6701,
+        "X": 332.7368,
         "Y": 399.6297
       },
       "z": {
@@ -3864,7 +4629,7 @@
       "hp_bar": {
         "H": 16,
         "W": 90.2667,
-        "X": 466.1333,
+        "X": 366.2667,
         "Y": 356
       },
       "menu": {
@@ -3882,7 +4647,7 @@
       "mp_bar": {
         "H": 16,
         "W": 90.2667,
-        "X": 563.0667,
+        "X": 463.2,
         "Y": 356
       },
       "notify": {
@@ -3894,7 +4659,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 399.4667,
+        "X": 299.6,
         "Y": 330.6667
       },
       "potion_hp": {
@@ -3919,7 +4684,7 @@
       "power_line": {
         "H": 18.6667,
         "W": 187.2,
-        "X": 466.1333,
+        "X": 366.2667,
         "Y": 333.3333
       },
       "q": {
@@ -3940,7 +4705,7 @@
         "H": 60,
         "Size": 60,
         "W": 253.8667,
-        "X": 399.4667,
+        "X": 299.6,
         "Y": 394.6667
       },
       "war_meter": {
@@ -3958,7 +4723,7 @@
       "xp_bar": {
         "H": 6.6667,
         "W": 187.2,
-        "X": 466.1333,
+        "X": 366.2667,
         "Y": 376
       },
       "z": {
@@ -4035,7 +4800,7 @@
       "hp_bar": {
         "H": 13.992,
         "W": 55.7932,
-        "X": 415.1633,
+        "X": 327.83,
         "Y": 336.1994
       },
       "menu": {
@@ -4053,7 +4818,7 @@
       "mp_bar": {
         "H": 13.992,
         "W": 55.7932,
-        "X": 476.7865,
+        "X": 389.4532,
         "Y": 336.1994
       },
       "notify": {
@@ -4065,7 +4830,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 349.3333,
+        "X": 262,
         "Y": 306.5154
       },
       "potion_hp": {
@@ -4090,7 +4855,7 @@
       "power_line": {
         "H": 16.324,
         "W": 117.4164,
-        "X": 415.1633,
+        "X": 327.83,
         "Y": 316.3774
       },
       "q": {
@@ -4111,7 +4876,7 @@
         "H": 60,
         "Size": 60,
         "W": 183.2464,
-        "X": 349.3333,
+        "X": 262,
         "Y": 370.0134
       },
       "war_meter": {
@@ -4129,7 +4894,7 @@
       "xp_bar": {
         "H": 5.83,
         "W": 117.4164,
-        "X": 415.1633,
+        "X": 327.83,
         "Y": 353.6894
       },
       "z": {
@@ -4206,7 +4971,7 @@
       "hp_bar": {
         "H": 16,
         "W": 128.2667,
-        "X": 516.8,
+        "X": 404.2667,
         "Y": 394.6667
       },
       "menu": {
@@ -4224,7 +4989,7 @@
       "mp_bar": {
         "H": 16,
         "W": 128.2667,
-        "X": 651.7333,
+        "X": 539.2,
         "Y": 394.6667
       },
       "notify": {
@@ -4236,7 +5001,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 450.1333,
+        "X": 337.6,
         "Y": 369.3333
       },
       "potion_hp": {
@@ -4261,7 +5026,7 @@
       "power_line": {
         "H": 18.6667,
         "W": 263.2,
-        "X": 516.8,
+        "X": 404.2667,
         "Y": 372
       },
       "q": {
@@ -4282,7 +5047,7 @@
         "H": 60,
         "Size": 60,
         "W": 329.8667,
-        "X": 450.1333,
+        "X": 337.6,
         "Y": 433.3333
       },
       "war_meter": {
@@ -4300,7 +5065,7 @@
       "xp_bar": {
         "H": 6.6667,
         "W": 263.2,
-        "X": 516.8,
+        "X": 404.2667,
         "Y": 414.6667
       },
       "z": {
@@ -4377,7 +5142,7 @@
       "hp_bar": {
         "H": 16,
         "W": 153.3333,
-        "X": 568.2667,
+        "X": 444.8,
         "Y": 445.3333
       },
       "menu": {
@@ -4395,7 +5160,7 @@
       "mp_bar": {
         "H": 16,
         "W": 153.3333,
-        "X": 728.2667,
+        "X": 604.8,
         "Y": 445.3333
       },
       "notify": {
@@ -4407,7 +5172,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 501.6,
+        "X": 378.1333,
         "Y": 420
       },
       "potion_hp": {
@@ -4432,7 +5197,7 @@
       "power_line": {
         "H": 18.6667,
         "W": 313.3333,
-        "X": 568.2667,
+        "X": 444.8,
         "Y": 422.6667
       },
       "q": {
@@ -4453,7 +5218,7 @@
         "H": 60,
         "Size": 60,
         "W": 380,
-        "X": 501.6,
+        "X": 378.1333,
         "Y": 484
       },
       "war_meter": {
@@ -4471,7 +5236,7 @@
       "xp_bar": {
         "H": 6.6667,
         "W": 313.3333,
-        "X": 568.2667,
+        "X": 444.8,
         "Y": 465.3333
       },
       "z": {
@@ -4548,7 +5313,7 @@
       "hp_bar": {
         "H": 15.3805,
         "W": 67.4692,
-        "X": 450.4085,
+        "X": 354.4085,
         "Y": 597.1963
       },
       "menu": {
@@ -4566,7 +5331,7 @@
       "mp_bar": {
         "H": 15.3805,
         "W": 67.4692,
-        "X": 524.2863,
+        "X": 428.2863,
         "Y": 597.1963
       },
       "notify": {
@@ -4578,7 +5343,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 384,
+        "X": 288,
         "Y": 570.5207
       },
       "potion_hp": {
@@ -4603,7 +5368,7 @@
       "power_line": {
         "H": 17.9439,
         "W": 141.3469,
-        "X": 450.4085,
+        "X": 354.4085,
         "Y": 575.4072
       },
       "q": {
@@ -4624,7 +5389,7 @@
         "H": 60,
         "Size": 60,
         "W": 207.7554,
-        "X": 384,
+        "X": 288,
         "Y": 634.3658
       },
       "war_meter": {
@@ -4642,7 +5407,7 @@
       "xp_bar": {
         "H": 6.4085,
         "W": 141.3469,
-        "X": 450.4085,
+        "X": 354.4085,
         "Y": 616.4219
       },
       "z": {
@@ -4719,7 +5484,7 @@
       "hp_bar": {
         "H": 16,
         "W": 90.1951,
-        "X": 481.1057,
+        "X": 377.4959,
         "Y": 594.6667
       },
       "menu": {
@@ -4737,7 +5502,7 @@
       "mp_bar": {
         "H": 16,
         "W": 90.1951,
-        "X": 577.9675,
+        "X": 474.3577,
         "Y": 594.6667
       },
       "notify": {
@@ -4749,7 +5514,7 @@
       "portrait": {
         "H": 60,
         "W": 60,
-        "X": 414.439,
+        "X": 310.8293,
         "Y": 569.3333
       },
       "potion_hp": {
@@ -4774,7 +5539,7 @@
       "power_line": {
         "H": 18.6667,
         "W": 187.0569,
-        "X": 481.1057,
+        "X": 377.4959,
         "Y": 572
       },
       "q": {
@@ -4795,7 +5560,7 @@
         "H": 60,
         "Size": 60,
         "W": 253.7236,
-        "X": 414.439,
+        "X": 310.8293,
         "Y": 633.3333
       },
       "war_meter": {
@@ -4813,7 +5578,7 @@
       "xp_bar": {
         "H": 6.6667,
         "W": 187.0569,
-        "X": 481.1057,
+        "X": 377.4959,
         "Y": 614.6667
       },
       "z": {
@@ -4825,9 +5590,9 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "8d67f5f3b8af5c2f9243017547f5f31be506c159ae8aa0d5b243718acd588399",
-    "tools/fixtures/hud_layout_offline.luau": "2ebdcbfc9ffcdc060890dd7ad26544bde338938996a4b27ab9a2e1e82f7b8c34",
-    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "1a06dc7abc13611a41e39b54a750b16f8b893e9e6fbdd36397a491c768270b46",
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "3417605bd7b7817094c1d23bcbb8952cbd29d2095913bd6fb5f7128667fa9690",
+    "tools/fixtures/hud_layout_offline.luau": "a9906c3afb3b1f8f385be6705a3557615a8b1359a3758bd3ea0902dafe7e24fd",
+    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "47e516357a51684e60f7b7c15329e95fa8f6e409ba29a3dbb143d6c2ce8a88f7",
     "src/ReplicatedStorage/Shared/Config.luau": "a9acd4a8f5eb371f9fbc73805ba0580a0309956c5007ab3bd88016e757f7cbec"
   },
   "sourcesChangedDuringRun": [],

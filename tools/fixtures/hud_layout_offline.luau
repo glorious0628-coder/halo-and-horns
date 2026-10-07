@@ -145,9 +145,12 @@ local TOP_BAR = { war_meter = true, menu = true }
 local ROBLOX_BUTTON_PX = 44 -- Roblox's top bar button height in a 58 px bar (Inset - 4 in smaller bars)
 local MENU_EDGE_PX = 12 -- [메뉴] keeps this from the bar's free right end
 local ROW_TILES = 6 -- 캐릭터 · 가방 · 스킬 · 지도 · 랭킹 · 펫
--- touch thumbstick zone: x < 0.4 W and y > STICK_Y H (2026-10-07 phone layout: the quest lines hang under the minimap
--- above it; Roblox's thumbstick appears where the thumb lands in the lower left)
+-- touch thumbstick zone: x < STICK_X W and y > STICK_Y H (2026-10-07 phone layout: the quest lines hang under the minimap
+-- above it; Roblox's thumbstick appears where the thumb lands in the lower left and rests around STICK_MID W). 검수
+-- 2026-10-07: the phone bottom group sits centred between that rest and the thumb ring, nothing pressable left of 0.3 W
 local STICK_Y = 0.54
+local STICK_X = 0.3
+local STICK_MID = 0.2
 
 local function excepted(case, name)
 	for _, e in EXCEPTIONS do
@@ -302,7 +305,7 @@ for _, case in CASES do
 					("angle %.1f after %.1f"):format(angle, lastAngle))
 				lastAngle = angle
 			end
-			local stick = { X = 0, Y = STICK_Y * H, W = 0.4 * W, H = H - STICK_Y * H }
+			local stick = { X = 0, Y = STICK_Y * H, W = STICK_X * W, H = H - STICK_Y * H }
 			for id in INTERACTIVE do
 				check(g, "stick zone free " .. id, not inter(out[id], stick), fmt(out[id]))
 			end
@@ -320,14 +323,15 @@ for _, case in CASES do
 		if sheet then
 			-- phone (2026-10-07 layout): the face group bottom-centre - its pressable parts right of the thumbstick zone, the
 			-- bars from the face to the tile row's right end, a GROUP_GAP left of the ring buttons level with the bars or the
-			-- row, centred between the thumbstick zone's edge and those buttons
+			-- row, as wide as the room right of 0.4 W (six tiles at most) and centred between the thumbstick's rest
+			-- (STICK_MID W) and those buttons (검수 2026-10-07)
 			local pl, row = out.power_line, t
 			local rowBottom = row.Y + row.H
 			for _, id in FACE do
 				check(g, "phone face group at the bottom " .. id, out[id].Y + out[id].H / 2 >= 0.6 * H, fmt(out[id]))
 			end
 			for _, id in { "portrait", "tiles" } do
-				check(g, "phone face group right of the stick zone " .. id, out[id].X >= 0.4 * W - 0.5, fmt(out[id]))
+				check(g, "phone face group right of the stick zone " .. id, out[id].X >= STICK_X * W - 0.5, fmt(out[id]))
 			end
 			for _, id in { "power_line", "mp_bar", "xp_bar" } do
 				local r = out[id]
@@ -347,8 +351,10 @@ for _, case in CASES do
 			end
 			check(g, "phone row at most six tiles wide", tileOk and row.W <= ROW_TILES * row.Size + (ROW_TILES - 1) * row.Gap + 0.01,
 				fmt(row))
-			local leftRoom, rightRoom = row.X - 0.4 * W, limit - (row.X + row.W)
-			check(g, "phone group centred between the stick zone and the ring", math.abs(leftRoom - rightRoom) <= 0.5,
+			check(g, "phone group no wider than the room right of 0.4 W", row.W <= math.max(0, limit - 0.4 * W) + 0.5,
+				fmt(row) .. (" limit %.2f"):format(limit))
+			local leftRoom, rightRoom = row.X - STICK_MID * W, limit - (row.X + row.W)
+			check(g, "phone group centred between the thumbstick and the ring", math.abs(leftRoom - rightRoom) <= 0.5,
 				("left room %.2f right room %.2f"):format(leftRoom, rightRoom))
 		else
 			-- 4. desktop: the corner cluster in the bottom-right corner; the face group along the bottom (the potion pair at
@@ -491,7 +497,7 @@ for _, case in CASES do
 					check(g, "fold clear of " .. id, gap(rr, false, out[id], ROUND[id]) >= -0.01, fmt(rr) .. " " .. fmt(out[id]))
 				end
 				if touch then
-					check(g, "fold stick zone free", not inter(rr, { X = 0, Y = STICK_Y * H, W = 0.4 * W, H = H - STICK_Y * H }),
+					check(g, "fold stick zone free", not inter(rr, { X = 0, Y = STICK_Y * H, W = STICK_X * W, H = H - STICK_Y * H }),
 						fmt(rr))
 					if env.Jump then check(g, "fold jump free", gap(rr, false, env.Jump, true) >= -0.01, fmt(rr)) end
 				end

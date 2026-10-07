@@ -2749,11 +2749,12 @@ end
 -- ring on that button (the L.SetGlow look) and, on the attack button, a short wobble every Every s (none with
 -- ReducedMotion). A press of that button or its key clears the hint, else it goes after Seconds. Bubble text: the
 -- "Button" style on light (navy, >= 16 px). Art 512 x 190: tail tip at (35, 188) -> mirrored (0.932, 0.99); text box
--- = Config TextRect mirrored
+-- = Config TextRect mirrored. Spare = du kept free on each side of the rendered line, FitMax = the most the rendered
+-- check may widen the bubble (L.FitHint)
 L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, TipY = 0.99, Aspect = 512 / 190,
 	TextX = 0.079, TextY = 0.181, TextW = 0.844, TextH = 0.448, MinW = 120, Wobble = { -9, 8, -6, 4, -2, 0 },
-	WobbleStep = 0.06, Breathe = 1.05 }
-L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0 }
+	WobbleStep = 0.06, Breathe = 1.05, Spare = 5, FitMax = 2.5 }
+L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0, Fit }
 
 -- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then leaves it
 -- out of its room checks (the potions keep their place on the thumb ring). A change of that button's Visible lays the
@@ -2786,7 +2787,8 @@ function L.HintTarget(id)
 end
 
 -- size and place the bubble over its button's rect (MainGui units; the tail tip on the button's top middle). The text
--- width is measured once (h.TextW0 at h.Size0) and scaled, so a relayout never waits for a measurement
+-- width is measured once (h.TextW0 at h.Size0) and scaled, so a relayout never waits for a measurement; h.FitK = the
+-- bubble width per text size unit that the rendered line asked for (L.FitHint), kept for relayouts
 function L.PlaceHint(h)
 	local r = L.Rects and L.Rects[h.Rect]
 	local bubble = h.Bubble
@@ -2795,7 +2797,7 @@ function L.PlaceHint(h)
 	local pf = type(UIKit.PxFloor) == "function" and UIKit.PxFloor() or 1 -- small PC windows: a smaller copy
 	local size = math.max(cfg.Size, math.ceil(cfg.MinPx * pf / currentScale()))
 	local tw = h.TextW0 * size / h.Size0
-	local w = math.max(cfg.MinW, tw / cfg.TextW + 16)
+	local w = math.max(cfg.MinW, tw / cfg.TextW + 16, (h.FitK or 0) * size)
 	local hh = w / cfg.Aspect
 	local need = size * 1.2 / cfg.TextH -- the text box holds one line of the text
 	if hh < need then hh, w = need, need * cfg.Aspect end
@@ -2805,6 +2807,27 @@ function L.PlaceHint(h)
 	-- never past the left edge (the bubble grows to the left of its tail)
 	x = math.max(x, cfg.TipX * w + 4)
 	bubble.Position = UDim2.fromOffset(math.floor(x + 0.5), math.floor(r.Y + r.H * 0.06 + 0.5))
+end
+
+-- the rendered line against its text box (검수 2026-10-07: "Tap the new buttor" - the font-service width ran short of
+-- what Denk One draws on phones): TextBounds and the box are both real px, so the line keeps Spare du free on each side
+-- whatever the UIScale or the pop scale; a short box widens the bubble (h.FitK, at most FitMax times its width).
+-- Returns true when the bubble changed
+function L.FitHint(h)
+	local label, bubble = h.Label, h.Bubble
+	if not (label and label.Parent and bubble and bubble.Parent and h.TextW0) then return false end
+	local cfg = L.HintCfg
+	local box, tb = label.AbsoluteSize.X, label.TextBounds.X
+	local wDu = bubble.Size.X.Offset
+	if box <= 1 or tb <= 0 or wDu <= 1 or label.TextSize <= 0 then return false end
+	local px = box / (cfg.TextW * wDu) -- real px per du inside the bubble
+	local need = tb / px + 2 * cfg.Spare -- du the line needs
+	if need <= cfg.TextW * wDu + 0.5 then return false end
+	local w = math.min(need / cfg.TextW, wDu * cfg.FitMax)
+	if w <= wDu + 0.5 then return false end
+	h.FitK = math.max(h.FitK or 0, w / label.TextSize)
+	L.PlaceHint(h)
+	return true
 end
 
 -- the pulsing gold ring around a round button (the same look as L.SetGlow's rim)
@@ -2924,6 +2947,18 @@ function HUD.Hint(id, text, opts)
 		if L.Hints[id] ~= h or h.Token ~= token then return end
 		h.TextW0, h.Size0 = (ok and type(w) == "number" and w > 0) and w or #text * size * 0.6, size
 		L.PlaceHint(h)
+		-- the rendered line decides before the bubble shows (L.FitHint), and again whenever it renders anew (a face that
+		-- loads late, a relayout's text size)
+		for _ = 1, 3 do
+			task.wait()
+			if L.Hints[id] ~= h or h.Token ~= token then return end
+			if not L.FitHint(h) then break end
+		end
+		h.Label:GetPropertyChangedSignal("TextBounds"):Connect(function()
+			task.defer(function()
+				if L.Hints[id] == h and h.Token == token then L.FitHint(h) end
+			end)
+		end)
 		h.Bubble.Visible = true
 		if not UIKit.ReducedMotion() then
 			h.Pop.Scale = 0.5
