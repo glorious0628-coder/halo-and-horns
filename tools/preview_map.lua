@@ -241,7 +241,7 @@ do
 		PinNear = 16, PinFar = 46, PinE = 3, PinBeach = 2.5,
 		Shoulder = 36, SeaRocks = 26,
 		-- measured in the main Studio (2026-10-07): a solid voxel column renders its surface 2 studs above the occupancy
-		-- crossing (water does not), the same +2 the old FillBlock notes found: solids are written 2 lower
+		-- crossing (water does not), the same +2 the old block-fill notes found: solids are written 2 lower
 		Lift = 2,
 	}
 	Terrain:Clear()
