@@ -70,6 +70,13 @@ def main():
          and "function WSHOP.ShowWay()" in panels and 'pcall(qt.Travel, "Crossroads", zone)' in panels),
         ("UI round 2 #3: no potions -> [Buy] shows the way to the merchant",
          'if count <= 0 and label == "Buy" then WAY.Show() end' in vitals and "pcall(hud.ShowGuide, target, WAY.Label)" in vitals),
+        ("#10 story choices: kind / sneaky art buttons with the wing / horns glyph, the old button without the art",
+         "function STORY.ChoiceButton(parent, side, text, size, onClick)" in panels
+         and 'local art = side == "Good" and "BtnKind" or "BtnSneaky"' in panels
+         and 'local glyph = side == "Good" and "GlyphKindWing" or "GlyphSneakyHorns"' in panels
+         and 'buttons[1] = STORY.ChoiceButton(actions, "Good", left,' in panels
+         and 'buttons[2] = STORY.ChoiceButton(actions, "Evil", right,' in panels
+         and "if not btn or disabledButtons[btn] then return end" in panels),
         ("E11: MapBuilder puts a BoardPrompt (attribute Board) on each job board's spot, off while the board is off",
          "local function ensureJobBoards(ctx, folder)" in mapb and 'prompt.Name = "BoardPrompt"' in mapb
          and 'prompt:SetAttribute("Board", tostring(id))' in mapb and "prompt.Enabled = B.Enabled == true" in mapb

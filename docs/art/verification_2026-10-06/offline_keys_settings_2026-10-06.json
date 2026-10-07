@@ -2530,7 +2530,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
+    "src/ReplicatedStorage/Shared/Config.luau": "d9b8fd3829d116065b1ee2a2499b003f986fe87f7cec3b89f1d7268b9d348e9d",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -2543,7 +2543,7 @@
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "79b6e8672987b9235f1c048329f848e2c8a863074b15f9f6cad2a3cda1a61fa6",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "586c375cdbd4927a0da2e2f0e92d4b915ad3fc7433b090193b8d4176e142d738",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "ce8da78e16d4a2644a4acda014d9a433e9bd25f20fdd22e76f68a685164bfad0",
     "src/ServerScriptService/StoryQuestService.luau": "3edf1cc5826336f97fbb408a319402ce2038e3a32aa1b2a64bc59bf9c621bc51",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "f47961ebe91be1478e2e4b7ba4b2ed6b6cc4837bb74406508ecae85a8438e268"
   },

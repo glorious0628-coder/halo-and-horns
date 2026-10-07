@@ -3029,6 +3029,38 @@ function STORY.Hint(obj, f, have)
 	return string.format(fmt, good, evil) .. string.format(STORY.Text.HintHave, have)
 end
 
+-- round 3 #10 (ideas_first10 §3): a choice is the kind / sneaky art button with the wing / horns glyph left of its
+-- words (the shape tells the sides apart, also for red-green colour blindness); without the art: the old button
+function STORY.ChoiceButton(parent, side, text, size, onClick)
+	local art = side == "Good" and "BtnKind" or "BtnSneaky"
+	local glyph = side == "Good" and "GlyphKindWing" or "GlyphSneakyHorns"
+	local hasArt = UIKit and type(UIKit.ArtTextButton) == "function" and type(UIKit.ArtPart) == "function"
+		and UIKit.ArtPart(art) ~= nil
+	if not hasArt then
+		return makeButton(parent, text, side == "Good" and PALETTE.Free or (PALETTE.Ticket or PALETTE.Button), size, onClick)
+	end
+	local btn = nil
+	btn = UIKit.ArtTextButton(art, { Name = "Button", Text = text, Size = size, TextSize = 20, Parent = parent }, function()
+		if os.clock() < inputGuardUntil then return end -- the same guards as makeButton
+		if not btn or disabledButtons[btn] then return end
+		local ok, err = pcall(onClick)
+		if not ok then Util.Warn(TAG, "button handler error: " .. tostring(err)) end
+	end)
+	if type(UIKit.ArtImage) == "function" then
+		pcall(UIKit.ArtImage, glyph, {
+			Name = "Glyph", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.48, 0),
+			Size = UDim2.fromScale(0.5, 0.5), SizeConstraint = Enum.SizeConstraint.RelativeYY, ZIndex = btn.ZIndex + 1,
+			Active = false, Parent = btn,
+		})
+		local label = btn:FindFirstChild("Label")
+		if label then -- the words move right of the glyph
+			label.Position = UDim2.new(0.5, 16, 0.48, 0)
+			label.Size = UDim2.new(1, -58, 1, -8)
+		end
+	end
+	return btn
+end
+
 -- my own side's points for STORY.Hint (nil before the save loads)
 function STORY.Points(f)
 	return tonumber(attr(f == "Halo" and "Honor" or "Infamy", nil))
@@ -3082,11 +3114,11 @@ BUILDERS.Story = function(parent)
 		local isNeutral = f ~= "Halo" and f ~= "Horns"
 		local left = isNeutral and (obj.Neutral and obj.Neutral.A) or obj.Good.Label
 		local right = isNeutral and (obj.Neutral and obj.Neutral.B) or obj.Evil.Label
-		buttons[1] = makeButton(actions, left, PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
+		buttons[1] = STORY.ChoiceButton(actions, "Good", left, UDim2.new(0.5, -5, 0, 60), function()
 			if last() then send(isNeutral and "A" or "Good") end
 		end)
 		buttons[1].Name = "StoryChoiceGood"
-		buttons[2] = makeButton(actions, right, PALETTE.Ticket or PALETTE.Button, UDim2.new(0.5, -5, 0, 60), function()
+		buttons[2] = STORY.ChoiceButton(actions, "Evil", right, UDim2.new(0.5, -5, 0, 60), function()
 			if last() then send(isNeutral and "B" or "Evil") end
 		end)
 		buttons[2].Name = "StoryChoiceEvil"
