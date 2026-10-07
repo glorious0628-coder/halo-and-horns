@@ -61,9 +61,10 @@ local ZONE = {
 	HaloTown = { Amb = { 1.06, 1.04, 0.95 }, Bright = 0.88, Exp = -0.12, Tint = rgb(255, 246, 228), Sat = 0.06, Con = 0.05,
 		CC = 0 },
 	-- quality 7 (이미지 생성 1 cdaaeaa, 2026-10-07): the dark basalt den read near black on phones (day mean 0.17, night
-	-- ~0.03): warmer, brighter light by day and a strong night lift (NightExp, tune 1.6-2.0 from real captures)
+	-- ~0.03): warmer, brighter light by day and a night lift (NightExp 1.6, 검수 2026-10-07 from real captures: 1.9 made
+	-- the night as bright and red as the day; 1.6 keeps it near the meadow night)
 	HornsTown = { Amb = { 1.18, 0.98, 1.0 }, Bright = 1.0, Exp = 0.25, Tint = rgb(255, 236, 230), Sat = 0.1, Con = 0.03,
-		CC = 0.03, NightExp = 1.9 },
+		CC = 0.03, NightExp = 1.6 },
 }
 ZONE.Default = ZONE.SlimeMeadow
 ZoneLook.Zone = ZONE -- read by tests / the design table
