@@ -4421,5 +4421,24 @@
    "bytes": 1775348,
    "at": "2026-10-06 20:07:06"
   }
+ ],
+ "Town_Horns_Castle_v3": [
+  {
+   "event": "generation_submitted",
+   "task_id": "420c4e94-c148-4b2a-a3ad-ecf45cbae730",
+   "image": "art\\out\\hq\\HQ_Town_Horns_Castle_v3N2.png",
+   "recipe": "building",
+   "seed": 68660
+  },
+  {
+   "task_id": "420c4e94-c148-4b2a-a3ad-ecf45cbae730",
+   "image": "art\\out\\hq\\HQ_Town_Horns_Castle_v3N2.png",
+   "recipe": "building",
+   "seed": 68660,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Town_Horns_Castle_v3_raw.glb",
+   "bytes": 3576368,
+   "at": "2026-10-07 09:20:13"
+  }
  ]
 }
