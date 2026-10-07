@@ -5,7 +5,7 @@
 -- A23-65 (user 2026-10-07 "캐릭터가 움직일 때 카메라도 같이 움직이면 좋겠어. 캐릭터의 뒤를 따라서!"): while I walk, the
 -- camera turns slowly around me toward my walking direction (I end up seen from behind). It is a yaw-only turn of the
 -- camera around its Focus, after Roblox's camera each frame (render step HHC_CameraFollow), capped per second and
--- eased, slower with 'Screen shake' off. It never turns while I stand, while I walk toward the camera (no spinning
+-- eased (45 deg/s), slower with 'Screen shake' off. It never turns while I stand, while I walk toward the camera (no spinning
 -- when backing up), for FOLLOW.ManualHold s after a hand turn (right drag, a finger drag on the camera side, the right
 -- stick), for FOLLOW.AttackHold s after my swing / skill (FaceTarget / the server turning my body never whips the
 -- camera), in shift lock or first person, and whenever blocked() (windows, the opening, menus, loading). Settings
@@ -24,8 +24,10 @@ local started, queued = false, false
 local character = nil
 local characterConnections, cameraConnections = {}, {}
 local FOLLOW = {
-	Rate = math.rad(110), SlowRate = math.rad(55), -- max turn speed (rad / s); 'Screen shake' off = slow
-	Ease = 2.2, SlowEase = 1.2, -- share of the remaining angle turned per second
+	-- max turn speed (rad / s); 'Screen shake' off = slow. Studio 2026-10-07: at 110 deg/s a held sideways key (the
+	-- stick to one side) chased its own camera-relative direction into an 8-stud circle; 45 deg/s makes a wide arc
+	Rate = math.rad(45), SlowRate = math.rad(25),
+	Ease = 1.2, SlowEase = 0.7, -- share of the remaining angle turned per second
 	DeadZone = math.rad(6), -- a smaller misalignment is left alone
 	BackDot = -0.25, -- walking toward the camera (walk . camera look below this): never turn
 	MinMove = 0.2, -- MoveDirection length that counts as walking

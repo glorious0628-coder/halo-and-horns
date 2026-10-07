@@ -6,7 +6,7 @@
     "checks": 24,
     "ok": true,
     "failure": "",
-    "fixtureSHA256": "b889283bfc6ad261768b9698102c4246d371f1e5e2ded312fc65bb7dac7b62cf"
+    "fixtureSHA256": "37d835b9de763b8274a0a4ce3ac6bc6fef59848ce48d770ed9d51387a1610983"
   },
   "mutations": {
     "total": 23,
@@ -17,68 +17,68 @@
         "mutation": "attack on the release instead of the press",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:219: a left press attacks on the press (before the release)"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:221: a left press attacks on the press (before the release)"
       },
       {
         "mutation": "a press on a GUI attacks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:219: a press on a GUI (processed) never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:221: a press on a GUI (processed) never attacks"
       },
       {
         "mutation": "open windows / loading no longer block",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:219: FactionPicker open: a left press never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:221: FactionPicker open: a left press never attacks"
       },
       {
         "mutation": "the right button attacks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:219: a left press attacks on the press (before the release)"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:221: a left press attacks on the press (before the release)"
       },
       {
         "mutation": "holding the left button repeats the attack",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:220: a left drag attacks once (the press) and never repeats while held"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:222: a left drag attacks once (the press) and never repeats while held"
       },
       {
         "mutation": "a left drag turns the camera again",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:220: a left drag never turns the camera"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:222: a left drag never turns the camera"
       },
       {
         "mutation": "a render step drives the camera again",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:220: one render step only: the A23-65 follow turn (after the camera); no left-mouse camera step"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:222: one render step only: the A23-65 follow turn (after the camera); no left-mouse camera step"
       },
       {
         "mutation": "an open Panels window no longer blocks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:219: Panels open: a left press never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:221: Panels open: a left press never attacks"
       },
       {
         "mutation": "the humanoid never becomes the subject",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:219: initial subject attaches"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:221: initial subject attaches"
       },
       {
         "mutation": "a scripted camera loses its subject",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:219: a scripted camera keeps its own subject"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:221: a scripted camera keeps its own subject"
       },
       {
         "mutation": "spins while backing up",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking toward the camera (backing up): never spins :: -110.00000000000009"
+        "failure": "CHECK_FAIL walking toward the camera (backing up): never spins :: -45"
       },
       {
         "mutation": "no hold after a hand turn",
@@ -99,7 +99,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking right turns the camera right, at most 110 deg/s :: table: 0x000001e1bda7e960"
+        "failure": "CHECK_FAIL walking right turns the camera right, at most 45 deg/s :: table: 0x000001b53a642930"
       },
       {
         "mutation": "Settings Free ignored",
@@ -113,7 +113,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL 'Screen shake' off: the follow turns slower (55 deg/s) :: 1.8333333333333328"
+        "failure": "CHECK_FAIL 'Screen shake' off: the follow turns slower (25 deg/s) :: 0.7499999999999999"
       },
       {
         "mutation": "other players' swings hold my camera",
@@ -134,7 +134,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking right turns the camera right, at most 110 deg/s :: table: 0x00000291a1cf6940"
+        "failure": "CHECK_FAIL walking right turns the camera right, at most 45 deg/s :: table: 0x000001d5d3a32930"
       },
       {
         "mutation": "follows in shift lock",
@@ -166,8 +166,8 @@
       }
     ]
   },
-  "sourceSHA256": "d1768368605edd2bc4e7437ccdeeffd73db22e11347c97b68d84ee3e52438241",
-  "hudSHA256": "ad48f7196a3344dd42c10708d6c35e7ca7329fffdbc81582218edf52e9bc0897",
+  "sourceSHA256": "c38cb9a7c8da557abf33ece570f4ad72e0287973042a2c84c9c3d481613aa09a",
+  "hudSHA256": "8575182ba364f5dc405d5827c2fb9d66214b44947f9eb81dcc965925407ef92d",
   "hudStatic": [
     {
       "check": "L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",
@@ -185,6 +185,6 @@
   "fixtureSHA256": "10ebccbf00ef41edeabd8e7eabdd48396185054474324e1e256d969110d5d675",
   "studioCalls": 0,
   "physicalInputTested": false,
-  "contract": "A23-51 (user 2026-10-06): the camera turns with the RIGHT mouse drag only, owned by Roblox's default camera (CameraFollow's only render step is the A23-65 follow turn, which never moves the camera while standing / dragging and never takes over the right drag); a left drag never turns the camera; a left press on the world fires PrimaryClick once on the press (HUD -> one Swing), never on the release, never repeated while held or dragged, never for a processed (GUI) press, an open picker / Panels / WorldMap / Roblox menu, a focused text box, loading, a scripted camera or a missing character; touch is left to Roblox; the camera subject follows the new humanoid after a costume swap / respawn and a scripted camera keeps its own subject. A23-65 (user 2026-10-07): while walking the camera turns slowly behind me (110 deg/s cap, eased; 55 deg/s with 'Screen shake' off), never while standing, walking toward the camera, 1.5 s after a right drag / camera-side finger drag / right stick, 0.5 s after my own Swing / Release / Skill Fx, in shift lock, first person, a window / scripted camera, or with Settings Camera = Free.",
+  "contract": "A23-51 (user 2026-10-06): the camera turns with the RIGHT mouse drag only, owned by Roblox's default camera (CameraFollow's only render step is the A23-65 follow turn, which never moves the camera while standing / dragging and never takes over the right drag); a left drag never turns the camera; a left press on the world fires PrimaryClick once on the press (HUD -> one Swing), never on the release, never repeated while held or dragged, never for a processed (GUI) press, an open picker / Panels / WorldMap / Roblox menu, a focused text box, loading, a scripted camera or a missing character; touch is left to Roblox; the camera subject follows the new humanoid after a costume swap / respawn and a scripted camera keeps its own subject. A23-65 (user 2026-10-07): while walking the camera turns slowly behind me (45 deg/s cap, eased; 25 deg/s with 'Screen shake' off), never while standing, walking toward the camera, 1.5 s after a right drag / camera-side finger drag / right stick, 0.5 s after my own Swing / Release / Skill Fx, in shift lock, first person, a window / scripted camera, or with Settings Camera = Free.",
   "limitations": "Engine input propagation, the default camera's right-drag orbit itself and real mouse/touch need runtime validation (Studio own test Play)."
 }

@@ -103,11 +103,11 @@ local d0, y0 = dist(), yaw(camera.CFrame.LookVector)
 humanoid.MoveDirection = vec(1, 0, 0)
 frame(1)
 local y1 = yaw(camera.CFrame.LookVector)
-check(y1 < y0 and math.abs(y1 - y0) <= 110 / 60 + 1e-6 and math.abs(y1 - y0) > 1, "walking right turns the camera right, at most 110 deg/s",
+check(y1 < y0 and math.abs(y1 - y0) <= 45 / 60 + 1e-6 and math.abs(y1 - y0) > 0.5, "walking right turns the camera right, at most 45 deg/s",
 	{ y0, y1 })
 check(math.abs(dist() - d0) < 1e-6 and math.abs(camera.CFrame.LookVector.Y - lookAt(vec(0, 9, 12), focus).LookVector.Y) < 1e-6,
 	"it orbits the focus: same distance, same downward tilt", { dist(), d0 })
-frame(240)
+frame(480)
 local y2 = yaw(camera.CFrame.LookVector)
 check(math.abs(y2 - (-90)) <= 6 + 1e-6 and y2 >= -90 - 1e-6, "after a while it settles behind me (within the 6 deg dead zone, no overshoot)", y2)
 -- 2. standing / walking toward the camera: never turns
@@ -119,7 +119,7 @@ frame(60)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "walking toward the camera (backing up): never spins", yaw(camera.CFrame.LookVector))
 humanoid.MoveDirection = vec(0.97, 0, 0.2) -- mostly sideways, a bit toward the camera (102 deg from the camera look): still follows
 frame(1)
-check(yaw(camera.CFrame.LookVector) < -1, "walking sideways (a little toward the camera) still follows", yaw(camera.CFrame.LookVector))
+check(yaw(camera.CFrame.LookVector) < -0.2, "walking sideways (a little toward the camera) still follows", yaw(camera.CFrame.LookVector))
 -- 3. a hand turn holds it for 1.5 s
 reset()
 humanoid.MoveDirection = vec(1, 0, 0)
@@ -130,7 +130,7 @@ input.RightDown = false
 frame(60) -- 1.0 s after the drag
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "1.0 s after the right drag: still no follow")
 frame(36) -- 1.6 s
-check(yaw(camera.CFrame.LookVector) < -0.5, "1.5 s after the right drag: the follow comes back", yaw(camera.CFrame.LookVector))
+check(yaw(camera.CFrame.LookVector) < -0.2, "1.5 s after the right drag: the follow comes back", yaw(camera.CFrame.LookVector))
 reset()
 humanoid.MoveDirection = vec(1, 0, 0)
 local right = { UserInputType = "Touch", Position = vec(800, 300, 0) }
@@ -144,7 +144,7 @@ local left = { UserInputType = "Touch", Position = vec(150, 450, 0) }
 input.InputBegan:Fire(left, false)
 input.InputChanged:Fire(left, false)
 frame(1)
-check(yaw(camera.CFrame.LookVector) < -0.5, "a finger on the move stick (left side) does not hold the follow", yaw(camera.CFrame.LookVector))
+check(yaw(camera.CFrame.LookVector) < -0.2, "a finger on the move stick (left side) does not hold the follow", yaw(camera.CFrame.LookVector))
 input.InputEnded:Fire(left, false)
 reset()
 humanoid.MoveDirection = vec(1, 0, 0)
@@ -158,7 +158,7 @@ fxSignal:Fire("Swing", { UserId = 7 })
 frame(24) -- 0.4 s
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "0.4 s after my swing: no follow (FaceTarget never whips the camera)")
 frame(9) -- 0.55 s
-check(yaw(camera.CFrame.LookVector) < -0.5, "0.5 s after my swing: follows again", yaw(camera.CFrame.LookVector))
+check(yaw(camera.CFrame.LookVector) < -0.2, "0.5 s after my swing: follows again", yaw(camera.CFrame.LookVector))
 for _, kind in { "Release", "Skill" } do
 	reset()
 	humanoid.MoveDirection = vec(1, 0, 0)
@@ -170,7 +170,7 @@ reset()
 humanoid.MoveDirection = vec(1, 0, 0)
 fxSignal:Fire("Swing", { UserId = 99 })
 frame(1)
-check(yaw(camera.CFrame.LookVector) < -0.5, "another player's swing does not hold my camera")
+check(yaw(camera.CFrame.LookVector) < -0.2, "another player's swing does not hold my camera")
 -- 5. switches and states
 reset()
 humanoid.MoveDirection = vec(1, 0, 0)
@@ -182,7 +182,7 @@ humanoid.MoveDirection = vec(1, 0, 0)
 W.Settings.Shake = false
 frame(1)
 local slowStep = math.abs(yaw(camera.CFrame.LookVector))
-check(slowStep > 0.5 and slowStep <= 55 / 60 + 1e-6, "'Screen shake' off: the follow turns slower (55 deg/s)", slowStep)
+check(slowStep > 0.2 and slowStep <= 25 / 60 + 1e-6, "'Screen shake' off: the follow turns slower (25 deg/s)", slowStep)
 reset()
 humanoid.MoveDirection = vec(1, 0, 0)
 registry.Panels.Open = true

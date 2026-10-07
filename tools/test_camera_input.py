@@ -176,7 +176,7 @@ def main():
                           "menu, a focused text box, loading, a scripted camera or a missing character; touch is left to "
                           "Roblox; the camera subject follows the new humanoid after a costume swap / respawn and a "
                           "scripted camera keeps its own subject. A23-65 (user 2026-10-07): while walking the camera turns "
-                          "slowly behind me (110 deg/s cap, eased; 55 deg/s with 'Screen shake' off), never while standing, "
+                          "slowly behind me (45 deg/s cap, eased; 25 deg/s with 'Screen shake' off), never while standing, "
                           "walking toward the camera, 1.5 s after a right drag / camera-side finger drag / right stick, 0.5 "
                           "s after my own Swing / Release / Skill Fx, in shift lock, first person, a window / scripted "
                           "camera, or with Settings Camera = Free.",
