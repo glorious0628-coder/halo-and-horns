@@ -740,7 +740,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
+    "src/ReplicatedStorage/Shared/Config.luau": "3768f78d2b187d87e04d0f1e568ae46a905b46399a41c3f040953b3cde696e80",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
@@ -761,7 +761,7 @@
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
     "src/ServerScriptService/MapBuilder.luau": "cebfe7d03b842395df4fd22f6d55675b45603005fd0615f1880b9d4e83b7eddf",
     "src/ServerScriptService/MonetizationService.luau": "db8f01abe47c1162686deb8aa3acf26858399cb4be898fc6511defa5997943a9",
-    "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a",
+    "src/ServerScriptService/MonsterService.luau": "89098e29c98f3fbd8c5afb6f7003b4d171fa23d5d5884ce9df51d493875059dc",
     "src/ServerScriptService/NicknameService.luau": "bca3dc61198f467488a4bcc1f4ead32504642a566dc3c4870df933c1cf7de939",
     "src/ServerScriptService/PetService.luau": "a9c800ce76799e177d0b3af6d5a62d73c0ca702376213ce7186aebdd2b4104ca",
     "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e",

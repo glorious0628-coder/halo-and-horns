@@ -4558,8 +4558,10 @@ Config.CustomModels = {
 	FolderName = "CustomModels",
 	GooseId = "GoldenGoose",
 	-- golden variant: gold Highlight instead of recoloring parts. 0.5 looked like see-through jelly on the textured cube
-	-- (user 2026-10-06 "투명해 보여"): a stronger fill reads as gold
-	GoldenFillTransparency = 0.25,
+	-- (user 2026-10-06 "투명해 보여"), 0.25 still a flat half-see-through gold layer (an olive ghost on the green slime,
+	-- user 2026-10-07 "왜 반투명한 애들이 생기냐고", A23-74): no fill, the body stays opaque under a solid gold rim
+	-- (with the gold sparkles, light and name)
+	GoldenFillTransparency = 1,
 }
 
 -- A23-5 (2026-10-05): every chibi 3D class costume is out of the game (CostumeService and its folders were removed

@@ -138,4 +138,21 @@ check(not nameShown(s4), "a same-kind monster within Cluster studs of a shown na
 local _, s5 = monster("Slime", vec(30, 0, 15))
 ML.Tick()
 check(not s5.Enabled or s5:FindFirstChild("NameLabel").Visible == false or true, "off-screen monsters never crash the pass")
+-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): a killed monster (MonsterService deathPop anchors its root and
+-- turns its bar off) gets no name / bar back from this pass, even right after the killing hit, and a living same-kind
+-- slime right next to it keeps its name (the dead body takes no slot)
+folder.Children = {}
+local dm, dying = monster("Slime", vec(0, 0, -4))
+local _, alive = monster("Slime", vec(2, 0, -4)) -- 2 studs away: inside Cluster
+ML.Tick()
+check(nameShown(dying) and not nameShown(alive), "before the kill: the nearer slime shows the pack's one name")
+dying:FindFirstChild("Bar"):FindFirstChild("Fill").Size = { X = { Scale = 0 } } -- the killing hit empties its bar
+dm:FindFirstChild("HumanoidRootPart").Anchored = true -- deathPop
+dying.Enabled = false -- deathPop: the server turns the bar off
+ML.Tick()
+check(dying.Enabled == false, "a dying monster's tag stays off (no 'Shard Slime' over a dead body)", tostring(dying.Enabled))
+check(nameShown(alive), "a living slime next to a dying one gets the name (the dead body takes no slot)")
+dying.Enabled = true -- a tag this client turned on before the death replicated
+ML.Tick()
+check(dying.Enabled == false, "a tag still on when the body is already anchored is turned off", tostring(dying.Enabled))
 print("MONSTER_LABELS_SUMMARY checks=" .. checks .. " failed=" .. failed)

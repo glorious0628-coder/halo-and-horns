@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 7,
+  "checks": 11,
   "failedChecks": [],
   "mutations": {
-    "total": 4,
-    "applied": 4,
-    "caught": 4,
+    "total": 6,
+    "applied": 6,
+    "caught": 6,
     "results": [
       {
         "mutation": "no screen check (the 2026-10-07 overlap)",
@@ -38,15 +38,33 @@
         "failures": [
           "CHECK_FAIL a same-kind name far away on screen stays :: nil"
         ]
+      },
+      {
+        "mutation": "a dying monster gets its tag back (no anchored check)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a dying monster's tag stays off (no 'Shard Slime' over a dead body) :: true",
+          "CHECK_FAIL a living slime next to a dying one gets the name (the dead body takes no slot) :: nil",
+          "CHECK_FAIL a tag still on when the body is already anchored is turned off :: true"
+        ]
+      },
+      {
+        "mutation": "a tag left on over a dying body stays on",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a tag still on when the body is already anchored is turned off :: true"
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
-    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "090abafc0a9313ae43848b2388ba2af2c92f9cc35bb7fe54748127ea7f71e2ca"
+    "src/ReplicatedStorage/Shared/Config.luau": "3768f78d2b187d87e04d0f1e568ae46a905b46399a41c3f040953b3cde696e80",
+    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "df83f72f4b23b3e9ccf8b4ce0ab6c789356a2b8f3a681bc1d613055d343548a4"
   },
-  "fixtureSHA256": "35d62711cd7f29238e59e15838e8e590960b8ae81c08290ecfcc56cb0d7dc839",
+  "fixtureSHA256": "a3cf6fd31c50f4b236297977e4b7321732c8e24f45a22c43ad7476bba2ab5a9d",
   "studioCalls": 0,
-  "contract": "MonsterLabels name-tag offline test (review devlog 12 + 2026-10-07 photos): one label pass (MonsterLabels.Tick) over\nworkspace.Monsters with a level camera double. A same-kind name whose tag would land on a shown same-kind tag on screen\n(NameW x NameH px) hides, even when the two monsters are farther apart than Cluster studs (one behind the other); a\nsame-kind tag far away on screen and another kind's tag stay; the old world rule (same kind within Cluster studs) holds;\noff-screen monsters never break the pass. Runs the real MonsterLabels.luau + Config.luau in\ntools/fixtures/monster_labels_offline.luau.",
+  "contract": "MonsterLabels name-tag offline test (review devlog 12 + 2026-10-07 photos): one label pass (MonsterLabels.Tick) over\nworkspace.Monsters with a level camera double. A same-kind name whose tag would land on a shown same-kind tag on screen\n(NameW x NameH px) hides, even when the two monsters are farther apart than Cluster studs (one behind the other); a\nsame-kind tag far away on screen and another kind's tag stay; the old world rule (same kind within Cluster studs) holds;\noff-screen monsters never break the pass; a dying monster (anchored root, A23-74) shows no tag and takes no name slot. Runs the real MonsterLabels.luau + Config.luau in\ntools/fixtures/monster_labels_offline.luau.",
   "limitations": "Real camera angles / phone sizes are a Studio check (the projection here is a level camera)."
 }
