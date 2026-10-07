@@ -30,7 +30,8 @@
    - 점검 메모: 뿔 성벽 탑 가운데 창 2개 + 아래 창이 얼굴처럼 읽히는지 3D 렌더에서 다시 보기.
 2. **해골 유적 큰 것 8개 → Tripo 웹 HD 8 × 55 = 440**(범위·합계 먼저 검수). 입력 `art/out/hq/HQ_R_*.png`, 크기·자리 `docs/design/kit_ruins.md`.
 3. **사진 벽 A_1 고급**(5) — 참조 = Firefly 에셋 `urn:aaid:sc:AP:599d5c8a-97dc-415e-b87b-0f7a58ff089e`(X_PhotoWall_A_1, 1536×1024), 비율 `{"height":1024,"width":1536}` → 이미지 개발 업로드(Decal, 1024 폭) → 개발 1 배치(`docs/design/kit_crossroads.md` X_PhotoWall 줄: 13.5×9 스터드, 날개 뿌리 = 바닥에서 4).
-4. **모닥불**: 이미지 생성 2 시안 B2(장작 틈 숯 빛 + 활활 불꽃) → 검수 고름 → 고급 → **Tripo API prop 40**(API 남은 45는 이 몫만, geometry_quality detailed 가능) → 시트 → 다음 묶음.
+4. **모닥불**: 2D 고급 끝(이미지 생성 2 ef15ac0, 검수 B2: 엇갈린 통나무 틈이 숯처럼 빛남 + 가운데 굵은 불꽃 한 덩어리). 입력 `art/out/hq/HQ_Woods_Campfire_FB2.png`(1024², 회색 바탕), approved.json `Kit_W_Campfire_Fire` → **Tripo API prop 40**(API 남은 45는 이 몫만, geometry_quality detailed 가능) → 2D↔3D 시트 → 다음 묶음. 불 없는 옛 `Kit_W_Campfire` 3D를 대체하고, 움직이는 불꽃·빛은 Studio에서 개발 1.
+   - 유적 작은 것 3D 후보 8개(기둥 A·B, 쓰러진 기둥, 돌 이정표, 영혼불 그릇, 돌 등롱, 빈 이정표, 왕관 조각)는 다음 이미지 생성 2가 고급으로 그림(`docs/handoff/imagegen2_handoff_2026-10-07.md`). 그 뒤 Tripo를 누가 돌릴지는 검수에 확인(숲 소품 때는 이 세션이 돌림).
 5. **다음 WorldKit 가져오기 묶음**: 게시판 2(`art/models/tripo/Kit_M_JobBoard_raw.glb`, `Kit_W_JobBoard_fix.glb`) + 3b HD + 모닥불 + 유적. 만들기 `tools/worldkit_combine.py`(spec `fit`) → **가져오기 버튼은 사용자가 누름** → MCP로 Model·피벗(바닥 가운데, 앞 -Z) → 장부 JSON + `tools/build_kit_from_ids.py` → id·크기 → 개발 1.
 6. 나중: 오프닝 FilmSet 카메라 길(10/15), 조각 v2(사용자 답 대기).
 
