@@ -1,0 +1,609 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 45,
+  "failedChecks": 0,
+  "namedChecks": 45,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config and hunters",
+      "check": "Config.SpawnSpread.Tutorial = { StarvedThreshold 3, 10-18, Extra 3 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "the A7-1 spread stays { 2, 18-28, 6 tries }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "the first mission hunts Slimes in the SlimeMeadow (step 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "TutorialStep 2 in the meadow: a hunter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "past the first mission (99): not a hunter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "step 1 (on the way): not a hunter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "no TutorialStep: not a hunter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "step 2 outside the meadow: not a hunter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config and hunters",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "playersPerZone counts the hunter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "one hunter: the meadow wants 3 more slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "every other kind keeps Config.MonsterTargets (King Slimes too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "targetCount sees the bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "cappedTargets keeps it (room under the GlobalCap)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "a lone sprout on a quiet server: more slimes wanted than the 12 alive, so new ones spawn now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "two hunters: +2 x 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "a hunter + a veteran: one bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "a veteran alone: no bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "step 2 outside the meadow: no bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "after the first [Claim] the bonus is gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "five hunters: capped at Count x MaxZoneMult (24)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "targets",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "60 slimes for a starved hunter: all 10-18 studs away, inside the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "closer than the old 18-28 ring",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "all on the half circle facing the meadow middle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "starved = monsters within 30 studs (A7-1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "2 slimes near: still the hunter ring",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "3 slimes near the hunter: a starved veteran gets the 18-28 ring",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "at the meadow entrance: 100 / 100 slimes within 10-18",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "draw 0.5 = straight toward the meadow middle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "6 misses on the inset edge: the 7th try still lands near",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "no 'no walkable ground' warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the ring near the hunter",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "the hunter beats a Rookie with fewer slimes near (both orders)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "a King Slime keeps the regular 18-28 ring",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "a King Slime: a hunter with 2 near is not starved (threshold 2), the Rookie is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "no hunters: a Rookie first, even with more slimes near and a higher level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "then the lower level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "then the fewest slimes near",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "a dead hunter pulls no slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who goes first",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 5,
+  "staticFailures": [],
+  "mutations": {
+    "total": 24,
+    "applied": 24,
+    "caught": 24,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the hunter is not first",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who goes first :: the hunter beats a Rookie with fewer slimes near (both orders)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the hunter keeps the regular threshold",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the ring near the hunter :: 2 slimes near: still the hunter ring",
+          "who goes first :: the hunter beats a Rookie with fewer slimes near (both orders)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Rookies are not first",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who goes first :: no hunters: a Rookie first, even with more slimes near and a higher level"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the lower level is not first",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who goes first :: then the lower level"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the fewest near is not the last tie-break",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who goes first :: then the fewest slimes near"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a dead player pulls slimes",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who goes first :: a dead hunter pulls no slimes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the ring for every kind",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who goes first :: a King Slime keeps the regular 18-28 ring",
+          "who goes first :: a King Slime: a hunter with 2 near is not starved (threshold 2), the Rookie is"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the hunter gets the old ring start (18)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the ring near the hunter :: 6 misses on the inset edge: the 7th try still lands near",
+          "the ring near the hunter :: closer than the old 18-28 ring",
+          "the ring near the hunter :: draw 0.5 = straight toward the meadow middle"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the hunter ring reaches 28",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the ring near the hunter :: 2 slimes near: still the hunter ring",
+          "the ring near the hunter :: 60 slimes for a starved hunter: all 10-18 studs away, inside the meadow",
+          "the ring near the hunter :: at the meadow entrance: 100 / 100 slimes within 10-18",
+          "who goes first :: the hunter beats a Rookie with fewer slimes near (both orders)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a full circle at the entrance",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the ring near the hunter :: all on the half circle facing the meadow middle",
+          "the ring near the hunter :: draw 0.5 = straight toward the meadow middle"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the ring faces away from the middle",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the ring near the hunter :: 6 misses on the inset edge: the 7th try still lands near",
+          "the ring near the hunter :: all on the half circle facing the meadow middle",
+          "the ring near the hunter :: at the meadow entrance: 100 / 100 slimes within 10-18",
+          "the ring near the hunter :: draw 0.5 = straight toward the meadow middle"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no extra tries",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the ring near the hunter :: 6 misses on the inset edge: the 7th try still lands near"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any step counts as a hunter",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config and hunters :: past the first mission (99): not a hunter",
+          "config and hunters :: step 1 (on the way): not a hunter",
+          "targets :: a hunter + a veteran: one bonus",
+          "targets :: a veteran alone: no bonus",
+          "targets :: after the first [Claim] the bonus is gone",
+          "the ring near the hunter :: 3 slimes near the hunter: a starved veteran gets the 18-28 ring"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "any zone counts",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config and hunters :: step 2 outside the meadow: not a hunter"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no hunter count",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "targets :: a hunter + a veteran: one bonus",
+          "targets :: a lone sprout on a quiet server: more slimes wanted than the 12 alive, so new ones spawn now",
+          "targets :: after the first [Claim] the bonus is gone",
+          "targets :: cappedTargets keeps it (room under the GlobalCap)",
+          "targets :: five hunters: capped at Count x MaxZoneMult (24)",
+          "targets :: one hunter: the meadow wants 3 more slimes"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "the hunters are never stored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "targets :: a hunter + a veteran: one bonus",
+          "targets :: a lone sprout on a quiet server: more slimes wanted than the 12 alive, so new ones spawn now",
+          "targets :: after the first [Claim] the bonus is gone",
+          "targets :: cappedTargets keeps it (room under the GlobalCap)",
+          "targets :: five hunters: capped at Count x MaxZoneMult (24)",
+          "targets :: one hunter: the meadow wants 3 more slimes"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "old hunters linger after the claim",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "targets :: after the first [Claim] the bonus is gone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "one bonus for any number of hunters",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "targets :: five hunters: capped at Count x MaxZoneMult (24)",
+          "targets :: two hunters: +2 x 3"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no cap",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "targets :: five hunters: capped at Count x MaxZoneMult (24)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "cappedTargets ignores the bonus",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "targets :: a lone sprout on a quiet server: more slimes wanted than the 12 alive, so new ones spawn now",
+          "targets :: cappedTargets keeps it (room under the GlobalCap)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "targetCount ignores the bonus",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "targets :: targetCount sees the bonus"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: no Extra",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config and hunters :: Config.SpawnSpread.Tutorial = { StarvedThreshold 3, 10-18, Extra 3 }",
+          "targets :: a hunter + a veteran: one bonus",
+          "targets :: a lone sprout on a quiet server: more slimes wanted than the 12 alive, so new ones spawn now",
+          "targets :: after the first [Claim] the bonus is gone",
+          "targets :: cappedTargets keeps it (room under the GlobalCap)",
+          "targets :: five hunters: capped at Count x MaxZoneMult (24)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Config: the old ring",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config and hunters :: Config.SpawnSpread.Tutorial = { StarvedThreshold 3, 10-18, Extra 3 }",
+          "the ring near the hunter :: 2 slimes near: still the hunter ring",
+          "the ring near the hunter :: 6 misses on the inset edge: the 7th try still lands near",
+          "the ring near the hunter :: 60 slimes for a starved hunter: all 10-18 studs away, inside the meadow",
+          "the ring near the hunter :: at the meadow entrance: 100 / 100 slimes within 10-18",
+          "the ring near the hunter :: closer than the old 18-28 ring"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "Config: threshold 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config and hunters :: Config.SpawnSpread.Tutorial = { StarvedThreshold 3, 10-18, Extra 3 }",
+          "the ring near the hunter :: 2 slimes near: still the hunter ring",
+          "who goes first :: the hunter beats a Rookie with fewer slimes near (both orders)"
+        ],
+        "newFailingCount": 3
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "d1eca1564a5eab09ccc0e287f6788dbe120fca151bec19798b894ee56ee270b9",
+    "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a"
+  },
+  "fixtureSHA256": "424b2e8d9371c399040d0809e039da118afe99e945d078794c4fe7541cd25ce1",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "ideas_first10 §3-#7 (검수 2026-10-07): Config.SpawnSpread.Tutorial = { StarvedThreshold 3, MinDist 10, MaxDist 18, Extra 3 }. A hunter = TutorialStep Tutorial.Steps.Quest (2) standing in Tutorial.GuideZone (SlimeMeadow). For the tutorial monster (Slime) a starved hunter (< 3 monsters within 30 studs) is chosen first and gets the point 10-18 studs away on the half circle facing the zone middle (12 tries); other starved players (< 2): a Rookie first, then the lowest level, then the fewest near, ring 18-28 (6 tries); King Slimes and other kinds keep the A7-1 rule. Each hunter in the meadow raises the Slime target by 3 (never above Count x MaxZoneMult = 24) through targetCount and cappedTargets; the bonus ends when the hunt ends (playersPerZone refreshes the hunters every pass).",
+  "limitations": "Players, Util (Random seeded, scripted draws), the ground ray (always flat ground) and the monster count near a player are doubles; the real Studio check (first kill within 10 s after the trip) is game dev 1's. The season (Config.SeasonOn) follows the machine clock; the checks compare with Config's own MonsterTargets so they hold either way."
+}

@@ -358,6 +358,13 @@ def make_harness(sources: dict[str, str]) -> str:
         + between(mon, "------------------------------------------------------------------ event monsters",
                   "------------------------------------------------------------------ personal monsters")
         + "return { killRecord = killRecord, despawn = despawn, aliveCountOf = aliveCountOf, totalNonPersonal = totalNonPersonal }\n")
+    # 3rd idea round #7: wantedTargets (Config.MonsterTargets + the first-mission bonus) reads these two
+    tut_consts = []
+    for pattern in (r"^local TUTORIAL = .*$", r"^local TUT_SPAWN = .*$"):
+        m = re.search(pattern, mon, re.M)
+        if not m:
+            raise ValueError(f"MonsterService constant {pattern!r} missing; update the test extractor.")
+        tut_consts.append(m.group(0))
     per_pass = re.search(r"local MAX_SPAWNS_PER_KIND_PER_PASS = (\d+)", mon)
     if not per_pass:
         raise ValueError("MAX_SPAWNS_PER_KIND_PER_PASS missing; update the test extractor.")
@@ -368,9 +375,10 @@ def make_harness(sources: dict[str, str]) -> str:
         "local records, pending = H.records, H.pending\n"
         f"local MAX_SPAWNS_PER_KIND_PER_PASS = {per_pass.group(1)}\n"
         "local spawnMonster, playersPerZone, warnThrottled, despawn = H.spawnMonster, H.playersPerZone, H.warnThrottled, H.despawn\n"
+        + "\n".join(tut_consts) + "\n"
         + between(mon, "local GLOBAL_CAP\n", "\n------------------------------------------------------------------ helpers") + "\n"
         + counting
-        + between(mon, "local function targetCount(", "------------------------------------------------------------------ public queries")
+        + between(mon, "local function wantedTargets(", "------------------------------------------------------------------ public queries")
         + function_block(mon, "local function reevaluate()") + "\n"
         + "local function startSpawn()\n"
         + between(mon, "\tlocal total = 0\n\tlocal counts = Config.EffectiveMonsterCounts()", "\n\ttask.spawn(function()")
