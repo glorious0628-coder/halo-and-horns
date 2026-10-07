@@ -5235,5 +5235,84 @@
   "preview": "art/review/s2/board_btn_horns_fix_sheet.jpg",
   "note": "E11 [Sneaky] 버튼 글자 왼쪽 아이콘(거의 흰 라일락 뿔 한 쌍 + 남색 테, 글자 없음). 보라 버튼 위에서 날개만큼 또렷하게 밝힘(원래 연보라는 대비 약함 — 검수). GlyphKindWing과 같은 크기·배치로.",
   "user_ok": "검수 확정 2026-10-07 (날개 A + 뿔 AL1, 사용자에게는 결과로 보여 줌 — 아니라고 하면 바꿈)"
+ },
+ "Town_Horns_Castle_v4": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "사용자 via 검수: \"B1이 멋있다 D1도 좋긴한데 너무 똑같아서\" (sheet art/review/town4/horns_castle_v4_vs_halo.jpg, 837a818)",
+  "source": "art/out/town_v4/Town_Horns_Castle_v4B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/Town_Horns_Castle_v4B.txt)",
+  "final": "art/out/hq/HQ_Town_Horns_Castle_v4B.png (High, 5 credits) -> Tripo building",
+  "keep": "horned lava crown + flame, 3 tiers of walls, lava flows; chunky stairs and lava streams; no paired windows / faces",
+  "replaces": "Town_Horns_Castle v3N2 (art/models/tripo/Town_Horns_Castle_v3_raw.glb)"
+ },
+ "W_GiantTree": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_GiantTree_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_GiantTree.txt)",
+  "final": "art/out/hq/HQ_W_GiantTree.png (High, 5 credits) -> Tripo"
+ },
+ "W_Gate": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Gate_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Gate.txt)",
+  "final": "art/out/hq/HQ_W_Gate.png (High, 5 credits) -> Tripo"
+ },
+ "W_Totem": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Totem_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Totem.txt)",
+  "final": "art/out/hq/HQ_W_Totem.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tent_A": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tent_A_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tent_A.txt)",
+  "final": "art/out/hq/HQ_W_Tent_A.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tent_B": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tent_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tent_B.txt)",
+  "final": "art/out/hq/HQ_W_Tent_B.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tree_A": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tree_A_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tree_A.txt)",
+  "final": "art/out/hq/HQ_W_Tree_A.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tree_B": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tree_B_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tree_B.txt)",
+  "final": "art/out/hq/HQ_W_Tree_B.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tree_C": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tree_C_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tree_C.txt)",
+  "final": "art/out/hq/HQ_W_Tree_C.png (High, 5 credits) -> Tripo"
+ },
+ "W_Boulder_A": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Boulder_A_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Boulder_A.txt)",
+  "final": "art/out/hq/HQ_W_Boulder_A.png (High, 5 credits) -> Tripo"
+ },
+ "W_Boulder_B": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Boulder_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Boulder_B.txt)",
+  "final": "art/out/hq/HQ_W_Boulder_B.png (High, 5 credits) -> Tripo"
  }
 }
