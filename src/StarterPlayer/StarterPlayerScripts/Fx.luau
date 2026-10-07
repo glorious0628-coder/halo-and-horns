@@ -75,7 +75,7 @@ local SOUND_VOLUME = { Swing = 0.35, Release = 0.6, Coin = 0.35, Click = 0.4 }
 local SHAKE_BIND_NAME = "HaloHornsFxShake"
 local MAX_SHAKE = 3
 
-local FONT_NUMBER = Enum.Font.GothamBlack
+local FONT_NUMBER = Enum.Font.DenkOne -- A23-63 (user 2026-10-07) / UI ideas #7: damage numbers, combo and milestone in Denk One
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11 -- addendum M1
 
 -- A7-3 level-up announce (client-only feature; A23-48: English).
