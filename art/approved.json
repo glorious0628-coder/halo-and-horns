@@ -6332,7 +6332,9 @@
   "source": "art/models/tripo/MonsterSlimeCube_tex_noback.png (in game now: rbxassetid://103903037538863, back face erased)",
   "settings": "fix Slime --bands green --value-mix 0 --ao-strength 0.45 --headroom 0.78 --base game_base_nb.png --ao ao_ground_nb.png (label nb0.78; noback: no AO + specks inpainted where the back face was erased)",
   "use": "Slime (cube) MeshPart.TextureID — replaces the noback texture",
-  "note": "형광 연두·그림자 없음 → 시안 연두 + 아래쪽 그늘. 게임 카메라 렌더 몸 밝기 0.96 → 0.82(시안 0.80). 앞 얼굴 그대로, 뒤통수 자국 정리."
+  "note": "형광 연두·그림자 없음 → 시안 연두 + 아래쪽 그늘. 게임 카메라 렌더 몸 밝기 0.96 → 0.82(시안 0.80). 앞 얼굴 그대로, 뒤통수 자국 정리.",
+  "id": "rbxassetid://71253753467123",
+  "uploaded": "2026-10-07 by 이미지 개발 1 (Studio swap + tools/apply_studio_state.py constant: 게임성 개발 1)"
  },
  "Tex_BigSlimeCube_blue_colorfix": {
   "status": "approved",
@@ -6345,7 +6347,9 @@
   "source": "art/models/tripo/BigSlimeCube_tex_blue_noback.png (in game now: rbxassetid://103583212016878)",
   "settings": "fix BigSlime --bands blue --value-mix 0 --ao-strength 0.45 --headroom 0.92 --sat 0.95 --base game_base_nb.png --ao ao_ground_nb.png (label nb0.92s0.95; concept = art/out/IconMonBigSlime_src.png)",
   "use": "BigSlime (king slime cube) MeshPart.TextureID — replaces the blue noback texture",
-  "note": "진한 청록 → 아이콘 같은 하늘 파랑(색상 193°→202°, 채도 ×0.95) + 아래 그늘. 뒤통수 정리 같음."
+  "note": "진한 청록 → 아이콘 같은 하늘 파랑(색상 193°→202°, 채도 ×0.95) + 아래 그늘. 뒤통수 정리 같음.",
+  "id": "rbxassetid://75055792951510",
+  "uploaded": "2026-10-07 by 이미지 개발 1 (Studio swap + tools/apply_studio_state.py constant: 게임성 개발 1)"
  },
  "Tex_MonsterPumpkinSlime_colorfix": {
   "status": "approved",
@@ -6358,6 +6362,22 @@
   "source": "base colour texture inside art/models/tripo/MonsterPumpkinSlime_raw.glb (4096; the imported model's colour map in game now)",
   "settings": "fix PumpkinSlime --bands gold,green --value-mix 0 --ao-strength 0.45 --headroom 0.86 (label v0h0.86)",
   "use": "PumpkinSlime model colour map (SurfaceAppearance.ColorMap or MeshPart.TextureID, whichever the imported model uses)",
-  "note": "빨강이 255로 잘려 골·명암이 흐리던 것 → 밝기 여유 0.86 + 골 사이 그늘. 색은 시안과 같아 그대로."
+  "note": "빨강이 255로 잘려 골·명암이 흐리던 것 → 밝기 여유 0.86 + 골 사이 그늘. 색은 시안과 같아 그대로.",
+  "id": "rbxassetid://100144323661916",
+  "uploaded": "2026-10-07 by 이미지 개발 1 (Studio swap + tools/apply_studio_state.py constant: 게임성 개발 1)"
+ },
+ "Town_Horns_Castle_v6_back": {
+  "status": "picked (이미지 생성 1, 검수 확인 대기)",
+  "date": "2026-10-07",
+  "why": "user via 검수: '앞모습은 2가 좋은데 뒷모습이 문제다. 1과 2를 섞을 수는 없어?' — ② v4 style rear view where the back is walls + horned/red-spire towers, not a rock mountain (검수 method 1)",
+  "candidates": [
+   "art/out/town_v6/Town_Horns_Castle_v6_back_1.png (picked: round footprint like v4, three rings of walls, rear gate)",
+   "art/out/town_v6/Town_Horns_Castle_v6_back_2.png (boxy, stairs + gate = reads as a second front)"
+  ],
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst; candidates Medium (0 credits, reference = art/out/hq/HQ_Town_Horns_Castle_v4B.png), final High (5 credits, reference = candidate 1)",
+  "prompt": "art/prompts/Town_Horns_Castle_v6_back.txt (candidates), art/prompts/Town_Horns_Castle_v6_back_HQ.txt (final)",
+  "final": "art/out/hq/HQ_Town_Horns_Castle_v6_back.png (1024, High 5 credits)",
+  "use": "Tripo web multi-view back slot with front = HQ_Town_Horns_Castle_v4B.png (task 852535df-361c-4ee2-a2c4-14a1e3d683ce)",
+  "checks": "no paired windows / faces; banners only on the keep"
  }
 }

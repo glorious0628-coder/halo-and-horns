@@ -28,6 +28,9 @@ B.NEON_CAP_Y, B.NEON_CAP_SIZE = 950, 88
 B.NEON_CHUNK = (16, 3)
 B.CHECK = (0.5, 320, 10)          # check sheet: frames per second, tile width, tiles per row
 B.TARGET_MB = 95                   # the whole file under ~100 MB (handoff), bitrate from the length
+B.CAPX = 960                       # captions on the frame's centre line
+B.CAP_MAXW = 1500
+B.SAFE_CHECK = False               # the Shorts safe-area check is for the 9:16 shorts only
 W, H = B.W, B.H
 CX = B.CX
 
@@ -41,11 +44,12 @@ def stage(inner="#4A5BC4", outer="#10122A"):
 
 
 def team_cells():
-    """the 7 team cards in one row"""
+    """the 8 team cards (the 8 sessions) in one centred row"""
     emo = ImageFont.truetype(B.EMOJI_FONT, 109)
     cells = []
-    cw, ch, gap = 228, 300, 20
-    x0 = CX - (7 * cw + 6 * gap) // 2
+    cw, ch, gap = 206, 290, 14
+    n = len(B.TEAM_CARDS)
+    x0 = CX - (n * cw + (n - 1) * gap) // 2
     for i, (e, word, col) in enumerate(B.TEAM_CARDS):
         x = x0 + i * (cw + gap)
         cell = B.rounded((cw, ch), 34, B.hexrgb("#24306E"), outline=B.hexrgb(col), width=7)
