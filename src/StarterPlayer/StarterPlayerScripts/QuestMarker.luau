@@ -28,7 +28,14 @@
 -- >= 3:1 next to bright lamps and on light grass (검수 2026-10-06).
 -- Presentation only: every instance is Active = false and nothing is a button, so no input is ever sunk.
 --
--- Public API: QuestMarker.Init(C), QuestMarker.Start(), QuestMarker.Refresh(), QuestMarker.IsShown()
+-- A23-68 #2 (user 2026-10-07 "그 자리 힌트"): game dev 1 points at the nearest slime of my first mission
+-- (QuestMarker.Focus(model), picked again every 0.5 s; nil after the first kill): a smaller copy of the marker art
+-- (T.FocusPx, white, no distance, no edge arrow) floats just over that monster's name tag (or its head when the tag is
+-- off) and bobs a little (not with ReducedMotion). Hidden whenever the marker hides (HUD hidden, map / window /
+-- opening), when the monster is gone or dead, and while it is off screen.
+--
+-- Public API: QuestMarker.Init(C), QuestMarker.Start(), QuestMarker.Refresh(), QuestMarker.IsShown(),
+-- QuestMarker.Focus(model | nil)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -72,6 +79,11 @@ local T = {
 	MinTurn = 1, -- degrees
 	ArtKey = "IconQuestMarker",
 	ArrowKey = "IconQuestMarkerArrow",
+	-- A23-68 #2 focus (QuestMarker.Focus): real px size, gap over the monster's name tag, bob (px, Hz)
+	FocusPx = 30,
+	FocusGapPx = 4,
+	FocusBobPx = 3,
+	FocusHz = 1.1,
 	Step = "QuestMarker", -- BindToRenderStep name (after the camera)
 	WarnEvery = 10,
 }
@@ -127,6 +139,9 @@ local S = {
 	raw = {}, -- the single HUD rects (+ thumbstick zone), not inflated
 	targetAcc = 0,
 	lastWarnAt = -math.huge,
+	focus = nil, -- A23-68 #2: the monster (Model / BasePart) QuestMarker.Focus points at
+	focusBar = nil, -- its MonsterBar BillboardGui (name tag + HP bar), when it has one
+	focusSize = nil, -- du the focus icon was last sized to
 }
 local ui = {} -- gui, scale, holder, iconBox, icon, iconHalo, arrow, arrowHalo, text
 local fades = {} -- { { inst, prop, base } }
@@ -365,6 +380,48 @@ local function build()
 	ui.arrow = makeArrow(holder)
 	ui.text = makeDistance(holder)
 	collectFades(holder)
+	-- A23-68 #2 focus icon (its own holder: never faded / tinted with the marker)
+	ui.focus = UIKit.Create("Frame", {
+		Name = "Focus",
+		AnchorPoint = Vector2.new(0.5, 1),
+		Size = UDim2.fromOffset(T.FocusPx, T.FocusPx),
+		BackgroundTransparency = 1,
+		Active = false,
+		Visible = false,
+		Parent = gui,
+	})
+	pcall(function()
+		ui.focus.Interactable = false
+	end)
+	local focusArt = UIKit.ArtImage(T.ArtKey, {
+		Name = "Icon",
+		Size = UDim2.fromScale(1, 1),
+		ImageColor3 = COL.Go,
+		ZIndex = 3,
+		Active = false,
+		Parent = ui.focus,
+	})
+	if focusArt then
+		ui.focusHalo = halo(focusArt)
+		ui.focusHalo.AnchorPoint = Vector2.new(0.5, 0.5)
+		ui.focusHalo.Position = UDim2.fromScale(0.5, 0.5)
+		ui.focusHalo.Size = UDim2.new(1, T.Halo, 1, T.Halo)
+	else
+		UIKit.Create("Frame", {
+			Name = "Diamond",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromScale(0.66, 0.66),
+			Rotation = 45,
+			BackgroundColor3 = COL.Go,
+			ZIndex = 3,
+			Active = false,
+			Parent = ui.focus,
+		}, {
+			UIKit.Create("UICorner", { CornerRadius = UDim.new(0, 3) }),
+			UIKit.Create("UIStroke", { Color = COL.Rim, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		})
+	end
 	local playerGui = LocalPlayer:FindFirstChildOfClass("PlayerGui") or LocalPlayer:WaitForChild("PlayerGui")
 	gui.Parent = playerGui
 	S.built = true
@@ -640,6 +697,32 @@ local function previewTarget()
 	return { Position = Vector3.new(tonumber(x), tonumber(y), tonumber(z)), Tag = "preview", Claim = flag == "claim" }
 end
 
+-- Studio-only check hook (UiSandbox captures of A23-68 #2): the local attribute FocusPreview = true focuses the nearest
+-- living monster (game dev 1's real picker chooses my quest's slimes); never read outside Studio
+local function previewFocus()
+	if not RunService:IsStudio() then return end
+	local on = LocalPlayer:GetAttribute("FocusPreview") == true
+	if not on then
+		if S.focusPreview then QuestMarker.Focus(nil) end
+		S.focusPreview = false
+		return
+	end
+	S.focusPreview = true
+	local root = myRoot()
+	local folder = workspace:FindFirstChild("Monsters")
+	if not (root and folder) then return end
+	local best, bestD = nil, math.huge
+	for _, m in folder:GetChildren() do
+		local hum = m:IsA("Model") and m:FindFirstChildOfClass("Humanoid") or nil
+		local pivot = hum and hum.Health > 0 and m:GetPivot() or nil
+		if pivot then
+			local d = (pivot.Position - root.Position).Magnitude
+			if d < bestD then best, bestD = m, d end
+		end
+	end
+	QuestMarker.Focus(best)
+end
+
 -- 2 Hz: the pinned row's place from HUD (QuestTarget.ForEntry result)
 local function retarget()
 	local t = previewTarget()
@@ -658,13 +741,101 @@ local function retarget()
 	S.target = t
 end
 
+-- A23-68 #2: the focus monster's anchor in the world (its name tag's spot, or over its box) + the tag, nil when the
+-- monster is gone, dead or leaving
+local function focusPoint()
+	local f = S.focus
+	if typeof(f) ~= "Instance" or not f.Parent then return nil, nil end
+	if f:IsA("Model") then
+		local hum = f:FindFirstChildOfClass("Humanoid")
+		if (hum and hum.Health <= 0) or f:GetAttribute("Leaving") == true then return nil, nil end
+		local bb = S.focusBar
+		local base = bb and bb.Parent
+		if bb and bb.Parent and base:IsA("BasePart") and base:IsDescendantOf(f) then
+			return base.Position + Vector3.new(0, bb.StudsOffset.Y, 0), bb
+		end
+		local cf, size = f:GetBoundingBox()
+		return cf.Position + Vector3.new(0, size.Y / 2, 0), nil
+	elseif f:IsA("BasePart") then
+		return f.Position + Vector3.new(0, f.Size.Y / 2, 0), nil
+	end
+	return nil, nil
+end
+
+-- the bottom of the HUD's top rows (war meter, chips, next event; du): the focus icon never sits under them
+local function topRowsBottom()
+	local hud = C and C.HUD
+	local layout = type(hud) == "table" and hud.Layout or nil
+	local rects = type(layout) == "table" and layout.Rects or nil
+	local bottom = 0
+	for _, id in { "war_meter", "chips", "event" } do
+		local r = type(rects) == "table" and rects[id] or nil
+		if type(r) == "table" and num(r.Y) and num(r.H) then bottom = math.max(bottom, r.Y + r.H) end
+	end
+	return bottom
+end
+
+-- every frame: the focus icon over its monster (screen space: the gap over the name tag stays the same at any range)
+local function focusStep()
+	local holder = ui.focus
+	if not holder then return end
+	local cam = workspace.CurrentCamera
+	local point, bb = focusPoint()
+	if not (point and cam and ui.gui and ui.gui.Parent) or not hudShowing() or moduleOpen("WorldMap")
+		or moduleOpen("Panels") or moduleOpen("Intro") then
+		if holder.Visible then holder.Visible = false end
+		return
+	end
+	local s = guiScale()
+	fitScale(s) -- the gui's UIScale (also when the quest marker itself is hidden)
+	local size = math.ceil(T.FocusPx / s)
+	if size ~= S.focusSize then
+		S.focusSize = size
+		holder.Size = UDim2.fromOffset(size, size)
+		if ui.focusHalo then ui.focusHalo.Size = UDim2.new(1, T.Halo, 1, T.Halo) end
+	end
+	local sp = cam:WorldToScreenPoint(point)
+	local origin, gsize = ui.gui.AbsolutePosition, ui.gui.AbsoluteSize
+	local W, H = gsize.X / s, gsize.Y / s
+	local x, y = (sp.X - origin.X) / s, (sp.Y - origin.Y) / s
+	if not (sp.Z > 0 and x >= 0 and x <= W and y >= 0 and y <= H) then
+		if holder.Visible then holder.Visible = false end
+		return
+	end
+	local tagHalf = (bb and bb.Enabled and bb.AbsoluteSize.Y > 0) and bb.AbsoluteSize.Y / 2 or 0
+	local bob = 0
+	if not UIKit.ReducedMotion() then bob = math.sin(os.clock() * math.pi * 2 * T.FocusHz) * T.FocusBobPx end
+	local iy = y - (tagHalf + T.FocusGapPx + bob) / s
+	-- a monster right in front of the camera lifts its name tag up under the HUD's top rows: then the icon sits just
+	-- over its head instead, and hides when even that is up there (UiSandbox phone 2026-10-07: a big slime next to me)
+	local top = topRowsBottom()
+	if iy - size < top then
+		local f = S.focus
+		local headY, headX = nil, nil
+		if f:IsA("Model") then
+			local cf, box = f:GetBoundingBox()
+			local hp = cam:WorldToScreenPoint(cf.Position + Vector3.new(0, box.Y / 2, 0))
+			if hp.Z > 0 then headX, headY = (hp.X - origin.X) / s, (hp.Y - origin.Y - T.FocusGapPx - bob) / s end
+		end
+		if not headY or headY - size < top then
+			if holder.Visible then holder.Visible = false end
+			return
+		end
+		x, iy = headX, headY
+	end
+	holder.Position = UDim2.fromOffset(x, iy)
+	if not holder.Visible then holder.Visible = true end
+end
+
 local function onRender(dt)
 	S.targetAcc += dt
 	if S.targetAcc >= T.TargetDt then
 		S.targetAcc = 0
 		guard(retarget, "retarget")
+		guard(previewFocus, "focus preview")
 	end
 	guard(moveStep, "move")
+	if S.focus ~= nil then guard(focusStep, "focus") elseif ui.focus and ui.focus.Visible then ui.focus.Visible = false end
 end
 
 ----------------------------------------------------------------- public API
@@ -693,6 +864,19 @@ end
 
 function QuestMarker.IsShown()
 	return S.shown == true
+end
+
+-- A23-68 #2: point the small focus icon at a monster (Model or BasePart), nil = off. The same target again is a no-op
+function QuestMarker.Focus(target)
+	if typeof(target) ~= "Instance" or not (target:IsA("Model") or target:IsA("BasePart")) then target = nil end
+	if target == S.focus then return end
+	S.focus = target
+	S.focusBar = nil
+	if target and target:IsA("Model") then
+		local bb = target:FindFirstChild("MonsterBar", true)
+		if bb and bb:IsA("BillboardGui") then S.focusBar = bb end
+	end
+	if target == nil and ui.focus then ui.focus.Visible = false end
 end
 
 return QuestMarker

@@ -1,0 +1,538 @@
+{
+  "tool": "tools/rookie_hint_view.py",
+  "note": "PC rows: run 1; phone rows: run 2 after the fixes (line 2 empty while folded, focus icon falls back to the head under the top rows)",
+  "rows": [
+    {
+      "device": "pc",
+      "view": "fold",
+      "probe": {
+        "QuestLinesShown": true,
+        "TapTop58": "Left",
+        "BannerShown": false,
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Lines": [
+          "Free the supply road · 5 slimes",
+          "2/5",
+          "Daily Quests 0/3"
+        ],
+        "TapShown": true,
+        "BannerText": "",
+        "Focus": false,
+        "TapTop0": "Left",
+        "Step": 2,
+        "Hints": [],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:28 · My pts 0"
+      },
+      "file": "build/rookie_hint_view/pc_fold.png",
+      "run": "run1 (before the line-2 / focus fixes)"
+    },
+    {
+      "device": "pc",
+      "view": "hint_atk",
+      "probe": {
+        "QuestLinesShown": true,
+        "TapTop58": "Left",
+        "BannerShown": false,
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Lines": [
+          "Free the supply road · 5 slimes",
+          "2/5",
+          "Daily Quests 0/3"
+        ],
+        "TapShown": true,
+        "BannerText": "",
+        "Focus": false,
+        "TapTop0": "Left",
+        "Step": 2,
+        "Hints": [
+          {
+            "Name": "Glow:Attack",
+            "Rect": [
+              1142,
+              530,
+              124,
+              124
+            ]
+          },
+          {
+            "TextFits": false,
+            "Rect": [
+              1096,
+              498,
+              116,
+              43
+            ],
+            "Name": "HintAttack",
+            "Text": "Click to hit!"
+          }
+        ],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:24 · My pts 0"
+      },
+      "file": "build/rookie_hint_view/pc_hint_atk.png",
+      "run": "run1 (before the line-2 / focus fixes)"
+    },
+    {
+      "device": "pc",
+      "view": "hint_q",
+      "probe": {
+        "QuestLinesShown": true,
+        "TapTop58": "Left",
+        "BannerShown": false,
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Lines": [
+          "Free the supply road · 5 slimes",
+          "2/5",
+          "Daily Quests 0/3"
+        ],
+        "TapShown": true,
+        "BannerText": "",
+        "Focus": false,
+        "TapTop0": "Left",
+        "Step": 2,
+        "Hints": [
+          {
+            "Name": "Glow:Attack",
+            "Rect": [
+              1142,
+              530,
+              124,
+              124
+            ]
+          },
+          {
+            "TextFits": false,
+            "Rect": [
+              1096,
+              498,
+              116,
+              43
+            ],
+            "Name": "HintAttack",
+            "Text": "Click to hit!"
+          },
+          {
+            "TextFits": false,
+            "Rect": [
+              980,
+              499,
+              117,
+              43
+            ],
+            "Name": "HintQ",
+            "Text": "Try your skill!"
+          },
+          {
+            "Name": "Glow:SkillQ",
+            "Rect": [
+              1048,
+              534,
+              83,
+              83
+            ]
+          }
+        ],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:19 · My pts 0"
+      },
+      "file": "build/rookie_hint_view/pc_hint_q.png",
+      "run": "run1 (before the line-2 / focus fixes)"
+    },
+    {
+      "device": "pc",
+      "view": "focus",
+      "probe": {
+        "QuestLinesShown": true,
+        "TapTop58": "Left",
+        "BannerShown": false,
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Lines": [
+          "Free the supply road · 5 slimes",
+          "2/5",
+          "Daily Quests 0/3"
+        ],
+        "TapShown": true,
+        "BannerText": "",
+        "Focus": [
+          620,
+          234,
+          30,
+          30
+        ],
+        "TapTop0": "Left",
+        "Step": 2,
+        "Hints": [],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:15 · My pts 0"
+      },
+      "file": "build/rookie_hint_view/pc_focus.png",
+      "run": "run1 (before the line-2 / focus fixes)"
+    },
+    {
+      "device": "pc",
+      "view": "unfold",
+      "probe": {
+        "QuestLinesShown": true,
+        "TapTop58": "Left",
+        "BannerShown": false,
+        "Monsters": 64,
+        "WarInfoShown": true,
+        "NewTags": [
+          {
+            "Parent": "Band",
+            "Rect": [
+              724,
+              -29,
+              40,
+              16
+            ]
+          },
+          {
+            "Parent": "QuestLines",
+            "Rect": [
+              277,
+              159,
+              40,
+              16
+            ]
+          },
+          {
+            "Parent": "PumpkinKingChip",
+            "Rect": [
+              696,
+              21,
+              40,
+              16
+            ]
+          }
+        ],
+        "GooseChip": false,
+        "Lines": [
+          "Show the jelly to the smith",
+          "Hit 4 monsters with a skill",
+          "0/4",
+          "NEW!"
+        ],
+        "TapShown": true,
+        "BannerText": "",
+        "Focus": false,
+        "TapTop0": "Left",
+        "Step": 99,
+        "Hints": [],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:13 · My pts 0"
+      },
+      "file": "build/rookie_hint_view/pc_unfold.png",
+      "run": "run1 (before the line-2 / focus fixes)"
+    },
+    {
+      "device": "pc",
+      "view": "unfold_late",
+      "probe": {
+        "QuestLinesShown": true,
+        "TapTop58": "Left",
+        "BannerShown": true,
+        "Monsters": 64,
+        "WarInfoShown": true,
+        "NewTags": [],
+        "GooseChip": false,
+        "Lines": [
+          "Show the jelly to the smith",
+          "Hit 4 monsters with a skill",
+          "0/4"
+        ],
+        "TapShown": true,
+        "BannerText": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+        "Focus": false,
+        "TapTop0": "Left",
+        "Step": 99,
+        "Hints": [],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:07 · My pts 0"
+      },
+      "file": "build/rookie_hint_view/pc_unfold_late.png",
+      "run": "run1 (before the line-2 / focus fixes)"
+    },
+    {
+      "device": "phone",
+      "view": "fold",
+      "probe": {
+        "QuestLinesShown": true,
+        "BannerShown": false,
+        "Focus": false,
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Step": 2,
+        "TapShown": true,
+        "BannerText": "",
+        "TapInput58": "none",
+        "Lines": [
+          "Free the supply road",
+          "2/5"
+        ],
+        "TapInput0": "MiniMapTap",
+        "Hints": [],
+        "WarInfoText": "Crown in 9:39"
+      },
+      "file": "build/rookie_hint_view/phone_fold.png",
+      "run": "run2 (after the fixes)"
+    },
+    {
+      "device": "phone",
+      "view": "hint_atk",
+      "probe": {
+        "QuestLinesShown": true,
+        "BannerShown": false,
+        "Focus": false,
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Step": 2,
+        "TapShown": true,
+        "BannerText": "",
+        "TapInput58": "none",
+        "Lines": [
+          "Free the supply road",
+          "2/5"
+        ],
+        "TapInput0": "MiniMapTap",
+        "Hints": [
+          {
+            "Name": "Glow:Attack",
+            "Rect": [
+              452,
+              167,
+              103,
+              103
+            ]
+          },
+          {
+            "TextFits": false,
+            "Rect": [
+              392,
+              132,
+              119,
+              44
+            ],
+            "Name": "HintAttack",
+            "Text": "Tap to hit!"
+          }
+        ],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:37"
+      },
+      "file": "build/rookie_hint_view/phone_hint_atk.png",
+      "run": "run2 (after the fixes)"
+    },
+    {
+      "device": "phone",
+      "view": "hint_q",
+      "probe": {
+        "QuestLinesShown": true,
+        "BannerShown": false,
+        "Focus": false,
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Step": 2,
+        "TapShown": true,
+        "BannerText": "",
+        "TapInput58": "none",
+        "Lines": [
+          "Free the supply road",
+          "2/5"
+        ],
+        "TapInput0": "MiniMapTap",
+        "Hints": [
+          {
+            "Name": "Glow:Attack",
+            "Rect": [
+              452,
+              167,
+              103,
+              103
+            ]
+          },
+          {
+            "TextFits": false,
+            "Rect": [
+              391,
+              131,
+              120,
+              44
+            ],
+            "Name": "HintAttack",
+            "Text": "Tap to hit!"
+          },
+          {
+            "TextFits": false,
+            "Rect": [
+              306,
+              139,
+              119,
+              44
+            ],
+            "Name": "HintQ",
+            "Text": "Try your skill!"
+          },
+          {
+            "Name": "Glow:SkillQ",
+            "Rect": [
+              382,
+              177,
+              68,
+              68
+            ]
+          }
+        ],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:35"
+      },
+      "file": "build/rookie_hint_view/phone_hint_q.png",
+      "run": "run2 (after the fixes)"
+    },
+    {
+      "device": "phone",
+      "view": "focus",
+      "probe": {
+        "QuestLinesShown": true,
+        "BannerShown": false,
+        "Focus": [
+          233,
+          67,
+          30,
+          30
+        ],
+        "Monsters": 64,
+        "WarInfoShown": false,
+        "NewTags": [],
+        "GooseChip": false,
+        "Step": 2,
+        "TapShown": true,
+        "BannerText": "",
+        "TapInput58": "none",
+        "Lines": [
+          "Free the supply road",
+          "2/5"
+        ],
+        "TapInput0": "MiniMapTap",
+        "Hints": [],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:32"
+      },
+      "file": "build/rookie_hint_view/phone_focus.png",
+      "run": "run2 (after the fixes)"
+    },
+    {
+      "device": "phone",
+      "view": "unfold",
+      "probe": {
+        "QuestLinesShown": true,
+        "BannerShown": false,
+        "Focus": false,
+        "Monsters": 64,
+        "WarInfoShown": true,
+        "NewTags": [
+          {
+            "Parent": "Band",
+            "Rect": [
+              369,
+              -29,
+              41,
+              16
+            ]
+          },
+          {
+            "Parent": "QuestLines",
+            "Rect": [
+              179,
+              -6,
+              41,
+              16
+            ]
+          },
+          {
+            "Parent": "PumpkinKingChip",
+            "Rect": [
+              367,
+              11,
+              41,
+              16
+            ]
+          }
+        ],
+        "GooseChip": false,
+        "Step": 99,
+        "TapShown": true,
+        "BannerText": "",
+        "TapInput58": "none",
+        "Lines": [
+          "Show the jelly to the smith",
+          "Hit 4 monsters with a skill",
+          "0/4",
+          "NEW!"
+        ],
+        "TapInput0": "MiniMapTap",
+        "Hints": [],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:30"
+      },
+      "file": "build/rookie_hint_view/phone_unfold.png",
+      "run": "run2 (after the fixes)"
+    },
+    {
+      "device": "phone",
+      "view": "unfold_late",
+      "probe": {
+        "QuestLinesShown": true,
+        "BannerShown": true,
+        "Focus": false,
+        "Monsters": 64,
+        "WarInfoShown": true,
+        "NewTags": [
+          {
+            "Parent": "QuestLines",
+            "Rect": [
+              179,
+              -6,
+              41,
+              16
+            ]
+          },
+          {
+            "Parent": "PumpkinKingChip",
+            "Rect": [
+              366,
+              11,
+              41,
+              16
+            ]
+          }
+        ],
+        "GooseChip": false,
+        "Step": 99,
+        "TapShown": true,
+        "BannerText": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+        "TapInput58": "none",
+        "Lines": [
+          "Show the jelly to the smith",
+          "Hit 4 monsters with a skill",
+          "0/4",
+          "NEW!"
+        ],
+        "TapInput0": "MiniMapTap",
+        "Hints": [],
+        "WarInfoText": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:26"
+      },
+      "file": "build/rookie_hint_view/phone_unfold_late.png",
+      "run": "run2 (after the fixes)"
+    }
+  ]
+}

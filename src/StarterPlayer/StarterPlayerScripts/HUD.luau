@@ -217,6 +217,10 @@ local TXT = {
 	Pond = "Pond",
 	Fountain = "Fountain",
 	HuntSlimes = "Hunt slimes and big slimes for XP.",
+	-- A23-68 #2 (user 2026-10-07 "그 자리 힌트"): the hint bubbles over the combat buttons (HUD.Hint)
+	HintTap = "Tap to hit!",
+	HintClick = "Click to hit!",
+	HintSkill = "Try your skill!",
 }
 
 ----------------------------------------------------------------- state
@@ -2689,6 +2693,239 @@ function L.SetGlow(key, stroke, on)
 	end
 end
 
+----------------------------------------------------------------- A23-68 the first minutes (user 2026-10-07)
+-- #4 one goal at a time: until the first [Claim] (TutorialStep 0 / 1 / 2; QuestService.claimTutorial writes 99 first)
+-- the quest lines show the first mission only (parseQuests), the war meter's "Crown in 9:40 · My pts 0" line is hidden
+-- (quality ⑨ minimum; the bar itself stays), EventHUD keeps its next-event line and the world banners wait
+-- (UIKit.ShouldHoldBanners). The first [Claim] brings them in with a NEW! tag (UIKit.NewTag)
+function L.RookieFold()
+	local step = attr("TutorialStep", nil)
+	local done = type(TUT.Steps) == "table" and tonumber(TUT.Steps.Done) or 99
+	return type(step) == "number" and step >= 0 and step < done
+end
+HUD.RookieFold = L.RookieFold -- EventHUD reads the same rule
+
+-- changed = the TutorialStep attribute just changed (a fold that ends in this session pops the parts in)
+function L.ApplyFold(changed)
+	local fold = L.RookieFold()
+	if ui.warInfo and ui.warInfo.Visible == fold then ui.warInfo.Visible = not fold end
+	if changed and L.WasFolded == true and not fold and type(UIKit.NewTag) == "function" then
+		pcall(UIKit.NewTag, ui.warBand or ui.warInfo)
+		task.delay(0.6, function() -- after the quest lines were rebuilt with the unfolded rows
+			if ui.questLines and ui.questLines.Visible then pcall(UIKit.NewTag, ui.questLines) end
+		end)
+	end
+	L.WasFolded = fold
+end
+
+-- #2 hints in place (the logic is game dev 1's: HUD.Hint / HUD.ClearHint, once each): a white speech bubble (the
+-- approved BarkBubble, mirrored so its tail points down at the button) over the attack or the Q button, a pulsing gold
+-- ring on that button (the L.SetGlow look) and, on the attack button, a short wobble every Every s (none with
+-- ReducedMotion). A press of that button or its key clears the hint, else it goes after Seconds. Bubble text: the
+-- "Button" style on light (navy, >= 16 px). Art 512 x 190: tail tip at (35, 188) -> mirrored (0.932, 0.99); text box
+-- = Config TextRect mirrored
+L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, TipY = 0.99, Aspect = 512 / 190,
+	TextX = 0.079, TextY = 0.181, TextW = 0.844, TextH = 0.448, MinW = 120, Wobble = { -9, 8, -6, 4, -2, 0 },
+	WobbleStep = 0.06, Breathe = 1.05 }
+L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0 }
+
+-- the button a hint hangs on and its HudLayout rect: "Attack" -> 공격, "Q" -> SkillBar's Q (else HUD's own Q disc)
+function L.HintTarget(id)
+	if id == "Attack" then return ui.attack, "attack" end
+	if id == "Q" then
+		local bar = C and C.SkillBar
+		if type(bar) == "table" and type(bar.Button) == "function" then
+			local ok, b = pcall(bar.Button, "Q")
+			if ok and typeof(b) == "Instance" and b.Visible then return b, "q" end
+		end
+		return ui.release, "q"
+	end
+	return nil, nil
+end
+
+-- size and place the bubble over its button's rect (MainGui units; the tail tip on the button's top middle). The text
+-- width is measured once (h.TextW0 at h.Size0) and scaled, so a relayout never waits for a measurement
+function L.PlaceHint(h)
+	local r = L.Rects and L.Rects[h.Rect]
+	local bubble = h.Bubble
+	if not (r and bubble and bubble.Parent and h.TextW0) then return end
+	local cfg = L.HintCfg
+	local pf = type(UIKit.PxFloor) == "function" and UIKit.PxFloor() or 1 -- small PC windows: a smaller copy
+	local size = math.max(cfg.Size, math.ceil(cfg.MinPx * pf / currentScale()))
+	local tw = h.TextW0 * size / h.Size0
+	local w = math.max(cfg.MinW, tw / cfg.TextW + 16)
+	local hh = w / cfg.Aspect
+	local need = size * 1.2 / cfg.TextH -- the text box holds one line of the text
+	if hh < need then hh, w = need, need * cfg.Aspect end
+	bubble.Size = UDim2.fromOffset(math.ceil(w), math.ceil(hh))
+	h.Label.TextSize = size
+	local x = r.X + r.W / 2
+	-- never past the left edge (the bubble grows to the left of its tail)
+	x = math.max(x, cfg.TipX * w + 4)
+	bubble.Position = UDim2.fromOffset(math.floor(x + 0.5), math.floor(r.Y + r.H * 0.06 + 0.5))
+end
+
+-- the pulsing gold ring around a round button (the same look as L.SetGlow's rim)
+function L.HintGlow(btn)
+	local f = UIKit.Create("Frame", {
+		Name = "HintGlow",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.new(1, 8, 1, 8),
+		BackgroundTransparency = 1,
+		ZIndex = 9,
+		Active = false,
+		Parent = btn,
+	}, {
+		corner(UDim.new(0.5, 0)),
+		UIKit.Create("UIStroke", {
+			Name = "Stroke",
+			Color = ac("Gold", Theme.Gold),
+			Thickness = 3,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		}),
+	})
+	local tw = TweenService:Create(f.Stroke, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{ Thickness = 7 })
+	tw:Play()
+	return f, tw
+end
+
+-- the bubble: mirrored BarkBubble art (IMG-R4 fallback: a white rounded box with a navy rim) + the navy line
+function L.HintBubble(h)
+	local cfg = L.HintCfg
+	local def = UIKit.ArtPart("BarkBubble")
+	local aw, ah = 512, 190
+	if def and typeof(def.Size) == "Vector2" then aw, ah = def.Size.X, def.Size.Y end
+	local bubble = UIKit.ArtImage("BarkBubble", {
+		Name = "Hint" .. h.Id,
+		AnchorPoint = Vector2.new(cfg.TipX, cfg.TipY),
+		Size = UDim2.fromOffset(cfg.MinW, cfg.MinW / cfg.Aspect),
+		ScaleType = Enum.ScaleType.Stretch,
+		ImageRectOffset = Vector2.new(aw, 0),
+		ImageRectSize = Vector2.new(-aw, ah), -- mirrored: the tail sits at the bottom right
+		ZIndex = 30,
+		Active = false,
+		Parent = ui.buttons,
+	})
+	if not bubble then
+		bubble = UIKit.Create("Frame", {
+			Name = "Hint" .. h.Id,
+			AnchorPoint = Vector2.new(cfg.TipX, 1),
+			Size = UDim2.fromOffset(cfg.MinW, cfg.MinW / cfg.Aspect),
+			BackgroundColor3 = COL.White,
+			ZIndex = 30,
+			Active = false,
+			Parent = ui.buttons,
+		}, {
+			corner(UDim.new(0.3, 0)),
+			UIKit.Create("UIStroke", { Color = ac("Navy", COL.Dark), Thickness = 2,
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		})
+	end
+	h.Bubble = bubble
+	h.Pop = UIKit.Create("UIScale", { Name = "Pop", Scale = 1, Parent = bubble })
+	h.Label = UIKit.StyledLabel({
+		Name = "Text",
+		Text = h.Text,
+		Position = UDim2.fromScale(cfg.TextX, cfg.TextY),
+		Size = UDim2.fromScale(cfg.TextW, cfg.TextH),
+		TextSize = cfg.Size,
+		ZIndex = 31,
+		Parent = bubble,
+	}, "Button", true)
+end
+
+-- the attack button's wobble: a few quick turns every Every s while the hint stays (ReducedMotion: none)
+function L.HintWobble(h, token)
+	local cfg = L.HintCfg
+	task.spawn(function()
+		task.wait(0.35)
+		while L.Hints[h.Id] == h and h.Token == token do
+			local btn = h.Button
+			if not (btn and btn.Parent) then break end
+			if not UIKit.ReducedMotion() then
+				for _, deg in cfg.Wobble do
+					if L.Hints[h.Id] ~= h then break end
+					TweenService:Create(btn, TweenInfo.new(cfg.WobbleStep, Enum.EasingStyle.Sine), { Rotation = deg }):Play()
+					task.wait(cfg.WobbleStep)
+				end
+				btn.Rotation = 0
+			end
+			task.wait(cfg.Every)
+		end
+		if h.Button and h.Button.Parent then h.Button.Rotation = 0 end
+	end)
+end
+
+-- shows a hint over "Attack" or "Q" (text nil = "Tap to hit!" / "Click to hit!" / "Try your skill!"); opts.Seconds,
+-- opts.Wobble = false. A second call for the same id starts it over. Returns true when it shows
+function HUD.Hint(id, text, opts)
+	if type(id) ~= "string" or not ui.buttons then return false end
+	local btn, rect = L.HintTarget(id)
+	if not (btn and rect) then return false end
+	opts = type(opts) == "table" and opts or {}
+	HUD.ClearHint(id)
+	if type(text) ~= "string" or text == "" then
+		text = id == "Attack" and (IS_TOUCH and TXT.HintTap or TXT.HintClick) or TXT.HintSkill
+	end
+	local h = { Id = id, Text = text, Button = btn, Rect = rect, Token = 1 }
+	local token = h.Token
+	L.Hints[id] = h
+	L.HintBubble(h)
+	h.Glow, h.GlowTween = L.HintGlow(btn)
+	h.Bubble.Visible = false
+	task.spawn(function()
+		-- measured once, off the caller's thread (GetTextBoundsAsync can wait)
+		local size = L.HintCfg.Size
+		local ok, _, w = pcall(UIKit.MeasureText, text, size, h.Label.FontFace, 100000)
+		if L.Hints[id] ~= h or h.Token ~= token then return end
+		h.TextW0, h.Size0 = (ok and type(w) == "number" and w > 0) and w or #text * size * 0.6, size
+		L.PlaceHint(h)
+		h.Bubble.Visible = true
+		if not UIKit.ReducedMotion() then
+			h.Pop.Scale = 0.5
+			TweenService:Create(h.Pop, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+			task.delay(0.3, function()
+				if L.Hints[id] == h and h.Pop.Parent then
+					TweenService:Create(h.Pop, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+						{ Scale = L.HintCfg.Breathe }):Play()
+				end
+			end)
+		end
+	end)
+	if id == "Attack" and opts.Wobble ~= false then L.HintWobble(h, token) end
+	local seconds = tonumber(opts.Seconds) or L.HintCfg.Seconds
+	task.delay(seconds, function()
+		if L.Hints[id] == h and h.Token == token then HUD.ClearHint(id) end
+	end)
+	return true
+end
+
+-- id = "Attack" / "Q", nil = every hint
+function HUD.ClearHint(id)
+	for key, h in L.Hints do
+		if id == nil or key == id then
+			L.Hints[key] = nil
+			h.Token += 1
+			if h.GlowTween then h.GlowTween:Cancel() end
+			if h.Glow then h.Glow:Destroy() end
+			if h.Button and h.Button.Parent then h.Button.Rotation = 0 end
+			local bubble = h.Bubble
+			if bubble and bubble.Parent then
+				local info = TweenInfo.new(0.15)
+				if bubble:IsA("ImageLabel") then TweenService:Create(bubble, info, { ImageTransparency = 1 }):Play() end
+				if h.Label then TweenService:Create(h.Label, info, { TextTransparency = 1 }):Play() end
+				task.delay(0.16, function() bubble:Destroy() end)
+			end
+		end
+	end
+end
+
+function HUD.HintShown(id)
+	return L.Hints[id] ~= nil
+end
+
 -- 환생 ready / 휴가 days are 설정 rows now (A23-40 정정): [메뉴] and its 설정 square glow; the scroll hint (B14) glows 가방
 local function refreshMenuGlow()
 	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
@@ -2756,24 +2993,27 @@ local function parseQuests()
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
 				ShortName = (type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or nil,
+				Folded = e.Folded == true, -- A23-68 #4: the server folds every row but the first mission (dev2)
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
 			table.insert(isPinned and pinned or normal, entry)
 		end
 	end
-	-- A23-3: before the first mission is accepted (step 0) dailies keep progressing on the server but stay folded
-	local folded = pinned[1] ~= nil and pinned[1].TutorialStep == 0
-	if questState.Folded == true and not folded and pinned[1] ~= nil and pinned[1].TutorialStep > 0 and #normal > 0 then
+	-- A23-68 #4 (user 2026-10-07 "한 번에 목표 하나"; replaces A23-3's step-0 fold and A23-2's early S0 line): until the
+	-- first [Claim] only the first mission shows. The other rows (S0, dailies) keep progressing on the server, folded.
+	-- One rule only (dev2 324055a): with Config.Tutorial.FoldOthers set the server's Folded flag on each row decides
+	-- (false = no folding at all); without it (older servers) L.RookieFold (TutorialStep 0 / 1 / 2) decides here
+	local fold = TUT.FoldOthers == nil and L.RookieFold()
+	local shown = {}
+	for _, e in normal do
+		if not (fold or e.Folded) then table.insert(shown, e) end
+	end
+	local folded = #shown < #normal
+	if questState.Folded == true and not folded and #normal > 0 then
 		UIKit.Toast((type(TUT.Text) == "table" and TUT.Text.DailiesOpened) or TXT.DailiesOpened, "good", 4)
 	end
 	questState.Folded = folded
-	if folded then
-		for _, e in normal do
-			if e.Kind == "Sub" then table.insert(pinned, e) end -- S0 shows even before the first mission (A23-2)
-		end
-		return pinned
-	end
-	for _, e in normal do
+	for _, e in shown do
 		table.insert(pinned, e)
 	end
 	return pinned
@@ -3204,7 +3444,12 @@ refreshQuests = function()
 		local e1, l1, n1 = lineFor(shown)
 		L.SetQuestLine(ui.qline[1], e1, l1 or head, n1)
 		local e2, l2, n2 = lineFor(second)
-		L.SetQuestLine(ui.qline[2], e2, l2 or head, n2)
+		if not e2 and (questState.Folded or (TUT.FoldOthers ~= false and L.RookieFold())) then
+			-- A23-68 #4: before the first [Claim] line 2 stays empty (no 'Daily Quests 0/3' next to the one goal)
+			L.SetQuestLine(ui.qline[2], nil, nil, nil)
+		else
+			L.SetQuestLine(ui.qline[2], e2, l2 or head, n2)
+		end
 		if ui.questFold then ui.questFold.Text = questExpanded and TXT.QuestCloseList or TXT.QuestOpenList end
 		questState.ShownEntry = e1
 	end
@@ -3561,6 +3806,7 @@ local function startHold(source)
 	holdToken += 1
 	local token = holdToken
 	pressScale(ui.attack, true)
+	if L.Hints.Attack then HUD.ClearHint("Attack") end -- A23-68 #2: the hint goes with the first swing
 	L.SwingFaced()
 end
 
@@ -3574,6 +3820,7 @@ local function stopHold(source)
 end
 
 local function doRelease()
+	if L.Hints.Q then HUD.ClearHint("Q") end -- A23-68 #2
 	if throttled("release", 0.2) then return end
 	if num("SkillReadyAt", 0) > Util.Now() then return end
 	if num("Mana", 0) < Config.BasicSkill.ManaCost then
@@ -4126,6 +4373,7 @@ applyLayout = function()
 	L.Place(ui.attack, R.attack)
 	L.Place(ui.release, R.q)
 	L.Place(ui.auto, R.auto)
+	for _, hint in L.Hints do L.PlaceHint(hint) end
 	C.VitalsUI.PlacePotions(R.potions)
 	-- combo line + milestone (Fx builds them in MainGui; it never moves them after build)
 	local combo = gui:FindFirstChild("FxCombo")
@@ -4376,6 +4624,20 @@ function HUD.Start()
 	UIKit.OnAttr({ "TravelingUntil" }, refreshTravel)
 	UIKit.OnAttr({ "TutorialStep", "ZoneId", "BlacksmithVisited", "TutorialKills" }, refreshGuides)
 	UIKit.OnAttr({ "Level" }, onLevelChanged)
+	-- A23-68 #4: the first [Claim] unfolds the quest lines and the war meter's info line (NEW! tags)
+	UIKit.OnAttr({ "TutorialStep" }, function()
+		L.ApplyFold(true)
+		refreshQuests()
+	end)
+	L.ApplyFold(false)
+	-- Studio-only check hook (UiSandbox captures of A23-68 #2): the local attribute HintPreview = "Attack" / "Q" shows
+	-- that hint, any other value clears them; never read outside Studio
+	if game:GetService("RunService"):IsStudio() then
+		LocalPlayer:GetAttributeChangedSignal("HintPreview"):Connect(function()
+			local v = LocalPlayer:GetAttribute("HintPreview")
+			if v == "Attack" or v == "Q" then HUD.Hint(v) else HUD.ClearHint(nil) end
+		end)
+	end
 
 	bindButtonInput()
 	task.spawn(placeLegacyChat)

@@ -6,8 +6,9 @@
 -- as drawn (17817e6), else MapPlayerArrow in my faction colour; Halo breathes, Horns' ember flickers (still with reduced
 -- motion). Marks:
 -- me, other players (faction colour dots), the quest target (★ inside the view, a ▲ chevron on the edge outside it), the potion
--- merchant and the blacksmith anvil, and nearby monsters (small dots). Presentation only: no buttons and every instance
--- is Active = false, so on phones the box (inside the thumbstick zone) never sinks a touch.
+-- merchant and the blacksmith anvil, and nearby monsters (small dots). Presentation only: every map instance is
+-- Active = false. UI round 2 (검수 2026-10-07): one transparent button of its own on the same box ("MiniMapTap", a
+-- sibling, since the frame never takes input) opens the big map on a tap / click.
 -- Drawing: Config lands / zones / roads / bridges as axis-aligned Frames on one big canvas (Scale positions, like
 -- WorldMap) inside a clipping view; per tick only the canvas moves. The box is C.HUD.Layout.Rects.minimap (logical
 -- MainGui units), read again by MiniMap.Relayout (HUD calls it after each layout pass; also on viewport changes and
@@ -570,6 +571,29 @@ local function build()
 	end
 
 	root.Parent = UIKit.Gui
+	-- UI round 2: a tap / click opens the big map (no press shrink: the ring stays put)
+	ui.tap = UIKit.Create("TextButton", {
+		Name = "MiniMapTap",
+		Text = "",
+		AutoButtonColor = false,
+		BackgroundTransparency = 1,
+		Size = UDim2.fromOffset(100, 100),
+		ZIndex = 5,
+		Visible = false,
+		Parent = UIKit.Gui,
+	})
+	ui.tap.Activated:Connect(function()
+		local hud = C and C.HUD
+		if type(hud) == "table" and type(hud.InputAllowed) == "function" then
+			local ok, allowed = pcall(hud.InputAllowed)
+			if ok and allowed == false then return end
+		end
+		local wm = C and C.WorldMap
+		if type(wm) == "table" and type(wm.Open) == "function" then
+			local ok, err = pcall(wm.Open)
+			if not ok then warnThrottled("world map open: " .. tostring(err)) end
+		end
+	end)
 	S.built = true
 end
 
@@ -592,6 +616,7 @@ local function relayout()
 		S.rectOk, S.rx = false, nil
 		S.shown = false
 		setVisible(ui.root, false)
+		if ui.tap then setVisible(ui.tap, false) end
 		return
 	end
 	S.rectOk = true
@@ -601,6 +626,10 @@ local function relayout()
 	S.rx, S.ry, S.side = x, y, side
 	ui.root.Position = UDim2.fromOffset(x, y)
 	ui.root.Size = UDim2.fromOffset(side, side)
+	if ui.tap then
+		ui.tap.Position = ui.root.Position
+		ui.tap.Size = ui.root.Size
+	end
 
 	-- the visible hole (du, root space); the art view bleeds a little under the rim
 	local hx, hy, hw, hh
@@ -984,6 +1013,7 @@ local function refreshVisibility()
 		end
 	end
 	local show = want and S.rectOk
+	if ui.tap and ui.tap.Visible ~= show then ui.tap.Visible = show end
 	if show == S.shown then return end
 	S.shown = show
 	ui.root.Visible = show

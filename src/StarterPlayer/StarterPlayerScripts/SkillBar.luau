@@ -17,7 +17,8 @@
 --   Studio : the local attribute SkillBarPreview = true shows Z / X with their flags off (UiSandbox captures only)
 -- Presentation + input only: the server decides every cast (MP, cooldown, targets).
 --
--- Public API: SkillBar.Init(C), SkillBar.Start(), SkillBar.Relayout(), SkillBar.Use(slot) -> bool, SkillBar.Owns(slot)
+-- Public API: SkillBar.Init(C), SkillBar.Start(), SkillBar.Relayout(), SkillBar.Use(slot) -> bool, SkillBar.Owns(slot),
+-- SkillBar.Button(slot) -> the button frame (A23-68 hints)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -622,11 +623,21 @@ function SkillBar.Owns(slot)
 	return S.built and ui.buttons[slot] ~= nil
 end
 
+-- A23-68 #2: the slot's button frame (HUD.Hint hangs its ring / bubble on it), nil before the bar is built
+function SkillBar.Button(slot)
+	local b = S.built and ui.buttons[slot] or nil
+	return b and b.Holder or nil
+end
+
 -- one press of a skill (button, key or pad). false when refused here (the button shook)
 function SkillBar.Use(slot)
 	local b = ui.buttons[slot]
 	if not b or not b.Holder.Visible then return false end
 	local hud = C and C.HUD
+	if type(hud) == "table" and type(hud.ClearHint) == "function" and type(hud.HintShown) == "function"
+		and hud.HintShown(slot) then
+		pcall(hud.ClearHint, slot) -- A23-68 #2: "Try your skill!" goes with the first press
+	end
 	if type(hud) == "table" and type(hud.InputAllowed) == "function" then
 		local ok, allowed = pcall(hud.InputAllowed)
 		if ok and allowed == false then return false end
