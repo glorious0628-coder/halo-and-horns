@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 152,
-  "namedChecks": 114,
+  "checks": 201,
+  "namedChecks": 145,
   "failing": [],
   "mutations": {
-    "total": 33,
-    "caught": 33,
+    "total": 51,
+    "caught": 51,
     "results": [
       {
         "mutation": "auto sounds at full volume",
@@ -31,17 +31,19 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "skills :: another player's Z cast far away is silent",
           "swing :: another player's swing 60 studs away is silent",
           "swing :: another player's swing without a place is silent"
         ]
       },
       {
-        "mutation": "bow twangs at the draw",
+        "mutation": "the arrow sounds at the draw",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "swing :: Archer: SwingArcher when the arrow leaves"
+          "swing :: Archer: 2+ targets = a second arrow 0.068 s later at 1.10x and 0.85 volume (§4-2 5)",
+          "swing :: Archer: one SwingArrow when the arrow leaves (sound_gaps A1)"
         ]
       },
       {
@@ -60,21 +62,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "hits :: a crit on a later target adds no layer",
+          "hits :: a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)",
+          "hits :: a ghost squishes higher (x1.15)",
           "hits :: a little ghost hit = HitSoft",
           "hits :: a slime hit = HitSoft at ContactDelay",
-          "hits :: goose + slime: squish and honk",
-          "hits :: two slimes = one HitSoft",
-          "runtime :: then the slime squishes",
-          "skills :: skill hits land at ContactDelay"
-        ]
-      },
-      {
-        "mutation": "three monsters stay soft",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "hits :: three monsters in one swing = one HitHeavy"
+          "hits :: goose + slime: squish and honk"
         ]
       },
       {
@@ -93,10 +86,174 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "hits :: a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)",
           "hits :: a slime hit = HitSoft at ContactDelay",
           "hits :: contact time clamped to 1 s",
           "runtime :: the swing plays now, the hit waits for the contact",
+          "skills :: a Z cast: SkillCast with my class file at once + my faction layer + its hit right after",
           "skills :: skill hits land at ContactDelay"
+        ]
+      },
+      {
+        "mutation": "no second arrow",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "swing :: Archer: 2+ targets = a second arrow 0.068 s later at 1.10x and 0.85 volume (§4-2 5)"
+        ]
+      },
+      {
+        "mutation": "the mage faction file is ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skills :: my skill = SkillCast with my class's swing file (a Halo mage: SwingMageHalo)",
+          "swing :: Halo mage: SwingMageHalo, its peak (0.20 s in) on the launch (sound_gaps A2)",
+          "swing :: Horns mage: SwingMageHorns"
+        ]
+      },
+      {
+        "mutation": "a faction file plays before it is uploaded",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "swing :: a faction file not uploaded yet: the old SwingMage at once"
+        ]
+      },
+      {
+        "mutation": "the mage file at the press, not on the launch",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "swing :: Halo mage: SwingMageHalo, its peak (0.20 s in) on the launch (sound_gaps A2)",
+          "swing :: Horns mage: SwingMageHorns"
+        ]
+      },
+      {
+        "mutation": "no crit layer",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)"
+        ]
+      },
+      {
+        "mutation": "crit on any target",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: a crit on a later target adds no layer"
+        ]
+      },
+      {
+        "mutation": "many hits not louder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: three slimes = one HitSoft, louder and lower (x1.25, x0.95)"
+        ]
+      },
+      {
+        "mutation": "ghosts not higher",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: a ghost squishes higher (x1.15)"
+        ]
+      },
+      {
+        "mutation": "Z / X casts are silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skills :: a Z cast: SkillCast with my class file at once + my faction layer + its hit right after",
+          "skills :: an X cast too",
+          "skills :: an auto Z / X cast is marked Auto",
+          "skills :: another player's Z cast near me: Others, no layer"
+        ]
+      },
+      {
+        "mutation": "the skill cast at the press",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skills :: the cast sounds at the launch, not at the press"
+        ]
+      },
+      {
+        "mutation": "Z / X hits at the swing contact time",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skills :: a Z cast: SkillCast with my class file at once + my faction layer + its hit right after"
+        ]
+      },
+      {
+        "mutation": "Upgrade stays gold after Equip is uploaded",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)"
+        ]
+      },
+      {
+        "mutation": "Upgrade plays Equip before it is uploaded",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: a weapon bought / equipped = GoldPickup until Equip is uploaded"
+        ]
+      },
+      {
+        "mutation": "purify never alternates",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
+          "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
+        ]
+      },
+      {
+        "mutation": "a skipped purify moves the turn",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
+        ]
+      },
+      {
+        "mutation": "the goose arrival honks even with its own file",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: no GooseArrive file yet: the honk stands in",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+        ]
+      },
+      {
+        "mutation": "no jump sound",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: falling and landing are quiet",
+          "runtime :: my jump -> Jump (sound_gaps A11)"
         ]
       },
       {
@@ -139,12 +296,13 @@
         ]
       },
       {
-        "mutation": "faction layer on every skill",
+        "mutation": "faction layer only on X",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "skills :: a Q skill has no faction layer"
+          "skills :: a Q skill also gets my faction's layer (§4-2 4: Q / Z / X)",
+          "skills :: a Z cast: SkillCast with my class file at once + my faction layer + its hit right after"
         ]
       },
       {
@@ -153,9 +311,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "rewards :: a weapon bought / equipped = GoldPickup until Equip is uploaded",
           "runtime :: an event with an id plays",
           "runtime :: an event without an id never plays",
-          "runtime :: volume = the table's Volume"
+          "runtime :: volume = the table's Volume",
+          "swing :: a faction file not uploaded yet: the old SwingMage at once"
         ]
       },
       {
@@ -210,7 +370,27 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a big moment ducks the combat sounds to 0.5"
+          "runtime :: a big moment ducks the combat sounds to 0.5",
+          "runtime :: a king holds the duck longer than 1.2 s (§4-2 10)",
+          "runtime :: a level up ducks for 1.2 s only"
+        ]
+      },
+      {
+        "mutation": "kings duck as short as the rest",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a king holds the duck longer than 1.2 s (§4-2 10)"
+        ]
+      },
+      {
+        "mutation": "every duck holds a king's time",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a level up ducks for 1.2 s only"
         ]
       },
       {
@@ -241,7 +421,8 @@
         "newFailingChecks": [
           "runtime :: a king already there at the join is quiet",
           "runtime :: buying potions is quiet",
-          "runtime :: potion counts arriving with the save are quiet"
+          "runtime :: potion counts arriving with the save are quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
         ]
       },
       {
@@ -250,7 +431,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet"
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
         ]
       },
       {
@@ -334,9 +516,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d19c7025232da63936b5439fc3eb231574205e9a1525fe390af6b04239a98f0e",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "420e3ecd248423816c5430aac41bb975cfd0f170ec59f3f0bc505e17d181faa6",
-    "tools/fixtures/audio_offline.luau": "fd78ff2cac50b79261fef4ff2543abf770a05680af1fc9ad3b599766ae30e85e"
+    "src/ReplicatedStorage/Shared/Config.luau": "00be05b460f51ec44f524b1182222ff9a9870bf22aa4e800a5e25fb560c243db",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "1fa023045e861c77d97134e4d4d30d74efcc2b4ee45a8c5b5aebf224824abce6",
+    "tools/fixtures/audio_offline.luau": "1f97b8329cee25026a6d52af06bc9061cab88b82126be0caf7e030ca288c5224"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
