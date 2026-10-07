@@ -5181,5 +5181,31 @@
   "preview": "art/review/s2/bark_bubble_sheet.jpg",
   "note": "몬스터 한마디 말풍선(흰색 + 굵은 남색 테, 꼬리 왼쪽 아래 → 아래쪽 몬스터를 가리킴). 슬라임·고블린·해골·유령 공용, 개발 1 MonsterLabels BillboardGui. 글자 없음 — Text 칸에 짙은 남색 글자(예: 'Boing! Boing!'). slice는 꼬리를 왼쪽 아래 칸(x<84)에 넣어 옆으로 늘려도 꼬리가 안 찌그러짐. 시트 예시: 높이 52에 폭 110~300.",
   "user_ok": "사용자 OK 2026-10-07 (검수 전달: 말풍선 A 흰색 + 남색 테)"
+ },
+ "MapArrowHalo": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "size": "512x512 RGBA",
+  "preview": "art/review/s2/map_arrow_final_sheet.jpg",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 빛 A + 뿔 C1, 남색 테 바깥 얇은 크림 테 추가)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_MapArrowHalo_A.txt",
+  "original": "art/out/s2/UIP_MapArrowHalo_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapArrowHalo.png",
+  "cutout": "tools/img2/cut_icon.py --holes --size 512 --fill 0.9, then scratchpad final_arrows.py: body height 420, cream rim 20px (4x supersampled) outside the navy outline, bbox centre = canvas centre",
+  "note": "빛 진영 '내 위치' 지도 화살표(금 화살촉 + 아래 양옆 흰 날개 + 남색 테 + 크림 테). 칠하지 않고 그대로 씀(ImageColor3 흰색). 위 = 앞, 가운데 = 회전 중심. 미니맵(heading-up)은 늘 위, 세계 지도는 Rotation. 뿔 화살표와 몸통 높이 같음. 땅 대비: 밝은 땅은 남색 테, 어두운 땅은 크림 테로 3:1 이상(시트 숫자). 장인·기본은 MapPlayerArrow 그대로."
+ },
+ "MapArrowHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "size": "512x512 RGBA",
+  "preview": "art/review/s2/map_arrow_final_sheet.jpg",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 빛 A + 뿔 C1, 남색 테 바깥 얇은 크림 테 추가)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1, reference = UIP_MapArrowHorns_A (edit: horns removed)",
+  "prompt": "art/prompts/UIP_MapArrowHorns_C1.txt",
+  "original": "art/out/s2/UIP_MapArrowHorns_C1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapArrowHorns.png",
+  "cutout": "tools/img2/cut_icon.py --holes --size 512 --fill 0.9, then scratchpad final_arrows.py: body height 420, cream rim 20px (4x supersampled) outside the navy outline, bbox centre = canvas centre",
+  "note": "뿔 진영 '내 위치' 지도 화살표(빨간 화살촉 + 용암 금 + 녹은 용암처럼 빛나는 끝 + 남색 테 + 크림 테, 뿔 없음 — 사용자 '뿔 없는 게 나을 듯'). 칠하지 않고 그대로 씀. 위 = 앞, 가운데 = 회전 중심. 빛 화살표와 몸통 높이 같음."
  }
 }
