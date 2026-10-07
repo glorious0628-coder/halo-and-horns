@@ -1,0 +1,929 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 70,
+  "failedChecks": 0,
+  "namedChecks": 70,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "switch off",
+      "check": "Config.Features.StatPoints = false (beta: switched on at the 10/20 check)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "no stat attributes at all",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "the remote does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "a monster hit is the plain formula",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "Config.StatMaxHealth = Config.MaxHealth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "a level-up writes no stat attribute, no Fx",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "attributes",
+      "check": "Lv10 Warrior, Auto: HAHAHAHAH = A4 H5, 0 free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "attributes",
+      "check": "Lv10 Archer, Auto: AHAHAHAHA = A5 H4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "attributes",
+      "check": "by hand: Order AAH at Lv10 = A2 H1, 6 free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "attributes",
+      "check": "Lv1: no point yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "attributes",
+      "check": "a later stage's letter (Z) keeps its point free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "attributes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "attributes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "[+] Attack: Order A, StatAtk 1, 8 free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "the character is re-read once, never fully healed (RefreshCharacter(p, false))",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "a 'Power X → Y' line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "Fx Stat { Kind = Action, From, To }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "[+5] Health: 5 points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "[+5] with 3 free places 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "no free point: nothing (no line, no Fx)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "Reset: every point free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "a second reset inside 3 s waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "after 3 s it resets again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "Auto on: Order cleared, the class pattern (A4 H5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "with Auto on [+] and Reset do nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "Auto on with picks left in Order: Reset / [+] change nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "Auto off: Order = what Auto placed, the same numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "the first time: 'Tap + to pick. Reset is free!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "never twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "Auto off when already off: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "actions",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "bad ops and args do nothing (only A / H, a boolean for auto)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "an extra argument: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "reset with an argument: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "two presses at once: one point (RateLimits.StatAction)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "in PvP combat: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "a kaiju: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "carrying the grudge sack: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "dead: refused silently",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "alive and calm again: works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "not ready: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "no class chosen: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "the first point after the first [Claim]: placed, 'New Stat Point!' once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "Fx Stat { Kind = First } (the power chip glows)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "Auto level-up: '+1 Health · Power X → Y'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "three levels at once: '+2 Attack +1 Health · Power …'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "by hand: '+1 Stat Point! Tap Power.'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "by hand, two levels later: '+3 Stat Points! Tap Power.' (the free points)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "before the first [Claim]: placed, no line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "a level reset: Order kept, no point at Lv1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "back at Lv6: AAHHA again (A3 H2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "a rebirth: Lv1, the picks kept, no extra point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "Warrior -> Archer (Auto): AH pattern, A5 H4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "in combat a level-up still places its point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "20 Attack: every monster hit x1.20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "a basic swing shape too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "40 Health: max HP x1.30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "computeMaxHealth = StatMaxHealth(Health points) x Justice health mult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "equal builds, equal weapons: 10 hits like today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "the victim's Health makes it last longer (not only a bigger hit base)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "300 random builds / weapons / levels: 6.67-12.5 hits to knock out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "numbers",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 8,
+  "staticFailures": [],
+  "mutations": {
+    "total": 37,
+    "applied": 37,
+    "caught": 37,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Config: the switch on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switch off :: Config.Features.StatPoints = false (beta: switched on at the 10/20 check)",
+          "switch off :: Config.StatMaxHealth = Config.MaxHealth"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "StatService ignores the switch",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switch off :: a level-up writes no stat attribute, no Fx",
+          "switch off :: no stat attributes at all",
+          "switch off :: the remote does nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "any op",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: a kaiju: refused",
+          "refusals :: alive and calm again: works",
+          "refusals :: an extra argument: nothing",
+          "refusals :: bad ops and args do nothing (only A / H, a boolean for auto)",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "any letter",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: a kaiju: refused",
+          "refusals :: alive and calm again: works",
+          "refusals :: an extra argument: nothing",
+          "refusals :: bad ops and args do nothing (only A / H, a boolean for auto)",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "auto takes a non-boolean",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: a kaiju: refused",
+          "refusals :: alive and calm again: works",
+          "refusals :: an extra argument: nothing",
+          "refusals :: bad ops and args do nothing (only A / H, a boolean for auto)",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "extra arguments taken",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: a kaiju: refused",
+          "refusals :: alive and calm again: works",
+          "refusals :: an extra argument: nothing",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently",
+          "refusals :: in PvP combat: refused"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: a kaiju: refused",
+          "refusals :: alive and calm again: works",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently",
+          "refusals :: in PvP combat: refused",
+          "refusals :: no class chosen: nothing"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "the dead may pick",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: alive and calm again: works",
+          "refusals :: dead: refused silently",
+          "refusals :: no class chosen: nothing",
+          "refusals :: not ready: nothing"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "not ready players may pick",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: no class chosen: nothing",
+          "refusals :: not ready: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "picks in PvP combat",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: a kaiju: refused",
+          "refusals :: alive and calm again: works",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently",
+          "refusals :: in PvP combat: refused",
+          "refusals :: no class chosen: nothing"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "picks as a kaiju",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: a kaiju: refused",
+          "refusals :: alive and calm again: works",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently",
+          "refusals :: no class chosen: nothing",
+          "refusals :: not ready: nothing"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "picks with the grudge sack",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: alive and calm again: works",
+          "refusals :: carrying the grudge sack: refused",
+          "refusals :: dead: refused silently",
+          "refusals :: no class chosen: nothing",
+          "refusals :: not ready: nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "[+] while Auto is on",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: Auto on with picks left in Order: Reset / [+] change nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "[+] past the free points",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: no free point: nothing (no line, no Fx)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "[+5] places 5 always",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: [+5] with 3 free places 3",
+          "actions :: no free point: nothing (no line, no Fx)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no reset cooldown",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: a second reset inside 3 s waits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: reset cooldown 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: a second reset inside 3 s waits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Auto off forgets the picks",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: Auto off: Order = what Auto placed, the same numbers"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Auto on keeps the old picks",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: Auto on: Order cleared, the class pattern (A4 H5)",
+          "actions :: with Auto on [+] and Reset do nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the manual hint every time",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: never twice"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a full heal after a pick",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: the character is re-read once, never fully healed (RefreshCharacter(p, false))"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no re-read after a pick",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: the character is re-read once, never fully healed (RefreshCharacter(p, false))"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no power line",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "actions :: a 'Power X → Y' line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no level-up placement",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: Auto level-up: '+1 Health · Power X → Y'",
+          "levels :: Fx Stat { Kind = First } (the power chip glows)",
+          "levels :: back at Lv6: AAHHA again (A3 H2)",
+          "levels :: before the first [Claim]: placed, no line",
+          "levels :: by hand, two levels later: '+3 Stat Points! Tap Power.' (the free points)",
+          "levels :: by hand: '+1 Stat Point! Tap Power.'"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "no re-read after a class change",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: Warrior -> Archer (Auto): AH pattern, A5 H4"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no re-read after a level reset",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: a level reset: Order kept, no point at Lv1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "lines before the first claim",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: before the first [Claim]: placed, no line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the first-point line every time",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: Auto level-up: '+1 Health · Power X → Y'",
+          "levels :: three levels at once: '+2 Attack +1 Health · Power …'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "by hand: no point line",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: by hand, two levels later: '+3 Stat Points! Tap Power.' (the free points)",
+          "levels :: by hand: '+1 Stat Point! Tap Power.'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "by hand: '+1 Stat Points'",
+        "file": "src/ServerScriptService/StatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: by hand: '+1 Stat Point! Tap Power.'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "monster hits ignore Attack",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "numbers :: 20 Attack: every monster hit x1.20"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvP ratio ignores Attack",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "numbers :: equal builds, equal weapons: 10 hits like today"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvP: Health only in the base (a bigger hit)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "numbers :: equal builds, equal weapons: 10 hits like today",
+          "numbers :: the victim's Health makes it last longer (not only a bigger hit base)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvP base without Health",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "numbers :: 300 random builds / weapons / levels: 6.67-12.5 hits to knock out",
+          "numbers :: equal builds, equal weapons: 10 hits like today"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvP clamp widened",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "numbers :: 300 random builds / weapons / levels: 6.67-12.5 hits to knock out"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "max HP without Health",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "numbers :: computeMaxHealth = StatMaxHealth(Health points) x Justice health mult"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "StatMaxHealth ignores Health",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "numbers :: 40 Health: max HP x1.30"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "dce1f90dbfac277cdb85fd74de3aab1856286b5177dcaa6dce71995689f548f0",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "ebb3ee9ae2d2964fab469d7fc8a85b10a2dbea51e5453f4d05f3e378402a97d4",
+    "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
+    "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
+    "src/ServerScriptService/PvPService.luau": "f65ae585a5ac353eedac54ed628f05eba3912e3fd983a7ad622dd06cb0895d8b",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
+    "src/ServerScriptService/StatService.luau": "25b7f110ed00592ebfb837eaae000bd189461439e1b9589bb50a9ce46e3e2a46",
+    "src/ServerScriptService/PlayerService.luau": "3b88ec1cc963a93f6a30b583614ac87078e5029acbd7f82498061be8185e4549"
+  },
+  "fixtureSHA256": "75204a40ed2e3d9ce51ace85e0331bba098afa851d2729c031135bb15c23407d",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-69 stage 2 (stat_points §2, §3-3, §5-2, §6), switch Features.StatPoints OFF in Config: while off StatService writes nothing and refuses StatAction, the numbers are today's. On: attributes StatAtk / StatHp / StatFree / AutoStat = Config.StatAlloc(data.Stats, level, class) at PlayerReady, LeveledUp, LevelReset, Rebirthed, ClassChanged and after actions. StatAction(op, arg): add A|H, add5 A|H (min 5 free), reset (3 s), auto true|false (off copies the placed letters, on clears Order); add / add5 / reset need Auto off; refused in PvP combat / as a kaiju / with the grudge sack (TravelBlockedCombat / BlockedKaiju / BlockedSack), silently when dead, not ready, rate-limited (0.15 s) or with bad args. After a change RefreshCharacter(p, false) and 'Power X -> Y'; lines after the first [Claim]: the first point once, Auto level-up '+N Stat · Power X -> Y', by hand '+N Stat Point(s)! Tap Power.', the first Auto-off hint once; Fx Stat. Monster hits x (1 + f(Attack)); PvP ratio (aW x atk) / (vW x hp) clamped 0.8 (bare 0.4) - 1.5, base StatMaxHealth x 0.1: 6.67-12.5 hits; max HP = StatMaxHealth x Justice; the bait rule uses StatMaxHealth.",
+  "limitations": "RefreshCharacter is a recording double (its HP-ratio rule is PlayerService.applyStats, unchanged); the [Stats] tab, the red dot and the chip glow are game dev 1's client (StatUI). The world's Justice multipliers are doubles (1)."
+}
