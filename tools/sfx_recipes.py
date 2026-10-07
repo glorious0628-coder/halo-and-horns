@@ -637,6 +637,41 @@ def skill_learn(run_notes=("A6", "C7", "D7", "E7", "G7"), gap=0.022, chord=("A6"
     return finish(FF.lowpass(at(parts), 7000, 2), 400)
 
 
+# ---------------------------------------------------------------- Loot (sound_spec §5 P0: my scroll / weapon drop)
+def paper_knock(f, dur=0.06, seed=1, q=3.0, body=0.6):
+    """a light paper-roll knock: a band-noise burst + a short sine body"""
+    n = N(dur)
+    return band(n, f * 1.6, q, seed) * env(n, 0.0008, 90) + body * np.sin(2 * np.pi * f * secs(n)) * env(n, 0.001, 55)
+
+
+def roll_bounces(f0=1000.0, gaps=(0.11, 0.07), fall=0.62, seed=3):
+    """the scroll lands and bounces: knocks with shorter and shorter gaps, each quieter"""
+    t, parts = 0.0, []
+    for i in range(len(gaps) + 1):
+        parts.append((paper_knock(f0 * (1 + 0.04 * i), seed=seed + i), t, fall ** i))
+        if i < len(gaps):
+            t += gaps[i]
+    return at(parts)
+
+
+def gleam(f=2900.0, dur=0.38, trem=8.0, rise=1.04):
+    """one gleam: a bright sine (+ a soft 2.01x partial) with an 8 Hz shimmer"""
+    n = N(dur)
+    t = secs(n)
+    fr = glide(n, f, f * rise, 0.5)
+    x = (0.75 * osc(fr) + 0.25 * osc(fr * 2.01)) * (1 - 0.3 * (0.5 - 0.5 * np.cos(2 * np.pi * trem * t)))
+    return x * np.minimum(t / 0.003, 1.0) * np.exp(-7.5 * t)
+
+
+def loot_drop(f0=1000.0, gaps=(0.11, 0.07), g_f=2900.0, g_at=0.17, grain=True, seed=3):
+    """'tok-tok-tok tiring~': bounces (the first is the loudest, at t = 0) + a gleam + maybe one tiny sparkle grain"""
+    parts = [(roll_bounces(f0, gaps, seed=seed), 0, 1.0), (gleam(g_f), g_at, 0.55)]
+    if grain:
+        rng = np.random.default_rng(seed + 6)
+        parts.append((bell(rng.uniform(4200, 6000), 0.04, 60.0, ((1.0, 1.0, 1.0),)), g_at + 0.03 + rng.uniform(0, 0.25), 0.125))
+    return finish(FF.lowpass(at(parts), 7500, 2), 500)
+
+
 RECIPES = {
     "GoldPickup": {"sA": ("our coins D7-E7-G7 stepping up, 55 ms apart (sound_spec)", lambda: gold(("D7", "E7", "G7"))),
                    "sB": ("our coins E7-D7-G7 (the other order, sound_spec)", lambda: gold(("E7", "D7", "G7"))),
@@ -718,4 +753,9 @@ RECIPES = {
                           lambda: skill_learn(("C7", "E7", "G7"), 0.035, ("A6", "E7"), 0.13)),
                    "sC": ("button pop + run A6-D7-E7-G7 30 ms apart + a lower E6+B6 chord (phones)",
                           lambda: skill_learn(("A6", "D7", "E7", "G7"), 0.03, ("E6", "B6"), 0.14))},
+    "Loot": {"sA": ("3 paper-roll knocks 1.0 kHz (gaps 110 / 70 ms) + gleam 2.9 kHz with 8 Hz shimmer @170 ms + 1 sparkle grain", lambda: loot_drop()),
+             "sB": ("4 knocks 0.9 kHz (gaps 110 / 70 / 45 ms) + gleam 3.0 kHz, no grain",
+                    lambda: loot_drop(900.0, (0.11, 0.07, 0.045), 3000.0, 0.17, False)),
+             "sC": ("3 slower knocks 0.9 kHz (120 / 75 ms) + a lower gleam 2.7 kHz @190 ms + 1 grain",
+                    lambda: loot_drop(900.0, (0.12, 0.075), 2700.0, 0.19, True))},
 }

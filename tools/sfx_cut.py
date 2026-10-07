@@ -372,7 +372,8 @@ KO = {"SwingArcher": "활 두 발 파일(선택) · '슉슉'", "SwingArrow": "�
       "GoldenSpot": "황금 몬스터 발견 '반짝반짝'", "ScrollSuccess": "강화 성공 '슈링 챙'", "Spend": "골드 씀 '짤-랑↓'",
       "RankUp": "등급 올라감 '또로롱↑'", "KO": "내가 쓰러짐 '콩! 삐요삐요'", "Respawn": "다시 나타남 '뿅!'",
       "Plunder": "주머니 뺏김 '짤그랑 또르르'", "JackpotOther": "남의 대박 '오오 반짝'",
-      "SkillLearn": "새 스킬 배움 '뽁! 샤라락 티잉~' (Lv5·15·25)"}
+      "SkillLearn": "새 스킬 배움 '뽁! 샤라락 티잉~' (Lv5·15·25)",
+      "Loot": "내 드롭 · 주문서·무기 '톡-톡-톡 티링~'"}
 ORDER = ["SwingArrow", "SwingMageHalo", "SwingMageHorns", "HitHeavy", "HitCrit", "ComboCoin", "HitSoft", "SwingArcher",
          "GoldPickup", "QuestNew", "QuestDone", "WindowClose", "Deny", "RankDown", "ScrollFail", "SkillHalo", "SkillHorns", "Purify", "Devour",
          "Potion", "AutoOn", "AutoOff", "TalkBlip", "Equip", "SkillReady", "HurtBig", "PowerUp", "Jump",
@@ -387,12 +388,16 @@ ORDER += ORDER4
 ORDER5 = ["SkillLearn"]
 BATCH.update({k: 5 for k in ORDER5})
 ORDER += ORDER5
+ORDER6 = ["Loot"]
+BATCH.update({k: 6 for k in ORDER6})
+ORDER += ORDER6
 BATCH_TITLE = {1: "1번 묶음 · 전투 (지난번과 같은 후보)", 2: "2번 묶음 · UI·스킬·선택·새 소리", 3: "3번 묶음 · 할로윈 P0",
                4: "4번 묶음 · 왕관·왕·전쟁 → 거위·괴수·PvP·황금 → 강화·돈·등급·KO",
-               5: "5번 묶음 · 새 스킬 배움 (A23-71)"}
+               5: "5번 묶음 · 새 스킬 배움 (A23-71)",
+               6: "6번 묶음 · 내 드롭 (설계서 §5 P0 Loot)"}
 SCENE_OF = {"SwingArrow": "archer", "SwingMageHalo": "mage_halo", "SwingMageHorns": "mage_horns", "HitHeavy": "warrior_goblin",
-            "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime", "SkillLearn": "lv5"}
-SCENE_LABEL = {"lv5": "Lv5 장면: LevelUp → 1.1 s 뒤 SkillLearn"}  # build/sfx_scene/lv5_*.mp3 (mixed by hand, game volumes)
+            "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime", "SkillLearn": "lv5", "Loot": "killloot"}
+SCENE_LABEL = {"lv5": "Lv5 장면: LevelUp → 1.1 s 뒤 SkillLearn", "killloot": "처치 장면: KillPop + 동전 → 0.15 s 뒤 Loot"}  # build/sfx_scene/lv5_*.mp3 (mixed by hand, game volumes)
 PICK = {  # 소리 만들기 추천 (검수가 고른다)
     "SwingArrow": ("SwingArrow_SwingArcher-2-4", "화살 한 발 73 ms, 중심 3.9 kHz(설계서 시제품 3.83), 줄 소리 없음. 궁수 장면에서 두 발이 '슉-슉'으로 떨어져 들려요."),
     "SwingMageHalo": ("SwingMageHalo_SwingMage-3-4", "'슝' 위로 휘는 반짝 0.17 s + 아주 얇은 합성 '샤랑'. 남은 경고는 잡음 정도(flat 0.05)뿐."),
@@ -447,6 +452,9 @@ PICK = {  # 소리 만들기 추천 (검수가 고른다)
     # batch 5
     "SkillLearn": ("SkillLearn_sA", "버튼 '뽁'(제일 커서 시작이 또렷) → 유리 반짝 5알 '샤라락' → A6+E7 화음 '티잉~' 7 Hz로 반짝이며 0.70 s. "
                                     "짝 점수 PowerUp 2.0 · LevelUp 1.4 · QuestDone 1.3(모두 1.0 이상). sC는 화음이 낮아(E6+B6) 폰에 더 둥글게."),
+    # batch 6
+    "Loot": ("Loot_sA", "주문서가 '톡-톡-톡' 세 번 튀고(첫 번째가 제일 커서 또렷) '티링~' 반짝 0.55 s. 동전 1.7 · 새 퀘스트 1.8 · "
+                        "강화 성공 1.5 · 황금 발견 2.0(모두 1.0 이상). sB는 네 번 튐, sC는 조금 느리고 반짝이 낮음."),
 }
 
 
@@ -618,6 +626,10 @@ BOARD_LEAD = {
 'New skill!'과 함께 스킬 버튼이 '톡' 나타나는 때예요. Lv5·15·25에서는 LevelUp과 같이 오니, 게임에서는 LevelUp 소리 뒤(약 1.1 s)에 틀어요.
 PowerUp(첫 무기)·LevelUp·QuestDone과 다르게 들리도록 설계표 짝 규칙을 새로 넣었어요(점수 1.0 이상, LevelUp이 1 dB 이상 더 큼).
 판정은 설계서 검사기(tools/sfx_check.py + tools/sfx_spec.json). 그림은 스펙트로그램(세로 50 Hz–12 kHz). sA·sB·sC = 우리 합성, 크레딧 0.</p>""", ""),
+    6: ("""<p class="lead">검수용 6번 묶음: 내 드롭(설계서 §5 P0 'Loot') 소리 하나를 골라 주세요.
+주문서(강화·이동)나 무기가 떨어질 때만 나요. 재료·물약은 자주 떨어져서 소리 없이 글자만 떠요(처치 '뽕'·동전과 겹치지 않게).
+주문서가 땅에 '톡-톡-톡' 튀고 '티링~' 빛나는 소리예요. 무기는 같은 파일을 0.92배로 낮게 써도 돼요.
+판정은 설계서 검사기. 짝 규칙 4개를 새로 넣었어요(골드 받기·새 퀘스트·강화 성공·황금 발견과 구별 1.0 이상). sA·sB·sC = 우리 합성, 크레딧 0.</p>""", ""),
 }
 
 
