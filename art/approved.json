@@ -6359,5 +6359,19 @@
   "settings": "fix PumpkinSlime --bands gold,green --value-mix 0 --ao-strength 0.45 --headroom 0.86 (label v0h0.86)",
   "use": "PumpkinSlime model colour map (SurfaceAppearance.ColorMap or MeshPart.TextureID, whichever the imported model uses)",
   "note": "빨강이 255로 잘려 골·명암이 흐리던 것 → 밝기 여유 0.86 + 골 사이 그늘. 색은 시안과 같아 그대로."
+ },
+ "Town_Horns_Castle_v6_back": {
+  "status": "picked (이미지 생성 1, 검수 확인 대기)",
+  "date": "2026-10-07",
+  "why": "user via 검수: '앞모습은 2가 좋은데 뒷모습이 문제다. 1과 2를 섞을 수는 없어?' — ② v4 style rear view where the back is walls + horned/red-spire towers, not a rock mountain (검수 method 1)",
+  "candidates": [
+   "art/out/town_v6/Town_Horns_Castle_v6_back_1.png (picked: round footprint like v4, three rings of walls, rear gate)",
+   "art/out/town_v6/Town_Horns_Castle_v6_back_2.png (boxy, stairs + gate = reads as a second front)"
+  ],
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst; candidates Medium (0 credits, reference = art/out/hq/HQ_Town_Horns_Castle_v4B.png), final High (5 credits, reference = candidate 1)",
+  "prompt": "art/prompts/Town_Horns_Castle_v6_back.txt (candidates), art/prompts/Town_Horns_Castle_v6_back_HQ.txt (final)",
+  "final": "art/out/hq/HQ_Town_Horns_Castle_v6_back.png (1024, High 5 credits)",
+  "use": "Tripo web multi-view back slot with front = HQ_Town_Horns_Castle_v4B.png (task 852535df-361c-4ee2-a2c4-14a1e3d683ce)",
+  "checks": "no paired windows / faces; banners only on the keep"
  }
 }
