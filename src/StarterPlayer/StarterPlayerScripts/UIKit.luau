@@ -233,15 +233,21 @@ local NOTIFY = {
 	-- FitHeight, so the socket stays round and grows with the height) behind every toast once uploaded. The item / monster
 	-- icon (or the kind's glyph) sits in the socket (centre DiscX x the height; GlyphK / IconK x the height), the words
 	-- between the socket (CapL) and the round end (CapR); at least MinH / MinHIcon du, Lines lines at most ("..." after)
+	-- The capsule may be WidthMult x the notify column (at most ScreenFrac of the screen; it stays centred on the column):
+	-- phones have a narrow column and the socket + round end take room (UiSandbox 749x361: 2 lines cut a world toast)
 	ToastArt = { Part = "Toast", MinH = 40, MinHIcon = 46, PadY = 7, DiscX = 49 / 102, GlyphK = 0.42, IconK = 0.5,
-		CapL = 0.94, CapR = 0.42, Lines = 2,
+		CapL = 0.94, CapR = 0.42, Lines = 3, Slack = 10, -- Slack: du added to the measured words (rounding, the stroke)
+		WidthMult = 1.45, ScreenFrac = 0.62,
 		Glyph = { good = { "GlyphCheck", Color3.fromRGB(80, 220, 120) }, bad = { "GlyphExclaim", Color3.fromRGB(255, 96, 86) },
 			reward = { "IconStar" }, info = { "IconAnnounce" } } },
-	-- the big banner's red BannerAlert ribbon (world news: war, kaiju, bounty, the Pumpkin King; 9-slice FitHeight): the
-	-- forked tails take Side x the height on each end, the red band is TextFrac of the height around CenterY; white words
-	-- with a dark red rim (approved note); the icon IconK x the height (it may overlap the gold rims)
-	AlertArt = { Part = "BannerAlert", Side = 0.6, CenterY = 0.445, TextFrac = 0.6, IconK = 0.9,
-		Stroke = Color3.fromRGB(120, 10, 20) },
+	-- the big banner's red BannerAlert ribbon (world news: war, kaiju, bounty, the Pumpkin King). Its ends keep the size of
+	-- the one-line banner (the column's banner height = "base"; SliceScale base / Base): more lines stretch only the 2 px
+	-- middle band, so the words keep their room (FitHeight grew the tails with every line: UiSandbox phone 749x361 cut a
+	-- 3-line banner to 10 letters a line). The tails take Side x base on each end, the red band is TextFrac x base around
+	-- CenterY of the one-line art; white words with a dark red rim (approved note); the icon IconK x base (it may overlap
+	-- the gold rims). The banner is WidthMult x the column, at most ScreenFrac of the screen
+	AlertArt = { Part = "BannerAlert", Base = 133, Side = 0.6, CenterY = 0.445, TextFrac = 0.6, IconK = 0.9,
+		WidthMult = 1.75, ScreenFrac = 0.62, Stroke = Color3.fromRGB(120, 10, 20) },
 	AlertImg = nil, -- the banner's art ImageLabel (UIKit.Init) when BannerAlert is uploaded
 	LaidH = nil, -- the banner height the words were last laid out for (the art's tails follow the height)
 	-- Short screens (free height under CompactBelow du, phones): a wider plate, a smaller banner / slots / buttons and 16 du
@@ -2310,7 +2316,7 @@ function NOTIFY.ToastCap()
 	for i = #toasts, 1, -1 do
 		local t = toasts[i]
 		local h = t.Frame.AbsoluteSize.Y / scale
-		if h <= 0 then h = t.Icon and TOAST_ICON + 14 or NOTIFY.ToastEstimate end -- not laid out yet
+		if h <= 0 then h = t.MinH or (t.Icon and TOAST_ICON + 14 or NOTIFY.ToastEstimate) end -- not laid out yet
 		local add = h + (count > 0 and NOTIFY.ToastGap or 0)
 		if count > 0 and used + add > avail then break end
 		used += add
@@ -2348,6 +2354,101 @@ local function scheduleToast(t, duration)
 	end)
 end
 
+-- handoff queue 3: one toast on the approved Toast capsule (NOTIFY.ToastArt), or nil when the art is missing (the caller
+-- builds the code look). The socket holds the item / monster icon, else the kind's glyph; the words sit between the
+-- socket and the round end, 1-2 lines. The capsule is as wide as its words (measured off-thread, then it fades in), at
+-- most the notify column. Returns the toast record { Frame, Label, Art, Icon, Text, Token, Dead, MinH }.
+function NOTIFY.BuildArtToast(text, kind, icon, color)
+	local ta = NOTIFY.ToastArt
+	if not artPart(ta.Part) or not toastHolder then return nil end
+	local T = UIKit.Theme
+	local frame = UIKit.Create("Frame", {
+		Name = "Toast",
+		LayoutOrder = -toastCounter,
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+	})
+	local art = UIKit.ArtImage(ta.Part, { Name = "Art", Size = UDim2.fromScale(1, 1), ImageTransparency = 1, ZIndex = 1,
+		Parent = frame })
+	local pad = UIKit.Create("UIPadding", { PaddingTop = UDim.new(0, ta.PadY), PaddingBottom = UDim.new(0, ta.PadY) })
+	local body = UIKit.Create("Frame", { Name = "Body", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1, ZIndex = 2, Parent = frame }, { pad })
+	local hasIcon = type(icon) == "string" and icon ~= ""
+	local img = hasIcon and UIKit.ItemIcon(icon, { Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5),
+		ImageTransparency = 1, ZIndex = 3, Parent = frame }) or nil
+	if not img then
+		hasIcon = false
+		local glyph = ta.Glyph[kind] or ta.Glyph.info
+		img = UIKit.ArtImage(glyph[1], { Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), ImageTransparency = 1,
+			ImageColor3 = glyph[2] or Color3.new(1, 1, 1), ZIndex = 3, Parent = frame })
+	end
+	local minH = hasIcon and ta.MinHIcon or ta.MinH
+	local label = UIKit.Create("TextLabel", {
+		Name = "Text",
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0, minH - 2 * ta.PadY),
+		TextWrapped = true,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextSize = math.max(18, math.ceil(NOTIFY.ToastPx * UIKit.PxFloor() / currentScale() - 0.001)),
+		Text = text,
+		TextColor3 = (kind == "good" or kind == "bad" or kind == "reward") and color or T.Text,
+		TextTransparency = 1,
+		TextStrokeTransparency = 1,
+		ZIndex = 2,
+		Parent = body,
+	})
+	-- the side room and the socket's icon follow the capsule's height (FitHeight: the socket grows with a 2nd line)
+	local function layout(h)
+		pad.PaddingLeft = UDim.new(0, math.floor(h * ta.CapL + 0.5))
+		pad.PaddingRight = UDim.new(0, math.floor(h * ta.CapR + 0.5))
+		if img then
+			local d = math.floor(h * (hasIcon and ta.IconK or ta.GlyphK) + 0.5)
+			img.Size = UDim2.fromOffset(d, d)
+			img.Position = UDim2.new(0, math.floor(h * ta.DiscX + 0.5), 0.5, 0)
+		end
+	end
+	layout(minH)
+	frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		local h = frame.AbsoluteSize.Y / currentScale()
+		if h > 1 then layout(h) end
+	end)
+	frame.Parent = toastHolder
+	local t = { Frame = frame, Label = label, Art = art, Icon = img, Text = text, Token = 0, Dead = false, MinH = minH }
+	UIKit.WrapHeight(label, NOTIFY.Avoid and 1 or ta.Lines, minH - 2 * ta.PadY)
+	task.spawn(function()
+		local s = currentScale()
+		local col = toastHolder.AbsoluteSize.X / s
+		local screenW = UIKit.Gui and UIKit.Gui.AbsoluteSize.X / s or col
+		col = math.max(col, math.min(col * ta.WidthMult, screenW * ta.ScreenFrac)) -- may pass the column, centred on it
+		local room = col - minH * (ta.CapL + ta.CapR)
+		-- review 2026-10-07: a long notice breaks at its " · " (one part a line) instead of a line starting with the dot
+		if string.find(text, " · ", 1, true) then
+			local ok, _, w = pcall(UIKit.MeasureText, text, label.TextSize, label.FontFace, 100000)
+			if room > 0 and ok and type(w) == "number" and w > room then
+				label.Text = (string.gsub(text, " · ", "\n"))
+			end
+		end
+		local ok, _, w = pcall(UIKit.MeasureText, label.Text, label.TextSize, label.FontFace, 100000)
+		if t.Dead or not frame.Parent then return end
+		if ok and type(w) == "number" and col > 0 then
+			-- split lines make the capsule taller and its socket / round end wider (FitHeight): count them in, or the
+			-- first part wrapped once more on phones ("Daily quest done! +60 / gold")
+			local _, breaks = string.gsub(label.Text, "\n", "")
+			local hExp = math.max(minH, math.ceil((breaks + 1) * label.TextSize * (NOTIFY.WrapLineH + NOTIFY.WrapSlack)
+				+ 2 * ta.PadY))
+			local want = math.ceil(hExp * (ta.CapL + ta.CapR) + w + ta.Slack)
+			frame.Size = UDim2.new(0, math.clamp(want, math.floor(minH * 3), math.floor(col)), 0, 0)
+		end
+		local info = TweenInfo.new(0.15)
+		if art then TweenService:Create(art, info, { ImageTransparency = 0 }):Play() end
+		TweenService:Create(label, info, { TextTransparency = 0, TextStrokeTransparency = 0.6 }):Play()
+		if img then TweenService:Create(img, info, { ImageTransparency = 0 }):Play() end
+	end)
+	return t
+end
+
 -- kinds: info / good / bad / reward (anything else = info); max 4 stacked (2 on short phones, CR-L38), newest on
 -- top; default 2.5 s. icon (optional) = a Config.Loot.Items id or a UIArt key (UIKit.ItemIcon), drawn left of the text.
 -- A toast whose text is already on screen is refreshed instead of stacked twice.
@@ -2368,6 +2469,15 @@ function UIKit.Toast(text, kind, duration, icon)
 	toastCounter += 1
 	local color = kindColor(kind)
 	local T = UIKit.Theme
+	-- the approved Toast capsule when uploaded (handoff queue 3), else the code look below
+	local artToast = NOTIFY.BuildArtToast(text, kind, icon, color)
+	if artToast then
+		table.insert(toasts, artToast)
+		NOTIFY.TrimToasts()
+		artToast.Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(NOTIFY.QueueTrim)
+		scheduleToast(artToast, duration)
+		return
+	end
 	local frame = UIKit.Create("Frame", {
 		Name = "Toast",
 		LayoutOrder = -toastCounter,
@@ -2457,7 +2567,7 @@ local function hideAnnounce(token)
 	if announceToken ~= token or not announceFrame then return end
 	announceCurrent = nil
 	local info = TweenInfo.new(0.25)
-	TweenService:Create(announceFrame, info, { BackgroundTransparency = 1 }):Play()
+	NOTIFY.BannerFade(info, false)
 	TweenService:Create(announceLabel, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 	local icon = announceFrame:FindFirstChild("Icon")
 	if icon then TweenService:Create(icon, info, { ImageTransparency = 1 }):Play() end
@@ -2478,27 +2588,67 @@ local function armAnnounceTimer(duration)
 	end)
 end
 
--- banner icon size + text box beside it (old path: ANNOUNCE_ICON; HUD v2: no taller than the shorter banner)
+-- the banner's look fades in / out: the BannerAlert art when uploaded (the frame's own fill stays off), else the frame
+function NOTIFY.BannerFade(info, shown)
+	local art = NOTIFY.AlertImg
+	if art and art.Parent then
+		announceFrame.BackgroundTransparency = 1
+		TweenService:Create(art, info, { ImageTransparency = shown and 0 or 1 }):Play()
+	else
+		TweenService:Create(announceFrame, info, { BackgroundTransparency = shown and 0.3 or 1 }):Play()
+	end
+end
+
+-- banner icon size + text box beside it (old path: ANNOUNCE_ICON; HUD v2: no taller than the shorter banner). With the
+-- BannerAlert art the forked tails and the gold rims grow with the banner's height (FitHeight): the icon and the words
+-- stay inside the red band (NOTIFY.AlertArt), laid out again whenever the height changes (NOTIFY.FitAnnounce)
 function NOTIFY.LayoutAnnounceText(img)
+	local a = (NOTIFY.AlertImg and NOTIFY.AlertImg.Parent) and NOTIFY.AlertArt or nil
+	local h = announceFrame.Size.Y.Offset
+	local base = (NOTIFY.Rect and NOTIFY.BannerShownH) or NOTIFY.BannerOldH -- the one-line banner's height
 	local size = NOTIFY.Rect and NOTIFY.BannerIcon or ANNOUNCE_ICON
-	if img then img.Size = UDim2.fromOffset(size, size) end
-	local shift = img and size + 16 or 0
-	announceLabel.Position = UDim2.new(0.5, shift / 2, 0.5, 0)
+	local side, cy = 20, 0.5
+	if a then
+		NOTIFY.AlertImg.SliceScale = math.max(base / a.Base, 0.01) -- the ends keep the one-line size
+		size = math.min(size, math.floor(base * a.IconK))
+		side = math.floor(base * a.Side + 0.5)
+		-- the red band's centre: CenterY of the one-line art, moved down by half the stretched middle
+		cy = h > 0 and (a.CenterY * base + math.max(0, h - base) / 2) / h or a.CenterY
+	end
+	if img then
+		img.Size = UDim2.fromOffset(size, size)
+		img.Position = UDim2.new(0, a and side or 28, cy, 0)
+	end
+	local shift = img and size + (a and 10 or 16) or 0
+	announceLabel.Position = UDim2.new(0.5, shift / 2, cy, 0)
 	-- the height stays the measured one (UIKit.WrapHeight refits when the width changes)
-	announceLabel.Size = UDim2.new(1, -40 - shift, 0, announceLabel.Size.Y.Offset)
+	announceLabel.Size = UDim2.new(1, -2 * side - shift, 0, announceLabel.Size.Y.Offset)
+	NOTIFY.LaidH = h
 	NOTIFY.FitAnnounce()
 end
 
 -- the banner frame follows its wrapped text: never lower than the column's banner (or the old 84), padding above and
--- below the text, at most BannerLines lines (UIKit.WrapHeight caps the label; its TextTruncate shows "...")
+-- below the text (art: the words take TextFrac of the height, between the gold rims), at most BannerLines lines
+-- (UIKit.WrapHeight caps the label; its TextTruncate shows "...")
 function NOTIFY.FitAnnounce()
 	if not announceFrame or not announceLabel then return end
+	local a = (NOTIFY.AlertImg and NOTIFY.AlertImg.Parent) and NOTIFY.AlertArt or nil
 	local textH = announceLabel.Size.Y.Offset
 	local minH = (NOTIFY.Rect and NOTIFY.BannerShownH) or NOTIFY.BannerOldH
-	local h = math.max(minH, math.ceil(textH + NOTIFY.BannerPadY * 2))
+	-- art: the one-line banner (minH) holds TextFrac x minH of words; more lines add their height to the stretched middle
+	local h = a and math.max(minH, math.ceil(minH + math.max(0, textH - a.TextFrac * minH)))
+		or math.max(minH, math.ceil(textH + NOTIFY.BannerPadY * 2))
 	local size = announceFrame.Size
 	if size.Y.Scale ~= 0 or size.Y.Offset ~= h then
 		announceFrame.Size = UDim2.new(size.X.Scale, size.X.Offset, 0, h)
+	end
+	-- the art's tails follow the height: lay the icon and words out again for a new height (once per height)
+	if a and NOTIFY.LaidH ~= h then
+		task.defer(function()
+			if not announceFrame then return end
+			local icon = announceFrame:FindFirstChild("Icon")
+			NOTIFY.LayoutAnnounceText(icon and icon:IsA("GuiObject") and icon or nil)
+		end)
 	end
 	NOTIFY.PlaceToasts()
 end
@@ -2577,11 +2727,12 @@ showAnnounce = function(text, duration, icon)
 	announceFrame.Visible = true
 	NOTIFY.PlaceToasts()
 	announceFrame.BackgroundTransparency = 1
+	if NOTIFY.AlertImg then NOTIFY.AlertImg.ImageTransparency = 1 end
 	announceLabel.TextTransparency = 1
 	announceLabel.TextStrokeTransparency = 1
 	announcePop.Scale = 0.85
 	local info = TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-	TweenService:Create(announceFrame, info, { BackgroundTransparency = 0.3 }):Play()
+	NOTIFY.BannerFade(info, true)
 	TweenService:Create(announceLabel, info, { TextTransparency = 0, TextStrokeTransparency = 0.2 }):Play()
 	if img then TweenService:Create(img, info, { ImageTransparency = 0 }):Play() end
 	TweenService:Create(announcePop, info, { Scale = 1 }):Play()
@@ -2609,7 +2760,11 @@ function UIKit.Announce(text, duration, icon)
 			announceLabel.Text = text
 		end
 		announceFrame.Visible = true
-		announceFrame.BackgroundTransparency = 0.3
+		if NOTIFY.AlertImg and NOTIFY.AlertImg.Parent then
+			NOTIFY.AlertImg.ImageTransparency = 0
+		else
+			announceFrame.BackgroundTransparency = 0.3
+		end
 		announceLabel.TextTransparency = 0
 		announceLabel.TextStrokeTransparency = 0.2
 		armAnnounceTimer(math.max(duration, 1.5))
@@ -2670,8 +2825,13 @@ function UIKit.PlaceNotify(rect, topY)
 		NOTIFY.BannerShownH = math.floor(bannerH)
 		announceFrame.AnchorPoint = Vector2.new(0.5, 0)
 		announceFrame.Position = UDim2.fromOffset(cx, ty)
-		announceFrame.Size = UDim2.fromOffset(math.floor(math.min(w * NOTIFY.BannerWidthMult, NOTIFY.BannerMaxW)),
-			math.floor(bannerH))
+		-- the art banner is wider (its tails take room; NOTIFY.AlertArt), never past ScreenFrac of the screen
+		local a = NOTIFY.AlertImg and NOTIFY.AlertArt or nil
+		local bw = math.min(w * NOTIFY.BannerWidthMult, NOTIFY.BannerMaxW)
+		if a and UIKit.Gui then
+			bw = math.max(bw, math.min(w * a.WidthMult, NOTIFY.BannerMaxW, UIKit.Gui.AbsoluteSize.X / currentScale() * a.ScreenFrac))
+		end
+		announceFrame.Size = UDim2.fromOffset(math.floor(bw), math.floor(bannerH))
 		-- text: about 44% of the banner, never under BannerPx real px, at most BannerTextMax
 		local floorDu = math.ceil(NOTIFY.BannerPx * UIKit.PxFloor() / currentScale() - 0.001)
 		local textSize = math.clamp(math.floor(bannerH * 0.44 + 0.5), floorDu, math.max(floorDu, NOTIFY.BannerTextMax))
@@ -2986,6 +3146,14 @@ function UIKit.Init(registry)
 		Text = "",
 		Parent = announceFrame,
 	})
+	-- handoff queue 3: the approved red BannerAlert ribbon behind the words once uploaded (NOTIFY.AlertArt; under the
+	-- words and the icon): white words with a dark red rim (the approved note)
+	NOTIFY.AlertImg = UIKit.ArtImage(NOTIFY.AlertArt.Part, { Name = "Art", Size = UDim2.fromScale(1, 1),
+		ImageTransparency = 1, ZIndex = 0, SliceScale = NOTIFY.BannerH / NOTIFY.AlertArt.Base, Parent = announceFrame })
+	if NOTIFY.AlertImg then
+		announceLabel.TextColor3 = Color3.new(1, 1, 1)
+		announceLabel.TextStrokeColor3 = NOTIFY.AlertArt.Stroke
+	end
 	UIKit.WrapHeight(announceLabel, NOTIFY.BannerLines, nil, NOTIFY.FitAnnounce)
 
 	gui.Parent = playerGui

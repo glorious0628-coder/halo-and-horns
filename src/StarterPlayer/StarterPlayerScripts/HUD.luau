@@ -139,6 +139,7 @@ local TUT_QUEST_ID = TUT.QuestId or "tutorial"
 local TXT = {
 	LevelTag = "Lv",
 	PowerLine = "Lv %d · %s %s", -- 'Lv 10 · Power 424' (A23-26)
+	PowerLineShort = "Lv %d · %s", -- the narrowest phone rows (2026-10-07): 'Lv 25 · 249' (L.CheckPouch)
 	Pouch = "· %s %s", -- after the power line: '· Pouch 1.2K' (검수 2026-10-06: carried gold can be stolen)
 	PouchLine = "%s %s", -- its own line under the XP bar when the power line is too narrow
 	CarriedTag = "Pouch",
@@ -200,6 +201,7 @@ local TXT = {
 	TileNews = "News",
 	TileTravel = "Travel",
 	TileHelp = "Help",
+	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
 	QuestLineSummary = "Daily Quests %d/%d",
@@ -595,7 +597,9 @@ function L.PowerValue()
 end
 
 function L.PowerText(n)
-	return string.format(TXT.PowerLine, math.floor(num("Level", 1)), TXT.PowerWord, Util.FormatInt(n))
+	local lv = math.floor(num("Level", 1))
+	if L.Pow.Short then return string.format(TXT.PowerLineShort, lv, Util.FormatInt(n)) end
+	return string.format(TXT.PowerLine, lv, TXT.PowerWord, Util.FormatInt(n))
 end
 
 function L.PowerOpen()
@@ -665,11 +669,22 @@ function L.PowerBuild(parent)
 	ui.pouch:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
 end
 
--- the pouch rides the power line while both fit its rect (2du spare against flicker), else it hides
+-- the pouch rides the power line while both fit its rect (2du spare against flicker), else it hides. When the power
+-- text alone runs past the row (the narrowest phone rows, 2026-10-07) the word 'Power' goes first ('Lv 25 · 249'); it
+-- comes back once the row is wider than the full line's last measured width
 function L.CheckPouch()
 	local R = L.Rects
 	if not R or not ui.power or not ui.pouch or not ui.powerRow then return end
 	local s = currentScale()
+	local P = L.Pow
+	local pw = ui.power.AbsoluteSize.X / s
+	if not P.Short and pw > R.power_line.W + 0.5 then
+		P.Short, P.FullW = true, pw
+		ui.power.Text = L.PowerText(P.Shown or L.PowerValue())
+	elseif P.Short and P.FullW and P.FullW <= R.power_line.W - 2 then
+		P.Short = false
+		ui.power.Text = L.PowerText(P.Shown or L.PowerValue())
+	end
 	local gap = ui.powerRow.List.Padding.Offset
 	local need = (ui.power.AbsoluteSize.X + ui.pouch.AbsoluteSize.X) / s + gap
 	local fits = need <= R.power_line.W - (ui.pouch.Visible and 0 or 2)
@@ -1741,10 +1756,13 @@ function L.LayoutQuestHeader(w, h)
 	end
 	local tx = disc + 4
 	if ui.questHeaderSub then
-		ui.questHeaderText.Position = UDim2.fromOffset(tx, 3)
-		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 0.5, -3)
-		ui.questHeaderSub.Position = UDim2.new(0, tx, 0.5, 0)
-		ui.questHeaderSub.Size = UDim2.new(1, -tx - 26, 0.5, -3)
+		-- the two phone lines stay in the plate's navy body (PanelHeader rows 22..96 of 121 = 0.19h..0.79h): they used to
+		-- start 3 du from the edges and ran over the gold rims (user 2026-10-07: "Dailies 0/3" over the bottom rim)
+		local top, mid, bot = math.floor(h * 0.19 + 0.5), math.floor(h * 0.49 + 0.5), math.floor(h * 0.79 + 0.5)
+		ui.questHeaderText.Position = UDim2.fromOffset(tx, top)
+		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 0, mid - top)
+		ui.questHeaderSub.Position = UDim2.fromOffset(tx, mid)
+		ui.questHeaderSub.Size = UDim2.new(1, -tx - 26, 0, bot - mid)
 	else
 		ui.questHeaderText.Position = UDim2.fromOffset(tx, 4)
 		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 1, -8)
@@ -1974,7 +1992,8 @@ function L.FoldEntries()
 	for i = #(ui.foldTiles or {}), 1, -1 do
 		local f = ui.foldTiles[i]
 		local def = f.Def
-		if (def.Map or L.TileWindow(def) ~= nil) and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
+		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window
+		if (def.Map or f.Row or L.TileWindow(def) ~= nil) and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
 	end
 	return list
 end
@@ -2736,8 +2755,9 @@ L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, Ti
 	WobbleStep = 0.06, Breathe = 1.05 }
 L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0 }
 
--- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then closes the
--- potions up to the attack button. A change of that button's Visible lays the HUD out again (connected once)
+-- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then leaves it
+-- out of its room checks (the potions keep their place on the thumb ring). A change of that button's Visible lays the
+-- HUD out again (connected once)
 function L.SkillHidden(slot)
 	local bar = C and C.SkillBar
 	if type(bar) ~= "table" or type(bar.Button) ~= "function" then return false end
@@ -4126,7 +4146,19 @@ function L.TileTap(def)
 	end
 	local panels = C and C.Panels
 	local target = L.TileWindow(def)
-	if not target or type(panels) ~= "table" then return end
+	if not target then
+		-- a row tile whose window is not built yet: 랭킹 opens the ranking list (the Tab list), the rest say it is coming
+		if throttled("tileSoon", 0.6) then return end
+		local list = C and C.PlayerListUI
+		if def.Id == "Ranking" and type(list) == "table" and type(list.Toggle) == "function" then
+			local ok, err = pcall(list.Toggle)
+			if not ok then warnThrottled("ranking list failed: " .. tostring(err)) end
+		else
+			UIKit.Toast(TXT.TileSoon, "info", 2)
+		end
+		return
+	end
+	if type(panels) ~= "table" then return end
 	local open = type(panels.IsOpen) == "function" and panels.IsOpen()
 	if not (open or inputAllowed()) or throttled("tile", 0.25) then return end
 	local ok, err
@@ -4292,11 +4324,9 @@ end
 -- Keep (phones: the rest fold out of [메뉴], L.FoldEntries). Returns true when the shown set changed.
 function L.PickTiles()
 	if not ui.tiles then return false end
-	local want = {}
-	for _, t in ui.tiles do
-		local def = t.Def
-		if def.Map or L.TileWindow(def) then table.insert(want, t) end
-	end
+	-- 검수 2026-10-07 (user: "이렇게 하라고" with the reference row): A23-40's six tiles are always on the row; a window
+	-- that is not built yet answers on press (L.TileTap); only the row's room (Count) decides what overflows to [메뉴]
+	local want = table.clone(ui.tiles)
 	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
 	if #want > count then
 		local sorted = table.clone(want)
@@ -4424,9 +4454,10 @@ applyLayout = function()
 		milestone.Size = UDim2.fromOffset(math.min(nt.W, 420), 64)
 	end
 
-	-- CR-L37: top / left edge of the cluster (EventHUD's legacy personal line keeps above ClusterTop)
+	-- CR-L37: top / left edge of the cluster (EventHUD's legacy personal line keeps above ClusterTop). PCs: the potions
+	-- sit by the icon row (HudLayout bottom-centre group), not in the corner cluster
 	local clusterTop, clusterLeft = math.huge, math.huge
-	for _, id in { "attack", "q", "potions", "auto" } do
+	for _, id in (IS_TOUCH and { "attack", "q", "potions", "auto" } or { "attack", "q", "auto" }) do
 		local r = R[id]
 		if r and (id ~= "auto" or ui.auto.Visible) then
 			clusterTop = math.min(clusterTop, r.Y)
