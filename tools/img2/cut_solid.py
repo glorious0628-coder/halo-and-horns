@@ -7,7 +7,7 @@ py cut_solid.py <src> <out> [--tol 12 --soft 5 --close 3 --gap-min 300 --gap-tol
    original source colour back.
 3. Real see-through gaps (between legs, pole and flag) are kept: an enclosed hole of the closed mask that is at
    least --gap-min px and whose median colour is within --gap-tol of the backdrop stays transparent.
-4. Keep the largest piece (+ pieces >= 2% of it), trim to the alpha box + 2 px, no resize.
+4. Keep the largest piece (+ pieces >= --min-piece of it, default 2%), trim to the alpha box + 2 px, no resize.
 """
 import argparse
 import os
@@ -35,6 +35,7 @@ def main():
     ap.add_argument("--close", type=int, default=3)
     ap.add_argument("--gap-min", type=int, default=300)
     ap.add_argument("--gap-tol", type=float, default=10.0)
+    ap.add_argument("--min-piece", type=float, default=0.02, help="drop detached pieces smaller than this share of the largest (0.001 keeps floating ember blobs)")
     a = ap.parse_args()
 
     src = np.asarray(Image.open(a.src).convert("RGB")).astype(np.float32)
@@ -69,7 +70,7 @@ def main():
     if n2 > 1:
         sizes = ndimage.sum(np.ones((h, w)), lab2, range(1, n2 + 1))
         big = sizes.max()
-        drop = [i + 1 for i, s in enumerate(sizes) if s < big * 0.02]
+        drop = [i + 1 for i, s in enumerate(sizes) if s < big * a.min_piece]
         cut[np.isin(lab2, drop), 3] = 0
     im = Image.fromarray(cut, "RGBA")
     box = im.getchannel("A").getbbox()
