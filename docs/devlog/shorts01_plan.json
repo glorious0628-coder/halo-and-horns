@@ -248,7 +248,16 @@
         "sound",
         "film"
        ],
-       "cue_sfx": "card"
+       "cue_sfx": [
+        "card",
+        "card",
+        "card",
+        "card",
+        "card",
+        "card",
+        "sound_card",
+        "card"
+       ]
       }
      ]
     },

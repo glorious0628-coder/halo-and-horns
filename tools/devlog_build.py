@@ -841,9 +841,10 @@ SFX_FILES = {
     "card": "interface/Audio/drop_003.ogg",
     "ding": "interface/Audio/confirmation_002.ogg",
     "tick": "interface/Audio/tick_004.ogg",
+    "sound_card": os.path.join(ROOT, "art", "sfx", "SkillLearn.wav"),   # our own synth (소리 만들기 2026-10-07): the SOUND team card
 }
 _SFX = {}
-SFX_GAIN = {"whoosh": 0.3, "boom": 0.3, "hit": 0.26, "pop": 0.22, "card": 0.2, "ding": 0.2, "tick": 0.25}  # about -18..-11 dB under the voice
+SFX_GAIN = {"whoosh": 0.3, "boom": 0.3, "hit": 0.26, "pop": 0.22, "card": 0.2, "sound_card": 0.24, "ding": 0.2, "tick": 0.25}  # about -18..-11 dB under the voice
 
 
 def sfx(name):
@@ -1023,8 +1024,9 @@ def build_short(short, voice, out_root, do_tts=True):
             o = int((sh["f0"] / FPS + at) * SR)
             o = max(0, o)
             fx[o:o + len(snd)] += snd[:max(0, len(fx) - o)]
-        name = sh["shot"].get("cue_sfx")
-        for tc in (sh["cue_t"] or []) if name else []:   # one effect on each cue word (team cards: the card pops as its word is said)
+        names = sh["shot"].get("cue_sfx")   # one effect on each cue word (team cards: the card pops as its word is said);
+        for ci, tc in enumerate(sh["cue_t"] or []) if names else []:   # a list = one name per cue (the SOUND card has its own)
+            name = names[ci] if isinstance(names, list) else names
             snd = sfx(name) * float(sh["shot"].get("sfx_gain", SFX_GAIN.get(name, 0.25)))
             o = max(0, int(tc * SR))
             fx[o:o + len(snd)] += snd[:max(0, len(fx) - o)]
