@@ -300,7 +300,8 @@ local function onChooseFaction(player, factionId)
 		-- CR-L10: the sign-on bonus starts the altar cooldown (no instant free switch after cashing it)
 		S.PlayerService.SetStat(player, "LastSwitchTime", os.time())
 		S.ProgressionService.AddBankGold(player, Config.Justice.SignOnGold, "Other")
-		notify(player, "UnderdogSignOn", "reward", Config.Justice.SignOnGold)
+		-- sound_gaps C1: banked gold (GoldPickup), never QuestDone
+		Net.Notify(player, string.format(Config.Text.UnderdogSignOn, Config.Justice.SignOnGold), "reward", nil, "GoldPickup")
 	end
 	S.PlayerService.Respawn(player)
 end

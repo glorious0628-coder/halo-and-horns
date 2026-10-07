@@ -54,8 +54,8 @@ MUTATIONS = [
      "for _, m in kit.MonstersNear(ctx.Player, at, 1000) do -- nearest first"),
     ("the chain hits a monster twice", SK, "\t\t\tif not used[m.Rec] then\n", "\t\t\tif true then\n"),
     ("one link more than Hits", SK, "while #chain < hits do", "while #chain < hits + 1 do"),
-    ("Z damage without Mult", SK, "Util.RoundDamage(CS.ComputeMonsterHit(player, false) * mult)",
-     "Util.RoundDamage(CS.ComputeMonsterHit(player, false))"),
+    ("Z damage without Mult", SK, "Util.RoundDamage(CS.ComputeMonsterHit(player, false) * mult)\n\t\tfor _, m in plan.Monsters do",
+     "Util.RoundDamage(CS.ComputeMonsterHit(player, false))\n\t\tfor _, m in plan.Monsters do"),
     ("an auto cast pulls", SK, "if num(def.Pull) > 0 and not ctx.Auto then", "if num(def.Pull) > 0 then"),
     ("no pull", SK, "mode, studs = \"Pull\", num(def.Pull)", "mode, studs = nil, 0"),
     ("no push", SK, "mode, studs = \"Push\", num(def.Push)", "mode, studs = nil, 0"),
@@ -68,7 +68,7 @@ MUTATIONS = [
     ("Z player damage not booked", SK, "\t\t\t\tkit.Book(\"Hit\", player, vp, applied)\n", ""),
     ("no heal from Z", SK, "local healed = kit.Heal(player, ctx.Pos, TUNE.HealRadius, total)", "local healed = {}"),
     ("heal radius 20", SK, "HealRadius = 12,", "HealRadius = 20,"),
-    ("no steal from Z", SK, "\tkit.Steal(player, total)\n", ""),
+    ("no steal from Z", SK, "\tkit.Steal(player, total)\n\tlocal statuses", "\tlocal statuses"),
     ("Released without Slot", SK, "\t\tSlot = ctx.Slot,\n\t\tStacks = 0, -- legacy event compatibility\n",
      "\t\tStacks = 0, -- legacy event compatibility\n"),
     ("Released Auto always false", SK, "\t\tAuto = ctx.Auto,\n\t\tPerfect = false,", "\t\tAuto = false,\n\t\tPerfect = false,"),
@@ -152,7 +152,7 @@ MUTATIONS = [
     ("the zone edge ignored", M, "\t\t\tok = insideZone(zone, dest, ZONE_MOVE_INSET)\n", "\t\t\tok = true\n"),
     ("water ignored", M, "ok = (g ~= nil or noHit) and not workspace:Raycast", "ok = not workspace:Raycast"),
     ("walls ignored", M, " and not workspace:Raycast(pos, delta + dir * 0.5, getShoveParams())", ""),
-    ("no shorter steps", M, "Steps = { 1, 0.75, 0.5, 0.25 } }", "Steps = { 1 } }"),
+    ("no shorter steps", M, "Steps = { 1, 0.75, 0.5, 0.25 }, HopDrop = 8 }", "Steps = { 1 }, HopDrop = 8 }"),
     ("someone else's personal monster moves", M,
      "\tif record.Owner and record.Owner ~= player then return 0 end -- A5-C2\n", ""),
     ("a push pulls", M, "local dir = mode == \"Pull\" and toCaster.Unit or -toCaster.Unit", "local dir = toCaster.Unit"),
@@ -213,8 +213,8 @@ SUITE = Suite(
              "and a manual cast. Slots (A23-71): SkillSlots 0..3 = Config.SkillSlotsFor (Q Lv5 / Z Lv15 / X Lv25, all "
              "after a rebirth), never lowered, Fx SkillUnlocked (Q always, Z / X only while the slot's flag is on); no "
              "skill before Lv5 (manual, the old Release remote and auto). Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
-    limitations="X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal, SK1 / SK2 and the X-first auto order are "
-                "SKL-3. The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are "
+    limitations="X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal and the X-first auto order are SKL-3: "
+                "tools/test_skills_x.py (SK1 / SK2 in tools/test_town_quests.py). The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are "
                 "game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline.",
 )
 

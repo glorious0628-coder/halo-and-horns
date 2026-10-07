@@ -253,13 +253,13 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 ### 5-1. 저장 (`Config.Data` L76-, `DataService`)
 
 - `Defaults.Stats = { Auto = true, Order = "" }`
-- **`Version` 3 → 4** (L80, L89). 저장소 이름 `HaloHorns_Player_v1`은 그대로입니다.
-  - `migrate`(DataService L115-145)에 v3→v4 단계를 추가해 Stats를 넣습니다. 여러 번 돌려도 결과가 같아야 합니다.
-  - 옛 서버는 v4 기록을 거부합니다(L368, CR-L3). 옛 v3 서버가 필드를 받고도 무시하는 일을 막기 위해서입니다.
-  - 게시할 때는 '모든 서버 종료'가 필요합니다. **게시는 사용자 OK를 받은 뒤에만** 합니다.
+- **`Version`은 3 그대로입니다** (검수 2026-10-07 결정, 1단계 구현 기준). Stats는 Settings·Rank·SkillsA71처럼 더하기만 하는 필드라서, v3 서버도 그대로 보존합니다. 저장소 이름 `HaloHorns_Player_v1`도 그대로입니다.
+  - `migrate`에 단계를 더하지 않습니다. 없는 Stats는 `fillDefaults`가 기본값으로 채웁니다(여러 번 돌려도 같음).
+  - 처음 계획한 v3 → v4 올리기는 하지 않습니다. Studio가 진짜 DataStore에 v4를 쓰면 옛 서버가 그 기록을 거부해서 되돌릴 수 없는 잠금이 생기기 때문입니다. 버전을 올릴지는 2단계(스위치 켬) 게시 때 다시 정합니다.
+  - 게시는 **사용자 OK를 받은 뒤에만** 합니다.
 - `Config.SanitizeStats(d)`를 `fillDefaults`(L147-231)에서 부릅니다.
   - Auto가 boolean이 아니면 true로 둡니다.
-  - Order는 string만 받고, `Config.Stats.Letters`의 글자만 남기고, 99자로 자릅니다. string이 아니면 ""로 둡니다.
+  - Order는 string만 받고, 대문자 A–Z만 남기고(다음 단계 스탯을 위해, 셀 때는 A·H만), 99자로 자릅니다. string이 아니면 ""로 둡니다.
   - **잔액이 없으므로** 깎을 것도, 악용할 것도 없습니다.
 - **평평한 속성**은 StatService가 직접 SetAttribute로 씁니다. 중첩 표라서 `Data.Mirrored` L173을 쓸 수 없습니다.
   - `StatAtk`, `StatHp`, `StatFree`, `AutoStat` (정식에 `StatCrit` 추가)
@@ -293,11 +293,11 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 - **기능 플래그:** `Config.Features.StatPoints`(L17)
   - 꺼지면 `StatMults`가 (1, 1)을 돌려줘서 전투력·HP·피해가 지금과 같아집니다.
   - 탭은 숨기고 원격은 거절합니다.
-  - v4 데이터는 그대로 남지만 아무 영향이 없습니다.
+  - 저장된 Stats는 그대로 남지만 아무 영향이 없습니다.
 
 ### 5-3. 검사 묶음 (dev2 오프라인, 새 날짜 폴더 `docs/art/verification_2026-10-1x/`)
 
-- v3→v4 이전을 두 번 돌려도 같은지
+- Stats 없는 v3·v1 기록에 기본값이 붙고(버전 3 그대로) 두 번 불러도 같은지
 - 정리 함수 퍼즈 테스트
 - 원격 퍼즈 테스트: 잘못된 타입, 자동 ON 상태 add, 빈 점수, 속도 제한, 막기 3종
 - 레벨 하락 뒤 다시 자라는지
@@ -333,7 +333,7 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 | 스탯 | Attack, Health | + Crit (PvE 전용, "Monsters only – not Power", 상한 50%) |
 | 자동 | 기본 ON, 직업별 번갈아 찍기 | Archer만 40/40 뒤 Crit (실측으로 확정) |
 | 직접 찍기 | [+], [+5], 무료 초기화, Order 글자열 | 같음 |
-| 저장 | Data v4, 옛 서버 거부 | 새 글자 추가라서 이전 작업 없음 |
+| 저장 | Stats 더하기 필드, 버전 3 그대로(검수 2026-10-07) | 새 글자 추가라서 이전 작업 없음 |
 | 전투력 | `CombatPowerOf`, 복사본 6곳 통일 | 같음 |
 | PvP | 기존 상한(0.8–1.5) 안 | 다인 실측 보고 상한 밖 여부 결정 |
 | 화면 | Hero [Stats] 탭: 전투력 머리, 64px 2줄, 자동 스위치, 초기화 | + Firefly 아이콘 3장 |
@@ -345,7 +345,7 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 
 | 담당 | 베타 최소판 | 정식 추가 |
 |---|---|---|
-| 게임성 개발 2 (서버, Game-dev2) | **3.0**: Config.Stats·도우미 0.5 / v4 이전·정리 0.5 / StatService 1.0 / 6곳·피해·PvP·HP·Justice 연결 0.5 / 오프라인 검사 0.5 | 1.5: Crit 0.5 / 몬스터 HP 조정 0.5 / PvP 상한 변경(결정되면) 0.5 |
+| 게임성 개발 2 (서버, Game-dev2) | **3.0**: Config.Stats·도우미 0.5 / 저장 필드 Stats(더하기만, 1단계는 버전 3 그대로)·정리 0.5 / StatService 1.0 / 6곳·피해·PvP·HP·Justice 연결 0.5 / 오프라인 검사 0.5 | 1.5: Crit 0.5 / 몬스터 HP 조정 0.5 / PvP 상한 변경(결정되면) 0.5 |
 | 게임성 개발 1 (클라·메인 Studio) | **2.0**: StatUI 탭 1.0 / 레벨업 줄·빨간 점·안내 0.5 / 병합·동기화·플레이·폰 749×361·2클라 PvP 0.5 | 0.25: Crit 줄 |
 | 이미지 개발 | **0.5**: UIKit 대체 모양·빨간 점 위치 (UiSandbox) | 0.25: 아이콘 업로드·UIArt |
 | 이미지 생성 2 | 0 | 0.5: 아이콘 3장 (Medium 무제한, High 쓸 때만 장당 5크레딧, 먼저 알림) |
@@ -356,7 +356,7 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 
 | 날짜 | 담당 | 할 일 |
 |---|---|---|
-| 10/11–12 | 개발 2 | SKL-2(10/08–10)와 SKL-3(10/13–15) 사이에 `Config.Stats` + v4 이전 + `CombatPowerOf` + 6곳 통일을 **플래그 OFF**로 넣음. 꺼져 있으면 동작이 지금과 같음. 보드상 같은 날의 A23-23 정산·BB14 서버와 겹치므로 점검 1에서 조정 |
+| 10/11–12 | 개발 2 | SKL-2(10/08–10)와 SKL-3(10/13–15) 사이에 `Config.Stats` + 저장 필드 Stats(더하기만, 버전 3 그대로) + `CombatPowerOf` + 6곳 통일을 **플래그 OFF**로 넣음. 꺼져 있으면 동작이 지금과 같음. 보드상 같은 날의 A23-23 정산·BB14 서버와 겹치므로 점검 1에서 조정 |
 | 10/12 점검 1 | 검수 → 사용자 | **"베타 = 2스탯(플래그), 정식 = 전체로 할까요?"** (A23-69가 정한 질문) |
 | 10/16–17 | 개발 2 | StatService + 피해·PvP·HP 연결 + 검사. 보드의 PET-4·6, WPN-3, GOOSE-Q가 약 2일 밀림. A23-18 검사는 같이 돌림 |
 | 10/17 점검 2 | — | 서버 병합 확인 |
@@ -382,7 +382,7 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 5. **쓰지 않은 점수:** 실제로 약하므로 전투력이 낮게 나오는 것이 정직합니다. Lv62부터 대담함 0.8선 아래로 내려갑니다. 빨간 점과 레벨업 줄로 알립니다.
 6. **PvP 기대와 실제:** 다른 무기 단계 사이에서는 스탯 효과가 거의 없습니다. 화면에 PvP 약속을 쓰지 않고, PvPNote는 그대로 둡니다. 상한 밖 확장은 정식 때 다인 실측으로 정합니다.
 7. **PvE가 쉬워짐:** Lv20 약 +10%, Lv100 약 +32%입니다. 베타는 대부분 Lv20 아래라 위험이 낮고, 정식 때 `Config.Stats.Curve`나 몬스터 HP로 맞춥니다.
-8. **v4로 올리면 섞인 서버에서 튕김:** 게시할 때 모든 서버를 종료합니다(사용자 OK).
+8. **저장 버전을 올리면 섞인 서버에서 튕김:** 1단계는 버전 3 그대로라 이 위험이 없습니다(검수 2026-10-07). 2단계에서 4로 올리면(SPEC A23-69) 그 게시 때 모든 서버를 종료합니다(사용자 OK). 무기 먼저(TutorialStep 3)와 같은 묶음으로 게시할 때도 모든 서버 종료가 필요합니다(`weapon_first_server_2026-10-07.md` §6).
 9. **직업이 전투력에 없음** (BB4 규칙: Warrior HP ×1.3 vs Mage ×0.8): 스탯이 생기면 더 눈에 띕니다. 이번에는 바꾸지 않고 정식 전에 따로 판단합니다.
 10. **Size Justice 합계 이동:** 두 진영 모두 자동이 기본이라 같이 오릅니다. 30초마다 다시 계산합니다.
 11. **HP 비율 유지:** Health를 찍으면 HP가 조금 늘지만, 초기화 후 다시 찍으면 득실 0입니다. 전투 태그 중에는 막혀서 PvP 회복 꼼수가 되지 않습니다.

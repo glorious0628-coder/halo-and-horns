@@ -40,6 +40,19 @@ function VitalsService.TrySpendMana(player, amount, silent)
 	return true
 end
 
+-- SKL-3 MP steal (SkillService): adds up to `amount` MP (never past MaxMana); returns the MP really added
+function VitalsService.AddMana(player, amount)
+	if type(amount) ~= "number" or amount ~= amount or amount <= 0 or amount == math.huge then return 0 end
+	if not ready(player) then return 0 end
+	local st = states[player]
+	if not st then return 0 end
+	local before = st.Mana
+	st.Mana = math.min(TUNE.MaxMana, before + amount)
+	if st.Mana <= before then return 0 end
+	publish(player, st)
+	return st.Mana - before
+end
+
 local function usePotion(player, kind)
 	if kind ~= "HP" and kind ~= "MP" then return end
 	if not ready(player) or not Util.RateLimit(player, "UsePotion" .. kind, Config.RateLimits.UsePotion) then return end

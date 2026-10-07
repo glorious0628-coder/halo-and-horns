@@ -1,0 +1,1069 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 85,
+  "failedChecks": 0,
+  "namedChecks": 76,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Features.StatPoints is OFF (stage 1: everything works as before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "99 points at most; the beta letters are A (Attack) and H (Health)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the curve: 1% a point to 20, 0.5% to 40, 0.25% after",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "auto patterns: Warrior / Mage HA, Archer AH (the same for Halo and Horns)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save Data stays v3 (검수 2026-10-07: Stats is an additive field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a new save: Stats = { Auto = true, Order = '' }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no stat key is mirrored (StatService writes the attributes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "curve",
+      "check": "f(points): 0 / 1% / 10% / 20% / 20.5% / 25% / 30% / 30.25% / 32.5% / 44.75%",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "curve",
+      "check": "more than 99 points counts as 99 (never an endless bonus)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "curve",
+      "check": "nil, negative, NaN, text: 0; a fraction is floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "curve",
+      "check": "every point adds something, and never more than the point before (a one-stat build tails off)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "curve",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "curve",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "points: Lv1 0, Lv2 1, Lv10 9, Lv100 99, above 99 / below 1 / nil / NaN clamped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "auto Lv10 Warrior / Mage: H5 A4 (HA repeated), nothing free, Order ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "auto Lv10 Archer: A5 H4 (AH)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "auto Lv100: Warrior H50 A49, Archer A50 H49",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "Lv1: nothing; an unknown class uses the Warrior pattern",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "by hand Lv10, Order AAAH: A3 H1, 5 free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "a level reset keeps Order: Lv3 counts its first 2 letters, Lv2 its first 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "by hand with nothing picked: all 9 free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "leveling up again rebuilds the same picks in the same order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points and alloc",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "switch OFF: StatMults is (1, 1) for any points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "switch ON: (1 + f(A), 1 + f(H))",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "StatAllocOf reads StatAtk / StatHp",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "missing / NaN / negative -> 0, above 99 -> 99, fractions floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "nothing / not a table: Auto ON, nothing picked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "a good save stays as it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "Auto: only a real boolean counts (else ON)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "a kept letter that is no stat yet (X) counts nothing: its point stays free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "at most 99 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "a huge broken Order is cut (only its first 4096 characters are read)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "a new table every time (the input is never changed); sanitizing twice changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mults and sanitize",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "switch OFF: every power number is the same with or without stat points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "no points (alloc nil): the BB4 numbers stay (Lv20 tier 5 = 2,829)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "Lv10 tier 3: 923 -> 965 with the auto points (+4.5%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "Lv1 bare hands is still 0 (A23-34)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "MaxCombatPower OFF = 25,488 (cached in Power.MaxCache)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "switching back OFF gives 25,488 again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "no level / weapon / build goes above MaxCombatPower (ON)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "CombatPowerOf = CombatPower(Level, WeaponTier, WeaponEnhance, { StatAtk, StatHp }) OFF",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "the weapon / +N overrides (LootService's 'Power X -> Y') keep the level and the points OFF",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) OFF",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "Justice (attribute + faction sum), PvP's fallback (with / without Justice) and the Tab column all give CombatPowerOf OFF",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "the Tab column shows the CombatPower attribute once set OFF",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "CombatPowerOf = CombatPower(Level, WeaponTier, WeaponEnhance, { StatAtk, StatHp }) ON",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "the weapon / +N overrides (LootService's 'Power X -> Y') keep the level and the points ON",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) ON",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "Justice (attribute + faction sum), PvP's fallback (with / without Justice) and the Tab column all give CombatPowerOf ON",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "the Tab column shows the CombatPower attribute once set ON",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "Watch sets the CombatPower attribute at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "a StatAtk / StatHp change updates the CombatPower attribute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "the first weapon's 'Power X -> Y' counts the player's stat points on both sides",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one formula",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "loading it again changes nothing (idempotent)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "a save's picks are repaired, not reset",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "a broken Stats becomes the default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "a v1 save runs every step to v3 and gains the default Stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "a brand-new save is v3 with the default Stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 9,
+  "staticFailures": [],
+  "mutations": {
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Config: no 0.5% step",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the curve: 1% a point to 20, 0.5% to 40, 0.25% after",
+          "curve :: f(points): 0 / 1% / 10% / 20% / 20.5% / 25% / 30% / 30.25% / 32.5% / 44.75%",
+          "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
+          "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: Archer's pattern like the others",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: auto patterns: Warrior / Mage HA, Archer AH (the same for Halo and Horns)",
+          "points and alloc :: auto Lv10 Archer: A5 H4 (AH)",
+          "points and alloc :: auto Lv100: Warrior H50 A49, Archer A50 H49"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: a third letter",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 99 points at most; the beta letters are A (Attack) and H (Health)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: Auto off for a new save",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a new save: Stats = { Auto = true, Order = '' }",
+          "data :: a brand-new save is v3 with the default Stats",
+          "data :: a broken Stats becomes the default",
+          "data :: a v1 save runs every step to v3 and gains the default Stats",
+          "data :: a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: the switch on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Features.StatPoints is OFF (stage 1: everything works as before)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: the save version bumped to 4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: save Data stays v3 (검수 2026-10-07: Stats is an additive field)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeStats: only the known letters (the old rule)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a save's picks are repaired, not reset",
+          "mults and sanitize :: Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "SanitizeStats: lowercase kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a save's picks are repaired, not reset",
+          "mults and sanitize :: Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped",
+          "mults and sanitize :: a huge broken Order is cut (only its first 4096 characters are read)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "StatBonus without a cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "curve :: more than 99 points counts as 99 (never an endless bonus)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "StatBonus: NaN not caught",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "curve :: nil, negative, NaN, text: 0; a fraction is floored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "StatBonus: the next step starts at 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "curve :: f(points): 0 / 1% / 10% / 20% / 20.5% / 25% / 30% / 30.25% / 32.5% / 44.75%",
+          "curve :: nil, negative, NaN, text: 0; a fraction is floored",
+          "mults and sanitize :: switch ON: (1 + f(A), 1 + f(H))",
+          "power :: Lv10 tier 3: 923 -> 965 with the auto points (+4.5%)",
+          "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
+          "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "StatPoints from Lv1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: a kept letter that is no stat yet (X) counts nothing: its point stays free",
+          "points and alloc :: Lv1: nothing; an unknown class uses the Warrior pattern",
+          "points and alloc :: a level reset keeps Order: Lv3 counts its first 2 letters, Lv2 its first 1",
+          "points and alloc :: auto Lv10 Archer: A5 H4 (AH)",
+          "points and alloc :: auto Lv10 Warrior / Mage: H5 A4 (HA repeated), nothing free, Order ignored",
+          "points and alloc :: by hand Lv10, Order AAAH: A3 H1, 5 free"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "StatPoints without the cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points and alloc :: points: Lv1 0, Lv2 1, Lv10 9, Lv100 99, above 99 / below 1 / nil / NaN clamped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto ignores the class",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points and alloc :: auto Lv10 Archer: A5 H4 (AH)",
+          "points and alloc :: auto Lv100: Warrior H50 A49, Archer A50 H49"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "by hand counts the whole Order",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points and alloc :: a level reset keeps Order: Lv3 counts its first 2 letters, Lv2 its first 1",
+          "points and alloc :: leveling up again rebuilds the same picks in the same order"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Auto off ignored",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: a kept letter that is no stat yet (X) counts nothing: its point stays free",
+          "points and alloc :: a level reset keeps Order: Lv3 counts its first 2 letters, Lv2 its first 1",
+          "points and alloc :: by hand Lv10, Order AAAH: A3 H1, 5 free",
+          "points and alloc :: by hand with nothing picked: all 9 free"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "free points never counted",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: a kept letter that is no stat yet (X) counts nothing: its point stays free",
+          "points and alloc :: by hand Lv10, Order AAAH: A3 H1, 5 free",
+          "points and alloc :: by hand with nothing picked: all 9 free"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "StatMults ignores the switch",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: switch OFF: StatMults is (1, 1) for any points",
+          "power :: switch OFF: every power number is the same with or without stat points"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "StatMults: Health from the Attack points",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: switch ON: (1 + f(A), 1 + f(H))",
+          "power :: Lv10 tier 3: 923 -> 965 with the auto points (+4.5%)",
+          "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
+          "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
+          "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "StatAllocOf without a cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: missing / NaN / negative -> 0, above 99 -> 99, fractions floored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "StatAllocOf: NaN kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: missing / NaN / negative -> 0, above 99 -> 99, fractions floored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeStats keeps every character",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a save's picks are repaired, not reset",
+          "mults and sanitize :: Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped",
+          "mults and sanitize :: a huge broken Order is cut (only its first 4096 characters are read)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SanitizeStats: no length cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: at most 99 letters"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeStats loses Auto off",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a save's picks are repaired, not reset",
+          "mults and sanitize :: Auto: only a real boolean counts (else ON)",
+          "mults and sanitize :: a good save stays as it is"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SanitizeStats reads the whole of a huge Order",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mults and sanitize :: a huge broken Order is cut (only its first 4096 characters are read)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PowerOf ignores the stats",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: a StatAtk / StatHp change updates the CombatPower attribute",
+          "power :: Lv10 tier 3: 923 -> 965 with the auto points (+4.5%)",
+          "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
+          "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
+          "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "PowerOf: the stats outside the square root",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: Lv10 tier 3: 923 -> 965 with the auto points (+4.5%)",
+          "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
+          "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
+          "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "CombatPower drops the stats",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: a StatAtk / StatHp change updates the CombatPower attribute",
+          "power :: Lv10 tier 3: 923 -> 965 with the auto points (+4.5%)",
+          "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
+          "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "CombatPowerOf ignores the stats",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: CombatPowerOf = CombatPower(Level, WeaponTier, WeaponEnhance, { StatAtk, StatHp }) ON",
+          "one formula :: a StatAtk / StatHp change updates the CombatPower attribute",
+          "one formula :: the first weapon's 'Power X -> Y' counts the player's stat points on both sides",
+          "one formula :: the weapon / +N overrides (LootService's 'Power X -> Y') keep the level and the points ON"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "CombatPowerOf ignores the weapon override",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: the first weapon's 'Power X -> Y' counts the player's stat points on both sides",
+          "one formula :: the weapon / +N overrides (LootService's 'Power X -> Y') keep the level and the points OFF",
+          "one formula :: the weapon / +N overrides (LootService's 'Power X -> Y') keep the level and the points ON"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "CombatPowerOf ignores the +N override",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: the weapon / +N overrides (LootService's 'Power X -> Y') keep the level and the points OFF",
+          "one formula :: the weapon / +N overrides (LootService's 'Power X -> Y') keep the level and the points ON"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "CombatPowerOf: an unclamped tier",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) OFF",
+          "one formula :: no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) ON"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MaxCombatPower ignores the stats",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)",
+          "power :: no level / weapon / build goes above MaxCombatPower (ON)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MaxCombatPower: a one-stat build",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)",
+          "power :: no level / weapon / build goes above MaxCombatPower (ON)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MaxCombatPower: one cache for both",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DataService: a v4 step again",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a brand-new save is v3 with the default Stats",
+          "data :: a save's picks are repaired, not reset",
+          "data :: a v1 save runs every step to v3 and gains the default Stats",
+          "data :: a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "DataService: Stats never repaired",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: a save's picks are repaired, not reset"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Justice: the attribute without the stats",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: Justice (attribute + faction sum), PvP's fallback (with / without Justice) and the Tab column all give CombatPowerOf ON",
+          "one formula :: a StatAtk / StatHp change updates the CombatPower attribute"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Justice: the faction sum without the stats",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: Justice (attribute + faction sum), PvP's fallback (with / without Justice) and the Tab column all give CombatPowerOf ON"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Justice: the faction sum clamps bare hands to tier 1",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: Justice (attribute + faction sum), PvP's fallback (with / without Justice) and the Tab column all give CombatPowerOf OFF",
+          "one formula :: Justice (attribute + faction sum), PvP's fallback (with / without Justice) and the Tab column all give CombatPowerOf ON"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Justice: StatAtk not watched",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: a StatAtk / StatHp change updates the CombatPower attribute"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Justice: StatHp not watched",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: a StatAtk / StatHp change updates the CombatPower attribute"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvP fallback without the stats",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Tab column without the stats",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: Justice (attribute + faction sum), PvP's fallback (with / without Justice) and the Tab column all give CombatPowerOf ON"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Loot 'Power X -> Y' without the stats",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: the first weapon's 'Power X -> Y' counts the player's stat points on both sides"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Loot 'Power X -> Y' before = the new weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one formula :: the first weapon's 'Power X -> Y' counts the player's stat points on both sides"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
+    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
+    "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1"
+  },
+  "fixtureSHA256": "50b1b399b429867aca96ef37f8ca2a0f98791e60749b0a077e64c64cbbe7cbd4",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-69 stage 1 (switch Config.Features.StatPoints OFF): Config.Stats { MaxPoints 99, Letters A / H, Curve 1% to 20 / 0.5% to 40 / 0.25% after, AutoPattern Warrior HA / Mage HA / Archer AH }; StatPoints(L) = L - 1 (0..99, no points from rebirths); StatAlloc = the class pattern (Auto) or Order's first points (by hand, the rest free; a level reset keeps Order); StatMults = (1, 1) while off; SanitizeStats (boolean Auto, letters A-Z kept for later stats, the rest dropped, at most 99); PowerOf / CombatPower take alloc { A, H } (sqrt of attack x health with both mults); MaxCombatPower 25,488 off / 33,740 on (the even split), cached apart; Config.CombatPowerOf(player, tier?, +N?) reads Level / WeaponTier / WeaponEnhance / StatAtk / StatHp and is the one formula of JusticeService (GetCombatPower, GetPower with the rebirth bonus, the CombatPower attribute watching StatAtk / StatHp), PvPService's fallback, the Tab list column and LootService's 'Power X -> Y'; the save gains Stats = { Auto true, Order '' } as an additive field (검수 2026-10-07: Version stays 3; fillDefaults adds / repairs it, idempotent).",
+  "limitations": "Stage 2 (10/16-17) adds StatService (the StatAction remote, auto placement, the blocks, StatAtk / StatHp / StatFree / AutoStat attributes), the hits (ComputeMonsterHit, ComputePvPHit inside the 0.8-1.5 caps), max HP (Config.StatMaxHealth) and the bait threshold; game dev 1 builds the [Stats] tab and switches the HUD fallback to Config.CombatPowerOf. The real DataStore load (the CR-L3 refusal of a newer record) is in tools/test_onboarding.py."
+}

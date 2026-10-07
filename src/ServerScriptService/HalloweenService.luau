@@ -170,6 +170,20 @@ local function finish(b, defeated)
 	end
 	publish(b)
 	if defeated then K.Defeats += 1 end -- ⑫ Day 9: "Kings beaten on this server: %d"
+	-- sound_gaps B11: a king beaten (not one that leaves) = Fx "KingDefeat" for everyone: Key / Kind, Pos (nil when the
+	-- body is gone) and Contributors = the UserIds the kill paid (their sound is louder, their own kill pop and coins
+	-- 0.25 s later). 검수 2026-10-07: MonsterService's kill keeps them on the record (PaidUserIds, sorted) before it
+	-- clears the contributor tables, which this runs after
+	if defeated and type(rec) == "table" then
+		local ids = {}
+		for _, id in type(rec.PaidUserIds) == "table" and rec.PaidUserIds or {} do
+			if type(id) == "number" then table.insert(ids, id) end
+		end
+		local root = rec.Root
+		local ok, err = pcall(Net.Fx, nil, "KingDefeat", { Key = b.Key, Kind = rec.Kind,
+			Pos = root and typeof(root.Position) == "Vector3" and root.Position or nil, Contributors = ids })
+		if not ok then warnThrottled("defeat", err) end
+	end
 	announce(b.Key .. (defeated and "Defeat" or "Leave"))
 end
 

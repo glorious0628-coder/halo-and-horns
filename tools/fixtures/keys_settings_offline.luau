@@ -647,7 +647,7 @@ runGroup("config-contract", function()
 	check(CONFIG.RateLimits.SetSettings == 1, "Config.RateLimits.SetSettings = 1", CONFIG.RateLimits.SetSettings)
 	check(deepEq(CONFIG.Data.Defaults.Settings, SETTINGS_DEFAULTS), "Config.Data.Defaults.Settings = the BB2 defaults",
 		show(CONFIG.Data.Defaults.Settings))
-	check(CONFIG.Data.Version == 3, "Config.Data.Version stays 3", CONFIG.Data.Version)
+	check(CONFIG.Data.Version == 3, "Config.Data.Version stays 3 (the settings blob and A23-69's Stats are additive)", CONFIG.Data.Version)
 	check(table.find(CONFIG.Data.Mirrored, "Settings") == nil, "Settings is not mirrored to attributes")
 	local ST = CONFIG.Settings or {}
 	local defs = {}

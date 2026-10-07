@@ -36,8 +36,8 @@ local function getData(player)
 	return ok and type(data) == "table" and data or nil
 end
 
-local function notify(player, text, kind)
-	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, text, kind or "info") end
+local function notify(player, text, kind, sound)
+	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, text, kind or "info", nil, sound) end
 end
 
 ------------------------------------------------------------------ data
@@ -121,7 +121,7 @@ function PetService.GiveTamerPet(player, quiet)
 	pets.List[uid] = { Sp = TAMER.Pet, Lv = 1, XP = 0, Name = "", Lean = "", Bound = true }
 	if #pets.Equipped == 0 then pets.Equipped = { uid } end
 	publish(player, data)
-	if not quiet then notify(player, TXT.PetGot, "reward") end
+	if not quiet then notify(player, TXT.PetGot, "reward", "None") end -- sound_gaps C1: no pet sound yet, never QuestDone
 	PetService.PetGranted:Fire(player, uid, TAMER.Pet)
 	return uid
 end
@@ -146,7 +146,7 @@ local function onPlayerReady(player, data)
 			if not ok then Util.Warn(TAG, "free class change ticket: " .. tostring(err)) end
 		end
 		-- below Lv FreeKeepLevelBelow the class window has no ticket button (a free change keeps the level anyway)
-		notify(player, Config.ClassChangeKeepsLevel(data.Level) and TXT.BecameFree or TXT.Became, "reward")
+		notify(player, Config.ClassChangeKeepsLevel(data.Level) and TXT.BecameFree or TXT.Became, "reward", "None")
 	end
 	PetService.GiveTamerPet(player)
 end

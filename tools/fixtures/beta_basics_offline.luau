@@ -767,12 +767,13 @@ runGroup("pvp-power", function()
 	check(P.Weak(fixed(1000), fixed(499), S1) == true, "bully: victim below 50% is weak")
 	check(P.Weak(fixed(283), fixed(141), S1) == true and P.Weak(fixed(283), fixed(142), S1) == false,
 		"bully: 141 < 141.5 weak, 142 not (displayed integers)")
-	-- fallback without JusticeService: data Level / WeaponTier first, the WeaponEnhance ATTRIBUTE (data has a per-tier table)
-	local p = attrPlayer({ WeaponEnhance = 3, Level = 99, WeaponTier = 7 })
-	p.Data = { Level = 10, WeaponTier = 3, WeaponEnhance = { 9, 9, 9 } }
+	-- A23-69: the fallback without JusticeService is the one power formula, Config.CombatPowerOf: the mirrored attributes
+	-- (Level / WeaponTier mirror the save; WeaponEnhance is the equipped weapon's +N, the save keeps a per-tier table)
+	local p = attrPlayer({ WeaponEnhance = 3, Level = 10, WeaponTier = 3 })
+	p.Data = { Level = 99, WeaponTier = 7, WeaponEnhance = { 9, 9, 9 } }
 	local S0 = { PlayerService = { GetData = function(pl) return pl.Data end } }
-	check(P.combatPower(p, S0) == 1052, "fallback = Config.CombatPower(data Level, data WeaponTier, WeaponEnhance attribute)",
-		P.combatPower(p, S0))
+	check(P.combatPower(p, S0) == 1052 and P.combatPower(p, S0) == C.CombatPowerOf(p),
+		"fallback = Config.CombatPowerOf (the Level / WeaponTier / WeaponEnhance attributes, never the save table)", P.combatPower(p, S0))
 	local q = attrPlayer({ Level = 20, WeaponTier = 5, WeaponEnhance = 0 })
 	check(P.combatPower(q, S0) == 2829, "fallback without data reads the attributes", P.combatPower(q, S0))
 	local r = attrPlayer({ Level = 0, WeaponTier = 99 })
@@ -857,7 +858,7 @@ runGroup("title-config", function()
 	check(type(D.Titles) == "table" and next(D.Titles) == nil, "Data.Defaults.Titles = {}", show(D.Titles))
 	check(D.TitleSel == "", "Data.Defaults.TitleSel = \"\"", show(D.TitleSel))
 	check(D.BetaPioneer == false, "legacy Data.Defaults.BetaPioneer kept as false (migrated by TitleService)", show(D.BetaPioneer))
-	check(C.Data.Version == 3, "Data.Version stays 3 (additive fields)", C.Data.Version)
+	check(C.Data.Version == 3, "Data.Version stays 3 (the title fields and A23-69's Stats are additive)", C.Data.Version)
 	local mirrored = {}
 	for _, k in C.Data.Mirrored do mirrored[k] = true end
 	check(mirrored.TitleSel == true, "TitleSel is mirrored (attribute for nametag / HUD)")

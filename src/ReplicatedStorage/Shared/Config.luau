@@ -14,7 +14,9 @@ Config.Game = {
 -- Market = the trading market (RELEASE_PLAN: after the full launch). 검수 2026-10-07: no "coming soon" signs for things
 -- the beta does not have (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
 -- the world map calls the Crossroads anvil spot "Forge" (the weapon shop) instead of "Artisan Guild".
-Config.Features = { NeutralFaction = false, Market = false }
+-- StatPoints (A23-69, user 2026-10-07 "베타에 넣는다, 끌 수 있게"): the stat points (Config.Stats). Off = every number is
+-- the same as without stats (Config.StatMults is 1, 1); the saved picks stay and count again once it is on.
+Config.Features = { NeutralFaction = false, Market = false, StatPoints = false }
 
 function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
@@ -102,7 +104,9 @@ Config.Nickname = {
 Config.Data = {
 	StoreName = "HaloHorns_Player_v1", -- unchanged on purpose: v1 saves are migrated in place by DataService
 	KeyPrefix = "P_",
-	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. An older server refuses a newer record (CR-L3).
+	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. A23-69 (검수 2026-10-07): Stats { Auto, Order } is an
+	-- additive field like Settings / Rank / SkillsA71 (a v3 server keeps it as it is), so the version stays 3; a bump
+	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
 	Version = 3,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
@@ -196,6 +200,10 @@ Config.Data = {
 		SkillSlots = 0,
 		-- A23-71: this save's SkillSlots follow the Lv5 / 15 / 25 rule (older saves are fixed once at load: DataService)
 		SkillsA71 = true,
+		-- A23-69 stat points (an additive field, Version stays 3): Auto = the class pattern places every point (default ON); Order = the letters
+		-- picked by hand, in order ("HAHA...", at most Config.Stats.MaxPoints). No balance is kept: the points come from
+		-- the level (Config.StatPoints), so a level reset shrinks the build and leveling up again rebuilds it
+		Stats = { Auto = true, Order = "" },
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -903,10 +911,99 @@ Config.Justice = {
 	ScaleTick = 0.1,
 }
 
+----------------------------------------------------------------- A23-69 stat points (docs/design/stat_points_2026-10-07.md)
+-- Every level from Lv2 gives one point (Config.StatPoints(L) = L - 1, at most MaxPoints; a rebirth gives none, CR-L5).
+-- Attack (A) = every hit x (1 + f), Health (H) = max HP x (1 + f), f(r) = 1% a point up to 20, 0.5% for 21-40, 0.25%
+-- from 41 (Curve), so a one-stat build is weaker than an even one. Auto (default ON) places the class pattern
+-- (AutoPattern, repeated); by hand the save keeps Order, the letters picked in order (the free points are counted, never
+-- saved). Power (Config.PowerOf / CombatPowerOf), and later the hits and HP, read the points through Config.StatMults,
+-- which is (1, 1) while Config.Features.StatPoints is off. No stat, point or reset is ever sold (A23-69).
+Config.Stats = {
+	MaxPoints = 99,
+	Letters = { A = true, H = true }, -- the beta stats: Attack, Health (Crit "C" comes with the full launch)
+	-- f(points), in order: { up to this many points, + this much a point }
+	Curve = { { 20, 0.01 }, { 40, 0.005 }, { math.huge, 0.0025 } },
+	AutoPattern = { Warrior = "HA", Mage = "HA", Archer = "AH" }, -- repeated: Lv100 = H50 / A49 (Archer A50 / H49)
+}
+
+-- f(points): the bonus of `points` in one stat (0.1 at 10, 0.2 at 20, 0.25 at 30, 0.3 at 40, 0.4475 at 99; more points
+-- than MaxPoints count as MaxPoints, NaN / text as 0)
+function Config.StatBonus(points)
+	local r = math.clamp(math.floor(tonumber(points) or 0), 0, Config.Stats.MaxPoints)
+	if r ~= r then return 0 end
+	local bonus, from = 0, 0
+	for _, step in Config.Stats.Curve do
+		if r <= from then break end
+		bonus += (math.min(r, step[1]) - from) * step[2]
+		from = step[1]
+	end
+	return bonus
+end
+
+-- the stat points a level gives: Lv1 0, then one a level, at most Config.Stats.MaxPoints
+function Config.StatPoints(level)
+	local lv = math.floor(tonumber(level) or 1)
+	if lv ~= lv then lv = 1 end
+	return math.clamp(lv - 1, 0, Config.Stats.MaxPoints)
+end
+
+-- a save's points (A, H, free) at `level`: Auto = the class pattern's first StatPoints(level) letters; by hand = the
+-- first min(#Order, StatPoints(level)) letters of Order, the rest free. stats = data.Stats ({ Auto, Order })
+function Config.StatAlloc(stats, level, classId)
+	local points = Config.StatPoints(level)
+	local letters
+	if type(stats) ~= "table" or stats.Auto ~= false then
+		local pattern = Config.Stats.AutoPattern[classId] or Config.Stats.AutoPattern.Warrior
+		letters = string.sub(string.rep(pattern, math.ceil(points / #pattern)), 1, points)
+	else
+		letters = string.sub(type(stats.Order) == "string" and stats.Order or "", 1, points)
+	end
+	local a, h = 0, 0
+	for i = 1, #letters do
+		local ch = string.sub(letters, i, i)
+		if ch == "A" then a += 1 elseif ch == "H" then h += 1 end
+	end
+	return a, h, points - (a + h)
+end
+
+-- (atkMult, hpMult) of a split: 1 + f each; (1, 1) while Config.Features.StatPoints is off
+function Config.StatMults(a, h)
+	if not Config.FeatureOn("StatPoints") then return 1, 1 end
+	return 1 + Config.StatBonus(a), 1 + Config.StatBonus(h)
+end
+
+-- a player's split from the attributes StatService keeps (StatAtk / StatHp; missing = 0): the alloc of Config.PowerOf
+function Config.StatAllocOf(player)
+	local a, h = tonumber(player:GetAttribute("StatAtk")) or 0, tonumber(player:GetAttribute("StatHp")) or 0
+	if a ~= a then a = 0 end
+	if h ~= h then h = 0 end
+	return { A = math.clamp(math.floor(a), 0, Config.Stats.MaxPoints), H = math.clamp(math.floor(h), 0, Config.Stats.MaxPoints) }
+end
+
+-- a save's Stats repaired (DataService.fillDefaults): Auto a boolean (else true), Order = its uppercase letters A-Z
+-- (검수 2026-10-07: kept for the stats a later stage adds; StatAlloc counts only A / H), at most MaxPoints of them (a
+-- broken or huge Order is cut, never trusted)
+function Config.SanitizeStats(t)
+	local src = type(t) == "table" and t or {}
+	local auto = true
+	if type(src.Auto) == "boolean" then auto = src.Auto end
+	local order = type(src.Order) == "string" and src.Order or ""
+	local kept = {}
+	for i = 1, math.min(#order, 4096) do
+		if #kept >= Config.Stats.MaxPoints then break end
+		local ch = string.sub(order, i, i)
+		if string.match(ch, "^%u$") then table.insert(kept, ch) end
+	end
+	return { Auto = auto, Order = table.concat(kept) }
+end
+
 -- "base power" of a player (no Size Justice, no kaiju); rebirthMult = 1 + RebirthBonus.
 -- enhance = scroll +N of the equipped weapon (the WeaponEnhance attribute); nil counts as +0 (Config.EnhanceMult).
-function Config.PowerOf(level, weaponTier, rebirthMult, enhance)
-	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * Config.BaseHealth(level)) * (rebirthMult or 1)
+-- alloc = { A, H } stat points (A23-69, nil = none): sqrt(attack x atkMult x health x hpMult) like the plain formula
+function Config.PowerOf(level, weaponTier, rebirthMult, enhance, alloc)
+	local am, hm = 1, 1
+	if type(alloc) == "table" then am, hm = Config.StatMults(alloc.A, alloc.H) end
+	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * am * Config.BaseHealth(level) * hm) * (rebirthMult or 1)
 end
 
 -- BB4 "전투력": the one power number players see = level + equipped weapon incl. scroll +N. It leaves out class,
@@ -928,22 +1025,46 @@ Config.Power = {
 -- A23-34 (user 2026-10-06 "처음에는 전투력이 0"): bare hands count from 0 — the Lv1 punch is taken off, so Lv1 with no
 -- weapon (and no pet) shows 0 and every level still adds a little. With a weapon the number is the BB4 value as before,
 -- so armed players keep their numbers and every armed comparison (bully rule, boldness, Tab list) its balance.
-function Config.CombatPower(level, tier, enhance)
-	local raw = Config.PowerOf(level, tier, 1, enhance)
+-- A23-69: alloc = { A, H } stat points (nil = none; Config.StatAllocOf reads a player's)
+function Config.CombatPower(level, tier, enhance, alloc)
+	local raw = Config.PowerOf(level, tier, 1, enhance, alloc)
 	if not (type(tier) == "number" and Config.Weapons[tier]) then raw -= Config.PowerOf(1, 0, 1, 0) end
 	return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))
 end
 
--- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N); cached
+-- BB4 / A23-69: THE power number of a player, from the attributes (Level, WeaponTier, WeaponEnhance and the stat points
+-- StatAtk / StatHp). JusticeService (the CombatPower attribute, the bully rule, boldness), PvPService, the Tab list and
+-- the HUD all use this one formula. tierOverride / enhOverride: the same player with another weapon (LootService's
+-- "Power X -> Y"). Server and client alike.
+function Config.CombatPowerOf(player, tierOverride, enhOverride)
+	local level = tonumber(player:GetAttribute("Level")) or 1
+	if level ~= level then level = 1 end
+	local tier = tierOverride
+	if tier == nil then
+		tier = tonumber(player:GetAttribute("WeaponTier")) or 0
+		if tier ~= tier then tier = 0 end
+		tier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
+	end
+	local enhance = enhOverride
+	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
+	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player))
+end
+
+-- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N; A23-69 with the stat
+-- points on: the even split of every point, the strongest build); cached, one value with and one without stats
 function Config.MaxCombatPower()
-	if not Config.Power.MaxCache then
+	local stats = Config.FeatureOn("StatPoints")
+	local key = stats and "MaxCacheStats" or "MaxCache"
+	if not Config.Power[key] then
+		local points = Config.StatPoints(Config.Levels.MaxLevel)
+		local even = stats and { A = math.floor(points / 2), H = points - math.floor(points / 2) } or nil
 		local best = 0
 		for t = 1, Config.MaxWeaponTier do
-			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance))
+			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even))
 		end
-		Config.Power.MaxCache = best
+		Config.Power[key] = best
 	end
-	return Config.Power.MaxCache
+	return Config.Power[key]
 end
 
 -- S for a faction: weaker side = clamp(sqrt(enemy / ours), 1.0, 1.6); the stronger side naturally clamps to 1.0
@@ -1881,8 +2002,12 @@ end
 -- Step 1: HUD guide beam to the GuideZone pad/entrance; entering GuideZone -> step 2. Step 2: pinned quest
 -- (first quest-list entry, Id = QuestId, Pinned = true, Slot = nil; sent by the "Quests" remote since CR-L50);
 -- claim -> step 99.
+-- A23-74 (user 2026-10-07 "맨 손이니까 무기를 제일 먼저 줘야지"): Forge = 3 sits between the acceptance and the hunt for a
+-- player without the first weapon: [Accept] -> step 3 (the trip to the Crossroads Forge) -> the anvil prompt hands over
+-- the class basic weapon (QuestService.ForgeGift) -> step 1 (the trip to the meadow) -> step 2 -> claim -> step 99.
+-- A save that owns the first weapon already (from before A23-34) goes from [Accept] straight to step 1.
 Config.Tutorial = {
-	Steps = { Kill = 0, Guide = 1, Quest = 2, Done = 99 },
+	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },
 	Monster = "Slime",
 	MonsterHP = 10,
 	Golden = true,
@@ -1895,7 +2020,8 @@ Config.Tutorial = {
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
-		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
+		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
+		Skill = "Skill at Lv %d" },
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
@@ -1908,6 +2034,13 @@ Config.Tutorial = {
 	AcceptTravelSeconds = 3,
 	RespawnInMeadow = true,
 	FoldOthers = true,
+	-- A23-74: the Forge step's trips (the same AcceptTravelSeconds countdown and Fx "Travel" / "TravelDone" contract).
+	-- Landing "Anvil" = Back studs in front of the Crossroads anvil (toward the Crossroads spawn), Lift studs above the
+	-- anvil's bottom, facing it, so its prompt (12 studs) is up at once; "Spawn" = the Crossroads spawn only (game dev 1
+	-- can switch if the landing looks wrong in the live map). Near = a player this close to the anvil is not moved.
+	-- TravelDelay = seconds after the gift before the meadow trip starts (the "Stronger!" moment plays first);
+	-- nil / negative = no automatic meadow trip (the step 1 row and beam still lead there)
+	Forge = { Landing = "Anvil", Back = 8, Lift = 4, Near = 24, TravelDelay = 3 },
 	WelcomeRate = 0.5,
 	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
 	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
@@ -1915,7 +2048,7 @@ Config.Tutorial = {
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- 3rd idea round #2: page 1 = the mission card (검수 2026-10-07), then the catchphrase
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
 				"The Crown of Balance broke. Its shards drew slimes onto the Squishy Meadow road.",
@@ -1924,7 +2057,7 @@ Config.Tutorial = {
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
 				"Slimes chasing Crown Shards took the Squishy Meadow road. No food gets through!",
@@ -1933,7 +2066,7 @@ Config.Tutorial = {
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
 				"Slimes drawn to the Crown Shards have blocked the supply road in the Squishy Meadow.",
@@ -1948,14 +2081,21 @@ Config.Tutorial = {
 		Travel = "Free the supply road · Menu > Travel > Squishy Meadow",
 		QuestStart = "First mission: %s! (Reward: %s gold)",
 		QuestReady = "Supply road mission done! Press [Claim].",
-		-- A23-34: the first weapon waits at the Crossroads blacksmith (M1_1 gift)
-		Claimed = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
-		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
-		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
+		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
+		-- "You got your first weapon" line with the power change)
+		Forge = "Get your first weapon · Crossroads Forge",
+		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road.",
+		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
+		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
+		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
+		ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
+		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		-- the row after the claim while still bare-handed (no story row yet; A23-74 gives the weapon before that)
 		VisitBlacksmith = "Get your first weapon · Crossroads Forge",
 		VisitBlacksmithEn = "Get your first weapon · Crossroads Forge",
-		-- the same lines for a save that already owns tier 1 (from before A23-34): no first-weapon promise
+		-- the claim lines for a save that owns a better weapon than the first one already (no "new weapon" promise); the
+		-- VisitBlacksmithArmed row is for a save that owns the first weapon (no first-weapon promise)
 		ClaimedArmed = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
 		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
 		AutoClaimedArmed = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
@@ -1968,6 +2108,7 @@ Config.Tutorial = {
 		NextSkillIron = "Next goal · Lv%d: first skill + Iron weapon (now Lv%d)",
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
+		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
 		GuideDone = "That's all from me! Now hunt and get stronger.",
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
@@ -2023,7 +2164,8 @@ Config.StoryQuests = {
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
 	Subs = { "S0", "Lunch1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
-		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8" },
+		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
+		"SK1", "SK2" }, -- SKL-3: the practice subs of a new skill
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -2100,11 +2242,39 @@ Config.StoryQuests = {
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
 		},
+		-- SKL-3 (skill_kit §2): practice a new skill right after learning it. Requires.Skill = that skill is learned (its
+		-- switch on and the slot open: Z at Skills.Unlock.Z, X at Unlock.X). SkillHit Slot = only that skill's casts count
+		SK1 = {
+			Kind = "Sub", Title = "A New Move", ShortName = "New move", Speaker = "Shard", Requires = { Skill = "Z" },
+			Start = "Shard: A new move! Try it on a group.",
+			Steps = { { Text = "Hit 2 monsters at once with your new skill %d/%d", Obj = { Type = "SkillHit", Slot = "Z", Min = 2, Count = 1 } } },
+			Reward = { Gold = 1 },
+		},
+		SK2 = {
+			Kind = "Sub", Title = "The Shard's Gift", ShortName = "Shard's gift", Speaker = "Shard", Requires = { Skill = "X" },
+			Start = "Shard: You grew strong. Come to the Crossroads fountain.",
+			Steps = {
+				{ Text = "Go to the Crossroads fountain (tap for directions)", Guide = "Fountain",
+					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
+				{ Text = "How will you use your power?", Panel = true,
+					Lines = { All = { "You grew strong. Your side's power woke up in you.\nHow will you use it?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Guard my friends", Points = 1, Pick = "Guard" },
+						Evil = { Label = "Take what I want", Points = 1, Pick = "Take" },
+						Neutral = { A = "Build things", B = "Fix things" } } },
+				{ Text = "Hit monsters with your new skill %d/%d", Obj = { Type = "SkillHit", Slot = "X", Min = 1, Count = 3 } },
+			},
+			Reward = { Gold = 1 },
+		},
 		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
+		-- A23-74: the first weapon now comes before the hunt (Tutorial.Steps.Forge), so GiveWeapon is only the safety net
+		-- (owning tier 1 is the record: a no-op then). The visit is the next-weapon moment (the shop opens after the
+		-- lines; the first mission's 150 gold buy tier 2), and the quest pays like its chapter-1 siblings
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The King Slimes ate the most of it.",
+			Reward = { Gold = 1 },
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust", ShortName = "King Slimes",
@@ -3097,9 +3267,10 @@ Config.Analytics = {
 	-- A23-68 #5 (the first 3 minutes; renumbered before the beta, nothing is public yet): MeadowArrive, FirstHit,
 	-- FirstKill, FirstSkillHit and ForgeArrive between the old steps. A23-71 D5 / S13: the first skill comes at Lv5, after
 	-- the first weapon, and Auto Battle opens after it (S0 trial b is a skill hit), so FirstSkillHit sits right before
-	-- AutoUnlocked (in the order players reach it, no false drop-off)
-	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "MeadowArrive", "FirstHit", "FirstKill",
-		"FirstMissionDone", "ForgeArrive", "FirstWeapon", "FirstSkillHit", "AutoUnlocked", "Level10" },
+	-- AutoUnlocked (in the order players reach it, no false drop-off). A23-74: the Forge and the first weapon now come
+	-- right after the acceptance, before the meadow
+	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "ForgeArrive", "FirstWeapon", "MeadowArrive",
+		"FirstHit", "FirstKill", "FirstMissionDone", "FirstSkillHit", "AutoUnlocked", "Level10" },
 	UiIds = { "Menu", "Items", "Bag", "Skills", "Character", "Ranking", "Journal", "Board", "Settings", "Help", "News",
 		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback" },
 	AwayAfter = 300,
@@ -3433,7 +3604,7 @@ Config.Help = {
 		} },
 		{ Title = "New this week", Lines = {
 			"Halloween: the Pumpkin Patch and the new Haunted Hollow with ghosts and the Ghost King.",
-			"New players start bare-handed. The Blacksmith gives you your first weapon after the first mission.",
+			"New players get their first weapon from the Blacksmith before the first hunt.", -- A23-74
 			"New Settings window: change your keys, sound effects and screen shake.",
 		} },
 	},
@@ -4666,8 +4837,9 @@ Config.Text = {
 	WeaponAutoSwapEn = "That weapon needs Lv %d → switched to %s.",
 	-- A23-34: bare hands (weapon tier 0)
 	BareHands = "Bare hands", BareHandsEn = "Bare hands",
-	WeaponFromQuest = "The Blacksmith gives you your first weapon after your first mission (5 slimes).",
-	WeaponFromQuestEn = "The Blacksmith gives you your first weapon after your first mission (5 slimes).",
+	-- A23-74: the first weapon comes right after the Guide's first quest is accepted (the Forge step)
+	WeaponFromQuest = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
+	WeaponFromQuestEn = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
 	WeaponUsableNow = "You can now use %s! Equip it at the Forge or from your Bag.",
 	WeaponUsableNowEn = "You can now use %s! Equip it at the Forge or from your Bag.",
 	NeedFaction = "Pick a side first.",

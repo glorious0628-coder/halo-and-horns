@@ -1,10 +1,10 @@
 {
   "status": "passed",
-  "checks": 45,
+  "checks": 73,
   "failures": [],
   "mutations": {
-    "total": 37,
-    "caught": 37,
+    "total": 64,
+    "caught": 64,
     "results": [
       {
         "mutation": "QuestService.luau: no QuestDone on 'string.format(text, Util.FormatNumber(TU'",
@@ -151,7 +151,115 @@
         "caught": true
       },
       {
+        "mutation": "LootService.luau: no GoldPickup on 'TXT.DuplicateWeapon, weaponName(player, '",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no None on 'TXT.BareEquip, name'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no None on 'TXT.FirstWeapon, name'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no Equip on 'TXT.FirstWeaponBag, name'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no None on 'pcall(Net.Notify, player, line, \"reward\"'",
+        "caught": true
+      },
+      {
+        "mutation": "PetService.luau: no None on 'notify(player, TXT.PetGot'",
+        "caught": true
+      },
+      {
+        "mutation": "PetService.luau: no None on 'TXT.BecameFree or TXT.Became'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no None on 'fmt(\"GraduateStart\")'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no None on 'fmt(\"BoldStrong\")'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no GoldPickup on 'fmt(\"PlunderGain\"'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no RankUp on 'fmt(\"HonorGain\", honor)'",
+        "caught": true
+      },
+      {
+        "mutation": "GrudgeService.luau: no GoldPickup on 'fmt(\"SackPaid\"'",
+        "caught": true
+      },
+      {
+        "mutation": "GrudgeService.luau: no GoldPickup on 'fmt(\"AvengerBonus\"'",
+        "caught": true
+      },
+      {
+        "mutation": "RankingService.luau: no RankUp on 'TXT.ArtisanGain, gain'",
+        "caught": true
+      },
+      {
+        "mutation": "RankingService.luau: no RankUp on 'pcall(Net.Notify, p, text, \"reward\", 8'",
+        "caught": true
+      },
+      {
+        "mutation": "MonetizationService.luau: no None on 'string.format(Config.Text[textKey]), \"re'",
+        "caught": true
+      },
+      {
+        "mutation": "ProgressionService.luau: no None on 'Config.Text.RebirthDone'",
+        "caught": true
+      },
+      {
+        "mutation": "FactionService.luau: no GoldPickup on 'Config.Text.UnderdogSignOn'",
+        "caught": true
+      },
+      {
+        "mutation": "WarService.luau: no None on 'Config.Story.WarDraw'",
+        "caught": true
+      },
+      {
+        "mutation": "CombatService.luau: no None on 'outlawOnly and Config.Ranking.Text.Outla'",
+        "caught": true
+      },
+      {
         "mutation": "Net.Notify drops Sound",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: a jackpot weapon: Equip, or None when it is equipped from ba",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: a rare weapon drop: Equip, or None when equipped from bare h",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: B2: the Plunder Fx says who was robbed (Victim) and by whom ",
+        "caught": true
+      },
+      {
+        "mutation": "GrudgeService.luau: B2: the grudge refund Fx is marked Refund (the robbed player",
+        "caught": true
+      },
+      {
+        "mutation": "WarService.luau: B6: the war winner line carries CrownHalo / CrownHorns",
+        "caught": true
+      },
+      {
+        "mutation": "HalloweenService.luau: B11: a beaten king sends Fx KingDefeat to everyone (Key, Kin",
+        "caught": true
+      },
+      {
+        "mutation": "HalloweenService: KingDefeat also when a king leaves",
         "caught": true
       }
     ]

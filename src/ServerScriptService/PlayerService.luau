@@ -297,8 +297,7 @@ local COLUMN = {
 	Power = function(p)
 		local v = p:GetAttribute("CombatPower")
 		if v == nil then
-			v = Config.CombatPower(math.max(1, toInt(p:GetAttribute("Level"))),
-				math.clamp(toInt(p:GetAttribute("WeaponTier")), 0, Config.MaxWeaponTier), toInt(p:GetAttribute("WeaponEnhance")))
+			v = Config.CombatPowerOf(p) -- A23-69: the one power formula (with the stat points)
 		end
 		return toInt(v)
 	end,

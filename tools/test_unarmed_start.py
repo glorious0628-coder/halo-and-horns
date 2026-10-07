@@ -1,5 +1,6 @@
 """A23-34 bare-handed start (server side): new players start with no weapon and combat power 0, every class punches
-until the M1_1 blacksmith gives the class basic weapon, offline.
+until the blacksmith gives the class basic weapon (A23-74: at the first mission's Forge step, before the hunt; the M1_1
+gift stays as the safety net, tools/test_weapon_first.py covers the Forge step), offline.
 
 Runs the CURRENT Config, Util, CombatService, LootService, StoryQuestService and PvPService sources (whole modules)
 plus extracts of ShopService (onUpgradeWeapon / onSellWeapon / onBlacksmithPrompt), DataService (migrate /
@@ -158,8 +159,8 @@ MUTATIONS = [
     ("bare equip ignores the level", L,
      "if math.floor(num(data.WeaponTier, 0)) ~= 0 or not Config.WeaponUsable(tier, level) then return nil end",
      "if math.floor(num(data.WeaponTier, 0)) ~= 0 then return nil end"),
-    ("power line from the new weapon's power", L, "return Config.CombatPower(level, 0, 0), Config.CombatPower",
-     "return Config.CombatPower(level, tier, 0), Config.CombatPower"),
+    ("power line from the new weapon's power", L, "return Config.CombatPowerOf(player, 0, 0), Config.CombatPowerOf",
+     "return Config.CombatPowerOf(player, tier, 0), Config.CombatPowerOf"),
     ("the gift is paid again to a legacy save", L,
      "if not data or not validTier(tier) or owns(data, tier) then return nil end", "if not data or not validTier(tier) then return nil end"),
     ("the gift is paid again while another weapon is held", L,
@@ -170,14 +171,14 @@ MUTATIONS = [
      "local floor = Config.PvP.PowerRatioMin"),
     ("bare PvP floor as high as the weapons'", C, "AimCone = 90, PvPRatioMin = 0.4 }", "AimCone = 90, PvPRatioMin = 0.8 }"),
     ("bought-first player gets no bag line", L,
-     "\t\tnotify(player, string.format(TXT.FirstWeaponBag, name), \"reward\")\n", ""),
+     "\t\tnotify(player, string.format(TXT.FirstWeaponBag, name), \"reward\", \"Equip\")\n", ""),
     ("a drop is not equipped bare-handed", L,
      "\tlocal before, after = equipIfBare(player, data, tier)\n\tif isJackpot then",
      "\tlocal before, after = nil, nil\n\tif isJackpot then"),
     ("bare jackpot says 'equip it in the menu'", L,
      "notify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))\n"
-     "\t\t\tor string.format(TXT.JackpotSelf, name), \"reward\")",
-     "notify(player, string.format(TXT.JackpotSelf, name), \"reward\")"),
+     "\t\t\tor string.format(TXT.JackpotSelf, name), \"reward\", before and \"None\" or \"Equip\")",
+     "notify(player, string.format(TXT.JackpotSelf, name), \"reward\", \"Equip\")"),
     ("gift saved without the attribute mirror", L,
      "ensureTables(data)\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), "
      "bit32.lshift(1, tier - 1)))",
@@ -199,11 +200,11 @@ MUTATIONS = [
      "\t-- Reward.Item (e.g. Pip1's scroll)",
      "\tlocal finishLine = def.Finish or msg\n\t-- Reward.Item (e.g. Pip1's scroll)"),
     # --- JusticeService / PvPService / CharacterVisuals
-    ("power attribute clamps bare hands to tier 1", J,
-     "or 0), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands", "or 1), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands"),
-    ("PvP power fallback clamps bare hands to tier 1", P,
-     "math.clamp(math.floor(num(p, \"WeaponTier\", 0)), 0, Config.MaxWeaponTier)",
-     "math.clamp(math.floor(num(p, \"WeaponTier\", 1)), 1, Config.MaxWeaponTier)"),
+    # A23-69: the CombatPower attribute, PvP's fallback and the Tab list all use Config.CombatPowerOf, which clamps the tier
+    # for every power number (JusticeService's own levelAndTier now feeds only the faction sum GetPower: tools/test_stats.py)
+    ("the power formula clamps bare hands to tier 1", C,
+     "\t\ttier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands\n",
+     "\t\ttier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands\n"),
     ("bare hands draw a weapon", V,
      "\tif Config.Weapons[math.floor(attrNum(player, \"WeaponTier\", 0))] == nil then return end\n", ""),
 ]
@@ -224,14 +225,17 @@ def static() -> tuple[int, list[str]]:
           and 'watch(player, "WeaponOwnedMask", function(v) if num(v) > 0 then Step(player, "FirstWeapon") end end)' in tele,
           "Telemetry step FirstWeapon (BB38) = any weapon owned (the M1_1 gift counts)")
     player = read(SSS / "PlayerService.luau")
-    check("math.clamp(toInt(p:GetAttribute(\"WeaponTier\")), 0, Config.MaxWeaponTier)" in player,
+    config = read(SHARED / "Config.luau")
+    # A23-69: the Tab list falls back to Config.CombatPowerOf, which keeps bare hands (tier 0)
+    check("v = Config.CombatPowerOf(p)" in player
+          and "tier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands" in config,
           "Tab list Power fallback keeps bare hands (tier 0)")
     main = read(SSS / "Main.server.luau")
     check("S.LootService.DebugReset(player, tonumber(value) or 0)" in main, "debug LootReset defaults to the bare-handed start")
     data = strip_comments(read(SSS / "DataService.luau"))
     check("bit32.bor(owned, 1" not in data, "DataService never forces the tier-1 bit at load")
-    config = read(SHARED / "Config.luau")
-    check("Version = 3," in config, "save Version stays 3 (additive: older v3 records already hold their tier 1)")
+    check("Version = 3," in config,
+          "save Version stays 3 (additive: older v3 records already hold their tier 1; A23-69's Stats is additive too)")
     shop = strip_comments(read(SSS / "ShopService.luau"))
     check("bit32.band(ownedMask, 1) == 0" not in shop, "the shop never requires the tier-1 bit")
     combat = strip_comments(read(SSS / "CombatService.luau"))
@@ -239,11 +243,13 @@ def static() -> tuple[int, list[str]]:
     story = read(SSS / "StoryQuestService.luau")
     check("function StoryQuestService.Refresh(player)" in story, "StoryQuestService.Refresh is public (the anvil runs it)")
     quest = read(SSS / "QuestService.luau")
-    check('\tif not hasFirst then S.PlayerService.SetStat(player, "BlacksmithVisited", false) end\n\tsetStep(player, TUT_DONE)' in quest,
-          "the first-mission claim clears an earlier anvil visit unless tier 1 is owned (behavior: test_onboarding)")
-    check("hasFirst then\n\t\ttext = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)" in quest
+    # A23-74: the first weapon comes at the Forge step, so every claim clears the earlier visit (M1_1 needs a new one)
+    check('\tS.PlayerService.SetStat(player, "BlacksmithVisited", false)\n\tsetStep(player, TUT_DONE)' in quest,
+          "the first-mission claim always clears an earlier anvil visit (behavior: test_weapon_first)")
+    check("if armed then\n\t\ttext = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)" in quest
           and "hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith" in quest,
-          "a save that owns tier 1 gets the lines without the first-weapon promise (behavior: test_onboarding)")
+          "a better weapon owned: the claim lines without the next-weapon promise; the first weapon owned: the row without "
+          "the first-weapon promise (behavior: test_weapon_first)")
     return count, failures
 
 
@@ -266,7 +272,9 @@ SUITE = Suite(
              "BestUsableWeapon (0 = bare hands); the anvil prompt runs StoryQuestService.Refresh before opening the "
              "shop. M1_1 (GiveWeapon = 1) -> LootService.GrantFirstWeapon: tier 1 owned, equipped only when bare-handed "
              "(notice FirstWeapon '전투력 X → Y'), else the bag line; nothing for a save that owns it; the join safety "
-             "net pays a finished M1_1 that never paid. A weapon found bare-handed is equipped when its level allows. "
+             "net pays a finished M1_1 that never paid (A23-74: the gift itself now comes at the Forge step, "
+             "QuestService.ForgeGift, before the hunt; M1_1's is the safety net). A weapon found bare-handed is equipped "
+             "when its level allows. "
              "CharacterVisuals: tier 0 = no WeaponModel. JusticeService / PvP power read tier 0.",
     limitations="Offline doubles for Players, characters (a root facing -Z and a right hand), monsters (records with a "
                 "root), Net and the other services. The client side (punch animation / Fx, blacksmith and item windows "

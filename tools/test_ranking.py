@@ -117,7 +117,7 @@ MUTATIONS = [
     ("untagged scrolls score", R, "\tif have <= 0 then\n\t\ttags[id] = nil\n\t\treturn\n\tend\n", ""),
     ("a tag is never used up", R, "tags[id] = have > 1 and have - 1 or nil", "tags[id] = have"),
     ("tags outlive their scrolls", R, "local have = math.min(tags[id] or 0, held + 1)", "local have = tags[id] or 0"),
-    ("no '+N 장인 명성' notice", R, 'pcall(Net.Notify, player, string.format(TXT.ArtisanGain, gain), "reward")', ""),
+    ("no '+N 장인 명성' notice", R, 'pcall(Net.Notify, player, string.format(TXT.ArtisanGain, gain), "reward", nil, "RankUp")', ""),
     # --- RankingService: writes
     ("hidden flag not encoded", R, "(hidden and 10 or 0)", "0"),
     ("faction code not encoded", R, " + (R.FactionCode[faction] or 0)", ""),

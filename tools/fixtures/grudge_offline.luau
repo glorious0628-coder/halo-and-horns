@@ -603,6 +603,10 @@ runGroup("sack-avenged", function()
 	for _, e in f.Fx do if e.Player == V1 then fx = e end end
 	check(fx ~= nil and fx.Kind == "Plunder" and fx.Data.Amount == 120 and fx.Data.From.X == 50 and fx.Data.To.X == 10,
 		"Plunder Fx flies from the thief to the victim", show(fx))
+	-- sound_gaps B2 (검수 2026-10-07): the refund names the robbed player and the one who stole, never the avenger
+	check(fx ~= nil and fx.Data.Refund == true and fx.Data.Victim == V1.UserId and fx.Data.Thief == T.UserId
+		and fx.Data.Thief ~= H.UserId, "the refund Fx: Refund, Victim = the robbed, Thief = the thief (not the avenger)",
+		show(fx and { fx.Data.Victim, fx.Data.Thief, fx.Data.Refund }))
 	check(f:BankOf(H, "Bounty") == 100 and f:Told(H, f:Text("AvengerBonus", "100"), "reward") == 1, "the Halo killer gets the avenger bonus 100 (Bounty)")
 	-- BB37: the line names both players through AnnounceService.PublicName(p, true) (no AnnounceService here: the
 	-- fallback = nickname + Config.Announce.Text.Honorific)

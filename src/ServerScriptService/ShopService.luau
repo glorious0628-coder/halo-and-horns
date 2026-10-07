@@ -195,6 +195,12 @@ local function blacksmith()
 	return anvil, prompt
 end
 
+-- A23-74: the anvil part while the weapon shop is open (QuestService's forge trip lands in front of it), else nil
+function M.Anvil()
+	local anvil = blacksmith()
+	return anvil
+end
+
 function M.CanBuyWeapon(player)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players
 		or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return false end
@@ -218,7 +224,16 @@ local function onBlacksmithPrompt(prompt, player)
 	if expected ~= prompt then return end -- cloned/renamed prompts cannot open the weapon shop
 	if not Util.RateLimit(player, "BlacksmithPrompt", BLACKSMITH.PromptRate) then return end
 	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
-	-- A23-34: an active M1_1 finishes right here, so its free first weapon is in hand before the shop opens
+	-- A23-74: at the first mission's Forge step the blacksmith hands over the first weapon and the mission goes on to
+	-- the meadow (QuestService.ForgeGift): no shop window that time
+	local quest = S.QuestService
+	if type(quest) == "table" and type(quest.ForgeGift) == "function" then
+		local ok, handled = pcall(quest.ForgeGift, player)
+		if not ok then Util.Warn("ShopService", "ForgeGift: " .. tostring(handled)) end
+		if ok and handled == true then return end
+	end
+	-- an active M1_1 finishes right here (its story lines; A23-34's free first weapon is only its safety net now), then
+	-- the shop opens
 	local story = S.StoryQuestService
 	if type(story) == "table" and type(story.Refresh) == "function" then pcall(story.Refresh, player) end
 	Net.Get("OpenPanel"):FireClient(player, "WeaponShop")

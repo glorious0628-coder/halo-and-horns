@@ -1,0 +1,2159 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 166,
+  "failedChecks": 0,
+  "namedChecks": 166,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "x config",
+      "check": "XEnabled off until the 10/20 check; Taunt / Fields / MoveSkills on; MP steal cap 20; X at Lv25",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x config",
+      "check": "Guardian Roar: r12 x2, taunt 16 for 4 s, my Guard 40% 6 s, Halo friends 20% within 16, MP 30, 15 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x config",
+      "check": "Rage Roar: +5 MP a monster hit, no friend Guard (its own stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x config",
+      "check": "Sun / Hex Circle: r12 at the aimed monster (35), 5 ticks x1.5, slow x0.5; Halo friends 20%, Horns 2 MP a monster a tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x config",
+      "check": "Light / Shadow Step: 10 back in 0.25 s, the wind r7 x3 push 6, never auto; Halo friends 20% 4 s, Horns +5 MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x config",
+      "check": "the artisans: Anvil Guard / Jelly Brew / Big Boing, the same shapes with a crafted look, no faction extras",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "setup: a Lv25 hero has Q, Z and X",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "Guardian Roar: MP 30, SkillReadyAtX = now + 15 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "it hits the monsters within 12 studs (x2), not 14 or 20 away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "the taunt: every monster within 16 (5, 11, 14 away) for 4 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "Fx Skill { Shape Roar, Radius 12, 2 hits, Statuses.Taunted 3 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "my Guard: 40%, GuardPct / GuardUntil = now + 6 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "Halo friends within 16: 20%; a friend 20 away or a Horn: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "Statuses.Guard: me (40%, 6 s), then the friend (20%, 6 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "a Halo roar takes no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10 (a player's even with a monster kind)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "6 s later: no Guard, a slime's 10 is 10 again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "setup: b roars (40%), a and c are b's friends (20%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "a friend's 20% never replaces my 40% (my time stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "the same 20% again: extended to the new 6 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "c is still guarded by the extension; b's own ran out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "a cosmetic respawn keeps the Guard",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "a real respawn clears the Guard (GuardPct / GuardUntil 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "the same 20% for a shorter time (a field tick after a roar): the longer time stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "Rage Roar on 2 monsters: +10 MP (5 each), Statuses.MP 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "a Horn's roar guards itself too (40%), no friends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "5 monsters hit (25 MP): capped at 20 a cast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "the MP bar takes only 3 more: +3 (Statuses.MP 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "Anvil Guard: Fx Craft Anvil (6 s), the taunt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "the artisan guards only itself: no friend Guard, no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "Skills.Taunt off: no taunt, the hit and my Guard stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "MonsterService refuses the taunts (a boss, someone else's): Taunted 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x roar",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "Sun Circle: MP 30, SkillReadyAtX = now + 14 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "Fx Skill { Shape Field, Center = the aimed slime 20 ahead, Radius 12, Life 5, Tick 1 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "the first tick at once: x1.5 on everything inside (one dies), nothing 20 away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "Released once, at the first tick (3 monsters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "the living ones are slowed x0.5 for 1.5 s (the tick + 0.5); the dead one is not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a Halo friend inside the circle: 20%; the caster outside it: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "four more ticks, 1 s apart: Fx SkillTick { Slot X, Center, Radius, Hits, Total }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "each monster inside takes 5 ticks of x1.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "every tick hits with the same cast id (MonsterService counts one hit a cast)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "still one Released; the living monsters are slowed again on every tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "each tick guards the friend again (1.1 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "after 5 ticks the field is gone (no 6th)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a field that ran out sends no SkillEnd (its circle ends with Life)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "the friend's Guard ends 1.1 s after the last tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "Hex Circle on 3 monsters: +6 MP a tick, 20 a cast in all",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a field guards nobody on the Horn side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a KO ends it at once (SkillEnd Died), no tick after",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "SkillEnd { UserId, Slot X, Why }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a zone signal for the same zone keeps it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "walking into another zone ends it (Zone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a class or faction change ends it (Changed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "turning into a kaiju ends it at the next tick (Stop)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a new character ends it at the next tick (Stop)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "leaving ends it quietly (no SkillEnd, no more ticks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a new field ends the old one (SkillEnd New)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "one field a player: only the new one ticks (a new cast id)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "PvPZX on: the circle sits on the slime, not the nearer enemy, and never hits the enemy inside it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "nothing in reach: the circle 10 studs ahead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "setup: the first tick hit nothing (Released with 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "a later tick that hits reports nothing yet (the field goes on)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "still nothing before the end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "its Total = the damage of all the field's ticks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "nothing after the end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "setup: a late field that hit two",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "ended early: the late report then (2 at once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "and only once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "setup: a late field that hit one after its first tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "the caster left: no late report (nobody to count it for)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "Skills.Fields off: one burst x7.5, a 3 s slow, the 0.3 s mark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "no ticks after the burst",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "Jelly Brew: Fx Craft Cauldron; no friend Guard, no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "Light Step: MP 25, Fx Hop { To = 10 studs straight back, T = 0.25 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "the Hop Fx goes to the caster only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "MonsterService.HopReach asked for 10 studs straight back from where I stand",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "ZoneService.AllowMove(me, 10 + 2, 1 s): the movement check takes the hop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "the wind hits within 7 of the spot I left (x3), not 9 away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "the wind pushes them 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "Fx Skill { Shape Hop, To = the landing spot, Center = the spot I left, Radius 7 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "Halo friends within 12 of the landing spot: 20% for 4 s; one 25 away: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "a wall 5 back: the hop stops at 5 (AllowMove 5 + 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "only 2.5 studs to hop: 'CantHop' before MP (no MP, no cooldown, no move allowed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "3 studs is enough (HopMin)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "a grudge sack, a kaiju siren or an active kaiju: 'TooHeavy' (no MP, no hop asked)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "without them it hops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "Skills.MoveSkills off: the wind in place, no hop (a sack does not matter)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "... and the friends around me are guarded",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "Shadow Step on 2 monsters: +10 MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "Big Boing: Fx Craft BigSlime, the same hop, no statuses",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "auto combat never hops (it uses Z / Q)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x hop",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "auto Warrior, 3 monsters within 16: Guardian Roar first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "the same moment: Z waits for the 0.5 s gap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "0.5 s later: Earth Cleave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "then Q (X and Z on their cooldowns)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "auto casts never send the press answer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "2 monsters (HP full): no roar, Earth Cleave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "HP 40% and a monster 5 away: the roar",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "HP 40% but the monster 12 away, or HP 60%: no roar",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "auto Mage, 2 monsters inside the circle: Sun Circle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "one monster: no circle (Meteor first)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "XEnabled off: X is refused ('Locked'), no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "XEnabled off: auto goes straight to Z",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "Lv24: two slots, X is locked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x auto",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "Taunt / Slow / HopReach found beside Displace",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "Taunt: the monster chases me first for 4 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "someone else's live taunt is not taken over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "my own taunt again: refreshed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "after it runs out another player may taunt it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a taunt lasts at most 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a boss is never taunted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a personal monster is never taunted (even my own)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a dead monster, a non-player, 0 or NaN seconds: no taunt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "Slow x0.5 for 2 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "the stronger slow running stays, a later one extends the time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "after it runs out the new slow applies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a boss gets half the slow (x0.75)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "clamped: x0.1 .. x1, at most 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a dead monster, NaN or no time: no slow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "open meadow: the full 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "water 6 away: the hop stops at 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "water right there: no hop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a ledge 9 up, 6 away: stops at 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "8 up is fine (HopDrop 8)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a drop of 9: stops before it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a wall in the way: no hop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "no ground hit at all (noHit): allowed, like Displace",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "4 studs from the meadow's edge: only the 1/4 step stays in the zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "bad input or more than 40 studs: 0 (40 is fine)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "DamageMonster found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "one cast id 3 times (a field's ticks): 1 hit, all the damage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a new cast: one more hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "hits without a cast id (swings, Q) count each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "another player's hit with the same number is their own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "NATURAL and NATURAL.Pace found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "a slowed monster walks at x0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "after the slow: full speed again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster hooks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "AddMana: +30 from 50 -> 80 (Mana / MaxMana published)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "never past MaxMana: 95 + 10 -> 100 (+5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "a full bar takes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "0, negative, NaN, infinite or text: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "not ready: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "a KO'd player: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "no class picked: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "no mana state yet: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "setup: 15 studs at once is too far for the movement check",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "AllowMove(12, 1 s): 15 studs pass, 30 still do not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "after 1 s the allowance is gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "capped: at most 30 studs for 2 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "cleanup (leaving) forgets it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "a non-player, NaN, negative studs or no time: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mana and move",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 10,
+  "staticFailures": [],
+  "mutations": {
+    "total": 93,
+    "applied": 93,
+    "caught": 93,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Roar hits outside its radius",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: Fx Skill { Shape Roar, Radius 12, 2 hits, Statuses.Taunted 3 }",
+          "x roar :: it hits the monsters within 12 studs (x2), not 14 or 20 away"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no taunt",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: Anvil Guard: Fx Craft Anvil (6 s), the taunt",
+          "x roar :: Fx Skill { Shape Roar, Radius 12, 2 hits, Statuses.Taunted 3 }",
+          "x roar :: MonsterService refuses the taunts (a boss, someone else's): Taunted 0",
+          "x roar :: the taunt: every monster within 16 (5, 11, 14 away) for 4 s"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "taunt only within the hit radius",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: Fx Skill { Shape Roar, Radius 12, 2 hits, Statuses.Taunted 3 }",
+          "x roar :: the taunt: every monster within 16 (5, 11, 14 away) for 4 s"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the Taunt switch ignored",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: Skills.Taunt off: no taunt, the hit and my Guard stay"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a refused taunt is counted",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: MonsterService refuses the taunts (a boss, someone else's): Taunted 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no self Guard",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: 40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10 (a player's even with a monster kind)",
+          "x roar :: Skills.Taunt off: no taunt, the hit and my Guard stay",
+          "x roar :: Statuses.Guard: me (40%, 6 s), then the friend (20%, 6 s)",
+          "x roar :: a Horn's roar guards itself too (40%), no friends",
+          "x roar :: a friend's 20% never replaces my 40% (my time stays)",
+          "x roar :: c is still guarded by the extension; b's own ran out"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "a weaker Guard replaces a stronger one",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: 40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10 (a player's even with a monster kind)",
+          "x roar :: Skills.Taunt off: no taunt, the hit and my Guard stay",
+          "x roar :: Statuses.Guard: me (40%, 6 s), then the friend (20%, 6 s)",
+          "x roar :: a friend's 20% never replaces my 40% (my time stays)",
+          "x roar :: c is still guarded by the extension; b's own ran out",
+          "x roar :: my Guard: 40%, GuardPct / GuardUntil = now + 6 s"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the same Guard never extended",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: the same 20% for a shorter time (a field tick after a roar): the longer time stays"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Guard for any faction",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: Halo friends within 16: 20%; a friend 20 away or a Horn: none",
+          "x roar :: Statuses.Guard: me (40%, 6 s), then the friend (20%, 6 s)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "friends guarded from anywhere",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a Halo friend inside the circle: 20%; the caster outside it: none",
+          "x field :: each tick guards the friend again (1.1 s)",
+          "x hop :: Halo friends within 12 of the landing spot: 20% for 4 s; one 25 away: none",
+          "x roar :: Halo friends within 16: 20%; a friend 20 away or a Horn: none",
+          "x roar :: Statuses.Guard: me (40%, 6 s), then the friend (20%, 6 s)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "GuardOf past its time",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: the friend's Guard ends 1.1 s after the last tick",
+          "x roar :: 6 s later: no Guard, a slime's 10 is 10 again",
+          "x roar :: c is still guarded by the extension; b's own ran out"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a real respawn keeps the Guard",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: a real respawn clears the Guard (GuardPct / GuardUntil 0)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GuardUntil not published",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: Halo friends within 12 of the landing spot: 20% for 4 s; one 25 away: none",
+          "x roar :: my Guard: 40%, GuardPct / GuardUntil = now + 6 s",
+          "x roar :: the same 20% again: extended to the new 6 s",
+          "x roar :: the same 20% for a shorter time (a field tick after a roar): the longer time stays"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no MP steal cap",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: Hex Circle on 3 monsters: +6 MP a tick, 20 a cast in all",
+          "x roar :: 5 monsters hit (25 MP): capped at 20 a cast"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MP steal counts the asked, not the got",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: the MP bar takes only 3 more: +3 (Statuses.MP 3)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no MP steal",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: Shadow Step on 2 monsters: +10 MP",
+          "x roar :: 5 monsters hit (25 MP): capped at 20 a cast",
+          "x roar :: Rage Roar on 2 monsters: +10 MP (5 each), Statuses.MP 10",
+          "x roar :: the MP bar takes only 3 more: +3 (Statuses.MP 3)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a field may aim at a player",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: PvPZX on: the circle sits on the slime, not the nearer enemy, and never hits the enemy inside it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the field never goes ahead",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: nothing in reach: the circle 10 studs ahead"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the field never ends",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: after 5 ticks the field is gone (no 6th)",
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+          "x field :: its Total = the damage of all the field's ticks",
+          "x field :: nothing after the end",
+          "x field :: the friend's Guard ends 1.1 s after the last tick"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "one tick only",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: each monster inside takes 5 ticks of x1.5",
+          "x field :: four more ticks, 1 s apart: Fx SkillTick { Slot X, Center, Radius, Hits, Total }",
+          "x field :: group ran to the end without a Lua error",
+          "x field :: still one Released; the living monsters are slowed again on every tick"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "ticks stop after the second",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: each monster inside takes 5 ticks of x1.5",
+          "x field :: four more ticks, 1 s apart: Fx SkillTick { Slot X, Center, Radius, Hits, Total }",
+          "x field :: group ran to the end without a Lua error",
+          "x field :: still one Released; the living monsters are slowed again on every tick"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "each tick its own cast id",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: every tick hits with the same cast id (MonsterService counts one hit a cast)",
+          "x field :: one field a player: only the new one ticks (a new cast id)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no slow",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: Skills.Fields off: one burst x7.5, a 3 s slow, the 0.3 s mark",
+          "x field :: still one Released; the living monsters are slowed again on every tick",
+          "x field :: the living ones are slowed x0.5 for 1.5 s (the tick + 0.5); the dead one is not"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a killed monster is slowed",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: still one Released; the living monsters are slowed again on every tick",
+          "x field :: the living ones are slowed x0.5 for 1.5 s (the tick + 0.5); the dead one is not"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no friend Guard in the circle",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a Halo friend inside the circle: 20%; the caster outside it: none",
+          "x field :: each tick guards the friend again (1.1 s)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no MP steal a tick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: Hex Circle on 3 monsters: +6 MP a tick, 20 a cast in all"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a KO keeps the field",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a KO ends it at once (SkillEnd Died), no tick after"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a zone change keeps the field",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: walking into another zone ends it (Zone)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the same zone ends the field",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a zone signal for the same zone keeps it",
+          "x field :: walking into another zone ends it (Zone)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a class change keeps the field",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a class or faction change ends it (Changed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a kaiju keeps the field",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: turning into a kaiju ends it at the next tick (Stop)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a new character keeps the field",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a new character ends it at the next tick (Stop)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a leaver's field says SkillEnd",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: leaving ends it quietly (no SkillEnd, no more ticks)",
+          "x field :: the caster left: no late report (nobody to count it for)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "two fields at once",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a new field ends the old one (SkillEnd New)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Fields off still ticks",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: Skills.Fields off: one burst x7.5, a 3 s slow, the 0.3 s mark",
+          "x field :: no ticks after the burst"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the burst without the 5 ticks",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: Skills.Fields off: one burst x7.5, a 3 s slow, the 0.3 s mark",
+          "x field :: no ticks after the burst"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the burst slows like a tick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: Skills.Fields off: one burst x7.5, a 3 s slow, the 0.3 s mark"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no slow pad",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: the living ones are slowed x0.5 for 1.5 s (the tick + 0.5); the dead one is not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a late field never reports at its end",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+          "x field :: its Total = the damage of all the field's ticks",
+          "x field :: nothing after the end"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "an early end drops the late report",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: and only once",
+          "x field :: ended early: the late report then (2 at once)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the late report goes out for a player who left",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: the caster left: no late report (nobody to count it for)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the late report = the first hitting tick (the old rule)",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a later tick that hits reports nothing yet (the field goes on)",
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+          "x field :: its Total = the damage of all the field's ticks",
+          "x field :: setup: a late field that hit one after its first tick",
+          "x field :: setup: a late field that hit two",
+          "x field :: still nothing before the end"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the late report = the last tick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the late Total = the last tick's damage",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: its Total = the damage of all the field's ticks"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a field that hit at once reports again at its end",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a new field ends the old one (SkillEnd New)",
+          "x field :: still one Released; the living monsters are slowed again on every tick"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a hop with the grudge sack",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: a grudge sack, a kaiju siren or an active kaiju: 'TooHeavy' (no MP, no hop asked)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a kaiju hops",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: a grudge sack, a kaiju siren or an active kaiju: 'TooHeavy' (no MP, no hop asked)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a 2.5 stud hop",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: only 2.5 studs to hop: 'CantHop' before MP (no MP, no cooldown, no move allowed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a hop forward",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: Fx Skill { Shape Hop, To = the landing spot, Center = the spot I left, Radius 7 }",
+          "x hop :: Halo friends within 12 of the landing spot: 20% for 4 s; one 25 away: none",
+          "x hop :: Light Step: MP 25, Fx Hop { To = 10 studs straight back, T = 0.25 }",
+          "x hop :: MonsterService.HopReach asked for 10 studs straight back from where I stand",
+          "x hop :: a wall 5 back: the hop stops at 5 (AllowMove 5 + 2)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the hop ignores walls",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: MonsterService.HopReach asked for 10 studs straight back from where I stand",
+          "x hop :: a wall 5 back: the hop stops at 5 (AllowMove 5 + 2)",
+          "x hop :: only 2.5 studs to hop: 'CantHop' before MP (no MP, no cooldown, no move allowed)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no AllowMove",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: ZoneService.AllowMove(me, 10 + 2, 1 s): the movement check takes the hop",
+          "x hop :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "AllowMove without the slack",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: ZoneService.AllowMove(me, 10 + 2, 1 s): the movement check takes the hop",
+          "x hop :: a wall 5 back: the hop stops at 5 (AllowMove 5 + 2)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Hop Fx",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: Light Step: MP 25, Fx Hop { To = 10 studs straight back, T = 0.25 }",
+          "x hop :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MoveSkills ignored",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: ... and the friends around me are guarded",
+          "x hop :: Skills.MoveSkills off: the wind in place, no hop (a sack does not matter)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "friends guarded around the spot I left",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: Halo friends within 12 of the landing spot: 20% for 4 s; one 25 away: none"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto hops",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x hop :: auto combat never hops (it uses Z / Q)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto never casts X",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x auto :: 0.5 s later: Earth Cleave",
+          "x auto :: HP 40% and a monster 5 away: the roar",
+          "x auto :: auto Mage, 2 monsters inside the circle: Sun Circle",
+          "x auto :: auto Warrior, 3 monsters within 16: Guardian Roar first",
+          "x auto :: the same moment: Z waits for the 0.5 s gap",
+          "x auto :: then Q (X and Z on their cooldowns)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "auto Roar ignores Min",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x auto :: 2 monsters (HP full): no roar, Earth Cleave",
+          "x auto :: HP 40% but the monster 12 away, or HP 60%: no roar"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "auto Roar without the low-HP rule",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x auto :: HP 40% and a monster 5 away: the roar"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto Roar low HP at any distance",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x auto :: HP 40% but the monster 12 away, or HP 60%: no roar"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto field for one monster",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x auto :: one monster: no circle (Meteor first)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Guard on every hit",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: 40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10 (a player's even with a monster kind)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Guard on a player's hit",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: 40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10 (a player's even with a monster kind)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Guard",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x roar :: 40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10 (a player's even with a monster kind)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the cast id dropped",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: every tick hits with the same cast id (MonsterService counts one hit a cast)",
+          "x field :: one field a player: only the new one ticks (a new cast id)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "one hit a cast ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a new cast: one more hit",
+          "monster hooks :: hits without a cast id (swings, Q) count each",
+          "monster hooks :: one cast id 3 times (a field's ticks): 1 hit, all the damage"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a cast id hit never counts",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a new cast: one more hit",
+          "monster hooks :: another player's hit with the same number is their own",
+          "monster hooks :: hits without a cast id (swings, Q) count each",
+          "monster hooks :: one cast id 3 times (a field's ticks): 1 hit, all the damage"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a boss taunted",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a boss is never taunted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a personal monster taunted",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a personal monster is never taunted (even my own)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a taunt taken over",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: someone else's live taunt is not taken over"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a taunt of any length",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a taunt lasts at most 10 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a boss slowed fully",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a boss gets half the slow (x0.75)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the weaker slow wins",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: the stronger slow running stays, a later one extends the time"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a slow never extended",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: the stronger slow running stays, a later one extends the time"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "slow unclamped",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: clamped: x0.1 .. x1, at most 10 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Pace ignores the slow",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a slowed monster walks at x0.5"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hop through walls",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a wall in the way: no hop"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hop off a ledge",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: a drop of 9: stops before it",
+          "monster hooks :: a ledge 9 up, 6 away: stops at 5"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hop out of the zone",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: 4 studs from the meadow's edge: only the 1/4 step stays in the zone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hop into water",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: water 6 away: the hop stops at 5",
+          "monster hooks :: water right there: no hop"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "HopReach past 40",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: bad input or more than 40 studs: 0 (40 is fine)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no shorter hops",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster hooks :: 4 studs from the meadow's edge: only the 1/4 step stays in the zone",
+          "monster hooks :: a drop of 9: stops before it",
+          "monster hooks :: a ledge 9 up, 6 away: stops at 5",
+          "monster hooks :: water 6 away: the hop stops at 5"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "AddMana past MaxMana",
+        "file": "src/ServerScriptService/VitalsService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: a full bar takes nothing",
+          "mana and move :: never past MaxMana: 95 + 10 -> 100 (+5)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "AddMana when not ready",
+        "file": "src/ServerScriptService/VitalsService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: a KO'd player: nothing",
+          "mana and move :: no class picked: nothing",
+          "mana and move :: not ready: nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "AddMana takes NaN",
+        "file": "src/ServerScriptService/VitalsService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: 0, negative, NaN, infinite or text: nothing",
+          "mana and move :: no class picked: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "AddMana not published",
+        "file": "src/ServerScriptService/VitalsService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: AddMana: +30 from 50 -> 80 (Mana / MaxMana published)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the move check ignores AllowMove",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: AllowMove(12, 1 s): 15 studs pass, 30 still do not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "AllowMove forever",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: after 1 s the allowance is gone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "AllowMove uncapped",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: capped: at most 30 studs for 2 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "AllowMove takes NaN",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: a non-player, NaN, negative studs or no time: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "cleanup keeps the allowance",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mana and move :: a non-player, NaN, negative studs or no time: ignored",
+          "mana and move :: cleanup (leaving) forgets it"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: Rage Roar steals 50",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x config :: Rage Roar: +5 MP a monster hit, no friend Guard (its own stays)",
+          "x roar :: Rage Roar on 2 monsters: +10 MP (5 each), Statuses.MP 10"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: no MP steal cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x config :: XEnabled off until the 10/20 check; Taunt / Fields / MoveSkills on; MP steal cap 20; X at Lv25",
+          "x field :: Hex Circle on 3 monsters: +6 MP a tick, 20 a cast in all",
+          "x roar :: 5 monsters hit (25 MP): capped at 20 a cast"
+        ],
+        "newFailingCount": 3
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
+    "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
+    "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
+    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
+    "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
+    "src/ServerScriptService/SkillService.luau": "3a11db855624b8f07a2c1cd36693e3e914e766228c6fcce0cfebaad10a8ffdf6",
+    "src/ServerScriptService/MonsterService.luau": "06bf0e1ebb61dd86226b35dca17e8d16de085c1e749d75dff728e773bbed3077",
+    "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",
+    "src/ServerScriptService/ZoneService.luau": "a48dc0e0395518962081690f147bba2337755f027a7181ba3dcd6698288d45f0"
+  },
+  "fixtureSHA256": "235da76c9b453070e5912041728fb1a035ef92045fb53dc2455d9c92fe8e4ddf",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "SKL-3 X (monster fights only for every status; XEnabled stays off until the 10/20 check, X at Lv25): Roar (r12 x2, Taunt r16 4 s via MonsterService.Taunt, my Guard 40% 6 s, Halo friends r16 20%, Horns +5 MP a monster hit, the anvil look for the blacksmith); Field (a circle r12 at the aimed monster within 35 or 10 ahead, a tick every 1 s for 5 s at x1.5 with one cast id, Slow x0.5 for tick + 0.5 s, Halo friends inside 20% for tick + 0.1 s, Horns 2 MP a monster a tick; one field a player; it ends on a KO / zone / class / faction change / kaiju / new character (Fx SkillEnd { UserId, Slot, Why }), quietly on leaving; never players; Fields off = one x7.5 burst with a 3 s slow); Hop (back HopReach of 10, under 3 'CantHop', a sack or kaiju 'TooHeavy', both before MP; ZoneService.AllowMove(hop + 2, 1 s); Fx Hop { To, T } to the caster; the wind r7 x3 push 6; Halo friends r12 of the landing 20% 4 s; Horns +5 MP; never auto; MoveSkills off = the wind in place). MP steal at most 20 a cast. Guard: CombatService.DamagePlayer cuts a monster's hit only (GuardOf, the larger wins, the same extends, a real respawn clears; GuardPct / GuardUntil). Auto: X -> Z -> Q (Roar 3 within 16 or HP < 50% with one within 10; Field 2 inside the circle). MonsterService: Taunt (no boss / personal / someone else's live taunt, <= 10 s), Slow (boss half, strongest stays, <= 10 s, Pace), HopReach (zone, water, walls, ledges over 8, the Displace steps), DamageMonster castId (one hit a cast).",
+  "limitations": "The client side (SkillFx circles / roar / hop movement, the HP bar shield, SkillBar X) is game dev 1's and image dev's; the hop's real character move, the monsters' real walk under Slow / Taunt (aiStep is checked statically) and the live AnalyticsService are not run offline. SK1 / SK2 and the SkillHit Slot filter are in tools/test_town_quests.py; the next-goal line in tools/test_onboarding.py."
+}

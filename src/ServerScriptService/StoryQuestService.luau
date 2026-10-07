@@ -29,8 +29,11 @@ local TICK = 1
 -- E4 Near.Stay: [Player] = { [questId .. ":" .. step] = os.clock() when the player came inside } (never saved: a rejoin
 -- or leaving the spot starts the count again)
 local stays = {}
--- story_depth E1 / E2 / E3: a pick's side (Good / Purify / A on one side, Evil / Devour / B on the other)
-local SIDE = { Good = "Good", Purify = "Good", A = "Good", Evil = "Evil", Devour = "Evil", B = "Evil" }
+-- story_depth E1 / E2 / E3: a pick's side (Good / Purify / A on one side, Evil / Devour / B on the other). Every Pick in
+-- Config.StoryQuests has its side here (검수 2026-10-07: SKL-3 SK2's Guard / Take were missing, so that pick never
+-- counted as a change of mind; A23-70 Lunch1's GiveBack / Bite too)
+local SIDE = { Good = "Good", Purify = "Good", A = "Good", Evil = "Evil", Devour = "Evil", B = "Evil", Guard = "Good",
+	Take = "Evil", GiveBack = "Good", Bite = "Evil" }
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -248,6 +251,7 @@ local function eventAmount(player, obj, ev)
 		return 1
 	elseif ev.Kind == "Skill" then
 		if t ~= "SkillHit" or ev.Info.Auto == true then return 0 end
+		if obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)
 		return num(ev.Info.MonstersHit) >= (obj.Min or 1) and 1 or 0
 	elseif ev.Kind == "Gold" then
 		if t == "EarnGold" and (obj.Source == nil or obj.Source == ev.Source) then return math.floor(num(ev.Amount)) end
@@ -426,6 +430,13 @@ local function requirementsMet(player, data, def)
 		if st.Done[gone] then return false end
 	end
 	if req.Level and num(data.Level, 1) < req.Level then return false end
+	-- SKL-3: Skill = "Q" / "Z" / "X" learned (its switch on and the saved slot open)
+	if req.Skill then
+		local skills = Config.Skills or {}
+		local index = table.find(skills.Order or { "Q", "Z", "X" }, req.Skill)
+		local on = req.Skill == "Q" or skills[req.Skill .. "Enabled"] == true
+		if not index or not on or num(data.SkillSlots) < index then return false end
+	end
 	for _, need in req.Done or {} do
 		if not st.Done[need] then return false end
 	end

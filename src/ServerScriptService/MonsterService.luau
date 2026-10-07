@@ -1196,6 +1196,12 @@ local function killRecord(rec)
 			perFaction[f] = (perFaction[f] or 0) + 1
 		end
 	end
+	-- sound_gaps B11 (검수 2026-10-07): the UserIds this kill pays, kept on the record (sorted) for HalloweenService's
+	-- KingDefeat Fx, which runs after the contributor tables below are cleared
+	local paid = {}
+	for _, e in eligible do table.insert(paid, e.Player.UserId) end
+	table.sort(paid)
+	rec.PaidUserIds = paid
 	rec._contributors, rec._hits, rec._dmg = {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
@@ -1230,8 +1236,9 @@ local function markHurt(rec, amount, crit)
 	model:SetAttribute(HURT_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
 end
 
--- crit (optional): the hit was a critical hit (only used for the "HurtBig" pain reaction)
-function MonsterService.DamageMonster(record, amount, player, crit)
+-- crit (optional): the hit was a critical hit (only used for the "HurtBig" pain reaction). castId (optional, SKL-3): a
+-- skill cast that hits the same monster again (a field's ticks) counts as one hit of that player (A23-27 RewardMinHits)
+function MonsterService.DamageMonster(record, amount, player, crit, castId)
 	if type(record) ~= "table" or not record.Alive then return false end
 	if type(amount) ~= "number" or amount ~= amount or amount <= 0 then return false end
 	if record.Owner and record.Owner ~= player then return false end -- A5-C2
@@ -1240,8 +1247,18 @@ function MonsterService.DamageMonster(record, amount, player, crit)
 	if player then
 		record._contributors[player] = os.clock()
 		-- A23-27: own hits and damage per contributor (a def with RewardMinHits / RewardMinDamageFrac pays only those
-		-- who met both); the overkill part of the last hit does not count
-		record._hits[player] = (record._hits[player] or 0) + 1
+		-- who met both); the overkill part of the last hit does not count. SKL-3: a cast counts once however often it
+		-- hits (a field's ticks), also with other hits in between (검수 2026-10-07: the casts seen per player are a set)
+		record._castOf = record._castOf or {}
+		local seen = castId ~= nil and record._castOf[player] or nil
+		if castId == nil or not (seen and seen[castId]) then
+			record._hits[player] = (record._hits[player] or 0) + 1
+			if castId ~= nil then
+				seen = seen or {}
+				seen[castId] = true
+				record._castOf[player] = seen
+			end
+		end
 		record._dmg[player] = (record._dmg[player] or 0) + math.min(amount, math.max(0, record.HP))
 	end
 	record.HP -= amount
@@ -1351,7 +1368,7 @@ end
 -- ZONE_MOVE_INSET and within LeashRadius of its home), on walkable ground, with no wall / decor in the way at body
 -- height; when the full move is not allowed it tries the shorter Steps, else nothing. Slides over Time (ease out) like
 -- Shove, which stays the small hit slide. Returns the studs moved (0 = none).
-local DISPLACE = { Stop = 3, Time = 0.2, Steps = { 1, 0.75, 0.5, 0.25 } }
+local DISPLACE = { Stop = 3, Time = 0.2, Steps = { 1, 0.75, 0.5, 0.25 }, HopDrop = 8 } -- HopDrop: SKL-3 HopReach
 function DISPLACE.Slide(record, root, delta)
 	local start = os.clock()
 	record._shoveReadyAt = math.max(record._shoveReadyAt or 0, start + DISPLACE.Time) -- no hit shove fights the slide
@@ -1407,6 +1424,59 @@ function MonsterService.Displace(record, mode, fromPosition, studs, player)
 		if ok then
 			DISPLACE.Slide(record, root, delta)
 			return dist * part
+		end
+	end
+	return 0
+end
+
+-- SKL-3 Taunt (Roar): the monster chases `player` first for `seconds` (os.clock). Bosses, the golden goose (not a
+-- record) and personal monsters never; a living taunt by someone else is not taken over. True when taunted
+function MonsterService.Taunt(record, player, seconds)
+	if type(record) ~= "table" or not record.Alive or record.Owner ~= nil then return false end
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return false end
+	if type(seconds) ~= "number" or seconds ~= seconds or seconds <= 0 then return false end
+	local def = record.Def or Config.MonsterTypes[record.Kind]
+	if type(def) == "table" and def.Boss then return false end
+	local now = os.clock()
+	if record._tauntBy and record._tauntBy ~= player and now < (record._tauntUntil or 0) then return false end
+	record._tauntBy, record._tauntUntil = player, now + math.min(seconds, 10)
+	return true
+end
+
+-- SKL-3 Slow (fields): walk speed x mult for `seconds` (a boss gets half the slow: 0.5 -> x0.75); the strongest slow
+-- running wins, a refresh extends it
+function MonsterService.Slow(record, mult, seconds)
+	if type(record) ~= "table" or not record.Alive then return false end
+	if type(mult) ~= "number" or mult ~= mult or type(seconds) ~= "number" or seconds ~= seconds or seconds <= 0 then
+		return false
+	end
+	mult = math.clamp(mult, 0.1, 1)
+	local def = record.Def or Config.MonsterTypes[record.Kind]
+	if type(def) == "table" and def.Boss then mult = 1 - (1 - mult) / 2 end
+	local now = os.clock()
+	local running = record._slowUntil and now < record._slowUntil
+	record._slowMult = running and math.min(record._slowMult or 1, mult) or mult
+	record._slowUntil = math.max(running and record._slowUntil or 0, now + math.min(seconds, 10))
+	return true
+end
+
+-- SKL-3 Hop (SkillService): how far a player may hop from `from` along the flat unit `dir`: the longest of `studs` x
+-- DISPLACE.Steps that stays in the zone `from` stands in, lands on walkable ground (no water, ridge or decor; at most
+-- HopDrop studs up or down from the ground under `from`) with no wall in between. 0 = nowhere
+function MonsterService.HopReach(from, dir, studs)
+	if typeof(from) ~= "Vector3" or typeof(dir) ~= "Vector3" then return 0 end
+	if type(studs) ~= "number" or studs ~= studs or studs <= 0 or studs > 40 then return 0 end
+	local here = Config.ZoneAt(from).Id
+	local base = groundPoint(from.X, from.Z)
+	for _, part in DISPLACE.Steps do
+		local delta = dir * (studs * part)
+		local dest = from + delta
+		if Config.ZoneAt(dest).Id == here then
+			local g, noHit = groundPoint(dest.X, dest.Z)
+			local level = g == nil or base == nil or math.abs(g.Y - base.Y) <= DISPLACE.HopDrop
+			if (g ~= nil or noHit) and level and not workspace:Raycast(from, delta + dir * 0.5, getShoveParams()) then
+				return studs * part
+			end
 		end
 	end
 	return 0
@@ -1632,7 +1702,9 @@ function NATURAL.Pace(rec, pace, goal)
 	if typeof(goal) == "Vector3" then
 		arrive = math.clamp(Util.FlatDistance(root.Position, goal) / NATURAL.ArriveSlow, 0.5, 1)
 	end
-	rec.Humanoid.WalkSpeed = (tonumber(rec.Def.Speed) or 12) * pace * ramp * arrive
+	-- SKL-3 Slow (MonsterService.Slow): x _slowMult until _slowUntil
+	local slow = (rec._slowUntil and os.clock() < rec._slowUntil) and (rec._slowMult or 1) or 1
+	rec.Humanoid.WalkSpeed = (tonumber(rec.Def.Speed) or 12) * pace * ramp * arrive * slow
 end
 
 -- NATURAL: true while a monster stops with a '!' for a target it just spotted out of reach (AlertAt), facing it
@@ -1969,9 +2041,14 @@ local function aiStep(rec, plist, now)
 		end
 	end
 
-	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a)
+	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a);
+	-- SKL-3 Taunt: until _tauntUntil the taunter first (while still a valid target)
 	local best, bestD = nil, nil
-	if now >= rec._noAggroUntil then
+	if rec._tauntUntil and now < rec._tauntUntil then
+		local tinfo = findInfo(plist, rec._tauntBy)
+		if tinfo and targetable(rec, tinfo) then best, bestD = tinfo, Util.FlatDistance(pos, tinfo.Pos) end
+	end
+	if best == nil and now >= rec._noAggroUntil then
 		for _, info in plist do
 			if targetable(rec, info) then
 				local d = Util.FlatDistance(pos, info.Pos)

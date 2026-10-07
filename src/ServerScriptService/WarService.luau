@@ -345,10 +345,12 @@ local function endRound(mode, haloScore, hornsScore, halo, horns, curHalo, curHo
 	payChests(winner, snapshot)
 
 	if mode ~= "Idle" then
+		-- sound_gaps B6: the crown goes to a side = CrownHalo / CrownHorns for everyone (the client holds the war-chest
+		-- coins 1.5 s); a draw has no sound
 		if winner ~= "None" and Config.Story.WarWin[winner] then
-			Net.NotifyAll(string.format(Config.Story.WarWin[winner]))
+			Net.NotifyAll(string.format(Config.Story.WarWin[winner]), nil, nil, winner == "Halo" and "CrownHalo" or "CrownHorns")
 		else
-			Net.NotifyAll(string.format(Config.Story.WarDraw))
+			Net.NotifyAll(string.format(Config.Story.WarDraw), nil, nil, "None")
 		end
 	end
 
