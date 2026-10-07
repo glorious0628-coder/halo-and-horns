@@ -1,0 +1,638 @@
+{
+  "tool": "tools/text_fit_view.py",
+  "tag": "smallpc2",
+  "rows": [
+    {
+      "device": "pc",
+      "file": "build/text_fit_view/pc_smallpc2.png",
+      "probe": {
+        "Count": 35,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/HUD/Buttons/TileMenu/Label",
+            "Truncate": "None",
+            "Text": "Menu",
+            "Bounds": [
+              32,
+              13
+            ],
+            "Pos": [
+              1220,
+              40
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 13,
+            "Size": [
+              50,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "pc900",
+      "file": "build/text_fit_view/pc900_smallpc2.png",
+      "probe": {
+        "Count": 35,
+        "Screen": [
+          900,
+          500
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Power",
+            "Truncate": "None",
+            "Text": "Lv 1 · Power 0",
+            "Bounds": [
+              72,
+              15
+            ],
+            "Pos": [
+              296,
+              401
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              72,
+              11
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Pouch",
+            "Truncate": "None",
+            "Text": "· Pouch 0",
+            "Bounds": [
+              49,
+              15
+            ],
+            "Pos": [
+              371,
+              401
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              49,
+              11
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/WarMeter/Info/Text",
+            "Truncate": "AtEnd",
+            "Text": "Crown in 9:41",
+            "Bounds": [
+              89,
+              15
+            ],
+            "Pos": [
+              349,
+              31
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              200,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line1/Text",
+            "Truncate": "SplitWord",
+            "Text": "Free the supply road · 5 slimes",
+            "Bounds": [
+              147,
+              18
+            ],
+            "Pos": [
+              27,
+              174
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 19,
+            "Size": [
+              150,
+              18
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line2/Text",
+            "Truncate": "SplitWord",
+            "Text": "Hit 4 monsters with a skill",
+            "Bounds": [
+              165,
+              18
+            ],
+            "Pos": [
+              27,
+              192
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 19,
+            "Size": [
+              168,
+              18
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileBag/Label",
+            "Truncate": "None",
+            "Text": "Bag",
+            "Bounds": [
+              23,
+              13
+            ],
+            "Pos": [
+              409,
+              468
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 13,
+            "Size": [
+              41,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileMap/Label",
+            "Truncate": "None",
+            "Text": "Map",
+            "Bounds": [
+              25,
+              13
+            ],
+            "Pos": [
+              447,
+              468
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 13,
+            "Size": [
+              41,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/SkillBar/SkillQ/Name/Text",
+            "Truncate": "None",
+            "Text": "Shockwave",
+            "Bounds": [
+              54,
+              15
+            ],
+            "Pos": [
+              738,
+              456
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              58,
+              11
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "pc655",
+      "file": "build/text_fit_view/pc655_smallpc2.png",
+      "probe": {
+        "Count": 35,
+        "Screen": [
+          655,
+          340
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/Toasts/Toast/Text",
+            "Truncate": "AtEnd",
+            "Text": "Daily quest done! +60 gold\nCheck the board for more jobs.",
+            "Bounds": [
+              151,
+              11
+            ],
+            "Pos": [
+              236,
+              100
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              166,
+              21
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Power",
+            "Truncate": "None",
+            "Text": "Lv 1 · Power 0",
+            "Bounds": [
+              72,
+              15
+            ],
+            "Pos": [
+              154,
+              251
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              72,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Pouch",
+            "Truncate": "None",
+            "Text": "· Pouch 0",
+            "Bounds": [
+              49,
+              15
+            ],
+            "Pos": [
+              229,
+              251
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              49,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/WarMeter/Info/Text",
+            "Truncate": "AtEnd",
+            "Text": "<font color=\"#ff9628\">Siege: 150 each</font> · 9:38",
+            "Bounds": [
+              139,
+              15
+            ],
+            "Pos": [
+              229,
+              29
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              180,
+              11
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line1/Text",
+            "Truncate": "SplitWord",
+            "Text": "Free the supply road · 5 slimes",
+            "Bounds": [
+              132,
+              18
+            ],
+            "Pos": [
+              25,
+              163
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 19,
+            "Size": [
+              133,
+              16
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line2/Text",
+            "Truncate": "SplitWord",
+            "Text": "Hit 4 monsters with a skill",
+            "Bounds": [
+              144,
+              18
+            ],
+            "Pos": [
+              25,
+              179
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 19,
+            "Size": [
+              150,
+              16
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileBag/Label",
+            "Truncate": "None",
+            "Text": "Bag",
+            "Bounds": [
+              23,
+              13
+            ],
+            "Pos": [
+              256,
+              311
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 13,
+            "Size": [
+              37,
+              9
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileMap/Label",
+            "Truncate": "None",
+            "Text": "Map",
+            "Bounds": [
+              25,
+              13
+            ],
+            "Pos": [
+              290,
+              311
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 13,
+            "Size": [
+              37,
+              9
+            ]
+          },
+          {
+            "Path": "MainGui/SkillBar/SkillQ/Name/Text",
+            "Truncate": "None",
+            "Text": "Shockwave",
+            "Bounds": [
+              48,
+              15
+            ],
+            "Pos": [
+              510,
+              300
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              52,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/SkillBar/SkillQ/Key",
+            "Truncate": "None",
+            "Text": "Q",
+            "Bounds": [
+              7,
+              15
+            ],
+            "Pos": [
+              546,
+              262
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              14,
+              14
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "pc573",
+      "file": "build/text_fit_view/pc573_smallpc2.png",
+      "probe": {
+        "Count": 35,
+        "Screen": [
+          573,
+          354
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/Toasts/Toast/Text",
+            "Truncate": "AtEnd",
+            "Text": "Daily quest done! +60 gold\nCheck the board for more jobs.",
+            "Bounds": [
+              134,
+              22
+            ],
+            "Pos": [
+              175,
+              100
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              145,
+              21
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Power",
+            "Truncate": "None",
+            "Text": "Lv 1 · Power 0",
+            "Bounds": [
+              72,
+              15
+            ],
+            "Pos": [
+              72,
+              265
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              72,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Pouch",
+            "Truncate": "None",
+            "Text": "· Pouch 0",
+            "Bounds": [
+              49,
+              15
+            ],
+            "Pos": [
+              147,
+              265
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              49,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/WarMeter/Info/Text",
+            "Truncate": "AtEnd",
+            "Text": "Crown in 9:37",
+            "Bounds": [
+              91,
+              15
+            ],
+            "Pos": [
+              168,
+              29
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              159,
+              11
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line1/Text",
+            "Truncate": "SplitWord",
+            "Text": "Free the supply road · 5 slimes",
+            "Bounds": [
+              132,
+              18
+            ],
+            "Pos": [
+              25,
+              163
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 19,
+            "Size": [
+              133,
+              16
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line2/Text",
+            "Truncate": "SplitWord",
+            "Text": "Hit 4 monsters with a skill",
+            "Bounds": [
+              144,
+              18
+            ],
+            "Pos": [
+              25,
+              179
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 19,
+            "Size": [
+              150,
+              16
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileBag/Label",
+            "Truncate": "None",
+            "Text": "Bag",
+            "Bounds": [
+              23,
+              13
+            ],
+            "Pos": [
+              174,
+              325
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 13,
+            "Size": [
+              37,
+              9
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileMap/Label",
+            "Truncate": "None",
+            "Text": "Map",
+            "Bounds": [
+              25,
+              13
+            ],
+            "Pos": [
+              208,
+              325
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 13,
+            "Size": [
+              37,
+              9
+            ]
+          },
+          {
+            "Path": "MainGui/SkillBar/SkillQ/Name/Text",
+            "Truncate": "None",
+            "Text": "Shockwave",
+            "Bounds": [
+              48,
+              15
+            ],
+            "Pos": [
+              428,
+              314
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              52,
+              10
+            ]
+          },
+          {
+            "Path": "MainGui/SkillBar/SkillQ/Key",
+            "Truncate": "None",
+            "Text": "Q",
+            "Bounds": [
+              7,
+              15
+            ],
+            "Pos": [
+              464,
+              276
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              14,
+              14
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

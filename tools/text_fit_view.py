@@ -24,7 +24,8 @@ import quest_marker_view as qv  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "build", "text_fit_view")
 # extra screen: the wide but short PC window game dev 1 played in (1920x943, 2026-10-07 morning round)
-DEVICES = dict(dv.DEVICES, wide=("hd_1080", 1920, 943))
+DEVICES = dict(dv.DEVICES, wide=("hd_1080", 1920, 943), pc900=("hd_720", 900, 500), pc655=("hd_720", 655, 340),
+               pc573=("hd_720", 573, 354))
 
 SETUP = r'''
 local p = game.Players:GetPlayers()[1]

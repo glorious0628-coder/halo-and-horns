@@ -1,19 +1,12 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9630,
+  "checks": 9645,
   "failedChecks": 0,
-  "namedChecks": 9094,
+  "namedChecks": 9073,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
-    {
-      "screen": "pc_573x354_small",
-      "check": "fold holds the menu tiles in one line",
-      "reason": "573 px wide desktop window on the phone sheet: Roblox's buttons + the war meter + [메뉴] leave room for 3 fold squares in the bar; the 4th wraps under it (A23-40 보강, like the narrow phones).",
-      "measuredDu": 3,
-      "neededDu": 4
-    },
     {
       "screen": "phone_568x320",
       "check": "tap size potions cell width",
@@ -293,20 +286,20 @@
         655,
         340
       ],
-      "uiScale": 0.6,
+      "uiScale": 0.5,
       "logical": [
-        1091.67,
-        566.67
+        1310.0,
+        680.0
       ],
       "insetPx": 58,
       "jumpLogical": null,
       "minGap": {
-        "Gap": 1.3333,
-        "Pair": "event/notify"
+        "Gap": 5,
+        "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 6.6667,
-        "Pair": "portrait/tiles"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -319,20 +312,20 @@
         573,
         354
       ],
-      "uiScale": 0.6,
+      "uiScale": 0.5,
       "logical": [
-        955.0,
-        590.0
+        1146.0,
+        708.0
       ],
       "insetPx": 58,
       "jumpLogical": null,
       "minGap": {
-        "Gap": 1.275,
-        "Pair": "event/notify"
+        "Gap": 5,
+        "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 6.3752,
-        "Pair": "portrait/tiles"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -345,20 +338,20 @@
         700,
         450
       ],
-      "uiScale": 0.6,
+      "uiScale": 0.5,
       "logical": [
-        1166.67,
-        750.0
+        1400.0,
+        900.0
       ],
       "insetPx": 58,
       "jumpLogical": null,
       "minGap": {
-        "Gap": 1.3333,
-        "Pair": "event/notify"
+        "Gap": 5,
+        "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 6.6667,
-        "Pair": "portrait/tiles"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -371,10 +364,10 @@
         1280,
         240
       ],
-      "uiScale": 0.6,
+      "uiScale": 0.5,
       "logical": [
-        2133.33,
-        400.0
+        2560.0,
+        480.0
       ],
       "insetPx": 58,
       "jumpLogical": null,
@@ -634,7 +627,7 @@
     "ScaleMin": 0.75,
     "ScaleMax": 1.25,
     "DesktopScaleMult": 0.8,
-    "DesktopScaleMin": 0.6,
+    "DesktopScaleMin": 0.5,
     "DesktopScaleMax": 1.0
   },
   "mutations": {
@@ -643,19 +636,19 @@
     "caught": 49,
     "results": [
       {
-        "mutation": "short desktop windows keep the desktop sheet",
+        "mutation": "short desktop windows go to the phone sheet",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pc_573x354_small :: exception still needed: fold holds the menu tiles in one line",
-          "pc_573x354_small :: no overlap portrait/hp_bar",
-          "pc_573x354_small :: no overlap portrait/xp_bar",
-          "pc_573x354_small :: phone plate at the right edge mp_bar",
-          "pc_573x354_small :: phone plate at the right edge power_line",
-          "pc_573x354_small :: phone plate at the right edge xp_bar"
+          "pc_573x354_small :: at least 6 tiles on every PC",
+          "pc_573x354_small :: attack in corner",
+          "pc_573x354_small :: face group at the bottom hp_bar",
+          "pc_573x354_small :: face group at the bottom mp_bar",
+          "pc_573x354_small :: face group at the bottom portrait",
+          "pc_573x354_small :: face group at the bottom power_line"
         ],
-        "newFailingCount": 33
+        "newFailingCount": 49
       },
       {
         "mutation": "touch targets may shrink to 30",
@@ -770,7 +763,7 @@
           "pc_1280x720 :: matches sheet tile gap",
           "pc_1280x720 :: tile gap"
         ],
-        "newFailingCount": 44
+        "newFailingCount": 41
       },
       {
         "mutation": "touch quest lines may shrink below a thumb",
@@ -792,14 +785,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pc_655x340_small :: phone plate at the right edge mp_bar",
-          "pc_655x340_small :: phone plate at the right edge power_line",
-          "pc_655x340_small :: phone plate at the right edge xp_bar",
-          "pc_700x450_small :: phone plate at the right edge mp_bar",
-          "pc_700x450_small :: phone plate at the right edge power_line",
-          "pc_700x450_small :: phone plate at the right edge xp_bar"
+          "phone_844x390 :: phone plate at the right edge mp_bar",
+          "phone_844x390 :: phone plate at the right edge power_line",
+          "phone_844x390 :: phone plate at the right edge xp_bar",
+          "tablet_1180x820 :: phone plate at the right edge mp_bar",
+          "tablet_1180x820 :: phone plate at the right edge power_line",
+          "tablet_1180x820 :: phone plate at the right edge xp_bar"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 6
       },
       {
         "mutation": "top-left items ignore the real top bar",
@@ -808,13 +801,13 @@
         "crashed": false,
         "newFailingChecks": [
           "pc_1024x600 :: top rows hug the top bar",
+          "pc_573x354_small :: no overlap minimap/quest",
+          "pc_573x354_small :: quest under the minimap",
           "pc_573x354_small :: top rows hug the top bar",
-          "pc_655x340_small :: top rows hug the top bar",
-          "pc_700x450_small :: top rows hug the top bar",
-          "pc_800x600 :: top rows hug the top bar",
-          "phone_568x320 :: top rows hug the top bar"
+          "pc_655x340_small :: no overlap minimap/quest",
+          "pc_655x340_small :: quest under the minimap"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 15
       },
       {
         "mutation": "phone plate anchored like the PC (bottom-centre)",
@@ -822,14 +815,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pc_573x354_small :: no overlap portrait/tiles",
-          "pc_573x354_small :: press gap portrait/tiles",
-          "pc_655x340_small :: no overlap portrait/tiles",
-          "pc_655x340_small :: press gap portrait/tiles",
-          "pc_700x450_small :: phone plate top-right portrait",
-          "phone_568x320 :: column clear of chips/portrait"
+          "phone_568x320 :: column clear of chips/portrait",
+          "phone_568x320 :: column clear of event/portrait",
+          "phone_568x320 :: column clear of notify/portrait",
+          "phone_568x320 :: no overlap chips/portrait",
+          "phone_568x320 :: no overlap event/portrait",
+          "phone_568x320 :: no overlap notify/portrait"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 18
       },
       {
         "mutation": "narrow phone safe area not shrunk",
@@ -857,9 +850,9 @@
           "pc_1280x1024 :: face group centred or stepped aside",
           "pc_1280x1024 :: press gap tiles/potions",
           "pc_1280x720_unibar_wide :: in the top bar war_meter",
-          "pc_573x354_small :: column clear of chips/quest"
+          "pc_573x354_small :: face group centred or stepped aside"
         ],
-        "newFailingCount": 27
+        "newFailingCount": 31
       },
       {
         "mutation": "PC face group never steps aside",
@@ -874,7 +867,7 @@
           "pc_1024x768 :: no overlap xp_bar/ghost",
           "pc_1024x768 :: press gap tiles/potions"
         ],
-        "newFailingCount": 26
+        "newFailingCount": 38
       },
       {
         "mutation": "PC face group ignores the left margin",
@@ -1116,7 +1109,7 @@
           "pc_1024x768 :: menu as big as a Roblox button",
           "pc_1024x768 :: no taller than a Roblox button menu"
         ],
-        "newFailingCount": 68
+        "newFailingCount": 69
       },
       {
         "mutation": "war meter not in the top bar",
@@ -1131,7 +1124,7 @@
           "pc_1024x600 :: on Roblox's button middle war_meter",
           "pc_1024x768 :: column order chips"
         ],
-        "newFailingCount": 118
+        "newFailingCount": 117
       },
       {
         "mutation": "top bar items follow the UIScale",
@@ -1184,9 +1177,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pc_1280x720_unibar_wide :: in the top bar war_meter"
+          "pc_1280x720_unibar_wide :: in the top bar war_meter",
+          "pc_573x354_small :: in the top bar war_meter"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "no fold room left beside [메뉴]",
@@ -1194,9 +1188,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_573x354_small :: fold holds the menu tiles in one line",
           "pc_655x340_small :: fold holds the menu tiles in one line"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "info rows not under the bar",
@@ -1211,7 +1206,7 @@
           "pc_1024x768 :: column order event",
           "pc_1024x768 :: no overlap chips/notify"
         ],
-        "newFailingCount": 31
+        "newFailingCount": 40
       },
       {
         "mutation": "fold may cover the war meter",
@@ -1226,7 +1221,7 @@
           "pc_1280x720_inset36 :: fold clear of war_meter",
           "pc_1280x720_unibar_wide :: fold clear of war_meter"
         ],
-        "newFailingCount": 14
+        "newFailingCount": 13
       },
       {
         "mutation": "fold lines ignore every item",
@@ -1241,7 +1236,7 @@
           "pc_1024x768 :: fold clear of war_meter",
           "pc_1024x768 :: fold first line in the top bar"
         ],
-        "newFailingCount": 66
+        "newFailingCount": 62
       },
       {
         "mutation": "fold one square too many",
@@ -1256,7 +1251,7 @@
           "pc_1280x1024 :: fold clear of war_meter",
           "pc_1280x720 :: fold clear of war_meter"
         ],
-        "newFailingCount": 40
+        "newFailingCount": 37
       },
       {
         "mutation": "fold lines go up",
@@ -1293,14 +1288,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pc_573x354_small :: phone tiles reach the plate's right edge",
-          "pc_655x340_small :: phone tiles reach the plate's right edge",
-          "pc_700x450_small :: phone tiles reach the plate's right edge",
           "phone_568x320 :: fold holds the menu tiles in one line",
           "phone_568x320 :: phone tiles reach the plate's right edge",
-          "phone_592x360_navbar :: phone tiles reach the plate's right edge"
+          "phone_592x360_navbar :: phone tiles reach the plate's right edge",
+          "phone_667x375 :: phone tiles reach the plate's right edge",
+          "phone_749x361 :: matches sheet chips",
+          "phone_749x361 :: matches sheet event"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 16
       },
       {
         "mutation": "fold squares touch",
@@ -1803,156 +1798,151 @@
     },
     "pc_1280x240_short": {
       "attack": {
-        "H": 124.0997,
-        "W": 124.0997,
-        "X": 1895.1062,
-        "Y": 267.036
+        "H": 147.5,
+        "W": 147.5,
+        "X": 2392.5,
+        "Y": 320
       },
       "auto": {
-        "H": 53.1856,
-        "W": 53.1856,
-        "X": 2040.2585,
-        "Y": 238.2271
+        "H": 63.75,
+        "W": 63.75,
+        "X": 2483.75,
+        "Y": 130
       },
       "chips": {
-        "H": 18.8366,
-        "W": 265.928,
-        "X": 933.7027,
-        "Y": 101.0988
+        "H": 27.5,
+        "W": 310,
+        "X": 1125,
+        "Y": 121
       },
       "combo": {
-        "H": 22.1607,
-        "W": 159.5568,
-        "X": 989.6584,
-        "Y": 261.4958
+        "H": 30,
+        "W": 150,
+        "X": 1205,
+        "Y": 158.75
       },
       "event": {
-        "H": 19.9446,
-        "W": 265.928,
-        "X": 933.7027,
-        "Y": 122.1514
+        "H": 27.5,
+        "W": 310,
+        "X": 1125,
+        "Y": 153.5
       },
       "fold": {
         "Cols": 10,
-        "Gap": 3.3241,
-        "H": 153.3241,
+        "Gap": 5,
+        "H": 88,
         "Lines": [
           {
             "Cols": 10,
-            "X": 1273.4257,
-            "Y": 20
-          },
-          {
-            "Cols": 22,
-            "X": 353.5365,
-            "Y": 99.9908
+            "X": 1518,
+            "Y": 24
           }
         ],
-        "Rows": 2,
-        "Size": 73.3333,
-        "W": 1683.1394,
-        "X": 353.5365,
-        "Y": 20
+        "Rows": 1,
+        "Size": 88,
+        "W": 925,
+        "X": 1518,
+        "Y": 24
       },
       "ghost": {
-        "H": 63.1579,
-        "W": 63.1579,
-        "X": 1731.1173,
-        "Y": 188.3657
+        "H": 76.25,
+        "W": 76.25,
+        "X": 2193.75,
+        "Y": 301.25
       },
       "hp_bar": {
-        "H": 14.4044,
-        "W": 103.0471,
-        "X": 1913.9428,
-        "Y": 118.8273
+        "H": 25,
+        "W": 270,
+        "X": 1005,
+        "Y": 327.5
       },
       "menu": {
-        "H": 73.3333,
-        "W": 73.3333,
-        "X": 2040,
-        "Y": 20
+        "H": 88,
+        "W": 88,
+        "X": 2448,
+        "Y": 24
       },
       "minimap": {
-        "H": 93.0748,
-        "W": 93.0748,
-        "X": 8.8643,
-        "Y": 101.0988
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 126
       },
       "mp_bar": {
-        "H": 14.4044,
-        "W": 103.0471,
-        "X": 2021.422,
-        "Y": 118.8273
+        "H": 25,
+        "W": 270,
+        "X": 1285,
+        "Y": 327.5
       },
       "notify": {
-        "H": 37.6731,
-        "W": 265.928,
-        "X": 933.7027,
-        "Y": 143.2041
+        "H": 57.5,
+        "W": 360,
+        "X": 1100,
+        "Y": 188.5
       },
       "portrait": {
-        "H": 49.8615,
-        "W": 49.8615,
-        "X": 1859.6491,
-        "Y": 101.0988
+        "H": 62.5,
+        "W": 62.5,
+        "X": 932.5,
+        "Y": 312.5
       },
       "potions": {
-        "Gap": 6.6482,
-        "H": 59.8338,
-        "W": 124.0997,
-        "X": 1676.8236,
-        "Y": 330.1939
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 2117.5,
+        "Y": 387.5
       },
       "power_line": {
-        "H": 15.5125,
-        "W": 210.5263,
-        "X": 1913.9428,
-        "Y": 101.0988
+        "H": 20,
+        "W": 550,
+        "X": 1005,
+        "Y": 302.5
       },
       "q": {
-        "H": 79.7784,
-        "W": 79.7784,
-        "X": 1807.5716,
-        "Y": 279.2244
+        "H": 96.25,
+        "W": 96.25,
+        "X": 2275,
+        "Y": 325
       },
       "quest": {
-        "H": 49.8615,
-        "W": 166.205,
-        "X": 108.5873,
-        "Y": 101.0988
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 326
       },
       "tiles": {
-        "Count": 5,
-        "Gap": 3.3241,
-        "H": 49.8615,
-        "Size": 49.8615,
-        "W": 264.8199,
-        "X": 1859.6491,
-        "Y": 156.5005
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 1005,
+        "Y": 380
       },
       "war_meter": {
-        "H": 63.3333,
-        "W": 265.928,
-        "X": 933.7027,
-        "Y": 25
+        "H": 84,
+        "W": 360,
+        "X": 1100,
+        "Y": 26
       },
       "x": {
-        "H": 79.7784,
-        "W": 79.7784,
-        "X": 1946.0757,
-        "Y": 210.362
+        "H": 96.25,
+        "W": 96.25,
+        "X": 2442.5,
+        "Y": 203.75
       },
       "xp_bar": {
-        "H": 6.6482,
-        "W": 210.5263,
-        "X": 1913.9428,
-        "Y": 137.6639
+        "H": 10,
+        "W": 550,
+        "X": 1005,
+        "Y": 357.5
       },
       "z": {
-        "H": 79.7784,
-        "W": 79.7784,
-        "X": 1854.109,
-        "Y": 210.362
+        "H": 96.25,
+        "W": 96.25,
+        "X": 2335,
+        "Y": 227.5
       }
     },
     "pc_1280x720": {
@@ -2752,479 +2742,479 @@
     },
     "pc_573x354_small": {
       "attack": {
-        "H": 142.8037,
-        "W": 142.8037,
-        "X": 680.8678,
-        "Y": 436.996
+        "H": 147.5,
+        "W": 147.5,
+        "X": 978.5,
+        "Y": 548
       },
       "auto": {
-        "H": 61.2016,
-        "W": 61.2016,
-        "X": 847.8972,
-        "Y": 403.8451
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1069.75,
+        "Y": 358
       },
       "chips": {
-        "H": 21.6756,
-        "W": 240,
-        "X": 324.2083,
-        "Y": 101.7668
+        "H": 27.5,
+        "W": 310,
+        "X": 340,
+        "Y": 121
       },
       "combo": {
-        "H": 25.5007,
-        "W": 183.6048,
-        "X": 388.8852,
-        "Y": 430.6208
+        "H": 30,
+        "W": 150,
+        "X": 498,
+        "Y": 386.75
       },
       "event": {
-        "H": 22.9506,
-        "W": 240,
-        "X": 324.2083,
-        "Y": 125.9924
+        "H": 27.5,
+        "W": 310,
+        "X": 340,
+        "Y": 153.5
       },
       "fold": {
-        "Cols": 3,
-        "Gap": 3.8251,
-        "H": 230.9835,
+        "Cols": 4,
+        "Gap": 5,
+        "H": 278,
         "Lines": [
           {
-            "Cols": 3,
-            "X": 630.1914,
-            "Y": 20
+            "Cols": 4,
+            "X": 662,
+            "Y": 24
           },
           {
-            "Cols": 6,
-            "X": 398.7161,
-            "Y": 100.4918
+            "Cols": 8,
+            "X": 290,
+            "Y": 121
           },
           {
-            "Cols": 9,
-            "X": 167.2408,
-            "Y": 177.6502
+            "Cols": 8,
+            "X": 290,
+            "Y": 214
           }
         ],
         "Rows": 3,
-        "Size": 73.3333,
-        "W": 690.6008,
-        "X": 167.2408,
-        "Y": 20
+        "Size": 88,
+        "W": 739,
+        "X": 290,
+        "Y": 24
       },
       "ghost": {
-        "H": 72.6769,
-        "W": 72.6769,
-        "X": 492.1629,
-        "Y": 346.4686
+        "H": 76.25,
+        "W": 76.25,
+        "X": 779.75,
+        "Y": 529.25
       },
       "hp_bar": {
-        "H": 16.5754,
-        "W": 118.5781,
-        "X": 702.5434,
-        "Y": 122.1673
+        "H": 25,
+        "W": 270,
+        "X": 145.5,
+        "Y": 555.5
       },
       "menu": {
-        "H": 73.3333,
-        "W": 73.3333,
-        "X": 861.6667,
-        "Y": 20
+        "H": 88,
+        "W": 88,
+        "X": 1034,
+        "Y": 24
       },
       "minimap": {
-        "H": 107.1028,
-        "W": 107.1028,
-        "X": 10.2003,
-        "Y": 101.7668
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 126
       },
       "mp_bar": {
-        "H": 16.5754,
-        "W": 118.5781,
-        "X": 826.2216,
-        "Y": 122.1673
+        "H": 25,
+        "W": 270,
+        "X": 425.5,
+        "Y": 555.5
       },
       "notify": {
-        "H": 43.3511,
-        "W": 240,
-        "X": 324.2083,
-        "Y": 150.2181
+        "H": 57.5,
+        "W": 318,
+        "X": 336,
+        "Y": 188.5
       },
       "portrait": {
-        "H": 57.3765,
-        "W": 57.3765,
-        "X": 640.0668,
-        "Y": 101.7668
+        "H": 62.5,
+        "W": 62.5,
+        "X": 73,
+        "Y": 540.5
       },
       "potions": {
-        "Gap": 7.6502,
-        "H": 68.8518,
-        "W": 142.8037,
-        "X": 429.6862,
-        "Y": 509.6729
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 703.5,
+        "Y": 615.5
       },
       "power_line": {
-        "H": 17.8505,
-        "W": 242.2563,
-        "X": 702.5434,
-        "Y": 101.7668
+        "H": 20,
+        "W": 550,
+        "X": 145.5,
+        "Y": 530.5
       },
       "q": {
-        "H": 91.8024,
-        "W": 91.8024,
-        "X": 580.1402,
-        "Y": 451.0214
+        "H": 96.25,
+        "W": 96.25,
+        "X": 861,
+        "Y": 553
       },
       "quest": {
-        "H": 57.3765,
-        "W": 191.255,
-        "X": 124.9533,
-        "Y": 101.7668
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 326
       },
       "tiles": {
-        "Count": 5,
-        "Gap": 3.8251,
-        "H": 57.3765,
-        "Size": 57.3765,
-        "W": 304.733,
-        "X": 640.0668,
-        "Y": 165.5185
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 145.5,
+        "Y": 608
       },
       "war_meter": {
-        "H": 63.3333,
-        "W": 240,
-        "X": 324.2083,
-        "Y": 25
+        "H": 84,
+        "W": 318,
+        "X": 336,
+        "Y": 26
       },
       "x": {
-        "H": 91.8024,
-        "W": 91.8024,
-        "X": 739.5194,
-        "Y": 338.8184
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1028.5,
+        "Y": 431.75
       },
       "xp_bar": {
-        "H": 7.6502,
-        "W": 242.2563,
-        "X": 702.5434,
-        "Y": 143.8429
+        "H": 10,
+        "W": 550,
+        "X": 145.5,
+        "Y": 585.5
       },
       "z": {
-        "H": 91.8024,
-        "W": 91.8024,
-        "X": 633.6916,
-        "Y": 359.219
+        "H": 96.25,
+        "W": 96.25,
+        "X": 921,
+        "Y": 455.5
       }
     },
     "pc_655x340_small": {
       "attack": {
-        "H": 149.3333,
-        "W": 149.3333,
-        "X": 805,
-        "Y": 406.6667
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1142.5,
+        "Y": 520
       },
       "auto": {
-        "H": 64,
-        "W": 64,
-        "X": 979.6667,
-        "Y": 372
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1233.75,
+        "Y": 330
       },
       "chips": {
-        "H": 22.6667,
-        "W": 320,
-        "X": 361,
-        "Y": 102
+        "H": 27.5,
+        "W": 310,
+        "X": 483,
+        "Y": 121
       },
       "combo": {
-        "H": 26.6667,
-        "W": 192,
-        "X": 453.1667,
-        "Y": 400
+        "H": 30,
+        "W": 150,
+        "X": 580,
+        "Y": 358.75
       },
       "event": {
-        "H": 24,
-        "W": 320,
-        "X": 361,
-        "Y": 127.3333
+        "H": 27.5,
+        "W": 310,
+        "X": 483,
+        "Y": 153.5
       },
       "fold": {
         "Cols": 4,
-        "Gap": 4,
-        "H": 231.3333,
+        "Gap": 5,
+        "H": 278,
         "Lines": [
           {
             "Cols": 4,
-            "X": 689,
-            "Y": 20
+            "X": 826,
+            "Y": 24
           },
           {
-            "Cols": 8,
-            "X": 379.6667,
-            "Y": 100.6667
+            "Cols": 10,
+            "X": 268,
+            "Y": 121
           },
           {
-            "Cols": 11,
-            "X": 147.6667,
-            "Y": 178
+            "Cols": 10,
+            "X": 268,
+            "Y": 214
           }
         ],
         "Rows": 3,
-        "Size": 73.3333,
-        "W": 846.6667,
-        "X": 147.6667,
-        "Y": 20
+        "Size": 88,
+        "W": 925,
+        "X": 268,
+        "Y": 24
       },
       "ghost": {
-        "H": 76,
-        "W": 76,
-        "X": 607.6667,
-        "Y": 312
+        "H": 76.25,
+        "W": 76.25,
+        "X": 943.75,
+        "Y": 501.25
       },
       "hp_bar": {
-        "H": 17.3333,
-        "W": 124,
-        "X": 827.6667,
-        "Y": 123.3333
+        "H": 25,
+        "W": 270,
+        "X": 309.5,
+        "Y": 527.5
       },
       "menu": {
-        "H": 73.3333,
-        "W": 73.3333,
-        "X": 998.3333,
-        "Y": 20
+        "H": 88,
+        "W": 88,
+        "X": 1198,
+        "Y": 24
       },
       "minimap": {
-        "H": 112,
-        "W": 112,
-        "X": 10.6667,
-        "Y": 102
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 126
       },
       "mp_bar": {
-        "H": 17.3333,
-        "W": 124,
-        "X": 957,
-        "Y": 123.3333
+        "H": 25,
+        "W": 270,
+        "X": 589.5,
+        "Y": 527.5
       },
       "notify": {
-        "H": 45.3333,
-        "W": 320,
-        "X": 361,
-        "Y": 152.6667
+        "H": 57.5,
+        "W": 360,
+        "X": 458,
+        "Y": 188.5
       },
       "portrait": {
-        "H": 60,
-        "W": 60,
-        "X": 762.3333,
-        "Y": 102
+        "H": 62.5,
+        "W": 62.5,
+        "X": 237,
+        "Y": 512.5
       },
       "potions": {
-        "Gap": 8,
-        "H": 72,
-        "W": 149.3333,
-        "X": 542.3333,
-        "Y": 482.6667
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 867.5,
+        "Y": 587.5
       },
       "power_line": {
-        "H": 18.6667,
-        "W": 253.3333,
-        "X": 827.6667,
-        "Y": 102
+        "H": 20,
+        "W": 550,
+        "X": 309.5,
+        "Y": 502.5
       },
       "q": {
-        "H": 96,
-        "W": 96,
-        "X": 699.6667,
-        "Y": 421.3333
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1025,
+        "Y": 525
       },
       "quest": {
-        "H": 60,
-        "W": 200,
-        "X": 130.6667,
-        "Y": 102
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 326
       },
       "tiles": {
-        "Count": 5,
-        "Gap": 4,
-        "H": 60,
-        "Size": 60,
-        "W": 318.6667,
-        "X": 762.3333,
-        "Y": 168.6667
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 309.5,
+        "Y": 580
       },
       "war_meter": {
-        "H": 63.3333,
-        "W": 320,
-        "X": 361,
-        "Y": 25
+        "H": 84,
+        "W": 360,
+        "X": 458,
+        "Y": 26
       },
       "x": {
-        "H": 96,
-        "W": 96,
-        "X": 866.3333,
-        "Y": 304
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1192.5,
+        "Y": 403.75
       },
       "xp_bar": {
-        "H": 8,
-        "W": 253.3333,
-        "X": 827.6667,
-        "Y": 146
+        "H": 10,
+        "W": 550,
+        "X": 309.5,
+        "Y": 557.5
       },
       "z": {
-        "H": 96,
-        "W": 96,
-        "X": 755.6667,
-        "Y": 325.3333
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1085,
+        "Y": 427.5
       }
     },
     "pc_700x450_small": {
       "attack": {
-        "H": 149.3333,
-        "W": 149.3333,
-        "X": 880,
-        "Y": 590
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1232.5,
+        "Y": 740
       },
       "auto": {
-        "H": 64,
-        "W": 64,
-        "X": 1054.6667,
-        "Y": 555.3333
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1323.75,
+        "Y": 550
       },
       "chips": {
-        "H": 22.6667,
-        "W": 320,
-        "X": 423.3333,
-        "Y": 102
+        "H": 27.5,
+        "W": 310,
+        "X": 545,
+        "Y": 121
       },
       "combo": {
-        "H": 26.6667,
-        "W": 192,
-        "X": 490.6667,
-        "Y": 583.3333
+        "H": 30,
+        "W": 150,
+        "X": 625,
+        "Y": 578.75
       },
       "event": {
-        "H": 24,
-        "W": 320,
-        "X": 423.3333,
-        "Y": 127.3333
+        "H": 27.5,
+        "W": 310,
+        "X": 545,
+        "Y": 153.5
       },
       "fold": {
         "Cols": 4,
-        "Gap": 4,
-        "H": 231.3333,
+        "Gap": 5,
+        "H": 278,
         "Lines": [
           {
             "Cols": 4,
-            "X": 764,
-            "Y": 20
+            "X": 916,
+            "Y": 24
           },
           {
-            "Cols": 9,
-            "X": 377.3333,
-            "Y": 100.6667
+            "Cols": 11,
+            "X": 265,
+            "Y": 121
           },
           {
-            "Cols": 12,
-            "X": 145.3333,
-            "Y": 178
+            "Cols": 11,
+            "X": 265,
+            "Y": 214
           }
         ],
         "Rows": 3,
-        "Size": 73.3333,
-        "W": 924,
-        "X": 145.3333,
-        "Y": 20
+        "Size": 88,
+        "W": 1018,
+        "X": 265,
+        "Y": 24
       },
       "ghost": {
-        "H": 76,
-        "W": 76,
-        "X": 682.6667,
-        "Y": 495.3333
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1033.75,
+        "Y": 721.25
       },
       "hp_bar": {
-        "H": 17.3333,
-        "W": 124,
-        "X": 902.6667,
-        "Y": 123.3333
+        "H": 25,
+        "W": 270,
+        "X": 399.5,
+        "Y": 747.5
       },
       "menu": {
-        "H": 73.3333,
-        "W": 73.3333,
-        "X": 1073.3333,
-        "Y": 20
+        "H": 88,
+        "W": 88,
+        "X": 1288,
+        "Y": 24
       },
       "minimap": {
-        "H": 112,
-        "W": 112,
-        "X": 10.6667,
-        "Y": 102
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 126
       },
       "mp_bar": {
-        "H": 17.3333,
-        "W": 124,
-        "X": 1032,
-        "Y": 123.3333
+        "H": 25,
+        "W": 270,
+        "X": 679.5,
+        "Y": 747.5
       },
       "notify": {
-        "H": 45.3333,
-        "W": 320,
-        "X": 423.3333,
-        "Y": 152.6667
+        "H": 57.5,
+        "W": 360,
+        "X": 520,
+        "Y": 188.5
       },
       "portrait": {
-        "H": 60,
-        "W": 60,
-        "X": 837.3333,
-        "Y": 102
+        "H": 62.5,
+        "W": 62.5,
+        "X": 327,
+        "Y": 732.5
       },
       "potions": {
-        "Gap": 8,
-        "H": 72,
-        "W": 149.3333,
-        "X": 617.3333,
-        "Y": 666
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 957.5,
+        "Y": 807.5
       },
       "power_line": {
-        "H": 18.6667,
-        "W": 253.3333,
-        "X": 902.6667,
-        "Y": 102
+        "H": 20,
+        "W": 550,
+        "X": 399.5,
+        "Y": 722.5
       },
       "q": {
-        "H": 96,
-        "W": 96,
-        "X": 774.6667,
-        "Y": 604.6667
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1115,
+        "Y": 745
       },
       "quest": {
-        "H": 60,
-        "W": 200,
-        "X": 130.6667,
-        "Y": 102
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 326
       },
       "tiles": {
-        "Count": 5,
-        "Gap": 4,
-        "H": 60,
-        "Size": 60,
-        "W": 318.6667,
-        "X": 837.3333,
-        "Y": 168.6667
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 399.5,
+        "Y": 800
       },
       "war_meter": {
-        "H": 63.3333,
-        "W": 320,
-        "X": 423.3333,
-        "Y": 25
+        "H": 84,
+        "W": 360,
+        "X": 520,
+        "Y": 26
       },
       "x": {
-        "H": 96,
-        "W": 96,
-        "X": 941.3333,
-        "Y": 487.3333
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1282.5,
+        "Y": 623.75
       },
       "xp_bar": {
-        "H": 8,
-        "W": 253.3333,
-        "X": 902.6667,
-        "Y": 146
+        "H": 10,
+        "W": 550,
+        "X": 399.5,
+        "Y": 777.5
       },
       "z": {
-        "H": 96,
-        "W": 96,
-        "X": 830.6667,
-        "Y": 508.6667
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1175,
+        "Y": 647.5
       }
     },
     "pc_800x600": {
@@ -4779,10 +4769,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "0f9a350d5a92a4873378e27c16a58471d43da366472a0107cfd31a420211d315",
-    "tools/fixtures/hud_layout_offline.luau": "66e5b03f002a9a9c606415a835502988bb96df61bdbe6bb45cab29027a8f03ef",
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "f9717bf6d94d1ac9734528828aed212b9b548ceaf07ae4eab5e10caf694c5ee5",
+    "tools/fixtures/hud_layout_offline.luau": "253b9f87efdd26de5d6c4d8503b1aea2e0fd7aad38fc18e1caed0d1ac05899d2",
     "docs/design/hud_layout_B_imgdev_2026-10-06.json": "8c65195f6ed4f34c690eadf8815910cf396ba7ceb302757a3766b1e17fa0463b",
-    "src/ReplicatedStorage/Shared/Config.luau": "9f5c26cafa5214db4a7297097bb3a85b9c386864ef8234723b6625ea0376056e"
+    "src/ReplicatedStorage/Shared/Config.luau": "9acfe018b6b41001071fe13a80e77a623b4ac56cd1de3238190361943b802083"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

@@ -159,7 +159,7 @@ for _, case in CASES do
 	local W, H, s = env.W, env.H, env.Scale
 	local top = env.Inset / s
 	local touch = env.Touch == true
-	-- the approved sheet the rects follow: the phone one on touch and on short desktop windows (HudLayout SMALL_PC)
+	-- the approved sheet the rects follow: the phone one on touch only (short PC windows: desktop sheet, smaller UIScale)
 	local sheet = case.Sheet == true
 	-- the Roblox top bar's free part (GuiService.TopbarInset) as HUD.luau passes it
 	local bar = env.Topbar or { X0 = 164 / s, Y0 = 0, X1 = W, Y1 = top }

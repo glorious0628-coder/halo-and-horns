@@ -363,6 +363,15 @@ local function currentScale()
 	return s
 end
 
+-- review 2026-10-07: a mouse / keyboard PC in a short window keeps the desktop layout at a smaller UIScale; its real-px
+-- text floors (readability rules made for phones) shrink with it below the 720p desktop scale (DESKTOP_MULT), so the
+-- HUD stays one picture, only smaller - at UIScale 0.5 the floors had kept every word full size and they spilled out of
+-- the halved HUD. Touch devices: 1 (the floors stand)
+function UIKit.PxFloor()
+	if UserInputService.TouchEnabled then return 1 end
+	return math.min(1, currentScale() / DESKTOP_MULT)
+end
+
 local function applyScale()
 	if not uiScale then return end
 	local cam = workspace.CurrentCamera
@@ -1535,7 +1544,7 @@ function STYLE.Refresh(label)
 	local scale = STYLE.Scale(label)
 	-- a label may lower its floor with the attribute StyleMinPx (A23-48: English icon tile names such as 'Settings'
 	-- shrink inside the tile down to 10 px, 검수 2026-10-06)
-	local minPx = tonumber(label:GetAttribute("StyleMinPx")) or def.MinPx
+	local minPx = (tonumber(label:GetAttribute("StyleMinPx")) or def.MinPx) * UIKit.PxFloor()
 	-- ceil, not floor: floor(14 / 0.75) = 18 would render 13.5 px, under the rubric's 14
 	local floorSize = math.clamp(math.ceil(minPx / scale - 0.001), 1, 100)
 	Art.StyleFloor[label] = floorSize
@@ -2237,7 +2246,7 @@ function UIKit.Toast(text, kind, duration, icon)
 		Size = UDim2.new(1, -left, 0, img and TOAST_ICON or 22),
 		TextWrapped = true,
 		TextTruncate = Enum.TextTruncate.AtEnd,
-		TextSize = math.max(18, math.ceil(NOTIFY.ToastPx / currentScale() - 0.001)),
+		TextSize = math.max(18, math.ceil(NOTIFY.ToastPx * UIKit.PxFloor() / currentScale() - 0.001)),
 		Text = text,
 		TextColor3 = (kind == "good" or kind == "bad" or kind == "reward") and color or T.Text,
 		TextTransparency = 1,
@@ -2466,7 +2475,7 @@ function UIKit.PlaceNotify(rect, topY)
 		announceFrame.Size = UDim2.fromOffset(math.floor(math.min(w * NOTIFY.BannerWidthMult, NOTIFY.BannerMaxW)),
 			math.floor(bannerH))
 		-- text: about 44% of the banner, never under BannerPx real px, at most BannerTextMax
-		local floorDu = math.ceil(NOTIFY.BannerPx / currentScale() - 0.001)
+		local floorDu = math.ceil(NOTIFY.BannerPx * UIKit.PxFloor() / currentScale() - 0.001)
 		local textSize = math.clamp(math.floor(bannerH * 0.44 + 0.5), floorDu, math.max(floorDu, NOTIFY.BannerTextMax))
 		announceLabel.TextSize = textSize -- UIKit.WrapHeight refits the lines
 		local icon = announceFrame:FindFirstChild("Icon")

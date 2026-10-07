@@ -70,10 +70,9 @@ local TOPBAR = { Left = 164, Button = 44, Bottom = 2, Edge = 12, Tap = 45 }
 HudLayout.Topbar = TOPBAR
 local FOLD_MIN = 4 -- the [메뉴] squares that must fit beside it on the bar (새 소식 · 이동 · 도움말 · 설정)
 local MIN_CENTER = 240 -- logical units: narrowest centre column (the war meter stays >= 240du)
--- real px: a desktop window shorter than this lays out on the phone sheet (top-right plate and tiles, quest lines beside
--- the minimap). On the desktop sheet the bottom-centre group steps left into the quest lines there (main Studio 655x340
--- and 573x354, 검수 2026-10-06). Touch rules (finger sizes, the thumbstick zone, the jump button) stay touch-only.
-local SMALL_PC = 500
+-- review 2026-10-07 (user: "이거 위치 왜이래?" on a short Studio window): a mouse / keyboard PC always lays out on the
+-- desktop sheet, however small the window; short windows get a smaller UIScale instead (Config.UI.DesktopScaleMin 0.5),
+-- which keeps the desktop layout's top and bottom blocks apart. The phone sheet is for touch only (replaces SMALL_PC)
 local GAP = 8
 -- touch targets never shrink below 60 logical units (~45 real px at the phone's 0.75 UIScale). A scaled down button
 -- grows back: the portrait from its top-left corner (the bars beside it give way, the tile row under it moves down), the
@@ -118,18 +117,10 @@ HudLayout.AnchorOf = anchorOf
 -- returns { [id] = { X, Y, W, H } } in logical units (MainGui space, before UIScale). potions also carries Gap (du between
 -- its HP and MP cells: cell width = (W - Gap) / 2); tiles carries Size (square tile side), Gap (least gap) and Count (how
 -- many tiles fit the row: the HUD shows that many, the rest go into the [메뉴] tile)
--- true when a desktop window is too short for the desktop sheet (SMALL_PC)
-function HudLayout.SmallDesktop(env)
-	if type(env) ~= "table" or env.Touch == true then return false end
-	local s = (type(env.Scale) == "number" and env.Scale > 0) and env.Scale or 1
-	return type(env.H) == "number" and env.H * s < SMALL_PC
-end
-
 function HudLayout.Compute(env)
 	local touch = env.Touch == true
-	-- sheet = which approved sheet the rects come from (the phone one on touch and on short desktop windows);
-	-- touch = the finger rules
-	local sheet = touch or HudLayout.SmallDesktop(env)
+	-- sheet = which approved sheet the rects come from (the phone one on touch only); touch = the finger rules
+	local sheet = touch
 	local ref = sheet and REF.Touch or REF.Desktop
 	local k = 1 / ref.Scale -- reference px -> logical units
 	local s = (type(env.Scale) == "number" and env.Scale > 0) and env.Scale or 1

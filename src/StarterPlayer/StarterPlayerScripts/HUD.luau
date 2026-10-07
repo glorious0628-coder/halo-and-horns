@@ -441,9 +441,11 @@ function L.FitText(label, pixels, bold, minPixels)
 		fit.Apply = function()
 			if not label.Parent then return end
 			local s = currentScale()
-			local mp = fit.MinPixels or 11
+			-- small PC windows: the real-px floor and ceiling shrink with the scale (UIKit.PxFloor, review 2026-10-07)
+			local pf = type(UIKit.PxFloor) == "function" and UIKit.PxFloor() or 1
+			local mp = (fit.MinPixels or 11) * pf
 			local minSize = math.max(1, math.min(mp, math.floor(mp / s)))
-			local maxSize = math.max(minSize, math.floor(fit.Pixels / s))
+			local maxSize = math.max(minSize, math.floor(fit.Pixels * pf / s))
 			if fit.Min == minSize and fit.Max == maxSize then return end
 			fit.Min, fit.Max = minSize, maxSize
 			local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
