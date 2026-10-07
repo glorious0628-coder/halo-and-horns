@@ -55,11 +55,10 @@
     "Respawn": "rbxassetid://128867123359602",
     "Plunder": "rbxassetid://74602898707411",
     "JackpotOther": "rbxassetid://99814762304779",
-    "SkillLearn": "rbxassetid://113535664889883"
+    "SkillLearn": "rbxassetid://113535664889883",
+    "Loot": "rbxassetid://114739645345413"
   },
-  "pending": [
-    "Loot"
-  ],
+  "pending": [],
   "kept": {
     "about": "round-3 sounds that have no round-4 file yet; still current in Config.Audio.Files (do not retire)",
     "ids": {
