@@ -1,0 +1,157 @@
+ComboMilestone  ComboMilestone_kA        PASS 100  FAIL: -  |  WARN: -
+ComboMilestone  ComboMilestone_sA        PASS 100  FAIL: -  |  WARN: -
+ComboMilestone  ComboMilestone_sB        PASS 100  FAIL: -  |  WARN: -
+KillPop         KillPop_sA               PASS 100  FAIL: -  |  WARN: -
+KillPop         KillPop_sB               PASS 100  FAIL: -  |  WARN: -
+LevelUp         LevelUp_sA               PASS 100  FAIL: -  |  WARN: -
+LevelUp         LevelUp_sB               PASS 100  FAIL: -  |  WARN: -
+SwingWarrior    SwingWarrior_sA          PASS 100  FAIL: -  |  WARN: -
+SwingWarrior    SwingWarrior_sB          PASS 100  FAIL: -  |  WARN: -
+Tap             Tap_kA                   WARN  97  FAIL: -  |  WARN: effLufs=-26.7 (want -26.5..-21.5)
+Tap             Tap_kB                   WARN  97  FAIL: -  |  WARN: effLufs=-27.0 (want -26.5..-21.5)
+WindowOpen      WindowOpen_sA            PASS 100  FAIL: -  |  WARN: -
+WindowOpen      WindowOpen_sB            PASS 100  FAIL: -  |  WARN: -
+AutoOff         AutoOff                  PASS 100  FAIL: -  |  WARN: -
+AutoOn          AutoOn                   PASS 100  FAIL: -  |  WARN: -
+ComboCoin       ComboCoin                WARN  98  FAIL: -  |  WARN: durMs=198 (want 200..260)
+CountTick       CountTick                PASS 100  FAIL: -  |  WARN: -
+CrownHalo       CrownHalo                PASS 100  FAIL: -  |  WARN: -
+CrownHorns      CrownHorns               PASS 100  FAIL: -  |  WARN: -
+Deny            Deny                     PASS 100  FAIL: -  |  WARN: -
+Devour          Devour                   PASS 100  FAIL: -  |  WARN: -
+Equip           Equip                    PASS 100  FAIL: -  |  WARN: -
+GhostKing       GhostKing                PASS 100  FAIL: -  |  WARN: -
+GoldPickup      GoldPickup               PASS 100  FAIL: -  |  WARN: -
+GoldenSpot      GoldenSpot               PASS 100  FAIL: -  |  WARN: -
+GooseArrive     GooseArrive              PASS 100  FAIL: -  |  WARN: -
+GooseEnd        GooseEnd                 PASS 100  FAIL: -  |  WARN: -
+GooseHonk       GooseHonk                PASS 100  FAIL: -  |  WARN: -
+HitCrit         HitCrit                  PASS 100  FAIL: -  |  WARN: -
+HitHeavy        HitHeavy                 WARN  97  FAIL: -  |  WARN: peakAtMs=5.50 (want 0..5)
+HitSoft         HitSoft                  WARN  91  FAIL: -  |  WARN: lt150=0.143 (want 0..0.1); phoneDropDb=5.06 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
+HurtBig         HurtBig                  PASS 100  FAIL: -  |  WARN: -
+JackpotOther    JackpotOther             PASS 100  FAIL: -  |  WARN: -
+Jump            Jump                     PASS 100  FAIL: -  |  WARN: -
+KO              KO                       PASS 100  FAIL: -  |  WARN: -
+KaijuSiren      KaijuSiren               PASS 100  FAIL: -  |  WARN: -
+KaijuStomp      KaijuStomp               PASS 100  FAIL: -  |  WARN: -
+KingDefeat      KingDefeat               PASS 100  FAIL: -  |  WARN: -
+Loot            Loot                     PASS 100  FAIL: -  |  WARN: -
+Plunder         Plunder                  PASS 100  FAIL: -  |  WARN: -
+Potion          Potion                   PASS 100  FAIL: -  |  WARN: -
+PowerUp         PowerUp                  PASS 100  FAIL: -  |  WARN: -
+PumpkinKing     PumpkinKing              PASS 100  FAIL: -  |  WARN: -
+Purify          Purify                   PASS 100  FAIL: -  |  WARN: -
+Purify          Purify_b                 PASS 100  FAIL: -  |  WARN: -
+QuestDone       QuestDone                PASS 100  FAIL: -  |  WARN: -
+QuestNew        QuestNew                 PASS 100  FAIL: -  |  WARN: -
+RankDown        RankDown                 PASS 100  FAIL: -  |  WARN: -
+RankUp          RankUp                   PASS 100  FAIL: -  |  WARN: -
+Respawn         Respawn                  PASS 100  FAIL: -  |  WARN: -
+ScrollFail      ScrollFail               PASS 100  FAIL: -  |  WARN: -
+ScrollSuccess   ScrollSuccess            PASS 100  FAIL: -  |  WARN: -
+SkillHalo       SkillHalo                PASS 100  FAIL: -  |  WARN: -
+SkillHorns      SkillHorns               PASS 100  FAIL: -  |  WARN: -
+SkillLearn      SkillLearn               PASS 100  FAIL: -  |  WARN: -
+SkillReady      SkillReady               PASS 100  FAIL: -  |  WARN: -
+Spend           Spend                    PASS 100  FAIL: -  |  WARN: -
+SwingArrow      SwingArrow               PASS 100  FAIL: -  |  WARN: -
+SwingMageHalo   SwingMageHalo            WARN  98  FAIL: -  |  WARN: flat=0.054 (want 0.1..0.5)
+SwingMageHorns  SwingMageHorns           PASS 100  FAIL: -  |  WARN: -
+TalkBlip        TalkBlip                 PASS 100  FAIL: -  |  WARN: -
+WarFinal30      WarFinal30               PASS 100  FAIL: -  |  WARN: -
+WindowClose     WindowClose              PASS 100  FAIL: -  |  WARN: -
+ZoneEnterPvP    ZoneEnterPvP             PASS 100  FAIL: -  |  WARN: -
+BarkPop         TalkBlip@0.8x            PASS 100  FAIL: -  |  WARN: -
+BarkPop         TalkBlip@1.5x            WARN  96  FAIL: -  |  WARN: effLufs=-35.4 (want -35.0..-27.5)
+ShardLean       Devour@1.12x             PASS 100  FAIL: -  |  WARN: -
+ShardLean       Purify@1.12x             PASS 100  FAIL: -  |  WARN: -
+ShardLean       Purify_b@1.12x           PASS 100  FAIL: -  |  WARN: -
+
+distinct ok   SwingMageHalo vs SwingMageHorns: score 2.15 (>= 1.0) | the faction must be heard
+distinct ok   HitSoft vs HitHeavy: score 2.1 (>= 1.0) | 말랑 vs 퍽
+distinct ok   HitHeavy vs HitCrit: score 2.05 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy vs HurtBig: score 1.33 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   HitCrit vs ScrollSuccess: score 1.42 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   KillPop_sA [KillPop] vs ComboCoin: registerOct 1.593 (>= 0.7) | score 2.28 | own lanes: pop ~0.8 kHz, coin ~2.7 kHz
+distinct ok   KillPop_sB [KillPop] vs ComboCoin: registerOct 1.684 (>= 0.7) | score 2.41 | own lanes: pop ~0.8 kHz, coin ~2.7 kHz
+distinct ok   KillPop_sA [KillPop] vs Potion: score 2.0 (>= 1.0) | a potion must not read as a kill
+distinct ok   KillPop_sB [KillPop] vs Potion: score 2.14 (>= 1.0) | a potion must not read as a kill
+distinct ok   HitHeavy vs CountTick: score 2.84 (>= 1.0) | a war-end 3-2-1 must not sound like hits
+distinct ok   SkillHalo vs ComboCoin: score 1.74 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo vs Purify: score 1.74 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo vs Purify_b [Purify]: score 1.62 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns vs Devour: score 3.9 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   KaijuStomp vs HitHeavy: score 1.65 (>= 1.0) | danger cue vs my own hit
+distinct ok   Tap_kA [Tap] vs TalkBlip: score 1.31 (>= 1.0) | Tap must be the percussive one
+distinct ok   Tap_kB [Tap] vs TalkBlip: score 1.38 (>= 1.0) | Tap must be the percussive one
+distinct ok   Tap_kA [Tap] vs SkillReady: score 2.3 (>= 1.0) | skill ready is not a menu press
+distinct ok   Tap_kB [Tap] vs SkillReady: score 2.38 (>= 1.0) | skill ready is not a menu press
+distinct ok   Tap_kA [Tap] vs CountTick: score 2.05 (>= 1.0) | a countdown tick is not a button
+distinct ok   Tap_kB [Tap] vs CountTick: score 2.14 (>= 1.0) | a countdown tick is not a button
+distinct ok   WindowOpen_sA [WindowOpen] vs WindowClose: contourOct 0.383 (>= 0.25) | score 0.91 | a matched mirror pair: up vs down
+distinct ok   WindowOpen_sB [WindowOpen] vs WindowClose: contourOct 0.412 (>= 0.25) | score 1.24 | a matched mirror pair: up vs down
+distinct ok   WindowOpen_sA [WindowOpen] vs QuestNew: score 1.26 (>= 1.0) | both play when a quest window opens
+distinct ok   WindowOpen_sB [WindowOpen] vs QuestNew: score 1.29 (>= 1.0) | both play when a quest window opens
+distinct ok   WindowClose vs Deny: score 2.32 (>= 1.0) | a 'no' is two separate notes
+distinct ok   WindowClose vs ScrollFail: score 2.51 (>= 1.0) | no plain falling glide for the fail
+distinct ok   Deny vs RankDown: registerOct 0.042 (>= 0.3) or timbreDb 10.24 (>= 10) | score 1.36 | critique: the RankDown recipe is the Deny sound with one more note
+distinct ok   Deny vs AutoOff: score 1.2 (>= 1.0) | OFF is calm, not a 'no'
+distinct ok   Deny vs GooseHonk: score 1.98 (>= 1.0) | a honk must never mean 'wrong'
+distinct ok   AutoOn vs AutoOff: registerOct 1.115 (>= 0.5) and contourOct 0.832 (>= 0.3) | score 1.66 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   RankDown vs RankUp: contourOct 0.342 (>= 0.25) | score 0.68 | mirror pair
+distinct ok   QuestDone vs LevelUp_sA [LevelUp]: registerOct 0.925 (>= 0.8) | score 1.92 | QuestDone at least an octave above LevelUp
+distinct ok   QuestDone vs LevelUp_sB [LevelUp]: registerOct 0.959 (>= 0.8) | score 1.95 | QuestDone at least an octave above LevelUp
+distinct ok   QuestDone vs ComboMilestone_kA [ComboMilestone]: score 1.49 (>= 1.0) | quest done vs combo
+distinct ok   QuestDone vs ComboMilestone_sA [ComboMilestone]: score 1.81 (>= 1.0) | quest done vs combo
+distinct ok   QuestDone vs ComboMilestone_sB [ComboMilestone]: score 1.26 (>= 1.0) | quest done vs combo
+distinct ok   QuestDone vs ScrollSuccess: score 1.2 (>= 1.0) | quest done vs enhance
+distinct ok   ComboMilestone_kA [ComboMilestone] vs ScrollSuccess: score 2.04 (>= 1.0) | combo vs enhance
+distinct ok   ComboMilestone_sA [ComboMilestone] vs ScrollSuccess: score 2.03 (>= 1.0) | combo vs enhance
+distinct ok   ComboMilestone_sB [ComboMilestone] vs ScrollSuccess: score 1.67 (>= 1.0) | combo vs enhance
+distinct ok   ScrollSuccess vs GoldPickup: score 2.26 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   GoldenSpot vs GoldPickup: score 2.07 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot vs ComboCoin: score 1.49 (>= 1.0) | spotting gold is not getting gold
+distinct ok   WarFinal30 vs ComboCoin: score 1.79 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30 vs GoldPickup: score 1.85 (>= 1.0) | 'hurry' must not read as money
+distinct ok   KingDefeat vs ComboCoin: score 2.61 (>= 1.0) | candy is not gold
+distinct ok   JackpotOther vs LevelUp_sA [LevelUp]: score 2.43 (>= 1.0) | someone else's moment is smaller than mine
+distinct ok   JackpotOther vs LevelUp_sB [LevelUp]: score 2.44 (>= 1.0) | someone else's moment is smaller than mine
+distinct ok   PumpkinKing vs GhostKing: score 2.21 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   CrownHalo vs Purify: score 2.26 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo vs Purify_b [Purify]: score 2.79 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo vs LevelUp_sA [LevelUp]: score 2.03 (>= 1.0) | a different sound from my level up
+distinct ok   CrownHalo vs LevelUp_sB [LevelUp]: score 1.98 (>= 1.0) | a different sound from my level up
+distinct ok   ZoneEnterPvP vs CountTick: score 2.92 (>= 1.0) | both wood: keep the safety cue its own
+match    ok   Purify vs Devour: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    ok   Purify_b [Purify] vs Devour: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    ok   SwingMageHalo vs SwingMageHorns: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo vs SkillHorns: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.7 LU (<= 2.0) | fair on phones
+match    ok   CrownHalo vs CrownHorns: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.0 LU (<= 2.0) | fair on phones
+louder   ok   ScrollSuccess vs ScrollFail: ScrollSuccess is +4.9 LU vs ScrollFail in game (need >= +4.8) | spec: at least 4.8 dB above the fail
+louder   ok   LevelUp_sA [LevelUp] vs QuestDone: LevelUp is +2.3 LU vs QuestDone in game (need >= +1.5) | LevelUp is the loudest sound
+louder   ok   LevelUp_sB [LevelUp] vs QuestDone: LevelUp is +2.3 LU vs QuestDone in game (need >= +1.5) | LevelUp is the loudest sound
+louder   ok   LevelUp_sA [LevelUp] vs ScrollSuccess: LevelUp is +1.7 LU vs ScrollSuccess in game (need >= +1.0) | LevelUp is the loudest sound
+louder   ok   LevelUp_sB [LevelUp] vs ScrollSuccess: LevelUp is +1.7 LU vs ScrollSuccess in game (need >= +1.0) | LevelUp is the loudest sound
+louder   ok   LevelUp_sA [LevelUp] vs PumpkinKing: LevelUp is +3.0 LU vs PumpkinKing in game (need >= +1.0) | LevelUp is the loudest sound
+louder   ok   LevelUp_sB [LevelUp] vs PumpkinKing: LevelUp is +3.0 LU vs PumpkinKing in game (need >= +1.0) | LevelUp is the loudest sound
+louder   ok   QuestDone vs QuestNew: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   ComboMilestone_kA [ComboMilestone] vs ComboCoin: ComboMilestone is +3.8 LU vs ComboCoin in game (need >= +3.0) | the milestone peaks the run
+louder   ok   ComboMilestone_sA [ComboMilestone] vs ComboCoin: ComboMilestone is +3.8 LU vs ComboCoin in game (need >= +3.0) | the milestone peaks the run
+louder   ok   ComboMilestone_sB [ComboMilestone] vs ComboCoin: ComboMilestone is +3.8 LU vs ComboCoin in game (need >= +3.0) | the milestone peaks the run
+louder   warn Tap_kA [Tap] vs TalkBlip: Tap is +3.0 LU vs TalkBlip in game (need >= +3.0) | TalkBlip is the softest repeated sound
+louder   warn Tap_kB [Tap] vs TalkBlip: Tap is +2.7 LU vs TalkBlip in game (need >= +3.0) | TalkBlip is the softest repeated sound
+distinct ok   GoldPickup vs Spend: contourOct 0.217 (>= 0.1) | score 0.43 | the same coins: getting goes up, spending goes down
+distinct ok   GoldPickup vs Plunder: score 1.43 (>= 1.0) | losing coins is not getting coins
+distinct ok   HurtBig vs KO: score 2.4 (>= 1.0) | a big hit is not a knock-out (the KO adds the spinning stars)
+distinct ok   Jump vs Respawn: score 1.7 (>= 1.0) | coming back is not a hop
+distinct ok   SkillLearn vs PowerUp: score 2.01 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn vs LevelUp_sA [LevelUp]: score 1.46 (>= 1.0) | it plays right after LevelUp at Lv5 / 15 / 25: it must not sound like a second level-up
+distinct ok   SkillLearn vs LevelUp_sB [LevelUp]: score 1.5 (>= 1.0) | it plays right after LevelUp at Lv5 / 15 / 25: it must not sound like a second level-up
+distinct ok   SkillLearn vs QuestDone: score 1.31 (>= 1.0) | a new skill is not a finished quest
+louder   ok   LevelUp_sA [LevelUp] vs SkillLearn: LevelUp is +3.0 LU vs SkillLearn in game (need >= +1.0) | LevelUp is the loudest sound
+louder   ok   LevelUp_sB [LevelUp] vs SkillLearn: LevelUp is +3.0 LU vs SkillLearn in game (need >= +1.0) | LevelUp is the loudest sound
+distinct ok   Loot vs GoldPickup: score 1.71 (>= 1.0) | an item drop is not gold
+distinct ok   Loot vs QuestNew: score 1.76 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot vs ScrollSuccess: score 1.46 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot vs GoldenSpot: score 2.02 (>= 1.0) | my drop is not a golden monster in view

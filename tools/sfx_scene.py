@@ -31,16 +31,16 @@ OUT = os.path.join(ROOT, "build", "sfx_scene")
 TARGET_LUFS = -17.0
 
 # the files a scene uses unless the command line names others (soon: the picked candidates; today's game files meanwhile)
-BASE = {  # batch 1 recommendations (소리 만들기 2026-10-07) + today's game files for keys not remade yet
-    "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+BASE = {  # the game files 검수 picked (art/sfx/<key>.wav, 2026-10-07) + today's game files for keys not remade yet
+    "SwingArrow": "art/sfx/SwingArrow.wav",
     "SwingWarrior": "art/sfx/SwingWarrior.ogg",
-    "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
-    "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
-    "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
-    "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
-    "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+    "SwingMageHalo": "art/sfx/SwingMageHalo.wav",
+    "SwingMageHorns": "art/sfx/SwingMageHorns.wav",
+    "HitSoft": "art/sfx/HitSoft.wav",
+    "HitHeavy": "art/sfx/HitHeavy.wav",
+    "HitCrit": "art/sfx/HitCrit.wav",
     "KillPop": "art/sfx/KillPop.ogg",
-    "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+    "ComboCoin": "art/sfx/ComboCoin.wav",
     "ComboMilestone": "art/sfx/ComboMilestone.ogg",
 }
 # speeds (Config.Audio ranges, sound_spec where it set new ones)
@@ -57,6 +57,7 @@ CLASS = {  # interval s, launch s (None = melee), contact s, swing key, hit kind
 SCENES = {  # class, hit key, targets per swing, a kill every N swings, a crit every N swings
     "archer": ("archer", "HitSoft", 2, 3, 5),
     "warrior_slime": ("warrior", "HitSoft", 3, 2, 4),
+    "warrior7": ("warrior", "HitSoft", 3, 2, 4),  # batch 7: the same slime fight for the new swing / pop
     "warrior_goblin": ("warrior", "HitHeavy", 3, 3, 4),
     "mage_halo": ("mage_halo", "HitHeavy", 1, 3, 4),
     "mage_horns": ("mage_horns", "HitHeavy", 1, 3, 4),

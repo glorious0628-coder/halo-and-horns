@@ -97,6 +97,21 @@ def main():
         else:
             os.remove(p)
         touched[p] = b
+    # 2026-10-07 (검수): other sessions' pushed files often sit in the shared tree as 'modified' or 'untracked' with
+    # exactly origin's bytes (their own reset was blocked by a third file), and then block every later reset. Any file
+    # that origin changed and whose working bytes already equal origin's is put back to HEAD (or removed when HEAD
+    # lacks it); the reset below writes the same bytes again. Files with other bytes are never touched.
+    for p in git("diff", "--name-only", "HEAD", "origin/main").splitlines():
+        if p in touched or not os.path.isfile(p):
+            continue
+        want = git("rev-parse", f"origin/main:{p}", check=False)
+        if not want or git("hash-object", p) != want:
+            continue
+        if subprocess.run(["git", "cat-file", "-e", f"HEAD:{p}"], capture_output=True).returncode == 0:
+            git("checkout", "HEAD", "--", p, check=False)
+        else:
+            os.remove(p)
+        touched[p] = want
     r = subprocess.run(["git", "reset", "--keep", "origin/main"], capture_output=True, text=True)
     if r.returncode != 0:
         print("주의: reset --keep이 막혔어요(다른 세션의 수정과 겹침). 공유 HEAD는 그대로예요:", r.stderr.strip()[:200])

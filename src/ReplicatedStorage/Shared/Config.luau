@@ -4514,25 +4514,25 @@ Config.UIArt = {
 		Weapon_Warrior_T8 = { Id = "rbxassetid://73318746668169", Size = Vector2.new(512, 512) }, -- jelly-crown legendary (bundle 9)
 		Weapon_Mage_T8 = { Id = "rbxassetid://109033955946235", Size = Vector2.new(512, 512) },
 		Weapon_Archer_T8 = { Id = "rbxassetid://118154781260735", Size = Vector2.new(512, 512) },
-		Tex_Grass = { Id = "rbxassetid://104463174886181", Size = Vector2.new(1024, 1024) }, -- A23-30 E: Firefly painted meadow (Tex_Grass_FF)
-		Tex_LeafyGrass = { Id = "rbxassetid://92129043469297", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
+		Tex_Grass = { Id = "rbxassetid://72716790388998", Size = Vector2.new(1024, 1024) }, -- A23-30 E: Firefly painted meadow (Tex_Grass_FF)
+		Tex_LeafyGrass = { Id = "rbxassetid://99820027824650", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
 		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
 		Tex_Ground = { Id = "rbxassetid://140158008208812", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins dirt (Tex_Ground_FF)
-		Tex_DirtPath = { Id = "rbxassetid://85612652410118", Size = Vector2.new(1024, 1024) }, -- A23-30 E: road (Tex_DirtPath_FF)
+		Tex_DirtPath = { Id = "rbxassetid://140356696032031", Size = Vector2.new(1024, 1024) }, -- A23-30 E: road (Tex_DirtPath_FF)
 		Tex_CrownShardGround = { Id = "rbxassetid://114856730896342", Size = Vector2.new(1024, 1024) },
 		Tex_CrackedLava = { Id = "rbxassetid://116294435572633", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lava cracks (Tex_CrackedLava_FF)
-		Tex_Cobblestone = { Id = "rbxassetid://106614155699357", Size = Vector2.new(1024, 1024) }, -- A23-30 E: town cobbles (Tex_Cobblestone_FF)
+		Tex_Cobblestone = { Id = "rbxassetid://86097337095441", Size = Vector2.new(1024, 1024) }, -- A23-30 E: town cobbles (Tex_Cobblestone_FF)
 		Tex_Basalt = { Id = "rbxassetid://90858017609308", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lair floor; quality 7 (cdaaeaa) Tex_Basalt_FF2 = darks lifted (was Tex_Basalt_FF rbxassetid://82958066906333)
 		Tex_WoodPlanks = { Id = "rbxassetid://89937004688664", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: bridges / benches (parts) (Tex_WoodPlanks_FF)
-		Tex_Slate = { Id = "rbxassetid://115115936747396", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins flagstones (Tex_RuinsFlagstone_FF)
+		Tex_Slate = { Id = "rbxassetid://117516477244385", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins flagstones (Tex_RuinsFlagstone_FF)
 		Tex_Sand = { Id = "rbxassetid://131974232864115", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: beaches (Tex_Sand_FF)
-		Tex_Rock = { Id = "rbxassetid://104777096316045", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: every cliff (Tex_Rock_FF)
+		Tex_Rock = { Id = "rbxassetid://81976112942859", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: every cliff (Tex_Rock_FF)
 		Tex_Marble = { Id = "rbxassetid://82709638100363", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: fountain / Halo parts (Tex_Marble_FF)
-		Tex_Limestone = { Id = "rbxassetid://75666187308111", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Halo town floor (Tex_Limestone_FF)
-		Tex_PumpkinSoil = { Id = "rbxassetid://126628778707353", Size = Vector2.new(1024, 1024) }, -- A23-30 pumpkin field soil (Mud slot)
+		Tex_Limestone = { Id = "rbxassetid://105789118055805", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Halo town floor (Tex_Limestone_FF)
+		Tex_PumpkinSoil = { Id = "rbxassetid://101513604708442", Size = Vector2.new(1024, 1024) }, -- A23-30 pumpkin field soil (Mud slot)
 		Tex_TreeLeaves = { Id = "rbxassetid://139379724133324", Size = Vector2.new(1024, 1024) }, -- tree leaf balls (neutral: the part Color tints it)
 		Tex_TreeBark = { Id = "rbxassetid://85265884740870", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
-		Tex_HauntedFloor = { Id = "rbxassetid://112704604810052", Size = Vector2.new(1024, 1024) }, -- A23-45 유령 숲 floor (Tex_HauntedFloor_FF): Asphalt slot GE_HauntedFloor
+		Tex_HauntedFloor = { Id = "rbxassetid://78580688016455", Size = Vector2.new(1024, 1024) }, -- A23-45 유령 숲 floor (Tex_HauntedFloor_FF): Asphalt slot GE_HauntedFloor
 		-- sky sun / moon (black = transparent, additive): WarService Sky.SunTextureId / MoonTextureId per war sky
 		Sky_Sun = { Id = "rbxassetid://104329382887122", Size = Vector2.new(512, 512) }, -- Neutral sun
 		Sky_SunDawn = { Id = "rbxassetid://134904669662412", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun

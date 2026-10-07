@@ -1,6 +1,6 @@
 """
 효과음 연결 대조 (소리 만들기, 2026-10-07): Config.Audio(Files·Sounds)가 art/sfx/asset_ids.json의 새 id와 맞는지 본다. 읽기만 한다.
-  py tools/sfx_wiring_check.py [--ref origin/main]   (--ref 없으면 작업 폴더의 src를 읽음)
+  py tools/sfx_wiring_check.py [--ref origin/main] [--file <Config.luau 사본>]   (--ref 없으면 작업 폴더의 src를 읽음)
 나오는 것: 맞음 / 옛 id 그대로 / 빈 id / Files에 없음(이벤트 연결 필요) / Sounds 볼륨 차이(설계표) / 이제 아무 데도 안 쓰는 옛 id(지워도 되는 후보 —
 개발 1 연결 + Play 확인 뒤에만 지움).
 """
@@ -15,7 +15,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG = "src/ReplicatedStorage/Shared/Config.luau"
 
 
+CONFIG_FILE = None  # --file <path>: read Config.luau from this file instead (a pasted / simulated copy)
+
+
 def read_src(path, ref):
+    if CONFIG_FILE and path == CONFIG:
+        return open(CONFIG_FILE, encoding="utf-8").read()
     if ref:
         return subprocess.run(["git", "show", f"{ref}:{path}"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
                               check=True).stdout
@@ -41,7 +46,10 @@ def block(text, start_pat):
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
+    global CONFIG_FILE
     ref = sys.argv[sys.argv.index("--ref") + 1] if "--ref" in sys.argv else None
+    if "--file" in sys.argv:
+        CONFIG_FILE = sys.argv[sys.argv.index("--file") + 1]
     cfg = read_src(CONFIG, ref)
     audio = block(cfg, r"Config\.Audio\s*=\s*\{")
     files_txt = block(audio, r"\n\tFiles\s*=\s*\{")

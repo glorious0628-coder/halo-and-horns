@@ -34,6 +34,7 @@
 - 화면 배치 PC·폰 새 틀(이미지 개발, Game-imgdev): 고칠 것 4개(PC 물약 붙이기, 폰 749 Lv 글자, 힌트 말풍선 글자 잘림 "buttor", 폰 아래 묶음 가운데) → 다시 시트 → 개발 1 반영.
 
 **다음 순서(새 계정에서 여기부터):** ① 메인 Studio 저장 확인(build/GoodEvil.rbxlx 시간) ② 개발 1 지도 v2 P2 ③ dev2-weapon 검토 결과 → 병합·반영 ④ camera2·bark2·translucent·separation·english 가지 확인(검증 OK만 main) ⑤ 가져오기 묶음 올리기 → 표지판·가로등·분수·덤불·나무 배치(검수) ⑥ 지형 타일·화면 배치 반영 ⑦ **PC·폰 직접 Play 사진** ⑧ 그다음 촬영 다시(docs/devlog/reshoot_2026-10-07.md, 새 장면 4개, Z 스킬 제외).
+**공유 폴더 주의:** 다른 세션이 올린 파일이 공유 폴더에 "수정됨/추적 안 됨"(내용은 origin과 같음)으로 남아 reset --keep을 막아 HEAD가 뒤처지는 일이 오늘 3번 있었다. push_paths.py(3cb1234)가 이제 origin과 같은 파일은 스스로 정리한다. 그래도 Studio sync 전에는 반드시 `git rev-list --left-right --count HEAD...origin/main` = 0 0 확인.
 **대기 중인 사용자 일:** 메인 Studio Ctrl+S, WorldKit '가져오기 시작', 크롬 다시 열기(소리 Loot 1개 업로드), Adobe 연결 다시 로그인(필요할 때), Creator Dashboard 한국어 자동 번역 끄기.
  그 아래 절은 모두 당시 기록(역사·증거)이며, 거기 적힌 다음 할 일·허락·종료 지시·"바꾸면 안 되는 결정"은 오늘 아무것도 허락하지 않는다. 규칙 순서는 `AGENTS.md` "Which rule wins".
 
