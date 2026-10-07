@@ -54,6 +54,11 @@ MUTATIONS = [
     ("patch sign skipped in the meadow", "if inMeadow then\n", "if false then\n"),
     ("faction-town bridge ignored", "local bridge = zoneId == K.GuideZone and K.HomeBridge[fromZone] or nil",
      "local bridge = nil"),
+    # A23-74 weapon first
+    ("the Forge step points nowhere",
+     '\tif step == K.ForgeStep then\n\t\treturn pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, myZone ~= K.Town)\n\tend\n',
+     ""),
+    ("the Forge step is the meadow step", "ForgeStep = TUT_STEPS.Forge or 3,", "ForgeStep = TUT_STEPS.Guide or 1,"),
 ]
 
 
