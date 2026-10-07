@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 436,
+  "checks": 448,
   "failedChecks": 0,
-  "namedChecks": 433,
+  "namedChecks": 445,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -489,6 +489,78 @@
     },
     {
       "group": "n3",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "Config: Lunch1 pops, 0 points both ways",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "before the first [Claim]: no lunchbox",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "a player past the Forge (M1_1 done) never gets it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "right after the first [Claim]: offered, the card opens once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "a refresh never opens it again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "Give it back: +1 HP potion, Honor unchanged, done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "the kid thanks you (no lean line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "Fx Choice { Option = 'Good' }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "One bite: +25 gold, 'Yum!…', no score",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "a Horns player can give it back too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-70 lunchbox",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -2610,11 +2682,82 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 77,
-    "applied": 77,
-    "caught": 77,
+    "total": 83,
+    "applied": 83,
+    "caught": 83,
     "skipped": false,
     "results": [
+      {
+        "mutation": "the lunchbox before the first claim",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-70 lunchbox :: before the first [Claim]: no lunchbox"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "players past the Forge get the lunchbox",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-70 lunchbox :: a player past the Forge (M1_1 done) never gets it",
+          "h1-good :: Open from far away: no window",
+          "h1-good :: Open next to Bright: the talk window"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the card waits in the list",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-70 lunchbox :: a refresh never opens it again",
+          "a23-70 lunchbox :: right after the first [Claim]: offered, the card opens once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no answer from the kid",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-70 lunchbox :: One bite: +25 gold, 'Yum!…', no score",
+          "a23-70 lunchbox :: the kid thanks you (no lean line)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the lunchbox scores Honor",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-70 lunchbox :: Config: Lunch1 pops, 0 points both ways",
+          "a23-70 lunchbox :: Give it back: +1 HP potion, Honor unchanged, done"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a bite pays nothing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-70 lunchbox :: One bite: +25 gold, 'Yum!…', no score"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "a ShowProgress row keeps its numbers",
         "file": "src/ServerScriptService/StoryQuestService.luau",
@@ -2656,9 +2799,10 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-58 :: a 0-point pick still sends Fx Choice { Option = 'Evil' }",
+          "a23-70 lunchbox :: Fx Choice { Option = 'Good' }",
           "h1-good :: the pick sends Fx Choice { Option = 'Good' } (Purify sound)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "the finish line without QuestDone",
@@ -2963,13 +3107,13 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-58 :: the B reward is paid as usual",
+          "a23-70 lunchbox :: Give it back: +1 HP potion, Honor unchanged, done",
+          "a23-70 lunchbox :: One bite: +25 gold, 'Yum!…', no score",
+          "a23-70 lunchbox :: a Horns player can give it back too",
           "ch3-horns-evil :: Into our vault: Infamy +3 and Dibs's 192 gold at once",
-          "h1-good :: A: one 70% scroll (no potions)",
-          "h1-good :: lines: '+Enhance Scroll 70%' and the closing question",
-          "n3 :: a Halo player picks A: the scroll",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+          "h1-good :: A: one 70% scroll (no potions)"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 11
       },
       {
         "mutation": "a Neutral A pays Evil's reward",
@@ -3028,12 +3172,13 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-58 :: the B reward is paid as usual",
+          "a23-70 lunchbox :: Give it back: +1 HP potion, Honor unchanged, done",
+          "a23-70 lunchbox :: a Horns player can give it back too",
           "grant-item :: 3 HP potions (the attribute too)",
           "grant-item :: potions stop at the cap",
-          "n3 :: Neutral B: recorded, no score, Evil's reward",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+          "n3 :: Neutral B: recorded, no score, Evil's reward"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 7
       },
       {
         "mutation": "GrantItem: no upper count limit",
@@ -3600,11 +3745,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4f32824950d2a3970fb81420771e0dc5c294fbd2acedde69d5221d3d0eff0cb5",
+    "src/ReplicatedStorage/Shared/Config.luau": "9cd65a70cb0121a7ee3b71adcfeb2f6c978e16965566641fc489342dbeb7303b",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
-    "src/ServerScriptService/StoryQuestService.luau": "117e3ca4f5c84a09c6cd36422cc22c400a79873d7dd42dd1d0f764d5304f536f",
+    "src/ServerScriptService/StoryQuestService.luau": "3edf1cc5826336f97fbb408a319402ce2038e3a32aa1b2a64bc59bf9c621bc51",
     "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -3613,7 +3758,7 @@
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
   },
-  "fixtureSHA256": "a25f1b637248171e03673ad40ae30807faf5bf05949da8f587f7e84d0ea8274a",
+  "fixtureSHA256": "c141ba236a9370a13a10ba48590fe7e328ef983b286e78c7d5951c68e38375dc",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
