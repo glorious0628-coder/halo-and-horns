@@ -4108,6 +4108,12 @@ Config.UIArt = {
 		IconMonGoblinBrute = { Id = "rbxassetid://121297622077113", Size = Vector2.new(512, 512) },
 		IconMonSkeleton = { Id = "rbxassetid://140176829708782", Size = Vector2.new(512, 512) },
 		IconMonSkeletonKnight = { Id = "rbxassetid://81833958125033", Size = Vector2.new(512, 512) },
+		-- E12 woods daily / PvP daily rows (28c6324, High, the navy-rimmed icon frame; drawn as is, no tint): the golden
+		-- monster row, Halo's Hunt row, Horns' Plunder row, the woods daily chest (Lv10-24)
+		IconGoldenMon = { Id = "rbxassetid://117889924897289", Size = Vector2.new(512, 512) },
+		IconHunt = { Id = "rbxassetid://73974758192262", Size = Vector2.new(512, 512) },
+		IconPlunder = { Id = "rbxassetid://79074522466902", Size = Vector2.new(512, 512) },
+		IconChestWoods = { Id = "rbxassetid://121321744394366", Size = Vector2.new(512, 512) },
 		-- materials (Config.Loot.Items[*].Icon)
 		IconJelly = { Id = "rbxassetid://120712914963442", Size = Vector2.new(512, 512) },
 		IconSlimeCore = { Id = "rbxassetid://135486964395284", Size = Vector2.new(512, 512) },

@@ -532,5 +532,9 @@
   "RewardRibbonHornsStraight": "rbxassetid://83671618689638",
   "RewardSlot": "rbxassetid://131467829477534",
   "RewardGlow": "rbxassetid://134856789083293",
-  "RewardSparkle": "rbxassetid://139083428436055"
+  "RewardSparkle": "rbxassetid://139083428436055",
+  "IconGoldenMon": "rbxassetid://117889924897289",
+  "IconHunt": "rbxassetid://73974758192262",
+  "IconPlunder": "rbxassetid://79074522466902",
+  "IconChestWoods": "rbxassetid://121321744394366"
 }
