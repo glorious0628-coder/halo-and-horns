@@ -3687,6 +3687,10 @@ Config.UIArt = {
 		BtnKind = { Id = "rbxassetid://96995284140099", Size = Vector2.new(512, 175), Slice = Rect.new(88, 54, 424, 121), FitHeight = true, TextRect = { 0.053, 0.123, 0.893, 0.596 } }, -- sky blue, white "Kind"
 		BtnSneaky = { Id = "rbxassetid://82745606719708", Size = Vector2.new(512, 171), Slice = Rect.new(86, 53, 426, 118), FitHeight = true, TextRect = { 0.057, 0.117, 0.887, 0.612 } }, -- purple, white "Sneaky"
 		JobTag = { Id = "rbxassetid://87413375917921", Size = Vector2.new(256, 106), TextRect = { 0.2, 0.118, 0.745, 0.578 } }, -- the quest row's "Job" tag (accepted jobs only), keep the ratio
+		-- monster bark bubble (8e517a6, user OK via review): white + thick navy rim, tail at the bottom left (points down at
+		-- the monster), no letters - dark navy text in TextRect. SliceScale 0.3 keeps the tail the same size at ~52 px and
+		-- lets only the 24 px middle band grow for a second line. MonsterLabels BillboardGui (game dev 1, BarkService)
+		BarkBubble = { Id = "rbxassetid://124351323911597", Size = Vector2.new(512, 190), Slice = Rect.new(84, 65, 446, 89), SliceScale = 0.3, TextRect = { 0.077, 0.181, 0.844, 0.448 } },
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
 		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
 		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },
