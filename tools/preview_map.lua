@@ -245,11 +245,14 @@ do
 		Lift = 2,
 	}
 	Terrain:Clear()
-	Terrain.WaterColor = RGB(24, 150, 190)
-	Terrain.WaterTransparency = 0.6
-	Terrain.WaterReflectance = 0.3
-	Terrain.WaterWaveSize = 0.12
-	Terrain.WaterWaveSpeed = 8
+	-- water and grass from the A2_2 map (이미지 생성 1's table, 2026-10-07): bright sea, the sand shows through the
+	-- shallow ring; no realistic grass blades (they made the "default terrain" look; the art is smooth painted grass)
+	Terrain.WaterColor = RGB(8, 181, 214)
+	Terrain.WaterTransparency = 0.35
+	Terrain.WaterReflectance = 0.05
+	Terrain.WaterWaveSize = 0.05
+	Terrain.WaterWaveSpeed = 6
+	pcall(function() Terrain.Decoration = false end)
 	pcall(function()
 		-- A23-29/30: every ground is a painted Firefly tile that carries its own colour, so the materials stay near white
 		-- (tools/apply_surface_materials.lua sets the same PAINTED colour)
@@ -383,19 +386,20 @@ do
 		local z0, z1 = PASS.HalfZ + 46, PASS.MaxZ + 10
 		for i = 0, 3 do
 			local h = rng:NextNumber(58, 86) * (i == 0 and 0.8 or 1)
+			-- foot radius 1.4 x height: the slopes stay near 45 degrees or gentler (이미지 생성 1 sheet ⑦)
 			table.insert(PEAKS, { X = PASS.X + rng:NextNumber(-10, 10), Z = s * (z0 + (z1 - z0) * (i + 0.5) / 4) + rng:NextNumber(-8, 8),
-				H = h, R = h * 0.95 })
+				H = h, R = h * 1.4 })
 		end
 		for _, side in { -1, 1 } do -- lower shoulders on the woods / ruins side
 			for i = 0, 2 do
 				local h = rng:NextNumber(28, 44)
 				table.insert(PEAKS, { X = PASS.X + side * rng:NextNumber(38, 52),
-					Z = s * (z0 + 10 + (z1 - z0 - 20) * (i + 0.5) / 3) + rng:NextNumber(-10, 10), H = h, R = h * 1.05 })
+					Z = s * (z0 + 10 + (z1 - z0 - 20) * (i + 0.5) / 3) + rng:NextNumber(-10, 10), H = h, R = h * 1.5 })
 			end
 		end
 	end
 	local function mountain(x, z)
-		if x < PASS.MinX - 110 or x > PASS.MaxX + 110 then return 0 end
+		if x < PASS.MinX - 160 or x > PASS.MaxX + 160 then return 0 end
 		local h = 0
 		for _, p in PEAKS do
 			local dx, dz = x - p.X, z - p.Z
@@ -405,6 +409,19 @@ do
 		local az = math.abs(z)
 		if az < PASS.HalfZ + T.Shoulder then h *= smooth(math.clamp((az - PASS.HalfZ) / T.Shoulder, 0, 1)) end
 		return h
+	end
+
+	-- the slime pond (= Config.StoryQuests.Landmarks.SlimePond): a round basin the sea level fills (water edge about
+	-- R + 3), a sand rim, Kit_M_JellyRock stones around it (sheet ⑬: no flat blue plate)
+	local PONDS = { { X = 290, Z = 150, R = 18, Rim = 7, Bottom = -4.5 } }
+	local function pondAt(x, z) -- basin top (nil = no pond here), sand rim?
+		for _, p in PONDS do
+			local dx, dz = x - p.X, z - p.Z
+			local r = math.sqrt(dx * dx + dz * dz)
+			if r <= p.R then return p.Bottom + (-1.8 - p.Bottom) * (r / p.R) ^ 2, true end
+			if r < p.R + p.Rim then return -1.8 + 1.8 * smooth((r - p.R) / p.Rim), r < p.R + p.Rim * 0.6 end
+		end
+		return nil, false
 	end
 
 	-- one column: surface height and material
@@ -427,6 +444,11 @@ do
 			top, sandy = math.max(T.Floor, -T.Dip + inland * T.Slope), true
 		end
 		local mat = sandy and M.Sand or floorAt(x, z)
+		local pt, rim = pondAt(x, z)
+		if pt and pt < top then
+			top = pt
+			if rim then mat = M.Sand end
+		end
 		if g == EAST then
 			local h = mountain(x, z)
 			if h > 0.5 then
@@ -532,8 +554,39 @@ do
 			rocks += 1
 		end
 	end
-	note(string.format("terrain v2: %d lands, %d chunks (%s), %d peaks, %d sea rocks%s", #LANDS, chunks,
-		useChannels and "WriteVoxelChannels" or "WriteVoxels", #PEAKS, rocks, kit and "" or " (no WorldKit3D)"))
+
+	-- the pond: the old flat blue plate goes to the backup, jelly stones sit round the sand rim
+	local plate = folders.Decor:FindFirstChild("SlimePond")
+	if plate and plate:IsA("BasePart") then stash(plate) end
+	local oldStones = folders.Decor:FindFirstChild("PondStones")
+	if oldStones then stash(oldStones) end
+	local stones = model("PondStones", folders.Decor)
+	local ground = RaycastParams.new()
+	ground.FilterType = Enum.RaycastFilterType.Include
+	ground.FilterDescendantsInstances = { Terrain }
+	local stoneSrc = kit and kit:FindFirstChild("Kit_M_JellyRock")
+	for _, p in PONDS do
+		for i = 1, (stoneSrc and 9 or 0) do
+			local a = (i + rng:NextNumber(-0.3, 0.3)) / 9 * math.pi * 2
+			local r = p.R + p.Rim * rng:NextNumber(0.55, 0.95)
+			local x, z = p.X + math.cos(a) * r, p.Z + math.sin(a) * r
+			local hit = workspace:Raycast(Vector3.new(x, 60, z), Vector3.new(0, -120, 0), ground)
+			local m = stoneSrc:Clone()
+			pcall(m.ScaleTo, m, m:GetScale() * rng:NextNumber(0.9, 1.5))
+			m:PivotTo(CFrame.new(x, (hit and hit.Position.Y or 0) - 0.3, z) * CFrame.Angles(0, rng:NextNumber(0, 6.28), 0))
+			for _, d in m:GetDescendants() do
+				if d:IsA("BasePart") then
+					d.Anchored = true
+					d.CanCollide = false
+					d.CastShadow = true
+				end
+			end
+			m.Parent = stones
+		end
+	end
+	note(string.format("terrain v2: %d lands, %d chunks (%s), %d peaks, %d sea rocks, %d pond stones%s", #LANDS, chunks,
+		useChannels and "WriteVoxelChannels" or "WriteVoxels", #PEAKS, rocks, #stones:GetChildren(),
+		kit and "" or " (no WorldKit3D)"))
 end
 
 ------------------------------------------------------------------ 계약 조각 (두 모드 공통)
@@ -622,10 +675,7 @@ for _, r in ROADS do
 			Color = r.Color, Material = r.Material }, roads)
 	end
 end
-for _, sx in { -7.2, 7.2 } do -- 교차로 남북 길 가장자리: 빛 쪽 금 띠, 뿔 쪽 붉은 띠
-	prop({ Name = "TrimGold", Size = Vector3.new(0.8, 0.22, 140), Position = Vector3.new(sx, 0.09, -80), Color = RGB(212, 175, 55) }, roads)
-	prop({ Name = "TrimRed", Size = Vector3.new(0.8, 0.22, 140), Position = Vector3.new(sx, 0.09, 80), Color = RGB(200, 30, 40) }, roads)
-end
+-- (the gold / red edge stripes of the north / south roads are gone: not in the A2_2 map, 이미지 생성 1 sheet ⑫)
 
 -- PvP 경계: 말뚝 + 띠 (숲 = 주황, 유적 = 빨강). 숲은 다리 끝 해안, 유적은 고갯길 출구(띠 = 길목 폭)
 local function pvpBorder(x, tipColor, stripColor, stripMat, stripLen)
