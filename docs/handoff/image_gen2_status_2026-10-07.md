@@ -15,3 +15,10 @@
 - 고른 게시판은 나중에 High로 다시(Tripo용) → 그때 등불 고리 구멍 회색 점·숲 등불 빛 번짐도 누끼에서 정리. 이름: KIT_Meadow_JobBoard / KIT_Woods_JobBoard(MostWantedBoard와 다르게, 이미지 생성 1 요청).
 - 요령: Firefly 문구 1000자 넘으면 생성 클릭이 조용히 무시됨 → 1000자 아래로. 참조 이미지 빼기 버튼은 aria-label이 "Remove "(끝에 공백) — `trim()`으로 찾기.
 - 요령: push가 갈라졌을 때 임시 worktree는 짧은 경로(예: `C:/Users/glori/Documents/Roblox/Game-push`)에 — scratchpad 경로는 "Filename too long"으로 실패. 다시 하기 전에 `git fetch`(다른 세션이 이미 rebase·push했을 수 있음).
+
+## 오전 3
+- 사용자 OK(검수 전달): 게시판 실물 **초원 B + 숲 B**, 말풍선 **A**.
+- **8e517a6** `art/ui/BarkBubble.png` 512x190 + approved.json `BarkBubble`(slice 84,65,446,89 · Text) → 이미지 개발 업로드 a3fc2ea(124351323911597, SliceScale 0.3). E11 5장도 업로드 4da02d3, 폰 게시판 = 카드 2장씩 넘기기(이미지 개발).
+- **ffe806d** 게시판 고급(High, 약 10크레딧) 2D: 원본 `art/out/hq/HQ_{Meadow,Woods}_JobBoard.png`(Tripo용, 회색 바탕), 누끼 `art/out/kit/{meadow,woods}/JobBoard.png`(고리 구멍 회색·빛 번짐 정리), 시트 `art/review/s2/kit_jobboard_hq_sheet.jpg` → 이미지 생성 1에 경로 전달. Tripo 비용은 검수가 사용자에게.
+- **ffe806d** 진영별 지도 화살표 후보 4장(검수 요청: 사용자 "화살표 더 멋있게, 진영 따라 색·분위기"): 시트 `art/review/s2/faction_map_arrow_sheet.jpg`, 누끼 `art/out/s2/UIP_MapArrow{Halo,Horns}_{A,B}_cut.png`(512 정사각, 로컬). 추천 빛 A(날개) + 뿔 A(위쪽 뿔). 고르면 키 MapArrowHalo / MapArrowHorns → 이미지 개발.
+- push 요령: 갈라졌을 때 체크아웃 없이 `git merge-tree --write-tree --merge-base=<c>^ origin/main <c>` → `git commit-tree` → `git push origin <new>:main`(198bdd6 → ffe806d).
