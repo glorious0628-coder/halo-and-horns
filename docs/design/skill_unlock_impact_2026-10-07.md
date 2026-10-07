@@ -1,4 +1,4 @@
-> **검수 결정(2026-10-07, 이 목록의 D1~D6):** D1 = S0 시험 b를 스킬 없는 Kill 2로(10/05 '자동 전투 레벨 제한 없음' 유지) · D2 = M1_3 앞에 'Lv5 · Learn your first skill (now Lv%d)' 단계 추가 · D3 = Lv1-4 일일은 왕 슬라임·슬라임·골드(중복 거르기) · D4 = 옛 세이브 한 번 보정은 넣는다(작음, SkillRule71 깃발) · D5 = 퍼널 FirstSkillHit를 AutoUnlocked 뒤로 · D6 = Help 'Your first skill comes at Lv 5…', 다음 목표 'Next goal · Lv%d: first skill + Iron weapon (now Lv%d)'.
+> **검수 결정(2026-10-07, 이 목록의 D1~D6):** D1 = ~~S0 시험 b를 스킬 없는 Kill 2로~~ → **사용자 정정: S0 시험 b는 스킬 그대로(A), 자동 전투는 Lv5 뒤**(dev2 940fb2e대로) · D2 = M1_3 앞에 'Lv5 · Learn your first skill (now Lv%d)' 단계 추가 · D3 = Lv1-4 일일은 왕 슬라임·슬라임·골드(중복 거르기) · D4 = 옛 세이브 한 번 보정은 넣는다(작음, SkillRule71 깃발) · D5 = 퍼널 FirstSkillHit를 AutoUnlocked 뒤로 · D6 = Help 'Your first skill comes at Lv 5…', 다음 목표 'Next goal · Lv%d: first skill + Iron weapon (now Lv%d)'.
 
 # A23-71 스킬 해금 변경: 고칠 곳 목록 (2026-10-07)
 
