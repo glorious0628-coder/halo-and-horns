@@ -1,6 +1,6 @@
 -- FountainFx.luau : flowing water on the plaza fountains, drawn by every client (user 2026-10-07: "물줄기도 나오게 해야지
 -- 로블록스 이펙트 사용해서!"). Free Creator Store effect textures only (A23-62: texture ids, no imported scripts; sources in
--- docs/design/skill_vfx_sources.md): a jet from the top spout, water curtains (Beams with a flowing texture) falling from
+-- docs/design/skill_vfx_sources.md): a jet from the top spout, thin water streams (Beams with a flowing texture) falling from
 -- each bowl rim, droplet splashes + ripples where they land, a few sparkles on the pool, and for the Halo fountain a
 -- golden halo ring with one warm light. Specs per fountain model name, as fractions of the model's bounding box (a
 -- rescaled model still fits). Phones and "Screen Shake: Off" (or Roblox Reduced Motion) get fewer particles.
@@ -15,7 +15,7 @@ local C = nil
 
 local TEX = {
 	Drop = "rbxassetid://401407269", -- "Fountain (water) particles" (SparkleWays, 458829107)
-	Flow = "rbxassetid://5465796644", -- "Moving Beam Water - Tiny" (bluecoolman280, 10610453422)
+	Flow = "rbxassetid://6045867277", -- "Water Beam Effect VFX" (EvilArtist, 14582235284): thin soft streams
 	Ripple = "rbxassetid://9833214445", -- "Stylized Water Particles Splash Effect RP" (MoonRocket29609, 104302188311459)
 	Sparkle = "rbxassetid://244221535", -- "Sparkles Particle" (Nanonauts, 688891088)
 }
@@ -32,8 +32,8 @@ local SPECS = {
 	K_Fountain = {
 		Jet = { Y = 1.0, Up = 9 },
 		Curtains = {
-			{ FromY = 0.75, FromR = 0.21, ToY = 0.53, ToR = 0.235, Count = 8, Width = 1.9 },
-			{ FromY = 0.525, FromR = 0.305, ToY = 0.13, ToR = 0.335, Count = 12, Width = 2.3, Ripples = true },
+			{ FromY = 0.75, FromR = 0.21, ToY = 0.53, ToR = 0.235, Count = 16, Width = 1.3 },
+			{ FromY = 0.525, FromR = 0.305, ToY = 0.13, ToR = 0.335, Count = 24, Width = 1.6, Ripples = true },
 		},
 		Pool = { Y = 0.13, R = 0.42 },
 	},
@@ -41,7 +41,7 @@ local SPECS = {
 	Town_Halo_Fountain = {
 		Jet = { Y = 0.86, Up = 8 },
 		Curtains = {
-			{ FromY = 0.62, FromR = 0.24, ToY = 0.18, ToR = 0.28, Count = 10, Width = 2.2, Ripples = true },
+			{ FromY = 0.62, FromR = 0.24, ToY = 0.18, ToR = 0.28, Count = 20, Width = 1.6, Ripples = true },
 		},
 		Pool = { Y = 0.17, R = 0.4 },
 		Halo = { Y = 1.02, R = 0.18 },
@@ -156,18 +156,18 @@ local function build(model, spec)
 			b.Attachment0, b.Attachment1 = a0, a1
 			b.Texture = TEX.Flow
 			b.TextureMode = Enum.TextureMode.Wrap
-			b.TextureLength = 2.5
-			b.TextureSpeed = 1.4
-			b.Width0, b.Width1 = c.Width * 0.85, c.Width
+			b.TextureLength = 3
+			b.TextureSpeed = 1.6
+			b.Width0, b.Width1 = c.Width * 0.8, c.Width
 			b.FaceCamera = true
 			b.Segments = 4
-			b.Transparency = seq({ { 0, 0.22 }, { 0.8, 0.28 }, { 1, 0.6 } })
+			b.Transparency = seq({ { 0, 0.2 }, { 0.5, 0.3 }, { 1, 0.65 } })
 			b.Color = ColorSequence.new(COL.Water, COL.Foam)
-			b.LightEmission = 0.35
-			b.LightInfluence = 0.6
+			b.LightEmission = 0.6
+			b.LightInfluence = 0.5
 			b.Parent = a0
 			emitter(a1, "Splash", {
-				Texture = TEX.Drop, EmissionDirection = Enum.NormalId.Top, Rate = 5,
+				Texture = TEX.Drop, EmissionDirection = Enum.NormalId.Top, Rate = 2.5,
 				Speed = NumberRange.new(2.5, 4.5), SpreadAngle = Vector2.new(40, 40), Acceleration = Vector3.new(0, -28, 0),
 				Lifetime = NumberRange.new(0.3, 0.5), Size = seq({ { 0, 0.18 }, { 1, 0.08 } }),
 				Transparency = seq({ { 0, 0.25 }, { 1, 1 } }), Color = ColorSequence.new(COL.Foam), LightEmission = 0.25,
@@ -175,7 +175,7 @@ local function build(model, spec)
 			if c.Ripples then
 				emitter(a1, "Ripple", {
 					Texture = TEX.Ripple, EmissionDirection = Enum.NormalId.Top, Orientation = Enum.ParticleOrientation.VelocityPerpendicular,
-					Rate = 0.8, Speed = NumberRange.new(0.01), Lifetime = NumberRange.new(0.9), Size = seq({ { 0, 0.6 }, { 1, 2.6 } }),
+					Rate = 0.4, Speed = NumberRange.new(0.01), Lifetime = NumberRange.new(0.9), Size = seq({ { 0, 0.6 }, { 1, 2.6 } }),
 					Transparency = seq({ { 0, 0.35 }, { 1, 1 } }), Color = ColorSequence.new(COL.Foam), LightEmission = 0.2,
 				})
 			end
