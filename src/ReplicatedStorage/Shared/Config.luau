@@ -1954,7 +1954,7 @@ Config.StoryQuests = {
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
+	Subs = { "S0", "Lunch1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8" },
 	Text = {
 		Claim = "%s done! Press [Claim].",
@@ -2013,6 +2013,23 @@ Config.StoryQuests = {
 						Neutral = { A = "Purify it", B = "Devour it" } } },
 			},
 			Unlock = "AutoCombat",
+		},
+		-- A23-70 (user 2026-10-07 "아 좋다"): the first good / evil moment, one small card right after the first [Claim]
+		-- (Pop = the card opens by itself once). No score either way (Points 0: the shard leans, the Choice sound and the
+		-- afterglow answer); every side may press both buttons. Reply = the kid's line after the pick. Then the Forge row.
+		Lunch1 = {
+			Kind = "Sub", Title = "Lost Lunchbox!", ShortName = "Lost lunchbox", Pop = true,
+			Requires = { TutorialDone = true, NotDone = { "M1_1" } },
+			Steps = {
+				{ Text = "Return the lunchbox, or take a bite?", Panel = true,
+					Lines = { All = { "A slime dropped a lunchbox. It belongs to a kid at the Crossroads." } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Give it back", Points = 0, Pick = "GiveBack", Reply = "Thank you! Here, take this potion.",
+							Reward = { Potion = "HP", N = 1 } },
+						Evil = { Label = "One bite!", Points = 0, Pick = "Bite", Reply = "Yum! ...Nobody saw that, right?",
+							Reward = { Gold = 25 } },
+						Neutral = { A = "Give it back", B = "One bite!" } } },
+			},
 		},
 		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		M1_1 = {

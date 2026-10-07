@@ -559,7 +559,7 @@ HANGUL_EXEMPT = {("Settings", "Text", "Options", "ko"), ("Settings", "Text", "Op
 FORMAT_EXEMPT = {("Halloween", "Banter", "Days", 9, "GhostKing"): 1}  # lines_pack §4: the only %d in a line
 DOC_COUNTS = {("Halloween", "Banter", "Format"): 2, ("Halloween", "Banter", "Days", 9, "GhostKing"): 1,
               ("Tutorial", "QuestText"): 1}
-RAW_KEYS = {"Title", "Start", "Finish", "Clue", "Say", "Label", "Lines", "LinesBy", "Name"}
+RAW_KEYS = {"Title", "Start", "Finish", "Clue", "Say", "Label", "Lines", "LinesBy", "Name", "Reply"}  # Reply: A23-70
 
 GENDER = {"Bright": "f", "Smokey": "f", "Hallie": "f", "Kit": "f", "Tiny": "m", "Magpie": "m", "Otto": "m",
           "Fizzby": "m"}
