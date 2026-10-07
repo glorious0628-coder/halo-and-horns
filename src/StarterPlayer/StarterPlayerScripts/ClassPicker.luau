@@ -71,6 +71,13 @@ local LAY = {
 -- and the colour of the unfilled stat segments
 -- bundle 2 class cards: white names on the coloured ribbons, ink on the cream bodies, white button words
 local CARD_STYLE = {
+	-- A23-57 redraw (ClassPick*): Halo's cream panel takes dark words, Horns' charcoal panel light ones
+	New = {
+		Halo = { Name = "light", Body = "ink", Button = "light",
+			Empty = Color3.fromRGB(214, 203, 184), EmptyRim = Color3.fromRGB(168, 144, 108) },
+		Horns = { Name = "light", Body = "light", Button = "light",
+			Empty = Color3.fromRGB(74, 62, 66), EmptyRim = Color3.fromRGB(128, 96, 96) },
+	},
 	Halo = {
 		Name = "light", Body = "ink", Button = "light",
 		Empty = Color3.fromRGB(214, 203, 184), EmptyRim = Color3.fromRGB(168, 144, 108),
@@ -106,6 +113,10 @@ local CLASS_ICONS = { Warrior = "🗡️", Mage = "🔮", Archer = "🏹" }
 local T = {
 	Title = "Pick a class!", -- short: the bundle 2 ribbon's scroll is narrow (검수 2026-10-06: 'Choose…' was cut)
 	Choose = "Pick this class!",
+	ChooseShort = "Pick!", -- the A23-57 frames' button band is narrow
+	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
+	Tag = { Warrior = "Smash all around!", Mage = "Blast from afar!", Archer = "Two arrows, fast!" },
+	FooterShort = "Change class later: Menu > Change Class", -- short screens (검수 2026-10-06: the menu square is Change Class)
 	Wait = "One moment...",
 	Recommend = "Best for beginners",
 	StartWeaponF = "First weapon: %s (from the Blacksmith)", -- A23-34 (검수 2026-10-06)
@@ -155,6 +166,7 @@ local built = false
 local visible = false
 local lockedUntil = 0
 local shownFaction = nil
+local shownKey = nil -- the card art in use: "ClassPick<faction>" (A23-57 redraw) or "ClassCard<faction>" (bundle 2)
 local lastWarnAt = -math.huge
 local cameraConn = nil
 local scaleConn = nil
@@ -572,7 +584,7 @@ local function refreshButtons()
 	local enabled = os.clock() >= lockedUntil
 	for _, c in cards do
 		c.Hit:SetAttribute("Disabled", not enabled)
-		c.Label.Text = enabled and T.Choose or T.Wait
+		c.Label.Text = enabled and (c.Choose or T.Choose) or T.Wait
 		c.Label.TextTransparency = enabled and 0 or 0.35
 		if not enabled then c.Down = false end
 		cardVisual(c)
@@ -602,9 +614,17 @@ end
 local function refreshPortraits()
 	local faction = shownFaction or myFaction()
 	local other = gender == "M" and "F" or "M"
+	local redraw = shownKey ~= nil and string.sub(shownKey, 1, 9) == "ClassPick"
 	for id, c in cards do
 		local base = "Char" .. faction .. id
-		local img = artId(base .. gender) or artId(base .. other)
+		local img
+		if redraw then
+			-- A23-57: the window pictures CLS_<faction><class>_<M|F>_Card, by the chosen gender
+			local cls = "CLS_" .. faction .. id .. "_"
+			img = artId(cls .. gender .. "_Card") or artId(cls .. other .. "_Card")
+		else
+			img = artId(base .. gender) or artId(base .. other)
+		end
 		c.Char.Image = img or ""
 		c.Char.Visible = img ~= nil
 		c.Emoji.Visible = img == nil
@@ -683,7 +703,9 @@ local function buildHeader()
 
 	-- "직업을 골라요!" on the empty title ribbon (code ribbon without the art)
 	local ribbon = newImage(root, "TitleRibbon", 2)
-	local ribbonKey = artId(PANEL.Title) and PANEL.Title or "TitleRibbon"
+	-- the A23-57 crown ribbon first (its text band is much wider: 'Pick a class!' was cut to 'Pick a' on bundle 2's)
+	local ribbonKey = (artId("FactionPickTitle") and "FactionPickTitle") or (artId(PANEL.Title) and PANEL.Title)
+		or "TitleRibbon"
 	local ribbonId = artId(ribbonKey)
 	LAY.RibbonKey = ribbonKey
 	ribbon.Image = ribbonId or ""
@@ -944,7 +966,7 @@ local function buildArtCard(id)
 		Chip = chip, ChipText = chipText, Badge = badge, BadgeText = badgeText,
 		DescFull = (def and type(def.Desc) == "string" and def.Desc ~= "") and def.Desc or pickLine(id),
 		DescShort = pickLine(id),
-		Hover = false, Down = false, PopUntil = 0,
+		Hover = false, Down = false, PopUntil = 0, Id = id,
 	}
 	wireCard(c, id)
 	card.Parent = cardsRow
@@ -1078,18 +1100,21 @@ end
 local function applyFaction()
 	local faction = myFaction()
 	shownFaction = faction
-	local key = "ClassCard" .. faction
-	local cardId = artId(key)
 	-- IMG-R4: art cards only with the image AND every measured region (a missing Name region would crop nothing and
-	-- draw the whole card image over the character)
-	local L = Art.Layout[key]
-	local complete = type(L) == "table"
-	if complete then
+	-- draw the whole card image over the character). The A23-57 frame first, then bundle 2's card
+	local function complete(key)
+		local L = Art.Layout[key]
+		if type(L) ~= "table" or artId(key) == nil then return false end
 		for _, r in { "Portrait", "Name", "Body", "Button" } do
-			if type(L[r]) ~= "table" then complete = false end
+			if type(L[r]) ~= "table" then return false end
 		end
+		return true
 	end
-	mode = (cardId ~= nil and complete) and "art" or "old"
+	local key = complete("ClassPick" .. faction) and ("ClassPick" .. faction) or ("ClassCard" .. faction)
+	shownKey = key
+	local cardId = artId(key)
+	local redraw = string.sub(key, 1, 9) == "ClassPick"
+	mode = complete(key) and "art" or "old"
 
 	local shieldId = artId("Shield" .. faction)
 	head.Shield.Image = shieldId or ""
@@ -1098,11 +1123,13 @@ local function applyFaction()
 	refreshGender()
 
 	if mode == "art" then
-		local style = CARD_STYLE[faction] or CARD_STYLE.Halo
+		local style = (redraw and CARD_STYLE.New[faction]) or CARD_STYLE[faction] or CARD_STYLE.Halo
 		for id, c in cards do
 			c.Card.Visible = true
+			c.Redraw = redraw
 			c.Bg.Image = cardId
 			c.Crop.Image = cardId
+			c.Crop.Visible = not redraw -- the redraw's picture already ends inside its window
 			c.Name.Text = className(id, faction)
 			styleText(c.Name, style.Name)
 			styleText(c.Desc, style.Body)
@@ -1184,7 +1211,7 @@ local function layoutNote(w, h, minT)
 	local iconW = math.floor(size * 1.7)
 	local padX = math.floor(size * 0.8)
 	local maxTextW = w - 2 * LAY.Gutter - iconW - padX * 2 - 6
-	local th, tw = textBounds(T.Footer, size, note.Text.Font, maxTextW)
+	local th, tw = textBounds(note.Text.Text ~= "" and note.Text.Text or T.Footer, size, note.Text.Font, maxTextW)
 	local textW = math.min(maxTextW, tw + size) -- one glyph of slack so the measured line never re-wraps
 	local noteH = math.ceil(th + size * 0.9)
 	local noteW = padX * 2 + iconW + 6 + textW
@@ -1205,17 +1232,27 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 	local bx, by, bw, bh = region(L.Body, W, H)
 	local kx, ky, kw, kh = region(L.Button, W, H)
 
-	-- character from just under the arch top, its belt line (LAY.CharHip) on the ribbon: the clip ends inside the ribbon
-	-- and the ribbon crop covers the cut, so only the upper body shows (mockup UI_Class_A: waist-up hero shot)
-	local top = py + ph * 0.02
-	local hip = ny + nh * 0.3
-	local hh = math.max(H * 0.2, (hip - top) / LAY.CharHip)
-	place(c.Clip, 0, 0, W, ny + nh * 0.45)
-	c.Holder.Position = UDim2.fromOffset(px + pw / 2, top + hh)
-	c.Holder.Size = UDim2.fromOffset(math.max(W, hh), hh) -- wider than any figure (aspect <= 1): Fit keeps the feet at the bottom
-	c.Emoji.Position = UDim2.fromScale(0.5, LAY.CharHip / 2)
-	c.Emoji.Size = UDim2.fromScale(1, LAY.CharHip * 0.8)
-	setTextRange(c.Emoji, minT, hh * LAY.CharHip * 0.6)
+	if c.Redraw then
+		-- A23-57: the CLS_* picture is cut to the window already: it fills the Portrait region exactly
+		place(c.Clip, 0, 0, W, H)
+		c.Holder.Position = UDim2.fromOffset(px + pw / 2, py + ph)
+		c.Holder.Size = UDim2.fromOffset(pw, ph)
+		c.Emoji.Position = UDim2.fromScale(0.5, 0.5)
+		c.Emoji.Size = UDim2.fromScale(1, 0.6)
+		setTextRange(c.Emoji, minT, ph * 0.4)
+	else
+		-- character from just under the arch top, its belt line (LAY.CharHip) on the ribbon: the clip ends inside the
+		-- ribbon and the ribbon crop covers the cut, so only the upper body shows (mockup UI_Class_A: waist-up hero shot)
+		local top = py + ph * 0.02
+		local hip = ny + nh * 0.3
+		local hh = math.max(H * 0.2, (hip - top) / LAY.CharHip)
+		place(c.Clip, 0, 0, W, ny + nh * 0.45)
+		c.Holder.Position = UDim2.fromOffset(px + pw / 2, top + hh)
+		c.Holder.Size = UDim2.fromOffset(math.max(W, hh), hh) -- wider than any figure (aspect <= 1): Fit keeps the feet at the bottom
+		c.Emoji.Position = UDim2.fromScale(0.5, LAY.CharHip / 2)
+		c.Emoji.Size = UDim2.fromScale(1, LAY.CharHip * 0.8)
+		setTextRange(c.Emoji, minT, hh * LAY.CharHip * 0.6)
+	end
 	local r = L.Name
 	if type(r) == "table" then
 		c.Crop.ImageRectOffset = Vector2.new((r[1] or 0) * img.X, (r[2] or 0) * img.Y)
@@ -1233,7 +1270,11 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 	local descW = bw * 0.94 -- wider than the rows: on a phone the Horns panel only fits 2 lines this way
 	place(c.Desc, bx + bw * 0.03, by + bh * 0.03, descW, descH)
 	local text = c.DescFull
-	if c.DescShort ~= "" and textBounds(text, minT, c.Desc.Font, descW) > descH then text = c.DescShort end
+	if c.Redraw then
+		text = T.Tag[c.Id] or c.DescShort
+	elseif c.DescShort ~= "" and textBounds(text, minT, c.Desc.Font, descW) > descH then
+		text = c.DescShort
+	end
 	c.Desc.Text = text
 	setTextRange(c.Desc, minT, math.clamp(math.floor(H * 0.046), minT, math.max(minT, 24)))
 
@@ -1247,6 +1288,9 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 		setTextRange(row.Emoji, minT, icon)
 		local lx = icon + rowH * 0.2
 		local lw = labelSize * 2.3
+		-- a row lower than the readable size keeps its icon and bars only (phones on the A23-57 frames)
+		row.Label.Visible = rowH >= minT * 1.05
+		if not row.Label.Visible then lw = 0 end
 		place(row.Label, lx, 0, lw, rowH)
 		setTextRange(row.Label, minT, labelSize)
 		local sx = lx + lw + rowH * 0.1
@@ -1263,20 +1307,28 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 	place(c.Shade, kx + kw * 0.03, ky + kh * 0.08, kw * 0.94, kh * 0.84)
 	place(c.Label, kx + kw * 0.1, ky + kh * 0.12, kw * 0.8, kh * 0.72)
 	setTextRange(c.Label, minT, kh * 0.62)
+	c.Choose = c.Redraw and T.ChooseShort or T.Choose
+	if c.Label.Text ~= T.Wait then c.Label.Text = c.Choose end
 	local hitH = math.min(math.max(kh * 1.2, LAY.TouchTarget / s), H * 0.2)
 	local hitW = math.min(W, kw * 1.08)
 	local hitY = math.min(ky + kh / 2 - hitH / 2, H - hitH)
 	place(c.Hit, kx + kw / 2 - hitW / 2, hitY, hitW, hitH)
 
 	-- chips: generic class at the alcove's bottom-left (resting on the ribbon, clear of the shield / orb / bow that the
-	-- characters hold on the right), badge over the top ornament
+	-- characters hold on the right), badge over the top ornament. The A23-57 frames: the class word centred over the
+	-- name ribbon, its bottom on the ribbon's rim (CardLayout RibbonTop) - user 2026-10-07 via 검수: centred reads better
 	local chipT = math.max(minT, math.floor(nh * 0.48))
 	local chipH = math.floor(chipT * 1.5)
 	local function chipW(label)
 		return (utf8.len(label.Text) or #label.Text) * chipT * 1.02 + chipH * 0.9
 	end
 	local gw = math.min(chipW(c.ChipText), pw * 0.6)
-	place(c.Chip, px + pw * 0.03, ny - chipH * 0.85, gw, chipH)
+	if c.Redraw then
+		local rim = (type(L.RibbonTop) == "number" and L.RibbonTop or (ny / H - 0.014)) * H
+		place(c.Chip, (W - gw) / 2, rim - chipH - 1, gw, chipH)
+	else
+		place(c.Chip, px + pw * 0.03, ny - chipH * 0.85, gw, chipH)
+	end
 	setTextRange(c.ChipText, minT, chipT)
 	if c.Badge then
 		local bw2 = math.min(chipW(c.BadgeText), W * 0.9)
@@ -1287,7 +1339,7 @@ end
 
 -- three art cards in a row; scaled to fit, or a sideways ScrollingFrame when they would get too small
 local function layoutArtCards(w, cardsTop, cardsBottom, minT, s)
-	local key = "ClassCard" .. (shownFaction or "Halo")
+	local key = shownKey or ("ClassCard" .. (shownFaction or "Halo"))
 	local L = type(Art.Layout[key]) == "table" and Art.Layout[key] or {} -- {} = whole-card regions (never nil-indexed)
 	local img = partSize(key) or Vector2.new(640, 1024)
 	local aspect = img.X / img.Y
@@ -1326,6 +1378,90 @@ local function layoutArtCards(w, cardsTop, cardsBottom, minT, s)
 			layoutArtCard(c, L, img, cardW, cardH, minT, s)
 		end
 	end
+	return scroll and availW or canvasW
+end
+
+-- phones (side layouts): the note in a side column without its capsule. The capsule art is one wide line; on two or
+-- three lines in a narrow column it stretched and clipped (UiSandbox 749x361 / 844x390, 2026-10-07). Here: the icon over
+-- the words, light text with a dark outline on the dimmed screen. side = false puts the capsule look back.
+local function noteSideLook(side)
+	if note.Side == side then return end
+	note.Side = side
+	local frame = note.Frame
+	if frame:IsA("ImageLabel") then
+		if note.FrameImageT == nil then note.FrameImageT = frame.ImageTransparency end
+		frame.ImageTransparency = side and 1 or note.FrameImageT
+	else
+		if note.FrameBgT == nil then note.FrameBgT = frame.BackgroundTransparency end
+		frame.BackgroundTransparency = side and 1 or note.FrameBgT
+		local st = frame:FindFirstChild("Stroke")
+		if st and st:IsA("UIStroke") then st.Enabled = not side end
+	end
+	if side then
+		styleText(note.Text, "light", 1.5)
+	else
+		styleText(note.Text, artId(PANEL.Footer) ~= nil and "light" or "ink")
+	end
+end
+
+-- the narrowest width (at least half of maxW) that keeps the words on as few lines as maxW does: no lone last word
+-- ("...at the Altar of / Fate." on a 749 phone, 2026-10-07)
+local function balancedWidth(text, size, font, maxW)
+	local lines = textBounds(text, size, font, maxW)
+	local lo, hi = maxW * 0.5, maxW
+	for _ = 1, 7 do
+		local mid = (lo + hi) / 2
+		if textBounds(text, size, font, mid) > lines + 0.5 then lo = mid else hi = mid end
+	end
+	return hi
+end
+
+-- phones (wide but short) with the A23-57 frames: the shield and the Boy | Girl pill stacked in the left column (no
+-- title ribbon: the cards and their "Pick!" buttons say it), the note in the right one, the cards as tall as the screen
+-- (UiSandbox 749x361, 2026-10-06: under a header row the names and the description no longer fit)
+local function layoutSide(w, h, top, minT, s)
+	local bottom = h - 8
+	head.Ribbon.Visible = false
+	local rowW = layoutArtCards(w, top + 2, bottom, minT, s) or w * 0.6
+	local side = math.max(0, (w - rowW) / 2)
+	local colW = math.max(1, side - 2 * LAY.Gutter)
+	local ss = partSize("Shield" .. (shownFaction or "Halo"))
+	local shieldAspect = ss and ss.X / ss.Y or 1
+	local shieldH = math.floor(math.min(colW * 0.6 / shieldAspect, 96))
+	local cy = top + (bottom - top) * 0.4
+	place(head.Shield, side / 2 - shieldH * shieldAspect / 2, cy - shieldH - 6, shieldH * shieldAspect, shieldH)
+	local pillH = math.max(minT + 10, math.floor(shieldH * 0.5))
+	local pillW = math.min(colW, math.floor(pillH * 2.4))
+	place(head.Pill, side / 2 - pillW / 2, cy + 6, pillW, pillH)
+	-- the same thumb-size hit areas as the header row (CR-L41)
+	local target = math.ceil(LAY.TouchTarget / s)
+	local hitH = math.max(pillH, target)
+	local extraW = math.max(0, target - pillW / 2)
+	local textSize = math.max(minT, math.floor(pillH * 0.52))
+	head.M.Size = UDim2.new(0.5, extraW, 0, hitH)
+	head.M.HitPad.PaddingLeft = UDim.new(0, extraW)
+	head.F.Size = UDim2.new(0.5, extraW, 0, hitH)
+	head.F.HitPad.PaddingRight = UDim.new(0, extraW)
+	for _, b in { head.M, head.F } do
+		setTextRange(b, minT, textSize)
+	end
+	-- the note in the right column: the scroll icon over the words, wrapped to the column, clear of the jump button
+	noteSideLook(true)
+	local size = minT
+	note.Icon.Visible = note.Icon.Image ~= ""
+	local iconW = note.Icon.Visible and math.floor(size * 2.2) or 0
+	local gapY = iconW > 0 and math.floor(size * 0.3) or 0
+	local fitW = balancedWidth(note.Text.Text, size, note.Text.Font, colW)
+	local th, tw = textBounds(note.Text.Text, size, note.Text.Font, fitW)
+	local textW = math.min(colW, tw + size)
+	th = math.ceil(th * 1.15) + 2 -- the wrap slack (UIKit NOTIFY.WrapSlack): rendered lines run a little wider
+	local noteW = math.max(textW, iconW)
+	local noteH = iconW + gapY + th
+	place(note.Frame, w - side / 2 - noteW / 2, top + (bottom - top) * 0.42 - noteH / 2, noteW, noteH)
+	place(note.Icon, (noteW - iconW) / 2, 0, iconW, iconW)
+	place(note.Text, (noteW - textW) / 2, iconW + gapY, textW, th)
+	note.Text.TextWrapped = true
+	setTextRange(note.Text, minT, size)
 end
 
 -- code-styled cards (IMG-R4): same sizes as before the art pass
@@ -1358,9 +1494,26 @@ local function layout()
 	root.Position = UDim2.fromOffset(0, 0)
 	root.Size = UDim2.fromOffset(w, h)
 	local minT = minTextFor(s)
-	local tall = LAY.RibbonKey == "FactionTitle" and h * s >= 560 -- short (phone) screens keep the room for the cards
+	local compact = h * s < 560
+	-- short (phone) screens keep the room for the cards
+	local tall = (LAY.RibbonKey == "FactionTitle" or LAY.RibbonKey == "FactionPickTitle") and not compact
 	local headH = math.clamp(math.floor(h * (tall and LAY.HeadFracArt or LAY.HeadFrac)), LAY.HeadMin,
 		tall and LAY.HeadMaxArt or LAY.HeadMax)
+	if LAY.RibbonKey == "FactionPickTitle" then
+		-- the title words fit the ribbon's text band at the readable size
+		local part = ART.Parts and ART.Parts.FactionPickTitle
+		local band = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect[3] or 0.7
+		local rs = partSize("FactionPickTitle")
+		local aspect = rs and rs.X / rs.Y or 2.7
+		headH = math.max(headH, math.ceil((#T.Title * 0.58 + 1) * minT / band / aspect / 0.92))
+	end
+	note.Text.Text = compact and T.FooterShort or T.Footer
+	if compact and mode == "art" and shownKey and string.sub(shownKey, 1, 9) == "ClassPick" then
+		layoutSide(w, h, top, minT, s)
+		return
+	end
+	head.Ribbon.Visible = true
+	noteSideLook(false)
 	layoutHeader(w, top, headH, minT, s)
 	local noteTop = layoutNote(w, h, minT)
 	local cardsTop = top + headH + 6

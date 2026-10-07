@@ -94,7 +94,11 @@ local COL = {
 	-- marks (Theme values copied in at build)
 	Monster = Color3.fromRGB(255, 80, 80),
 	Golden = Color3.fromRGB(255, 200, 30),
-	Quest = Color3.fromRGB(255, 210, 60),
+	Quest = Color3.fromRGB(255, 210, 60), -- the "★" fallback text and the player dots
+	-- the quest diamond / edge chevron like the screen marker (QuestMarker): in progress white, waiting for [Claim] light
+	-- gold (Config.UIArt.Colors MarkerGo / MarkerClaim, copied in at build)
+	QuestGo = Color3.fromRGB(255, 255, 255),
+	QuestClaim = Color3.fromRGB(255, 228, 128),
 	-- my arrow by faction (A23-51: 빛 금 · 뿔 빨강 · 장인 청록; nobody yet: white)
 	MeHalo = Color3.fromRGB(252, 198, 52),
 	MeHorns = Color3.fromRGB(243, 38, 44),
@@ -417,6 +421,8 @@ local function build()
 	local artCol = type(UIKit.ArtColors) == "table" and UIKit.ArtColors or {}
 	if typeof(theme.Bad) == "Color3" then COL.Monster = theme.Bad end
 	if typeof(theme.Gold) == "Color3" then COL.Quest = theme.Gold end
+	if typeof(artCol.MarkerGo) == "Color3" then COL.QuestGo = artCol.MarkerGo end
+	if typeof(artCol.MarkerClaim) == "Color3" then COL.QuestClaim = artCol.MarkerClaim end
 	if typeof(theme.Good) == "Color3" then COL.Potion = theme.Good end
 	if typeof(theme.Neutral) == "Color3" then COL.Smith = theme.Neutral end
 	local mc = type(Config.Monsters) == "table" and Config.Monsters or {}
@@ -511,11 +517,11 @@ local function build()
 	-- A23-36: the quest target is the marker diamond (IconQuestMarker, tinted), the edge chevron its arrow art
 	ui.star = UIKit.ArtImage("IconQuestMarker", {
 		Name = "Quest", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.Star, T.Star),
-		ImageColor3 = COL.Quest, ZIndex = 9, Active = false, Visible = false, Parent = ui.canvas,
+		ImageColor3 = COL.QuestGo, ZIndex = 9, Active = false, Visible = false, Parent = ui.canvas,
 	}) or textMark("Quest", TXT.Quest, T.Star, COL.Quest, 9, ui.canvas)
 	ui.chev = UIKit.ArtImage("IconQuestMarkerArrow", {
 		Name = "QuestEdge", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.Star, T.Star),
-		ImageColor3 = COL.Quest, ZIndex = 2, Active = false, Visible = false, Parent = ui.view,
+		ImageColor3 = COL.QuestGo, ZIndex = 2, Active = false, Visible = false, Parent = ui.view,
 	}) or textMark("QuestEdge", TXT.Edge, T.Star, COL.Quest, 2, ui.view)
 	-- A23-51: my arrow art in the middle, always up (the map turns under it); the "▲" text when the art is missing
 	ui.me = UIKit.ArtImage(T.MeArt, {
@@ -613,14 +619,38 @@ local function relayout()
 end
 
 ----------------------------------------------------------------- live updates
+-- review 8e89d2b ① (검수 2026-10-06): the same target as the screen marker. HUD.QuestTarget() (QuestTarget.ForEntry:
+-- { Position?, Part?, Claim }) first; the old HUD.GuideTarget only when it has none. Returns position, waiting-for-claim
 local function questTarget()
 	local hud = C and C.HUD
-	if type(hud) ~= "table" or type(hud.GuideTarget) ~= "function" then return nil end
+	if type(hud) ~= "table" then return nil, false end
+	if type(hud.QuestTarget) == "function" then
+		local ok, target = pcall(hud.QuestTarget)
+		if ok and type(target) == "table" then
+			local p = typeof(target.Position) == "Vector3" and target.Position or instPos(target.Part)
+			if p then return p, target.Claim == true end
+		end
+	end
+	if type(hud.GuideTarget) ~= "function" then return nil, false end
 	local ok, p = pcall(hud.GuideTarget)
-	if not ok then return nil end
-	if typeof(p) == "Vector3" then return p end
-	if typeof(p) == "CFrame" then return p.Position end
-	return instPos(p)
+	if not ok then return nil, false end
+	if typeof(p) == "Vector3" then return p, false end
+	if typeof(p) == "CFrame" then return p.Position, false end
+	return instPos(p), false
+end
+
+-- the diamond and the edge chevron: white in progress, light gold when the quest waits for [Claim] (QuestMarker's colours)
+local function tintQuest(claim)
+	if S.questClaim == claim then return end
+	S.questClaim = claim
+	local col = claim and COL.QuestClaim or COL.QuestGo
+	for _, g in { ui.star, ui.chev } do
+		if g and g:IsA("ImageLabel") then
+			g.ImageColor3 = col
+		elseif g and g:IsA("TextLabel") then
+			g.TextColor3 = claim and COL.QuestClaim or COL.Quest
+		end
+	end
 end
 
 local function merchantPos()
@@ -763,12 +793,13 @@ end
 local function scan()
 	local x, z = S.x, S.z
 	if not x then return end
-	local tp = questTarget()
+	local tp, claim = questTarget()
 	if tp then
 		if not S.questPos or (tp - S.questPos).Magnitude > 0.5 then
 			S.questPos = tp
 			ui.star.Position = toScale(tp)
 		end
+		tintQuest(claim == true)
 	else
 		S.questPos = nil
 	end

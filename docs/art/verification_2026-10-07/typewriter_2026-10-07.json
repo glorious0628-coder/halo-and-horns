@@ -1,0 +1,39 @@
+{
+  "tool": "tools/typewriter_view.py",
+  "line": "Hallie here! Now you know my name. Welcome to the Knights!",
+  "measuredLettersPerSecond": 40.0,
+  "result": {
+    "ShortDone": true,
+    "Total": 58,
+    "ShortOnDone": true,
+    "StateAfterFinish": "done",
+    "Samples": [
+      9,
+      19,
+      29,
+      39
+    ],
+    "OldState": "cancelled",
+    "NewShown": -1,
+    "AfterFinish": -1,
+    "NewText": "Line B.",
+    "ShortShown": -1,
+    "Start": 0,
+    "Speed": 38,
+    "NewDone": true,
+    "DoneBeforeFinish": false,
+    "OldCancelled": true
+  },
+  "checks": {
+    "starts hidden": true,
+    "grows every sample": true,
+    "about the set speed (+-25%)": true,
+    "not done before Finish": true,
+    "Finish shows all": true,
+    "short line ends by itself + OnDone": true,
+    "a new line cancels the old": true,
+    "the new line finishes": true
+  },
+  "passed": 8,
+  "total": 8
+}

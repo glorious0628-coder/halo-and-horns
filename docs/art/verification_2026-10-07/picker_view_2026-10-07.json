@@ -1,0 +1,3571 @@
+{
+  "tool": "tools/picker_view.py",
+  "sheet": "art/review/picker_view_2026-10-07.jpg",
+  "rows": [
+    {
+      "device": "phone",
+      "mode": "faction",
+      "file": "build/picker_view/phone_faction.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://88246897757091",
+            "Name": "Body/Art",
+            "Rect": [
+              222.5,
+              78.75,
+              147,
+              240.75
+            ]
+          },
+          {
+            "Image": "rbxassetid://72414557308193",
+            "Name": "Body/Art",
+            "Rect": [
+              378.5,
+              78.75,
+              147,
+              240.75
+            ]
+          }
+        ],
+        "Open": "FactionPicker",
+        "Screen": [
+          749,
+          361
+        ],
+        "Texts": [
+          {
+            "Name": "Text",
+            "Px": 14,
+            "Text": "Choose your side!",
+            "Fits": true,
+            "Box": [
+              105,
+              18
+            ]
+          },
+          {
+            "Name": "FactionName",
+            "Px": 12,
+            "Text": "Knights of Light",
+            "Fits": true,
+            "Box": [
+              77,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "XP +30%",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "HP +20%, regen",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Skills heal allies",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Auto-save gold",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Join this side!",
+            "Fits": true,
+            "Box": [
+              72,
+              14
+            ]
+          },
+          {
+            "Name": "FactionName",
+            "Px": 12,
+            "Text": "Horn Legion",
+            "Fits": true,
+            "Box": [
+              77,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Gold +25%",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "ATK +15%, Lifesteal",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Keep your loot gold",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "5★ = Kaiju!",
+            "Fits": true,
+            "Box": [
+              80,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Join this side!",
+            "Fits": true,
+            "Box": [
+              72,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 22,
+            "Text": "Switch sides later at the Altar of Fate.",
+            "Fits": true,
+            "Box": [
+              91,
+              27
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "phone",
+      "mode": "class_Halo_M",
+      "file": "build/picker_view/phone_class_Halo_M.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              162.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://83476661743336",
+            "Name": "Portrait/Character",
+            "Rect": [
+              192.5,
+              113.87139892578125,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              306.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://126336881237120",
+            "Name": "Portrait/Character",
+            "Rect": [
+              336.5,
+              113.95016479492188,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              450.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://115817198015355",
+            "Name": "Portrait/Character",
+            "Rect": [
+              480.5,
+              113.40847778320312,
+              73.5,
+              88.5
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          749,
+          361
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Paladin",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              120,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Light Mage",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Ranger",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 33,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              69,
+              40
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "phone",
+      "mode": "class_Halo_F",
+      "file": "build/picker_view/phone_class_Halo_F.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              162.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://88805775159569",
+            "Name": "Portrait/Character",
+            "Rect": [
+              192.5,
+              112.05165100097656,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              306.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://123314243302195",
+            "Name": "Portrait/Character",
+            "Rect": [
+              336.5,
+              113.99896240234375,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              450.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://126666354590986",
+            "Name": "Portrait/Character",
+            "Rect": [
+              480.5,
+              113.70721435546875,
+              73.5,
+              88.5
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          749,
+          361
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Paladin",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              120,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Light Mage",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Ranger",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 33,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              69,
+              40
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "phone",
+      "mode": "class_Horns_M",
+      "file": "build/picker_view/phone_class_Horns_M.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              162.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://91103879889186",
+            "Name": "Portrait/Character",
+            "Rect": [
+              192.5,
+              113.82879638671875,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              306.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://87840664026840",
+            "Name": "Portrait/Character",
+            "Rect": [
+              336.5,
+              113.97268676757812,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              450.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://81732631379103",
+            "Name": "Portrait/Character",
+            "Rect": [
+              480.5,
+              113.48399353027344,
+              73.5,
+              88.5
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          749,
+          361
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Berserker",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              120,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Dark Mage",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Shadow Hunter",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 33,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              69,
+              40
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "phone",
+      "mode": "class_Horns_F",
+      "file": "build/picker_view/phone_class_Horns_F.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              162.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://94079237131593",
+            "Name": "Portrait/Character",
+            "Rect": [
+              192.5,
+              111.97686767578125,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              306.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://136362714347322",
+            "Name": "Portrait/Character",
+            "Rect": [
+              336.5,
+              113.9925537109375,
+              73.5,
+              88.5
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              450.5,
+              76.5,
+              134.25,
+              249
+            ]
+          },
+          {
+            "Image": "rbxassetid://100853653295965",
+            "Name": "Portrait/Character",
+            "Rect": [
+              480.5,
+              113.78573608398438,
+              73.5,
+              88.5
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          749,
+          361
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Berserker",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              120,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Dark Mage",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Shadow Hunter",
+            "Fits": true,
+            "Box": [
+              77,
+              13
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 11,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              87,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              58,
+              12
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              44,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 33,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              69,
+              40
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "844",
+      "mode": "faction",
+      "file": "build/picker_view/844_faction.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://88246897757091",
+            "Name": "Body/Art",
+            "Rect": [
+              254,
+              79.5,
+              163.5,
+              267.75
+            ]
+          },
+          {
+            "Image": "rbxassetid://72414557308193",
+            "Name": "Body/Art",
+            "Rect": [
+              426.5,
+              79.5,
+              163.5,
+              267.75
+            ]
+          }
+        ],
+        "Open": "FactionPicker",
+        "Screen": [
+          844,
+          390
+        ],
+        "Texts": [
+          {
+            "Name": "Text",
+            "Px": 14,
+            "Text": "Choose your side!",
+            "Fits": true,
+            "Box": [
+              107,
+              18
+            ]
+          },
+          {
+            "Name": "FactionName",
+            "Px": 12,
+            "Text": "Knights of Light",
+            "Fits": true,
+            "Box": [
+              86,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "XP +30%",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "HP +20%, regen",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Skills heal allies",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Auto-save gold",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Join this side!",
+            "Fits": true,
+            "Box": [
+              80,
+              14
+            ]
+          },
+          {
+            "Name": "FactionName",
+            "Px": 12,
+            "Text": "Horn Legion",
+            "Fits": true,
+            "Box": [
+              86,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Gold +25%",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "ATK +15%, Lifesteal",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Keep your loot gold",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "5 stars = Kaiju form!",
+            "Fits": true,
+            "Box": [
+              89,
+              15
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 11,
+            "Text": "Join this side!",
+            "Fits": true,
+            "Box": [
+              80,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Switch sides later at the Altar of Fate.",
+            "Fits": true,
+            "Box": [
+              166,
+              15
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "844",
+      "mode": "class_Halo_M",
+      "file": "build/picker_view/844_class_Halo_M.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              186.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://83476661743336",
+            "Name": "Portrait/Character",
+            "Rect": [
+              219.875,
+              118.333984375,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              347,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://126336881237120",
+            "Name": "Portrait/Character",
+            "Rect": [
+              380.375,
+              118.47012329101562,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              507.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://115817198015355",
+            "Name": "Portrait/Character",
+            "Rect": [
+              540.875,
+              117.88951110839844,
+              81.75,
+              98.25
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          844,
+          390
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Paladin",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              134,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Light Mage",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Ranger",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 22,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              104,
+              27
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "844",
+      "mode": "class_Halo_F",
+      "file": "build/picker_view/844_class_Halo_F.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              186.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://88805775159569",
+            "Name": "Portrait/Character",
+            "Rect": [
+              219.875,
+              116.07513427734375,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              347,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://123314243302195",
+            "Name": "Portrait/Character",
+            "Rect": [
+              380.375,
+              118.31259155273438,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              507.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://126666354590986",
+            "Name": "Portrait/Character",
+            "Rect": [
+              540.875,
+              118.4686279296875,
+              81.75,
+              98.25
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          844,
+          390
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Paladin",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              134,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Light Mage",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Ranger",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 22,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              104,
+              27
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "844",
+      "mode": "class_Horns_M",
+      "file": "build/picker_view/844_class_Horns_M.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              186.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://91103879889186",
+            "Name": "Portrait/Character",
+            "Rect": [
+              219.875,
+              118.33450317382812,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              347,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://87840664026840",
+            "Name": "Portrait/Character",
+            "Rect": [
+              380.375,
+              118.45858764648438,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              507.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://81732631379103",
+            "Name": "Portrait/Character",
+            "Rect": [
+              540.875,
+              117.88623046875,
+              81.75,
+              98.25
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          844,
+          390
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Berserker",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              134,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Dark Mage",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Shadow Hunter",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 22,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              104,
+              27
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "844",
+      "mode": "class_Horns_F",
+      "file": "build/picker_view/844_class_Horns_F.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              186.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://94079237131593",
+            "Name": "Portrait/Character",
+            "Rect": [
+              219.875,
+              116.11404418945312,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              347,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://136362714347322",
+            "Name": "Portrait/Character",
+            "Rect": [
+              380.375,
+              118.43304443359375,
+              81.75,
+              98.25
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              507.5,
+              77.25,
+              149.25,
+              276
+            ]
+          },
+          {
+            "Image": "rbxassetid://100853653295965",
+            "Name": "Portrait/Character",
+            "Rect": [
+              540.875,
+              118.41450500488281,
+              81.75,
+              98.25
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          844,
+          390
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Berserker",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              134,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Dark Mage",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 12,
+            "Text": "Shadow Hunter",
+            "Fits": true,
+            "Box": [
+              85,
+              15
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 12,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              97,
+              20
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 12,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              65,
+              14
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 11,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              48,
+              16
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 22,
+            "Text": "Change class later: Menu > Change Class",
+            "Fits": true,
+            "Box": [
+              104,
+              27
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "pc",
+      "mode": "faction",
+      "file": "build/picker_view/pc_faction.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://88246897757091",
+            "Name": "Body/Art",
+            "Rect": [
+              432.800048828125,
+              321.5999755859375,
+              201.60000610351562,
+              330.3999938964844
+            ]
+          },
+          {
+            "Image": "rbxassetid://72414557308193",
+            "Name": "Body/Art",
+            "Rect": [
+              644,
+              321.5999755859375,
+              201.60000610351562,
+              330.3999938964844
+            ]
+          }
+        ],
+        "Open": "FactionPicker",
+        "Screen": [
+          1280,
+          720
+        ],
+        "Texts": [
+          {
+            "Name": "PremiseLine1",
+            "Px": 15,
+            "Text": "They say someone broke the Crown of Balance.",
+            "Fits": true,
+            "Box": [
+              796,
+              22
+            ]
+          },
+          {
+            "Name": "PremiseLine2",
+            "Px": 15,
+            "Text": "Some who picked up its shards grew a halo. Others grew horns.",
+            "Fits": true,
+            "Box": [
+              796,
+              22
+            ]
+          },
+          {
+            "Name": "PremiseLine3",
+            "Px": 15,
+            "Text": "Now each side says the other did it.",
+            "Fits": true,
+            "Box": [
+              796,
+              22
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 35,
+            "Text": "Choose your side!",
+            "Fits": true,
+            "Box": [
+              248,
+              43
+            ]
+          },
+          {
+            "Name": "FactionName",
+            "Px": 16,
+            "Text": "Knights of Light",
+            "Fits": true,
+            "Box": [
+              106,
+              20
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "XP +30%",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "HP +20%, regen",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "Skills heal allies",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "Pouch gold auto-saved",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 13,
+            "Text": "Join this side!",
+            "Fits": true,
+            "Box": [
+              99,
+              18
+            ]
+          },
+          {
+            "Name": "FactionName",
+            "Px": 16,
+            "Text": "Horn Legion",
+            "Fits": true,
+            "Box": [
+              106,
+              20
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "Gold +25%",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "ATK +15%, Lifesteal",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "Keep your loot gold",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 12,
+            "Text": "5 stars = Kaiju form!",
+            "Fits": true,
+            "Box": [
+              110,
+              18
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 13,
+            "Text": "Join this side!",
+            "Fits": true,
+            "Box": [
+              99,
+              18
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 15,
+            "Text": "You can switch later at the Altar of Fate in the Crossroads (free or with a ticket)",
+            "Fits": true,
+            "Box": [
+              574,
+              40
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "pc",
+      "mode": "class_Halo_M",
+      "file": "build/picker_view/pc_class_Halo_M.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              251.99998474121094,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://83476661743336",
+            "Name": "Portrait/Character",
+            "Rect": [
+              306.79998779296875,
+              274.565185546875,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              516,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://126336881237120",
+            "Name": "Portrait/Character",
+            "Rect": [
+              570.800048828125,
+              274.7127685546875,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              780.0000610351562,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://115817198015355",
+            "Name": "Portrait/Character",
+            "Rect": [
+              834.8001098632812,
+              273.727783203125,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          1280,
+          720
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Paladin",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              220,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Light Mage",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              72,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Ranger",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Title",
+            "Px": 36,
+            "Text": "Pick a class!",
+            "Fits": true,
+            "Box": [
+              212,
+              37
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 16,
+            "Text": "You can change your class later in Menu > Change Class (free: level kept under Lv5, after that from Lv1 / ticket: level kept)",
+            "Fits": true,
+            "Box": [
+              772,
+              30
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "pc",
+      "mode": "class_Halo_F",
+      "file": "build/picker_view/pc_class_Halo_F.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              251.99998474121094,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://88805775159569",
+            "Name": "Portrait/Character",
+            "Rect": [
+              306.79998779296875,
+              271.5189208984375,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              516,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://123314243302195",
+            "Name": "Portrait/Character",
+            "Rect": [
+              570.800048828125,
+              272.775634765625,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://85173061508076",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              780.0000610351562,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://126666354590986",
+            "Name": "Portrait/Character",
+            "Rect": [
+              834.8001098632812,
+              274.800048828125,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          1280,
+          720
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Paladin",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              220,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Light Mage",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              72,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Ranger",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Title",
+            "Px": 36,
+            "Text": "Pick a class!",
+            "Fits": true,
+            "Box": [
+              212,
+              37
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 16,
+            "Text": "You can change your class later in Menu > Change Class (free: level kept under Lv5, after that from Lv1 / ticket: level kept)",
+            "Fits": true,
+            "Box": [
+              772,
+              30
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "pc",
+      "mode": "class_Horns_M",
+      "file": "build/picker_view/pc_class_Horns_M.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              251.99998474121094,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://91103879889186",
+            "Name": "Portrait/Character",
+            "Rect": [
+              306.79998779296875,
+              274.49139404296875,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              516,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://87840664026840",
+            "Name": "Portrait/Character",
+            "Rect": [
+              570.800048828125,
+              274.74908447265625,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              780.0000610351562,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://81732631379103",
+            "Name": "Portrait/Character",
+            "Rect": [
+              834.8001098632812,
+              273.85150146484375,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          1280,
+          720
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Berserker",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              220,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Dark Mage",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              72,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Shadow Hunter",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Title",
+            "Px": 36,
+            "Text": "Pick a class!",
+            "Fits": true,
+            "Box": [
+              212,
+              37
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 16,
+            "Text": "You can change your class later in Menu > Change Class (free: level kept under Lv5, after that from Lv1 / ticket: level kept)",
+            "Fits": true,
+            "Box": [
+              772,
+              30
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    },
+    {
+      "device": "pc",
+      "mode": "class_Horns_F",
+      "file": "build/picker_view/pc_class_Horns_F.png",
+      "probe": {
+        "Cards": [
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Warrior/Bg",
+            "Rect": [
+              251.99998474121094,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://94079237131593",
+            "Name": "Portrait/Character",
+            "Rect": [
+              306.79998779296875,
+              272.04052734375,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Mage/Bg",
+            "Rect": [
+              516,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://136362714347322",
+            "Name": "Portrait/Character",
+            "Rect": [
+              570.800048828125,
+              272.03961181640625,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          },
+          {
+            "Image": "rbxassetid://103562830131699",
+            "Name": "Card_Archer/Bg",
+            "Rect": [
+              780.0000610351562,
+              206.00001525878906,
+              245.60000610351562,
+              453.6000061035156
+            ]
+          },
+          {
+            "Image": "rbxassetid://100853653295965",
+            "Name": "Portrait/Character",
+            "Rect": [
+              834.8001098632812,
+              274.800048828125,
+              135.1999969482422,
+              161.60000610351562
+            ]
+          }
+        ],
+        "Open": "ClassPicker",
+        "Screen": [
+          1280,
+          720
+        ],
+        "Texts": [
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Berserker",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Smash all around!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Warrior",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Best for beginners",
+            "Fits": true,
+            "Box": [
+              220,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Dark Mage",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Blast from afar!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Mage",
+            "Fits": true,
+            "Box": [
+              72,
+              20
+            ]
+          },
+          {
+            "Name": "ClassName",
+            "Px": 21,
+            "Text": "Shadow Hunter",
+            "Fits": true,
+            "Box": [
+              140,
+              25
+            ]
+          },
+          {
+            "Name": "Desc",
+            "Px": 19,
+            "Text": "Two arrows, fast!",
+            "Fits": true,
+            "Box": [
+              160,
+              34
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "HP",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "ATK",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "Label",
+            "Px": 11,
+            "Text": "SPD",
+            "Fits": true,
+            "Box": [
+              25,
+              13
+            ]
+          },
+          {
+            "Name": "ChooseLabel",
+            "Px": 20,
+            "Text": "Pick!",
+            "Fits": true,
+            "Box": [
+              108,
+              23
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 13,
+            "Text": "Archer",
+            "Fits": true,
+            "Box": [
+              80,
+              20
+            ]
+          },
+          {
+            "Name": "Title",
+            "Px": 36,
+            "Text": "Pick a class!",
+            "Fits": true,
+            "Box": [
+              212,
+              37
+            ]
+          },
+          {
+            "Name": "Text",
+            "Px": 16,
+            "Text": "You can change your class later in Menu > Change Class (free: level kept under Lv5, after that from Lv1 / ticket: level kept)",
+            "Fits": true,
+            "Box": [
+              772,
+              30
+            ]
+          }
+        ]
+      },
+      "notFitting": []
+    }
+  ]
+}

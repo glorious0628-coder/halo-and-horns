@@ -1,0 +1,464 @@
+{
+  "tool": "tools/minimap_quest_view.py",
+  "sheet": "art/review/minimap_quest_2026-10-07.jpg",
+  "passed": 8,
+  "total": 8,
+  "rows": [
+    {
+      "device": "pc",
+      "mode": "near_go",
+      "mark": "Quest",
+      "want": [
+        255,
+        255,
+        255
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/pc_near_go.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            24,
+            75,
+            12,
+            12
+          ]
+        },
+        "Quest": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            81,
+            116,
+            12,
+            12
+          ]
+        },
+        "Zone": "Crossroads",
+        "Root": [
+          14,
+          65,
+          150,
+          150
+        ],
+        "RootShown": true,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Step": 0
+      }
+    },
+    {
+      "device": "pc",
+      "mode": "near_claim",
+      "mark": "Quest",
+      "want": [
+        255,
+        228,
+        128
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/pc_near_claim.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            24,
+            75,
+            12,
+            12
+          ]
+        },
+        "Quest": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            81,
+            116,
+            12,
+            12
+          ]
+        },
+        "Zone": "Crossroads",
+        "Root": [
+          14,
+          65,
+          150,
+          150
+        ],
+        "RootShown": true,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Step": 0
+      }
+    },
+    {
+      "device": "pc",
+      "mode": "edge_claim",
+      "mark": "QuestEdge",
+      "want": [
+        255,
+        228,
+        128
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/pc_edge_claim.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            50,
+            95,
+            12,
+            12
+          ]
+        },
+        "Quest": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            18,
+            58,
+            12,
+            12
+          ]
+        },
+        "Zone": "Outskirts",
+        "Root": [
+          14,
+          65,
+          150,
+          150
+        ],
+        "RootShown": true,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Step": 0
+      }
+    },
+    {
+      "device": "pc",
+      "mode": "edge_go",
+      "mark": "QuestEdge",
+      "want": [
+        255,
+        255,
+        255
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/pc_edge_go.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            50,
+            95,
+            12,
+            12
+          ]
+        },
+        "Quest": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            18,
+            58,
+            12,
+            12
+          ]
+        },
+        "Zone": "Outskirts",
+        "Root": [
+          14,
+          65,
+          150,
+          150
+        ],
+        "RootShown": true,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Step": 0
+      }
+    },
+    {
+      "device": "phone",
+      "mode": "near_go",
+      "mark": "Quest",
+      "want": [
+        255,
+        255,
+        255
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/phone_near_go.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            55,
+            63,
+            11,
+            11
+          ]
+        },
+        "Quest": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            83,
+            80,
+            11,
+            11
+          ]
+        },
+        "Zone": "Crossroads",
+        "Root": [
+          53,
+          61,
+          73,
+          73
+        ],
+        "RootShown": true,
+        "Screen": [
+          749,
+          361
+        ],
+        "Step": 0
+      }
+    },
+    {
+      "device": "phone",
+      "mode": "near_claim",
+      "mark": "Quest",
+      "want": [
+        255,
+        228,
+        128
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/phone_near_claim.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            55,
+            63,
+            11,
+            11
+          ]
+        },
+        "Quest": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            83,
+            80,
+            11,
+            11
+          ]
+        },
+        "Zone": "Crossroads",
+        "Root": [
+          53,
+          61,
+          73,
+          73
+        ],
+        "RootShown": true,
+        "Screen": [
+          749,
+          361
+        ],
+        "Step": 0
+      }
+    },
+    {
+      "device": "phone",
+      "mode": "edge_claim",
+      "mark": "QuestEdge",
+      "want": [
+        255,
+        228,
+        128
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/phone_edge_claim.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            70,
+            76,
+            11,
+            11
+          ]
+        },
+        "Quest": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            228,
+            128
+          ],
+          "Rect": [
+            42,
+            41,
+            11,
+            11
+          ]
+        },
+        "Zone": "Outskirts",
+        "Root": [
+          53,
+          61,
+          73,
+          73
+        ],
+        "RootShown": true,
+        "Screen": [
+          749,
+          361
+        ],
+        "Step": 0
+      }
+    },
+    {
+      "device": "phone",
+      "mode": "edge_go",
+      "mark": "QuestEdge",
+      "want": [
+        255,
+        255,
+        255
+      ],
+      "ok": true,
+      "file": "build/minimap_quest_view/phone_edge_go.png",
+      "probe": {
+        "QuestEdge": {
+          "Shown": true,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            70,
+            76,
+            11,
+            11
+          ]
+        },
+        "Quest": {
+          "Shown": false,
+          "Class": "ImageLabel",
+          "Color": [
+            255,
+            255,
+            255
+          ],
+          "Rect": [
+            42,
+            41,
+            11,
+            11
+          ]
+        },
+        "Zone": "Outskirts",
+        "Root": [
+          53,
+          61,
+          73,
+          73
+        ],
+        "RootShown": true,
+        "Screen": [
+          749,
+          361
+        ],
+        "Step": 0
+      }
+    }
+  ]
+}

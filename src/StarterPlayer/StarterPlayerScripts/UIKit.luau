@@ -656,6 +656,72 @@ function UIKit.WindowOut(frame, onDone)
 		end)
 end
 
+-- quality ② (docs/design/quality_ideas_2026-10-06.md §1-②): a dialogue line appears letter by letter with the
+-- speaker's blips (C.Audio.Talk(speaker), Config.Audio.Talk voices: the shard high and fast, the Horns guide low); a tap
+-- (handle.Finish) shows the whole line at once. It reveals with MaxVisibleGraphemes, so the label keeps its final wrap
+-- from the first frame (nothing jumps). Reduced motion (UIKit.ReducedMotion) = the whole line at once, one blip.
+-- opts: Speed (letters / s, default UIKit.TypeSpeed.Default; a speaker's own in UIKit.TypeSpeed), Speaker, BlipEvery
+-- (letters per blip, 2), OnDone(fn). A new call on the same label ends the old one. Returns a handle
+-- { Finish(), Cancel(), Done() -> bool }. Panels wires it to the story lines (game dev 1).
+UIKit.TypeSpeed = { Default = 38, Shard = 46 } -- letters per second
+UIKit.Typing = setmetatable({}, { __mode = "k" }) -- [label] = its running handle
+function UIKit.Typewriter(label, text, opts)
+	opts = type(opts) == "table" and opts or {}
+	if typeof(label) ~= "Instance" or not (label:IsA("TextLabel") or label:IsA("TextButton")) then return nil end
+	local old = UIKit.Typing[label]
+	if old then old.Cancel() end
+	text = tostring(text or "")
+	label.Text = text
+	local total = utf8.len(text) or #text
+	local speed = tonumber(opts.Speed) or UIKit.TypeSpeed[opts.Speaker] or UIKit.TypeSpeed.Default
+	local blipEvery = math.max(1, math.floor(tonumber(opts.BlipEvery) or 2))
+	local handle = { State = "typing" }
+	local conn = nil
+	local function blip()
+		local audio = C and C.Audio
+		if type(audio) == "table" and type(audio.Talk) == "function" then pcall(audio.Talk, opts.Speaker) end
+	end
+	local function stop(state)
+		if handle.State ~= "typing" then return end
+		handle.State = state
+		if conn then conn:Disconnect() end
+		conn = nil
+		if UIKit.Typing[label] == handle then UIKit.Typing[label] = nil end
+		label.MaxVisibleGraphemes = -1
+		if state == "done" and type(opts.OnDone) == "function" then safeCall(opts.OnDone) end
+	end
+	handle.Finish = function() stop("done") end
+	handle.Cancel = function() stop("cancelled") end
+	handle.Done = function() return handle.State ~= "typing" end
+	UIKit.Typing[label] = handle
+	if total <= 0 or UIKit.ReducedMotion() then
+		if total > 0 then blip() end
+		stop("done")
+		return handle
+	end
+	label.MaxVisibleGraphemes = 0
+	local shown, nextBlip, started = 0, 1, os.clock()
+	conn = game:GetService("RunService").Heartbeat:Connect(function()
+		if not label.Parent then
+			handle.Cancel()
+			return
+		end
+		local n = math.min(total, math.floor((os.clock() - started) * speed))
+		if n > shown then
+			shown = n
+			label.MaxVisibleGraphemes = n
+			-- a blip every blipEvery letters, never on a space or punctuation
+			if n >= nextBlip then
+				local ok, ch = pcall(function() return string.sub(text, utf8.offset(text, n) or n, (utf8.offset(text, n + 1) or n + 1) - 1) end)
+				if ok and type(ch) == "string" and string.match(ch, "[%w]") then blip() end
+				nextBlip = n + blipEvery
+			end
+		end
+		if shown >= total then stop("done") end
+	end)
+	return handle
+end
+
 -- the shared press feel (UIKit.ButtonFeel) + Click sound; onClick(button) runs on Activated unless the button has
 -- Active == false or attribute Disabled == true (shared by UIKit.Button and UIKit.ArtButton)
 local function wirePress(btn, onClick)

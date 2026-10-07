@@ -3613,10 +3613,12 @@ Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
 		Button = { 0.224, 0.859, 0.548, 0.061 } },
 	FactionPickHorns = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },
 		Button = { 0.224, 0.859, 0.548, 0.061 } },
+	-- RibbonTop: the name ribbon's gold rim under the window (centre column of the 555x1024 frames: y 507), the class
+	-- word chip sits on it
 	ClassPickHalo = { Aspect = 0.542, Portrait = { 0.224, 0.15, 0.552, 0.358 }, Name = { 0.2, 0.509, 0.6, 0.066 },
-		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 } },
+		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 }, RibbonTop = 0.495 },
 	ClassPickHorns = { Aspect = 0.542, Portrait = { 0.224, 0.15, 0.552, 0.358 }, Name = { 0.2, 0.509, 0.6, 0.066 },
-		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 } },
+		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 }, RibbonTop = 0.495 },
 	CardHalo = { Aspect = 0.607, Title = { 0.217, 0.156, 0.566, 0.115 }, Desc = { 0.154, 0.313, 0.692, 0.049 },
 		Motto = { 0.154, 0.392, 0.692, 0.049 }, Perks = { 0.157, 0.491, 0.686, 0.381 }, Button = { 0.243, 0.886, 0.492, 0.083 } },
 	CardHorns = { Aspect = 0.642, Title = { 0.236, 0.161, 0.519, 0.097 }, Desc = { 0.184, 0.313, 0.632, 0.062 },

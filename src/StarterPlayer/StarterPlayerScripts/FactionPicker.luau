@@ -26,7 +26,9 @@ local FactionPicker = {}
 local TAG = "FactionPicker"
 local player = Players.LocalPlayer
 
-local FACTION_IDS = { "Halo", "Horns", "Neutral" }
+-- A23-57 (beta): Halo and Horns only; Config.Features.NeutralFaction (game dev 2) brings the Artisan Guild card back
+local FACTION_IDS = (type(Config.Features) == "table" and Config.Features.NeutralFaction == true)
+	and { "Halo", "Horns", "Neutral" } or { "Halo", "Horns" }
 local CLICK_LOCK = 2 -- seconds the choose buttons stay disabled after a click
 local OPEN_LOCK = 0.6 -- CR-M26: card input ignored this long after the picker opens (a fast 2nd tap)
 local PREMISE_STEP = 0.6 -- seconds between premise lines fading in
@@ -78,6 +80,14 @@ local LAY = {
 	Lift = 0.04, -- room around the cards for the hover scale + glow (fraction of the card height)
 	-- Only a narrow touch viewport uses larger cards and a sideways scroll; desktop A always shows all cards.
 	NeedCardK = 26,
+	-- the A23-57 cards carry less text (name, four perks, the button): this many min-text sizes of card height keep them
+	-- readable (UiSandbox phone 749x361, 2026-10-06: at 26 the two cards ran off the bottom)
+	NeedCardKNew = 18,
+	-- the title words must fit the ribbon's text band (TextRect) at the readable size: about this many em per letter
+	TitleEm = 0.58,
+	-- phones (side layout): the gutter inside the side columns, and the note column at least this many text sizes wide
+	SideGutter = 8,
+	SideNoteEm = 7,
 	PremiseMaxW = 1600, PremiseFrac = 0.66,
 	TitleFrac = 0.10, TitleMin = 40, TitleMax = 140, -- compact ribbon on short viewports
 	TitleFracArt = 0.2, TitleMaxArt = 220, -- bundle 2 FactionTitle (crown + halo + horn over the scroll)
@@ -106,6 +116,7 @@ local LAY = {
 	PerkRows = 4,
 	-- perk panel inset { x of card width, y of card height }: Halo's panel has gold corner flourishes
 	PerkInset = { Halo = { 0.06, 0.03 }, Horns = { 0.015, 0.015 }, Neutral = { 0.015, 0.015 } },
+	PerkInsetNew = { 0.03, 0.02 }, -- the A23-57 cards' Panel region is already the inner panel
 	-- glow layers behind a hovered / chosen card { extra width, extra height, transparency } around the card body
 	Glow = { { 0.04, 0.03, 0.45 }, { 0.08, 0.05, 0.75 } },
 	GlowBody = { Art = { 0.56, 0.88 }, Old = { 0.5, 1 } }, -- { centre Y, height }: the art's emblem pokes out on top
@@ -116,6 +127,11 @@ local LAY = {
 -- "gold" = gold with a dark outline like the "Choose your side!" title)
 -- bundle 2 cards: white names on the coloured ribbons, ink on the cream strips and perk panels, white button words
 local CARD_STYLE = {
+	-- A23-57 redraw (FactionPick*): Halo's cream panel takes dark words, Horns' charcoal panel light ones
+	New = {
+		Halo = { Title = "light", Motto = "ink", Perks = "ink", Button = "light" },
+		Horns = { Title = "light", Motto = "light", Perks = "light", Button = "light" },
+	},
 	Halo = { Title = "light", Motto = "ink", Perks = "ink", Button = "light" },
 	Horns = { Title = "light", Motto = "ink", Perks = "ink", Button = "light" },
 	Neutral = { Title = "light", Motto = "ink", Perks = "ink", Button = "light" },
@@ -137,6 +153,7 @@ local T = {
 	Wait = "One moment...",
 	WeakerF = "Joining the smaller side! Start gold +%d · the Size Scale makes you bigger",
 	Footer = "You can switch later at the Altar of Fate in the Crossroads (free or with a ticket)",
+	FooterShort = "Switch sides later at the Altar of Fate.", -- phones with the A23-57 cards
 }
 
 local DEFAULT_THEME = {
@@ -870,26 +887,35 @@ local function buildGlow(c)
 end
 
 -- card art key, CardLayout entry, image px size and id, or nil when anything is missing (IMG-R4)
+-- the A23-57 redraw (FactionPick<id>: Title / Perks / Button, no Desc / Motto strips) when uploaded, else bundle 2
+-- (Card<id>, every region); nil = the code-styled card (IMG-R4)
 local function cardArt(id)
-	local key = "Card" .. id
-	local lay = Art.Layout[key]
-	if type(lay) ~= "table" then return nil end
-	for _, name in LAY.Regions do
-		local r = lay[name]
-		if type(r) ~= "table" then return nil end
-		for j = 1, 4 do
-			if type(r[j]) ~= "number" then return nil end
+	for _, key in { "FactionPick" .. id, "Card" .. id } do
+		local lay = Art.Layout[key]
+		local img = partSize(key)
+		local imageId = artId(key)
+		local ok = type(lay) == "table" and img ~= nil and imageId ~= nil
+		if ok then
+			for _, name in LAY.Regions do
+				local r = lay[name]
+				if type(r) == "table" then
+					for j = 1, 4 do
+						if type(r[j]) ~= "number" then ok = false end
+					end
+				elseif not (key ~= "Card" .. id and (name == "Desc" or name == "Motto")) then
+					ok = false
+				end
+			end
 		end
+		if ok then return key, lay, img, imageId end
 	end
-	local img = partSize(key)
-	local imageId = artId(key)
-	if not img or not imageId then return nil end
-	return key, lay, img, imageId
+	return nil
 end
 
 local function buildArtCard(c, id, lay, img, imageId)
 	local def = factionDef(id)
-	local style = CARD_STYLE[id] or CARD_STYLE.Halo
+	c.NewArt = lay.Desc == nil -- the A23-57 cards (no lore / motto strips)
+	local style = (c.NewArt and CARD_STYLE.New[id]) or CARD_STYLE[id] or CARD_STYLE.Halo
 	local body = c.Body
 	local titleFont = artFont("Title", Enum.Font.GothamBlack)
 
@@ -913,6 +939,7 @@ local function buildArtCard(c, id, lay, img, imageId)
 	motto.Text = tostring(def.Pitch or "")
 	motto.TextWrapped = false
 	styleText(motto, style.Motto, 1.5)
+	desc.Visible, motto.Visible = lay.Desc ~= nil, lay.Motto ~= nil
 
 	-- perk panel: icon + one line per perk
 	local perks = {}
@@ -1288,7 +1315,7 @@ end
 -- Perk rows remain centred groups of an icon and a complete one-line label.
 local function layoutPerks(c, W, H, minT, scale)
 	local px, py, pw, ph = region(c.Layout.Perks, W, H)
-	local inset = LAY.PerkInset[c.Id] or LAY.PerkInset.Horns
+	local inset = (c.NewArt and LAY.PerkInsetNew) or LAY.PerkInset[c.Id] or LAY.PerkInset.Horns
 	px, pw = px + W * inset[1], pw - W * inset[1] * 2
 	local count = math.max(LAY.PerkRows, #c.Perks)
 	-- Reduce only the empty inset, staying inside the original bitmap perk panel. Keep a real 11px line
@@ -1359,16 +1386,18 @@ local function layoutArtCard(c, W, H, minT, s)
 	setTextRange(c.NameLabel, minT, th * 0.66)
 	boldOutline(c.NameLabel, th * 0.66)
 
-	layoutDesc(c, W, H, minT, s)
+	if lay.Desc then layoutDesc(c, W, H, minT, s) end
 
-	-- motto: one line; the box may spill onto the ribbon tails
-	local mx, my, mw, mh = region(lay.Motto, W, H)
-	local motW = math.min(W * 0.9, mw * 1.3)
-	local mottoSize = math.max(MIN_TEXT, math.floor(mh * 0.72))
-	c.Motto.Text = cardText(c.Motto, c.FullMotto, LAY.MottoShort[c.Id], LAY.MottoTiny[c.Id], motW * s, mh * 0.96 * s, s)
-	c.Motto.TextWrapped = false
-	place(c.Motto, mx + mw / 2 - motW / 2, my + mh * 0.02, motW, mh * 0.96)
-	setTextRange(c.Motto, minT, mottoSize)
+	-- motto: one line; the box may spill onto the ribbon tails (the A23-57 cards have no motto strip)
+	if lay.Motto then
+		local mx, my, mw, mh = region(lay.Motto, W, H)
+		local motW = math.min(W * 0.9, mw * 1.3)
+		local mottoSize = math.max(MIN_TEXT, math.floor(mh * 0.72))
+		c.Motto.Text = cardText(c.Motto, c.FullMotto, LAY.MottoShort[c.Id], LAY.MottoTiny[c.Id], motW * s, mh * 0.96 * s, s)
+		c.Motto.TextWrapped = false
+		place(c.Motto, mx + mw / 2 - motW / 2, my + mh * 0.02, motW, mh * 0.96)
+		setTextRange(c.Motto, minT, mottoSize)
+	end
 
 	layoutPerks(c, W, H, minT, s)
 
@@ -1457,9 +1486,10 @@ local function placeFooter(cx, bottom, maxW, size, scale, compact)
 	local padX = math.floor(size * 0.8)
 	if artId(PANEL.Footer) then padX = math.floor(size * 2.2) end -- bundle 2 capsule: words between its sapphire caps
 	local maxTextW = math.max(40, maxW - iconW - gapW - padX * 2)
-	local th, tw = textBounds(T.Footer, size, note.Text.FontFace, maxTextW * scale)
+	local words = note.Text.Text ~= "" and note.Text.Text or T.Footer
+	local th, tw = textBounds(words, size, note.Text.FontFace, maxTextW * scale)
 	-- Preserve the selected footer's width; only remove the unused height on short viewports.
-	if compact then th = renderedBounds(T.Footer, size, note.Text.FontFace, scale, maxTextW * scale) end
+	if compact then th = renderedBounds(words, size, note.Text.FontFace, scale, maxTextW * scale) end
 	th, tw = th / scale, tw / scale
 	local textW = math.min(maxTextW, tw + size) -- one glyph of slack so the measured line never re-wraps
 	local noteH = math.ceil(math.max(th, iconW) + (compact and 4 / scale or size * 0.9))
@@ -1467,6 +1497,64 @@ local function placeFooter(cx, bottom, maxW, size, scale, compact)
 	place(note.Frame, cx - noteW / 2, bottom - noteH, noteW, noteH)
 	place(note.Icon, padX, (noteH - iconW) / 2, iconW, iconW)
 	place(note.Text, padX + iconW + gapW, 0, textW, noteH)
+	setTextRange(note.Text, size, size)
+	return noteH
+end
+
+-- phones (side layouts): the note in a side column without its capsule. The capsule art is one wide line; on two or
+-- three lines in a narrow column it stretched and clipped (UiSandbox 749x361 / 844x390, 2026-10-07). Here: the icon over
+-- the words, light text with a dark outline on the dimmed screen. side = false puts the capsule look back.
+local function noteSideLook(side)
+	if note.Side == side then return end
+	note.Side = side
+	local frame = note.Frame
+	if frame:IsA("ImageLabel") then
+		if note.FrameImageT == nil then note.FrameImageT = frame.ImageTransparency end
+		frame.ImageTransparency = side and 1 or note.FrameImageT
+	else
+		if note.FrameBgT == nil then note.FrameBgT = frame.BackgroundTransparency end
+		frame.BackgroundTransparency = side and 1 or note.FrameBgT
+		local st = frame:FindFirstChild("Stroke")
+		if st and st:IsA("UIStroke") then st.Enabled = not side end
+	end
+	if side then
+		styleText(note.Text, "light")
+		local st = note.Text:FindFirstChild("Outline")
+		if st and st:IsA("UIStroke") then st.Thickness, st.Transparency = 1.5, 0 end
+	else
+		local navy = artId(PANEL.Footer) ~= nil
+		styleText(note.Text, navy and "light" or "ink", navy and 1 or nil)
+	end
+end
+
+-- the narrowest width (at least half of maxW) that keeps the words on as few lines as maxW does: no lone last word
+-- ("...at the Altar of / Fate." on a 749 phone, 2026-10-07)
+local function balancedWidth(text, size, font, maxW)
+	local lines = textBounds(text, size, font, maxW)
+	local lo, hi = maxW * 0.5, maxW
+	for _ = 1, 7 do
+		local mid = (lo + hi) / 2
+		if textBounds(text, size, font, mid) > lines + 0.5 then lo = mid else hi = mid end
+	end
+	return hi
+end
+
+-- the side-column note centred at (cx, cy), wrapped to colW; returns its height
+local function placeSideNote(cx, cy, colW, minT)
+	noteSideLook(true)
+	local size = minT
+	local iconW = note.Icon.Visible and math.floor(size * 2.2) or 0
+	local gapY = iconW > 0 and math.floor(size * 0.3) or 0
+	local fitW = balancedWidth(note.Text.Text, size, note.Text.FontFace, colW)
+	local th, tw = textBounds(note.Text.Text, size, note.Text.FontFace, fitW)
+	local textW = math.min(colW, tw + size)
+	th = math.ceil(th * 1.15) + 2 -- the wrap slack (UIKit NOTIFY.WrapSlack): rendered lines run a little wider
+	local noteW = math.max(textW, iconW)
+	local noteH = iconW + gapY + th
+	place(note.Frame, cx - noteW / 2, cy - noteH / 2, noteW, noteH)
+	place(note.Icon, (noteW - iconW) / 2, 0, iconW, iconW)
+	place(note.Text, (noteW - textW) / 2, iconW + gapY, textW, th)
+	note.Text.TextWrapped = true
 	setTextRange(note.Text, size, size)
 	return noteH
 end
@@ -1760,19 +1848,72 @@ local function layoutNow()
 	local physicalCaption = math.clamp(math.floor(h * s * LAY.TextFrac), 12, LAY.TextMax)
 	local size = math.ceil(physicalCaption / math.min(s, 1))
 	local compact = h * s < 560
-	local needH = LAY.NeedCardK * minT
+	-- the A23-57 cards (no lore / motto strips) need less height; on phones the premise strip gives its room to them
+	local newArt = false
+	for _, id in FACTION_IDS do
+		if cards[id] and cards[id].NewArt then newArt = true end
+	end
+	local needH = (newArt and LAY.NeedCardKNew or LAY.NeedCardK) * minT
 	local g = LAY.Gutter
 	local bottom = h - 8
+
+	if newArt and compact then
+		-- phones (wide but short) with the A23-57 cards: the cards as tall as the screen allows, the title ribbon left of
+		-- them and the altar note right of them. Stacked, the cards shrank until their names, perks and buttons no
+		-- longer fit (UiSandbox 749x361, 2026-10-06). The left column is as wide as the title's words need (measured at
+		-- the readable size: the old estimate kept that room on both sides and the cards came out 115 px wide on a 749
+		-- phone, 2026-10-07), the right one at least LAY.SideNoteEm text sizes for the note.
+		premiseFrame.Visible = false
+		note.Text.Text = T.FooterShort
+		prepareCardBalance()
+		local n = 0
+		for _, id in FACTION_IDS do
+			if cards[id] then n += 1 end
+		end
+		local part = Art.Parts.FactionPickTitle
+		local band = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect[3] or 0.7
+		local _, wordsW = textBounds(T.Title, minT, heading.Text.FontFace, 100000)
+		local titleW = (wordsW + minT * 1.5) / band -- the ribbon width its words need at minT
+		local gs = LAY.SideGutter
+		local leftNeed, rightNeed = titleW + 2 * gs, LAY.SideNoteEm * minT + 2 * gs
+		local gaps = LAY.Gap * math.max(0, n - 1)
+		local cardsH = math.max(1, bottom - top - 4)
+		local cardH = math.min(cardsH / (LAY.BalancedHeight + 2 * LAY.Lift), LAY.CardMaxH / s)
+		cardH = math.max(1, math.min(cardH, (w - leftNeed - rightNeed - gaps) / (n * LAY.CardAspect + 2 * LAY.Lift)))
+		local lift = math.ceil(cardH * LAY.Lift)
+		local cardsW = n * math.floor(cardH * LAY.CardAspect) + gaps + 2 * lift
+		-- centred when both columns have their room, else pushed off the title
+		local left = math.min(math.max((w - cardsW) / 2, leftNeed), math.max(leftNeed, w - cardsW - rightNeed))
+		local rightW = math.max(0, w - left - cardsW)
+		local colL, colR = math.max(1, left - 2 * gs), math.max(1, rightW - 2 * gs)
+		local tH = math.floor(math.min(colL, titleW * 1.15) / heading.Aspect)
+		placeTitle(left / 2, top + math.max(4, (bottom - top) * 0.3 - tH / 2), colL, tH, minT)
+		placeSideNote(w - rightW / 2, top + (bottom - top) * 0.42, colR, minT)
+		placeCards(left, top + 2, cardsW, cardsH, 0, minT, s)
+		return
+	end
+	noteSideLook(false)
 
 	-- Selected A composition: title / wide compact premise / centred cards / centred altar note.
 	local y = top
 	local usableH = math.max(80, bottom - top)
-	local tall = heading.Key == PANEL.Title and not compact -- short (phone) screens keep the room for the cards
+	-- short (phone) screens keep the room for the cards
+	local tall = (heading.Key == PANEL.Title or heading.Key == "FactionPickTitle") and not compact
 	local titleH = math.clamp(math.floor(usableH * (tall and LAY.TitleFracArt or LAY.TitleFrac)), LAY.TitleMin,
 		tall and LAY.TitleMaxArt or LAY.TitleMax)
+	if heading.Key == "FactionPickTitle" then
+		-- the words fit the ribbon's text band (0.704 wide) at the readable size ('oose your sid' on a phone before)
+		local part = Art.Parts.FactionPickTitle
+		local band = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect[3] or 0.7
+		local needW = (#T.Title * LAY.TitleEm + 1) * minT / band
+		titleH = math.max(titleH, math.ceil(needW / heading.Aspect))
+	end
 	y += placeTitle(w / 2, y, w - g * 2, titleH, minT) + 4
 	local premiseW = math.min(w - g * 2, LAY.PremiseMaxW, math.max(300, w * LAY.PremiseFrac))
-	y += placePremise(w / 2, y, premiseW, size, s, compact) + 8
+	local hidePremise = newArt and compact
+	premiseFrame.Visible = not hidePremise
+	if not hidePremise then y += placePremise(w / 2, y, premiseW, size, s, compact) + 8 end
+	note.Text.Text = hidePremise and T.FooterShort or T.Footer
 	local noteH = placeFooter(w / 2, bottom - (artId(PANEL.Footer) and 6 or 0), w - g * 2, size, s, compact)
 	local areaH = bottom - noteH - 6 - y
 	placeCards(g, y, w - g * 2, math.max(areaH, 1), needH, minT, s)
@@ -1823,7 +1964,9 @@ local function build()
 	end
 
 	-- "어느 편에 설래요?" on the GPT title ribbon; plain gold text when the ribbon art is missing
-	local ribbonKey = artId(PANEL.Title) and PANEL.Title or "TitleRibbon"
+	-- the A23-57 title ribbon first (FactionPickTitle), then bundle 2's, then the old empty ribbon
+	local ribbonKey = (artId("FactionPickTitle") and "FactionPickTitle") or (artId(PANEL.Title) and PANEL.Title)
+		or "TitleRibbon"
 	local ribbonId = artId(ribbonKey)
 	local titleFrame
 	if ribbonId then
@@ -1847,7 +1990,7 @@ local function build()
 		local b = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect or LAY.TitleText
 		titleText.Position = UDim2.fromScale(b[1], b[2])
 		titleText.Size = UDim2.fromScale(b[3], b[4])
-		styleText(titleText, "ink", ribbonKey == PANEL.Title and 1 or 0) -- dark words, a thin cream rim on the scroll
+		styleText(titleText, "ink", ribbonKey ~= "TitleRibbon" and 1 or 0) -- dark words, a thin cream rim on the scroll
 	else
 		titleText.Size = UDim2.fromScale(1, 1)
 		titleText.TextColor3 = artColor("Ink", Color3.fromRGB(66, 40, 18))
