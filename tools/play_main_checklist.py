@@ -1,8 +1,9 @@
 """Main Studio Play checklist (검수 2026-10-07, user: "md says applied to the main Studio - check what is not"):
 own test Play with a FRESH in-memory save (ServerStorage StudioFreshSave), no mouse / keyboard input.
-  py play_checklist.py pc|phone
+  py tools/play_main_checklist.py pc|phone|story   (own test Play: tell 검수 first; the main Studio window must not be
+  minimized or the 3D view captures white; phone / story also play the first mission with fists and claim it)
 Checks + photos: prologue (letterbox), team notice (English, no Hangul anywhere on screen), HUD layout, story portrait
-(StoryAction S0 Open), reward popup (UIKit.RewardPopup built from the real module into MainGui), map v2 / MeadowKit /
+(the Lunch1 card after the first claim, at the Crossroads), reward popup (UIKit.RewardPopup built from the real module into MainGui), map v2 / MeadowKit /
 WorldKit3D / new tile ids, SunRays off, a few v2 spots. Stops Play and puts the device back to default at the end."""
 import base64
 import io
@@ -11,7 +12,7 @@ import os
 import sys
 import time
 
-ROOT = r"C:\Users\glori\Documents\Roblox\Game-wtc2"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from studio_mcp import Client  # noqa: E402
 
