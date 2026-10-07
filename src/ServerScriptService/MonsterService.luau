@@ -47,7 +47,7 @@ local TUTORIAL = Config.Tutorial or {}
 local TUT_SPAWN = { Cfg = (Config.SpawnSpread or {}).Tutorial or {}, Hunters = {} }
 local CUSTOM = Config.CustomModels or {}
 local CUSTOM_FOLDER = CUSTOM.FolderName or "CustomModels"
-local GOLDEN_FILL_TRANSPARENCY = CUSTOM.GoldenFillTransparency or 0.5
+local GOLDEN_FILL_TRANSPARENCY = CUSTOM.GoldenFillTransparency or 1
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11
 local NO_REAGGRO_SECONDS = MC.ReaggroDelay or 3 -- A3-M4
 local PERSONAL_DISTANCE = TUTORIAL.SpawnDistance or 8 -- A4: ~8 studs in front of the player
@@ -81,14 +81,20 @@ local SPAWN_TRIES = 8
 
 -- visuals
 local BAR_MAX_DISTANCE = 80
--- monster motion review 2026-10-06 (survey 4-1): a killed monster's body stays DEATH_DESTROY - DEATH_FADE - 0.1 s
--- (0.75: the rigged fall / slime splat shows), then shrinks and fades over DEATH_FADE; destroyed at DEATH_DESTROY
-local DEATH_FADE = 0.3
+-- monster motion review 2026-10-06 (survey 4-1): a killed monster's body stays DEATH_DESTROY - DEATH_SHRINK - 0.1 s
+-- (0.75: the rigged fall / slime splat shows), then shrinks over DEATH_SHRINK; destroyed at DEATH_DESTROY.
+-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): a monster body is never see-through (ART_DIRECTION: part
+-- Transparency is 0 or 1): no fade, it stays opaque until the model is destroyed
+local DEATH_SHRINK = 0.3
 local DEATH_DESTROY = 1.15
 local DEATH_PARTICLES = 15
 -- an event monster that leaves undefeated (RemoveEvent(rec, true, true), the Pumpkin King going home): model attribute
--- "Leaving" (clients skip the dying-slime splat), keeps its size, floats up Rise studs and fades over Fade s, no burst
-local LEAVE = { Fade = 1.2, Rise = 3 }
+-- "Leaving" (clients skip the dying-slime splat), floats up Rise studs while it shrinks away over Time s, no burst
+local LEAVE = { Time = 1.2, Rise = 3 }
+-- A23-74 (user 2026-10-07 "점점 합쳐지겠다"): only living records and dying bodies (Dying[model] = os.clock() after
+-- which it must be gone) may stand in workspace.Monsters; Sweep removes any other copy (a body whose destroy never ran,
+-- a monster model saved into the place) so no ghost stays where the living ones walk into it
+local GHOST = { Dying = {}, Grace = 1 }
 -- every visible part is welded to VisualRoot, which hangs off the root by the Weld VisualJoint (C0 = C1 = identity).
 -- Clients tween VisualJoint.C0 locally (Fx.luau attack lunge / hit recoil); the server never writes C0 after spawn.
 local VISUAL_ROOT_NAME = "VisualRoot"
@@ -884,12 +890,14 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 			visual.Parent = model
 			visualParts = vparts
 			if golden then
+				-- A23-74 (user 2026-10-07): a gold rim only (Config.CustomModels.GoldenFillTransparency 1); a fill is a flat
+				-- half-see-through gold layer over the textured body (green + gold read as an olive ghost)
 				local h = Instance.new("Highlight")
 				h.Name = "GoldenTint"
 				h.FillColor = MC.GoldenColor
 				h.FillTransparency = GOLDEN_FILL_TRANSPARENCY
 				h.OutlineColor = MC.GoldenColor
-				h.OutlineTransparency = 0.3
+				h.OutlineTransparency = 0
 				h.DepthMode = Enum.HighlightDepthMode.Occluded
 				h.Parent = visual
 			end
@@ -1079,7 +1087,12 @@ local function emitDeathParticles(pos, color, scale)
 	Debris:AddItem(fx, 1.5)
 end
 
--- shrink/fade 0.3 s, particle burst, destroy after 0.4 s. leaving = it goes home instead (LEAVE): no shrink, no splat
+-- particle burst, the body holds (fall / splat) then shrinks to 0.2 in DEATH_SHRINK, destroyed at DEATH_DESTROY.
+-- leaving = it goes home instead (LEAVE): no splat, no burst, it floats up while it shrinks away.
+-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): no Transparency tween, the body stays opaque until it is
+-- destroyed. A killed slime's CustomVisual keeps its size here: the clients splat it and shrink the puddle (Fx WOBBLE);
+-- a server resize replicated over the splat and stood the body back up full size while it faded, so a dead slime read
+-- as a living see-through one.
 local function deathPop(rec, withParticles, leaving)
 	local model, root, hum = rec.Model, rec.Root, rec.Humanoid
 	if not model then return end
@@ -1095,24 +1108,29 @@ local function deathPop(rec, withParticles, leaving)
 			emitDeathParticles(root.Position, rec.Golden and MC.GoldenColor or rec.Def.Color, rec._scale or 1)
 		end
 		if leaving then
-			TweenService:Create(root, TweenInfo.new(LEAVE.Fade, Enum.EasingStyle.Sine, Enum.EasingDirection.In),
+			TweenService:Create(root, TweenInfo.new(LEAVE.Time, Enum.EasingStyle.Sine, Enum.EasingDirection.In),
 				{ CFrame = root.CFrame + Vector3.new(0, LEAVE.Rise, 0) }):Play()
 		end
 	end
-	local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_FADE - 0.1) -- TweenInfo DelayTime: the body stays
-	local info = TweenInfo.new(leaving and LEAVE.Fade or DEATH_FADE, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false,
-		hold)
+	local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_SHRINK - 0.1) -- TweenInfo DelayTime: the body stays
+	local info = TweenInfo.new(leaving and LEAVE.Time or DEATH_SHRINK, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0,
+		false, hold)
+	local def = rec.Def
+	local splatted = not leaving and type(def) == "table" and def.Shape == "Slime" and model:FindFirstChild("CustomVisual")
+		or nil
 	for _, d in model:GetDescendants() do
 		if d:IsA("BasePart") then
-			if d ~= root and d.Name ~= VISUAL_ROOT_NAME then -- the invisible joint anchor keeps its size
-				local goal = leaving and { Transparency = 1 } or { Size = d.Size * 0.2, Transparency = 1 }
-				TweenService:Create(d, info, goal):Play()
+			-- the invisible joint anchor keeps its size; so does a slime body the clients splat
+			if d ~= root and d.Name ~= VISUAL_ROOT_NAME and not (splatted and d:IsDescendantOf(splatted)) then
+				TweenService:Create(d, info, { Size = d.Size * 0.2 }):Play()
 			end
 		elseif d:IsA("ParticleEmitter") or d:IsA("Light") or d:IsA("Highlight") then
 			d.Enabled = false
 		end
 	end
-	task.delay(leaving and LEAVE.Fade + 0.1 or DEATH_DESTROY, function()
+	local life = leaving and LEAVE.Time + 0.1 or DEATH_DESTROY
+	GHOST.Dying[model] = os.clock() + life + GHOST.Grace
+	task.delay(life, function()
 		if model then model:Destroy() end
 	end)
 end
@@ -1129,7 +1147,7 @@ end
 
 local scheduleRespawn -- forward
 
--- removes a record without rewards (timeout, owner left, model lost); leaving = fade out as going home (LEAVE)
+-- removes a record without rewards (timeout, owner left, model lost); leaving = float up and shrink away (LEAVE)
 local function despawn(rec, fade, leaving)
 	if not rec.Alive then return end
 	rec.Alive = false
@@ -1140,6 +1158,28 @@ local function despawn(rec, fade, leaving)
 	elseif rec.Model then
 		rec.Model:Destroy()
 	end
+end
+
+-- A23-74 (user 2026-10-07): removes every child of workspace.Monsters that is neither a living record's model nor a
+-- dying body still inside its time (GHOST.Dying); returns how many it removed
+function GHOST.Sweep()
+	local folder = getMonstersFolder()
+	local live = {}
+	for _, rec in records do
+		if rec.Model then live[rec.Model] = true end
+	end
+	local now, removed = os.clock(), 0
+	for _, child in folder:GetChildren() do
+		local untilAt = GHOST.Dying[child]
+		if not live[child] and not (untilAt and now < untilAt) then
+			if pcall(child.Destroy, child) then removed += 1 end
+		end
+	end
+	for model, untilAt in GHOST.Dying do
+		if now >= untilAt or model.Parent == nil then GHOST.Dying[model] = nil end
+	end
+	if removed > 0 then warnThrottled("ghost", ("removed %d stray monster model(s) from workspace.Monsters"):format(removed)) end
+	return removed
 end
 
 scheduleRespawn = function(kind)
@@ -2084,6 +2124,9 @@ function MonsterService.Init(registry)
 end
 
 function MonsterService.Start()
+	-- A23-74: a monster model left in the place file (saved from a test) never stands among the living ones
+	local okSweep, errSweep = pcall(GHOST.Sweep)
+	if not okSweep then warnThrottled("ghost", errSweep) end
 	for _, id in Config.MonsterTypeOrder do
 		print(("[MonsterService] custom model for %s: %s"):format(id, getCustomTemplate(id) and "yes" or "no"))
 	end
@@ -2126,6 +2169,8 @@ function MonsterService.Start()
 			task.wait(REEVAL_INTERVAL)
 			local ok, err = pcall(reevaluate)
 			if not ok then warnThrottled("density", err) end
+			local okG, errG = pcall(GHOST.Sweep) -- A23-74: no stray copy stays in workspace.Monsters
+			if not okG then warnThrottled("ghost", errG) end
 		end
 	end)
 

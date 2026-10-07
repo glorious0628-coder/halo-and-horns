@@ -7,7 +7,8 @@
 --   * a pack crowding one spot shows one name: a same-kind monster within CLUSTER studs of a shown name keeps only its
 --     bar (2026-10-06: three ghost minions on top of me stacked "똘마니 유령" three times), and so does one whose name
 --     would land on a shown same-kind name on screen (NameW x NameH px apart; 2026-10-07 photos: two "Shard Slime" tags
---     one behind the other were 6 studs apart but drawn over each other).
+--     one behind the other were 6 studs apart but drawn over each other);
+--   * a dying monster (anchored root, A23-74) shows neither (the server turned its bar off).
 -- Hurt = its Fill bar got shorter (server bar updates replicate). Local only: Enabled / Visible never replicate.
 -- Monster barks (lines_pack 2, dev2 BarkService): the server writes Bark (the line) then BarkAt (server time) on the
 -- monster model; every new BarkAt (the same line again too) shows Bark in a speech bubble over the head for
@@ -140,7 +141,13 @@ local function tick()
 	for _, model in folder:GetChildren() do
 		local bb = model:FindFirstChild("MonsterBar", true)
 		local root = bb and bb.Parent
-		if bb and bb:IsA("BillboardGui") and root and root:IsA("BasePart") then
+		if bb and bb:IsA("BillboardGui") and root and root:IsA("BasePart") and root.Anchored then
+			-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): a dying / leaving monster (MonsterService deathPop
+			-- anchors its root and turns its bar off) never gets its name tag / bar back from this pass, and takes no
+			-- name slot from the living ones; a dead body with "Shard Slime" over it read as a living monster
+			seen[bb] = true
+			if bb.Enabled then bb.Enabled = false end
+		elseif bb and bb:IsA("BillboardGui") and root and root:IsA("BasePart") then
 			seen[bb] = true
 			local back = bb:FindFirstChild("Bar")
 			local fill = back and back:FindFirstChild("Fill")

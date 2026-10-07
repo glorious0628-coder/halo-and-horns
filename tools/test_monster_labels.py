@@ -2,7 +2,7 @@
 workspace.Monsters with a level camera double. A same-kind name whose tag would land on a shown same-kind tag on screen
 (NameW x NameH px) hides, even when the two monsters are farther apart than Cluster studs (one behind the other); a
 same-kind tag far away on screen and another kind's tag stay; the old world rule (same kind within Cluster studs) holds;
-off-screen monsters never break the pass. Runs the real MonsterLabels.luau + Config.luau in
+off-screen monsters never break the pass; a dying monster (anchored root, A23-74) shows no tag and takes no name slot. Runs the real MonsterLabels.luau + Config.luau in
 tools/fixtures/monster_labels_offline.luau. Status "passed" only when the fixture passes AND every mutation was applied
 and caught.
 Report: docs/art/verification_2026-10-07/offline_monster_labels_2026-10-07.json
@@ -26,6 +26,9 @@ MUTATIONS = [
     ("the screen check hides other kinds too", "\t\t\t\tif o.Kind == r.Kind then\n", "\t\t\t\tif true then\n"),
     ("no world cluster rule", "\t\t\t\t\tif (o.Pos - r.Pos).Magnitude < T.Cluster then\n", "\t\t\t\t\tif false then\n"),
     ("a far tag counts as overlapping", "Cluster = 5, NameW = 135, NameH = 24 }", "Cluster = 5, NameW = 1350, NameH = 24 }"),
+    # A23-74 (user 2026-10-07): a dying monster (anchored root) shows no tag and takes no name slot
+    ("a dying monster gets its tag back (no anchored check)", "and root.Anchored then", "and false then"),
+    ("a tag left on over a dying body stays on", "\t\t\tif bb.Enabled then bb.Enabled = false end\n", ""),
 ]
 
 
