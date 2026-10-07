@@ -20,7 +20,8 @@ ASSETS = os.path.join(ROOT, "build", "sfx_firefly", "raw_assets.json")
 SPEC = os.path.join(ROOT, "tools", "sfx_spec.json")
 
 # 검수 고름 (2026-10-07): 1번 묶음 = efc2604 장면 렌더 뒤 확정, 2·3번 묶음 = a5d9555 추천 그대로 확정,
-# 4번 묶음 = 8efda17 추천 그대로 확정(새 계정 세션), 5번 묶음 SkillLearn = e351187 추천 sA 확정
+# 4번 묶음 = 8efda17 추천 그대로 확정(새 계정 세션), 5번 묶음 SkillLearn = e351187 추천 sA 확정,
+# 6번 묶음 Loot = 추천 sA 확정(검수 2026-10-07: 주문서·무기만, 무기는 0.92배)
 PICKS = [
     # key, candidate, batch, replaces (old Config.Audio.Files keys / art/sfx files)
     ("SwingArrow", "SwingArrow_SwingArcher-2-4", 1, "SwingArcher (now silent); the code plays it twice"),
@@ -73,6 +74,7 @@ PICKS = [
     ("Plunder", "Plunder_sB", 4, "new (my sack is taken; the taker hears GoldPickup)"),
     ("JackpotOther", "JackpotOther_sA", 4, "new (someone else's Jackpot / FirstMax line)"),
     ("SkillLearn", "SkillLearn_sA", 5, "new (A23-71: a skill is learned at Lv5 / 15 / 25; play it about 1.1 s after LevelUp)"),
+    ("Loot", "Loot_sA", 6, "new (Fx Loot with a scroll or a weapon; a weapon may play it at 0.92x; materials / potions stay silent)"),
 ]
 
 KENNEY = {  # the Kenney CC0 files inside each picked recipe (tools/sfx_recipes.py / sfx_make.py)
@@ -106,7 +108,7 @@ def main():
     spec = json.load(open(SPEC, encoding="utf-8"))["keys"]
     out = {"about": "검수 picks of round 4 (2026-10-07): batch 1 confirmed after the scene renders (efc2604), batches 2-3 = the "
                     "소리 만들기 recommendations (a5d9555), batch 4 = the recommendations (8efda17), batch 5 = SkillLearn sA "
-                    "(e351187). Files are byte copies of "
+                    "(e351187), batch 6 = Loot sA. Files are byte copies of "
                     "art/sfx/cand/<candidate>.wav "
                     "(mono 48 kHz 16-bit, K-weighted loudest 100 ms = -17 LUFS, peak <= -2.5 dBFS).",
            "upload": "pending: the next account uploads these wav files (Creator Hub, 'HH SFX <key>', Restricted, no Creator Store), "
