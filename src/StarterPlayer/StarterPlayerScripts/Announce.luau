@@ -158,22 +158,31 @@ function A.Chat(line, color)
 	end
 end
 
--- TextChatService only (ChatText.luau covers the legacy chat on the server): Roblox's team line ("You are now on the
--- ... team.", Metadata Roblox.Team.Success.NowInTeam) comes in the player's Roblox language -> our English line
+-- New chat (TextChatService; ChatText.luau covers the legacy chat on the server): Roblox's team line ("You are now on
+-- the ... team.", Metadata Roblox.Team.Success.NowInTeam) comes in the player's Roblox language -> our English line.
+-- Every other message comes back nil (untouched).
 function A.Incoming(message)
+	if message.Metadata ~= "Roblox.Team.Success.NowInTeam" then return nil end
 	local props = Instance.new("TextChatMessageProperties")
-	if message.Metadata == "Roblox.Team.Success.NowInTeam" then
-		local team = Players.LocalPlayer.Team
-		local text = Config.ChatText.Choosing
-		if team and not team.AutoAssignable then text = string.format(Config.ChatText.Joined, team.Name) end
-		local color = team and team.TeamColor.Color or Color3.new(1, 1, 1)
-		props.Text = string.format('<font color="%s"><b>%s</b></font>', hex(color), escape(text))
-	end
+	local team = Players.LocalPlayer.Team
+	local text = Config.ChatText.Choosing
+	if team and not team.AutoAssignable then text = string.format(Config.ChatText.Joined, team.Name) end
+	local color = team and team.TeamColor.Color or Color3.new(1, 1, 1)
+	props.Text = string.format('<font color="%s"><b>%s</b></font>', hex(color), escape(text))
 	return props
+end
+
+-- A23-74 (user 2026-10-07: the Korean team line still showed): the place says ChatVersion = LegacyChatService but
+-- Chat.IsAutoMigrated = true, so Roblox runs the new chat anyway and hides the legacy window. The hook no longer asks
+-- ChatVersion (unused when the new chat is off) and is set in Init, before any module's Start, for the first team line.
+function A.HookTeamLine()
+	local ok, err = pcall(function() TextChatService.OnIncomingMessage = A.Incoming end)
+	if not ok then warn("[Announce] team line hookup failed: " .. tostring(err)) end
 end
 
 function Announce.Init(registry)
 	C = registry
+	A.HookTeamLine()
 end
 
 function Announce.Start()
@@ -184,9 +193,6 @@ function Announce.Start()
 			end)
 		end)
 		if not ok then warn("[Announce] hookup failed: " .. tostring(err)) end
-	end)
-	pcall(function()
-		if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then TextChatService.OnIncomingMessage = A.Incoming end
 	end)
 	print("[Announce] started")
 end

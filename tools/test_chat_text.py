@@ -4,10 +4,16 @@ player's Roblox language). The place runs the legacy chat: its server modules se
 English text; the team-change line becomes Config.ChatText.Joined ("You joined the Horn Legion!") in the team colour in
 the general channel (none for the auto-assigned team); Team / System lines move to the general channel (their tag is
 translated too); the Team / System welcome lines are dropped; it hooks only on the legacy chat, existing and later
-channels / speakers, and only warns when the ChatService is missing. Static: Main loads ChatText; Announce rewrites the
-TextChatService team line (Metadata Roblox.Team.Success.NowInTeam) with Config.ChatText.
-Runs the real ChatText.luau + Config.luau in tools/fixtures/chat_text_offline.luau.
-Status "passed" only when the fixture passes, the static checks pass AND every mutation was applied and caught.
+channels / speakers, and only warns when the ChatService is missing. Static: Main loads ChatText; Announce hooks the
+TextChatService team line without reading ChatVersion.
+Client (A23-74, user 2026-10-07: the Korean team line still showed): the main place reads ChatVersion =
+LegacyChatService while Chat.IsAutoMigrated = true, so Roblox runs the new chat (TextChatService) anyway. Announce.Init
+(before any module's Start) sets TextChatService.OnIncomingMessage whatever ChatVersion says; the team line (Metadata
+Roblox.Team.Success.NowInTeam) becomes Config.ChatText in the team colour, escaped, without Hangul; every other message
+comes back nil; a refused hookup only warns.
+Runs the real ChatText.luau + Config.luau in tools/fixtures/chat_text_offline.luau and the real Announce.luau +
+Config.luau in tools/fixtures/team_line_offline.luau.
+Status "passed" only when both fixtures pass, the static checks pass AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-07/offline_chat_text_2026-10-07.json
 """
 from pathlib import Path
@@ -22,6 +28,7 @@ CHAT = ROOT / "src/ServerScriptService/ChatText.luau"
 MAIN = ROOT / "src/ServerScriptService/Main.server.luau"
 ANNOUNCE = ROOT / "src/StarterPlayer/StarterPlayerScripts/Announce.luau"
 FIXTURE = ROOT / "tools/fixtures/chat_text_offline.luau"
+CLIENT_FIXTURE = ROOT / "tools/fixtures/team_line_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-07/offline_chat_text_2026-10-07.json"
 
@@ -45,6 +52,32 @@ MUTATIONS = [
      "\tif paramStart then return string.sub(message, defEnd + 1, paramStart - 1), key end\n", ""),
 ]
 
+# Announce.luau (client): each mutation is a list of (old, new) replacements, every old text must appear exactly once
+CLIENT_MUTATIONS = [
+    ("the hook waits for ChatVersion = TextChatService (the A23-74 bug)",
+     [("pcall(function() TextChatService.OnIncomingMessage = A.Incoming end)",
+       "pcall(function() if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then "
+       "TextChatService.OnIncomingMessage = A.Incoming end end)")]),
+    ("the hook is set in Start instead of Init",
+     [("\tC = registry\n\tA.HookTeamLine()\n", "\tC = registry\n"),
+      ('\tprint("[Announce] started")', '\tA.HookTeamLine()\n\tprint("[Announce] started")')]),
+    ("the hook is never set", [("\tC = registry\n\tA.HookTeamLine()\n", "\tC = registry\n")]),
+    ("every message gets new properties",
+     [('if message.Metadata ~= "Roblox.Team.Success.NowInTeam" then return nil end',
+       'if message.Metadata ~= "Roblox.Team.Success.NowInTeam" then return Instance.new("TextChatMessageProperties") end')]),
+    ("the team line keeps Roblox's text",
+     [("props.Text = string.format('<font color=", "props.PrefixText = string.format('<font color=")]),
+    ("the auto-assigned team gets a Joined line",
+     [("if team and not team.AutoAssignable then text = string.format(Config.ChatText.Joined, team.Name) end",
+       "if team then text = string.format(Config.ChatText.Joined, team.Name) end")]),
+    ("no team colour", [("local color = team and team.TeamColor.Color or Color3.new(1, 1, 1)",
+                         "local color = Color3.new(1, 1, 1)")]),
+    ("the team name is not escaped", [("hex(color), escape(text))\n\treturn props", "hex(color), text)\n\treturn props")]),
+    ("a refused hookup throws",
+     [("local ok, err = pcall(function() TextChatService.OnIncomingMessage = A.Incoming end)",
+       "TextChatService.OnIncomingMessage = A.Incoming\n\tlocal ok, err = true, nil")]),
+]
+
 
 def lua_str(s: str) -> str:
     level = 0
@@ -53,30 +86,42 @@ def lua_str(s: str) -> str:
     return f"[{'=' * level}[{s}]{'=' * level}]"
 
 
-def run(config: str, chat: str, name: str):
-    path = ROOT / f"build/chat_text_offline{name}.luau"
-    path.write_text("local CONFIG_SOURCE = " + lua_str(config) + "\nlocal CHAT_SOURCE = " + lua_str(chat) + "\n"
-                    + FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
+def run_fixture(fixture: Path, sources: dict, summary: str, name: str):
+    path = ROOT / f"build/{fixture.stem}{name}.luau"
+    head = "".join(f"local {var} = {lua_str(text)}\n" for var, text in sources.items())
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(head + fixture.read_text(encoding="utf-8"), encoding="utf-8")
     result = subprocess.run([str(BINARY), str(path)], cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
                             errors="replace", timeout=120)
-    match = re.search(r"CHAT_TEXT_SUMMARY checks=(\d+) failed=(\d+)", result.stdout)
+    match = re.search(summary + r" checks=(\d+) failed=(\d+)", result.stdout)
     ok = result.returncode == 0 and match is not None and match[2] == "0"
     fails = [ln for ln in (result.stdout + result.stderr).splitlines() if ln.startswith("CHECK_FAIL") or "error" in ln.lower()]
     return ok, (int(match[1]) if match else 0), fails, result
 
 
+def run(config: str, chat: str, name: str):
+    return run_fixture(FIXTURE, {"CONFIG_SOURCE": config, "CHAT_SOURCE": chat}, "CHAT_TEXT_SUMMARY", name)
+
+
+def run_client(config: str, announce: str, name: str):
+    return run_fixture(CLIENT_FIXTURE, {"CONFIG_SOURCE": config, "ANNOUNCE_SOURCE": announce}, "TEAM_LINE_SUMMARY", name)
+
+
 def static_checks(main: str, announce: str, config: str):
     init = re.search(r"local INIT_ORDER = \{(.*?)\}", main, re.S)
     start = re.search(r"local START_ORDER = \{(.*?)\}", main, re.S)
+    hook = re.search(r"\nfunction A\.HookTeamLine\(\)\n(.*?)\nend\n", announce, re.S)
+    client_init = re.search(r"\nfunction Announce\.Init\(registry\)\n(.*?)\nend\n", announce, re.S)
     rows = [
         ("Main loads ChatText (INIT_ORDER)", bool(init and '"ChatText"' in init[1])),
         ("Main starts ChatText before PlayerService (START_ORDER)",
          bool(start and '"ChatText"' in start[1] and start[1].index('"ChatText"') < start[1].index('"PlayerService"'))),
-        ("Announce rewrites the TextChatService team line",
-         'message.Metadata == "Roblox.Team.Success.NowInTeam"' in announce
-         and "string.format(Config.ChatText.Joined, team.Name)" in announce
-         and "TextChatService.OnIncomingMessage = A.Incoming" in announce
-         and "TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then" in announce),
+        ("Announce hooks the TextChatService team line in Init, without reading ChatVersion (A23-74)",
+         bool(hook and "TextChatService.OnIncomingMessage = A.Incoming" in hook[1] and "ChatVersion" not in hook[1])
+         and bool(client_init and "A.HookTeamLine()" in client_init[1])
+         and announce.count("TextChatService.OnIncomingMessage =") == 1
+         and '"Roblox.Team.Success.NowInTeam"' in announce
+         and "string.format(Config.ChatText.Joined, team.Name)" in announce),
         ("Config.ChatText lines are English (no Hangul)",
          bool(re.search(r"Config\.ChatText = \{(.*?)\n\}", config, re.S))
          and not re.search(r"[가-힣]", re.search(r"Config\.ChatText = \{(.*?)\n\}", config, re.S)[1].split("--")[0])),
@@ -99,25 +144,43 @@ def main():
             caught = not m_ok
         rows.append({"mutation": name, "applied": applied, "caught": caught, "failures": why[:3]})
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
-    static = static_checks(MAIN.read_text(encoding="utf-8-sig").replace("\r\n", "\n"),
-                           ANNOUNCE.read_text(encoding="utf-8-sig").replace("\r\n", "\n"), config)
+    announce = ANNOUNCE.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    c_ok, c_checks, c_fails, c_result = run_client(config, announce, "")
+    print(c_result.stdout, end="")
+    print(c_result.stderr, end="")
+    for name, pairs in CLIENT_MUTATIONS:
+        mutated, applied = announce, True
+        for old, new in pairs:
+            applied = applied and mutated.count(old) == 1
+            mutated = mutated.replace(old, new)
+        caught, why = False, []
+        if applied:
+            m_ok, _, why, _ = run_client(config, mutated, "_mut")
+            caught = not m_ok
+        rows.append({"mutation": "client: " + name, "applied": applied, "caught": caught, "failures": why[:3]})
+        print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: client: {name}")
+    static = static_checks(MAIN.read_text(encoding="utf-8-sig").replace("\r\n", "\n"), announce, config)
     for name, good in static:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)
-    passed = ok and all(r["applied"] and r["caught"] for r in rows) and all(g for _, g in static)
+    passed = ok and c_ok and all(r["applied"] and r["caught"] for r in rows) and all(g for _, g in static)
     report = {"status": "passed" if passed else "failed", "checks": checks, "failedChecks": fails,
+              "clientChecks": c_checks, "clientFailedChecks": c_fails,
               "static": [{"check": n, "ok": g} for n, g in static],
               "mutations": {"total": len(rows), "applied": sum(r["applied"] for r in rows),
                             "caught": sum(r["caught"] for r in rows), "results": rows},
               "sourceSHA256": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                                for p in (CONFIG, CHAT, MAIN, ANNOUNCE)},
-              "fixtureSHA256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(), "studioCalls": 0,
+              "fixtureSHA256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),
+              "clientFixtureSHA256": hashlib.sha256(CLIENT_FIXTURE.read_bytes()).hexdigest(), "studioCalls": 0,
               "contract": __doc__.split("Status")[0].strip(),
               "limitations": "The doubles copy the legacy chat's shapes (Studio ExtraContent ServerChat/Speaker.lua, "
-                             "ChatChannel.lua, ChatLocalization.lua); what a Korean-language client finally shows is a "
-                             "Studio check (team pick, chat window)."}
+                             "ChatChannel.lua, ChatLocalization.lua) and a TextChatService that stores the "
+                             "OnIncomingMessage callback; whether Roblox's new chat calls it for its team line and what "
+                             "a Korean-language client finally shows is a Studio check (team pick, chat window)."}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Status: {report['status']} (mutations {report['mutations']['caught']}/{report['mutations']['total']})")
+    print(f"Status: {report['status']} (checks {checks} + client {c_checks}, "
+          f"mutations {report['mutations']['caught']}/{report['mutations']['total']})")
 
 
 if __name__ == "__main__":
