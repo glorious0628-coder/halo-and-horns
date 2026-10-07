@@ -5637,5 +5637,16 @@
   "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
   "note": "보상 반짝이(흰 4각 + 짧은 대각): 흰색 + 밝기 알파, 파티클·장식용. 검수 고름 2026-10-07.",
   "cutout": "tools/img2/lum_alpha.py --center: 검은 바탕 밝기 → 알파, RGB 흰색, 가운데 맞춘 정사각"
+ },
+ "Kit_W_Campfire_Fire": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate Campfire_FB2",
+  "prompt": "art/prompts/KIT_Woods_Campfire_FB_HQ.txt (candidate art/prompts/KIT_Woods_Campfire_FB.txt)",
+  "original": "art/out/kit/woods/Campfire_FB2_HQ_src.png (1024x1024, gray backdrop = Tripo input; copy art/out/hq/HQ_Woods_Campfire_FB2.png)",
+  "medium_pick": "art/out/kit/woods/Campfire_FB2_src.png",
+  "file": "art/out/kit/woods/Campfire_FB2_HQ.png (cutout for sheets only)",
+  "preview": "art/review/s2/kit_campfire_fire_sheet.jpg",
+  "note": "검수 고름 B2(사용자: '지금은 나무에 불이 안 붙어서 이상해', 참고 사진 2번째 느낌 — 사진은 출처를 몰라 참조로 안 씀). 엇갈린 통나무 틈이 숯처럼 빛남 + 가운데 굵은 불꽃 덩어리, 고급에서 불꽃 끝을 굵게 붙여 Tripo가 한 덩어리로 잡게. 불 없는 Kit_W_Campfire(Campfire_HQ_src) 3D를 대체. 움직이는 불꽃·빛은 Studio(개발 1)."
  }
 }
