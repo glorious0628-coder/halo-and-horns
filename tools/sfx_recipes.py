@@ -349,6 +349,232 @@ def goose_arrive(seed=131, f1=560.0, f2=665.0):
                       (g, 0.64, 0.4), (sparkle(0.3, 6, 3000, 7000, 0.3, seed + 2), 0.66, 1.0)]), 150)
 
 
+# ---------------------------------------------------------------- batch 4 (P1 crown / king / war, P2, then the rest)
+def norm(x):
+    return x / max(1e-9, np.abs(x).max())
+
+
+def fade_out(x, sec):
+    k = min(len(x), N(sec))
+    y = x.copy()
+    y[-k:] *= np.cos(np.linspace(0, np.pi / 2, k)) ** 2
+    return y
+
+
+def rate_sparkle(dur, r0, r1, lo, hi, seed, gdur=0.03, level=1.0):
+    """sparkle grains whose rate goes r0 -> r1 per second (r1 > r0 = a swell) and that get louder as they go"""
+    rng = np.random.default_rng(seed)
+    total = N(dur + gdur)
+    out = np.zeros(total)
+    t = 0.0
+    while t < dur:
+        u = t / dur
+        g = bell(rng.uniform(lo, hi), gdur, 60.0, ((1.0, 1.0, 1.0), (2.76, 0.3, 1.5)))
+        s = N(t)
+        m = min(len(g), total - s)
+        out[s:s + m] += g[:m] * rng.uniform(0.5, 1.0) * (0.3 + 0.7 * u)
+        t += rng.exponential(1.0 / (r0 + (r1 - r0) * u))
+    return norm(out) * level
+
+
+def crown_halo(seed=141):
+    """swell 0-700 ms (sparkles 25 -> 60/s + air 1.5 -> 5 kHz) -> @700 ms A major glass chord A5-C#6-E6 + Kenney glass -> sparkle tail"""
+    n = N(0.7)
+    t = secs(n)
+    air = norm(svf_bp(noise(n, seed), glide(n, 1500, 5000, 1.0), 1.3)) * (0.25 + 0.75 * (t / 0.7) ** 1.6) * 0.4
+    swell = rate_sparkle(0.7, 25, 60, 2500, 7000, seed + 1, level=0.6)
+    chord = sum(bell(f, 1.0, 3.2, ((1.0, 1.0, 1.0), (2.0, 0.3, 1.5), (2.76, 0.12, 2.2))) for f in (880.0, 1108.7, 1318.5))
+    glass = norm(kenney("impact/impactGlass_medium_000", 0.989))
+    tail = rate_sparkle(0.8, 40, 12, 3000, 7000, seed + 2, level=0.35)
+    mix = at([(air, 0, 1.0), (swell, 0, 1.0), (norm(chord), 0.7, 1.0), (glass, 0.7, 0.45), (tail, 0.72, 1.0)])
+    return finish(FF.lowpass(FF.highpass(mix, 400, 4), 8000, 2), 150)
+
+
+def crown_horns(seed=151):
+    """fire flare 300 -> 2500 Hz + embers 20 -> 70/s -> @600 ms wood drum (Kenney impactWood_medium_002 1.8x, driven, HP 450)
+    + ember burst + a low fire bed -> tail embers + 'to-dok' (Kenney impactWood_light_000 1.6x / 1.35x)"""
+    n = N(0.6)
+    t = secs(n)
+    flare = norm(np.tanh(2.0 * svf_bp(noise(n, seed), glide(n, 300, 2500, 1.0), 1.4))) * (0.2 + 0.8 * (t / 0.6) ** 1.4)
+    embers = rate_sparkle(0.6, 20, 70, 1200, 3500, seed + 1, 0.012, 0.3)
+    snow = FF.highpass(kenney("impact/footstep_snow_000"), 200, 2)
+    drum = fade_out(drive(FF.highpass(kenney("impact/impactWood_medium_002", 1.8), 450, 2), 2.5)[:N(0.45)], 0.2)
+    burst = rate_sparkle(0.25, 60, 25, 1200, 3500, seed + 2, 0.012, 0.35)
+    m = N(0.9)
+    bed = norm(svf_bp(noise(m, seed + 4), 900, 0.9)) * np.exp(-secs(m) * 3.0) * 0.35
+    tail = rate_sparkle(0.6, 35, 12, 1200, 3200, seed + 3, 0.012, 0.25)
+    mix = at([(flare, 0, 0.75), (embers, 0, 1.0), (norm(snow), 0.55, 0.25), (norm(drum), 0.6, 1.0), (burst, 0.6, 1.0),
+              (bed, 0.6, 1.0), (tail, 0.85, 1.0), (norm(kenney("impact/impactWood_light_000", 1.6)), 0.98, 0.45),
+              (norm(kenney("impact/impactWood_light_000", 1.35)), 1.08, 0.4)])
+    return finish(FF.lowpass(FF.highpass(mix, 300, 4), 5000, 2), 150)
+
+
+def king_defeat(seed=161, span=1.0):
+    """pinata 'crack' (our tok + 40 ms paper tear) -> 52 candies bouncing 2-3 times (Kenney impactGlass_light_003 2.0-2.6x)
+    -> @350 ms Kenney confirmation_002"""
+    rng = np.random.default_rng(seed)
+    m = N(0.06)
+    crack = at([(osc(glide(m, 1300, 900)) * env(m, 0.001, 70), 0, 0.8), (band(N(0.04), 3500, 0.8, seed) * env(N(0.04), 0.001, 60), 0, 0.6)])
+    glass = kenney("impact/impactGlass_light_003")
+    rain = []
+    for _ in range(52):
+        t0 = 0.03 + (span - 0.03) * rng.uniform(0, 1) ** 1.25
+        g = SC.respeed(glass, rng.uniform(2.0, 2.6))[:N(0.025)]
+        g = g * np.linspace(1, 0, len(g)) ** 2
+        for b in range(rng.integers(2, 4)):  # each candy bounces 2-3 times, smaller and sooner
+            rain.append((g, t0 + b * 0.07 * (0.7 ** b), rng.uniform(0.25, 0.55) * 0.55 ** b))
+    return finish(FF.highpass(at([(crack, 0, 1.0), *rain, (norm(kenney("interface/confirmation_002")), 0.35, 0.55)]), 300, 4), 150)
+
+
+def war_final30(f=3200.0):
+    """a bicycle bell: 3.2 kHz (+ a 15 Hz-off twin) + 1.04 kHz body, the clapper trill = 3 strikes 55 ms apart, rung twice @0 / 250 ms"""
+    r = norm(bell(f, 0.16, 18, ((1.0, 1.0, 1.0), (2.1, 0.2, 1.6))) + bell(f + 15, 0.16, 18, ((1.0, 1.0, 1.0),))
+             + 0.4 * bell(1040, 0.16, 14, ((1.0, 1.0, 1.0), (2.0, 0.2, 1.4))))
+    trill = at([(r, 0, 1.0), (r, 0.055, 0.85), (r, 0.11, 0.75)])
+    return finish(FF.highpass(at([(trill, 0, 0.8), (trill, 0.25, 1.0)]), 800, 4), 150)
+
+
+def count_tick(seed=181, dec=36.0):
+    """a wood block 'tok': 1.6 kHz + 2.76x partial, 3 ms click (the game plays it 1.0 / 1.12 / 1.26x for 3-2-1)"""
+    b = bell(1600, 0.08, dec, ((1.0, 1.0, 1.0), (2.76, 0.3, 1.5)))
+    click = band(N(0.003), 3000, 1.0, seed) * env(N(0.003), 0.0003, 600)
+    return finish(FF.highpass(at([(b, 0, 1.0), (click, 0, 0.35)]), 600, 4), 150)
+
+
+def goose_end(seed=191):
+    """5 wing flaps flying away (Kenney footstep_grass_001, quieter each) + one happy honk 2 semitones up + 4 feather drifts"""
+    rng = np.random.default_rng(seed)
+    fl = [(flap(1.5 + 0.08 * i), 0.11 * i, 1.0 - 0.13 * i) for i in range(5)]
+    drift = []
+    for i in range(4):
+        n = N(0.12)
+        d = svf_bp(noise(n, seed + 10 + i), glide(n, rng.uniform(1500, 2500), rng.uniform(3000, 4000), 1.0), 1.2)
+        drift.append((norm(d) * np.sin(np.pi * np.linspace(0, 1, n)), 0.5 + 0.13 * i, 0.45 - 0.06 * i))
+    return finish(FF.highpass(at([*fl, (honk_toy(600 * 2 ** (2 / 12), seed=seed), 0.15, 0.55), *drift]), 400, 2), 150)
+
+
+def stomp_mix(seed=201, wg=0.9, dg=0.5, sq_db=-5.0):
+    """the big rubber boot: Kenney wood body (driven, HP 450 so phones keep it) + snow crunch + dust puff 1.3 -> 0.4 kHz
+    + the rubber 'bwoong' 900 -> 600 Hz"""
+    wood = FF.highpass(fade_out(drive(FF.highpass(kenney("impact/impactWood_medium_002"), 300, 2), 3.0)[:N(0.45)], 0.28), 450, 2)
+    snow = FF.highpass(kenney("impact/footstep_snow_000"), 300, 2)
+    n = N(0.32)
+    dust = norm(svf_bp(noise(n, seed), glide(n, 1300, 400, 1.0), 0.8)) * env(n, 0.002, 8.0)
+    m = N(0.05)
+    squonk = osc(glide(m, 900, 600)) * env(m, 0.003, 25)
+    return FF.lowpass(at([(norm(wood), 0, wg), (norm(snow), 0, 0.25), (dust, 0.0, dg), (squonk, 0.0, 10 ** (sq_db / 20))]), 3500, 2)
+
+
+def kaiju_stomp(seed=201):
+    return finish(stomp_mix(seed), 150)
+
+
+def kaiju_siren(seed=211):
+    """a rolling rumble 600 / 900 Hz noise with a 14 Hz wobble, -24 -> -6 dB over 0.9 s -> two boot stomps @0.95 / 1.3 s + dust
+    + a few embers (not a siren, not a roar)"""
+    n = N(1.0)
+    t = secs(n)
+    rumble = svf_bp(noise(n, seed), 600, 0.7) + 0.6 * svf_bp(noise(n, seed + 1), 900, 0.8)
+    rumble = fade_out(norm(rumble) * (0.65 + 0.35 * np.sin(2 * np.pi * 14 * t)) * 10 ** ((-24 + 18 * np.minimum(t / 0.9, 1)) / 20), 0.1)
+    st = norm(stomp_mix(seed + 2, 0.6, 0.9))
+    m = N(0.5)
+    dust = norm(svf_bp(noise(m, seed + 5), 800, 0.7)) * np.exp(-secs(m) * 4) * 0.3
+    embers = rate_sparkle(0.55, 16, 8, 1500, 4000, seed + 3, 0.012, 0.12)
+    return finish(FF.highpass(at([(rumble, 0, 1.0), (st, 0.95, 1.0), (dust, 0.98, 1.0), (st, 1.3, 1.0), (dust, 1.33, 1.0),
+                                  (embers, 1.3, 1.0)]), 150, 4), 150)
+
+
+def zone_enter_pvp(seed=221):
+    """two pitched toms 400 Hz -> 530 Hz 130 ms apart ('du-dum!' going up), each with a small skin click"""
+    def tom(f):
+        n = N(0.26)
+        x = osc(glide(n, f * 1.05, f)) + 0.4 * osc(glide(n, 1.5 * f * 1.05, 1.5 * f))
+        click = band(N(0.006), 2500, 1.0, seed + int(f)) * env(N(0.006), 0.0003, 400)
+        return at([(x * env(n, 0.003, 13), 0, 1.0), (click, 0, 0.3)])
+    return finish(FF.highpass(at([(tom(400), 0, 1.0), (tom(530), 0.13, 1.0)]), 250, 4), 150)
+
+
+def golden_spot(seed=234):
+    """sparkle grains slowly rising 2.5 -> 4.5 kHz (no steps) -> @280 ms Kenney glass_002 'ping' (LP 4.5 k) + a 4.4 kHz ring"""
+    rng = np.random.default_rng(seed)
+    total = N(0.33)
+    out = np.zeros(total)
+    t = 0.0
+    while t < 0.3:
+        g = bell(2500 * 2 ** (t / 0.3 * 0.85) * rng.uniform(0.94, 1.06), 0.03, 60.0, ((1.0, 1.0, 1.0), (2.76, 0.15, 1.5)))
+        s = N(t)
+        m = min(len(g), total - s)
+        out[s:s + m] += g[:m] * rng.uniform(0.6, 1.0)
+        t += rng.exponential(1 / 45)
+    g2 = fade_out(norm(FF.lowpass(FF.highpass(kenney("interface/glass_002"), 2500, 2), 4500, 4))[:N(0.2)], 0.1)
+    ring = bell(4400, 0.22, 10.0, ((1.0, 1.0, 1.0),))
+    return finish(FF.lowpass(FF.highpass(at([(norm(out), 0, 0.8), (g2, 0.28, 0.5), (ring, 0.28, 0.45)]), 1500, 4), 6000, 2), 150)
+
+
+def scroll_success(seed=241):
+    """a glint sweep 2 -> 7 kHz (80 ms) -> G7 3.1 kHz ring with a 1.05 kHz body partial -> Kenney glass_004 @150 ms -> high sparkles"""
+    n = N(0.08)
+    glint = norm(svf_bp(noise(n, seed), glide(n, 2000, 7000, 1.0), 2.0)) * np.sin(np.pi * np.linspace(0, 1, n)) ** 0.5
+    ring = bell(3136, 0.5, 6, ((1.0, 1.0, 1.0), (0.335, 0.5, 2.5), (2.0, 0.15, 1.2)))
+    sp = rate_sparkle(0.45, 20, 30, 4500, 7500, seed + 1, level=0.35)
+    return finish(FF.highpass(at([(glint, 0, 0.5), (ring, 0.05, 1.0), (norm(kenney("interface/glass_004")), 0.15, 0.5), (sp, 0.25, 1.0)]),
+                              500, 4), 150)
+
+
+def rank_up(notes=("C5", "D5", "E5"), gap=0.055):
+    """the mirror of RankDown: the same marimba going up C5-D5-E5"""
+    parts = [(marimba(note_hz(n), 0.22, 18), i * gap, 10 ** (-1.0 * i / 20)) for i, n in enumerate(notes)]
+    return finish(FF.lowpass(at(parts), 4000, 2), 400)
+
+
+def spend(gap=0.05):
+    """the GoldPickup coins going DOWN: E7 -> D7, quietly"""
+    return finish(at([(coin(note_hz("E7")), 0.0, 1.0), (coin(note_hz("D7")), gap, 0.85)]), 400)
+
+
+def plunder():
+    """coins scattering away: G7-E7-D7-C7-A6, each quieter and later, getting duller (further away)"""
+    t, parts = 0.0, []
+    for i, nm in enumerate(("G7", "E7", "D7", "C7", "A6")):
+        parts.append((coin(note_hz(nm)), t, 0.9 ** (i * 2)))
+        t += 0.045 + 0.02 * i
+    y = at(parts)
+    w = np.linspace(0, 1, len(y)) ** 0.8
+    return finish(y * (1 - w) + FF.lowpass(y, 2500, 2) * w, 400)
+
+
+def ko(seed=261):
+    """cartoon dizzy: a soft bump + 'boing' -> three warbling tweet-stars 2.4 -> 2.9 kHz + a soft whirl (no sad jingle)"""
+    n = N(0.12)
+    bump = norm(svf_bp(noise(n, seed), glide(n, 800, 400), 1.2)) * env(n, 0.001, 25)
+    m = N(0.06)
+    boing = osc(glide(m, 700, 520)) * env(m, 0.003, 30)
+    stars = []
+    for i in range(3):
+        k = N(0.16)
+        f = glide(k, 2400, 2900, 1.0) * (1 + 0.04 * np.sin(2 * np.pi * 22 * secs(k)))
+        stars.append((osc(f) * np.sin(np.pi * np.linspace(0, 1, k)) ** 1.2, 0.17 + 0.18 * i, 0.4 - 0.05 * i))
+    w = N(0.7)
+    whirl = norm(svf_bp(noise(w, seed + 3), 2600 + 300 * np.sin(2 * np.pi * 5 * secs(w)), 4.0)) * np.sin(np.pi * np.linspace(0, 1, w)) * 0.08
+    return finish(FF.lowpass(at([(bump, 0, 1.0), (boing, 0.005, 0.5), *stars, (whirl, 0.12, 1.0)]), 6000, 2), 250)
+
+
+def respawn():
+    """a short 'ppyong!' 620 -> 1300 Hz with an octave layer"""
+    n = N(0.16)
+    x = osc(glide(n, 620, 1300, 0.7)) * env(n, 0.004, 11) + 0.25 * osc(glide(n, 1240, 2600, 0.7)) * env(n, 0.004, 14)
+    return finish(FF.highpass(x, 450, 4), 300)
+
+
+def jackpot_other(seed=281):
+    """a 30 ms confetti pop (noise 2 kHz) + a rising glass ping 2.2 -> 2.9 kHz + sparkles"""
+    pop = band(N(0.03), 2000, 1.0, seed) * env(N(0.03), 0.0005, 80)
+    n = N(0.5)
+    ping = osc(glide(n, 2200, 2900, 0.8)) * env(n, 0.002, 5.0)
+    sp = rate_sparkle(0.45, 25, 15, 3000, 6000, seed + 1, level=0.4)
+    return finish(FF.highpass(at([(pop, 0, 0.8), (ping, 0.02, 1.0), (sp, 0.12, 1.0)]), 400, 4), 150)
+
+
 RECIPES = {
     "GoldPickup": {"sA": ("our coins D7-E7-G7 stepping up, 55 ms apart (sound_spec)", lambda: gold(("D7", "E7", "G7"))),
                    "sB": ("our coins E7-D7-G7 (the other order, sound_spec)", lambda: gold(("E7", "D7", "G7"))),
@@ -392,4 +618,34 @@ RECIPES = {
                     "sB": ("same, honks 600 -> 713 Hz", lambda: goose_arrive(133, 600.0, 713.0))},
     "GooseHonk": {"sA": ("ONE toy rubber honk 600 Hz: rising 20 ms squeak + nasal body (formants 1.0 / 1.8 / 2.8 kHz) + 10 % breath", lambda: finish(honk_toy(600.0), 300)),
                   "sB": ("same honk at 620 Hz", lambda: finish(honk_toy(620.0, seed=103), 300))},
+    "CrownHalo": {"sA": ("swell (sparkles 25 -> 60/s + air 1.5 -> 5 kHz) -> A major glass chord + Kenney impactGlass_medium_000 0.989x -> sparkle tail", lambda: crown_halo()),
+                  "sB": ("same recipe, another sparkle seed", lambda: crown_halo(143))},
+    "CrownHorns": {"sA": ("fire flare 300 -> 2500 Hz + embers -> Kenney wood drum 1.8x (driven, HP 450) + burst + fire bed -> 'to-dok' (Kenney wood light 1.6x / 1.35x)", lambda: crown_horns()),
+                   "sB": ("same recipe, another fire seed", lambda: crown_horns(153))},
+    "KingDefeat": {"sA": ("pinata crack (tok + paper tear) + 52 bouncing candies (Kenney impactGlass_light_003 2.0-2.6x) + Kenney confirmation_002 @350 ms", lambda: king_defeat()),
+                   "sB": ("same recipe, another candy rain", lambda: king_defeat(163))},
+    "WarFinal30": {"sA": ("bicycle bell: 3.2 kHz + 1.04 kHz body, clapper trill 3 strikes 55 ms apart, rung twice @0 / 250 ms", lambda: war_final30()),
+                   "sB": ("same bell a little lower (3.0 kHz)", lambda: war_final30(3000.0))},
+    "CountTick": {"sA": ("wood block 'tok' 1.6 kHz + 2.76x partial + 3 ms click (game: 1.0 / 1.12 / 1.26x)", lambda: count_tick()),
+                  "sB": ("same block, a slightly longer ring", lambda: count_tick(183, 32.0))},
+    "GooseEnd": {"sA": ("5 flaps flying away (Kenney footstep_grass_001) + one happy toy honk +2 semitones + 4 feather drifts", lambda: goose_end()),
+                 "sB": ("same recipe, other feathers", lambda: goose_end(193))},
+    "KaijuSiren": {"sA": ("rolling rumble 600 / 900 Hz noise, 14 Hz wobble, -24 -> -6 dB -> two rubber-boot stomps + dust + embers", lambda: kaiju_siren()),
+                   "sB": ("same recipe, another rumble", lambda: kaiju_siren(213))},
+    "KaijuStomp": {"sA": ("Kenney wood body (driven, HP 450) + Kenney snow crunch + dust puff 1.3 -> 0.4 kHz + rubber 'bwoong' 900 -> 600 Hz", lambda: kaiju_stomp()),
+                   "sB": ("same boot, another dust puff", lambda: kaiju_stomp(203))},
+    "ZoneEnterPvP": {"sA": ("two pitched toms 400 -> 530 Hz, 130 ms apart, small skin clicks", lambda: zone_enter_pvp())},
+    "GoldenSpot": {"sA": ("rising sparkle grains 2.5 -> 4.5 kHz (no steps) + Kenney glass_002 ping (LP 4.5 k) + 4.4 kHz ring", lambda: golden_spot())},
+    "ScrollSuccess": {"sA": ("glint 2 -> 7 kHz + G7 ring with a 1.05 kHz body + Kenney glass_004 @150 ms + high sparkles", lambda: scroll_success()),
+                      "sB": ("same recipe, other sparkles", lambda: scroll_success(243))},
+    "RankUp": {"sA": ("marimba C5-D5-E5 55 ms apart (RankDown's mirror)", lambda: rank_up()),
+               "sB": ("marimba C5-D5-E5 65 ms apart", lambda: rank_up(gap=0.065))},
+    "Spend": {"sA": ("our coins E7 -> D7 going down, 50 ms apart (GoldPickup's coins)", lambda: spend()),
+              "sB": ("same coins 60 ms apart", lambda: spend(0.06))},
+    "Plunder": {"sA": ("coins scattering away G7-E7-D7-C7-A6, quieter, later and duller", plunder)},
+    "KO": {"sA": ("soft bump + 'boing' + three warbling tweet-stars 2.4 -> 2.9 kHz + soft whirl", lambda: ko()),
+           "sB": ("same recipe, another bump", lambda: ko(263))},
+    "Respawn": {"sA": ("'ppyong!' 620 -> 1300 Hz with an octave layer, 0.16 s", respawn)},
+    "JackpotOther": {"sA": ("confetti pop + rising glass ping 2.2 -> 2.9 kHz + sparkles", lambda: jackpot_other()),
+                     "sB": ("same recipe, other sparkles", lambda: jackpot_other(283))},
 }

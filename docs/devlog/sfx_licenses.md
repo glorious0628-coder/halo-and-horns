@@ -95,9 +95,11 @@
 기준은 `docs/design/sound_spec_2026-10-07.md`(검수, 9d911c2)와 `tools/sfx_spec.json` / `tools/sfx_check.py`.
 - **만든 곳:** firefly.adobe.com 효과음 생성(사용자 Adobe 계정, 앱 안 브라우저). 1번 생성 = 10크레딧, 변형 4개, 길이 1초(PowerUp 1.5초).
   Adobe 안내: Firefly 모델로 만든 결과물은 상업용으로 써도 안전. 유명 게임·브랜드 이름은 프롬프트에 넣지 않았다.
-- **크레딧:** 60번 × 10 = 600 (9,640 → 약 9,040, 11/4 초기화): 1번 묶음 35번, 2번 묶음 18번, 3번 묶음(할로윈) 7번. 사용자 "크레딧은 걱정마슈", 검수 묶음 OK.
-- **프롬프트:** `art/prompts/SFX_<키>_<번호>.txt` 60개.
-- **원본:** Firefly 생성 기록에서 내려받은 WAV 48 kHz 16비트 스테레오 240개(`build/sfx_firefly/raw`, git 밖, 사용자 OK "이번 세션 계속 받아").
+- **크레딧:** 72번 × 10 = 720 (11/4 초기화): 1번 묶음 35번, 2번 묶음 18번, 3번 묶음(할로윈) 7번, 4번 묶음 12번(검수 '4번은 시작하지 마'가
+  대기열에 있어 늦게 도착하기 전에 만듦, 아직 고르지 않음). 계정은 이미지 세션과 같이 써서, 4번 묶음 직전 화면 잔액 8,750 → 지금 약 8,630.
+  사용자 "크레딧은 걱정마슈", 검수 묶음 OK.
+- **프롬프트:** `art/prompts/SFX_<키>_<번호>.txt` 72개.
+- **원본:** Firefly 생성 기록에서 내려받은 WAV 48 kHz 16비트 스테레오 288개(`build/sfx_firefly/raw`, git 밖, 사용자 OK "이번 세션 계속 받아").
   애셋 id·sha256은 `art/sfx/cand/firefly_r4.json`, 받는 도구 `tools/sfx_fetch.py`.
 - **우리 손질:** 설계서 검사기의 판정을 목표로 원본마다 여러 자리·길이·고역/저역 통과를 시험해 가장 잘 맞는 자르기를 남김
   (`tools/sfx_cut.py`). 48 kHz 모노, K 가중 가장 큰 100 ms = -17 LUFS, 최고점 -2.5 dBFS 아래.
@@ -118,4 +120,9 @@
 - **시트·듣기판:** 공식 검사기 시트 `art/review/sfx_check_r4b_2026-10-07/<키>.png`(+ `summary.json`), 검수 듣기판
   https://claude.ai/artifact/EEwW3ounewa6BWPrFMFD2P . 후보 파일 `art/sfx/cand/*.wav`. 4차 첫 판(개발 2 모양 기준) 시트
   `art/review/sfx_firefly_2026-10-07*.png`은 기록으로만 둔다.
-- 고른 소리를 올리면 이 절에 키·후보·id를 적는다.
+- **검수 고름(2026-10-07):** 1번 묶음은 장면 렌더 뒤 확정(화살 2-4, 빛 3-4, 뿔 1-1, 퍽 3-2, 치명타 sB3, 동전 kA, 말랑 kB,
+  PowerUp 1-2, Jump 2-2), 2·3번 묶음은 추천 그대로 확정. 게임용 파일 32개 = `art/sfx/<키>.wav`(후보를 바이트 그대로 복사,
+  `tools/sfx_final.py`). 키마다 sha256·출처·라이선스(Firefly / 우리 합성 / Kenney CC0 파일 이름)·볼륨·바꾸는 옛 파일은
+  `art/sfx/picks_r4.json`. Purify는 설계서대로 두 버전(Purify, Purify_b)을 번갈아 쓴다.
+- **업로드: 아직(다음 계정 1순위).** 올리면 id를 `art/sfx/asset_ids.json` "ids"와 이 절에 적고, 개발 1이 연결한 뒤 옛
+  `art/sfx/*.ogg`를 지운다.

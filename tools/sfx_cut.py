@@ -204,6 +204,27 @@ PLAN = {
                                                 fin=[0.006], fout=[0.5], hp=[350, 550, 800], lp=[5000, 7000])),
     "PowerUp": (["PowerUp_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[1.0, 1.15, 1.3], fin=[0.004], fout=[0.35],
                                   hp=[200, 300], lp=[9000, 11000])),
+    # batch 4 (P1 crown / king / war, P2 kaiju / goose / golden, then scroll success, KO, jackpot)
+    "CrownHalo": (["CrownHalo_"], grid(anchor=["onset"], on=[-35, -25], pre=[0.002], len=[1.55, 1.65], fin=[0.01], fout=[0.3],
+                                      hp=[300, 500], lp=[8000, 10000])),
+    "CrownHorns": (["CrownHorns_"], grid(anchor=["onset"], on=[-35, -25], pre=[0.002], len=[1.45, 1.55], fin=[0.01], fout=[0.3],
+                                        hp=[250, 350], lp=[6000, 8000])),
+    "KingDefeat": (["KingDefeat_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[1.05, 1.15], fin=[0.003], fout=[0.3],
+                                        hp=[300], lp=[8000, 10000])),
+    "KaijuSiren": (["KaijuSiren_"], grid(anchor=["onset"], on=[-35, -25], pre=[0.002], len=[1.75, 1.85], fin=[0.01], fout=[0.3],
+                                        hp=[150, 250], lp=[4000, 6000])),
+    "KaijuStomp": (["KaijuStomp_"], grid(anchor=["onset", "peak"], on=[-20], pre=[0.0, 0.003], len=[0.32, 0.38], fin=[0.001], fout=[0.45],
+                                        hp=[150, 250], lp=[4000, 6000])),
+    "GooseEnd": (["GooseEnd_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[0.95, 1.05], fin=[0.003], fout=[0.3],
+                                    hp=[400], lp=[9000])),
+    "GoldenSpot": (["GoldenSpot_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[0.42, 0.48], fin=[0.005], fout=[0.35],
+                                        hp=[1200, 1500], lp=[7000, 8000])),
+    "ScrollSuccess": (["ScrollSuccess_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.65, 0.75], fin=[0.002], fout=[0.35],
+                                              hp=[500], lp=[8000, 10000])),
+    "KO": (["KO_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.75, 0.85], fin=[0.002], fout=[0.35],
+                        hp=[250, 300], lp=[6000, 8000])),
+    "JackpotOther": (["JackpotOther_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.55, 0.62], fin=[0.002], fout=[0.35],
+                                            hp=[300, 600], lp=[8000, 10000])),
 }
 
 
@@ -546,21 +567,23 @@ li.l2:before{background:var(--ok)}li.l1:before{background:var(--near)}li.l0:befo
 """
 
 
-def ledger(board_url="", generations=60, balance_before=9640):
+def ledger(board_url="", generations=72, balance_before=9640):
     """art/sfx/cand/firefly_r4.json: prompts, Firefly asset ids, credits, the checker verdicts and cuts of the candidates"""
     results = json.load(open(REPORT, encoding="utf-8"))
     assets = json.load(open(os.path.join(FF.WORK, "raw_assets.json"), encoding="utf-8"))
     prompts = {f[4:-4]: open(os.path.join(FF.PROMPTS, f), encoding="utf-8").read().strip()
                for f in sorted(os.listdir(FF.PROMPTS)) if f.startswith("SFX_") and f.endswith(".txt")}
     book = {
-        "round": "4b / batches 1-3", "date": "2026-10-07", "by": "소리 만들기",
+        "round": "4b / batches 1-3 (+ batch 4 Firefly clips, not picked yet)", "date": "2026-10-07", "by": "소리 만들기",
         "made": "Adobe Firefly 'Generate sound effects' (firefly.adobe.com, the user's Adobe account): 1 s (PowerUp 1.5 s), 4 variations per generation; "
                 "where Firefly could not meet the spec: Kenney CC0 + our synthesis (tools/sfx_make.py RECIPES: ComboCoin k*, HitSoft k*, HitCrit sB*; "
                 "tools/sfx_recipes.py: the sound_spec recipes for batches 2-3, names s* / k*)",
         "license": "Firefly generation (Adobe: commercially safe output); Kenney Impact Sounds + Interface Sounds (CC0 1.0); our own synthesis. Our edit = cut, "
                    "mono 48 kHz, high/low-pass, level; SwingMageHalo candidates may carry our own thin synthesized 'tsing' (tools/sfx_cut.py tsing())",
         "credits": {"generations": generations, "perGeneration": 10, "used": generations * 10, "balanceBefore": balance_before,
-                    "balanceAfter": balance_before - generations * 10},
+                    "balanceAfter": balance_before - generations * 10,
+                    "accountNote": "the Firefly account is shared with the image sessions: the page showed 8,750 left right before "
+                                   "batch 4 (12 generations), so about 8,630 after it (2026-10-07)"},
         "spec": "tools/sfx_spec.json (Jump / PowerUp / Equip added by 소리 만들기)", "checker": "tools/sfx_check.py", "scenes": "tools/sfx_scene.py",
         "level": "K-weighted loudest 100 ms = -17 LUFS, peak <= -2.5 dBFS",
         "sheets": os.path.relpath(REVIEW, ROOT).replace("\\", "/"), "board": board_url,

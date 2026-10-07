@@ -1169,6 +1169,84 @@
     "gt8k": [0, 0.05],
     "harshDb": [0, 10]
    }
+  },
+  "Spend": {
+   "status": "new key P1 (sound_spec §5: potion purchase)",
+   "tier": "normal",
+   "volume": 0.35,
+   "repeat": "0.2-1/min",
+   "say": "짤-랑↓ (two coins going down, quietly)",
+   "moment": "I buy a potion (gold leaves my pocket).",
+   "rules": {
+    "durMs": {"range": [180, 260], "hard": [140, 320]},
+    "nOnsets": {"range": [2, 2], "hard": [2, 3]},
+    "gapMs": {"range": [40, 65], "hard": [30, 90]},
+    "pitchDir": "down",
+    "pitchSemis": {"range": [-3.5, -0.5], "hard": [-6, -0.3]},
+    "centroidHz": [2000, 3200],
+    "lt300": [0, 0.01],
+    "gt8k": [0, 0.03],
+    "ringMs": {"range": [0, 250], "hard": [0, 350]},
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]}
+   },
+   "notes": {"pitchDir": "sound_spec §3: the same coin sample as GoldPickup; spending = two coins going DOWN (E7 -> D7)"}
+  },
+  "Plunder": {
+   "status": "new key P1 (sound_spec §5: my sack is taken; the taker hears GoldPickup)",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "rare",
+   "say": "짤그랑~ 또르르↓ (coins scatter and roll away)",
+   "moment": "Another player takes my sack / pocket gold.",
+   "rules": {
+    "durMs": {"range": [350, 500], "hard": [250, 650]},
+    "nOnsets": {"range": [3, 8], "hard": [2, 12]},
+    "peakAtMs": {"range": [0, 60], "hard": [0, 120]},
+    "pitchDir": "down",
+    "centroidHz": [1500, 3200],
+    "lt300": [0, 0.01],
+    "gt8k": [0, 0.04],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2.5]}
+   },
+   "notes": {"peakAtMs": "loudest first, then the coins get smaller and further away (not a sad jingle, not a buzzer)"}
+  },
+  "KO": {
+   "status": "new key P1 (sound_spec §5: Fx KO comes only to me)",
+   "tier": "normal",
+   "volume": 0.4,
+   "repeat": "rare",
+   "say": "콩! 삐요삐요 (cartoon dizzy: a soft bump + three spinning tweet-stars)",
+   "moment": "I am knocked out (no death jingle).",
+   "rules": {
+    "durMs": {"range": [700, 900], "hard": [550, 1050]},
+    "nOnsets": {"range": [3, 6], "hard": [2, 9]},
+    "peakAtMs": {"range": [0, 40], "hard": [0, 120]},
+    "pitchMinHz": [250, null],
+    "centroidHz": [800, 3000],
+    "lt150": [0, 0.01],
+    "lt300": {"range": [0, 0.08], "hard": [0, 0.2]},
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3.5]},
+    "gt8k": [0, 0.03]
+   },
+   "notes": {"sound": "funny, not sad: no falling sad trombone, no scream, no death jingle"}
+  },
+  "Respawn": {
+   "status": "new key P1 (sound_spec §5: KO + come back = 2 uploads)",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "rare",
+   "say": "뿅! (back again)",
+   "moment": "I appear again after a KO.",
+   "rules": {
+    "durMs": {"range": [120, 220], "hard": [80, 300]},
+    "attackMs": {"range": [0, 10], "hard": [0, 20]},
+    "nOnsets": {"range": [1, 2], "hard": [1, 3]},
+    "pitchDir": "up",
+    "pitchMinHz": [400, null],
+    "centroidHz": [800, 3000],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2]}
+   }
   }
  },
  "pairs": [
@@ -1517,6 +1595,34 @@
    "minDb": 0.5,
    "why": "the archer swish is the quietest combat sound"
   },
-  {"kind": "louder", "a": "Tap", "b": "TalkBlip", "minDb": 3.0, "why": "TalkBlip is the softest repeated sound"}
+  {"kind": "louder", "a": "Tap", "b": "TalkBlip", "minDb": 3.0, "why": "TalkBlip is the softest repeated sound"},
+  {
+   "kind": "distinct",
+   "a": "GoldPickup",
+   "b": "Spend",
+   "require": {"contourOct": 0.1},
+   "why": "the same coins: getting goes up, spending goes down"
+  },
+  {
+   "kind": "distinct",
+   "a": "GoldPickup",
+   "b": "Plunder",
+   "require": {"score": 1.0},
+   "why": "losing coins is not getting coins"
+  },
+  {
+   "kind": "distinct",
+   "a": "HurtBig",
+   "b": "KO",
+   "require": {"score": 1.0},
+   "why": "a big hit is not a knock-out (the KO adds the spinning stars)"
+  },
+  {
+   "kind": "distinct",
+   "a": "Jump",
+   "b": "Respawn",
+   "require": {"score": 1.0},
+   "why": "coming back is not a hop"
+  }
  ]
 }

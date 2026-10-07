@@ -1,15 +1,16 @@
 {
- "round": "4b / batches 1-3",
+ "round": "4b / batches 1-3 (+ batch 4 Firefly clips, not picked yet)",
  "date": "2026-10-07",
  "by": "소리 만들기",
  "made": "Adobe Firefly 'Generate sound effects' (firefly.adobe.com, the user's Adobe account): 1 s (PowerUp 1.5 s), 4 variations per generation; where Firefly could not meet the spec: Kenney CC0 + our synthesis (tools/sfx_make.py RECIPES: ComboCoin k*, HitSoft k*, HitCrit sB*; tools/sfx_recipes.py: the sound_spec recipes for batches 2-3, names s* / k*)",
  "license": "Firefly generation (Adobe: commercially safe output); Kenney Impact Sounds + Interface Sounds (CC0 1.0); our own synthesis. Our edit = cut, mono 48 kHz, high/low-pass, level; SwingMageHalo candidates may carry our own thin synthesized 'tsing' (tools/sfx_cut.py tsing())",
  "credits": {
-  "generations": 60,
+  "generations": 72,
   "perGeneration": 10,
-  "used": 600,
+  "used": 720,
   "balanceBefore": 9640,
-  "balanceAfter": 9040
+  "balanceAfter": 8920,
+  "accountNote": "the Firefly account is shared with the image sessions: the page showed 8,750 left right before batch 4 (12 generations), so about 8,630 after it (2026-10-07)"
  },
  "spec": "tools/sfx_spec.json (Jump / PowerUp / Equip added by 소리 만들기)",
  "checker": "tools/sfx_check.py",
@@ -1438,11 +1439,17 @@
   "AutoOn_1": "small switch click, tiny motor whirring up, bright beep, short",
   "ComboCoin_1": "two small coins clinking, bright and cheerful, short",
   "ComboCoin_2": "coin clink clink into a pouch, two coins, short",
+  "CrownHalo_1": "twinkling sparkles slowly swelling upward, then one bright crystal glass chord, shimmering tail, joyful and light",
+  "CrownHalo_2": "airy magical shimmer rising, a clear glass chime chord strike, soft sparkle fading away",
+  "CrownHorns_1": "a playful fire whoosh flaring up, one big hollow wooden drum hit, crackling embers and two small wood knocks",
+  "CrownHorns_2": "flames rushing up into a punchy wooden drum boom, sparks crackling, cartoon and fun",
   "Deny_1": "two short soft nasal toy beeps, the second one lower, gentle, short",
   "Devour_1": "cartoon chomp and gulp, then a cute pop with tiny crackles, playful, short",
   "Equip_1": "weapon equip click-clack latch with a small sparkle, short",
   "GoldPickup_1": "a few small coins dropping into a pile, bright clinks, short",
+  "GoldenSpot_1": "a quick golden sparkle twinkle rising softly, then one small glass ping",
   "GooseArrive_1": "cartoon goose lands with wing flaps, two toy honks, golden sparkle",
+  "GooseEnd_1": "a cartoon goose flaps its wings and flies away, one happy toy honk, feathers fluttering",
   "GooseHonk_1": "single short squeaky rubber toy honk",
   "GooseHonk_2": "one quick cartoon toy goose honk, nasal and cute",
   "HitCrit_1": "cartoon critical hit, punchy impact with a bright metallic ting",
@@ -1459,8 +1466,13 @@
   "HitSoft_1": "soft squishy jelly poke, bouncy boing, short",
   "HitSoft_2": "cartoon slime squish, soft wobbly bounce, short",
   "HurtBig_1": "muffled soft cartoon bump with a short falling chirp, short",
+  "JackpotOther_1": "a tiny confetti pop, a rising glass ping, short sparkle, happy",
   "Jump_1": "light cartoon hop, quick soft whoosh up, cute, short",
   "Jump_2": "small springy jump, soft bouncy pop, playful, short",
+  "KO_1": "a soft cartoon bonk, then little tweeting birds circling a dizzy head, funny and gentle",
+  "KaijuSiren_1": "a big friendly cartoon rumble rolling closer, then two giant rubber boot stomps, fun not scary",
+  "KaijuStomp_1": "one giant cartoon rubber boot stomp on a wooden floor, dusty thump with a bouncy squeak",
+  "KingDefeat_1": "a cartoon pinata cracks open, lots of hard candies rain down and bounce, happy little ta-da",
   "KingGhost_1": "two cheerful jingle bells, a soft breathy rising whoo, then a glass tinkle, playful",
   "KingGhost_2": "friendly ghost arrives, bell jingle twice, airy hooo rising like a question, sparkly glass chime",
   "KingPumpkin_1": "two cheerful jingle bells, a hollow wooden pop, then candies sprinkling, playful",
@@ -1473,6 +1485,7 @@
   "QuestNew_1": "quick paper flutter then a bright wooden marimba two-note chime rising, short",
   "RankDown_1": "three soft wooden marimba notes stepping down, gentle, short",
   "ScrollFail_1": "soft deflating puff then a small round plop, gentle, short",
+  "ScrollSuccess_1": "a bright magical glint sweeping upward, a clear shining ring tone, glassy sparkles, success",
   "SkillHalo_1": "magical golden shimmer rising, airy whoosh with glass sparkles, short",
   "SkillHorns_1": "campfire flare whoosh with crackling sparks and a small wooden knock, playful",
   "SkillReady_1": "tiny soft pip, gentle ready ping, very short",
@@ -1560,6 +1573,70 @@
    "assetId": "urn:aaid:sc:AP:49bfb8b6-b888-40ee-8ab3-61bc54475f13",
    "sha256_24": "8d3071ac81f2e73c165de993"
   },
+  "CrownHalo_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:e8aab91d-c287-4586-8bf0-c95c7a90ee6f",
+   "sha256_24": "4aae5afb38b9a84ed5387c7f"
+  },
+  "CrownHalo_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:bd41e6df-8936-4ec3-966c-973c72b7a3a4",
+   "sha256_24": "06c8cd21f9a64c345953c7a2"
+  },
+  "CrownHalo_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:0f157300-5747-4374-a199-a790fadca4e6",
+   "sha256_24": "7ba36d282c1166f3526269b9"
+  },
+  "CrownHalo_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:df683363-0b17-4402-ad4b-6749fb48c796",
+   "sha256_24": "d88c48fcaed12bff97cf5276"
+  },
+  "CrownHalo_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:c207f9b1-be42-4b8a-bd17-fb489c17c432",
+   "sha256_24": "19a5599c9bacabd00d824774"
+  },
+  "CrownHalo_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:0f1ac7e0-e7c2-4328-bff0-0c153ef33d07",
+   "sha256_24": "d768977bf04755a24d60e5ed"
+  },
+  "CrownHalo_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:c59dca12-5497-481a-8644-0b1a29bc15cc",
+   "sha256_24": "0fcfc7a30e8dcb1047bfd5d8"
+  },
+  "CrownHalo_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:924478fa-803b-4e11-9477-d886ed66254b",
+   "sha256_24": "c57040b820ab48d53168bbce"
+  },
+  "CrownHorns_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:7089e20a-f43e-40e4-bdc8-4c3b060dc4b7",
+   "sha256_24": "47f30aab321ce87aa844ba55"
+  },
+  "CrownHorns_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:ba8a0f71-ce65-422d-8ffc-27c1e3072b06",
+   "sha256_24": "35aba2934ce52f325a574a5d"
+  },
+  "CrownHorns_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:b893a0f0-141b-4b3d-80e1-678e2f010ed3",
+   "sha256_24": "6229131a1bb5f8264d096ec1"
+  },
+  "CrownHorns_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:462c44bd-7678-4acb-9a69-95d02cbfa882",
+   "sha256_24": "6af13bf07e99b96c67445f89"
+  },
+  "CrownHorns_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:55e22ade-1665-4ef1-95d1-3d9a45ed5fe8",
+   "sha256_24": "40352509d8d143874ceba04a"
+  },
+  "CrownHorns_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:93af3f6c-6801-431f-a448-554bbd2cc850",
+   "sha256_24": "ef1068824c3340026565e96d"
+  },
+  "CrownHorns_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:cb99151a-4bcb-41c7-88eb-002124681cc1",
+   "sha256_24": "184d85f5b7e9ae01263fb9e6"
+  },
+  "CrownHorns_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:72e5598e-a801-44fd-a99e-dd984616b45e",
+   "sha256_24": "a78271a71b68a1a359ddf9d4"
+  },
   "Deny_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:0d4b9c29-ffae-4e4c-9917-31398cfd4798",
    "sha256_24": "5f933670b748f1bbdf6b0313"
@@ -1624,6 +1701,22 @@
    "assetId": "urn:aaid:sc:AP:9028b64a-f3cc-476e-92d6-ccf574599127",
    "sha256_24": "b8140407a683a31766e16073"
   },
+  "GoldenSpot_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:4bb60916-dacf-4c69-8178-227f896d2cc5",
+   "sha256_24": "cfe95134f1ed1ef73613a35e"
+  },
+  "GoldenSpot_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:01281633-8bca-49c2-ac59-ca55521a6599",
+   "sha256_24": "987185edccab9735c7877989"
+  },
+  "GoldenSpot_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:40a7c629-209b-4bb6-8fff-0ed94fa3feac",
+   "sha256_24": "c295c158a3667788a78ec5a4"
+  },
+  "GoldenSpot_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:801bf435-9eee-49ae-988c-8fdcd00dc123",
+   "sha256_24": "02bd9d3a21d4358c9c67bc95"
+  },
   "GooseArrive_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:bb3b3c02-304c-490f-9201-a149e8a1bd8c",
    "sha256_24": "4d680dff67ec4d625ac4c3a4"
@@ -1639,6 +1732,22 @@
   "GooseArrive_1-4.wav": {
    "assetId": "urn:aaid:sc:AP:328eb93c-99c7-4799-8d59-98aa63b8ba56",
    "sha256_24": "d661271c5bc18fe884ac2f4a"
+  },
+  "GooseEnd_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:2faa22fe-5b51-41f0-a795-aea3f06a3ecc",
+   "sha256_24": "242f8b3f453c7a9b97a4248e"
+  },
+  "GooseEnd_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:eb8a13e2-b1aa-401f-a01e-f05162d69e07",
+   "sha256_24": "6319012b90cb0ea6eb4b1946"
+  },
+  "GooseEnd_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:51ae94b8-3620-444d-92da-8a05c6820867",
+   "sha256_24": "fb1629a42bb4dc7ba2960257"
+  },
+  "GooseEnd_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:a494af97-d802-4569-abec-4fde8ef5ca25",
+   "sha256_24": "fe7a37af8bdc17cc973236e0"
   },
   "GooseHonk_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:76f10b76-b65c-48fb-a332-6333239509d2",
@@ -1896,6 +2005,22 @@
    "assetId": "urn:aaid:sc:AP:48a8ef24-9ebd-4d31-9df3-0cc28ceb6b03",
    "sha256_24": "a99c5750544bfe501e4af612"
   },
+  "JackpotOther_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:a1498839-9dc3-40df-bd47-d302e3ca4124",
+   "sha256_24": "23926454aa70e0641205b556"
+  },
+  "JackpotOther_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:f7a588e6-0c7a-48ee-bc39-983d46a687be",
+   "sha256_24": "82b9602f2a42e1686397ce02"
+  },
+  "JackpotOther_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:fd49fcac-b79e-402c-814f-42f8e507012a",
+   "sha256_24": "a81192a8d1051d74f321f587"
+  },
+  "JackpotOther_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:bf6fd730-6117-4777-ab8f-2c2a713187a3",
+   "sha256_24": "a383a3bc5e813bcf8ad0dda9"
+  },
   "Jump_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:8e27c188-1afc-4e67-b58f-e89832e7f9d8",
    "sha256_24": "422ab13c013377ff6c246ed3"
@@ -1927,6 +2052,70 @@
   "Jump_2-4.wav": {
    "assetId": "urn:aaid:sc:AP:154d8f89-2c59-4258-bbee-49694f7f87fb",
    "sha256_24": "4d4b837bad3ab5d49718cd5a"
+  },
+  "KO_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:c3bf5e69-9f55-4a5d-aca7-21f9ce33aeec",
+   "sha256_24": "f296b6cf7f7ec001d946bef6"
+  },
+  "KO_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:6464877a-92fe-4e65-a8d5-aa592ac4f812",
+   "sha256_24": "08be13722d8957ffa1e81aa2"
+  },
+  "KO_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:942f71aa-8bd1-4a45-8bde-5be33d012974",
+   "sha256_24": "3e0246cb9b8d7b957f9ef2ae"
+  },
+  "KO_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:40ac65ef-1b64-4a41-9dfa-936636420303",
+   "sha256_24": "b5f94205b289fe42241c8a54"
+  },
+  "KaijuSiren_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:8fffc813-acbf-4bbe-941e-30814b4d390e",
+   "sha256_24": "a3ca602731807bceda1c5a70"
+  },
+  "KaijuSiren_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:be9990c7-b57b-46ae-b2ec-4fb9101e6c0d",
+   "sha256_24": "5b4eef4a173419dbbc5e4ba5"
+  },
+  "KaijuSiren_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:03defde4-7561-430e-b70f-a36181dd523d",
+   "sha256_24": "58cbe93a1f03bb9433e5799b"
+  },
+  "KaijuSiren_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:b4416063-1b3a-497b-9809-2053dc164cb9",
+   "sha256_24": "4c5fd84228ef6f21fe08be6e"
+  },
+  "KaijuStomp_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:a0505dc8-89be-4951-a0b8-63b66565a69e",
+   "sha256_24": "c5a9b6d5dffeb6bed44251f9"
+  },
+  "KaijuStomp_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:f3d01820-db1d-4cc3-8dc5-bb4d6f81b06a",
+   "sha256_24": "b8df8c6a1da00b7a349b884b"
+  },
+  "KaijuStomp_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:4638f9d9-8e04-4b0f-bff4-a115fe052a67",
+   "sha256_24": "7d49b270a41d2110ee995a28"
+  },
+  "KaijuStomp_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:8c6d76ee-0f5f-460f-9a1b-718c6535deeb",
+   "sha256_24": "e2fbc0b4dc560fde54e824f6"
+  },
+  "KingDefeat_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:49bcc843-a569-48fc-aec8-35d447db1e9a",
+   "sha256_24": "cb6237dea88fedadf587b4f1"
+  },
+  "KingDefeat_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:e0c70d7a-9e3a-4708-a580-34b18b02371f",
+   "sha256_24": "446b29f638ace2b34de3208e"
+  },
+  "KingDefeat_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:217cbfdc-3bdb-4cb2-8a23-94b84a09fac2",
+   "sha256_24": "bb65bf7691b051c27079520f"
+  },
+  "KingDefeat_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:78db7d58-0447-4d4d-85da-6296e1e19909",
+   "sha256_24": "527c0f2d8cc9454689a913b1"
   },
   "KingGhost_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:51ddf982-5756-44e0-aff2-deed129f4146",
@@ -2119,6 +2308,22 @@
   "ScrollFail_1-4.wav": {
    "assetId": "urn:aaid:sc:AP:45542429-431b-4ae6-a031-6f07eac93d7a",
    "sha256_24": "b25284cfc5b85b6bc9ed4557"
+  },
+  "ScrollSuccess_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:6f7c6074-1405-48c0-8bd3-886e5a6ddbb3",
+   "sha256_24": "1d7e32f38e44c3bd46820b9e"
+  },
+  "ScrollSuccess_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:6f44bd7b-919e-4544-a62e-2dabb88475df",
+   "sha256_24": "b0650b23597a04cb91e2f62f"
+  },
+  "ScrollSuccess_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:67c13718-c5bc-4442-a69d-b4a13927c455",
+   "sha256_24": "b39796a6c4aa4f2997a1f725"
+  },
+  "ScrollSuccess_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:81e2fe20-3e16-4753-80ce-de3df1f406ef",
+   "sha256_24": "b15a142875fcf4911b60d2b8"
   },
   "SkillHalo_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:2b6b8770-584e-4078-8b8c-77d9a0d0d2a6",
