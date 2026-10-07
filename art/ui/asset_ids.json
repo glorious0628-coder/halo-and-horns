@@ -359,9 +359,9 @@
   "CLS_ArtisanTamer_M": "rbxassetid://139781808666841",
   "CLS_ArtisanTamer_F": "rbxassetid://116024640272965",
   "FB_PotionMerchant": "rbxassetid://119279738895658",
-  "PTR_MerchantC": "rbxassetid://109852166851562",
+  "PTR_MerchantC": "rbxassetid://85592132165738",
   "FB_MerchantC": "rbxassetid://126082561922667",
-  "PTR_PotionMerchant": "rbxassetid://73178531948067",
+  "PTR_PotionMerchant": "rbxassetid://87346642697895",
   "Weapon_Warrior_T4_prev": "replaced 2026-10-06 - rbxassetid://121628920172881",
   "Weapon_Warrior_T6_prev": "replaced 2026-10-06 - rbxassetid://134912361470616",
   "Weapon_Warrior_T1_prev": "replaced 2026-10-06 - rbxassetid://110253568224769",
@@ -423,7 +423,6 @@
   "GlyphCheck": "rbxassetid://76746602947118",
   "Skill_Warrior_Q": "rbxassetid://113383058913403",
   "GlyphLock": "rbxassetid://140357879006452",
-  "RewardRays": "rbxassetid://140645623920982",
   "Skill_Mage_Q": "rbxassetid://125518430228988",
   "Skill_Archer_Q": "rbxassetid://107372298235964",
   "GlyphBack": "rbxassetid://84595951514011",
@@ -431,7 +430,7 @@
   "IconClassChange": "rbxassetid://84376751004017",
   "IconAnnounce": "rbxassetid://82534665069625",
   "IconOpening": "rbxassetid://74327546251541",
-  "IconVacation": "rbxassetid://94546800522289",
+  "IconVacation": "rbxassetid://104205149645477",
   "IconRebirth": "rbxassetid://96377940849921",
   "IconMedalBronze": "rbxassetid://129231723184529",
   "IconMedalGold": "rbxassetid://100897193417032",
@@ -536,5 +535,6 @@
   "IconGoldenMon": "rbxassetid://117889924897289",
   "IconHunt": "rbxassetid://73974758192262",
   "IconPlunder": "rbxassetid://79074522466902",
-  "IconChestWoods": "rbxassetid://121321744394366"
+  "IconChestWoods": "rbxassetid://121321744394366",
+  "PTR_CrownShard": "rbxassetid://131966294834604"
 }

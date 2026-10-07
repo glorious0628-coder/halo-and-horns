@@ -3941,8 +3941,8 @@ Config.UIArt = {
 		PortraitGuideHorns = { Id = "rbxassetid://81858266071600", Size = Vector2.new(512, 512) },
 		PortraitGuideArtisan = { Id = "rbxassetid://79157745259396", Size = Vector2.new(512, 512) },
 		-- shop NPCs (2975f24, user OK): portraits for a ring / dialogue, full body beside a shop window (the 3D NPCs stay)
-		PortraitPotionMerchant = { Id = "rbxassetid://73178531948067", Size = Vector2.new(486, 512) },
-		PortraitMerchantC = { Id = "rbxassetid://109852166851562", Size = Vector2.new(487, 512) },
+		PortraitPotionMerchant = { Id = "rbxassetid://87346642697895", Size = Vector2.new(486, 512) },
+		PortraitMerchantC = { Id = "rbxassetid://85592132165738", Size = Vector2.new(487, 512) },
 		FullPotionMerchant = { Id = "rbxassetid://119279738895658", Size = Vector2.new(449, 768) },
 		FullMerchantC = { Id = "rbxassetid://126082561922667", Size = Vector2.new(494, 768) },
 		-- A23-40 layout B parts (Firefly 2026-10-06: 83eaffb minimap_ring_sheet, ccab705 / a601f39 b12 / b1213 sheets)
@@ -4064,7 +4064,7 @@ Config.UIArt = {
 		IconNickname = { Id = "rbxassetid://112860477776524", Size = Vector2.new(512, 512) },
 		IconOpening = { Id = "rbxassetid://74327546251541", Size = Vector2.new(512, 512) },
 		IconAnnounce = { Id = "rbxassetid://82534665069625", Size = Vector2.new(512, 512) },
-		IconVacation = { Id = "rbxassetid://94546800522289", Size = Vector2.new(512, 512) },
+		IconVacation = { Id = "rbxassetid://104205149645477", Size = Vector2.new(512, 512) },
 		IconMedalGold = { Id = "rbxassetid://100897193417032", Size = Vector2.new(512, 512) },
 		IconMedalSilver = { Id = "rbxassetid://86859981439769", Size = Vector2.new(512, 512) },
 		IconMedalBronze = { Id = "rbxassetid://129231723184529", Size = Vector2.new(512, 512) },
@@ -4106,6 +4106,7 @@ Config.UIArt = {
 		PTR_TownBright = { Id = "rbxassetid://86154525392813", Size = Vector2.new(509, 512) }, -- Halo town guard trainee
 		PTR_TownSmokey = { Id = "rbxassetid://91810571998991", Size = Vector2.new(400, 512) }, -- Horns den lookout
 		PTR_TownTiny = { Id = "rbxassetid://107434856525614", Size = Vector2.new(445, 512) }, -- Crossroads artisan trainee
+		PTR_CrownShard = { Id = "rbxassetid://131966294834604", Size = Vector2.new(443, 512) }, -- the Crown Shard speaker (Speakers.Shard / Fountain; High, d9aec52)
 		PetCard = { Id = "rbxassetid://129842998819313", Size = Vector2.new(462, 768) }, -- pet window / book card: picture Window (0.126, 0.121, 0.747, 0.444), Name (0.10, 0.60, 0.80, 0.075), Body (0.08, 0.70, 0.84, 0.18)
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
