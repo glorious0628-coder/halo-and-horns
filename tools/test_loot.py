@@ -55,8 +55,9 @@ JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained,
                   '\t-- A23-34: found while still bare-handed (e.g. the slime jackpot before the first weapon) -> equipped at once, and\n'
                   '\t-- the line says so (never "equip it in the menu" for a weapon already in hand)\n'
                   '\tlocal before, after = equipIfBare(player, data, tier)\n\tif isJackpot then\n'
+                  '\t\t-- sound_gaps C1: equipped from bare hands = the HUD\'s power-up moment sounds it (None), else Equip\n'
                   '\t\tnotify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))\n'
-                  '\t\t\tor string.format(TXT.JackpotSelf, name), "reward")\n'
+                  '\t\t\tor string.format(TXT.JackpotSelf, name), "reward", before and "None" or "Equip")\n'
                   '\t\tannounce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)\n')
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source

@@ -170,14 +170,14 @@ MUTATIONS = [
      "local floor = Config.PvP.PowerRatioMin"),
     ("bare PvP floor as high as the weapons'", C, "AimCone = 90, PvPRatioMin = 0.4 }", "AimCone = 90, PvPRatioMin = 0.8 }"),
     ("bought-first player gets no bag line", L,
-     "\t\tnotify(player, string.format(TXT.FirstWeaponBag, name), \"reward\")\n", ""),
+     "\t\tnotify(player, string.format(TXT.FirstWeaponBag, name), \"reward\", \"Equip\")\n", ""),
     ("a drop is not equipped bare-handed", L,
      "\tlocal before, after = equipIfBare(player, data, tier)\n\tif isJackpot then",
      "\tlocal before, after = nil, nil\n\tif isJackpot then"),
     ("bare jackpot says 'equip it in the menu'", L,
      "notify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))\n"
-     "\t\t\tor string.format(TXT.JackpotSelf, name), \"reward\")",
-     "notify(player, string.format(TXT.JackpotSelf, name), \"reward\")"),
+     "\t\t\tor string.format(TXT.JackpotSelf, name), \"reward\", before and \"None\" or \"Equip\")",
+     "notify(player, string.format(TXT.JackpotSelf, name), \"reward\", \"Equip\")"),
     ("gift saved without the attribute mirror", L,
      "ensureTables(data)\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), "
      "bit32.lshift(1, tier - 1)))",
