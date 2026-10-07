@@ -4440,5 +4440,24 @@
    "bytes": 3576368,
    "at": "2026-10-07 09:20:13"
   }
+ ],
+ "Crown_Broken_B": [
+  {
+   "event": "generation_submitted",
+   "task_id": "2bffe687-b787-4ac0-8866-93053f635ece",
+   "image": "art\\out\\hq\\HQ_Crown_Broken_B.png",
+   "recipe": "building",
+   "seed": 12050
+  },
+  {
+   "task_id": "2bffe687-b787-4ac0-8866-93053f635ece",
+   "image": "art\\out\\hq\\HQ_Crown_Broken_B.png",
+   "recipe": "building",
+   "seed": 12050,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Crown_Broken_B_raw.glb",
+   "bytes": 2917964,
+   "at": "2026-10-07 10:11:59"
+  }
  ]
 }
