@@ -138,10 +138,13 @@ def main() -> int:
         return 2
     step = args[0]
     if step == "terrain":
-        code = (ROOT / "tools/preview_map.lua").read_text(encoding="utf-8").replace('"__MODE__"', '"terrain"', 1)
+        # the code line itself (the file's header comment also says "__MODE__": a plain first-match replace hit the comment)
+        code = (ROOT / "tools/preview_map.lua").read_text(encoding="utf-8").replace('local MODE = "__MODE__"',
+                                                                                   'local MODE = "terrain"', 1)
     elif step == "move":
         mode = "apply" if "--apply" in args else "dry"
-        code = (ROOT / "tools/map_v2_move.lua").read_text(encoding="utf-8").replace('"__MODE__"', f'"{mode}"', 1)
+        code = (ROOT / "tools/map_v2_move.lua").read_text(encoding="utf-8").replace('local MODE = "__MODE__"',
+                                                                                    f'local MODE = "{mode}"', 1)
     elif step == "settle":
         code = SETTLE
     elif step == "kits":

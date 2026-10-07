@@ -1,5 +1,5 @@
 {
-  "status": "passed",
+  "status": "failed",
   "checks": 490,
   "namedChecks": 86,
   "failing": [],
@@ -38,7 +38,7 @@
     },
     {
       "check": "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks",
-      "ok": true
+      "ok": false
     },
     {
       "check": "the mover puts the pond and the three goblin camps on the story spots (Config.StoryQuests.Landmarks), MeadowKit piece by piece, the kit swap's spots too, and notes the old ground height",
@@ -67,7 +67,8 @@
         "newFailingChecks": [
           "links :: each gate stands on its zone's border",
           "preview :: preview ZONES = Config.Zones (centre, size, spawn, level, PvP, season)",
-          "zones :: the zone rectangle = the v2 land rectangle"
+          "zones :: the zone rectangle = the v2 land rectangle",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -92,7 +93,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "halloween :: pumpkin king spots are in the far half (away from the meadow entrance)"
+          "halloween :: pumpkin king spots are in the far half (away from the meadow entrance)",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -102,7 +104,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "halloween :: ghost king spots stay off the ghost willow"
+          "halloween :: ghost king spots stay off the ghost willow",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -113,7 +116,8 @@
         "crashed": false,
         "newFailingChecks": [
           "places :: the golden goose perch is in the Crossroads (safe town)",
-          "preview :: preview ALTAR / BOARD / GOOSE_NEST = Config"
+          "preview :: preview ALTAR / BOARD / GOOSE_NEST = Config",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -125,6 +129,7 @@
         "newFailingChecks": [
           "places :: the slime pond lies in the meadow",
           "HUD's pond guide spot and QuestTarget's pond fallback = Config.StoryQuests.Landmarks.SlimePond + 3",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks",
           "the mover puts the pond and the three goblin camps on the story spots (Config.StoryQuests.Landmarks), MeadowKit piece by piece, the kit swap's spots too, and notes the old ground height"
         ]
       },
@@ -136,7 +141,8 @@
         "crashed": false,
         "newFailingChecks": [
           "places :: WoodsGate stays within 20 studs of the woods bridge's meadow end",
-          "places :: WoodsGate: outside the PvP woods and every level gate, on the meadow"
+          "places :: WoodsGate: outside the PvP woods and every level gate, on the meadow",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -146,7 +152,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "QuestTarget takes the Halloween sign / passage / hollow gate from Config.Map.Halloween"
+          "QuestTarget takes the Halloween sign / passage / hollow gate from Config.Map.Halloween",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -156,7 +163,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "HUD's pond guide spot and QuestTarget's pond fallback = Config.StoryQuests.Landmarks.SlimePond + 3"
+          "HUD's pond guide spot and QuestTarget's pond fallback = Config.StoryQuests.Landmarks.SlimePond + 3",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -166,7 +174,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "places :: the potion seller is off every road"
+          "places :: the potion seller is off every road",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -179,7 +188,8 @@
           "preview :: preview ZONES = Config.Zones (centre, size, spawn, level, PvP, season)",
           "zones :: PvP follows the layout",
           "zones :: PvP zones are exactly the Goblin Woods and the Skeleton Ruins",
-          "zones :: towns have no PvP and no level gate"
+          "zones :: towns have no PvP and no level gate",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -206,7 +216,8 @@
         "newFailingChecks": [
           "lands :: every land lies inside Bounds with 20+ studs of sea",
           "preview :: preview BOUNDS / WALL_HEIGHT / WATER_TOP = Config.Map",
-          "zones :: Outskirts = Config.Map.Bounds"
+          "zones :: Outskirts = Config.Map.Bounds",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -218,7 +229,8 @@
         "newFailingChecks": [
           "links :: both bridge ends land on a shore of two different land pieces",
           "links :: each bridge = the layout bridge (ends, width 22)",
-          "preview :: preview BRIDGES = Config.Map.Bridges"
+          "preview :: preview BRIDGES = Config.Map.Bridges",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -230,7 +242,8 @@
         "newFailingChecks": [
           "links :: each gate stands on its zone's border",
           "links :: each zone gate = the layout gate",
-          "preview :: preview GATES = Config.Map.Gates"
+          "preview :: preview GATES = Config.Map.Gates",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -241,7 +254,8 @@
         "crashed": false,
         "newFailingChecks": [
           "links :: no road runs through a kit landmark",
-          "preview :: every Config road is a preview road with the same strip and season"
+          "preview :: every Config road is a preview road with the same strip and season",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -251,7 +265,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "MapBuilder PATCH / HOLLOW read Config.Map.Halloween (path, west gate, sign) and place the hollow by shares"
+          "MapBuilder PATCH / HOLLOW read Config.Map.Halloween (path, west gate, sign) and place the hollow by shares",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -261,7 +276,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "preview :: every Config land is a preview land with the same rectangle and season"
+          "preview :: every Config land is a preview land with the same rectangle and season",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -271,7 +287,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the Intro's town shots stand in the towns, between the gate and the spawn"
+          "the Intro's town shots stand in the towns, between the gate and the spawn",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -282,7 +299,8 @@
         "crashed": false,
         "newFailingChecks": [
           "halloween :: the hollow gate is on the shared edge of the patch and the hollow",
-          "preview :: preview HW = Config.Map.Halloween"
+          "preview :: preview HW = Config.Map.Halloween",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -292,7 +310,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "preview_map: \"terrain\" unless asked for \"full\"; only \"full\" destroys workspace.Map; PvP borders at the woods / ruins zone edges"
+          "preview_map: \"terrain\" unless asked for \"full\"; only \"full\" destroys workspace.Map; PvP borders at the woods / ruins zone edges",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -302,7 +321,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the mover: a dry run unless told to apply; towns 10 studs out, castles to (0, -+630); bridges / roads / gates / pads never moved"
+          "the mover: a dry run unless told to apply; towns 10 studs out, castles to (0, -+630); bridges / roads / gates / pads never moved",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -312,7 +332,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "MapBuilder re-fits reused zone markers, walls and gates to Config (map v2 on an older place)"
+          "MapBuilder re-fits reused zone markers, walls and gates to Config (map v2 on an older place)",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -323,6 +344,7 @@
         "crashed": false,
         "newFailingChecks": [
           "places :: every goblin camp is in the Goblin Woods, away from the arrival",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks",
           "the mover puts the pond and the three goblin camps on the story spots (Config.StoryQuests.Landmarks), MeadowKit piece by piece, the kit swap's spots too, and notes the old ground height"
         ]
       },
@@ -333,7 +355,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "places :: the meadow board stands beside the arrival, off the crown road"
+          "places :: the meadow board stands beside the arrival, off the crown road",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -343,7 +366,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "places :: the hero statue road is in Halo Citadel, the lava crack in Horns Den"
+          "places :: the hero statue road is in Halo Citadel, the lava crack in Horns Den",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -353,7 +377,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "MapBuilder re-fits reused zone markers, walls and gates to Config (map v2 on an older place)"
+          "MapBuilder re-fits reused zone markers, walls and gates to Config (map v2 on an older place)",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       },
       {
@@ -364,7 +389,8 @@
         "crashed": false,
         "newFailingChecks": [
           "links :: no road runs through a kit landmark",
-          "preview :: every Config road is a preview road with the same strip and season"
+          "preview :: every Config road is a preview road with the same strip and season",
+          "A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks"
         ]
       }
     ]
@@ -378,9 +404,9 @@
     "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "eb16161a8ac93bdbf0452630ba97e7dbe63ea22c1daeb7717dd061bea4523179",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "57131370823a481425a033dc1b864b62f56dcfe07e8836631433f675b4ae7293",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "06c5c5c030c976f0c6a7869db0ce80f31aed70c904c23eae87c2b26913727b64",
-    "tools/preview_map.lua": "96e6a4223c1b86d5f1792038879a9ccc332df127d79a74b32a754b99a2236328",
+    "tools/preview_map.lua": "bded5e4dd4e33cfcef0d52896e62298ffb4e151006c6d84ff3e61daa2a352721",
     "tools/map_v2_move.lua": "12d1ead5ada6e5a75380efef7fb31d5585cd40c6b17b55abcf88adfde39e1183",
-    "tools/map_v2_apply.py": "3cff2791fa277958ff4bc1ada5d947adc1eecbe8d1f509940b13fa1f4c14bd96",
+    "tools/map_v2_apply.py": "2b5e5ac141356e0ab8d9725465070638378ed5af852ed53648cc4fcd3c648362",
     "src/ServerScriptService/WarService.luau": "eb3020dbd74a07c1424219bfe5646518f556bf6773b05c49dde0359cec1e868e",
     "docs/design/world_map_v2_2026-10-06.json": "d5e196575a82adcac70a771866899a9bfa146a66868b8ec6b2996664381cbe2f",
     "tools/fixtures/map_v2_offline.luau": "a57200280c8db9f45a6145e2715ed219fe3c2b4fabfdea3731b5ab5448c8446f"
