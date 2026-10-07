@@ -2784,7 +2784,8 @@ Config.Visuals = {
 -- once it is in Studio. ServerStorage[Folder] holds MeshParts (or Models with one mesh) named as below, imported at their
 -- real size (studs, built for a 1.2-stud head, origin = the bottom center; files art/models/acc/*.glb). Horns sink
 -- HornsDepth into the head top, halos float HaloGap above it (both x head height / HeadRef); Yaw turns the model to the
--- head's front (glTF +Z front -> 180; game dev 1 checks once in Studio). A missing model keeps the drawn mark.
+-- head's front (0: 이미지 생성 1 turned the models to face Roblox -Z before the import, 427baf8). A missing model keeps
+-- the drawn mark.
 Config.Visuals.MarkModels = {
 	Folder = "MarkModels",
 	Halo = { "Acc_HaloR1", "Acc_HaloR2", "Acc_HaloR3", "Acc_HaloR4", "Acc_HaloR5" },
@@ -2792,7 +2793,7 @@ Config.Visuals.MarkModels = {
 	HeadRef = 1.2,
 	HaloGap = 0.3,
 	HornsDepth = 0.06,
-	Yaw = 180,
+	Yaw = 0,
 	HaloLight = { Range = 8, Brightness = 1.2 }, -- the old halo disc's light
 	-- R5: a soft gold glow / embers as an effect (이미지 생성 1: "금빛 번짐·불씨는 효과로")
 	Glow = { Rank = 5, Rate = 5, Size = 0.25, Halo = Color3.fromRGB(255, 225, 130), Horns = Color3.fromRGB(255, 140, 60) },

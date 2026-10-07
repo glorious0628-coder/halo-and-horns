@@ -146,7 +146,7 @@ runGroup("config", function()
 	check(M0.HeadRef == 1.2 and M0.HaloGap == 0.3 and M0.HornsDepth == 0.06, "head 1.2, halo +0.3, horns -0.06 (이미지 생성 1)",
 		show({ M0.HeadRef, M0.HaloGap, M0.HornsDepth }))
 	check(#C0.Titles.Thresholds == 5, "five ranks (Config.Titles.Thresholds)", #C0.Titles.Thresholds)
-	check(M0.Glow and M0.Glow.Rank == 5 and M0.Yaw == 180, "the R5 glow (이미지 생성 1) and Yaw 180 for a glTF +Z front",
+	check(M0.Glow and M0.Glow.Rank == 5 and M0.Yaw == 0, "the R5 glow (이미지 생성 1) and Yaw 0 (the models already face -Z, 427baf8)",
 		show(M0.Glow and { M0.Glow.Rank, M0.Yaw }))
 end)
 
