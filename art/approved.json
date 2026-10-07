@@ -5207,5 +5207,33 @@
   "file": "art/ui/MapArrowHorns.png",
   "cutout": "tools/img2/cut_icon.py --holes --size 512 --fill 0.9, then scratchpad final_arrows.py: body height 420, cream rim 20px (4x supersampled) outside the navy outline, bbox centre = canvas centre",
   "note": "뿔 진영 '내 위치' 지도 화살표(빨간 화살촉 + 용암 금 + 녹은 용암처럼 빛나는 끝 + 남색 테 + 크림 테, 뿔 없음 — 사용자 '뿔 없는 게 나을 듯'). 칠하지 않고 그대로 씀. 위 = 앞, 가운데 = 회전 중심. 빛 화살표와 몸통 높이 같음."
+ },
+ "GlyphKindWing": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphKindWing_A.txt",
+  "original": "art/out/s2/UIP_GlyphKindWing_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphKindWing.png",
+  "file_64": "art/ui/GlyphKindWing_64.png",
+  "size": "256x256 RGBA (+ 64x64)",
+  "cutout": "tools/img2/cut_icon.py --holes --size 256 --fill 0.9; checked on light/navy",
+  "preview": "art/review/s2/board_btn_horns_fix_sheet.jpg",
+  "note": "E11 [Kind] 버튼 글자 왼쪽 아이콘(흰 날개 한 쪽 + 남색 테, 글자 없음). 적록 색약이면 Kind(하늘)·Sneaky(보라) 버튼이 둘 다 파랗게 보여서 모양으로 구별. 버튼 Text 칸 안에서 아이콘(높이 = 글자 높이의 약 1.4배) + 8px + 글자를 가운데 정렬(시트 예시).",
+  "user_ok": "검수 확정 2026-10-07 (날개 A + 뿔 AL1, 사용자에게는 결과로 보여 줌 — 아니라고 하면 바꿈)"
+ },
+ "GlyphSneakyHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1 + local recolour",
+  "prompt": "art/prompts/UIP_GlyphSneakyHorns_A.txt",
+  "original": "art/out/s2/UIP_GlyphSneakyHorns_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphSneakyHorns.png",
+  "file_64": "art/ui/GlyphSneakyHorns_64.png",
+  "size": "256x256 RGBA (+ 64x64)",
+  "cutout": "tools/img2/cut_icon.py --holes --size 256 --fill 0.9, then local recolour AL1 (HSV: saturation x0.35, value 1-(1-v)x0.35 on the fill) + outer navy ring 4px (4x supersampled) so the outline matches GlyphKindWing (about 10.4 vs 10.5 px at 256)",
+  "preview": "art/review/s2/board_btn_horns_fix_sheet.jpg",
+  "note": "E11 [Sneaky] 버튼 글자 왼쪽 아이콘(거의 흰 라일락 뿔 한 쌍 + 남색 테, 글자 없음). 보라 버튼 위에서 날개만큼 또렷하게 밝힘(원래 연보라는 대비 약함 — 검수). GlyphKindWing과 같은 크기·배치로.",
+  "user_ok": "검수 확정 2026-10-07 (날개 A + 뿔 AL1, 사용자에게는 결과로 보여 줌 — 아니라고 하면 바꿈)"
  }
 }
