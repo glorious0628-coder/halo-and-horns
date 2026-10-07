@@ -1247,11 +1247,17 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId)
 	if player then
 		record._contributors[player] = os.clock()
 		-- A23-27: own hits and damage per contributor (a def with RewardMinHits / RewardMinDamageFrac pays only those
-		-- who met both); the overkill part of the last hit does not count
+		-- who met both); the overkill part of the last hit does not count. SKL-3: a cast counts once however often it
+		-- hits (a field's ticks), also with other hits in between (검수 2026-10-07: the casts seen per player are a set)
 		record._castOf = record._castOf or {}
-		if castId == nil or record._castOf[player] ~= castId then
+		local seen = castId ~= nil and record._castOf[player] or nil
+		if castId == nil or not (seen and seen[castId]) then
 			record._hits[player] = (record._hits[player] or 0) + 1
-			record._castOf[player] = castId
+			if castId ~= nil then
+				seen = seen or {}
+				seen[castId] = true
+				record._castOf[player] = seen
+			end
 		end
 		record._dmg[player] = (record._dmg[player] or 0) + math.min(amount, math.max(0, record.HP))
 	end

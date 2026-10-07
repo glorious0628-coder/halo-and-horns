@@ -841,9 +841,15 @@ runGroup("skl3 subs", function()
 	w:Flush()
 	check(t2 and t2.St == 2, "at the Crossroads fountain: the pick", t2 and t2.St)
 	local honor = e.Honor or 0
+	e.Story.LastSide = "Evil" -- an earlier real pick was on the other side
+	local nk = #w.Notices
 	w:Act(q, "SK2", "Choose", "Good")
 	check(e.Story.Pick.SK2 == "Guard" and (e.Honor or 0) == honor + 1 and t2.St == 3, "Halo 'Guard my friends': Pick Guard, Honor +1, then the X step",
 		show({ e.Story.Pick.SK2, e.Honor, t2.St }))
+	-- 검수 2026-10-07: SK2's picks have their side (Guard = Good, Take = Evil), so the pick is a change of mind like the others
+	check(e.Story.LastSide == "Good" and said(w, q, nk, SQ0.Text.ChangedGood),
+		"SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one",
+		show({ e.Story.LastSide, w:NoticesFor(q, nk) }))
 	CS.Released:Fire(q, { Slot = "Z", Auto = false, MonstersHit = 3 })
 	CS.Released:Fire(q, { Slot = "X", Auto = false, MonstersHit = 0 })
 	w:Flush()

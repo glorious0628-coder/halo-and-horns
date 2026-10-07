@@ -200,7 +200,7 @@ Config.Data = {
 		SkillSlots = 0,
 		-- A23-71: this save's SkillSlots follow the Lv5 / 15 / 25 rule (older saves are fixed once at load: DataService)
 		SkillsA71 = true,
-		-- A23-69 (Data v4) stat points: Auto = the class pattern places every point (default ON); Order = the letters
+		-- A23-69 stat points (an additive field, Version stays 3): Auto = the class pattern places every point (default ON); Order = the letters
 		-- picked by hand, in order ("HAHA...", at most Config.Stats.MaxPoints). No balance is kept: the points come from
 		-- the level (Config.StatPoints), so a level reset shrinks the build and leveling up again rebuilds it
 		Stats = { Auto = true, Order = "" },

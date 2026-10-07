@@ -253,13 +253,13 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 ### 5-1. 저장 (`Config.Data` L76-, `DataService`)
 
 - `Defaults.Stats = { Auto = true, Order = "" }`
-- **`Version` 3 → 4** (L80, L89). 저장소 이름 `HaloHorns_Player_v1`은 그대로입니다.
-  - `migrate`(DataService L115-145)에 v3→v4 단계를 추가해 Stats를 넣습니다. 여러 번 돌려도 결과가 같아야 합니다.
-  - 옛 서버는 v4 기록을 거부합니다(L368, CR-L3). 옛 v3 서버가 필드를 받고도 무시하는 일을 막기 위해서입니다.
-  - 게시할 때는 '모든 서버 종료'가 필요합니다. **게시는 사용자 OK를 받은 뒤에만** 합니다.
+- **`Version`은 3 그대로입니다** (검수 2026-10-07 결정, 1단계 구현 기준). Stats는 Settings·Rank·SkillsA71처럼 더하기만 하는 필드라서, v3 서버도 그대로 보존합니다. 저장소 이름 `HaloHorns_Player_v1`도 그대로입니다.
+  - `migrate`에 단계를 더하지 않습니다. 없는 Stats는 `fillDefaults`가 기본값으로 채웁니다(여러 번 돌려도 같음).
+  - 처음 계획한 v3 → v4 올리기는 하지 않습니다. Studio가 진짜 DataStore에 v4를 쓰면 옛 서버가 그 기록을 거부해서 되돌릴 수 없는 잠금이 생기기 때문입니다. 버전을 올릴지는 2단계(스위치 켬) 게시 때 다시 정합니다.
+  - 게시는 **사용자 OK를 받은 뒤에만** 합니다.
 - `Config.SanitizeStats(d)`를 `fillDefaults`(L147-231)에서 부릅니다.
   - Auto가 boolean이 아니면 true로 둡니다.
-  - Order는 string만 받고, `Config.Stats.Letters`의 글자만 남기고, 99자로 자릅니다. string이 아니면 ""로 둡니다.
+  - Order는 string만 받고, 대문자 A–Z만 남기고(다음 단계 스탯을 위해, 셀 때는 A·H만), 99자로 자릅니다. string이 아니면 ""로 둡니다.
   - **잔액이 없으므로** 깎을 것도, 악용할 것도 없습니다.
 - **평평한 속성**은 StatService가 직접 SetAttribute로 씁니다. 중첩 표라서 `Data.Mirrored` L173을 쓸 수 없습니다.
   - `StatAtk`, `StatHp`, `StatFree`, `AutoStat` (정식에 `StatCrit` 추가)
@@ -293,11 +293,11 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 - **기능 플래그:** `Config.Features.StatPoints`(L17)
   - 꺼지면 `StatMults`가 (1, 1)을 돌려줘서 전투력·HP·피해가 지금과 같아집니다.
   - 탭은 숨기고 원격은 거절합니다.
-  - v4 데이터는 그대로 남지만 아무 영향이 없습니다.
+  - 저장된 Stats는 그대로 남지만 아무 영향이 없습니다.
 
 ### 5-3. 검사 묶음 (dev2 오프라인, 새 날짜 폴더 `docs/art/verification_2026-10-1x/`)
 
-- v3→v4 이전을 두 번 돌려도 같은지
+- Stats 없는 v3·v1 기록에 기본값이 붙고(버전 3 그대로) 두 번 불러도 같은지
 - 정리 함수 퍼즈 테스트
 - 원격 퍼즈 테스트: 잘못된 타입, 자동 ON 상태 add, 빈 점수, 속도 제한, 막기 3종
 - 레벨 하락 뒤 다시 자라는지
@@ -333,7 +333,7 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 | 스탯 | Attack, Health | + Crit (PvE 전용, "Monsters only – not Power", 상한 50%) |
 | 자동 | 기본 ON, 직업별 번갈아 찍기 | Archer만 40/40 뒤 Crit (실측으로 확정) |
 | 직접 찍기 | [+], [+5], 무료 초기화, Order 글자열 | 같음 |
-| 저장 | Data v4, 옛 서버 거부 | 새 글자 추가라서 이전 작업 없음 |
+| 저장 | Stats 더하기 필드, 버전 3 그대로(검수 2026-10-07) | 새 글자 추가라서 이전 작업 없음 |
 | 전투력 | `CombatPowerOf`, 복사본 6곳 통일 | 같음 |
 | PvP | 기존 상한(0.8–1.5) 안 | 다인 실측 보고 상한 밖 여부 결정 |
 | 화면 | Hero [Stats] 탭: 전투력 머리, 64px 2줄, 자동 스위치, 초기화 | + Firefly 아이콘 3장 |

@@ -2109,6 +2109,18 @@ runGroup("king-rewards", function()
 	check(d1 == true and g1 == 0, "overkill does not count: 1 + 1 + (1e9 on 30 HP) = 32 damage, not paid", show({ d1, g1 }))
 	local d2, g2 = overkillRun("Exact", 43)
 	check(d2 == true and g2 == 1, "the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid", show({ d2, g2 }))
+	-- SKL-3 (검수 2026-10-07): a cast counts as one hit however often it hits (a field's ticks), also with a swing or
+	-- another cast in between: the casts seen per player are a set, not the last one only
+	local crec = f.H.spawnMonster("PumpkinKing", { Event = true, Position = vec(330, 0, 255) })
+	local cp = f:AddPlayer("Caster")
+	f.MS.DamageMonster(crec, 1, cp, false, 7) -- the field's first tick
+	f.MS.DamageMonster(crec, 1, cp) -- a swing in between
+	f.MS.DamageMonster(crec, 1, cp, false, 7) -- the same field's next ticks
+	f.MS.DamageMonster(crec, 1, cp, false, 8) -- a new cast
+	f.MS.DamageMonster(crec, 1, cp, false, 7)
+	check(crec._hits[cp] == 3 and crec._dmg[cp] == 5,
+		"one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)",
+		show({ crec._hits[cp], crec._dmg[cp] }))
 	-- a regular kind has no RewardMinHits / RewardMinDamageFrac: one hit inside its window is enough
 	local slime = f.H.spawnMonster("Slime", {})
 	local sdef = f.Config.MonsterTypes.Slime

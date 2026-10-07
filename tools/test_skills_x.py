@@ -99,6 +99,8 @@ MUTATIONS = [
     # 검수 2026-10-07: a field that hits only from its second tick still counts once, at its end, with its best tick
     ("a late field never reports at its end", SK, "\t\tfieldDone(f)\n\t\treturn\n", "\t\treturn\n"),
     ("an early end drops the late report", SK, "\t\tfieldDone(f)\n\tend\nend", "\tend\nend"),
+    # 검수 2026-10-07 minor 5: never a late report for a player who left
+    ("the late report goes out for a player who left", SK, "\t\tfieldDone(f)\n\tend\nend", "\tend\n\tfieldDone(f)\nend"),
     ("the late report = the first hitting tick (the old rule)", SK,
      "\tif f.Late then f.Best, f.Sum = math.max(f.Best, n), f.Sum + total end\n",
      "\tif f.Late and n > 0 then f.Late = false; fieldReleased(f, total, n) end\n"),
@@ -149,8 +151,8 @@ MUTATIONS = [
     ("the cast id dropped", CO, "local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit, castId)",
      "local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit)"),
     # --- MonsterService (cut out)
-    ("one hit a cast ignored", M, "\t\tif castId == nil or record._castOf[player] ~= castId then\n", "\t\tif true then\n"),
-    ("a cast id hit never counts", M, "\t\tif castId == nil or record._castOf[player] ~= castId then\n", "\t\tif castId == nil then\n"),
+    ("one hit a cast ignored", M, "\t\tif castId == nil or not (seen and seen[castId]) then\n", "\t\tif true then\n"),
+    ("a cast id hit never counts", M, "\t\tif castId == nil or not (seen and seen[castId]) then\n", "\t\tif castId == nil then\n"),
     ("a boss taunted", M, "\tif type(def) == \"table\" and def.Boss then return false end\n\tlocal now = os.clock()\n\tif record._tauntBy",
      "\tlocal now = os.clock()\n\tif record._tauntBy"),
     ("a personal monster taunted", M, "if type(record) ~= \"table\" or not record.Alive or record.Owner ~= nil then return false end",

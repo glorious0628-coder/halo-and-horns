@@ -88,6 +88,10 @@ MUTATIONS = [
     ("the kill keeps no paid list (KingDefeat Contributors empty)", "MONSTER_SOURCE", "\trec.PaidUserIds = paid\n", ""),
     ("KingDefeat reads nothing (the cleared tallies)", "HALLOWEEN_SOURCE",
      "for _, id in type(rec.PaidUserIds) == \"table\" and rec.PaidUserIds or {} do", "for _, id in {} do"),
+    # SKL-3 (검수 2026-10-07): one cast = one hit, also with other hits in between
+    ("only the last cast remembered (a cast counts again)", "MONSTER_SOURCE", "\t\t\t\tseen = seen or {}\n", "\t\t\t\tseen = {}\n"),
+    ("every cast hit counts", "MONSTER_SOURCE", "\t\tif castId == nil or not (seen and seen[castId]) then\n",
+     "\t\tif true then\n"),
     # A23-45 one family per field: pumpkins in the patch, ghosts in the hollow, bat goblins take 3 goblin slots (as goblins)
     ("a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)", "CONFIG_SOURCE",
      "Zone = \"PumpkinPatch\", Count = 10, QuestAs = \"Slime\",", "Zone = \"SlimeMeadow\", Count = 10, QuestAs = \"Slime\","),

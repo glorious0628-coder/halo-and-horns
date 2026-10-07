@@ -284,13 +284,19 @@ runGroup("forge trip", function()
 	local spawn = w.Config.Zones.Crossroads.Spawn
 	check(w.ZoneOf[p] == "Crossroads" and p.Character.Pivot == nil and #w.Marked == 0
 		and flat(rootOf(p).Position, spawn) < 1e-6, "Landing 'Spawn': the Crossroads spawn only", show(rootOf(p).Position))
-	-- the shop closed (no anvil): the same
+	-- the anvil gone between [Accept] and the move: the Crossroads spawn only, then (검수 2026-10-07: never stuck at the
+	-- Forge step) the next check gives the weapon and the mission goes on
 	local w2 = forgeWorld()
-	w2.ShopClosed = true
-	local p2 = w2:Newbie(2)
+	local p2, d2 = w2:Newbie(2)
 	w2:Accept(p2)
+	check(step(p2) == 3, "setup: the Forge step with the anvil there", step(p2))
+	w2.ShopClosed = true
 	w2:Advance(3)
-	check(w2.ZoneOf[p2] == "Crossroads" and p2.Character.Pivot == nil, "no anvil: the Crossroads spawn only", show(rootOf(p2).Position))
+	check(w2.ZoneOf[p2] == "Crossroads" and p2.Character.Pivot == nil, "the anvil gone before the move: the Crossroads spawn only",
+		show(rootOf(p2).Position))
+	w2:QuestTick()
+	check(step(p2) == 1 and d2.WeaponTier == 1 and d2.WeaponOwnedMask == 1 and firstLines(w2:NoticesFor(p2)) == 1,
+		"no anvil at the Forge step: the first weapon at once (Power 0 → N), then step 1", show({ step(p2), d2.WeaponTier }))
 	-- already next to the anvil: no trip, no fade, no lock
 	local w3 = forgeWorld()
 	local p3 = w3:Newbie(3, { Pos = vec(39, 3, 30) })
@@ -425,6 +431,46 @@ runGroup("gift", function()
 	check(step(p5) == 1 and d5.WeaponOwnedMask == 1 and count(again, w5.Config.Tutorial.Text.ForgeGift) == 0
 		and firstLines(again) == 0 and w5:Panels(p5, "WeaponShop", f5) == 1,
 		"a second press: the shop, no second gift", show({ step(p5), again }))
+end)
+
+------------------------------------------------------------------ 4b. no anvil / a held weapon (검수 2026-10-07 minors 2, 6)
+runGroup("no anvil / held weapon", function()
+	-- the weapon shop closed at [Accept]: the gift at once, then the usual meadow trip (never the Forge step)
+	local w = forgeWorld()
+	w.ShopClosed = true
+	local p, d = w:Newbie(1)
+	local fx0 = #w.Fx
+	w:Accept(p)
+	local trip = w:FxFor(p, "Travel", fx0)
+	check(step(p) == 1 and d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(p)) == 1,
+		"no anvil at [Accept]: the first weapon at once, step 1 (never stuck at the Forge step)", show({ step(p), d.WeaponTier }))
+	check(#trip == 1 and trip[1].Data.To == "SlimeMeadow" and trip[1].Data.Spot == nil, "then the meadow trip",
+		show(trip[1] and trip[1].Data))
+	-- a save waiting at the Forge step when the shop is closed: the join gives the weapon and moves on
+	local q, e = w:Newbie(2, { Tutorial = 3 })
+	check(step(q) == 1 and e.WeaponTier == 1 and e.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(q)) == 1,
+		"a Forge-step save with no anvil: the weapon at the join, then step 1", show({ step(q), e.WeaponTier }))
+	-- holding a weapon already (tier 2 bought, no tier 1): [Accept] hunts at once like an old save; nothing is given now
+	-- (M1_1 hands the first weapon over later, into the bag)
+	local w2 = forgeWorld()
+	local h, hd = w2:Newbie(3, { Tier = 2, Mask = 2 })
+	local fx1 = #w2.Fx
+	w2:Accept(h)
+	local htrip = w2:FxFor(h, "Travel", fx1)
+	check(step(h) == 1 and #htrip == 1 and htrip[1].Data.To == "SlimeMeadow" and hd.WeaponOwnedMask == 2 and hd.WeaponTier == 2,
+		"holding tier 2 (no tier 1): [Accept] -> step 1 and the meadow trip, no Forge step, nothing given yet",
+		show({ step(h), hd.WeaponOwnedMask, htrip[1] and htrip[1].Data.To }))
+	w2:QuestTick()
+	check(hd.WeaponOwnedMask == 2, "and no late gift either (the same rule for both)", hd.WeaponOwnedMask)
+	-- owning the first weapon but holding nothing (a v3 save may keep tier 0 with weapons owned): it is no gift case,
+	-- [Accept] hunts at once (equip from the Bag), no Forge step
+	local o, od = w2:Newbie(4, { Tier = 0, Mask = 1 })
+	local fx2 = #w2.Fx
+	w2:Accept(o)
+	local otrip = w2:FxFor(o, "Travel", fx2)
+	check(step(o) == 1 and #otrip == 1 and otrip[1].Data.To == "SlimeMeadow" and od.WeaponOwnedMask == 1,
+		"owns tier 1, holds nothing: [Accept] -> step 1 and the meadow trip (no Forge step)",
+		show({ step(o), od.WeaponOwnedMask, otrip[1] and otrip[1].Data.To }))
 end)
 
 ------------------------------------------------------------------ 5. old saves: never left bare-handed

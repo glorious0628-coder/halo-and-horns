@@ -62,6 +62,9 @@ local function fixture(saved, opts)
 		Character = { Name = "Body1" }, FxLog = {}, Travels = {}, TravelOk = true }
 	local config = execute(CONFIG_SOURCE, configEnv)
 	f.Config = config
+	-- A23-74: the forge trip lands at the Crossroads spawn here (no Vector3 / CFrame doubles; test_weapon_first checks
+	-- the spot in front of the anvil)
+	config.Tutorial.Forge.Landing = "Spawn"
 	local players = {}
 	local function newPlayer()
 		local p = { Name = "OnboardingTester", UserId = serial, Parent = players, Attrs = {}, __kind = "Instance" }
@@ -163,7 +166,13 @@ local function fixture(saved, opts)
 				return true
 			end },
 		CombatService = { Released = signal() }, GooseService = { GooseFinished = signal() },
-		PvPService = { PlayerKO = signal(), IsRookie = function() return true end }, KaijuService = { KaijuEnded = signal() } }
+		PvPService = { PlayerKO = signal(), IsRookie = function() return true end }, KaijuService = { KaijuEnded = signal() },
+		-- A23-74: the Crossroads anvil is there (f.NoAnvil = true: the weapon shop closed, the gift comes at once)
+		ShopService = { Anvil = function()
+			if f.NoAnvil then return nil end
+			return { __kind = "Instance", Position = { X = 39, Y = 1.5, Z = 45 }, Size = { X = 4, Y = 3, Z = 2 },
+				IsA = function(_, kind) return kind == "BasePart" end }
+		end } }
 	local questEnv = table.clone(env)
 	questEnv.os = setmetatable({ clock = function() return f.Clock end }, { __index = os })
 	local quest = execute(QUEST_SOURCE, questEnv); quest.Init(registry); quest.Start()

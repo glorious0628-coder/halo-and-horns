@@ -426,6 +426,13 @@ local function hasFirstWeapon(data)
 	return type(data) == "table" and bit32.btest(math.floor(num(data.WeaponOwnedMask, 0)), 1)
 end
 
+-- A23-74 (검수 2026-10-07: one rule for [Accept] and the late gift): bare-handed and without the first weapon. A player
+-- holding a weapon already (a save from before A23-34, a bought or found one) hunts at once; M1_1 still hands the first
+-- weapon over later (into the bag)
+local function needsFirstWeapon(data)
+	return type(data) == "table" and not hasFirstWeapon(data) and math.floor(num(data.WeaponTier, 0)) <= 0
+end
+
 local function getTutorialKills(data)
 	return math.clamp(math.floor(num(data and data.TutorialKills)), 0, TUT_TARGET)
 end
@@ -565,6 +572,15 @@ function FORGE.Move(player, character)
 	root.AssemblyLinearVelocity = Vector3.zero
 end
 
+-- the blacksmith's gift without the Forge visit (no anvil in the world, or an old save past the Forge step):
+-- LootService.GrantFirstWeapon pays once (owning tier 1 is the record); `why` names the warning when it fails
+function FORGE.Give(player, why)
+	local loot = S.LootService
+	if not loot or type(loot.GrantFirstWeapon) ~= "function" then return end
+	local ok, err = pcall(loot.GrantFirstWeapon, player, 1)
+	if not ok then Util.Warn(TAG, why .. ": " .. tostring(err)) end
+end
+
 -- a forge trip, unless one is running (MoveLockUntil ahead) or the player stands at the Forge already
 function FORGE.Request(player)
 	if not S.PlayerService.IsReady(player) or not Util.IsAlive(player) or getStep(player) ~= STEP_FORGE then return end
@@ -577,12 +593,16 @@ local function onAcceptTutorial(player, ...)
 	if not Util.RateLimit(player, "AcceptTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
 	welcomeShown[player] = true
 	S.PlayerService.SetStat(player, "TutorialKills", 0) -- a fresh acceptance never inherits stale kills
-	-- A23-74 weapon first: a player without the first weapon goes to the Forge (a save from before A23-34 owns it and
-	-- hunts at once, as before)
-	if STEP_FORGE and not hasFirstWeapon(getData(player)) then
-		setStep(player, STEP_FORGE)
-		if not FORGE.Near(player) then trip(player, FORGE.Zone, "Forge", FORGE.Move) end
-		return
+	-- A23-74 weapon first: a bare-handed player without the first weapon goes to the Forge; one holding a weapon already
+	-- hunts at once, as before. 검수 2026-10-07: with no anvil in the world (the weapon shop closed) the gift comes at
+	-- once and the mission goes on, never stuck at the Forge step
+	if STEP_FORGE and needsFirstWeapon(getData(player)) then
+		if FORGE.Anvil() then
+			setStep(player, STEP_FORGE)
+			if not FORGE.Near(player) then trip(player, FORGE.Zone, "Forge", FORGE.Move) end
+			return
+		end
+		FORGE.Give(player, "first weapon (no anvil)")
 	end
 	setStep(player, STEP_GUIDE) -- acceptance in the meadow can enter step 2, without crediting any kill
 	if getStep(player) == STEP_GUIDE then trip(player, TUT_ZONE, nil, travelToMeadow) end
@@ -620,12 +640,9 @@ end
 function FORGE.LateGift(player, data, step)
 	if FORGE.Late[player] or data.ClassChosen ~= true then return end
 	if step ~= STEP_GUIDE and step ~= STEP_QUEST and step ~= TUT_DONE then return end
-	if hasFirstWeapon(data) or num(data.WeaponTier) > 0 then return end
+	if not needsFirstWeapon(data) then return end
 	FORGE.Late[player] = true
-	local loot = S.LootService
-	if not loot or type(loot.GrantFirstWeapon) ~= "function" then return end
-	local ok, err = pcall(loot.GrantFirstWeapon, player, 1)
-	if not ok then Util.Warn(TAG, "late first weapon: " .. tostring(err)) end
+	FORGE.Give(player, "late first weapon")
 end
 
 -- Restore existing accepted progress. Step 0 only opens dialogue; closing it never accepts a mission.
@@ -654,6 +671,14 @@ local function tryTutorial(player)
 			end
 		else
 			TUT_READY_AT[player] = nil
+		end
+		return
+	end
+	if step == STEP_FORGE then
+		-- 검수 2026-10-07: the weapon shop gone (no anvil): the gift comes at once and the mission goes on, never stuck
+		if not FORGE.Anvil() then
+			FORGE.Give(player, "first weapon (no anvil)")
+			setStep(player, STEP_GUIDE)
 		end
 		return
 	end

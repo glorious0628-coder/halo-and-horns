@@ -470,6 +470,18 @@ runGroup("x field", function()
 		show({ wl:Count("X"), wl:Last("X").MonstersHit }))
 	for _ = 1, 4 do wl:Advance(1) end
 	check(wl:Count("X") == 2, "and only once", wl:Count("X"))
+	-- 검수 2026-10-07 minor 5: the caster leaves after a later tick hit: no late report for a player who is gone
+	local wq = xWorld()
+	local pq = wq:Hero(1, { Class = "Mage", Faction = "Halo" })
+	wq:Use(pq, "X")
+	wq:Monster("Slime", 10, 1, 99999)
+	wq:Advance(1) -- a later tick hits one
+	check(wq:Count("X") == 1 and wq:Last("X").MonstersHit == 0, "setup: a late field that hit one after its first tick",
+		wq:Count("X"))
+	wq.PS.PlayerLeaving:Fire(pq)
+	wq:Remove(pq)
+	for _ = 1, 4 do wq:Advance(1) end
+	check(wq:Count("X") == 1, "the caster left: no late report (nobody to count it for)", wq:Count("X"))
 	-- §10 Fields off: one burst of all 5 ticks, a 3 s slow, the short mark, no ticks
 	local wb = xWorld({ Fields = false })
 	local pb = wb:Hero(1, { Class = "Mage", Faction = "Halo" })
