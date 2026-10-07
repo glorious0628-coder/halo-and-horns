@@ -232,13 +232,13 @@ check(W.Focus[#W.Focus] == near, "back in the meadow: marked again", "")
 fx("Reward", { Gold = 3, XP = 5 })
 check(W.Focus[#W.Focus] == false, "my first kill clears the marker", tostring(W.Focus[#W.Focus]))
 advance(1)
-check(#W.Hints == 2 and W.Hints[2][1] == "Q", "after the first kill -> the Q hint", W.Hints[2] and W.Hints[2][1])
+check(#W.Hints == 1, "no Q hint after the kill (A23-71: it comes with learning Q at Lv5)", W.Hints[2] and W.Hints[2][1])
 fx("Reward", { Gold = 3, XP = 5 })
 step(2)
-check(#W.Hints == 2 and W.Focus[#W.Focus] == false, "the Q hint once; no marker after the kill", #W.Hints)
+check(#W.Hints == 1 and W.Focus[#W.Focus] == false, "no marker after the kill", #W.Hints)
 -- after the first mission everything stays quiet
 player.Attrs.TutorialStep = 99
 step(6)
-check(#W.Hints == 2, "after the first mission: no hints", #W.Hints)
+check(#W.Hints == 1, "after the first mission: no hints", #W.Hints)
 
 print(string.format("FIRST_STEPS_SUMMARY checks=%d failed=%d", checks, failed))

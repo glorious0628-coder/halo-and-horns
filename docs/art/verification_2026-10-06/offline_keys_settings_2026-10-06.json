@@ -2539,7 +2539,7 @@
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "2513851ad2c826356eb7bb9e6b76e6c80aba0682f915f9d8e752ced68257d2b8",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "50b44a632268176ab1ddf18054942297ba3a6e0d608bd0a41e60bdcbf48a0671",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "e599949c306b7b1fac5b94ea1fae443b5196b08eeaf1ccf6ed0e6865c37b6085",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "cd8018ed1598f29167c419c8e88132acc9cc5f478a794e75cda29065fddc8058",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",

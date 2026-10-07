@@ -5,8 +5,8 @@ black from T - Fade; TravelDone lifts it at once, else T + MaxExtra; the gui goe
 own timing. #2 hints in place during the first mission (TutorialStep 1..98): Idle s within my reach of a monster
 without a swing of mine -> C.HUD.Hint("Attack") once (my swing restarts the wait, others' swings do not); in the meadow
 before my first kill a marker over the nearest monster (my own slime first) via C.QuestMarker.Focus, not re-sent while
-unchanged, cleared outside the meadow; my first kill (Reward) clears it and C.HUD.Hint("Q") follows once; nothing
-before / after the first mission. Static: ClientMain loads FirstSteps before SkillBar / Audio.
+unchanged, cleared outside the meadow; my first kill (Reward) clears it (the Q hint moved to the Lv5 learn moment,
+A23-71: no hint after the kill); nothing before / after the first mission. Static: ClientMain loads FirstSteps before SkillBar / Audio.
 Runs the real FirstSteps.luau + Config.luau in tools/fixtures/first_steps_offline.luau.
 Status "passed" only when the fixture passes, the static checks pass AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-07/offline_first_steps_2026-10-07.json
@@ -39,7 +39,6 @@ MUTATIONS = [
     ("the marker is re-sent every tick", "\tif HINT.Marked == model then return end\n", ""),
     ("the marker stays outside the meadow", "attr(\"ZoneId\", \"\") ~= \"SlimeMeadow\"", "false"),
     ("the kill keeps the marker", "\tHINT.Killed = true\n\tif HINT.Marked then HINT.Mark(nil) end\n", "\tHINT.Killed = true\n"),
-    ("no Q hint", "\ttask.delay(0.8, function() call(\"HUD\", \"Hint\", \"Q\") end)", "\t-- (no Q hint)"),
 ]
 
 

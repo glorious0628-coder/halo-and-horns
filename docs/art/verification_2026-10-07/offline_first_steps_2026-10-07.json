@@ -13,9 +13,9 @@
     }
   ],
   "mutations": {
-    "total": 14,
-    "applied": 14,
-    "caught": 14,
+    "total": 13,
+    "applied": 13,
+    "caught": 13,
     "results": [
       {
         "mutation": "other players' Travel shows",
@@ -23,7 +23,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL another player's Travel shows nothing :: ",
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000018d28310a90 closed 2"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001e28c99f4b0 closed 2"
         ]
       },
       {
@@ -31,7 +31,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000026ff8518a30 closed 0"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001e5966c78b0 closed 0"
         ]
       },
       {
@@ -50,7 +50,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TravelDone lifts the black at once :: 0",
-          "CHECK_FAIL the fade gui goes after the lift :: table: 0x00000260d9cbea40"
+          "CHECK_FAIL the fade gui goes after the lift :: table: 0x0000022ddfdff9e0"
         ]
       },
       {
@@ -94,8 +94,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL the attack hint shows once :: 41",
-          "CHECK_FAIL after the first kill -> the Q hint :: Attack",
-          "CHECK_FAIL the Q hint once; no marker after the kill :: 72"
+          "CHECK_FAIL no Q hint after the kill (A23-71: it comes with learning Q at Lv5) :: Attack",
+          "CHECK_FAIL no marker after the kill :: 71"
         ]
       },
       {
@@ -119,7 +119,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000024a1d2186f0"
+          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x00000277ace7d280"
         ]
       },
       {
@@ -127,28 +127,18 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my first kill clears the marker :: table: 0x000001858a2aa6c0"
-        ]
-      },
-      {
-        "mutation": "no Q hint",
-        "applied": true,
-        "caught": true,
-        "failures": [
-          "CHECK_FAIL after the first kill -> the Q hint :: nil",
-          "CHECK_FAIL the Q hint once; no marker after the kill :: 1",
-          "CHECK_FAIL after the first mission: no hints :: 1"
+          "CHECK_FAIL my first kill clears the marker :: table: 0x000001181a91a710"
         ]
       }
     ]
   },
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485",
-    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "546b5b53a25f81f16cae9aca1bb796948b8d6d40648bef6b4cc32afaee502f37",
+    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "fa6bb2d48ecf24b14a6ee637afdc80a581354eb3ba2e6654222d9f097ccce839",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "2513851ad2c826356eb7bb9e6b76e6c80aba0682f915f9d8e752ced68257d2b8"
   },
-  "fixtureSHA256": "b75028535df2e0721d4b83dfe55026dd5efcacd618a99d989910451011cec4c4",
+  "fixtureSHA256": "f81f5c5155457e29c1c9576cc5b4c9e16653c1bc55cde1cfb9ae747461a1f82e",
   "studioCalls": 0,
-  "contract": "A23-68 first-minutes helpers offline test (FirstSteps.luau; user 2026-10-07 \"ㅇㅇ 모두 좋다 구현하자\").\n#1 travel fade (dev2 324055a contract: Fx \"Travel\" { UserId, To, T } -> the server moves me T s later -> always\nFx \"TravelDone\" { UserId }): only my Travel counts; the guide window closes; 'Off to Squishy Meadow!  3' / 2 / 1;\nblack from T - Fade; TravelDone lifts it at once, else T + MaxExtra; the gui goes afterwards; a newer Travel keeps its\nown timing. #2 hints in place during the first mission (TutorialStep 1..98): Idle s within my reach of a monster\nwithout a swing of mine -> C.HUD.Hint(\"Attack\") once (my swing restarts the wait, others' swings do not); in the meadow\nbefore my first kill a marker over the nearest monster (my own slime first) via C.QuestMarker.Focus, not re-sent while\nunchanged, cleared outside the meadow; my first kill (Reward) clears it and C.HUD.Hint(\"Q\") follows once; nothing\nbefore / after the first mission. Static: ClientMain loads FirstSteps before SkillBar / Audio.\nRuns the real FirstSteps.luau + Config.luau in tools/fixtures/first_steps_offline.luau.",
+  "contract": "A23-68 first-minutes helpers offline test (FirstSteps.luau; user 2026-10-07 \"ㅇㅇ 모두 좋다 구현하자\").\n#1 travel fade (dev2 324055a contract: Fx \"Travel\" { UserId, To, T } -> the server moves me T s later -> always\nFx \"TravelDone\" { UserId }): only my Travel counts; the guide window closes; 'Off to Squishy Meadow!  3' / 2 / 1;\nblack from T - Fade; TravelDone lifts it at once, else T + MaxExtra; the gui goes afterwards; a newer Travel keeps its\nown timing. #2 hints in place during the first mission (TutorialStep 1..98): Idle s within my reach of a monster\nwithout a swing of mine -> C.HUD.Hint(\"Attack\") once (my swing restarts the wait, others' swings do not); in the meadow\nbefore my first kill a marker over the nearest monster (my own slime first) via C.QuestMarker.Focus, not re-sent while\nunchanged, cleared outside the meadow; my first kill (Reward) clears it (the Q hint moved to the Lv5 learn moment,\nA23-71: no hint after the kill); nothing before / after the first mission. Static: ClientMain loads FirstSteps before SkillBar / Audio.\nRuns the real FirstSteps.luau + Config.luau in tools/fixtures/first_steps_offline.luau.",
   "limitations": "The hint looks (HUD.Hint, QuestMarker.Focus) are image dev's; how the fade and the hints feel with the real server move is a Studio check (accept -> meadow)."
 }

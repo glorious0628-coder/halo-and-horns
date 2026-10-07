@@ -6,9 +6,10 @@
 --      TravelDone (T + MaxExtra s at the latest); open windows close. Input is never blocked here (the server ignores
 --      attacks until it moved me).
 --   #2 during the first mission (TutorialStep 1..98): Idle s within my reach of a monster without a swing of mine -> the
---      attack button hint (C.HUD.Hint "Attack"); my first kill (my first Reward Fx) -> the Q hint (C.HUD.Hint "Q");
---      in the meadow before that kill a small marker over the nearest monster (C.QuestMarker.Focus). Each at most once
---      per session. The looks are image dev's: every call is pcall'd, so a missing function just skips the hint.
+--      attack button hint (C.HUD.Hint "Attack"); in the meadow before my first kill (my first Reward Fx) a small marker
+--      over the nearest monster (C.QuestMarker.Focus). Each at most once per session. The "Try your skill!" hint moved
+--      to the moment Q is learned (A23-71, SkillBar). The looks are image dev's: every call is pcall'd, so a missing
+--      function just skips the hint.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -24,7 +25,7 @@ local C = nil
 local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow" }
 local TRAVEL = { Fade = 0.4, MaxExtra = 1.5, FadeIn = 0.5, Token = 0, Gui = nil, Black = nil, Line = nil, Done = false }
 local HINT = { Idle = 5, Tick = 0.25, Search = 120, MarkerGap = 0.5, NearSince = nil,
-	AttackShown = false, QShown = false, Killed = false, MarkerAt = -math.huge, Marked = nil }
+	AttackShown = false, Killed = false, MarkerAt = -math.huge, Marked = nil }
 
 local function attr(key, default)
 	local v = LocalPlayer:GetAttribute(key)
@@ -190,9 +191,6 @@ function HINT.Kill()
 	if HINT.Killed then return end
 	HINT.Killed = true
 	if HINT.Marked then HINT.Mark(nil) end
-	if HINT.QShown or not firstMission() then return end
-	HINT.QShown = true
-	task.delay(0.8, function() call("HUD", "Hint", "Q") end) -- after the kill's own popups
 end
 
 ------------------------------------------------------------------ wiring
