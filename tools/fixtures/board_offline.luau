@@ -173,6 +173,10 @@ runGroup("take and finish", function()
 	local rows = w.Board.JobRows(p, d)
 	check(#rows == 1 and rows[1].Kind == "Job" and rows[1].Text == "King Slime 0/2" and rows[1].CanClaim == false and rows[1].Job.Side == "Kind",
 		"the quest list row: 'King Slime 0/2', Kind Job, no [Claim]", show(rows[1]))
+	local j3short = nil
+	for _, j in B0.Jobs do if j.Id == "J3" then j3short = j.ShortName end end
+	check(type(j3short) == "string" and #j3short <= 14 and rows[1].ShortName == j3short,
+		"the job row carries the job's ShortName (검수 2026-10-07: the phone quest row)", show({ rows[1].ShortName, j3short }))
 	local bank, honor, infamy, n0 = d.BankGold or 0, d.Honor or 0, d.Infamy or 0, #w.Notices
 	w:KillAt(p, "Slime")
 	check(st.Held[1].P == 0, "a slime is not a King Slime", st.Held[1].P)
@@ -326,6 +330,8 @@ runGroup("hint and saves", function()
 	local rows = w.Board.JobRows(p, d)
 	check(#rows == 1 and rows[1].Id == "job:board" and rows[1].Text == B0.Text.Hint and rows[1].Job.Guide == "MeadowBoard",
 		"after M1_4: 'Job Board · tap for directions' guides to the meadow board", show(rows[1]))
+	check(type(B0.Text.HintShort) == "string" and rows[1].ShortName == B0.Text.HintShort,
+		"the hint row's ShortName is Text.HintShort ('Job Board')", rows[1].ShortName)
 	w:Act(p, "Meadow", "Take", 1, "Kind")
 	rows = w.Board.JobRows(p, d)
 	check(#rows == 1 and rows[1].Id == "job:1", "after the first job the hint is gone", show(rows))

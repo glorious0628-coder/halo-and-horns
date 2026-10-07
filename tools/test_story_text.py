@@ -51,14 +51,20 @@ Checks (each finding = level, rule, Config path, source line, the text):
                       plural-literal  a '%d <count phrase>' literal in other src/*.luau code (client text tables):
                                       warn while a string.format of its key in that file is not wrapped in
                                       Plural(...), error when the phrase is not in Config.PluralWords.
+ 10. shortname-*      ShortName (검수 2026-10-07: the phone HUD quest row shows it instead of a cut-off line).
+                      shortname-length  a ShortName / HintShort / Tutorial.ShortNames text longer than 14 characters
+                                        (%d counts as 2 digits; a %s is not allowed: its length is unknown) = error.
+                      shortname-missing a story quest, daily / extra quest template, board job, first-mission row
+                                        (Tutorial.ShortNames) or the Job Board hint row without one = error.
 
 Scope of checks 2-7: Config.StoryQuests, Config.Tutorial (Welcome, Text, GuideText, QuestText), Config.Halloween
 (Banter, Text), Config.Barks.Lines, Config.Text, Config.Story, Config.StoryLines, Config.Board, and every other table named
 Text inside Config (ids such as Type / Kind / Zone / Guide / Npc / Spot / Speaker are skipped).
 
-Self-test: 8 mutations are appended to an in-memory copy of Config (Hangul line, 20-word toast, LinesBy without
+Self-test: 10 mutations are appended to an in-memory copy of Config (Hangul line, 20-word toast, LinesBy without
 Default, stray %d in a story line, a gore word, a glossary name in lower case, '1 days', a count text whose noun is
-not in Config.PluralWords); each must produce its own new finding. Prints "mutations caught N/N"; the status is "passed" only with no error findings and every mutation caught,
+not in Config.PluralWords, a 16-character ShortName, a story quest without ShortName); each must produce its own new
+finding. Prints "mutations caught N/N"; the status is "passed" only with no error findings and every mutation caught,
 "passed-no-mutations" when there are no errors but the self-test was skipped or missed one, else "failed".
 
 Usage: py tools/test_story_text.py [--src path/to/src] [--out report.json] [--no-mutations] [--luau luau.exe]
@@ -577,6 +583,13 @@ PLURAL_NOUNS = {"days", "times", "minutes", "seconds", "hours", "weeks", "hits",
 COUNT_WORDS_RE = re.compile(r"[A-Za-z']+(?: [A-Za-z']+){0,2}")
 ONE_RE = re.compile(r"(?<![\d.,/])1 (?=[A-Za-z])")
 DSPEC_RE = re.compile(r"(?<!/)%[-+ #0]*\d*[di] (?=[A-Za-z])")  # not the max of '%d/%d players'
+
+
+# 10. ShortName: the phone quest row's name
+SHORT_MAX = 14
+SHORT_NEEDS = [(("StoryQuests", "Defs"), "story quest"), (("Quests", "Templates"), "daily / extra quest template"),
+               (("Board", "Jobs"), "board job")]
+TUT_SHORT_KEYS = ("Welcome", "Travel", "Quest", "Forge", "IronLevel", "IronGold", "Zone")
 
 
 def count_phrase(after: str) -> str | None:
@@ -1179,6 +1192,34 @@ class Checker:
                                                 if bare else "no string.format(<table>." + str(key) + ") found: "
                                                 "wrap the formatted line in Config.Plural(...)")
                                      + f" ('1 {phrases[0]}')"})
+        # ---- 10. ShortName (검수 2026-10-07)
+        for path, s in leaves(tree):
+            if not path or not (path[-1] in ("ShortName", "HintShort") or (len(path) >= 2 and path[-2] == "ShortNames")):
+                continue
+            shown = re.sub(r"%[-+ #0]*\d*[di]", "10", s)
+            if "%s" in s:
+                add("error", "shortname-length", path, s, "'%s' in a ShortName: its length on the row is unknown")
+            elif len(shown) > SHORT_MAX:
+                add("error", "shortname-length", path, s,
+                    f"{len(shown)} characters (> {SHORT_MAX}): the phone quest row cuts it")
+        for root, what in SHORT_NEEDS:
+            node = get(tree, root)
+            if not isinstance(node, dict):
+                continue
+            for k, v in node.items():
+                if isinstance(v, dict) and not isinstance(v.get("ShortName"), str):
+                    label = v.get("Title") or v.get("Goal") or v.get("Text") or v.get("Id") or k
+                    add("error", "shortname-missing", root + (k,), str(label), f"{what} without ShortName",
+                        line=self._table_line(lm, root + (k,)))
+        tut = get(tree, ("Tutorial", "ShortNames"))
+        for key in TUT_SHORT_KEYS:
+            if not (isinstance(tut, dict) and isinstance(tut.get(key), str)):
+                add("error", "shortname-missing", ("Tutorial", "ShortNames", key), key,
+                    "first-mission row (QuestService.tutorialEntry) without ShortName", line=None)
+        btext = get(tree, ("Board", "Text"))
+        if isinstance(btext, dict) and isinstance(btext.get("Hint"), str) and not isinstance(btext.get("HintShort"), str):
+            add("error", "shortname-missing", ("Board", "Text", "HintShort"), btext["Hint"],
+                "the Job Board hint row without HintShort", line=None)
         # ---- Hangul in other src files
         for rel, toks in self.files.items():
             stack: list[str] = []
@@ -1246,6 +1287,12 @@ MUTATIONS = [
      'Config.Text.MutOneDays = "Welcome back! You were away for 1 days."'),
     ("a count text whose noun Config.Plural does not know", "plural-word", ("Text", "MutCount"),
      'Config.Text.MutCount = "Find %d stars in the meadow"'),
+    ("a 16-character ShortName", "shortname-length", ("StoryQuests", "Defs", "MutShort", "ShortName"),
+     'Config.StoryQuests.Defs.MutShort = { Kind = "Sub", Title = "Mutant Name", ShortName = "A very long name", '
+     'Steps = { { Text = "Talk", Obj = { Type = "Talk" } } } }'),
+    ("a story quest without ShortName", "shortname-missing", ("StoryQuests", "Defs", "MutNoShort"),
+     'Config.StoryQuests.Defs.MutNoShort = { Kind = "Sub", Title = "Mutant Two", '
+     'Steps = { { Text = "Talk", Obj = { Type = "Talk" } } } }'),
 ]
 
 

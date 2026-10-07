@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 88,
+  "checks": 90,
   "failedChecks": 0,
-  "namedChecks": 85,
+  "namedChecks": 87,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -238,6 +238,12 @@
     {
       "group": "take and finish",
       "check": "the quest list row: 'King Slime 0/2', Kind Job, no [Claim]",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "the job row carries the job's ShortName (검수 2026-10-07: the phone quest row)",
       "pass": 1,
       "fail": 0
     },
@@ -489,6 +495,12 @@
     },
     {
       "group": "hint and saves",
+      "check": "the hint row's ShortName is Text.HintShort ('Job Board')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
       "check": "after the first job the hint is gone",
       "pass": 1,
       "fail": 0
@@ -522,11 +534,33 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 22,
-    "applied": 22,
-    "caught": 22,
+    "total": 24,
+    "applied": 24,
+    "caught": 24,
     "skipped": false,
     "results": [
+      {
+        "mutation": "job rows lose their ShortName",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "take and finish :: the job row carries the job's ShortName (검수 2026-10-07: the phone quest row)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the hint row loses its ShortName",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hint and saves :: the hint row's ShortName is Text.HintShort ('Job Board')"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "the switch ignored",
         "file": "src/ServerScriptService/BoardService.luau",
@@ -716,9 +750,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hint and saves :: after M1_4: 'Job Board · tap for directions' guides to the meadow board"
+          "hint and saves :: after M1_4: 'Job Board · tap for directions' guides to the meadow board",
+          "hint and saves :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "the hint stays after the first job",
@@ -797,19 +832,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "a65e36e5ff32b21c33138873718edeb397fa6f532fdbe7326b708f271b3dfb5d",
+    "src/ReplicatedStorage/Shared/Config.luau": "7837354dc8772b80417a957ab06970b94c7304461919e42c46c66816462bfa0f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
-    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
-    "src/ServerScriptService/StoryQuestService.luau": "c42a3c9e3fb3aed3a2ded313a9b2dda54aadafb9880f5e2c16002ef60a0077f3",
-    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
-    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/CombatService.luau": "62fcbb61aacb2068d5adec21bc414338a91e341538c6e6f1db2d670b649334a8",
+    "src/ServerScriptService/LootService.luau": "e8c996a2e196bdaa750861c0431966be48b3dfceb1a5163860f14555c57a0c75",
+    "src/ServerScriptService/StoryQuestService.luau": "39dbd369c12b9bc6f919bcff054de2b9bf2ebea8cc2382603a06b9310d265c0c",
+    "src/ServerScriptService/PvPService.luau": "cd3ba05e927e40b348d2d2671992380cc41b6decfefc7c931a50f0ca6fae3826",
+    "src/ServerScriptService/ShopService.luau": "24cbcaf5cf4a13431ea1b5d3671c16238c6f4162712c0e3b5c82f0b1b4a3688c",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60",
-    "src/ServerScriptService/BoardService.luau": "94f4327a892208e56d61c3b4f698964139fd9b6fcd278b31780f82712476ff9c"
+    "src/ServerScriptService/BoardService.luau": "ee561cda6482159f55c2f6f8bc097b147520d67c50510e679b5b35b0dd3a47ab"
   },
-  "fixtureSHA256": "3ae254a7d6042ba7a1bf8d44c037d11994da438c2644cb8ad3e1ff76ebb37707",
+  "fixtureSHA256": "dd910daa4e9c02daeae93f7fa1756783f07de6f46ef308baf20df48dfd5381c9",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -398,6 +398,7 @@ function BoardService.JobRows(player, data)
 	if st.Seen ~= true and #st.Held == 0 and done[B.HintAfter or "M1_4"] and type(B.HintBoard) == "string"
 		and B.Boards[B.HintBoard] then
 		table.insert(rows, { Id = "job:board", Kind = "Job", Pinned = false, Text = (B.Text or {}).Hint or "Job Board",
+			ShortName = (B.Text or {}).HintShort,
 			Progress = 0, Target = 1, RewardGold = 0, RewardXP = 0, CanClaim = false, ShowProgress = false,
 			Job = { Board = B.HintBoard, Guide = B.Boards[B.HintBoard].Spot } })
 	end
@@ -407,7 +408,7 @@ function BoardService.JobRows(player, data)
 		if job and board then
 			local g, x = reward(h.Board, st.Done)
 			table.insert(rows, {
-				Id = "job:" .. i, Kind = "Job", Pinned = false, Text = goalText(job, board, h),
+				Id = "job:" .. i, Kind = "Job", Pinned = false, Text = goalText(job, board, h), ShortName = job.ShortName,
 				Progress = math.floor(num(h.P) * 10) / 10, Target = h.Target, RewardGold = g, RewardXP = x,
 				CanClaim = false, ShowProgress = h.Target > 1,
 				Job = { Board = h.Board, Side = h.Side, Card = h.Id, Guide = board.Zone },

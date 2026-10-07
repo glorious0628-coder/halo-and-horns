@@ -39,6 +39,8 @@ STATIC_ONLY = {
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
+    ("quest rows lose the template's ShortName", "QUEST_SOURCE",
+     "\t\t\t\t\tShortName = tpl and tpl.ShortName or nil, -- 검수 2026-10-07: the phone HUD quest row\n", ""),
     ("newbie daily pays the 5-minute reward", "QUEST_SOURCE",
      "rewardGold, rewardXP = Config.HuntValue(level, num(NEWBIE.RewardMinutes, Config.Daily.QuestMinutes))",
      "rewardGold, rewardXP = Config.DailyQuestReward(level)"),

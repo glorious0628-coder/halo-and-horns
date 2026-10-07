@@ -36,6 +36,7 @@ local TUT_XP = TUT_CFG.QuestRewardXP or 0
 local TUT_TEXT = Config.Plural(string.format(TUT_CFG.QuestText, TUT_TARGET))
 local TUT_ZONE = TUT_CFG.GuideZone
 local TUT_MESSAGES = TUT_CFG.Text or {}
+local TUT_SHORT = TUT_CFG.ShortNames or {} -- 검수 2026-10-07: each row's ShortName (the phone HUD quest row, <= 14)
 local TUT_START_TEXT = TUT_MESSAGES.QuestStart or "First mission: %s! (Reward: %s gold)" -- (TUT_TEXT, gold)
 local TUT_READY_TEXT = TUT_MESSAGES.QuestReady or "First mission done! Press [Claim]."
 local TUT_CLAIMED_TEXT = TUT_MESSAGES.Claimed or "First mission reward +%s gold! Check your next goal."
@@ -528,16 +529,24 @@ local function nextGoalText(data)
 	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or num(data.WeaponTier, 1) >= IRON_TIER
 	if iron and not hasIron then
 		if level < iron.MinLevel then
-			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level), "IronLevel"
+			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level), "IronLevel", iron.MinLevel
 		end
 		local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
 		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold)), "IronGold"
 	end
 	local zone = Config.Zones[NEXT_ZONE]
 	if zone and level < zone.MinLevel then
-		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level), "Zone"
+		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level), "Zone", zone.MinLevel
 	end
 	return nil
+end
+
+-- ShortName of a next-goal row: Config.Tutorial.ShortNames[kind], "%d" = the level the goal needs
+local function goalShort(kind, need)
+	local short = TUT_SHORT[kind]
+	if type(short) ~= "string" then return nil end
+	local ok, text = pcall(string.format, short, need or 0)
+	return ok and text or short
 end
 
 local function tutorialEntry(player, data)
@@ -549,21 +558,26 @@ local function tutorialEntry(player, data)
 	}
 	if step == STEP_WELCOME then
 		entry.Text = TUT_MESSAGES.Welcome or "First quest · Tap here to meet the Guide"
+		entry.ShortName = TUT_SHORT.Welcome
 	elseif step == STEP_GUIDE then
 		entry.Text = TUT_MESSAGES.Travel or "Go to the Squishy Meadow · Menu > Travel > Squishy Meadow"
+		entry.ShortName = TUT_SHORT.Travel
 	elseif step == STEP_QUEST then
 		entry.Progress, entry.Target = getTutorialKills(data), TUT_TARGET
 		entry.Text = if entry.Progress >= TUT_TARGET then TUT_READY_TEXT else TUT_TEXT
+		entry.ShortName = TUT_SHORT.Quest
 		entry.RewardGold, entry.RewardXP = TUT_GOLD, TUT_XP
 		entry.CanClaim, entry.ShowProgress = true, true
 	elseif step == TUT_DONE and data.ClassChosen == true and getFaction(player) ~= "None" then
 		if data.BlacksmithVisited ~= true then
 			entry.Text = (hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith)
 				or "Check the weapons · Crossroads Forge"
+			entry.ShortName = TUT_SHORT.Forge
 		else
-			local text, kind = nextGoalText(data)
+			local text, kind, need = nextGoalText(data)
 			if not text then return nil end
 			entry.Text = text
+			entry.ShortName = goalShort(kind, need)
 			entry.NextGoal = true
 			-- A23-48: which next goal this is ("IronLevel" | "IronGold" | "Zone"), so clients never search the (now
 			-- English) text for a word
@@ -623,10 +637,12 @@ local function publish(player)
 				if q.Kind == "Daily" then
 					rg, rx = capTo(math.floor(rg), math.floor(rx), capG, capX)
 				end
+				local tpl = TEMPLATE_BY_ID[q.Id]
 				table.insert(list, {
 					Id = tostring(q.Id),
 					Kind = q.Kind,
 					Text = tostring(q.Text),
+					ShortName = tpl and tpl.ShortName or nil, -- 검수 2026-10-07: the phone HUD quest row
 					-- CR-M27: Kill/Golden progress is fractional; sent floored to 1 decimal (0.43 -> 0.4)
 					Progress = math.floor(num(q.Progress) * 10 + PROGRESS_EPS) / 10,
 					Target = num(q.Target),
