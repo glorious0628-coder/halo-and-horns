@@ -776,7 +776,7 @@
     "src/ServerScriptService/TelemetryService.luau": "9a2c85ac23ffc5e5d1c48862b3b468111e53f14c87fc81b532c6e17a3a7746c0",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
-    "src/ServerScriptService/WarService.luau": "70668f200901c82541abc734e47915b2a6da05ea39c8544d5cf86d124e7ebc58",
+    "src/ServerScriptService/WarService.luau": "eb3020dbd74a07c1424219bfe5646518f556bf6773b05c49dde0359cec1e868e",
     "src/ServerScriptService/ZoneService.luau": "1a8b12bee2b4a2832349eb0cf9eb1b9062c688387d1cd2342507adf4daaecc53"
   },
   "fixtureSHA256": "757ec067ab58bb8df7dc3a6049e70937abae938b29124e1d49ef058c1eb5423a",

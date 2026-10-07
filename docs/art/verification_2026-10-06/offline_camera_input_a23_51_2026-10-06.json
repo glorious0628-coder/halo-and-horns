@@ -141,7 +141,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking forward-right turns the camera right, at most 45 deg/s :: table: 0x000002169070a950"
+        "failure": "CHECK_FAIL walking forward-right turns the camera right, at most 45 deg/s :: table: 0x0000027634406940"
       },
       {
         "mutation": "follows in shift lock",
