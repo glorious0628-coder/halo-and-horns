@@ -5376,5 +5376,61 @@
   "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
   "source": "art/out/kit/woods_big/W_Boulder_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Boulder_B.txt)",
   "final": "art/out/hq/HQ_W_Boulder_B.png (High, 5 credits) -> Tripo"
+ },
+ "R_BrokenTower": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_BrokenTower_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_BrokenTower.txt)",
+  "final": "art/out/hq/HQ_R_BrokenTower.png (High, 5 credits; prompt art/prompts/HQ_R_BrokenTower.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Gate": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Gate_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Gate.txt)",
+  "final": "art/out/hq/HQ_R_Gate.png (High, 5 credits; prompt art/prompts/HQ_R_Gate.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Arch_A": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Arch_A_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Arch_A.txt)",
+  "final": "art/out/hq/HQ_R_Arch_A.png (High, 5 credits; prompt art/prompts/HQ_R_Arch_A.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Arch_B": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Arch_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Arch_B.txt)",
+  "final": "art/out/hq/HQ_R_Arch_B.png (High, 5 credits; prompt art/prompts/HQ_R_Arch_B.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_CrownAltar": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_CrownAltar_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_CrownAltar.txt)",
+  "final": "art/out/hq/HQ_R_CrownAltar.png (High, 5 credits; prompt art/prompts/HQ_R_CrownAltar.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_WallRuin": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_WallRuin_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_WallRuin.txt)",
+  "final": "art/out/hq/HQ_R_WallRuin.png (High, 5 credits; prompt art/prompts/HQ_R_WallRuin.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Cliff_A": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Cliff_A_v2_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Cliff_A_v2.txt)",
+  "final": "art/out/hq/HQ_R_Cliff_A.png (High, 5 credits; prompt art/prompts/HQ_R_Cliff_A.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Cliff_B": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Cliff_B_v2_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Cliff_B_v2.txt)",
+  "final": "art/out/hq/HQ_R_Cliff_B.png (High, 5 credits; prompt art/prompts/HQ_R_Cliff_B.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
  }
 }
