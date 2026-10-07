@@ -2878,16 +2878,12 @@
   "note": "묶음 12. NPC 머리 위 표시(금색 원 + 아래 뾰족, 가운데 빈칸). 안에 글리프(느낌표·퀘스트) 얹음."
  },
  "RewardRays": {
-  "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "preview": "art/review/s2/b1213_sheet.png",
-  "size": "512x512 RGBA",
-  "cutout": "밝기→알파(8 이하 투명), RGB 흰색, bbox 정사각 → 512",
-  "prompt": "art/prompts/UIP_RewardRays.txt",
-  "original": "art/out/s2/RewardRays_a_src.png (Adobe MCP presigned download)",
-  "file": "art/ui/RewardRays.png",
-  "note": "묶음 12. 보상 빛살(흰색, 투명 바탕). 검정 바탕 원본의 밝기를 투명도로 바꿈. ImageColor3로 금색 등으로 칠하고 보상·부화·전리품 팝업 뒤에서 돌림. 밝은 바탕에선 안 보임(어두운 막 위에 씀)."
+  "status": "rejected",
+  "date": "2026-10-07",
+  "rejectionQuote": "근데 너무 욱일기 같음 ㅋㅋㅋ 저 빛나는 거 고쳐줘",
+  "note": "2026-10-07 사용자: 욱일기처럼 보여 폐기. 이미지 개발 cb9d30e에서 코드·Config 키 뺌(검수 통과). 빛남은 둥근 빛무리(RewardGlow)·반짝이(RewardSparkle)로. 가운데서 퍼지는 빛살·부채꼴 줄무늬는 모든 그림에서 금지(AGENTS).",
+  "was": "2026-10-06 Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1, prompt art/prompts/UIP_RewardRays.txt, preview art/review/s2/b1213_sheet.png",
+  "deleted": "deleted 2026-10-07: art/ui/RewardRays.png, art/out/s2/RewardRays_a_src.png, art/out/s2/RewardRays_a_cut.png (art/ui/asset_ids.json 줄은 이미지 개발 몫이라 그대로)"
  },
  "GlyphQuest": {
   "status": "approved",
@@ -3535,16 +3531,19 @@
  },
  "PTR_PotionMerchant": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/PTR_PotionMerchant.txt",
-  "original": "art/out/s2/PTR_PotionMerchant_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/PTR_Fizzby_HQ.txt",
+  "original": "art/out/hq/src/PTR_PotionMerchant_HQ_src.png (1024, Firefly asset eebcbef2, Adobe MCP presigned download)",
   "file": "art/ui/PTR_PotionMerchant.png",
   "size": "486x512 RGBA",
-  "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
-  "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "상점 NPC 최종 모습(handoff 9번). 물약 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
-  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
+  "cutout": "tools/img2/hq_fit.py --mode keep (cut_keep --tol 28 --soft 6 --holes --keep-largest, same canvas) + clean_haze; checked light/dark/magenta/green + PortraitFrame + 96px; alpha IoU vs old 0.987",
+  "preview": "art/review/s2/story_speakers_hq_sheet.jpg",
+  "note": "상점 NPC 최종 모습(handoff 9번). 물약 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택. | 2026-10-07 이야기 창 화자 Fizzby(Speakers.Potion): 모습 그대로 또렷하게(볼의 작은 주근깨 유지). 중간 2안 중 A(검수 고름) → 고급.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)",
+  "medium_original": "art/out/s2/ptr/PTR_Fizzby_A_src.png (Medium A, Firefly asset 17a9085c, prompt art/prompts/PTR_Fizzby_A.txt, candidates art/review/s2/story_speakers_sheet.jpg); first portrait art/out/s2/PTR_PotionMerchant_a_src.png",
+  "hq_note": "고급 2026-10-07(검수 통과): 같은 키·같은 캔버스, Id만 교체.",
+  "user_seen_hq": "2026-10-07 검수가 사용자에게 시트(art/review/s2/story_speakers_hq_sheet.jpg)를 보여 줌, 검수 적용 지시(반대 오면 되돌림)"
  },
  "FB_MerchantC": {
   "status": "approved",
@@ -3561,16 +3560,19 @@
  },
  "PTR_MerchantC": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/PTR_MerchantC.txt",
-  "original": "art/out/s2/PTR_MerchantC_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/PTR_Otto_HQ.txt",
+  "original": "art/out/hq/src/PTR_MerchantC_HQ_src.png (1024, Firefly asset 6b85bf90, Adobe MCP presigned download)",
   "file": "art/ui/PTR_MerchantC.png",
   "size": "487x512 RGBA",
-  "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
-  "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
-  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
+  "cutout": "tools/img2/hq_fit.py --mode keep (cut_keep --tol 28 --soft 6 --holes --keep-largest, same canvas) + clean_haze; checked light/dark/magenta/green + PortraitFrame + 96px; alpha IoU vs old 0.938",
+  "preview": "art/review/s2/story_speakers_hq_sheet.jpg",
+  "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택. | 2026-10-07 이야기 창 화자 Otto(Speakers.Smith): 머그잔 → 망치(어깨에), 볼 그을음 지움(얼굴 무늬 금지). 중간 2안 중 A(검수 고름) → 고급.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)",
+  "medium_original": "art/out/s2/ptr/PTR_Otto_A_src.png (Medium A, Firefly asset a1274a19, prompt art/prompts/PTR_Otto_A.txt, candidates art/review/s2/story_speakers_sheet.jpg); first portrait art/out/s2/PTR_MerchantC_a_src.png",
+  "hq_note": "고급 2026-10-07(검수 통과): 같은 키·같은 캔버스, Id만 교체.",
+  "user_seen_hq": "2026-10-07 검수가 사용자에게 시트(art/review/s2/story_speakers_hq_sheet.jpg)를 보여 줌, 검수 적용 지시(반대 오면 되돌림)"
  },
  "CON_GhostMinion": {
   "status": "approved",
@@ -4088,15 +4090,17 @@
  },
  "IconVacation": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/IconVacation.txt",
-  "original": "art/out/s2/IconVacation_1_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original",
+  "prompt": "art/prompts/IconVacation_HQ.txt",
+  "original": "art/out/hq/src/IconVacation_HQ_src.png (1024, Firefly asset 5edfaa9f, Adobe MCP presigned download)",
   "file": "art/ui/IconVacation.png",
   "size": "512x512 RGBA",
-  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
-  "preview": "art/review/s2/menu_icons7_sheet.png",
-  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 휴가(모래섬 야자수 + 웃는 해). 2장 중 1."
+  "cutout": "tools/img2/hq_fit.py --mode icon (cut_icon --holes, same 512 canvas, alpha IoU vs old 0.893); checked light/navy/magenta/green + 48/32px",
+  "preview": "art/review/s2/story_speakers_hq_sheet.jpg",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 휴가(모래섬 야자수 + 웃는 해). 2장 중 1. | 2026-10-07 해의 얼굴·가시 → 얼굴 없는 둥근 해(소품 얼굴 금지 + 빛살 금지, 검수 요청) → 고급.",
+  "medium_original": "art/out/s2/IconVacation_1_src.png (Firefly asset 21cb6e2a)",
+  "hq_note": "고급 2026-10-07(검수 통과): 같은 키·같은 캔버스, Id만 교체."
  },
  "IconMedalGold": {
   "status": "approved",
@@ -5700,5 +5704,18 @@
   "medium_original": "art/out/s2/e12/IconChestWoods_A_src.png (Firefly asset f163d5fb…, prompt art/prompts/IconChestWoods_A.txt; local)",
   "file": "art/ui/IconChestWoods.png",
   "note": "숲 일일(Lv10~24) 상자. 초콜릿색 나무 + 잎 + 금 띠·자물쇠. 중간 A(검수 고름)."
+ },
+ "PTR_CrownShard": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/PTR_CrownShard_HQ.txt",
+  "original": "art/out/hq/src/PTR_CrownShard_HQ_src.png (1024, Firefly asset a5943c32, Adobe MCP presigned download)",
+  "medium_original": "art/out/s2/ptr/PTR_CrownShard_A_src.png (Medium A, Firefly asset 9508a672, prompt art/prompts/PTR_CrownShard_A.txt; drawn from ShardBase art/out/s2/Shard_Base_1_src.png)",
+  "file": "art/ui/PTR_CrownShard.png",
+  "size": "443x512 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --tol 28 --soft 6 + clean_haze --min-island 80; checked light/dark/magenta/green + PortraitFrame + 96px",
+  "preview": "art/review/s2/story_speakers_hq_sheet.jpg",
+  "note": "이야기 창 왕관 조각 화자(Speakers.Shard · Fountain) 초상, 새 키. ShardBase와 같은 금빛 조각 + 금관 띠, 얼굴 없음, 빛살 없음(4각 반짝이 별 3). PortraitFrame 창에 아래 맞춤. 중간 2안 중 A(검수 고름) → 고급."
  }
 }
