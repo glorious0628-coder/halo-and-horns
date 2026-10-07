@@ -571,10 +571,10 @@ local function visible(player, def)
 end
 
 -- sub rows, best first, at most Config.StoryQuests.MaxSubs (quest_volume §2-6: 3; the HUD shows 2, the open list all):
--- 0 = a claim or a waiting Talk / Choice card, 1 = situational (Show), 2 = started (past step 1 or with progress) or
--- S0, 3 = the rest; within a rank the newer quest (later in StoryQuests.Subs) first. A started sub outranks untouched
--- ones so a town quest in progress is never pushed off by older background subs, and the order index keeps the rows
--- from swapping between refreshes (table.sort is not stable).
+-- 0 = a claim or a Talk / Choice card waiting mid-quest (past step 1), 1 = situational (Show), 2 = started (past step 1
+-- or with progress) or S0, 3 = a new offer waiting at its first card, 4 = the rest; within a rank the newer quest
+-- (later in StoryQuests.Subs) first. With A23-56's many subs a sub in progress is never pushed off by new offers or
+-- older background subs, and the order index keeps the rows from swapping between refreshes (table.sort is not stable).
 function StoryQuestService.SubRows(player, data)
 	local st = story(data)
 	local rows = {}
@@ -588,9 +588,10 @@ function StoryQuestService.SubRows(player, data)
 			if num(data.TutorialStep) ~= 0 or id == "S0" then
 				local row = rowFor(player, data, id, tr)
 				local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
-				local waiting = step ~= nil and step.Panel == true -- a Talk / Choice card waits: never hidden by MaxSubs
+				local waiting = step ~= nil and step.Panel == true -- a Talk / Choice card waits
 				local started = num(tr.St, 1) > 1 or num(tr.P) > 0 or (type(tr.T) == "table" and next(tr.T) ~= nil)
-				row.Rank = ((tr.Claim or waiting) and 0) or (def.Show and 1) or ((started or id == "S0") and 2) or 3
+				row.Rank = ((tr.Claim or (waiting and started)) and 0) or (def.Show and 1) or ((started or id == "S0") and 2)
+					or (waiting and 3) or 4
 				row.Order = order
 				table.insert(rows, row)
 			end

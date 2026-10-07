@@ -33,5 +33,16 @@
   - 창: 카드 4장(이미지 생성 2가 글자 없는 카드 그림 만드는 중), 카드마다 [Kind]/[Sneaky] 두 버튼 + 목표·보상, 위에 "Kind 12 · Sneaky 3", 3개 들고 있으면 버튼 잠금("You carry 3 jobs."), 바꾸기 버튼(60초 남은 시간). 목록 'Job' 표시.
 - 검사: `py tools/test_board.py`(88검사, 변이 22/22) + `tools/test_a23_14.py` board-switch(꺼짐 = 추가 그대로, 켜짐 = 빈 칸·Job 줄·다음 날 일일, 3348검사, 변이 33/33).
 
-## 3. 다음
-- 서브 18개 데이터(quest_volume §3-2) → ③ 몬스터 한마디(lines_pack §2) → BB38 이벤트 → PET-2·4 …
+## 3. 서브 18개 (quest_volume §3-2: 새 12 + 당김 6)
+- `StoryQuests.Subs` 끝에 S6·XR1·H2·R5·GW1·H3·R3·GW2·GW3·H5·R6·GW4·GW5·GW6·GW7·H6·R7·GW8. 모두 한 번만, 마지막은 A(천사)/B(악마) 선택(점수 1, A23-58 규칙), 끝 줄은 질문.
+  - **마을형(Lv5~10: S6·XR1·H2·R5):** 120골드 + 레벨 칸 0.5, A = 70% 주문서 1 / B = HP 물약 3 + 60골드. 열림 M1_4 뒤 Lv5/8.
+  - **숲형(Lv10+: 나머지):** `Reward{Gold=2, XP=2}`, A = 70% 주문서 1 / B = HP 물약 3 + **192골드**(HuntValue 1분). 열림 M2_7 뒤 각 레벨(GW1·H3·R3 12, GW2 11, GW3 14, H5·R6 15, GW4 16, GW5 17, GW6 19, GW7 21 + **GW1 뒤**, H6·R7 22, GW8 23).
+  - 진영: H·R은 빛/뿔만, S6·GW4·GW5는 빛·뿔(S6은 진영별 단계: 빛 = 초원 도착 지점 슬라임 5 / 뿔 = 사냥 골드 80 → 우리 마을), 나머지는 모두(장인 저장은 Neutral A/B 이름).
+  - 말하는 이: Tiny(XR1, NPC 말 걸기), Bright(H2·H5·H6, H5만 NPC), Smokey(R5·R6·R7, R6만 NPC), Grabbo(GW1·GW7), Sir Gleam(H3)·Rascal Rex(R3)(Speakers `Gleam`·`Rex`, 베타는 이름만), Fountain Shard(GW5), 안내자(이름 없는 줄 = 내 진영 안내자).
+  - 대사: quest_volume 표의 한 줄 + A/B 그대로, story_depth §3·§5 ⑤(GW1 회의) 그대로, 모자란 1~2쪽은 같은 말투로 채움(검수 ⑭ 검사기로 훑음). H2 등불 안 줄은 lines_pack 1-5 ③ 고친 줄("a tiny 'B.' scratched in"). GW1 끝에 그로보 반응(LinesBy 자기 Pick), GW7 1쪽은 GW1에서 고른 쪽 기억(LinesBy From=GW1).
+- 새 랜드마크: `HeroStatue` (0,0,−360) 빛의 성채 영웅의 길, `LavaCrack` (48,0,400) 뿔 소굴 용암 수로(지도 v2 때 개발 1 확인). 마커 Guide 키로도 씀.
+- **목록 순위 고침(서브가 많아져서):** 0 = 받기·**진행 중** 대화/선택 카드, 1 = 상황(거위), 2 = 시작한 서브·S0, **3 = 새로 열린 제안(첫 대화 카드)**, 4 = 나머지, 같은 순위는 새 퀘스트 먼저. 새 제안이 진행 중인 마을 퀘스트를 밀어내지 않는다(검사).
+- 검사: test_town_quests subs18-data·subs18-offered·subs18-flow + max-subs 갱신 — 431검사, 변이 69/69.
+
+## 4. 다음
+- ③ 몬스터 한마디(lines_pack §2, BarkService 따로 + MonsterService 신호 한두 줄, Main ORDER와 같은 커밋) → BB38 이벤트 → PET-2·4 …
