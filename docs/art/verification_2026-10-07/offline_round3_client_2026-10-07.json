@@ -52,6 +52,10 @@
     {
       "check": "UI round 2 #3: no potions -> [Buy] shows the way to the merchant",
       "ok": true
+    },
+    {
+      "check": "E11: MapBuilder puts a BoardPrompt (attribute Board) on each job board's spot, off while the board is off",
+      "ok": true
     }
   ],
   "sourceSHA256": {

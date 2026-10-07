@@ -38,6 +38,7 @@ def main():
     welcome = panels[panels.find("BUILDERS.Welcome = function(parent)"):]
     welcome = welcome[:welcome.find("\nBUILDERS.") if "\nBUILDERS." in welcome else len(welcome)]
     vitals = (ROOT / "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau").read_text(encoding="utf-8-sig")
+    mapb = (ROOT / "src/ServerScriptService/MapBuilder.luau").read_text(encoding="utf-8-sig")
     checks = [
         ("#3 the step-0 pinned line opens the guide in one tap (before the claim / list paths)",
          "if e and e.Pinned and e.TutorialStep == 0 and L.PinnedTap then" in tap
@@ -69,6 +70,10 @@ def main():
          and "function WSHOP.ShowWay()" in panels and 'pcall(qt.Travel, "Crossroads", zone)' in panels),
         ("UI round 2 #3: no potions -> [Buy] shows the way to the merchant",
          'if count <= 0 and label == "Buy" then WAY.Show() end' in vitals and "pcall(hud.ShowGuide, target, WAY.Label)" in vitals),
+        ("E11: MapBuilder puts a BoardPrompt (attribute Board) on each job board's spot, off while the board is off",
+         "local function ensureJobBoards(ctx, folder)" in mapb and 'prompt.Name = "BoardPrompt"' in mapb
+         and 'prompt:SetAttribute("Board", tostring(id))' in mapb and "prompt.Enabled = B.Enabled == true" in mapb
+         and "ensureJobBoards(ctx, folders.Landmarks)" in mapb),
     ]
     for name, good in checks:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)
