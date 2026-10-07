@@ -23,7 +23,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL another player's Travel shows nothing :: ",
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000002a333213000 closed 2"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000011d3609cf80 closed 2"
         ]
       },
       {
@@ -31,7 +31,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000019aa90a6fa0 closed 0"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000018ac4ecaf50 closed 0"
         ]
       },
       {
@@ -50,7 +50,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TravelDone lifts the black at once :: 0",
-          "CHECK_FAIL the fade gui goes after the lift :: table: 0x0000022d177fafb0"
+          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000001e51d926f40"
         ]
       },
       {
@@ -137,7 +137,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000024069e3e3d0"
+          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000013680e573f0"
         ]
       },
       {
@@ -145,7 +145,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my first kill clears the marker :: table: 0x00000125117e4450"
+          "CHECK_FAIL my first kill clears the marker :: table: 0x00000206b0e563f0"
         ]
       }
     ]

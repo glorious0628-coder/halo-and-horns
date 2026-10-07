@@ -141,7 +141,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking forward-right turns the camera right, at most 45 deg/s :: table: 0x0000021e8a8e2930"
+        "failure": "CHECK_FAIL walking forward-right turns the camera right, at most 45 deg/s :: table: 0x0000024f5af7a950"
       },
       {
         "mutation": "follows in shift lock",
@@ -174,7 +174,7 @@
     ]
   },
   "sourceSHA256": "3ee1a8bddff2e136b7ef27a4df7f765b42d5f1b4b8d17ccc32a58c87c4c8b6e6",
-  "hudSHA256": "731fe7ba17639b34d7dfdb13e4cf45c22f75d3cd70f838c7cf86571aa5440f12",
+  "hudSHA256": "39432fb4dfcc73a789dbb118fe2bc07cf8ef4171360cfe66ddc423bc068fa130",
   "hudStatic": [
     {
       "check": "L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",

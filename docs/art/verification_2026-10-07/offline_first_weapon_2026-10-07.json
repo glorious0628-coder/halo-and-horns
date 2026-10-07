@@ -104,7 +104,7 @@
   },
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "024fee7016e993de85ac23aa99a129a5d31a2e8cedd9cfec863b5d52424dbe25",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "731fe7ba17639b34d7dfdb13e4cf45c22f75d3cd70f838c7cf86571aa5440f12"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "39432fb4dfcc73a789dbb118fe2bc07cf8ef4171360cfe66ddc423bc068fa130"
   },
   "fixtureSHA256": "369a5b586034d04ec326d85a9042f4f05c701eed98c1c25e715850388deac91f",
   "studioCalls": 0,

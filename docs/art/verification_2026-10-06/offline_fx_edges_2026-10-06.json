@@ -55,7 +55,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL 20% HP: the edges throb slowly between 0.55 and 0.85 over 1.1 s :: table: 0x000002037b55b0a0",
+          "CHECK_FAIL 20% HP: the edges throb slowly between 0.55 and 0.85 over 1.1 s :: table: 0x0000022a4237b0a0",
           "CHECK_FAIL shake off at 20% HP: a steady faint edge (0.82), no throb :: 1"
         ]
       },
