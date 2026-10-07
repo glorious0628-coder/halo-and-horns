@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 227,
+  "checks": 228,
   "failedChecks": 0,
-  "namedChecks": 220,
+  "namedChecks": 221,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -339,7 +339,13 @@
     },
     {
       "group": "config",
-      "check": "first-mission line points to the free first weapon",
+      "check": "first-mission line points to the next weapon (its reward = the tier-2 price)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the tier-1 refusal says the gift comes with the Guide's first quest",
       "pass": 1,
       "fail": 0
     },
@@ -2291,21 +2297,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "024fee7016e993de85ac23aa99a129a5d31a2e8cedd9cfec863b5d52424dbe25",
+    "src/ReplicatedStorage/Shared/Config.luau": "00be05b460f51ec44f524b1182222ff9a9870bf22aa4e800a5e25fb560c243db",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
     "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
     "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
-    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/DataService.luau": "188d6fbfa2d86795b8b005f3599f80edfe7e9c07119c2f4a0b701c53e7d53425",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e"
   },
-  "fixtureSHA256": "dde3aed6f65ed7f1e8b36691a51fbc9dee18252e6ad353a6088d083342cd3b1b",
+  "fixtureSHA256": "73b7b9f942c0dc722241efc343324b347ccd34755299943563612286aa643dc2",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-34 server: Config.Data.Defaults WeaponTier 0 / WeaponOwnedMask 0; v1 / v2 records get tier 1 + its bit in migrate, v3 records keep what they own, fillDefaults accepts 0 and forces no bit, a corrupted tier = Config.BestUsableWeapon (0 = bare hands). Config.WeaponDamage(0) = Combat.Unarmed.Damage (4, no +N); Config.CombatPower counts bare hands from 0 (Lv1 = 0, Lv2 = 12) and leaves armed numbers unchanged; BestUsableWeapon -> 0 when nothing owned is usable; WeaponName(0) = Text.BareHands, WeaponArtKey(0) = nil; Config.AttackProfile(class, tier, faction) = the class row armed, the shared punch bare-handed (Style Punch, 1 nearest target within 7 in a 75 deg cone, 0.8 s, class multiplier 1, not ranged, no Mage MP). CombatService.Swing / auto combat use it (Fx Swing Style = 'Punch', From = right hand, Contact 0.15, no launch / flight); skill Q stays the class skill (class range / multiplier). ShopService sells tier 2-3 to a bare-handed player, refuses tier 1 with Text.WeaponFromQuest, selling the equipped weapon equips BestUsableWeapon (0 = bare hands); the anvil prompt runs StoryQuestService.Refresh before opening the shop. M1_1 (GiveWeapon = 1) -> LootService.GrantFirstWeapon: tier 1 owned, equipped only when bare-handed (notice FirstWeapon '전투력 X → Y'), else the bag line; nothing for a save that owns it; the join safety net pays a finished M1_1 that never paid. A weapon found bare-handed is equipped when its level allows. CharacterVisuals: tier 0 = no WeaponModel. JusticeService / PvP power read tier 0.",
+  "contract": "A23-34 server: Config.Data.Defaults WeaponTier 0 / WeaponOwnedMask 0; v1 / v2 records get tier 1 + its bit in migrate, v3 records keep what they own, fillDefaults accepts 0 and forces no bit, a corrupted tier = Config.BestUsableWeapon (0 = bare hands). Config.WeaponDamage(0) = Combat.Unarmed.Damage (4, no +N); Config.CombatPower counts bare hands from 0 (Lv1 = 0, Lv2 = 12) and leaves armed numbers unchanged; BestUsableWeapon -> 0 when nothing owned is usable; WeaponName(0) = Text.BareHands, WeaponArtKey(0) = nil; Config.AttackProfile(class, tier, faction) = the class row armed, the shared punch bare-handed (Style Punch, 1 nearest target within 7 in a 75 deg cone, 0.8 s, class multiplier 1, not ranged, no Mage MP). CombatService.Swing / auto combat use it (Fx Swing Style = 'Punch', From = right hand, Contact 0.15, no launch / flight); skill Q stays the class skill (class range / multiplier). ShopService sells tier 2-3 to a bare-handed player, refuses tier 1 with Text.WeaponFromQuest, selling the equipped weapon equips BestUsableWeapon (0 = bare hands); the anvil prompt runs StoryQuestService.Refresh before opening the shop. M1_1 (GiveWeapon = 1) -> LootService.GrantFirstWeapon: tier 1 owned, equipped only when bare-handed (notice FirstWeapon '전투력 X → Y'), else the bag line; nothing for a save that owns it; the join safety net pays a finished M1_1 that never paid (A23-74: the gift itself now comes at the Forge step, QuestService.ForgeGift, before the hunt; M1_1's is the safety net). A weapon found bare-handed is equipped when its level allows. CharacterVisuals: tier 0 = no WeaponModel. JusticeService / PvP power read tier 0.",
   "limitations": "Offline doubles for Players, characters (a root facing -Z and a right hand), monsters (records with a root), Net and the other services. The client side (punch animation / Fx, blacksmith and item windows with tier 0, the class card text) is the 게임성 개발 1 contract; real play is checked after the merge."
 }

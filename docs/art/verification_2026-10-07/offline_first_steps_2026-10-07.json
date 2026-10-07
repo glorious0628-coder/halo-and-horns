@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 31,
+  "checks": 29,
   "failedChecks": [],
   "static": [
     {
@@ -13,9 +13,9 @@
     }
   ],
   "mutations": {
-    "total": 15,
-    "applied": 15,
-    "caught": 15,
+    "total": 13,
+    "applied": 13,
+    "caught": 13,
     "results": [
       {
         "mutation": "other players' Travel shows",
@@ -23,7 +23,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL another player's Travel shows nothing :: ",
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000011d3609cf80 closed 2"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001ba229f4ed0 closed 2"
         ]
       },
       {
@@ -31,7 +31,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000018ac4ecaf50 closed 0"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000014345b99e80 closed 0"
         ]
       },
       {
@@ -50,7 +50,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TravelDone lifts the black at once :: 0",
-          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000001e51d926f40"
+          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000001d22ebd9e80"
         ]
       },
       {
@@ -76,26 +76,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL before the first mission: no hints, no marker :: 1/1",
-          "CHECK_FAIL the Forge step (on the way to the first weapon): no hints, no marker :: 1/2",
-          "CHECK_FAIL no attack hint before Idle s :: 1"
-        ]
-      },
-      {
-        "mutation": "hints on the way to the Forge (A23-74)",
-        "applied": true,
-        "caught": true,
-        "failures": [
-          "CHECK_FAIL the Forge step (on the way to the first weapon): no hints, no marker :: 1/1",
           "CHECK_FAIL no attack hint before Idle s :: 1",
           "CHECK_FAIL a swing of mine restarts the wait :: 1"
-        ]
-      },
-      {
-        "mutation": "the Forge walk says the zone",
-        "applied": true,
-        "caught": true,
-        "failures": [
-          "CHECK_FAIL the Forge walk: 'Off to the Forge!  3' :: Off to Crossroads!  3"
         ]
       },
       {
@@ -111,9 +93,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Idle s near a monster without my swing -> the attack hint :: Attack",
-          "CHECK_FAIL the attack hint shows once :: 42",
-          "CHECK_FAIL no Q hint after the kill (A23-71: it comes with learning Q at Lv5) :: Attack"
+          "CHECK_FAIL the attack hint shows once :: 41",
+          "CHECK_FAIL no Q hint after the kill (A23-71: it comes with learning Q at Lv5) :: Attack",
+          "CHECK_FAIL no marker after the kill :: 71"
         ]
       },
       {
@@ -137,7 +119,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000013680e573f0"
+          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000022795829c40"
         ]
       },
       {
@@ -145,17 +127,17 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my first kill clears the marker :: table: 0x00000206b0e563f0"
+          "CHECK_FAIL my first kill clears the marker :: table: 0x0000029b845c18d0"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "024fee7016e993de85ac23aa99a129a5d31a2e8cedd9cfec863b5d52424dbe25",
-    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "1adfa845426841cc59847245d5d8eafccd0492670149490f22323a5515248a6a",
+    "src/ReplicatedStorage/Shared/Config.luau": "00be05b460f51ec44f524b1182222ff9a9870bf22aa4e800a5e25fb560c243db",
+    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "fa6bb2d48ecf24b14a6ee637afdc80a581354eb3ba2e6654222d9f097ccce839",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "c0137c9cc4d887e85d146d631e8cb83939addd9ebe99ac120a61081b83bf78ee"
   },
-  "fixtureSHA256": "9575c90a20103e687fbef7fc362a6cdbabd89c5fda0e25f09e330c399cc3e5a0",
+  "fixtureSHA256": "f81f5c5155457e29c1c9576cc5b4c9e16653c1bc55cde1cfb9ae747461a1f82e",
   "studioCalls": 0,
   "contract": "A23-68 first-minutes helpers offline test (FirstSteps.luau; user 2026-10-07 \"ㅇㅇ 모두 좋다 구현하자\").\n#1 travel fade (dev2 324055a contract: Fx \"Travel\" { UserId, To, T } -> the server moves me T s later -> always\nFx \"TravelDone\" { UserId }): only my Travel counts; the guide window closes; 'Off to Squishy Meadow!  3' / 2 / 1;\nblack from T - Fade; TravelDone lifts it at once, else T + MaxExtra; the gui goes afterwards; a newer Travel keeps its\nown timing. #2 hints in place during the first mission (TutorialStep 1..98): Idle s within my reach of a monster\nwithout a swing of mine -> C.HUD.Hint(\"Attack\") once (my swing restarts the wait, others' swings do not); in the meadow\nbefore my first kill a marker over the nearest monster (my own slime first) via C.QuestMarker.Focus, not re-sent while\nunchanged, cleared outside the meadow; my first kill (Reward) clears it (the Q hint moved to the Lv5 learn moment,\nA23-71: no hint after the kill); nothing before / after the first mission. Static: ClientMain loads FirstSteps before SkillBar / Audio.\nRuns the real FirstSteps.luau + Config.luau in tools/fixtures/first_steps_offline.luau.",
   "limitations": "The hint looks (HUD.Hint, QuestMarker.Focus) are image dev's; how the fade and the hints feel with the real server move is a Studio check (accept -> meadow)."

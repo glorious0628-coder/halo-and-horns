@@ -95,6 +95,10 @@ local function fixture(saved, opts)
 	local util = { DeepCopy = copy, Warn = function(tag, msg) if tag ~= "DataService" then error(tag .. ": " .. msg) end end,
 		IsAlive = function() return f.Alive end, FormatNumber = tostring, Now = function() return 100 end,
 		GetCharacter = function() return f.Character end,
+		-- A23-74: no root and no anvil here (QuestService's forge trip lands at the Crossroads only: tools/test_weapon_first.py
+		-- checks the spot in front of the anvil)
+		GetRoot = function() return nil end,
+		FlatDistance = function(a, b) return math.sqrt((a.X - b.X) ^ 2 + (a.Z - b.Z) ^ 2) end,
 		RateLimit = function() return f.RateAllowed end,
 		Random = { NextNumber = function(_, a, b) return a and (a + b) / 2 or 0.5 end, NextInteger = function(_, a) return a end } }
 	local net = { Get = function(name)
@@ -164,7 +168,7 @@ local function fixture(saved, opts)
 	questEnv.os = setmetatable({ clock = function() return f.Clock end }, { __index = os })
 	local quest = execute(QUEST_SOURCE, questEnv); quest.Init(registry); quest.Start()
 	ps.PlayerReady:Fire(f.Player, f.Data)
-	f.Services, f.DataService = registry, dataService
+	f.Services, f.DataService, f.Quest = registry, dataService, quest
 	-- loops run in the order they were started (QuestService: publish, then tutorial), so every run is the same
 	function f:Tick()
 		local list = {}
@@ -185,6 +189,8 @@ local function fixture(saved, opts)
 		ps.SetStat(self.Player, "Faction", "Halo"); ps.SetStat(self.Player, "ClassChosen", true)
 		registry.ClassService.ClassChanged:Fire(self.Player)
 	end
+	-- A23-74: own the first weapon (a save from before A23-34, or one past the Forge step): [Accept] goes to step 1
+	function f:Arm() ps.SetStat(self.Player, "WeaponOwnedMask", 1); ps.SetStat(self.Player, "WeaponTier", 1) end
 	function f:ZoneTo(zone) self.Zone = zone; registry.ZoneService.ZoneChanged:Fire(self.Player, zone); self:Publish() end
 	function f:Claim() self.Remote.ClaimQuest.OnServerEvent:Fire(self.Player, "tutorial"); self:Publish() end
 	function f:Request(...) self.Remote.RequestTutorial.OnServerEvent:Fire(self.Player, ...) end
@@ -219,6 +225,25 @@ do
 	for _, fn in f.Delayed do fn() end; f:Publish()
 	check(#f.Panels == 1 and f.Data.TutorialStep == 0, "closed welcome auto-reopened/accepted")
 	f:Request(); check(#f.Panels == 2 and f.Data.TutorialStep == 0, "request did not reopen without accepting")
+	-- A23-74 (user 2026-10-07 "무기를 제일 먼저"): a bare-handed acceptance goes to the Forge step first
+	local TT, SN = f.Config.Tutorial.Text, f.Config.Tutorial.ShortNames
+	f:Accept(); f:Publish()
+	check(f.Data.TutorialStep == 3 and f.LastList[1].TutorialStep == 3 and f.LastList[1].Text == TT.Forge
+		and f.LastList[1].ShortName == SN.Forge and f.LastList[1].CanClaim == false and f.LastList[1].ShowProgress == false,
+		"A23-74: a bare-handed accept pins the Forge row (step 3, 'To the Forge', not claimable)")
+	check(f.FxLog[#f.FxLog].Kind == "Travel" and f.FxLog[#f.FxLog].Data.To == "Crossroads" and f.FxLog[#f.FxLog].Data.Spot == "Forge",
+		"A23-74: the forge trip's Fx Travel { To = Crossroads, Spot = Forge }")
+	f:Claim(); check(f.Data.BankGold == 0 and f.Data.TutorialStep == 3, "A23-74: the Forge row pays nothing")
+	table.remove(f.Delayed)(); f:Publish()
+	check(#f.Travels == 1 and f.Travels[1].Dest == "Crossroads" and f.Travels[1].Instant == true and f.Data.TutorialStep == 3,
+		"A23-74: the delayed forge move is an instant Travel to the Crossroads (still step 3)")
+	f:ZoneTo("SlimeMeadow"); f:Kill()
+	check(f.Data.TutorialStep == 3 and f.Data.TutorialKills == 0, "A23-74: the meadow before the Forge credits no kill")
+	check(f.Quest.ForgeGift(f.Player) == true and f.Data.TutorialStep == 2,
+		"A23-74: the gift moves the mission on (standing in the meadow: straight to the hunt)")
+	check(f.Notices[#f.Notices - 1] == TT.ForgeGift, "A23-74: Otto's gift line", tostring(f.Notices[#f.Notices - 1]))
+	check(f.Quest.ForgeGift(f.Player) == false, "A23-74: no second gift after the Forge step")
+	f = fixture(); f:Choose(); f:Publish(); f:Arm()
 	f:Accept(); f:Publish()
 	check(f.Data.TutorialStep == 1 and f.LastList[1].TutorialStep == 1, "accept did not pin meadow travel")
 	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Travel, "the travel row's ShortName")
@@ -287,16 +312,23 @@ do
 	local last = f.Notices[#f.Notices]
 	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)), "bare-handed: the Claimed line", last)
 end
--- A23-34 (검수): a save that already owns tier 1 (from before A23-34) keeps its visit and gets no first-weapon promise
+-- A23-74: the first weapon came at the Forge step, so every claim clears the earlier visit (M1_1 = a new visit with the
+-- jelly) and the claim line points to the next weapon; a save that owns a better weapon already gets "check the gear"
 do
 	local initial = saved(2, 5); initial.BlacksmithVisited = true -- Version 2: owns tier 1 after migrate
 	local f = fixture(initial)
 	f:Claim()
 	local T = f.Config.Tutorial.Text
-	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == true and bit32.btest(f.Data.WeaponOwnedMask, 1),
-		"a tier-1 owner keeps the anvil visit at the claim")
+	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == false and f.Data.WeaponOwnedMask == 1,
+		"A23-74: a tier-1 owner's claim clears the anvil visit too (M1_1 needs a new one)")
 	local last = f.Notices[#f.Notices]
-	check(last == string.format(T.ClaimedArmed, tostring(f.Config.Tutorial.QuestRewardGold)), "a tier-1 owner: the old Claimed line", last)
+	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)),
+		"A23-74: a tier-1 owner gets the next-weapon line", last)
+	local h = saved(2, 5); h.Version, h.WeaponTier, h.WeaponOwnedMask, h.BlacksmithVisited = 3, 2, 3, true
+	local k = fixture(h)
+	k:Claim()
+	check(k.Data.BlacksmithVisited == false and k.Notices[#k.Notices] == string.format(T.ClaimedArmed, tostring(k.Config.Tutorial.QuestRewardGold)),
+		"A23-74: a save that owns the tier-2 weapon already: the 'check the gear' line", k.Notices[#k.Notices])
 	local g = fixture(saved(99, 5)) -- step 99, tier 1 owned, no visit yet: the row has no first-weapon promise
 	check(g.LastList[1].Text == T.VisitBlacksmithArmed, "a tier-1 owner's pinned row: 'check the weapons'", g.LastList[1].Text)
 end
@@ -305,7 +337,11 @@ for _, test in { { -4, 0 }, { 2.8, 2 }, { 99, 5 }, { "4", 0 }, { 0/0, 0 }, { mat
 end
 do
 	local f = fixture({ Version = 2, Level = 9 }); check(f.Data.TutorialStep == 99 and f.Data.TutorialKills == 0, "legacy save reopened onboarding")
-	for _, step in { 3, -1, 0/0, math.huge } do local g = fixture(saved(step, 4)); check(g.Data.TutorialStep == 99, "invalid step remained stuck") end
+	for _, step in { 4, -1, 0/0, math.huge } do local g = fixture(saved(step, 4)); check(g.Data.TutorialStep == 99, "invalid step remained stuck") end
+	-- A23-74: 3 is the Forge step now (accepted, on the way to the first weapon): kept like the other accepted steps
+	local k = fixture(saved(3, 0)); check(k.Data.TutorialStep == 3, "A23-74: the Forge step was reset at load")
+	local record = k:SaveAndRejoin()
+	check(record.TutorialStep == 3 and k.Data.TutorialStep == 3, "A23-74: the Forge step did not survive save/reload")
 end
 do
 	local f = fixture(saved(2, 4)); f.Alive = false; f.Services.PlayerService.CharacterSpawned:Fire(f.Player)
@@ -325,7 +361,9 @@ do
 	check(f.Data.TutorialStep == 2 and f.Data.TutorialKills == 1, "accepted meadow combat did not count1/5")
 	local g = fixture(); g.Zone = "SlimeMeadow"; g:Choose(); g:Publish()
 	check(g.Data.TutorialStep == 0 and #g.Spawned == 0, "class choice in meadow bypassed dialogue")
-	g:Accept(); check(g.Data.TutorialStep == 2 and g.Data.TutorialKills == 0, "meadow acceptance failed")
+	-- A23-74: bare-handed, the weapon comes first even when the acceptance happens in the meadow (no kill credited)
+	g:Accept(); check(g.Data.TutorialStep == 3 and g.Data.TutorialKills == 0, "A23-74: a bare-handed meadow acceptance skipped the Forge")
+	g:Kill(); check(g.Data.TutorialStep == 3 and g.Data.TutorialKills == 0, "A23-74: a meadow kill before the Forge counted")
 end
 -- Tutorial acceptance is the only step0 transition; no client arguments can select a faction, stage or reward.
 for _, faction in { "Halo", "Horns", "Neutral" } do
@@ -371,10 +409,15 @@ do
 	f:SaveAndRejoin()
 	check(f.Data.TutorialStep == 0 and #f.Panels == 2, "pending welcome not restored once in new session")
 end
-for _, step in { 1, 2, 99 } do
+for _, step in { 1, 2, 3, 99 } do
 	local f = fixture(saved(step, 4)); f:Request(); f:Accept(); f:Publish()
 	check(f.Data.TutorialStep == step and f.Data.TutorialKills == 4 and #f.Panels == 0,
 		"existing accepted/completed save was reopened or reset")
+	-- A23-74: at the Forge step the request is the forge trip again (the row's tap after a rejoin at home)
+	local trips = 0
+	for _, fx in f.FxLog do if fx.Kind == "Travel" and fx.Data.Spot == "Forge" then trips += 1 end end
+	check(trips == (step == 3 and 1 or 0), "A23-74: RequestTutorial asks for the forge trip at the Forge step only (step "
+		.. step .. ": " .. trips .. ")")
 end
 do
 	local f = fixture(saved(99, 5)); f:Publish(); check(f.LastList[1].CanClaim == false, "post-reward hint is claimable")
@@ -700,9 +743,9 @@ do
 	local function lines(f)
 		local gold = tostring(f.Config.Tutorial.QuestRewardGold)
 		local T = f.Config.Tutorial.Text
-		-- A23-34 (검수): a save that owns tier 1 (these Version 2 rows do after migrate) gets the lines without the
-		-- first-weapon promise
-		local armed = bit32.btest(math.floor(tonumber(f.Data.WeaponOwnedMask) or 0), 1)
+		-- A23-74: only a save that owns a better weapon than the first one gets the lines without the next-weapon promise
+		-- (these Version 2 rows own tier 1 only after migrate: the next-weapon lines)
+		local armed = bit32.band(math.floor(tonumber(f.Data.WeaponOwnedMask) or 0), bit32.bnot(1)) ~= 0
 		return string.format(armed and T.AutoClaimedArmed or T.AutoClaimed, gold), string.format(armed and T.ClaimedArmed or T.Claimed, gold)
 	end
 	local function count(f, text)
@@ -806,7 +849,7 @@ end
 -- A23-68 #1: [Accept] -> AcceptTravelSeconds -> an instant Travel to the meadow entrance (the client fades on Fx
 -- "MeadowTravel"); #4: until the first [Claim] every other quest row is folded
 do
-	local f = fixture(); f:Choose(); f:Publish()
+	local f = fixture(); f:Choose(); f:Publish(); f:Arm() -- A23-74: the first weapon in hand (no Forge step)
 	local T = f.Config.Tutorial
 	check(T.AcceptTravelSeconds == 3 and T.RespawnInMeadow == true and T.FoldOthers == true,
 		"A23-68 Config.Tutorial: travel 3 s, respawn in the meadow, fold the other rows")
@@ -841,20 +884,37 @@ do
 	for _, row in f.LastList do if row.Folded ~= nil then stillFolded += 1 end end
 	check(stillFolded == 0, "A23-68 #4: after the first claim nothing is folded")
 	-- a new character before the move (a KO), a move the zone rules refuse, accepting in the meadow: no move
-	local g = fixture(); g:Choose(); g:Publish(); g:Accept()
+	local g = fixture(); g:Choose(); g:Publish(); g:Arm(); g:Accept()
 	g.Character = { Name = "Body2" }
 	table.remove(g.Delayed)()
 	check(#g.Travels == 0 and g.Data.TutorialStep == 1, "A23-68: a respawned character is not moved (the guide beam stays)")
 	check(g.FxLog[#g.FxLog].Kind == "TravelDone" and g.Player:GetAttribute("MoveLockUntil") == 0,
 		"A23-68: no move still ends the fade (TravelDone) and lifts the lock")
-	local h = fixture(); h:Choose(); h:Publish(); h.TravelOk = false; h:Accept()
+	local h = fixture(); h:Choose(); h:Publish(); h:Arm(); h.TravelOk = false; h:Accept()
 	table.remove(h.Delayed)()
 	check(#h.Travels == 1 and h.Data.TutorialStep == 1, "A23-68: a refused Travel keeps step 1 (walk with the guide beam)")
-	local m = fixture(); m:Choose(); m.Zone = "SlimeMeadow"; m:Publish()
+	local m = fixture(); m:Choose(); m.Zone = "SlimeMeadow"; m:Publish(); m:Arm()
 	local mBefore = #m.Delayed
 	m:Accept(); m:Publish()
 	check(m.Data.TutorialStep == 2 and #m.Delayed == mBefore and #m.FxLog == 0 and m.Player:GetAttribute("MoveLockUntil") == nil,
 		"A23-68: accepting in the meadow moves nobody (no fade, no lock)")
+	-- A23-74: bare-handed: [Accept] -> the forge trip -> the gift -> Forge.TravelDelay later the meadow trip -> the hunt
+	local w = fixture(); w:Choose(); w:Publish()
+	local wBefore = #w.Delayed
+	w:Accept(); w:Publish()
+	check(w.Data.TutorialStep == 3 and #w.Delayed == wBefore + 1 and w.FxLog[1].Data.To == "Crossroads" and w.FxLog[1].Data.T == 3
+		and w.Player:GetAttribute("MoveLockUntil") == 100 + 3 + 1.5, "A23-74: the forge trip uses the same 3 s fade and lock")
+	table.remove(w.Delayed)(); w:Publish()
+	check(w.Zone == "Crossroads" and w.FxLog[2].Kind == "TravelDone" and w.Player:GetAttribute("MoveLockUntil") == 0,
+		"A23-74: at the Crossroads, the fade ends and the lock is lifted")
+	check(w.Quest.ForgeGift(w.Player) == true and w.Data.TutorialStep == 1 and #w.FxLog == 2 and #w.Delayed == wBefore + 1,
+		"A23-74: the gift: step 1, the meadow trip waits Forge.TravelDelay (the Stronger! moment first)")
+	table.remove(w.Delayed)(); w:Publish()
+	check(#w.FxLog == 3 and w.FxLog[3].Kind == "Travel" and w.FxLog[3].Data.To == "SlimeMeadow" and w.FxLog[3].Data.Spot == nil
+		and #w.Delayed == wBefore + 1, "A23-74: then the usual meadow trip (Fx Travel To = SlimeMeadow)")
+	table.remove(w.Delayed)(); w:Publish()
+	check(w.Zone == "SlimeMeadow" and w.Data.TutorialStep == 2 and w.LastList[1].Target == 5,
+		"A23-74: arriving after the gift starts the hunt (step 2)")
 	-- PlayerService.respawnZoneId: the meadow entrance while the first mission runs, else home
 	local function cut(source, header)
 		local a = assert(string.find(source, header, 1, true), header)
@@ -868,7 +928,8 @@ do
 	local fn = assert(loadstring(chunk))
 	local respawnZoneId = fn({ DataService = { Get = function() return data end } }, f.Config)
 	local home = f.Config.HomeZoneId("Halo")
-	for _, case in { { 0, home }, { 1, "SlimeMeadow" }, { 2, "SlimeMeadow" }, { 99, home } } do
+	-- A23-74: the Forge step (3) is a town step: home
+	for _, case in { { 0, home }, { 1, "SlimeMeadow" }, { 2, "SlimeMeadow" }, { 3, home }, { 99, home } } do
 		data.TutorialStep = case[1]
 		check(respawnZoneId(who) == case[2], "A23-68 respawn at step " .. case[1] .. " -> " .. tostring(case[2]))
 	end

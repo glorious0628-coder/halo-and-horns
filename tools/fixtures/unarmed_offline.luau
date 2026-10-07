@@ -90,8 +90,12 @@ runGroup("config", function()
 	} do
 		check(same(pair[1][pair[2]], pair[1][pair[2] .. "En"]), "text " .. pair[2] .. " has KO + EN with the same placeholders")
 	end
-	check(not has(C.Tutorial.Text.Claimed, "Check the gear") and has(C.Tutorial.Text.Claimed, "first weapon"),
-		"first-mission line points to the free first weapon")
+	-- A23-74: the first weapon is in hand before the hunt, so the claim line points to the next one (150 gold = tier 2)
+	check(not has(C.Tutorial.Text.Claimed, "Check the gear") and has(C.Tutorial.Text.Claimed, "new weapon")
+		and C.Tutorial.QuestRewardGold == C.Weapons[2].Price,
+		"first-mission line points to the next weapon (its reward = the tier-2 price)", C.Tutorial.Text.Claimed)
+	check(has(C.Text.WeaponFromQuest, "Guide's first quest") and not has(C.Text.WeaponFromQuest, "after your first mission"),
+		"the tier-1 refusal says the gift comes with the Guide's first quest", C.Text.WeaponFromQuest)
 	check(C.WeaponInfo[1].Source ~= "처음부터 가진 무기" and has(C.WeaponInfo[1].Source, "Blacksmith"),
 		"tier 1 source = the blacksmith's gift", C.WeaponInfo[1].Source)
 end)

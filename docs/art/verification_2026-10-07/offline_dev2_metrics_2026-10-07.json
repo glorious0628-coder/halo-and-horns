@@ -1,15 +1,15 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 92,
+  "checks": 95,
   "failedChecks": 0,
-  "namedChecks": 85,
+  "namedChecks": 87,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "config",
-      "check": "the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle)",
+      "check": "the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle; A23-74: the Forge and the first weapon right after the acceptance)",
       "pass": 1,
       "fail": 0
     },
@@ -46,7 +46,7 @@
     {
       "group": "funnel",
       "check": "Start spawns the minute and the 5-minute loops",
-      "pass": 4,
+      "pass": 5,
       "fail": 0
     },
     {
@@ -57,7 +57,13 @@
     },
     {
       "group": "funnel",
-      "check": "the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)",
+      "check": "A23-74: the Forge step is an acceptance, not a meadow arrival",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)",
       "pass": 1,
       "fail": 0
     },
@@ -75,13 +81,19 @@
     },
     {
       "group": "funnel",
-      "check": "an old save catches up the steps it passed (auto not yet)",
+      "check": "an old save catches up the steps it passed, in the funnel's order (auto not yet)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "funnel",
       "check": "accepted only: no meadow / hit / kill yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "A23-74: a save at the Forge step catches up the acceptance only",
       "pass": 1,
       "fail": 0
     },
@@ -522,9 +534,9 @@
   "staticChecks": 10,
   "staticFailures": [],
   "mutations": {
-    "total": 48,
-    "applied": 48,
-    "caught": 48,
+    "total": 51,
+    "applied": 51,
+    "caught": 51,
     "skipped": false,
     "results": [
       {
@@ -558,7 +570,7 @@
         "newFailingChecks": [
           "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
           "funnel :: a returning account logs no step twice",
-          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 3
       },
@@ -569,7 +581,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "funnel :: an old save catches up the steps it passed (auto not yet)"
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)"
         ],
         "newFailingCount": 1
       },
@@ -592,9 +604,49 @@
         "crashed": false,
         "newFailingChecks": [
           "funnel :: a returning account logs no step twice",
-          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "the Forge step counts as a meadow arrival",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: A23-74: a save at the Forge step catches up the acceptance only",
+          "funnel :: A23-74: the Forge step is an acceptance, not a meadow arrival",
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "an old save catches up the Forge after the meadow",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: the Forge back after the first mission",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle; A23-74: the Forge and the first weapon right after the acceptance)",
+          "first 3 minutes :: FirstHit once; later hits log nothing",
+          "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
+          "first 3 minutes :: walking into the meadow (no guide step) counts as arriving",
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)",
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 6
       },
       {
         "mutation": "no first kill",
@@ -604,7 +656,7 @@
         "crashed": false,
         "newFailingChecks": [
           "funnel :: a returning account logs no step twice",
-          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 2
       },
@@ -615,12 +667,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle)",
+          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle; A23-74: the Forge and the first weapon right after the acceptance)",
           "first 3 minutes :: FirstHit once; later hits log nothing",
           "first 3 minutes :: a manual skill that hit a monster: FirstSkillHit",
           "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
           "first 3 minutes :: walking into the meadow (no guide step) counts as arriving",
-          "funnel :: an old save catches up the steps it passed (auto not yet)"
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)"
         ],
         "newFailingCount": 7
       },
@@ -631,22 +683,21 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle)",
+          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle; A23-74: the Forge and the first weapon right after the acceptance)",
           "first 3 minutes :: a manual skill that hit a monster: FirstSkillHit",
-          "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
-          "funnel :: an old save catches up the steps it passed (auto not yet)",
-          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)",
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 4
       },
       {
-        "mutation": "an old save catches up the skill hit before the weapon",
+        "mutation": "an old save catches up the skill hit before the first mission",
         "file": "src/ServerScriptService/TelemetryService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "funnel :: an old save catches up the steps it passed (auto not yet)"
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)"
         ],
         "newFailingCount": 1
       },
@@ -658,7 +709,7 @@
         "crashed": false,
         "newFailingChecks": [
           "funnel :: a returning account logs no step twice",
-          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 2
       },
@@ -671,7 +722,7 @@
         "newFailingChecks": [
           "funnel :: a returning account logs no step twice",
           "funnel :: saved: Funnel names + Sessions 1",
-          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
         ],
         "newFailingCount": 3
       },
@@ -682,10 +733,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "funnel :: A23-74: a save at the Forge step catches up the acceptance only",
           "funnel :: accepted only: no meadow / hit / kill yet",
-          "funnel :: an old save catches up the steps it passed (auto not yet)"
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "step numbers from 0",
@@ -698,10 +750,10 @@
           "first 3 minutes :: a manual skill that hit a monster: FirstSkillHit",
           "first 3 minutes :: the smith's prompt (BlacksmithVisited): ForgeArrive",
           "first 3 minutes :: walking into the meadow (no guide step) counts as arriving",
-          "funnel :: accepted only: no meadow / hit / kill yet",
-          "funnel :: an old save catches up the steps it passed (auto not yet)"
+          "funnel :: A23-74: a save at the Forge step catches up the acceptance only",
+          "funnel :: A23-74: the Forge step is an acceptance, not a meadow arrival"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "the funnel misses a step",
@@ -710,12 +762,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle)",
+          "config :: the funnel = BB38's 8 steps + A23-68's first 3 minutes (13 in order; A23-71 S13: the first skill at Lv5, after the first weapon and before Auto Battle; A23-74: the Forge and the first weapon right after the acceptance)",
+          "first 3 minutes :: FirstHit once; later hits log nothing",
           "first 3 minutes :: a manual skill that hit a monster: FirstSkillHit",
-          "funnel :: an old save catches up the steps it passed (auto not yet)",
-          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; Level 10 at 10, not again at 11)"
+          "first 3 minutes :: walking into the meadow (no guide step) counts as arriving",
+          "funnel :: an old save catches up the steps it passed, in the funnel's order (auto not yet)",
+          "funnel :: the 13 steps in order, each once (two hits: one FirstHit; the second forge visit nothing; Level 10 at 10, not again at 11)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "FirstDeath every KO",
@@ -1093,16 +1147,16 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "024fee7016e993de85ac23aa99a129a5d31a2e8cedd9cfec863b5d52424dbe25",
+    "src/ReplicatedStorage/Shared/Config.luau": "00be05b460f51ec44f524b1182222ff9a9870bf22aa4e800a5e25fb560c243db",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/TelemetryService.luau": "9a2c85ac23ffc5e5d1c48862b3b468111e53f14c87fc81b532c6e17a3a7746c0",
+    "src/ServerScriptService/TelemetryService.luau": "76173be234b8c2cf8055a998aef6085fd7a86709d5f1cf80de026db4406d0261",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
   },
-  "fixtureSHA256": "059541c4f1ea414749e8305bd70c299fbe5b77975258be62aa1c418173c92068",
+  "fixtureSHA256": "6b7791c94dea7b4e77a56db9965698088f2d5153012d133d4695983fe411deb0",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "BB38: the onboarding funnel (Config.Analytics.Steps, 13 steps in order with A23-68's first 3 minutes and A23-71 S13's FirstSkillHit after FirstWeapon, before AutoUnlocked; once per account, old saves catch up in that order), c->s UiMetric(id) -> WindowOpen_<id> (Config.Analytics.UiIds, one argument, ready, 2 s, once a session), KeyRebind (SettingsService.KeysChanged), AutoOn / AutoOff, FirstDeath_<By> (CombatService.KnockedOut, once per account), Plunder_Kept / _Avenged / _Returned, EnhanceFailLeave (a failed enhance then a leave within 300 s), SameKindStreak (30 in a row, once a session per kind), ReturnAct (a returning player's first 3 zone / window actions); at leave: SessionMinutes, AutoAwayMinutes (auto ON, no own action for 300 s), GoldIn / GoldOut per source / sink (ProgressionService.GoldEarned / GoldSpent with reasons), FriendMinutes, KillsTogether / KillsWithFriend (MonsterKilled Party / Others, IsFriendsWith once per pair), ZoneMinutes, RankingViews. No names, UserIds or free text; Studio prints every call ([Metrics]).",
+  "contract": "BB38: the onboarding funnel (Config.Analytics.Steps, 13 steps in order with A23-68's first 3 minutes, A23-71 S13's FirstSkillHit after FirstWeapon, before AutoUnlocked, and A23-74's ForgeArrive / FirstWeapon right after FirstMissionAccept, before MeadowArrive (TutorialStep 3 = the Forge step is an acceptance, not a meadow arrival); once per account, old saves catch up in that order), c->s UiMetric(id) -> WindowOpen_<id> (Config.Analytics.UiIds, one argument, ready, 2 s, once a session), KeyRebind (SettingsService.KeysChanged), AutoOn / AutoOff, FirstDeath_<By> (CombatService.KnockedOut, once per account), Plunder_Kept / _Avenged / _Returned, EnhanceFailLeave (a failed enhance then a leave within 300 s), SameKindStreak (30 in a row, once a session per kind), ReturnAct (a returning player's first 3 zone / window actions); at leave: SessionMinutes, AutoAwayMinutes (auto ON, no own action for 300 s), GoldIn / GoldOut per source / sink (ProgressionService.GoldEarned / GoldSpent with reasons), FriendMinutes, KillsTogether / KillsWithFriend (MonsterKilled Party / Others, IsFriendsWith once per pair), ZoneMinutes, RankingViews. No names, UserIds or free text; Studio prints every call ([Metrics]).",
   "limitations": "The real AnalyticsService dashboard and its limits are not reached offline. The client's UiMetric sends (Panels, the Tab list) are game dev 1's. The 5-minute loop (HighLevelInMeadow, ServerPopulation) is not stepped here (unchanged)."
 }
