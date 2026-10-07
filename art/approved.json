@@ -5015,5 +5015,144 @@
   "preview": "art/review/s2/a2357_class_cards_equal.png",
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "Tex_Basalt_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (quality ⑦ sheet art/review/zone/horns_town_brightness_7.jpg, commit cdaaeaa)",
+  "source": "art/ui/Tex_Basalt_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_Basalt_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel curve keeps the tiling)",
+  "edit": "darks lifted on luminance only: L' = 1-(1-L)^1.45, RGB scaled by L'/L (hue kept); mean luma 0.222 -> 0.305",
+  "use": "replaces Tex_Basalt (Horns lair floor GE_Basalt) after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_Basalt"
+ },
+ "JobBoard": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_JobBoard_A.txt",
+  "original": "art/out/s2/UIP_JobBoard_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/JobBoard.png",
+  "size": "1024x647 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; checked 4x on navy/magenta/white",
+  "layout": {
+   "Header": [
+    0.27,
+    0.04,
+    0.461,
+    0.1
+   ],
+   "Inner": [
+    0.087,
+    0.182,
+    0.829,
+    0.683
+   ]
+  },
+  "slice": [
+   320,
+   130,
+   704,
+   550
+  ],
+  "preview": "art/review/s2/e11_job_board_sheet.jpg",
+  "note": "E11 사냥터 게시판 창(나무 판 + 코르크 + 위 남색 이름판). 글자 없음 — Header = 이름판(흰 글자 'Job Board'), Inner = 코르크(위쪽 줄 'Kind 12 · Sneaky 3'·'Jobs 1 / 3' + 의뢰 카드 4장). slice는 이름판 끝 금 단추(x 286~304, 718~737)를 피해 [320,130,704,550]: 늘리면 이름판 가운데 줄·코르크·나무 테만 길어짐. 폰(749×361)에서 카드 4장 가로는 글자가 너무 작음 → 폰은 카드 2장씩 넘기기나 2×2 등, 배치는 이미지 개발이 정함(검수 2026-10-07).",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+ },
+ "JobCard": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_JobCard_A.txt",
+  "original": "art/out/s2/UIP_JobCard_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/JobCard.png",
+  "size": "339x512 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked 4x on navy/magenta/white",
+  "layout": {
+   "Body": [
+    0.065,
+    0.079,
+    0.867,
+    0.861
+   ]
+  },
+  "preview": "art/review/s2/e11_job_board_sheet.jpg",
+  "note": "E11 의뢰 카드(크림 종이 + 금 테 + 위 가운데 빨간 핀). 핀 때문에 9조각 없이 비율 유지(Fit). 시트 예시 배치(Body 높이 기준): 제목 14%, 목표 31%, 보상 47%(짙은 갈색 글자), BtnKind 56~76%, BtnSneaky 78~98%(Body 폭의 92%).",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+ },
+ "BtnKind": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BtnKind_B.txt",
+  "original": "art/out/s2/UIP_BtnKind_B_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BtnKind.png",
+  "size": "512x175 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked 4x on navy/magenta/white",
+  "layout": {
+   "Text": [
+    0.053,
+    0.123,
+    0.893,
+    0.596
+   ]
+  },
+  "slice": [
+   88,
+   54,
+   424,
+   121
+  ],
+  "preview": "art/review/s2/e11_job_board_sheet.jpg",
+  "note": "E11 [Kind] 버튼(하늘색 + 두꺼운 금 테, 빈 버튼, 가로 9조각). 글자 'Kind' 흰색 + 어두운 테두리. BtnSecondary(남색 테)와 금 테로 구별.",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+ },
+ "BtnSneaky": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BtnSneaky_B.txt",
+  "original": "art/out/s2/UIP_BtnSneaky_B_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BtnSneaky.png",
+  "size": "512x171 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked 4x on navy/magenta/white",
+  "layout": {
+   "Text": [
+    0.057,
+    0.117,
+    0.887,
+    0.612
+   ]
+  },
+  "slice": [
+   86,
+   53,
+   426,
+   118
+  ],
+  "preview": "art/review/s2/e11_job_board_sheet.jpg",
+  "note": "E11 [Sneaky] 버튼(보라색 + 두꺼운 금 테, 빈 버튼, 가로 9조각). 글자 'Sneaky' 흰색 + 어두운 테두리. BtnKind와 같은 모양·크기.",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+ },
+ "JobTag": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_JobTag_A.txt",
+  "original": "art/out/s2/UIP_JobTag_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/JobTag.png",
+  "size": "256x106 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 256 --holes --keep-largest; checked 4x on navy/magenta/white; hole inner gray fringe (80px) recoloured to the hole outline colour",
+  "layout": {
+   "Text": [
+    0.2,
+    0.118,
+    0.745,
+    0.578
+   ]
+  },
+  "preview": "art/review/s2/e11_job_board_sheet.jpg",
+  "note": "E11 퀘스트 목록 'Job' 꼬리표(주황 + 금 테, 왼쪽 뾰족한 끝 + 투명 구멍). Text 칸에 'Job'(흰색 + 어두운 테두리). 퀘스트 줄 Badge 자리(아이콘 오른쪽)에 받은 의뢰만. 비율 유지, 게임 크기 약 44x18~84x34.",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
  }
 }

@@ -28,8 +28,9 @@ local definitions = {
 	{ Key = "Tex_CrownShardGround", Name = "GE_CrownShardGround", Material = Enum.Material.Ground },
 	{ Key = "Tex_CrackedLava", Name = "GE_CrackedLava", Material = Enum.Material.CrackedLava, Override = true, Fresh = true,
 		StudsPerTile = 14, TerrainColor = PAINTED },
+	-- quality 8 (2026-10-07): one cobble ~1.4 studs (was ~2.5 = a torso) and Organic scatters the repeat
 	{ Key = "Tex_Cobblestone", Name = "GE_Cobblestone", Material = Enum.Material.Cobblestone, Override = true, Fresh = true,
-		StudsPerTile = 14, TerrainColor = PAINTED },
+		StudsPerTile = 8, Pattern = Enum.MaterialPattern.Organic, TerrainColor = PAINTED },
 	{ Key = "Tex_Basalt", Name = "GE_Basalt", Material = Enum.Material.Basalt, Override = true, Fresh = true,
 		StudsPerTile = 14, TerrainColor = PAINTED },
 	{ Key = "Tex_WoodPlanks", Name = "GE_WoodPlanks", Material = Enum.Material.WoodPlanks, Override = true, Fresh = true,
@@ -209,6 +210,7 @@ local ok, err = pcall(function()
 			variant.RoughnessMap = ""
 			variant:SetAttribute(freshMarker, row.Id)
 			if row.StudsPerTile then variant.StudsPerTile = row.StudsPerTile end
+			if row.Pattern then variant.MaterialPattern = row.Pattern end
 		end
 		table.insert(result.Updated, row.Name)
 		if row.Override then
@@ -240,6 +242,7 @@ local ok, err = pcall(function()
 				"PBR 비우기 검증 실패: " .. row.Name)
 			assert(variant:GetAttribute(freshMarker) == row.Id, "새 재질 표시 검증 실패: " .. row.Name)
 			assert(not row.StudsPerTile or variant.StudsPerTile == row.StudsPerTile, "타일 크기 검증 실패: " .. row.Name)
+			assert(not row.Pattern or variant.MaterialPattern == row.Pattern, "무늬 검증 실패: " .. row.Name)
 		end
 		if row.TerrainColor then
 			assert(workspace.Terrain:GetMaterialColor(row.Material) == row.TerrainColor, "지형 색 검증 실패: " .. row.Name)
