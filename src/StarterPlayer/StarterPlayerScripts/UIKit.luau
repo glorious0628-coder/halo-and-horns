@@ -215,6 +215,10 @@ local NOTIFY = {
 	-- height is taller than the measurement and the last line was dropped for "..." (UiSandbox 655x340, 2026-10-06)
 	WrapSlack = 0.15,
 	TrimQueued = false,
+	-- UI round 2 #4 (검수 2026-10-07: "창이 열려 있으면 알림은 창 위 한 줄로"): the open window's rect (MainGui du, its title
+	-- ribbon included; UIKit.SetNotifyAvoid from Panels) - toasts then show one line, one at a time, just above the window
+	-- (else just below it; else in the column as before) and big banners come as that one line
+	Avoid = nil,
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
 	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4 },
 	-- 창 꾸미기 ③ the reward popup (UIKit.RewardPopup), du: plate width, banner (BannerGold 512 x 178, text box
@@ -2253,6 +2257,7 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 end
 
 function NOTIFY.ToastCap()
+	if NOTIFY.Avoid then return 1 end -- a window is open: the newest line only
 	local rect = NOTIFY.Rect
 	if rect == nil then return toastMax end
 	local avail = rect.Y + rect.H - (NOTIFY.Y or rect.Y) - NOTIFY.BannerOffset()
@@ -2374,7 +2379,7 @@ function UIKit.Toast(text, kind, duration, icon)
 			label.Text = (string.gsub(text, " · ", "\n"))
 		end
 	end
-	UIKit.WrapHeight(label, NOTIFY.ToastLines, img and TOAST_ICON or nil)
+	UIKit.WrapHeight(label, NOTIFY.Avoid and 1 or NOTIFY.ToastLines, img and TOAST_ICON or nil)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
@@ -2463,10 +2468,44 @@ end
 
 function NOTIFY.PlaceToasts()
 	if not (NOTIFY.Rect and toastHolder) then return end
+	local av = NOTIFY.Avoid
+	if av and UIKit.Gui then
+		-- a window is open: one line just above it, else just below it (room for one line: NOTIFY.ToastEstimate)
+		local s = currentScale()
+		local top = insetY() / s + 4
+		local screenH = UIKit.Gui.AbsoluteSize.Y / s
+		local cx = math.floor(av.X + av.W / 2 + 0.5)
+		if av.Y - 6 - top >= NOTIFY.ToastEstimate then
+			toastHolder.AnchorPoint = Vector2.new(0.5, 1)
+			toastHolder.Position = UDim2.fromOffset(cx, math.floor(av.Y - 6))
+			NOTIFY.QueueTrim()
+			return
+		elseif screenH - (av.Y + av.H) - 6 >= NOTIFY.ToastEstimate then
+			toastHolder.AnchorPoint = Vector2.new(0.5, 0)
+			toastHolder.Position = UDim2.fromOffset(cx, math.floor(av.Y + av.H + 6))
+			NOTIFY.QueueTrim()
+			return
+		end
+		-- no room around it (phones, tall windows): the column as before, one line
+	end
 	local cx = math.floor(NOTIFY.Rect.X + NOTIFY.Rect.W / 2 + 0.5)
 	local ty = math.floor((NOTIFY.Y or NOTIFY.Rect.Y) + NOTIFY.BannerOffset() + 0.5)
+	toastHolder.AnchorPoint = Vector2.new(0.5, 0)
 	toastHolder.Position = UDim2.fromOffset(cx, ty)
 	NOTIFY.QueueTrim()
+end
+
+-- Panels tells where its open window is (nil = closed); the toasts move around it at once
+function UIKit.SetNotifyAvoid(rect)
+	local ok = type(rect) == "table" and NOTIFY.Num(rect.X) and NOTIFY.Num(rect.Y) and NOTIFY.Num(rect.W)
+		and NOTIFY.Num(rect.H)
+	local new = ok and { X = rect.X, Y = rect.Y, W = rect.W, H = rect.H } or nil
+	local old = NOTIFY.Avoid
+	if (old == nil) == (new == nil) and (new == nil or (math.abs(old.X - new.X) < 1 and math.abs(old.Y - new.Y) < 1
+		and math.abs(old.W - new.W) < 1 and math.abs(old.H - new.H) < 1)) then return end
+	NOTIFY.Avoid = new
+	NOTIFY.PlaceToasts()
+	NOTIFY.TrimToasts()
 end
 
 -- icon (optional, UIKit.ItemIcon): item / monster art left of the banner text
@@ -2514,6 +2553,11 @@ function UIKit.Announce(text, duration, icon)
 	if text == "" or not announceFrame then return end
 	duration = tonumber(duration) or DEFAULT_ANNOUNCE_SECONDS
 	if duration <= 0 then duration = DEFAULT_ANNOUNCE_SECONDS end
+	-- UI round 2 #4: a window is open - the big banner comes as the one line around it
+	if NOTIFY.Avoid then
+		UIKit.Toast(text, "reward", duration, icon)
+		return
+	end
 
 	if announceCurrent and related(announceCurrent.Text, text) then
 		if #text > #announceCurrent.Text then
@@ -2573,9 +2617,8 @@ function UIKit.PlaceNotify(rect, topY)
 	local cx = math.floor(x + w / 2 + 0.5)
 	local ty = math.floor(top + 0.5)
 	if toastHolder then
-		toastHolder.AnchorPoint = Vector2.new(0.5, 0)
-		toastHolder.Position = UDim2.fromOffset(cx, ty + NOTIFY.BannerOffset())
 		toastHolder.Size = UDim2.fromOffset(math.floor(w), 10)
+		NOTIFY.PlaceToasts() -- the column top, or around an open window (NOTIFY.Avoid)
 	end
 	if announceFrame then
 		local bannerH = math.max(math.min(NOTIFY.BannerH, y + h - top), NOTIFY.BannerMinH)
@@ -2844,6 +2887,7 @@ function UIKit.Init(registry)
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, TOAST_Y + TOP_FALLBACK),
 		Size = UDim2.fromOffset(TOAST_WIDTH, 10),
+		AutomaticSize = Enum.AutomaticSize.Y, -- its height = the toasts: anchored at the bottom it grows upward (Avoid)
 		BackgroundTransparency = 1,
 		ZIndex = Z_TOASTS,
 		Parent = gui,
@@ -3066,9 +3110,10 @@ function UIKit.RewardPopup(opts)
 		Name = "Title",
 		BackgroundTransparency = 1,
 		Text = tostring(opts.Title or ""),
-		Position = banner and UDim2.fromScale(0.254, 0.225) or UDim2.fromOffset(0, -cfg.TitleSize - 10),
-		Size = banner and UDim2.fromScale(0.492, 0.365) or UDim2.new(1, 0, 0, cfg.TitleSize + 6),
+		Position = banner and UDim2.fromScale(0.22, 0.2) or UDim2.fromOffset(0, -cfg.TitleSize - 10),
+		Size = banner and UDim2.fromScale(0.56, 0.42) or UDim2.new(1, 0, 0, cfg.TitleSize + 6),
 		TextScaled = true,
+		TextWrapped = false, -- one line that shrinks (phones showed "Vacation" with "Bonus" wrapped away)
 		ZIndex = panel.ZIndex + 4,
 	}, { UIKit.Create("UITextSizeConstraint", { MaxTextSize = cfg.TitleSize, MinTextSize = 1 }) })
 	-- the banner's text box is narrow: a long title ("Vacation Bonus" on phones) shrinks down to 12 px instead of losing words
@@ -3098,7 +3143,11 @@ function UIKit.RewardPopup(opts)
 	end
 	local lines = opts.Lines
 	if type(lines) == "string" then lines = { lines } end
-	for _, line in (type(lines) == "table" and lines or {}) do
+	lines = type(lines) == "table" and lines or {}
+	if compact then -- short screens: the first line(s) only, so the popup fits without shrinking
+		lines = table.move(lines, 1, math.min(#lines, math.max(1, tonumber(opts.CompactLines) or 1)), 1, {})
+	end
+	for _, line in lines do
 		UIKit.StyledLabel({ Name = "Line", Text = tostring(line), Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextSize = compact and cfg.LineCompact or cfg.LineSize,
 			LayoutOrder = nextOrder(),
@@ -3175,7 +3224,8 @@ function UIKit.RewardPopup(opts)
 	-- inside the space under the top bar, with a small margin
 	handle.Fit = 1
 	pop.Scale = reduced and 1 or 0.6
-	task.defer(function()
+	task.spawn(function()
+		task.wait() -- one frame: the plate's AutomaticSize has run
 		if closed or not panel.Parent then return end
 		local s = currentScale()
 		local free = (UIKit.Gui.AbsoluteSize.Y - insetY() - 16) / s -- du under the top bar
