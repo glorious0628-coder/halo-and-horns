@@ -1,0 +1,165 @@
+{
+  "status": "passed",
+  "checks": 30,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "Main loads ChatText (INIT_ORDER)",
+      "ok": true
+    },
+    {
+      "check": "Main starts ChatText before PlayerService (START_ORDER)",
+      "ok": true
+    },
+    {
+      "check": "Announce rewrites the TextChatService team line",
+      "ok": true
+    },
+    {
+      "check": "Config.ChatText lines are English (no Hangul)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 14,
+    "applied": 14,
+    "caught": 14,
+    "results": [
+      {
+        "mutation": "the team line keeps Roblox's text",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the team line is our English line :: You are now on the 'Horn Legion' team.",
+          "CHECK_FAIL the team line is in the team colour :: nil",
+          "CHECK_FAIL no team line for the auto-assigned 'Choosing a side' team :: 1"
+        ]
+      },
+      {
+        "mutation": "the team line stays in the Team channel",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the team line goes to the general channel (no translated {Team} tag) :: Team",
+          "CHECK_FAIL legacy chat: a speaker added later is hooked :: You joined the Horn Legion!"
+        ]
+      },
+      {
+        "mutation": "no team colour",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the team line is in the team colour :: nil"
+        ]
+      },
+      {
+        "mutation": "a line for the auto-assigned team",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no team line for the auto-assigned 'Choosing a side' team :: 1",
+          "CHECK_FAIL no team line without a team :: 1"
+        ]
+      },
+      {
+        "mutation": "Team / System lines keep their translated tag",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL other Team-channel lines: English, general channel :: You cannot team chat if you are not on a team! @ Team",
+          "CHECK_FAIL System-channel lines: English, general channel :: Your friend Pal has joined the game. @ System"
+        ]
+      },
+      {
+        "mutation": "other lines keep the key",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL other Team-channel lines: English, general channel :: {RBX_LOCALIZATION_KEY}GameChat_TeamChat_CannotTeamChatIfNotInTeam{RBX_LOCALIZATION_DEFAULT}You cannot team chat if you are not on a team! @ All",
+          "CHECK_FAIL System-channel lines: English, general channel :: {RBX_LOCALIZATION_KEY}GameChat_FriendChatNotifier_JoinMessage{RBX_LOCALIZATION_DEFAULT}Your friend Pal has joined the game.{RBX_LOCALIZATION_PARAMS}RBX_NAME=Pal @ All",
+          "CHECK_FAIL general-channel lines: English, same channel :: {RBX_LOCALIZATION_KEY}GameChat_ChatFloodDetector_MessageDisplaySeconds{RBX_LOCALIZATION_DEFAULT}You must wait 3 seconds before sending another message!{RBX_LOCALIZATION_PARAMS}RBX_NUMBER=3"
+        ]
+      },
+      {
+        "mutation": "Team / System welcome lines stay",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no Team channel welcome line :: This is a private channel between you and your team members.",
+          "CHECK_FAIL no System channel welcome line :: This channel is for system and game notifications.",
+          "CHECK_FAIL legacy chat: an existing Team channel is hooked :: This is a private channel between you and your team members."
+        ]
+      },
+      {
+        "mutation": "welcome lines keep the key",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the general welcome line is English :: {RBX_LOCALIZATION_KEY}GameChat_ChatCommandsTeller_AllChannelWelcomeMessage{RBX_LOCALIZATION_DEFAULT}Chat '/?' or '/help' for a list of chat commands.",
+          "CHECK_FAIL a welcome line set later is English too :: {RBX_LOCALIZATION_KEY}GameChat_PrivateMessaging_NowChattingWith{RBX_LOCALIZATION_DEFAULT}You are now privately chatting with Pal.{RBX_LOCALIZATION_PARAMS}RBX_NAME=Pal"
+        ]
+      },
+      {
+        "mutation": "channel-wide lines keep the key",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL channel-wide lines are English :: {RBX_LOCALIZATION_KEY}GameChat_ChatService_ChatFilterIssues{RBX_LOCALIZATION_DEFAULT}The chat filter is currently experiencing issues and messages may be slow to appear."
+        ]
+      },
+      {
+        "mutation": "a speaker is wrapped twice",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a speaker is wrapped only once :: "
+        ]
+      },
+      {
+        "mutation": "speakers added later are missed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL legacy chat: a speaker added later is hooked :: {RBX_LOCALIZATION_KEY}GameChat_TeamChat_NowInTeam{RBX_LOCALIZATION_DEFAULT}You are now on the 'Horn Legion' team.{RBX_LOCALIZATION_PARAMS}RBX_NAME=Horn Legion"
+        ]
+      },
+      {
+        "mutation": "channels added later are missed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL legacy chat: a channel added later is hooked :: {RBX_LOCALIZATION_KEY}GameChat_ChatServiceRunner_SystemChannelWelcomeMessage{RBX_LOCALIZATION_DEFAULT}This channel is for system and game notifications."
+        ]
+      },
+      {
+        "mutation": "hooks on TextChatService too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL TextChatService: the legacy hook stays off :: 1",
+          "CHECK_FAIL legacy chat: waits for ChatServiceRunner :: 2"
+        ]
+      },
+      {
+        "mutation": "the parameter part stays in the text",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a keyed line with a parameter keeps its English text :: You are now on the 'Horn Legion' team.{RBX_LOCALIZATION_PARAMS}RBX_NAME=Horn Legion / GameChat_TeamChat_NowInTeam",
+          "CHECK_FAIL System-channel lines: English, general channel :: Your friend Pal has joined the game.{RBX_LOCALIZATION_PARAMS}RBX_NAME=Pal @ All",
+          "CHECK_FAIL general-channel lines: English, same channel :: You must wait 3 seconds before sending another message!{RBX_LOCALIZATION_PARAMS}RBX_NUMBER=3"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "27ad305d7a5686cc3620127ea37b1c39f0a78b31b8f92430cdf608794f36cb3b",
+    "src/ServerScriptService/ChatText.luau": "f7c4ed3a83ee0ce42baa5c1a0a9e16df28d25a90f4efd431c80d9a80a8e3c853",
+    "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "167c0f0f211eaefb21e829373f411f9c57391d7a21cd8ef6d2eaf295b8b3e2b8"
+  },
+  "fixtureSHA256": "ff3a0a3719449c77d4c72e17f332ca3a0c62fc3f7659ef0d9ecbc79d7897e9bd",
+  "studioCalls": 0,
+  "contract": "Roblox chat lines in English offline test (ChatText.luau, A23-48; 검수 2026-10-07: the team line showed in the\nplayer's Roblox language). The place runs the legacy chat: its server modules send keyed lines\n(\"{RBX_LOCALIZATION_KEY}key{RBX_LOCALIZATION_DEFAULT}English...\") that each client translates. ChatText keeps only the\nEnglish text; the team-change line becomes Config.ChatText.Joined (\"You joined the Horn Legion!\") in the team colour in\nthe general channel (none for the auto-assigned team); Team / System lines move to the general channel (their tag is\ntranslated too); the Team / System welcome lines are dropped; it hooks only on the legacy chat, existing and later\nchannels / speakers, and only warns when the ChatService is missing. Static: Main loads ChatText; Announce rewrites the\nTextChatService team line (Metadata Roblox.Team.Success.NowInTeam) with Config.ChatText.\nRuns the real ChatText.luau + Config.luau in tools/fixtures/chat_text_offline.luau.",
+  "limitations": "The doubles copy the legacy chat's shapes (Studio ExtraContent ServerChat/Speaker.lua, ChatChannel.lua, ChatLocalization.lua); what a Korean-language client finally shows is a Studio check (team pick, chat window)."
+}

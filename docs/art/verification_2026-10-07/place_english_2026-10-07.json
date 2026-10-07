@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "hangulStrings": 0,
+  "hits": [],
+  "static": [
+    {
+      "check": "Config.Features.Market is off for the beta",
+      "ok": true
+    },
+    {
+      "check": "Config.Features.NeutralFaction is off for the beta (A23-57)",
+      "ok": true
+    },
+    {
+      "check": "the world map adds the Market landmark only when the feature is on",
+      "ok": true
+    },
+    {
+      "check": "the world map calls the anvil spot Forge while the artisan guild is off",
+      "ok": true
+    }
+  ],
+  "source": {
+    "place": "place/GoodEvil.rbxlx",
+    "placeSHA256": "dac86b01f87474f64d9b4e5fa4c9dcb9ab0384728c40447d6668b0a2625bc64c"
+  },
+  "contract": "The place shows English only (A23-48; 검수 2026-10-07: find every Hangul text inside the place, not only in src).\n\nOffline (default): reads a saved place file (place/GoodEvil.rbxlx, or --place <file>) and lists every Hangul string in\nany property of any object (TextLabel / TextButton / SurfaceGui / BillboardGui texts, ProximityPrompt texts, names,\nStringValues, string attributes, ...) except script sources (comments there are never shown). --studio runs the same\nsearch live in the open Studio's Edit DataModel through Studio MCP (Edit mode only; it changes nothing).\nStatic: beta signs (Config.Features): no \"Market\" landmark on the world map while Market is off; the Crossroads anvil spot\nis called \"Forge\" while NeutralFaction (the artisan guild) is off.",
+  "limitations": "Script sources are skipped (comments are never shown); text that code makes at run time is covered by the src text tests (test_english, test_ko_screen)."
+}

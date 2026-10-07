@@ -11,7 +11,10 @@ Config.Game = {
 -- off for the beta (the artisan update brings it back). Off: no new Neutral pick at the faction picker, the altar or a
 -- rebirth (Config.Pickable), its own sub quests are not offered; saves that are Neutral already stay as they are.
 -- Code and data stay; game dev 1's faction picker reads the switch for its cards.
-Config.Features = { NeutralFaction = false }
+-- Market = the trading market (RELEASE_PLAN: after the full launch). 검수 2026-10-07: no "coming soon" signs for things
+-- the beta does not have (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
+-- the world map calls the Crossroads anvil spot "Forge" (the weapon shop) instead of "Artisan Guild".
+Config.Features = { NeutralFaction = false, Market = false }
 
 function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
@@ -3505,6 +3508,13 @@ Config.Loot = {
 		SellNothing = "No materials to sell.",
 		SellFar = "Sell materials near the Forge anvil.",
 	},
+}
+
+-- Roblox's own chat lines in English (A23-48; 검수 2026-10-07: the team line showed in the player's Roblox language).
+-- ChatText.luau rewrites them on the legacy chat (server), Announce.luau on TextChatService (client).
+Config.ChatText = {
+	Joined = "You joined the %s!", -- team name: "You joined the Horn Legion!"
+	Choosing = "Pick a side to start!", -- TextChatService only: the line for the auto-assigned "Choosing a side" team
 }
 
 -- A23-15 server-wide chat announcements (AnnounceService -> remote "Announce" -> client Announce.luau). Server sends
