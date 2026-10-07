@@ -107,9 +107,15 @@ def make_harness(sources: dict[str, str]) -> str:
     bully = re.search(r"^Config\.Bully\s*=\s*\{.*?\n\}", config, re.S | re.M)
     if not bully:
         raise ValueError("Config.Bully boundary changed; update the test extractor.")
+    # A23-71: DataService gives an old save its skill slots once with Config.SkillSlotsFor (Config.Skills: all literals)
+    skills = re.search(r"^Config\.Skills\s*=\s*\{.*?\n\}", config, re.S | re.M)
+    slots_for = re.search(r"^function Config\.SkillSlotsFor\(.*?\nend", config, re.S | re.M)
+    if not skills or not slots_for:
+        raise ValueError("Config.Skills / Config.SkillSlotsFor boundary changed; update the test extractor.")
     set_stat = between(sources["PLAYER_SOURCE"], "function PlayerService.SetStat(", "function PlayerService.AddStat(")
     bindings = {
         "CONFIG_SOURCE": prefix + "\n" + rates.group() + "\n" + bully.group() + "\n" + settings + "\n" + texts.group()
+                         + "\n" + skills.group() + "\n" + slots_for.group()
                          + f"\nConfig.MaxWeaponTier = {max_tier} -- extracted: number of Config.Weapons rows\nreturn Config",
         "NET_SOURCE": sources["NET_SOURCE"],
         "DATA_SOURCE": sources["DATA_SOURCE"],
