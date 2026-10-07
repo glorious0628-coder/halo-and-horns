@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 155,
+  "checks": 158,
   "failedChecks": 0,
-  "namedChecks": 155,
+  "namedChecks": 158,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -388,6 +388,24 @@
     {
       "group": "x field",
       "check": "nothing in reach: the circle 10 studs ahead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "setup: the first tick hit nothing (Released with 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "the first tick that hits: one more Released { Slot X, MonstersHit 1 } for that cast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "x field",
+      "check": "later hitting ticks add no more Released",
       "pass": 1,
       "fail": 0
     },
@@ -942,9 +960,9 @@
   "staticChecks": 10,
   "staticFailures": [],
   "mutations": {
-    "total": 86,
-    "applied": 86,
-    "caught": 86,
+    "total": 88,
+    "applied": 88,
+    "caught": 88,
     "skipped": false,
     "results": [
       {
@@ -1408,6 +1426,31 @@
           "x field :: the living ones are slowed x0.5 for 1.5 s (the tick + 0.5); the dead one is not"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "a late-hitting field never counts",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: later hitting ticks add no more Released",
+          "x field :: the first tick that hits: one more Released { Slot X, MonstersHit 1 } for that cast"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a field counts every hitting tick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "x field :: a new field ends the old one (SkillEnd New)",
+          "x field :: later hitting ticks add no more Released",
+          "x field :: still one Released; the living monsters are slowed again on every tick"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "a hop with the grudge sack",
@@ -1978,23 +2021,23 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "cd5355c621a3ab2f47b4645a190d0f99a09bb97125e7c9c30892999ffaa272c5",
+    "src/ReplicatedStorage/Shared/Config.luau": "f798aa2fd23436934bc0b3f3554841a71aefbdf300067f982ab950ffc3434774",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "3e3c15e5ffc06dc3a2784d7b85d645cd3a2238043a8c8c3e5dfafe3124d4141c",
-    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
+    "src/ServerScriptService/LootService.luau": "ded7d2886bdf7da9a01c78a891486f3d9d9e6fb94dd904081289031d43ef777b",
     "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
-    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
+    "src/ServerScriptService/PvPService.luau": "467d49d9f96d0d035603e7ba651049c0e6da798ccfe3cc24f5a36bf874866938",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
-    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/SkillService.luau": "514afbd7066b690e5e02b5c4639bab1c752dee7b431bbd319b0102490a7c95c4",
+    "src/ServerScriptService/SkillService.luau": "00b3dcaf6a23d2f37022f8edb6d9af3ece669bce1d38375228795399699d59e9",
     "src/ServerScriptService/MonsterService.luau": "2294ede7730ed958434e78ceb434ac6f86cf3b8256b1f173430917ac4f2cada7",
     "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",
     "src/ServerScriptService/ZoneService.luau": "a48dc0e0395518962081690f147bba2337755f027a7181ba3dcd6698288d45f0"
   },
-  "fixtureSHA256": "89120407c7b93bd589eb1712cccbfceed29deaac1dbf617f5283af38db07e73f",
+  "fixtureSHA256": "66ef68c14c9cb6b84ea5a9bbaddc0797325bd87f02dbc54e14aeec0ddca6714a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

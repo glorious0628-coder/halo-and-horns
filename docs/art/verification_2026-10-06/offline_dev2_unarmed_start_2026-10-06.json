@@ -15,7 +15,7 @@
     },
     {
       "group": "config",
-      "check": "save Version stays 3 (A23-34 is additive)",
+      "check": "save Version 4 (A23-69; A23-34 itself was additive)",
       "pass": 1,
       "fail": 0
     },
@@ -375,7 +375,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 bare-handed save kept (no bit forced) (idempotent, Version 3)",
+      "check": "load again: v3 bare-handed save kept (no bit forced) (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -387,7 +387,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 stored tier 0 is valid: kept even with a weapon owned (idempotent, Version 3)",
+      "check": "load again: v3 stored tier 0 is valid: kept even with a weapon owned (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -399,7 +399,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 save that bought T2 first keeps only T2 (idempotent, Version 3)",
+      "check": "load again: v3 save that bought T2 first keeps only T2 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -411,7 +411,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 legacy save with T1 unchanged (idempotent, Version 3)",
+      "check": "load again: v3 legacy save with T1 unchanged (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -423,7 +423,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 save with T1-T3 unchanged (idempotent, Version 3)",
+      "check": "load again: v3 save with T1-T3 unchanged (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -435,7 +435,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 equipped tier is owned (bit added) (idempotent, Version 3)",
+      "check": "load again: v3 equipped tier is owned (bit added) (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -447,7 +447,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 save without a mask keeps its T1 (A23-4) + the equipped T2 (idempotent, Version 3)",
+      "check": "load again: v2 save without a mask keeps its T1 (A23-4) + the equipped T2 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -459,7 +459,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 save without weapon fields = T1 (pre-A23-34 saves always had it) (idempotent, Version 3)",
+      "check": "load again: v2 save without weapon fields = T1 (pre-A23-34 saves always had it) (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -471,7 +471,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 tier 0 = its T1 (idempotent, Version 3)",
+      "check": "load again: v2 tier 0 = its T1 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -483,7 +483,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 mask without T1 gets T1 back (idempotent, Version 3)",
+      "check": "load again: v2 mask without T1 gets T1 back (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -495,7 +495,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v1 SwordTier 3 -> T3 + T1 (idempotent, Version 3)",
+      "check": "load again: v1 SwordTier 3 -> T3 + T1 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -507,7 +507,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 NaN mask -> nothing owned (idempotent, Version 3)",
+      "check": "load again: v3 NaN mask -> nothing owned (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -519,7 +519,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 negative mask -> nothing owned (idempotent, Version 3)",
+      "check": "load again: v3 negative mask -> nothing owned (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -531,7 +531,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 fraction mask -> only the equipped bit (idempotent, Version 3)",
+      "check": "load again: v3 fraction mask -> only the equipped bit (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -543,7 +543,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 0xFFFFFFFF -> only the equipped bit (idempotent, Version 3)",
+      "check": "load again: v3 0xFFFFFFFF -> only the equipped bit (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -555,7 +555,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier 9 with nothing owned -> bare hands (idempotent, Version 3)",
+      "check": "load again: v3 tier 9 with nothing owned -> bare hands (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -567,7 +567,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier -1, owns T2+T3 at Lv1 -> T2 (idempotent, Version 3)",
+      "check": "load again: v3 tier -1, owns T2+T3 at Lv1 -> T2 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -579,7 +579,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 NaN tier, owns T2+T3 at Lv5 -> T3 (idempotent, Version 3)",
+      "check": "load again: v3 NaN tier, owns T2+T3 at Lv5 -> T3 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -591,7 +591,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier 1.5 with T1 -> T1 (idempotent, Version 3)",
+      "check": "load again: v3 tier 1.5 with T1 -> T1 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -1332,9 +1332,9 @@
   "staticChecks": 10,
   "staticFailures": [],
   "mutations": {
-    "total": 72,
-    "applied": 72,
-    "caught": 72,
+    "total": 71,
+    "applied": 71,
+    "caught": 71,
     "skipped": false,
     "results": [
       {
@@ -2253,26 +2253,16 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "power attribute clamps bare hands to tier 1",
-        "file": "src/ServerScriptService/JusticeService.luau",
+        "mutation": "the power formula clamps bare hands to tier 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "power-pvp-visuals :: JusticeService.GetCombatPower: bare Lv1 0, bare Lv2 12, T1 Lv1 283"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "PvP power fallback clamps bare hands to tier 1",
-        "file": "src/ServerScriptService/PvPService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
+          "power-pvp-visuals :: JusticeService.GetCombatPower: bare Lv1 0, bare Lv2 12, T1 Lv1 283",
           "power-pvp-visuals :: KO of a bare victim (power 0): the weak multiplier"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "bare hands draw a weapon",
@@ -2291,18 +2281,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "cd5355c621a3ab2f47b4645a190d0f99a09bb97125e7c9c30892999ffaa272c5",
+    "src/ReplicatedStorage/Shared/Config.luau": "f798aa2fd23436934bc0b3f3554841a71aefbdf300067f982ab950ffc3434774",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "3e3c15e5ffc06dc3a2784d7b85d645cd3a2238043a8c8c3e5dfafe3124d4141c",
-    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
+    "src/ServerScriptService/LootService.luau": "ded7d2886bdf7da9a01c78a891486f3d9d9e6fb94dd904081289031d43ef777b",
     "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
-    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
+    "src/ServerScriptService/PvPService.luau": "467d49d9f96d0d035603e7ba651049c0e6da798ccfe3cc24f5a36bf874866938",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
-    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/DataService.luau": "2e6cf72d6d358eaaece9c1a99930f604163778db59b94ff04c25c90346644ace",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e"
   },
-  "fixtureSHA256": "b32da2b318dcaf0c97a5644e6e4da80353c8c73ae7ef01b0e9f58ba46ccc02ff",
+  "fixtureSHA256": "b36f1e05caeadc9c8d59b69c197d3ad379fcad440460ba83bc23253cb6354327",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
