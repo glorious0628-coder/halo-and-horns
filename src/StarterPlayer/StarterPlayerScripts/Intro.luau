@@ -4,12 +4,12 @@
 -- button (Enter / pad A, ignored for the first 1.5 s so a held key cannot skip by accident). While open: HUD / pickers / potions treat the screen as covered (IsOpen), world
 -- banners wait (UIKit.HeldBanners), movement is off. Ending, skipping or respawning restores CameraType Custom and
 -- the Humanoid camera subject. Only the server writes IntroSeen (remote "IntroSeen", no arguments).
+-- A23-74 (user 2026-10-07): full screen on PC and phone, no black letterbox bars.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local ContextActionService = game:GetService("ContextActionService")
 local UserInputService = game:GetService("UserInputService")
-local GuiService = game:GetService("GuiService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -42,12 +42,8 @@ local SPOT = {
 	Red = Color3.fromRGB(235, 60, 60),
 	White = Color3.fromRGB(255, 250, 225),
 }
-local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil, Bars = nil, Folder = nil, Controls = nil,
+local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil, Folder = nil, Controls = nil,
 	CamTween = nil, OpenedAt = 0 }
--- the letterbox: its own full-screen ScreenGui (ScreenInsets None) so the bars reach the real screen edges on phones
--- (검수 2026-10-07: on a phone the safe-area insets left sky at both sides and lifted the bottom bar); phones get thinner
--- bars, and the top one covers Roblox's top button row too (the buttons float on it; 검수: no strip of sky above it)
-local BARS = { Height = 0.11, TouchHeight = 0.07 }
 -- shot 1 (검수 2026-10-07: seen from straight below the crown was only an orange ring): a front three-quarter view,
 -- 25 deg below the crown and 30 deg to its left, pushing in slowly; the crown's front (-Z, the glowing crack) faces it
 local CROWN_SHOT = { Down = math.rad(25), Side = math.rad(30), From = 330, To = 255 }
@@ -130,34 +126,15 @@ local function flyTo(part, to, seconds)
 		{ Position = to, Orientation = part.Orientation + Vector3.new(0, 360, 0) }):Play()
 end
 
------------------------------------------------------------------ screen (letterbox, subtitle, skip)
+----------------------------------------------------------------- screen (subtitle, skip)
+-- A23-74 (user 2026-10-07: "프롤로그 3d 영상도 무슨 위아래 까만색"): no letterbox bars on PC or phone; the shots fill
+-- the screen. Subtitle and skip stay in this device-safe ScreenGui (IgnoreGuiInset); the subtitle gets the UIKit
+-- dark-world text rim so it reads over bright sky without a black strip behind it
 local function buildGui()
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "IntroGui"
 	gui.IgnoreGuiInset, gui.ResetOnSpawn, gui.DisplayOrder = true, false, 60
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling -- the skip label (child) must draw over its ZIndex-5 button
-	local bars = Instance.new("ScreenGui")
-	bars.Name = "IntroBars"
-	bars.IgnoreGuiInset, bars.ResetOnSpawn, bars.DisplayOrder = true, false, 59 -- under the subtitle / skip (60)
-	pcall(function() bars.ScreenInsets = Enum.ScreenInsets.None end)
-	local touch = UserInputService.TouchEnabled == true
-	local h = touch and BARS.TouchHeight or BARS.Height
-	local topExtra = 0
-	if touch then
-		local ok, inset = pcall(function() return GuiService:GetGuiInset() end)
-		if ok and typeof(inset) == "Vector2" then topExtra = inset.Y end
-	end
-	local function bar(name, anchor, pos, extra)
-		local f = Instance.new("Frame")
-		f.Name = name
-		f.BackgroundColor3, f.BorderSizePixel = Color3.new(0, 0, 0), 0
-		f.AnchorPoint, f.Position, f.Size = Vector2.new(0, anchor), pos, UDim2.new(1, 0, h, extra)
-		f.Parent = bars
-	end
-	bar("TopBar", 0, UDim2.fromScale(0, 0), topExtra) -- from the very top, under Roblox's buttons on phones
-	bar("BottomBar", 1, UDim2.fromScale(0, 1), 0)
-	bars.Parent = player:WaitForChild("PlayerGui")
-	state.Bars = bars
 	local sub = Instance.new("TextLabel")
 	sub.Name = "Subtitle"
 	sub.BackgroundTransparency = 1
@@ -173,6 +150,8 @@ local function buildGui()
 	cap.MaxTextSize, cap.MinTextSize = 34, 16
 	cap.Parent = sub
 	sub.Parent = gui
+	-- A23-74: navy rim + white-cream face (UIKit Title, A23-35) instead of the thin legacy shadow; kept as the fallback
+	if UIKit and type(UIKit.StyleText) == "function" then pcall(UIKit.StyleText, sub, "Title") end
 	local skip
 	local function onSkip()
 		if os.clock() - state.OpenedAt >= SKIP_GRACE then Intro.Finish() end
@@ -210,6 +189,12 @@ local function say(text, big)
 	if cap then cap.MaxTextSize = big and 52 or 34 end
 	sub.TextTransparency = 1
 	TweenService:Create(sub, TweenInfo.new(0.4), { TextTransparency = 0 }):Play()
+	-- the rim fades with the text (UIKit text style contract: tween StyleStroke with TextTransparency)
+	local rim = sub:FindFirstChild("StyleStroke")
+	if rim and rim:IsA("UIStroke") then
+		rim.Transparency = 1
+		TweenService:Create(rim, TweenInfo.new(0.4), { Transparency = 0 }):Play()
+	end
 end
 
 ----------------------------------------------------------------- camera shots
@@ -302,9 +287,8 @@ function Intro.Finish()
 	state.CamTween = nil
 	pcall(ContextActionService.UnbindAction, ContextActionService, "HHC_IntroSkip")
 	if state.Gui then state.Gui:Destroy() end
-	if state.Bars then state.Bars:Destroy() end
 	if state.Folder then state.Folder:Destroy() end
-	state.Gui, state.Bars, state.Sub, state.Folder = nil, nil, nil, nil
+	state.Gui, state.Sub, state.Folder = nil, nil, nil
 	local cam = workspace.CurrentCamera
 	if cam then
 		cam.CameraType = Enum.CameraType.Custom
