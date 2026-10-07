@@ -34,6 +34,14 @@
 증거 사진: `art/review/`의 rookie_hint · window_audit(전·후) · notify_window · picker_view_hq (2026-10-07).
 
 ## 2. 다음 큐 (순서)
+> **도착함(1d58f6c, 이 계정이 멈춘 뒤):** 보상 팝업 고급 9장 art/ui — RewardPanelHalo 512×294 Slice (62,66,449,231) Inner
+> (0.076,0.16,0.848,0.707) · RewardPanelHorns 512×305 Slice (60,65,452,239) Inner (0.066,0.128,0.869,0.754) · RewardRibbonHalo
+> 512×143 크기 고정 Text (0.22,0.31,0.56,0.44) · RewardRibbonHorns 512×149 크기 고정 Text (0.12,0.33,0.76,0.41) · 곧은 띠 예비
+> RewardRibbonHaloStraight 512×100 Slice (71,49,441,51) Text (0.14,0.30,0.72,0.52) / RewardRibbonHornsStraight 512×106 Slice
+> (42,52,469,54) Text (0.10,0.26,0.80,0.50) · RewardSlot 256×252 Inner (0.121,0.127,0.758,0.742) · RewardGlow 512 · RewardSparkle 256
+> (흰색 + 밝기 알파, ImageColor3로 빛 = 금 / 뿔 = 주황). 세계 지도 UIP_WorldMapV2(1024×683 + _1536, 얼굴 느낌 뺌, map_transform
+> 그대로). 값은 art/approved.json, 합친 모습 art/review/s2/reward_hq_sheet.jpg. → 1·2번을 이것으로 바로 시작(직접 보기 →
+> 10장 이하 업로드 → Config 키·Slice·글자 칸 → RewardPopup 제목 칸을 띠 Text 값으로).
 1. **보상 팝업 부품**(이미지 생성 2가 고급으로 받는 중): RewardPanelHalo / RewardPanelHorns(진영 판), RewardRibbonHalo /
    RewardRibbonHorns(휜 띠, 크기 고정 — 가장 긴 제목 'VACATION BONUS!'가 들어가는 폭, 글자 크기는 우리가), 예비 곧은 띠
    RewardRibbonHaloStraight / HornsStraight, RewardSlot(칸), RewardGlow(흰 빛무리), Sparkle(흰 반짝이). 받으면: 밝은·어두운

@@ -48,3 +48,11 @@
 - 새 누끼 도구 `tools/img2/cut_solid.py`: 연보라·회색 돌 그림자가 바탕색과 같아 틈을 따라 구멍이 날 때 사용.
 - 크레딧: 오늘 이 세션 고급 = 숲 8(40) + 고급 27(135). Firefly 표시 9410(고급 27 전), 그 뒤는 창 숨김이라 새로고침 못 함 → 9275 이하.
 - 다음: 검수 고르기 → 고른 보상 부품·모닥불·유적 3D 후보 고급 → art/ui·approved.json → 이미지 개발 / 이미지 생성 1. 숲 E12·PvP 작은 아이콘은 목록을 검수에 물어보기.
+
+## 오후 4
+- 검수 통과: 고급 25 → art/ui + approved.json **4ceaabf**(이미지 개발 업로드·Config 반영 끝). 세계 지도는 얼굴 느낌 고친 고급판(+5)으로 **1d58f6c**.
+- 검수 고름 → 보상 팝업 고급 9장 **1d58f6c**: RewardPanelHalo/Horns(9조각), RewardRibbonHalo/Horns(휜 띠, 크기 고정, Text), RewardRibbonHaloStraight/HornsStraight(예비, 알약 slice), RewardSlot, RewardGlow, RewardSparkle(흰색 + 밝기 알파). 시트 `art/review/s2/reward_hq_sheet.jpg`. 빛 휜 띠 글자 칸 56% → 폰에서 긴 제목이 작아짐(이미지 개발에 전달).
+- 모닥불: 사용자 '나무에 불이 안 붙어서 이상해' → 불 붙은 시안 4장 **143f131** `art/review/s2/kit_campfire_fire_sheet.jpg`(A 점토 불꽃 덩어리 / B 숯 틈 + 굵은 불꽃, 추천 A2·B2) → 검수 고르기 대기. 앞의 D는 취소. 사진은 출처 몰라 참조로 안 올림.
+- git: 검수 새 순서(AGENTS 4bef885) `git fetch -q origin && git reset --keep origin/main` → `git commit -- <paths>` → `git push origin HEAD:main`, 거절되면 커밋 직후 잡은 해시로 temp-index push 뒤 다시 reset --keep. 다른 세션 reset 때문에 빈 중복 커밋 81077c1이 한 번 올라감(내용 피해 없음).
+- 크레딧: 오늘 이 세션 고급 225(숲 8 = 40, 고급 다시 27 = 135, 보상 9 + 지도 1 = 50). 표시 숫자는 창 숨김이라 못 읽음(9410 → 9225 이하).
+- 대기: 모닥불 고르기 → 고급 → 이미지 생성 1 / 유적 13 시트(70c5739) 고르기 → 3D 후보 고급 / 숲 E12·PvP 작은 아이콘 목록은 검수에 물어보기.

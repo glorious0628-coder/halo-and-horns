@@ -1,5 +1,7 @@
 # 이미지 생성 1 상태 (2026-10-07)
 
+> 계정 정리(10/07): 다음 계정은 **`docs/handoff/imagegen1_handoff_2026-10-07.md`** 부터 읽기(다음 큐·잔액·주의). 이 파일은 오늘 상세 기록.
+
 ## 오늘 끝난 것 (모두 origin/main)
 - **빛 성 깃발 문양 → 금빛 고리** (텍스처만, 0크레딧) — 깃발 5장(정면 4 + 왼쪽 탑 1). 사용자 OK "둘 다 넣어".
   `art/models/tripo/town/Town_Halo_Castle_10k_ring.glb`(2.5MB), 시트 `art/review/town3/halo_castle_banner_ring.jpg`.

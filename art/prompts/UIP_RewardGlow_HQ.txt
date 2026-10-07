@@ -1,0 +1,2 @@
+[reference: Firefly 참조 이미지 = 고른 중간 시안(고급 다시 그리기)]
+Redraw the attached glow exactly, smoother and cleaner: one soft round glowing light, a pure white bright center fading smoothly outward into a wide soft round glow, no rays, no sparkles, perfectly round and centered, nothing else. Pure flat black background. No texture, wordless.

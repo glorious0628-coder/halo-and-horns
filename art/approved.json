@@ -4516,16 +4516,18 @@
  },
  "UIP_WorldMapV2": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2, reference = art/review/worldmap/layout_v2_sketch_nomarks.png (0 credits) + local retouch tools/worldmap_slimefix.py (pond slimes -> our cube jelly slime from art/out/CON_SlimeCube.png)",
-  "prompt": "art/prompts/WorldMap_v2_A.txt",
-  "original": "art/out/worldmap/WorldMap_v2_A2_2.png (1536x1024, Adobe MCP presigned download); retouched master art/out/worldmap/WorldMap_v2_A2_2_slimefix.png",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits) x2: first High re-render (reference = slimefix master), then a fix pass (reference = first High) removing the face look of the horned fortress tower and turning the ruins stone mask into a crown medallion",
+  "prompt": "art/prompts/WorldMap_v2_HQ2.txt (first pass art/prompts/WorldMap_v2_HQ.txt)",
+  "original": "art/out/hq/src/WorldMapV2_HQ2_src.png (1536x1024, Adobe MCP presigned download; first pass WorldMapV2_HQ1_src.png)",
   "file": "art/ui/UIP_WorldMapV2.png",
   "size": "1024x683 RGB (opaque, no lettering; Roblox caps images at 1024). Full-size copy art/ui/UIP_WorldMapV2_1536.png",
   "cutout": "none — opaque map background",
   "preview": "art/review/worldmap/worldmap_v2_sheet.jpg; slime fix art/review/worldmap/slimefix_before_after.jpg",
   "map_transform": "stud (x,z) -> pixel in the 1536x1024 master: px = 46.222 + (x + 230) * 0.71111, py = (z + 720) * 0.71111 (+X east = right, -Z north = up). For the 1024x683 file multiply by 2/3. Painted coastlines match the layout within a few px (land IoU 0.84).",
-  "note": "사용자 OK(검수 전달, A23-53): 큰 지도 창 바탕. 둥근 슬라임 2마리를 우리 네모 젤리 슬라임으로 바꿈(사용자 요청). 뿔 요새 가운데 탑 창(얼굴처럼 보임)은 3D 때 고침. 업로드·Config.UIArt 키는 이미지 개발."
+  "note": "사용자 OK(검수 전달, A23-53): 큰 지도 창 바탕. 둥근 슬라임 2마리를 우리 네모 젤리 슬라임으로 바꿈(사용자 요청). 뿔 요새 가운데 탑 창(얼굴처럼 보임)은 3D 때 고침. 업로드·Config.UIArt 키는 이미지 개발.",
+  "medium_original": "art/out/worldmap/WorldMap_v2_A2_2.png (1536x1024, Adobe MCP presigned download); retouched master art/out/worldmap/WorldMap_v2_A2_2_slimefix.png",
+  "hq_note": "고급 2026-10-07: 해안선 차이 평균 0.9px(1536 기준) → map_transform 그대로. 뿔 요새 가운데 탑 얼굴 느낌 없앰, 유적 돌 가면 → 왕관 메달(kit_ruins.md). 시트 art/review/s2/reward_hq_sheet.jpg 아래."
  },
  "ACC_HornsR1": {
   "status": "approved",
@@ -5432,5 +5434,208 @@
   "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
   "source": "art/out/kit/ruins_big/R_Cliff_B_v2_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Cliff_B_v2.txt)",
   "final": "art/out/hq/HQ_R_Cliff_B.png (High, 5 credits; prompt art/prompts/HQ_R_Cliff_B.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "RewardPanelHalo": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardPanelHalo_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardPanelHalo_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardPanelHalo_A.png (prompt art/prompts/UIP_RewardPanelHalo_A.txt)",
+  "file": "art/ui/RewardPanelHalo.png",
+  "size": "512x294 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 팝업 빛 판(9조각): 흰 테 + 모서리 작은 깃털, 크림 속. 모서리 장식은 모서리 칸 안. Inner = 속 크림 칸(분수). 검수 고름 2026-10-07.",
+  "slice": [
+   62,
+   66,
+   449,
+   231
+  ],
+  "layout": {
+   "Inner": [
+    0.076,
+    0.16,
+    0.848,
+    0.707
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardPanelHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardPanelHorns_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardPanelHorns_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardPanelHorns_A.png (prompt art/prompts/UIP_RewardPanelHorns_A.txt)",
+  "file": "art/ui/RewardPanelHorns.png",
+  "size": "512x305 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 팝업 뿔 판(9조각): 진홍 테 + 모서리 작은 숯색 뿔, 자주 속. Inner = 속 칸(분수). 검수 고름 2026-10-07.",
+  "slice": [
+   60,
+   65,
+   452,
+   239
+  ],
+  "layout": {
+   "Inner": [
+    0.066,
+    0.128,
+    0.869,
+    0.754
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHalo": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHalo_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHalo_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHalo_A.png (prompt art/prompts/UIP_RewardRibbonHalo_A.txt)",
+  "file": "art/ui/RewardRibbonHalo.png",
+  "size": "512x143 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 제목 띠(빛, 휜 것, 날개): 크기 고정으로 씀(늘리면 휘어짐이 깨짐). Text = 글자 칸. 'VACATION BONUS!'는 띠 폭 520px 이상에서 글자 약 20px(검수: 폭은 가장 긴 제목에 맞추고 글자 크기는 이미지 개발). 검수 고름 2026-10-07.",
+  "layout": {
+   "Text": [
+    0.22,
+    0.31,
+    0.56,
+    0.44
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHorns_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHorns_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHorns_A.png (prompt art/prompts/UIP_RewardRibbonHorns_A.txt)",
+  "file": "art/ui/RewardRibbonHorns.png",
+  "size": "512x149 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 제목 띠(뿔, 휜 것, 뿔 + 접힌 꼬리): 크기 고정으로 씀. Text = 글자 칸(넓음). 검수 고름 2026-10-07.",
+  "layout": {
+   "Text": [
+    0.12,
+    0.33,
+    0.76,
+    0.41
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHaloStraight": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHaloStraight_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHaloStraight_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHalo_C.png (prompt art/prompts/UIP_RewardRibbonHalo_C.txt)",
+  "file": "art/ui/RewardRibbonHaloStraight.png",
+  "size": "512x100 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "예비: 곧은 빛 띠(날개 끝). 가운데만 늘어남(slice 알약 규칙). 늘려야 하는 곳용. 검수 고름 2026-10-07.",
+  "slice": [
+   71,
+   49,
+   441,
+   51
+  ],
+  "layout": {
+   "Text": [
+    0.14,
+    0.3,
+    0.72,
+    0.52
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHornsStraight": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHornsStraight_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHornsStraight_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHorns_C.png (prompt art/prompts/UIP_RewardRibbonHorns_C.txt)",
+  "file": "art/ui/RewardRibbonHornsStraight.png",
+  "size": "512x106 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "예비: 곧은 뿔 띠(뿔 끝). 가운데만 늘어남(slice 알약 규칙). 검수 고름 2026-10-07.",
+  "slice": [
+   42,
+   52,
+   469,
+   54
+  ],
+  "layout": {
+   "Text": [
+    0.1,
+    0.26,
+    0.8,
+    0.5
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardSlot": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardSlot_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardSlot_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardSlot_A.png (prompt art/prompts/UIP_RewardSlot_A.txt)",
+  "file": "art/ui/RewardSlot.png",
+  "size": "256x252 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 아이템 칸(공용): 금 테 + 남색 속. Inner = 아이콘·숫자 자리(분수). 검수 고름 2026-10-07.",
+  "slice": [
+   43,
+   67,
+   215,
+   207
+  ],
+  "layout": {
+   "Inner": [
+    0.121,
+    0.127,
+    0.758,
+    0.742
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 256 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardGlow": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardGlow_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardGlow_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardGlow_A.png (prompt art/prompts/UIP_RewardGlow_A.txt)",
+  "file": "art/ui/RewardGlow.png",
+  "size": "512x512 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 둥근 빛무리: 흰색 + 밝기 알파(ImageColor3로 금·주황 칠함), 판 뒤. 검수 고름 2026-10-07.",
+  "cutout": "tools/img2/lum_alpha.py --center: 검은 바탕 밝기 → 알파, RGB 흰색, 가운데 맞춘 정사각"
+ },
+ "RewardSparkle": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_Sparkle_HQ.txt",
+  "original": "art/out/s2/reward/hq/Sparkle_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/Sparkle_B.png (prompt art/prompts/UIP_Sparkle_B.txt)",
+  "file": "art/ui/RewardSparkle.png",
+  "size": "256x256 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 반짝이(흰 4각 + 짧은 대각): 흰색 + 밝기 알파, 파티클·장식용. 검수 고름 2026-10-07.",
+  "cutout": "tools/img2/lum_alpha.py --center: 검은 바탕 밝기 → 알파, RGB 흰색, 가운데 맞춘 정사각"
  }
 }
