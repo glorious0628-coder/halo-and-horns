@@ -1,0 +1,25 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 WeaponOwnedMask=0 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=false ZoneId=Crossroads pos=-1,4,-25 anvilDist=80.7 weaponModel=false
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 WeaponOwnedMask=0 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=false ZoneId=Crossroads pos=-1,4,-25 anvilDist=80.7 weaponModel=false
+probe bare hands: {"Viewport":[991,451],"Lines":["MainGui.PanelsModal.Window.TitleRibbon.Title = Guide · Take Back the Supply Road","MainGui.PanelsModal.Window.Content.WelcomeLine = First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road."],"Beam":[]}
+saved C:\Users\glori\Documents\Roblox\Game-wtc\docs\art\verification_2026-10-07\weapon_first\pc\01_bare_hands.png
+fired AcceptTutorial
+accepted: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=3 TutorialKills=0 WeaponTier=0 WeaponOwnedMask=0 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=false ZoneId=HaloTown pos=4,4,-425 anvilDist=471.6 weaponModel=false
+probe walk fade: {"Viewport":[991,451],"Lines":["MainGui.HUD.QuestLines.Line1.Text = Get your first weapon","TravelFade.Line = Off to the Forge!  2"],"Beam":["Your first weapon · the anvil @ Workspace.HUDGuideAnchor_Crossroads (0,3,-25)"]}
+saved C:\Users\glori\Documents\Roblox\Game-wtc\docs\art\verification_2026-10-07\weapon_first\pc\02_off_to_the_forge.png
+moved: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=3 TutorialKills=0 WeaponTier=0 WeaponOwnedMask=0 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=false ZoneId=Crossroads pos=35,4,38 anvilDist=8.0 weaponModel=false
+probe at the forge: {"Viewport":[991,451],"Lines":["MainGui.HUD.QuestLines.Line1.Text = Get your first weapon","ProximityPrompts.Prompt.Frame.TextFrame.ActionText = See weapons","ProximityPrompts.Prompt.Frame.TextFrame.ObjectText = Forge"],"Beam":["Your first weapon · the anvil @ Workspace.Map.Landmarks.ArtisanGuild.Anvil (39,2,45)"]}
+saved C:\Users\glori\Documents\Roblox\Game-wtc\docs\art\verification_2026-10-07\weapon_first\pc\03_at_the_anvil.png
+prompt: held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt enabled=true hold=0.0 dist=12
+weapon: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=1 TutorialKills=0 WeaponTier=1 WeaponOwnedMask=1 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=true ZoneId=Crossroads pos=35,4,38 anvilDist=8.0 weaponModel=true
+probe first weapon: {"Viewport":[991,451],"Lines":["MainGui.Toasts.Toast.Body.Text = You got your first weapon, [Twig]! Power 0 → 283","MainGui.HUD.QuestLines.Line1.Text = Free the supply road","ProximityPrompts.Prompt.Frame.TextFrame.ActionText = See weapons","ProximityPrompts.Prompt.Frame.TextFrame.ObjectText = Forge"],"Beam":["Squishy Meadow · Step on the glowing pad @ Workspace.Map.Pads.Pad_SlimeMeadow (52,1,-24)"]}
+saved C:\Users\glori\Documents\Roblox\Game-wtc\docs\art\verification_2026-10-07\weapon_first\pc\04_first_weapon.png
+next step: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=1 TutorialKills=0 WeaponTier=1 WeaponOwnedMask=1 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=true ZoneId=Crossroads pos=35,4,38 anvilDist=8.0 weaponModel=true
+probe meadow beam: {"Viewport":[991,451],"Lines":["MainGui.Toasts.Toast.Body.Text = First mission: Free the supply road\n5 slimes! (Reward: 150 gold)","MainGui.HUD.QuestLines.Line1.Text = Free the supply road · 5 slimes"],"Beam":[]}
+saved C:\Users\glori\Documents\Roblox\Game-wtc\docs\art\verification_2026-10-07\weapon_first\pc\05_to_the_meadow.png
+console: [RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+play stopped
+fresh off
+device: default
