@@ -38,6 +38,16 @@ BAND_H = 250
 BOX_Y, BOX_H = 250, 1350          # main picture box under the title band (below it: blurred fill behind YouTube's title area)
 CAP_CX, CAP_CY, CAP_MAXW = 520, 1340, 860   # captions: centre, just above the lower third, clear of the right-side buttons
 GAP, LEAD = 0.03, 0.05
+# YouTube Shorts UI covers the top ~200 px, bottom ~420 px, right ~120 px, left ~60 px (검수 2026-10-07):
+# text, faces and key action stay inside SAFE; CX is the centre of that box (boards and captions use it)
+SAFE = (60, 200, 960, 1500)
+CX = (SAFE[0] + SAFE[2]) // 2
+EMOJI_FONT = "C:/Windows/Fonts/seguiemj.ttf"
+VBAND = (150, 1500)          # neon style: rows the game footage fills (full width); outside = blurred copy
+NEON_CAP_Y, NEON_CAP_SIZE = 1400, 120
+NEON_CHUNK = (12, 2)          # neon captions: max characters / words on screen at once
+CHECK = (2, 180, 12)          # check sheet: frames per second, tile width, tiles per row
+EXTRA_BOARDS = {}             # name -> fn(shot) for boards a wrapper adds (tools/devlog_long.py)
 BETA = dt.date(2026, 10, 31)
 GOLD, RED, WHITE = (255, 214, 80), (255, 84, 84), (255, 255, 255)
 
@@ -188,8 +198,9 @@ def neon_font(size):
 def neon_img(parts, size):
     """parts = [(text, rgb)]: Segoe UI Black, thick dark outline, a blurred glow in each coloured part"""
     f = neon_font(size)
+    fe = ImageFont.truetype(EMOJI_FONT, max(20, int(size * 0.8)))
     stroke = max(6, size // 9)
-    widths = [f.getlength(t) for t, _ in parts]
+    widths = [(fe.getlength(t) + 10) if col == "emoji" else f.getlength(t) for t, col in parts]
     pad = 40
     tw, th = int(sum(widths)) + stroke * 2 + pad * 2, int(size * 1.4) + stroke * 2 + pad * 2
     im = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
@@ -197,14 +208,17 @@ def neon_img(parts, size):
     dg, d = ImageDraw.Draw(glow), ImageDraw.Draw(im)
     x = stroke + pad
     for (t, col), wpx in zip(parts, widths):
-        if tuple(col) != WHITE:
+        if col != "emoji" and tuple(col) != WHITE:
             dg.text((x, stroke + pad // 2), t, font=f, fill=tuple(col) + (230,), stroke_width=stroke + 10, stroke_fill=tuple(col) + (200,))
         x += wpx
     im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(16)))
     x = stroke + pad
     for (t, col), wpx in zip(parts, widths):
-        d.text((x + 4, stroke + pad // 2 + 7), t, font=f, fill=(0, 0, 0, 160), stroke_width=stroke, stroke_fill=(0, 0, 0, 160))
-        d.text((x, stroke + pad // 2), t, font=f, fill=tuple(col) + (255,), stroke_width=stroke, stroke_fill=(12, 10, 18, 255))
+        if col == "emoji":
+            d.text((x + 10, stroke + pad // 2 + int(size * 0.12)), t, font=fe, embedded_color=True)
+        else:
+            d.text((x + 4, stroke + pad // 2 + 7), t, font=f, fill=(0, 0, 0, 160), stroke_width=stroke, stroke_fill=(0, 0, 0, 160))
+            d.text((x, stroke + pad // 2), t, font=f, fill=tuple(col) + (255,), stroke_width=stroke, stroke_fill=(12, 10, 18, 255))
         x += wpx
     return im
 
@@ -307,8 +321,8 @@ def board_angel_devil():
     c.alpha_composite(gradient(W, H // 2, "#6A1236", "#1A0614"), (0, H // 2))
     halo = contain(load_rgba("art/ui/CLS_HaloWarrior_M.png"), 520, 600)
     horn = contain(load_rgba("art/ui/CLS_HornsWarrior_F.png"), 520, 600)
-    soft_shadow_paste(c, halo, (600 - halo.width // 2 + 80, BOX_Y + 60))
-    soft_shadow_paste(c, horn, (600 - horn.width // 2 + 80, H // 2 + 150))
+    soft_shadow_paste(c, halo, (CX - halo.width // 2, BOX_Y + 30))
+    soft_shadow_paste(c, horn, (CX - horn.width // 2, H // 2 + 60))
     return c
 
 
@@ -343,16 +357,16 @@ def team_cells():
     """7 big cards: 3 + 3 + 1, emoji on top, one word under it"""
     emo = ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109)
     cells = []
-    cw, ch = 316, 300
+    cw, ch = 280, 290
     for i, (e, word, col) in enumerate(TEAM_CARDS):
         row, colx = i // 3, i % 3
-        x = 34 + colx * (cw + 23) if i < 6 else (W - cw) // 2
+        x = SAFE[0] + 10 + colx * (cw + 20) if i < 6 else CX - cw // 2
         y = BOX_Y + 50 + row * (ch + 22)
         cell = rounded((cw, ch), 38, hexrgb("#24306E"), outline=hexrgb(col), width=8)
         ic = Image.new("RGBA", (150, 150), (0, 0, 0, 0))
         ImageDraw.Draw(ic).text((10, 8), e, font=emo, embedded_color=True)
         ic = ic.crop(ic.getbbox() or (0, 0, 1, 1))
-        ic = contain(ic, 168, 168)
+        ic = contain(ic, 150, 150)
         cell.alpha_composite(ic, ((cw - ic.width) // 2, 22))
         lab = text_img([(word, hexrgb(col)[:3])], fit_size(word, cw - 30, 64))
         cell.alpha_composite(lab, ((cw - lab.width) // 2, ch - lab.height - 6))
@@ -366,10 +380,10 @@ GRID6 = [("Slime", "MonsterSlimeCube"), ("Baby Slime", "PetBabySlime"), ("Pumpki
 
 def grid6_cells():
     cells = []
-    cw, ch = 470, 300
+    cw, ch = 420, 300
     for i, (name, fid) in enumerate(GRID6):
         col, row = i % 2, i // 2
-        x, y = 50 + col * (cw + 40), BOX_Y + 40 + row * (ch + 20)
+        x, y = SAFE[0] + 10 + col * (cw + 40), BOX_Y + 40 + row * (ch + 20)
         cell = rounded((cw, ch), 30, (255, 255, 255, 40), outline=(255, 255, 255, 110), width=3)
         m = contain(load_rgba("art/models/tripo/%s_preview.png" % fid), 240, 222)
         cell.alpha_composite(m, ((cw - m.width) // 2, 6))
@@ -381,12 +395,12 @@ def grid6_cells():
 
 def board_end():
     c = radial(W, H, "#FF9A3C", "#3B0F4F", cy=0.42)
-    king = contain(load_rgba("art/models/tripo/MonsterPumpkinKing_preview.png"), 680, 680)
-    soft_shadow_paste(c, king, ((W - king.width) // 2 - 30, BOX_Y + 470))
-    buddy = contain(load_rgba("art/models/tripo/MonsterPumpkinSlime_preview.png"), 270, 270)  # pumpkin family only (A23-45)
-    soft_shadow_paste(c, buddy, (700, BOX_Y + 820))
-    paste_center(c, text_img([("HALO & HORNS", (255, 243, 214))], 120), W // 2, BOX_Y + 250)
-    paste_center(c, text_img([("BETA  OCT 31", GOLD)], 116), W // 2, BOX_Y + 390)
+    king = contain(load_rgba("art/models/tripo/MonsterPumpkinKing_preview.png"), 640, 640)
+    soft_shadow_paste(c, king, (CX - king.width // 2 - 40, BOX_Y + 470))
+    buddy = contain(load_rgba("art/models/tripo/MonsterPumpkinSlime_preview.png"), 250, 250)  # pumpkin family only (A23-45)
+    soft_shadow_paste(c, buddy, (CX + 180, BOX_Y + 800))
+    paste_center(c, text_img([("HALO & HORNS", (255, 243, 214))], fit_size("HALO & HORNS", 860, 120)), CX, BOX_Y + 250)
+    paste_center(c, text_img([("BETA  OCT 31", GOLD)], fit_size("BETA  OCT 31", 860, 116)), CX, BOX_Y + 390)
     return c
 
 
@@ -429,7 +443,7 @@ def board_doodle():
         q = [(x + rng.uniform(-6, 6), y + rng.uniform(-6, 6)) for x, y in pts]
         d.line(q, fill=ink, width=w, joint="curve")
 
-    cx, cy = 540, 760
+    cx, cy = CX, 760
     d.ellipse((cx - 95, cy - 330, cx + 85, cy - 150), outline=ink, width=9)
     d.ellipse((cx - 50, cy - 270, cx - 30, cy - 250), fill=ink)
     d.ellipse((cx + 15, cy - 265, cx + 33, cy - 247), fill=ink)
@@ -443,12 +457,14 @@ def board_doodle():
     return c
 
 
-def board_pic_full(img):
+def board_pic_full(img, crop=None):
     src = Image.open(os.path.join(ROOT, img)).convert("RGBA")
+    if crop:  # fractional (x0, y0, x1, y1), e.g. to leave out a sheet's heading
+        src = src.crop((int(crop[0] * src.width), int(crop[1] * src.height), int(crop[2] * src.width), int(crop[3] * src.height)))
     bg = cover(src, W // 8, H // 8).filter(ImageFilter.GaussianBlur(3)).resize((W, H), Image.BILINEAR)
     bg = Image.eval(bg.convert("RGB"), lambda v: int(v * 0.6)).convert("RGBA")
-    fg = contain(src, W, int(H * 0.62))
-    soft_shadow_paste(bg, fg, ((W - fg.width) // 2, (H - fg.height) // 2 + 40))
+    fg = contain(src, SAFE[2] - SAFE[0] - 40, int((SAFE[3] - SAFE[1]) * 0.8))
+    soft_shadow_paste(bg, fg, (CX - fg.width // 2, SAFE[1] + 40))
     return bg
 
 
@@ -459,7 +475,7 @@ def board_image(img, focus=(0.5, 0.5)):
 
 
 def get_board(shot):
-    key = json.dumps({k: shot.get(k) for k in ("board", "lit", "img", "label", "image", "focus_img")}, sort_keys=True)
+    key = json.dumps({k: shot.get(k) for k in ("board", "lit", "img", "label", "image", "focus_img", "crop", "which")}, sort_keys=True)
     if key in _BOARD_CACHE:
         return _BOARD_CACHE[key]
     b = shot.get("board")
@@ -473,8 +489,10 @@ def get_board(shot):
         im = board_picture(shot["img"], shot.get("label", "PICTURE"))
     elif b == "end":
         im = board_end()
+    elif b in EXTRA_BOARDS:
+        im = EXTRA_BOARDS[b](shot)
     elif b == "pic_full":
-        im = board_pic_full(shot["img"])
+        im = board_pic_full(shot["img"], shot.get("crop"))
     elif b == "code":
         im = board_code()
     elif b == "doodle":
@@ -549,6 +567,29 @@ def compose_video_full(fr, shot, t, top):
     return fr.resize((W, H), Image.BICUBIC, box=(x0, y0, x0 + cw, y0 + ch))
 
 
+def compose_video_band(fr, shot, t, top):
+    """full-width band VBAND from the source (zoom / focus animated), on a blurred, darker copy of the frame"""
+    sw, sh = fr.size
+    ah = sh - top
+    bh = VBAND[1] - VBAND[0]
+    z0, z1 = shot.get("zf", [max(1.0, v * 0.8) for v in shot.get("z", [1.0, 1.0])])
+    z = lerp(z0, z1, ease(t))
+    f0 = shot.get("f", [[0.5, 0.5], [0.5, 0.5]])
+    fx, fy = lerp(f0[0][0], f0[1][0], ease(t)), lerp(f0[0][1], f0[1][1], ease(t))
+    ch = ah / z
+    cw = ch * W / bh
+    if cw > sw:
+        cw = sw
+        ch = cw * bh / W
+    x0 = (sw - cw) * fx
+    y0 = top + (ah - ch) * fy
+    small = fr.crop((0, top, sw, sh)).resize((96, 170), Image.BILINEAR)
+    bg = small.filter(ImageFilter.GaussianBlur(5)).resize((W, H), Image.BILINEAR)
+    bg = Image.eval(bg, lambda v: int(v * 0.5))
+    bg.paste(fr.resize((W, bh), Image.BICUBIC, box=(x0, y0, x0 + cw, y0 + ch)), (0, VBAND[0]))
+    return bg
+
+
 def compose_video_frame(fr, shot, t, top):
     sw, sh = fr.size
     small = fr.crop((0, top, sw, sh)).resize((96, 170), Image.BILINEAR, reducing_gap=None)
@@ -589,11 +630,30 @@ def build_caption_events(timeline, style="band"):
         line = it["line"]
         if line.get("cap") is False or line.get("silent"):
             continue
-        cs = caption_chunks(fill(line["en"]), line.get("hl", []), line.get("hlr", []), max_chars=12 if style == "neon" else 14,
-                            max_words=2 if style == "neon" else 3)
-        if style == "neon":  # hl words take the line's neon colour, hlr words red, the rest white; upper case like the reference
-            ncol = NEON.get(line.get("neon", "green"), NEON["green"])
-            cs = [[(t.upper(), ncol if c == GOLD else NEON["red"] if c == RED else WHITE) for t, c in ch_] for ch_ in cs]
+        cs = caption_chunks(fill(line["en"]), line.get("hl", []), line.get("hlr", []), max_chars=NEON_CHUNK[0] if style == "neon" else 14,
+                            max_words=NEON_CHUNK[1] if style == "neon" else 3)
+        if style == "neon":
+            ncol = NEON.get(line.get("neon", "yellow"), NEON["yellow"])
+            words_all = [[(t.upper(), c) for t, c in ch_] for ch_ in cs]
+            lens = [sum(len(t) for t, _ in c) + 3 for c in words_all]
+            t0, t1 = it["start"], it["speech_end"]
+            t = t0
+            for ci, (c, L) in enumerate(zip(words_all, lens)):
+                d = (t1 - t0) * L / sum(lens)
+                wl = [len(w) + 2 for w, _ in c]
+                tw = t
+                for wi in range(len(c)):
+                    # the spoken word in the line colour, hlr words always red, the rest white
+                    parts = [(w, ncol if k == wi else NEON["red"] if col == RED else WHITE) for k, (w, col) in enumerate(c)]
+                    if ci == len(words_all) - 1 and line.get("emoji"):
+                        parts = parts + [(" ", WHITE), (line["emoji"], "emoji")]
+                    txt = "".join(w for w, _ in parts if _ != "emoji")
+                    dw = d * wl[wi] / sum(wl)
+                    ev.append({"start": tw, "end": tw + dw, "pop_from": t, "hold": t1 + 0.06,
+                               "img": neon_img(parts, neon_fit(txt, SAFE[2] - SAFE[0] - 60, NEON_CAP_SIZE))})
+                    tw += dw
+                t += d
+            continue
         lens = [sum(len(t) for t, _ in c) + 3 for c in cs]
         t0, t1 = it["start"], it["speech_end"]
         t = t0
@@ -777,7 +837,7 @@ def build_short(short, voice, out_root, do_tts=True):
     loudnorm(raw_wav, norm_wav)
     # captions + subtitles files
     style = short.get("style", "band")
-    cap_y = int(short.get("cap_y", CAP_CY))
+    cap_y = int(short.get("cap_y", NEON_CAP_Y if short.get("style") == "neon" else CAP_CY))
     caps = build_caption_events(timeline, style)
     write_srts(timeline, out_dir)
     # title band (one image)
@@ -809,7 +869,7 @@ def build_short(short, voice, out_root, do_tts=True):
         s, f0, f1 = sh["shot"], sh["f0"], sh["f1"]
         n = max(1, f1 - f0)
         reader = VideoReader(s["video"], float(s.get("ss", 0)), float(s.get("speed", 1.0))) if "video" in s else None
-        top = 72 if s.get("topbar") else 0
+        top = int(s.get("top", 72 if s.get("topbar") else 0))
         cells = grid6_cells() if s.get("board") == "grid6" else team_cells() if s.get("board") == "team_cards" else None
         tframes = None
         shot_prev = last
@@ -823,7 +883,8 @@ def build_short(short, voice, out_root, do_tts=True):
             fi = f0 + i
             t = i / max(1, n - 1)
             if reader:
-                fr = (compose_video_full if (style == "neon" or s.get("full")) else compose_video_frame)(reader.next(), s, t, top).convert("RGBA")
+                comp = compose_video_full if s.get("full") else compose_video_band if style == "neon" else compose_video_frame
+                fr = comp(reader.next(), s, t, top).convert("RGBA")
             else:
                 base = get_board(s)
                 z0, z1 = s.get("z", [1.0, 1.06])
@@ -837,7 +898,7 @@ def build_short(short, voice, out_root, do_tts=True):
                     k = int(round(float(s.get("start", 0)) + i * float(s.get("step", 1)))) % len(tframes)  # step < 1 = slow swing past the front
                     m = tframes[k]
                     sc = float(s.get("scale", 1.0))
-                    paste_center(fr, m, W // 2, int(s.get("y", BOX_Y + 560)), sc * pop_scale(i) if s.get("pop") else sc)
+                    paste_center(fr, m, CX, int(s.get("y", BOX_Y + 560)), sc * pop_scale(i) if s.get("pop") else sc)
                 if cells:
                     per = int(s["every"] * FPS) if s.get("every") else max(1, int(n * 0.75) // len(cells))
                     for ci, (cell, cx, cy) in enumerate(cells):
@@ -856,7 +917,7 @@ def build_short(short, voice, out_root, do_tts=True):
             if s.get("xmark"):
                 xm = Image.new("RGBA", (W, H), (0, 0, 0, 0))
                 dx = ImageDraw.Draw(xm)
-                cx_, cy_, r_ = W // 2, int(s.get("xy", BOX_Y + 560)), 330
+                cx_, cy_, r_ = CX, int(s.get("xy", BOX_Y + 560)), 330
                 for k_, (p0, p1) in enumerate((((cx_ - r_, cy_ - r_), (cx_ + r_, cy_ + r_)), ((cx_ + r_, cy_ - r_), (cx_ - r_, cy_ + r_)))):
                     prog = ease((i - 4 - k_ * 5) / 4)
                     if prog > 0:
@@ -873,14 +934,14 @@ def build_short(short, voice, out_root, do_tts=True):
             ch = s.get("chip")
             if ch:
                 pill = chip_img(ch)
-                paste_center(fr, pill, 60 + pill.width // 2, BOX_Y + 120, pop_scale(i))
+                paste_center(fr, pill, SAFE[0] + 10 + pill.width // 2, SAFE[1] + 90, pop_scale(i))
             bg_ = s.get("big")
             if bg_:
                 txt = fill(bg_["text"])
                 col_ = NEON.get(bg_.get("color")) or hexrgb(bg_.get("color", "#FFD650"))[:3]
-                img_ = (neon_img([(txt, col_)], neon_fit(txt, 960, bg_.get("size", 170))) if style == "neon"
-                        else text_img([(txt, col_)], fit_size(txt, 980, bg_.get("size", 150))))
-                paste_center(fr, img_, W // 2, bg_.get("y", BOX_Y + 260), pop_scale(i))
+                img_ = (neon_img([(txt, col_)], neon_fit(txt, SAFE[2] - SAFE[0] - 40, bg_.get("size", 170))) if style == "neon"
+                        else text_img([(txt, col_)], fit_size(txt, 860, bg_.get("size", 150))))
+                paste_center(fr, img_, CX, min(SAFE[3] - 110, max(SAFE[1] + 90, bg_.get("y", BOX_Y + 260))), pop_scale(i))
             # transition in
             kind = s.get("in", "punch")
             if kind == "punch" and i < 6:
@@ -904,8 +965,8 @@ def build_short(short, voice, out_root, do_tts=True):
             tt = fi / FPS
             for c in caps:
                 if c["start"] <= tt < c["end"]:
-                    k = int((tt - c["start"]) * FPS)
-                    paste_center(fr, c["img"], W // 2 if style == "neon" else CAP_CX, cap_y, pop_scale(k))
+                    k = int((tt - c.get("pop_from", c["start"])) * FPS)
+                    paste_center(fr, c["img"], CX if style == "neon" else CAP_CX, cap_y, pop_scale(k))
                     break
             if kind == "flash" and i < 5:
                 a = [0.85, 0.6, 0.35, 0.18, 0.06][i]
@@ -917,7 +978,9 @@ def build_short(short, voice, out_root, do_tts=True):
     if enc.wait() != 0:
         raise RuntimeError("encode failed")
     run([FFMPEG, "-hide_banner", "-loglevel", "error", "-y", "-i", final, "-vf",
-         "fps=2,scale=180:-2,tile=12x%d" % math.ceil(total * 2 / 12), "-frames:v", "1", os.path.join(out_dir, "check_sheet.png")])
+         "drawbox=x=%d:y=%d:w=%d:h=%d:color=red@0.9:t=8,fps=%s,scale=%d:-2,tile=%dx%d"
+         % (SAFE[0], SAFE[1], SAFE[2] - SAFE[0], SAFE[3] - SAFE[1], CHECK[0], CHECK[1], CHECK[2], math.ceil(total * CHECK[0] / CHECK[2])),
+         "-frames:v", "1", os.path.join(out_dir, "check_sheet.png")])
     m = short.get("meta", {})
     dur = probe_duration(final)
     open(os.path.join(out_dir, "meta.txt"), "w", encoding="utf-8").write(

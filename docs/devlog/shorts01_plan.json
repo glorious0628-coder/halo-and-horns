@@ -80,7 +80,7 @@
      ],
      "shots": [
       {
-       "video": "s21_meadow_auto",
+       "video": "s30_meadow_auto",
        "ss": 3.0,
        "z": [
         1.15,
@@ -100,7 +100,8 @@
         "max": 150
        }
       }
-     ]
+     ],
+     "emoji": "❤️"
     },
     {
      "id": "A0d",
@@ -154,7 +155,8 @@
         }
        ]
       }
-     ]
+     ],
+     "emoji": "💸"
     },
     {
      "id": "A0e",
@@ -167,8 +169,8 @@
      ],
      "shots": [
       {
-       "video": "s20_king_front",
-       "ss": 1.0,
+       "video": "s30_king_front",
+       "ss": 1.5,
        "topbar": true,
        "z": [
         1.3,
@@ -177,21 +179,25 @@
        "f": [
         [
          0.5,
-         0.6
+         1.0
         ],
         [
          0.5,
-         0.58
+         1.0
         ]
        ],
        "in": "flash",
        "sfx": [
         "boom"
        ],
-       "w": 1.3
+       "w": 1.3,
+       "zf": [
+        1.2,
+        1.12
+       ]
       },
       {
-       "video": "s21_meadow_auto",
+       "video": "s30_meadow_auto",
        "ss": 9.0,
        "z": [
         1.1,
@@ -203,7 +209,8 @@
        ],
        "w": 1.0
       }
-     ]
+     ],
+     "emoji": "🤖"
     },
     {
      "id": "A3",
@@ -270,7 +277,7 @@
      ],
      "shots": [
       {
-       "video": "s21_meadow_auto",
+       "video": "s30_meadow_auto",
        "ss": 1.0,
        "z": [
         1.2,
@@ -299,7 +306,7 @@
        "w": 1.0
       },
       {
-       "video": "s21_meadow_auto",
+       "video": "s30_meadow_auto",
        "ss": 13.0,
        "z": [
         1.25,
@@ -402,8 +409,8 @@
      ],
      "shots": [
       {
-       "video": "s21_king_fight",
-       "ss": 0.9,
+       "video": "s30_king_fight",
+       "ss": 6.0,
        "z": [
         1.1,
         1.25
@@ -419,9 +426,10 @@
         "y": 560,
         "size": 190
        },
-       "speed": 0.8
+       "speed": 1.0
       }
-     ]
+     ],
+     "emoji": "🎃"
     },
     {
      "id": "A9",
@@ -482,7 +490,7 @@
      ],
      "shots": [
       {
-       "video": "s20_slime_front",
+       "video": "s30_slime_front",
        "ss": 2.6,
        "topbar": true,
        "z": [
@@ -492,18 +500,22 @@
        "f": [
         [
          0.5,
-         0.62
+         0.85
         ],
         [
          0.5,
-         0.6
+         0.85
         ]
        ],
        "in": "flash",
        "sfx": [
         "pop"
        ],
-       "w": 1.0
+       "w": 1.0,
+       "zf": [
+        1.1,
+        1.0
+       ]
       },
       {
        "board": "picture",
@@ -519,7 +531,8 @@
        ],
        "w": 0.9
       }
-     ]
+     ],
+     "emoji": "😲"
     },
     {
      "id": "B2",
@@ -598,8 +611,8 @@
      ],
      "shots": [
       {
-       "video": "s20_slime_front",
-       "ss": 1.0,
+       "video": "s30_slime_front",
+       "ss": 1.5,
        "topbar": true,
        "z": [
         1.2,
@@ -610,10 +623,24 @@
         "boom"
        ],
        "shake": true,
-       "w": 1.0
+       "w": 1.0,
+       "zf": [
+        1.1,
+        1.0
+       ],
+       "f": [
+        [
+         0.5,
+         0.85
+        ],
+        [
+         0.5,
+         0.85
+        ]
+       ]
       },
       {
-       "video": "s21_meadow_auto",
+       "video": "s30_meadow_auto",
        "ss": 6.0,
        "z": [
         1.1,
@@ -676,7 +703,7 @@
      ],
      "shots": [
       {
-       "video": "s20_pumpkin_slime",
+       "video": "s30_pumpkin_slime",
        "ss": 2.0,
        "topbar": true,
        "z": [
@@ -686,9 +713,24 @@
        "in": "whip",
        "sfx": [
         "whoosh"
+       ],
+       "zf": [
+        1.1,
+        1.0
+       ],
+       "f": [
+        [
+         0.5,
+         0.85
+        ],
+        [
+         0.5,
+         0.85
+        ]
        ]
       }
-     ]
+     ],
+     "emoji": "🎃"
     },
     {
      "id": "B6",
@@ -728,23 +770,34 @@
      ],
      "shots": [
       {
-       "board": "stage",
-       "turn": "LittleGhost",
-       "start": 74,
-       "step": 0.6,
-       "scale": 1.5,
-       "y": 860,
-       "pop": true,
+       "video": "s30_little_ghost",
+       "ss": 6.0,
+       "topbar": true,
        "z": [
-        1.0,
-        1.05
+        1.3,
+        1.15
+       ],
+       "f": [
+        [
+         0.5,
+         0.6
+        ],
+        [
+         0.5,
+         0.6
+        ]
        ],
        "in": "whip",
        "sfx": [
         "pop"
+       ],
+       "zf": [
+        1.1,
+        1.0
        ]
       }
-     ]
+     ],
+     "emoji": "👻"
     },
     {
      "id": "B7b",
@@ -784,7 +837,7 @@
      ],
      "shots": [
       {
-       "video": "s20_pet",
+       "video": "s30_pet",
        "ss": 1.5,
        "topbar": true,
        "z": [
@@ -870,7 +923,7 @@
        "static": true
       },
       {
-       "video": "s20_slime_front",
+       "video": "s30_slime_front",
        "ss": 2.0,
        "topbar": true,
        "z": [
@@ -880,18 +933,22 @@
        "f": [
         [
          0.5,
-         0.6
+         0.85
         ],
         [
          0.5,
-         0.62
+         0.85
         ]
        ],
        "in": "whip",
        "sfx": [
         "whoosh"
        ],
-       "w": 1.0
+       "w": 1.0,
+       "zf": [
+        1.1,
+        1.0
+       ]
       }
      ]
     }
@@ -934,8 +991,8 @@
      "gap": 0.12,
      "shots": [
       {
-       "video": "s20_king_front",
-       "ss": 1.0,
+       "video": "s30_king_front",
+       "ss": 1.5,
        "topbar": true,
        "z": [
         1.3,
@@ -944,19 +1001,24 @@
        "f": [
         [
          0.5,
-         0.6
+         1.0
         ],
         [
          0.5,
-         0.58
+         1.0
         ]
        ],
        "in": "flash",
        "sfx": [
         "boom"
+       ],
+       "zf": [
+        1.2,
+        1.12
        ]
       }
-     ]
+     ],
+     "emoji": "🎃"
     },
     {
      "id": "C2",
@@ -996,7 +1058,7 @@
      ],
      "shots": [
       {
-       "video": "s20_patch_dolly",
+       "video": "s30_patch_dolly",
        "ss": 2.0,
        "speed": 1.5,
        "topbar": true,
@@ -1015,7 +1077,7 @@
        }
       },
       {
-       "video": "s20_king_front",
+       "video": "s30_king_front",
        "ss": 5.0,
        "topbar": true,
        "z": [
@@ -1026,7 +1088,21 @@
        "sfx": [
         "hit"
        ],
-       "w": 1.0
+       "w": 1.0,
+       "zf": [
+        1.2,
+        1.12
+       ],
+       "f": [
+        [
+         0.5,
+         1.0
+        ],
+        [
+         0.5,
+         1.0
+        ]
+       ]
       }
      ]
     },
@@ -1041,8 +1117,8 @@
      "gap": 0.12,
      "shots": [
       {
-       "video": "s21_king_fight",
-       "ss": 0.9,
+       "video": "s30_king_fight",
+       "ss": 7.0,
        "z": [
         1.1,
         1.25
@@ -1052,7 +1128,7 @@
        "sfx": [
         "hit"
        ],
-       "speed": 0.85
+       "speed": 1.0
       }
      ]
     },
@@ -1066,7 +1142,7 @@
      ],
      "shots": [
       {
-       "video": "s20_king_front",
+       "video": "s30_king_front",
        "ss": 6.0,
        "topbar": true,
        "z": [
@@ -1080,7 +1156,21 @@
        "chip": {
         "icon": "art/ui/IconAttack.png",
         "text": "5 minutes"
-       }
+       },
+       "zf": [
+        1.2,
+        1.12
+       ],
+       "f": [
+        [
+         0.5,
+         1.0
+        ],
+        [
+         0.5,
+         1.0
+        ]
+       ]
       }
      ]
     },
@@ -1096,8 +1186,8 @@
      ],
      "shots": [
       {
-       "video": "s21_king_fight",
-       "ss": 2.2,
+       "video": "s30_king_fight",
+       "ss": 22.2,
        "z": [
         1.1,
         1.25
@@ -1125,7 +1215,8 @@
        },
        "speed": 0.8
       }
-     ]
+     ],
+     "emoji": "🍬"
     },
     {
      "id": "C7",
@@ -1138,7 +1229,7 @@
      ],
      "shots": [
       {
-       "video": "s20_king_front",
+       "video": "s30_king_front",
        "ss": 3.5,
        "topbar": true,
        "z": [
@@ -1152,7 +1243,21 @@
        "chip": {
         "icon": "art/ui/IconSprout.png",
         "text": "new players safe"
-       }
+       },
+       "zf": [
+        1.2,
+        1.12
+       ],
+       "f": [
+        [
+         0.5,
+         1.0
+        ],
+        [
+         0.5,
+         1.0
+        ]
+       ]
       }
      ]
     },
@@ -1166,7 +1271,7 @@
      ],
      "shots": [
       {
-       "video": "s20_patch_dolly",
+       "video": "s30_patch_dolly",
        "ss": 6.5,
        "speed": 1.3,
        "topbar": true,
@@ -1218,8 +1323,8 @@
      ],
      "shots": [
       {
-       "video": "s20_king_front",
-       "ss": 0.6,
+       "video": "s30_king_front",
+       "ss": 1.5,
        "topbar": true,
        "z": [
         1.12,
@@ -1228,16 +1333,20 @@
        "f": [
         [
          0.5,
-         0.58
+         1.0
         ],
         [
          0.5,
-         0.6
+         1.0
         ]
        ],
        "in": "whip",
        "sfx": [
         "whoosh"
+       ],
+       "zf": [
+        1.2,
+        1.12
        ]
       }
      ]
@@ -1264,7 +1373,6 @@
   {
    "id": "short04_monster_reveal",
    "style": "neon",
-   "cap_y": 1560,
    "lines": [
     {
      "id": "R0",
@@ -1278,7 +1386,7 @@
      "neon": "green",
      "shots": [
       {
-       "video": "s20_slime_front",
+       "video": "s30_slime_front",
        "ss": 1.6,
        "topbar": true,
        "z": [
@@ -1288,19 +1396,24 @@
        "f": [
         [
          0.5,
-         0.62
+         0.85
         ],
         [
          0.5,
-         0.6
+         0.85
         ]
        ],
        "in": "flash",
        "sfx": [
         "boom"
+       ],
+       "zf": [
+        1.1,
+        1.0
        ]
       }
-     ]
+     ],
+     "emoji": "😲"
     },
     {
      "id": "R1",
@@ -1313,7 +1426,7 @@
      "gap": 0.0,
      "shots": [
       {
-       "video": "s20_slime_front",
+       "video": "s30_slime_front",
        "ss": 3.0,
        "topbar": true,
        "z": [
@@ -1323,16 +1436,20 @@
        "f": [
         [
          0.5,
-         0.62
+         0.85
         ],
         [
          0.5,
-         0.62
+         0.85
         ]
        ],
        "in": "whip",
        "sfx": [
         "whoosh"
+       ],
+       "zf": [
+        1.1,
+        1.0
        ]
       }
      ]
@@ -1358,7 +1475,7 @@
        "big": {
         "text": "AI DRAWING",
         "color": "cyan",
-        "y": 1560,
+        "y": 1390,
         "size": 150
        }
       }
@@ -1375,7 +1492,7 @@
      "gap": 0.0,
      "shots": [
       {
-       "video": "s20_pumpkin_slime",
+       "video": "s30_pumpkin_slime",
        "ss": 2.0,
        "topbar": true,
        "z": [
@@ -1385,16 +1502,20 @@
        "f": [
         [
          0.5,
-         0.62
+         0.85
         ],
         [
          0.5,
-         0.62
+         0.85
         ]
        ],
        "in": "whip",
        "sfx": [
         "whoosh"
+       ],
+       "zf": [
+        1.1,
+        1.0
        ]
       }
      ]
@@ -1420,7 +1541,7 @@
        "big": {
         "text": "AI DRAWING",
         "color": "cyan",
-        "y": 1560,
+        "y": 1390,
         "size": 150
        }
       }
@@ -1437,8 +1558,8 @@
      "gap": 0.0,
      "shots": [
       {
-       "video": "s20_king_front",
-       "ss": 1.2,
+       "video": "s30_king_front",
+       "ss": 1.5,
        "topbar": true,
        "z": [
         1.0,
@@ -1447,19 +1568,24 @@
        "f": [
         [
          0.5,
-         0.5
+         1.0
         ],
         [
          0.5,
-         0.48
+         1.0
         ]
        ],
        "in": "whip",
        "sfx": [
         "hit"
+       ],
+       "zf": [
+        1.2,
+        1.12
        ]
       }
-     ]
+     ],
+     "emoji": "👑"
     },
     {
      "id": "R3r",
@@ -1482,7 +1608,7 @@
        "big": {
         "text": "AI DRAWING",
         "color": "cyan",
-        "y": 1560,
+        "y": 1390,
         "size": 150
        }
       }
@@ -1538,7 +1664,7 @@
        "big": {
         "text": "AI DRAWING",
         "color": "cyan",
-        "y": 1560,
+        "y": 1390,
         "size": 150
        }
       }
@@ -1555,23 +1681,34 @@
      "gap": 0.0,
      "shots": [
       {
-       "board": "stage",
-       "turn": "LittleGhost",
-       "start": 78,
-       "step": 0.6,
-       "scale": 1.7,
-       "y": 980,
-       "pop": true,
+       "video": "s30_little_ghost",
+       "ss": 6.0,
+       "topbar": true,
        "z": [
-        1.0,
-        1.05
+        1.3,
+        1.15
+       ],
+       "f": [
+        [
+         0.5,
+         0.6
+        ],
+        [
+         0.5,
+         0.6
+        ]
        ],
        "in": "whip",
        "sfx": [
         "pop"
+       ],
+       "zf": [
+        1.1,
+        1.0
        ]
       }
-     ]
+     ],
+     "emoji": "👻"
     },
     {
      "id": "R5r",
@@ -1594,7 +1731,7 @@
        "big": {
         "text": "AI DRAWING",
         "color": "cyan",
-        "y": 1560,
+        "y": 1390,
         "size": 150
        }
       }
@@ -1611,8 +1748,8 @@
      "neon": "yellow",
      "shots": [
       {
-       "video": "s20_slime_front",
-       "ss": 1.2,
+       "video": "s30_slime_front",
+       "ss": 1.5,
        "topbar": true,
        "z": [
         1.2,
@@ -1621,16 +1758,20 @@
        "f": [
         [
          0.5,
-         0.62
+         0.85
         ],
         [
          0.5,
-         0.62
+         0.85
         ]
        ],
        "in": "whip",
        "sfx": [
         "whoosh"
+       ],
+       "zf": [
+        1.1,
+        1.0
        ]
       }
      ]
