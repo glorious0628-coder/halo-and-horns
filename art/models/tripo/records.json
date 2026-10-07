@@ -4839,5 +4839,43 @@
    "bytes": 2646412,
    "at": "2026-10-07 11:59:12"
   }
+ ],
+ "Kit_W_JobBoard": [
+  {
+   "event": "generation_submitted",
+   "task_id": "865feb4b-b2d9-4512-aa4e-9af19867356f",
+   "image": "art\\out\\hq\\HQ_Woods_JobBoard.png",
+   "recipe": "prop_std",
+   "seed": 50804
+  },
+  {
+   "task_id": "865feb4b-b2d9-4512-aa4e-9af19867356f",
+   "image": "art\\out\\hq\\HQ_Woods_JobBoard.png",
+   "recipe": "prop_std",
+   "seed": 50804,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\Kit_W_JobBoard_raw.glb",
+   "bytes": 1279540,
+   "at": "2026-10-07 12:26:23"
+  }
+ ],
+ "Kit_M_JobBoard": [
+  {
+   "event": "generation_submitted",
+   "task_id": "a5762091-ed0e-40d7-9823-e41bead7318e",
+   "image": "art\\out\\hq\\HQ_Meadow_JobBoard.png",
+   "recipe": "prop_std",
+   "seed": 12741
+  },
+  {
+   "task_id": "a5762091-ed0e-40d7-9823-e41bead7318e",
+   "image": "art\\out\\hq\\HQ_Meadow_JobBoard.png",
+   "recipe": "prop_std",
+   "seed": 12741,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\Kit_M_JobBoard_raw.glb",
+   "bytes": 1059484,
+   "at": "2026-10-07 12:26:14"
+  }
  ]
 }
