@@ -49,6 +49,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
             + between(mon, "local GLOBAL_CAP\n", "\n------------------------------------------------------------------ helpers")
             + "\n"
             + function_block(mon, "local function insideZone(")
+            # A23-74: pickSpawnPoint skips tries next to a living monster (SEP.Clear; no monsters here: always clear)
+            + between(mon, "local SEP = {\n", "\n}\n") + "\n}\n"
+            + function_block(mon, "function SEP.RadiusOf(")
+            + function_block(mon, "function SEP.Clear(")
             + function_block(mon, "local function tutorialHunter(")
             + function_block(mon, "local function playersPerZone(")
             + between(mon, "local function wantedTargets(",
