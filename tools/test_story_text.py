@@ -39,14 +39,26 @@ Checks (each finding = level, rule, Config path, source line, the text):
                       (not as the speaker prefix) with only the other gender's pronouns (warn).
   8. Neutral / Guild / Artisan paths and the Neutral-only story quests (N1, N2) are hidden in the beta (A23-57): their
      findings are reported as info (levelIfShown keeps the real level) and never fail the run.
+  9. plural-*         one / many (검수 2026-10-07, 'You were away for 1 days'): a count phrase = the words after a
+                      number up to the first plural count noun (PLURAL_NOUNS, max 3 words: 'days', 'basic hits',
+                      'Wanted players').
+                      plural-one      a lone 1 before a count phrase in a Config text ('1 days', also lines Config
+                                      formats while it loads) = error.
+                      plural-word     '%d <count phrase>' in a Config format text whose phrase is not a key of
+                                      Config.PluralWords (Config.Plural could not say '1 day') = error.
+                      plural-callsite string.format(<Config path>, ...) of such a text not wrapped in Plural(...)
+                                      (Config.Plural / an alias) = error; a dynamic Config.X[key] site = info.
+                      plural-literal  a '%d <count phrase>' literal in other src/*.luau code (client text tables):
+                                      warn while a string.format of its key in that file is not wrapped in
+                                      Plural(...), error when the phrase is not in Config.PluralWords.
 
 Scope of checks 2-7: Config.StoryQuests, Config.Tutorial (Welcome, Text, GuideText, QuestText), Config.Halloween
 (Banter, Text), Config.Barks.Lines, Config.Text, Config.Story, Config.StoryLines, Config.Board, and every other table named
 Text inside Config (ids such as Type / Kind / Zone / Guide / Npc / Spot / Speaker are skipped).
 
-Self-test: 6 mutations are appended to an in-memory copy of Config (Hangul line, 20-word toast, LinesBy without
-Default, stray %d in a story line, a gore word, a glossary name in lower case); each must produce its own new
-finding. Prints "mutations caught N/N"; the status is "passed" only with no error findings and every mutation caught,
+Self-test: 8 mutations are appended to an in-memory copy of Config (Hangul line, 20-word toast, LinesBy without
+Default, stray %d in a story line, a gore word, a glossary name in lower case, '1 days', a count text whose noun is
+not in Config.PluralWords); each must produce its own new finding. Prints "mutations caught N/N"; the status is "passed" only with no error findings and every mutation caught,
 "passed-no-mutations" when there are no errors but the self-test was skipped or missed one, else "failed".
 
 Usage: py tools/test_story_text.py [--src path/to/src] [--out report.json] [--no-mutations] [--luau luau.exe]
@@ -556,6 +568,45 @@ SHOP_CONTEXT = re.compile(r"shop|potion|weapon|forge|blacksmith|merchant|product
                           re.I)
 SHOP_TEXT = re.compile(r"\b(gold|robux|buy|price|shop|potion|ticket|sale)\b", re.I)
 
+# 9. one / many: plural count nouns a number stands before ('1 days' is wrong, '1 gold' is fine: gold is no count noun)
+PLURAL_NOUNS = {"days", "times", "minutes", "seconds", "hours", "weeks", "hits", "kills", "monsters", "slimes",
+                "goblins", "skeletons", "ghosts", "pumpkins", "bats", "brutes", "kings", "bosses", "players", "people",
+                "quests", "materials", "items", "stars", "points", "coins", "potions", "scrolls", "steps", "levels",
+                "friends", "rounds", "wins", "jobs", "knights", "arrows", "pets", "gems", "shards", "enemies",
+                "trials", "sacks", "goals", "tries", "chances", "rebirths"}
+COUNT_WORDS_RE = re.compile(r"[A-Za-z']+(?: [A-Za-z']+){0,2}")
+ONE_RE = re.compile(r"(?<![\d.,/])1 (?=[A-Za-z])")
+DSPEC_RE = re.compile(r"(?<!/)%[-+ #0]*\d*[di] (?=[A-Za-z])")  # not the max of '%d/%d players'
+
+
+def count_phrase(after: str) -> str | None:
+    """the words right after a number up to the first plural count noun (max 3 words): 'days', 'Wanted players'"""
+    m = COUNT_WORDS_RE.match(after)
+    if not m:
+        return None
+    words = m.group(0).split(" ")
+    for i, w in enumerate(words):
+        if w.lower() in PLURAL_NOUNS:
+            return " ".join(words[:i + 1])
+    return None
+
+
+def count_templates(text: str) -> list[str]:
+    """the count phrases after each '%d ' in a format text"""
+    return [ph for m in DSPEC_RE.finditer(text) if (ph := count_phrase(text[m.end():]))]
+
+
+def call_start(toks: list, i: int) -> int:
+    """index of the first token of the callee chain ending at toks[i] (a.b.c -> index of a)"""
+    while i >= 2 and is_op(toks[i - 1], ".") and toks[i - 2].kind == "name":
+        i -= 2
+    return i
+
+
+def plural_wrapped(toks: list, i: int) -> bool:
+    """the call starting at toks[i] (string.format / a format helper) is the first argument of Plural(...)"""
+    return i >= 2 and is_op(toks[i - 1], "(") and toks[i - 2].kind == "name" and toks[i - 2].val == "Plural"
+
 
 def _w(words: str) -> re.Pattern:
     return re.compile(r"\b(" + words + r")\b", re.I)
@@ -697,11 +748,13 @@ class Checker:
                 alias["Config"] = ()
             for i, t in enumerate(toks):
                 start = None
+                wrapped = False
                 if t.kind == "name" and t.val == "string" and i + 3 < len(toks) and is_op(toks[i + 1], ".") \
                         and toks[i + 2].val == "format" and is_op(toks[i + 3], "("):
                     if i >= 2 and is_op(toks[i - 1], "(") and toks[i - 2].val == "pcall":
                         continue  # pcall(string.format, ...) handled below
                     start = i + 4
+                    wrapped = plural_wrapped(toks, i)
                 elif t.kind == "name" and t.val == "pcall" and i + 5 < len(toks) and is_op(toks[i + 1], "(") \
                         and toks[i + 2].val == "string" and toks[i + 4].val == "format" and is_op(toks[i + 5], ","):
                     start = i + 6
@@ -756,7 +809,7 @@ class Checker:
                     if last and (is_op(last[0], "...") or any(x.val in ("unpack",) for x in last[:3])):
                         variadic = True
                 sites.append({"file": rel, "line": t.line, "path": tuple(path), "dynamic": dynamic, "args": args,
-                              "variadic": variadic})
+                              "variadic": variadic, "wrapped": wrapped})
         return sites
 
     # ---------------------------------------------------------------- one run over a loaded Config
@@ -1048,6 +1101,84 @@ class Checker:
                     add("error", "format-callsite", path, s, f"{n} placeholders but {where}: string.format throws")
                 elif n < site["args"]:
                     add("warn", "format-callsite", path, s, f"{n} placeholders but {where}: extra values not shown")
+        # ---- 9. one / many (검수 2026-10-07)
+        plural_words = get(tree, ("PluralWords",))
+        plural_words = plural_words if isinstance(plural_words, dict) else {}
+        for path, s in texts:
+            for m in ONE_RE.finditer(s):
+                ph = count_phrase(s[m.end():])
+                if ph:
+                    one = plural_words.get(ph)
+                    add("error", "plural-one", path, s,
+                        f"'1 {ph}': say '1 {one}'" if one else f"'1 {ph}': use the singular after 1")
+            if is_raw(path):
+                continue
+            for ph in count_templates(s):
+                if ph not in plural_words:
+                    add("error", "plural-word", path, s, f"'%d {ph}' but Config.PluralWords has no '{ph}': "
+                        f"Config.Plural cannot say '1 <singular>' (add {ph!r} = its singular)")
+        for site in self.callsites:
+            if site["wrapped"]:
+                continue
+            node = get(tree, site["path"])
+            if site["dynamic"] and isinstance(node, dict):
+                for k, v in node.items():
+                    if isinstance(v, str) and count_templates(v):
+                        add("info", "plural-callsite", site["path"] + (k,), v,
+                            f"{site['file']}:{site['line']} formats {fmt_path(site['path'])}[key] without "
+                            "Config.Plural (dynamic, unverified)")
+            elif isinstance(node, str) and not site["dynamic"] and count_templates(node):
+                add("error", "plural-callsite", site["path"], node,
+                    f"{site['file']}:{site['line']}: wrap it: Config.Plural(string.format(...)) "
+                    f"('{count_templates(node)[0]}' after a 1)")
+        for rel, toks in self.files.items():
+            stack: list[tuple[str, int]] = []  # (callee, index of its first token) per open parenthesis
+            for i, t in enumerate(toks):
+                if t.kind == "op" and t.val == "(":
+                    named = i and toks[i - 1].kind == "name"
+                    stack.append((".".join(chain_back(toks, i - 1)) if named else "",
+                                  call_start(toks, i - 1) if named else i))
+                    continue
+                if t.kind == "op" and t.val == ")":
+                    if stack:
+                        stack.pop()
+                    continue
+                if t.kind != "str" or not count_templates(t.val):
+                    continue
+                if any(c.split(".")[-1] in ("warn", "print", "error", "assert", "find", "match", "gmatch", "gsub")
+                       for c, _ in stack):
+                    continue  # developer logs and text matchers never reach the screen as counts
+                inline = bool(stack) and stack[-1][0] == "string.format" and is_op(toks[i - 1], "(")
+                key = toks[i - 2].val if i >= 2 and is_op(toks[i - 1], "=") and toks[i - 2].kind == "name" else None
+                if not inline and not key:
+                    continue  # not a format string here (a table-field text or string.format("...", n) is)
+                phrases = count_templates(t.val)
+                missing = [ph for ph in phrases if ph not in plural_words]
+                where = {"file": "src/" + rel, "line": t.line, "text": t.val[:240]}
+                if missing:
+                    findings.append({"level": "error", "rule": "plural-literal", "path": f"{rel}:{t.line}", **where,
+                                     "detail": f"'%d {missing[0]}' is not in Config.PluralWords"})
+                if inline:
+                    if not plural_wrapped(toks, stack[-1][1]):
+                        findings.append({"level": "warn", "rule": "plural-literal", "path": f"{rel}:{t.line}", **where,
+                                         "detail": f"string.format(\"...\") without Config.Plural ('1 {phrases[0]}')"})
+                    continue
+                uses = []  # string.format(<x>.key, ...) in this file: wrapped or not
+                for j in range(len(toks) - 5):
+                    if toks[j].val == "string" and is_op(toks[j + 1], ".") and toks[j + 2].val == "format" \
+                            and is_op(toks[j + 3], "("):
+                        k = j + 4
+                        while k + 2 < len(toks) and toks[k].kind == "name" and is_op(toks[k + 1], "."):
+                            k += 2
+                        if key and toks[k].kind == "name" and toks[k].val == key and k > j + 4:
+                            uses.append((toks[j].line, plural_wrapped(toks, j)))
+                bare = [ln for ln, ok in uses if not ok]
+                if bare or not uses:
+                    findings.append({"level": "warn", "rule": "plural-literal", "path": f"{rel}:{t.line}", **where,
+                                     "detail": ("formatted without Config.Plural at line " + ", ".join(map(str, bare))
+                                                if bare else "no string.format(<table>." + str(key) + ") found: "
+                                                "wrap the formatted line in Config.Plural(...)")
+                                     + f" ('1 {phrases[0]}')"})
         # ---- Hangul in other src files
         for rel, toks in self.files.items():
             stack: list[str] = []
@@ -1111,6 +1242,10 @@ MUTATIONS = [
      'Config.Text.MutBanned = "There is blood on the meadow path."'),
     ("a glossary name in lower case", "glossary-case", ("Text", "MutCase"),
      'Config.Text.MutCase = "Welcome to the haunted hollow!"'),
+    ("'1 days' in a toast", "plural-one", ("Text", "MutOneDays"),
+     'Config.Text.MutOneDays = "Welcome back! You were away for 1 days."'),
+    ("a count text whose noun Config.Plural does not know", "plural-word", ("Text", "MutCount"),
+     'Config.Text.MutCount = "Find %d stars in the meadow"'),
 ]
 
 

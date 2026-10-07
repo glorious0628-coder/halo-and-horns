@@ -33,7 +33,7 @@ local TUT_DONE = TUT_CFG.Steps.Done -- 99
 local TUT_TARGET = TUT_CFG.QuestKills
 local TUT_GOLD = TUT_CFG.QuestRewardGold
 local TUT_XP = TUT_CFG.QuestRewardXP or 0
-local TUT_TEXT = string.format(TUT_CFG.QuestText, TUT_TARGET)
+local TUT_TEXT = Config.Plural(string.format(TUT_CFG.QuestText, TUT_TARGET))
 local TUT_ZONE = TUT_CFG.GuideZone
 local TUT_MESSAGES = TUT_CFG.Text or {}
 local TUT_START_TEXT = TUT_MESSAGES.QuestStart or "First mission: %s! (Reward: %s gold)" -- (TUT_TEXT, gold)
@@ -323,6 +323,7 @@ local function newQuest(player, kind, others)
 	else
 		text = string.format(t.Text, target)
 	end
+	text = Config.Plural(text) -- "Join the Golden Goose tug 1 time"
 
 	local progress = 0
 	if target >= 5 then
@@ -354,8 +355,9 @@ local function ensureSlots(player, data)
 			q.Progress = math.clamp(q.Progress, 0, q.Target)
 			if q.Id == "Release" then
 				q.MinStacks = nil
-				q.Text = string.format(TEMPLATE_BY_ID.Release.Text, q.Target)
+				q.Text = Config.Plural(string.format(TEMPLATE_BY_ID.Release.Text, q.Target))
 			end
+			q.Text = Config.Plural(q.Text) -- saves from before 2026-10-07 said "tug 1 times"
 			fixed[i] = q
 		end
 	end

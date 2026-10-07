@@ -17,6 +17,23 @@ function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
+-- 1 day / 2 days (검수 2026-10-07, 'You were away for 1 days'): string.format a count line, then Config.Plural(line)
+-- turns "1 <plural>" into "1 <singular>" for the phrases below (only after a lone 1: not 11, 0.1, 1,000 or 1/3).
+-- A new "%d <noun>s" text adds its phrase here (tools/test_story_text.py: plural-one / plural-word / plural-callsite).
+Config.PluralWords = {
+	days = "day", times = "time", minutes = "minute", seconds = "second", hits = "hit", ["basic hits"] = "basic hit",
+	slimes = "slime", monsters = "monster", materials = "material", quests = "quest", players = "player",
+	["Wanted players"] = "Wanted player", Knights = "Knight", ["more great items"] = "more great item",
+}
+
+function Config.Plural(text)
+	if type(text) ~= "string" then return text end
+	for many, one in Config.PluralWords do
+		text = string.gsub(text, "%f[%d%.,]1 " .. (string.gsub(many, "%p", "%%%0")) .. "%f[^%w]", "1 " .. one)
+	end
+	return text
+end
+
 ----------------------------------------------------------------- player / data
 Config.Player = {
 	WalkSpeed = 20,
@@ -926,12 +943,12 @@ Config.Bully.Text = {
 	Lines = {
 		string.format("KO a player weaker than %d%% of your power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
 		string.format("KO a player who respawned less than %d s ago", Config.Bully.FreshSpawnSeconds),
-		string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60)),
+		Config.Plural(string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60))),
 	},
 	LinesEn = {
 		string.format("KO a player weaker than %d%% of your power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
 		string.format("KO a player who respawned less than %d s ago", Config.Bully.FreshSpawnSeconds),
-		string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60)),
+		Config.Plural(string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60))),
 	},
 }
 
@@ -3241,8 +3258,8 @@ Config.Help = {
 			"Sprout Shield: no PvP until you reach Lv 15 and play for 1 hour.",
 			string.format("KO someone under %d%% of your power, or who respawned less than %d s ago: Bully!",
 				math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5), Config.Bully.FreshSpawnSeconds),
-			string.format("KO the same player %d times in %d minutes: Bully too!", Config.Bully.RepeatKOs,
-				math.floor(Config.Bully.RepeatWindow / 60)),
+			Config.Plural(string.format("KO the same player %d times in %d minutes: Bully too!", Config.Bully.RepeatKOs,
+				math.floor(Config.Bully.RepeatWindow / 60))),
 			"Bullies get no Auto Battle, and half XP and drops.",
 		} },
 		{ Id = "Wanted", Title = "Wanted Stars & Grudge Sacks", Lines = {
