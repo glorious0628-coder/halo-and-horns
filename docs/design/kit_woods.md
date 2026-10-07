@@ -1,0 +1,64 @@
+# 고블린 숲 키트 목록 (A23-47, 이미지 생성 1 초안 2026-10-07)
+
+순서(A23-47, 초원과 같음): 장면 시안 `art/review/concept/Concept_GoblinWoods.jpg` + 세계 지도 v2(`docs/design/world_map_v2_2026-10-06.md`) → 시안 속 물건을 **한 장에 하나씩** 2D(중간 품질 0크레딧, 3/4 앞모습, 전체가 그림 안, 단색 회색 배경, 글자 없음) → 고르기(검수) → 3D로 갈 것만 고급(5) → Tripo(답 받은 묶음만) → Blender 정면 렌더 비교 → WorldKit → 게임성 개발 1.
+- **넓이(v2):** 숲 땅 x 710~1190, z -260~260 (480×520). 숲 다리 x 650→710(z 0, 폭 22) → 관문(고블린 토템) (710, 0) → 도착 지점 (730, 0). 왕관 큰길(z 0, 폭 18)이 동쪽 고갯길(x 1190, z -70~70)까지 관통. 랜드마크 **고블린 나무집 고목** (960, -90), 반경 58. Lv10+, **PvP**.
+- **분위기(ART_DIRECTION §6):** "크고 어둡고 거칠게" — 하지만 아이용이라 무섭지 않게. 짙은 초콜릿색 나무, 부드러운 이끼 초록, 따뜻한 호박색 불빛, 통통하고 둥근데 살짝 손으로 깎은 느낌.
+
+## 그림체 꼬리말 (숲 작은 것 공통 — 문구 = 머리 한 문장 + 물건 한두 문장 + 꼬리)
+- **머리:** `Deep forest colors: dark chocolate-brown wood, soft moss green, warm amber light, chunky rounded shapes with a slightly rough hand-carved feel.`
+- **꼬리:** `Single standalone game prop for a cute toy-world kids RPG, chunky rounded toy proportions with slightly exaggerated soft bevels, smooth hand-painted toy plastic and painted wood materials, simple clean shapes with a few large color blocks, rich friendly colors, soft even studio light from the top left. Three-quarter front view from slightly above, the whole object fully inside the frame with a wide margin, centered, standing on nothing. Isolated on a plain flat medium gray background, no ground, no shadow, no other objects. No faces, no eyes, no skulls, no bones. Wordless, blank unmarked surfaces.`
+- 초원 꼬리와 같은 틀이라 두 사냥터 소품이 같은 장난감 그림체로 맞는다(초원은 머리만 `Bright lime and soft pastel colors…`). 문구 전체 1000자 미만(넘으면 Firefly 생성 버튼이 조용히 안 눌림) → 물건 문장은 220자 안쪽.
+
+## 지킬 것 (시안에 있어도 그리지 않음)
+- **해골·뼈 없음:** 시안 깃발의 해골 무늬 → 빈 천 + 바느질 조각만. 십자가 없음.
+- **얼굴·눈 없음:** 소품에 얼굴 금지. 시안의 "덤불 속 빛나는 눈"은 그림에 넣지 않는다 — 눈은 Studio에서 Neon 파트로 따로 붙인다(지금 게임의 빨간 눈 덤불 6개와 같은 방식, 개발 1).
+- **고블린 몬스터와 겹치지 않게:** 고블린 피부색 같은 밝은 초록, 이빨·송곳니·뾰족 귀 장식, 눈 모양 무늬 금지. 천막 위 뿔 장식도 빼기(뿔 진영 표시와 헷갈림).
+- **주황 끝 말뚝 금지:** 시안은 모든 울타리 끝이 주황인데, **주황 = PvP 경계 색**이라 경계 말뚝 줄에만 쓴다. 야영지 울타리 끝은 나무색 그대로.
+- **채집 노드 색 금지:** 하늘색 크리스털·구리색 광석처럼 보이는 장식은 피한다(채집 노드와 헷갈림). 노란 반짝이는 금화 정도는 괜찮다(고블린 "Grab Club").
+- 불꽃은 그림에 크게 그리지 않는다: 모닥불·횃불은 장작 + 호박색 잔불까지만 그리고, 불꽃·빛은 Studio(Fire/Neon, PointLight는 맵 전체 40 제한)에서 붙인다.
+
+## 큰 것 (이미지 생성 1 — 나중 묶음, 크레딧 먼저)
+| 이름 | 모양 | 크기(스터드) | 개수 | 자리(v2) |
+|---|---|---|---|---|
+| W_GiantTree | 고블린 나무집이 달린 거대 고목(둥근 판잣집 2~3채, 밧줄 사다리, 천 차양) — 입구 랜드마크 | 높이 70~90, 밑동 지름 18 | 1 | (960, -90) |
+| W_Gate | 휜 통나무 관문 + 밧줄 묶음 + 빈 나무 간판(글자는 SurfaceGui). `Gate_GoblinWoods` + `Lintel` 유지 | 폭 24, 높이 20 | 1 | (710, 0) |
+| W_Totem | 관문 위 토템 — **얼굴 없는 판**(커다란 잎 귀 + 훔친 반짝이 왕관을 쓴 깎은 기둥). 얼굴 넣을지는 검수 확인 뒤 | 높이 8 | 1 | 관문 위 |
+| W_Tent_A/B | 기운 천 조각 A자 천막(2색 패치, 막대 삐죽, 입구 천), 뿔·해골 없음 | 폭 14 | 3 (+1 예비) | 야영지 3곳 |
+| W_Tree_A/B/C | 크고 통통한 숲나무 3종(층층 둥근 잎, 굵게 휜 줄기, 뿌리), 짙은 초록 두 톤 | 높이 40~55 | 60+ | 가장자리·길 사이(길 /z/<12 비움) |
+| W_Boulder_A/B | 이끼 덮인 큰 둥근 바위 2종(시안의 큰 바위) | 폭 10~16 | 12+ | 가장자리·능선 앞 |
+| W_BruteRing | 우두머리 공터: 통나무 의자·큰 그루터기 고리 + 깃발 2 | 지름 40 | 1 | 동쪽 안쪽 (1110, 120) 제안 |
+| W_BridgeWood | 숲 다리(짙은 나무, 고블린 장식) — 3a에서 만듦 | 폭 22, 길이 60 | 1 | x 650~710 |
+
+## 작은 것 (이미지 생성 2) — 문구 `art/prompts/KIT_Woods_<이름>.txt`, Studio 이름 `Kit_W_<이름>`
+| 이름 | 모양(문구 요약) | 크기(스터드) | 개수 | 자리 |
+|---|---|---|---|---|
+| BushA / BushB | 울퉁불퉁 짙은 초록 덤불(둥근 덩어리 3~4 / 키 큰 다른 모양), **눈 없음** | 4~6 | 각 20+ | 가장자리·야영지 둘레·길가(길 위 금지). 6개는 Neon 눈 붙여 "빨간 눈 덤불" |
+| Fern | 큰 고사리 무더기(부드러운 이끼 초록 잎) | 3 | 30+ | 나무 사이 바닥 덮개 |
+| Mushrooms | 갈색 갓 + 크림 점 버섯 3개 묶음(숲 게시판 B의 버섯과 같은 색) | 2.5 | 15+ | 나무뿌리·그루터기 옆 |
+| GlowShrooms | 호박색으로 은은히 빛나는 작은 버섯 무더기(빛은 Studio Neon) | 2 | 10+ | 어두운 구석·길가 (GW2 "어두운 길") |
+| Stump | 짙은 나무 그루터기 + 이끼 + 작은 버섯 하나 | 3 | 8+ | 공터·야영지 옆 |
+| FallenLog | 속이 빈 이끼 낀 쓰러진 통나무(시안 왼쪽 아래) | 길이 10, 지름 2.5 | 6+ | 가장자리(길을 막지 않게) |
+| MossRock | 이끼 모자 쓴 회색 둥근 바위, 작은 것·중간 것 | 3~6 | 12+ | 덤불 사이·물가 |
+| CampFence | 야영지 울타리 한 칸: 끝이 둥근 통나무 4개를 밧줄로 묶음, **끝은 나무색**(주황 아님) | 폭 6, 높이 4 | 18 (야영지마다 5~6칸 반원 + 입구 틈) | 야영지 3곳 둘레 |
+| Campfire | 돌 고리 + 엇갈린 장작 + 호박색 잔불(불꽃은 Studio) | 지름 4 | 3 | 야영지 가운데(PointLight 3 그대로) |
+| Crates | 나무 상자 2개 + 작은 통 1개, 밧줄 묶음 | 3~4 | 6+ | 야영지마다 2 |
+| LootSack | 기운 천 자루 + 쏟아진 금화 몇 개(고블린 "Grab Club") | 2 | 6 | 야영지마다 2 |
+| Banner | 막대에 단 빈 천 깃발(패치·바느질만, 무늬·글자 없음) | 높이 8 | 3~5 | 야영지 입구, 우두머리 공터 |
+| LogStool | 짧은 통나무 의자(둥근 윗면 나이테) | 지름 1.5 | 9 | 모닥불 둘레 |
+| LanternPost | 휜 나무 기둥에 매단 호박색 등불(빛은 Neon, PointLight 없음) | 높이 7 | 8+ | 큰길 양옆(GW2 "Put up a lamp") |
+| SignPost | 짙은 나무 화살표 이정표, 빈 판 2장(글자는 SurfaceGui) | 높이 6 | 4 | 갈림길·고목 길·고갯길 쪽 |
+
+- 이미 정한 것: `Kit_W_JobBoard`(숲 게시판 B, `kit_meadow.md` 끝 표) — 같은 머리 문구 색과 맞춘다.
+- 3D로 갈 것(나중 고급 + Tripo 후보): Campfire, CampFence, Crates, LootSack, LanternPost, SignPost, FallenLog, Stump. 덤불·고사리·버섯·바위는 무료(Creator Store/생성) 먼저 보고 색이 맞으면 그걸 쓴다.
+
+## 야영지·공터 자리 (제안 — 개발 1이 지도 v2로 옮길 때 확정, 퀘스트 GoblinCamp1~3 좌표)
+- 야영지 1 (840, 95): 도착 지점에서 가장 가까움(GW1 "Grab Club" Lv12, R10).
+- 야영지 2 (1010, 130): 큰길 남쪽.
+- 야영지 3 (1090, -150): 고목 동쪽 너머.
+- 우두머리 공터 (1110, 120)와 야영지 2는 40 이상 떨어뜨린다(고블린 무리와 우두머리 무리 출현이 겹치지 않게).
+
+## 빈 땅 점검
+- 큰길(z 0) 양옆 등불 기둥·덤불·고사리, 길 /z/<12는 비움(지금 규칙).
+- 40×40보다 큰 빈 땅 없음 — 나무 사이를 덤불·고사리·버섯·바위로 채운다. 단, 몬스터 무리 자리(Config 스폰 점)는 비워 두고 둘레만 채운다.
+- 입구(관문)에서 보이는 랜드마크 = 고블린 나무집 고목(높이 70~90이라 숲 나무 40~55 위로 보임).
+- PvP 경계: 주황 말뚝 줄(지금 MapBuilder 계약)은 관문 바로 안쪽 그대로. 주황은 이 줄에만.

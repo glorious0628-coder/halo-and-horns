@@ -64,7 +64,7 @@
       "applied": true,
       "caught": true,
       "newFailing": [
-        "horns den exposure: +0.25, +1.9 more only at night"
+        "horns den exposure: +0.25, +1.6 more only at night"
       ]
     },
     {
@@ -72,7 +72,7 @@
       "applied": true,
       "caught": true,
       "newFailing": [
-        "horns den exposure: +0.25, +1.9 more only at night"
+        "horns den exposure: +0.25, +1.6 more only at night"
       ]
     },
     {
@@ -80,12 +80,12 @@
       "applied": true,
       "caught": true,
       "newFailing": [
-        "horns den exposure: +0.25, +1.9 more only at night",
+        "horns den exposure: +0.25, +1.6 more only at night",
         "horns den sun not dimmed (Bright 1.0)"
       ]
     }
   ],
-  "sourceSHA256": "862b154539410029c8879ae59403bba8483cd38e9b67a7637e30bf5842fe2dbc",
+  "sourceSHA256": "52fb8e4acc7553134a61b4cd4e162a15d6bafa46c164938d0b15bf2addf7bf87",
   "runtimeError": null,
   "studioCalls": 0,
   "apiCalls": 0

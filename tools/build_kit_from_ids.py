@@ -8,7 +8,7 @@ Make the Studio command that builds kit Models from uploaded mesh/texture ids (n
 Each item becomes Model <name> with one anchored MeshPart <name> (AssetService:CreateMeshPartAsync), the uploaded
 texture, the listed size in studs, pivot at the bottom centre and the front facing -Z, under --parent (folders are
 made when missing; a first path part that is a service name uses that service). Existing names are skipped unless
---replace. Gates, bridges, walls, spawn pads, the fountain and the guild hall get PreciseConvexDecomposition
+--replace. Gates, bridges, walls, spawn pads, the fountain, the guild hall and castles get PreciseConvexDecomposition
 collision (walk-through arches); small props get Hull; rank marks get Box (the server turns collision off).
 """
 import argparse
@@ -26,7 +26,7 @@ items = json.load(open(a.list, encoding="utf-8"))["items"]
 prefixes = [p for p in a.only.split(",") if p]
 if prefixes:
     items = [it for it in items if any(it["name"].startswith(p) for p in prefixes)]
-PRECISE = ("Gate", "Bridge", "Wall", "Spawn", "Fountain", "GuildHall", "PadBase", "SpawnPlaza")
+PRECISE = ("Gate", "Bridge", "Wall", "Spawn", "Fountain", "GuildHall", "PadBase", "SpawnPlaza", "Castle")
 
 
 def fidelity(name):

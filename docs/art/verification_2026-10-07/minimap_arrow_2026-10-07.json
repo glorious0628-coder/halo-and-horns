@@ -1,0 +1,255 @@
+{
+  "tool": "tools/minimap_arrow_view.py",
+  "passed": 8,
+  "total": 8,
+  "rows": [
+    {
+      "device": "pc",
+      "faction": "Halo",
+      "case": "ahead",
+      "want": 0,
+      "probe": {
+        "MapRot": -90.29720306396484,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          255,
+          255
+        ],
+        "Root": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ],
+        "MeRot": -0.8768552541732788,
+        "Screen": [
+          1280,
+          720
+        ],
+        "MeImage": "rbxassetid://102236026912773"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/pc_ahead.png"
+    },
+    {
+      "device": "pc",
+      "faction": "Halo",
+      "case": "left",
+      "want": -90,
+      "probe": {
+        "MapRot": -90.29720306396484,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          255,
+          255
+        ],
+        "Root": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ],
+        "MeRot": -89.77118682861328,
+        "Screen": [
+          1280,
+          720
+        ],
+        "MeImage": "rbxassetid://102236026912773"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/pc_left.png"
+    },
+    {
+      "device": "pc",
+      "faction": "Halo",
+      "case": "right",
+      "want": 90,
+      "probe": {
+        "MapRot": -90.29720306396484,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          255,
+          255
+        ],
+        "Root": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ],
+        "MeRot": 89.72639465332031,
+        "Screen": [
+          1280,
+          720
+        ],
+        "MeImage": "rbxassetid://102236026912773"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/pc_right.png"
+    },
+    {
+      "device": "pc",
+      "faction": "Halo",
+      "case": "back",
+      "want": 180,
+      "probe": {
+        "MapRot": -90.29720306396484,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          255,
+          255
+        ],
+        "Root": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ],
+        "MeRot": 178.88311767578125,
+        "Screen": [
+          1280,
+          720
+        ],
+        "MeImage": "rbxassetid://102236026912773"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/pc_back.png"
+    },
+    {
+      "device": "phone",
+      "faction": "Horns",
+      "case": "ahead",
+      "want": 0,
+      "probe": {
+        "MapRot": -90.26317596435547,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          255,
+          255
+        ],
+        "Root": [
+          53.75,
+          61.5,
+          73.5,
+          73.5
+        ],
+        "MeRot": -1.1348329782485962,
+        "Screen": [
+          749,
+          361
+        ],
+        "MeImage": "rbxassetid://119222134756742"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/phone_ahead.png"
+    },
+    {
+      "device": "phone",
+      "faction": "Horns",
+      "case": "left",
+      "want": -90,
+      "probe": {
+        "MapRot": -90.26317596435547,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          214,
+          180
+        ],
+        "Root": [
+          53.75,
+          61.5,
+          73.5,
+          73.5
+        ],
+        "MeRot": -89.43871307373047,
+        "Screen": [
+          749,
+          361
+        ],
+        "MeImage": "rbxassetid://119222134756742"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/phone_left.png"
+    },
+    {
+      "device": "phone",
+      "faction": "Horns",
+      "case": "right",
+      "want": 90,
+      "probe": {
+        "MapRot": -90.26317596435547,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          255,
+          255
+        ],
+        "Root": [
+          53.75,
+          61.5,
+          73.5,
+          73.5
+        ],
+        "MeRot": 89.46060180664062,
+        "Screen": [
+          749,
+          361
+        ],
+        "MeImage": "rbxassetid://119222134756742"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/phone_right.png"
+    },
+    {
+      "device": "phone",
+      "faction": "Horns",
+      "case": "back",
+      "want": 180,
+      "probe": {
+        "MapRot": -90.26317596435547,
+        "NorthDir": -90,
+        "CamYaw": 90,
+        "MeTint": [
+          255,
+          255,
+          255
+        ],
+        "Root": [
+          53.75,
+          61.5,
+          73.5,
+          73.5
+        ],
+        "MeRot": 178.9073944091797,
+        "Screen": [
+          749,
+          361
+        ],
+        "MeImage": "rbxassetid://119222134756742"
+      },
+      "okArrow": true,
+      "okNorth": true,
+      "file": "build/minimap_arrow_view/phone_back.png"
+    }
+  ]
+}

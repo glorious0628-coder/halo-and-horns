@@ -5154,5 +5154,165 @@
   "preview": "art/review/s2/e11_job_board_sheet.jpg",
   "note": "E11 퀘스트 목록 'Job' 꼬리표(주황 + 금 테, 왼쪽 뾰족한 끝 + 투명 구멍). Text 칸에 'Job'(흰색 + 어두운 테두리). 퀘스트 줄 Badge 자리(아이콘 오른쪽)에 받은 의뢰만. 비율 유지, 게임 크기 약 44x18~84x34.",
   "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+ },
+ "BarkBubble": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BarkBubble_A.txt",
+  "original": "art/out/s2/UIP_BarkBubble_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BarkBubble.png",
+  "size": "512x190 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked on light/navy/magenta/green",
+  "layout": {
+   "Text": [
+    0.077,
+    0.181,
+    0.844,
+    0.448
+   ]
+  },
+  "slice": [
+   84,
+   65,
+   446,
+   89
+  ],
+  "preview": "art/review/s2/bark_bubble_sheet.jpg",
+  "note": "몬스터 한마디 말풍선(흰색 + 굵은 남색 테, 꼬리 왼쪽 아래 → 아래쪽 몬스터를 가리킴). 슬라임·고블린·해골·유령 공용, 개발 1 MonsterLabels BillboardGui. 글자 없음 — Text 칸에 짙은 남색 글자(예: 'Boing! Boing!'). slice는 꼬리를 왼쪽 아래 칸(x<84)에 넣어 옆으로 늘려도 꼬리가 안 찌그러짐. 시트 예시: 높이 52에 폭 110~300.",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 말풍선 A 흰색 + 남색 테)"
+ },
+ "MapArrowHalo": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "size": "512x512 RGBA",
+  "preview": "art/review/s2/map_arrow_final_sheet.jpg",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 빛 A + 뿔 C1, 남색 테 바깥 얇은 크림 테 추가)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_MapArrowHalo_A.txt",
+  "original": "art/out/s2/UIP_MapArrowHalo_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapArrowHalo.png",
+  "cutout": "tools/img2/cut_icon.py --holes --size 512 --fill 0.9, then scratchpad final_arrows.py: body height 420, cream rim 20px (4x supersampled) outside the navy outline, bbox centre = canvas centre",
+  "note": "빛 진영 '내 위치' 지도 화살표(금 화살촉 + 아래 양옆 흰 날개 + 남색 테 + 크림 테). 칠하지 않고 그대로 씀(ImageColor3 흰색). 위 = 앞, 가운데 = 회전 중심. 미니맵(heading-up)은 늘 위, 세계 지도는 Rotation. 뿔 화살표와 몸통 높이 같음. 땅 대비: 밝은 땅은 남색 테, 어두운 땅은 크림 테로 3:1 이상(시트 숫자). 장인·기본은 MapPlayerArrow 그대로."
+ },
+ "MapArrowHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "size": "512x512 RGBA",
+  "preview": "art/review/s2/map_arrow_final_sheet.jpg",
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 빛 A + 뿔 C1, 남색 테 바깥 얇은 크림 테 추가)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1, reference = UIP_MapArrowHorns_A (edit: horns removed)",
+  "prompt": "art/prompts/UIP_MapArrowHorns_C1.txt",
+  "original": "art/out/s2/UIP_MapArrowHorns_C1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapArrowHorns.png",
+  "cutout": "tools/img2/cut_icon.py --holes --size 512 --fill 0.9, then scratchpad final_arrows.py: body height 420, cream rim 20px (4x supersampled) outside the navy outline, bbox centre = canvas centre",
+  "note": "뿔 진영 '내 위치' 지도 화살표(빨간 화살촉 + 용암 금 + 녹은 용암처럼 빛나는 끝 + 남색 테 + 크림 테, 뿔 없음 — 사용자 '뿔 없는 게 나을 듯'). 칠하지 않고 그대로 씀. 위 = 앞, 가운데 = 회전 중심. 빛 화살표와 몸통 높이 같음."
+ },
+ "GlyphKindWing": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphKindWing_A.txt",
+  "original": "art/out/s2/UIP_GlyphKindWing_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphKindWing.png",
+  "file_64": "art/ui/GlyphKindWing_64.png",
+  "size": "256x256 RGBA (+ 64x64)",
+  "cutout": "tools/img2/cut_icon.py --holes --size 256 --fill 0.9; checked on light/navy",
+  "preview": "art/review/s2/board_btn_horns_fix_sheet.jpg",
+  "note": "E11 [Kind] 버튼 글자 왼쪽 아이콘(흰 날개 한 쪽 + 남색 테, 글자 없음). 적록 색약이면 Kind(하늘)·Sneaky(보라) 버튼이 둘 다 파랗게 보여서 모양으로 구별. 버튼 Text 칸 안에서 아이콘(높이 = 글자 높이의 약 1.4배) + 8px + 글자를 가운데 정렬(시트 예시).",
+  "user_ok": "검수 확정 2026-10-07 (날개 A + 뿔 AL1, 사용자에게는 결과로 보여 줌 — 아니라고 하면 바꿈)"
+ },
+ "GlyphSneakyHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1 + local recolour",
+  "prompt": "art/prompts/UIP_GlyphSneakyHorns_A.txt",
+  "original": "art/out/s2/UIP_GlyphSneakyHorns_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphSneakyHorns.png",
+  "file_64": "art/ui/GlyphSneakyHorns_64.png",
+  "size": "256x256 RGBA (+ 64x64)",
+  "cutout": "tools/img2/cut_icon.py --holes --size 256 --fill 0.9, then local recolour AL1 (HSV: saturation x0.35, value 1-(1-v)x0.35 on the fill) + outer navy ring 4px (4x supersampled) so the outline matches GlyphKindWing (about 10.4 vs 10.5 px at 256)",
+  "preview": "art/review/s2/board_btn_horns_fix_sheet.jpg",
+  "note": "E11 [Sneaky] 버튼 글자 왼쪽 아이콘(거의 흰 라일락 뿔 한 쌍 + 남색 테, 글자 없음). 보라 버튼 위에서 날개만큼 또렷하게 밝힘(원래 연보라는 대비 약함 — 검수). GlyphKindWing과 같은 크기·배치로.",
+  "user_ok": "검수 확정 2026-10-07 (날개 A + 뿔 AL1, 사용자에게는 결과로 보여 줌 — 아니라고 하면 바꿈)"
+ },
+ "Town_Horns_Castle_v4": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "사용자 via 검수: \"B1이 멋있다 D1도 좋긴한데 너무 똑같아서\" (sheet art/review/town4/horns_castle_v4_vs_halo.jpg, 837a818)",
+  "source": "art/out/town_v4/Town_Horns_Castle_v4B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/Town_Horns_Castle_v4B.txt)",
+  "final": "art/out/hq/HQ_Town_Horns_Castle_v4B.png (High, 5 credits) -> Tripo building",
+  "keep": "horned lava crown + flame, 3 tiers of walls, lava flows; chunky stairs and lava streams; no paired windows / faces",
+  "replaces": "Town_Horns_Castle v3N2 (art/models/tripo/Town_Horns_Castle_v3_raw.glb)"
+ },
+ "W_GiantTree": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_GiantTree_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_GiantTree.txt)",
+  "final": "art/out/hq/HQ_W_GiantTree.png (High, 5 credits) -> Tripo"
+ },
+ "W_Gate": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Gate_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Gate.txt)",
+  "final": "art/out/hq/HQ_W_Gate.png (High, 5 credits) -> Tripo"
+ },
+ "W_Totem": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Totem_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Totem.txt)",
+  "final": "art/out/hq/HQ_W_Totem.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tent_A": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tent_A_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tent_A.txt)",
+  "final": "art/out/hq/HQ_W_Tent_A.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tent_B": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tent_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tent_B.txt)",
+  "final": "art/out/hq/HQ_W_Tent_B.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tree_A": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tree_A_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tree_A.txt)",
+  "final": "art/out/hq/HQ_W_Tree_A.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tree_B": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tree_B_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tree_B.txt)",
+  "final": "art/out/hq/HQ_W_Tree_B.png (High, 5 credits) -> Tripo"
+ },
+ "W_Tree_C": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Tree_C_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Tree_C.txt)",
+  "final": "art/out/hq/HQ_W_Tree_C.png (High, 5 credits) -> Tripo"
+ },
+ "W_Boulder_A": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Boulder_A_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Boulder_A.txt)",
+  "final": "art/out/hq/HQ_W_Boulder_A.png (High, 5 credits) -> Tripo"
+ },
+ "W_Boulder_B": {
+  "status": "picked (final High + Tripo next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
+  "source": "art/out/kit/woods_big/W_Boulder_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Boulder_B.txt)",
+  "final": "art/out/hq/HQ_W_Boulder_B.png (High, 5 credits) -> Tripo"
  }
 }

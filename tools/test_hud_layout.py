@@ -54,7 +54,6 @@ OUT = ROOT / "docs/art/verification_2026-10-06/hud_layout_B_offline_2026-10-06.j
 PNG = OUT.with_suffix(".png")
 
 INSET = 58  # Roblox top bar (real px) on both reference screens of the approved sheet
-SMALL_PC_PX = 500  # HudLayout.luau SMALL_PC: a desktop window shorter than this uses the phone sheet
 ROBLOX_LEFT = 164  # where Roblox's own top bar buttons end (GuiService.TopbarInset.Min.X, UiSandbox PC + phone 2026-10-06)
 
 # (name, touch, screen px w, h, reference screen, supported, top inset px, MainGui safe area px or None[, Roblox
@@ -71,8 +70,8 @@ SCREENS = [
     ("pc_1280x720_inset36", False, 1280, 720, False, True, 36, None),
     # Roblox's own menu opened wide in the top bar (chat + menu + more): the war meter keeps clear of it
     ("pc_1280x720_unibar_wide", False, 1280, 720, False, True, INSET, None, 560),
-    # short desktop windows (< 500 px tall) lay out on the phone sheet (HudLayout SMALL_PC; main Studio 655x340 /
-    # 573x354 had the quest lines run into the face group on the desktop sheet, 검수 2026-10-06)
+    # short desktop windows keep the desktop sheet at a smaller UIScale (DesktopScaleMin 0.5; review 2026-10-07 replaced
+    # the 10/06 rule that put them on the phone sheet - main Studio 655x340 / 573x354)
     ("pc_655x340_small", False, 655, 340, False, True, INSET, None),
     ("pc_573x354_small", False, 573, 354, False, True, INSET, None),
     ("pc_700x450_small", False, 700, 450, False, True, INSET, None),
@@ -99,27 +98,16 @@ EXCEPTIONS = [
     # A23-40 보강: [메뉴] and the war meter share the Roblox top bar with Roblox's own buttons (164 px). Where the bar
     # cannot hold Roblox's buttons + the war meter (>= 240du) + [메뉴] + 4 thumb-size fold squares, the fold-out's
     # first line beside [메뉴] holds fewer and the rest wrap to the next line right under the bar
-    ("phone_568x320", "fold holds the menu tiles in one line",
-     "568 px wide phone: 164 px of Roblox buttons + the 240du war meter + [메뉴] leave room for 2 fold squares in the "
-     "bar; the other 2 wrap to the line right under it (A23-40 보강)."),
-    ("phone_592x360_navbar", "fold holds the menu tiles in one line",
-     "592 px wide (Android nav bar): the bar holds 3 fold squares beside [메뉴]; the 4th wraps under the bar."),
-    ("pc_573x354_small", "fold holds the menu tiles in one line",
-     "573 px wide desktop window on the phone sheet: Roblox's buttons + the war meter + [메뉴] leave room for 3 fold "
-     "squares in the bar; the 4th wraps under it (A23-40 보강, like the narrow phones)."),
-    ("phone_749x361_notch", "fold holds the menu tiles in one line",
-     "655 px safe area (notch): 164 px Roblox buttons + war meter + [메뉴] + 4 squares need ~670 px; 3 squares fit "
-     "in the bar, the 4th wraps under it."),
 ]
 
 # (name, exact text, replacement) in HudLayout.luau: each must match exactly once. The final on-screen clamp (r.Y) has no
-# mutation since SMALL_PC: windows short enough to push items off the desktop sheet now use the phone sheet, which the
+# mutation (it was dropped with SMALL_PC; since 2026-10-07 short PC windows stay on the desktop sheet at UIScale >= 0.5, which the
 # safe-area factor always fits (the clamp stays as a guard; "every item on screen" still runs on every screen). The centre column's narrowing / room
 # clamp is defensive in layout B (no supported screen squeezes the column: the left, centre and right blocks all scale
 # with the same k), so it has no mutation here; the column checks still run on every screen.
 MUTATIONS = [
-    ("short desktop windows keep the desktop sheet", "local sheet = touch or HudLayout.SmallDesktop(env)",
-     "local sheet = touch"),
+    ("short desktop windows go to the phone sheet", "\tlocal sheet = touch\n",
+     "\tlocal sheet = touch or (env.H or 0) * (env.Scale or 1) < 500\n"),
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),
     ("round touch buttons never grow back", "			if r.W < MIN_TAP then", "			if false then"),
     ("potions never grow back", "if pot.H < MIN_TAP then pot.Y, pot.H = pot.Y + pot.H - MIN_TAP, MIN_TAP end", ""),
@@ -162,7 +150,8 @@ MUTATIONS = [
     # A23-40 정정: [메뉴] top-right + its fold-out room
     ("menu not at the bar's right end", "menu.X = bar.X1 - TOPBAR.Edge / s - mSize", "menu.X = bar.X1 - 40 / s - mSize"),
     ("menu under the bar", "menu.Y = barMid - mSize / 2", "menu.Y = bar.Y1 + 4 / s"),
-    ("touch menu may shrink below a thumb", "local mSize = touch and math.max(btn, TOPBAR.Tap / s) or btn", "local mSize = btn"),
+    # touch: [메뉴] is the tile row's last square, as big as the tiles (review 2026-10-07)
+    ("touch menu may shrink below a thumb", "\t\tmSize = size\n", "\t\tmSize = btn * 0.7\n"),
     ("menu bigger than a Roblox button", "local btn = math.min(TOPBAR.Button, math.max(1, barPx - 4)) / s",
      "local btn = 52 / s"),
     # A23-40 보강: the war meter in the Roblox top bar row
@@ -229,7 +218,7 @@ def cases(ui: dict) -> list[dict]:
         if touch:
             j = jump_rect(gw, gh)
             env["Jump"] = {k: v / s for k, v in j.items()}
-        sheet = touch or ph < SMALL_PC_PX  # HudLayout SMALL_PC: short desktop windows use the phone sheet
+        sheet = touch  # review 2026-10-07: mouse / keyboard PCs always on the desktop sheet (only a smaller UIScale)
         out.append({"Name": name, "Base": name, "Pouch": False, "Touch": touch, "Sheet": sheet,
                     "Ref": ref, "Supported": supported, "PxW": gw, "PxH": gh, "Env": env})
     return out

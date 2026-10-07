@@ -1,0 +1,404 @@
+{
+  "tool": "tools/text_fit_view.py",
+  "tag": "after_fix7",
+  "rows": [
+    {
+      "device": "pc",
+      "file": "build/text_fit_view/pc_after_fix7.png",
+      "probe": {
+        "Count": 35,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Bad": []
+      }
+    },
+    {
+      "device": "phone",
+      "file": "build/text_fit_view/phone_after_fix7.png",
+      "probe": {
+        "Count": 28,
+        "Screen": [
+          749,
+          361
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Power",
+            "Truncate": "None",
+            "Text": "Lv 1 · Power 0",
+            "Bounds": [
+              76,
+              16
+            ],
+            "Pos": [
+              533,
+              60
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              76,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Pouch",
+            "Truncate": "None",
+            "Text": "· Pouch 0",
+            "Bounds": [
+              53,
+              16
+            ],
+            "Pos": [
+              613,
+              60
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              53,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/WarMeter/Info/Text",
+            "Truncate": "AtEnd",
+            "Text": "Crown in 9:41",
+            "Bounds": [
+              94,
+              16
+            ],
+            "Pos": [
+              269,
+              39
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              180,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line1/Text",
+            "Truncate": "SplitWord",
+            "Text": "Free the supply road",
+            "Bounds": [
+              130,
+              15
+            ],
+            "Pos": [
+              151,
+              60
+            ],
+            "Font": "Montserrat",
+            "Fits": true,
+            "TextSize": 15,
+            "Size": [
+              91,
+              22
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line2/Text",
+            "Truncate": "SplitWord",
+            "Text": "Hit 4 monsters with a skill",
+            "Bounds": [
+              125,
+              15
+            ],
+            "Pos": [
+              151,
+              83
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 15,
+            "Size": [
+              88,
+              22
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileBag/Label",
+            "Truncate": "None",
+            "Text": "Bag",
+            "Bounds": [
+              25,
+              14
+            ],
+            "Pos": [
+              598,
+              140
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              52,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileMap/Label",
+            "Truncate": "None",
+            "Text": "Map",
+            "Bounds": [
+              27,
+              14
+            ],
+            "Pos": [
+              646,
+              140
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              52,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileMenu/Label",
+            "Truncate": "None",
+            "Text": "Menu",
+            "Bounds": [
+              35,
+              14
+            ],
+            "Pos": [
+              641,
+              41
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              52,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/EventStrip/PumpkinKingChip/Text",
+            "Truncate": "None",
+            "Text": "Pumpkin King! 4:54 left",
+            "Bounds": [
+              159,
+              15
+            ],
+            "Pos": [
+              279,
+              78
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              160,
+              14
+            ]
+          },
+          {
+            "Path": "MainGui/MiniMap/North/N",
+            "Truncate": "None",
+            "Text": "N",
+            "Bounds": [
+              11,
+              16
+            ],
+            "Pos": [
+              81,
+              122
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              15,
+              15
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "844",
+      "file": "build/text_fit_view/844_after_fix7.png",
+      "probe": {
+        "Count": 27,
+        "Screen": [
+          844,
+          390
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Power",
+            "Truncate": "None",
+            "Text": "Lv 1 · Power 0",
+            "Bounds": [
+              76,
+              16
+            ],
+            "Pos": [
+              599,
+              61
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              76,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Pouch",
+            "Truncate": "None",
+            "Text": "· Pouch 0",
+            "Bounds": [
+              53,
+              16
+            ],
+            "Pos": [
+              678,
+              61
+            ],
+            "Font": "DenkOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              53,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/WarMeter/Info/Text",
+            "Truncate": "AtEnd",
+            "Text": "Crown in 9:41",
+            "Bounds": [
+              94,
+              16
+            ],
+            "Pos": [
+              302,
+              39
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              240,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line2/Text",
+            "Truncate": "SplitWord",
+            "Text": "Hit 4 monsters with a skill",
+            "Bounds": [
+              105,
+              15
+            ],
+            "Pos": [
+              163,
+              84
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 15,
+            "Size": [
+              108,
+              22
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileBag/Label",
+            "Truncate": "None",
+            "Text": "Bag",
+            "Bounds": [
+              25,
+              14
+            ],
+            "Pos": [
+              692,
+              141
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              52,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileMap/Label",
+            "Truncate": "None",
+            "Text": "Map",
+            "Bounds": [
+              27,
+              14
+            ],
+            "Pos": [
+              740,
+              141
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              52,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Buttons/TileMenu/Label",
+            "Truncate": "None",
+            "Text": "Menu",
+            "Bounds": [
+              35,
+              14
+            ],
+            "Pos": [
+              736,
+              41
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              52,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/MiniMap/North/N",
+            "Truncate": "None",
+            "Text": "N",
+            "Bounds": [
+              11,
+              16
+            ],
+            "Pos": [
+              96,
+              132
+            ],
+            "Font": "Montserrat",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              15,
+              15
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

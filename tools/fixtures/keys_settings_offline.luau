@@ -282,7 +282,8 @@ do
 end
 local NOT_ALLOWED = { "Home", "End", "Insert", "Delete", "RightControl", "RightAlt", "LeftSuper", "F13", "Keypad1", "Backspace",
 	"NumLock", "ButtonR2", "Unknown", "f", "", " F" }
-local SETTINGS_DEFAULTS = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default" }
+local SETTINGS_DEFAULTS = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default",
+	Cam = "Follow" } -- Cam: A23-65
 local SETTINGS_DEFS = {
 	Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 	Shake = { Type = "Bool" },
@@ -291,6 +292,7 @@ local SETTINGS_DEFS = {
 	KeyBadges = { Type = "Bool" },
 	Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 	BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
+	Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65
 }
 local SFX_GRID = {}
 for i = 0, 10 do SFX_GRID[i / 10] = true end
@@ -813,7 +815,8 @@ end)
 runGroup("sanitize", function()
 	local C = CONFIG
 	local S = C.SanitizeSettings
-	local fieldSet = { V = true, Keys = true, Sfx = true, Shake = true, DmgNum = true, Tags = true, KeyBadges = true, Lang = true, BagSort = true }
+	local fieldSet = { V = true, Keys = true, Sfx = true, Shake = true, DmgNum = true, Tags = true, KeyBadges = true, Lang = true, BagSort = true,
+		Cam = true }
 	local bads = table.pack(nil, 5, "x", true, {})
 	for i = 1, bads.n do
 		check(deepEq(S(bads[i]), SETTINGS_DEFAULTS), "nil / non-table / empty -> the defaults", tostring(bads[i]))
@@ -944,7 +947,7 @@ runGroup("dataservice-settings", function()
 	check(d1 ~= nil and d1.Version == 3, "Version stays 3", d1 and d1.Version)
 	local d2 = f:Load(502)
 	check(d2 ~= nil and deepEq(d2.Settings, { V = 1, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near",
-		KeyBadges = true, Lang = "en", BagSort = "Grade" }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
+		KeyBadges = true, Lang = "en", BagSort = "Grade", Cam = "Follow" }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
 	local d3 = f:Load(503)
 	check(d3 ~= nil and deepEq(d3.Settings, SETTINGS_DEFAULTS), "Settings = a string -> the defaults", d3 and show(d3.Settings))
 	local d4 = f:Load(504)
@@ -1046,7 +1049,7 @@ runGroup("service-remote", function()
 	s:Call(p, { Seq = 30, Keys = { Attack = "Escape", Map = "X", Menu = "X", Foo = "Y", Bag = string.rep("A", 1000) }, Sfx = 5,
 		Shake = "yes", DmgNum = "Near", Tags = "Near", Lang = string.rep("한", 1000), Foo = 1 })
 	local want = { V = 1, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = true,
-		Lang = "Auto", BagSort = "Default" }
+		Lang = "Auto", BagSort = "Default", Cam = "Follow" }
 	e = s.Sent[#s.Sent]
 	check(deepEq(s.Data[p].Settings, want), "BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
 		show(s.Data[p].Settings))
@@ -1384,7 +1387,7 @@ runGroup("settings-client", function()
 	local bk = {}
 	for k in blob do bk[k] = true end
 	check(count(blob) <= 16 and deepEq(bk, { V = true, Keys = true, Sfx = true, Shake = true, DmgNum = true, Tags = true, KeyBadges = true,
-		Lang = true, BagSort = true, Seq = true }), "the blob = the sanitized settings + Seq (<= 16 keys)", show(bk))
+		Lang = true, BagSort = true, Cam = true, Seq = true }), "the blob = the sanitized settings + Seq (<= 16 keys)", show(bk))
 	check(ST.Set("Nope", 1) == false and ST.Set("Seq", 3) == false, "unknown fields are refused")
 	w.Clock:Advance(3)
 	local n = #w.Sends

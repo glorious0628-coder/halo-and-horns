@@ -64,6 +64,20 @@ def static_checks() -> tuple[int, list[str]]:
           "client fires IntroSeen on menu replays or after it is already saved")
     client_writes = [w for w in writers if w.startswith("src/StarterPlayer/")]
     check(not client_writes, f"client code writes IntroSeen: {client_writes}")
+    # 검수 2026-10-07 (phone letterbox): the bars live in their own full-screen ScreenGui (ScreenInsets None), phones get
+    # thinner bars starting under Roblox's top button row, and closing removes them
+    check('bars.Name = "IntroBars"' in intro and "bars.ScreenInsets = Enum.ScreenInsets.None" in intro
+          and "bars.IgnoreGuiInset, bars.ResetOnSpawn, bars.DisplayOrder = true, false, 59" in intro,
+          "the letterbox is not a full-screen IntroBars ScreenGui (ScreenInsets None, IgnoreGuiInset, under the subtitle)")
+    m = re.search(r"local BARS = \{ Height = ([\d.]+), TouchHeight = ([\d.]+) \}", intro)
+    check(m is not None and float(m.group(2)) < float(m.group(1)), "phones do not get thinner letterbox bars")
+    check("GuiService:GetGuiInset()" in intro and 'bar("TopBar", 0, UDim2.fromScale(0, 0), topExtra)' in intro
+          and "UDim2.new(1, 0, h, extra)" in intro,
+          "the phone top bar does not cover Roblox's top button row from the very top (검수: no strip of sky above it)")
+    check("local CROWN_SHOT = { Down = math.rad(25), Side = math.rad(30)" in intro
+          and "look(crown + dir * c.To, crown), 5.5)" in intro,
+          "the first shot does not show the crown front three-quarter (25 deg below, 30 deg to the side)")
+    check("if state.Bars then state.Bars:Destroy() end" in intro, "closing the opening leaves the letterbox bars on screen")
     return count, failures
 
 

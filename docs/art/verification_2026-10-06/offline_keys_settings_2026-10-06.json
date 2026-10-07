@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9325,
+  "checks": 9592,
   "failedChecks": 0,
   "namedChecks": 311,
   "namedChecksFailing": 0,
@@ -160,7 +160,7 @@
     {
       "group": "config-contract",
       "check": "every setting has Korean + English text",
-      "pass": 7,
+      "pass": 8,
       "fail": 0
     },
     {
@@ -514,13 +514,13 @@
     {
       "group": "sanitize",
       "check": "every enum option is kept",
-      "pass": 11,
+      "pass": 13,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "values outside Options -> the default (incl. a 1000-character string)",
-      "pass": 20,
+      "pass": 25,
       "fail": 0
     },
     {
@@ -550,13 +550,13 @@
     {
       "group": "sanitize",
       "check": "a non-finite / non-number Sfx -> 1",
-      "pass": 253,
+      "pass": 255,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "enums: an option is kept, anything else is the default",
-      "pass": 1200,
+      "pass": 1500,
       "fail": 0
     },
     {
@@ -568,19 +568,19 @@
     {
       "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 939,
+      "pass": 924,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 939,
+      "pass": 924,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 654,
+      "pass": 643,
       "fail": 0
     },
     {
@@ -592,7 +592,7 @@
     {
       "group": "sanitize",
       "check": "Sfx = the nearest step of the clamped value",
-      "pass": 47,
+      "pass": 45,
       "fail": 0
     },
     {
@@ -1209,7 +1209,7 @@
     },
     {
       "group": "keybinds-collisions",
-      "check": "one toast: 'The new action [Quest journal] has no key: …'",
+      "check": "one toast: 'New action [Quest journal] has no key: …'",
       "pass": 1,
       "fail": 0
     },
@@ -1880,7 +1880,7 @@
       "Text": "BB1 lists Allowed 'Keypad0-Keypad9'; Roblox names them KeypadZero..KeypadNine, so those names are stored (KeyUsable('Keypad1') = false, KeyLabel('Keypad1') = Num1)."
     }
   ],
-  "staticChecks": 28,
+  "staticChecks": 29,
   "staticFailures": [],
   "mutations": {
     "total": 42,
@@ -2530,24 +2530,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "378a1191fbbdd4dd19485bb8137a94029dcb18f1d00e7207e72eb13f48e88c58",
+    "src/ReplicatedStorage/Shared/Config.luau": "12eaf5eb87b8a28aaaf23339085df3a23cc1c8bf7ccb04b99c6de21f2720feeb",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
+    "src/ReplicatedStorage/Shared/Net.luau": "b3d7092dba134f0b514a54f27c9f20fe69ba8894389e490cd96a4bb6866584e6",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
-    "src/ServerScriptService/SettingsService.luau": "fb99b60c6422f4bb60ccaa904086a50a85dca490a7edd87939440922fd7b1102",
+    "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "780b23fcf830fb004f52ccdb68e98a2229c8379464c52d4f31ef0bb93dc428f1",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "acfed529a7be7f8bdf96fe0988d61d33d6f135b02e146c623d72bdc41686c57c",
-    "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "2487b4652803b93f4dd298f615bf206c2244921df27b4be6a67ed05ebc41c925",
+    "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "8575182ba364f5dc405d5827c2fb9d66214b44947f9eb81dcc965925407ef92d",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "cd8018ed1598f29167c419c8e88132acc9cc5f478a794e75cda29065fddc8058",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
-    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "0ee2bfff4342ae26b197dc100048d080fd95e1fec03c555555ed542743b82971",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "fae67f7c9535ad277d6d918a4366135ff8c5bc580cbe849e11c0604c4533c7bb",
-    "src/ServerScriptService/StoryQuestService.luau": "88266a94a136f571fbf624be2514baeb3396523eeeb802cfb1ce3406dcdb2889",
-    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "502030f270f711f28fded7edede65bfab2b51bd47f2629eb7511363a86950fbe"
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "2ce81432edc33d2e824d315149fc4ca5e5e4fc1468f3747826f860e22f040f7d",
+    "src/ServerScriptService/StoryQuestService.luau": "b3fa4f85dc379a7f2b591287bffd92b8fe9b57eb88e9a08c5eadd5cc1d3593c5",
+    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "c45b65ef853a84d7531f01947522386c192a12467a8cc6721f1f55b93d492d41"
   },
-  "fixtureSHA256": "90c73591e04032bddc3d7b9e4608cdb4e2cc41db52a94c797862c6754773cd60",
+  "fixtureSHA256": "7d09a5a8a7f402bee13c3b5bc7291494024033a20500e5fdb0b589680110e04e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

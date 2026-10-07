@@ -500,6 +500,8 @@ function PlayerListUI.Show(on)
 	if S.Open then return true end
 	S.Open = true
 	S.Token += 1
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.Metric) == "function" then pcall(panels.Metric, "PlayerList") end -- BB38
 	local token = S.Token
 	local ok, err = pcall(refresh)
 	if not ok then warnThrottled("refresh error: " .. tostring(err)) end

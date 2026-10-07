@@ -243,6 +243,46 @@ local NICK = { UI = nil, Draft = nil, Message = "", Pending = false, Request = 0
 local WSHOP = { Distance = 12, PromptName = "HHC_BlacksmithPrompt",
 	PendingTimeout = 5, SlowNoteSeconds = 4 } -- s: an unanswered trade unlocks the row, then T.WeaponSlow shows
 local WELCOME = { PendingOpen = false }
+
+-- quality 2 (UIKit.Typewriter, image dev adc7311; 검수 2026-10-07): a dialogue line types in at Speed letters / s with the
+-- speaker's blips (C.Audio.Talk; silent until the sound ids exist); a tap on the line, or [Next] / an answer button
+-- while it still types, first shows the whole line. One state table per open window: { Key, Handle }.
+local TYPE = { Speed = 40 }
+-- shows `text` on `label`; the same key on a refresh (update runs often) leaves the running / finished line alone
+function TYPE.Show(state, label, text, speaker, key)
+	key = tostring(key) .. "|" .. text
+	if state.Key == key and state.Label == label then return end
+	state.Key, state.Label, state.Handle = key, label, nil
+	if UIKit and type(UIKit.Typewriter) == "function" then
+		local ok, h = pcall(UIKit.Typewriter, label, text, { Speed = TYPE.Speed, Speaker = speaker })
+		if ok and type(h) == "table" then
+			state.Handle = h
+			return
+		end
+	end
+	label.Text = text
+end
+-- true when the line was still typing (now shown whole): that tap is used up
+function TYPE.Finish(state)
+	local h = state.Handle
+	if type(h) == "table" and type(h.Done) == "function" and not h.Done() then
+		h.Finish()
+		return true
+	end
+	return false
+end
+-- an invisible button over the line: a tap there finishes the line
+function TYPE.Tap(state, label)
+	local b = Instance.new("TextButton")
+	b.Name = "TypeTap"
+	b.BackgroundTransparency = 1
+	b.Text = ""
+	b.AutoButtonColor = false
+	b.Size = UDim2.fromScale(1, 1)
+	b.ZIndex = label.ZIndex + 1
+	b.Parent = label
+	b.Activated:Connect(function() TYPE.Finish(state) end)
+end
 local ITEMS -- A23-12 item list state + helpers (assigned below the blacksmith helpers; the menu reads ITEMS.Hint)
 local RENDER = { Reset = false } -- B14: a queued rebuild resets the scroll (user / structure) unless only data changed
 -- BB13 windows other client modules register (Panels.Register): Opts[id] = { Build, Title, FixedBody, Rebuild,
@@ -1239,13 +1279,15 @@ BUILDERS.Welcome = function(parent)
 	local pageLabel = addText(parent, "", { Name = "WelcomePage", Size = short and 13 or 16, Color = theme.SubText,
 		Align = Enum.TextXAlignment.Center })
 	local line = addText(parent, "", { Name = "WelcomeLine", Size = short and 16 or 22, Align = Enum.TextXAlignment.Center })
+	local typing = {}
+	TYPE.Tap(typing, line)
 	local status = addText(parent, "", { Name = "WelcomeStatus", Size = 16, Color = theme.SubText,
 		Align = Enum.TextXAlignment.Center })
 	local actions = addRow(parent, 64, 10)
 	local readMore, nextButton, later, update
 	-- 함께할게요 is there from page 1 (no forced reading); 다음 still pages through the lines; closing never accepts
 	readMore = makeButton(actions, T.WelcomeNext, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
-		if pending then return end
+		if pending or TYPE.Finish(typing) then return end
 		page = (page % #def.Lines) + 1; status.Text = ""; update()
 	end)
 	readMore.Name = "WelcomeReadMore"
@@ -1268,7 +1310,7 @@ BUILDERS.Welcome = function(parent)
 		if pending and os.clock() - sentAt >= 5 then
 			pending = false; status.Text = T.WelcomeRetry
 		end
-		line.Text = tostring(def.Lines[page])
+		TYPE.Show(typing, line, tostring(def.Lines[page]), faction == "Neutral" and "Guild" or faction, page)
 		pageLabel.Text = string.format("%d / %d", page, #def.Lines)
 		nextButton.Text = pending and T.WelcomePending or T.WelcomeAccept
 		readMore.Text = page < #def.Lines and T.WelcomeNext or T.WelcomeFirst
@@ -2738,6 +2780,9 @@ BUILDERS.Story = function(parent)
 	local TXT = Config.StoryQuests.Text
 	local page = 1
 	local line = addText(parent, "", { Name = "StoryLine", Size = 22, Align = Enum.TextXAlignment.Center })
+	local typing = {}
+	TYPE.Tap(typing, line)
+	local voice = def.Speaker or (f == "Neutral" and "Guild" or f) -- no speaker = my faction's guide
 	local pageLabel = addText(parent, "", { Name = "StoryPage", Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
 	local actions = addRow(parent, 64, 10)
 	-- what a pick does, shown with the choice buttons on the last page (user 2026-10-05: the flow must explain itself)
@@ -2749,6 +2794,7 @@ BUILDERS.Story = function(parent)
 	local buttons = {}
 	local update
 	local function send(option)
+		if TYPE.Finish(typing) then return end -- the first tap while the line types shows it whole
 		-- B15: an answer may unlock the next dialogue step at once; it continues even if auto combat is fighting
 		STORY.ForceUntil = os.clock() + STORY.ForceSeconds
 		if obj.Type == "Talk" then
@@ -2760,6 +2806,7 @@ BUILDERS.Story = function(parent)
 	end
 	local last = function() return page >= #lines end
 	local nextBtn = makeButton(actions, TXT.Next, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+		if TYPE.Finish(typing) then return end
 		if not last() then page += 1; update() end
 	end)
 	nextBtn.Name = "StoryNext"
@@ -2787,7 +2834,7 @@ BUILDERS.Story = function(parent)
 	end
 	update = function()
 		if currentId ~= "Story" or not line.Parent then return end
-		line.Text = tostring(lines[page] or "")
+		TYPE.Show(typing, line, tostring(lines[page] or ""), voice, page)
 		pageLabel.Text = #lines > 1 and string.format("%d / %d", page, #lines) or ""
 		-- one thing to press at a time: [다음] while reading, the answer buttons only on the last page
 		nextBtn.Visible = not last()
@@ -3107,6 +3154,7 @@ function Panels.Open(id, arg)
 	openedFromMenu = fromMenu
 	REG.Arg = arg -- BB13: a registered window's Build gets it (e.g. Settings { Tab = "Keys" })
 	currentId = id
+	Panels.Metric(id)
 	-- The nickname result is displayed in its own panel; transient game tips stay behind it.
 	root.ZIndex = id == "Nickname" and 96 or ZINDEX
 	root.Visible = true
@@ -3134,6 +3182,27 @@ end
 
 function Panels.IsOpen()
 	return currentId ~= nil
+end
+
+-- BB38 beta metrics (dev2 cfef90c, docs/design/metrics_server_2026-10-07.md section 5): a window opening counts once per
+-- session per window (server WindowOpen_<id>, RateLimits.UiMetric 2 s). Only Config.Analytics.UiIds; the ids go out
+-- one at a time Gap s apart, so a quick burst of windows never loses one. Also used by HUD ([메뉴] fold), WorldMap and
+-- PlayerListUI (the Tab list).
+local METRIC = { Sent = {}, Queue = {}, Busy = false, Gap = 2.1 }
+function Panels.Metric(id)
+	local ids = Config.Analytics and Config.Analytics.UiIds
+	if type(id) ~= "string" or METRIC.Sent[id] or type(ids) ~= "table" or not table.find(ids, id) then return end
+	METRIC.Sent[id] = true
+	table.insert(METRIC.Queue, id)
+	if METRIC.Busy then return end
+	METRIC.Busy = true
+	task.spawn(function()
+		while #METRIC.Queue > 0 do
+			fire("UiMetric", table.remove(METRIC.Queue, 1))
+			task.wait(METRIC.Gap)
+		end
+		METRIC.Busy = false
+	end)
 end
 
 -- B15: the story page waiting for a calm moment ({ Id, St, Label } copy) or nil; HUD pulses that quest row

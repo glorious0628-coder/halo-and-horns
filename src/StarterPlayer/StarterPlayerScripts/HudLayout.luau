@@ -34,7 +34,9 @@ local ITEMS = {
 	-- follow our UIScale); the sheet's y = on the middle line of Roblox's buttons (34 px)
 	war_meter = { "TB", { 496, 13, 288, 42 }, { 255, 15, 240, 38 } },
 	chips = { "TC", { 516, 62, 248, 22 }, { 255, 62, 240, 17 } },
-	event = { "TC", { 546, 88, 188, 22 }, { 300, 81, 150, 16 } },
+	-- A23-63 (2026-10-07): as wide as the chip row on PC and the whole column on phones - Montserrat runs wider and the
+	-- king pill ("Pumpkin King is here! 4:54 left") was squeezed to 150 x 16 px with its words spilling out
+	event = { "TC", { 516, 88, 248, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
 	portrait = { "BC", { 362, 586, 50, 50 }, { 502, 62, 45, 45 }, "TR" },
 	power_line = { "BC", { 420, 578, 440, 16 }, { 551, 62, 190, 14 }, "TR" },
@@ -68,10 +70,9 @@ local TOPBAR = { Left = 164, Button = 44, Bottom = 2, Edge = 12, Tap = 45 }
 HudLayout.Topbar = TOPBAR
 local FOLD_MIN = 4 -- the [메뉴] squares that must fit beside it on the bar (새 소식 · 이동 · 도움말 · 설정)
 local MIN_CENTER = 240 -- logical units: narrowest centre column (the war meter stays >= 240du)
--- real px: a desktop window shorter than this lays out on the phone sheet (top-right plate and tiles, quest lines beside
--- the minimap). On the desktop sheet the bottom-centre group steps left into the quest lines there (main Studio 655x340
--- and 573x354, 검수 2026-10-06). Touch rules (finger sizes, the thumbstick zone, the jump button) stay touch-only.
-local SMALL_PC = 500
+-- review 2026-10-07 (user: "이거 위치 왜이래?" on a short Studio window): a mouse / keyboard PC always lays out on the
+-- desktop sheet, however small the window; short windows get a smaller UIScale instead (Config.UI.DesktopScaleMin 0.5),
+-- which keeps the desktop layout's top and bottom blocks apart. The phone sheet is for touch only (replaces SMALL_PC)
 local GAP = 8
 -- touch targets never shrink below 60 logical units (~45 real px at the phone's 0.75 UIScale). A scaled down button
 -- grows back: the portrait from its top-left corner (the bars beside it give way, the tile row under it moves down), the
@@ -116,18 +117,10 @@ HudLayout.AnchorOf = anchorOf
 -- returns { [id] = { X, Y, W, H } } in logical units (MainGui space, before UIScale). potions also carries Gap (du between
 -- its HP and MP cells: cell width = (W - Gap) / 2); tiles carries Size (square tile side), Gap (least gap) and Count (how
 -- many tiles fit the row: the HUD shows that many, the rest go into the [메뉴] tile)
--- true when a desktop window is too short for the desktop sheet (SMALL_PC)
-function HudLayout.SmallDesktop(env)
-	if type(env) ~= "table" or env.Touch == true then return false end
-	local s = (type(env.Scale) == "number" and env.Scale > 0) and env.Scale or 1
-	return type(env.H) == "number" and env.H * s < SMALL_PC
-end
-
 function HudLayout.Compute(env)
 	local touch = env.Touch == true
-	-- sheet = which approved sheet the rects come from (the phone one on touch and on short desktop windows);
-	-- touch = the finger rules
-	local sheet = touch or HudLayout.SmallDesktop(env)
+	-- sheet = which approved sheet the rects come from (the phone one on touch only); touch = the finger rules
+	local sheet = touch
 	local ref = sheet and REF.Touch or REF.Desktop
 	local k = 1 / ref.Scale -- reference px -> logical units
 	local s = (type(env.Scale) == "number" and env.Scale > 0) and env.Scale or 1
@@ -246,6 +239,17 @@ function HudLayout.Compute(env)
 	menu.W, menu.H = mSize, mSize
 	menu.X = bar.X1 - TOPBAR.Edge / s - mSize
 	menu.Y = barMid - mSize / 2
+	-- touch (review 2026-10-07, game dev 1: a tap on [메뉴] in the bar never reached it, B opened it): Roblox's top bar
+	-- row takes every touch inside it, so on touch devices [메뉴] is the last square of the tile row under the bar
+	-- (phones: the plate's row top-right) and the row's own tiles step left of it; mouse / keyboard keep it in the bar
+	if touch then
+		mSize = size
+		menu.W, menu.H = mSize, mSize
+		menu.X = tiles.X + tiles.W - mSize
+		menu.Y = tiles.Y
+		tiles.W = math.max(0, tiles.W - mSize - tileGap)
+		tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
+	end
 
 	-- phone sheet: a round button that reaches up into the plate's tile row steps down under it (short / narrow phones: the
 	-- plate hangs from the top, the cluster from the jump button, so the X skill can meet the row; A23-49)
@@ -328,7 +332,7 @@ function HudLayout.Compute(env)
 	-- everything stays on screen and below the top bar (big tablets / very short windows); the top bar items stay in it
 	for id, r in out do
 		r.X = math.clamp(r.X, 0, math.max(0, W - r.W))
-		if anchorOf(id, sheet) == "TB" then
+		if anchorOf(id, sheet) == "TB" and not (touch and id == "menu") then
 			r.Y = math.clamp(r.Y, bar.Y0, math.max(bar.Y0, bar.Y1 - r.H))
 		else
 			r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))
@@ -360,17 +364,19 @@ function HudLayout.Compute(env)
 		end
 		return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6))
 	end
-	-- the first line on [메뉴]'s own (top bar) line, the next ones from just under the bar down
+	-- the first line on [메뉴]'s own line (mouse: the top bar, the next ones from just under the bar down; touch: the
+	-- tile row, the next ones up over the plate and never into the bar - "위쪽에서만", A23-38)
 	local lines = {}
 	local y, step = m.Y, fSize + fGap
 	local x0, y0, y1 = right, math.huge, -math.huge
-	while #lines < FOLD_ROWS and y >= math.min(top, bar.Y0) - 0.01 and y + fSize <= H + 0.01 do
+	local yMin = touch and top or math.min(top, bar.Y0)
+	while #lines < FOLD_ROWS and y >= yMin - 0.01 and y + fSize <= H + 0.01 do
 		local cols = colsAt(y)
 		if cols < 1 then break end
 		local lx = right - cols * (fSize + fGap) + fGap
 		table.insert(lines, { X = lx, Y = y, Cols = cols })
 		x0, y0, y1 = math.min(x0, lx), math.min(y0, y), math.max(y1, y + fSize)
-		y = math.max(y + step, top + fGap)
+		y = touch and (y - step) or math.max(y + step, top + fGap)
 	end
 	if #lines == 0 then -- no room at all (a tiny window): one square over [메뉴]'s left neighbour
 		lines[1] = { X = right - fSize, Y = m.Y, Cols = 1 }

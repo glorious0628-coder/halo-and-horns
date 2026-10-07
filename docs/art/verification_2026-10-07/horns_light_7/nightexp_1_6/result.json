@@ -1,0 +1,10 @@
+{
+  "den_night": {
+    "mean": 0.28,
+    "ground": 0.293,
+    "groundRelL": 0.0968,
+    "skinContrast": 4.7
+  },
+  "audio": "AudioSfx sounds=6 distinct ids=4 groups=SfxCombat=1,Sfx=1 sample: Sfx_QuestNew_1=0.50 Sfx_WindowOpen_1=0.45 Sfx_TalkBlip_1=0.25 Sfx_TalkBlip_2=0.25 Sfx_TalkBlip_3=0.25 Sfx_WindowClose_1=0.42",
+  "console": []
+}

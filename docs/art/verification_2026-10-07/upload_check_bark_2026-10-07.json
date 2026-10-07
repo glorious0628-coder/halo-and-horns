@@ -1,0 +1,19 @@
+{
+  "tool": "tools/upload_check_view.py",
+  "keys": [
+    "BarkBubble",
+    "JobTag"
+  ],
+  "images": {
+    "BarkBubble": {
+      "Id": "rbxassetid://124351323911597",
+      "Loaded": true
+    },
+    "JobTag": {
+      "Id": "rbxassetid://87413375917921",
+      "Loaded": true
+    }
+  },
+  "sheet": "art/review/upload_check_bark_2026-10-07.jpg",
+  "allLoaded": true
+}

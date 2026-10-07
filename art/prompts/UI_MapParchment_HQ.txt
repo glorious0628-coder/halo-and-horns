@@ -1,0 +1,2 @@
+[reference: Firefly 참조 이미지 = MapParchment 원본 _src (고급 다시 그리기)]
+Redraw the attached reference image cleaner and more detailed with the same look: blank old parchment paper filling the entire canvas edge to edge, flat front view, warm cream center fading to honey tones, subtle paper fibers and faint watercolor stains, gently darkened brown edges, a large clean even center area. No border, no frame, no gray background, no margin. Plain empty paper sheet only, wordless, blank unmarked surface.

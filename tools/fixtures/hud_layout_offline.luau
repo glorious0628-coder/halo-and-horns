@@ -159,7 +159,7 @@ for _, case in CASES do
 	local W, H, s = env.W, env.H, env.Scale
 	local top = env.Inset / s
 	local touch = env.Touch == true
-	-- the approved sheet the rects follow: the phone one on touch and on short desktop windows (HudLayout SMALL_PC)
+	-- the approved sheet the rects follow: the phone one on touch only (short PC windows: desktop sheet, smaller UIScale)
 	local sheet = case.Sheet == true
 	-- the Roblox top bar's free part (GuiService.TopbarInset) as HUD.luau passes it
 	local bar = env.Topbar or { X0 = 164 / s, Y0 = 0, X1 = W, Y1 = top }
@@ -184,7 +184,7 @@ for _, case in CASES do
 		check(g, "rect " .. id, good, fmt(r))
 		if good then
 			check(g, "on screen " .. id, r.X >= -0.5 and r.X + r.W <= W + 0.5 and r.Y + r.H <= H + 0.5, fmt(r))
-			if TOP_BAR[id] then
+			if TOP_BAR[id] and not (touch and id == "menu") then
 				-- A23-40 보강: in the bar's free part (clear of Roblox's buttons by >= 4 px), centred on its middle, never
 				-- taller than a Roblox button
 				check(g, "in the top bar " .. id, r.Y >= bar.Y0 - 0.5 and r.Y + r.H <= bar.Y1 + 0.5
@@ -246,8 +246,9 @@ for _, case in CASES do
 			for _, id in TAPS do
 				local r = out[id]
 				if id == "menu" then
-					-- in the 58 px Roblox top bar: at least 45 real px (= MIN_TAP at the phone's 0.75 UIScale)
-					check(g, "tap size " .. id, math.min(r.W, r.H) * s >= 45 - 0.01, ("%s %.1f px"):format(fmt(r), r.W * s))
+					-- a tile-row square under the bar (review 2026-10-07: taps in the Roblox bar never reach it)
+					check(g, "tap size " .. id, math.min(r.W, r.H) >= MIN_TAP - 0.01, ("%s %.1f px"):format(fmt(r), r.W * s))
+					check(g, "menu under the top bar on touch", r.Y >= top - 0.5, ("%s top=%.1f"):format(fmt(r), top))
 				else
 					check(g, "tap size " .. id, math.min(r.W, r.H) >= MIN_TAP - 0.01, fmt(r))
 				end
@@ -257,7 +258,9 @@ for _, case in CASES do
 			-- tiles: 5 on the reference phone, at least 3 on every phone (the rest fold out of [메뉴])
 			local tileName = "tiles at least 3 on phones"
 			local e3 = excepted(case, tileName)
-			if tileOk and t.Count >= 3 then
+			-- touch: [메뉴] is the row's last square (review 2026-10-07), it counts as one of the three
+			local rowCount = (tileOk and t.Count or 0) + (touch and 1 or 0)
+			if rowCount >= 3 then
 				check(g, tileName, true)
 				if e3 then check(g, "exception still needed: " .. tileName, false, "3 tiles fit; drop the exception") end
 			elseif e3 then
@@ -308,10 +311,11 @@ for _, case in CASES do
 				local right = W - (out[id].X + out[id].W)
 				check(g, "phone plate at the right edge " .. id, right >= 2 and right <= 16, ("%s right gap %.2f"):format(fmt(out[id]), right))
 			end
-			-- [메뉴] moved up into the top bar (A23-40 보강): the tile row now reaches the plate's right edge
+			-- the row reaches the plate's right edge: the tiles (mouse: [메뉴] is in the bar) or [메뉴] after them (touch)
 			local pl = out.power_line
-			check(g, "phone tiles reach the plate's right edge", math.abs((t.X + t.W) - (pl.X + pl.W)) <= 0.5,
-				fmt(t) .. " " .. fmt(pl))
+			local rowRight = touch and (out.menu.X + out.menu.W) or (t.X + t.W)
+			check(g, "phone tiles reach the plate's right edge", math.abs(rowRight - (pl.X + pl.W)) <= 0.5,
+				fmt(t) .. " " .. fmt(out.menu) .. " " .. fmt(pl))
 		else
 			-- 4. desktop: the corner cluster in the bottom-right corner; the face group along the bottom, centred unless it
 			-- had to step aside, always clear of the cluster and inside the left margin
@@ -336,9 +340,15 @@ for _, case in CASES do
 		-- [메뉴]: a square in the top bar's right end, MENU_EDGE_PX from its free part's end, a Roblox button on PCs
 		-- (A23-40 정정 + 보강)
 		local m = out.menu
-		local rightPx = (bar.X1 - (m.X + m.W)) * s
-		check(g, "menu at the top bar's right end", rightPx >= MENU_EDGE_PX - 0.5 and rightPx <= MENU_EDGE_PX + 0.5,
-			("%s right %.1f px"):format(fmt(m), rightPx))
+		if touch then
+			-- touch: the tile row's last square, as big as the tiles (review 2026-10-07)
+			check(g, "menu at the tile row's right end", tileOk and math.abs(m.Y - t.Y) <= 0.01
+				and math.abs(m.H - t.Size) <= 0.01 and m.X >= t.X + t.W - 0.01, fmt(m) .. " " .. fmt(t))
+		else
+			local rightPx = (bar.X1 - (m.X + m.W)) * s
+			check(g, "menu at the top bar's right end", rightPx >= MENU_EDGE_PX - 0.5 and rightPx <= MENU_EDGE_PX + 0.5,
+				("%s right %.1f px"):format(fmt(m), rightPx))
+		end
 		check(g, "menu square", math.abs(m.W - m.H) <= 0.01, fmt(m))
 		if not touch then
 			check(g, "menu as big as a Roblox button", math.abs(m.H * s - buttonPx) <= 0.5, ("%.1f px"):format(m.H * s))
@@ -416,16 +426,28 @@ for _, case in CASES do
 				local rr = { X = ln.X, Y = ln.Y, W = ln.Cols * (f.Size + f.Gap) - f.Gap, H = f.Size }
 				check(g, "fold line ends at the menu", math.abs(rr.X + rr.W + f.Gap - m.X) <= 0.01, fmt(rr) .. " " .. fmt(m))
 				if i == 1 then
-					-- the first line runs along the top bar, right of Roblox's own buttons
-					check(g, "fold first line in the top bar", rr.Y >= bar.Y0 - 0.01 and rr.Y + rr.H <= bar.Y1 + 0.01
-						and rr.X >= bar.X0 - 0.01, fmt(rr) .. (" bar x0 %.1f"):format(bar.X0))
+					if touch then
+						-- touch: the first line on [메뉴]'s tile row, under the bar
+						check(g, "fold first line under the top bar", rr.Y >= top - 0.01, fmt(rr) .. (" top %.1f"):format(top))
+					else
+						-- the first line runs along the top bar, right of Roblox's own buttons
+						check(g, "fold first line in the top bar", rr.Y >= bar.Y0 - 0.01 and rr.Y + rr.H <= bar.Y1 + 0.01
+							and rr.X >= bar.X0 - 0.01, fmt(rr) .. (" bar x0 %.1f"):format(bar.X0))
+					end
 				else
 					check(g, "fold line on screen below the top bar", rr.X >= -0.01 and rr.Y >= top - 0.01 and rr.Y + rr.H <= H + 0.01,
 						fmt(rr))
-					-- down: the second line right under the bar (one gap), the next ones one square + gap apart
+					-- mouse: down, the second line right under the bar (one gap), the next ones one square + gap apart;
+					-- touch: up from the tile row, one square + gap apart, never into the bar
 					local prev = f.Lines[i - 1]
-					local want = i == 2 and math.max(prev.Y + f.Size + f.Gap, top + f.Gap) or prev.Y + f.Size + f.Gap
-					check(g, "fold lines go down", math.abs(ln.Y - want) <= 0.01, fmt(rr) .. (" want y %.2f"):format(want))
+					if touch then
+						local want = prev.Y - f.Size - f.Gap
+						check(g, "fold lines go up", math.abs(ln.Y - want) <= 0.01 and ln.Y >= top - 0.01,
+							fmt(rr) .. (" want y %.2f"):format(want))
+					else
+						local want = i == 2 and math.max(prev.Y + f.Size + f.Gap, top + f.Gap) or prev.Y + f.Size + f.Gap
+						check(g, "fold lines go down", math.abs(ln.Y - want) <= 0.01, fmt(rr) .. (" want y %.2f"):format(want))
+					end
 				end
 				local protect = table.clone(FOLD_PROTECT)
 				if not sheet then
@@ -471,8 +493,8 @@ for _, case in CASES do
 		end
 		check(g, "matches sheet potion gap", math.abs(pg * s - POTION_GAP_PX) <= 1.01, ("gap %.2f px"):format(pg * s))
 		check(g, "matches sheet tile gap", tileOk and math.abs(t.Gap * s - TILE_GAP_PX) <= 0.51, ("gap %.2f px"):format((t.Gap or 0) * s))
-		-- phones: 5 now that [메뉴] left the row for the top bar (A23-40 보강)
-		check(g, "reference tile count", tileOk and t.Count == (touch and 5 or 8), fmt(t) .. " count " .. tostring(t.Count))
+		-- phones: 4 tiles + [메뉴] as the row's last square (touch, review 2026-10-07; was 5 with [메뉴] in the bar)
+		check(g, "reference tile count", tileOk and t.Count == (touch and 4 or 8), fmt(t) .. " count " .. tostring(t.Count))
 	end
 
 	-- 8. hiding the auto button (before the crown-shard quest) never moves another item

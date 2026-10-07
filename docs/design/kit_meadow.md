@@ -43,3 +43,13 @@
 - 왕관 큰길(z 0) 양옆 울타리·덤불·바람개비, 호박밭 길(x 535) 양옆 덤불·버섯.
 - 슬라임 무리 자리(지금 Config 스폰 점)는 비워 두고 둘레를 덤불·그루터기·젤리 바위로 채운다.
 - 입구에서 보이는 랜드마크 = 슬라임 석상 + 북쪽 왕 슬라임 언덕.
+
+## 사냥터 입구 게시판 (E11, 2026-10-07 — 그림 이미지 생성 2 고급판 ffe806d, 사용자 고름: 초원 B · 숲 B)
+교차로 현상수배 게시판(3b `X_NoticeBoard`)과 **같은 실루엣·같은 크기 규칙**(검수: "교차로 판에 맞춰").
+| 이름(Tripo·Studio) | Tripo 원본 | 크기(스터드) | Tripo | 자리 (quest_volume §4) |
+|---|---|---|---|---|
+| Kit_M_JobBoard | `art/out/hq/HQ_Meadow_JobBoard.png` (밝은 나무 + 라임 젤리 큐브, 얼굴 없음) | 폭 16 (X_NoticeBoard와 같음) | 표준 30(3k 면) — 3b와 같이 승인 | 초원 도착 지점(MeadowArrival = 초원 Spawn) 옆, 앞면이 도착 지점을 봄 |
+| Kit_W_JobBoard | `art/out/hq/HQ_Woods_JobBoard.png` (짙은 나무 + 이끼) | 폭 16 | 표준 30 | WoodsGate의 초원 쪽 끝(PvP 밖), 앞면이 초원 쪽 길을 봄 |
+- 앞면 = Roblox -Z(가져오기 때 다른 키트와 같이 돌려 넣음), 피벗 = 밑면 가운데.
+- 글자는 그림에 없고, 가운데 빈 판 앞 0.1스터드에 얇은 Part `BoardFace` + SurfaceGui(영어, 카드 4장·"Kind 12 · Sneaky 3", 개발 1). 교차로 `MostWantedBoard`와 이름이 겹치지 않게 한다.
+- 장식 젤리는 `Kit_M_SignPost`의 라임 젤리 큐브와 같은 색(채집 노드 색인 하늘색·구리색 금지).

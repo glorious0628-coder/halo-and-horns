@@ -293,6 +293,103 @@ do
 	end
 end
 
+----------------------------------------------------------------- Panels TYPE (UIKit.Typewriter on dialogue lines)
+do
+	local g = "dialogue typewriter"
+	local calls = {}
+	local function fakeHandle()
+		local h = { State = "typing" }
+		h.Finish = function() h.State = "done" end
+		h.Done = function() return h.State ~= "typing" end
+		return h
+	end
+	local kit = { Typewriter = function(label, text, opts)
+		table.insert(calls, { Label = label, Text = text, Speed = opts and opts.Speed, Speaker = opts and opts.Speaker })
+		label.Text = text
+		local h = fakeHandle()
+		calls[#calls].Handle = h
+		return h
+	end }
+	local made = {}
+	local inst = { new = function(class)
+		local o = { ClassName = class, Activated = { Connect = function(_, fn) table.insert(made, fn) end } }
+		return o
+	end }
+	local env = { UIKit = kit, Instance = inst, UDim2 = { fromScale = function() return {} end }, tostring = tostring,
+		type = type, pcall = pcall }
+	local TYPE = execute("TYPE", TYPE_SOURCE .. "\nreturn TYPE", env)
+	check(g, "Panels has TYPE.Show / Finish / Tap", type(TYPE) == "table" and type(TYPE.Show) == "function"
+		and type(TYPE.Finish) == "function" and type(TYPE.Tap) == "function")
+	local label, state = { Text = "", ZIndex = 1 }, {}
+	TYPE.Show(state, label, "Hallie here!", "Halo", 1)
+	check(g, "a new line types in at 40 letters / s with the speaker's voice", #calls == 1 and calls[1].Speed == 40
+		and calls[1].Speaker == "Halo" and calls[1].Text == "Hallie here!", show(calls[1]))
+	TYPE.Show(state, label, "Hallie here!", "Halo", 1)
+	TYPE.Show(state, label, "Hallie here!", "Halo", 1)
+	check(g, "the same page on a refresh never retypes", #calls == 1, #calls)
+	check(g, "a tap while it types finishes the line (the tap is used up)", TYPE.Finish(state) == true and calls[1].Handle.Done())
+	check(g, "a tap after it finished is free (Next pages on)", TYPE.Finish(state) == false)
+	TYPE.Show(state, label, "Welcome to the Knights!", "Halo", 2)
+	check(g, "the next page types again", #calls == 2 and calls[2].Text == "Welcome to the Knights!", #calls)
+	TYPE.Show(state, label, "Welcome to the Knights!", "Halo", 3)
+	check(g, "the same words on another page still type (page in the key)", #calls == 3, #calls)
+	TYPE.Tap(state, label)
+	check(g, "Tap puts one invisible button over the line that finishes it", #made == 1)
+	made[1]()
+	check(g, "tapping the line finishes it", calls[3].Handle.Done())
+	-- no UIKit.Typewriter (older UIKit): the whole line at once
+	local env2 = { UIKit = {}, Instance = inst, UDim2 = { fromScale = function() return {} end }, tostring = tostring,
+		type = type, pcall = pcall }
+	local TYPE2 = execute("TYPE2", TYPE_SOURCE .. "\nreturn TYPE", env2)
+	local l2, st2 = { Text = "" }, {}
+	TYPE2.Show(st2, l2, "Fix first. Talk later.", "Guild", 1)
+	check(g, "without UIKit.Typewriter the line shows at once", l2.Text == "Fix first. Talk later." and TYPE2.Finish(st2) == false)
+end
+
+----------------------------------------------------------------- Panels.Metric (BB38 UiMetric)
+do
+	local g = "window open metric"
+	local W2 = { Now = 0, Sent = {}, Jobs = {} }
+	local env = {
+		Config = Config, table = table, type = type,
+		fire = function(name, id) table.insert(W2.Sent, { Name = name, Id = id, At = W2.Now }) end,
+		task = { spawn = function(fn) table.insert(W2.Jobs, coroutine.create(fn)) end,
+			wait = function(t) coroutine.yield(t) end },
+		Panels = {},
+	}
+	local P = execute("METRIC", METRIC_SOURCE .. "\nreturn Panels", env)
+	-- run the sender coroutine like the task scheduler: each yield(t) waits t seconds
+	local function run(seconds)
+		local stop = W2.Now + seconds
+		while true do
+			local job = W2.Jobs[1]
+			if not job or W2.Now > stop then break end
+			local ok, wait = coroutine.resume(job)
+			if coroutine.status(job) == "dead" then table.remove(W2.Jobs, 1) else W2.Now += (tonumber(wait) or 0) end
+			if not ok then error(wait) end
+		end
+	end
+	check(g, "Panels has Metric", type(P.Metric) == "function")
+	P.Metric("Items")
+	P.Metric("Items")
+	P.Metric("Settings")
+	P.Metric("Nickname") -- not in Config.Analytics.UiIds
+	P.Metric("Help")
+	run(30)
+	local ids = {}
+	for _, row in W2.Sent do table.insert(ids, row.Id) end
+	check(g, "each listed window once, in order; unknown ids never", table.concat(ids, ",") == "Items,Settings,Help", table.concat(ids, ","))
+	local spaced = true
+	for i = 2, #W2.Sent do
+		if W2.Sent[i].At - W2.Sent[i - 1].At < 2 then spaced = false end
+	end
+	check(g, "a burst goes out at least 2 s apart (the server allows one per 2 s)", spaced and #W2.Sent == 3, #W2.Sent)
+	check(g, "every send is the UiMetric remote with one id", W2.Sent[1] and W2.Sent[1].Name == "UiMetric")
+	P.Metric("Items")
+	run(5)
+	check(g, "a window opened again later is not sent again", #W2.Sent == 3, #W2.Sent)
+end
+
 local named = {}
 for _, key in order do table.insert(named, Named[key]) end
 print("STORY_CLIENT_RESULT_JSON " .. encode({ Checks = checks, Failed = failed, Named = named }))

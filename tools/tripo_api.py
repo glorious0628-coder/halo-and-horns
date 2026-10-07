@@ -55,8 +55,10 @@ RECIPES = {
     "prop_std": {"face_limit": 3000, "texture_quality": "standard", "texture_alignment": "original_image"},
     # head accessories (rank horns / halo, A23-54): small on screen, 2k tris
     "acc": {"face_limit": 2000, "texture_quality": "detailed", "texture_alignment": "original_image"},
+    # forest trees and boulders placed many times (ART_DIRECTION: <= 1.5k tris per tree), same price as prop
+    "tree": {"face_limit": 1500, "texture_quality": "detailed", "texture_alignment": "original_image"},
 }
-COST = {"character": 40, "monster": 30, "boss": 60, "prop": 40, "building": 40, "prop_std": 30, "acc": 40}
+COST = {"character": 40, "monster": 30, "boss": 60, "prop": 40, "building": 40, "prop_std": 30, "acc": 40, "tree": 40}
 RIG_COST = 25
 HUMANOID_RIG = {"model": "v1.0-20240301", "rig_type": "biped", "spec": "mixamo", "out_format": "glb"}
 

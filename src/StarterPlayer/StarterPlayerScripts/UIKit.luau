@@ -19,16 +19,18 @@ local UIKit = {}
 
 UIKit.Gui = nil -- ScreenGui "MainGui", created in Init
 
--- A23-48 (user 2026-10-06 "게임은 영어만": every text on the game screen is English): one font set, chosen here only
--- (검수 2026-10-06 picked candidate 1 of art/review/font_en_candidates_2026-10-06.png). Head = titles, buttons and
--- numbers (TextStyles Title / Button / Number, ExtraBold text) = Fredoka One; Body = body text and name tags = Builder
--- Sans (Regular / Bold). No language choice and no device-language switch (A23-48 replaces A23-43's English + Korean).
+-- A23-48 (user 2026-10-06 "게임은 영어만": every text on the game screen is English): one font set, chosen here only.
+-- A23-63 (user 2026-10-07 "폰트 이쁜 걸로", candidate 3 of art/review/font_en_candidates_2026-10-06.png): Head = titles,
+-- buttons and numbers (TextStyles Title / Button / Number, ExtraBold text) = Denk One (one weight); Body = body text and
+-- name tags = Montserrat (Regular / Bold). Was Fredoka One + Builder Sans. Montserrat runs ~15 % wider than Builder Sans
+-- and Denk One ~11 % narrower than Fredoka One at the same size (UiSandbox TextService, 2026-10-07): sized-to-text
+-- elements measure with UIKit.MeasureText, so they follow. No language choice and no device-language switch.
 -- Shared state keeps large HUD / Fx chunks below the local limit.
 local FONT = { UseTextImages = false, Faces = {}, States = setmetatable({}, { __mode = "k" }), MeasureCache = {}, CacheCount = 0,
 	Lang = "en",
 	Sets = {
-		en = { Head = { Family = "rbxasset://fonts/families/FredokaOne.json" },
-			Body = { Family = "rbxasset://fonts/families/BuilderSans.json" } },
+		en = { Head = { Family = "rbxasset://fonts/families/DenkOne.json" },
+			Body = { Family = "rbxasset://fonts/families/Montserrat.json" } },
 	},
 	Cache = {}, -- [lang .. role .. weight name] = Font
 }
@@ -359,6 +361,15 @@ local function currentScale()
 	local s = uiScale and uiScale.Scale or 1
 	if s <= 0 then s = 1 end
 	return s
+end
+
+-- review 2026-10-07: a mouse / keyboard PC in a short window keeps the desktop layout at a smaller UIScale; its real-px
+-- text floors (readability rules made for phones) shrink with it below the 720p desktop scale (DESKTOP_MULT), so the
+-- HUD stays one picture, only smaller - at UIScale 0.5 the floors had kept every word full size and they spilled out of
+-- the halved HUD. Touch devices: 1 (the floors stand)
+function UIKit.PxFloor()
+	if UserInputService.TouchEnabled then return 1 end
+	return math.min(1, currentScale() / DESKTOP_MULT)
 end
 
 local function applyScale()
@@ -1460,7 +1471,7 @@ end
 --  * Text and AutoLocalize are never touched, so Roblox auto-translation keeps working.
 --  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
 --    StyleStroke.Transparency with TextTransparency.
--- Families come from FONT.Sets (A23-48 English only): Fredoka One (Face = "Head") + Builder Sans (Face = "Body").
+-- Families come from FONT.Sets (A23-48 English only, A23-63): Denk One (Face = "Head") + Montserrat (Face = "Body").
 UIKit.TextStyles = {
 	Title = { Weight = Enum.FontWeight.ExtraBold, Size = 28, MinPx = 16, Face = "Head" }, -- window / ribbon titles, big notices
 	Button = { Weight = Enum.FontWeight.ExtraBold, Size = 20, MinPx = 16, Face = "Head" }, -- rubric: button text >= 16 px
@@ -1533,7 +1544,7 @@ function STYLE.Refresh(label)
 	local scale = STYLE.Scale(label)
 	-- a label may lower its floor with the attribute StyleMinPx (A23-48: English icon tile names such as 'Settings'
 	-- shrink inside the tile down to 10 px, 검수 2026-10-06)
-	local minPx = tonumber(label:GetAttribute("StyleMinPx")) or def.MinPx
+	local minPx = (tonumber(label:GetAttribute("StyleMinPx")) or def.MinPx) * UIKit.PxFloor()
 	-- ceil, not floor: floor(14 / 0.75) = 18 would render 13.5 px, under the rubric's 14
 	local floorSize = math.clamp(math.ceil(minPx / scale - 0.001), 1, 100)
 	Art.StyleFloor[label] = floorSize
@@ -2235,7 +2246,7 @@ function UIKit.Toast(text, kind, duration, icon)
 		Size = UDim2.new(1, -left, 0, img and TOAST_ICON or 22),
 		TextWrapped = true,
 		TextTruncate = Enum.TextTruncate.AtEnd,
-		TextSize = math.max(18, math.ceil(NOTIFY.ToastPx / currentScale() - 0.001)),
+		TextSize = math.max(18, math.ceil(NOTIFY.ToastPx * UIKit.PxFloor() / currentScale() - 0.001)),
 		Text = text,
 		TextColor3 = (kind == "good" or kind == "bad" or kind == "reward") and color or T.Text,
 		TextTransparency = 1,
@@ -2243,6 +2254,15 @@ function UIKit.Toast(text, kind, duration, icon)
 		Parent = frame,
 	})
 	frame.Parent = toastHolder
+	-- review 2026-10-07: a notice that does not fit on one line breaks at its " · " (one part a line) instead of
+	-- starting the second line with the dot ("... +60 gold / · Check the board ...")
+	if string.find(text, " · ", 1, true) then
+		local room = toastHolder.AbsoluteSize.X / currentScale() - 28 - left
+		local ok, _, w = pcall(UIKit.MeasureText, text, label.TextSize, label.FontFace, 100000)
+		if room > 0 and ok and type(w) == "number" and w > room then
+			label.Text = (string.gsub(text, " · ", "\n"))
+		end
+	end
 	UIKit.WrapHeight(label, NOTIFY.ToastLines, img and TOAST_ICON or nil)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
@@ -2455,7 +2475,7 @@ function UIKit.PlaceNotify(rect, topY)
 		announceFrame.Size = UDim2.fromOffset(math.floor(math.min(w * NOTIFY.BannerWidthMult, NOTIFY.BannerMaxW)),
 			math.floor(bannerH))
 		-- text: about 44% of the banner, never under BannerPx real px, at most BannerTextMax
-		local floorDu = math.ceil(NOTIFY.BannerPx / currentScale() - 0.001)
+		local floorDu = math.ceil(NOTIFY.BannerPx * UIKit.PxFloor() / currentScale() - 0.001)
 		local textSize = math.clamp(math.floor(bannerH * 0.44 + 0.5), floorDu, math.max(floorDu, NOTIFY.BannerTextMax))
 		announceLabel.TextSize = textSize -- UIKit.WrapHeight refits the lines
 		local icon = announceFrame:FindFirstChild("Icon")

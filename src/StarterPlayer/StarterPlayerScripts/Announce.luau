@@ -5,6 +5,7 @@
 -- (Text[Key .. "En"] when the language setting is English) in the event's Color, optionally also a toast. A king's
 -- appear line may carry Args.Banter (lines_pack 12, the day's king vs king line, built by the server): one more chat
 -- line in the same colour, never a toast.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextChatService = game:GetService("TextChatService")
 local StarterGui = game:GetService("StarterGui")
@@ -157,6 +158,20 @@ function A.Chat(line, color)
 	end
 end
 
+-- TextChatService only (ChatText.luau covers the legacy chat on the server): Roblox's team line ("You are now on the
+-- ... team.", Metadata Roblox.Team.Success.NowInTeam) comes in the player's Roblox language -> our English line
+function A.Incoming(message)
+	local props = Instance.new("TextChatMessageProperties")
+	if message.Metadata == "Roblox.Team.Success.NowInTeam" then
+		local team = Players.LocalPlayer.Team
+		local text = Config.ChatText.Choosing
+		if team and not team.AutoAssignable then text = string.format(Config.ChatText.Joined, team.Name) end
+		local color = team and team.TeamColor.Color or Color3.new(1, 1, 1)
+		props.Text = string.format('<font color="%s"><b>%s</b></font>', hex(color), escape(text))
+	end
+	return props
+end
+
 function Announce.Init(registry)
 	C = registry
 end
@@ -170,10 +185,14 @@ function Announce.Start()
 		end)
 		if not ok then warn("[Announce] hookup failed: " .. tostring(err)) end
 	end)
+	pcall(function()
+		if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then TextChatService.OnIncomingMessage = A.Incoming end
+	end)
 	print("[Announce] started")
 end
 
 -- test aid / reuse: format a payload without showing it
 Announce.Format = A.Format
+Announce.Incoming = A.Incoming -- test aid
 
 return Announce

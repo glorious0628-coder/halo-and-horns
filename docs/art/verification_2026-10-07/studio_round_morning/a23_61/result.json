@@ -1,0 +1,24 @@
+{
+  "a23_61": [
+    {
+      "case": "side80",
+      "hit": true,
+      "turned": false,
+      "detail": "side80 try0: before[hp=1.000 bearing=82 look=0.174,-0.985] after[hp=0.800 bearing=82 look=0.174,-0.985] hit=True turned=False"
+    },
+    {
+      "case": "side-80",
+      "hit": true,
+      "turned": false,
+      "detail": "side-80 try1: before[hp=1.000 bearing=46 look=0.174,0.985] after[hp=0.600 bearing=46 look=0.174,0.985] hit=True turned=False"
+    },
+    {
+      "case": "behind",
+      "hit": false,
+      "turned": true,
+      "detail": "behind try2: before[hp=1.000 bearing=180 look=-1.000,0.000] after[hp=1.000 bearing=0 look=1.000,0.000] hit=False turned=True"
+    }
+  ],
+  "audio_started": true,
+  "console_errors": []
+}

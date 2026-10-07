@@ -9,17 +9,17 @@ local SP = Enum.Material.SmoothPlastic
 local NEON = Enum.Material.Neon
 
 local ZONES = {
-	Crossroads = { Name = "교차로 마을", Center = Vector3.new(0, 0, 0), Size = Vector3.new(160, 0, 160), MinLevel = 1, PvP = false,
+	Crossroads = { Name = "Crossroads", Center = Vector3.new(0, 0, 0), Size = Vector3.new(160, 0, 160), MinLevel = 1, PvP = false,
 		Color = RGB(190, 176, 150), Material = Enum.Material.Cobblestone, Spawn = Vector3.new(0, 0, -25) },
-	HaloTown = { Name = "빛의 성채", Center = Vector3.new(0, 0, -400), Size = Vector3.new(160, 0, 160), MinLevel = 1, PvP = false,
+	HaloTown = { Name = "Halo Citadel", Center = Vector3.new(0, 0, -400), Size = Vector3.new(160, 0, 160), MinLevel = 1, PvP = false,
 		Color = RGB(228, 218, 190), Material = Enum.Material.Marble, Spawn = Vector3.new(0, 0, -410) },
-	HornsTown = { Name = "뿔 소굴", Center = Vector3.new(0, 0, 400), Size = Vector3.new(160, 0, 160), MinLevel = 1, PvP = false,
+	HornsTown = { Name = "Horns Den", Center = Vector3.new(0, 0, 400), Size = Vector3.new(160, 0, 160), MinLevel = 1, PvP = false,
 		Color = RGB(70, 40, 45), Material = Enum.Material.Slate, Spawn = Vector3.new(0, 0, 410) },
-	SlimeMeadow = { Name = "말랑 초원", Center = Vector3.new(330, 0, 0), Size = Vector3.new(260, 0, 260), MinLevel = 1, PvP = false,
+	SlimeMeadow = { Name = "Squishy Meadow", Center = Vector3.new(330, 0, 0), Size = Vector3.new(260, 0, 260), MinLevel = 1, PvP = false,
 		Color = RGB(115, 195, 95), Material = Enum.Material.Grass, Spawn = Vector3.new(220, 0, 0) },
-	GoblinWoods = { Name = "고블린 숲", Center = Vector3.new(720, 0, 0), Size = Vector3.new(300, 0, 300), MinLevel = 10, PvP = true,
+	GoblinWoods = { Name = "Goblin Woods", Center = Vector3.new(720, 0, 0), Size = Vector3.new(300, 0, 300), MinLevel = 10, PvP = true,
 		Color = RGB(60, 125, 55), Material = Enum.Material.Grass, Spawn = Vector3.new(590, 0, 0) },
-	SkeletonRuins = { Name = "해골 유적", Center = Vector3.new(1120, 0, 0), Size = Vector3.new(320, 0, 320), MinLevel = 25, PvP = true,
+	SkeletonRuins = { Name = "Skeleton Ruins", Center = Vector3.new(1120, 0, 0), Size = Vector3.new(320, 0, 320), MinLevel = 25, PvP = true,
 		Color = RGB(135, 125, 108), Material = Enum.Material.Slate, Spawn = Vector3.new(980, 0, 0) },
 }
 local ZONE_ORDER = { "Crossroads", "HaloTown", "HornsTown", "SlimeMeadow", "GoblinWoods", "SkeletonRuins" }
@@ -42,9 +42,9 @@ local GATES = {
 }
 local DANGER = { Safe = RGB(80, 220, 120), PvP = RGB(255, 150, 40), Extreme = RGB(255, 60, 60) }
 local function dangerOf(zoneId)
-	if zoneId == "SkeletonRuins" then return DANGER.Extreme, "☠ PvP · 극한" end
-	if zoneId == "GoblinWoods" then return DANGER.PvP, "⚔ PvP · 위험" end
-	return DANGER.Safe, "🛡 안전 지역"
+	if zoneId == "SkeletonRuins" then return DANGER.Extreme, "☠ PvP · Extreme" end
+	if zoneId == "GoblinWoods" then return DANGER.PvP, "⚔ PvP · Danger" end
+	return DANGER.Safe, "🛡 Safe Zone"
 end
 
 -- 장식 금지 지점 (스폰/발판/제단/게시판/관문/거위 둥지 주변 12칸 + 광장 반경 24)
@@ -555,11 +555,11 @@ for _, cx in { -6, 6 } do
 		part({ Name = "AltarColumn", Size = Vector3.new(2, 10, 2), Position = ALTAR + Vector3.new(cx, 5, cz), Color = RGB(150, 140, 165), Material = Enum.Material.Slate }, altar)
 	end
 end
-billboard(altar, "운명의 제단", 8, RGB(230, 210, 255))
+billboard(altar, "Altar of Fate", 8, RGB(230, 210, 255))
 local prompt = Instance.new("ProximityPrompt")
 prompt.Name = "AltarPrompt"
-prompt.ActionText = "진영 바꾸기"
-prompt.ObjectText = "운명의 제단"
+prompt.ActionText = "Switch sides"
+prompt.ObjectText = "Altar of Fate"
 prompt.HoldDuration = 0.5
 prompt.MaxActivationDistance = 12
 prompt.RequiresLineOfSight = false
@@ -582,7 +582,7 @@ bt.BackgroundColor3 = RGB(30, 25, 25)
 bt.TextColor3 = Color3.new(1, 1, 1)
 bt.TextScaled = true
 bt.Font = Enum.Font.GothamBold
-bt.Text = "현상수배 게시판"
+bt.Text = "Wanted Board"
 bt.Parent = sg
 sg.Parent = board
 
@@ -598,7 +598,7 @@ for i, pos in { Vector3.new(-22, 0, -42), Vector3.new(-36, 0, -34), Vector3.new(
 	part({ Name = "Roof", Size = Vector3.new(11, 0.6, 6), CFrame = cf * CFrame.new(0, 8.2, 0.5) * CFrame.Angles(math.rad(-12), 0, 0), Color = stallColors[i], Material = Enum.Material.Fabric }, stall)
 end
 local market = prop({ Name = "MarketSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-30, 13, -36), Transparency = 1 }, folders.Landmarks)
-billboard(market, "거래소 (준비 중)", 0, RGB(255, 240, 180))
+billboard(market, "Market (Coming soon)", 0, RGB(255, 240, 180))
 
 -- 장인 길드 (+ 청록 톱니 엠블럼)
 local guild = model("ArtisanGuild", folders.Landmarks)
@@ -623,7 +623,7 @@ part({ Name = "GearPost", Size = Vector3.new(1, 8, 1), Position = gpos + Vector3
 local anvil = part({ Name = "Anvil", Size = Vector3.new(4, 3, 2), Position = gpos + Vector3.new(-5, 1.5, -13), Color = RGB(70, 70, 75), Material = Enum.Material.Metal }, guild)
 local forge = prop({ Name = "Forge", Size = Vector3.new(3, 1, 3), Position = gpos + Vector3.new(5, 0.5, -13), Color = RGB(255, 140, 60), Material = NEON }, guild)
 light(forge, RGB(255, 140, 60), 14, 1.5)
-billboard(anvil, "대장간 · 장인 길드", 6, RGB(120, 235, 225))
+billboard(anvil, "Forge", 6, RGB(120, 235, 225))
 
 -- 황금 거위 둥지 (이벤트 무대)
 local nest = model("GoosePerch", folders.Landmarks)
@@ -634,7 +634,7 @@ for k = 0, 3 do
 	local a = k * math.pi / 2 + math.pi / 4
 	part({ Name = "GoldPost", Size = Vector3.new(1, 6, 1), Position = GOOSE_NEST + Vector3.new(math.cos(a) * 10, 3, math.sin(a) * 10), Color = RGB(212, 175, 55) }, nest)
 end
-billboard(nestCore, "황금 거위 둥지", 5, RGB(255, 225, 120))
+billboard(nestCore, "Golden Goose Nest", 5, RGB(255, 225, 120))
 
 -- 진영 주머니 (북 = 빛, 남 = 뿔)
 for _, sx in { -12, 12 } do

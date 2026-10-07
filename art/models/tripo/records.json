@@ -4440,5 +4440,195 @@
    "bytes": 3576368,
    "at": "2026-10-07 09:20:13"
   }
+ ],
+ "Crown_Broken_B": [
+  {
+   "event": "generation_submitted",
+   "task_id": "2bffe687-b787-4ac0-8866-93053f635ece",
+   "image": "art\\out\\hq\\HQ_Crown_Broken_B.png",
+   "recipe": "building",
+   "seed": 12050
+  },
+  {
+   "task_id": "2bffe687-b787-4ac0-8866-93053f635ece",
+   "image": "art\\out\\hq\\HQ_Crown_Broken_B.png",
+   "recipe": "building",
+   "seed": 12050,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Crown_Broken_B_raw.glb",
+   "bytes": 2917964,
+   "at": "2026-10-07 10:11:59"
+  }
+ ],
+ "Kit_W_CampFence": [
+  {
+   "event": "generation_submitted",
+   "task_id": "5b41f411-d347-48d3-9752-598a9a935bf7",
+   "image": "art\\out\\kit\\woods\\CampFence_HQ_src.png",
+   "recipe": "prop",
+   "seed": 41170
+  },
+  {
+   "task_id": "5b41f411-d347-48d3-9752-598a9a935bf7",
+   "image": "art\\out\\kit\\woods\\CampFence_HQ_src.png",
+   "recipe": "prop",
+   "seed": 41170,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_CampFence_raw.glb",
+   "bytes": 2534348,
+   "at": "2026-10-07 11:21:28"
+  }
+ ],
+ "Kit_W_Campfire": [
+  {
+   "event": "generation_submitted",
+   "task_id": "f0e16f8c-837f-494b-9b14-9793fc5f53b7",
+   "image": "art\\out\\kit\\woods\\Campfire_HQ_src.png",
+   "recipe": "prop",
+   "seed": 25909
+  },
+  {
+   "task_id": "f0e16f8c-837f-494b-9b14-9793fc5f53b7",
+   "image": "art\\out\\kit\\woods\\Campfire_HQ_src.png",
+   "recipe": "prop",
+   "seed": 25909,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_Campfire_raw.glb",
+   "bytes": 2790244,
+   "at": "2026-10-07 11:21:42"
+  }
+ ],
+ "Kit_W_Crates": [
+  {
+   "event": "generation_submitted",
+   "task_id": "4d692b5c-6577-4076-b9ad-203d3d0a508b",
+   "image": "art\\out\\kit\\woods\\Crates_HQ_src.png",
+   "recipe": "prop",
+   "seed": 81371
+  },
+  {
+   "task_id": "4d692b5c-6577-4076-b9ad-203d3d0a508b",
+   "image": "art\\out\\kit\\woods\\Crates_HQ_src.png",
+   "recipe": "prop",
+   "seed": 81371,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_Crates_raw.glb",
+   "bytes": 3451188,
+   "at": "2026-10-07 11:21:46"
+  }
+ ],
+ "Kit_W_LootSack": [
+  {
+   "event": "generation_submitted",
+   "task_id": "7ef6f36f-b446-4c99-80b6-22cef90d6cc0",
+   "image": "art\\out\\kit\\woods\\LootSack_HQ_src.png",
+   "recipe": "prop",
+   "seed": 84931
+  },
+  {
+   "task_id": "7ef6f36f-b446-4c99-80b6-22cef90d6cc0",
+   "image": "art\\out\\kit\\woods\\LootSack_HQ_src.png",
+   "recipe": "prop",
+   "seed": 84931,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_LootSack_raw.glb",
+   "bytes": 2200560,
+   "at": "2026-10-07 11:24:49"
+  }
+ ],
+ "Kit_W_LanternPost": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c9faf8c7-9eaf-48f9-830a-c10f7540e7b2",
+   "image": "art\\out\\kit\\woods\\LanternPost_HQ_src.png",
+   "recipe": "prop",
+   "seed": 23947
+  },
+  {
+   "task_id": "c9faf8c7-9eaf-48f9-830a-c10f7540e7b2",
+   "image": "art\\out\\kit\\woods\\LanternPost_HQ_src.png",
+   "recipe": "prop",
+   "seed": 23947,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_LanternPost_raw.glb",
+   "bytes": 3128152,
+   "at": "2026-10-07 11:23:46"
+  }
+ ],
+ "Kit_W_SignPost": [
+  {
+   "event": "generation_submitted",
+   "task_id": "26a7b67c-c20c-4da3-b487-e9930dbd8f57",
+   "image": "art\\out\\kit\\woods\\SignPost_HQ_src.png",
+   "recipe": "prop",
+   "seed": 81824
+  },
+  {
+   "task_id": "26a7b67c-c20c-4da3-b487-e9930dbd8f57",
+   "image": "art\\out\\kit\\woods\\SignPost_HQ_src.png",
+   "recipe": "prop",
+   "seed": 81824,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_SignPost_raw.glb",
+   "bytes": 3132132,
+   "at": "2026-10-07 11:23:54"
+  }
+ ],
+ "Kit_W_FallenLog": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c6a94d7e-8c5e-467d-9744-cdf526baf82b",
+   "image": "art\\out\\kit\\woods\\FallenLog_HQ_src.png",
+   "recipe": "prop",
+   "seed": 59234
+  },
+  {
+   "task_id": "c6a94d7e-8c5e-467d-9744-cdf526baf82b",
+   "image": "art\\out\\kit\\woods\\FallenLog_HQ_src.png",
+   "recipe": "prop",
+   "seed": 59234,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_FallenLog_raw.glb",
+   "bytes": 3263888,
+   "at": "2026-10-07 11:25:55"
+  }
+ ],
+ "Kit_W_Stump": [
+  {
+   "event": "generation_submitted",
+   "task_id": "e4fb05e3-4b7a-4cac-a513-6dd420969780",
+   "image": "art\\out\\kit\\woods\\Stump_HQ_src.png",
+   "recipe": "prop",
+   "seed": 68696
+  },
+  {
+   "task_id": "e4fb05e3-4b7a-4cac-a513-6dd420969780",
+   "image": "art\\out\\kit\\woods\\Stump_HQ_src.png",
+   "recipe": "prop",
+   "seed": 68696,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_Stump_raw.glb",
+   "bytes": 2747156,
+   "at": "2026-10-07 11:26:09"
+  }
+ ],
+ "Town_Horns_Castle_v4": [
+  {
+   "event": "generation_submitted",
+   "task_id": "67388d05-b8f3-4c3d-ad9f-a49d4b902b37",
+   "image": "art\\out\\hq\\HQ_Town_Horns_Castle_v4B.png",
+   "recipe": "building",
+   "seed": 77111
+  },
+  {
+   "task_id": "67388d05-b8f3-4c3d-ad9f-a49d4b902b37",
+   "image": "art\\out\\hq\\HQ_Town_Horns_Castle_v4B.png",
+   "recipe": "building",
+   "seed": 77111,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Town_Horns_Castle_v4_raw.glb",
+   "bytes": 3859060,
+   "at": "2026-10-07 11:40:31"
+  }
  ]
 }

@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 76,
-  "namedChecks": 30,
+  "checks": 166,
+  "namedChecks": 45,
   "failing": [],
   "static": [
     {
@@ -25,14 +25,26 @@
       "ok": true
     },
     {
+      "check": "the Welcome line types (TYPE.Show) with a tap button, [Next] finishes a typing line first",
+      "ok": true
+    },
+    {
+      "check": "the Story line types (TYPE.Show ... voice, page), [Next] and the answers finish a typing line first",
+      "ok": true
+    },
+    {
+      "check": "BB38: Panels.Open sends Panels.Metric(id); the [메뉴] fold, the world map and the Tab list send theirs",
+      "ok": true
+    },
+    {
       "check": "Config has the two shop greetings (dev2 lines_pack 11)",
       "ok": true
     }
   ],
   "mutations": {
-    "total": 17,
-    "applied": 17,
-    "caught": 17,
+    "total": 28,
+    "applied": 28,
+    "caught": 28,
     "results": [
       {
         "mutation": "the banter is never shown",
@@ -212,6 +224,124 @@
         "newFailingChecks": [
           "ClientMain ORDER ends with Audio, every module once, every module file exists"
         ]
+      },
+      {
+        "mutation": "typing at UIKit's 38 / s",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dialogue typewriter :: a new line types in at 40 letters / s with the speaker's voice"
+        ]
+      },
+      {
+        "mutation": "every refresh retypes the line",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dialogue typewriter :: a tap while it types finishes the line (the tap is used up)",
+          "dialogue typewriter :: the next page types again",
+          "dialogue typewriter :: the same page on a refresh never retypes",
+          "dialogue typewriter :: the same words on another page still type (page in the key)"
+        ]
+      },
+      {
+        "mutation": "a tap never finishes the line",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dialogue typewriter :: a tap while it types finishes the line (the tap is used up)",
+          "dialogue typewriter :: tapping the line finishes it"
+        ]
+      },
+      {
+        "mutation": "Welcome [Next] skips a typing line",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Welcome line types (TYPE.Show) with a tap button, [Next] finishes a typing line first"
+        ]
+      },
+      {
+        "mutation": "an answer while typing is sent at once",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story line types (TYPE.Show ... voice, page), [Next] and the answers finish a typing line first"
+        ]
+      },
+      {
+        "mutation": "the Story line no longer types",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story line types (TYPE.Show ... voice, page), [Next] and the answers finish a typing line first"
+        ]
+      },
+      {
+        "mutation": "a window counts twice",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "window open metric :: a burst goes out at least 2 s apart (the server allows one per 2 s)",
+          "window open metric :: a window opened again later is not sent again",
+          "window open metric :: each listed window once, in order; unknown ids never"
+        ]
+      },
+      {
+        "mutation": "any id is sent",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "window open metric :: a burst goes out at least 2 s apart (the server allows one per 2 s)",
+          "window open metric :: a window opened again later is not sent again",
+          "window open metric :: each listed window once, in order; unknown ids never"
+        ]
+      },
+      {
+        "mutation": "a burst goes out at once (the server drops the 2nd)",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "window open metric :: a burst goes out at least 2 s apart (the server allows one per 2 s)"
+        ]
+      },
+      {
+        "mutation": "opening a window sends nothing",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "BB38: Panels.Open sends Panels.Metric(id); the [메뉴] fold, the world map and the Tab list send theirs"
+        ]
+      },
+      {
+        "mutation": "the [메뉴] fold sends nothing",
+        "file": "hud",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "BB38: Panels.Open sends Panels.Metric(id); the [메뉴] fold, the world map and the Tab list send theirs"
+        ]
       }
     ]
   },
@@ -219,12 +349,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
+    "src/ReplicatedStorage/Shared/Config.luau": "16b046f0358a1e9e54b93d03f5da7d24f9f54f10a54292c542446309521cb1e1",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "74a2fb80d6414c355b485a60e7e01185266c2b69063615c16b6d8ae5016d4137",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "fae67f7c9535ad277d6d918a4366135ff8c5bc580cbe849e11c0604c4533c7bb",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "2ce81432edc33d2e824d315149fc4ca5e5e4fc1468f3747826f860e22f040f7d",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "acfed529a7be7f8bdf96fe0988d61d33d6f135b02e146c623d72bdc41686c57c",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "ad48f7196a3344dd42c10708d6c35e7ca7329fffdbc81582218edf52e9bc0897",
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "f8ff1dcd1a43a1418e0e7a44067ed56e063f082da2b7c92df5d5a1a582b69c1c",
+    "src/StarterPlayer/StarterPlayerScripts/PlayerListUI.luau": "bf6757b177aa451ee934c3fdb527c9960204de753b0e4ce43c27d44bcdee9f41",
     "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "2cf902976f0012fe5dd0b9249ba54eac409cbbebeb6886c7c5a8c7ea1f863dab",
-    "tools/fixtures/story_client_offline.luau": "52eda9e8c6396bebc0feab833853b34915b41f334d7cda37c726eced16b66bee"
+    "tools/fixtures/story_client_offline.luau": "2d090e373345f392adbd281ea0a69c90dba18d9d2d49c748052b6daecc3cb8bd"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

@@ -154,6 +154,7 @@ local TXT = {
 	Nest = "Golden Goose Nest",
 	Pads = "Travel Pads",
 	Guild = "Artisan Guild",
+	Forge = "Forge", -- the same spot while the artisan guild is out of the game (Config.Features.NeutralFaction)
 	Pass = "Mountain Pass",
 	Goose = "Golden Goose!",
 	Kaiju = "Kaiju %s",
@@ -834,7 +835,9 @@ local function drawWorld()
 	local altarPos = typeof(mapCfg.AltarPosition) == "Vector3" and mapCfg.AltarPosition or Vector3.new(0, 0, 45)
 	landmark("Altar", GLYPH.Altar, COL.Altar, altarPos, TXT.Altar, 18)
 	local marketPos = typeof(mapCfg.MarketPosition) == "Vector3" and mapCfg.MarketPosition or MARKET_FALLBACK
-	landmark("Market", GLYPH.Market, COL.Market, marketPos, TXT.Market, 18)
+	if Config.FeatureOn("Market") then -- not in the beta: no "Market" on the map until it opens
+		landmark("Market", GLYPH.Market, COL.Market, marketPos, TXT.Market, 18)
+	end
 	local nestPos = type(Config.Goose) == "table" and Config.Goose.Position or nil
 	if typeof(nestPos) ~= "Vector3" then nestPos = Vector3.new(-30, 0, 30) end
 	landmark("Nest", GLYPH.Nest, COL.Nest, nestPos, TXT.Nest, 18)
@@ -878,7 +881,7 @@ local function drawWorld()
 				local offset = UDim2.fromOffset(0, 15)
 				local cap = label({
 					Name = "Label_Guild",
-					Text = TXT.Guild,
+					Text = Config.FeatureOn("NeutralFaction") and TXT.Guild or TXT.Forge,
 					TextColor3 = Color3.fromRGB(120, 235, 225),
 					AnchorPoint = Vector2.new(0.5, 0),
 					Position = at(pos) + offset,
@@ -1845,6 +1848,8 @@ function WorldMap.Open()
 	end
 	closePanels() -- one modal at a time (also covers opening from the Menu panel)
 	isOpen = true
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.Metric) == "function" then pcall(panels.Metric, "WorldMap") end -- BB38
 	resetPointers()
 	pcall(refreshLandmarks)
 	pcall(layoutRoot)

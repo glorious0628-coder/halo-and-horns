@@ -1,0 +1,281 @@
+[
+ {
+  "area": "roblox_docs",
+  "findings": [
+   {
+    "claim": "Roblox's home recommendations rank games mainly on four 'most important' signals. Two of them are decided in the first 3 minutes: play-through rate, and first play bounce rate, which counts players who leave in under 60 s and in 61-180 s and counts against the game. The other two are play days per user and playtime per user. For Halo & Horns: the 15-25 s opening, the faction pick and the class pick all fall inside the <60 s bounce window. A new player has to reach real action (first monster hit, first reward) well before 3 minutes.",
+    "evidence": "The official Discovery doc (last updated 2026-10-06) has a signals table. 'Most important': play-through rate; first play bounce rate, 'a negative signal', measured at '<60 seconds' and '61-180 seconds'; play days per user (Day 1, Day 2-7, Day 8-28); playtime per user, capped at 'a maximum of 60 minutes per user, per game, per day'. 'Important': intentional co-play days per user, qualified play sessions per user, spend days, Robux spent. Every signal uses only users who joined organically from Recommended for You.",
+    "source_url": "https://create.roblox.com/docs/en-us/discovery.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "Since June 2026 the algorithm judges retention over 28 days, not 7, so steady return play counts for more than a flashy first click. Staff advice for low-retention games is to make the next action obvious, cut early friction and give a reason to keep going.",
+    "evidence": "Roblox staff on the DevForum (BurningEmbar, 2026-06-15) and the Roblox newsroom (John Ciancutti, Chief Growth Officer, 2026-06-15): the window moved from 7 to 28 days (Day 1, Days 2-7, Days 8-28). Qualified play-through rate was removed; play-through rate and first play bounce rate were added. Roblox had 132M DAU in Q1 2026. In a later staff post (2026-08-06) Ciancutti advises low-retention games to 'Make it easy to understand what to do, remove early friction, and give players a reason to keep going.' A creator in the June thread pointed out a cold-start problem for new games (creator comment, not staff).",
+    "source_url": "https://devforum.roblox.com/t/recommended-for-you-algorithm-improvements-that-better-value-long-term-retention/4684575 ; https://about.roblox.com/newsroom/2026/06/optimizing-discovery-great-games-reach-millions-players-roblox ; https://devforum.roblox.com/t/boost-your-discovery-by-building-games-people-want-to-play/4779042",
+    "strength": "strong"
+   },
+   {
+    "claim": "Roblox's own onboarding guide has three rules: teach the essentials (controls, and what to do and why), get to the fun quickly, and leave players wanting more. It also suggests low early level thresholds so players level up almost at once, free starter items so they use the game's systems early, and ending onboarding with a planned 'moment of joy' (reward plus celebration effects).",
+    "evidence": "Official onboarding doc: 'New players typically decide their interest in a game within minutes'; Day 1 retention and the player funnel are how success is measured. It recommends 'Keeping thresholds low for a player's early levels allows them to level up quickly and feel the fun of progression immediately', free starter items or currency, short/mid/long-term goals, and ending with 'an intentionally designed moment of joy' through 'rewards, delightful animations, and celebratory visual effects'.",
+    "source_url": "https://create.roblox.com/docs/production/game-design/onboarding",
+    "strength": "strong"
+   },
+   {
+    "claim": "Roblox's target for the first-time experience is 5 minutes or less. Day 1 retention depends on the core loop, the first-time experience and performance. Day 7 depends on progression with clear short and long goals. Day 30 depends on regular updates: small updates every 2-4 weeks, bigger features every 2-3 months.",
+    "evidence": "Official retention doc: for the FTUE, 'Avoid a complex or time consuming FTUE ... ideally in 5 minutes or less'. It recommends brief tutorials, a joyful moment once the core loop is completed, and a preview of future progress. Day 7: 'Set up clear user goals... Short-term goals can provide instant gratification and feedback'. Day 30: 'smaller updates on the existing mechanics every 2-4 weeks, and bigger updates of new features every 2-3 months'.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/analytics/retention.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "Roblox's engagement guide says the same thing: players must be having fun within 5 minutes, so skip long tutorials and remove barriers to playing with others. Roblox analytics has a chart that shows exactly when new players quit in their first session.",
+    "evidence": "Official engagement doc: 'Ensure users have fun within the first five minutes of joining your game', 'Get users into the action as soon as possible and avoid long tutorials', 'Remove unnecessary barriers to social interaction'. If you add progression, make sure 'there is still enough content available upfront'. The 'New User First Session Retention' chart 'shows how many new users are still playing X minutes after joining your game for the first time'. The analytics overview names 'D1 (day 1) retention and average session time' as the 'key metrics to focus on first'.",
+    "source_url": "https://create.roblox.com/docs/production/analytics/engagement",
+    "strength": "strong"
+   },
+   {
+    "claim": "Roblox recommends teaching with visuals and just-in-time prompts rather than text. Use highlights and arrows on the thing to tap, introduce each mechanic only when the player first meets it, and show a timed hint only after most players would normally have finished the step. This suits English-only text for 8-12-year-olds: one glowing arrow or beam beats a dialog page.",
+    "evidence": "Official 'Onboarding techniques' doc: visual elements placed in the player's line of sight; highlights such as 'A pink outline highlights the button and an arrow points at it'; persistent hints. Contextual ('just in time') tutorials 'Delay unneeded tutorials, enabling players to begin having fun more quickly' (Squishmallows example). Timed hints: if playtests show most players finish a task within 10 s, highlight the button at 11 s.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/game-design/onboarding-techniques.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "Measure the onboarding funnel step by step on the server. Roblox staff show that one confusing step can lose about 70% of new players, and that a tiny visual cue can fix it. Suggested steps for Halo & Horns: join, intro done or skipped, faction picked, class picked, first monster hit, first kill, first loot, first shop visit, first quest turned in, auto-combat unlocked.",
+    "evidence": "Roblox staff (BreakfastCandy, DevForum, 2024-07-12). In the 'Plant' example, 100% reach step 1 (In Farm) but only 29.52% reach step 2 (Plant Seed), a 70.48% drop, and fewer than 3% reach step 9. The fix: 'simply adding an icon over the players' pots.' Official funnel doc: onboarding is 'likely where you lose the majority of your users'; log step 1 'on the PlayerAdded event'. AnalyticsService.LogOnboardingFunnelStepEvent allows steps 1-100, works server-side only, and only in published experiences (not from the client or Studio).",
+    "source_url": "https://devforum.roblox.com/t/improving-onboarding-through-funnel-events/3064458 ; https://create.roblox.com/docs/en-us/production/analytics/funnel-events.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "Roblox players are mostly on phones, react badly to friction and load times, quit long tutorials, and often play with friends. Roblox says single-player games find it harder to keep an audience.",
+    "evidence": "Official 'Design for Roblox' doc: 'Most users play Roblox on mobile devices, and the audience is sensitive to friction and load times'; 'Lengthy, detailed tutorials are liable to bore users and cause them to bounce off your game'; 'users often help each other out'; 'single-player games often find it harder to build and retain an audience on Roblox'; it describes 'Tourists', who hop between games, and 'Locals', who stay with a few. Trade press (PocketGamer.biz, citing Roblox's 2024 annual report) says 80% of 2024 DAU played on mobile. That figure is second-hand and I did not check it in the filing.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/game-design/design-for-roblox.md ; http://www.pocketgamer.biz/80-of-roblox-users-are-on-mobile-contributing-46-of-robux-revenue/",
+    "strength": "strong"
+   },
+   {
+    "claim": "Phone UI rules: never put key buttons, such as attack, skill or the auto toggle, under the default thumbstick and jump zones in the bottom-left and bottom-right corners. Keep the HUD context-sensitive, because small screens fill up fast. Animated arrows and wiggling buttons are Roblox's suggested ways to guide new players.",
+    "evidence": "Official cross-platform design doc: 'the default controls occupy a portion of the bottom-left and bottom-right corners of the screen'; 'Most mobile players use two thumbs'; 'avoid placing frequently-used buttons outside of easy-to-reach zones'; 'A button placed 40% below the screen's top edge is reachable on a phone but almost unreachable on a tablet.' Official UI/UX doc: 'small screens can easily get overwhelmed with excessive buttons, screens, and text'; use contextual UI and 'particle effects, wiggling buttons, and animated arrows' in tutorials.",
+    "source_url": "https://create.roblox.com/docs/ui/cross-platform-design ; https://create.roblox.com/docs/en-us/production/game-design/ui-ux-design.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "Performance is part of onboarding: the first 60 seconds after joining should go to streaming and loading assets, and low-end Android memory is a crash risk. Many new 3D props and Tripo models increase the risk that phone players crash or bounce in the first minute.",
+    "evidence": "Official performance dashboard doc: 'The primary goal during the first 60 seconds of a player joining is to stream and load your game's assets'. 'If the Android line approaches 100%, the majority of Android devices running your game are at risk of running out of memory and crashing.' For 60 FPS, client CPU time must stay below 16 ms. Client charts need 100+ DAU and can be broken down by place version. The retention doc lists performance (devices, crashes, frame rate) as one of the three Day 1 drivers.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/analytics/performance.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "Use quests as the tutorial: split each mechanic into small single-objective quests, and mix goals finished in one session with goals that take days. Roblox's 'dailies' pattern uses a 24-hour expiry. That would conflict with this game's no-pressure-timer rule for kids, so if dailies are added, they need a non-expiring or no-loss variant (this is my inference).",
+    "evidence": "Official quest design doc: 'Quests promote active learning, where players learn by playing, not just reading'; 'complex tasks can be broken into simple, discrete steps, each one a quest objective'. Short-term goals are 'completed in a single play session', mid-term goals need days to weeks, long-term goals need months. Dailies are 'available for and must be completed within 24-hours' and give 'a reliable source of soft currency'.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/game-design/introduction-to-quest-design.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "Push re-engagement does not reach the core audience: experience notifications go only to opted-in users aged 13+, at most one per day. For 8-12-year-olds, the reason to come back tomorrow has to be built into the session itself, for example a visible next goal or a teaser of the next unlock at logout.",
+    "evidence": "Official experience notifications doc: 'opted-in users age 13+'; 'Each user can receive one notification per day from a given experience'. The opt-in modal does not appear for users under 13, users who saw it in the past 30 days, or users already opted in. Notifications should be personalized and actionable, not generic ads.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/promotion/experience-notifications",
+    "strength": "strong"
+   },
+   {
+    "claim": "Playing with friends is a ranking signal ('intentional co-play days', rated important), and in-game invite prompts strongly increase invites. Age checks have restricted chat since 2026, so co-op should work without chat: invite prompts at good moments, invitees spawned next to the friend who invited them, and shared fights.",
+    "evidence": "Roblox staff (m0bsterlobster, DevForum, 2023-01-31): 'experiences that use in-experience invite prompts have 6x more users sending invites... an 8x increase in invite volume overall'; consider teleporting invitees near the friend who invited them. Discovery doc: intentional co-play days per user is an 'Important' signal. Roblox's Q1 2026 shareholder letter (SEC 8-K, 2026-04-30): 36% of age-checked users are under 13, and the age-check rollout 'restricted on-platform communication for non-age checked users'.",
+    "source_url": "https://devforum.roblox.com/t/player-invite-prompts/2170724 ; https://www.sec.gov/Archives/edgar/data/0001315098/000162828026028882/ex991-q12026earningsshar.htm",
+    "strength": "strong"
+   },
+   {
+    "claim": "Third-party data across thousands of Roblox games shows next-day return rising strongly with first-session length. Games whose sessions last 0-3 minutes have a median D1 of about 4%. Games with 19-24-minute sessions have a median of about 11.5%, and their top 2% reach about 32%. The weakest games lose players in under 2 minutes. This shows correlation, not cause, but it supports a goal of 'win the first two minutes'.",
+    "evidence": "GameAnalytics 2025 Roblox Benchmark Report (data from Jan 2023 to Jul 2025, about 47% of platform engagement among its integrated titles). Median D1/D7 by session length: 0-3 min 4.31%/0.41%; 4-6 min 6.20%/0.88%; 7-12 min 7.91%/0.90%; 13-18 min 10.24%/1.20%; 19-24 min 11.46%/1.61%; 25+ min 10.76%/1.82%. The 98th percentile at 19-24 min has D1 32.3% and D7 8.5%. The 25th-percentile session length fell from 4.09 to 2.36 min (2023 to 2025); the report says bottom-quartile 'Casual Users' 'leave the experience in under 2 minutes'. Advice: 'Win the first two minutes: Ensure clarity, fast onboarding, and an immediate sense of reward.'",
+    "source_url": "https://www.gameanalytics.com/reports/2025-roblox-report",
+    "strength": "medium"
+   },
+   {
+    "claim": "Roblox publishes no fixed 'good' D1 or D7 number. Its benchmarks are relative scorecards (similar games or genre) that unlock at 100+ DAU and do not affect recommendations. A small beta will not have them, so before beta, use your own funnel steps and first-session retention as the yardstick. Some 'improved D1 from X% to Y%' claims found online come from unofficial blogs and could not be verified; do not use them.",
+    "evidence": "Official analytics doc: 'If you have 100+ DAU, you can compare how your game is performing against similar games using the benchmark scorecards', updated daily. Roblox staff (signal_zzz, DevForum, 2025-10-16) added retention by acquisition source and a choice between similar-game and genre benchmarks; 'benchmarks are for comparison only and don't impact your home recommendation distribution'. Experiments (A/B tests) run 14-60 days. An example range ('12.4%-24.1%' D1) appeared in a search snippet but was not on the current page when fetched, so it is unverified.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/analytics.md ; https://devforum.roblox.com/t/analytics-view-retention-by-acquisition-source-and-select-your-benchmark-set/4010157 ; https://create.roblox.com/docs/en-us/production/experiments",
+    "strength": "strong"
+   }
+  ]
+ },
+ {
+  "area": "top_games",
+  "findings": [
+   {
+    "claim": "Roblox's own target: the first core loop should be finished, and fun, within 5 minutes, ending in a 'joyful moment'. For Halo & Horns, the opening (15-25 s), faction pick, class pick and guide dialog all come before the first slime hit. That is a long pre-fun stretch. The first kill, quest turn-in and 150 gold should land well inside 5 minutes, and each step should be tracked as a funnel step.",
+    "evidence": "Roblox retention docs say to guide users through the core loop in '5 minutes or less after entering your game', to 'deliver a joyful moment after users complete your core loop for the first time', and to track 'the completion rate of each step'. The engagement docs say to 'ensure users have fun within the first five minutes', to 'avoid long tutorials' and to use 'short, unobtrusive pop-up instructions'. The strategies page adds that Roblox players 'like to get to the action immediately and figure it out on their own'.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/analytics/retention.md",
+    "strength": "strong"
+   },
+   {
+    "claim": "The early power spike should be designed on purpose: low early XP thresholds so the first level-ups come fast, a balanced starter currency or item, goals shown on screen at all times, and celebration effects at milestones. This matches our 150-gold first mission leading to the wood weapon. Make level 2 and the first purchase feel like big events (VFX, sound, a 'stronger!' number).",
+    "evidence": "Roblox's onboarding page recommends 'Player XP-Based leveling systems' with low early thresholds so players 'level up quickly and feel the fun of progression immediately'. It also says to balance starter items and currency, to surface goals in 'highly visible places, either in the game-world or the UI', and to create 'Moments of joy' through rewards and celebratory effects at milestones. Examples named: Super Striker League, Jailbreak.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/game-design/onboarding",
+    "strength": "strong"
+   },
+   {
+    "claim": "Long up-front tutorials do not help simple games. Teaching in context (at the moment the player needs it) does. Halo & Horns should cut guide text and show the 'tap to attack' or skill prompt only when a slime is in range. Making the tutorial skippable will not hurt.",
+    "evidence": "A CHI 2012 study (Andersen et al., University of Washington; over 45,000 players, 8 tutorial designs, 3 games) found tutorials raised play time 'by as much as 29% in the most complex game' but 'did not significantly improve player engagement in the two simpler games'. Its findings: 'Context-sensitivity can improve engagement' and 'Tutorial freedom did not affect player behavior'. On-demand help had mixed effects.",
+    "source_url": "https://grail.cs.washington.edu/projects/game-abtesting/chi2012/",
+    "strength": "strong"
+   },
+   {
+    "claim": "The biggest drop-off usually comes right before the first core action. A cheap fix is a clear in-world marker on the target, and showing UI a little at a time instead of all at once. For a phone-first game: put a marker or beam on the first slime and on the quest NPC, and keep non-essential HUD buttons hidden until they matter.",
+    "evidence": "A Roblox staff DevForum post (BreakfastCandy, 12 July 2024) shows an example 'Plant' funnel that loses '70.48%' between spawning and planting a seed. The fix is 'simply adding an icon over the players' pots'. The docs call Plant a reference project, so these are illustrative numbers, not live data. In a separate community thread (survival game Ancient Peaks, players leaving within 30 seconds), replies advised: make the GUI 'appear over time rather than ... all at once'; 'it took too long to break a tree'; add hit sound and feedback; and the guide line 'blended in with the snowy environment'.",
+    "source_url": "https://devforum.roblox.com/t/improving-onboarding-through-funnel-events/3064458",
+    "strength": "medium"
+   },
+   {
+    "claim": "Blox Fruits uses almost our exact opening: pick a side (Pirate or Marine) as you join, spawn on a starter island next to a quest giver with weak enemies close by, run a short kill quest, repeat, then save up for the first sword. Starter islands are PvP safe zones. Halo & Horns can copy the shape: put the first quest giver at spawn with slimes in sight, give a first-weapon savings goal, and protect new players from PvP in town and the first field.",
+    "evidence": "Guides say players start on the 'Marine or Pirate Starter island' and get a quest to defeat Bandits (rblxguide says 5 Bandits and '$100+400 XP'; bloxmeta says 8 Bandits for about 250 Beli; the numbers conflict). Bloxmeta names the Cutlass at 1,000 Beli as the first sword target. PCGamesN says the faction choice is offered 'every time you log in'. The fandom wiki lists Pirate and Marine Starter Island among PvP Safe Zones. All are third-party guides, not developer statements.",
+    "source_url": "https://rblxguide.com/games/blox-fruits/islands/starter-island",
+    "strength": "medium"
+   },
+   {
+    "claim": "Top simulators give the new player something free that is theirs right away, and make one NPC's quest chain the tutorial. Examples: PS99's first egg is free (a second pet at once), Bee Swarm gives a free first bee and Black Bear's quests, and Adopt Me gives a Starter Egg and a first 'Hungry' task with a free sandwich. Halo & Horns' guide NPC chain should be the tutorial. A small owned item or ally early on (not sold) gives a first sense of ownership.",
+    "evidence": "PS99 guides: 'The first egg is free—hatch it to get your second pet', and fill all 12 slots because 'a full team of common pets beats three rares and nine empty slots' (dungeonpath). Bee Swarm guides: Black Bear's questline 'is the game's built-in tutorial', and the first quest is to collect 100 Pollen. Adopt Me wiki mirror: the Starter Egg 'is given to every player that enters the game for the first time'; the first task is always 'Hungry' and a free sandwich is in the inventory. These are wiki or guide sources.",
+    "source_url": "https://dungeonpath.com/posts/pet-simulator-99/complete-beginner-progression-guide/",
+    "strength": "medium"
+   },
+   {
+    "claim": "Grow a Garden pays out within the first minute and keeps the mood low-stress, with no forced objective. The lesson for the town and the first field: one very short first loop (kill, loot, sell or turn in), a calm safe space, and no pressure to follow a single path.",
+    "evidence": "Avergames guide: Carrot seeds cost '10 ₛ', you 'wait 30 seconds', then harvest and sell at the Sell Station. Starting cash is unverified; one search snippet said 20. Fortune (30 July 2025) quotes Common Sense Media: players can 'just kind of hang out and do what you want'. It notes plants grow without active watering and reports a 21.6 million concurrent-player record.",
+    "source_url": "https://fortune.com/2025/07/30/roblox-video-game-grow-a-garden-viral-summer-hit/",
+    "strength": "medium"
+   },
+   {
+    "claim": "Social cues must work without text chat. Many 8-12 players may not be able to chat freely, and Roblox's docs push group play. Kid-safe options for Halo & Horns: shared credit for nearby players, a party or 'join friend' button, Roblox invite prompts after the first quest, and a one-time referral reward. Avoid a Grow-a-Garden-style 'friends in server' boost, because it pushes kids to friend strangers.",
+    "evidence": "Roblox docs: 'Don't restrict socialization'; 'support group play wherever possible'. The referral system docs suggest one-time rewards, a cooldown and a cap ('up to 3 rewards per inviter'). News (Nov 2025): Roblox age checks for chat were enforced worldwide from early January; users are grouped by age ('under 9, 9 to 12 ...'); under-13s cannot chat outside games without parental permission. A Grow a Garden guide: '+10% Sheckle boost' per friend in the same server, capped at 5 per followchain. Another search result advised players to add everyone in the server as a friend.",
+    "source_url": "https://create.roblox.com/docs/production/promotion/referral-system",
+    "strength": "strong"
+   },
+   {
+    "claim": "Roblox notifications will not bring our audience back. They reach only users 13 and older, need opt-in, are limited to one per day per experience, and must not use fake urgency. For 8-12 year olds, reasons to return must live inside the game: a goal shown at logout, a gentle return bonus, progress that waits for them.",
+    "evidence": "Roblox Experience Notifications docs: only users 13+ get personalized notifications; opt-in is required; 'each user can receive one notification per day from a given experience'. Dark patterns and fake urgency ('in the next 10 minutes') are banned, and gameplay cannot require turning notifications on.",
+    "source_url": "https://create.roblox.com/docs/production/promotion/experience-notifications",
+    "strength": "strong"
+   },
+   {
+    "claim": "Return hooks should reward coming back, not punish missing a day. WoW's rested XP showed that the same mechanic feels good as a bonus and bad as a penalty. Bee Swarm's free dispensers on cooldowns are a gentle reason to visit. Adopt Me's 30-day login streak that resets on a missed day is loss-based pressure. For Halo & Horns, use a running login total or a 'rested' bonus instead of a resetting streak.",
+    "evidence": "GameBanshee, reporting Rob Pardo's GDC panel (March 2010): the original 50% XP penalty for long play made beta players react badly ('screaming bloody murder'). It was reframed as 200% falling to 100% with the same numbers, and players liked it. Bee Swarm wiki snippets: Honey and Treat Dispensers have 1-hour cooldowns, and free dispensers need no club or tickets. allthings.how (10 Sep 2026) on Adopt Me's new 30-day track: 'This is a streak, not a running total'; skipping a day 'sets your current count back'.",
+    "source_url": "https://www.gamebanshee.com/qw9",
+    "strength": "medium"
+   },
+   {
+    "claim": "Patterns to avoid, as documented in top-earning Roblox games: countdown timers and false urgency, 'near-miss' visuals, fake 'daily discounts' that are always on, loot boxes, pay-to-progress, spending prompts after a loss, and prices hidden behind extra currencies. Also skip FOMO-style global restock timers and paid auto-clicker or auto-attack passes. Our quest-unlocked auto combat is the kid-safe version of that.",
+    "evidence": "University of Sydney (Prof. Marcus Carter; report 'Misleading and Deceptive Monetisation in Roblox'; news posted 17 May 2026): 15 top-earning games were studied between Oct 2025 and Feb 2026, and misleading practices were found in 14. Named practices include countdown timers, 'near-miss' visuals, inflated 'worth' prices, loot boxes, pay-to-progress and 'pressure tactics that prompt spending after losses'. Grow a Garden's seed shop restocks globally every 5 minutes with shared stock (allthings.how). Anime Champions Simulator sells an Auto Clicker gamepass (Sportskeeda, 49 Robux).",
+    "source_url": "https://www.sydney.edu.au/news-opinion/news/2026/05/17/inside-the-pay-to-play-world-of-roblox-targeting-children-.html",
+    "strength": "strong"
+   },
+   {
+    "claim": "If gacha is ever added (it is only documented now, GDD §10-1), Roblox rules require all odds shown as numbers before purchase, numeric disclosure for luck boosts and pity systems, and a non-random alternative for restricted users. These rules were rolled out worldwide because of Korea's law.",
+    "evidence": "Roblox paid random items policy: show 'all possible outcomes and the actual numerical odds' summing to 100%. Luck, pity and rate-up modifiers must be explained with numbers. For users where PolicyService ArePaidRandomItemsRestricted is true, the game must offer an earnable path, a set sequence, a direct purchase, or remove the feature. TechTimes (June 2026): the disclosure rule went global after Korea's Game Industry Promotion Act, in force since Aug 2025.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/monetization/paid-random-items",
+    "strength": "strong"
+   },
+   {
+    "claim": "Kid-safe session design: autosave often and point to a 'good place to stop' after a quest chain, rather than trying to stretch play time. The UK Children's Code recommends mid-level pause and save, and nudging toward breaks, for every age band including 6-9 and 10-12.",
+    "evidence": "ICO Age Appropriate Design Code, Standard 13 (nudge techniques): 'Provide tools to support wellbeing enhancing behaviours (such as mid-level pause and save features)' and 'Nudge towards wellbeing enhancing behaviours (such as taking breaks)'. A search summary also says the code warns against nudges that lead children to 'extend use'. The page I fetched did not show that exact wording, so treat that part as unconfirmed.",
+    "source_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/age-appropriate-design-a-code-of-practice-for-online-services/13-nudge-techniques/",
+    "strength": "strong"
+   },
+   {
+    "claim": "Benchmarks: typical Roblox day-1 retention is low and sessions are short and frequent. The first session should end at a satisfying checkpoint, such as the wood weapon bought or auto combat unlocked, with the next goal already on screen. That gives a reason to come back the same day.",
+    "evidence": "GameDev Reports' summary of GameAnalytics' 2023 Roblox report: 'Only 12-15% of users return after the first day'. In half of games the average session does not pass 6 minutes; top-5% games reach about 30 minutes; top-5% games bring players back more than 3.5 times a day. This is a secondary summary; the original PDF is behind a download page I did not open. A 2025 GameAnalytics benchmark excerpt uses different measures, so the figures are not directly comparable.",
+    "source_url": "https://gamedevreports.substack.com/p/gameanalytics-key-roblox-and-games",
+    "strength": "medium"
+   }
+  ]
+ },
+ {
+  "area": "kids_ux",
+  "findings": [
+   {
+    "claim": "DO: get a brand-new player from join to the core fun (first Slime kill and first reward) fast, and finish the whole first-time flow (opening, faction, class, first quest) in about 5 minutes or less. DON'T: put long tutorials or non-skippable steps in front of the fun. For Halo & Horns, keep the 15-25 s opening skippable, make the faction and class picks one-tap each, and drop the player close to Slimes with the first quest already active.",
+    "evidence": "The official Roblox retention doc says: 'Use a brief tutorial or contextual info like tooltips to guide users through your core loop', 'Avoid long tutorials to help users get to the fun as quickly as possible', and aim to complete the FTUE 'ideally in 5 minutes or less after entering your game'. The Roblox 'Recommended strategies' page (create.roblox.com/docs/get-started/strategies) adds that users should be able to tell what makes the game fun 'within the first few minutes'. Note: I found no reliable study giving a kids' 'attention span in minutes'. Popular rules of thumb exist, but I could not source them, so the 5-minute FTUE target is the best-backed number.",
+    "source_url": "https://create.roblox.com/docs/production/analytics/retention",
+    "strength": "strong"
+   },
+   {
+    "claim": "DO: make early progress fast and visible. Use low XP thresholds for the first levels, give starter gold or items so the shop and forge loop works right away, keep a short, a mid and a long goal on screen at the same time, and celebrate milestones (level-up, first drop, first weapon) with animation and sound. For Halo & Horns: level 2 within the first few kills, the 150-gold first mission paying for the wood weapon, and an always-visible 'next goal' line after every step, including after the forge visit.",
+    "evidence": "The Roblox onboarding doc lists three practices: 'Teach the essentials', 'Get to the fun quickly', 'Leave players wanting more'. It says 'Keeping thresholds low for a player's early levels allows them to level up quickly and feel the fun of progression immediately'. It recommends free starter items or currency, surfacing 'short, mid, and long-term goals' in visible UI, and using 'rewards, delightful animations, and celebratory visual effects when a player achieves a milestone'. It also mentions A/B testing a guided arrow.",
+    "source_url": "https://create.roblox.com/docs/production/game-design/onboarding",
+    "strength": "strong"
+   },
+   {
+    "claim": "DO: instrument every first-session step with Roblox onboarding funnel events before beta, then fix the single worst drop-off step first. Suggested steps: joined, opening skipped/finished, faction picked, class picked, first Slime hit, first kill, first quest turned in, first shop visit, wood weapon bought, auto-combat quest accepted/finished, first skill hit. One hard step can lose most new players.",
+    "evidence": "Roblox funnel-events doc: 'Your onboarding flow is a great place to start tracking funnel events, as this is likely where you lose the majority of your users.' Events are logged with AnalyticsService:LogOnboardingFunnelStepEvent, 'can only be sent from the server and in published games' (not Studio). The doc's RPG example uses joining, choosing a class and exiting the starting room as steps, and its farm example shows a '70% drop-off' between two steps. Practitioner data point (Budge Studios on the Android Developers Blog; their apps are for younger children): in one app, one hard activity (a microphone requirement) caused 'a drastic drop-off'. Fixing it raised first-loop completion from 25% to 74% of first-time users.",
+    "source_url": "https://create.roblox.com/docs/en-us/production/analytics/funnel-events",
+    "strength": "strong"
+   },
+   {
+    "claim": "DON'T rely on paragraphs: kids skip long instructions and scan. DO: use one short, direct sentence per bubble, larger default text, icons next to every word that matters, and keep key info above the fold with no scrolling. For the guide dialog and quest text, put the action first ('Hit 3 Slimes') and cut the lore lines. 9-12 year olds dislike 'babyish' looks, so keep the tone cool rather than toddler-like.",
+    "evidence": "NN/g children's UX research (users 3-12) saw kids 'skipping the long paragraphs of instructions', and the same behavior again eight years later. It recommends larger fonts than for adults (14 pt younger, 12 pt older), says kids judge sites as being 'for babies' by their visuals, and recommends little or no scrolling. Game Accessibility Guidelines ('Use simple clear language', Basic): '14% of adults in the USA and UK have a reading age of below 11 years old'. Its example prefers 'Click below to save your character' over the longer phrasing. These are qualitative usability studies plus a practitioner guideline, not controlled trials.",
+    "source_url": "https://www.nngroup.com/articles/childrens-websites-usability-issues/",
+    "strength": "medium"
+   },
+   {
+    "claim": "DO: show goals concretely, with the current state and the target state together. Write 'Slime icon 2/5', never a bare '2/5'. Use input-neutral words like 'Tap' or 'Hit' instead of 'click the mouse', because kids take instructions literally and have smaller working memory.",
+    "evidence": "NN/g 'Designing for Kids: Cognitive Considerations': children's ability 'to reason, infer, and make connections is still developing'. In one game a bare number '2' with no context confused kids, and the fix suggested was icons or outlines next to the number. A game telling kids to 'use the mouse' made a 7-year-old abandon her trackpad and get frustrated, so the advice is neutral words like 'click' or 'touch'. A successful example showed the target state, the current state and the required operations visually.",
+    "source_url": "https://www.nngroup.com/articles/kids-cognition/",
+    "strength": "medium"
+   },
+   {
+    "claim": "DO: teach by doing. Make the first Slime walk up so the first attack is taught in play. Keep a small controls hint and the current objective on screen during the first minutes and recallable later. Let text advance at the player's pace and be replayable, and give a no-fail practice moment. DON'T: front-load a text tutorial.",
+    "evidence": "The Game Accessibility Guidelines list, among the cognitive items: 'Include interactive tutorials' and 'Allow players to progress through text prompts at their own pace' (Basic); 'Indicate / allow reminder of controls during gameplay', 'Indicate / allow reminder of current objectives during gameplay', 'Include a means of practicing without failure' and 'Include contextual in-game help / guidance / tips' (Intermediate); 'Allow all narrative and instructions to be replayed' (Advanced). One anecdotal playtest (Game Developer, Sarangi 2015): 2/10 players understood the rules with a text tutorial, 5/10 with reduced text, and nearly all with a gameplay-based tutorial. That is a small, single-game anecdote.",
+    "source_url": "https://gameaccessibilityguidelines.com/full-list/",
+    "strength": "medium"
+   },
+   {
+    "claim": "DON'T let early failures sting. In the first session there should be no gold or item loss on death, respawn should be quick and near the fight, and new players should not be beaten by other players (PvP losses) before they have learned the basics. DO: make failure informative or even funny, and give contextual help right after a failure (e.g. 'Try your skill!' after a second death). Fix bugs and lag before adding content, because technical problems are a top rage trigger.",
+    "evidence": "Tampere University Playlab summary of a study by Kahila et al. (children's essays; it mentions sixth and ninth graders, sample size not given on the blog): the main causes of children's gamer rage were 'in-game failures' ('dying at crucial moments or losing to other players in a competitive setting'), incompetent teammates, and technical problems ('glitches and bugs, and bad internet connection'). Practitioner guidance for ages 6-12 (Jonathan Evans, UXmatters 2015, https://www.uxmatters.com/mt/archives/2015/11/how-to-balance-design-guidelines-for-children.php) recommends contextual help after failures, immediate feedback, awards or achievements, and peer recognition. For 9-12 it also suggests inviting silliness or irreverence.",
+    "source_url": "https://blogs.tuni.fi/playlab/game-research-highlights/little-children-big-anger-understanding-gamer-rage-in-children/",
+    "strength": "medium"
+   },
+   {
+    "claim": "DO (phone first): keep attack, skill and auto-toggle buttons in the thumb zone next to the default jump button. Never place important UI in the bottom-left and bottom-right areas taken by Roblox's default touch controls. Show only vital info during combat, and use proximity prompts for shop and NPC actions instead of permanent buttons. Use big tap targets and avoid drag gestures for core actions.",
+    "evidence": "Roblox cross-platform UI doc: 'On mobile devices, the default controls occupy a portion of the bottom-left and bottom-right corners of the screen.' It recommends 'relative positioning of custom buttons near frequently-used controls like the default jump button', warns that 'A button placed 40% below the screen's top edge is reachable on a phone but almost unreachable on a tablet', and says 'show only the most vital information during active gameplay'. NN/g physical development article (https://www.nngroup.com/articles/children-ux-physical-development/): 'swiping and tapping big targets are easy for all children', while fine gestures 'such as dragging are hard for young kids'.",
+    "source_url": "https://create.roblox.com/docs/building-and-visuals/ui/cross-platform-design",
+    "strength": "strong"
+   },
+   {
+    "claim": "DON'T use engagement nudges on kids: no 'come back or lose it' messages, no streaks that punish missed days, no reward loops tuned to stretch play, and no big bright 'continue' button next to a tiny 'stop' option. DO: auto-save so a child can quit at any moment without losing progress, and it is fine to nudge toward breaks (e.g. a calm 'Good place to rest' card after a quest chain).",
+    "evidence": "UK ICO Children's Code, Standard 13: 'Do not use nudge techniques to lead or encourage children to provide unnecessary personal data, weaken or turn off their privacy protections, or extend their use.' The ICO's guidance lists pro-wellbeing nudges as allowed and, for ages 10-12, suggests to 'Nudge towards wellbeing enhancing behaviours (such as taking breaks)'. Standard 5 (https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/age-appropriate-design-a-code-of-practice-for-online-services/5-detrimental-use-of-data/) names 'reward loops, continuous scrolling, notifications and auto-play' as 'sticky' features. It says data-driven features that make it hard for children to disengage are likely unfair, and it recommends 'pause buttons which allow children to take a break at any time without losing their progress in a game'. The Code is UK law guidance and covers data-driven features; it is a strong signal for global kid-facing design.",
+    "source_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/age-appropriate-design-a-code-of-practice-for-online-services/13-nudge-techniques/",
+    "strength": "strong"
+   },
+   {
+    "claim": "DO: design natural stopping points with closure. A quest chain should end with a clear 'done!' moment and a preview of the next goal, so kids can stop happy and still want to return. Any daily reward should be forgiving (no streak reset, missed days are not lost). DON'T: send 'summons' or end sessions mid-objective.",
+    "evidence": "5Rights Foundation, 'Disrupted Childhood' (2018, updated 2023): persuasive features such as reward loops and notifications affect children's wellbeing. It argues 'summonses' such as notifications should be off by default and proposes default 'streak holidays' and built-in timeouts (summarized from search results; the full PDF was not text-extracted). KIT academic work (Alsheail, Gerling, Yildiz, Proc. ACM HCI 2025; 25 participants, children aged 4-9 and parents, so younger than our audience) found children struggle to exit games without reaching 'a point of closure'. Alsheail et al.'s 2023 position paper (arXiv 2303.15400) argues for 'facilitating a timely and autonomous exit from play'. This is advocacy plus a small qualitative study.",
+    "source_url": "https://5rightsfoundation.com/in-action/disrupted-childhood-the-cost-of-persuasive-design-2023.html",
+    "strength": "medium"
+   },
+   {
+    "claim": "DON'T use spending pressure on the change-ticket sales (or any later Robux item): no countdown timers, no fake or unclear scarcity, no direct exhortations like 'Get it now!' or 'Buy now', and no confusing button layouts where a buy button sits next to or under gameplay buttons. DO: use a separate, clearly labeled purchase screen with an explicit confirm step.",
+    "evidence": "Dutch regulator ACM fined Epic EUR 1.125 million (12 June 2024) for Fortnite practices aimed at children: '24-hour countdown timers' when items actually stayed about 15 days, direct exhortations such as 'Get it now', and complex offers under time pressure (CMS law summary). The ACM's guidelines also say not to directly exhort children to spend. The US FTC (Dec 2022) got $245 million in refunds over 'counterintuitive, inconsistent, and confusing button configuration' that charged players 'by pressing an adjacent button' or while waking from sleep mode (https://www.ftc.gov/news-events/news/press-releases/2022/12/fortnite-video-game-maker-epic-games-pay-more-half-billion-dollars-over-ftc-allegations). The settlement also requires voice and text chat off by default for kids and teens.",
+    "source_url": "https://cms.law/en/nld/legal-updates/acm-fines-epic-games-after-ruling-fortnite-encouraged-children-to-buy",
+    "strength": "strong"
+   },
+   {
+    "claim": "Keep the random-chance systems clean. The enhancement scroll (10/30/70% success) should stay drop-only. If it, or a luck boost, is ever sold for Robux or for currency bought with Robux, it becomes a 'paid random item' under Roblox policy (odds must be shown) and is the kind of mechanic regulators now rate up. Also avoid limited-time shop offers for a kid audience.",
+    "evidence": "Roblox paid random items policy: requirements apply to random items bought 'directly or indirectly with Robux', explicitly including 'enhancement items' and 'probability modifier items (like luck boosts and pity systems)'. Odds must be shown as percentages summing to 100% before purchase. PEGI (announced 12 March 2026, effective June 2026; GT Law summary): games with countdown timers or time-limited offers get at least PEGI 12, and paid random items get at least PEGI 16. As far as I know, PEGI rates games and apps, not individual Roblox experiences, so this is an industry signal, not a binding rule for this game.",
+    "source_url": "https://create.roblox.com/docs/production/monetization/paid-random-items",
+    "strength": "strong"
+   },
+   {
+    "claim": "DO: build the first session around the well-being drivers 8-12 year olds respond to. Autonomy: real choices (Halo/Horns, class, which quest next). Competence: visible mastery. Identity: their own avatar plus faction halo or horns. Relationships: easy moments of playing with others. Kids naturally turn play social, so give the first 10 minutes a reason to team up (e.g. helping someone fight a Slime tilts you toward angel).",
+    "evidence": "UNICEF Innocenti, RITEC project (with the LEGO Foundation, April 2024): the RITEC-8 framework was built with 787 children, mainly aged 8-12, in 18 countries. It has eight dimensions: autonomy, competence, emotions, relationships, creativity, identities, safety and security, and diversity, equity and inclusion. Studies included a multi-week intervention with 255 children aged 8-12. The press release says well-designed games 'put them in control, allow them to make decisions about gameplay', let them 'experience mastery and feelings of achievement' and 'create their own characters or narratives'. The Joan Ganz Cooney Center noted kids 'almost immediately gathered together to turn the game play into a community activity'.",
+    "source_url": "https://www.unicef.org/innocenti/press-releases/video-games-can-have-positive-impact-children-if-they-are-designed-right-says-new",
+    "strength": "strong"
+   },
+   {
+    "claim": "DON'T make the early social loop depend on text chat: many kids in the target range will have chat restricted or off. DO: give no-chat social tools such as emotes, a one-tap 'Help!'/'Thanks' button, auto-party on a shared quest, joining a friend, and visible helping that earns angel points. Make it easy for friends to join and play together.",
+    "evidence": "Roblox newsroom (19 Nov 2025): users are age-checked into brackets (Under 9, 9-12, 13-15, 16-17, 18-20, 21+) and chat only with similar adjacent groups. 'Chat in experiences will be turned to default off for users under nine years old, unless a parent provides consent after an age check', and chat outside experiences stays restricted for under-13s. Enforcement went global in early January 2026. Roblox 'Recommended strategies': 'Design your gameplay to support group play wherever possible and make it easy for friends to connect.'",
+    "source_url": "https://about.roblox.com/newsroom/2025/11/roblox-requires-age-checks-limits-minor-and-adult-chat",
+    "strength": "strong"
+   },
+   {
+    "claim": "Benchmark target (treat with caution): third-party guidance suggests a 'good' Roblox Day-1 retention of roughly 20-35% depending on genre, and repeats the same first-session rules: show the core fun within seconds, remove every unnecessary popup or screen between join and gameplay, and 'teach through doing, not through reading'. Use it only as a rough yardstick once the funnel events are live.",
+    "evidence": "ROLearn (Tu Dang, 17 Feb 2026): D1 'Good' benchmarks from 20% (obby) to 35% (simulator), D7 8-18%, 'based on data aggregated across thousands of Roblox games during 2025'. The methodology is not published and this is not Roblox data. Another third-party search result cited 'below 15 percent' as a warning sign and 20-30% as typical for successful games, also with no verifiable source. Roblox's own retention doc gives no numeric benchmark.",
+    "source_url": "https://rolearn.dev/guidance/first-week-retention-optimization",
+    "strength": "weak"
+   }
+  ]
+ }
+]

@@ -1,0 +1,36 @@
+{
+  "behind": [
+    {
+      "case": "behind_F_1",
+      "hit": true,
+      "turned": true
+    },
+    {
+      "case": "behind_F_2",
+      "hit": true,
+      "turned": true
+    },
+    {
+      "case": "behind_F_3",
+      "hit": true,
+      "turned": true
+    },
+    {
+      "case": "behind_click_1",
+      "hit": true,
+      "turned": true
+    },
+    {
+      "case": "behind_click_2",
+      "hit": false,
+      "turned": true
+    },
+    {
+      "case": "behind_click_3",
+      "hit": true,
+      "turned": true
+    }
+  ],
+  "audio_started": true,
+  "console_errors": []
+}

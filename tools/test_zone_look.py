@@ -8,7 +8,7 @@ stand-ins, a Config with the three war skies) and checks ZoneLook.TargetFor, the
   its night clock; the meadow is the base itself (factor 1)
 - the factor maths (Brightness x Bright, Ambient x Amb, exposure + Exp) for the hollow, and ZoneLook.Blend half way into
   / out of the hollow (the eased dusk weight)
-- quality 7 (2026-10-07): the horns den's lighter numbers and its NightExp (+1.9 exposure under the Eclipse sky only;
+- quality 7 (2026-10-07): the horns den's lighter numbers and its NightExp (+1.6 exposure under the Eclipse sky only;
   no other zone gets a night lift)
 No Studio, network or Roblox API calls. Mutations break in-memory copies of ZoneLook; each must be caught.
 
@@ -128,8 +128,8 @@ do
 	for _, sky in { "Neutral", "Dawn", "Eclipse" } do
 		local b = base(sky)
 		local g, cc = ZoneLook.TargetFor("HornsTown", b, sky)
-		local want = b.ExposureCompensation + 0.25 + (sky == "Eclipse" and 1.9 or 0)
-		check("horns den exposure: +0.25, +1.9 more only at night", near(g.ExposureCompensation, want, 1e-4),
+		local want = b.ExposureCompensation + 0.25 + (sky == "Eclipse" and 1.6 or 0)
+		check("horns den exposure: +0.25, +1.6 more only at night", near(g.ExposureCompensation, want, 1e-4),
 			sky .. " " .. tostring(g.ExposureCompensation) .. " want " .. want)
 		check("horns den sun not dimmed (Bright 1.0)", near(g.Brightness, b.Brightness * (sky == "Eclipse" and math.max(1, 0.95) or 1), 1e-4),
 			sky .. " " .. tostring(g.Brightness))
