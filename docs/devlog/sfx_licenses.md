@@ -131,5 +131,5 @@
 - **7번 묶음(2026-10-07 밤):** 옛 파일이던 6개를 새로(사용자 "그대로 두는 것도 다시 다"): SwingWarrior·KillPop·ComboMilestone·
   LevelUp·WindowOpen = 우리 합성, Tap = Kenney Interface `select_002` + `click_003`(CC0, 설계서 레시피). Firefly 0크레딧.
 - **업로드:** 4차 51개 끝(Creator Hub Darugi_S2, 비공개, 'HH SFX <키>', 상점 배포 안 함; id = `art/sfx/asset_ids.json` "ids").
-  7번 묶음은 SwingWarrior만 올림(rbxassetid://114585478722203), 나머지 5개는 크롬 다시 연결 뒤("pending"). 개발 1이 연결하고
+  7번 묶음 6개도 올림(id = asset_ids.json "ids", 연결표 `docs/design/sound_wiring_r4_2026-10-07.md` 7번 절). 개발 1이 연결하고
   Play로 확인하면 옛 id("old")와 옛 `art/sfx/*.ogg`를 지운다.

@@ -59,13 +59,13 @@ Creator Hub 업로드 끝(Darugi_S2, 비공개, 이름 'HH SFX <키>'). id 원�
 새 Config.Audio.Sounds 키가 필요한 것: Jump, PowerUp(파일만 바꿈), Equip, Spend, RankUp, SkillLearn, SkillReady, HitCrit, GooseArrive, CrownHalo, CrownHorns, KingDefeat, WarFinal30, CountTick, GooseEnd, KaijuSiren, KaijuStomp, ZoneEnterPvP, GoldenSpot, KO, Respawn, Plunder, JackpotOther, Loot (+ Purify_b, 두 왕 분리).
 
 ## 7번 묶음 — 옛 파일이던 6개 새로 (2026-10-07 밤, 검수 고름 eef5072)
-Config.Audio.Files의 **같은 키에 id만 바꾸면 됨**(새 이벤트 없음). 옛 id는 `asset_ids.json` "old"로 옮겼다(연결·Play 확인 뒤 소리 만들기가 정리). 업로드는 크롬 연결이 끊겨 1/6에서 멈춤 — 나머지 id는 올리는 대로 이 표와 asset_ids.json "ids"에 채운다("pending" = 아직 안 올린 것).
+Config.Audio.Files의 **같은 키에 id만 바꾸면 됨**(새 이벤트 없음). 옛 id는 `asset_ids.json` "old"로 옮겼다(연결·Play 확인 뒤 소리 만들기가 정리). 업로드 6/6 끝(Creator Hub Darugi_S2, 비공개, 'HH SFX <키>', 중복 없음). 이제 옛 소리 중 남은 것은 SwingMage(새 SwingMageHalo/Horns로 대체 예정)·SwingTamer(베타 뒤)뿐.
 
 | 키 | id | 볼륨 | 언제 / 바꾸는 것 |
 |---|---|---|---|
 | SwingWarrior | `rbxassetid://114585478722203` | 0.30 | 전사 휘두름(설정 그대로: Speed 0.92~1.05). 공기만 '휙' 0.16 s, 금속·음정 없음 |
-| KillPop | 올리는 중 | 0.39~0.40 | 내 처치 '뽕' 800→940 Hz(설정 그대로). 설계서 버그 메모: 타격 시각(ContactDelay + 0.04 s)에 틀기 |
-| ComboMilestone | 올리는 중 | 0.45 | 콤보 x10·25·50·100. 끝음 C8 4.2 kHz — 단계마다 높일 때는 **최대 1.15배**(끝음 4.8 kHz, 설계서 '5 kHz 아래') |
-| LevelUp | 올리는 중 | 0.85 | 레벨업(설정 그대로). 폰 몸통 523 + 785 Hz가 들어 있음, 1.09 s |
-| Tap | 올리는 중 | **0.46**(지금 0.42) | 모든 UIKit 버튼. TalkBlip보다 +3 LU 커야 해서 볼륨을 올림(설계서 범위 0.42~0.50) |
-| WindowOpen | 올리는 중 | 0.45 | 창 열기 1080→1730 Hz(새 WindowClose 1550→1000 Hz의 거울) |
+| KillPop | `rbxassetid://117802423144289` | 0.39~0.40 | 내 처치 '뽕' 800→940 Hz(설정 그대로). 설계서 버그 메모: 타격 시각(ContactDelay + 0.04 s)에 틀기 |
+| ComboMilestone | `rbxassetid://73147095978331` | 0.45 | 콤보 x10·25·50·100. 끝음 C8 4.2 kHz — 단계마다 높일 때는 **최대 1.15배**(끝음 4.8 kHz, 설계서 '5 kHz 아래') |
+| LevelUp | `rbxassetid://108525821312554` | 0.85 | 레벨업(설정 그대로). 폰 몸통 523 + 785 Hz가 들어 있음, 1.09 s |
+| Tap | `rbxassetid://118436931537673` | **0.46**(지금 0.42) | 모든 UIKit 버튼. TalkBlip보다 +3 LU 커야 해서 볼륨을 올림(설계서 범위 0.42~0.50) |
+| WindowOpen | `rbxassetid://129419018750436` | 0.45 | 창 열기 1080→1730 Hz(새 WindowClose 1550→1000 Hz의 거울) |
