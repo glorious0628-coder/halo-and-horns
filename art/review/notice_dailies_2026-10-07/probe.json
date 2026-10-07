@@ -1,0 +1,8 @@
+{
+ "phone_dailies": "[{\"Shown\":false,\"Rect\":[6.75,182.25,209.25,45],\"Sub\":{\"Visible\":true,\"Rect\":[39.75,204,156.75,13.5],\"Text\":\"Dailies 0/3\",\"Fits\":true,\"Bounds\":[53,12]},\"Text\":{\"Visible\":true,\"Rect\":[39.75,190.5,156.75,13.5],\"Text\":\"0/1 Defeat 1 golden monster\",\"Fits\":true,\"Bounds\":[120.5,12]}}]",
+ "phone_toast_reward_split": "toast 244x57 art=true fits=true bounds=154x39 box=166x47 'Daily quest done! +60 gold\nCheck the board for new jobs'",
+ "pc_dailies": "[{\"Shown\":false,\"Rect\":[13.600006103515625,280.8000183105469,300,22.399999618530275],\"Text\":{\"Visible\":true,\"Rect\":[39.19999694824219,284.0000305175781,253.60000610351563,16],\"Text\":\"Daily Quests 0/3\",\"Fits\":true,\"Bounds\":[72,12]}}]",
+ "pc_fallback_toast_good": "toast 288x28 art=false fits=true bounds=121x14 box=265x16 'Auto combat is ON.'",
+ "pc_fallback_toast_reward": "toast 288x44 art=false fits=true bounds=184x28 box=265x33 'Daily quest done! +60 gold\nCheck the board for new jobs'",
+ "pc_fallback_banner": ""
+}
