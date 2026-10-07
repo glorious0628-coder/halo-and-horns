@@ -3284,11 +3284,13 @@ local function showGuide(target, text, tag, seconds)
 	beam.Name = "HUDGuideBeam"
 	beam.Attachment1 = a1
 	beam.Color = ColorSequence.new(Theme.Gold)
-	beam.Transparency = NumberSequence.new(0.2)
-	beam.Width0 = 1.2
-	beam.Width1 = 1.2
+	-- 2026-10-06 photos (검수): the 1.2-stud glowing band crossed the whole meadow and fought the quest marker; a thin,
+	-- softer line still shows the way
+	beam.Transparency = NumberSequence.new(0.35)
+	beam.Width0 = 0.35
+	beam.Width1 = 0.35
 	beam.FaceCamera = true
-	beam.LightEmission = 0.8
+	beam.LightEmission = 0.45
 	beam.LightInfluence = 0
 	beam.Parent = part
 	g.Beam = beam
