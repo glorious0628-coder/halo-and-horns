@@ -91,3 +91,6 @@
 10. 몬스터 색 고친 텍스처 3장은 이미지 개발이 업로드하면 CustomModels의 TextureID를 바꿉니다.
 11. PC·폰 Play로 확인하고 사진을 남깁니다: 프롤로그(폰), 한국어 로케일 팀 알림, Lv5 자동 전투, 미니맵 회전, 분수 물줄기, BB37 2인. 에뮬레이터 Device = none도 확인합니다.
 12. 마지막으로 Save to File As `build/`로 저장하고 `place/`로 복사합니다(시간과 해시 확인). 그다음 `py tools/push_paths.py`로 src와 함께 push합니다.
+
+## 6-보충 (2026-10-08, 개발 2 dev2-place-english 39ebd84)
+- test_place_english.py를 고침(바이트 문자 참조를 UTF-8로 다시 읽음, 자체 시험: 84c7dbdd 전 place에서 한글 9개를 잡음 + 변이). **고친 도구로 다시 검사: build/GoodEvil.rbxlx(17:55)와 place/GoodEvil.rbxlx 모두 화면 글자 한글 0개.** "영어만" 주장은 이제 증거가 있음(스크립트 주석은 검사 대상 아님).
