@@ -17,6 +17,15 @@ function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
+-- A23-63 (user 2026-10-07 "폰트 이쁜 걸로"): the game's two fonts, in one place. Head = titles, buttons, numbers and the
+-- name on a name tag (Denk One, one weight); Body = body text and the other name-tag lines (Montserrat). The server-built
+-- name tags (CharacterVisuals, UI round 2 #7) read Nametag; UIKit's FONT.Sets can read Head / Body from here too.
+Config.Fonts = {
+	Head = "rbxasset://fonts/families/DenkOne.json",
+	Body = "rbxasset://fonts/families/Montserrat.json",
+	Nametag = { Line1 = "Head", Line2 = "Body", Line3 = "Body", Ghost = "Body" },
+}
+
 -- 1 day / 2 days (검수 2026-10-07, 'You were away for 1 days'): string.format a count line, then Config.Plural(line)
 -- turns "1 <plural>" into "1 <singular>" for the phrases below (only after a lone 1: not 11, 0.1, 1,000 or 1/3).
 -- A new "%d <noun>s" text adds its phrase here (tools/test_story_text.py: plural-one / plural-word / plural-callsite).
