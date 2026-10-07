@@ -1260,17 +1260,18 @@ BUILDERS.Welcome = function(parent)
 		return nil
 	end
 	local faction, page, pending, sentAt = myFaction(), 1, false, 0
-	-- short phone screens (e.g. 749x361): no portrait, smaller text, so 다음/함께할게요 never need a scroll
+	-- short phone screens (e.g. 749x361): a small face (round 3 #2: 64 px, so the guide still has a face) and smaller
+	-- text, so Next / I'm In! never need a scroll
 	local cam = workspace.CurrentCamera
 	local short = cam ~= nil and cam.ViewportSize.Y < 520
-	local portraitRow = addRow(parent, short and 0 or 170, 0)
+	local face = short and 64 or 170
+	local portraitRow = addRow(parent, face, 0)
 	portraitRow.Name = "WelcomePortrait"
-	portraitRow.Visible = not short
-	if not short and UIKit and type(UIKit.ArtImage) == "function" then
+	if UIKit and type(UIKit.ArtImage) == "function" then
 		-- the faction's guide (Config.UIArt PortraitGuide*: the Artisan guild guide for Neutral)
 		local guide = "PortraitGuide" .. (faction == "Neutral" and "Artisan" or faction)
 		local ok, portrait = pcall(UIKit.ArtImage, guide, {
-			Name = "Guide", Parent = portraitRow, Size = UDim2.fromOffset(170, 170), ScaleType = Enum.ScaleType.Fit,
+			Name = "Guide", Parent = portraitRow, Size = UDim2.fromOffset(face, face), ScaleType = Enum.ScaleType.Fit,
 		})
 		if not ok then Util.Warn(TAG, "welcome portrait failed: " .. tostring(portrait)) end
 	end
@@ -1286,12 +1287,13 @@ BUILDERS.Welcome = function(parent)
 	local actions = addRow(parent, 64, 10)
 	local readMore, nextButton, later, update
 	-- 함께할게요 is there from page 1 (no forced reading); 다음 still pages through the lines; closing never accepts
-	readMore = makeButton(actions, T.WelcomeNext, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+	-- round 3 #2: [I'm In!] is the one wide main button; Next / Later stay small beside it
+	readMore = makeButton(actions, T.WelcomeNext, PALETTE.Button, UDim2.new(0.25, -8, 0, 60), function()
 		if pending or TYPE.Finish(typing) then return end
 		page = (page % #def.Lines) + 1; status.Text = ""; update()
 	end)
 	readMore.Name = "WelcomeReadMore"
-	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(1 / 3, -7, 0, 60), function()
+	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(0.5, -4, 0, 60), function()
 		if pending or currentId ~= "Welcome" or faction ~= myFaction() then return end
 		if WELCOME.Ready() then
 			pending, sentAt = true, os.clock()
@@ -1300,7 +1302,7 @@ BUILDERS.Welcome = function(parent)
 		end
 	end)
 	nextButton.Name = "WelcomeNext"
-	later = makeButton(actions, T.WelcomeLater, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+	later = makeButton(actions, T.WelcomeLater, PALETTE.Button, UDim2.new(0.25, -8, 0, 60), function()
 		if not pending then Panels.Close() end -- closing is never acceptance
 	end)
 	later.Name = "WelcomeLater"

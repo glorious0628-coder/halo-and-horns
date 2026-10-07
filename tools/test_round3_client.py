@@ -4,6 +4,8 @@ the first daily, in both the phone header line and the two quest lines; the PC l
 first mission is accepted (step 0); a seconds row's ProgressUnit follows the target ('5/10 s', dev2 2c5e84e).
 #3 one tap on the phone quest block whose line 1 is the step-0 pinned row ('Tap here: first quest from Hallie') opens
 the guide (L.PinnedTap) instead of the list.
+#2 the guide's first window (Panels BUILDERS.Welcome): [I'm In!] is the one wide button (half the row), Next / Later a
+quarter each; short phone screens (height < 520) keep a 64 px guide face instead of none.
 Static source checks (HUD.luau is too large for an offline run of refreshQuests); each check names the exact code.
 Report: docs/art/verification_2026-10-07/offline_round3_client_2026-10-07.json
 """
@@ -14,6 +16,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
+PANELS = ROOT / "src/StarterPlayer/StarterPlayerScripts/Panels.luau"
 OUT = ROOT / "docs/art/verification_2026-10-07/offline_round3_client_2026-10-07.json"
 
 
@@ -31,6 +34,9 @@ def main():
     refresh = hud[hud.find("refreshQuests = function()"):]
     refresh = refresh[:refresh.find("\nend\n") + 4] if refresh else ""
     nums = block(hud, "local function questNums(e)")
+    panels = PANELS.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    welcome = panels[panels.find("BUILDERS.Welcome = function(parent)"):]
+    welcome = welcome[:welcome.find("\nBUILDERS.") if "\nBUILDERS." in welcome else len(welcome)]
     checks = [
         ("#3 the step-0 pinned line opens the guide in one tap (before the claim / list paths)",
          "if e and e.Pinned and e.TutorialStep == 0 and L.PinnedTap then" in tap
@@ -45,12 +51,19 @@ def main():
          re.search(r"ProgressUnit = \(type\(e\.ProgressUnit\) == \"string\" and #e\.ProgressUnit > 0 and #e\.ProgressUnit <= 3\)", hud)
          is not None),
         ("ProgressUnit follows the target: '5/10 s'", 'if e.ProgressUnit then t = t .. " " .. e.ProgressUnit end' in nums),
+        ("#2 [I'm In!] is the wide button (half the row)",
+         "nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(0.5, -4, 0, 60)" in welcome),
+        ("#2 Next and Later are a quarter each",
+         "readMore = makeButton(actions, T.WelcomeNext, PALETTE.Button, UDim2.new(0.25, -8, 0, 60)" in welcome
+         and "later = makeButton(actions, T.WelcomeLater, PALETTE.Button, UDim2.new(0.25, -8, 0, 60)" in welcome),
+        ("#2 short screens keep a 64 px face", "local face = short and 64 or 170" in welcome
+         and "Size = UDim2.fromOffset(face, face)" in welcome and "portraitRow.Visible = not short" not in welcome),
     ]
     for name, good in checks:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)
     passed = all(g for _, g in checks)
     report = {"status": "passed" if passed else "failed", "static": [{"check": n, "ok": g} for n, g in checks],
-              "sourceSHA256": {HUD.relative_to(ROOT).as_posix(): hashlib.sha256(HUD.read_bytes()).hexdigest()},
+              "sourceSHA256": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in (HUD, PANELS)},
               "studioCalls": 0, "contract": __doc__.split("Static")[0].strip(),
               "limitations": "Static only; the phone tap and the line order are a Studio check (fresh save, phone)."}
     OUT.parent.mkdir(parents=True, exist_ok=True)
