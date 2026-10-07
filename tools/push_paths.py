@@ -82,6 +82,19 @@ def main():
     else:
         sys.exit("push 실패: 5번 모두 거절됐어요")
     git("fetch", "-q", "origin")
+    # reset --keep refuses while a pushed file still shows as 'modified' (or 'untracked') against the old HEAD, even
+    # though it already equals origin. Put each such file back to the old HEAD version (or remove a new one) first;
+    # the reset below writes origin's (= your pushed) version again at once.
+    for p, b in blobs.items():
+        if b is None or not os.path.isfile(p):
+            continue
+        if git("rev-parse", f"origin/main:{p}", check=False) != b or git("hash-object", p) != b:
+            continue  # someone changed it again meanwhile: leave it alone
+        if git("cat-file", "-e", f"HEAD:{p}", check=False) == "" and subprocess.run(
+                ["git", "cat-file", "-e", f"HEAD:{p}"], capture_output=True).returncode == 0:
+            git("checkout", "HEAD", "--", p, check=False)
+        else:
+            os.remove(p)
     r = subprocess.run(["git", "reset", "--keep", "origin/main"], capture_output=True, text=True)
     if r.returncode != 0:
         print("주의: reset --keep이 막혔어요(다른 세션의 수정과 겹침). 공유 HEAD는 그대로예요:", r.stderr.strip()[:200])
