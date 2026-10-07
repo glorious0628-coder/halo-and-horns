@@ -7,11 +7,16 @@
   py tools/map_v2_apply.py move            tools/map_v2_move.lua dry run (lists what would move)
   py tools/map_v2_apply.py move --apply    ... and moves it (towns 10 studs out + castles to the island ends, field decor
                                            to the same share of the v2 land, the Halloween decor to the backup)
+  py tools/map_v2_apply.py settle          after terrain: every piece the mover noted (MapV2Ground) goes back to the same
+                                           height over the NEW ground (a tree from a v1 hill comes down, clouds stay up)
   py tools/map_v2_apply.py build           require(ServerScriptService.MapBuilder).Build() in Edit (rebuilds the
                                            Halloween fields at the v2 spots, moves pads / gates / zone markers / walls)
+  py tools/map_v2_apply.py kits            tools/worldkit/meadow_kit_swap.luau (검수): Decor.MeadowKit again from the
+                                           moved spots, on the new ground
 
-Order for the real place (P2): sync the v2 sources first (Config must already say v2), then terrain -> move (dry, then
---apply) -> build -> photos -> Play checks -> File > Save to File As build/GoodEvil.rbxlx. "full" mode of preview_map
+Order for the real place (P2, A23-74): Save to File As build/GoodEvil_before_v2.rbxlx, sync the v2 sources (Config must
+already say v2), then survey -> move (dry) -> move --apply (notes the old ground heights) -> terrain -> settle -> build ->
+kits -> survey -> photos -> Play checks -> File > Save to File As build/GoodEvil.rbxlx. "full" mode of preview_map
 wipes workspace.Map and is never run here. Every step refuses to run unless Studio is in Edit (never stops a Play).
 Pick the window with STUDIO_ID=<id prefix> when two Studio windows match (tools/studio_mcp.py).
 """
@@ -69,6 +74,51 @@ add("MapV1Backup: " .. tostring(b and #b:GetDescendants() or "none"))
 return table.concat(out, "\n")
 '''
 
+SETTLE = r'''
+local RAY = RaycastParams.new()
+RAY.FilterType = Enum.RaycastFilterType.Include
+RAY.FilterDescendantsInstances = { workspace.Terrain }
+RAY.IgnoreWater = false
+local function posOf(inst)
+	if inst:IsA("BasePart") then return inst.Position end
+	if inst:IsA("Model") then local ok, cf = pcall(inst.GetPivot, inst); if ok then return cf.Position end end
+	return nil
+end
+local function bottomOf(inst)
+	if inst:IsA("BasePart") then return inst.Position.Y - inst.Size.Y / 2 end
+	if inst:IsA("Model") then local ok, cf, size = pcall(inst.GetBoundingBox, inst); if ok then return cf.Position.Y - size.Y / 2 end end
+	return nil
+end
+local moved, kept, water, big = 0, 0, 0, {}
+for _, root in { workspace:FindFirstChild("Map"), game:GetService("ServerStorage"):FindFirstChild("MeadowPrimitiveBackup") } do
+	for _, inst in (root and root:GetDescendants() or {}) do
+		local off = inst:GetAttribute("MapV2Ground")
+		if type(off) == "number" and not inst:GetAttribute("MapV2Settled") then
+			local p, b = posOf(inst), bottomOf(inst)
+			local hit = p and workspace:Raycast(Vector3.new(p.X, 400, p.Z), Vector3.new(0, -800, 0), RAY)
+			if not (hit and b) or hit.Material == Enum.Material.Water then
+				water += 1
+			else
+				local dy = hit.Position.Y + off - b
+				if math.abs(dy) > 60 then
+					table.insert(big, string.format("%s %.0f", inst:GetFullName(), dy))
+				else
+					if math.abs(dy) > 0.05 then
+						if inst:IsA("BasePart") then inst.CFrame += Vector3.new(0, dy, 0) else inst:PivotTo(inst:GetPivot() + Vector3.new(0, dy, 0)) end
+						moved += 1
+					else
+						kept += 1
+					end
+					inst:SetAttribute("MapV2Settled", true)
+				end
+			end
+		end
+	end
+end
+return string.format("settle: moved %d, already right %d, over water / no ground %d (kept), too far %d%s", moved, kept, water, #big,
+	#big > 0 and (": " .. table.concat(big, "; ", 1, math.min(#big, 8))) or "")
+'''
+
 BUILD = r'''
 local mb = require(game:GetService("ServerScriptService"):WaitForChild("MapBuilder"))
 local ok, res = pcall(mb.Build)
@@ -83,7 +133,7 @@ def text_of(res: dict) -> str:
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     args = sys.argv[1:]
-    if not args or args[0] not in ("survey", "terrain", "move", "build"):
+    if not args or args[0] not in ("survey", "terrain", "move", "settle", "build", "kits"):
         print(__doc__)
         return 2
     step = args[0]
@@ -92,6 +142,10 @@ def main() -> int:
     elif step == "move":
         mode = "apply" if "--apply" in args else "dry"
         code = (ROOT / "tools/map_v2_move.lua").read_text(encoding="utf-8").replace('"__MODE__"', f'"{mode}"', 1)
+    elif step == "settle":
+        code = SETTLE
+    elif step == "kits":
+        code = (ROOT / "tools/worldkit/meadow_kit_swap.luau").read_text(encoding="utf-8")
     elif step == "build":
         code = BUILD
     else:
