@@ -20,7 +20,7 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-07/offline_skill_kit_2026-10-07.json"
 
 MUTATIONS = [
-    ("Z unlocks at Lv10", "Unlock = { Q = 1, Z = 5, X = 8 }", "Unlock = { Q = 1, Z = 10, X = 8 }"),
+    ("Z unlocks at Lv10", "Unlock = { Q = 5, Z = 15, X = 25 }", "Unlock = { Q = 5, Z = 10, X = 25 }"),
     ("the Z flag starts on", "ZEnabled = false, XEnabled = false, PvPZX = false,", "ZEnabled = true, XEnabled = false, PvPZX = false,"),
     ("Earth Cleave's band 20 long", 'pull monsters to you.",\n\t\t\t\tShape = "Line", Len = 22,',
      'pull monsters to you.",\n\t\t\t\tShape = "Line", Len = 20,'),

@@ -80,7 +80,19 @@ MUTATIONS = [
     # --- slots
     ("slots never saved", SK, "\tS.PlayerService.SetStat(player, \"SkillSlots\", want)\n", ""),
     ("slots can go down", SK, "\tif want <= have then return end\n", "\tif want == have then return end\n"),
-    ("a rebirth opens nothing", SK, "\tif num(player:GetAttribute(\"Rebirths\")) >= 1 then return 3 end\n", ""),
+    # A23-71: none before Lv5, Q Lv5 / Z Lv15 / X Lv25
+    ("Q from the start again", SK, 'math.floor(num(player:GetAttribute("SkillSlots"), 0)), 0, 3)',
+     'math.floor(num(player:GetAttribute("SkillSlots"), 0)), 1, 3)'),
+    ("SkillSlotsFor ignores rebirths", C, "\tif (tonumber(rebirths) or 0) >= 1 then return 3 end\n", ""),
+    ("SkillSlotsFor counts one slot too many", C, "local unlock, lv, n = Config.Skills.Unlock or {}, tonumber(level) or 1, 0",
+     "local unlock, lv, n = Config.Skills.Unlock or {}, tonumber(level) or 1, 1"),
+    ("SkillSlotsFor: a slot one level early", C, "if lv >= (tonumber(unlock[slot]) or math.huge) then n += 1 end",
+     "if lv + 1 >= (tonumber(unlock[slot]) or math.huge) then n += 1 end"),
+    ("Config: Q at Lv1 again", C, "Unlock = { Q = 5, Z = 15, X = 25 }", "Unlock = { Q = 1, Z = 15, X = 25 }"),
+    ("Config: Z at Lv5 again", C, "Unlock = { Q = 5, Z = 15, X = 25 }", "Unlock = { Q = 5, Z = 5, X = 25 }"),
+    ("Config: a new save starts with Q", C, "\t\tSkillSlots = 0,\n", "\t\tSkillSlots = 1,\n"),
+    ("a rebirth opens nothing", SK, 'num(player:GetAttribute("Level"), 1), num(player:GetAttribute("Rebirths")))',
+     'num(player:GetAttribute("Level"), 1), 0)'),
     ("the unlock notice with the flag off", SK, "\t\tif slot and flagOn(slot) then\n", "\t\tif slot then\n"),
     ("the unlock notice at join", SK, "function(player) catchUp(player, false) end)", "function(player) catchUp(player, true) end)"),
     ("no catch-up at level up", SK, "\tconnect(\"ProgressionService\", \"LeveledUp\", function(player) catchUp(player, true) end)\n", ""),
@@ -198,8 +210,9 @@ SUITE = Suite(
              "Damage D x Mult once a target; pull (manual) / push via MonsterService.Displace (stop 3 in front, / body "
              "scale, bosses never, zone rect + leash + ground + walls, shorter steps). DamageWindow: 3 s per pair, player "
              "damage 35% (kaiju 8%), Halo heal 30% an ally, Horns steal 3% - Q and Z share it; players only with PvPZX "
-             "and a manual cast. Slots: SkillSlots 1..3 (Lv5 / Lv8 / rebirth), never lowered, Fx SkillUnlocked only "
-             "while the slot's flag is on. Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
+             "and a manual cast. Slots (A23-71): SkillSlots 0..3 = Config.SkillSlotsFor (Q Lv5 / Z Lv15 / X Lv25, all "
+             "after a rebirth), never lowered, Fx SkillUnlocked (Q always, Z / X only while the slot's flag is on); no "
+             "skill before Lv5 (manual, the old Release remote and auto). Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
     limitations="X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal, SK1 / SK2 and the X-first auto order are "
                 "SKL-3. The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are "
                 "game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline.",

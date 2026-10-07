@@ -191,9 +191,11 @@ Config.Data = {
 		-- next uid number. TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
 		Pets = { List = {}, Equipped = {}, Next = 1 },
 		TamerNotice = false,
-		-- SKL-2 (A23-49): skill slots opened so far (1 = Q, 2 = +Z at Lv5, 3 = +X at Lv8; all after a rebirth). The most
-		-- ever reached is kept through rebirths, class / faction changes and level resets (SkillService)
-		SkillSlots = 1,
+		-- SKL-2 (A23-49): skill slots opened so far (0 = none yet, 1 = Q, 2 = +Z, 3 = +X at Config.Skills.Unlock; all after
+		-- a rebirth). The most ever reached is kept through rebirths, class / faction changes and level resets (SkillService)
+		SkillSlots = 0,
+		-- A23-71: this save's SkillSlots follow the Lv5 / 15 / 25 rule (older saves are fixed once at load: DataService)
+		SkillsA71 = true,
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -538,7 +540,8 @@ Config.BasicSkill = {
 	SwingImmediate = 0.5, PvPCapPct = 0.35, HaloHealPct = 0.10, HaloHealCapPct = 0.30,
 }
 -- SKL-1 (A23-49, docs/design/skill_kit_beta_2026-10-06.md section 1 rules / 4 tables / 5 English / 8-1 shape): every
--- class has three skills Q (Lv1) / Z (Lv5) / X (Lv8). Defs[kit][slot]; an X with Halo / Horns tables differs per
+-- class has three skills Q / Z / X, learned at Unlock (A23-71, user 2026-10-07: none at the start, Q Lv5, Z Lv15,
+-- X Lv25; all three after a rebirth). Defs[kit][slot]; an X with Halo / Horns tables differs per
 -- faction (Config.SkillDef merges the faction table over the base). Kits: Warrior / Mage / Archer, and for the
 -- artisan guild Blacksmith / Alchemist / Tamer (Config.SkillKit). Q keeps Config.BasicSkill's numbers (MP 20, 3 s, x6,
 -- radius 9). Mult = x the monster hit D (ComputeMonsterHit); MP / CD (s); Shape: SelfCircle, TargetCircle (Range =
@@ -550,7 +553,7 @@ Config.BasicSkill = {
 Config.Skills = {
 	ZEnabled = false, XEnabled = false, PvPZX = false,
 	MoveSkills = true, Fields = true, Taunt = true,
-	Order = { "Q", "Z", "X" }, Unlock = { Q = 1, Z = 5, X = 8 }, GlobalGap = 0.5, MPStealCap = 20,
+	Order = { "Q", "Z", "X" }, Unlock = { Q = 5, Z = 15, X = 25 }, GlobalGap = 0.5, MPStealCap = 20,
 	Kits = { "Warrior", "Mage", "Archer", "Blacksmith", "Alchemist", "Tamer" },
 	Defs = {
 		Warrior = {
@@ -630,6 +633,23 @@ Config.Skills = {
 		ShapeLine = "Line %d", ShapeCircle = "Area %d", ShapeChain = "Jumps %d", ShapeField = "Field %d s", ShapeHop = "Hop %d",
 	},
 }
+
+-- A23-71: the skill slots (0..3) a level / rebirth count opens: Q at Unlock.Q, Z at Unlock.Z, X at Unlock.X, all three
+-- after a rebirth (SKL-2). SkillService raises the saved SkillSlots to this; DataService fixes older saves once
+function Config.SkillSlotsFor(level, rebirths)
+	if (tonumber(rebirths) or 0) >= 1 then return 3 end
+	local unlock, lv, n = Config.Skills.Unlock or {}, tonumber(level) or 1, 0
+	for _, slot in Config.Skills.Order or { "Q", "Z", "X" } do
+		if lv >= (tonumber(unlock[slot]) or math.huge) then n += 1 end
+	end
+	return n
+end
+
+-- A23-71: the player has a skill (Q) = saved slots >= 1 (kept after a level reset) or the level / rebirths open one
+-- (also true in the moment before SkillService's catch-up raised the saved slots)
+function Config.SkillLearned(slots, level, rebirths)
+	return (tonumber(slots) or 0) >= 1 or Config.SkillSlotsFor(level, rebirths) >= 1
+end
 
 -- the skill kit of a class in a faction: Neutral -> Blacksmith / Alchemist / Tamer (Config.IsTamer), else the class id
 function Config.SkillKit(classId, factionId)
@@ -1997,6 +2017,7 @@ Config.StoryQuests = {
 		ChangedGood = "You kept it last time. Now you give. People change. Shards too.", -- E2 (story_depth §7)
 		ChangedEvil = "You gave it last time. Now you keep. Shards change too.",
 		NewTitle = "New title: %s!", -- E3 (a stat-free title)
+		SkillLater = "%s · Skills come at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
 	},
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
@@ -2049,10 +2070,14 @@ Config.StoryQuests = {
 			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
+		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it
 		M1_3 = {
 			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!", ShortName = "Skill boom",
 			Start = "Dusty slimes move in groups. Skills use MP!",
-			Steps = { { Text = "Hit monsters with a skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 1, Count = 3 } } },
+			Steps = {
+				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", Obj = { Type = "Level", Level = 5 } },
+				{ Text = "Hit monsters with a skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 1, Count = 3 } },
+			},
 			Reward = { Gold = 1 },
 		},
 		M1_4 = {
@@ -2117,7 +2142,10 @@ Config.StoryQuests = {
 		M2_5 = {
 			Kind = "Main", Chapter = 2, Title = "The Dusty Slime Swarm", ShortName = "Slime swarm",
 			Start = "The dust smell brings a slime swarm! Gather them and hit them all at once!",
-			Steps = { { Text = "Hit 3 with one skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 3, Count = 2 } } },
+			Steps = {
+				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", Obj = { Type = "Level", Level = 5 } }, -- A23-71
+				{ Text = "Hit 3 with one skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
+			},
 			Reward = { Gold = 1 },
 		},
 		M2_6 = {
@@ -2287,7 +2315,7 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		N1 = {
-			Kind = "Sub", Title = "The Artisan's Touch", ShortName = "Artisan touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" } },
+			Kind = "Sub", Title = "The Artisan's Touch", ShortName = "Artisan touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" }, Level = 5 }, -- A23-71: a skill quest
 			Start = "Kit: Shape with care. Two at once!",
 			Steps = { { Text = "Hit 2 with one skill %d/%d", Obj = { Type = "SkillHit", Min = 2, Count = 3 } } },
 			Reward = { Gold = 1 },
@@ -2765,7 +2793,7 @@ Config.Board = {
 			Sneaky = { Meadow = "Best spot in the meadow. Claim it!", Woods = "Best spot in the woods. Claim it!" } },
 		{ Id = "J3", ShortName = "Big hunt", Obj = { Type = "Kill", Kind = "$Big" }, Count = { Meadow = 2, Woods = 1 }, Goal = "{Big} %d/%d",
 			Kind = "A big one blocks the road. Stop it!", Sneaky = "Bonk the big one. Show who's boss!" },
-		{ Id = "J4", ShortName = "Hit 3 at once", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, Goal = "Hit 3 at once with a skill %d/%d",
+		{ Id = "J4", ShortName = "Hit 3 at once", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, NeedSkill = true, Goal = "Hit 3 at once with a skill %d/%d",
 			Kind = "A swarm blocks a cart. Clear it at once!", Sneaky = "Hit three at once. Make everyone look!" },
 		{ Id = "J5", ShortName = "Basic hits", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic hits only · {Unit} %d/%d",
 			Kind = "Basic hits only. Keep it quiet for the birds.", Sneaky = "No skills needed. Too easy!" },

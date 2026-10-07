@@ -39,6 +39,23 @@ STATIC_ONLY = {
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
+    # A23-71 (user 2026-10-07): no skill before Lv5
+    ("A23-71: a skill daily before the first skill", "QUEST_SOURCE",
+     "return t.Id ~= \"Release\" or (data ~= nil and Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths))",
+     "return true"),
+    ("A23-71: an old skill daily is kept at join", "QUEST_SOURCE",
+     "\tremakeUnfit(player, data, getFaction(player)) -- A23-71: a skill daily kept from before the Lv5 rule\n", ""),
+    ("A23-71: a remade daily loses its reward", "QUEST_SOURCE",
+     "\t\t\t\tnq.RewardGold = math.max(nq.RewardGold, math.floor(num(q.RewardGold)))\n", ""),
+    ("A23-71: a finished skill daily is remade too", "QUEST_SOURCE",
+     "if isValidQuest(q) and not isComplete(q) and not templateFitsNow(", "if isValidQuest(q) and not templateFitsNow("),
+    ("A23-71: old saves keep their slots", "DATA_SOURCE", "\t\tif d.SkillsA71 ~= true then\n", "\t\tif false then\n"),
+    ("A23-71: the save fix runs every join", "DATA_SOURCE", "\t\tif d.SkillsA71 ~= true then\n", "\t\tif true then\n"),
+    ("A23-71: SkillLearned ignores the saved slots", "CONFIG_SOURCE",
+     "return (tonumber(slots) or 0) >= 1 or Config.SkillSlotsFor(level, rebirths) >= 1",
+     "return Config.SkillSlotsFor(level, rebirths) >= 1"),
+    ("A23-71: SkillLearned ignores the level", "CONFIG_SOURCE",
+     "return (tonumber(slots) or 0) >= 1 or Config.SkillSlotsFor(level, rebirths) >= 1", "return (tonumber(slots) or 0) >= 1"),
     ("quest rows lose the template's ShortName", "QUEST_SOURCE",
      "\t\t\t\t\tShortName = tpl and tpl.ShortName or nil, -- 검수 2026-10-07: the phone HUD quest row\n", ""),
     ("newbie daily pays the 5-minute reward", "QUEST_SOURCE",

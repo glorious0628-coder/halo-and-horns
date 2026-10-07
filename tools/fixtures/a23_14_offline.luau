@@ -272,9 +272,11 @@ local function questWorld(saved, seed, opts)
 end
 
 local function today() return CONFIG.DayIndex(os.time()) end
+-- A23-71: a rookie row has learned Q (SkillSlots 1, e.g. kept after a level reset), so the kill / skill / gold daily sets
+-- below keep their meaning at Lv1-4; the "a23-71 skill dailies" group passes SkillSlots = 0 for a player without Q
 local function rookieRow(level, faction, extra)
 	local row = { Version = 3, Level = level, Faction = faction or "Halo", ClassChosen = true, Class = "Warrior",
-		TutorialStep = 99, BlacksmithVisited = true, WeaponTier = 1, WeaponOwnedMask = 1 }
+		TutorialStep = 99, BlacksmithVisited = true, WeaponTier = 1, WeaponOwnedMask = 1, SkillSlots = 1, SkillsA71 = true }
 	for k, v in extra or {} do row[k] = v end
 	return row
 end
@@ -424,6 +426,72 @@ runGroup("dailies-generate", function()
 	local row = f:SaveAndReload()
 	check(row.DailyLevel == 4 and #row.Quests == 3 and row.Quests[1].RewardGold == 72, "DailyLevel and the newbie set survive a save",
 		show({ row.DailyLevel, #row.Quests }))
+end)
+
+------------------------------------------------------------------ A23-71: no "Skill hits" daily before the first skill
+runGroup("a23-71 skill dailies", function()
+	local function idsOf(f)
+		local ids = {}
+		for _, q in f.Data.Quests do ids[q.Id] = (ids[q.Id] or 0) + 1 end
+		return ids
+	end
+	for _, level in { 1, 3, 4 } do
+		for seed = 1, 12 do
+			local f = questWorld(rookieRow(level, "Halo", { SkillSlots = 0 }), seed * 37 + level)
+			local ids = idsOf(f)
+			check(#f.Data.Quests == 3 and ids.Release == nil and (ids.Kill or 0) + (ids.Gold or 0) == 3,
+				"Lv1-4 without a skill: three dailies, none of them 'Skill hits'", "Lv" .. level .. " " .. show(ids))
+		end
+	end
+	-- Lv5 opens Q: the skill daily is back, even before SkillService's catch-up raised the saved slots
+	for seed = 1, 8 do
+		local ids = idsOf(questWorld(rookieRow(5, "Horns", { SkillSlots = 0 }), seed * 53))
+		check(ids.Release == 1 and ids.Kill == 1 and ids.Gold == 1, "Lv5: kill / skill / gold again", show(ids))
+	end
+	-- a Lv3 who kept Q after a level reset (saved slots 1) keeps the full set
+	local kept = idsOf(questWorld(rookieRow(3, "Halo", { SkillSlots = 1 }), 11))
+	check(kept.Release == 1 and kept.Kill == 1 and kept.Gold == 1, "a Lv3 who kept Q: kill / skill / gold", show(kept))
+	-- an old save (no SkillsA71) gets its slots once from its level and rebirths
+	local function oldRow(level, slots, extra)
+		local row = rookieRow(level, "Halo", extra)
+		row.SkillsA71, row.SkillSlots = nil, slots
+		return row
+	end
+	local o8 = questWorld(oldRow(8, 3), 5)
+	check(o8.Data.SkillSlots == 1 and o8.Data.SkillsA71 == true, "an old Lv8 save with 3 slots: Q only after the fix",
+		show({ o8.Data.SkillSlots, o8.Data.SkillsA71 }))
+	check(questWorld(oldRow(3, 1), 6).Data.SkillSlots == 0, "an old Lv3 save with Q: none (Q comes at Lv5)")
+	check(questWorld(oldRow(1, 1, { Rebirths = 1 }), 7).Data.SkillSlots == 3, "an old reborn save: all three")
+	check(questWorld(oldRow(30, 2), 8).Data.SkillSlots == 3, "an old Lv30 save: all three (Lv25)")
+	-- the fix runs once: a level reset after it (Lv1, saved 1) keeps Q
+	local again = deepCopy(o8:SaveAndReload())
+	again.Level = 1
+	local o8b = questWorld(again, 12)
+	check(o8b.Data.SkillSlots == 1 and o8b.Data.SkillsA71 == true, "the fix runs once: a later level reset keeps Q",
+		show({ o8b.Data.SkillSlots }))
+	-- an unfinished skill daily saved before the rule is remade at join (same reward); a finished one stays to be claimed
+	local function withQuests(release)
+		local row = oldRow(3, 1)
+		row.DailyDay, row.DailyLevel = today(), 3
+		row.Quests = {
+			release,
+			{ Id = "Kill", Kind = "Daily", Target = 12, Progress = 0, RewardGold = 72, RewardXP = 120, Text = "x", Unit = "Slime" },
+			{ Id = "Gold", Kind = "Daily", Target = 40, Progress = 0, RewardGold = 72, RewardXP = 120, Text = "x", Unit = "Slime" },
+		}
+		return row
+	end
+	local r = questWorld(withQuests({ Id = "Release", Kind = "Daily", Target = 3, Progress = 1, RewardGold = 999,
+		RewardXP = 888, Text = "x", Unit = "Slime" }), 13)
+	local q1 = r.Data.Quests[1]
+	check(q1.Id ~= "Release" and q1.Kind == "Daily" and q1.RewardGold == 999 and q1.RewardXP == 888,
+		"an unfinished skill daily without a skill: remade at join, the reward kept", show(q1))
+	local sent = false
+	for _, row in r.LastList or {} do if row.Id == "Release" then sent = true end end
+	check(not sent, "the remade daily is what the list shows", show(r.LastList))
+	local r2 = questWorld(withQuests({ Id = "Release", Kind = "Daily", Target = 3, Progress = 3, RewardGold = 999,
+		RewardXP = 888, Text = "x", Unit = "Slime" }), 14)
+	check(r2.Data.Quests[1].Id == "Release" and r2.Data.Quests[1].Progress == 3, "a finished skill daily stays (claimable)",
+		show(r2.Data.Quests[1]))
 end)
 
 ------------------------------------------------------------------ A3. progress and claims

@@ -203,6 +203,12 @@ local function templateFitsFaction(t, faction)
 	return true
 end
 
+-- a template the player can do now: its faction rule, and A23-71 the skill row ("Release") only once a skill is learned
+local function templateFitsNow(t, faction, data)
+	if not templateFitsFaction(t, faction) then return false end
+	return t.Id ~= "Release" or (data ~= nil and Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths))
+end
+
 local function pickWeighted(list)
 	local total = 0
 	for _, t in list do
@@ -260,7 +266,7 @@ local function newQuest(player, kind, others)
 	local candidates, preferred = {}, {}
 	for _, row in (if band then band.Dailies else Config.Quests.Templates) do
 		local rt = type(row) == "table" and TEMPLATE_BY_ID[row.Id]
-		if rt and templateFitsFaction(rt, faction) and (not rt.PvP or pvpAllowed) then
+		if rt and templateFitsNow(rt, faction, data) and (not rt.PvP or pvpAllowed) then
 			table.insert(candidates, row)
 			if not otherIds[row.Id] then
 				table.insert(preferred, row)
@@ -372,6 +378,26 @@ local function ensureSlots(player, data)
 		end
 	end
 	data.Quests = fixed
+end
+
+-- unfinished quests the player cannot do now (another side's, or A23-71 a skill row before the first skill) are remade
+local function remakeUnfit(player, data, faction)
+	if type(data.Quests) ~= "table" then return end
+	local quests = data.Quests
+	for i = 1, #quests do
+		local q = quests[i]
+		if isValidQuest(q) and not isComplete(q) and not templateFitsNow(TEMPLATE_BY_ID[q.Id], faction, data) then
+			local nq = newQuest(player, q.Kind, othersExcept(quests, i))
+			if q.Kind == "Daily" then
+				-- CR-L12: a remade daily keeps the reward it had (a rebirth must not shrink it to Lv1 here;
+				-- claiming caps it to the current level anyway: CR-M6)
+				nq.RewardGold = math.max(nq.RewardGold, math.floor(num(q.RewardGold)))
+				nq.RewardXP = math.max(nq.RewardXP, math.floor(num(q.RewardXP)))
+			end
+			quests[i] = nq
+			dirty[player] = true
+		end
+	end
 end
 
 ------------------------------------------------------------------ tutorial (A4 / A5)
@@ -990,6 +1016,7 @@ local function onPlayerReady(player, data)
 	-- Never reset the saved TutorialKills here: a reconnect can have an unclaimed completed quest.
 
 	ensureSlots(player, data)
+	remakeUnfit(player, data, getFaction(player)) -- A23-71: a skill daily kept from before the Lv5 rule
 	runDayCheck(player)
 	tryTutorial(player) -- pending dialogue opens once when choices and a living character are ready
 	publish(player)
@@ -1095,23 +1122,9 @@ end
 local function onFactionChanged(player, newFaction)
 	dirty[player] = true -- 3rd idea round #3: the welcome row names the side's guide
 	local data = getData(player)
-	if not data or type(data.Quests) ~= "table" then return end
+	if not data then return end
 	if type(newFaction) ~= "string" then newFaction = getFaction(player) end
-	local quests = data.Quests
-	for i = 1, #quests do
-		local q = quests[i]
-		if isValidQuest(q) and not isComplete(q) and not templateFitsFaction(TEMPLATE_BY_ID[q.Id], newFaction) then
-			local nq = newQuest(player, q.Kind, othersExcept(quests, i))
-			if q.Kind == "Daily" then
-				-- CR-L12: a remade daily keeps the reward it had (a rebirth must not shrink it to Lv1 here;
-				-- claiming caps it to the current level anyway: CR-M6)
-				nq.RewardGold = math.max(nq.RewardGold, math.floor(num(q.RewardGold)))
-				nq.RewardXP = math.max(nq.RewardXP, math.floor(num(q.RewardXP)))
-			end
-			quests[i] = nq
-			dirty[player] = true
-		end
-	end
+	remakeUnfit(player, data, newFaction)
 end
 
 -- dailies keep their stored rewards (capped to the current level when claimed: CR-M6); extras are regenerated

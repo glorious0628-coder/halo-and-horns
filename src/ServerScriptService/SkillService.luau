@@ -15,9 +15,10 @@
 --   a manual cast with Config.Skills.PvPZX on (CombatService.ComputePvPHit x Mult through DamageWindow, like Q). Pull
 --   (manual only) / Push through MonsterService.Displace. Halo heals allies within HealRadius of the caster, Horns steal
 --   life (both through DamageWindow, CombatService.Kit). CombatService.Released fires with Slot / MonstersHit / Auto.
---   Slots (saved SkillSlots 1..3, mirrored, never lowered): Q from the start, Z at Unlock.Z (Lv5), X at Unlock.X (Lv8),
---   all three after a rebirth; an old save catches up at PlayerReady. Z / X work only while Config.Skills.ZEnabled /
---   XEnabled (Studio tests until the 10/20 decision); a newly opened slot sends Fx "SkillUnlocked" { Slot } only then.
+--   Slots (saved SkillSlots 0..3, mirrored, never lowered): none at the start, Q at Unlock.Q (Lv5), Z at Unlock.Z
+--   (Lv15), X at Unlock.X (Lv25) (A23-71), all three after a rebirth (Config.SkillSlotsFor); an old save catches up at
+--   PlayerReady. Z / X work only while Config.Skills.ZEnabled / XEnabled (Studio tests until the 10/20 decision); a
+--   newly opened slot sends Fx "SkillUnlocked" { Slot } only then (Q always).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -71,7 +72,7 @@ local function classOf(player)
 end
 
 local function slotsOf(player)
-	return math.clamp(math.floor(num(player:GetAttribute("SkillSlots"), 1)), 1, 3)
+	return math.clamp(math.floor(num(player:GetAttribute("SkillSlots"), 0)), 0, 3) -- A23-71: 0 = no skill yet
 end
 
 local function flagOn(slot)
@@ -406,15 +407,9 @@ function SkillService.AutoCast(player)
 	return SkillService.Cast(player, "Z", true)
 end
 
------------------------------------------------------------------- slots (Lv5 Z, Lv8 X, all after a rebirth)
+------------------------------------------------------------------ slots (A23-71: Q Lv5, Z Lv15, X Lv25, all after a rebirth)
 local function slotsFor(player)
-	if num(player:GetAttribute("Rebirths")) >= 1 then return 3 end
-	local level = num(player:GetAttribute("Level"), 1)
-	local unlock = K.Unlock or {}
-	local n = 1
-	if level >= num(unlock.Z, 5) then n += 1 end
-	if level >= num(unlock.X, 8) then n += 1 end
-	return n
+	return Config.SkillSlotsFor(num(player:GetAttribute("Level"), 1), num(player:GetAttribute("Rebirths")))
 end
 
 -- raises the saved SkillSlots to what the level / rebirths allow (never lowers it); announce = the new-slot Fx

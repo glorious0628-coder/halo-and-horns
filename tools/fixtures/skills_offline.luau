@@ -14,6 +14,9 @@ local function skillWorld(o)
 	local w = bareWorld({ Hit = o.Hit })
 	local K = w.Config.Skills
 	K.ZEnabled, K.XEnabled, K.PvPZX = o.Z == true, o.X == true, o.PvP == true
+	-- A23-71 moved the unlocks to Q Lv5 / Z Lv15 / X Lv25 (the "slots" group runs those: o.RealUnlock). The shape, damage
+	-- and auto groups keep their SKL-2 heroes (Lv5 = Q + Z, Lv9 = all three) with the SKL-2 unlock levels
+	if not o.RealUnlock then K.Unlock = { Q = 1, Z = 5, X = 8 } end
 	w.Rel = {}
 	w.Combat.Released:Connect(function(p, info) table.insert(w.Rel, { P = p, Info = info }) end)
 	-- a ready player with MP (the attribute the skills read); jo as w:Join plus Mana
@@ -69,54 +72,99 @@ local function zDealt(w, p, mult)
 	return w.Util.RoundDamage(w.Combat.ComputeMonsterHit(p, false) * mult)
 end
 
------------------------------------------------------------------- slots
+------------------------------------------------------------------ slots (A23-71: no skill at the start, Q Lv5, Z Lv15, X Lv25)
 runGroup("slots", function()
 	local d0 = C0.Data.Defaults
-	check(d0.SkillSlots == 1 and table.find(C0.Data.Mirrored, "SkillSlots") ~= nil, "a new save has 1 slot (Q), mirrored",
-		show({ d0.SkillSlots }))
+	check(d0.SkillSlots == 0 and d0.SkillsA71 == true and table.find(C0.Data.Mirrored, "SkillSlots") ~= nil,
+		"a new save has no skill yet (0 slots), follows the A23-71 rule, mirrored", show({ d0.SkillSlots, d0.SkillsA71 }))
 	local U = C0.Skills.Unlock
-	check(U.Q == 1 and U.Z == 5 and U.X == 8, "Q Lv1, Z Lv5, X Lv8 (SKL-1)", show(U))
-	local w = skillWorld({ Z = true })
+	check(U.Q == 5 and U.Z == 15 and U.X == 25, "A23-71: Q Lv5, Z Lv15, X Lv25", show(U))
+	local F = C0.SkillSlotsFor
+	check(F(1, 0) == 0 and F(4, 0) == 0 and F(5, 0) == 1 and F(14, 0) == 1 and F(15, 0) == 2 and F(24, 0) == 2
+		and F(25, 0) == 3 and F(99, 0) == 3 and F(1, 1) == 3 and F(nil, nil) == 0,
+		"Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+		show({ F(1, 0), F(4, 0), F(5, 0), F(14, 0), F(15, 0), F(24, 0), F(25, 0), F(1, 1) }))
+	local w = skillWorld({ Z = true, RealUnlock = true })
 	local p1 = w:Hero(1, { Level = 1 })
 	local p4 = w:Hero(2, { Level = 4 })
 	local p5 = w:Hero(3, { Level = 5 })
-	local p8 = w:Hero(4, { Level = 9 })
+	local p15 = w:Hero(4, { Level = 15 })
+	local p25 = w:Hero(7, { Level = 25 })
 	local pr = w:Hero(5, { Level = 1, Data = { Rebirths = 1 } })
-	local pk = w:Hero(6, { Level = 1, Data = { SkillSlots = 3 } }) -- reached Lv8 before a free class change reset
-	check(p1:GetAttribute("SkillSlots") == 1 and p4:GetAttribute("SkillSlots") == 1 and p5:GetAttribute("SkillSlots") == 2
-		and p8:GetAttribute("SkillSlots") == 3, "old saves catch up at PlayerReady: Lv1 1, Lv4 1, Lv5 2, Lv9 3",
-		show({ p1:GetAttribute("SkillSlots"), p4:GetAttribute("SkillSlots"), p5:GetAttribute("SkillSlots"), p8:GetAttribute("SkillSlots") }))
-	check(pr:GetAttribute("SkillSlots") == 3 and w.Data[pr].SkillSlots == 3, "a reborn player has all three", pr:GetAttribute("SkillSlots"))
-	check(pk:GetAttribute("SkillSlots") == 3, "slots are never taken away (Lv1 after a level reset keeps 3)", pk:GetAttribute("SkillSlots"))
+	local pk = w:Hero(6, { Level = 1, Data = { SkillSlots = 3 } }) -- reached Lv25 before a free class change reset
+	local function slots(p) return p:GetAttribute("SkillSlots") end
+	check(slots(p1) == 0 and slots(p4) == 0 and slots(p5) == 1 and slots(p15) == 2 and slots(p25) == 3,
+		"saves catch up at PlayerReady: Lv1 0, Lv4 0, Lv5 1, Lv15 2, Lv25 3",
+		show({ slots(p1), slots(p4), slots(p5), slots(p15), slots(p25) }))
+	check(slots(pr) == 3 and w.Data[pr].SkillSlots == 3, "a reborn player has all three", slots(pr))
+	check(slots(pk) == 3, "slots are never taken away (Lv1 after a level reset keeps 3)", slots(pk))
 	local f0 = #w.Fx
 	check(#w:FxOf("SkillUnlocked", 0) == 0, "no unlock notice for a catch-up at join", #w:FxOf("SkillUnlocked", 0))
-	-- level up: Lv4 -> 5 opens Z (the flag is on: the notice); Lv7 -> 8 opens X (X is off: saved, no notice)
+	-- before Lv5: Q is refused ('Locked', no MP), the old Release remote too
+	w:Monster("Slime", 4, 0, 9999)
+	w:Use(p1, "Q")
+	check(w:Count("Q") == 0 and w:Press(p1) == "Q:Locked" and w:ManaSpent(p1) == 0, "Lv1: Q is locked ('Locked'), no MP",
+		show({ w:Count("Q"), w:Press(p1), w:ManaSpent(p1) }))
+	w:Advance(0.6)
+	w.Net.Get("Release").OnServerEvent:Fire(p1)
+	w:Flush()
+	check(w:Count("Q") == 0 and w:ManaSpent(p1) == 0, "Lv1: the old Release remote is refused too", w:Count("Q"))
+	-- level up: Lv4 -> 5 opens Q (always announced); 14 -> 15 opens Z (ZEnabled: announced); 24 -> 25 opens X (XEnabled
+	-- off: saved, no notice)
 	w.PS.SetStat(p4, "Level", 5)
 	w.Registry.ProgressionService.LeveledUp:Fire(p4, 5)
 	local un = w:FxOf("SkillUnlocked", f0)
-	check(p4:GetAttribute("SkillSlots") == 2 and w.Data[p4].SkillSlots == 2 and #un == 1 and un[1].Player == p4
-		and un[1].Data.Slot == "Z", "Lv5: Z opens with the 'new skill' notice (ZEnabled)", show({ p4:GetAttribute("SkillSlots"), #un }))
-	w.PS.SetStat(p4, "Level", 8)
-	w.Registry.ProgressionService.LeveledUp:Fire(p4, 8)
-	check(p4:GetAttribute("SkillSlots") == 3 and #w:FxOf("SkillUnlocked", f0) == 1,
-		"Lv8: X opens and is saved, no notice while XEnabled is off", show({ p4:GetAttribute("SkillSlots"), #w:FxOf("SkillUnlocked", f0) }))
+	check(slots(p4) == 1 and w.Data[p4].SkillSlots == 1 and #un == 1 and un[1].Player == p4 and un[1].Data.Slot == "Q",
+		"Lv5: Q opens with the 'new skill' notice", show({ slots(p4), #un, un[1] and un[1].Data.Slot }))
+	w:Advance(0.6)
+	w:Use(p4, "Q")
+	check(w:Count("Q") == 1, "Lv5: Q casts", w:Count("Q"))
+	w.PS.SetStat(p4, "Level", 15)
+	w.Registry.ProgressionService.LeveledUp:Fire(p4, 15)
+	un = w:FxOf("SkillUnlocked", f0)
+	check(slots(p4) == 2 and #un == 2 and un[2].Data.Slot == "Z", "Lv15: Z opens with the notice (ZEnabled)",
+		show({ slots(p4), #un }))
+	w.PS.SetStat(p4, "Level", 25)
+	w.Registry.ProgressionService.LeveledUp:Fire(p4, 25)
+	check(slots(p4) == 3 and #w:FxOf("SkillUnlocked", f0) == 2, "Lv25: X opens and is saved, no notice while XEnabled is off",
+		show({ slots(p4), #w:FxOf("SkillUnlocked", f0) }))
+	-- a jump over two unlocks at once (Lv4 -> 16): Q and Z, in order
+	local pj = w:Hero(8, { Level = 4 })
+	local f1 = #w.Fx
+	w.PS.SetStat(pj, "Level", 16)
+	w.Registry.ProgressionService.LeveledUp:Fire(pj, 16)
+	local uj = w:FxOf("SkillUnlocked", f1)
+	check(slots(pj) == 2 and #uj == 2 and uj[1].Data.Slot == "Q" and uj[2].Data.Slot == "Z", "Lv4 -> 16 at once: Q then Z",
+		show({ slots(pj), #uj }))
 	w.PS.SetStat(p1, "Rebirths", 1)
 	w.Registry.ProgressionService.Rebirthed:Fire(p1, 1)
-	check(p1:GetAttribute("SkillSlots") == 3, "a rebirth opens all three", p1:GetAttribute("SkillSlots"))
-	-- the flag off: a Lv5 player's slot is saved but Z is refused
-	local w2 = skillWorld({ Z = false })
-	local q5 = w2:Hero(1, { Level = 5 })
-	check(q5:GetAttribute("SkillSlots") == 2, "ZEnabled off: the slot is still saved", q5:GetAttribute("SkillSlots"))
+	check(slots(p1) == 3, "a rebirth opens all three", slots(p1))
+	-- the flag off: a Lv15 player's Z slot is saved but Z is refused
+	local w2 = skillWorld({ Z = false, RealUnlock = true })
+	local q15 = w2:Hero(1, { Level = 15 })
+	check(q15:GetAttribute("SkillSlots") == 2, "ZEnabled off: the slot is still saved", q15:GetAttribute("SkillSlots"))
 	w2:Monster("Slime", 8, 0, 9999)
-	w2:Use(q5, "Z")
-	check(w2:Count("Z") == 0 and w2:Press(q5) == "Z:Locked" and w2:ManaSpent(q5) == 0, "ZEnabled off: Z is refused ('Locked'), no MP",
-		show({ w2:Count("Z"), w2:Press(q5) }))
-	-- not unlocked yet: Lv4
-	local w3 = skillWorld({ Z = true })
-	local q4 = w3:Hero(1, { Level = 4 })
+	w2:Use(q15, "Z")
+	check(w2:Count("Z") == 0 and w2:Press(q15) == "Z:Locked" and w2:ManaSpent(q15) == 0, "ZEnabled off: Z is refused ('Locked'), no MP",
+		show({ w2:Count("Z"), w2:Press(q15) }))
+	-- not unlocked yet: Lv14
+	local w3 = skillWorld({ Z = true, RealUnlock = true })
+	local q14 = w3:Hero(1, { Level = 14 })
 	w3:Monster("Slime", 8, 0, 9999)
-	w3:Use(q4, "Z")
-	check(w3:Count("Z") == 0 and w3:Press(q4) == "Z:Locked", "Lv4: Z is locked", w3:Press(q4))
+	w3:Use(q14, "Z")
+	check(w3:Count("Z") == 0 and w3:Press(q14) == "Z:Locked", "Lv14: Z is locked", w3:Press(q14))
+	-- auto combat before the first skill: it swings, but never casts
+	local w4 = skillWorld({ Z = true, RealUnlock = true })
+	local a1 = w4:Hero(1, { Level = 3, Tier = 1, Mask = 1, Class = "Warrior",
+		Attrs = { AutoCombatUnlocked = true, AutoCombatEnabled = true } })
+	w4:Monster("Slime", 4, 0, 99999)
+	w4:Monster("Slime", 6, 0, 99999)
+	for _ = 1, 4 do
+		w4:AutoTick()
+		w4:Advance(0.6)
+	end
+	check(w4:Count("Q") == 0 and w4:Count("Z") == 0 and w4:ManaSpent(a1) == 0 and #w4:FxOf("SkillPress", 0) == 0,
+		"auto combat at Lv3: no skill cast, no MP, no press answer", show({ w4:Count("Q"), w4:Count("Z"), w4:ManaSpent(a1) }))
 end)
 
 ------------------------------------------------------------------ the remote, the gap and the queue

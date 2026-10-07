@@ -677,6 +677,71 @@ local function said(w, p, from, text)
 	return false
 end
 
+-- A23-71 (user 2026-10-07): the first skill comes at Lv5. M1_3 / M2_5 wait for it with a 'Lv5 · Learn your first
+-- skill' step, N1 (a skill sub) opens at Lv5, and a skill step / trial before the first skill says when it comes
+runGroup("a23-71 skill quests", function()
+	local w = townWorld({ Npcs = false })
+	local Q = w.Config.Skills.Unlock.Q
+	check(Q == 5, "the first skill at Lv5", Q)
+	for _, id in { "M1_3", "M2_5" } do
+		local steps = SQ0.Defs[id].Steps
+		check(steps[1].Obj.Type == "Level" and steps[1].Obj.Level == Q and steps[1].ShortName == "Reach Lv 5"
+			and steps[2].Obj.Type == "SkillHit", id .. ": a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)",
+			show(steps[1]))
+	end
+	check(SQ0.Defs.N1.Requires.Level == Q, "N1 (a skill sub) opens at Lv5", show(SQ0.Defs.N1.Requires))
+	local function story(main, subs, done)
+		return { Main = main or { Id = "" }, Subs = subs or {}, Done = done or {}, Pick = {}, First = { Migrated = true } }
+	end
+	-- M1_3 at Lv3: the row waits for Lv5; at Lv5 the skill hits begin (no 'Skills come' tail any more)
+	local p, d = w:Join(7101, { Faction = "Halo", Level = 3,
+		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+	w.Story.Refresh(p)
+	w:Flush()
+	local row = w.Story.MainRow(p, d)
+	check(row and row.Text == "Lv5 · Learn your first skill (now Lv3)" and row.ShortName == "Reach Lv 5" and d.Story.Main.St == 1,
+		"M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'", show(row and { row.Text, row.ShortName }))
+	w.PS.SetStat(p, "Level", 5)
+	w.Story.Refresh(p)
+	w:Flush()
+	row = w.Story.MainRow(p, d)
+	check(d.Story.Main.St == 2 and row and row.Text == "Hit monsters with a skill" and row.Target == 3,
+		"Lv5: the skill hits begin, no 'Skills come' tail", show(row and { d.Story.Main.St, row.Text, row.Target }))
+	-- a Lv7 who reaches M1_3 passes the Lv5 step at once
+	local p7, d7 = w:Join(7102, { Faction = "Horns", Level = 7,
+		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+	w.Story.Refresh(p7)
+	w:Flush()
+	check(d7.Story.Main.St == 2, "a Lv7 at M1_3: straight to the skill hits", d7.Story.Main.St)
+	-- S0's trials (b = a skill hit on 2) before the first skill: the row says when the skill comes
+	local function s0(level, t, extra)
+		local data = { Story = story(nil, { S0 = { St = 2, P = 0, T = t, Claim = false } }) }
+		for k, v in extra or {} do data[k] = v end
+		local sp, sd = w:Join(7110 + level * 10 + (extra and 1 or 0) + (t.b and 2 or 0), { Faction = "Halo", Level = level, Data = data })
+		return rowOf(w, sp, sd, "S0")
+	end
+	local r2 = s0(2, { a = 3 })
+	check(r2 and r2.Text == "The shard's test · Skills come at Lv5" and r2.Progress == 1 and r2.Target == 3,
+		"S0 at Lv2 (skill trial open): 'The shard's test · Skills come at Lv5'", show(r2 and { r2.Text, r2.Progress }))
+	local rb = s0(2, { a = 3, b = 1 })
+	check(rb and rb.Text == "The shard's test", "the skill trial already done: no tail", rb and rb.Text)
+	local r5 = s0(5, { a = 3 })
+	check(r5 and r5.Text == "The shard's test", "Lv5 (Q learned): no tail", r5 and r5.Text)
+	local rk = s0(2, { a = 3 }, { SkillSlots = 1 })
+	check(rk and rk.Text == "The shard's test", "a Lv2 who kept Q (saved slots 1): no tail", rk and rk.Text)
+	-- N1 (Neutral, after M1_4; with the guild switch on, A23-57): not before Lv5
+	w.Config.Features.NeutralFaction = true
+	local n3, nd3 = w:Join(7120, { Faction = "Neutral", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true,
+		M1_3 = true, M1_4 = true }) } })
+	w.Story.Refresh(n3)
+	w:Flush()
+	check(w:Track(nd3, "N1") == nil, "a Neutral Lv3 after M1_4: no N1 yet")
+	w.PS.SetStat(n3, "Level", 5)
+	w.Story.Refresh(n3)
+	w:Flush()
+	check(w:Track(nd3, "N1") ~= nil, "at Lv5: N1 is offered")
+end)
+
 runGroup("e1-pick-gate", function()
 	local w = townWorld()
 	local CORE = { Text = "Visit the Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } }
