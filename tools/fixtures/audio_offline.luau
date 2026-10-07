@@ -160,13 +160,14 @@ local WORKSPACE = { FindFirstChild = function(_, n) if n == "Monsters" then retu
 
 local ME = 111
 local ROOT = { Position = vec(0, 3, 0), IsA = function(_, c) return c == "BasePart" end }
-local HUM = { Health = 100, MaxHealth = 100, IsA = function(_, c) return c == "Humanoid" end }
+local HUM = { Health = 100, MaxHealth = 100, IsA = function(_, c) return c == "Humanoid" end, StateChanged = signal() }
 local CHAR = {
 	FindFirstChild = function(_, n) if n == "HumanoidRootPart" then return ROOT end return nil end,
 	FindFirstChildOfClass = function(_, c) if c == "Humanoid" then return HUM end return nil end,
+	WaitForChild = function(_, n) if n == "Humanoid" then return HUM end return nil end,
 }
 -- AutoCombatEnabled and the potion counts arrive with the save (not there at the join)
-local PLAYER = attrHolder({ UserId = ME, Name = "Me", Character = CHAR,
+local PLAYER = attrHolder({ UserId = ME, Name = "Me", Character = CHAR, CharacterAdded = signal(),
 	Attr = { Faction = "Halo", DataLoaded = true, Honor = 3, Infamy = 0 } })
 local GAMESTATE = attrHolder({ Name = "GameState", Attr = { PumpkinKingActive = false, GhostKingActive = false, GooseActive = false } })
 local REMOTES = { Fx = { OnClientEvent = signal() }, Notify = { OnClientEvent = signal() }, Quests = { OnClientEvent = signal() } }
@@ -258,10 +259,30 @@ do
 	p = swing({ Manual = false })
 	check(g, "an auto swing is marked Auto (played at AutoMul)", p[1] and p[1].Auto == true, encode(p))
 	p = swing({ Class = "Archer", LaunchDelay = 0.22 })
-	check(g, "Archer: SwingArcher when the arrow leaves", p[1] and p[1].Event == "SwingArcher" and near(p[1].At, 0.22), encode(p))
-	p = swing({ Class = "Mage" })
-	check(g, "Mage: SwingMage at once", p[1] and p[1].Event == "SwingMage" and p[1].At == 0, encode(p))
+	check(g, "Archer: one SwingArrow when the arrow leaves (sound_gaps A1)", #p == 1 and p[1].Event == "SwingArrow"
+		and near(p[1].At, 0.22), encode(p))
+	p = swing({ Class = "Archer", LaunchDelay = 0.22, Hits = { hit(80, 0) } })
+	check(g, "Archer: one target = one arrow", #p == 2 and p[1].Event == "SwingArrow" and p[2].Event == "HitHeavy", encode(p))
+	p = swing({ Class = "Archer", LaunchDelay = 0.22, Hits = { hit(80, 0), hit(40, 0) } })
+	local second = p[2]
+	check(g, "Archer: 2+ targets = a second arrow 0.068 s later at 1.10x and 0.85 volume (§4-2 5)", p[1].Event == "SwingArrow"
+		and second ~= nil and second.Event == "SwingArrow" and near(second.At, 0.22 + 0.068) and near(second.SpeedMul, 1.1)
+		and near(second.Volume, 0.85), encode(p))
+	p = swing({ Class = "Mage", LaunchDelay = 0.3 })
+	check(g, "Halo mage: SwingMageHalo, its peak (0.20 s in) on the launch (sound_gaps A2)", p[1] and p[1].Event == "SwingMageHalo"
+		and near(p[1].At, 0.1), encode(p))
+	ctx.Faction = "Horns"
+	p = swing({ Class = "Mage", LaunchDelay = 0.3 })
+	check(g, "Horns mage: SwingMageHorns", p[1] and p[1].Event == "SwingMageHorns" and near(p[1].At, 0.1), encode(p))
+	ctx.Faction = "Halo"
+	local keep = A.Files.SwingMageHalo
+	A.Files.SwingMageHalo = ""
+	p = swing({ Class = "Mage", LaunchDelay = 0.3 })
+	check(g, "a faction file not uploaded yet: the old SwingMage at once", p[1] and p[1].Event == "SwingMage" and p[1].At == 0, encode(p))
+	A.Files.SwingMageHalo = keep
 	ctx.Faction = "Neutral"
+	p = swing({ Class = "Mage", LaunchDelay = 0.3 })
+	check(g, "the Guild's alchemist: the old SwingMage at once", p[1] and p[1].Event == "SwingMage" and p[1].At == 0, encode(p))
 	check(g, "Neutral Alchemist: 0.9x", near(swing({ Class = "Mage" })[1].SpeedMul, 0.9), "")
 	check(g, "Neutral Blacksmith: 0.85x", near(swing({ Class = "Warrior" })[1].SpeedMul, 0.85), "")
 	p = swing({ Class = "Archer", Style = "PetHeadbutt" })
@@ -287,11 +308,20 @@ do
 	check(g, "a goblin hit = HitHeavy", find(swing({ Hits = { hit(80, 0) } }), "HitHeavy") ~= nil, "")
 	check(g, "a little ghost hit = HitSoft", find(swing({ Hits = { hit(120, 0) } }), "HitSoft") ~= nil, "")
 	p = swing({ Hits = { hit(10, 0, true) } })
-	check(g, "a critical slime hit = HitHeavy", find(p, "HitHeavy") ~= nil and find(p, "HitSoft") == nil, events(p))
+	check(g, "a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)", events(p) == "SwingWarrior,HitSoft,HitCrit"
+		and near(find(p, "HitCrit").At, 0.23), events(p))
+	p = swing({ Hits = { hit(10, 0), hit(11, 1, true) } })
+	check(g, "a crit on a later target adds no layer", events(p) == "SwingWarrior,HitSoft", events(p))
 	p = swing({ Hits = { hit(10, 0), hit(11, 1) } })
 	check(g, "two slimes = one HitSoft", events(p) == "SwingWarrior,HitSoft", events(p))
 	p = swing({ Hits = { hit(10, 0), hit(11, 1), hit(9, -1) } })
-	check(g, "three monsters in one swing = one HitHeavy", events(p) == "SwingWarrior,HitHeavy", events(p))
+	h = find(p, "HitSoft")
+	check(g, "three slimes = one HitSoft, louder and lower (x1.25, x0.95)", events(p) == "SwingWarrior,HitSoft" and h ~= nil
+		and near(h.Volume, 1.25) and near(h.SpeedMul, 0.95), encode(p))
+	h = find(swing({ Hits = { hit(10, 0) } }), "HitSoft")
+	check(g, "one slime: the plain volume and speed", h ~= nil and near(h.Volume, 1) and h.SpeedMul == nil, encode(h or {}))
+	h = find(swing({ Hits = { hit(120, 0) } }), "HitSoft")
+	check(g, "a ghost squishes higher (x1.15)", h ~= nil and near(h.SpeedMul, 1.15), encode(h or {}))
 	p = swing({ Hits = { hit(0, 0, false, "P") } })
 	check(g, "a player hit = HitHeavy", find(p, "HitHeavy") ~= nil, events(p))
 	p = swing({ Hits = { hit(0, 0, false, "G") } })
@@ -315,8 +345,10 @@ do
 	end
 	local p = rel()
 	local s = find(p, "SkillCast")
-	check(g, "my skill = SkillCast with my class's swing file", s ~= nil and s.File == "SwingMage", encode(p))
-	check(g, "a Q skill has no faction layer", find(p, "SkillHalo") == nil and find(p, "SkillHorns") == nil, events(p))
+	check(g, "my skill = SkillCast with my class's swing file (a Halo mage: SwingMageHalo)", s ~= nil and s.File == "SwingMageHalo", encode(p))
+	check(g, "a Q skill also gets my faction's layer (§4-2 4: Q / Z / X)", find(p, "SkillHalo") ~= nil, events(p))
+	s = find(rel({ LaunchDelay = 0.3 }), "SkillCast")
+	check(g, "the cast sounds at the launch, not at the press", s ~= nil and near(s.At, 0.3), encode(s or {}))
 	check(g, "X as Halo adds SkillHalo", find(rel({ Slot = "X" }), "SkillHalo") ~= nil, "")
 	ctx.Faction = "Horns"
 	check(g, "X as Horns adds SkillHorns", find(rel({ Slot = "X" }), "SkillHorns") ~= nil, "")
@@ -331,6 +363,24 @@ do
 	p = rel({ UserId = 222, Pos = vec(30, 3, 0) })
 	s = find(p, "SkillCast")
 	check(g, "another player's skill near me: Others, no layer", s ~= nil and s.Others == true and #p == 1, encode(p))
+	-- sound_gaps B13: a Z / X cast (SkillService Fx "Skill": no launch / contact times, From = the caster)
+	local function cast(t)
+		local d = { UserId = ME, Class = "Warrior", Slot = "Z", From = vec(5, 3, 0), Center = vec(15, 3, 0), Hits = { hit(80, 0) } }
+		for k, v in t or {} do d[k] = v end
+		return Audio.Plan("Skill", d, ctx)
+	end
+	p = cast()
+	s = find(p, "SkillCast")
+	local hh = find(p, "HitHeavy")
+	check(g, "a Z cast: SkillCast with my class file at once + my faction layer + its hit right after", s ~= nil and s.File == "SwingWarrior"
+		and s.At == 0 and find(p, "SkillHalo") ~= nil and hh ~= nil and near(hh.At, A.SkillContact), encode(p))
+	check(g, "an X cast too", find(cast({ Slot = "X" }), "SkillCast") ~= nil, "")
+	s = find(cast({ Auto = true }), "SkillCast")
+	check(g, "an auto Z / X cast is marked Auto", s ~= nil and s.Auto == true, encode(s or {}))
+	p = cast({ UserId = 222, From = vec(30, 3, 0) })
+	check(g, "another player's Z cast near me: Others, no layer", find(p, "SkillCast") ~= nil and find(p, "SkillCast").Others == true
+		and find(p, "SkillHalo") == nil, encode(p))
+	check(g, "another player's Z cast far away is silent", #cast({ UserId = 222, From = vec(90, 3, 0) }) == 0, "")
 end
 
 do
@@ -353,9 +403,15 @@ do
 	ctx.Combo = 1
 	check(g, "enhance success = ScrollSuccess", events(Audio.Plan("Enhance", { Success = true }, ctx)) == "ScrollSuccess", "")
 	check(g, "enhance failure = ScrollFail", events(Audio.Plan("Enhance", { Success = false }, ctx)) == "ScrollFail", "")
-	for _, k in { "Bank", "Upgrade", "Rare" } do
+	for _, k in { "Bank", "Rare" } do
 		check(g, "gold outside kills = GoldPickup", events(Audio.Plan(k, { Amount = 9 }, ctx)) == "GoldPickup", k)
 	end
+	local keepEquip = A.Files.Equip
+	A.Files.Equip = ""
+	check(g, "a weapon bought / equipped = GoldPickup until Equip is uploaded", events(Audio.Plan("Upgrade", {}, ctx)) == "GoldPickup", "")
+	A.Files.Equip = "rbxassetid://Equip"
+	check(g, "a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)", events(Audio.Plan("Upgrade", {}, ctx)) == "Equip", "")
+	A.Files.Equip = keepEquip
 	check(g, "my level up = LevelUp", events(Audio.Plan("LevelUp", { UserId = ME }, ctx)) == "LevelUp", "")
 	check(g, "another player's level up is silent", #Audio.Plan("LevelUp", { UserId = 222 }, ctx) == 0, "")
 	check(g, "a big hit (30% of my HP) = HurtBig", events(Audio.Plan("Hurt", { Amount = 30 }, ctx)) == "HurtBig", "")
@@ -369,10 +425,11 @@ end
 
 do
 	local g = "config"
-	local used = { "SwingWarrior", "SwingMage", "SwingArcher", "SwingTamer", "HitSoft", "HitHeavy", "KillPop", "ComboCoin",
-		"ComboMilestone", "LevelUp", "WindowOpen", "WindowClose", "Deny", "AutoOn", "AutoOff", "Purify", "Devour",
-		"PumpkinKing", "GhostKing", "GooseHonk", "QuestDone", "GoldPickup", "ScrollSuccess", "ScrollFail", "Tap",
-		"SkillCast", "SkillHalo", "SkillHorns", "HurtBig", "Potion", "QuestNew", "RankDown", "TalkBlip" }
+	local used = { "SwingWarrior", "SwingMage", "SwingMageHalo", "SwingMageHorns", "SwingArrow", "SwingTamer", "HitSoft",
+		"HitHeavy", "HitCrit", "KillPop", "ComboCoin", "ComboMilestone", "LevelUp", "PowerUp", "Jump", "WindowOpen", "WindowClose",
+		"Deny", "AutoOn", "AutoOff", "Purify", "Devour", "PumpkinKing", "GhostKing", "GooseHonk", "GooseArrive", "QuestDone",
+		"GoldPickup", "ScrollSuccess", "ScrollFail", "Tap", "SkillCast", "SkillHalo", "SkillHorns", "HurtBig", "Potion", "QuestNew",
+		"RankDown", "TalkBlip", "Equip", "Spend", "RankUp", "SkillLearn", "SkillReady" }
 	for _, e in used do
 		local d = A.Sounds[e]
 		local files = d and (d.Files or (d.File and { d.File })) or {}
@@ -394,11 +451,24 @@ do
 	check(g, "level up is the loudest (0.85)", near(vol("LevelUp"), 0.85) and near(biggest, 0.85), tostring(biggest))
 	check(g, "purify and devour are the same size", near(vol("Purify"), vol("Devour")), "")
 	check(g, "kings never under 0.85x", A.Sounds.PumpkinKing.Speed[1] >= 0.85 and A.Sounds.GhostKing.Speed[1] >= 0.85, "")
-	check(g, "both kings share one file", A.Sounds.PumpkinKing.File == A.Sounds.GhostKing.File, "")
+	check(g, "each king has its own file (sound_gaps A6)", A.Sounds.PumpkinKing.File == "PumpkinKing" and A.Sounds.GhostKing.File == "GhostKing", "")
+	check(g, "the kings hold the duck 1.6 s", near(A.Duck.SecondsBy.PumpkinKing, 1.6) and near(A.Duck.SecondsBy.GhostKing, 1.6), "")
+	check(g, "big hurts have their own file (sound_gaps A5)", A.Sounds.HurtBig.File == "HurtBig" and A.Files.HurtBig ~= "", "")
 	check(g, "duck: level up, both kings and scroll success", A.Duck.By.LevelUp and A.Duck.By.PumpkinKing
 		and A.Duck.By.GhostKing and A.Duck.By.ScrollSuccess and near(A.Duck.Mul, 0.5) and near(A.Duck.Seconds, 1.2), "")
 	check(g, "others 0.35x within 40 studs, 8 at once", near(A.OthersMul, 0.35) and A.OthersRange == 40 and A.MaxPlaying == 8, "")
 	check(g, "talk voices: the shard high, the Horns guide low", A.Talk.Default == 1 and A.Talk.Shard > 1 and A.Talk.Horns < 1, "")
+	-- sound_gaps A8: the Sound keys the server's Notify lines send all have an entry (silent until uploaded)
+	for _, k in { "Equip", "Spend", "RankUp", "QuestDone", "GoldPickup", "ScrollSuccess", "ScrollFail", "Deny" } do
+		check(g, "every Notify Sound key the server sends is a Config.Audio event", type(A.Sounds[k]) == "table", k)
+	end
+	check(g, "the archer swing is the arrow; the pet dash whistles", A.Swing.Archer == "SwingArrow" and A.Swing.PetDash == "SwingTamer", "")
+	check(g, "the faction mage files (Halo / Horns)", A.SwingFaction.Mage.Halo == "SwingMageHalo" and A.SwingFaction.Mage.Horns == "SwingMageHorns", "")
+	check(g, "purify takes its two files in turn", A.Sounds.Purify.Alternate == true and #A.Sounds.Purify.Files == 2, "")
+	check(g, "round-4 uploads wired (arrow, mage files, hits, crit, power-up, jump, purify b)", A.Files.SwingArrow ~= ""
+		and A.Files.SwingMageHalo ~= "" and A.Files.SwingMageHorns ~= "" and A.Files.HitSoft ~= "" and A.Files.HitHeavy ~= ""
+		and A.Files.HitCrit ~= "" and A.Files.PowerUp ~= "" and A.Files.Jump ~= "" and A.Files.Purify_b ~= "", "")
+	check(g, "the goose arrival ducks the combat sounds", A.Duck.By.GooseArrive == true, "")
 end
 
 ----------------------------------------------------------------- runtime
@@ -432,7 +502,7 @@ do
 	Audio.Play("HitSoft", { Auto = true })
 	p = PLAYS[1]
 	check(g, "auto plays at AutoMul", p and near(p.Volume, A.Sounds.HitSoft.Volume * A.AutoMul), encode(p or {}))
-	check(g, "HitSoft picks one of its two files", p and (p.Id == "rbxassetid://HitSoft1" or p.Id == "rbxassetid://HitSoft2"), encode(p or {}))
+	check(g, "HitSoft plays its one round-4 file", p and p.Id == "rbxassetid://HitSoft", encode(p or {}))
 	waitClock(0.06)
 	Audio.Play("HitSoft", { Others = true })
 	p = PLAYS[2]
@@ -461,8 +531,8 @@ do
 	table.clear(PLAYS)
 	Audio.Play("PumpkinKing")
 	p = PLAYS[1]
-	check(g, "the Pumpkin King rings the king bell at 0.90-0.95x", p and p.Id == "rbxassetid://KingBell" and p.Speed >= 0.9 - 1e-9
-		and p.Speed <= 0.95 + 1e-9, encode(p or {}))
+	check(g, "the Pumpkin King plays its own file at 1.0x (sound_gaps A6)", p and p.Id == "rbxassetid://PumpkinKing"
+		and near(p.Speed, 1), encode(p or {}))
 	local combatGroup = nil
 	for _, s in SOUNDS_MADE do
 		if s.SoundGroup and s.SoundGroup.Name == "SfxCombat" then combatGroup = s.SoundGroup end
@@ -470,7 +540,15 @@ do
 	check(g, "a big moment ducks the combat sounds to 0.5", combatGroup ~= nil and near(combatGroup.Volume, 0.5),
 		tostring(combatGroup and combatGroup.Volume))
 	runDelays(1.3)
-	check(g, "and they come back after 1.2 s", combatGroup ~= nil and near(combatGroup.Volume, 1), tostring(combatGroup and combatGroup.Volume))
+	check(g, "a king holds the duck longer than 1.2 s (§4-2 10)", combatGroup ~= nil and near(combatGroup.Volume, 0.5),
+		tostring(combatGroup and combatGroup.Volume))
+	runDelays(1.7)
+	check(g, "and they come back after 1.6 s", combatGroup ~= nil and near(combatGroup.Volume, 1), tostring(combatGroup and combatGroup.Volume))
+	endAll()
+	Audio.Play("LevelUp")
+	local ducked = combatGroup ~= nil and near(combatGroup.Volume, 0.5)
+	runDelays(1.3)
+	check(g, "a level up ducks for 1.2 s only", ducked and near(combatGroup.Volume, 1), tostring(combatGroup and combatGroup.Volume))
 	waitClock(0.55) -- Deny played in the 8-at-once check: past its 0.5 s cooldown
 	table.clear(PLAYS)
 	check(g, "'No' (SkillBar) plays Deny", Audio.Play("No") == true and PLAYS[1] and PLAYS[1].Id == "rbxassetid://Deny", encode(PLAYS[1] or {}))
@@ -483,6 +561,33 @@ do
 	table.clear(PLAYS)
 	Audio.Talk("Horns")
 	check(g, "the Horns guide talks low", PLAYS[1] and PLAYS[1].Speed > 0.73 and PLAYS[1].Speed < 0.82, encode(PLAYS[1] or {}))
+	endAll()
+	-- sound_gaps A12: Purify takes its two files in turn (a skipped play never moves the turn)
+	local gap = A.Sounds.Purify.Gap
+	A.Sounds.Purify.Gap = 0
+	table.clear(PLAYS)
+	for _ = 1, 16 do
+		Audio.Play("Purify")
+		endAll()
+	end
+	local ids = {}
+	for i, pl in PLAYS do ids[i] = pl.Id end
+	local both = { ["rbxassetid://Purify"] = true, ["rbxassetid://Purify_b"] = true }
+	local turns = #ids == 16
+	for i = 1, #ids do
+		if not both[ids[i]] or (i > 1 and ids[i] == ids[i - 1]) then turns = false end
+	end
+	check(g, "purify alternates its two files (16 plays: a, b, a, b ...)", turns, encode(ids))
+	A.Sounds.Purify.Gap = gap
+	settings.Sfx = 0
+	Audio.Play("Purify")
+	settings.Sfx = 1
+	table.clear(PLAYS)
+	A.Sounds.Purify.Gap = 0
+	Audio.Play("Purify")
+	A.Sounds.Purify.Gap = gap
+	check(g, "a muted (skipped) purify keeps the turn", PLAYS[1] and PLAYS[1].Id == ids[#ids - 1],
+		encode({ PLAYS[1] and PLAYS[1].Id, ids[#ids - 1] }))
 	endAll()
 
 	-- listeners: what Audio.Play is asked for
@@ -544,7 +649,26 @@ do
 	GAMESTATE:SetAttribute("GhostKingActive", true)
 	check(g, "the Ghost King arrives -> GhostKing", last() == "GhostKing", tostring(last()))
 	GAMESTATE:SetAttribute("GooseActive", true)
-	check(g, "the golden goose appears -> GooseHonk", last() == "GooseHonk", tostring(last()))
+	check(g, "the golden goose appears -> GooseArrive (sound_gaps A7)", last() == "GooseArrive" and #asked == 3, tostring(last()))
+	GAMESTATE:SetAttribute("GooseActive", false)
+	clear()
+	Audio.Play = function(event, opts)
+		table.insert(asked, { Event = event, Opts = opts })
+		return event ~= "GooseArrive" -- no GooseArrive file yet
+	end
+	GAMESTATE:SetAttribute("GooseActive", true)
+	check(g, "no GooseArrive file yet: the honk stands in", #asked == 2 and asked[1].Event == "GooseArrive" and last() == "GooseHonk",
+		encode(asked))
+	Audio.Play = function(event, opts)
+		table.insert(asked, { Event = event, Opts = opts })
+		return true
+	end
+	clear()
+	HUM.StateChanged:Fire("HumanoidStateType.Running", "HumanoidStateType.Jumping")
+	check(g, "my jump -> Jump (sound_gaps A11)", last() == "Jump" and #asked == 1, encode(asked))
+	HUM.StateChanged:Fire("HumanoidStateType.Jumping", "HumanoidStateType.Freefall")
+	HUM.StateChanged:Fire("HumanoidStateType.Freefall", "HumanoidStateType.Landed")
+	check(g, "falling and landing are quiet", #asked == 1, encode(asked))
 	clear()
 
 	REMOTES.Notify.OnClientEvent:Fire({ Text = "Not enough gold", Kind = "bad" })

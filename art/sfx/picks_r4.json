@@ -1,5 +1,5 @@
 {
- "about": "검수 picks of round 4 (2026-10-07): batch 1 confirmed after the scene renders (efc2604), batches 2-3 = the 소리 만들기 recommendations (a5d9555), batch 4 = the recommendations (8efda17), batch 5 = SkillLearn sA (e351187). Files are byte copies of art/sfx/cand/<candidate>.wav (mono 48 kHz 16-bit, K-weighted loudest 100 ms = -17 LUFS, peak <= -2.5 dBFS).",
+ "about": "검수 picks of round 4 (2026-10-07): batch 1 confirmed after the scene renders (efc2604), batches 2-3 = the 소리 만들기 recommendations (a5d9555), batch 4 = the recommendations (8efda17), batch 5 = SkillLearn sA (e351187), batch 6 = Loot sA. Files are byte copies of art/sfx/cand/<candidate>.wav (mono 48 kHz 16-bit, K-weighted loudest 100 ms = -17 LUFS, peak <= -2.5 dBFS).",
  "upload": "pending: the next account uploads these wav files (Creator Hub, 'HH SFX <key>', Restricted, no Creator Store), then writes the ids into asset_ids.json 'ids' and sends them to 게임성 개발 1",
  "picks": {
   "SwingArrow": {
@@ -807,6 +807,22 @@
    "volume": 0.6,
    "replaces": "new (A23-71: a skill is learned at Lv5 / 15 / 25; play it about 1.1 s after LevelUp)",
    "made": "our recipe (tools/sfx_recipes.py / sfx_make.py): button pop 700 -> 1600 Hz + glass run A6-C7-D7-E7-G7 22 ms apart + held A6+E7 chord, 7 Hz shimmer",
+   "license": "our own synthesis"
+  },
+  "Loot": {
+   "file": "art/sfx/Loot.wav",
+   "candidate": "art/sfx/cand/Loot_sA.wav",
+   "batch": 6,
+   "sha256": "ca16155867bdefe2bbea052dc65491c60bb6f06af72f8ab2515b3c1838a7b717",
+   "bytes": 52844,
+   "verdict": "PASS",
+   "score": 100,
+   "durMs": 547.8,
+   "centroidHz": 3030,
+   "phoneDropDb": 0.01,
+   "volume": 0.45,
+   "replaces": "new (Fx Loot with a scroll or a weapon; a weapon may play it at 0.92x; materials / potions stay silent)",
+   "made": "our recipe (tools/sfx_recipes.py / sfx_make.py): 3 paper-roll knocks 1.0 kHz (gaps 110 / 70 ms) + gleam 2.9 kHz with 8 Hz shimmer @170 ms + 1 sparkle grain",
    "license": "our own synthesis"
   }
  }

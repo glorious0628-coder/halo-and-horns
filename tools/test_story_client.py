@@ -94,8 +94,8 @@ MUTATIONS = [
     ("a speaker whose art id is empty still gets a slot", "panels",
      '\tif type(UIKit.ArtPart) == "function" and not UIKit.ArtPart(key) then return nil end\n', ""),
     ("Otto shows Fizzby's face", "config", 'Smith = "PortraitMerchantC"', 'Smith = "PortraitPotionMerchant"'),
-    ("the crown shard gets the guide's face", "config", "Portraits = { Smith = ",
-     'Portraits = { Shard = "PortraitGuideHalo", Smith = '),
+    ("the crown shard gets the guide's face", "config", 'Shard = "PTR_CrownShard"', 'Shard = "PortraitGuideHalo"'),
+    ("the goblins get a face", "config", 'Portraits = { Smith = ', 'Portraits = { Pip = "PortraitGuideHorns", Smith = '),
     ("no guide face when a step has no speaker", "config", ' Halo = "PortraitGuideHalo",\n', "\n"),
     # BB38 UiMetric (dev2 cfef90c): once per window per session, only UiIds, spaced Gap s apart
     ("a window counts twice", "panels", "or METRIC.Sent[id] or type(ids)", "or false or type(ids)"),

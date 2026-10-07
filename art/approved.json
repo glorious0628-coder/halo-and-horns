@@ -5717,5 +5717,266 @@
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --tol 28 --soft 6 + clean_haze --min-island 80; checked light/dark/magenta/green + PortraitFrame + 96px",
   "preview": "art/review/s2/story_speakers_hq_sheet.jpg",
   "note": "이야기 창 왕관 조각 화자(Speakers.Shard · Fountain) 초상, 새 키. ShardBase와 같은 금빛 조각 + 금관 띠, 얼굴 없음, 빛살 없음(4각 반짝이 별 3). PortraitFrame 창에 아래 맞춤. 중간 2안 중 A(검수 고름) → 고급."
+ },
+ "AV_PersonalAvatar": {
+  "status": "on_hold",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium only (0 credits), 3:2",
+  "prompt": "art/prompts/AV_B_Look.txt, AV_B_Parts.txt, AV_B_Clothes.txt",
+  "file": "art/out/s2/avatar/AV_B_Look_1.png, AV_B_Look_2.png, AV_B_Parts_1.png, AV_B_Clothes_1.png",
+  "preview": "art/review/s2/avatar_look_sheet.jpg (c491321, shown to the user)",
+  "note": "보류: 사용자 2026-10-07 지금 아바타로 (\"그냥 지금 아바타로 하자 / 아바타 올리기 되게 복잡하네\"). 그 전에 사용자가 고른 안 = B: 검은 긴 머리 높은 포니테일 + 차분한 검은 눈 + 남색 오버핏 지퍼 재킷·흰 티 + 회색 바지 + 검흰 운동화. 개인용(게임에 넣지 않음, 판매 안 함). 고급 0장. 두 번째 시트 art/review/s2/avatar_personal_sheet.jpg(e715a3a)는 사용자에게 안 보여 줌(기록용). 다시 하면: 셔츠·바지 클래식 판형 585×559 → 헤어 3D(Tripo) → 얼굴(올리는 방법 먼저, docs/design/personal_avatar_howto_2026-10-07.md)."
+ },
+ "Town_Halo_Bakery": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Halo_Bakery_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Halo_Potion": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Halo_Potion_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Halo_Smithy": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Halo_Smithy_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Halo_JuiceBar": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Halo_JuiceBar_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Halo_HouseA": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Halo_HouseA_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Halo_HouseB": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Halo_HouseB_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Horns_Bakery": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Horns_Bakery_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Horns_Potion": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Horns_Potion_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Horns_Smithy": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Horns_Smithy_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Horns_JuiceBar": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Horns_JuiceBar_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Horns_HouseA": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Horns_HouseA_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Town_Horns_HouseB": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/towns_2d_vs_3d.jpg — 시안과 모양·색 맞음, 뒷면 단순 → 앞이 길 쪽)",
+  "model": "art/models/tripo/town/Town_Horns_HouseB_raw.glb",
+  "tool": "Tripo API building 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_B1|B2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "질감 고침 안 함(원본). 앞이 길 쪽을 보게 배치."
+ },
+ "Kit_X_Anvil": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Anvil_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_BannerHalo": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_BannerHalo_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_BannerHorns": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_BannerHorns_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Barrel": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Barrel_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Bench": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Bench_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Brazier": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Brazier_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Bush": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Bush_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Crate": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Crate_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Curb": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Curb_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Fence": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Fence_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_FlowerPot": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_FlowerPot_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Forge": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Forge_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_FruitCart": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_FruitCart_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_Lamp": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_Lamp_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_PotionCart": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_PotionCart_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Kit_X_StallRed": {
+  "status": "approved (3D)",
+  "date": "2026-10-07",
+  "approved_by": "검수 2026-10-07 (art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg)",
+  "model": "art/models/tripo/kit_crossroads/Kit_X_StallRed_raw.glb",
+  "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
+  "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
+  "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
  }
 }

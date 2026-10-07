@@ -66,6 +66,9 @@ KaijuStomp      KaijuStomp_1-1           WARN  93  FAIL: -  |  WARN: phoneDropDb
 KingDefeat      KingDefeat_sA            PASS 100  FAIL: -  |  WARN: -
 KingDefeat      KingDefeat_sB            PASS 100  FAIL: -  |  WARN: -
 KingDefeat      KingDefeat_1-3           WARN  96  FAIL: -  |  WARN: durMs=932 (want 1000..1200)
+Loot            Loot_sA                  PASS 100  FAIL: -  |  WARN: -
+Loot            Loot_sB                  PASS 100  FAIL: -  |  WARN: -
+Loot            Loot_sC                  PASS 100  FAIL: -  |  WARN: -
 Plunder         Plunder_sA               PASS 100  FAIL: -  |  WARN: -
 Plunder         Plunder_sB               PASS 100  FAIL: -  |  WARN: -
 Potion          Potion_sA                PASS 100  FAIL: -  |  WARN: -
@@ -445,3 +448,39 @@ distinct ok   SkillLearn_sB [SkillLearn] vs QuestDone_1-1 [QuestDone]: score 2.5
 distinct ok   SkillLearn_sC [SkillLearn] vs QuestDone_sA [QuestDone]: score 1.23 (>= 1.0) | a new skill is not a finished quest
 distinct ok   SkillLearn_sC [SkillLearn] vs QuestDone_sB [QuestDone]: score 1.23 (>= 1.0) | a new skill is not a finished quest
 distinct ok   SkillLearn_sC [SkillLearn] vs QuestDone_1-1 [QuestDone]: score 2.56 (>= 1.0) | a new skill is not a finished quest
+distinct ok   Loot_sA [Loot] vs GoldPickup_sB [GoldPickup]: score 1.71 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sA [Loot] vs GoldPickup_sA [GoldPickup]: score 1.73 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sA [Loot] vs GoldPickup_kA [GoldPickup]: score 1.49 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sB [Loot] vs GoldPickup_sB [GoldPickup]: score 1.75 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sB [Loot] vs GoldPickup_sA [GoldPickup]: score 1.77 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sB [Loot] vs GoldPickup_kA [GoldPickup]: score 1.49 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sC [Loot] vs GoldPickup_sB [GoldPickup]: score 1.74 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sC [Loot] vs GoldPickup_sA [GoldPickup]: score 1.76 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sC [Loot] vs GoldPickup_kA [GoldPickup]: score 1.55 (>= 1.0) | an item drop is not gold
+distinct ok   Loot_sA [Loot] vs QuestNew_sA [QuestNew]: score 1.76 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sA [Loot] vs QuestNew_sB [QuestNew]: score 1.45 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sA [Loot] vs QuestNew_1-2 [QuestNew]: score 2.54 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sB [Loot] vs QuestNew_sA [QuestNew]: score 1.84 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sB [Loot] vs QuestNew_sB [QuestNew]: score 1.52 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sB [Loot] vs QuestNew_1-2 [QuestNew]: score 2.6 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sC [Loot] vs QuestNew_sA [QuestNew]: score 1.85 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sC [Loot] vs QuestNew_sB [QuestNew]: score 1.54 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sC [Loot] vs QuestNew_1-2 [QuestNew]: score 2.61 (>= 1.0) | both have paper: a drop is not a new quest
+distinct ok   Loot_sA [Loot] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.46 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sA [Loot] vs ScrollSuccess_sA [ScrollSuccess]: score 1.45 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sA [Loot] vs ScrollSuccess_sB [ScrollSuccess]: score 1.46 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sB [Loot] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.56 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sB [Loot] vs ScrollSuccess_sA [ScrollSuccess]: score 1.5 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sB [Loot] vs ScrollSuccess_sB [ScrollSuccess]: score 1.5 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sC [Loot] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.58 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sC [Loot] vs ScrollSuccess_sA [ScrollSuccess]: score 1.49 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sC [Loot] vs ScrollSuccess_sB [ScrollSuccess]: score 1.49 (>= 1.0) | finding a scroll is not using it
+distinct ok   Loot_sA [Loot] vs GoldenSpot_sA [GoldenSpot]: score 2.02 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sA [Loot] vs GoldenSpot_1-3 [GoldenSpot]: score 2.14 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sA [Loot] vs GoldenSpot_1-1 [GoldenSpot]: score 1.56 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sB [Loot] vs GoldenSpot_sA [GoldenSpot]: score 2.02 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sB [Loot] vs GoldenSpot_1-3 [GoldenSpot]: score 2.11 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sB [Loot] vs GoldenSpot_1-1 [GoldenSpot]: score 1.6 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sC [Loot] vs GoldenSpot_sA [GoldenSpot]: score 2.03 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sC [Loot] vs GoldenSpot_1-3 [GoldenSpot]: score 2.12 (>= 1.0) | my drop is not a golden monster in view
+distinct ok   Loot_sC [Loot] vs GoldenSpot_1-1 [GoldenSpot]: score 1.57 (>= 1.0) | my drop is not a golden monster in view

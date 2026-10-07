@@ -1267,6 +1267,25 @@
     "harshDb": [0, 12]
    },
    "notes": {"pairs": "not PowerUp's long sweep, not LevelUp's fanfare, not QuestDone's bell steps: a pop (the button) + a quick sparkle run + one held shimmering chord"}
+  },
+  "Loot": {
+   "status": "new key P0 (sound_spec §5 'Loot', 검수 OK 2026-10-07): my kill drops a scroll or a weapon",
+   "tier": "normal",
+   "volume": 0.45,
+   "repeat": "rare (scrolls 0.3-5 % of kills, weapons rarer); materials and potions stay silent (their labels show)",
+   "say": "톡-톡-톡 티링~ (the scroll pops out, bounces on the ground and gleams)",
+   "moment": "Fx 'Loot' with an Enhance / Transfer scroll or a weapon in Items (a weapon may use it at 0.92x).",
+   "rules": {
+    "durMs": {"range": [400, 650], "hard": [300, 800]},
+    "firstOnsetMs": [0, 15],
+    "nOnsets": {"range": [3, 6], "hard": [2, 8]},
+    "peakAtMs": {"range": [0, 60], "hard": [0, 300]},
+    "centroidHz": [1200, 3500],
+    "lt300": [0, 0.02],
+    "gt8k": [0, 0.05],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
+   },
+   "notes": {"pairs": "bounces (light paper-roll knocks, gaps getting shorter) + one gleam: no coins (GoldPickup / ComboCoin), no marimba two-note (QuestNew), no rising sweep (ScrollSuccess), no confetti (JackpotOther)"}
   }
  },
  "pairs": [
@@ -1671,6 +1690,34 @@
    "b": "SkillLearn",
    "minDb": 1.0,
    "why": "LevelUp is the loudest sound"
+  },
+  {
+   "kind": "distinct",
+   "a": "Loot",
+   "b": "GoldPickup",
+   "require": {"score": 1.0},
+   "why": "an item drop is not gold"
+  },
+  {
+   "kind": "distinct",
+   "a": "Loot",
+   "b": "QuestNew",
+   "require": {"score": 1.0},
+   "why": "both have paper: a drop is not a new quest"
+  },
+  {
+   "kind": "distinct",
+   "a": "Loot",
+   "b": "ScrollSuccess",
+   "require": {"score": 1.0},
+   "why": "finding a scroll is not using it"
+  },
+  {
+   "kind": "distinct",
+   "a": "Loot",
+   "b": "GoldenSpot",
+   "require": {"score": 1.0},
+   "why": "my drop is not a golden monster in view"
   }
  ]
 }

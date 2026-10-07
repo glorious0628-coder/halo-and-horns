@@ -1,5 +1,6 @@
 """A23-34 bare-handed start (server side): new players start with no weapon and combat power 0, every class punches
-until the M1_1 blacksmith gives the class basic weapon, offline.
+until the blacksmith gives the class basic weapon (A23-74: at the first mission's Forge step, before the hunt; the M1_1
+gift stays as the safety net, tools/test_weapon_first.py covers the Forge step), offline.
 
 Runs the CURRENT Config, Util, CombatService, LootService, StoryQuestService and PvPService sources (whole modules)
 plus extracts of ShopService (onUpgradeWeapon / onSellWeapon / onBlacksmithPrompt), DataService (migrate /
@@ -242,11 +243,13 @@ def static() -> tuple[int, list[str]]:
     story = read(SSS / "StoryQuestService.luau")
     check("function StoryQuestService.Refresh(player)" in story, "StoryQuestService.Refresh is public (the anvil runs it)")
     quest = read(SSS / "QuestService.luau")
-    check('\tif not hasFirst then S.PlayerService.SetStat(player, "BlacksmithVisited", false) end\n\tsetStep(player, TUT_DONE)' in quest,
-          "the first-mission claim clears an earlier anvil visit unless tier 1 is owned (behavior: test_onboarding)")
-    check("hasFirst then\n\t\ttext = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)" in quest
+    # A23-74: the first weapon comes at the Forge step, so every claim clears the earlier visit (M1_1 needs a new one)
+    check('\tS.PlayerService.SetStat(player, "BlacksmithVisited", false)\n\tsetStep(player, TUT_DONE)' in quest,
+          "the first-mission claim always clears an earlier anvil visit (behavior: test_weapon_first)")
+    check("if armed then\n\t\ttext = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)" in quest
           and "hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith" in quest,
-          "a save that owns tier 1 gets the lines without the first-weapon promise (behavior: test_onboarding)")
+          "a better weapon owned: the claim lines without the next-weapon promise; the first weapon owned: the row without "
+          "the first-weapon promise (behavior: test_weapon_first)")
     return count, failures
 
 
@@ -269,7 +272,9 @@ SUITE = Suite(
              "BestUsableWeapon (0 = bare hands); the anvil prompt runs StoryQuestService.Refresh before opening the "
              "shop. M1_1 (GiveWeapon = 1) -> LootService.GrantFirstWeapon: tier 1 owned, equipped only when bare-handed "
              "(notice FirstWeapon '전투력 X → Y'), else the bag line; nothing for a save that owns it; the join safety "
-             "net pays a finished M1_1 that never paid. A weapon found bare-handed is equipped when its level allows. "
+             "net pays a finished M1_1 that never paid (A23-74: the gift itself now comes at the Forge step, "
+             "QuestService.ForgeGift, before the hunt; M1_1's is the safety net). A weapon found bare-handed is equipped "
+             "when its level allows. "
              "CharacterVisuals: tier 0 = no WeaponModel. JusticeService / PvP power read tier 0.",
     limitations="Offline doubles for Players, characters (a root facing -Z and a right hand), monsters (records with a "
                 "root), Net and the other services. The client side (punch animation / Fx, blacksmith and item windows "

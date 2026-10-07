@@ -211,17 +211,18 @@ do
 	end
 	check(g, "Panels has STORY.PortraitKey", type(STORY.PortraitKey) == "function", type(STORY.PortraitKey))
 	storyEnv.UIKit = { Portrait = function() end, ArtPart = artPart }
-	-- 검수's table: Otto, Fizzby, the three town NPCs, Kit and the two faction guides (no Speaker = my guide)
+	-- 검수's table: Otto, Fizzby, the three town NPCs, Kit and the two faction guides (no Speaker = my guide); the crown
+	-- shard and the fountain shard share PTR_CrownShard (image dev 94207f5)
 	local want = { Smith = "PortraitMerchantC", Potion = "PortraitPotionMerchant", Bright = "PTR_TownBright",
 		Smokey = "PTR_TownSmokey", Tiny = "PTR_TownTiny", Guild = "PortraitGuideArtisan", Halo = "PortraitGuideHalo",
-		Horns = "PortraitGuideHorns" }
+		Horns = "PortraitGuideHorns", Shard = "PTR_CrownShard", Fountain = "PTR_CrownShard" }
 	for voice, key in want do
 		local got = STORY.PortraitKey(voice)
 		check(g, "a speaker with art shows its own face (검수 table)", got == key, voice .. " -> " .. show(got))
 	end
-	for _, voice in { "Shard", "Fountain", "Kids", "Pip", "Dibs", "Grabbo", "Gleam", "Rex", "Nobody" } do
+	for _, voice in { "Kids", "Pip", "Dibs", "Grabbo", "Gleam", "Rex", "Nobody" } do
 		local got = STORY.PortraitKey(voice)
-		check(g, "a speaker without art (shards, kids, goblins, Gleam, Rex) gets no portrait slot", got == nil,
+		check(g, "a speaker without art (kids, goblins, Gleam, Rex) gets no portrait slot", got == nil,
 			voice .. " -> " .. show(got))
 	end
 	local sq = Config.StoryQuests or {}

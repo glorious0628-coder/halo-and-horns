@@ -2,7 +2,7 @@
 ⑤ 재질 손보기(0 크레딧): base color 색으로 금·물·흰 부분을 골라 glTF 금속/거칠기 맵(G = 거칠기, B = 금속)을 고친다.
 Roblox SurfaceAppearance의 MetalnessMap·RoughnessMap으로 그대로 쓸 수 있게 따로 회색 PNG도 남긴다.
 
-  py tools/tex_mr_tune.py <base color png> <mr png> <out mr png> [--gold 0.9,0.25] [--blue 0.0,0.05] [--white 0.0,0.30]
+  py tools/tex_mr_tune.py <base color png> <mr png> <out mr png> [--gold 0.15,0.3] [--blue 0.0,0.05] [--white 0.0,0.30]
 
 - 각 값 = 금속,거칠기. 경계는 부드럽게 섞는다. 결과: <out>, <out>_metal.png, <out>_rough.png
 """
@@ -16,7 +16,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("base")
 ap.add_argument("mr")
 ap.add_argument("out")
-ap.add_argument("--gold", default="0.9,0.25")
+ap.add_argument("--gold", default="0.15,0.3")
 ap.add_argument("--blue", default="0.0,0.05")
 ap.add_argument("--white", default="0.0,0.30")
 a = ap.parse_args()
@@ -46,4 +46,6 @@ Image.fromarray((metal * 255 + 0.5).astype(np.uint8)).save(a.out.replace(".png",
 Image.fromarray((rough * 255 + 0.5).astype(np.uint8)).save(a.out.replace(".png", "_rough.png"))
 for nm, w in (("gold", w_gold), ("blue", w_blue), ("white", w_white)):
     m = w > 0.5
+    if not m.any():
+        continue
     print(f"{nm:5s} px {m.mean():.3f}  metal {np.median(mr[..., 2][m]):.2f}->{np.median(metal[m]):.2f}  rough {np.median(mr[..., 1][m]):.2f}->{np.median(rough[m]):.2f}")

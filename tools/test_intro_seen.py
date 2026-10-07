@@ -64,20 +64,22 @@ def static_checks() -> tuple[int, list[str]]:
           "client fires IntroSeen on menu replays or after it is already saved")
     client_writes = [w for w in writers if w.startswith("src/StarterPlayer/")]
     check(not client_writes, f"client code writes IntroSeen: {client_writes}")
-    # 검수 2026-10-07 (phone letterbox): the bars live in their own full-screen ScreenGui (ScreenInsets None), phones get
-    # thinner bars starting under Roblox's top button row, and closing removes them
-    check('bars.Name = "IntroBars"' in intro and "bars.ScreenInsets = Enum.ScreenInsets.None" in intro
-          and "bars.IgnoreGuiInset, bars.ResetOnSpawn, bars.DisplayOrder = true, false, 59" in intro,
-          "the letterbox is not a full-screen IntroBars ScreenGui (ScreenInsets None, IgnoreGuiInset, under the subtitle)")
-    m = re.search(r"local BARS = \{ Height = ([\d.]+), TouchHeight = ([\d.]+) \}", intro)
-    check(m is not None and float(m.group(2)) < float(m.group(1)), "phones do not get thinner letterbox bars")
-    check("GuiService:GetGuiInset()" in intro and 'bar("TopBar", 0, UDim2.fromScale(0, 0), topExtra)' in intro
-          and "UDim2.new(1, 0, h, extra)" in intro,
-          "the phone top bar does not cover Roblox's top button row from the very top (검수: no strip of sky above it)")
+    # A23-74 (user 2026-10-07: "프롤로그 3d 영상도 무슨 위아래 까만색"): no letterbox at all, PC and phone; the subtitle
+    # keeps contrast over the open 3D view with the UIKit dark-world text rim, and stays in the device-safe IntroGui
+    bars = [name for name in ("IntroBars", "BARS", "state.Bars", '"TopBar"', '"BottomBar"') if name in intro]
+    check(not bars, f"the opening still draws letterbox bars: {bars}")
+    black = re.findall(r"BackgroundColor3[^\n]*Color3\.new\(0, 0, 0\)", intro)
+    check(not black, f"the opening still makes black frames: {black}")
+    check('pcall(UIKit.StyleText, sub, "Title")' in intro,
+          "the subtitle has no UIKit Title rim (unreadable over the bright sky without the bars)")
+    check('sub:FindFirstChild("StyleStroke")' in intro and "{ Transparency = 0 }" in intro,
+          "say() does not fade the subtitle rim in with its text (UIKit contract: tween StyleStroke with TextTransparency)")
+    check("gui.IgnoreGuiInset, gui.ResetOnSpawn, gui.DisplayOrder = true, false, 60" in intro
+          and "gui.ScreenInsets" not in intro,
+          "the subtitle / skip ScreenGui left the device-safe area (IgnoreGuiInset, no ScreenInsets None)")
     check("local CROWN_SHOT = { Down = math.rad(25), Side = math.rad(30)" in intro
           and "look(crown + dir * c.To, crown), 5.5)" in intro,
           "the first shot does not show the crown front three-quarter (25 deg below, 30 deg to the side)")
-    check("if state.Bars then state.Bars:Destroy() end" in intro, "closing the opening leaves the letterbox bars on screen")
     return count, failures
 
 
