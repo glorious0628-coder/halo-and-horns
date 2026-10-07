@@ -2,7 +2,7 @@
 새 효과음이 Studio에서 실제로 불러와지는지 재기 (소리 만들기, 2026-10-07). 개발 1이 연결한 뒤, 옛 id·ogg를 지우기 전에 쓴다.
   py tools/sfx_loadcheck.py [--dm Edit|Client] [--print]
 art/sfx/asset_ids.json "ids"(+ "kept")의 id마다 SoundService 아래 임시 Sound를 만들어 IsLoaded·TimeLength를 재고(최대 15 s) 바로 지운다.
-결과를 picks_r4.json 길이(durMs)와 견준다: 못 불러옴(권한·잘못된 id) / 길이 차이 50 ms 넘음 = 문제.
+결과를 art/sfx/<키>.wav 파일 길이와 견준다: 못 불러옴(권한·잘못된 id) / 길이 차이 50 ms 넘음 = 문제. (picks_r4 durMs는 들리는 길이라 쓰지 않음)
 메인 Studio를 쓰므로 실행 전에 검수의 '전달함, 시작'을 받는다(AGENTS 화면·Studio 규칙). --print는 Luau만 출력하고 실행하지 않는다.
 """
 
@@ -11,6 +11,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import wave
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -76,7 +77,11 @@ def main():
     bad = 0
     for k in sorted(ids):
         loaded, length = rows.get(k, (False, 0.0))
-        want = (picks.get(k, {}).get("durMs") or 0) / 1000
+        wav = os.path.join(ROOT, "art", "sfx", k + ".wav")
+        want = 0.0
+        if os.path.exists(wav):  # the whole file (with its short fade tail), which is what TimeLength reports
+            with wave.open(wav) as w:
+                want = w.getnframes() / w.getframerate()
         note = ""
         if not loaded:
             note = "못 불러옴"
