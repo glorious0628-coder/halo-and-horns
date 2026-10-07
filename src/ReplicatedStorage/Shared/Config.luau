@@ -3774,6 +3774,10 @@ Config.Audio = {
 	-- B13: a Z / X cast (Fx "Skill") has no launch / contact times: the cast at once, the hits right after
 	SkillContact = 0.12,
 	HurtBigFrac = 0.15, -- a hit taking at least this share of my max HP (or leaving me under 30 %) = HurtBig
+	-- sound_wiring_r4 Loot: my drop rings only when it holds a scroll of these Config.Loot kinds or a weapon (a weapon at
+	-- LootWeaponSpeed); materials and potions stay silent
+	LootKinds = { Enhance = true, Transfer = true },
+	LootWeaponSpeed = 0.92,
 	-- uploaded 2026-10-07 (Creator Hub, Darugi_S2, Restricted; art/sfx/asset_ids.json): the round-4 picks (picks_r4.json)
 	-- where they are uploaded, the round-3 file otherwise. "" = not uploaded yet: the event stays silent or plays its
 	-- stand-in (Equip -> GoldPickup, GooseArrive -> GooseHonk, SkillReady -> Fx Click, SkillLearn -> PowerUp)
@@ -3804,10 +3808,10 @@ Config.Audio = {
 		Devour = "rbxassetid://118262766439187",
 		PumpkinKing = "rbxassetid://112500082253148",
 		GhostKing = "rbxassetid://100319357258743",
-		GooseHonk = "rbxassetid://126013517999832",
+		GooseHonk = "rbxassetid://115693307820380", -- r4 (sound_wiring_r4): only when the goose is hit
 		QuestDone = "rbxassetid://131457371135343",
 		GoldPickup = "rbxassetid://119243238199900",
-		ScrollSuccess = "rbxassetid://75617018211597",
+		ScrollSuccess = "rbxassetid://116061752455414", -- r4
 		ScrollFail = "rbxassetid://124525939049830",
 		Tap = "rbxassetid://101266273493121",
 		SkillHalo = "rbxassetid://75898672312875",
@@ -3818,11 +3822,12 @@ Config.Audio = {
 		TalkBlip = "rbxassetid://94593126133806",
 		Equip = "rbxassetid://132294814566104",
 		SkillReady = "rbxassetid://99319219774246",
-		-- coming with the next uploads (sound_gaps A7-A9)
-		Spend = "",
-		RankUp = "",
-		SkillLearn = "",
-		GooseArrive = "",
+		-- r4 uploads (소리 만들기 2026-10-07, docs/design/sound_wiring_r4_2026-10-07.md)
+		Spend = "rbxassetid://80768400627761",
+		RankUp = "rbxassetid://84902463002053",
+		SkillLearn = "rbxassetid://113535664889883",
+		GooseArrive = "rbxassetid://113800368972766",
+		Loot = "rbxassetid://114739645345413",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
@@ -3854,7 +3859,7 @@ Config.Audio = {
 		-- sound_gaps A6: each king its own file at 1.0x (never under 0.85x: lower turns scary)
 		PumpkinKing = { File = "PumpkinKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
 		GhostKing = { File = "GhostKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
-		GooseHonk = { File = "GooseHonk", Volume = 0.55, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
+		GooseHonk = { File = "GooseHonk", Volume = 0.40, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
 		GooseArrive = { File = "GooseArrive", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 3.0 }, -- A7: GooseActive turning on
 		QuestDone = { File = "QuestDone", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
 		GoldPickup = { File = "GoldPickup", Volume = 0.45, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.08 },
@@ -3877,6 +3882,9 @@ Config.Audio = {
 		RankUp = { File = "RankUp", Volume = 0.32, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
 		SkillLearn = { File = "SkillLearn", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
 		SkillReady = { File = "SkillReady", Volume = 0.25, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
+		-- my drop (Fx "Loot"): only a scroll (Enhance / Transfer) or a weapon rings; a weapon at LootWeaponSpeed;
+		-- materials and potions stay silent (the kill pop and the coin already play)
+		Loot = { File = "Loot", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
 	},
 	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed); SwingFaction picks the
 	-- caster's faction file when it is uploaded (sound_gaps A2: Halo / Horns mages)
