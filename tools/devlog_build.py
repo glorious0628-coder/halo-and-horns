@@ -47,6 +47,8 @@ VBAND = (150, 1500)          # neon style: rows the game footage fills (full wid
 NEON_CAP_Y, NEON_CAP_SIZE = 1400, 120
 NEON_CHUNK = (12, 2)          # neon captions: max characters / words on screen at once
 CHECK = (2, 180, 12)          # check sheet: frames per second, tile width, tiles per row
+ENC_V = ["-preset", "medium", "-crf", "18"]   # video encoder settings
+TARGET_MB = 0                 # > 0: cap the video bitrate so the whole file stays under this size (the long-form: 95)
 EXTRA_BOARDS = {}             # name -> fn(shot) for boards a wrapper adds (tools/devlog_long.py)
 BETA = dt.date(2026, 10, 31)
 GOLD, RED, WHITE = (255, 214, 80), (255, 84, 84), (255, 255, 255)
@@ -223,8 +225,12 @@ def neon_img(parts, size):
     return im
 
 
-def neon_fit(text, max_w, size):
-    while size > 40 and neon_font(size).getlength(text) > max_w:
+def neon_fit(text, max_w, size, emoji=False):
+    """largest size (step 4) whose drawn width fits max_w: the text, its outline on both sides and, for a caption that ends
+    with an emoji, the emoji (0.8 x size) and its gap"""
+    def width(sz):
+        return neon_font(sz).getlength(text) + 2 * max(6, sz // 9) + ((0.8 * sz + 30) if emoji else 0)
+    while size > 40 and width(size) > max_w:
         size -= 4
     return size
 
@@ -647,10 +653,11 @@ def build_caption_events(timeline, style="band"):
                     parts = [(w, ncol if k == wi else NEON["red"] if col == RED else WHITE) for k, (w, col) in enumerate(c)]
                     if ci == len(words_all) - 1 and line.get("emoji"):
                         parts = parts + [(" ", WHITE), (line["emoji"], "emoji")]
-                    txt = "".join(w for w, _ in parts if _ != "emoji")
+                    txt = "".join(w for w, col in parts if col != "emoji")
+                    has_emoji = any(col == "emoji" for _, col in parts)
                     dw = d * wl[wi] / sum(wl)
                     ev.append({"start": tw, "end": tw + dw, "pop_from": t, "hold": t1 + 0.06,
-                               "img": neon_img(parts, neon_fit(txt, SAFE[2] - SAFE[0] - 60, NEON_CAP_SIZE))})
+                               "img": neon_img(parts, neon_fit(txt.strip(), SAFE[2] - SAFE[0] - 40, NEON_CAP_SIZE, has_emoji))})
                     tw += dw
                 t += d
             continue
@@ -804,7 +811,7 @@ def build_short(short, voice, out_root, do_tts=True):
     for l, v in zip(short["lines"], voices):
         d = len(v) / SR
         timeline.append({"line": l, "audio": v, "start": t, "speech_end": t + d})
-        t += d + float(l.get("gap", GAP))
+        t += d + float(l.get("gap", short.get("gap", GAP)))
     total = t + float(short.get("tail", 0.4))
     nframes = int(round(total * FPS))
     # shots → frame ranges (a line's shots split its span by weight)
@@ -856,10 +863,14 @@ def build_short(short, voice, out_root, do_tts=True):
         paste_center(band, text_img([(b1, WHITE)], fit_size(b1, 980, 50)), W // 2, 222)
     # render
     final = os.path.join(out_dir, "final.mp4")
+    enc_v = ENC_V
+    if TARGET_MB:
+        kbps = max(1500, int(TARGET_MB * 8000 / total) - 230)  # minus the 192k audio and the mp4 overhead
+        enc_v = ["-preset", "slow", "-crf", "20", "-maxrate", "%dk" % kbps, "-bufsize", "%dk" % (2 * kbps)]
     enc = subprocess.Popen([FFMPEG, "-hide_banner", "-loglevel", "error", "-y",
                             "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", "%dx%d" % (W, H), "-r", str(FPS), "-i", "-",
                             "-i", norm_wav, "-map", "0:v", "-map", "1:a",
-                            "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-profile:v", "high", "-pix_fmt", "yuv420p",
+                            "-c:v", "libx264"] + enc_v + ["-profile:v", "high", "-pix_fmt", "yuv420p",
                             "-c:a", "aac", "-b:a", "192k", "-ar", str(SR), "-movflags", "+faststart", "-shortest", final],
                            stdin=subprocess.PIPE)
     turn_cache = {}
@@ -934,7 +945,8 @@ def build_short(short, voice, out_root, do_tts=True):
             ch = s.get("chip")
             if ch:
                 pill = chip_img(ch)
-                paste_center(fr, pill, SAFE[0] + 10 + pill.width // 2, SAFE[1] + 90, pop_scale(i))
+                chip_y = int(s.get("chip_y", SAFE[1] + 90 if int(s.get("cap_y", 9999)) > 800 else int(s["cap_y"]) + 175))
+                paste_center(fr, pill, SAFE[0] + 10 + pill.width // 2, chip_y, pop_scale(i))
             bg_ = s.get("big")
             if bg_:
                 txt = fill(bg_["text"])
@@ -966,7 +978,7 @@ def build_short(short, voice, out_root, do_tts=True):
             for c in caps:
                 if c["start"] <= tt < c["end"]:
                     k = int((tt - c.get("pop_from", c["start"])) * FPS)
-                    paste_center(fr, c["img"], CX if style == "neon" else CAP_CX, cap_y, pop_scale(k))
+                    paste_center(fr, c["img"], CX if style == "neon" else CAP_CX, int(s.get("cap_y", cap_y)), pop_scale(k))
                     break
             if kind == "flash" and i < 5:
                 a = [0.85, 0.6, 0.35, 0.18, 0.06][i]
@@ -1040,6 +1052,7 @@ def srt_time(t):
 
 def write_srts(timeline, out_dir):
     en, ko = [], []
+    timeline = [it for it in timeline if not it["line"].get("silent") and it["line"].get("cap") is not False]
     for n, it in enumerate(timeline, 1):
         span = "%s --> %s" % (srt_time(it["start"]), srt_time(it["speech_end"] + 0.05))
         en.append("%d\n%s\n%s\n" % (n, span, fill(it["line"]["en"])))

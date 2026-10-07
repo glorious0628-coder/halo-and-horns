@@ -1,4 +1,4 @@
-# 소리 연결표 — 4차 50개 (2026-10-07, 소리 만들기 → 게임성 개발 1)
+# 소리 연결표 — 4차 51개 (2026-10-07, 소리 만들기 → 게임성 개발 1)
 
 Creator Hub 업로드 끝(Darugi_S2, 비공개, 이름 'HH SFX <키>'). id 원본은 `art/sfx/asset_ids.json` "ids", 출처·sha256·볼륨은 `art/sfx/picks_r4.json`. 볼륨은 설계표(`tools/sfx_spec.json`) 값이고 파일은 모두 K가중 −17 LUFS로 맞춰 둠. 옛 id("old")와 `art/sfx/*.ogg`는 새 id를 연결하고 Play로 확인한 뒤에 지움(소리 만들기가 지움). 어디서 틀지는 `docs/design/sound_gaps_2026-10-07.md`(A·B·C 표)와 같은 번호.
 
@@ -54,5 +54,6 @@ Creator Hub 업로드 끝(Darugi_S2, 비공개, 이름 'HH SFX <키>'). id 원�
 | Plunder | `rbxassetid://74602898707411` | 0.4 | 주머니 뺏김(당한 사람만; 패킷에 피해자 id 필요, 개발 2) |
 | JackpotOther | `rbxassetid://99814762304779` | 0.4 | 남의 Jackpot·FirstMax 알림(30 s에 1번) |
 | SkillLearn | `rbxassetid://113535664889883` | 0.6 | 새 스킬 배움(SkillBar가 이미 부름). Lv5·15·25에서는 LevelUp 소리 뒤 약 1.1 s |
+| Loot | `rbxassetid://114739645345413` | 0.45 | Fx Loot에 주문서(Enhance·Transfer)나 무기가 있을 때만. 무기는 0.92배. 재료·물약은 소리 없음(글자만) |
 
-새 Config.Audio.Sounds 키가 필요한 것: Jump, PowerUp(파일만 바꿈), Equip, Spend, RankUp, SkillLearn, SkillReady, HitCrit, GooseArrive, CrownHalo, CrownHorns, KingDefeat, WarFinal30, CountTick, GooseEnd, KaijuSiren, KaijuStomp, ZoneEnterPvP, GoldenSpot, KO, Respawn, Plunder, JackpotOther (+ Purify_b, 두 왕 분리).
+새 Config.Audio.Sounds 키가 필요한 것: Jump, PowerUp(파일만 바꿈), Equip, Spend, RankUp, SkillLearn, SkillReady, HitCrit, GooseArrive, CrownHalo, CrownHorns, KingDefeat, WarFinal30, CountTick, GooseEnd, KaijuSiren, KaijuStomp, ZoneEnterPvP, GoldenSpot, KO, Respawn, Plunder, JackpotOther, Loot (+ Purify_b, 두 왕 분리).

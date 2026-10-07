@@ -29,13 +29,14 @@ local LIGHTING_FIXED = {
 local TINT_FIXED = { Brightness = 0, Contrast = 0.05, Saturation = 0.1 } -- only TintColor is tweened
 local SKY_FIXED = { SunAngularSize = 14, MoonAngularSize = 18, StarCount = 3000 }
 local BLOOM_FIXED = { Size = 24, Threshold = 2.2 }
-local SUNRAYS_FIXED = { Spread = 0.4 }
+-- A23-74 (검수 2026-10-07): no sun rays at all - rays fanning out of the sun break the no-ray-burst rule
+local SUNRAYS_FIXED = { Spread = 0.4, Intensity = 0, Enabled = false }
 -- ART_DIRECTION 3.2 per-sky values used only where Config.Sky[name] has no key of its own (Config.Sky stays the source
 -- for everything it carries: FogStart / ExposureCompensation / BloomIntensity are read from the preset first).
 -- Exposures = the client ZoneLook base light (SKY table there) so a war-sky change never flickers between the two.
 local SKY_EXTRAS = {
-	Neutral = { Exposure = -0.2, Bloom = 0.2, SunRays = 0.04, Clouds = Color3.fromRGB(255, 255, 255) },
-	Dawn = { Exposure = -0.15, Bloom = 0.6, SunRays = 0.12, Clouds = Color3.fromRGB(255, 225, 190) },
+	Neutral = { Exposure = -0.2, Bloom = 0.2, SunRays = 0, Clouds = Color3.fromRGB(255, 255, 255) },
+	Dawn = { Exposure = -0.15, Bloom = 0.6, SunRays = 0, Clouds = Color3.fromRGB(255, 225, 190) },
 	Eclipse = { Exposure = 0.45, Bloom = 0.5, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
 }
 
