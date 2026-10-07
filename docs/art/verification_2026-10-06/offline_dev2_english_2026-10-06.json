@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3231 strings)",
+      "check": "the walk reached the player strings (3232 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -740,7 +740,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4f32824950d2a3970fb81420771e0dc5c294fbd2acedde69d5221d3d0eff0cb5",
+    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",

@@ -2756,6 +2756,9 @@ local function parseQuests()
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
 				ShortName = (type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or nil,
+				-- dev2 2c5e84e: ShowProgress rows carry no "%d/%d" in Text; a seconds row says ProgressUnit = "s"
+				ProgressUnit = (type(e.ProgressUnit) == "string" and #e.ProgressUnit > 0 and #e.ProgressUnit <= 3)
+					and e.ProgressUnit or nil,
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
 			table.insert(isPinned and pinned or normal, entry)
@@ -2813,6 +2816,7 @@ local function questNums(e)
 	if e.Progress < e.Target and p == t then
 		p, t = tostring(math.floor(e.Progress)), tostring(math.floor(e.Target)) -- never "12.5K/12.5K" unfinished
 	end
+	if e.ProgressUnit then t = t .. " " .. e.ProgressUnit end -- '5/10 s'
 	return p, t
 end
 

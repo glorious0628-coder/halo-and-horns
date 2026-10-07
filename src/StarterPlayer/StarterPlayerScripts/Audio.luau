@@ -16,7 +16,9 @@
 --   my attributes: AutoCombatEnabled -> AutoOn / AutoOff; Honor up -> Purify, Infamy up -> Devour (GDD §0); my own
 --     faction's points going down (A23-58, not a faction change) -> RankDown; HP / MP potion count down -> Potion.
 --     Values that arrive with the save never sound.
---   "Notify" remote: kind "bad" -> Deny, "reward" -> QuestDone; "Quests" remote: a new quest id -> QuestNew
+--   "Notify" remote: payload.Sound (dev2 2c5e84e, sound_spec §4-1) = the Config.Audio key of that line, "None" = no
+--   sound; without it kind "bad" -> Deny, "reward" -> QuestDone; "Quests" remote: a new quest id -> QuestNew;
+--   Fx "Choice" { Option = "Good" | "Evil" } (the story choice itself, to the chooser) -> Purify / Devour
 --   windows: C.Panels / C.WorldMap / C.PlayerListUI IsOpen() turning on / off -> WindowOpen / WindowClose
 -- Rules (§6): every event keeps its own pool of Max copies (a new play is skipped when all are busy) and its cooldown;
 -- at most MaxPlaying sounds at once; auto combat plays Auto sounds at AutoMul; the big moments (Duck.By) lower the
@@ -212,6 +214,12 @@ function Audio.Plan(kind, data, ctx)
 		add(out, "KillPop", 0)
 		add(out, "ComboCoin", 0.05, { Speed = speed })
 		if MILESTONES[combo] then add(out, "ComboMilestone", 0.15) end
+	elseif kind == "Choice" then -- the story choice itself (sound_spec §4-1; the server sends it to the chooser only)
+		if data.Option == "Good" then
+			add(out, "Purify", 0)
+		elseif data.Option == "Evil" then
+			add(out, "Devour", 0)
+		end
 	elseif kind == "Enhance" then
 		add(out, data.Success == true and "ScrollSuccess" or "ScrollFail", 0)
 	elseif kind == "Bank" or kind == "Upgrade" or kind == "Rare" then
@@ -411,6 +419,20 @@ function Audio.OnFx(kind, data)
 	end
 end
 
+-- the sound of one Notify line: payload.Sound wins ("None" = silent), else the kind ("bad" -> Deny, "reward" ->
+-- QuestDone), else nothing
+function Audio.NotifySound(payload)
+	if type(payload) ~= "table" then return nil end
+	local sound = payload.Sound
+	if type(sound) == "string" and sound ~= "" then
+		if sound == "None" then return nil end
+		return sound
+	end
+	if payload.Kind == "bad" then return "Deny" end
+	if payload.Kind == "reward" then return "QuestDone" end
+	return nil
+end
+
 -- calls fn(previous, value) on every change of inst's attribute
 local function watch(inst, key, fn)
 	local last = inst:GetAttribute(key)
@@ -436,11 +458,11 @@ local function watchMe()
 		end
 	end)
 	watch(LocalPlayer, "Faction", function() S.FactionAt = os.clock() end)
-	for stat, sound in { Honor = "Purify", Infamy = "Devour" } do
+	for _, stat in { "Honor", "Infamy" } do
 		watch(LocalPlayer, stat, function(prev, v)
 			if type(prev) ~= "number" or type(v) ~= "number" or not loaded() then return end
 			if v > prev then
-				Audio.Play(sound)
+				return -- Purify / Devour come with the Choice Fx (the choice itself, not every point change)
 			elseif v < prev and os.clock() - S.FactionAt > T.FactionCalm then
 				-- A23-58: my own side's points going down (an off-side choice); a faction change resets both quietly
 				local mine = LocalPlayer:GetAttribute("Faction")
@@ -571,12 +593,8 @@ function Audio.Start()
 	end)
 	task.spawn(function()
 		Net.Get("Notify").OnClientEvent:Connect(function(payload)
-			if type(payload) ~= "table" then return end
-			if payload.Kind == "bad" then
-				Audio.Play("Deny")
-			elseif payload.Kind == "reward" then
-				Audio.Play("QuestDone")
-			end
+			local event = Audio.NotifySound(payload)
+			if event then Audio.Play(event) end
 		end)
 	end)
 	task.spawn(function()
