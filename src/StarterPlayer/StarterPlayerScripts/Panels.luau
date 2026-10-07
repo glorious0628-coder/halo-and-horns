@@ -3470,7 +3470,7 @@ function Panels.Register(id, opts)
 end
 
 -- 창 꾸미기 ③ (검수 2026-10-07; user on the 'Vacation Bonus' window: "이런 화면도 멋있게"): a vacation bonus to claim
--- shows in the shared reward popup (UIKit.RewardPopup: the banner, the turning rays, gold / XP counting up, a big
+-- shows in the shared reward popup (UIKit.RewardPopup: the banner, a soft glow, gold / XP counting up, a big
 -- Claim); without a bonus the plain window keeps its one line. Returns true when the popup took over
 function FRAME.VacationPopup()
 	if num("VacationDays") <= 0 or pickerOpen() then return false end

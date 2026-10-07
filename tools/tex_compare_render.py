@@ -9,6 +9,8 @@ options
   --views a,b,...    front34, back34, game, close, match (기본 front34,back34,game,close,match)
   --mr <png>         금속/거칠기 맵(glTF: G 거칠기, B 금속)을 이 그림으로 바꾸기(tex_mr_tune.py 결과)
   --sky              흰 하늘 대신 파란 하늘 그라데이션(금속·물에 하늘이 비침 — Roblox 하늘과 비슷하게)
+  --front -y|+x|+y|-x  모델 앞이 Blender에서 어느 쪽인지(Tripo API = +x, 웹·우리 가져오기 GLB = +y/-y). 모든 시점을 그만큼 돌림
+  views에 near = 문 앞에 다가간 플레이어 눈높이
   --cam <json>       match 시점 {"az":..,"el":..,"lens":..} (concept_cam_fit.py 결과). 없으면 match 안 찍음
   --res N            해상도(기본 768, match는 1024)
   --masks <dir>      시점 찾기용: 여러 az/el/lens로 흰 실루엣만 찍어 <dir>/m_<az>_<el>_<lens>.png 로 저장하고 끝
@@ -29,7 +31,7 @@ from mathutils import Vector
 argv = sys.argv[sys.argv.index("--") + 1:]
 IN_GLB, OUT_DIR, LABEL = argv[0], os.path.abspath(argv[1]), argv[2]
 opt = {"tex": None, "no_pbr": False, "views": "front34,back34,game,close,match", "cam": None, "res": 768,
-       "masks": None, "mask_grid": "-30:30:5,5:45:5,35/50/85", "mr": None, "sky": False}
+       "masks": None, "mask_grid": "-30:30:5,5:45:5,35/50/85", "mr": None, "sky": False, "front": "-y"}
 i = 3
 while i < len(argv):
     k = argv[i]
@@ -193,10 +195,13 @@ sun_d.energy = 2.2
 sun_d.angle = math.radians(8)
 sun = bpy.data.objects.new("Sun", sun_d)
 scene.collection.objects.link(sun)
-sun.rotation_euler = (math.radians(50), 0, math.radians(-35))
+YAW = {"-y": 0, "+x": 90, "+y": 180, "-x": 270}[opt["front"]]  # which way the model's front faces in Blender
+sun.rotation_euler = (math.radians(50), 0, math.radians(-35 + YAW))
 scene.render.film_transparent = True
 
 VIEWS = {"front34": (30, 12, 50, 1.0, None), "back34": (210, 12, 50, 1.0, None), "game": (20, 35, 50, 1.0, None),
+         # a player walking up to the gate: low camera, close, looking at the lower third
+         "near": (18, 6, 35, 0.34, Vector((centre.x, centre.y, lo.z + 0.3 * (hi.z - lo.z)))),
          # close-up on the upper tiers (crown, water, gold trim) for the texture/material row
          "close": (20, 22, 50, 0.48, Vector((centre.x, centre.y, lo.z + 0.62 * (hi.z - lo.z))))}
 cam_fit = json.load(open(opt["cam"], encoding="utf-8")) if opt["cam"] else None
@@ -208,7 +213,7 @@ for v in opt["views"].split(","):
         scene.render.resolution_x = scene.render.resolution_y = 1024
     else:
         az, el, ln, zoom, aim = VIEWS[v]
-        place(az, el, ln, zoom, aim)
+        place(az + YAW, el, ln, zoom, aim)
         scene.render.resolution_x = scene.render.resolution_y = int(opt["res"])
     scene.render.filepath = os.path.join(OUT_DIR, f"{LABEL}_{v}.png")
     bpy.ops.render.render(write_still=True)

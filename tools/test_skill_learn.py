@@ -37,6 +37,11 @@ MUTATIONS = [
     ("SkillSlots ignored (a rebirth at Lv1 looks locked)",
      "\tif locked and type(slots) == \"number\" and slots >= (T.SlotIndex[slot] or 99) then locked = false end\n", ""),
     ("SkillSlots changes not watched", '"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }', '"SkillReadyAtX", "SkillBarPreview" }'),
+    # sound_gaps A9 / A10 (2026-10-07)
+    ("the learn sound plays with the banner", "\ttask.delay(LEARN.SoundDelay, LEARN.Sound)\n", "\tLEARN.Sound()\n"),
+    ("no SkillReady at the cooldown end",
+     'if type(audio) == "table" and type(audio.Play) == "function" then ok, played = pcall(audio.Play, "SkillReady") end', ""),
+    ("the click plays on top of SkillReady", 'if not (ok and played) and type(fx) == "table"', 'if type(fx) == "table"'),
 ]
 
 

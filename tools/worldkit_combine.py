@@ -36,6 +36,33 @@ for it in items:
     bpy.ops.import_scene.gltf(filepath=os.path.abspath(it["file"]))
     new = [o for o in bpy.data.objects if o not in before]
     meshes = [o for o in new if o.type == "MESH"]
+    if it["kind"] == "parts":
+        # already in studs, front +Y, base centre at the origin (e.g. tools/split_uv_tiles.py): keep every part as its
+        # own mesh (one 1024 texture each) under an empty named <name>, only move it into its row
+        for o in meshes:
+            mw = o.matrix_world.copy()
+            o.parent = None
+            o.matrix_world = mw
+        for o in new:
+            if o.type != "MESH":
+                bpy.data.objects.remove(o, do_unlink=True)
+        pts = [o.matrix_world @ Vector(c) for o in meshes for c in o.bound_box]
+        lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
+        hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
+        size = hi - lo
+        k = it.get("row", "tripo")
+        x = row_x[k] + size.x / 2
+        row_x[k] += size.x + {"tripo": 12.0, "meadow": 6.0}.get(k, 4.0)
+        root = bpy.data.objects.new(it["name"], None)
+        bpy.context.scene.collection.objects.link(root)
+        root.location = (x - (lo.x + hi.x) / 2, row_y[k] - (lo.y + hi.y) / 2, -lo.z)
+        for o in meshes:
+            o.parent = root
+        tris = sum(len(p.vertices) - 2 for o in meshes for p in o.data.polygons)
+        done.append({"name": it["name"], "tris": tris, "parts": [o.name for o in meshes],
+                     "size_studs": [round(size.x, 2), round(size.y, 2), round(size.z, 2)], "materials": len(meshes)})
+        print("[worldkit_combine]", json.dumps(done[-1]), flush=True)
+        continue
     # bake every mesh into world space, drop the empties
     for o in meshes:
         mw = o.matrix_world.copy()

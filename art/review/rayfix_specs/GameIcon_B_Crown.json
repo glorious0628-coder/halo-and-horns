@@ -1,0 +1,44 @@
+{
+ "origin": "auto",
+ "bg": [
+  {
+   "h": [
+    30,
+    60
+   ],
+   "s": [
+    0.5,
+    1
+   ],
+   "v": [
+    0.6,
+    1
+   ]
+  }
+ ],
+ "flood_dark": null,
+ "fill_outline": {
+  "v": 0.35,
+  "close": 6,
+  "min_area": 0.0002
+ },
+ "protect": [
+  {
+   "ellipse": [
+    405,
+    245,
+    143,
+    63
+   ],
+   "pad": 16
+  }
+ ],
+ "sigma_deg": 14,
+ "keep_sparkles": true,
+ "feather": 20,
+ "region": null,
+ "min_component": 0.01,
+ "radial_blur": 41,
+ "soft_h": 10,
+ "soft_sv": 0.12
+}
