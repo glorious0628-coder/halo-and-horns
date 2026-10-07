@@ -20,11 +20,15 @@
       "ok": true
     },
     {
-      "check": "ClientMain turns AutoLocalize off for every GUI object under PlayerGui and in the world",
+      "check": "ClientMain turns AutoLocalize off for every GUI object and ProximityPrompt under PlayerGui and in the world",
       "ok": true
     },
     {
       "check": "FactionPicker has no Korean in its code (warnings / errors are English)",
+      "ok": true
+    },
+    {
+      "check": "the Altar of Fate prompt opens on E at once and is never auto-translated (검수 audit 2026-10-08)",
       "ok": true
     }
   ],
