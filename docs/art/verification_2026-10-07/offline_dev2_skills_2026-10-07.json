@@ -1,27 +1,33 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 143,
+  "checks": 150,
   "failedChecks": 0,
-  "namedChecks": 143,
+  "namedChecks": 150,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "slots",
-      "check": "a new save has 1 slot (Q), mirrored",
+      "check": "a new save has no skill yet (0 slots), follows the A23-71 rule, mirrored",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "slots",
-      "check": "Q Lv1, Z Lv5, X Lv8 (SKL-1)",
+      "check": "A23-71: Q Lv5, Z Lv15, X Lv25",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "slots",
-      "check": "old saves catch up at PlayerReady: Lv1 1, Lv4 1, Lv5 2, Lv9 3",
+      "check": "Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "saves catch up at PlayerReady: Lv1 0, Lv4 0, Lv5 1, Lv15 2, Lv25 3",
       "pass": 1,
       "fail": 0
     },
@@ -45,13 +51,43 @@
     },
     {
       "group": "slots",
-      "check": "Lv5: Z opens with the 'new skill' notice (ZEnabled)",
+      "check": "Lv1: Q is locked ('Locked'), no MP",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "slots",
-      "check": "Lv8: X opens and is saved, no notice while XEnabled is off",
+      "check": "Lv1: the old Release remote is refused too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv5: Q opens with the 'new skill' notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv5: Q casts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv15: Z opens with the notice (ZEnabled)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv25: X opens and is saved, no notice while XEnabled is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv4 -> 16 at once: Q then Z",
       "pass": 1,
       "fail": 0
     },
@@ -75,7 +111,13 @@
     },
     {
       "group": "slots",
-      "check": "Lv4: Z is locked",
+      "check": "Lv14: Z is locked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "auto combat at Lv3: no skill cast, no MP, no press answer",
       "pass": 1,
       "fail": 0
     },
@@ -870,9 +912,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 81,
-    "applied": 81,
-    "caught": 81,
+    "total": 88,
+    "applied": 88,
+    "caught": 88,
     "skipped": false,
     "results": [
       {
@@ -938,9 +980,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "slots :: Lv4: Z is locked"
+          "slots :: Lv14: Z is locked",
+          "slots :: Lv1: Q is locked ('Locked'), no MP",
+          "slots :: Lv1: the old Release remote is refused too",
+          "slots :: Lv5: Q casts",
+          "slots :: auto combat at Lv3: no skill cast, no MP, no press answer"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 5
       },
       {
         "mutation": "ZEnabled / XEnabled ignored",
@@ -1329,12 +1375,12 @@
         "newFailingChecks": [
           "aim behind :: Chain Bolt with only a slime behind: it starts there",
           "aim behind :: Earth Cleave with only a slime behind: the band turns to it (root turned)",
+          "aim behind :: Meteor with only a slime behind: the blast lands on it",
           "aim behind :: PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit",
-          "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn",
-          "aim behind :: only an enemy behind: 'No target' (players never pull the aim)",
-          "auto :: Q on cooldown: Chain Bolt"
+          "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit",
+          "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn"
         ],
-        "newFailingCount": 51
+        "newFailingCount": 66
       },
       {
         "mutation": "slots can go down",
@@ -1346,6 +1392,114 @@
           "slots :: slots are never taken away (Lv1 after a level reset keeps 3)"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "Q from the start again",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Lv15: Z opens with the notice (ZEnabled)",
+          "slots :: Lv1: Q is locked ('Locked'), no MP",
+          "slots :: Lv1: the old Release remote is refused too",
+          "slots :: Lv25: X opens and is saved, no notice while XEnabled is off",
+          "slots :: Lv4 -> 16 at once: Q then Z",
+          "slots :: Lv5: Q casts"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "SkillSlotsFor ignores rebirths",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+          "slots :: a rebirth opens all three",
+          "slots :: a reborn player has all three"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SkillSlotsFor counts one slot too many",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+          "slots :: Lv14: Z is locked",
+          "slots :: Lv15: Z opens with the notice (ZEnabled)",
+          "slots :: Lv1: Q is locked ('Locked'), no MP",
+          "slots :: Lv1: the old Release remote is refused too",
+          "slots :: Lv25: X opens and is saved, no notice while XEnabled is off"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "SkillSlotsFor: a slot one level early",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+          "slots :: Lv14: Z is locked",
+          "slots :: Lv15: Z opens with the notice (ZEnabled)",
+          "slots :: Lv25: X opens and is saved, no notice while XEnabled is off",
+          "slots :: Lv4 -> 16 at once: Q then Z",
+          "slots :: Lv5: Q opens with the 'new skill' notice"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "Config: Q at Lv1 again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: A23-71: Q Lv5, Z Lv15, X Lv25",
+          "slots :: Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+          "slots :: Lv15: Z opens with the notice (ZEnabled)",
+          "slots :: Lv1: Q is locked ('Locked'), no MP",
+          "slots :: Lv1: the old Release remote is refused too",
+          "slots :: Lv25: X opens and is saved, no notice while XEnabled is off"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "Config: Z at Lv5 again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: A23-71: Q Lv5, Z Lv15, X Lv25",
+          "slots :: Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+          "slots :: Lv14: Z is locked",
+          "slots :: Lv5: Q opens with the 'new skill' notice",
+          "slots :: saves catch up at PlayerReady: Lv1 0, Lv4 0, Lv5 1, Lv15 2, Lv25 3"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: a new save starts with Q",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Lv15: Z opens with the notice (ZEnabled)",
+          "slots :: Lv1: Q is locked ('Locked'), no MP",
+          "slots :: Lv1: the old Release remote is refused too",
+          "slots :: Lv25: X opens and is saved, no notice while XEnabled is off",
+          "slots :: Lv4 -> 16 at once: Q then Z",
+          "slots :: Lv5: Q casts"
+        ],
+        "newFailingCount": 10
       },
       {
         "mutation": "a rebirth opens nothing",
@@ -1366,7 +1520,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "slots :: Lv8: X opens and is saved, no notice while XEnabled is off"
+          "slots :: Lv25: X opens and is saved, no notice while XEnabled is off"
         ],
         "newFailingCount": 1
       },
@@ -1388,10 +1542,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "slots :: Lv5: Z opens with the 'new skill' notice (ZEnabled)",
-          "slots :: Lv8: X opens and is saved, no notice while XEnabled is off"
+          "slots :: Lv15: Z opens with the notice (ZEnabled)",
+          "slots :: Lv25: X opens and is saved, no notice while XEnabled is off",
+          "slots :: Lv4 -> 16 at once: Q then Z",
+          "slots :: Lv5: Q casts",
+          "slots :: Lv5: Q opens with the 'new skill' notice"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       },
       {
         "mutation": "a real respawn keeps the Z cooldown",
@@ -1585,7 +1742,7 @@
           "auto :: after the gap: Q (Z on its cooldown)",
           "auto :: auto Mage, one target: Q first"
         ],
-        "newFailingCount": 14
+        "newFailingCount": 15
       },
       {
         "mutation": "Release reports nothing",
@@ -1608,9 +1765,11 @@
         "crashed": false,
         "newFailingChecks": [
           "gap and queue :: a Release press inside the gap is queued too (or on cooldown)",
-          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'"
+          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'",
+          "slots :: Lv1: the old Release remote is refused too",
+          "slots :: Lv5: Q casts"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "auto never tries Z",
@@ -1635,9 +1794,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "auto :: the next tick: Q waits for the 0.5 s gap"
+          "auto :: the next tick: Q waits for the 0.5 s gap",
+          "slots :: auto combat at Lv3: no skill cast, no MP, no press answer"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "a skill press is not noted",
@@ -1868,12 +2028,12 @@
         "newFailingChecks": [
           "aim behind :: Chain Bolt with only a slime behind: it starts there",
           "aim behind :: Earth Cleave with only a slime behind: the band turns to it (root turned)",
+          "aim behind :: Meteor with only a slime behind: the blast lands on it",
           "aim behind :: PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit",
-          "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn",
-          "aim behind :: only an enemy behind: 'No target' (players never pull the aim)",
-          "auto :: Q on cooldown: Chain Bolt"
+          "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit",
+          "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn"
         ],
-        "newFailingCount": 53
+        "newFailingCount": 68
       }
     ]
   },
@@ -1881,24 +2041,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485",
+    "src/ReplicatedStorage/Shared/Config.luau": "426a50dcf1d3f798db694782e08b2dac4528e4bb6cbc6cf48a92334c51d456e8",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
-    "src/ServerScriptService/StoryQuestService.luau": "117e3ca4f5c84a09c6cd36422cc22c400a79873d7dd42dd1d0f764d5304f536f",
+    "src/ServerScriptService/StoryQuestService.luau": "ae2424c85059a2dc76b263e0124f24847164b6ecc9ce11b8b903b027643c0e1b",
     "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
-    "src/ServerScriptService/CharacterVisuals.luau": "fcfaec02dd563265306e73a3c9ec94846c110cb66ba17ba56c31719fec2a90f9",
+    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/SkillService.luau": "55a5566de07570f67fb737e190200926273bec2cb8e2074ee5d5551d4a777a30",
-    "src/ServerScriptService/MonsterService.luau": "cd4df07039f3eba18beef6f0121e31a84b617c0096a09a42f4d94efa9556c50b"
+    "src/ServerScriptService/SkillService.luau": "9e30e596b881e7348797ded6a4e06e958c3429594e8a26d5d8469b6f7df7bd47",
+    "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a"
   },
-  "fixtureSHA256": "eee546e30c1abc5684dd5beb6122e800dd24947bb01c565f66d3d44d82c3f09a",
+  "fixtureSHA256": "bd0fa06732c4245980271e20e34c58147360646202cd497b1acf51556d9be041",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "SKL-2 (A23-49): UseSkill(slot) -> SkillService.Cast: GlobalGap 0.5 s between any two skills (a manual press inside it queued once, an auto cast waits), refusals before MP with Fx SkillPress { Slot, Result }. Q = CombatService.Release (returns true, Released.Slot = \"Q\"); Z shapes: Line (band Len x Width toward the nearest aimed target, else ahead) and Chain (Range, Jump, Hits, no repeats; no target = NoTarget). Damage D x Mult once a target; pull (manual) / push via MonsterService.Displace (stop 3 in front, / body scale, bosses never, zone rect + leash + ground + walls, shorter steps). DamageWindow: 3 s per pair, player damage 35% (kaiju 8%), Halo heal 30% an ally, Horns steal 3% - Q and Z share it; players only with PvPZX and a manual cast. Slots: SkillSlots 1..3 (Lv5 / Lv8 / rebirth), never lowered, Fx SkillUnlocked only while the slot's flag is on. Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
+  "contract": "SKL-2 (A23-49): UseSkill(slot) -> SkillService.Cast: GlobalGap 0.5 s between any two skills (a manual press inside it queued once, an auto cast waits), refusals before MP with Fx SkillPress { Slot, Result }. Q = CombatService.Release (returns true, Released.Slot = \"Q\"); Z shapes: Line (band Len x Width toward the nearest aimed target, else ahead) and Chain (Range, Jump, Hits, no repeats; no target = NoTarget). Damage D x Mult once a target; pull (manual) / push via MonsterService.Displace (stop 3 in front, / body scale, bosses never, zone rect + leash + ground + walls, shorter steps). DamageWindow: 3 s per pair, player damage 35% (kaiju 8%), Halo heal 30% an ally, Horns steal 3% - Q and Z share it; players only with PvPZX and a manual cast. Slots (A23-71): SkillSlots 0..3 = Config.SkillSlotsFor (Q Lv5 / Z Lv15 / X Lv25, all after a rebirth), never lowered, Fx SkillUnlocked (Q always, Z / X only while the slot's flag is on); no skill before Lv5 (manual, the old Release remote and auto). Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
   "limitations": "X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal, SK1 / SK2 and the X-first auto order are SKL-3. The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline."
 }

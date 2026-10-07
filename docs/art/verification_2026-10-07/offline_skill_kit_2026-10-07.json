@@ -12,7 +12,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Q / Z / X unlock at Lv1 / Lv5 / Lv8 :: nil"
+          "CHECK_FAIL Q / Z / X unlock at Lv5 / Lv15 / Lv25 (A23-71, user 2026-10-07; SKL-1 had Lv1 / Lv5 / Lv8) :: nil"
         ]
       },
       {
@@ -20,7 +20,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x000001ea612d95a0"
+          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x000002485465fc60"
         ]
       },
       {
@@ -64,7 +64,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL SkillX: X / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x000001dfd4164720"
+          "CHECK_FAIL SkillX: X / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x00000250ffa161a0"
         ]
       },
       {
@@ -97,9 +97,9 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485"
+    "src/ReplicatedStorage/Shared/Config.luau": "426a50dcf1d3f798db694782e08b2dac4528e4bb6cbc6cf48a92334c51d456e8"
   },
-  "fixtureSHA256": "1c1cbf66c9e18366221a39a1076a9470c60f2ed2855f219c87dc3415af63354a",
+  "fixtureSHA256": "20801ee4ce710856b3bf469d477e7da212efd278218c03551a329697db11acef",
   "studioCalls": 0,
   "contract": "SKL-1 offline test (A23-49 skill kit, docs/design/skill_kit_beta_2026-10-06.md sections 1 / 4 / 5 / 6-3 / 8-1), plus\nmutations: the real Config.luau loaded with engine doubles. Config.Skills flags off (ZEnabled / XEnabled / PvPZX),\nUnlock Q1 / Z5 / X8, 0.5 s gap, MP steal cap 20, 6 kits x 3 slots = 21 skills with the section 4 MP / CD / Mult / shape\nnumbers and the section 5 English names (<= 14 letters) + descriptions, artisan kits with crafted looks only;\nConfig.SkillKit / SkillDef (faction table merged, cached) / SkillNumbers (\"Costs N MP\", A23-60); the SkillX key (X,\npad ButtonR3, Flag Skills.XEnabled, right after SkillZ).",
   "limitations": "Data only: casting, shapes, cooldowns and auto combat are SKL-2 / SKL-3 (dev2's SkillService)."
