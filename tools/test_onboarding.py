@@ -68,7 +68,7 @@ def main() -> int:
                           "acceptRemote": "AcceptTutorial", "remoteArgumentCount": 0,
                           "dialoguePagesPerFaction": 3, "worldNpcCreated": False,
                           "newArtOrUploads": 0, "clientPanelAndLiveEngineVerification": "pending_root"},
-        "a23Facts": {"firstMissionRewardGold": 150, "nextGoalAfterBlacksmith": ["NextSkillIron", "NextIronLevel", "NextIronGold", "NextZone", "GuideDone"],
+        "a23Facts": {"firstMissionRewardGold": 150, "nextGoalAfterBlacksmith": ["NextSkillIron", "NextIronLevel", "NextIronGold", "NextSkill", "NextZone", "GuideDone"],
                      "skillQuestCounts": "manual Released with MonstersHit >= 1 only (Auto ~= true)"},
         "coverage": ["real Net registry includes unique RequestTutorial/AcceptTutorial names",
                      "faction guide three-page dialogue, once per session automatic open, explicit reopen/accept",
@@ -80,7 +80,8 @@ def main() -> int:
                      "death/respawn/faction/class changes retain progress",
                      "A23-3 reward is 150 gold and covers the wood weapon price",
                      "A23-3 pinned next-goal row after the visit: NextSkillIron (A23-71 S16, no Q yet; NextIronLevel when Q was kept) -> "
-                     "NextIronGold (live gold) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel",
+                     "NextIronGold (live gold) -> NextSkill (SKL-3: iron owned, the next skill before the next zone; Z / X only "
+                     "with their switch) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel / Skill",
                      "next-goal row is never claimable, pays nothing, survives save/rejoin and keeps all ordinary quest slots",
                      "A23-3 pre-acceptance quest completion is paid quietly and never accepts the first mission",
                      "saved daily/extra Release quests migrate MinStacks50 to no stack gate and skill wording",

@@ -436,6 +436,23 @@ do
 	nextGoal("iron owned", string.format(T.NextZone, woods.MinLevel, woods.Name, 6), string.format(SN.Zone, woods.MinLevel))
 	f.Services.PlayerService.SetStat(f.Player, "WeaponTier", 1); f:Publish()
 	nextGoal("owned iron unequipped", string.format(T.NextZone, woods.MinLevel, woods.Name, 6), string.format(SN.Zone, woods.MinLevel))
+	-- SKL-3 (skill_kit §2): with the iron weapon owned, the next skill to learn comes before the next zone when it is
+	-- earlier (Q; Z / X only while their switch is on)
+	local PS = f.Services.PlayerService
+	PS.SetStat(f.Player, "Level", 1); f:Publish()
+	nextGoal("iron owned, no Q yet", string.format(T.NextSkill, 5, 1), string.format(SN.Skill, 5))
+	check(f.LastList[1].Text == "Next goal · New skill at Lv5 (now Lv1)", "SKL-3 next skill wording: " .. tostring(f.LastList[1].Text))
+	goalKind("iron owned, no Q yet", "Skill")
+	PS.SetStat(f.Player, "SkillSlots", 1); PS.SetStat(f.Player, "Level", 6); f:Publish()
+	nextGoal("Q learned, Z switched off", string.format(T.NextZone, woods.MinLevel, woods.Name, 6), string.format(SN.Zone, woods.MinLevel))
+	f.Config.Skills.ZEnabled = true; f:Publish()
+	nextGoal("Z on at Lv6: the woods (Lv10) first", string.format(T.NextZone, woods.MinLevel, woods.Name, 6), string.format(SN.Zone, woods.MinLevel))
+	PS.SetStat(f.Player, "Level", 12); f:Publish()
+	nextGoal("Z on at Lv12", string.format(T.NextSkill, 15, 12), string.format(SN.Skill, 15))
+	goalKind("Z on at Lv12", "Skill")
+	f.Config.Skills.ZEnabled = false
+	PS.SetStat(f.Player, "SkillSlots", 0); PS.SetStat(f.Player, "Level", 6); f:Publish()
+	nextGoal("back to Lv6 without Q", string.format(T.NextZone, woods.MinLevel, woods.Name, 6), string.format(SN.Zone, woods.MinLevel))
 	check(guideDone() == 0, "guide-finished toast fired while a goal remained")
 	f.Services.PlayerService.SetStat(f.Player, "Level", 10); f:Publish()
 	check(f.LastList[1].Pinned ~= true and #f.LastList == f.Config.Quests.Slots, "finished guide chain kept a pinned row")

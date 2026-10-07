@@ -48,6 +48,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # SKL-3 the practice subs SK1 / SK2
+    ("SKL-3: SkillHit ignores the Slot", ST,
+     "\t\tif obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)\n", ""),
+    ("SKL-3: Requires.Skill ignores the switch", ST, "local on = req.Skill == \"Q\" or skills[req.Skill .. \"Enabled\"] == true",
+     "local on = true"),
+    ("SKL-3: Requires.Skill ignores the slot", ST, "if not index or not on or num(data.SkillSlots) < index then return false end",
+     "if not index or not on then return false end"),
+    ("SKL-3: SK2 forgotten in the sub list", C, "\t\t\"SK1\", \"SK2\" }, -- SKL-3: the practice subs of a new skill",
+     "\t\t\"SK1\" }, -- SKL-3: the practice subs of a new skill"),
     # A23-71 the first skill at Lv5
     ("A23-71: no 'Skills come' tail", ST,
      "\tif not track.Claim and needsSkill(obj, track) and not Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths) then\n",

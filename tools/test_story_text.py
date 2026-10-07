@@ -589,7 +589,7 @@ DSPEC_RE = re.compile(r"(?<!/)%[-+ #0]*\d*[di] (?=[A-Za-z])")  # not the max of 
 SHORT_MAX = 14
 SHORT_NEEDS = [(("StoryQuests", "Defs"), "story quest"), (("Quests", "Templates"), "daily / extra quest template"),
                (("Board", "Jobs"), "board job")]
-TUT_SHORT_KEYS = ("Welcome", "Travel", "Quest", "Forge", "IronLevel", "SkillIron", "IronGold", "Zone")
+TUT_SHORT_KEYS = ("Welcome", "Travel", "Quest", "Forge", "IronLevel", "SkillIron", "IronGold", "Zone", "Skill")
 # a ShortName '%s' the checker can fill: path -> every value it can take (3rd idea round #3: 'Meet %s' = the guide names)
 SHORT_SUBS = {("Tutorial", "ShortNames", "Welcome"): lambda tree: [
     w["Name"] for w in (get(tree, ("Tutorial", "Welcome")) or {}).values()

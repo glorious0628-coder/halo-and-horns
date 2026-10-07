@@ -179,7 +179,10 @@ runGroup("x roar", function()
 	local a1 = w.Combat.DamagePlayer(p, 10, nil, false, "Slime")
 	local a2 = w.Combat.DamagePlayer(p, 10, nil, false, "Kaiju")
 	local a3 = w.Combat.DamagePlayer(p, 10, horn, false)
-	check(a1 == 6 and a2 == 10 and a3 == 10, "40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10", show({ a1, a2, a3 }))
+	local a4 = w.Combat.DamagePlayer(p, 10, horn, false, "Slime")
+	check(a1 == 6 and a2 == 10 and a3 == 10 and a4 == 10,
+		"40% Guard: a slime's 10 -> 6; a kaiju's 10 and a player's 10 stay 10 (a player's even with a monster kind)",
+		show({ a1, a2, a3, a4 }))
 	w:Advance(6)
 	check(w.Skills.GuardOf(p) == 0 and w.Combat.DamagePlayer(p, 10, nil, false, "Slime") == 10, "6 s later: no Guard, a slime's 10 is 10 again",
 		w.Skills.GuardOf(p))
@@ -206,6 +209,18 @@ runGroup("x roar", function()
 	w2.PS.CharacterSpawned:Fire(c, c.Character, c.Character:FindFirstChild("Humanoid"), false)
 	check(w2.Skills.GuardOf(c) == 0 and c:GetAttribute("GuardPct") == 0 and c:GetAttribute("GuardUntil") == 0,
 		"a real respawn clears the Guard (GuardPct / GuardUntil 0)", show({ w2.Skills.GuardOf(c), c:GetAttribute("GuardPct") }))
+	-- the same 20% again for a shorter time (a field tick after a roar) keeps the longer time
+	local w2b = xWorld()
+	local war = w2b:Hero(1, { Class = "Warrior", Faction = "Halo" })
+	local mage = w2b:Hero(2, { Class = "Mage", Faction = "Halo", Pos = vec(0, 0, 10) })
+	local buddy = w2b:Hero(3, { Class = "Archer", Faction = "Halo", Pos = vec(0, 0, -16) })
+	w2b:Monster("Slime", 20, 0, 99999)
+	w2b:Use(war, "X")
+	local until0 = buddy:GetAttribute("GuardUntil")
+	w2b:Use(mage, "X")
+	check(near(w2b.Skills.GuardOf(buddy), 0.2) and type(until0) == "number" and near(buddy:GetAttribute("GuardUntil"), until0)
+		and until0 > w2b.Time + 5, "the same 20% for a shorter time (a field tick after a roar): the longer time stays",
+		show({ until0, buddy:GetAttribute("GuardUntil"), w2b.Time }))
 
 	-- Horns: +5 MP a monster hit, at most 20 a cast, only what the MP bar takes
 	local w3 = xWorld()

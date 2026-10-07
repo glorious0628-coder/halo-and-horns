@@ -116,8 +116,7 @@ MUTATIONS = [
     # --- auto
     ("auto never casts X", SK,
      "\tif K.XEnabled == true and slotsOf(player) >= SLOT.X and SkillService.Cast(player, \"X\", true) then return true end\n", ""),
-    ("auto X with XEnabled off", SK, "\tif K.XEnabled == true and slotsOf(player) >= SLOT.X and SkillService.Cast(",
-     "\tif slotsOf(player) >= SLOT.X and SkillService.Cast("),
+    # (no 'auto X with XEnabled off' mutation: SkillService.Cast refuses a switched-off slot by itself, an equivalent mutant)
     ("auto Roar ignores Min", SK, "if #kit.MonstersNear(ctx.Player, ctx.Pos, num(a.Radius, 16)) >= num(a.Min, 3) then return true end",
      "if #kit.MonstersNear(ctx.Player, ctx.Pos, num(a.Radius, 16)) >= 1 then return true end"),
     ("auto Roar without the low-HP rule", SK,
