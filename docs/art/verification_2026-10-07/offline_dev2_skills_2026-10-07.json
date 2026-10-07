@@ -279,7 +279,7 @@
     },
     {
       "group": "refusals",
-      "check": "X before SKL-3: nothing happens, nothing spent",
+      "check": "SKL-3: X goes off with XEnabled (Guardian Roar, MP 30)",
       "pass": 1,
       "fail": 0
     },
@@ -1303,7 +1303,7 @@
           "auto :: auto Mage, 2 spread targets: Chain Bolt before Q",
           "auto :: auto Warrior: 2 in the band -> Earth Cleave without the pull"
         ],
-        "newFailingCount": 22
+        "newFailingCount": 23
       },
       {
         "mutation": "Released Auto always false",
@@ -1380,7 +1380,7 @@
           "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit",
           "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn"
         ],
-        "newFailingCount": 66
+        "newFailingCount": 67
       },
       {
         "mutation": "slots can go down",
@@ -2033,7 +2033,7 @@
           "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit",
           "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn"
         ],
-        "newFailingCount": 68
+        "newFailingCount": 69
       }
     ]
   },
@@ -2041,24 +2041,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "af78e57d96c1eff74befc1c08b47a97a425e63053d70998cc56cc92f1dcc2464",
+    "src/ReplicatedStorage/Shared/Config.luau": "d888c85a40d47ede02d3aee99549622bb0116c89cda7022010f2aad14fecd6e5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
+    "src/ServerScriptService/CombatService.luau": "3e3c15e5ffc06dc3a2784d7b85d645cd3a2238043a8c8c3e5dfafe3124d4141c",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
-    "src/ServerScriptService/StoryQuestService.luau": "ae2424c85059a2dc76b263e0124f24847164b6ecc9ce11b8b903b027643c0e1b",
+    "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
     "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
     "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/SkillService.luau": "9e30e596b881e7348797ded6a4e06e958c3429594e8a26d5d8469b6f7df7bd47",
-    "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a"
+    "src/ServerScriptService/SkillService.luau": "514afbd7066b690e5e02b5c4639bab1c752dee7b431bbd319b0102490a7c95c4",
+    "src/ServerScriptService/MonsterService.luau": "2294ede7730ed958434e78ceb434ac6f86cf3b8256b1f173430917ac4f2cada7"
   },
-  "fixtureSHA256": "bd0fa06732c4245980271e20e34c58147360646202cd497b1acf51556d9be041",
+  "fixtureSHA256": "3afb962f59ac0ff33646cf23181bc4521a73ff6770ec8682142095399b9ff03b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
   "contract": "SKL-2 (A23-49): UseSkill(slot) -> SkillService.Cast: GlobalGap 0.5 s between any two skills (a manual press inside it queued once, an auto cast waits), refusals before MP with Fx SkillPress { Slot, Result }. Q = CombatService.Release (returns true, Released.Slot = \"Q\"); Z shapes: Line (band Len x Width toward the nearest aimed target, else ahead) and Chain (Range, Jump, Hits, no repeats; no target = NoTarget). Damage D x Mult once a target; pull (manual) / push via MonsterService.Displace (stop 3 in front, / body scale, bosses never, zone rect + leash + ground + walls, shorter steps). DamageWindow: 3 s per pair, player damage 35% (kaiju 8%), Halo heal 30% an ally, Horns steal 3% - Q and Z share it; players only with PvPZX and a manual cast. Slots (A23-71): SkillSlots 0..3 = Config.SkillSlotsFor (Q Lv5 / Z Lv15 / X Lv25, all after a rebirth), never lowered, Fx SkillUnlocked (Q always, Z / X only while the slot's flag is on); no skill before Lv5 (manual, the old Release remote and auto). Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
-  "limitations": "X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal, SK1 / SK2 and the X-first auto order are SKL-3. The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline."
+  "limitations": "X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal and the X-first auto order are SKL-3: tools/test_skills_x.py (SK1 / SK2 in tools/test_town_quests.py). The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline."
 }
