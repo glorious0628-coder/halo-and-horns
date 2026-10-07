@@ -1,7 +1,9 @@
--- A23-65 (user 2026-10-07): the production CameraFollow follow turn with vector / camera doubles. While walking the
--- camera turns slowly around its Focus toward the walking direction (capped per second, eased, slower with 'Screen
--- shake' off); never while standing, walking toward the camera, 1.5 s after a hand turn, 0.5 s after my swing / skill,
--- in shift lock / first person, when blocked, or with Settings Cam = "Free". Input: SOURCE.
+-- A23-65 + A23-74 (user 2026-10-07): the production CameraFollow follow turn with vector / camera doubles. While walking
+-- (forward, sideways, diagonal - anything but a backpedal toward the camera) the camera turns around its Focus toward
+-- the walking direction = my back (capped per second: 45 deg/s forward, 20 deg/s sideways so a held side key makes a wide
+-- arc; eased; slower with 'Screen shake' off or Reduced Motion); never while standing, backing up, 1.5 s after a hand
+-- turn, 0.5 s after my swing / skill, in shift lock / first person, when blocked, or with Settings Cam = "Free".
+-- Phone: the left thumbstick (a sunk touch on the stick side) never holds it. Input: SOURCE.
 local checks, failed = 0, 0
 local function check(ok, name, detail)
 	checks += 1
@@ -53,7 +55,8 @@ function run:BindToRenderStep(name, priority, fn) steps[name] = { Priority = pri
 local fxSignal = signal()
 local net = { Get = function(name) assert(name == "Fx", name) return { OnClientEvent = fxSignal } end }
 local shared = { WaitForChild = function(_, n) return { __module = n } end }
-local services = { Players = { LocalPlayer = player }, UserInputService = input, GuiService = { MenuIsOpen = false }, RunService = run,
+local gui = { MenuIsOpen = false, ReducedMotionEnabled = false }
+local services = { Players = { LocalPlayer = player }, UserInputService = input, GuiService = gui, RunService = run,
 	ReplicatedStorage = { WaitForChild = function() return shared end } }
 local registry = { Settings = { Get = function(k) return W.Settings[k] end } }
 for _, name in { "FactionPicker", "ClassPicker", "Panels", "WorldMap" } do
@@ -92,16 +95,24 @@ local function reset()
 	humanoid.MoveDirection = vec(0, 0, 0)
 	input.RightDown, input.MouseBehavior = false, "Default"
 	W.Settings.Cam, W.Settings.Shake = "Follow", true
+	gui.ReducedMotionEnabled = false
 	camera.Focus.Position = focus
 	W.Clock += 10 -- past every hold
 end
 local function dist() return (camera.CFrame.Position - camera.Focus.Position).Magnitude end
--- forward and to the right of the camera look (-Z): dot 0.8 >= MinDot 0.5; its yaw is -36.87 deg
+-- forward and to the right of the camera look (-Z): dot 0.8 >= FwdDot 0.5 (the full forward cap); its yaw is -36.87 deg
 local FWD_RIGHT = vec(0.6, 0, -0.8)
 local FWD_YAW = -math.deg(math.atan2(0.6, 0.8))
+-- MoveDirection of a key / stick input relative to the camera (Roblox's ControlModule: W = camera look, D = its right)
+local function camRelative(right, fwd)
+	local l = camera.CFrame.LookVector
+	local m = math.sqrt(l.X * l.X + l.Z * l.Z)
+	local fx, fz = l.X / m, l.Z / m
+	return vec(fwd * fx - right * fz, 0, fwd * fz + right * fx)
+end
 
 -- 1. walking forward and to my right (36.87 deg right of the camera look): the camera turns toward it, capped,
--- orbiting the focus (A23-65 follow, forward walks only since 검수 2026-10-07)
+-- orbiting the focus (A23-65)
 reset()
 local d0, y0 = dist(), yaw(camera.CFrame.LookVector)
 humanoid.MoveDirection = FWD_RIGHT
@@ -114,23 +125,71 @@ check(math.abs(dist() - d0) < 1e-6 and math.abs(camera.CFrame.LookVector.Y - loo
 frame(480)
 local y2 = yaw(camera.CFrame.LookVector)
 check(math.abs(y2 - FWD_YAW) <= 6 + 1e-6 and y2 >= FWD_YAW - 1e-6, "after a while it settles behind me (within the 6 deg dead zone, no overshoot)", y2)
--- 2. standing / walking toward the camera: never turns
+-- 2. standing / backing up toward the camera: never turns (no spinning)
 reset()
 frame(60)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "standing still: the camera stays", yaw(camera.CFrame.LookVector))
 humanoid.MoveDirection = vec(0, 0, 1)
 frame(60)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "walking toward the camera (backing up): never spins", yaw(camera.CFrame.LookVector))
-humanoid.MoveDirection = vec(1, 0, 0) -- a plain sidestep (90 deg from the camera look)
+humanoid.MoveDirection = vec(0.6, 0, 0.8) -- back and to the right (walk . look = -0.8)
 frame(60)
-check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "a sidestep never turns it (no circling)", yaw(camera.CFrame.LookVector))
-humanoid.MoveDirection = vec(0.97, 0, -0.24) -- mostly sideways, a little forward (dot 0.24 < 0.5)
+check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "backing up diagonally (S+D): never spins", yaw(camera.CFrame.LookVector))
+humanoid.MoveDirection = vec(0.9, 0, 0.436) -- mostly sideways, a little back (walk . look = -0.44 < BackDot -0.35)
 frame(60)
-check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "mostly sideways (a little forward) does not turn it either", yaw(camera.CFrame.LookVector))
-humanoid.MoveDirection = FWD_RIGHT
+check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "a walk more than ~110 deg off the look counts as backing up", yaw(camera.CFrame.LookVector))
+-- 3. A23-74 (user 2026-10-07 "카메라도 뒤통수 따라가랬잖아"): a sidestep turns it too, slower than a forward walk
+reset()
+humanoid.MoveDirection = vec(1, 0, 0) -- a plain sidestep to the right (D / the stick to the right)
 frame(1)
-check(yaw(camera.CFrame.LookVector) < -0.2, "a forward walk turns it again", yaw(camera.CFrame.LookVector))
--- 3. a hand turn holds it for 1.5 s
+local side1 = yaw(camera.CFrame.LookVector)
+check(side1 < -0.25 and math.abs(side1) <= 20 / 60 + 1e-6, "a sidestep right turns the camera right, at most 20 deg/s (below the 45 forward cap)", side1)
+reset()
+humanoid.MoveDirection = vec(-1, 0, 0)
+frame(1)
+check(yaw(camera.CFrame.LookVector) > 0.25, "a sidestep left turns it left", yaw(camera.CFrame.LookVector))
+reset()
+humanoid.MoveDirection = vec(0.97, 0, 0.24) -- sideways, a little back (walk . look = -0.24, above BackDot)
+frame(1)
+check(yaw(camera.CFrame.LookVector) < -0.2, "sideways and a little back still turns it", yaw(camera.CFrame.LookVector))
+reset()
+humanoid.MoveDirection = vec(0.97, 0, -0.24) -- sideways, a little forward (walk . look = 0.24)
+frame(1)
+local sideFwd = math.abs(yaw(camera.CFrame.LookVector))
+check(sideFwd > math.abs(side1) + 0.05 and sideFwd <= 45 / 60 + 1e-6, "a little forward of sideways: faster than sideways, within the forward cap", sideFwd)
+-- held keys are camera-relative: W already walks along the camera look; a held side key keeps walking 90 deg off it,
+-- so the turn never ends - the side cap makes that a wide arc (radius = walked / turned), not a tight circle
+reset()
+for _ = 1, 60 do humanoid.MoveDirection = camRelative(0, 1); frame(1) end
+check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "holding W: already behind me, the camera stays", yaw(camera.CFrame.LookVector))
+reset()
+local walked, turned = 0, 0
+for _ = 1, 120 do
+	humanoid.MoveDirection = camRelative(1, 0)
+	local before = yaw(camera.CFrame.LookVector)
+	frame(1)
+	turned += before - yaw(camera.CFrame.LookVector)
+	walked += 20 / 60 -- Config.Player.WalkSpeed 20 studs/s
+end
+local radius = walked / math.rad(turned)
+check(turned > 30 and turned <= 40 + 1e-4 and radius >= 55,
+	"holding D for 2 s: the camera keeps turning right in a wide arc (radius >= 55 studs; 110 deg/s made an 8-stud circle)",
+	{ turned, radius })
+reset()
+humanoid.MoveDirection = camRelative(0.7071, 0.7071)
+frame(1)
+local diag = yaw(camera.CFrame.LookVector)
+check(diag < -0.5 and math.abs(diag) <= 45 / 60 + 1e-6, "W+D (forward diagonal): the full forward cap, 45 deg/s", diag)
+-- phone: walking with the left thumbstick drives the follow (the stick sinks its touch: processed)
+reset()
+humanoid.MoveDirection = vec(1, 0, 0) -- the stick pushed right
+local stick = { UserInputType = "Touch", Position = vec(150, 450, 0) }
+input.InputBegan:Fire(stick, true)
+input.InputChanged:Fire(stick, true)
+frame(1)
+check(yaw(camera.CFrame.LookVector) < -0.2, "phone: walking with the left thumbstick drives the follow", yaw(camera.CFrame.LookVector))
+input.InputEnded:Fire(stick, true)
+-- 4. a hand turn holds it for 1.5 s
 reset()
 humanoid.MoveDirection = FWD_RIGHT
 input.RightDown = true
@@ -161,7 +220,7 @@ humanoid.MoveDirection = FWD_RIGHT
 input.InputChanged:Fire({ UserInputType = "Pad", KeyCode = "Thumb2", Position = vec(0.8, 0, 0) }, false)
 frame(30)
 check(math.abs(yaw(camera.CFrame.LookVector)) < 1e-9, "the right stick holds the follow")
--- 4. my own swing / skill holds it 0.5 s; another player's never
+-- 5. my own swing / skill holds it 0.5 s; another player's never
 reset()
 humanoid.MoveDirection = FWD_RIGHT
 fxSignal:Fire("Swing", { UserId = 7 })
@@ -181,7 +240,7 @@ humanoid.MoveDirection = FWD_RIGHT
 fxSignal:Fire("Swing", { UserId = 99 })
 frame(1)
 check(yaw(camera.CFrame.LookVector) < -0.2, "another player's swing does not hold my camera")
--- 5. switches and states
+-- 6. switches and states
 reset()
 humanoid.MoveDirection = FWD_RIGHT
 W.Settings.Cam = "Free"
@@ -193,6 +252,18 @@ W.Settings.Shake = false
 frame(1)
 local slowStep = math.abs(yaw(camera.CFrame.LookVector))
 check(slowStep > 0.2 and slowStep <= 25 / 60 + 1e-6, "'Screen shake' off: the follow turns slower (25 deg/s)", slowStep)
+reset()
+humanoid.MoveDirection = vec(1, 0, 0)
+W.Settings.Shake = false
+frame(1)
+local slowSide = math.abs(yaw(camera.CFrame.LookVector))
+check(slowSide > 0.1 and slowSide <= 12 / 60 + 1e-6, "'Screen shake' off, sideways: slower still (12 deg/s)", slowSide)
+reset()
+humanoid.MoveDirection = FWD_RIGHT
+gui.ReducedMotionEnabled = true
+frame(1)
+local reducedStep = math.abs(yaw(camera.CFrame.LookVector))
+check(reducedStep > 0.2 and reducedStep <= 25 / 60 + 1e-6, "Roblox Reduced Motion: the slow rate too (25 deg/s)", reducedStep)
 reset()
 humanoid.MoveDirection = FWD_RIGHT
 registry.Panels.Open = true

@@ -2,6 +2,7 @@
 
 A23-51 (user 2026-10-06): the camera turns with the right mouse drag only (Roblox's default camera, which CameraFollow
 never touches); a left drag never turns it; a left press on the world = one attack on the press, never repeated.
+A23-65 + A23-74 (user 2026-10-07): the follow turn behind me while walking (forward and sideways; never backing up).
 Does not inject physical mouse input, call Studio, or validate Roblox camera collision.
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-06/offline_camera_input_a23_51_2026-10-06.json
@@ -71,10 +72,14 @@ HUD_MUTATIONS = [
 ]
 
 
-# A23-65 (user 2026-10-07): the follow turn (tools/fixtures/camera_follow_offline.luau); each must make it fail
+# A23-65 + A23-74 (user 2026-10-07): the follow turn (tools/fixtures/camera_follow_offline.luau); each must make it fail
 FOLLOW_MUTATIONS = [
-    ("spins while backing up", "MinDot = 0.5,", "MinDot = -1.1,"),
-    ("circles on sidesteps", "MinDot = 0.5,", "MinDot = 0,"),
+    ("spins while backing up", "BackDot = -0.35,", "BackDot = -1.1,"),
+    ("sidesteps never turn again (the old A23-65 forward-only rule)", "BackDot = -0.35,", "BackDot = 0.5,"),
+    ("a held side key circles tightly (side cap = forward cap)", "SideRate = math.rad(20),", "SideRate = math.rad(45),"),
+    ("forward walks lose the full cap", "math.clamp(dot / FOLLOW.FwdDot, 0, 1)", "0"),
+    ("'Screen shake' off ignored sideways", "slow and FOLLOW.SlowSideRate or FOLLOW.SideRate", "FOLLOW.SideRate"),
+    ("Reduced Motion ignored", "or FOLLOW.Reduced()", "or false"),
     ("no hold after a hand turn", "if now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack",
      "if now - FOLLOW.LastAttack"),
     ("no hold after my swing", " or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end", " then return end"),
@@ -176,11 +181,13 @@ def main():
                           "held or dragged, never for a processed (GUI) press, an open picker / Panels / WorldMap / Roblox "
                           "menu, a focused text box, loading, a scripted camera or a missing character; touch is left to "
                           "Roblox; the camera subject follows the new humanoid after a costume swap / respawn and a "
-                          "scripted camera keeps its own subject. A23-65 (user 2026-10-07): while walking the camera turns "
-                          "slowly behind me (45 deg/s cap, eased; 25 deg/s with 'Screen shake' off), never while standing, "
-                          "walking toward the camera, 1.5 s after a right drag / camera-side finger drag / right stick, 0.5 "
-                          "s after my own Swing / Release / Skill Fx, in shift lock, first person, a window / scripted "
-                          "camera, or with Settings Camera = Free.",
+                          "scripted camera keeps its own subject. A23-65 + A23-74 (user 2026-10-07): while walking in any "
+                          "direction but a backpedal toward the camera (walk . look < -0.35) the camera turns behind me "
+                          "(eased; 45 deg/s cap forward, 20 deg/s sideways so a held side key makes a wide arc, radius "
+                          ">= 55 studs; 25 / 12 deg/s with 'Screen shake' off or Reduced Motion); the phone thumbstick "
+                          "drives it too; never while standing, backing up, 1.5 s after a right drag / camera-side finger "
+                          "drag / right stick, 0.5 s after my own Swing / Release / Skill Fx, in shift lock, first person, "
+                          "a window / scripted camera, or with Settings Camera = Free.",
               "limitations": "Engine input propagation, the default camera's right-drag orbit itself and real mouse/touch "
                              "need runtime validation (Studio own test Play)."}
     OUT.parent.mkdir(parents=True, exist_ok=True)

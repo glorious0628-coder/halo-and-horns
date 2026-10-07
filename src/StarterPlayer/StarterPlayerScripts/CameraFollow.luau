@@ -2,14 +2,21 @@
 -- A23-51 (user 2026-10-06): the camera turns with the RIGHT mouse drag only, owned by Roblox's default PlayerModule
 -- camera (nothing here touches it); a left drag never turns the camera. A left press on the world = one attack:
 -- PrimaryClick fires on the press, holding or dragging never repeats it. Touch and gamepad stay with Roblox.
--- A23-65 (user 2026-10-07 "캐릭터가 움직일 때 카메라도 같이 움직이면 좋겠어. 캐릭터의 뒤를 따라서!"): while I walk, the
--- camera turns slowly around me toward my walking direction (I end up seen from behind). It is a yaw-only turn of the
--- camera around its Focus, after Roblox's camera each frame (render step HHC_CameraFollow), capped per second and
--- eased (45 deg/s), slower with 'Screen shake' off. It never turns while I stand, while I walk toward the camera (no spinning
--- when backing up), for FOLLOW.ManualHold s after a hand turn (right drag, a finger drag on the camera side, the right
+-- A23-65 (user 2026-10-07 "캐릭터가 움직일 때 카메라도 같이 움직이면 좋겠어. 캐릭터의 뒤를 따라서!") and A23-74 (user
+-- 2026-10-07 "카메라도 뒤통수 따라가랬잖아"): while I walk, the camera turns around me toward my walking direction, which
+-- is the way my body faces (Humanoid AutoRotate), so I end up seen from behind. Every walk counts - forward, sideways,
+-- diagonal - except a backpedal toward the camera (walk . camera look < FOLLOW.BackDot: no spinning when backing up).
+-- It is a yaw-only turn of the camera around its Focus, after Roblox's camera each frame (render step HHC_CameraFollow),
+-- eased and capped per second: 45 deg/s walking forward, down to 20 deg/s walking sideways (the keys and the stick are
+-- camera-relative, so a held side key keeps walking 90 deg off the camera and the turn never ends: the low cap makes
+-- that a wide gentle arc, not a tight circle), slower with 'Screen shake' off or Roblox's Reduced Motion. It never turns
+-- while I stand, for FOLLOW.ManualHold s after a hand turn (right drag, a finger drag on the camera side, the right
 -- stick), for FOLLOW.AttackHold s after my swing / skill (FaceTarget / the server turning my body never whips the
 -- camera), in shift lock or first person, and whenever blocked() (windows, the opening, menus, loading). Settings
--- "Cam" = "Free" turns it off. The right-drag turn itself stays Roblox's (A23-51).
+-- "Cam" = "Free" turns it off. The right-drag turn itself stays Roblox's (A23-51). Phone: the left thumbstick walks
+-- (a camera-relative MoveDirection like the keys) and so drives the follow; its touch never counts as a hand turn.
+-- Why A23-74: the A23-65 version ran only for walk . camera look >= 0.5 (69f1fe45). W already walks along the camera
+-- look (nothing to turn) and A / D / S are all below 0.5, so with single keys it never turned.
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local GuiService = game:GetService("GuiService")
@@ -24,14 +31,16 @@ local started, queued = false, false
 local character = nil
 local characterConnections, cameraConnections = {}, {}
 local FOLLOW = {
-	-- max turn speed (rad / s); 'Screen shake' off = slow. Studio 2026-10-07: at 110 deg/s a held sideways key (the
-	-- stick to one side) chased its own camera-relative direction into an 8-stud circle; 45 deg/s makes a wide arc
+	-- max turn speed (rad / s) walking forward; 'Screen shake' off / Reduced Motion = slow. Studio 2026-10-07: at 110
+	-- deg/s a held sideways key (the stick to one side) chased its own camera-relative direction into an 8-stud circle
 	Rate = math.rad(45), SlowRate = math.rad(25),
+	-- A23-74 (user 2026-10-07): the cap walking sideways. A held side key circles with radius = walk speed / cap:
+	-- 20 studs/s at 20 deg/s = 57 studs (a wide gentle arc; 45 deg/s = 25 studs, which 검수 saw as circling)
+	SideRate = math.rad(20), SlowSideRate = math.rad(12),
+	FwdDot = 0.5, -- walk . camera look >= this = forward (within 60 deg): the full Rate; the cap eases to SideRate at 0
+	BackDot = -0.35, -- walk . camera look below this (more than ~110 deg off) = backing up toward the camera: never turn
 	Ease = 1.2, SlowEase = 0.7, -- share of the remaining angle turned per second
 	DeadZone = math.rad(6), -- a smaller misalignment is left alone
-	-- only while walking mostly forward (walk . camera look >= MinDot; 검수 2026-10-07: a sidestep or a walk toward the
-	-- camera never turns it - sideways it kept circling)
-	MinDot = 0.5,
 	MinMove = 0.2, -- MoveDirection length that counts as walking
 	ManualHold = 1.5, AttackHold = 0.5, -- s
 	CameraSide = 0.4, -- a finger drag that starts right of this share of the screen turns the camera (not the stick)
@@ -66,6 +75,12 @@ local function setting(key, default)
 	return v
 end
 
+-- Roblox's Reduced Motion (Fx MOTION.ShakeAllowed reads it too); pcall: an older client may lack the property
+function FOLLOW.Reduced()
+	local ok, reduced = pcall(function() return GuiService.ReducedMotionEnabled end)
+	return ok and reduced == true
+end
+
 -- one frame of the follow turn (after Roblox's camera, priority Camera + 1)
 function FOLLOW.Step(dt)
 	if setting("Cam", "Follow") == "Free" or blocked() then return end
@@ -85,12 +100,16 @@ function FOLLOW.Step(dt)
 	if cl < 0.05 or ml < 0.05 then return end
 	cx, cz, mx, mz = cx / cl, cz / cl, mx / ml, mz / ml
 	local dot = cx * mx + cz * mz
-	if dot < FOLLOW.MinDot then return end
-	-- signed yaw (about +Y) from the camera heading to the walking heading
+	if dot < FOLLOW.BackDot then return end -- backing up toward the camera: never spin (A23-74 keeps this one exception)
+	-- signed yaw (about +Y) from the camera heading to the walking heading (= my back while walking: AutoRotate)
 	local angle = math.atan2(cz * mx - cx * mz, dot)
 	if math.abs(angle) < FOLLOW.DeadZone then return end
 	local slow = setting("Shake", true) == false
-	local rate, ease = slow and FOLLOW.SlowRate or FOLLOW.Rate, slow and FOLLOW.SlowEase or FOLLOW.Ease
+		or FOLLOW.Reduced()
+	local full, side = slow and FOLLOW.SlowRate or FOLLOW.Rate, slow and FOLLOW.SlowSideRate or FOLLOW.SideRate
+	local ease = slow and FOLLOW.SlowEase or FOLLOW.Ease
+	-- A23-74: the full cap walking forward, easing down to the side cap walking sideways (a wide arc, not a circle)
+	local rate = side + (full - side) * math.clamp(dot / FOLLOW.FwdDot, 0, 1)
 	local a = math.clamp(angle * math.min(1, ease * dt), -rate * dt, rate * dt)
 	local c, sn = math.cos(a), math.sin(a)
 	local function yaw(v) return Vector3.new(v.X * c + v.Z * sn, v.Y, -v.X * sn + v.Z * c) end
