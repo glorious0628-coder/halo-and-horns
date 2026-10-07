@@ -47,6 +47,10 @@
     {
       "check": "the runner's settle step lifts / lowers only noted pieces, once, never over water or by more than 60",
       "ok": true
+    },
+    {
+      "check": "A23-74 no ray bursts: WarService turns the SunRaysEffect off and every sky's SunRays is 0",
+      "ok": true
     }
   ],
   "mutations": {
@@ -377,6 +381,7 @@
     "tools/preview_map.lua": "96e6a4223c1b86d5f1792038879a9ccc332df127d79a74b32a754b99a2236328",
     "tools/map_v2_move.lua": "12d1ead5ada6e5a75380efef7fb31d5585cd40c6b17b55abcf88adfde39e1183",
     "tools/map_v2_apply.py": "3cff2791fa277958ff4bc1ada5d947adc1eecbe8d1f509940b13fa1f4c14bd96",
+    "src/ServerScriptService/WarService.luau": "eb3020dbd74a07c1424219bfe5646518f556bf6773b05c49dde0359cec1e868e",
     "docs/design/world_map_v2_2026-10-06.json": "d5e196575a82adcac70a771866899a9bfa146a66868b8ec6b2996664381cbe2f",
     "tools/fixtures/map_v2_offline.luau": "a57200280c8db9f45a6145e2715ed219fe3c2b4fabfdea3731b5ab5448c8446f"
   },

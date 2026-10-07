@@ -47,6 +47,7 @@ FILES = {
     "preview": ROOT / "tools/preview_map.lua",
     "move": ROOT / "tools/map_v2_move.lua",
     "apply": ROOT / "tools/map_v2_apply.py",
+    "war": ROOT / "src/ServerScriptService/WarService.luau",
 }
 LAYOUT = ROOT / "docs/design/world_map_v2_2026-10-06.json"
 FIXTURE = ROOT / "tools/fixtures/map_v2_offline.luau"
@@ -246,6 +247,11 @@ def static_checks(src: dict[str, str], values: dict | None) -> list[tuple[str, b
                 'local off = inst:GetAttribute("MapV2Ground")' in ap and 'inst:SetAttribute("MapV2Settled", true)' in ap
                 and "if math.abs(dy) > 60 then" in ap and "hit.Material == Enum.Material.Water then" in ap
                 and '"settle", "build", "kits"' in ap))
+    war = src["war"]
+    out.append(("A23-74 no ray bursts: WarService turns the SunRaysEffect off and every sky's SunRays is 0",
+                "local SUNRAYS_FIXED = { Spread = 0.4, Intensity = 0, Enabled = false }" in war
+                and 'setProps(findOrCreate(Lighting, "SunRaysEffect"), SUNRAYS_FIXED)' in war
+                and re.findall(r"SunRays = ([\d.]+)", war) == ["0", "0", "0"]))
     return out
 
 
