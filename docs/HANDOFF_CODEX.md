@@ -1,6 +1,41 @@
 # HANDOFF_CODEX — 지금까지 한 것, 지금 상태, 다음에 할 것 (2026-10-06 기준)
 
-> **이 문서에서 현재 유효한 것은 맨 위 "최신 인계 (2026-10-06)" 절뿐이다.** 그 아래 절은 모두 당시 기록(역사·증거)이며, 거기 적힌 다음 할 일·허락·종료 지시·"바꾸면 안 되는 결정"은 오늘 아무것도 허락하지 않는다. 규칙 순서는 `AGENTS.md` "Which rule wins".
+> **이 문서에서 현재 유효한 것은 맨 위 "최신 인계 (2026-10-07 저녁, 계정 전환 전)" 절뿐이다.**
+
+## 최신 인계 (2026-10-07 저녁, 계정 전환 전) — 검수 작성
+
+**배경:** 사용자가 메인 Studio를 직접 플레이하고 크게 화냈다("3~4일 동안 된 게 없어"). 지적은 SPEC **A23-74**에 모두 적었다(PC·폰 같은 틀, 무기 먼저, 등 뒤 카메라, 프롤로그 띠, 팀 알림, Dailies, 몬스터마다 말풍선 + 의성어 대사, 미니맵 진행 방향, 만든 3D를 메인에 넣기, 지형이 그림과 안 맞음, 반투명·겹치는 몬스터, 악마성). **새 계정 세션은 A23-74부터 읽는다.**
+**검사 규칙:** "고쳤다"는 메인 Studio에서 **PC와 폰 둘 다 직접 Play한 사진**이 있어야 받는다. 기기 흉내는 쓰면 반드시 default로 돌린다(메인에 'average_laptop'이 켜진 채 남아 사용자가 PC에서 폰 배치를 봤다).
+
+**메인 Studio 상태(build/GoodEvil.rbxlx 파일로 열림, 아직 파일 저장 안 됨 — 사용자 Ctrl+S 필요):**
+- 기기 흉내 끔. origin/main cf78a4d까지 동기화(프롤로그 검은 띠 없음 확인, 팀 알림 고침).
+- ServerStorage.WorldKit3D = 업로드된 3D 61개(tools/build_kit_from_ids.py, art/models/worldkit/import*_assets_*.json).
+- Map.Decor.MeadowKit = 초원 옛 임시 장식 → Kit_M 버섯·덤불·꽃 + W_Tree_B/A 60개(tools/worldkit/meadow_kit_swap.luau, 옛 것은 ServerStorage.MeadowPrimitiveBackup).
+- **저장 전에 Studio를 닫으면 위 두 개가 사라진다.** 저장은 Windows가 창 전환을 막아서 사용자에게 Ctrl+S를 부탁한 상태.
+
+**가지·진행 중(검수 워크플로 결과는 가지에 push됨, main 아님):**
+| 일 | 가지 | 상태 |
+|---|---|---|
+| 프롤로그 띠 / 팀 알림 | fix/a2374-letterbox, -teammsg | **main 완료(cf78a4d)** |
+| 카메라 등 뒤 | fix/a2374-camera(검사 탈락: 옆걸음에 영영 옆모습) → fix/a2374-camera2(멈추면 등 뒤로 되돌기 + 대각선 넓게) | camera2 워크플로 진행 중이었음. 없으면 같은 사양으로 다시 |
+| 말풍선 코드 | fix/a2374-bark(3종 가족 키) → fix/a2374-bark2(12종 BarkBubble<Kind>, 고정 크기 둥근 풍선, 대사 의성어·한 단어) | **bark2 9fa21ef 끝**(시험 통과, 대사 96줄 모두 의성어·2단어 이하). 남은 1개: 몬스터별 그림이 올라가기 전에는 공용 BarkBubble 9조각이 112x60(몸통 약 2.4:1)으로 여전히 길쭉함 → 공용 키를 건너뛰고 둥근 코드 말풍선(96x70)을 쓰게 고친 뒤 main |
+| 반투명·겹침 | fix/a2374-translucent, fix/a2374-separation | 워크플로 진행 중이었음(가지가 없으면 다시) |
+| 한국어 자동 번역("아야!") | fix/a2374-english(AutoLocalize=false) | 진행 중이었음. Creator Dashboard 자동 번역 끄기는 사용자 몫 |
+| 3D 배치 도구 + 성 원인 | tool/a2374-kit-place | 진행 중이었음 |
+| 무기 먼저(서버) + 스탯 1단계 + 소리 서버 + 고칠 것 4개 | **origin/dev2-sound bde2715d**(dev2-weapon 49d2744 포함, 저장 v3 유지) — 개발 2가 최신 main 합치고 CI 다시 → 검수 검토 OK → 개발 1 병합 | 클라 = wtc-weapon-client. 예전 줄: origin/dev2-weapon 49d2744 | 검수 검토 워크플로 진행 중 → 통과하면 개발 1 병합·반영(클라 = wtc-weapon-client) |
+| 지도 v2 지형 | **main 9ae686e**, build/GoodEvil.rbxlx 17:55 사용자 저장(새 지형 포함) | 남은 것: Studio 다시 열기 → sync → MapBuilder.Build → kits → PC·폰 Play → 저장. (예전 기록: 진행 중(17:30경): 백업 = Studio 자동 복구본 → build/GoodEvil_before_v2.rbxl(WorldKit3D·MeadowKit 포함). move 285개 → 새 지형(둥근 해안·모래·둥근 산·3D 바다 바위 26) → 높이 맞춤 294개 끝. 남은 것: 연못·노란 줄 빼기·물 색·풀잎 끄기·산 경사 → main push → sync → build → kits → PC·폰 Play → 저장. 이미지 생성 1 '튀는 곳' 16곳(art/review/terrain/terrain_standout_2026-10-07.jpg) 반영, SunRays 끄기(빛살 규칙) |
+| 스탯 1단계 + 소리 서버 | dev2 a698787 / dev2-sound 43c491f | 고칠 것 4개(KingDefeat Contributors 비어 있음, 환불 Thief, 장판 늦은 Released 수, **저장 v3 유지**) 개발 2 진행 중 |
+
+**그림·3D:**
+- 지형 타일 9장(시안 색, e940760) 검수 OK → 이미지 개발 업로드 → Config Tex_* → 개발 1 apply_surface_materials.
+- 말풍선 12종 동글동글(caa33da) 픽 끝, 고급 60크레딧 OK → 이미지 생성 2 진행. 몬스터 텍스처(슬라임이 형광 연두·그림자 없음) 색+AO 고침 다음.
+- 가져오기 묶음 8개 준비 끝(build/import_A·B1·B2·C1·C2·D1·D2·E, B 마을 가게 12·C 교차로 소품 16 검수 통과). **WorldKit '대기열 가져오기'의 '가져오기 시작'이 검수 마우스로는 반응 없음** → 사용자 클릭 또는 원인 조사. 악마성(Town_Horns_Castle_v4 조각판)은 덩어리처럼 보여 A에서 뺐고 이미지 생성 1이 다시 만든다.
+- 이야기 초상 고급 4장 업로드 끝(94207f5). 썸네일·아이콘 일은 사용자 요청 아님 → 멈춤.
+- 화면 배치 PC·폰 새 틀(이미지 개발, Game-imgdev): 고칠 것 4개(PC 물약 붙이기, 폰 749 Lv 글자, 힌트 말풍선 글자 잘림 "buttor", 폰 아래 묶음 가운데) → 다시 시트 → 개발 1 반영.
+
+**다음 순서(새 계정에서 여기부터):** ① 메인 Studio 저장 확인(build/GoodEvil.rbxlx 시간) ② 개발 1 지도 v2 P2 ③ dev2-weapon 검토 결과 → 병합·반영 ④ camera2·bark2·translucent·separation·english 가지 확인(검증 OK만 main) ⑤ 가져오기 묶음 올리기 → 표지판·가로등·분수·덤불·나무 배치(검수) ⑥ 지형 타일·화면 배치 반영 ⑦ **PC·폰 직접 Play 사진** ⑧ 그다음 촬영 다시(docs/devlog/reshoot_2026-10-07.md, 새 장면 4개, Z 스킬 제외).
+**대기 중인 사용자 일:** 메인 Studio Ctrl+S, WorldKit '가져오기 시작', 크롬 다시 열기(소리 Loot 1개 업로드), Adobe 연결 다시 로그인(필요할 때), Creator Dashboard 한국어 자동 번역 끄기.
+ 그 아래 절은 모두 당시 기록(역사·증거)이며, 거기 적힌 다음 할 일·허락·종료 지시·"바꾸면 안 되는 결정"은 오늘 아무것도 허락하지 않는다. 규칙 순서는 `AGENTS.md` "Which rule wins".
 
 ## 지금 하던 일 (2026-10-05 17:45, 사용자 컴퓨터 재시작 전 메모)
 - 커밋 02e55c7까지 Studio 저장 파일(place/)과 src가 같다. 그 뒤 src만 바뀜(아직 Studio 미반영):

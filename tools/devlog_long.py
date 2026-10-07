@@ -27,6 +27,7 @@ B.VBAND = (0, 1080)
 B.NEON_CAP_Y, B.NEON_CAP_SIZE = 950, 88
 B.NEON_CHUNK = (16, 3)
 B.CHECK = (0.5, 320, 10)          # check sheet: frames per second, tile width, tiles per row
+B.TARGET_MB = 95                   # the whole file under ~100 MB (handoff), bitrate from the length
 W, H = B.W, B.H
 CX = B.CX
 
@@ -140,9 +141,10 @@ def board_hud_ab(shot):
     which = shot.get("which", "A")
     spec = json.load(open(os.path.join(B.ROOT, "docs", "design", "hud_layout_%s_2026-10-06.json" % which), encoding="utf-8"))
     c = B.radial(W, H, "#3A4A78", "#141A2E")
-    sx, sy, ox, oy = 1500 / 1280, 844 / 720, CX - 750, 120
+    bw, bh = 1360, 765
+    sx, sy, ox, oy = bw / 1280, bh / 720, CX - bw // 2 + 60, 70   # the caption line (y 950) stays below the box
     d = ImageDraw.Draw(c)
-    d.rounded_rectangle((ox - 6, oy - 6, ox + 1506, oy + 850), 18, fill=(70, 86, 120, 255), outline=(220, 228, 255, 255), width=4)
+    d.rounded_rectangle((ox - 6, oy - 6, ox + bw + 6, oy + bh + 6), 18, fill=(70, 86, 120, 255), outline=(220, 228, 255, 255), width=4)
     cols = {"A": (255, 190, 90), "B": (90, 200, 255)}
     col = cols.get(which, (255, 255, 255))
     for it in spec.get("items", []):
@@ -162,7 +164,7 @@ def board_hud_ab(shot):
             fs -= 2
             f = B.font(fs)
         d.text(((x0 + x1) / 2, (y0 + y1) / 2), lab, font=f, fill=(20, 20, 30, 255), anchor="mm")
-    B.paste_center(c, B.neon_img([(which, col)], 150), ox // 2, oy + 422)  # outside the box, left
+    B.paste_center(c, B.neon_img([(which, col)], 170), ox // 2, oy + bh // 2)  # outside the box, left
     return c
 
 
@@ -193,14 +195,15 @@ def board_angel_devil():
 
 
 def board_classes():
+    """the 8 class pictures in one slightly overlapping row, big and centred above the caption line"""
     c = B.radial(W, H, "#3B4BA0", "#120F2A")
     files = ["CLS_HaloWarrior_M", "CLS_HaloMage_F", "CLS_HaloArcher_M", "CLS_HornsWarrior_F", "CLS_HornsMage_M", "CLS_HornsArcher_F",
              "CLS_ArtisanWarrior_M", "CLS_ArtisanMage_F"]
-    cw = 220
-    x0 = CX - (8 * cw) // 2
+    step, bw, bh = 222, 320, 600
+    x0 = CX - (7 * step) // 2
     for k, f in enumerate(files):
-        im = B.contain(B.load_rgba("art/ui/%s.png" % f), cw - 10, 640)
-        B.soft_shadow_paste(c, im, (x0 + k * cw + (cw - im.width) // 2, 120 + (40 if k % 2 else 0)))
+        im = B.contain(B.load_rgba("art/ui/%s.png" % f), bw, bh)
+        B.soft_shadow_paste(c, im, (x0 + k * step - im.width // 2, 250 + (30 if k % 2 else 0)))
     return c
 
 

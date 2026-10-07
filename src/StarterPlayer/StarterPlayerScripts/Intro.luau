@@ -36,8 +36,9 @@ local TXT = {
 local SPOT = {
 	Crown = Vector3.new(15, 344, -18),
 	Shard = Vector3.new(0, 22, 0),
-	Halo = Vector3.new(0, 16, -400),
-	Horns = Vector3.new(0, 16, 400),
+	-- map v2: the town cores moved 10 studs outward with their gates (spawns (0, -+420))
+	Halo = Vector3.new(0, 16, -410),
+	Horns = Vector3.new(0, 16, 410),
 	Gold = Color3.fromRGB(255, 214, 90),
 	Red = Color3.fromRGB(235, 60, 60),
 	White = Color3.fromRGB(255, 250, 225),

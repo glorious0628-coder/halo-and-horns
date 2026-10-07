@@ -2,7 +2,7 @@
  "note": "롱폼 개발 일지 1편(16:9). 글은 docs/devlog/ep01_script.md v2(검수 OK), 화면은 FilmSet 영어 화면 s30_* 촬영 + 승인 그림. 만들기: py tools/devlog_long.py ep01. 한국어가 든 그림(검수 시트 머리글 등)은 잘라서 씀.",
  "voice": {
   "speaker": "EN-US",
-  "speed": 1.1
+  "speed": 1.05
  },
  "video": {
   "id": "ep01_longform",
@@ -345,6 +345,32 @@
     ]
    },
    {
+    "id": "card2-1",
+    "silent": 1.0,
+    "en": "(section)",
+    "ko": "(장 제목)",
+    "cap": false,
+    "shots": [
+     {
+      "board": "stage",
+      "z": [
+       1.06,
+       1.0
+      ],
+      "in": "whip",
+      "sfx": [
+       "whoosh"
+      ],
+      "big": {
+       "text": "THE TEAM",
+       "color": "cyan",
+       "y": 470,
+       "size": 150
+      }
+     }
+    ]
+   },
+   {
     "id": "2-1",
     "en": "My team is seven Claude AI sessions. Each one has one job.",
     "ko": "제 팀은 클로드 AI 세션 일곱이에요. 각자 할 일이 하나씩.",
@@ -525,6 +551,32 @@
       ],
       "w": 0.8,
       "static": true
+     }
+    ]
+   },
+   {
+    "id": "card3-1",
+    "silent": 1.0,
+    "en": "(section)",
+    "ko": "(장 제목)",
+    "cap": false,
+    "shots": [
+     {
+      "board": "stage",
+      "z": [
+       1.06,
+       1.0
+      ],
+      "in": "whip",
+      "sfx": [
+       "whoosh"
+      ],
+      "big": {
+       "text": "THE GAME",
+       "color": "yellow",
+       "y": 470,
+       "size": 150
+      }
      }
     ]
    },
@@ -947,6 +999,32 @@
     ]
    },
    {
+    "id": "card4-1",
+    "silent": 1.0,
+    "en": "(section)",
+    "ko": "(장 제목)",
+    "cap": false,
+    "shots": [
+     {
+      "board": "stage",
+      "z": [
+       1.06,
+       1.0
+      ],
+      "in": "whip",
+      "sfx": [
+       "whoosh"
+      ],
+      "big": {
+       "text": "THE ART",
+       "color": "pink",
+       "y": 470,
+       "size": 150
+      }
+     }
+    ]
+   },
+   {
     "id": "4-1",
     "en": "Next problem: art. I can't draw, remember?",
     "ko": "다음 문제: 그림. 저 그림 못 그리잖아요?",
@@ -1026,8 +1104,8 @@
      {
       "board": "classes",
       "z": [
-       1.05,
-       1.25
+       1.0,
+       1.15
       ],
       "in": "punch",
       "sfx": [
@@ -1037,11 +1115,11 @@
       "f": [
        [
         0.5,
-        0.3
+        0.45
        ],
        [
-        0.35,
-        0.3
+        0.42,
+        0.45
        ]
       ]
      }
@@ -1158,6 +1236,32 @@
     "hl": [
      "one big picture...",
      "its own drawing."
+    ]
+   },
+   {
+    "id": "card5-1",
+    "silent": 1.0,
+    "en": "(section)",
+    "ko": "(장 제목)",
+    "cap": false,
+    "shots": [
+     {
+      "board": "stage",
+      "z": [
+       1.06,
+       1.0
+      ],
+      "in": "whip",
+      "sfx": [
+       "whoosh"
+      ],
+      "big": {
+       "text": "3D MONSTERS",
+       "color": "green",
+       "y": 470,
+       "size": 150
+      }
+     }
     ]
    },
    {
@@ -1701,9 +1805,9 @@
       "w": 0.8,
       "crop": [
        0.0,
-       0.05,
-       0.5,
-       0.56
+       0.053,
+       0.492,
+       0.452
       ],
       "big": {
        "text": "BEFORE",
@@ -1725,10 +1829,10 @@
       ],
       "w": 0.8,
       "crop": [
-       0.505,
-       0.05,
-       1.0,
-       0.56
+       0.5,
+       0.053,
+       0.992,
+       0.452
       ],
       "big": {
        "text": "AFTER!",
@@ -1740,6 +1844,32 @@
     ],
     "hl": [
      "the eyes."
+    ]
+   },
+   {
+    "id": "card6-1",
+    "silent": 1.0,
+    "en": "(section)",
+    "ko": "(장 제목)",
+    "cap": false,
+    "shots": [
+     {
+      "board": "stage",
+      "z": [
+       1.06,
+       1.0
+      ],
+      "in": "whip",
+      "sfx": [
+       "whoosh"
+      ],
+      "big": {
+       "text": "DIRECTOR'S CALLS",
+       "color": "yellow",
+       "y": 470,
+       "size": 150
+      }
+     }
     ]
    },
    {
@@ -1769,13 +1899,7 @@
        "whoosh"
       ],
       "w": 1.0,
-      "top": 0,
-      "big": {
-       "text": "DIRECTOR'S CALLS",
-       "color": "#FFD650",
-       "y": 300,
-       "size": 130
-      }
+      "top": 0
      }
     ]
    },
@@ -2031,8 +2155,8 @@
      {
       "board": "stage",
       "turn": "PumpkinKing",
-      "start": 74,
-      "step": 0.6,
+      "start": 80,
+      "step": 0.25,
       "scale": 1.0,
       "y": 470,
       "pop": true,
@@ -2198,6 +2322,32 @@
     ],
     "hl": [
      "English only."
+    ]
+   },
+   {
+    "id": "card7-1",
+    "silent": 1.0,
+    "en": "(section)",
+    "ko": "(장 제목)",
+    "cap": false,
+    "shots": [
+     {
+      "board": "stage",
+      "z": [
+       1.06,
+       1.0
+      ],
+      "in": "whip",
+      "sfx": [
+       "whoosh"
+      ],
+      "big": {
+       "text": "THE PUMPKIN KING",
+       "color": "orange",
+       "y": 470,
+       "size": 150
+      }
+     }
     ]
    },
    {
@@ -2450,6 +2600,32 @@
     ]
    },
    {
+    "id": "card8-1",
+    "silent": 1.0,
+    "en": "(section)",
+    "ko": "(장 제목)",
+    "cap": false,
+    "shots": [
+     {
+      "board": "stage",
+      "z": [
+       1.06,
+       1.0
+      ],
+      "in": "whip",
+      "sfx": [
+       "whoosh"
+      ],
+      "big": {
+       "text": "WHAT'S NEXT",
+       "color": "cyan",
+       "y": 470,
+       "size": 150
+      }
+     }
+    ]
+   },
+   {
     "id": "8-1",
     "en": "{DAYS} days left.",
     "ko": "{DAYS}일 남았어요.",
@@ -2633,6 +2809,7 @@
     "#AI",
     "#Halloween"
    ]
-  }
+  },
+  "gap": 0.16
  }
 }

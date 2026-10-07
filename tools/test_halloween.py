@@ -100,8 +100,8 @@ MUTATIONS = [
      "LittleGhost = { Name = \"Little Ghost\", Short = \"Little Ghost\", Zone = \"PumpkinPatch\","),
     ("ghost king due with the pumpkin king (FirstDelay 360)", "CONFIG_SOURCE",
      "{ Kind = \"GhostKing\", Key = \"GhostKing\", FirstDelay = 960,", "{ Kind = \"GhostKing\", Key = \"GhostKing\", FirstDelay = 360,"),
-    ("PumpkinPatch land detached from the meadow (MinZ 180)", "CONFIG_SOURCE",
-     "MinX = 280, MaxX = 440, MinZ = 175,", "MinX = 280, MaxX = 440, MinZ = 180,"),
+    ("PumpkinPatch land detached from the meadow (MinZ 245)", "CONFIG_SOURCE",
+     "MinX = 420, MaxX = 650, MinZ = 240,", "MinX = 420, MaxX = 650, MinZ = 245,"),
     ("PumpkinPatch exists with the season off (ZoneAt ignores Season)", "CONFIG_SOURCE",
      "(z.Season == nil or Config.SeasonOn(z.Season))", "true"),
     ("seasonal kinds counted with the season off", "CONFIG_SOURCE",
@@ -674,8 +674,8 @@ def main() -> int:
                     "Config.Halloween.Enabled AND the server clock before EndsAt 1794150000 (2026-11-09 00:00 KST; "
                     "Config.SeasonOn via Config.SeasonNow = workspace:GetServerTimeNow, os.time fallback) gate every "
                     "seasonal kind, the PumpkinPatch zone, the Pumpkin King schedule, its HUD line and the patch road sign. "
-                    "A23-30 zone family: Config.Zones.PumpkinPatch (Center 360,0,235, Size 160x120, MinLevel 1, no PvP, "
-                    "Season Halloween; LandPumpkinPatch x 280..440 z 175..295 joined to LandMeadow) holds every Halloween "
+                    "A23-30 zone family: Config.Zones.PumpkinPatch (map v2: Center 535,0,335, Size 230x190, MinLevel 1, no PvP, "
+                    "Season Halloween; LandPumpkinPatch x 420..650 z 240..430 joined to LandMeadow) holds every Halloween "
                     "kind and only them: PumpkinSlime (Count 6, counts as Slime), LittleGhost (Count 4, HP 30, Float 1.5), "
                     "BatGoblin (Count 4, HP 45, counts as itself; rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), "
                     "PumpkinKing (Count 0, Boss, never golden, never respawns); no Takes, so the meadow / woods / ruins keep "
