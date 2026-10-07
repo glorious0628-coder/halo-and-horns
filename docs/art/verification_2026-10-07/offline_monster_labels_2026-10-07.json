@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "checks": 7,
+  "failedChecks": [],
+  "mutations": {
+    "total": 4,
+    "applied": 4,
+    "caught": 4,
+    "results": [
+      {
+        "mutation": "no screen check (the 2026-10-07 overlap)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a same-kind name drawn over a shown one on screen hides (7 studs apart in the world) :: true"
+        ]
+      },
+      {
+        "mutation": "the screen check hides other kinds too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL another kind on top of it on screen keeps its name (only same-kind tags merge) :: nil"
+        ]
+      },
+      {
+        "mutation": "no world cluster rule",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a same-kind monster within Cluster studs of a shown name keeps only its bar :: nil"
+        ]
+      },
+      {
+        "mutation": "a far tag counts as overlapping",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a same-kind name far away on screen stays :: nil"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "5281ad9471dfbeee808c1ca276b9ddf685a22ae2db1977ad1d4f075fb02facdb",
+    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "090abafc0a9313ae43848b2388ba2af2c92f9cc35bb7fe54748127ea7f71e2ca"
+  },
+  "fixtureSHA256": "35d62711cd7f29238e59e15838e8e590960b8ae81c08290ecfcc56cb0d7dc839",
+  "studioCalls": 0,
+  "contract": "MonsterLabels name-tag offline test (review devlog 12 + 2026-10-07 photos): one label pass (MonsterLabels.Tick) over\nworkspace.Monsters with a level camera double. A same-kind name whose tag would land on a shown same-kind tag on screen\n(NameW x NameH px) hides, even when the two monsters are farther apart than Cluster studs (one behind the other); a\nsame-kind tag far away on screen and another kind's tag stay; the old world rule (same kind within Cluster studs) holds;\noff-screen monsters never break the pass. Runs the real MonsterLabels.luau + Config.luau in\ntools/fixtures/monster_labels_offline.luau.",
+  "limitations": "Real camera angles / phone sizes are a Studio check (the projection here is a level camera)."
+}

@@ -5,7 +5,9 @@
 --     last HURT_SECONDS (the one I am fighting), and for event bosses (the kings) while in their bar range;
 --   * the HP bar under it shows only while the monster was hurt in the last HURT_SECONDS (bosses: always);
 --   * a pack crowding one spot shows one name: a same-kind monster within CLUSTER studs of a shown name keeps only its
---     bar (2026-10-06: three ghost minions on top of me stacked "똘마니 유령" three times).
+--     bar (2026-10-06: three ghost minions on top of me stacked "똘마니 유령" three times), and so does one whose name
+--     would land on a shown same-kind name on screen (NameW x NameH px apart; 2026-10-07 photos: two "Shard Slime" tags
+--     one behind the other were 6 studs apart but drawn over each other).
 -- Hurt = its Fill bar got shorter (server bar updates replicate). Local only: Enabled / Visible never replicate.
 -- Monster barks (lines_pack 2, dev2 BarkService): the server writes Bark (the line) then BarkAt (server time) on the
 -- monster model; every new BarkAt (the same line again too) shows Bark in a speech bubble over the head for
@@ -22,7 +24,7 @@ local Config = require(Shared:WaitForChild("Config"))
 local MonsterLabels = {}
 local LocalPlayer = Players.LocalPlayer
 
-local T = { Tick = 0.2, NameRange = 30, MaxNames = 5, HurtSeconds = 4, Cluster = 5 }
+local T = { Tick = 0.2, NameRange = 30, MaxNames = 5, HurtSeconds = 4, Cluster = 5, NameW = 135, NameH = 24 }
 local S = { Started = false, Fill = {}, HurtAt = {} } -- [BillboardGui] = last Fill scale / os.clock() of the last drop
 local C = nil
 -- bubble: At[model] = the last BarkAt seen (false = none yet); a newer bark replaces the bubble (B.Make)
@@ -155,15 +157,34 @@ local function tick()
 		end
 	end
 	table.sort(rows, function(a, b) return a.D < b.D end)
+	local cam = workspace.CurrentCamera
+	-- where a name tag lands on screen (px), nil when it is off screen / behind me
+	local function screenOf(r)
+		if r.Screen == nil then
+			r.Screen = false
+			if cam then
+				local p, on = cam:WorldToViewportPoint(r.Pos + Vector3.new(0, r.BB.StudsOffset.Y, 0))
+				if on and p.Z > 0 then r.Screen = p end
+			end
+		end
+		return r.Screen or nil
+	end
 	local names, shown = 0, {}
 	for _, r in rows do
 		local near = r.D <= T.NameRange and names < T.MaxNames
 		local name = near or r.Hurt or r.Boss
 		if name and not r.Boss then
 			for _, o in shown do
-				if o.Kind == r.Kind and (o.Pos - r.Pos).Magnitude < T.Cluster then
-					name = false
-					break
+				if o.Kind == r.Kind then
+					if (o.Pos - r.Pos).Magnitude < T.Cluster then
+						name = false
+						break
+					end
+					local a, b = screenOf(r), screenOf(o)
+					if a and b and math.abs(a.X - b.X) < T.NameW and math.abs(a.Y - b.Y) < T.NameH then
+						name = false
+						break
+					end
 				end
 			end
 		end
@@ -190,8 +211,9 @@ function MonsterLabels.Init(registry)
 	C = registry
 end
 
--- test aid: the bark check / bubble builder (tools/test_monster_bark.py)
+-- test aids: the bark check / bubble builder (tools/test_monster_bark.py), one label pass (tools/test_monster_labels.py)
 MonsterLabels.Bark = B
+MonsterLabels.Tick = tick
 
 function MonsterLabels.Start()
 	if S.Started then return end
