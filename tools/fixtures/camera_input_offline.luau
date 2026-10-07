@@ -33,6 +33,8 @@ local function fixture()
 		if kind == "LMB" then return self.LeftDown == true end
 		return kind == "RMB" and self.RightDown == true
 	end
+	input.Keys = {}
+	function input:IsKeyDown(key) return self.Keys[key] == true end
 	local run = {}
 	function run:BindToRenderStep(name, priority, fn) frameSteps[name] = { Priority = priority, Fn = fn } end
 	local services = { Players = { LocalPlayer = player }, UserInputService = input, GuiService = gui, RunService = run,
@@ -55,9 +57,11 @@ local function fixture()
 		Instance = { new = function() local s = signal(); return { Event = s, Fire = function() s:Fire() end } end },
 		Vector3 = { zero = vec(0, 0, 0) }, Vector2 = { new = function(x, y) return { X = x, Y = y } end },
 		task = { defer = function(cb) table.insert(q, cb) end, spawn = function(cb) cb() end },
-		Enum = { CameraType = { Custom = "Custom" }, UserInputType = { MouseButton1 = "LMB", MouseButton2 = "RMB", MouseMovement = "Move", Touch = "Touch" },
+		Enum = { CameraType = { Custom = "Custom" }, UserInputType = { MouseButton1 = "LMB", MouseButton2 = "RMB", MouseMovement = "Move", Touch = "Touch",
+			Keyboard = "Keyboard" },
 			MouseBehavior = { Default = "Default", LockCenter = "LockCenter", LockCurrentPosition = "LockCurrentPosition" },
-			RenderPriority = { Camera = { Value = 200 } }, KeyCode = { Thumbstick2 = "Thumb2" } },
+			RenderPriority = { Camera = { Value = 200 } },
+			KeyCode = { Thumbstick2 = "Thumb2", Left = "Left", Right = "Right", Comma = "Comma", Period = "Period" } },
 	}, { __index = getfenv() }))
 	local module = fn(); module.Init(registry); module.Start()
 	local f = { Module = module, Input = input, Gui = gui, Registry = registry, Camera = camera, Player = player, Workspace = workspace,
@@ -109,6 +113,15 @@ check(f.Camera.CFrame == "unchanged", "a right drag is left to Roblox's camera (
 f:Begin("RMB"); f:Begin(); f:Move(30, 0); f:End(); f:End("RMB")
 check(f.Clicks == 4 and f.Camera.CFrame == "unchanged", "a left press while turning with the right button attacks once")
 f:Begin("Touch"); f:End("Touch"); check(f.Clicks == 4, "touch is left to Roblox")
+-- Roblox's keyboard camera turn (A23-74 review: read only to pause the follow turn): never an attack, never our camera write
+for _, key in { "Left", "Right", "Comma", "Period" } do
+	f.Input.Keys[key] = true
+	f.Input.InputBegan:Fire({ UserInputType = "Keyboard", KeyCode = key }, false)
+	f:RunSteps()
+	f.Input.Keys[key] = nil
+	f.Input.InputEnded:Fire({ UserInputType = "Keyboard", KeyCode = key }, false)
+end
+check(f.Clicks == 4 and f.Camera.CFrame == "unchanged", "arrow / Comma / Period keys never attack and never write the camera")
 -- presses that never attack
 f:Begin(nil, true); f:End(); check(f.Clicks == 4, "a press on a GUI (processed) never attacks")
 for _, name in { "FactionPicker", "ClassPicker", "Panels", "WorldMap" } do

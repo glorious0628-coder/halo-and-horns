@@ -9,6 +9,9 @@
 
 **main에 들어간 것(오늘):** 프롤로그 띠 없음, 팀 알림 영어, 지도 v2, 지형 타일 FF2, SunRays 끔, 새 HUD(PC·폰 같은 틀, 검사 55/55), 말풍선 12종 그림 + 몬스터별 키 + 의성어 대사(그림 없는 몬스터는 둥근 코드 말풍선), 감사 고침, place 한글 검사 도구 고침(한글 0 확인), push_paths 개선.
 
+**22:20 추가:** 카메라 camera3가 **main 5a97a5b**에 들어감(메인 Studio sync + StarterPlayer.DevTouchCameraMovementMode = Classic). 무기 먼저 PC: 모루 앞 순간 이동 뒤 카메라가 얼굴 쪽 → 내일 FirstSteps TravelDone 때 카메라를 등 뒤로 맞추기. 소리 연결 `sound-r5`(ab70833)는 전체 시험 전 → 내일 첫 일.
+**메인 Studio 저장:** 사용자 Ctrl+S가 23:00 전에 안 되면 파일은 21:22본. 그러면 내일 먼저 **main sync(0 0) → `py tools/map_v2_apply.py build` → `py tools/apply_studio_state.py`(몬스터 색 상수) → StarterPlayer.DevTouchCameraMovementMode = Classic(Studio 속성) → PC·폰 확인 사진 → 저장**.
+
 **내일 첫 순서:**
 1. 개발 1 밤 인계 확인 → 메인 Studio 저장·place 확인(build=place, 0 0).
 2. **무기 먼저 병합:** `weapon-sound-r1`(main + dev2-sound 892fa28 + wtc-weapon-client dd1d4135, 증거 518b4df, 전체 60개 결과 확인) → main → sync → `py tools/play_weapon_first.py pc|phone` 사진. 게시 때 모든 서버 종료(체크리스트).
@@ -16,6 +19,8 @@
    - 반투명: **main 39ec154에 들어감**(살아 있는 몬스터 늘 불투명, 시험 통과). Studio 확인 필요.
    - 카메라 `origin/fix/a2374-camera3`(52a6ccb): **검증 통과**(방향키·쉼표·트랙패드 = 손 돌리기, 걸을 때 원 반지름 55 이상, 폰 Classic 카메라, 끊김 제한, 멈추면 1.2초 안에 등 뒤). main에 병합 → sync → **메인 Studio StarterPlayer.DevTouchCameraMovementMode = Classic**(개발 1) → PC·폰 사진.
    - 몬스터 겹침 `origin/fix/a2374-separation2`(2b07018): 고칠 4개는 맞음(걷는 플레이어 겹침 평균 1.94 → 0.04). 새로 찾은 것 2개: ① 구역 가장자리 선에 몬스터가 몰리면 안 떨어짐(SEP.CanSlide가 선을 따라 미끄러지기를 막음) ② 두 플레이어가 붙어 서면 사이 몬스터가 대상을 계속 바꿈. 이 2개를 고친 뒤 병합(검수 워크플로로 다시).
+3-1. **무기 먼저: main b882423 + 메인 Studio sync + PC·폰 사진 완료**(docs/art/verification_2026-10-07/weapon_first/). 남은 것: PC 착지 뒤 카메라가 모루 반대쪽(camera3 병합 뒤 다시), 'Forge' 간판이 고블린 숲 발판 글자를 가림.
+3-2. 말풍선 글자 칸 12개 다시 잼(e13980e, approved.json TextRect) → 이미지 개발이 Config 12줄 적용, 박쥐 고블린 대사 'Skree-eek!' → **'Skreek!'**(검수가 main 238477f에 넣음). TextRect 12줄은 이미지 개발이 main 1ce92cc에 넣음 — **그런데 그 뒤 `tools/test_monster_bark.py`가 실패함**: GhostMinion 새 TextRect가 fixture 검사 '2줄이 TextMin에서 들어가고 폭 40px 이상'에 걸림. 내일 첫 일: 이미지 생성 2·이미지 개발이 GhostMinion 칸을 고치거나, fixture를 '실제 대사가 들어가는가' 기준으로 바꾸기(검수 확인).
 4. 소리 57개 연결(`docs/design/sound_wiring_onepass_2026-10-07.md`) → Play → 옛 ogg 정리(소리 세션).
 5. 3D 가져오기: `build/import_all/1_first`(A 빛 성 9조각+분수 ②, E, H 뿔 성 ③) → 사용자 WorldKit '가져오기 시작'(검수 마우스로는 반응 없었음) → id 장부 → 메인 배치(분수·성·표지판·가로등·소품).
 6. **사용자 답 대기:** 뿔 성 ③(앞 ② + 새 뒷모습, `art/review/town5/horns_castle_mix_compare.jpg`)으로 할지. 다른 걸 고르면 `build/import_H/H_HornsCastle_B2.glb`.
