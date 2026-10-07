@@ -99,8 +99,8 @@ MUTATIONS = [
      "\t\ttable.insert(kept, ch)\n"),
     ("SanitizeStats: no length cap", C, "\t\tif #kept >= Config.Stats.MaxPoints then break end\n", ""),
     ("SanitizeStats loses Auto off", C, "\tif type(src.Auto) == \"boolean\" then auto = src.Auto end\n", ""),
-    ("SanitizeStats takes a number Order", C, "local order = type(src.Order) == \"string\" and src.Order or \"\"",
-     "local order = tostring(src.Order or \"\")"),
+    # (no 'a number Order' mutation: a number or table has no A / H letters, so tostring() gives the same "": equivalent)
+    ("SanitizeStats reads the whole of a huge Order", C, "\tfor i = 1, math.min(#order, 4096) do\n", "\tfor i = 1, #order do\n"),
     # --- the power formula
     ("PowerOf ignores the stats", C, "\tif type(alloc) == \"table\" then am, hm = Config.StatMults(alloc.A, alloc.H) end\n", ""),
     ("PowerOf: the stats outside the square root", C,
@@ -128,6 +128,8 @@ MUTATIONS = [
      "\tlocal level, tier, enhance = levelAndTier(player)\n\treturn Config.CombatPower(level, tier, enhance)\nend"),
     ("Justice: the faction sum without the stats", J, "1 + rebirthBonus, enhance, Config.StatAllocOf(player))",
      "1 + rebirthBonus, enhance)"),
+    ("Justice: the faction sum clamps bare hands to tier 1", J,
+     "or 0), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands", "or 1), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands"),
     ("Justice: StatAtk not watched", J, "\"WeaponEnhance\", \"StatAtk\", \"StatHp\" }", "\"WeaponEnhance\", \"StatHp\" }"),
     ("Justice: StatHp not watched", J, "\"WeaponEnhance\", \"StatAtk\", \"StatHp\" }", "\"WeaponEnhance\", \"StatAtk\" }"),
     ("PvP fallback without the stats", P, "\treturn Config.CombatPowerOf(p)\nend",

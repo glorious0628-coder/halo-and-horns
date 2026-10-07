@@ -199,9 +199,8 @@ MUTATIONS = [
      "\t-- Reward.Item (e.g. Pip1's scroll)",
      "\tlocal finishLine = def.Finish or msg\n\t-- Reward.Item (e.g. Pip1's scroll)"),
     # --- JusticeService / PvPService / CharacterVisuals
-    ("power attribute clamps bare hands to tier 1", J,
-     "or 0), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands", "or 1), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands"),
-    # A23-69: PvPService's fallback is Config.CombatPowerOf, which clamps the tier for every power number
+    # A23-69: the CombatPower attribute, PvP's fallback and the Tab list all use Config.CombatPowerOf, which clamps the tier
+    # for every power number (JusticeService's own levelAndTier now feeds only the faction sum GetPower: tools/test_stats.py)
     ("the power formula clamps bare hands to tier 1", C,
      "\t\ttier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands\n",
      "\t\ttier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands\n"),
