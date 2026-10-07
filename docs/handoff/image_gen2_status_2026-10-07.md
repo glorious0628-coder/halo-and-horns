@@ -63,3 +63,13 @@
 - Firefly: 모델이 Gemini 3.1로 바뀌어 있었음 → 피커를 연 뒤 `__s2_pick('openai:firefly:colligo:gpt-image-2.5-prism')`. 들어가자마자 '무제한 생성' 안내 팝업 → '닫기'(sp-button 글자 '닫기')만 누름. 품질 바꾸기는 `__setQ(v)` = 세 번째 피커 클릭 → pick → 값 확인.
 - push_paths 사고: reset --keep이 남의 추적 안 된 파일(origin과 같은 분수 그림) 때문에 막혀 내 새 파일 20개가 작업 폴더에서 잠깐 사라짐(origin에는 있음) → 검수가 46c97f5로 고침(실패 때 다시 써 둠). push_paths에는 **파일만** 넘기기(폴더를 넘기면 없는 것으로 보고 지우기를 시도함).
 - 아이콘 후보 누끼·원본은 `art/out/s2/e12/`(로컬). 사용자: Tripo 웹을 쓸 일이 생기면 앱 안 브라우저로 열기.
+
+## 저녁 (앱 재시작 뒤 이어서)
+- **7fb946b** 이야기 창 화자 중간 시안(Otto·Fizzby·왕관 조각, 참조 = 지금 초상) + 빛살 점검표 `art/review/s2/ray_audit_2026-10-07.jpg`(art/ui 417장 전부 눈으로). 검수 결정: 게임 아이콘 2·썸네일 A는 이미지 생성 1, 작은 가시 해 문양·만화 폭발은 그대로, IconVacation만 다시.
+- **9206448 → d9aec52** 고급 4(20크레딧): Otto(PTR_MerchantC, 망치·그을음 없음)·Fizzby(PTR_PotionMerchant)·새 키 PTR_CrownShard(443×512)·IconVacation(얼굴 없는 해) → art/ui + approved.json, 이미지 개발 1에 업로드 요청. 고급 원본 `art/out/hq/src/*_HQ_src.png`.
+- **d9aec52** RewardRays 폐기(사용자: 욱일기처럼 보임, 코드는 cb9d30e): art/ui·원본 지움, approved.json = rejected + 이유, 프롬프트에 '폐기' 표시, asset_ids.json 줄은 이미지 개발 몫.
+- **c491321** 개인 아바타 시안 1차(정정 메시지 예시: 단발·포니테일·탈색) → **e715a3a** 다시 보낸 사양(성별 무난) `art/review/s2/avatar_personal_sheet.jpg`. 둘 다 중간 0. 사용자 고르기 대기(검수).
+- Firefly: 앱 재시작 뒤 로그아웃 → 사용자 직접 로그인(앱 브라우저). 모델이 Gemini로 돌아가 있으니 큐 전에 확인. **품질 바꾸기는 `__s2_setQ`(품질 피커를 직접 엶)** — 문서 전체 `__s2_pick('high')`는 다른 메뉴를 눌러 '중간'에 머문 적 있음(안전장치가 막아 0크레딧). firefly_helpers.js에 추가(9206448).
+- 크레딧: 웹 표시 8565(고급 4 전) → 계산상 **8545**. 오늘 이 세션 고급 합계 = 65 + 20 = 85.
+- 규칙 추가(AGENTS): 가운데서 퍼지는 빛살·부채꼴 줄무늬 금지(욱일기). 프린트 무늬에도 얼굴 넣지 않기(C 구름 다시 그림).
+- 다음: 사용자 아바타 고르기 → 옷 판형(585×559)·얼굴 데칼·헤어 2D(Tripo용) / FullMerchantC(전신, 머그잔·그을음 그대로)는 쓰는 곳 없음 — 쓰게 되면 다시.
