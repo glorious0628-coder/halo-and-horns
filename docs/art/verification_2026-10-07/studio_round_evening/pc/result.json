@@ -1,0 +1,10 @@
+{
+  "chat": "CHAT To chat click here or press \"/\" key || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Horn Legion!\nKO 0: \nLOCALE ko-kr table=LocalizationTable",
+  "travel_ui": "line='Off to Squishy Meadow!  3' black=1",
+  "travel_ui_black": "line='Off to Squishy Meadow!  1' black=0.21931564807891846",
+  "after_travel": "DataLoaded=true Faction=Horns ClassChosen=true TutorialStep=2 IntroSeen=true ZoneId=SlimeMeadow Team=Horn Legion",
+  "travel_ui_after": "no TravelFade",
+  "localize": "PlayerGui GuiBase2d 884, AutoLocalize on 0; world AutoLocalize on 0",
+  "chat_later": "CHAT To chat click here or press \"/\" key || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Horn Legion!\nKO 0: \nLOCALE ko-kr table=LocalizationTable",
+  "console": []
+}

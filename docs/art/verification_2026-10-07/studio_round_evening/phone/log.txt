@@ -1,0 +1,34 @@
+device phone ok=true nil
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 IntroSeen=false ZoneId=Crossroads Team=Choosing a side
+saved 01_opening_crown
+bars: inset 0, 58 ; TopBar pos -47, -58 size 748, 83.1999969 ; BottomBar pos -47, 276.799988 size 748, 25.2000008
+saved 02_opening_crown_b
+fired faction
+faction: DataLoaded=true Faction=Halo ClassChosen=false TutorialStep=0 IntroSeen=true ZoneId=Crossroads Team=Knights of Light
+chat after the pick:
+CHAT Tap here to chat || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Knights of Light!
+KO 0: 
+LOCALE ko-kr table=LocalizationTable
+fired class
+chosen: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=0 IntroSeen=true ZoneId=HaloTown Team=Knights of Light
+fired tutorial
+travel ui (0.8 s): line='Off to Squishy Meadow!  3' black=1
+travel ui (2.8 s): line='Off to Squishy Meadow!  1' black=0.16669142246246338
+after travel: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=2 IntroSeen=true ZoneId=SlimeMeadow Team=Knights of Light
+travel ui (after): no TravelFade
+autolocalize: PlayerGui GuiBase2d 872, AutoLocalize on 0; world AutoLocalize on 0
+saved 03_crossroads
+chat later:
+CHAT Tap here to chat || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Knights of Light!
+KO 0: 
+LOCALE ko-kr table=LocalizationTable
+menu button: LocalPlayer.PlayerGui.MainGui.HUD.Buttons.TileMenu|601.5, 52.25|45, 45
+fold before: MenuFold=true visible=false; shown 0: 
+menu hit-test: centre 624, 74.75 inset 0, 58 | top: FxEdgeGui.FxHurtFlash(active=false) ; MainGui.WorldMap.Viewport.Parchment(active=false) ; MainGui.WorldMap.Viewport(active=true) ; MainGui.WorldMap(active=true) ; MainGui.HUD.Buttons(active=false)
+fold after tap: MenuFold=true visible=false; shown 0: 
+saved 04_phone_menu
+quest rows: Text=0/5 Free the supply road · 5 slimes || Chevron=▼ || Sub=Dailies 0/3 || Title=Dailies 0/3 || Label=Close || Badge=Guide || Text=Free the supply road · 5 slimes || Text=0/5 || Reward=+150 || Label=Claim || Label=Swap || Text=Supply road || Nums=0/5 || Text=Claim || Text=Claim || Distance=89m
+saved 05_phone_quests
+console: 
+play stopped (my own test Play)
+device default ok=true nil

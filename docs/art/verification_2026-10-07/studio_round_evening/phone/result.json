@@ -1,0 +1,14 @@
+{
+  "bars": "inset 0, 58 ; TopBar pos -47, -58 size 748, 83.1999969 ; BottomBar pos -47, 276.799988 size 748, 25.2000008",
+  "chat": "CHAT Tap here to chat || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Knights of Light!\nKO 0: \nLOCALE ko-kr table=LocalizationTable",
+  "travel_ui": "line='Off to Squishy Meadow!  3' black=1",
+  "travel_ui_black": "line='Off to Squishy Meadow!  1' black=0.16669142246246338",
+  "after_travel": "DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=2 IntroSeen=true ZoneId=SlimeMeadow Team=Knights of Light",
+  "travel_ui_after": "no TravelFade",
+  "localize": "PlayerGui GuiBase2d 872, AutoLocalize on 0; world AutoLocalize on 0",
+  "chat_later": "CHAT Tap here to chat || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Knights of Light!\nKO 0: \nLOCALE ko-kr table=LocalizationTable",
+  "menu_hit": "centre 624, 74.75 inset 0, 58 | top: FxEdgeGui.FxHurtFlash(active=false) ; MainGui.WorldMap.Viewport.Parchment(active=false) ; MainGui.WorldMap.Viewport(active=true) ; MainGui.WorldMap(active=true) ; MainGui.HUD.Buttons(active=false)",
+  "fold": "MenuFold=true visible=false; shown 0: ",
+  "quests": "Text=0/5 Free the supply road · 5 slimes || Chevron=▼ || Sub=Dailies 0/3 || Title=Dailies 0/3 || Label=Close || Badge=Guide || Text=Free the supply road · 5 slimes || Text=0/5 || Reward=+150 || Label=Claim || Label=Swap || Text=Supply road || Nums=0/5 || Text=Claim || Text=Claim || Distance=89m",
+  "console": []
+}
