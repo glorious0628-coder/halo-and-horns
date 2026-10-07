@@ -248,11 +248,18 @@ local function newQuest(player, kind, others)
 	-- Config.Quests.Woods.Dailies the same way (band = the rows' table); everything else as before
 	local newbie = kind == "Daily" and isNewbieLevel(level)
 	local band = (kind == "Daily" and bandAt(level)) or nil
+	local mainId = Config.ZoneMainMonster[Config.QuestZoneForLevel(level)]
+	-- the monster a row's quest counts (its Unit): the zone's unit monster, or a band row's Monster (e.g. BigSlime)
+	local function unitOf(row)
+		if band and type(row.Monster) == "string" and type(Config.MonsterTypes[row.Monster]) == "table" then return row.Monster end
+		return mainId
+	end
 
-	local otherIds, otherPvP = {}, 0
+	local otherIds, otherKeys, otherPvP = {}, {}, 0
 	for _, q in others or {} do
 		if type(q) == "table" and type(q.Id) == "string" then
 			otherIds[q.Id] = true
+			otherKeys[q.Id .. "|" .. tostring(q.Unit)] = true
 			local ot = TEMPLATE_BY_ID[q.Id]
 			if ot and ot.PvP then otherPvP += 1 end
 		end
@@ -262,18 +269,22 @@ local function newQuest(player, kind, others)
 		and otherPvP < (Config.Quests.MaxPvPQuests or 1)
 		and not S.PvPService.IsRookie(player)
 
-	-- rows = templates, or A23-14 / E12 band rows ({ Id = template Id, Targets, Monster?, Strict? })
-	local candidates, preferred = {}, {}
+	-- rows = templates, or A23-14 / E12 band rows ({ Id = template Id, Targets, Monster?, Strict? }). A new goal first
+	-- (another template), else (A23-71 S9 / D3) at least another monster: Lv1-4 has no skill row, so its set is always
+	-- King Slime 3 + Slime 12-15 + Gold, never the King Slime row twice; else anything that fits
+	local candidates, preferred, otherUnit = {}, {}, {}
 	for _, row in (if band then band.Dailies else Config.Quests.Templates) do
 		local rt = type(row) == "table" and TEMPLATE_BY_ID[row.Id]
 		if rt and templateFitsNow(rt, faction, data) and (not rt.PvP or pvpAllowed) then
 			table.insert(candidates, row)
 			if not otherIds[row.Id] then
 				table.insert(preferred, row)
+			elseif not otherKeys[row.Id .. "|" .. tostring(unitOf(row))] then
+				table.insert(otherUnit, row)
 			end
 		end
 	end
-	local pool = (#preferred > 0) and preferred or candidates
+	local pool = (#preferred > 0 and preferred) or (#otherUnit > 0 and otherUnit) or candidates
 	local row
 	if #pool > 0 then
 		row = pickWeighted(pool)
@@ -292,13 +303,9 @@ local function newQuest(player, kind, others)
 	if type(unitsList) ~= "table" or #unitsList == 0 then unitsList = { 1 } end
 	local units = num(unitsList[Util.Random:NextInteger(1, #unitsList)], 1)
 
-	local mainId = Config.ZoneMainMonster[Config.QuestZoneForLevel(level)]
 	local main = Config.MonsterTypes[mainId]
 	-- the monster a Kill/Golden quest counts: the zone's unit monster, or the newbie row's Monster (e.g. BigSlime)
-	local unitId = mainId
-	if band and type(row.Monster) == "string" and type(Config.MonsterTypes[row.Monster]) == "table" then
-		unitId = row.Monster
-	end
+	local unitId = unitOf(row)
 	local unitDef = Config.MonsterTypes[unitId]
 	local target = units -- band Targets are exact (a Gold row already says gold)
 	if t.Id == "Gold" and not band then
@@ -583,6 +590,12 @@ local function nextGoalText(data)
 	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or num(data.WeaponTier, 1) >= IRON_TIER
 	if iron and not hasIron then
 		if level < iron.MinLevel then
+			-- A23-71 D6 / S16: the first skill comes at the same level (Skills.Unlock.Q): one line for both
+			local q = math.floor(num((Config.Skills.Unlock or {}).Q))
+			if q == iron.MinLevel and TUT_MESSAGES.NextSkillIron
+				and not Config.SkillLearned(data.SkillSlots, level, data.Rebirths) then
+				return string.format(TUT_MESSAGES.NextSkillIron, iron.MinLevel, level), "SkillIron", iron.MinLevel
+			end
 			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level), "IronLevel", iron.MinLevel
 		end
 		local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
@@ -636,8 +649,8 @@ local function tutorialEntry(player, data)
 			entry.Text = text
 			entry.ShortName = goalShort(kind, need)
 			entry.NextGoal = true
-			-- A23-48: which next goal this is ("IronLevel" | "IronGold" | "Zone"), so clients never search the (now
-			-- English) text for a word
+			-- A23-48: which next goal this is ("SkillIron" (A23-71 S16) | "IronLevel" | "IronGold" | "Zone"), so clients
+			-- never search the (now English) text for a word
 			entry.GoalKind = kind
 		end
 	else

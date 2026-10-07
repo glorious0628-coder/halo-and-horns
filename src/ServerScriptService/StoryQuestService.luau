@@ -205,6 +205,25 @@ local function needsSkill(obj, track)
 	return false
 end
 
+-- a Level step is reached; A23-71 Skill = also once the first skill is learned (Q kept after a free class change took
+-- the level back to 1, or a rebirth)
+local function levelReached(data, obj)
+	if num(data.Level, 1) >= num(obj.Level) then return true end
+	return obj.Skill == true and Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths)
+end
+
+-- the opening line(s) of a quest that just started: its Start, then (A23-71 S8) its first Level step's own Start while
+-- that level is still ahead (past it, the step passes at once and the next step's Start is said instead)
+local function announceStart(player, data, def)
+	if def.Hidden then return end -- E5: a hidden sub stays secret
+	if def.Start then notify(player, def.Start, "info") end
+	local first = stepOf(player, def, 1)
+	local obj = first and first.Obj
+	if first and first.Start and type(obj) == "table" and obj.Type == "Level" and not levelReached(data, obj) then
+		notify(player, first.Start, "info")
+	end
+end
+
 -- how much one event moves an objective (0 = not this objective)
 local function eventAmount(player, obj, ev)
 	local t = obj.Type
@@ -446,8 +465,7 @@ local function refresh(player)
 		for _, id in SQ.Main do
 			if not st.Done[id] then
 				st.Main = { Id = id, St = 1, P = 0, T = {}, Claim = false }
-				local def = DEFS[id]
-				if def.Start then notify(player, def.Start, "info") end
+				announceStart(player, data, DEFS[id])
 				changed = true
 				openStep(player, id, st.Main)
 				break
@@ -458,7 +476,7 @@ local function refresh(player)
 		local def = DEFS[id]
 		if def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
-			if def.Start and not def.Hidden then notify(player, def.Start, "info") end -- E5: a hidden sub stays secret
+			announceStart(player, data, def) -- E5: a hidden sub stays secret
 			if def.Pop then openStep(player, id, st.Subs[id]) end -- A23-70: the card opens by itself, once
 			changed = true
 		elseif st.Subs[id] and def.Factions and not def.Factions[faction(player)] then
@@ -476,7 +494,7 @@ local function refresh(player)
 			if obj.Type == "State" then
 				done = stateTrue(player, obj.Key)
 			elseif obj.Type == "Level" then
-				done = num(data.Level, 1) >= obj.Level
+				done = levelReached(data, obj)
 				if not done then changed = true end -- the row shows "(지금 LvN)"
 			elseif obj.Type == "Enter" then
 				done = zoneMatches(player, obj.Zone, currentZone(player))

@@ -43,6 +43,11 @@ MUTATIONS = [
      "if st.Done == num(B.BonusAt, 5) + 1 and not st.Bonus then"),
     ("the side is not counted", BD, "\tstory.N[h.Side] = math.floor(num(story.N[h.Side])) + 1\n", ""),
     ("a finished job pays again", BD, "\ttable.remove(st.Held, index)\n", ""),
+    # A23-71 S11: 'Hit 3 at once' (NeedSkill) waits for the first skill, also as a saved card
+    ("A23-71: a skill job before the first skill", BD, "\treturn not job.NeedSkill or Config.SkillLearned(",
+     "\treturn true or Config.SkillLearned("),
+    ("S11: a saved card is kept when the player can't do it", BD,
+     "if job and canDo(player, job) and #valid < num(B.Cards, 4) then", "if job and #valid < num(B.Cards, 4) then"),
     ("Auto Battle jobs before the unlock", BD,
      '\tif job.NeedAuto and player:GetAttribute("AutoCombatUnlocked") ~= true then return false end\n', ""),
     ("the woods board may lose its safe card", BD, "\tif type(safe) ~= \"table\" then return end\n", "\tdo return end\n"),
