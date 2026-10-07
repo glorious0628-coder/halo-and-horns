@@ -1446,9 +1446,15 @@ Config.Monsters = {
 -- seasonal kinds (Config.MonsterOutsideCap: the little ghosts, at most Count x MaxZoneMult = 6 on top while on).
 Config.MonsterDensity ={ ExtraPerPlayer = 2, MaxZoneMult = 2, GlobalCap = 72, ReevalInterval = 5 }
 
--- addendum A7-1: on each (re)spawn of a non-personal monster, prefer a point 18-28 studs from the most "starved"
--- player in def.Zone (fewest monsters within 30 studs) when that player has fewer than StarvedThreshold nearby.
-Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDist = 28, Tries = 6 }
+-- addendum A7-1: on each (re)spawn of a non-personal monster, prefer a point 18-28 studs from a "starved" player in
+-- def.Zone (fewer than StarvedThreshold monsters within 30 studs; a Rookie first, then the lowest level, then the fewest).
+Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDist = 28, Tries = 6,
+	-- 3rd idea round #7: a first-mission hunter (TutorialStep = Tutorial.Steps.Quest in Tutorial.GuideZone) is chosen
+	-- first (then a Rookie, then the lowest level, then the fewest monsters near) and gets its slimes 10-18 studs away
+	-- (the half circle facing the zone middle) while it has fewer than 3 near; each hunter raises the meadow's
+	-- Tutorial.Monster target by Extra (max Count x MonsterDensity.MaxZoneMult) so a lone sprout on a quiet server sees
+	-- a new one at once
+	Tutorial = { StarvedThreshold = 3, MinDist = 10, MaxDist = 18, Extra = 3 } }
 
 -- seasonal kinds sit right after the base kind of their zone (drop table / UI order); they spawn only while their
 -- season is on (Config.MonsterActive / Config.EffectiveMonsterCounts)
@@ -2973,6 +2979,11 @@ Config.Visuals.MarkModels = {
 	HaloLight = { Range = 8, Brightness = 1.2 }, -- the old halo disc's light
 	-- R5: a soft gold glow / embers as an effect (이미지 생성 1: "금빛 번짐·불씨는 효과로")
 	Glow = { Rank = 5, Rate = 5, Size = 0.25, Halo = Color3.fromRGB(255, 225, 130), Horns = Color3.fromRGB(255, 140, 60) },
+	-- 3rd idea round #6 (검수 2026-10-07): R1 / R2 were lost in hair, so their clone is x1.4 / x1.2 (ranks 3-5 x1).
+	-- The mark stands on the head top, or on the top of a hat / hair accessory when that is higher, at most
+	-- MaxRise x (head height / HeadRef) above the head top (a giant hat keeps it near the head)
+	RankScale = { 1.4, 1.2 },
+	MaxRise = 1.0,
 }
 
 function Config.SackTier(gold, level)

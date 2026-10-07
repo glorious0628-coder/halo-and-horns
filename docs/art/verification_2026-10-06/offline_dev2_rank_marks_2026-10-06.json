@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 89,
+  "checks": 117,
   "failedChecks": 0,
-  "namedChecks": 89,
+  "namedChecks": 117,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -87,7 +87,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Halo rank 1: turned by Yaw, real size on a 1.2 head",
+      "check": "Halo rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -123,7 +123,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Halo rank 2: turned by Yaw, real size on a 1.2 head",
+      "check": "Halo rank 2: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -159,7 +159,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Halo rank 3: turned by Yaw, real size on a 1.2 head",
+      "check": "Halo rank 3: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -195,7 +195,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Halo rank 4: turned by Yaw, real size on a 1.2 head",
+      "check": "Halo rank 4: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -231,7 +231,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Halo rank 5: turned by Yaw, real size on a 1.2 head",
+      "check": "Halo rank 5: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -267,7 +267,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Horns rank 1: turned by Yaw, real size on a 1.2 head",
+      "check": "Horns rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -303,7 +303,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Horns rank 2: turned by Yaw, real size on a 1.2 head",
+      "check": "Horns rank 2: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -339,7 +339,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Horns rank 3: turned by Yaw, real size on a 1.2 head",
+      "check": "Horns rank 3: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -375,7 +375,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Horns rank 4: turned by Yaw, real size on a 1.2 head",
+      "check": "Horns rank 4: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -411,7 +411,7 @@
     },
     {
       "group": "each rank wears its own model",
-      "check": "Horns rank 5: turned by Yaw, real size on a 1.2 head",
+      "check": "Horns rank 5: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
       "pass": 1,
       "fail": 0
     },
@@ -447,7 +447,7 @@
     },
     {
       "group": "bigger heads, models, missing files",
-      "check": "a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+      "check": "a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25",
       "pass": 1,
       "fail": 0
     },
@@ -489,6 +489,174 @@
     },
     {
       "group": "bigger heads, models, missing files",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "Config: RankScale { 1.4, 1.2 }, MaxRise 1.0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, bald: on the head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, bald: on the head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, up-do (a bun 0.8 over the head)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, up-do (a bun 0.8 over the head)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, long hair (0.25 over the head, hanging down)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, long hair (0.25 over the head, hanging down)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, a cap (0.35 over the head)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, a cap (0.35 over the head)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, a top hat (1.6 over the head): capped at 1.0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, a top hat (1.6 over the head): capped at 1.0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, a cap on an up-do: the higher one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, a cap on an up-do: the higher one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, wings on the back (2.0 over the head): not a head slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, wings on the back (2.0 over the head): not a head slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, glasses (below the head top) change nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, glasses (below the head top) change nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, hair with AccessoryType Hair and no slot name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, hair with AccessoryType Hair and no slot name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, a hat with AccessoryType Hat and no slot name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, a hat with AccessoryType Hat and no slot name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R1, a waist item of another type: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "horns R1, a waist item of another type: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "halo R2 on an up-do: x1.2, on the bun",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "rank 5: its real size (x1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "a 1.5 head under a giant hat: at most 1.25 over the head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on top of hair and hats",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -543,12 +711,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 12,
+  "staticChecks": 14,
   "staticFailures": [],
   "mutations": {
-    "total": 17,
-    "applied": 17,
-    "caught": 17,
+    "total": 27,
+    "applied": 27,
+    "caught": 27,
     "skipped": false,
     "results": [
       {
@@ -558,14 +726,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25",
           "bigger heads, models, missing files :: a template that is a Model: its mesh is used",
           "each rank wears its own model :: Halo rank 1: a weightless, non-colliding accessory",
           "each rank wears its own model :: Halo rank 1: bottom at head top +0.3",
           "each rank wears its own model :: Halo rank 1: the Acc_HaloR1 model",
-          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head"
+          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)"
         ],
-        "newFailingCount": 44
+        "newFailingCount": 69
       },
       {
         "mutation": "always the rank 1 model",
@@ -574,14 +742,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25",
           "bigger heads, models, missing files :: a template that is a Model: its mesh is used",
           "bigger heads, models, missing files :: rank 3 horns missing in Studio: the drawn horns",
           "each rank wears its own model :: Halo rank 2: bottom at head top +0.3",
           "each rank wears its own model :: Halo rank 2: the Acc_HaloR2 model",
-          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head"
+          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)"
         ],
-        "newFailingCount": 27
+        "newFailingCount": 29
       },
       {
         "mutation": "no scale for bigger heads",
@@ -590,7 +758,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25"
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25"
         ],
         "newFailingCount": 1
       },
@@ -605,9 +773,10 @@
           "each rank wears its own model :: Halo rank 2: bottom at head top +0.3",
           "each rank wears its own model :: Halo rank 3: bottom at head top +0.3",
           "each rank wears its own model :: Halo rank 4: bottom at head top +0.3",
-          "each rank wears its own model :: Halo rank 5: bottom at head top +0.3"
+          "each rank wears its own model :: Halo rank 5: bottom at head top +0.3",
+          "on top of hair and hats :: a 1.5 head under a giant hat: at most 1.25 over the head"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 18
       },
       {
         "mutation": "the horns float",
@@ -616,14 +785,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25",
           "each rank wears its own model :: Horns rank 1: bottom at head top -0.06",
           "each rank wears its own model :: Horns rank 2: bottom at head top -0.06",
           "each rank wears its own model :: Horns rank 3: bottom at head top -0.06",
           "each rank wears its own model :: Horns rank 4: bottom at head top -0.06",
           "each rank wears its own model :: Horns rank 5: bottom at head top -0.06"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 17
       },
       {
         "mutation": "the model ignores Config Yaw (faces its back)",
@@ -632,12 +801,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head",
-          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head",
-          "each rank wears its own model :: Halo rank 3: turned by Yaw, real size on a 1.2 head",
-          "each rank wears its own model :: Halo rank 4: turned by Yaw, real size on a 1.2 head",
-          "each rank wears its own model :: Halo rank 5: turned by Yaw, real size on a 1.2 head",
-          "each rank wears its own model :: Horns rank 1: turned by Yaw, real size on a 1.2 head"
+          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Halo rank 3: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Halo rank 4: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Halo rank 5: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Horns rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)"
         ],
         "newFailingCount": 10
       },
@@ -740,7 +909,150 @@
           "each rank wears its own model :: Halo rank 4: bottom at head top +0.3",
           "each rank wears its own model :: Halo rank 5: bottom at head top +0.3"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "hair and hats are ignored",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on top of hair and hats :: a 1.5 head under a giant hat: at most 1.25 over the head",
+          "on top of hair and hats :: halo R1, a cap (0.35 over the head)",
+          "on top of hair and hats :: halo R1, a cap on an up-do: the higher one",
+          "on top of hair and hats :: halo R1, a hat with AccessoryType Hat and no slot name",
+          "on top of hair and hats :: halo R1, a top hat (1.6 over the head): capped at 1.0",
+          "on top of hair and hats :: halo R1, hair with AccessoryType Hair and no slot name"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "no cap for giant hats",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on top of hair and hats :: a 1.5 head under a giant hat: at most 1.25 over the head",
+          "on top of hair and hats :: halo R1, a top hat (1.6 over the head): capped at 1.0",
+          "on top of hair and hats :: horns R1, a top hat (1.6 over the head): capped at 1.0"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the cap ignores the head size",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on top of hair and hats :: a 1.5 head under a giant hat: at most 1.25 over the head"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every accessory lifts the mark",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on top of hair and hats :: halo R1, wings on the back (2.0 over the head): not a head slot",
+          "on top of hair and hats :: horns R1, wings on the back (2.0 over the head): not a head slot"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "AccessoryType Hat / Hair is ignored",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on top of hair and hats :: halo R1, a hat with AccessoryType Hat and no slot name",
+          "on top of hair and hats :: halo R1, hair with AccessoryType Hair and no slot name",
+          "on top of hair and hats :: horns R1, a hat with AccessoryType Hat and no slot name",
+          "on top of hair and hats :: horns R1, hair with AccessoryType Hair and no slot name"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the mark ignores the floor",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on top of hair and hats :: a 1.5 head under a giant hat: at most 1.25 over the head",
+          "on top of hair and hats :: halo R1, a cap (0.35 over the head)",
+          "on top of hair and hats :: halo R1, a cap on an up-do: the higher one",
+          "on top of hair and hats :: halo R1, a hat with AccessoryType Hat and no slot name",
+          "on top of hair and hats :: halo R1, a top hat (1.6 over the head): capped at 1.0",
+          "on top of hair and hats :: halo R1, hair with AccessoryType Hair and no slot name"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "R1 / R2 keep the small size",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25",
+          "each rank wears its own model :: Halo rank 1: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Halo rank 2: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Horns rank 1: bottom at head top -0.06"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "Config: R1 not bigger",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "each rank wears its own model :: Halo rank 1: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Horns rank 1: bottom at head top -0.06",
+          "each rank wears its own model :: Horns rank 1: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "on top of hair and hats :: Config: RankScale { 1.4, 1.2 }, MaxRise 1.0"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: R2 not bigger",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 (x1.2 for R2) and sunk 0.06 x1.25",
+          "each rank wears its own model :: Halo rank 2: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "each rank wears its own model :: Horns rank 2: bottom at head top -0.06",
+          "each rank wears its own model :: Horns rank 2: turned by Yaw, real size on a 1.2 head (R1 x1.4, R2 x1.2)",
+          "on top of hair and hats :: Config: RankScale { 1.4, 1.2 }, MaxRise 1.0"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "Config: a high cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on top of hair and hats :: Config: RankScale { 1.4, 1.2 }, MaxRise 1.0",
+          "on top of hair and hats :: a 1.5 head under a giant hat: at most 1.25 over the head",
+          "on top of hair and hats :: halo R1, a top hat (1.6 over the head): capped at 1.0",
+          "on top of hair and hats :: horns R1, a top hat (1.6 over the head): capped at 1.0"
+        ],
+        "newFailingCount": 4
       },
       {
         "mutation": "name tags keep GothamBold",
@@ -795,11 +1107,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "d9b8fd3829d116065b1ee2a2499b003f986fe87f7cec3b89f1d7268b9d348e9d",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CharacterVisuals.luau": "fcfaec02dd563265306e73a3c9ec94846c110cb66ba17ba56c31719fec2a90f9"
+    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e"
   },
-  "fixtureSHA256": "68d28991385ba0c4ccbe553764fa638eb93f66ea6e08440bdd7d8ab769985c50",
+  "fixtureSHA256": "fb7bf885239a13ddfacecf3ca81e9f468770777fd4a8dfb7482c48793443e2b8",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

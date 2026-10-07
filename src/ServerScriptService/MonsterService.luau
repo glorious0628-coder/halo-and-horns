@@ -43,6 +43,8 @@ local SPREAD_COUNT_RADIUS = 30
 
 -- shared Config keys (G1) with fallbacks
 local TUTORIAL = Config.Tutorial or {}
+-- 3rd idea round #7: Cfg = Config.SpawnSpread.Tutorial; Hunters = [zoneId] = first-mission hunters (playersPerZone)
+local TUT_SPAWN = { Cfg = (Config.SpawnSpread or {}).Tutorial or {}, Hunters = {} }
 local CUSTOM = Config.CustomModels or {}
 local CUSTOM_FOLDER = CUSTOM.FolderName or "CustomModels"
 local GOLDEN_FILL_TRANSPARENCY = CUSTOM.GoldenFillTransparency or 0.5
@@ -184,6 +186,11 @@ local function readyPlayers()
 	local ok, list = pcall(S.PlayerService.GetReadyPlayers)
 	if ok and type(list) == "table" then return list end
 	return {}
+end
+
+-- 3rd idea round #7: a player on the first mission's hunt (TutorialStep = Steps.Quest) standing in the guide zone
+local function tutorialHunter(p, zoneId)
+	return zoneId == TUTORIAL.GuideZone and p:GetAttribute("TutorialStep") == (TUTORIAL.Steps or {}).Quest
 end
 
 local function isPlayerInTown(player, pos)
@@ -376,15 +383,31 @@ local function totalNonPersonal()
 end
 
 local function playersPerZone()
-	local counts = {}
+	local counts, hunters = {}, {}
 	for _, p in readyPlayers() do
 		local root = Util.GetRoot(p)
 		if root then
 			local id = Config.ZoneAt(root.Position).Id
 			counts[id] = (counts[id] or 0) + 1
+			if tutorialHunter(p, id) then hunters[id] = (hunters[id] or 0) + 1 end
 		end
 	end
+	TUT_SPAWN.Hunters = hunters
 	return counts
+end
+
+-- Config.MonsterTargets + the first-mission bonus: each hunter adds Tutorial Extra to the guide zone's tutorial monster
+-- (never above Count x MaxZoneMult)
+local function wantedTargets(zoneCounts)
+	local wanted = Config.MonsterTargets(zoneCounts)
+	local kind, zone = TUTORIAL.Monster, TUTORIAL.GuideZone
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	local n, extra = TUT_SPAWN.Hunters[zone] or 0, math.floor(tonumber(TUT_SPAWN.Cfg.Extra) or 0)
+	if n > 0 and extra > 0 and def and def.Zone == zone and wanted[kind] then
+		local cap = math.floor((tonumber(def.Count) or 0) * (tonumber((Config.MonsterDensity or {}).MaxZoneMult) or 2))
+		wanted[kind] = math.max(wanted[kind], math.min(wanted[kind] + extra * n, cap))
+	end
+	return wanted
 end
 
 -- per kind: min(count + ExtraPerPlayer * (playersInZone - 1), count * MaxZoneMult) with the seasonal counts
@@ -393,7 +416,7 @@ end
 -- under the GlobalCap)
 local function targetCount(kind, zoneCounts)
 	if not Config.MonsterTypes[kind] then return 0 end
-	return Config.MonsterTargets(zoneCounts or playersPerZone())[kind] or 0
+	return wantedTargets(zoneCounts or playersPerZone())[kind] or 0
 end
 
 -- largest-remainder split of `total` over `keys` (in order) by `weight` (> 0 only); ties go to the earlier key
@@ -435,7 +458,7 @@ local function cappedTargets(zoneCounts)
 	local targets, extras = {}, {}
 	local groups, groupOf, groupExtra = {}, {}, {} -- cap groups in MonsterTypeOrder (first member's position)
 	local baseSum, extraSum = 0, 0
-	local wanted, counts = Config.MonsterTargets(zoneCounts), Config.EffectiveMonsterCounts()
+	local wanted, counts = wantedTargets(zoneCounts), Config.EffectiveMonsterCounts()
 	for _, kind in Config.MonsterTypeOrder do
 		local def = Config.MonsterTypes[kind]
 		if def and targets[kind] == nil then
@@ -585,7 +608,10 @@ local function pickSpawnPoint(def, kind)
 		end
 	end
 	if SPREAD_ENABLED then
-		local bestPos, bestCount = nil, nil
+		-- a starved player (fewer monsters near than the threshold): a first-mission hunter first (3rd idea round #7,
+		-- the tutorial monster in the guide zone, closer ring), then a Rookie, then the lowest level, then the fewest near
+		local best = nil
+		local tutKind = kind ~= nil and kind == TUTORIAL.Monster and def.Zone == TUTORIAL.GuideZone
 		for _, p in readyPlayers() do
 			if Util.IsAlive(p) then
 				local root = Util.GetRoot(p)
@@ -594,17 +620,31 @@ local function pickSpawnPoint(def, kind)
 					local z = Config.ZoneAt(pos)
 					if z.Id == def.Zone and not z.Town then
 						local c = MonsterService.CountInRadius(pos, SPREAD_COUNT_RADIUS, p)
-						if bestCount == nil or c < bestCount then
-							bestPos, bestCount = pos, c
+						local tut = tutKind and tutorialHunter(p, z.Id)
+						if c < (tut and (TUT_SPAWN.Cfg.StarvedThreshold or 3) or SPREAD_THRESHOLD) then
+							local cand = { Pos = pos, Count = c, Tut = tut == true, Rookie = p:GetAttribute("Rookie") == true,
+								Level = tonumber(p:GetAttribute("Level")) or 1 }
+							if best == nil or (cand.Tut ~= best.Tut and cand.Tut)
+								or (cand.Tut == best.Tut and (cand.Rookie ~= best.Rookie and cand.Rookie
+									or (cand.Rookie == best.Rookie and (cand.Level < best.Level
+										or (cand.Level == best.Level and cand.Count < best.Count))))) then
+								best = cand
+							end
 						end
 					end
 				end
 			end
 		end
-		if bestPos and bestCount < SPREAD_THRESHOLD then
-			for _ = 1, SPREAD_TRIES do
-				local a = Util.Random:NextNumber(0, math.pi * 2)
-				local d = Util.Random:NextNumber(SPREAD_MIN, SPREAD_MAX)
+		if best then
+			local bestPos = best.Pos
+			local minD = best.Tut and (TUT_SPAWN.Cfg.MinDist or 10) or SPREAD_MIN
+			local maxD = best.Tut and (TUT_SPAWN.Cfg.MaxDist or 18) or SPREAD_MAX
+			-- the first-mission ring is the half circle facing the zone middle (where the kid looks after the trip; the
+			-- meadow entrance sits on the spawn-inset edge, so a full circle wastes half its tries) with twice the tries
+			local face = best.Tut and math.atan2(zone.Center.Z - bestPos.Z, zone.Center.X - bestPos.X) or nil
+			for _ = 1, face and SPREAD_TRIES * 2 or SPREAD_TRIES do
+				local a = face and face + Util.Random:NextNumber(-math.pi / 2, math.pi / 2) or Util.Random:NextNumber(0, math.pi * 2)
+				local d = Util.Random:NextNumber(minD, maxD)
 				local pt = Vector3.new(bestPos.X + math.cos(a) * d, 0, bestPos.Z + math.sin(a) * d)
 				if insideZone(zone, pt, inset) then
 					local g = try(pt)
