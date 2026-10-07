@@ -577,7 +577,8 @@ local function rewardPlayer(p, result, f, share)
 	if gold > 0 then call("ProgressionService", "AddBankGold", p, gold, "Event") end
 	if xp > 0 then call("ProgressionService", "AddXP", p, xp) end
 	local msg = (share ~= nil) and txt("CoopReward", f, Util.FormatNumber(gold), Util.FormatNumber(xp)) or nil
-	Net.Notify(p, msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp)), "reward")
+	Net.Notify(p, msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp)), "reward", nil,
+		"GoldPickup")
 
 	if rare then
 		Net.Fx(p, "Rare", { Gold = gold, XP = xp })

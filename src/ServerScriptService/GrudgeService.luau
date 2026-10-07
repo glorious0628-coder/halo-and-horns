@@ -59,9 +59,9 @@ local function fmt(key, ...)
 	return string.format(Config.Text[key], ...)
 end
 
-local function notify(p, text, kind)
+local function notify(p, text, kind, sound)
 	if isPlaying(p) then
-		Net.Notify(p, text, kind)
+		Net.Notify(p, text, kind, nil, sound)
 	end
 end
 
@@ -146,7 +146,7 @@ local function closeSack(thief, sack, outcome, tellThief)
 		if v then pointVictim(v) end
 	end
 	if tellThief and outcome ~= "Paid" then
-		notify(thief, fmt("SackLost"), "bad")
+		notify(thief, fmt("SackLost"), "bad", "None")
 	end
 	GrudgeService.SackResolved:Fire(thief, outcome, sack.Total)
 end
@@ -541,7 +541,7 @@ local function onGhostHold(victim, ...)
 		if isPlaying(thief) and thief:GetAttribute("SackHeldUntil") == glowUntil then thief:SetAttribute("SackHeldUntil", 0) end
 	end)
 	notify(victim, fmt("GhostHoldOk", add, G.HoldMaxSeconds), "good")
-	notify(thief, fmt("GhostHeld"), "bad")
+	notify(thief, fmt("GhostHeld"), "bad", "None")
 	S.PlayerService.MarkActive(victim)
 end
 

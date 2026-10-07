@@ -441,7 +441,7 @@ local function survive(p)
 		elseif bonus < fullBonus then
 			text = TXT_SURVIVE_CAPPED
 		end
-		Net.Notify(p, string.format(text, Util.FormatNumber(amount)), "reward")
+		Net.Notify(p, string.format(text, Util.FormatNumber(amount)), "reward", nil, "GoldPickup")
 		Net.NotifyAll(string.format(Config.Story.KaijuSurvived, name))
 	end)
 	if not ok then warnThrottled("survive", "survive reward failed: " .. tostring(err)) end
@@ -769,7 +769,7 @@ function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 				if share > 0 then
 					call("ProgressionService", "AddBankGold", p, share, "Kaiju")
 					paid += share
-					Net.Notify(p, string.format(Config.Text.KaijuReward, Util.FormatNumber(share)), "reward")
+					Net.Notify(p, string.format(Config.Text.KaijuReward, Util.FormatNumber(share)), "reward", nil, "GoldPickup")
 				end
 			end
 		end

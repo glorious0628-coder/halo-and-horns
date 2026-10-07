@@ -84,9 +84,9 @@ local function fmt(key, ...)
 	return string.format(Config.Text[key], ...)
 end
 
-local function notify(p, text, kind)
+local function notify(p, text, kind, sound)
 	if isPlaying(p) then
-		Net.Notify(p, text, kind)
+		Net.Notify(p, text, kind, nil, sound)
 	end
 end
 
@@ -661,7 +661,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 	elseif bully then
 		-- 4. bully KO: no plunder, stars, honor/infamy, bounty or war points
 		local n = math.floor(tonumber(Justice.AddBullyStack(killer)) or 0)
-		notify(killer, fmt("BullyKO", n), "bad")
+		notify(killer, fmt("BullyKO", n), "bad", "None") -- a consequence, not a refused press
 		notify(victim, fmt("BullyVictim"), "info")
 		refreshStarAttrs(killer) -- bounty doubles while a bully
 		info = { Kind = "Bully", Bully = true, VictimStars = starsBefore, Stolen = 0, Bounty = 0, Rewarded = false }
@@ -699,7 +699,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 					if from and to then
 						Net.Fx(nil, "Plunder", { From = from, To = to, Amount = stolen })
 					end
-					notify(victim, fmt("Plundered", Util.PlayerDisplayName(killer), Util.FormatNumber(stolen)), "bad")
+					notify(victim, fmt("Plundered", Util.PlayerDisplayName(killer), Util.FormatNumber(stolen)), "bad", "None")
 					notify(killer, fmt("PlunderGain", Util.FormatNumber(stolen), stars[killer] or 0), "reward")
 				end
 			end
@@ -713,7 +713,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 				if bullyBounty > 0 then
 					claimBullyBounty(victim) -- claimed: no bully bounty on this victim for any killer for a while
 					Progression.AddBankGold(killer, bullyBounty, "Bounty")
-					notify(killer, fmt("BullyBountyGain", Util.FormatNumber(bullyBounty)), "reward")
+					notify(killer, fmt("BullyBountyGain", Util.FormatNumber(bullyBounty)), "reward", "GoldPickup")
 				end
 			end
 			info = {
@@ -751,7 +751,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 				end
 			end
 			if bounty > 0 or honor > 0 then
-				notify(killer, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
+				notify(killer, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward", "GoldPickup")
 			end
 			if starsBefore >= P.GlowStars and bounty > 0 then
 				Net.NotifyAll(bountyLine(killer, bounty))
@@ -966,7 +966,7 @@ local function payLeaveBounty(player)
 		S.ProgressionService.AddBankGold(a, bounty, "Bounty")
 	end
 	if honor > 0 then grantFame(a, "Honor", honor, verdict, player) end
-	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
+	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward", "GoldPickup")
 	if s >= Config.PvP.GlowStars and bounty > 0 then
 		Net.NotifyAll(bountyLine(a, bounty))
 	end

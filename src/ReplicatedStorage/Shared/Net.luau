@@ -102,12 +102,14 @@ end
 
 -- server helpers --------------------------------------------------------
 -- kind: "info" | "good" | "bad" | "reward" | "announce"
-function Net.Notify(player, text, kind, duration)
-	Net.Get("Notify"):FireClient(player, { Text = text, Kind = kind or "info", Duration = duration })
+-- sound (sound_spec 2026-10-07 §4-1, optional): the Config.Audio key the client plays for this line ("None" = no sound);
+-- without it the client keeps its kind mapping ("bad" -> Deny, "reward" -> QuestDone)
+function Net.Notify(player, text, kind, duration, sound)
+	Net.Get("Notify"):FireClient(player, { Text = text, Kind = kind or "info", Duration = duration, Sound = sound })
 end
 
-function Net.NotifyAll(text, kind, duration)
-	Net.Get("Notify"):FireAllClients({ Text = text, Kind = kind or "announce", Duration = duration })
+function Net.NotifyAll(text, kind, duration, sound)
+	Net.Get("Notify"):FireAllClients({ Text = text, Kind = kind or "announce", Duration = duration, Sound = sound })
 end
 
 -- player == nil -> FireAllClients

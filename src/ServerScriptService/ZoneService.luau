@@ -74,9 +74,9 @@ local function fmt(key, ...)
 	return string.format(s, ...)
 end
 
-local function notify(player, text, kind)
+local function notify(player, text, kind, sound)
 	if type(text) == "string" and text ~= "" then
-		Net.Notify(player, text, kind)
+		Net.Notify(player, text, kind, nil, sound)
 	end
 end
 
@@ -289,7 +289,7 @@ local function cancelChannel(player)
 	channels[player] = nil
 	if player.Parent then
 		player:SetAttribute("TravelingUntil", 0)
-		notify(player, fmt("TravelCancelled"), "bad")
+		notify(player, fmt("TravelCancelled"), "bad", "None") -- cut short by a hit: happens to me, no Deny
 	end
 end
 
@@ -338,7 +338,7 @@ local function updateZone(player)
 		if getFaction(player) == "Neutral" then
 			notify(player, fmt("EnteredPvPNeutral"), "info") -- CR-L24: 장인 길드 is immune to PvP
 		else
-			notify(player, fmt("EnteredPvP"), "bad")
+			notify(player, fmt("EnteredPvP"), "bad", "None") -- happens to me: no Deny
 		end
 	elseif not zone.PvP and wasPvP then
 		notify(player, fmt("EnteredSafe"), "good")

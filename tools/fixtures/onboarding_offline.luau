@@ -210,8 +210,11 @@ do
 	local f = fixture(); f:Choose(); f:Publish()
 	check(f.LastList[1].Pinned and f.LastList[1].TutorialStep == 0, "class choice bypassed welcome acceptance")
 	check(#f.Panels == 1 and f.Panels[1] == "Welcome", "class choice did not open the guide")
-	check(string.find(f.LastList[1].Text, "Guide") ~= nil, "pending guide is not discoverable")
-	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Welcome, "the welcome row's ShortName (phone quest row)")
+	-- 3rd idea round #3: the row names the side's guide (there is no 'Guide' NPC to look for)
+	check(string.find(f.LastList[1].Text, "Hallie", 1, true) ~= nil, "pending guide is not discoverable")
+	check(f.LastList[1].ShortName == "Meet Hallie" and f.LastList[1].Text == "Tap here: first quest from Hallie",
+		"3rd idea round #3: the welcome row names the guide ('Meet Hallie', 'Tap here: first quest from Hallie'): "
+			.. tostring(f.LastList[1].ShortName) .. " / " .. tostring(f.LastList[1].Text))
 	f:Publish(); f.Services.PlayerService.CharacterSpawned:Fire(f.Player)
 	for _, fn in f.Delayed do fn() end; f:Publish()
 	check(#f.Panels == 1 and f.Data.TutorialStep == 0, "closed welcome auto-reopened/accepted")
@@ -329,8 +332,8 @@ for _, faction in { "Halo", "Horns", "Neutral" } do
 	local initial = saved(0, 0); initial.Faction = faction
 	local f = fixture(initial)
 	local welcome = f.Config.Tutorial.Welcome[faction]
-	-- ⑪ (lines_pack §1-3): the guide's catchphrase page + the three mission pages
-	check(type(welcome.Name) == "string" and #welcome.Lines == 4, faction .. " guide has no four-page dialogue (catchphrase + 3)")
+	-- ⑪ (lines_pack §1-3) + 3rd idea round #2: the mission card page, the catchphrase page and two story pages
+	check(type(welcome.Name) == "string" and #welcome.Lines == 4, faction .. " guide has no four-page dialogue (card + 3)")
 	for _, line in welcome.Lines do check(type(line) == "string" and #line > 0, faction .. " guide page missing") end
 	check(f.Panels[1] == "Welcome" and f.Data.TutorialStep == 0, faction .. " guide did not open pending")
 	local beforeGold = f.Data.BankGold

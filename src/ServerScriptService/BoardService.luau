@@ -41,8 +41,8 @@ local function getData(player)
 	return ok and type(data) == "table" and data or nil
 end
 
-local function notify(player, text, kind)
-	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, text, kind or "info") end
+local function notify(player, text, kind, sound)
+	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, text, kind or "info", nil, sound) end
 end
 
 local function dirty(player)
@@ -236,7 +236,8 @@ local function finish(player, data, index)
 	if type(story.N) ~= "table" then story.N = {} end
 	story.N[h.Side] = math.floor(num(story.N[h.Side])) + 1
 	local T = B.Text or {}
-	notify(player, string.format(T.Done or "Job done! +%s gold · +%s XP", Util.FormatNumber(g), Util.FormatNumber(x)), "reward")
+	notify(player, string.format(T.Done or "Job done! +%s gold · +%s XP", Util.FormatNumber(g), Util.FormatNumber(x)), "reward",
+		"QuestDone")
 	notify(player, h.Side == "Kind" and T.LeanKind or T.LeanSneaky, "info")
 	if st.Done == num(B.BonusAt, 5) and not st.Bonus then
 		st.Bonus = true -- saved before the scroll
@@ -246,7 +247,7 @@ local function finish(player, data, index)
 			if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(given)) end
 			local item = Config.Loot.Items[B.BonusItem]
 			if ok and num(given) > 0 then
-				notify(player, string.format(T.Bonus or "%s", item and item.Name or B.BonusItem), "reward")
+				notify(player, string.format(T.Bonus or "%s", item and item.Name or B.BonusItem), "reward", "None")
 			end
 		end
 	end
