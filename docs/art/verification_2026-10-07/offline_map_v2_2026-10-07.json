@@ -1,0 +1,373 @@
+{
+  "status": "passed",
+  "checks": 490,
+  "namedChecks": 86,
+  "failing": [],
+  "static": [
+    {
+      "check": "QuestTarget takes the Halloween sign / passage / hollow gate from Config.Map.Halloween",
+      "ok": true
+    },
+    {
+      "check": "HUD's pond guide spot and QuestTarget's pond fallback = Config.StoryQuests.Landmarks.SlimePond + 3",
+      "ok": true
+    },
+    {
+      "check": "the Intro's town shots stand in the towns, between the gate and the spawn",
+      "ok": true
+    },
+    {
+      "check": "MapBuilder PATCH / HOLLOW read Config.Map.Halloween (path, west gate, sign) and place the hollow by shares",
+      "ok": true
+    },
+    {
+      "check": "MapBuilder re-fits reused zone markers, walls and gates to Config (map v2 on an older place)",
+      "ok": true
+    },
+    {
+      "check": "preview_map: \"terrain\" unless asked for \"full\"; only \"full\" destroys workspace.Map; PvP borders at the woods / ruins zone edges",
+      "ok": true
+    },
+    {
+      "check": "the mover: a dry run unless told to apply; towns 10 studs out, castles to (0, -+630); bridges / roads / gates / pads never moved",
+      "ok": true
+    },
+    {
+      "check": "the Studio runner works only in Edit and runs preview_map only in terrain mode",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 28,
+    "applied": 28,
+    "caught": 28,
+    "results": [
+      {
+        "mutation": "HaloTown centre back to v1",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "links :: each gate stands on its zone's border",
+          "preview :: preview ZONES = Config.Zones (centre, size, spawn, level, PvP, season)",
+          "zones :: the zone rectangle = the v2 land rectangle"
+        ]
+      },
+      {
+        "mutation": "meadow spawn in the river",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: the meadow board stands beside the arrival, off the crown road",
+          "preview :: preview ZONES = Config.Zones (centre, size, spawn, level, PvP, season)",
+          "zones :: ZoneAt(spawn) is that zone in season",
+          "zones :: every other spawn = the v2 layout spawn",
+          "zones :: every spawn stands on its own land piece",
+          "zones :: the spawn lies inside its zone, 15+ studs from the edge"
+        ]
+      },
+      {
+        "mutation": "pumpkin king spot in the near half",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halloween :: pumpkin king spots are in the far half (away from the meadow entrance)"
+        ]
+      },
+      {
+        "mutation": "ghost king on the ghost willow",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halloween :: ghost king spots stay off the ghost willow"
+        ]
+      },
+      {
+        "mutation": "goose out of the Crossroads",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: the golden goose perch is in the Crossroads (safe town)",
+          "preview :: preview ALTAR / BOARD / GOOSE_NEST = Config"
+        ]
+      },
+      {
+        "mutation": "slime pond in the hollow",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: the slime pond lies in the meadow",
+          "HUD's pond guide spot and QuestTarget's pond fallback = Config.StoryQuests.Landmarks.SlimePond + 3"
+        ]
+      },
+      {
+        "mutation": "WoodsGate inside the PvP woods",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: WoodsGate stays within 20 studs of the woods bridge's meadow end",
+          "places :: WoodsGate: outside the PvP woods and every level gate, on the meadow"
+        ]
+      },
+      {
+        "mutation": "QuestTarget sign back to the v1 spot",
+        "file": "questtarget",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "QuestTarget takes the Halloween sign / passage / hollow gate from Config.Map.Halloween"
+        ]
+      },
+      {
+        "mutation": "HUD pond spot back to v1",
+        "file": "hud",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "HUD's pond guide spot and QuestTarget's pond fallback = Config.StoryQuests.Landmarks.SlimePond + 3"
+        ]
+      },
+      {
+        "mutation": "potion seller on the north road",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: the potion seller is off every road"
+        ]
+      },
+      {
+        "mutation": "Halo Citadel allows PvP",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "preview :: preview ZONES = Config.Zones (centre, size, spawn, level, PvP, season)",
+          "zones :: PvP follows the layout",
+          "zones :: PvP zones are exactly the Goblin Woods and the Skeleton Ruins",
+          "zones :: towns have no PvP and no level gate"
+        ]
+      },
+      {
+        "mutation": "pumpkin land overlaps the hollow",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halloween :: the hollow gate is on the shared edge of the patch and the hollow",
+          "halloween :: the patch and the hollow keep their land-joined layout (the hollow is reached from the patch)",
+          "lands :: every layout land is a Config.Map.Lands piece with the same rectangle",
+          "lands :: land pieces never overlap (shared edges only)",
+          "preview :: every Config land is a preview land with the same rectangle and season",
+          "zones :: every spawn stands on its own land piece"
+        ]
+      },
+      {
+        "mutation": "Bounds cut the ruins",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lands :: every land lies inside Bounds with 20+ studs of sea",
+          "preview :: preview BOUNDS / WALL_HEIGHT / WATER_TOP = Config.Map",
+          "zones :: Outskirts = Config.Map.Bounds"
+        ]
+      },
+      {
+        "mutation": "Halo bridge ends in the water",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "links :: both bridge ends land on a shore of two different land pieces",
+          "links :: each bridge = the layout bridge (ends, width 22)",
+          "preview :: preview BRIDGES = Config.Map.Bridges"
+        ]
+      },
+      {
+        "mutation": "ruins gate off the zone border",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "links :: each gate stands on its zone's border",
+          "links :: each zone gate = the layout gate",
+          "preview :: preview GATES = Config.Map.Gates"
+        ]
+      },
+      {
+        "mutation": "meadow ring road over the King Slime Hill",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "links :: no road runs through a kit landmark",
+          "preview :: every Config road is a preview road with the same strip and season"
+        ]
+      },
+      {
+        "mutation": "MapBuilder west gate back to v1",
+        "file": "mapbuilder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "MapBuilder PATCH / HOLLOW read Config.Map.Halloween (path, west gate, sign) and place the hollow by shares"
+        ]
+      },
+      {
+        "mutation": "preview meadow land narrower than Config",
+        "file": "preview",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "preview :: every Config land is a preview land with the same rectangle and season"
+        ]
+      },
+      {
+        "mutation": "Intro Halo shot back over the sea",
+        "file": "intro",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Intro's town shots stand in the towns, between the gate and the spawn"
+        ]
+      },
+      {
+        "mutation": "hollow gate off the shared edge",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halloween :: the hollow gate is on the shared edge of the patch and the hollow",
+          "preview :: preview HW = Config.Map.Halloween"
+        ]
+      },
+      {
+        "mutation": "preview_map wipes the Map by default",
+        "file": "preview",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "preview_map: \"terrain\" unless asked for \"full\"; only \"full\" destroys workspace.Map; PvP borders at the woods / ruins zone edges"
+        ]
+      },
+      {
+        "mutation": "the mover applies by default",
+        "file": "move",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the mover: a dry run unless told to apply; towns 10 studs out, castles to (0, -+630); bridges / roads / gates / pads never moved"
+        ]
+      },
+      {
+        "mutation": "MapBuilder stops moving reused gates",
+        "file": "mapbuilder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "MapBuilder re-fits reused zone markers, walls and gates to Config (map v2 on an older place)"
+        ]
+      },
+      {
+        "mutation": "goblin camp 3 back on its v1 spot (the river)",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: every goblin camp is in the Goblin Woods, away from the arrival"
+        ]
+      },
+      {
+        "mutation": "meadow board on the crown road",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: the meadow board stands beside the arrival, off the crown road"
+        ]
+      },
+      {
+        "mutation": "hero statue outside Halo Citadel",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "places :: the hero statue road is in Halo Citadel, the lava crack in Horns Den"
+        ]
+      },
+      {
+        "mutation": "MapBuilder no longer re-fits reused walls",
+        "file": "mapbuilder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "MapBuilder re-fits reused zone markers, walls and gates to Config (map v2 on an older place)"
+        ]
+      },
+      {
+        "mutation": "the ruins road runs into the crown altar",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "links :: no road runs through a kit landmark",
+          "preview :: every Config road is a preview road with the same strip and season"
+        ]
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "1abf7d337bf4a8be2d2f720136b988b52b02b9066d1db10a3743f731a30f51d8",
+    "src/ServerScriptService/MapBuilder.luau": "cebfe7d03b842395df4fd22f6d55675b45603005fd0615f1880b9d4e83b7eddf",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "eb16161a8ac93bdbf0452630ba97e7dbe63ea22c1daeb7717dd061bea4523179",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "371e337d021e94e53d0676a378c355d507a0df10d2db975791f7035431e56c2f",
+    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "06c5c5c030c976f0c6a7869db0ce80f31aed70c904c23eae87c2b26913727b64",
+    "tools/preview_map.lua": "0c8d99ab6b88683ce5fda5d86dbe6b0f94c7646887888c9c5571b47cd4a5f47f",
+    "tools/map_v2_move.lua": "a9a84f2fed691bddf67fe236f9e7fa745f8f76bfb25190a2c1e24b9bd97681b7",
+    "tools/map_v2_apply.py": "91785b5feb295746988c74061b15f2cb00f95c8fc8215862e84a610f634be9b8",
+    "docs/design/world_map_v2_2026-10-06.json": "d5e196575a82adcac70a771866899a9bfa146a66868b8ec6b2996664381cbe2f",
+    "tools/fixtures/map_v2_offline.luau": "a57200280c8db9f45a6145e2715ed219fe3c2b4fabfdea3731b5ab5448c8446f"
+  },
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "contract": "SPEC A23-53 world map v2 (docs/design/world_map_v2_2026-10-06.json) in Config.Zones / Config.Map, the Halloween fields (A23-30 / A23-45), the story places, tools/preview_map.lua terrain mode and the v1 -> v2 mover.",
+  "limitations": "Numbers and source contracts only. The Terrain itself, the moved kit / town models, the bridges and the play feel need the Studio step (P2: terrain -> move -> MapBuilder.Build -> photos -> Play)."
+}

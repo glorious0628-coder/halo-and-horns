@@ -312,14 +312,16 @@ local function ensureZones(ctx, folder)
 		local z = Config.Zones[id]
 		if z then
 			local floor = folder:FindFirstChild(id)
+			local size = Vector3.new(z.Size.X, 1, z.Size.Z)
+			local pos = Vector3.new(z.Center.X, -0.45, z.Center.Z) -- top at Y = 0.05
 			if not floor then
 				floor = part(ctx, {
-					Name = id,
-					Size = Vector3.new(z.Size.X, 1, z.Size.Z),
-					Position = Vector3.new(z.Center.X, -0.45, z.Center.Z), -- top at Y = 0.05
-					Color = z.FloorColor, Material = z.FloorMaterial,
+					Name = id, Size = size, Position = pos, Color = z.FloorColor, Material = z.FloorMaterial,
 				}, folder)
 				ctx.pieces += 1
+			elseif floor:IsA("BasePart") and ((floor.Size - size).Magnitude > 0.05 or (floor.Position - pos).Magnitude > 0.05) then
+				-- map v2 (A23-53): a marker from an older layout follows the Config rectangle
+				floor.Size, floor.CFrame = size, CFrame.new(pos)
 			end
 			applyFloorMarker(floor)
 			floor:SetAttribute("ZoneId", id)
@@ -367,6 +369,18 @@ local function classifyWall(wall, center)
 	return (wall.Position.X < center.X) and "Wall_MinX" or "Wall_MaxX"
 end
 
+-- map v2 (A23-53): a reused upright wall standing on older bounds moves onto the Config edge (X / Z place and length
+-- from the spec, its own height kept; lowerWall then fixes the bottom). Returns true when it moved.
+local function fitWall(wall, spec)
+	if not wall:IsA("BasePart") or math.abs(wall.CFrame.UpVector.Y) < 0.99 then return false end
+	local p, s = wall.Position, wall.Size
+	local flat = Vector3.new(p.X - spec.Position.X, 0, p.Z - spec.Position.Z).Magnitude
+	if flat < 0.5 and math.abs(s.X - spec.Size.X) < 0.5 and math.abs(s.Z - spec.Size.Z) < 0.5 then return false end
+	wall.Size = Vector3.new(spec.Size.X, s.Y, spec.Size.Z)
+	wall.CFrame = CFrame.new(spec.Position.X, p.Y, spec.Position.Z)
+	return true
+end
+
 local function ensureWalls(ctx, folder)
 	local specs = wallSpecs()
 	local b = Config.Map.Bounds
@@ -390,6 +404,7 @@ local function ensureWalls(ctx, folder)
 			}, folder)
 			ctx.pieces += 1
 		else
+			if fitWall(wall, specs[name]) then Util.Log(TAG, "moved " .. name .. " onto Config.Map.Bounds") end
 			lowerWall(wall) -- CR-L17
 		end
 	end
@@ -499,6 +514,18 @@ local function buildGate(ctx, parent, entry, zone)
 	return gate
 end
 
+-- map v2 (A23-53): a reused gate (built here, by preview_map or a kit model keeping its "Lintel") slides on X / Z so its
+-- lintel stands over the Config position; height and turn stay. Returns true when it moved.
+local function placeGate(gate, pos)
+	if not gate:IsA("Model") then return false end
+	local anchor = gate.PrimaryPart or gate:FindFirstChild("Lintel", true)
+	local at = (anchor and anchor:IsA("BasePart")) and anchor.Position or gate:GetPivot().Position
+	local delta = Vector3.new(pos.X - at.X, 0, pos.Z - at.Z)
+	if delta.Magnitude < 0.5 then return false end
+	gate:PivotTo(gate:GetPivot() + delta)
+	return true
+end
+
 local function ensureGates(ctx, folder)
 	for _, entry in Config.Map.Gates do
 		local zone = Config.Zones[entry.Zone]
@@ -507,6 +534,8 @@ local function ensureGates(ctx, folder)
 			if not gate then
 				gate = buildGate(ctx, folder, entry, zone)
 				ctx.pieces += 1
+			elseif placeGate(gate, entry.Position) then
+				Util.Log(TAG, ("moved Gate_%s to (%g, %g)"):format(entry.Zone, entry.Position.X, entry.Position.Z))
 			end
 			ctx.pieces += clearGateSigns(gate)
 		end
@@ -896,21 +925,23 @@ end
 -- Terrain land joined to the meadow's south shore (Config.Map.Lands "LandPumpkinPatch"; filled only while that spot is
 -- still sea), a dirt path from the meadow road, furrows, pumpkins and a fence (plain parts, no new art) in
 -- Map.Decor.PumpkinPatch, and the one road sign Map.Landmarks.PumpkinPatchSign (HalloweenService hides it out of
--- season). Idempotent: every piece is looked up by name first.
+-- season). Idempotent: every piece is looked up by name first. Map v2 (A23-53): the path, gates and sign come from
+-- Config.Map.Halloween; the coast is an open beach (no ridge), so the fence is the field's edge.
+local HW = type(Config.Map.Halloween) == "table" and Config.Map.Halloween or {}
 local PATCH = {
 	Land = "LandPumpkinPatch",
 	Pumpkin = RGB(235, 128, 34), Stem = RGB(92, 112, 44), Wood = RGB(128, 92, 58),
 	Soil = Enum.Material.Mud, -- the Tex_PumpkinSoil slot (Config.Zones.PumpkinPatch.FloorMaterial); Ground = ruins soil
-	PathX = 360, PathHalfW = 4, PathFromZ = 9, -- from the meadow road (|z| <= 8) south into the patch
-	-- the meadow's south shore is a rocky ridge (Y 30-40 at z 140-176): a pass is cut through it along the path
-	PassHalfW = 9, PassFromZ = 126, PassToZ = 194,
+	PathX = tonumber(HW.PathX) or 535, PathHalfW = 6, PathFromZ = 9, -- from the meadow road (|z| <= 9) south into the patch
+	-- a pass is cut only if something still stands on the path between the meadow and the patch (the v1 ridge)
+	PassHalfW = 9, PassReach = 30, -- the cut runs PassReach studs either side of the patch's north edge
 	FurrowStep = 24, PostStep = 16, Gate = 10, -- a 4-stud furrow every 24 studs; fence post every 16; gate half-width
-	-- world_kit 2026-10-06 (Edit raycasts): the ridge slope reaches z ~199, so the north fence stands at z 202 (not in
-	-- the hill at z 175) and the pumpkins grow on the leafy furrows (z 211, 235, 259, 283) on the flat field
-	FenceNorthZ = 202, PumpkinFromZ = 211,
-	WestGateZ = 245, -- A23-45: the gap in the west fence that leads into the HauntedHollow (x < 280)
-	-- in front of the pass mouth, west of the dirt path (the old (368, 136) stood inside the pass wall); A23-36: no text
-	SignPos = Vector3.new(352, 0, 118),
+	FenceInset = 2, -- the north fence 2 studs inside the land edge; pumpkins from 9 studs past it
+	PumpkinStepX = 34,
+	WestGateZ = (typeof(HW.HollowGate) == "Vector3" and HW.HollowGate.Z) or 340, -- A23-45: the gap into the HauntedHollow
+	-- no pumpkins on the giant pumpkin house (world_map_v2 landmark, a later kit) or the hollow road
+	Keep = { { Vector3.new(585, 0, 370), 34 } },
+	SignPos = typeof(HW.SignPos) == "Vector3" and HW.SignPos or Vector3.new(525, 0, 226), -- west of the path; A23-36: no text
 }
 
 function PATCH.rect()
@@ -920,13 +951,21 @@ function PATCH.rect()
 	return nil
 end
 
--- true while the patch centre is still sea (or nothing): then the land is filled once
-function PATCH.landMissing(cx, cz)
+function PATCH.northZ(l)
+	return l.MinZ + PATCH.FenceInset
+end
+
+function PATCH.terrainHit(x, z)
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = { workspace.Terrain }
 	params.IgnoreWater = false
-	local hit = workspace:Raycast(Vector3.new(cx, 60, cz), Vector3.new(0, -120, 0), params)
+	return workspace:Raycast(Vector3.new(x, 120, z), Vector3.new(0, -200, 0), params)
+end
+
+-- true while the patch centre is still sea (or nothing): then the land is filled once
+function PATCH.landMissing(cx, cz)
+	local hit = PATCH.terrainHit(cx, cz)
 	return hit == nil or hit.Material == Enum.Material.Water
 end
 
@@ -943,37 +982,53 @@ function PATCH.fillLand(l)
 	end
 end
 
--- true while the ridge still stands on the path between the meadow and the patch
-function PATCH.passBlocked()
-	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Include
-	params.FilterDescendantsInstances = { workspace.Terrain }
-	local mid = (PATCH.PassFromZ + PATCH.PassToZ) / 2
-	local hit = workspace:Raycast(Vector3.new(PATCH.PathX, 120, mid), Vector3.new(0, -200, 0), params)
+-- true while something higher than a step stands on the path where it crosses into the patch
+function PATCH.passBlocked(l)
+	local hit = PATCH.terrainHit(PATCH.PathX, l.MinZ)
 	return hit ~= nil and hit.Position.Y > 3
 end
 
--- the pass through the ridge (cleared above the floor, floor at Y = 0) and the dirt path from the meadow road
-function PATCH.cutPass()
+-- the soil path from the meadow road to the north gate is missing (an older place, or a fresh Terrain)
+function PATCH.pathMissing(l)
+	local hit = PATCH.terrainHit(PATCH.PathX, (PATCH.PathFromZ + l.MinZ) / 2)
+	return hit == nil or (hit.Material ~= PATCH.Soil and hit.Material ~= Enum.Material.Water)
+end
+
+-- the pass (cleared above the floor, floor at Y = 0) where the path enters the patch
+function PATCH.cutPass(l)
 	local T = workspace.Terrain
-	local w, fromZ, toZ = PATCH.PassHalfW * 2, PATCH.PassFromZ, PATCH.PassToZ
-	local midZ = (fromZ + toZ) / 2
+	local fromZ, toZ = l.MinZ - PATCH.PassReach, l.MinZ + PATCH.PassReach
+	local midZ, w = (fromZ + toZ) / 2, PATCH.PassHalfW * 2
 	T:FillBlock(CFrame.new(PATCH.PathX, 50, midZ), Vector3.new(w, 100, toZ - fromZ), Enum.Material.Air)
 	T:FillBlock(CFrame.new(PATCH.PathX, -8, midZ), Vector3.new(w, 12, toZ - fromZ), Enum.Material.Grass)
-	local pFrom, pTo = PATCH.PathFromZ, toZ
-	T:FillBlock(CFrame.new(PATCH.PathX, -4, (pFrom + pTo) / 2), Vector3.new(PATCH.PathHalfW * 2, 4, pTo - pFrom),
+end
+
+-- the dirt path from the meadow road (|z| <= 9) to the north gate (a soil strip on the meadow grass)
+function PATCH.paintPath(l)
+	local fromZ, toZ = PATCH.PathFromZ, PATCH.northZ(l) + 4
+	workspace.Terrain:FillBlock(CFrame.new(PATCH.PathX, -4, (fromZ + toZ) / 2), Vector3.new(PATCH.PathHalfW * 2, 4, toZ - fromZ),
 		PATCH.Soil)
+end
+
+function PATCH.keepClear(px, pz)
+	for _, k in PATCH.Keep do
+		if Vector3.new(px - k[1].X, 0, pz - k[1].Z).Magnitude < k[2] then return false end
+	end
+	-- the hollow road (Config.Map.Roads RoadHollow: the west gate -> the path, z WestGateZ +- 5)
+	if math.abs(pz - PATCH.WestGateZ) < 9 and px < PATCH.PathX + 6 then return false end
+	return math.abs(px - PATCH.PathX) > 8
 end
 
 function PATCH.decor(ctx, l, decor)
 	if decor:FindFirstChild("PumpkinPatch") then return end
 	local m = model("PumpkinPatch")
 	local rng = Random.new(1031) -- the same field every build
+	local north = PATCH.northZ(l)
 	-- pumpkins on the furrows: an orange ball, a stem and one leaf
-	for z = math.max(l.MinZ + PATCH.FurrowStep, PATCH.PumpkinFromZ), l.MaxZ - 10, PATCH.FurrowStep do
-		for x = l.MinX + 18, l.MaxX - 18, 26 do
+	for z = math.max(l.MinZ + PATCH.FurrowStep, north + 9), l.MaxZ - 10, PATCH.FurrowStep do
+		for x = l.MinX + 18, l.MaxX - 18, PATCH.PumpkinStepX do
 			local px, pz = x + rng:NextNumber(-6, 6), z + rng:NextNumber(-1.5, 1.5)
-			if math.abs(px - PATCH.PathX) > 8 then
+			if PATCH.keepClear(px, pz) then
 				local size = rng:NextNumber(2.2, 3.8)
 				prop(ctx, { Name = "Pumpkin", Shape = Enum.PartType.Ball, Size = Vector3.new(size, size, size),
 					Position = Vector3.new(px, size * 0.42, pz), Color = PATCH.Pumpkin }, m)
@@ -985,7 +1040,7 @@ function PATCH.decor(ctx, l, decor)
 			end
 		end
 	end
-	-- a low fence around the field with a gate in the north side (the path)
+	-- a low fence around the field with a gate in the north side (the path) and one in the west side (the hollow)
 	local function post(x, z)
 		prop(ctx, { Name = "FencePost", Size = Vector3.new(0.8, 3.2, 0.8), Position = Vector3.new(x, 1.6, z),
 			Color = PATCH.Wood, Material = Enum.Material.WoodPlanks }, m)
@@ -996,7 +1051,6 @@ function PATCH.decor(ctx, l, decor)
 			CFrame = CFrame.lookAt(mid + Vector3.new(0, 2.2, 0), b + Vector3.new(0, 2.2, 0)),
 			Color = PATCH.Wood, Material = Enum.Material.WoodPlanks }, m)
 	end
-	local north = math.max(l.MinZ, PATCH.FenceNorthZ)
 	local corners = { Vector3.new(l.MinX, 0, north), Vector3.new(l.MaxX, 0, north), Vector3.new(l.MaxX, 0, l.MaxZ),
 		Vector3.new(l.MinX, 0, l.MaxZ) }
 	for i = 1, 4 do
@@ -1017,13 +1071,14 @@ function PATCH.decor(ctx, l, decor)
 	ctx.pieces += 1
 end
 
--- the road sign at the pass mouth: a post and a blank pumpkin-orange board (HalloweenService shows it only in season).
--- A23-36: no billboard text on it any more (an older "SignGui" is removed); the quest marker points into the field.
+-- the road sign at the path's meadow end: a post and a blank pumpkin-orange board (HalloweenService shows it only in
+-- season). A23-36: no billboard text on it any more (an older "SignGui" is removed); the quest marker points into the
+-- field. Map v2: a sign left on the old spot moves to PATCH.SignPos.
 function PATCH.sign(ctx, landmarks)
 	local sign = landmarks:FindFirstChild("PumpkinPatchSign")
+	local p = PATCH.SignPos
 	if not sign then
 		sign = model("PumpkinPatchSign")
-		local p = PATCH.SignPos
 		local postPart = part(ctx, { Name = "Post", Size = Vector3.new(0.8, 6, 0.8), Position = p + Vector3.new(0, 3, 0),
 			Color = PATCH.Wood, Material = Enum.Material.WoodPlanks }, sign)
 		postPart:SetAttribute("ShownTransparency", 0)
@@ -1032,8 +1087,14 @@ function PATCH.sign(ctx, landmarks)
 			Color = PATCH.Pumpkin, Material = Enum.Material.WoodPlanks, CanCollide = false }, sign)
 		board:SetAttribute("ShownTransparency", 0)
 		board:SetAttribute("ShownCollide", false)
+		sign.PrimaryPart = postPart
 		sign.Parent = landmarks
 		ctx.pieces += 1
+	elseif sign:IsA("Model") then
+		local postPart = sign:FindFirstChild("Post")
+		local at = (postPart and postPart:IsA("BasePart")) and postPart.Position or sign:GetPivot().Position
+		local delta = Vector3.new(p.X - at.X, 0, p.Z - at.Z)
+		if delta.Magnitude > 0.5 then sign:PivotTo(sign:GetPivot() + delta) end
 	end
 	for _, d in sign:GetDescendants() do
 		if d:IsA("BillboardGui") then d:Destroy() end
@@ -1048,9 +1109,13 @@ function PATCH.ensure(ctx, folders)
 		local ok, err = pcall(PATCH.fillLand, l)
 		if ok then ctx.pieces += 1 else Util.Warn(TAG, "PumpkinPatch land: " .. tostring(err)) end
 	end
-	if PATCH.passBlocked() then
-		local ok, err = pcall(PATCH.cutPass)
+	if PATCH.passBlocked(l) then
+		local ok, err = pcall(PATCH.cutPass, l)
 		if ok then ctx.pieces += 1 else Util.Warn(TAG, "PumpkinPatch pass: " .. tostring(err)) end
+	end
+	if PATCH.pathMissing(l) then
+		local ok, err = pcall(PATCH.paintPath, l)
+		if ok then ctx.pieces += 1 else Util.Warn(TAG, "PumpkinPatch path: " .. tostring(err)) end
 	end
 	PATCH.decor(ctx, l, folders.Decor)
 	PATCH.sign(ctx, folders.Landmarks)
@@ -1061,24 +1126,26 @@ end
 -- spot is still sea) and Map.Decor.HauntedHollow: the free generated GF_* props of image session 1 (art/models/worldkit/
 -- manifest.json ghost_forest, inserted into ServerStorage.KitStage by tools/apply_crossroads_kit.py) or plain-part
 -- stand-ins without them. Blue lantern lights within the map light budget, no fog (A23-30 / A23-45 mood: ZoneLook).
+-- Map v2: every prop sits at the same share of the land rectangle as in image session 1's v1 layout (U, V from the
+-- west / north edge), the entrance arch just inside the patch's west gate.
 local HOLLOW = {
 	Land = "LandHauntedHollow",
 	Soil = Enum.Material.Asphalt, -- the Tex_HauntedFloor slot (GE_HauntedFloor, tools/apply_surface_materials.lua)
 	LanternLight = Color3.fromRGB(150, 200, 255),
-	-- { kit, x, z, size along fit, fit ("h" | "w"), yaw, solid }
+	ArchInset = 7, -- the arch stands this far inside the west gate (its front faces the gate, +X)
+	-- { kit, U, V, size along fit, fit ("h" | "w"), yaw, solid, lit }
 	Props = {
-		{ "GF_Arch", 273, 245, 18, "w", -90, false }, -- the entrance from the pumpkin field's west gate (front -> +X)
-		{ "GF_Tree", 175, 200, 17, "h", 20, true }, { "GF_Tree", 172, 245, 16, "h", 140, true },
-		{ "GF_Tree", 182, 284, 18, "h", 250, true }, { "GF_Tree", 225, 291, 15, "h", 80, true },
-		{ "GF_Tree", 262, 288, 16, "h", 310, true }, { "GF_Tree", 258, 199, 17, "h", 200, true },
-		{ "GF_Tree", 212, 197, 15, "h", 0, true },
-		{ "GF_Willow", 198, 266, 14, "h", 30, true }, { "GF_Willow", 244, 212, 14, "h", 160, true },
-		{ "GF_Lantern", 232, 247, 9, "h", 0, true, true }, { "GF_Lantern", 192, 226, 9, "h", 90, true, true },
-		{ "GF_Lantern", 254, 268, 9, "h", 200, true, true },
-		{ "GF_Mushrooms", 210, 238, 2.5, "h", 0, false }, { "GF_Mushrooms", 180, 214, 2.5, "h", 70, false },
-		{ "GF_Mushrooms", 250, 254, 2.5, "h", 140, false }, { "GF_Mushrooms", 224, 276, 2.5, "h", 210, false },
-		{ "GF_Rock", 190, 252, 2.5, "h", 0, true }, { "GF_Rock", 266, 226, 2.5, "h", 60, true },
-		{ "GF_Rock", 216, 214, 2.5, "h", 120, true },
+		{ "GF_Tree", 0.125, 0.136, 17, "h", 20, true }, { "GF_Tree", 0.1, 0.545, 16, "h", 140, true },
+		{ "GF_Tree", 0.183, 0.9, 18, "h", 250, true }, { "GF_Tree", 0.542, 0.964, 15, "h", 80, true },
+		{ "GF_Tree", 0.85, 0.936, 16, "h", 310, true }, { "GF_Tree", 0.817, 0.127, 17, "h", 200, true },
+		{ "GF_Tree", 0.433, 0.109, 15, "h", 0, true },
+		{ "GF_Willow", 0.317, 0.736, 14, "h", 30, true }, { "GF_Willow", 0.7, 0.245, 14, "h", 160, true },
+		{ "GF_Lantern", 0.6, 0.564, 9, "h", 0, true, true }, { "GF_Lantern", 0.267, 0.373, 9, "h", 90, true, true },
+		{ "GF_Lantern", 0.783, 0.755, 9, "h", 200, true, true },
+		{ "GF_Mushrooms", 0.417, 0.482, 2.5, "h", 0, false }, { "GF_Mushrooms", 0.167, 0.264, 2.5, "h", 70, false },
+		{ "GF_Mushrooms", 0.75, 0.627, 2.5, "h", 140, false }, { "GF_Mushrooms", 0.533, 0.827, 2.5, "h", 210, false },
+		{ "GF_Rock", 0.25, 0.609, 2.5, "h", 0, true }, { "GF_Rock", 0.883, 0.373, 2.5, "h", 60, true },
+		{ "GF_Rock", 0.467, 0.264, 2.5, "h", 120, true },
 	},
 }
 
@@ -1087,6 +1154,11 @@ function HOLLOW.rect()
 		if type(l) == "table" and l.Name == HOLLOW.Land then return l end
 	end
 	return nil
+end
+
+-- a prop's world X / Z from its share of the rectangle
+function HOLLOW.at(l, u, v)
+	return l.MinX + u * (l.MaxX - l.MinX), l.MinZ + v * (l.MaxZ - l.MinZ)
 end
 
 function HOLLOW.fillLand(l)
@@ -1142,28 +1214,34 @@ function HOLLOW.standIn(ctx, name, x, z, size, parent)
 	return m
 end
 
-function HOLLOW.decor(ctx, decor)
+function HOLLOW.place(ctx, root, name, x, z, size, fit, yaw, solid, lit)
+	local m = HOLLOW.kitProp(name, x, z, size, fit, yaw)
+	if m then
+		m.Parent = root
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") then
+				d.Anchored = true
+				if not solid then d.CanCollide = false end
+			end
+		end
+	else
+		m = HOLLOW.standIn(ctx, name, x, z, size, root)
+	end
+	if lit then
+		local holder = part(ctx, { Name = "LanternLight", Size = Vector3.new(0.4, 0.4, 0.4),
+			Position = Vector3.new(x, size * 0.95, z), Transparency = 1, CanCollide = false }, m)
+		light(ctx, holder, HOLLOW.LanternLight, 16, 1.4)
+	end
+end
+
+function HOLLOW.decor(ctx, l, decor)
 	if decor:FindFirstChild("HauntedHollow") then return end
 	local root = model("HauntedHollow")
+	-- the entrance from the pumpkin field's west gate (front -> +X)
+	HOLLOW.place(ctx, root, "GF_Arch", l.MaxX - HOLLOW.ArchInset, PATCH.WestGateZ, 18, "w", -90, false)
 	for _, e in HOLLOW.Props do
-		local name, x, z, size, fit, yaw, solid, lit = e[1], e[2], e[3], e[4], e[5], e[6], e[7], e[8]
-		local m = HOLLOW.kitProp(name, x, z, size, fit, yaw)
-		if m then
-			m.Parent = root
-			for _, d in m:GetDescendants() do
-				if d:IsA("BasePart") then
-					d.Anchored = true
-					if not solid then d.CanCollide = false end
-				end
-			end
-		else
-			m = HOLLOW.standIn(ctx, name, x, z, size, root)
-		end
-		if lit then
-			local holder = part(ctx, { Name = "LanternLight", Size = Vector3.new(0.4, 0.4, 0.4),
-				Position = Vector3.new(x, size * 0.95, z), Transparency = 1, CanCollide = false }, m)
-			light(ctx, holder, HOLLOW.LanternLight, 16, 1.4)
-		end
+		local x, z = HOLLOW.at(l, e[2], e[3])
+		HOLLOW.place(ctx, root, e[1], x, z, e[4], e[5], e[6], e[7], e[8])
 	end
 	root.Parent = decor
 	ctx.pieces += 1
@@ -1176,7 +1254,7 @@ function HOLLOW.ensure(ctx, folders)
 		local ok, err = pcall(HOLLOW.fillLand, l)
 		if ok then ctx.pieces += 1 else Util.Warn(TAG, "HauntedHollow land: " .. tostring(err)) end
 	end
-	HOLLOW.decor(ctx, folders.Decor)
+	HOLLOW.decor(ctx, l, folders.Decor)
 end
 
 function MapBuilder.Build()
@@ -1244,14 +1322,15 @@ function MapBuilder.Build()
 	return map
 end
 
--- A23-30: only the PumpkinPatch pieces (land, pass, decor, sign); returns { land, pass } = what it had to make
+-- A23-30: only the PumpkinPatch pieces (land, pass, path, decor, sign); returns { land, pass, path } = what it had to make
 function MapBuilder.EnsurePumpkinPatch()
 	local map = workspace:FindFirstChild("Map")
 	if not map then return nil end
 	local folders = {}
 	for _, name in FOLDER_NAMES do folders[name] = getChildFolder(map, name) end
 	local l = PATCH.rect()
-	local made = { land = l ~= nil and PATCH.landMissing((l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2), pass = PATCH.passBlocked() }
+	local made = { land = l ~= nil and PATCH.landMissing((l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2),
+		pass = l ~= nil and PATCH.passBlocked(l), path = l ~= nil and PATCH.pathMissing(l) }
 	PATCH.ensure(newCtx(), folders)
 	return made
 end
