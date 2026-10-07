@@ -221,10 +221,9 @@ local function combatPower(p)
 			return v
 		end
 	end
-	local level = math.max(1, num(p, "Level", 1))
-	local tier = math.clamp(math.floor(num(p, "WeaponTier", 0)), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
-	-- review B5: the equipped scroll +N counts. Read the attribute directly: data.WeaponEnhance is the per-tier table.
-	return Config.CombatPower(level, tier, tonumber(p:GetAttribute("WeaponEnhance")) or 0) -- BB4 (same as Justice)
+	-- BB4 / A23-69: the same formula as JusticeService (level, the equipped weapon +N read from the WeaponEnhance
+	-- attribute - data.WeaponEnhance is the per-tier table - and the stat points)
+	return Config.CombatPowerOf(p)
 end
 
 -- A23-18 boldness: x2 vs a much stronger victim, x0.5 vs a much weaker one (honor / infamy / war points only)

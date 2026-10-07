@@ -263,7 +263,8 @@ local function equipIfBare(player, data, tier)
 	S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals builds the model; WeaponEnhance follows
 	publish(player, data)
 	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
-	return Config.CombatPower(level, 0, 0), Config.CombatPower(level, tier, enhanceOf(data, tier))
+	-- A23-69: Config.CombatPowerOf with only the weapon swapped (the level and the stat points are the player's)
+	return Config.CombatPowerOf(player, 0, 0), Config.CombatPowerOf(player, tier, enhanceOf(data, tier))
 end
 
 local function grantWeapon(player, data, tier, gained, isJackpot, kind)

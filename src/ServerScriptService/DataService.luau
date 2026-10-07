@@ -111,7 +111,7 @@ local function hasStoredData(old)
 	return false
 end
 
--- stepwise v1 -> v2 -> v3 (each step idempotent; a record runs every step it has not reached yet)
+-- stepwise v1 -> v2 -> v3 -> v4 (each step idempotent; a record runs every step it has not reached yet)
 local function migrate(d, player)
 	if (tonumber(d.Version) or 1) < 2 then
 		d.WeaponTier = d.WeaponTier or d.SwordTier or 1 -- v1 field SwordTier is renamed
@@ -140,6 +140,12 @@ local function migrate(d, player)
 			or mask >= bit32.lshift(1, Config.MaxWeaponTier) then mask = 0 end
 		d.WeaponOwnedMask = bit32.bor(mask, 1)
 		d.Version = 3
+	end
+	-- A23-69: v4 adds the stat points (Stats = { Auto, Order }: fillDefaults fills a missing one, Auto ON and nothing picked
+	-- = every point placed by the class pattern, so an old save loses nothing). The bump makes an older v3 server refuse
+	-- these records (CR-L3 guard in loadLocked) instead of playing a save whose power it counts without the stats.
+	if (tonumber(d.Version) or 1) < 4 then
+		d.Version = 4
 	end
 end
 
@@ -225,6 +231,9 @@ local function fillDefaults(d, playerName)
 	if Config.SanitizeRank then Config.SanitizeRank(d, os.time()) end
 	-- A23-32 bag '얻은 순' numbers (additive; an old save starts with 0 everywhere)
 	if Config.SanitizeItemSeq then Config.SanitizeItemSeq(d) end
+	-- A23-69 stat points: Auto a boolean, Order only known letters (at most Config.Stats.MaxPoints); no balance is saved
+	-- (guarded like the ranking fields: some offline suites load a cut-down Config)
+	if Config.SanitizeStats then d.Stats = Config.SanitizeStats(d.Stats) end
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.

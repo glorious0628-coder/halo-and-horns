@@ -14,7 +14,9 @@ Config.Game = {
 -- Market = the trading market (RELEASE_PLAN: after the full launch). 검수 2026-10-07: no "coming soon" signs for things
 -- the beta does not have (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
 -- the world map calls the Crossroads anvil spot "Forge" (the weapon shop) instead of "Artisan Guild".
-Config.Features = { NeutralFaction = false, Market = false }
+-- StatPoints (A23-69, user 2026-10-07 "베타에 넣는다, 끌 수 있게"): the stat points (Config.Stats). Off = every number is
+-- the same as without stats (Config.StatMults is 1, 1); the saved picks stay and count again once it is on.
+Config.Features = { NeutralFaction = false, Market = false, StatPoints = false }
 
 function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
@@ -102,8 +104,9 @@ Config.Nickname = {
 Config.Data = {
 	StoreName = "HaloHorns_Player_v1", -- unchanged on purpose: v1 saves are migrated in place by DataService
 	KeyPrefix = "P_",
-	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. An older server refuses a newer record (CR-L3).
-	Version = 3,
+	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. A23-69: 4 = Stats { Auto, Order } (the stat points).
+	-- An older server refuses a newer record (CR-L3).
+	Version = 4,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -112,7 +115,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 3,
+		Version = 4,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -196,6 +199,10 @@ Config.Data = {
 		SkillSlots = 0,
 		-- A23-71: this save's SkillSlots follow the Lv5 / 15 / 25 rule (older saves are fixed once at load: DataService)
 		SkillsA71 = true,
+		-- A23-69 (Data v4) stat points: Auto = the class pattern places every point (default ON); Order = the letters
+		-- picked by hand, in order ("HAHA...", at most Config.Stats.MaxPoints). No balance is kept: the points come from
+		-- the level (Config.StatPoints), so a level reset shrinks the build and leveling up again rebuilds it
+		Stats = { Auto = true, Order = "" },
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -903,10 +910,97 @@ Config.Justice = {
 	ScaleTick = 0.1,
 }
 
+----------------------------------------------------------------- A23-69 stat points (docs/design/stat_points_2026-10-07.md)
+-- Every level from Lv2 gives one point (Config.StatPoints(L) = L - 1, at most MaxPoints; a rebirth gives none, CR-L5).
+-- Attack (A) = every hit x (1 + f), Health (H) = max HP x (1 + f), f(r) = 1% a point up to 20, 0.5% for 21-40, 0.25%
+-- from 41 (Curve), so a one-stat build is weaker than an even one. Auto (default ON) places the class pattern
+-- (AutoPattern, repeated); by hand the save keeps Order, the letters picked in order (the free points are counted, never
+-- saved). Power (Config.PowerOf / CombatPowerOf), and later the hits and HP, read the points through Config.StatMults,
+-- which is (1, 1) while Config.Features.StatPoints is off. No stat, point or reset is ever sold (A23-69).
+Config.Stats = {
+	MaxPoints = 99,
+	Letters = { A = true, H = true }, -- the beta stats: Attack, Health (Crit "C" comes with the full launch)
+	-- f(points), in order: { up to this many points, + this much a point }
+	Curve = { { 20, 0.01 }, { 40, 0.005 }, { math.huge, 0.0025 } },
+	AutoPattern = { Warrior = "HA", Mage = "HA", Archer = "AH" }, -- repeated: Lv100 = H50 / A49 (Archer A50 / H49)
+}
+
+-- f(points): the bonus of `points` in one stat (0.1 at 10, 0.2 at 20, 0.25 at 30, 0.3 at 40, 0.4475 at 99)
+function Config.StatBonus(points)
+	local r = math.max(0, math.floor(tonumber(points) or 0))
+	if r ~= r then return 0 end
+	local bonus, from = 0, 0
+	for _, step in Config.Stats.Curve do
+		if r <= from then break end
+		bonus += (math.min(r, step[1]) - from) * step[2]
+		from = step[1]
+	end
+	return bonus
+end
+
+-- the stat points a level gives: Lv1 0, then one a level, at most Config.Stats.MaxPoints
+function Config.StatPoints(level)
+	local lv = math.floor(tonumber(level) or 1)
+	if lv ~= lv then lv = 1 end
+	return math.clamp(lv - 1, 0, Config.Stats.MaxPoints)
+end
+
+-- a save's points (A, H, free) at `level`: Auto = the class pattern's first StatPoints(level) letters; by hand = the
+-- first min(#Order, StatPoints(level)) letters of Order, the rest free. stats = data.Stats ({ Auto, Order })
+function Config.StatAlloc(stats, level, classId)
+	local points = Config.StatPoints(level)
+	local letters
+	if type(stats) ~= "table" or stats.Auto ~= false then
+		local pattern = Config.Stats.AutoPattern[classId] or Config.Stats.AutoPattern.Warrior
+		letters = string.sub(string.rep(pattern, math.ceil(points / #pattern)), 1, points)
+	else
+		letters = string.sub(type(stats.Order) == "string" and stats.Order or "", 1, points)
+	end
+	local a, h = 0, 0
+	for i = 1, #letters do
+		local ch = string.sub(letters, i, i)
+		if ch == "A" then a += 1 elseif ch == "H" then h += 1 end
+	end
+	return a, h, points - (a + h)
+end
+
+-- (atkMult, hpMult) of a split: 1 + f each; (1, 1) while Config.Features.StatPoints is off
+function Config.StatMults(a, h)
+	if not Config.FeatureOn("StatPoints") then return 1, 1 end
+	return 1 + Config.StatBonus(a), 1 + Config.StatBonus(h)
+end
+
+-- a player's split from the attributes StatService keeps (StatAtk / StatHp; missing = 0): the alloc of Config.PowerOf
+function Config.StatAllocOf(player)
+	local a, h = tonumber(player:GetAttribute("StatAtk")) or 0, tonumber(player:GetAttribute("StatHp")) or 0
+	if a ~= a then a = 0 end
+	if h ~= h then h = 0 end
+	return { A = math.clamp(math.floor(a), 0, Config.Stats.MaxPoints), H = math.clamp(math.floor(h), 0, Config.Stats.MaxPoints) }
+end
+
+-- a save's Stats repaired (DataService.fillDefaults): Auto a boolean (else true), Order only known letters, at most
+-- MaxPoints of them (a broken or huge Order is cut, never trusted)
+function Config.SanitizeStats(t)
+	local src = type(t) == "table" and t or {}
+	local auto = true
+	if type(src.Auto) == "boolean" then auto = src.Auto end
+	local order = type(src.Order) == "string" and src.Order or ""
+	local kept = {}
+	for i = 1, math.min(#order, 4096) do
+		if #kept >= Config.Stats.MaxPoints then break end
+		local ch = string.sub(order, i, i)
+		if Config.Stats.Letters[ch] then table.insert(kept, ch) end
+	end
+	return { Auto = auto, Order = table.concat(kept) }
+end
+
 -- "base power" of a player (no Size Justice, no kaiju); rebirthMult = 1 + RebirthBonus.
 -- enhance = scroll +N of the equipped weapon (the WeaponEnhance attribute); nil counts as +0 (Config.EnhanceMult).
-function Config.PowerOf(level, weaponTier, rebirthMult, enhance)
-	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * Config.BaseHealth(level)) * (rebirthMult or 1)
+-- alloc = { A, H } stat points (A23-69, nil = none): sqrt(attack x atkMult x health x hpMult) like the plain formula
+function Config.PowerOf(level, weaponTier, rebirthMult, enhance, alloc)
+	local am, hm = 1, 1
+	if type(alloc) == "table" then am, hm = Config.StatMults(alloc.A, alloc.H) end
+	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * am * Config.BaseHealth(level) * hm) * (rebirthMult or 1)
 end
 
 -- BB4 "전투력": the one power number players see = level + equipped weapon incl. scroll +N. It leaves out class,
@@ -928,22 +1022,46 @@ Config.Power = {
 -- A23-34 (user 2026-10-06 "처음에는 전투력이 0"): bare hands count from 0 — the Lv1 punch is taken off, so Lv1 with no
 -- weapon (and no pet) shows 0 and every level still adds a little. With a weapon the number is the BB4 value as before,
 -- so armed players keep their numbers and every armed comparison (bully rule, boldness, Tab list) its balance.
-function Config.CombatPower(level, tier, enhance)
-	local raw = Config.PowerOf(level, tier, 1, enhance)
+-- A23-69: alloc = { A, H } stat points (nil = none; Config.StatAllocOf reads a player's)
+function Config.CombatPower(level, tier, enhance, alloc)
+	local raw = Config.PowerOf(level, tier, 1, enhance, alloc)
 	if not (type(tier) == "number" and Config.Weapons[tier]) then raw -= Config.PowerOf(1, 0, 1, 0) end
 	return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))
 end
 
--- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N); cached
+-- BB4 / A23-69: THE power number of a player, from the attributes (Level, WeaponTier, WeaponEnhance and the stat points
+-- StatAtk / StatHp). JusticeService (the CombatPower attribute, the bully rule, boldness), PvPService, the Tab list and
+-- the HUD all use this one formula. tierOverride / enhOverride: the same player with another weapon (LootService's
+-- "Power X -> Y"). Server and client alike.
+function Config.CombatPowerOf(player, tierOverride, enhOverride)
+	local level = tonumber(player:GetAttribute("Level")) or 1
+	if level ~= level then level = 1 end
+	local tier = tierOverride
+	if tier == nil then
+		tier = tonumber(player:GetAttribute("WeaponTier")) or 0
+		if tier ~= tier then tier = 0 end
+		tier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
+	end
+	local enhance = enhOverride
+	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
+	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player))
+end
+
+-- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N; A23-69 with the stat
+-- points on: the even split of every point, the strongest build); cached, one value with and one without stats
 function Config.MaxCombatPower()
-	if not Config.Power.MaxCache then
+	local stats = Config.FeatureOn("StatPoints")
+	local key = stats and "MaxCacheStats" or "MaxCache"
+	if not Config.Power[key] then
+		local points = Config.StatPoints(Config.Levels.MaxLevel)
+		local even = stats and { A = math.floor(points / 2), H = points - math.floor(points / 2) } or nil
 		local best = 0
 		for t = 1, Config.MaxWeaponTier do
-			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance))
+			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even))
 		end
-		Config.Power.MaxCache = best
+		Config.Power[key] = best
 	end
-	return Config.Power.MaxCache
+	return Config.Power[key]
 end
 
 -- S for a faction: weaker side = clamp(sqrt(enemy / ours), 1.0, 1.6); the stronger side naturally clamps to 1.0
