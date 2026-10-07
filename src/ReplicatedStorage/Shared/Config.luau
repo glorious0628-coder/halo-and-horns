@@ -4006,7 +4006,7 @@ Config.UIArt = {
 		QuestTab = { Id = "rbxassetid://124642276890798", Size = Vector2.new(512, 138), Slice = Rect.new(70, 68, 430, 70), FitHeight = true, Tone = "Gold" }, -- the arrow box (x 440+) never stretches
 		BannerAlert = { Id = "rbxassetid://104830795997617", Size = Vector2.new(512, 133), Slice = Rect.new(84, 65, 428, 67), FitHeight = true, Tone = "Red" }, -- white text, dark red rim
 		NpcMarkerBubble = { Id = "rbxassetid://76402030324791", Size = Vector2.new(512, 512) }, -- gold pin over NPC heads; a glyph inside
-		RewardRays = { Id = "rbxassetid://140645623920982", Size = Vector2.new(512, 512) }, -- white rays: tint with ImageColor3, behind reward pops (dark backdrop only)
+		-- RewardRays removed 2026-10-07 (user: the turning rays looked like the Rising Sun flag; AGENTS: no ray bursts)
 		-- 창 꾸미기 ③ reward popup parts, High (1d58f6c; art/approved.json, 검수 picks 2026-10-07). Plates: 9-slice
 		-- (SliceScale 0.7 = the sheet's look), Inner = the cream / plum inside. Their slice lines sit on the straight rim only
 		-- (rows / columns measured identical, ~10 px clear of every wing, knot, horn and corner curve): approved.json's
@@ -4021,7 +4021,7 @@ Config.UIArt = {
 		RewardRibbonHaloStraight = { Id = "rbxassetid://127336158318218", Size = Vector2.new(512, 100), Slice = Rect.new(71, 49, 441, 51), FitHeight = true, TextRect = { 0.14, 0.3, 0.72, 0.52 } },
 		RewardRibbonHornsStraight = { Id = "rbxassetid://83671618689638", Size = Vector2.new(512, 106), Slice = Rect.new(42, 52, 469, 54), FitHeight = true, TextRect = { 0.1, 0.26, 0.8, 0.5 } },
 		RewardSlot = { Id = "rbxassetid://131467829477534", Size = Vector2.new(256, 252), Tone = "Navy", Inner = Rect.new(31, 32, 225, 219) }, -- gold rim, navy inside
-		RewardGlow = { Id = "rbxassetid://134856789083293", Size = Vector2.new(512, 512) }, -- round glow, under the rays
+		RewardGlow = { Id = "rbxassetid://134856789083293", Size = Vector2.new(512, 512) }, -- round soft glow behind the ribbon (breathes)
 		RewardSparkle = { Id = "rbxassetid://139083428436055", Size = Vector2.new(256, 256) }, -- 4-point twinkle
 		GlyphBack = { Id = "rbxassetid://84595951514011", Size = Vector2.new(512, 512) },
 		GlyphLock = { Id = "rbxassetid://140357879006452", Size = Vector2.new(512, 512) },

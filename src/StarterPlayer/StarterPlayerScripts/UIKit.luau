@@ -222,19 +222,33 @@ local NOTIFY = {
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
 	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4 },
 	-- 창 꾸미기 ③ the reward popup (UIKit.RewardPopup), du: plate width, banner (BannerGold 512 x 178, text box
-	-- 0.254 / 0.225 / 0.492 / 0.365), slots, rays (one turn in RayTurn s), the count-up time
+	-- 0.254 / 0.225 / 0.492 / 0.365), slots, the glow and sparkles, the count-up time
 	-- 창 꾸미기: the parts the windows / popups use, loaded once at start (UIKit.Start) so the first confirm box or reward
 	-- popup never shows an empty plate while its texture downloads (UiSandbox PC 2026-10-07: DialogBox still blank 1.2 s in)
 	PreloadArt = { "DialogBox", "PanelCard", "RibbonHeader", "BtnRound", "GlyphClose", "GlyphBack", "BtnPrimary",
-		"BtnSecondary", "BtnConfirm", "BannerGold", "RewardRays", "SlotCommon", "IconCoin", "IconExp", "Chip", "BarkBubble",
+		"BtnSecondary", "BtnConfirm", "BannerGold", "SlotCommon", "IconCoin", "IconExp", "Chip", "BarkBubble",
 		"RewardPanelHalo", "RewardPanelHorns", "RewardRibbonHalo", "RewardRibbonHorns", "RewardSlot", "RewardGlow",
-		"RewardSparkle" },
+		"RewardSparkle", "Toast", "BannerAlert", "GlyphCheck", "GlyphExclaim", "IconStar", "IconAnnounce" },
+	-- handoff queue 3 (notice art): the approved Toast capsule (navy, gold rim, a gold ring socket on the left; 9-slice
+	-- FitHeight, so the socket stays round and grows with the height) behind every toast once uploaded. The item / monster
+	-- icon (or the kind's glyph) sits in the socket (centre DiscX x the height; GlyphK / IconK x the height), the words
+	-- between the socket (CapL) and the round end (CapR); at least MinH / MinHIcon du, Lines lines at most ("..." after)
+	ToastArt = { Part = "Toast", MinH = 40, MinHIcon = 46, PadY = 7, DiscX = 49 / 102, GlyphK = 0.42, IconK = 0.5,
+		CapL = 0.94, CapR = 0.42, Lines = 2,
+		Glyph = { good = { "GlyphCheck", Color3.fromRGB(80, 220, 120) }, bad = { "GlyphExclaim", Color3.fromRGB(255, 96, 86) },
+			reward = { "IconStar" }, info = { "IconAnnounce" } } },
+	-- the big banner's red BannerAlert ribbon (world news: war, kaiju, bounty, the Pumpkin King; 9-slice FitHeight): the
+	-- forked tails take Side x the height on each end, the red band is TextFrac of the height around CenterY; white words
+	-- with a dark red rim (approved note); the icon IconK x the height (it may overlap the gold rims)
+	AlertArt = { Part = "BannerAlert", Side = 0.6, CenterY = 0.445, TextFrac = 0.6, IconK = 0.9,
+		Stroke = Color3.fromRGB(120, 10, 20) },
+	AlertImg = nil, -- the banner's art ImageLabel (UIKit.Init) when BannerAlert is uploaded
+	LaidH = nil, -- the banner height the words were last laid out for (the art's tails follow the height)
 	-- Short screens (free height under CompactBelow du, phones): a wider plate, a smaller banner / slots / buttons and 16 du
 	-- lines, so it fits without shrinking (a shrunk popup kept its words at the real-px floor and grew tall and narrow)
 	Reward = { W = 440, BannerW = 340, BannerAspect = 512 / 178, TitleSize = 26, SlotSize = 76, SlotGap = 18,
 		CompactBelow = 560, WideW = 620, BannerCompact = 270, SlotCompact = 58, ButtonHCompact = 48, LineSize = 18,
-		LineCompact = 16,
-		RaySize = 600, RayTurn = 24, RayColor = Color3.fromRGB(255, 214, 96), RayAlpha = 0.3, Count = 0.9,
+		LineCompact = 16, Count = 0.9,
 		ButtonW = 230, ButtonH = 58, Panel = { Halo = "RewardPanelHalo", Horns = "RewardPanelHorns" },
 		Banner = { Halo = "RewardRibbonHalo", Horns = "RewardRibbonHorns" }, Slot = "RewardSlot", Glow = "RewardGlow",
 		Sparkle = "RewardSparkle",
@@ -244,13 +258,19 @@ local NOTIFY = {
 		-- TitleArtCompact du in the part's TextRect. InnerPad: the body's margin inside the plate's Inner
 		BannerOver = 1.16, BannerArtW = 520, BannerArtCompact = 380, BannerArtAnchor = 0.78, TitleArt = 36,
 		TitleArtCompact = 26, InnerPad = 12,
-		-- the glow (GlowOver x the banner, GlowAlpha) at the banner's centre under the turning rays (centre RayDrop x the
-		-- banner height lower: they rise from behind the plate's top), in the faction tint (no faction: RayColor)
-		Tint = { Halo = Color3.fromRGB(255, 214, 96), Horns = Color3.fromRGB(255, 132, 60) },
-		GlowOver = 1.08, GlowAlpha = 0.45, RayDrop = 0.3,
+		-- PC (검수 2026-10-07): the whole popup grows so the plate is PcFrac of the screen width (1280x720 ~490 px, 1080p
+		-- the same share; body 16+ px, numbers / buttons 18+ px at 1280x720), at most GrowMax, and still fits under the top
+		-- bar; touch screens (phones) keep the base size
+		PcFrac = 0.38, GrowMax = 1.8,
+		-- No rays (user 2026-10-07: the turning RewardRays looked like the Rising Sun flag; AGENTS: no ray bursts): a round
+		-- soft glow (GlowOver x the banner, GlowAlpha) on the banner's centre, breathing between GlowPulse[1] and [2] in
+		-- GlowPulse[3] s (still with ReducedMotion), in the faction tint (no faction: Tint.None), and the sparkles
+		Tint = { Halo = Color3.fromRGB(255, 214, 96), Horns = Color3.fromRGB(255, 132, 60), None = Color3.fromRGB(255, 214, 96) },
+		GlowOver = 1.25, GlowAlpha = 0.35, GlowPulse = { 0.94, 1.05, 1.6 },
 		-- sparkles around the plate: { "B" (banner) | "P" (plate), x, y in that box's half sizes from its centre, du };
 		-- each twinkles (grow + turn 45, shrink + turn 90) then rests SparkleRest s; still with ReducedMotion
 		Sparkles = { { "B", -1.08, -0.4, 26 }, { "B", 1.1, 0.05, 20 }, { "B", -0.42, -1.3, 18 }, { "B", 0.52, -1.2, 24 },
+			{ "B", -0.8, -1.15, 16 }, { "B", 0.05, -1.75, 22 }, { "B", 0.85, -0.95, 18 },
 			{ "P", -1.12, 0.12, 22 }, { "P", 1.13, -0.32, 18 }, { "P", 1.1, 0.72, 26 }, { "P", -1.08, 0.88, 16 } },
 		SparkleRest = { 0.5, 1.6 },
 		SparkleTint = { Halo = Color3.fromRGB(255, 240, 180), Horns = Color3.fromRGB(255, 196, 140) } },
@@ -2215,9 +2235,13 @@ local function removeToast(t)
 	t.Dead = true
 	local info = TweenInfo.new(0.2)
 	if t.Frame.Parent then
-		TweenService:Create(t.Frame, info, { BackgroundTransparency = 1 }):Play()
+		if t.Art then
+			TweenService:Create(t.Art, info, { ImageTransparency = 1 }):Play()
+		else
+			TweenService:Create(t.Frame, info, { BackgroundTransparency = 1 }):Play()
+		end
 		TweenService:Create(t.Label, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-		TweenService:Create(t.Stroke, info, { Transparency = 1 }):Play()
+		if t.Stroke then TweenService:Create(t.Stroke, info, { Transparency = 1 }):Play() end
 		if t.Icon then TweenService:Create(t.Icon, info, { ImageTransparency = 1 }):Play() end
 	end
 	task.delay(0.22, function()
@@ -3042,12 +3066,12 @@ function UIKit.NewTag(target, text)
 end
 
 -- 창 꾸미기 ③ (검수 2026-10-07; user on the 'Vacation Bonus' window: "이런 화면도 멋있게"): ONE reward popup for the vacation
--- bonus, the daily chest, event rewards and level ups. A dark backdrop; behind the plate the faction-tinted RewardGlow,
--- the white RewardRays turning slowly and RewardSparkle twinkles; the plate (the faction plate RewardPanelHalo / Horns,
--- else the navy PanelCard) with the body inside its Inner; the faction ribbon RewardRibbonHalo / Horns (else BannerGold)
--- over its top edge with the title in its TextRect; the lines (navy on the cream Halo plate); one row of reward slots
--- (RewardSlot, else SlotCommon) with the icon and the amount counting up from 0; a big Claim capsule (BtnConfirm) and an
--- optional blue second button. No pop / turn / twinkle with ReducedMotion.
+-- bonus, the daily chest, event rewards and level ups. A dark backdrop; behind the plate the faction-tinted round
+-- RewardGlow breathing and RewardSparkle twinkles (no rays: user 2026-10-07); the plate (the faction plate
+-- RewardPanelHalo / Horns, else the navy PanelCard) with the body inside its Inner; the faction ribbon RewardRibbonHalo /
+-- Horns (else BannerGold) over its top edge with the title in its TextRect; the lines (navy on the cream Halo plate); one
+-- row of reward slots (RewardSlot, else SlotCommon) with the icon and the amount counting up from 0; a big Claim capsule
+-- (BtnConfirm) and an optional blue second button. No pop / breathing / twinkle with ReducedMotion.
 -- opts = { Title, Lines = { string } | string, Rewards = { { Icon = UIArt key or Config.Loot item id, Amount = number,
 --   Label = string? } }, Button = "Claim!", OnClaim = fn?, Second = string?, OnSecond = fn?, Faction = "Halo" | "Horns"? }
 -- Returns { Close = fn(), Frame = the overlay }. The popup closes itself after either button.
@@ -3078,6 +3102,11 @@ function UIKit.RewardPopup(opts)
 	local plateW = compact and math.min(cfg.WideW, gsize.X / sc - 40) or cfg.W
 	local slotSize = compact and cfg.SlotCompact or cfg.SlotSize
 	local buttonH = compact and cfg.ButtonHCompact or cfg.ButtonH
+	-- PC: the whole popup (plate, ribbon, slots, words) grows to PcFrac of the screen width; touch screens keep 1
+	local grow = 1
+	if not compact and not UserInputService.TouchEnabled and gsize.X > 0 and sc > 0 then
+		grow = math.clamp(gsize.X * cfg.PcFrac / sc / plateW, 1, cfg.GrowMax)
+	end
 	-- the faction parts once uploaded (each falls back on its own: PanelCard / BannerGold / SlotCommon)
 	local panelKey = faction and artPart(cfg.Panel[faction]) and cfg.Panel[faction] or "PanelCard"
 	local bannerKey = faction and artPart(cfg.Banner[faction]) and cfg.Banner[faction] or "BannerGold"
@@ -3094,7 +3123,7 @@ function UIKit.RewardPopup(opts)
 		aspect = bannerDef.Size.X / bannerDef.Size.Y
 	end
 	local bannerH = bannerW / aspect
-	local tint = faction and cfg.Tint[faction] or cfg.RayColor
+	local tint = faction and cfg.Tint[faction] or cfg.Tint.None
 	-- the body stays inside the faction plate's Inner (cream / plum) at the plate's slice scale, off the rim
 	local pad = { L = 26, R = 26, T = 0, B = 24 }
 	if panelKey ~= "PanelCard" and panelDef and typeof(panelDef.Inner) == "Rect" and typeof(panelDef.Size) == "Vector2" then
@@ -3106,8 +3135,8 @@ function UIKit.RewardPopup(opts)
 	end
 	local plateLight = panelKey ~= "PanelCard" and panelDef ~= nil and panelDef.Tone == "Parchment" -- navy words
 
-	-- behind the plate, in one holder on the plate's centre (placed and scaled with it after the first frame): the glow,
-	-- the turning rays, the sparkles
+	-- behind the plate, in one holder on the plate's centre (placed and scaled with it after the first frame): the round
+	-- glow and the sparkles
 	local deco = UIKit.Create("Frame", { Name = "Deco", AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(0, 0), BackgroundTransparency = 1, Visible = false,
 		ZIndex = overlay.ZIndex + 1, Parent = overlay })
@@ -3116,22 +3145,12 @@ function UIKit.RewardPopup(opts)
 	local glow = UIKit.ArtImage(cfg.Glow, { Name = "Glow", AnchorPoint = Vector2.new(0.5, 0.5),
 		Size = UDim2.fromOffset(glowSize, glowSize), ImageColor3 = tint, ImageTransparency = cfg.GlowAlpha, ZIndex = 1,
 		Active = false, Parent = deco })
-	local raySize = artBanner and math.floor(cfg.RaySize * math.clamp(bannerW / cfg.BannerArtW, 0.75, 1.2)) or cfg.RaySize
-	local rays = UIKit.ArtImage("RewardRays", {
-		Name = "Rays",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.fromOffset(raySize, raySize),
-		ImageColor3 = tint,
-		ImageTransparency = cfg.RayAlpha,
-		ZIndex = 2,
-		Active = false,
-		Parent = deco,
-	})
-	if rays and not reduced then
-		local turn = TweenService:Create(rays, TweenInfo.new(cfg.RayTurn, Enum.EasingStyle.Linear,
-			Enum.EasingDirection.InOut, -1), { Rotation = 360 })
-		turn:Play()
-		overlay.Destroying:Connect(function() turn:Cancel() end)
+	if glow and not reduced then -- breathes: a UIScale between GlowPulse[1] and [2], back and forth
+		local breath = UIKit.Create("UIScale", { Name = "Breath", Scale = cfg.GlowPulse[1], Parent = glow })
+		local tw = TweenService:Create(breath, TweenInfo.new(cfg.GlowPulse[3], Enum.EasingStyle.Sine,
+			Enum.EasingDirection.InOut, -1, true), { Scale = cfg.GlowPulse[2] })
+		tw:Play()
+		overlay.Destroying:Connect(function() tw:Cancel() end)
 	end
 	local sparkles = {}
 	local sparkTint = faction and cfg.SparkleTint[faction] or cfg.SparkleTint.Halo
@@ -3292,23 +3311,22 @@ function UIKit.RewardPopup(opts)
 	end
 
 	overlay.Parent = UIKit.Gui
-	-- the entrance: the plate pops (to the scale that fits the screen), then the amounts count up one after the other.
-	-- Fit (UiSandbox phone 749x361 2026-10-07: the banner hung above the screen): the plate + the banner's overhang stay
-	-- inside the space under the top bar, with a small margin
-	handle.Fit = 1
-	pop.Scale = reduced and 1 or 0.6
+	-- the entrance: the plate pops (to the PC size, or the scale that fits the screen), then the amounts count up one after
+	-- the other. Fit (UiSandbox phone 749x361 2026-10-07: the banner hung above the screen): the plate + the banner's
+	-- overhang stay inside the space under the top bar, with a small margin
+	handle.Fit = grow
+	pop.Scale = reduced and grow or 0.6 * grow
 	-- the plate's height in plate units (du before the pop / fit scale)
 	local function plateH()
 		return panel.AbsoluteSize.Y / math.max(pop.Scale, 0.01) / currentScale()
 	end
-	-- the glow / rays on the banner's centre (rays RayDrop lower), the sparkles around the banner and the plate
+	-- the glow on the banner's centre, the sparkles around the banner and the plate
 	local function placeDeco()
 		local h = plateH()
 		deco.Position = panel.Position
 		decoFit.Scale = handle.Fit
 		local by = -h / 2 - bannerH * (anchorY - 0.5)
 		if glow then glow.Position = UDim2.fromOffset(0, math.floor(by)) end
-		if rays then rays.Position = UDim2.fromOffset(0, math.floor(by + bannerH * cfg.RayDrop)) end
 		for _, sp in sparkles do
 			local spec = sp.Spec
 			local x, y = spec[2] * plateW / 2, spec[3] * h / 2
@@ -3340,7 +3358,7 @@ function UIKit.RewardPopup(opts)
 		local s = currentScale()
 		local free = (UIKit.Gui.AbsoluteSize.Y - insetY() - 16) / s -- du under the top bar
 		local need = plateH() + bannerH * anchorY + 8
-		handle.Fit = (free > 0 and need > free) and math.max(0.5, free / need) or 1
+		handle.Fit = (free > 0 and need * grow > free) and math.max(0.5, free / need) or grow
 		-- centred under the top bar (the banner's overhang counted)
 		panel.Position = UDim2.new(0.5, 0, 0.5, math.floor((insetY() / s + bannerH * anchorY * handle.Fit) / 2))
 		placeDeco()

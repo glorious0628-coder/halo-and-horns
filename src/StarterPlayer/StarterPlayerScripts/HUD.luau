@@ -121,8 +121,10 @@ local COL = {
 }
 
 -- quest Id -> icon part (slime for monster kills, scroll otherwise)
--- kill rows use their monster head (IconMon<Unit>) when it exists; these are the fallbacks per row type
-local QUEST_ICON = { tutorial = "IconMonSlime", Kill = "IconScroll", Golden = "IconScroll", Goose = "IconGoose" }
+-- kill rows use their monster head (IconMon<Unit>) when it exists; these are the fallbacks per row type. 28c6324 (High):
+-- the golden monster, Halo's Hunt (Catch Wanted) and Horns' Plunder (Rob Knights) rows; gold = coin, skill hits = Skills
+local QUEST_ICON = { tutorial = "IconMonSlime", Kill = "IconScroll", Golden = "IconGoldenMon", Goose = "IconGoose",
+	Gold = "IconCoin", Release = "IconSkills", Hunt = "IconHunt", Plunder = "IconPlunder" }
 
 local GUIDE_SECONDS = NEXT.GuideSeconds or 90
 local GUIDE_ZONES = NEXT.GuideZones or { "GoblinWoods", "SkeletonRuins" }
