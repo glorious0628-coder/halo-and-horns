@@ -39,7 +39,8 @@ local T = { Tween = 1.5, NightBright = 0.95 }
 local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
 
 -- per zone: Ambient / OutdoorAmbient channel factors, sun Brightness factor, exposure added, ZoneTint colour /
--- saturation / contrast / brightness, optional specular (wet moonlit stone). Unknown zones use Default.
+-- saturation / contrast / brightness, optional specular (wet moonlit stone), optional NightExp (exposure added on top
+-- under the Eclipse night sky only; 0 elsewhere). Unknown zones use Default.
 local ZONE = {
 	SlimeMeadow = { Amb = { 1, 1, 1 }, Bright = 1, Exp = 0, Tint = rgb(255, 255, 255), Sat = 0.1, Con = 0.05, CC = 0 },
 	Crossroads = { Amb = { 1.03, 1, 0.97 }, Bright = 1, Exp = 0, Tint = rgb(255, 252, 246), Sat = 0.08, Con = 0.05, CC = 0 },
@@ -59,8 +60,10 @@ local ZONE = {
 	-- pale limestone town: dimmer sun so the white tiles do not burn out
 	HaloTown = { Amb = { 1.06, 1.04, 0.95 }, Bright = 0.88, Exp = -0.12, Tint = rgb(255, 246, 228), Sat = 0.06, Con = 0.05,
 		CC = 0 },
-	HornsTown = { Amb = { 1.12, 0.86, 0.9 }, Bright = 0.88, Exp = 0.08, Tint = rgb(255, 218, 214), Sat = 0.1, Con = 0.08,
-		CC = 0 },
+	-- quality 7 (이미지 생성 1 cdaaeaa, 2026-10-07): the dark basalt den read near black on phones (day mean 0.17, night
+	-- ~0.03): warmer, brighter light by day and a strong night lift (NightExp, tune 1.6-2.0 from real captures)
+	HornsTown = { Amb = { 1.18, 0.98, 1.0 }, Bright = 1.0, Exp = 0.25, Tint = rgb(255, 236, 230), Sat = 0.1, Con = 0.03,
+		CC = 0.03, NightExp = 1.9 },
 }
 ZONE.Default = ZONE.SlimeMeadow
 ZoneLook.Zone = ZONE -- read by tests / the design table
@@ -127,7 +130,7 @@ local function factorsFor(zoneId, sky)
 	return {
 		Amb = { z.Amb[1], z.Amb[2], z.Amb[3] },
 		Bright = sky == "Eclipse" and math.max(z.Bright, T.NightBright) or z.Bright,
-		Exp = z.Exp,
+		Exp = z.Exp + (sky == "Eclipse" and (z.NightExp or 0) or 0),
 		Spec = z.Specular,
 		Tint = z.Tint, Sat = z.Sat, Con = z.Con, CC = z.CC,
 		W = z.Dusk and 1 or 0, Dusk = z.Dusk, -- dusk weight (eased like the factors) and its targets

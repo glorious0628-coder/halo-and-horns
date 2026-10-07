@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 60,
+  "checks": 77,
   "failed": 0,
   "mutations": [
     {
@@ -58,9 +58,34 @@
         "half way into the hollow: clock half way",
         "half way into the hollow: fog half way"
       ]
+    },
+    {
+      "mutation": "NightExp by day too",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "horns den exposure: +0.25, +1.9 more only at night"
+      ]
+    },
+    {
+      "mutation": "no NightExp",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "horns den exposure: +0.25, +1.9 more only at night"
+      ]
+    },
+    {
+      "mutation": "horns den back to the dark numbers",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "horns den exposure: +0.25, +1.9 more only at night",
+        "horns den sun not dimmed (Bright 1.0)"
+      ]
     }
   ],
-  "sourceSHA256": "cab9c1e738f88fb7eb5c473da97e3e223fa275f066683a33833e7941a25bcac6",
+  "sourceSHA256": "862b154539410029c8879ae59403bba8483cd38e9b67a7637e30bf5842fe2dbc",
   "runtimeError": null,
   "studioCalls": 0,
   "apiCalls": 0

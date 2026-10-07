@@ -8,6 +8,8 @@ stand-ins, a Config with the three war skies) and checks ZoneLook.TargetFor, the
   its night clock; the meadow is the base itself (factor 1)
 - the factor maths (Brightness x Bright, Ambient x Amb, exposure + Exp) for the hollow, and ZoneLook.Blend half way into
   / out of the hollow (the eased dusk weight)
+- quality 7 (2026-10-07): the horns den's lighter numbers and its NightExp (+1.9 exposure under the Eclipse sky only;
+  no other zone gets a night lift)
 No Studio, network or Roblox API calls. Mutations break in-memory copies of ZoneLook; each must be caught.
 
 Usage: py tools/test_zone_look.py [--no-mutations]
@@ -121,6 +123,28 @@ do
 	check("hollow at night fog purple", n.FogColor.B > n.FogColor.R, "fog")
 	check("hollow at night keeps the night floor light", n.Brightness >= 1.4 * 0.95 - 1e-6, n.Brightness)
 end
+-- quality 7 (2026-10-07): the horns den is lighter by day and gets NightExp under the Eclipse sky only
+do
+	for _, sky in { "Neutral", "Dawn", "Eclipse" } do
+		local b = base(sky)
+		local g, cc = ZoneLook.TargetFor("HornsTown", b, sky)
+		local want = b.ExposureCompensation + 0.25 + (sky == "Eclipse" and 1.9 or 0)
+		check("horns den exposure: +0.25, +1.9 more only at night", near(g.ExposureCompensation, want, 1e-4),
+			sky .. " " .. tostring(g.ExposureCompensation) .. " want " .. want)
+		check("horns den sun not dimmed (Bright 1.0)", near(g.Brightness, b.Brightness * (sky == "Eclipse" and math.max(1, 0.95) or 1), 1e-4),
+			sky .. " " .. tostring(g.Brightness))
+		check("horns den ambient 1.18 / 0.98 / 1.00", near(g.Ambient.R, math.min(1, b.Ambient.R * 1.18), 1e-3)
+			and near(g.Ambient.G, b.Ambient.G * 0.98, 1e-3) and near(g.Ambient.B, b.Ambient.B * 1.0, 1e-3), sky)
+		check("horns den tint 255,236,230, contrast 0.03", near(cc.TintColor.G, 236 / 255, 1e-3) and near(cc.Contrast, 0.03, 1e-4),
+			sky)
+	end
+	for _, z in { "SlimeMeadow", "Crossroads", "HaloTown", "GoblinWoods", "SkeletonRuins" } do
+		local n = ZoneLook.TargetFor(z, base("Eclipse"), "Eclipse")
+		local d = ZoneLook.TargetFor(z, base("Neutral"), "Neutral")
+		check("other zones: no night exposure lift", near(n.ExposureCompensation - base("Eclipse").ExposureCompensation,
+			d.ExposureCompensation - base("Neutral").ExposureCompensation, 1e-6), z)
+	end
+end
 -- half way through a zone change (the eased weight carries the dusk too)
 do
 	local b = base("Neutral")
@@ -147,6 +171,10 @@ MUTATIONS = [
     ("fog never nearer", "lerp(base.FogEnd, math.min(base.FogEnd, d.FogEnd), w)", "base.FogEnd"),
     ("hollow as bright as the meadow", "Bright = 0.45, Exp = 0.2,", "Bright = 1, Exp = 0.2,"),
     ("dusk weight lost when easing", "W = lerp(a.W or 0, b.W or 0, t), Dusk = b.Dusk or a.Dusk,", "W = 0, Dusk = nil,"),
+    # quality 7 (2026-10-07)
+    ("NightExp by day too", 'Exp = z.Exp + (sky == "Eclipse" and (z.NightExp or 0) or 0),', "Exp = z.Exp + (z.NightExp or 0),"),
+    ("no NightExp", 'Exp = z.Exp + (sky == "Eclipse" and (z.NightExp or 0) or 0),', "Exp = z.Exp,"),
+    ("horns den back to the dark numbers", "Bright = 1.0, Exp = 0.25, Tint = rgb(255, 236, 230)", "Bright = 0.88, Exp = 0.08, Tint = rgb(255, 236, 230)"),
 ]
 
 
