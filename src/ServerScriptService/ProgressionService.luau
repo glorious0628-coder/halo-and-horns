@@ -14,6 +14,10 @@ local M = {}
 
 -- public signals (created at module load so they exist before any Init)
 M.GoldEarned = Util.Signal.new() -- (player, amount, source)
+-- BB38 economy metrics (TelemetryService): gold that left a player: (player, amount, sink) - SpendGold's reason (Weapon,
+-- Potion, ...) or TakeCarriedGold's (Plunder, Penalty, Kaiju, ...). Fired inside no-yield purchase steps: handlers must
+-- not yield
+M.GoldSpent = Util.Signal.new()
 M.LeveledUp = Util.Signal.new() -- (player, newLevel)
 M.Rebirthed = Util.Signal.new() -- (player, rebirths, { From, To, Bonus, Mark })
 M.LevelReset = Util.Signal.new() -- (player) CR-M6: free class change dropped the player to Lv1 (QuestService remakes extras)
@@ -227,20 +231,21 @@ function M.AddBankGold(player, amount, source)
 	M.GoldEarned:Fire(player, amount, source or "Other")
 end
 
--- clamped to [0, carried]; no signal. Returns the amount actually taken.
-function M.TakeCarriedGold(player, amount)
+-- clamped to [0, carried]. Returns the amount actually taken. reason (optional) = the GoldSpent sink ("Taken")
+function M.TakeCarriedGold(player, amount, reason)
 	local data = getData(player)
 	if not data then return 0 end
 	local carried = math.floor(math.max(0, num(data.CarriedGold)))
 	local taken = math.clamp(math.floor(num(amount)), 0, carried)
 	if taken > 0 then
 		S.PlayerService.SetStat(player, "CarriedGold", carried - taken)
+		M.GoldSpent:Fire(player, taken, type(reason) == "string" and reason or "Taken")
 	end
 	return taken
 end
 
--- carried first, then bank; false = nothing changed
-function M.SpendGold(player, amount)
+-- carried first, then bank; false = nothing changed. reason (optional) = the GoldSpent sink ("Other")
+function M.SpendGold(player, amount, reason)
 	amount = math.ceil(num(amount, -1))
 	if amount < 0 then return false end
 	local data = getData(player)
@@ -257,6 +262,7 @@ function M.SpendGold(player, amount)
 	if fromBank > 0 then
 		S.PlayerService.SetStat(player, "BankGold", bank - fromBank)
 	end
+	M.GoldSpent:Fire(player, amount, type(reason) == "string" and reason or "Other")
 	return true
 end
 

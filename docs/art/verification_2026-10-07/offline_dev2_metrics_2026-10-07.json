@@ -1,0 +1,919 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 81,
+  "failedChecks": 0,
+  "namedChecks": 75,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the funnel = the BB38 contract's 8 steps in order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "window ids for the new windows + the Tab list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "UiMetric 2 s, away 5 min, enhance-fail leave 300 s, streak 30, 3 return acts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "saves keep a Telemetry table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "Start spawns the minute and the 5-minute loops",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "a brand-new player: no step yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "the 8 steps in order, each once (Level 10 at 10, not again at 11)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "saved: Funnel names + Sessions 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "a returning account logs no step twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "an old save catches up the steps it passed (auto not yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "funnel",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "Start spawns the minute and the 5-minute loops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "AutoOn / AutoOff, at most one per 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "FirstDeath_<By> (the BB14 cause) once per account, with the zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "Plunder_Kept / Plunder_Avenged with the gold (an unknown outcome logs nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "KeyRebind with the number of actions changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "29 slimes in a row: nothing yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "the 30th slime in a row: SameKindStreak once (kind)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "a new slime streak in the same session is not logged again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "events",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "Start spawns the minute and the 5-minute loops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "WindowOpen_Bag once a session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "a second report inside 2 s is dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "an unknown id, an extra argument, none or a number: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "a player who is not ready right now: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "a player who is not ready: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "windows",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "return acts",
+      "check": "Start spawns the minute and the 5-minute loops",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "return acts",
+      "check": "a returning player: the first 3 actions (zone, window, zone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "return acts",
+      "check": "a first session logs no return acts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "return acts",
+      "check": "an unknown zone id is never logged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "return acts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "return acts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "Start spawns the minute and the 5-minute loops",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "GoldIn per source (Monster 42, Quest 150)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "GoldOut per sink (Weapon 100, Potion 60)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "KillsTogether 2 (party of 2+), KillsWithFriend 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "FriendMinutes 7 (while the friend was here)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "AutoAwayMinutes 5 (from the 5th minute without input)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "ZoneMinutes per zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "RankingViews per board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "SessionMinutes 9 (bucket 5-15)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "auto OFF: never counted as away (however idle)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "12 minutes: bucket 5-15",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "a player with no friend here: FriendMinutes 0 (Solo)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "IsFriendsWith once per pair (3 pairs for 3 players)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "a rejoin does not ask IsFriendsWith again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "left 100 s after a failed enhance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "a success, or a leave 301 s after a fail: no EnhanceFailLeave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "session sums at leave",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "privacy and robustness",
+      "check": "Start spawns the minute and the 5-minute loops",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "privacy and robustness",
+      "check": "every event name from the fixed lists, no names or user ids in any field",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "privacy and robustness",
+      "check": "Studio: every call is printed ([Metrics])",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "privacy and robustness",
+      "check": "a live server: no [Metrics] prints (only the start line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "privacy and robustness",
+      "check": "no AnalyticsService: no error (the group's warnings check covers it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "privacy and robustness",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "privacy and robustness",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "SpendGold fires GoldSpent(70, Weapon)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "a refused spend fires nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "spending 0 fires nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "no reason: sink Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "TakeCarriedGold fires GoldSpent(25, Plunder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "clamped to the carried 15, sink Taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "nothing carried: nothing fired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold signals",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings keys changed",
+      "check": "KeysChanged: 1 new binding, then 2 changed, then 2 back to default (the same blob again: nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings keys changed",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings keys changed",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 8,
+  "staticFailures": [],
+  "mutations": {
+    "total": 38,
+    "applied": 38,
+    "caught": 38,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "steps logged again on another server",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: a returning account logs no step twice",
+          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Level10 step",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: a returning account logs no step twice",
+          "funnel :: saved: Funnel names + Sessions 1",
+          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no catch-up for an old save",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: an old save catches up the steps it passed (auto not yet)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "step numbers from 0",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "funnel :: an old save catches up the steps it passed (auto not yet)",
+          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the funnel misses a step",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the funnel = the BB38 contract's 8 steps in order",
+          "funnel :: an old save catches up the steps it passed (auto not yet)",
+          "funnel :: the 8 steps in order, each once (Level 10 at 10, not again at 11)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "FirstDeath every KO",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "events :: FirstDeath_<By> (the BB14 cause) once per account, with the zone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "AutoOn / AutoOff not throttled",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "events :: AutoOn / AutoOff, at most one per 10 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Plunder_* for any outcome",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "events :: Plunder_Kept / Plunder_Avenged with the gold (an unknown outcome logs nothing)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no KeyRebind",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "events :: KeyRebind with the number of actions changed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a streak logged every kill",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "events :: a new slime streak in the same session is not logged again",
+          "events :: the 30th slime in a row: SameKindStreak once (kind)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the streak never resets",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "events :: a new slime streak in the same session is not logged again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any window id",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "windows :: an unknown id, an extra argument, none or a number: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "UiMetric extra arguments",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "windows :: an unknown id, an extra argument, none or a number: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "UiMetric without a rate limit",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "windows :: a second report inside 2 s is dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a window counted every open",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "windows :: WindowOpen_Bag once a session"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "UiMetric before ready",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "windows :: a player who is not ready right now: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "return acts for a first session too",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "return acts :: a first session logs no return acts",
+          "return acts :: an unknown zone id is never logged"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "more than 3 return acts",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "return acts :: a returning player: the first 3 actions (zone, window, zone)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "unknown zones as return acts",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "return acts :: a returning player: the first 3 actions (zone, window, zone)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no GoldIn",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: GoldIn per source (Monster 42, Quest 150)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GoldOut ignored",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "solo kills counted together",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: KillsTogether 2 (party of 2+), KillsWithFriend 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a stranger counted as a friend",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: KillsTogether 2 (party of 2+), KillsWithFriend 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "away counted without the 5 minutes",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: AutoAwayMinutes 5 (from the 5th minute without input)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "away counted with auto off",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: auto OFF: never counted as away (however idle)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "friend minutes with anyone here",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: FriendMinutes 7 (while the friend was here)",
+          "session sums at leave :: a player with no friend here: FriendMinutes 0 (Solo)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "IsFriendsWith asked again for a known pair",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: a rejoin does not ask IsFriendsWith again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no zone minutes",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no ranking views",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "enhance success counted as a fail",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: a success, or a leave 301 s after a fail: no EnhanceFailLeave"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "enhance fail leave at any time",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: a success, or a leave 301 s after a fail: no EnhanceFailLeave"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "session minutes bucket off",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "session sums at leave :: 12 minutes: bucket 5-15"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "prints on a live server",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "privacy and robustness :: a live server: no [Metrics] prints (only the start line)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no prints in Studio",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "privacy and robustness :: Studio: every call is printed ([Metrics])"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SpendGold fires no GoldSpent",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gold signals :: SpendGold fires GoldSpent(70, Weapon)",
+          "gold signals :: a refused spend fires nothing",
+          "gold signals :: group ran to the end without a Lua error",
+          "gold signals :: no reason: sink Other",
+          "gold signals :: spending 0 fires nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "TakeCarriedGold fires no GoldSpent",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gold signals :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KeysChanged on any blob",
+        "file": "src/ServerScriptService/SettingsService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settings keys changed :: KeysChanged: 1 new binding, then 2 changed, then 2 back to default (the same blob again: nothing)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KeysChanged misses removed keys",
+        "file": "src/ServerScriptService/SettingsService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settings keys changed :: KeysChanged: 1 new binding, then 2 changed, then 2 back to default (the same blob again: nothing)"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "cba6d0f587f83f2f88012378bc45df2046cb1558e2998212e5a53297da80356e",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/TelemetryService.luau": "0e0c556289f19b3127204de449326e388827c55560611dc031291972cd616131",
+    "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
+    "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
+  },
+  "fixtureSHA256": "b96e8169ff398619c9b95792657eddf990206e4856a942432d46c5f2efca256f",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "BB38: the onboarding funnel (Config.Analytics.Steps, 8 steps in order, once per account, old saves catch up), c->s UiMetric(id) -> WindowOpen_<id> (Config.Analytics.UiIds, one argument, ready, 2 s, once a session), KeyRebind (SettingsService.KeysChanged), AutoOn / AutoOff, FirstDeath_<By> (CombatService.KnockedOut, once per account), Plunder_Kept / _Avenged / _Returned, EnhanceFailLeave (a failed enhance then a leave within 300 s), SameKindStreak (30 in a row, once a session per kind), ReturnAct (a returning player's first 3 zone / window actions); at leave: SessionMinutes, AutoAwayMinutes (auto ON, no own action for 300 s), GoldIn / GoldOut per source / sink (ProgressionService.GoldEarned / GoldSpent with reasons), FriendMinutes, KillsTogether / KillsWithFriend (MonsterKilled Party / Others, IsFriendsWith once per pair), ZoneMinutes, RankingViews. No names, UserIds or free text; Studio prints every call ([Metrics]).",
+  "limitations": "The real AnalyticsService dashboard and its limits are not reached offline. The client's UiMetric sends (Panels, the Tab list) are game dev 1's. The 5-minute loop (HighLevelInMeadow, ServerPopulation) is not stepped here (unchanged)."
+}

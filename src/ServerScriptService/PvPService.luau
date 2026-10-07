@@ -565,7 +565,7 @@ function PvPService.HandleNonPvPDeath(victim)
 		local carried = num(victim, "CarriedGold", 0)
 		local loss = math.floor(carried * Config.PvP.VillainLossOnWantedPvEDeath)
 		if loss > 0 then
-			S.ProgressionService.TakeCarriedGold(victim, loss)
+			S.ProgressionService.TakeCarriedGold(victim, loss, "Penalty")
 		end
 	end
 	PvPService.ResetStars(victim)
@@ -685,7 +685,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 				local safeFloor = P.SafeFloorPerLevel * vLevel
 				stolen = math.min(math.floor(math.max(0, carried - safeFloor) * P.PlunderRate), P.PlunderCapPerLevel * vLevel)
 				if stolen > 0 then
-					stolen = math.floor(tonumber(Progression.TakeCarriedGold(victim, stolen)) or 0)
+					stolen = math.floor(tonumber(Progression.TakeCarriedGold(victim, stolen, "Plunder")) or 0)
 				end
 				if stolen > 0 then
 					-- A23-18 boldness; BB10: the sack also carries the fair weekly points (paid only if the thief keeps it)
@@ -747,7 +747,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 				local carried = num(victim, "CarriedGold", 0)
 				local loss = math.floor(carried * P.VillainLossOnBountyKO)
 				if loss > 0 then
-					Progression.TakeCarriedGold(victim, loss)
+					Progression.TakeCarriedGold(victim, loss, "Penalty")
 				end
 			end
 			if bounty > 0 or honor > 0 then

@@ -96,7 +96,7 @@ local function onUpgradeWeapon(player, selectedTier)
 			return
 		end
 		-- No yields between debit, ownership and equipment: duplicate requests cannot debit twice.
-		if not S.ProgressionService.SpendGold(player, price) then
+		if not S.ProgressionService.SpendGold(player, price, "Weapon") then
 			notifyBad(player, "NotEnoughGold")
 			return
 		end
@@ -279,7 +279,7 @@ function M.BuyPotion(player, kind, amount)
 	if not finite(price) or price <= 0 or price ~= math.floor(price) then return false, "InvalidPrice" end
 	-- Validate the whole purchase before debiting. SpendGold and SetStat do not yield; no request can interleave here.
 	-- No datastore write, prompt callback, Notify or remote call occurs between these two mutations.
-	if not S.ProgressionService.SpendGold(player, price * amount) then
+	if not S.ProgressionService.SpendGold(player, price * amount, "Potion") then
 		notifyBad(player, "NotEnoughGold")
 		return false, "NotEnoughGold"
 	end

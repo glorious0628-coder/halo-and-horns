@@ -1161,6 +1161,11 @@ local function killRecord(rec)
 		local i = table.clone(info)
 		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
 		i.SkillHit = type(rec._skillBy) == "table" and rec._skillBy[e.Player] == true -- story S0: "basic attacks only"
+		-- BB38 metrics (TelemetryService: kills together / with a friend): how many earned this kill, and the others
+		i.Party, i.Others = #eligible, {}
+		for _, o in eligible do
+			if o.Player ~= e.Player then table.insert(i.Others, o.Player) end
+		end
 		MonsterService.MonsterKilled:Fire(e.Player, i)
 	end
 

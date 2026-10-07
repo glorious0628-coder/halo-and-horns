@@ -29,6 +29,8 @@ local Util = require(Shared:WaitForChild("Util"))
 local Net = require(Shared:WaitForChild("Net"))
 
 local RankingService = {}
+-- (player, board, scope) BB38 metrics: a ranking board the player asked for (RequestRankings answered)
+RankingService.Viewed = Util.Signal.new()
 local S = nil
 local TAG = "RankingService"
 local R = Config.Ranking
@@ -768,6 +770,7 @@ local function onRequest(player, ...)
 	local cur = week()
 	Net.Get("Rankings"):FireClient(player, { Board = board, Scope = scope, Rows = rows, Me = me, UpdatedAt = updatedAt,
 		WeekId = cur, WeekEndsAt = Config.WeekStart(cur + 1) })
+	RankingService.Viewed:Fire(player, board, scope) -- BB38 metrics
 end
 
 ------------------------------------------------------------------ weekly settle + effects

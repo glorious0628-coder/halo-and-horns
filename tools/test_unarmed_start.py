@@ -220,9 +220,9 @@ def static() -> tuple[int, list[str]]:
             failures.append(message)
 
     tele = strip_comments(read(SSS / "TelemetryService.luau"))
-    check("(tonumber(data.WeaponOwnedMask) or 0) > 0 then TelemetryService.Step(player, 7)" in tele
-          and "if (tonumber(v) or 0) > 0 then TelemetryService.Step(player, 7) end" in tele,
-          "Telemetry step 7 FirstWeaponOwned = any weapon owned (the M1_1 gift counts)")
+    check('if num(data.WeaponOwnedMask) > 0 then Step(player, "FirstWeapon") end' in tele
+          and 'watch(player, "WeaponOwnedMask", function(v) if num(v) > 0 then Step(player, "FirstWeapon") end end)' in tele,
+          "Telemetry step FirstWeapon (BB38) = any weapon owned (the M1_1 gift counts)")
     player = read(SSS / "PlayerService.luau")
     check("math.clamp(toInt(p:GetAttribute(\"WeaponTier\")), 0, Config.MaxWeaponTier)" in player,
           "Tab list Power fallback keeps bare hands (tier 0)")

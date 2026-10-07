@@ -17,6 +17,8 @@ local Net = require(Shared:WaitForChild("Net"))
 local Util = require(Shared:WaitForChild("Util"))
 
 local SettingsService = {}
+-- (player, changed) BB38 metrics: an accepted SetSettings changed `changed` key bindings (actions whose key differs)
+SettingsService.KeysChanged = Util.Signal.new()
 local S = nil
 local TAG = "SettingsService"
 local MAX_SEQ = 2 ^ 31
@@ -67,7 +69,15 @@ local function onSetSettings(player, ...)
 	if not Util.RateLimit(player, "SetSettings", Config.RateLimits.SetSettings or 1) then return end
 	local data = getData(player)
 	if not data then return end
-	if n == 1 then data.Settings = Config.SanitizeSettings(blob) end
+	if n == 1 then
+		local before = type(data.Settings) == "table" and type(data.Settings.Keys) == "table" and data.Settings.Keys or {}
+		data.Settings = Config.SanitizeSettings(blob)
+		local after = data.Settings.Keys or {}
+		local changed = 0
+		for id, key in after do if before[id] ~= key then changed += 1 end end
+		for id in before do if after[id] == nil then changed += 1 end end
+		if changed > 0 then SettingsService.KeysChanged:Fire(player, changed) end
+	end
 	send(player, seq, SettingsService.Get(player))
 end
 

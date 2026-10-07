@@ -146,7 +146,8 @@ Config.Data = {
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
 		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default" },
-		Telemetry = {}, -- P6: { Onb = last onboarding funnel step logged, FirstDeath = true } (analytics only)
+		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
+		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
 		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).
@@ -2929,6 +2930,29 @@ Config.RateLimits = {
 	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
+	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
+}
+
+----------------------------------------------------------------- beta metrics (BB38, TelemetryService)
+-- docs/design/beta_basics_2026-10-05.md BB38 + 검수 2026-10-07 (economy, friends) + emergent_play_watch §2. Roblox
+-- AnalyticsService only; no names, UserIds or free text: every event name and field comes from these lists, zone /
+-- monster ids or gold sources. Steps = the onboarding funnel in order (each once per account). UiIds = the windows the
+-- client reports with c->s "UiMetric"(id) when it opens one (WindowOpen_<id>, once a session each; game dev 1 sends
+-- them from Panels / the Tab list). AwayAfter = s with no own action while auto combat is ON (AutoAwayMinutes).
+-- EnhanceFailLeave = s after a failed enhance a leave is counted. SameKindStreak = kills of one kind in a row worth a
+-- note. ReturnActs = the first actions logged for a returning player. FriendCheckMax = IsFriendsWith calls per join.
+-- Debug = print every call (nil = Studio only).
+Config.Analytics = {
+	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "FirstMissionDone", "FirstWeapon", "AutoUnlocked",
+		"Level10" },
+	UiIds = { "Menu", "Items", "Bag", "Skills", "Character", "Ranking", "Journal", "Board", "Settings", "Help", "News",
+		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback" },
+	AwayAfter = 300,
+	EnhanceFailLeave = 300,
+	SameKindStreak = 30,
+	ReturnActs = 3,
+	FriendCheckMax = 12,
+	Debug = nil,
 }
 
 ----------------------------------------------------------------- keys + settings (BB1 / BB2)

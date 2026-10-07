@@ -96,7 +96,7 @@ MUTATIONS = [
     ("the echo goes to every client", "SERVICE_SOURCE",
      'Net.Get("Settings"):FireClient(player, ', 'Net.Get("Settings"):FireAllClients('),
     ("the blob is saved without SanitizeSettings", "SERVICE_SOURCE",
-     "if n == 1 then data.Settings = Config.SanitizeSettings(blob) end", "if n == 1 then data.Settings = blob end"),
+     "\t\tdata.Settings = Config.SanitizeSettings(blob)\n", "\t\tdata.Settings = blob\n"),
     ("no push on PlayerReady", "SERVICE_SOURCE",
      "local ok, err = pcall(function() send(player, 0, SettingsService.Get(player)) end)", "local ok, err = true, nil"),
     ("SetLocal does not swap (the holder keeps its key)", "KEYBINDS_SOURCE",
