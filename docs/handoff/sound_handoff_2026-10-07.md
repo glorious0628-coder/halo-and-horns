@@ -4,6 +4,8 @@
 - **7번 묶음 = 아직 옛 파일이던 6개 새로**(사용자 "그대로 두는 것도 다시 다"): SwingWarrior · KillPop · ComboMilestone · LevelUp · Tap · WindowOpen. 레시피 `tools/sfx_recipes.py` "batch 7"(Firefly 0크레딧), 후보 13개 `art/sfx/cand/`, 시트 `art/review/sfx_check_b7_2026-10-07/`(이미 고른 게임 파일 51개와 짝 검사 85/87, 남은 2개 = Tap이 TalkBlip보다 +3 LU → 게임 볼륨 0.46), 전사 장면 `art/review/sfx_scene_2026-10-07/warrior7_rec*.mp3`.
 - 듣기판: https://claude.ai/artifact/EEwW3ounewa6BWPrFMFD2P v5 = 7번 묶음(이 계정 주소). 추천 SwingWarrior sA · KillPop sA · ComboMilestone kA(설계서 레시피) · LevelUp sA · Tap kA · WindowOpen sA. 검수 고름 기다림 → `tools/sfx_final.py` PICKS에 더하고 업로드(크롬 확장 필요).
 - `py tools/sfx_cut.py pick 3 <키들>` = 그 키만 다시 고름(다른 묶음 후보는 그대로, 시트는 `sfx_check_b<묶음>_…`). `sfx_scene.py` BASE는 고른 게임 파일 기준으로 바꿈.
+- **검수 고름(7번):** SwingWarrior sA · KillPop sA · ComboMilestone **sA**(kA 끝음 5.1 kHz가 설계서 '5 kHz 아래'를 넘어서) · LevelUp sA · Tap kA(게임 볼륨 0.46) · WindowOpen sA → `art/sfx/<키>.wav` + picks_r4.json 57개(11f6c4c).
+- **업로드 1/6:** SwingWarrior = rbxassetid://114585478722203(44806dd). 그 뒤 Claude in Chrome 연결이 끊김 → 검수가 사용자에게 다시 연결 부탁, "크롬 붙음"을 받으면 나머지 5개(KillPop, ComboMilestone, LevelUp, Tap, WindowOpen; asset_ids.json "pending")를 올리고 `py tools/sfx_ids.py <키> <id>`로 적은 뒤 연결표 `docs/design/sound_wiring_r4_2026-10-07.md` 7번 절을 채워 개발 1에게 보냄.
 
 ## 새 계정 세션 진행 (2026-10-07 밤, 맨 위가 최신)
 - **업로드 끝: 50개**(1~3번 32 + 4번 17 + SkillLearn). Creator Hub, Darugi_S2, 비공개, 'HH SFX <키>'. 목록 82줄 = 옛 32 + 새 50, 중복 없음. id = `art/sfx/asset_ids.json` "ids"(옛 id는 "old"). 연결표 `docs/design/sound_wiring_r4_2026-10-07.md`를 게임성 개발 1에게 보냄(SkillLearn은 LevelUp 뒤 약 1.1 s 메모).
