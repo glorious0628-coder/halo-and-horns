@@ -41,12 +41,17 @@ os.makedirs(W, exist_ok=True)
 L = a.label
 
 
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # child output has ΔE etc.; the console codepage (cp949) cannot print all of it
+ENV = dict(os.environ, PYTHONIOENCODING="utf-8")
+
+
 def run(args, blender=False):
     if blender:
-        cmd = [BLENDER, "--background", "--factory-startup", "--python", args[0], "--"] + args[1:]
+        # --python-exit-code: a script error (or a missing script) must fail the step, Blender returns 0 otherwise
+        cmd = [BLENDER, "--background", "--factory-startup", "--python-exit-code", "1", "--python", args[0], "--"] + args[1:]
     else:
         cmd = [sys.executable] + args
-    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", env=ENV)
     tail = [ln for ln in (r.stdout + r.stderr).splitlines() if ln.strip()][-3:]
     if r.returncode != 0:
         raise SystemExit("FAILED: " + " ".join(cmd) + "\n" + "\n".join(tail))
