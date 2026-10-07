@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 463,
+  "checks": 470,
   "failedChecks": 0,
-  "namedChecks": 460,
+  "namedChecks": 467,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -982,6 +982,48 @@
     {
       "group": "a23-71 skill quests",
       "check": "N1 (a skill sub) opens at Lv5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "S8: M1_3's start lines sit on its steps (the Lv5 step guides to the meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "both Lv5 steps pass once Q is learned (Skill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "M1_3 starts at Lv3: 'Grow to Lv5 to learn your first skill!' once, not the skill line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "Lv5: the skill step says 'Dusty slimes move in groups. Skills use MP!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "M1_3 starts at Lv7: the skill line once, no 'Grow to Lv5'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "a Lv1 who kept Q: M1_3's Lv5 step passes at once (Skill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "a Lv1 without Q still waits at M1_3's Lv5 step",
       "pass": 1,
       "fail": 0
     },
@@ -2772,9 +2814,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 87,
-    "applied": 87,
-    "caught": 87,
+    "total": 92,
+    "applied": 92,
+    "caught": 92,
     "skipped": false,
     "results": [
       {
@@ -2806,10 +2848,71 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-71 skill quests :: Lv5: the skill step says 'Dusty slimes move in groups. Skills use MP!'",
           "a23-71 skill quests :: M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'",
-          "a23-71 skill quests :: M1_3: a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)"
+          "a23-71 skill quests :: M1_3 starts at Lv3: 'Grow to Lv5 to learn your first skill!' once, not the skill line",
+          "a23-71 skill quests :: M1_3: a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)",
+          "a23-71 skill quests :: a Lv1 without Q still waits at M1_3's Lv5 step"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "A23-71: M1_3's Lv5 step ignores a kept Q",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: a Lv1 who kept Q: M1_3's Lv5 step passes at once (Skill)",
+          "a23-71 skill quests :: both Lv5 steps pass once Q is learned (Skill)"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "A23-71: a kept Q never passes a Lv5 step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: a Lv1 who kept Q: M1_3's Lv5 step passes at once (Skill)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "S8: a Level step's Start never said",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: M1_3 starts at Lv3: 'Grow to Lv5 to learn your first skill!' once, not the skill line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "S8: a Level step's Start said past its level",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: M1_3 starts at Lv7: the skill line once, no 'Grow to Lv5'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "S8: M1_3 keeps its old quest Start",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: M1_3 starts at Lv3: 'Grow to Lv5 to learn your first skill!' once, not the skill line",
+          "a23-71 skill quests :: M1_3 starts at Lv7: the skill line once, no 'Grow to Lv5'",
+          "a23-71 skill quests :: S8: M1_3's start lines sit on its steps (the Lv5 step guides to the meadow)"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "A23-71: N1 at any level",
@@ -3888,11 +3991,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "af78e57d96c1eff74befc1c08b47a97a425e63053d70998cc56cc92f1dcc2464",
+    "src/ReplicatedStorage/Shared/Config.luau": "0610bfcb1fc2f7f6d55a8abfaaa718bc70431fadfc7c42b330c1b39d92c7299b",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
-    "src/ServerScriptService/StoryQuestService.luau": "ae2424c85059a2dc76b263e0124f24847164b6ecc9ce11b8b903b027643c0e1b",
+    "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
     "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
     "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
@@ -3901,7 +4004,7 @@
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
   },
-  "fixtureSHA256": "77fbaacd98408f1d354f74d2b235a7d9eb7148135acd112c3b4cf57916eff299",
+  "fixtureSHA256": "fe0b90f47f1aeaf3ff282d84def7254397a67b9f348f2c82c716817f8620d5b1",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

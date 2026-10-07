@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3908,
+  "checks": 3945,
   "failedChecks": 0,
-  "namedChecks": 199,
+  "namedChecks": 201,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -243,6 +243,12 @@
     },
     {
       "group": "a23-71 skill dailies",
+      "check": "Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)",
+      "pass": 36,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill dailies",
       "check": "Lv5: kill / skill / gold again",
       "pass": 8,
       "fail": 0
@@ -286,6 +292,12 @@
     {
       "group": "a23-71 skill dailies",
       "check": "an unfinished skill daily without a skill: remade at join, the reward kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill dailies",
+      "check": "the remade daily is the King Slime row (S9: slimes and gold are taken)",
       "pass": 1,
       "fail": 0
     },
@@ -1211,9 +1223,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 42,
-    "applied": 42,
-    "caught": 42,
+    "total": 45,
+    "applied": 45,
+    "caught": 45,
     "results": [
       {
         "mutation": "A23-71: a skill daily before the first skill",
@@ -1222,11 +1234,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-71 skill dailies :: Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)",
           "a23-71 skill dailies :: Lv1-4 without a skill: three dailies, none of them 'Skill hits'",
           "a23-71 skill dailies :: an unfinished skill daily without a skill: remade at join, the reward kept",
+          "a23-71 skill dailies :: the remade daily is the King Slime row (S9: slimes and gold are taken)",
           "a23-71 skill dailies :: the remade daily is what the list shows"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "A23-71: an old skill daily is kept at join",
@@ -1236,9 +1250,10 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-71 skill dailies :: an unfinished skill daily without a skill: remade at join, the reward kept",
+          "a23-71 skill dailies :: the remade daily is the King Slime row (S9: slimes and gold are taken)",
           "a23-71 skill dailies :: the remade daily is what the list shows"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "A23-71: a remade daily loses its reward",
@@ -1276,7 +1291,7 @@
           "a23-71 skill dailies :: an unfinished skill daily without a skill: remade at join, the reward kept",
           "a23-71 skill dailies :: the fix runs once: a later level reset keeps Q"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "A23-71: the save fix runs every join",
@@ -1413,14 +1428,52 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-71 skill dailies :: Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)",
           "a23-71 skill dailies :: Lv5: kill / skill / gold again",
           "a23-71 skill dailies :: a Lv3 who kept Q: kill / skill / gold",
           "dailies-generate :: Lv1-9: three different dailies (kill / skill / gold)",
           "dailies-progress :: group ran to the end without a Lua error",
-          "dailies-woods :: Lv10-24: three different dailies",
-          "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest"
+          "dailies-woods :: Lv10-24: three different dailies"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "S9: the third rookie row may repeat the King Slime",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "S9: rows compared by template only",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "S9: a band row's unit ignored",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)",
+          "a23-71 skill dailies :: the remade daily is the King Slime row (S9: slimes and gold are taken)",
+          "dailies-generate :: both kill variants occur (king slime 3 more often than 12-15 slimes)",
+          "dailies-generate :: 슬라임 row: 12-15 kills, not strict",
+          "dailies-progress :: group ran to the end without a Lua error",
+          "dailies-reroll-band :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 9
       },
       {
         "mutation": "vacation uses the Lv10+ day value",
@@ -1782,14 +1835,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "af78e57d96c1eff74befc1c08b47a97a425e63053d70998cc56cc92f1dcc2464",
+    "src/ReplicatedStorage/Shared/Config.luau": "0610bfcb1fc2f7f6d55a8abfaaa718bc70431fadfc7c42b330c1b39d92c7299b",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
-    "src/ServerScriptService/QuestService.luau": "61d8615d0b5f3d2ec64a5a402391177d6a66c7a45c815a328ae8d53213f268ba",
+    "src/ServerScriptService/QuestService.luau": "fdf1f780d43f841db4fdb4b13d8fe2c02dee62a16d05232ca5ec4bd205f23ae0",
     "src/ServerScriptService/GooseService.luau": "246f574eb1329a4d850f700d3cd9fcdc02effcfc98dbabbf8b91951b50ecd274",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005"
   },
-  "fixtureSHA256": "cc16bdaf6582136c60386a0cc29281a524199cc47b9ed1922411b0274ac31a0c",
+  "fixtureSHA256": "7e6bef62aa63bcc12fba910c34304a05d095c7b4ea0aa8bd6f3c6b537103b7ea",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
