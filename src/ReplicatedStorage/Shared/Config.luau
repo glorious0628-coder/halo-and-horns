@@ -1864,7 +1864,7 @@ Config.Tutorial = {
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
-		IronLevel = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
+		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
@@ -1933,6 +1933,8 @@ Config.Tutorial = {
 		VisitBlacksmithArmedEn = "Check the weapons · Crossroads Forge",
 		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
 		NextIronLevel = "Next goal · Iron weapon at Lv%d (now Lv%d)",
+		-- A23-71 D6 / S16: the first skill comes at the iron weapon's level (Skills.Unlock.Q = Weapons[3].MinLevel), one line
+		NextSkillIron = "Next goal · Lv%d: first skill + Iron weapon (now Lv%d)",
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		GuideDone = "That's all from me! Now hunt and get stronger.",
@@ -1944,7 +1946,8 @@ Config.Tutorial = {
 -- Design: docs/design/quest_chain_2026-10-06.md (decisions 1-8 = recommended). Main = one chain after the first
 -- mission (TutorialStep 99); Subs are accepted automatically and listed under the main row (S0 right after the
 -- class pick). Step Obj types (StoryQuestService): Kill{Kind,Zone,Golden,Near,Radius,Count} BasicKill SafeKill{MinHP}
--- AutoKill SkillHit{Min,Count} WarPoints{Count} EarnGold{Source,Count} Enter{Zone|"OwnTown"|"AnyTown"} Level{Level}
+-- AutoKill SkillHit{Min,Count} WarPoints{Count} EarnGold{Source,Count} Enter{Zone|"OwnTown"|"AnyTown"} Level{Level,
+-- Skill = also done once the first skill is learned (A23-71)}
 -- State{Key: BlacksmithVisited | AutoOn | OwnIron | Graduated (E7: no Sprout Shield)} Goose WarChest Talk
 -- Choice{Good,Evil,Neutral} Trials{List; a list entry may carry Say = a line when it is done} Near{Spot,Radius,Zone,Stay}.
 -- Reward.Item = a Loot item id (+ N) is given through LootService.GrantItem when the quest ends. Rewards: Gold / XP
@@ -2070,13 +2073,17 @@ Config.StoryQuests = {
 			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
-		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it
+		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
+		-- the step is also done once Q is learned below that level (slots kept after a free class change resets the level).
+		-- S8: the Level step's own Start is said when the quest starts below Lv5; at Lv5+ the step passes at once and the
+		-- skill step's Start is said instead.
 		M1_3 = {
 			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!", ShortName = "Skill boom",
-			Start = "Dusty slimes move in groups. Skills use MP!",
 			Steps = {
-				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", Obj = { Type = "Level", Level = 5 } },
-				{ Text = "Hit monsters with a skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 1, Count = 3 } },
+				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", Guide = "SlimeMeadow",
+					Start = "Grow to Lv5 to learn your first skill!", Obj = { Type = "Level", Level = 5, Skill = true } },
+				{ Text = "Hit monsters with a skill %d/%d", Guide = "SlimeMeadow", Start = "Dusty slimes move in groups. Skills use MP!",
+					Obj = { Type = "SkillHit", Min = 1, Count = 3 } },
 			},
 			Reward = { Gold = 1 },
 		},
@@ -2143,7 +2150,8 @@ Config.StoryQuests = {
 			Kind = "Main", Chapter = 2, Title = "The Dusty Slime Swarm", ShortName = "Slime swarm",
 			Start = "The dust smell brings a slime swarm! Gather them and hit them all at once!",
 			Steps = {
-				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", Obj = { Type = "Level", Level = 5 } }, -- A23-71
+				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", -- A23-71 (Skill: see M1_3)
+					Obj = { Type = "Level", Level = 5, Skill = true } },
 				{ Text = "Hit 3 with one skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
 			},
 			Reward = { Gold = 1 },
@@ -3045,9 +3053,11 @@ Config.RateLimits = {
 -- Debug = print every call (nil = Studio only).
 Config.Analytics = {
 	-- A23-68 #5 (the first 3 minutes; renumbered before the beta, nothing is public yet): MeadowArrive, FirstHit,
-	-- FirstKill, FirstSkillHit and ForgeArrive between the old steps
+	-- FirstKill, FirstSkillHit and ForgeArrive between the old steps. A23-71 D5 / S13: the first skill comes at Lv5, after
+	-- the first weapon, and Auto Battle opens after it (S0 trial b is a skill hit), so FirstSkillHit sits right before
+	-- AutoUnlocked (in the order players reach it, no false drop-off)
 	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "MeadowArrive", "FirstHit", "FirstKill",
-		"FirstSkillHit", "FirstMissionDone", "ForgeArrive", "FirstWeapon", "AutoUnlocked", "Level10" },
+		"FirstMissionDone", "ForgeArrive", "FirstWeapon", "FirstSkillHit", "AutoUnlocked", "Level10" },
 	UiIds = { "Menu", "Items", "Bag", "Skills", "Character", "Ranking", "Journal", "Board", "Settings", "Help", "News",
 		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback" },
 	AwayAfter = 300,
@@ -3333,7 +3343,7 @@ Config.Help = {
 		{ Id = "Controls", Title = "Controls", Lines = {} },
 		{ Id = "Combat", Title = "Combat & Auto Battle", Lines = {
 			"One press = one attack. Holding it down won't repeat it.",
-			"Skills cost 20 MP. You can use one again after 3 seconds.",
+			"Your first skill comes at Lv 5. It costs 20 MP; wait 3 s to use it again.", -- A23-71 D6 / S14
 			"Finish the Crown Shard side quest to unlock Auto Battle. It only hits monsters.",
 			"No input for 20 minutes? Roblox will disconnect you.",
 		} },

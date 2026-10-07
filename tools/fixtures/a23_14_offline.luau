@@ -441,6 +441,15 @@ runGroup("a23-71 skill dailies", function()
 			local ids = idsOf(f)
 			check(#f.Data.Quests == 3 and ids.Release == nil and (ids.Kill or 0) + (ids.Gold or 0) == 3,
 				"Lv1-4 without a skill: three dailies, none of them 'Skill hits'", "Lv" .. level .. " " .. show(ids))
+			-- S9 / D3: the set is always King Slime 3 + Slime 12-15 + Gold (the King Slime row never twice)
+			local king, slimes, gold = 0, 0, 0
+			for _, q in f.Data.Quests do
+				if q.Id == "Kill" and q.Unit == "BigSlime" and q.Target == 3 then king += 1 end
+				if q.Id == "Kill" and q.Unit == "Slime" and (q.Target == 12 or q.Target == 15) then slimes += 1 end
+				if q.Id == "Gold" then gold += 1 end
+			end
+			check(king == 1 and slimes == 1 and gold == 1, "Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)",
+				"Lv" .. level .. " seed " .. seed .. " " .. show(f.Data.Quests))
 		end
 	end
 	-- Lv5 opens Q: the skill daily is back, even before SkillService's catch-up raised the saved slots
@@ -485,6 +494,8 @@ runGroup("a23-71 skill dailies", function()
 	local q1 = r.Data.Quests[1]
 	check(q1.Id ~= "Release" and q1.Kind == "Daily" and q1.RewardGold == 999 and q1.RewardXP == 888,
 		"an unfinished skill daily without a skill: remade at join, the reward kept", show(q1))
+	check(q1.Id == "Kill" and q1.Unit == "BigSlime" and q1.Target == 3,
+		"the remade daily is the King Slime row (S9: slimes and gold are taken)", show(q1))
 	local sent = false
 	for _, row in r.LastList or {} do if row.Id == "Release" then sent = true end end
 	check(not sent, "the remade daily is what the list shows", show(r.LastList))

@@ -690,9 +690,53 @@ runGroup("a23-71 skill quests", function()
 			show(steps[1]))
 	end
 	check(SQ0.Defs.N1.Requires.Level == Q, "N1 (a skill sub) opens at Lv5", show(SQ0.Defs.N1.Requires))
+	-- S8: M1_3 has no Start of its own; its Lv5 step says 'Grow to Lv5…' (and guides to the meadow), the skill step says
+	-- the old line. Skill: both Lv5 steps also pass once Q is learned below Lv5.
+	local m13 = SQ0.Defs.M1_3
+	local GROW, DUSTY = "Grow to Lv5 to learn your first skill!", "Dusty slimes move in groups. Skills use MP!"
+	check(m13.Start == nil and m13.Steps[1].Start == GROW and m13.Steps[1].Guide == "SlimeMeadow" and m13.Steps[2].Start == DUSTY,
+		"S8: M1_3's start lines sit on its steps (the Lv5 step guides to the meadow)",
+		show({ m13.Start, m13.Steps[1].Start, m13.Steps[1].Guide, m13.Steps[2].Start }))
+	check(m13.Steps[1].Obj.Skill == true and SQ0.Defs.M2_5.Steps[1].Obj.Skill == true, "both Lv5 steps pass once Q is learned (Skill)")
 	local function story(main, subs, done)
 		return { Main = main or { Id = "" }, Subs = subs or {}, Done = done or {}, Pick = {}, First = { Migrated = true } }
 	end
+	local function count(p, from, text)
+		local n = 0
+		for _, t in w:NoticesFor(p, from) do if t == text then n += 1 end end
+		return n
+	end
+	-- M1_3 starts at Lv3 (after M1_2): 'Grow to Lv5…' only; at Lv5 the skill step says its line
+	local n0 = #w.Notices
+	local ps, ds = w:Join(7103, { Faction = "Halo", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true }) } })
+	w.Story.Refresh(ps)
+	w:Flush()
+	check(ds.Story.Main.Id == "M1_3" and ds.Story.Main.St == 1 and count(ps, n0, GROW) == 1 and count(ps, n0, DUSTY) == 0,
+		"M1_3 starts at Lv3: 'Grow to Lv5 to learn your first skill!' once, not the skill line", show(w:NoticesFor(ps, n0)))
+	local n1 = #w.Notices
+	w.PS.SetStat(ps, "Level", 5)
+	w.Story.Refresh(ps)
+	w:Flush()
+	check(ds.Story.Main.St == 2 and count(ps, n1, DUSTY) == 1 and count(ps, n1, GROW) == 0,
+		"Lv5: the skill step says 'Dusty slimes move in groups. Skills use MP!'", show(w:NoticesFor(ps, n1)))
+	-- M1_3 starts at Lv7: straight to the skill step, its line once, no 'Grow to Lv5'
+	local n2 = #w.Notices
+	local pq, dq = w:Join(7104, { Faction = "Horns", Level = 7, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true }) } })
+	w.Story.Refresh(pq)
+	w:Flush()
+	check(dq.Story.Main.Id == "M1_3" and dq.Story.Main.St == 2 and count(pq, n2, DUSTY) == 1 and count(pq, n2, GROW) == 0,
+		"M1_3 starts at Lv7: the skill line once, no 'Grow to Lv5'", show(w:NoticesFor(pq, n2)))
+	-- a Lv1 who kept Q (a free class change from Lv5+ took the level back, the slots stay) passes the Lv5 step at once
+	local pk, dk = w:Join(7105, { Faction = "Halo", Level = 1, Data = { SkillSlots = 1,
+		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+	w.Story.Refresh(pk)
+	w:Flush()
+	check(dk.Story.Main.St == 2, "a Lv1 who kept Q: M1_3's Lv5 step passes at once (Skill)", dk.Story.Main.St)
+	local p2, d2 = w:Join(7106, { Faction = "Halo", Level = 1, Data = { SkillSlots = 0,
+		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+	w.Story.Refresh(p2)
+	w:Flush()
+	check(d2.Story.Main.St == 1, "a Lv1 without Q still waits at M1_3's Lv5 step", d2.Story.Main.St)
 	-- M1_3 at Lv3: the row waits for Lv5; at Lv5 the skill hits begin (no 'Skills come' tail any more)
 	local p, d = w:Join(7101, { Faction = "Halo", Level = 3,
 		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })

@@ -404,11 +404,25 @@ do
 		return n
 	end
 	check(iron.MinLevel == 5 and woods.MinLevel == 10, "next-goal fixture expects iron Lv5 and Goblin Woods Lv10")
-	nextGoal("visit without purchase", string.format(T.NextIronLevel, iron.MinLevel, 1), string.format(SN.IronLevel, iron.MinLevel))
+	-- A23-71 D6 / S16: the first skill comes at the iron weapon's level (Lv5), so a Lv1 without Q sees both in one line
+	check(f.Config.Skills.Unlock.Q == iron.MinLevel and f.Data.SkillSlots == 0, "S16 fixture expects Q at the iron level and no Q yet")
+	local function goalKind(context, kind)
+		check(f.LastList[1].GoalKind == kind, context .. " GoalKind mismatch: " .. tostring(f.LastList[1].GoalKind) .. " ~= " .. kind)
+	end
+	nextGoal("visit without purchase", string.format(T.NextSkillIron, iron.MinLevel, 1), string.format(SN.SkillIron, iron.MinLevel))
+	check(f.LastList[1].Text == "Next goal · Lv5: first skill + Iron weapon (now Lv1)", "S16 wording (D6): "
+		.. tostring(f.LastList[1].Text))
+	goalKind("visit without purchase", "SkillIron")
 	local record = f:SaveAndRejoin()
 	check(record.BlacksmithVisited == true and f.Data.BlacksmithVisited == true, "saved blacksmith visit was lost")
-	nextGoal("rejoin", string.format(T.NextIronLevel, iron.MinLevel, 1), string.format(SN.IronLevel, iron.MinLevel))
+	nextGoal("rejoin", string.format(T.NextSkillIron, iron.MinLevel, 1), string.format(SN.SkillIron, iron.MinLevel))
 	check(f.Data.WeaponTier == 1, "rejoin forced a purchase/equipment change")
+	-- a Lv1 who kept Q (a free class change from Lv5+ took the level back, the slots stay): only the iron weapon is ahead
+	f.Services.PlayerService.SetStat(f.Player, "SkillSlots", 1); f:Publish()
+	nextGoal("kept Q", string.format(T.NextIronLevel, iron.MinLevel, 1), string.format(SN.IronLevel, iron.MinLevel))
+	goalKind("kept Q", "IronLevel")
+	f.Services.PlayerService.SetStat(f.Player, "SkillSlots", 0); f:Publish()
+	goalKind("Q not kept", "SkillIron")
 	f.Services.PlayerService.SetStat(f.Player, "Level", 5); f.Services.ProgressionService.LeveledUp:Fire(f.Player); f:Publish()
 	nextGoal("level5", string.format(T.NextIronGold, tostring(iron.Price), gold()), SN.IronGold)
 	f.Services.PlayerService.SetStat(f.Player, "CarriedGold", 120); f.Services.PlayerService.SetStat(f.Player, "BankGold", 600); f:Publish()

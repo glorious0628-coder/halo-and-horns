@@ -6,7 +6,8 @@
 -- (default: Studio) prints every call.
 --   Onboarding funnel (each step once per account, any order; data.Telemetry.Funnel = { [name] = true }):
 --     Config.Analytics.Steps = IntroDone, Faction, Class, FirstMissionAccept, MeadowArrive, FirstHit, FirstKill,
---     FirstSkillHit, FirstMissionDone, ForgeArrive, FirstWeapon, AutoUnlocked, Level10 (A23-68 #5: the first 3 minutes)
+--     FirstMissionDone, ForgeArrive, FirstWeapon, FirstSkillHit, AutoUnlocked, Level10 (A23-68 #5: the first 3 minutes;
+--     A23-71 S13: the first skill comes at Lv5, before Auto Battle opens)
 --   Right away: FirstDeath_<By> (BB14 KO cause, once per account), AutoOn / AutoOff, Plunder_Kept / _Avenged /
 --     _Returned, KeyRebind (actions changed), WindowOpen_<id> (UiMetric, once per session per window),
 --     RookieFirstKillSeconds, HighLevelInMeadow, ServerPopulation, CrownTrialMiss, SameKindStreak, ReturnAct (the first
@@ -30,7 +31,7 @@ local T = {
 	Analytics = nil,
 	Debug = nil,
 	Steps = A.Steps or { "IntroDone", "Faction", "Class", "FirstMissionAccept", "MeadowArrive", "FirstHit", "FirstKill",
-		"FirstSkillHit", "FirstMissionDone", "ForgeArrive", "FirstWeapon", "AutoUnlocked", "Level10" },
+		"FirstMissionDone", "ForgeArrive", "FirstWeapon", "FirstSkillHit", "AutoUnlocked", "Level10" },
 	FirstHit = {}, -- [Player] = true once FirstHit is logged (or passed): later hits skip the funnel lookup
 	UiIds = {}, -- [window id] = true (Config.Analytics.UiIds)
 	JoinedAt = {}, -- [Player] = os.clock()
@@ -206,11 +207,11 @@ local function onReady(player, data)
 		Step(player, "FirstHit")
 		Step(player, "FirstKill")
 	end
-	local done = type(data.Story) == "table" and type(data.Story.Done) == "table" and data.Story.Done or {}
-	if done.M1_3 or done.S0 then Step(player, "FirstSkillHit") end -- both need a manual skill that hit a monster
 	if tut == 99 then Step(player, "FirstMissionDone") end
 	if data.BlacksmithVisited == true then Step(player, "ForgeArrive") end
 	if num(data.WeaponOwnedMask) > 0 then Step(player, "FirstWeapon") end -- A23-34: any weapon owned
+	local done = type(data.Story) == "table" and type(data.Story.Done) == "table" and data.Story.Done or {}
+	if done.M1_3 or done.S0 then Step(player, "FirstSkillHit") end -- both need a manual skill that hit a monster
 	if data.AutoCombatUnlocked == true then Step(player, "AutoUnlocked") end
 	if num(data.Level, 1) >= 10 then Step(player, "Level10") end
 	for _, c in T.Conns[player] or {} do c:Disconnect() end
