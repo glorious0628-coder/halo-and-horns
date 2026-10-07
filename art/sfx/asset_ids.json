@@ -56,9 +56,10 @@
     "Plunder": "rbxassetid://74602898707411",
     "JackpotOther": "rbxassetid://99814762304779",
     "SkillLearn": "rbxassetid://113535664889883",
-    "Loot": "rbxassetid://114739645345413"
+    "Loot": "rbxassetid://114739645345413",
+    "SwingWarrior": "rbxassetid://114585478722203"
   },
-  "pending": ["SwingWarrior", "KillPop", "ComboMilestone", "LevelUp", "Tap", "WindowOpen"],
+  "pending": ["KillPop", "ComboMilestone", "LevelUp", "Tap", "WindowOpen"],
   "kept": {
     "about": "round-3 sounds that have no round-4 file yet; still current in Config.Audio.Files (do not retire)",
     "ids": {
@@ -67,7 +68,6 @@
       "LevelUp": "rbxassetid://115723389387503",
       "SwingMage": "rbxassetid://136838684864577",
       "SwingTamer": "rbxassetid://126503879214394",
-      "SwingWarrior": "rbxassetid://100665788892468",
       "Tap": "rbxassetid://101266273493121",
       "WindowOpen": "rbxassetid://72025655652305"
     }
@@ -99,6 +99,7 @@
       "SkillHalo": "rbxassetid://94791750026317",
       "SkillHorns": "rbxassetid://98826164651498",
       "SwingArcher": "rbxassetid://110195369508891",
+      "SwingWarrior": "rbxassetid://100665788892468",
       "TalkBlip": "rbxassetid://72477911054987",
       "WindowClose": "rbxassetid://96155752903162"
     }
