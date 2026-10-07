@@ -58,7 +58,7 @@
     "SkillLearn": "rbxassetid://113535664889883",
     "Loot": "rbxassetid://114739645345413"
   },
-  "pending": [],
+  "pending": ["SwingWarrior", "KillPop", "ComboMilestone", "LevelUp", "Tap", "WindowOpen"],
   "kept": {
     "about": "round-3 sounds that have no round-4 file yet; still current in Config.Audio.Files (do not retire)",
     "ids": {
