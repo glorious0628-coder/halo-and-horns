@@ -20,7 +20,7 @@ local TEX = {
 	Sparkle = "rbxassetid://244221535", -- "Sparkles Particle" (Nanonauts, 688891088)
 }
 local COL = {
-	Water = Color3.fromRGB(185, 232, 255),
+	Water = Color3.fromRGB(150, 214, 255), -- a little more sky blue: reads from the walk (검수 play-view check)
 	Foam = Color3.fromRGB(240, 251, 255),
 	Gold = Color3.fromRGB(255, 226, 140),
 	Halo = Color3.fromRGB(255, 214, 90),
@@ -30,18 +30,18 @@ local SPECS = {
 	-- Crossroads (Roblox generate_mesh kit, 21 x 20.4 x 21): top spout, small upper bowl, wide scalloped middle bowl,
 	-- round pool (rim heights measured with rays on its collision mesh, 2026-10-07)
 	K_Fountain = {
-		Jet = { Y = 1.0, Up = 9 },
+		Jet = { Y = 1.0, Up = 12 },
 		Curtains = {
-			{ FromY = 0.75, FromR = 0.21, ToY = 0.53, ToR = 0.235, Count = 16, Width = 1.3 },
-			{ FromY = 0.525, FromR = 0.305, ToY = 0.13, ToR = 0.335, Count = 24, Width = 1.6, Ripples = true },
+			{ FromY = 0.75, FromR = 0.21, ToY = 0.53, ToR = 0.235, Count = 16, Width = 2.2 },
+			{ FromY = 0.525, FromR = 0.305, ToY = 0.13, ToR = 0.335, Count = 24, Width = 2.8, Ripples = true },
 		},
 		Pool = { Y = 0.13, R = 0.42 },
 	},
 	-- Halo town (Tripo 3b HD, two cloud tiers + a floating halo ring): first guess, tuned when the model is in the place
 	Town_Halo_Fountain = {
-		Jet = { Y = 0.86, Up = 8 },
+		Jet = { Y = 0.86, Up = 11 },
 		Curtains = {
-			{ FromY = 0.62, FromR = 0.24, ToY = 0.18, ToR = 0.28, Count = 20, Width = 1.6, Ripples = true },
+			{ FromY = 0.62, FromR = 0.24, ToY = 0.18, ToR = 0.28, Count = 20, Width = 2.6, Ripples = true },
 		},
 		Pool = { Y = 0.17, R = 0.4 },
 		Halo = { Y = 1.02, R = 0.18 },
@@ -133,13 +133,13 @@ local function build(model, spec)
 			Texture = TEX.Drop, EmissionDirection = Enum.NormalId.Top, Rate = 34,
 			Speed = NumberRange.new(spec.Jet.Up * 0.85, spec.Jet.Up * 1.1), SpreadAngle = Vector2.new(5, 5),
 			Acceleration = Vector3.new(0, -38, 0), Drag = 0.4, Lifetime = NumberRange.new(0.55, 0.75),
-			Size = seq({ { 0, 0.25 }, { 0.15, 0.45 }, { 1, 0.2 } }), Transparency = seq({ { 0, 0.15 }, { 0.7, 0.3 }, { 1, 1 } }),
+			Size = seq({ { 0, 0.35 }, { 0.15, 0.6 }, { 1, 0.25 } }), Transparency = seq({ { 0, 0.1 }, { 0.7, 0.25 }, { 1, 1 } }),
 			Color = ColorSequence.new(COL.Water, COL.Foam), LightEmission = 0.3,
 		})
 		emitter(a, "Spray", {
 			Texture = TEX.Drop, EmissionDirection = Enum.NormalId.Top, Rate = 14,
-			Speed = NumberRange.new(3, 5), SpreadAngle = Vector2.new(28, 28), Acceleration = Vector3.new(0, -30, 0),
-			Lifetime = NumberRange.new(0.5, 0.8), Size = seq({ { 0, 0.2 }, { 1, 0.08 } }),
+			Speed = NumberRange.new(4, 7), SpreadAngle = Vector2.new(38, 38), Acceleration = Vector3.new(0, -30, 0),
+			Lifetime = NumberRange.new(0.6, 0.9), Size = seq({ { 0, 0.35 }, { 1, 0.12 } }),
 			Transparency = seq({ { 0, 0.2 }, { 1, 1 } }), Color = ColorSequence.new(COL.Foam), LightEmission = 0.3,
 		})
 	end
@@ -161,16 +161,16 @@ local function build(model, spec)
 			b.Width0, b.Width1 = c.Width * 0.8, c.Width
 			b.FaceCamera = true
 			b.Segments = 4
-			b.Transparency = seq({ { 0, 0.2 }, { 0.5, 0.3 }, { 1, 0.65 } })
+			b.Transparency = seq({ { 0, 0.15 }, { 0.5, 0.28 }, { 1, 0.6 } })
 			b.Color = ColorSequence.new(COL.Water, COL.Foam)
-			b.LightEmission = 0.6
-			b.LightInfluence = 0.5
+			b.LightEmission = 0.7
+			b.LightInfluence = 0.45
 			b.Parent = a0
 			emitter(a1, "Splash", {
 				Texture = TEX.Drop, EmissionDirection = Enum.NormalId.Top, Rate = 2.5,
-				Speed = NumberRange.new(2.5, 4.5), SpreadAngle = Vector2.new(40, 40), Acceleration = Vector3.new(0, -28, 0),
-				Lifetime = NumberRange.new(0.3, 0.5), Size = seq({ { 0, 0.18 }, { 1, 0.08 } }),
-				Transparency = seq({ { 0, 0.25 }, { 1, 1 } }), Color = ColorSequence.new(COL.Foam), LightEmission = 0.25,
+				Speed = NumberRange.new(3, 6), SpreadAngle = Vector2.new(45, 45), Acceleration = Vector3.new(0, -26, 0),
+				Lifetime = NumberRange.new(0.4, 0.7), Size = seq({ { 0, 0.5 }, { 0.4, 0.95 }, { 1, 0.4 } }),
+				Transparency = seq({ { 0, 0.12 }, { 0.6, 0.35 }, { 1, 1 } }), Color = ColorSequence.new(COL.Foam), LightEmission = 0.45,
 			})
 			if c.Ripples then
 				emitter(a1, "Ripple", {

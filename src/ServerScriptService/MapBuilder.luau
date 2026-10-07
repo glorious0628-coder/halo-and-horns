@@ -37,6 +37,9 @@ local SIGN_MAX_DISTANCE = 150
 -- A23-36 (user 2026-10-06): no big 3D place text; a pad keeps only a small label seen up close (like shop names)
 local PAD_SIGN = { Width = 190, Height = 32, MaxDistance = 40, OffsetY = 3 }
 local SHOP_SIGN_MAX_DISTANCE = 50 -- shop / landmark name labels (the sky crown image has no TextLabel and stays)
+-- the goose nest label sits beside the Crossroads walk: small, low and only up close, so it never floats behind the
+-- HUD quest rows (검수 2026-10-07, play-view photo)
+local PERCH_SIGN = { Width = 190, Height = 32, MaxDistance = 30, OffsetY = 3 }
 local MAX_LIGHTS = 40 -- whole map
 local MAX_LIGHT_RANGE = 40
 local MAX_LIGHT_BRIGHTNESS = 2
@@ -711,7 +714,8 @@ local function buildGoosePerch(ctx, parent)
 			Position = Vector3.new(gp.X + math.cos(a) * 10, 3, gp.Z + math.sin(a) * 10), Color = RGB(212, 175, 55),
 		}, perch)
 	end
-	billboard(perch, "PerchSign", "Golden Goose Nest", 5, RGB(255, 225, 120))
+	billboard(perch, "PerchSign", "Golden Goose Nest", PERCH_SIGN.OffsetY, RGB(255, 225, 120), PERCH_SIGN.Width,
+		PERCH_SIGN.MaxDistance, PERCH_SIGN.Height)
 	return perch
 end
 
@@ -1207,6 +1211,11 @@ function MapBuilder.Build()
 	for _, d in folders.Landmarks:GetDescendants() do
 		if d:IsA("BillboardGui") and d.MaxDistance > SHOP_SIGN_MAX_DISTANCE and d:FindFirstChildWhichIsA("TextLabel", true) then
 			d.MaxDistance = SHOP_SIGN_MAX_DISTANCE
+		end
+		if d:IsA("BillboardGui") and d.Name == "PerchSign" then -- a nest label already saved in the place
+			d.Size = UDim2.fromOffset(PERCH_SIGN.Width, PERCH_SIGN.Height)
+			d.StudsOffset = Vector3.new(0, PERCH_SIGN.OffsetY, 0)
+			d.MaxDistance = PERCH_SIGN.MaxDistance
 		end
 	end
 
