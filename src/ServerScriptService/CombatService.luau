@@ -19,6 +19,9 @@ CombatService.Released = Util.Signal.new()
 -- (victim, amount, attacker) : fired by DamagePlayer only when attacker ~= nil, after the damage.
 -- amount = HP actually removed (CR-M10: no overkill; 0 under a ForceField, still fired for the bait log)
 CombatService.PlayerDamaged = Util.Signal.new()
+-- (victim, by) BB38 metrics: fired with the KO screen's cause (BB14 sendKO: "Player" | "Kaiju" | "Monster" | "Fall" |
+-- "Other") once per KO, from the death pipeline
+CombatService.KnockedOut = Util.Signal.new()
 
 local S = nil
 
@@ -1260,6 +1263,7 @@ local function sendKO(victim, killer, ctx, carriedBefore, died)
 	local lost = math.max(0, math.floor(carriedBefore - numAttr(victim, "CarriedGold", 0)))
 	Net.Fx(victim, "KO", { By = by, Name = name, Faction = killerFaction, Lost = lost, Sack = ctx.HadSack == true,
 		RespawnIn = Config.Player.RespawnTime })
+	CombatService.KnockedOut:Fire(victim, by)
 end
 
 local function runDeathPipeline(victim, diedAt, died)

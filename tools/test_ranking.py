@@ -371,8 +371,8 @@ def static() -> tuple[int, list[str]]:
     visuals = read(SSS / "CharacterVisuals.luau")
     check(re.search(r'Outlaw = \{ "Nametag" \}', visuals) is not None, "CharacterVisuals rebuilds the nametag when Outlaw changes")
     telemetry = read(SSS / "TelemetryService.luau")
-    check('connect("LootService", "Enhanced", function(player, _tier, before, after)' in telemetry,
-          "the other Enhanced listener (TelemetryService) still reads only its first 4 arguments")
+    check('connect("LootService", "Enhanced", function(player, _tier, _before, _after, success)' in telemetry,
+          "the other Enhanced listener (TelemetryService, BB38) reads the 5th argument success, nothing after it")
     ranking = strip_comments(read(SSS / "RankingService.luau"))
     leaving = function_block(read(SSS / "RankingService.luau"), "local function onLeaving(")
     head = leaving.split("task.spawn(function()", 1)[0]

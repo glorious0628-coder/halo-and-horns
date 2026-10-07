@@ -426,7 +426,7 @@ local function survive(p)
 		local okCap, capGold = pcall(Config.HuntValue, level, SURVIVE_BONUS_MINUTES)
 		capGold = (okCap and tonumber(capGold)) or 0
 		local carried = math.max(0, math.floor(getNum(p, "CarriedGold")))
-		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", p, carried)) or 0))
+		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", p, carried, "Kaiju")) or 0))
 		local fullBonus = math.max(0, math.floor(taken * Config.Kaiju.SurviveBankMult) - taken) -- minted part
 		local bonus = opposed and math.min(fullBonus, math.max(0, math.floor(capGold))) or 0
 		local amount = taken + bonus
@@ -501,7 +501,7 @@ local function escrowLeaverGold(player)
 	leaveEscrow[player] = entry
 	local carried = math.max(0, math.floor(getNum(player, "CarriedGold")))
 	if carried > 0 then
-		entry.Gold = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", player, carried)) or 0))
+		entry.Gold = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", player, carried, "Kaiju")) or 0))
 	end
 end
 
@@ -735,7 +735,7 @@ function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 		mint = math.floor(mint)
 
 		local carried = math.max(0, math.floor(getNum(victim, "CarriedGold")))
-		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", victim, carried)) or 0))
+		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", victim, carried, "Kaiju")) or 0))
 		-- CR-M11: a leaving kaiju's pouch was escrowed before ProgressionService could bank it; it joins the pool here
 		local escrow = leaveEscrow[victim]
 		if type(escrow) == "table" then
