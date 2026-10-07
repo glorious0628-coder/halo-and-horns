@@ -545,5 +545,17 @@
   "Tex_Limestone_FF2": "rbxassetid://105789118055805",
   "Tex_PumpkinSoil_FF2": "rbxassetid://101513604708442",
   "Tex_Rock_FF2": "rbxassetid://81976112942859",
-  "Tex_RuinsFlagstone_FF2": "rbxassetid://117516477244385"
+  "Tex_RuinsFlagstone_FF2": "rbxassetid://117516477244385",
+  "BarkBubbleSlime": "rbxassetid://121607411194048",
+  "BarkBubbleBigSlime": "rbxassetid://121478824500297",
+  "BarkBubblePumpkinSlime": "rbxassetid://85044172676856",
+  "BarkBubblePumpkinKing": "rbxassetid://110500874816557",
+  "BarkBubbleGoblin": "rbxassetid://135198528423754",
+  "BarkBubbleBatGoblin": "rbxassetid://136707268128149",
+  "BarkBubbleGoblinBrute": "rbxassetid://137522622485063",
+  "BarkBubbleSkeleton": "rbxassetid://128451193232701",
+  "BarkBubbleSkeletonKnight": "rbxassetid://134713081207957",
+  "BarkBubbleGhostMinion": "rbxassetid://121325988367395",
+  "BarkBubbleLittleGhost": "rbxassetid://106182896723807",
+  "BarkBubbleGhostKing": "rbxassetid://120140777254240"
 }

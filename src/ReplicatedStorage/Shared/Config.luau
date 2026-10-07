@@ -4070,6 +4070,23 @@ Config.UIArt = {
 		-- the monster), no letters - dark navy text in TextRect. SliceScale 0.3 keeps the tail the same size at ~52 px and
 		-- lets only the 24 px middle band grow for a second line. MonsterLabels BillboardGui (game dev 1, BarkService)
 		BarkBubble = { Id = "rbxassetid://124351323911597", Size = Vector2.new(512, 190), Slice = Rect.new(84, 65, 446, 89), SliceScale = 0.3, TextRect = { 0.077, 0.181, 0.844, 0.448 } },
+		-- A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지" / "가로로 길쭉한 거 말고"): one bark bubble per monster
+		-- kind, "BarkBubble" .. kind. A round chubby bubble (about 1.2-1.5 : 1, small tail at the bottom left, big empty middle),
+		-- NOT 9-sliced: MonsterLabels draws it ~104 px wide with ScaleType Fit, height from Size. Id = "" = not drawn yet:
+		-- the family's key (Config.Barks.BubbleFamily / BubbleArt), else BarkBubble (IMG-R4). With the id add Size (the
+		-- PNG px) and TextRect (the empty middle as fractions); no Slice.
+		BarkBubbleSlime = { Id = "rbxassetid://121607411194048", Size = Vector2.new(512, 415), TextRect = { 0.202, 0.333, 0.562, 0.394 } },
+		BarkBubbleBigSlime = { Id = "rbxassetid://121478824500297", Size = Vector2.new(512, 445), TextRect = { 0.232, 0.385, 0.543, 0.338 } },
+		BarkBubblePumpkinSlime = { Id = "rbxassetid://85044172676856", Size = Vector2.new(512, 438), TextRect = { 0.254, 0.356, 0.486, 0.36 } },
+		BarkBubblePumpkinKing = { Id = "rbxassetid://110500874816557", Size = Vector2.new(512, 431), TextRect = { 0.226, 0.342, 0.543, 0.355 } },
+		BarkBubbleGoblin = { Id = "rbxassetid://135198528423754", Size = Vector2.new(512, 409), TextRect = { 0.202, 0.412, 0.56, 0.344 } },
+		BarkBubbleBatGoblin = { Id = "rbxassetid://136707268128149", Size = Vector2.new(512, 298), TextRect = { 0.294, 0.33, 0.392, 0.413 } },
+		BarkBubbleGoblinBrute = { Id = "rbxassetid://137522622485063", Size = Vector2.new(512, 379), TextRect = { 0.219, 0.243, 0.526, 0.397 } },
+		BarkBubbleSkeleton = { Id = "rbxassetid://128451193232701", Size = Vector2.new(512, 369), TextRect = { 0.237, 0.233, 0.526, 0.429 } },
+		BarkBubbleSkeletonKnight = { Id = "rbxassetid://134713081207957", Size = Vector2.new(512, 409), TextRect = { 0.277, 0.348, 0.447, 0.368 } },
+		BarkBubbleGhostMinion = { Id = "rbxassetid://121325988367395", Size = Vector2.new(512, 333), TextRect = { 0.228, 0.362, 0.538, 0.37 } },
+		BarkBubbleLittleGhost = { Id = "rbxassetid://106182896723807", Size = Vector2.new(512, 344), TextRect = { 0.217, 0.325, 0.497, 0.412 } },
+		BarkBubbleGhostKing = { Id = "rbxassetid://120140777254240", Size = Vector2.new(512, 395), TextRect = { 0.211, 0.383, 0.543, 0.339 } },
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
 		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
 		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },
