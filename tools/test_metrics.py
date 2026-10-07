@@ -50,29 +50,43 @@ MUTATIONS = [
     ("old saves do not catch up kills", T, "\tif num(data.TotalKills) > 0 then\n", "\tif false then\n"),
     ("walking into the meadow does not count", T,
      "\t\tif newZone == \"SlimeMeadow\" then TelemetryService.Step(player, \"MeadowArrive\") end\n", ""),
-    ("the guide's meadow step does not count", T, "\t\tif num(v) >= 2 then Step(player, \"MeadowArrive\") end\n", ""),
+    ("the guide's meadow step does not count", T, "\t\tif pastMeadow(v) then Step(player, \"MeadowArrive\") end\n", ""),
+    # --- A23-74: the Forge step (3) comes before the meadow
+    ("the Forge step counts as a meadow arrival", T,
+     "\tlocal function pastMeadow(v) return v == tutSteps.Quest or v == tutSteps.Done end\n",
+     "\tlocal function pastMeadow(v) return num(v) >= 2 end\n"),
+    ("an old save catches up the Forge after the meadow", T,
+     "\tif data.BlacksmithVisited == true then Step(player, \"ForgeArrive\") end\n"
+     "\tif num(data.WeaponOwnedMask) > 0 then Step(player, \"FirstWeapon\") end -- A23-34: any weapon owned\n"
+     "\tif pastMeadow(tut) then Step(player, \"MeadowArrive\") end\n",
+     "\tif pastMeadow(tut) then Step(player, \"MeadowArrive\") end\n"
+     "\tif data.BlacksmithVisited == true then Step(player, \"ForgeArrive\") end\n"
+     "\tif num(data.WeaponOwnedMask) > 0 then Step(player, \"FirstWeapon\") end -- A23-34: any weapon owned\n"),
+    ("Config: the Forge back after the first mission", C,
+     "\"FirstMissionAccept\", \"ForgeArrive\", \"FirstWeapon\", \"MeadowArrive\",\n\t\t\"FirstHit\", \"FirstKill\", \"FirstMissionDone\",",
+     "\"FirstMissionAccept\", \"MeadowArrive\",\n\t\t\"FirstHit\", \"FirstKill\", \"FirstMissionDone\", \"ForgeArrive\", \"FirstWeapon\","),
     ("no first kill", T, "\tTelemetryService.Step(player, \"FirstKill\") -- A23-68 #5\n", ""),
     ("Config: the old 8 steps", C,
-     "\"FirstMissionAccept\", \"MeadowArrive\", \"FirstHit\", \"FirstKill\",\n\t\t\"FirstMissionDone\", \"ForgeArrive\", \"FirstWeapon\", \"FirstSkillHit\",",
+     "\"FirstMissionAccept\", \"ForgeArrive\", \"FirstWeapon\", \"MeadowArrive\",\n\t\t\"FirstHit\", \"FirstKill\", \"FirstMissionDone\", \"FirstSkillHit\",",
      "\"FirstMissionAccept\",\n\t\t\"FirstMissionDone\", \"FirstWeapon\","),
     # --- A23-71 S13 (D5): the first skill comes at Lv5, after the first weapon and before Auto Battle
     ("Config: FirstSkillHit back before the first mission", C,
-     "\"FirstKill\",\n\t\t\"FirstMissionDone\", \"ForgeArrive\", \"FirstWeapon\", \"FirstSkillHit\", \"AutoUnlocked\",",
-     "\"FirstKill\",\n\t\t\"FirstSkillHit\", \"FirstMissionDone\", \"ForgeArrive\", \"FirstWeapon\", \"AutoUnlocked\","),
-    ("an old save catches up the skill hit before the weapon", T,
-     "\tif num(data.WeaponOwnedMask) > 0 then Step(player, \"FirstWeapon\") end -- A23-34: any weapon owned\n"
+     "\"FirstKill\", \"FirstMissionDone\", \"FirstSkillHit\", \"AutoUnlocked\",",
+     "\"FirstSkillHit\", \"FirstKill\", \"FirstMissionDone\", \"AutoUnlocked\","),
+    ("an old save catches up the skill hit before the first mission", T,
+     "\tif tut == 99 then Step(player, \"FirstMissionDone\") end\n"
      "\tlocal done = type(data.Story) == \"table\" and type(data.Story.Done) == \"table\" and data.Story.Done or {}\n"
      "\tif done.M1_3 or done.S0 then Step(player, \"FirstSkillHit\") end -- both need a manual skill that hit a monster\n",
      "\tlocal done = type(data.Story) == \"table\" and type(data.Story.Done) == \"table\" and data.Story.Done or {}\n"
      "\tif done.M1_3 or done.S0 then Step(player, \"FirstSkillHit\") end -- both need a manual skill that hit a monster\n"
-     "\tif num(data.WeaponOwnedMask) > 0 then Step(player, \"FirstWeapon\") end -- A23-34: any weapon owned\n"),
+     "\tif tut == 99 then Step(player, \"FirstMissionDone\") end\n"),
     # --- the funnel
     ("steps logged again on another server", T, "\tif tel.Funnel[name] then return end\n", ""),
     ("no Level10 step", T, "\twatch(player, \"Level\", function(v) if num(v, 1) >= 10 then Step(player, \"Level10\") end end)\n", ""),
     ("no catch-up for an old save", T, "\tif data.IntroSeen == true then Step(player, \"IntroDone\") end\n", ""),
     ("step numbers from 0", T, "pcall(svc.LogOnboardingFunnelStepEvent, svc, player, index, name)",
      "pcall(svc.LogOnboardingFunnelStepEvent, svc, player, index - 1, name)"),
-    ("the funnel misses a step", C, "\"ForgeArrive\", \"FirstWeapon\", \"FirstSkillHit\",", "\"ForgeArrive\", \"FirstSkillHit\","),
+    ("the funnel misses a step", C, "\"ForgeArrive\", \"FirstWeapon\", \"MeadowArrive\",", "\"ForgeArrive\", \"MeadowArrive\","),
     # --- events
     ("FirstDeath every KO", T, "\t\tif tel.FirstDeath then return end\n", ""),
     ("AutoOn / AutoOff not throttled", T, "if not throttled(player, \"auto\", 10) then", "if true then"),
@@ -176,9 +190,10 @@ SUITE = Suite(
     fixture=ROOT / "tools/fixtures/metrics_offline.luau",
     out=ROOT / "docs/art/verification_2026-10-07/offline_dev2_metrics_2026-10-07.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="BB38: the onboarding funnel (Config.Analytics.Steps, 13 steps in order with A23-68's first 3 minutes and "
-             "A23-71 S13's FirstSkillHit after FirstWeapon, before AutoUnlocked; once per account, old saves catch up in "
-             "that order), "
+    contract="BB38: the onboarding funnel (Config.Analytics.Steps, 13 steps in order with A23-68's first 3 minutes, "
+             "A23-71 S13's FirstSkillHit after FirstWeapon, before AutoUnlocked, and A23-74's ForgeArrive / FirstWeapon "
+             "right after FirstMissionAccept, before MeadowArrive (TutorialStep 3 = the Forge step is an acceptance, not a "
+             "meadow arrival); once per account, old saves catch up in that order), "
              "c->s UiMetric(id) -> WindowOpen_<id> (Config.Analytics.UiIds, one argument, ready, 2 s, once a session), "
              "KeyRebind (SettingsService.KeysChanged), AutoOn / AutoOff, FirstDeath_<By> (CombatService.KnockedOut, once "
              "per account), Plunder_Kept / _Avenged / _Returned, EnhanceFailLeave (a failed enhance then a leave within "

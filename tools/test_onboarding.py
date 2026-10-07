@@ -69,8 +69,16 @@ def main() -> int:
                           "dialoguePagesPerFaction": 3, "worldNpcCreated": False,
                           "newArtOrUploads": 0, "clientPanelAndLiveEngineVerification": "pending_root"},
         "a23Facts": {"firstMissionRewardGold": 150, "nextGoalAfterBlacksmith": ["NextSkillIron", "NextIronLevel", "NextIronGold", "NextZone", "GuideDone"],
-                     "skillQuestCounts": "manual Released with MonstersHit >= 1 only (Auto ~= true)"},
-        "coverage": ["real Net registry includes unique RequestTutorial/AcceptTutorial names",
+                     "skillQuestCounts": "manual Released with MonstersHit >= 1 only (Auto ~= true)",
+                     "weaponFirst": "A23-74: a bare-handed [Accept] -> the Forge step 3 before the hunt (the mutations: "
+                                    "tools/test_weapon_first.py)"},
+        "coverage": ["A23-74: a bare-handed [Accept] -> step 3 (the Forge row, Fx Travel To = Crossroads / Spot = Forge, "
+                     "the instant Crossroads travel); meadow kills before the gift count nothing; QuestService.ForgeGift -> "
+                     "Otto's line + step 1 (2 in the meadow), once; Forge.TravelDelay later the meadow trip -> the hunt; a "
+                     "save owning tier 1 -> step 1 as before; every claim clears BlacksmithVisited, Claimed = the next "
+                     "weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); "
+                     "RequestTutorial at step 3 = the forge trip; a KO at step 3 respawns at home",
+                     "real Net registry includes unique RequestTutorial/AcceptTutorial names",
                      "faction guide three-page dialogue, once per session automatic open, explicit reopen/accept",
                      "no-argument remotes reject extra/nil payload, unready/dead/invalid choices and rate-limit denial",
                      "closed guide stays pending; zone/kill/respawn/watchdog cannot bypass acceptance",

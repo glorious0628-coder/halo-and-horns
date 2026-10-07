@@ -5,9 +5,10 @@
 -- state. Every call is pcall'd; a missing AnalyticsService (Studio, old engine) costs nothing. Config.Analytics.Debug
 -- (default: Studio) prints every call.
 --   Onboarding funnel (each step once per account, any order; data.Telemetry.Funnel = { [name] = true }):
---     Config.Analytics.Steps = IntroDone, Faction, Class, FirstMissionAccept, MeadowArrive, FirstHit, FirstKill,
---     FirstMissionDone, ForgeArrive, FirstWeapon, FirstSkillHit, AutoUnlocked, Level10 (A23-68 #5: the first 3 minutes;
---     A23-71 S13: the first skill comes at Lv5, before Auto Battle opens)
+--     Config.Analytics.Steps = IntroDone, Faction, Class, FirstMissionAccept, ForgeArrive, FirstWeapon, MeadowArrive,
+--     FirstHit, FirstKill, FirstMissionDone, FirstSkillHit, AutoUnlocked, Level10 (A23-68 #5: the first 3 minutes;
+--     A23-71 S13: the first skill comes at Lv5, before Auto Battle opens; A23-74: the Forge and the first weapon come
+--     right after the acceptance, before the meadow)
 --   Right away: FirstDeath_<By> (BB14 KO cause, once per account), AutoOn / AutoOff, Plunder_Kept / _Avenged /
 --     _Returned, KeyRebind (actions changed), WindowOpen_<id> (UiMetric, once per session per window),
 --     RookieFirstKillSeconds, HighLevelInMeadow, ServerPopulation, CrownTrialMiss, SameKindStreak, ReturnAct (the first
@@ -30,8 +31,8 @@ local A = Config.Analytics or {}
 local T = {
 	Analytics = nil,
 	Debug = nil,
-	Steps = A.Steps or { "IntroDone", "Faction", "Class", "FirstMissionAccept", "MeadowArrive", "FirstHit", "FirstKill",
-		"FirstMissionDone", "ForgeArrive", "FirstWeapon", "FirstSkillHit", "AutoUnlocked", "Level10" },
+	Steps = A.Steps or { "IntroDone", "Faction", "Class", "FirstMissionAccept", "ForgeArrive", "FirstWeapon", "MeadowArrive",
+		"FirstHit", "FirstKill", "FirstMissionDone", "FirstSkillHit", "AutoUnlocked", "Level10" },
 	FirstHit = {}, -- [Player] = true once FirstHit is logged (or passed): later hits skip the funnel lookup
 	UiIds = {}, -- [window id] = true (Config.Analytics.UiIds)
 	JoinedAt = {}, -- [Player] = os.clock()
@@ -200,16 +201,21 @@ local function onReady(player, data)
 	if data.IntroSeen == true then Step(player, "IntroDone") end
 	if data.Faction ~= "None" then Step(player, "Faction") end
 	if data.ClassChosen == true then Step(player, "Class") end
+	-- TutorialStep: 1 = accepted, 3 = accepted and at the Forge step (A23-74: the first weapon before the meadow),
+	-- 2 = arrived in the meadow, 99 = claimed
+	local tutSteps = Config.Tutorial.Steps
+	local function pastMeadow(v) return v == tutSteps.Quest or v == tutSteps.Done end
 	local tut = num(data.TutorialStep)
 	if tut >= 1 then Step(player, "FirstMissionAccept") end
-	if tut >= 2 then Step(player, "MeadowArrive") end -- 2 = arrived in the meadow, 99 = claimed
+	-- A23-74: caught up in the funnel's order, the Forge and the first weapon before the meadow
+	if data.BlacksmithVisited == true then Step(player, "ForgeArrive") end
+	if num(data.WeaponOwnedMask) > 0 then Step(player, "FirstWeapon") end -- A23-34: any weapon owned
+	if pastMeadow(tut) then Step(player, "MeadowArrive") end
 	if num(data.TotalKills) > 0 then
 		Step(player, "FirstHit")
 		Step(player, "FirstKill")
 	end
 	if tut == 99 then Step(player, "FirstMissionDone") end
-	if data.BlacksmithVisited == true then Step(player, "ForgeArrive") end
-	if num(data.WeaponOwnedMask) > 0 then Step(player, "FirstWeapon") end -- A23-34: any weapon owned
 	local done = type(data.Story) == "table" and type(data.Story.Done) == "table" and data.Story.Done or {}
 	if done.M1_3 or done.S0 then Step(player, "FirstSkillHit") end -- both need a manual skill that hit a monster
 	if data.AutoCombatUnlocked == true then Step(player, "AutoUnlocked") end
@@ -219,9 +225,9 @@ local function onReady(player, data)
 	watch(player, "IntroSeen", function(v) if v == true then Step(player, "IntroDone") end end)
 	watch(player, "ClassChosen", function(v) if v == true then Step(player, "Class") end end)
 	watch(player, "TutorialStep", function(v)
-		-- accepting the guide mission sets TutorialStep 1 (2 = arrived in the meadow, 99 = first mission claimed)
+		-- accepting the guide mission sets TutorialStep 3 (the Forge; 1 for a save that owns the first weapon)
 		if num(v) >= 1 then Step(player, "FirstMissionAccept") end
-		if num(v) >= 2 then Step(player, "MeadowArrive") end
+		if pastMeadow(v) then Step(player, "MeadowArrive") end
 		if v == 99 then Step(player, "FirstMissionDone") end
 	end)
 	watch(player, "BlacksmithVisited", function(v) if v == true then Step(player, "ForgeArrive") end end)

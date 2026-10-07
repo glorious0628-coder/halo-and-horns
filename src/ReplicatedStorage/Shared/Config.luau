@@ -1850,8 +1850,12 @@ end
 -- Step 1: HUD guide beam to the GuideZone pad/entrance; entering GuideZone -> step 2. Step 2: pinned quest
 -- (first quest-list entry, Id = QuestId, Pinned = true, Slot = nil; sent by the "Quests" remote since CR-L50);
 -- claim -> step 99.
+-- A23-74 (user 2026-10-07 "맨 손이니까 무기를 제일 먼저 줘야지"): Forge = 3 sits between the acceptance and the hunt for a
+-- player without the first weapon: [Accept] -> step 3 (the trip to the Crossroads Forge) -> the anvil prompt hands over
+-- the class basic weapon (QuestService.ForgeGift) -> step 1 (the trip to the meadow) -> step 2 -> claim -> step 99.
+-- A save that owns the first weapon already (from before A23-34) goes from [Accept] straight to step 1.
 Config.Tutorial = {
-	Steps = { Kill = 0, Guide = 1, Quest = 2, Done = 99 },
+	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },
 	Monster = "Slime",
 	MonsterHP = 10,
 	Golden = true,
@@ -1865,7 +1869,10 @@ Config.Tutorial = {
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
-	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
+	-- A23-3: enough for the wood weapon (150); buying stays optional. A23-74: the first weapon now comes before the hunt,
+	-- so these 150 gold are the NEXT weapon's price (tier 2 at Lv1): the Claimed line says so and the M1_1 visit (show the
+	-- jelly) opens the weapon shop right after it
+	QuestRewardGold = 150,
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
 	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
@@ -1877,6 +1884,13 @@ Config.Tutorial = {
 	AcceptTravelSeconds = 3,
 	RespawnInMeadow = true,
 	FoldOthers = true,
+	-- A23-74: the Forge step's trips (the same AcceptTravelSeconds countdown and Fx "Travel" / "TravelDone" contract).
+	-- Landing "Anvil" = Back studs in front of the Crossroads anvil (toward the Crossroads spawn), Lift studs above the
+	-- anvil's bottom, facing it, so its prompt (12 studs) is up at once; "Spawn" = the Crossroads spawn only (game dev 1
+	-- can switch if the landing looks wrong in the live map). Near = a player this close to the anvil is not moved.
+	-- TravelDelay = seconds after the gift before the meadow trip starts (the "Stronger!" moment plays first);
+	-- nil / negative = no automatic meadow trip (the step 1 row and beam still lead there)
+	Forge = { Landing = "Anvil", Back = 8, Lift = 4, Near = 24, TravelDelay = 3 },
 	WelcomeRate = 0.5,
 	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
 	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
@@ -1884,7 +1898,7 @@ Config.Tutorial = {
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- 3rd idea round #2: page 1 = the mission card (검수 2026-10-07), then the catchphrase
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
 				"The Crown of Balance broke. Its shards drew slimes onto the Squishy Meadow road.",
@@ -1893,7 +1907,7 @@ Config.Tutorial = {
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
 				"Slimes chasing Crown Shards took the Squishy Meadow road. No food gets through!",
@@ -1902,7 +1916,7 @@ Config.Tutorial = {
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
 				"Slimes drawn to the Crown Shards have blocked the supply road in the Squishy Meadow.",
@@ -1917,14 +1931,21 @@ Config.Tutorial = {
 		Travel = "Free the supply road · Menu > Travel > Squishy Meadow",
 		QuestStart = "First mission: %s! (Reward: %s gold)",
 		QuestReady = "Supply road mission done! Press [Claim].",
-		-- A23-34: the first weapon waits at the Crossroads blacksmith (M1_1 gift)
-		Claimed = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
-		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
-		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
+		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
+		-- "You got your first weapon" line with the power change)
+		Forge = "Get your first weapon · Crossroads Forge",
+		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road.",
+		-- A23-74: the first weapon is in hand already, so the 150 gold are the next weapon's price (M1_1 sends the player
+		-- back to the Forge)
+		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
+		ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
+		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		-- the row after the claim while still bare-handed (no story row yet; A23-74 gives the weapon before that)
 		VisitBlacksmith = "Get your first weapon · Crossroads Forge",
 		VisitBlacksmithEn = "Get your first weapon · Crossroads Forge",
-		-- the same lines for a save that already owns tier 1 (from before A23-34): no first-weapon promise
+		-- the claim lines for a save that owns a better weapon than the first one already (no "new weapon" promise); the
+		-- VisitBlacksmithArmed row is for a save that owns the first weapon (no first-weapon promise)
 		ClaimedArmed = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
 		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
 		AutoClaimedArmed = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
@@ -2067,11 +2088,15 @@ Config.StoryQuests = {
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
 		},
-		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
+		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon).
+		-- A23-74: the first weapon now comes before the hunt (Tutorial.Steps.Forge), so GiveWeapon is only the safety net
+		-- (owning tier 1 is the record: a no-op then). The visit is the next-weapon moment (the shop opens after the
+		-- lines; the first mission's 150 gold buy tier 2), and the quest pays like its chapter-1 siblings
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The King Slimes ate the most of it.",
+			Reward = { Gold = 1 },
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust", ShortName = "King Slimes",
@@ -3061,9 +3086,10 @@ Config.Analytics = {
 	-- A23-68 #5 (the first 3 minutes; renumbered before the beta, nothing is public yet): MeadowArrive, FirstHit,
 	-- FirstKill, FirstSkillHit and ForgeArrive between the old steps. A23-71 D5 / S13: the first skill comes at Lv5, after
 	-- the first weapon, and Auto Battle opens after it (S0 trial b is a skill hit), so FirstSkillHit sits right before
-	-- AutoUnlocked (in the order players reach it, no false drop-off)
-	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "MeadowArrive", "FirstHit", "FirstKill",
-		"FirstMissionDone", "ForgeArrive", "FirstWeapon", "FirstSkillHit", "AutoUnlocked", "Level10" },
+	-- AutoUnlocked (in the order players reach it, no false drop-off). A23-74: the Forge and the first weapon now come
+	-- right after the acceptance, before the meadow
+	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "ForgeArrive", "FirstWeapon", "MeadowArrive",
+		"FirstHit", "FirstKill", "FirstMissionDone", "FirstSkillHit", "AutoUnlocked", "Level10" },
 	UiIds = { "Menu", "Items", "Bag", "Skills", "Character", "Ranking", "Journal", "Board", "Settings", "Help", "News",
 		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback" },
 	AwayAfter = 300,
@@ -3397,7 +3423,7 @@ Config.Help = {
 		} },
 		{ Title = "New this week", Lines = {
 			"Halloween: the Pumpkin Patch and the new Haunted Hollow with ghosts and the Ghost King.",
-			"New players start bare-handed. The Blacksmith gives you your first weapon after the first mission.",
+			"New players get their first weapon from the Blacksmith before the first hunt.", -- A23-74
 			"New Settings window: change your keys, sound effects and screen shake.",
 		} },
 	},
@@ -4569,8 +4595,9 @@ Config.Text = {
 	WeaponAutoSwapEn = "That weapon needs Lv %d → switched to %s.",
 	-- A23-34: bare hands (weapon tier 0)
 	BareHands = "Bare hands", BareHandsEn = "Bare hands",
-	WeaponFromQuest = "The Blacksmith gives you your first weapon after your first mission (5 slimes).",
-	WeaponFromQuestEn = "The Blacksmith gives you your first weapon after your first mission (5 slimes).",
+	-- A23-74: the first weapon comes right after the Guide's first quest is accepted (the Forge step)
+	WeaponFromQuest = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
+	WeaponFromQuestEn = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
 	WeaponUsableNow = "You can now use %s! Equip it at the Forge or from your Bag.",
 	WeaponUsableNowEn = "You can now use %s! Equip it at the Forge or from your Bag.",
 	NeedFaction = "Pick a side first.",
