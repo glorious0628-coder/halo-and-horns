@@ -104,7 +104,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "f8870c41712495333b7c63856b3c435e689030b915e3eae94499d3e1d6d93b1a",
     "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a7583ebf3ec53f513f0fbab414019603cb64d12a357dbd5a7986c002edd488f7",
     "tools/fixtures/quest_target_offline.luau": "4c7158d6b31fef10bc989e5929f499de82d7ec8f61fcf338e24c464a4bc1d820"
   },

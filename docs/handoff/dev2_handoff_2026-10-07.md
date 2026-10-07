@@ -7,9 +7,11 @@
 | A23-71 남은 일 S8·S9·S11·S13·S14·S16 | **main에 병합됨**(개발 1, 33bc5f4) | dev2 5c71430 |
 | SKL-3 마무리(X 스킬 서버 + 시험 `tools/test_skills_x.py`, SK1·SK2, 다음 목표 New skill) | **검수 통과**, 개발 1 병합·Studio 반영 대기 | dev2 94c3870 |
 | A23-69 스탯 1단계(스위치 꺼짐) + 장판 늦은 Released 고침(검수 요청) | **병합 요청 보냄** | dev2 a698787 (= dev2-stats 끝) |
-| 소리 서버 몫 sound_gaps C1·B2·B6·B11·C3 | 코드·시험 끝, **전체 CI 중** → 끝나면 증거 + 병합 요청 | 가지 **dev2-sound** (44ae959 = a698787 + main 91a5379 + 소리) |
+| 소리 서버 몫 sound_gaps C1·B2·B6·B11·C3 | 전체 CI 56개 통과(소리 때문에 낡은 변이 문구 7개만 고침, e2b462c) → 증거 커밋, **병합 요청 보냄** | 가지 **dev2-sound** 끝 (= a698787 + main 91a5379 + 소리) |
+| A23-69 2단계 | 검수 지시로 **아직 시작 안 함**(a698787 검토 결과 뒤) | — |
 
 - 가지 정리: `dev2` = 병합 요청한 것. `dev2-stats`는 a698787로 끝(dev2와 같음). `dev2-sound`는 dev2 위 소리 묶음. `dev2-skl3-wip`은 dev2에 다 들어가서 더 안 씀.
+- 증거 정리 요령: CI 뒤 바뀐 증거 중 **경로·시간만 바뀐 것**(작업 폴더 이름이 다른 것)은 올리지 않는다. 상태·검사 수·변이·sourceSHA256·계약 글이 바뀐 것만 Game-dev2로 복사해 커밋한다.
 - 문서: `docs/design/skills_server_2026-10-07.md` §3-2(X 계약), `docs/design/stats_server_2026-10-07.md`(스탯 1단계, **게시 때 모든 서버 종료** — Data v4), `docs/design/sound_server_2026-10-07.md`(소리 계약).
 - 새 시험: `tools/test_skills_x.py`(X 스킬·몬스터 고리·MP·이동 허용), `tools/test_stats.py`(스탯 1단계). `tools/test_notify_sound.py`는 소리 경로표 + Plunder/Crown/KingDefeat까지 본다.
 - 다음 큐(검수 확인 필요): A23-69 2단계(10/16–17: StatService·피해·HP·PvP) 또는 검수가 정하는 다른 일. 소리 묶음 병합 요청이 먼저.
