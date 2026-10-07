@@ -4087,8 +4087,8 @@ Config.UIArt = {
 		PortraitGuideHorns = { Id = "rbxassetid://81858266071600", Size = Vector2.new(512, 512) },
 		PortraitGuideArtisan = { Id = "rbxassetid://79157745259396", Size = Vector2.new(512, 512) },
 		-- shop NPCs (2975f24, user OK): portraits for a ring / dialogue, full body beside a shop window (the 3D NPCs stay)
-		PortraitPotionMerchant = { Id = "rbxassetid://73178531948067", Size = Vector2.new(486, 512) },
-		PortraitMerchantC = { Id = "rbxassetid://109852166851562", Size = Vector2.new(487, 512) },
+		PortraitPotionMerchant = { Id = "rbxassetid://87346642697895", Size = Vector2.new(486, 512) },
+		PortraitMerchantC = { Id = "rbxassetid://85592132165738", Size = Vector2.new(487, 512) },
 		FullPotionMerchant = { Id = "rbxassetid://119279738895658", Size = Vector2.new(449, 768) },
 		FullMerchantC = { Id = "rbxassetid://126082561922667", Size = Vector2.new(494, 768) },
 		-- A23-40 layout B parts (Firefly 2026-10-06: 83eaffb minimap_ring_sheet, ccab705 / a601f39 b12 / b1213 sheets)
@@ -4152,7 +4152,7 @@ Config.UIArt = {
 		QuestTab = { Id = "rbxassetid://124642276890798", Size = Vector2.new(512, 138), Slice = Rect.new(70, 68, 430, 70), FitHeight = true, Tone = "Gold" }, -- the arrow box (x 440+) never stretches
 		BannerAlert = { Id = "rbxassetid://104830795997617", Size = Vector2.new(512, 133), Slice = Rect.new(84, 65, 428, 67), FitHeight = true, Tone = "Red" }, -- white text, dark red rim
 		NpcMarkerBubble = { Id = "rbxassetid://76402030324791", Size = Vector2.new(512, 512) }, -- gold pin over NPC heads; a glyph inside
-		RewardRays = { Id = "rbxassetid://140645623920982", Size = Vector2.new(512, 512) }, -- white rays: tint with ImageColor3, behind reward pops (dark backdrop only)
+		-- RewardRays removed 2026-10-07 (user: the turning rays looked like the Rising Sun flag; AGENTS: no ray bursts)
 		-- 창 꾸미기 ③ reward popup parts, High (1d58f6c; art/approved.json, 검수 picks 2026-10-07). Plates: 9-slice
 		-- (SliceScale 0.7 = the sheet's look), Inner = the cream / plum inside. Their slice lines sit on the straight rim only
 		-- (rows / columns measured identical, ~10 px clear of every wing, knot, horn and corner curve): approved.json's
@@ -4167,7 +4167,7 @@ Config.UIArt = {
 		RewardRibbonHaloStraight = { Id = "rbxassetid://127336158318218", Size = Vector2.new(512, 100), Slice = Rect.new(71, 49, 441, 51), FitHeight = true, TextRect = { 0.14, 0.3, 0.72, 0.52 } },
 		RewardRibbonHornsStraight = { Id = "rbxassetid://83671618689638", Size = Vector2.new(512, 106), Slice = Rect.new(42, 52, 469, 54), FitHeight = true, TextRect = { 0.1, 0.26, 0.8, 0.5 } },
 		RewardSlot = { Id = "rbxassetid://131467829477534", Size = Vector2.new(256, 252), Tone = "Navy", Inner = Rect.new(31, 32, 225, 219) }, -- gold rim, navy inside
-		RewardGlow = { Id = "rbxassetid://134856789083293", Size = Vector2.new(512, 512) }, -- round glow, under the rays
+		RewardGlow = { Id = "rbxassetid://134856789083293", Size = Vector2.new(512, 512) }, -- round soft glow behind the ribbon (breathes)
 		RewardSparkle = { Id = "rbxassetid://139083428436055", Size = Vector2.new(256, 256) }, -- 4-point twinkle
 		GlyphBack = { Id = "rbxassetid://84595951514011", Size = Vector2.new(512, 512) },
 		GlyphLock = { Id = "rbxassetid://140357879006452", Size = Vector2.new(512, 512) },
@@ -4210,7 +4210,7 @@ Config.UIArt = {
 		IconNickname = { Id = "rbxassetid://112860477776524", Size = Vector2.new(512, 512) },
 		IconOpening = { Id = "rbxassetid://74327546251541", Size = Vector2.new(512, 512) },
 		IconAnnounce = { Id = "rbxassetid://82534665069625", Size = Vector2.new(512, 512) },
-		IconVacation = { Id = "rbxassetid://94546800522289", Size = Vector2.new(512, 512) },
+		IconVacation = { Id = "rbxassetid://104205149645477", Size = Vector2.new(512, 512) },
 		IconMedalGold = { Id = "rbxassetid://100897193417032", Size = Vector2.new(512, 512) },
 		IconMedalSilver = { Id = "rbxassetid://86859981439769", Size = Vector2.new(512, 512) },
 		IconMedalBronze = { Id = "rbxassetid://129231723184529", Size = Vector2.new(512, 512) },
@@ -4252,6 +4252,7 @@ Config.UIArt = {
 		PTR_TownBright = { Id = "rbxassetid://86154525392813", Size = Vector2.new(509, 512) }, -- Halo town guard trainee
 		PTR_TownSmokey = { Id = "rbxassetid://91810571998991", Size = Vector2.new(400, 512) }, -- Horns den lookout
 		PTR_TownTiny = { Id = "rbxassetid://107434856525614", Size = Vector2.new(445, 512) }, -- Crossroads artisan trainee
+		PTR_CrownShard = { Id = "rbxassetid://131966294834604", Size = Vector2.new(443, 512) }, -- the Crown Shard speaker (Speakers.Shard / Fountain; High, d9aec52)
 		PetCard = { Id = "rbxassetid://129842998819313", Size = Vector2.new(462, 768) }, -- pet window / book card: picture Window (0.126, 0.121, 0.747, 0.444), Name (0.10, 0.60, 0.80, 0.075), Body (0.08, 0.70, 0.84, 0.18)
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
