@@ -46,8 +46,11 @@ local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil
 	CamTween = nil, OpenedAt = 0 }
 -- the letterbox: its own full-screen ScreenGui (ScreenInsets None) so the bars reach the real screen edges on phones
 -- (검수 2026-10-07: on a phone the safe-area insets left sky at both sides and lifted the bottom bar); phones get thinner
--- bars and the top one starts under Roblox's top button row
+-- bars, and the top one covers Roblox's top button row too (the buttons float on it; 검수: no strip of sky above it)
 local BARS = { Height = 0.11, TouchHeight = 0.07 }
+-- shot 1 (검수 2026-10-07: seen from straight below the crown was only an orange ring): a front three-quarter view,
+-- 25 deg below the crown and 30 deg to its left, pushing in slowly; the crown's front (-Z, the glowing crack) faces it
+local CROWN_SHOT = { Down = math.rad(25), Side = math.rad(30), From = 330, To = 255 }
 local SKIP_GRACE = 1.5 -- seconds after the start when skip input is ignored
 
 local function needsFirstIntro()
@@ -139,20 +142,20 @@ local function buildGui()
 	pcall(function() bars.ScreenInsets = Enum.ScreenInsets.None end)
 	local touch = UserInputService.TouchEnabled == true
 	local h = touch and BARS.TouchHeight or BARS.Height
-	local topY = 0
+	local topExtra = 0
 	if touch then
 		local ok, inset = pcall(function() return GuiService:GetGuiInset() end)
-		if ok and typeof(inset) == "Vector2" then topY = inset.Y end
+		if ok and typeof(inset) == "Vector2" then topExtra = inset.Y end
 	end
-	local function bar(name, anchor, pos)
+	local function bar(name, anchor, pos, extra)
 		local f = Instance.new("Frame")
 		f.Name = name
 		f.BackgroundColor3, f.BorderSizePixel = Color3.new(0, 0, 0), 0
-		f.AnchorPoint, f.Position, f.Size = Vector2.new(0, anchor), pos, UDim2.fromScale(1, h)
+		f.AnchorPoint, f.Position, f.Size = Vector2.new(0, anchor), pos, UDim2.new(1, 0, h, extra)
 		f.Parent = bars
 	end
-	bar("TopBar", 0, UDim2.new(0, 0, 0, topY))
-	bar("BottomBar", 1, UDim2.fromScale(0, 1))
+	bar("TopBar", 0, UDim2.fromScale(0, 0), topExtra) -- from the very top, under Roblox's buttons on phones
+	bar("BottomBar", 1, UDim2.fromScale(0, 1), 0)
 	bars.Parent = player:WaitForChild("PlayerGui")
 	state.Bars = bars
 	local sub = Instance.new("TextLabel")
@@ -241,9 +244,11 @@ end
 
 local function run(token)
 	local look = CFrame.lookAt
-	-- 1. Crossroads: look up at the broken crown in the sky (0-6 s)
-	if not shot(token, look(Vector3.new(0, 7, -40), Vector3.new(0, 30, 0)),
-		look(Vector3.new(0, 6, -32), crownPos()), 5.5) then return end
+	-- 1. the broken crown in the sky over the Crossroads, front three-quarter (0-6 s)
+	local crown = crownPos()
+	local c = CROWN_SHOT
+	local dir = Vector3.new(-math.sin(c.Side) * math.cos(c.Down), -math.sin(c.Down), -math.cos(c.Side) * math.cos(c.Down))
+	if not shot(token, look(crown + dir * c.From, crown + Vector3.new(0, -20, 0)), look(crown + dir * c.To, crown), 5.5) then return end
 	if not wait(token, 0.4) then return end
 	say(TXT.Lines[1])
 	if not wait(token, 5.4) then return end
