@@ -602,6 +602,19 @@ function CombatService.DebugSetCharge(player, amount)
 end
 
 ------------------------------------------------------------------ lifesteal
+-- CR-M8: an Active kaiju's lifesteal cap uses its health WITHOUT the kaiju multiplier (x20 MaxHealth outhealed the raid)
+local function lifestealCapBase(player, hum)
+	local capBase = hum.MaxHealth
+	if kstate(player) == "Active" and S.KaijuService and type(S.KaijuService.GetHealthMult) == "function" then
+		local okK, km = pcall(S.KaijuService.GetHealthMult, player)
+		if okK and type(km) == "number" and km > 1 then
+			capBase = capBase / km
+		end
+	end
+	return capBase
+end
+
+-- a basic swing's lifesteal (per swing; the class skills use SKILL.Steal and the 3 s window)
 local function applyLifesteal(player, perks, total)
 	local rate = perks.Lifesteal or 0
 	if rate <= 0 or total <= 0 then
@@ -611,15 +624,7 @@ local function applyLifesteal(player, perks, total)
 	if not hum or hum.Health <= 0 then
 		return
 	end
-	-- CR-M8: an Active kaiju's cap uses its health WITHOUT the kaiju multiplier (x20 MaxHealth outhealed the raid)
-	local capBase = hum.MaxHealth
-	if kstate(player) == "Active" and S.KaijuService and type(S.KaijuService.GetHealthMult) == "function" then
-		local okK, km = pcall(S.KaijuService.GetHealthMult, player)
-		if okK and type(km) == "number" and km > 1 then
-			capBase = capBase / km
-		end
-	end
-	CombatService.HealPlayer(player, math.min(total * rate, capBase * (perks.LifestealCapPct or 0)))
+	CombatService.HealPlayer(player, math.min(total * rate, lifestealCapBase(player, hum) * (perks.LifestealCapPct or 0)))
 end
 
 -- CR-M10: damage a monster and return the HP it actually lost (no overkill; 0 when the hit was refused).
@@ -659,6 +664,85 @@ local function shoveLater(attack, classId, rec, fromPos, studs, player, style)
 		shoveMonster(rec, fromPos, studs, player)
 	end
 end
+
+------------------------------------------------------------------ SKL-2 skill kit (Q here, Z / X in SkillService)
+-- A23-49 rule 4: the class skills' player damage (35% / kaiju 8%), Halo heal (30% an ally) and Horns life steal (3%)
+-- count in DamageWindow's 3 s window per pair, so Q + Z + X together stay under one cap. Without DamageWindow (older
+-- offline worlds) the room is the whole cap, i.e. the old per-cast caps. CombatService.Kit = this table: SkillService
+-- picks targets and deals damage with the same helpers as the swings and Q.
+local SKILL = {}
+
+-- the room DamageWindow leaves for `kind` from -> to under capHP (HP)
+function SKILL.Room(kind, from, to, capHP)
+	local W = S.DamageWindow
+	if W and type(W.Room) == "function" then return W.Room(kind, from, to, capHP) end
+	return capHP
+end
+
+function SKILL.Book(kind, from, to, n)
+	local W = S.DamageWindow
+	if W and type(W.Book) == "function" and type(n) == "number" and n > 0 then W.Book(kind, from, to, n) end
+end
+
+-- `want` cut to the room left; a used-up window gives 0 (never rounded up to 1 HP past it)
+function SKILL.Fit(want, room)
+	if room < want then
+		return room >= 0.5 and room or 0
+	end
+	return want
+end
+
+-- Halo skill support: every Halo player alive within `radius` of `center` (the caster too) heals HaloHealPct of the HP
+-- the cast really removed, at most HaloHealCapPct of their MaxHealth per 3 s from this caster. Returns the OTHER
+-- players healed (Released.Healed). A whiff heals nothing.
+function SKILL.Heal(player, center, radius, total)
+	local healed = {}
+	local skill = Config.BasicSkill or {}
+	if type(total) ~= "number" or total <= 0 or perksOf(player).ReleaseSupport ~= true or faction(player) ~= "Halo" then
+		return healed
+	end
+	for _, a in S.PlayerService.GetReadyPlayers() do
+		if a.Parent and faction(a) == "Halo" and Util.IsAlive(a) then
+			local aRoot = Util.GetRoot(a)
+			local aHum = Util.GetHumanoid(a)
+			if aRoot and aHum and Util.FlatDistance(aRoot.Position, center) <= radius then
+				local room = SKILL.Room("Heal", player, a, (skill.HaloHealCapPct or 0.30) * aHum.MaxHealth)
+				local want = SKILL.Fit((skill.HaloHealPct or 0.10) * total, room)
+				local amount = want > 0 and CombatService.HealPlayer(a, want) or 0
+				SKILL.Book("Heal", player, a, amount)
+				if a ~= player and amount > 0 then
+					table.insert(healed, a)
+				end
+			end
+		end
+	end
+	return healed
+end
+
+-- Horns skill life steal: Lifesteal of the HP the cast removed, at most LifestealCapPct of the caster's MaxHealth (an
+-- Active kaiju: without its health multiplier) per 3 s. Returns the HP healed.
+function SKILL.Steal(player, total)
+	local perks = perksOf(player)
+	local rate = perks.Lifesteal or 0
+	if rate <= 0 or type(total) ~= "number" or total <= 0 then return 0 end
+	local hum = Util.GetHumanoid(player)
+	if not hum or hum.Health <= 0 then return 0 end
+	local room = SKILL.Room("Steal", player, player, lifestealCapBase(player, hum) * (perks.LifestealCapPct or 0))
+	local want = SKILL.Fit(total * rate, room)
+	local amount = want > 0 and CombatService.HealPlayer(player, want) or 0
+	SKILL.Book("Steal", player, player, amount)
+	return amount
+end
+
+-- a manual skill press (UseSkill): auto combat yields to it like to a manual swing
+function SKILL.NoteManual(player)
+	lastManualAt[player] = os.clock()
+end
+
+SKILL.MonstersNear, SKILL.PlayersNear, SKILL.Aimed, SKILL.InAim = monstersNear, playersNear, aimed, inAim
+SKILL.ForwardPoint, SKILL.HitMonster, SKILL.FxNear, SKILL.Blocked = forwardPoint, damageMonster, fxNear, attackBlocked
+SKILL.Kaiju, SKILL.TurnTo = kstate, turnTo
+CombatService.Kit = SKILL
 
 ------------------------------------------------------------------ auto combat (A23-1)
 -- Unlocked by the optional quest "내 싸움을 배우는 왕관 조각", starts OFF, toggled and saved by the player.
@@ -993,12 +1077,12 @@ function CombatService.Release(player, isAuto)
 	player:SetAttribute("SkillReadyAt", Util.Now() + cooldown)
 	local c = cls(player)
 	local fac = faction(player)
-	local perks = perksOf(player)
 	local style = Config.IsTamer(c.Id, fac) and Config.Tamer.SkillStyle or nil -- A23-39 (look only)
 
 	-- 3. center + radius
 	local pos = root.Position
 	local center = pos
+	local turnedQ = false -- A23-61 server aim: the blast went to a monster outside the aim cone (monsters only)
 	if c.ReleaseCenter == "Target" then
 		local range = c.Range or 10
 		local bestPos, bestDist = nil, math.huge
@@ -1010,6 +1094,15 @@ function CombatService.Release(player, isAuto)
 			local nearPl = aimed(playersNear(player, pos, range), root, c.AimCone)
 			if nearPl[1] and nearPl[1].Dist < bestDist then
 				bestPos, bestDist = nearPl[1].Pos, nearPl[1].Dist
+			end
+		end
+		-- A23-61 server aim (검수 2026-10-07): nothing aimed -> the nearest monster within range in any direction (the
+		-- client FaceTarget rule; the root turns to it), the swing's rule
+		if not bestPos then
+			local nearQ = monstersNear(player, pos, range)[1]
+			if nearQ then
+				bestPos = nearQ.Pos
+				turnedQ = turnTo(root, pos, nearQ.Pos) ~= root
 			end
 		end
 		if bestPos then
@@ -1049,9 +1142,11 @@ function CombatService.Release(player, isAuto)
 		end
 	end
 
-	-- 5. players (manual releases only), capped at PvPCapPct of the target's current MaxHealth
-	-- (CR-M7: an Active kaiju at Kaiju.ReleaseCapPct, so its x20 HP is not 3 shots of saved-up stacks)
-	if not isAuto then
+	-- 5. players (manual releases only), at most PvPCapPct of the target's current MaxHealth (CR-M7: an Active kaiju at
+	-- Kaiju.ReleaseCapPct, so its x20 HP is not 3 shots of saved-up stacks). SKL-2: the cap is DamageWindow's 3 s window
+	-- per attacker -> victim (Q + Z + X together), no longer per cast; a used-up window deals nothing. A turned blast
+	-- (A23-61 server aim) hits monsters only.
+	if not isAuto and not turnedQ then
 		for _, v in playersNear(player, center, radius) do
 			local vp = v.Player
 			local vHum = Util.GetHumanoid(vp)
@@ -1061,12 +1156,16 @@ function CombatService.Release(player, isAuto)
 				if kstate(vp) == "Active" then
 					capPct = Config.Kaiju.ReleaseCapPct or 0.08
 				end
-				local raw = math.min(D * releaseMult, capPct * vHum.MaxHealth)
-				local dealt = Util.RoundDamage(raw)
-				total += CombatService.DamagePlayer(vp, dealt, player) or 0 -- CR-M10
-				table.insert(hits, { P = v.Pos, A = dealt, C = false, K = "P", V = vp.UserId }) -- CR-M23: V = victim
-				shownTotal += dealt
-				playersHit += 1
+				local raw = SKILL.Fit(D * releaseMult, SKILL.Room("Hit", player, vp, capPct * vHum.MaxHealth))
+				if raw > 0 then
+					local dealt = Util.RoundDamage(raw)
+					local applied = CombatService.DamagePlayer(vp, dealt, player) or 0
+					SKILL.Book("Hit", player, vp, applied)
+					total += applied -- CR-M10
+					table.insert(hits, { P = v.Pos, A = dealt, C = false, K = "P", V = vp.UserId }) -- CR-M23: V = victim
+					shownTotal += dealt
+					playersHit += 1
+				end
 			end
 		end
 		if playersHit > 0 then
@@ -1074,33 +1173,12 @@ function CombatService.Release(player, isAuto)
 		end
 	end
 
-	-- 6. Halo skill support heals nearby allies (self included); no charge-sharing remains.
-	-- Healing still uses actual HP removed, so a whiff heals nothing.
-	local healed = {}
-	local healPct = skill.HaloHealPct or 0.10
-	local healCapPct = skill.HaloHealCapPct or 0.30
-	if perks.ReleaseSupport == true and fac == "Halo" then
-		for _, a in S.PlayerService.GetReadyPlayers() do
-			if a.Parent and faction(a) == "Halo" and Util.IsAlive(a) then
-				local aRoot = Util.GetRoot(a)
-				local aHum = Util.GetHumanoid(a)
-				if aRoot and aHum and Util.FlatDistance(aRoot.Position, center) <= radius then
-					local amount = CombatService.HealPlayer(
-						a,
-						math.min(healPct * total, healCapPct * aHum.MaxHealth)
-					)
-					if a ~= player then
-						if amount > 0 then
-							table.insert(healed, a)
-						end
-					end
-				end
-			end
-		end
-	end
+	-- 6. Halo skill support heals the Halo players inside the blast (self included) from the HP really removed (a whiff
+	-- heals nothing); SKL-2: per ally through the 3 s window (SKILL.Heal)
+	local healed = SKILL.Heal(player, center, radius, total)
 
-	-- 7. lifesteal (Horns) on the total
-	applyLifesteal(player, perks, total)
+	-- 7. lifesteal (Horns) on the total; SKL-2: the skills' 3 s window (SKILL.Steal)
+	SKILL.Steal(player, total)
 
 	-- 8. activity
 	if not isAuto then
@@ -1127,6 +1205,7 @@ function CombatService.Release(player, isAuto)
 		Hits = hits,
 	})
 	CombatService.Released:Fire(player, {
+		Slot = "Q", -- SKL-2: Z / X casts (SkillService) fire this signal with their own slot
 		Stacks = 0, -- legacy event compatibility; never fabricate quest charge
 		Auto = isAuto,
 		Perfect = false,
@@ -1137,6 +1216,7 @@ function CombatService.Release(player, isAuto)
 		PlayersHit = playersHit,
 		Healed = healed,
 	})
+	return true -- SKL-2: the cast went off (SkillService keeps the shared gap from here)
 end
 
 ------------------------------------------------------------------ death pipeline (the only KO entry point)
@@ -1398,7 +1478,12 @@ local function onReleaseRemote(player)
 		return
 	end
 	lastManualAt[player] = os.clock()
-	CombatService.Release(player, false) -- MarkActive inside
+	local skills = S.SkillService
+	if skills and type(skills.Cast) == "function" then
+		skills.Cast(player, "Q", false) -- SKL-2: the shared 0.5 s gap / one queued press / the refusal words
+	else
+		CombatService.Release(player, false) -- MarkActive inside
+	end
 end
 
 -- A23-1: ON/OFF only after the unlock; the choice is saved (AutoCombatEnabled)
@@ -1458,14 +1543,28 @@ local function autoTick(p)
 	if os.clock() >= (nextSwingAt[p] or 0) and #monstersNear(p, pos, w.Range or 10) > 0 then
 		CombatService.Swing(p, false)
 	end
+	-- SKL-2: Z first when its auto rule holds (SkillService; SKL-3 adds X before it); the skills' shared 0.5 s gap then
+	-- holds Q back to a later tick
+	local skills = S.SkillService
+	if skills and type(skills.AutoCast) == "function" then
+		local okZ, cast = pcall(skills.AutoCast, p)
+		if not okZ then
+			loopWarn("AutoSkill", cast)
+		elseif cast then
+			return
+		end
+	end
 	local skill = Config.BasicSkill or {}
 	if os.clock() - (guard.releaseAt[p] or -math.huge) < (skill.Cooldown or 3) then return end
 	if numAttr(p, "Mana", 0) < (skill.ManaCost or Config.Vitals.ReleaseCost) then return end
 	local reach = (c.ReleaseCenter == "Target") and range or (skill.Radius or 9)
-	local inReach = monstersNear(p, pos, reach)
-	if c.ReleaseCenter == "Target" then inReach = aimed(inReach, root, c.AimCone) end
+	local inReach = monstersNear(p, pos, reach) -- A23-61 server aim: any direction (Release turns to it)
 	if #inReach > 0 then
-		CombatService.Release(p, true)
+		if skills and type(skills.Cast) == "function" then
+			skills.Cast(p, "Q", true) -- the shared gap
+		else
+			CombatService.Release(p, true)
+		end
 	end
 end
 

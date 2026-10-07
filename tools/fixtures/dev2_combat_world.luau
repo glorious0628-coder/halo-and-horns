@@ -2,7 +2,8 @@
 -- LootService, StoryQuestService (and PetService) together: tools/test_unarmed_start.py (A23-34) and
 -- tools/test_tamer.py (A23-39). tools/dev2_offline.py puts it after tools/fixtures/dev2_kit.luau and before the suite
 -- fixture. Needs the bindings CONFIG_SOURCE, UTIL_SOURCE, COMBAT_SOURCE, LOOT_SOURCE, STORY_SOURCE, SHOP_EXTRACT,
--- JUSTICE_EXTRACT; PET_SOURCE is optional (PetService is loaded when it is bound).
+-- JUSTICE_EXTRACT; PET_SOURCE is optional (PetService is loaded when it is bound), so are WINDOW_SOURCE and SKILL_SOURCE
+-- (SKL-2 DamageWindow / SkillService: tools/test_skills.py).
 -- The world: the real CombatService (its auto-combat loop stepped by hand), LootService, StoryQuestService and
 -- PetService on doubles of the other services; characters face -Z with a right / left hand; monsters are records with
 -- a root.
@@ -59,6 +60,7 @@ local function bareWorld(o)
 	local cfg = w.Config
 	local Signal = w.Util.Signal
 	w.Data, w.Mana, w.Damage, w.Announced, w.Monsters, w.Opened, w.Shoves = {}, {}, {}, {}, {}, {}, {}
+	w.Displaced = {} -- SKL-2: MonsterService.Displace calls { Rec, Mode, From, Studs, P }
 	local data = w.Data
 	local mirrored = {}
 	for _, key in cfg.Data.Mirrored do mirrored[key] = true end
@@ -107,7 +109,11 @@ local function bareWorld(o)
 	reg.KaijuService = { GetState = function() return "None" end, GetHealthMult = function() return 1 end }
 	local stage = newInstance("Folder", w)
 	reg.MonsterService = { MonsterKilled = Signal.new(),
-		Shove = function(rec) table.insert(w.Shoves, { Rec = rec, At = w.Clock }) end }
+		Shove = function(rec) table.insert(w.Shoves, { Rec = rec, At = w.Clock }) end,
+		Displace = function(rec, mode, from, studs, player)
+			table.insert(w.Displaced, { Rec = rec, Mode = mode, From = from, Studs = studs, P = player })
+			return studs
+		end }
 	function reg.MonsterService.GetMonstersInRadius(point, radius)
 		local out = {}
 		for _, rec in w.Monsters do
@@ -203,10 +209,16 @@ local function bareWorld(o)
 	end
 	local pet = PET_SOURCE and w:Load("PetService", PET_SOURCE) or nil
 	reg.PetService = pet
+	-- SKL-2 (when bound): the skills' 3 s window and the Q / Z / X service on the same registry
+	local window = WINDOW_SOURCE and w:Load("DamageWindow", WINDOW_SOURCE) or nil
+	local skills = SKILL_SOURCE and w:Load("SkillService", SKILL_SOURCE) or nil
+	reg.DamageWindow, reg.SkillService = window, skills
 	combat.Init(reg)
 	loot.Init(reg)
 	story.Init(reg)
 	if pet then pet.Init(reg) end
+	if window then window.Init(reg) end
+	if skills then skills.Init(reg) end
 	local n0 = #w.Spawned
 	combat.Start()
 	assert(#w.Spawned == n0 + 2, "CombatService.Start spawns the regen and the auto-combat loop")
@@ -214,9 +226,11 @@ local function bareWorld(o)
 	w.Spawned = {}
 	loot.Start()
 	if pet then pet.Start() end
+	if window then window.Start() end
+	if skills then skills.Start() end
 	w.Spawned = {}
 	assert(coroutine.resume(autoLoop)) -- runs to its first task.wait
-	w.Combat, w.Loot, w.Story, w.Pet = combat, loot, story, pet
+	w.Combat, w.Loot, w.Story, w.Pet, w.Window, w.Skills = combat, loot, story, pet, window, skills
 	-- one auto-combat step for every ready player
 	function w:AutoTick()
 		local ok, err = coroutine.resume(autoLoop)
