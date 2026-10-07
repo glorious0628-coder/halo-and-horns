@@ -1474,6 +1474,113 @@ function Config.QuestKind(kind)
 	return kind
 end
 
+-- quality_ideas ③ monster barks (lines_pack §2-2 as written): BarkService picks a line at MonsterService.Moment
+-- (Spot / Hit) and its Idle roll and writes it on the monster model (attributes Bark, BarkAt); game dev 1's
+-- MonsterLabels shows it in a BillboardGui bubble.
+-- English only (A23-48), <= 8 words a line. Cadence: one bark per monster per PerMonster s, per zone per PerZone s.
+-- Missing kind -> Config.QuestKind(kind) lines. Golden monsters (Config.Monsters.GoldenChance, incl. the tutorial
+-- golden slime) prefer Lines.Golden for EVERY trigger; a trigger Golden lacks falls back to the kind's lines.
+-- Lines.Goose is for GooseService (the optional goose barks, lines_pack §2-1: not wired yet; BarkService skips it).
+Config.Barks = {
+	Enabled = true,
+	PerMonster = 12, -- s: at most one bark per monster
+	PerZone = 6, -- s: at most one bark per zone (all monsters in it share this)
+	Show = 3, -- s the bubble stays up
+	MaxDistance = 60, -- studs: bubble visible range
+	LowAt = 0.3, -- HP fraction for Low (once per life)
+	IdleEvery = 10, -- s between Idle rolls (no target, a player within IdleNear)
+	IdleNear = 40,
+	Chance = { Spot = 0.5, Hit = 0.2, Low = 1, Idle = 0.15 },
+	Priority = { "Low", "Spot", "Hit", "Idle" }, -- same moment: only the first one speaks
+	Lines = {
+		Slime = {
+			Spot = { "Blub?", "Blub! New friend? Blub!" },
+			Hit = { "Bloop! Rude.", "Squish! Hey, I'm jelly!" },
+			Low = { "Wobbly… so wobbly… blub." },
+			Idle = { "Blub blub. Sparkle snack time." },
+		},
+		PumpkinSlime = {
+			Spot = { "Blub-kin? Blub-kin!" },
+			Hit = { "Squish! My stem!" },
+			Low = { "Too squishy! Need a patch nap." },
+			Idle = { "Orange is my best color. Blub.", "Candy smells nice today. Blub-kin." },
+		},
+		BigSlime = { -- King Slime
+			Spot = { "Who dares wobble near the King?", "A visitor! Bow! Or wobble. Either works." },
+			Hit = { "Hey! Royal jelly here!" },
+			Low = { "The King needs… a royal nap." },
+			Idle = { "King of the puddle. Big puddle!", "Royal rule one: more snacks. Blub." },
+		},
+		Goblin = {
+			Spot = { "Dibs! Need more glow!", "Ooh, sparkly! Grab Club, grab!" },
+			Hit = { "Hey! I grabbed first!" },
+			Low = { "Wait… why do we grab again?" },
+			Idle = { "Meeting #47: grab more. Same as #46.", "Grab more glow. Then… grab more." },
+		},
+		BatGoblin = {
+			Spot = { "Flap flap! Candy? Dibs!", "Bat Club? No, Grab Club! Flap!" },
+			Hit = { "Eek! Watch the wings!" },
+			Low = { "Flap away! Grab later!" },
+			Idle = { "Grab Club, night shift. Flap flap." },
+		},
+		GoblinBrute = {
+			Spot = { "New stuff for the sack!", "Not stealing! Surprise collecting!" },
+			Hit = { "Hey! Sack's closed today!", "Ow! Mind the sack!" },
+			Low = { "Sack too heavy… can't run!" },
+			Idle = { "Big sack. Bigger sack. BIGGEST sack!" },
+		},
+		Skeleton = {
+			Spot = { "HALT! …Please?", "Guarding! Guarding what? Not sure. Halt!" },
+			Hit = { "Clank! I'm on duty here!" },
+			Low = { "Clatter clatter! I'm fine. Mostly." },
+			Idle = { "Is it Wednesday yet? …No.", "Tuesday again. Love Tuesdays. I think." },
+		},
+		SkeletonKnight = {
+			Spot = { "Halt! Knight on duty. Since forever." },
+			Hit = { "My armor! I polished it Tuesday!" },
+			Low = { "Is my shift over yet?" },
+			Idle = { "Same post. Same Tuesday. Same me.", "Guarding the Crown. Which Crown? Oh well." },
+		},
+		GhostMinion = {
+			Spot = { "Boo! Boo! Boo! …Together now!", "Team Boo, go!" },
+			Hit = { "Hey! Wait for the team!" },
+			Low = { "Float away! Float away!" },
+			Idle = { "Count off! One, two, boo!" },
+		},
+		LittleGhost = {
+			Spot = { "Boo! …Did that work?" },
+			Hit = { "Eep! That tickles!" },
+			Low = { "I'm see-through enough already!" },
+			Idle = { "Floaty floaty. Candy smells nice.", "Boo practice. Day one hundred." },
+		},
+		GhostKing = {
+			Spot = { "Visitors! Finally! Welcome to my hollow!", "BOO! …The Pumpkin King never does that." },
+			Hit = { "Ow! I'm see-through, not tough!" },
+			Low = { "Fading… dramatically… are you watching?" },
+			Idle = { "My hollow beats his patch. Obviously." },
+		},
+		PumpkinKing = {
+			Spot = { "Welcome to my patch! Pick a pumpkin!" },
+			Hit = { "Ha! You tickle my stem!" },
+			Low = { "Fine, fine! Candy for everyone!" },
+			Idle = { "Ghost King thinks he's the best. Cute.", "Same patch, every year. Best patch!" },
+		},
+		Golden = { -- any golden monster: used first for every trigger
+			Spot = { "So much sparkle! Not sharing!" },
+			Hit = { "Hey! You're scratching my shine!" },
+			Low = { "Okay, okay! Share the sparkle!" },
+			Idle = { "Ate all the dust. Tummy ache." },
+		},
+		Goose = { -- GooseService: Spot = appears, Hit = accepted tug (RegisterHit), Idle = hovering,
+			-- Low = co-op gauge >= 0.8, or tug-of-war pivot >= 0.8 of the way to either end
+			Spot = { "HONK! I'm not a piggy bank!" },
+			Hit = { "Honk! Gentle hands, please!", "Tug, tug, HONK!" },
+			Low = { "Okay, okay! You win! Honk!" },
+			Idle = { "No golden eggs today. Honk.", "Both sides want me? Popular goose!" },
+		},
+	},
+}
+
 -- true while a season id (MonsterTypes[*].Season) is on; nil = no season (always on). override = true / false forces
 -- every season on / off (tests, previews)
 -- the server clock seasons end on (A23-28 HW-13: workspace server time; os.time outside a running place)

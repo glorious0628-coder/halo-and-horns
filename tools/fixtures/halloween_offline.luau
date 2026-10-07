@@ -1676,7 +1676,7 @@ local function hwWorld(opts)
 
 	-- MonsterService pieces: SpawnEvent / RemoveEvent / DamageMonster / killRecord / despawn (real), spawnMonster = a
 	-- record maker that uses the real golden roll
-	local ms = { MonsterKilled = util.Signal.new() }
+	local ms = { MonsterKilled = util.Signal.new(), Moment = util.Signal.new() } -- Moment: ③ barks (DamageMonster fires Hit)
 	ms.MonsterKilled:Connect(function(p, info) table.insert(f.Killed, { Player = p, Info = info }) end)
 	local golden = execute("MonsterService.golden", MONSTER_GOLDEN_SOURCE, env(), config, util, config.Monsters)
 	local H = { records = {}, pending = {}, SPAWN_TRIES = 8 }
