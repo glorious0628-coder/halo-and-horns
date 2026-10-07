@@ -57,16 +57,30 @@
     "JackpotOther": "rbxassetid://99814762304779",
     "SkillLearn": "rbxassetid://113535664889883"
   },
-  "pending": [],
+  "pending": [
+    "Loot"
+  ],
+  "kept": {
+    "about": "round-3 sounds that have no round-4 file yet; still current in Config.Audio.Files (do not retire)",
+    "ids": {
+      "ComboMilestone": "rbxassetid://120183624157841",
+      "KillPop": "rbxassetid://76243013610008",
+      "LevelUp": "rbxassetid://115723389387503",
+      "SwingMage": "rbxassetid://136838684864577",
+      "SwingTamer": "rbxassetid://126503879214394",
+      "SwingWarrior": "rbxassetid://100665788892468",
+      "Tap": "rbxassetid://101266273493121",
+      "WindowOpen": "rbxassetid://72025655652305"
+    }
+  },
   "old": {
-    "about": "round-3 uploads (2026-10-07, art/sfx/*.ogg masters); Config.Audio.Files still points here until 게임성 개발 1 wires the round-4 ids below. Delete these assets / files only after the new ids are wired and checked in Play.",
+    "about": "round-3 uploads replaced by round-4 files (art/sfx/*.ogg masters). Retire these ids / files only after 게임성 개발 1 wires the round-4 ids and the Play check passes (tools/sfx_wiring_check.py, tools/sfx_loadcheck.py).",
     "uploaded": "2026-10-07",
     "format": "wav (pcm_s16le from the art/sfx/*.ogg masters; Chrome sent .ogg as an unknown type)",
     "ids": {
       "AutoOff": "rbxassetid://87842131842953",
       "AutoOn": "rbxassetid://91575528786721",
       "ComboCoin": "rbxassetid://132118526896477",
-      "ComboMilestone": "rbxassetid://120183624157841",
       "Deny": "rbxassetid://70560315563605",
       "Devour": "rbxassetid://89066730830142",
       "GoldPickup": "rbxassetid://74126067367127",
@@ -75,9 +89,7 @@
       "HitHeavy2": "rbxassetid://129011812816837",
       "HitSoft1": "rbxassetid://132253070570696",
       "HitSoft2": "rbxassetid://138414840858825",
-      "KillPop": "rbxassetid://76243013610008",
       "KingBell": "rbxassetid://133609264734232",
-      "LevelUp": "rbxassetid://115723389387503",
       "Potion": "rbxassetid://139764142335079",
       "Purify": "rbxassetid://112385811106575",
       "QuestDone": "rbxassetid://125748535247961",
@@ -88,13 +100,8 @@
       "SkillHalo": "rbxassetid://94791750026317",
       "SkillHorns": "rbxassetid://98826164651498",
       "SwingArcher": "rbxassetid://110195369508891",
-      "SwingMage": "rbxassetid://136838684864577",
-      "SwingTamer": "rbxassetid://126503879214394",
-      "SwingWarrior": "rbxassetid://100665788892468",
       "TalkBlip": "rbxassetid://72477911054987",
-      "Tap": "rbxassetid://101266273493121",
-      "WindowClose": "rbxassetid://96155752903162",
-      "WindowOpen": "rbxassetid://72025655652305"
+      "WindowClose": "rbxassetid://96155752903162"
     }
   }
 }
