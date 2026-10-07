@@ -1,6 +1,26 @@
 # HANDOFF_CODEX — 지금까지 한 것, 지금 상태, 다음에 할 것 (2026-10-06 기준)
 
-> **이 문서에서 현재 유효한 것은 맨 위 "최신 인계 (2026-10-07 저녁, 계정 전환 전)" 절뿐이다.**
+> **이 문서에서 현재 유효한 것은 맨 위 "최신 인계 (2026-10-07 밤 23:00 컴퓨터 끄기 전)" 절이다. 그 아래 "2026-10-07 저녁" 절은 표·규칙 참고용.**
+
+## 최신 인계 (2026-10-07 밤 23:00 컴퓨터 끄기 전) — 검수 작성
+사용자: "오후 11시까지 작업 정리하고 컴퓨터 꺼 줘" → 23:00 종료 예약(`shutdown /s /f`, 검수). 세션별 밤 인계: `docs/handoff/*_2026-10-07_night.md`. 오늘 사용자 지적은 SPEC **A23-74**, 대조 결과는 `docs/review/main_studio_audit_2026-10-08.md`, 게시 체크리스트는 `docs/design/launch_ops_checklist.md`.
+
+**메인 Studio(build/GoodEvil.rbxlx):** 21:22 저장본에 지도 v2 코드·지형·초원 3D 60·숲 키트 202·빛 마을 3D 나무·고갯길 3D 바위 70·묻힌 장식 16 고침·새 지형 타일 9·SunRays 끔·몬스터 색 3장이 들어감. 그 뒤 개발 1이 감사 고침(안내 버튼 자동 번역 끔, 제단 E 바로, 하늘 빌보드 안 씀) + **새 HUD(4f20a8b) + 말풍선 bark2(fb137f6)**까지 sync하고 PC·폰 Play 사진 → Ctrl+S → place/ 복사·commit 중이었음(개발 1 밤 인계에서 저장 시간 확인).
+
+**main에 들어간 것(오늘):** 프롤로그 띠 없음, 팀 알림 영어, 지도 v2, 지형 타일 FF2, SunRays 끔, 새 HUD(PC·폰 같은 틀, 검사 55/55), 말풍선 12종 그림 + 몬스터별 키 + 의성어 대사(그림 없는 몬스터는 둥근 코드 말풍선), 감사 고침, place 한글 검사 도구 고침(한글 0 확인), push_paths 개선.
+
+**내일 첫 순서:**
+1. 개발 1 밤 인계 확인 → 메인 Studio 저장·place 확인(build=place, 0 0).
+2. **무기 먼저 병합:** `weapon-sound-r1`(main + dev2-sound 892fa28 + wtc-weapon-client dd1d4135, 증거 518b4df, 전체 60개 결과 확인) → main → sync → `py tools/play_weapon_first.py pc|phone` 사진. 게시 때 모든 서버 종료(체크리스트).
+3. **검수 워크플로 결과 확인(23:00에 끊겼을 수 있음):** `origin/fix/a2374-camera3`(카메라: 화살표 키·스틱 반경·폰 Follow 모드·dt), `fix/a2374-separation2`(몬스터 겹침, 없으면 separation 리뷰대로 다시), `merge/translucent`(반투명 — 검토 OK, main에 없으면 다시 병합). 각각 검증 → main → sync → PC·폰 사진.
+4. 소리 57개 연결(`docs/design/sound_wiring_onepass_2026-10-07.md`) → Play → 옛 ogg 정리(소리 세션).
+5. 3D 가져오기: `build/import_all/1_first`(A 빛 성 9조각+분수 ②, E, H 뿔 성 ③) → 사용자 WorldKit '가져오기 시작'(검수 마우스로는 반응 없었음) → id 장부 → 메인 배치(분수·성·표지판·가로등·소품).
+6. **사용자 답 대기:** 뿔 성 ③(앞 ② + 새 뒷모습, `art/review/town5/horns_castle_mix_compare.jpg`)으로 할지. 다른 걸 고르면 `build/import_H/H_HornsCastle_B2.glb`.
+7. 그다음 쇼츠 다시 찍기(촬영 편집, 메인에 다 들어간 뒤). 고친 쇼츠는 다운로드 `HaloHorns_ShortsFix_2026-10-07`(목소리 크게·또렷, 자막 안전 영역 밖 0, 팀 8명).
+- 크레딧 메모: Firefly 잔액이 세션마다 다르게 계산됨(이미지 생성 1 약 9,655 / 이미지 생성 2 약 8,485) → 내일 한 번 Firefly 화면에서 실제 잔액 확인. Tripo 웹 ① 2,465, API 5.
+- 스탯 2단계 `dev2-stats2`(4cc19db)는 지시 없이 만든 것 — 보관만.
+
+> (이전) **"최신 인계 (2026-10-07 저녁, 계정 전환 전)"**
 
 ## 최신 인계 (2026-10-07 저녁, 계정 전환 전) — 검수 작성
 
