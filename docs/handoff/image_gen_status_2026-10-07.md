@@ -10,6 +10,9 @@
 - **⑧ 교차로 돌길** — `tools/apply_surface_materials.lua` GE_Cobblestone StudsPerTile 14→8 + Organic(5c7cfb1). 그림 `art/review/zone/crossroads_cobble_scale_8.jpg`.
 - 어제(10/06) 가져온 40개 애셋 id: `art/models/worldkit/import40_assets_2026-10-06.json` + 모델 만드는 도구 `tools/build_kit_from_ids.py`(MCP 한 번, 화면 제어 없음). 계급 장식은 앞 -Z → 서버 Yaw = 0(개발 2 반영).
 
+- **슬라임 뒤통수 얼굴** (사용자 "징그러워") — 13종 앞·뒤·옆 검사 → 뒤 얼굴은 초원 슬라임·왕 슬라임뿐. 텍스처만 고침(0크레딧): `art/models/tripo/MonsterSlimeCube_tex_noback.png`, `BigSlimeCube_tex_blue_noback.png`(1024). 시트 `art/review/monsters/slime_backface_fix.jpg`(3733381, 검수 OK). 업로드 = 이미지 개발, TextureID 교체 = 개발 1. 도구 `tools/back_face_erase.py`(1024 텍스처에 써야 칸이 안 빔).
+- **오프닝 콘티** — `art/review/opening/opening_storyboard_v1.jpg`(56b5186, 중간 20장 0크레딧, 원본 `art/out/opening/` 미추적). 검수 조건(보라 안개 손·십자 없는 고리 투구·삐친 얼굴) 반영. 고를 안 대기.
+
 ## 대기 중
 - **다음 3D 가져오기 묶음** `build/import_next/WorldKit_ImportNext.glb`(뿔 성 70×67×58, 빛 성 70×55×66, 앞 -Z) — 화면 제어라 다른 것과 모아서, 할 때 검수에 먼저. 만드는 법: `tools/worldkit_combine.py`(spec에 fit 크기) → WorldKit 가져오기 창 한 번 → `execute_luau`로 Model·피벗 정리 → id 기록.
 - **3b Tripo**(약 480): 3a를 게임에서 본 뒤.
