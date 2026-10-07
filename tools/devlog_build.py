@@ -5,12 +5,17 @@
 
 입력: docs/devlog/<plan>_plan.json (줄·장면·효과음·제목 초안), build/devlog/raw/*.mp4 (FilmSet 녹화),
       build/devlog/turn/<name>/f_*.png (tools/devlog_turntable.py), art/ (승인 그림)
-출력: build/devlog/<plan>/<short id>/ final.mp4 · en.srt · ko.srt · meta.txt · check_sheet.png (git 밖)
+출력: build/devlog/<plan>/<short id>/ final.mp4 · en.srt · ko.srt · meta.txt · check_sheet.png · safe_check.json (git 밖)
+      (안전 영역 시트: py tools/devlog_safe_sheet.py build/devlog/<plan>/<short id>)
 
 - 장면: 파이썬(PIL)이 프레임마다 그린다 — 영상 자르기·확대/밀기(부드러운 소수점 이동), 흔들림, 전환(번쩍·휙·펀치),
   큰 글자·칩 '뿅' 등장, 자막(1~3단어, 가운데 크게, 중요한 단어 금색/빨강, 굵은 외곽선). 인코더 하나로 바로 내보낸다.
-- 내레이션: MeloTTS(MIT) EN-US (build/tts/.venv), 앞뒤 무음을 잘라 빈틈 없이 잇는다.
-- 효과음: 휙·뿅·쿵·딩을 numpy로 직접 합성한다(저작권 없음). 음악 없음.
+- 자막(네온, 사용자 2026-10-07): 가로 540 가운데 고정, 덩어리마다 크기·줄바꿈을 한 번 정하고 강조 단어가 바뀌어도
+  줄이 움직이거나 커지지 않는다. 너무 길면 두 줄 → 글자 줄이기. 프레임마다 자막·이모지·큰 글자·칩 상자를 재서
+  쇼츠 안전 영역 SAFE(60,200)-(960,1500) 밖이 하나라도 있으면 빌드가 실패한다(safe_check.json).
+- 내레이션: MeloTTS(MIT) EN-US (build/tts/.venv), 앞뒤 무음을 잘라 잇는다. 또렷하게(저음 컷·3 kHz 살짝 올림·압축),
+  문장 끝(. ! ?)에서는 sentence_gap만큼 더 쉰다.
+- 효과음: Kenney CC0 + 직접 합성(휙). 말하는 동안에는 효과음을 낮춘다(덕킹). 음악 없음.
 - 소리 크기: 두 번 재는 loudnorm, -14 LUFS / -1.5 dBTP.
 - {DAYS}: 빌드하는 날(KST) 기준 2026-10-31 베타까지 남은 날.
 """
@@ -45,11 +50,18 @@ CX = (SAFE[0] + SAFE[2]) // 2
 EMOJI_FONT = "C:/Windows/Fonts/seguiemj.ttf"
 VBAND = (150, 1500)          # neon style: rows the game footage fills (full width); outside = blurred copy
 NEON_CAP_Y, NEON_CAP_SIZE = 1400, 120
+# neon captions sit on the frame's centre line and must stay inside SAFE even at the pop peak (x 1.06) and with their glow:
+# visible width <= 2 * (SAFE[2] - CAPX) / 1.06 - 2 * glow margin
+CAPX = 540
+CAP_POP = [0.7, 0.9, 1.04, 1.06, 1.03, 1.0]
+CAP_MAXW = int(2 * (SAFE[2] - CAPX) / CAP_POP[3]) - 2 * 22
+SAFE_ALPHA = 128              # a pixel counts as visible text / outline / strong glow above this alpha (safe-area check)
 NEON_CHUNK = (12, 2)          # neon captions: max characters / words on screen at once
 CHECK = (2, 180, 12)          # check sheet: frames per second, tile width, tiles per row
 ENC_V = ["-preset", "medium", "-crf", "18"]   # video encoder settings
 TARGET_MB = 0                 # > 0: cap the video bitrate so the whole file stays under this size (the long-form: 95)
 EXTRA_BOARDS = {}             # name -> fn(shot) for boards a wrapper adds (tools/devlog_long.py)
+SAFE_CHECK = True             # neon shorts: fail the build if any caption / overlay box leaves SAFE (the long-form turns it off)
 BETA = dt.date(2026, 10, 31)
 GOLD, RED, WHITE = (255, 214, 80), (255, 84, 84), (255, 255, 255)
 
@@ -225,6 +237,74 @@ def neon_img(parts, size):
     return im
 
 
+def cap_layout(words, max_w, size=None, min_size=84):
+    """one fixed layout for a caption chunk: (size, lines) where lines = [[word, ...], ...]. Words keep a tight gap
+    (0.26 x size). One line while it fits at >= min_size, else one word per line (still centred)."""
+    size = size or NEON_CAP_SIZE
+
+    def line_w(ws, sz):
+        f = neon_font(sz)
+        return sum(f.getlength(w) for w in ws) + 0.26 * sz * (len(ws) - 1) + 2 * max(6, sz // 9)
+
+    sz = size
+    while sz > min_size and line_w(words, sz) > max_w:
+        sz -= 4
+    if line_w(words, sz) <= max_w or len(words) == 1:
+        while sz > 40 and line_w(words, sz) > max_w:
+            sz -= 4
+        return sz, [list(words)]
+    sz = size
+    while sz > 40 and max(line_w([w], sz) for w in words) > max_w:
+        sz -= 4
+    return sz, [[w] for w in words]
+
+
+def cap_img(words, colors, size, lines):
+    """render a caption chunk with its fixed layout; colors[i] = rgb of words[i] (white = no glow). Every highlight state
+    of one chunk has the same canvas size and word positions, so the line never moves."""
+    f = neon_font(size)
+    stroke = max(6, size // 9)
+    gap = 0.26 * size
+    pad = 40
+    lh = int(size * 1.25)
+    widths = [[f.getlength(w) for w in ln] for ln in lines]
+    lw = [sum(ws) + gap * (len(ws) - 1) for ws in widths]
+    tw = int(max(lw)) + stroke * 2 + pad * 2
+    th = lh * len(lines) + int(size * 0.2) + stroke * 2 + pad * 2
+    im = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
+    glow = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
+    dg, d = ImageDraw.Draw(glow), ImageDraw.Draw(im)
+    places = []
+    k = 0
+    for li, ln in enumerate(lines):
+        x = pad + stroke + (max(lw) - lw[li]) / 2
+        y = pad // 2 + stroke + li * lh
+        for wi, w in enumerate(ln):
+            places.append((w, x, y, colors[k]))
+            x += widths[li][wi] + gap
+            k += 1
+    for w, x, y, col in places:
+        if tuple(col) != WHITE:
+            dg.text((x, y), w, font=f, fill=tuple(col) + (230,), stroke_width=stroke + 10, stroke_fill=tuple(col) + (200,))
+    im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(16)))
+    for w, x, y, col in places:
+        d.text((x + 4, y + 7), w, font=f, fill=(0, 0, 0, 160), stroke_width=stroke, stroke_fill=(0, 0, 0, 160))
+        d.text((x, y), w, font=f, fill=tuple(col) + (255,), stroke_width=stroke, stroke_fill=(12, 10, 18, 255))
+    return im
+
+
+_EMO = {}
+
+
+def emoji_img(e, size=104):
+    if (e, size) not in _EMO:
+        fe = ImageFont.truetype(EMOJI_FONT, size)
+        im = Image.new("RGBA", (int(size * 1.6), int(size * 1.6)), (0, 0, 0, 0))
+        ImageDraw.Draw(im).text((int(size * 0.2), int(size * 0.1)), e, font=fe, embedded_color=True)
+        _EMO[(e, size)] = im.crop(im.getbbox() or (0, 0, 1, 1))
+    return _EMO[(e, size)]
+
+
 def neon_fit(text, max_w, size, emoji=False):
     """largest size (step 4) whose drawn width fits max_w: the text, its outline on both sides and, for a caption that ends
     with an emoji, the emoji (0.8 x size) and its gap"""
@@ -269,7 +349,26 @@ def pop_scale(i):
     return seq[i] if i < len(seq) else 1.0
 
 
-def paste_center(canvas, im, cx, cy, scale=1.0):
+_VIS = {}
+
+
+def visible_box(im):
+    """bbox of the pixels a viewer reads (alpha > SAFE_ALPHA), cached per image"""
+    key = id(im)
+    if key not in _VIS:
+        _VIS[key] = (im, im.getchannel("A").point(lambda a: 255 if a > SAFE_ALPHA else 0).getbbox())
+    return _VIS[key][1]
+
+
+def paste_center(canvas, im, cx, cy, scale=1.0, check=None):
+    """paste im centred at (cx, cy); check = (log list, kind, frame) records the visible box for the safe-area check"""
+    if check is not None:
+        bb = visible_box(im)
+        if bb:
+            x0 = cx - im.width * scale / 2
+            y0 = cy - im.height * scale / 2
+            check[0].append((check[2], check[1], (round(x0 + bb[0] * scale), round(y0 + bb[1] * scale),
+                                                  round(x0 + bb[2] * scale), round(y0 + bb[3] * scale))))
     if scale != 1.0:
         im = im.resize((max(1, int(im.width * scale)), max(1, int(im.height * scale))), Image.BICUBIC)
     canvas.alpha_composite(im, (int(cx - im.width / 2), int(cy - im.height / 2)))
@@ -356,24 +455,29 @@ def board_stage(color_in="#4A5BC4", color_out="#10122A"):
 
 
 TEAM_CARDS = [("🔍", "BOSS", "#F2C94C"), ("🔨", "BUILDER", "#6FCF97"), ("🖥️", "BUILDER", "#6FCF97"), ("🖌️", "ARTIST", "#56CCF2"),
-              ("✏️", "ARTIST", "#56CCF2"), ("🧩", "ART DEV", "#BB86FC"), ("🎥", "FILM CREW", "#FF8A65")]
+              ("✏️", "ARTIST", "#56CCF2"), ("🧩", "ART DEV", "#BB86FC"), ("🔊", "SOUND", "#FF7FC8"), ("🎥", "FILM CREW", "#FF8A65")]
 
 
 def team_cells():
-    """7 big cards: 3 + 3 + 1, emoji on top, one word under it"""
+    """8 cards (the 8 sessions): rows of 3 + 3 + 2 centred on the frame (x 540), inside the Shorts safe area even at
+    the pop peak; emoji on top, one word under it"""
     emo = ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109)
     cells = []
-    cw, ch = 280, 290
+    cw, ch, gx, gy = 246, 270, 20, 20
+    rows = [TEAM_CARDS[0:3], TEAM_CARDS[3:6], TEAM_CARDS[6:8]]
+    flat = []
+    for r, row in enumerate(rows):
+        x0 = CAPX - (len(row) * cw + (len(row) - 1) * gx) // 2
+        for k in range(len(row)):
+            flat.append((x0 + k * (cw + gx), BOX_Y + 60 + r * (ch + gy)))
     for i, (e, word, col) in enumerate(TEAM_CARDS):
-        row, colx = i // 3, i % 3
-        x = SAFE[0] + 10 + colx * (cw + 20) if i < 6 else CX - cw // 2
-        y = BOX_Y + 50 + row * (ch + 22)
+        x, y = flat[i]
         cell = rounded((cw, ch), 38, hexrgb("#24306E"), outline=hexrgb(col), width=8)
         ic = Image.new("RGBA", (150, 150), (0, 0, 0, 0))
         ImageDraw.Draw(ic).text((10, 8), e, font=emo, embedded_color=True)
         ic = ic.crop(ic.getbbox() or (0, 0, 1, 1))
-        ic = contain(ic, 150, 150)
-        cell.alpha_composite(ic, ((cw - ic.width) // 2, 22))
+        ic = contain(ic, 132, 132)
+        cell.alpha_composite(ic, ((cw - ic.width) // 2, 24))
         lab = text_img([(word, hexrgb(col)[:3])], fit_size(word, cw - 30, 64))
         cell.alpha_composite(lab, ((cw - lab.width) // 2, ch - lab.height - 6))
         cells.append((cell, x + cw // 2, y + ch // 2))
@@ -610,13 +714,27 @@ def caption_chunks(text, hl, hlr, max_chars=14, max_words=3):
     toks = text.split()
     hl_words = set(w.lower().strip(".,!?:") for k in hl for w in fill(k).split())
     hlr_words = set(w.lower().strip(".,!?:") for k in hlr for w in fill(k).split())
+    # a short highlighted phrase ("art dev," / "sound maker,") stays in one chunk instead of splitting "AN ART" | "DEV,"
+    low = [w.lower().strip(".,!?:") for w in toks]
+    spans = {}
+    for k in list(hl) + list(hlr):
+        ph = [w.lower().strip(".,!?:") for w in fill(k).split()]
+        if len(ph) > 1 and len(" ".join(fill(k).split())) <= max_chars:
+            for i in range(len(low) - len(ph) + 1):
+                if low[i:i + len(ph)] == ph:
+                    spans.setdefault(i, i + len(ph))
     chunks, cur = [], []
-    for w in toks:
-        cand = " ".join([x for x in cur] + [w])
-        if cur and (len(cur) >= max_words or len(cand) > max_chars or re.search(r"[.!?:,]$", cur[-1])):
+    i = 0
+    while i < len(toks):
+        j = spans.get(i, i + 1)
+        unit = toks[i:j]
+        cand = " ".join(cur + unit)
+        too_many = len(cur) + len(unit) > max_words and not (len(unit) > 1 and len(cand) <= max_chars)
+        if cur and (too_many or len(cand) > max_chars or re.search(r"[.!?:,]$", cur[-1])):
             chunks.append(cur)
             cur = []
-        cur.append(w)
+        cur.extend(unit)
+        i = j
     if cur:
         chunks.append(cur)
     out = []
@@ -627,6 +745,40 @@ def caption_chunks(text, hl, hlr, max_chars=14, max_words=3):
             col = RED if key in hlr_words else GOLD if key in hl_words else WHITE
             parts.append((w + (" " if i < len(ch) - 1 else ""), col))
         out.append(parts)
+    return out
+
+
+def word_times(it):
+    """(WORD, start s) of each spoken word of a timeline line, timed exactly like the neon karaoke captions"""
+    line = it["line"]
+    cs = caption_chunks(fill(line["en"]), line.get("hl", []), line.get("hlr", []), max_chars=NEON_CHUNK[0], max_words=NEON_CHUNK[1])
+    words_all = [[t.upper().strip() for t, _ in ch_] for ch_ in cs]
+    lens = [sum(len(w) + 1 for w in c) - 1 + 3 for c in words_all]
+    t0, t1 = it["start"], it["speech_end"]
+    out, t = [], t0
+    for c, L in zip(words_all, lens):
+        d = (t1 - t0) * L / sum(lens)
+        wl = [len(w) + 2 for w in c]
+        tw = t
+        for w, l_ in zip(c, wl):
+            out.append((w.strip(".,!?:…"), tw))
+            tw += d * l_ / sum(wl)
+        t += d
+    return out
+
+
+def cue_times(it, cues):
+    """start times of the cue words in order (a repeated word = its next use), e.g. a team card pops as its word is said"""
+    if not cues:
+        return None
+    wt = word_times(it)
+    out, j = [], 0
+    for cue in cues:
+        key = cue.upper().strip(".,!?:…")
+        while j < len(wt) and wt[j][0] != key:
+            j += 1
+        out.append(wt[j][1] if j < len(wt) else it["start"])
+        j += 1
     return out
 
 
@@ -646,18 +798,17 @@ def build_caption_events(timeline, style="band"):
             t = t0
             for ci, (c, L) in enumerate(zip(words_all, lens)):
                 d = (t1 - t0) * L / sum(lens)
-                wl = [len(w) + 2 for w, _ in c]
+                ws = [w.strip() for w, _ in c]
+                size, lines = cap_layout(ws, CAP_MAXW)          # one layout per chunk: it never moves or resizes
+                wl = [len(w) + 2 for w in ws]
+                emo = line.get("emoji") if ci == len(words_all) - 1 else None
                 tw = t
                 for wi in range(len(c)):
                     # the spoken word in the line colour, hlr words always red, the rest white
-                    parts = [(w, ncol if k == wi else NEON["red"] if col == RED else WHITE) for k, (w, col) in enumerate(c)]
-                    if ci == len(words_all) - 1 and line.get("emoji"):
-                        parts = parts + [(" ", WHITE), (line["emoji"], "emoji")]
-                    txt = "".join(w for w, col in parts if col != "emoji")
-                    has_emoji = any(col == "emoji" for _, col in parts)
+                    cols = [ncol if k == wi else NEON["red"] if col == RED else WHITE for k, (w, col) in enumerate(c)]
                     dw = d * wl[wi] / sum(wl)
                     ev.append({"start": tw, "end": tw + dw, "pop_from": t, "hold": t1 + 0.06,
-                               "img": neon_img(parts, neon_fit(txt.strip(), SAFE[2] - SAFE[0] - 40, NEON_CAP_SIZE, has_emoji))})
+                               "img": cap_img(ws, cols, size, lines), "emoji": emo})
                     tw += dw
                 t += d
             continue
@@ -756,8 +907,9 @@ def synth_sfx(name):
 
 # ------------------------------------------------------------------ audio
 def tts_wavs(short, voice, tts_dir, out_dir, do_tts):
-    jobs = [{"id": "%s_%s" % (short["id"], l["id"]), "text": fill(l.get("tts", l["en"]), True),
-             "out": os.path.join(tts_dir, "%s_%s.wav" % (short["id"], l["id"])), "speaker": voice["speaker"], "speed": voice["speed"]}
+    jobs = [dict({"id": "%s_%s" % (short["id"], l["id"]), "text": fill(l.get("tts", l["en"]), True),
+                  "out": os.path.join(tts_dir, "%s_%s.wav" % (short["id"], l["id"]))},
+                 **{k: voice[k] for k in ("speaker", "speed", "noise_scale", "noise_scale_w", "sdp_ratio") if k in voice})
             for l in short["lines"] if not l.get("silent")]
     if do_tts:
         jf = os.path.join(out_dir, "tts_jobs.json")
@@ -766,15 +918,43 @@ def tts_wavs(short, voice, tts_dir, out_dir, do_tts):
         if r.returncode != 0:
             raise RuntimeError("tts failed:\n" + r.stderr[-3000:])
     out = {}
-    for j in jobs:  # trim the silence MeloTTS leaves before / after each line, convert to 48 kHz mono
+    for j in jobs:  # trim the silence MeloTTS leaves (gently: keep soft word ends), clean the voice, 48 kHz mono
         trimmed = j["out"].replace(".wav", "_trim.wav")
-        trim = "silenceremove=start_periods=1:start_threshold=-42dB:start_silence=0.02"
+        trim = "silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.06"
+        voice_fx = VOICE_FX if voice.get("process", True) else "anull"
         run([FFMPEG, "-hide_banner", "-loglevel", "error", "-y", "-i", j["out"], "-af",
-             "%s,areverse,%s,areverse,aresample=%d" % (trim, trim, SR), "-ac", "1", "-sample_fmt", "s16", trimmed])
+             "%s,areverse,%s,areverse,%s,aresample=%d" % (trim, trim, voice_fx, SR), "-ac", "1", "-sample_fmt", "s16", trimmed])
         with wave.open(trimmed) as w:
             out[j["id"]] = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32) / 32768.0
     return [out.get("%s_%s" % (short["id"], l["id"]), np.zeros(int(float(l.get("silent", 0)) * SR), dtype=np.float32))
             for l in short["lines"]]
+
+
+# a clearer voice: cut rumble, a little presence (consonants), gentle compression so every word is as loud
+VOICE_FX = ("highpass=f=90,equalizer=f=3200:t=q:w=1.0:g=3,equalizer=f=250:t=q:w=1.0:g=-2,"
+            "acompressor=threshold=-20dB:ratio=2.5:attack=5:release=80:makeup=2")
+
+
+def duck(fx, voice_track, depth=0.42, attack=0.015, release=0.25):
+    """lower the effects while the narrator talks (sidechain ducking): gain -> depth (0.42 = -7.5 dB) under speech"""
+    hop = SR // 200                                                    # 5 ms control rate
+    n = len(voice_track) // hop
+    if n == 0:
+        return fx
+    frames = voice_track[:n * hop].reshape(n, hop)
+    env = np.sqrt((frames ** 2).mean(axis=1))
+    speech = env > 0.015
+    g = np.ones(n)
+    a_up, a_dn = math.exp(-1 / (release * 200)), math.exp(-1 / (attack * 200))
+    cur = 1.0
+    for i in range(n):
+        target = depth if speech[i] else 1.0
+        a = a_dn if target < cur else a_up
+        cur = target + (cur - target) * a
+        g[i] = cur
+    gain = np.repeat(g, hop)
+    gain = np.pad(gain, (0, max(0, len(fx) - len(gain))), constant_values=1.0)[:len(fx)]
+    return fx * gain
 
 
 def write_wav(path, x):
@@ -811,7 +991,11 @@ def build_short(short, voice, out_root, do_tts=True):
     for l, v in zip(short["lines"], voices):
         d = len(v) / SR
         timeline.append({"line": l, "audio": v, "start": t, "speech_end": t + d})
-        t += d + float(l.get("gap", short.get("gap", GAP)))
+        # a clear stop after a sentence (user: "문장 끝을 분명히"), a short breath elsewhere
+        default_gap = short.get("gap", GAP)
+        if "gap" not in l and re.search(r"[.!?…]\s*$", fill(l.get("en", ""))):
+            default_gap = max(float(default_gap), float(short.get("sentence_gap", default_gap)))
+        t += d + float(l.get("gap", default_gap))
     total = t + float(short.get("tail", 0.4))
     nframes = int(round(total * FPS))
     # shots → frame ranges (a line's shots split its span by weight)
@@ -824,7 +1008,7 @@ def build_short(short, voice, out_root, do_tts=True):
         acc = f0
         for k, s in enumerate(ss):
             n = (f1 - acc) if k == len(ss) - 1 else round((f1 - f0) * ws[k] / sum(ws))
-            shots.append({"shot": s, "f0": acc, "f1": acc + n})
+            shots.append({"shot": s, "f0": acc, "f1": acc + n, "cue_t": cue_times(it, s.get("cues"))})
             acc += n
     # audio: narration + effects
     mix = np.zeros(int(total * SR) + SR)
@@ -839,6 +1023,12 @@ def build_short(short, voice, out_root, do_tts=True):
             o = int((sh["f0"] / FPS + at) * SR)
             o = max(0, o)
             fx[o:o + len(snd)] += snd[:max(0, len(fx) - o)]
+        name = sh["shot"].get("cue_sfx")
+        for tc in (sh["cue_t"] or []) if name else []:   # one effect on each cue word (team cards: the card pops as its word is said)
+            snd = sfx(name) * float(sh["shot"].get("sfx_gain", SFX_GAIN.get(name, 0.25)))
+            o = max(0, int(tc * SR))
+            fx[o:o + len(snd)] += snd[:max(0, len(fx) - o)]
+    fx = duck(fx, mix)
     raw_wav, norm_wav = os.path.join(out_dir, "mix_raw.wav"), os.path.join(out_dir, "mix.wav")
     write_wav(raw_wav, (mix + fx)[:int(total * SR)])
     loudnorm(raw_wav, norm_wav)
@@ -876,6 +1066,8 @@ def build_short(short, voice, out_root, do_tts=True):
     turn_cache = {}
     rnd = random.Random(3)
     last = None
+    safe_log = []          # (frame, kind, visible box) of every caption / emoji / big word / chip (neon shorts)
+    check_on = style == "neon" and SAFE_CHECK
     for sh in shots:
         s, f0, f1 = sh["shot"], sh["f0"], sh["f1"]
         n = max(1, f1 - f0)
@@ -912,8 +1104,9 @@ def build_short(short, voice, out_root, do_tts=True):
                     paste_center(fr, m, CX, int(s.get("y", BOX_Y + 560)), sc * pop_scale(i) if s.get("pop") else sc)
                 if cells:
                     per = int(s["every"] * FPS) if s.get("every") else max(1, int(n * 0.75) // len(cells))
+                    cue_t = sh["cue_t"]
                     for ci, (cell, cx, cy) in enumerate(cells):
-                        k = 99 if s.get("static") else i - ci * per
+                        k = 99 if s.get("static") else fi - math.ceil(cue_t[ci] * FPS - 1e-6) if cue_t and ci < len(cue_t) else i - ci * per
                         if k >= 0:
                             paste_center(fr, cell, cx, cy, pop_scale(k))
             # falling / rising icons
@@ -941,19 +1134,6 @@ def build_short(short, voice, out_root, do_tts=True):
                 amp = 10 * (1 - t) + 3
                 dx, dy = rnd.uniform(-amp, amp), rnd.uniform(-amp, amp)
                 fr = fr.transform(fr.size, Image.AFFINE, (1, 0, dx, 0, 1, dy), resample=Image.BILINEAR)
-            # chip / big word
-            ch = s.get("chip")
-            if ch:
-                pill = chip_img(ch)
-                chip_y = int(s.get("chip_y", SAFE[1] + 90 if int(s.get("cap_y", 9999)) > 800 else int(s["cap_y"]) + 175))
-                paste_center(fr, pill, SAFE[0] + 10 + pill.width // 2, chip_y, pop_scale(i))
-            bg_ = s.get("big")
-            if bg_:
-                txt = fill(bg_["text"])
-                col_ = NEON.get(bg_.get("color")) or hexrgb(bg_.get("color", "#FFD650"))[:3]
-                img_ = (neon_img([(txt, col_)], neon_fit(txt, SAFE[2] - SAFE[0] - 40, bg_.get("size", 170))) if style == "neon"
-                        else text_img([(txt, col_)], fit_size(txt, 860, bg_.get("size", 150))))
-                paste_center(fr, img_, CX, min(SAFE[3] - 110, max(SAFE[1] + 90, bg_.get("y", BOX_Y + 260))), pop_scale(i))
             # transition in
             kind = s.get("in", "punch")
             if kind == "punch" and i < 6:
@@ -974,11 +1154,42 @@ def build_short(short, voice, out_root, do_tts=True):
             # band + caption
             fr = fr.copy()
             fr.alpha_composite(band, (0, 0))
+            # chip / big word: drawn after the transition, so a whip never slides a word off the frame (user 2026-10-07)
+            ch = s.get("chip")
+            if ch:
+                pill = chip_img(ch)
+                chip_y = int(s.get("chip_y", SAFE[1] + 90 if int(s.get("cap_y", 9999)) > 800 else int(s["cap_y"]) + 175))
+                # left-aligned, far enough in that the pop (x 1.1 around its centre) never crosses the safe edge
+                paste_center(fr, pill, SAFE[0] + 14 + pill.width * 0.55, chip_y, pop_scale(i),
+                             check=(safe_log, "chip", fi) if check_on else None)
+            bg_ = s.get("big")
+            if bg_:
+                txt = fill(bg_["text"])
+                col_ = NEON.get(bg_.get("color")) or hexrgb(bg_.get("color", "#FFD650"))[:3]
+                if style == "neon":   # centred on the frame like the captions, fitted for the pop peak (x 1.1)
+                    img_ = neon_img([(txt, col_)], neon_fit(txt, int(2 * (SAFE[2] - CAPX) / 1.1) - 44, bg_.get("size", 170)))
+                    paste_center(fr, img_, CAPX, min(SAFE[3] - 110, max(SAFE[1] + 90, bg_.get("y", BOX_Y + 260))), pop_scale(i),
+                                 check=(safe_log, "big", fi) if check_on else None)
+                else:
+                    img_ = text_img([(txt, col_)], fit_size(txt, 860, bg_.get("size", 150)))
+                    paste_center(fr, img_, CX, min(SAFE[3] - 110, max(SAFE[1] + 90, bg_.get("y", BOX_Y + 260))), pop_scale(i))
             tt = fi / FPS
             for c in caps:
                 if c["start"] <= tt < c["end"]:
                     k = int((tt - c.get("pop_from", c["start"])) * FPS)
-                    paste_center(fr, c["img"], CX if style == "neon" else CAP_CX, int(s.get("cap_y", cap_y)), pop_scale(k))
+                    cy_ = int(s.get("cap_y", cap_y))
+                    if style == "neon":
+                        img_ = c["img"]
+                        # keep a two-line caption fully above the bottom safe edge / below the top edge
+                        cy_ = min(cy_, SAFE[3] - 10 - img_.height // 2 + 40) if cy_ > 800 else max(cy_, SAFE[1] + 10 + img_.height // 2 - 40)
+                        sc = CAP_POP[k] if k < len(CAP_POP) else 1.0
+                        paste_center(fr, img_, CAPX, cy_, sc, check=(safe_log, "caption", fi) if check_on else None)
+                        if c.get("emoji"):   # the emoji floats above (or, for a top caption, below) the line, never inside it
+                            em = emoji_img(c["emoji"])
+                            ey = cy_ - img_.height // 2 - 10 if cy_ > 800 else cy_ + img_.height // 2 + 20
+                            paste_center(fr, em, CAPX, ey, sc, check=(safe_log, "emoji", fi) if check_on else None)
+                    else:
+                        paste_center(fr, c["img"], CAP_CX, cy_, pop_scale(k))
                     break
             if kind == "flash" and i < 5:
                 a = [0.85, 0.6, 0.35, 0.18, 0.06][i]
@@ -989,6 +1200,17 @@ def build_short(short, voice, out_root, do_tts=True):
     enc.stdin.close()
     if enc.wait() != 0:
         raise RuntimeError("encode failed")
+    if check_on:   # every caption / emoji / big word / chip box of every frame inside the Shorts safe area
+        bad = [(f_, k_, b_) for f_, k_, b_ in safe_log if b_[0] < SAFE[0] or b_[1] < SAFE[1] or b_[2] > SAFE[2] or b_[3] > SAFE[3]]
+        rep_ = {"safe": SAFE, "frames": nframes, "boxes": len(safe_log), "outside": len(bad),
+                "worst": sorted(bad, key=lambda r: -max(SAFE[0] - r[2][0], SAFE[1] - r[2][1], r[2][2] - SAFE[2], r[2][3] - SAFE[3]))[:20],
+                "extent": [min(b[0] for _, _, b in safe_log), min(b[1] for _, _, b in safe_log),
+                           max(b[2] for _, _, b in safe_log), max(b[3] for _, _, b in safe_log)] if safe_log else None,
+                "fps": FPS, "log": [[f_, k_, list(b_)] for f_, k_, b_ in safe_log]}   # every box, for tools/devlog_safe_sheet.py
+        json.dump(rep_, open(os.path.join(out_dir, "safe_check.json"), "w"), indent=1)
+        print("safe-area check: %d boxes in %d frames, outside %d, extent %s" % (len(safe_log), nframes, len(bad), rep_["extent"]), flush=True)
+        if bad:
+            raise RuntimeError("caption / overlay outside the Shorts safe area: %s" % rep_["worst"][:5])
     run([FFMPEG, "-hide_banner", "-loglevel", "error", "-y", "-i", final, "-vf",
          "drawbox=x=%d:y=%d:w=%d:h=%d:color=red@0.9:t=8,fps=%s,scale=%d:-2,tile=%dx%d"
          % (SAFE[0], SAFE[1], SAFE[2] - SAFE[0], SAFE[3] - SAFE[1], CHECK[0], CHECK[1], CHECK[2], math.ceil(total * CHECK[0] / CHECK[2])),
