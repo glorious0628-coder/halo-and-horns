@@ -5717,5 +5717,14 @@
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --tol 28 --soft 6 + clean_haze --min-island 80; checked light/dark/magenta/green + PortraitFrame + 96px",
   "preview": "art/review/s2/story_speakers_hq_sheet.jpg",
   "note": "이야기 창 왕관 조각 화자(Speakers.Shard · Fountain) 초상, 새 키. ShardBase와 같은 금빛 조각 + 금관 띠, 얼굴 없음, 빛살 없음(4각 반짝이 별 3). PortraitFrame 창에 아래 맞춤. 중간 2안 중 A(검수 고름) → 고급."
+ },
+ "AV_PersonalAvatar": {
+  "status": "on_hold",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium only (0 credits), 3:2",
+  "prompt": "art/prompts/AV_B_Look.txt, AV_B_Parts.txt, AV_B_Clothes.txt",
+  "file": "art/out/s2/avatar/AV_B_Look_1.png, AV_B_Look_2.png, AV_B_Parts_1.png, AV_B_Clothes_1.png",
+  "preview": "art/review/s2/avatar_look_sheet.jpg (c491321, shown to the user)",
+  "note": "보류: 사용자 2026-10-07 지금 아바타로 (\"그냥 지금 아바타로 하자 / 아바타 올리기 되게 복잡하네\"). 그 전에 사용자가 고른 안 = B: 검은 긴 머리 높은 포니테일 + 차분한 검은 눈 + 남색 오버핏 지퍼 재킷·흰 티 + 회색 바지 + 검흰 운동화. 개인용(게임에 넣지 않음, 판매 안 함). 고급 0장. 두 번째 시트 art/review/s2/avatar_personal_sheet.jpg(e715a3a)는 사용자에게 안 보여 줌(기록용). 다시 하면: 셔츠·바지 클래식 판형 585×559 → 헤어 3D(Tripo) → 얼굴(올리는 방법 먼저, docs/design/personal_avatar_howto_2026-10-07.md)."
  }
 }
