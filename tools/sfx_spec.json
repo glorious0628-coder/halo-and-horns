@@ -163,14 +163,14 @@
    }
   },
   "SwingArrow": {
-   "status": "option (critique: upload ONE arrow, Audio plays it twice at +0.068 s, 1.10x, 0.85 vol when 2+ targets)",
+   "status": "replaces SwingArcher (sound_spec §1-1: upload ONE arrow, Audio plays it twice at +0.068 s, 1.10x, 0.85 vol when 2+ targets)",
    "tier": "quiet",
    "volume": 0.25,
    "repeat": "up to 240/min",
    "say": "슉 (one arrow)",
    "moment": "Single-arrow file for the code-doubled archer shot.",
    "rules": {
-    "durMs": {"range": [50, 80], "hard": [40, 95]},
+    "durMs": {"range": [65, 90], "hard": [50, 100]},
     "attackMs": {"range": [0, 8], "hard": [0, 20]},
     "peakAtMs": {"range": [2, 20], "hard": [0, 35]},
     "centroidHz": {"range": [3000, 4300], "hard": [2500, 5000]},
@@ -278,23 +278,24 @@
    }
   },
   "HitCrit": {
-   "status": "new key",
+   "status": "new key: a LAYER on top of the material hit (sound_spec §1-1: A = metal klang + sparkles, B = no metal: pang + falling stars + soft 'jing'; the body comes from HitSoft / HitHeavy)",
    "tier": "normal",
-   "volume": 0.4,
+   "volume": 0.38,
    "repeat": "6-12/min (needs Gap 1.5 s: ~23/min for archers)",
    "say": "빡! 캉★ (whack-klang)",
-   "moment": "Crit swing; critique: play it as a layer on the normal material hit.",
+   "moment": "Crit swing (PvE swings only): played over the normal material hit, first target crit, Gap 1.5 s, Max 1.",
    "rules": {
-    "durMs": {"range": [180, 270], "hard": [120, 300]},
+    "durMs": {"range": [180, 250], "hard": [120, 300]},
     "attackMs": {"range": [0, 5], "hard": [0, 10]},
     "peakAtMs": {"range": [0, 8], "hard": [0, 15]},
     "phoneDropDb": {"range": [0, 3], "hard": [0, 5]},
     "lt150": {"range": [0, 0.02], "hard": [0, 0.05]},
-    "centroidHz": {"range": [1500, 4500], "hard": [800, 6000]},
+    "lt300": {"range": [0, 0.05], "hard": [0, 0.12]},
+    "centroidHz": {"range": [2500, 4500], "hard": [1500, 6000]},
     "gt8k": {"range": [0, 0.06], "hard": [0, 0.1]},
     "harshDb": [0, 14]
    },
-   "notes": {"centroidHz": "the rejected crits sit at 270-370 Hz (a bigger muddy thud)", "durMs": "nothing over 300 ms"}
+   "notes": {"centroidHz": "a layer centred near 3.5 kHz; the rejected crits sit at 270-370 Hz (a bigger muddy thud)", "lt300": "no body: the material hit under it is the body", "durMs": "nothing over 300 ms"}
   },
   "HurtBig": {
    "status": "new file (today = HitHeavy2, which becomes the skeleton wood hit)",
@@ -1113,6 +1114,60 @@
     "lt300": [0, 0.005],
     "phoneDropDb": [0, 0.5],
     "gt8k": [0, 0.05]
+   }
+  },
+  "Equip": {
+   "status": "new key P0 (sound_spec §5: Upgrade / buy / equip leaves GoldPickup)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "rare (the first wood weapon right after the first quest's 150 gold)",
+   "say": "착! 반짝 (click-clack + a small sparkle)",
+   "moment": "A weapon is bought or equipped at the blacksmith.",
+   "rules": {
+    "durMs": {"range": [250, 300], "hard": [180, 380]},
+    "attackMs": {"range": [0, 5], "hard": [0, 15]},
+    "firstOnsetMs": [0, 5],
+    "lt300": {"range": [0, 0.02], "hard": [0, 0.06]},
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 4]},
+    "centroidHz": [1200, 4500],
+    "gt8k": [0, 0.06],
+    "harshDb": [0, 12]
+   },
+   "notes": {"sound": "a ratchet / latch 'chak' (not a coin: 2.3-2.7 kHz metal rings belong to the coins) + a small sparkle"}
+  },
+  "PowerUp": {
+   "status": "new key (검수 2026-10-07, A23-68 #3)",
+   "tier": "big",
+   "volume": 0.6,
+   "repeat": "once (the first weapon at the blacksmith)",
+   "say": "반짝반짝↑ 짠! (a rising sparkle into a small ta-da)",
+   "moment": "Under the 1-1.5 s Power count-up when the first weapon is taken; shorter than LevelUp, unlike QuestDone.",
+   "rules": {
+    "durMs": {"range": [1000, 1400], "hard": [800, 1600]},
+    "firstOnsetMs": [0, 10],
+    "centDir": "up",
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 4]},
+    "lt150": {"range": [0, 0.01], "hard": [0, 0.03]},
+    "gt8k": [0, 0.08],
+    "harshDb": [0, 12]
+   },
+   "notes": {"pairs": "no stepped arpeggio (LevelUp / QuestDone / ComboMilestone own those); a sweep, not a melody"}
+  },
+  "Jump": {
+   "status": "new key (user 2026-10-07: '점프할 때도 소리 나면 좋겠어')",
+   "tier": "quiet",
+   "volume": 0.25,
+   "repeat": "often (every jump): short and soft",
+   "say": "폴짝 / 퐁 (hop)",
+   "moment": "My character jumps.",
+   "rules": {
+    "durMs": {"range": [150, 260], "hard": [100, 330]},
+    "attackMs": {"range": [0, 10], "hard": [0, 25]},
+    "peakAtMs": {"range": [0, 40], "hard": [0, 80]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 6]},
+    "lt150": {"range": [0, 0.02], "hard": [0, 0.05]},
+    "gt8k": [0, 0.05],
+    "harshDb": [0, 10]
    }
   }
  },

@@ -92,17 +92,22 @@
 ## 게임 효과음 4차 — Firefly 생성 (소리 만들기, 2026-10-07)
 
 사용자 결정(A23-67): 소리 만들기 세션이 Adobe Firefly '효과음 생성'으로 만든다. 모든 소리를 다시 만든다(사용자 "그대로 두는 것도 다시 다!").
+기준은 `docs/design/sound_spec_2026-10-07.md`(검수, 9d911c2)와 `tools/sfx_spec.json` / `tools/sfx_check.py`.
 - **만든 곳:** firefly.adobe.com 효과음 생성(사용자 Adobe 계정, 앱 안 브라우저). 1번 생성 = 10크레딧, 변형 4개, 길이 1초(PowerUp 1.5초).
   Adobe 안내: Firefly 모델로 만든 결과물은 상업용으로 써도 안전. 유명 게임·브랜드 이름은 프롬프트에 넣지 않았다.
-- **크레딧:** 25번 × 10 = 250 (9,640 → 9,390, 11/4 초기화). 사용자 "크레딧은 걱정마슈", 검수 묶음 OK.
-- **프롬프트:** `art/prompts/SFX_<키>_<번호>.txt` 25개(활 4 · 빛 마법 6 · 뿔 마법 4 · 퍽 4 · 치명타 3 · 점프 2 · PowerUp 2).
-- **원본:** Firefly 생성 기록에서 내려받은 WAV 48 kHz 16비트 스테레오 100개(`build/sfx_firefly/raw`, git 밖, 사용자 OK "이번 세션 계속 받아").
+- **크레딧:** 35번 × 10 = 350 (9,640 → 9,290, 11/4 초기화). 사용자 "크레딧은 걱정마슈", 검수 묶음 OK.
+- **프롬프트:** `art/prompts/SFX_<키>_<번호>.txt` 35개.
+- **원본:** Firefly 생성 기록에서 내려받은 WAV 48 kHz 16비트 스테레오 140개(`build/sfx_firefly/raw`, git 밖, 사용자 OK "이번 세션 계속 받아").
   애셋 id·sha256은 `art/sfx/cand/firefly_r4.json`, 받는 도구 `tools/sfx_fetch.py`.
-- **우리 손질(4차 b):** 설계표 검사기(`tools/sfx_check.py` + `tools/sfx_spec.json`)의 판정을 목표로 원본마다 여러 자리·길이·고역/저역 통과를
-  시험해 가장 잘 맞는 자르기를 남김(`tools/sfx_cut.py`). 48 kHz 모노, K 가중 가장 큰 100 ms = -17 LUFS, 최고점 -2.5 dBFS 아래.
-  활 두 발 = 같은 화살을 +0.068 s에 1.10배·0.85 크기로 한 번 더(설계표 비평대로).
-- **섞은 것:** 치명타 섞음 = Firefly 퍽 + Firefly 쨍 한 겹. 빛 마법 후보에는 우리 합성 '샤랑'(두 부분음, 22 ms 감쇠)을 아주 얇게 얹은 것이 있다.
-  Kenney 소리는 4차 b 후보에 없다(4차 첫 판의 퍽 섞음은 버림).
+- **우리 손질:** 설계서 검사기의 판정을 목표로 원본마다 여러 자리·길이·고역/저역 통과를 시험해 가장 잘 맞는 자르기를 남김
+  (`tools/sfx_cut.py`). 48 kHz 모노, K 가중 가장 큰 100 ms = -17 LUFS, 최고점 -2.5 dBFS 아래.
+- **Firefly가 못 맞춘 소리(A23-67 순서대로 Kenney → 합성, `tools/sfx_make.py`):**
+  - 동전 ComboCoin k*: Kenney Impact `impactMetal_light_000`(CC0)을 두 번(설계서 레시피, 좋아했던 '동전 두 개' 방향, 복사 아님).
+  - 말랑 HitSoft k*: Kenney Impact `impactSoft_medium_002` / `_004`(CC0, 포화) + 우리 합성 젤리 덩어리(새 값) + 폰용 작은 '뽀'. kC는 Firefly 말랑 + 합성 덩어리.
+  - 치명타 B HitCrit sB*: 금속 없는 층 = 우리 합성 '팡' + 떨어지는 별 알갱이 + '징'(설계서 B 레시피).
+  - 빛 마법 후보 일부에는 우리 합성 '샤랑'(두 부분음, 22 ms 감쇠)을 아주 얇게 얹었다.
+- **장면 렌더:** `tools/sfx_scene.py`(실제 휘두름 → 타격 → 처치 → 동전 타이밍, 설계표 볼륨). 추천 조합 장면과 폰판을
+  `art/review/sfx_scene_2026-10-07/`에 둔다.
 - **시트·듣기판:** 공식 검사기 시트 `art/review/sfx_check_r4b_2026-10-07/<키>.png`(+ `summary.json`), 검수 듣기판
   https://claude.ai/artifact/EEwW3ounewa6BWPrFMFD2P . 후보 파일 `art/sfx/cand/*.wav`. 4차 첫 판(개발 2 모양 기준) 시트
   `art/review/sfx_firefly_2026-10-07*.png`은 기록으로만 둔다.
