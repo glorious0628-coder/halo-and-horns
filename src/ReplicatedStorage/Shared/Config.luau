@@ -1548,6 +1548,12 @@ Config.Barks = {
 	PerZone = 6, -- s: at most one bark per zone (all monsters in it share this)
 	Show = 3, -- s the bubble stays up
 	MaxDistance = 60, -- studs: bubble visible range
+	-- A23-74 (user 2026-10-07 "슬라임이 말하는 말풍선이 하나도 안 귀여움"): each monster family gets its own bubble art.
+	-- BubbleFamily = kind -> family (a kind not listed: its Config.QuestKind's family, else Default); BubbleArt = family ->
+	-- Config.UIArt.Parts key. MonsterLabels uses a family key only while its Id is uploaded (not ""), else Default.
+	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
+		LittleGhost = "Ghost", GhostMinion = "Ghost", GhostKing = "Ghost" },
+	BubbleArt = { Slime = "BarkBubbleSlime", Pumpkin = "BarkBubblePumpkin", Ghost = "BarkBubbleGhost", Default = "BarkBubble" },
 	LowAt = 0.3, -- HP fraction for Low (once per life)
 	IdleEvery = 10, -- s between Idle rolls (no target, a player within IdleNear)
 	IdleNear = 40,
@@ -3990,6 +3996,12 @@ Config.UIArt = {
 		-- the monster), no letters - dark navy text in TextRect. SliceScale 0.3 keeps the tail the same size at ~52 px and
 		-- lets only the 24 px middle band grow for a second line. MonsterLabels BillboardGui (game dev 1, BarkService)
 		BarkBubble = { Id = "rbxassetid://124351323911597", Size = Vector2.new(512, 190), Slice = Rect.new(84, 65, 446, 89), SliceScale = 0.3, TextRect = { 0.077, 0.181, 0.844, 0.448 } },
+		-- A23-74 (user 2026-10-07 "not cute"): per-family bark bubbles (Config.Barks.BubbleArt), being drawn now. Id = "" =
+		-- not uploaded yet: MonsterLabels draws BarkBubble instead (IMG-R4). With the id add Size / Slice / SliceScale /
+		-- TextRect like BarkBubble (tail at the bottom left; drawn ~150-214 x 44-64 px)
+		BarkBubbleSlime = { Id = "" },
+		BarkBubblePumpkin = { Id = "" },
+		BarkBubbleGhost = { Id = "" },
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
 		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
 		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },

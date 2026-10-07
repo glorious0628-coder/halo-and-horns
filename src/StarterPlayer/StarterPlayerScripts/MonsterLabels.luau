@@ -13,7 +13,11 @@
 -- monster model; every new BarkAt (the same line again too) shows Bark in a speech bubble over the head for
 -- Config.Barks.Show s, only within Config.Barks.MaxDistance studs; no player names, chat settings do not matter. The
 -- bubble is Config.UIArt BarkBubble (9-slice, its tail at the bottom-left sits at the head) or, without that art, a
--- white rounded box with a navy rim. A bark already old when its monster streams in is not shown.
+-- white pill with a soft navy rim. A bark already old when its monster streams in is not shown.
+-- A23-74 (user 2026-10-07 "슬라임이 말하는 말풍선이 하나도 안 귀여움"): smaller, rounder bubbles that grow with the line
+-- (max 2 lines) in the game's Head font; the monster family's own bubble art (Config.Barks.BubbleFamily / BubbleArt)
+-- once it is uploaded; a jelly pop-in from the tail, a slow float while shown and a quick shrink + fade at the end
+-- (all off with UIKit.ReducedMotion). Every tween of a bubble is cancelled when the bubble is destroyed.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -28,8 +32,17 @@ local T = { Tick = 0.2, NameRange = 30, MaxNames = 5, HurtSeconds = 4, Cluster =
 local S = { Started = false, Fill = {}, HurtAt = {} } -- [BillboardGui] = last Fill scale / os.clock() of the last drop
 local C = nil
 -- bubble: At[model] = the last BarkAt seen (false = none yet); a newer bark replaces the bubble (B.Make)
-local B = { At = setmetatable({}, { __mode = "k" }), W = 230, H = 56, H2 = 74,
-	LongAt = 24, Lift = 1.1, Text = Color3.fromRGB(28, 36, 82), Rim = Color3.fromRGB(40, 52, 120), Pop = 0.12 }
+local B = { At = setmetatable({}, { __mode = "k" }),
+	-- A23-74 (user 2026-10-07): size in px. One line (<= LongAt letters): H tall, Base + letters x PerChar wide within
+	-- W..WMax; longer lines wrap to two: H2 tall, Base2 + letters x PerChar2 within W2..W2Max (was 230 x 56 / 74)
+	W = 150, WMax = 172, Base = 96, PerChar = 5, H = 44,
+	W2 = 176, W2Max = 214, Base2 = 120, PerChar2 = 2.6, H2 = 64, LongAt = 16,
+	Lift = 1.1, Text = Color3.fromRGB(28, 36, 82), TextMin = 11, TextMax = 21,
+	-- the code pill (no art): fully round, a thin soft rim; its text box as fractions of the pill
+	Rim = Color3.fromRGB(92, 108, 178), RimThick = 1.5, RimFade = 0.25, PillRect = { 0.1, 0.14, 0.8, 0.72 },
+	-- motion: UIScale From -> 1 (Back, Grow s) while the art's Size goes Stretch -> 1 x 1 (Elastic, Wobble s) from the
+	-- tail corner = squash & stretch; a Bob studs float (BobTime s each way); the last Out s shrink to OutScale + fade
+	From = 0.3, Grow = 0.34, Stretch = { 0.78, 1.22 }, Wobble = 0.42, Bob = 0.12, BobTime = 0.8, Out = 0.18, OutScale = 0.25 }
 
 local function myPos()
 	local ch = LocalPlayer.Character
@@ -49,68 +62,136 @@ local function isBoss(kind)
 	return type(def) == "table" and def.Boss == true
 end
 
-function B.Make(root, offsetY, text)
+-- A23-74: the bubble art key for a monster kind - its family's part (Config.Barks.BubbleFamily -> BubbleArt; a kind not
+-- listed uses its Config.QuestKind's family) only while that part has an uploaded Id, else BubbleArt.Default
+function B.ArtKey(kind)
+	local cfg = Config.Barks or {}
+	local arts = type(cfg.BubbleArt) == "table" and cfg.BubbleArt or {}
+	local fams = type(cfg.BubbleFamily) == "table" and cfg.BubbleFamily or {}
+	local fam = type(kind) == "string" and fams[kind] or nil
+	if fam == nil and type(kind) == "string" and type(Config.QuestKind) == "function" then
+		local ok, q = pcall(Config.QuestKind, kind)
+		fam = ok and type(q) == "string" and fams[q] or nil
+	end
+	local key = fam and arts[fam]
+	local parts = Config.UIArt and Config.UIArt.Parts or {}
+	local def = type(key) == "string" and parts[key] or nil
+	if type(def) == "table" and type(def.Id) == "string" and def.Id ~= "" then return key end
+	return type(arts.Default) == "string" and arts.Default or "BarkBubble"
+end
+
+-- A23-74: bubble px for a line - one line up to LongAt letters, else two; the width follows the letter count
+function B.SizeFor(text)
+	local n = utf8.len(text) or #text
+	if n > B.LongAt then
+		return math.clamp(B.Base2 + n * B.PerChar2, B.W2, B.W2Max), B.H2
+	end
+	return math.clamp(B.Base + n * B.PerChar, B.W, B.WMax), B.H
+end
+
+-- builds the bubble on root; returns it and its fade-out (nil with reduced motion: it just goes at the end)
+function B.Make(root, offsetY, text, kind)
 	local old = root:FindFirstChild("BarkBubble")
 	if old then old:Destroy() end
 	local cfg = Config.Barks or {}
+	local w, h = B.SizeFor(text)
 	local bb = Instance.new("BillboardGui")
 	bb.Name = "BarkBubble"
-	bb.Size = UDim2.fromOffset(B.W, #text > B.LongAt and B.H2 or B.H)
+	bb.Size = UDim2.fromOffset(w, h)
 	bb.SizeOffset = Vector2.new(0.5, 0.5) -- the bubble's bottom-left corner (its tail) at the attach point
-	bb.StudsOffset = Vector3.new(0.4, offsetY + B.Lift, 0)
+	local base = Vector3.new(0.4, offsetY + B.Lift, 0)
+	bb.StudsOffset = base
 	bb.MaxDistance = tonumber(cfg.MaxDistance) or 60
 	bb.LightInfluence = 0
 	bb.AlwaysOnTop = false
+	bb.ClipsDescendants = false -- the pop overshoots the box for a moment
 	local kit = C and C.UIKit
-	local art = nil
+	local art, used = nil, nil
 	if type(kit) == "table" and type(kit.ArtImage) == "function" then
-		local ok, img = pcall(kit.ArtImage, "BarkBubble", { Name = "Art", Size = UDim2.fromScale(1, 1) })
-		if ok and img then
-			art = img
-			art.Parent = bb
+		for _, key in { B.ArtKey(kind), "BarkBubble" } do
+			local ok, img = pcall(kit.ArtImage, key, { Name = "Art", Size = UDim2.fromScale(1, 1) })
+			if ok and img then
+				art, used = img, key
+				art.Parent = bb
+				break
+			end
 		end
 	end
+	local rim = nil
 	if not art then
 		art = Instance.new("Frame")
 		art.Name = "Art"
 		art.Size = UDim2.fromScale(1, 1)
 		art.BackgroundColor3 = Color3.new(1, 1, 1)
 		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, 14)
+		corner.CornerRadius = UDim.new(0.5, 0) -- A23-74: a pill
 		corner.Parent = art
-		local rim = Instance.new("UIStroke")
+		rim = Instance.new("UIStroke")
 		rim.Color = B.Rim
-		rim.Thickness = 2
+		rim.Thickness = B.RimThick
+		rim.Transparency = B.RimFade
 		rim.Parent = art
 		art.Parent = bb
 	end
+	art.AnchorPoint = Vector2.new(0, 1) -- scales out of the tail corner
+	art.Position = UDim2.fromScale(0, 1)
 	local label = Instance.new("TextLabel")
 	label.Name = "Line"
 	label.BackgroundTransparency = 1
-	local rect = Config.UIArt and Config.UIArt.Parts and Config.UIArt.Parts.BarkBubble
-	rect = art:IsA("ImageLabel") and type(rect) == "table" and rect.TextRect or { 0.07, 0.15, 0.86, 0.6 }
+	local def = used and Config.UIArt and Config.UIArt.Parts and Config.UIArt.Parts[used]
+	local rect = type(def) == "table" and type(def.TextRect) == "table" and def.TextRect or B.PillRect
 	label.Position = UDim2.fromScale(rect[1], rect[2])
 	label.Size = UDim2.fromScale(rect[3], rect[4])
 	label.Text = text
 	label.TextColor3 = B.Text
 	label.TextWrapped = true
 	label.TextScaled = true
-	local face = type(kit) == "table" and kit.Theme and kit.Theme.FontFace
-	if typeof(face) == "Font" then label.FontFace = face else label.Font = Enum.Font.GothamBold end
+	-- the game's round Head face (Denk One, the HUD hint bubble's Button style); Fredoka One without UIKit
+	local fontOk = type(kit) == "table" and type(kit.ApplyFont) == "function"
+		and pcall(kit.ApplyFont, label, Enum.FontWeight.ExtraBold, "Head")
+	if not fontOk then label.Font = Enum.Font.FredokaOne end
 	local size = Instance.new("UITextSizeConstraint")
-	size.MaxTextSize = 18
-	size.MinTextSize = 11
+	size.MaxTextSize = B.TextMax
+	size.MinTextSize = B.TextMin
 	size.Parent = label
 	label.Parent = art
 	local reduced = type(kit) == "table" and type(kit.ReducedMotion) == "function" and kit.ReducedMotion()
-	if not reduced then
-		local scale = Instance.new("UIScale")
-		scale.Scale = 0.6
-		scale.Parent = art
-		TweenService:Create(scale, TweenInfo.new(B.Pop, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	if reduced then
+		bb.Parent = root
+		return bb, nil
 	end
+	-- A23-74 motion: jelly pop from the tail corner + a slow float; every tween stops when the bubble is destroyed
+	local pop = Instance.new("UIScale")
+	pop.Name = "Pop"
+	pop.Scale = B.From
+	pop.Parent = art
+	art.Size = UDim2.fromScale(B.Stretch[1], B.Stretch[2])
 	bb.Parent = root
-	return bb
+	local tweens = {}
+	local function play(inst, info, goal)
+		local ok, tw = pcall(TweenService.Create, TweenService, inst, info, goal)
+		if ok and tw then
+			table.insert(tweens, tw)
+			tw:Play()
+		end
+	end
+	bb.Destroying:Connect(function()
+		for _, tw in tweens do tw:Cancel() end
+	end)
+	play(pop, TweenInfo.new(B.Grow, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 })
+	play(art, TweenInfo.new(B.Wobble, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out), { Size = UDim2.fromScale(1, 1) })
+	play(bb, TweenInfo.new(B.BobTime, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{ StudsOffset = base + Vector3.new(0, B.Bob, 0) })
+	-- the last B.Out s: shrink (Back In) and fade instead of vanishing
+	local function fadeOut()
+		if not bb.Parent then return end -- a newer bark already replaced it
+		play(pop, TweenInfo.new(B.Out, Enum.EasingStyle.Back, Enum.EasingDirection.In), { Scale = B.OutScale })
+		local quick = TweenInfo.new(B.Out, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+		play(art, quick, art:IsA("ImageLabel") and { ImageTransparency = 1 } or { BackgroundTransparency = 1 })
+		play(label, quick, { TextTransparency = 1 })
+		if rim then play(rim, quick, { Transparency = 1 }) end
+	end
+	return bb, fadeOut
 end
 
 -- the bark check of one monster this tick (called with its MonsterBar's root part)
@@ -125,8 +206,10 @@ function B.Check(model, root, barBB, me)
 	local text = model:GetAttribute("Bark")
 	if type(text) ~= "string" or text == "" then return end
 	if me and (root.Position - me).Magnitude > (tonumber(cfg.MaxDistance) or 60) then return end
-	local bubble = B.Make(root, barBB and barBB.StudsOffset.Y or 3, text)
-	task.delay(tonumber(cfg.Show) or 3, function()
+	local bubble, fadeOut = B.Make(root, barBB and barBB.StudsOffset.Y or 3, text, kindOf(model))
+	local show = tonumber(cfg.Show) or 3
+	if fadeOut then task.delay(math.max(0, show - B.Out), fadeOut) end
+	task.delay(show, function()
 		if bubble.Parent then bubble:Destroy() end -- a newer bark already replaced (destroyed) it otherwise
 	end)
 end

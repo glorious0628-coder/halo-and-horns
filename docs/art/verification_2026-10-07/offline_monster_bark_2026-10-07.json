@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 17,
+  "checks": 52,
   "failedChecks": [],
   "mutations": {
-    "total": 8,
-    "applied": 8,
-    "caught": 8,
+    "total": 17,
+    "applied": 17,
+    "caught": 17,
     "results": [
       {
         "mutation": "every tick shows the bubble again",
@@ -45,7 +45,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL the bubble goes after Config.Barks.Show seconds :: nil"
+          "CHECK_FAIL the bubble goes after Config.Barks.Show seconds :: nil",
+          "CHECK_FAIL the bubble goes after Config.Barks.Show seconds (with the fade) :: nil",
+          "CHECK_FAIL every tween of a destroyed bubble is cancelled (the float loop stops) :: nil"
         ]
       },
       {
@@ -69,17 +71,94 @@
         "failures": [
           "CHECK_FAIL the same line with a new BarkAt shows again (one bubble) :: 2",
           "CHECK_FAIL the first bubble's timer leaves the newer bubble :: nil",
-          "CHECK_FAIL without the art: a white rounded box with a rim (code fallback) :: nil"
+          "CHECK_FAIL without UIKit.ApplyFont: Fredoka One (never GothamBold) :: nil"
+        ]
+      },
+      {
+        "mutation": "letters counted as bytes",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the width counts letters, not bytes (… is one letter) :: 171"
+        ]
+      },
+      {
+        "mutation": "the old GothamBold font",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL without UIKit.ApplyFont: Fredoka One (never GothamBold) :: Font.GothamBold"
+        ]
+      },
+      {
+        "mutation": "the family art is never used",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a slime draws the slime bubble with its TextRect :: BarkBubble"
+        ]
+      },
+      {
+        "mutation": "an un-uploaded family key is used",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL not uploaded: every family falls back to BarkBubble :: BarkBubbleSlime",
+          "CHECK_FAIL the pumpkin family is its own (not the slime bubble), BarkBubble until uploaded :: BarkBubblePumpkin"
+        ]
+      },
+      {
+        "mutation": "the fallback has square corners",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the fallback is a pill (fully round) :: nil"
+        ]
+      },
+      {
+        "mutation": "reduced motion still wobbles",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL UIKit.ReducedMotion: no pop, no wobble, no float :: 3",
+          "CHECK_FAIL reduced motion: no fade either, the bubble just goes :: nil"
+        ]
+      },
+      {
+        "mutation": "the bubble vanishes with no fade",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL at the end it shrinks and fades instead of vanishing :: nil",
+          "CHECK_FAIL the art image fades too :: nil",
+          "CHECK_FAIL the fallback pill and its rim fade out too :: nil"
+        ]
+      },
+      {
+        "mutation": "a replaced bubble still fades",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a replaced bubble never fades (its timer sees it gone) :: nil"
+        ]
+      },
+      {
+        "mutation": "the float loop never stops",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL every tween of a destroyed bubble is cancelled (the float loop stops) :: nil",
+          "CHECK_FAIL a replaced bubble's float stops :: nil"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
-    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "090abafc0a9313ae43848b2388ba2af2c92f9cc35bb7fe54748127ea7f71e2ca"
+    "src/ReplicatedStorage/Shared/Config.luau": "cb419ccab3c036c7a18da868b36c0bfd6339df0bc8cfdab2158bd3fc203a918e",
+    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "0a02d846bc8a874509b1b57020cf5504bc4dd923a7464bcfd8b1f47f4a357d61"
   },
-  "fixtureSHA256": "7445b0cab46587309cca7b42886517e00302db4c1398a65910b50665a3d5fc94",
+  "fixtureSHA256": "fb92b78348df6fe70f5410d177c469f3b5cf045924f592fa67bf22f411be251c",
   "studioCalls": 0,
-  "contract": "Monster bark bubble offline test (MonsterLabels; lines_pack 2, dev2 BarkService contract\ndocs/design/lines_pack_server_2026-10-07.md section 3): a new BarkAt on a monster model shows its Bark in a speech bubble\nover the head for Config.Barks.Show s within Config.Barks.MaxDistance studs (the same line with a new BarkAt shows\nagain; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); the\nBarkBubble art (9-slice, TextRect) or a white rounded box with a navy rim; a newer bark replaces the bubble (never two). Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.",
+  "contract": "Monster bark bubble offline test (MonsterLabels; lines_pack 2, dev2 BarkService contract\ndocs/design/lines_pack_server_2026-10-07.md section 3): a new BarkAt on a monster model shows its Bark in a speech bubble\nover the head for Config.Barks.Show s within Config.Barks.MaxDistance studs (the same line with a new BarkAt shows\nagain; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); the\nBarkBubble art (9-slice, TextRect) or a white pill with a soft navy rim; a newer bark replaces the bubble (never two).\nA23-74 (user 2026-10-07 \"not cute\"): 150-172 x 44 px for one line, wider with more letters (utf8), two lines at H2 up to\nW2Max; the Head font (Fredoka One without UIKit); the family art (Config.Barks.BubbleFamily / BubbleArt) only once its\nId is uploaded, else BarkBubble; a jelly pop (UIScale Back + Size Elastic from the tail corner), a looping float, a\nshrink + fade in the last B.Out s, every tween cancelled when the bubble is destroyed or replaced, none with reduced\nmotion. Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.",
   "limitations": "How the bubble looks over real monsters (size, overlap with the name tag, phones) is a Studio check."
 }

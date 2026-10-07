@@ -37,6 +37,12 @@ imt.__index = {
 	end,
 	IsA = function(self, c) return self.ClassName == c end,
 	Destroy = function(self)
+		-- Destroying fires for the instance and its descendants first (the bubble's tween cleanup listens to it)
+		local function fire(node)
+			for _, fn in node.DestroyingFns do fn() end
+			for _, ch in node.Children do fire(ch) end
+		end
+		fire(self)
 		local p = rawget(self, "Parent")
 		if p then
 			for i, ch in p.Children do if ch == self then table.remove(p.Children, i) break end end
@@ -57,7 +63,9 @@ imt.__newindex = function(self, k, v)
 	rawset(self, k, v)
 end
 local function inst(class, name)
-	return setmetatable({ ClassName = class, Name = name or class, Children = {}, Attrs = {} }, imt)
+	local o = setmetatable({ ClassName = class, Name = name or class, Children = {}, Attrs = {}, DestroyingFns = {} }, imt)
+	rawset(o, "Destroying", { Connect = function(_, fn) table.insert(o.DestroyingFns, fn) return { Disconnect = function() end } end })
+	return o
 end
 
 local W = { Now = 1000, Timers = {} }
@@ -71,20 +79,35 @@ local function advance(dt)
 	for _, t in due do t.Fn() end
 end
 local kitArt = true
+local uploaded = { BarkBubble = true } -- the art ids the UIKit double can draw
+local artAsked = {} -- names ArtImage was asked for, in order
+local reducedMotion = false
+local fontCalls = {}
 local kit = {
 	ArtImage = function(name, props)
-		if not kitArt or name ~= "BarkBubble" then return nil end
+		table.insert(artAsked, name)
+		if not kitArt or not uploaded[name] then return nil end
 		local img = inst("ImageLabel", props.Name)
 		img.Size = props.Size
+		img.ArtKey = name
 		return img
 	end,
-	ReducedMotion = function() return false end,
+	ApplyFont = function(label, weight, role) table.insert(fontCalls, { Label = label, Weight = weight, Role = role }) return label end,
+	ReducedMotion = function() return reducedMotion end,
 	Theme = { FontFace = nil },
 }
+-- every tween made: Inst / Info (TweenInfo double: Args) / Goal / Played / Cancelled
+local tweens = {}
 local services = {
 	Players = { LocalPlayer = { Character = nil } },
 	ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function(_, n) return { __module = n } end } end },
-	TweenService = { Create = function() return { Play = function() end } end },
+	TweenService = { Create = function(_, target, info, goal)
+		local tw = { Inst = target, Info = info, Goal = goal, Played = false, Cancelled = false }
+		tw.Play = function() tw.Played = true end
+		tw.Cancel = function() tw.Cancelled = true end
+		table.insert(tweens, tw)
+		return tw
+	end },
 }
 local env = setmetatable({
 	game = { GetService = function(_, n) return assert(services[n], n) end },
@@ -98,7 +121,7 @@ local env = setmetatable({
 	BrickColor = { new = function(v) return v end }, Rect = ctor("Rect"), NumberRange = ctor("NumberRange"),
 	NumberSequence = ctor("NumberSequence"), ColorSequence = ctor("ColorSequence"), NumberSequenceKeypoint = ctor("NumberSequenceKeypoint"),
 	ColorSequenceKeypoint = ctor("ColorSequenceKeypoint"), CFrame = ctor("CFrame"), Font = ctor("Font"),
-	TweenInfo = { new = function() return {} end }, Enum = enum,
+	TweenInfo = { new = function(...) return { Args = { ... } } end }, Enum = enum,
 	Instance = { new = function(class) return inst(class) end },
 	typeof = function(v) return type(v) == "table" and rawget(v, "__kind") or type(v) end,
 	task = { delay = function(t, fn) table.insert(W.Timers, { At = W.Now + t, Fn = fn }) end, spawn = function() end, wait = function() end },
@@ -192,18 +215,169 @@ advance(0.5)
 m4.Attrs.Bark, m4.Attrs.BarkAt = "", W.Now
 B.Check(m4, root4, bar4, me)
 check(bubbleOf(root4) == nil, "an empty line: no bubble")
--- 7. long lines get a taller bubble; no art -> the white box with a navy rim
+-- 7. A23-74 (user 2026-10-07 "not cute"): small round bubbles, the width follows the letters, max 2 lines
+check(bb and bb.Size.Kind == "Offset" and bb.Size.X >= 150 and bb.Size.X <= 172 and bb.Size.Y >= 40 and bb.Size.Y <= 46,
+	"a short line: a small bubble (150-172 x 40-46 px)", bb and (bb.Size.X .. "x" .. bb.Size.Y))
+local function wOf(text) local w = B.SizeFor(text) return w end
+check(wOf("Blub?") <= wOf("Team Boo, go!") and wOf("Team Boo, go!") <= wOf("Squish! My stem!") and wOf("Squish! My stem!") <= 172
+	and wOf("Team Boo, go!") > wOf("Blub?"), "a longer one-line bark gets a wider bubble (<= 172 px)",
+	wOf("Blub?") .. "/" .. wOf("Team Boo, go!") .. "/" .. wOf("Squish! My stem!"))
+check(wOf("Blub… blub…") == wOf("Blub. blub."), "the width counts letters, not bytes (… is one letter)", wOf("Blub… blub…"))
 advance(0.5)
 m4.Attrs.Bark, m4.Attrs.BarkAt = "Wobbly... so wobbly... blub.", W.Now
 B.Check(m4, root4, bar4, me)
 local b4 = bubbleOf(root4)
-check(b4 and b4.Size.Y == B.H2 and b4.Size.X == B.W, "a long line gets the taller bubble", b4 and b4.Size.Y)
+check(b4 and b4.Size.Y == B.H2 and b4.Size.X >= B.W2 and b4.Size.X <= B.W2Max and B.H2 > B.H,
+	"a long line gets the two-line bubble", b4 and (b4.Size.X .. "x" .. b4.Size.Y))
+local _, longH = B.SizeFor("A visitor! Bow! Or wobble. Either works.")
+check(longH == B.H2 and wOf("A visitor! Bow! Or wobble. Either works.") == B.W2Max, "the longest lines stop at W2Max x H2 (two lines)")
+-- the round Head font (UIKit.ApplyFont ExtraBold / Head = the HUD bubble's Button face); Fredoka One without UIKit
+local fc = fontCalls[#fontCalls]
+check(fc and fc.Label == lineOf(root4) and fc.Weight == "FontWeight.ExtraBold" and fc.Role == "Head",
+	"the line uses the game's Head face (ExtraBold)")
+local lineMax = lineOf(root4) and lineOf(root4):FindFirstChild("UITextSizeConstraint")
+check(lineMax and lineMax.MaxTextSize == B.TextMax and B.TextMax > 18, "the text may grow bigger than before (MaxTextSize > 18)")
+local applyFont = kit.ApplyFont
+kit.ApplyFont = nil
+advance(0.5)
+m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub?", W.Now
+B.Check(m4, root4, bar4, me)
+check(lineOf(root4) and lineOf(root4).Font == "Font.FredokaOne", "without UIKit.ApplyFont: Fredoka One (never GothamBold)",
+	lineOf(root4) and lineOf(root4).Font)
+kit.ApplyFont = applyFont
+
+-- 8. per-family bubble art keys (Config.Barks.BubbleFamily / BubbleArt), used only once uploaded
+local parts = Config.UIArt.Parts
+check(parts.BarkBubbleSlime and parts.BarkBubbleSlime.Id == "" and parts.BarkBubblePumpkin and parts.BarkBubblePumpkin.Id == ""
+	and parts.BarkBubbleGhost and parts.BarkBubbleGhost.Id == "", "the three family keys exist, not uploaded yet (Id \"\")")
+check(B.ArtKey("Slime") == "BarkBubble" and B.ArtKey("GhostKing") == "BarkBubble" and B.ArtKey(nil) == "BarkBubble",
+	"not uploaded: every family falls back to BarkBubble", B.ArtKey("Slime"))
+parts.BarkBubbleSlime.Id = "rbxassetid://1"
+check(B.ArtKey("Slime") == "BarkBubbleSlime" and B.ArtKey("BigSlime") == "BarkBubbleSlime", "slimes and the King Slime: the slime bubble")
+check(B.ArtKey("PumpkinSlime") == "BarkBubble", "the pumpkin family is its own (not the slime bubble), BarkBubble until uploaded",
+	B.ArtKey("PumpkinSlime"))
+check(B.ArtKey("Goblin") == "BarkBubble" and B.ArtKey("BatGoblin") == "BarkBubble" and B.ArtKey("Skeleton") == "BarkBubble",
+	"goblins / skeletons: the default bubble")
+Config.MonsterTypes.TestJelly = { QuestAs = "Slime" }
+check(B.ArtKey("TestJelly") == "BarkBubbleSlime", "a kind not listed uses its QuestKind's family", B.ArtKey("TestJelly"))
+Config.MonsterTypes.TestJelly = nil
+parts.BarkBubblePumpkin.Id = "rbxassetid://2"
+parts.BarkBubbleGhost.Id = "rbxassetid://3"
+check(B.ArtKey("PumpkinSlime") == "BarkBubblePumpkin" and B.ArtKey("PumpkinKing") == "BarkBubblePumpkin"
+	and B.ArtKey("GhostMinion") == "BarkBubbleGhost" and B.ArtKey("LittleGhost") == "BarkBubbleGhost"
+	and B.ArtKey("GhostKing") == "BarkBubbleGhost", "pumpkins and ghosts get their own bubbles once uploaded")
+-- the bubble draws the family art with its own TextRect; art UIKit cannot draw -> BarkBubble
+uploaded.BarkBubbleSlime = true
+parts.BarkBubbleSlime.TextRect = { 0.1, 0.2, 0.8, 0.5 }
+advance(0.5)
+m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub!", W.Now
+B.Check(m4, root4, bar4, me)
+local art6 = bubbleOf(root4) and bubbleOf(root4):FindFirstChild("Art")
+local line6 = lineOf(root4)
+check(art6 and art6.ArtKey == "BarkBubbleSlime" and line6 and line6.Position.X == 0.1 and line6.Position.Y == 0.2
+	and line6.Size.X == 0.8 and line6.Size.Y == 0.5, "a slime draws the slime bubble with its TextRect", art6 and art6.ArtKey)
+uploaded.BarkBubbleSlime = nil
+advance(0.5)
+m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub!", W.Now
+B.Check(m4, root4, bar4, me)
+art6 = bubbleOf(root4) and bubbleOf(root4):FindFirstChild("Art")
+check(art6 and art6.ArtKey == "BarkBubble", "the family art fails to draw -> BarkBubble", art6 and art6.ArtKey)
+parts.BarkBubbleSlime.Id, parts.BarkBubblePumpkin.Id, parts.BarkBubbleGhost.Id = "", "", ""
+parts.BarkBubbleSlime.TextRect = nil
+
+-- 9. motion: jelly pop from the tail corner, a float while shown, shrink + fade at the end, every tween cancelled
+local function tweensOf(target)
+	local out = {}
+	for _, tw in tweens do if tw.Inst == target then table.insert(out, tw) end end
+	return out
+end
+local m7, root7, bar7 = monster(vec(6, 3, 0))
+B.Check(m7, root7, bar7, me)
+advance(0.5)
+m7.Attrs.Bark, m7.Attrs.BarkAt = "Blub?", W.Now
+B.Check(m7, root7, bar7, me)
+local b7 = bubbleOf(root7)
+local art7 = b7 and b7:FindFirstChild("Art")
+local pop7 = art7 and art7:FindFirstChild("Pop")
+check(art7 and art7.AnchorPoint.X == 0 and art7.AnchorPoint.Y == 1 and art7.Position.X == 0 and art7.Position.Y == 1,
+	"the art grows out of the tail corner (bottom left)")
+check(pop7 and pop7.ClassName == "UIScale" and pop7.Scale == B.From and B.From < 0.6, "it pops in from small (UIScale From)")
+local popT = tweensOf(pop7)[1]
+check(popT and popT.Played and popT.Goal.Scale == 1 and popT.Info.Args[2] == "EasingStyle.Back"
+	and popT.Info.Args[1] >= 0.25 and popT.Info.Args[1] <= 0.5, "pop: Back overshoot to 1 in about 0.35 s")
+local jellyT = tweensOf(art7)[1]
+check(art7 and art7.Size.X == B.Stretch[1] and art7.Size.Y == B.Stretch[2] and B.Stretch[1] < 1 and B.Stretch[2] > 1
+	and jellyT and jellyT.Played and jellyT.Goal.Size.X == 1 and jellyT.Goal.Size.Y == 1
+	and jellyT.Info.Args[2] == "EasingStyle.Elastic", "squash & stretch: tall-narrow -> 1 x 1 with an elastic wobble")
+local bobT = tweensOf(b7)[1]
+check(bobT and bobT.Played and bobT.Info.Args[4] == -1 and bobT.Info.Args[5] == true and bobT.Goal.StudsOffset
+	and math.abs(bobT.Goal.StudsOffset.Y - (b7.StudsOffset.Y + B.Bob)) < 1e-6 and B.Bob > 0 and B.Bob <= 0.3,
+	"a gentle float up and down while shown (looping StudsOffset tween)")
+local line7 = lineOf(root7)
+advance(Config.Barks.Show - B.Out - 0.05)
+check(#tweensOf(line7) == 0, "no fade before the last B.Out seconds")
+advance(0.1)
+local fadeT = tweensOf(line7)[1]
+local shrinkT = tweensOf(pop7)[2]
+check(bubbleOf(root7) == b7 and fadeT and fadeT.Goal.TextTransparency == 1 and shrinkT and shrinkT.Goal.Scale == B.OutScale
+	and B.OutScale < 1, "at the end it shrinks and fades instead of vanishing")
+local artFade = false
+for _, tw in tweensOf(art7) do if tw.Goal.ImageTransparency == 1 then artFade = true end end
+check(artFade, "the art image fades too")
+advance(B.Out)
+check(bubbleOf(root7) == nil, "the bubble goes after Config.Barks.Show seconds (with the fade)")
+local allCancelled = true
+for _, target in { b7, art7, pop7, line7 } do
+	for _, tw in tweensOf(target) do if not tw.Cancelled then allCancelled = false end end
+end
+check(allCancelled and bobT.Cancelled, "every tween of a destroyed bubble is cancelled (the float loop stops)")
+-- a newer bark replaces a bubble mid-float: the old one's tweens stop, its fade never starts
+advance(0.5)
+m7.Attrs.Bark, m7.Attrs.BarkAt = "Blub!", W.Now
+B.Check(m7, root7, bar7, me)
+local b8 = bubbleOf(root7)
+local line8 = lineOf(root7)
+local bob8 = tweensOf(b8)[1]
+advance(0.5)
+m7.Attrs.Bark, m7.Attrs.BarkAt = "Bloop! Rude.", W.Now
+B.Check(m7, root7, bar7, me)
+check(b8.Destroyed and bob8 and bob8.Cancelled, "a replaced bubble's float stops")
+advance(Config.Barks.Show - 0.5 - B.Out + 0.01)
+check(line8 and #tweensOf(line8) == 0, "a replaced bubble never fades (its timer sees it gone)")
+advance(1)
+check(bubbleOf(root7) == nil, "the newer bubble still goes on time")
+-- reduced motion: no pop, no float, no fade - it shows and goes
+reducedMotion = true
+advance(0.5)
+local n0 = #tweens
+m7.Attrs.Bark, m7.Attrs.BarkAt = "Blub?", W.Now
+B.Check(m7, root7, bar7, me)
+local b9 = bubbleOf(root7)
+local art9 = b9 and b9:FindFirstChild("Art")
+check(b9 and art9 and art9:FindFirstChild("Pop") == nil and art9.Size.X == 1 and art9.Size.Y == 1 and #tweens == n0,
+	"UIKit.ReducedMotion: no pop, no wobble, no float", #tweens - n0)
+advance(Config.Barks.Show + 0.01)
+check(bubbleOf(root7) == nil and #tweens == n0, "reduced motion: no fade either, the bubble just goes")
+reducedMotion = false
+
+-- 10. the code fallback: a white pill with a thin soft rim, text in PillRect, and it fades too
 kitArt = false
 advance(0.5)
 m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub!", W.Now
 B.Check(m4, root4, bar4, me)
 local b5 = bubbleOf(root4)
 local art5 = b5 and b5:FindFirstChild("Art")
-check(art5 and art5.ClassName == "Frame" and art5:FindFirstChild("UIStroke") and art5:FindFirstChild("UICorner")
-	and art5:FindFirstChild("Line"), "without the art: a white rounded box with a rim (code fallback)")
+local corner5 = art5 and art5:FindFirstChild("UICorner")
+local rim5 = art5 and art5:FindFirstChild("UIStroke")
+check(art5 and art5.ClassName == "Frame" and rim5 and corner5 and art5:FindFirstChild("Line"),
+	"without the art: a white rounded box with a rim (code fallback)")
+check(corner5 and corner5.CornerRadius[1] == 0.5 and corner5.CornerRadius[2] == 0, "the fallback is a pill (fully round)")
+check(rim5 and rim5.Thickness < 2 and rim5.Transparency > 0, "the fallback rim is softer (thinner, see-through)")
+local line5 = lineOf(root4)
+check(line5 and line5.Position.X == B.PillRect[1] and line5.Size.Y == B.PillRect[4], "the fallback text sits in PillRect")
+advance(Config.Barks.Show - B.Out + 0.01)
+local rimFade, bgFade = false, false
+for _, tw in tweensOf(rim5) do if tw.Goal.Transparency == 1 then rimFade = true end end
+for _, tw in tweensOf(art5) do if tw.Goal.BackgroundTransparency == 1 then bgFade = true end end
+check(rimFade and bgFade, "the fallback pill and its rim fade out too")
 print("MONSTER_BARK_SUMMARY checks=" .. checks .. " failed=" .. failed)
