@@ -590,6 +590,10 @@ SHORT_MAX = 14
 SHORT_NEEDS = [(("StoryQuests", "Defs"), "story quest"), (("Quests", "Templates"), "daily / extra quest template"),
                (("Board", "Jobs"), "board job")]
 TUT_SHORT_KEYS = ("Welcome", "Travel", "Quest", "Forge", "IronLevel", "IronGold", "Zone")
+# a ShortName '%s' the checker can fill: path -> every value it can take (3rd idea round #3: 'Meet %s' = the guide names)
+SHORT_SUBS = {("Tutorial", "ShortNames", "Welcome"): lambda tree: [
+    w["Name"] for w in (get(tree, ("Tutorial", "Welcome")) or {}).values()
+    if isinstance(w, dict) and isinstance(w.get("Name"), str)]}
 
 
 def count_phrase(after: str) -> str | None:
@@ -1198,8 +1202,13 @@ class Checker:
                 continue
             shown = re.sub(r"%[-+ #0]*\d*[di]", "10", s)
             if "%s" in s:
-                add("error", "shortname-length", path, s, "'%s' in a ShortName: its length on the row is unknown")
-            elif len(shown) > SHORT_MAX:
+                # a '%s' is allowed only where the checker knows every value (the guide names: 'Meet %s')
+                names = SHORT_SUBS[path](tree) if path in SHORT_SUBS else []
+                if not names:
+                    add("error", "shortname-length", path, s, "'%s' in a ShortName: its length on the row is unknown")
+                    continue
+                shown = shown.replace("%s", max(names, key=len))
+            if len(shown) > SHORT_MAX:
                 add("error", "shortname-length", path, s,
                     f"{len(shown)} characters (> {SHORT_MAX}): the phone quest row cuts it")
         for root, what in SHORT_NEEDS:

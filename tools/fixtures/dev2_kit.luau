@@ -490,8 +490,10 @@ local function newWorld(opts)
 	end
 	local gameState = newInstance("Folder", w)
 	function net.GameState() return gameState end
-	function net.Notify(player, text, kind) table.insert(w.Notices, { Player = player, Text = text, Kind = kind }) end
-	function net.NotifyAll(text, kind) table.insert(w.All, { Text = text, Kind = kind }) end
+	function net.Notify(player, text, kind, secs, sound)
+		table.insert(w.Notices, { Player = player, Text = text, Kind = kind, Sound = sound })
+	end
+	function net.NotifyAll(text, kind, secs, sound) table.insert(w.All, { Text = text, Kind = kind, Sound = sound }) end
 	function net.Fx(player, kind, data) table.insert(w.Fx, { Player = player, Kind = kind, Data = data }) end
 	modules.Net = net
 	w.Net, w.Remotes, w.GameState = net, remotes, gameState
@@ -564,6 +566,15 @@ local function newWorld(opts)
 		return m
 	end
 	-- notices / server-wide lines since index `from`
+	-- sound_spec 2026-10-07 §4-1: the Sound key of p's notices since `from` ("-" for a notice without one)
+	function w:SoundsFor(p, from)
+		local out = {}
+		for i = (from or 0) + 1, #self.Notices do
+			local n = self.Notices[i]
+			if n.Player == p then table.insert(out, n.Sound or "-") end
+		end
+		return out
+	end
 	function w:NoticesFor(p, from)
 		local out = {}
 		for i = (from or 0) + 1, #self.Notices do

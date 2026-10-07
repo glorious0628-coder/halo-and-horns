@@ -314,7 +314,7 @@ local function payChests(winner, snapshot)
 			local amount = math.floor(level * perLevel)
 			if amount <= 0 then return end
 			S.ProgressionService.AddBankGold(player, amount, "War")
-			Net.Notify(player, string.format(Config.Text.WarChest, Util.FormatNumber(amount)), "reward")
+			Net.Notify(player, string.format(Config.Text.WarChest, Util.FormatNumber(amount)), "reward", nil, "GoldPickup")
 		end)
 		if not ok then
 			warnThrottled("chest", "war chest error: " .. tostring(err))

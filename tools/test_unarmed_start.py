@@ -195,7 +195,7 @@ MUTATIONS = [
     # --- StoryQuestService
     ("M1_1 completion never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
     ("weapon line before the story lines", ST,
-     "\tnotify(player, def.Finish or msg, \"reward\")\n\tif def.Finish then notify(player, msg, \"reward\") end\n"
+     "\tnotify(player, def.Finish or msg, \"reward\", \"QuestDone\")\n\tif def.Finish then notify(player, msg, \"reward\", \"None\") end\n"
      "\t-- Reward.Item (e.g. Pip1's scroll)",
      "\tlocal finishLine = def.Finish or msg\n\t-- Reward.Item (e.g. Pip1's scroll)"),
     # --- JusticeService / PvPService / CharacterVisuals

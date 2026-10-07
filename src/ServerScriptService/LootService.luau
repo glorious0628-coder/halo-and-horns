@@ -44,8 +44,8 @@ local function getData(player)
 	return ok and type(data) == "table" and data or nil
 end
 
-local function notify(player, text, kind)
-	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, text, kind or "info") end
+local function notify(player, text, kind, sound)
+	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, text, kind or "info", nil, sound) end
 end
 
 -- review B7: a full-stack notice at most once per key per player per Config.Loot.FullNoticeSeconds, always "info"
@@ -445,11 +445,12 @@ local function useEnhance(player, data, id, def, tier)
 	if success then
 		firstMax(player, data, tier, after)
 		notify(player, string.format(TXT.EnhanceOk, name, before, after,
-			math.floor(Config.EnhanceMult(before) * 100 + 0.5), math.floor(Config.EnhanceMult(after) * 100 + 0.5)), "reward")
+			math.floor(Config.EnhanceMult(before) * 100 + 0.5), math.floor(Config.EnhanceMult(after) * 100 + 0.5)), "reward",
+			"ScrollSuccess")
 	elseif after < before then
-		notify(player, string.format(TXT.EnhanceFailDown, name, before, after), "bad")
+		notify(player, string.format(TXT.EnhanceFailDown, name, before, after), "bad", "ScrollFail")
 	else
-		notify(player, string.format(TXT.EnhanceFailKeep, name, before), "info")
+		notify(player, string.format(TXT.EnhanceFailKeep, name, before), "info", "ScrollFail")
 	end
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = tier, Before = before, After = after, Success = success })
 	LootService.Enhanced:Fire(player, tier, before, after, success, id)
@@ -473,9 +474,9 @@ local function useTransfer(player, data, id, def, fromTier, toTier)
 		data.WeaponEnhance[toTier] = after
 		data.WeaponEnhance[fromTier] = amount - (after - target)
 		firstMax(player, data, toTier, after) -- after both tiers are saved
-		notify(player, string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after), "reward")
+		notify(player, string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after), "reward", "ScrollSuccess")
 	else
-		notify(player, string.format(TXT.MoveFail, fromName, amount), "info")
+		notify(player, string.format(TXT.MoveFail, fromName, amount), "info", "ScrollFail")
 	end
 	publish(player, data)
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = toTier, From = fromTier, Before = target, After = after, Success = success, Move = true })
@@ -528,7 +529,7 @@ local function onEquipWeapon(player, tier, ...)
 	if S.CombatService.IsInCombat(player) then notify(player, TXT.EquipCombat, "bad"); return end
 	S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals rebuilds the model; WeaponEnhance follows
 	S.PlayerService.MarkActive(player)
-	notify(player, string.format(TXT.Equip, weaponName(player, tier)), "info")
+	notify(player, string.format(TXT.Equip, weaponName(player, tier)), "info", "Equip")
 	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
 end
 

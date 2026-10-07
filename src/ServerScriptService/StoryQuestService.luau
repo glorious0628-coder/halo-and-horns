@@ -62,8 +62,10 @@ local function keyText(data, text)
 	return Config.FillKeys(text, (Config.KeyMap(type(settings) == "table" and settings.Keys or nil, nil)))
 end
 
-local function notify(player, text, kind)
-	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, keyText(getData(player), text), kind or "info") end
+local function notify(player, text, kind, sound)
+	if type(text) == "string" and text ~= "" then
+		pcall(Net.Notify, player, keyText(getData(player), text), kind or "info", nil, sound)
+	end
 end
 
 ------------------------------------------------------------------ data
@@ -276,14 +278,14 @@ local function complete(player, data, id)
 	local msg = payReward(player, def) or string.format(TXT.Done, def.Title)
 	if def.Unlock == "AutoCombat" and S.CombatService and type(S.CombatService.UnlockAutoCombat) == "function" then
 		pcall(S.CombatService.UnlockAutoCombat, player)
-		notify(player, TXT.Unlocked, "reward")
+		notify(player, TXT.Unlocked, "reward", "None") -- the completion line below has the sound
 	end
-	notify(player, def.Finish or msg, "reward")
-	if def.Finish then notify(player, msg, "reward") end
+	notify(player, def.Finish or msg, "reward", "QuestDone")
+	if def.Finish then notify(player, msg, "reward", "None") end
 	-- Reward.Item (e.g. Pip1's scroll): one more line under the reward line
 	if type(def.Reward) == "table" and def.Reward.Item then
 		local line = grantItem(player, def.Reward.Item, def.Reward.N)
-		if line then notify(player, line, "reward") end
+		if line then notify(player, line, "reward", "None") end
 	end
 	if def.Clue then notify(player, def.Clue, "info") end -- story_depth §2-1: a clue toast after the closing lines
 	-- E3: a stat-free title (Reward.Title, or Reward.TitleBy by the side of this quest's own pick), once
@@ -293,7 +295,7 @@ local function complete(player, data, id)
 	if type(titleId) == "string" and Config.TitleDefs[titleId] and type(titles) == "table" and type(titles.Grant) == "function" then
 		local ok, new = pcall(titles.Grant, player, titleId)
 		if not ok then Util.Warn(TAG, "TitleService.Grant: " .. tostring(new)) end
-		if ok and new == true then notify(player, string.format(TXT.NewTitle, Config.TitleDefs[titleId].Name), "reward") end
+		if ok and new == true then notify(player, string.format(TXT.NewTitle, Config.TitleDefs[titleId].Name), "reward", "RankUp") end
 	end
 	-- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its
 	-- own "전투력 X → Y" line after the story lines
@@ -511,6 +513,17 @@ function StoryQuestService.Refresh(player)
 end
 
 ------------------------------------------------------------------ quest list rows (QuestService.publish)
+-- 3rd idea round #1: a step text without its count ('King Slimes %d/%d' -> 'King Slimes', 'The shard's test %d/3' ->
+-- 'The shard's test', 'Spy by the woods' edge %d/%d s' -> 'Spy by the woods' edge' + unit 's')
+local function countless(template)
+	local unit = nil
+	local s, n = string.gsub(template, "%s*%%d/%%d%s+s$", "")
+	if n > 0 then unit = "s" end
+	s = string.gsub(s, "%s*%%d/%%d", "")
+	s = string.gsub(s, "%s*%%d/%d+", "")
+	return s, unit
+end
+
 local function rowFor(player, data, id, track)
 	local def = DEFS[id]
 	local step = stepOf(player, def, track.St)
@@ -539,9 +552,16 @@ local function rowFor(player, data, id, track)
 		local okF, f = pcall(string.format, step.Text, progress, target)
 		text = okF and f or step.Text
 	end
+	-- 3rd idea round #1: the HUD draws a ShowProgress row's numbers itself ('King Slimes 0/2 0/2' on PC), so the text
+	-- loses its '%d/%d' (a '%d/%d s' row keeps the unit as ProgressUnit)
+	local unit = nil
+	if target > 1 and not track.Claim and step and type(step.Text) == "string" then
+		text, unit = countless(step.Text)
+	end
 	return {
 		Id = "story:" .. id, Kind = def.Kind, Pinned = def.Kind == "Main", TutorialStep = TUT_DONE,
 		Text = Config.Plural(text), Progress = progress, Target = target, -- raw '{Auto}' tokens (client fills them)
+		ProgressUnit = unit, -- "s": a seconds row (its numbers are shown by the HUD)
 		ShortName = (step and step.ShortName) or def.ShortName, -- 검수 2026-10-07: the phone HUD quest row (<= 14)
 		RewardGold = 0, RewardXP = 0,
 		CanClaim = track.Claim == true, ShowProgress = target > 1 and not track.Claim,
@@ -622,6 +642,13 @@ function StoryQuestService.Claim(player, id)
 end
 
 ------------------------------------------------------------------ StoryAction (Talk / Choose / Open)
+-- sound_spec 2026-10-07 §4-1: the moment of a story pick (the client plays Purify / Devour on it, never on a score
+-- change): Fx "Choice" { Option = "Good" | "Evil" } to the picker (a Neutral A = Good, B = Evil)
+local function choiceFx(player, option)
+	local ok, err = pcall(Net.Fx, player, "Choice", { Option = option })
+	if not ok then Util.Warn(TAG, "choice fx: " .. tostring(err)) end
+end
+
 -- A23-58 (user 2026-10-06, every good / evil pick): my side's own score only. Halo: Good = Honor +pts, Evil = Honor
 -- -pts; Horns: Evil = Infamy +pts, Good = Infamy -pts; never below 0, the other side's score never moves. A rank the
 -- lower score loses (Config.GetTitle) gets one line. PvP fame (GrantFame) and the weekly boards are not touched.
@@ -636,7 +663,12 @@ local function pickScore(player, f, option, pts)
 	local data = getData(player)
 	local have = math.max(0, math.floor(num(data and data[stat])))
 	local take = math.min(have, pts)
-	if take <= 0 then return end
+	if take <= 0 then
+		-- 3rd idea round #5: nothing to take (A23-58 floor), but the pick still answers: no number, the shard leans
+		notify(player, (f == "Halo" and TXT.OffSideHaloZero or TXT.OffSideHornsZero) .. " "
+			.. (option == "Good" and TXT.LeanGood or TXT.LeanEvil), "info")
+		return
+	end
 	S.PlayerService.SetStat(player, stat, have - take)
 	notify(player, string.format(f == "Halo" and TXT.OffSideHalo or TXT.OffSideHorns, take), "info")
 	local function rank(score)
@@ -672,7 +704,7 @@ local function payChoice(player, obj, side)
 		S.ProgressionService.AddBankGold(player, gold, "Quest")
 		table.insert(parts, string.format(TXT.ChoiceGold, Util.FormatNumber(gold)))
 	end
-	if #parts > 0 then notify(player, table.concat(parts, " · "), "reward") end
+	if #parts > 0 then notify(player, table.concat(parts, " · "), "reward", "None") end -- the pick's own Choice sound
 end
 
 -- E2 (story_depth §7): a real pick (its Choice carries points) on the other side from the last real pick gets one kind
@@ -711,6 +743,7 @@ local function onStoryAction(player, id, action, option, ...)
 			if option ~= "Good" and option ~= "Evil" then return end
 			local pick = obj[option]
 			st.Pick[id] = pick.Pick or option -- saved before the points
+			choiceFx(player, option)
 			local pts = math.floor(num(pick.Points))
 			if pts > 0 then
 				pickScore(player, f, option, pts)
@@ -722,6 +755,7 @@ local function onStoryAction(player, id, action, option, ...)
 		else
 			if option ~= "A" and option ~= "B" then return end
 			st.Pick[id] = option -- Neutral: recorded only (no good/evil score, A6)
+			choiceFx(player, option == "A" and "Good" or "Evil")
 			notify(player, TXT.Recorded, "info")
 			changedMind(player, st, obj, option)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")

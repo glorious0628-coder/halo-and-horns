@@ -48,6 +48,17 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # 3rd idea round + sound_spec §4-1
+    ("a ShowProgress row keeps its numbers", ST,
+     "\tif target > 1 and not track.Claim and step and type(step.Text) == \"string\" then\n", "\tif false then\n"),
+    ("the seconds lose their unit", ST, "\tif n > 0 then unit = \"s\" end\n", ""),
+    ("a 0-point pick stays silent", ST,
+     "\t\tnotify(player, (f == \"Halo\" and TXT.OffSideHaloZero or TXT.OffSideHornsZero) .. \" \"\n", "\t\tnotify(player, \"\" .. \" \"\n"),
+    ("no Choice sound for a pick", ST, "\t\t\tchoiceFx(player, option)\n", ""),
+    ("the finish line without QuestDone", ST, "\tnotify(player, def.Finish or msg, \"reward\", \"QuestDone\")\n",
+     "\tnotify(player, def.Finish or msg, \"reward\")\n"),
+    ("follow-up lines get the default sound", ST, "\tif def.Finish then notify(player, msg, \"reward\", \"None\") end\n",
+     "\tif def.Finish then notify(player, msg, \"reward\") end\n"),
     ("story rows lose their ShortName", ST,
      "\t\tShortName = (step and step.ShortName) or def.ShortName, -- 검수 2026-10-07: the phone HUD quest row (<= 14)\n", ""),
     ("a step's ShortName is ignored", ST, "ShortName = (step and step.ShortName) or def.ShortName,", "ShortName = def.ShortName,"),

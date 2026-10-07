@@ -108,7 +108,8 @@ local function onUpgradeWeapon(player, selectedTier)
 	S.PlayerService.MarkActive(player)
 	local weaponName = Config.WeaponName(selectedTier, S.ClassService.GetClass(player), faction)
 	local equipFmt = (Config.Loot and Config.Loot.Text and Config.Loot.Text.Equip) or Config.Text.WeaponBought
-	Net.Notify(player, string.format(alreadyOwned and equipFmt or Config.Text.WeaponBought, weaponName), alreadyOwned and "info" or "reward")
+	Net.Notify(player, string.format(alreadyOwned and equipFmt or Config.Text.WeaponBought, weaponName), alreadyOwned and "info" or "reward",
+		nil, "Equip")
 	if tier ~= selectedTier then Net.Fx(player, "Upgrade", { Tier = selectedTier }) end
 end
 
@@ -285,7 +286,7 @@ function M.BuyPotion(player, kind, amount)
 	end
 	S.PlayerService.SetStat(player, key, count + amount)
 	S.PlayerService.MarkActive(player)
-	Net.Notify(player, string.format(Config.Text.PotionBought, kind, amount), "good")
+	Net.Notify(player, string.format(Config.Text.PotionBought, kind, amount), "good", nil, "Spend")
 	return true, "Bought"
 end
 

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 224,
+  "checks": 227,
   "failedChecks": 0,
-  "namedChecks": 217,
+  "namedChecks": 220,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -663,6 +663,12 @@
     },
     {
       "group": "punch",
+      "check": "Warrior nothing in front: the punch turns to the slime behind (A23-61 server aim)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
       "check": "Warrior a punch whiff flies 7 ahead",
       "pass": 1,
       "fail": 0
@@ -723,6 +729,12 @@
     },
     {
       "group": "punch",
+      "check": "Mage nothing in front: the punch turns to the slime behind (A23-61 server aim)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
       "check": "Mage a punch whiff flies 7 ahead",
       "pass": 1,
       "fail": 0
@@ -778,6 +790,12 @@
     {
       "group": "punch",
       "check": "Archer a slime falls to the 5th punch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer nothing in front: the punch turns to the slime behind (A23-61 server aim)",
       "pass": 1,
       "fail": 0
     },
@@ -1333,7 +1351,7 @@
           "config :: a new save starts bare-handed: WeaponTier 0, nothing owned",
           "drops :: a T4 drop at Lv3 stays in the bag (MinLevel 12)"
         ],
-        "newFailingCount": 43
+        "newFailingCount": 45
       },
       {
         "mutation": "new players own tier 1 again",
@@ -1365,7 +1383,7 @@
           "config :: SwingHitsToKill bare Archer/Halo = 5",
           "config :: SwingHitsToKill bare Archer/Horns = 5"
         ],
-        "newFailingCount": 36
+        "newFailingCount": 39
       },
       {
         "mutation": "bare hands take a scroll +N",
@@ -1393,7 +1411,7 @@
           "config :: Lv2 bare 12, Lv3 bare 23",
           "config :: SwingHitsToKill bare Archer/Halo = 5"
         ],
-        "newFailingCount": 36
+        "newFailingCount": 39
       },
       {
         "mutation": "bare power not counted from 0",
@@ -1495,7 +1513,7 @@
           "auto :: then auto punches",
           "config :: AttackProfile(Archer, 0) = the shared punch"
         ],
-        "newFailingCount": 38
+        "newFailingCount": 41
       },
       {
         "mutation": "punch reach = the class range",
@@ -1527,7 +1545,7 @@
           "config :: SwingHitsToKill bare Archer/Halo = 5",
           "config :: SwingHitsToKill bare Archer/Horns = 5"
         ],
-        "newFailingCount": 22
+        "newFailingCount": 24
       },
       {
         "mutation": "punch hits two targets",
@@ -1559,7 +1577,7 @@
           "punch :: Archer no second punch 0.5 s later (punch interval 0.8 s)",
           "punch :: Mage a punch whiff flies 7 ahead"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 13
       },
       {
         "mutation": "shop hit count with the class multiplier",
@@ -1693,11 +1711,11 @@
           "punch :: Archer no second punch 0.5 s later (punch interval 0.8 s)",
           "punch :: Mage a punch whiff flies 7 ahead",
           "punch :: Mage a slime falls to the 5th punch",
+          "punch :: Mage nothing in front: the punch turns to the slime behind (A23-61 server aim)",
           "punch :: Mage the next punch after 0.85 s",
-          "punch :: Warrior a punch whiff flies 7 ahead",
-          "punch :: Warrior a slime falls to the 5th punch"
+          "punch :: Warrior a punch whiff flies 7 ahead"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "punch uses the class range",
@@ -1723,10 +1741,10 @@
           "punch :: Mage a slime falls to the 5th punch",
           "punch :: Mage bare-handed: one punch = 2 damage to the nearest slime in front only",
           "punch :: Mage no second punch 0.5 s later (punch interval 0.8 s)",
-          "punch :: Mage the next punch after 0.85 s",
-          "punch :: Mage the punch shoves at contact 0.15 s"
+          "punch :: Mage nothing in front: the punch turns to the slime behind (A23-61 server aim)",
+          "punch :: Mage the next punch after 0.85 s"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "punch damage with the class multiplier",
@@ -1742,7 +1760,7 @@
           "punch :: Archer bare-handed: one punch = 2 damage to the nearest slime in front only",
           "punch :: Archer no second punch 0.5 s later (punch interval 0.8 s)"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 13
       },
       {
         "mutation": "punch on a player keeps the ranged factor",
@@ -2273,18 +2291,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e8e7bb2afe8982e72358de05e9a2f266460eaf2b8f263c6d256176266e15e685",
+    "src/ReplicatedStorage/Shared/Config.luau": "4f32824950d2a3970fb81420771e0dc5c294fbd2acedde69d5221d3d0eff0cb5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
-    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
-    "src/ServerScriptService/StoryQuestService.luau": "88266a94a136f571fbf624be2514baeb3396523eeeb802cfb1ce3406dcdb2889",
-    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
-    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
+    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
+    "src/ServerScriptService/StoryQuestService.luau": "117e3ca4f5c84a09c6cd36422cc22c400a79873d7dd42dd1d0f764d5304f536f",
+    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
+    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
-    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60"
+    "src/ServerScriptService/CharacterVisuals.luau": "fcfaec02dd563265306e73a3c9ec94846c110cb66ba17ba56c31719fec2a90f9"
   },
-  "fixtureSHA256": "90b4dfe4e86706a24f577e3dc5c09821028566b31c29048c190cc64e8cc8ef76",
+  "fixtureSHA256": "dde3aed6f65ed7f1e8b36691a51fbc9dee18252e6ad353a6088d083342cd3b1b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

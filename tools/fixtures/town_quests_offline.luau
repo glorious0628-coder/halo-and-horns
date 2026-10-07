@@ -208,8 +208,9 @@ runGroup("h1-good", function()
 	local row = nil
 	for _, r in w.Story.SubRows(p, d) do if r.Story and r.Story.Id == "H1" then row = r end end
 	check(tr.St == 2 and tr.P >= 5 and row and row.Target == 10 and row.Progress == tr.P
-		and row.Text == string.format(SQ0.Defs.H1.Steps[2].Text, tr.P, 10), "the row counts the seconds (%d/%d s)",
-		show({ tr.P, row and row.Text }))
+		and row.Text == "Spy by the woods' edge" and row.ProgressUnit == "s",
+		"the row counts the seconds: Progress / Target + unit 's', no '%d/%d s' in the text (3rd round #1)",
+		show({ tr.P, row and row.Text, row and row.ProgressUnit }))
 	w:MoveTo(p, vec(gate.X + 40, 0, gate.Z))
 	w:Tick(p, 1)
 	check(tr.St == 2 and tr.P == 0, "stepping away resets the count", show({ tr.St, tr.P }))
@@ -228,7 +229,11 @@ runGroup("h1-good", function()
 	w:MoveTo(p, vec(2, 0, -402))
 	local enh, bank, honor, xpN, n0 = d.Items and d.Items.Enh70 or 0, d.BankGold or 0, d.Honor or 0, #w.XP, #w.Notices
 	local hp = d.HPPotionCount or 0
+	local fx0 = #w.Fx
 	w:Act(p, "H1", "Choose", "Good")
+	local choice = nil
+	for i = fx0 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p then choice = w.Fx[i].Data end end
+	check(choice and choice.Option == "Good", "the pick sends Fx Choice { Option = 'Good' } (Purify sound)", show(choice))
 	check(d.Story.Pick.H1 == "Good" and (d.Honor or 0) == honor + 1, "A: Pick 'Good', honor +1", show({ d.Story.Pick.H1, d.Honor }))
 	check((d.Items.Enh70 or 0) == enh + 1 and (d.HPPotionCount or 0) == hp, "A: one 70% scroll (no potions)",
 		show({ d.Items.Enh70, d.HPPotionCount }))
@@ -243,6 +248,14 @@ runGroup("h1-good", function()
 		if t == string.format(w.Config.Loot.Text.Got, w.Config.Loot.Items.Enh70.Name) then hasScroll = true end
 	end
 	check(hasFinish and hasScroll, "lines: '+Enhance Scroll 70%' and the closing question", show(lines))
+	local sounds, finishSound, nextSound = w:SoundsFor(p, n0), nil, nil
+	local quest = 0
+	for i, t in lines do
+		if t == SQ0.Defs.H1.Finish then finishSound, nextSound = sounds[i], sounds[i + 1] end
+		if sounds[i] == "QuestDone" then quest += 1 end
+	end
+	check(finishSound == "QuestDone" and nextSound == "None" and quest == 1,
+		"one QuestDone for the finish; the reward line right after it says Sound 'None'", show({ finishSound, sounds }))
 	local clueAt, finishAt = nil, nil
 	for i, t in lines do
 		if t == SQ0.Defs.H1.Clue then clueAt = i end
@@ -351,12 +364,18 @@ runGroup("a23-58", function()
 	local l2 = lines(p2, n2)
 	check(has(l2, string.format(T.OffSideHalo, 1)) and not has(l2, T.RankDownHalo), "'Not very angel-like! Honor -1', no rank line (5 -> 4)",
 		show(l2))
-	-- at 0 nothing to take: no line, never below 0
-	local n3 = #w.Notices
+	-- at 0 nothing to take: never below 0 (A23-58), but the pick answers with a line without a number + the lean
+	-- (3rd idea round #5), and the Choice sound
+	local n3, fx3 = #w.Notices, #w.Fx
 	local p3, d3 = atPick(w, 803, "Halo", "H1", { Honor = 0 })
 	w:Act(p3, "H1", "Choose", "Evil")
-	check((d3.Honor or 0) == 0 and not has(lines(p3, n3), string.format(T.OffSideHalo, 1)), "Honor 0 stays 0 (no line)",
+	local zero = T.OffSideHaloZero .. " " .. T.LeanEvil
+	check((d3.Honor or 0) == 0 and has(lines(p3, n3), zero) and not has(lines(p3, n3), string.format(T.OffSideHalo, 1)),
+		"Honor 0 stays 0, the pick says 'not very angel-like! Your shard leaned to the dark.' (no number)",
 		show({ d3.Honor, lines(p3, n3) }))
+	local leaned = nil
+	for i = fx3 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p3 then leaned = w.Fx[i].Data end end
+	check(leaned and leaned.Option == "Evil", "a 0-point pick still sends Fx Choice { Option = 'Evil' }", show(leaned))
 	-- 10 -> 9: the Knight rank drops to Squire: one line
 	local n4 = #w.Notices
 	local p4, d4 = atPick(w, 804, "Halo", "H1", { Honor = 10 })

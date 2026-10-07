@@ -1837,7 +1837,7 @@ Config.Tutorial = {
 	QuestKills = 5,
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
-	ShortNames = { Welcome = "Meet the Guide", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
+	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
@@ -1857,36 +1857,37 @@ Config.Tutorial = {
 	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
-			Lines = {
+			Lines = { -- 3rd idea round #2: page 1 = the mission card (검수 2026-10-07), then the catchphrase
+				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
 				"The Crown of Balance broke. Its shards drew slimes onto the Squishy Meadow road.",
-				"Please defeat 5 slimes and free the road. Heroes start by opening paths.",
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
+				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
 				"Slimes chasing Crown Shards took the Squishy Meadow road. No food gets through!",
-				"Beat 5 slimes and win the road back. Real leaders get friends moving.",
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
+				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
 				"Slimes drawn to the Crown Shards have blocked the supply road in the Squishy Meadow.",
-				"Please defeat 5 slimes and free the road. It's your first step to helping everyone get their gear.",
 			},
 		},
 	},
 	Text = {
 		FirstFight = "Pick a class, then get your first mission from the Guide.",
 		-- A23-40: the guide is met by tapping this quest line (the menu moved to the top-right fold)
-		Welcome = "First quest · Tap here to meet the Guide", WelcomeEn = "First quest · Tap here to meet the Guide",
+		-- 3rd idea round #3: %s = the faction guide's name (Welcome[faction].Name), there is no guide NPC to look for
+		Welcome = "Tap here: first quest from %s", WelcomeEn = "Tap here: first quest from %s",
 		Travel = "Free the supply road · Menu > Travel > Squishy Meadow",
 		QuestStart = "First mission: %s! (Reward: %s gold)",
 		QuestReady = "Supply road mission done! Press [Claim].",
@@ -1974,6 +1975,8 @@ Config.StoryQuests = {
 		ChoiceHintNeutral = "The Artisan Guild just saves your pick, with no good or evil points.",
 		OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d", -- A23-58 (points actually taken), ⑪ the guide says it
 		OffSideHorns = "Magpie: Too nice for a devil! Your call. Infamy -%d",
+		-- 3rd idea round #5: the same pick at 0 points (nothing to take) + the lean line after it
+		OffSideHaloZero = "Hallie: Hmm… not very angel-like!", OffSideHornsZero = "Magpie: Too nice for a devil!",
 		RankDownHalo = "Your rank went down. Do good deeds to get it back!",
 		RankDownHorns = "Your rank went down. Do devilish deeds to get it back!",
 		GooseFirstHalo = "Your first Golden Goose rescue! (Honor +%d)",
@@ -1995,6 +1998,7 @@ Config.StoryQuests = {
 			Kind = "Sub", Title = "The Shard That Learns to Fight", ShortName = "Learn to fight", Speaker = "Shard", Requires = { ClassChosen = true },
 			Steps = {
 				{ Text = "Beat a King Slime and find the shard %d/%d", Guide = "SlimeMeadow",
+					Start = "A King Slime swallowed a shard! Beat it to free the shard.",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "The shard's test %d/3", Guide = "SlimeMeadow", Start = "Shard: Show me how you fight!",
 					Obj = { Type = "Trials", List = {

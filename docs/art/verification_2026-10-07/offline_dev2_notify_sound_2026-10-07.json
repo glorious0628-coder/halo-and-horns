@@ -1,0 +1,161 @@
+{
+  "status": "passed",
+  "checks": 45,
+  "failures": [],
+  "mutations": {
+    "total": 37,
+    "caught": 37,
+    "results": [
+      {
+        "mutation": "QuestService.luau: no QuestDone on 'string.format(text, Util.FormatNumber(TU'",
+        "caught": true
+      },
+      {
+        "mutation": "QuestService.luau: no QuestDone on 'Config.Text.QuestDone, Util.FormatNumber'",
+        "caught": true
+      },
+      {
+        "mutation": "QuestService.luau: no QuestDone on 'Config.Text.DailyAutoPaid'",
+        "caught": true
+      },
+      {
+        "mutation": "QuestService.luau: no QuestDone on 'Config.Text.DailyClaimed'",
+        "caught": true
+      },
+      {
+        "mutation": "QuestService.luau: no GoldPickup on 'Config.Text.DailyChest,'",
+        "caught": true
+      },
+      {
+        "mutation": "QuestService.luau: no None on 'Config.Text.DailyChestTicket'",
+        "caught": true
+      },
+      {
+        "mutation": "QuestService.luau: no GoldPickup on 'Config.Text.VacationClaimed'",
+        "caught": true
+      },
+      {
+        "mutation": "StoryQuestService.luau: no QuestDone on 'notify(player, def.Finish or msg'",
+        "caught": true
+      },
+      {
+        "mutation": "StoryQuestService.luau: no None on 'if def.Finish then notify(player, msg'",
+        "caught": true
+      },
+      {
+        "mutation": "StoryQuestService.luau: no None on 'notify(player, TXT.Unlocked'",
+        "caught": true
+      },
+      {
+        "mutation": "StoryQuestService.luau: no None on 'if line then notify(player, line'",
+        "caught": true
+      },
+      {
+        "mutation": "StoryQuestService.luau: no RankUp on 'TXT.NewTitle, Config.TitleDefs[titleId].'",
+        "caught": true
+      },
+      {
+        "mutation": "StoryQuestService.luau: no None on 'notify(player, table.concat(parts, \" · \"'",
+        "caught": true
+      },
+      {
+        "mutation": "BoardService.luau: no QuestDone on 'T.Done or \"Job done!'",
+        "caught": true
+      },
+      {
+        "mutation": "BoardService.luau: no None on 'T.Bonus or \"%s\"'",
+        "caught": true
+      },
+      {
+        "mutation": "GooseService.luau: no GoldPickup on 'Config.Text.GooseReward'",
+        "caught": true
+      },
+      {
+        "mutation": "WarService.luau: no GoldPickup on 'Config.Text.WarChest'",
+        "caught": true
+      },
+      {
+        "mutation": "KaijuService.luau: no GoldPickup on 'Config.Text.KaijuReward'",
+        "caught": true
+      },
+      {
+        "mutation": "KaijuService.luau: no GoldPickup on 'Net.Notify(p, string.format(text, Util.F'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no GoldPickup on 'fmt(\"BullyBountyGain\"'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no GoldPickup on 'notify(killer, fmt(\"BountyGain\"'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no GoldPickup on 'notify(a, fmt(\"BountyGain\"'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no None on 'fmt(\"Plundered\"'",
+        "caught": true
+      },
+      {
+        "mutation": "PvPService.luau: no None on 'fmt(\"BullyKO\"'",
+        "caught": true
+      },
+      {
+        "mutation": "GrudgeService.luau: no None on 'fmt(\"SackLost\")'",
+        "caught": true
+      },
+      {
+        "mutation": "GrudgeService.luau: no None on 'fmt(\"GhostHeld\")'",
+        "caught": true
+      },
+      {
+        "mutation": "ZoneService.luau: no None on 'fmt(\"EnteredPvP\")'",
+        "caught": true
+      },
+      {
+        "mutation": "ZoneService.luau: no None on '\tnotify(player, fmt(\"TravelCancelled\"), '",
+        "caught": true
+      },
+      {
+        "mutation": "ShopService.luau: no Equip on 'alreadyOwned and equipFmt or Config.Text'",
+        "caught": true
+      },
+      {
+        "mutation": "ShopService.luau: no Spend on 'Config.Text.PotionBought'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no ScrollSuccess on 'TXT.EnhanceOk'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no ScrollFail on 'TXT.EnhanceFailDown'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no ScrollFail on 'TXT.EnhanceFailKeep'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no ScrollSuccess on 'TXT.MoveOk'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no ScrollFail on 'TXT.MoveFail'",
+        "caught": true
+      },
+      {
+        "mutation": "LootService.luau: no Equip on 'string.format(TXT.Equip, weaponName(play'",
+        "caught": true
+      },
+      {
+        "mutation": "Net.Notify drops Sound",
+        "caught": true
+      }
+    ]
+  },
+  "studioCalls": 0,
+  "apiCalls": 0
+}

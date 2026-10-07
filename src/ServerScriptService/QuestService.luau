@@ -543,7 +543,7 @@ function claimTutorial(player, auto)
 	if hasFirst then
 		text = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)
 	end
-	Net.Notify(player, string.format(text, Util.FormatNumber(TUT_GOLD)), "reward", auto and 6 or nil)
+	Net.Notify(player, string.format(text, Util.FormatNumber(TUT_GOLD)), "reward", auto and 6 or nil, "QuestDone")
 end
 
 -- A23-3: one fixed next-goal line after the blacksmith visit, from existing state only (no new reward).
@@ -585,8 +585,11 @@ local function tutorialEntry(player, data)
 		CanClaim = false, ShowProgress = false,
 	}
 	if step == STEP_WELCOME then
-		entry.Text = TUT_MESSAGES.Welcome or "First quest · Tap here to meet the Guide"
-		entry.ShortName = TUT_SHORT.Welcome
+		-- 3rd idea round #3: the guide by name (there is no guide NPC in the world to look for)
+		local guide = TUT_CFG.Welcome and TUT_CFG.Welcome[getFaction(player)]
+		local name = type(guide) == "table" and type(guide.Name) == "string" and guide.Name or "the Guide"
+		entry.Text = string.format(TUT_MESSAGES.Welcome or "Tap here: first quest from %s", name)
+		entry.ShortName = type(TUT_SHORT.Welcome) == "string" and string.format(TUT_SHORT.Welcome, name) or nil
 	elseif step == STEP_GUIDE then
 		entry.Text = TUT_MESSAGES.Travel or "Go to the Squishy Meadow · Menu > Travel > Squishy Meadow"
 		entry.ShortName = TUT_SHORT.Travel
@@ -723,11 +726,12 @@ local function payChest(player, data, genLevel)
 	local cg, cx = chestReward(getLevel(data), genLevel)
 	cg, cx = math.floor(num(cg)), math.floor(num(cx))
 	payReward(player, cg, cx)
-	Net.Notify(player, string.format(Config.Text.DailyChest, Util.FormatNumber(cg), Util.FormatNumber(cx)), "reward")
+	Net.Notify(player, string.format(Config.Text.DailyChest, Util.FormatNumber(cg), Util.FormatNumber(cx)), "reward", nil,
+		"GoldPickup")
 	if Util.Random:NextNumber() < Config.Daily.ChestTicketChance then
 		local ok, err = pcall(S.MonetizationService.AddTickets, player, "Class", 1)
 		if ok then
-			Net.Notify(player, string.format(Config.Text.DailyChestTicket), "reward")
+			Net.Notify(player, string.format(Config.Text.DailyChestTicket), "reward", nil, "None")
 		else
 			Util.Warn(TAG, "chest ticket failed: " .. tostring(err))
 		end
@@ -744,7 +748,7 @@ local function completeQuest(player, data, index, q)
 		data.Quests[index] = boardOn() and { Kind = "Empty" } or newQuest(player, "Extra", othersExcept(data.Quests, index))
 		payReward(player, math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP)))
 		if not quiet then
-			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(q.RewardGold)), "reward")
+			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(q.RewardGold)), "reward", nil, "QuestDone")
 		end
 	elseif not quiet then
 		-- dailies stay in their slot until claimed
@@ -875,7 +879,7 @@ local function runDayCheck(player)
 		payReward(player, g, x)
 	end
 	if paidGold > 0 then
-		Net.Notify(player, string.format(Config.Text.DailyAutoPaid, Util.FormatNumber(paidGold)), "reward")
+		Net.Notify(player, string.format(Config.Text.DailyAutoPaid, Util.FormatNumber(paidGold)), "reward", nil, "QuestDone")
 	end
 	-- CR-M21: an auto-pay that completes the set also pays the bonus chest (capped to the OLD day's band)
 	if prevClaims < slots and claims >= slots then
@@ -913,7 +917,8 @@ local function onClaimQuest(player, slot)
 	local g, x = math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP))
 	g, x = capTo(g, x, Config.DailyQuestReward(getLevel(data))) -- CR-M6
 	payReward(player, g, x)
-	Net.Notify(player, string.format(Config.Text.DailyClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward")
+	Net.Notify(player, string.format(Config.Text.DailyClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward", nil,
+		"QuestDone")
 
 	local claims = num(S.PlayerService.AddStat(player, "DailyClaims", 1))
 	if claims == Config.Quests.Slots then
@@ -965,7 +970,8 @@ local function onClaimVacation(player)
 	S.PlayerService.SetStat(player, "VacationGold", 0)
 	S.PlayerService.SetStat(player, "VacationXP", 0)
 	payReward(player, g, x)
-	Net.Notify(player, string.format(Config.Text.VacationClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward")
+	Net.Notify(player, string.format(Config.Text.VacationClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward", nil,
+		"GoldPickup")
 end
 
 ------------------------------------------------------------------ signal handlers
@@ -1009,6 +1015,7 @@ local function onCharacterSpawned(player)
 end
 
 local function onClassChanged(player)
+	dirty[player] = true -- 3rd idea round #3: the welcome row names the side's guide
 	task.delay(RESUME_DELAY_ON_CLASS, function()
 		local ok, err = pcall(tryTutorial, player)
 		if not ok then Util.Warn(TAG, "tutorial on class pick: " .. tostring(err)) end
@@ -1086,6 +1093,7 @@ end
 
 -- regenerate (same Kind) unfinished slots whose template no longer fits the new faction
 local function onFactionChanged(player, newFaction)
+	dirty[player] = true -- 3rd idea round #3: the welcome row names the side's guide
 	local data = getData(player)
 	if not data or type(data.Quests) ~= "table" then return end
 	if type(newFaction) ~= "string" then newFaction = getFaction(player) end
