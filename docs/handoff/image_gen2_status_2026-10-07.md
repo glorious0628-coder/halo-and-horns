@@ -7,4 +7,4 @@
 - 같은 커밋: QuestRow `sockets.Count`를 실제 그림에서 다시 잼 → (425,48)-(489,80)(예전 값은 25px 왼쪽). Config.luau 주석은 이미지 개발 몫.
 - push가 갈라짐으로 막혔던 것은 검수가 공용 main을 origin 위로 rebase해서 해결(9783b01 → 5dc69ad). **규칙(검수):** 앞으로 push가 거절되고 작업 트리에 남의 수정이 있으면 `git worktree add <임시 폴더> origin/main`에서 내 커밋만 cherry-pick해 올리고, 공용 main은 건드리지 않는다.
 - 브라우저: 이 세션이 창에 열려 있어도 내장 브라우저 창이 좁으면(800px) Firefly가 휴대폰 화면처럼 바뀌어 `sp-picker`가 없음 → `resize_window` 1440×900로 넓히고 생성(턴이 끝나면 풀리므로 생성 동안 턴 유지). 다 쓰면 탭 닫음.
-- 다음: 검수 OK → 고른 것 art/ui(창 1024·카드 512·버튼 512·꼬리표 256) + approved.json(`layout`) → 이미지 개발.
+- **사용자 OK(검수 전달): 추천 조합** → `art/ui/JobBoard.png`(1024x647, slice [320,130,704,550])·`JobCard.png`(339x512, 비율 유지)·`BtnKind.png`(512x175, slice [88,54,424,121])·`BtnSneaky.png`(512x171, slice [86,53,426,118])·`JobTag.png`(256x106, 구멍 안쪽 회색 테 → 테두리 색) + approved.json 5키(`layout` 포함) → 이미지 개발에 전달(폰 배치 메모 포함: 폰 749×361은 카드 4장 가로면 글자가 너무 작음 → 2장씩 넘기기나 2×2).
