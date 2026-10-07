@@ -190,9 +190,16 @@ runGroup("punch", function()
 		end
 		w:Flush()
 		check(near.Alive == false and w:Dealt(near) == 10, id .. " a slime falls to the 5th punch", show({ near.Alive, w:Dealt(near) }))
-		-- a whiff (nothing within 7) still shows the punch, aimed 7 studs ahead
-		local fx1 = #w.Fx
+		-- A23-61 server aim (검수 2026-10-07): with nothing in front, the punch turns to the slime 3 studs behind and hits it
 		second.Alive, far.Alive = false, false
+		w:Advance(1)
+		w.Combat.Swing(p, true)
+		w:Flush()
+		check(w:Dealt(behind) == 2, id .. " nothing in front: the punch turns to the slime behind (A23-61 server aim)", w:Dealt(behind))
+		-- a whiff (nothing within 7) still shows the punch, aimed 7 studs ahead (of where I face now)
+		local fx1 = #w.Fx
+		behind.Alive = false
+		p.Character:FindFirstChild("HumanoidRootPart").CFrame = { LookVector = vec(0, 0, -1) }
 		w:Advance(1)
 		w.Combat.Swing(p, true)
 		w:Flush()

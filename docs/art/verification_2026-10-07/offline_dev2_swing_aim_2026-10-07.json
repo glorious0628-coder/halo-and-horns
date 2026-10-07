@@ -1,0 +1,356 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 30,
+  "failedChecks": 0,
+  "namedChecks": 30,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "warrior around",
+      "check": "a slime right behind me: the swing turns to it and hits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior around",
+      "check": "the root now faces it (+Z)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior around",
+      "check": "a monster in front (60 deg) and a nearer one behind: the front one, no turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior around",
+      "check": "a monster behind but out of Range: no hit, no turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior around",
+      "check": "turned to the one behind: the Around sweep hits the new front half (two monsters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior around",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior around",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "an enemy player behind me: never hit, no turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "a monster and a player behind: the monster is hit, the player is not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "an enemy in front is hit as before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "an enemy in front and a monster behind: the enemy, no turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "the goose behind me alone: no turn, no tug",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "a slime and the goose behind: turned to the slime, no tug counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players keep the front half",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage, archer, bare hands",
+      "check": "Mage (Splash): the orb goes to the monster behind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage, archer, bare hands",
+      "check": "Archer (Multi): the arrow goes to the monster behind-left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage, archer, bare hands",
+      "check": "bare hands: the punch turns to the slime behind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage, archer, bare hands",
+      "check": "bare hands: a slime behind beyond the punch reach (7): nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage, archer, bare hands",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage, archer, bare hands",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim without the turn",
+      "check": "Warrior: the turn fails, the monster behind is still hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim without the turn",
+      "check": "Mage: the turn fails, the monster behind is still hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim without the turn",
+      "check": "Archer: the turn fails, the monster behind is still hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim without the turn",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim without the turn",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto combat",
+      "check": "auto combat swings at a monster behind me",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto combat",
+      "check": "auto never swings at a player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto combat",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto combat",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 3,
+  "staticFailures": [],
+  "mutations": {
+    "total": 11,
+    "applied": 11,
+    "caught": 11,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no turn to a monster behind",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim without the turn :: Archer: the turn fails, the monster behind is still hit",
+          "aim without the turn :: Mage: the turn fails, the monster behind is still hit",
+          "aim without the turn :: Warrior: the turn fails, the monster behind is still hit",
+          "auto combat :: auto combat swings at a monster behind me",
+          "mage, archer, bare hands :: Archer (Multi): the arrow goes to the monster behind-left",
+          "mage, archer, bare hands :: Mage (Splash): the orb goes to the monster behind"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "always the nearest monster (the front ignored)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players keep the front half :: an enemy in front and a monster behind: the enemy, no turn",
+          "warrior around :: a monster in front (60 deg) and a nearer one behind: the front one, no turn"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the turn reaches past Range",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mage, archer, bare hands :: bare hands: a slime behind beyond the punch reach (7): nothing",
+          "warrior around :: a monster behind but out of Range: no hit, no turn"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the body is not turned",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mage, archer, bare hands :: Archer (Multi): the arrow goes to the monster behind-left",
+          "mage, archer, bare hands :: Mage (Splash): the orb goes to the monster behind",
+          "mage, archer, bare hands :: bare hands: the punch turns to the slime behind",
+          "players keep the front half :: a monster and a player behind: the monster is hit, the player is not",
+          "players keep the front half :: a slime and the goose behind: turned to the slime, no tug counted",
+          "warrior around :: a slime right behind me: the swing turns to it and hits"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "a turned Around sweep hits players",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players keep the front half :: a monster and a player behind: the monster is hit, the player is not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a turned swing counts the goose",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players keep the front half :: a slime and the goose behind: turned to the slime, no tug counted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the front check ignores players",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players keep the front half :: an enemy in front and a monster behind: the enemy, no turn"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Splash keeps the old facing",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim without the turn :: Mage: the turn fails, the monster behind is still hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Multi keeps the old facing",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim without the turn :: Archer: the turn fails, the monster behind is still hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Around keeps the old facing",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim without the turn :: Warrior: the turn fails, the monster behind is still hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto swings only at the front half",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto combat :: auto combat swings at a monster behind me"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "679ce350b44015a369c9b1632371f862fb0f3316f392ead81894a067e90bb214",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "7220d13ed782a980da989631fb98f4ed064550f46e6e81c26952883ce8a7fc46",
+    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
+    "src/ServerScriptService/StoryQuestService.luau": "b3fa4f85dc379a7f2b591287bffd92b8fe9b57eb88e9a08c5eadd5cc1d3593c5",
+    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60"
+  },
+  "fixtureSHA256": "f9084837c319bc4e276c06a2333b68f22e7564fc9561af368d9edd2c5f7c83a7",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-61 + 검수 2026-10-07: a swing with no monster / player / goose inside the front half (AimCone) aims at the nearest monster within Range in any direction (the client FaceTarget rule) and turns the root to it (CFrame.lookAt); the swing is then judged from that facing (Around: its front half, Splash / Multi: that target first) on monsters only - players and the goose keep the real front-half rule. Something inside the front half always wins (no turn). Auto combat swings whenever a monster is within Range (same rule).",
+  "limitations": "The real network delay and the client's own turn are not simulated; the root turn is a CFrame.lookAt double. Skills Q / Z get the same rule in SKL-2 (SkillService)."
+}
