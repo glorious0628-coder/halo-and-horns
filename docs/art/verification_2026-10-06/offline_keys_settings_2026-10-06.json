@@ -2530,7 +2530,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
+    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
@@ -2539,13 +2539,13 @@
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "c0137c9cc4d887e85d146d631e8cb83939addd9ebe99ac120a61081b83bf78ee",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "731fe7ba17639b34d7dfdb13e4cf45c22f75d3cd70f838c7cf86571aa5440f12",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "57131370823a481425a033dc1b864b62f56dcfe07e8836631433f675b4ae7293",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "79b6e8672987b9235f1c048329f848e2c8a863074b15f9f6cad2a3cda1a61fa6",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "29044dbfc398a1a998873099a317265b5e6b27fe2fc47d8fec21ca0226093a02",
     "src/ServerScriptService/StoryQuestService.luau": "60e1b0d8ba616f147c70c81a5aa0065fec1a1b49dc074a88e9b36e7e50dff5a1",
-    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "1d347fd0d3b8e0d44f7eeaa53a415f577ab10b0641c05959a3cf58b912ff180f"
+    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1"
   },
   "fixtureSHA256": "da506059abf960be54febf4e426762f53b7cd5aba8dde22dfbdced31d1a4a35d",
   "sourcesChangedDuringRun": [],

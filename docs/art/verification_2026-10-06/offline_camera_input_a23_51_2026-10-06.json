@@ -17,61 +17,61 @@
         "mutation": "attack on the release instead of the press",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:223: a left press attacks on the press (before the release)"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:223: a left press attacks on the press (before the release)"
       },
       {
         "mutation": "a press on a GUI attacks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:223: a press on a GUI (processed) never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:223: a press on a GUI (processed) never attacks"
       },
       {
         "mutation": "open windows / loading no longer block",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:223: FactionPicker open: a left press never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:223: FactionPicker open: a left press never attacks"
       },
       {
         "mutation": "the right button attacks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:223: a left press attacks on the press (before the release)"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:223: a left press attacks on the press (before the release)"
       },
       {
         "mutation": "holding the left button repeats the attack",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:224: a left drag attacks once (the press) and never repeats while held"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:224: a left drag attacks once (the press) and never repeats while held"
       },
       {
         "mutation": "a left drag turns the camera again",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:224: a left drag never turns the camera"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:224: a left drag never turns the camera"
       },
       {
         "mutation": "a render step drives the camera again",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:224: one render step only: the A23-65 follow turn (after the camera); no left-mouse camera step"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:224: one render step only: the A23-65 follow turn (after the camera); no left-mouse camera step"
       },
       {
         "mutation": "an open Panels window no longer blocks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:223: Panels open: a left press never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:223: Panels open: a left press never attacks"
       },
       {
         "mutation": "the humanoid never becomes the subject",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:223: initial subject attaches"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:223: initial subject attaches"
       },
       {
         "mutation": "a scripted camera loses its subject",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc2/build/camera_input_offline_mut.luau:223: a scripted camera keeps its own subject"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/camera_input_offline_mut.luau:223: a scripted camera keeps its own subject"
       },
       {
         "mutation": "spins while backing up",
@@ -141,7 +141,7 @@
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking forward-right turns the camera right, at most 45 deg/s :: table: 0x0000027634406940"
+        "failure": "CHECK_FAIL walking forward-right turns the camera right, at most 45 deg/s :: table: 0x000001ccbeda6940"
       },
       {
         "mutation": "follows in shift lock",

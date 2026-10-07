@@ -378,7 +378,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
+    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58",
     "src/ServerScriptService/MapBuilder.luau": "cebfe7d03b842395df4fd22f6d55675b45603005fd0615f1880b9d4e83b7eddf",
     "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "eb16161a8ac93bdbf0452630ba97e7dbe63ea22c1daeb7717dd061bea4523179",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "57131370823a481425a033dc1b864b62f56dcfe07e8836631433f675b4ae7293",
@@ -386,7 +386,7 @@
     "tools/preview_map.lua": "86823d9bc469f41fb6a21633056a4a00d16c49644ea2e7cb8bdde4ce5fa4cfae",
     "tools/map_v2_move.lua": "12d1ead5ada6e5a75380efef7fb31d5585cd40c6b17b55abcf88adfde39e1183",
     "tools/map_v2_apply.py": "2b5e5ac141356e0ab8d9725465070638378ed5af852ed53648cc4fcd3c648362",
-    "src/ServerScriptService/WarService.luau": "eb3020dbd74a07c1424219bfe5646518f556bf6773b05c49dde0359cec1e868e",
+    "src/ServerScriptService/WarService.luau": "d0fb4ae0f7bb4c4487fb7a7ab0587b29b4dce326b6871e225316d03edf489939",
     "docs/design/world_map_v2_2026-10-06.json": "d5e196575a82adcac70a771866899a9bfa146a66868b8ec6b2996664381cbe2f",
     "tools/fixtures/map_v2_offline.luau": "a57200280c8db9f45a6145e2715ed219fe3c2b4fabfdea3731b5ab5448c8446f"
   },

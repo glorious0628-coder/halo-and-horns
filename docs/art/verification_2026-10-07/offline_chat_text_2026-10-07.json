@@ -169,7 +169,7 @@
         "failures": [
           "CHECK_FAIL LegacyChatService (auto-migrated place): Init sets TextChatService.OnIncomingMessage (before any Start) :: 0",
           "CHECK_FAIL LegacyChatService (auto-migrated place): the hook is Announce.Incoming :: nil",
-          "CHECK_FAIL LegacyChatService (auto-migrated place): Start keeps the same hook :: function: 0x000001a3c5057ad0"
+          "CHECK_FAIL LegacyChatService (auto-migrated place): Start keeps the same hook :: function: 0x0000017517f686e0"
         ]
       },
       {
@@ -232,14 +232,14 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL a refused hookup does not break Init :: C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/team_line_offline_mut.luau:5574: TextChatService is not available",
+          "CHECK_FAIL a refused hookup does not break Init :: C:/Users/glori/Documents/Roblox/Game-dev2-ci/build/team_line_offline_mut.luau:5609: TextChatService is not available",
           "CHECK_FAIL a refused hookup warns once :: nil"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2",
+    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58",
     "src/ServerScriptService/ChatText.luau": "f7c4ed3a83ee0ce42baa5c1a0a9e16df28d25a90f4efd431c80d9a80a8e3c853",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "507e5c4432316d825fbaffb3961f02eac1fdb896510ad618598776cde0421e8c"

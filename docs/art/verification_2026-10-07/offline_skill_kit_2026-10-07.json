@@ -20,7 +20,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x000002329309aeb0"
+          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x000002d76bf63ad0"
         ]
       },
       {
@@ -64,7 +64,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL SkillX: X / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x000002445a3d1040"
+          "CHECK_FAIL SkillX: X / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x000001e11a68ac10"
         ]
       },
       {
@@ -97,7 +97,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c33fa3d3e406435ee845a5ddba50c6addd189b2b8867eced9555660cda53e5d2"
+    "src/ReplicatedStorage/Shared/Config.luau": "3b41b1ab361743d7efc2ac787d5b0fc39960e7ffba4c7076516a9f2e4bef8c58"
   },
   "fixtureSHA256": "20801ee4ce710856b3bf469d477e7da212efd278218c03551a329697db11acef",
   "studioCalls": 0,
