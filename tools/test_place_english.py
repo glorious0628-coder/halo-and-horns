@@ -6,7 +6,12 @@ StringValues, string attributes, ...) except script sources (comments there are 
 search live in the open Studio's Edit DataModel through Studio MCP (Edit mode only; it changes nothing).
 Static: beta signs (Config.Features): no "Market" landmark on the world map while Market is off; the Crossroads anvil spot
 is called "Forge" while NeutralFaction (the artisan guild) is off.
-Status "passed" only when the search finds 0 Hangul strings and the static checks pass.
+Status "passed" only when the search finds 0 Hangul strings, the static checks pass and the self test passes.
+Roblox writes each non-ASCII byte of a string as its own character reference ('말' = &#235;&#167;&#144;), so the parser
+hands back Latin-1 characters; every text is read back as the UTF-8 bytes it is (roblox_text). 검수 2026-10-08
+(docs/review/main_studio_audit_2026-10-08.md §5): before that fix the scan never saw Hangul, so the old "0" reports
+prove nothing. The self test (offline runs) checks a Roblox-style sample is caught, that the old reading misses it (the
+mutation), and that the saved place from before 84c7dbdd (Korean labels then) is caught again.
 Reports: docs/art/verification_2026-10-07/place_english_2026-10-07.json (offline),
          docs/art/verification_2026-10-07/place_english_studio_2026-10-07.json (--studio)
 """
@@ -16,6 +21,7 @@ import base64
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
@@ -66,8 +72,17 @@ return "SCANNED " .. n .. "\n" .. table.concat(out, "\n")
 """
 
 
-def scan_file(path: Path):
-    root = ET.parse(path).getroot()
+def roblox_text(text: str) -> str:
+    """A string property as Roblox meant it: the place file writes every non-ASCII byte as its own character reference
+    (&#235;&#167;&#144; = '말'), which the parser returns as Latin-1 characters, so they are read back as UTF-8 bytes.
+    A text that is no such byte string (a character above U+00FF, or bytes that are not UTF-8) stays as it is."""
+    try:
+        return text.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return text
+
+
+def scan_tree(root, decode=roblox_text):
     hits = []
 
     def walk(item, trail):
@@ -76,14 +91,14 @@ def scan_file(path: Path):
         if props is not None:
             for p in props:
                 if p.get("name") == "Name":
-                    name = p.text or ""
+                    name = decode(p.text or "")
         here = trail + [name or item.get("class")]
         if props is not None:
             for p in props:
                 pname = p.get("name")
                 if pname in SKIP_PROPS:
                     continue
-                text = p.text or ""
+                text = decode(p.text or "")
                 if p.tag == "BinaryString" and pname == "AttributesSerialize" and text.strip():
                     try:
                         text = base64.b64decode(text).decode("utf-8", errors="ignore")
@@ -98,6 +113,46 @@ def scan_file(path: Path):
     for item in root.findall("Item"):
         walk(item, [])
     return hits
+
+
+def scan_file(path: Path, decode=roblox_text):
+    return scan_tree(ET.parse(path).getroot(), decode)
+
+
+# a Roblox-style sample: '말' and '→' written byte by byte, as Studio saves them
+SAMPLE = """<roblox version="4">
+  <Item class="ScreenGui" referent="RBX1"><Properties><string name="Name">Shop</string></Properties>
+    <Item class="TextLabel" referent="RBX2"><Properties><string name="Name">&#235;&#167;&#144;</string>
+      <string name="Text">&#235;&#167;&#144; Hi</string></Properties></Item>
+    <Item class="TextLabel" referent="RBX3"><Properties><string name="Name">Title</string>
+      <string name="Text">Forge &#226;&#134;&#146; Shop</string></Properties></Item>
+  </Item>
+</roblox>"""
+OLD_PLACE = "84c7dbdd^:place/GoodEvil.rbxlx"  # the last saved place with Korean labels (검수 2026-10-08: 9 of them)
+
+
+def self_test():
+    """(name, ok, detail) checks: the fix finds a Roblox-style Korean label, the old reading (no decode) misses it - the
+    mutation the test must catch - and the old saved place shows its Korean labels again."""
+    out = []
+    sample = ET.fromstring(SAMPLE)
+    fixed = scan_tree(sample)
+    out.append(("a Roblox-style Korean label is found (Name and Text, read as UTF-8)",
+                len(fixed) == 2 and {h["property"] for h in fixed} == {"Name", "Text"}
+                and any(h["value"] == "말 Hi" for h in fixed), [h["value"] for h in fixed]))
+    old = scan_tree(sample, decode=lambda t: t)
+    out.append(("mutation: the old Latin-1 reading misses it (the self test catches that bug)", len(old) == 0, len(old)))
+    out.append(("non-Hangul bytes ('→') are decoded and not reported",
+                all("→" not in h["value"] for h in fixed) and not any("Forge" in h["value"] for h in fixed), ""))
+    try:
+        data = subprocess.run(["git", "show", OLD_PLACE], cwd=ROOT, capture_output=True, check=True, timeout=120).stdout
+        root = ET.fromstring(data)
+        then, before_fix = len(scan_tree(root)), len(scan_tree(root, decode=lambda t: t))
+        out.append((f"the place from before 84c7dbdd: its Korean labels are found again ({then}; the old scan said {before_fix})",
+                    then >= 9 and before_fix == 0, {"found": then, "oldScan": before_fix}))
+    except (OSError, subprocess.SubprocessError, ET.ParseError) as err:
+        out.append(("the place from before 84c7dbdd (git history) could not be read: skipped", True, str(err)[:120]))
+    return out
 
 
 def scan_studio():
@@ -169,11 +224,15 @@ def main():
         source = {"place": place.resolve().relative_to(ROOT).as_posix() if place.resolve().is_relative_to(ROOT) else str(place),
                   "placeSHA256": hashlib.sha256(place.read_bytes()).hexdigest()}
         out = OUT
+    selftest = [] if args.studio else self_test()
+    for name, good, detail in selftest:
+        print(("SELFTEST_OK " if good else "SELFTEST_FAILURE ") + name + (f" :: {detail}" if not good else ""))
     for h in hits:
         print(f"HANGUL {h['class']}\t{h['path']}\t{h['property']}\t{h['value']!r}")
-    passed = not hits and all(g for _, g in static)
+    passed = not hits and all(g for _, g in static) and all(g for _, g, _ in selftest)
     report = {"status": "passed" if passed else "failed", "hangulStrings": len(hits), "hits": hits,
-              "static": [{"check": n, "ok": g} for n, g in static], "source": source,
+              "static": [{"check": n, "ok": g} for n, g in static],
+              "selfTest": [{"check": n, "ok": g, "detail": d} for n, g, d in selftest], "source": source,
               "contract": __doc__.split("Status")[0].strip(),
               "limitations": "Script sources are skipped (comments are never shown); text that code makes at run time is "
                              "covered by the src text tests (test_english, test_ko_screen)."}

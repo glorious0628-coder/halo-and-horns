@@ -22,7 +22,7 @@
 | 0-1 | I can't code. I can't draw. | 저는 코딩도 못 하고, 그림도 못 그려요. |
 | 0-2 | But I LOVE games! | 하지만 게임을 너무 좋아해요! |
 | 0-3 | I spent way too much money on games... | 게임에 돈을 너무 많이 썼어요… |
-| 0-4 | So I decided to make my own, with seven AI teammates. | 그래서 직접 만들기로 했어요, AI 팀원 일곱 명과 함께. |
+| 0-4 | So I decided to make my own, with eight AI teammates. | 그래서 직접 만들기로 했어요, AI 팀원 여덟 명과 함께. |
 | 0-5 | This is the Pumpkin King. In {DAYS} days, he has to be ready for real players. | 이건 호박 대왕이에요. {DAYS}일 뒤엔 진짜 플레이어를 맞을 준비가 돼야 해요. |
 | 0-6 | Let's see if we make it. | 해낼 수 있는지 봐요. |
 
@@ -30,12 +30,12 @@
 ✏️ "HALO & HORNS · DEVLOG #1" (휙, 내레이션 없음)
 
 ## 2. 팀 소개 (0:28–0:55)
-화면: ⭐ 팀 카드 일곱 장 0.3초씩 → 카드마다 그 세션 작업 장면 1초(검수 = 체크 시트, 개발 = Studio 코드, 그림 = Firefly 시트, 이미지 개발 = HUD, 촬영 = 이 영상 타임라인)
+화면: ⭐ 팀 카드 여덟 장(소리 만들기 SOUND 포함, 2026-10-07) 0.3초씩 → 카드마다 그 세션 작업 장면 1초(검수 = 체크 시트, 개발 = Studio 코드, 그림 = Firefly 시트, 이미지 개발 = HUD, 촬영 = 이 영상 타임라인)
 
 | # | English | 한국어 뜻 |
 |---|---|---|
-| 2-1 | My team is seven Claude AI sessions. Each one has one job. | 제 팀은 클로드 AI 세션 일곱이에요. 각자 할 일이 하나씩. |
-| 2-2 | A boss, two builders, two artists, an art dev, and a film crew! | 대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 그리고 촬영 담당! |
+| 2-1 | My team is eight Claude AI sessions. Each one has one job. | 제 팀은 클로드 AI 세션 여덟이에요. 각자 할 일이 하나씩. |
+| 2-2 | A boss, two builders, two artists, an art dev, a sound maker, and a film crew! | 대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 소리 만드는 사람 하나, 그리고 촬영 담당! |
 | 2-3 | The boss checks everything before I see it. | 대장은 제가 보기 전에 모든 걸 확인해요. |
 | 2-4 | And me? I'm the director. I play, I pick, and I say yes or no. | 그럼 저는? 감독이에요. 플레이하고, 고르고, 좋다 싫다를 말해요. |
 | 2-5 | When I find a bug, I tell the boss, and the boss sends it to the right teammate. | 버그를 찾으면 대장에게 말하고, 대장이 맞는 팀원에게 보내요. |

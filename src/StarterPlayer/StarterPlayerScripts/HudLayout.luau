@@ -3,14 +3,19 @@
 -- 1280x720 (MainGui UIScale 0.8; the PC numbers are 검수's docs/design/hud_layout_B_2026-10-06.json) and phone 749x361
 -- (UIScale 0.75; 이미지 개발 placed the phone by the A23-40 rules), both with a 58 px top bar.
 -- HudLayout.Compute turns them into MainGui logical units (before UIScale) for the current screen: every item keeps its
--- distance to the edge it belongs to (top-left / top-centre / top-right / bottom-centre / bottom-right), the top rows follow
--- the real top-bar inset, the phone combat cluster follows the real jump button, the centre column narrows between the
+-- distance to the edge it belongs to (top-left / top-centre / the top bar / bottom-centre / bottom-right), the top rows
+-- follow the real top-bar inset, the phone thumb ring follows the real jump button, the centre column narrows between the
 -- left and right blocks, and on PCs the bottom-centre group moves left when the corner cluster would cover it.
 --   PC:    top-left round minimap + 2 quest lines under it, top-centre war meter -> chips -> next event -> notify,
---          bottom-centre face + 'Lv · 전투력' + HP | MP + XP + icon tile row, bottom-right combat cluster, top-right the
---          [메뉴] tile (A23-40 정정: its tiles fold out to the left; the Tab list opens under it).
---   phone: the bottom centre belongs to the thumbstick and the combat buttons, so the face / bars / tile row sit top-right
---          (the quest lines beside the minimap, the centre column between them).
+--          bottom-centre face + 'Lv · 전투력' + HP | MP + XP + icon tile row + the potion pair, the skill column Q · Z · X
+--          on the right edge over a smaller attack disc, top-right the [메뉴] tile (A23-40 정정: its tiles fold out to the
+--          left; the Tab list opens under it).
+--   phone (2026-10-07, user via 검수: "어쨌든 모바일로도 되어야" + the reference shot): the same reading as the PC - the
+--          minimap with the quest lines under it top-left, [메뉴] in the top bar, the face / Lv line / HP | MP / XP and
+--          under them the tile row bottom-centre, centred between the thumbstick zone and the thumb ring (it gives up
+--          tiles to [메뉴] where the room is short); the thumb ring = the attack disc by the jump button with the HP and
+--          MP potions and Q · Z · X on one ring around it (lower left to upper right), 자동 above the jump button and the
+--          grudge ghost above the ring's left end.
 --   A23-40 보강 (user 2026-10-06 "메뉴 위치랑 가운데 바가 로블록스 기본 메뉴랑 위치가 같으면 좋겠어"): on both, [메뉴] and the war
 --          meter sit IN the Roblox top bar row (env.Topbar = GuiService.TopbarInset, the free part of the bar right of
 --          Roblox's own buttons), on the same middle line as Roblox's buttons; [메뉴] is as big as a Roblox button
@@ -26,10 +31,10 @@ local REF = {
 }
 
 -- id = { desktop anchor, desktop { x, y, w, h }, touch { x, y, w, h }, touch anchor (default: the desktop one) }
--- anchors: TL top-left, TC top-centre, TR top-right, BC bottom-centre, BR bottom-right (touch: the jump button)
+-- anchors: TL top-left, TC top-centre, TB the Roblox top bar, BC bottom-centre, BR bottom-right (touch: the jump button)
 local ITEMS = {
-	minimap = { "TL", { 14, 66, 150, 150 }, { 8, 62, 84, 84 } },
-	quest = { "TL", { 14, 226, 300, 52 }, { 98, 62, 150, 45 } },
+	minimap = { "TL", { 14, 66, 150, 150 }, { 8, 62, 80, 80 } },
+	quest = { "TL", { 14, 226, 300, 52 }, { 8, 146, 240, 45 } },
 	-- TB = in the Roblox top bar: x like TC, centred on the bar's middle, its height in REAL px (Roblox's buttons do not
 	-- follow our UIScale); the sheet's y = on the middle line of Roblox's buttons (34 px)
 	war_meter = { "TB", { 496, 13, 288, 42 }, { 255, 15, 240, 38 } },
@@ -38,25 +43,35 @@ local ITEMS = {
 	-- king pill ("Pumpkin King is here! 4:54 left") was squeezed to 150 x 16 px with its words spilling out
 	event = { "TC", { 516, 88, 248, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
-	portrait = { "BC", { 362, 586, 50, 50 }, { 502, 62, 45, 45 }, "TR" },
-	power_line = { "BC", { 420, 578, 440, 16 }, { 551, 62, 190, 14 }, "TR" },
-	hp_bar = { "BC", { 420, 598, 216, 20 }, { 551, 78, 93, 13 }, "TR" },
-	mp_bar = { "BC", { 644, 598, 216, 20 }, { 648, 78, 93, 13 }, "TR" },
-	xp_bar = { "BC", { 420, 622, 440, 8 }, { 551, 95, 190, 6 }, "TR" },
-	tiles = { "BC", { 420, 640, 440, 52 }, { 502, 112, 239, 45 }, "TR" },
+	portrait = { "BC", { 387, 586, 50, 50 }, { 225, 248, 45, 45 } },
+	power_line = { "BC", { 445, 578, 449, 16 }, { 275, 250, 140, 14 } },
+	hp_bar = { "BC", { 445, 598, 220, 20 }, { 275, 267, 68, 12 } },
+	mp_bar = { "BC", { 673, 598, 221, 20 }, { 347, 267, 68, 12 } },
+	xp_bar = { "BC", { 445, 622, 449, 8 }, { 275, 282, 140, 5 } },
+	tiles = { "BC", { 445, 640, 327, 52 }, { 225, 296, 190, 45 } },
 	-- A23-40 정정 + 보강: [메뉴] in the top bar's right end (TB anchor; size and position come from TOPBAR, the rects are
 	-- the 1280x720 / 749x361 results). out.fold = its fold-out room
 	menu = { "TB", { 1224, 12, 44, 44 }, { 692, 12, 45, 45 } },
-	combo = { "BC", { 580, 463, 120, 24 }, { 305, 236, 144, 20 } },
-	potions = { "BR", { 926, 646, 122, 58 }, { 337, 298, 112, 54 } },
-	-- A23-49 three skills Q · Z · X (docs/design/skill_kit_beta_2026-10-06.md §6-1): the X button joins the cluster; Q / Z /
-	-- auto move on PCs and the grudge ghost on phones so the four round buttons keep clear of each other
-	ghost = { "BR", { 987, 577, 61, 61 }, { 386, 170, 57, 57 } },
-	q = { "BR", { 1052, 596, 77, 77 }, { 455, 252, 72, 72 } },
-	z = { "BR", { 1100, 518, 77, 77 }, { 497, 180, 72, 72 } },
-	x = { "BR", { 1186, 499, 77, 77 }, { 580, 164, 72, 72 } },
-	auto = { "BR", { 1219, 440, 51, 51 }, { 665, 215, 48, 48 } },
-	attack = { "BR", { 1146, 592, 118, 118 }, { 534, 241, 112, 112 } },
+	combo = { "BC", { 580, 463, 120, 24 }, { 520, 110, 144, 20 }, "BR" },
+	-- PC combat (검수 2026-10-07 with the user's reference shot: "이렇게 … 똑같이 하지 말고 더 낫게"): a mouse / keyboard player
+	-- reads keys, not thumbs. The potions (keys 1 · 2) sit right after the icon row (six tiles wide), part of the
+	-- bottom-centre group: face, bars and the tiles + potions row make one block centred on the screen; the
+	-- skills Q · Z · X are one column on the right edge (their key badges in reading order, like an action bar); the
+	-- attack (left click / F) is a smaller disc under the column with 자동 and the grudge ghost left of it.
+	-- Phones (검수 2026-10-07: "공격·스킬·물약을 엄지가 닿는 곳에 깔끔한 묶음으로", not two lone [Buy] buttons by the attack):
+	-- one thumb ring - the attack disc left of the jump button, the HP and MP potions and Q · Z · X on one circle around
+	-- it (centres 82 px from the attack's centre, 5 px apart, lower left to upper right: HP · MP · Q · Z · X; X clears the
+	-- jump button), 자동 above the jump button, the grudge ghost above the ring's left end (A23-49: three skills Q · Z ·
+	-- X, docs/design/skill_kit_beta_2026-10-06.md). The two potions are round buttons of their own (out.potions = the
+	-- box around both with Cells, for VitalsUI.PlacePotions)
+	potion_hp = { "BC", { 784, 640, 52, 52 }, { 500, 305, 46, 46 }, "BR" },
+	potion_mp = { "BC", { 842, 640, 52, 52 }, { 496, 254, 46, 46 }, "BR" },
+	ghost = { "BR", { 1050, 630, 61, 61 }, { 475, 161, 50, 50 } },
+	q = { "BR", { 1199, 392, 66, 66 }, { 523, 204, 54, 54 } },
+	z = { "BR", { 1199, 466, 66, 66 }, { 580, 188, 54, 54 } },
+	x = { "BR", { 1199, 540, 66, 66 }, { 633, 215, 54, 54 } },
+	auto = { "BR", { 1124, 634, 52, 52 }, { 694, 164, 44, 44 } },
+	attack = { "BR", { 1186, 620, 80, 80 }, { 550, 248, 98, 98 } },
 }
 HudLayout.Items = ITEMS
 HudLayout.Ref = REF
@@ -75,27 +90,32 @@ local MIN_CENTER = 240 -- logical units: narrowest centre column (the war meter 
 -- which keeps the desktop layout's top and bottom blocks apart. The phone sheet is for touch only (replaces SMALL_PC)
 local GAP = 8
 -- touch targets never shrink below 60 logical units (~45 real px at the phone's 0.75 UIScale). A scaled down button
--- grows back: the portrait from its top-left corner (the bars beside it give way, the tile row under it moves down), the
--- tiles to MIN_TAP squares (fewer fit the row), the quest lines downwards, the round combat buttons around their centre,
--- the potions upwards and then to the left (both cells: the potions rect holds HP and MP side by side, POTION_GAP apart)
+-- grows back: the round combat buttons and potions around their centre, the quest lines downwards; in the bottom-centre
+-- group the face from its bottom-left corner and the tile row upwards
 local MIN_TAP = 60
-local ROUND_TAPS = { "ghost", "q", "z", "x", "auto", "attack" }
-local POTION_GAP = 6 -- real px between the HP and MP buttons on both reference sheets (out.potions.Gap, in du)
+local ROUND_TAPS = { "ghost", "q", "z", "x", "auto", "attack", "potion_hp", "potion_mp" }
+local POTION_GAP = 6 -- real px between the HP and MP buttons on the PC sheet (out.potions.Gap, in du)
 HudLayout.PotionGap = POTION_GAP
 local TILE_GAP = 3 -- real px: the least gap between two tiles of the icon row (out.tiles.Gap, in du)
-local STICK = { X = 0.4, Y = 1 / 3 } -- touch thumbstick zone: x < 0.4 W and y > H / 3
--- desktop: the bottom-centre group (face, power line, bars, XP, tiles) and the corner cluster it must stay clear of
-local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
-local CLUSTER = { "potions", "ghost", "q", "z", "x", "auto", "attack" }
--- touch: the plate beside the portrait (moves right when the portrait grows back to MIN_TAP)
-local PLATE = { "power_line", "hp_bar", "mp_bar", "xp_bar" }
+-- touch thumbstick zone: x < 0.3 W and y > 0.54 H, nothing pressable there (2026-10-07 phone layout: the quest lines hang
+-- under the minimap above the thumb's rest; Roblox's thumbstick appears where the thumb lands in the lower left and rests
+-- around Mid = 0.2 W). 검수 2026-10-07 ("폰 아래 묶음 가운데"): the bottom-centre group is as wide as the room right of
+-- Room = 0.4 W and sits centred between the thumbstick's rest and the thumb ring (left edge 0.3 W on the reference phones)
+local STICK = { X = 0.3, Y = 0.54, Mid = 0.2, Room = 0.4 }
+-- the bottom-centre group (face, power line, bars, XP, tiles; PCs: the potions right of the tiles) and the corner cluster
+-- it must stay clear of (touch: the thumb ring, potions included)
+local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles", "potion_hp", "potion_mp" }
+local CLUSTER = { "ghost", "q", "z", "x", "auto", "attack" }
+local RING = { "potion_hp", "potion_mp", "ghost", "q", "z", "x", "auto", "attack" }
+local RING_BUTTONS = { "potion_hp", "potion_mp", "q", "z", "x" } -- the buttons on the ring itself (lower left -> upper right)
+local BARS = { "power_line", "hp_bar", "mp_bar", "xp_bar" } -- touch: they run from the face to the tile row's right end
+local BAR_GAP = 5 -- real px between the face and the bars, and between HP and MP, on the phone sheet
+local ROW_MAX = 6 -- touch: the bottom group grows up to this many tiles wide where the room allows (the icon row's windows)
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
 -- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
--- While open it may run over the centre column's info rows (chips / next event / notify), on phones also over the tile
--- row and the face / bars, but never over the war meter, the minimap, the quest lines, a combat button, the jump button
--- or the thumbstick zone
-local FOLD_OVER = { tiles = true, menu = true, chips = true, event = true, notify = true, combo = true }
-local FOLD_OVER_TOUCH = { portrait = true, power_line = true, hp_bar = true, mp_bar = true, xp_bar = true }
+-- While open it may run over the centre column's info rows (chips / next event / notify), but never over the war meter,
+-- the minimap, the quest lines, the face group, a combat button, the jump button or the thumbstick zone
+local FOLD_OVER = { menu = true, chips = true, event = true, notify = true, combo = true }
 local FOLD_ROWS = 3
 local FOLD_GAP = 4 -- real px between two fold-out squares on PCs
 
@@ -114,9 +134,10 @@ HudLayout.AnchorOf = anchorOf
 --         Jump = { X, Y, W, H } of the touch jump button in logical units or nil, Hidden = { [id] = true },
 --         Topbar = { X0, Y0, X1, Y1 } = the free part of the Roblox top bar (GuiService.TopbarInset) in logical units
 --         (MainGui space) or nil (then TOPBAR.Left .. W, 0 .. Inset) }
--- returns { [id] = { X, Y, W, H } } in logical units (MainGui space, before UIScale). potions also carries Gap (du between
--- its HP and MP cells: cell width = (W - Gap) / 2); tiles carries Size (square tile side), Gap (least gap) and Count (how
--- many tiles fit the row: the HUD shows that many, the rest go into the [메뉴] tile)
+-- returns { [id] = { X, Y, W, H } } in logical units (MainGui space, before UIScale). potions (derived) = the box around
+-- potion_hp and potion_mp with Gap (du between them on PCs) and Cells = { HP, MP } (the two button rects); tiles carries
+-- Size (square tile side), Gap (least gap) and Count (how many tiles fit the row: the HUD shows that many, the rest go
+-- into the [메뉴] fold-out)
 function HudLayout.Compute(env)
 	local touch = env.Touch == true
 	-- sheet = which approved sheet the rects come from (the phone one on touch only); touch = the finger rules
@@ -147,17 +168,27 @@ function HudLayout.Compute(env)
 		k *= math.min(1, W / (ref.W / ref.Scale), H / (ref.H / ref.Scale))
 	end
 	local rj = touch and ref.Jump or nil -- the approved sheet's jump button (real px)
+	-- touch: the thumb cluster (the BR items: attack, ring, 자동, ghost, combo) is one rigid shape. The attack keeps its
+	-- approved gaps to the live jump button (left edge, middle; Roblox draws it 70 or 120 px), every other BR item its sheet
+	-- offset from the attack's centre, all at one scale kc that never lets the smallest ring button fall below MIN_TAP (so
+	-- nothing grows into its neighbour on small phones)
+	local kc, ac = k, nil
+	if jump and rj then
+		local ringMin = math.huge
+		for _, id in RING_BUTTONS do ringMin = math.min(ringMin, ITEMS[id][3][3]) end
+		kc = math.max(k, MIN_TAP / ringMin)
+		local ra = ITEMS.attack[3]
+		ac = { X = jump.X - (rj[1] - ra[1]) * kc + ra[3] * kc / 2,
+			Y = jump.Y + jump.H / 2 + (ra[2] + ra[4] / 2 - rj[2] - rj[4] / 2) * kc, SX = ra[1] + ra[3] / 2, SY = ra[2] + ra[4] / 2 }
+	end
 	local out = {}
 	for id, def in ITEMS do
 		local r = sheet and def[3] or def[2]
 		local x, y, w, h = r[1], r[2], r[3] * k, r[4] * k
 		local anchor = anchorOf(id, sheet)
-		if anchor == "BC" and jump then anchor = "BR" end -- touch: the combo line rides with the cluster (never under Q)
 		local X, Y
 		if anchor == "TL" then
 			X, Y = x * k, top + (y - ref.Inset) * k
-		elseif anchor == "TR" then
-			X, Y = W - (ref.W - x) * k, top + (y - ref.Inset) * k
 		elseif anchor == "TC" then
 			X, Y = W / 2 + (x - ref.W / 2) * k, top + (y - ref.Inset) * k
 		elseif anchor == "TB" then
@@ -166,40 +197,20 @@ function HudLayout.Compute(env)
 			X, Y = W / 2 + (x - ref.W / 2) * k, barMid - h / 2
 		elseif anchor == "BC" then
 			X, Y = W / 2 + (x - ref.W / 2) * k, H - (ref.H - y) * k
-		elseif jump and rj then
-			-- BR on touch: keep the approved gaps to the live jump button's edges (Roblox draws it 70 or 120 px, so its
-			-- centre alone would put a big button over it): left of it -> gap to its left edge, over it (자동) -> centred;
-			-- wholly above it -> gap to its top, else the offset to its middle
-			if x >= rj[1] then
-				X = jump.X + jump.W / 2 + (x + r[3] / 2 - rj[1] - rj[3] / 2) * k - w / 2
-			else
-				X = jump.X - (rj[1] - x) * k
-			end
-			if y + r[4] <= rj[2] then
-				Y = jump.Y - (rj[2] - y) * k
-			else
-				Y = jump.Y + jump.H / 2 + (y - rj[2] - rj[4] / 2) * k
-			end
+		elseif ac then
+			-- BR on touch: the rigid thumb cluster around the attack's centre (kc above; the combo line keeps the screen's
+			-- scale k - text over the cluster, never wider than the centre column allows on small phones)
+			if id ~= "combo" then w, h = r[3] * kc, r[4] * kc end
+			X = ac.X + (x + r[3] / 2 - ac.SX) * kc - w / 2
+			Y = ac.Y + (y + r[4] / 2 - ac.SY) * kc - h / 2
 		else -- BR
 			X, Y = W - (ref.W - x) * k, H - (ref.H - y) * k
 		end
 		out[id] = rect(X, Y, w, h)
 	end
-	out.potions.Gap = POTION_GAP * k
 	local tileGap = TILE_GAP * k
 
 	if touch then
-		-- portrait: grows from its top-left corner; the plate beside it gives way (same right edge), the tile row moves down
-		local p = out.portrait
-		if p.W < MIN_TAP then
-			local g = MIN_TAP - p.W
-			p.W, p.H = MIN_TAP, MIN_TAP
-			for _, id in PLATE do
-				local r = out[id]
-				r.X, r.W = r.X + g, math.max(1, r.W - g)
-			end
-			out.tiles.Y += g
-		end
 		-- quest lines: one MIN_TAP target (two text lines), grown downward
 		if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end
 		for _, id in ROUND_TAPS do
@@ -208,38 +219,55 @@ function HudLayout.Compute(env)
 				r.X, r.Y, r.W, r.H = r.X + r.W / 2 - MIN_TAP / 2, r.Y + r.H / 2 - MIN_TAP / 2, MIN_TAP, MIN_TAP
 			end
 		end
-		-- potions: two cells side by side (HP, MP), each >= MIN_TAP. The rect grows upwards, then to the left with the
-		-- same right edge (Q sits right of it), but never into the thumbstick zone or onto an item level with it on the
-		-- left; a phone without that room keeps the widest cells it can get (the offline test names it as an exception)
-		local pot = out.potions
-		if pot.H < MIN_TAP then pot.Y, pot.H = pot.Y + pot.H - MIN_TAP, MIN_TAP end
-		local potRight = pot.X + pot.W
-		local minX = potRight - (2 * MIN_TAP + pot.Gap)
-		if pot.Y + pot.H > H * STICK.Y then minX = math.max(minX, W * STICK.X) end
-		for oid, o in out do
-			if oid ~= "potions" and not hidden[oid] and o.X + o.W <= pot.X + 0.01 and o.Y < pot.Y + pot.H and o.Y + o.H > pot.Y then
-				minX = math.max(minX, o.X + o.W + GAP)
-			end
+		-- 2026-10-07 phone layout (user via 검수: "어쨌든 모바일로도 되어야" + the reference shot): the bottom-centre group sits
+		-- between the thumbstick zone and the thumb ring. Thumb sizes first, growing upwards so the tile row keeps its
+		-- bottom: the row, the face from its bottom-left corner (the bars ride up with the row)
+		local face, tl = out.portrait, out.tiles
+		local rowBottom = tl.Y + tl.H
+		local rowH = math.max(tl.H, MIN_TAP)
+		local lift = rowH - tl.H
+		for _, id in BARS do out[id].Y -= lift end
+		face.Y -= lift
+		tl.Y, tl.H = rowBottom - rowH, rowH
+		if face.W < MIN_TAP then
+			local g = MIN_TAP - face.W
+			face.Y, face.W, face.H = face.Y - g, MIN_TAP, MIN_TAP
 		end
-		if minX < pot.X then pot.X, pot.W = minX, potRight - minX end
+		-- across: the group's width is the room from STICK.Room to a GAP left of the ring buttons level with the bars and
+		-- the row (the face may stand above the bars at the group's left end), up to ROW_MAX tiles wide; it sits centred
+		-- between the thumbstick's rest (STICK.Mid) and those buttons ("조이스틱과 전투 버튼 사이 가운데", 검수 2026-10-07),
+		-- never left of the thumbstick zone (STICK.X; defensive: the centred group starts there at the latest). The tile row
+		-- spans the group (tiles that do not fit go to [메뉴]), the bars run from the face to the group's right end, HP and
+		-- MP halves BAR_GAP apart
+		local limit = W
+		for _, id in RING do
+			local r = out[id]
+			if not hidden[id] and r.Y < rowBottom and r.Y + r.H > out.power_line.Y then limit = math.min(limit, r.X - GAP) end
+		end
+		local edge, mid = W * STICK.X, W * STICK.Mid
+		local room = math.max(0, limit - W * STICK.Room)
+		local gw = math.min(room, ROW_MAX * rowH + (ROW_MAX - 1) * tileGap)
+		local left = math.max(edge, mid + (limit - mid - gw) / 2)
+		local right = left + gw
+		local barGap = BAR_GAP * k
+		tl.X, tl.W = left, gw
+		face.X = left
+		local bx = face.X + face.W + barGap
+		local bw = math.max(1, right - bx)
+		local half = math.max(1, (bw - barGap) / 2)
+		out.power_line.X, out.power_line.W = bx, bw
+		out.xp_bar.X, out.xp_bar.W = bx, bw
+		out.hp_bar.X, out.hp_bar.W = bx, half
+		out.mp_bar.X, out.mp_bar.W = bx + half + barGap, half
 	end
 
-	-- A23-71 (user 2026-10-07 "스킬도 처음에는 없어야 돼"): before Lv5 the skill buttons are not on screen. While Q is
-	-- hidden the potions close up to the attack button (the hole Q leaves read as a missing button); Z / X leave their
-	-- room above the attack button empty
-	if hidden.q then
-		local pot, atk = out.potions, out.attack
-		local want = atk.X - GAP - pot.W
-		if want > pot.X then pot.X = want end
-	end
-
-	-- tile row: square tiles as tall as the row (>= MIN_TAP on touch), Count = how many fit with the least gap
+	-- tile row: square tiles as tall as the row (touch: the row already grew to MIN_TAP), Count = how many fit with the
+	-- least gap
 	local tiles = out.tiles
-	local size = touch and math.max(tiles.H, MIN_TAP) or tiles.H
-	tiles.H = size
+	local size = tiles.H
 	tiles.Size = size
 	tiles.Gap = tileGap
-	tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
+	tiles.Count = math.max(touch and 0 or 1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
 	-- [메뉴]: a Roblox-button-sized square in the top bar, TOPBAR.Edge px from its free right end, centred on the bar's
 	-- middle like Roblox's own buttons (A23-40 보강); on touch never under TOPBAR.Tap real px (= MIN_TAP at the phone's
 	-- 0.75 UIScale; on tablets MIN_TAP du would no longer fit the 58 px bar)
@@ -248,27 +276,8 @@ function HudLayout.Compute(env)
 	menu.W, menu.H = mSize, mSize
 	menu.X = bar.X1 - TOPBAR.Edge / s - mSize
 	menu.Y = barMid - mSize / 2
-	-- touch (review 2026-10-07, game dev 1: a tap on [메뉴] in the bar never reached it, B opened it): Roblox's top bar
-	-- row takes every touch inside it, so on touch devices [메뉴] is the last square of the tile row under the bar
-	-- (phones: the plate's row top-right) and the row's own tiles step left of it; mouse / keyboard keep it in the bar
-	if touch then
-		mSize = size
-		menu.W, menu.H = mSize, mSize
-		menu.X = tiles.X + tiles.W - mSize
-		menu.Y = tiles.Y
-		tiles.W = math.max(0, tiles.W - mSize - tileGap)
-		tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
-	end
-
-	-- phone sheet: a round button that reaches up into the plate's tile row steps down under it (short / narrow phones: the
-	-- plate hangs from the top, the cluster from the jump button, so the X skill can meet the row; A23-49)
-	if sheet then
-		local rowBottom = tiles.Y + tiles.H + GAP / 2
-		for _, id in ROUND_TAPS do
-			local r = out[id]
-			if r.X < tiles.X + tiles.W and r.X + r.W > tiles.X and r.Y < rowBottom then r.Y = rowBottom end
-		end
-	end
+	-- (2026-10-07 phone layout: touch keeps [메뉴] in the bar too, like the reference shot; review 2026-10-07 had moved it
+	-- under the bar after MCP taps missed it under phone emulation, whose clicks are offset - a real phone test decides)
 
 	-- desktop: the bottom-centre group moves left (keeping its shape) when the corner cluster reaches it, but never past
 	-- the left margin; if that is still not enough it is squeezed from its left edge (narrow 4:3 / 5:4 windows)
@@ -290,12 +299,21 @@ function HudLayout.Compute(env)
 			for _, id in BC_GROUP do out[id].X -= shift end
 			minX, maxX = minX - shift, maxX - shift
 			if maxX > limit and maxX - minX > 1 then
-				local f = math.max(0.5, (limit - minX) / (maxX - minX))
-				for _, id in BC_GROUP do
-					local r = out[id]
-					r.X = minX + (r.X - minX) * f
-					if id ~= "portrait" then r.W *= f end
-				end
+				-- the right end comes in to the limit (narrow 4:3-ish windows): the face and the starts of the bars and the
+				-- row stay, the potion pair keeps its size and gaps at the right end, the tile row gives up its right part
+				-- (tiles that no longer fit go to [메뉴]) and the bars end with the pair, HP and MP halves keeping their gap
+				local hp, mp = out.potion_hp, out.potion_mp
+				local lead, cut = hp.X - (tiles.X + tiles.W), maxX - limit
+				mp.X -= cut
+				hp.X -= cut
+				tiles.W = math.max(0, hp.X - lead - tiles.X)
+				out.power_line.W -= cut
+				out.xp_bar.W -= cut
+				local hb, mb = out.hp_bar, out.mp_bar
+				local barGap = mb.X - (hb.X + hb.W)
+				local half = math.max(1, (out.power_line.W - barGap) / 2)
+				hb.W = half
+				mb.X, mb.W = hb.X + half + barGap, half
 				tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
 			end
 		end
@@ -307,7 +325,7 @@ function HudLayout.Compute(env)
 	-- In the top bar row the left neighbour is Roblox's own buttons and the right one [메뉴] with room for FOLD_MIN fold
 	-- squares beside it (the war meter never takes the fold's first line)
 	local leftEdge, rightEdge = 0, W
-	local fGapRow = sheet and tileGap or FOLD_GAP * k
+	local fGapRow = FOLD_GAP * k
 	for _, id in CENTER do
 		local c = out[id]
 		for oid, o in out do
@@ -341,7 +359,7 @@ function HudLayout.Compute(env)
 	-- everything stays on screen and below the top bar (big tablets / very short windows); the top bar items stay in it
 	for id, r in out do
 		r.X = math.clamp(r.X, 0, math.max(0, W - r.W))
-		if anchorOf(id, sheet) == "TB" and not (touch and id == "menu") then
+		if anchorOf(id, sheet) == "TB" then
 			r.Y = math.clamp(r.Y, bar.Y0, math.max(bar.Y0, bar.Y1 - r.H))
 		else
 			r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))
@@ -352,12 +370,12 @@ function HudLayout.Compute(env)
 	-- nearest item it may not cover (an item level with it that reaches under [메뉴] leaves no room: the line closes). X / Y / W / H = the box
 	-- around all lines, Cols = the first line's squares, Rows = #Lines
 	local m = out.menu
-	local fGap = sheet and tileGap or FOLD_GAP * k -- phone sheet: the tile row's gap (the first line lies on that row)
+	local fGap = FOLD_GAP * k
 	local fSize = m.H
 	local right = m.X - fGap
 	local blockers = {}
 	for oid, o in out do
-		if not hidden[oid] and not FOLD_OVER[oid] and not (sheet and FOLD_OVER_TOUCH[oid]) then table.insert(blockers, o) end
+		if not hidden[oid] and not FOLD_OVER[oid] then table.insert(blockers, o) end
 	end
 	table.insert(blockers, rect(0, bar.Y0, bar.X0, bar.Y1 - bar.Y0)) -- Roblox's own top bar buttons
 	if touch then
@@ -373,19 +391,18 @@ function HudLayout.Compute(env)
 		end
 		return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6))
 	end
-	-- the first line on [메뉴]'s own line (mouse: the top bar, the next ones from just under the bar down; touch: the
-	-- tile row, the next ones up over the plate and never into the bar - "위쪽에서만", A23-38)
+	-- the first line on [메뉴]'s own line in the top bar, the next ones from just under the bar down (mouse and touch)
 	local lines = {}
 	local y, step = m.Y, fSize + fGap
 	local x0, y0, y1 = right, math.huge, -math.huge
-	local yMin = touch and top or math.min(top, bar.Y0)
+	local yMin = math.min(top, bar.Y0)
 	while #lines < FOLD_ROWS and y >= yMin - 0.01 and y + fSize <= H + 0.01 do
 		local cols = colsAt(y)
 		if cols < 1 then break end
 		local lx = right - cols * (fSize + fGap) + fGap
 		table.insert(lines, { X = lx, Y = y, Cols = cols })
 		x0, y0, y1 = math.min(x0, lx), math.min(y0, y), math.max(y1, y + fSize)
-		y = touch and (y - step) or math.max(y + step, top + fGap)
+		y = math.max(y + step, top + fGap)
 	end
 	if #lines == 0 then -- no room at all (a tiny window): one square over [메뉴]'s left neighbour
 		lines[1] = { X = right - fSize, Y = m.Y, Cols = 1 }
@@ -393,6 +410,11 @@ function HudLayout.Compute(env)
 	end
 	out.fold = { X = x0, Y = y0, W = right - x0, H = y1 - y0, Size = fSize, Gap = fGap, Cols = lines[1].Cols,
 		Rows = #lines, Lines = lines }
+	-- the potion pair for VitalsUI.PlacePotions: the box around both buttons, Gap and Cells (each button's own rect)
+	local ph, pm = out.potion_hp, out.potion_mp
+	local px0, py0 = math.min(ph.X, pm.X), math.min(ph.Y, pm.Y)
+	out.potions = { X = px0, Y = py0, W = math.max(ph.X + ph.W, pm.X + pm.W) - px0,
+		H = math.max(ph.Y + ph.H, pm.Y + pm.H) - py0, Gap = POTION_GAP * k, Cells = { HP = ph, MP = pm } }
 	return out
 end
 
