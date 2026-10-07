@@ -35,7 +35,7 @@
 | 잔디 Grass | GE_Grass(옛 그림), StudsPerTile 14, 색 106,150,72 | 타일 28, 색 112,168,82 | **무늬 없는 새 재질(색만)**, 색 106,148,86 | **새 그림 Tex_Grass_FF**, 타일 16, 색 235,235,235 |
 | 숲 바닥 LeafyGrass | GE_LeafyGrass, 14, 70,110,55 | 28, 92,140,70 | 무늬 없음, 88,122,72 | **Tex_LeafyGrass_FF**, 16, 235 |
 | 흙길(길 파트) | GE_DirtPath, 14 | 28 | 28 | **Tex_DirtPath_FF**, 16 |
-| 돌바닥 Cobblestone | GE_Cobblestone, 14, 170,160,140 | 24, 178,168,148 | 24, 178,168,148 | **Tex_Cobblestone_FF**, 14, 235 |
+| 돌바닥 Cobblestone | GE_Cobblestone, 14, 170,160,140 | 24, 178,168,148 | 24, 178,168,148 | **Tex_Cobblestone_FF**, **8 + Organic**(품질 ⑧, 5c7cfb1), 235 |
 | 폐허 Slate | GE_Slate, 14, 63,127,107 | 28, 104,138,124 | 28, 104,138,124 | 그대로(A) |
 
 - C(무늬만 크게)는 잡무늬가 커질 뿐 덜 시끄러워지지 않았다.
@@ -111,7 +111,7 @@
 - 시트: `art/review/zone_look_2026-10-06_sheet.png`, 다시 찍기 `py tools/zone_look_view.py`(UiSandbox Play, 캐릭터를 각 지역 안에 세움, 레벨·진영 문은 시험 속성으로 통과).
 
 ## 새 땅·나무 적용 (2026-10-06)
-- 땅 13종(E 4장 + 10장: 폐허 판석·호박밭 흙·폐허 흙·석회암·현무암·용암·바위·모래·대리석·나무판)을 `tools/apply_surface_materials.lua`가 새 재질로 만든다(옛 재질 복제 안 함, ColorMap만, 지형 색 235). StudsPerTile: 잔디·숲 바닥·길·폐허 흙·바위·모래 16, 돌바닥·판석·석회암·현무암·용암·호박밭 흙 14, 대리석·나무판 10.
+- 땅 13종(E 4장 + 10장: 폐허 판석·호박밭 흙·폐허 흙·석회암·현무암·용암·바위·모래·대리석·나무판)을 `tools/apply_surface_materials.lua`가 새 재질로 만든다(옛 재질 복제 안 함, ColorMap만, 지형 색 235). StudsPerTile: 잔디·숲 바닥·길·폐허 흙·바위·모래 16, 돌바닥 8 + Organic(품질 ⑧ 2026-10-07, 돌 하나 약 1.4스터드), 판석·석회암·현무암·용암·호박밭 흙 14, 대리석·나무판 10.
 - 나무 46그루: 잎(Leaves·Leaves2, SmoothPlastic) = 이름 붙인 변형 GE_TreeLeaves(타일 9), 줄기(Trunk, Wood) = GE_TreeBark(타일 8). 덮어쓰기 없음(Wood·SmoothPlastic을 쓰는 다른 파트 약 300개에 안 번짐). 무채색 그림이라 파트 Color가 잎·껍질 색이 된다.
 - **나무 색 제안(MapBuilder·preview_map, 게임성 개발 1):** 숲 잎 Color를 ×1.35 밝게(지금 40,90,45 → 54,121,61; 시트 '숲 나무 한 단계 밝게'). 새 잎 그림이 평균 0.76배 어두워서 지금 색 그대로면 숲 나무가 거의 검게 보인다. 초원 나무도 같은 비율 추천.
 - **하늘 해(Sky_Sun):** Roblox 해 렌더에서 흰 꽃(데이지) 모양으로 보인다(시트 '새 해 그림'). 색이 사라지고 빛살이 꽃잎처럼 보여 기본 해보다 낫지 않다. 제안: 해는 빛살 없는 둥근 원판 한 장으로 다시 그리기(이미지 생성 1), Dawn 해·Eclipse 달은 하늘 바뀔 때 WarService가 Sky.SunTextureId/MoonTextureId로 바꾼다(게임성 개발).
