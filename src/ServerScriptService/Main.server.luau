@@ -11,7 +11,7 @@ local INIT_ORDER = {
 	"ClassService", "VitalsService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
 	"AnnounceService", "SettingsService", "RankingService", "LootService", "TelemetryService", "TitleService",
-	"CharacterVisuals", "HalloweenService", "PetService", "BoardService", "BarkService",
+	"CharacterVisuals", "HalloweenService", "PetService", "BoardService", "BarkService", "DamageWindow", "SkillService",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -20,7 +20,8 @@ local START_ORDER = {
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
 	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "HalloweenService", "LootService", "TelemetryService",
 	"TitleService", "MonetizationService", "CharacterVisuals", "DataService",
-	"NicknameService", "SettingsService", "RankingService", "PetService", "BoardService", "BarkService", "PlayerService",
+	"NicknameService", "SettingsService", "RankingService", "PetService", "BoardService", "BarkService", "DamageWindow",
+	"SkillService", "PlayerService",
 }
 
 local S = {}

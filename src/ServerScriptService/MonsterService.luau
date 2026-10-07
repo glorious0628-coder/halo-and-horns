@@ -1298,6 +1298,75 @@ function MonsterService.Shove(record, fromPosition, studs, player)
 	return true
 end
 
+------------------------------------------------------------------ SKL-2 skill pull / push (SkillService)
+-- A23-49 rule 9 (skill_kit §3 Pull / Push): a skill moves a monster it hit. "Pull": toward fromPosition (the caster) by
+-- at most `studs`, stopping Stop studs short of it; "Push": away from fromPosition by `studs`. The distance is divided by
+-- the body scale (big monsters move less); a boss (MonsterTypes Boss) never moves, nor another player's personal
+-- monster. The end point must stay in the zone the monster stands in (a zone monster: inside its own zone rect inset
+-- ZONE_MOVE_INSET and within LeashRadius of its home), on walkable ground, with no wall / decor in the way at body
+-- height; when the full move is not allowed it tries the shorter Steps, else nothing. Slides over Time (ease out) like
+-- Shove, which stays the small hit slide. Returns the studs moved (0 = none).
+local DISPLACE = { Stop = 3, Time = 0.2, Steps = { 1, 0.75, 0.5, 0.25 } }
+function DISPLACE.Slide(record, root, delta)
+	local start = os.clock()
+	record._shoveReadyAt = math.max(record._shoveReadyAt or 0, start + DISPLACE.Time) -- no hit shove fights the slide
+	task.spawn(function()
+		local ok, err = pcall(function()
+			local done = 0
+			while true do
+				task.wait()
+				if not record.Alive or not root.Parent or root.Anchored then break end
+				local t = math.clamp((os.clock() - start) / DISPLACE.Time, 0, 1)
+				local f = 1 - (1 - t) * (1 - t) -- ease out
+				root.CFrame = root.CFrame + delta * (f - done)
+				done = f
+				if t >= 1 then break end
+			end
+		end)
+		if not ok then warnThrottled("displace", err) end
+	end)
+end
+
+function MonsterService.Displace(record, mode, fromPosition, studs, player)
+	if type(record) ~= "table" or not record.Alive then return 0 end
+	if (mode ~= "Pull" and mode ~= "Push") or typeof(fromPosition) ~= "Vector3" then return 0 end
+	if type(studs) ~= "number" or studs ~= studs or studs <= 0 or studs == math.huge then return 0 end
+	if record.Owner and record.Owner ~= player then return 0 end -- A5-C2
+	local def = record.Def or Config.MonsterTypes[record.Kind]
+	if type(def) == "table" and def.Boss then return 0 end
+	local root = record.Root
+	if not root or not root.Parent or root.Anchored then return 0 end
+	local pos = root.Position
+	local toCaster = Vector3.new(fromPosition.X - pos.X, 0, fromPosition.Z - pos.Z)
+	local gap = toCaster.Magnitude
+	if gap < 0.05 then return 0 end
+	local dir = mode == "Pull" and toCaster.Unit or -toCaster.Unit
+	local dist = studs / math.max(1, record._scale or 1)
+	if mode == "Pull" then dist = math.min(dist, gap - DISPLACE.Stop) end
+	if dist <= 0.05 then return 0 end
+	local here = Config.ZoneAt(pos).Id
+	local zone = record.Owner == nil and Config.Zones[record.ZoneId] or nil
+	if record.Owner == nil and (here ~= record.ZoneId or not zone) then return 0 end
+	for _, part in DISPLACE.Steps do
+		local delta = dir * (dist * part)
+		local dest = pos + delta
+		local ok = Config.ZoneAt(dest).Id == here
+		if ok and zone then
+			ok = insideZone(zone, dest, ZONE_MOVE_INSET)
+				and (typeof(record.Home) ~= "Vector3" or Util.FlatDistance(dest, record.Home) <= MC.LeashRadius)
+		end
+		if ok then
+			local g, noHit = groundPoint(dest.X, dest.Z)
+			ok = (g ~= nil or noHit) and not workspace:Raycast(pos, delta + dir * 0.5, getShoveParams())
+		end
+		if ok then
+			DISPLACE.Slide(record, root, delta)
+			return dist * part
+		end
+	end
+	return 0
+end
+
 ------------------------------------------------------------------ event monsters (HalloweenService miniboss)
 -- Spawns `kind` outside the regular pool: not in the density counts, never respawns, never golden unless opts.Golden.
 -- opts.Near (Vector3) + opts.Radius: a walkable ground point in def.Zone within Radius of Near (never water, a ridge

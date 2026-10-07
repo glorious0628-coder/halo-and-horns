@@ -1,0 +1,1904 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 143,
+  "failedChecks": 0,
+  "namedChecks": 143,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "slots",
+      "check": "a new save has 1 slot (Q), mirrored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Q Lv1, Z Lv5, X Lv8 (SKL-1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "old saves catch up at PlayerReady: Lv1 1, Lv4 1, Lv5 2, Lv9 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "a reborn player has all three",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "slots are never taken away (Lv1 after a level reset keeps 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "no unlock notice for a catch-up at join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv5: Z opens with the 'new skill' notice (ZEnabled)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv8: X opens and is saved, no notice while XEnabled is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "a rebirth opens all three",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "ZEnabled off: the slot is still saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "ZEnabled off: Z is refused ('Locked'), no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "Lv4: Z is locked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slots",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "a bad slot, a number, an extra argument or nothing: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "two presses in the same instant: the second is dropped (rate limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "Q 0.11 s after Z: queued ('Queued')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "a second press while one is queued adds nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "the queued Q goes off when the gap ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "an auto cast inside the gap simply waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "the old Release remote still casts Q (through SkillService)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "a Release press inside the gap is queued too (or on cooldown)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "a queued Q that comes due on cooldown says 'Cooldown'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "setup: Q again after its cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "Z 0.11 s after Q: queued (the gap counts from any skill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "while Z waits, another press is not queued as well",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "the queued Z goes off; the extra Q press is gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "a queued press is dropped when the character changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gap and queue",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "Earth Cleave: MP 25, SkillReadyAtZ = now + 6 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "Z on its 6 s cooldown: 'Cooldown', no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "24 MP for a 25 MP skill: 'NoMP', nothing spent",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "Q with 19 MP: 'NoMP' (before CombatService)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "Q on its 3 s cooldown: 'Cooldown'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "Chain Bolt with nothing in range: 'NoTarget', no MP, no cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "a monster 30 studs ahead: the chain goes (MP 25)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "a monster behind beyond 35 studs is no target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "X before SKL-3: nothing happens, nothing spent",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "Earth Cleave hits the band 22 x 10: D x 7.5 each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "outside the band (5.2 across, 22.5 along, behind): no hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "Released { Slot Z, MonstersHit 2, Auto false, Total }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "a manual Earth Cleave pulls each hit monster 5 studs toward me",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "Fx 'Skill' { Slot, Kit, Faction, Shape Line, Dir, Len, Width, Life 0.3, Hits }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "the band points at the nearest aimed monster (45 deg)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "no monster: the band goes straight ahead (a whiff)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "Pierce Shot: the whole 40 x 4 line at D x 9",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "Pierce Shot pushes 3 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "the pet tamer's Z = Slime Roll (Kit Tamer, line 40)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "line",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "Chain Bolt: A -> B -> C -> D (jumps <= 10), D x 5 each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "four hits at most; 12 studs is too far to jump",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "Fx 'Skill' Chain with the 4 points in order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "the chain moves nobody",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "the next monster 12 studs on: no jump",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "two monsters: two hits, no bouncing back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "the alchemist's Z = Bubble Hop (Kit Alchemist)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "chain",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "PvPZX off: Z leaves players alone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "setup: one Q alone would deal more than 35% of 100 HP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "Q: 35 (the window's cap)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "Z 0.6 s later: the window is used up, no damage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "3 s later the window is open again (Q 35)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "Z then Q: 35 together (Z hit, Q nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "an auto Z hits the monster, never the player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "a blacksmith's Hook Chain never hits a player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp window",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "setup: Z removed 300+ HP (5 monsters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "Halo Z heals an ally 8 studs away up to 30% (window), not one 13 away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "Released.Healed = the other players healed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "Q right after: that ally's 30% is used up for 3 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "3 s later Q heals again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "Horns Z steals 3 (3% of 100)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "Q 0.5 s later steals nothing more (same window)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "3 s later Q steals again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "the artisan heals and steals nothing (A6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "heal and steal",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto Warrior: 2 in the band -> Earth Cleave without the pull",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "the next tick: Q waits for the 0.5 s gap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "after the gap: Q (Z on its cooldown)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto casts never send the press answer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto Warrior: one small monster -> Q, not Z",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto Warrior: one big monster (King Slime) -> Z",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "ZEnabled off: auto stays Q only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto Mage, one target: Q first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "Q on cooldown: Chain Bolt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto Mage, 2 spread targets: Chain Bolt before Q",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto Archer: one on the line -> Pierce Shot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "right after my own press auto combat yields (no auto Z)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "respawn and leave",
+      "check": "a cosmetic respawn keeps the Z cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "respawn and leave",
+      "check": "a real respawn clears SkillReadyAtZ",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "respawn and leave",
+      "check": "a real respawn resets the Z cooldown (like Q)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "respawn and leave",
+      "check": "setup: 20 of 35 booked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "respawn and leave",
+      "check": "a player who leaves is forgotten (both ways)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "respawn and leave",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "respawn and leave",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "the window is 3 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "an empty window: the whole cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "booked per pair and kind (bad numbers ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "2.9 s later both still count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "at 3 s the first one drops out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "never below 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "window",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "Displace found in MonsterService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "setup: the meadow center is in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "Pull 5 from 20 studs: moves 5 (a slide starts)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "Pull stops 3 studs in front of the caster (6 away: 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "already within 3 studs: no pull",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "Push 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "a monster twice as big moves half",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "a boss never moves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "someone else's personal monster never moves (my own does)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "the leash (60 from home) shortens the push to 1/4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "2 studs from the zone edge: a push of 4 becomes 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "water 2 studs ahead: only 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "water right ahead: no move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "a wall in the way: no move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "a dead monster, a bad mode, NaN studs or no caster: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "a zone monster standing outside its zone: no move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "inside its rect but in another zone (overlap): no move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "Earth Cleave with only a slime behind: the band turns to it (root turned)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "Chain Bolt with only a slime behind: it starts there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "Meteor with only a slime behind: the blast lands on it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "a slime in front and a nearer one behind: the chain starts in front, no turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "only an enemy behind: 'No target' (players never pull the aim)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "auto Meteor at a slime behind me",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "auto Meteor at a slime behind me even when the root cannot turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "a Meteor turned to a slime behind: the enemy next to it is not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "an auto Z that does not go off does not turn me",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "aim behind",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 13,
+  "staticFailures": [],
+  "mutations": {
+    "total": 81,
+    "applied": 81,
+    "caught": 81,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no gap between skills",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: the next tick: Q waits for the 0.5 s gap",
+          "gap and queue :: Q 0.11 s after Z: queued ('Queued')",
+          "gap and queue :: Z 0.11 s after Q: queued (the gap counts from any skill)",
+          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'",
+          "gap and queue :: a queued press is dropped when the character changes",
+          "gap and queue :: a second press while one is queued adds nothing"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "a press inside the gap is dropped (no queue)",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: Q 0.11 s after Z: queued ('Queued')",
+          "gap and queue :: Z 0.11 s after Q: queued (the gap counts from any skill)",
+          "gap and queue :: a Release press inside the gap is queued too (or on cooldown)",
+          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'",
+          "gap and queue :: a second press while one is queued adds nothing",
+          "gap and queue :: setup: Q again after its cooldown"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "more than one queued press",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: a second press while one is queued adds nothing",
+          "gap and queue :: the queued Z goes off; the extra Q press is gone",
+          "gap and queue :: while Z waits, another press is not queued as well"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a queued press survives a new character",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: a queued press is dropped when the character changes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "slots ignored",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Lv4: Z is locked"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ZEnabled / XEnabled ignored",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: ZEnabled off: Z is refused ('Locked'), no MP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Z cooldown",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: after the gap: Q (Z on its cooldown)",
+          "refusals :: 24 MP for a 25 MP skill: 'NoMP', nothing spent",
+          "refusals :: Z on its 6 s cooldown: 'Cooldown', no MP",
+          "respawn and leave :: a cosmetic respawn keeps the Z cooldown"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no MP check before the cast",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: 24 MP for a 25 MP skill: 'NoMP', nothing spent",
+          "refusals :: Q on its 3 s cooldown: 'Cooldown'",
+          "refusals :: Q with 19 MP: 'NoMP' (before CombatService)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Q cooldown answered by nobody",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'",
+          "refusals :: Q on its 3 s cooldown: 'Cooldown'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no 'No target' answer",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: only an enemy behind: 'No target' (players never pull the aim)",
+          "refusals :: Chain Bolt with nothing in range: 'NoTarget', no MP, no cooldown",
+          "refusals :: a monster behind beyond 35 studs is no target"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SkillReadyAtZ not written",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals :: Earth Cleave: MP 25, SkillReadyAtZ = now + 6 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the band has no width",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "line :: Fx 'Skill' { Slot, Kit, Faction, Shape Line, Dir, Len, Width, Life 0.3, Hits }",
+          "line :: Pierce Shot pushes 3 studs",
+          "line :: Pierce Shot: the whole 40 x 4 line at D x 9",
+          "line :: Released { Slot Z, MonstersHit 2, Auto false, Total }",
+          "line :: a manual Earth Cleave pulls each hit monster 5 studs toward me",
+          "line :: outside the band (5.2 across, 22.5 along, behind): no hit"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the band has no length",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "line :: Fx 'Skill' { Slot, Kit, Faction, Shape Line, Dir, Len, Width, Life 0.3, Hits }",
+          "line :: Released { Slot Z, MonstersHit 2, Auto false, Total }",
+          "line :: a manual Earth Cleave pulls each hit monster 5 studs toward me",
+          "line :: outside the band (5.2 across, 22.5 along, behind): no hit"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the band also hits behind",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "line :: Fx 'Skill' { Slot, Kit, Faction, Shape Line, Dir, Len, Width, Life 0.3, Hits }",
+          "line :: Released { Slot Z, MonstersHit 2, Auto false, Total }",
+          "line :: a manual Earth Cleave pulls each hit monster 5 studs toward me",
+          "line :: outside the band (5.2 across, 22.5 along, behind): no hit"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the band never turns to the aimed monster",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Earth Cleave with only a slime behind: the band turns to it (root turned)",
+          "aim behind :: PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit",
+          "line :: the band points at the nearest aimed monster (45 deg)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the chain jumps any distance",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "chain :: the next monster 12 studs on: no jump"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the chain hits a monster twice",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto Mage, 2 spread targets: Chain Bolt before Q",
+          "chain :: Chain Bolt: A -> B -> C -> D (jumps <= 10), D x 5 each",
+          "chain :: Fx 'Skill' Chain with the 4 points in order",
+          "chain :: the next monster 12 studs on: no jump",
+          "chain :: two monsters: two hits, no bouncing back"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "one link more than Hits",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "chain :: Fx 'Skill' Chain with the 4 points in order",
+          "chain :: four hits at most; 12 studs is too far to jump"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Z damage without Mult",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "chain :: Chain Bolt: A -> B -> C -> D (jumps <= 10), D x 5 each",
+          "chain :: two monsters: two hits, no bouncing back",
+          "heal and steal :: 3 s later Q heals again",
+          "heal and steal :: Halo Z heals an ally 8 studs away up to 30% (window), not one 13 away",
+          "heal and steal :: Q right after: that ally's 30% is used up for 3 s",
+          "heal and steal :: setup: Z removed 300+ HP (5 monsters)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "an auto cast pulls",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto Warrior: 2 in the band -> Earth Cleave without the pull"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no pull",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "line :: a manual Earth Cleave pulls each hit monster 5 studs toward me"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no push",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "line :: Pierce Shot pushes 3 studs"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvPZX ignored",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp window :: PvPZX off: Z leaves players alone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an auto Z hits players",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp window :: an auto Z hits the monster, never the player"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Z player damage outside the window",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp window :: 3 s later the window is open again (Q 35)",
+          "pvp window :: Z 0.6 s later: the window is used up, no damage",
+          "pvp window :: Z then Q: 35 together (Z hit, Q nothing)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Z player damage not booked",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp window :: Z then Q: 35 together (Z hit, Q nothing)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no heal from Z",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "heal and steal :: 3 s later Q heals again",
+          "heal and steal :: Halo Z heals an ally 8 studs away up to 30% (window), not one 13 away",
+          "heal and steal :: Q right after: that ally's 30% is used up for 3 s",
+          "heal and steal :: Released.Healed = the other players healed"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "heal radius 20",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "heal and steal :: Halo Z heals an ally 8 studs away up to 30% (window), not one 13 away",
+          "heal and steal :: Released.Healed = the other players healed"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no steal from Z",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "heal and steal :: Horns Z steals 3 (3% of 100)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Released without Slot",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Chain Bolt with only a slime behind: it starts there",
+          "auto :: Q on cooldown: Chain Bolt",
+          "auto :: after the gap: Q (Z on its cooldown)",
+          "auto :: auto Archer: one on the line -> Pierce Shot",
+          "auto :: auto Mage, 2 spread targets: Chain Bolt before Q",
+          "auto :: auto Warrior: 2 in the band -> Earth Cleave without the pull"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "Released Auto always false",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto Archer: one on the line -> Pierce Shot",
+          "auto :: auto Warrior: 2 in the band -> Earth Cleave without the pull",
+          "pvp window :: an auto Z hits the monster, never the player"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "auto Z ignores Min",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: an auto Z that does not go off does not turn me",
+          "auto :: auto Warrior: one small monster -> Q, not Z"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "auto Z ignores big monsters",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto Warrior: one big monster (King Slime) -> Z",
+          "pvp window :: an auto Z hits the monster, never the player"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "auto Chain Bolt always before Q",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: auto Meteor at a slime behind me",
+          "aim behind :: auto Meteor at a slime behind me even when the root cannot turn",
+          "auto :: auto Mage, one target: Q first"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "auto Q always before Chain Bolt",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto Mage, 2 spread targets: Chain Bolt before Q"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "slots never saved",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Chain Bolt with only a slime behind: it starts there",
+          "aim behind :: Earth Cleave with only a slime behind: the band turns to it (root turned)",
+          "aim behind :: PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit",
+          "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn",
+          "aim behind :: only an enemy behind: 'No target' (players never pull the aim)",
+          "auto :: Q on cooldown: Chain Bolt"
+        ],
+        "newFailingCount": 51
+      },
+      {
+        "mutation": "slots can go down",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: slots are never taken away (Lv1 after a level reset keeps 3)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a rebirth opens nothing",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: a rebirth opens all three",
+          "slots :: a reborn player has all three"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the unlock notice with the flag off",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Lv8: X opens and is saved, no notice while XEnabled is off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the unlock notice at join",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: no unlock notice for a catch-up at join"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no catch-up at level up",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slots :: Lv5: Z opens with the 'new skill' notice (ZEnabled)",
+          "slots :: Lv8: X opens and is saved, no notice while XEnabled is off"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a real respawn keeps the Z cooldown",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "respawn and leave :: a real respawn resets the Z cooldown (like Q)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a cosmetic respawn resets the Z cooldown",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "respawn and leave :: a cosmetic respawn keeps the Z cooldown"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "UseSkill takes extra arguments",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: Q 0.11 s after Z: queued ('Queued')",
+          "gap and queue :: a bad slot, a number, an extra argument or nothing: ignored",
+          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'",
+          "gap and queue :: a second press while one is queued adds nothing",
+          "gap and queue :: setup: Q again after its cooldown",
+          "gap and queue :: the old Release remote still casts Q (through SkillService)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "UseSkill without a rate limit",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: Q 0.11 s after Z: queued ('Queued')",
+          "gap and queue :: a second press while one is queued adds nothing",
+          "gap and queue :: two presses in the same instant: the second is dropped (rate limit)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "auto combat does not yield to a skill press",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: right after my own press auto combat yields (no auto Z)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the window never forgets",
+        "file": "src/ServerScriptService/DamageWindow.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "heal and steal :: 3 s later Q heals again",
+          "heal and steal :: 3 s later Q steals again",
+          "pvp window :: 3 s later the window is open again (Q 35)",
+          "window :: at 3 s the first one drops out"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "an entry lasts past 3 s (<=)",
+        "file": "src/ServerScriptService/DamageWindow.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "window :: at 3 s the first one drops out"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Room below 0",
+        "file": "src/ServerScriptService/DamageWindow.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "window :: never below 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bad numbers booked",
+        "file": "src/ServerScriptService/DamageWindow.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "window :: 2.9 s later both still count",
+          "window :: booked per pair and kind (bad numbers ignored)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a leaver stays in the book",
+        "file": "src/ServerScriptService/DamageWindow.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "respawn and leave :: a player who leaves is forgotten (both ways)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Forget one way only",
+        "file": "src/ServerScriptService/DamageWindow.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "respawn and leave :: a player who leaves is forgotten (both ways)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Q back to the per-cast cap",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp window :: Z then Q: 35 together (Z hit, Q nothing)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Q damage not booked",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp window :: 3 s later the window is open again (Q 35)",
+          "pvp window :: Z 0.6 s later: the window is used up, no damage"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "heal per cast (no window)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "heal and steal :: Q right after: that ally's 30% is used up for 3 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "steal per cast (no window)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "heal and steal :: 3 s later Q steals again",
+          "heal and steal :: Q 0.5 s later steals nothing more (same window)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Released without Slot Q",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Meteor with only a slime behind: the blast lands on it",
+          "aim behind :: auto Meteor at a slime behind me",
+          "aim behind :: auto Meteor at a slime behind me even when the root cannot turn",
+          "auto :: ZEnabled off: auto stays Q only",
+          "auto :: after the gap: Q (Z on its cooldown)",
+          "auto :: auto Mage, one target: Q first"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "Release reports nothing",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: Z 0.11 s after Q: queued (the gap counts from any skill)",
+          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'",
+          "gap and queue :: while Z waits, another press is not queued as well"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the old Release remote skips SkillService",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: a Release press inside the gap is queued too (or on cooldown)",
+          "gap and queue :: a queued Q that comes due on cooldown says 'Cooldown'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "auto never tries Z",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: Q on cooldown: Chain Bolt",
+          "auto :: after the gap: Q (Z on its cooldown)",
+          "auto :: auto Archer: one on the line -> Pierce Shot",
+          "auto :: auto Mage, 2 spread targets: Chain Bolt before Q",
+          "auto :: auto Warrior: 2 in the band -> Earth Cleave without the pull",
+          "auto :: auto Warrior: one big monster (King Slime) -> Z"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "auto Q skips the gap",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: the next tick: Q waits for the 0.5 s gap"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a skill press is not noted",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: right after my own press auto combat yields (no auto Z)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Z never aims behind",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Chain Bolt with only a slime behind: it starts there",
+          "aim behind :: Earth Cleave with only a slime behind: the band turns to it (root turned)",
+          "aim behind :: PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a turned Z still hits players",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a turned Z does not turn the root",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Chain Bolt with only a slime behind: it starts there",
+          "aim behind :: Earth Cleave with only a slime behind: the band turns to it (root turned)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Q never aims behind",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Meteor with only a slime behind: the blast lands on it",
+          "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a turned Q blast hits players",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto Q only at the cone",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: auto Meteor at a slime behind me even when the root cannot turn"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a pull never stops in front",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: Pull stops 3 studs in front of the caster (6 away: 3)",
+          "displace :: already within 3 studs: no pull"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "size ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: a monster twice as big moves half"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a boss moves",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: a boss never moves"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the leash ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: the leash (60 from home) shortens the push to 1/4"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the zone edge ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: 2 studs from the zone edge: a push of 4 becomes 2"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "water ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: water 2 studs ahead: only 2",
+          "displace :: water right ahead: no move"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "walls ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: a wall in the way: no move"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no shorter steps",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: 2 studs from the zone edge: a push of 4 becomes 2",
+          "displace :: the leash (60 from home) shortens the push to 1/4",
+          "displace :: water 2 studs ahead: only 2"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "someone else's personal monster moves",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: someone else's personal monster never moves (my own does)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a push pulls",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: 2 studs from the zone edge: a push of 4 becomes 2",
+          "displace :: the leash (60 from home) shortens the push to 1/4"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a knocked-out zone monster moves",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace :: inside its rect but in another zone (overlap): no move"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no UseSkill rate limit",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gap and queue :: Q 0.11 s after Z: queued ('Queued')",
+          "gap and queue :: a second press while one is queued adds nothing",
+          "gap and queue :: two presses in the same instant: the second is dropped (rate limit)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SkillSlots not mirrored",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "aim behind :: Chain Bolt with only a slime behind: it starts there",
+          "aim behind :: Earth Cleave with only a slime behind: the band turns to it (root turned)",
+          "aim behind :: PvPZX on, an enemy and a slime behind: turned to the slime, the enemy is not hit",
+          "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn",
+          "aim behind :: only an enemy behind: 'No target' (players never pull the aim)",
+          "auto :: Q on cooldown: Chain Bolt"
+        ],
+        "newFailingCount": 53
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "a0205191c923235f05d7eec71a8eb373da3ab255f902e557dc06724e37de82c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "6237d7a69911aa3ac8e7aa2fb50f2c2e505c44d6ecc79b8e9b389d004636f2d5",
+    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
+    "src/ServerScriptService/StoryQuestService.luau": "b3fa4f85dc379a7f2b591287bffd92b8fe9b57eb88e9a08c5eadd5cc1d3593c5",
+    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60",
+    "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
+    "src/ServerScriptService/SkillService.luau": "55a5566de07570f67fb737e190200926273bec2cb8e2074ee5d5551d4a777a30",
+    "src/ServerScriptService/MonsterService.luau": "af9ac936538825e0d56bcbe42314cf2ffd006e9d82fb7afb1d5028e0e4f74e1e"
+  },
+  "fixtureSHA256": "b54636b33db535240c1846b37fa331d81d47c8248def1ce5f9f2a069394813c3",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "SKL-2 (A23-49): UseSkill(slot) -> SkillService.Cast: GlobalGap 0.5 s between any two skills (a manual press inside it queued once, an auto cast waits), refusals before MP with Fx SkillPress { Slot, Result }. Q = CombatService.Release (returns true, Released.Slot = \"Q\"); Z shapes: Line (band Len x Width toward the nearest aimed target, else ahead) and Chain (Range, Jump, Hits, no repeats; no target = NoTarget). Damage D x Mult once a target; pull (manual) / push via MonsterService.Displace (stop 3 in front, / body scale, bosses never, zone rect + leash + ground + walls, shorter steps). DamageWindow: 3 s per pair, player damage 35% (kaiju 8%), Halo heal 30% an ally, Horns steal 3% - Q and Z share it; players only with PvPZX and a manual cast. Slots: SkillSlots 1..3 (Lv5 / Lv8 / rebirth), never lowered, Fx SkillUnlocked only while the slot's flag is on. Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
+  "limitations": "X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal, SK1 / SK2 and the X-first auto order are SKL-3. The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline."
+}

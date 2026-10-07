@@ -160,6 +160,9 @@ Config.Data = {
 		-- next uid number. TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
 		Pets = { List = {}, Equipped = {}, Next = 1 },
 		TamerNotice = false,
+		-- SKL-2 (A23-49): skill slots opened so far (1 = Q, 2 = +Z at Lv5, 3 = +X at Lv8; all after a rebirth). The most
+		-- ever reached is kept through rebirths, class / faction changes and level resets (SkillService)
+		SkillSlots = 1,
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -172,6 +175,7 @@ Config.Data = {
 		"TutorialStep", "TutorialKills", -- addendum A4 (kills: meadow guide after a mid-mission death)
 		"IntroSeen", -- A23-9
 		"AutoCombatUnlocked", "AutoCombatEnabled", -- A23-1
+		"SkillSlots", -- SKL-2: the SkillBar shows these slots
 	},
 }
 
@@ -2924,6 +2928,7 @@ Config.RateLimits = {
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
 	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
+	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
 }
 
 ----------------------------------------------------------------- keys + settings (BB1 / BB2)
