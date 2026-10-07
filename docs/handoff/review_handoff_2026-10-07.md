@@ -27,6 +27,12 @@
 - Firefly: **시안은 중간(0), 최종은 모두 고급(5)**, 예산 약 1만.
 - 게임 패스: 사용자가 '후원자 패스 + 진영별 꾸미기 묶음'을 고름. 편의는 OK지만 가방 늘리기는 안 됨. 검수가 제안한 1~5(비공개 서버, 꾸미기 세트 저장, 장난감 탈것(속도 같음), 진영 이모트, 후원자 게시판) 중 **사용자 답 대기**.
 
+## 2-0. 마감 상태 (10/07 저녁, 모든 세션 멈춤)
+- **메인 Studio = origin/main 713fd05**(다시 비교 0/104), place 커밋 ce27afa(build 13:52:14, sha256 b865947c…). 한국어 0개, Roblox 자동 번역 꺼짐(GUI 891개 중 0), 팀 줄 영어. 기기 흉내 PC, 편집 모드, 최소화.
+- 세션 인계 파일 7개 모두 origin에 있음: dev1(5790e00) · dev2(2911163, SKL-3 진행분은 브랜치 dev2-skl3-wip 788f5d4, 시험 전) · imgdev(de9096b) · imagegen1(2708d76) · imagegen2(ef15ac0) · sound(c824725) · 이 파일.
+- 잔액: Firefly 약 8,630/10,000(11/4 초기화), Tripo API 45(모닥불 B2 몫, 고급 입력 art/out/hq/HQ_Woods_Campfire_FB2.png), Tripo 웹 ① 3,400/3,550(HD 55로 3b 13개 = 715 예정), 웹 ② 25,000.
+- 소리 32개는 골라서 art/sfx에 넣었지만 **아직 Roblox 업로드 전**(로그인 필요) → 소리 만들기 1순위.
+
 ## 2. 지금 상태 (검수가 마지막으로 본 것)
 - **메인 Studio**: 검수 확인 시 origin/main보다 스크립트 31개 옛날 + 2개 없음(ChatText, FirstSteps). 개발 1의 Studio 묶음이 넣는 중 → 끝나면 같은 비교로 0/0 확인(방법: sync_to_studio의 READ_LUA·src_hash를 origin/main src에 대어 비교, STUDIO_ID=49d7f5be). 맵 물체 한국어 0개. Roblox 자동 번역 막기(AutoLocalize=false) 개발 1에게 맡김.
 - **공유 Game 폴더**: origin과 같게 유지하는 규칙(AGENTS 4bef885): 커밋 전 `git fetch -q origin && git reset --keep origin/main` → `git commit -- <paths>` → `git push origin HEAD:main`. 백업 브랜치 backup/shared-main-before-reset-2026-10-07.
