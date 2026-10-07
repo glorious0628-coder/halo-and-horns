@@ -1,6 +1,7 @@
 """미리 확인한 art/ui PNG 배치 업로드. --dry는 검증만 하고 아무 파일도 바꾸지 않는다.
 
 py tools/upload_ui_assets.py --batch build/reviewed_batch.json [--dry]
+py tools/upload_ui_assets.py --batch build/reviewed_batch.json --studio UiSandbox   (연습 Studio로 올리기; 이미지 개발)
 py tools/upload_ui_assets.py --batch build/reviewed_batch.json --record-result build/upload_result.json [--dry]
 py tools/upload_ui_assets.py --batch build/reviewed_batch.json --retry-disconnected-unknown --reason "이전 Studio 종료; 원본 매칭 불가"
 Batch: [{"key": "PanelParchment", "file": "art/ui/UIP_PanelParchment.png", "sha256": "..."}]
@@ -379,7 +380,13 @@ def disconnected_retry(items, pending, previous, global_inflight, report_path, s
             "candidateEvidence": evidence}
 
 
-def run(batch_path, dry, retry_disconnected_unknown=False, reason=None):
+# the only Studio windows this tool may talk to (never the user's other place): the game, or the practice copy
+STUDIOS = ("GoodEvil", "UiSandbox")
+
+
+def run(batch_path, dry, retry_disconnected_unknown=False, reason=None, studio="GoodEvil"):
+    if studio not in STUDIOS:
+        raise ValueError(f"--studio는 {STUDIOS} 중 하나만: {studio}")
     if retry_disconnected_unknown and (not isinstance(reason, str) or not reason.strip()):
         raise ValueError("--retry-disconnected-unknown에는 명시적인 --reason이 필요합니다.")
     if reason is not None and not retry_disconnected_unknown:
@@ -420,7 +427,7 @@ def run(batch_path, dry, retry_disconnected_unknown=False, reason=None):
         verify_served_images(pending)
         from studio_mcp import Client
         # Ignore ambient STUDIO_NAME; never select the user's other place.
-        os.environ["STUDIO_NAME"] = "GoodEvil"
+        os.environ["STUDIO_NAME"] = studio
         client = Client()
         try:
             client.start()
@@ -490,6 +497,8 @@ def main():
     parser.add_argument("--retry-disconnected-unknown", action="store_true",
                         help="이전 Studio가 종료된 배치만 근거 보존 후 불명확한 PNG 재업로드")
     parser.add_argument("--reason", help="종료된 Studio의 불명확한 업로드를 다시 시도하는 이유")
+    parser.add_argument("--studio", choices=STUDIOS, default="GoodEvil",
+                        help="올릴 Studio 창(GoodEvil = 게임, UiSandbox = 이미지 개발 연습 Studio)")
     args = parser.parse_args()
     try:
         if args.record_result:
@@ -497,7 +506,8 @@ def main():
                 raise ValueError("--record-result와 불명확한 업로드 재시도 옵션은 함께 사용할 수 없습니다.")
             result, code = record_result(args.batch.resolve(strict=True), args.record_result.resolve(strict=True), args.dry)
         else:
-            result, code = run(args.batch.resolve(strict=True), args.dry, args.retry_disconnected_unknown, args.reason)
+            result, code = run(args.batch.resolve(strict=True), args.dry, args.retry_disconnected_unknown, args.reason,
+                               args.studio)
     except Exception as exc:
         result, code = {"status": "error", "error": str(exc)}, 1
     if hasattr(sys.stdout, "reconfigure"):

@@ -1,0 +1,39 @@
+{
+  "tool": "tools/upload_check_view.py",
+  "keys": [
+    "JobBoard",
+    "JobCard",
+    "BtnKind",
+    "BtnSneaky",
+    "JobTag",
+    "Tex_Basalt"
+  ],
+  "images": {
+    "JobCard": {
+      "Id": "rbxassetid://78959256677789",
+      "Loaded": true
+    },
+    "JobTag": {
+      "Id": "rbxassetid://87413375917921",
+      "Loaded": true
+    },
+    "JobBoard": {
+      "Id": "rbxassetid://123680567879703",
+      "Loaded": true
+    },
+    "Tex_Basalt": {
+      "Id": "rbxassetid://90858017609308",
+      "Loaded": true
+    },
+    "BtnKind": {
+      "Id": "rbxassetid://96995284140099",
+      "Loaded": true
+    },
+    "BtnSneaky": {
+      "Id": "rbxassetid://82745606719708",
+      "Loaded": true
+    }
+  },
+  "sheet": "art/review/upload_check_2026-10-07.jpg",
+  "allLoaded": true
+}

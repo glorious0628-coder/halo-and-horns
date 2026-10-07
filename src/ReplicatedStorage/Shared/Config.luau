@@ -3654,7 +3654,7 @@ Config.UIArt = {
 		MinimapRing = { Id = "rbxassetid://134883699176479", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
 		WarMeterFrame = { Id = "rbxassetid://73887778381300", Size = Vector2.new(512, 74), Tone = "Navy", Inner = Rect.new(66, 22, 442, 54) }, -- opaque navy inside: the fills draw above it
 		WarCrownPip = { Id = "rbxassetid://100273975086572", Size = Vector2.new(512, 512) }, -- the war split marker
-		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 56, 388, 68), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (400,49)-(462,78)
+		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 56, 388, 68), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (425,48)-(489,80)
 		AutoRingOn = { Id = "rbxassetid://82348810388598", Size = Vector2.new(512, 512) }, -- turns around the auto button while ON
 		GlyphQuest = { Id = "rbxassetid://85735330851016", Size = Vector2.new(512, 512) },
 		GlyphAuto = { Id = "rbxassetid://125607651991448", Size = Vector2.new(512, 512) },
@@ -3679,6 +3679,14 @@ Config.UIArt = {
 		LogoPlate = { Id = "rbxassetid://72831856163795", Size = Vector2.new(1024, 731) }, -- title band empty: the name is a TextLabel at (0.15, 0.48, 0.70, 0.19)
 		EventBannerHalloween = { Id = "rbxassetid://120811187352890", Size = Vector2.new(1024, 316) }, -- text box (0.22, 0.17, 0.56, 0.34)
 		ShardBase = { Id = "rbxassetid://137006454032810", Size = Vector2.new(512, 512) }, -- crown shard (S0 quest, reward notices, map)
+		-- E11 job board (d53ad3b, user OK 2026-10-07 via review; sheet art/review/s2/e11_job_board_sheet.jpg). Regions in
+		-- CardLayout.JobBoard / JobCard. Phones (749x361): the board shows 2 cards a page (< > + page dots), PC / tablet 4
+		-- in a row (image dev 2026-10-07: 4 across made the words too small on a phone)
+		JobBoard = { Id = "rbxassetid://123680567879703", Size = Vector2.new(1024, 647), Slice = Rect.new(320, 130, 704, 550) }, -- the slice skips the plate's gold studs
+		JobCard = { Id = "rbxassetid://78959256677789", Size = Vector2.new(339, 512) }, -- the red pin: keep the ratio (Fit), no 9-slice
+		BtnKind = { Id = "rbxassetid://96995284140099", Size = Vector2.new(512, 175), Slice = Rect.new(88, 54, 424, 121), FitHeight = true, TextRect = { 0.053, 0.123, 0.893, 0.596 } }, -- sky blue, white "Kind"
+		BtnSneaky = { Id = "rbxassetid://82745606719708", Size = Vector2.new(512, 171), Slice = Rect.new(86, 53, 426, 118), FitHeight = true, TextRect = { 0.057, 0.117, 0.887, 0.612 } }, -- purple, white "Sneaky"
+		JobTag = { Id = "rbxassetid://87413375917921", Size = Vector2.new(256, 106), TextRect = { 0.2, 0.118, 0.745, 0.578 } }, -- the quest row's "Job" tag (accepted jobs only), keep the ratio
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
 		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
 		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },
@@ -3932,7 +3940,7 @@ Config.UIArt = {
 		Tex_CrownShardGround = { Id = "rbxassetid://114856730896342", Size = Vector2.new(1024, 1024) },
 		Tex_CrackedLava = { Id = "rbxassetid://116294435572633", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lava cracks (Tex_CrackedLava_FF)
 		Tex_Cobblestone = { Id = "rbxassetid://106614155699357", Size = Vector2.new(1024, 1024) }, -- A23-30 E: town cobbles (Tex_Cobblestone_FF)
-		Tex_Basalt = { Id = "rbxassetid://82958066906333", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lair floor (Tex_Basalt_FF)
+		Tex_Basalt = { Id = "rbxassetid://90858017609308", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lair floor; quality 7 (cdaaeaa) Tex_Basalt_FF2 = darks lifted (was Tex_Basalt_FF rbxassetid://82958066906333)
 		Tex_WoodPlanks = { Id = "rbxassetid://89937004688664", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: bridges / benches (parts) (Tex_WoodPlanks_FF)
 		Tex_Slate = { Id = "rbxassetid://115115936747396", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins flagstones (Tex_RuinsFlagstone_FF)
 		Tex_Sand = { Id = "rbxassetid://131974232864115", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: beaches (Tex_Sand_FF)
@@ -4025,6 +4033,11 @@ Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
 		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 }, RibbonTop = 0.495 },
 	ClassPickHorns = { Aspect = 0.542, Portrait = { 0.224, 0.15, 0.552, 0.358 }, Name = { 0.2, 0.509, 0.6, 0.066 },
 		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 }, RibbonTop = 0.495 },
+	-- E11 job board: the navy name plate (white "Job Board"), the cork (top line "Kind 12 · Sneaky 3" / "Jobs 1 / 3" +
+	-- the cards); a job card's paper (sheet layout by Body height: title 14%, goal 31%, reward 47%, Kind 56-76%,
+	-- Sneaky 78-98%, buttons 92% of the Body width)
+	JobBoard = { Header = { 0.27, 0.04, 0.461, 0.1 }, Inner = { 0.087, 0.182, 0.829, 0.683 } },
+	JobCard = { Body = { 0.065, 0.079, 0.867, 0.861 } },
 	CardHalo = { Aspect = 0.607, Title = { 0.217, 0.156, 0.566, 0.115 }, Desc = { 0.154, 0.313, 0.692, 0.049 },
 		Motto = { 0.154, 0.392, 0.692, 0.049 }, Perks = { 0.157, 0.491, 0.686, 0.381 }, Button = { 0.243, 0.886, 0.492, 0.083 } },
 	CardHorns = { Aspect = 0.642, Title = { 0.236, 0.161, 0.519, 0.097 }, Desc = { 0.184, 0.313, 0.632, 0.062 },

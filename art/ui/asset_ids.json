@@ -510,5 +510,11 @@
   "CLS_HornsWarrior_F_Card": "rbxassetid://94079237131593",
   "CLS_HaloArcher_F_Card": "rbxassetid://126666354590986",
   "CLS_HornsMage_F_Card": "rbxassetid://136362714347322",
-  "CLS_HornsArcher_M_Card": "rbxassetid://81732631379103"
+  "CLS_HornsArcher_M_Card": "rbxassetid://81732631379103",
+  "JobBoard": "rbxassetid://123680567879703",
+  "JobCard": "rbxassetid://78959256677789",
+  "BtnKind": "rbxassetid://96995284140099",
+  "BtnSneaky": "rbxassetid://82745606719708",
+  "JobTag": "rbxassetid://87413375917921",
+  "Tex_Basalt_FF2": "rbxassetid://90858017609308"
 }
