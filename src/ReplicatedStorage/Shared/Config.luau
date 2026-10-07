@@ -1288,47 +1288,54 @@ function Config.RebirthBonusFor(targetCountOthers, othersTotal)
 end
 
 ----------------------------------------------------------------- zones & map
--- World layout v3 (addendum A10, = tools/preview_map.lua): an RPG continent of three land pieces along +X (Crossroads,
--- Slime Meadow, the wild lands of Goblin Woods + Skeleton Ruins) split by rivers, plus two faction islands north/south of
--- Crossroads across the sea, joined by bridges. Ground is Terrain with its top at Y = 0 on land (zone floor parts are
--- invisible, non-colliding contract parts: A11); the sea/river surface is Config.Map.WaterTop. Size.Y is unused (0).
--- Zones are XZ rectangles; first match in ZoneOrder wins; everything else (incl. sea, bridges, the pass) is Outskirts.
+-- World map v2 (SPEC A23-53, docs/design/world_map_v2_2026-10-06.md + .json; = tools/preview_map.lua): the same order
+-- as before, about 2.1x the land. Crossroads in the middle, the Halo / Horns islands north / south across the sea, east
+-- the Squishy Meadow -> Goblin Woods -> the mountain pass -> Skeleton Ruins split by two rivers, the Halloween fields
+-- south of the meadow. Every zone is now its whole land piece. Ground is Terrain with its top at Y = 0 on land (zone
+-- floor parts are invisible, non-colliding contract parts: A11); the sea/river surface is Config.Map.WaterTop. Size.Y is
+-- unused (0). Zones are XZ rectangles; first match in ZoneOrder wins; everything else (incl. sea, bridges, the pass)
+-- is Outskirts. tools/test_map_v2.py checks these numbers against the v2 layout.
 -- A23-30: PumpkinPatch (Season = "Halloween") is its own land south of the meadow; with its season off ZoneAt skips it
 -- (that ground reads as Outskirts) and nothing spawns there.
 Config.ZoneOrder = { "Crossroads", "HaloTown", "HornsTown", "SlimeMeadow", "PumpkinPatch", "HauntedHollow", "GoblinWoods",
 	"SkeletonRuins" }
 Config.Zones = {
-	Crossroads = { Id = "Crossroads", Name = "Crossroads", Center = Vector3.new(0, 0, 0), Size = Vector3.new(160, 0, 160),
+	-- the Crossroads core (fountain, kit, pads, spawn plaza, potion seller next to the spawn) keeps its v1 place
+	Crossroads = { Id = "Crossroads", Name = "Crossroads", Center = Vector3.new(0, 0, 0), Size = Vector3.new(300, 0, 300),
 		MinLevel = 1, PvP = false, Town = true, Faction = nil,
 		FloorColor = Color3.fromRGB(190, 176, 150), FloorMaterial = Enum.Material.Cobblestone, Spawn = Vector3.new(0, 0, -25) },
-	HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(0, 0, -400), Size = Vector3.new(160, 0, 160),
+	-- the towns: land x -200..200, z -700..-330 / 330..700; the gate at the bridge end, the castle at the far end (z -+630)
+	HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(0, 0, -515), Size = Vector3.new(400, 0, 370),
 		MinLevel = 1, PvP = false, Town = true, Faction = "Halo",
-		FloorColor = Color3.fromRGB(228, 218, 190), FloorMaterial = Enum.Material.Marble, Spawn = Vector3.new(0, 0, -410) },
-	HornsTown = { Id = "HornsTown", Name = "Horns Den", Center = Vector3.new(0, 0, 400), Size = Vector3.new(160, 0, 160),
+		FloorColor = Color3.fromRGB(228, 218, 190), FloorMaterial = Enum.Material.Marble, Spawn = Vector3.new(0, 0, -420) },
+	HornsTown = { Id = "HornsTown", Name = "Horns Den", Center = Vector3.new(0, 0, 515), Size = Vector3.new(400, 0, 370),
 		MinLevel = 1, PvP = false, Town = true, Faction = "Horns",
-		FloorColor = Color3.fromRGB(70, 40, 45), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(0, 0, 410) },
-	SlimeMeadow = { Id = "SlimeMeadow", Name = "Squishy Meadow", Center = Vector3.new(330, 0, 0), Size = Vector3.new(260, 0, 260),
+		FloorColor = Color3.fromRGB(70, 40, 45), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(0, 0, 420) },
+	SlimeMeadow = { Id = "SlimeMeadow", Name = "Squishy Meadow", Center = Vector3.new(430, 0, 0), Size = Vector3.new(440, 0, 480),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil,
-		FloorColor = Color3.fromRGB(115, 195, 95), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(220, 0, 0) },
+		FloorColor = Color3.fromRGB(115, 195, 95), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(230, 0, 0) },
 	-- A23-30 (user 2026-10-06 "슬라임은 슬라임만, 고블린은 고블린, 호박은 호박!"): every Halloween kind lives here, a
-	-- Lv1-walkable field joined to the meadow's south shore (land x 280..440, z 175..295; MapBuilder fills it)
-	PumpkinPatch = { Id = "PumpkinPatch", Name = "Pumpkin Patch", Center = Vector3.new(360, 0, 235), Size = Vector3.new(160, 0, 120),
+	-- Lv1-walkable field joined to the meadow's south shore (land x 420..650, z 240..430; the north gate on the pumpkin
+	-- path x 535, Config.Map.Halloween)
+	PumpkinPatch = { Id = "PumpkinPatch", Name = "Pumpkin Patch", Center = Vector3.new(535, 0, 335), Size = Vector3.new(230, 0, 190),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "Halloween",
 		-- Mud = the pumpkin-soil texture slot (Config.UIArt Tex_PumpkinSoil; Ground is the ruins soil)
-		FloorColor = Color3.fromRGB(150, 118, 72), FloorMaterial = Enum.Material.Mud, Spawn = Vector3.new(360, 0, 190) },
+		FloorColor = Color3.fromRGB(150, 118, 72), FloorMaterial = Enum.Material.Mud, Spawn = Vector3.new(535, 0, 255) },
 	-- A23-45 (user 2026-10-06 "유령은 유령끼리"): the ghost family's own seasonal field west of the PumpkinPatch (land
-	-- x 160..280, z 185..295 joined to it; MapBuilder fills it), entered only through the pumpkin field's west gate.
-	-- Goblin-woods strength (Lv 8-14 recommended, no level gate), no PvP. Floor: Asphalt = the Tex_HauntedFloor slot.
-	HauntedHollow = { Id = "HauntedHollow", Name = "Haunted Hollow", Center = Vector3.new(220, 0, 240), Size = Vector3.new(104, 0, 90),
+	-- x 220..420, z 255..430 joined to it, a narrow strait from the meadow), entered through the pumpkin field's west gate
+	-- (Config.Map.Halloween.HollowGate). Goblin-woods strength (Lv 8-14 recommended, no level gate), no PvP. Floor:
+	-- Asphalt = the Tex_HauntedFloor slot.
+	HauntedHollow = { Id = "HauntedHollow", Name = "Haunted Hollow", Center = Vector3.new(320, 0, 342.5), Size = Vector3.new(200, 0, 175),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "Halloween",
-		FloorColor = Color3.fromRGB(118, 106, 150), FloorMaterial = Enum.Material.Asphalt, Spawn = Vector3.new(262, 0, 240) },
-	GoblinWoods = { Id = "GoblinWoods", Name = "Goblin Woods", Center = Vector3.new(720, 0, 0), Size = Vector3.new(300, 0, 300),
+		FloorColor = Color3.fromRGB(118, 106, 150), FloorMaterial = Enum.Material.Asphalt, Spawn = Vector3.new(400, 0, 340) },
+	GoblinWoods = { Id = "GoblinWoods", Name = "Goblin Woods", Center = Vector3.new(950, 0, 0), Size = Vector3.new(480, 0, 520),
 		MinLevel = 10, PvP = true, Town = false, Faction = nil,
-		FloorColor = Color3.fromRGB(60, 125, 55), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(590, 0, 0) },
-	SkeletonRuins = { Id = "SkeletonRuins", Name = "Skeleton Ruins", Center = Vector3.new(1120, 0, 0), Size = Vector3.new(320, 0, 320),
+		FloorColor = Color3.fromRGB(60, 125, 55), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(730, 0, 0) },
+	SkeletonRuins = { Id = "SkeletonRuins", Name = "Skeleton Ruins", Center = Vector3.new(1520, 0, 0), Size = Vector3.new(520, 0, 580),
 		MinLevel = 25, PvP = true, Town = false, Faction = nil,
-		FloorColor = Color3.fromRGB(135, 125, 108), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(980, 0, 0) },
-	Outskirts = { Id = "Outskirts", Name = "Outskirts", Center = Vector3.new(595, 0, 0), Size = Vector3.new(1450, 0, 1040),
+		FloorColor = Color3.fromRGB(135, 125, 108), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(1280, 0, 0) },
+	-- = Config.Map.Bounds
+	Outskirts = { Id = "Outskirts", Name = "Outskirts", Center = Vector3.new(790, 0, 0), Size = Vector3.new(2100, 0, 1440),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(130, 165, 100), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(0, 0, -25) },
 }
@@ -1351,8 +1358,10 @@ function Config.HomeZoneId(factionId)
 end
 
 Config.Map = {
-	-- invisible walls only: NEVER a ground plate covering Bounds (it would cover the sea and rivers: A10-V3-1)
-	Bounds = { MinX = -130, MaxX = 1320, MinZ = -520, MaxZ = 520 },
+	-- invisible walls only: NEVER a ground plate covering Bounds (it would cover the sea and rivers: A10-V3-1). Map v2:
+	-- 60 studs of sea past the lands east / west, 20 past the town ends (= the big map picture UIP_WorldMapV2 covers x
+	-- -295..1865, z -720..720). New islands (A23-53 "차차 넓힌다") push these out later.
+	Bounds = { MinX = -260, MaxX = 1840, MinZ = -720, MaxZ = 720 },
 	WallHeight = 80,
 	FountainPosition = Vector3.new(0, 0, 0),
 	AltarPosition = Vector3.new(0, 0, 45), -- "운명의 제단": Part named "Altar" + ProximityPrompt "AltarPrompt"
@@ -1366,45 +1375,65 @@ Config.Map = {
 		{ Dest = "GoblinWoods", Position = Vector3.new(52, 0, 24) },
 		{ Dest = "SkeletonRuins", Position = Vector3.new(68, 0, 24) },
 	},
-	Gates = { -- decorative arches with a level sign, centered on zone borders
-		{ Zone = "SlimeMeadow", Position = Vector3.new(200, 0, 0) },
-		{ Zone = "GoblinWoods", Position = Vector3.new(570, 0, 0) },
-		{ Zone = "SkeletonRuins", Position = Vector3.new(960, 0, 0) },
-		{ Zone = "HaloTown", Position = Vector3.new(0, 0, -320) },
-		{ Zone = "HornsTown", Position = Vector3.new(0, 0, 320) },
+	Gates = { -- decorative arches centered on zone borders (map v2: at the bridge ends; MapBuilder moves built ones here)
+		{ Zone = "SlimeMeadow", Position = Vector3.new(210, 0, 0) },
+		{ Zone = "GoblinWoods", Position = Vector3.new(710, 0, 0) },
+		{ Zone = "SkeletonRuins", Position = Vector3.new(1260, 0, 0) },
+		{ Zone = "HaloTown", Position = Vector3.new(0, 0, -330) },
+		{ Zone = "HornsTown", Position = Vector3.new(0, 0, 330) },
 	},
 	MaxParts = 1600, -- total map parts budget (decor included); ART_DIRECTION 9 [SPEC] raised it from 450
-	-- addendum A10 (values = tools/preview_map.lua v3/v4)
 	WaterTop = -1.2, -- Terrain water surface Y everywhere outside the lands (sea + rivers)
-	PassX = 915, -- Terrain rock mountain pass between GoblinWoods and SkeletonRuins (road corridor |z| < 20)
-	-- land pieces (Terrain top at Y = 0); rivers between the continent pieces, sea around the islands
+	-- map v2: the rock mountain band between GoblinWoods and SkeletonRuins is LandPass (x 1190..1260); its walkable road
+	-- corridor is |z| < PassHalfZ around the crown road, the rest is mountains (tools/preview_map.lua)
+	PassX = 1225,
+	PassHalfZ = 70,
+	-- land pieces (Terrain top at Y = 0, sand beaches, no ridges: the coasts of the big map picture); the rivers x
+	-- 150..210 and 650..710 and the sea between them. The two Halloween fields are drawn on the maps only in season.
 	Lands = {
-		{ Name = "LandCrossroads", MinX = -110, MaxX = 115, MinZ = -175, MaxZ = 175 },
-		{ Name = "LandMeadow", MinX = 155, MaxX = 490, MinZ = -175, MaxZ = 175 },
-		{ Name = "LandWild", MinX = 530, MaxX = 1300, MinZ = -175, MaxZ = 175 },
-		{ Name = "IslandHalo", MinX = -110, MaxX = 110, MinZ = -500, MaxZ = -300 },
-		{ Name = "IslandHorns", MinX = -110, MaxX = 110, MinZ = 300, MaxZ = 500 },
-		{ Name = "LandPumpkinPatch", MinX = 280, MaxX = 440, MinZ = 175, MaxZ = 295, Season = "Halloween" }, -- A23-30, joined to LandMeadow; WorldMap draws it only in season
-		{ Name = "LandHauntedHollow", MinX = 160, MaxX = 280, MinZ = 185, MaxZ = 295, Season = "Halloween" }, -- A23-45, joined to the patch's west edge
+		{ Name = "LandCrossroads", MinX = -150, MaxX = 150, MinZ = -150, MaxZ = 150 },
+		{ Name = "LandMeadow", MinX = 210, MaxX = 650, MinZ = -240, MaxZ = 240 },
+		{ Name = "LandWoods", MinX = 710, MaxX = 1190, MinZ = -260, MaxZ = 260 },
+		{ Name = "LandPass", MinX = 1190, MaxX = 1260, MinZ = -260, MaxZ = 260 },
+		{ Name = "LandRuins", MinX = 1260, MaxX = 1780, MinZ = -290, MaxZ = 290 },
+		{ Name = "IslandHalo", MinX = -200, MaxX = 200, MinZ = -700, MaxZ = -330 },
+		{ Name = "IslandHorns", MinX = -200, MaxX = 200, MinZ = 330, MaxZ = 700 },
+		{ Name = "LandPumpkinPatch", MinX = 420, MaxX = 650, MinZ = 240, MaxZ = 430, Season = "Halloween" }, -- A23-30, joined to LandMeadow
+		{ Name = "LandHauntedHollow", MinX = 220, MaxX = 420, MinZ = 255, MaxZ = 430, Season = "Halloween" }, -- A23-45, joined to the patch's west edge
 	},
-	-- bridge decks (top at Y = 0); the built models are workspace.Map.Decor["Bridge_" .. Name]
+	-- bridge decks (top at Y = 0) from shore to shore; the built models are workspace.Map.Decor["Bridge_" .. Name]
 	Bridges = {
-		{ Name = "Meadow", From = Vector3.new(113, 0, 0), To = Vector3.new(157, 0, 0), Width = 18 },
-		{ Name = "Goblin", From = Vector3.new(488, 0, 0), To = Vector3.new(532, 0, 0), Width = 18 },
-		{ Name = "Halo", From = Vector3.new(0, 0, -173), To = Vector3.new(0, 0, -302), Width = 18 },
-		{ Name = "Horns", From = Vector3.new(0, 0, 173), To = Vector3.new(0, 0, 302), Width = 18 },
+		{ Name = "Meadow", From = Vector3.new(150, 0, 0), To = Vector3.new(210, 0, 0), Width = 22 },
+		{ Name = "Goblin", From = Vector3.new(650, 0, 0), To = Vector3.new(710, 0, 0), Width = 22 },
+		{ Name = "Halo", From = Vector3.new(0, 0, -150), To = Vector3.new(0, 0, -330), Width = 22 },
+		{ Name = "Horns", From = Vector3.new(0, 0, 150), To = Vector3.new(0, 0, 330), Width = 22 },
 	},
-	-- road strips on land (drawing data for the World Map, A12; built by tools/preview_map.lua as Decor.Roads)
+	-- road strips on land (drawing data for the world map / minimap, A12; built by tools/preview_map.lua as
+	-- Decor.Roads). The crown road (z 0, 18 wide) runs from the Crossroads to the ruins; the town roads end at the castles;
+	-- one ring road per hunting field. Season roads are drawn only in season (preview_map paints them as soil).
 	Roads = {
-		{ Name = "RoadCross", MinX = 13, MaxX = 115, MinZ = -8, MaxZ = 8 },
-		{ Name = "RoadMeadow", MinX = 155, MaxX = 490, MinZ = -8, MaxZ = 8 },
-		{ Name = "RoadWild", MinX = 530, MaxX = 1300, MinZ = -8, MaxZ = 8 },
-		{ Name = "RoadWest", MinX = -43, MaxX = -13, MinZ = -8, MaxZ = 8 },
-		{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -175, MaxZ = -10 },
-		{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -398, MaxZ = -300 },
-		{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 175 },
-		{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 300, MaxZ = 398 },
+		{ Name = "RoadCross", MinX = 13, MaxX = 150, MinZ = -9, MaxZ = 9 },
+		{ Name = "RoadWest", MinX = -43, MaxX = -13, MinZ = -9, MaxZ = 9 }, -- to the wanted board (BoardPosition)
+		{ Name = "RoadMeadow", MinX = 210, MaxX = 650, MinZ = -9, MaxZ = 9 },
+		{ Name = "RoadWoods", MinX = 710, MaxX = 1190, MinZ = -9, MaxZ = 9 },
+		{ Name = "RoadPass", MinX = 1190, MaxX = 1260, MinZ = -9, MaxZ = 9 },
+		-- ends at the crown altar ruin (kit_ruins R_CrownAltar (1700, 0), 30 wide): the crown road leads up to it
+		{ Name = "RoadRuins", MinX = 1260, MaxX = 1684, MinZ = -9, MaxZ = 9 },
+		{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10 },
+		{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330 },
+		{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150 },
+		{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600 },
+		-- the layout's z -170 would cross the King Slime Hill (kit_meadow M_KingHill (430, -170), 60 wide): south of it
+		{ Name = "RoadMeadowLoop", MinX = 260, MaxX = 600, MinZ = -125, MaxZ = -115 },
+		{ Name = "RoadWoodsTrail", MinX = 760, MaxX = 1120, MinZ = -155, MaxZ = -145 },
+		{ Name = "RoadRuinsSouth", MinX = 1300, MaxX = 1700, MinZ = 145, MaxZ = 155 },
+		{ Name = "RoadPumpkin", MinX = 529, MaxX = 541, MinZ = 9, MaxZ = 330, Season = "Halloween" },
+		{ Name = "RoadHollow", MinX = 330, MaxX = 535, MinZ = 335, MaxZ = 345, Season = "Halloween" },
 	},
+	-- A23-30 / A23-45 on map v2 (MapBuilder PATCH / HOLLOW, QuestTarget): the pumpkin path along x = PathX from the meadow
+	-- road to the patch's north gate (PatchGateZ), the patch's west gate into the HauntedHollow, the road sign at the
+	-- path's meadow end (HalloweenService shows it only in season)
+	Halloween = { PathX = 535, PatchGateZ = 240, HollowGate = Vector3.new(420, 0, 340), SignPos = Vector3.new(525, 0, 226) },
 	SkyCrownPosition = Vector3.new(0, 350, 0), -- A11 "Crown of Balance" landmark floating above Crossroads (radius ~80)
 }
 
@@ -1773,17 +1802,19 @@ Config.Halloween = {
 	Lifetime = 300,
 	RetryDelay = 10, -- no walkable spot found this time: try again this many seconds later
 	SpawnRadius = 12, -- studs around the chosen spot (walkable ground inside the zone, never in solid decor)
-	-- A23-30: the king appears in the PumpkinPatch (x 280..440, z 175..295; entrance from the meadow at the north
-	-- edge), in its far half (one spot picked at random each time)
-	SpawnSpots = { Vector3.new(330, 0, 255), Vector3.new(390, 0, 255) },
+	-- A23-30: the king appears in the PumpkinPatch (map v2: x 420..650, z 240..430; entrance from the meadow at the north
+	-- gate x 535), in its far half, clear of the giant pumpkin house (585, 370) and the west gate (one spot picked at
+	-- random each time)
+	SpawnSpots = { Vector3.new(470, 0, 390), Vector3.new(545, 0, 405) },
 	-- A23-45: the minibosses HalloweenService runs. Each entry may override FirstDelay / SpawnSpots (and Interval /
 	-- Lifetime); Interval, Lifetime, RetryDelay, SpawnRadius and the A23-27 safety are shared. The ghost king comes 10
 	-- minutes after the pumpkin king (FirstDelay 360 + 600, both every Interval), in the HauntedHollow.
 	-- Key = the GameState prefix (<Key>NextAt / <Key>Active / <Key>EndsAt) and the Config.Announce event prefix.
 	Bosses = {
 		{ Kind = "PumpkinKing", Key = "PumpkinKing" },
+		-- map v2: the hollow's far (west) half, clear of the ghost willow (300, 360)
 		{ Kind = "GhostKing", Key = "GhostKing", FirstDelay = 960,
-			SpawnSpots = { Vector3.new(205, 0, 255), Vector3.new(235, 0, 230) } },
+			SpawnSpots = { Vector3.new(260, 0, 300), Vector3.new(255, 0, 400) } },
 	},
 	-- A23-27: rookies are safe from the king whatever their faction: it never targets or hits a player below
 	-- SafeBelowLevel OR with less than SafePlaySeconds played (the PvP Rookie shield is NOT used here). They can still
@@ -1969,7 +2000,8 @@ Config.Tutorial = {
 -- [Claim]); a Choice with Points = 0 leans the shard (LeanGood / LeanEvil) instead of a score line.
 Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
-	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
+	-- map v2: the slime pond in the meadow's south-west (kit_meadow M_Pond, 50 wide)
+	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
 		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
 		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo", -- story_depth §4 goblins (beta: names only, no models)
@@ -2745,31 +2777,34 @@ Config.StoryQuests = {
 	},
 }
 
--- A23-46 town sub-quest spots at the bridge ends of Config.Map.Bridges: the meadow end of the Goblin bridge (488, 0, 0)
--- 14 studs back, outside the PvP woods (H1 spies there), and the Crossroads ends of the Halo / Horns bridges (0, 0, -173)
--- / (0, 0, 173) 12 studs onto the land (N3 watches them). They move with the bridges: tools/test_town_quests.py fails
+-- A23-46 town sub-quest spots at the bridge ends of Config.Map.Bridges: the meadow end of the Goblin bridge (650, 0, 0)
+-- 14 studs back, outside the PvP woods (H1 spies there), and the Crossroads ends of the Halo / Horns bridges (0, 0, -150)
+-- / (0, 0, 150) 12 studs onto the land (N3 watches them). They move with the bridges: tools/test_town_quests.py fails
 -- when a bridge end moves away from its spot.
-Config.StoryQuests.Landmarks.WoodsGate = Vector3.new(474, 0, 0)
-Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -161)
-Config.StoryQuests.Landmarks.HornsBridge = Vector3.new(0, 0, 161)
--- story_depth §2-1: the Crossroads bench behind the fountain where two kids meet every evening (map v2 moves it)
+Config.StoryQuests.Landmarks.WoodsGate = Vector3.new(636, 0, 0)
+Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -138)
+Config.StoryQuests.Landmarks.HornsBridge = Vector3.new(0, 0, 138)
+-- story_depth §2-1: the Crossroads bench behind the fountain where two kids meet every evening (the Crossroads core
+-- keeps its place on map v2)
 Config.StoryQuests.Landmarks.KidsBench = Vector3.new(18, 0, 18)
--- quest_chain M3-2: the three goblin camps (tools/preview_map.lua GoblinCamp models; game dev 1 re-checks them for map v2)
-Config.StoryQuests.Landmarks.GoblinCamp1 = Vector3.new(660, 0, -60)
-Config.StoryQuests.Landmarks.GoblinCamp2 = Vector3.new(750, 0, 50)
-Config.StoryQuests.Landmarks.GoblinCamp3 = Vector3.new(820, 0, -40)
+-- quest_chain M3-2: the three goblin camps on map v2 (docs/design/kit_woods.md camps 1-3; the boss clearing (1110, 120)
+-- stays 40+ studs from camp 2)
+Config.StoryQuests.Landmarks.GoblinCamp1 = Vector3.new(840, 0, 95)
+Config.StoryQuests.Landmarks.GoblinCamp2 = Vector3.new(1010, 0, 130)
+Config.StoryQuests.Landmarks.GoblinCamp3 = Vector3.new(1090, 0, -150)
 -- quest_volume §3-5: the fields' arrival points follow their zones' Spawn (map v2 moves them along), and the two job
 -- boards (E11): the meadow board beside the meadow arrival, the woods board at the meadow end of the woods bridge
 -- (WoodsGate, outside the PvP woods). Game dev 1 places the boards there (the server checks the distance to these).
 Config.StoryQuests.Landmarks.MeadowArrival = Config.Zones.SlimeMeadow.Spawn
 Config.StoryQuests.Landmarks.WoodsArrival = Config.Zones.GoblinWoods.Spawn
--- (a literal: some offline Vector3 doubles have no arithmetic; test_board checks it stays 10 studs from the arrival)
-Config.StoryQuests.Landmarks.MeadowBoard = Vector3.new(220, 0, 10)
+-- (a literal: some offline Vector3 doubles have no arithmetic; test_board checks it stays beside the arrival) - map v2:
+-- just south of the crown road (|z| <= 9), its face toward the arrival
+Config.StoryQuests.Landmarks.MeadowBoard = Vector3.new(230, 0, 12)
 Config.StoryQuests.Landmarks.WoodsBoard = Config.StoryQuests.Landmarks.WoodsGate
 -- quest_volume §3-2 H6 / R7: the Heroes' Road between the hero statues (Halo Citadel) and the east lava channel (Horns
--- Den), from tools/preview_map.lua (town center + offsets); map v2 moves them
-Config.StoryQuests.Landmarks.HeroStatue = Vector3.new(0, 0, -360)
-Config.StoryQuests.Landmarks.LavaCrack = Vector3.new(48, 0, 400)
+-- Den). Map v2 moves the town cores 10 studs outward with their gates (Halo z -320 -> -330, Horns 320 -> 330).
+Config.StoryQuests.Landmarks.HeroStatue = Vector3.new(0, 0, -370)
+Config.StoryQuests.Landmarks.LavaCrack = Vector3.new(48, 0, 410)
 
 -- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
 -- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that
