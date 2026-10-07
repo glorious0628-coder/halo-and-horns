@@ -1,7 +1,9 @@
 """계급 장식 3D: the rank's own halo / horns model on the head (CharacterVisuals.buildFactionMark), offline.
+Also UI round 2 #7: the server-built name tags use the game's fonts from Config.Fonts (tagFont / makeLine /
+createNametag).
 
-Cuts attrNum, markTemplate, buildMarkModel and buildFactionMark from the CURRENT CharacterVisuals (with the CURRENT
-Config and Util) and runs them on tools/fixtures/dev2_kit.luau doubles with tools/fixtures/rank_marks_offline.luau and
+Cuts attrNum, markTemplate, buildMarkModel and buildFactionMark (and attrNum, tagFont, makeLine, nametagOffset,
+createNametag for the name tag) from the CURRENT CharacterVisuals (with the CURRENT Config and Util) and runs them on tools/fixtures/dev2_kit.luau doubles with tools/fixtures/rank_marks_offline.luau and
 the installed official Luau CLI. No Studio, network, DataStore or Roblox API calls; mutations run on in-memory copies of
 the sources only.
 
@@ -33,6 +35,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
             + function_block(visuals, "local function buildMarkModel(")
             + function_block(visuals, "local function buildFactionMark(")
             + "\nreturn buildFactionMark\n"),
+        "NAMETAG_EXTRACT": (
+            "local Config = ...\nlocal V = Config.Visuals\nlocal MIN_TEXT_SIZE = 11\n"
+            "local LINE2_COLOR, LINE3_COLOR = Color3.fromRGB(235, 235, 240), Color3.fromRGB(255, 70, 70)\n"
+            + function_block(visuals, "local function attrNum(")
+            + function_block(visuals, "local function tagFont(")
+            + function_block(visuals, "local function makeLine(")
+            + function_block(visuals, "local function nametagOffset(")
+            + function_block(visuals, "local function createNametag(")
+            + "\nreturn { create = createNametag, tagFont = tagFont }\n"),
     }
 
 
@@ -52,6 +63,12 @@ MUTATIONS = [
      '\tif t and t:IsA("Model") then t = t:FindFirstChildWhichIsA("BasePart", true) end\n', ""),
     ("Config: no R5 glow", C, "Glow = { Rank = 5,", "Glow = { Rank = 6,"),
     ("Config: the halo on the head", C, "HaloGap = 0.3,", "HaloGap = 0,"),
+    # UI round 2 #7: name tag fonts
+    ("name tags keep GothamBold", V, "\tif ok and face then label.FontFace = face end\n", ""),
+    ("no guard when Config.Fonts is missing", V, "\tlocal fonts = Config.Fonts or {}\n", "\tlocal fonts = Config.Fonts\n"),
+    ("Config: the name line in the Body font", C, 'Nametag = { Line1 = "Head",', 'Nametag = { Line1 = "Body",'),
+    ("Config: Denk One swapped for Montserrat", C, 'Head = "rbxasset://fonts/families/DenkOne.json",',
+     'Head = "rbxasset://fonts/families/Montserrat.json",'),
 ]
 
 

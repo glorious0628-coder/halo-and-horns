@@ -216,13 +216,25 @@ local function sparkle(parent, color, rate, size)
 end
 
 ------------------------------------------------------------------ Nametag
+-- UI round 2 #7: the game's fonts (Config.Fonts, A23-63); a font that cannot be made keeps GothamBold
+local function tagFont(label, slot)
+	label.Font = Enum.Font.GothamBold
+	local fonts = Config.Fonts or {}
+	local family = fonts[(fonts.Nametag or {})[slot] or "Body"]
+	if type(family) ~= "string" then return end
+	local ok, face = pcall(function()
+		return Font.new(family, Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	end)
+	if ok and face then label.FontFace = face end
+end
+
 local function makeLine(name, order, height, maxSize, color)
 	local l = Instance.new("TextLabel")
 	l.Name = name
 	l.LayoutOrder = order
 	l.BackgroundTransparency = 1
 	l.Size = UDim2.new(1, 0, 0, height)
-	l.Font = Enum.Font.GothamBold
+	tagFont(l, name)
 	l.RichText = true
 	l.TextScaled = true
 	l.TextColor3 = color
@@ -776,7 +788,7 @@ local function buildGrudgeGhost(player, character)
 	local label = Instance.new("TextLabel")
 	label.BackgroundTransparency = 1
 	label.Size = UDim2.fromScale(1, 1)
-	label.Font = Enum.Font.GothamBold
+	tagFont(label, "Ghost")
 	label.TextScaled = true
 	label.TextColor3 = GHOST_TEXT
 	label.TextStrokeTransparency = 0.3

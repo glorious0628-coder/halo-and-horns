@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 267,
+  "checks": 433,
   "failedChecks": 0,
-  "namedChecks": 264,
+  "namedChecks": 430,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -220,6 +220,18 @@
     {
       "group": "offered",
       "check": "the H1 row: 'Talk to Bright' with Story.Npc = Bright",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "the H1 row carries the quest's ShortName (the phone quest row)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "a step's own ShortName comes before the quest's",
       "pass": 1,
       "fail": 0
     },
@@ -801,7 +813,7 @@
     },
     {
       "group": "max-subs",
-      "check": "N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
+      "check": "the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
       "pass": 1,
       "fail": 0
     },
@@ -813,13 +825,25 @@
     },
     {
       "group": "max-subs",
-      "check": "the goose gone: N3, H1, then S0",
+      "check": "the goose gone: H1, S0, then N3's offer",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "max-subs",
-      "check": "the N3 row sends no Rank / Order",
+      "check": "XR1's new offer joins after the subs in progress",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "a pick card waiting mid-quest comes first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "the XR1 row sends no Rank / Order",
       "pass": 1,
       "fail": 0
     },
@@ -892,6 +916,18 @@
     {
       "group": "e1-pick-gate",
       "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e2-lines-by",
+      "check": "GW1 step 3: LinesBy has a Default and a real From",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e2-lines-by",
+      "check": "GW7 step 2: LinesBy has a Default and a real From",
       "pass": 1,
       "fail": 0
     },
@@ -1590,17 +1626,1000 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "S6: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "S6: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "S6: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "S6: town-type 120 gold + half a bar",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "S6: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "S6: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "S6: spot MeadowArrival exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: town-type 120 gold + half a bar",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: everyone's sub keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "XR1: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: town-type 120 gold + half a bar",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: spot Fountain exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H2: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: town-type 120 gold + half a bar",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: spot SlimePond exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R5: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: everyone's sub keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: spot GoblinCamp1 exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: LinesBy with a Default and a Lines fallback",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW1: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H3: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H3: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H3: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H3: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H3: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H3: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H3: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R3: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R3: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R3: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R3: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R3: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R3: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R3: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: everyone's sub keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: spot WoodsGate exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW2: spot WoodsArrival exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW3: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW3: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW3: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW3: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW3: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW3: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW3: everyone's sub keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H5: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H5: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H5: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H5: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H5: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H5: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H5: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R6: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R6: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R6: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R6: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R6: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R6: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R6: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW4: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW4: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW4: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW4: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW4: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW4: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW5: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW5: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW5: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW5: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW5: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW5: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW5: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW6: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW6: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW6: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW6: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW6: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW6: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW6: everyone's sub keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: everyone's sub keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: spot GoblinCamp1 exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: LinesBy with a Default and a Lines fallback",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: spot HeroStatue exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "H6: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: spot LavaCrack exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "R7: the speaker has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW8: a sub in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW8: an A / B pick, 1 point each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW8: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW8: woods-type 2 minutes of gold + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW8: ends with a question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW8: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW8: everyone's sub keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "HeroStatue is in Halo Citadel, LavaCrack in Horns Den",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "GW7 follows GW1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "Sir Gleam / Rascal Rex",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-data",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "Halo Lv23: the Halo subs + everyone's (GW7 waits for GW1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "Horns Lv23: the Horns subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "a Neutral save: everyone's subs only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "Lv5 after M1_4: S6 + XR1 only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "before M1_4: none of them (the first ten minutes stay)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "GW1 done: GW7 is offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-offered",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "S6 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "Horns: 80 hunting gold (not sale gold) finishes step 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "home: the pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "XR1: talk, a King Slime, then the pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "Return it to its owner: one 70% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "GW7 at the camp: Grabbo remembers the MORE vote (Var Evil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "subs18-flow",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 61,
-    "applied": 61,
-    "caught": 61,
+    "total": 71,
+    "applied": 71,
+    "caught": 71,
     "skipped": false,
     "results": [
+      {
+        "mutation": "story rows lose their ShortName",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: a step's own ShortName comes before the quest's",
+          "offered :: the H1 row carries the quest's ShortName (the phone quest row)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a step's ShortName is ignored",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: a step's own ShortName comes before the quest's"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "H1 opens after M1_1",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
@@ -1637,12 +2656,12 @@
         "newFailingChecks": [
           "a23-58 :: group ran to the end without a Lua error",
           "config :: N3: a sub for everyone",
-          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
           "max-subs :: both town quests wait at their NPC: on the list",
           "max-subs :: the busy Halo list after M2_3: S0 (never done), S1, S2, S3, H1, N3",
-          "max-subs :: the goose gone: N3, H1, then S0"
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "n3 :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 9
       },
       {
         "mutation": "an off-side pick adds instead of taking",
@@ -1865,7 +2884,7 @@
           "n3 :: a Halo player picks A: the scroll",
           "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "a Neutral A pays Evil's reward",
@@ -1900,9 +2919,10 @@
           "a23-58 :: the B reward is paid as usual",
           "h1-good :: the quest: +120 gold, +half a Lv6 bar of XP",
           "n3 :: Neutral B: recorded, no score, Evil's reward",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)",
+          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "the guild's own quests offered while off",
@@ -2002,11 +3022,12 @@
         "crashed": false,
         "newFailingChecks": [
           "max-subs :: MaxSubs = 3 (the HUD shows 2, the open list all)",
-          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
+          "max-subs :: XR1's new offer joins after the subs in progress",
           "max-subs :: both town quests wait at their NPC: on the list",
-          "max-subs :: the goose gone: N3, H1, then S0"
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "a started sub ranks like an untouched one",
@@ -2015,10 +3036,26 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
-          "max-subs :: the goose gone: N3, H1, then S0"
+          "max-subs :: XR1's new offer joins after the subs in progress",
+          "max-subs :: a pick card waiting mid-quest comes first",
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a new offer outranks the subs in progress",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: XR1's new offer joins after the subs in progress",
+          "max-subs :: a pick card waiting mid-quest comes first",
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer"
+        ],
+        "newFailingCount": 4
       },
       {
         "mutation": "older quests first within a rank",
@@ -2027,10 +3064,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
-          "max-subs :: the goose gone: N3, H1, then S0"
+          "max-subs :: XR1's new offer joins after the subs in progress",
+          "max-subs :: a pick card waiting mid-quest comes first",
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "the sort fields reach the client",
@@ -2040,8 +3079,8 @@
         "crashed": false,
         "newFailingChecks": [
           "max-subs :: the H1 row sends no Rank / Order",
-          "max-subs :: the N3 row sends no Rank / Order",
-          "max-subs :: the S0 row sends no Rank / Order"
+          "max-subs :: the S0 row sends no Rank / Order",
+          "max-subs :: the XR1 row sends no Rank / Order"
         ],
         "newFailingCount": 3
       },
@@ -2088,7 +3127,7 @@
           "e2-lines-by :: Halo {M2_3=Good}: the window opens with Var Good",
           "e2-lines-by :: Halo {}: the window opens with Var Default"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 11
       },
       {
         "mutation": "E2: the row gets no Var",
@@ -2387,6 +3426,88 @@
           "ch3-data :: GoblinCamp1 is in the Goblin Woods"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "GW7 not waiting for GW1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "subs18-data :: GW7 follows GW1",
+          "subs18-offered :: Halo Lv23: the Halo subs + everyone's (GW7 waits for GW1)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "XR1 before the first ten minutes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "subs18-data :: XR1: opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)",
+          "subs18-offered :: before M1_4: none of them (the first ten minutes stay)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a woods-type B pays the town gold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "subs18-data :: GW6: A = one 70% scroll, B = 3 HP potions + 192 gold"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "S6 for Horns without its gold step",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold",
+          "subs18-flow :: Horns: 80 hunting gold (not sale gold) finishes step 1",
+          "subs18-flow :: home: the pick"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the hero statue outside Halo Citadel",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "subs18-data :: HeroStatue is in Halo Citadel, LavaCrack in Horns Den"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GW7 forgets the GW1 pick",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "subs18-flow :: GW7 at the camp: Grabbo remembers the MORE vote (Var Evil)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Neutral save gets the Halo / Horns subs",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "subs18-data :: GW4: everyone's sub keeps A / B labels for a Neutral save",
+          "subs18-offered :: a Neutral save: everyone's subs only"
+        ],
+        "newFailingCount": 2
       }
     ]
   },
@@ -2394,20 +3515,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
+    "src/ReplicatedStorage/Shared/Config.luau": "7837354dc8772b80417a957ab06970b94c7304461919e42c46c66816462bfa0f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
-    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
-    "src/ServerScriptService/StoryQuestService.luau": "88266a94a136f571fbf624be2514baeb3396523eeeb802cfb1ce3406dcdb2889",
-    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
-    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/CombatService.luau": "62fcbb61aacb2068d5adec21bc414338a91e341538c6e6f1db2d670b649334a8",
+    "src/ServerScriptService/LootService.luau": "e8c996a2e196bdaa750861c0431966be48b3dfceb1a5163860f14555c57a0c75",
+    "src/ServerScriptService/StoryQuestService.luau": "39dbd369c12b9bc6f919bcff054de2b9bf2ebea8cc2382603a06b9310d265c0c",
+    "src/ServerScriptService/PvPService.luau": "cd3ba05e927e40b348d2d2671992380cc41b6decfefc7c931a50f0ca6fae3826",
+    "src/ServerScriptService/ShopService.luau": "24cbcaf5cf4a13431ea1b5d3671c16238c6f4162712c0e3b5c82f0b1b4a3688c",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60",
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
-    "src/ServerScriptService/ProgressionService.luau": "074be3338e3845a95ebd1d0943d7c3ab68ed03f9529e11286e62e7140ab8fee3"
+    "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
   },
-  "fixtureSHA256": "6807d23fde8cd3a32156224f9df14790a41e8b6359e0b2c1b3f28ca2e5baff78",
+  "fixtureSHA256": "f1947ba7fc473724ae6b37e560512c1213e8b9c0cfeac2d8c55ee8f8546321ec",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

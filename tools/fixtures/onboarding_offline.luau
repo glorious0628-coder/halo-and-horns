@@ -198,17 +198,20 @@ do
 	check(f.LastList[1].Pinned and f.LastList[1].TutorialStep == 0, "class choice bypassed welcome acceptance")
 	check(#f.Panels == 1 and f.Panels[1] == "Welcome", "class choice did not open the guide")
 	check(string.find(f.LastList[1].Text, "Guide") ~= nil, "pending guide is not discoverable")
+	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Welcome, "the welcome row's ShortName (phone quest row)")
 	f:Publish(); f.Services.PlayerService.CharacterSpawned:Fire(f.Player)
 	for _, fn in f.Delayed do fn() end; f:Publish()
 	check(#f.Panels == 1 and f.Data.TutorialStep == 0, "closed welcome auto-reopened/accepted")
 	f:Request(); check(#f.Panels == 2 and f.Data.TutorialStep == 0, "request did not reopen without accepting")
 	f:Accept(); f:Publish()
 	check(f.Data.TutorialStep == 1 and f.LastList[1].TutorialStep == 1, "accept did not pin meadow travel")
+	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Travel, "the travel row's ShortName")
 	check(f.LastList[1].CanClaim == false and f.LastList[1].ShowProgress == false, "travel is claimable/fake counter")
 	f:Claim(); check(f.Data.BankGold == 0, "travel guidance paid gold")
 	check(#f.Spawned == 0 and f.Data.TutorialKills == 0, "a personal town slime was spawned/credited")
 	check(f.LastList[1].TutorialStep == 1 and f.LastList[1].CanClaim == false, "travel is not pinned")
 	f:ZoneTo("SlimeMeadow"); check(f.LastList[1].Target == 5 and f.LastList[1].Progress == 0, "meadow entry does not show hunt")
+	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Quest, "the first mission row's ShortName ('Supply road')")
 end
 do
 	local f = fixture(saved(0, 0)); f.Zone = "SlimeMeadow"; f:Kill()
@@ -264,6 +267,7 @@ do
 	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == false,
 		"bare-handed: the claim clears an earlier anvil visit (M1_1 waits for a smithy visit after the first mission)")
 	check(f.LastList[1].Text == T.VisitBlacksmith, "bare-handed: the pinned row promises the first weapon", f.LastList[1].Text)
+	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Forge, "the forge row's ShortName")
 	local last = f.Notices[#f.Notices]
 	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)), "bare-handed: the Claimed line", last)
 end
@@ -365,10 +369,13 @@ do
 	f.Services.PlayerService.SetStat(f.Player, "BlacksmithVisited", true); f:Publish()
 	-- A23-3: after the visit the pinned row stays as one next-goal line computed from existing state (no reward).
 	local T, iron, woods = f.Config.Tutorial.Text, f.Config.Weapons[3], f.Config.Zones.GoblinWoods
-	local function nextGoal(context, expected)
+	local SN = f.Config.Tutorial.ShortNames
+	local function nextGoal(context, expected, short)
 		local row = f.LastList[1]
 		check(row.Pinned == true and row.Id == "tutorial" and row.NextGoal == true, context .. " lost the pinned next-goal row")
 		check(row.Text == expected, context .. " next-goal text mismatch: " .. tostring(row.Text) .. " ~= " .. expected)
+		check(type(short) == "string" and row.ShortName == short and #short <= 14,
+			context .. " next-goal ShortName mismatch: " .. tostring(row.ShortName) .. " ~= " .. tostring(short))
 		check(row.CanClaim == false and row.ShowProgress == false and row.RewardGold == 0 and row.RewardXP == 0,
 			context .. " next goal became claimable or advertised a reward")
 		check(#f.LastList == f.Config.Quests.Slots + 1, context .. " hid ordinary quest slots")
@@ -381,24 +388,24 @@ do
 		return n
 	end
 	check(iron.MinLevel == 5 and woods.MinLevel == 10, "next-goal fixture expects iron Lv5 and Goblin Woods Lv10")
-	nextGoal("visit without purchase", string.format(T.NextIronLevel, iron.MinLevel, 1))
+	nextGoal("visit without purchase", string.format(T.NextIronLevel, iron.MinLevel, 1), string.format(SN.IronLevel, iron.MinLevel))
 	local record = f:SaveAndRejoin()
 	check(record.BlacksmithVisited == true and f.Data.BlacksmithVisited == true, "saved blacksmith visit was lost")
-	nextGoal("rejoin", string.format(T.NextIronLevel, iron.MinLevel, 1))
+	nextGoal("rejoin", string.format(T.NextIronLevel, iron.MinLevel, 1), string.format(SN.IronLevel, iron.MinLevel))
 	check(f.Data.WeaponTier == 1, "rejoin forced a purchase/equipment change")
 	f.Services.PlayerService.SetStat(f.Player, "Level", 5); f.Services.ProgressionService.LeveledUp:Fire(f.Player); f:Publish()
-	nextGoal("level5", string.format(T.NextIronGold, tostring(iron.Price), gold()))
+	nextGoal("level5", string.format(T.NextIronGold, tostring(iron.Price), gold()), SN.IronGold)
 	f.Services.PlayerService.SetStat(f.Player, "CarriedGold", 120); f.Services.PlayerService.SetStat(f.Player, "BankGold", 600); f:Publish()
-	nextGoal("level5 gold change", string.format(T.NextIronGold, tostring(iron.Price), "720"))
+	nextGoal("level5 gold change", string.format(T.NextIronGold, tostring(iron.Price), "720"), SN.IronGold)
 	f.Services.PlayerService.SetStat(f.Player, "Level", 10); f:Publish()
-	nextGoal("level10 without iron", string.format(T.NextIronGold, tostring(iron.Price), "720"))
+	nextGoal("level10 without iron", string.format(T.NextIronGold, tostring(iron.Price), "720"), SN.IronGold)
 	local before = f.Sends; f:Publish(); check(f.Sends == before, "watchdog resends unchanged payload")
 	-- iron owned (bought through the separately tested shop contract) below Goblin Woods level -> zone goal
 	f.Services.PlayerService.SetStat(f.Player, "Level", 6)
 	f.Services.PlayerService.SetStat(f.Player, "WeaponOwnedMask", 5); f.Services.PlayerService.SetStat(f.Player, "WeaponTier", 3); f:Publish()
-	nextGoal("iron owned", string.format(T.NextZone, woods.MinLevel, woods.Name, 6))
+	nextGoal("iron owned", string.format(T.NextZone, woods.MinLevel, woods.Name, 6), string.format(SN.Zone, woods.MinLevel))
 	f.Services.PlayerService.SetStat(f.Player, "WeaponTier", 1); f:Publish()
-	nextGoal("owned iron unequipped", string.format(T.NextZone, woods.MinLevel, woods.Name, 6))
+	nextGoal("owned iron unequipped", string.format(T.NextZone, woods.MinLevel, woods.Name, 6), string.format(SN.Zone, woods.MinLevel))
 	check(guideDone() == 0, "guide-finished toast fired while a goal remained")
 	f.Services.PlayerService.SetStat(f.Player, "Level", 10); f:Publish()
 	check(f.LastList[1].Pinned ~= true and #f.LastList == f.Config.Quests.Slots, "finished guide chain kept a pinned row")

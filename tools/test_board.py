@@ -26,6 +26,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("job rows lose their ShortName", BD, ", ShortName = job.ShortName,", ","),
+    ("the hint row loses its ShortName", BD, "\n\t\t\tShortName = (B.Text or {}).HintShort,", ""),
     ("the switch ignored", BD, "local function on()\n\treturn B.Enabled == true\nend", "local function on()\n\treturn true\nend"),
     ("the board works from anywhere", BD,
      "\treturn spot ~= nil and root ~= nil and Util.FlatDistance(root.Position, spot) <= num(B.Range, 14)\nend\n\nlocal function onBoardAction",

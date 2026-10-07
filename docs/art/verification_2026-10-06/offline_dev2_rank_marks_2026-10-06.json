@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 81,
+  "checks": 89,
   "failedChecks": 0,
-  "namedChecks": 81,
+  "namedChecks": 89,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -57,7 +57,7 @@
     },
     {
       "group": "config",
-      "check": "the R5 glow (이미지 생성 1) and Yaw 180 for a glTF +Z front",
+      "check": "the R5 glow (이미지 생성 1) and Yaw 0 (the models already face -Z, 427baf8)",
       "pass": 1,
       "fail": 0
     },
@@ -492,15 +492,63 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "Config.Fonts: Head = Denk One, Body = Montserrat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "the name line: Denk One (Head)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "lines 2 and 3: Montserrat (Body)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "bold, like the old GothamBold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "the grudge ghost's label: Montserrat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "without Config.Fonts: GothamBold, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "name tag fonts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 12,
   "staticFailures": [],
   "mutations": {
-    "total": 13,
-    "applied": 13,
-    "caught": 13,
+    "total": 17,
+    "applied": 17,
+    "caught": 17,
     "skipped": false,
     "results": [
       {
@@ -578,7 +626,7 @@
         "newFailingCount": 6
       },
       {
-        "mutation": "the model faces its back",
+        "mutation": "the model ignores Config Yaw (faces its back)",
         "file": "src/ServerScriptService/CharacterVisuals.luau",
         "applied": true,
         "caught": true,
@@ -674,7 +722,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the R5 glow (이미지 생성 1) and Yaw 180 for a glTF +Z front"
+          "config :: the R5 glow (이미지 생성 1) and Yaw 0 (the models already face -Z, 427baf8)"
         ],
         "newFailingCount": 1
       },
@@ -693,6 +741,53 @@
           "each rank wears its own model :: Halo rank 5: bottom at head top +0.3"
         ],
         "newFailingCount": 6
+      },
+      {
+        "mutation": "name tags keep GothamBold",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "name tag fonts :: bold, like the old GothamBold",
+          "name tag fonts :: lines 2 and 3: Montserrat (Body)",
+          "name tag fonts :: the grudge ghost's label: Montserrat",
+          "name tag fonts :: the name line: Denk One (Head)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no guard when Config.Fonts is missing",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "name tag fonts :: without Config.Fonts: GothamBold, no error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: the name line in the Body font",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "name tag fonts :: the name line: Denk One (Head)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: Denk One swapped for Montserrat",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "name tag fonts :: Config.Fonts: Head = Denk One, Body = Montserrat"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -700,14 +795,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
+    "src/ReplicatedStorage/Shared/Config.luau": "273b0a7d74599782dc3d88161f7229364eaa8a4cdd0a97517399ec39f8a6e5e4",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60"
+    "src/ServerScriptService/CharacterVisuals.luau": "fcfaec02dd563265306e73a3c9ec94846c110cb66ba17ba56c31719fec2a90f9"
   },
-  "fixtureSHA256": "4925d256a28676bccbae59d8b96d178f654c721d20e8f5927143324f20edbb52",
+  "fixtureSHA256": "68d28991385ba0c4ccbe553764fa638eb93f66ea6e08440bdd7d8ab769985c50",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
   "contract": "계급 장식 3D (이미지 생성 1 45b6220, user OK): Halo / Horns rank r (Config.GetTitle) wears ServerStorage[Config.Visuals.MarkModels.Folder] Acc_HaloR<r> / Acc_HornsR<r> (a MeshPart, or a Model with one mesh) cloned, sized x head height / HeadRef (1.2), its bottom HaloGap (0.3) above / HornsDepth (0.06) into the head top (both x k), turned by Yaw, unanchored / massless / no collision, welded to the head; halos get the old PointLight, rank >= Glow.Rank (5) sparkles. A missing model keeps the drawn mark; the guild keeps its gear.",
-  "limitations": "The import itself (GLB -> MeshPart in ServerStorage.MarkModels, the asset upload) and the real look on avatars (front direction = Yaw 180, glTF +Z) are checked in Studio by game dev 1 / image dev. CFrame is a translation + yaw stand-in (the test head never turns)."
+  "limitations": "The import itself (GLB -> MeshPart in ServerStorage.MarkModels, the asset upload) and the real look on avatars (Yaw 0: the models were turned to face Roblox -Z before the import, 427baf8) are checked in Studio by game dev 1. CFrame is a translation + yaw stand-in (the test head never turns)."
 }

@@ -173,6 +173,13 @@ runGroup("offered", function()
 	for _, r in rows do if r.Story and r.Story.Id == "H1" then h1row = r end end
 	check(h1row and h1row.Story.Npc == "Bright" and h1row.Story.Guide == "HaloTown" and h1row.Text == SQ0.Defs.H1.Steps[1].Text,
 		"the H1 row: 'Talk to Bright' with Story.Npc = Bright", show(h1row and h1row.Story))
+	check(h1row and type(SQ0.Defs.H1.ShortName) == "string" and h1row.ShortName == SQ0.Defs.H1.ShortName
+		and #h1row.ShortName <= 14, "the H1 row carries the quest's ShortName (the phone quest row)", h1row and h1row.ShortName)
+	w.Config.StoryQuests.Defs.H1.Steps[1].ShortName = "Talk to Bright"
+	local over = nil
+	for _, r in w.Story.SubRows(halo, hd) do if r.Story and r.Story.Id == "H1" then over = r end end
+	check(over and over.ShortName == "Talk to Bright", "a step's own ShortName comes before the quest's", over and over.ShortName)
+	w.Config.StoryQuests.Defs.H1.Steps[1].ShortName = nil
 end)
 
 ------------------------------------------------------------------ 3. H1 all the way (A side)

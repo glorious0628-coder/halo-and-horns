@@ -10,7 +10,7 @@
   "sec": 0.195,
   "phoneDropDb": 0.1,
   "bytes": 5466,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "AutoOn": {
   "file": "art/sfx/AutoOn.ogg",
@@ -23,20 +23,20 @@
   "sec": 0.195,
   "phoneDropDb": 0.1,
   "bytes": 5624,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "ComboCoin": {
   "file": "art/sfx/ComboCoin.ogg",
-  "candidate": "Coin_a",
-  "note": "one bright ting (combo raises it a semitone per kill)",
+  "candidate": "Coin_b",
+  "note": "two quick coins",
   "sources": [
    "synth · tools/sfx_game.py (ours)"
   ],
   "license": "our own synthesis (no third-party material)",
-  "sec": 0.5,
-  "phoneDropDb": 0.1,
-  "bytes": 7363,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "sec": 0.555,
+  "phoneDropDb": 0.0,
+  "bytes": 7966,
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "ComboMilestone": {
   "file": "art/sfx/ComboMilestone.ogg",
@@ -49,7 +49,7 @@
   "sec": 0.322,
   "phoneDropDb": 0.0,
   "bytes": 6763,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "Deny": {
   "file": "art/sfx/Deny.ogg",
@@ -62,7 +62,7 @@
   "sec": 0.29,
   "phoneDropDb": 3.8,
   "bytes": 7230,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "Devour": {
   "file": "art/sfx/Devour.ogg",
@@ -76,20 +76,20 @@
   "sec": 0.235,
   "phoneDropDb": 5.5,
   "bytes": 6064,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "GoldPickup": {
   "file": "art/sfx/GoldPickup.ogg",
-  "candidate": "GoldPickup_a",
-  "note": "Kenney tick (§6 #20, the devlog coin)",
+  "candidate": "Coin_b",
+  "note": "two quick coins",
   "sources": [
-   "Kenney Interface Sounds · tick_004.ogg (CC0)"
+   "synth · tools/sfx_game.py (ours)"
   ],
-  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
-  "sec": 0.055,
-  "phoneDropDb": 0.1,
-  "bytes": 5356,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.555,
+  "phoneDropDb": 0.0,
+  "bytes": 7966,
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "GooseHonk": {
   "file": "art/sfx/GooseHonk.ogg",
@@ -102,7 +102,7 @@
   "sec": 0.36,
   "phoneDropDb": 0.6,
   "bytes": 8486,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "HitHeavy1": {
   "file": "art/sfx/HitHeavy1.ogg",
@@ -116,7 +116,7 @@
   "sec": 0.293,
   "phoneDropDb": 6.5,
   "bytes": 7373,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "HitHeavy2": {
   "file": "art/sfx/HitHeavy2.ogg",
@@ -130,33 +130,35 @@
   "sec": 0.276,
   "phoneDropDb": 8.2,
   "bytes": 7402,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "HitSoft1": {
   "file": "art/sfx/HitSoft1.ogg",
-  "candidate": "HitSquish_a",
-  "note": "wet blob (slimes)",
+  "candidate": "HitSquish_b",
+  "note": "soft thud saturated + blob",
   "sources": [
+   "Kenney Impact Sounds 1.0 · impactSoft_medium_001.ogg (CC0) · saturated",
    "synth · tools/sfx_game.py (ours)"
   ],
-  "license": "our own synthesis (no third-party material)",
-  "sec": 0.16,
-  "phoneDropDb": 3.8,
-  "bytes": 6002,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip) + our own synthesis (no third-party material)",
+  "sec": 0.18,
+  "phoneDropDb": 5.5,
+  "bytes": 6154,
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "HitSoft2": {
   "file": "art/sfx/HitSoft2.ogg",
-  "candidate": "HitSoft_b",
-  "note": "wet blob, second take (§6 #4 variant)",
+  "candidate": "HitSquish_b2",
+  "note": "soft thud saturated + blob, second take",
   "sources": [
+   "Kenney Impact Sounds 1.0 · impactSoft_medium_003.ogg (CC0) · saturated",
    "synth · tools/sfx_game.py (ours)"
   ],
-  "license": "our own synthesis (no third-party material)",
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip) + our own synthesis (no third-party material)",
   "sec": 0.16,
-  "phoneDropDb": 3.5,
-  "bytes": 6010,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "phoneDropDb": 5.8,
+  "bytes": 6006,
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "KillPop": {
   "file": "art/sfx/KillPop.ogg",
@@ -169,7 +171,7 @@
   "sec": 0.103,
   "phoneDropDb": 0.7,
   "bytes": 4921,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "KingBell": {
   "file": "art/sfx/KingBell.ogg",
@@ -183,7 +185,7 @@
   "sec": 1.527,
   "phoneDropDb": 3.9,
   "bytes": 16626,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "LevelUp": {
   "file": "art/sfx/LevelUp.ogg",
@@ -196,7 +198,7 @@
   "sec": 0.975,
   "phoneDropDb": 0.2,
   "bytes": 14258,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "Potion": {
   "file": "art/sfx/Potion.ogg",
@@ -209,7 +211,7 @@
   "sec": 0.121,
   "phoneDropDb": 0.1,
   "bytes": 6207,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "Purify": {
   "file": "art/sfx/Purify.ogg",
@@ -222,7 +224,7 @@
   "sec": 1.135,
   "phoneDropDb": 0.0,
   "bytes": 15205,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "QuestDone": {
   "file": "art/sfx/QuestDone.ogg",
@@ -235,7 +237,7 @@
   "sec": 0.29,
   "phoneDropDb": 5.0,
   "bytes": 5838,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "QuestNew": {
   "file": "art/sfx/QuestNew.ogg",
@@ -248,7 +250,7 @@
   "sec": 0.22,
   "phoneDropDb": 0.0,
   "bytes": 6840,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "RankDown": {
   "file": "art/sfx/RankDown.ogg",
@@ -261,7 +263,7 @@
   "sec": 0.084,
   "phoneDropDb": 4.4,
   "bytes": 5679,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "ScrollFail": {
   "file": "art/sfx/ScrollFail.ogg",
@@ -274,7 +276,7 @@
   "sec": 0.081,
   "phoneDropDb": 4.9,
   "bytes": 5837,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "ScrollSuccess": {
   "file": "art/sfx/ScrollSuccess.ogg",
@@ -288,7 +290,7 @@
   "sec": 0.75,
   "phoneDropDb": 0.2,
   "bytes": 9088,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "SkillHalo": {
   "file": "art/sfx/SkillHalo.ogg",
@@ -301,7 +303,7 @@
   "sec": 0.078,
   "phoneDropDb": 0.0,
   "bytes": 4700,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "SkillHorns": {
   "file": "art/sfx/SkillHorns.ogg",
@@ -315,7 +317,7 @@
   "sec": 0.08,
   "phoneDropDb": 8.2,
   "bytes": 4858,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "SwingArcher": {
   "file": "art/sfx/SwingArcher.ogg",
@@ -328,7 +330,7 @@
   "sec": 0.3,
   "phoneDropDb": 0.3,
   "bytes": 7608,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "SwingMage": {
   "file": "art/sfx/SwingMage.ogg",
@@ -341,20 +343,20 @@
   "sec": 0.27,
   "phoneDropDb": 0.2,
   "bytes": 7388,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "SwingTamer": {
   "file": "art/sfx/SwingTamer.ogg",
-  "candidate": "SwingWhistle_a",
-  "note": "one rising whistle (Tamer pet attack)",
+  "candidate": "SwingWhistle_b",
+  "note": "two-note 'fwee-fwit'",
   "sources": [
    "synth · tools/sfx_game.py (ours)"
   ],
   "license": "our own synthesis (no third-party material)",
-  "sec": 0.22,
+  "sec": 0.19,
   "phoneDropDb": 0.0,
-  "bytes": 6791,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "bytes": 6523,
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "SwingWarrior": {
   "file": "art/sfx/SwingWarrior.ogg",
@@ -367,7 +369,7 @@
   "sec": 0.175,
   "phoneDropDb": 0.0,
   "bytes": 6103,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "TalkBlip": {
   "file": "art/sfx/TalkBlip.ogg",
@@ -380,7 +382,7 @@
   "sec": 0.05,
   "phoneDropDb": 2.4,
   "bytes": 4741,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "Tap": {
   "file": "art/sfx/Tap.ogg",
@@ -393,7 +395,7 @@
   "sec": 0.04,
   "phoneDropDb": 0.9,
   "bytes": 4624,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "WindowClose": {
   "file": "art/sfx/WindowClose.ogg",
@@ -406,7 +408,7 @@
   "sec": 0.206,
   "phoneDropDb": 0.1,
   "bytes": 5232,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  },
  "WindowOpen": {
   "file": "art/sfx/WindowOpen.ogg",
@@ -419,6 +421,6 @@
   "sec": 0.218,
   "phoneDropDb": 0.1,
   "bytes": 5273,
-  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+  "made": "tools/sfx_game.py build (48 kHz mono, loudest 100 ms -18 dBFS RMS, peak <= -3 dBFS)"
  }
 }

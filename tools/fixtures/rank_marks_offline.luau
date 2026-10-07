@@ -219,4 +219,35 @@ runGroup("bigger heads, models, missing files", function()
 	check(marks == 1, "a rebuild leaves one mark", marks)
 end)
 
+-- UI round 2 #7 (검수 2026-10-07): the name tag over a head uses the game's fonts (A23-63) from one Config place
+runGroup("name tag fonts", function()
+	local F = C0.Fonts
+	check(type(F) == "table" and F.Head == "rbxasset://fonts/families/DenkOne.json"
+		and F.Body == "rbxasset://fonts/families/Montserrat.json", "Config.Fonts: Head = Denk One, Body = Montserrat", show(F))
+	local w = newWorld({})
+	local tag = execute("CharacterVisuals.nametag", NAMETAG_EXTRACT, w:Env(), C0)
+	local p = newInstance("Player", w)
+	local bb = tag.create(p)
+	local function face(n)
+		local l = bb:FindFirstChild(n)
+		return l and type(l.FontFace) == "table" and l.FontFace.Args or {}
+	end
+	check(face("Line1")[1] == F.Head, "the name line: Denk One (Head)", show(face("Line1")))
+	check(face("Line2")[1] == F.Body and face("Line3")[1] == F.Body, "lines 2 and 3: Montserrat (Body)",
+		show({ face("Line2")[1], face("Line3")[1] }))
+	check(face("Line1")[2] == "FontWeight.Bold" and face("Line2")[2] == "FontWeight.Bold", "bold, like the old GothamBold",
+		show({ face("Line1")[2], face("Line2")[2] }))
+	local ghost = newInstance("TextLabel", w)
+	tag.tagFont(ghost, "Ghost")
+	check(type(ghost.FontFace) == "table" and ghost.FontFace.Args[1] == F.Body, "the grudge ghost's label: Montserrat",
+		show(ghost.FontFace))
+	-- no Config.Fonts (an old Config): the label keeps GothamBold
+	local plain = newInstance("TextLabel", w)
+	C0.Fonts = nil
+	local ok, err = pcall(tag.tagFont, plain, "Line1")
+	C0.Fonts = F
+	check(ok and plain.Font == "Font.GothamBold" and plain.FontFace == nil, "without Config.Fonts: GothamBold, no error",
+		show({ ok, err, plain.Font, plain.FontFace }))
+end)
+
 finish()

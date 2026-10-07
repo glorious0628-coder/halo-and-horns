@@ -48,6 +48,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("story rows lose their ShortName", ST,
+     "\t\tShortName = (step and step.ShortName) or def.ShortName, -- 검수 2026-10-07: the phone HUD quest row (<= 14)\n", ""),
+    ("a step's ShortName is ignored", ST, "ShortName = (step and step.ShortName) or def.ShortName,", "ShortName = def.ShortName,"),
     ("H1 opens after M1_1", C, 'Speaker = "Bright", Factions = { Halo = true },\n\t\t\tRequires = { Done = { "M2_3" } },',
      'Speaker = "Bright", Factions = { Halo = true },\n\t\t\tRequires = { Done = { "M1_1" } },'),
     ("H1 spies 1 s", C,
@@ -148,8 +151,8 @@ MUTATIONS = [
     # quest_volume §3-2: the 18 subs
     ("GW7 not waiting for GW1", C, 'Requires = { Done = { "GW1" }, Level = 21 },', 'Requires = { Done = { "M2_7" }, Level = 21 },'),
     ("XR1 before the first ten minutes", C,
-     'Kind = "Sub", Title = "Lost & Found", Speaker = "Tiny",\n\t\t\tRequires = { Done = { "M1_4" }, Level = 5 },',
-     'Kind = "Sub", Title = "Lost & Found", Speaker = "Tiny",\n\t\t\tRequires = { Done = { "M1_1" }, Level = 1 },'),
+     'Kind = "Sub", Title = "Lost & Found", ShortName = "Lost bear", Speaker = "Tiny",\n\t\t\tRequires = { Done = { "M1_4" }, Level = 5 },',
+     'Kind = "Sub", Title = "Lost & Found", ShortName = "Lost bear", Speaker = "Tiny",\n\t\t\tRequires = { Done = { "M1_1" }, Level = 1 },'),
     ("a woods-type B pays the town gold", C,
      'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },',
      'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },'),
@@ -161,8 +164,8 @@ MUTATIONS = [
     ("GW7 forgets the GW1 pick", C, 'LinesBy = { From = "GW1",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time',
      'LinesBy = { From = "GW7",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time'),
     ("a Neutral save gets the Halo / Horns subs", C,
-     'Kind = "Sub", Title = "The Crown War Is Close", Factions = { Halo = true, Horns = true },',
-     'Kind = "Sub", Title = "The Crown War Is Close",'),
+     'Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War", Factions = { Halo = true, Horns = true },',
+     'Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War",'),
 ]
 
 

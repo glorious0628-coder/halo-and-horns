@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3348,
+  "checks": 3853,
   "failedChecks": 0,
-  "namedChecks": 183,
+  "namedChecks": 186,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -124,6 +124,18 @@
     {
       "group": "dailies-generate",
       "check": "Lv1-9: three different dailies (kill / skill / gold)",
+      "pass": 126,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "a sent daily row carries its template's ShortName",
+      "pass": 378,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "the sent list holds the three dailies",
       "pass": 126,
       "fail": 0
     },
@@ -586,6 +598,12 @@
     {
       "group": "board-switch",
       "check": "off: the extra is listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "the extra row carries its template's ShortName",
       "pass": 1,
       "fail": 0
     },
@@ -1115,10 +1133,22 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 33,
-    "applied": 33,
-    "caught": 33,
+    "total": 34,
+    "applied": 34,
+    "caught": 34,
     "results": [
+      {
+        "mutation": "quest rows lose the template's ShortName",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: the extra row carries its template's ShortName",
+          "dailies-generate :: a sent daily row carries its template's ShortName"
+        ],
+        "newFailingCount": 2
+      },
       {
         "mutation": "newbie daily pays the 5-minute reward",
         "file": "src/ServerScriptService/QuestService.luau",
@@ -1487,11 +1517,11 @@
           "board-switch :: off: a claimed daily slot becomes an extra quest",
           "board-switch :: off: the extra is listed",
           "board-switch :: switched off again: an empty slot gets an extra at load",
+          "board-switch :: the extra row carries its template's ShortName",
           "dailies-generate :: both kill variants occur (king slime 3 more often than 12-15 slimes)",
-          "dailies-progress :: a claimed daily slot becomes an extra quest",
-          "dailies-progress :: group ran to the end without a Lua error"
+          "dailies-progress :: a claimed daily slot becomes an extra quest"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "board on: a claimed daily still becomes an extra",
@@ -1567,14 +1597,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "a65e36e5ff32b21c33138873718edeb397fa6f532fdbe7326b708f271b3dfb5d",
-    "src/ReplicatedStorage/Shared/Net.luau": "0715c7aed87e0391dafc8dc9bd7945089cfe78585f4fcf385c64e92a2badb2f1",
+    "src/ReplicatedStorage/Shared/Config.luau": "7837354dc8772b80417a957ab06970b94c7304461919e42c46c66816462bfa0f",
+    "src/ReplicatedStorage/Shared/Net.luau": "b3d7092dba134f0b514a54f27c9f20fe69ba8894389e490cd96a4bb6866584e6",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
-    "src/ServerScriptService/QuestService.luau": "3f2a12c29b00bebb39813412068b72db1110a1608d047d45eee04d980d06d7d3",
+    "src/ServerScriptService/QuestService.luau": "f096182e0ee5f9846d3a05ca5a2b3014703989da9143e41b283d8264185b258f",
     "src/ServerScriptService/GooseService.luau": "eb39998538042239d5966f71c08869788465bee782e6b26f6d2a50847bf8dc99",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005"
   },
-  "fixtureSHA256": "9ba4c2718a5edb0c7698ac0a28a919c6a63e10a0eff2e942d95c7e2981b36dcd",
+  "fixtureSHA256": "66d75cbd1bf7a110a4e19faebe53816c08dfb737533015e699221f27abe0246a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

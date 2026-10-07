@@ -553,7 +553,7 @@ local function onSellMaterials(player, ...)
 	S.ProgressionService.AddCarriedGold(player, gold, "Sale")
 	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
 	S.PlayerService.MarkActive(player)
-	notify(player, string.format(TXT.SellDone, count, tostring(gold)), "good")
+	notify(player, Config.Plural(string.format(TXT.SellDone, count, tostring(gold))), "good")
 end
 
 ------------------------------------------------------------------ A23-28 weapon level rule

@@ -361,6 +361,17 @@ runGroup("dailies-generate", function()
 				for _, q in d.Quests do ids[q.Id] = (ids[q.Id] or 0) + 1 end
 				check(#d.Quests == 3 and ids.Kill == 1 and ids.Release == 1 and ids.Gold == 1,
 					"Lv1-9: three different dailies (kill / skill / gold)", faction .. " Lv" .. level .. " " .. show(ids))
+				-- 검수 2026-10-07: the sent rows carry their template's ShortName (the phone quest row, <= 14)
+				local sentDaily = 0
+				for _, row in f.LastList or {} do
+					if row.Kind == "Daily" then
+						sentDaily += 1
+						local want = TEMPLATE[row.Id] and TEMPLATE[row.Id].ShortName
+						check(type(want) == "string" and #want <= 14 and row.ShortName == want,
+							"a sent daily row carries its template's ShortName", show({ row.Id, row.ShortName, want }))
+					end
+				end
+				check(sentDaily == 3, "the sent list holds the three dailies", sentDaily)
 				local wantG, wantX = CONFIG.HuntValue(level, NB.RewardMinutes)
 				for _, q in d.Quests do
 					check(q.Kind == "Daily", "all three are dailies", q.Kind)
@@ -705,6 +716,9 @@ runGroup("board-switch", function()
 	off:Claim(ki)
 	check(off.Data.Quests[ki].Kind == "Extra", "off: a claimed daily slot becomes an extra quest", show(off.Data.Quests[ki]))
 	check(slotOf(listed(off), ki) ~= nil, "off: the extra is listed", show(off.LastList))
+	local extraRow = slotOf(off.LastList, ki)
+	check(extraRow and TEMPLATE[extraRow.Id] and extraRow.ShortName == TEMPLATE[extraRow.Id].ShortName,
+		"the extra row carries its template's ShortName", show(extraRow))
 	-- on: the slot stays empty (not listed, never rerolled), the boards' Job rows are listed instead
 	local f = woodsKSG(12, 400)
 	f.Config.Board.Enabled = true

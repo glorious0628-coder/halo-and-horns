@@ -36,11 +36,11 @@
 | 1 | SwingWarrior | 전사 휘두르기(맨손 1.3배) | 직접 합성(짧은 바람 0.18초) | 우리 것 |
 | 2 | SwingMage | 마법사 쏘기 | 직접 합성(올라가는 마법음 + 반짝) | 우리 것 |
 | 3 | SwingArcher | 궁수 쏘기 | 직접 합성(활줄 퉁 + 화살 바람) | 우리 것 |
-| — | SwingTamer | 펫 조련사 휘파람(표에 없음, 펫 공격용) | 직접 합성 | 우리 것 |
-| 4 | HitSoft1 · HitSoft2 | 맞힘 약(슬라임·유령·호박) | 직접 합성(물컹 두 가지) | 우리 것 |
+| — | SwingTamer | 펫 조련사 휘파람(표에 없음, 펫 공격용) | 직접 합성('휘-휙' 두 번, 2026-10-07 사용자 B) | 우리 것 |
+| 4 | HitSoft1 · HitSoft2 | 맞힘 약(슬라임·유령·호박) | 2026-10-07 사용자 '말랑 B': Kenney Impact `impactSoft_medium_001` / `impactSoft_medium_003`(포화) + 직접 합성 물컹 | CC0 + 우리 것 |
 | 5 | HitHeavy1 · HitHeavy2 | 맞힘 강(고블린·우두머리·치명타), #27 내가 세게 맞음도 같이 씀 | Kenney Impact `impactGeneric_light_002`+`impactPunch_medium_000` / `impactPunch_medium_001`+`impactGeneric_light_000` (주먹은 150 Hz 하이패스 + 포화) | CC0 |
 | 6 | KillPop | 처치 '뽕' | Kenney Interface `drop_002` | CC0 |
-| 7 | ComboCoin | 연속 처치 동전(한 음씩 올라감) | 직접 합성(종 한 음) | 우리 것 |
+| 7 | ComboCoin | 연속 처치 동전(한 음씩 올라감) | 직접 합성('동전 두 개' 종 두 음, 2026-10-07 사용자) | 우리 것 |
 | 8 | ComboMilestone | 콤보 기념 x10·25·50·100 | Kenney Interface `confirmation_003` | CC0 |
 | 9 | LevelUp | 레벨 업 팡파르 | 직접 합성(도-미-솔-도 종 + 반짝) | 우리 것 |
 | 10 | WindowOpen | 창 열기 | Kenney Interface `maximize_009` | CC0 |
@@ -53,7 +53,7 @@
 | 17 · 17b | KingBell | 호박 대왕(0.9~0.95배)·유령 왕(1.0~1.05배) 등장, 같은 파일 | Kenney Impact `impactBell_heavy_000` + Interface `maximize_006` 섞음 | CC0 |
 | 18 | GooseHonk | 거위 '꽥' | 직접 합성(꽥꽥 0.15초×2) | 우리 것 |
 | 19 | QuestDone | 퀘스트 완료 | Kenney Interface `confirmation_001` | CC0 |
-| 20 | GoldPickup | 처치 밖 골드(보상·금고) | Kenney Interface `tick_004` | CC0 |
+| 20 | GoldPickup | 처치 밖 골드(보상·금고) | 직접 합성('동전 두 개', ComboCoin과 같은 파일, 2026-10-07 사용자) | 우리 것 |
 | 21 | ScrollSuccess | 주문서 성공 | Kenney Interface `confirmation_004` + `glass_004` 섞음 | CC0 |
 | 22 | ScrollFail | 주문서 실패('아쉬워') | Kenney Interface `back_002` | CC0 |
 | 23 | Tap | 버튼 누름 | Kenney Interface `select_002` | CC0 |
@@ -73,3 +73,18 @@
 - 공개 범위: 제한(본인·허락된 체험만). 크리에이터 상점 배포는 안 함.
 - id: `art/sfx/asset_ids.json`, 게임 코드 `Config.Audio.Files`. Studio(UiSandbox)에서 32개 모두 불러오기 성공(PreloadAsync Success, 길이 0.04~1.5초).
 - 이후 소리(새로 만들기·올리기·Audio.luau·크기 조절)는 게임성 개발 1 몫(사용자 결정 2026-10-07).
+
+## 3차 후보 (게임성 개발 2, 2026-10-07 — 사용자: 마법 쏘기·활 쏘기·퍽·치명타 '별로', 활은 "팅 말고 슉")
+
+검수가 목표 모양(파형 + 스펙트로그램, `art/review/sfx_shapes_2026-10-07.png`, `py tools/sfx_game.py shapes`)을 정하고, 그 모양에 맞춰 새로 만든 12개 중 2개씩 골라 듣기판에 올렸다: https://claude.ai/artifact/YZjYSiYdK8RHXoL2Z9DmiR. 8개 모두 직접 합성(남의 소리 없음)이다. 사용자가 고르면 위 표의 줄을 바꾼다. 2차 후보(d·e·f)는 목표 모양 전에 만든 것이라 쓰지 않는다.
+
+| 후보 | 듣기판 이름 | 원본 | 라이선스 |
+|---|---|---|---|
+| SwingMagic g | 마법 쏘기 1 반짝 줄 | 직접 합성(2→5.6 kHz로 휘는 사인 줄 + 반짝 알갱이, 부드러운 시작) | 우리 것 |
+| SwingMagic h | 마법 쏘기 2 방울 구름 | 직접 합성(2→6 kHz로 오르는 작은 종 44개 + 바람 띠) | 우리 것 |
+| SwingBow g | 활 쏘기 1 날카로운 슉 | 직접 합성(좁은 바람 띠 4.8→1.3 kHz) | 우리 것 |
+| SwingBow h | 활 쏘기 2 굵은 슉 | 직접 합성(넓은 바람 띠 3.8→0.95 kHz) | 우리 것 |
+| HitThud g | 퍽 1 짧은 퍽 | 직접 합성(쿵 175→62 Hz + 650 Hz 몸통 + 3 kHz 딸깍) | 우리 것 |
+| HitThud i | 퍽 2 단단한 퍽 | 직접 합성(쿵 220→75 Hz + 700 Hz 몸통 + 3.5 kHz 딸깍) | 우리 것 |
+| HitCrit g | 치명타 1 맑은 쨍 | 직접 합성(퍽 1 + 3.3–7.6 kHz 쇠 울림) | 우리 것 |
+| HitCrit i | 치명타 2 쨍쨍 | 직접 합성(퍽 1 + 쇠 울림 두 번) | 우리 것 |

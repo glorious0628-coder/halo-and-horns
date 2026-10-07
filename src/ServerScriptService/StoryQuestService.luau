@@ -541,7 +541,8 @@ local function rowFor(player, data, id, track)
 	end
 	return {
 		Id = "story:" .. id, Kind = def.Kind, Pinned = def.Kind == "Main", TutorialStep = TUT_DONE,
-		Text = text, Progress = progress, Target = target, -- raw '{Auto}' tokens (client fills them)
+		Text = Config.Plural(text), Progress = progress, Target = target, -- raw '{Auto}' tokens (client fills them)
+		ShortName = (step and step.ShortName) or def.ShortName, -- 검수 2026-10-07: the phone HUD quest row (<= 14)
 		RewardGold = 0, RewardXP = 0,
 		CanClaim = track.Claim == true, ShowProgress = target > 1 and not track.Claim,
 		-- Npc (A23-46): the town NPC this step is talked through (game dev 1: '!' over it, the row guides there)

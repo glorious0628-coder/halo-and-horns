@@ -20,6 +20,32 @@ function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
+-- A23-63 (user 2026-10-07 "폰트 이쁜 걸로"): the game's two fonts, in one place. Head = titles, buttons, numbers and the
+-- name on a name tag (Denk One, one weight); Body = body text and the other name-tag lines (Montserrat). The server-built
+-- name tags (CharacterVisuals, UI round 2 #7) read Nametag; UIKit's FONT.Sets can read Head / Body from here too.
+Config.Fonts = {
+	Head = "rbxasset://fonts/families/DenkOne.json",
+	Body = "rbxasset://fonts/families/Montserrat.json",
+	Nametag = { Line1 = "Head", Line2 = "Body", Line3 = "Body", Ghost = "Body" },
+}
+
+-- 1 day / 2 days (검수 2026-10-07, 'You were away for 1 days'): string.format a count line, then Config.Plural(line)
+-- turns "1 <plural>" into "1 <singular>" for the phrases below (only after a lone 1: not 11, 0.1, 1,000 or 1/3).
+-- A new "%d <noun>s" text adds its phrase here (tools/test_story_text.py: plural-one / plural-word / plural-callsite).
+Config.PluralWords = {
+	days = "day", times = "time", minutes = "minute", seconds = "second", hits = "hit", ["basic hits"] = "basic hit",
+	slimes = "slime", monsters = "monster", materials = "material", quests = "quest", players = "player",
+	["Wanted players"] = "Wanted player", Knights = "Knight", ["more great items"] = "more great item",
+}
+
+function Config.Plural(text)
+	if type(text) ~= "string" then return text end
+	for many, one in Config.PluralWords do
+		text = string.gsub(text, "%f[%d%.,]1 " .. (string.gsub(many, "%p", "%%%0")) .. "%f[^%w]", "1 " .. one)
+	end
+	return text
+end
+
 ----------------------------------------------------------------- player / data
 Config.Player = {
 	WalkSpeed = 20,
@@ -930,12 +956,12 @@ Config.Bully.Text = {
 	Lines = {
 		string.format("KO a player weaker than %d%% of your power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
 		string.format("KO a player who respawned less than %d s ago", Config.Bully.FreshSpawnSeconds),
-		string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60)),
+		Config.Plural(string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60))),
 	},
 	LinesEn = {
 		string.format("KO a player weaker than %d%% of your power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
 		string.format("KO a player who respawned less than %d s ago", Config.Bully.FreshSpawnSeconds),
-		string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60)),
+		Config.Plural(string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60))),
 	},
 }
 
@@ -1810,6 +1836,9 @@ Config.Tutorial = {
 	QuestId = "tutorial",
 	QuestKills = 5,
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
+	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
+	ShortNames = { Welcome = "Meet the Guide", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
+		IronLevel = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
@@ -1855,15 +1884,15 @@ Config.Tutorial = {
 		QuestStart = "First mission: %s! (Reward: %s gold)",
 		QuestReady = "Supply road mission done! Press [Claim].",
 		-- A23-34: the first weapon waits at the Crossroads blacksmith (M1_1 gift)
-		Claimed = "Thanks for guarding the supply road! +%s gold · Get your first weapon at the Crossroads Forge.",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold · Get your first weapon at the Crossroads Forge.",
+		Claimed = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
+		ClaimedEn = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
 		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
 		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
 		VisitBlacksmith = "Get your first weapon · Crossroads Forge",
 		VisitBlacksmithEn = "Get your first weapon · Crossroads Forge",
 		-- the same lines for a save that already owns tier 1 (from before A23-34): no first-weapon promise
-		ClaimedArmed = "Thanks for guarding the supply road! +%s gold · Check the gear at the Crossroads Forge.",
-		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold · Check the gear at the Crossroads Forge.",
+		ClaimedArmed = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
+		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
 		AutoClaimedArmed = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
 		AutoClaimedArmedEn = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
 		VisitBlacksmithArmed = "Check the weapons · Crossroads Forge",
@@ -1956,7 +1985,7 @@ Config.StoryQuests = {
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
 		S0 = {
-			Kind = "Sub", Title = "The Shard That Learns to Fight", Speaker = "Shard", Requires = { ClassChosen = true },
+			Kind = "Sub", Title = "The Shard That Learns to Fight", ShortName = "Learn to fight", Speaker = "Shard", Requires = { ClassChosen = true },
 			Steps = {
 				{ Text = "Beat a King Slime and find the shard %d/%d", Guide = "SlimeMeadow",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
@@ -1976,24 +2005,24 @@ Config.StoryQuests = {
 		},
 		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		M1_1 = {
-			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", Speaker = "Smith", GiveWeapon = 1,
+			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The King Slimes ate the most of it.",
 		},
 		M1_2 = {
-			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust",
+			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust", ShortName = "King Slimes",
 			Start = "King Slimes full of shard dust roam the meadow.",
 			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		M1_3 = {
-			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!",
+			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!", ShortName = "Skill boom",
 			Start = "Dusty slimes move in groups. Skills use MP!",
 			Steps = { { Text = "Hit monsters with a skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 1, Count = 3 } } },
 			Reward = { Gold = 1 },
 		},
 		M1_4 = {
-			Kind = "Main", Chapter = 1, Title = "Report to Your Side", Claim = true,
+			Kind = "Main", Chapter = 1, Title = "Report to Your Side", ShortName = "Report home", Claim = true,
 			Steps = {
 				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Report to the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
@@ -2010,21 +2039,21 @@ Config.StoryQuests = {
 			Reward = { Gold = 2, XP = 2 },
 		},
 		M2_1 = {
-			Kind = "Main", Chapter = 2, Title = "The Crown in the Sky",
+			Kind = "Main", Chapter = 2, Title = "The Crown in the Sky", ShortName = "Crown points",
 			Start = "The sky crown glows for the side with more shards.\nEach monster you beat = 1 point for your side!",
 			Steps = { { Text = "Crown points %d/%d", Obj = { Type = "WarPoints", Count = 15 },
 				Neutral = { Text = "Supply gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 45 } } } },
 			Reward = { Gold = 1 },
 		},
 		M2_2 = {
-			Kind = "Main", Chapter = 2, Title = "Sparkles in the Pond",
+			Kind = "Main", Chapter = 2, Title = "Sparkles in the Pond", ShortName = "Pond slimes",
 			Start = "They say the dust melted into the pond. The pond slimes look fishy.",
 			Steps = { { Text = "Pond slimes %d/%d", Guide = "SlimePond",
 				Obj = { Type = "Kill", Kind = "Slime", Near = "SlimePond", Radius = 40, Count = 4 } } },
 			Reward = { Gold = 1 },
 		},
 		M2_3 = {
-			Kind = "Main", Chapter = 2, Title = "The Fountain of Balance", Speaker = "Fountain",
+			Kind = "Main", Chapter = 2, Title = "The Fountain of Balance", ShortName = "The fountain", Speaker = "Fountain",
 			Start = "They say a Crown Shard is stuck in the Crossroads fountain. Go look!\n(Tap the quest line for directions)",
 			Steps = {
 				-- user 2026-10-05 ("균형의 분수가 뭐야? 튜토리얼이 없어서 엥?"): walk up to the fountain, then talk
@@ -2043,7 +2072,7 @@ Config.StoryQuests = {
 			Finish = "Two kids by the fountain. They see you and run… opposite ways.", -- story_depth §2-1 (no speaker)
 		},
 		M2_4 = {
-			Kind = "Main", Chapter = 2, Title = "Supply Road Fund",
+			Kind = "Main", Chapter = 2, Title = "Supply Road Fund", ShortName = "Road fund",
 			Start = "Collect gold to fix the supply road. Walk into a town and it goes into your vault!",
 			Steps = {
 				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 60 } },
@@ -2052,19 +2081,19 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		M2_5 = {
-			Kind = "Main", Chapter = 2, Title = "The Dusty Slime Swarm",
+			Kind = "Main", Chapter = 2, Title = "The Dusty Slime Swarm", ShortName = "Slime swarm",
 			Start = "The dust smell brings a slime swarm! Gather them and hit them all at once!",
 			Steps = { { Text = "Hit 3 with one skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 3, Count = 2 } } },
 			Reward = { Gold = 1 },
 		},
 		M2_6 = {
-			Kind = "Main", Chapter = 2, Title = "Little Footprints on the Hill",
+			Kind = "Main", Chapter = 2, Title = "Little Footprints on the Hill", ShortName = "Hill tracks",
 			Start = "The King Slime dust is gone. Little footprints lead to the woods…",
 			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Goblins stole the dust!", Reward = { Gold = 1 },
 		},
 		M2_7 = {
-			Kind = "Main", Chapter = 2, Title = "A Call From Beyond the Woods", Claim = true,
+			Kind = "Main", Chapter = 2, Title = "A Call From Beyond the Woods", ShortName = "To the woods", Claim = true,
 			Steps = {
 				{ Text = "Lv10 · Goblin Woods (now Lv%d)", Obj = { Type = "Level", Level = 10 } },
 				{ Text = "Hear the Guide's warning", Panel = true, Obj = { Type = "Talk" }, Lines = {
@@ -2089,14 +2118,14 @@ Config.StoryQuests = {
 		-- the sub Pip1 at Lv15 (one 70% scroll), Evil / B -> Dibs pays the same worth in gold at once (HuntValue 1 minute
 		-- of Lv10-24 = 192, quest_volume §2-4).
 		M3_1 = {
-			Kind = "Main", Chapter = 3, Title = "Thief Footprints",
+			Kind = "Main", Chapter = 3, Title = "Thief Footprints", ShortName = "Goblin thieves",
 			Start = "The dust thieves were goblins! Go stop them.",
 			Steps = { { Text = "Goblins %d/%d", Guide = "GoblinWoods",
 				Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 5 } } },
 			Finish = "A note: 'IOU 1 dust. Will pay back. Maybe.'", Reward = { Gold = 1 },
 		},
 		M3_2 = {
-			Kind = "Main", Chapter = 3, Title = "Three Camps",
+			Kind = "Main", Chapter = 3, Title = "Three Camps", ShortName = "Three camps",
 			Start = "They hid dust sacks in three goblin camps.",
 			Steps = { { Text = "Goblin camps %d/3", Guide = "GoblinWoods", Obj = { Type = "Trials", List = {
 				{ Key = "a", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp1", Radius = 40, Count = 1,
@@ -2109,7 +2138,7 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		M3_3 = {
-			Kind = "Main", Chapter = 3, Title = "The Brute's Sack",
+			Kind = "Main", Chapter = 3, Title = "The Brute's Sack", ShortName = "Brute's sack",
 			Start = "The Goblin Brute has the sack. Beat it with friends. Everyone counts!",
 			Steps = { { Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Count = 1 } } },
 			Finish = "Brute: Not stealing! I'm a… surprise collector.",
@@ -2118,7 +2147,7 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		M3_4 = {
-			Kind = "Main", Chapter = 3, Title = "Whose Shard?", Claim = true,
+			Kind = "Main", Chapter = 3, Title = "Whose Shard?", ShortName = "Whose shard?", Claim = true,
 			Start = "A Crown Shard shines in the sack! Take it home.",
 			Steps = {
 				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
@@ -2146,7 +2175,7 @@ Config.StoryQuests = {
 			Reward = { Gold = 2, XP = 2 },
 		},
 		M3_5 = {
-			Kind = "Main", Chapter = 3, Title = "Sprout Graduation",
+			Kind = "Main", Chapter = 3, Title = "Sprout Graduation", ShortName = "Graduation",
 			Steps = {
 				{ Text = "Sprout Shield ends · Lv15 + 1 hour of play", Obj = { Type = "State", Key = "Graduated" } },
 				{ Text = "Talk with the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
@@ -2164,7 +2193,7 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		M3_6 = {
-			Kind = "Main", Chapter = 3, Title = "Brute Hunt",
+			Kind = "Main", Chapter = 3, Title = "Brute Hunt", ShortName = "Brute hunt",
 			Steps = {
 				{ Text = "Lv18 · Brute Hunt (now Lv%d)", Obj = { Type = "Level", Level = 18 } },
 				{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Start = "The Brutes carry the sacks to the mountain path!",
@@ -2173,7 +2202,7 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		M3_7 = {
-			Kind = "Main", Chapter = 3, Title = "Campfire Dust",
+			Kind = "Main", Chapter = 3, Title = "Campfire Dust", ShortName = "Campfire dust",
 			Steps = {
 				{ Text = "Lv21 · Campfire Dust (now Lv%d)", Obj = { Type = "Level", Level = 21 } },
 				{ Text = "Hit 3 at once with a skill %d/%d", Guide = "GoblinWoods", Start = "They grab in a line. Break the line!",
@@ -2182,7 +2211,7 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		M3_8 = {
-			Kind = "Main", Chapter = 3, Title = "Call of the Tombs", Claim = true,
+			Kind = "Main", Chapter = 3, Title = "Call of the Tombs", ShortName = "The tombs", Claim = true,
 			Steps = {
 				{ Text = "Lv25 · Skeleton Ruins (now Lv%d)", Obj = { Type = "Level", Level = 25 } },
 				{ Text = "Go to the Skeleton Ruins", Guide = "SkeletonRuins", Obj = { Type = "Enter", Zone = "SkeletonRuins" } },
@@ -2195,17 +2224,17 @@ Config.StoryQuests = {
 			Reward = { Gold = 2, XP = 2 },
 		},
 		S1 = {
-			Kind = "Sub", Title = "The Golden Goose With a Shard", Factions = { Halo = true, Horns = true },
+			Kind = "Sub", Title = "The Golden Goose With a Shard", ShortName = "Golden Goose", Factions = { Halo = true, Horns = true },
 			Requires = { Tutorial = true }, Show = "GooseSoon",
 			Steps = { { Text = "Hit the Golden Goose yourself 3 times", Guide = "Goose", Obj = { Type = "Goose", Count = 1 } } },
 			FirstPoints = 1, -- 구조(빛) 명예 / 밀렵(뿔) 악명, 첫 1회만; 거위 보상은 GooseService가 그대로 준다
 		},
 		S2 = {
-			Kind = "Sub", Title = "First Crown War Chest", Factions = { Halo = true, Horns = true }, Requires = { Done = { "M2_1" } },
+			Kind = "Sub", Title = "First Crown War Chest", ShortName = "War chest", Factions = { Halo = true, Horns = true }, Requires = { Done = { "M2_1" } },
 			Steps = { { Text = "Get 30 points in one round · win the chest", Obj = { Type = "WarChest", Count = 1 } } },
 		},
 		S3 = {
-			Kind = "Sub", Title = "Golden Jelly", Requires = { Done = { "M1_4" } },
+			Kind = "Sub", Title = "Golden Jelly", ShortName = "Golden jelly", Requires = { Done = { "M1_4" } },
 			Steps = {
 				{ Text = "Golden monsters %d/%d", Obj = { Type = "Kill", Golden = true, Count = 1 } },
 				{ Text = "What will you do with the gold dust?", Panel = true,
@@ -2215,7 +2244,7 @@ Config.StoryQuests = {
 			},
 		},
 		S4 = {
-			Kind = "Sub", Title = "The Shard Fights for You", Speaker = "Shard", Requires = { Done = { "S0" } },
+			Kind = "Sub", Title = "The Shard Fights for You", ShortName = "Auto Battle", Speaker = "Shard", Requires = { Done = { "S0" } },
 			Start = "Shard: Now I'll fight monsters for you. Players, only by your own hand!",
 			Steps = {
 				{ Text = "Turn on Auto Battle ({Auto})", Obj = { Type = "State", Key = "AutoOn" } }, -- {Auto}: HUD fills it (phone: button name)
@@ -2224,13 +2253,13 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		N1 = {
-			Kind = "Sub", Title = "The Artisan's Touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" } },
+			Kind = "Sub", Title = "The Artisan's Touch", ShortName = "Artisan touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" } },
 			Start = "Kit: Shape with care. Two at once!",
 			Steps = { { Text = "Hit 2 with one skill %d/%d", Obj = { Type = "SkillHit", Min = 2, Count = 3 } } },
 			Reward = { Gold = 1 },
 		},
 		N2 = {
-			Kind = "Sub", Title = "Guild Supply Book", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M2_1" } },
+			Kind = "Sub", Title = "Guild Supply Book", ShortName = "Supply book", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M2_1" } },
 			Start = "Kit: Both sides need our gear. Collect supply gold.",
 			Steps = {
 				{ Text = "Supply book %d/2", Obj = { Type = "Trials", List = {
@@ -2247,7 +2276,7 @@ Config.StoryQuests = {
 		-- (A: one 70% scroll, B: 3 HP potions + 60 gold) on top of 120 gold + half a level bar of XP. No weekly ranking
 		-- points (A23-23 D1). The last line asks a question (story_depth §1).
 		H1 = {
-			Kind = "Sub", Title = "The Horns Are Up to Something", Speaker = "Bright", Factions = { Halo = true },
+			Kind = "Sub", Title = "The Horns Are Up to Something", ShortName = "Spy on Horns", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M2_3" } },
 			Start = "Bright, the young guard, needs help. Find her in Halo Citadel!",
 			Steps = {
@@ -2274,7 +2303,7 @@ Config.StoryQuests = {
 			Clue = "Bright's wristband: gold and purple. Where have you seen one?",
 		},
 		R1 = {
-			Kind = "Sub", Title = "The Halos Are Up to Something", Speaker = "Smokey", Factions = { Horns = true },
+			Kind = "Sub", Title = "The Halos Are Up to Something", ShortName = "Spy on Halos", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M2_3" } },
 			Start = "Psst! Smokey in Horns Den has a secret job for you.",
 			Steps = {
@@ -2301,7 +2330,7 @@ Config.StoryQuests = {
 			Clue = "Smokey's wristband: gold and purple. Where have you seen one?",
 		},
 		N3 = {
-			Kind = "Sub", Title = "Both Sides Are Suspicious", Speaker = "Tiny", -- everyone (A23-57: no Factions)
+			Kind = "Sub", Title = "Both Sides Are Suspicious", ShortName = "Spy on both", Speaker = "Tiny", -- everyone (A23-57: no Factions)
 			Requires = { Done = { "M2_3" } },
 			Start = "Tiny from the guild is taking notes. Find Tiny at the Crossroads!",
 			Steps = {
@@ -2326,7 +2355,7 @@ Config.StoryQuests = {
 		},
 		-- story_depth §3 echo of M3_4 Good / A (beta): Pip waits at the woods' edge with a lamp at Lv15
 		Pip1 = {
-			Kind = "Sub", Title = "Pip's Lamp", Speaker = "Pip",
+			Kind = "Sub", Title = "Pip's Lamp", ShortName = "Pip's lamp", Speaker = "Pip",
 			Requires = { Done = { "M3_4" }, Pick = { Id = "M3_4", Is = "Good" }, Level = 15 },
 			Start = "Someone small is waving at the woods' edge…",
 			Steps = {
@@ -2342,7 +2371,7 @@ Config.StoryQuests = {
 		-- 2 minutes of hunting gold + XP, A one 70% scroll / B 3 HP potions + 192 gold (HuntValue 1 minute of Lv10-24).
 		-- They open after M1_4 at Lv5+ (the first ten minutes stay as they are). No weekly ranking points (A23-23 D1).
 		S6 = {
-			Kind = "Sub", Title = "Keep the Path Safe", Factions = { Halo = true, Horns = true },
+			Kind = "Sub", Title = "Keep the Path Safe", ShortName = "Safe path", Factions = { Halo = true, Horns = true },
 			Requires = { Done = { "M1_4" }, Level = 5 },
 			Steps = {
 				{ Text = "Slimes by the meadow arrival %d/%d", Guide = "SlimeMeadow",
@@ -2361,7 +2390,7 @@ Config.StoryQuests = {
 			Finish = "Who walks this path next?",
 		},
 		XR1 = {
-			Kind = "Sub", Title = "Lost & Found", Speaker = "Tiny",
+			Kind = "Sub", Title = "Lost & Found", ShortName = "Lost bear", Speaker = "Tiny",
 			Requires = { Done = { "M1_4" }, Level = 5 },
 			Steps = {
 				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
@@ -2377,7 +2406,7 @@ Config.StoryQuests = {
 			Finish = "Tiny: Thanks for your business. …Who lost it, anyway?",
 		},
 		H2 = {
-			Kind = "Sub", Title = "The Missing Halo Lantern", Speaker = "Bright", Factions = { Halo = true },
+			Kind = "Sub", Title = "The Missing Halo Lantern", ShortName = "Lost lantern", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M1_4" }, Level = 8 },
 			Start = "Bright: The town lantern is gone! Did a slime eat it?",
 			Steps = {
@@ -2394,7 +2423,7 @@ Config.StoryQuests = {
 			Finish = "Bright: Who was the first to carry it, I wonder?",
 		},
 		R5 = {
-			Kind = "Sub", Title = "Smokey's Hat Problem", Speaker = "Smokey", Factions = { Horns = true },
+			Kind = "Sub", Title = "Smokey's Hat Problem", ShortName = "Smokey's hat", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M1_4" }, Level = 8 },
 			Start = "Smokey: A King Slime is wearing my sack as a hat!",
 			Steps = {
@@ -2409,7 +2438,7 @@ Config.StoryQuests = {
 			Finish = "Smokey: Did the slime look good in it, at least?",
 		},
 		GW1 = {
-			Kind = "Sub", Title = "Grab Club Meeting", Speaker = "Grabbo",
+			Kind = "Sub", Title = "Grab Club Meeting", ShortName = "Grab Club", Speaker = "Grabbo",
 			Requires = { Done = { "M2_7" }, Level = 12 },
 			Steps = {
 				{ Text = "Find the goblin camp meeting", Guide = "GoblinCamp1",
@@ -2430,7 +2459,7 @@ Config.StoryQuests = {
 			Finish = "Grabbo: What were we grabbing for again?",
 		},
 		H3 = {
-			Kind = "Sub", Title = "Day 40: Cat in Tree", Speaker = "Gleam", Factions = { Halo = true },
+			Kind = "Sub", Title = "Day 40: Cat in Tree", ShortName = "Cat in a tree", Speaker = "Gleam", Factions = { Halo = true },
 			Requires = { Done = { "M2_7" }, Level = 12 },
 			Steps = {
 				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Panel = true, Obj = { Type = "Talk" },
@@ -2445,7 +2474,7 @@ Config.StoryQuests = {
 			Finish = "Sir Gleam: Is it still helping if you do it for the hearts?",
 		},
 		R3 = {
-			Kind = "Sub", Title = "Prank #200", Speaker = "Rex", Factions = { Horns = true },
+			Kind = "Sub", Title = "Prank #200", ShortName = "Prank #200", Speaker = "Rex", Factions = { Horns = true },
 			Requires = { Done = { "M2_7" }, Level = 12 },
 			Steps = {
 				{ Text = "Talk to Rascal Rex", Guide = "HornsTown", Panel = true, Obj = { Type = "Talk" },
@@ -2460,7 +2489,7 @@ Config.StoryQuests = {
 			Finish = "Rascal Rex: Classic! …Is classic getting old?",
 		},
 		GW2 = {
-			Kind = "Sub", Title = "The Dark Path",
+			Kind = "Sub", Title = "The Dark Path", ShortName = "Dark path",
 			Requires = { Done = { "M2_7" }, Level = 11 },
 			Start = "The woods path has no light. Kids won't walk it in the dark.",
 			Steps = {
@@ -2478,7 +2507,7 @@ Config.StoryQuests = {
 			Finish = "Who will walk this path tomorrow?",
 		},
 		GW3 = {
-			Kind = "Sub", Title = "Gold Paint",
+			Kind = "Sub", Title = "Gold Paint", ShortName = "Gold paint",
 			Requires = { Done = { "M2_7" }, Level = 14 },
 			Start = "A goblin painted himself gold to look rich!",
 			Steps = {
@@ -2494,7 +2523,7 @@ Config.StoryQuests = {
 			Finish = "Does gold paint make anyone rich?",
 		},
 		H5 = {
-			Kind = "Sub", Title = "Form H-2", Speaker = "Bright", Factions = { Halo = true },
+			Kind = "Sub", Title = "Form H-2", ShortName = "Form H-2", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M2_7" }, Level = 15 },
 			Steps = {
 				{ Text = "Talk to Bright", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
@@ -2509,7 +2538,7 @@ Config.StoryQuests = {
 			Finish = "Bright: Do rules help, or do people help?",
 		},
 		R6 = {
-			Kind = "Sub", Title = "Plan B, Again", Speaker = "Smokey", Factions = { Horns = true },
+			Kind = "Sub", Title = "Plan B, Again", ShortName = "Plan B", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M2_7" }, Level = 15 },
 			Steps = {
 				{ Text = "Talk to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
@@ -2524,7 +2553,7 @@ Config.StoryQuests = {
 			Finish = "Smokey: What if a plan needs two people?",
 		},
 		GW4 = {
-			Kind = "Sub", Title = "The Crown War Is Close", Factions = { Halo = true, Horns = true },
+			Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War", Factions = { Halo = true, Horns = true },
 			Requires = { Done = { "M2_7" }, Level = 16 },
 			Start = "The Crown War is close! Win points for your side.",
 			Steps = {
@@ -2538,7 +2567,7 @@ Config.StoryQuests = {
 			Finish = "Who was the war really for?",
 		},
 		GW5 = {
-			Kind = "Sub", Title = "The Tired Goose", Speaker = "Fountain", Factions = { Halo = true, Horns = true },
+			Kind = "Sub", Title = "The Tired Goose", ShortName = "Tired goose", Speaker = "Fountain", Factions = { Halo = true, Horns = true },
 			Requires = { Done = { "M2_7" }, Level = 17 },
 			Start = "Fountain Shard: The Golden Goose looks so tired…",
 			Steps = {
@@ -2552,7 +2581,7 @@ Config.StoryQuests = {
 			Finish = "Fountain Shard: Are more eggs ever enough?",
 		},
 		GW6 = {
-			Kind = "Sub", Title = "Nap Time",
+			Kind = "Sub", Title = "Nap Time", ShortName = "Nap time",
 			Requires = { Done = { "M2_7" }, Level = 19 },
 			Start = "Beat a Brute and stay above half HP. He wants a nap.",
 			Steps = {
@@ -2568,7 +2597,7 @@ Config.StoryQuests = {
 			Finish = "Even Brutes get tired. What makes you tired?",
 		},
 		GW7 = {
-			Kind = "Sub", Title = "Grab Club, Again", Speaker = "Grabbo",
+			Kind = "Sub", Title = "Grab Club, Again", ShortName = "Grab Club 2", Speaker = "Grabbo",
 			Requires = { Done = { "GW1" }, Level = 21 },
 			Steps = {
 				{ Text = "Back to the goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
@@ -2589,7 +2618,7 @@ Config.StoryQuests = {
 			Finish = "Grabbo: What else can a club do?",
 		},
 		H6 = {
-			Kind = "Sub", Title = "Dusty Heroes", Speaker = "Bright", Factions = { Halo = true },
+			Kind = "Sub", Title = "Dusty Heroes", ShortName = "Dusty heroes", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M2_7" }, Level = 22 },
 			Start = "Bright: The hero statues are dusty. Who were they, really?",
 			Steps = {
@@ -2605,7 +2634,7 @@ Config.StoryQuests = {
 			Finish = "Bright: Who is a hero? Only the big ones?",
 		},
 		R7 = {
-			Kind = "Sub", Title = "Lava Party", Speaker = "Smokey", Factions = { Horns = true },
+			Kind = "Sub", Title = "Lava Party", ShortName = "Lava party", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M2_7" }, Level = 22 },
 			Start = "Smokey: Party at the lava cracks! Bring snacks… or gold.",
 			Steps = {
@@ -2621,7 +2650,7 @@ Config.StoryQuests = {
 			Finish = "Smokey: Is a party better big, or just right?",
 		},
 		GW8 = {
-			Kind = "Sub", Title = "A Very Full Vault",
+			Kind = "Sub", Title = "A Very Full Vault", ShortName = "Full vault",
 			Requires = { Done = { "M2_7" }, Level = 23 },
 			Start = "Your vault is SO full. What is all this gold for?",
 			Steps = {
@@ -2693,28 +2722,28 @@ Config.Board = {
 			SafeIds = { J6 = true, J10 = true } },
 	},
 	Jobs = {
-		{ Id = "J1", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Arrival", Radius = 40 }, Count = { Meadow = 5, Woods = 4 },
+		{ Id = "J1", ShortName = "Clear the path", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Arrival", Radius = 40 }, Count = { Meadow = 5, Woods = 4 },
 			Goal = "Clear the path · {Unit} %d/%d",
 			Kind = "Clear the path so new kids can walk.", Sneaky = "Clear the path. Now it's YOUR road!" },
-		{ Id = "J2", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Camp", Radius = 40 }, Count = { Meadow = 4, Woods = 3 },
+		{ Id = "J2", ShortName = "Camp patrol", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Camp", Radius = 40 }, Count = { Meadow = 4, Woods = 3 },
 			Goal = "By the {Camp} · {Unit} %d/%d",
 			Kind = { Meadow = "The pond is too crowded. Give the frogs room.", Woods = "The camp is too crowded. Give the little ones room." },
 			Sneaky = { Meadow = "Best spot in the meadow. Claim it!", Woods = "Best spot in the woods. Claim it!" } },
-		{ Id = "J3", Obj = { Type = "Kill", Kind = "$Big" }, Count = { Meadow = 2, Woods = 1 }, Goal = "{Big} %d/%d",
+		{ Id = "J3", ShortName = "Big hunt", Obj = { Type = "Kill", Kind = "$Big" }, Count = { Meadow = 2, Woods = 1 }, Goal = "{Big} %d/%d",
 			Kind = "A big one blocks the road. Stop it!", Sneaky = "Bonk the big one. Show who's boss!" },
-		{ Id = "J4", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, Goal = "Hit 3 at once with a skill %d/%d",
+		{ Id = "J4", ShortName = "Hit 3 at once", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, Goal = "Hit 3 at once with a skill %d/%d",
 			Kind = "A swarm blocks a cart. Clear it at once!", Sneaky = "Hit three at once. Make everyone look!" },
-		{ Id = "J5", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic hits only · {Unit} %d/%d",
+		{ Id = "J5", ShortName = "Basic hits", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic hits only · {Unit} %d/%d",
 			Kind = "Basic hits only. Keep it quiet for the birds.", Sneaky = "No skills needed. Too easy!" },
-		{ Id = "J6", Obj = { Type = "EarnGold", Source = "Monster" }, Count = { Meadow = 40, Woods = 150 }, Goal = "Hunting gold %d/%d",
+		{ Id = "J6", ShortName = "Hunting gold", Obj = { Type = "EarnGold", Source = "Monster" }, Count = { Meadow = 40, Woods = 150 }, Goal = "Hunting gold %d/%d",
 			Kind = "Collect gold for the town road fund.", Sneaky = "Fill your pouch. Bigger pouch, bigger grin!" },
-		{ Id = "J7", Obj = { Type = "AutoKill" }, Count = { Meadow = 8, Woods = 6 }, NeedAuto = true, Goal = "Auto Battle defeats %d/%d",
+		{ Id = "J7", ShortName = "Auto defeats", Obj = { Type = "AutoKill" }, Count = { Meadow = 8, Woods = 6 }, NeedAuto = true, Goal = "Auto Battle defeats %d/%d",
 			Kind = "Let your shard guard the road.", Sneaky = "Let your shard do the boring part." },
-		{ Id = "J8", Obj = { Type = "Kill", Golden = true }, Count = 1, Weight = 1, Goal = "A golden monster %d/%d",
+		{ Id = "J8", ShortName = "Golden monster", Obj = { Type = "Kill", Golden = true }, Count = 1, Weight = 1, Goal = "A golden monster %d/%d",
 			Kind = "A golden one is lost. Bring it home!", Sneaky = "A golden one! Finders keepers!" },
-		{ Id = "J9", Obj = { Type = "SafeKill", Kind = "$Big", MinHP = 0.5 }, Count = 1, Goal = "{Big} above half HP %d/%d",
+		{ Id = "J9", ShortName = "Safe big hunt", Obj = { Type = "SafeKill", Kind = "$Big", MinHP = 0.5 }, Count = 1, Goal = "{Big} above half HP %d/%d",
 			Kind = "Show the sprouts how to fight safely.", Sneaky = "Win without a scratch. Show off!" },
-		{ Id = "J10", Obj = { Type = "Near", Spot = "$Gate", Radius = 14 }, Count = 15, Goal = "Stand guard at the gate %d/%d s",
+		{ Id = "J10", ShortName = "Gate guard", Obj = { Type = "Near", Spot = "$Gate", Radius = 14 }, Count = 15, Goal = "Stand guard at the gate %d/%d s",
 			Kind = "Stand guard at the gate.", Sneaky = "Stand at the gate and look tough." },
 	},
 	Text = {
@@ -2724,6 +2753,7 @@ Config.Board = {
 		Bonus = "5th job today! +%s",
 		Full = "You carry 3 jobs. Finish one first!",
 		Hint = "Job Board · tap for directions",
+		HintShort = "Job Board", -- ShortName of the hint row (phone quest row)
 	},
 }
 
@@ -2742,19 +2772,19 @@ Config.Quests = {
 	-- progress per kill = killed monster XP / unit monster XP (max 1), so it can be fractional (shown with 1 decimal).
 	-- Every other template: string.format(Text, target) ("Gold" passes the target as a string).
 	Templates = {
-		{ Id = "Kill", Weight = 40, Units = { 25, 40 }, DailyUnits = { 50, 60 }, RewardPerUnit = 1.0,
+		{ Id = "Kill", ShortName = "Monster hunt", Weight = 40, Units = { 25, 40 }, DailyUnits = { 50, 60 }, RewardPerUnit = 1.0,
 			Text = "Defeat %s ×%d" },
-		{ Id = "Golden", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 30,
+		{ Id = "Golden", ShortName = "Golden hunt", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 30,
 			Text = "Defeat golden %s ×%d" },
-		{ Id = "Gold", Weight = 20, Units = { 40, 60 }, DailyUnits = { 50, 60 }, RewardPerUnit = 0.5,
+		{ Id = "Gold", ShortName = "Earn gold", Weight = 20, Units = { 40, 60 }, DailyUnits = { 50, 60 }, RewardPerUnit = 0.5,
 			Text = "Earn %s gold by hunting" },
-		{ Id = "Release", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8,
+		{ Id = "Release", ShortName = "Skill hits", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8,
 			Text = "Hit monsters with skills %d times" },
-		{ Id = "Goose", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20,
+		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20,
 			Text = "Join the Golden Goose tug %d times" },
-		{ Id = "Hunt", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true,
+		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true,
 			Text = "Catch %d Wanted players (Kaiju count)" },
-		{ Id = "Plunder", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true,
+		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true,
 			Text = "Rob %d Knights of Light" },
 	},
 	-- A23-14 (user 2026-10-05 "짧고 다양하게"): DAILIES generated at Lv1..Newbie.MaxLevel (meadow levels; Goblin Woods
@@ -3248,8 +3278,8 @@ Config.Help = {
 			"Sprout Shield: no PvP until you reach Lv 15 and play for 1 hour.",
 			string.format("KO someone under %d%% of your power, or who respawned less than %d s ago: Bully!",
 				math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5), Config.Bully.FreshSpawnSeconds),
-			string.format("KO the same player %d times in %d minutes: Bully too!", Config.Bully.RepeatKOs,
-				math.floor(Config.Bully.RepeatWindow / 60)),
+			Config.Plural(string.format("KO the same player %d times in %d minutes: Bully too!", Config.Bully.RepeatKOs,
+				math.floor(Config.Bully.RepeatWindow / 60))),
 			"Bullies get no Auto Battle, and half XP and drops.",
 		} },
 		{ Id = "Wanted", Title = "Wanted Stars & Grudge Sacks", Lines = {
