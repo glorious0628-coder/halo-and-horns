@@ -25,12 +25,12 @@
     "SkillHalo": "rbxassetid://75898672312875",
     "SkillHorns": "rbxassetid://110780992455213",
     "Purify": "rbxassetid://126260420453106",
-    "Purify_b": "rbxassetid://75155843966047"
+    "Purify_b": "rbxassetid://75155843966047",
+    "Devour": "rbxassetid://118262766439187",
+    "Potion": "rbxassetid://133789691162407",
+    "AutoOn": "rbxassetid://90300088723425"
   },
   "pending": [
-    "Devour",
-    "Potion",
-    "AutoOn",
     "AutoOff",
     "TalkBlip",
     "Equip",
