@@ -5978,5 +5978,95 @@
   "tool": "Tripo API prop 40 (묶음 2, 2026-10-06, d0ee650)",
   "import": "build/import_C1|C2 → 한 번에 가져오기 묶음(검수 지시)",
   "note": "교차로 작은 소품(docs/design/kit_crossroads.md 크기). 질감 고침 안 함(원본)."
+ },
+ "Tex_Grass_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_Grass_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_Grass_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 172,197,82 (measured from Concept_SlimeMeadow lawn crops); mean (108, 154, 72) -> (171, 196, 81)",
+  "use": "replaces Config.UIArt.Tex_Grass after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_Grass — GE_Grass (terrain Grass: meadow, outer fields)"
+ },
+ "Tex_LeafyGrass_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_LeafyGrass_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_LeafyGrass_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 98,118,44 (measured from Concept_GoblinWoods mossy floor crops); mean (79, 89, 31) -> (98, 118, 44)",
+  "use": "replaces Config.UIArt.Tex_LeafyGrass after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_LeafyGrass — GE_LeafyGrass (GoblinWoods floor, ridge tops)"
+ },
+ "Tex_DirtPath_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_DirtPath_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_DirtPath_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 226,184,121 (measured from Concept_SlimeMeadow path crops); mean (198, 141, 84) -> (225, 183, 121)",
+  "use": "replaces Config.UIArt.Tex_DirtPath after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_DirtPath — GE_DirtPath (road parts, MaterialVariant)"
+ },
+ "Tex_Cobblestone_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_Cobblestone_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_Cobblestone_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 202,160,128 (measured from Concept_Crossroads plaza crops); mean (174, 142, 116) -> (202, 160, 128)",
+  "use": "replaces Config.UIArt.Tex_Cobblestone after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_Cobblestone — GE_Cobblestone (Crossroads floor)"
+ },
+ "Tex_Rock_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_Rock_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_Rock_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 168,157,148 (measured from Concept_SlimeMeadow boulder crops (warm light grey, was brown)); mean (172, 129, 91) -> (167, 157, 147)",
+  "use": "replaces Config.UIArt.Tex_Rock after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_Rock — GE_Rock (every cliff / ridge side)"
+ },
+ "Tex_Limestone_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_Limestone_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_Limestone_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 242,226,204 (measured from Concept_HaloTown floor crops); mean (236, 213, 173) -> (242, 226, 203)",
+  "use": "replaces Config.UIArt.Tex_Limestone after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_Limestone — GE_Limestone (Halo town floor, Halo ridges)"
+ },
+ "Tex_RuinsFlagstone_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_RuinsFlagstone_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_RuinsFlagstone_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 142,124,158 (measured from Concept_SkeletonRuins flagstone crops); mean (118, 113, 120) -> (141, 124, 157)",
+  "use": "replaces Config.UIArt.Tex_Slate after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_Slate — GE_Slate (ruins flagstones, south roads)"
+ },
+ "Tex_PumpkinSoil_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_PumpkinSoil_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_PumpkinSoil_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 152,78,36 (measured from Concept_PumpkinPatch soil crop); mean (127, 76, 36) -> (151, 78, 35)",
+  "use": "replaces Config.UIArt.Tex_PumpkinSoil after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_PumpkinSoil — GE_PumpkinSoil (Mud slot, pumpkin field)"
+ },
+ "Tex_HauntedFloor_FF2": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/terrain/terrain_tiles_v2.jpg, commit e940760: '시안 색에 훨씬 가까워졌어요 … 3×3 이음매도 괜찮아요')",
+  "source": "art/ui/Tex_HauntedFloor_FF.png (approved Firefly tile) — no new generation, 0 credits",
+  "file": "art/ui/Tex_HauntedFloor_FF2.png",
+  "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
+  "edit": "tools/tile_recolor.py target mean RGB 100,90,150 (measured from Concept_HauntedHollow_2 ground (reference, night scene)); mean (65, 61, 100) -> (100, 89, 149)",
+  "use": "replaces Config.UIArt.Tex_HauntedFloor after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_HauntedFloor — GE_HauntedFloor (Asphalt slot, haunted hollow)"
  }
 }
