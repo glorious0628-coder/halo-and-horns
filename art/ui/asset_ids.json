@@ -536,5 +536,14 @@
   "IconHunt": "rbxassetid://73974758192262",
   "IconPlunder": "rbxassetid://79074522466902",
   "IconChestWoods": "rbxassetid://121321744394366",
-  "PTR_CrownShard": "rbxassetid://131966294834604"
+  "PTR_CrownShard": "rbxassetid://131966294834604",
+  "Tex_Cobblestone_FF2": "rbxassetid://86097337095441",
+  "Tex_DirtPath_FF2": "rbxassetid://140356696032031",
+  "Tex_Grass_FF2": "rbxassetid://72716790388998",
+  "Tex_HauntedFloor_FF2": "rbxassetid://78580688016455",
+  "Tex_LeafyGrass_FF2": "rbxassetid://99820027824650",
+  "Tex_Limestone_FF2": "rbxassetid://105789118055805",
+  "Tex_PumpkinSoil_FF2": "rbxassetid://101513604708442",
+  "Tex_Rock_FF2": "rbxassetid://81976112942859",
+  "Tex_RuinsFlagstone_FF2": "rbxassetid://117516477244385"
 }
