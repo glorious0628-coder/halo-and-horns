@@ -1067,6 +1067,19 @@ local function layoutChrome(s)
 	end
 end
 
+-- UI round 2 #4: UIKit keeps the toasts off the open window (one line above / below it); nil = no window
+function FRAME.TellNotify(open)
+	if not (UIKit and type(UIKit.SetNotifyAvoid) == "function") then return end
+	if not (open and window and window.Visible) then
+		pcall(UIKit.SetNotifyAvoid, nil)
+		return
+	end
+	local pos, size = window.Position, window.Size -- MainGui du, AnchorPoint (0.5, 0.5)
+	local hang = FRAME.Ribbon and FRAME.TitleH / 2 or 0
+	pcall(UIKit.SetNotifyAvoid, { X = pos.X.Offset - size.X.Offset / 2, Y = pos.Y.Offset - size.Y.Offset / 2 - hang,
+		W = size.X.Offset, H = size.Y.Offset + hang })
+end
+
 -- the content's height (du): the list plus its padding, nil before it was laid out
 function FRAME.ContentH(s)
 	local list = content and content:FindFirstChildOfClass("UIListLayout")
@@ -1083,6 +1096,7 @@ local function layoutRoot()
 	root.Size = UDim2.fromOffset(w, h)
 	if currentId == "Nickname" and NICK.UI then
 		NICK.Layout(w, h, top, s)
+		FRAME.TellNotify(false)
 		return
 	end
 	-- the ribbon hangs half above the plate: keep it under the top bar
@@ -1100,6 +1114,7 @@ local function layoutRoot()
 	window.Size = UDim2.fromOffset(winW, winH)
 	window.Position = UDim2.fromOffset(w / 2, top + hang + availH / 2)
 	layoutChrome(s)
+	FRAME.TellNotify(root.Visible and currentId ~= nil)
 end
 
 local function ensureRoot()
@@ -3501,6 +3516,7 @@ function Panels.Close(manual)
 	selectedClass = nil
 	selectedTarget = nil
 	if root then root.Visible = false end
+	FRAME.TellNotify(false) -- the toasts go back to their column (before the farewell line)
 	NICK.Destroy()
 	REG.CleanupBuilt()
 	REG.Arg = nil

@@ -3802,9 +3802,9 @@ Config.UIArt = {
 		-- at the top corners on phones, user via review 2026-10-07); see the FitHeight slice note above Parts
 		Pill = { Id = "rbxassetid://116332974579615", Size = Vector2.new(512, 120), Slice = Rect.new(60, 59, 452, 61), FitHeight = true, Tone = "Parchment" },
 		BarTrack = { Id = "rbxassetid://137159149395361", Size = Vector2.new(512, 86), Slice = Rect.new(45, 42, 467, 44), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(21, 21, 491, 63) }, -- Firefly redraw (bundle 5)
-		BtnSquare = { Id = "rbxassetid://91067965003210", Size = Vector2.new(510, 512), Slice = Rect.new(100, 100, 410, 412), SliceScale = 0.22, Tone = "Navy" }, -- Firefly navy square (bundle 4): light labels
+		BtnSquare = { Id = "rbxassetid://115107332625256", Size = Vector2.new(510, 512), Slice = Rect.new(121, 150, 396, 368), SliceScale = 0.22, Tone = "Navy" }, -- Firefly navy square (bundle 4): light labels
 		-- round buttons / rings (Fit)
-		BtnAttack = { Id = "rbxassetid://77268479686299", Size = Vector2.new(512, 512), Round = true, Tone = "Orange", Inner = Rect.new(58, 50, 452, 427) }, -- Firefly orange attack disc (bundle 6)
+		BtnAttack = { Id = "rbxassetid://138359104403150", Size = Vector2.new(512, 512), Round = true, Tone = "Orange", Inner = Rect.new(58, 50, 452, 427) }, -- Firefly orange attack disc (bundle 6)
 		BtnSpecial = { Id = "rbxassetid://78355405067281", Size = Vector2.new(512, 512), Round = true, Tone = "QuestBlue", Inner = Rect.new(61, 57, 450, 425) }, -- Firefly blue skill disc BtnSkill (bundle 6)
 		LevelBadge = { Id = "rbxassetid://97341840194719", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(75, 77, 436, 427) }, -- Firefly (bundle 6): no faction / white number
 		PortraitRing = { Id = "rbxassetid://81879569016992", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(85, 82, 427, 424) }, -- Firefly (bundle 6): transparent hole
@@ -3812,21 +3812,21 @@ Config.UIArt = {
 		LevelBadgeHalo = { Id = "rbxassetid://140072275905868", Size = Vector2.new(512, 512), Round = true, Tone = "Parchment", Inner = Rect.new(122, 150, 386, 400) }, -- ivory centre: dark number
 		LevelBadgeHorns = { Id = "rbxassetid://131043118998343", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(92, 101, 420, 414) },
 		LevelBadgeArtisan = { Id = "rbxassetid://135233332138906", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(118, 112, 389, 365) },
-		BtnPotion = { Id = "rbxassetid://100849701844741", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(67, 72, 447, 436) }, -- count socket bottom-right
+		BtnPotion = { Id = "rbxassetid://70624679686039", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(67, 72, 447, 436) }, -- count socket bottom-right
 		MinimapFrame = { Id = "rbxassetid://121102769530414", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(74, 76, 439, 428) }, -- A23-26 live minimap
 		GlyphSword = { Id = "rbxassetid://104681533093026", Size = Vector2.new(512, 512) }, -- attack button glyph: Warrior
 		GlyphStaff = { Id = "rbxassetid://123664178583457", Size = Vector2.new(512, 512) }, -- attack button glyph: Mage (bow: bundle 7)
 		-- bundle 4/5 + bundle 1 masters (Firefly 2026-10-06, art/review/s2/b45_common_ui_sheet.png): common window kit
-		PanelMain = { Id = "rbxassetid://96251321300093", Size = Vector2.new(512, 308), Slice = Rect.new(37, 37, 475, 270), SliceScale = 0.35, Tone = "Parchment" },
-		DialogBox = { Id = "rbxassetid://112964393409287", Size = Vector2.new(512, 189), Slice = Rect.new(50, 50, 462, 139), SliceScale = 0.35, Tone = "Parchment" },
+		PanelMain = { Id = "rbxassetid://88644317713609", Size = Vector2.new(512, 308), Slice = Rect.new(50, 45, 463, 260), SliceScale = 0.35, Tone = "Parchment" },
+		DialogBox = { Id = "rbxassetid://81677603849224", Size = Vector2.new(512, 189), Slice = Rect.new(40, 34, 472, 154), SliceScale = 0.35, Tone = "Parchment" },
 		ListRow = { Id = "rbxassetid://125160937753435", Size = Vector2.new(512, 128), Slice = Rect.new(50, 63, 462, 65), FitHeight = true, Tone = "Parchment" },
 		StatusPlate = { Id = "rbxassetid://111562222428548", Size = Vector2.new(512, 153), Slice = Rect.new(140, 75, 460, 77), FitHeight = true, Tone = "Navy", Inner = Rect.new(145, 41, 498, 129) },
 		Chip = { Id = "rbxassetid://98251464747498", Size = Vector2.new(512, 189), Slice = Rect.new(95, 93, 417, 95), FitHeight = true, Tone = "Parchment" }, -- white: tint with ImageColor3
 		BarFill = { Id = "rbxassetid://106350683674684", Size = Vector2.new(512, 76), Slice = Rect.new(38, 37, 474, 39), FitHeight = true }, -- white: HP green / MP #3B5BDB / XP sky
-		BtnPrimary = { Id = "rbxassetid://71722849741284", Size = Vector2.new(512, 165), Slice = Rect.new(83, 81, 429, 83), FitHeight = true, Tone = "Gold" }, -- gold capsule
-		BtnSecondary = { Id = "rbxassetid://81644397617472", Size = Vector2.new(512, 160), Slice = Rect.new(80, 79, 432, 81), FitHeight = true, Tone = "QuestBlue" }, -- blue capsule
-		BtnConfirm = { Id = "rbxassetid://105674867912092", Size = Vector2.new(512, 156), Slice = Rect.new(78, 77, 434, 79), FitHeight = true, Tone = "Confirm" }, -- green capsule
-		BtnRound = { Id = "rbxassetid://115852818963492", Size = Vector2.new(512, 495), Round = true, Tone = "Navy" }, -- do not stretch
+		BtnPrimary = { Id = "rbxassetid://127738422299817", Size = Vector2.new(512, 165), Slice = Rect.new(73, 81, 443, 83), FitHeight = true, Tone = "Gold" }, -- gold capsule
+		BtnSecondary = { Id = "rbxassetid://114817071398745", Size = Vector2.new(512, 160), Slice = Rect.new(72, 79, 442, 81), FitHeight = true, Tone = "QuestBlue" }, -- blue capsule
+		BtnConfirm = { Id = "rbxassetid://108547133403905", Size = Vector2.new(512, 156), Slice = Rect.new(69, 77, 445, 79), FitHeight = true, Tone = "Confirm" }, -- green capsule
+		BtnRound = { Id = "rbxassetid://130540388825411", Size = Vector2.new(512, 495), Round = true, Tone = "Navy" }, -- do not stretch
 		GlyphClose = { Id = "rbxassetid://139183604533147", Size = Vector2.new(512, 507) }, -- on BtnRound at 60%
 		SlotRare = { Id = "rbxassetid://74934960438246", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) }, -- A23-32 dark inside (bundle 7; replaces the cream master)
 		-- bundle 7 (Firefly 2026-10-06, art/review/s2/b7_slots_glyphs_sheet.png): grade slots share the body Rect(36,40,476,480),
@@ -3902,7 +3902,7 @@ Config.UIArt = {
 		FullPotionMerchant = { Id = "rbxassetid://119279738895658", Size = Vector2.new(449, 768) },
 		FullMerchantC = { Id = "rbxassetid://126082561922667", Size = Vector2.new(494, 768) },
 		-- A23-40 layout B parts (Firefly 2026-10-06: 83eaffb minimap_ring_sheet, ccab705 / a601f39 b12 / b1213 sheets)
-		MinimapRing = { Id = "rbxassetid://134883699176479", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
+		MinimapRing = { Id = "rbxassetid://79170457332929", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
 		WarMeterFrame = { Id = "rbxassetid://73887778381300", Size = Vector2.new(512, 74), Tone = "Navy", Inner = Rect.new(66, 22, 442, 54) }, -- opaque navy inside: the fills draw above it
 		WarCrownPip = { Id = "rbxassetid://100273975086572", Size = Vector2.new(512, 512) }, -- the war split marker
 		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 61, 388, 63), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (425,48)-(489,80)
@@ -3927,14 +3927,14 @@ Config.UIArt = {
 		BadgeLeanGuild = { Id = "rbxassetid://74850129740155", Size = Vector2.new(512, 512) },
 		IconMonGhostMinion = { Id = "rbxassetid://93544533194341", Size = Vector2.new(512, 512) }, -- A23-45 ghost family heads
 		IconMonGhostKing = { Id = "rbxassetid://77166897215168", Size = Vector2.new(512, 512) },
-		LogoPlate = { Id = "rbxassetid://72831856163795", Size = Vector2.new(1024, 731) }, -- title band empty: the name is a TextLabel at (0.15, 0.48, 0.70, 0.19)
-		EventBannerHalloween = { Id = "rbxassetid://120811187352890", Size = Vector2.new(1024, 316) }, -- text box (0.22, 0.17, 0.56, 0.34)
+		LogoPlate = { Id = "rbxassetid://130599938745953", Size = Vector2.new(1024, 731) }, -- title band empty: the name is a TextLabel at (0.15, 0.48, 0.70, 0.19)
+		EventBannerHalloween = { Id = "rbxassetid://132425576520690", Size = Vector2.new(1024, 316) }, -- text box (0.22, 0.17, 0.56, 0.34)
 		ShardBase = { Id = "rbxassetid://137006454032810", Size = Vector2.new(512, 512) }, -- crown shard (S0 quest, reward notices, map)
 		-- E11 job board (d53ad3b, user OK 2026-10-07 via review; sheet art/review/s2/e11_job_board_sheet.jpg). Regions in
 		-- CardLayout.JobBoard / JobCard. Phones (749x361): the board shows 2 cards a page (< > + page dots), PC / tablet 4
 		-- in a row (image dev 2026-10-07: 4 across made the words too small on a phone)
-		JobBoard = { Id = "rbxassetid://123680567879703", Size = Vector2.new(1024, 647), Slice = Rect.new(320, 130, 704, 550) }, -- the slice skips the plate's gold studs
-		JobCard = { Id = "rbxassetid://78959256677789", Size = Vector2.new(339, 512) }, -- the red pin: keep the ratio (Fit), no 9-slice
+		JobBoard = { Id = "rbxassetid://115013449737046", Size = Vector2.new(1024, 647), Slice = Rect.new(320, 130, 704, 550) }, -- the slice skips the plate's gold studs
+		JobCard = { Id = "rbxassetid://89823627909881", Size = Vector2.new(339, 512) }, -- the red pin: keep the ratio (Fit), no 9-slice
 		BtnKind = { Id = "rbxassetid://96995284140099", Size = Vector2.new(512, 175), Slice = Rect.new(88, 86, 424, 88), FitHeight = true, TextRect = { 0.053, 0.123, 0.893, 0.596 } }, -- sky blue, white "Kind"
 		BtnSneaky = { Id = "rbxassetid://82745606719708", Size = Vector2.new(512, 171), Slice = Rect.new(86, 84, 426, 86), FitHeight = true, TextRect = { 0.057, 0.117, 0.887, 0.612 } }, -- purple, white "Sneaky"
 		JobTag = { Id = "rbxassetid://87413375917921", Size = Vector2.new(256, 106), TextRect = { 0.2, 0.118, 0.745, 0.578 } }, -- the quest row's "Job" tag (accepted jobs only), keep the ratio
@@ -4039,13 +4039,13 @@ Config.UIArt = {
 		ToggleTrack = { Id = "rbxassetid://101018450994489", Size = Vector2.new(512, 183) }, -- BB3 settings switch track (ON colour = ImageColor3); ToggleKnob rides on it (~1.15x its height)
 		ToggleKnob = { Id = "rbxassetid://115651000790819", Size = Vector2.new(512, 512) },
 		GlyphGear = { Id = "rbxassetid://103647965370087", Size = Vector2.new(512, 512) }, -- settings gear glyph (window title / buttons)
-		PortraitFrame = { Id = "rbxassetid://87342192348849", Size = Vector2.new(512, 498) }, -- dialogue NPC portrait frame: the portrait sits on Window (0.107, 0.116, 0.783, 0.759)
+		PortraitFrame = { Id = "rbxassetid://128161442754384", Size = Vector2.new(512, 498) }, -- dialogue NPC portrait frame: the portrait sits on Window (0.107, 0.116, 0.783, 0.759)
 		-- A23-46 / A23-59 town quest NPC portraits (이미지 생성 2, user OK 2026-10-06: 91cc2c9 · 309c692), transparent, no
 		-- lettering: UIKit.Portrait draws one on PortraitFrame's window (bottom-aligned, centred, rounded corners)
-		PTR_TownBright = { Id = "rbxassetid://136976488823430", Size = Vector2.new(509, 512) }, -- Halo town guard trainee
-		PTR_TownSmokey = { Id = "rbxassetid://116672418091847", Size = Vector2.new(400, 512) }, -- Horns den lookout
-		PTR_TownTiny = { Id = "rbxassetid://82956358780804", Size = Vector2.new(445, 512) }, -- Crossroads artisan trainee
-		PetCard = { Id = "rbxassetid://140401787896538", Size = Vector2.new(462, 768) }, -- pet window / book card: picture Window (0.126, 0.121, 0.747, 0.444), Name (0.10, 0.60, 0.80, 0.075), Body (0.08, 0.70, 0.84, 0.18)
+		PTR_TownBright = { Id = "rbxassetid://86154525392813", Size = Vector2.new(509, 512) }, -- Halo town guard trainee
+		PTR_TownSmokey = { Id = "rbxassetid://91810571998991", Size = Vector2.new(400, 512) }, -- Horns den lookout
+		PTR_TownTiny = { Id = "rbxassetid://107434856525614", Size = Vector2.new(445, 512) }, -- Crossroads artisan trainee
+		PetCard = { Id = "rbxassetid://129842998819313", Size = Vector2.new(462, 768) }, -- pet window / book card: picture Window (0.126, 0.121, 0.747, 0.444), Name (0.10, 0.60, 0.80, 0.075), Body (0.08, 0.70, 0.84, 0.18)
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
 		IconMonBigSlime = { Id = "rbxassetid://137346108147632", Size = Vector2.new(512, 512) },
@@ -4098,11 +4098,11 @@ Config.UIArt = {
 		-- (CardLayout FactionPick* / ClassPick* regions). Ids "" until the upload: the pickers keep the bundle 2 cards
 		-- (CardHalo / ClassCardHalo ...) meanwhile (IMG-R4). The 12 class pictures are already cut to the card's window
 		-- (eyes at 20 %, feet at 92 %): drawn exactly on ClassPick*'s Portrait region, by the player's chosen gender.
-		FactionPickTitle = { Id = "rbxassetid://79129691623347", Size = Vector2.new(1024, 373), TextRect = { 0.149, 0.429, 0.704, 0.338 } },
-		FactionPickHalo = { Id = "rbxassetid://88246897757091", Size = Vector2.new(624, 1024) },
-		FactionPickHorns = { Id = "rbxassetid://72414557308193", Size = Vector2.new(624, 1024) },
-		ClassPickHalo = { Id = "rbxassetid://85173061508076", Size = Vector2.new(555, 1024) },
-		ClassPickHorns = { Id = "rbxassetid://103562830131699", Size = Vector2.new(555, 1024) },
+		FactionPickTitle = { Id = "rbxassetid://109240387368574", Size = Vector2.new(1024, 373), TextRect = { 0.148, 0.41, 0.704, 0.343 } }, -- HQ redraw 4ceaabf: the band sits a little higher
+		FactionPickHalo = { Id = "rbxassetid://105227426103706", Size = Vector2.new(624, 1024) },
+		FactionPickHorns = { Id = "rbxassetid://111143659498431", Size = Vector2.new(624, 1024) },
+		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
+		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
 		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://83476661743336", Size = Vector2.new(460, 550) },
 		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://88805775159569", Size = Vector2.new(460, 550) },
 		CLS_HaloMage_M_Card = { Id = "rbxassetid://126336881237120", Size = Vector2.new(460, 550) },
@@ -4218,7 +4218,7 @@ Config.UIArt = {
 		Sky_Sun = { Id = "rbxassetid://104329382887122", Size = Vector2.new(512, 512) }, -- Neutral sun
 		Sky_SunDawn = { Id = "rbxassetid://134904669662412", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun
 		Sky_MoonEclipse = { Id = "rbxassetid://101354392666522", Size = Vector2.new(512, 512) }, -- Eclipse (Horns crown) moon
-		MapParchment = { Id = "rbxassetid://73520674697747", Size = Vector2.new(1536, 1024) },
+		MapParchment = { Id = "rbxassetid://114711223801871", Size = Vector2.new(1536, 1024) },
 	},
 	-- Lettering images (TXT_*) were deleted 2026-10-06 (unused: UseTextImages=false). Text stays live TextLabels.
 	TextLabels = {},
