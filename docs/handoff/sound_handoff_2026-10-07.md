@@ -1,5 +1,15 @@
 # 소리 만들기 인계 — 2026-10-07 저녁 (계정 옮김, 주간 한도)
 
+## 새 계정 세션 진행 (2026-10-07 밤, 맨 위가 최신)
+- **사용자 OK(이 세션 한정, 내 채팅에서 직접):** "예, 이번 세션 모두" = Creator Hub 라이선스 칸 체크 + 업로드 제출(32개 + 검수가 고르는 효과음, wav, 'HH SFX <키>', 비공개, 상점 배포 안 함) + Firefly 효과음 내려받기. 검수도 같은 OK를 사용자에게서 받아 전달함.
+- **업로드: 아직 0개.** 앱 안 브라우저(create.roblox.com)가 Roblox 로그인 화면이고 크롬 확장은 연결 없음. 검수가 사용자에게 Darugi_S2 로그인을 부탁함. 앱 브라우저 로그인은 세션끼리 같이 씀.
+- **올릴 파일 = 49개**(`art/sfx/picks_r4.json`): 1~3번 묶음 32개 + 4번 묶음 17개(검수가 추천 그대로 고름, bc590ac). 4번 묶음 고름: CrownHalo sA · CrownHorns sA · KingDefeat sA · WarFinal30 sA · CountTick sA · GooseEnd sA · KaijuSiren sA · KaijuStomp sA · ZoneEnterPvP sA · GoldenSpot sA · ScrollSuccess 1-4(Firefly) · Spend sA · RankUp sA · KO sA · Respawn sB · Plunder sB · JackpotOther sA.
+- 4번 묶음 짝 고침: Plunder sA가 GoldPickup과 비슷(0.81) → sB '짤그랑+또르르' 1.43, Respawn sA가 Jump와 비슷(0.73) → sB 높은 '뿅' 1.70 (8efda17).
+- **SkillLearn(A23-71):** 설계표 키 + 짝 규칙 4개, 합성 sA·sB·sC 모두 PASS 100(e351187). 추천 sA, 검수 고름 기다림. 개발 1에게: Lv5·15·25에서는 LevelUp 뒤 약 1.1 s에 틀기.
+- **듣기판 새 주소**(예전 EEwW… 주소는 새 계정에서 안 열림): https://claude.ai/artifact/X5pRdsi4L4YnywwnfpKgxr — v1 = 4번 묶음, v2 = 5번 묶음(SkillLearn). `py tools/sfx_cut.py board <묶음>`이 한 묶음만 그림.
+- 이 세션은 worktree에서 열려서 Edit 도구가 공유 폴더 파일을 막음 → 공유 폴더 고침은 작은 파이썬 치환 스크립트로 함(내용 그대로 확인 후 push_paths).
+- 크레딧: 이 세션 Firefly 0.
+
 다음 계정의 '소리 만들기'가 이 파일 하나로 이어 할 수 있게 적었다. 함께 볼 것: 역할 `docs/design/sound_session_handoff_2026-10-07.md`, 기준 `docs/design/sound_spec_2026-10-07.md`(검수 9d911c2), 기록 `docs/devlog/sfx_licenses.md`의 "게임 효과음 4차", 고른 파일 목록 `art/sfx/picks_r4.json`.
 
 ## 역할·규칙 (그대로)
