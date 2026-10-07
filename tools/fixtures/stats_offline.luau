@@ -38,7 +38,7 @@ runGroup("config", function()
 		show(S.Curve))
 	check(S.AutoPattern.Warrior == "HA" and S.AutoPattern.Mage == "HA" and S.AutoPattern.Archer == "AH",
 		"auto patterns: Warrior / Mage HA, Archer AH (the same for Halo and Horns)", show(S.AutoPattern))
-	check(C.Data.Version == 4 and C.Data.Defaults.Version == 4, "save Data v4 (an older v3 server refuses these records)",
+	check(C.Data.Version == 3 and C.Data.Defaults.Version == 3, "save Data stays v3 (검수 2026-10-07: Stats is an additive field)",
 		show({ C.Data.Version, C.Data.Defaults.Version }))
 	check(sameTable(C.Data.Defaults.Stats, { Auto = true, Order = "" }), "a new save: Stats = { Auto = true, Order = '' }",
 		show(C.Data.Defaults.Stats))
@@ -115,8 +115,10 @@ runGroup("mults and sanitize", function()
 	check(sameTable(san({ Auto = false, Order = "HAHA" }), { Auto = false, Order = "HAHA" }), "a good save stays as it is", "")
 	check(san({ Auto = "yes" }).Auto == true and san({ Auto = 1 }).Auto == true and san({ Auto = false }).Auto == false,
 		"Auto: only a real boolean counts (else ON)", "")
-	check(san({ Order = 5 }).Order == "" and san({ Order = { "A" } }).Order == "" and san({ Order = "AHXAHz!" }).Order == "AHAH",
-		"Order: only text, only the known letters", show(san({ Order = "AHXAHz!" })))
+	check(san({ Order = 5 }).Order == "" and san({ Order = { "A" } }).Order == "" and san({ Order = "AHXAHz!" }).Order == "AHXAH",
+		"Order: only text, its letters A-Z kept (for later stats), lowercase / digits / signs dropped", show(san({ Order = "AHXAHz!" })))
+	check(sameTable({ C.StatAlloc({ Auto = false, Order = "AXH" }, 4, "Warrior") }, { 1, 1, 1 }),
+		"a kept letter that is no stat yet (X) counts nothing: its point stays free", show({ C.StatAlloc({ Auto = false, Order = "AXH" }, 4, "Warrior") }))
 	check(san({ Order = string.rep("A", 200) }).Order == string.rep("A", 99), "at most 99 letters", #san({ Order = string.rep("A", 200) }).Order)
 	check(san({ Order = string.rep("x", 5000) .. "A" }).Order == "", "a huge broken Order is cut (only its first 4096 characters are read)", "")
 	local input = { Auto = false, Order = "HA" }
@@ -246,8 +248,8 @@ runGroup("one formula", function()
 		"the first weapon's 'Power X -> Y' counts the player's stat points on both sides", show({ x, y }))
 end)
 
------------------------------------------------------------------- save Data v4 (DataService migrate / fillDefaults, cut out)
-runGroup("data v4", function()
+------------------------------------------------------------------ the save: Stats is additive, Version stays 3 (cut out)
+runGroup("data", function()
 	local w = newWorld({})
 	w.AllowWarn = "field Stats had type string, reset to default" -- the broken save below
 	local C = w.Config
@@ -262,19 +264,20 @@ runGroup("data v4", function()
 	local v3 = { Version = 3, Level = 12, XP = 5, Faction = "Halo", Class = "Mage", ClassChosen = true, TutorialStep = 99,
 		WeaponTier = 3, WeaponOwnedMask = 7, BankGold = 300 }
 	local d = load(v3)
-	check(d.Version == 4 and sameTable(d.Stats, { Auto = true, Order = "" }) and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300,
-		"a v3 save loads as v4: Stats = { Auto ON, nothing picked }, nothing else changes", show({ d.Version, d.Stats }))
+	check(d.Version == 3 and sameTable(d.Stats, { Auto = true, Order = "" }) and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300,
+		"a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes", show({ d.Version, d.Stats }))
 	local again = load(d)
-	check(sameTable(again, d), "loading the v4 save again changes nothing (idempotent)", "")
-	local hand = load({ Version = 4, Level = 8, TutorialStep = 99, Stats = { Auto = false, Order = "AHXAH" } })
-	check(sameTable(hand.Stats, { Auto = false, Order = "AHAH" }), "a v4 save's picks are repaired, not reset", show(hand.Stats))
-	local broken = load({ Version = 4, Level = 8, TutorialStep = 99, Stats = "oops" })
+	check(sameTable(again, d), "loading it again changes nothing (idempotent)", "")
+	local hand = load({ Version = 3, Level = 8, TutorialStep = 99, Stats = { Auto = false, Order = "AHXah" } })
+	check(sameTable(hand.Stats, { Auto = false, Order = "AHX" }) and hand.Version == 3, "a save's picks are repaired, not reset",
+		show(hand.Stats))
+	local broken = load({ Version = 3, Level = 8, TutorialStep = 99, Stats = "oops" })
 	check(sameTable(broken.Stats, { Auto = true, Order = "" }), "a broken Stats becomes the default", show(broken.Stats))
 	local v1 = load({ Level = 5, SwordTier = 2, TutorialStep = 99 })
-	check(v1.Version == 4 and v1.WeaponTier == 2 and v1.SwordTier == nil and sameTable(v1.Stats, { Auto = true, Order = "" }),
-		"a v1 save runs every step to v4", show({ v1.Version, v1.WeaponTier }))
+	check(v1.Version == 3 and v1.WeaponTier == 2 and v1.SwordTier == nil and sameTable(v1.Stats, { Auto = true, Order = "" }),
+		"a v1 save runs every step to v3 and gains the default Stats", show({ v1.Version, v1.WeaponTier }))
 	local fresh = load(deepCopy(C.Data.Defaults))
-	check(fresh.Version == 4 and sameTable(fresh.Stats, { Auto = true, Order = "" }), "a brand-new save is v4 with the default Stats", "")
+	check(fresh.Version == 3 and sameTable(fresh.Stats, { Auto = true, Order = "" }), "a brand-new save is v3 with the default Stats", "")
 end)
 
 finish()

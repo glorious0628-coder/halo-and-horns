@@ -96,9 +96,18 @@ MUTATIONS = [
      "local mult = num(def.TickMult, 1.5)"),
     ("the burst slows like a tick", SK, "local slowSec = burst and TUNE.BurstSlow or tick + TUNE.SlowPad", "local slowSec = tick + TUNE.SlowPad"),
     ("no slow pad", SK, "SlowPad = 0.5,", "SlowPad = 0,"),
-    # 검수 2026-10-07: a field that hits only from its second tick still counts once
-    ("a late-hitting field never counts", SK, "\tif not f.HitOnce and n > 0 then fieldReleased(f, total, n) end\n", ""),
-    ("a field counts every hitting tick", SK, "\tif n > 0 then f.HitOnce = true end\n", ""),
+    # 검수 2026-10-07: a field that hits only from its second tick still counts once, at its end, with its best tick
+    ("a late field never reports at its end", SK, "\t\tfieldDone(f)\n\t\treturn\n", "\t\treturn\n"),
+    ("an early end drops the late report", SK, "\t\tfieldDone(f)\n\tend\nend", "\tend\nend"),
+    ("the late report = the first hitting tick (the old rule)", SK,
+     "\tif f.Late then f.Best, f.Sum = math.max(f.Best, n), f.Sum + total end\n",
+     "\tif f.Late and n > 0 then f.Late = false; fieldReleased(f, total, n) end\n"),
+    ("the late report = the last tick", SK, "f.Best, f.Sum = math.max(f.Best, n), f.Sum + total",
+     "f.Best, f.Sum = n, f.Sum + total"),
+    ("the late Total = the last tick's damage", SK, "f.Best, f.Sum = math.max(f.Best, n), f.Sum + total",
+     "f.Best, f.Sum = math.max(f.Best, n), total"),
+    ("a field that hit at once reports again at its end", SK, "f.Late, f.Best, f.Sum = n == 0 and not burst, 0, 0",
+     "f.Late, f.Best, f.Sum = not burst, 0, 0"),
     # --- Hop
     ("a hop with the grudge sack", SK, "if sack or TUNE.Kaiju[kit.Kaiju(player)] then return nil, \"TooHeavy\" end",
      "if TUNE.Kaiju[kit.Kaiju(player)] then return nil, \"TooHeavy\" end"),

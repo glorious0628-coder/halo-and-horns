@@ -84,6 +84,10 @@ EOL_FILES = [FILES[k] for k in ("CONFIG_SOURCE", "NET_SOURCE", "QUEST_SOURCE", "
 
 # (name, source key, exact text, replacement): each must match exactly once in the current (LF-normalized) source
 MUTATIONS = [
+    # sound_gaps B11 (검수 2026-10-07): the KingDefeat Fx names the players the kill paid
+    ("the kill keeps no paid list (KingDefeat Contributors empty)", "MONSTER_SOURCE", "\trec.PaidUserIds = paid\n", ""),
+    ("KingDefeat reads nothing (the cleared tallies)", "HALLOWEEN_SOURCE",
+     "for _, id in type(rec.PaidUserIds) == \"table\" and rec.PaidUserIds or {} do", "for _, id in {} do"),
     # A23-45 one family per field: pumpkins in the patch, ghosts in the hollow, bat goblins take 3 goblin slots (as goblins)
     ("a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)", "CONFIG_SOURCE",
      "Zone = \"PumpkinPatch\", Count = 10, QuestAs = \"Slime\",", "Zone = \"SlimeMeadow\", Count = 10, QuestAs = \"Slime\","),

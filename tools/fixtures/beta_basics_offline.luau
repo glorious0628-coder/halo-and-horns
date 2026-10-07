@@ -858,7 +858,7 @@ runGroup("title-config", function()
 	check(type(D.Titles) == "table" and next(D.Titles) == nil, "Data.Defaults.Titles = {}", show(D.Titles))
 	check(D.TitleSel == "", "Data.Defaults.TitleSel = \"\"", show(D.TitleSel))
 	check(D.BetaPioneer == false, "legacy Data.Defaults.BetaPioneer kept as false (migrated by TitleService)", show(D.BetaPioneer))
-	check(C.Data.Version == 4, "Data.Version 4 (A23-69 stat points; the title fields were additive)", C.Data.Version)
+	check(C.Data.Version == 3, "Data.Version stays 3 (the title fields and A23-69's Stats are additive)", C.Data.Version)
 	local mirrored = {}
 	for _, k in C.Data.Mirrored do mirrored[k] = true end
 	check(mirrored.TitleSel == true, "TitleSel is mirrored (attribute for nametag / HUD)")

@@ -491,7 +491,9 @@ local function zoneOf(player)
 	return ok and id or nil
 end
 
--- the field ends early (a new field, death, zone, class / faction, kaiju, leaving): the clients drop its circle
+-- the field ends early (a new field, death, zone, class / faction, kaiju, leaving): the clients drop its circle; a late
+-- field reports what it hit (fieldDone, below: not for a player who left)
+local fieldDone
 local function endField(player, why)
 	local f = fields[player]
 	if not f then return end
@@ -500,6 +502,7 @@ local function endField(player, why)
 		local ok, err = pcall(S.CombatService.Kit.FxNear, player, "SkillEnd", f.Center, f.Radius,
 			{ UserId = player.UserId, Slot = "X", Why = why })
 		if not ok then Util.Warn(TAG, "field end: " .. tostring(err)) end
+		fieldDone(f)
 	end
 end
 
@@ -548,13 +551,20 @@ local function fieldHit(f, mult, slowSec, guardSec)
 	return hits, shown, total, n, st
 end
 
--- CombatService.Released for a field (the quests, the board, the kaiju and the funnel read it): at the first tick, and
--- (검수 2026-10-07) once more at the first later tick that hits when the first one hit nothing - a field laid ahead of
--- the monsters still counts as a skill that hit (every reader counts only MonstersHit >= 1)
+-- CombatService.Released for a field (the quests, the board, the kaiju and the funnel read it): right after the first
+-- tick. 검수 2026-10-07: a field whose first tick hit nothing (laid ahead of the monsters) reports once more when it
+-- ends (its last tick, or ended early), with the most monsters one tick hit and the damage of all its ticks, so a
+-- Min 2 / 3 goal (J4, SK1) counts a group caught later; every reader counts only MonstersHit >= 1
 local function fieldReleased(f, total, n)
-	if n > 0 then f.HitOnce = true end
 	S.CombatService.Released:Fire(f.Player, { Slot = f.Ctx.Slot, Stacks = 0, Auto = f.Ctx.Auto, Perfect = false,
 		Center = f.Center, Radius = f.Radius, Total = total, MonstersHit = n, PlayersHit = 0, Healed = f.Healed or {} })
+end
+
+-- the field is over: a late field's one report (nothing when its first tick hit, or when no tick ever hit)
+function fieldDone(f)
+	if not f.Late or f.Best < 1 then return end
+	f.Late = false
+	fieldReleased(f, f.Sum, f.Best)
 end
 
 local function fieldTick(player, f)
@@ -567,10 +577,11 @@ local function fieldTick(player, f)
 	local ok, err = pcall(S.CombatService.Kit.FxNear, player, "SkillTick", f.Center, f.Radius,
 		{ UserId = player.UserId, Slot = "X", Center = f.Center, Radius = f.Radius, Hits = hits, Total = shown, Statuses = st })
 	if not ok then Util.Warn(TAG, "field tick: " .. tostring(err)) end
-	if not f.HitOnce and n > 0 then fieldReleased(f, total, n) end
+	if f.Late then f.Best, f.Sum = math.max(f.Best, n), f.Sum + total end
 	f.Left -= 1
 	if f.Left <= 0 then
 		fields[player] = nil -- the clients' circle ends with its Life
+		fieldDone(f)
 		return
 	end
 	task.delay(f.Tick, fieldTick, player, f)
@@ -598,6 +609,7 @@ local function startField(ctx, plan)
 		Radius = plan.Radius, Craft = def.Craft, Life = burst and TUNE.FxLife or count * tick, Tick = tick,
 		Auto = ctx.Auto, Total = shown, Hits = hits, Statuses = st,
 	})
+	f.Late, f.Best, f.Sum = n == 0 and not burst, 0, 0 -- a burst is all its ticks at once: nothing comes later
 	fieldReleased(f, total, n)
 	if burst or f.Left <= 0 then return end
 	fields[player] = f

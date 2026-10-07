@@ -21,7 +21,7 @@ C3: 괴롭힘·무법자로 자동 전투가 강제로 꺼질 때의 'bad' 알�
 ## 2. B2 — 약탈 Fx
 
 - `Net.Fx(nil, "Plunder", { From, To, Amount, Victim = 뺏긴 사람 UserId, Thief = 뺏은 사람 UserId })` — 모두에게. 클라: 내가 Victim이면 **Plunder**, Thief면 GoldPickup(알림 줄이 이미 GoldPickup이니 겹치지 않게).
-- 원한 자루 되찾기(GrudgeService, 뺏긴 사람에게만): `{ From, To, Amount, Victim, Thief, Refund = true }` — 돈이 돌아옴: GoldPickup(Plunder 아님).
+- 원한 자루 되찾기(GrudgeService, 뺏긴 사람에게만): `{ From, To, Amount, Victim, Thief, Refund = true }` — 돈이 돌아옴: GoldPickup(Plunder 아님). Thief는 **뺏은 사람**(복수해 준 사람이 아님, 검수 2026-10-07 고침), 동전은 뺏은 사람 자리에서 날아온다.
 
 ## 3. B6 — 전쟁 한 판 끝
 
@@ -29,7 +29,9 @@ C3: 괴롭힘·무법자로 자동 전투가 강제로 꺼질 때의 'bad' 알�
 
 ## 4. B11 — 왕을 쓰러뜨림
 
-`Net.Fx(nil, "KingDefeat", { Key = "PumpkinKing" | "GhostKing"(HalloweenService의 Key), Kind, Pos(몸이 없으면 nil), Contributors = { 때린 사람 UserId… } })` — 모두에게, **쓰러뜨렸을 때만**(그냥 떠나면 안 옴). 클라: Contributors에 내가 있으면 0.65 볼륨 + 내 KillPop·동전 0.25초 뒤, 아니면 0.45.
+`Net.Fx(nil, "KingDefeat", { Key = "PumpkinKing" | "GhostKing"(HalloweenService의 Key), Kind, Pos(몸이 없으면 nil), Contributors = { 보상 받은 사람 UserId… } })` — 모두에게, **쓰러뜨렸을 때만**(그냥 떠나면 안 옴). 클라: Contributors에 내가 있으면 0.65 볼륨 + 내 KillPop·동전 0.25초 뒤, 아니면 0.45.
+- Contributors = 이번 처치가 보상을 준 사람(MonsterService의 eligible: 120초 안, 3번 이상, 0.5% 이상)의 UserId, 작은 순서.
+- 검수 2026-10-07 고침: MonsterService가 기여 표를 비운 **뒤에** HalloweenService가 읽어서 늘 빈 목록이었어요. 이제 처치할 때 기록에 `PaidUserIds`로 남기고, HalloweenService는 그것을 읽어요. 시험: `tools/test_halloween.py` king-rewards(Mid·Ace·Bo 세 명).
 
 ## 5. 검사
 

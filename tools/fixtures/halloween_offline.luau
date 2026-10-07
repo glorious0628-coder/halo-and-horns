@@ -2081,6 +2081,18 @@ runGroup("king-rewards", function()
 	check(#f.Respawns == 0 and f.Mini.aliveCountOf("PumpkinKing") == 0, "a defeated event king never respawns")
 	f:Step(0.5)
 	check(#f.Killed == 3 and #f.Pays == 0, "the defeat line adds no second payout", show({ #f.Killed, #f.Pays }))
+	-- sound_gaps B11 (검수 2026-10-07): the KingDefeat Fx to everyone names the players this kill paid; MonsterService
+	-- keeps them on the record (PaidUserIds) before it clears the tallies, HalloweenService reads them after
+	local want = { mid.UserId, a.UserId, b.UserId }
+	table.sort(want)
+	local kd = nil
+	for _, e in f.RS.Remotes.Fx.Log do
+		if e.All and e.Args[1] == "KingDefeat" then kd = e.Args[2] end
+	end
+	check(kd ~= nil and kd.Kind == "PumpkinKing" and type(kd.Contributors) == "table"
+		and table.concat(kd.Contributors, ",") == table.concat(want, ","),
+		"KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
+		show(kd and kd.Contributors))
 	-- overkill is not damage: 2 x 1 + a 1e9 killing blow on 30 HP = 32 (< 45, unpaid); on 43 HP = 45 (paid)
 	local function overkillRun(name, hpLeft)
 		local rec = f.H.spawnMonster("PumpkinKing", { Event = true, Position = vec(330, 0, 255) })

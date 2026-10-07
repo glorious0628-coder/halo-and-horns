@@ -369,9 +369,10 @@ local function avenge(thief, sack, killer)
 				notify(victim, fmt("GrudgeRefund", Util.PlayerDisplayName(killer), Util.FormatNumber(refund)), "good")
 				local victimPos = rootPos(victim)
 				if thiefPos and victimPos then
-					-- sound_gaps B2: the robbed player gets gold back (Refund: the client plays GoldPickup, not Plunder)
+					-- sound_gaps B2: the robbed player gets gold back (Refund: the client plays GoldPickup, not Plunder);
+					-- Thief = the one who stole it (검수 2026-10-07: never the avenger), the coins fly from the thief's spot
 					Net.Fx(victim, "Plunder", { From = thiefPos, To = victimPos, Amount = refund, Victim = victim.UserId,
-						Thief = killer.UserId, Refund = true })
+						Thief = thief.UserId, Refund = true })
 				end
 			end
 		elseif not victim then

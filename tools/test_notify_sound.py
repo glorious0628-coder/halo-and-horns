@@ -95,8 +95,9 @@ SPECIAL = [
     ("PvPService.luau", "Net.Fx(nil, \"Plunder\", { From = from, To = to, Amount = stolen, Victim = victim.UserId, Thief = killer.UserId })",
      "B2: the Plunder Fx says who was robbed (Victim) and by whom (Thief)",
      "Net.Fx(nil, \"Plunder\", { From = from, To = to, Amount = stolen })"),
-    ("GrudgeService.luau", "Amount = refund, Victim = victim.UserId,\n\t\t\t\t\t\tThief = killer.UserId, Refund = true })",
-     "B2: the grudge refund Fx is marked Refund (the robbed player gets gold back: GoldPickup, not Plunder)",
+    ("GrudgeService.luau", "Amount = refund, Victim = victim.UserId,\n\t\t\t\t\t\tThief = thief.UserId, Refund = true })",
+     "B2: the grudge refund Fx is marked Refund (the robbed player gets gold back: GoldPickup, not Plunder); "
+     "Thief = the one who stole (검수 2026-10-07, never the avenger)",
      "Amount = refund })"),
     ("WarService.luau", "nil, nil, winner == \"Halo\" and \"CrownHalo\" or \"CrownHorns\")",
      "B6: the war winner line carries CrownHalo / CrownHorns",
@@ -171,7 +172,9 @@ def check_all(sources: dict[str, str], net: str) -> tuple[int, list[str]]:
         check(sources[name].count(piece) == 1, f"{name}: {what}")
     finish = fn_block(sources["HalloweenService.luau"], "local function finish(b, defeated)")
     check("if defeated and type(rec) == \"table\" then" in finish and "Contributors = ids" in finish
-          and "rec._contributors" in finish, "B11: KingDefeat only for a beaten king (not one that leaves), with the hitters' UserIds")
+          and "rec.PaidUserIds" in finish and "rec._contributors" not in finish,
+          "B11: KingDefeat only for a beaten king (not one that leaves), with the paid players' UserIds (MonsterService keeps "
+          "them on the record before it clears the tallies; behavior: test_halloween)")
     return count, failures
 
 

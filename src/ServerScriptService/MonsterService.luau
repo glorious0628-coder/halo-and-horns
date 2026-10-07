@@ -1196,6 +1196,12 @@ local function killRecord(rec)
 			perFaction[f] = (perFaction[f] or 0) + 1
 		end
 	end
+	-- sound_gaps B11 (검수 2026-10-07): the UserIds this kill pays, kept on the record (sorted) for HalloweenService's
+	-- KingDefeat Fx, which runs after the contributor tables below are cleared
+	local paid = {}
+	for _, e in eligible do table.insert(paid, e.Player.UserId) end
+	table.sort(paid)
+	rec.PaidUserIds = paid
 	rec._contributors, rec._hits, rec._dmg = {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)

@@ -104,9 +104,10 @@ Config.Nickname = {
 Config.Data = {
 	StoreName = "HaloHorns_Player_v1", -- unchanged on purpose: v1 saves are migrated in place by DataService
 	KeyPrefix = "P_",
-	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. A23-69: 4 = Stats { Auto, Order } (the stat points).
-	-- An older server refuses a newer record (CR-L3).
-	Version = 4,
+	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. A23-69 (검수 2026-10-07): Stats { Auto, Order } is an
+	-- additive field like Settings / Rank / SkillsA71 (a v3 server keeps it as it is), so the version stays 3; a bump
+	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
+	Version = 3,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -115,7 +116,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 4,
+		Version = 3,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -979,8 +980,9 @@ function Config.StatAllocOf(player)
 	return { A = math.clamp(math.floor(a), 0, Config.Stats.MaxPoints), H = math.clamp(math.floor(h), 0, Config.Stats.MaxPoints) }
 end
 
--- a save's Stats repaired (DataService.fillDefaults): Auto a boolean (else true), Order only known letters, at most
--- MaxPoints of them (a broken or huge Order is cut, never trusted)
+-- a save's Stats repaired (DataService.fillDefaults): Auto a boolean (else true), Order = its uppercase letters A-Z
+-- (검수 2026-10-07: kept for the stats a later stage adds; StatAlloc counts only A / H), at most MaxPoints of them (a
+-- broken or huge Order is cut, never trusted)
 function Config.SanitizeStats(t)
 	local src = type(t) == "table" and t or {}
 	local auto = true
@@ -990,7 +992,7 @@ function Config.SanitizeStats(t)
 	for i = 1, math.min(#order, 4096) do
 		if #kept >= Config.Stats.MaxPoints then break end
 		local ch = string.sub(order, i, i)
-		if Config.Stats.Letters[ch] then table.insert(kept, ch) end
+		if string.match(ch, "^%u$") then table.insert(kept, ch) end
 	end
 	return { Auto = auto, Order = table.concat(kept) }
 end

@@ -12,9 +12,14 @@
   - `Config.StatAlloc(stats, level, class)` → (A, H, 남은 점수): 자동이면 직업 패턴, 직접이면 Order 앞 글자. **레벨이 내려가도 Order는 그대로** → 다시 크면 같은 순서로 다시 찍힘.
   - `Config.StatMults(a, h)` → 스위치 꺼짐이면 (1, 1)
   - `Config.StatAllocOf(player)` → 속성 `StatAtk`·`StatHp`(2단계 StatService가 씀)
-  - `Config.SanitizeStats(t)` → Auto는 boolean만(아니면 켜짐), Order는 아는 글자만 99자까지
-- **저장 Data v4:** `Stats = { Auto = true, Order = "" }`. 옛 저장은 불러올 때 기본값(자동 켜짐, 찍은 것 없음)이 붙고 다른 값은 그대로. 잔액은 저장하지 않는다(레벨로 계산).
-  - **게시할 때 주의(사용자 OK 필요):** v4 서버가 한 번 저장한 기록은 **옛 v3 서버가 거부**한다(CR-L3). 그래서 이걸 게시할 때는 **모든 서버 종료(Shut Down All Servers)**를 같이 해야 한다. 안 하면 옛 서버에 들어간 사람이 불러오기 실패로 튕길 수 있다.
+  - `Config.SanitizeStats(t)` → Auto는 boolean만(아니면 켜짐), Order는 대문자 A–Z만 99자까지
+    - 검수 2026-10-07: 다음 단계 스탯을 위해 A·H 말고도 대문자는 남긴다. 셀 때(`StatAlloc`)는 A·H만 세고, 나머지 글자의 점수는 남은 점수가 된다.
+- **저장: 버전은 3 그대로, `Stats`는 더하기만 하는 필드** (검수 2026-10-07 결정. Settings·Rank·SkillsA71과 같은 방식)
+  - 새 필드: `Stats = { Auto = true, Order = "" }`
+  - 옛 저장은 불러올 때 기본값(자동 켜짐, 찍은 것 없음)이 붙고, 다른 값은 그대로예요. 잔액은 저장하지 않아요(레벨로 계산).
+  - v3 서버도 이 필드를 그대로 보존해요. 그래서 1단계 게시에는 **모든 서버 종료가 필요 없어요.**
+  - 처음에 버전 4로 했던 것은 되돌렸어요. Studio가 진짜 DataStore에 v4를 쓰면 v3 서버가 그 기록을 거부해서 되돌릴 수 없는 잠금이 생겨요.
+  - 버전을 올릴지는 2단계(스위치 켬) 게시 때 다시 정해요.
 - **전투력 한 공식 `Config.CombatPowerOf(player, tier?, +N?)`:** 속성 Level·WeaponTier·WeaponEnhance·StatAtk·StatHp로 계산. 서버 4곳이 모두 이걸 쓴다.
   - JusticeService: `GetCombatPower`(CombatPower 속성·괴롭힘·대담함), `GetPower`(진영 합계, 환생 보너스 포함 + 스탯), CombatPower 속성은 StatAtk·StatHp가 바뀌어도 다시 계산
   - PvPService 대체식, Tab 목록 Power 칸, LootService 첫 무기 "Power X → Y"(무기만 바꾼 값)
@@ -28,8 +33,8 @@
 
 ## 3. 검사
 
-- 새 `py tools/test_stats.py`: 표·스위치·저장 모양, 곡선, 점수·자동·직접(레벨 하락·재성장), 꺼짐이면 모든 숫자 같음, 켜짐 예시 숫자, 최대치 두 개, `CombatPowerOf` = Justice·PvP 대체식·Tab 칸(60명 무작위, 켜짐/꺼짐), CombatPower 속성이 StatAtk·StatHp를 따라감, 첫 무기 "Power X → Y", v3→v4·v1→v4·깨진 Stats 고치기·두 번 불러도 같음.
-- 버전 4에 맞춘 기존 시험: onboarding(v3→v4는 Stats만 붙음, 찍은 빌드가 저장·복구됨, v5 기록은 v4 서버가 거부), keys_settings, ranking, tamer, unarmed_start, beta_basics(PvP 대체식 = CombatPowerOf), loot·names_columns 변이 문구.
+- 새 `py tools/test_stats.py`: 표·스위치·저장 모양, 곡선, 점수·자동·직접(레벨 하락·재성장), 꺼짐이면 모든 숫자 같음, 켜짐 예시 숫자, 최대치 두 개, `CombatPowerOf` = Justice·PvP 대체식·Tab 칸(60명 무작위, 켜짐/꺼짐), CombatPower 속성이 StatAtk·StatHp를 따라감, 첫 무기 "Power X → Y", Stats 없는 v3·v1 기록에 기본값만 붙음(버전 3 그대로), 깨진 Stats 고치기, A–Z 보존, 두 번 불러도 같음.
+- 저장 쪽 기존 시험: onboarding(Stats는 기본값만 붙음, 찍은 빌드가 저장·복구됨, v4 기록은 v3 서버가 거부), keys_settings, ranking, tamer, unarmed_start, beta_basics(PvP 대체식 = CombatPowerOf), loot·names_columns 변이 문구.
 
 ## 4. 2단계 (10/16–17 예정)
 

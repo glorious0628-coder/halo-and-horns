@@ -58,6 +58,9 @@ SRC_PATCHES = [
 
 # (name, exact text, replacement) in the mutation baseline GrudgeService: each must match exactly once
 MUTATIONS = [
+    # sound_gaps B2 (검수 2026-10-07): the refund Fx names the one who stole, never the avenger
+    ("the refund Fx names the avenger as the thief", "Thief = thief.UserId, Refund = true })",
+     "Thief = killer.UserId, Refund = true })"),
     ("avenge always pays 100%",
      "local refund = math.floor(entry.Amount * (bonusOk and G.AvengeRefundRate or G.ReturnRate))",
      "local refund = math.floor(entry.Amount * G.ReturnRate)"),

@@ -434,16 +434,42 @@ runGroup("x field", function()
 	local ska = wa:FxTo("Skill", pa, 0)[1]
 	check(wa:Count("X") == 1 and ska and ska.Center.X == 0 and ska.Center.Z == -10, "nothing in reach: the circle 10 studs ahead",
 		show(ska and ska.Center))
-	-- 검수 2026-10-07: a field that hits nothing at its first tick counts once more at the first tick that hits (quests,
-	-- board and funnel count only MonstersHit >= 1), never again after that
+	-- 검수 2026-10-07: a field that hits nothing at its first tick reports once more when it ends, with the most monsters
+	-- one tick hit and the damage of all its ticks (quests, board and funnel count only MonstersHit >= 1; Min 2 / 3 goals
+	-- such as J4 or SK1 count a group caught later)
 	check(wa:Last("X").MonstersHit == 0, "setup: the first tick hit nothing (Released with 0)", wa:Last("X").MonstersHit)
 	local walker = wa:Monster("Slime", 12, 0, 99999) -- walks into the circle (2 studs from its center)
 	wa:Advance(1)
-	check(wa:Count("X") == 2 and wa:Last("X").MonstersHit == 1 and wa:Last("X").Auto == false and wa:Last("X").Slot == "X"
-		and hitOf(wa, walker) > 0, "the first tick that hits: one more Released { Slot X, MonstersHit 1 } for that cast",
-		show({ wa:Count("X"), wa:Last("X").MonstersHit }))
+	check(wa:Count("X") == 1 and hitOf(wa, walker) > 0, "a later tick that hits reports nothing yet (the field goes on)",
+		show({ wa:Count("X"), hitOf(wa, walker) }))
+	local g1, g2 = wa:Monster("Slime", 10, 1, 99999), wa:Monster("Slime", 10, -1, 99999)
+	wa:Advance(1) -- three inside at once
+	g1.Alive, g2.Alive = false, false -- two are gone before the last ticks
+	wa:Advance(1)
+	check(wa:Count("X") == 1 and hitOf(wa, g1) > 0, "still nothing before the end", wa:Count("X"))
+	wa:Advance(1) -- the 5th and last tick: the field ends
+	local late = wa:Last("X")
+	check(wa:Count("X") == 2 and late.MonstersHit == 3 and late.Slot == "X" and late.Auto == false and late.Total > 0,
+		"at its end: one Released { Slot X } with the best tick (3 at once), not the last tick (1)",
+		show({ wa:Count("X"), late.MonstersHit, late.Total }))
+	check(late.Total == hitOf(wa, walker) + hitOf(wa, g1) + hitOf(wa, g2), "its Total = the damage of all the field's ticks",
+		show({ late.Total, hitOf(wa, walker), hitOf(wa, g1), hitOf(wa, g2) }))
 	for _ = 1, 3 do wa:Advance(1) end
-	check(wa:Count("X") == 2, "later hitting ticks add no more Released", wa:Count("X"))
+	check(wa:Count("X") == 2, "nothing after the end", wa:Count("X"))
+	-- ended early (the caster fell): the late report goes out then, once
+	local wl = xWorld()
+	local pl = wl:Hero(1, { Class = "Mage", Faction = "Halo" })
+	wl:Use(pl, "X")
+	wl:Monster("Slime", 10, 1, 99999)
+	wl:Monster("Slime", 10, -1, 99999)
+	wl:Advance(1) -- two at once
+	check(wl:Count("X") == 1, "setup: a late field that hit two", wl:Count("X"))
+	pl.Character:FindFirstChild("Humanoid").Health = 0
+	wl:Advance(1) -- the field stops (its caster is down)
+	check(wl:Count("X") == 2 and wl:Last("X").MonstersHit == 2, "ended early: the late report then (2 at once)",
+		show({ wl:Count("X"), wl:Last("X").MonstersHit }))
+	for _ = 1, 4 do wl:Advance(1) end
+	check(wl:Count("X") == 2, "and only once", wl:Count("X"))
 	-- §10 Fields off: one burst of all 5 ticks, a 3 s slow, the short mark, no ticks
 	local wb = xWorld({ Fields = false })
 	local pb = wb:Hero(1, { Class = "Mage", Faction = "Halo" })
