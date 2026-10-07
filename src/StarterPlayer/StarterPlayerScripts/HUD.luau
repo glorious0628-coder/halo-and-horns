@@ -1713,6 +1713,11 @@ function L.QuestBlockTap()
 	end
 	local l = ui.qline and ui.qline[1]
 	local e = l and l.Entry
+	-- round 3 #3 (ideas_first10 §3): 'Tap here: first quest from Hallie' opens the guide in one tap, even after [Later]
+	if e and e.Pinned and e.TutorialStep == 0 and L.PinnedTap then
+		L.PinnedTap(e)
+		return
+	end
 	if e and e.Progress >= e.Target and e.CanClaim then
 		for _, r in questRows do
 			if r.Entry == e and r.Claim.Visible then
@@ -2729,16 +2734,31 @@ L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, Ti
 	WobbleStep = 0.06, Breathe = 1.05 }
 L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0 }
 
--- the button a hint hangs on and its HudLayout rect: "Attack" -> 공격, "Q" -> SkillBar's Q (else HUD's own Q disc)
+-- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then closes the
+-- potions up to the attack button. A change of that button's Visible lays the HUD out again (connected once)
+function L.SkillHidden(slot)
+	local bar = C and C.SkillBar
+	if type(bar) ~= "table" or type(bar.Button) ~= "function" then return false end
+	local ok, b = pcall(bar.Button, slot)
+	if not ok or typeof(b) ~= "Instance" then return false end
+	L.SkillWatch = L.SkillWatch or {}
+	if not L.SkillWatch[slot] then
+		L.SkillWatch[slot] = b:GetPropertyChangedSignal("Visible"):Connect(requestLayout)
+	end
+	return not b.Visible
+end
+
+-- the button a hint hangs on and its HudLayout rect: "Attack" -> 공격, "Q" / "Z" / "X" -> SkillBar's button (Q: else
+-- HUD's own Q disc; game dev 1 calls them when a skill is learned, A23-71)
 function L.HintTarget(id)
 	if id == "Attack" then return ui.attack, "attack" end
-	if id == "Q" then
+	if id == "Q" or id == "Z" or id == "X" then
 		local bar = C and C.SkillBar
 		if type(bar) == "table" and type(bar.Button) == "function" then
-			local ok, b = pcall(bar.Button, "Q")
-			if ok and typeof(b) == "Instance" and b.Visible then return b, "q" end
+			local ok, b = pcall(bar.Button, id)
+			if ok and typeof(b) == "Instance" and b.Visible then return b, string.lower(id) end
 		end
-		return ui.release, "q"
+		if id == "Q" then return ui.release, "q" end -- before SkillBar: HUD's own Q disc
 	end
 	return nil, nil
 end
@@ -2865,7 +2885,7 @@ function HUD.Hint(id, text, opts)
 	local btn, rect = L.HintTarget(id)
 	if not (btn and rect) then return false end
 	opts = type(opts) == "table" and opts or {}
-	HUD.ClearHint(id)
+	HUD.ClearHint(nil) -- one hint at a time (검수 2026-10-07: "Try your skill!" over "Tap to hit!" on phones)
 	if type(text) ~= "string" or text == "" then
 		text = id == "Attack" and (IS_TOUCH and TXT.HintTap or TXT.HintClick) or TXT.HintSkill
 	end
@@ -3380,10 +3400,18 @@ refreshQuests = function()
 	end
 	-- 'now do' row: the pinned guide / next-goal row when there is one (검수 2026-10-06 (b): it always shows, phones too),
 	-- else the waiting story, the first claimable, the first unfinished daily. Desktop shows one more row under it.
+	-- round 3 #1 (ideas_first10 §3): after them the S0 shard story (it leads to auto combat) before the first daily,
+	-- until auto combat is unlocked
+	local s0 = nil
+	if attr("AutoCombatUnlocked", false) ~= true then
+		for i, e in entries do
+			if e.Story and e.Story.Id == "S0" and e.Progress < e.Target then s0 = i break end
+		end
+	end
 	local shown, second = nil, nil
 	if entries[1] and entries[1].Pinned then
 		shown = 1
-		second = callIndex or firstClaim or firstDaily
+		second = callIndex or firstClaim or s0 or firstDaily
 		if second == 1 then second = nil end
 	elseif callIndex then
 		shown = callIndex -- B15: the collapsed list shows the story that is waiting
@@ -3422,6 +3450,8 @@ refreshQuests = function()
 		if ui.questOverlayTitle then ui.questOverlayTitle.Text = head end
 	else
 		ui.questHeaderText.Text = head
+		-- round 3 #1: before the first mission is accepted (step 0) the list has no daily header
+		ui.questHeader.Visible = not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
 		ui.questChevron.Visible = #entries > 1
 		ui.questChevron.Text = questExpanded and TXT.QuestCollapse or TXT.QuestExpand
 	end
@@ -3431,7 +3461,7 @@ refreshQuests = function()
 	-- else today's count with 받기 N
 	if ui.qline then
 		if not second and entries[shown] then
-			local alt = callIndex or firstClaim or firstDaily
+			local alt = callIndex or firstClaim or s0 or firstDaily
 			if alt and alt ~= shown then second = alt end
 		end
 		local function lineFor(i)
@@ -4318,7 +4348,7 @@ applyLayout = function()
 		jump = { X = rel.X / s, Y = rel.Y / s, W = jb.AbsoluteSize.X / s, H = jb.AbsoluteSize.Y / s }
 	end
 	local R = L.HL.Compute({ W = W, H = H, Scale = s, Inset = insetY(), Touch = IS_TOUCH, Jump = jump,
-		Topbar = L.TopbarRect(gui, s), Hidden = { auto = not (ui.auto and ui.auto.Visible) } })
+		Topbar = L.TopbarRect(gui, s), Hidden = { auto = not (ui.auto and ui.auto.Visible), q = L.SkillHidden("Q") } })
 	L.Rects = R
 	L.LayoutPlate(R)
 	for label in ui.textFits or {} do
@@ -4639,7 +4669,7 @@ function HUD.Start()
 	if game:GetService("RunService"):IsStudio() then
 		LocalPlayer:GetAttributeChangedSignal("HintPreview"):Connect(function()
 			local v = LocalPlayer:GetAttribute("HintPreview")
-			if v == "Attack" or v == "Q" then HUD.Hint(v) else HUD.ClearHint(nil) end
+			if v == "Attack" or v == "Q" or v == "Z" or v == "X" then HUD.Hint(v) else HUD.ClearHint(nil) end
 		end)
 	end
 

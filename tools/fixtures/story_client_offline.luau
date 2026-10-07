@@ -196,8 +196,8 @@ do
 end
 
 ----------------------------------------------------------------- Panels STORY.Lines / STORY.Hint
-local STORY = { Text = { HintLean = HINT_LEAN } }
-execute("STORY", STORY_SOURCE, { STORY = STORY, Config = Config, string = string, type = type })
+local STORY = { Text = { HintLean = HINT_LEAN, HintHave = HINT_HAVE } }
+execute("STORY", STORY_SOURCE, { STORY = STORY, Config = Config, string = string, type = type, math = math })
 do
 	local g = "story lines by Var"
 	check(g, "Panels has STORY.Lines and STORY.Hint", type(STORY.Lines) == "function" and type(STORY.Hint) == "function",
@@ -272,6 +272,20 @@ do
 	local fb = STORY.Hint(obj, "Halo")
 	TXT.ChoiceHintHalo = saved
 	check(g, "an older Config without the faction line falls back to ChoiceHint", fb == string.format(TXT.ChoiceHint, 3, 5), fb)
+	-- round 3 #5: the real minus (never below 0, A23-58) and my points now
+	local h0 = STORY.Hint(obj, "Halo", 0)
+	check(g, "Halo with 0 Honor: 'Honor -0' and '(you have 0)'",
+		string.find(h0, "Honor +3", 1, true) ~= nil and string.find(h0, "Honor -0", 1, true) ~= nil
+		and string.find(h0, string.format(HINT_HAVE, 0), 1, true) ~= nil, h0)
+	local h10 = STORY.Hint(obj, "Halo", 10)
+	check(g, "Halo with 10 Honor: the full -5", string.find(h10, "Honor -5", 1, true) ~= nil
+		and string.find(h10, string.format(HINT_HAVE, 10), 1, true) ~= nil, h10)
+	local r1 = STORY.Hint(obj, "Horns", 1)
+	check(g, "Horns with 1 Infamy: 'Infamy -1' (the good pick costs what I have)",
+		string.find(r1, "Infamy -1", 1, true) ~= nil and string.find(r1, "Infamy +5", 1, true) ~= nil
+		and string.find(r1, string.format(HINT_HAVE, 1), 1, true) ~= nil, r1)
+	check(g, "points unknown (nil): the plain hint, no '(you have'", STORY.Hint(obj, "Halo", nil) == halo, STORY.Hint(obj, "Halo", nil))
+	check(g, "0-point picks with points known: still the lean line", STORY.Hint(zero, "Halo", 4) == HINT_LEAN, STORY.Hint(zero, "Halo", 4))
 	-- every real choice card: a finished English line (no %d left) for both factions
 	for id, def in Config.StoryQuests.Defs or {} do
 		for si, st in (type(def) == "table" and def.Steps) or {} do

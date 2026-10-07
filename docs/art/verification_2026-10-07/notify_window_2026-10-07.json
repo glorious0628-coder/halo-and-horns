@@ -1,0 +1,201 @@
+{
+  "tool": "tools/notify_window_view.py",
+  "rows": [
+    {
+      "device": "pc",
+      "view": "short",
+      "probe": {
+        "Window": [
+          327,
+          186,
+          624,
+          304
+        ],
+        "Toasts": [
+          {
+            "Text": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+            "Rect": [
+              495,
+              133,
+              288,
+              29
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/pc_short.png"
+    },
+    {
+      "device": "pc",
+      "view": "tall",
+      "probe": {
+        "Window": [
+          327,
+          163,
+          624,
+          350
+        ],
+        "Toasts": [
+          {
+            "Text": "You found a Slime Jelly!",
+            "Rect": [
+              495,
+              112,
+              288,
+              28
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/pc_tall.png"
+    },
+    {
+      "device": "pc",
+      "view": "vac",
+      "probe": {
+        "PopupTitle": {
+          "Text": "Vacation Bonus",
+          "Rect": [
+            563,
+            168,
+            152,
+            39
+          ],
+          "Fits": true
+        },
+        "Toasts": [
+          {
+            "Text": "You found a Slime Jelly!",
+            "Rect": [
+              496,
+              61,
+              288,
+              28
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/pc_vac.png"
+    },
+    {
+      "device": "pc",
+      "view": "free",
+      "probe": {
+        "Toasts": [
+          {
+            "Text": "You found a Goblin Tooth!",
+            "Rect": [
+              496,
+              61,
+              288,
+              28
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/pc_free.png"
+    },
+    {
+      "device": "phone",
+      "view": "short",
+      "probe": {
+        "Window": [
+          34,
+          25,
+          585,
+          247
+        ],
+        "Toasts": [
+          {
+            "Text": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+            "Rect": [
+              223,
+              39,
+              183,
+              27
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/phone_short.png"
+    },
+    {
+      "device": "phone",
+      "view": "tall",
+      "probe": {
+        "Window": [
+          34,
+          25,
+          585,
+          247
+        ],
+        "Toasts": [
+          {
+            "Text": "You found a Slime Jelly!",
+            "Rect": [
+              223,
+              39,
+              183,
+              26
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/phone_tall.png"
+    },
+    {
+      "device": "phone",
+      "view": "vac",
+      "probe": {
+        "PopupTitle": {
+          "Text": "Vacation Bonus",
+          "Rect": [
+            275,
+            43,
+            103,
+            26
+          ],
+          "Fits": true
+        },
+        "Toasts": [
+          {
+            "Text": "You found a Slime Jelly!",
+            "Rect": [
+              223,
+              39,
+              183,
+              26
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/phone_vac.png"
+    },
+    {
+      "device": "phone",
+      "view": "free",
+      "probe": {
+        "Toasts": [
+          {
+            "Text": "You found a Goblin Tooth!",
+            "Rect": [
+              223,
+              39,
+              183,
+              26
+            ]
+          }
+        ],
+        "Banner": false
+      },
+      "file": "build/notify_window_view/phone_free.png"
+    }
+  ]
+}

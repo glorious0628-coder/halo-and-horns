@@ -512,6 +512,28 @@ for _, case in CASES do
 	else
 		check(g, "auto hidden runs", false, out2)
 	end
+
+	-- 9. A23-71 (no skills before Lv5): with Q hidden the potions close up to the attack button (GAP 8 du between them,
+	-- same row, never further left); the rest of the cluster and the top blocks stay where they were
+	local ok3, out3 = pcall(function()
+		local HudLayout = execute(HUDLAYOUT_SOURCE)
+		local e = table.clone(env)
+		e.Hidden = { q = true }
+		return HudLayout.Compute(e)
+	end)
+	if ok3 and type(out3) == "table" then
+		local pot, atk = out3.potions, out3.attack
+		check(g, "q hidden: potions close up to attack", math.abs((pot.X + pot.W) - (atk.X - 8)) < 0.5
+			or pot.X <= out.potions.X + 0.01 and (out.potions.X + out.potions.W) >= atk.X - 8 - 0.5, fmt(pot) .. " / " .. fmt(atk))
+		check(g, "q hidden: potions same row, not further left", math.abs(pot.Y - out.potions.Y) < 0.01
+			and pot.X >= out.potions.X - 0.01, fmt(pot))
+		for _, id in { "attack", "z", "x", "auto", "ghost", "minimap", "quest", "war_meter", "menu" } do
+			local a, b = out[id], out3[id]
+			check(g, "q hidden keeps " .. id, a and b and math.abs(a.X - b.X) < 0.01 and math.abs(a.Y - b.Y) < 0.01, fmt(b))
+		end
+	else
+		check(g, "q hidden runs", false, out3)
+	end
 end
 
 ----------------------------------------------------------------- static: HudLayout stays a pure module

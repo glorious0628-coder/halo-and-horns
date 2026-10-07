@@ -4877,5 +4877,96 @@
    "bytes": 1059484,
    "at": "2026-10-07 12:26:14"
   }
+ ],
+ "Town_Halo_Fountain_web_smart": [
+  {
+   "event": "web_generation",
+   "mode": "Smart Mesh (quad)",
+   "points": 0,
+   "trial": "1/2",
+   "task": "1819e3d4-2ae5-46ed-9601-ed1aec715757",
+   "image": "art/out/hq/HQ_Town_Halo_Fountain.png",
+   "faces": "5435 quads",
+   "verts": 5212,
+   "at": "2026-10-07 13:00",
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": null,
+   "note_file": "GLB not downloaded yet (download needs user OK)"
+  },
+  {
+   "event": "web_texture",
+   "points": 20,
+   "task": "1819e3d4-2ae5-46ed-9601-ed1aec715757",
+   "at": "2026-10-07 13:15",
+   "balance_after": 3400,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": null,
+   "note_file": "GLB not downloaded yet (download needs user OK)"
+  }
+ ],
+ "Town_Halo_Fountain_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles)",
+   "points": 55,
+   "task": "6e003ef8-0896-4416-b116-e51275704316",
+   "image": "art/out/hq/HQ_Town_Halo_Fountain.png",
+   "tris": 9643,
+   "verts": 6566,
+   "at": "2026-10-07 13:02",
+   "balance_after": 3495,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": null,
+   "note_file": "GLB not downloaded yet (download needs user OK)"
+  }
+ ],
+ "Town_Horns_Brazier_web_smart": [
+  {
+   "event": "web_generation",
+   "mode": "Smart Mesh (quad)",
+   "points": 0,
+   "trial": "2/2",
+   "task": "721360aa-5ff3-4587-ab29-b8db4aac3b08",
+   "image": "art/out/hq/HQ_Town_Horns_Brazier.png",
+   "faces": "5777 quads",
+   "verts": 5239,
+   "at": "2026-10-07 13:03",
+   "note": "a timed-out click registered several times: 4 Smart Mesh brazier variants exist in the account; balance shows no extra charge",
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": null,
+   "note_file": "GLB not downloaded yet (download needs user OK)"
+  },
+  {
+   "event": "web_texture",
+   "points": 20,
+   "task": "721360aa-5ff3-4587-ab29-b8db4aac3b08",
+   "at": "2026-10-07 13:11",
+   "balance_after": 3420,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": null,
+   "note_file": "GLB not downloaded yet (download needs user OK)"
+  }
+ ],
+ "Town_Horns_Brazier_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 (ultra mesh, poly limit 10000, 4K tex, PBR, triangles)",
+   "points": 55,
+   "task": "53521772-9a79-44bc-a0cb-ee0b2314c2cc",
+   "image": "art/out/hq/HQ_Town_Horns_Brazier.png",
+   "tris": 9411,
+   "verts": 6592,
+   "at": "2026-10-07 13:06",
+   "balance_after": 3440,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": null,
+   "note_file": "GLB not downloaded yet (download needs user OK)"
+  }
  ]
 }

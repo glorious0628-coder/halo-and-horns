@@ -931,15 +931,17 @@
  },
  "BtnAttack": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/UIP_BtnAttack.txt",
-  "original": "art/out/BtnAttack_src.png (1024, Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_BtnAttack_HQ.txt",
+  "original": "art/out/hq/src/BtnAttack_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BtnAttack.png",
   "size": "512x512 RGBA",
   "cutout": "scratch frame_final: cutout_flat (no holes), aspect kept, fill 98%, edge clean-up; checked light/navy + real size",
   "preview": "art/review/b6_hud_sheet.png",
-  "note": "묶음 6 HUD 전투 묶음. 공격 버튼(150) 주황 면, Parts.BtnAttack 대체 — Tone Red→주황, COL.AttackFill도 주황으로. 면 Inner Rect(58,50,452,427). 위에 직업 글리프. 2안 중 2(스킬·물약과 같은 두꺼운 테·아래 입술). 고르기는 사용자가 이미지 세션에 맡김(2026-10-06), 형제 시트로 보여 줌."
+  "note": "묶음 6 HUD 전투 묶음. 공격 버튼(150) 주황 면, Parts.BtnAttack 대체 — Tone Red→주황, COL.AttackFill도 주황으로. 면 Inner Rect(58,50,452,427). 위에 직업 글리프. 2안 중 2(스킬·물약과 같은 두꺼운 테·아래 입술). 고르기는 사용자가 이미지 세션에 맡김(2026-10-06), 형제 시트로 보여 줌.",
+  "medium_original": "art/out/BtnAttack_src.png (1024, Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "BtnSkill": {
   "status": "approved",
@@ -955,15 +957,17 @@
  },
  "BtnPotion": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/UIP_BtnPotion.txt",
-  "original": "art/out/BtnPotion_src.png (1024, Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_BtnPotion_HQ.txt",
+  "original": "art/out/hq/src/BtnPotion_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BtnPotion.png",
   "size": "512x512 RGBA",
   "cutout": "scratch frame_final: cutout_flat (no holes), aspect kept, fill 98%, edge clean-up; checked light/navy + real size",
   "preview": "art/review/b6_hud_sheet.png",
-  "note": "묶음 6 HUD 전투 묶음. 물약 칸(72) 남색 면 + 오른쪽 아래 개수 소켓(새 키). 면 Inner Rect(67,72,447,436). 물약 아이콘·개수는 게임에서. 2안 중 1. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06), 형제 시트로 보여 줌."
+  "note": "묶음 6 HUD 전투 묶음. 물약 칸(72) 남색 면 + 오른쪽 아래 개수 소켓(새 키). 면 Inner Rect(67,72,447,436). 물약 아이콘·개수는 게임에서. 2안 중 1. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06), 형제 시트로 보여 줌.",
+  "medium_original": "art/out/BtnPotion_src.png (1024, Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "LevelBadge": {
   "status": "approved",
@@ -1039,27 +1043,43 @@
  },
  "PanelMain": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
-  "prompt": "art/prompts/SB_UIP_PanelMain.txt",
-  "original": "art/out/PanelMain_src.png (1536x1024) (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_PanelMain_HQ.txt",
+  "original": "art/out/hq/src/PanelMain_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/PanelMain.png",
   "size": "512x308 RGBA",
   "cutout": "scratch frame9: cutout_flat, aspect kept, longest side 508 + 2px pad, edge clean-up; SliceCenter measured with prep_ui.border",
   "preview": "art/review/styleboard_b1_preview.png",
-  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 창 1. 기본 창 틀(남색 테·금 줄·사파이어 모서리·크림 속), PanelParchment 키 대체 예정(묶음 4). Slice = Rect(37,37,475,270)."
+  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 창 1. 기본 창 틀(남색 테·금 줄·사파이어 모서리·크림 속), PanelParchment 키 대체 예정(묶음 4). Slice = Rect(37,37,475,270).",
+  "medium_original": "art/out/PanelMain_src.png (1536x1024) (Adobe MCP presigned download)",
+  "slice": [
+   50,
+   45,
+   463,
+   260
+  ],
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "BtnPrimary": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
-  "prompt": "art/prompts/SB_UIP_BtnPrimary.txt",
-  "original": "art/out/BtnPrimary_src.png (1536x1024) (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_BtnPrimary_HQ.txt",
+  "original": "art/out/hq/src/BtnPrimary_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BtnPrimary.png",
   "size": "512x165 RGBA",
   "cutout": "scratch frame9: cutout_flat, aspect kept, longest side 508 + 2px pad, edge clean-up; SliceCenter measured with prep_ui.border",
   "preview": "art/review/styleboard_b1_preview.png",
-  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 버튼 2. 금색 주요 버튼(캡슐). 가로로 늘리는 9조각: 양 끝 반원이라 좌우 고정폭은 약 83(높이의 절반), 측정값 Rect(131,45,381,105)은 세로 그라데이션 때문에 넓게 잡힘."
+  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 버튼 2. 금색 주요 버튼(캡슐). 가로로 늘리는 9조각: 양 끝 반원이라 좌우 고정폭은 약 83(높이의 절반), 측정값 Rect(131,45,381,105)은 세로 그라데이션 때문에 넓게 잡힘.",
+  "medium_original": "art/out/BtnPrimary_src.png (1536x1024) (Adobe MCP presigned download)",
+  "slice": [
+   73,
+   81,
+   443,
+   83
+  ],
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "Weapon_Warrior_T3": {
   "status": "approved",
@@ -1772,69 +1792,77 @@
  },
  "BtnSecondary": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UIP_BtnSecondary.txt",
-  "original": "art/out/s2/BtnSecondary_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_BtnSecondary_HQ.txt",
+  "original": "art/out/hq/src/BtnSecondary_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BtnSecondary.png",
   "size": "512x160 RGBA",
   "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
   "preview": "art/review/s2/b45_common_ui_sheet.png",
   "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 파랑 보조 버튼(취소·뒤로). BtnPrimary와 같은 캡슐 모양. 가로 9조각.",
   "slice": [
-   80,
-   50,
-   432,
-   110
-  ]
+   72,
+   79,
+   442,
+   81
+  ],
+  "medium_original": "art/out/s2/BtnSecondary_a_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "BtnConfirm": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UIP_BtnConfirm.txt",
-  "original": "art/out/s2/BtnConfirm_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_BtnConfirm_HQ.txt",
+  "original": "art/out/hq/src/BtnConfirm_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BtnConfirm.png",
   "size": "512x156 RGBA",
   "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
   "preview": "art/review/s2/b45_common_ui_sheet.png",
   "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 초록 받기 버튼(보상 받기·완료). 가로 9조각.",
   "slice": [
-   78,
-   50,
-   434,
-   106
-  ]
+   69,
+   77,
+   445,
+   79
+  ],
+  "medium_original": "art/out/s2/BtnConfirm_a_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "BtnSquare": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/UIP_BtnSquare.txt",
-  "original": "art/out/s2/BtnSquare_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_BtnSquare_HQ.txt",
+  "original": "art/out/hq/src/BtnSquare_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BtnSquare.png",
   "size": "510x512 RGBA",
   "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
   "preview": "art/review/s2/b45_common_ui_sheet.png",
   "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 네모 아이콘 버튼 바탕(남색 + 금테 + 아래 턱). Parts.BtnSquare 대체. 위에 글리프/아이콘을 얹음.",
   "slice": [
-   100,
-   100,
-   410,
-   412
-  ]
+   121,
+   150,
+   396,
+   368
+  ],
+  "medium_original": "art/out/s2/BtnSquare_a_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "BtnRound": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/UIP_BtnRound.txt",
-  "original": "art/out/s2/BtnRound_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_BtnRound_HQ.txt",
+  "original": "art/out/hq/src/BtnRound_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BtnRound.png",
   "size": "512x495 RGBA",
   "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
   "preview": "art/review/s2/b45_common_ui_sheet.png",
-  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 동그라미 작은 버튼 바탕(닫기·뒤로·정보). 늘리지 말고 정사각 그대로, GlyphClose를 60% 크기로 얹음."
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 동그라미 작은 버튼 바탕(닫기·뒤로·정보). 늘리지 말고 정사각 그대로, GlyphClose를 60% 크기로 얹음.",
+  "medium_original": "art/out/s2/BtnRound_a_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "ListRow": {
   "status": "approved",
@@ -1874,21 +1902,23 @@
  },
  "DialogBox": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UIP_DialogBox.txt",
-  "original": "art/out/s2/DialogBox_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_DialogBox_HQ.txt",
+  "original": "art/out/hq/src/DialogBox_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/DialogBox.png",
   "size": "512x189 RGBA",
   "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
   "preview": "art/review/s2/b45_common_ui_sheet.png",
   "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 대화창(크림 + 두꺼운 남색 테 + 금줄 + 모서리 사파이어). 9조각.",
   "slice": [
-   50,
-   50,
-   462,
-   139
-  ]
+   40,
+   34,
+   472,
+   154
+  ],
+  "medium_original": "art/out/s2/DialogBox_a_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "GlyphClose": {
   "status": "approved",
@@ -2921,10 +2951,10 @@
  },
  "MinimapRing": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/UIP_MinimapRing.txt",
-  "original": "art/out/s2/MinimapRing_b_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_MinimapRing_HQ.txt",
+  "original": "art/out/hq/src/MinimapRing_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/MinimapRing.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes --fill 0.98 --hole-tol 8 (center hole cleared), then shifted (0,+2) so the hole centroid is (256,256); checked green/light/navy, 150px",
@@ -2934,10 +2964,12 @@
     256,
     256
    ],
-   "hole_diameter": 386,
+   "hole_diameter": 385,
    "map_diameter_suggest": 392
   },
-  "note": "A23-40 B안 둥근 미니맵 틀(이미지 개발 요청). 남색 광택 고리 + 안·밖 금테 + 위쪽 금 단추. 가운데 구멍 완전 투명, 지름 약 386px(이미지의 75%) — 지도 원은 지름 392 정도로 금테 밑에 살짝 들어가게. a/b 중 b(광택·바깥 외곽선 더 진함)."
+  "note": "A23-40 B안 둥근 미니맵 틀(이미지 개발 요청). 남색 광택 고리 + 안·밖 금테 + 위쪽 금 단추. 가운데 구멍 완전 투명, 지름 약 386px(이미지의 75%) — 지도 원은 지름 392 정도로 금테 밑에 살짝 들어가게. a/b 중 b(광택·바깥 외곽선 더 진함).",
+  "medium_original": "art/out/s2/MinimapRing_b_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "Weapon_Warrior_T1": {
   "status": "approved",
@@ -3590,11 +3622,11 @@
  },
  "LogoPlate": {
   "status": "approved",
-  "date": "2026-10-06",
+  "date": "2026-10-07",
   "preview": "art/review/s2/b18_ghosticons_sheet.png",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UIP_LogoPlate.txt",
-  "original": "art/out/s2/LogoPlate_2_src.png (Adobe MCP presigned download)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_LogoPlate_HQ2.txt",
+  "original": "art/out/hq/src/LogoPlate_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/LogoPlate.png",
   "size": "1024x731 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; checked magenta/navy",
@@ -3606,15 +3638,17 @@
     0.7,
     0.19
    ]
-  }
+  },
+  "medium_original": "art/out/s2/LogoPlate_2_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "EventBannerHalloween": {
   "status": "approved",
-  "date": "2026-10-06",
+  "date": "2026-10-07",
   "preview": "art/review/s2/b18_ghosticons_sheet.png",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UIP_EventBannerHalloween.txt",
-  "original": "art/out/s2/EventBannerHalloween_2_src.png (Adobe MCP presigned download)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_EventBannerHalloween_HQ.txt",
+  "original": "art/out/hq/src/EventBannerHalloween_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/EventBannerHalloween.png",
   "size": "1024x316 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; checked magenta/navy",
@@ -3626,19 +3660,23 @@
     0.56,
     0.34
    ]
-  }
+  },
+  "medium_original": "art/out/s2/EventBannerHalloween_2_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "MapParchment": {
   "status": "approved",
-  "date": "2026-10-06",
+  "date": "2026-10-07",
   "preview": "art/review/s2/b18_ghosticons_sheet.png",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UI_MapParchment.txt",
-  "original": "art/out/s2/MapParchment_1_src.png (Adobe MCP presigned download)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UI_MapParchment_HQ.txt",
+  "original": "art/out/hq/src/MapParchment_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/MapParchment.png",
   "size": "1536x1024 RGB (opaque)",
   "cutout": "no cutout; cropped 12px each side (gray corners) and resized back to 1536x1024; border has no gray",
-  "note": "묶음 18 세계 지도 양피지(빈 종이, 끝까지 꽉 참). 옛 MapParchment(같은 키·크기) 대체. 땅·길·이름은 코드."
+  "note": "묶음 18 세계 지도 양피지(빈 종이, 끝까지 꽉 참). 옛 MapParchment(같은 키·크기) 대체. 땅·길·이름은 코드.",
+  "medium_original": "art/out/s2/MapParchment_1_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "ShardBase": {
   "status": "approved",
@@ -4242,10 +4280,10 @@
  },
  "PortraitFrame": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/UIP_PortraitFrame.txt",
-  "original": "art/out/s2/PortraitFrame_1_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_PortraitFrame_HQ.txt",
+  "original": "art/out/hq/src/PortraitFrame_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/PortraitFrame.png",
   "size": "512x498 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked light/navy",
@@ -4258,14 +4296,16 @@
     0.759
    ]
   },
-  "note": "대화창 왼쪽 NPC 초상화 틀(금테 + 모서리 사파이어, 창 안 하늘색 — 초상은 창 사각형 위에 둥근 모서리로 얹음). 검수 순서 ④. 2장 중 1."
+  "note": "대화창 왼쪽 NPC 초상화 틀(금테 + 모서리 사파이어, 창 안 하늘색 — 초상은 창 사각형 위에 둥근 모서리로 얹음). 검수 순서 ④. 2장 중 1.",
+  "medium_original": "art/out/s2/PortraitFrame_1_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "PetCard": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
-  "prompt": "art/prompts/UIP_PetCard.txt",
-  "original": "art/out/s2/PetCard_1_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_PetCard_HQ.txt",
+  "original": "art/out/hq/src/PetCard_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/PetCard.png",
   "size": "462x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 768 --holes --keep-largest; checked navy",
@@ -4290,7 +4330,9 @@
     0.18
    ]
   },
-  "note": "펫 창·도감 카드 틀(크림 + 금테, 위 민트 둥근 창 + 이름 판 + 아래 능력 칸). 펫 그림은 창 위에, 이름·능력은 TextLabel. 검수 순서 ④. 2장 중 1."
+  "note": "펫 창·도감 카드 틀(크림 + 금테, 위 민트 둥근 창 + 이름 판 + 아래 능력 칸). 펫 그림은 창 위에, 이름·능력은 TextLabel. 검수 순서 ④. 2장 중 1.",
+  "medium_original": "art/out/s2/PetCard_1_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "MapKaiju": {
   "status": "approved",
@@ -4474,16 +4516,18 @@
  },
  "UIP_WorldMapV2": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2, reference = art/review/worldmap/layout_v2_sketch_nomarks.png (0 credits) + local retouch tools/worldmap_slimefix.py (pond slimes -> our cube jelly slime from art/out/CON_SlimeCube.png)",
-  "prompt": "art/prompts/WorldMap_v2_A.txt",
-  "original": "art/out/worldmap/WorldMap_v2_A2_2.png (1536x1024, Adobe MCP presigned download); retouched master art/out/worldmap/WorldMap_v2_A2_2_slimefix.png",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits) x2: first High re-render (reference = slimefix master), then a fix pass (reference = first High) removing the face look of the horned fortress tower and turning the ruins stone mask into a crown medallion",
+  "prompt": "art/prompts/WorldMap_v2_HQ2.txt (first pass art/prompts/WorldMap_v2_HQ.txt)",
+  "original": "art/out/hq/src/WorldMapV2_HQ2_src.png (1536x1024, Adobe MCP presigned download; first pass WorldMapV2_HQ1_src.png)",
   "file": "art/ui/UIP_WorldMapV2.png",
   "size": "1024x683 RGB (opaque, no lettering; Roblox caps images at 1024). Full-size copy art/ui/UIP_WorldMapV2_1536.png",
   "cutout": "none — opaque map background",
   "preview": "art/review/worldmap/worldmap_v2_sheet.jpg; slime fix art/review/worldmap/slimefix_before_after.jpg",
   "map_transform": "stud (x,z) -> pixel in the 1536x1024 master: px = 46.222 + (x + 230) * 0.71111, py = (z + 720) * 0.71111 (+X east = right, -Z north = up). For the 1024x683 file multiply by 2/3. Painted coastlines match the layout within a few px (land IoU 0.84).",
-  "note": "사용자 OK(검수 전달, A23-53): 큰 지도 창 바탕. 둥근 슬라임 2마리를 우리 네모 젤리 슬라임으로 바꿈(사용자 요청). 뿔 요새 가운데 탑 창(얼굴처럼 보임)은 3D 때 고침. 업로드·Config.UIArt 키는 이미지 개발."
+  "note": "사용자 OK(검수 전달, A23-53): 큰 지도 창 바탕. 둥근 슬라임 2마리를 우리 네모 젤리 슬라임으로 바꿈(사용자 요청). 뿔 요새 가운데 탑 창(얼굴처럼 보임)은 3D 때 고침. 업로드·Config.UIArt 키는 이미지 개발.",
+  "medium_original": "art/out/worldmap/WorldMap_v2_A2_2.png (1536x1024, Adobe MCP presigned download); retouched master art/out/worldmap/WorldMap_v2_A2_2_slimefix.png",
+  "hq_note": "고급 2026-10-07: 해안선 차이 평균 0.9px(1536 기준) → map_transform 그대로. 뿔 요새 가운데 탑 얼굴 느낌 없앰, 유적 돌 가면 → 왕관 메달(kit_ruins.md). 시트 art/review/s2/reward_hq_sheet.jpg 아래."
  },
  "ACC_HornsR1": {
   "status": "approved",
@@ -4682,49 +4726,55 @@
  },
  "PTR_TownTiny": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/PTR_TownTiny_F.txt",
-  "original": "art/out/s2/PTR_TownTiny_F_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src + PTR_TownSmokey_A (style)",
+  "prompt": "art/prompts/PTR_TownTiny_HQ.txt",
+  "original": "art/out/hq/src/PTR_TownTiny_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/PTR_TownTiny.png",
   "size": "445x512 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (+clean_haze; Tiny: --tol 16 --soft 5 + gray-fringe clean) ; checked 4x light/navy/magenta + PortraitFrame 300/170",
   "preview": "art/review/s2/a2346_town_npc_portraits_v2.png",
   "note": "티니(교차로 장인 견습, 퀘스트 NPC A23-46). 입 다문 차분한 미소, 볼 홍조, 얼굴 그을음 없음(앞치마에만), 모자 위 고글. 참조 두 장(스모키 A 그림체 + 티니 A 캐릭터)으로 다시 그림. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '티니는 F')"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '티니는 F')",
+  "medium_original": "art/out/s2/PTR_TownTiny_F_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "PTR_TownSmokey": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/PTR_TownSmokey_A.txt",
-  "original": "art/out/s2/PTR_TownSmokey_A_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/PTR_TownSmokey_HQ.txt",
+  "original": "art/out/hq/src/PTR_TownSmokey_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/PTR_TownSmokey.png",
   "size": "400x512 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (+clean_haze; Tiny: --tol 16 --soft 5 + gray-fringe clean) ; checked 4x light/navy/magenta + PortraitFrame 300/170",
   "preview": "art/review/s2/a2346_town_npc_portraits_sheet.png",
   "note": "스모키(뿔 소굴 망보는 꼬마, 퀘스트 NPC A23-46). 윙크+한쪽 입꼬리, 뿔 달린 빨간 두건, 목에 건 망원경. 마을 NPC 초상 그림체 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '스모키 A 확정')"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '스모키 A 확정')",
+  "medium_original": "art/out/s2/PTR_TownSmokey_A_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "PTR_TownBright": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1 (Firefly reference image = PTR_TownBright_GS; GS itself from references PTR_TownBright_I + PTR_TownSmokey_A)",
-  "prompt": "art/prompts/PTR_TownBright_GS_L1.txt",
-  "original": "art/out/s2/PTR_TownBright_GS_L1_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src + PTR_TownSmokey_A (style)",
+  "prompt": "art/prompts/PTR_TownBright_HQ.txt",
+  "original": "art/out/hq/src/PTR_TownBright_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/PTR_TownBright.png",
   "size": "509x512 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 512 --tol 16 --soft 5 --holes --keep-largest + clean_haze (silver helmet kept); checked 4x light/navy/magenta + PortraitFrame 300/170",
   "preview": "art/review/s2/a2359_bright_girl_long_hair_frames.png",
   "note": "브라이트(빛 마을 경비 견습, 10살 여자아이, A23-59; 퀘스트 NPC A23-46). 스모키 A 그림체, 은빛 투구+하늘색 깃·후광·해 무늬 하늘색 겉옷·손 흔들기·금보라 땋은 손목 끈(이야기 단서)·볼 주근깨·두 눈 크게, 작게 벌린 웃음(윗니만 살짝), 긴 옆 땋은 머리. 화장 없음. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: 'L1 긴 땋은 머리 확정')"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: 'L1 긴 땋은 머리 확정')",
+  "medium_original": "art/out/s2/PTR_TownBright_GS_L1_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "FactionPickHalo": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
-  "prompt": "art/prompts/UIP_FactionCardHalo_A.txt",
-  "original": "art/out/s2/UIP_FactionCardHalo_A_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_FactionPickHalo_HQ.txt",
+  "original": "art/out/hq/src/FactionPickHalo_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/FactionPickHalo.png",
   "size": "624x1024 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
@@ -4750,14 +4800,16 @@
   },
   "preview": "art/review/s2/a2357_faction_select_v2.jpg",
   "note": "A23-57 진영 고르기 새 카드(빛). 글자 없음 — Name 리본(흰 글자)·Panel 크림 판(짙은 글자)·Button 금 버튼. 뿔 카드와 같은 실루엣·같은 칸. 글자는 게임 TextLabel(영어).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
+  "medium_original": "art/out/s2/UIP_FactionCardHalo_A_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "FactionPickHorns": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
-  "prompt": "art/prompts/UIP_FactionCardHorns_C.txt",
-  "original": "art/out/s2/UIP_FactionCardHorns_C_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_FactionPickHorns_HQ.txt",
+  "original": "art/out/hq/src/FactionPickHorns_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/FactionPickHorns.png",
   "size": "624x1024 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
@@ -4783,14 +4835,16 @@
   },
   "preview": "art/review/s2/a2357_faction_select_v2.jpg",
   "note": "A23-57 진영 고르기 새 카드(뿔). 빛 카드를 Firefly 참조로 색·장식만 바꿈(실루엣 일치도 0.998), 같은 624x1024 캔버스·같은 칸. Panel은 짙은 숯색 판 → 밝은 글자. 글자는 게임 TextLabel(영어).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
+  "medium_original": "art/out/s2/UIP_FactionCardHorns_C_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "ClassPickHalo": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
-  "prompt": "art/prompts/UIP_ClassCardHalo_A.txt",
-  "original": "art/out/s2/UIP_ClassCardHalo_A_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_ClassPickHalo_HQ.txt",
+  "original": "art/out/hq/src/ClassPickHalo_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/ClassPickHalo.png",
   "size": "555x1024 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
@@ -4822,14 +4876,16 @@
   },
   "preview": "art/review/s2/a2357_faction_select_v2.jpg",
   "note": "A23-57 직업 카드 틀(빛). Portrait 창에 CLS_Halo*_Card.png를 그대로 얹음(창 모양으로 잘려 있음). 뿔 틀과 같은 555x1024 캔버스·같은 칸. 글자는 게임 TextLabel(영어).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
+  "medium_original": "art/out/s2/UIP_ClassCardHalo_A_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "ClassPickHorns": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
-  "prompt": "art/prompts/UIP_ClassCardHorns_E.txt",
-  "original": "art/out/s2/UIP_ClassCardHorns_E_src.png (edit of UIP_ClassCardHorns_C_src.png) (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_ClassPickHorns_HQ.txt",
+  "original": "art/out/hq/src/ClassPickHorns_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/ClassPickHorns.png",
   "size": "555x1024 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
@@ -4861,28 +4917,32 @@
   },
   "preview": "art/review/s2/a2357_faction_select_v2.jpg",
   "note": "A23-57 직업 카드 틀(뿔). 빛 틀을 참조로 다시 그리고 남은 후광 고리를 지운 판, 빛 틀과 같은 캔버스·같은 칸. Body는 짙은 숯색 판 → 밝은 글자. 글자는 게임 TextLabel(영어).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
+  "medium_original": "art/out/s2/UIP_ClassCardHorns_E_src.png (edit of UIP_ClassCardHorns_C_src.png) (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "FactionPickTitle": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UIP_FactionPickTitle_A.txt",
-  "original": "art/out/s2/UIP_FactionPickTitle_A_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_FactionPickTitle_HQ.txt",
+  "original": "art/out/hq/src/FactionPickTitle_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/FactionPickTitle.png",
   "size": "1024x373 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
   "layout": {
    "Text": [
-    0.149,
-    0.429,
+    0.148,
+    0.41,
     0.704,
-    0.338
+    0.343
    ]
   },
   "preview": "art/review/s2/a2357_faction_select_v2.jpg",
   "note": "A23-57 진영 고르기 제목 띠 A(크림 리본, 왕관·날개·뿔). Text 칸에 짙은 영어 글자. 글자는 게임 TextLabel(영어).",
-  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
+  "medium_original": "art/out/s2/UIP_FactionPickTitle_A_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "CLS_HaloWarrior_M_Card": {
   "status": "approved",
@@ -5029,9 +5089,9 @@
  "JobBoard": {
   "status": "approved",
   "date": "2026-10-07",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
-  "prompt": "art/prompts/UIP_JobBoard_A.txt",
-  "original": "art/out/s2/UIP_JobBoard_A_src.png (Adobe MCP presigned download)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_JobBoard_HQ.txt",
+  "original": "art/out/hq/src/JobBoard_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/JobBoard.png",
   "size": "1024x647 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; checked 4x on navy/magenta/white",
@@ -5057,14 +5117,16 @@
   ],
   "preview": "art/review/s2/e11_job_board_sheet.jpg",
   "note": "E11 사냥터 게시판 창(나무 판 + 코르크 + 위 남색 이름판). 글자 없음 — Header = 이름판(흰 글자 'Job Board'), Inner = 코르크(위쪽 줄 'Kind 12 · Sneaky 3'·'Jobs 1 / 3' + 의뢰 카드 4장). slice는 이름판 끝 금 단추(x 286~304, 718~737)를 피해 [320,130,704,550]: 늘리면 이름판 가운데 줄·코르크·나무 테만 길어짐. 폰(749×361)에서 카드 4장 가로는 글자가 너무 작음 → 폰은 카드 2장씩 넘기기나 2×2 등, 배치는 이미지 개발이 정함(검수 2026-10-07).",
-  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)",
+  "medium_original": "art/out/s2/UIP_JobBoard_A_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "JobCard": {
   "status": "approved",
   "date": "2026-10-07",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
-  "prompt": "art/prompts/UIP_JobCard_A.txt",
-  "original": "art/out/s2/UIP_JobCard_A_src.png (Adobe MCP presigned download)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src",
+  "prompt": "art/prompts/UIP_JobCard_HQ.txt",
+  "original": "art/out/hq/src/JobCard_HQ_src.png (Adobe MCP presigned download)",
   "file": "art/ui/JobCard.png",
   "size": "339x512 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked 4x on navy/magenta/white",
@@ -5078,7 +5140,9 @@
   },
   "preview": "art/review/s2/e11_job_board_sheet.jpg",
   "note": "E11 의뢰 카드(크림 종이 + 금 테 + 위 가운데 빨간 핀). 핀 때문에 9조각 없이 비율 유지(Fit). 시트 예시 배치(Body 높이 기준): 제목 14%, 목표 31%, 보상 47%(짙은 갈색 글자), BtnKind 56~76%, BtnSneaky 78~98%(Body 폭의 92%).",
-  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)"
+  "user_ok": "사용자 OK 2026-10-07 (검수 전달: 추천 조합 창 A · 카드 A · Kind B · Sneaky B · 꼬리표 A)",
+  "medium_original": "art/out/s2/UIP_JobCard_A_src.png (Adobe MCP presigned download)",
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
  },
  "BtnKind": {
   "status": "approved",
@@ -5314,5 +5378,275 @@
   "approved_by": "검수 (sheet art/review/kit_woods/woods_big_2d_v1.jpg, a42d8b8); shown to the user by 검수",
   "source": "art/out/kit/woods_big/W_Boulder_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/W_Boulder_B.txt)",
   "final": "art/out/hq/HQ_W_Boulder_B.png (High, 5 credits) -> Tripo"
+ },
+ "R_BrokenTower": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_BrokenTower_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_BrokenTower.txt)",
+  "final": "art/out/hq/HQ_R_BrokenTower.png (High, 5 credits; prompt art/prompts/HQ_R_BrokenTower.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Gate": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Gate_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Gate.txt)",
+  "final": "art/out/hq/HQ_R_Gate.png (High, 5 credits; prompt art/prompts/HQ_R_Gate.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Arch_A": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Arch_A_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Arch_A.txt)",
+  "final": "art/out/hq/HQ_R_Arch_A.png (High, 5 credits; prompt art/prompts/HQ_R_Arch_A.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Arch_B": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Arch_B_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Arch_B.txt)",
+  "final": "art/out/hq/HQ_R_Arch_B.png (High, 5 credits; prompt art/prompts/HQ_R_Arch_B.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_CrownAltar": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_CrownAltar_2.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_CrownAltar.txt)",
+  "final": "art/out/hq/HQ_R_CrownAltar.png (High, 5 credits; prompt art/prompts/HQ_R_CrownAltar.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_WallRuin": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_WallRuin_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_WallRuin.txt)",
+  "final": "art/out/hq/HQ_R_WallRuin.png (High, 5 credits; prompt art/prompts/HQ_R_WallRuin.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Cliff_A": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Cliff_A_v2_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Cliff_A_v2.txt)",
+  "final": "art/out/hq/HQ_R_Cliff_A.png (High, 5 credits; prompt art/prompts/HQ_R_Cliff_A.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "R_Cliff_B": {
+  "status": "picked (final High done; Tripo web next)",
+  "date": "2026-10-07",
+  "approved_by": "검수 (sheet art/review/kit_ruins/ruins_big_2d_v1.jpg, d034799 — the image session's recommendation kept); shown to the user by 검수",
+  "source": "art/out/kit/ruins_big/R_Cliff_B_v2_1.png (Firefly GPT Image 2.5 medium, 0 credits; prompt art/prompts/R_Cliff_B_v2.txt)",
+  "final": "art/out/hq/HQ_R_Cliff_B.png (High, 5 credits; prompt art/prompts/HQ_R_Cliff_B.txt; sheet art/review/kit_ruins/ruins_big_hq_v1.jpg) -> Tripo"
+ },
+ "RewardPanelHalo": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardPanelHalo_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardPanelHalo_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardPanelHalo_A.png (prompt art/prompts/UIP_RewardPanelHalo_A.txt)",
+  "file": "art/ui/RewardPanelHalo.png",
+  "size": "512x294 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 팝업 빛 판(9조각): 흰 테 + 모서리 작은 깃털, 크림 속. 모서리 장식은 모서리 칸 안. Inner = 속 크림 칸(분수). 검수 고름 2026-10-07.",
+  "slice": [
+   62,
+   66,
+   449,
+   231
+  ],
+  "layout": {
+   "Inner": [
+    0.076,
+    0.16,
+    0.848,
+    0.707
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardPanelHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardPanelHorns_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardPanelHorns_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardPanelHorns_A.png (prompt art/prompts/UIP_RewardPanelHorns_A.txt)",
+  "file": "art/ui/RewardPanelHorns.png",
+  "size": "512x305 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 팝업 뿔 판(9조각): 진홍 테 + 모서리 작은 숯색 뿔, 자주 속. Inner = 속 칸(분수). 검수 고름 2026-10-07.",
+  "slice": [
+   60,
+   65,
+   452,
+   239
+  ],
+  "layout": {
+   "Inner": [
+    0.066,
+    0.128,
+    0.869,
+    0.754
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHalo": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHalo_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHalo_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHalo_A.png (prompt art/prompts/UIP_RewardRibbonHalo_A.txt)",
+  "file": "art/ui/RewardRibbonHalo.png",
+  "size": "512x143 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 제목 띠(빛, 휜 것, 날개): 크기 고정으로 씀(늘리면 휘어짐이 깨짐). Text = 글자 칸. 'VACATION BONUS!'는 띠 폭 520px 이상에서 글자 약 20px(검수: 폭은 가장 긴 제목에 맞추고 글자 크기는 이미지 개발). 검수 고름 2026-10-07.",
+  "layout": {
+   "Text": [
+    0.22,
+    0.31,
+    0.56,
+    0.44
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHorns": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHorns_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHorns_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHorns_A.png (prompt art/prompts/UIP_RewardRibbonHorns_A.txt)",
+  "file": "art/ui/RewardRibbonHorns.png",
+  "size": "512x149 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 제목 띠(뿔, 휜 것, 뿔 + 접힌 꼬리): 크기 고정으로 씀. Text = 글자 칸(넓음). 검수 고름 2026-10-07.",
+  "layout": {
+   "Text": [
+    0.12,
+    0.33,
+    0.76,
+    0.41
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHaloStraight": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHaloStraight_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHaloStraight_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHalo_C.png (prompt art/prompts/UIP_RewardRibbonHalo_C.txt)",
+  "file": "art/ui/RewardRibbonHaloStraight.png",
+  "size": "512x100 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "예비: 곧은 빛 띠(날개 끝). 가운데만 늘어남(slice 알약 규칙). 늘려야 하는 곳용. 검수 고름 2026-10-07.",
+  "slice": [
+   71,
+   49,
+   441,
+   51
+  ],
+  "layout": {
+   "Text": [
+    0.14,
+    0.3,
+    0.72,
+    0.52
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardRibbonHornsStraight": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardRibbonHornsStraight_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardRibbonHornsStraight_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardRibbonHorns_C.png (prompt art/prompts/UIP_RewardRibbonHorns_C.txt)",
+  "file": "art/ui/RewardRibbonHornsStraight.png",
+  "size": "512x106 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "예비: 곧은 뿔 띠(뿔 끝). 가운데만 늘어남(slice 알약 규칙). 검수 고름 2026-10-07.",
+  "slice": [
+   42,
+   52,
+   469,
+   54
+  ],
+  "layout": {
+   "Text": [
+    0.1,
+    0.26,
+    0.8,
+    0.5
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardSlot": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardSlot_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardSlot_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardSlot_A.png (prompt art/prompts/UIP_RewardSlot_A.txt)",
+  "file": "art/ui/RewardSlot.png",
+  "size": "256x252 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 아이템 칸(공용): 금 테 + 남색 속. Inner = 아이콘·숫자 자리(분수). 검수 고름 2026-10-07.",
+  "slice": [
+   43,
+   67,
+   215,
+   207
+  ],
+  "layout": {
+   "Inner": [
+    0.121,
+    0.127,
+    0.758,
+    0.742
+   ]
+  },
+  "cutout": "tools/img2/cut_keep.py --long 256 --holes --keep-largest; 3배 확대 남색·자홍·흰 바탕 확인"
+ },
+ "RewardGlow": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_RewardGlow_HQ.txt",
+  "original": "art/out/s2/reward/hq/RewardGlow_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/RewardGlow_A.png (prompt art/prompts/UIP_RewardGlow_A.txt)",
+  "file": "art/ui/RewardGlow.png",
+  "size": "512x512 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 둥근 빛무리: 흰색 + 밝기 알파(ImageColor3로 금·주황 칠함), 판 뒤. 검수 고름 2026-10-07.",
+  "cutout": "tools/img2/lum_alpha.py --center: 검은 바탕 밝기 → 알파, RGB 흰색, 가운데 맞춘 정사각"
+ },
+ "RewardSparkle": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_Sparkle_HQ.txt",
+  "original": "art/out/s2/reward/hq/Sparkle_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/reward/Sparkle_B.png (prompt art/prompts/UIP_Sparkle_B.txt)",
+  "file": "art/ui/RewardSparkle.png",
+  "size": "256x256 RGBA",
+  "preview": "art/review/s2/reward_hq_sheet.jpg (시안 art/review/s2/reward_popup_sheet.jpg)",
+  "note": "보상 반짝이(흰 4각 + 짧은 대각): 흰색 + 밝기 알파, 파티클·장식용. 검수 고름 2026-10-07.",
+  "cutout": "tools/img2/lum_alpha.py --center: 검은 바탕 밝기 → 알파, RGB 흰색, 가운데 맞춘 정사각"
+ },
+ "Kit_W_Campfire_Fire": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate Campfire_FB2",
+  "prompt": "art/prompts/KIT_Woods_Campfire_FB_HQ.txt (candidate art/prompts/KIT_Woods_Campfire_FB.txt)",
+  "original": "art/out/kit/woods/Campfire_FB2_HQ_src.png (1024x1024, gray backdrop = Tripo input; copy art/out/hq/HQ_Woods_Campfire_FB2.png)",
+  "medium_pick": "art/out/kit/woods/Campfire_FB2_src.png",
+  "file": "art/out/kit/woods/Campfire_FB2_HQ.png (cutout for sheets only)",
+  "preview": "art/review/s2/kit_campfire_fire_sheet.jpg",
+  "note": "검수 고름 B2(사용자: '지금은 나무에 불이 안 붙어서 이상해', 참고 사진 2번째 느낌 — 사진은 출처를 몰라 참조로 안 씀). 엇갈린 통나무 틈이 숯처럼 빛남 + 가운데 굵은 불꽃 덩어리, 고급에서 불꽃 끝을 굵게 붙여 Tripo가 한 덩어리로 잡게. 불 없는 Kit_W_Campfire(Campfire_HQ_src) 3D를 대체. 움직이는 불꽃·빛은 Studio(개발 1)."
  }
 }

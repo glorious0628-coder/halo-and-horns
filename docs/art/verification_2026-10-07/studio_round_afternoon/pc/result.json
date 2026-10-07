@@ -1,0 +1,41 @@
+{
+  "custom_follow": {
+    "walk_right": {
+      "cam_before": 0.0,
+      "cam_after": -177.1,
+      "turned": -177.1
+    },
+    "back_up": {
+      "cam_before": 0.0,
+      "cam_after": 0.0,
+      "turned": 0.0
+    },
+    "attack_walking": {
+      "cam_before": 0.0,
+      "cam_after": 0.0,
+      "body_after": -1.8,
+      "turned": 0.0
+    }
+  },
+  "roblox_follow": {
+    "walk_right": {
+      "cam_before": -178.5,
+      "cam_after": 26.3,
+      "turned": -155.2
+    },
+    "back_up": {
+      "cam_before": -173.9,
+      "cam_after": -173.9,
+      "turned": 0.0
+    },
+    "attack_walking": {
+      "cam_before": -173.9,
+      "cam_after": -173.9,
+      "body_after": -173.8,
+      "turned": 0.0
+    }
+  },
+  "minimap": "2 PotionMerchant rot=0 text=- img=192030084262 | Me rot=90 text=- img=236026912773",
+  "bark": "bubbles 1",
+  "console": []
+}

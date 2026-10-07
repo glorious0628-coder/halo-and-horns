@@ -39,3 +39,20 @@
 - 고급 26 참조 = 게임에 들어간 그림의 원본 `_src`(세계 지도는 슬라임 고친 `WorldMap_v2_A2_2_slimefix.png`), Adobe 내 파일 `halo-horns-refs/`에 올림. 초상은 참조 2장(스모키 A = 그림체 + 그 사람). 자산 id(urn:aaid:sc:AP: 뒤, Firefly 참조로 다시 쓸 때 `asset_get_presigned_urls`):
   `{"PanelMain": "f89349b2-1aeb-4557-bc32-de0ccb2f42f5", "DialogBox": "ad945370-0168-4d8b-9963-3965e7036355", "PortraitFrame": "96041eab-ff59-4989-989c-534ec5ccba20", "PetCard": "8413897f-837a-4b0f-b164-46428168b0e2", "MapParchment": "06dd914e-79d5-4031-84a4-268e70306813", "WorldMapV2": "3218a69f-d26d-4f62-af5a-bc402d585d30", "LogoPlate": "88a8cf00-3b40-41ce-8765-d36d92085bca", "EventBannerHalloween": "27c51b0b-0a72-4707-8f4f-c753c94b908e", "JobBoard": "33aee9c6-a614-427c-82e0-8fe3b974c126", "JobCard": "df034b17-0588-4f42-81ff-0893cea0533b", "FactionPickHalo": "c96ebdc1-6e59-4f2e-815a-9e50cdb73000", "FactionPickHorns": "71803965-292b-4217-8841-ffb9042a1955", "ClassPickHalo": "fa024df8-c24b-4e2c-96e1-0d6a3a2f730e", "ClassPickHorns": "5622d3ab-1a5e-4616-8f3a-f5a67a2b1d6b", "FactionPickTitle": "1c244613-ca48-49b1-8ab0-5977d0a11290", "PTR_TownTiny": "691115ca-61b7-41e8-a27d-c140a23bce91", "PTR_TownSmokey": "c29ad5c1-7c3b-494f-9c97-5e207b4b7e4c", "PTR_TownBright": "b67bd4b6-bb28-4466-9516-5b46cc3c24f3", "BtnPrimary": "11bb6b94-b301-4579-97d7-ad65bfd9320f", "BtnSecondary": "d13f8078-b01e-49a9-b9fc-b66e346864ea", "BtnConfirm": "4658e42b-ad5a-46ec-8bae-e6fab8fd7b09", "BtnSquare": "06d7f81e-330d-4f18-be7c-c096d445b14c", "BtnRound": "d4cef942-8e88-4057-b1c9-085053ad408a", "BtnAttack": "ee73cba6-2203-4bb6-8826-c81bb24db8e6", "BtnPotion": "6671818d-e07a-4a9c-adec-baa4a3533aba", "MinimapRing": "9f3db201-d022-45d5-b68e-3be9f4c8cedb"}`
 - 막힘: 내장 브라우저 창이 숨겨져 Firefly가 그리지 못함(숨김에서는 넓히기도 안 먹음) → 검수에게 사용자 Ctrl+Shift+B 전달 부탁. 창이 보이면 보상 14 + 모닥불 2(중간 0크레딧)부터.
+
+## 오후 3
+- 브라우저 창이 한 번 보일 때 1440×900으로 넓혀 두면 그 뒤 창이 숨겨져도 생성·업로드가 계속 됨(숨김에서는 타이머가 느려져 한 장 30~60초). 새로고침만 숨김에서 하지 않기.
+- **bdf4ab1** 보상 팝업 시안 18장(판 빛/뿔 A·B, 띠 휜 A·B + 곧은 C·D, 칸 A·B, 빛무리 A·B, 반짝이 A·B) + 숲 모닥불 C/D 시트 → 검수 대기. 추천: 빛 판 A + 띠 C, 뿔 판 A + 띠 C, 칸 A, 빛무리 A, 반짝이 B, 모닥불 D. 원본·누끼 `art/out/s2/reward/`, 재기 `meas.json`.
+- **f8b933f** 고급 다시 그리기 26 + 로고 판 다시 1 = 135크레딧. 비교 시트 `art/review/s2/hq_rerender_sheet{1,2,3}.jpg` → 검수 대기. 원본 `art/out/hq/src/<Key>_HQ_src.png`, 누끼(같은 캔버스) `art/out/hq/ui/`, 9조각 `art/out/hq/ui/slices.json`. OK 나면 scratchpad `hq_apply.py`(art/ui 덮어쓰기 + approved.json 26키)와 같은 일을 하고 이미지 개발에 넘김. 첫 고급 로고는 왕관 금 간 자국이 사라져 다시(UIP_LogoPlate_HQ2). 세계 지도 뿔 요새 탑 창·유적 돌 가면 얼굴 느낌은 그대로(검수 판단 대기, 고치면 +5).
+- **70c5739** 해골 유적 작은 소품 13종(이미지 생성 1 kit_ruins.md) 시트 `art/review/s2/kit_ruins13_sheet.jpg` → 검수 대기. 머리말의 'faded purple cloth'가 돌마다 천으로 번져서 돌은 'Bare stone only: no cloth, no drapes.'(_B), 꽃은 따로 머리말. 돌 이정표는 묘비 모양을 피해 둥근 기둥(C).
+- 새 누끼 도구 `tools/img2/cut_solid.py`: 연보라·회색 돌 그림자가 바탕색과 같아 틈을 따라 구멍이 날 때 사용.
+- 크레딧: 오늘 이 세션 고급 = 숲 8(40) + 고급 27(135). Firefly 표시 9410(고급 27 전), 그 뒤는 창 숨김이라 새로고침 못 함 → 9275 이하.
+- 다음: 검수 고르기 → 고른 보상 부품·모닥불·유적 3D 후보 고급 → art/ui·approved.json → 이미지 개발 / 이미지 생성 1. 숲 E12·PvP 작은 아이콘은 목록을 검수에 물어보기.
+
+## 오후 4
+- 검수 통과: 고급 25 → art/ui + approved.json **4ceaabf**(이미지 개발 업로드·Config 반영 끝). 세계 지도는 얼굴 느낌 고친 고급판(+5)으로 **1d58f6c**.
+- 검수 고름 → 보상 팝업 고급 9장 **1d58f6c**: RewardPanelHalo/Horns(9조각), RewardRibbonHalo/Horns(휜 띠, 크기 고정, Text), RewardRibbonHaloStraight/HornsStraight(예비, 알약 slice), RewardSlot, RewardGlow, RewardSparkle(흰색 + 밝기 알파). 시트 `art/review/s2/reward_hq_sheet.jpg`. 빛 휜 띠 글자 칸 56% → 폰에서 긴 제목이 작아짐(이미지 개발에 전달).
+- 모닥불: 사용자 '나무에 불이 안 붙어서 이상해' → 불 붙은 시안 4장 **143f131** `art/review/s2/kit_campfire_fire_sheet.jpg`(A 점토 불꽃 덩어리 / B 숯 틈 + 굵은 불꽃, 추천 A2·B2) → 검수 고르기 대기. 앞의 D는 취소. 사진은 출처 몰라 참조로 안 올림.
+- git: 검수 새 순서(AGENTS 4bef885) `git fetch -q origin && git reset --keep origin/main` → `git commit -- <paths>` → `git push origin HEAD:main`, 거절되면 커밋 직후 잡은 해시로 temp-index push 뒤 다시 reset --keep. 다른 세션 reset 때문에 빈 중복 커밋 81077c1이 한 번 올라감(내용 피해 없음).
+- 크레딧: 오늘 이 세션 고급 225(숲 8 = 40, 고급 다시 27 = 135, 보상 9 + 지도 1 = 50). 표시 숫자는 창 숨김이라 못 읽음(9410 → 9225 이하).
+- 대기: 모닥불 고르기 → 고급 → 이미지 생성 1 / 유적 13 시트(70c5739) 고르기 → 3D 후보 고급 / 숲 E12·PvP 작은 아이콘 목록은 검수에 물어보기.

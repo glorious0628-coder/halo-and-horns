@@ -1,0 +1,58 @@
+{
+  "tool": "tools/window_audit_view.py",
+  "rows": [
+    {
+      "device": "phone",
+      "id": "NoSkills",
+      "probe": {},
+      "file": "build/window_audit_after/phone_NoSkills.png"
+    },
+    {
+      "device": "phone",
+      "id": "Vacation",
+      "probe": {
+        "Code": [],
+        "Root": "RewardPopup",
+        "Art": {
+          "IconCoin": 1,
+          "RewardRays": 1,
+          "SlotCommon": 2,
+          "PanelCard": 1,
+          "BannerGold": 1,
+          "BtnConfirm": 1,
+          "IconExp": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Vacation.png"
+    },
+    {
+      "device": "phone",
+      "id": "Reward",
+      "probe": {
+        "Code": [],
+        "Root": "RewardPopup",
+        "Art": {
+          "IconCoin": 1,
+          "RewardRays": 1,
+          "SlotCommon": 2,
+          "BannerGold": 1,
+          "BtnConfirm": 1,
+          "IconExp": 1,
+          "PanelCard": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Reward.png"
+    }
+  ]
+}

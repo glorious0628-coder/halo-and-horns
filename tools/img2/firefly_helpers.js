@@ -1,0 +1,30 @@
+// Firefly web (firefly.adobe.com/generate/image) queue helpers — paste into the built-in browser with javascript_tool.
+// 이미지 생성 2, 2026-10-07. Needs the desktop layout: show the browser pane once (Ctrl+Shift+B), resize_window 1440x900,
+// then the pane may be hidden again (timers slow down to 30-60 s per image). Never reload while the pane is hidden.
+// Model value: 'openai:firefly:colligo:gpt-image-2.5-prism' (= GPT Image 2.5 Sunburst). Quality values: 'medium' (0 credits), 'high' (5).
+// Aspect labels: '와이드 (3:2)', '정사각형 (1:1)', '긴 (2:3)'. Prompts must stay under 1000 characters (longer = click silently ignored).
+// Results: Adobe MCP asset_search(entityScope GenAIAsset, sortBy createDate, filters.mediaType image) -> asset_get_presigned_urls -> downloadUrl.
+// Map results by the prompt's first words + createDate right after each logged submit time (the name's number changes per page).
+
+window.__s2_deepAll = function (root, sel, out = []) { root.querySelectorAll(sel).forEach(e => out.push(e)); root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) window.__s2_deepAll(e.shadowRoot, sel, out); }); return out; };
+window.__s2_sleep = ms => new Promise(r => setTimeout(r, ms));
+window.__s2_log = window.__s2_log || [];
+window.__s2_btn = () => window.__s2_deepAll(document, 'sp-button').find(b => (b.getAttribute('aria-label') || '') === '생성' || (b.textContent || '').trim() === '생성');
+window.__s2_busy = () => { const b = window.__s2_btn(); return !!(b && b.pending); };
+window.__s2_pick = (value) => { const it = window.__s2_deepAll(document, 'sp-menu-item').find(e => e.value === value || e.getAttribute('value') === value); if (!it) return false; it.click(); return true; };
+window.__s2_setAspect = (label) => { const items = window.__s2_deepAll(document, 'sp-menu-item[role="option"]').filter(e => (e.getAttribute('aria-label') || '') === label); if (!items.length) return false; items[0].click(); return true; };
+window.__s2_ta = () => window.__s2_deepAll(document, 'textarea').find(t => /설명해 주세요/.test(t.getAttribute('placeholder') || '') || (t.getAttribute('aria-label') || '') === '프롬프트');
+window.__s2_type = (text) => { const ta = window.__s2_ta(); if (!ta) return false; ta.focus(); ta.select(); document.execCommand('insertText', false, text + ' '); document.execCommand('delete'); return ta.value === text; };
+window.__s2_refs = () => window.__s2_deepAll(document, 'span').filter(s => /참조 이미지 \(/.test(s.textContent || '')).map(s => s.textContent.trim());
+// Reference image from a URL the page can fetch (Adobe presigned at.adobe.com links work): fills the first empty upload slot.
+window.__s2_upload = async (url, name) => { const r = await fetch(url); const blob = await r.blob(); const file = new File([blob], name, { type: 'image/png' }); const up = window.__s2_deepAll(document, 'firefly-upload-new').find(u => !u.hasAttribute('fileref')); const input = (up.shadowRoot && up.shadowRoot.querySelector('input[type=file]')) || up.querySelector('input[type=file]'); const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files; input.dispatchEvent(new Event('change', { bubbles: true })); return blob.size; };
+window.__s2_unref = () => { const rm = window.__s2_deepAll(document, 'button').filter(b => (b.getAttribute('aria-label') || '').trim() === 'Remove'); rm.forEach(b => b.click()); return rm.length; };
+
+// Medium queue (no references): items [{tag, a: aspect label, t: prompt}]. Skips an item unless quality is 'medium' and no reference is attached.
+window.__s2_runMed = async function (q) { const S = window.__s2_sleep, L = (x) => window.__s2_log.push(typeof x === 'string' ? x : JSON.stringify(x)); window.__s2_stop = false; for (let i = 0; i < q.length; i++) { if (window.__s2_stop) { L('stopped at ' + i); return; } const it = q[i]; let w = 0; while (window.__s2_busy() && w < 300) { await S(1000); w++; } await S(1200); window.__s2_unref(); await S(1500); window.__s2_setAspect(it.a); await S(700); const ok = window.__s2_type(it.t); await S(900); const pk = window.__s2_deepAll(document, 'sp-picker').map(p => p.value); const refs = window.__s2_refs().join(''); if (pk[2] !== 'medium' || refs.indexOf('(0/6)') < 0 || !ok) { L({ skip: it.tag, q: pk[2], refs, ok }); continue; } const b = window.__s2_btn(); L({ i, tag: it.tag, ok, size: pk[1], t: new Date().toISOString() }); b.click(); await S(6000); L('after ' + i + ' pending=' + window.__s2_btn().pending); } L('done'); };
+
+// High queue with references: items [{tag, a, urls: [reference urls], t}]. Skips unless quality is 'high' and every reference loaded.
+window.__s2_runHQ = async function (items) { const S = window.__s2_sleep, L = (x) => window.__s2_log.push(typeof x === 'string' ? x : JSON.stringify(x)); window.__s2_stop = false; for (let i = 0; i < items.length; i++) { if (window.__s2_stop) { L('stopped at ' + i); return; } const it = items[i]; let w = 0; while (window.__s2_busy() && w < 400) { await S(1000); w++; } await S(1200); window.__s2_unref(); await S(2500); for (let j = 0; j < it.urls.length; j++) { try { await window.__s2_upload(it.urls[j], it.tag + '_ref' + j + '.png'); } catch (e) { L('upload fail ' + it.tag + ' ' + e); } await S(6500); } const refs = window.__s2_refs().join(''); window.__s2_setAspect(it.a); await S(800); const ok = window.__s2_type(it.t); await S(900); const pk = window.__s2_deepAll(document, 'sp-picker').map(p => p.value); const want = '(' + it.urls.length + '/6)'; if (pk[2] !== 'high' || refs.indexOf(want) < 0 || !ok) { L({ skip: it.tag, q: pk[2], refs, ok }); continue; } const b = window.__s2_btn(); L({ i, tag: it.tag, ok, refs, size: pk[1], t: new Date().toISOString() }); b.click(); await S(8000); L('after ' + i + ' pending=' + window.__s2_btn().pending); } let w = 0; while (window.__s2_busy() && w < 400) { await S(1000); w++; } window.__s2_unref(); L('done'); };
+
+// Typical use: window.__s2_pick('medium'); window.__s2_log = []; window.__s2_runMed([...]);  then poll JSON.stringify(window.__s2_log.slice(-3))
+// After a High run, switch back with window.__s2_pick('medium') so a later Medium queue cannot spend credits.

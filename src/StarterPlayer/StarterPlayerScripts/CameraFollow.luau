@@ -29,7 +29,9 @@ local FOLLOW = {
 	Rate = math.rad(45), SlowRate = math.rad(25),
 	Ease = 1.2, SlowEase = 0.7, -- share of the remaining angle turned per second
 	DeadZone = math.rad(6), -- a smaller misalignment is left alone
-	BackDot = -0.25, -- walking toward the camera (walk . camera look below this): never turn
+	-- only while walking mostly forward (walk . camera look >= MinDot; 검수 2026-10-07: a sidestep or a walk toward the
+	-- camera never turns it - sideways it kept circling)
+	MinDot = 0.5,
 	MinMove = 0.2, -- MoveDirection length that counts as walking
 	ManualHold = 1.5, AttackHold = 0.5, -- s
 	CameraSide = 0.4, -- a finger drag that starts right of this share of the screen turns the camera (not the stick)
@@ -83,7 +85,7 @@ function FOLLOW.Step(dt)
 	if cl < 0.05 or ml < 0.05 then return end
 	cx, cz, mx, mz = cx / cl, cz / cl, mx / ml, mz / ml
 	local dot = cx * mx + cz * mz
-	if dot < FOLLOW.BackDot then return end
+	if dot < FOLLOW.MinDot then return end
 	-- signed yaw (about +Y) from the camera heading to the walking heading
 	local angle = math.atan2(cz * mx - cx * mz, dot)
 	if math.abs(angle) < FOLLOW.DeadZone then return end

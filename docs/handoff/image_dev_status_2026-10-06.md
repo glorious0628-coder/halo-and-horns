@@ -1,5 +1,7 @@
 # 이미지 개발 인계 상태 (2026-10-06 오후, 계정 옮기느라 멈춤 — 검수 지시)
 
+> **2026-10-07 저녁: 최신 인계는 `docs/handoff/imgdev_handoff_2026-10-07.md`** (이 파일은 기록용).
+
 > **최신(10/07 저녁):** 오늘 main — adc7311 폰 진영·직업 가로 배치 + Typewriter, 8f7f122 A23-66 미니맵 화살표·게시판 그림, 53db902 글꼴 Denk One + Montserrat(A23-63) + 넘침, 15ff595 9조각 가운데 2px 띠 + 오프닝 폰 + 폰 [메뉴] + 빛 +2du, 491fa51 작은 PC 창 = PC 배치(UIScale만 줄임, UIKit.PxFloor), **6f0ab5a A23-68 꾸밈**(HUD.Hint·ClearHint·HintShown 말풍선·금빛 테·흔들림, QuestMarker.Focus, 첫 [Claim] 전 접힘 + NEW!, MiniMapTap, Config.Fonts 읽기; 로직은 개발 1 FirstSteps cfd05ec), 그리고 창 점검표 커밋(tools/window_audit_view.py, docs/design/window_art_audit_2026-10-07.md, '지금 모습' 사진 art/review/window_audit_{pc,phone}_2026-10-07.jpg). 효과음 32개 업로드 끝.
 > **준비만 됨(scratchpad 패치, 다음 UiSandbox Play에서 적용·확인):** 공통 틀(Panels 껍데기 PanelCard + RibbonHeader 제목 + BtnRound X/← + 버튼 그림 UIKit.ArtTextButton/SetButtonArt + 높이 = 내용), 확인 상자 DialogBox, UIKit.RewardPopup(보상 팝업 하나; 이미지 생성 2 보상 부품 시안 bdf4ab1 고른 뒤 바뀜). 패치가 날아가면 이 설명대로 다시 쓴다.
 > **다음:** 공통 틀 적용·사진(PC·폰, 상점 2개 먼저) → 보상 팝업(휴가 보너스부터, Panels.Open("Vacation") 길) → #10 선택 버튼 모양 확인 + 749 호박 대왕 알약 넘침 → 골드 합친 표시 안(주머니+금고) → BoardPanel → UI 아이디어 2회차 나머지(#4 알림이 창을 가리지 않게, #5 퀘스트 체크, #6 전쟁 막대, #8 두 번 눌러 사기) → A23-62 무료 VFX → 10/19 A23-69 [Stats] 탭 모양 확인.

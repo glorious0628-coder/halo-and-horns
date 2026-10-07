@@ -28,7 +28,7 @@
 | R_WallRuin | 무너진 성벽 한 칸(성가퀴 들쭉날쭉, 이끼, 빈 창 하나만) | 폭 16, 높이 10 | 8+ | 가장자리·길 둘레 |
 | R_Cliff_A/B | 판석이 겹친 연보라 바위 덩어리 2종(능선 앞 덧대기) | 폭 14~20 | 10+ | 북·남·동 능선 앞 |
 
-- **2D 시안(2026-10-07, 중간 0크레딧):** `art/review/kit_ruins/ruins_big_2d_v1.jpg`(8종×2안, 원본 `art/out/kit/ruins_big/`). 이미지 생성 1 추천 ★: 성탑 2 · 관문 1 · 아치 A 2 · 아치 B 1 · 제단 2 · 성벽 1 · 바위 A v2-1 · 바위 B v2-1 — 검수 고름 대기. 고르면 고른 안만 고급(5×8=40) → Tripo.
+- **2D 시안(2026-10-07, 중간 0크레딧):** `art/review/kit_ruins/ruins_big_2d_v1.jpg`(8종×2안, 원본 `art/out/kit/ruins_big/`). 검수 확정(추천 그대로): 성탑 2 · 관문 1 · 아치 A 2 · 아치 B 1 · 제단 2 · 성벽 1 · 바위 A v2-1 · 바위 B v2-1 → 고급 8장(5×8=40) `art/out/hq/HQ_R_*.png`, 전·후 시트 `art/review/kit_ruins/ruins_big_hq_v1.jpg`. 다음: Tripo 웹(3b 시험으로 정한 방식).
 
 ## 작은 것 (이미지 생성 2) — 문구 `art/prompts/KIT_Ruins_<이름>.txt`, Studio 이름 `Kit_R_<이름>`
 | 이름 | 모양(문구 요약) | 크기(스터드) | 개수 | 자리 |

@@ -133,6 +133,20 @@ def static_checks(config: str, worldmap: str):
          and re.search(r'if Config\.FeatureOn\("Market"\) then[^\n]*\n\t\tlandmark\("Market"', worldmap) is not None),
         ("the world map calls the anvil spot Forge while the artisan guild is off",
          'Text = Config.FeatureOn("NeutralFaction") and TXT.Guild or TXT.Forge,' in worldmap and 'Forge = "Forge",' in worldmap),
+    ] + english_checks()
+
+
+def english_checks():
+    """A23-48 (검수 2026-10-07): Roblox auto-translation is off for every GUI; no Korean in FactionPicker's code lines."""
+    cm = (ROOT / "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau").read_text(encoding="utf-8-sig")
+    fp = (ROOT / "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau").read_text(encoding="utf-8-sig")
+    fp_code = "\n".join(line.split("--")[0] for line in fp.splitlines())
+    return [
+        ("ClientMain turns AutoLocalize off for every GUI object under PlayerGui and in the world",
+         'if inst:IsA("GuiBase2d") then inst.AutoLocalize = false end' in cm
+         and 'watch(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))' in cm
+         and "task.spawn(watch, workspace)" in cm and cm.index("AutoLocalize") < cm.index("local ORDER = {")),
+        ("FactionPicker has no Korean in its code (warnings / errors are English)", HANGUL.search(fp_code) is None),
     ]
 
 

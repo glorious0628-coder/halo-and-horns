@@ -1,0 +1,22 @@
+{
+  "fold": "MenuFold=true visible=false size=333, 156 pos=263.25, -54.25; shown 0: ",
+  "custom_follow_phone": {
+    "walk_right": {
+      "cam_before": -141.1,
+      "cam_after": 146.7,
+      "turned": -72.20000000000005
+    },
+    "back_up": {
+      "cam_before": 0.0,
+      "cam_after": 0.0,
+      "turned": 0.0
+    },
+    "attack_walking": {
+      "cam_before": 0.0,
+      "cam_after": 0.0,
+      "body_after": -0.0,
+      "turned": 0.0
+    }
+  },
+  "console": []
+}

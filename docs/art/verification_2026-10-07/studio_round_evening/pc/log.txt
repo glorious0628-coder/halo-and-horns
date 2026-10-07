@@ -1,0 +1,31 @@
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 IntroSeen=false ZoneId=Crossroads Team=Choosing a side
+saved 01_opening_crown
+saved 02_opening_crown_b
+fired faction
+faction: DataLoaded=true Faction=Horns ClassChosen=false TutorialStep=0 IntroSeen=true ZoneId=Crossroads Team=Horn Legion
+chat after the pick:
+CHAT To chat click here or press "/" key || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Horn Legion!
+KO 0: 
+LOCALE ko-kr table=LocalizationTable
+fired class
+chosen: DataLoaded=true Faction=Horns ClassChosen=true TutorialStep=0 IntroSeen=true ZoneId=HornsTown Team=Horn Legion
+fired tutorial
+travel ui (0.8 s): line='Off to Squishy Meadow!  3' black=1
+travel ui (2.8 s): line='Off to Squishy Meadow!  1' black=0.21931564807891846
+after travel: DataLoaded=true Faction=Horns ClassChosen=true TutorialStep=2 IntroSeen=true ZoneId=SlimeMeadow Team=Horn Legion
+travel ui (after): no TravelFade
+autolocalize: PlayerGui GuiBase2d 884, AutoLocalize on 0; world AutoLocalize on 0
+saved 03_crossroads
+chat later:
+CHAT To chat click here or press "/" key || Leave channel <XX>? || Chat '/?' or '/help' for a list of chat commands. || You joined the Horn Legion!
+KO 0: 
+LOCALE ko-kr table=LocalizationTable
+look set
+saved 04_sky_crown_from_ground
+look set
+saved 05_halo_castle
+look set
+saved 06_horns_castle
+camera custom
+console: 
+play stopped (my own test Play)
