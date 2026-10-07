@@ -1969,6 +1969,8 @@ function L.SetFold(open)
 	if open then
 		ui.fold.Visible = true
 		L.PlaceFold(not reduced)
+		local panels = C and C.Panels
+		if type(panels) == "table" and type(panels.Metric) == "function" then pcall(panels.Metric, "Menu") end -- BB38
 	elseif reduced then
 		ui.fold.Visible = false
 		for _, f in ui.foldTiles do

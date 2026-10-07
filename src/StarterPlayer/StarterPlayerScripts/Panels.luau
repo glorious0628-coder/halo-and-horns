@@ -3154,6 +3154,7 @@ function Panels.Open(id, arg)
 	openedFromMenu = fromMenu
 	REG.Arg = arg -- BB13: a registered window's Build gets it (e.g. Settings { Tab = "Keys" })
 	currentId = id
+	Panels.Metric(id)
 	-- The nickname result is displayed in its own panel; transient game tips stay behind it.
 	root.ZIndex = id == "Nickname" and 96 or ZINDEX
 	root.Visible = true
@@ -3181,6 +3182,27 @@ end
 
 function Panels.IsOpen()
 	return currentId ~= nil
+end
+
+-- BB38 beta metrics (dev2 cfef90c, docs/design/metrics_server_2026-10-07.md section 5): a window opening counts once per
+-- session per window (server WindowOpen_<id>, RateLimits.UiMetric 2 s). Only Config.Analytics.UiIds; the ids go out
+-- one at a time Gap s apart, so a quick burst of windows never loses one. Also used by HUD ([메뉴] fold), WorldMap and
+-- PlayerListUI (the Tab list).
+local METRIC = { Sent = {}, Queue = {}, Busy = false, Gap = 2.1 }
+function Panels.Metric(id)
+	local ids = Config.Analytics and Config.Analytics.UiIds
+	if type(id) ~= "string" or METRIC.Sent[id] or type(ids) ~= "table" or not table.find(ids, id) then return end
+	METRIC.Sent[id] = true
+	table.insert(METRIC.Queue, id)
+	if METRIC.Busy then return end
+	METRIC.Busy = true
+	task.spawn(function()
+		while #METRIC.Queue > 0 do
+			fire("UiMetric", table.remove(METRIC.Queue, 1))
+			task.wait(METRIC.Gap)
+		end
+		METRIC.Busy = false
+	end)
 end
 
 -- B15: the story page waiting for a calm moment ({ Id, St, Label } copy) or nil; HUD pulses that quest row

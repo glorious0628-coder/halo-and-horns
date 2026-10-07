@@ -346,6 +346,50 @@ do
 	check(g, "without UIKit.Typewriter the line shows at once", l2.Text == "Fix first. Talk later." and TYPE2.Finish(st2) == false)
 end
 
+----------------------------------------------------------------- Panels.Metric (BB38 UiMetric)
+do
+	local g = "window open metric"
+	local W2 = { Now = 0, Sent = {}, Jobs = {} }
+	local env = {
+		Config = Config, table = table, type = type,
+		fire = function(name, id) table.insert(W2.Sent, { Name = name, Id = id, At = W2.Now }) end,
+		task = { spawn = function(fn) table.insert(W2.Jobs, coroutine.create(fn)) end,
+			wait = function(t) coroutine.yield(t) end },
+		Panels = {},
+	}
+	local P = execute("METRIC", METRIC_SOURCE .. "\nreturn Panels", env)
+	-- run the sender coroutine like the task scheduler: each yield(t) waits t seconds
+	local function run(seconds)
+		local stop = W2.Now + seconds
+		while true do
+			local job = W2.Jobs[1]
+			if not job or W2.Now > stop then break end
+			local ok, wait = coroutine.resume(job)
+			if coroutine.status(job) == "dead" then table.remove(W2.Jobs, 1) else W2.Now += (tonumber(wait) or 0) end
+			if not ok then error(wait) end
+		end
+	end
+	check(g, "Panels has Metric", type(P.Metric) == "function")
+	P.Metric("Items")
+	P.Metric("Items")
+	P.Metric("Settings")
+	P.Metric("Nickname") -- not in Config.Analytics.UiIds
+	P.Metric("Help")
+	run(30)
+	local ids = {}
+	for _, row in W2.Sent do table.insert(ids, row.Id) end
+	check(g, "each listed window once, in order; unknown ids never", table.concat(ids, ",") == "Items,Settings,Help", table.concat(ids, ","))
+	local spaced = true
+	for i = 2, #W2.Sent do
+		if W2.Sent[i].At - W2.Sent[i - 1].At < 2 then spaced = false end
+	end
+	check(g, "a burst goes out at least 2 s apart (the server allows one per 2 s)", spaced and #W2.Sent == 3, #W2.Sent)
+	check(g, "every send is the UiMetric remote with one id", W2.Sent[1] and W2.Sent[1].Name == "UiMetric")
+	P.Metric("Items")
+	run(5)
+	check(g, "a window opened again later is not sent again", #W2.Sent == 3, #W2.Sent)
+end
+
 local named = {}
 for _, key in order do table.insert(named, Named[key]) end
 print("STORY_CLIENT_RESULT_JSON " .. encode({ Checks = checks, Failed = failed, Named = named }))

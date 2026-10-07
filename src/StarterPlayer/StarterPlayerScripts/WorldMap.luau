@@ -1845,6 +1845,8 @@ function WorldMap.Open()
 	end
 	closePanels() -- one modal at a time (also covers opening from the Menu panel)
 	isOpen = true
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.Metric) == "function" then pcall(panels.Metric, "WorldMap") end -- BB38
 	resetPointers()
 	pcall(refreshLandmarks)
 	pcall(layoutRoot)

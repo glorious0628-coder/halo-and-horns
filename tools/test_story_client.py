@@ -36,6 +36,9 @@ CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 ANNOUNCE = SPS / "Announce.luau"
 PANELS = SPS / "Panels.luau"
 CLIENT_MAIN = SPS / "ClientMain.client.luau"
+HUD = SPS / "HUD.luau"
+WORLDMAP = SPS / "WorldMap.luau"
+PLAYERLIST = SPS / "PlayerListUI.luau"
 AUDIO = SPS / "Audio.luau"
 FIXTURE = ROOT / "tools/fixtures/story_client_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
@@ -75,6 +78,13 @@ MUTATIONS = [
      "\t\tif TYPE.Finish(typing) then return end -- the first tap while the line types shows it whole\n", ""),
     ("the Story line no longer types", "panels", 'TYPE.Show(typing, line, tostring(lines[page] or ""), voice, page)',
      'line.Text = tostring(lines[page] or "")'),
+    # BB38 UiMetric (dev2 cfef90c): once per window per session, only UiIds, spaced Gap s apart
+    ("a window counts twice", "panels", "or METRIC.Sent[id] or type(ids)", "or false or type(ids)"),
+    ("any id is sent", "panels", 'or type(ids) ~= "table" or not table.find(ids, id) then return end', "then return end"),
+    ("a burst goes out at once (the server drops the 2nd)", "panels", "Busy = false, Gap = 2.1 }", "Busy = false, Gap = 0 }"),
+    ("opening a window sends nothing", "panels", "\tcurrentId = id\n\tPanels.Metric(id)\n", "\tcurrentId = id\n"),
+    ("the [메뉴] fold sends nothing", "hud",
+     'if type(panels) == "table" and type(panels.Metric) == "function" then pcall(panels.Metric, "Menu") end', ""),
 ]
 
 
@@ -97,6 +107,14 @@ def cut_story(panels: str) -> tuple[str, str]:
     if not lean:
         raise ValueError("Panels.luau: STORY.Text.HintLean missing")
     return "\n".join(parts) + "\n", lean.group(1)
+
+
+def cut_metric(panels: str) -> str:
+    """the BB38 UiMetric block of Panels.luau (local METRIC ... the end of Panels.Metric)"""
+    m = re.search(r"\n(local METRIC = \{.*?\nfunction Panels\.Metric\(id\)\n.*?\nend)\n", panels, re.S)
+    if not m:
+        raise ValueError("Panels.luau: the METRIC block is missing; update the extractor")
+    return m.group(1)
 
 
 def cut_type(panels: str) -> str:
@@ -139,6 +157,11 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
          story is not None and "TYPE.Tap(typing, line)" in story.group(1)
          and 'TYPE.Show(typing, line, tostring(lines[page] or ""), voice, page)' in story.group(1)
          and story.group(1).count("TYPE.Finish(typing)") >= 2),
+        ("BB38: Panels.Open sends Panels.Metric(id); the [메뉴] fold, the world map and the Tab list send theirs",
+         "\tcurrentId = id\n\tPanels.Metric(id)\n" in panels
+         and 'pcall(panels.Metric, "Menu")' in src["hud"]
+         and 'pcall(panels.Metric, "WorldMap")' in src["worldmap"]
+         and 'pcall(panels.Metric, "PlayerList")' in src["playerlist"]),
         ("Config has the two shop greetings (dev2 lines_pack 11)",
          re.search(r'\n\tForgeGreeting = "[^"]+",', src["config"]) is not None
          and re.search(r'\n\tPotionGreeting = "[^"]+",', src["config"]) is not None),
@@ -148,8 +171,10 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
 def run(src: dict[str, str], directory: Path, name: str) -> dict:
     story, lean = cut_story(src["panels"])
     type_src = cut_type(src["panels"])
+    metric_src = cut_metric(src["panels"])
     text = (f"local CONFIG_SOURCE = {lua_long(src['config'])}\nlocal ANNOUNCE_SOURCE = {lua_long(src['announce'])}\n"
             f"local STORY_SOURCE = {lua_long(story)}\nlocal HINT_LEAN = {lean}\nlocal TYPE_SOURCE = {lua_long(type_src)}\n"
+            f"local METRIC_SOURCE = {lua_long(metric_src)}\n"
             + FIXTURE.read_text(encoding="utf-8"))
     path = directory / name
     path.write_text(text, encoding="utf-8")
@@ -173,7 +198,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--no-mutations", action="store_true")
     args = parser.parse_args()
-    files = {"config": CONFIG, "announce": ANNOUNCE, "panels": PANELS, "client_main": CLIENT_MAIN}
+    files = {"config": CONFIG, "announce": ANNOUNCE, "panels": PANELS, "client_main": CLIENT_MAIN, "hud": HUD,
+             "worldmap": WORLDMAP, "playerlist": PLAYERLIST}
     raw = {p: p.read_bytes() for p in (*files.values(), AUDIO, FIXTURE)}
     src = {k: raw[p].decode("utf-8-sig").replace("\r\n", "\n") for k, p in files.items()}
     compiler = BINARY.with_name("luau-compile.exe")
