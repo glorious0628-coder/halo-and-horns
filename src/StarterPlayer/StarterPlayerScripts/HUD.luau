@@ -3536,14 +3536,12 @@ function L.FaceTarget(which)
 end
 
 -- one Swing for one press (F key, attack button or a world click, A23-51; review 2026-10-06: the click skipped this):
--- the nearest monster outside my aim cone turns me first (the server only hits what I face, AimCone), then the swing
--- follows a moment later so the new facing has replicated
+-- the nearest monster outside my aim cone turns me (the look), and the swing goes at once: the server aims the same
+-- way itself (dev2 bd3d6bd: no target in the front half -> the nearest monster in Range, and it turns my root), so it
+-- never waits for my turn to replicate (0.27-0.43 s in Studio, measured 2026-10-07)
 function L.SwingFaced()
-	if L.FaceTarget("Swing") then
-		task.delay(0.08, function() fire("Swing") end)
-	else
-		fire("Swing")
-	end
+	L.FaceTarget("Swing")
+	fire("Swing")
 end
 
 -- story rows: a talk / choice step reopens its dialogue; otherwise travel + the guide beam to where it happens

@@ -44,16 +44,16 @@ MUTATIONS = [
 
 
 # review 2026-10-06 (medium): the world click (PrimaryClick) must take the same face-the-nearest-monster path as the F key
-# and the attack button (L.SwingFaced: L.FaceTarget("Swing") then the Swing 0.08 s later), or it whiffs at monsters
-# beside / behind me (server AimCone). Static checks on HUD.luau + one mutation.
+# and the attack button (L.SwingFaced: L.FaceTarget("Swing"), then the Swing at once - since dev2 bd3d6bd the server
+# aims at the nearest monster itself, so no wait for the turn to replicate). Static checks on HUD.luau + mutations.
 def hud_checks(hud: str):
     hud = hud.replace("\r\n", "\n")
     m_fn = re.search(r"\nfunction L\.SwingFaced\(\)\n(.*?)\nend\n", hud, re.S)
     m_hold = re.search(r"\nlocal function startHold\(source\)\n(.*?)\nend\n", hud, re.S)
     return [
-        ("L.SwingFaced faces the nearest monster, then swings 0.08 s later",
-         m_fn is not None and 'if L.FaceTarget("Swing") then' in m_fn.group(1)
-         and 'task.delay(0.08, function() fire("Swing") end)' in m_fn.group(1)),
+        ("L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",
+         m_fn is not None and [ln.strip() for ln in m_fn.group(1).strip().splitlines()][-2:] == ['L.FaceTarget("Swing")', 'fire("Swing")']
+         and "task.delay" not in m_fn.group(1)),
         ("the F key / attack button (startHold) swing through L.SwingFaced",
          m_hold is not None and "L.SwingFaced()" in m_hold.group(1) and 'fire("Swing")' not in m_hold.group(1)),
         ("a world click (PrimaryClick) swings through L.SwingFaced too",
@@ -64,7 +64,9 @@ def hud_checks(hud: str):
 HUD_MUTATIONS = [
     ("a world click skips FaceTarget (fires Swing at once)", "if inputAllowed() then L.SwingFaced() end",
      'if inputAllowed() then fire("Swing") end'),
-    ("SwingFaced never turns first", 'if L.FaceTarget("Swing") then\n\t\ttask.delay(0.08', 'if false then\n\t\ttask.delay(0.08'),
+    ("SwingFaced never turns first", 'L.FaceTarget("Swing")\n\tfire("Swing")', 'fire("Swing")'),
+    ("SwingFaced waits for the turn again", 'L.FaceTarget("Swing")\n\tfire("Swing")',
+     'L.FaceTarget("Swing")\n\ttask.delay(0.08, function() fire("Swing") end)'),
 ]
 
 
