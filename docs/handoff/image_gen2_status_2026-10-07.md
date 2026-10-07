@@ -56,3 +56,10 @@
 - git: 검수 새 순서(AGENTS 4bef885) `git fetch -q origin && git reset --keep origin/main` → `git commit -- <paths>` → `git push origin HEAD:main`, 거절되면 커밋 직후 잡은 해시로 temp-index push 뒤 다시 reset --keep. 다른 세션 reset 때문에 빈 중복 커밋 81077c1이 한 번 올라감(내용 피해 없음).
 - 크레딧: 오늘 이 세션 고급 225(숲 8 = 40, 고급 다시 27 = 135, 보상 9 + 지도 1 = 50). 표시 숫자는 창 숨김이라 못 읽음(9410 → 9225 이하).
 - 대기: 모닥불 고르기 → 고급 → 이미지 생성 1 / 유적 13 시트(70c5739) 고르기 → 3D 후보 고급 / 숲 E12·PvP 작은 아이콘 목록은 검수에 물어보기.
+
+## 이어서 (계정 돌아옴, 오후 5)
+- 인계 큐 4개 끝: **3e6cde9** 유적 3D 후보 8 고급(40, 검수 통과 → 이미지 생성 1 Tripo, 입력 `art/out/kit/ruins/<이름>_HQ_src.png`) + 돌무더기 C1/C2 중간(판석 없음) · **9991196** 숲 일일·PvP 아이콘 4종 ×2안 시트 · **28c6324** 아이콘 고급 4 → `art/ui/IconGoldenMon·IconHunt·IconPlunder·IconChestWoods.png` + approved.json 4키(이미지 개발 1에 전달) + 돌무더기 C1 고급(Tripo 입력 `Rubble_C1_HQ_src.png`).
+- 크레딧: 웹 표시 **8630/10000**(고급 전 새로고침) → 이 세션 고급 65 → 계산상 8565.
+- Firefly: 모델이 Gemini 3.1로 바뀌어 있었음 → 피커를 연 뒤 `__s2_pick('openai:firefly:colligo:gpt-image-2.5-prism')`. 들어가자마자 '무제한 생성' 안내 팝업 → '닫기'(sp-button 글자 '닫기')만 누름. 품질 바꾸기는 `__setQ(v)` = 세 번째 피커 클릭 → pick → 값 확인.
+- push_paths 사고: reset --keep이 남의 추적 안 된 파일(origin과 같은 분수 그림) 때문에 막혀 내 새 파일 20개가 작업 폴더에서 잠깐 사라짐(origin에는 있음) → 검수가 46c97f5로 고침(실패 때 다시 써 둠). push_paths에는 **파일만** 넘기기(폴더를 넘기면 없는 것으로 보고 지우기를 시도함).
+- 아이콘 후보 누끼·원본은 `art/out/s2/e12/`(로컬). 사용자: Tripo 웹을 쓸 일이 생기면 앱 안 브라우저로 열기.

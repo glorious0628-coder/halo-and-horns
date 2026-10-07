@@ -5648,5 +5648,57 @@
   "file": "art/out/kit/woods/Campfire_FB2_HQ.png (cutout for sheets only)",
   "preview": "art/review/s2/kit_campfire_fire_sheet.jpg",
   "note": "검수 고름 B2(사용자: '지금은 나무에 불이 안 붙어서 이상해', 참고 사진 2번째 느낌 — 사진은 출처를 몰라 참조로 안 씀). 엇갈린 통나무 틈이 숯처럼 빛남 + 가운데 굵은 불꽃 덩어리, 고급에서 불꽃 끝을 굵게 붙여 Tripo가 한 덩어리로 잡게. 불 없는 Kit_W_Campfire(Campfire_HQ_src) 3D를 대체. 움직이는 불꽃·빛은 Studio(개발 1)."
+ },
+ "IconGoldenMon": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 48/32px",
+  "preview": "art/review/s2/e12_pvp_icons_hq_sheet.jpg",
+  "prompt": "art/prompts/IconGoldenMon_B_HQ.txt",
+  "original": "art/out/s2/e12/IconGoldenMon_B_HQ_src.png (1024, Firefly asset e3560405…, Adobe MCP presigned download; local)",
+  "medium_original": "art/out/s2/e12/IconGoldenMon_B_src.png (Firefly asset 33881de1…, prompt art/prompts/IconGoldenMon_B.txt; local)",
+  "file": "art/ui/IconGoldenMon.png",
+  "note": "숲 일일(E12) '황금 몬스터 1' 줄. 네모 젤리 + 왕관 조각(우리 네모 슬라임 모양), 얼굴 없음. 중간 2안 중 B(검수 고름 2026-10-07, 시트 art/review/s2/e12_pvp_icons_sheet.jpg)."
+ },
+ "IconHunt": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 48/32px",
+  "preview": "art/review/s2/e12_pvp_icons_hq_sheet.jpg",
+  "prompt": "art/prompts/IconHunt_A_HQ.txt",
+  "original": "art/out/s2/e12/IconHunt_A_HQ_src.png (1024, Firefly asset 855a3a38…, Adobe MCP presigned download; local)",
+  "medium_original": "art/out/s2/e12/IconHunt_A_src.png (Firefly asset c286faae…, prompt art/prompts/IconHunt_A.txt; local)",
+  "file": "art/ui/IconHunt.png",
+  "note": "빛 PvP '사냥(Hunt)' 일일 줄. 금 화살 + 하늘색 과녁 + 후광. 중간 A(검수 고름). 후광 고리 속 회색 줄은 남색으로 메움."
+ },
+ "IconPlunder": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 48/32px",
+  "preview": "art/review/s2/e12_pvp_icons_hq_sheet.jpg",
+  "prompt": "art/prompts/IconPlunder_A_HQ.txt",
+  "original": "art/out/s2/e12/IconPlunder_A_HQ_src.png (1024, Firefly asset 88920e89…, Adobe MCP presigned download; local)",
+  "medium_original": "art/out/s2/e12/IconPlunder_A_src.png (Firefly asset f2bd5662…, prompt art/prompts/IconPlunder_A.txt; local)",
+  "file": "art/ui/IconPlunder.png",
+  "note": "뿔 PvP '약탈(Plunder)' 일일 줄. 빨간 자루 + 뿔 매듭 + 금화. 중간 A(검수 고름), 고급에서 금화를 4개로 줄이고 크게(검수: 32px에서 뭉개짐)."
+ },
+ "IconChestWoods": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 48/32px",
+  "preview": "art/review/s2/e12_pvp_icons_hq_sheet.jpg",
+  "prompt": "art/prompts/IconChestWoods_A_HQ.txt",
+  "original": "art/out/s2/e12/IconChestWoods_A_HQ_src.png (1024, Firefly asset 25bb83fd…, Adobe MCP presigned download; local)",
+  "medium_original": "art/out/s2/e12/IconChestWoods_A_src.png (Firefly asset f163d5fb…, prompt art/prompts/IconChestWoods_A.txt; local)",
+  "file": "art/ui/IconChestWoods.png",
+  "note": "숲 일일(Lv10~24) 상자. 초콜릿색 나무 + 잎 + 금 띠·자물쇠. 중간 A(검수 고름)."
  }
 }
