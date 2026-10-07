@@ -3,14 +3,14 @@
 > **이 문서에서 현재 유효한 것은 맨 위 "최신 인계 (2026-10-07 밤 23:00 컴퓨터 끄기 전)" 절이다. 그 아래 "2026-10-07 저녁" 절은 표·규칙 참고용.**
 
 ## 최신 인계 (2026-10-07 밤 23:00 컴퓨터 끄기 전) — 검수 작성
-사용자: "오후 11시까지 작업 정리하고 컴퓨터 꺼 줘" → 23:00 종료 예약(`shutdown /s /f`, 검수). 세션별 밤 인계: `docs/handoff/*_2026-10-07_night.md`. 오늘 사용자 지적은 SPEC **A23-74**, 대조 결과는 `docs/review/main_studio_audit_2026-10-08.md`, 게시 체크리스트는 `docs/design/launch_ops_checklist.md`.
+사용자: "오후 11시까지 작업 정리하고 컴퓨터 꺼 줘" → 저장(22:39) 뒤 "컴퓨터도 꺼줘"로 22:43경 종료(`shutdown /s /f`, 검수). 세션별 밤 인계: `docs/handoff/*_2026-10-07_night.md`. 오늘 사용자 지적은 SPEC **A23-74**, 대조 결과는 `docs/review/main_studio_audit_2026-10-08.md`, 게시 체크리스트는 `docs/design/launch_ops_checklist.md`.
 
 **메인 Studio(build/GoodEvil.rbxlx):** 21:22 저장본에 지도 v2 코드·지형·초원 3D 60·숲 키트 202·빛 마을 3D 나무·고갯길 3D 바위 70·묻힌 장식 16 고침·새 지형 타일 9·SunRays 끔·몬스터 색 3장이 들어감. 그 뒤 개발 1이 감사 고침(안내 버튼 자동 번역 끔, 제단 E 바로, 하늘 빌보드 안 씀) + **새 HUD(4f20a8b) + 말풍선 bark2(fb137f6)**까지 sync하고 PC·폰 Play 사진 → Ctrl+S → place/ 복사·commit 중이었음(개발 1 밤 인계에서 저장 시간 확인).
 
 **main에 들어간 것(오늘):** 프롤로그 띠 없음, 팀 알림 영어, 지도 v2, 지형 타일 FF2, SunRays 끔, 새 HUD(PC·폰 같은 틀, 검사 55/55), 말풍선 12종 그림 + 몬스터별 키 + 의성어 대사(그림 없는 몬스터는 둥근 코드 말풍선), 감사 고침, place 한글 검사 도구 고침(한글 0 확인), push_paths 개선.
 
 **22:20 추가:** 카메라 camera3가 **main 5a97a5b**에 들어감(메인 Studio sync + StarterPlayer.DevTouchCameraMovementMode = Classic). 무기 먼저 PC: 모루 앞 순간 이동 뒤 카메라가 얼굴 쪽 → 내일 FirstSteps TravelDone 때 카메라를 등 뒤로 맞추기. 소리 57개 연결은 **main ded542f에 들어감**(오프라인 58/58, test_audio 157) — Studio sync는 내일(위 다시 하기 순서에 포함), 그 뒤 소리 세션의 Play 확인 목록(docs/design/sound_play_check_2026-10-07.md) → 옛 ogg 30개 정리.
-**메인 Studio 저장:** 사용자 Ctrl+S가 23:00 전에 안 되면 파일은 21:22본. 그러면 내일 먼저 **main sync(0 0) → `py tools/map_v2_apply.py build` → `py tools/apply_studio_state.py`(몬스터 색 상수) → StarterPlayer.DevTouchCameraMovementMode = Classic(Studio 속성) → PC·폰 확인 사진 → 저장**.
+**메인 Studio 저장: 사용자가 22:39:21에 저장함**(새 HUD·말풍선·무기 먼저·소리 서버·camera3·터치 카메라 Classic 포함). 내일은 main ded542f(소리 57개 연결) 등 그 뒤 코드만 sync하면 됨. (아래는 저장이 안 됐을 때를 위한 옛 메모) 사용자 Ctrl+S가 23:00 전에 안 되면 파일은 21:22본. 그러면 내일 먼저 **main sync(0 0) → `py tools/map_v2_apply.py build` → `py tools/apply_studio_state.py`(몬스터 색 상수) → StarterPlayer.DevTouchCameraMovementMode = Classic(Studio 속성) → PC·폰 확인 사진 → 저장**.
 
 **내일 첫 순서:**
 1. 개발 1 밤 인계 확인 → 메인 Studio 저장·place 확인(build=place, 0 0).
