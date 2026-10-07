@@ -34,6 +34,13 @@ local FONT = { UseTextImages = false, Faces = {}, States = setmetatable({}, { __
 	},
 	Cache = {}, -- [lang .. role .. weight name] = Font
 }
+-- Config.Fonts (dev2 0f6de17, UI round 2 #7): the Head / Body families are set in one place (the server's name tags
+-- read them too); the literals above stay as the fallback while it is missing
+for role, family in (type(Config.Fonts) == "table" and Config.Fonts or {}) do
+	if (role == "Head" or role == "Body") and type(family) == "string" and family ~= "" then
+		FONT.Sets.en[role] = { Family = family }
+	end
+end
 -- the face for a role ("Head" / "Body") and weight in the current language (GothamBold when a font fails to load)
 function FONT.Face(role, weight)
 	role = role == "Head" and "Head" or "Body"
@@ -208,6 +215,8 @@ local NOTIFY = {
 	-- height is taller than the measurement and the last line was dropped for "..." (UiSandbox 655x340, 2026-10-06)
 	WrapSlack = 0.15,
 	TrimQueued = false,
+	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
+	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4 },
 }
 
 ----------------------------------------------------------------- helpers
@@ -2800,13 +2809,73 @@ end
 
 function UIKit.ShouldHoldBanners()
 	local me = game:GetService("Players").LocalPlayer
-	if me:GetAttribute("TutorialStep") == 0 then return true end
+	-- A23-3 / A23-68 #4 (user 2026-10-07): world banners and event toasts wait until the first [Claim] (TutorialStep
+	-- 0 / 1 / 2; claimTutorial writes 99 first), then FlushBanners shows the last two
+	local step = me:GetAttribute("TutorialStep")
+	local steps = type(Config.Tutorial) == "table" and Config.Tutorial.Steps or nil
+	local done = type(steps) == "table" and tonumber(steps.Done) or 99
+	if type(step) == "number" and step >= 0 and step < done then return true end
 	local intro = C and C.Intro
 	if type(intro) == "table" and type(intro.IsOpen) == "function" then
 		local ok, open = pcall(intro.IsOpen)
 		if ok and open then return true end
 	end
 	return false
+end
+
+-- A23-68 #4 / quality ⑨ (user 2026-10-07): a HUD part that shows for the first time (the first [Claim] unfolds the quest
+-- lines, the war meter's info line and the next-event line) pops in and wears a small gold "NEW!" tag on its top-right
+-- corner for NOTIFY.NewTag.Seconds. No pop with ReducedMotion, nor on a part that already has its own UIScale (a press /
+-- pop scale of its own). Calling it again restarts the tag. Returns the tag
+function UIKit.NewTag(target, text)
+	if typeof(target) ~= "Instance" or not target:IsA("GuiObject") then return nil end
+	local cfg = NOTIFY.NewTag
+	local old = target:FindFirstChild("NewTag")
+	if old then old:Destroy() end
+	text = (type(text) == "string" and text ~= "") and text or cfg.Text
+	local s = currentScale()
+	local h = math.max(cfg.H, math.ceil(cfg.MinPx * UIKit.PxFloor() / s) + 6)
+	local size = h - 6
+	local tag = UIKit.ArtFrame("Chip", {
+		Name = "NewTag",
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, 6, 0, 0),
+		Size = UDim2.fromOffset(math.ceil(size * cfg.WidthEm), h),
+		ImageColor3 = cfg.Gold,
+		ZIndex = target.ZIndex + 6,
+		Active = false,
+	}, { Color = cfg.Gold, CornerRadius = UDim.new(0.5, 0), StrokeColor = STYLE.Navy, StrokeThickness = 2 })
+	local label = UIKit.StyledLabel({
+		Name = "Text",
+		Text = text,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.new(1, -8, 1, -4),
+		TextSize = size,
+		ZIndex = tag.ZIndex + 1,
+		Parent = tag,
+	}, "Number", true)
+	local pop = UIKit.Create("UIScale", { Name = "Pop", Scale = 1, Parent = tag })
+	tag.Parent = target
+	if not UIKit.ReducedMotion() then
+		pop.Scale = 0.2
+		TweenService:Create(pop, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		if target:FindFirstChildOfClass("UIScale") == nil then
+			local grow = UIKit.Create("UIScale", { Name = "NewPop", Scale = 0.6, Parent = target })
+			local tw = TweenService:Create(grow, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+				{ Scale = 1 })
+			tw.Completed:Connect(function() grow:Destroy() end)
+			tw:Play()
+		end
+	end
+	task.delay(cfg.Seconds, function()
+		if not tag.Parent then return end
+		local info = TweenInfo.new(0.3)
+		if tag:IsA("ImageLabel") then TweenService:Create(tag, info, { ImageTransparency = 1 }):Play() end
+		TweenService:Create(label, info, { TextTransparency = 1 }):Play()
+		task.delay(0.32, function() tag:Destroy() end)
+	end)
+	return tag
 end
 
 -- show the held world banners (called when the first mission is accepted / the opening ends)

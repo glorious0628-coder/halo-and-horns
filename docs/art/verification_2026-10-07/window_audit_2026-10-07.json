@@ -1,0 +1,845 @@
+{
+  "tool": "tools/window_audit_view.py",
+  "rows": [
+    {
+      "device": "pc",
+      "id": "Story",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          288
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:StoryNext": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 3,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Story.png"
+    },
+    {
+      "device": "pc",
+      "id": "Welcome",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:WelcomeNext": 1,
+          "TextButton:WelcomeLater": 1,
+          "TextButton:WelcomeReadMore": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "PortraitGuideHalo": 1
+        },
+        "Buttons": {
+          "Code": 5,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Welcome.png"
+    },
+    {
+      "device": "pc",
+      "id": "Menu",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 11
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 11,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Menu.png"
+    },
+    {
+      "device": "pc",
+      "id": "Travel",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Row_Home": 1,
+          "TextButton:Button": 6,
+          "Frame:Row_SkeletonRuins": 1,
+          "Frame:Row_SlimeMeadow": 1,
+          "Frame:Row_Crossroads": 1,
+          "Frame:Row_GoblinWoods": 1,
+          "Frame:Window": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 6,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Travel.png"
+    },
+    {
+      "device": "pc",
+      "id": "Class",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:Card": 3
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 4,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Class.png"
+    },
+    {
+      "device": "pc",
+      "id": "Rebirth",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 4
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 4,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Rebirth.png"
+    },
+    {
+      "device": "pc",
+      "id": "Altar",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 2,
+          "TextButton:Card": 2
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 4,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Altar.png"
+    },
+    {
+      "device": "pc",
+      "id": "Items",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Items.png"
+    },
+    {
+      "device": "pc",
+      "id": "WeaponShop",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_WeaponShop.png"
+    },
+    {
+      "device": "pc",
+      "id": "PotionShop",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:BuyHP1": 1,
+          "TextButton:BuyHP5": 1,
+          "TextButton:BuyMP5": 1,
+          "TextButton:BuyMP1": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 5,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_PotionShop.png"
+    },
+    {
+      "device": "pc",
+      "id": "Shop",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 3,
+          "Frame:Row_Class": 1,
+          "Frame:Row_Faction": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 3,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Shop.png"
+    },
+    {
+      "device": "pc",
+      "id": "Vacation",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Vacation.png"
+    },
+    {
+      "device": "pc",
+      "id": "Settings",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 14,
+          "Frame:Row": 10
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 14,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Settings.png"
+    },
+    {
+      "device": "pc",
+      "id": "Help",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 2
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 2,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Help.png"
+    },
+    {
+      "device": "pc",
+      "id": "News",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_News.png"
+    },
+    {
+      "device": "pc",
+      "id": "Nickname",
+      "probe": {
+        "Window": [
+          "Frame",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:TitleRibbon": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "CardHalo": 1,
+          "PanelParchment": 2,
+          "BtnSpecial": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Nickname.png"
+    },
+    {
+      "device": "pc",
+      "id": "Confirm",
+      "probe": {
+        "Window": [
+          "Frame",
+          368,
+          126
+        ],
+        "Code": {
+          "TextButton:Cancel": 1,
+          "Frame:Box": 1,
+          "TextButton:Confirm": 1
+        },
+        "Root": "ConfirmDialog",
+        "Art": [],
+        "Buttons": {
+          "Code": 2,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/pc_Confirm.png"
+    },
+    {
+      "device": "pc",
+      "id": "Notices",
+      "probe": {},
+      "file": "build/window_audit/pc_Notices.png"
+    },
+    {
+      "device": "phone",
+      "id": "Story",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:StoryNext": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 3,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Story.png"
+    },
+    {
+      "device": "phone",
+      "id": "Welcome",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:WelcomeNext": 1,
+          "TextButton:WelcomeLater": 1,
+          "TextButton:WelcomeReadMore": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 5,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Welcome.png"
+    },
+    {
+      "device": "phone",
+      "id": "Menu",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 11
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 11,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Menu.png"
+    },
+    {
+      "device": "phone",
+      "id": "Travel",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Row_Home": 1,
+          "TextButton:Button": 6,
+          "Frame:Row_SkeletonRuins": 1,
+          "Frame:Row_SlimeMeadow": 1,
+          "Frame:Row_Crossroads": 1,
+          "Frame:Row_GoblinWoods": 1,
+          "Frame:Window": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 6,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Travel.png"
+    },
+    {
+      "device": "phone",
+      "id": "Class",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:Card": 3
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 4,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Class.png"
+    },
+    {
+      "device": "phone",
+      "id": "Rebirth",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 4
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 4,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Rebirth.png"
+    },
+    {
+      "device": "phone",
+      "id": "Altar",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 2,
+          "TextButton:Card": 2
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 4,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Altar.png"
+    },
+    {
+      "device": "phone",
+      "id": "Items",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Items.png"
+    },
+    {
+      "device": "phone",
+      "id": "WeaponShop",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_WeaponShop.png"
+    },
+    {
+      "device": "phone",
+      "id": "PotionShop",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1,
+          "TextButton:BuyHP1": 1,
+          "TextButton:BuyHP5": 1,
+          "TextButton:BuyMP5": 1,
+          "TextButton:BuyMP1": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 5,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_PotionShop.png"
+    },
+    {
+      "device": "phone",
+      "id": "Shop",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 3,
+          "Frame:Row_Class": 1,
+          "Frame:Row_Faction": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 3,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Shop.png"
+    },
+    {
+      "device": "phone",
+      "id": "Vacation",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Vacation.png"
+    },
+    {
+      "device": "phone",
+      "id": "Settings",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 14,
+          "Frame:Row": 10
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 14,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Settings.png"
+    },
+    {
+      "device": "phone",
+      "id": "Help",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 2
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 2,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Help.png"
+    },
+    {
+      "device": "phone",
+      "id": "News",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:Window": 1,
+          "TextButton:Button": 1
+        },
+        "Root": "PanelsModal",
+        "Art": [],
+        "Buttons": {
+          "Code": 1,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_News.png"
+    },
+    {
+      "device": "phone",
+      "id": "Nickname",
+      "probe": {
+        "Window": [
+          "Frame",
+          585,
+          264
+        ],
+        "Code": {
+          "Frame:TitleRibbon": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "CardHalo": 1,
+          "PanelParchment": 2,
+          "BtnSpecial": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Nickname.png"
+    },
+    {
+      "device": "phone",
+      "id": "Confirm",
+      "probe": {
+        "Window": [
+          "Frame",
+          345,
+          119
+        ],
+        "Code": {
+          "TextButton:Cancel": 1,
+          "Frame:Box": 1,
+          "TextButton:Confirm": 1
+        },
+        "Root": "ConfirmDialog",
+        "Art": [],
+        "Buttons": {
+          "Code": 2,
+          "Art": 0
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit/phone_Confirm.png"
+    },
+    {
+      "device": "phone",
+      "id": "Notices",
+      "probe": {},
+      "file": "build/window_audit/phone_Notices.png"
+    }
+  ]
+}
