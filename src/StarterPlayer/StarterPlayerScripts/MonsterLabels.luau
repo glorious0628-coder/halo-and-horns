@@ -11,13 +11,14 @@
 -- Hurt = its Fill bar got shorter (server bar updates replicate). Local only: Enabled / Visible never replicate.
 -- Monster barks (lines_pack 2, dev2 BarkService): the server writes Bark (the line) then BarkAt (server time) on the
 -- monster model; every new BarkAt (the same line again too) shows Bark in a speech bubble over the head for
--- Config.Barks.Show s, only within Config.Barks.MaxDistance studs; no player names, chat settings do not matter. The
--- bubble is Config.UIArt BarkBubble (9-slice, its tail at the bottom-left sits at the head) or, without that art, a
--- white pill with a soft navy rim. A bark already old when its monster streams in is not shown.
--- A23-74 (user 2026-10-07 "슬라임이 말하는 말풍선이 하나도 안 귀여움"): smaller, rounder bubbles that grow with the line
--- (max 2 lines) in the game's Head font; the monster family's own bubble art (Config.Barks.BubbleFamily / BubbleArt)
--- once it is uploaded; a jelly pop-in from the tail, a slow float while shown and a quick shrink + fade at the end
--- (all off with UIKit.ReducedMotion). Every tween of a bubble is cancelled when the bubble is destroyed.
+-- Config.Barks.Show s, only within Config.Barks.MaxDistance studs; no player names, chat settings do not matter. Its
+-- tail (bottom-left) sits at the head. A bark already old when its monster streams in is not shown.
+-- A23-74 (user 2026-10-07 "슬라임이 말하는 말풍선이 하나도 안 귀여움" / "몬스터마다 다른 말풍선 그려야지" / "말풍선 가로로
+-- 길쭉한 거 말고"): fixed-size round bubbles (the lines are one sound word now, B.SizeOf), never a wide pill. The art:
+-- the monster's own "BarkBubble<Kind>" (round, Fit, ~104 px wide), else its family's (Config.Barks.BubbleFamily /
+-- BubbleArt), else the shared 9-slice BarkBubble drawn compact, else a round white code bubble with a tail dot. The line
+-- wraps to up to 2 lines in the game's Head font; a jelly pop-in from the tail, a slow float while shown and a quick
+-- shrink + fade at the end (all off with UIKit.ReducedMotion). Every tween of a bubble stops when it is destroyed.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -33,13 +34,15 @@ local S = { Started = false, Fill = {}, HurtAt = {} } -- [BillboardGui] = last F
 local C = nil
 -- bubble: At[model] = the last BarkAt seen (false = none yet); a newer bark replaces the bubble (B.Make)
 local B = { At = setmetatable({}, { __mode = "k" }),
-	-- A23-74 (user 2026-10-07): size in px. One line (<= LongAt letters): H tall, Base + letters x PerChar wide within
-	-- W..WMax; longer lines wrap to two: H2 tall, Base2 + letters x PerChar2 within W2..W2Max (was 230 x 56 / 74)
-	W = 150, WMax = 172, Base = 96, PerChar = 5, H = 44,
-	W2 = 176, W2Max = 214, Base2 = 120, PerChar2 = 2.6, H2 = 64, LongAt = 16,
-	Lift = 1.1, Text = Color3.fromRGB(28, 36, 82), TextMin = 11, TextMax = 21,
-	-- the code pill (no art): fully round, a thin soft rim; its text box as fractions of the pill
-	Rim = Color3.fromRGB(92, 108, 178), RimThick = 1.5, RimFade = 0.25, PillRect = { 0.1, 0.14, 0.8, 0.72 },
+	-- A23-74 (user 2026-10-07 "말풍선 가로로 길쭉한 거 말고"): fixed px, never per letter. A monster's own art (no Slice):
+	-- ArtW wide, height = ArtW x its Size H / W (ArtAspect without a Size) within ArtHMin..ArtHMax. The shared 9-slice
+	-- BarkBubble: SliceW x SliceH. The code bubble: CodeW x CodeH (was a 150-214 x 44-64 pill)
+	ArtW = 104, ArtAspect = 0.75, ArtHMin = 60, ArtHMax = 104, SliceW = 112, SliceH = 60, CodeW = 96, CodeH = 70,
+	Lift = 1.1, Text = Color3.fromRGB(28, 36, 82), TextMin = 12, TextMax = 26, LineHeight = 0.9,
+	-- text box (fractions of the bubble) of a monster art without a TextRect / of the code bubble
+	RoundRect = { 0.16, 0.12, 0.68, 0.6 }, CodeRect = { 0.1, 0.12, 0.8, 0.76 },
+	-- the code bubble (no art): fully round, a thin soft rim, a small round tail dot (Tail px) under its bottom left
+	Rim = Color3.fromRGB(92, 108, 178), RimThick = 1.5, RimFade = 0.25, Tail = 12,
 	-- motion: UIScale From -> 1 (Back, Grow s) while the art's Size goes Stretch -> 1 x 1 (Elastic, Wobble s) from the
 	-- tail corner = squash & stretch; a Bob studs float (BobTime s each way); the last Out s shrink to OutScale + fade
 	From = 0.3, Grow = 0.34, Stretch = { 0.78, 1.22 }, Wobble = 0.42, Bob = 0.12, BobTime = 0.8, Out = 0.18, OutScale = 0.25 }
@@ -62,31 +65,63 @@ local function isBoss(kind)
 	return type(def) == "table" and def.Boss == true
 end
 
--- A23-74: the bubble art key for a monster kind - its family's part (Config.Barks.BubbleFamily -> BubbleArt; a kind not
--- listed uses its Config.QuestKind's family) only while that part has an uploaded Id, else BubbleArt.Default
-function B.ArtKey(kind)
+-- A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지"): the bubble art keys to try for a monster kind, in order:
+-- its own "BarkBubble<Kind>", then its family's (Config.Barks.BubbleFamily -> BubbleArt; a kind not listed uses its
+-- Config.QuestKind's family) - each only while its Id is uploaded (not "") - then BubbleArt.Default (BarkBubble)
+function B.ArtKeys(kind)
 	local cfg = Config.Barks or {}
 	local arts = type(cfg.BubbleArt) == "table" and cfg.BubbleArt or {}
 	local fams = type(cfg.BubbleFamily) == "table" and cfg.BubbleFamily or {}
-	local fam = type(kind) == "string" and fams[kind] or nil
-	if fam == nil and type(kind) == "string" and type(Config.QuestKind) == "function" then
-		local ok, q = pcall(Config.QuestKind, kind)
-		fam = ok and type(q) == "string" and fams[q] or nil
-	end
-	local key = fam and arts[fam]
 	local parts = Config.UIArt and Config.UIArt.Parts or {}
-	local def = type(key) == "string" and parts[key] or nil
-	if type(def) == "table" and type(def.Id) == "string" and def.Id ~= "" then return key end
-	return type(arts.Default) == "string" and arts.Default or "BarkBubble"
+	local keys = {}
+	local function add(key)
+		local def = type(key) == "string" and parts[key] or nil
+		if type(def) == "table" and type(def.Id) == "string" and def.Id ~= "" and not table.find(keys, key) then
+			table.insert(keys, key)
+		end
+	end
+	if type(kind) == "string" then
+		local fam = fams[kind]
+		if fam == nil and type(Config.QuestKind) == "function" then
+			local ok, q = pcall(Config.QuestKind, kind)
+			fam = ok and type(q) == "string" and fams[q] or nil
+		end
+		add("BarkBubble" .. kind)
+		add(fam and arts[fam])
+	end
+	local default = type(arts.Default) == "string" and arts.Default or "BarkBubble"
+	if not table.find(keys, default) then table.insert(keys, default) end
+	return keys
 end
 
--- A23-74: bubble px for a line - one line up to LongAt letters, else two; the width follows the letter count
-function B.SizeFor(text)
-	local n = utf8.len(text) or #text
-	if n > B.LongAt then
-		return math.clamp(B.Base2 + n * B.PerChar2, B.W2, B.W2Max), B.H2
-	end
-	return math.clamp(B.Base + n * B.PerChar, B.W, B.WMax), B.H
+-- the first art key tried for a kind (test aid): BarkBubble while none of the monster's own art is uploaded
+function B.ArtKey(kind)
+	return B.ArtKeys(kind)[1]
+end
+
+-- A23-74 (user 2026-10-07 "가로로 길쭉한 거 말고"): bubble px for the art drawn (its Config.UIArt.Parts entry; nil = the
+-- code bubble) - a fixed size, the line never stretches it. A monster's round art keeps its drawn shape (Size H / W).
+function B.SizeOf(def)
+	if type(def) ~= "table" then return B.CodeW, B.CodeH end
+	if typeof(def.Slice) == "Rect" then return B.SliceW, B.SliceH end
+	local ok, w, h = pcall(function() return def.Size.X, def.Size.Y end)
+	local aspect = (ok and type(w) == "number" and type(h) == "number" and w > 0 and h > 0) and h / w or B.ArtAspect
+	return B.ArtW, math.clamp(math.floor(B.ArtW * aspect + 0.5), B.ArtHMin, B.ArtHMax)
+end
+
+-- the code bubble's round look: a fully round corner + the thin soft rim; both fade at the end (fades)
+local function roundLook(frame, fades)
+	frame.BackgroundColor3 = Color3.new(1, 1, 1)
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0.5, 0) -- A23-74: fully round
+	corner.Parent = frame
+	local rim = Instance.new("UIStroke")
+	rim.Color = B.Rim
+	rim.Thickness = B.RimThick
+	rim.Transparency = B.RimFade
+	rim.Parent = frame
+	table.insert(fades, { frame, { BackgroundTransparency = 1 } })
+	table.insert(fades, { rim, { Transparency = 1 } })
 end
 
 -- builds the bubble on root; returns it and its fade-out (nil with reduced motion: it just goes at the end)
@@ -94,10 +129,8 @@ function B.Make(root, offsetY, text, kind)
 	local old = root:FindFirstChild("BarkBubble")
 	if old then old:Destroy() end
 	local cfg = Config.Barks or {}
-	local w, h = B.SizeFor(text)
 	local bb = Instance.new("BillboardGui")
 	bb.Name = "BarkBubble"
-	bb.Size = UDim2.fromOffset(w, h)
 	bb.SizeOffset = Vector2.new(0.5, 0.5) -- the bubble's bottom-left corner (its tail) at the attach point
 	local base = Vector3.new(0.4, offsetY + B.Lift, 0)
 	bb.StudsOffset = base
@@ -106,46 +139,53 @@ function B.Make(root, offsetY, text, kind)
 	bb.AlwaysOnTop = false
 	bb.ClipsDescendants = false -- the pop overshoots the box for a moment
 	local kit = C and C.UIKit
-	local art, used = nil, nil
+	local art, def = nil, nil
 	if type(kit) == "table" and type(kit.ArtImage) == "function" then
-		for _, key in { B.ArtKey(kind), "BarkBubble" } do
-			local ok, img = pcall(kit.ArtImage, key, { Name = "Art", Size = UDim2.fromScale(1, 1) })
+		local parts = Config.UIArt and Config.UIArt.Parts or {}
+		for _, key in B.ArtKeys(kind) do
+			local d = type(parts[key]) == "table" and parts[key] or {}
+			local props = { Name = "Art", Size = UDim2.fromScale(1, 1) }
+			-- A23-74: a monster's own round art keeps its drawn shape (Fit, never 9-sliced); BarkBubble = UIKit's Slice
+			if typeof(d.Slice) ~= "Rect" then props.ScaleType = Enum.ScaleType.Fit end
+			local ok, img = pcall(kit.ArtImage, key, props)
 			if ok and img then
-				art, used = img, key
+				art, def = img, d
 				art.Parent = bb
 				break
 			end
 		end
 	end
-	local rim = nil
+	local fades = {} -- the code bubble's frames and rims: they fade at the end too
 	if not art then
 		art = Instance.new("Frame")
 		art.Name = "Art"
 		art.Size = UDim2.fromScale(1, 1)
-		art.BackgroundColor3 = Color3.new(1, 1, 1)
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0.5, 0) -- A23-74: a pill
-		corner.Parent = art
-		rim = Instance.new("UIStroke")
-		rim.Color = B.Rim
-		rim.Thickness = B.RimThick
-		rim.Transparency = B.RimFade
-		rim.Parent = art
+		roundLook(art, fades)
+		-- A23-74: a small round tail dot under the bottom left (a speech bubble, not a name plate)
+		local tail = Instance.new("Frame")
+		tail.Name = "Tail"
+		tail.Size = UDim2.fromOffset(B.Tail, B.Tail)
+		tail.Position = UDim2.new(0, 2, 1, 2)
+		roundLook(tail, fades)
+		tail.Parent = art
 		art.Parent = bb
 	end
+	local w, h = B.SizeOf(def)
+	bb.Size = UDim2.fromOffset(w, h)
 	art.AnchorPoint = Vector2.new(0, 1) -- scales out of the tail corner
 	art.Position = UDim2.fromScale(0, 1)
 	local label = Instance.new("TextLabel")
 	label.Name = "Line"
 	label.BackgroundTransparency = 1
-	local def = used and Config.UIArt and Config.UIArt.Parts and Config.UIArt.Parts[used]
-	local rect = type(def) == "table" and type(def.TextRect) == "table" and def.TextRect or B.PillRect
+	local rect = def and (type(def.TextRect) == "table" and def.TextRect or B.RoundRect) or B.CodeRect
 	label.Position = UDim2.fromScale(rect[1], rect[2])
 	label.Size = UDim2.fromScale(rect[3], rect[4])
 	label.Text = text
 	label.TextColor3 = B.Text
+	-- A23-74: one sound word, at most 2 lines: wrapped and scaled between TextMin and TextMax
 	label.TextWrapped = true
 	label.TextScaled = true
+	label.LineHeight = B.LineHeight
 	-- the game's round Head face (Denk One, the HUD hint bubble's Button style); Fredoka One without UIKit
 	local fontOk = type(kit) == "table" and type(kit.ApplyFont) == "function"
 		and pcall(kit.ApplyFont, label, Enum.FontWeight.ExtraBold, "Head")
@@ -160,7 +200,8 @@ function B.Make(root, offsetY, text, kind)
 		bb.Parent = root
 		return bb, nil
 	end
-	-- A23-74 motion: jelly pop from the tail corner + a slow float; every tween stops when the bubble is destroyed
+	-- A23-74 motion: jelly pop from the tail corner + a slow float; every tween stops when the bubble is destroyed. A
+	-- monster's own art is drawn with Fit, so its squash & stretch reads as an elastic boing without bending the drawing.
 	local pop = Instance.new("UIScale")
 	pop.Name = "Pop"
 	pop.Scale = B.From
@@ -187,9 +228,9 @@ function B.Make(root, offsetY, text, kind)
 		if not bb.Parent then return end -- a newer bark already replaced it
 		play(pop, TweenInfo.new(B.Out, Enum.EasingStyle.Back, Enum.EasingDirection.In), { Scale = B.OutScale })
 		local quick = TweenInfo.new(B.Out, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-		play(art, quick, art:IsA("ImageLabel") and { ImageTransparency = 1 } or { BackgroundTransparency = 1 })
+		if art:IsA("ImageLabel") then play(art, quick, { ImageTransparency = 1 }) end
 		play(label, quick, { TextTransparency = 1 })
-		if rim then play(rim, quick, { Transparency = 1 }) end
+		for _, f in fades do play(f[1], quick, f[2]) end
 	end
 	return bb, fadeOut
 end

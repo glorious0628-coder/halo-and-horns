@@ -90,6 +90,7 @@ local kit = {
 		local img = inst("ImageLabel", props.Name)
 		img.Size = props.Size
 		img.ArtKey = name
+		img.AskedScaleType = props.ScaleType -- A23-74: own art asks for Fit, BarkBubble leaves UIKit's Slice
 		return img
 	end,
 	ApplyFont = function(label, weight, role) table.insert(fontCalls, { Label = label, Weight = weight, Role = role }) return label end,
@@ -114,7 +115,8 @@ local env = setmetatable({
 	workspace = { GetServerTimeNow = function() return W.Now end, FindFirstChild = function() return nil end, CurrentCamera = nil },
 	Vector3 = { new = vec }, Vector2 = { new = function(x, y) return { X = x, Y = y } end },
 	UDim2 = { fromOffset = function(x, y) return { Kind = "Offset", X = x, Y = y } end,
-		fromScale = function(x, y) return { Kind = "Scale", X = x, Y = y } end },
+		fromScale = function(x, y) return { Kind = "Scale", X = x, Y = y } end,
+		new = function(xs, xo, ys, yo) return { Kind = "New", XS = xs, XO = xo, YS = ys, YO = yo } end },
 	UDim = { new = function(a, b) return { a, b } end },
 	Color3 = { new = function(r, g, b) return { R = r, G = g, B = b } end, fromRGB = function(r, g, b) return { R = r / 255, G = g / 255, B = b / 255 } end,
 		fromHSV = function() return {} end },
@@ -170,6 +172,8 @@ check(bb and bb.MaxDistance == Config.Barks.MaxDistance and bb.SizeOffset.X == 0
 	"bubble: MaxDistance from Config.Barks, tail corner at the head (SizeOffset 0.5), above the name tag",
 	bb and tostring(bb.MaxDistance))
 check(bb and bb:FindFirstChild("Art") and bb:FindFirstChild("Art").ClassName == "ImageLabel", "the BarkBubble art draws the bubble")
+check(bb and bb:FindFirstChild("Art") and bb:FindFirstChild("Art").ArtKey == "BarkBubble" and bb:FindFirstChild("Art").AskedScaleType == nil,
+	"the shared BarkBubble keeps UIKit's 9-slice (no ScaleType asked)")
 local rect = Config.UIArt.Parts.BarkBubble.TextRect
 local line = lineOf(root)
 check(line and line.Position.X == rect[1] and line.Position.Y == rect[2] and line.Size.X == rect[3] and line.Size.Y == rect[4]
@@ -215,28 +219,28 @@ advance(0.5)
 m4.Attrs.Bark, m4.Attrs.BarkAt = "", W.Now
 B.Check(m4, root4, bar4, me)
 check(bubbleOf(root4) == nil, "an empty line: no bubble")
--- 7. A23-74 (user 2026-10-07 "not cute"): small round bubbles, the width follows the letters, max 2 lines
-check(bb and bb.Size.Kind == "Offset" and bb.Size.X >= 150 and bb.Size.X <= 172 and bb.Size.Y >= 40 and bb.Size.Y <= 46,
-	"a short line: a small bubble (150-172 x 40-46 px)", bb and (bb.Size.X .. "x" .. bb.Size.Y))
-local function wOf(text) local w = B.SizeFor(text) return w end
-check(wOf("Blub?") <= wOf("Team Boo, go!") and wOf("Team Boo, go!") <= wOf("Squish! My stem!") and wOf("Squish! My stem!") <= 172
-	and wOf("Team Boo, go!") > wOf("Blub?"), "a longer one-line bark gets a wider bubble (<= 172 px)",
-	wOf("Blub?") .. "/" .. wOf("Team Boo, go!") .. "/" .. wOf("Squish! My stem!"))
-check(wOf("Blub… blub…") == wOf("Blub. blub."), "the width counts letters, not bytes (… is one letter)", wOf("Blub… blub…"))
+-- 7. A23-74 (user 2026-10-07 "not cute" / "말풍선 가로로 길쭉한 거 말고"): fixed-size round bubbles, never a wide pill
+check(bb and bb.Size.Kind == "Offset" and bb.Size.X == B.SliceW and bb.Size.Y == B.SliceH and B.SliceW >= 96 and B.SliceW <= 120
+	and B.SliceH >= 52 and B.SliceW / B.SliceH <= 2, "the shared 9-slice bubble is drawn compact (96-120 px wide, at most 2 : 1)",
+	bb and (bb.Size.X .. "x" .. bb.Size.Y))
 advance(0.5)
 m4.Attrs.Bark, m4.Attrs.BarkAt = "Wobbly... so wobbly... blub.", W.Now
 B.Check(m4, root4, bar4, me)
 local b4 = bubbleOf(root4)
-check(b4 and b4.Size.Y == B.H2 and b4.Size.X >= B.W2 and b4.Size.X <= B.W2Max and B.H2 > B.H,
-	"a long line gets the two-line bubble", b4 and (b4.Size.X .. "x" .. b4.Size.Y))
-local _, longH = B.SizeFor("A visitor! Bow! Or wobble. Either works.")
-check(longH == B.H2 and wOf("A visitor! Bow! Or wobble. Either works.") == B.W2Max, "the longest lines stop at W2Max x H2 (two lines)")
+check(b4 and b4.Size.X == bb.Size.X and b4.Size.Y == bb.Size.Y, "a longer line keeps the same fixed size (no width per letter)",
+	b4 and (b4.Size.X .. "x" .. b4.Size.Y))
+check(B.SizeFor == nil and type(B.SizeOf) == "function", "no per-letter sizing left (B.SizeFor gone, B.SizeOf per art)")
+-- the line wraps (at most 2 lines: one sound word) and scales between TextMin and TextMax
+local l4 = lineOf(root4)
+local c4 = l4 and l4:FindFirstChild("UITextSizeConstraint")
+check(l4 and l4.TextWrapped == true and l4.TextScaled == true and l4.LineHeight == B.LineHeight and B.LineHeight <= 1
+	and c4 and c4.MaxTextSize == B.TextMax and c4.MinTextSize == B.TextMin and B.TextMin >= 10 and B.TextMin < B.TextMax,
+	"the line wraps and scales between TextMin and TextMax", l4 and tostring(l4.LineHeight))
+check(B.TextMax > 18, "the text may grow bigger than before (MaxTextSize > 18)", B.TextMax)
 -- the round Head font (UIKit.ApplyFont ExtraBold / Head = the HUD bubble's Button face); Fredoka One without UIKit
 local fc = fontCalls[#fontCalls]
 check(fc and fc.Label == lineOf(root4) and fc.Weight == "FontWeight.ExtraBold" and fc.Role == "Head",
 	"the line uses the game's Head face (ExtraBold)")
-local lineMax = lineOf(root4) and lineOf(root4):FindFirstChild("UITextSizeConstraint")
-check(lineMax and lineMax.MaxTextSize == B.TextMax and B.TextMax > 18, "the text may grow bigger than before (MaxTextSize > 18)")
 local applyFont = kit.ApplyFont
 kit.ApplyFont = nil
 advance(0.5)
@@ -246,44 +250,123 @@ check(lineOf(root4) and lineOf(root4).Font == "Font.FredokaOne", "without UIKit.
 	lineOf(root4) and lineOf(root4).Font)
 kit.ApplyFont = applyFont
 
--- 8. per-family bubble art keys (Config.Barks.BubbleFamily / BubbleArt), used only once uploaded
+-- 8. A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지"): BarkBubble<Kind> for each kind -> its family's -> BarkBubble
 local parts = Config.UIArt.Parts
-check(parts.BarkBubbleSlime and parts.BarkBubbleSlime.Id == "" and parts.BarkBubblePumpkin and parts.BarkBubblePumpkin.Id == ""
-	and parts.BarkBubbleGhost and parts.BarkBubbleGhost.Id == "", "the three family keys exist, not uploaded yet (Id \"\")")
-check(B.ArtKey("Slime") == "BarkBubble" and B.ArtKey("GhostKing") == "BarkBubble" and B.ArtKey(nil) == "BarkBubble",
-	"not uploaded: every family falls back to BarkBubble", B.ArtKey("Slime"))
+local kindCount, notReady = 0, {}
+for kind in Config.MonsterTypes do
+	kindCount += 1
+	local p = parts["BarkBubble" .. kind]
+	if type(p) ~= "table" or p.Id ~= "" then table.insert(notReady, kind) end
+end
+check(kindCount == 12 and #notReady == 0, "a BarkBubble<Kind> key for each of the 12 kinds, not uploaded yet (Id \"\")",
+	kindCount .. " " .. table.concat(notReady, ","))
+check(parts.BarkBubblePumpkin == nil and parts.BarkBubbleGhost == nil, "no family-only keys left (BarkBubblePumpkin / BarkBubbleGhost)")
+local badFam = {}
+for kind, fam in Config.Barks.BubbleFamily do
+	if Config.MonsterTypes[kind] == nil or type(Config.Barks.BubbleArt[fam]) ~= "string" then table.insert(badFam, kind) end
+end
+for fam, key in Config.Barks.BubbleArt do
+	local ownKind = string.sub(key, 11)
+	if fam ~= "Default" and (string.sub(key, 1, 10) ~= "BarkBubble" or Config.MonsterTypes[ownKind] == nil
+		or Config.Barks.BubbleFamily[ownKind] ~= fam) then
+		table.insert(badFam, fam)
+	end
+end
+check(#badFam == 0 and Config.Barks.BubbleArt.Default == "BarkBubble",
+	"every family points at one of its own monsters' keys; Default = BarkBubble", table.concat(badFam, ","))
+check(B.ArtKey("Slime") == "BarkBubble" and B.ArtKey("GhostKing") == "BarkBubble" and B.ArtKey(nil) == "BarkBubble"
+	and #B.ArtKeys("Slime") == 1, "nothing uploaded: every kind uses BarkBubble", B.ArtKey("Slime"))
 parts.BarkBubbleSlime.Id = "rbxassetid://1"
-check(B.ArtKey("Slime") == "BarkBubbleSlime" and B.ArtKey("BigSlime") == "BarkBubbleSlime", "slimes and the King Slime: the slime bubble")
-check(B.ArtKey("PumpkinSlime") == "BarkBubble", "the pumpkin family is its own (not the slime bubble), BarkBubble until uploaded",
-	B.ArtKey("PumpkinSlime"))
-check(B.ArtKey("Goblin") == "BarkBubble" and B.ArtKey("BatGoblin") == "BarkBubble" and B.ArtKey("Skeleton") == "BarkBubble",
-	"goblins / skeletons: the default bubble")
+check(B.ArtKey("Slime") == "BarkBubbleSlime", "the slime's own bubble once uploaded", B.ArtKey("Slime"))
+local keys = B.ArtKeys("BigSlime")
+check(keys[1] == "BarkBubbleSlime" and keys[2] == "BarkBubble" and #keys == 2,
+	"the King Slime borrows the slime bubble (its family) until its own is up", table.concat(keys, ","))
+parts.BarkBubbleBigSlime.Id = "rbxassetid://2"
+keys = B.ArtKeys("BigSlime")
+check(keys[1] == "BarkBubbleBigSlime" and keys[2] == "BarkBubbleSlime" and keys[3] == "BarkBubble" and #keys == 3,
+	"order: its own -> its family's -> BarkBubble", table.concat(keys, ","))
+check(B.ArtKey("PumpkinSlime") == "BarkBubble" and B.ArtKey("Goblin") == "BarkBubble" and B.ArtKey("Skeleton") == "BarkBubble",
+	"a pumpkin slime never borrows the slime bubble (its own family); goblins / skeletons: BarkBubble", B.ArtKey("PumpkinSlime"))
 Config.MonsterTypes.TestJelly = { QuestAs = "Slime" }
 check(B.ArtKey("TestJelly") == "BarkBubbleSlime", "a kind not listed uses its QuestKind's family", B.ArtKey("TestJelly"))
 Config.MonsterTypes.TestJelly = nil
-parts.BarkBubblePumpkin.Id = "rbxassetid://2"
-parts.BarkBubbleGhost.Id = "rbxassetid://3"
-check(B.ArtKey("PumpkinSlime") == "BarkBubblePumpkin" and B.ArtKey("PumpkinKing") == "BarkBubblePumpkin"
-	and B.ArtKey("GhostMinion") == "BarkBubbleGhost" and B.ArtKey("LittleGhost") == "BarkBubbleGhost"
-	and B.ArtKey("GhostKing") == "BarkBubbleGhost", "pumpkins and ghosts get their own bubbles once uploaded")
--- the bubble draws the family art with its own TextRect; art UIKit cannot draw -> BarkBubble
-uploaded.BarkBubbleSlime = true
+parts.BarkBubbleSlime.Id, parts.BarkBubbleBigSlime.Id = "", ""
+-- all 12 drawn: every monster gets its own
+local notOwn = {}
+for kind in Config.MonsterTypes do parts["BarkBubble" .. kind].Id = "rbxassetid://9" end
+for kind in Config.MonsterTypes do
+	if B.ArtKey(kind) ~= "BarkBubble" .. kind then table.insert(notOwn, kind) end
+end
+check(#notOwn == 0, "all 12 uploaded: every monster kind draws its own bubble", table.concat(notOwn, ","))
+for kind in Config.MonsterTypes do parts["BarkBubble" .. kind].Id = "" end
+-- family fallbacks while only the base monsters are drawn
+parts.BarkBubbleGoblin.Id, parts.BarkBubbleSkeleton.Id = "rbxassetid://3", "rbxassetid://4"
+parts.BarkBubbleGhostMinion.Id, parts.BarkBubblePumpkinSlime.Id = "rbxassetid://5", "rbxassetid://6"
+check(B.ArtKey("GoblinBrute") == "BarkBubbleGoblin" and B.ArtKey("BatGoblin") == "BarkBubbleGoblin"
+	and B.ArtKey("SkeletonKnight") == "BarkBubbleSkeleton" and B.ArtKey("GhostKing") == "BarkBubbleGhostMinion"
+	and B.ArtKey("LittleGhost") == "BarkBubbleGhostMinion" and B.ArtKey("PumpkinKing") == "BarkBubblePumpkinSlime",
+	"family fallbacks: brute / bat -> goblin, knight -> skeleton, ghosts -> ghost minion, pumpkin king -> pumpkin slime")
+parts.BarkBubbleGoblin.Id, parts.BarkBubbleSkeleton.Id, parts.BarkBubbleGhostMinion.Id, parts.BarkBubblePumpkinSlime.Id = "", "", "", ""
+
+-- drawing a monster's own round art: fixed ~104 px wide, height from its Size, ScaleType Fit, its TextRect
+parts.BarkBubbleSlime.Id = "rbxassetid://1"
+parts.BarkBubbleSlime.Size = env.Vector2.new(640, 512)
 parts.BarkBubbleSlime.TextRect = { 0.1, 0.2, 0.8, 0.5 }
+uploaded.BarkBubbleSlime = true
 advance(0.5)
 m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub!", W.Now
 B.Check(m4, root4, bar4, me)
-local art6 = bubbleOf(root4) and bubbleOf(root4):FindFirstChild("Art")
+local b6 = bubbleOf(root4)
+local art6 = b6 and b6:FindFirstChild("Art")
 local line6 = lineOf(root4)
-check(art6 and art6.ArtKey == "BarkBubbleSlime" and line6 and line6.Position.X == 0.1 and line6.Position.Y == 0.2
-	and line6.Size.X == 0.8 and line6.Size.Y == 0.5, "a slime draws the slime bubble with its TextRect", art6 and art6.ArtKey)
+check(art6 and art6.ArtKey == "BarkBubbleSlime" and art6.AskedScaleType == "ScaleType.Fit",
+	"a slime draws its own bubble with ScaleType Fit (not 9-sliced)", art6 and (tostring(art6.ArtKey) .. " " .. tostring(art6.AskedScaleType)))
+check(b6 and b6.Size.Kind == "Offset" and b6.Size.X == B.ArtW and B.ArtW >= 96 and B.ArtW <= 110 and b6.Size.Y == math.floor(B.ArtW * 0.8 + 0.5),
+	"its own bubble: a fixed ~104 px wide, height from its Size (640 x 512 -> 4 : 5)", b6 and (b6.Size.X .. "x" .. b6.Size.Y))
+check(line6 and line6.Position.X == 0.1 and line6.Position.Y == 0.2 and line6.Size.X == 0.8 and line6.Size.Y == 0.5
+	and line6.TextWrapped and line6.TextScaled, "the line sits in its own TextRect, wrapped and scaled")
+advance(0.5)
+m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub… blub… blub… blub…", W.Now
+B.Check(m4, root4, bar4, me)
+b6 = bubbleOf(root4)
+check(b6 and b6.Size.X == B.ArtW and b6.Size.Y == math.floor(B.ArtW * 0.8 + 0.5), "a longer line: its own bubble keeps its size",
+	b6 and (b6.Size.X .. "x" .. b6.Size.Y))
+local sw, sh = B.SizeOf({ Id = "x" })
+check(sw == B.ArtW and sh == math.floor(B.ArtW * B.ArtAspect + 0.5) and B.ArtAspect >= 0.6 and B.ArtAspect <= 0.85,
+	"no Size: ArtAspect (a round 1.2-1.6 : 1 bubble)", sw .. "x" .. sh)
+sw, sh = B.SizeOf({ Id = "x", Size = env.Vector2.new(1000, 200) })
+check(sw == B.ArtW and sh == B.ArtHMin and B.ArtHMin >= 56, "a very wide Size: still ~104 px wide, height clamped (never a pill)", sw .. "x" .. sh)
+sw, sh = B.SizeOf({ Id = "x", Size = env.Vector2.new(200, 1000) })
+check(sw == B.ArtW and sh == B.ArtHMax and B.ArtHMax <= 110, "a very tall Size: height clamped to ArtHMax", sw .. "x" .. sh)
+parts.BarkBubbleSlime.TextRect = nil
+advance(0.5)
+m4.Attrs.Bark, m4.Attrs.BarkAt = "Boing!", W.Now
+B.Check(m4, root4, bar4, me)
+line6 = lineOf(root4)
+check(line6 and line6.Position.X == B.RoundRect[1] and line6.Position.Y == B.RoundRect[2] and line6.Size.X == B.RoundRect[3]
+	and line6.Size.Y == B.RoundRect[4], "its own art without a TextRect: the line in RoundRect")
+-- a King Slime: its own art cannot draw -> the slime's (family) -> BarkBubble (compact 9-slice)
+local mk, rootK, barK = monster(vec(7, 3, 0))
+mk.Attrs.MonsterKind = "BigSlime"
+B.Check(mk, rootK, barK, me)
+parts.BarkBubbleBigSlime.Id = "rbxassetid://2" -- uploaded in Config, but UIKit cannot draw it (the double)
+advance(0.5)
+mk.Attrs.Bark, mk.Attrs.BarkAt = "BLOOP!", W.Now
+local asked0 = #artAsked
+B.Check(mk, rootK, barK, me)
+local artK = bubbleOf(rootK) and bubbleOf(rootK):FindFirstChild("Art")
+check(artK and artK.ArtKey == "BarkBubbleSlime" and artAsked[asked0 + 1] == "BarkBubbleBigSlime" and artAsked[asked0 + 2] == "BarkBubbleSlime",
+	"the King Slime's own art fails to draw -> the slime bubble (tried in order)", artK and artK.ArtKey)
 uploaded.BarkBubbleSlime = nil
 advance(0.5)
-m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub!", W.Now
-B.Check(m4, root4, bar4, me)
-art6 = bubbleOf(root4) and bubbleOf(root4):FindFirstChild("Art")
-check(art6 and art6.ArtKey == "BarkBubble", "the family art fails to draw -> BarkBubble", art6 and art6.ArtKey)
-parts.BarkBubbleSlime.Id, parts.BarkBubblePumpkin.Id, parts.BarkBubbleGhost.Id = "", "", ""
-parts.BarkBubbleSlime.TextRect = nil
+mk.Attrs.Bark, mk.Attrs.BarkAt = "SPLOOSH!", W.Now
+B.Check(mk, rootK, barK, me)
+local bK = bubbleOf(rootK)
+artK = bK and bK:FindFirstChild("Art")
+check(artK and artK.ArtKey == "BarkBubble" and artK.AskedScaleType == nil and bK.Size.X == B.SliceW and bK.Size.Y == B.SliceH,
+	"neither draws -> the shared BarkBubble, compact 9-slice", artK and artK.ArtKey)
+parts.BarkBubbleSlime.Id, parts.BarkBubbleBigSlime.Id, parts.BarkBubbleSlime.Size = "", "", nil
+advance(Config.Barks.Show + 0.01)
 
 -- 9. motion: jelly pop from the tail corner, a float while shown, shrink + fade at the end, every tween cancelled
 local function tweensOf(target)
@@ -360,7 +443,8 @@ advance(Config.Barks.Show + 0.01)
 check(bubbleOf(root7) == nil and #tweens == n0, "reduced motion: no fade either, the bubble just goes")
 reducedMotion = false
 
--- 10. the code fallback: a white pill with a thin soft rim, text in PillRect, and it fades too
+-- 10. the code fallback (A23-74): a round compact white bubble (about 96 x 70, not a long pill) with a thin soft rim and
+-- a small round tail dot under its bottom left, the line in CodeRect, and it all fades too
 kitArt = false
 advance(0.5)
 m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub!", W.Now
@@ -369,15 +453,37 @@ local b5 = bubbleOf(root4)
 local art5 = b5 and b5:FindFirstChild("Art")
 local corner5 = art5 and art5:FindFirstChild("UICorner")
 local rim5 = art5 and art5:FindFirstChild("UIStroke")
-check(art5 and art5.ClassName == "Frame" and rim5 and corner5 and art5:FindFirstChild("Line"),
-	"without the art: a white rounded box with a rim (code fallback)")
-check(corner5 and corner5.CornerRadius[1] == 0.5 and corner5.CornerRadius[2] == 0, "the fallback is a pill (fully round)")
-check(rim5 and rim5.Thickness < 2 and rim5.Transparency > 0, "the fallback rim is softer (thinner, see-through)")
+check(art5 and art5.ClassName == "Frame" and rim5 and corner5 and art5:FindFirstChild("Line") and art5.BackgroundColor3
+	and art5.BackgroundColor3.R == 1 and art5.BackgroundColor3.G == 1 and art5.BackgroundColor3.B == 1,
+	"without the art: a white round box with a rim (code fallback)")
+check(b5 and b5.Size.Kind == "Offset" and b5.Size.X == B.CodeW and b5.Size.Y == B.CodeH and B.CodeW >= 88 and B.CodeW <= 104
+	and B.CodeH >= 62 and B.CodeH <= 78, "the code bubble is round and compact (about 96 x 70 px), not a long pill",
+	b5 and (b5.Size.X .. "x" .. b5.Size.Y))
+check(corner5 and corner5.CornerRadius[1] == 0.5 and corner5.CornerRadius[2] == 0, "the code bubble's corner is fully round")
+check(rim5 and rim5.Thickness < 2 and rim5.Transparency > 0, "the code bubble's rim is soft (thin, see-through)")
+local tail5 = art5 and art5:FindFirstChild("Tail")
+local tailCorner = tail5 and tail5:FindFirstChild("UICorner")
+check(tail5 and tail5.ClassName == "Frame" and tail5.Size.Kind == "Offset" and tail5.Size.X == B.Tail and tail5.Size.Y == B.Tail
+	and B.Tail <= 16 and tail5.Position.Kind == "New" and tail5.Position.XS == 0 and tail5.Position.YS == 1 and tail5.Position.XO <= 8
+	and tailCorner and tailCorner.CornerRadius[1] == 0.5 and tail5:FindFirstChild("UIStroke"),
+	"a small round tail dot (<= 16 px, rimmed) under the bottom left")
 local line5 = lineOf(root4)
-check(line5 and line5.Position.X == B.PillRect[1] and line5.Size.Y == B.PillRect[4], "the fallback text sits in PillRect")
+check(line5 and line5.Position.X == B.CodeRect[1] and line5.Position.Y == B.CodeRect[2] and line5.Size.X == B.CodeRect[3]
+	and line5.Size.Y == B.CodeRect[4] and line5.TextWrapped and line5.TextScaled, "the code bubble's line sits in CodeRect, wrapped")
+advance(0.5)
+m4.Attrs.Bark, m4.Attrs.BarkAt = "Blub… blub… blub… blub…", W.Now
+B.Check(m4, root4, bar4, me)
+b5 = bubbleOf(root4)
+art5 = b5 and b5:FindFirstChild("Art")
+rim5 = art5 and art5:FindFirstChild("UIStroke")
+tail5 = art5 and art5:FindFirstChild("Tail")
+check(b5 and b5.Size.X == B.CodeW and b5.Size.Y == B.CodeH, "a longer line: the code bubble keeps its size")
 advance(Config.Barks.Show - B.Out + 0.01)
-local rimFade, bgFade = false, false
-for _, tw in tweensOf(rim5) do if tw.Goal.Transparency == 1 then rimFade = true end end
-for _, tw in tweensOf(art5) do if tw.Goal.BackgroundTransparency == 1 then bgFade = true end end
-check(rimFade and bgFade, "the fallback pill and its rim fade out too")
+local function fadesTo(target, prop)
+	for _, tw in tweensOf(target) do if tw.Goal[prop] == 1 then return true end end
+	return false
+end
+check(fadesTo(rim5, "Transparency") and fadesTo(art5, "BackgroundTransparency"), "the code bubble and its rim fade out too")
+check(tail5 and fadesTo(tail5, "BackgroundTransparency") and fadesTo(tail5:FindFirstChild("UIStroke"), "Transparency"),
+	"the tail dot and its rim fade out too")
 print("MONSTER_BARK_SUMMARY checks=" .. checks .. " failed=" .. failed)
