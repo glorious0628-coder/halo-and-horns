@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 448,
+  "checks": 463,
   "failedChecks": 0,
-  "namedChecks": 445,
+  "namedChecks": 460,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -957,6 +957,96 @@
     },
     {
       "group": "max-subs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "the first skill at Lv5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "M1_3: a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "M2_5: a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "N1 (a skill sub) opens at Lv5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "Lv5: the skill hits begin, no 'Skills come' tail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "a Lv7 at M1_3: straight to the skill hits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "S0 at Lv2 (skill trial open): 'The shard's test · Skills come at Lv5'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "the skill trial already done: no tail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "Lv5 (Q learned): no tail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "a Lv2 who kept Q (saved slots 1): no tail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "a Neutral Lv3 after M1_4: no N1 yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "at Lv5: N1 is offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-71 skill quests",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -2682,11 +2772,57 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 83,
-    "applied": 83,
-    "caught": 83,
+    "total": 87,
+    "applied": 87,
+    "caught": 87,
     "skipped": false,
     "results": [
+      {
+        "mutation": "A23-71: no 'Skills come' tail",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: S0 at Lv2 (skill trial open): 'The shard's test · Skills come at Lv5'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "A23-71: the tail stays after the skill trial",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: the skill trial already done: no tail"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "A23-71: M1_3 skill hits from Lv1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'",
+          "a23-71 skill quests :: M1_3: a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "A23-71: N1 at any level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill quests :: N1 (a skill sub) opens at Lv5",
+          "a23-71 skill quests :: a Neutral Lv3 after M1_4: no N1 yet"
+        ],
+        "newFailingCount": 2
+      },
       {
         "mutation": "the lunchbox before the first claim",
         "file": "src/ServerScriptService/StoryQuestService.luau",
@@ -2765,9 +2901,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-71 skill quests :: Lv5 (Q learned): no tail",
+          "a23-71 skill quests :: Lv5: the skill hits begin, no 'Skills come' tail",
+          "a23-71 skill quests :: S0 at Lv2 (skill trial open): 'The shard's test · Skills come at Lv5'",
+          "a23-71 skill quests :: a Lv2 who kept Q (saved slots 1): no tail",
+          "a23-71 skill quests :: the skill trial already done: no tail",
           "h1-good :: the row counts the seconds: Progress / Target + unit 's', no '%d/%d s' in the text (3rd round #1)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 6
       },
       {
         "mutation": "the seconds lose their unit",
@@ -2833,10 +2974,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-71 skill quests :: M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'",
           "offered :: a step's own ShortName comes before the quest's",
           "offered :: the H1 row carries the quest's ShortName (the phone quest row)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "a step's ShortName is ignored",
@@ -2845,9 +2987,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-71 skill quests :: M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'",
           "offered :: a step's own ShortName comes before the quest's"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "H1 opens after M1_1",
@@ -3745,20 +3888,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
+    "src/ReplicatedStorage/Shared/Config.luau": "426a50dcf1d3f798db694782e08b2dac4528e4bb6cbc6cf48a92334c51d456e8",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
-    "src/ServerScriptService/StoryQuestService.luau": "3edf1cc5826336f97fbb408a319402ce2038e3a32aa1b2a64bc59bf9c621bc51",
+    "src/ServerScriptService/StoryQuestService.luau": "ae2424c85059a2dc76b263e0124f24847164b6ecc9ce11b8b903b027643c0e1b",
     "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
-    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
-    "src/ServerScriptService/CharacterVisuals.luau": "fcfaec02dd563265306e73a3c9ec94846c110cb66ba17ba56c31719fec2a90f9",
+    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
   },
-  "fixtureSHA256": "c141ba236a9370a13a10ba48590fe7e328ef983b286e78c7d5951c68e38375dc",
+  "fixtureSHA256": "77fbaacd98408f1d354f74d2b235a7d9eb7148135acd112c3b4cf57916eff299",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

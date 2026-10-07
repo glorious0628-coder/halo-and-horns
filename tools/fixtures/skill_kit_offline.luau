@@ -55,8 +55,8 @@ local S = Config.Skills
 check(type(S) == "table" and S.ZEnabled == false and S.XEnabled == false and S.PvPZX == false,
 	"flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false", S and { S.ZEnabled, S.XEnabled, S.PvPZX })
 check(S.MoveSkills == true and S.Fields == true and S.Taunt == true, "the section 10 fall-back switches start on")
-check(table.concat(S.Order or {}, ",") == "Q,Z,X" and S.Unlock and S.Unlock.Q == 1 and S.Unlock.Z == 5 and S.Unlock.X == 8,
-	"Q / Z / X unlock at Lv1 / Lv5 / Lv8")
+check(table.concat(S.Order or {}, ",") == "Q,Z,X" and S.Unlock and S.Unlock.Q == 5 and S.Unlock.Z == 15 and S.Unlock.X == 25,
+	"Q / Z / X unlock at Lv5 / Lv15 / Lv25 (A23-71, user 2026-10-07; SKL-1 had Lv1 / Lv5 / Lv8)")
 check(S.GlobalGap == 0.5 and S.MPStealCap == 20, "0.5 s between skills, MP steal capped at 20 a cast")
 
 -- section 4 numbers (the build-fast tables) per kit and slot: { MP, CD, Mult, Shape }

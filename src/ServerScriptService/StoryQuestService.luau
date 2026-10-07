@@ -195,6 +195,16 @@ local function stateTrue(player, key)
 	return false
 end
 
+-- A23-71: the step is a skill hit, or a trial list with a skill-hit trial not done yet
+local function needsSkill(obj, track)
+	if obj.Type == "SkillHit" then return true end
+	if obj.Type ~= "Trials" or type(obj.List) ~= "table" then return false end
+	for _, sub in obj.List do
+		if sub.Type == "SkillHit" and num(type(track.T) == "table" and track.T[sub.Key]) < num(sub.Count, 1) then return true end
+	end
+	return false
+end
+
 -- how much one event moves an objective (0 = not this objective)
 local function eventAmount(player, obj, ev)
 	local t = obj.Type
@@ -563,6 +573,10 @@ local function rowFor(player, data, id, track)
 	local unit = nil
 	if target > 1 and not track.Claim and step and type(step.Text) == "string" then
 		text, unit = countless(step.Text)
+	end
+	-- A23-71: a step that needs a skill hit (or a trial list still missing one) before the first skill says when it comes
+	if not track.Claim and needsSkill(obj, track) and not Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths) then
+		text = string.format(TXT.SkillLater, text, math.floor(num((Config.Skills.Unlock or {}).Q, 5)))
 	end
 	return {
 		Id = "story:" .. id, Kind = def.Kind, Pinned = def.Kind == "Main", TutorialStep = TUT_DONE,

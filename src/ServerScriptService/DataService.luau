@@ -432,6 +432,13 @@ local function loadLocked(player)
 
 	if not fresh then
 		migrate(d, player) -- a brand-new record gets everything from the defaults below
+		-- A23-71 (user 2026-10-07): skills are learned at Lv5 / 15 / 25 now (Q was there from the start, Z Lv5, X Lv8).
+		-- An older save gets its slots once from its level and rebirths (this may lower them, once); after that
+		-- SkillService only raises them (Version stays 3: an additive fix like BB2)
+		if d.SkillsA71 ~= true then
+			d.SkillSlots = Config.SkillSlotsFor(d.Level, d.Rebirths)
+			d.SkillsA71 = true
+		end
 	end
 	fillDefaults(d, player.Name)
 	d.Version = Config.Data.Version

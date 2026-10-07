@@ -435,6 +435,7 @@ end
 for _, kind in { "Daily", "Extra" } do
 	local initial = saved(99, 5)
 	initial.BlacksmithVisited = true
+	initial.SkillSlots, initial.SkillsA71 = 1, true -- A23-71: this Lv1 player kept Q (a level reset), so a skill daily fits
 	initial.DailyDay = execute(CONFIG_SOURCE, configEnv).DayIndex(os.time())
 	initial.Quests = {
 		{ Id = "Release", Kind = kind, Target = 5, Progress = 1, RewardGold = 123, RewardXP = 45,
@@ -503,6 +504,7 @@ do
 	local text = string.format(template.Text, 3)
 	local initial = saved(99, 5)
 	initial.BlacksmithVisited, initial.DailyDay = true, cfg.DayIndex(os.time())
+	initial.SkillSlots, initial.SkillsA71 = 1, true -- A23-71: this Lv1 player kept Q (a level reset), so a skill quest fits
 	initial.Quests = {
 		{ Id = "Release", Kind = "Extra", Target = 3, Progress = 0, RewardGold = 10, RewardXP = 5, Text = text, Unit = "Slime" },
 		{ Id = "Kill", Kind = "Daily", Target = 10, Progress = 2, RewardGold = 12, RewardXP = 4, Text = "슬라임 10마리 쓰러뜨리기", Unit = "Slime" },
@@ -519,6 +521,7 @@ end
 do
 	local initial = saved(0, 0)
 	initial.DailyDay = execute(CONFIG_SOURCE, configEnv).DayIndex(os.time())
+	initial.SkillSlots, initial.SkillsA71 = 1, true -- A23-71: this Lv1 player kept Q (a level reset), so a skill quest fits
 	initial.Quests = {
 		{ Id = "Release", Kind = "Extra", Target = 2, Progress = 1, RewardGold = 10, RewardXP = 5, Text = "x", Unit = "Slime" },
 		{ Id = "Kill", Kind = "Daily", Target = 10, Progress = 2, RewardGold = 12, RewardXP = 4, Text = "y", Unit = "Slime" },

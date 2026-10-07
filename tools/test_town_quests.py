@@ -48,6 +48,18 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-71 the first skill at Lv5
+    ("A23-71: no 'Skills come' tail", ST,
+     "\tif not track.Claim and needsSkill(obj, track) and not Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths) then\n",
+     "\tif false then\n"),
+    ("A23-71: the tail stays after the skill trial", ST,
+     "if sub.Type == \"SkillHit\" and num(type(track.T) == \"table\" and track.T[sub.Key]) < num(sub.Count, 1) then return true end",
+     "if sub.Type == \"SkillHit\" then return true end"),
+    ("A23-71: M1_3 skill hits from Lv1", C,
+     "\t\t\t\t{ Text = \"Lv5 · Learn your first skill (now Lv%d)\", ShortName = \"Reach Lv 5\", Obj = { Type = \"Level\", Level = 5 } },\n\t\t\t\t{ Text = \"Hit monsters with a skill",
+     "\t\t\t\t{ Text = \"Lv5 · Learn your first skill (now Lv%d)\", ShortName = \"Reach Lv 5\", Obj = { Type = \"Level\", Level = 1 } },\n\t\t\t\t{ Text = \"Hit monsters with a skill"),
+    ("A23-71: N1 at any level", C, 'Requires = { Done = { "M1_4" }, Level = 5 }, -- A23-71: a skill quest',
+     'Requires = { Done = { "M1_4" } },'),
     # A23-70 the lost lunchbox
     ("the lunchbox before the first claim", ST,
      "\tif req.TutorialDone and num(data.TutorialStep) ~= TUT_DONE then return false end\n", ""),

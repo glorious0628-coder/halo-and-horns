@@ -117,6 +117,10 @@ end
 local function eligible(player, job, boardId, avoid)
 	if avoid[job.Id] then return false end
 	if job.NeedAuto and player:GetAttribute("AutoCombatUnlocked") ~= true then return false end
+	if job.NeedSkill and not Config.SkillLearned(player:GetAttribute("SkillSlots"), player:GetAttribute("Level"),
+		player:GetAttribute("Rebirths")) then
+		return false -- A23-71: the first skill comes at Lv5
+	end
 	local only = job.Boards
 	return only == nil or only[boardId] == true
 end
