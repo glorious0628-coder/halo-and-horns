@@ -534,6 +534,13 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 		return 0
 	end
 
+	-- SKL-3 Guard (SkillService.GuardOf): only a monster's hit (no attacker, a monster kind) is cut, never a player's or
+	-- the kaiju's
+	if attacker == nil and type(sourceKind) == "string" and Config.MonsterTypes[sourceKind] ~= nil and S.SkillService
+		and type(S.SkillService.GuardOf) == "function" then
+		local g = tonumber(S.SkillService.GuardOf(victim)) or 0
+		if g > 0 then amount = amount * (1 - math.clamp(g, 0, 0.9)) end
+	end
 	amount = Util.RoundDamage(amount)
 	local now = os.clock()
 	lastDamagedAt[victim] = now
@@ -637,9 +644,9 @@ end
 
 -- CR-M10: damage a monster and return the HP it actually lost (no overkill; 0 when the hit was refused).
 -- killed = DamageMonster's own result
-local function damageMonster(rec, dealt, player, crit)
+local function damageMonster(rec, dealt, player, crit, castId)
 	local hpBefore = math.max(0, tonumber(rec.HP) or 0)
-	local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit)
+	local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit, castId) -- castId: SKL-3 one hit a cast
 	local applied = math.max(0, hpBefore - math.max(0, tonumber(rec.HP) or 0))
 	if player and (killed or applied > 0) then CombatService.MonsterHit:Fire(player, rec, killed) end
 	return killed, applied

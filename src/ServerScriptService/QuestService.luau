@@ -588,8 +588,26 @@ local function nextGoalText(data)
 		local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
 		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold)), "IronGold"
 	end
+	-- SKL-3 (skill_kit §2): the next skill this save learns (Q; Z / X while their switch is on), before the next zone
+	-- when it comes first
+	local skills = Config.Skills or {}
+	local skillAt = nil
+	if num(data.Rebirths) < 1 then
+		local have = math.floor(num(data.SkillSlots))
+		for i, slot in skills.Order or { "Q", "Z", "X" } do
+			if i > have then
+				local need = math.floor(num((skills.Unlock or {})[slot]))
+				if (slot == "Q" or skills[slot .. "Enabled"] == true) and need > level then skillAt = need end
+				break
+			end
+		end
+	end
 	local zone = Config.Zones[NEXT_ZONE]
-	if zone and level < zone.MinLevel then
+	local zoneAt = zone and level < zone.MinLevel and zone.MinLevel or nil
+	if skillAt and (zoneAt == nil or skillAt <= zoneAt) and TUT_MESSAGES.NextSkill then
+		return string.format(TUT_MESSAGES.NextSkill, skillAt, level), "Skill", skillAt
+	end
+	if zoneAt then
 		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level), "Zone", zone.MinLevel
 	end
 	return nil
@@ -636,7 +654,7 @@ local function tutorialEntry(player, data)
 			entry.Text = text
 			entry.ShortName = goalShort(kind, need)
 			entry.NextGoal = true
-			-- A23-48: which next goal this is ("IronLevel" | "IronGold" | "Zone"), so clients never search the (now
+			-- A23-48: which next goal this is ("IronLevel" | "IronGold" | "Skill" | "Zone"), so clients never search the (now
 			-- English) text for a word
 			entry.GoalKind = kind
 		end

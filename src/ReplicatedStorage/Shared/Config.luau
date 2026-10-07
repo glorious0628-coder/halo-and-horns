@@ -1864,7 +1864,7 @@ Config.Tutorial = {
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
-		IronLevel = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
+		IronLevel = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d", Skill = "Skill at Lv %d" },
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
@@ -1935,6 +1935,7 @@ Config.Tutorial = {
 		NextIronLevel = "Next goal · Iron weapon at Lv%d (now Lv%d)",
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
+		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
 		GuideDone = "That's all from me! Now hunt and get stronger.",
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
@@ -1981,7 +1982,8 @@ Config.StoryQuests = {
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
 	Subs = { "S0", "Lunch1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
-		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8" },
+		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
+		"SK1", "SK2" }, -- SKL-3: the practice subs of a new skill
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -2057,6 +2059,30 @@ Config.StoryQuests = {
 							Reward = { Gold = 25 } },
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
+		},
+		-- SKL-3 (skill_kit §2): practice a new skill right after learning it. Requires.Skill = that skill is learned (its
+		-- switch on and the slot open: Z at Skills.Unlock.Z, X at Unlock.X). SkillHit Slot = only that skill's casts count
+		SK1 = {
+			Kind = "Sub", Title = "A New Move", ShortName = "New move", Speaker = "Shard", Requires = { Skill = "Z" },
+			Start = "Shard: A new move! Try it on a group.",
+			Steps = { { Text = "Hit 2 monsters at once with your new skill %d/%d", Obj = { Type = "SkillHit", Slot = "Z", Min = 2, Count = 1 } } },
+			Reward = { Gold = 1 },
+		},
+		SK2 = {
+			Kind = "Sub", Title = "The Shard's Gift", ShortName = "Shard's gift", Speaker = "Shard", Requires = { Skill = "X" },
+			Start = "Shard: You grew strong. Come to the Crossroads fountain.",
+			Steps = {
+				{ Text = "Go to the Crossroads fountain (tap for directions)", Guide = "Fountain",
+					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
+				{ Text = "How will you use your power?", Panel = true,
+					Lines = { All = { "You grew strong. Your side's power woke up in you.\nHow will you use it?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Guard my friends", Points = 1, Pick = "Guard" },
+						Evil = { Label = "Take what I want", Points = 1, Pick = "Take" },
+						Neutral = { A = "Build things", B = "Fix things" } } },
+				{ Text = "Hit monsters with your new skill %d/%d", Obj = { Type = "SkillHit", Slot = "X", Min = 1, Count = 3 } },
+			},
+			Reward = { Gold = 1 },
 		},
 		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		M1_1 = {

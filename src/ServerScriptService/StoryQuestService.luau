@@ -229,6 +229,7 @@ local function eventAmount(player, obj, ev)
 		return 1
 	elseif ev.Kind == "Skill" then
 		if t ~= "SkillHit" or ev.Info.Auto == true then return 0 end
+		if obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)
 		return num(ev.Info.MonstersHit) >= (obj.Min or 1) and 1 or 0
 	elseif ev.Kind == "Gold" then
 		if t == "EarnGold" and (obj.Source == nil or obj.Source == ev.Source) then return math.floor(num(ev.Amount)) end
@@ -407,6 +408,13 @@ local function requirementsMet(player, data, def)
 		if st.Done[gone] then return false end
 	end
 	if req.Level and num(data.Level, 1) < req.Level then return false end
+	-- SKL-3: Skill = "Q" / "Z" / "X" learned (its switch on and the saved slot open)
+	if req.Skill then
+		local skills = Config.Skills or {}
+		local index = table.find(skills.Order or { "Q", "Z", "X" }, req.Skill)
+		local on = req.Skill == "Q" or skills[req.Skill .. "Enabled"] == true
+		if not index or not on or num(data.SkillSlots) < index then return false end
+	end
 	for _, need in req.Done or {} do
 		if not st.Done[need] then return false end
 	end
