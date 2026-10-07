@@ -1,0 +1,480 @@
+{
+ "archer_SwingArrow_SwingArcher-2-1": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-1.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 169,
+  "masterGainDb": 7.3,
+  "lufs": -21.3,
+  "mp3": "build/sfx_scene/archer_SwingArrow_SwingArcher-2-1.mp3"
+ },
+ "archer_SwingArrow_SwingArcher-2-4": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 169,
+  "masterGainDb": 7.3,
+  "lufs": -21.3,
+  "mp3": "build/sfx_scene/archer_SwingArrow_SwingArcher-2-4.mp3"
+ },
+ "archer_SwingArrow_SwingArcher-3-1": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-3-1.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 169,
+  "masterGainDb": 7.3,
+  "lufs": -21.3,
+  "mp3": "build/sfx_scene/archer_SwingArrow_SwingArcher-3-1.mp3"
+ },
+ "mage_halo_SwingMageHalo_SwingMage-3-4": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.3,
+  "mp3": "build/sfx_scene/mage_halo_SwingMageHalo_SwingMage-3-4.mp3"
+ },
+ "mage_halo_SwingMageHalo_1-1": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_1-1.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.3,
+  "mp3": "build/sfx_scene/mage_halo_SwingMageHalo_1-1.mp3"
+ },
+ "mage_halo_SwingMageHalo_SwingMage-2-2": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-2-2.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.3,
+  "mp3": "build/sfx_scene/mage_halo_SwingMageHalo_SwingMage-2-2.mp3"
+ },
+ "mage_horns_SwingMageHorns_1-1": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.0,
+  "mp3": "build/sfx_scene/mage_horns_SwingMageHorns_1-1.mp3"
+ },
+ "mage_horns_SwingMageHorns_1-2": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-2.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.3,
+  "mp3": "build/sfx_scene/mage_horns_SwingMageHorns_1-2.mp3"
+ },
+ "mage_horns_SwingMageHorns_2-2": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_2-2.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.2,
+  "mp3": "build/sfx_scene/mage_horns_SwingMageHorns_2-2.mp3"
+ },
+ "warrior_goblin_HitHeavy_3-2": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 70,
+  "masterGainDb": 7.0,
+  "lufs": -21.8,
+  "mp3": "build/sfx_scene/warrior_goblin_HitHeavy_3-2.mp3"
+ },
+ "warrior_goblin_HitHeavy_1-2": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_1-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 70,
+  "masterGainDb": 6.5,
+  "lufs": -22.3,
+  "mp3": "build/sfx_scene/warrior_goblin_HitHeavy_1-2.mp3"
+ },
+ "warrior_goblin_HitHeavy_1-3": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_1-3.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 70,
+  "masterGainDb": 7.2,
+  "lufs": -21.6,
+  "mp3": "build/sfx_scene/warrior_goblin_HitHeavy_1-3.mp3"
+ },
+ "warrior_goblin_HitCrit_sB3": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 70,
+  "masterGainDb": 7.0,
+  "lufs": -21.8,
+  "mp3": "build/sfx_scene/warrior_goblin_HitCrit_sB3.mp3"
+ },
+ "warrior_goblin_HitCrit_1-2": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_1-2.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 70,
+  "masterGainDb": 5.3,
+  "lufs": -23.5,
+  "mp3": "build/sfx_scene/warrior_goblin_HitCrit_1-2.mp3"
+ },
+ "warrior_goblin_HitCrit_1-4": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_1-4.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 70,
+  "masterGainDb": 6.3,
+  "lufs": -22.5,
+  "mp3": "build/sfx_scene/warrior_goblin_HitCrit_1-4.mp3"
+ },
+ "warrior_slime_ComboCoin_kA": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 87,
+  "masterGainDb": 7.6,
+  "lufs": -21.0,
+  "mp3": "build/sfx_scene/warrior_slime_ComboCoin_kA.mp3"
+ },
+ "warrior_slime_ComboCoin_kB": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kB.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 87,
+  "masterGainDb": 7.6,
+  "lufs": -21.0,
+  "mp3": "build/sfx_scene/warrior_slime_ComboCoin_kB.mp3"
+ },
+ "warrior_slime_ComboCoin_kC": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kC.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 87,
+  "masterGainDb": 7.6,
+  "lufs": -21.0,
+  "mp3": "build/sfx_scene/warrior_slime_ComboCoin_kC.mp3"
+ },
+ "warrior_slime_HitSoft_kB": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 87,
+  "masterGainDb": 7.6,
+  "lufs": -21.0,
+  "mp3": "build/sfx_scene/warrior_slime_HitSoft_kB.mp3"
+ },
+ "warrior_slime_HitSoft_kA": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kA.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 87,
+  "masterGainDb": 7.6,
+  "lufs": -21.0,
+  "mp3": "build/sfx_scene/warrior_slime_HitSoft_kA.mp3"
+ },
+ "warrior_slime_HitSoft_kC": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kC.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 87,
+  "masterGainDb": 7.7,
+  "lufs": -20.9,
+  "mp3": "build/sfx_scene/warrior_slime_HitSoft_kC.mp3"
+ },
+ "archer_rec": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 169,
+  "masterGainDb": 7.3,
+  "lufs": -21.3,
+  "mp3": "build/sfx_scene/archer_rec.mp3",
+  "phoneMp3": "build/sfx_scene/archer_rec_phone.mp3",
+  "phoneLufs": -22.0
+ },
+ "warrior_slime_rec": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 87,
+  "masterGainDb": 7.6,
+  "lufs": -21.0,
+  "mp3": "build/sfx_scene/warrior_slime_rec.mp3",
+  "phoneMp3": "build/sfx_scene/warrior_slime_rec_phone.mp3",
+  "phoneLufs": -21.9
+ },
+ "warrior_goblin_rec": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 70,
+  "masterGainDb": 7.0,
+  "lufs": -21.8,
+  "mp3": "build/sfx_scene/warrior_goblin_rec.mp3",
+  "phoneMp3": "build/sfx_scene/warrior_goblin_rec_phone.mp3",
+  "phoneLufs": -22.4
+ },
+ "mage_halo_rec": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.3,
+  "mp3": "build/sfx_scene/mage_halo_rec.mp3",
+  "phoneMp3": "build/sfx_scene/mage_halo_rec_phone.mp3",
+  "phoneLufs": -23.9
+ },
+ "mage_horns_rec": {
+  "files": {
+   "SwingArrow": "art/sfx/cand/SwingArrow_SwingArcher-2-4.wav",
+   "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+   "SwingMageHalo": "art/sfx/cand/SwingMageHalo_SwingMage-3-4.wav",
+   "SwingMageHorns": "art/sfx/cand/SwingMageHorns_1-1.wav",
+   "HitSoft": "art/sfx/cand/HitSoft_kB.wav",
+   "HitHeavy": "art/sfx/cand/HitHeavy_3-2.wav",
+   "HitCrit": "art/sfx/cand/HitCrit_sB3.wav",
+   "KillPop": "art/sfx/KillPop.ogg",
+   "ComboCoin": "art/sfx/cand/ComboCoin_kA.wav",
+   "ComboMilestone": "art/sfx/ComboMilestone.ogg"
+  },
+  "events": 52,
+  "masterGainDb": 6.8,
+  "lufs": -23.0,
+  "mp3": "build/sfx_scene/mage_horns_rec.mp3",
+  "phoneMp3": "build/sfx_scene/mage_horns_rec_phone.mp3",
+  "phoneLufs": -23.6
+ }
+}

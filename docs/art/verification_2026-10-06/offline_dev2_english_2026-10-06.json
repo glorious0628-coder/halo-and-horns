@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3231 strings)",
+      "check": "the walk reached the player strings (3249 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -740,7 +740,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4f32824950d2a3970fb81420771e0dc5c294fbd2acedde69d5221d3d0eff0cb5",
+    "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
@@ -772,7 +772,7 @@
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
     "src/ServerScriptService/SkillService.luau": "55a5566de07570f67fb737e190200926273bec2cb8e2074ee5d5551d4a777a30",
-    "src/ServerScriptService/StoryQuestService.luau": "117e3ca4f5c84a09c6cd36422cc22c400a79873d7dd42dd1d0f764d5304f536f",
+    "src/ServerScriptService/StoryQuestService.luau": "3edf1cc5826336f97fbb408a319402ce2038e3a32aa1b2a64bc59bf9c621bc51",
     "src/ServerScriptService/TelemetryService.luau": "db0aed3775e7820fa29edce620ba91f82352acf60d31f359f916a95686a5663f",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",

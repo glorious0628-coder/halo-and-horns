@@ -972,8 +972,8 @@ local function updateGoose(now)
 				if total < target then
 					coopSub = safeFormat(type(gt.HudSub) == "table" and gt.HudSub[side] or nil, mine)
 				else
-					coopSub = safeFormat(type(gt.HudFull) == "table" and gt.HudFull[side] or nil, mine,
-						math.floor(num(Config.Goose.MinManualHits)))
+					coopSub = Config.Plural(safeFormat(type(gt.HudFull) == "table" and gt.HudFull[side] or nil, mine,
+						math.floor(num(Config.Goose.MinManualHits)))) -- "Hit it 1 time"
 				end
 			elseif faction == "Halo" or faction == "Horns" then
 				coopSub = type(gt.HudOther) == "table" and gt.HudOther[side] or ""
@@ -1565,9 +1565,31 @@ function KING.place(chip)
 	return V2.LegacyKingPlace(chip)
 end
 
+-- A23-68 #4 (user 2026-10-07 "한 번에 목표 하나"): until the first [Claim] (HUD.RookieFold) the next-event line, the
+-- siren, the arrows and the status lines wait; the first [Claim] brings the event line in with a NEW! tag
+function V2.Fold()
+	local hud = C and C.HUD
+	if type(hud) ~= "table" or type(hud.RookieFold) ~= "function" then return false end
+	local ok, fold = pcall(hud.RookieFold)
+	return ok and fold == true
+end
+
+function V2.NewTag()
+	local kit = C and C.UIKit
+	if type(kit) ~= "table" or type(kit.NewTag) ~= "function" then return end
+	for _, chip in { ui.KingChip, ui.GooseChip } do
+		if chip and chip.Visible and chip.AbsoluteSize.X > 4 then
+			pcall(kit.NewTag, chip)
+			return
+		end
+	end
+end
+
 local function update()
 	if not built then return end
-	if pickersOpen() then
+	local folded = V2.Fold()
+	if folded then V2.WasFolded = true end
+	if pickersOpen() or folded then
 		setVisible(ui.Arrows, false)
 		setVisible(ui.Strip, false)
 		setVisible(ui.Luck, false)
@@ -1575,6 +1597,10 @@ local function update()
 		setVisible(ui.Personal, false)
 		activeTargets = {}
 		return
+	end
+	if V2.WasFolded then
+		V2.WasFolded = false
+		task.delay(0.5, V2.NewTag) -- after this update showed the line
 	end
 	V2.Busy = true -- no v2 stack pass mid-update (a relayout would hide rows before V2.tick reads the wants)
 	setVisible(ui.Arrows, true)

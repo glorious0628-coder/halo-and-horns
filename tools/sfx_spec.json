@@ -1,0 +1,1522 @@
+{
+ "version": "2026-10-07",
+ "about": "Thresholds for tools/sfx_check.py, from the 47 sound specs and the 검수 critique of 2026-10-07. A rule is metric: [lo, hi] (a miss = WARN) or {range: [lo, hi], hard: [lo, hi]} (a hard miss = FAIL: do not listen). null = open end. Measured at speed 1.0 on the file as played; speedChecks measure the same file at game PlaybackSpeeds. Loudness is never a hard fail (a gain fixes it); summary.json gives gainToTargetDb.",
+ "loudness": {
+  "fileTargetLufs": -17.0,
+  "tolerance": 1.5,
+  "note": "Every file is normalised to the same K-weighted loudness (loudest 100 ms, BS.1770 weighting, short sounds counted over 100 ms); the in-game tier comes from Volume. effLufs = lufs + 20 log10(Volume) must sit in the tier band = target + 20 log10(tier Volume range) +- tolerance."
+ },
+ "tiers": {
+  "whisper": {"volume": [0.15, 0.25], "keys": "TalkBlip, BarkPop, SkillReady"},
+  "quiet": {"volume": [0.24, 0.3], "keys": "swings, ComboCoin"},
+  "normal": {"volume": [0.32, 0.4], "keys": "hits, KillPop, skill layers, GooseHonk, RankDown"},
+  "ui": {"volume": [0.4, 0.5], "keys": "UI, small world cues"},
+  "big": {"volume": [0.55, 0.75], "keys": "choices, quest done, enhance, kings, crown, kaiju"},
+  "top": {"volume": [0.85, 0.85], "keys": "LevelUp only"}
+ },
+ "defaults": {
+  "rules": {
+   "peakDb": {"range": [null, -2.5], "hard": [null, -0.5]},
+   "truePeakDb": {"range": [null, -1.0], "hard": [null, 0.3]},
+   "clip": {"range": [0, 0], "hard": [0, 0]},
+   "leadMs": {"range": [0, 5], "hard": [0, 20]},
+   "lt150": {"range": [0, 0.02], "hard": [0, 0.08]},
+   "gt8k": {"range": [0, 0.06], "hard": [0, 0.15]},
+   "holeMs": [0, 80]
+  }
+ },
+ "aliases": {
+  "SwingMage": ["SwingMageHalo", "SwingMageHorns"],
+  "KingBell": ["PumpkinKing", "GhostKing"],
+  "HitHeavy2": ["HitHeavy", "HurtBig"],
+  "SwingBow": ["SwingArcher"],
+  "SwingMagic": ["SwingMageHalo"],
+  "SwingBlade": ["SwingWarrior"],
+  "SwingWhistle": ["SwingTamer"],
+  "HitThud": ["HitHeavy"],
+  "HitSquish": ["HitSoft"],
+  "HitClack": ["HitHeavy"],
+  "Coin": ["ComboCoin"],
+  "No": ["Deny"],
+  "Click": ["Tap"],
+  "KingArrive": ["PumpkinKing", "GhostKing"],
+  "Reward_a": ["QuestDone"],
+  "Reward_b": ["ComboMilestone"]
+ },
+ "keys": {
+  "SwingWarrior": {
+   "status": "installed (SwingWarrior_a, not flagged: keep)",
+   "tier": "quiet",
+   "volume": 0.3,
+   "repeat": "up to 60/min",
+   "say": "휙! / 부웅 (whff)",
+   "moment": "Warrior basic attack on the press; the hit follows at 0.23 s. Blacksmith 0.85x, bare hands 1.3x, Shockwave cast 0.85x.",
+   "rules": {
+    "durMs": {"range": [150, 200], "hard": [120, 220]},
+    "attackMs": {"range": [35, 80], "hard": [10, 120]},
+    "peakAtMs": {"range": [55, 100], "hard": [30, 130]},
+    "centroidHz": {"range": [3200, 4600], "hard": [2500, 5500]},
+    "centDir": "updown",
+    "flat": [0.2, 0.6],
+    "tonalShare": {"range": [0, 0.1], "hard": [0, 0.25]},
+    "periodicity": {"range": [0, 0.35], "hard": [0, 0.5]},
+    "ringMs": {"range": [0, 20], "hard": [0, 60]},
+    "lt300": {"range": [0, 0.01], "hard": [0, 0.05]},
+    "gt8k": {"range": [0, 0.085], "hard": [0, 0.12]},
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 3]},
+    "harshDb": {"range": [0, 8], "hard": [0, 14]},
+    "nOnsets": {"range": [1, 1], "hard": [1, 1]}
+   },
+   "speedChecks": [{"speed": 1.3, "centroidHz": [null, 4800], "gt8k": [0, 0.1]}, {"speed": 0.85, "durMs": [null, 230]}],
+   "notes": {
+    "nOnsets": "one wide swish, never a double (that is the archer)",
+    "ringMs": "no steel 'shing' (SwingBlade_a rang 129 ms)",
+    "speed 1.3": "bare hands: critique says ~5.2 kHz hiss at 1.3x; use PunchSpeed 1.15 or a 6 kHz low-pass"
+   }
+  },
+  "SwingMageHalo": {
+   "status": "new (installed SwingMage = rejected SwingMagic_c)",
+   "tier": "quiet",
+   "volume": 0.28,
+   "repeat": "up to 55/min",
+   "say": "슝~ 샤랑 (shoom-twinkle)",
+   "moment": "Light Mage bolt at launch (0.24 s). Meteor cast = 0.85x.",
+   "rules": {
+    "durMs": {"range": [160, 220], "hard": [130, 250]},
+    "attackMs": {"range": [0, 30], "hard": [0, 60]},
+    "peakAtMs": {"range": [0, 40], "hard": [0, 70]},
+    "centroidHz": {"range": [2800, 4500], "hard": [2200, 5500]},
+    "centDir": "up",
+    "periodicity": {"range": [0.2, 0.7], "hard": [0, 0.8]},
+    "tonalShare": {"range": [0.1, 0.5], "hard": [0, 0.65]},
+    "flat": [0.1, 0.5],
+    "ringMs": {"range": [0, 60], "hard": [0, 150]},
+    "lt300": {"range": [0, 0.01], "hard": [0, 0.03]},
+    "gt8k": {"range": [0, 0.05], "hard": [0, 0.08]},
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 3]},
+    "harshDb": [0, 12]
+   },
+   "speedChecks": [{"speed": 0.85, "durMs": [null, 260]}, {"speed": 1.08, "gt8k": [0, 0.06]}],
+   "notes": {
+    "periodicity": "the rejected SwingMagic_a/c were one rising sine (periodicity 0.92): a slide whistle",
+    "ringMs": "critique: drop the G6-B6-D7 triad (reward ding); one short inharmonic 'tsing' at -8 dB"
+   }
+  },
+  "SwingMageHorns": {
+   "status": "new",
+   "tier": "quiet",
+   "volume": 0.28,
+   "repeat": "up to 55/min",
+   "say": "푸슉-파직! (fwoosh-crackle)",
+   "moment": "Dark Mage ember bolt at launch (0.24 s). Meteor cast = 0.85x.",
+   "rules": {
+    "durMs": {"range": [170, 220], "hard": [140, 240]},
+    "attackMs": {"range": [0, 40], "hard": [0, 70]},
+    "peakAtMs": {"range": [0, 50], "hard": [0, 80]},
+    "centroidHz": {"range": [1300, 2600], "hard": [900, 3500]},
+    "lt150": {"range": [0, 0.005], "hard": [0, 0.03]},
+    "lt300": {"range": [0, 0.06], "hard": [0, 0.15]},
+    "gt8k": {"range": [0, 0.03], "hard": [0, 0.06]},
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]},
+    "pitchMinHz": {"range": [220, null], "hard": [180, null]},
+    "periodicity": [0.15, 0.75],
+    "flat": [0.05, 0.5],
+    "ringMs": [0, 40],
+    "harshDb": [0, 10]
+   },
+   "speedChecks": [{"speed": 0.85, "durMs": [null, 260]}],
+   "notes": {
+    "pitchMinHz": "fundamental never under 220 Hz (no fart-like bass wobble)",
+    "phoneDropDb": "within 1-2 dB of the Halo mage on phones"
+   }
+  },
+  "SwingArcher": {
+   "status": "new (installed SwingArcher = rejected SwingBow_a, string twang)",
+   "tier": "quiet",
+   "volume": 0.25,
+   "repeat": "up to 120/min (240 whoosh bursts/min)",
+   "say": "슉슉! (shk-shk) - 줄 소리 없음",
+   "moment": "Archer release (0.22 s): two arrows. Arrow Rain cast = 0.85x.",
+   "rules": {
+    "durMs": {"range": [110, 150], "hard": [90, 170]},
+    "attackMs": {"range": [0, 8], "hard": [0, 20]},
+    "peakAtMs": {"range": [3, 25], "hard": [0, 40]},
+    "centroidHz": {"range": [3200, 4500], "hard": [2600, 5200]},
+    "flat": [0.15, 0.6],
+    "tonalShare": {"range": [0, 0.05], "hard": [0, 0.15]},
+    "periodicity": {"range": [0, 0.35], "hard": [0, 0.45]},
+    "ringMs": {"range": [0, 15], "hard": [0, 40]},
+    "lt300": {"range": [0, 0.005], "hard": [0, 0.02]},
+    "gt8k": {"range": [0, 0.05], "hard": [0, 0.08]},
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]},
+    "harshDb": {"range": [0, 8], "hard": [0, 14]},
+    "nOnsets": {"range": [2, 2], "hard": [2, 2]},
+    "gapMs": {"range": [55, 75], "hard": [40, 90]},
+    "gapDipDb": {"range": [20, null], "hard": [10, null]}
+   },
+   "speedChecks": [{"speed": 1.08, "gt8k": [0, 0.06], "centroidHz": [null, 4800]}, {"speed": 0.85, "durMs": [null, 180]}],
+   "notes": {
+    "ringMs": "ANY string = fail: the rejected SwingBow_a/b/c ring 159-259 ms",
+    "nOnsets": "two arrows, fast (one whoosh = fail)",
+    "centroidHz": "critique: the spec recipe measures 4.7 kHz (hissy at 240/min); 2800/3300/1100 Hz Q1.8 gives 3.8 kHz",
+    "gapDipDb": "a clean gap between the arrows ('슉-슉'), not a half-blur"
+   }
+  },
+  "SwingArrow": {
+   "status": "replaces SwingArcher (sound_spec §1-1: upload ONE arrow, Audio plays it twice at +0.068 s, 1.10x, 0.85 vol when 2+ targets)",
+   "tier": "quiet",
+   "volume": 0.25,
+   "repeat": "up to 240/min",
+   "say": "슉 (one arrow)",
+   "moment": "Single-arrow file for the code-doubled archer shot.",
+   "rules": {
+    "durMs": {"range": [65, 90], "hard": [50, 100]},
+    "attackMs": {"range": [0, 8], "hard": [0, 20]},
+    "peakAtMs": {"range": [2, 20], "hard": [0, 35]},
+    "centroidHz": {"range": [3000, 4300], "hard": [2500, 5000]},
+    "flat": [0.15, 0.6],
+    "tonalShare": {"range": [0, 0.05], "hard": [0, 0.15]},
+    "periodicity": {"range": [0, 0.35], "hard": [0, 0.45]},
+    "ringMs": {"range": [0, 15], "hard": [0, 40]},
+    "lt300": {"range": [0, 0.005], "hard": [0, 0.02]},
+    "gt8k": {"range": [0, 0.05], "hard": [0, 0.08]},
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]},
+    "harshDb": {"range": [0, 8], "hard": [0, 14]},
+    "nOnsets": {"range": [1, 1], "hard": [1, 1]}
+   },
+   "speedChecks": [{"speed": 1.1, "gt8k": [0, 0.06], "centroidHz": [null, 4800]}]
+  },
+  "SwingTamer": {
+   "status": "liked B not installed (installed = SwingWhistle_a)",
+   "tier": "quiet",
+   "volume": 0.25,
+   "repeat": "Gap 0.9 s: 60/min or fewer",
+   "say": "휘-휙! (fwee-fwit)",
+   "moment": "Pet Tamer whistle; also the Pet Rush cast (Swing.PetDash).",
+   "liked": {
+    "file": "build/sfx_game/cand/SwingWhistle_b.ogg (user liked B)",
+    "sha256": [
+     "d62ecaa69b7c4d5d41024164142a021ae2622a984d650da579a6d686e1d5e018",
+     "57537f96195c8e8a3c18b183fe66ba11415a5cff0f77d52cb78a9878d2195fdb"
+    ]
+   },
+   "rules": {
+    "durMs": {"range": [170, 210], "hard": [150, 240]},
+    "attackMs": {"range": [0, 15], "hard": [0, 30]},
+    "nOnsets": {"range": [2, 2], "hard": [2, 2]},
+    "gapMs": {"range": [90, 110], "hard": [70, 130]},
+    "pitchStartHz": [1500, 1800],
+    "pitchEndHz": [2200, 2600],
+    "pitchSemis": [5, 9],
+    "pitchMaxHz": {"range": [null, 3000], "hard": [null, 4000]},
+    "centroidHz": [1900, 2500],
+    "tonalShare": [0.7, 1],
+    "periodicity": [0.9, 1],
+    "lt300": {"range": [0, 0.005], "hard": [0, 0.02]},
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]},
+    "gt8k": [0, 0.01]
+   },
+   "notes": {
+    "likedFile": "copy B's exact file; anything else must win an A/B against B",
+    "pitchMaxHz": "no dog whistle above 4 kHz"
+   }
+  },
+  "HitSoft": {
+   "status": "liked B not installed (installed HitSoft1/2 = HitSquish_a / HitSoft_b)",
+   "tier": "normal",
+   "volume": 0.32,
+   "repeat": "60-120/min",
+   "say": "말랑! 뽀용 (squish-boing)",
+   "moment": "Landed swing on slimes, King Slime, Pumpkin Slime, ghosts; one per swing.",
+   "liked": {
+    "file": "build/sfx_game/cand/HitSquish_b.ogg (user liked B)",
+    "sha256": [
+     "5495b576c368b7728e7eaeefd3d2476f79690757e329a0a44ae212ceea19a827",
+     "2687d8017e3839df426f6b0119f09378d98b3fed8bb79446e80c6d476ad5ad26"
+    ]
+   },
+   "rules": {
+    "durMs": {"range": [140, 190], "hard": [110, 220]},
+    "attackMs": {"range": [0, 5], "hard": [0, 10]},
+    "peakAtMs": {"range": [0, 10], "hard": [0, 20]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 7]},
+    "lt150": {"range": [0, 0.1], "hard": [0, 0.6]},
+    "centroidHz": {"range": [250, 900], "hard": [200, 1500]},
+    "centDir": "down",
+    "flat": [0, 0.1],
+    "gt8k": [0, 0.02],
+    "harshDb": {"range": [0, 8], "hard": [0, 14]}
+   },
+   "notes": {
+    "phoneDropDb": "B measures 5.5 dB: WARN = check on a phone; if it vanishes make 'B+' (drop_003 0.75x at -10 dB), never change B",
+    "lt150": "B keeps ~50 % of its energy under 150 Hz (thud body + 240->150 Hz wobble): allowed because the user liked it; WARN only"
+   }
+  },
+  "HitHeavy": {
+   "status": "new (installed HitHeavy1/2 = rejected HitThud_c / _a)",
+   "tier": "normal",
+   "volume": 0.36,
+   "repeat": "60-120/min",
+   "say": "퍽! (thwack)",
+   "moment": "Landed swing on goblins, skeletons, players (and today 3+ monsters).",
+   "rules": {
+    "durMs": {"range": [90, 200], "hard": [70, 230]},
+    "attackMs": {"range": [0, 3], "hard": [0, 8]},
+    "peakAtMs": {"range": [0, 5], "hard": [0, 12]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 5]},
+    "lt150": {"range": [0, 0.02], "hard": [0, 0.05]},
+    "lt300": [0, 0.6],
+    "centroidHz": {"range": [300, 1500], "hard": [200, 2500]},
+    "gt8k": {"range": [0, 0.03], "hard": [0, 0.06]},
+    "harshDb": {"range": [0, 10], "hard": [0, 16]},
+    "ringMs": {"range": [0, 40], "hard": [0, 100]},
+    "nOnsets": [1, 2]
+   },
+   "notes": {
+    "peakAtMs": "the rejected thuds peak 27-38 ms late (Kenney punch pre-roll) = 뭉툭, not 퍽",
+    "phoneDropDb": "rejected thuds lose 6.5-9.4 dB on phones"
+   }
+  },
+  "HitCrit": {
+   "status": "new key: a LAYER on top of the material hit (sound_spec §1-1: A = metal klang + sparkles, B = no metal: pang + falling stars + soft 'jing'; the body comes from HitSoft / HitHeavy)",
+   "tier": "normal",
+   "volume": 0.38,
+   "repeat": "6-12/min (needs Gap 1.5 s: ~23/min for archers)",
+   "say": "빡! 캉★ (whack-klang)",
+   "moment": "Crit swing (PvE swings only): played over the normal material hit, first target crit, Gap 1.5 s, Max 1.",
+   "rules": {
+    "durMs": {"range": [180, 250], "hard": [120, 300]},
+    "attackMs": {"range": [0, 5], "hard": [0, 10]},
+    "peakAtMs": {"range": [0, 8], "hard": [0, 15]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 5]},
+    "lt150": {"range": [0, 0.02], "hard": [0, 0.05]},
+    "lt300": {"range": [0, 0.05], "hard": [0, 0.12]},
+    "centroidHz": {"range": [2500, 4500], "hard": [1500, 6000]},
+    "gt8k": {"range": [0, 0.06], "hard": [0, 0.1]},
+    "harshDb": [0, 14]
+   },
+   "notes": {"centroidHz": "a layer centred near 3.5 kHz; the rejected crits sit at 270-370 Hz (a bigger muddy thud)", "lt300": "no body: the material hit under it is the body", "durMs": "nothing over 300 ms"}
+  },
+  "HurtBig": {
+   "status": "new file (today = HitHeavy2, which becomes the skeleton wood hit)",
+   "tier": "normal",
+   "volume": 0.36,
+   "repeat": "Gap 0.6 s",
+   "say": "욱 (bump)",
+   "moment": "I get hit hard (critique D1: muffled 300-700 Hz bump + falling 1.1->0.6 kHz chirp, 150 ms).",
+   "rules": {
+    "durMs": {"range": [120, 180], "hard": [90, 230]},
+    "attackMs": {"range": [0, 5], "hard": [0, 12]},
+    "centroidHz": {"range": [400, 1100], "hard": [300, 1800]},
+    "centDir": "down",
+    "lt150": {"range": [0, 0.01], "hard": [0, 0.04]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 5]},
+    "nOnsets": [1, 1]
+   }
+  },
+  "KillPop": {
+   "status": "installed (drop_002, keep)",
+   "tier": "normal",
+   "volume": 0.39,
+   "repeat": "15-30/min",
+   "say": "뽕! (pop)",
+   "moment": "My kill: must sound right AFTER my hit (timing bug: today it plays on the press).",
+   "rules": {
+    "durMs": {"range": [60, 120], "hard": [40, 150]},
+    "attackMs": {"range": [0, 3], "hard": [0, 6]},
+    "peakAtMs": {"range": [0, 8], "hard": [0, 15]},
+    "centroidHz": {"range": [650, 1100], "hard": [500, 1500]},
+    "pitchStartHz": [650, 1000],
+    "pitchSemis": {"range": [-1, 5], "hard": [-6, 8]},
+    "tonalShare": [0.6, 1],
+    "periodicity": [0.85, 1],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]},
+    "lt300": [0, 0.02],
+    "harshDb": [0, 8],
+    "nOnsets": [1, 1]
+   },
+   "notes": {"centroidHz": "its own lane between the hit body (150-500 Hz) and the coin (2.3-2.7 kHz)"}
+  },
+  "SkillHalo": {
+   "status": "new (installed = glass_005 ping, 65 ms)",
+   "tier": "normal",
+   "volume": 0.36,
+   "repeat": "X only today; 8-12/min if on every cast",
+   "say": "샤라랑~ (shimmer-ring)",
+   "moment": "Halo faction layer of a skill cast.",
+   "rules": {
+    "durMs": {"range": [300, 420], "hard": [200, 450]},
+    "attackMs": [10, 150],
+    "peakAtMs": {"range": [80, 180], "hard": [20, 260]},
+    "centroidHz": {"range": [2500, 4200], "hard": [1800, 5000]},
+    "centDir": "up",
+    "lt300": [0, 0.01],
+    "periodicity": [0.3, 0.85],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2.5]},
+    "gt8k": {"range": [0, 0.05], "hard": [0, 0.08]}
+   },
+   "notes": {"durMs": "the 65-78 ms ping has no sense of power; under 450 ms because it rides on every cast"}
+  },
+  "SkillHorns": {
+   "status": "new (installed SkillHorns_b: 75 ms bong, phone -8.3 dB)",
+   "tier": "normal",
+   "volume": 0.36,
+   "repeat": "as SkillHalo",
+   "say": "화르륵-퐁! (fwoosh-crackle-pop)",
+   "moment": "Horns faction layer of a skill cast; must match SkillHalo on phones.",
+   "rules": {
+    "durMs": {"range": [250, 350], "hard": [180, 400]},
+    "attackMs": [10, 80],
+    "peakAtMs": {"range": [30, 110], "hard": [5, 160]},
+    "centroidHz": {"range": [900, 1900], "hard": [600, 2600]},
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 4]},
+    "lt150": {"range": [0, 0.005], "hard": [0, 0.02]},
+    "lt300": {"range": [0, 0.1], "hard": [0, 0.25]},
+    "pitchMinHz": [220, null],
+    "gt8k": [0, 0.03],
+    "ringMs": [0, 60]
+   },
+   "notes": {"phoneDropDb": "the installed bong loses 8.3 dB on phones: Horns kids barely hear their side (unfair)"}
+  },
+  "ComboCoin": {
+   "status": "new (installed Coin_a = one 0.5 s ting; user wants two coins)",
+   "tier": "quiet",
+   "volume": 0.29,
+   "repeat": "15-30/min",
+   "say": "짤-랑! (clink-clink, two coins)",
+   "moment": "Every kill, 50 ms after KillPop, climbing 0.80x -> 1.60x.",
+   "rules": {
+    "durMs": {"range": [200, 260], "hard": [150, 300]},
+    "nOnsets": {"range": [2, 2], "hard": [2, 3]},
+    "gapMs": {"range": [35, 60], "hard": [25, 80]},
+    "peakAtMs": [30, 65],
+    "centroidHz": {"range": [2300, 3100], "hard": [1800, 3800]},
+    "pitchStartHz": [2200, 2600],
+    "pitchEndHz": [2450, 2850],
+    "pitchSemis": {"range": [0.5, 3], "hard": [-1, 4]},
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]},
+    "ringMs": {"range": [0, 220], "hard": [0, 280]},
+    "tonalShare": [0.5, 1]
+   },
+   "speedChecks": [
+    {"speed": 1.6, "gapMs": [18, null], "nOnsets": [2, 3], "gt8k": [0, 0.05], "centroidHz": [null, 5000]},
+    {"speed": 0.8, "gapMs": [null, 80]}
+   ],
+   "notes": {
+    "pitchSemis": "coin 2 at most 3 semitones over coin 1 (a 4th/5th jump = the famous platformer coin)",
+    "durMs": "the 0.5 s ring stacks with the next kill at 15-30/min"
+   }
+  },
+  "ComboMilestone": {
+   "status": "installed (confirmation_003, not flagged)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "rare",
+   "say": "띠리링! (ta-da-ding)",
+   "moment": "x10 / x25 / x50 / x100 combo.",
+   "rules": {
+    "durMs": {"range": [280, 500], "hard": [200, 600]},
+    "attackMs": {"range": [0, 6], "hard": [0, 15]},
+    "nOnsets": [3, 8],
+    "centroidHz": [2500, 4500],
+    "centDir": "up",
+    "pitchMaxHz": {"range": [null, 5000], "hard": [null, 6000]},
+    "gt8k": [0, 0.02],
+    "phoneDropDb": [0, 1],
+    "lt300": [0, 0.005]
+   },
+   "speedChecks": [{"speed": 1.19, "pitchMaxHz": [null, 5500]}],
+   "notes": {
+    "pitchMaxHz": "critique: confirmation_003 ends on a 5.9 kHz pure tone (~7 kHz at the x100 lift): thin and shrill; play at 0.89x, cap the lift"
+   }
+  },
+  "GoldPickup": {
+   "status": "new (installed tick_004 = the rejected single tick)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "0.5-1/min",
+   "say": "짤랑! (two coins land)",
+   "moment": "Gold outside a kill: town bank, Halo courier (x0.6), goose Rare.",
+   "rules": {
+    "durMs": {"range": [240, 330], "hard": [180, 400]},
+    "nOnsets": {"range": [2, 4], "hard": [2, 5]},
+    "gapMs": {"range": [45, 65], "hard": [30, 90]},
+    "centroidHz": [2000, 3200],
+    "pitchSemis": [0.5, 3.5],
+    "lt300": [0, 0.01],
+    "gt8k": [0, 0.03],
+    "ringMs": {"range": [0, 300], "hard": [0, 400]},
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]}
+   },
+   "notes": {"nOnsets": "two coins (critique: bank deposit 3-4 cascading coins)"}
+  },
+  "QuestNew": {
+   "status": "new (installed select_003, 4.8 kHz thin)",
+   "tier": "ui",
+   "volume": 0.5,
+   "repeat": "0.1-0.6/min",
+   "say": "띠링? (bling? a new job)",
+   "moment": "A new quest appears (critique: marimba C6->G6 + required paper flick).",
+   "rules": {
+    "durMs": {"range": [330, 470], "hard": [250, 550]},
+    "attackMs": [0, 8],
+    "nOnsets": [2, 4],
+    "pitchStartHz": [950, 1650],
+    "pitchSemis": [4, 10],
+    "pitchMaxHz": [null, 2300],
+    "centroidHz": [1200, 3000],
+    "tonalShare": [0.3, 0.95],
+    "lt300": [0, 0.01],
+    "phoneDropDb": [0, 1]
+   },
+   "notes": {"pitchMaxHz": "E7 (2.64 kHz) is the coin pitch; keep the notes under it"}
+  },
+  "QuestDone": {
+   "status": "new (installed confirmation_001: G4 start, phone -5 dB)",
+   "tier": "big",
+   "volume": 0.65,
+   "repeat": "0.3-0.6/min",
+   "say": "따라링~ 짠! (ta-da)",
+   "moment": "Quest / story / daily / board done only.",
+   "rules": {
+    "durMs": {"range": [450, 620], "hard": [300, 700]},
+    "attackMs": [0, 8],
+    "nOnsets": [3, 6],
+    "pitchMinHz": {"range": [1000, null], "hard": [480, null]},
+    "pitchEndHz": [1900, 2300],
+    "centDir": "up",
+    "lt300": [0, 0.005],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3]},
+    "gt8k": [0, 0.02]
+   },
+   "notes": {"phoneDropDb": "accept only 3 dB or less", "pitchMinHz": "at least an octave over LevelUp (critique)"}
+  },
+  "LevelUp": {
+   "status": "installed (LevelUp_a, ours; add the phone body + 150 Hz HP)",
+   "tier": "top",
+   "volume": 0.85,
+   "repeat": "~0.8/min early",
+   "say": "빠-바-밤~ 반짝반짝!",
+   "moment": "My level goes up; loudest sound, ducks combat.",
+   "rules": {
+    "durMs": {"range": [1000, 1200], "hard": [800, 1300]},
+    "firstOnsetMs": {"range": [0, 5], "hard": [0, 30]},
+    "peakAtMs": [150, 400],
+    "nOnsets": [4, 14],
+    "pitchStartHz": [480, 580],
+    "pitchEndHz": [950, 1150],
+    "pitchMinHz": [480, null],
+    "centDir": "up",
+    "centroidHz": [900, 1450],
+    "lt300": [0, 0.005],
+    "phoneDropDb": [0, 1],
+    "gt8k": [0, 0.02]
+   },
+   "notes": {
+    "centroidHz": "the chip LevelUp_b (rejected: harsh square) reads 1650 Hz vs 1200 Hz",
+    "firstOnsetMs": "first note at t=0, no pre-swell"
+   }
+  },
+  "ScrollSuccess": {
+   "status": "new (installed confirmation_004 + glass_004)",
+   "tier": "big",
+   "volume": 0.7,
+   "repeat": "0-3/min in bursts",
+   "say": "슈링~ 챙! 반짝!",
+   "moment": "Enhance scroll success.",
+   "rules": {
+    "durMs": {"range": [600, 800], "hard": [450, 900]},
+    "firstOnsetMs": {"range": [0, 5], "hard": [0, 30]},
+    "peakAtMs": [40, 250],
+    "centDir": "up",
+    "centroidHz": [2500, 5000],
+    "lt300": [0, 0.005],
+    "phoneDropDb": [0, 1],
+    "gt8k": {"range": [0, 0.06], "hard": [0, 0.1]}
+   }
+  },
+  "ScrollFail": {
+   "status": "new (installed back_002: 81 ms, phone -4.9 dB)",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "up to 3-6/min",
+   "say": "푸슈… 퐁 (pfff… plop)",
+   "moment": "Enhance scroll fails (one file for both outcomes, critique).",
+   "rules": {
+    "durMs": {"range": [250, 350], "hard": [180, 400]},
+    "attackMs": {"range": [6, 25], "hard": [2, 40]},
+    "centDir": "down",
+    "centroidHz": [700, 2200],
+    "lt300": {"range": [0, 0.02], "hard": [0, 0.08]},
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3]},
+    "gt8k": [0, 0.01],
+    "periodicity": [0.1, 0.7]
+   },
+   "notes": {"attackMs": "soft, no click", "phoneDropDb": "accept only 3 dB or less"}
+  },
+  "RankDown": {
+   "status": "new (installed back_004: 81 ms pop, phone -4.4 dB)",
+   "tier": "normal",
+   "volume": 0.32,
+   "repeat": "0.1/min",
+   "say": "또로롱↓ (doo-doo-dum)",
+   "moment": "My side's score goes down; 0.1 s after the choice sound ends.",
+   "rules": {
+    "durMs": {"range": [250, 350], "hard": [180, 400]},
+    "nOnsets": {"range": [3, 4], "hard": [2, 5]},
+    "pitchDir": "down",
+    "pitchSemis": [-8, -2],
+    "pitchEndHz": [490, 560],
+    "pitchMinHz": [400, null],
+    "centroidHz": [500, 1500],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3]},
+    "gt8k": [0, 0.005]
+   },
+   "notes": {"pitchSemis": "spec G5-E5-C5 = -7 st; critique E5-D5-C5 = -4 st (marimba, stepwise)"}
+  },
+  "RankUp": {
+   "status": "draft (critique D6: mirror of RankDown in the same marimba)",
+   "tier": "normal",
+   "volume": 0.32,
+   "repeat": "rare",
+   "say": "또로롱↑",
+   "moment": "My side's rank / title goes up (NewTitle).",
+   "rules": {
+    "durMs": {"range": [250, 350], "hard": [180, 400]},
+    "nOnsets": [3, 4],
+    "pitchDir": "up",
+    "pitchMinHz": [400, null],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3]}
+   }
+  },
+  "Potion": {
+   "status": "new (installed glass_003: 'cheers' clink)",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "0.5-3/min",
+   "say": "뽁! 보글보글~ (pop! fizz)",
+   "moment": "I drank an HP (1.0x) or MP (1.12x) potion.",
+   "rules": {
+    "durMs": {"range": [350, 450], "hard": [250, 520]},
+    "firstOnsetMs": [0, 3],
+    "nOnsets": {"range": [4, 10], "hard": [2, 14]},
+    "centDir": "up",
+    "centroidHz": [800, 2500],
+    "lt300": [0, 0.01],
+    "phoneDropDb": [0, 1]
+   },
+   "speedChecks": [{"speed": 1.12, "gt8k": [0, 0.03]}]
+  },
+  "Purify": {
+   "status": "new (installed Purify_a: E-major chime 1.13 s)",
+   "tier": "big",
+   "volume": 0.55,
+   "repeat": "0.3/min",
+   "say": "샤라라랑~ 반짝 (shimmer-shing)",
+   "moment": "Angel-side choice; follows the option, any faction.",
+   "rules": {
+    "durMs": {"range": [850, 1000], "hard": [700, 1150]},
+    "firstOnsetMs": [0, 10],
+    "peakAtMs": [100, 300],
+    "centDir": "up",
+    "centroidHz": [1800, 3500],
+    "lt300": [0, 0.005],
+    "phoneDropDb": [0, 1],
+    "gt8k": [0, 0.05]
+   },
+   "notes": {"centDir": "critique: wind-chime cluster in random order + rising air + C-E-G bloom (not a harp glissando)"}
+  },
+  "Devour": {
+   "status": "new (installed Devour_c: 223 ms, 206 Hz bong, phone -5.5 dB)",
+   "tier": "big",
+   "volume": 0.55,
+   "repeat": "0.3/min",
+   "say": "앙! 꿀꺽 뿅! (chomp! gulp, pop)",
+   "moment": "Devil-side choice; as pleasant as Purify; same file every time.",
+   "rules": {
+    "durMs": {"range": [600, 750], "hard": [450, 850]},
+    "attackMs": [0, 6],
+    "pitchMinHz": {"range": [300, null], "hard": [250, null]},
+    "lt150": [0, 0.005],
+    "lt300": {"range": [0, 0.03], "hard": [0, 0.08]},
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3]},
+    "centDir": "downup",
+    "centroidHz": [700, 2000]
+   },
+   "notes": {
+    "pitchMinHz": "no body below 300 Hz (bong_001 233 Hz loses ~20 dB on phones)",
+    "centDir": "goes down, then UP at the end: a happy ending"
+   }
+  },
+  "Tap": {
+   "status": "installed (select_002, keep + click layer)",
+   "tier": "ui",
+   "volume": 0.41,
+   "repeat": "5-40/min, bursts 4-5/s",
+   "say": "톡 / 뽁 (tok)",
+   "moment": "Every UIKit button press.",
+   "rules": {
+    "durMs": {"range": [28, 50], "hard": [15, 65]},
+    "attackMs": {"range": [0, 2.5], "hard": [0, 5]},
+    "peakAtMs": [0, 8],
+    "dur30Ms": [0, 32],
+    "centroidHz": {"range": [600, 1800], "hard": [400, 2600]},
+    "centDir": "notup",
+    "lt150": [0, 0.01],
+    "lt300": [0, 0.02],
+    "gt8k": [0, 0.01],
+    "ringMs": [0, 20]
+   },
+   "notes": {"centDir": "pitch moves slightly down, never up (up = open/start)"}
+  },
+  "SkillReady": {
+   "status": "draft (critique D5: its own soft pip instead of the Tap)",
+   "tier": "whisper",
+   "volume": 0.25,
+   "repeat": "20-40/min in combat",
+   "say": "삥 (pip)",
+   "moment": "A skill's cooldown ends.",
+   "rules": {
+    "durMs": {"range": [30, 90], "hard": [20, 140]},
+    "attackMs": [0, 5],
+    "centroidHz": [800, 2500],
+    "lt300": [0, 0.01],
+    "phoneDropDb": [0, 1]
+   }
+  },
+  "WindowOpen": {
+   "status": "installed (maximize_009, keep)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "2-10/min",
+   "say": "뾰롱↑ (fwip-pop)",
+   "moment": "A window opens (16 ms after the Tap).",
+   "rules": {
+    "durMs": {"range": [180, 230], "hard": [140, 300]},
+    "attackMs": {"range": [8, 25], "hard": [3, 60]},
+    "peakAtMs": {"range": [20, 45], "hard": [5, 80]},
+    "pitchDir": "up",
+    "pitchSemis": [4, 9],
+    "centroidHz": [1100, 2200],
+    "tonalShare": [0.7, 1],
+    "lt300": [0, 0.005],
+    "gt8k": [0, 0.01],
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]}
+   }
+  },
+  "WindowClose": {
+   "status": "replace (installed minimize_009 = reversed swell, peak at 176 ms)",
+   "tier": "ui",
+   "volume": 0.42,
+   "repeat": "2-10/min",
+   "say": "쏙↓ (fwup)",
+   "moment": "A window closes: loudest at the START.",
+   "rules": {
+    "durMs": {"range": [140, 180], "hard": [110, 230]},
+    "attackMs": {"range": [0, 8], "hard": [0, 30]},
+    "peakAtMs": {"range": [0, 15], "hard": [0, 50]},
+    "pitchDir": "down",
+    "pitchSemis": [-9, -4],
+    "centroidHz": [1100, 2200],
+    "lt300": [0, 0.005],
+    "gt8k": [0, 0.01],
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]}
+   },
+   "notes": {"attackMs": "a reversed swell lands after the window is gone"}
+  },
+  "Deny": {
+   "status": "replace (installed uh_uh: 466->349 Hz, 287 ms, a fourth, sad)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "0-6/min",
+   "say": "응-응 (uh-uh)",
+   "moment": "A refused press (no MP, locked...).",
+   "rules": {
+    "durMs": {"range": [200, 250], "hard": [160, 300]},
+    "nOnsets": {"range": [2, 2], "hard": [2, 2]},
+    "gapMs": {"range": [90, 120], "hard": [60, 160]},
+    "pitchStartHz": [570, 680],
+    "pitchEndHz": [480, 560],
+    "pitchSemis": {"range": [-5, -2], "hard": [-8, -1]},
+    "pitchMinHz": {"range": [450, null], "hard": [300, null]},
+    "lt300": [0, 0.01],
+    "gt8k": [0, 0.005],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3.5]},
+    "flat": [0, 0.02],
+    "periodicity": [0.85, 1],
+    "harshDb": [0, 10]
+   },
+   "notes": {"pitchSemis": "a minor third down (D#5 -> C5): friendly, not a scolding fall"}
+  },
+  "AutoOn": {
+   "status": "replace (installed: two sine blips, same timbre as AutoOff)",
+   "tier": "ui",
+   "volume": 0.5,
+   "repeat": "0-4/min",
+   "say": "딸깍-위잉↑-삐! (click-whirr-beep)",
+   "moment": "Auto combat switched ON.",
+   "rules": {
+    "durMs": {"range": [220, 270], "hard": [160, 300]},
+    "firstOnsetMs": [0, 3],
+    "nOnsets": [2, 4],
+    "centroidHz": [1800, 2800],
+    "centDir": "up",
+    "centEndHz": [1500, 3500],
+    "lt300": [0, 0.005],
+    "phoneDropDb": [0, 0.5]
+   }
+  },
+  "AutoOff": {
+   "status": "replace (installed: two falling sine blips)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "0-4/min",
+   "say": "딸깍-위웅↓-똑 (click-whirr-tok)",
+   "moment": "Auto combat switched OFF (also forced off).",
+   "rules": {
+    "durMs": {"range": [170, 210], "hard": [130, 260]},
+    "firstOnsetMs": [0, 3],
+    "centroidHz": [700, 1400],
+    "centDir": "down",
+    "centEndHz": [500, 1200],
+    "pitchMinHz": [400, null],
+    "ringMs": [0, 60],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
+   },
+   "notes": {"ringMs": "OFF must stop dead"}
+  },
+  "TalkBlip": {
+   "status": "installed (TalkBlip_a: 47 ms, a bit long)",
+   "tier": "whisper",
+   "volume": 0.25,
+   "repeat": "700-1200/min while typing",
+   "say": "삐비비빅 (bip-bip)",
+   "moment": "Typewriter voice, one blip per 2 letters.",
+   "rules": {
+    "durMs": {"range": [28, 38], "hard": [20, 50]},
+    "attackMs": {"range": [1.5, 3.5], "hard": [0.8, 6]},
+    "dur30Ms": [0, 32],
+    "centroidHz": [450, 900],
+    "pitchStartHz": [550, 700],
+    "pitchSemis": [-1.5, 0.3],
+    "lt300": [0, 0.005],
+    "gt8k": [0, 0.002],
+    "flat": [0, 0.01],
+    "periodicity": [0.95, 1],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3]}
+   },
+   "speedChecks": [{"speed": 0.78, "durMs": {"range": [null, 45], "hard": [null, 65]}}, {"speed": 1.45, "gt8k": [0, 0.005]}],
+   "notes": {"speed 0.78": "the Horns guide plays it at 0.78x: over ~50-65 ms the blips smear into a drone"}
+  },
+  "PumpkinKing": {
+   "status": "new file KingPumpkin (installed shared KingBell)",
+   "tier": "big",
+   "volume": 0.7,
+   "repeat": "1 per 20 min",
+   "say": "딸랑딸랑~ 뻥! 사르르르",
+   "moment": "Pumpkin King appears; bells, hollow bonk, candy tail.",
+   "rules": {
+    "durMs": {"range": [1200, 1400], "hard": [1000, 1600]},
+    "firstOnsetMs": [0, 5],
+    "nOnsets": [3, 40],
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 5]},
+    "lt150": [0, 0.005],
+    "lt300": [0, 0.25],
+    "centroidHz": [600, 3000],
+    "holeMs": {"range": [0, 60], "hard": [0, 150]}
+   },
+   "notes": {"holeMs": "KingBell has a near-silent hole before the pop: two unrelated sounds"}
+  },
+  "GhostKing": {
+   "status": "new file KingGhost (installed shared KingBell)",
+   "tier": "big",
+   "volume": 0.7,
+   "repeat": "1 per 20 min",
+   "say": "딸랑딸랑~ 후우↗ 찰랑",
+   "moment": "Ghost King appears; bells, a breathy rising 'whoo?', glass.",
+   "rules": {
+    "durMs": {"range": [1300, 1500], "hard": [1100, 1700]},
+    "firstOnsetMs": [0, 5],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 4]},
+    "lt300": [0, 0.02],
+    "centroidHz": [700, 3000],
+    "holeMs": {"range": [0, 60], "hard": [0, 150]}
+   }
+  },
+  "GooseArrive": {
+   "status": "new",
+   "tier": "big",
+   "volume": 0.65,
+   "repeat": "0.1/min",
+   "say": "꽥꽥! 푸드덕 반짝",
+   "moment": "Golden goose lands.",
+   "rules": {
+    "durMs": {"range": [900, 1100], "hard": [750, 1250]},
+    "nOnsets": [4, 12],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2.5]},
+    "centroidHz": [900, 3000],
+    "holeMs": {"range": [0, 80], "hard": [0, 150]}
+   }
+  },
+  "GooseHonk": {
+   "status": "new (installed: two honks 0.36 s)",
+   "tier": "normal",
+   "volume": 0.4,
+   "repeat": "up to 20/min in the goose window",
+   "say": "꽉! (honk)",
+   "moment": "My hit lands on the golden goose: ONE short toy honk.",
+   "rules": {
+    "durMs": {"range": [140, 180], "hard": [110, 220]},
+    "nOnsets": {"range": [1, 1], "hard": [1, 1]},
+    "attackMs": [6, 14],
+    "pitchMinHz": {"range": [450, null], "hard": [400, null]},
+    "pitchStartHz": [470, 650],
+    "pitchSemis": [-3, 3],
+    "centroidHz": [900, 2000],
+    "tonalShare": [0.5, 1],
+    "lt300": [0, 0.005],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2]}
+   },
+   "speedChecks": [{"speed": 0.92, "pitchMinHz": [450, null]}],
+   "notes": {"nOnsets": "two notes with falling ends sit close to the Deny 'uh-uh'"}
+  },
+  "CrownHalo": {
+   "status": "new",
+   "tier": "big",
+   "volume": 0.7,
+   "repeat": "<= 0.1/min",
+   "say": "샤라라라~ 치잉!",
+   "moment": "Halo wins the war round: slow swell into one glass chord strike.",
+   "rules": {
+    "durMs": {"range": [1500, 1700], "hard": [1300, 1900]},
+    "peakAtMs": {"range": [600, 800], "hard": [450, 950]},
+    "lt300": [0, 0.005],
+    "phoneDropDb": {"range": [0, 0.5], "hard": [0, 2]},
+    "centroidHz": [1200, 4000],
+    "gt8k": [0, 0.05],
+    "holeMs": {"range": [0, 60], "hard": [0, 150]}
+   }
+  },
+  "CrownHorns": {
+   "status": "new",
+   "tier": "big",
+   "volume": 0.7,
+   "repeat": "<= 0.1/min",
+   "say": "화르륵~ 쿠웅! 타닥타닥",
+   "moment": "Horns win the war round: fire flare into a wood BWONG, ember tail, 'to-dok'.",
+   "rules": {
+    "durMs": {"range": [1400, 1600], "hard": [1200, 1800]},
+    "peakAtMs": {"range": [500, 700], "hard": [400, 850]},
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3]},
+    "lt150": [0, 0.005],
+    "lt300": {"range": [0, 0.1], "hard": [0, 0.25]},
+    "centroidHz": [700, 2500],
+    "pitchMinHz": [300, null],
+    "holeMs": {"range": [0, 60], "hard": [0, 150]}
+   },
+   "notes": {"phoneDropDb": "critique: bong_001 loses 19.6 dB on phones; rebuild the strike in 450-1000 Hz"}
+  },
+  "KingDefeat": {
+   "status": "new",
+   "tier": "big",
+   "volume": 0.65,
+   "repeat": "<= 0.1/min",
+   "say": "와르르르~ 짜잔!",
+   "moment": "A king is beaten: piñata crack, candy rain, confirmation_002 'ta-da'.",
+   "rules": {
+    "durMs": {"range": [1000, 1200], "hard": [800, 1400]},
+    "firstOnsetMs": [0, 5],
+    "nOnsets": [5, 60],
+    "centroidHz": [1500, 4500],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2.5]},
+    "gt8k": [0, 0.06],
+    "holeMs": {"range": [0, 60], "hard": [0, 150]}
+   }
+  },
+  "WarFinal30": {
+   "status": "new",
+   "tier": "ui",
+   "volume": 0.5,
+   "repeat": "0.1/min",
+   "say": "따릉따릉! (bicycle bell)",
+   "moment": "30 s before the war round ends.",
+   "rules": {
+    "durMs": {"range": [400, 550], "hard": [300, 650]},
+    "nOnsets": {"range": [2, 8], "hard": [1, 12]},
+    "centroidHz": [1800, 3500],
+    "lt300": [0, 0.005],
+    "phoneDropDb": [0, 0.5]
+   },
+   "notes": {
+    "nOnsets": "two rings; critique: a synth clapper trill (~18 re-strikes/s) at ~3.2 kHz with a 1 kHz body, not coin samples"
+   }
+  },
+  "CountTick": {
+   "status": "new",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "bursts of 3",
+   "say": "똑, 똑, 똑!",
+   "moment": "3-2-1 before a reveal (1.0 / 1.12 / 1.26x).",
+   "rules": {
+    "durMs": {"range": [70, 100], "hard": [50, 130]},
+    "attackMs": [0, 3],
+    "nOnsets": [1, 1],
+    "pitchStartHz": [1400, 1800],
+    "pitchSemis": [-1, 1],
+    "centroidHz": [1200, 2500],
+    "lt300": [0, 0.005],
+    "ringMs": [0, 60],
+    "phoneDropDb": [0, 0.5]
+   },
+   "speedChecks": [{"speed": 1.26, "gt8k": [0, 0.03]}],
+   "notes": {"pitchStartHz": "critique: a synth temple block ~1.6 kHz (impactGeneric_light is HitHeavy's tok)"}
+  },
+  "GooseEnd": {
+   "status": "new",
+   "tier": "ui",
+   "volume": 0.5,
+   "repeat": "0.1/min",
+   "say": "푸드득~ 꽥! 팔랑팔랑",
+   "moment": "The goose flies off; feathers drift.",
+   "rules": {
+    "durMs": {"range": [900, 1100], "hard": [750, 1250]},
+    "nOnsets": [4, 12],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2.5]},
+    "centroidHz": [900, 3000],
+    "flat": [0.05, 0.6],
+    "periodicity": [0.1, 0.7],
+    "holeMs": {"range": [0, 80], "hard": [0, 150]}
+   }
+  },
+  "KaijuSiren": {
+   "status": "new",
+   "tier": "big",
+   "volume": 0.7,
+   "repeat": "rare",
+   "say": "우르르릉~ 쿵! 쿵!",
+   "moment": "Kaiju in 10 s banner: rolling rumble, two stomps, crackle. Must NOT be a siren.",
+   "rules": {
+    "durMs": {"range": [1700, 1900], "hard": [1500, 2100]},
+    "peakAtMs": [900, 1400],
+    "lt150": {"range": [0, 0.01], "hard": [0, 0.03]},
+    "lt300": [0, 0.3],
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 5]},
+    "centroidHz": [400, 1500],
+    "ringMs": {"range": [0, 80], "hard": [0, 200]},
+    "tonalShare": {"range": [0, 0.3], "hard": [0, 0.5]},
+    "periodicity": [0, 0.6],
+    "holeMs": {"range": [0, 60], "hard": [0, 150]}
+   },
+   "notes": {"tonalShare": "a siren is a sustained tonal glide: keep it noise"}
+  },
+  "KaijuStomp": {
+   "status": "new",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "15/min for 2 min near the kaiju",
+   "say": "쿵! (thoomp)",
+   "moment": "Kaiju stomp (positional).",
+   "rules": {
+    "durMs": {"range": [300, 400], "hard": [220, 500]},
+    "attackMs": {"range": [0, 6], "hard": [0, 12]},
+    "peakAtMs": [0, 15],
+    "lt150": {"range": [0, 0.01], "hard": [0, 0.03]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 5]},
+    "centroidHz": [350, 1500],
+    "nOnsets": [1, 2]
+   }
+  },
+  "ZoneEnterPvP": {
+   "status": "new",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "0.1-0.5/min",
+   "say": "두둥! (ba-DUM)",
+   "moment": "I walk into a PvP field: the key safety cue.",
+   "rules": {
+    "durMs": {"range": [350, 450], "hard": [250, 550]},
+    "nOnsets": {"range": [2, 2], "hard": [2, 3]},
+    "gapMs": [110, 150],
+    "pitchDir": "up",
+    "pitchSemis": [3, 7],
+    "pitchMinHz": {"range": [330, null], "hard": [250, null]},
+    "lt150": [0, 0.005],
+    "lt300": [0, 0.15],
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 4]},
+    "centroidHz": [500, 1800]
+   },
+   "notes": {"phoneDropDb": "critique: impactWood_light_000 loses 7.7 dB on phones; phone loss 3 dB or less required"}
+  },
+  "GoldenSpot": {
+   "status": "new",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "0.1-0.5/min",
+   "say": "반짝반짝~",
+   "moment": "A golden monster comes into view.",
+   "rules": {
+    "durMs": {"range": [400, 500], "hard": [300, 600]},
+    "centDir": "up",
+    "centroidHz": [2000, 4500],
+    "pitchMaxHz": {"range": [null, 5200], "hard": [null, 6500]},
+    "lt300": [0, 0.005],
+    "gt8k": [0, 0.03],
+    "phoneDropDb": [0, 0.5],
+    "ringMs": [0, 350]
+   },
+   "notes": {"pitchMaxHz": "critique: stepped grains ending at 6.6 kHz are shrill on phones; 2.5-5 kHz"}
+  },
+  "BarkPop": {
+   "status": "reuse TalkBlip (0 uploads)",
+   "tier": "whisper",
+   "volume": 0.15,
+   "repeat": "2-10/min per zone",
+   "say": "블룹? (blip-blup)",
+   "moment": "Monster speech bubble: TalkBlip twice at the monster's voice speed (0.8-1.5x).",
+   "reuse": {"keys": ["TalkBlip"], "speeds": [0.8, 1.5]},
+   "rules": {
+    "durMs": {"range": [20, 65], "hard": [15, 80]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 6]},
+    "pitchMinHz": [380, null],
+    "lt300": [0, 0.01]
+   }
+  },
+  "ShardLean": {
+   "status": "reuse Purify / Devour at 1.12x (0 uploads)",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "rare",
+   "say": "찰랑 / 꿀꺽 (small echo)",
+   "moment": "0-point shard lean: a smaller Purify (light) or Devour (dark).",
+   "reuse": {"keys": ["Purify", "Devour"], "speeds": [1.12]},
+   "rules": {"durMs": [null, 1100], "phoneDropDb": {"range": [0, 3], "hard": [0, 5]}, "lt300": [0, 0.05]}
+  },
+  "JackpotOther": {
+   "status": "new (optional, P3)",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "< 0.2/min",
+   "say": "오오~ 반짝!",
+   "moment": "Someone else's Jackpot / FirstMax line.",
+   "rules": {
+    "durMs": {"range": [500, 650], "hard": [400, 800]},
+    "firstOnsetMs": [0, 5],
+    "centDir": "up",
+    "centroidHz": [1500, 5000],
+    "lt300": [0, 0.005],
+    "phoneDropDb": [0, 0.5],
+    "gt8k": [0, 0.05]
+   }
+  },
+  "Equip": {
+   "status": "new key P0 (sound_spec §5: Upgrade / buy / equip leaves GoldPickup)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "rare (the first wood weapon right after the first quest's 150 gold)",
+   "say": "착! 반짝 (click-clack + a small sparkle)",
+   "moment": "A weapon is bought or equipped at the blacksmith.",
+   "rules": {
+    "durMs": {"range": [250, 300], "hard": [180, 380]},
+    "attackMs": {"range": [0, 5], "hard": [0, 15]},
+    "firstOnsetMs": [0, 5],
+    "lt300": {"range": [0, 0.02], "hard": [0, 0.06]},
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 4]},
+    "centroidHz": [1200, 4500],
+    "gt8k": [0, 0.06],
+    "harshDb": [0, 12]
+   },
+   "notes": {"sound": "a ratchet / latch 'chak' (not a coin: 2.3-2.7 kHz metal rings belong to the coins) + a small sparkle"}
+  },
+  "PowerUp": {
+   "status": "new key (검수 2026-10-07, A23-68 #3)",
+   "tier": "big",
+   "volume": 0.6,
+   "repeat": "once (the first weapon at the blacksmith)",
+   "say": "반짝반짝↑ 짠! (a rising sparkle into a small ta-da)",
+   "moment": "Under the 1-1.5 s Power count-up when the first weapon is taken; shorter than LevelUp, unlike QuestDone.",
+   "rules": {
+    "durMs": {"range": [1000, 1400], "hard": [800, 1600]},
+    "firstOnsetMs": [0, 10],
+    "centDir": "up",
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 4]},
+    "lt150": {"range": [0, 0.01], "hard": [0, 0.03]},
+    "gt8k": [0, 0.08],
+    "harshDb": [0, 12]
+   },
+   "notes": {"pairs": "no stepped arpeggio (LevelUp / QuestDone / ComboMilestone own those); a sweep, not a melody"}
+  },
+  "Jump": {
+   "status": "new key (user 2026-10-07: '점프할 때도 소리 나면 좋겠어')",
+   "tier": "quiet",
+   "volume": 0.25,
+   "repeat": "often (every jump): short and soft",
+   "say": "폴짝 / 퐁 (hop)",
+   "moment": "My character jumps.",
+   "rules": {
+    "durMs": {"range": [150, 260], "hard": [100, 330]},
+    "attackMs": {"range": [0, 10], "hard": [0, 25]},
+    "peakAtMs": {"range": [0, 40], "hard": [0, 80]},
+    "phoneDropDb": {"range": [0, 3], "hard": [0, 6]},
+    "lt150": {"range": [0, 0.02], "hard": [0, 0.05]},
+    "gt8k": [0, 0.05],
+    "harshDb": [0, 10]
+   }
+  }
+ },
+ "pairs": [
+  {
+   "kind": "distinct",
+   "a": "SwingWarrior",
+   "b": "SwingArcher",
+   "require": {"score": 1.0},
+   "why": "one wide swish vs a quick double"
+  },
+  {
+   "kind": "distinct",
+   "a": "SwingMageHalo",
+   "b": "SwingTamer",
+   "require": {"score": 1.0},
+   "noSameGlide": true,
+   "why": "the rejected mage cast was a rising sine like the Tamer whistle"
+  },
+  {
+   "kind": "distinct",
+   "a": "SwingMageHalo",
+   "b": "SwingMageHorns",
+   "require": {"score": 1.0},
+   "why": "the faction must be heard"
+  },
+  {"kind": "distinct", "a": "HitSoft", "b": "HitHeavy", "require": {"score": 1.0}, "why": "말랑 vs 퍽"},
+  {
+   "kind": "distinct",
+   "a": "HitHeavy",
+   "b": "HitCrit",
+   "require": {"score": 1.0},
+   "why": "a crit must feel special"
+  },
+  {
+   "kind": "distinct",
+   "a": "HitHeavy",
+   "b": "HurtBig",
+   "require": {"score": 1.0},
+   "why": "'I got hit' is not 'I hit a skeleton'"
+  },
+  {
+   "kind": "distinct",
+   "a": "HitCrit",
+   "b": "ScrollSuccess",
+   "require": {"score": 1.0},
+   "why": "the rising glint belongs to ScrollSuccess"
+  },
+  {
+   "kind": "distinct",
+   "a": "KillPop",
+   "b": "ComboCoin",
+   "require": {"registerOct": 0.7},
+   "why": "own lanes: pop ~0.8 kHz, coin ~2.7 kHz"
+  },
+  {
+   "kind": "distinct",
+   "a": "KillPop",
+   "b": "Potion",
+   "require": {"score": 1.0},
+   "why": "a potion must not read as a kill"
+  },
+  {
+   "kind": "distinct",
+   "a": "HitHeavy",
+   "b": "CountTick",
+   "require": {"score": 1.0},
+   "why": "a war-end 3-2-1 must not sound like hits"
+  },
+  {
+   "kind": "distinct",
+   "a": "SkillHalo",
+   "b": "ComboCoin",
+   "require": {"score": 1.0},
+   "why": "SkillHalo bells sat on the coin pitches"
+  },
+  {
+   "kind": "distinct",
+   "a": "SkillHalo",
+   "b": "Purify",
+   "require": {"score": 1.0},
+   "why": "the cast is not the moral-choice reward"
+  },
+  {
+   "kind": "distinct",
+   "a": "SkillHorns",
+   "b": "Devour",
+   "require": {"score": 1.0},
+   "why": "the cast is not the moral-choice reward"
+  },
+  {
+   "kind": "distinct",
+   "a": "KaijuStomp",
+   "b": "HitHeavy",
+   "require": {"score": 1.0},
+   "why": "danger cue vs my own hit"
+  },
+  {
+   "kind": "distinct",
+   "a": "Tap",
+   "b": "TalkBlip",
+   "require": {"score": 1.0},
+   "why": "Tap must be the percussive one"
+  },
+  {
+   "kind": "distinct",
+   "a": "Tap",
+   "b": "SkillReady",
+   "require": {"score": 1.0},
+   "why": "skill ready is not a menu press"
+  },
+  {
+   "kind": "distinct",
+   "a": "Tap",
+   "b": "CountTick",
+   "require": {"score": 1.0},
+   "why": "a countdown tick is not a button"
+  },
+  {
+   "kind": "distinct",
+   "a": "WindowOpen",
+   "b": "WindowClose",
+   "require": {"contourOct": 0.25},
+   "why": "a matched mirror pair: up vs down"
+  },
+  {
+   "kind": "distinct",
+   "a": "WindowOpen",
+   "b": "QuestNew",
+   "require": {"score": 1.0},
+   "why": "both play when a quest window opens"
+  },
+  {
+   "kind": "distinct",
+   "a": "WindowClose",
+   "b": "Deny",
+   "require": {"score": 1.0},
+   "why": "a 'no' is two separate notes"
+  },
+  {
+   "kind": "distinct",
+   "a": "WindowClose",
+   "b": "ScrollFail",
+   "require": {"score": 1.0},
+   "why": "no plain falling glide for the fail"
+  },
+  {
+   "kind": "distinct",
+   "a": "Deny",
+   "b": "RankDown",
+   "require": {"registerOct": 0.3, "timbreDb": 10},
+   "mode": "any",
+   "why": "critique: the RankDown recipe is the Deny sound with one more note"
+  },
+  {"kind": "distinct", "a": "Deny", "b": "AutoOff", "require": {"score": 1.0}, "why": "OFF is calm, not a 'no'"},
+  {
+   "kind": "distinct",
+   "a": "Deny",
+   "b": "GooseHonk",
+   "require": {"score": 1.0},
+   "why": "a honk must never mean 'wrong'"
+  },
+  {
+   "kind": "distinct",
+   "a": "AutoOn",
+   "b": "AutoOff",
+   "require": {"registerOct": 0.5, "contourOct": 0.3},
+   "why": "critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough"
+  },
+  {"kind": "distinct", "a": "RankDown", "b": "RankUp", "require": {"contourOct": 0.25}, "why": "mirror pair"},
+  {
+   "kind": "distinct",
+   "a": "QuestNew",
+   "b": "SwingTamer",
+   "require": {"score": 1.0},
+   "noSameGlide": true,
+   "why": "critique: G6->E7 copies the whistle's contour and range"
+  },
+  {
+   "kind": "distinct",
+   "a": "QuestDone",
+   "b": "LevelUp",
+   "require": {"registerOct": 0.8},
+   "why": "QuestDone at least an octave above LevelUp"
+  },
+  {
+   "kind": "distinct",
+   "a": "QuestDone",
+   "b": "ComboMilestone",
+   "require": {"score": 1.0},
+   "why": "quest done vs combo"
+  },
+  {
+   "kind": "distinct",
+   "a": "QuestDone",
+   "b": "ScrollSuccess",
+   "require": {"score": 1.0},
+   "why": "quest done vs enhance"
+  },
+  {
+   "kind": "distinct",
+   "a": "ComboMilestone",
+   "b": "ScrollSuccess",
+   "require": {"score": 1.0},
+   "why": "combo vs enhance"
+  },
+  {
+   "kind": "distinct",
+   "a": "ScrollSuccess",
+   "b": "GoldPickup",
+   "require": {"score": 1.0},
+   "why": "same metal family: keep the ring higher and longer"
+  },
+  {
+   "kind": "distinct",
+   "a": "GoldenSpot",
+   "b": "GoldPickup",
+   "require": {"score": 1.0},
+   "why": "spotting gold is not getting gold"
+  },
+  {
+   "kind": "distinct",
+   "a": "GoldenSpot",
+   "b": "ComboCoin",
+   "require": {"score": 1.0},
+   "why": "spotting gold is not getting gold"
+  },
+  {
+   "kind": "distinct",
+   "a": "WarFinal30",
+   "b": "ComboCoin",
+   "require": {"score": 1.0},
+   "why": "'hurry' must not read as money"
+  },
+  {
+   "kind": "distinct",
+   "a": "WarFinal30",
+   "b": "GoldPickup",
+   "require": {"score": 1.0},
+   "why": "'hurry' must not read as money"
+  },
+  {
+   "kind": "distinct",
+   "a": "KingDefeat",
+   "b": "ComboCoin",
+   "require": {"score": 1.0},
+   "why": "candy is not gold"
+  },
+  {
+   "kind": "distinct",
+   "a": "JackpotOther",
+   "b": "LevelUp",
+   "require": {"score": 1.0},
+   "why": "someone else's moment is smaller than mine"
+  },
+  {
+   "kind": "distinct",
+   "a": "PumpkinKing",
+   "b": "GhostKing",
+   "require": {"score": 1.0},
+   "windowMs": 900,
+   "hard": true,
+   "why": "eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)"
+  },
+  {
+   "kind": "distinct",
+   "a": "CrownHalo",
+   "b": "Purify",
+   "require": {"score": 1.0},
+   "why": "a different sound from the moral choice"
+  },
+  {
+   "kind": "distinct",
+   "a": "CrownHalo",
+   "b": "LevelUp",
+   "require": {"score": 1.0},
+   "why": "a different sound from my level up"
+  },
+  {
+   "kind": "distinct",
+   "a": "ZoneEnterPvP",
+   "b": "CountTick",
+   "require": {"score": 1.0},
+   "why": "both wood: keep the safety cue its own"
+  },
+  {
+   "kind": "match",
+   "a": "Purify",
+   "b": "Devour",
+   "lufsTol": 1.0,
+   "phoneTol": 2.0,
+   "why": "neither choice is louder or 'better'"
+  },
+  {
+   "kind": "match",
+   "a": "SwingMageHalo",
+   "b": "SwingMageHorns",
+   "lufsTol": 1.0,
+   "phoneTol": 2.0,
+   "why": "fair on phones"
+  },
+  {
+   "kind": "match",
+   "a": "SkillHalo",
+   "b": "SkillHorns",
+   "lufsTol": 1.0,
+   "phoneTol": 2.0,
+   "why": "fair on phones"
+  },
+  {
+   "kind": "match",
+   "a": "CrownHalo",
+   "b": "CrownHorns",
+   "lufsTol": 1.0,
+   "phoneTol": 2.0,
+   "why": "fair on phones"
+  },
+  {
+   "kind": "louder",
+   "a": "ScrollSuccess",
+   "b": "ScrollFail",
+   "minDb": 4.8,
+   "why": "spec: at least 4.8 dB above the fail"
+  },
+  {"kind": "louder", "a": "LevelUp", "b": "QuestDone", "minDb": 1.5, "why": "LevelUp is the loudest sound"},
+  {"kind": "louder", "a": "LevelUp", "b": "ScrollSuccess", "minDb": 1.0, "why": "LevelUp is the loudest sound"},
+  {"kind": "louder", "a": "LevelUp", "b": "PumpkinKing", "minDb": 1.0, "why": "LevelUp is the loudest sound"},
+  {"kind": "louder", "a": "QuestDone", "b": "QuestNew", "minDb": 1.5, "why": "done is bigger than new"},
+  {
+   "kind": "louder",
+   "a": "ComboMilestone",
+   "b": "ComboCoin",
+   "minDb": 3.0,
+   "why": "the milestone peaks the run"
+  },
+  {
+   "kind": "louder",
+   "a": "HitHeavy",
+   "b": "SwingArcher",
+   "minDb": 2.0,
+   "why": "the archer swish is the quietest combat sound"
+  },
+  {
+   "kind": "louder",
+   "a": "SwingWarrior",
+   "b": "SwingArcher",
+   "minDb": 0.5,
+   "why": "the archer swish is the quietest combat sound"
+  },
+  {"kind": "louder", "a": "Tap", "b": "TalkBlip", "minDb": 3.0, "why": "TalkBlip is the softest repeated sound"}
+ ]
+}

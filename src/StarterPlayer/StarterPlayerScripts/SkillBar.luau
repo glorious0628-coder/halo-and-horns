@@ -8,8 +8,12 @@
 --            lives in the skill's description only
 --   state  : cooling down = a dark radial sweep + whole seconds left (attributes SkillReadyAt / SkillReadyAtZ /
 --            SkillReadyAtX), then a short white flash; MP short = the whole button dimmed (a press says "Not enough
---            MP"); locked (Level < Unlock) = shaded face + lock glyph + "Lv N"; a slot whose flag is off
---            (Config.Skills.ZEnabled / XEnabled) stays hidden and keeps its rect free
+--            MP"); A23-71 (user 2026-10-07 "스킬도 처음에는 없어야 돼"): a slot below its unlock level (Config.Skills.Unlock)
+--            is not shown at all (its key says "Skills come at Lv N"); a slot whose flag is off (Config.Skills.ZEnabled /
+--            XEnabled) stays hidden and keeps its rect free
+--   learn  : the moment a slot unlocks while I play (not at a save load): "New skill! <name>" banner, the button pops in,
+--            one line on it (PC "Press Q", phones "Tap the new button" - C.HUD.Hint) and the SkillLearn sound (PowerUp
+--            until that file exists). Replaces A23-68 #2's "Try your skill!" after the first kill
 --   input  : a press = SkillBar.Use(slot): one press, one cast. Inside the 0.5 s gap between casts one press waits in
 --            line (white rim) and goes when the gap ends. Refused here (locked, cooling, MP) -> the button shakes and a
 --            short word floats up. Q goes through HUD.Release (the live Release remote) until SkillService's UseSkill
@@ -17,7 +21,8 @@
 --   Studio : the local attribute SkillBarPreview = true shows Z / X with their flags off (UiSandbox captures only)
 -- Presentation + input only: the server decides every cast (MP, cooldown, targets).
 --
--- Public API: SkillBar.Init(C), SkillBar.Start(), SkillBar.Relayout(), SkillBar.Use(slot) -> bool, SkillBar.Owns(slot)
+-- Public API: SkillBar.Init(C), SkillBar.Start(), SkillBar.Relayout(), SkillBar.Use(slot) -> bool, SkillBar.Owns(slot),
+-- SkillBar.Button(slot) -> the button frame (A23-68 hints), SkillBar.Learn (test aid: the A23-71 learn moment)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -79,7 +84,13 @@ local TXT = {
 	Unlock = "Unlocks at Lv %d",
 	NeedMP = "Not enough MP",
 	Wait = "Not yet",
+	NewSkill = "New skill! %s", -- A23-71 the learn moment
+	LearnKey = "Press %s",
+	LearnTouch = "Tap the new button",
+	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
 }
+-- A23-71 learn moment tuning
+local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge }
 
 ----------------------------------------------------------------- state
 local S = {
@@ -441,8 +452,13 @@ end
 local function paintButton(b)
 	local st = stateOf(b.Slot)
 	b.State = st
-	local visible = st.On
+	local visible = st.On and not st.Locked -- A23-71: no locked slot on the screen
 	if b.Holder.Visible ~= visible then b.Holder.Visible = visible end
+	-- the learn moment: unlocked while I was already playing (a save loading past the level shows nothing)
+	local live = LocalPlayer:GetAttribute("DataLoaded") == true and LocalPlayer:GetAttribute("ClassChosen") == true
+	if visible and b.Live and b.WasLocked == true then LEARN.Show(b, st) end
+	b.WasLocked = st.Locked
+	b.Live = live
 	if not visible then return end
 	setIcon(b)
 	local tint = (st.Locked and COL.Locked) or (st.MPShort and COL.Dim) or COL.White
@@ -617,16 +633,68 @@ local function placeAll()
 	end
 end
 
+----------------------------------------------------------------- A23-71 learn moment
+function LEARN.Show(b, st)
+	local slot = b.Slot
+	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, string.format(TXT.NewSkill, st.Def.Name), LEARN.Banner) end
+	-- the button pops in (no bounce with 'Screen shake' off)
+	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
+	if not reduced then
+		local scale = b.Holder:FindFirstChild("LearnPop") or Instance.new("UIScale")
+		scale.Name = "LearnPop"
+		scale.Scale = 0.2
+		scale.Parent = b.Holder
+		TweenService:Create(scale, TweenInfo.new(LEARN.Pop, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	end
+	-- one line on the new button: the key on keyboards, a tap on phones
+	local line = TXT.LearnTouch
+	if not IS_TOUCH then
+		local kb = C and C.Keybinds
+		local ok, label = false, nil
+		if type(kb) == "table" and type(kb.Label) == "function" then ok, label = pcall(kb.Label, T.Action[slot]) end
+		line = string.format(TXT.LearnKey, (ok and type(label) == "string" and label ~= "") and label or slot)
+	end
+	local hud = C and C.HUD
+	if type(hud) == "table" and type(hud.Hint) == "function" then pcall(hud.Hint, slot, line) end
+	local audio = C and C.Audio
+	if type(audio) == "table" and type(audio.Play) == "function" then
+		local ok, played = pcall(audio.Play, "SkillLearn")
+		if not (ok and played) then pcall(audio.Play, "PowerUp") end
+	end
+end
+
+-- a skill key before the first skill: one short toast now and then
+function LEARN.Tell(level)
+	if os.clock() - LEARN.TellAt < LEARN.TellGap then return end
+	LEARN.TellAt = os.clock()
+	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, string.format(TXT.Later, level), "info", 2.5) end
+end
+
 ----------------------------------------------------------------- public API
 function SkillBar.Owns(slot)
 	return S.built and ui.buttons[slot] ~= nil
 end
 
+-- A23-68 #2: the slot's button frame (HUD.Hint hangs its ring / bubble on it), nil before the bar is built
+function SkillBar.Button(slot)
+	local b = S.built and ui.buttons[slot] or nil
+	return b and b.Holder or nil
+end
+
 -- one press of a skill (button, key or pad). false when refused here (the button shook)
 function SkillBar.Use(slot)
 	local b = ui.buttons[slot]
-	if not b or not b.Holder.Visible then return false end
+	if not b then return false end
+	if not b.Holder.Visible then
+		local st = stateOf(slot)
+		if st.On and st.Locked then LEARN.Tell(st.Unlock) end
+		return false
+	end
 	local hud = C and C.HUD
+	if type(hud) == "table" and type(hud.ClearHint) == "function" and type(hud.HintShown) == "function"
+		and hud.HintShown(slot) then
+		pcall(hud.ClearHint, slot) -- A23-68 #2: "Try your skill!" goes with the first press
+	end
 	if type(hud) == "table" and type(hud.InputAllowed) == "function" then
 		local ok, allowed = pcall(hud.InputAllowed)
 		if ok and allowed == false then return false end
@@ -721,7 +789,10 @@ function SkillBar.Start()
 	-- one Q button: HUD hides its own
 	local hud = C and C.HUD
 	if type(hud) == "table" and type(hud.SkillBarReady) == "function" then guard(hud.SkillBarReady, "hand-off") end
+	UIKit.OnAttr({ "DataLoaded" }, refreshAll) -- the learn moment only starts once the save is in
 	print("[SkillBar] started")
 end
+
+SkillBar.Learn = LEARN -- test aid
 
 return SkillBar

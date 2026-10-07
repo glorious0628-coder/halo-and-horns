@@ -68,7 +68,7 @@ function A.Format(msg)
 	elseif msg.Key == "Jackpot" or msg.Key == "FirstMax" then
 		return string.format(tmpl, who, weapon)
 	elseif msg.Key == "More" then
-		return string.format(tmpl, who, math.floor(tonumber(args.Count) or 1))
+		return Config.Plural(string.format(tmpl, who, math.floor(tonumber(args.Count) or 1))) -- "1 more great item"
 	end
 	return nil
 end

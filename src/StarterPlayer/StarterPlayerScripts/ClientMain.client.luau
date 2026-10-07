@@ -1,5 +1,5 @@
 -- ClientMain.client.luau : the ONLY client entry point.
-local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "SettingsUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "SkillBar", "Audio" }
+local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "SettingsUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "FirstSteps", "SkillBar", "Audio" }
 
 local C = {}
 for _, name in ORDER do

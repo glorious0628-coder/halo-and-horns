@@ -1,0 +1,116 @@
+{
+  "status": "passed",
+  "checks": 16,
+  "failedChecks": [],
+  "mutations": {
+    "total": 11,
+    "applied": 11,
+    "caught": 11,
+    "results": [
+      {
+        "mutation": "locked slots show again",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Lv1: no Q button on the screen (A23-71) :: true",
+          "CHECK_FAIL Lv1: no Z / X either :: ",
+          "CHECK_FAIL a Q press before Lv5: 'Skills come at Lv 5' :: nil"
+        ]
+      },
+      {
+        "mutation": "a save load shows the moment",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a save load shows no learn moment :: 3"
+        ]
+      },
+      {
+        "mutation": "the moment repeats",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a 'New skill! <name>' banner :: nil",
+          "CHECK_FAIL one line on the new button: 'Press Q' :: nil",
+          "CHECK_FAIL the SkillLearn sound (PowerUp until its file exists) :: "
+        ]
+      },
+      {
+        "mutation": "no banner",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a 'New skill! <name>' banner :: nil",
+          "CHECK_FAIL the moment shows once :: 0",
+          "CHECK_FAIL Lv15: Z learned the same way :: Z"
+        ]
+      },
+      {
+        "mutation": "no line on the button",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL one line on the new button: 'Press Q' :: nil",
+          "CHECK_FAIL the moment shows once :: 1"
+        ]
+      },
+      {
+        "mutation": "phones read 'Press Q'",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL phones: 'Tap the new button' :: Press Q"
+        ]
+      },
+      {
+        "mutation": "no PowerUp fallback",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the SkillLearn sound (PowerUp until its file exists) :: SkillLearn"
+        ]
+      },
+      {
+        "mutation": "no pop",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the button pops in (small -> full size) :: 1"
+        ]
+      },
+      {
+        "mutation": "pops with reduced motion",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL reduced motion: no pop :: "
+        ]
+      },
+      {
+        "mutation": "a locked key press says nothing",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Q press before Lv5: 'Skills come at Lv 5' :: nil",
+          "CHECK_FAIL that toast is not spammed :: 0"
+        ]
+      },
+      {
+        "mutation": "the toast is spammed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL that toast is not spammed :: 2"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485",
+    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "94ce9349b4823d8ea819da13950b5a40651fe3829d692355fd6bb6ff8d91a309"
+  },
+  "fixtureSHA256": "7f7a4537818fd1343fdc3ba4918f2b7ef1cd4b8fc5c894111b3b5c0760bfd4f0",
+  "studioCalls": 0,
+  "contract": "A23-71 skill learn offline test (SkillBar.luau; user 2026-10-07 \"스킬도 처음에는 없어야 돼! 레벨 5일 때 하나 배우는 걸로\n하자\", unlocks Q 5 / Z 15 / X 25): no skill button below its unlock level (a key press says \"Skills come at Lv N\",\nnot spammed); unlocking while playing -> \"New skill! <name>\" banner (UIKit.Announce), the button pops in, one line on it\n(C.HUD.Hint(slot, \"Press Q\") / phones \"Tap the new button\"), the SkillLearn sound with PowerUp until its file exists;\nonce per slot; a save loading past the level shows its skills without the moment; reduced motion: no pop.\nRuns the real SkillBar.luau + Config.luau (Config.Skills.Unlock set to the A23-71 numbers) in\ntools/fixtures/skill_learn_offline.luau.",
+  "limitations": "The button layout without skill slots is image dev's (HudLayout); the real unlock numbers come with dev2's Config.Skills.Unlock change; the look of the moment is a Studio check."
+}

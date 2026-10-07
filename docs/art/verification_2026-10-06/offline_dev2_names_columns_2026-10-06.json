@@ -1025,17 +1025,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
+    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
+    "src/ServerScriptService/PvPService.luau": "cd3ba05e927e40b348d2d2671992380cc41b6decfefc7c931a50f0ca6fae3826",
     "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
     "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
-    "src/ServerScriptService/ProgressionService.luau": "6475444ebec7822d9993c1a0c5c3d117f47ff80548dd6b94c6b76e02789bf468",
+    "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a",
     "src/ServerScriptService/GooseService.luau": "eb39998538042239d5966f71c08869788465bee782e6b26f6d2a50847bf8dc99",
-    "src/ServerScriptService/KaijuService.luau": "c5d1398e170af68cc369b464ce07e7895f38b3da98ab0abda2a2eaed61bf2d3d"
+    "src/ServerScriptService/KaijuService.luau": "2b542c7f8849b2c29089940789407116e3c13720bcb78812e7819fa17dd8111f"
   },
-  "fixtureSHA256": "ea7b371e711784b69305fb54b1545aa80dc4b41d5c8474c26f4fb456cda079d4",
+  "fixtureSHA256": "de98c0912d2a4b36b0fe75834bb7da7d3acb384100262627507068bdf975734a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -84,6 +84,13 @@ MUTATIONS = [
     ("a window staying open repeats", "if was ~= nil and was ~= open then", "if open or was ~= open then"),
     ("combo never resets", "if S.ComboToken == token then S.Combo = 0 end", ""),
     ("'No' is not Deny", 'Aliases = { No = "Deny" },', "Aliases = {},"),
+    # dev2 2c5e84e / sound_spec §4-1
+    ("the Choice Fx is silent", '\t\tif data.Option == "Good" then\n\t\t\tadd(out, "Purify", 0)\n',
+     '\t\tif data.Option == "Good" then\n'),
+    ("points going up still purify", "\t\t\t\treturn -- Purify / Devour come with the Choice Fx",
+     "\t\t\t\tAudio.Play(stat == \"Honor\" and \"Purify\" or \"Devour\") return --"),
+    ("Sound None still plays", '\t\tif sound == "None" then return nil end\n', ""),
+    ("the payload's Sound is ignored", "\t\treturn sound\n\tend\n", "\tend\n"),
 ]
 
 

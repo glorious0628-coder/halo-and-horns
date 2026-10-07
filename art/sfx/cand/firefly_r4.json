@@ -1,0 +1,1142 @@
+{
+ "round": "4b / batch 1",
+ "date": "2026-10-07",
+ "by": "소리 만들기",
+ "made": "Adobe Firefly 'Generate sound effects' (firefly.adobe.com, the user's Adobe account): 1 s (PowerUp 1.5 s), 4 variations per generation; where Firefly could not meet the spec: Kenney CC0 + our synthesis (tools/sfx_make.py RECIPES: ComboCoin k*, HitSoft k*, HitCrit sB*)",
+ "license": "Firefly generation (Adobe: commercially safe output); Kenney Impact Sounds (CC0 1.0); our own synthesis. Our edit = cut, mono 48 kHz, high/low-pass, level; SwingMageHalo candidates may carry our own thin synthesized 'tsing' (tools/sfx_cut.py tsing())",
+ "credits": {
+  "generations": 35,
+  "perGeneration": 10,
+  "used": 350,
+  "balanceBefore": 9640,
+  "balanceAfter": 9290
+ },
+ "spec": "tools/sfx_spec.json (Jump / PowerUp / Equip added by 소리 만들기)",
+ "checker": "tools/sfx_check.py",
+ "scenes": "tools/sfx_scene.py",
+ "level": "K-weighted loudest 100 ms = -17 LUFS, peak <= -2.5 dBFS",
+ "sheets": "art/review/sfx_check_r4b_2026-10-07",
+ "board": "https://claude.ai/artifact/EEwW3ounewa6BWPrFMFD2P",
+ "recommend": {
+  "SwingArrow": "SwingArrow_SwingArcher-2-4",
+  "SwingMageHalo": "SwingMageHalo_SwingMage-3-4",
+  "SwingMageHorns": "SwingMageHorns_1-1",
+  "HitHeavy": "HitHeavy_3-2",
+  "HitCrit": "HitCrit_sB3",
+  "ComboCoin": "ComboCoin_kA",
+  "HitSoft": "HitSoft_kB",
+  "PowerUp": "PowerUp_1-2",
+  "Jump": "Jump_2-2",
+  "SwingArcher": "SwingArcher_2-1"
+ },
+ "candidates": {
+  "ComboCoin_kA": {
+   "key": "ComboCoin",
+   "source": "ComboCoin_kA",
+   "verdict": "WARN",
+   "score": 98,
+   "params": {
+    "recipe": "Kenney impactMetal_light_000 0.891x (D7) 70 ms x0.8 + 1.0x @45 ms 200 ms (sound_spec recipe)"
+   },
+   "durMs": 198.1,
+   "centroidHz": 2674,
+   "phoneDropDb": 0.15
+  },
+  "ComboCoin_kB": {
+   "key": "ComboCoin",
+   "source": "ComboCoin_kB",
+   "verdict": "WARN",
+   "score": 98,
+   "params": {
+    "recipe": "same money sample, coins 50 ms apart, softer first coin, 230 ms ring"
+   },
+   "durMs": 199.1,
+   "centroidHz": 2670,
+   "phoneDropDb": 0.15
+  },
+  "ComboCoin_kC": {
+   "key": "ComboCoin",
+   "source": "ComboCoin_kC",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "money sample a whole tone lower pair (0.84x -> 0.94x), 50 ms apart"
+   },
+   "durMs": 209.3,
+   "centroidHz": 2512,
+   "phoneDropDb": 0.18
+  },
+  "HitCrit_1-2": {
+   "key": "HitCrit",
+   "source": "HitCrit_1-2",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.0005,
+    "len": 0.22,
+    "fin": 0.0008,
+    "fout": 0.6,
+    "hp": 600,
+    "lp": 9000
+   },
+   "durMs": 202.4,
+   "centroidHz": 3104,
+   "phoneDropDb": 0.07
+  },
+  "HitCrit_1-4": {
+   "key": "HitCrit",
+   "source": "HitCrit_1-4",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.0005,
+    "len": 0.22,
+    "fin": 0.0008,
+    "fout": 0.6,
+    "hp": 600,
+    "lp": 9000
+   },
+   "durMs": 204.5,
+   "centroidHz": 3254,
+   "phoneDropDb": 0.12
+  },
+  "HitCrit_sB3": {
+   "key": "HitCrit",
+   "source": "HitCrit_sB3",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "B (no metal), our synthesis, a wider pang 1.8 kHz + 10 star grains 6.5 -> 2.8 kHz"
+   },
+   "durMs": 222.2,
+   "centroidHz": 4405,
+   "phoneDropDb": 0.03
+  },
+  "HitHeavy_1-2": {
+   "key": "HitHeavy",
+   "source": "HitHeavy_1-2",
+   "verdict": "WARN",
+   "score": 97,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.0005,
+    "len": 0.11,
+    "fin": 0.0005,
+    "fout": 0.85,
+    "hp": 250,
+    "lp": 8000,
+    "punch": 4
+   },
+   "durMs": 108.2,
+   "centroidHz": 695,
+   "phoneDropDb": 3.97
+  },
+  "HitHeavy_1-3": {
+   "key": "HitHeavy",
+   "source": "HitHeavy_1-3",
+   "verdict": "WARN",
+   "score": 94,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.0005,
+    "len": 0.11,
+    "fin": 0.0005,
+    "fout": 0.6,
+    "hp": 250,
+    "lp": 5000,
+    "punch": 4
+   },
+   "durMs": 99.1,
+   "centroidHz": 1332,
+   "phoneDropDb": 2.29
+  },
+  "HitHeavy_3-2": {
+   "key": "HitHeavy",
+   "source": "HitHeavy_3-2",
+   "verdict": "WARN",
+   "score": 97,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.0005,
+    "len": 0.11,
+    "fin": 0.0005,
+    "fout": 0.6,
+    "hp": 250,
+    "lp": 5000,
+    "punch": 0
+   },
+   "durMs": 103.3,
+   "centroidHz": 1454,
+   "phoneDropDb": 2.57
+  },
+  "HitSoft_kA": {
+   "key": "HitSoft",
+   "source": "HitSoft_kA",
+   "verdict": "WARN",
+   "score": 91,
+   "params": {
+    "recipe": "Kenney impactSoft_medium_002 saturated (HP 220) + jelly blob (1500->420 Hz, 320->220 Hz, 20 Hz wobble) + soft 'po'"
+   },
+   "durMs": 155.0,
+   "centroidHz": 538,
+   "phoneDropDb": 4.56
+  },
+  "HitSoft_kB": {
+   "key": "HitSoft",
+   "source": "HitSoft_kB",
+   "verdict": "WARN",
+   "score": 94,
+   "params": {
+    "recipe": "Kenney impactSoft_medium_004 saturated + a brighter blob (1700->450 Hz, 280->180 Hz) + a soft 550 Hz 'po' for phones"
+   },
+   "durMs": 156.8,
+   "centroidHz": 520,
+   "phoneDropDb": 5.06
+  },
+  "HitSoft_kC": {
+   "key": "HitSoft",
+   "source": "HitSoft_kC",
+   "verdict": "WARN",
+   "score": 91,
+   "params": {
+    "recipe": "Firefly HitSoft_2-3 (cut) + a low jelly blob"
+   },
+   "durMs": 145.5,
+   "centroidHz": 625,
+   "phoneDropDb": 3.26
+  },
+  "Jump_2-1": {
+   "key": "Jump",
+   "source": "Jump_2-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.002,
+    "len": 0.2,
+    "fin": 0.003,
+    "fout": 0.6,
+    "hp": 200,
+    "lp": 9000
+   },
+   "durMs": 176.3,
+   "centroidHz": 1022,
+   "phoneDropDb": 1.22
+  },
+  "Jump_2-2": {
+   "key": "Jump",
+   "source": "Jump_2-2",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.002,
+    "len": 0.2,
+    "fin": 0.003,
+    "fout": 0.6,
+    "hp": 200,
+    "lp": 9000
+   },
+   "durMs": 186.3,
+   "centroidHz": 923,
+   "phoneDropDb": 0.77
+  },
+  "PowerUp_1-2": {
+   "key": "PowerUp",
+   "source": "PowerUp_1-2",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 1.3,
+    "fin": 0.004,
+    "fout": 0.35,
+    "hp": 200,
+    "lp": 9000
+   },
+   "durMs": 1050.9,
+   "centroidHz": 2396,
+   "phoneDropDb": 0.93
+  },
+  "PowerUp_1-3": {
+   "key": "PowerUp",
+   "source": "PowerUp_1-3",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 1.3,
+    "fin": 0.004,
+    "fout": 0.35,
+    "hp": 200,
+    "lp": 9000
+   },
+   "durMs": 1029.5,
+   "centroidHz": 5722,
+   "phoneDropDb": 0.07
+  },
+  "PowerUp_2-1": {
+   "key": "PowerUp",
+   "source": "PowerUp_2-1",
+   "verdict": "WARN",
+   "score": 96,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 1.3,
+    "fin": 0.004,
+    "fout": 0.35,
+    "hp": 200,
+    "lp": 9000
+   },
+   "durMs": 1139.7,
+   "centroidHz": 2586,
+   "phoneDropDb": 0.01
+  },
+  "SwingArcher_2-1": {
+   "key": "SwingArcher",
+   "source": "SwingArcher_2-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "peak",
+    "pre": 0.004,
+    "len": 0.062,
+    "fin": 0.003,
+    "fout": 0.8,
+    "hp": 400,
+    "lp": 6500,
+    "gap": 0.068
+   },
+   "durMs": 119.3,
+   "centroidHz": 4433,
+   "phoneDropDb": 0.01
+  },
+  "SwingArcher_2-4": {
+   "key": "SwingArcher",
+   "source": "SwingArcher_2-4",
+   "verdict": "WARN",
+   "score": 98,
+   "params": {
+    "anchor": "peak",
+    "pre": 0.004,
+    "len": 0.055,
+    "fin": 0.003,
+    "fout": 0.8,
+    "hp": 400,
+    "lp": 6500,
+    "gap": 0.068
+   },
+   "durMs": 112.8,
+   "centroidHz": 4876,
+   "phoneDropDb": 0.01
+  },
+  "SwingArcher_3-1": {
+   "key": "SwingArcher",
+   "source": "SwingArcher_3-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "peak",
+    "pre": 0.004,
+    "len": 0.055,
+    "fin": 0.003,
+    "fout": 0.8,
+    "hp": 400,
+    "lp": 6500,
+    "gap": 0.068
+   },
+   "durMs": 113.4,
+   "centroidHz": 3432,
+   "phoneDropDb": 0.16
+  },
+  "SwingArrow_SwingArcher-2-1": {
+   "key": "SwingArrow",
+   "source": "SwingArcher_2-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "peak",
+    "pre": 0.004,
+    "len": 0.07,
+    "fin": 0.003,
+    "fout": 0.6,
+    "hp": 400,
+    "lp": 6500
+   },
+   "durMs": 65.8,
+   "centroidHz": 4068,
+   "phoneDropDb": 0.01
+  },
+  "SwingArrow_SwingArcher-2-4": {
+   "key": "SwingArrow",
+   "source": "SwingArcher_2-4",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "peak",
+    "pre": 0.004,
+    "len": 0.08,
+    "fin": 0.003,
+    "fout": 0.6,
+    "hp": 400,
+    "lp": 6500
+   },
+   "durMs": 72.8,
+   "centroidHz": 3913,
+   "phoneDropDb": 0.02
+  },
+  "SwingArrow_SwingArcher-3-1": {
+   "key": "SwingArrow",
+   "source": "SwingArcher_3-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "peak",
+    "pre": 0.004,
+    "len": 0.07,
+    "fin": 0.003,
+    "fout": 0.6,
+    "hp": 400,
+    "lp": 8000
+   },
+   "durMs": 65.5,
+   "centroidHz": 3318,
+   "phoneDropDb": 0.23
+  },
+  "SwingMageHalo_1-1": {
+   "key": "SwingMageHalo",
+   "source": "SwingMageHalo_1-1",
+   "verdict": "WARN",
+   "score": 95,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.0,
+    "len": 0.2,
+    "fin": 0.008,
+    "tsing": -6,
+    "tsingAt": 0.35,
+    "fout": 0.5,
+    "hp": 300,
+    "lp": 7000
+   },
+   "durMs": 191.1,
+   "centroidHz": 3450,
+   "phoneDropDb": 0.24
+  },
+  "SwingMageHalo_SwingMage-2-2": {
+   "key": "SwingMageHalo",
+   "source": "SwingMage_2-2",
+   "verdict": "WARN",
+   "score": 95,
+   "params": {
+    "anchor": "peak",
+    "on": -20,
+    "pre": 0.0,
+    "len": 0.17,
+    "fin": 0.008,
+    "tsing": -10,
+    "tsingAt": 0.35,
+    "fout": 0.5,
+    "hp": 300,
+    "lp": 7000
+   },
+   "durMs": 161.3,
+   "centroidHz": 2348,
+   "phoneDropDb": 0.06
+  },
+  "SwingMageHalo_SwingMage-3-4": {
+   "key": "SwingMageHalo",
+   "source": "SwingMage_3-4",
+   "verdict": "WARN",
+   "score": 98,
+   "params": {
+    "anchor": "peak",
+    "on": -20,
+    "pre": 0.02,
+    "len": 0.17,
+    "fin": 0.008,
+    "tsing": -6,
+    "tsingAt": 0.35,
+    "fout": 0.5,
+    "hp": 300,
+    "lp": 8500
+   },
+   "durMs": 169.9,
+   "centroidHz": 4199,
+   "phoneDropDb": 0.0
+  },
+  "SwingMageHorns_1-1": {
+   "key": "SwingMageHorns",
+   "source": "SwingMageHorns_1-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.02,
+    "len": 0.18,
+    "fin": 0.006,
+    "fout": 0.5,
+    "hp": 800,
+    "lp": 5000
+   },
+   "durMs": 174.4,
+   "centroidHz": 1616,
+   "phoneDropDb": 0.35
+  },
+  "SwingMageHorns_1-2": {
+   "key": "SwingMageHorns",
+   "source": "SwingMageHorns_1-2",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "peak",
+    "on": -20,
+    "pre": 0.0,
+    "len": 0.18,
+    "fin": 0.006,
+    "fout": 0.5,
+    "hp": 800,
+    "lp": 7000
+   },
+   "durMs": 171.2,
+   "centroidHz": 1548,
+   "phoneDropDb": 0.34
+  },
+  "SwingMageHorns_2-2": {
+   "key": "SwingMageHorns",
+   "source": "SwingMageHorns_2-2",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "peak",
+    "on": -20,
+    "pre": 0.0,
+    "len": 0.2,
+    "fin": 0.006,
+    "fout": 0.5,
+    "hp": 800,
+    "lp": 5000
+   },
+   "durMs": 185.7,
+   "centroidHz": 1581,
+   "phoneDropDb": 0.26
+  }
+ },
+ "prompts": {
+  "ComboCoin_1": "two small coins clinking, bright and cheerful, short",
+  "ComboCoin_2": "coin clink clink into a pouch, two coins, short",
+  "HitCrit_1": "cartoon critical hit, punchy impact with a bright metallic ting",
+  "HitCrit_2": "small bright metal ting, clear and shiny, quick sparkle tail",
+  "HitCrit_3": "cartoon power hit, heavy punch with a shiny metal ting, sparkle",
+  "HitCrit_4": "bright metal clang with a sparkle burst, short and light",
+  "HitCrit_5": "light metallic klang, glittering sparkles, short and bright",
+  "HitCrit_6": "magic star burst pop, falling glitter sparkles, short",
+  "HitCrit_7": "sparkly pang, twinkling stars tumbling down, bright and short",
+  "HitHeavy_1": "cartoon punch hit, short round thump with a small click, dry",
+  "HitHeavy_2": "quick padded thwack, soft chubby impact, punchy and dry",
+  "HitHeavy_3": "cartoon bop hit, snappy smack, short, dry",
+  "HitHeavy_4": "punchy cartoon thwack, mid smack with a tiny click, dry",
+  "HitSoft_1": "soft squishy jelly poke, bouncy boing, short",
+  "HitSoft_2": "cartoon slime squish, soft wobbly bounce, short",
+  "Jump_1": "light cartoon hop, quick soft whoosh up, cute, short",
+  "Jump_2": "small springy jump, soft bouncy pop, playful, short",
+  "PowerUp_1": "power up charge, rising sparkly shimmer, ends with a bright twinkle hit",
+  "PowerUp_2": "magic energy rising, glittering sweep upward, small sparkle burst at the end",
+  "SwingArcher_1": "fast arrow whoosh flying past, short airy swish",
+  "SwingArcher_2": "single quick swoosh, thin and airy, very short, fast fade",
+  "SwingArcher_3": "arrow fly-by whoosh, sharp attack, quick and airy, fading down",
+  "SwingArcher_4": "fast arrow swish, sharp start, thin rushing air, short",
+  "SwingMageHalo_1": "light magic bolt shoom with a tiny twinkle chime, short",
+  "SwingMageHalo_2": "bright spell swoosh rising, soft shimmering ring, short",
+  "SwingMageHorns_1": "playful fire magic fwoosh with crackling embers, short burst",
+  "SwingMageHorns_2": "warm ember spell whoosh, small crackle pops, short",
+  "SwingMageHorns_3": "quick fire spark fwoosh, crackling embers, light and snappy",
+  "SwingMageHorns_4": "small flame burst whoosh with popping sparks, playful, short",
+  "SwingMage_1": "magic sparkle cast, bright tiny chimes rising upward, soft, short",
+  "SwingMage_2": "cartoon magic spell, twinkling shimmer sweeping up in pitch, light, short",
+  "SwingMage_3": "magic wand swish with twinkling sparkles rising, gentle, short",
+  "SwingMage_4": "soft magical whoosh rising in pitch, glittering sparkles, cute, short",
+  "SwingTamer_1": "quick two-note rising whistle, airy and playful, short",
+  "SwingTamer_2": "short cheerful whistle, two quick rising notes, calling a puppy"
+ },
+ "clips": {
+  "ComboCoin_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:53d04ebd-6de3-4a87-ae2d-fee9c6c68880",
+   "sha256_24": "1023752fb29f72b771bc3db0"
+  },
+  "ComboCoin_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:5a6c78dc-6a42-4b95-bb1b-dbebd9f0026a",
+   "sha256_24": "39bc7c5bf8079c1c8f2d7019"
+  },
+  "ComboCoin_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:d851c024-fc39-4d59-9a96-8e5100e5859c",
+   "sha256_24": "2c05529ef67f7fea82d74f18"
+  },
+  "ComboCoin_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:cb161f28-096b-4dbd-8fa0-7588bddf5823",
+   "sha256_24": "d0adef06bbc66054c2f14a68"
+  },
+  "ComboCoin_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:4997ed5c-989e-41ed-8fb6-4c062e34e749",
+   "sha256_24": "24ce6fe18de68a8c0a2f3a5a"
+  },
+  "ComboCoin_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:a9a883cc-2d03-4b24-84e7-17005b1bc89c",
+   "sha256_24": "1deecb498d9c7facafbfa077"
+  },
+  "ComboCoin_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:ef633c67-2e6f-471c-a12b-b5429ee3ebba",
+   "sha256_24": "82758d8ebcddc7974bd4ad54"
+  },
+  "ComboCoin_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:49bfb8b6-b888-40ee-8ab3-61bc54475f13",
+   "sha256_24": "8d3071ac81f2e73c165de993"
+  },
+  "HitCrit_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:1d29935d-ab10-4535-9b22-3bdcc2d4bd2d",
+   "sha256_24": "78fb023c6470708964c7ef92"
+  },
+  "HitCrit_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:1d863a3c-be5e-40ec-b11e-15ff0ee65ad4",
+   "sha256_24": "075fb53f2faedf0c4252db00"
+  },
+  "HitCrit_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:702e68b5-6574-4961-b621-21d3c85e3ad1",
+   "sha256_24": "dc8d206f45b69f518be411be"
+  },
+  "HitCrit_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:392456f0-aaf9-4aa2-bcb8-79dbbc6bc968",
+   "sha256_24": "2659634754efa6fdbaf7a116"
+  },
+  "HitCrit_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:1289e89d-d564-46c3-b0d8-a75255447be3",
+   "sha256_24": "aea14df159a87216c0e57459"
+  },
+  "HitCrit_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:87723ce9-80bb-4c99-944b-e9bb05b4ee7e",
+   "sha256_24": "59317b28f070174be97d1f86"
+  },
+  "HitCrit_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:ef06032a-c6db-4141-9f36-cfb6898b1d08",
+   "sha256_24": "cc4b79c7c328f8bec5e7d718"
+  },
+  "HitCrit_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:aeef29c5-5e6d-43bb-8260-fc37d33601a0",
+   "sha256_24": "c84a620c8b0d582f27d607e1"
+  },
+  "HitCrit_3-1.wav": {
+   "assetId": "urn:aaid:sc:AP:755edcf3-71fa-43fb-a5f1-aa145cfa0fe7",
+   "sha256_24": "d07b10e86cf3865090f7c0c9"
+  },
+  "HitCrit_3-2.wav": {
+   "assetId": "urn:aaid:sc:AP:508af822-bcf1-43d9-83d2-ebc6658533ca",
+   "sha256_24": "64fc3579f5169841109687cc"
+  },
+  "HitCrit_3-3.wav": {
+   "assetId": "urn:aaid:sc:AP:7ac30ac1-1f3d-4ac4-b164-231530aab9d9",
+   "sha256_24": "69ace9573dc6e8b0c6a17dbf"
+  },
+  "HitCrit_3-4.wav": {
+   "assetId": "urn:aaid:sc:AP:ded58a4b-867a-43b4-96fb-7bc4fcbcd5a0",
+   "sha256_24": "93e8dcecbdcccf94d868d4f7"
+  },
+  "HitCrit_4-1.wav": {
+   "assetId": "urn:aaid:sc:AP:705c9d52-bc0a-4771-8130-c2f53bdece2c",
+   "sha256_24": "6fc5500e7a100fc7d506707b"
+  },
+  "HitCrit_4-2.wav": {
+   "assetId": "urn:aaid:sc:AP:d5535ee1-f7e0-4f83-a0c6-112dfc361097",
+   "sha256_24": "d010e57369c44104fe663d2f"
+  },
+  "HitCrit_4-3.wav": {
+   "assetId": "urn:aaid:sc:AP:bee0c4db-dba0-4647-826a-f257e704faf6",
+   "sha256_24": "35664271a4b1049f9f8e3ba4"
+  },
+  "HitCrit_4-4.wav": {
+   "assetId": "urn:aaid:sc:AP:ee2f8027-4327-4e95-b4d5-365f13979b78",
+   "sha256_24": "fe2316ebfe1fe455c6f964cb"
+  },
+  "HitCrit_5-1.wav": {
+   "assetId": "urn:aaid:sc:AP:c64dc77e-7d73-499e-85db-3a2609f4f4c7",
+   "sha256_24": "c5a045bdb4c43eb6be137e90"
+  },
+  "HitCrit_5-2.wav": {
+   "assetId": "urn:aaid:sc:AP:43aed271-b570-4020-a8e5-aa9ace614df6",
+   "sha256_24": "fae16cf0257ed525f6c53408"
+  },
+  "HitCrit_5-3.wav": {
+   "assetId": "urn:aaid:sc:AP:bc8b9586-930a-463a-a504-317f79043706",
+   "sha256_24": "78ce4f1ab55897ffeb33a640"
+  },
+  "HitCrit_5-4.wav": {
+   "assetId": "urn:aaid:sc:AP:2cacfcf7-ac7e-4ecc-bdda-c8b8954f1188",
+   "sha256_24": "d28a6d5eba9f9711152559db"
+  },
+  "HitCrit_6-1.wav": {
+   "assetId": "urn:aaid:sc:AP:23dbfc85-811d-4f96-97bf-d825b1cef1e6",
+   "sha256_24": "fcd7fe5e32f1baeaf8c8f0e5"
+  },
+  "HitCrit_6-2.wav": {
+   "assetId": "urn:aaid:sc:AP:a22d58f5-9e58-4ee1-9e1e-4c18779713e5",
+   "sha256_24": "017a283d64dbc6a420538eb0"
+  },
+  "HitCrit_6-3.wav": {
+   "assetId": "urn:aaid:sc:AP:836836e2-0869-48c5-b315-4bcb0b7804ee",
+   "sha256_24": "44f89c058c6589943527590b"
+  },
+  "HitCrit_6-4.wav": {
+   "assetId": "urn:aaid:sc:AP:16e94cb2-95a7-4d9d-80ca-d648b2501e10",
+   "sha256_24": "fde5997916552aa4f1c96568"
+  },
+  "HitCrit_7-1.wav": {
+   "assetId": "urn:aaid:sc:AP:074ec217-7d01-4d4f-be60-32ca17493c4b",
+   "sha256_24": "79bf3091a0f85e1197169aaa"
+  },
+  "HitCrit_7-2.wav": {
+   "assetId": "urn:aaid:sc:AP:5dec9a9b-79d0-459e-b225-8e6b10c44af9",
+   "sha256_24": "520fb339cfdb13a86977c5aa"
+  },
+  "HitCrit_7-3.wav": {
+   "assetId": "urn:aaid:sc:AP:b6046024-1e35-4fbb-a37b-30e3db83ac80",
+   "sha256_24": "7d984ccbc7e764c090d05fa9"
+  },
+  "HitCrit_7-4.wav": {
+   "assetId": "urn:aaid:sc:AP:1f19310b-e126-4ee4-b672-3f769471c853",
+   "sha256_24": "237ed57fa747ad26809026a0"
+  },
+  "HitHeavy_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:ca68e77f-c226-4c00-b898-c4aee8a4ad39",
+   "sha256_24": "43cf7dd6d2a9a11b9b8eafc8"
+  },
+  "HitHeavy_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:e2f1d655-8905-41d7-9f83-06cbe6d094ec",
+   "sha256_24": "add3d02314e784637e5a9003"
+  },
+  "HitHeavy_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:3d2d334c-0cba-47b6-b2d0-3309c3f391a6",
+   "sha256_24": "99e628fa9c9a84c801e97f42"
+  },
+  "HitHeavy_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:ffd4bd55-97cd-4225-8d06-6cecbdc16047",
+   "sha256_24": "1170b4b7737bd800eb6a5ad1"
+  },
+  "HitHeavy_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:8f0c9019-3eba-4e82-9e16-7e339f08271f",
+   "sha256_24": "48f6566afd708951d87ac0dd"
+  },
+  "HitHeavy_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:4ed50368-75fa-4f7f-8543-55025dc5f99a",
+   "sha256_24": "b89f5b9152321084cd2f340e"
+  },
+  "HitHeavy_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:23ec3ab5-3272-45a7-a74b-818c984eb379",
+   "sha256_24": "9d249325548c6f71dbe6ff35"
+  },
+  "HitHeavy_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:b46e1a16-14cb-431c-a17e-2028172bb9c8",
+   "sha256_24": "400566c9adb7669a612eeeae"
+  },
+  "HitHeavy_3-1.wav": {
+   "assetId": "urn:aaid:sc:AP:af37ca04-0c49-4d0f-9b67-b046e7fb50cc",
+   "sha256_24": "063cda0fdbd0c8c15352fa69"
+  },
+  "HitHeavy_3-2.wav": {
+   "assetId": "urn:aaid:sc:AP:46e9f908-6015-473c-bcab-0285961cd54e",
+   "sha256_24": "dbf535242d7c95e9cd6332af"
+  },
+  "HitHeavy_3-3.wav": {
+   "assetId": "urn:aaid:sc:AP:4412a98d-9e03-4122-afcf-624ba48518a1",
+   "sha256_24": "2f33bf5273260ee35afb81c7"
+  },
+  "HitHeavy_3-4.wav": {
+   "assetId": "urn:aaid:sc:AP:7a42da60-48b5-4110-a14d-58d4490d4e5e",
+   "sha256_24": "c91a8771e3cbca11cc3ff872"
+  },
+  "HitHeavy_4-1.wav": {
+   "assetId": "urn:aaid:sc:AP:aab0042d-1213-4d45-bb9f-8aaacd5e689c",
+   "sha256_24": "e4f9e43382f97e5524d5a0f3"
+  },
+  "HitHeavy_4-2.wav": {
+   "assetId": "urn:aaid:sc:AP:638637ee-66c7-4138-b28b-0d1c4b797ddf",
+   "sha256_24": "235a08d2d5a543df54738e81"
+  },
+  "HitHeavy_4-3.wav": {
+   "assetId": "urn:aaid:sc:AP:d4732744-2afd-4806-8bf8-bb9b4999a3a4",
+   "sha256_24": "2b5925af7989529ee4bebd52"
+  },
+  "HitHeavy_4-4.wav": {
+   "assetId": "urn:aaid:sc:AP:9e68aa6e-3c3e-4581-a1e7-5088cca12d65",
+   "sha256_24": "b02b4218c392c69fbdfa8dfa"
+  },
+  "HitSoft_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:5bcd8897-a7c1-4954-9f34-3ccfa57c50c8",
+   "sha256_24": "860c6d68802f3ae704519f2a"
+  },
+  "HitSoft_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:1e680cc3-776c-4b26-9a1f-3036a5eaea30",
+   "sha256_24": "325ecbc043ac17da9c0fa805"
+  },
+  "HitSoft_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:2d648dc5-ced2-4ff8-84f8-01dc45c61c19",
+   "sha256_24": "a4d75ba88a29be34cb058f1e"
+  },
+  "HitSoft_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:1656c9e8-bc4d-408b-83e9-eafac30719bd",
+   "sha256_24": "2271efacb9345dda1f058d8f"
+  },
+  "HitSoft_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:bf42191c-6cf8-46e7-a3c7-db0bd472d4e3",
+   "sha256_24": "1b94ae9ea273c87e38fd6e28"
+  },
+  "HitSoft_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:48f4cf61-a132-41af-bc14-216a4eb089c9",
+   "sha256_24": "7fc55be6bca35a9a7fc0e906"
+  },
+  "HitSoft_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:23731815-1884-47cb-acf7-1f56e6468790",
+   "sha256_24": "ba284291a80407daaf086b84"
+  },
+  "HitSoft_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:0f7ab4f5-4f09-45e6-8123-d13089c8ed3b",
+   "sha256_24": "8887304e68e7b956d3aa0d0a"
+  },
+  "Jump_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:8e27c188-1afc-4e67-b58f-e89832e7f9d8",
+   "sha256_24": "422ab13c013377ff6c246ed3"
+  },
+  "Jump_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:7483ed3f-aabd-4111-9d05-94f97adc4627",
+   "sha256_24": "dfee80db6cd3fea99fb08dbc"
+  },
+  "Jump_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:708b1e4c-ead0-4028-b722-dd5f490a11fc",
+   "sha256_24": "4f2af501184e1ede58274b99"
+  },
+  "Jump_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:0c08226e-5876-4980-af08-73ccc75d7c24",
+   "sha256_24": "e0508d194cbe9c0c71fa5843"
+  },
+  "Jump_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:4aea75d1-2823-4671-87b5-c4dce5fde871",
+   "sha256_24": "0bb5d243d419ff2f20348dec"
+  },
+  "Jump_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:e8ad15eb-e1ac-4087-9adb-ebf7de9664eb",
+   "sha256_24": "165d0b41810fa1dd1fc36b8a"
+  },
+  "Jump_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:542c21f7-2785-49dd-a80f-a0c2677bec09",
+   "sha256_24": "c183209e12090d7a1ab9e77e"
+  },
+  "Jump_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:154d8f89-2c59-4258-bbee-49694f7f87fb",
+   "sha256_24": "4d4b837bad3ab5d49718cd5a"
+  },
+  "PowerUp_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:32fc87eb-9e05-46ce-819e-c9cab76dfd8d",
+   "sha256_24": "2d4fab23f88b31b4340f0c03"
+  },
+  "PowerUp_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:94ee280d-c8ec-40a2-a6d4-dc95491be069",
+   "sha256_24": "b753ba7044ecdb7af7881cac"
+  },
+  "PowerUp_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:cfae5fde-9616-4da2-bc99-7320404f30c8",
+   "sha256_24": "2ca267c17f9cd26d62404c03"
+  },
+  "PowerUp_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:2891fa1c-241c-4e6a-ba9a-a653c0b1b2c4",
+   "sha256_24": "d53d677f319923a9905632ac"
+  },
+  "PowerUp_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:07af23ec-6d68-4bca-9e9b-fb0dc695d1b9",
+   "sha256_24": "e0726930d2ba40d87bed1153"
+  },
+  "PowerUp_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:3aaf2e62-75b4-43ed-94dd-5e4139da4dee",
+   "sha256_24": "380420f45e6e65457c68e32a"
+  },
+  "PowerUp_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:e4d649de-5e31-468d-a745-5b087daebbce",
+   "sha256_24": "6d945826a516e6a79b1dfa02"
+  },
+  "PowerUp_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:d7ae3bc8-9bbd-405c-8e87-3f3198e39991",
+   "sha256_24": "54cdaf47724c71dfdf8c4c55"
+  },
+  "SwingArcher_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:aa51cf86-e83d-48ba-a29f-492ec6194bd5",
+   "sha256_24": "b1a830022415a3f869de90a6"
+  },
+  "SwingArcher_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:342daebe-c379-43cc-be68-110ae0057fbd",
+   "sha256_24": "1abb3e08390aa3c0f18bd59e"
+  },
+  "SwingArcher_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:4216052a-8316-4ef7-b088-a1a6f08330ae",
+   "sha256_24": "104a8fe0e7bcf8f83115a5d9"
+  },
+  "SwingArcher_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:8a22ea91-0e0e-47c2-a04a-a0ee6bbe0170",
+   "sha256_24": "272d783611f42e331f8e564f"
+  },
+  "SwingArcher_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:2bfa1fc3-0a2e-4b0a-aa9d-2a38267d8926",
+   "sha256_24": "efe506934b2eca65e888756f"
+  },
+  "SwingArcher_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:debb11fc-0050-46e0-9f8a-391f216af191",
+   "sha256_24": "befba8794e5d4ded1a427e47"
+  },
+  "SwingArcher_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:771030c6-10b3-4f4c-9e00-3053f94dd451",
+   "sha256_24": "890092aefeddba2ba65f1d88"
+  },
+  "SwingArcher_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:79fda8b2-25dc-4340-8731-52237d294335",
+   "sha256_24": "5aa275a794c1a6d9cc64c93f"
+  },
+  "SwingArcher_3-1.wav": {
+   "assetId": "urn:aaid:sc:AP:af3b1b44-d460-455b-a566-308105f76c2d",
+   "sha256_24": "28927349e9149e3b22c63b9d"
+  },
+  "SwingArcher_3-2.wav": {
+   "assetId": "urn:aaid:sc:AP:e9965d05-7833-469d-aa5c-13521164c3c1",
+   "sha256_24": "7cfd2cf568c78f13551b19f5"
+  },
+  "SwingArcher_3-3.wav": {
+   "assetId": "urn:aaid:sc:AP:bf196184-9069-4725-9e98-99d95137449f",
+   "sha256_24": "b9302afbb46eca4174b30581"
+  },
+  "SwingArcher_3-4.wav": {
+   "assetId": "urn:aaid:sc:AP:e3f6bfb7-7131-441e-8057-7f6486b66616",
+   "sha256_24": "2e5f984f176cd06ace06a4b7"
+  },
+  "SwingArcher_4-1.wav": {
+   "assetId": "urn:aaid:sc:AP:1178d697-9a21-48e9-8696-784133f103b4",
+   "sha256_24": "23d88c76937f09c996565be3"
+  },
+  "SwingArcher_4-2.wav": {
+   "assetId": "urn:aaid:sc:AP:84e4310d-5d69-4d1c-964d-2cb02615445f",
+   "sha256_24": "4b98ab856e9d0d5b66aaf4dc"
+  },
+  "SwingArcher_4-3.wav": {
+   "assetId": "urn:aaid:sc:AP:71a519d6-360f-45c6-a76f-4322ae82751c",
+   "sha256_24": "f8456183cb44f8765c55f51e"
+  },
+  "SwingArcher_4-4.wav": {
+   "assetId": "urn:aaid:sc:AP:a06c5ac9-4d3f-46b0-be25-13f6bee0c82a",
+   "sha256_24": "abfadf791b40319892e8f561"
+  },
+  "SwingMageHalo_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:3cbaafc5-35e3-4ab2-9f5f-4b162f0948a3",
+   "sha256_24": "011f6c9ae386f70f68178256"
+  },
+  "SwingMageHalo_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:dfd17263-ed37-4751-b1f6-d38bc4668258",
+   "sha256_24": "e7bcfa89312b011b7e61ccec"
+  },
+  "SwingMageHalo_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:24aecada-3867-4eb7-95df-21f1dc732d40",
+   "sha256_24": "6bb7a1f97827401a06c1f162"
+  },
+  "SwingMageHalo_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:be30f4f7-e28b-48b4-935f-61286ba8ee6c",
+   "sha256_24": "bbc6b0ab666961606f3a85b8"
+  },
+  "SwingMageHalo_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:b35ef296-54e9-4356-a96c-5fb0bb5261fb",
+   "sha256_24": "bd9a70875417554983d5d393"
+  },
+  "SwingMageHalo_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:fe5095b3-1b61-4ea4-bb41-58042c29569f",
+   "sha256_24": "14ad16186eb51c586b369791"
+  },
+  "SwingMageHalo_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:d7df6e70-eca3-40fb-b725-c189af39bed3",
+   "sha256_24": "4562180b94e01c265a886042"
+  },
+  "SwingMageHalo_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:4ee0010a-9f60-4070-a7c7-22781601b5e5",
+   "sha256_24": "5a345336af911403881977be"
+  },
+  "SwingMageHorns_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:3e655bd9-c5d2-43d4-9f72-5a3df6be50c8",
+   "sha256_24": "385dfa67ea3594c2042c5de2"
+  },
+  "SwingMageHorns_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:cc62f183-c38f-4634-9f65-b0312d917553",
+   "sha256_24": "9be78fd6e833622ac9882278"
+  },
+  "SwingMageHorns_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:c4ae7897-54eb-4b2a-8c95-f403ac6a7727",
+   "sha256_24": "42c70eeefeb171d9a65581b4"
+  },
+  "SwingMageHorns_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:04fb5a8c-de1b-46e2-a5b9-925bdbd17874",
+   "sha256_24": "574485cf6547132a5d50c4a9"
+  },
+  "SwingMageHorns_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:ae34d26e-707b-49e8-8e38-2fb294c9b2cf",
+   "sha256_24": "ab2dd695351aa4a2ed5946f9"
+  },
+  "SwingMageHorns_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:b707c94a-d48c-411f-88a7-0be12f5b186d",
+   "sha256_24": "c6c2f1ba1b5711b75089115b"
+  },
+  "SwingMageHorns_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:bb4b3195-01be-42b9-bdab-8b3625141edd",
+   "sha256_24": "c059a5fcce21ec17563119de"
+  },
+  "SwingMageHorns_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:7c9d5ac1-c4bb-497b-ab3d-ed66c1c524ec",
+   "sha256_24": "cb28894d29a45adea2f070db"
+  },
+  "SwingMageHorns_3-1.wav": {
+   "assetId": "urn:aaid:sc:AP:91e94697-1375-4948-80fb-6aba6c876cc6",
+   "sha256_24": "6d3c51b28f6dcfe224ab64fa"
+  },
+  "SwingMageHorns_3-2.wav": {
+   "assetId": "urn:aaid:sc:AP:349278e8-cb2d-4347-98cf-9ee36950788f",
+   "sha256_24": "492b2c18a5dc6f696865b8e5"
+  },
+  "SwingMageHorns_3-3.wav": {
+   "assetId": "urn:aaid:sc:AP:ab0a6db4-a76b-4d60-8901-8ac370f24056",
+   "sha256_24": "222badd12bbdfcf9f6a2fd5d"
+  },
+  "SwingMageHorns_3-4.wav": {
+   "assetId": "urn:aaid:sc:AP:46d0c460-f069-4485-b4d5-334bd90fe696",
+   "sha256_24": "b6ce870e22b73ea0dad48585"
+  },
+  "SwingMageHorns_4-1.wav": {
+   "assetId": "urn:aaid:sc:AP:8a866549-9cf8-41ac-ac22-4d2155ae6e10",
+   "sha256_24": "c44ecee627fa4dbeef05ee85"
+  },
+  "SwingMageHorns_4-2.wav": {
+   "assetId": "urn:aaid:sc:AP:0f683eb4-29c5-4ab6-85d3-c391840e6404",
+   "sha256_24": "7c92d74ddb9879649b8bad31"
+  },
+  "SwingMageHorns_4-3.wav": {
+   "assetId": "urn:aaid:sc:AP:7b4dc024-428f-4b53-93ee-e2d99fa3bdef",
+   "sha256_24": "1f5c0d3583dd67f88887ef9d"
+  },
+  "SwingMageHorns_4-4.wav": {
+   "assetId": "urn:aaid:sc:AP:9af93f8f-21ef-40e2-b664-2980443946fd",
+   "sha256_24": "16734e2fa17e41570b56120b"
+  },
+  "SwingMage_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:1e6ed174-ae0f-4f02-9da6-5a9e10eb2003",
+   "sha256_24": "2c99772a474283958d3719dc"
+  },
+  "SwingMage_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:9b4be7e9-be20-4bd5-96db-d94510335329",
+   "sha256_24": "8222e44ec8460a1ef6adfcbb"
+  },
+  "SwingMage_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:661ec047-ba13-4149-8249-bcc71579775d",
+   "sha256_24": "f60f80a69d082107cdc32ab9"
+  },
+  "SwingMage_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:7194b8d1-38f5-4e52-a099-1a080736b321",
+   "sha256_24": "b14f93c9e07a807f78f8395d"
+  },
+  "SwingMage_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:7ce09f2e-933b-439e-96b8-06b4468ed210",
+   "sha256_24": "538ddf845ecd039a000dc3d5"
+  },
+  "SwingMage_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:8df15249-a720-4af6-8a99-a9eb8f193485",
+   "sha256_24": "099ebc31a139d2ba37e6e097"
+  },
+  "SwingMage_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:854f1285-aa21-4fd4-8f11-f81a738f2809",
+   "sha256_24": "c2ec2d6be223b60f99bc1be5"
+  },
+  "SwingMage_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:18e1c0fe-3797-49a9-8a17-8f01b9392c1f",
+   "sha256_24": "e98c70432c1a827b6cf8ab2b"
+  },
+  "SwingMage_3-1.wav": {
+   "assetId": "urn:aaid:sc:AP:843c7f16-ee54-49d1-b3cf-2b720e705a4b",
+   "sha256_24": "38a21e609a597d8966162b09"
+  },
+  "SwingMage_3-2.wav": {
+   "assetId": "urn:aaid:sc:AP:31012279-b6c2-4ea3-8905-13c88ac3df1b",
+   "sha256_24": "54ea90c93d27be7e4dc2bc58"
+  },
+  "SwingMage_3-3.wav": {
+   "assetId": "urn:aaid:sc:AP:34da6d11-a2dc-4f95-a69f-edc6c4605e92",
+   "sha256_24": "f531a1107221d4121c4a4db0"
+  },
+  "SwingMage_3-4.wav": {
+   "assetId": "urn:aaid:sc:AP:77b358f3-104d-44ce-98ae-cceac5365776",
+   "sha256_24": "977a4f7dcf10a452677dbb93"
+  },
+  "SwingMage_4-1.wav": {
+   "assetId": "urn:aaid:sc:AP:9359d7ff-2552-4e95-b5c7-789b558505af",
+   "sha256_24": "875ec67c894584e5311f4b0f"
+  },
+  "SwingMage_4-2.wav": {
+   "assetId": "urn:aaid:sc:AP:34d6f786-486b-49c4-82cb-a05eca650a57",
+   "sha256_24": "6ecd349ca82a4b3d679ba642"
+  },
+  "SwingMage_4-3.wav": {
+   "assetId": "urn:aaid:sc:AP:040b3e1e-00ad-4cab-a217-f6953fadb64c",
+   "sha256_24": "39725239d2c8084f4cabe4aa"
+  },
+  "SwingMage_4-4.wav": {
+   "assetId": "urn:aaid:sc:AP:91cbed68-cab3-4745-89e8-6c1c6430dba8",
+   "sha256_24": "61059090d698147a36af842d"
+  },
+  "SwingTamer_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:78796ead-62de-40e9-b52a-0e5244c45f2e",
+   "sha256_24": "e01998019ce14dc811a7d067"
+  },
+  "SwingTamer_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:e33e79f4-2158-4060-88c2-b2937b64a539",
+   "sha256_24": "56a9a9440a6b03bc653a3040"
+  },
+  "SwingTamer_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:f9354e42-6977-45ba-9a8c-ccee21f9df8c",
+   "sha256_24": "4b583255b830a0743eab7a45"
+  },
+  "SwingTamer_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:6a92fa8a-35ca-47a5-a215-8b4aa1733f1d",
+   "sha256_24": "1460d852537f31a62eeba993"
+  },
+  "SwingTamer_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:cf07e370-9afc-45b6-b9c5-aa94948473ee",
+   "sha256_24": "caa93194e9f9e2c03ee10d30"
+  },
+  "SwingTamer_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:99f816b4-b4e7-4ea4-8efb-397e1f303659",
+   "sha256_24": "dcf5696812832e855b4b4ddf"
+  },
+  "SwingTamer_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:64b44622-5b5e-41ad-8e44-4af819130f2c",
+   "sha256_24": "bacd8fef6166261cecc250d7"
+  },
+  "SwingTamer_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:0cc5075f-ce44-452a-84fa-1da40fa118e8",
+   "sha256_24": "36aa6bfbd046689910a6ab40"
+  }
+ },
+ "superseded": "round 4 first cut (dev2 shape targets): art/review/sfx_firefly_2026-10-07*.png, commit 58b7026"
+}

@@ -3722,6 +3722,9 @@ Config.Audio = {
 		ComboCoin = { File = "ComboCoin", Volume = 0.30, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
+		-- A23-68 #3 the first weapon's big moment (HUD L.FirstWeapon). Until 소리 만들기 sends its own PowerUp file this
+		-- plays the level-up file a little higher
+		PowerUp = { File = "LevelUp", Volume = 0.8, Speed = { 1.12, 1.12 }, Max = 1, Gap = 2.0 },
 		WindowOpen = { File = "WindowOpen", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.15 },
 		WindowClose = { File = "WindowClose", Volume = 0.42, Speed = { 1, 1 }, Max = 1, Gap = 0.15 },
 		Deny = { File = "Deny", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.5 },

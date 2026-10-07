@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 166,
+  "checks": 169,
   "namedChecks": 45,
   "failing": [],
   "static": [
@@ -349,14 +349,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "16b046f0358a1e9e54b93d03f5da7d24f9f54f10a54292c542446309521cb1e1",
-    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "74a2fb80d6414c355b485a60e7e01185266c2b69063615c16b6d8ae5016d4137",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "2ce81432edc33d2e824d315149fc4ca5e5e4fc1468f3747826f860e22f040f7d",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "acfed529a7be7f8bdf96fe0988d61d33d6f135b02e146c623d72bdc41686c57c",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "ad48f7196a3344dd42c10708d6c35e7ca7329fffdbc81582218edf52e9bc0897",
-    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "f8ff1dcd1a43a1418e0e7a44067ed56e063f082da2b7c92df5d5a1a582b69c1c",
+    "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "f54d397395dbf7e6ae1d26dcb4fb6cca5da7d8c747075b785877323af7ac311a",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "5064aeeb2ff8afe04ed6fb1d5d1660e52dbd5fe17f1b218021c08e3694102e65",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "2513851ad2c826356eb7bb9e6b76e6c80aba0682f915f9d8e752ced68257d2b8",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "e599949c306b7b1fac5b94ea1fae443b5196b08eeaf1ccf6ed0e6865c37b6085",
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
     "src/StarterPlayer/StarterPlayerScripts/PlayerListUI.luau": "bf6757b177aa451ee934c3fdb527c9960204de753b0e4ce43c27d44bcdee9f41",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "2cf902976f0012fe5dd0b9249ba54eac409cbbebeb6886c7c5a8c7ea1f863dab",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "420e3ecd248423816c5430aac41bb975cfd0f170ec59f3f0bc505e17d181faa6",
     "tools/fixtures/story_client_offline.luau": "2d090e373345f392adbd281ea0a69c90dba18d9d2d49c748052b6daecc3cb8bd"
   },
   "sourcesChangedDuringRun": [],

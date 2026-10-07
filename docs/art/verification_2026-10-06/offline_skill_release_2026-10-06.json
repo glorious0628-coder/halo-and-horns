@@ -4,8 +4,8 @@
   "keyStaticChecks": 4,
   "keyStaticFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
-    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ReplicatedStorage/Shared/Config.luau": "6a656ae69b0eeb321a80c571dd8387b90a7fe1e7a9f2c5332870a31790cfa6b6",
+    "src/ServerScriptService/CombatService.luau": "62fcbb61aacb2068d5adec21bc414338a91e341538c6e6f1db2d670b649334a8",
     "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c"
   },

@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 147,
-  "namedChecks": 109,
+  "checks": 152,
+  "namedChecks": 114,
   "failing": [],
   "mutations": {
-    "total": 29,
-    "caught": 29,
+    "total": 33,
+    "caught": 33,
     "results": [
       {
         "mutation": "auto sounds at full volume",
@@ -289,6 +289,44 @@
         "newFailingChecks": [
           "runtime :: 'No' (SkillBar) plays Deny"
         ]
+      },
+      {
+        "mutation": "the Choice Fx is silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a good story choice -> Purify"
+        ]
+      },
+      {
+        "mutation": "points going up still purify",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: points going up are quiet (Purify / Devour come with the Choice Fx)"
+        ]
+      },
+      {
+        "mutation": "Sound None still plays",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: Sound = 'None' keeps even a 'bad' notice quiet",
+          "runtime :: the line after a completion stays quiet (Sound None)"
+        ]
+      },
+      {
+        "mutation": "the payload's Sound is ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: the line after a completion stays quiet (Sound None)",
+          "runtime :: the payload's Sound key plays"
+        ]
       }
     ]
   },
@@ -296,9 +334,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "2cf902976f0012fe5dd0b9249ba54eac409cbbebeb6886c7c5a8c7ea1f863dab",
-    "tools/fixtures/audio_offline.luau": "e7b5d44a77cc016bdce63c1f799bc87050719fb3f9e391be4d4d4635fa9230f1"
+    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "420e3ecd248423816c5430aac41bb975cfd0f170ec59f3f0bc505e17d181faa6",
+    "tools/fixtures/audio_offline.luau": "fd78ff2cac50b79261fef4ff2543abf770a05680af1fc9ad3b599766ae30e85e"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

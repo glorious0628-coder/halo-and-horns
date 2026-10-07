@@ -438,6 +438,8 @@ def make_harness(sources: dict[str, str]) -> str:
     bindings["KING_HUD_SOURCE"] = (
         "local Config, Util, H = ...\nlocal C = H.C\nlocal ui = H.ui\nlocal IS_TOUCH = H.IsTouch == true\nlocal guiScale = H.guiScale\n"
         "local gameState = nil\nlocal ReplicatedStorage = H.RS\nlocal hudBottom, relayout = H.hudBottom, H.relayout\n"
+        # KING.fit (A23-63, 53db902) reads the layout rects; without them it keeps the full line
+        "local V2 = H.V2 or { rects = function() return nil end }\n"
         + "\n".join(hud_lines) + "\n"
         + between(hud, "local L = {", "\n}\n") + "\n}\n"
         + function_block(hud, "local function num(v)") + "\n"
