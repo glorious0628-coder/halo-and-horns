@@ -307,10 +307,20 @@ def cand_name(out):
     return f"{key}_{pv}" if group == key else f"{key}_{group}-{pv}"
 
 
-def pick(n=3):
+def review_dir(batch):
+    """the sheets of one batch picked on its own (pick n Key ...)"""
+    return os.path.join(ROOT, "art", "review", f"sfx_check_b{batch}_2026-10-07")
+
+
+def pick(n=3, keys=None):
+    """keys = only these keys: their old candidates are replaced, every other key keeps its files; the official
+    sheets go to review_dir(<batch>) and the pair checks run against the game files art/sfx/<key>.wav of the other keys"""
     results = json.load(open(REPORT, encoding="utf-8"))
     chosen = {}
+    only = set(keys or [])
     for key in sorted({v["key"] for v in results.values()}):
+        if only and key not in only:
+            continue
         rows = sorted(((k, v) for k, v in results.items() if v["key"] == key), key=lambda kv: sort_key(kv[1]), reverse=True)
         per, out = {}, []
         for k, v in rows:
@@ -325,11 +335,18 @@ def pick(n=3):
                 break
         chosen[key] = out
     os.makedirs(FF.CAND, exist_ok=True)
-    for f in os.listdir(FF.CAND):
-        if f.endswith(".wav"):
-            os.remove(os.path.join(FF.CAND, f))
-    for v in results.values():
-        v.pop("cand", None)
+    if only:
+        for v in results.values():
+            if v["key"] in only and v.get("cand"):
+                old = os.path.join(ROOT, v.pop("cand"))
+                if os.path.exists(old):
+                    os.remove(old)
+    else:
+        for f in os.listdir(FF.CAND):
+            if f.endswith(".wav"):
+                os.remove(os.path.join(FF.CAND, f))
+        for v in results.values():
+            v.pop("cand", None)
     files = []
     for key, outs in chosen.items():
         for k in outs:
@@ -344,12 +361,22 @@ def pick(n=3):
     with open(tmp_spec, "w", encoding="utf-8") as fh:
         json.dump(SPEC, fh, ensure_ascii=False)
     maps = ",".join(f"{os.path.basename(f)[:-4]}={os.path.basename(f).split('_', 1)[0]}" for f in files)
-    subprocess.run([sys.executable, "-W", "ignore", os.path.join(ROOT, "tools", "sfx_check.py"), *files, "--spec", tmp_spec,
-                    "--out", CHECK_OUT, "--map", maps], check=True)
-    os.makedirs(REVIEW, exist_ok=True)
-    for f in os.listdir(CHECK_OUT):
-        if f.endswith(".png") or f in ("summary.json", "summary.txt"):
-            shutil.copyfile(os.path.join(CHECK_OUT, f), os.path.join(REVIEW, f))
+    check_out, review, context = CHECK_OUT, REVIEW, []
+    if only:
+        batch = BATCH.get(sorted(only)[0], 0)
+        check_out, review = CHECK_OUT + f"_b{batch}", review_dir(batch)
+        picks = json.load(open(os.path.join(ROOT, "art", "sfx", "picks_r4.json"), encoding="utf-8"))["picks"]
+        for k, v in sorted(picks.items()):  # the chosen game file of every other key, so the pair rules see the real neighbours
+            if k.split("_")[0] not in only and os.path.exists(os.path.join(ROOT, v["file"])):
+                context.append(os.path.join(ROOT, v["file"]))
+        maps = ",".join([maps] + [f"{os.path.basename(f)[:-4]}={os.path.basename(f)[:-4].split('_')[0]}" for f in context])
+    shutil.rmtree(check_out, ignore_errors=True)
+    subprocess.run([sys.executable, "-W", "ignore", os.path.join(ROOT, "tools", "sfx_check.py"), *files, *context, "--spec", tmp_spec,
+                    "--out", check_out, "--map", maps], check=True)
+    os.makedirs(review, exist_ok=True)
+    for f in os.listdir(check_out):
+        if (f.endswith(".png") and (not only or f[:-4] in only or f == "pairs.png")) or f in ("summary.json", "summary.txt"):
+            shutil.copyfile(os.path.join(check_out, f), os.path.join(review, f))
     for key, outs in chosen.items():
         print(key, [f"{cand_name(k)} {results[k]['verdict']} {results[k]['score']}" for k in outs])
     return chosen
@@ -373,7 +400,9 @@ KO = {"SwingArcher": "활 두 발 파일(선택) · '슉슉'", "SwingArrow": "�
       "RankUp": "등급 올라감 '또로롱↑'", "KO": "내가 쓰러짐 '콩! 삐요삐요'", "Respawn": "다시 나타남 '뿅!'",
       "Plunder": "주머니 뺏김 '짤그랑 또르르'", "JackpotOther": "남의 대박 '오오 반짝'",
       "SkillLearn": "새 스킬 배움 '뽁! 샤라락 티잉~' (Lv5·15·25)",
-      "Loot": "내 드롭 · 주문서·무기 '톡-톡-톡 티링~'"}
+      "Loot": "내 드롭 · 주문서·무기 '톡-톡-톡 티링~'",
+      "SwingWarrior": "전사 휘두름 '휙!'", "KillPop": "처치 '뽕!'", "ComboMilestone": "콤보 x10·25·50·100 '띠리링!'",
+      "LevelUp": "레벨업 '빠-바-밤~ 반짝!'", "Tap": "모든 버튼 '톡'", "WindowOpen": "창 열기 '뾰롱↑'"}
 ORDER = ["SwingArrow", "SwingMageHalo", "SwingMageHorns", "HitHeavy", "HitCrit", "ComboCoin", "HitSoft", "SwingArcher",
          "GoldPickup", "QuestNew", "QuestDone", "WindowClose", "Deny", "RankDown", "ScrollFail", "SkillHalo", "SkillHorns", "Purify", "Devour",
          "Potion", "AutoOn", "AutoOff", "TalkBlip", "Equip", "SkillReady", "HurtBig", "PowerUp", "Jump",
@@ -391,13 +420,19 @@ ORDER += ORDER5
 ORDER6 = ["Loot"]
 BATCH.update({k: 6 for k in ORDER6})
 ORDER += ORDER6
+ORDER7 = ["SwingWarrior", "KillPop", "ComboMilestone", "LevelUp", "Tap", "WindowOpen"]
+BATCH.update({k: 7 for k in ORDER7})
+ORDER += ORDER7
 BATCH_TITLE = {1: "1번 묶음 · 전투 (지난번과 같은 후보)", 2: "2번 묶음 · UI·스킬·선택·새 소리", 3: "3번 묶음 · 할로윈 P0",
                4: "4번 묶음 · 왕관·왕·전쟁 → 거위·괴수·PvP·황금 → 강화·돈·등급·KO",
                5: "5번 묶음 · 새 스킬 배움 (A23-71)",
-               6: "6번 묶음 · 내 드롭 (설계서 §5 P0 Loot)"}
+               6: "6번 묶음 · 내 드롭 (설계서 §5 P0 Loot)",
+               7: "7번 묶음 · 아직 옛 파일이던 6개 새로 (사용자 '그대로 두는 것도 다시 다')"}
 SCENE_OF = {"SwingArrow": "archer", "SwingMageHalo": "mage_halo", "SwingMageHorns": "mage_horns", "HitHeavy": "warrior_goblin",
-            "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime", "SkillLearn": "lv5", "Loot": "killloot"}
-SCENE_LABEL = {"lv5": "Lv5 장면: LevelUp → 1.1 s 뒤 SkillLearn", "killloot": "처치 장면: KillPop + 동전 → 0.15 s 뒤 Loot"}  # build/sfx_scene/lv5_*.mp3 (mixed by hand, game volumes)
+            "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime", "SkillLearn": "lv5", "Loot": "killloot",
+            "SwingWarrior": "warrior7", "KillPop": "warrior7"}
+SCENE_LABEL = {"lv5": "Lv5 장면: LevelUp → 1.1 s 뒤 SkillLearn", "killloot": "처치 장면: KillPop + 동전 → 0.15 s 뒤 Loot",
+               "warrior7": "전사 vs 슬라임 셋 20초"}  # build/sfx_scene/lv5_*.mp3 (mixed by hand, game volumes)
 PICK = {  # 소리 만들기 추천 (검수가 고른다)
     "SwingArrow": ("SwingArrow_SwingArcher-2-4", "화살 한 발 73 ms, 중심 3.9 kHz(설계서 시제품 3.83), 줄 소리 없음. 궁수 장면에서 두 발이 '슉-슉'으로 떨어져 들려요."),
     "SwingMageHalo": ("SwingMageHalo_SwingMage-3-4", "'슝' 위로 휘는 반짝 0.17 s + 아주 얇은 합성 '샤랑'. 남은 경고는 잡음 정도(flat 0.05)뿐."),
@@ -455,6 +490,14 @@ PICK = {  # 소리 만들기 추천 (검수가 고른다)
     # batch 6
     "Loot": ("Loot_sA", "주문서가 '톡-톡-톡' 세 번 튀고(첫 번째가 제일 커서 또렷) '티링~' 반짝 0.55 s. 동전 1.7 · 새 퀘스트 1.8 · "
                         "강화 성공 1.5 · 황금 발견 2.0(모두 1.0 이상). sB는 네 번 튐, sC는 조금 느리고 반짝이 낮음."),
+    # batch 7
+    "SwingWarrior": ("SwingWarrior_sA", "공기만 있는 '휙' 한 번 0.16 s(550 → 3200 → 950 Hz), 금속·음정 없음, 중심 3.5 kHz. 한 번만 쉭(두 번 쉭은 궁수 몫)."),
+    "KillPop": ("KillPop_sA", "비눗방울 '뽕' 800 → 940 Hz 0.1 s + 아주 작은 '푸'. 타격 몸통(0.15~0.5 kHz)과 동전(2.3~2.7 kHz) 사이 자기 자리."),
+    "ComboMilestone": ("ComboMilestone_kA", "설계서 레시피 그대로: confirmation_003 네 음 오름을 0.87배로(끝음 5.9 → 5.1 kHz). 우리 유리 '띠리링' sA·sB도 통과."),
+    "LevelUp": ("LevelUp_sA", "도-미-솔-도 80 ms 간격 + 마지막 음 떨림 + 반짝 1.09 s, 폰 몸통 523 + 785 Hz(-10 dB)로 폰 손실 0.2 dB."),
+    "Tap": ("Tap_kA", "설계서 레시피: select_002 몸통 + click_003 -10 dB, 33 ms. 경고는 짧아서 크기가 작게 재지는 것뿐(설계서: 귀로 맞춤). "
+                    "TalkBlip보다 +3 LU 커야 해서 게임 볼륨은 0.46 정도(설계서 범위 0.42~0.50)."),
+    "WindowOpen": ("WindowOpen_sA", "둥근 음 1080 → 1730 Hz 0.21 s, 새 창 닫기(1550 → 1000 Hz)의 거울이라 둘이 짝이 맞아요."),
 }
 
 
@@ -478,7 +521,8 @@ def board(only=None):
     """build/sfx_firefly/board/index.html + a/*.wav, i/*.jpg, s/*.mp3 (published as files beside the page);
     only = one batch number (the batches already picked stay out of the page)"""
     import html as H
-    summ = json.load(open(os.path.join(REVIEW, "summary.json"), encoding="utf-8"))
+    own = os.path.join(review_dir(only), "summary.json") if only else ""
+    summ = json.load(open(own if own and os.path.exists(own) else os.path.join(REVIEW, "summary.json"), encoding="utf-8"))
     results = json.load(open(REPORT, encoding="utf-8"))
     by_cand = {cand_name(k): v for k, v in results.items() if v.get("cand")}
     root = os.path.join(FF.WORK, "board")
@@ -630,6 +674,10 @@ PowerUp(첫 무기)·LevelUp·QuestDone과 다르게 들리도록 설계표 짝 
 주문서(강화·이동)나 무기가 떨어질 때만 나요. 재료·물약은 자주 떨어져서 소리 없이 글자만 떠요(처치 '뽕'·동전과 겹치지 않게).
 주문서가 땅에 '톡-톡-톡' 튀고 '티링~' 빛나는 소리예요. 무기는 같은 파일을 0.92배로 낮게 써도 돼요.
 판정은 설계서 검사기. 짝 규칙 4개를 새로 넣었어요(골드 받기·새 퀘스트·강화 성공·황금 발견과 구별 1.0 이상). sA·sB·sC = 우리 합성, 크레딧 0.</p>""", ""),
+    7: ("""<p class="lead">검수용 7번 묶음: 아직 옛 파일이던 6개(전사 휘두름·처치 '뽕'·콤보 띠리링·레벨업·버튼 '톡'·창 열기)를 새로 만들었어요. 키마다 하나를 골라 주세요.
+사용자 규칙 "그대로 두는 것도 다시 다"에 따라, 설계서가 '유지'로 둔 소리도 설계서의 고칠 점(레벨업 폰 몸통, 콤보 끝음 5 kHz 아래, 버튼 클릭층)대로 다시 만들었어요.
+짝 검사는 이미 고른 게임 파일 51개와 함께 돌렸어요(85/87 통과). 남은 2개는 버튼 '톡'이 TalkBlip보다 +3 LU 커야 하는 규칙인데, 게임 볼륨을 0.46으로 올리면 맞아요.
+'장면 20초'는 전사가 슬라임 셋을 치는 실제 타이밍에 새 '휙'·'뽕'과 이미 고른 게임 파일을 겹친 소리예요. 판정은 설계서 검사기. sA·sB = 우리 합성, kA·kB = Kenney CC0 + 우리 손질. Firefly 0크레딧.</p>""", ""),
 }
 
 
@@ -671,7 +719,7 @@ def main():
     if cmd == "search":
         search(sys.argv[2:])
     elif cmd == "pick":
-        pick(int(sys.argv[2]) if len(sys.argv) > 2 else 3)
+        pick(int(sys.argv[2]) if len(sys.argv) > 2 else 3, sys.argv[3:] or None)
     elif cmd == "board":
         board(int(sys.argv[2]) if len(sys.argv) > 2 else None)
     elif cmd == "ledger":

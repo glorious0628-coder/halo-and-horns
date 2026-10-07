@@ -1,0 +1,11 @@
+- Current Studio Mode: Edit
+WoodsKit 202 pieces, trees 102, posts 102, old primitives left 0, map parts 1246
+issues: BossBanner floats 2.5 at (1118,144); BossBanner floats 2.5 at (1102,144)
+blocked open ground: trail 9
+ROWS (positions: placed_topdown.png)
+notes (2026-10-08, 게임성 개발 1):
+- BossBanner "floats": false positive of the check (the banner pivot is the rotated pole cylinder, so GetBoundingBox Y is
+  horizontal). Measured directly: pole bottom 0.20 / ground 0.20 and -0.02 / -0.02 = on the ground.
+- trail 9: all nine samples are the camp-3 tent W_Tent_A at x 1096-1104, the trail end (camp 3 sits at the trail end by
+  design, kit_woods.md); no trunk or other piece on the trail, the crown road, the camp middles, the boss middle or the
+  arrival.

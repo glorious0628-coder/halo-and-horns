@@ -124,5 +124,12 @@
   PowerUp 1-2, Jump 2-2), 2·3번 묶음은 추천 그대로 확정. 게임용 파일 32개 = `art/sfx/<키>.wav`(후보를 바이트 그대로 복사,
   `tools/sfx_final.py`). 키마다 sha256·출처·라이선스(Firefly / 우리 합성 / Kenney CC0 파일 이름)·볼륨·바꾸는 옛 파일은
   `art/sfx/picks_r4.json`. Purify는 설계서대로 두 버전(Purify, Purify_b)을 번갈아 쓴다.
-- **업로드: 아직(다음 계정 1순위).** 올리면 id를 `art/sfx/asset_ids.json` "ids"와 이 절에 적고, 개발 1이 연결한 뒤 옛
-  `art/sfx/*.ogg`를 지운다.
+- **4번 묶음·SkillLearn·Loot(새 계정 세션):** 고름은 `art/sfx/picks_r4.json`(키마다 라이선스 칸). 4번 묶음 레시피에 쓴 Kenney CC0:
+  Impact `impactGlass_medium_000`(CrownHalo), `impactWood_medium_002`·`impactWood_light_000`·`footstep_snow_000`(CrownHorns, 괴수 발),
+  `impactGlass_light_003`(KingDefeat 사탕), `footstep_grass_001`(GooseEnd), Interface `confirmation_002`(KingDefeat), `glass_002`(GoldenSpot).
+  ScrollSuccess는 Firefly 1-4. 나머지는 우리 합성.
+- **7번 묶음(2026-10-07 밤):** 옛 파일이던 6개를 새로(사용자 "그대로 두는 것도 다시 다"): SwingWarrior·KillPop·ComboMilestone·
+  LevelUp·WindowOpen = 우리 합성, Tap = Kenney Interface `select_002` + `click_003`(CC0, 설계서 레시피). Firefly 0크레딧.
+- **업로드:** 4차 51개 끝(Creator Hub Darugi_S2, 비공개, 'HH SFX <키>', 상점 배포 안 함; id = `art/sfx/asset_ids.json` "ids").
+  7번 묶음 6개도 올림(id = asset_ids.json "ids", 연결표 `docs/design/sound_wiring_r4_2026-10-07.md` 7번 절). 개발 1이 연결하고
+  Play로 확인하면 옛 id("old")와 옛 `art/sfx/*.ogg`를 지운다.

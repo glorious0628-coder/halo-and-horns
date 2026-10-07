@@ -672,6 +672,79 @@ def loot_drop(f0=1000.0, gaps=(0.11, 0.07), g_f=2900.0, g_at=0.17, grain=True, s
     return finish(FF.lowpass(at(parts), 7500, 2), 500)
 
 
+# ---------------------------------------------------------------- batch 7 (the six sounds still on the old files)
+def whoosh(dur=0.18, f0=550.0, f1=3200.0, f2=950.0, q=1.2, peak=0.45, seed=43, a_up=1.8, a_dn=2.2):
+    """one airy band of noise sweeping f0 -> f1 (at peak) -> f2: no metal, no pitch (sound_spec SwingWarrior)"""
+    n = N(dur)
+    u = np.linspace(0, 1, n)
+    fc = np.where(u < peak, f0 * (f1 / f0) ** (u / peak), f1 * (f2 / f1) ** ((u - peak) / (1 - peak)))
+    a = np.where(u < peak, (u / peak) ** a_up, ((1 - u) / (1 - peak)) ** a_dn)
+    return norm(svf_bp(noise(n, seed), fc, q)) * a
+
+
+def swing_warrior(seed=43):
+    return finish(FF.lowpass(whoosh(seed=seed), 7500, 2), 150)
+
+
+def kill_pop(f0=800.0, f1=940.0, dur=0.1, dec=38.0, h2=0.0, seed=51):
+    """a soap-bubble 'pop': a sine rising f0 -> f1 + a 18 ms 'pu' of 2.5 kHz noise at -12 dB"""
+    n = N(dur)
+    fr = glide(n, f0, f1, 0.6)
+    x = (osc(fr) + h2 * osc(2 * fr)) * env(n, 0.0012, dec)
+    m = N(0.018)
+    return finish(at([(x, 0, 1.0), (band(m, 2500, 0.9, seed) * env(m, 0.0008, 160), 0.0, 10 ** (-12 / 20))]), 300)
+
+
+def combo_kenney(speed=0.87):
+    """sound_spec recipe: Kenney confirmation_003's four rising notes lowered to 0.87x (last note ~5 kHz, not 5.9)"""
+    return finish(FF.lowpass(kenney("interface/confirmation_003", speed), 7000, 2), 300)
+
+
+def combo_glass(notes=(2093.0, 2637.0, 3136.0, 4186.0), gap=0.055, seed=61, gains=(1.0, 0.9, 0.85, 0.8)):
+    """our 'tti-ri-ring': four quick glass notes going up (the first the loudest) + a few sparkles"""
+    parts = []
+    for i, f in enumerate(notes):
+        last = i == len(notes) - 1
+        b = bell(f, 0.3 if last else 0.12, 9.0 if last else 26.0, ((1.0, 1.0, 1.0), (2.0, 0.15, 1.6), (2.76, 0.08, 2.0)))
+        parts.append((b, i * gap, gains[i]))
+    parts.append((sparkle(0.18, 5, 3000, 5000, 0.15, seed), 3 * gap + 0.02, 1.0))
+    return finish(FF.lowpass(at(parts), 6000, 2), 400)
+
+
+def level_up(gap=0.08, last=0.85, seed=71, vib=5.5):
+    """C5-E5-G5-C6, the last note rings with a little vibrato, a soft air rise, sparkles, and the phone body
+    (sound_spec: 523 + 785 Hz at -10 dB for 1.0 s so phones keep the fanfare)"""
+    notes = [523.25, 659.25, 783.99, 1046.5]
+    parts = []
+    for i, f in enumerate(notes):
+        is_last = i == len(notes) - 1
+        n = N(last if is_last else 0.22)
+        t = secs(n)
+        ff = f * (1 + (0.011 * np.sin(2 * np.pi * vib * t) * np.clip((t - 0.25) / 0.2, 0, 1) if is_last else np.zeros(n)))
+        tone = (osc(ff) + 0.32 * osc(ff * 2) + 0.1 * osc(ff * 3) + 0.25 * tri(ff)) * env(n, 0.004, 3.0 if is_last else 9.0)
+        parts.append((tone, i * gap, 1.0 if is_last else 0.85))
+    r = N(0.3)
+    parts.append((norm(svf_bp(noise(r, seed), glide(r, 1000, 4500), 1.2)) * np.sin(np.pi * np.linspace(0, 1, r)), 0.0, 0.12))
+    parts.append((sparkle(0.45, 12, 3000, 6500, 0.2, seed + 1), 0.28, 1.0))
+    m = N(1.0)
+    body = (osc(np.full(m, 523.25)) * 0.25 + osc(np.full(m, 785.0)) * 0.15) * env(m, 0.01, 2.6)
+    parts.append((body, 0.0, 10 ** (-10 / 20) * 2.5))
+    return finish(FF.lowpass(at(parts), 7000, 2), 300)
+
+
+def tap(speed=1.0, click_db=-10.0, cut=0.045):
+    """sound_spec recipe: Kenney select_002 body + click_003 at -10 dB, cut to 45 ms (a synthesized tap sat too close to TalkBlip)"""
+    y = at([(norm(kenney("interface/select_002", speed)), 0, 1.0), (norm(kenney("interface/click_003")), 0, 10 ** (click_db / 20))])
+    return finish(fade_out(y[:N(cut)], 0.012), 300)
+
+
+def window_open(f0=1080.0, f1=1730.0, dur=0.21, att=0.022, dec=11.0):
+    """a round tone rising f0 -> f1 (+ a soft octave): the mirror of the new WindowClose (1550 -> 1000 Hz)"""
+    n = N(dur)
+    fr = glide(n, f0, f1, 0.8)
+    return finish(osc(fr) * env(n, att, dec) + 0.3 * osc(2 * fr) * env(n, att, dec + 6), 300)
+
+
 RECIPES = {
     "GoldPickup": {"sA": ("our coins D7-E7-G7 stepping up, 55 ms apart (sound_spec)", lambda: gold(("D7", "E7", "G7"))),
                    "sB": ("our coins E7-D7-G7 (the other order, sound_spec)", lambda: gold(("E7", "D7", "G7"))),
@@ -758,4 +831,17 @@ RECIPES = {
                     lambda: loot_drop(900.0, (0.11, 0.07, 0.045), 3000.0, 0.17, False)),
              "sC": ("3 slower knocks 0.9 kHz (120 / 75 ms) + a lower gleam 2.7 kHz @190 ms + 1 grain",
                     lambda: loot_drop(900.0, (0.12, 0.075), 2700.0, 0.19, True))},
+    "SwingWarrior": {"sA": ("one airy noise band 550 -> 3200 -> 950 Hz, 0.18 s (no metal, no pitch), LP 7.5 k", lambda: swing_warrior()),
+                     "sB": ("same swish, another noise seed", lambda: swing_warrior(45))},
+    "KillPop": {"sA": ("soap-bubble pop: sine 800 -> 940 Hz, 0.1 s + 18 ms 2.5 kHz 'pu' at -12 dB", lambda: kill_pop()),
+                "sB": ("rounder pop 780 -> 900 Hz with a soft octave, 0.09 s", lambda: kill_pop(780.0, 900.0, 0.09, 40.0, 0.2, 53))},
+    "ComboMilestone": {"kA": ("sound_spec recipe: Kenney confirmation_003 at 0.87x (ends ~5 kHz, not 5.9), LP 7 k", lambda: combo_kenney()),
+                       "sA": ("our glass run C7-E7-G7-C8, 55 ms apart, first note loudest + sparkles", lambda: combo_glass()),
+                       "sB": ("our glass run A6-C#7-E7-A7, 60 ms apart", lambda: combo_glass((1760.0, 2217.0, 2637.0, 3520.0), 0.06, 63, (1.0, 0.8, 0.7, 0.65)))},
+    "LevelUp": {"sA": ("C5-E5-G5-C6 80 ms apart, last note 0.85 s with vibrato + air + sparkles + phone body 523 + 785 Hz (-10 dB)", lambda: level_up()),
+                "sB": ("same fanfare 75 ms apart, last note 0.9 s, other sparkles", lambda: level_up(0.075, 0.9, 73))},
+    "Tap": {"kA": ("sound_spec recipe: Kenney select_002 + click_003 at -10 dB, 45 ms", lambda: tap()),
+            "kB": ("same, a hair lower (0.97x) and a softer click (-12 dB), 42 ms", lambda: tap(0.97, -12.0, 0.042))},
+    "WindowOpen": {"sA": ("round tone 1080 -> 1730 Hz + soft octave, 22 ms attack, 0.21 s (mirror of the new WindowClose)", lambda: window_open()),
+                   "sB": ("round tone 1000 -> 1600 Hz, 25 ms attack, 0.2 s", lambda: window_open(1000.0, 1600.0, 0.2, 0.025, 12.0))},
 }

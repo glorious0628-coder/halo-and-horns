@@ -5301,5 +5301,49 @@
    "bytes": 1089056,
    "note": "image fed via Adobe CC storage presigned URL (built-in browser has no file upload); export GLB 1k, 0 pts"
   }
+ ],
+ "Town_Horns_Castle_nowin_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 40000 typed with real input, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "16ad4b83-ff6f-42d6-8980-a30fded93e76",
+   "image": "art/out/town/Town_Horns_Castle_1_nowin.png",
+   "at": "2026-10-07 17:59 (Tripo assets list)",
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Horns_Castle_nowin_HD_src.glb",
+   "balance_after": 2575,
+   "tris": 38415,
+   "bytes": 8655540,
+   "derived": [
+    "art/models/tripo/web/Town_Horns_Castle_nowin_HD_plain.glb (tools/glb_decimate.py 0 = plain re-save, no meshopt, front -Y)",
+    "build/castle_v5/Town_Horns_Castle_B2_tiles.glb (tools/split_uv_tiles.py --grid 3 --tex 4K src --kind web --fit h 84: 9 parts 3.5k-4.7k tris, 84 x 67.05 x 78.61 studs)"
+   ],
+   "sheet": "art/review/town5/horns_castle_hd_compare.jpg",
+   "note": "bundle-2 castle 2D with the centre tower windows painted over (ec39220); 검수 OK 110 for nowin + v4; source = pinia feature-workspace model_url (tripo_pbr_model_*_meshopt.glb, 4K, 0 pts)"
+  }
+ ],
+ "Town_Horns_Castle_v4_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 — the poly field was set from JS (40000 shown) but the job used the default 2,000,000",
+   "points": 55,
+   "task": "3f58b7f8-1b18-44c4-9772-b7a36f9653d0",
+   "image": "art/out/hq/HQ_Town_Horns_Castle_v4B.png",
+   "at": "2026-10-07 18:27 (Tripo assets list; recorded 18:40)",
+   "balance_after": 2520,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Horns_Castle_v4_HD_src.glb",
+   "tris": 1890999,
+   "bytes": 23988588,
+   "derived": [
+    "art/models/tripo/web/Town_Horns_Castle_v4_HD_40k.glb + _40k_r.glb (tools/glb_decimate.py 40000, --rotz -90)",
+    "build/castle_v5/Town_Horns_Castle_v4HD_tiles.glb (split_uv_tiles 9 parts 2.7k-5.6k tris, 83.94 x 64.13 x 84.0 studs)"
+   ],
+   "note": "55 points: the triangle limit was not applied (lesson in memory tripo-web-in-app-browser: type the poly field); usable after local decimation",
+   "sheet": "art/review/town5/horns_castle_hd_compare.jpg"
+  }
  ]
 }

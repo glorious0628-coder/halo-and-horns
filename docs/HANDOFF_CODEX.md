@@ -22,8 +22,8 @@
 | 반투명·겹침 | fix/a2374-translucent, fix/a2374-separation | 워크플로 진행 중이었음(가지가 없으면 다시) |
 | 한국어 자동 번역("아야!") | fix/a2374-english(AutoLocalize=false) | 진행 중이었음. Creator Dashboard 자동 번역 끄기는 사용자 몫 |
 | 3D 배치 도구 + 성 원인 | tool/a2374-kit-place | 진행 중이었음 |
-| 무기 먼저(서버) | origin/dev2-weapon 49d2744 | 검수 검토 워크플로 진행 중 → 통과하면 개발 1 병합·반영(클라 = wtc-weapon-client) |
-| 지도 v2 지형 | mapv2-p1(main 아님), mapv2-p2(개발 1, Game-wtc2) | **진행 중(17:30경)**: 백업 = Studio 자동 복구본 → build/GoodEvil_before_v2.rbxl(WorldKit3D·MeadowKit 포함). move 285개 → 새 지형(둥근 해안·모래·둥근 산·3D 바다 바위 26) → 높이 맞춤 294개 끝. 남은 것: 연못·노란 줄 빼기·물 색·풀잎 끄기·산 경사 → main push → sync → build → kits → PC·폰 Play → 저장. 이미지 생성 1 '튀는 곳' 16곳(art/review/terrain/terrain_standout_2026-10-07.jpg) 반영, SunRays 끄기(빛살 규칙) |
+| 무기 먼저(서버) + 스탯 1단계 + 소리 서버 + 고칠 것 4개 | **origin/dev2-sound bde2715d**(dev2-weapon 49d2744 포함, 저장 v3 유지) — 개발 2가 최신 main 합치고 CI 다시 → 검수 검토 OK → 개발 1 병합 | 클라 = wtc-weapon-client. 예전 줄: origin/dev2-weapon 49d2744 | 검수 검토 워크플로 진행 중 → 통과하면 개발 1 병합·반영(클라 = wtc-weapon-client) |
+| 지도 v2 지형 | **main 9ae686e**, build/GoodEvil.rbxlx 17:55 사용자 저장(새 지형 포함) | 남은 것: Studio 다시 열기 → sync → MapBuilder.Build → kits → PC·폰 Play → 저장. (예전 기록: 진행 중(17:30경): 백업 = Studio 자동 복구본 → build/GoodEvil_before_v2.rbxl(WorldKit3D·MeadowKit 포함). move 285개 → 새 지형(둥근 해안·모래·둥근 산·3D 바다 바위 26) → 높이 맞춤 294개 끝. 남은 것: 연못·노란 줄 빼기·물 색·풀잎 끄기·산 경사 → main push → sync → build → kits → PC·폰 Play → 저장. 이미지 생성 1 '튀는 곳' 16곳(art/review/terrain/terrain_standout_2026-10-07.jpg) 반영, SunRays 끄기(빛살 규칙) |
 | 스탯 1단계 + 소리 서버 | dev2 a698787 / dev2-sound 43c491f | 고칠 것 4개(KingDefeat Contributors 비어 있음, 환불 Thief, 장판 늦은 Released 수, **저장 v3 유지**) 개발 2 진행 중 |
 
 **그림·3D:**
@@ -34,6 +34,7 @@
 - 화면 배치 PC·폰 새 틀(이미지 개발, Game-imgdev): 고칠 것 4개(PC 물약 붙이기, 폰 749 Lv 글자, 힌트 말풍선 글자 잘림 "buttor", 폰 아래 묶음 가운데) → 다시 시트 → 개발 1 반영.
 
 **다음 순서(새 계정에서 여기부터):** ① 메인 Studio 저장 확인(build/GoodEvil.rbxlx 시간) ② 개발 1 지도 v2 P2 ③ dev2-weapon 검토 결과 → 병합·반영 ④ camera2·bark2·translucent·separation·english 가지 확인(검증 OK만 main) ⑤ 가져오기 묶음 올리기 → 표지판·가로등·분수·덤불·나무 배치(검수) ⑥ 지형 타일·화면 배치 반영 ⑦ **PC·폰 직접 Play 사진** ⑧ 그다음 촬영 다시(docs/devlog/reshoot_2026-10-07.md, 새 장면 4개, Z 스킬 제외).
+**공유 폴더 주의:** 다른 세션이 올린 파일이 공유 폴더에 "수정됨/추적 안 됨"(내용은 origin과 같음)으로 남아 reset --keep을 막아 HEAD가 뒤처지는 일이 오늘 3번 있었다. push_paths.py(3cb1234)가 이제 origin과 같은 파일은 스스로 정리한다. 그래도 Studio sync 전에는 반드시 `git rev-list --left-right --count HEAD...origin/main` = 0 0 확인.
 **대기 중인 사용자 일:** 메인 Studio Ctrl+S, WorldKit '가져오기 시작', 크롬 다시 열기(소리 Loot 1개 업로드), Adobe 연결 다시 로그인(필요할 때), Creator Dashboard 한국어 자동 번역 끄기.
  그 아래 절은 모두 당시 기록(역사·증거)이며, 거기 적힌 다음 할 일·허락·종료 지시·"바꾸면 안 되는 결정"은 오늘 아무것도 허락하지 않는다. 규칙 순서는 `AGENTS.md` "Which rule wins".
 
