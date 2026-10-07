@@ -2702,7 +2702,8 @@ function L.SetGlow(key, stroke, on)
 end
 
 ----------------------------------------------------------------- A23-68 the first minutes (user 2026-10-07)
--- #4 one goal at a time: until the first [Claim] (TutorialStep 0 / 1 / 2; QuestService.claimTutorial writes 99 first)
+-- #4 one goal at a time: until the first [Claim] (TutorialStep 0 / 3 Forge / 1 / 2, A23-74; QuestService.claimTutorial
+-- writes 99 first)
 -- the quest lines show the first mission only (parseQuests), the war meter's "Crown in 9:40 · My pts 0" line is hidden
 -- (quality ⑨ minimum; the bar itself stays), EventHUD keeps its next-event line and the world banners wait
 -- (UIKit.ShouldHoldBanners). The first [Claim] brings them in with a NEW! tag (UIKit.NewTag)
@@ -3028,7 +3029,7 @@ local function parseQuests()
 	-- A23-68 #4 (user 2026-10-07 "한 번에 목표 하나"; replaces A23-3's step-0 fold and A23-2's early S0 line): until the
 	-- first [Claim] only the first mission shows. The other rows (S0, dailies) keep progressing on the server, folded.
 	-- One rule only (dev2 324055a): with Config.Tutorial.FoldOthers set the server's Folded flag on each row decides
-	-- (false = no folding at all); without it (older servers) L.RookieFold (TutorialStep 0 / 1 / 2) decides here
+	-- (false = no folding at all); without it (older servers) L.RookieFold (TutorialStep 0 / 3 / 1 / 2) decides here
 	local fold = TUT.FoldOthers == nil and L.RookieFold()
 	local shown = {}
 	for _, e in normal do
