@@ -1,0 +1,1340 @@
+{
+ "rows": [
+  {
+   "title": "활 쏘기 · SwingArcher",
+   "target": "목표: '슉' 바람 소리만 · 시작 5–10 ms · 띠 중심 3–5 kHz → 1–2 kHz로 내려감 · 톤 줄 없음 · 0.15–0.3 s",
+   "kind": "bow",
+   "candidates": [
+    {
+     "name": "SwingArcher_2-4",
+     "source": "firefly",
+     "label": "2-4 · 얇고 짧은 바람",
+     "file": "build/sfx_firefly/trim/SwingArcher_2-4.wav",
+     "prompt": "single quick swoosh, thin and airy, very short, fast fade",
+     "sec": 0.24,
+     "audibleSec": 0.216,
+     "attackMs": 7.5,
+     "peakDb": -6.2,
+     "rms100Db": -18.0,
+     "k100Lufs": -14.9,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "bandKHz": [
+      5.6,
+      4.7,
+      3.6
+     ],
+     "lineDb": 8.9,
+     "score": 9,
+     "checks": [
+      [
+       2,
+       "시작 7.5 ms (5–10) · 들리는 길이 0.216 s (0.15–0.3)"
+      ],
+      [
+       1,
+       "띠 중심 5.6 → 3.6 kHz (3–5 → 1–2)"
+      ],
+      [
+       2,
+       "톤 줄 없음 (줄 뾰족함 8.9 dB, 15 아래 = 바람)"
+      ],
+      [
+       2,
+       "최대 -6.2 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -14.9 (같은 줄 평균 +1.1 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingArcher_1-1",
+     "source": "firefly",
+     "label": "1-1 · 화살이 휙 지나감",
+     "file": "build/sfx_firefly/trim/SwingArcher_1-1.wav",
+     "prompt": "fast arrow whoosh flying past, short airy swish",
+     "sec": 0.24,
+     "audibleSec": 0.227,
+     "attackMs": 9.0,
+     "peakDb": -3.0,
+     "rms100Db": -21.4,
+     "k100Lufs": -18.4,
+     "phoneDropDb": 0.2,
+     "above100": 0.999,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "bandKHz": [
+      5.5,
+      3.0,
+      2.1
+     ],
+     "lineDb": 10.8,
+     "score": 8,
+     "checks": [
+      [
+       2,
+       "시작 9 ms (5–10) · 들리는 길이 0.227 s (0.15–0.3)"
+      ],
+      [
+       1,
+       "띠 중심 5.5 → 2.1 kHz (3–5 → 1–2)"
+      ],
+      [
+       2,
+       "톤 줄 없음 (줄 뾰족함 10.8 dB, 15 아래 = 바람)"
+      ],
+      [
+       2,
+       "최대 -3 dBFS · 100 Hz 위 100% · 폰 -0.2 dB (10 아래)"
+      ],
+      [
+       1,
+       "크기 K -18.4 (같은 줄 평균 -2.4 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingArcher_2-2",
+     "source": "firefly",
+     "label": "2-2 · 얇고 짧은 바람",
+     "file": "build/sfx_firefly/trim/SwingArcher_2-2.wav",
+     "prompt": "single quick swoosh, thin and airy, very short, fast fade",
+     "sec": 0.2,
+     "audibleSec": 0.181,
+     "attackMs": 29.0,
+     "peakDb": -3.0,
+     "rms100Db": -19.6,
+     "k100Lufs": -17.4,
+     "phoneDropDb": 0.1,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "bandKHz": [
+      4.5,
+      1.2,
+      0.9
+     ],
+     "lineDb": 11.7,
+     "score": 6,
+     "checks": [
+      [
+       0,
+       "시작 29 ms (5–10) · 들리는 길이 0.181 s (0.15–0.3)"
+      ],
+      [
+       2,
+       "띠 중심 4.5 → 0.9 kHz (3–5 → 1–2)"
+      ],
+      [
+       2,
+       "톤 줄 없음 (줄 뾰족함 11.7 dB, 15 아래 = 바람)"
+      ],
+      [
+       2,
+       "최대 -3 dBFS · 100 Hz 위 100% · 폰 -0.1 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -17.4 (같은 줄 평균 -1.4 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingBow_g",
+     "source": "dev2",
+     "label": "3차 g · 짧고 날카로운 슉",
+     "file": "../Game-dev2/build/sfx_game/cand/SwingBow_g.wav",
+     "prompt": "",
+     "sec": 0.18,
+     "audibleSec": 0.161,
+     "attackMs": 7.0,
+     "peakDb": -5.6,
+     "rms100Db": -18.0,
+     "k100Lufs": -14.9,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "bandKHz": [
+      3.9,
+      2.4,
+      1.8
+     ],
+     "lineDb": 8.1,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "시작 7 ms (5–10) · 들리는 길이 0.161 s (0.15–0.3)"
+      ],
+      [
+       2,
+       "띠 중심 3.9 → 1.8 kHz (3–5 → 1–2)"
+      ],
+      [
+       2,
+       "톤 줄 없음 (줄 뾰족함 8.1 dB, 15 아래 = 바람)"
+      ],
+      [
+       2,
+       "최대 -5.6 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -14.9 (같은 줄 평균 +1.1 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingBow_h",
+     "source": "dev2",
+     "label": "3차 h · 조금 굵은 슉",
+     "file": "../Game-dev2/build/sfx_game/cand/SwingBow_h.wav",
+     "prompt": "",
+     "sec": 0.268,
+     "audibleSec": 0.245,
+     "attackMs": 7.0,
+     "peakDb": -4.9,
+     "rms100Db": -18.0,
+     "k100Lufs": -15.2,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "bandKHz": [
+      3.5,
+      2.2,
+      1.7
+     ],
+     "lineDb": 7.6,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "시작 7 ms (5–10) · 들리는 길이 0.245 s (0.15–0.3)"
+      ],
+      [
+       2,
+       "띠 중심 3.5 → 1.7 kHz (3–5 → 1–2)"
+      ],
+      [
+       2,
+       "톤 줄 없음 (줄 뾰족함 7.6 dB, 15 아래 = 바람)"
+      ],
+      [
+       2,
+       "최대 -4.9 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -15.2 (같은 줄 평균 +0.8 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingBow_i",
+     "source": "dev2",
+     "label": "3차 i · 두 겹 슉슉",
+     "file": "../Game-dev2/build/sfx_game/cand/SwingBow_i.wav",
+     "prompt": "",
+     "sec": 0.245,
+     "audibleSec": 0.223,
+     "attackMs": 5.8,
+     "peakDb": -5.8,
+     "rms100Db": -18.0,
+     "k100Lufs": -15.0,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "bandKHz": [
+      3.3,
+      3.0,
+      1.8
+     ],
+     "lineDb": 9.8,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "시작 5.8 ms (5–10) · 들리는 길이 0.223 s (0.15–0.3)"
+      ],
+      [
+       2,
+       "띠 중심 3.3 → 1.8 kHz (3–5 → 1–2)"
+      ],
+      [
+       2,
+       "톤 줄 없음 (줄 뾰족함 9.8 dB, 15 아래 = 바람)"
+      ],
+      [
+       2,
+       "최대 -5.8 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -15 (같은 줄 평균 +1 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "title": "마법 쏘기 · SwingMage",
+   "target": "목표: 2–6 kHz에서 위로 휘며 올라가는 반짝임 · 부드러운 시작 10–20 ms(딸깍 없음) · 0.3–0.5 s",
+   "kind": "magic",
+   "candidates": [
+    {
+     "name": "SwingMage_3-4",
+     "source": "firefly",
+     "label": "3-4 · 지팡이 휙 + 반짝 올라감",
+     "file": "build/sfx_firefly/trim/SwingMage_3-4.wav",
+     "prompt": "magic wand swish with twinkling sparkles rising, gentle, short",
+     "sec": 0.38,
+     "audibleSec": 0.367,
+     "attackMs": 13.7,
+     "peakDb": -3.0,
+     "rms100Db": -19.0,
+     "k100Lufs": -15.8,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 2953,
+     "spikeSec": 0.03,
+     "bandKHz": [
+      3.0,
+      3.9,
+      4.8
+     ],
+     "lineDb": 17.8,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "시작 13.7 ms (목표 10–20, 딸깍 없이)"
+      ],
+      [
+       2,
+       "띠 3 → 3.9 → 4.8 kHz (2–6에서 위로)"
+      ],
+      [
+       2,
+       "들리는 길이 0.367 s (0.3–0.5)"
+      ],
+      [
+       2,
+       "최대 -3 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -15.8 (같은 줄 평균 -0.6 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingMage_1-4",
+     "source": "firefly",
+     "label": "1-4 · 작은 방울 반짝",
+     "file": "build/sfx_firefly/trim/SwingMage_1-4.wav",
+     "prompt": "magic sparkle cast, bright tiny chimes rising upward, soft, short",
+     "sec": 0.38,
+     "audibleSec": 0.367,
+     "attackMs": 6.2,
+     "peakDb": -3.4,
+     "rms100Db": -18.0,
+     "k100Lufs": -14.6,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 3046,
+     "spikeSec": 0.05,
+     "bandKHz": [
+      4.2,
+      7.1,
+      6.6
+     ],
+     "lineDb": 26.1,
+     "score": 9,
+     "checks": [
+      [
+       1,
+       "시작 6.2 ms (목표 10–20, 딸깍 없이)"
+      ],
+      [
+       2,
+       "띠 4.2 → 7.1 → 6.6 kHz (2–6에서 위로)"
+      ],
+      [
+       2,
+       "들리는 길이 0.367 s (0.3–0.5)"
+      ],
+      [
+       2,
+       "최대 -3.4 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -14.6 (같은 줄 평균 +0.6 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingMage_3-3",
+     "source": "firefly",
+     "label": "3-3 · 지팡이 휙 + 반짝 올라감",
+     "file": "build/sfx_firefly/trim/SwingMage_3-3.wav",
+     "prompt": "magic wand swish with twinkling sparkles rising, gentle, short",
+     "sec": 0.46,
+     "audibleSec": 0.405,
+     "attackMs": 8.2,
+     "peakDb": -6.4,
+     "rms100Db": -18.0,
+     "k100Lufs": -15.0,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "bandKHz": [
+      2.4,
+      3.3,
+      6.4
+     ],
+     "lineDb": 11.4,
+     "score": 9,
+     "checks": [
+      [
+       1,
+       "시작 8.2 ms (목표 10–20, 딸깍 없이)"
+      ],
+      [
+       2,
+       "띠 2.4 → 3.3 → 6.4 kHz (2–6에서 위로)"
+      ],
+      [
+       2,
+       "들리는 길이 0.405 s (0.3–0.5)"
+      ],
+      [
+       2,
+       "최대 -6.4 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -15 (같은 줄 평균 +0.2 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingMagic_g",
+     "source": "dev2",
+     "label": "3차 g · 반짝 줄 휘며 올라감",
+     "file": "../Game-dev2/build/sfx_game/cand/SwingMagic_g.wav",
+     "prompt": "",
+     "sec": 0.379,
+     "audibleSec": 0.362,
+     "attackMs": 11.5,
+     "peakDb": -8.1,
+     "rms100Db": -18.0,
+     "k100Lufs": -15.4,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 2367,
+     "spikeSec": 0.06,
+     "bandKHz": [
+      2.0,
+      2.7,
+      4.1
+     ],
+     "lineDb": 32.1,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "시작 11.5 ms (목표 10–20, 딸깍 없이)"
+      ],
+      [
+       2,
+       "띠 2 → 2.7 → 4.1 kHz (2–6에서 위로)"
+      ],
+      [
+       2,
+       "들리는 길이 0.362 s (0.3–0.5)"
+      ],
+      [
+       2,
+       "최대 -8.1 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -15.4 (같은 줄 평균 -0.2 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingMagic_h",
+     "source": "dev2",
+     "label": "3차 h · 방울 구름 올라감",
+     "file": "../Game-dev2/build/sfx_game/cand/SwingMagic_h.wav",
+     "prompt": "",
+     "sec": 0.435,
+     "audibleSec": 0.419,
+     "attackMs": 16.7,
+     "peakDb": -7.4,
+     "rms100Db": -18.0,
+     "k100Lufs": -15.3,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 3375,
+     "spikeSec": 0.03,
+     "bandKHz": [
+      2.3,
+      3.4,
+      5.1
+     ],
+     "lineDb": 23.1,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "시작 16.7 ms (목표 10–20, 딸깍 없이)"
+      ],
+      [
+       2,
+       "띠 2.3 → 3.4 → 5.1 kHz (2–6에서 위로)"
+      ],
+      [
+       2,
+       "들리는 길이 0.419 s (0.3–0.5)"
+      ],
+      [
+       2,
+       "최대 -7.4 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -15.3 (같은 줄 평균 -0.1 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "SwingMagic_i",
+     "source": "dev2",
+     "label": "3차 i · 반짝반짝 떨며",
+     "file": "../Game-dev2/build/sfx_game/cand/SwingMagic_i.wav",
+     "prompt": "",
+     "sec": 0.334,
+     "audibleSec": 0.319,
+     "attackMs": 14.5,
+     "peakDb": -8.8,
+     "rms100Db": -18.0,
+     "k100Lufs": -14.9,
+     "phoneDropDb": 0.0,
+     "above100": 1.0,
+     "spikeHz": 3468,
+     "spikeSec": 0.04,
+     "bandKHz": [
+      2.3,
+      3.2,
+      4.1
+     ],
+     "lineDb": 42.7,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "시작 14.5 ms (목표 10–20, 딸깍 없이)"
+      ],
+      [
+       2,
+       "띠 2.3 → 3.2 → 4.1 kHz (2–6에서 위로)"
+      ],
+      [
+       2,
+       "들리는 길이 0.319 s (0.3–0.5)"
+      ],
+      [
+       2,
+       "최대 -8.8 dBFS · 100 Hz 위 100% · 폰 -0 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -14.9 (같은 줄 평균 +0.3 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "title": "퍽 · HitHeavy",
+   "target": "목표: 60–200 Hz 낮은 쿵(아주 빠른 시작) + 2–4 kHz 딸깍 3–10 ms · 0.15–0.3 s · 긴 울림 없음 · 폰에서 들림",
+   "kind": "thud",
+   "candidates": [
+    {
+     "name": "HitHeavy_4-4",
+     "source": "firefly",
+     "label": "4-4 · 가운데 소리 퍽 + 딸깍",
+     "file": "build/sfx_firefly/trim/HitHeavy_4-4.wav",
+     "prompt": "punchy cartoon thwack, mid smack with a tiny click, dry",
+     "sec": 0.25,
+     "audibleSec": 0.23,
+     "attackMs": 1.5,
+     "peakDb": -4.6,
+     "rms100Db": -18.0,
+     "k100Lufs": -18.6,
+     "phoneDropDb": 6.5,
+     "above100": 0.771,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.44,
+     "tickMs": 6.5,
+     "tickDb": -6.7,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 44% · 시작 1.5 ms (5 아래)"
+      ],
+      [
+       2,
+       "딸깍 2–4 kHz 6.5 ms (3–10) · 크기 -6.7 dB"
+      ],
+      [
+       2,
+       "들리는 길이 0.23 s (0.15–0.3, 긴 울림 없이)"
+      ],
+      [
+       2,
+       "최대 -4.6 dBFS · 100 Hz 위 77% · 폰 -6.5 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -18.6 (같은 줄 평균 +0.8 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitHeavy_1-2",
+     "source": "firefly",
+     "label": "1-2 · 만화 주먹 쿵",
+     "file": "build/sfx_firefly/trim/HitHeavy_1-2.wav",
+     "prompt": "cartoon punch hit, short round thump with a small click, dry",
+     "sec": 0.2,
+     "audibleSec": 0.198,
+     "attackMs": 4.2,
+     "peakDb": -11.2,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.8,
+     "phoneDropDb": 11.7,
+     "above100": 0.281,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.75,
+     "tickMs": 11.8,
+     "tickDb": -11.6,
+     "score": 8,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 75% · 시작 4.2 ms (5 아래)"
+      ],
+      [
+       1,
+       "딸깍 2–4 kHz 11.8 ms (3–10) · 크기 -11.6 dB"
+      ],
+      [
+       2,
+       "들리는 길이 0.198 s (0.15–0.3, 긴 울림 없이)"
+      ],
+      [
+       1,
+       "최대 -11.2 dBFS · 100 Hz 위 28% · 폰 -11.7 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.8 (같은 줄 평균 -0.4 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitHeavy_2-4",
+     "source": "firefly",
+     "label": "2-4 · 푹신하고 통통",
+     "file": "build/sfx_firefly/trim/HitHeavy_2-4.wav",
+     "prompt": "quick padded thwack, soft chubby impact, punchy and dry",
+     "sec": 0.25,
+     "audibleSec": 0.224,
+     "attackMs": 1.5,
+     "peakDb": -6.5,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.7,
+     "phoneDropDb": 9.2,
+     "above100": 0.639,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.31,
+     "tickMs": 11.5,
+     "tickDb": -7.4,
+     "score": 8,
+     "checks": [
+      [
+       1,
+       "쿵 60–200 Hz 몫 31% · 시작 1.5 ms (5 아래)"
+      ],
+      [
+       1,
+       "딸깍 2–4 kHz 11.5 ms (3–10) · 크기 -7.4 dB"
+      ],
+      [
+       2,
+       "들리는 길이 0.224 s (0.15–0.3, 긴 울림 없이)"
+      ],
+      [
+       2,
+       "최대 -6.5 dBFS · 100 Hz 위 64% · 폰 -9.2 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.7 (같은 줄 평균 -0.3 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitHeavy_mix-1-2+kenney",
+     "source": "mix",
+     "label": "섞음 · 퍽 1-2 + Kenney 주먹 얇게",
+     "file": "build/sfx_firefly/trim/HitHeavy_mix-1-2+kenney.wav",
+     "prompt": "",
+     "sec": 0.2,
+     "audibleSec": 0.192,
+     "attackMs": 1.0,
+     "peakDb": -9.5,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.7,
+     "phoneDropDb": 9.7,
+     "above100": 0.315,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.7,
+     "tickMs": 11.8,
+     "tickDb": -12.8,
+     "score": 9,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 70% · 시작 1 ms (5 아래)"
+      ],
+      [
+       1,
+       "딸깍 2–4 kHz 11.8 ms (3–10) · 크기 -12.8 dB"
+      ],
+      [
+       2,
+       "들리는 길이 0.192 s (0.15–0.3, 긴 울림 없이)"
+      ],
+      [
+       2,
+       "최대 -9.5 dBFS · 100 Hz 위 32% · 폰 -9.7 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.7 (같은 줄 평균 -0.3 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitThud_g",
+     "source": "dev2",
+     "label": "3차 g · 짧은 퍽",
+     "file": "../Game-dev2/build/sfx_game/cand/HitThud_g.wav",
+     "prompt": "",
+     "sec": 0.214,
+     "audibleSec": 0.187,
+     "attackMs": 3.0,
+     "peakDb": -5.4,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.4,
+     "phoneDropDb": 7.8,
+     "above100": 0.713,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.74,
+     "tickMs": 9.8,
+     "tickDb": -19.1,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 74% · 시작 3 ms (5 아래)"
+      ],
+      [
+       2,
+       "딸깍 2–4 kHz 9.8 ms (3–10) · 크기 -19.1 dB"
+      ],
+      [
+       2,
+       "들리는 길이 0.187 s (0.15–0.3, 긴 울림 없이)"
+      ],
+      [
+       2,
+       "최대 -5.4 dBFS · 100 Hz 위 71% · 폰 -7.8 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.4 (같은 줄 평균 +0 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitThud_h",
+     "source": "dev2",
+     "label": "3차 h · 둥근 퍽",
+     "file": "../Game-dev2/build/sfx_game/cand/HitThud_h.wav",
+     "prompt": "",
+     "sec": 0.258,
+     "audibleSec": 0.237,
+     "attackMs": 3.5,
+     "peakDb": -6.5,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.6,
+     "phoneDropDb": 8.4,
+     "above100": 0.562,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.63,
+     "tickMs": 8.2,
+     "tickDb": -19.0,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 63% · 시작 3.5 ms (5 아래)"
+      ],
+      [
+       2,
+       "딸깍 2–4 kHz 8.2 ms (3–10) · 크기 -19 dB"
+      ],
+      [
+       2,
+       "들리는 길이 0.237 s (0.15–0.3, 긴 울림 없이)"
+      ],
+      [
+       2,
+       "최대 -6.5 dBFS · 100 Hz 위 56% · 폰 -8.4 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.6 (같은 줄 평균 -0.2 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitThud_i",
+     "source": "dev2",
+     "label": "3차 i · 단단한 퍽",
+     "file": "../Game-dev2/build/sfx_game/cand/HitThud_i.wav",
+     "prompt": "",
+     "sec": 0.179,
+     "audibleSec": 0.155,
+     "attackMs": 2.3,
+     "peakDb": -3.1,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.1,
+     "phoneDropDb": 8.6,
+     "above100": 0.94,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.68,
+     "tickMs": 7.2,
+     "tickDb": -20.9,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 68% · 시작 2.3 ms (5 아래)"
+      ],
+      [
+       2,
+       "딸깍 2–4 kHz 7.2 ms (3–10) · 크기 -20.9 dB"
+      ],
+      [
+       2,
+       "들리는 길이 0.155 s (0.15–0.3, 긴 울림 없이)"
+      ],
+      [
+       2,
+       "최대 -3.1 dBFS · 100 Hz 위 94% · 폰 -8.6 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.1 (같은 줄 평균 +0.3 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "title": "치명타 · HitCrit",
+   "target": "목표: 퍽 + 3–8 kHz 맑은 쇠 울림 줄(0.3–0.5 s 동안 줄어듦) · 확실히 특별하게 · 귀를 찌르지 않게",
+   "kind": "crit",
+   "candidates": [
+    {
+     "name": "HitCrit_1-1",
+     "source": "firefly",
+     "label": "1-1 · 퍽 + 쨍",
+     "file": "build/sfx_firefly/trim/HitCrit_1-1.wav",
+     "prompt": "cartoon critical hit, punchy impact with a bright metallic ting",
+     "sec": 0.5,
+     "audibleSec": 0.454,
+     "attackMs": 6.2,
+     "peakDb": -9.7,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.6,
+     "phoneDropDb": 8.4,
+     "above100": 0.323,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.55,
+     "tickMs": 38.2,
+     "tickDb": -11.0,
+     "ringSec": 0.443,
+     "ringVsThumpDb": -9.1,
+     "ringLineDb": 23.2,
+     "score": 8,
+     "checks": [
+      [
+       1,
+       "쿵 60–200 Hz 몫 55% · 시작 6.2 ms (5 아래)"
+      ],
+      [
+       2,
+       "쇠 울림 3–8 kHz 0.443 s (0.3–0.5) · 줄 뚜렷함 23.2 dB"
+      ],
+      [
+       1,
+       "쇠 울림 크기 = 쿵 최대 -9.1 dB (-10 아래) · 길이 0.454 s"
+      ],
+      [
+       2,
+       "최대 -9.7 dBFS · 100 Hz 위 32% · 폰 -8.4 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.6 (같은 줄 평균 -0.3 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitCrit_1-4",
+     "source": "firefly",
+     "label": "1-4 · 퍽 + 쨍",
+     "file": "build/sfx_firefly/trim/HitCrit_1-4.wav",
+     "prompt": "cartoon critical hit, punchy impact with a bright metallic ting",
+     "sec": 0.42,
+     "audibleSec": 0.404,
+     "attackMs": 1.5,
+     "peakDb": -9.6,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.9,
+     "phoneDropDb": 8.4,
+     "above100": 0.203,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.4,
+     "tickMs": 37.2,
+     "tickDb": -6.2,
+     "ringSec": 0.388,
+     "ringVsThumpDb": -5.6,
+     "ringLineDb": 24.6,
+     "score": 5,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 40% · 시작 1.5 ms (5 아래)"
+      ],
+      [
+       2,
+       "쇠 울림 3–8 kHz 0.388 s (0.3–0.5) · 줄 뚜렷함 24.6 dB"
+      ],
+      [
+       0,
+       "쇠 울림 크기 = 쿵 최대 -5.6 dB (-10 아래) · 길이 0.404 s"
+      ],
+      [
+       1,
+       "최대 -9.6 dBFS · 100 Hz 위 20% · 폰 -8.4 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.9 (같은 줄 평균 -0.6 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitCrit_mix-4-4+2-1",
+     "source": "mix",
+     "label": "섞음 · 퍽 4-4 + 쨍 2-1",
+     "file": "build/sfx_firefly/trim/HitCrit_mix-4-4+2-1.wav",
+     "prompt": "",
+     "sec": 0.502,
+     "audibleSec": 0.386,
+     "attackMs": 2.8,
+     "peakDb": -3.5,
+     "rms100Db": -18.0,
+     "k100Lufs": -18.5,
+     "phoneDropDb": 6.4,
+     "above100": 0.781,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.44,
+     "tickMs": 6.5,
+     "tickDb": -11.4,
+     "ringSec": 0.445,
+     "ringVsThumpDb": -10.4,
+     "ringLineDb": 61.4,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 44% · 시작 2.8 ms (5 아래)"
+      ],
+      [
+       2,
+       "쇠 울림 3–8 kHz 0.445 s (0.3–0.5) · 줄 뚜렷함 61.4 dB"
+      ],
+      [
+       2,
+       "쇠 울림 크기 = 쿵 최대 -10.4 dB (-10 아래) · 길이 0.386 s"
+      ],
+      [
+       2,
+       "최대 -3.5 dBFS · 100 Hz 위 78% · 폰 -6.4 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -18.5 (같은 줄 평균 +0.8 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitCrit_mix-1-2+2-1",
+     "source": "mix",
+     "label": "섞음 · 퍽 1-2 + 쨍 2-1",
+     "file": "build/sfx_firefly/trim/HitCrit_mix-1-2+2-1.wav",
+     "prompt": "",
+     "sec": 0.502,
+     "audibleSec": 0.402,
+     "attackMs": 3.8,
+     "peakDb": -9.6,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.2,
+     "phoneDropDb": 9.2,
+     "above100": 0.338,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.7,
+     "tickMs": 11.8,
+     "tickDb": -17.3,
+     "ringSec": 0.445,
+     "ringVsThumpDb": -10.0,
+     "ringLineDb": 61.4,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 70% · 시작 3.8 ms (5 아래)"
+      ],
+      [
+       2,
+       "쇠 울림 3–8 kHz 0.445 s (0.3–0.5) · 줄 뚜렷함 61.4 dB"
+      ],
+      [
+       2,
+       "쇠 울림 크기 = 쿵 최대 -10 dB (-10 아래) · 길이 0.402 s"
+      ],
+      [
+       2,
+       "최대 -9.6 dBFS · 100 Hz 위 34% · 폰 -9.2 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.2 (같은 줄 평균 +0.1 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitCrit_g",
+     "source": "dev2",
+     "label": "3차 g · 퍽 + 맑은 쨍",
+     "file": "../Game-dev2/build/sfx_game/cand/HitCrit_g.wav",
+     "prompt": "",
+     "sec": 0.401,
+     "audibleSec": 0.234,
+     "attackMs": 3.0,
+     "peakDb": -5.1,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.2,
+     "phoneDropDb": 7.4,
+     "above100": 0.717,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.73,
+     "tickMs": 37.2,
+     "tickDb": -19.5,
+     "ringSec": 0.388,
+     "ringVsThumpDb": -10.5,
+     "ringLineDb": 77.6,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 73% · 시작 3 ms (5 아래)"
+      ],
+      [
+       2,
+       "쇠 울림 3–8 kHz 0.388 s (0.3–0.5) · 줄 뚜렷함 77.6 dB"
+      ],
+      [
+       2,
+       "쇠 울림 크기 = 쿵 최대 -10.5 dB (-10 아래) · 길이 0.234 s"
+      ],
+      [
+       2,
+       "최대 -5.1 dBFS · 100 Hz 위 72% · 폰 -7.4 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.2 (같은 줄 평균 +0.1 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitCrit_h",
+     "source": "dev2",
+     "label": "3차 h · 퍽 + 쨍 + 반짝",
+     "file": "../Game-dev2/build/sfx_game/cand/HitCrit_h.wav",
+     "prompt": "",
+     "sec": 0.363,
+     "audibleSec": 0.254,
+     "attackMs": 3.0,
+     "peakDb": -6.8,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.3,
+     "phoneDropDb": 9.8,
+     "above100": 0.688,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.82,
+     "tickMs": 27.5,
+     "tickDb": -18.1,
+     "ringSec": 0.347,
+     "ringVsThumpDb": -10.2,
+     "ringLineDb": 42.9,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 82% · 시작 3 ms (5 아래)"
+      ],
+      [
+       2,
+       "쇠 울림 3–8 kHz 0.347 s (0.3–0.5) · 줄 뚜렷함 42.9 dB"
+      ],
+      [
+       2,
+       "쇠 울림 크기 = 쿵 최대 -10.2 dB (-10 아래) · 길이 0.254 s"
+      ],
+      [
+       2,
+       "최대 -6.8 dBFS · 100 Hz 위 69% · 폰 -9.8 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.3 (같은 줄 평균 -0 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "HitCrit_i",
+     "source": "dev2",
+     "label": "3차 i · 퍽 + 쨍쨍",
+     "file": "../Game-dev2/build/sfx_game/cand/HitCrit_i.wav",
+     "prompt": "",
+     "sec": 0.373,
+     "audibleSec": 0.222,
+     "attackMs": 3.3,
+     "peakDb": -6.2,
+     "rms100Db": -18.0,
+     "k100Lufs": -19.3,
+     "phoneDropDb": 7.6,
+     "above100": 0.726,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "thumpShare": 0.71,
+     "tickMs": 29.0,
+     "tickDb": -18.3,
+     "ringSec": 0.36,
+     "ringVsThumpDb": -10.3,
+     "ringLineDb": 70.0,
+     "score": 10,
+     "checks": [
+      [
+       2,
+       "쿵 60–200 Hz 몫 71% · 시작 3.3 ms (5 아래)"
+      ],
+      [
+       2,
+       "쇠 울림 3–8 kHz 0.36 s (0.3–0.5) · 줄 뚜렷함 70 dB"
+      ],
+      [
+       2,
+       "쇠 울림 크기 = 쿵 최대 -10.3 dB (-10 아래) · 길이 0.222 s"
+      ],
+      [
+       2,
+       "최대 -6.2 dBFS · 100 Hz 위 73% · 폰 -7.6 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -19.3 (같은 줄 평균 -0 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "title": "점프 · Jump (새 소리)",
+   "target": "목표: 가볍게 '폴짝' · 시작 10 ms 아래 · 0.15–0.3 s · 폰에서 들림(500 Hz–4 kHz 몸통) · 자주 나니 작고 귀엽게",
+   "kind": "jump",
+   "candidates": [
+    {
+     "name": "Jump_1-2",
+     "source": "firefly",
+     "label": "1-2 · 가볍게 휙 올라감",
+     "file": "build/sfx_firefly/trim/Jump_1-2.wav",
+     "prompt": "light cartoon hop, quick soft whoosh up, cute, short",
+     "sec": 0.22,
+     "audibleSec": 0.216,
+     "attackMs": 5.8,
+     "peakDb": -12.7,
+     "rms100Db": -18.0,
+     "k100Lufs": -18.5,
+     "phoneDropDb": 1.0,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "pitchHz": [
+      562,
+      679,
+      750
+     ],
+     "lineDb": 44.3,
+     "score": 6,
+     "checks": [
+      [
+       2,
+       "시작 5.8 ms (10 아래) · 들리는 길이 0.216 s (0.15–0.3)"
+      ],
+      [
+       -1,
+       "음높이 562 → 679 → 750 Hz (올라감) · 톤 44.3 dB"
+      ],
+      [
+       2,
+       "최대 -12.7 dBFS · 100 Hz 위 100% · 폰 -1 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -18.5 (같은 줄 평균 -0.2 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "Jump_2-1",
+     "source": "firefly",
+     "label": "2-1 · 통통 튀는 폴짝",
+     "file": "build/sfx_firefly/trim/Jump_2-1.wav",
+     "prompt": "small springy jump, soft bouncy pop, playful, short",
+     "sec": 0.28,
+     "audibleSec": 0.254,
+     "attackMs": 2.8,
+     "peakDb": -3.0,
+     "rms100Db": -18.2,
+     "k100Lufs": -18.2,
+     "phoneDropDb": 1.9,
+     "above100": 0.958,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "pitchHz": [
+      796,
+      796,
+      585
+     ],
+     "lineDb": 19.4,
+     "score": 6,
+     "checks": [
+      [
+       2,
+       "시작 2.8 ms (10 아래) · 들리는 길이 0.254 s (0.15–0.3)"
+      ],
+      [
+       -1,
+       "음높이 796 → 796 → 585 Hz (내려감) · 톤 19.4 dB"
+      ],
+      [
+       2,
+       "최대 -3 dBFS · 100 Hz 위 96% · 폰 -1.9 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -18.2 (같은 줄 평균 +0.1 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    },
+    {
+     "name": "Jump_2-2",
+     "source": "firefly",
+     "label": "2-2 · 통통 튀는 폴짝",
+     "file": "build/sfx_firefly/trim/Jump_2-2.wav",
+     "prompt": "small springy jump, soft bouncy pop, playful, short",
+     "sec": 0.22,
+     "audibleSec": 0.214,
+     "attackMs": 3.3,
+     "peakDb": -8.2,
+     "rms100Db": -18.0,
+     "k100Lufs": -18.3,
+     "phoneDropDb": 0.7,
+     "above100": 1.0,
+     "spikeHz": 0,
+     "spikeSec": 0.0,
+     "pitchHz": [
+      796,
+      890,
+      703
+     ],
+     "lineDb": 13.1,
+     "score": 6,
+     "checks": [
+      [
+       2,
+       "시작 3.3 ms (10 아래) · 들리는 길이 0.214 s (0.15–0.3)"
+      ],
+      [
+       -1,
+       "음높이 796 → 890 → 703 Hz (평평) · 톤 13.1 dB"
+      ],
+      [
+       2,
+       "최대 -8.2 dBFS · 100 Hz 위 100% · 폰 -0.7 dB (10 아래)"
+      ],
+      [
+       2,
+       "크기 K -18.3 (같은 줄 평균 +0 dB) · 2–5 kHz 뾰족 줄 없음"
+      ]
+     ]
+    }
+   ]
+  }
+ ]
+}

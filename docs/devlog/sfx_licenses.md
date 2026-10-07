@@ -88,3 +88,22 @@
 | HitThud i | 퍽 2 단단한 퍽 | 직접 합성(쿵 220→75 Hz + 700 Hz 몸통 + 3.5 kHz 딸깍) | 우리 것 |
 | HitCrit g | 치명타 1 맑은 쨍 | 직접 합성(퍽 1 + 3.3–7.6 kHz 쇠 울림) | 우리 것 |
 | HitCrit i | 치명타 2 쨍쨍 | 직접 합성(퍽 1 + 쇠 울림 두 번) | 우리 것 |
+
+## 게임 효과음 4차 — Firefly 생성 (소리 만들기, 2026-10-07)
+
+사용자 결정(A23-67): 소리 만들기 세션이 Adobe Firefly '효과음 생성'으로 만든다. 모든 소리를 다시 만든다(사용자 "그대로 두는 것도 다시 다!").
+- **만든 곳:** firefly.adobe.com 효과음 생성(사용자 Adobe 계정, 앱 안 브라우저). 1번 생성 = 10크레딧, 변형 4개, 길이 1초(PowerUp 1.5초).
+  Adobe 안내: Firefly 모델로 만든 결과물은 상업용으로 써도 안전. 유명 게임·브랜드 이름은 프롬프트에 넣지 않았다.
+- **크레딧:** 25번 × 10 = 250 (9,640 → 9,390, 11/4 초기화). 사용자 "크레딧은 걱정마슈", 검수 묶음 OK.
+- **프롬프트:** `art/prompts/SFX_<키>_<번호>.txt` 25개(활 4 · 빛 마법 6 · 뿔 마법 4 · 퍽 4 · 치명타 3 · 점프 2 · PowerUp 2).
+- **원본:** Firefly 생성 기록에서 내려받은 WAV 48 kHz 16비트 스테레오 100개(`build/sfx_firefly/raw`, git 밖, 사용자 OK "이번 세션 계속 받아").
+  애셋 id·sha256은 `art/sfx/cand/firefly_r4.json`, 받는 도구 `tools/sfx_fetch.py`.
+- **우리 손질(4차 b):** 설계표 검사기(`tools/sfx_check.py` + `tools/sfx_spec.json`)의 판정을 목표로 원본마다 여러 자리·길이·고역/저역 통과를
+  시험해 가장 잘 맞는 자르기를 남김(`tools/sfx_cut.py`). 48 kHz 모노, K 가중 가장 큰 100 ms = -17 LUFS, 최고점 -2.5 dBFS 아래.
+  활 두 발 = 같은 화살을 +0.068 s에 1.10배·0.85 크기로 한 번 더(설계표 비평대로).
+- **섞은 것:** 치명타 섞음 = Firefly 퍽 + Firefly 쨍 한 겹. 빛 마법 후보에는 우리 합성 '샤랑'(두 부분음, 22 ms 감쇠)을 아주 얇게 얹은 것이 있다.
+  Kenney 소리는 4차 b 후보에 없다(4차 첫 판의 퍽 섞음은 버림).
+- **시트·듣기판:** 공식 검사기 시트 `art/review/sfx_check_r4b_2026-10-07/<키>.png`(+ `summary.json`), 검수 듣기판
+  https://claude.ai/artifact/EEwW3ounewa6BWPrFMFD2P . 후보 파일 `art/sfx/cand/*.wav`. 4차 첫 판(개발 2 모양 기준) 시트
+  `art/review/sfx_firefly_2026-10-07*.png`은 기록으로만 둔다.
+- 고른 소리를 올리면 이 절에 키·후보·id를 적는다.

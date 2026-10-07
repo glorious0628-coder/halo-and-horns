@@ -1,0 +1,138 @@
+{
+ "made": "2026-10-07 이미지 생성 1 — WorldKit 3D 가져오기 3(build/import_next3/WorldKit_ImportNext3.glb, 10개; 가져오기는 사용자가 직접 함 — 화면 제어 클릭에 '3D 가져오기'가 반응 안 함), 업로드 계정 = 새 계정",
+ "convention": "모두 MeshPart 1개 + 텍스처 1장. 크기 = 스터드(X 폭, Y 높이, Z 깊이). 앞 = Roblox -Z. 피벗 = 밑면 가운데.",
+ "build": "py tools/build_kit_from_ids.py --list art/models/worldkit/import_next3_assets_2026-10-07.json [--only W_Tree] --parent ServerStorage/WorldKit3D --out build/kit_next3_args.json → py tools/studio_mcp.py call execute_luau @build/kit_next3_args.json",
+ "worldkit": "build/WorldKit.rbxlx workspace.Kit3D_ImportNext3 (10 Model; 파일은 저장 안 됨 — id가 원본)",
+ "items": [
+  {
+   "name": "W_GiantTree",
+   "group": "woods_big",
+   "meshId": "rbxassetid://98906136960678",
+   "textureId": "rbxassetid://111797540482847",
+   "size_studs": [
+    62.16,
+    80.0,
+    46.27
+   ],
+   "source_glb": "art/models/tripo/W_GiantTree_raw.glb",
+   "note": "고블린 나무집 고목 — 숲 랜드마크(지도 v2 (960, -90)), 입구에서 나무 위로 보이게 높이 80. 뒤쪽은 나무만 → 나무집 쪽이 길·입구를 보게."
+  },
+  {
+   "name": "W_Gate",
+   "group": "woods_big",
+   "meshId": "rbxassetid://92354414518103",
+   "textureId": "rbxassetid://91807211573167",
+   "size_studs": [
+    24.0,
+    21.1,
+    7.94
+   ],
+   "source_glb": "art/models/tripo/W_Gate_raw.glb",
+   "note": "숲 관문(빈 판, 글자는 SurfaceGui). MapBuilder 계약: 모델 이름 Gate_GoblinWoods + Lintel 파트(PrimaryPart·간판 자리) 유지. 걸어서 지나가게 PreciseConvexDecomposition."
+  },
+  {
+   "name": "W_Totem",
+   "group": "woods_big",
+   "meshId": "rbxassetid://85874937331352",
+   "textureId": "rbxassetid://108120754036226",
+   "size_studs": [
+    4.76,
+    8.0,
+    2.07
+   ],
+   "source_glb": "art/models/tripo/W_Totem_raw.glb",
+   "note": "얼굴 없는 토템(높이 8). 관문 옆 또는 야영지."
+  },
+  {
+   "name": "W_Tent_A",
+   "group": "woods_big",
+   "meshId": "rbxassetid://75491787574805",
+   "textureId": "rbxassetid://71832245558560",
+   "size_studs": [
+    14.0,
+    11.74,
+    11.92
+   ],
+   "source_glb": "art/models/tripo/W_Tent_A_raw.glb",
+   "note": "A자 패치 천막(폭 14). 고블린 야영지."
+  },
+  {
+   "name": "W_Tent_B",
+   "group": "woods_big",
+   "meshId": "rbxassetid://110182929629557",
+   "textureId": "rbxassetid://102167637409277",
+   "size_studs": [
+    14.0,
+    11.99,
+    13.96
+   ],
+   "source_glb": "art/models/tripo/W_Tent_B_raw.glb",
+   "note": "둥근 움막 천막(폭 14). 고블린 야영지."
+  },
+  {
+   "name": "W_Tree_A",
+   "group": "woods_big",
+   "meshId": "rbxassetid://89362965968405",
+   "textureId": "rbxassetid://121465946798694",
+   "size_studs": [
+    30.72,
+    50.0,
+    28.62
+   ],
+   "source_glb": "art/models/tripo/W_Tree_A_raw.glb",
+   "note": "전나무(높이 50, 면 1,500). 숲 곳곳 수십 그루 — 크기 0.8~1.2배·Yaw 무작위로 변형."
+  },
+  {
+   "name": "W_Tree_B",
+   "group": "woods_big",
+   "meshId": "rbxassetid://119752494377465",
+   "textureId": "rbxassetid://128194951234486",
+   "size_studs": [
+    36.07,
+    44.0,
+    27.2
+   ],
+   "source_glb": "art/models/tripo/W_Tree_B_raw.glb",
+   "note": "둥근 참나무(높이 44, 면 1,500, 옹이 없음). 수십 그루 변형 배치."
+  },
+  {
+   "name": "W_Tree_C",
+   "group": "woods_big",
+   "meshId": "rbxassetid://101305312737894",
+   "textureId": "rbxassetid://124382017201104",
+   "size_studs": [
+    37.63,
+    48.0,
+    23.98
+   ],
+   "source_glb": "art/models/tripo/W_Tree_C_vines.glb",
+   "note": "휜 고목 + 덩굴(높이 48, 면 1,500, 덩굴 색은 텍스처로 고침). 수십 그루 변형 배치."
+  },
+  {
+   "name": "W_Boulder_A",
+   "group": "woods_big",
+   "meshId": "rbxassetid://99362269271907",
+   "textureId": "rbxassetid://77504709570662",
+   "size_studs": [
+    12.0,
+    10.95,
+    11.31
+   ],
+   "source_glb": "art/models/tripo/W_Boulder_A_raw.glb",
+   "note": "이끼 큰 바위(폭 12). 야영지 둘레·가장자리. 뒤쪽이 단순 → 앞을 길 쪽으로."
+  },
+  {
+   "name": "W_Boulder_B",
+   "group": "woods_big",
+   "meshId": "rbxassetid://79139351840427",
+   "textureId": "rbxassetid://104486542265201",
+   "size_studs": [
+    14.0,
+    11.61,
+    12.17
+   ],
+   "source_glb": "art/models/tripo/W_Boulder_B_raw.glb",
+   "note": "이끼 바위 둘 + 버섯(폭 14). 야영지 둘레·가장자리. 앞을 길 쪽으로."
+  }
+ ]
+}
