@@ -663,7 +663,7 @@
     },
     {
       "group": "pvp-power",
-      "check": "fallback = Config.CombatPower(data Level, data WeaponTier, WeaponEnhance attribute)",
+      "check": "fallback = Config.CombatPowerOf (the Level / WeaponTier / WeaponEnhance attributes, never the save table)",
       "pass": 1,
       "fail": 0
     },
@@ -807,7 +807,7 @@
     },
     {
       "group": "title-config",
-      "check": "Data.Version stays 3 (additive fields)",
+      "check": "Data.Version stays 3 (the title fields and A23-69's Stats are additive)",
       "pass": 1,
       "fail": 0
     },
@@ -1582,7 +1582,7 @@
         "newFailingCount": 4
       },
       {
-        "mutation": "PvP fallback compares the unrounded PowerOf",
+        "mutation": "PvP fallback is not the displayed number",
         "file": "src/ServerScriptService/PvPService.luau",
         "applied": true,
         "caught": true,
@@ -1590,7 +1590,7 @@
         "newFailingChecks": [
           "pvp-power :: a failing JusticeService.GetCombatPower falls back to Config.CombatPower",
           "pvp-power :: a non-number from JusticeService falls back",
-          "pvp-power :: fallback = Config.CombatPower(data Level, data WeaponTier, WeaponEnhance attribute)",
+          "pvp-power :: fallback = Config.CombatPowerOf (the Level / WeaponTier / WeaponEnhance attributes, never the save table)",
           "pvp-power :: fallback clamps level >= 1 and the tier",
           "pvp-power :: fallback without data reads the attributes"
         ],
@@ -1801,18 +1801,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "5b2acb6d8a7cb1dde585d48e71e8cb6565b9c2a75d1e9960d5c145a8fd4ed2e7",
+    "src/ReplicatedStorage/Shared/Config.luau": "05f24de7415f41bb9225fb4a0c983b22b4d14779522af14d906fd3260592216b",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
-    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
-    "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e",
-    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037"
+    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
+    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce"
   },
-  "fixtureSHA256": "a381b428ba709fae97ceea8c8487794777989eb7c8724b84fca00ca9c51d0c65",
+  "fixtureSHA256": "8fb5336b52c74658a41b282e47648d701ede89ea6ff449a0766ea62c70554cc1",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "BB4 (docs/design/beta_basics_2026-10-05.md): Config.CombatPower(level, tier, +N) = floor(PowerOf(level, tier, 1, +N) x DisplayScale 10 + 0.5) for a weapon (A23-34: bare hands count from 0: Lv1 0, Lv2 12) with samples 283 (Lv1 T1) / 387 (Lv1 T2) / 758 (Lv5 T3) / 1,052 (Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; Config.Power.Text (Label/Up/Change/Formula + En; PvPNote / PvPNoteEn are finished lines built right after Config.PvP: strings with no '%', following PowerRatioMax / PowerRatioMin and equal to exactly (A23-48: both) 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>' (full-sentence compare: max first, min second) and Config.Bully.Text (Title + 3 lines KO/EN built from WeakPowerRatio 50% / FreshSpawnSeconds 15 / RepeatKOs 3 in RepeatWindow 10 min); JusticeService.GetCombatPower = Config.CombatPower from the Level / WeaponTier / WeaponEnhance attributes (no rebirth bonus), GetPower unchanged; the CombatPower attribute is set on PlayerReady, follows Level / WeaponTier / WeaponEnhance with ONE task.defer-coalesced refresh per frame (an equip = one change) and is disconnected on PlayerLeaving; PvPService combatPower fallback = Config.CombatPower, BoldMult x2 at ratio >= 1.2, x0.5 below 0.8, bully weak test victim < 50% of killer, all on the displayed integer. BB16: Data Titles {} / TitleSel \"\" (TitleSel mirrored), Config.TitleDefs / TitleOrder / Beta (GrantPioneer, PioneerUntil 2026-12-19 11:00 KST); BetaPioneer granted on PlayerReady before PioneerUntil (legacy data.BetaPioneer always); no automatic selection: a grant never sets TitleSel (it stays \"\", the faction rank stays the title, no TitleSel SetStat; only the player's SetTitle picks); legacy rows from the first build (TitleSel \"BetaPioneer\" without TitleSelAt) go back to \"\" once at ready (SetTitle records TitleSelAt, so an explicit pick is kept); the pioneer shows as a mark on the nametag's second line (CharacterVisuals, static check); a \"\" choice survives rejoin, GrantPioneer=false stops new grants; GrayLegend when FallMarks and RedeemMarks >= Rebirth.GrayLegendMin (at ready and on change); TitlesOwned = owned TitleOrder ids joined by \",\"; unowned/unknown TitleSel -> \"\" at ready; SetTitle remote: exactly one string <= 32 chars, \"\" or owned, ready, RateLimits.SetTitle 0.5 s, else ignored; titles never change stats; DisplayTitle order session > selected > gray legend > rank.",
+  "contract": "BB4 (docs/design/beta_basics_2026-10-05.md): Config.CombatPower(level, tier, +N) = floor(PowerOf(level, tier, 1, +N) x DisplayScale 10 + 0.5) for a weapon (A23-34: bare hands count from 0: Lv1 0, Lv2 12) with samples 283 (Lv1 T1) / 387 (Lv1 T2) / 758 (Lv5 T3) / 1,052 (Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; Config.Power.Text (Label/Up/Change/Formula + En; PvPNote / PvPNoteEn are finished lines built right after Config.PvP: strings with no '%', following PowerRatioMax / PowerRatioMin and equal to exactly (A23-48: both) 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>' (full-sentence compare: max first, min second) and Config.Bully.Text (Title + 3 lines KO/EN built from WeakPowerRatio 50% / FreshSpawnSeconds 15 / RepeatKOs 3 in RepeatWindow 10 min); JusticeService.GetCombatPower = Config.CombatPowerOf(player) (A23-69: Config.CombatPower from the Level / WeaponTier / WeaponEnhance attributes + StatAtk / StatHp, which count only with the StatPoints switch on; no rebirth bonus), GetPower unchanged; the CombatPower attribute is set on PlayerReady, follows Level / WeaponTier / WeaponEnhance (+ StatAtk / StatHp) with ONE task.defer-coalesced refresh per frame (an equip = one change) and is disconnected on PlayerLeaving; PvPService combatPower fallback = Config.CombatPowerOf (the attributes), BoldMult x2 at ratio >= 1.2, x0.5 below 0.8, bully weak test victim < 50% of killer, all on the displayed integer. BB16: Data Titles {} / TitleSel \"\" (TitleSel mirrored), Config.TitleDefs / TitleOrder / Beta (GrantPioneer, PioneerUntil 2026-12-19 11:00 KST); BetaPioneer granted on PlayerReady before PioneerUntil (legacy data.BetaPioneer always); no automatic selection: a grant never sets TitleSel (it stays \"\", the faction rank stays the title, no TitleSel SetStat; only the player's SetTitle picks); legacy rows from the first build (TitleSel \"BetaPioneer\" without TitleSelAt) go back to \"\" once at ready (SetTitle records TitleSelAt, so an explicit pick is kept); the pioneer shows as a mark on the nametag's second line (CharacterVisuals, static check); a \"\" choice survives rejoin, GrantPioneer=false stops new grants; GrayLegend when FallMarks and RedeemMarks >= Rebirth.GrayLegendMin (at ready and on change); TitlesOwned = owned TitleOrder ids joined by \",\"; unowned/unknown TitleSel -> \"\" at ready; SetTitle remote: exactly one string <= 32 chars, \"\" or owned, ready, RateLimits.SetTitle 0.5 s, else ignored; titles never change stats; DisplayTitle order session > selected > gray legend > rank.",
   "limitations": "Offline doubles: DataStore = in-memory rows (deep copies), PlayerService ready/leave flow and signals modelled on the real one (real SetStat / AddStat), LootService reduced to its WeaponEnhance attribute writes, attribute-changed signals fire immediately and only on a real change, task.defer flushed by the fixture, os.time / os.clock doubles. PvPService is tested through extracted helpers (num, combatPower, BoldMult, the bully weak line), not the whole KO flow. Client HUD / CharacterVisuals / BB8 picker are only checked statically. Studio play, replication and multiple clients are not certified here."
 }
