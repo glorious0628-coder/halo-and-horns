@@ -430,7 +430,8 @@ function M.TryRebirth(player, factionId)
 	end
 
 	Net.Fx(nil, "Rebirth", { UserId = player.UserId, Rebirths = newRebirths, Pos = pos, Mark = mark })
-	Net.Notify(player, string.format(Config.Text.RebirthDone, math.floor(bonus * 100 + 0.5)), "reward")
+	-- sound_gaps C1: the Rebirth sound (Fx "Rebirth") comes after the beta; never QuestDone
+	Net.Notify(player, string.format(Config.Text.RebirthDone, math.floor(bonus * 100 + 0.5)), "reward", nil, "None")
 	if mark == "Fall" then
 		Net.Notify(player, string.format(Config.Story.Fall), "announce")
 	elseif mark == "Redeem" then

@@ -1379,7 +1379,8 @@ local function onPlayerReady(player, _data)
 		if now and not wasBully and player:GetAttribute("AutoCombatEnabled") == true and S.PlayerService.IsReady(player) then
 			S.PlayerService.SetStat(player, "AutoCombatEnabled", false)
 			local outlawOnly = (tonumber(player:GetAttribute("BullyStacks")) or 0) < 1
-			Net.Notify(player, outlawOnly and Config.Ranking.Text.OutlawAutoOff or Config.Text.BullyAutoOff, "bad")
+			-- sound_gaps C3: the AutoOff sound (the attribute) is enough, no Deny on top
+			Net.Notify(player, outlawOnly and Config.Ranking.Text.OutlawAutoOff or Config.Text.BullyAutoOff, "bad", nil, "None")
 		elseif wasBully and not now and not fromOutlaw and (tonumber(player:GetAttribute("BullyStacks")) or 0) <= 0 then
 			local unlocked = player:GetAttribute("AutoCombatUnlocked") == true
 			Net.Notify(player, unlocked and Config.Text.BullyPenaltyEnd or Config.Text.BullyPenaltyEndNoAuto, "good")

@@ -273,7 +273,7 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 		local gold = LOOT.DuplicateWeaponGold[tier] or 0
 		if gold > 0 then
 			S.ProgressionService.AddCarriedGold(player, gold, "Loot")
-			notify(player, string.format(TXT.DuplicateWeapon, weaponName(player, tier), Util.FormatNumber and Util.FormatNumber(gold) or tostring(gold)), "reward")
+			notify(player, string.format(TXT.DuplicateWeapon, weaponName(player, tier), Util.FormatNumber and Util.FormatNumber(gold) or tostring(gold)), "reward", "GoldPickup")
 		end
 		return
 	end
@@ -285,16 +285,17 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 	-- the line says so (never "equip it in the menu" for a weapon already in hand)
 	local before, after = equipIfBare(player, data, tier)
 	if isJackpot then
+		-- sound_gaps C1: equipped from bare hands = the HUD's power-up moment sounds it (None), else Equip
 		notify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))
-			or string.format(TXT.JackpotSelf, name), "reward")
+			or string.format(TXT.JackpotSelf, name), "reward", before and "None" or "Equip")
 		announce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)
 	else
-		notify(player, string.format(TXT.RareWeapon, Config.WeaponGrade(tier).Name, name), "reward")
+		notify(player, string.format(TXT.RareWeapon, Config.WeaponGrade(tier).Name, name), "reward", before and "None" or "Equip")
 		local g = Config.WeaponGrade(tier)
 		if g.Rank >= ((Config.Announce and Config.Announce.MinWeaponGrade) or 3) then
 			announce(player, "RareWeapon", { Weapon = tier, Monster = kind }, tier)
 		end
-		if before then notify(player, string.format(TXT.BareEquip, name, formatNumber(before), formatNumber(after)), "reward") end
+		if before then notify(player, string.format(TXT.BareEquip, name, formatNumber(before), formatNumber(after)), "reward", "None") end
 	end
 end
 
@@ -313,10 +314,11 @@ function LootService.GrantFirstWeapon(player, tier)
 	local name = weaponName(player, tier)
 	local before, after = equipIfBare(player, data, tier)
 	if before then
-		notify(player, string.format(TXT.FirstWeapon, name, formatNumber(before), formatNumber(after)), "reward")
+		-- sound_gaps C1: the HUD's first-weapon moment plays PowerUp; no QuestDone on top
+		notify(player, string.format(TXT.FirstWeapon, name, formatNumber(before), formatNumber(after)), "reward", "None")
 	else
 		publish(player, data)
-		notify(player, string.format(TXT.FirstWeaponBag, name), "reward")
+		notify(player, string.format(TXT.FirstWeaponBag, name), "reward", "Equip")
 	end
 	return tier
 end
@@ -383,7 +385,7 @@ function LootService.RollKill(player, info)
 			-- "where to use it" toast for this scroll (one toast, not two)
 			-- A23-34: no weapon owned yet (the M1_1 gift comes later) -> the hint says where the first weapon comes from
 			local line = math.floor(num(data.WeaponOwnedMask, 0)) == 0 and TXT.FirstScrollBare or TXT.FirstScroll
-			pcall(Net.Notify, player, line, "reward", num(first.NoticeSeconds, 6))
+			pcall(Net.Notify, player, line, "reward", num(first.NoticeSeconds, 6), "None") -- the drop has its own sound
 		end
 	end
 

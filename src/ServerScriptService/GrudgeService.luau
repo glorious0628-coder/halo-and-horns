@@ -332,7 +332,7 @@ local function pay(thief, sack)
 		-- BB10: the stat gets every point; the weekly board only the fair part (sack.RankInfamy, never sack.Infamy)
 		S.PlayerService.GrantFame(thief, "Infamy", sack.Infamy, { RankPoints = sack.RankInfamy or 0 })
 	end
-	notify(thief, fmt("SackPaid", Util.FormatNumber(sack.Total)), "reward")
+	notify(thief, fmt("SackPaid", Util.FormatNumber(sack.Total)), "reward", "GoldPickup") -- sound_gaps C1
 	closeSack(thief, sack, "Paid", true)
 end
 
@@ -369,7 +369,9 @@ local function avenge(thief, sack, killer)
 				notify(victim, fmt("GrudgeRefund", Util.PlayerDisplayName(killer), Util.FormatNumber(refund)), "good")
 				local victimPos = rootPos(victim)
 				if thiefPos and victimPos then
-					Net.Fx(victim, "Plunder", { From = thiefPos, To = victimPos, Amount = refund })
+					-- sound_gaps B2: the robbed player gets gold back (Refund: the client plays GoldPickup, not Plunder)
+					Net.Fx(victim, "Plunder", { From = thiefPos, To = victimPos, Amount = refund, Victim = victim.UserId,
+						Thief = killer.UserId, Refund = true })
 				end
 			end
 		elseif not victim then
@@ -380,7 +382,7 @@ local function avenge(thief, sack, killer)
 	-- "복수 대행" bonus, once per AVENGER per PairRewardCooldown whatever the thief (CR-L6; avenger's save, CR-M4)
 	if pairReady(killer, 0, "avenge", Config.PvP.PairRewardCooldown) then
 		S.ProgressionService.AddBankGold(killer, G.AvengerBonus, "Bounty")
-		notify(killer, fmt("AvengerBonus", Util.FormatNumber(G.AvengerBonus)), "reward")
+		notify(killer, fmt("AvengerBonus", Util.FormatNumber(G.AvengerBonus)), "reward", "GoldPickup")
 	end
 
 	Net.NotifyAll(fmt("GrudgeAvengedAll", publicName(killer, true), publicName(thief, true)), "info")
