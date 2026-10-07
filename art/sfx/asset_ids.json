@@ -54,11 +54,10 @@
     "KO": "rbxassetid://137556643487651",
     "Respawn": "rbxassetid://128867123359602",
     "Plunder": "rbxassetid://74602898707411",
-    "JackpotOther": "rbxassetid://99814762304779"
+    "JackpotOther": "rbxassetid://99814762304779",
+    "SkillLearn": "rbxassetid://113535664889883"
   },
-  "pending": [
-    "SkillLearn"
-  ],
+  "pending": [],
   "old": {
     "about": "round-3 uploads (2026-10-07, art/sfx/*.ogg masters); Config.Audio.Files still points here until 게임성 개발 1 wires the round-4 ids below. Delete these assets / files only after the new ids are wired and checked in Play.",
     "uploaded": "2026-10-07",
