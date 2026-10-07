@@ -84,8 +84,8 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
-    "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
+    "src/ReplicatedStorage/Shared/Config.luau": "5b2acb6d8a7cb1dde585d48e71e8cb6565b9c2a75d1e9960d5c145a8fd4ed2e7",
+    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "57131370823a481425a033dc1b864b62f56dcfe07e8836631433f675b4ae7293"
   },
   "fixtureSHA256": "24e31f74fce43e19e28881d242631fc480a6f2de00d18534c07281a415263aa9",

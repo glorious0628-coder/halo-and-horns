@@ -1685,10 +1685,12 @@ function Config.QuestKind(kind)
 	return kind
 end
 
--- quality_ideas ③ monster barks (lines_pack §2-2 as written): BarkService picks a line at MonsterService.Moment
--- (Spot / Hit) and its Idle roll and writes it on the monster model (attributes Bark, BarkAt); game dev 1's
--- MonsterLabels shows it in a BillboardGui bubble.
--- English only (A23-48), <= 8 words a line. Cadence: one bark per monster per PerMonster s, per zone per PerZone s.
+-- quality_ideas ③ monster barks: BarkService picks a line at MonsterService.Moment (Spot / Hit) and its Idle roll and
+-- writes it on the monster model (attributes Bark, BarkAt); game dev 1's MonsterLabels shows it in a BillboardGui bubble.
+-- A23-74 (user 2026-10-07 "몬스터들이 말하는 건 의성어 의태어나 단어 수준이면 좋겠어"): every line is a sound word or one
+-- short word in the monster's own voice - at most 2 words and 12 letters (marks included), English (A23-48), no two
+-- kinds share a line. They replace lines_pack §2-2's sentences; kinds and moments stay, so BarkService is unchanged.
+-- Cadence: one bark per monster per PerMonster s, per zone per PerZone s.
 -- Missing kind -> Config.QuestKind(kind) lines. Golden monsters (Config.Monsters.GoldenChance, incl. the tutorial
 -- golden slime) prefer Lines.Golden for EVERY trigger; a trigger Golden lacks falls back to the kind's lines.
 -- Lines.Goose is for GooseService (the optional goose barks, lines_pack §2-1: not wired yet; BarkService skips it).
@@ -1698,96 +1700,107 @@ Config.Barks = {
 	PerZone = 6, -- s: at most one bark per zone (all monsters in it share this)
 	Show = 3, -- s the bubble stays up
 	MaxDistance = 60, -- studs: bubble visible range
+	-- A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지"): one bubble art per monster kind, Config.UIArt.Parts
+	-- "BarkBubble" .. kind (12 keys). MonsterLabels tries the kind's own key, then its family's key (BubbleFamily = kind ->
+	-- family; a kind not listed uses its Config.QuestKind's family; BubbleArt = family -> the family's base monster key),
+	-- each only while its Id is uploaded (not "") and it is round (no Slice), then the round code bubble - never the
+	-- shared 9-slice BarkBubble (user "말풍선 가로로 길쭉한 거 말고": drawn small its body stays ~2.4 : 1).
+	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
+		Goblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonKnight = "Skeleton",
+		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost" },
+	BubbleArt = { Slime = "BarkBubbleSlime", Pumpkin = "BarkBubblePumpkinSlime", Goblin = "BarkBubbleGoblin",
+		Skeleton = "BarkBubbleSkeleton", Ghost = "BarkBubbleGhostMinion" },
 	LowAt = 0.3, -- HP fraction for Low (once per life)
 	IdleEvery = 10, -- s between Idle rolls (no target, a player within IdleNear)
 	IdleNear = 40,
 	Chance = { Spot = 0.5, Hit = 0.2, Low = 1, Idle = 0.15 },
 	Priority = { "Low", "Spot", "Hit", "Idle" }, -- same moment: only the first one speaks
+	-- A23-74: sound words (Spot = it sees you, Hit = it is hit, Low = HP below LowAt, Idle = just hanging around)
 	Lines = {
-		Slime = {
-			Spot = { "Blub?", "Blub! New friend? Blub!" },
-			Hit = { "Bloop! Rude.", "Squish! Hey, I'm jelly!" },
-			Low = { "Wobbly… so wobbly… blub." },
-			Idle = { "Blub blub. Sparkle snack time." },
+		Slime = { -- a happy jelly
+			Spot = { "Blub?", "Boing!" },
+			Hit = { "Squish!", "Plop!" },
+			Low = { "Wobble…", "Blub… blub…" },
+			Idle = { "Blub blub~", "Jiggle~" },
 		},
-		PumpkinSlime = {
-			Spot = { "Blub-kin? Blub-kin!" },
-			Hit = { "Squish! My stem!" },
-			Low = { "Too squishy! Need a patch nap." },
-			Idle = { "Orange is my best color. Blub.", "Candy smells nice today. Blub-kin." },
+		PumpkinSlime = { -- a giggly pumpkin jelly
+			Spot = { "Hehe!", "Blub-kin?" },
+			Hit = { "Thump!", "Squash!" },
+			Low = { "Squelch…", "Too squishy!" },
+			Idle = { "Thump thump~", "Hehe~" },
 		},
-		BigSlime = { -- King Slime
-			Spot = { "Who dares wobble near the King?", "A visitor! Bow! Or wobble. Either works." },
-			Hit = { "Hey! Royal jelly here!" },
-			Low = { "The King needs… a royal nap." },
-			Idle = { "King of the puddle. Big puddle!", "Royal rule one: more snacks. Blub." },
+		BigSlime = { -- King Slime: big and royal
+			Spot = { "BLOOP!", "Bow! Blub!" },
+			Hit = { "SPLOOSH!", "Royal BOING!" },
+			Low = { "Royal nap…", "Bloop… zzz" },
+			Idle = { "Ahem. BLOOP.", "Big blub~" },
 		},
-		Goblin = {
-			Spot = { "Dibs! Need more glow!", "Ooh, sparkly! Grab Club, grab!" },
-			Hit = { "Hey! I grabbed first!" },
-			Low = { "Wait… why do we grab again?" },
-			Idle = { "Meeting #47: grab more. Same as #46.", "Grab more glow. Then… grab more." },
+		Goblin = { -- Grab Club: wants everything shiny
+			Spot = { "Heh!", "Mine!", "Ooh, shiny!" },
+			Hit = { "Hey! Mine!", "Oof!" },
+			Low = { "Yikes!", "Eep! Run!" },
+			Idle = { "Heh heh.", "Grab grab~" },
 		},
-		BatGoblin = {
-			Spot = { "Flap flap! Candy? Dibs!", "Bat Club? No, Grab Club! Flap!" },
-			Hit = { "Eek! Watch the wings!" },
-			Low = { "Flap away! Grab later!" },
-			Idle = { "Grab Club, night shift. Flap flap." },
+		BatGoblin = { -- a squeaky night goblin
+			Spot = { "Skree!", "Flap flap!" },
+			Hit = { "Eek!", "Skree-eek!" },
+			Low = { "Flap away!" },
+			Idle = { "Flap flap~", "Skree~" },
 		},
-		GoblinBrute = {
-			Spot = { "New stuff for the sack!", "Not stealing! Surprise collecting!" },
-			Hit = { "Hey! Sack's closed today!", "Ow! Mind the sack!" },
-			Low = { "Sack too heavy… can't run!" },
-			Idle = { "Big sack. Bigger sack. BIGGEST sack!" },
+		GoblinBrute = { -- a grumpy goblin with a big sack
+			Spot = { "Grrr!", "Sack time!" },
+			Hit = { "Hmph!", "Ugh! Sack!" },
+			Low = { "Heavy sack…" },
+			Idle = { "Big sack~", "Grumble~" },
 		},
-		Skeleton = {
-			Spot = { "HALT! …Please?", "Guarding! Guarding what? Not sure. Halt!" },
-			Hit = { "Clank! I'm on duty here!" },
-			Low = { "Clatter clatter! I'm fine. Mostly." },
-			Idle = { "Is it Wednesday yet? …No.", "Tuesday again. Love Tuesdays. I think." },
+		Skeleton = { -- a bony guard who lost track of the days
+			Spot = { "Rattle!", "Clack clack!" },
+			Hit = { "Clank!", "Clack!" },
+			Low = { "Clatter…" },
+			Idle = { "Rattle~", "Tuesday?" },
 		},
-		SkeletonKnight = {
-			Spot = { "Halt! Knight on duty. Since forever." },
-			Hit = { "My armor! I polished it Tuesday!" },
-			Low = { "Is my shift over yet?" },
-			Idle = { "Same post. Same Tuesday. Same me.", "Guarding the Crown. Which Crown? Oh well." },
+		SkeletonKnight = { -- an old knight, always on duty
+			Spot = { "Halt!", "Who goes?" },
+			Hit = { "CLANG!", "My armor!" },
+			Low = { "Shift over?" },
+			Idle = { "On duty.", "Clank… yawn." },
 		},
-		GhostMinion = {
-			Spot = { "Boo! Boo! Boo! …Together now!", "Team Boo, go!" },
-			Hit = { "Hey! Wait for the team!" },
-			Low = { "Float away! Float away!" },
-			Idle = { "Count off! One, two, boo!" },
+		GhostMinion = { -- Team Boo
+			Spot = { "Boo!", "Team Boo!" },
+			Hit = { "Eep!", "Boo-hoo!" },
+			Low = { "Float away!" },
+			Idle = { "Boo-boo-boo!", "Hoo-hoo~" },
 		},
-		LittleGhost = {
-			Spot = { "Boo! …Did that work?" },
-			Hit = { "Eep! That tickles!" },
-			Low = { "I'm see-through enough already!" },
-			Idle = { "Floaty floaty. Candy smells nice.", "Boo practice. Day one hundred." },
+		LittleGhost = { -- a shy little ghost
+			Spot = { "Wooo~", "Boo…?" },
+			Hit = { "Tickles!", "Oopsie!" },
+			Low = { "Fading…" },
+			Idle = { "Floaty~", "Wooo-ooo~" },
 		},
-		GhostKing = {
-			Spot = { "Visitors! Finally! Welcome to my hollow!", "BOO! …The Pumpkin King never does that." },
-			Hit = { "Ow! I'm see-through, not tough!" },
-			Low = { "Fading… dramatically… are you watching?" },
-			Idle = { "My hollow beats his patch. Obviously." },
+		GhostKing = { -- a dramatic ghost king
+			Spot = { "OOOH!", "Visitors!" },
+			Hit = { "Ow-ooh!", "Hoo-ouch!" },
+			Low = { "Ooh… fading…" },
+			Idle = { "OOOH~", "Ooh-hoo-hoo~" },
 		},
-		PumpkinKing = {
-			Spot = { "Welcome to my patch! Pick a pumpkin!" },
-			Hit = { "Ha! You tickle my stem!" },
-			Low = { "Fine, fine! Candy for everyone!" },
-			Idle = { "Ghost King thinks he's the best. Cute.", "Same patch, every year. Best patch!" },
+		PumpkinKing = { -- a jolly pumpkin king
+			Spot = { "HA-HA!", "Welcome!" },
+			Hit = { "HA! Tickles!", "Ho-ho!" },
+			Low = { "Candy time!" },
+			Idle = { "HA-HA-HA!", "Best patch!" },
 		},
 		Golden = { -- any golden monster: used first for every trigger
-			Spot = { "So much sparkle! Not sharing!" },
-			Hit = { "Hey! You're scratching my shine!" },
-			Low = { "Okay, okay! Share the sparkle!" },
-			Idle = { "Ate all the dust. Tummy ache." },
+			Spot = { "Bling!", "Shiny me!" },
+			Hit = { "My shine!" },
+			Low = { "Okay, share!" },
+			Idle = { "Burp. Shiny." },
 		},
 		Goose = { -- GooseService: Spot = appears, Hit = accepted tug (RegisterHit), Idle = hovering,
 			-- Low = co-op gauge >= 0.8, or tug-of-war pivot >= 0.8 of the way to either end
-			Spot = { "HONK! I'm not a piggy bank!" },
-			Hit = { "Honk! Gentle hands, please!", "Tug, tug, HONK!" },
-			Low = { "Okay, okay! You win! Honk!" },
-			Idle = { "No golden eggs today. Honk.", "Both sides want me? Popular goose!" },
+			Spot = { "HONK!" },
+			Hit = { "Honk?!", "Tug-HONK!" },
+			Low = { "Honk… okay!" },
+			Idle = { "Honk honk~", "Waddle~" },
 		},
 	},
 }
@@ -4195,7 +4208,7 @@ Config.UIArt = {
 		PortraitPotionMerchant = { Id = "rbxassetid://87346642697895", Size = Vector2.new(486, 512) },
 		PortraitMerchantC = { Id = "rbxassetid://85592132165738", Size = Vector2.new(487, 512) },
 		FullPotionMerchant = { Id = "rbxassetid://119279738895658", Size = Vector2.new(449, 768) },
-		FullMerchantC = { Id = "rbxassetid://126082561922667", Size = Vector2.new(494, 768) },
+		-- FullMerchantC (the old blacksmith full body) removed 2026-10-07: unused (검수); 이미지 생성 2 cleans the file
 		-- A23-40 layout B parts (Firefly 2026-10-06: 83eaffb minimap_ring_sheet, ccab705 / a601f39 b12 / b1213 sheets)
 		MinimapRing = { Id = "rbxassetid://79170457332929", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
 		WarMeterFrame = { Id = "rbxassetid://73887778381300", Size = Vector2.new(512, 74), Tone = "Navy", Inner = Rect.new(66, 22, 442, 54) }, -- opaque navy inside: the fills draw above it
@@ -4239,13 +4252,15 @@ Config.UIArt = {
 		GlyphSneakyHorns = { Id = "rbxassetid://101558632670193", Size = Vector2.new(256, 256) },
 		-- monster bark bubble (8e517a6, user OK via review): white + thick navy rim, tail at the bottom left (points down at
 		-- the monster), no letters - dark navy text in TextRect. SliceScale 0.3 keeps the tail the same size at ~52 px and
-		-- lets only the 24 px middle band grow for a second line. MonsterLabels BillboardGui (game dev 1, BarkService)
+		-- lets only the 24 px middle band grow for a second line. Now the HUD hint bubble's only (HUD.luau); monster barks
+		-- no longer use it (A23-74: BarkBubble<Kind> below, else MonsterLabels' round code bubble)
 		BarkBubble = { Id = "rbxassetid://124351323911597", Size = Vector2.new(512, 190), Slice = Rect.new(84, 65, 446, 89), SliceScale = 0.3, TextRect = { 0.077, 0.181, 0.844, 0.448 } },
 		-- A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지" / "가로로 길쭉한 거 말고"): one bark bubble per monster
 		-- kind, "BarkBubble" .. kind. A round chubby bubble (about 1.2-1.5 : 1, small tail at the bottom left, big empty middle),
 		-- NOT 9-sliced: MonsterLabels draws it ~104 px wide with ScaleType Fit, height from Size. Id = "" = not drawn yet:
-		-- the family's key (Config.Barks.BubbleFamily / BubbleArt), else BarkBubble (IMG-R4). With the id add Size (the
-		-- PNG px) and TextRect (the empty middle as fractions); no Slice.
+		-- the family's key (Config.Barks.BubbleFamily / BubbleArt), else the round code bubble (IMG-R4; never the wide
+		-- 9-slice BarkBubble above, which only the HUD hint bubble uses). With the id add Size (the PNG px) and TextRect
+		-- (the empty middle as fractions); no Slice (a sliced key is skipped).
 		BarkBubbleSlime = { Id = "rbxassetid://121607411194048", Size = Vector2.new(512, 415), TextRect = { 0.202, 0.333, 0.562, 0.394 } },
 		BarkBubbleBigSlime = { Id = "rbxassetid://121478824500297", Size = Vector2.new(512, 445), TextRect = { 0.232, 0.385, 0.543, 0.338 } },
 		BarkBubblePumpkinSlime = { Id = "rbxassetid://85044172676856", Size = Vector2.new(512, 438), TextRect = { 0.254, 0.356, 0.486, 0.36 } },
@@ -4729,8 +4744,10 @@ Config.CustomModels = {
 	FolderName = "CustomModels",
 	GooseId = "GoldenGoose",
 	-- golden variant: gold Highlight instead of recoloring parts. 0.5 looked like see-through jelly on the textured cube
-	-- (user 2026-10-06 "투명해 보여"): a stronger fill reads as gold
-	GoldenFillTransparency = 0.25,
+	-- (user 2026-10-06 "투명해 보여"), 0.25 still a flat half-see-through gold layer (an olive ghost on the green slime,
+	-- user 2026-10-07 "왜 반투명한 애들이 생기냐고", A23-74): no fill, the body stays opaque under a solid gold rim
+	-- (with the gold sparkles, light and name)
+	GoldenFillTransparency = 1,
 }
 
 -- A23-5 (2026-10-05): every chibi 3D class costume is out of the game (CostumeService and its folders were removed

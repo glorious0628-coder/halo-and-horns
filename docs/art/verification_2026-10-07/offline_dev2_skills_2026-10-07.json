@@ -279,7 +279,7 @@
     },
     {
       "group": "refusals",
-      "check": "SKL-3: X goes off with XEnabled (Guardian Roar, MP 30)",
+      "check": "X before SKL-3: nothing happens, nothing spent",
       "pass": 1,
       "fail": 0
     },
@@ -1303,7 +1303,7 @@
           "auto :: auto Mage, 2 spread targets: Chain Bolt before Q",
           "auto :: auto Warrior: 2 in the band -> Earth Cleave without the pull"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 22
       },
       {
         "mutation": "Released Auto always false",
@@ -1380,7 +1380,7 @@
           "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit",
           "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn"
         ],
-        "newFailingCount": 67
+        "newFailingCount": 66
       },
       {
         "mutation": "slots can go down",
@@ -2033,7 +2033,7 @@
           "aim behind :: a Meteor turned to a slime behind: the enemy next to it is not hit",
           "aim behind :: a slime in front and a nearer one behind: the chain starts in front, no turn"
         ],
-        "newFailingCount": 69
+        "newFailingCount": 68
       }
     ]
   },
@@ -2041,24 +2041,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
+    "src/ReplicatedStorage/Shared/Config.luau": "5b2acb6d8a7cb1dde585d48e71e8cb6565b9c2a75d1e9960d5c145a8fd4ed2e7",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
-    "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
-    "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
-    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
-    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
+    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
+    "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
+    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
+    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
+    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/SkillService.luau": "3a11db855624b8f07a2c1cd36693e3e914e766228c6fcce0cfebaad10a8ffdf6",
-    "src/ServerScriptService/MonsterService.luau": "06bf0e1ebb61dd86226b35dca17e8d16de085c1e749d75dff728e773bbed3077"
+    "src/ServerScriptService/SkillService.luau": "9e30e596b881e7348797ded6a4e06e958c3429594e8a26d5d8469b6f7df7bd47",
+    "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a"
   },
-  "fixtureSHA256": "3afb962f59ac0ff33646cf23181bc4521a73ff6770ec8682142095399b9ff03b",
+  "fixtureSHA256": "bd0fa06732c4245980271e20e34c58147360646202cd497b1acf51556d9be041",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
   "contract": "SKL-2 (A23-49): UseSkill(slot) -> SkillService.Cast: GlobalGap 0.5 s between any two skills (a manual press inside it queued once, an auto cast waits), refusals before MP with Fx SkillPress { Slot, Result }. Q = CombatService.Release (returns true, Released.Slot = \"Q\"); Z shapes: Line (band Len x Width toward the nearest aimed target, else ahead) and Chain (Range, Jump, Hits, no repeats; no target = NoTarget). Damage D x Mult once a target; pull (manual) / push via MonsterService.Displace (stop 3 in front, / body scale, bosses never, zone rect + leash + ground + walls, shorter steps). DamageWindow: 3 s per pair, player damage 35% (kaiju 8%), Halo heal 30% an ally, Horns steal 3% - Q and Z share it; players only with PvPZX and a manual cast. Slots (A23-71): SkillSlots 0..3 = Config.SkillSlotsFor (Q Lv5 / Z Lv15 / X Lv25, all after a rebirth), never lowered, Fx SkillUnlocked (Q always, Z / X only while the slot's flag is on); no skill before Lv5 (manual, the old Release remote and auto). Auto: Z first by its rule (Min / OrBig / BeforeQIfSpread), never pulls.",
-  "limitations": "X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal and the X-first auto order are SKL-3: tools/test_skills_x.py (SK1 / SK2 in tools/test_town_quests.py). The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline."
+  "limitations": "X shapes (Field / Roar / Hop), Guard / Slow / Taunt / MP steal, SK1 / SK2 and the X-first auto order are SKL-3. The client parts (SkillBar buttons, SkillFx looks, the refusal shake / words, the unlock page) are game dev 1's and image dev's. Displace's slide itself (the CFrame loop) is not run offline."
 }

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 485,
+  "checks": 470,
   "failedChecks": 0,
-  "namedChecks": 482,
+  "namedChecks": 467,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1089,96 +1089,6 @@
     },
     {
       "group": "a23-71 skill quests",
-      "check": "no service warnings (pcall-swallowed handler errors)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "SK1: Z hitting 2 once; SK2: the fountain, a pick, X hits x3 (both in the sub list)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "ZEnabled off: no SK1, even with Z's slot saved",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "the Z switch on and the slot open: SK1 with its Start line",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "only Q learned (slot 1): no SK1",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "a Q cast hitting 4, a Z hitting 1 or an auto Z: not counted",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "a manual Z hitting 2: SK1 done",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "XEnabled off: no SK2",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "the X switch on and slot 3: SK2 starts at the fountain step",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "at the Crossroads fountain: the pick",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "Halo 'Guard my friends': Pick Guard, Honor +1, then the X step",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "a Z cast or an X that hit nothing: not counted",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "3 manual X casts that hit: SK2 done",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
-      "check": "group ran to the end without a Lua error",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "skl3 subs",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -2901,75 +2811,14 @@
     }
   ],
   "findings": [],
-  "staticChecks": 5,
+  "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 97,
-    "applied": 97,
-    "caught": 97,
+    "total": 92,
+    "applied": 92,
+    "caught": 92,
     "skipped": false,
     "results": [
-      {
-        "mutation": "SKL-3: SkillHit ignores the Slot",
-        "file": "src/ServerScriptService/StoryQuestService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "skl3 subs :: a Q cast hitting 4, a Z hitting 1 or an auto Z: not counted",
-          "skl3 subs :: a Z cast or an X that hit nothing: not counted"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "SKL-3: Requires.Skill ignores the switch",
-        "file": "src/ServerScriptService/StoryQuestService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "skl3 subs :: XEnabled off: no SK2",
-          "skl3 subs :: ZEnabled off: no SK1, even with Z's slot saved",
-          "skl3 subs :: the Z switch on and the slot open: SK1 with its Start line"
-        ],
-        "newFailingCount": 3
-      },
-      {
-        "mutation": "SKL-3: Requires.Skill ignores the slot",
-        "file": "src/ServerScriptService/StoryQuestService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "skl3 subs :: only Q learned (slot 1): no SK1"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "SKL-3: SK2 forgotten in the sub list",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "skl3 subs :: SK1: Z hitting 2 once; SK2: the fountain, a pick, X hits x3 (both in the sub list)",
-          "skl3 subs :: at the Crossroads fountain: the pick",
-          "skl3 subs :: group ran to the end without a Lua error",
-          "skl3 subs :: the X switch on and slot 3: SK2 starts at the fountain step"
-        ],
-        "newFailingCount": 4
-      },
-      {
-        "mutation": "SK2 'Guard' has no side (no change of mind)",
-        "file": "src/ServerScriptService/StoryQuestService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "skl3 subs :: SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one"
-        ],
-        "newFailingCount": 1
-      },
       {
         "mutation": "A23-71: no 'Skills come' tail",
         "file": "src/ServerScriptService/StoryQuestService.luau",
@@ -3804,10 +3653,9 @@
         "crashed": false,
         "newFailingChecks": [
           "e2-changed-mind :: Good then Evil: 'You gave it last time…'",
-          "e2-changed-mind :: an artisan's A after B: 'You kept it last time…'",
-          "skl3 subs :: SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one"
+          "e2-changed-mind :: an artisan's A after B: 'You kept it last time…'"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 2
       },
       {
         "mutation": "E2: 0-point picks count as a change",
@@ -4143,20 +3991,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
+    "src/ReplicatedStorage/Shared/Config.luau": "5b2acb6d8a7cb1dde585d48e71e8cb6565b9c2a75d1e9960d5c145a8fd4ed2e7",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
-    "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
-    "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
-    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
-    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CombatService.luau": "bf477cece3556e4b08dfeb86261fa925630831bf72fa74a527161691d3d5c142",
+    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
+    "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
+    "src/ServerScriptService/PvPService.luau": "493627968058a7c5cfff923ff1294ecf69fb31ef9b97f005dc7ad5d47b70c037",
+    "src/ServerScriptService/ShopService.luau": "6ffdf75b3bc038f466c4275d79fe02fe920551bf9d4a44203625dbf0d2a53f5a",
+    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
-    "src/ServerScriptService/FactionService.luau": "e4ba1e0bd8b6b1a4e027472d519fdd1b83ba999ecf7ee99ff84f510b8166e0d9",
-    "src/ServerScriptService/ProgressionService.luau": "227961d963eb15c19e96eda039fc662a2220110a7020274397ed1ab69e078b94"
+    "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
+    "src/ServerScriptService/ProgressionService.luau": "ce551b175872bcb70c923ddcfea4831c38c0861bdd84876cb100c13a4a32a09a"
   },
-  "fixtureSHA256": "75d686d233e814dd53b38dfd535b24fbee951af9bbb0c2a98a2a343185f375f2",
+  "fixtureSHA256": "fe0b90f47f1aeaf3ff282d84def7254397a67b9f348f2c82c716817f8620d5b1",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

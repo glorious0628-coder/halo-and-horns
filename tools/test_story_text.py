@@ -12,7 +12,7 @@ Checks (each finding = level, rule, Config path, source line, the text):
                       (warn/print/error/assert) or the NicknameService word lists (info).
   2. length           an in-game line (story page line, toast, banter, quest row): > 14 words warn, > 18 error.
                       Each "\n" part is one line; a leading "Speaker:" name is not counted; {Token} and %s = 1 word.
-     length-bark      Config.Barks lines: > 8 words warn (lines_pack §2).
+     length-bark      Config.Barks lines: > 2 words or > 12 letters warn (A23-74 sound words, user 2026-10-07).
   3. banned-*         kids 8-12 / satire rules: gore and swear words (error); die/dead/kill (error, warn when the line
                       is about a monster: prefer "beat" / "defeat"); romance words (error); scary / insult words (warn);
                       real brands, countries, religions, politicians (warn); money pressure (free!, sale, hurry,
@@ -960,8 +960,8 @@ class Checker:
                     add("error", "length", path, seg, f"{n} words (> 18)")
                 elif n > 14:
                     add("warn", "length", path, seg, f"{n} words (> 14)")
-                elif bark and n > 8:
-                    add("warn", "length-bark", path, seg, f"bark {n} words (> 8)")
+                elif bark and (n > 2 or len(seg) > 12):
+                    add("warn", "length-bark", path, seg, f"bark {n} words / {len(seg)} letters (> 2 / 12, A23-74)")
                 for rule, level, rx, note in BANNED:
                     m = rx.search(seg)
                     if m:

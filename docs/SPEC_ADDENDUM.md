@@ -968,6 +968,9 @@ Applied in the Studio preview map (`tools/preview_map.lua` v3). Config must matc
   golden silhouette against the (unfogged) sky, so the real crown is enough. The optional `BillboardGui` (name `CrownSkyBillboard`,
   `AlwaysOnTop = false`, `LightInfluence = 0`, `MaxDistance = 1e5`, Size in studs ≈ 200×120) on an invisible anchor part at the
   crown position (ViewportFrame clone of the crown) exists but stays `Enabled = false`; no client code needed.
+  **2026-10-08 (검수 audit K3-02): not used** — the 3D crown (Crown_Broken_B) is what players see; the anchor + billboard
+  left the main place (ServerStorage.MapV1Backup.Landmarks). Only `tools/preview_map.lua` "full" mode (empty places) still
+  makes one.
 - **World Map (new client module `StarterPlayerScripts/WorldMap.luau`, owner: new group G13):** full-screen panel opened by
   the Menu panel's "지도" entry and the `M` key (also a small "지도" chip on the HUD top-right under the zone pill). Draws a
   top-down map from Config only (no screenshots, no asset ids): Config.Map.Lands (land shapes), sea background, zone rectangles

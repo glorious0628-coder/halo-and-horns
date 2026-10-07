@@ -150,7 +150,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
+    "src/ReplicatedStorage/Shared/Config.luau": "5b2acb6d8a7cb1dde585d48e71e8cb6565b9c2a75d1e9960d5c145a8fd4ed2e7",
     "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "f429d7ad0e5827457ea419f8d557e737931de1f339b0f45261be89538b55c930"
   },
   "fixtureSHA256": "7529ed9319468892c09cd5fa2d35d3e55062f1dcdb0e3253892f7479a59be6ec",

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7243,
+  "checks": 7260,
   "failedChecks": 0,
-  "namedChecks": 589,
+  "namedChecks": 606,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1719,12 +1719,6 @@
     },
     {
       "group": "king-rewards",
-      "check": "KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "king-rewards",
       "check": "overkill does not count: 1 + 1 + (1e9 on 30 HP) = 32 damage, not paid",
       "pass": 1,
       "fail": 0
@@ -1732,12 +1726,6 @@
     {
       "group": "king-rewards",
       "check": "the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "king-rewards",
-      "check": "one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)",
       "pass": 1,
       "fail": 0
     },
@@ -1779,7 +1767,7 @@
     },
     {
       "group": "king-leave-visual",
-      "check": "a kill: the parts shrink to 0.2 and fade, with the particle burst",
+      "check": "a kill: the parts shrink to 0.2 with the particle burst and stay opaque (no fade)",
       "pass": 1,
       "fail": 0
     },
@@ -1791,25 +1779,43 @@
     },
     {
       "group": "king-leave-visual",
+      "check": "a killed slime: its CustomVisual keeps its size on the server (the clients splat it), its hidden parts shrink, removed at 1.15 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "a defeated Pumpkin King (slime shape) is splatted by the clients too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "a slime without a custom model (procedural ball, no client splat) shrinks on the server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
       "check": "leaving: the model is marked Leaving before the root anchors (clients skip the death splat)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "king-leave-visual",
-      "check": "leaving: every part keeps its size and only fades (no burst)",
+      "check": "leaving: no burst, the body shrinks away opaque (the clients do not splat it, nothing fades)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "king-leave-visual",
-      "check": "leaving: it floats up while it fades",
+      "check": "leaving: it floats up while it shrinks away",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "king-leave-visual",
-      "check": "leaving: a slower fade than a kill, destroyed after it",
+      "check": "leaving: slower than a kill, destroyed after it",
       "pass": 1,
       "fail": 0
     },
@@ -1821,13 +1827,31 @@
     },
     {
       "group": "king-leave-visual",
-      "check": "a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s",
+      "check": "a kill: the body stays 0.75 s (the fall / splat shows), then shrinks in 0.3 s, removed at 1.15 s",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "king-leave-visual",
-      "check": "leaving: the fade starts at once (no hold)",
+      "check": "leaving: the shrink starts at once (no hold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "no death or leave tween touches Transparency (a monster body is never see-through)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "a killed body is held from the ghost sweep until its destroy time (1.15 s) + grace",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "a leaving body is held until its later destroy + grace",
       "pass": 1,
       "fail": 0
     },
@@ -1839,6 +1863,48 @@
     },
     {
       "group": "king-leave-visual",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-ghost-sweep",
+      "check": "the sweep removes a stray copy and a body past its destroy time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-ghost-sweep",
+      "check": "living records (a personal one too) and a dying body inside its time stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-ghost-sweep",
+      "check": "the sweep forgets bodies that are gone or past their time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-ghost-sweep",
+      "check": "it reports how many it removed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-ghost-sweep",
+      "check": "a clean folder: nothing removed, nothing reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-ghost-sweep",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-ghost-sweep",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -3135,6 +3201,42 @@
     },
     {
       "group": "fx-float",
+      "check": "the splat plays at once, the puddle shrink is scheduled DeathHold s later",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "after the hold the puddle shrinks to 0.2 in DeathShrink s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the shrinking puddle keeps its bottom on the floor (joint C1 follows)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the client never fades a dying slime (no Transparency tween)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the client's puddle timing matches MonsterService's death pop (it is gone before the model is removed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "a slime removed before the hold ends gets no shrink tween",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -3566,54 +3668,10 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 114,
-    "applied": 114,
-    "caught": 114,
+    "total": 121,
+    "applied": 121,
+    "caught": 121,
     "results": [
-      {
-        "mutation": "the kill keeps no paid list (KingDefeat Contributors empty)",
-        "file": "src/ServerScriptService/MonsterService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "KingDefeat reads nothing (the cleared tallies)",
-        "file": "src/ServerScriptService/HalloweenService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "only the last cast remembered (a cast counts again)",
-        "file": "src/ServerScriptService/MonsterService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "king-rewards :: one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "every cast hit counts",
-        "file": "src/ServerScriptService/MonsterService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "king-rewards :: one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)"
-        ],
-        "newFailingCount": 1
-      },
       {
         "mutation": "a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
@@ -4003,7 +4061,7 @@
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
           "king-rewards :: A23-27: the king pays >= 3 own hits AND >= 0.5% of MaxHP (45 of 9000)"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 9
       },
       {
         "mutation": "king scroll row back to 0.5 (Enh70)",
@@ -4049,11 +4107,10 @@
           "config-kinds :: number / text field = design value",
           "king-rewards :: 2 hits are not enough for the king (RewardMinHits 3), however much damage",
           "king-rewards :: A23-27: the king pays >= 3 own hits AND >= 0.5% of MaxHP (45 of 9000)",
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 5
       },
       {
         "mutation": "king safe only below Lv4 (SafeBelowLevel)",
@@ -4153,7 +4210,7 @@
           "ghost-king-schedule :: no ghost king before 16:00",
           "ghost-king-schedule :: server start: the pumpkin king is due at 6:00, the ghost king at 16:00 (10 minutes later)"
         ],
-        "newFailingCount": 46
+        "newFailingCount": 45
       },
       {
         "mutation": "next king 10 min after an appearance",
@@ -4243,15 +4300,107 @@
         "newFailingCount": 2
       },
       {
-        "mutation": "leave fade shrinks the king",
+        "mutation": "a dying body fades see-through again",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "king-leave-visual :: leaving: every part keeps its size and only fades (no burst)"
+          "king-leave-visual :: a kill: the parts shrink to 0.2 with the particle burst and stay opaque (no fade)",
+          "king-leave-visual :: leaving: no burst, the body shrinks away opaque (the clients do not splat it, nothing fades)",
+          "king-leave-visual :: no death or leave tween touches Transparency (a monster body is never see-through)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the server resizes a killed slime's splatted body",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: a defeated Pumpkin King (slime shape) is splatted by the clients too",
+          "king-leave-visual :: a killed slime: its CustomVisual keeps its size on the server (the clients splat it), its hidden parts shrink, removed at 1.15 s"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a leaving king is left to a splat it never gets (keeps its size)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: leaving: no burst, the body shrinks away opaque (the clients do not splat it, nothing fades)",
+          "king-leave-visual :: leaving: the shrink starts at once (no hold)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a slime without a custom model never shrinks",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: a killed slime: its CustomVisual keeps its size on the server (the clients splat it), its hidden parts shrink, removed at 1.15 s",
+          "king-leave-visual :: a slime without a custom model (procedural ball, no client splat) shrinks on the server"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a dying body is not held from the ghost sweep",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: a killed body is held from the ghost sweep until its destroy time (1.15 s) + grace",
+          "king-leave-visual :: a leaving body is held until its later destroy + grace"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the ghost sweep removes dying bodies early",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-ghost-sweep :: a clean folder: nothing removed, nothing reported",
+          "monster-ghost-sweep :: it reports how many it removed",
+          "monster-ghost-sweep :: living records (a personal one too) and a dying body inside its time stay",
+          "monster-ghost-sweep :: the sweep forgets bodies that are gone or past their time",
+          "monster-ghost-sweep :: the sweep removes a stray copy and a body past its destroy time"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the ghost sweep keeps a body past its time",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-ghost-sweep :: a clean folder: nothing removed, nothing reported",
+          "monster-ghost-sweep :: it reports how many it removed",
+          "monster-ghost-sweep :: the sweep removes a stray copy and a body past its destroy time"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the ghost sweep removes living records",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-ghost-sweep :: a clean folder: nothing removed, nothing reported",
+          "monster-ghost-sweep :: it reports how many it removed",
+          "monster-ghost-sweep :: living records (a personal one too) and a dying body inside its time stay",
+          "monster-ghost-sweep :: the sweep removes a stray copy and a body past its destroy time"
+        ],
+        "newFailingCount": 4
       },
       {
         "mutation": "Leaving set after the anchor",
@@ -4358,11 +4507,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 2
       },
       {
         "mutation": "king pays one-hit contributors (RewardMinHits ignored)",
@@ -4372,11 +4520,10 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 2 hits are not enough for the king (RewardMinHits 3), however much damage",
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 3
       },
       {
         "mutation": "king pays chip damage (RewardMinDamageFrac ignored)",
@@ -4386,12 +4533,11 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: overkill does not count: 1 + 1 + (1e9 on 30 HP) = 32 damage, not paid",
           "king-rewards :: the defeat line adds no second payout"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 4
       },
       {
         "mutation": "overkill counted as damage",
@@ -4412,13 +4558,13 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: every accepted hit adds +1 hit and its damage",
           "king-rewards :: hit / damage tallies per player",
-          "king-rewards :: one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)"
+          "king-rewards :: the defeat line adds no second payout",
+          "king-rewards :: the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 6
       },
       {
         "mutation": "3 hits not enough (> RewardMinHits)",
@@ -4428,12 +4574,11 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout",
           "king-rewards :: the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 4
       },
       {
         "mutation": "exactly 0.5% of MaxHP not enough (> minDamage)",
@@ -4443,12 +4588,11 @@
         "crashed": false,
         "newFailingChecks": [
           "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)",
-          "king-rewards :: KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
           "king-rewards :: MonsterKilled fires once per eligible contributor of the last 120 s (one roll each, no duplicates)",
           "king-rewards :: the defeat line adds no second payout",
           "king-rewards :: the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 4
       },
       {
         "mutation": "every monster spares new players (Boss check dropped)",
@@ -4814,18 +4958,21 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "king-leave-visual :: a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s"
+          "fx-float :: the client's puddle timing matches MonsterService's death pop (it is gone before the model is removed)",
+          "king-leave-visual :: a kill: the body stays 0.75 s (the fall / splat shows), then shrinks in 0.3 s, removed at 1.15 s",
+          "king-leave-visual :: a killed body is held from the ghost sweep until its destroy time (1.15 s) + grace",
+          "king-leave-visual :: a killed slime: its CustomVisual keeps its size on the server (the clients splat it), its hidden parts shrink, removed at 1.15 s"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
-        "mutation": "the body shrinks at once (no hold before the fade)",
+        "mutation": "the body shrinks at once (no hold before the shrink)",
         "file": "src/ServerScriptService/MonsterService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "king-leave-visual :: a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s"
+          "king-leave-visual :: a kill: the body stays 0.75 s (the fall / splat shows), then shrinks in 0.3 s, removed at 1.15 s"
         ],
         "newFailingCount": 1
       },
@@ -4852,7 +4999,52 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "fx-float :: a leaving king: no splat, back to its rest size and pose while it floats away"
+          "fx-float :: a leaving king: no splat, back to its rest size and pose while it floats away",
+          "fx-float :: the splat plays at once, the puddle shrink is scheduled DeathHold s later"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a killed slime's puddle never shrinks",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fx-float :: after the hold the puddle shrinks to 0.2 in DeathShrink s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the shrinking puddle floats off the floor",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fx-float :: the shrinking puddle keeps its bottom on the floor (joint C1 follows)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "puddle shrink drifts from the server's death timing",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fx-float :: the client's puddle timing matches MonsterService's death pop (it is gone before the model is removed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "puddle shrinks while the slime is already gone",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fx-float :: a slime removed before the hold ends gets no shrink tween"
         ],
         "newFailingCount": 1
       },
@@ -5094,20 +5286,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
+    "src/ReplicatedStorage/Shared/Config.luau": "541f1c61add614cf129100859ba76057f07ff345c3f12f6a8d5c7bd944d841fb",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/QuestService.luau": "208bbcd7b1d1e3b7b9d4c354c797ffa65a717c9b117e5eb196c7e7ccc7c87df9",
-    "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
-    "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
+    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ServerScriptService/QuestService.luau": "fdf1f780d43f841db4fdb4b13d8fe2c02dee62a16d05232ca5ec4bd205f23ae0",
+    "src/ServerScriptService/StoryQuestService.luau": "cbca6951ae2590403769d1157009d0a7784cc21af1fe77a68d493a74b684612e",
+    "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/HalloweenService.luau": "eea6f3f80ca035d754fd598d8ef295c52b1cef5c651b4e624a501431ba4100c3",
+    "src/ServerScriptService/HalloweenService.luau": "d288c4fa858b3d3f868e071b2253b1cc7f960afdc06dcabe257b73eed0e7783e",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/ServerScriptService/MonsterService.luau": "06bf0e1ebb61dd86226b35dca17e8d16de085c1e749d75dff728e773bbed3077",
+    "src/ServerScriptService/MonsterService.luau": "89098e29c98f3fbd8c5afb6f7003b4d171fa23d5d5884ce9df51d493875059dc",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "507e5c4432316d825fbaffb3961f02eac1fdb896510ad618598776cde0421e8c",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "cbe5046ae65283c9d2fcc1ddd0fe75d3f5d76ea12d664b9beed9bf225f041020",
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "83d4f4a4421832b97d43fc682f0ffe8956660b9964a8127eb56404258e346730",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "5abc08bba8f4ebf95b3203b5fac448098394a105554e80e4ddb445e33fd26feb",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "29044dbfc398a1a998873099a317265b5e6b27fe2fc47d8fec21ca0226093a02",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
@@ -5120,7 +5312,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "67784a33238eeda364464d6cb001516025b58c0cb149927dbf6c82fdfda7e2bf",
+  "fixtureSHA256": "b4acb7e12d496141a6d2ce31ebf85eb7ff662b341fc014cbfcf19bdd25905715",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

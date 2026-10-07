@@ -116,28 +116,41 @@ end
 ROUND.minimap = nil -- measured as its square box (the round view sits inside it)
 -- interactive = something a finger / mouse presses (the minimap, chips, event, notify, combo, bars are passive displays;
 -- the minimap is drawn with Active = false)
-local INTERACTIVE = { portrait = true, quest = true, tiles = true, menu = true, potions = true,
+local INTERACTIVE = { portrait = true, quest = true, tiles = true, menu = true, potion_hp = true, potion_mp = true,
 	ghost = true, q = true, z = true, x = true, auto = true, attack = true }
-local TAPS = { "portrait", "ghost", "q", "z", "x", "auto", "attack", "menu" }
+local TAPS = { "portrait", "ghost", "q", "z", "x", "auto", "attack", "potion_hp", "potion_mp", "menu" }
 local MIN_TAP = 60 -- logical units (>= 45 real px at the phone's 0.75 UIScale)
+local TAP_PX = 45 -- touch [메뉴] in the Roblox top bar: real px (MIN_TAP at the phone's UIScale; tablets keep the px)
 local MIN_PRESS_GAP = 2 -- logical units between any two pressable items (touching buttons are a regression)
-local POTION_GAP_PX = 6 -- real px between the HP and MP potion cells on both reference sheets
+local POTION_GAP_PX = 6 -- real px between the HP and MP potion buttons on the PC sheet
 local TILE_GAP_PX = 3 -- real px on the reference screens: least gap between two tiles of the icon row
+local GROUP_GAP = 8 -- logical units: the phone bottom group keeps this from the thumb ring (HudLayout GAP)
+local RING_GAP_MAX = 24 -- logical units: a phone ring button's circle stays this close to the attack disc
+-- the bottom-centre group: face, Lv line, bars, XP, tile row (PCs: the potions right of the tile row as well)
 local FACE = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
+local POTIONS = { "potion_hp", "potion_mp" }
 local LEFT_BAND = { "minimap", "quest" }
 local CENTER = { "war_meter", "chips", "event", "notify" }
-local CLUSTER = { "potions", "ghost", "q", "z", "x", "auto", "attack" }
+local CLUSTER = { "ghost", "q", "z", "x", "auto", "attack" }
+-- phones: the thumb ring around the attack disc, lower left to upper right (2026-10-07: "공격·스킬·물약 … 깔끔한 묶음")
+local RING = { "potion_hp", "potion_mp", "q", "z", "x" }
 local REF_SCALE = { Desktop = 0.8, Touch = 0.75 }
 -- A23-40 정정: the [메뉴] fold-out (out.fold) never covers these while open (it may cover the chips / next event /
--- notify rows and, on phones, the tile row it replaces); ROW_TILES = the icon row's windows (phones fold the overflow)
-local FOLD_PROTECT = { "minimap", "quest", "war_meter", "potions", "ghost", "q", "z", "x", "auto", "attack" }
-local FOLD_PROTECT_PC = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" } -- phones fold up over these
+-- notify rows); ROW_TILES = the icon row's windows (phones fold the overflow)
+local FOLD_PROTECT = { "minimap", "quest", "war_meter", "potion_hp", "potion_mp", "ghost", "q", "z", "x", "auto", "attack",
+	"portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
 local MENU_TILES = 4 -- 새 소식 · 이동 · 도움말 · 설정
 -- A23-40 보강: these sit IN the Roblox top bar row (centred on its middle, inside its free part), not below it
 local TOP_BAR = { war_meter = true, menu = true }
 local ROBLOX_BUTTON_PX = 44 -- Roblox's top bar button height in a 58 px bar (Inset - 4 in smaller bars)
 local MENU_EDGE_PX = 12 -- [메뉴] keeps this from the bar's free right end
 local ROW_TILES = 6 -- 캐릭터 · 가방 · 스킬 · 지도 · 랭킹 · 펫
+-- touch thumbstick zone: x < STICK_X W and y > STICK_Y H (2026-10-07 phone layout: the quest lines hang under the minimap
+-- above it; Roblox's thumbstick appears where the thumb lands in the lower left and rests around STICK_MID W). 검수
+-- 2026-10-07: the phone bottom group sits centred between that rest and the thumb ring, nothing pressable left of 0.3 W
+local STICK_Y = 0.54
+local STICK_X = 0.3
+local STICK_MID = 0.2
 
 local function excepted(case, name)
 	for _, e in EXCEPTIONS do
@@ -184,7 +197,7 @@ for _, case in CASES do
 		check(g, "rect " .. id, good, fmt(r))
 		if good then
 			check(g, "on screen " .. id, r.X >= -0.5 and r.X + r.W <= W + 0.5 and r.Y + r.H <= H + 0.5, fmt(r))
-			if TOP_BAR[id] and not (touch and id == "menu") then
+			if TOP_BAR[id] then
 				-- A23-40 보강: in the bar's free part (clear of Roblox's buttons by >= 4 px), centred on its middle, never
 				-- taller than a Roblox button
 				check(g, "in the top bar " .. id, r.Y >= bar.Y0 - 0.5 and r.Y + r.H <= bar.Y1 + 0.5
@@ -200,11 +213,20 @@ for _, case in CASES do
 			end
 		end
 	end
-	if not out.attack or not out.portrait or not out.chips or not out.tiles then continue end
-	-- the potions rect publishes the gap between its HP and MP cells (du; cell width = (W - Gap) / 2)
-	local pg = out.potions and out.potions.Gap
-	check(g, "potion gap published", finite(pg) and pg >= MIN_PRESS_GAP - 0.01, tostring(pg))
-	if not finite(pg) then pg = 0 end
+	if not out.attack or not out.portrait or not out.chips or not out.tiles or not out.potion_hp or not out.potion_mp then
+		continue
+	end
+	-- out.potions (VitalsUI.PlacePotions) = the box around both potion buttons, Cells = their own rects, Gap = the PC gap
+	local pb, hp, mp = out.potions, out.potion_hp, out.potion_mp
+	local pboxOk = type(pb) == "table" and type(pb.Cells) == "table" and pb.Cells.HP == hp and pb.Cells.MP == mp
+		and finite(pb.Gap) and math.abs(pb.X - math.min(hp.X, mp.X)) <= 0.01 and math.abs(pb.Y - math.min(hp.Y, mp.Y)) <= 0.01
+		and math.abs(pb.X + pb.W - math.max(hp.X + hp.W, mp.X + mp.W)) <= 0.01
+		and math.abs(pb.Y + pb.H - math.max(hp.Y + hp.H, mp.Y + mp.H)) <= 0.01
+	check(g, "potions box published", pboxOk, fmt(pb))
+	local pg = pboxOk and pb.Gap or 0
+	for _, id in POTIONS do
+		check(g, "potion button square " .. id, math.abs(out[id].W - out[id].H) <= 0.01, fmt(out[id]))
+	end
 	-- the tile row publishes square tiles: Size = its height, Gap >= 2du, Count = as many as fit the row
 	local t = out.tiles
 	local tileOk = finite(t.Size) and finite(t.Gap) and type(t.Count) == "number" and t.Count >= 1
@@ -246,47 +268,44 @@ for _, case in CASES do
 			for _, id in TAPS do
 				local r = out[id]
 				if id == "menu" then
-					-- a tile-row square under the bar (review 2026-10-07: taps in the Roblox bar never reach it)
-					check(g, "tap size " .. id, math.min(r.W, r.H) >= MIN_TAP - 0.01, ("%s %.1f px"):format(fmt(r), r.W * s))
-					check(g, "menu under the top bar on touch", r.Y >= top - 0.5, ("%s top=%.1f"):format(fmt(r), top))
+					-- in the Roblox top bar (2026-10-07 phone layout, like the reference shot): TAP_PX real px (MIN_TAP at the
+					-- phone's UIScale; tablets keep the px so it still fits the 58 px bar)
+					check(g, "tap size " .. id, math.min(r.W, r.H) * s >= TAP_PX - 0.5, ("%s %.1f px"):format(fmt(r), r.W * s))
 				else
 					check(g, "tap size " .. id, math.min(r.W, r.H) >= MIN_TAP - 0.01, fmt(r))
 				end
 			end
 			check(g, "tap size tiles", tileOk and t.Size >= MIN_TAP - 0.01, fmt(t))
 			check(g, "tap size quest lines", out.quest.H >= MIN_TAP - 0.01 and out.quest.W >= MIN_TAP - 0.01, fmt(out.quest))
-			-- tiles: 5 on the reference phone, at least 3 on every phone (the rest fold out of [메뉴])
-			local tileName = "tiles at least 3 on phones"
+			-- tiles: 4 on the reference phone, at least 2 on every phone (the rest fold out of [메뉴]; 2026-10-07 layout: the
+			-- row sits bottom-centre between the thumbstick zone and the thumb ring)
+			local tileName = "tiles at least 2 on phones"
 			local e3 = excepted(case, tileName)
-			-- touch: [메뉴] is the row's last square (review 2026-10-07), it counts as one of the three
-			local rowCount = (tileOk and t.Count or 0) + (touch and 1 or 0)
-			if rowCount >= 3 then
+			local rowCount = tileOk and t.Count or 0
+			if rowCount >= 2 then
 				check(g, tileName, true)
-				if e3 then check(g, "exception still needed: " .. tileName, false, "3 tiles fit; drop the exception") end
+				if e3 then check(g, "exception still needed: " .. tileName, false, "2 tiles fit; drop the exception") end
 			elseif e3 then
-				check(g, "tiles at least 2 on tiny phones", tileOk and t.Count >= 2, fmt(t) .. " count " .. tostring(t.Count))
-				table.insert(exceptions, { Screen = g, Check = tileName, Reason = e3.Reason, Measured = tileOk and t.Count or 0,
-					Need = 3 })
+				check(g, "tiles at least 1 on tiny phones", rowCount >= 1, fmt(t) .. " count " .. tostring(t.Count))
+				table.insert(exceptions, { Screen = g, Check = tileName, Reason = e3.Reason, Measured = rowCount, Need = 2 })
 			else
 				check(g, tileName, false, fmt(t) .. " count " .. tostring(t.Count))
 			end
-			-- potions: both cells (HP, MP side by side, Gap apart) are thumb size; a declared exception (no room) only
-			-- requires the pair to reach the thumbstick zone edge, and is reported with its measured cell width
-			local pot = out.potions
-			local cellW = (pot.W - pg) / 2
-			check(g, "tap size potions cell height", pot.H >= MIN_TAP - 0.01, fmt(pot))
-			local cellName = "tap size potions cell width"
-			local e = excepted(case, cellName)
-			if cellW >= MIN_TAP - 0.01 then
-				check(g, cellName, true)
-				if e then check(g, "exception still needed: " .. cellName, false, ("cell %.2fdu fits; drop the exception"):format(cellW)) end
-			elseif e then
-				check(g, "potions use all their room", pot.X <= 0.4 * W + 0.5, ("%s stick edge %.2f"):format(fmt(pot), 0.4 * W))
-				table.insert(exceptions, { Screen = g, Check = cellName, Reason = e.Reason, Measured = cellW, Need = MIN_TAP })
-			else
-				check(g, cellName, false, ("cell %.2fdu (gap %.2f) %s"):format(cellW, pg, fmt(pot)))
+			-- the thumb ring: HP · MP · Q · Z · X each hug the attack disc (circle gap <= RING_GAP_MAX), lower left to upper
+			-- right in that order (the angle around the attack's centre falls along the list)
+			local a = out.attack
+			local ax, ay = a.X + a.W / 2, a.Y + a.H / 2
+			local lastAngle = math.huge
+			for _, id in RING do
+				local r = out[id]
+				local d = gap(r, true, a, true)
+				check(g, "ring hugs the attack " .. id, d <= RING_GAP_MAX + 0.01, ("gap %.2f %s"):format(d, fmt(r)))
+				local angle = math.deg(math.atan2(-(r.Y + r.H / 2 - ay), r.X + r.W / 2 - ax)) % 360
+				check(g, "ring order " .. id, angle < lastAngle and angle >= 20 and angle <= 230,
+					("angle %.1f after %.1f"):format(angle, lastAngle))
+				lastAngle = angle
 			end
-			local stick = { X = 0, Y = H / 3, W = 0.4 * W, H = H - H / 3 }
+			local stick = { X = 0, Y = STICK_Y * H, W = STICK_X * W, H = H - STICK_Y * H }
 			for id in INTERACTIVE do
 				check(g, "stick zone free " .. id, not inter(out[id], stick), fmt(out[id]))
 			end
@@ -302,53 +321,92 @@ for _, case in CASES do
 			end
 		end
 		if sheet then
-			-- phone plate: face, bars and the tile row sit in the top-right block, flush with the right edge (8 px)
+			-- phone (2026-10-07 layout): the face group bottom-centre - its pressable parts right of the thumbstick zone, the
+			-- bars from the face to the tile row's right end, a GROUP_GAP left of the ring buttons level with the bars or the
+			-- row, as wide as the room right of 0.4 W (six tiles at most) and centred between the thumbstick's rest
+			-- (STICK_MID W) and those buttons (검수 2026-10-07)
+			local pl, row = out.power_line, t
+			local rowBottom = row.Y + row.H
 			for _, id in FACE do
-				check(g, "phone plate top-right " .. id, out[id].X + out[id].W >= 0.6 * W and out[id].Y + out[id].H <= 0.5 * H,
-					fmt(out[id]))
+				check(g, "phone face group at the bottom " .. id, out[id].Y + out[id].H / 2 >= 0.6 * H, fmt(out[id]))
+			end
+			for _, id in { "portrait", "tiles" } do
+				check(g, "phone face group right of the stick zone " .. id, out[id].X >= STICK_X * W - 0.5, fmt(out[id]))
 			end
 			for _, id in { "power_line", "mp_bar", "xp_bar" } do
-				local right = W - (out[id].X + out[id].W)
-				check(g, "phone plate at the right edge " .. id, right >= 2 and right <= 16, ("%s right gap %.2f"):format(fmt(out[id]), right))
+				local r = out[id]
+				check(g, "phone bars end with the tile row " .. id, math.abs((r.X + r.W) - (row.X + row.W)) <= 0.5,
+					fmt(r) .. " " .. fmt(row))
 			end
-			-- the row reaches the plate's right edge: the tiles (mouse: [메뉴] is in the bar) or [메뉴] after them (touch)
-			local pl = out.power_line
-			local rowRight = touch and (out.menu.X + out.menu.W) or (t.X + t.W)
-			check(g, "phone tiles reach the plate's right edge", math.abs(rowRight - (pl.X + pl.W)) <= 0.5,
-				fmt(t) .. " " .. fmt(out.menu) .. " " .. fmt(pl))
+			check(g, "phone face left of the bars", out.portrait.X + out.portrait.W <= pl.X + 0.01,
+				fmt(out.portrait) .. " " .. fmt(pl))
+			local limit = W
+			for _, id in { "potion_hp", "potion_mp", "ghost", "q", "z", "x", "auto", "attack" } do
+				local r = out[id]
+				if r.Y < rowBottom and r.Y + r.H > pl.Y then
+					check(g, "phone group clear of the ring " .. id, r.X - (row.X + row.W) >= GROUP_GAP - 0.01,
+						fmt(r) .. " " .. fmt(row))
+					limit = math.min(limit, r.X - GROUP_GAP)
+				end
+			end
+			check(g, "phone row at most six tiles wide", tileOk and row.W <= ROW_TILES * row.Size + (ROW_TILES - 1) * row.Gap + 0.01,
+				fmt(row))
+			check(g, "phone group no wider than the room right of 0.4 W", row.W <= math.max(0, limit - 0.4 * W) + 0.5,
+				fmt(row) .. (" limit %.2f"):format(limit))
+			local leftRoom, rightRoom = row.X - STICK_MID * W, limit - (row.X + row.W)
+			check(g, "phone group centred between the thumbstick and the ring", math.abs(leftRoom - rightRoom) <= 0.5,
+				("left room %.2f right room %.2f"):format(leftRoom, rightRoom))
 		else
-			-- 4. desktop: the corner cluster in the bottom-right corner; the face group along the bottom, centred unless it
-			-- had to step aside, always clear of the cluster and inside the left margin
+			-- 4. desktop: the corner cluster in the bottom-right corner; the face group along the bottom (the potion pair at
+			-- its right end), centred unless it had to step aside, always clear of the cluster and inside the left margin
 			check(g, "attack in corner", W - (out.attack.X + out.attack.W) <= 30 and H - (out.attack.Y + out.attack.H) <= 30,
 				fmt(out.attack))
 			local minX, maxX = math.huge, -math.huge
-			for _, id in FACE do
+			local group = table.clone(FACE)
+			for _, id in POTIONS do table.insert(group, id) end
+			for _, id in group do
 				local r = out[id]
 				minX, maxX = math.min(minX, r.X), math.max(maxX, r.X + r.W)
 				check(g, "face group at the bottom " .. id, r.Y + r.H / 2 >= 0.6 * H, fmt(r))
 			end
+			-- the potions (keys 1 · 2) right of the icon row, side by side, Gap apart
+			check(g, "PC potions side by side", math.abs(hp.Y - mp.Y) <= 0.01 and math.abs(mp.X - (hp.X + hp.W) - pg) <= 0.01,
+				fmt(hp) .. " " .. fmt(mp) .. (" gap %.2f"):format(pg))
+			check(g, "PC potions right of the icon row", hp.X >= t.X + t.W + MIN_PRESS_GAP - 0.01, fmt(hp) .. " " .. fmt(t))
 			local clusterLeft = math.huge
 			for _, id in CLUSTER do clusterLeft = math.min(clusterLeft, out[id].X) end
 			local centred = math.abs((minX + maxX) / 2 - W / 2) <= 1
 			check(g, "face group centred or stepped aside", centred or maxX <= clusterLeft - 8 + 0.01,
 				("group %.1f..%.1f W/2 %.1f cluster %.1f"):format(minX, maxX, W / 2, clusterLeft))
 			check(g, "face group left margin", minX >= 8 - 0.01, ("group %.1f..%.1f"):format(minX, maxX))
-			check(g, "all 8 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= 8),
+			check(g, "all 6 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= ROW_TILES),
 				fmt(t) .. " count " .. tostring(t.Count))
-			check(g, "at least 6 tiles on every PC", tileOk and t.Count >= 6, fmt(t) .. " count " .. tostring(t.Count))
+			-- every PC row holds the six tiles; a declared narrow window may give up its right end (the rest fold out of
+			-- [메뉴]) but keeps at least four
+			local pcName = "at least 6 tiles on every PC"
+			local ePc = excepted(case, pcName)
+			if tileOk and t.Count >= ROW_TILES then
+				check(g, pcName, true)
+				if ePc then check(g, "exception still needed: " .. pcName, false, "6 tiles fit; drop the exception") end
+			elseif ePc then
+				check(g, "at least 4 tiles on narrow PC windows", tileOk and t.Count >= 4, fmt(t) .. " count " .. tostring(t.Count))
+				table.insert(exceptions, { Screen = g, Check = pcName, Reason = ePc.Reason, Measured = tileOk and t.Count or 0,
+					Need = ROW_TILES })
+			else
+				check(g, pcName, false, fmt(t) .. " count " .. tostring(t.Count))
+			end
+			-- the potions stay a lead gap right of the tile row, the bars end with the pair (one block)
+			check(g, "PC potions follow the icon row", hp.X - (t.X + t.W) >= MIN_PRESS_GAP - 0.01 and hp.X - (t.X + t.W) <= 16,
+				fmt(hp) .. " " .. fmt(t))
+			check(g, "PC bars end with the potion pair", math.abs((out.power_line.X + out.power_line.W) - (mp.X + mp.W)) <= 0.5,
+				fmt(out.power_line) .. " " .. fmt(mp))
 		end
 		-- [메뉴]: a square in the top bar's right end, MENU_EDGE_PX from its free part's end, a Roblox button on PCs
 		-- (A23-40 정정 + 보강)
 		local m = out.menu
-		if touch then
-			-- touch: the tile row's last square, as big as the tiles (review 2026-10-07)
-			check(g, "menu at the tile row's right end", tileOk and math.abs(m.Y - t.Y) <= 0.01
-				and math.abs(m.H - t.Size) <= 0.01 and m.X >= t.X + t.W - 0.01, fmt(m) .. " " .. fmt(t))
-		else
-			local rightPx = (bar.X1 - (m.X + m.W)) * s
-			check(g, "menu at the top bar's right end", rightPx >= MENU_EDGE_PX - 0.5 and rightPx <= MENU_EDGE_PX + 0.5,
-				("%s right %.1f px"):format(fmt(m), rightPx))
-		end
+		local rightPx = (bar.X1 - (m.X + m.W)) * s
+		check(g, "menu at the top bar's right end", rightPx >= MENU_EDGE_PX - 0.5 and rightPx <= MENU_EDGE_PX + 0.5,
+			("%s right %.1f px"):format(fmt(m), rightPx))
 		check(g, "menu square", math.abs(m.W - m.H) <= 0.01, fmt(m))
 		if not touch then
 			check(g, "menu as big as a Roblox button", math.abs(m.H * s - buttonPx) <= 0.5, ("%.1f px"):format(m.H * s))
@@ -365,19 +423,18 @@ for _, case in CASES do
 			("first row %.1f top %.1f"):format(firstRow, top))
 		check(g, "chips right under the bar", (out.chips.Y - top) * s >= 2 - 0.01 and (out.chips.Y - top) * s <= 8 + 0.01,
 			("chips %.1f top %.1f (%.1f px)"):format(out.chips.Y, top, (out.chips.Y - top) * s))
-		for _, id in CLUSTER do
-			check(g, "cluster lower right " .. id, out[id].X + out[id].W / 2 >= (sheet and 0.45 or 0.5) * W
+		local lowerRight = table.clone(CLUSTER)
+		if sheet then
+			for _, id in POTIONS do table.insert(lowerRight, id) end
+		end
+		for _, id in lowerRight do
+			check(g, "cluster lower right " .. id, out[id].X + out[id].W / 2 >= 0.5 * W
 				and out[id].Y + out[id].H / 2 >= 0.4 * H,
 				fmt(out[id]))
 		end
-		-- the quest lines hang under the minimap on PC, beside it on the phone sheet (outside the thumbstick zone)
-		if sheet then
-			check(g, "quest beside the minimap", out.quest.X >= out.minimap.X + out.minimap.W - 0.01
-				and out.quest.Y <= out.minimap.Y + 1, fmt(out.quest) .. " " .. fmt(out.minimap))
-		else
-			check(g, "quest under the minimap", out.quest.Y >= out.minimap.Y + out.minimap.H - 0.01
-				and math.abs(out.quest.X - out.minimap.X) <= 1, fmt(out.quest) .. " " .. fmt(out.minimap))
-		end
+		-- the quest lines hang under the minimap (PCs; phones since the 2026-10-07 layout, above the thumbstick zone)
+		check(g, "quest under the minimap", out.quest.Y >= out.minimap.Y + out.minimap.H - 0.01
+			and math.abs(out.quest.X - out.minimap.X) <= 1, fmt(out.quest) .. " " .. fmt(out.minimap))
 
 		-- 6. centre column: one centre x for the meter, the chip row, the next-event line and notify, top-down in that
 		-- order; meter >= 240du (or its approved width when smaller); >= 6du from the blocks beside it
@@ -394,8 +451,7 @@ for _, case in CASES do
 			if it.Id == "war_meter" then refW = (sheet and it.Phone.w or it.Pc.w) / (sheet and REF_SCALE.Touch or REF_SCALE.Desktop) end
 		end
 		check(g, "war meter width", out.war_meter.W >= math.min(240, refW) - 0.5, fmt(out.war_meter))
-		local sides = sheet and { "minimap", "quest", "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
-			or { "minimap", "quest" }
+		local sides = { "minimap", "quest" }
 		for _, cid in CENTER do
 			local c = out[cid]
 			for _, id in sides do
@@ -408,10 +464,10 @@ for _, case in CASES do
 		end
 
 		-- 7. [메뉴] fold-out room (A23-40 정정): lines of [메뉴]-sized squares right-aligned one gap left of [메뉴]; the first
-		-- on [메뉴]'s line, more lines down on PCs / up on phones (A23-38 "위쪽에서만"); the four menu tiles in one line
-		-- (검수: "폰에서도 한 줄에"; narrow 4:3-ish PC windows may wrap), room for the phone row's overflow too; never
-		-- over the war meter, minimap, quest lines, a combat button, the jump button or the thumbstick zone (PCs: nor the
-		-- face group / tile row)
+		-- on [메뉴]'s line in the top bar, more lines down (phones too since the 2026-10-07 layout: [메뉴] is in the bar);
+		-- the four menu tiles in one line (검수: "폰에서도 한 줄에"; narrow 4:3-ish PC windows may wrap), room for the
+		-- phone row's overflow too; never over the war meter, minimap, quest lines, the face group / tile row, a combat
+		-- button, the jump button or the thumbstick zone
 		local f, m = out.fold, out.menu
 		local foldOk = type(f) == "table" and finite(f.Size) and finite(f.Gap) and type(f.Lines) == "table" and #f.Lines >= 1
 			and f.Rows == #f.Lines and f.Cols == (f.Lines[1] and f.Lines[1].Cols)
@@ -426,38 +482,23 @@ for _, case in CASES do
 				local rr = { X = ln.X, Y = ln.Y, W = ln.Cols * (f.Size + f.Gap) - f.Gap, H = f.Size }
 				check(g, "fold line ends at the menu", math.abs(rr.X + rr.W + f.Gap - m.X) <= 0.01, fmt(rr) .. " " .. fmt(m))
 				if i == 1 then
-					if touch then
-						-- touch: the first line on [메뉴]'s tile row, under the bar
-						check(g, "fold first line under the top bar", rr.Y >= top - 0.01, fmt(rr) .. (" top %.1f"):format(top))
-					else
-						-- the first line runs along the top bar, right of Roblox's own buttons
-						check(g, "fold first line in the top bar", rr.Y >= bar.Y0 - 0.01 and rr.Y + rr.H <= bar.Y1 + 0.01
-							and rr.X >= bar.X0 - 0.01, fmt(rr) .. (" bar x0 %.1f"):format(bar.X0))
-					end
+					-- the first line runs along the top bar, right of Roblox's own buttons
+					check(g, "fold first line in the top bar", rr.Y >= bar.Y0 - 0.01 and rr.Y + rr.H <= bar.Y1 + 0.01
+						and rr.X >= bar.X0 - 0.01, fmt(rr) .. (" bar x0 %.1f"):format(bar.X0))
 				else
 					check(g, "fold line on screen below the top bar", rr.X >= -0.01 and rr.Y >= top - 0.01 and rr.Y + rr.H <= H + 0.01,
 						fmt(rr))
-					-- mouse: down, the second line right under the bar (one gap), the next ones one square + gap apart;
-					-- touch: up from the tile row, one square + gap apart, never into the bar
+					-- down: the second line right under the bar (one gap), the next ones one square + gap apart
 					local prev = f.Lines[i - 1]
-					if touch then
-						local want = prev.Y - f.Size - f.Gap
-						check(g, "fold lines go up", math.abs(ln.Y - want) <= 0.01 and ln.Y >= top - 0.01,
-							fmt(rr) .. (" want y %.2f"):format(want))
-					else
-						local want = i == 2 and math.max(prev.Y + f.Size + f.Gap, top + f.Gap) or prev.Y + f.Size + f.Gap
-						check(g, "fold lines go down", math.abs(ln.Y - want) <= 0.01, fmt(rr) .. (" want y %.2f"):format(want))
-					end
+					local want = i == 2 and math.max(prev.Y + f.Size + f.Gap, top + f.Gap) or prev.Y + f.Size + f.Gap
+					check(g, "fold lines go down", math.abs(ln.Y - want) <= 0.01, fmt(rr) .. (" want y %.2f"):format(want))
 				end
-				local protect = table.clone(FOLD_PROTECT)
-				if not sheet then
-					for _, id in FOLD_PROTECT_PC do table.insert(protect, id) end
-				end
-				for _, id in protect do
+				for _, id in FOLD_PROTECT do
 					check(g, "fold clear of " .. id, gap(rr, false, out[id], ROUND[id]) >= -0.01, fmt(rr) .. " " .. fmt(out[id]))
 				end
 				if touch then
-					check(g, "fold stick zone free", not inter(rr, { X = 0, Y = H / 3, W = 0.4 * W, H = H - H / 3 }), fmt(rr))
+					check(g, "fold stick zone free", not inter(rr, { X = 0, Y = STICK_Y * H, W = STICK_X * W, H = H - STICK_Y * H }),
+						fmt(rr))
 					if env.Jump then check(g, "fold jump free", gap(rr, false, env.Jump, true) >= -0.01, fmt(rr)) end
 				end
 			end
@@ -475,7 +516,7 @@ for _, case in CASES do
 			else
 				check(g, lineName, false, ("cols %d total %d"):format(f.Cols, total))
 			end
-			local overflow = sheet and math.max(0, ROW_TILES - (tileOk and t.Count or 0)) or 0
+			local overflow = math.max(0, ROW_TILES - (tileOk and t.Count or 0))
 			check(g, "fold holds the row overflow", total >= MENU_TILES + overflow,
 				("total %d need %d"):format(total, MENU_TILES + overflow))
 		end
@@ -491,10 +532,13 @@ for _, case in CASES do
 			check(g, "matches sheet " .. it.Id, d <= 1.01,
 				("got %.1f,%.1f %.1fx%.1f want %d,%d %dx%d"):format(px.x, px.y, px.w, px.h, want.x, want.y, want.w, want.h))
 		end
-		check(g, "matches sheet potion gap", math.abs(pg * s - POTION_GAP_PX) <= 1.01, ("gap %.2f px"):format(pg * s))
+		if not touch then
+			check(g, "matches sheet potion gap", math.abs(pg * s - POTION_GAP_PX) <= 1.01, ("gap %.2f px"):format(pg * s))
+		end
 		check(g, "matches sheet tile gap", tileOk and math.abs(t.Gap * s - TILE_GAP_PX) <= 0.51, ("gap %.2f px"):format((t.Gap or 0) * s))
-		-- phones: 4 tiles + [메뉴] as the row's last square (touch, review 2026-10-07; was 5 with [메뉴] in the bar)
-		check(g, "reference tile count", tileOk and t.Count == (touch and 4 or 8), fmt(t) .. " count " .. tostring(t.Count))
+		-- phones: 4 tiles in the bottom row (2026-10-07 layout; [메뉴] in the top bar); PCs: the six tiles exactly (the
+		-- potions follow right after them)
+		check(g, "reference tile count", tileOk and t.Count == (touch and 4 or ROW_TILES), fmt(t) .. " count " .. tostring(t.Count))
 	end
 
 	-- 8. hiding the auto button (before the crown-shard quest) never moves another item
@@ -513,8 +557,8 @@ for _, case in CASES do
 		check(g, "auto hidden runs", false, out2)
 	end
 
-	-- 9. A23-71 (no skills before Lv5): with Q hidden the potions close up to the attack button (GAP 8 du between them,
-	-- same row, never further left); the rest of the cluster and the top blocks stay where they were
+	-- 9. A23-71 (no skills before Lv5): a hidden Q moves nothing - the potions keep their place (PCs: by the icon row;
+	-- phones: on the thumb ring, where the thumb learned them), the rest of the cluster and the top blocks stay
 	local ok3, out3 = pcall(function()
 		local HudLayout = execute(HUDLAYOUT_SOURCE)
 		local e = table.clone(env)
@@ -522,12 +566,11 @@ for _, case in CASES do
 		return HudLayout.Compute(e)
 	end)
 	if ok3 and type(out3) == "table" then
-		local pot, atk = out3.potions, out3.attack
-		check(g, "q hidden: potions close up to attack", math.abs((pot.X + pot.W) - (atk.X - 8)) < 0.5
-			or pot.X <= out.potions.X + 0.01 and (out.potions.X + out.potions.W) >= atk.X - 8 - 0.5, fmt(pot) .. " / " .. fmt(atk))
-		check(g, "q hidden: potions same row, not further left", math.abs(pot.Y - out.potions.Y) < 0.01
-			and pot.X >= out.potions.X - 0.01, fmt(pot))
-		for _, id in { "attack", "z", "x", "auto", "ghost", "minimap", "quest", "war_meter", "menu" } do
+		for _, id in POTIONS do
+			check(g, "q hidden: potions stay " .. id, math.abs(out3[id].X - out[id].X) < 0.01
+				and math.abs(out3[id].Y - out[id].Y) < 0.01, fmt(out3[id]))
+		end
+		for _, id in { "attack", "z", "x", "auto", "ghost", "minimap", "quest", "war_meter", "menu", "tiles" } do
 			local a, b = out[id], out3[id]
 			check(g, "q hidden keeps " .. id, a and b and math.abs(a.X - b.X) < 0.01 and math.abs(a.Y - b.Y) < 0.01, fmt(b))
 		end

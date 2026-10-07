@@ -1104,7 +1104,10 @@ local WOBBLE = { State = {}, Range = 140, StartedAt = os.clock(), FloatBob = 0.2
 	-- camera gets a soft blob shadow (3 stacked discs, darkest in the middle) on the ground under it; slimes hop at
 	-- most HopMax studs (HopRatio of the body), puff a little dust on landing and sit Sink studs into the ground
 	Shadows = {}, ShadowRays = 0.15, ShadowRings = { { 0.62, 0.5 }, { 0.82, 0.68 }, { 1.0, 0.84 } },
-	ShadowColor = Color3.fromRGB(18, 22, 16), HopRatio = 0.15, HopMax = 0.6, Sink = 0.1, DustRange = 70 }
+	ShadowColor = Color3.fromRGB(18, 22, 16), HopRatio = 0.15, HopMax = 0.6, Sink = 0.1, DustRange = 70,
+	-- A23-74 (user 2026-10-07): a killed slime's puddle holds DeathHold s, then shrinks to 0.2 in DeathShrink s, opaque
+	-- (= MonsterService DEATH_DESTROY - DEATH_SHRINK - 0.1 and DEATH_SHRINK; the server leaves a slime body to us)
+	DeathHold = 0.75, DeathShrink = 0.3 }
 
 -- the blob shadow of one monster: { Parts = { discs }, D = diameter, Faint = ghost, Y = ground, NextRay }
 function WOBBLE.shadowFor(model, st)
@@ -1244,12 +1247,24 @@ function WOBBLE.step(dt)
 		if st and st.Joint.Parent and st.Root.Parent then
 			if st.Root.Anchored and st.Slime and st.Active and st.Mesh and st.Base and not st.Splat
 				and model:GetAttribute("Leaving") ~= true then
-				-- dying slime: splat flat while the server's death pop shrinks and fades it (an event monster that goes
-				-- home undefeated is "Leaving": it rests and floats away instead)
+				-- dying slime: splat flat, hold, then the puddle shrinks away on the floor, opaque (an event monster that
+				-- goes home undefeated is "Leaving": it rests and floats away instead). A23-74: the server no longer
+				-- resizes / fades a slime body, whose replicated size used to stand the splat back up see-through.
 				st.Splat = true
+				local splat = Vector3.new(st.Base.X * 1.45, st.Base.Y * 0.35, st.Base.Z * 1.45)
 				TweenService:Create(st.Mesh, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-					{ Size = Vector3.new(st.Base.X * 1.45, st.Base.Y * 0.35, st.Base.Z * 1.45) }):Play()
+					{ Size = splat }):Play()
 				st.Joint.C1 = CFrame.new(0, st.Base.Y * 0.32, 0)
+				local mesh, joint, baseY = st.Mesh, st.Joint, st.Base.Y
+				task.delay(WOBBLE.DeathHold, function()
+					pcall(function()
+						if not mesh.Parent or not joint.Parent then return end
+						local info = TweenInfo.new(WOBBLE.DeathShrink, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+						TweenService:Create(mesh, info, { Size = splat * 0.2 }):Play()
+						-- bottom stays on the floor: 0.32 + 0.35 / 2 = 0.46 + 0.07 / 2 (heights in Base.Y)
+						TweenService:Create(joint, info, { C1 = CFrame.new(0, baseY * 0.46, 0) }):Play()
+					end)
+				end)
 			elseif st.Root.Anchored or (st.Root.Position - camPos).Magnitude > WOBBLE.Range then
 				if not st.Splat then WOBBLE.rest(st) end
 			else

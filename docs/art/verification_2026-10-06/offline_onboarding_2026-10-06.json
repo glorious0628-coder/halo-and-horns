@@ -1,15 +1,15 @@
 {
   "status": "passed",
-  "checks": 871,
+  "checks": 769,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/QuestService.luau": "208bbcd7b1d1e3b7b9d4c354c797ffa65a717c9b117e5eb196c7e7ccc7c87df9",
+    "src/ReplicatedStorage/Shared/Config.luau": "5b2acb6d8a7cb1dde585d48e71e8cb6565b9c2a75d1e9960d5c145a8fd4ed2e7",
+    "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
+    "src/ServerScriptService/QuestService.luau": "fdf1f780d43f841db4fdb4b13d8fe2c02dee62a16d05232ca5ec4bd205f23ae0",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
-    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360"
+    "src/ServerScriptService/PlayerService.luau": "8ab1fc83d7a2b081baa96d894234decaabc31aa593f6ab6df13606ff3707393e"
   },
-  "fixtureSHA256": "8fd65c7ba90b7e2df406c62edd7d1692ab1e274dc773648046046fbb82a2d2ae",
+  "fixtureSHA256": "c9e7bc556680e5adc7d46a9d36ed2d10e4b78aaa2e7ff34324e3ed1a62ea57ec",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,
@@ -29,7 +29,6 @@
       "NextSkillIron",
       "NextIronLevel",
       "NextIronGold",
-      "NextSkill",
       "NextZone",
       "GuideDone"
     ],
@@ -49,7 +48,7 @@
     "legacy/corrupt counters",
     "death/respawn/faction/class changes retain progress",
     "A23-3 reward is 150 gold and covers the wood weapon price",
-    "A23-3 pinned next-goal row after the visit: NextSkillIron (A23-71 S16, no Q yet; NextIronLevel when Q was kept) -> NextIronGold (live gold) -> NextSkill (SKL-3: iron owned, the next skill before the next zone; Z / X only with their switch) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel / Skill",
+    "A23-3 pinned next-goal row after the visit: NextSkillIron (A23-71 S16, no Q yet; NextIronLevel when Q was kept) -> NextIronGold (live gold) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel",
     "next-goal row is never claimable, pays nothing, survives save/rejoin and keeps all ordinary quest slots",
     "A23-3 pre-acceptance quest completion is paid quietly and never accepts the first mission",
     "saved daily/extra Release quests migrate MinStacks50 to no stack gate and skill wording",
@@ -61,10 +60,9 @@
     "legacy tier4 preserved without inventing earlier purchases",
     "invalid/nonfinite mask, tier and visit repair",
     "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
-    "B4 Data Version 3 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a picked build saves and comes back repaired, A-Z kept): fresh/v2/v1 records load and save as Version 3 with no other field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
+    "B4 Data Version 3: fresh/v2/v1 records load and save as Version 3 with no field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
     "finite-value save serialization guard and migration idempotence",
-    "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
-    "A23-74 weapon first (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 (the Forge row, Fx Travel To = Crossroads / Spot = Forge, the instant Crossroads travel); meadow kills before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 (2 in the meadow), once; Forge.TravelDelay later the meadow trip -> the hunt; a save owning tier 1 -> step 1 as before; every claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial at step 3 = the forge trip; a KO at step 3 respawns at home"
+    "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more"
   ],
   "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); 'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again)."
 }

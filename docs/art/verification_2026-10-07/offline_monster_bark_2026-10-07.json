@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 17,
+  "checks": 72,
   "failedChecks": [],
   "mutations": {
-    "total": 8,
-    "applied": 8,
-    "caught": 8,
+    "total": 28,
+    "applied": 28,
+    "caught": 28,
     "results": [
       {
         "mutation": "every tick shows the bubble again",
@@ -45,7 +45,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL the bubble goes after Config.Barks.Show seconds :: nil"
+          "CHECK_FAIL the bubble goes after Config.Barks.Show seconds :: nil",
+          "CHECK_FAIL the bubble goes after Config.Barks.Show seconds (with the fade) :: nil",
+          "CHECK_FAIL every tween of a destroyed bubble is cancelled (the float loop stops) :: nil"
         ]
       },
       {
@@ -69,17 +71,202 @@
         "failures": [
           "CHECK_FAIL the same line with a new BarkAt shows again (one bubble) :: 2",
           "CHECK_FAIL the first bubble's timer leaves the newer bubble :: nil",
-          "CHECK_FAIL without the art: a white rounded box with a rim (code fallback) :: nil"
+          "CHECK_FAIL without UIKit.ApplyFont: Fredoka One (never GothamBold) :: nil"
+        ]
+      },
+      {
+        "mutation": "the old GothamBold font",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL without UIKit.ApplyFont: Fredoka One (never GothamBold) :: Font.GothamBold"
+        ]
+      },
+      {
+        "mutation": "the kind's own art is never used",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL as uploaded: every monster kind draws its own bubble first, never the shared BarkBubble :: SkeletonKnight,BigSlime,GoblinBrute,GhostKing,PumpkinKing,LittleGhost,BatGoblin",
+          "CHECK_FAIL order: its own -> its family's (no BarkBubble after them) :: BarkBubbleSlime",
+          "CHECK_FAIL the King Slime's own art fails to draw -> the slime bubble (tried in order) :: BarkBubbleSlime"
+        ]
+      },
+      {
+        "mutation": "no family fallback",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the King Slime borrows the slime bubble (its family) until its own is up :: ",
+          "CHECK_FAIL order: its own -> its family's (no BarkBubble after them) :: BarkBubbleBigSlime",
+          "CHECK_FAIL a kind not listed uses its QuestKind's family :: nil"
+        ]
+      },
+      {
+        "mutation": "the family before the kind's own",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL as uploaded: every monster kind draws its own bubble first, never the shared BarkBubble :: SkeletonKnight,BigSlime,GoblinBrute,GhostKing,PumpkinKing,LittleGhost,BatGoblin",
+          "CHECK_FAIL order: its own -> its family's (no BarkBubble after them) :: BarkBubbleSlime,BarkBubbleBigSlime",
+          "CHECK_FAIL the King Slime's own art fails to draw -> the slime bubble (tried in order) :: BarkBubbleSlime"
+        ]
+      },
+      {
+        "mutation": "an un-uploaded key is used",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL nothing uploaded: no art key for any kind (the round code bubble), never BarkBubble :: BarkBubbleSlime",
+          "CHECK_FAIL no round art uploaded: the round code bubble (CodeW x CodeH, fully round, tail dot), the shared BarkBubble never asked :: ImageLabel 104x84 asked 1",
+          "CHECK_FAIL a 9-sliced key (the shared BarkBubble) is never a bark bubble, even when a family names it :: BarkBubbleBigSlime"
+        ]
+      },
+      {
+        "mutation": "the shared wide BarkBubble is the last fallback again",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL as uploaded: every monster kind draws its own bubble first, never the shared BarkBubble :: PumpkinSlime,SkeletonKnight,BigSlime,Skeleton,GoblinBrute,GhostKing,PumpkinKing,LittleGhost,GhostMinion,BatGoblin,Slime,Goblin",
+          "CHECK_FAIL nothing uploaded: no art key for any kind (the round code bubble), never BarkBubble :: BarkBubble",
+          "CHECK_FAIL no round art uploaded: the round code bubble (CodeW x CodeH, fully round, tail dot), the shared BarkBubble never asked :: ImageLabel 104x60 asked 1"
+        ]
+      },
+      {
+        "mutation": "a 9-sliced key is used as a bark bubble",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a 9-sliced key (the shared BarkBubble) is never a bark bubble, even when a family names it :: BarkBubble"
+        ]
+      },
+      {
+        "mutation": "the own art is stretched (no Fit)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a slime draws its uploaded BarkBubbleSlime with Fit (not 9-sliced) :: BarkBubbleSlime",
+          "CHECK_FAIL a slime draws its own bubble with ScaleType Fit (not 9-sliced) :: BarkBubbleSlime nil"
+        ]
+      },
+      {
+        "mutation": "the own art ignores its shape",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL all 12 BarkBubble<Kind> uploaded (Id, Size, TextRect, no Slice), drawn in their own round shape (ArtW wide, height from Size, no clamp, at most 1.8 : 1) :: 12 PumpkinSlime 104x104,SkeletonKnight 104x104,BigSlime 104x104,Skeleton 104x104,GoblinBrute 104x104,GhostKing 104x104,PumpkinKing 104x104,LittleGhost 104x104,GhostMinion 104x104,BatGoblin 104x104,Slime 104x104,Goblin 104x104",
+          "CHECK_FAIL the slime's bubble: a fixed ArtW wide, height from its art (512 x 415 -> 104 x 84, round) :: 104x104",
+          "CHECK_FAIL its own bubble: a fixed ~104 px wide, height from its Size (640 x 512 -> 4 : 5) :: 104x104"
+        ]
+      },
+      {
+        "mutation": "an uploaded bubble is letterboxed (height clamped)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL all 12 BarkBubble<Kind> uploaded (Id, Size, TextRect, no Slice), drawn in their own round shape (ArtW wide, height from Size, no clamp, at most 1.8 : 1) :: 12 BatGoblin 104x66"
+        ]
+      },
+      {
+        "mutation": "the code bubble is a wide pill",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the code bubble is round and compact (about 96 x 70 px), not a long pill :: 172x44"
+        ]
+      },
+      {
+        "mutation": "the bubble grows with the letters",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the slime's bubble: a fixed ArtW wide, height from its art (512 x 415 -> 104 x 84, round) :: 124x84",
+          "CHECK_FAIL a longer line keeps the same fixed size (no width per letter) :: 216x84",
+          "CHECK_FAIL no round art uploaded: the round code bubble (CodeW x CodeH, fully round, tail dot), the shared BarkBubble never asked :: Frame 116x70 asked 0"
+        ]
+      },
+      {
+        "mutation": "the text never wraps",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the line sits in the art's TextRect, wrapped and scaled :: nil",
+          "CHECK_FAIL the line wraps and scales between TextMin and TextMax :: 0.9",
+          "CHECK_FAIL the line sits in its own TextRect, wrapped and scaled :: nil"
+        ]
+      },
+      {
+        "mutation": "the fallback has square corners",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no round art uploaded: the round code bubble (CodeW x CodeH, fully round, tail dot), the shared BarkBubble never asked :: Frame 96x70 asked 0",
+          "CHECK_FAIL the code bubble's corner is fully round :: nil",
+          "CHECK_FAIL a small round tail dot (<= 16 px, rimmed) under the bottom left :: nil"
+        ]
+      },
+      {
+        "mutation": "no tail dot on the code bubble",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no round art uploaded: the round code bubble (CodeW x CodeH, fully round, tail dot), the shared BarkBubble never asked :: Frame 96x70 asked 0",
+          "CHECK_FAIL a small round tail dot (<= 16 px, rimmed) under the bottom left :: nil",
+          "CHECK_FAIL the tail dot and its rim fade out too :: nil"
+        ]
+      },
+      {
+        "mutation": "the tail dot never fades",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the tail dot and its rim fade out too :: nil"
+        ]
+      },
+      {
+        "mutation": "reduced motion still wobbles",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL UIKit.ReducedMotion: no pop, no wobble, no float :: 3",
+          "CHECK_FAIL reduced motion: no fade either, the bubble just goes :: nil"
+        ]
+      },
+      {
+        "mutation": "the bubble vanishes with no fade",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL at the end it shrinks and fades instead of vanishing :: nil",
+          "CHECK_FAIL the art image fades too :: nil",
+          "CHECK_FAIL the code bubble and its rim fade out too :: nil"
+        ]
+      },
+      {
+        "mutation": "a replaced bubble still fades",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a replaced bubble never fades (its timer sees it gone) :: nil"
+        ]
+      },
+      {
+        "mutation": "the float loop never stops",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL every tween of a destroyed bubble is cancelled (the float loop stops) :: nil",
+          "CHECK_FAIL a replaced bubble's float stops :: nil"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
-    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "090abafc0a9313ae43848b2388ba2af2c92f9cc35bb7fe54748127ea7f71e2ca"
+    "src/ReplicatedStorage/Shared/Config.luau": "541f1c61add614cf129100859ba76057f07ff345c3f12f6a8d5c7bd944d841fb",
+    "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "9dfb1ce7d655f796b9ca595d25145947abc0facac4e97bdfa6e6a7a91eb5d167"
   },
-  "fixtureSHA256": "7445b0cab46587309cca7b42886517e00302db4c1398a65910b50665a3d5fc94",
+  "fixtureSHA256": "3dabd4d99778a69d593e2393eff260b326bf659c858950ccde644e1209c111b3",
   "studioCalls": 0,
-  "contract": "Monster bark bubble offline test (MonsterLabels; lines_pack 2, dev2 BarkService contract\ndocs/design/lines_pack_server_2026-10-07.md section 3): a new BarkAt on a monster model shows its Bark in a speech bubble\nover the head for Config.Barks.Show s within Config.Barks.MaxDistance studs (the same line with a new BarkAt shows\nagain; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); the\nBarkBubble art (9-slice, TextRect) or a white rounded box with a navy rim; a newer bark replaces the bubble (never two). Runs the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.",
+  "contract": "Monster bark bubble offline test (MonsterLabels; lines_pack 2, dev2 BarkService contract\ndocs/design/lines_pack_server_2026-10-07.md section 3): a new BarkAt on a monster model shows its Bark in a speech bubble\nover the head for Config.Barks.Show s within Config.Barks.MaxDistance studs (the same line with a new BarkAt shows\nagain; an old bark of a monster streaming in, a far monster, Barks.Enabled = false or an empty line show nothing); a newer\nbark replaces the bubble (never two).\nA23-74 (user 2026-10-07 \"not cute\" / \"몬스터마다 다른 말풍선 그려야지\" / \"말풍선 가로로 길쭉한 거 말고\"): fixed-size round\nbubbles, never per letter. Art order: the kind's own BarkBubble<Kind> (12 keys, all uploaded since 270b9c3e: Id, Size,\nTextRect) -> its family's (Config.Barks.BubbleFamily / BubbleArt), each only once uploaded and round (no Slice), else a\nround white code bubble (about 96 x 70, fully round, soft rim, a small tail dot) - never the shared 9-slice BarkBubble\n(512 x 190: drawn 112 x 60 its body stays ~2.4 : 1, the wide pill the user turned down). A monster's own art: ~104 px\nwide, height from its Size (the 12 uploaded fit with no clamp, so Fit fills the box and the TextRect lines up; text box\nroom for 2 lines at TextMin), ScaleType Fit, its TextRect. The line wraps (max 2 lines) and scales between TextMin and\nTextMax in the Head font\n(Fredoka One without UIKit); a jelly pop (UIScale Back + Size Elastic from the tail corner), a looping float, a shrink +\nfade in the last B.Out s, every tween cancelled when the bubble is destroyed or replaced, none with reduced motion.\nRuns the real MonsterLabels.luau + Config.luau in tools/fixtures/monster_bark_offline.luau.",
   "limitations": "How the bubble looks over real monsters (size, overlap with the name tag, phones) is a Studio check."
 }

@@ -195,13 +195,16 @@ def english_checks():
     """A23-48 (검수 2026-10-07): Roblox auto-translation is off for every GUI; no Korean in FactionPicker's code lines."""
     cm = (ROOT / "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau").read_text(encoding="utf-8-sig")
     fp = (ROOT / "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau").read_text(encoding="utf-8-sig")
+    mb = (ROOT / "src/ServerScriptService/MapBuilder.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     fp_code = "\n".join(line.split("--")[0] for line in fp.splitlines())
     return [
-        ("ClientMain turns AutoLocalize off for every GUI object under PlayerGui and in the world",
-         'if inst:IsA("GuiBase2d") then inst.AutoLocalize = false end' in cm
+        ("ClientMain turns AutoLocalize off for every GUI object and ProximityPrompt under PlayerGui and in the world",
+         'if inst:IsA("GuiBase2d") or inst:IsA("ProximityPrompt") then inst.AutoLocalize = false end' in cm
          and 'watch(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))' in cm
          and "task.spawn(watch, workspace)" in cm and cm.index("AutoLocalize") < cm.index("local ORDER = {")),
         ("FactionPicker has no Korean in its code (warnings / errors are English)", HANGUL.search(fp_code) is None),
+        ("the Altar of Fate prompt opens on E at once and is never auto-translated (검수 audit 2026-10-08)",
+         "\tprompt.HoldDuration = 0\n\tprompt.AutoLocalize = false\n" in mb[mb.find("local function ensureAltarPrompt(altar)"):]),
     ]
 
 

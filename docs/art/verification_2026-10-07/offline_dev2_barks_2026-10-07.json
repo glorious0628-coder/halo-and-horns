@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 128,
+  "checks": 130,
   "failedChecks": 0,
-  "namedChecks": 76,
+  "namedChecks": 78,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -63,7 +63,7 @@
     },
     {
       "group": "config",
-      "check": "lines_pack §2-2 pasted (60+ lines), each 8 words or fewer",
+      "check": "A23-74 sound words: 60+ lines, each at most 2 words and 12 letters",
       "pass": 1,
       "fail": 0
     },
@@ -75,7 +75,19 @@
     },
     {
       "group": "config",
-      "check": "lines as written (lines_pack §2-2)",
+      "check": "every monster sounds like itself (no two kinds share a line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "each kind's first Spot is its own sound (A23-74 examples)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "golden / goose lines as written (A23-74)",
       "pass": 1,
       "fail": 0
     },
@@ -237,13 +249,13 @@
     },
     {
       "group": "golden and fallback",
-      "check": "a golden slime: 'So much sparkle! Not sharing!'",
+      "check": "a golden slime: 'Bling!'",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "golden and fallback",
-      "check": "a golden goblin low on HP: 'Share the sparkle!'",
+      "check": "a golden goblin low on HP: 'Okay, share!'",
       "pass": 1,
       "fail": 0
     },
@@ -468,9 +480,9 @@
   "staticChecks": 11,
   "staticFailures": [],
   "mutations": {
-    "total": 31,
-    "applied": 31,
-    "caught": 31,
+    "total": 34,
+    "applied": 34,
+    "caught": 34,
     "skipped": false,
     "results": [
       {
@@ -533,7 +545,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "golden and fallback :: a golden goblin low on HP: 'Share the sparkle!'",
+          "golden and fallback :: a golden goblin low on HP: 'Okay, share!'",
           "low :: a hit below 30%: the Low line (only the line pick drawn)",
           "low :: the next hit after the cooldown says the Low line"
         ],
@@ -579,8 +591,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "golden and fallback :: a golden goblin low on HP: 'Share the sparkle!'",
-          "golden and fallback :: a golden slime: 'So much sparkle! Not sharing!'"
+          "golden and fallback :: a golden goblin low on HP: 'Okay, share!'",
+          "golden and fallback :: a golden slime: 'Bling!'"
         ],
         "newFailingCount": 2
       },
@@ -693,7 +705,7 @@
         "crashed": false,
         "newFailingChecks": [
           "golden and fallback :: a bat goblin without lines says a goblin line (Config.QuestKind)",
-          "golden and fallback :: a golden slime: 'So much sparkle! Not sharing!'",
+          "golden and fallback :: a golden slime: 'Bling!'",
           "no repeats :: a King Slime's Spot line never repeats back to back (both lines used)",
           "spot and hit :: a Spot roll of exactly 0.5 says nothing (one draw used)",
           "spot and hit :: a goblin in the woods speaks at once (zones are separate), roll 0.49 < 0.5",
@@ -807,13 +819,24 @@
         "newFailingCount": 2
       },
       {
-        "mutation": "a nine-word line",
+        "mutation": "a sentence comes back",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: lines_pack §2-2 pasted (60+ lines), each 8 words or fewer"
+          "config :: A23-74 sound words: 60+ lines, each at most 2 words and 12 letters"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a 13-letter word",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-74 sound words: 60+ lines, each at most 2 words and 12 letters"
         ],
         "newFailingCount": 1
       },
@@ -838,6 +861,28 @@
           "config :: no kill / die / dead / blood / scary, the one-glyph ellipsis only"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "two kinds share a sound",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: every monster sounds like itself (no two kinds share a line)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a kind loses its own first sound",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: each kind's first Spot is its own sound (A23-74 examples)"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -845,16 +890,16 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e602e90ca54aadf41f87199e7f37ed6e298f0e27171de09e39d4991a2763cf4",
+    "src/ReplicatedStorage/Shared/Config.luau": "541f1c61add614cf129100859ba76057f07ff345c3f12f6a8d5c7bd944d841fb",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
-    "src/ServerScriptService/MonsterService.luau": "06bf0e1ebb61dd86226b35dca17e8d16de085c1e749d75dff728e773bbed3077",
+    "src/ServerScriptService/MonsterService.luau": "89098e29c98f3fbd8c5afb6f7003b4d171fa23d5d5884ce9df51d493875059dc",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def"
   },
-  "fixtureSHA256": "f3033aa030ff91f543e4dcf4a923644af09dab055253a99fa77bcc85135a31ea",
+  "fixtureSHA256": "7dbdfdcbeb598e3f7832919c3a5d3000c3a9dc9cd08ec0f955e7c6223a52f0e3",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "③ (lines_pack §2): MonsterService fires Moment(rec, \"Spot\") when a monster picks a new target (a personal monster once, when it first goes for its owner) and Moment(rec, \"Hit\") when a hit leaves it alive. BarkService (Config.Barks) turns a Hit below LowAt (30%) into Low once a life, drops a moment blocked by PerMonster (12 s) or PerZone (6 s, all monsters of a zone) with no roll (a blocked Low tries again at the next hit), rolls Chance (Spot 50%, Hit 20%, Low 100%, Idle 15%; a roll equal to the chance stays quiet), picks the golden set first for a golden monster, else its kind's, else Config.QuestKind's, never the same line twice in a row, and writes model attributes Bark, then BarkAt (server time). Every IdleEvery (10) s a monster with no target within IdleNear (40) of a player (the monsters that player may hit) rolls Idle once. Lines never change a score.",
+  "contract": "③ (lines_pack §2): MonsterService fires Moment(rec, \"Spot\") when a monster picks a new target (a personal monster once, when it first goes for its owner) and Moment(rec, \"Hit\") when a hit leaves it alive. BarkService (Config.Barks) turns a Hit below LowAt (30%) into Low once a life, drops a moment blocked by PerMonster (12 s) or PerZone (6 s, all monsters of a zone) with no roll (a blocked Low tries again at the next hit), rolls Chance (Spot 50%, Hit 20%, Low 100%, Idle 15%; a roll equal to the chance stays quiet), picks the golden set first for a golden monster, else its kind's, else Config.QuestKind's, never the same line twice in a row, and writes model attributes Bark, then BarkAt (server time). Every IdleEvery (10) s a monster with no target within IdleNear (40) of a player (the monsters that player may hit) rolls Idle once. Lines never change a score. A23-74 (user 2026-10-07): every line is a sound word or one short word in the monster's own voice (at most 2 words and 12 letters, no two kinds share a line, e.g. Slime 'Blub?', King Slime 'BLOOP!', Ghost King 'OOOH!'); the kinds and moments are unchanged.",
   "limitations": "The bubble is game dev 1's (MonsterLabels: watch BarkAt, show Bark for Show s within MaxDistance). The real aiStep / personalStep are checked as source text (the AI needs the engine); DamageMonster runs as a cut chunk. The optional goose barks (Lines.Goose, GooseService) are not wired."
 }
