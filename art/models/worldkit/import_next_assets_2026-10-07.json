@@ -21,14 +21,15 @@
    "name": "Town_Halo_Castle",
    "group": "town_castle",
    "meshId": "rbxassetid://123075840109987",
-   "textureId": "rbxassetid://115923779729921",
+   "textureId": "rbxassetid://81624750351092",
    "size_studs": [
     70.0,
     65.71,
     55.38
    ],
    "source_glb": "art/models/tripo/town/Town_Halo_Castle_10k_ring.glb",
-   "note": "빛 성: 깃발 문양 → 금빛 고리(텍스처만, 사용자 OK '둘 다 넣어')."
+   "note": "빛 성: 깃발 문양 → 금빛 고리(텍스처만, 사용자 OK '둘 다 넣어'). 색 고침(84ae50a, 검수 통과): 진한 금·파랑 채도↑ — 텍스처만 새 id, 메시 그대로. 원본 텍스처 = textureId_import.",
+   "textureId_import": "rbxassetid://115923779729921"
   },
   {
    "name": "Crown_Broken_B",
