@@ -1,0 +1,1012 @@
+{
+  "tool": "tools/window_audit_view.py",
+  "rows": [
+    {
+      "device": "pc",
+      "id": "NoSkills",
+      "probe": {},
+      "file": "build/window_audit_after/pc_NoSkills.png"
+    },
+    {
+      "device": "pc",
+      "id": "Story",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          164
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconScroll": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 1,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Story.png"
+    },
+    {
+      "device": "pc",
+      "id": "Welcome",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          338
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconScroll": 1,
+          "BtnRound": 1,
+          "BtnConfirm": 1,
+          "BtnSecondary": 2,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "PortraitGuideHalo": 1
+        },
+        "Buttons": {
+          "Code": 1,
+          "Art": 4
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Welcome.png"
+    },
+    {
+      "device": "pc",
+      "id": "Menu",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          417
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconSettings": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 9
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 10
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Menu.png"
+    },
+    {
+      "device": "pc",
+      "id": "Travel",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          354
+        ],
+        "Code": {
+          "Frame:Row_GoblinWoods": 1,
+          "Frame:Row_SkeletonRuins": 1,
+          "Frame:Row_SlimeMeadow": 1,
+          "Frame:Row_Crossroads": 1,
+          "Frame:Row_Home": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "IconTravel": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 5
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 6
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Travel.png"
+    },
+    {
+      "device": "pc",
+      "id": "Class",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          228
+        ],
+        "Code": {
+          "TextButton:Card": 3
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "IconClassChange": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1
+        },
+        "Buttons": {
+          "Code": 3,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Class.png"
+    },
+    {
+      "device": "pc",
+      "id": "Rebirth",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          271
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "IconRebirth": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 2
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 3
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Rebirth.png"
+    },
+    {
+      "device": "pc",
+      "id": "Altar",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          356
+        ],
+        "Code": {
+          "TextButton:Card": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "BtnConfirm": 1,
+          "GlyphClose": 1,
+          "IconAltar": 1
+        },
+        "Buttons": {
+          "Code": 1,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Altar.png"
+    },
+    {
+      "device": "pc",
+      "id": "Items",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          220
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "IconBag": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Items.png"
+    },
+    {
+      "device": "pc",
+      "id": "WeaponShop",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          152
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "IconHammer": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_WeaponShop.png"
+    },
+    {
+      "device": "pc",
+      "id": "PotionShop",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          304
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "BtnConfirm": 4,
+          "GlyphClose": 1,
+          "IconPotionHP": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 5
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_PotionShop.png"
+    },
+    {
+      "device": "pc",
+      "id": "Shop",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          193
+        ],
+        "Code": {
+          "Frame:Row_Class": 1,
+          "Frame:Row_Faction": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "IconCoin": 1,
+          "BtnRound": 1,
+          "BtnPrimary": 2,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "RibbonHeader": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 3
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Shop.png"
+    },
+    {
+      "device": "pc",
+      "id": "Vacation",
+      "probe": {
+        "Code": [],
+        "Root": "RewardPopup",
+        "Art": {
+          "IconCoin": 1,
+          "RewardRays": 1,
+          "SlotCommon": 2,
+          "PanelCard": 1,
+          "BannerGold": 1,
+          "BtnConfirm": 1,
+          "IconExp": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Vacation.png"
+    },
+    {
+      "device": "pc",
+      "id": "Settings",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          480
+        ],
+        "Code": {
+          "Frame:Row": 11
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "IconSettings": 1,
+          "BtnRound": 1,
+          "BtnConfirm": 1,
+          "BtnPrimary": 3,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 10
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 15
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Settings.png"
+    },
+    {
+      "device": "pc",
+      "id": "Help",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          480
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "IconHelp": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Help.png"
+    },
+    {
+      "device": "pc",
+      "id": "News",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          202
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconNews": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "RibbonHeader": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_News.png"
+    },
+    {
+      "device": "pc",
+      "id": "Nickname",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          624,
+          202
+        ],
+        "Code": {
+          "Frame:TitleRibbon": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "CardHalo": 1,
+          "PanelParchment": 2,
+          "BtnSpecial": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Nickname.png"
+    },
+    {
+      "device": "pc",
+      "id": "Confirm",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          368,
+          134
+        ],
+        "Code": [],
+        "Root": "ConfirmDialog",
+        "Art": {
+          "BtnConfirm": 1,
+          "DialogBox": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Confirm.png"
+    },
+    {
+      "device": "pc",
+      "id": "Reward",
+      "probe": {
+        "Code": [],
+        "Root": "RewardPopup",
+        "Art": {
+          "IconCoin": 1,
+          "RewardRays": 1,
+          "SlotCommon": 2,
+          "BannerGold": 1,
+          "BtnConfirm": 1,
+          "IconExp": 1,
+          "PanelCard": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/pc_Reward.png"
+    },
+    {
+      "device": "pc",
+      "id": "Notices",
+      "probe": {},
+      "file": "build/window_audit_after/pc_Notices.png"
+    },
+    {
+      "device": "phone",
+      "id": "NoSkills",
+      "probe": {},
+      "file": "build/window_audit_after/phone_NoSkills.png",
+      "note": "phone re-check after the compact reward popup fix"
+    },
+    {
+      "device": "phone",
+      "id": "Story",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          153
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconScroll": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 1,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Story.png"
+    },
+    {
+      "device": "phone",
+      "id": "Welcome",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          173
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconScroll": 1,
+          "BtnRound": 1,
+          "BtnConfirm": 1,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 2
+        },
+        "Buttons": {
+          "Code": 1,
+          "Art": 4
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Welcome.png"
+    },
+    {
+      "device": "phone",
+      "id": "Menu",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          247
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconSettings": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 9
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 10
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Menu.png"
+    },
+    {
+      "device": "phone",
+      "id": "Travel",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          247
+        ],
+        "Code": {
+          "Frame:Row_GoblinWoods": 1,
+          "Frame:Row_SkeletonRuins": 1,
+          "Frame:Row_SlimeMeadow": 1,
+          "Frame:Row_Crossroads": 1,
+          "Frame:Row_Home": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "IconTravel": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 5
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 6
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Travel.png"
+    },
+    {
+      "device": "phone",
+      "id": "Class",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          215
+        ],
+        "Code": {
+          "TextButton:Card": 3
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "IconClassChange": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1
+        },
+        "Buttons": {
+          "Code": 3,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Class.png"
+    },
+    {
+      "device": "phone",
+      "id": "Rebirth",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          247
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "IconRebirth": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 2
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 3
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Rebirth.png"
+    },
+    {
+      "device": "phone",
+      "id": "Altar",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          247
+        ],
+        "Code": {
+          "TextButton:Card": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "BtnConfirm": 1,
+          "GlyphClose": 1,
+          "IconAltar": 1
+        },
+        "Buttons": {
+          "Code": 1,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Altar.png"
+    },
+    {
+      "device": "phone",
+      "id": "Items",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          207
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "IconBag": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Items.png"
+    },
+    {
+      "device": "phone",
+      "id": "WeaponShop",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          142
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "IconHammer": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_WeaponShop.png"
+    },
+    {
+      "device": "phone",
+      "id": "PotionShop",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          247
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "BtnConfirm": 4,
+          "GlyphClose": 1,
+          "IconPotionHP": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 5
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_PotionShop.png"
+    },
+    {
+      "device": "phone",
+      "id": "Shop",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          182
+        ],
+        "Code": {
+          "Frame:Row_Class": 1,
+          "Frame:Row_Faction": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "IconCoin": 1,
+          "BtnRound": 1,
+          "BtnPrimary": 2,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "RibbonHeader": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 3
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Shop.png"
+    },
+    {
+      "device": "phone",
+      "id": "Vacation",
+      "probe": {
+        "Code": [],
+        "Root": "RewardPopup",
+        "Art": {
+          "IconCoin": 1,
+          "RewardRays": 1,
+          "SlotCommon": 2,
+          "PanelCard": 1,
+          "BannerGold": 1,
+          "BtnConfirm": 1,
+          "IconExp": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Vacation.png",
+      "note": "phone re-check after the compact reward popup fix"
+    },
+    {
+      "device": "phone",
+      "id": "Settings",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          247
+        ],
+        "Code": {
+          "Frame:Row": 11
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "IconSettings": 1,
+          "BtnRound": 1,
+          "BtnConfirm": 1,
+          "BtnPrimary": 3,
+          "PanelCard": 1,
+          "RibbonHeader": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 10
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 15
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Settings.png"
+    },
+    {
+      "device": "phone",
+      "id": "Help",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          247
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "RibbonHeader": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "IconHelp": 1,
+          "GlyphClose": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Help.png"
+    },
+    {
+      "device": "phone",
+      "id": "News",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          189
+        ],
+        "Code": [],
+        "Root": "PanelsModal",
+        "Art": {
+          "IconNews": 1,
+          "BtnRound": 1,
+          "PanelCard": 1,
+          "GlyphClose": 1,
+          "RibbonHeader": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_News.png"
+    },
+    {
+      "device": "phone",
+      "id": "Nickname",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          585,
+          189
+        ],
+        "Code": {
+          "Frame:TitleRibbon": 1
+        },
+        "Root": "PanelsModal",
+        "Art": {
+          "CardHalo": 1,
+          "PanelParchment": 2,
+          "BtnSpecial": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Nickname.png"
+    },
+    {
+      "device": "phone",
+      "id": "Confirm",
+      "probe": {
+        "Window": [
+          "ImageLabel",
+          345,
+          141
+        ],
+        "Code": [],
+        "Root": "ConfirmDialog",
+        "Art": {
+          "BtnConfirm": 1,
+          "DialogBox": 1,
+          "BtnSecondary": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 2
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Confirm.png"
+    },
+    {
+      "device": "phone",
+      "id": "Reward",
+      "probe": {
+        "Code": [],
+        "Root": "RewardPopup",
+        "Art": {
+          "IconCoin": 1,
+          "RewardRays": 1,
+          "SlotCommon": 2,
+          "BannerGold": 1,
+          "BtnConfirm": 1,
+          "IconExp": 1,
+          "PanelCard": 1
+        },
+        "Buttons": {
+          "Code": 0,
+          "Art": 1
+        },
+        "Shown": true
+      },
+      "file": "build/window_audit_after/phone_Reward.png",
+      "note": "phone re-check after the compact reward popup fix"
+    },
+    {
+      "device": "phone",
+      "id": "Notices",
+      "probe": {},
+      "file": "build/window_audit_after/phone_Notices.png"
+    }
+  ],
+  "note": "phone NoSkills / Vacation / Reward rows: the quick re-check (--only Vacation) after the compact popup fix"
+}
