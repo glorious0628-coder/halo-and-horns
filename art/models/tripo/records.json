@@ -5356,12 +5356,19 @@
     "front": "art/out/hq/HQ_Town_Horns_Castle_v4B.png",
     "back": "art/out/hq/HQ_Town_Horns_Castle_v6_back.png"
    },
-   "at": "2026-10-07 21:1x",
+   "at": "2026-10-07 21:10",
    "balance_after": 2465,
    "account": "web ① (12516812)",
    "site": "studio.tripo3d.ai",
-   "file": null,
-   "note": "user via 검수: '앞모습은 2가 좋은데 뒷모습이 문제다. 1과 2를 섞을 수는 없어?' → 검수 method 1 (② style rear 2D + multi-view). Multi-view slots (앞/왼쪽/오른쪽/뒷면) carry a subscribe crown but ran on the free account for 55."
+   "file": "art/models/tripo/web/Town_Horns_Castle_v6mv_HD_src.glb",
+   "note": "user via 검수: '앞모습은 2가 좋은데 뒷모습이 문제다. 1과 2를 섞을 수는 없어?' → 검수 method 1 (② style rear 2D + multi-view). Multi-view slots (앞/왼쪽/오른쪽/뒷면) carry a subscribe crown but ran on the free account for 55.",
+   "tris": 38432,
+   "bytes": 13371012,
+   "derived": [
+    "art/models/tripo/web/Town_Horns_Castle_v6mv_HD_plain.glb (glb_decimate.py 100000 = no change, --rotz -90: front -Y)",
+    "build/castle_v5/Town_Horns_Castle_v6mv_tiles.glb (split_uv_tiles 9 parts 3.6k-5.3k tris, 83.84 x 65.76 x 84.0 studs)"
+   ],
+   "sheet": "art/review/town5/horns_castle_mix_compare.jpg"
   }
  ]
 }
