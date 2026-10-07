@@ -1,0 +1,112 @@
+{
+ "made": "2026-10-07 이미지 생성 1 — WorldKit 3D 가져오기 2(build/import_next2/WorldKit_ImportNext2.glb, 8개; 미리보기 '가져오기'는 사용자가 누름), 업로드 계정 = 새 계정",
+ "convention": "모두 MeshPart 1개 + 텍스처 1장. 크기 = 스터드(X 폭, Y 높이, Z 깊이). 앞 = Roblox -Z. 피벗 = 밑면 가운데.",
+ "build": "py tools/build_kit_from_ids.py --list art/models/worldkit/import_next2_assets_2026-10-07.json [--only Kit_W_|Town_] --parent ServerStorage/WorldKit3D --out build/kit_next2_args.json → py tools/studio_mcp.py call execute_luau @build/kit_next2_args.json",
+ "worldkit": "build/WorldKit.rbxlx workspace.Kit3D_ImportNext2 (8 Model, 파일은 저장 안 됨 — id가 원본)",
+ "items": [
+  {
+   "name": "Town_Horns_Castle_v4",
+   "group": "town_castle",
+   "meshId": "rbxassetid://115349247467412",
+   "textureId": "rbxassetid://121003399614369",
+   "size_studs": [
+    83.53,
+    65.62,
+    84.0
+   ],
+   "source_glb": "art/models/tripo/Town_Horns_Castle_v4_raw.glb",
+   "note": "뿔 성 새 판 v4(사용자 고름 B_1, 8e8d012 검수 통과). 이미 1.2배(빛 성과 같은 무게, 높이 65.6). 뒤쪽(산 뒷면)은 단순 → 뒤가 산·벽 쪽을 보게. 옛 Town_Horns_Castle(v3N2)는 안 씀."
+  },
+  {
+   "name": "Kit_W_CampFence",
+   "group": "woods_prop",
+   "meshId": "rbxassetid://79119036174525",
+   "textureId": "rbxassetid://99371547652013",
+   "size_studs": [
+    6.0,
+    5.99,
+    2.03
+   ],
+   "source_glb": "art/models/tripo/Kit_W_CampFence_raw.glb",
+   "note": "야영지 울타리 한 칸(끝 나무색). 야영지마다 5~6칸 반원 + 입구 틈."
+  },
+  {
+   "name": "Kit_W_Crates",
+   "group": "woods_prop",
+   "meshId": "rbxassetid://138332417672184",
+   "textureId": "rbxassetid://135854095349820",
+   "size_studs": [
+    4.0,
+    3.39,
+    2.58
+   ],
+   "source_glb": "art/models/tripo/Kit_W_Crates_raw.glb",
+   "note": "상자 2 + 통 1. 야영지마다 2."
+  },
+  {
+   "name": "Kit_W_LootSack",
+   "group": "woods_prop",
+   "meshId": "rbxassetid://121683216005196",
+   "textureId": "rbxassetid://134921517402760",
+   "size_studs": [
+    2.08,
+    2.07,
+    2.2
+   ],
+   "source_glb": "art/models/tripo/Kit_W_LootSack_raw.glb",
+   "note": "금화 자루. 뒤쪽은 금화 없음 → 금화가 앞(길)을 보게."
+  },
+  {
+   "name": "Kit_W_LanternPost",
+   "group": "woods_prop",
+   "meshId": "rbxassetid://103007560611135",
+   "textureId": "rbxassetid://90546442367341",
+   "size_studs": [
+    3.76,
+    7.0,
+    2.58
+   ],
+   "source_glb": "art/models/tripo/Kit_W_LanternPost_raw.glb",
+   "note": "등불 기둥(빛은 Neon, PointLight 없이). 큰길 양옆."
+  },
+  {
+   "name": "Kit_W_SignPost",
+   "group": "woods_prop",
+   "meshId": "rbxassetid://87319370167767",
+   "textureId": "rbxassetid://115647470437962",
+   "size_studs": [
+    4.47,
+    6.0,
+    1.9
+   ],
+   "source_glb": "art/models/tripo/Kit_W_SignPost_raw.glb",
+   "note": "이정표(빈 판 2장, 글자는 SurfaceGui)."
+  },
+  {
+   "name": "Kit_W_FallenLog",
+   "group": "woods_prop",
+   "meshId": "rbxassetid://124007846852047",
+   "textureId": "rbxassetid://89978127844533",
+   "size_studs": [
+    10.0,
+    5.64,
+    7.03
+   ],
+   "source_glb": "art/models/tripo/Kit_W_FallenLog_raw.glb",
+   "note": "쓰러진 통나무(속 빈 끝 하나). 길을 막지 않게 가장자리."
+  },
+  {
+   "name": "Kit_W_Stump",
+   "group": "woods_prop",
+   "meshId": "rbxassetid://94180057479156",
+   "textureId": "rbxassetid://92014656910584",
+   "size_studs": [
+    3.2,
+    1.76,
+    3.2
+   ],
+   "source_glb": "art/models/tripo/Kit_W_Stump_raw.glb",
+   "note": "그루터기(0.6~1.0배로 다양하게). 우두머리 공터 조립에도."
+  }
+ ]
+}
