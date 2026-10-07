@@ -2217,7 +2217,8 @@ ITEMS = {
 		SellKeepEnhF = "Your +%d is saved (you get it back if you own it again)",
 		Plus = " +%d",
 		Weapons = "My Weapons", Scrolls = "Scrolls", Materials = "Materials",
-		NoWeapons = "Bare hands for now. The Blacksmith gives you your first weapon after your first mission.", -- A23-34
+		-- A23-34 / A23-74 weapon first: Otto hands it over right after the Guide's first quest
+		NoWeapons = "Bare hands for now. Accept the Guide's first quest and Otto gives you your first weapon.",
 		Drops = "What Monsters Drop", DropsNone = "Defeat monsters to see what they drop here.", -- P7
 		DropLine = "%s: %s", DropPart = "%s %s", DropJackpot = "★Legendary weapon (jackpot) 1 in %s", DropPotion = "%s potion",
 		DropWeapon = "%s weapon",

@@ -22,7 +22,8 @@ local FirstSteps = {}
 local LocalPlayer = Players.LocalPlayer
 local C = nil
 
-local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow" }
+-- Forge: A23-74 weapon first, the walk to Otto's anvil (Fx "Travel" { To = "Crossroads", Spot = "Forge" })
+local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
 local TRAVEL = { Fade = 0.4, MaxExtra = 1.5, FadeIn = 0.5, Token = 0, Gui = nil, Black = nil, Line = nil, Done = false }
 local HINT = { Idle = 5, Tick = 0.25, Search = 120, MarkerGap = 0.5, NearSince = nil,
 	AttackShown = false, Killed = false, MarkerAt = -math.huge, Marked = nil }
@@ -96,7 +97,7 @@ function TRAVEL.Start(data)
 	TRAVEL.Done = false
 	local t = math.clamp(tonumber(data.T) or 3, 0.5, 10)
 	local zone = type(data.To) == "string" and Config.Zones[data.To] or nil
-	local place = zone and zone.Name or TXT.Place
+	local place = (data.Spot == "Forge" and TXT.Forge) or (zone and zone.Name) or TXT.Place
 	TRAVEL.Build()
 	call("Panels", "Close", false) -- the guide window: the walk is over before it could be read
 	local whole = math.floor(t + 0.5)
@@ -114,9 +115,11 @@ function TRAVEL.Start(data)
 end
 
 ------------------------------------------------------------------ #2 hints in place
+-- the slime part of the first mission (A23-74: not the Forge step before it, the hints are about hitting monsters)
 local function firstMission()
 	local step = tonumber(attr("TutorialStep", 0)) or 0
-	return step >= 1 and step < 99
+	local steps = type(Config.Tutorial) == "table" and type(Config.Tutorial.Steps) == "table" and Config.Tutorial.Steps or {}
+	return step >= 1 and step < 99 and step ~= (tonumber(steps.Forge) or 3)
 end
 
 local function myRoot()

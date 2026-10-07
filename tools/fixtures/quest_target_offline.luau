@@ -269,6 +269,18 @@ do
 	check(g, "step 1 from the Crossroads -> meadow pad", type(e) == "table" and isNamed(e.Part, "Pad_SlimeMeadow") and e.Travel == true,
 		e and encode({ Tag = e.Tag, Travel = e.Travel }) or "nil")
 	check(g, "step 1 is not a claim", type(e) == "table" and e.Claim == false, e and tostring(e.Claim) or "nil")
+	-- A23-74 weapon first: the Forge step (3) = the anvil in the Crossroads, the Crossroads from elsewhere - even when
+	-- an early visit already set BlacksmithVisited
+	ATTR.BlacksmithVisited = true
+	local forgeRow = { Id = "tutorial", Kind = "Tutorial", Pinned = true, TutorialStep = 3, Text = "Get your first weapon · Crossroads Forge",
+		ShortName = "To the Forge", CanClaim = false, Progress = 0, Target = 1 }
+	e = QT.ForEntry(forgeRow, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "Forge step in the Crossroads -> the anvil (BlacksmithVisited ignored)", type(e) == "table" and isNamed(e.Part, "Anvil")
+		and e.Travel == false and e.Tag == "blacksmith" and e.Claim == false, where(e and e.Part))
+	e = QT.ForEntry(forgeRow, "SlimeMeadow", "Halo", vec(330, 3, 0))
+	check(g, "Forge step from the meadow -> a trip to the Crossroads", type(e) == "table" and e.Travel == true and e.Zone == "Crossroads",
+		e and encode({ Tag = e.Tag, Zone = e.Zone, Travel = e.Travel }) or "nil")
+	ATTR.BlacksmithVisited = nil
 	-- step 2 with every kill done: nothing to walk to
 	ATTR.TutorialKills = 5
 	e = QT.ForEntry({ Pinned = true, TutorialStep = 2, Progress = 5, Target = 5, CanClaim = true }, "Crossroads", "Halo", vec(0, 3, 0))

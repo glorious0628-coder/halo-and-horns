@@ -58,13 +58,25 @@
       "ok": true
     },
     {
+      "check": "A23-74 weapon first: the Forge step's beam goes to the anvil in the Crossroads (the Crossroads from elsewhere), decided by the step, never by BlacksmithVisited",
+      "ok": true
+    },
+    {
+      "check": "A23-74 weapon first: tapping the Forge row asks the server for the walk again and brings the beam back",
+      "ok": true
+    },
+    {
+      "check": "A23-74: the bag's empty weapons line promises the weapon right after the first quest",
+      "ok": true
+    },
+    {
       "check": "E11: MapBuilder puts a BoardPrompt (attribute Board) on each job board's spot, off while the board is off",
       "ok": true
     }
   ],
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "731fe7ba17639b34d7dfdb13e4cf45c22f75d3cd70f838c7cf86571aa5440f12",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "29044dbfc398a1a998873099a317265b5e6b27fe2fc47d8fec21ca0226093a02"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "39432fb4dfcc73a789dbb118fe2bc07cf8ef4171360cfe66ddc423bc068fa130",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "dedd3121495e9910a7bc015632ea1a43874d6c4d13575601e6f61f28debc1eab"
   },
   "studioCalls": 0,
   "contract": "Round 3 'first 10 minutes' client pieces in HUD.luau (docs/design/ideas_first10_2026-10-07.md §3-4, game dev 1):\n#1 line 2 after the pinned row = the waiting story -> a claim -> the S0 shard story (until auto combat is unlocked) ->\nthe first daily, in both the phone header line and the two quest lines; the PC list has no daily header before the\nfirst mission is accepted (step 0); a seconds row's ProgressUnit follows the target ('5/10 s', dev2 2c5e84e).\n#3 one tap on the phone quest block whose line 1 is the step-0 pinned row ('Tap here: first quest from Hallie') opens\nthe guide (L.PinnedTap) instead of the list.\n#2 the guide's first window (Panels BUILDERS.Welcome): [I'm In!] is the one wide button (half the row), Next / Later a\nquarter each; short phone screens (height < 520) keep a 64 px guide face instead of none.",

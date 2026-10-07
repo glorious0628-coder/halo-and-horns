@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 34,
-  "namedChecks": 34,
+  "checks": 36,
+  "namedChecks": 36,
   "failing": [],
   "mutations": {
-    "total": 9,
-    "caught": 9,
+    "total": 11,
+    "caught": 11,
     "results": [
       {
         "mutation": "claim ignores CanClaim",
@@ -97,6 +97,27 @@
         "newFailingChecks": [
           "plain zones :: meadow from the Halo town -> the bridge"
         ]
+      },
+      {
+        "mutation": "the Forge step points nowhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step from the meadow -> a trip to the Crossroads",
+          "rows :: Forge step in the Crossroads -> the anvil (BlacksmithVisited ignored)"
+        ]
+      },
+      {
+        "mutation": "the Forge step is the meadow step",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step from the meadow -> a trip to the Crossroads",
+          "rows :: Forge step in the Crossroads -> the anvil (BlacksmithVisited ignored)",
+          "rows :: step 1 from the Crossroads -> meadow pad"
+        ]
       }
     ]
   },
@@ -104,9 +125,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7c432b8c4fb3d51a08fc698760a42358f25d6ad51a9311c0e8c9937550bd5407",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a7583ebf3ec53f513f0fbab414019603cb64d12a357dbd5a7986c002edd488f7",
-    "tools/fixtures/quest_target_offline.luau": "4c7158d6b31fef10bc989e5929f499de82d7ec8f61fcf338e24c464a4bc1d820"
+    "src/ReplicatedStorage/Shared/Config.luau": "024fee7016e993de85ac23aa99a129a5d31a2e8cedd9cfec863b5d52424dbe25",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "ceba49b926940237c2045d4b89399bc6634324781c290f526b681420694fad43",
+    "tools/fixtures/quest_target_offline.luau": "caebce5acd839b9a3db7a08f33ac5ab5ef585fcabf8ed085a0e826b8773e6d08"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

@@ -184,6 +184,15 @@ g = gui()
 check(g and g:FindFirstChild("Black").BackgroundTransparency == 0, "a newer Travel keeps its own timing", g and g:FindFirstChild("Black").BackgroundTransparency)
 fx("TravelDone", { UserId = 77 })
 advance(1)
+-- A23-74 weapon first: the walk to Otto's anvil says where it goes
+fx("Travel", { UserId = 77, To = "Crossroads", Spot = "Forge", T = 3 })
+advance(0.01)
+g = gui()
+line = g and g:FindFirstChild("Line")
+check(line and line.Text == string.format(TXT.Count, string.format(TXT.Travel, "the Forge"), 3), "the Forge walk: 'Off to the Forge!  3'",
+	line and line.Text)
+fx("TravelDone", { UserId = 77 })
+advance(1)
 
 ------------------------------------------------------------------ #2 hints in place
 local function step(seconds)
@@ -198,6 +207,9 @@ setAttrs({ TutorialStep = 0, Class = "Warrior", WeaponTier = 0, Faction = "Halo"
 local near = monster("Slime", vec(6, 3, 0), nil) -- inside the punch reach (7 + 2)
 step(7)
 check(#W.Hints == 0 and #W.Focus == 0, "before the first mission: no hints, no marker", #W.Hints .. "/" .. #W.Focus)
+player.Attrs.TutorialStep = 3 -- A23-74: the Forge step comes before the slimes
+step(7)
+check(#W.Hints == 0 and #W.Focus == 0, "the Forge step (on the way to the first weapon): no hints, no marker", #W.Hints .. "/" .. #W.Focus)
 player.Attrs.TutorialStep = 1
 step(4)
 check(#W.Hints == 0, "no attack hint before Idle s", #W.Hints)

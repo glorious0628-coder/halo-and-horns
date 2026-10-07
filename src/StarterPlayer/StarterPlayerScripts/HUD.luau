@@ -214,6 +214,7 @@ local TXT = {
 	Traveling = "Traveling...",
 	DailiesOpened = "Daily quests are open!",
 	SmithGuide = "Forge · use the anvil",
+	ForgeGuide = "Your first weapon · the anvil", -- A23-74 weapon first (TutorialStep Forge)
 	NoMana = "Not enough MP.",
 	GoSmith = "Go to the Crossroads and find the anvil at the Forge.",
 	Pond = "Pond",
@@ -3767,14 +3768,23 @@ function L.NeedsMeadowGuide(step)
 	return step == quest and num("TutorialKills", 0) < (tonumber(TUT.QuestKills) or 5)
 end
 
+-- A23-74 weapon first (dev2 dev2-weapon): after [Accept] the first goal is the Forge (TutorialStep Forge = 3), where
+-- Otto hands over the first weapon at the anvil; then the meadow
+L.ForgeStep = (type(TUT.Steps) == "table" and tonumber(TUT.Steps.Forge)) or 3
+
 -- tutorial step 1: guide to the SlimeMeadow pad; cleared when the step changes or the player enters the zone.
--- Zone guides (Lv 10 / Lv 25) are cleared when the player enters that zone.
+-- The Forge step: the anvil inside the Crossroads, the Crossroads from anywhere else - decided by the step, never by
+-- BlacksmithVisited (a visit before [Accept] already set it). Zone guides (Lv 10 / Lv 25) are cleared when the player
+-- enters that zone.
 local function refreshGuides()
 	if attr("DataLoaded", false) ~= true then return end
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
+	local forge = step == L.ForgeStep
 	if guide then
-		if guide.Tag == "tutorial" and (not L.NeedsMeadowGuide(step) or zone == TUT_GUIDE_ZONE or guide.From ~= zone) then
+		if guide.Tag == "forge" and (not forge or guide.From ~= zone) then
+			HUD.ClearGuide()
+		elseif guide.Tag == "tutorial" and (not L.NeedsMeadowGuide(step) or zone == TUT_GUIDE_ZONE or guide.From ~= zone) then
 			HUD.ClearGuide()
 		elseif isZoneGuide(guide.Tag) and zone == string.sub(guide.Tag, 6) then
 			HUD.ClearGuide()
@@ -3784,7 +3794,12 @@ local function refreshGuides()
 			HUD.ClearGuide()
 		end
 	end
-	if L.NeedsMeadowGuide(step) and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
+	if forge then
+		if not (guide and guide.Tag == "forge") then
+			local target = zone == "Crossroads" and L.BlacksmithTarget() or findTravelTarget("Crossroads")
+			if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end
+		end
+	elseif L.NeedsMeadowGuide(step) and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
 		if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "tutorial", nil) and guide then guide.From = zone end
 	elseif step == 99 and attr("BlacksmithVisited", false) ~= true and zone == "Crossroads"
 		and not (guide and guide.Tag == "blacksmith") then
@@ -4034,8 +4049,9 @@ function L.ClaimableMission(e)
 		and e.Progress >= e.Target
 end
 
--- tapping the pinned guide row: step 0 guide dialogue, step 1/2 travel to the meadow, blacksmith step and the
--- iron-weapon goal -> the existing doUpgrade path, level goals -> the existing beam to the hunting ground.
+-- tapping the pinned guide row: step 0 guide dialogue, the Forge step (A23-74) back to the anvil, step 1/2 travel to the
+-- meadow, blacksmith step and the iron-weapon goal -> the existing doUpgrade path, level goals -> the existing beam to
+-- the hunting ground.
 -- r = the quest row that was tapped (nil from the touch header)
 function L.PinnedTap(e, r)
 	if throttled("pinnedTap", 0.5) then return end
@@ -4060,6 +4076,11 @@ function L.PinnedTap(e, r)
 	end
 	if step == 0 then
 		fire("RequestTutorial")
+	elseif step == L.ForgeStep then
+		-- A23-74: the server walks me to the anvil again (ignored while moving or already there); the beam comes back
+		fire("RequestTutorial")
+		HUD.ClearGuide()
+		refreshGuides()
 	elseif step == 1 or step == 2 then
 		if zone ~= TUT_GUIDE_ZONE then
 			if panels and panels.Open then panels.Open("Travel") end

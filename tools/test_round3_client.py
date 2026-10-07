@@ -6,6 +6,9 @@ first mission is accepted (step 0); a seconds row's ProgressUnit follows the tar
 the guide (L.PinnedTap) instead of the list.
 #2 the guide's first window (Panels BUILDERS.Welcome): [I'm In!] is the one wide button (half the row), Next / Later a
 quarter each; short phone screens (height < 520) keep a 64 px guide face instead of none.
+A23-74 weapon first (dev2 dev2-weapon): TutorialStep Forge (3) beams to the anvil in the Crossroads, to the Crossroads
+from elsewhere (by the step, never BlacksmithVisited); a tap of the Forge row fires RequestTutorial and brings the beam
+back; the bag's empty weapons line says the weapon comes with the first quest.
 Static source checks (HUD.luau is too large for an offline run of refreshQuests); each check names the exact code.
 Report: docs/art/verification_2026-10-07/offline_round3_client_2026-10-07.json
 """
@@ -34,6 +37,9 @@ def main():
     refresh = hud[hud.find("refreshQuests = function()"):]
     refresh = refresh[:refresh.find("\nend\n") + 4] if refresh else ""
     nums = block(hud, "local function questNums(e)")
+    guides = block(hud, "local function refreshGuides()")
+    pinned = block(hud, "function L.PinnedTap(e, r)")
+    forge_branch = guides[guides.find("\tif forge then"):guides.find("\telseif L.NeedsMeadowGuide(step)")]
     panels = PANELS.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     welcome = panels[panels.find("BUILDERS.Welcome = function(parent)"):]
     welcome = welcome[:welcome.find("\nBUILDERS.") if "\nBUILDERS." in welcome else len(welcome)]
@@ -77,6 +83,26 @@ def main():
          and 'buttons[1] = STORY.ChoiceButton(actions, "Good", left,' in panels
          and 'buttons[2] = STORY.ChoiceButton(actions, "Evil", right,' in panels
          and "if not btn or disabledButtons[btn] then return end" in panels),
+        ("A23-74 weapon first: the Forge step's beam goes to the anvil in the Crossroads (the Crossroads from elsewhere), "
+         "decided by the step, never by BlacksmithVisited",
+         'L.ForgeStep = (type(TUT.Steps) == "table" and tonumber(TUT.Steps.Forge)) or 3' in hud
+         and hud.find("L.ForgeStep = ") < hud.find("local function refreshGuides()")
+         and "\tlocal forge = step == L.ForgeStep\n" in guides
+         and '\t\tif guide.Tag == "forge" and (not forge or guide.From ~= zone) then\n\t\t\tHUD.ClearGuide()\n' in guides
+         and 'local target = zone == "Crossroads" and L.BlacksmithTarget() or findTravelTarget("Crossroads")' in forge_branch
+         and 'if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end' in forge_branch
+         and 0 < guides.find("\tif forge then") < guides.find("\telseif L.NeedsMeadowGuide(step)")
+         and "BlacksmithVisited" not in forge_branch
+         and 'ForgeGuide = "Your first weapon · the anvil",' in hud),
+        ("A23-74 weapon first: tapping the Forge row asks the server for the walk again and brings the beam back",
+         "\telseif step == L.ForgeStep then\n" in pinned
+         and "\telseif step == L.ForgeStep then\n\t\t-- A23-74: the server walks me to the anvil again (ignored while moving "
+             "or already there); the beam comes back\n\t\tfire(\"RequestTutorial\")\n\t\tHUD.ClearGuide()\n\t\trefreshGuides()\n"
+         in pinned
+         and pinned.find("if step == 0 then") < pinned.find("elseif step == L.ForgeStep then")
+         < pinned.find("elseif step == 1 or step == 2 then")),
+        ("A23-74: the bag's empty weapons line promises the weapon right after the first quest",
+         'NoWeapons = "Bare hands for now. Accept the Guide\'s first quest and Otto gives you your first weapon.",' in panels),
         ("E11: MapBuilder puts a BoardPrompt (attribute Board) on each job board's spot, off while the board is off",
          "local function ensureJobBoards(ctx, folder)" in mapb and 'prompt.Name = "BoardPrompt"' in mapb
          and 'prompt:SetAttribute("Board", tostring(id))' in mapb and "prompt.Enabled = B.Enabled == true" in mapb
