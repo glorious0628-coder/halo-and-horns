@@ -8,6 +8,7 @@
 - **머리:** `Moonlit ruin colors: pale lavender-gray stone, soft moss green, faded purple cloth, gentle lavender glow, chunky rounded shapes with softly cracked edges.`
 - **꼬리:** `Single standalone game prop for a cute toy-world kids RPG, chunky rounded toy proportions with slightly exaggerated soft bevels, smooth hand-painted toy plastic and painted stone materials, simple clean shapes with a few large color blocks, soft friendly colors, soft even studio light from the top left. Three-quarter front view from slightly above, the whole object fully inside the frame with a wide margin, centered, standing on nothing. Isolated on a plain flat medium gray background, no ground, no shadow, no other objects. No faces, no eyes, no skulls, no bones, no crosses, no graves. Wordless, blank unmarked surfaces.`
 - 숲 꼬리와 같은 틀(재질만 painted stone, 색만 soft). 머리+꼬리 약 780자라 물건 문장은 200자 안쪽(전체 1000자 미만, 넘으면 Firefly 생성 버튼이 조용히 안 눌림).
+- **바위·이끼·꽃처럼 사람이 만들지 않은 것은 바위 머리:** `Moonlit ruin colors: pale lavender-gray stone, soft moss green, tiny purple flowers, chunky rounded shapes with softly cracked edges.` + 물건 문장 끝에 `Plain natural rock only: no arch, no stairs, no cloth, no walls.` — 기본 머리의 "faded purple cloth" 때문에 바위 첫 안 4장 모두 아치·계단·깃발이 붙어 나왔다(2026-10-07, `R_Cliff_*_v2`로 다시 그림).
 
 ## 지킬 것 (시안에 있어도 그리지 않음)
 - **얼굴·눈 없음:** 시안의 얼굴 있는 돌 표지(눈·웃는 입)와 관문 위 둥근 돌 가면은 쓰지 않는다. 가면 자리 = **왕관 무늬 둥근 돌 메달**(얼굴 없음). 지도 v2 랜드마크 '돌 가면'도 '왕관 메달'로 바꿔 읽는다.
@@ -26,6 +27,8 @@
 | R_CrownAltar | 왕관 제단 폐허: 둥근 돌 단 + 계단 + 금 간 커다란 돌 왕관 조각(장래 해골왕 자리, 얼굴 없음) | 지름 30, 높이 10 | 1 | 동쪽 안쪽 (1700, 0) |
 | R_WallRuin | 무너진 성벽 한 칸(성가퀴 들쭉날쭉, 이끼, 빈 창 하나만) | 폭 16, 높이 10 | 8+ | 가장자리·길 둘레 |
 | R_Cliff_A/B | 판석이 겹친 연보라 바위 덩어리 2종(능선 앞 덧대기) | 폭 14~20 | 10+ | 북·남·동 능선 앞 |
+
+- **2D 시안(2026-10-07, 중간 0크레딧):** `art/review/kit_ruins/ruins_big_2d_v1.jpg`(8종×2안, 원본 `art/out/kit/ruins_big/`). 이미지 생성 1 추천 ★: 성탑 2 · 관문 1 · 아치 A 2 · 아치 B 1 · 제단 2 · 성벽 1 · 바위 A v2-1 · 바위 B v2-1 — 검수 고름 대기. 고르면 고른 안만 고급(5×8=40) → Tripo.
 
 ## 작은 것 (이미지 생성 2) — 문구 `art/prompts/KIT_Ruins_<이름>.txt`, Studio 이름 `Kit_R_<이름>`
 | 이름 | 모양(문구 요약) | 크기(스터드) | 개수 | 자리 |
