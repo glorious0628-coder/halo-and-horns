@@ -1495,7 +1495,8 @@ end
 --    fixed TextSize is raised to it (the caller's own size comes back when the floor drops); a UIKit.FitText label
 --    gets it as its picker minimum instead. Floor and stroke re-run on TextSize / AbsoluteSize / TextBounds /
 --    TextScaled / parent changes and on every UIScale change (applyScale).
---  * Text and AutoLocalize are never touched, so Roblox auto-translation keeps working.
+--  * Text is never touched. AutoLocalize is switched off game-wide by ClientMain (A23-48 English only: Roblox's
+--    automatic translation would show the English text in the player's Roblox language).
 --  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
 --    StyleStroke.Transparency with TextTransparency.
 -- Families come from FONT.Sets (A23-48 English only, A23-63): Denk One (Face = "Head") + Montserrat (Face = "Body").

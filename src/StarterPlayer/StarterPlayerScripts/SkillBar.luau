@@ -48,7 +48,7 @@ local T = {
 	Rect = { Q = "q", Z = "z", X = "x" }, -- HudLayout ids
 	Ready = { Q = "SkillReadyAt", Z = "SkillReadyAtZ", X = "SkillReadyAtX" }, -- server attributes (os time)
 	Flag = { Z = "ZEnabled", X = "XEnabled" }, -- Config.Skills flags (Q is always on)
-	Unlock = { Q = 1, Z = 5, X = 8 }, -- Config.Skills.Unlock wins when it is there
+	Unlock = { Q = 5, Z = 15, X = 25 }, -- A23-71; Config.Skills.Unlock wins when it is there
 	-- dev2 (A23-71): the server's SkillSlots attribute (0-3, never goes down: a rebirth / a free class change back to Lv1
 	-- keeps the skills) opens slot N when SkillSlots >= N; either it or the level opens a slot
 	SlotIndex = { Q = 1, Z = 2, X = 3 },

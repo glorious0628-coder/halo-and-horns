@@ -477,7 +477,7 @@ local function textBounds(text, size, font, width)
 			params:Destroy()
 			return bounds
 		end
-		if font == Enum.Font.Unknown then error("FontFace가 필요합니다.") end
+		if font == Enum.Font.Unknown then error("FontFace is required.") end
 		return TextService:GetTextSize(text, size, font, Vector2.new(math.max(1, width), 10000))
 	end)
 	if ok and typeof(v) == "Vector2" then return v.Y, v.X end
@@ -553,7 +553,7 @@ function E.watchImage(image, state, role, id, apply)
 	state.Image = image
 	state.Failed, state.Ready, state.CanDisplay, state.Preloaded = false, false, true, false
 	state.Semantic = E.semantic(role, id)
-	if not state.Semantic then E.warn(role .. tostring(id), "문구 스냅샷 불일치: " .. role .. tostring(id or "")) end
+	if not state.Semantic then E.warn(role .. tostring(id), "text snapshot mismatch: " .. role .. tostring(id or "")) end
 	state.Update = function()
 		if not image.Parent then return end
 		if image.IsLoaded and (not state.Preloaded or state.Failed) then
@@ -593,7 +593,7 @@ function E.watchImage(image, state, role, id, apply)
 		state.Failed = not ok or failed
 		state.Preloaded = not state.Failed
 		if not ok then state.FetchStatus = tostring(err) end
-		if state.Failed then E.warn("load" .. role .. tostring(id), "이미지 로드 실패, 글자 대체 표시: " .. role .. tostring(id or "")) end
+		if state.Failed then E.warn("load" .. role .. tostring(id), "image failed to load, showing the text fallback: " .. role .. tostring(id or "")) end
 		state.Update()
 	end)
 end
@@ -1133,7 +1133,7 @@ function E.buttonRect(id)
 		end
 		if valid and r[3] > 0 and r[4] > 0 and r[1] + r[3] <= 1 and r[2] + r[4] <= 1 then return r end
 	end
-	E.warn("button" .. id, "선택 버튼 영역 없음: " .. id)
+	E.warn("button" .. id, "no pick button area: " .. id)
 	return { 0.12, 0.82, 0.76, 0.12 }
 end
 
@@ -1194,7 +1194,7 @@ function E.buildCard(c, id)
 	end)
 	if size and math.abs(size.X / size.Y - c.Aspect) > 0.002 then
 		c.E.Semantic = false
-		E.warn("aspect" .. id, "공통 카드 비율 불일치: " .. id)
+		E.warn("aspect" .. id, "shared card aspect mismatch: " .. id)
 		c.E.Update()
 	end
 end
@@ -1228,7 +1228,7 @@ local function buildCard(id, order)
 	if E.Enabled then
 		local ok, err = pcall(E.buildCard, c, id)
 		if not ok then
-			E.warn("build" .. id, "카드 생성 실패, 대체 표시: " .. id .. " " .. tostring(err))
+			E.warn("build" .. id, "card build failed, showing the fallback: " .. id .. " " .. tostring(err))
 			for _, child in body:GetChildren() do
 				if child ~= scale then child:Destroy() end
 			end

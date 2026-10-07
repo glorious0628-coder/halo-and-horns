@@ -18,6 +18,14 @@
     {
       "check": "the world map calls the anvil spot Forge while the artisan guild is off",
       "ok": true
+    },
+    {
+      "check": "ClientMain turns AutoLocalize off for every GUI object under PlayerGui and in the world",
+      "ok": true
+    },
+    {
+      "check": "FactionPicker has no Korean in its code (warnings / errors are English)",
+      "ok": true
     }
   ],
   "source": {
