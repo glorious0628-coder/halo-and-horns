@@ -248,6 +248,17 @@ function HudLayout.Compute(env)
 	menu.W, menu.H = mSize, mSize
 	menu.X = bar.X1 - TOPBAR.Edge / s - mSize
 	menu.Y = barMid - mSize / 2
+	-- touch (review 2026-10-07, game dev 1: a tap on [메뉴] in the bar never reached it, B opened it): Roblox's top bar
+	-- row takes every touch inside it, so on touch devices [메뉴] is the last square of the tile row under the bar
+	-- (phones: the plate's row top-right) and the row's own tiles step left of it; mouse / keyboard keep it in the bar
+	if touch then
+		mSize = size
+		menu.W, menu.H = mSize, mSize
+		menu.X = tiles.X + tiles.W - mSize
+		menu.Y = tiles.Y
+		tiles.W = math.max(0, tiles.W - mSize - tileGap)
+		tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
+	end
 
 	-- phone sheet: a round button that reaches up into the plate's tile row steps down under it (short / narrow phones: the
 	-- plate hangs from the top, the cluster from the jump button, so the X skill can meet the row; A23-49)
@@ -330,7 +341,7 @@ function HudLayout.Compute(env)
 	-- everything stays on screen and below the top bar (big tablets / very short windows); the top bar items stay in it
 	for id, r in out do
 		r.X = math.clamp(r.X, 0, math.max(0, W - r.W))
-		if anchorOf(id, sheet) == "TB" then
+		if anchorOf(id, sheet) == "TB" and not (touch and id == "menu") then
 			r.Y = math.clamp(r.Y, bar.Y0, math.max(bar.Y0, bar.Y1 - r.H))
 		else
 			r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))
@@ -362,17 +373,19 @@ function HudLayout.Compute(env)
 		end
 		return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6))
 	end
-	-- the first line on [메뉴]'s own (top bar) line, the next ones from just under the bar down
+	-- the first line on [메뉴]'s own line (mouse: the top bar, the next ones from just under the bar down; touch: the
+	-- tile row, the next ones up over the plate and never into the bar - "위쪽에서만", A23-38)
 	local lines = {}
 	local y, step = m.Y, fSize + fGap
 	local x0, y0, y1 = right, math.huge, -math.huge
-	while #lines < FOLD_ROWS and y >= math.min(top, bar.Y0) - 0.01 and y + fSize <= H + 0.01 do
+	local yMin = touch and top or math.min(top, bar.Y0)
+	while #lines < FOLD_ROWS and y >= yMin - 0.01 and y + fSize <= H + 0.01 do
 		local cols = colsAt(y)
 		if cols < 1 then break end
 		local lx = right - cols * (fSize + fGap) + fGap
 		table.insert(lines, { X = lx, Y = y, Cols = cols })
 		x0, y0, y1 = math.min(x0, lx), math.min(y0, y), math.max(y1, y + fSize)
-		y = math.max(y + step, top + fGap)
+		y = touch and (y - step) or math.max(y + step, top + fGap)
 	end
 	if #lines == 0 then -- no room at all (a tiny window): one square over [메뉴]'s left neighbour
 		lines[1] = { X = right - fSize, Y = m.Y, Cols = 1 }

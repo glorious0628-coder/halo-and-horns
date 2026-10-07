@@ -1,0 +1,134 @@
+{
+  "tool": "tools/intro_view.py",
+  "rows": [
+    {
+      "device": "phone",
+      "shot": 0,
+      "probe": {
+        "Sub": [
+          92,
+          227,
+          563,
+          40
+        ],
+        "SubText": "The Crown of Balance broke.",
+        "Screen": [
+          749,
+          361
+        ],
+        "Skip": [
+          516,
+          280,
+          170,
+          48
+        ],
+        "SkipSlice": [
+          "Slice",
+          "60, 59, 452, 61",
+          0.4000000059604645
+        ],
+        "SkipClass": "ImageButton",
+        "SubBounds": [
+          425,
+          34
+        ],
+        "SubFits": true,
+        "SkipKids": [
+          "UIScale:PressScale",
+          "TextLabel:Label"
+        ],
+        "Overlap": [
+          139,
+          0
+        ]
+      },
+      "file": "build/intro_view/phone_0.png"
+    },
+    {
+      "device": "phone",
+      "shot": 1,
+      "probe": {
+        "Sub": [
+          92,
+          227,
+          563,
+          40
+        ],
+        "SubText": "Some who touched the shards grew halos. Others grew horns.",
+        "Screen": [
+          749,
+          361
+        ],
+        "Skip": [
+          516,
+          280,
+          170,
+          48
+        ],
+        "SkipSlice": [
+          "Slice",
+          "60, 59, 452, 61",
+          0.4000000059604645
+        ],
+        "SkipClass": "ImageButton",
+        "SubBounds": [
+          551,
+          20
+        ],
+        "SubFits": true,
+        "SkipKids": [
+          "UIScale:PressScale",
+          "TextLabel:Label"
+        ],
+        "Overlap": [
+          139,
+          0
+        ]
+      },
+      "file": "build/intro_view/phone_1.png"
+    },
+    {
+      "device": "phone",
+      "shot": 2,
+      "probe": {
+        "Sub": [
+          92,
+          227,
+          563,
+          40
+        ],
+        "SubText": "Some who touched the shards grew halos. Others grew horns.",
+        "Screen": [
+          749,
+          361
+        ],
+        "Skip": [
+          516,
+          280,
+          170,
+          48
+        ],
+        "SkipSlice": [
+          "Slice",
+          "60, 59, 452, 61",
+          0.4000000059604645
+        ],
+        "SkipClass": "ImageButton",
+        "SubBounds": [
+          551,
+          20
+        ],
+        "SubFits": true,
+        "SkipKids": [
+          "UIScale:PressScale",
+          "TextLabel:Label"
+        ],
+        "Overlap": [
+          139,
+          0
+        ]
+      },
+      "file": "build/intro_view/phone_2.png"
+    }
+  ]
+}

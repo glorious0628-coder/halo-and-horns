@@ -158,7 +158,9 @@ local function buildGui()
 	local sub = Instance.new("TextLabel")
 	sub.Name = "Subtitle"
 	sub.BackgroundTransparency = 1
-	sub.AnchorPoint, sub.Position, sub.Size = Vector2.new(0.5, 1), UDim2.new(0.5, 0, 0.86, 0), UDim2.new(0.86, 0, 0.12, 0)
+	-- the bottom 12 px above the Skip button (bottom-right, 48 tall, 12 from the edge): on phones the line ran behind it
+	-- ("...broke." under Skip, user via review 2026-10-07)
+	sub.AnchorPoint, sub.Position, sub.Size = Vector2.new(0.5, 1), UDim2.new(0.5, 0, 1, -72), UDim2.new(0.86, 0, 0.12, 0)
 	sub.Font = Enum.Font.GothamBold
 	sub.TextScaled, sub.TextWrapped = true, true
 	sub.TextColor3, sub.TextStrokeTransparency = Color3.new(1, 1, 1), 0.2

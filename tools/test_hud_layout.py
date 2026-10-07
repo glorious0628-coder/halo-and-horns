@@ -99,17 +99,9 @@ EXCEPTIONS = [
     # A23-40 보강: [메뉴] and the war meter share the Roblox top bar with Roblox's own buttons (164 px). Where the bar
     # cannot hold Roblox's buttons + the war meter (>= 240du) + [메뉴] + 4 thumb-size fold squares, the fold-out's
     # first line beside [메뉴] holds fewer and the rest wrap to the next line right under the bar
-    ("phone_568x320", "fold holds the menu tiles in one line",
-     "568 px wide phone: 164 px of Roblox buttons + the 240du war meter + [메뉴] leave room for 2 fold squares in the "
-     "bar; the other 2 wrap to the line right under it (A23-40 보강)."),
-    ("phone_592x360_navbar", "fold holds the menu tiles in one line",
-     "592 px wide (Android nav bar): the bar holds 3 fold squares beside [메뉴]; the 4th wraps under the bar."),
     ("pc_573x354_small", "fold holds the menu tiles in one line",
      "573 px wide desktop window on the phone sheet: Roblox's buttons + the war meter + [메뉴] leave room for 3 fold "
      "squares in the bar; the 4th wraps under it (A23-40 보강, like the narrow phones)."),
-    ("phone_749x361_notch", "fold holds the menu tiles in one line",
-     "655 px safe area (notch): 164 px Roblox buttons + war meter + [메뉴] + 4 squares need ~670 px; 3 squares fit "
-     "in the bar, the 4th wraps under it."),
 ]
 
 # (name, exact text, replacement) in HudLayout.luau: each must match exactly once. The final on-screen clamp (r.Y) has no
@@ -162,7 +154,8 @@ MUTATIONS = [
     # A23-40 정정: [메뉴] top-right + its fold-out room
     ("menu not at the bar's right end", "menu.X = bar.X1 - TOPBAR.Edge / s - mSize", "menu.X = bar.X1 - 40 / s - mSize"),
     ("menu under the bar", "menu.Y = barMid - mSize / 2", "menu.Y = bar.Y1 + 4 / s"),
-    ("touch menu may shrink below a thumb", "local mSize = touch and math.max(btn, TOPBAR.Tap / s) or btn", "local mSize = btn"),
+    # touch: [메뉴] is the tile row's last square, as big as the tiles (review 2026-10-07)
+    ("touch menu may shrink below a thumb", "\t\tmSize = size\n", "\t\tmSize = btn * 0.7\n"),
     ("menu bigger than a Roblox button", "local btn = math.min(TOPBAR.Button, math.max(1, barPx - 4)) / s",
      "local btn = 52 / s"),
     # A23-40 보강: the war meter in the Roblox top bar row

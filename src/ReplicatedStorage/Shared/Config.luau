@@ -3713,9 +3713,11 @@ Config.UIArt = {
 		-- frames (9-slice)
 		PanelParchment = { Id = "rbxassetid://71017857503225", Size = Vector2.new(512, 327), Slice = Rect.new(22, 23, 490, 300), SliceScale = 0.5, Tone = "Parchment" },
 		PanelCard = { Id = "rbxassetid://91331609258606", Size = Vector2.new(512, 229), Slice = Rect.new(52, 52, 460, 177), SliceScale = 0.35, Tone = "Navy", Inner = Rect.new(22, 43, 490, 206) }, -- Firefly PanelDark (bundle 5)
-		RibbonHeader = { Id = "rbxassetid://71822647719938", Size = Vector2.new(512, 121), Slice = Rect.new(130, 40, 460, 81), FitHeight = true, Tone = "Navy", Inner = Rect.new(114, 33, 497, 100) }, -- Firefly PanelHeader: navy plate, left disc (icon); light text
-		Pill = { Id = "rbxassetid://116332974579615", Size = Vector2.new(512, 120), Slice = Rect.new(41, 23, 472, 98), FitHeight = true, Tone = "Parchment" },
-		BarTrack = { Id = "rbxassetid://137159149395361", Size = Vector2.new(512, 86), Slice = Rect.new(45, 25, 467, 61), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(21, 21, 491, 63) }, -- Firefly redraw (bundle 5)
+		RibbonHeader = { Id = "rbxassetid://71822647719938", Size = Vector2.new(512, 121), Slice = Rect.new(130, 59, 460, 61), FitHeight = true, Tone = "Navy", Inner = Rect.new(114, 33, 497, 100) }, -- Firefly PanelHeader: navy plate, left disc (icon); light text
+		-- Skip button: the old Rect(41, 23, 472, 98) cut the round ends into corner pieces + stretched edges (square notches
+		-- at the top corners on phones, user via review 2026-10-07); see the FitHeight slice note above Parts
+		Pill = { Id = "rbxassetid://116332974579615", Size = Vector2.new(512, 120), Slice = Rect.new(60, 59, 452, 61), FitHeight = true, Tone = "Parchment" },
+		BarTrack = { Id = "rbxassetid://137159149395361", Size = Vector2.new(512, 86), Slice = Rect.new(45, 42, 467, 44), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(21, 21, 491, 63) }, -- Firefly redraw (bundle 5)
 		BtnSquare = { Id = "rbxassetid://91067965003210", Size = Vector2.new(510, 512), Slice = Rect.new(100, 100, 410, 412), SliceScale = 0.22, Tone = "Navy" }, -- Firefly navy square (bundle 4): light labels
 		-- round buttons / rings (Fit)
 		BtnAttack = { Id = "rbxassetid://77268479686299", Size = Vector2.new(512, 512), Round = true, Tone = "Orange", Inner = Rect.new(58, 50, 452, 427) }, -- Firefly orange attack disc (bundle 6)
@@ -3733,13 +3735,13 @@ Config.UIArt = {
 		-- bundle 4/5 + bundle 1 masters (Firefly 2026-10-06, art/review/s2/b45_common_ui_sheet.png): common window kit
 		PanelMain = { Id = "rbxassetid://96251321300093", Size = Vector2.new(512, 308), Slice = Rect.new(37, 37, 475, 270), SliceScale = 0.35, Tone = "Parchment" },
 		DialogBox = { Id = "rbxassetid://112964393409287", Size = Vector2.new(512, 189), Slice = Rect.new(50, 50, 462, 139), SliceScale = 0.35, Tone = "Parchment" },
-		ListRow = { Id = "rbxassetid://125160937753435", Size = Vector2.new(512, 128), Slice = Rect.new(50, 45, 462, 83), FitHeight = true, Tone = "Parchment" },
-		StatusPlate = { Id = "rbxassetid://111562222428548", Size = Vector2.new(512, 153), Slice = Rect.new(140, 50, 460, 103), FitHeight = true, Tone = "Navy", Inner = Rect.new(145, 41, 498, 129) },
-		Chip = { Id = "rbxassetid://98251464747498", Size = Vector2.new(512, 189), Slice = Rect.new(95, 60, 417, 129), FitHeight = true, Tone = "Parchment" }, -- white: tint with ImageColor3
-		BarFill = { Id = "rbxassetid://106350683674684", Size = Vector2.new(512, 76), Slice = Rect.new(38, 20, 474, 56), FitHeight = true }, -- white: HP green / MP #3B5BDB / XP sky
-		BtnPrimary = { Id = "rbxassetid://71722849741284", Size = Vector2.new(512, 165), Slice = Rect.new(83, 45, 429, 120), FitHeight = true, Tone = "Gold" }, -- gold capsule
-		BtnSecondary = { Id = "rbxassetid://81644397617472", Size = Vector2.new(512, 160), Slice = Rect.new(80, 50, 432, 110), FitHeight = true, Tone = "QuestBlue" }, -- blue capsule
-		BtnConfirm = { Id = "rbxassetid://105674867912092", Size = Vector2.new(512, 156), Slice = Rect.new(78, 50, 434, 106), FitHeight = true, Tone = "Confirm" }, -- green capsule
+		ListRow = { Id = "rbxassetid://125160937753435", Size = Vector2.new(512, 128), Slice = Rect.new(50, 63, 462, 65), FitHeight = true, Tone = "Parchment" },
+		StatusPlate = { Id = "rbxassetid://111562222428548", Size = Vector2.new(512, 153), Slice = Rect.new(140, 75, 460, 77), FitHeight = true, Tone = "Navy", Inner = Rect.new(145, 41, 498, 129) },
+		Chip = { Id = "rbxassetid://98251464747498", Size = Vector2.new(512, 189), Slice = Rect.new(95, 93, 417, 95), FitHeight = true, Tone = "Parchment" }, -- white: tint with ImageColor3
+		BarFill = { Id = "rbxassetid://106350683674684", Size = Vector2.new(512, 76), Slice = Rect.new(38, 37, 474, 39), FitHeight = true }, -- white: HP green / MP #3B5BDB / XP sky
+		BtnPrimary = { Id = "rbxassetid://71722849741284", Size = Vector2.new(512, 165), Slice = Rect.new(83, 81, 429, 83), FitHeight = true, Tone = "Gold" }, -- gold capsule
+		BtnSecondary = { Id = "rbxassetid://81644397617472", Size = Vector2.new(512, 160), Slice = Rect.new(80, 79, 432, 81), FitHeight = true, Tone = "QuestBlue" }, -- blue capsule
+		BtnConfirm = { Id = "rbxassetid://105674867912092", Size = Vector2.new(512, 156), Slice = Rect.new(78, 77, 434, 79), FitHeight = true, Tone = "Confirm" }, -- green capsule
 		BtnRound = { Id = "rbxassetid://115852818963492", Size = Vector2.new(512, 495), Round = true, Tone = "Navy" }, -- do not stretch
 		GlyphClose = { Id = "rbxassetid://139183604533147", Size = Vector2.new(512, 507) }, -- on BtnRound at 60%
 		SlotRare = { Id = "rbxassetid://74934960438246", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) }, -- A23-32 dark inside (bundle 7; replaces the cream master)
@@ -3819,12 +3821,12 @@ Config.UIArt = {
 		MinimapRing = { Id = "rbxassetid://134883699176479", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
 		WarMeterFrame = { Id = "rbxassetid://73887778381300", Size = Vector2.new(512, 74), Tone = "Navy", Inner = Rect.new(66, 22, 442, 54) }, -- opaque navy inside: the fills draw above it
 		WarCrownPip = { Id = "rbxassetid://100273975086572", Size = Vector2.new(512, 512) }, -- the war split marker
-		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 56, 388, 68), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (425,48)-(489,80)
+		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 61, 388, 63), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (425,48)-(489,80)
 		AutoRingOn = { Id = "rbxassetid://82348810388598", Size = Vector2.new(512, 512) }, -- turns around the auto button while ON
 		GlyphQuest = { Id = "rbxassetid://85735330851016", Size = Vector2.new(512, 512) },
 		GlyphAuto = { Id = "rbxassetid://125607651991448", Size = Vector2.new(512, 512) },
-		NameTag = { Id = "rbxassetid://101536515759381", Size = Vector2.new(512, 153), Slice = Rect.new(80, 72, 432, 82), FitHeight = true, Tone = "Navy" },
-		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 52, 448, 121), FitHeight = true, Tone = "Gold" }, -- b: deep gold
+		NameTag = { Id = "rbxassetid://101536515759381", Size = Vector2.new(512, 153), Slice = Rect.new(80, 75, 432, 77), FitHeight = true, Tone = "Navy" },
+		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 85, 448, 87), FitHeight = true, Tone = "Gold" }, -- b: deep gold
 		Toast = { Id = "rbxassetid://92139413642355", Size = Vector2.new(512, 102), Slice = Rect.new(100, 50, 460, 52), FitHeight = true, Tone = "Navy" }, -- icon disc centre (49,51) r~37
 		-- 2026-10-06 uploads (bundles 12/13 rest, 15/16 tamer staffs, 17, 18, map markers 9a8b47a, skill Q ae9a7ea; sheets in
 		-- art/review/s2/): new keys. EmoOuch (now a blank burst for an '아야!' TextLabel) and TitleRibbon (slice [118,40,394,95])
@@ -3849,8 +3851,8 @@ Config.UIArt = {
 		-- in a row (image dev 2026-10-07: 4 across made the words too small on a phone)
 		JobBoard = { Id = "rbxassetid://123680567879703", Size = Vector2.new(1024, 647), Slice = Rect.new(320, 130, 704, 550) }, -- the slice skips the plate's gold studs
 		JobCard = { Id = "rbxassetid://78959256677789", Size = Vector2.new(339, 512) }, -- the red pin: keep the ratio (Fit), no 9-slice
-		BtnKind = { Id = "rbxassetid://96995284140099", Size = Vector2.new(512, 175), Slice = Rect.new(88, 54, 424, 121), FitHeight = true, TextRect = { 0.053, 0.123, 0.893, 0.596 } }, -- sky blue, white "Kind"
-		BtnSneaky = { Id = "rbxassetid://82745606719708", Size = Vector2.new(512, 171), Slice = Rect.new(86, 53, 426, 118), FitHeight = true, TextRect = { 0.057, 0.117, 0.887, 0.612 } }, -- purple, white "Sneaky"
+		BtnKind = { Id = "rbxassetid://96995284140099", Size = Vector2.new(512, 175), Slice = Rect.new(88, 86, 424, 88), FitHeight = true, TextRect = { 0.053, 0.123, 0.893, 0.596 } }, -- sky blue, white "Kind"
+		BtnSneaky = { Id = "rbxassetid://82745606719708", Size = Vector2.new(512, 171), Slice = Rect.new(86, 84, 426, 86), FitHeight = true, TextRect = { 0.057, 0.117, 0.887, 0.612 } }, -- purple, white "Sneaky"
 		JobTag = { Id = "rbxassetid://87413375917921", Size = Vector2.new(256, 106), TextRect = { 0.2, 0.118, 0.745, 0.578 } }, -- the quest row's "Job" tag (accepted jobs only), keep the ratio
 		-- the job board buttons' icons (c51be3f, review OK): icon + 8 px + word as one centred group inside BtnKind /
 		-- BtnSneaky's TextRect (icon about 1.4x the word height) - the shape tells the two apart for red-green colour blindness
@@ -3870,11 +3872,11 @@ Config.UIArt = {
 		IconPetPaw = { Id = "rbxassetid://101099487202511", Size = Vector2.new(512, 512) }, -- 'my pet' row head icon
 		GradeSlotBack = { Id = "rbxassetid://120590954007382", Size = Vector2.new(512, 498) }, -- navy plate behind weapon / pet icons (no grade rim)
 		BannerGold = { Id = "rbxassetid://105577140932665", Size = Vector2.new(512, 178) }, -- Fit (no slice); text box (0.254, 0.225, 0.492, 0.365)
-		TabOn = { Id = "rbxassetid://102062478132150", Size = Vector2.new(512, 228), Slice = Rect.new(110, 100, 402, 200), FitHeight = true, Tone = "Gold" }, -- selected tab: navy text
-		TabOff = { Id = "rbxassetid://76306323831801", Size = Vector2.new(512, 202), Slice = Rect.new(100, 84, 412, 180), FitHeight = true, Tone = "Navy" }, -- idle tab: white text
-		InputField = { Id = "rbxassetid://108042300963591", Size = Vector2.new(512, 129), Slice = Rect.new(52, 40, 460, 89), FitHeight = true, Tone = "Parchment" }, -- text box: navy text
-		QuestTab = { Id = "rbxassetid://124642276890798", Size = Vector2.new(512, 138), Slice = Rect.new(70, 60, 430, 78), FitHeight = true, Tone = "Gold" }, -- the arrow box (x 440+) never stretches
-		BannerAlert = { Id = "rbxassetid://104830795997617", Size = Vector2.new(512, 133), Slice = Rect.new(84, 40, 428, 93), FitHeight = true, Tone = "Red" }, -- white text, dark red rim
+		TabOn = { Id = "rbxassetid://102062478132150", Size = Vector2.new(512, 228), Slice = Rect.new(110, 113, 402, 115), FitHeight = true, Tone = "Gold" }, -- selected tab: navy text
+		TabOff = { Id = "rbxassetid://76306323831801", Size = Vector2.new(512, 202), Slice = Rect.new(100, 100, 412, 102), FitHeight = true, Tone = "Navy" }, -- idle tab: white text
+		InputField = { Id = "rbxassetid://108042300963591", Size = Vector2.new(512, 129), Slice = Rect.new(52, 63, 460, 65), FitHeight = true, Tone = "Parchment" }, -- text box: navy text
+		QuestTab = { Id = "rbxassetid://124642276890798", Size = Vector2.new(512, 138), Slice = Rect.new(70, 68, 430, 70), FitHeight = true, Tone = "Gold" }, -- the arrow box (x 440+) never stretches
+		BannerAlert = { Id = "rbxassetid://104830795997617", Size = Vector2.new(512, 133), Slice = Rect.new(84, 65, 428, 67), FitHeight = true, Tone = "Red" }, -- white text, dark red rim
 		NpcMarkerBubble = { Id = "rbxassetid://76402030324791", Size = Vector2.new(512, 512) }, -- gold pin over NPC heads; a glyph inside
 		RewardRays = { Id = "rbxassetid://140645623920982", Size = Vector2.new(512, 512) }, -- white rays: tint with ImageColor3, behind reward pops (dark backdrop only)
 		GlyphBack = { Id = "rbxassetid://84595951514011", Size = Vector2.new(512, 512) },
@@ -4030,7 +4032,7 @@ Config.UIArt = {
 		CLS_HornsArcher_M_Card = { Id = "rbxassetid://81732631379103", Size = Vector2.new(460, 550) },
 		CLS_HornsArcher_F_Card = { Id = "rbxassetid://100853653295965", Size = Vector2.new(460, 550) },
 		FactionPremise = { Id = "rbxassetid://75757875574311", Size = Vector2.new(1024, 434), Slice = Rect.new(120, 120, 904, 314), SliceScale = 0.22, Tone = "Navy" },
-		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 0, 924, 142), FitHeight = true, Tone = "Navy" },
+		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 70, 924, 72), FitHeight = true, Tone = "Navy" },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
 		TitleRibbon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
 		-- class characters (Firefly blocky toy style, bundles 10 / 19, 50bf8ea + af64891 clean + 2975f24, user OK):

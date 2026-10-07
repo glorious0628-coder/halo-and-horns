@@ -45,6 +45,8 @@ local T = {
 	MeEase = 12, -- 1/s: my arrow eases toward the character's facing on the turned map
 	-- the faction arrows (17817e6, user OK): drawn as they are (white); MapPlayerArrow tinted for the rest
 	MeArtFaction = { Halo = "MapArrowHalo", Horns = "MapArrowHorns" },
+	-- the Halo arrow's wings take part of its square: +2 du so it weighs the same as the Horns arrow (review 2026-10-07)
+	MeExtra = { Halo = 2 },
 	-- UI idea #1 (docs/design/ideas_ui_2026-10-07.md): Halo breathes (scale), Horns' ember flickers (a warm tint now and
 	-- then); UIKit.ReducedMotion = still
 	MeBreath = { Period = 2.4, Amp = 0.06 },
@@ -1063,9 +1065,12 @@ function MiniMap.PaintMe()
 		ui.me.Image = id
 		ui.me.ImageColor3 = WHITE
 		S.meStyle = f
+		local d = T.MeSize + (T.MeExtra[f] or 0)
+		ui.me.Size = UDim2.fromOffset(d, d)
 	else
 		local base = UIKit.ArtId(T.MeArt)
 		if base then ui.me.Image = base end
+		ui.me.Size = UDim2.fromOffset(T.MeSize, T.MeSize)
 		ui.me.ImageColor3 = (f == "Halo" and COL.MeHalo) or (f == "Horns" and COL.MeHorns)
 			or (f == "Neutral" and COL.MeNeutral) or WHITE
 		S.meStyle = nil

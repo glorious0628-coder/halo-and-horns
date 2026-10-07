@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9758,
+  "checks": 9630,
   "failedChecks": 0,
-  "namedChecks": 9102,
+  "namedChecks": 9094,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
@@ -15,32 +15,11 @@
       "neededDu": 4
     },
     {
-      "screen": "phone_749x361_notch",
-      "check": "fold holds the menu tiles in one line",
-      "reason": "655 px safe area (notch): 164 px Roblox buttons + war meter + [메뉴] + 4 squares need ~670 px; 3 squares fit in the bar, the 4th wraps under it.",
-      "measuredDu": 3,
-      "neededDu": 4
-    },
-    {
       "screen": "phone_568x320",
       "check": "tap size potions cell width",
       "reason": "4-inch phone (iPhone SE 1st gen class, 568x320 px): the whole layout scales to k = 1.011 du/px, so the potions rect is 113du wide. Growing to the left (right edge kept: Q sits 6du to its right) stops at the thumbstick zone edge x = 0.4W = 302.9du, which leaves 120.5du: two cells of 57.2du with the approved 6 px gap (60.2du only with no gap at all). The cells stay below 60du (~43 real px) here; spec decision needed.",
       "measuredDu": 57.19,
       "neededDu": 60
-    },
-    {
-      "screen": "phone_568x320",
-      "check": "fold holds the menu tiles in one line",
-      "reason": "568 px wide phone: 164 px of Roblox buttons + the 240du war meter + [메뉴] leave room for 2 fold squares in the bar; the other 2 wrap to the line right under it (A23-40 보강).",
-      "measuredDu": 2,
-      "neededDu": 4
-    },
-    {
-      "screen": "phone_592x360_navbar",
-      "check": "fold holds the menu tiles in one line",
-      "reason": "592 px wide (Android nav bar): the bar holds 3 fold squares beside [메뉴]; the 4th wraps under the bar.",
-      "measuredDu": 3,
-      "neededDu": 4
     }
   ],
   "screens": [
@@ -429,8 +408,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 6.6667,
-        "Pair": "portrait/tiles"
+        "Gap": 4,
+        "Pair": "tiles/menu"
       }
     },
     {
@@ -460,8 +439,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 4,
-        "Pair": "tiles/x"
+        "Gap": 3.498,
+        "Pair": "tiles/menu"
       }
     },
     {
@@ -491,8 +470,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 6.6667,
-        "Pair": "portrait/tiles"
+        "Gap": 4,
+        "Pair": "tiles/menu"
       }
     },
     {
@@ -522,8 +501,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 5.9368,
-        "Pair": "portrait/tiles"
+        "Gap": 3.5621,
+        "Pair": "tiles/menu"
       }
     },
     {
@@ -553,8 +532,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 4,
-        "Pair": "tiles/x"
+        "Gap": 3.0334,
+        "Pair": "tiles/menu"
       }
     },
     {
@@ -584,8 +563,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 5.2692,
-        "Pair": "portrait/tiles"
+        "Gap": 3.1615,
+        "Pair": "tiles/menu"
       }
     },
     {
@@ -615,8 +594,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 6.4085,
-        "Pair": "portrait/tiles"
+        "Gap": 3.8451,
+        "Pair": "tiles/menu"
       }
     },
     {
@@ -646,8 +625,8 @@
         "Pair": "event/notify"
       },
       "minPressableGap": {
-        "Gap": 6.6667,
-        "Pair": "portrait/tiles"
+        "Gap": 4,
+        "Pair": "tiles/menu"
       }
     }
   ],
@@ -687,11 +666,11 @@
           "phone_568x320 :: potions use all their room",
           "phone_568x320 :: tap size auto",
           "phone_568x320 :: tap size ghost",
+          "phone_568x320 :: tap size menu",
           "phone_568x320 :: tap size portrait",
-          "phone_568x320 :: tap size potions cell height",
-          "phone_568x320 :: tap size quest lines"
+          "phone_568x320 :: tap size potions cell height"
         ],
-        "newFailingCount": 24
+        "newFailingCount": 29
       },
       {
         "mutation": "round touch buttons never grow back",
@@ -739,14 +718,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "phone_568x320 :: fold holds the row overflow",
           "phone_568x320 :: no overlap portrait/tiles",
           "phone_568x320 :: press gap portrait/tiles",
+          "phone_592x360_navbar :: fold holds the row overflow",
           "phone_592x360_navbar :: no overlap portrait/tiles",
-          "phone_592x360_navbar :: press gap portrait/tiles",
-          "phone_667x375 :: no overlap portrait/tiles",
-          "phone_667x375 :: press gap portrait/tiles"
+          "phone_592x360_navbar :: press gap portrait/tiles"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 10
       },
       {
         "mutation": "touch tiles may shrink below a thumb",
@@ -754,13 +733,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "phone_568x320 :: tap size menu",
           "phone_568x320 :: tap size tiles",
+          "phone_592x360_navbar :: tap size menu",
           "phone_592x360_navbar :: tap size tiles",
-          "phone_667x375 :: tap size tiles",
-          "phone_749x361_notch :: tap size tiles",
-          "tablet_1024x768 :: tap size tiles"
+          "phone_667x375 :: tap size menu",
+          "phone_667x375 :: tap size tiles"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 10
       },
       {
         "mutation": "tile count ignores the gap",
@@ -775,7 +755,7 @@
           "pc_1280x720 :: reference tile count",
           "pc_1280x720 :: tiles fit the row"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 14
       },
       {
         "mutation": "tiles touch",
@@ -790,7 +770,7 @@
           "pc_1280x720 :: matches sheet tile gap",
           "pc_1280x720 :: tile gap"
         ],
-        "newFailingCount": 36
+        "newFailingCount": 44
       },
       {
         "mutation": "touch quest lines may shrink below a thumb",
@@ -864,7 +844,7 @@
           "phone_568x320 :: column clear of chips/power_line",
           "phone_568x320 :: column clear of event/hp_bar"
         ],
-        "newFailingCount": 74
+        "newFailingCount": 73
       },
       {
         "mutation": "centre column touches its neighbours",
@@ -879,7 +859,7 @@
           "pc_1280x720_unibar_wide :: in the top bar war_meter",
           "pc_573x354_small :: column clear of chips/quest"
         ],
-        "newFailingCount": 28
+        "newFailingCount": 27
       },
       {
         "mutation": "PC face group never steps aside",
@@ -933,12 +913,12 @@
         "newFailingChecks": [
           "phone_568x320 :: attack left of jump",
           "phone_568x320 :: exception still needed: tap size potions cell width",
+          "phone_568x320 :: fold holds the menu tiles in one line",
           "phone_568x320 :: jump free attack",
           "phone_592x360_navbar :: attack left of jump",
-          "phone_592x360_navbar :: jump free attack",
-          "tablet_1024x768 :: attack left of jump"
+          "phone_592x360_navbar :: jump free attack"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "auto not kept above the jump button",
@@ -1022,11 +1002,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "phone_568x320 :: fold holds the menu tiles in one line",
+          "phone_568x320 :: fold holds the row overflow",
           "phone_568x320 :: no overlap tiles/x",
           "phone_568x320 :: press gap tiles/x",
           "phone_749x361_notch :: press gap tiles/x"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "phone quest rect drifted",
@@ -1041,7 +1023,7 @@
           "phone_568x320 :: no overlap chips/portrait",
           "phone_568x320 :: no overlap event/portrait"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 19
       },
       {
         "mutation": "potions never widen",
@@ -1089,7 +1071,7 @@
           "pc_1280x720 :: menu at the top bar's right end",
           "pc_1280x720_inset36 :: menu at the top bar's right end"
         ],
-        "newFailingCount": 28
+        "newFailingCount": 14
       },
       {
         "mutation": "menu under the bar",
@@ -1104,7 +1086,7 @@
           "pc_1280x720 :: matches sheet menu",
           "pc_1280x720 :: on Roblox's button middle menu"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 15
       },
       {
         "mutation": "touch menu may shrink below a thumb",
@@ -1112,14 +1094,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "phone_568x320 :: menu at the tile row's right end",
           "phone_568x320 :: tap size menu",
+          "phone_592x360_navbar :: menu at the tile row's right end",
           "phone_592x360_navbar :: tap size menu",
-          "phone_667x375 :: tap size menu",
-          "phone_749x361 :: tap size menu",
-          "phone_749x361_notch :: exception still needed: fold holds the menu tiles in one line",
-          "phone_749x361_notch :: tap size menu"
+          "phone_667x375 :: menu at the tile row's right end",
+          "phone_667x375 :: tap size menu"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 18
       },
       {
         "mutation": "menu bigger than a Roblox button",
@@ -1134,7 +1116,7 @@
           "pc_1024x768 :: menu as big as a Roblox button",
           "pc_1024x768 :: no taller than a Roblox button menu"
         ],
-        "newFailingCount": 88
+        "newFailingCount": 68
       },
       {
         "mutation": "war meter not in the top bar",
@@ -1149,7 +1131,7 @@
           "pc_1024x600 :: on Roblox's button middle war_meter",
           "pc_1024x768 :: column order chips"
         ],
-        "newFailingCount": 120
+        "newFailingCount": 118
       },
       {
         "mutation": "top bar items follow the UIScale",
@@ -1194,7 +1176,7 @@
           "pc_1280x1024 :: on Roblox's button middle menu",
           "pc_1280x1024 :: on Roblox's button middle war_meter"
         ],
-        "newFailingCount": 46
+        "newFailingCount": 37
       },
       {
         "mutation": "Roblox's buttons not kept clear",
@@ -1212,11 +1194,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pc_655x340_small :: fold holds the menu tiles in one line",
-          "phone_667x375 :: fold holds the menu tiles in one line",
-          "phone_749x361 :: fold holds the menu tiles in one line"
+          "pc_655x340_small :: fold holds the menu tiles in one line"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 1
       },
       {
         "mutation": "info rows not under the bar",
@@ -1246,7 +1226,7 @@
           "pc_1280x720_inset36 :: fold clear of war_meter",
           "pc_1280x720_unibar_wide :: fold clear of war_meter"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 14
       },
       {
         "mutation": "fold lines ignore every item",
@@ -1261,7 +1241,7 @@
           "pc_1024x768 :: fold clear of war_meter",
           "pc_1024x768 :: fold first line in the top bar"
         ],
-        "newFailingCount": 85
+        "newFailingCount": 66
       },
       {
         "mutation": "fold one square too many",
@@ -1276,7 +1256,7 @@
           "pc_1280x1024 :: fold clear of war_meter",
           "pc_1280x720 :: fold clear of war_meter"
         ],
-        "newFailingCount": 43
+        "newFailingCount": 40
       },
       {
         "mutation": "fold lines go up",
@@ -1291,7 +1271,7 @@
           "pc_1280x720_inset36 :: fold lines go down",
           "pc_1280x720_unibar_wide :: fold lines go down"
         ],
-        "newFailingCount": 21
+        "newFailingCount": 17
       },
       {
         "mutation": "fold covers the thumbstick zone",
@@ -1316,11 +1296,11 @@
           "pc_573x354_small :: phone tiles reach the plate's right edge",
           "pc_655x340_small :: phone tiles reach the plate's right edge",
           "pc_700x450_small :: phone tiles reach the plate's right edge",
+          "phone_568x320 :: fold holds the menu tiles in one line",
           "phone_568x320 :: phone tiles reach the plate's right edge",
-          "phone_592x360_navbar :: phone tiles reach the plate's right edge",
-          "phone_667x375 :: phone tiles reach the plate's right edge"
+          "phone_592x360_navbar :: phone tiles reach the plate's right edge"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 19
       },
       {
         "mutation": "fold squares touch",
@@ -1335,7 +1315,7 @@
           "pc_1280x720_inset36 :: fold gap",
           "pc_1280x720_unibar_wide :: fold gap"
         ],
-        "newFailingCount": 22
+        "newFailingCount": 21
       }
     ]
   },
@@ -3597,31 +3577,26 @@
         "Y": 100.5892
       },
       "fold": {
-        "Cols": 2,
+        "Cols": 4,
         "Gap": 3.0334,
-        "H": 188.0668,
+        "H": 123.0334,
         "Lines": [
           {
-            "Cols": 2,
-            "X": 555.2666,
-            "Y": 15.3333
+            "Cols": 4,
+            "X": 437.1108,
+            "Y": 146.4335
           },
           {
             "Cols": 6,
-            "X": 303.1331,
-            "Y": 80.3667
-          },
-          {
-            "Cols": 4,
-            "X": 429.1998,
-            "Y": 143.4001
+            "X": 311.0441,
+            "Y": 83.4001
           }
         ],
-        "Rows": 3,
+        "Rows": 2,
         "Size": 60,
         "W": 375.1669,
-        "X": 303.1331,
-        "Y": 15.3333
+        "X": 311.0441,
+        "Y": 83.4001
       },
       "ghost": {
         "H": 60,
@@ -3638,8 +3613,8 @@
       "menu": {
         "H": 60,
         "W": 60,
-        "X": 681.3333,
-        "Y": 15.3333
+        "X": 689.2443,
+        "Y": 146.4335
       },
       "minimap": {
         "H": 84.9346,
@@ -3691,11 +3666,11 @@
         "Y": 81.3778
       },
       "tiles": {
-        "Count": 3,
+        "Count": 2,
         "Gap": 3.0334,
         "H": 60,
         "Size": 60,
-        "W": 241.6591,
+        "W": 178.6257,
         "X": 507.5852,
         "Y": 146.4335
       },
@@ -3756,31 +3731,26 @@
         "Y": 101.5719
       },
       "fold": {
-        "Cols": 3,
+        "Cols": 6,
         "Gap": 3.1615,
-        "H": 188.3231,
+        "H": 123.1615,
         "Lines": [
           {
-            "Cols": 3,
-            "X": 523.8487,
-            "Y": 15.3333
+            "Cols": 6,
+            "X": 341.9332,
+            "Y": 146.818
           },
           {
             "Cols": 7,
-            "X": 271.2025,
-            "Y": 80.4949
-          },
-          {
-            "Cols": 6,
-            "X": 334.364,
-            "Y": 143.6564
+            "X": 278.7717,
+            "Y": 83.6564
           }
         ],
-        "Rows": 3,
+        "Rows": 2,
         "Size": 60,
         "W": 438.9693,
-        "X": 271.2025,
-        "Y": 15.3333
+        "X": 278.7717,
+        "Y": 83.6564
       },
       "ghost": {
         "H": 60.0694,
@@ -3797,8 +3767,8 @@
       "menu": {
         "H": 60,
         "W": 60,
-        "X": 713.3333,
-        "Y": 15.3333
+        "X": 720.9025,
+        "Y": 146.818
       },
       "minimap": {
         "H": 88.5234,
@@ -3850,11 +3820,11 @@
         "Y": 81.5487
       },
       "tiles": {
-        "Count": 4,
+        "Count": 3,
         "Gap": 3.1615,
         "H": 60,
         "Size": 60,
-        "W": 251.87,
+        "W": 188.7085,
         "X": 529.0325,
         "Y": 146.818
       },
@@ -3898,7 +3868,7 @@
       },
       "chips": {
         "H": 20.1851,
-        "W": 248.6195,
+        "W": 255.1206,
         "X": 302.4655,
         "Y": 82.0828
       },
@@ -3910,36 +3880,31 @@
       },
       "event": {
         "H": 21.3725,
-        "W": 248.6195,
+        "W": 255.1206,
         "X": 302.4655,
         "Y": 104.6426
       },
       "fold": {
-        "Cols": 4,
+        "Cols": 7,
         "Gap": 3.5621,
-        "H": 189.1242,
+        "H": 123.5621,
         "Lines": [
           {
-            "Cols": 4,
-            "X": 559.085,
-            "Y": 15.3333
+            "Cols": 7,
+            "X": 374.8999,
+            "Y": 148.0196
           },
           {
             "Cols": 8,
-            "X": 304.8367,
-            "Y": 80.8954
-          },
-          {
-            "Cols": 7,
-            "X": 368.3988,
-            "Y": 144.4575
+            "X": 311.3378,
+            "Y": 84.4575
           }
         ],
-        "Rows": 3,
+        "Rows": 2,
         "Size": 60,
         "W": 504.9346,
-        "X": 304.8367,
-        "Y": 15.3333
+        "X": 311.3378,
+        "Y": 84.4575
       },
       "ghost": {
         "H": 67.6796,
@@ -3956,8 +3921,8 @@
       "menu": {
         "H": 60,
         "W": 60,
-        "X": 813.3333,
-        "Y": 15.3333
+        "X": 819.8344,
+        "Y": 148.0196
       },
       "minimap": {
         "H": 99.7383,
@@ -3973,7 +3938,7 @@
       },
       "notify": {
         "H": 40.3703,
-        "W": 248.6195,
+        "W": 255.1206,
         "X": 302.4655,
         "Y": 127.2025
       },
@@ -4009,17 +3974,17 @@
         "Y": 82.0828
       },
       "tiles": {
-        "Count": 4,
+        "Count": 3,
         "Gap": 3.5621,
         "H": 60,
         "Size": 60,
-        "W": 283.7793,
+        "W": 220.2172,
         "X": 596.0552,
         "Y": 148.0196
       },
       "war_meter": {
         "H": 50.6667,
-        "W": 248.6195,
+        "W": 255.1206,
         "X": 302.4655,
         "Y": 20
       },
@@ -4058,7 +4023,7 @@
       "chips": {
         "H": 22.6667,
         "W": 320,
-        "X": 338.6667,
+        "X": 339.3333,
         "Y": 82.6667
       },
       "combo": {
@@ -4070,35 +4035,30 @@
       "event": {
         "H": 24,
         "W": 320,
-        "X": 338.6667,
+        "X": 339.3333,
         "Y": 108
       },
       "fold": {
-        "Cols": 4,
+        "Cols": 8,
         "Gap": 4,
-        "H": 190,
+        "H": 124,
         "Lines": [
           {
-            "Cols": 4,
-            "X": 666.6667,
-            "Y": 15.3333
+            "Cols": 8,
+            "X": 416,
+            "Y": 149.3333
           },
           {
             "Cols": 9,
-            "X": 346.6667,
-            "Y": 81.3333
-          },
-          {
-            "Cols": 8,
-            "X": 410.6667,
-            "Y": 145.3333
+            "X": 352,
+            "Y": 85.3333
           }
         ],
-        "Rows": 3,
+        "Rows": 2,
         "Size": 60,
         "W": 572,
-        "X": 346.6667,
-        "Y": 15.3333
+        "X": 352,
+        "Y": 85.3333
       },
       "ghost": {
         "H": 76,
@@ -4115,8 +4075,8 @@
       "menu": {
         "H": 60,
         "W": 60,
-        "X": 922.6667,
-        "Y": 15.3333
+        "X": 928,
+        "Y": 149.3333
       },
       "minimap": {
         "H": 112,
@@ -4133,7 +4093,7 @@
       "notify": {
         "H": 45.3333,
         "W": 320,
-        "X": 338.6667,
+        "X": 339.3333,
         "Y": 133.3333
       },
       "portrait": {
@@ -4168,18 +4128,18 @@
         "Y": 82.6667
       },
       "tiles": {
-        "Count": 5,
+        "Count": 4,
         "Gap": 4,
         "H": 60,
         "Size": 60,
-        "W": 318.6667,
+        "W": 254.6667,
         "X": 669.3333,
         "Y": 149.3333
       },
       "war_meter": {
         "H": 50.6667,
         "W": 320,
-        "X": 338.6667,
+        "X": 339.3333,
         "Y": 20
       },
       "x": {
@@ -4216,7 +4176,7 @@
       },
       "chips": {
         "H": 19.822,
-        "W": 240,
+        "W": 244.8456,
         "X": 297.1678,
         "Y": 81.9973
       },
@@ -4228,36 +4188,31 @@
       },
       "event": {
         "H": 20.988,
-        "W": 240,
+        "W": 244.8456,
         "X": 297.1678,
         "Y": 104.1513
       },
       "fold": {
-        "Cols": 3,
+        "Cols": 7,
         "Gap": 3.498,
-        "H": 188.996,
+        "H": 123.498,
         "Lines": [
           {
-            "Cols": 3,
-            "X": 606.8393,
-            "Y": 15.3333
+            "Cols": 7,
+            "X": 359.5194,
+            "Y": 147.8273
           },
           {
             "Cols": 7,
-            "X": 352.8474,
-            "Y": 80.8313
-          },
-          {
-            "Cols": 6,
-            "X": 416.3453,
-            "Y": 144.3293
+            "X": 359.5194,
+            "Y": 84.3293
           }
         ],
-        "Rows": 3,
+        "Rows": 2,
         "Size": 60,
         "W": 440.988,
-        "X": 352.8474,
-        "Y": 15.3333
+        "X": 359.5194,
+        "Y": 84.3293
       },
       "ghost": {
         "H": 66.4619,
@@ -4274,8 +4229,8 @@
       "menu": {
         "H": 60,
         "W": 60,
-        "X": 797.3333,
-        "Y": 15.3333
+        "X": 804.0053,
+        "Y": 147.8273
       },
       "minimap": {
         "H": 97.9439,
@@ -4291,7 +4246,7 @@
       },
       "notify": {
         "H": 39.644,
-        "W": 240,
+        "W": 244.8456,
         "X": 297.1678,
         "Y": 126.3053
       },
@@ -4327,17 +4282,17 @@
         "Y": 81.9973
       },
       "tiles": {
-        "Count": 4,
+        "Count": 3,
         "Gap": 3.498,
         "H": 60,
         "Size": 60,
-        "W": 278.6738,
+        "W": 215.1758,
         "X": 585.3316,
         "Y": 147.8273
       },
       "war_meter": {
         "H": 50.6667,
-        "W": 240,
+        "W": 244.8456,
         "X": 297.1678,
         "Y": 20
       },
@@ -4392,31 +4347,26 @@
         "Y": 108
       },
       "fold": {
-        "Cols": 4,
+        "Cols": 9,
         "Gap": 4,
-        "H": 190,
+        "H": 124,
         "Lines": [
           {
-            "Cols": 4,
-            "X": 793.3333,
-            "Y": 15.3333
+            "Cols": 9,
+            "X": 478.6667,
+            "Y": 149.3333
           },
           {
             "Cols": 11,
-            "X": 345.3333,
-            "Y": 81.3333
-          },
-          {
-            "Cols": 9,
-            "X": 473.3333,
-            "Y": 145.3333
+            "X": 350.6667,
+            "Y": 85.3333
           }
         ],
-        "Rows": 3,
+        "Rows": 2,
         "Size": 60,
         "W": 700,
-        "X": 345.3333,
-        "Y": 15.3333
+        "X": 350.6667,
+        "Y": 85.3333
       },
       "ghost": {
         "H": 76,
@@ -4433,8 +4383,8 @@
       "menu": {
         "H": 60,
         "W": 60,
-        "X": 1049.3333,
-        "Y": 15.3333
+        "X": 1054.6667,
+        "Y": 149.3333
       },
       "minimap": {
         "H": 112,
@@ -4486,11 +4436,11 @@
         "Y": 82.6667
       },
       "tiles": {
-        "Count": 5,
+        "Count": 4,
         "Gap": 4,
         "H": 60,
         "Size": 60,
-        "W": 318.6667,
+        "W": 254.6667,
         "X": 796,
         "Y": 149.3333
       },
@@ -4534,8 +4484,8 @@
       },
       "chips": {
         "H": 21.7891,
-        "W": 307.6101,
-        "X": 326.1949,
+        "W": 300.502,
+        "X": 325.8638,
         "Y": 59.5018
       },
       "combo": {
@@ -4546,36 +4496,31 @@
       },
       "event": {
         "H": 23.0708,
-        "W": 307.6101,
-        "X": 326.1949,
+        "W": 300.502,
+        "X": 325.8638,
         "Y": 83.8543
       },
       "fold": {
-        "Cols": 5,
+        "Cols": 11,
         "Gap": 3.8451,
-        "H": 135.659,
+        "H": 123.8451,
         "Lines": [
           {
-            "Cols": 5,
-            "X": 676.3994,
-            "Y": 10.7812
+            "Cols": 11,
+            "X": 187.4499,
+            "Y": 125.9104
           },
           {
-            "Cols": 12,
-            "X": 354.171,
-            "Y": 58.2201
-          },
-          {
-            "Cols": 12,
-            "X": 354.171,
-            "Y": 104.2528
+            "Cols": 8,
+            "X": 378.9853,
+            "Y": 62.0653
           }
         ],
-        "Rows": 3,
-        "Size": 42.1875,
-        "W": 548.5464,
-        "X": 354.171,
-        "Y": 10.7812
+        "Rows": 2,
+        "Size": 60,
+        "W": 698.4513,
+        "X": 187.4499,
+        "Y": 62.0653
       },
       "ghost": {
         "H": 73.0574,
@@ -4590,10 +4535,10 @@
         "Y": 80.0092
       },
       "menu": {
-        "H": 42.1875,
-        "W": 42.1875,
-        "X": 906.5625,
-        "Y": 10.7812
+        "H": 60,
+        "W": 60,
+        "X": 889.7463,
+        "Y": 125.9104
       },
       "minimap": {
         "H": 107.6636,
@@ -4609,8 +4554,8 @@
       },
       "notify": {
         "H": 43.5781,
-        "W": 307.6101,
-        "X": 326.1949,
+        "W": 300.502,
+        "X": 325.8638,
         "Y": 108.2068
       },
       "portrait": {
@@ -4645,18 +4590,18 @@
         "Y": 59.5018
       },
       "tiles": {
-        "Count": 4,
+        "Count": 3,
         "Gap": 3.8451,
         "H": 60,
         "Size": 60,
-        "W": 306.3284,
+        "W": 242.4833,
         "X": 643.4179,
         "Y": 125.9104
       },
       "war_meter": {
         "H": 35.625,
-        "W": 307.6101,
-        "X": 326.1949,
+        "W": 300.502,
+        "X": 325.8638,
         "Y": 14.0625
       },
       "x": {
@@ -4710,31 +4655,26 @@
         "Y": 81.5935
       },
       "fold": {
-        "Cols": 6,
+        "Cols": 13,
         "Gap": 4,
-        "H": 127.8537,
+        "H": 124,
         "Lines": [
           {
-            "Cols": 6,
-            "X": 724.9756,
-            "Y": 10.0976
+            "Cols": 13,
+            "X": 133.4309,
+            "Y": 122.9268
           },
           {
-            "Cols": 14,
-            "X": 376.878,
-            "Y": 54.9268
-          },
-          {
-            "Cols": 14,
-            "X": 376.878,
-            "Y": 98.439
+            "Cols": 9,
+            "X": 389.4309,
+            "Y": 58.9268
           }
         ],
-        "Rows": 3,
-        "Size": 39.5122,
-        "W": 605.1707,
-        "X": 376.878,
-        "Y": 10.0976
+        "Rows": 2,
+        "Size": 60,
+        "W": 828,
+        "X": 133.4309,
+        "Y": 58.9268
       },
       "ghost": {
         "H": 76,
@@ -4749,10 +4689,10 @@
         "Y": 77.5935
       },
       "menu": {
-        "H": 39.5122,
-        "W": 39.5122,
-        "X": 986.0488,
-        "Y": 10.0976
+        "H": 60,
+        "W": 60,
+        "X": 965.4309,
+        "Y": 122.9268
       },
       "minimap": {
         "H": 112,
@@ -4804,11 +4744,11 @@
         "Y": 56.2602
       },
       "tiles": {
-        "Count": 5,
+        "Count": 4,
         "Gap": 4,
         "H": 60,
         "Size": 60,
-        "W": 318.6667,
+        "W": 254.6667,
         "X": 706.7642,
         "Y": 122.9268
       },
@@ -4839,10 +4779,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "b939078ffadbf1642f97def30424896f8a800f55e971f0354eda9bb0c16c8719",
-    "tools/fixtures/hud_layout_offline.luau": "557163b364cf5b8ce740cfdac5d7a052a6dafc37ff28c57a930a6f0552d62db7",
-    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "22979c55e5bd4f03cbf1a74366a99a1ddc5e39a1244f54fa0330015c36375026",
-    "src/ReplicatedStorage/Shared/Config.luau": "2c84ed81a6af70f52f516e3e16adbe880450533c9d7d3518f6fc6604851545ca"
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "0f9a350d5a92a4873378e27c16a58471d43da366472a0107cfd31a420211d315",
+    "tools/fixtures/hud_layout_offline.luau": "66e5b03f002a9a9c606415a835502988bb96df61bdbe6bb45cab29027a8f03ef",
+    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "8c65195f6ed4f34c690eadf8815910cf396ba7ceb302757a3766b1e17fa0463b",
+    "src/ReplicatedStorage/Shared/Config.luau": "9f5c26cafa5214db4a7297097bb3a85b9c386864ef8234723b6625ea0376056e"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
