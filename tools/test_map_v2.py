@@ -212,7 +212,12 @@ def static_checks(src: dict[str, str], values: dict | None) -> list[tuple[str, b
                 and "Shift = 10, Castle = Vector3.new(0, 0, 630)" in mv
                 and 'local SKIP_PREFIX = { "Bridge_", "PvPBorder_", "Gate_", "Pad_", "Wall" }' in mv))
     out.append(("the Studio runner works only in Edit and runs preview_map only in terrain mode",
-                '"Current Studio Mode: Edit" not in state' in ap and ".replace('\"__MODE__\"', '\"terrain\"', 1)" in ap
+                '"Current Studio Mode: Edit" not in state' in ap
+                and ".replace('local MODE = \"__MODE__\"'," in ap and "'local MODE = \"terrain\"', 1)" in ap
+                # the runner's replace really reaches the code line (not the header comment)
+                and 'local MODE = "terrain"' in pv.replace('local MODE = "__MODE__"', 'local MODE = "terrain"', 1)
+                and 'local MODE = "apply"' in mv.replace('local MODE = "__MODE__"', 'local MODE = "apply"', 1)
+                and "f'local MODE = \"{mode}\"', 1)" in ap
                 and "'\"full\"'" not in ap))
     # A23-74 (user: "default terrain lumps clash with our art"): the v2 terrain is written voxel by voxel like the A2_2 map
     terr = pv[pv.find("-- 지형 (두 모드 공통)"):pv.find("-- 계약 조각 (두 모드 공통)")] if "-- 계약 조각 (두 모드 공통)" in pv else ""

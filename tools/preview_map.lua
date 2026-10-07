@@ -240,6 +240,9 @@ do
 		Beach = 12, Sand = 11, Dip = 2.4, Slope = 0.32,
 		PinNear = 16, PinFar = 46, PinE = 3, PinBeach = 2.5,
 		Shoulder = 36, SeaRocks = 26,
+		-- measured in the main Studio (2026-10-07): a solid voxel column renders its surface 2 studs above the occupancy
+		-- crossing (water does not), the same +2 the old FillBlock notes found: solids are written 2 lower
+		Lift = 2,
 	}
 	Terrain:Clear()
 	Terrain.WaterColor = RGB(24, 150, 190)
@@ -465,7 +468,7 @@ do
 					local mJ, oJ, lJ = table.create(nz), table.create(nz), table.create(nz)
 					for k = 1, nz do
 						local idx = (i - 1) * nz + k
-						local occ = math.clamp((tops[idx] - c) / R + 0.5, 0, 1)
+						local occ = math.clamp((tops[idx] - T.Lift - c) / R + 0.5, 0, 1)
 						if useChannels then
 							mJ[k], oJ[k], lJ[k] = occ > 0 and mats[idx] or M.Air, occ, occ < 1 and lw or 0
 						elseif occ >= 0.5 or lw <= 0 then
