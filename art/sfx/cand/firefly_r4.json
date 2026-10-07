@@ -1,15 +1,15 @@
 {
- "round": "4b / batch 1",
+ "round": "4b / batches 1-3",
  "date": "2026-10-07",
  "by": "소리 만들기",
- "made": "Adobe Firefly 'Generate sound effects' (firefly.adobe.com, the user's Adobe account): 1 s (PowerUp 1.5 s), 4 variations per generation; where Firefly could not meet the spec: Kenney CC0 + our synthesis (tools/sfx_make.py RECIPES: ComboCoin k*, HitSoft k*, HitCrit sB*)",
- "license": "Firefly generation (Adobe: commercially safe output); Kenney Impact Sounds (CC0 1.0); our own synthesis. Our edit = cut, mono 48 kHz, high/low-pass, level; SwingMageHalo candidates may carry our own thin synthesized 'tsing' (tools/sfx_cut.py tsing())",
+ "made": "Adobe Firefly 'Generate sound effects' (firefly.adobe.com, the user's Adobe account): 1 s (PowerUp 1.5 s), 4 variations per generation; where Firefly could not meet the spec: Kenney CC0 + our synthesis (tools/sfx_make.py RECIPES: ComboCoin k*, HitSoft k*, HitCrit sB*; tools/sfx_recipes.py: the sound_spec recipes for batches 2-3, names s* / k*)",
+ "license": "Firefly generation (Adobe: commercially safe output); Kenney Impact Sounds + Interface Sounds (CC0 1.0); our own synthesis. Our edit = cut, mono 48 kHz, high/low-pass, level; SwingMageHalo candidates may carry our own thin synthesized 'tsing' (tools/sfx_cut.py tsing())",
  "credits": {
-  "generations": 35,
+  "generations": 60,
   "perGeneration": 10,
-  "used": 350,
+  "used": 600,
   "balanceBefore": 9640,
-  "balanceAfter": 9290
+  "balanceAfter": 9040
  },
  "spec": "tools/sfx_spec.json (Jump / PowerUp / Equip added by 소리 만들기)",
  "checker": "tools/sfx_check.py",
@@ -27,9 +27,124 @@
   "HitSoft": "HitSoft_kB",
   "PowerUp": "PowerUp_1-2",
   "Jump": "Jump_2-2",
-  "SwingArcher": "SwingArcher_2-1"
+  "SwingArcher": "SwingArcher_2-1",
+  "GoldPickup": "GoldPickup_sB",
+  "QuestNew": "QuestNew_sA",
+  "QuestDone": "QuestDone_sA",
+  "WindowClose": "WindowClose_sA",
+  "Deny": "Deny_sA",
+  "RankDown": "RankDown_sA",
+  "ScrollFail": "ScrollFail_sA",
+  "SkillHalo": "SkillHalo_sA",
+  "SkillHorns": "SkillHorns_sA",
+  "Purify": "Purify_sA",
+  "Devour": "Devour_sA",
+  "Potion": "Potion_sA",
+  "AutoOn": "AutoOn_sA",
+  "AutoOff": "AutoOff_sA",
+  "TalkBlip": "TalkBlip_sB",
+  "Equip": "Equip_sA",
+  "SkillReady": "SkillReady_sA",
+  "HurtBig": "HurtBig_sA",
+  "PumpkinKing": "PumpkinKing_sA",
+  "GhostKing": "GhostKing_sA",
+  "GooseArrive": "GooseArrive_sA",
+  "GooseHonk": "GooseHonk_sA"
  },
  "candidates": {
+  "AutoOff_1-1": {
+   "key": "AutoOff",
+   "source": "AutoOff_1-1",
+   "verdict": "WARN",
+   "score": 91,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.001,
+    "len": 0.2,
+    "fin": 0.002,
+    "fout": 0.45,
+    "hp": 300,
+    "lp": 3000
+   },
+   "durMs": 178.0,
+   "centroidHz": 3483,
+   "phoneDropDb": 0.02
+  },
+  "AutoOff_1-2": {
+   "key": "AutoOff",
+   "source": "AutoOff_1-2",
+   "verdict": "WARN",
+   "score": 91,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.001,
+    "len": 0.18,
+    "fin": 0.002,
+    "fout": 0.45,
+    "hp": 300,
+    "lp": 3000
+   },
+   "durMs": 171.2,
+   "centroidHz": 3081,
+   "phoneDropDb": 0.07
+  },
+  "AutoOff_sA": {
+   "key": "AutoOff",
+   "source": "AutoOff_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same latch + motor down 1300 -> 420 Hz + wooden 'tok' 523 Hz"
+   },
+   "durMs": 179.9,
+   "centroidHz": 767,
+   "phoneDropDb": 1.1
+  },
+  "AutoOn_1-1": {
+   "key": "AutoOn",
+   "source": "AutoOn_1-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.001,
+    "len": 0.26,
+    "fin": 0.002,
+    "fout": 0.4,
+    "hp": 300,
+    "lp": 6000
+   },
+   "durMs": 244.4,
+   "centroidHz": 2588,
+   "phoneDropDb": 0.1
+  },
+  "AutoOn_sA": {
+   "key": "AutoOn",
+   "source": "AutoOn_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "latch (Kenney switch_002) + bright motor up 800 -> 2200 Hz + triangle beep D7 2349 Hz"
+   },
+   "durMs": 239.9,
+   "centroidHz": 1993,
+   "phoneDropDb": 0.09
+  },
+  "AutoOn_sB": {
+   "key": "AutoOn",
+   "source": "AutoOn_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same latch + motor up 700 -> 2000 Hz + a longer beep C7 2093 Hz"
+   },
+   "durMs": 260.1,
+   "centroidHz": 1893,
+   "phoneDropDb": 0.08
+  },
   "ComboCoin_kA": {
    "key": "ComboCoin",
    "source": "ComboCoin_kA",
@@ -65,6 +180,269 @@
    "durMs": 209.3,
    "centroidHz": 2512,
    "phoneDropDb": 0.18
+  },
+  "Deny_sA": {
+   "key": "Deny",
+   "source": "Deny_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "two nasal rubber notes 622 -> 523 Hz (pulse 30 % + 1 kHz band, LP 2.5 k)"
+   },
+   "durMs": 222.4,
+   "centroidHz": 547,
+   "phoneDropDb": 1.76
+  },
+  "Deny_sB": {
+   "key": "Deny",
+   "source": "Deny_sB",
+   "verdict": "WARN",
+   "score": 98,
+   "params": {
+    "recipe": "same, a little lower 587 -> 494 Hz"
+   },
+   "durMs": 222.4,
+   "centroidHz": 519,
+   "phoneDropDb": 2.05
+  },
+  "Devour_1-1": {
+   "key": "Devour",
+   "source": "Devour_1-1",
+   "verdict": "WARN",
+   "score": 89,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.001,
+    "len": 0.62,
+    "fin": 0.002,
+    "fout": 0.35,
+    "hp": 300,
+    "lp": 6000
+   },
+   "durMs": 495.1,
+   "centroidHz": 925,
+   "phoneDropDb": 0.44
+  },
+  "Devour_sA": {
+   "key": "Devour",
+   "source": "Devour_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "bright 'am' bite grains + gulp x2 (720 -> 480, 600 -> 400 Hz) + 'pop' 900 -> 1800 Hz + ember crackles"
+   },
+   "durMs": 689.0,
+   "centroidHz": 915,
+   "phoneDropDb": 0.13
+  },
+  "Devour_sB": {
+   "key": "Devour",
+   "source": "Devour_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same recipe, another seed"
+   },
+   "durMs": 676.7,
+   "centroidHz": 892,
+   "phoneDropDb": 0.13
+  },
+  "Equip_sA": {
+   "key": "Equip",
+   "source": "Equip_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "ratchet clicks x3 + latch (Kenney switch_002 0.9x) + small sparkle"
+   },
+   "durMs": 293.5,
+   "centroidHz": 2976,
+   "phoneDropDb": 0.2
+  },
+  "Equip_sB": {
+   "key": "Equip",
+   "source": "Equip_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same recipe, another seed"
+   },
+   "durMs": 251.9,
+   "centroidHz": 3507,
+   "phoneDropDb": 0.11
+  },
+  "GhostKing_sA": {
+   "key": "GhostKing",
+   "source": "GhostKing_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "the same king bells + breathy rising 'whoo?' 620 -> 740 Hz + glass (Kenney impactGlass_medium_001) + sparkles"
+   },
+   "durMs": 1331.1,
+   "centroidHz": 772,
+   "phoneDropDb": 0.88
+  },
+  "GhostKing_KingGhost-1-1": {
+   "key": "GhostKing",
+   "source": "KingGhost_1-1",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 1.45,
+    "fin": 0.003,
+    "fout": 0.3,
+    "hp": 300,
+    "lp": 9000
+   },
+   "durMs": 1323.0,
+   "centroidHz": 2377,
+   "phoneDropDb": 0.0
+  },
+  "GhostKing_KingGhost-2-3": {
+   "key": "GhostKing",
+   "source": "KingGhost_2-3",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 1.35,
+    "fin": 0.003,
+    "fout": 0.3,
+    "hp": 300,
+    "lp": 9000
+   },
+   "durMs": 1322.8,
+   "centroidHz": 928,
+   "phoneDropDb": 0.54
+  },
+  "GoldPickup_kA": {
+   "key": "GoldPickup",
+   "source": "GoldPickup_kA",
+   "verdict": "WARN",
+   "score": 94,
+   "params": {
+    "recipe": "Kenney impactMetal_light_001 -> 000 -> 004 stepping (money samples)"
+   },
+   "durMs": 208.4,
+   "centroidHz": 2543,
+   "phoneDropDb": 0.09
+  },
+  "GoldPickup_sA": {
+   "key": "GoldPickup",
+   "source": "GoldPickup_sA",
+   "verdict": "WARN",
+   "score": 94,
+   "params": {
+    "recipe": "our coins D7-E7-G7 stepping up, 55 ms apart (sound_spec)"
+   },
+   "durMs": 307.9,
+   "centroidHz": 3262,
+   "phoneDropDb": 0.01
+  },
+  "GoldPickup_sB": {
+   "key": "GoldPickup",
+   "source": "GoldPickup_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "our coins E7-D7-G7 (the other order, sound_spec)"
+   },
+   "durMs": 307.9,
+   "centroidHz": 3186,
+   "phoneDropDb": 0.0
+  },
+  "GooseArrive_1-1": {
+   "key": "GooseArrive",
+   "source": "GooseArrive_1-1",
+   "verdict": "WARN",
+   "score": 96,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 1.05,
+    "fin": 0.003,
+    "fout": 0.3,
+    "hp": 400,
+    "lp": 9000
+   },
+   "durMs": 1026.9,
+   "centroidHz": 1125,
+   "phoneDropDb": 0.15
+  },
+  "GooseArrive_sA": {
+   "key": "GooseArrive",
+   "source": "GooseArrive_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "3 wing flaps (Kenney footstep_grass_001 1.6-1.8x) + toy honk 560 Hz + honk 665 Hz (3 semitones up) + gold sparkle (Kenney glass_002)"
+   },
+   "durMs": 982.5,
+   "centroidHz": 1349,
+   "phoneDropDb": 0.59
+  },
+  "GooseArrive_sB": {
+   "key": "GooseArrive",
+   "source": "GooseArrive_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same, honks 600 -> 713 Hz"
+   },
+   "durMs": 986.1,
+   "centroidHz": 1310,
+   "phoneDropDb": 0.52
+  },
+  "GooseHonk_1-1": {
+   "key": "GooseHonk",
+   "source": "GooseHonk_1-1",
+   "verdict": "WARN",
+   "score": 97,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.0,
+    "len": 0.15,
+    "fin": 0.003,
+    "fout": 0.4,
+    "hp": 450,
+    "lp": 5000
+   },
+   "durMs": 144.1,
+   "centroidHz": 1493,
+   "phoneDropDb": 0.17
+  },
+  "GooseHonk_sA": {
+   "key": "GooseHonk",
+   "source": "GooseHonk_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "ONE toy rubber honk 600 Hz: rising 20 ms squeak + nasal body (formants 1.0 / 1.8 / 2.8 kHz) + 10 % breath"
+   },
+   "durMs": 155.8,
+   "centroidHz": 1431,
+   "phoneDropDb": 0.51
+  },
+  "GooseHonk_sB": {
+   "key": "GooseHonk",
+   "source": "GooseHonk_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same honk at 620 Hz"
+   },
+   "durMs": 155.5,
+   "centroidHz": 1379,
+   "phoneDropDb": 0.56
   },
   "HitCrit_1-2": {
    "key": "HitCrit",
@@ -212,6 +590,30 @@
    "centroidHz": 625,
    "phoneDropDb": 3.26
   },
+  "HurtBig_sA": {
+   "key": "HurtBig",
+   "source": "HurtBig_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "muffled bump 700 -> 300 Hz + falling chirp 1.1 -> 0.6 kHz, 150 ms"
+   },
+   "durMs": 147.1,
+   "centroidHz": 754,
+   "phoneDropDb": 1.25
+  },
+  "HurtBig_sB": {
+   "key": "HurtBig",
+   "source": "HurtBig_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same recipe, another seed"
+   },
+   "durMs": 146.0,
+   "centroidHz": 822,
+   "phoneDropDb": 1.38
+  },
   "Jump_2-1": {
    "key": "Jump",
    "source": "Jump_2-1",
@@ -249,6 +651,49 @@
    "durMs": 186.3,
    "centroidHz": 923,
    "phoneDropDb": 0.77
+  },
+  "Potion_1-2": {
+   "key": "Potion",
+   "source": "Potion_1-2",
+   "verdict": "WARN",
+   "score": 97,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.001,
+    "len": 0.42,
+    "fin": 0.002,
+    "fout": 0.4,
+    "hp": 450,
+    "lp": 6000
+   },
+   "durMs": 387.6,
+   "centroidHz": 929,
+   "phoneDropDb": 0.94
+  },
+  "Potion_sA": {
+   "key": "Potion",
+   "source": "Potion_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "cork 1400 -> 500 Hz + 7 bubbles rising 700 -> 1800 Hz"
+   },
+   "durMs": 369.4,
+   "centroidHz": 1137,
+   "phoneDropDb": 0.36
+  },
+  "Potion_sB": {
+   "key": "Potion",
+   "source": "Potion_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same recipe, another seed"
+   },
+   "durMs": 369.1,
+   "centroidHz": 1130,
+   "phoneDropDb": 0.38
   },
   "PowerUp_1-2": {
    "key": "PowerUp",
@@ -306,6 +751,362 @@
    "durMs": 1139.7,
    "centroidHz": 2586,
    "phoneDropDb": 0.01
+  },
+  "PumpkinKing_KingPumpkin-2-3": {
+   "key": "PumpkinKing",
+   "source": "KingPumpkin_2-3",
+   "verdict": "WARN",
+   "score": 93,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 1.25,
+    "fin": 0.003,
+    "fout": 0.3,
+    "hp": 150,
+    "lp": 9000
+   },
+   "durMs": 1081.4,
+   "centroidHz": 1353,
+   "phoneDropDb": 1.25
+  },
+  "PumpkinKing_sA": {
+   "key": "PumpkinKing",
+   "source": "PumpkinKing_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "king bells x2 (Kenney impactBell_heavy_003 2.0x) + hollow 'bonk' (Kenney wood + our 445 Hz tok) + 34 candy clicks (Kenney glass 2.4x falling) + sparkle"
+   },
+   "durMs": 1237.3,
+   "centroidHz": 2839,
+   "phoneDropDb": 2.54
+  },
+  "PumpkinKing_sB": {
+   "key": "PumpkinKing",
+   "source": "PumpkinKing_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same, a louder wood bonk (HP 500) and another candy order"
+   },
+   "durMs": 1243.7,
+   "centroidHz": 2641,
+   "phoneDropDb": 2.34
+  },
+  "Purify_1-2": {
+   "key": "Purify",
+   "source": "Purify_1-2",
+   "verdict": "WARN",
+   "score": 90,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.002,
+    "len": 0.88,
+    "fin": 0.01,
+    "fout": 0.35,
+    "hp": 300,
+    "lp": 9000
+   },
+   "durMs": 755.2,
+   "centroidHz": 3433,
+   "phoneDropDb": 0.0
+  },
+  "Purify_sA": {
+   "key": "Purify",
+   "source": "Purify_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "glass wind chimes (C major, random order) + rising air + C-E-G pad + sparkles"
+   },
+   "durMs": 919.0,
+   "centroidHz": 2596,
+   "phoneDropDb": 0.04
+  },
+  "Purify_sB": {
+   "key": "Purify",
+   "source": "Purify_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same, another order (two rotating versions, sound_spec)"
+   },
+   "durMs": 919.2,
+   "centroidHz": 2754,
+   "phoneDropDb": 0.07
+  },
+  "QuestDone_1-1": {
+   "key": "QuestDone",
+   "source": "QuestDone_1-1",
+   "verdict": "WARN",
+   "score": 94,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.001,
+    "len": 0.56,
+    "fin": 0.002,
+    "fout": 0.35,
+    "hp": 300,
+    "lp": 9000
+   },
+   "durMs": 501.4,
+   "centroidHz": 3902,
+   "phoneDropDb": 0.0
+  },
+  "QuestDone_sA": {
+   "key": "QuestDone",
+   "source": "QuestDone_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "bells E6-G6-C7 65 ms apart + C6 triangle body + sparkle"
+   },
+   "durMs": 578.5,
+   "centroidHz": 2105,
+   "phoneDropDb": 0.06
+  },
+  "QuestDone_sB": {
+   "key": "QuestDone",
+   "source": "QuestDone_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "bells E6-G6-C7 55 ms apart, last rings longer"
+   },
+   "durMs": 558.5,
+   "centroidHz": 2089,
+   "phoneDropDb": 0.04
+  },
+  "QuestNew_1-2": {
+   "key": "QuestNew",
+   "source": "QuestNew_1-2",
+   "verdict": "WARN",
+   "score": 92,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.001,
+    "len": 0.36,
+    "fin": 0.002,
+    "fout": 0.4,
+    "hp": 600,
+    "lp": 8000
+   },
+   "durMs": 349.1,
+   "centroidHz": 1214,
+   "phoneDropDb": 0.29
+  },
+  "QuestNew_sA": {
+   "key": "QuestNew",
+   "source": "QuestNew_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "paper flick x2 + marimba C6 -> G6 (open fifth)"
+   },
+   "durMs": 367.6,
+   "centroidHz": 1510,
+   "phoneDropDb": 0.12
+  },
+  "QuestNew_sB": {
+   "key": "QuestNew",
+   "source": "QuestNew_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "paper flick x2 + marimba D6 -> A6"
+   },
+   "durMs": 367.5,
+   "centroidHz": 1700,
+   "phoneDropDb": 0.08
+  },
+  "RankDown_1-2": {
+   "key": "RankDown",
+   "source": "RankDown_1-2",
+   "verdict": "WARN",
+   "score": 97,
+   "params": {
+    "anchor": "onset",
+    "on": -30,
+    "pre": 0.001,
+    "len": 0.27,
+    "fin": 0.002,
+    "fout": 0.4,
+    "hp": 300,
+    "lp": 4000
+   },
+   "durMs": 261.5,
+   "centroidHz": 913,
+   "phoneDropDb": 0.34
+  },
+  "RankDown_sA": {
+   "key": "RankDown",
+   "source": "RankDown_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "marimba E5-D5-C5 55 ms apart, each 1.5 dB quieter, LP 4 k"
+   },
+   "durMs": 324.2,
+   "centroidHz": 582,
+   "phoneDropDb": 1.28
+  },
+  "RankDown_sB": {
+   "key": "RankDown",
+   "source": "RankDown_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "marimba E5-D5-C5 65 ms apart"
+   },
+   "durMs": 344.3,
+   "centroidHz": 583,
+   "phoneDropDb": 1.26
+  },
+  "ScrollFail_sA": {
+   "key": "ScrollFail",
+   "source": "ScrollFail_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "'pfff' noise 3.5 -> 0.9 kHz + 'plop' E5 -> C5 + two fading sparkles"
+   },
+   "durMs": 276.0,
+   "centroidHz": 1540,
+   "phoneDropDb": 0.2
+  },
+  "SkillHalo_1-3": {
+   "key": "SkillHalo",
+   "source": "SkillHalo_1-3",
+   "verdict": "WARN",
+   "score": 94,
+   "params": {
+    "anchor": "peak",
+    "on": -25,
+    "pre": 0.08,
+    "len": 0.38,
+    "fin": 0.02,
+    "fout": 0.4,
+    "hp": 800,
+    "lp": 7000
+   },
+   "durMs": 317.8,
+   "centroidHz": 4567,
+   "phoneDropDb": 0.0
+  },
+  "SkillHalo_sA": {
+   "key": "SkillHalo",
+   "source": "SkillHalo_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "rising wind 1.2 -> 5 kHz + glass chime cluster 1.2-2 kHz + sparkles 3.5-7 kHz"
+   },
+   "durMs": 357.8,
+   "centroidHz": 3638,
+   "phoneDropDb": 0.02
+  },
+  "SkillHalo_sB": {
+   "key": "SkillHalo",
+   "source": "SkillHalo_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "same recipe, another seed"
+   },
+   "durMs": 374.9,
+   "centroidHz": 3231,
+   "phoneDropDb": 0.02
+  },
+  "SkillHorns_1-1": {
+   "key": "SkillHorns",
+   "source": "SkillHorns_1-1",
+   "verdict": "WARN",
+   "score": 93,
+   "params": {
+    "anchor": "onset",
+    "on": -25,
+    "pre": 0.0,
+    "len": 0.27,
+    "fin": 0.01,
+    "fout": 0.4,
+    "hp": 400,
+    "lp": 5000
+   },
+   "durMs": 255.4,
+   "centroidHz": 707,
+   "phoneDropDb": 1.99
+  },
+  "SkillHorns_sA": {
+   "key": "SkillHorns",
+   "source": "SkillHorns_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "fire whoosh 400 -> 1200 -> 600 Hz + crackles + 'bwomp' + Kenney wood 'to-dok'"
+   },
+   "durMs": 320.4,
+   "centroidHz": 1801,
+   "phoneDropDb": 1.05
+  },
+  "SkillHorns_sB": {
+   "key": "SkillHorns",
+   "source": "SkillHorns_sB",
+   "verdict": "WARN",
+   "score": 97,
+   "params": {
+    "recipe": "same recipe, another seed"
+   },
+   "durMs": 320.5,
+   "centroidHz": 1816,
+   "phoneDropDb": 1.03
+  },
+  "SkillReady_1-2": {
+   "key": "SkillReady",
+   "source": "SkillReady_1-2",
+   "verdict": "WARN",
+   "score": 96,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.002,
+    "len": 0.05,
+    "fin": 0.002,
+    "fout": 0.5,
+    "hp": 300,
+    "lp": 4000
+   },
+   "durMs": 38.9,
+   "centroidHz": 2622,
+   "phoneDropDb": 0.05
+  },
+  "SkillReady_sA": {
+   "key": "SkillReady",
+   "source": "SkillReady_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "soft sine pip 1.4 -> 1.6 kHz, 50 ms"
+   },
+   "durMs": 49.2,
+   "centroidHz": 1476,
+   "phoneDropDb": 0.05
+  },
+  "SkillReady_sB": {
+   "key": "SkillReady",
+   "source": "SkillReady_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "soft sine pip 1.2 -> 1.45 kHz"
+   },
+   "durMs": 49.4,
+   "centroidHz": 1293,
+   "phoneDropDb": 0.09
   },
   "SwingArcher_2-1": {
    "key": "SwingArcher",
@@ -537,11 +1338,113 @@
    "durMs": 185.7,
    "centroidHz": 1581,
    "phoneDropDb": 0.26
+  },
+  "TalkBlip_1-1": {
+   "key": "TalkBlip",
+   "source": "TalkBlip_1-1",
+   "verdict": "WARN",
+   "score": 94,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.0,
+    "len": 0.03,
+    "fin": 0.002,
+    "fout": 0.5,
+    "hp": 300,
+    "lp": 3000
+   },
+   "durMs": 28.9,
+   "centroidHz": 3529,
+   "phoneDropDb": 0.0
+  },
+  "TalkBlip_sA": {
+   "key": "TalkBlip",
+   "source": "TalkBlip_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "triangle 620 -> 595 Hz, 34 ms, LP 3 k"
+   },
+   "durMs": 33.0,
+   "centroidHz": 626,
+   "phoneDropDb": 1.44
+  },
+  "TalkBlip_sB": {
+   "key": "TalkBlip",
+   "source": "TalkBlip_sB",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "triangle 660 -> 630 Hz, 34 ms"
+   },
+   "durMs": 33.3,
+   "centroidHz": 664,
+   "phoneDropDb": 1.15
+  },
+  "WindowClose_1-1": {
+   "key": "WindowClose",
+   "source": "WindowClose_1-1",
+   "verdict": "WARN",
+   "score": 96,
+   "params": {
+    "anchor": "onset",
+    "on": -20,
+    "pre": 0.0,
+    "len": 0.17,
+    "fin": 0.002,
+    "fout": 0.7,
+    "hp": 300,
+    "lp": 6000
+   },
+   "durMs": 132.4,
+   "centroidHz": 1215,
+   "phoneDropDb": 0.24
+  },
+  "WindowClose_1-3": {
+   "key": "WindowClose",
+   "source": "WindowClose_1-3",
+   "verdict": "WARN",
+   "score": 86,
+   "params": {
+    "anchor": "peak",
+    "on": -20,
+    "pre": 0.003,
+    "len": 0.15,
+    "fin": 0.002,
+    "fout": 0.7,
+    "hp": 600,
+    "lp": 6000
+   },
+   "durMs": 116.4,
+   "centroidHz": 812,
+   "phoneDropDb": 1.34
+  },
+  "WindowClose_sA": {
+   "key": "WindowClose",
+   "source": "WindowClose_sA",
+   "verdict": "PASS",
+   "score": 100,
+   "params": {
+    "recipe": "our mirror of WindowOpen: 1550 -> 1000 Hz, 4 ms attack"
+   },
+   "durMs": 158.9,
+   "centroidHz": 1317,
+   "phoneDropDb": 0.06
   }
  },
  "prompts": {
+  "AutoOff_1": "small switch click, tiny motor winding down, soft wooden tok, short",
+  "AutoOn_1": "small switch click, tiny motor whirring up, bright beep, short",
   "ComboCoin_1": "two small coins clinking, bright and cheerful, short",
   "ComboCoin_2": "coin clink clink into a pouch, two coins, short",
+  "Deny_1": "two short soft nasal toy beeps, the second one lower, gentle, short",
+  "Devour_1": "cartoon chomp and gulp, then a cute pop with tiny crackles, playful, short",
+  "Equip_1": "weapon equip click-clack latch with a small sparkle, short",
+  "GoldPickup_1": "a few small coins dropping into a pile, bright clinks, short",
+  "GooseArrive_1": "cartoon goose lands with wing flaps, two toy honks, golden sparkle",
+  "GooseHonk_1": "single short squeaky rubber toy honk",
+  "GooseHonk_2": "one quick cartoon toy goose honk, nasal and cute",
   "HitCrit_1": "cartoon critical hit, punchy impact with a bright metallic ting",
   "HitCrit_2": "small bright metal ting, clear and shiny, quick sparkle tail",
   "HitCrit_3": "cartoon power hit, heavy punch with a shiny metal ting, sparkle",
@@ -555,10 +1458,24 @@
   "HitHeavy_4": "punchy cartoon thwack, mid smack with a tiny click, dry",
   "HitSoft_1": "soft squishy jelly poke, bouncy boing, short",
   "HitSoft_2": "cartoon slime squish, soft wobbly bounce, short",
+  "HurtBig_1": "muffled soft cartoon bump with a short falling chirp, short",
   "Jump_1": "light cartoon hop, quick soft whoosh up, cute, short",
   "Jump_2": "small springy jump, soft bouncy pop, playful, short",
+  "KingGhost_1": "two cheerful jingle bells, a soft breathy rising whoo, then a glass tinkle, playful",
+  "KingGhost_2": "friendly ghost arrives, bell jingle twice, airy hooo rising like a question, sparkly glass chime",
+  "KingPumpkin_1": "two cheerful jingle bells, a hollow wooden pop, then candies sprinkling, playful",
+  "KingPumpkin_2": "fun Halloween arrival, bell jingle twice, bonk on a hollow pumpkin, sweets rattling down",
+  "Potion_1": "cork pop then rising bubbles bubbling, short",
   "PowerUp_1": "power up charge, rising sparkly shimmer, ends with a bright twinkle hit",
   "PowerUp_2": "magic energy rising, glittering sweep upward, small sparkle burst at the end",
+  "Purify_1": "glass wind chimes sparkling upward, light and airy, short",
+  "QuestDone_1": "cheerful three-note bell chime rising, bright little ta-da, short",
+  "QuestNew_1": "quick paper flutter then a bright wooden marimba two-note chime rising, short",
+  "RankDown_1": "three soft wooden marimba notes stepping down, gentle, short",
+  "ScrollFail_1": "soft deflating puff then a small round plop, gentle, short",
+  "SkillHalo_1": "magical golden shimmer rising, airy whoosh with glass sparkles, short",
+  "SkillHorns_1": "campfire flare whoosh with crackling sparks and a small wooden knock, playful",
+  "SkillReady_1": "tiny soft pip, gentle ready ping, very short",
   "SwingArcher_1": "fast arrow whoosh flying past, short airy swish",
   "SwingArcher_2": "single quick swoosh, thin and airy, very short, fast fade",
   "SwingArcher_3": "arrow fly-by whoosh, sharp attack, quick and airy, fading down",
@@ -574,9 +1491,43 @@
   "SwingMage_3": "magic wand swish with twinkling sparkles rising, gentle, short",
   "SwingMage_4": "soft magical whoosh rising in pitch, glittering sparkles, cute, short",
   "SwingTamer_1": "quick two-note rising whistle, airy and playful, short",
-  "SwingTamer_2": "short cheerful whistle, two quick rising notes, calling a puppy"
+  "SwingTamer_2": "short cheerful whistle, two quick rising notes, calling a puppy",
+  "TalkBlip_1": "single soft tiny blip, very short",
+  "WindowClose_1": "soft quick UI swoosh closing downward, small pop, short"
  },
  "clips": {
+  "AutoOff_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:52083cf9-1801-4fb0-8bfa-841067008391",
+   "sha256_24": "aa124a47bb4f27d4089e3c5f"
+  },
+  "AutoOff_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:7f4cf8b1-9840-4d3d-8791-9d79c7efe574",
+   "sha256_24": "886e23865f7a83b5b4fc0023"
+  },
+  "AutoOff_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:b2430e63-f7eb-4b88-be0c-fca8db5bf74d",
+   "sha256_24": "7fb76c8a3351fe504edae051"
+  },
+  "AutoOff_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:2b1507fa-f140-4802-841e-8cd40c55bd02",
+   "sha256_24": "630dd9f95a7d35b9fde127fa"
+  },
+  "AutoOn_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:72dfc7d4-6c3e-4f4a-b62e-e05b3d287c81",
+   "sha256_24": "6e5c45cd61d692f85a0b498a"
+  },
+  "AutoOn_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:2a0abfe5-8450-4999-80de-7de15970c463",
+   "sha256_24": "10c9cd514107f7b59bb91231"
+  },
+  "AutoOn_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:38e2e29a-54c6-4459-b34d-13f35fdac030",
+   "sha256_24": "28d27ff41c709ef696b4b7fc"
+  },
+  "AutoOn_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:4746096f-d908-4615-9cdc-f16ceadb8625",
+   "sha256_24": "b4d1205dfbecffde0f17b87e"
+  },
   "ComboCoin_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:53d04ebd-6de3-4a87-ae2d-fee9c6c68880",
    "sha256_24": "1023752fb29f72b771bc3db0"
@@ -608,6 +1559,118 @@
   "ComboCoin_2-4.wav": {
    "assetId": "urn:aaid:sc:AP:49bfb8b6-b888-40ee-8ab3-61bc54475f13",
    "sha256_24": "8d3071ac81f2e73c165de993"
+  },
+  "Deny_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:0d4b9c29-ffae-4e4c-9917-31398cfd4798",
+   "sha256_24": "5f933670b748f1bbdf6b0313"
+  },
+  "Deny_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:7daab80f-3095-4ecd-ad16-fb3792d80008",
+   "sha256_24": "66e031aee604384f792ab003"
+  },
+  "Deny_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:535fd3e6-0517-4dde-a0fe-65e305f65e80",
+   "sha256_24": "8e9c562ef0967cd3e5486a4a"
+  },
+  "Deny_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:701dee02-4bb1-4601-a5a3-989899d85a86",
+   "sha256_24": "b26a2a15326f9f77b4c1bc04"
+  },
+  "Devour_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:3aa84b88-5308-4ab2-9a2e-7574fe8a2318",
+   "sha256_24": "925212f3e38844907769ed67"
+  },
+  "Devour_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:77e18643-c1ba-42b4-ba7c-f21c549abebe",
+   "sha256_24": "1bcf75180bac51cec339ab36"
+  },
+  "Devour_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:b1565c15-b8a9-4efd-9fb8-8cd5686c0acc",
+   "sha256_24": "75a66c6baa0e3693d7e7de6f"
+  },
+  "Devour_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:2cc353d1-9780-41dc-bbca-807d5df521f3",
+   "sha256_24": "80bedb2c714f40f75073dcc3"
+  },
+  "Equip_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:49b7fa9a-2a8a-4940-ba78-90d3086f0d26",
+   "sha256_24": "1409d29a8a30394bc1575856"
+  },
+  "Equip_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:9d2466ed-0702-46ae-9875-f8a56b6dd173",
+   "sha256_24": "20e336bf94a83a91f34bdfd6"
+  },
+  "Equip_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:61d74bc5-56a4-4fc1-81b0-5e129bc04b19",
+   "sha256_24": "ef1ccb714999ff4dee296505"
+  },
+  "Equip_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:92c3d8a1-f88c-47dc-bb9c-d10f8b8e75bd",
+   "sha256_24": "bdda8ab18cae3e25f3a1b79c"
+  },
+  "GoldPickup_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:66165e7f-3f9f-4328-acfa-36a0906d6f06",
+   "sha256_24": "f89e0161a585517c1816894b"
+  },
+  "GoldPickup_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:df0aa49d-5acf-47e4-8181-5b8127a2160d",
+   "sha256_24": "697f4e88e49b301cbb1504ce"
+  },
+  "GoldPickup_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:b3d64e1e-ce9f-41e3-aaec-d1635a8f8984",
+   "sha256_24": "e4a991af71b31682a9422cd5"
+  },
+  "GoldPickup_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:9028b64a-f3cc-476e-92d6-ccf574599127",
+   "sha256_24": "b8140407a683a31766e16073"
+  },
+  "GooseArrive_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:bb3b3c02-304c-490f-9201-a149e8a1bd8c",
+   "sha256_24": "4d680dff67ec4d625ac4c3a4"
+  },
+  "GooseArrive_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:1181a8f4-e1aa-49a3-937b-d01681f14348",
+   "sha256_24": "3b263b1f463c5d58658a4e61"
+  },
+  "GooseArrive_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:c22e5639-4d07-4d89-833e-0371b256586b",
+   "sha256_24": "57fd3ae96408682919556507"
+  },
+  "GooseArrive_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:328eb93c-99c7-4799-8d59-98aa63b8ba56",
+   "sha256_24": "d661271c5bc18fe884ac2f4a"
+  },
+  "GooseHonk_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:76f10b76-b65c-48fb-a332-6333239509d2",
+   "sha256_24": "5f716da5b86a70252e8e16b7"
+  },
+  "GooseHonk_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:f9aa5f1e-9029-4313-a59c-7d07d7aec2ee",
+   "sha256_24": "94d78bed2ab36ae24380cb1e"
+  },
+  "GooseHonk_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:113768f6-6656-4e7a-b2f8-0ab4d510a3ae",
+   "sha256_24": "d1a043f66500dc50760c3517"
+  },
+  "GooseHonk_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:8f6e3faf-d61b-4066-91e1-a8f9f44e29b9",
+   "sha256_24": "c46a8ed958edaa8ccdd42277"
+  },
+  "GooseHonk_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:dffad919-1631-43be-a589-ab4b35c68872",
+   "sha256_24": "6df2e40ad182300b3271405c"
+  },
+  "GooseHonk_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:c5ec7499-4210-4631-beab-4a71786c3e08",
+   "sha256_24": "f39ac02e0c1adad40630273d"
+  },
+  "GooseHonk_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:8e19df5c-39e7-43a2-affc-5eafedade620",
+   "sha256_24": "8bf3ef2f83f21f6fb41950e1"
+  },
+  "GooseHonk_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:eda71685-276e-4c1d-a65b-56fe175f5724",
+   "sha256_24": "04f90c39cc9f8fb02b4e09d3"
   },
   "HitCrit_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:1d29935d-ab10-4535-9b22-3bdcc2d4bd2d",
@@ -817,6 +1880,22 @@
    "assetId": "urn:aaid:sc:AP:0f7ab4f5-4f09-45e6-8123-d13089c8ed3b",
    "sha256_24": "8887304e68e7b956d3aa0d0a"
   },
+  "HurtBig_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:b5dc0af4-d917-4eb1-bf58-c6cd714b30a4",
+   "sha256_24": "37fea5b15c0bacd9d43bc4a7"
+  },
+  "HurtBig_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:7b8f3d85-cc16-4f0a-9009-714cad7ca636",
+   "sha256_24": "a34c14c46167348518fa9018"
+  },
+  "HurtBig_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:d1cb585f-0948-416f-80d9-dc49d868f052",
+   "sha256_24": "bfb611d889ac32447c0abcc0"
+  },
+  "HurtBig_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:48a8ef24-9ebd-4d31-9df3-0cc28ceb6b03",
+   "sha256_24": "a99c5750544bfe501e4af612"
+  },
   "Jump_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:8e27c188-1afc-4e67-b58f-e89832e7f9d8",
    "sha256_24": "422ab13c013377ff6c246ed3"
@@ -849,6 +1928,86 @@
    "assetId": "urn:aaid:sc:AP:154d8f89-2c59-4258-bbee-49694f7f87fb",
    "sha256_24": "4d4b837bad3ab5d49718cd5a"
   },
+  "KingGhost_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:51ddf982-5756-44e0-aff2-deed129f4146",
+   "sha256_24": "ab6a00aa32c2a26c1d7d823f"
+  },
+  "KingGhost_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:3a90ef13-a683-4cf4-a010-64f5f5acef14",
+   "sha256_24": "52a57966f02ded2e7071a473"
+  },
+  "KingGhost_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:465b077a-9ee0-46e9-9a20-59bfc96d5172",
+   "sha256_24": "28dc0b49115f96a89dbc6412"
+  },
+  "KingGhost_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:4aa48dbc-a231-4556-80d2-7d0de7acd2ed",
+   "sha256_24": "88c7adda86c1ddcb6a01294b"
+  },
+  "KingGhost_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:4627adf3-56aa-40c8-87a1-83592496fd58",
+   "sha256_24": "db5cc69a2a7d0d534a97cb3e"
+  },
+  "KingGhost_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:6b5c7c26-1d47-43d0-8528-1e1aecfc465a",
+   "sha256_24": "bf3d3ca214f6169bce070dd4"
+  },
+  "KingGhost_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:c5d5627c-37df-4396-a948-95110ccdbd39",
+   "sha256_24": "3d96d923165624e26f3f6b14"
+  },
+  "KingGhost_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:723592ad-d5c2-444f-91a6-82cf047fffa2",
+   "sha256_24": "da7aa2dc68601d21574f3c9e"
+  },
+  "KingPumpkin_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:7b635c4d-6ef8-4043-911c-4af51e333127",
+   "sha256_24": "a524136ac5b8502cf0767393"
+  },
+  "KingPumpkin_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:b0cca62d-a767-4f79-b360-8847c1fbf892",
+   "sha256_24": "4e95b48396b0cedc688847ba"
+  },
+  "KingPumpkin_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:d4c3f0ec-87a5-41c2-85df-fb35373dacce",
+   "sha256_24": "9503aa0eb1cfa2b56c52c5c6"
+  },
+  "KingPumpkin_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:eabeff9e-4474-4dc1-805f-2ae225c4c931",
+   "sha256_24": "9894c86d2c8ecffc11ed697a"
+  },
+  "KingPumpkin_2-1.wav": {
+   "assetId": "urn:aaid:sc:AP:e13868e6-9517-4452-b229-7934aa427017",
+   "sha256_24": "7871e26bdc46e6474f1dd3bd"
+  },
+  "KingPumpkin_2-2.wav": {
+   "assetId": "urn:aaid:sc:AP:83590df9-6cf3-46f9-8b6c-090f76a740a7",
+   "sha256_24": "f4c8dcff9f7113246869b233"
+  },
+  "KingPumpkin_2-3.wav": {
+   "assetId": "urn:aaid:sc:AP:d5bee8fa-a840-4c2d-ad6e-333932bb2638",
+   "sha256_24": "faa73437331ad045d3e6112c"
+  },
+  "KingPumpkin_2-4.wav": {
+   "assetId": "urn:aaid:sc:AP:30574694-d331-48fe-85c1-3866904a6b49",
+   "sha256_24": "de3aa274b26a7da704aadaa9"
+  },
+  "Potion_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:4c3b576c-32a2-4e66-b860-d4a56d92e5ac",
+   "sha256_24": "2437f6b4dcdf131515cb94b8"
+  },
+  "Potion_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:12475183-5a74-4756-9822-4e7d78f0c844",
+   "sha256_24": "528ef45aac154be7dab4f8e1"
+  },
+  "Potion_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:df278c1a-d55b-43e4-aae3-224fa311bb13",
+   "sha256_24": "0fac633229f71b72e63ccfa3"
+  },
+  "Potion_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:afd98a27-c83f-4c73-8de3-5a0f5e647865",
+   "sha256_24": "c43094d8f6491ee0cc9d067f"
+  },
   "PowerUp_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:32fc87eb-9e05-46ce-819e-c9cab76dfd8d",
    "sha256_24": "2d4fab23f88b31b4340f0c03"
@@ -880,6 +2039,134 @@
   "PowerUp_2-4.wav": {
    "assetId": "urn:aaid:sc:AP:d7ae3bc8-9bbd-405c-8e87-3f3198e39991",
    "sha256_24": "54cdaf47724c71dfdf8c4c55"
+  },
+  "Purify_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:5d2e24cc-0e32-4671-bec7-950bbbb63aeb",
+   "sha256_24": "4f1fa9451bb86a7f7cc9dbfd"
+  },
+  "Purify_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:b51f81f1-040c-45d1-b4bf-16563c9d2df1",
+   "sha256_24": "2c0a521b977b36693dfffc1c"
+  },
+  "Purify_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:4f06fc67-5fff-4d73-a025-5fa8296809f9",
+   "sha256_24": "fae047e75023c9c85dafea4e"
+  },
+  "Purify_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:bd939942-2767-4aeb-beaf-30a17c80331a",
+   "sha256_24": "359e76370b4e171ef3b3a968"
+  },
+  "QuestDone_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:0cdd44b0-1269-4a06-9ad6-1285f11abd48",
+   "sha256_24": "0c64d1bc1489bb64994df3f9"
+  },
+  "QuestDone_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:401e6c76-2577-4960-b892-68a55d2abf53",
+   "sha256_24": "dd958db788ad1d718b19d454"
+  },
+  "QuestDone_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:7db64e4e-6079-41f1-bb08-f6b2f75aa448",
+   "sha256_24": "bb0b954ad1a50cd917196351"
+  },
+  "QuestDone_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:a118b1ec-bf96-476a-b865-6c5ccd03f81c",
+   "sha256_24": "1ba785010c00e6b758ed1997"
+  },
+  "QuestNew_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:56c7380d-837b-48c6-83f2-b6b26dfdc118",
+   "sha256_24": "79ff38b3e911efb45c66cf5a"
+  },
+  "QuestNew_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:31b9dd60-eb3d-4aed-a931-cdc0cd985375",
+   "sha256_24": "2fa74978a44780599ac0943e"
+  },
+  "QuestNew_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:64275bd5-3ff0-42d6-822f-cc9ee7f1690a",
+   "sha256_24": "3d92b38341eef554746bbd5f"
+  },
+  "QuestNew_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:2a2d692b-d74e-4628-8c29-ee2cc7525898",
+   "sha256_24": "a032448929c532448af69d28"
+  },
+  "RankDown_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:d7d5d3bf-79c3-4c72-b943-e5288d90a312",
+   "sha256_24": "a5f6a529cc5e76011979f78a"
+  },
+  "RankDown_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:711eab72-b23b-4165-9b2c-6ec778eaa0e8",
+   "sha256_24": "370c9539760e1883a04dce83"
+  },
+  "RankDown_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:f9529f20-317b-442d-9238-1aac33d46924",
+   "sha256_24": "e2d1027da49d61f6cd366420"
+  },
+  "RankDown_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:da57d1e3-54c8-4998-bf1a-1ea5a2bfab55",
+   "sha256_24": "b7110108fe8c26128fa4d11f"
+  },
+  "ScrollFail_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:c24b0aad-3be6-477c-83bb-90161b75cea5",
+   "sha256_24": "679ce2d1b8d32bd28f7c6f51"
+  },
+  "ScrollFail_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:0529b7ca-0a90-4289-ae95-39089e007c24",
+   "sha256_24": "ddd25cc96cab4bab1df0e514"
+  },
+  "ScrollFail_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:44a7392a-08c2-4e26-9b12-3871b67348d1",
+   "sha256_24": "1b25db569a2ce6721b6b3859"
+  },
+  "ScrollFail_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:45542429-431b-4ae6-a031-6f07eac93d7a",
+   "sha256_24": "b25284cfc5b85b6bc9ed4557"
+  },
+  "SkillHalo_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:2b6b8770-584e-4078-8b8c-77d9a0d0d2a6",
+   "sha256_24": "8422f0c2c3707b3af28542e2"
+  },
+  "SkillHalo_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:43aaafd0-07ef-42b8-905c-6e5ba839e852",
+   "sha256_24": "98489752c2533a2c3998aa1e"
+  },
+  "SkillHalo_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:5b03dc1e-f12f-49ec-b5ef-815eb9e0c876",
+   "sha256_24": "5042723eba69825050e5673f"
+  },
+  "SkillHalo_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:c9919df8-4325-4b58-bec1-0b9f1cfd2321",
+   "sha256_24": "50cc62ac7fca94d2f6c7ea11"
+  },
+  "SkillHorns_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:619bb8f9-46d1-49e7-bff5-618944a632ac",
+   "sha256_24": "08bfaad46acdcd3a0ee465d5"
+  },
+  "SkillHorns_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:89744d2f-9059-4062-96f7-7ca6ff6d7bad",
+   "sha256_24": "4ad1dd2ebca0e381a06f09d3"
+  },
+  "SkillHorns_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:18e7b1e4-49a4-45c6-9bef-df75bfc4fe2c",
+   "sha256_24": "6334fc5bc2a77bbae674053c"
+  },
+  "SkillHorns_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:7c81bb4b-9955-462a-8ba3-5d118443a378",
+   "sha256_24": "cb1d670c76e2ad8bea0dc213"
+  },
+  "SkillReady_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:3a640577-a3ad-4876-8fbb-f9de733aea8f",
+   "sha256_24": "237ac162bd839762a9439bfd"
+  },
+  "SkillReady_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:92cdc979-786a-4f26-8ff5-a087dde7db8e",
+   "sha256_24": "7f910501af30de56da493009"
+  },
+  "SkillReady_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:0485138e-0036-43bf-b349-31661cd0fc6e",
+   "sha256_24": "ee82e7fb6eb3490b78847da7"
+  },
+  "SkillReady_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:9aa6e014-a55e-498e-abb5-c018d2e7479d",
+   "sha256_24": "979e51da018d419cdd44cdcd"
   },
   "SwingArcher_1-1.wav": {
    "assetId": "urn:aaid:sc:AP:aa51cf86-e83d-48ba-a29f-492ec6194bd5",
@@ -1136,6 +2423,38 @@
   "SwingTamer_2-4.wav": {
    "assetId": "urn:aaid:sc:AP:0cc5075f-ce44-452a-84fa-1da40fa118e8",
    "sha256_24": "36aa6bfbd046689910a6ab40"
+  },
+  "TalkBlip_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:a90bd307-9778-4e80-ad1f-9df188d14a84",
+   "sha256_24": "8edd8f05a61fa771305e3eb5"
+  },
+  "TalkBlip_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:3e2f68e0-7c8b-4665-81a5-f5529955d16e",
+   "sha256_24": "b2b078e5d60f77405e325c24"
+  },
+  "TalkBlip_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:b33988f0-5e61-4300-a151-731f186b2791",
+   "sha256_24": "0793f08a318d6f6bc5288cb5"
+  },
+  "TalkBlip_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:f3ad18d7-1c9a-411e-a2e9-161d350b6c30",
+   "sha256_24": "12597801806675671fb2e187"
+  },
+  "WindowClose_1-1.wav": {
+   "assetId": "urn:aaid:sc:AP:a113f192-759b-4f23-822c-56d9f98caf95",
+   "sha256_24": "e2cfe25d7a182515b24839e7"
+  },
+  "WindowClose_1-2.wav": {
+   "assetId": "urn:aaid:sc:AP:123f7bb2-7975-4fbc-8456-247b4177c292",
+   "sha256_24": "e0f8011c94fee65ceb322d96"
+  },
+  "WindowClose_1-3.wav": {
+   "assetId": "urn:aaid:sc:AP:6828a11a-d0de-4a7d-bc6c-7c4151a6c79f",
+   "sha256_24": "9204381de1b1e681bfb419e7"
+  },
+  "WindowClose_1-4.wav": {
+   "assetId": "urn:aaid:sc:AP:62432ed6-142a-4d43-bb55-6d8d6c1b1f39",
+   "sha256_24": "a637b46e7c20f2f2bebe7dca"
   }
  },
  "superseded": "round 4 first cut (dev2 shape targets): art/review/sfx_firefly_2026-10-07*.png, commit 58b7026"

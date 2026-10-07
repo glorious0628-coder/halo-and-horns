@@ -1,6 +1,31 @@
+AutoOff         AutoOff_sA               PASS 100  FAIL: -  |  WARN: -
+AutoOff         AutoOff_1-1              WARN  91  FAIL: -  |  WARN: centroidHz=3483 (want 700..1400); centEndHz=3341 (want 500..1200); centDir=0.011 (want down)
+AutoOff         AutoOff_1-2              WARN  91  FAIL: -  |  WARN: centroidHz=3081 (want 700..1400); centEndHz=3111 (want 500..1200); centDir=-0.021 (want down)
+AutoOn          AutoOn_1-1               PASS 100  FAIL: -  |  WARN: -
+AutoOn          AutoOn_sA                PASS 100  FAIL: -  |  WARN: -
+AutoOn          AutoOn_sB                PASS 100  FAIL: -  |  WARN: -
 ComboCoin       ComboCoin_kC             PASS 100  FAIL: -  |  WARN: -
 ComboCoin       ComboCoin_kA             WARN  98  FAIL: -  |  WARN: durMs=198 (want 200..260)
 ComboCoin       ComboCoin_kB             WARN  98  FAIL: -  |  WARN: durMs=199 (want 200..260)
+Deny            Deny_sA                  PASS 100  FAIL: -  |  WARN: -
+Deny            Deny_sB                  WARN  98  FAIL: -  |  WARN: phoneDropDb=2.05 (want 0..2)
+Devour          Devour_sA                PASS 100  FAIL: -  |  WARN: -
+Devour          Devour_sB                PASS 100  FAIL: -  |  WARN: -
+Devour          Devour_1-1               WARN  89  FAIL: -  |  WARN: effLufs=-25.1 (want -23.7..-18.0); holeMs=252 (want 0..80); durMs=495 (want 600..750)
+Equip           Equip_sA                 PASS 100  FAIL: -  |  WARN: -
+Equip           Equip_sB                 PASS 100  FAIL: -  |  WARN: -
+GhostKing       GhostKing_KingGhost-1-1  PASS 100  FAIL: -  |  WARN: -
+GhostKing       GhostKing_KingGhost-2-3  PASS 100  FAIL: -  |  WARN: -
+GhostKing       GhostKing_sA             PASS 100  FAIL: -  |  WARN: -
+GoldPickup      GoldPickup_sB            PASS 100  FAIL: -  |  WARN: -
+GoldPickup      GoldPickup_sA            WARN  94  FAIL: -  |  WARN: centroidHz=3262 (want 2000..3200); pitchSemis=5.00 (want 0.5..3.50)
+GoldPickup      GoldPickup_kA            WARN  94  FAIL: -  |  WARN: durMs=208 (want 240..330); pitchSemis=0.4 (want 0.5..3.50)
+GooseArrive     GooseArrive_sA           PASS 100  FAIL: -  |  WARN: -
+GooseArrive     GooseArrive_sB           PASS 100  FAIL: -  |  WARN: -
+GooseArrive     GooseArrive_1-1          WARN  96  FAIL: -  |  WARN: holeMs=126 (want 0..80)
+GooseHonk       GooseHonk_sA             PASS 100  FAIL: -  |  WARN: -
+GooseHonk       GooseHonk_sB             PASS 100  FAIL: -  |  WARN: -
+GooseHonk       GooseHonk_1-1            WARN  97  FAIL: -  |  WARN: pitchStartHz=1263 (want 470..650)
 HitCrit         HitCrit_1-2              PASS 100  FAIL: -  |  WARN: -
 HitCrit         HitCrit_1-4              PASS 100  FAIL: -  |  WARN: -
 HitCrit         HitCrit_sB3              PASS 100  FAIL: -  |  WARN: -
@@ -10,11 +35,41 @@ HitHeavy        HitHeavy_1-3             WARN  94  FAIL: -  |  WARN: attackMs=5.
 HitSoft         HitSoft_kB               WARN  91  FAIL: -  |  WARN: lt150=0.143 (want 0..0.1); phoneDropDb=5.06 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
 HitSoft         HitSoft_kA               WARN  88  FAIL: -  |  WARN: lt150=0.133 (want 0..0.1); attackMs=6.50 (want 0..5); phoneDropDb=4.56 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
 HitSoft         HitSoft_kC               WARN  88  FAIL: -  |  WARN: effLufs=-28.6 (want -28.4..-23.5); attackMs=9.50 (want 0..5); phoneDropDb=3.26 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
+HurtBig         HurtBig_sA               PASS 100  FAIL: -  |  WARN: -
+HurtBig         HurtBig_sB               PASS 100  FAIL: -  |  WARN: -
 Jump            Jump_2-1                 PASS 100  FAIL: -  |  WARN: -
 Jump            Jump_2-2                 PASS 100  FAIL: -  |  WARN: -
+Potion          Potion_sA                PASS 100  FAIL: -  |  WARN: -
+Potion          Potion_sB                PASS 100  FAIL: -  |  WARN: -
+Potion          Potion_1-2               WARN  97  FAIL: -  |  WARN: centDir=-1.12 (want up)
 PowerUp         PowerUp_1-2              PASS 100  FAIL: -  |  WARN: -
 PowerUp         PowerUp_1-3              PASS 100  FAIL: -  |  WARN: -
 PowerUp         PowerUp_2-1              WARN  96  FAIL: -  |  WARN: firstOnsetMs=294 (want 0..10)
+PumpkinKing     PumpkinKing_sA           PASS 100  FAIL: -  |  WARN: -
+PumpkinKing     PumpkinKing_sB           PASS 100  FAIL: -  |  WARN: -
+PumpkinKing     PumpkinKing_KingPumpkin-2-3 WARN  93  FAIL: -  |  WARN: holeMs=130 (want 0..60); durMs=1081 (want 1200..1400)
+Purify          Purify_sA                PASS 100  FAIL: -  |  WARN: -
+Purify          Purify_sB                PASS 100  FAIL: -  |  WARN: -
+Purify          Purify_1-2               WARN  90  FAIL: -  |  WARN: durMs=755 (want 850..1000); peakAtMs=336 (want 100..300); centDir=-0.361 (want up)
+QuestDone       QuestDone_sA             PASS 100  FAIL: -  |  WARN: -
+QuestDone       QuestDone_sB             PASS 100  FAIL: -  |  WARN: -
+QuestDone       QuestDone_1-1            WARN  94  FAIL: -  |  WARN: pitchEndHz=3532 (want 1900..2300); centDir=-0.433 (want up)
+QuestNew        QuestNew_sA              PASS 100  FAIL: -  |  WARN: -
+QuestNew        QuestNew_sB              PASS 100  FAIL: -  |  WARN: -
+QuestNew        QuestNew_1-2             WARN  92  FAIL: -  |  WARN: attackMs=75.0 (want 0..8); pitchSemis=-25.1 (want 4..10); tonalShare=0.956 (want 0.3..0.95)
+RankDown        RankDown_sA              PASS 100  FAIL: -  |  WARN: -
+RankDown        RankDown_sB              PASS 100  FAIL: -  |  WARN: -
+RankDown        RankDown_1-2             WARN  97  FAIL: -  |  WARN: pitchSemis=-12.9 (want -8..-2)
+ScrollFail      ScrollFail_sA            PASS 100  FAIL: -  |  WARN: -
+SkillHalo       SkillHalo_sA             PASS 100  FAIL: -  |  WARN: -
+SkillHalo       SkillHalo_sB             PASS 100  FAIL: -  |  WARN: -
+SkillHalo       SkillHalo_1-3            WARN  94  FAIL: -  |  WARN: centroidHz=4567 (want 2500..4200); centDir=-0.215 (want up)
+SkillHorns      SkillHorns_sA            PASS 100  FAIL: -  |  WARN: -
+SkillHorns      SkillHorns_sB            WARN  97  FAIL: -  |  WARN: peakAtMs=29.5 (want 30..110)
+SkillHorns      SkillHorns_1-1           WARN  93  FAIL: -  |  WARN: attackMs=84.5 (want 10..80); centroidHz=707 (want 900..1900)
+SkillReady      SkillReady_sA            PASS 100  FAIL: -  |  WARN: -
+SkillReady      SkillReady_sB            PASS 100  FAIL: -  |  WARN: -
+SkillReady      SkillReady_1-2           WARN  96  FAIL: -  |  WARN: centroidHz=2622 (want 800..2500)
 SwingArcher     SwingArcher_2-1          PASS 100  FAIL: -  |  WARN: -
 SwingArcher     SwingArcher_3-1          PASS 100  FAIL: -  |  WARN: -
 SwingArcher     SwingArcher_2-4          WARN  94  FAIL: -  |  WARN: centroidHz=4876 (want 3200..4500); gt8k@1.08x=0.0693 (want 0..0.06); centroidHz@1.08x=5267 (want <= 4800)
@@ -27,6 +82,24 @@ SwingMageHalo   SwingMageHalo_1-1        WARN  93  FAIL: -  |  WARN: attackMs=42
 SwingMageHorns  SwingMageHorns_1-1       PASS 100  FAIL: -  |  WARN: -
 SwingMageHorns  SwingMageHorns_1-2       PASS 100  FAIL: -  |  WARN: -
 SwingMageHorns  SwingMageHorns_2-2       PASS 100  FAIL: -  |  WARN: -
+TalkBlip        TalkBlip_sA              PASS 100  FAIL: -  |  WARN: -
+TalkBlip        TalkBlip_sB              PASS 100  FAIL: -  |  WARN: -
+TalkBlip        TalkBlip_1-1             WARN  95  FAIL: -  |  WARN: centroidHz=3529 (want 450..900); pitchStartHz=3524 (want 550..700)
+WindowClose     WindowClose_sA           PASS 100  FAIL: -  |  WARN: -
+WindowClose     WindowClose_1-1          WARN  96  FAIL: -  |  WARN: durMs=132 (want 140..180)
+WindowClose     WindowClose_1-3          WARN  86  FAIL: -  |  WARN: durMs=116 (want 140..180); centroidHz=812 (want 1100..2200); lt300=0.0122 (want 0..0.005); phoneDropDb=1.34 (want 0..0.5)
+BarkPop         TalkBlip_sB@0.8x         PASS 100  FAIL: -  |  WARN: -
+BarkPop         TalkBlip_1-1@0.8x        PASS 100  FAIL: -  |  WARN: -
+BarkPop         TalkBlip_sB@1.5x         WARN  96  FAIL: -  |  WARN: effLufs=-35.4 (want -35.0..-27.5)
+BarkPop         TalkBlip_sA@0.8x         WARN  92  FAIL: -  |  WARN: peakDb=-2.49 (want <= -2.50); phoneDropDb=3.10 (want 0..3)
+BarkPop         TalkBlip_sA@1.5x         WARN  92  FAIL: -  |  WARN: effLufs=-35.3 (want -35.0..-27.5); peakDb=-2.49 (want <= -2.50)
+BarkPop         TalkBlip_1-1@1.5x        WARN  92  FAIL: -  |  WARN: effLufs=-35.1 (want -35.0..-27.5); durMs=19.3 (want 20..65)
+ShardLean       Devour_sA@1.12x          PASS 100  FAIL: -  |  WARN: -
+ShardLean       Devour_sB@1.12x          PASS 100  FAIL: -  |  WARN: -
+ShardLean       Purify_sA@1.12x          PASS 100  FAIL: -  |  WARN: -
+ShardLean       Purify_sB@1.12x          PASS 100  FAIL: -  |  WARN: -
+ShardLean       Purify_1-2@1.12x         PASS 100  FAIL: -  |  WARN: -
+ShardLean       Devour_1-1@1.12x         WARN  91  FAIL: -  |  WARN: effLufs=-28.1 (want -26.5..-21.5); holeMs=224 (want 0..80)
 
 distinct ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_1-1 [SwingMageHorns]: score 2.15 (>= 1.0) | the faction must be heard
 distinct ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_1-2 [SwingMageHorns]: score 2.35 (>= 1.0) | the faction must be heard
@@ -55,6 +128,93 @@ distinct ok   HitHeavy_3-2 [HitHeavy] vs HitCrit_sB3 [HitCrit]: score 2.05 (>= 1
 distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_1-2 [HitCrit]: score 1.99 (>= 1.0) | a crit must feel special
 distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_1-4 [HitCrit]: score 1.99 (>= 1.0) | a crit must feel special
 distinct ok   HitHeavy_1-3 [HitHeavy] vs HitCrit_sB3 [HitCrit]: score 2.38 (>= 1.0) | a crit must feel special
+distinct ok   HitHeavy_1-2 [HitHeavy] vs HurtBig_sA [HurtBig]: score 1.09 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   HitHeavy_1-2 [HitHeavy] vs HurtBig_sB [HurtBig]: score 1.09 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   HitHeavy_3-2 [HitHeavy] vs HurtBig_sA [HurtBig]: score 1.33 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   HitHeavy_3-2 [HitHeavy] vs HurtBig_sB [HurtBig]: score 1.33 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   HitHeavy_1-3 [HitHeavy] vs HurtBig_sA [HurtBig]: score 1.08 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   HitHeavy_1-3 [HitHeavy] vs HurtBig_sB [HurtBig]: score 1.12 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   SkillHalo_sA [SkillHalo] vs ComboCoin_kC [ComboCoin]: score 1.79 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_sA [SkillHalo] vs ComboCoin_kA [ComboCoin]: score 1.74 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_sA [SkillHalo] vs ComboCoin_kB [ComboCoin]: score 1.73 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_sB [SkillHalo] vs ComboCoin_kC [ComboCoin]: score 1.83 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_sB [SkillHalo] vs ComboCoin_kA [ComboCoin]: score 1.79 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_sB [SkillHalo] vs ComboCoin_kB [ComboCoin]: score 1.78 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_1-3 [SkillHalo] vs ComboCoin_kC [ComboCoin]: score 2.06 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_1-3 [SkillHalo] vs ComboCoin_kA [ComboCoin]: score 2.04 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_1-3 [SkillHalo] vs ComboCoin_kB [ComboCoin]: score 2.0 (>= 1.0) | SkillHalo bells sat on the coin pitches
+distinct ok   SkillHalo_sA [SkillHalo] vs Purify_sA [Purify]: score 1.74 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_sA [SkillHalo] vs Purify_sB [Purify]: score 1.62 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_sA [SkillHalo] vs Purify_1-2 [Purify]: score 1.58 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_sB [SkillHalo] vs Purify_sA [Purify]: score 1.64 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_sB [SkillHalo] vs Purify_sB [Purify]: score 1.93 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_sB [SkillHalo] vs Purify_1-2 [Purify]: score 1.71 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_1-3 [SkillHalo] vs Purify_sA [Purify]: score 2.17 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_1-3 [SkillHalo] vs Purify_sB [Purify]: score 2.1 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHalo_1-3 [SkillHalo] vs Purify_1-2 [Purify]: score 1.56 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_sA [SkillHorns] vs Devour_sA [Devour]: score 3.9 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_sA [SkillHorns] vs Devour_sB [Devour]: score 4.01 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_sA [SkillHorns] vs Devour_1-1 [Devour]: score 2.36 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_sB [SkillHorns] vs Devour_sA [Devour]: score 4.18 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_sB [SkillHorns] vs Devour_sB [Devour]: score 3.97 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_sB [SkillHorns] vs Devour_1-1 [Devour]: score 2.7 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_1-1 [SkillHorns] vs Devour_sA [Devour]: score 2.56 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_1-1 [SkillHorns] vs Devour_sB [Devour]: score 2.57 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   SkillHorns_1-1 [SkillHorns] vs Devour_1-1 [Devour]: score 1.9 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   WindowClose_sA [WindowClose] vs Deny_sA [Deny]: score 2.32 (>= 1.0) | a 'no' is two separate notes
+distinct ok   WindowClose_sA [WindowClose] vs Deny_sB [Deny]: score 2.47 (>= 1.0) | a 'no' is two separate notes
+distinct ok   WindowClose_1-1 [WindowClose] vs Deny_sA [Deny]: score 1.63 (>= 1.0) | a 'no' is two separate notes
+distinct ok   WindowClose_1-1 [WindowClose] vs Deny_sB [Deny]: score 1.83 (>= 1.0) | a 'no' is two separate notes
+distinct ok   WindowClose_1-3 [WindowClose] vs Deny_sA [Deny]: score 1.56 (>= 1.0) | a 'no' is two separate notes
+distinct ok   WindowClose_1-3 [WindowClose] vs Deny_sB [Deny]: score 1.6 (>= 1.0) | a 'no' is two separate notes
+distinct ok   WindowClose_sA [WindowClose] vs ScrollFail_sA [ScrollFail]: score 2.51 (>= 1.0) | no plain falling glide for the fail
+distinct ok   WindowClose_1-1 [WindowClose] vs ScrollFail_sA [ScrollFail]: score 2.43 (>= 1.0) | no plain falling glide for the fail
+distinct ok   WindowClose_1-3 [WindowClose] vs ScrollFail_sA [ScrollFail]: score 1.99 (>= 1.0) | no plain falling glide for the fail
+distinct ok   Deny_sA [Deny] vs RankDown_sA [RankDown]: registerOct 0.042 (>= 0.3) or timbreDb 10.24 (>= 10) | score 1.36 | critique: the RankDown recipe is the Deny sound with one more note
+distinct ok   Deny_sA [Deny] vs RankDown_sB [RankDown]: registerOct 0.035 (>= 0.3) or timbreDb 10.24 (>= 10) | score 1.28 | critique: the RankDown recipe is the Deny sound with one more note
+distinct ok   Deny_sA [Deny] vs RankDown_1-2 [RankDown]: registerOct 0.473 (>= 0.3) or timbreDb 9.16 (>= 10) | score 1.15 | critique: the RankDown recipe is the Deny sound with one more note
+distinct ok   Deny_sB [Deny] vs RankDown_sA [RankDown]: registerOct 0.135 (>= 0.3) or timbreDb 10.79 (>= 10) | score 1.37 | critique: the RankDown recipe is the Deny sound with one more note
+distinct ok   Deny_sB [Deny] vs RankDown_sB [RankDown]: registerOct 0.128 (>= 0.3) or timbreDb 10.79 (>= 10) | score 1.35 | critique: the RankDown recipe is the Deny sound with one more note
+distinct ok   Deny_sB [Deny] vs RankDown_1-2 [RankDown]: registerOct 0.566 (>= 0.3) or timbreDb 8.92 (>= 10) | score 1.12 | critique: the RankDown recipe is the Deny sound with one more note
+distinct ok   Deny_sA [Deny] vs AutoOff_sA [AutoOff]: score 1.2 (>= 1.0) | OFF is calm, not a 'no'
+distinct ok   Deny_sA [Deny] vs AutoOff_1-1 [AutoOff]: score 3.66 (>= 1.0) | OFF is calm, not a 'no'
+distinct ok   Deny_sA [Deny] vs AutoOff_1-2 [AutoOff]: score 3.42 (>= 1.0) | OFF is calm, not a 'no'
+distinct ok   Deny_sB [Deny] vs AutoOff_sA [AutoOff]: score 1.21 (>= 1.0) | OFF is calm, not a 'no'
+distinct ok   Deny_sB [Deny] vs AutoOff_1-1 [AutoOff]: score 3.79 (>= 1.0) | OFF is calm, not a 'no'
+distinct ok   Deny_sB [Deny] vs AutoOff_1-2 [AutoOff]: score 3.56 (>= 1.0) | OFF is calm, not a 'no'
+distinct ok   Deny_sA [Deny] vs GooseHonk_sA [GooseHonk]: score 1.98 (>= 1.0) | a honk must never mean 'wrong'
+distinct ok   Deny_sA [Deny] vs GooseHonk_sB [GooseHonk]: score 1.9 (>= 1.0) | a honk must never mean 'wrong'
+distinct ok   Deny_sA [Deny] vs GooseHonk_1-1 [GooseHonk]: score 2.12 (>= 1.0) | a honk must never mean 'wrong'
+distinct ok   Deny_sB [Deny] vs GooseHonk_sA [GooseHonk]: score 2.11 (>= 1.0) | a honk must never mean 'wrong'
+distinct ok   Deny_sB [Deny] vs GooseHonk_sB [GooseHonk]: score 2.03 (>= 1.0) | a honk must never mean 'wrong'
+distinct ok   Deny_sB [Deny] vs GooseHonk_1-1 [GooseHonk]: score 2.25 (>= 1.0) | a honk must never mean 'wrong'
+distinct ok   AutoOn_1-1 [AutoOn] vs AutoOff_sA [AutoOff]: registerOct 1.881 (>= 0.5) and contourOct 0.494 (>= 0.3) | score 2.69 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct warn AutoOn_1-1 [AutoOn] vs AutoOff_1-1 [AutoOff]: registerOct 0.325 (>= 0.5) and contourOct 0.186 (>= 0.3) | score 0.93 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct warn AutoOn_1-1 [AutoOn] vs AutoOff_1-2 [AutoOff]: registerOct 0.162 (>= 0.5) and contourOct 0.183 (>= 0.3) | score 1.18 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   AutoOn_sA [AutoOn] vs AutoOff_sA [AutoOff]: registerOct 1.115 (>= 0.5) and contourOct 0.832 (>= 0.3) | score 1.66 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   AutoOn_sA [AutoOn] vs AutoOff_1-1 [AutoOff]: registerOct 1.091 (>= 0.5) and contourOct 0.434 (>= 0.3) | score 1.56 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   AutoOn_sA [AutoOn] vs AutoOff_1-2 [AutoOff]: registerOct 0.929 (>= 0.5) and contourOct 0.473 (>= 0.3) | score 1.6 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   AutoOn_sB [AutoOn] vs AutoOff_sA [AutoOff]: registerOct 1.067 (>= 0.5) and contourOct 0.849 (>= 0.3) | score 1.7 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   AutoOn_sB [AutoOn] vs AutoOff_1-1 [AutoOff]: registerOct 1.139 (>= 0.5) and contourOct 0.458 (>= 0.3) | score 1.63 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   AutoOn_sB [AutoOn] vs AutoOff_1-2 [AutoOff]: registerOct 0.976 (>= 0.5) and contourOct 0.495 (>= 0.3) | score 1.66 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   PumpkinKing_sA [PumpkinKing] vs GhostKing_KingGhost-1-1 [GhostKing]: score 2.92 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_sA [PumpkinKing] vs GhostKing_KingGhost-2-3 [GhostKing]: score 2.04 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_sA [PumpkinKing] vs GhostKing_sA [GhostKing]: score 2.21 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_sB [PumpkinKing] vs GhostKing_KingGhost-1-1 [GhostKing]: score 2.99 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_sB [PumpkinKing] vs GhostKing_KingGhost-2-3 [GhostKing]: score 2.01 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_sB [PumpkinKing] vs GhostKing_sA [GhostKing]: score 2.28 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_KingPumpkin-2-3 [PumpkinKing] vs GhostKing_KingGhost-1-1 [GhostKing]: score 2.36 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_KingPumpkin-2-3 [PumpkinKing] vs GhostKing_KingGhost-2-3 [GhostKing]: score 2.13 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   PumpkinKing_KingPumpkin-2-3 [PumpkinKing] vs GhostKing_sA [GhostKing]: score 1.7 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+match    ok   Purify_sA [Purify] vs Devour_sA [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    ok   Purify_sA [Purify] vs Devour_sB [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    warn Purify_sA [Purify] vs Devour_1-1 [Devour]: in-game loudness gap 2.9 LU (<= 1.0), phone gap 3.3 LU (<= 2.0) | neither choice is louder or 'better'
+match    ok   Purify_sB [Purify] vs Devour_sA [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    ok   Purify_sB [Purify] vs Devour_sB [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    warn Purify_sB [Purify] vs Devour_1-1 [Devour]: in-game loudness gap 2.9 LU (<= 1.0), phone gap 3.3 LU (<= 2.0) | neither choice is louder or 'better'
+match    ok   Purify_1-2 [Purify] vs Devour_sA [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    ok   Purify_1-2 [Purify] vs Devour_sB [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
+match    warn Purify_1-2 [Purify] vs Devour_1-1 [Devour]: in-game loudness gap 2.9 LU (<= 1.0), phone gap 3.3 LU (<= 2.0) | neither choice is louder or 'better'
 match    ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_1-1 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
 match    ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_1-2 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
 match    ok   SwingMageHalo_SwingMage-3-4 [SwingMageHalo] vs SwingMageHorns_2-2 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
@@ -64,6 +224,24 @@ match    ok   SwingMageHalo_1-1 [SwingMageHalo] vs SwingMageHorns_2-2 [SwingMage
 match    ok   SwingMageHalo_SwingMage-2-2 [SwingMageHalo] vs SwingMageHorns_1-1 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
 match    ok   SwingMageHalo_SwingMage-2-2 [SwingMageHalo] vs SwingMageHorns_1-2 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
 match    ok   SwingMageHalo_SwingMage-2-2 [SwingMageHalo] vs SwingMageHorns_2-2 [SwingMageHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_sA [SkillHalo] vs SkillHorns_sA [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.7 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_sA [SkillHalo] vs SkillHorns_sB [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.6 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_sA [SkillHalo] vs SkillHorns_1-1 [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 1.8 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_sB [SkillHalo] vs SkillHorns_sA [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.7 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_sB [SkillHalo] vs SkillHorns_sB [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.6 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_sB [SkillHalo] vs SkillHorns_1-1 [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 1.8 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_1-3 [SkillHalo] vs SkillHorns_sA [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.7 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_1-3 [SkillHalo] vs SkillHorns_sB [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.6 LU (<= 2.0) | fair on phones
+match    ok   SkillHalo_1-3 [SkillHalo] vs SkillHorns_1-1 [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 1.8 LU (<= 2.0) | fair on phones
+louder   ok   QuestDone_sA [QuestDone] vs QuestNew_sA [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_sA [QuestDone] vs QuestNew_sB [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_sA [QuestDone] vs QuestNew_1-2 [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_sB [QuestDone] vs QuestNew_sA [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_sB [QuestDone] vs QuestNew_sB [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_sB [QuestDone] vs QuestNew_1-2 [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_1-1 [QuestDone] vs QuestNew_sA [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_1-1 [QuestDone] vs QuestNew_sB [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
+louder   ok   QuestDone_1-1 [QuestDone] vs QuestNew_1-2 [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
 louder   ok   HitHeavy_1-2 [HitHeavy] vs SwingArcher_2-1 [SwingArcher]: HitHeavy is +3.2 LU vs SwingArcher in game (need >= +2.0) | the archer swish is the quietest combat sound
 louder   ok   HitHeavy_1-2 [HitHeavy] vs SwingArcher_3-1 [SwingArcher]: HitHeavy is +3.2 LU vs SwingArcher in game (need >= +2.0) | the archer swish is the quietest combat sound
 louder   ok   HitHeavy_1-2 [HitHeavy] vs SwingArcher_2-4 [SwingArcher]: HitHeavy is +3.2 LU vs SwingArcher in game (need >= +2.0) | the archer swish is the quietest combat sound

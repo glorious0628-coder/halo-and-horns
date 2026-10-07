@@ -152,6 +152,52 @@ PLAN = {
                                          fout=[0.4], hp=[400, 800], lp=[6000, 8000])),
     "HitSoft": (["HitSoft_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.0005], len=[0.15, 0.18, 0.21], fin=[0.0008],
                                    fout=[0.6], hp=[120, 180, 250], lp=[5000, 8000])),
+    # batch 2 (sound_spec §4-1: broken or backwards sounds + P0 Equip / SkillReady / HurtBig)
+    "GoldPickup": (["GoldPickup_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.26, 0.3], fin=[0.001], fout=[0.4],
+                                         hp=[400, 700], lp=[8000, 10000])),
+    "QuestNew": (["QuestNew_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.36, 0.42], fin=[0.002], fout=[0.4],
+                                     hp=[300, 600], lp=[8000])),
+    "QuestDone": (["QuestDone_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.48, 0.56], fin=[0.002], fout=[0.35],
+                                       hp=[300, 600], lp=[9000])),
+    "WindowClose": (["WindowClose_"], grid(anchor=["peak", "onset"], on=[-20], pre=[0.0, 0.003], len=[0.15, 0.17], fin=[0.002],
+                                           fout=[0.7], hp=[300, 600], lp=[6000, 8000])),
+    "Deny": (["Deny_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.21, 0.24], fin=[0.002], fout=[0.4],
+                             hp=[300], lp=[2500, 4000])),
+    "RankDown": (["RankDown_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.27, 0.32], fin=[0.002], fout=[0.4],
+                                     hp=[300, 400], lp=[4000])),
+    "ScrollFail": (["ScrollFail_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.27, 0.32], fin=[0.012], fout=[0.45],
+                                         hp=[300], lp=[6000])),
+    "SkillHalo": (["SkillHalo_"], grid(anchor=["onset", "peak"], on=[-25], pre=[0.0, 0.08], len=[0.32, 0.38, 0.42], fin=[0.02], fout=[0.4],
+                                       hp=[800], lp=[7000, 9000])),
+    "SkillHorns": (["SkillHorns_"], grid(anchor=["onset", "peak"], on=[-25], pre=[0.0, 0.05], len=[0.27, 0.32], fin=[0.01], fout=[0.4],
+                                         hp=[250, 400], lp=[5000, 7000])),
+    "Purify": (["Purify_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[0.88, 0.95], fin=[0.01], fout=[0.35],
+                                 hp=[300, 600], lp=[9000])),
+    "Devour": (["Devour_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.62, 0.7], fin=[0.002], fout=[0.35],
+                                 hp=[300], lp=[6000, 8000])),
+    "Potion": (["Potion_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.37, 0.42], fin=[0.002], fout=[0.4],
+                                 hp=[450], lp=[6000, 8000])),
+    "AutoOn": (["AutoOn_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.23, 0.26], fin=[0.002], fout=[0.4],
+                                 hp=[300, 600], lp=[6000])),
+    "AutoOff": (["AutoOff_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.001], len=[0.18, 0.2], fin=[0.002], fout=[0.45],
+                                   hp=[300, 400], lp=[3000, 4000])),
+    "TalkBlip": (["TalkBlip_"], grid(anchor=["onset", "peak"], on=[-20], pre=[0.0, 0.002], len=[0.03, 0.035], fin=[0.002], fout=[0.5],
+                                     hp=[300], lp=[3000])),
+    "Equip": (["Equip_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.0005], len=[0.26, 0.29], fin=[0.001], fout=[0.4],
+                               hp=[300], lp=[8000])),
+    "SkillReady": (["SkillReady_"], grid(anchor=["onset", "peak"], on=[-20], pre=[0.0, 0.002], len=[0.05, 0.07], fin=[0.002], fout=[0.5],
+                                         hp=[300], lp=[4000])),
+    "HurtBig": (["HurtBig_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.0005], len=[0.13, 0.16], fin=[0.001], fout=[0.5],
+                                   hp=[250], lp=[3000, 5000])),
+    # batch 3 (Halloween beta week, P0): the files are named KingPumpkin / KingGhost (sound_spec), the spec keys are the events
+    "PumpkinKing": (["KingPumpkin_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[1.25, 1.35], fin=[0.003], fout=[0.3],
+                                          hp=[150, 300], lp=[9000])),
+    "GhostKing": (["KingGhost_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[1.35, 1.45], fin=[0.003], fout=[0.3],
+                                       hp=[300, 400], lp=[9000])),
+    "GooseArrive": (["GooseArrive_"], grid(anchor=["onset"], on=[-30, -20], pre=[0.002], len=[0.95, 1.05], fin=[0.003], fout=[0.3],
+                                           hp=[400], lp=[9000])),
+    "GooseHonk": (["GooseHonk_"], grid(anchor=["onset", "peak"], on=[-20], pre=[0.0, 0.01], len=[0.15, 0.17], fin=[0.003], fout=[0.4],
+                                       hp=[450], lp=[5000])),
     "Jump": (["Jump_"], grid(anchor=["onset"], on=[-20, -12], pre=[0.002], len=[0.16, 0.2, 0.24], fin=[0.003], fout=[0.6],
                             hp=[200, 300], lp=[9000])),
     "SwingMageHorns": (["SwingMageHorns_"], grid(anchor=["onset", "peak"], on=[-20], pre=[0.0, 0.02], len=[0.18, 0.2, 0.22],
@@ -292,10 +338,21 @@ def pick(n=3):
 KO = {"SwingArcher": "활 두 발 파일(선택) · '슉슉'", "SwingArrow": "활 · 화살 한 발(코드가 두 번 틀 수 있음)", "SwingMageHalo": "빛 마법 쏘기",
       "SwingMageHorns": "뿔 마법 쏘기", "HitHeavy": "퍽 · 단단한 몬스터 맞힘", "HitCrit": "치명타 · 재질 타격 위에 얹는 층",
       "ComboCoin": "동전 두 개 '짤-랑'", "HitSoft": "말랑 · 슬라임·유령 맞힘",
-      "Jump": "점프 · 새 소리(사용자 요청)", "PowerUp": "PowerUp · 대장간 첫 무기(A23-68 #3)"}
-ORDER = ["SwingArrow", "SwingMageHalo", "SwingMageHorns", "HitHeavy", "HitCrit", "ComboCoin", "HitSoft", "PowerUp", "Jump", "SwingArcher"]
-BATCH = {"SwingArrow": 1, "SwingMageHalo": 1, "SwingMageHorns": 1, "HitHeavy": 1, "HitCrit": 1, "ComboCoin": 1, "HitSoft": 1,
-         "PowerUp": 2, "Jump": 2, "SwingArcher": 1}
+      "Jump": "점프 · 새 소리(사용자 요청)", "PowerUp": "PowerUp · 대장간 첫 무기(A23-68 #3)",
+      "GoldPickup": "골드 받기 · 은행·택배·거위(처치 밖)", "QuestNew": "새 퀘스트 '띠링?'", "QuestDone": "퀘스트 완료 '짜잔~'",
+      "WindowClose": "창 닫기", "Deny": "안 돼요 '어-어' (MP 부족·잠김)", "RankDown": "등급 내려감", "ScrollFail": "강화 실패 '푸스스 퐁'",
+      "SkillHalo": "빛 스킬", "SkillHorns": "뿔 스킬", "Purify": "정화 · 빛 선택", "Devour": "먹기 · 뿔 선택 '앙! 꿀꺽 뽕!'",
+      "Potion": "물약 마시기", "AutoOn": "자동 전투 켜기", "AutoOff": "자동 전투 끄기", "TalkBlip": "대화 글자 '톡'",
+      "Equip": "장비 끼기 '착'", "SkillReady": "스킬 준비됨 '삥'", "HurtBig": "크게 맞음",
+      "PumpkinKing": "호박 왕 등장", "GhostKing": "유령 왕 등장", "GooseArrive": "황금 거위 착지", "GooseHonk": "거위 맞힘 '꽉!' 한 번"}
+ORDER = ["SwingArrow", "SwingMageHalo", "SwingMageHorns", "HitHeavy", "HitCrit", "ComboCoin", "HitSoft", "SwingArcher",
+         "GoldPickup", "QuestNew", "QuestDone", "WindowClose", "Deny", "RankDown", "ScrollFail", "SkillHalo", "SkillHorns", "Purify", "Devour",
+         "Potion", "AutoOn", "AutoOff", "TalkBlip", "Equip", "SkillReady", "HurtBig", "PowerUp", "Jump",
+         "PumpkinKing", "GhostKing", "GooseArrive", "GooseHonk"]
+BATCH = {k: 1 for k in ORDER[:8]}
+BATCH.update({k: 2 for k in ORDER[8:28]})
+BATCH.update({k: 3 for k in ORDER[28:]})
+BATCH_TITLE = {1: "1번 묶음 · 전투 (지난번과 같은 후보)", 2: "2번 묶음 · UI·스킬·선택·새 소리", 3: "3번 묶음 · 할로윈 P0"}
 SCENE_OF = {"SwingArrow": "archer", "SwingMageHalo": "mage_halo", "SwingMageHorns": "mage_horns", "HitHeavy": "warrior_goblin",
             "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime"}
 PICK = {  # 소리 만들기 추천 (검수가 고른다)
@@ -309,7 +366,37 @@ PICK = {  # 소리 만들기 추천 (검수가 고른다)
     "PowerUp": ("PowerUp_1-2", "0.7 → 2 → 4.9 kHz로 쭉 올라가는 반짝 1.05 s, 끝에 반짝 마무리."),
     "Jump": ("Jump_2-2", "통통 '폴-짝' 0.19 s, 폰 -0.8 dB, 낮은 소리 없음."),
     "SwingArcher": ("SwingArcher_2-1", "선택: 두 발을 파일 하나로 올릴 때(코드가 두 번 틀면 필요 없음)."),
+    "GoldPickup": ("GoldPickup_sB", "우리 동전 3개 E7→D7→G7, 55 ms 간격, 0.31 s. 처치 동전(ComboCoin)보다 길고 한 음 더. 폰 손실 0."),
+    "QuestNew": ("QuestNew_sA", "종이 '팔락' + 마림바 C6→G6 '띠링?' 0.37 s. 동전 음(E7)보다 아래라 돈 소리와 안 겹쳐요."),
+    "QuestDone": ("QuestDone_sA", "종 E6-G6-C7 65 ms 간격 + 작은 반짝 '짜잔' 0.58 s. LevelUp보다 한 옥타브 위, 폰 손실 0.1 dB."),
+    "WindowClose": ("WindowClose_sA", "창 열기의 거울: 1.55 → 1.0 kHz로 내려가는 '쏙' 0.16 s, 시작이 제일 커요."),
+    "Deny": ("Deny_sA", "고무 같은 두 음 622 → 523 Hz(단3도 아래, 꾸중 아님) 0.22 s, 두 음 사이 99 ms."),
+    "RankDown": ("RankDown_sA", "마림바 E5-D5-C5 55 ms 간격, 하나씩 조금 작게 0.32 s. 슬프지 않은 '또르르'."),
+    "ScrollFail": ("ScrollFail_sA", "'푸스스' 바람 3.5 → 0.9 kHz + '퐁' E5 → C5 0.28 s. 딸깍 없는 부드러운 시작(18 ms)."),
+    "SkillHalo": ("SkillHalo_sA", "위로 오르는 바람 1.2 → 5 kHz + 유리 차임 + 반짝 0.36 s. 뿔 스킬과 점수 차이 충분."),
+    "SkillHorns": ("SkillHorns_sA", "불꽃 '화르륵' 400 → 1200 → 600 Hz + 탁탁 + '봄' + 나무 '토독' 0.32 s, 폰 -1 dB."),
+    "Purify": ("Purify_sA", "유리 바람 종(C장조, 순서 랜덤) + 오르는 공기 + 반짝 0.92 s. 설계서대로 sB를 둘째 버전으로 번갈아 써도 돼요. 조각 기울기(ShardLean) 1.12배 재사용도 통과."),
+    "Devour": ("Devour_sA", "바삭 '앙' → 낮은 '꿀꺽' 두 번 → '뽕' 900 → 1800 Hz + 불씨 0.69 s. 정화와 크기 차이 1 LU 안(어느 쪽도 더 '좋은' 소리 아님)."),
+    "Potion": ("Potion_sA", "코르크 '뽁' 1.4 → 0.5 kHz + 오르는 거품 7개 0.37 s."),
+    "AutoOn": ("AutoOn_sA", "딸깍 + 밝게 올라가는 모터 + 높은 '삑'(D7) 0.24 s. 끄기(AutoOff_sA)와 같은 딸깍이라 짝이 맞아요(짝 검사 통과)."),
+    "AutoOff": ("AutoOff_sA", "같은 딸깍 + 내려가는 모터 + 나무 '톡'(C5) 0.18 s. 켜기는 높게 끝나고 끄기는 낮게 끝나요."),
+    "TalkBlip": ("TalkBlip_sB", "삼각파 '톡' 660 → 630 Hz, 33 ms, 글자마다 나도 귀가 안 아픈 소리. 몬스터 말풍선(BarkPop)이 이 파일을 0.8배로 쓸 때도 통과(sA는 폰 -3.1 dB로 살짝 넘음)."),
+    "Equip": ("Equip_sA", "톱니 '차르륵' 3번 + 걸쇠 '착' + 작은 반짝 0.29 s."),
+    "SkillReady": ("SkillReady_sA", "부드러운 '삥' 1.4 → 1.6 kHz, 49 ms. 전투 중에도 거슬리지 않게 짧게."),
+    "HurtBig": ("HurtBig_sA", "막힌 '쿵' 700 → 300 Hz + 내려가는 짧은 '끽' 0.15 s. 피·비명 없음, 폰 -1.3 dB."),
+    "PumpkinKing": ("PumpkinKing_sA", "왕 종 두 번(650 Hz) → 속 빈 '뻥' → 사탕 34알 '사르르' 1.24 s. 중간 빈 구멍 없음(36 ms), 폰 -2.5 dB."),
+    "GhostKing": ("GhostKing_sA", "호박 왕과 같은 왕 종 두 번 → 숨 섞인 '후우?'(위로, 질문 모양) → 유리 '찰랑' 1.33 s. Firefly 1-1·2-3도 통과지만 종이 달라요."),
+    "GooseArrive": ("GooseArrive_sA", "날갯짓 3번 → '꽥' 560 Hz → '꽥' 3반음 위 → 금 반짝 0.98 s. 꽥은 GooseHonk와 같은 목소리."),
+    "GooseHonk": ("GooseHonk_sA", "장난감 고무 거위 '꽉!' 한 번 0.16 s, 600 Hz, 위로 살짝 꺾임. 두 음이 내려가는 Deny와 다르게."),
 }
+
+
+def span_of(key):
+    """spectrogram time span (s): long keys get a longer picture"""
+    r = SPEC["keys"].get(key, {}).get("rules", {}).get("durMs")
+    hi = (r.get("hard") or r.get("range")) if isinstance(r, dict) else r
+    hi = (hi[1] if hi and hi[1] else 300) / 1000
+    return next(v for v in (0.35, 0.7, 1.0, 1.4, 1.8) if v >= hi + 0.05 or v == 1.8)
 
 
 def prompt_for(src):
@@ -346,10 +433,14 @@ def board():
         return f'<div class="scene"><span>{H.escape(label)}</span><audio controls preload="none" src="{rel}"></audio></div>'
 
     secs = []
+    last = None
     for key in ORDER:
         rows = summ["keys"].get(key, [])
         if not rows:
             continue
+        if BATCH.get(key) != last:
+            last = BATCH.get(key)
+            secs.append(f'<h2 class="bhead" id="b{last}">{H.escape(BATCH_TITLE.get(last, ""))}</h2>')
         ks = SPEC["keys"][key]
         rec, why = PICK.get(key, ("", ""))
         scene = SCENE_OF.get(key)
@@ -359,7 +450,7 @@ def board():
             v = by_cand.get(name, {})
             wav = os.path.join(FF.CAND, name + ".wav")
             x = FF.read_wav(wav)
-            FF.SPAN = 1.4 if key == "PowerUp" else 0.35
+            FF.SPAN = span_of(key)
             jpg = os.path.join(root, "i", name + ".jpg")
             FF.spec_image(x, 430, 140).save(jpg, quality=86)
             FF.SPAN = 0.7
@@ -389,8 +480,8 @@ def board():
         if scene:
             recscene = ('<div class="recscene"><b>추천 조합 장면</b>' + scene_audio(f"{scene}_rec", "보통 스피커")
                         + scene_audio(f"{scene}_rec_phone", "폰 스피커(400 Hz 고역 통과)") + '</div>')
-        tag = f'<span class="batch">{BATCH.get(key, "")}번 묶음</span>' if BATCH.get(key) else ""
-        secs.append(f'<section><h2>{H.escape(KO.get(key, key))} <code class="key">{key}</code> {tag}</h2>'
+        tag = f'<span class="batch">그림 0–{span_of(key):g} s</span>'
+        secs.append(f'<section><h3>{H.escape(KO.get(key, key))} <code class="key">{key}</code> {tag}</h3>'
                     f'<p class="target">{H.escape(ks.get("say", ""))} · {H.escape(ks.get("moment", ""))}</p>{recline}{recscene}'
                     f'<div class="grid">{"".join(tiles)}</div></section>')
     page = BOARD_HTML.replace("{{BODY}}", "".join(secs))
@@ -413,7 +504,10 @@ BOARD_HTML = """<title>효과음 4차 듣기판</title>
 :root[data-theme="dark"]{--bg:#121419;--surface:#1b1e26;--ink:#e8eaf1;--muted:#a1a6b4;--line:#2c303b;--accent:#5bc2d4;--ok:#4cca82;--near:#e2b33f;--off:#ee665e;--ref:#9a9fac;--pickbg:#183139;color-scheme:dark}
 body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
 main{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:24px 48px;display:flex;flex-direction:column;gap:30px}
-h1{font-size:1.5rem;margin:0;text-wrap:balance}h2{font-size:1.15rem;margin:0;text-wrap:balance}
+h1{font-size:1.5rem;margin:0;text-wrap:balance}h3{font-size:1.15rem;margin:0;text-wrap:balance}
+h2.bhead{font-size:1.3rem;margin:12px 0 -12px;padding-top:14px;border-top:2px solid var(--line);text-wrap:balance}
+nav.jump{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+nav.jump a{color:var(--accent);font-size:.88rem;border:1px solid var(--line);border-radius:999px;padding:3px 12px;text-decoration:none;background:var(--surface)}
 .lead{margin:6px 0 0;color:var(--muted);max-width:75ch}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0 0;padding:0;list-style:none;font-size:.82rem;color:var(--muted)}
 section{display:flex;flex-direction:column;gap:6px}
@@ -442,7 +536,9 @@ li.l2:before{background:var(--ok)}li.l1:before{background:var(--near)}li.l0:befo
 <h1>효과음 4차 듣기판</h1>
 <p class="lead">검수용입니다. 키마다 하나를 골라 주세요. 판정은 설계서 검사기(tools/sfx_check.py + tools/sfx_spec.json): PASS = 먼저 들어 볼 것, WARN = 작은 벗어남만 있음, 불합격은 뺐어요.
 '장면 20초'는 실제 게임 타이밍(휘두름 → 타격 → 처치 '뽕' → 동전)과 설계표 볼륨으로 겹친 소리예요. 맨 위 '추천 조합 장면'은 보통 스피커와 폰 스피커 두 가지.
-그림은 스펙트로그램(세로 50 Hz–12 kHz, 가로 0–0.35 s, PowerUp은 0–1.4 s). 2026-10-07 · Firefly 35번 생성(350크레딧) + Kenney CC0 + 우리 합성.</p>
+그림은 스펙트로그램(세로 50 Hz–12 kHz, 가로는 키 제목 옆에 적은 길이). 이름 끝이 sA·sB·kA인 것은 설계서 레시피대로 만든 우리 합성(+ Kenney CC0), 1-2 같은 숫자는 Firefly예요.
+2026-10-07 · Firefly 60번 생성(600크레딧: 1번 묶음 35 + 2·3번 묶음 25) + Kenney CC0 + 우리 합성. 1번 묶음은 지난번과 같은 후보예요.</p>
+<nav class="jump" aria-label="묶음"><a href="#b1">1번 묶음 · 전투</a><a href="#b2">2번 묶음 · UI·스킬</a><a href="#b3">3번 묶음 · 할로윈</a></nav>
 <ul class="legend"><li class="l2">목표 안</li><li class="l1">조금 벗어남</li><li class="l0">벗어남</li><li>참고</li></ul>
 </header>
 {{BODY}}
@@ -450,17 +546,18 @@ li.l2:before{background:var(--ok)}li.l1:before{background:var(--near)}li.l0:befo
 """
 
 
-def ledger(board_url="", generations=35, balance_before=9640):
+def ledger(board_url="", generations=60, balance_before=9640):
     """art/sfx/cand/firefly_r4.json: prompts, Firefly asset ids, credits, the checker verdicts and cuts of the candidates"""
     results = json.load(open(REPORT, encoding="utf-8"))
     assets = json.load(open(os.path.join(FF.WORK, "raw_assets.json"), encoding="utf-8"))
     prompts = {f[4:-4]: open(os.path.join(FF.PROMPTS, f), encoding="utf-8").read().strip()
                for f in sorted(os.listdir(FF.PROMPTS)) if f.startswith("SFX_") and f.endswith(".txt")}
     book = {
-        "round": "4b / batch 1", "date": "2026-10-07", "by": "소리 만들기",
+        "round": "4b / batches 1-3", "date": "2026-10-07", "by": "소리 만들기",
         "made": "Adobe Firefly 'Generate sound effects' (firefly.adobe.com, the user's Adobe account): 1 s (PowerUp 1.5 s), 4 variations per generation; "
-                "where Firefly could not meet the spec: Kenney CC0 + our synthesis (tools/sfx_make.py RECIPES: ComboCoin k*, HitSoft k*, HitCrit sB*)",
-        "license": "Firefly generation (Adobe: commercially safe output); Kenney Impact Sounds (CC0 1.0); our own synthesis. Our edit = cut, "
+                "where Firefly could not meet the spec: Kenney CC0 + our synthesis (tools/sfx_make.py RECIPES: ComboCoin k*, HitSoft k*, HitCrit sB*; "
+                "tools/sfx_recipes.py: the sound_spec recipes for batches 2-3, names s* / k*)",
+        "license": "Firefly generation (Adobe: commercially safe output); Kenney Impact Sounds + Interface Sounds (CC0 1.0); our own synthesis. Our edit = cut, "
                    "mono 48 kHz, high/low-pass, level; SwingMageHalo candidates may carry our own thin synthesized 'tsing' (tools/sfx_cut.py tsing())",
         "credits": {"generations": generations, "perGeneration": 10, "used": generations * 10, "balanceBefore": balance_before,
                     "balanceAfter": balance_before - generations * 10},
