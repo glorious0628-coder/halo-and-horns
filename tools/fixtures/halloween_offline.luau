@@ -437,12 +437,12 @@ runGroup("config-king-hp", function()
 end)
 
 ------------------------------------------------------------------ 1b. A23-30 zone family: the PumpkinPatch
-local PATCH_POINT = vec(360, 0, 235)
+local PATCH_POINT = vec(535, 0, 335) -- map v2 (A23-53)
 
 runGroup("config-patch", function()
 	local Z = CONFIG.Zones[PATCH]
-	check(type(Z) == "table" and Z.Id == PATCH and Z.Center and Z.Center.X == 360 and Z.Center.Y == 0 and Z.Center.Z == 235
-		and Z.Size and Z.Size.X == 160 and Z.Size.Z == 120, "Config.Zones.PumpkinPatch: Center (360, 0, 235), Size (160, 0, 120)",
+	check(type(Z) == "table" and Z.Id == PATCH and Z.Center and Z.Center.X == 535 and Z.Center.Y == 0 and Z.Center.Z == 335
+		and Z.Size and Z.Size.X == 230 and Z.Size.Z == 190, "Config.Zones.PumpkinPatch (map v2): Center (535, 0, 335), Size (230, 0, 190)",
 		show(Z and { Z.Center, Z.Size }))
 	check(Z and Z.MinLevel == 1 and Z.PvP == false and Z.Town == false and Z.Season == "Halloween" and Z.Faction == nil,
 		"PumpkinPatch: MinLevel 1 (a new player can walk in), no PvP, not a town, Season = \"Halloween\"",
@@ -456,8 +456,8 @@ runGroup("config-patch", function()
 	local lands = {}
 	for _, l in CONFIG.Map.Lands do lands[l.Name] = l end
 	local lp, lm = lands.LandPumpkinPatch, lands.LandMeadow
-	check(lp ~= nil and lp.MinX == 280 and lp.MaxX == 440 and lp.MinZ == 175 and lp.MaxZ == 295,
-		"Config.Map.Lands has LandPumpkinPatch { x 280..440, z 175..295 }", show(lp))
+	check(lp ~= nil and lp.MinX == 420 and lp.MaxX == 650 and lp.MinZ == 240 and lp.MaxZ == 430,
+		"Config.Map.Lands has LandPumpkinPatch { x 420..650, z 240..430 } (map v2)", show(lp))
 	check(lp and lm and lp.MinZ == lm.MaxZ and lp.MinX >= lm.MinX and lp.MaxX <= lm.MaxX,
 		"LandPumpkinPatch is joined to LandMeadow (its MinZ = the meadow's MaxZ, inside the meadow's x range)", show({ lp, lm }))
 	check(lp and Z and lp.MinX == Z.Center.X - Z.Size.X / 2 and lp.MaxX == Z.Center.X + Z.Size.X / 2
@@ -486,8 +486,8 @@ runGroup("config-patch", function()
 		"HauntedHollow: only the ghost family (minion + little ghost + king)", show(perZone[HOLLOW]))
 	-- the HauntedHollow: a small seasonal field west of the patch, joined to it (land), Lv 8-14 recommended, no gate
 	local HZ = CONFIG.Zones[HOLLOW]
-	check(type(HZ) == "table" and HZ.Id == HOLLOW and HZ.Center and HZ.Center.X == 220 and HZ.Center.Z == 240 and HZ.Size
-		and HZ.Size.X == 104 and HZ.Size.Z == 90, "Config.Zones.HauntedHollow: Center (220, 0, 240), Size (104, 0, 90)",
+	check(type(HZ) == "table" and HZ.Id == HOLLOW and HZ.Center and HZ.Center.X == 320 and HZ.Center.Z == 342.5 and HZ.Size
+		and HZ.Size.X == 200 and HZ.Size.Z == 175, "Config.Zones.HauntedHollow (map v2): Center (320, 0, 342.5), Size (200, 0, 175)",
 		show(HZ and { HZ.Center, HZ.Size }))
 	check(HZ and HZ.MinLevel == 1 and HZ.PvP == false and HZ.Town == false and HZ.Season == "Halloween" and HZ.Faction == nil,
 		"HauntedHollow: no level gate, no PvP, not a town, Season = \"Halloween\"", show(HZ and { HZ.MinLevel, HZ.PvP, HZ.Town, HZ.Season }))
@@ -497,25 +497,25 @@ runGroup("config-patch", function()
 	for _, id in CONFIG.ZoneOrder do if id == HOLLOW then hn += 1 end end
 	check(hn == 1, "HauntedHollow is in Config.ZoneOrder exactly once", hn)
 	local lh = lands.LandHauntedHollow
-	check(lh ~= nil and lh.MinX == 160 and lh.MaxX == 280 and lh.MinZ == 185 and lh.MaxZ == 295 and lh.Season == "Halloween",
-		"Config.Map.Lands has LandHauntedHollow { x 160..280, z 185..295, Season }", show(lh))
+	check(lh ~= nil and lh.MinX == 220 and lh.MaxX == 420 and lh.MinZ == 255 and lh.MaxZ == 430 and lh.Season == "Halloween",
+		"Config.Map.Lands has LandHauntedHollow { x 220..420, z 255..430, Season } (map v2)", show(lh))
 	check(lh and lp and lh.MaxX == lp.MinX and lh.MinZ < lp.MaxZ and lh.MaxZ > lp.MinZ,
 		"LandHauntedHollow is joined to the patch's west edge", show({ lh, lp }))
 	check(lh and HZ and HZ.Center.X - HZ.Size.X / 2 >= lh.MinX and HZ.Center.X + HZ.Size.X / 2 <= lh.MaxX
 		and HZ.Center.Z - HZ.Size.Z / 2 >= lh.MinZ and HZ.Center.Z + HZ.Size.Z / 2 <= lh.MaxZ, "the hollow's zone lies on its land", show(lh))
 	check(HZ and Z and HZ.Center.X + HZ.Size.X / 2 <= Z.Center.X - Z.Size.X / 2, "the hollow and the patch rectangles do not overlap")
 	local offH = newConfig(function(c) c.Halloween.Enabled = false end)
-	for _, p in { vec(220, 0, 240), vec(170, 0, 197), vec(270, 0, 283) } do
+	for _, p in { vec(320, 0, 342), vec(230, 0, 265), vec(410, 0, 420) } do
 		check(CONFIG.ZoneAt(p).Id == HOLLOW, "ZoneAt: a point inside the hollow is HauntedHollow in season", show(p))
 		check(offH.ZoneAt(p).Id == "Outskirts", "ZoneAt: the same point is Outskirts with Enabled = false", show(p))
 	end
 	-- ZoneAt: the patch exists only while the season is on
 	local off = newConfig(function(c) c.Halloween.Enabled = false end)
-	for _, p in { PATCH_POINT, vec(281, 0, 176), vec(439, 0, 294), vec(360, 0, 180) } do
+	for _, p in { PATCH_POINT, vec(421, 0, 241), vec(649, 0, 429), vec(535, 0, 245) } do
 		check(CONFIG.ZoneAt(p).Id == PATCH, "ZoneAt: a point inside the patch is PumpkinPatch while the season is on", show(p))
 		check(off.ZoneAt(p).Id == "Outskirts", "ZoneAt: the same point is Outskirts with Enabled = false", show(p))
 	end
-	check(CONFIG.ZoneAt(vec(360, 0, 300)).Id == "Outskirts" and CONFIG.ZoneAt(vec(330, 0, 0)).Id == "SlimeMeadow"
+	check(CONFIG.ZoneAt(vec(535, 0, 460)).Id == "Outskirts" and CONFIG.ZoneAt(vec(330, 0, 0)).Id == "SlimeMeadow"
 		and off.ZoneAt(vec(330, 0, 0)).Id == "SlimeMeadow", "ZoneAt: beyond the patch is Outskirts; the meadow is the meadow in and out of season")
 end)
 
@@ -539,7 +539,7 @@ runGroup("config-halloween", function()
 		show({ H.FirstDelay, H.Interval, H.Lifetime }))
 	check(H.SafeBelowLevel == 5 and H.SafePlaySeconds == 600, "A23-27 king safety: SafeBelowLevel 5, SafePlaySeconds 600",
 		show({ H.SafeBelowLevel, H.SafePlaySeconds }))
-	-- A23-30: the king's spots are in the far half of the patch (the entrance from the meadow is its north edge, z 175)
+	-- A23-30: the king's spots are in the far half of the patch (the entrance from the meadow is its north edge, z 240)
 	local Z = CONFIG.Zones[PATCH]
 	local spotsOk = type(H.SpawnSpots) == "table" and #H.SpawnSpots >= 1
 	for _, s in H.SpawnSpots or {} do
@@ -1248,7 +1248,7 @@ runGroup("loot", function()
 	-- the kill signal path (MonsterService.MonsterKilled -> LootService.RollKill) for a seasonal kind
 	f.Const = 0
 	local maskBefore = f.Data.WeaponOwnedMask
-	f.Registry.MonsterService.MonsterKilled:Fire(f.Player, { Kind = "BatGoblin", Golden = false, Position = vec(700, 0, 0) })
+	f.Registry.MonsterService.MonsterKilled:Fire(f.Player, { Kind = "BatGoblin", Golden = false, Position = vec(950, 0, 0) })
 	f.Const = nil
 	check(f.Data.Items.Candy == 1 and f.Data.Items.Enh70 == 1 and f.Data.Items.GoblinTooth == 1
 		and bit32.btest(f.Data.WeaponOwnedMask or 0, bit32.lshift(1, 3)) and maskBefore ~= f.Data.WeaponOwnedMask,
@@ -1892,7 +1892,7 @@ runGroup("king-schedule", function()
 		check(s.Opts.Event == true and s.Opts.Golden == false and s.Rec.Golden == false and s.Rec.Event == true,
 			"spawned through MonsterService.SpawnEvent: an event monster, never golden", show(s.Opts))
 		-- A23-30: one of Config.Halloween.SpawnSpots in the far half of the PumpkinPatch, away from its entrance from the
-		-- meadow (north edge z 175, patch spawn point z 190)
+		-- meadow (map v2: north edge z 240, patch spawn point z 255)
 		local p = s.Opts.Position
 		local nearSpot = false
 		for _, spot in HW.SpawnSpots or {} do
@@ -2083,7 +2083,7 @@ runGroup("king-rewards", function()
 	check(#f.Killed == 3 and #f.Pays == 0, "the defeat line adds no second payout", show({ #f.Killed, #f.Pays }))
 	-- overkill is not damage: 2 x 1 + a 1e9 killing blow on 30 HP = 32 (< 45, unpaid); on 43 HP = 45 (paid)
 	local function overkillRun(name, hpLeft)
-		local rec = f.H.spawnMonster("PumpkinKing", { Event = true, Position = vec(330, 0, 255) })
+		local rec = f.H.spawnMonster("PumpkinKing", { Event = true, Position = vec(470, 0, 390) })
 		local p = f:AddPlayer(name)
 		f.MS.DamageMonster(rec, 1, p)
 		f.MS.DamageMonster(rec, 1, p)
@@ -2246,7 +2246,7 @@ runGroup("season-off", function()
 	check(f.HS.DebugSpawn() == "no walkable spot found (try again)" and #f:Kings() == 0 and #f:Lines() == 0
 		and f:GS("PumpkinKingActive") == false, "season off: DebugSpawn finds no PumpkinPatch ground and spawns nothing")
 	-- a spawn point handed over by the fallback (bare test place): the debug king stays its Lifetime, no schedule starts
-	f.PickPoint = vec(360, 0, 250)
+	f.PickPoint = vec(535, 0, 335)
 	check(f.HS.DebugSpawn() == "spawned" and #f:Kings() == 1 and f:Keys() == "PumpkinKingAppear", "season off + a fallback spot: DebugSpawn brings one")
 	check(f:GS("PumpkinKingActive") == true and f:GS("PumpkinKingNextAt") == 0, "season off: debug king active, no countdown")
 	f:Advance(299.5)
@@ -2553,7 +2553,7 @@ runGroup("king-safety", function()
 	end
 	local mpos, mppos = vec(330, 0, 10), vec(332, 0, 10)
 	check(config.ZoneAt(mpos).Id == "SlimeMeadow", "setup: a meadow spot for the meadow kinds")
-	local hpos, hppos, wpos, wppos = vec(220, 0, 240), vec(222, 0, 240), vec(700, 0, 0), vec(702, 0, 0)
+	local hpos, hppos, wpos, wppos = vec(320, 0, 342), vec(322, 0, 342), vec(950, 0, 0), vec(952, 0, 0)
 	check(config.ZoneAt(hpos).Id == "HauntedHollow" and config.ZoneAt(wpos).Id == "GoblinWoods", "setup: a hollow spot and a woods spot")
 	for _, case in { { "Slime", mpos, mppos }, { "BigSlime", mpos, mppos }, { "PumpkinSlime", kpos, ppos }, { "LittleGhost", hpos, hppos },
 		{ "GhostMinion", hpos, hppos }, { "BatGoblin", wpos, wppos } } do

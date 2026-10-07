@@ -89,7 +89,7 @@
 ## 6. 가져오기 파일(준비 끝, `build/import_*/`, 사용자가 WorldKit '3D 가져오기'로 한 번씩)
 | 묶음 | 파일 | 개수 | 크기 | 안에 든 것(스터드 폭×깊이×높이) |
 |---|---|---|---|---|
-| A | `build/import_A/WorldKit_ImportA.glb` | 3 | 32.6MB | Town_Halo_Fountain 21.0×20.89×16.3; Town_Halo_Castle 70.0×55.38×65.71 (9조각); Town_Horns_Castle_v4 83.53×84.0×65.62 (9조각) |
+| A | `build/import_A/WorldKit_ImportA.glb` | 2 | 17.5MB | Town_Halo_Fountain 21.0×20.89×16.3; Town_Halo_Castle 70.0×55.38×65.71 (9조각) — **10/07 밤 다시 만듦: 덩어리 뿔 성 v4를 파일에서도 뺌**(옛 spec `build/import_A/spec_with_horns_v4.json`). 새 뿔 성(묶음2 2D 창문 지운 판 / v4, Tripo 웹 HD 둘 비교, 검수 OK 110) → 고른 것 9조각을 다음 가져오기에 |
 | B1 | `build/import_B1/WorldKit_ImportB1.glb` | 6 | 2.6MB | Town_Halo_Bakery 14.0×12.03×14.21; Town_Halo_Potion 13.41×13.51×16.0; Town_Halo_Smithy 14.0×12.53×14.0; Town_Halo_JuiceBar 12.0×11.79×13.08; Town_Halo_HouseA 12.0×9.98×11.92; Town_Halo_HouseB 11.85×10.62×16.0 |
 | B2 | `build/import_B2/WorldKit_ImportB2.glb` | 6 | 2.6MB | Town_Horns_Bakery 14.0×12.72×13.93; Town_Horns_Potion 14.31×12.44×16.0; Town_Horns_Smithy 14.0×12.14×13.27; Town_Horns_JuiceBar 12.0×11.12×11.17; Town_Horns_HouseA 12.0×9.81×10.55; Town_Horns_HouseB 13.16×11.76×16.0 |
 | C1 | `build/import_C1/WorldKit_ImportC1.glb` | 10 | 2.1MB | Kit_X_StallRed 10.0×7.48×12.91; Kit_X_PotionCart 5.73×4.25×7.5; Kit_X_Bench 6.5×3.12×4.31; Kit_X_Lamp 5.1×2.81×11.0; Kit_X_Barrel 2.82×2.98×3.0; Kit_X_Crate 3.04×2.94×2.5; Kit_X_FruitCart 5.0×4.29×3.65; Kit_X_FlowerPot 2.44×2.1×2.5; Kit_X_BannerHalo 5.54×2.14×14.0; Kit_X_BannerHorns 5.66×1.79×14.0 |
@@ -98,4 +98,11 @@
 | D2 | `build/import_D2/WorldKit_ImportD2.glb` | 7 | 23.1MB | X_MarketArch 12.0×2.91×10.36; X_NoticeBoard 16.0×7.04×15.44; X_GooseNest 12.0×11.11×7.57; X_TreeB 9.13×7.49×16.0; X_HouseA 14.0×11.35×14.1; X_HouseB 12.0×9.11×14.39; Town_Horns_Brazier 11.0×10.16×10.35 |
 | E | `build/import_E/WorldKit_ImportE.glb` | 3 | 0.7MB | Kit_M_JobBoard 16.0×7.35×14.94; Kit_W_JobBoard 16.0×7.38×15.69; Kit_W_Campfire_Fire 4.0×3.9×3.31 |
 
+**사용자가 고르기 쉽게(10/07 밤):** 같은 파일을 `build/import_all/1_first`(A·E) → `2_second`(B1·B2·C1·C2) → `3_third`(D1·D2) 폴더에 나눠 둠 — WorldKit 홈 '3D 가져오기'에서 폴더 안 파일을 모두 골라 한 번에 가져오기, 세 번에 나눠서.
+
 가져온 뒤: 이미지 생성 1이 WorldKit에서 MCP로 MeshId·TextureID(성은 조각마다)를 읽어 `art/models/worldkit/import_<묶음>_assets_2026-10-07.json` 장부로 적고, 검수가 메인에 배치.
+
+## 7. 후보(아직 안 만듦 — 검수가 정하면 2D 시안 → Tripo)
+| 이름 | 어디 | 왜 | 출처 |
+|---|---|---|---|
+| 덩굴 나무 아치(초원 입구) | 초원 입구 문(지금은 갈색 막대 문틀, 옛 파트) | 시안 Concept_SlimeMeadow 왼쪽 위의 덩굴·랜턴 나무 아치 | 튀는 곳 시트 ⑭ `art/review/terrain/terrain_standout_2026-10-07.jpg`(e39ba95), 검수 10/07 "목록에만" |

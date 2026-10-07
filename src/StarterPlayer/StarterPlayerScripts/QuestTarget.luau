@@ -42,6 +42,11 @@ local TUT = type(Config.Tutorial) == "table" and Config.Tutorial or {}
 local TUT_STEPS = type(TUT.Steps) == "table" and TUT.Steps or {}
 local STORY = type(Config.StoryQuests) == "table" and Config.StoryQuests or {}
 local STORY_SPOTS = type(STORY.Landmarks) == "table" and STORY.Landmarks or {}
+-- map v2 (A23-53): the Halloween path / gates / sign = MapBuilder PATCH and HOLLOW (Config.Map.Halloween)
+local HW = type(Config.Map) == "table" and type(Config.Map.Halloween) == "table" and Config.Map.Halloween or {}
+local HW_SIGN = typeof(HW.SignPos) == "Vector3" and HW.SignPos or Vector3.new(525, 0, 226)
+local HW_PATH_X = tonumber(HW.PathX) or 535
+local HW_GATE_Z = tonumber(HW.PatchGateZ) or 240
 
 local K = {
 	GuideZone = TUT.GuideZone or "SlimeMeadow", -- HUD TUT_GUIDE_ZONE
@@ -60,19 +65,20 @@ local K = {
 	-- the anvil from outside the Crossroads: true = route to the Crossroads (Travel); false = nil like HUD's beam,
 	-- which only shows inside the Crossroads (refreshGuides)
 	SmithFromAfar = true,
-	-- A23-30 PumpkinPatch: = MapBuilder PATCH (PathX 360 +- PassHalfW 9, PassFromZ 126 .. PassToZ 194, SignPos)
+	-- A23-30 PumpkinPatch: = MapBuilder PATCH (the path x PathX, its sign, the north gate at PatchGateZ)
 	Pumpkin = {
 		Zone = "PumpkinPatch",
-		Sign = Vector3.new(368, 3, 136), -- the meadow's south-end sign (Map.Landmarks.PumpkinPatchSign)
+		Sign = HW_SIGN + Vector3.new(0, 3, 0), -- the sign at the path's meadow end (Map.Landmarks.PumpkinPatchSign)
 		SignName = "PumpkinPatchSign",
-		Passage = { MinX = 351, MaxX = 369, MinZ = 126, MaxZ = 194 },
-		Field = Vector3.new(360, 3, 235), -- used when Config.Zones.PumpkinPatch has no Center
+		-- the path from the sign through the north gate: inside it the marker points into the field
+		Passage = { MinX = HW_PATH_X - 9, MaxX = HW_PATH_X + 9, MinZ = HW_SIGN.Z - 4, MaxZ = HW_GATE_Z + 12 },
+		Field = Vector3.new(535, 3, 335), -- used when Config.Zones.PumpkinPatch has no Center
 		MeadowLand = "LandMeadow", -- Config.Map.Lands: counts as "in the meadow" even where ZoneId says Outskirts
 	},
-	-- A23-45 HauntedHollow: = MapBuilder HOLLOW (land x 160..280, z 185..295; WestGateZ 245 on the patch's west edge)
+	-- A23-45 HauntedHollow: = MapBuilder HOLLOW (the gap in the patch's west fence = Config.Map.Halloween.HollowGate)
 	Hollow = {
 		Zone = "HauntedHollow",
-		Gate = Vector3.new(280, 3, 245), -- the gap in the patch's west fence
+		Gate = (typeof(HW.HollowGate) == "Vector3" and HW.HollowGate or Vector3.new(420, 0, 340)) + Vector3.new(0, 3, 0),
 		PatchLand = "LandPumpkinPatch", -- Config.Map.Lands: counts as "in the patch" even where ZoneId says Outskirts
 	},
 }
@@ -315,7 +321,7 @@ end
 -- L.StoryTap "SlimePond": Config.StoryQuests.Landmarks.SlimePond (+3) = HUD STORY_SPOT
 local function pondSpot()
 	local spot = STORY_SPOTS.SlimePond
-	return typeof(spot) == "Vector3" and (spot + K.Lift) or Vector3.new(280, 3, -45)
+	return typeof(spot) == "Vector3" and (spot + K.Lift) or Vector3.new(290, 3, 150)
 end
 
 -- the zone a story Guide happens in (L.StoryTap's target mapping)

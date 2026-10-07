@@ -1,0 +1,72 @@
+device before: default
+fresh on
+loaded after 0s
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\01_prologue_0.png
+[prologue 0] viewport [991, 451] hangul=0 bars=[] full=None cam=Scriptable (-101,236,-219) look (0.45,0.42,0.79) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[prologue 0] named=['MainGui.HUD.Stats.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false']
+[prologue 0] texts: The Crown of Balance broke. | Skip ▶ (Enter)
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\01_prologue_1.png
+[prologue 1] viewport [991, 451] hangul=0 bars=[] full=None cam=Scriptable (0,26,-13) look (-0.00,-0.24,0.97) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[prologue 1] named=['MainGui.HUD.Stats.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false']
+[prologue 1] texts: The Crown of Balance broke. | Skip ▶ (Enter)
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\01_prologue_2.png
+[prologue 2] viewport [991, 451] hangul=0 bars=[] full=None cam=Scriptable (6,26,-340) look (-0.08,-0.14,-0.99) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[prologue 2] named=['MainGui.HUD.Stats.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false']
+[prologue 2] texts: Some who touched the shards grew halos. Others grew horns. | Skip ▶ (Enter)
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\01_prologue_3.png
+[prologue 3] viewport [991, 451] hangul=0 bars=[] full=None cam=Scriptable (0,9,-13) look (0.02,-0.27,-0.96) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[prologue 3] named=['MainGui.HUD.Stats.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false']
+[prologue 3] texts: Whoever gathers more shards will remake the world. | Skip ▶ (Enter)
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\03_faction_pick.png
+[faction pick] viewport [991, 451] hangul=0 bars=[] full=['MainGui.FactionPicker rgb(8,8,14) tr=0.45'] cam=Custom (1,8,-39) look (-0.02,-0.26,0.97) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[faction pick] named=['MainGui.HUD.Stats.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false']
+[faction pick] texts: Choose your side! | Knights of Light | XP +30% | HP +20%, regen | Skills heal allies | Auto-save gold | Join this side! | Horn Legion | Gold +25% | ATK +15%, Lifesteal | Keep your loot gold | 5 stars = Kaiju form! | Switch sides later at the Altar of Fate.
+chat open: ChatActive true nil
+fired ChooseFaction
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\04_team_notice.png
+[team notice] viewport [991, 451] hangul=0 bars=[] full=['MainGui.ClassPicker rgb(40,26,14) tr=0.80'] cam=Custom (-4,8,-408) look (0.03,-0.26,-0.97) light=exp=-0.32 bright=1.76 fog=250..1100 bloom=0.20 clock=14.2
+[team notice] named=['MainGui.HUD.Stats.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=true', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=true', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=true']
+[team notice] texts: Paladin | Smash all around! | Pick! | Warrior | Best for beginners | Light Mage | Blast from afar! | Mage | Ranger | Two arrows, fast! | Archer | Boy | Girl | Change class later: Menu > Change Class
+fired ChooseClass
+state: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 ZoneId=HaloTown Level=1 WeaponTier=0
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\05a_guide_window.png
+fired AcceptTutorial
+state: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=2 ZoneId=SlimeMeadow Level=1 WeaponTier=0
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\05_hud.png
+[hud] viewport [991, 451] hangul=0 bars=[] full=None cam=Custom (233,8,16) look (0.03,-0.26,-0.97) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[hud] named=['MainGui.HUD.Stats.Portrait visible=true', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false']
+[hud] texts: 1 | 156/156 | 100/100 | Lv 1 · Power 0 | · Pouch 0 | 0 | Buy | 2 | Halo 0 | 0 Horns | Rare 5% | Sprout Shield | Free the supply road · 5 slimes | 0/5 | ▼ | Attack | F | Bag | Map | M | Menu | B | N
+world: {"Zones":{"Crossroads":"(0,0) 300x300","HornsTown":"(0,515) 400x370","SkeletonRuins":"(1520,0) 520x580","PumpkinPatch":"(535,335) 230x190","HauntedHollow":"(320,342) 200x175","SlimeMeadow":"(430,0) 440x480","GoblinWoods":"(950,0) 480x520","HaloTown":"(0,-515) 400x370"},"SlimePondPlateInDecor":false,"Tiles":{"GE_DirtPath":"rbxassetid://140356696032031","GE_Rock":"rbxassetid://81976112942859","GE_Cobblestone":"rbxassetid://86097337095441","GE_Grass":"rbxassetid://72716790388998"},"MeadowKit":60,"WorldKit3D":61,"PondStones":9,"SunRays":{"Enabled":false,"Intensity":0},"Water":"0.0313726, 0.709804, 0.839216","Ground":{"Crossroads":"0.0 Cobblestone","Meadow":"-0.0 Grass","Pond":"-1.2 Water","Peak":"65.8 Rock","Pass":"-0.0 Ground"},"SeaRocks":26}
+story: fired StoryAction
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\06_story_portrait.png
+[story] viewport [991, 451] hangul=0 bars=[] full=None cam=Custom (233,8,16) look (0.03,-0.26,-0.97) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[story] named=['MainGui.HUD.Stats.Portrait visible=true', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false']
+[story] texts: 1 | 154/156 | 100/100 | Lv 1 · Power 0 | · Pouch 0 | 0 | Buy | 2 | Halo 0 | 0 Horns | Rare 5% | Sprout Shield | Free the supply road · 5 slimes | 0/5 | ▼ | Attack | F | Bag | Map | M | Menu | B | N
+popup: popup shown true
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\07_reward_popup.png
+[popup] viewport [991, 451] hangul=0 bars=[] full=['MainGui.RewardPopup rgb(0,0,0) tr=0.40'] cam=Custom (233,8,16) look (0.03,-0.26,-0.97) light=exp=-0.20 bright=2.00 fog=250..1100 bloom=0.20 clock=14.2
+[popup] named=['MainGui.HUD.Stats.Portrait visible=true', 'MainGui.ClassPicker.Cards.Card_Warrior.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Mage.PortraitClip.Portrait visible=false', 'MainGui.ClassPicker.Cards.Card_Archer.PortraitClip.Portrait visible=false', 'MainGui.RewardPopup visible=true']
+[popup] texts: 1 | 153/156 | 100/100 | Lv 1 · Power 0 | · Pouch 0 | 0 | Buy | 2 | Halo 0 | 0 Horns | Rare 5% | Sprout Shield | Free the supply road · 5 slimes | 0/5 | ▼ | Attack | F | Bag | Map | M | Menu | B | N | Daily Chest | Test popup (checklist) | +50 | +20 | Claim!
+level 30 (test only)
+crossroads: zone=Crossroads
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_crossroads.png
+meadow_arrival: zone=SlimeMeadow
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_meadow_arrival.png
+meadow_pond: zone=SlimeMeadow
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_meadow_pond.png
+woods: zone=GoblinWoods
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_woods.png
+pass: zone=Outskirts
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_pass.png
+ruins: zone=SkeletonRuins
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_ruins.png
+halo_town: zone=HaloTown
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_halo_town.png
+horns_bridge: zone=Outskirts
+saved C:\Users\glori\Documents\Roblox\Game-wtc2\docs\art\verification_2026-10-07\main_checklist\pc\10_horns_bridge.png
+console: [RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[RankingService] read Artisan failed: You must publish this place to the web to access DataStore.
+play stopped
+fresh off
+device after: default

@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3293 strings)",
+      "check": "the walk reached the player strings (3307 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -740,7 +740,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7c432b8c4fb3d51a08fc698760a42358f25d6ad51a9311c0e8c9937550bd5407",
+    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
@@ -759,7 +759,7 @@
     "src/ServerScriptService/KaijuService.luau": "c34d693e33c283026fa15495d1e8b4f065475dafa3775819f4862a531a2331e8",
     "src/ServerScriptService/LootService.luau": "7c2bbf00ef120d29a18f513caf79c31017dcba26c112e31b9b13729419c99971",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/ServerScriptService/MapBuilder.luau": "8542813e0a2da9bcd38591e09148b1ca2a9c06147fee45dbe9c824ff041e9473",
+    "src/ServerScriptService/MapBuilder.luau": "cebfe7d03b842395df4fd22f6d55675b45603005fd0615f1880b9d4e83b7eddf",
     "src/ServerScriptService/MonetizationService.luau": "db8f01abe47c1162686deb8aa3acf26858399cb4be898fc6511defa5997943a9",
     "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a",
     "src/ServerScriptService/NicknameService.luau": "bca3dc61198f467488a4bcc1f4ead32504642a566dc3c4870df933c1cf7de939",
@@ -776,7 +776,7 @@
     "src/ServerScriptService/TelemetryService.luau": "9a2c85ac23ffc5e5d1c48862b3b468111e53f14c87fc81b532c6e17a3a7746c0",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
-    "src/ServerScriptService/WarService.luau": "70668f200901c82541abc734e47915b2a6da05ea39c8544d5cf86d124e7ebc58",
+    "src/ServerScriptService/WarService.luau": "eb3020dbd74a07c1424219bfe5646518f556bf6773b05c49dde0359cec1e868e",
     "src/ServerScriptService/ZoneService.luau": "1a8b12bee2b4a2832349eb0cf9eb1b9062c688387d1cd2342507adf4daaecc53"
   },
   "fixtureSHA256": "757ec067ab58bb8df7dc3a6049e70937abae938b29124e1d49ef058c1eb5423a",

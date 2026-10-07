@@ -147,7 +147,7 @@
     },
     {
       "group": "config-patch",
-      "check": "Config.Zones.PumpkinPatch: Center (360, 0, 235), Size (160, 0, 120)",
+      "check": "Config.Zones.PumpkinPatch (map v2): Center (535, 0, 335), Size (230, 0, 190)",
       "pass": 1,
       "fail": 0
     },
@@ -171,7 +171,7 @@
     },
     {
       "group": "config-patch",
-      "check": "Config.Map.Lands has LandPumpkinPatch { x 280..440, z 175..295 }",
+      "check": "Config.Map.Lands has LandPumpkinPatch { x 420..650, z 240..430 } (map v2)",
       "pass": 1,
       "fail": 0
     },
@@ -225,7 +225,7 @@
     },
     {
       "group": "config-patch",
-      "check": "Config.Zones.HauntedHollow: Center (220, 0, 240), Size (104, 0, 90)",
+      "check": "Config.Zones.HauntedHollow (map v2): Center (320, 0, 342.5), Size (200, 0, 175)",
       "pass": 1,
       "fail": 0
     },
@@ -249,7 +249,7 @@
     },
     {
       "group": "config-patch",
-      "check": "Config.Map.Lands has LandHauntedHollow { x 160..280, z 185..295, Season }",
+      "check": "Config.Map.Lands has LandHauntedHollow { x 220..420, z 255..430, Season } (map v2)",
       "pass": 1,
       "fail": 0
     },
@@ -3637,13 +3637,13 @@
         "newFailingCount": 6
       },
       {
-        "mutation": "PumpkinPatch land detached from the meadow (MinZ 180)",
+        "mutation": "PumpkinPatch land detached from the meadow (MinZ 245)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config-patch :: Config.Map.Lands has LandPumpkinPatch { x 280..440, z 175..295 }",
+          "config-patch :: Config.Map.Lands has LandPumpkinPatch { x 420..650, z 240..430 } (map v2)",
           "config-patch :: LandPumpkinPatch is joined to LandMeadow (its MinZ = the meadow's MaxZ, inside the meadow's x range)",
           "config-patch :: the zone rectangle = the land rectangle"
         ],
@@ -5032,7 +5032,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7c432b8c4fb3d51a08fc698760a42358f25d6ad51a9311c0e8c9937550bd5407",
+    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "0a7d4eb9abb73eedd862cc492cf099e76344084eddf49f99c809da7c485a9240",
@@ -5043,7 +5043,7 @@
     "src/ServerScriptService/HalloweenService.luau": "d288c4fa858b3d3f868e071b2253b1cc7f960afdc06dcabe257b73eed0e7783e",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
     "src/ServerScriptService/MonsterService.luau": "d75e034b0d441e79b4bca85c3236a2d5a665fc4d4ceb9b89b232d50b0523665a",
-    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "f54d397395dbf7e6ae1d26dcb4fb6cca5da7d8c747075b785877323af7ac311a",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "507e5c4432316d825fbaffb3961f02eac1fdb896510ad618598776cde0421e8c",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "cbe5046ae65283c9d2fcc1ddd0fe75d3f5d76ea12d664b9beed9bf225f041020",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "83d4f4a4421832b97d43fc682f0ffe8956660b9964a8127eb56404258e346730",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "29044dbfc398a1a998873099a317265b5e6b27fe2fc47d8fec21ca0226093a02",
@@ -5058,10 +5058,10 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "b07c621f388ba04e0c3e0800ac3fd451a69c979c8abc6f573776962903d18b7d",
+  "fixtureSHA256": "05a43db4c9e4bc412d22fe1ce19b5f005323577aba3d662190f3d16f9a03f6e4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "Halloween season (lead design 2026-10-06, numbers provisional; A23-27 / A23-28 / A23-30). Config.Halloween.Enabled AND the server clock before EndsAt 1794150000 (2026-11-09 00:00 KST; Config.SeasonOn via Config.SeasonNow = workspace:GetServerTimeNow, os.time fallback) gate every seasonal kind, the PumpkinPatch zone, the Pumpkin King schedule, its HUD line and the patch road sign. A23-30 zone family: Config.Zones.PumpkinPatch (Center 360,0,235, Size 160x120, MinLevel 1, no PvP, Season Halloween; LandPumpkinPatch x 280..440 z 175..295 joined to LandMeadow) holds every Halloween kind and only them: PumpkinSlime (Count 6, counts as Slime), LittleGhost (Count 4, HP 30, Float 1.5), BatGoblin (Count 4, HP 45, counts as itself; rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), PumpkinKing (Count 0, Boss, never golden, never respawns); no Takes, so the meadow / woods / ruins keep their counts and capped targets in season; the three regular kinds sit outside the GlobalCap on their own targets; ZoneAt reads the patch as Outskirts off season. King: first 6 min after server start, then every 20 min from the previous appearance, at a SpawnSpot in the patch's far half, leaves after 5 min with a friendly line; appear / defeat / leave lines go to every client without a name (AnnounceService.Broadcast, Korean + English twin). A23-27 safety: a Boss kind never targets or hits a player with Level < SafeBelowLevel (5) or PlaytimeSeconds < SafePlaySeconds (600), whatever the faction or the PvP Rookie flag; other kinds attack new players as usual. A23-27 rewards: MonsterService counts each contributor's own hits and damage (overkill excluded) and pays the king only to contributors of the last 120 s with >= 3 hits and >= 0.5% of MaxHP (45 of 9000), one MonsterKilled each; kinds without RewardMinHits / RewardMinDamageFrac pay every contributor. King rows: Candy x8, Enh70 25%, Enh30 8%, Enh10 2%, Move70 8%, HP / MP potions 50%, tier-4 weapon 5% (3 candies below its MinLevel). A23-28 HW-13: at EndsAt no king appears, PumpkinKingNextAt goes to 0, a king still here goes home (leave fade + leave line), MonsterService.reevaluate sends the regular Halloween monsters home, the sign hides. GameState PumpkinKingNextAt / Active / EndsAt; Candy material (sell 5); the slime jackpot also on pumpkin slimes; quests / tutorial / story objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'. Client: EventHUD king pill never narrower than its text (KING.need), moving to the next slot or under the chips (Korean / English, UIScale 1 / 0.75); Fx WOBBLE ghost float, slime hop <= min(0.15 x body, 0.6) with a 0.1 Sink, blob shadows (smaller in the air, 0.65 and fainter under a floater, rest-size for pop-ins, removed when anchored / out of range / gone, none and no dust for foreign personal monsters).",
+  "contract": "Halloween season (lead design 2026-10-06, numbers provisional; A23-27 / A23-28 / A23-30). Config.Halloween.Enabled AND the server clock before EndsAt 1794150000 (2026-11-09 00:00 KST; Config.SeasonOn via Config.SeasonNow = workspace:GetServerTimeNow, os.time fallback) gate every seasonal kind, the PumpkinPatch zone, the Pumpkin King schedule, its HUD line and the patch road sign. A23-30 zone family: Config.Zones.PumpkinPatch (map v2: Center 535,0,335, Size 230x190, MinLevel 1, no PvP, Season Halloween; LandPumpkinPatch x 420..650 z 240..430 joined to LandMeadow) holds every Halloween kind and only them: PumpkinSlime (Count 6, counts as Slime), LittleGhost (Count 4, HP 30, Float 1.5), BatGoblin (Count 4, HP 45, counts as itself; rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), PumpkinKing (Count 0, Boss, never golden, never respawns); no Takes, so the meadow / woods / ruins keep their counts and capped targets in season; the three regular kinds sit outside the GlobalCap on their own targets; ZoneAt reads the patch as Outskirts off season. King: first 6 min after server start, then every 20 min from the previous appearance, at a SpawnSpot in the patch's far half, leaves after 5 min with a friendly line; appear / defeat / leave lines go to every client without a name (AnnounceService.Broadcast, Korean + English twin). A23-27 safety: a Boss kind never targets or hits a player with Level < SafeBelowLevel (5) or PlaytimeSeconds < SafePlaySeconds (600), whatever the faction or the PvP Rookie flag; other kinds attack new players as usual. A23-27 rewards: MonsterService counts each contributor's own hits and damage (overkill excluded) and pays the king only to contributors of the last 120 s with >= 3 hits and >= 0.5% of MaxHP (45 of 9000), one MonsterKilled each; kinds without RewardMinHits / RewardMinDamageFrac pay every contributor. King rows: Candy x8, Enh70 25%, Enh30 8%, Enh10 2%, Move70 8%, HP / MP potions 50%, tier-4 weapon 5% (3 candies below its MinLevel). A23-28 HW-13: at EndsAt no king appears, PumpkinKingNextAt goes to 0, a king still here goes home (leave fade + leave line), MonsterService.reevaluate sends the regular Halloween monsters home, the sign hides. GameState PumpkinKingNextAt / Active / EndsAt; Candy material (sell 5); the slime jackpot also on pumpkin slimes; quests / tutorial / story objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'. Client: EventHUD king pill never narrower than its text (KING.need), moving to the next slot or under the chips (Korean / English, UIScale 1 / 0.75); Fx WOBBLE ghost float, slime hop <= min(0.15 x body, 0.6) with a 0.1 Sink, blob shadows (smaller in the air, 0.65 and fainter under a floater, rest-size for pop-ins, removed when anchored / out of range / gone, none and no dust for foreign personal monsters).",
   "limitations": "Offline doubles: Roblox Instances, a seeded / scripted Random, DataStore table, flat-ground stand-in for MonsterService.groundPoint / pickSpawnPoint, MonsterService.spawnMonster replaced by a record maker that uses the real golden roll and creates the same _contributors / _hits / _dmg tables, MonsterService.despawn replaced by a recorder in the pool world (the real one runs in the king worlds), CFrame algebra limited to Z rolls, EventHUD placement from logical numbers (no real GUI layout), Fx makePart / groundY / burst / Feel.isForeign as recording doubles on flat ground. Studio models and Terrain, MapBuilder's patch land / sign build, real Weld / shadow rendering, MonsterMotion playback, real phone layouts, the live server clock crossing EndsAt and multiplayer timing are not certified here."
 }

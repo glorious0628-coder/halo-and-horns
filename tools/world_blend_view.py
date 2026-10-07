@@ -31,7 +31,7 @@ SETUPS = {
                      "EnvironmentDiffuseScale": 1.0, "EnvironmentSpecularScale": 0.6, "ShadowSoftness": 0.5,
                      "ExposureCompensation": -0.2, "FogColor": [205, 215, 230], "FogStart": 250, "FogEnd": 1100},
         "Bloom": {"Intensity": 0.2, "Size": 24, "Threshold": 2.2},
-        "SunRays": {"Intensity": 0.04},
+        "SunRays": {"Intensity": 0.0},  # A23-74: no sun rays (no-ray-burst rule)
         "WarTint": {"Brightness": 0.0, "Contrast": 0.05, "Saturation": 0.1, "TintColor": [255, 255, 255]},
     },
     "night_new": {

@@ -45,22 +45,35 @@
     "CountTick": "rbxassetid://96016194154678",
     "GooseEnd": "rbxassetid://103362677938359",
     "KaijuSiren": "rbxassetid://110447360461794",
-    "KaijuStomp": "rbxassetid://82058880758348"
+    "KaijuStomp": "rbxassetid://82058880758348",
+    "ZoneEnterPvP": "rbxassetid://104461336219672",
+    "GoldenSpot": "rbxassetid://128057879317544",
+    "ScrollSuccess": "rbxassetid://116061752455414",
+    "Spend": "rbxassetid://80768400627761",
+    "RankUp": "rbxassetid://84902463002053",
+    "KO": "rbxassetid://137556643487651",
+    "Respawn": "rbxassetid://128867123359602",
+    "Plunder": "rbxassetid://74602898707411",
+    "JackpotOther": "rbxassetid://99814762304779",
+    "SkillLearn": "rbxassetid://113535664889883",
+    "Loot": "rbxassetid://114739645345413",
+    "SwingWarrior": "rbxassetid://114585478722203",
+    "KillPop": "rbxassetid://117802423144289",
+    "ComboMilestone": "rbxassetid://73147095978331",
+    "LevelUp": "rbxassetid://108525821312554",
+    "Tap": "rbxassetid://118436931537673",
+    "WindowOpen": "rbxassetid://129419018750436"
   },
-  "pending": [
-    "ZoneEnterPvP",
-    "GoldenSpot",
-    "ScrollSuccess",
-    "Spend",
-    "RankUp",
-    "KO",
-    "Respawn",
-    "Plunder",
-    "JackpotOther",
-    "SkillLearn"
-  ],
+  "pending": [],
+  "kept": {
+    "about": "round-3 sounds that have no round-4 file yet; still current in Config.Audio.Files (do not retire)",
+    "ids": {
+      "SwingMage": "rbxassetid://136838684864577",
+      "SwingTamer": "rbxassetid://126503879214394"
+    }
+  },
   "old": {
-    "about": "round-3 uploads (2026-10-07, art/sfx/*.ogg masters); Config.Audio.Files still points here until 게임성 개발 1 wires the round-4 ids below. Delete these assets / files only after the new ids are wired and checked in Play.",
+    "about": "round-3 uploads replaced by round-4 files (art/sfx/*.ogg masters). Retire these ids / files only after 게임성 개발 1 wires the round-4 ids and the Play check passes (tools/sfx_wiring_check.py, tools/sfx_loadcheck.py).",
     "uploaded": "2026-10-07",
     "format": "wav (pcm_s16le from the art/sfx/*.ogg masters; Chrome sent .ogg as an unknown type)",
     "ids": {
@@ -89,8 +102,6 @@
       "SkillHalo": "rbxassetid://94791750026317",
       "SkillHorns": "rbxassetid://98826164651498",
       "SwingArcher": "rbxassetid://110195369508891",
-      "SwingMage": "rbxassetid://136838684864577",
-      "SwingTamer": "rbxassetid://126503879214394",
       "SwingWarrior": "rbxassetid://100665788892468",
       "TalkBlip": "rbxassetid://72477911054987",
       "Tap": "rbxassetid://101266273493121",

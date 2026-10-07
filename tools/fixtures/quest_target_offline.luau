@@ -134,7 +134,7 @@ local function newWorld()
 	add(decor, inst("Part", "Bridge_Halo", { Position = vec(0, 1, -250) }))
 	add(decor, inst("Part", "Bridge_Horns", { Position = vec(0, 1, 250) }))
 	local sign = add(marks, inst("Model", "PumpkinPatchSign"))
-	add(sign, inst("Part", "Board", { Position = vec(368, 5, 136) }))
+	add(sign, inst("Part", "Board", { Position = vec(525, 5, 226) })) -- map v2: Config.Map.Halloween.SignPos
 	local guild = add(marks, inst("Model", "ArtisanGuild"))
 	add(guild, inst("Part", "Anvil", { Position = vec(-30, 2, 10) }))
 	ATTR = {}
@@ -202,31 +202,31 @@ do
 	check(g, "Crossroads -> meadow pad", isNamed(t, "Pad_SlimeMeadow"), where(t))
 	-- in the meadow: the patch sign
 	t = QT.Travel("HauntedHollow", "SlimeMeadow", vec(330, 3, 0))
-	check(g, "meadow -> the pumpkin patch sign", isNamed(t, "Board") and at(t, 368, 136), where(t))
+	check(g, "meadow -> the pumpkin patch sign", isNamed(t, "Board") and at(t, 525, 226), where(t))
 	-- on the meadow land but ZoneId Outskirts: still the sign
 	t = QT.Travel("HauntedHollow", "Outskirts", vec(400, 3, 160))
 	check(g, "meadow land (Outskirts id) -> the sign", isNamed(t, "Board"), where(t))
 	-- in the passage: the patch field
-	t = QT.Travel("HauntedHollow", "Outskirts", vec(360, 3, 160))
+	t = QT.Travel("HauntedHollow", "Outskirts", vec(535, 3, 235))
 	check(g, "passage -> the patch field", type(t) == "table" and tostring(t.Name):find("PumpkinField", 1, true) ~= nil, where(t))
 	-- in the patch: the gap in its west fence
-	t = QT.Travel("HauntedHollow", "PumpkinPatch", vec(360, 3, 235))
+	t = QT.Travel("HauntedHollow", "PumpkinPatch", vec(535, 3, 335))
 	check(g, "patch -> the west fence gap", type(t) == "table" and tostring(t.Name):find("HollowGate", 1, true) ~= nil
-		and at(t, 280, 245), where(t))
-	-- on the patch land with an Outskirts id (between the zone rect and the land edge): still the gap
-	t = QT.Travel("HauntedHollow", "Outskirts", vec(285, 3, 250))
-	check(g, "patch land (Outskirts id) -> the gap", type(t) == "table" and at(t, 280, 245), where(t))
+		and at(t, 420, 340), where(t))
+	-- on the patch land with an Outskirts id: still the gap
+	t = QT.Travel("HauntedHollow", "Outskirts", vec(600, 3, 300))
+	check(g, "patch land (Outskirts id) -> the gap", type(t) == "table" and at(t, 420, 340), where(t))
 	-- inside the hollow: nothing to point at (by id and by position)
-	check(g, "inside the hollow (id) -> nil", QT.Travel("HauntedHollow", "HauntedHollow", vec(220, 3, 240)) == nil, "not nil")
-	check(g, "inside the hollow (position) -> nil", QT.Travel("HauntedHollow", "", vec(220, 3, 240)) == nil, "not nil")
+	check(g, "inside the hollow (id) -> nil", QT.Travel("HauntedHollow", "HauntedHollow", vec(320, 3, 342)) == nil, "not nil")
+	check(g, "inside the hollow (position) -> nil", QT.Travel("HauntedHollow", "", vec(320, 3, 342)) == nil, "not nil")
 	-- a story guide to the hollow routes the same way (Story -> Travel, even from inside another zone)
-	t = QT.Story("HauntedHollow", "PumpkinPatch", vec(360, 3, 235), "Halo")
-	check(g, "story guide -> the gap", type(t) == "table" and at(t, 280, 245), where(t))
-	local e = QT.ForEntry({ Story = { Guide = "HauntedHollow" } }, "PumpkinPatch", "Halo", vec(360, 3, 235))
+	t = QT.Story("HauntedHollow", "PumpkinPatch", vec(535, 3, 335), "Halo")
+	check(g, "story guide -> the gap", type(t) == "table" and at(t, 420, 340), where(t))
+	local e = QT.ForEntry({ Story = { Guide = "HauntedHollow" } }, "PumpkinPatch", "Halo", vec(535, 3, 335))
 	check(g, "story entry is a travel to the hollow", type(e) == "table" and e.Travel == true and e.Zone == "HauntedHollow",
 		e and encode({ Zone = e.Zone, Travel = e.Travel, Tag = e.Tag }) or "nil")
 	-- the pumpkin patch itself keeps its own route (the hollow did not change it)
-	t = QT.Travel("PumpkinPatch", "PumpkinPatch", vec(360, 3, 235))
+	t = QT.Travel("PumpkinPatch", "PumpkinPatch", vec(535, 3, 335))
 	check(g, "pumpkin patch from inside -> nil", t == nil, where(t))
 	t = QT.Travel("PumpkinPatch", "SlimeMeadow", vec(330, 3, 0))
 	check(g, "pumpkin patch from the meadow -> the sign", isNamed(t, "Board"), where(t))
@@ -237,7 +237,7 @@ do
 	local QT, Config = load(false)
 	check(g, "Halloween off", Config.SeasonOn("Halloween") == false, "still on")
 	check(g, "hollow -> nil from the Crossroads", QT.Travel("HauntedHollow", "Crossroads", vec(0, 3, 0)) == nil, "not nil")
-	check(g, "hollow -> nil from the patch", QT.Travel("HauntedHollow", "PumpkinPatch", vec(360, 3, 235)) == nil, "not nil")
+	check(g, "hollow -> nil from the patch", QT.Travel("HauntedHollow", "PumpkinPatch", vec(535, 3, 335)) == nil, "not nil")
 	check(g, "patch -> nil", QT.Travel("PumpkinPatch", "SlimeMeadow", vec(330, 3, 0)) == nil, "not nil")
 end
 do
@@ -245,7 +245,7 @@ do
 	local QT = load(true)
 	local t = QT.Travel("GoblinWoods", "Crossroads", vec(0, 3, 0))
 	check(g, "woods from the Crossroads -> its pad", isNamed(t, "Pad_GoblinWoods"), where(t))
-	check(g, "already in the zone -> nil", QT.Travel("GoblinWoods", "GoblinWoods", vec(720, 3, 0)) == nil, "not nil")
+	check(g, "already in the zone -> nil", QT.Travel("GoblinWoods", "GoblinWoods", vec(950, 3, 0)) == nil, "not nil")
 	t = QT.Travel("SlimeMeadow", "HaloTown", vec(0, 3, -400))
 	check(g, "meadow from the Halo town -> the bridge", isNamed(t, "Bridge_Halo"), where(t))
 	check(g, "unknown zone -> nil", QT.Travel("Nowhere", "Crossroads", vec(0, 3, 0)) == nil, "not nil")
