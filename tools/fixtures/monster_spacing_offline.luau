@@ -149,13 +149,6 @@ runGroup("contract numbers", function()
 	check(#bad == 0, "every kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)", show(bad))
 	check(2 * maxR * SEP.Overlap <= SEP.Cell and (maxR + SEP.PlayerRadius) * SEP.Overlap <= SEP.Cell,
 		"the biggest pair / player overlap fits in one grid cell (neighbour cells see every overlap)", maxR)
-	-- review 2026-10-08: a ring with no room inside the move line keeps one member clamped onto the line; a player
-	-- stands at most ZONE_MOVE_INSET past it, so that member lands at most RingGap past the widest inner ring and the
-	-- next ring (RingGap outside its body) still clears it
-	local inset = tonumber(string.match(MONSTER_SOURCE, "\nlocal ZONE_MOVE_INSET = ([%d%.]+)"))
-	check(inset ~= nil and inset - (MC.AttackRange - SEP.RingInside) <= SEP.RingGap + EPS,
-		"zone move inset - widest inner ring <= RingGap (a clamped no-room slot never reaches the next ring)",
-		show({ inset, MC.AttackRange - SEP.RingInside, SEP.RingGap }))
 	check(math.abs(SEP.Ring({ _radius = 1.5 }) - 3.5) < EPS and math.abs(SEP.Ring({ _radius = 2.7 }) - 4.7) < EPS
 		and math.abs(SEP.Ring({ _radius = 3.75 }) - (MC.AttackRange - 0.5)) < EPS,
 		"rings: Shard Slime 3.5, King Slime 4.7, Pumpkin King capped at AttackRange - 0.5",
@@ -1014,13 +1007,13 @@ runGroup("zone edge slides", function()
 		"a zone monster standing outside its own zone never slides (aiStep walks it home)")
 
 	-- walking toward the line: a push out toward it may take the body only up to the line at the END of its walk
-	-- (the slide is checked from where it stands and where its walk ends)
+	-- (the slide is checked from where it stands, where its walk ends and at its MoveTo point)
 	w = spacingWorld()
 	local walker = mon(w, "Slime", HI - 2, CZ)
 	local beside = mon(w, "Slime", HI - 1.5, CZ)
 	w.SEP.Begin(list(w), {})
-	walker.Humanoid = newHumanoid(6) -- 1.5 studs this tick: its walk ends 0.5 inside the line
-	walker._walkTo = vec(HI, 0, CZ)
+	walker.Humanoid = newHumanoid(6) -- 1.5 studs this tick: its walk ends at its MoveTo point, 0.5 inside the line
+	walker._walkTo = vec(HI - 0.5, 0, CZ)
 	walker.Humanoid:MoveTo(walker._walkTo)
 	w.SEP.Resolve({})
 	local pw, pb = w.SEP.Push[walker], w.SEP.Push[beside]
@@ -1076,8 +1069,9 @@ runGroup("zone edge slides", function()
 	check(po == nil and pi ~= nil and math.abs(pi.Delta.X + 2) < 1e-9, "pinned second in the pair: the first one takes the whole push",
 		show({ po ~= nil, pi and pi.Delta.X }))
 
-	-- a walker whose MoveTo point is on the line: its slide pushes it out toward the line; the point moves along only
-	-- along the line, never past it
+	-- a walker whose MoveTo point is on the line (review 2026-10-08, 2nd look: a walk that got there early stopped there
+	-- and the rest of a slide out carried the body past the line): no slide out toward the line, the other monster takes
+	-- the push; the MoveTo point never passes the line
 	w = spacingWorld()
 	local walker = mon(w, "Slime", HI - 2, CZ)
 	local other = mon(w, "Slime", HI - 2.6, CZ + 2.3)
@@ -1087,10 +1081,37 @@ runGroup("zone edge slides", function()
 	walker.Humanoid:MoveTo(walker._walkTo)
 	other.Humanoid = newHumanoid(10)
 	w.SEP.Resolve({})
-	local pw = w.SEP.Push[walker]
-	check(pw ~= nil and pw.Delta.X > 0.2 and walker._walkTo.X <= HI + 1e-9,
-		"a walk ending on the line: the slide out toward it is fine, its MoveTo point never goes past the line",
-		show({ pw and pw.Delta.X, walker._walkTo.X - HI }))
+	local pw, po2 = w.SEP.Push[walker], w.SEP.Push[other]
+	check((pw == nil or pw.Delta.X <= 1e-9) and po2 ~= nil and po2.Delta.X < -0.5 and walker._walkTo.X <= HI + 1e-9,
+		"a walk ending on the line: no slide out toward it, the other one takes the push, the MoveTo point stays inside",
+		show({ pw and pw.Delta.X, po2 and po2.Delta.X, walker._walkTo.X - HI }))
+	-- the same played out: a walk reaching its point on the line early, a slide still going; the body never passes it
+	w = spacingWorld()
+	walker = mon(w, "Slime", HI - 1, CZ)
+	other = mon(w, "Slime", HI - 2, CZ + 0.5)
+	local farthest = -math.huge
+	for _ = 1, 8 do
+		w.SEP.Begin(list(w), {})
+		walker.Humanoid = walker.Humanoid or newHumanoid(10)
+		walker._walkTo = vec(HI - 0.6, 0, CZ + 0.2)
+		walker.Humanoid:MoveTo(walker._walkTo)
+		other.Humanoid = other.Humanoid or newHumanoid(0)
+		w.SEP.Resolve({})
+		for _ = 1, 8 do
+			local h = walker.Humanoid
+			if not h.Reached then
+				local pos = walker.Root.Position
+				local to = vec(h.Goal.X - pos.X, 0, h.Goal.Z - pos.Z)
+				local m = to.Magnitude
+				local step = math.min(m, h.WalkSpeed * MC.AIInterval / 8)
+				if m > 1e-9 then walker.Root.Position = pos + to * (step / m) end
+				h.Reached = m <= step + 1e-9
+			end
+			w.SEP.Step(MC.AIInterval / 8)
+			farthest = math.max(farthest, walker.Root.Position.X - HI)
+		end
+	end
+	check(farthest <= 1e-9, "a walk reaching its point near the line while a slide plays: never past the line", farthest)
 
 	-- a player standing 1 stud inside the line: a slime pinned on the line inside its body leaves along the line
 	w = spacingWorld()
@@ -1114,6 +1135,52 @@ runGroup("zone edge slides", function()
 	end
 	check(flat(s.Root.Position, info.Pos) >= 2.5 - 1e-6 and s.Root.Position.X <= HI,
 		"right in line with the player on the line: out of the body within two ticks", flat(s.Root.Position, info.Pos))
+
+	-- the north move line (z) the same way: stacked across it, the inner one takes the whole push; pinned on it inside a
+	-- player body, out along the line (x)
+	local ZHI = MEADOW.Center.Z + MEADOW.Size.Z / 2 - 6
+	w = spacingWorld()
+	outer = mon(w, "Slime", CX, ZHI)
+	inner = mon(w, "Slime", CX, ZHI - 1)
+	w.SEP.Begin(list(w), {})
+	w.SEP.Resolve({})
+	po, pi = w.SEP.Push[outer], w.SEP.Push[inner]
+	check(po == nil and pi ~= nil and math.abs(pi.Delta.Z + 2) < 1e-9 and pi.Delta.X == 0,
+		"the north line: pinned on it, the other one takes the whole push", show({ po ~= nil, pi and pi.Delta.Z }))
+	w = spacingWorld()
+	local zinfo = playerAt("kid", CX, ZHI - 1)
+	s = mon(w, "Slime", CX + 0.3, ZHI)
+	w.SEP.Begin(list(w), { zinfo })
+	w.SEP.Resolve({ zinfo })
+	w.SEP.Step(MC.AIInterval)
+	check(flat(s.Root.Position, zinfo.Pos) >= 2.5 - 1e-6 and s.Root.Position.Z <= ZHI,
+		"the north line: pinned on it inside a player body, out along it (x) in one tick", flat(s.Root.Position, zinfo.Pos))
+	-- straight SEP.Body: pinned on the east line, its own side partly blocked by the north line (0.3 of room): that part
+	-- is taken back and it leaves to the other side, exactly to the body's edge
+	w = spacingWorld()
+	local unit = mon(w, "Slime", HI, ZHI - 0.3)
+	w.SEP.Begin(list(w), {})
+	local here = unit.Root.Position
+	unit._sepAt, unit._sepFrom, unit._sepBox = here, here, w.SEP.Box(unit, here)
+	w.SEP.Body(unit, HI - 1, ZHI - 0.4, here.Y)
+	local out = math.sqrt((unit._sepAt.X - (HI - 1)) ^ 2 + (unit._sepAt.Z - (ZHI - 0.4)) ^ 2)
+	check(math.abs(out - 2.5) < 1e-6 and unit._sepAt.Z < ZHI - 0.4 and unit._sepAt.X <= HI,
+		"pinned, its own side blocked part way: back and out the other side, exactly r + 1 from the player",
+		show({ out, unit._sepAt.Z - ZHI }))
+	-- a corner (pinned on both lines), the player diagonally inside: out along one line, away from the corner
+	for _, spot in { { -1, -1 }, { -0.5, -1.5 }, { -1.5, -0.5 } } do
+		w = spacingWorld()
+		local cinfo = playerAt("kid", HI + spot[1], ZHI + spot[2])
+		s = mon(w, "Slime", HI, ZHI)
+		for _ = 1, 2 do
+			w.SEP.Begin(list(w), { cinfo })
+			w.SEP.Resolve({ cinfo })
+			w.SEP.Step(MC.AIInterval)
+		end
+		check(flat(s.Root.Position, cinfo.Pos) >= 2.5 - 1e-6 and s.Root.Position.X <= HI and s.Root.Position.Z <= ZHI,
+			"in the corner of both lines, the player at (" .. spot[1] .. ", " .. spot[2] .. "): out of the body within two ticks",
+			show({ flat(s.Root.Position, cinfo.Pos), s.Root.Position.X - HI, s.Root.Position.Z - ZHI }))
+	end
 end)
 
 runGroup("zone edge arcs", function()
@@ -1290,6 +1357,58 @@ runGroup("zone edge slots", function()
 	w, info, recs, goals = edgeRing(HI + 5.5)
 	worst, at = worstPair(recs, 1, function(r) return goals[r] end)
 	check(worst >= -1e-6, "5.5 studs past the line: still no two slots touch", show({ worst, at }))
+	-- review 2026-10-08 (2nd look): the closest one of a ring with no room is clamped onto the line, at a corner up to
+	-- 6 x sqrt 2 from the ring centre and ahead of a running player farther still; the next ring starts outside that spot
+	local ZHI = MEADOW.Center.Z + MEADOW.Size.Z / 2 - 6
+	local function cornerRing(px, pz, vel)
+		local cw = spacingWorld()
+		local ci = playerAt("kid", px, pz)
+		ci.Vel = vel
+		local crecs = {}
+		for i, kind in { "Slime", "Slime", "BigSlime", "Slime", "Slime", "BigSlime" } do
+			local a = -3 * math.pi / 4 + (i - 3.5) * 0.2 -- all from inside the meadow (a player's chasers share its zone)
+			table.insert(crecs, mon(cw, kind, px + math.cos(a) * 14, pz + math.sin(a) * 14,
+				{ _target = ci.Player, ZoneId = "SlimeMeadow" }))
+		end
+		cw.SEP.Begin(list(cw), { ci })
+		local cg = {}
+		for _, r in crecs do cg[r] = cw.Clamp(MEADOW, cw.SEP.Goal(r, ci)) end
+		return worstPair(crecs, 1, function(r) return cg[r] end)
+	end
+	worst, at = cornerRing(HI + 5.5, ZHI + 5.5)
+	check(worst >= -1e-6, "a player at the zone's corner (5.5 past both lines): no two slots touch", show({ worst, at }))
+	worst, at = cornerRing(HI + 3, CZ, vec(20, 0, 0))
+	check(worst >= -1e-6, "a player 3 past the line running out at 20 studs/s (rings 4 studs ahead): no two slots touch",
+		show({ worst, at }))
+	-- the south / north line too (z): a player 3 studs past the north move line
+	worst, at = cornerRing(CX, ZHI + 3)
+	local zw = spacingWorld()
+	local zi = playerAt("kid", CX, ZHI + 3)
+	local zrecs = {}
+	for i = 1, 6 do
+		local a = -math.pi / 2 + (i - 3.5) * 0.45
+		table.insert(zrecs, mon(zw, i % 3 == 0 and "BigSlime" or "Slime", CX + math.cos(a) * 12, ZHI + 3 + math.sin(a) * 12,
+			{ _target = zi.Player }))
+	end
+	zw.SEP.Begin(list(zw), { zi })
+	local zg, zpast = {}, 0
+	for _, r in zrecs do
+		zg[r] = zw.SEP.Goal(r, zi)
+		zpast = math.max(zpast, zg[r].Z - ZHI)
+	end
+	local zworst = worstPair(zrecs, 1, function(r) return zg[r] end)
+	check(worst >= -1e-6 and zworst >= -1e-6 and zpast <= 1e-9, "the north move line too: slots inside it, none touching",
+		show({ worst, zworst, zpast }))
+	-- a personal monster follows its owner anywhere: with one among a player's chasers the rings stay whole
+	local pw = spacingWorld()
+	local owner = playerAt("kid", HI + 4, CZ)
+	local pet = mon(pw, "Slime", HI + 5, CZ - 2, { Owner = owner.Player })
+	local zm = mon(pw, "Slime", HI - 8, CZ, { _target = owner.Player })
+	pw.SEP.Begin(list(pw), { owner })
+	local petGoal = pw.SEP.Goal(pet, owner)
+	check(pw.SEP.Slots[pet] and pw.SEP.Slots[pet].Ring <= MC.AttackRange and pw.SEP.Slots[zm] ~= nil and petGoal.X > HI,
+		"a personal monster among the chasers: whole rings (it stays in reach past the line beside its owner)",
+		show({ pw.SEP.Slots[pet], petGoal.X - HI }))
 end)
 
 runGroup("zone edge crowd", function()
@@ -1299,8 +1418,7 @@ runGroup("zone edge crowd", function()
 	local function edgeCrowd(old, path)
 		local w = spacingWorld()
 		if old then
-			w.SEP.Edge = function() return false end
-			w.SEP.Box = function() return nil end
+				w.SEP.Box = function() return nil end
 			local inset = MEADOW.Size.X / 2 - 6
 			w.SEP.Fit = function(_, pos, delta) -- the old SEP.CanSlide: the end must stay inside the line
 				local dest = pos + delta
@@ -1402,85 +1520,22 @@ runGroup("target hold", function()
 	A.Zone = "GoblinWoods"
 	B.Zone = "GoblinWoods"
 	check(pick(10) == nil, "nobody it may chase: none")
-	-- the wiring: aiStep picks with SEP.Pick and stamps when it took a new target
+	-- a taunt that just ran out (SKL-3): a free pick, the nearest one at once (as main had it), not a hold on the taunter
+	A.Zone, B.Zone = "SlimeMeadow", "SlimeMeadow"
+	A.Pos = vec(CX - 3, 3, CZ)
+	r._target, r._targetAt = A.Player, 9.5
+	check(pick(10) == A and SEP.Pick(r, { A, B }, r.Root.Position, 10, true) == B,
+		"after a taunt (free pick): the nearest one at once, no hold on the taunter")
+	-- the wiring: aiStep picks with SEP.Pick (free right after a taunt) and stamps only a new target
 	local ai = string.sub(MONSTER_SOURCE, string.find(MONSTER_SOURCE, "local function aiStep(", 1, true) or 1)
-	check(has(ai, "best, bestD = SEP.Pick(rec, plist, pos, now)") and has(ai, "rec._targetAt = now")
+	local _, stamps = string.gsub(ai, "rec%._targetAt = now", "")
+	check(has(ai, "best, bestD = SEP.Pick(rec, plist, pos, now, free)") and stamps == 1
+		and has(ai, "if rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n\t\t\trec._targetAt = now")
+		and has(ai, "local free = rec._tauntUntil ~= nil and now >= rec._tauntUntil and rec._target == rec._tauntBy")
+		and has(ai, "if free then rec._tauntUntil, rec._tauntBy = nil, nil end")
 		and not has(ai, "if d <= MC.AggroRadius and (bestD == nil or d < bestD) then"),
-		"aiStep: the target comes from SEP.Pick, a new one is stamped (rec._targetAt)")
-end)
-
-runGroup("two players rings", function()
-	-- review 2026-10-08 (3rd round): another player's body (where it will be) cuts a player's chase rings like the zone's
-	-- move line does: a slot inside it was shoved off by the body push, out of its target's reach and into the other
-	-- player's (70% of the target switches in a crowd of 16 around two players 2-4 studs apart)
-	local SEP = spacingWorld().SEP
-	local function wrap(a) return (a + math.pi) % TAU - math.pi end
-	-- a Shard Slime ring (3.5) around (CX, CZ), another player 2 studs east: the ring points closer than 1.5 + 1 = 2.5 to
-	-- it are cut, half width acos((3.5^2 + 2^2 - 2.5^2) / (2 x 3.5 x 2)) = 44.4 deg each side of east
-	local east = { { X = CX + 2, Z = CZ } }
-	local hw = math.acos((3.5 ^ 2 + 2 ^ 2 - 2.5 ^ 2) / (2 * 3.5 * 2))
-	local arc = SEP.Arc(CX, CZ, 3.5, nil, east, 1.5)
-	check(arc and math.abs(wrap((arc.A0 + arc.A1) / 2 - math.pi)) < 1e-9 and math.abs(arc.A1 - arc.A0 - (TAU - 2 * hw)) < 1e-9
-		and math.abs(math.deg(hw) - 44.4) < 0.05, "another player 2 studs east: the 44.4 deg each side of east are cut out", show(arc))
-	-- a King Slime (r 2.7, ring 4.7): the cut takes its bigger body (2.7 + 1)
-	local kw = math.acos((4.7 ^ 2 + 2 ^ 2 - 3.7 ^ 2) / (2 * 4.7 * 2))
-	arc = SEP.Arc(CX, CZ, 4.7, nil, east, 2.7)
-	check(arc and math.abs(arc.A1 - arc.A0 - (TAU - 2 * kw)) < 1e-9, "a King Slime's ring: the cut of its bigger body (48.7 deg)",
-		show({ arc, math.deg(kw) }))
-	check(SEP.Arc(CX, CZ, 3.5, nil, { { X = CX + 6.5, Z = CZ } }, 1.5) == nil and SEP.Arc(CX, CZ, 5, nil, east, 1.5) == nil,
-		"a player farther than ring + body (6 + 0.5), or a ring passing outside its body (5 = 2 + 2.5 + 0.5): no cut")
-	check(SEP.Arc(CX, CZ, 2, nil, { { X = CX, Z = CZ } }, 1.5) == false
-		and SEP.Arc(CX, CZ, 1, nil, { { X = CX + 0.5, Z = CZ } }, 1.5) == false, "a ring inside another player's body: no room at all")
-	-- with the zone's move line 3 studs east and the other player 2 studs west: both cut, the longer piece is used
-	local box = { X0 = CX - 200, X1 = CX + 3, Z0 = CZ - 200, Z1 = CZ + 200 }
-	arc = SEP.Arc(CX, CZ, 3.5, box, { { X = CX - 2, Z = CZ } }, 1.5)
-	check(arc and math.abs(arc.A1 - arc.A0 - (math.pi - math.acos(3 / 3.5) - hw)) < 1e-9,
-		"the move line and another player: both cut the ring, one of the two pieces between them", show(arc))
-	-- every member's room without a zone box: the overlap of their arcs (the King's bigger cut)
-	arc = SEP.RingArc({ { R = 3.5, Rad = 1.5 }, { R = 4.7, Rad = 2.7 } }, CX, CZ, nil, east)
-	check(arc and math.abs(arc.A1 - arc.A0 - (TAU - 2 * math.max(hw, kw))) < 1e-9,
-		"no zone box, another player near: the ring is cut all the same (the members' overlap)", show(arc))
-
-	-- the slots (SEP.Begin with the player list, like aiTick): player a's six chasers (4 Shard + 2 King Slimes, or six
-	-- Shard Slimes) coming from b's side (b 2 studs east); the deepest a slot reaches into b's body (r + 1 around where b
-	-- will be; < 0 = inside) and the slots
-	local function slotsAround(bPos, bVel, withB, slimesOnly)
-		local w = spacingWorld()
-		local A, B = playerAt("a", CX, CZ), playerAt("b", bPos.X, bPos.Z)
-		B.Pos, B.Vel = bPos, bVel
-		local recs = {}
-		for i, kind in { "Slime", "BigSlime", "Slime", "Slime", "BigSlime", "Slime" } do
-			local ang = (i - 3.5) * 0.5
-			kind = slimesOnly and "Slime" or kind
-			table.insert(recs, mon(w, kind, CX + math.cos(ang) * 10, CZ + math.sin(ang) * 10, { _target = A.Player }))
-		end
-		w.SEP.Begin(list(w), withB and { A, B } or { A })
-		local bx, bz = w.SEP.Ahead(B)
-		local inside, slots, pts = math.huge, {}, {}
-		for _, r in recs do
-			local s = w.SEP.Slots[r]
-			pts[r] = vec(CX + math.cos(s.Angle) * s.Ring, 0, CZ + math.sin(s.Angle) * s.Ring)
-			inside = math.min(inside, flat(pts[r], vec(bx, 0, bz)) - (r._radius + 1))
-			table.insert(slots, { s.Angle, s.Ring })
-		end
-		return inside, worstPair(recs, 1, function(r) return pts[r] end), slots
-	end
-	local oldInside = slotsAround(vec(CX + 2, 3, CZ), nil, false)
-	check(oldInside < -0.5, "control: rings blind to b (b not in the list) put a slot inside b's body", oldInside)
-	local inside, apart, slots = slotsAround(vec(CX + 2, 3, CZ), nil, true)
-	local reach = 0
-	for _, s in slots do reach += s[2] <= MC.AttackRange and 1 or 0 end
-	check(inside >= -1e-9 and apart >= -1e-9 and reach == 6, "b 2 studs east: no slot inside b's body, all six apart and "
-		.. "in reach (the cut own rings are full: the ring moves out to 5)", show({ inside, apart, reach }))
-	-- b walking west at 16 studs/s from 6 studs east, six Shard Slimes: cut where b will be (SEP.Ahead: 4 studs on, 2 east
-	-- of a; their own 3.5 ring minus 2 x 44 deg still holds all six). Cut where b stands (6 east, touching that ring),
-	-- they spread over the whole ring, one 25 deg off east, 1.9 from where b will be (inside, needs 2.5)
-	local inWalk = slotsAround(vec(CX + 6, 3, CZ), vec(-16, 0, 0), true, true)
-	check(inWalk >= -1e-9, "b walking in from 6 studs east: no slot inside b's body where it will be", inWalk)
-	-- b 10 studs up (a bridge, another floor; SEP.Body skips it too): the same slots as without b
-	local _, _, above = slotsAround(vec(CX + 2, 13, CZ), nil, true)
-	local _, _, alone = slotsAround(vec(CX + 2, 3, CZ), nil, false)
-	check(show(above) == show(alone) and show(slots) ~= show(alone), "b on another floor (10 studs up): it cuts nothing")
+		"aiStep: the target comes from SEP.Pick (free when a taunt ran out), only a new one is stamped (rec._targetAt)",
+		stamps)
 end)
 
 runGroup("two players", function()
@@ -1608,8 +1663,8 @@ runGroup("two players crowd", function()
 	end
 	check(old.Flips >= 1000, "control: the old rule flips them A -> B -> A all the time", show(old))
 	check(new.Quick == 0, "nobody switches target again within 2 s of taking one (the hold comes first)", show(new))
-	check(new.Flips * 20 <= old.Flips, "back to the target before (A -> B -> A) at most 5% as often as the old rule "
-		.. "(slots stay out of the other player's body)", show({ new = new.Flips, old = old.Flips }))
+	check(new.Flips * 5 <= old.Flips, "back to the target before (A -> B -> A) at most 20% as often as the old rule "
+		.. "(and never within 2 s)", show({ new = new.Flips, old = old.Flips }))
 	check(new.IdleMax <= 2 / MC.AIInterval, "nobody chases a target out of reach for longer than the 2 s hold while the "
 		.. "other player is in reach", new.IdleMax)
 	check(new.Swings >= 0.9 * old.Swings, "they swing at least 90% as often as under the old rule",

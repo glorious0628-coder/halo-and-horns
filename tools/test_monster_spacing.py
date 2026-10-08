@@ -31,10 +31,15 @@ ring slot back and forth; SEP.Pick keeps a target 2 s and then only gives it up 
 other player's body, a King Slime stood in that player's reach and swung at nobody; with players under 3 studs apart the
 margin can never be met). Review 2026-10-08 (3rd round): that reach rule bypassed the hold, so in a crowd (12 Shard + 4
 King Slimes) a monster shoved across the reach edge went A -> B -> A every 0.5 s; the hold now comes first (idle at most
-2 s), and SEP.Surround cuts each player's rings by the other players' bodies (SEP.Arc bodies, where they will be), so
-no slot lies inside another player (the shove behind 70% of those switches). A crowd probe (16 runs of 40 s, two players
-2 / 4 studs apart) asserts: no switch within 2 s, A -> B -> A at most 5% of the old rule's, idle at most the hold,
-swings >= 90% and about the old rule's pile (mean deepest overlap <= 1.25x).
+2 s). Cutting each player's rings by the other players' bodies was tried and dropped (in groups of 3-4 players it left
+most chasers out of reach). A crowd probe (16 runs of 40 s, two players 2 / 4 studs apart) asserts: no switch within
+2 s, A -> B -> A at most 20% of the old rule's, idle at most the hold, swings >= 90% and about the old rule's pile
+(mean deepest overlap <= 1.25x). Review 2026-10-08 (merge): a taunt that just ran out (SKL-3) gives a free pick (the
+nearest, as main had it). Edge rework after the adversarial pass: SEP.Arc lays the cuts out from an uncovered point
+(a cut across 0 hid another), a ring with no room starts the next one outside its clamped slot (zone corners, a running
+player), a player with a personal monster among its chasers keeps whole rings, the slide limit also counts the MoveTo
+point and a followed MoveTo point keeps room for the rest of the slide (a walk that got there early still slid past
+the line), and SEP.Body tries the other side and, in a corner, the other line.
 
 Cuts the SEP table and functions, insideZone and findInfo from the CURRENT MonsterService (with the CURRENT Config), the
 real pickSpawnPoint (the test_tutorial_spawn cut) and the real MonsterService.SpawnEvent, runs them on
@@ -143,7 +148,7 @@ MUTATIONS = [
      "\t\twhile inner and #ring > 1 and not SEP.Fits(ring, arc) do"),
     ("waiting ring ignores the ring before", M, "\t\t\tfor _, e in ring do e.R = edge + SEP.RingGap + e.Rad end\n",
      "\t\t\tfor _, e in ring do e.R += 2 * e.Rad + SEP.RingGap end\n"),
-    ("ring edge not tracked", M, "\t\t\tedge = math.max(edge, e.R + e.Rad)\n", ""),
+    ("ring edge not tracked", M, "\t\t\tedge = math.max(edge, r + e.Rad)\n", ""),
     ("the closest do not keep the ring", M,
      "\t\tif a.D ~= b.D then return a.D < b.D end\n\t\treturn a.Id < b.Id\n\tend)\n\tlocal cx, cz",
      "\t\tif a.D ~= b.D then return a.D > b.D end\n\t\treturn a.Id < b.Id\n\tend)\n\tlocal cx, cz"),
@@ -188,7 +193,7 @@ MUTATIONS = [
     ("last tick's walk kept", M, "\t\t\trec._walkTo = nil -- this tick's step", "\t\t\t-- this tick's step"),
     ("MoveTo point not moved along", M, "\t\t\t\t\t\t\trec.Humanoid:MoveTo(rec._walkTo)\n", ""),
     ("MoveTo point moved into water / past the line", M,
-     "local follow = goal ~= nil and rec.Humanoid and SEP.Fit(rec, Vector3.new(goal.X, pos.Y, goal.Z), step)",
+     "local follow = goal ~= nil and rec.Humanoid and SEP.Fit(rec, Vector3.new(goal.X, pos.Y, goal.Z), step, step)",
      "local follow = goal ~= nil and rec.Humanoid and step"),
     ("steer() hides its walk", M, "\trec._walkTo = dest -- A23-74: SEP.Walk\n", ""),
     ("attack() hides its step", M, "\t\trec._walkTo = walk\n", ""),
@@ -220,43 +225,42 @@ MUTATIONS = [
     # zone edge (review 2026-10-08: along the move line, never across it)
     ("slide check ignores the move line", M, "\tlocal box = SEP.Box(rec, pos)\n", "\tlocal box = nil\n"),
     ("slide check refuses the whole slide at the line (old)", M,
-     "\t\tdelta = Vector3.new(math.clamp(x, box.X0, box.X1) - pos.X, delta.Y, math.clamp(z, box.Z0, box.Z1) - pos.Z)\n",
-     "\t\treturn nil\n"),
+     "\t\tdelta = Vector3.new(math.max(box.X0, math.min(box.X1, x)) - pos.X, delta.Y,\n",
+     "\t\tdo return nil end\n\t\tdelta = Vector3.new(math.max(box.X0, math.min(box.X1, x)) - pos.X, delta.Y,\n"),
     ("slide check: a body past the line can never slide", M, "\tlocal box = SEP.Box(rec, pos)\n", "\tlocal box = SEP.Box(rec)\n"),
+    ("followed MoveTo point keeps no room for the rest of the slide", M,
+     "SEP.Fit(rec, Vector3.new(goal.X, pos.Y, goal.Z), step, step)", "SEP.Fit(rec, Vector3.new(goal.X, pos.Y, goal.Z), step)"),
+    ("room past the end on the wrong side", M, "box.X0, box.X1 = box.X0 - math.min(0, after.X), box.X1 - math.max(0, after.X)",
+     "box.X0, box.X1 = box.X0 + math.min(0, after.X), box.X1 + math.max(0, after.X)"),
     ("push rounds ignore the move line", M, "\tlocal box = rec._sepBox\n\tif box then\n", "\tlocal box = rec._sepBox\n\tif false then\n"),
     ("move line checked from the start only", M,
-     "\t\tlocal cx = math.clamp(sx, box.X0 - math.min(q.X, from.X), box.X1 - math.max(q.X, from.X))\n"
-     "\t\tlocal cz = math.clamp(sz, box.Z0 - math.min(q.Z, from.Z), box.Z1 - math.max(q.Z, from.Z))\n",
+     "\t\tlocal cx = math.clamp(sx, box.X0 - math.min(q.X, goal.X), box.X1 - math.max(q.X, goal.X))\n"
+     "\t\tlocal cz = math.clamp(sz, box.Z0 - math.min(q.Z, goal.Z), box.Z1 - math.max(q.Z, goal.Z))\n",
      "\t\tlocal cx = math.clamp(sx, box.X0 - q.X, box.X1 - q.X)\n"
      "\t\tlocal cz = math.clamp(sz, box.Z0 - q.Z, box.Z1 - q.Z)\n"),
-    ("box not grown to the walk end", M, "rec._sepBox = SEP.Box(rec, rec._sepPos, at)", "rec._sepBox = SEP.Box(rec, rec._sepPos)"),
-    ("no box in the push rounds", M, "rec._sepBox = SEP.Box(rec, rec._sepPos, at)", "rec._sepBox = nil"),
+    ("move line not checked at the MoveTo point", M, "\t\tlocal goal = rec._walkTo or q\n", "\t\tlocal goal = from\n"),
+    ("box not grown to the MoveTo point", M, "rec._sepBox = SEP.Box(rec, rec._sepPos, rec._walkTo or rec._sepPos)",
+     "rec._sepBox = SEP.Box(rec, rec._sepPos, at)"),
+    ("no box in the push rounds", M, "rec._sepBox = SEP.Box(rec, rec._sepPos, rec._walkTo or rec._sepPos)", "rec._sepBox = nil"),
     ("a pinned one's part is lost", M, "local sx, sz = SEP.Add(b, -dx * o * wb - rx, -dz * o * wb - rz)",
      "local sx, sz = SEP.Add(b, -dx * o * wb, -dz * o * wb)"),
     ("a pinned second one's part is lost", M, "\t\tif not fa and (sx ~= 0 or sz ~= 0) then SEP.Add(a, -sx, -sz) end\n", ""),
-    ("pinned in a player body: stays", M, "\tif rx ~= 0 or rz ~= 0 then\n\t\tlocal at = rec._sepAt", "\tif false then\n\t\tlocal at = rec._sepAt"),
-    ("rings never cut by the move line", M, "\t\tbox = box or SEP.Box(rec)\n", ""),
+    ("pinned in a player body: stays", M, "\tif rx == 0 and rz == 0 then return true end\n\tlocal at", "\tdo return true end\n\tlocal at"),
+    ("pinned in a player body: only its own side", M, "\tfor _, s in { side, -side } do\n", "\tfor _, s in { side } do\n"),
+    ("pinned in a player body: along the pinned line", M, "\tlocal alongZ = rx ~= 0 -- pinned", "\tlocal alongZ = rx == 0 -- pinned"),
+    ("a blocked try is kept", M, "\t\tSEP.Add(rec, ux - mx, uz - mz) -- that way is blocked too", "\t\t-- that way is blocked too"),
+    ("rings never cut by the move line", M, "if rec.Owner ~= nil then personal = true else box = box or SEP.Box(rec) end",
+     "if rec.Owner ~= nil then personal = true end"),
+    ("a personal monster's rings cut by the move line", M, "\tif personal then box = nil end\n", ""),
     ("rings cut around the player, not where it will be", M,
-     "\tlocal cx, cz = SEP.Ahead(info)\n\tlocal bodies = nil\n", "\tlocal cx, cz = p.X, p.Z\n\tlocal bodies = nil\n"),
-    ("arc: a ring inside is cut anyway", M, "\tif #cuts == 0 then return nil end\n", ""),
-    ("arc: no wrap over 0", M, "\twhile #merged > 1 and merged[#merged].E >= merged[1].S + tau do", "\twhile false do"),
-    ("arc: a ring with no room counts as room", M, "\t\t\tif dist <= -r then return false end\n",
-     "\t\t\tif dist <= -r then return nil end\n"),
-    # review 2026-10-08 (3rd round): the other players' bodies cut a player's rings
-    ("rings ignore the other players' bodies", M, "\t\tif o ~= info and math.abs(o.Pos.Y - p.Y) < 8 then\n", "\t\tif false then\n"),
-    ("players on another floor cut the rings", M, "\t\tif o ~= info and math.abs(o.Pos.Y - p.Y) < 8 then\n",
-     "\t\tif o ~= info then\n"),
-    ("Begin gives Surround no player list", M, "\t\tif info then SEP.Surround(info, recs, plist) end\n",
-     "\t\tif info then SEP.Surround(info, recs) end\n"),
-    ("body cut where the other player stands now", M, "\t\t\tlocal ox, oz = SEP.Ahead(o)\n", "\t\t\tlocal ox, oz = o.Pos.X, o.Pos.Z\n"),
-    ("body cut ignores the monster's size", M, "(rad or SEP.Radius.Slime) + SEP.PlayerRadius", "SEP.Radius.Slime + SEP.PlayerRadius"),
-    ("body cut on the far side", M, "local s = (math.atan2(oz, ox) - hw) % tau", "local s = (math.atan2(oz, ox) + math.pi - hw) % tau"),
-    ("a body over the whole ring counts as room", M, "\t\tif k <= -1 then return false end\n", "\t\tif k <= -1 then continue end\n"),
-    ("ring arc ignores bodies", M, "local arc = SEP.Arc(cx, cz, e.R, box, bodies, e.Rad)", "local arc = SEP.Arc(cx, cz, e.R, box)"),
-    ("ring arc without a box ignores bodies", M, "\tif box == nil and bodies == nil then return nil end\n",
-     "\tif box == nil then return nil end\n"),
-    ("full-ring check blind to the bodies", M, "if not SEP.Fits(ring, SEP.RingArc(ring, cx, cz, box, bodies)) then",
-     "if not SEP.Fits(ring, SEP.RingArc(ring, cx, cz, box)) then"),
+     "\tlocal cx, cz = SEP.Ahead(info)\n\tlocal known = {}", "\tlocal cx, cz = p.X, p.Z\n\tlocal known = {}"),
+    ("next ring starts at the no-room member's ring", M, "\t\t\tif arc == false then -- no room inside the line",
+     "\t\t\tif false then -- no room inside the line"),
+    ("arc: a ring inside is cut anyway", M, "\tif r <= dx1 and r <= dx0 and r <= dz1 and r <= dz0 then return nil end\n", ""),
+    ("arc: laid out from a covered point", M, "\t\tif not covered then\n", "\t\tif true then\n"),
+    ("arc: a ring with no room counts as room", M, "\t\tif dist <= -r then return false end\n", "\t\tif dist <= -r then return nil end\n"),
+    ("arc: the first free piece ignored", M, "\t\tif c.S > reach and (a0 == nil or c.S - reach > a1 - a0) then a0, a1 = reach, c.S end\n",
+     "\t\tif c.S > reach and a0 ~= nil and c.S - reach > a1 - a0 then a0, a1 = reach, c.S end\n"),
     ("ring arc: the last member's only", M, "a0, a1 = math.max(a0, arc.A0 + shift), math.min(a1, arc.A1 + shift)",
      "a0, a1 = arc.A0 + shift, arc.A1 + shift"),
     ("ring arc: one member without room ignored", M, "\t\tif arc == false then return false end\n\t\tif arc then",
@@ -292,13 +296,22 @@ MUTATIONS = [
      "\t\t\tor (bestD > curD - SEP.TargetMargin and (curD <= MC.AttackRange or bestD > MC.AttackRange))) then\n",
      "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin)\n"
      "\t\tand (curD <= MC.AttackRange or bestD > MC.AttackRange) then\n"),
-    ("always the nearest (old rule)", M, "\tif cur ~= nil and best ~= cur\n", "\tif false and cur ~= nil and best ~= cur\n"),
+    ("always the nearest (old rule)", M, "\tif not free and cur ~= nil and best ~= cur\n", "\tif false then\n"),
+    ("a taunt's end keeps the hold", M, "\tif not free and cur ~= nil and best ~= cur\n", "\tif cur ~= nil and best ~= cur\n"),
+    ("aiStep never picks free after a taunt", M,
+     "\t\tlocal free = rec._tauntUntil ~= nil and now >= rec._tauntUntil and rec._target == rec._tauntBy\n",
+     "\t\tlocal free = false\n"),
+    ("a stamp on every pick", M,
+     "\tif best then\n\t\tif rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n"
+     "\t\t\trec._targetAt = now -- SEP.Pick holds a new target TargetHold s\n",
+     "\tif best then\n\t\trec._targetAt = now -- SEP.Pick holds a new target TargetHold s\n"
+     "\t\tif rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n"),
     ("hold 0 s", M, "\tTargetHold = 2, -- s", "\tTargetHold = 0, -- s"),
     ("margin 1 stud", M, "\tTargetMargin = 3, -- studs", "\tTargetMargin = 1, -- studs"),
     ("a target past AggroRadius kept", M, "\t\t\tif d <= MC.AggroRadius then\n\t\t\t\tif bestD == nil", "\t\t\tif true then\n\t\t\t\tif bestD == nil"),
     ("pick ignores targetable", M, "\t\tif targetable(rec, info) then\n\t\t\tlocal d = Util.FlatDistance(pos, info.Pos)\n\t\t\tif d <= MC.AggroRadius then",
      "\t\tif true then\n\t\t\tlocal d = Util.FlatDistance(pos, info.Pos)\n\t\t\tif d <= MC.AggroRadius then"),
-    ("aiStep picks the nearest itself", M, "\t\tbest, bestD = SEP.Pick(rec, plist, pos, now)\n",
+    ("aiStep picks the nearest itself", M, "\t\tbest, bestD = SEP.Pick(rec, plist, pos, now, free)\n",
      "\t\tfor _, info in plist do\n\t\t\tif targetable(rec, info) then\n\t\t\t\tlocal d = Util.FlatDistance(pos, info.Pos)\n"
      "\t\t\t\tif d <= MC.AggroRadius and (bestD == nil or d < bestD) then best, bestD = info, d end\n\t\t\tend\n\t\tend\n"),
     ("new target not stamped", M, "\t\t\trec._targetAt = now -- SEP.Pick holds a new target TargetHold s\n", ""),
@@ -366,20 +379,22 @@ SUITE = Suite(
              "point; SpawnEvent (bosses) keeps the same clearance within its radius, else its spot (the slides clear "
              "it). Review probe: walking 3 / 5 / 8 studs/s with 4 Shard + 2 King Slimes, mean deepest overlap per AI "
              "tick < 0.3 studs. Review 2026-10-08: a zone monster's slide keeps its part along the zone's move line "
-             "(ZONE_MOVE_INSET inside the zone edge) and drops only the part crossing it, checked from where the body "
-             "stands and where its walk ends; the other monster of a pair takes the dropped part; a body pinned on the "
-             "line leaves a player body along it; a MoveTo point moved along a slide stays inside the line; a player's "
-             "rings count only their arc inside the line (around where the player will be), fewer fit and the rest wait "
-             "on the next ring, so no slot needs clamping (a player 3 studs past the line: 6 chasers, none touching, "
-             "old clamped slots 2.6 studs inside each other); a zone monster keeps its target 2 s (never switching "
-             "again sooner), then switches only to a player 3 studs closer, or when its target is out of AttackRange "
-             "and another player is in reach (idle in the other player's reach at most those 2 s); each player's rings "
-             "are also cut by the other players' bodies (r + 1 around where they will be, within 8 studs up / down), "
-             "so no slot lies inside another player. Two players 2 / 4 studs apart, standing or walking together: with "
-             "4 Shard + 2 King Slimes no switch within 2 s and at most half the old rule's switches; with a crowd of 12 "
-             "Shard + 4 King Slimes (16 runs of 40 s) monsters still change target now and then (switches about 7% "
-             "and A -> B -> A under 5% of the nearest-every-tick rule's, none within 2 s), swing >= 90% as often and "
-             "pile up about as much (mean deepest overlap <= 1.25x the old rule's). "
+             "(ZONE_MOVE_INSET inside the zone edge) and drops only the part crossing it, checked all the way from where "
+             "the body stands to its MoveTo point; the other monster of a pair takes the dropped part; a body pinned on "
+             "the line leaves a player body along it (the other side when its own is blocked); a MoveTo point moved "
+             "along a slide stays inside the line with room for the rest of the slide; a player's rings count only their "
+             "arc inside the line (around where the player will be), fewer fit and the rest wait on the next ring, so no "
+             "slot needs clamping (a player 3 studs past the line: 6 chasers, none touching, old clamped slots 2.6 studs "
+             "inside each other); a ring with no room keeps its closest one and the next ring starts outside where "
+             "aiStep clamps it (zone corners, a running player); a player with a personal monster among its chasers "
+             "keeps whole rings; a zone monster keeps its target 2 s (never switching again sooner), then switches only "
+             "to a player 3 studs closer, or when its target is out of AttackRange and another player is in reach (idle "
+             "in the other player's reach at most those 2 s); right after a taunt (SKL-3) the nearest one, no hold. Two "
+             "players 2 / 4 studs apart, standing or walking together: with 4 Shard + 2 King Slimes no switch within 2 s "
+             "and at most half the old rule's switches; with a crowd of 12 Shard + 4 King Slimes (16 runs of 40 s) "
+             "monsters still change target now and then (switches about 20% and A -> B -> A about 14% of the "
+             "nearest-every-tick rule's, none within 2 s), swing >= 90% as often and pile up about as much (mean "
+             "deepest overlap <= 1.25x the old rule's). "
              "Monster parts stay CanCollide = false.",
     limitations="Roots, Humanoids (MoveTo / WalkSpeed / AutoRotate), the ground ray, walls, Random and the player list "
                 "are doubles; the simulations use a stand-in for aiStep / attack (walk at Def.Speed x the NATURAL ramp, "
@@ -389,10 +404,13 @@ SUITE = Suite(
                 "the FACE turn while stepping sideways and the Tripo mesh footprints are only checkable in Studio Play "
                 "(game dev 1). SEP.Need sorting ties by id (like Spread) is asserted but has no mutation: Luau's "
                 "table.sort happens to order the test ties the same way with an angle-only comparator. Review "
-                "2026-10-08 (3rd round): each player's rings know the other players' bodies but not their chasers' "
-                "slots, so around two players 2 studs apart the two inner rings still overlap; in the heavier meadow "
-                "crowd (14 Shard + 6 King Slimes, offline probe only, not asserted here) about 6 of 20 stand in reach "
-                "against about 8 under the nearest-every-tick rule (swings about 90% of its, 93% of the 2nd round's).",
+                "2026-10-08: each player's rings know neither the other players' bodies nor their chasers' slots "
+                "(cutting them by the bodies left most chasers of a 3-4 player group out of reach), so a slot can lie "
+                "inside another player and around players 2 studs apart the two inner rings overlap: the body push "
+                "and the slides take that, and in a crowd a monster may change target about every few seconds (never "
+                "within 2 s). A zone's chasers are assumed to share the player's zone (targetable); the rings take the "
+                "first zone chaser's rect. SEP.Arc keeps only the longest free piece when a narrow zone cuts a ring "
+                "twice (no game zone is that narrow).",
 )
 
 if __name__ == "__main__":

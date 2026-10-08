@@ -2681,8 +2681,8 @@ runGroup("king-safety", function()
 	-- SEP.Pick, which holds a target a while), and landAttack checks it again at impact
 	local mon = MONSTER_SOURCE
 	check(string.find(mon, "elseif not targetable(rec, tinfo) then", 1, true) ~= nil
-		and string.find(mon, "\t\tbest, bestD = SEP.Pick(rec, plist, pos, now)\n", 1, true) ~= nil
-		and string.find(mon, "function SEP.Pick(rec, plist, pos, now)\n\tlocal best, bestD, cur, curD = nil, nil, nil, nil\n"
+		and string.find(mon, "\t\tbest, bestD = SEP.Pick(rec, plist, pos, now, free)\n", 1, true) ~= nil
+		and string.find(mon, "function SEP.Pick(rec, plist, pos, now, free)\n\tlocal best, bestD, cur, curD = nil, nil, nil, nil\n"
 			.. "\tfor _, info in plist do\n\t\tif targetable(rec, info) then", 1, true) ~= nil,
 		"aiStep drops a current target and picks a new one only through targetable()")
 end)
