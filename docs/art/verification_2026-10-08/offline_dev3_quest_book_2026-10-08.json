@@ -1,15 +1,21 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 73,
+  "checks": 78,
   "failedChecks": 0,
-  "namedChecks": 26,
+  "namedChecks": 31,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "config",
-      "check": "DoneMax 40, AvailableMax 10, 'Opens at Lv' text",
+      "check": "DoneMax 60, AvailableMax 10, 'Opens at Lv' text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every main + every sub fits in Done (a finished save loses none)",
       "pass": 1,
       "fail": 0
     },
@@ -33,7 +39,13 @@
     },
     {
       "group": "done",
-      "check": "a long list: the newest 40",
+      "check": "a finished save: every quest listed, the first sub too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "done",
+      "check": "DoneMax caps the list (the newest first)",
       "pass": 1,
       "fail": 0
     },
@@ -140,6 +152,24 @@
       "fail": 0
     },
     {
+      "group": "a failing visibility check",
+      "check": "the goose sub's check errors: that sub is left out, the book still lists the others",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a failing visibility check",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a failing visibility check",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "faction and hidden",
       "check": "a hidden sub is never listed before it is found",
       "pass": 20,
@@ -168,9 +198,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 11,
-    "applied": 11,
-    "caught": 11,
+    "total": 12,
+    "applied": 12,
+    "caught": 12,
     "skipped": false,
     "results": [
       {
@@ -181,9 +211,10 @@
         "crashed": false,
         "newFailingChecks": [
           "done :: Done: finished mains newest first, then finished subs newest first, as 'story:<id>'",
-          "done :: a long list: the newest 40"
+          "done :: DoneMax caps the list (the newest first)",
+          "done :: a finished save: every quest listed, the first sub too"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "Done without a cap",
@@ -192,7 +223,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "done :: a long list: the newest 40"
+          "done :: DoneMax caps the list (the newest first)"
         ],
         "newFailingCount": 1
       },
@@ -215,6 +246,17 @@
         "crashed": false,
         "newFailingChecks": [
           "available :: done (S3) or started (S6): not listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a failed visibility check shows the sub",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a failing visibility check :: the goose sub's check errors: that sub is left out, the book still lists the others"
         ],
         "newFailingCount": 1
       },
@@ -261,9 +303,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a failing visibility check :: the goose sub's check errors: that sub is left out, the book still lists the others",
           "available :: a ready sub that has not started yet: listed without a level"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "highest level first",
@@ -294,10 +337,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: DoneMax 40, AvailableMax 10, 'Opens at Lv' text",
-          "done :: a long list: the newest 40"
+          "config :: DoneMax 60, AvailableMax 10, 'Opens at Lv' text",
+          "config :: every main + every sub fits in Done (a finished save loses none)",
+          "done :: a finished save: every quest listed, the first sub too"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       }
     ]
   },
@@ -305,14 +349,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4cd9fe9db93fd441236f12cbbbdf48aca0a518b783739b3ba3fd1cb5ce78e842",
+    "src/ReplicatedStorage/Shared/Config.luau": "3df6deaf08e78df0fa5e6f8d8a1ef8a7f5f91985996080bc5b7f2bd7c7f0a00a",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/StoryQuestService.luau": "be8f4d4b8c6c0145f9d51e3e7251f87fe35e5f74607cd04a5949dadf2cd6b52d"
+    "src/ServerScriptService/StoryQuestService.luau": "8dbe06a670edb1bf96095ac74cc4369930e88d9884af90b6c791662552484e48"
   },
-  "fixtureSHA256": "c309f6b7f180d4b00b5e5c562fe50f3b6b1f37999eb482de903dd76aab2d160b",
+  "fixtureSHA256": "710796d27fb7ac9fd151a64c9db9e47f1e1fdec4f40b36b71899b6c79dd61054",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-81: Quests remote payload { Quests = rows, Book = { Available, Done } }. Done = finished story quests as 'story:<id>', mains newest first then subs newest first, known ids only, at most 40. Available = subs that only wait for a level ({ Id, Kind = 'Sub', Level, Text = 'Title · Opens at Lv N' }, the other requirements checked on a read-only level view) + ready subs not started yet, never hidden / started / done / other faction, lowest level first, at most 10; no main (the chain has no level gate).",
+  "contract": "A23-81: Quests remote payload { Quests = rows, Book = { Available, Done } }. Done = finished story quests as 'story:<id>', mains newest first then subs newest first, known ids only, at most 60. Available = subs that only wait for a level ({ Id, Kind = 'Sub', Level, Text = 'Title · Opens at Lv N' }, the other requirements checked on a read-only level view) + ready subs not started yet, never hidden / started / done / other faction, lowest level first, at most 10; no main (the chain has no level gate).",
   "limitations": "The Q window (tabs, Config.QuestTabs) is game dev 1's client. Today's dailies are not in Done (a claimed daily's row is replaced, only the count is kept). The real publish loop runs in the onboarding / weapon_first suites (their fixtures read the new table payload)."
 }

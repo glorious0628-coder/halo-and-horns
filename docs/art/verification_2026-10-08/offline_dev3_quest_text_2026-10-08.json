@@ -1,0 +1,257 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 22,
+  "failedChecks": 0,
+  "namedChecks": 20,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "old Korean texts",
+      "check": "three slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old Korean texts",
+      "check": "the Korean 'rob 1 Knight' daily: English again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old Korean texts",
+      "check": "a kill daily names its saved monster",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old Korean texts",
+      "check": "gold: the exact number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old Korean texts",
+      "check": "no Korean left in any slot",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "old Korean texts",
+      "check": "progress, target, rewards, the unit and the kind are kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old Korean texts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "old Korean texts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "no saved unit: the level zone's main monster (the same rule killWeight uses)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "an unknown unit: the zone's main monster too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "Release: MinStacks dropped, English text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "plural fixed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "valid saved quests are kept (not remade)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "invalid entries become fresh quests",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "units and old fields",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "questText = newQuest's text",
+      "check": "one goose tug: the plural rule",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "questText = newQuest's text",
+      "check": "kill text = (monster short name, count)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "questText = newQuest's text",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "questText = newQuest's text",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 3,
+  "staticFailures": [],
+  "mutations": {
+    "total": 8,
+    "applied": 8,
+    "caught": 8,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the saved text is kept",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old Korean texts :: a kill daily names its saved monster",
+          "old Korean texts :: gold: the exact number",
+          "old Korean texts :: no Korean left in any slot",
+          "old Korean texts :: the Korean 'rob 1 Knight' daily: English again",
+          "units and old fields :: Release: MinStacks dropped, English text",
+          "units and old fields :: an unknown unit: the zone's main monster too"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "only Release is rebuilt",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old Korean texts :: a kill daily names its saved monster",
+          "old Korean texts :: gold: the exact number",
+          "old Korean texts :: no Korean left in any slot",
+          "old Korean texts :: the Korean 'rob 1 Knight' daily: English again",
+          "units and old fields :: an unknown unit: the zone's main monster too",
+          "units and old fields :: no saved unit: the level zone's main monster (the same rule killWeight uses)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "a saved unit ignored",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old Korean texts :: a kill daily names its saved monster"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a broken unit trusted",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "units and old fields :: an unknown unit: the zone's main monster too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no plural fix",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old Korean texts :: the Korean 'rob 1 Knight' daily: English again",
+          "questText = newQuest's text :: one goose tug: the plural rule"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gold rounded",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "old Korean texts :: gold: the exact number"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the monster's long name",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "questText = newQuest's text :: kill text = (monster short name, count)",
+          "units and old fields :: an unknown unit: the zone's main monster too",
+          "units and old fields :: no saved unit: the level zone's main monster (the same rule killWeight uses)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Release keeps MinStacks",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "units and old fields :: Release: MinStacks dropped, English text"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3df6deaf08e78df0fa5e6f8d8a1ef8a7f5f91985996080bc5b7f2bd7c7f0a00a",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/QuestService.luau": "31db12ace1c3eaf4d3f72d79703e7f3d858b7afa9a23f34664c899d16a559d18"
+  },
+  "fixtureSHA256": "3303b85fdb2467df5612e865e477fcfff459df852fca8f37d0f82b965a961444",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "QuestService.ensureSlots (PlayerReady) rebuilds the Text of every valid saved daily / extra quest from its template (QuestService.questText, the same function newQuest uses): Kill / Golden name the saved Unit (a missing / unknown Unit = the level zone's main monster), Gold shows the exact number, Config.Plural; progress, target, rewards and the unit are kept; Release drops its old MinStacks.",
+  "limitations": "Story rows are built from Config every publish already (not saved text). The client safety net (game dev 1, 4bac9159) is not run here."
+}
