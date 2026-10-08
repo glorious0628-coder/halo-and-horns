@@ -90,7 +90,7 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/Passes.luau": "7e25a4c57113bfdeb16ce60169bacc25d6f168ce840d9b7132576e41557076db",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
   },
   "fixtureSHA256": "25a07e238fa439fd3b63558cee1441407fe24bf18408ae10311898b8d7202529",
   "studioCalls": 0,

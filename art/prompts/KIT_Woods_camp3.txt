@@ -1,0 +1,8 @@
+[고블린 숲 A23-76 새 3D 3종 (검수 OK 10/08 밤: 고급 15 + Tripo 165, LOD ≤3,000). LogStool = 이미지 생성 2 중간본 art/out/kit/woods/LogStool_B(_src).png → 고급만. Awning·StepStones = 중간 2장씩 → 검수 → 고급.
+ 지킬 것: 얼굴·눈·해골·무늬 그림 없음, 빛살 없음, 주황 끝 말뚝 없음]
+
+Kit_W_Awning: A small forest camp market stall with an awning: two rough wooden poles holding a slanted patched cloth canopy in muted red and cream with stitched square patches and a scalloped front edge, a simple low wooden plank counter underneath with two small closed burlap sacks on it. Glossy chunky toy 3D render, soft even light, plain flat medium gray background, whole object in frame with margin, three-quarter front view. No faces, no skulls, no symbols, no pictures. Wordless, blank surfaces.
+
+Kit_W_StepStones: Four flat round stepping stones lying on the ground in a short gently curved row, smooth grey stone slabs with soft rounded edges and slightly different sizes, a few tiny tufts of moss and short grass around their edges, no ground plane beyond the tufts. Glossy chunky toy 3D render, soft even light, plain flat medium gray background, whole object in frame with margin, high three-quarter view from above. No faces, no symbols. Wordless, blank surfaces.
+
+Kit_W_LogStool (HQ): Redraw the attached reference image as the same object, cleaner, sharper and more polished: keep its exact silhouette, proportions, camera angle, colors and every part in the same place and the same size in the frame. A short round wooden log stool with a smooth ring-cut top and bark sides with a few small moss patches. Glossy chunky toy 3D render, soft even light, plain flat medium gray background, whole object in frame with margin. No faces. Wordless, blank surfaces.

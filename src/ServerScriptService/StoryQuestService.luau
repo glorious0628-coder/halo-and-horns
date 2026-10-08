@@ -644,6 +644,48 @@ local function visible(player, def)
 	return true
 end
 
+-- A23-81 quest window (게임성 개발 3): the book lists QuestService.publish sends next to the rows. Done = the finished
+-- story quests, the newest first (the main chain backwards, then the subs backwards), at most Config.QuestBook.DoneMax,
+-- as "story:<id>" (the client shows the Title). Available = subs that only wait for a level (every other requirement
+-- met, not hidden, not started) as { Id, Kind = "Sub", Level, Text = "<Title> · Opens at Lv N" }, lowest level first,
+-- plus a sub that is ready but not started yet (the 1 s refresh starts it), at most AvailableMax. The main chain has no
+-- level gate (each next main starts at once), so no main is listed.
+function StoryQuestService.BookRows(player, data)
+	local QB = Config.QuestBook or {}
+	local st = story(data)
+	local maxDone = math.floor(num(QB.DoneMax, 40))
+	local done = {}
+	for _, list in { SQ.Main, SQ.Subs } do
+		for i = #list, 1, -1 do
+			if #done >= maxDone then break end
+			if st.Done[list[i]] and DEFS[list[i]] then table.insert(done, "story:" .. list[i]) end
+		end
+	end
+	local avail = {}
+	local level = num(data.Level, 1)
+	for _, id in SQ.Subs do
+		local def = DEFS[id]
+		if def and not def.Hidden and not st.Done[id] and not st.Subs[id] and visible(player, def) then
+			local need = math.floor(num(type(def.Requires) == "table" and def.Requires.Level))
+			if need > level then
+				-- the same requirements at the level it waits for (a read-only view of the save)
+				if requirementsMet(player, setmetatable({ Level = need }, { __index = data }), def) then
+					table.insert(avail, { Id = "story:" .. id, Kind = "Sub", Level = need,
+						Text = string.format((QB.Text or {}).OpensAt or "%s · Opens at Lv %d", tostring(def.Title), need) })
+				end
+			elseif requirementsMet(player, data, def) then
+				table.insert(avail, { Id = "story:" .. id, Kind = "Sub" })
+			end
+		end
+	end
+	table.sort(avail, function(a, b)
+		if (a.Level or 0) ~= (b.Level or 0) then return (a.Level or 0) < (b.Level or 0) end
+		return a.Id < b.Id
+	end)
+	for i = #avail, math.floor(num(QB.AvailableMax, 10)) + 1, -1 do avail[i] = nil end
+	return { Available = avail, Done = done }
+end
+
 -- sub rows, best first, at most Config.StoryQuests.MaxSubs (quest_volume §2-6: 3; the HUD shows 2, the open list all):
 -- 0 = a claim or a Talk / Choice card waiting mid-quest (past step 1), 1 = situational (Show), 2 = started (past step 1
 -- or with progress) or S0, 3 = a new offer waiting at its first card, 4 = the rest; within a rank the newer quest

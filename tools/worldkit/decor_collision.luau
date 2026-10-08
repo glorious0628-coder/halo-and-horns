@@ -34,6 +34,9 @@ local T = {
 	Tree = { "Tree", "Pine", "Willow", "Oak", "Birch", "Palm" },
 	Fence = { "Fence" }, -- fences block even when low (rails between posts)
 	NotPass = { "Cart", "Pot", "Stand", "Basket", "Box" }, -- a FlowerCart / FlowerPot is furniture, not ground cover
+	-- round shapes players could walk up: blocked by an upright post instead of the mesh hull
+	Round = { "Bush", "Hedge", "Mushroom", "JellyRock", "CrystalPile", "Rock", "Boulder" },
+	Block = { RFrac = 0.42, RMin = 0.8, Extra = 3, HMin = 8 }, -- post radius from the footprint; taller than a jump (7.2)
 	Trunk = { RFrac = 0.09, RMin = 0.6, RMax = 6, HFrac = 0.45, HMin = 4, HMax = 20 },
 }
 
@@ -103,7 +106,7 @@ local function bbox(piece)
 end
 
 local stats = { pieces = #pieces, solid = 0, solidParts = 0, trees = 0, postsMade = 0, postsReused = 0, meshOff = 0,
-	keptPass = 0, keptSolid = 0, restored = 0, removed = 0, unanchored = 0 }
+	keptPass = 0, keptSolid = 0, restored = 0, removed = 0, unanchored = 0, blockPosts = 0 }
 local kinds = {}
 local function note(kind, name)
 	local base = (string.gsub(string.gsub(name, "_%d+$", ""), "%d+$", ""))
@@ -175,7 +178,55 @@ for _, piece in pieces do
 		if p.CanCollide and p.Name ~= "TrunkPost" then anyColl = true end
 		if p:GetAttribute("DecorCollWas") == nil and not p:GetAttribute("DecorCollMade") then allChanged = false end
 	end
-	if allChanged then continue end -- done on an earlier run
+	-- 2026-10-08 메인 반영 Play: a round bush hull is a slope players walk up and over (Kit_M_BushA, y +3.4), so round
+	-- pieces get an upright invisible "BlockPost" (vertical sides, taller than a jump) and their mesh stops colliding;
+	-- pieces made solid by an earlier run are converted on the next run
+	local round = hasAny(name, T.Round) and not hasAny(name, T.Tree)
+	local hasPost = piece:IsA("Model") and piece:FindFirstChild("BlockPost") ~= nil
+	if allChanged and not (round and not hasPost and piece:IsA("Model")) then continue end -- done on an earlier run
+
+	if round and piece:IsA("Model") and not anyColl or (round and allChanged and not hasPost) then
+		local low = size.Y < T.LowY
+		if low or (hasAny(name, T.Pass) and not hasAny(name, T.NotPass)) then
+			stats.keptPass += 1
+			note("pass", name)
+			continue
+		end
+		stats.solid += 1
+		stats.blockPosts += 1
+		note("round", name)
+		if MODE == "apply" then
+			local okAnchor = true
+			for _, p in parts do
+				if not p.Anchored then okAnchor = false end
+			end
+			if not okAnchor then
+				stats.unanchored += 1
+				continue
+			end
+			for _, p in parts do
+				remember(p) -- the mesh stays (or goes back to) walk-through; the post blocks
+				p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
+			end
+			local r = math.max(T.Block.RMin, T.Block.RFrac * math.min(size.X, size.Z))
+			local h = math.max(size.Y + T.Block.Extra, T.Block.HMin)
+			local bottom = cf.Position - Vector3.new(0, size.Y / 2, 0)
+			local post = Instance.new("Part")
+			post.Name = "BlockPost"
+			post.Shape = Enum.PartType.Cylinder
+			post.Size = Vector3.new(h, r * 2, r * 2) -- cylinder axis = X, stood up below
+			post.CFrame = CFrame.new(bottom + Vector3.new(0, h / 2, 0)) * CFrame.Angles(0, 0, math.rad(90))
+			post.Anchored = true
+			post.Transparency = 1
+			post.CastShadow = false
+			post:SetAttribute("Collider", true)
+			post:SetAttribute("DecorCollMade", true)
+			post.CanCollide, post.CanQuery, post.CanTouch = true, false, false
+			post.CollisionGroup = T.Group
+			post.Parent = piece
+		end
+		continue
+	end
 
 	if hasAny(name, T.Tree) then
 		stats.trees += 1
@@ -253,7 +304,7 @@ local keys = {}
 for k, n in kinds do table.insert(keys, string.format("%s=%d", k, n)) end
 table.sort(keys)
 return string.format("%s: %d pieces | solid now %d (%d parts) | trees %d (posts made %d, reused %d, canopy meshes off %d)"
-	.. " | walk-through kept %d | already solid kept %d | unanchored skipped %d | group %s\n%s", MODE, stats.pieces,
-	stats.solid, stats.solidParts, stats.trees, stats.postsMade, stats.postsReused, stats.meshOff, stats.keptPass,
-	stats.keptSolid, stats.unanchored, T.Group,
+	.. " | round pieces with BlockPost %d | walk-through kept %d | already solid kept %d | unanchored skipped %d"
+	.. " | group %s\n%s", MODE, stats.pieces, stats.solid, stats.solidParts, stats.trees, stats.postsMade,
+	stats.postsReused, stats.meshOff, stats.blockPosts, stats.keptPass, stats.keptSolid, stats.unanchored, T.Group,
 	table.concat(keys, ", "))

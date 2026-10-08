@@ -1,0 +1,318 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 73,
+  "failedChecks": 0,
+  "namedChecks": 26,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "DoneMax 40, AvailableMax 10, 'Opens at Lv' text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "done",
+      "check": "Done: finished mains newest first, then finished subs newest first, as 'story:<id>'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "done",
+      "check": "a long list: the newest 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "done",
+      "check": "an unknown id in the save is not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "done",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "done",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "a sub waiting for Lv5: Level 5 + 'Title · Opens at Lv 5'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "another side's sub (artisan N1, Horns R5): not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "a sub waiting for Lv8",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "a ready sub that has not started yet: listed without a level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "a sub that needs a quest not done yet (M2_7): not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "no main is listed (the chain has no level gate)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "lowest level first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "done (S3) or started (S6): not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "Lv30: nothing waits for a level any more",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "BookRows leaves the save's level alone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "at most AvailableMax",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "a hidden ready sub stays hidden (the others still show)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "available",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "faction and hidden",
+      "check": "a hidden sub is never listed before it is found",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "faction and hidden",
+      "check": "a faction-only sub is listed for its own side only",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "faction and hidden",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "faction and hidden",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 11,
+    "applied": 11,
+    "caught": 11,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Done oldest first",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "done :: Done: finished mains newest first, then finished subs newest first, as 'story:<id>'",
+          "done :: a long list: the newest 40"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Done without a cap",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "done :: a long list: the newest 40"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hidden subs listed",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: a hidden ready sub stays hidden (the others still show)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "started subs listed",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: done (S3) or started (S6): not listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "level-waiting subs ignore the other requirements",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: a sub that needs a quest not done yet (M2_7): not listed",
+          "available :: another side's sub (artisan N1, Horns R5): not listed",
+          "faction and hidden :: a faction-only sub is listed for its own side only"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the level view writes the save",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: BookRows leaves the save's level alone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no level on a waiting sub",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: a sub waiting for Lv5: Level 5 + 'Title · Opens at Lv 5'",
+          "available :: a sub waiting for Lv8"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ready subs not listed",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: a ready sub that has not started yet: listed without a level"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "highest level first",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: lowest level first"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no AvailableMax",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "available :: at most AvailableMax"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: Done keeps 10",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: DoneMax 40, AvailableMax 10, 'Opens at Lv' text",
+          "done :: a long list: the newest 40"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "4cd9fe9db93fd441236f12cbbbdf48aca0a518b783739b3ba3fd1cb5ce78e842",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/StoryQuestService.luau": "be8f4d4b8c6c0145f9d51e3e7251f87fe35e5f74607cd04a5949dadf2cd6b52d"
+  },
+  "fixtureSHA256": "c309f6b7f180d4b00b5e5c562fe50f3b6b1f37999eb482de903dd76aab2d160b",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-81: Quests remote payload { Quests = rows, Book = { Available, Done } }. Done = finished story quests as 'story:<id>', mains newest first then subs newest first, known ids only, at most 40. Available = subs that only wait for a level ({ Id, Kind = 'Sub', Level, Text = 'Title · Opens at Lv N' }, the other requirements checked on a read-only level view) + ready subs not started yet, never hidden / started / done / other faction, lowest level first, at most 10; no main (the chain has no level gate).",
+  "limitations": "The Q window (tabs, Config.QuestTabs) is game dev 1's client. Today's dailies are not in Done (a claimed daily's row is replaced, only the count is kept). The real publish loop runs in the onboarding / weapon_first suites (their fixtures read the new table payload)."
+}

@@ -1062,6 +1062,18 @@ def build_short(short, voice, out_root, do_tts=True):
             n = (f1 - acc) if k == len(ss) - 1 else round((f1 - f0) * ws[k] / sum(ws))
             shots.append({"shot": s, "f0": acc, "f1": acc + n, "cue_t": cue_times(it, s.get("cues"))})
             acc += n
+    # the cut list (검수 v6: every cut's source and part, for tools/devlog_cutlist.py)
+    cuts = []
+    for sh in shots:
+        s_ = sh["shot"]
+        n_ = sh["f1"] - sh["f0"]
+        sp_ = float(s_.get("speed", 1.0))
+        cuts.append({"t0": round(sh["f0"] / FPS, 2), "t1": round(sh["f1"] / FPS, 2),
+                     "source": s_.get("video") or ("board:" + str(s_.get("board") or s_.get("cards"))),
+                     "src0": round(float(s_.get("ss", 0)), 2) if "video" in s_ else None,
+                     "src1": round(float(s_.get("ss", 0)) + n_ / FPS * sp_, 2) if "video" in s_ else None,
+                     "big": (s_.get("big") or {}).get("text"), "note": s_.get("note", "")})
+    json.dump(cuts, open(os.path.join(out_dir, "cuts.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     # audio: narration + effects
     mix = np.zeros(int(total * SR) + SR)
     for it in timeline:

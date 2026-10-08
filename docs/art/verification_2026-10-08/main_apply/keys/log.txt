@@ -1,0 +1,12 @@
+[   0.4] fresh attr: nil
+[   8.9] loaded: DataLoaded=true Faction=Horns Class=Mage ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 Level=19 CarriedGold=0 BankGold=11651 Honor=0 Infamy=2 AutoCombatUnlocked=true AutoCombatEnabled=
+[  21.2] 1 first: KeyBadges=false visible key letters: 0 | 
+[  25.4] saved docs\art\verification_2026-10-08\main_apply\keys\01_default.png (white 0%)
+[  25.5] set KeyBadges true -> true
+[  27.2] 2 on: KeyBadges=true visible key letters: 0 | 
+[  28.6] saved docs\art\verification_2026-10-08\main_apply\keys\02_on.png (white 0%)
+[  28.8] set KeyBadges false -> false
+[  30.4] 3 off: KeyBadges=false visible key letters: 0 | 
+[  32.0] saved docs\art\verification_2026-10-08\main_apply\keys\03_off.png (white 0%)
+[  32.1] console flagged: Maximum re-entrancy depth (80) exceeded calling task.defer
+[  33.7] play stopped

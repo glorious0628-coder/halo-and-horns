@@ -5,12 +5,16 @@
 -- closes it, a tap beside it too. No clock, no countdown, nothing starts by itself, never a purchase button (A23-79).
 -- Fx "WelcomeBack" { Next = "<goal>", Zone = "<zone id>"? } - the first spawn after 6 h away - shows "Welcome back!" /
 -- "Next: <Next>" with [Go] (the existing Travel channel to Zone; the server checks level, combat, stars) and [OK].
+-- 게임성 개발 3's contract (return_server_2026-10-08.md): the daily card also carries Tomorrow ("New dailies" / "King Diary
+-- page N": one more line "Tomorrow: …") and OptIn = true (once the card is closed, the notification opt-in moment:
+-- ComeBack.OptIn "Daily"); [Go] on the welcome-back card -> ClientMetric "WelcomeBackGo" (ComeBack.Metric).
 -- A card waits while the screen is busy (a window, the intro, a picker, the map, a reward popup, a confirm box, the
 -- first steps before [Claim], knocked out, hurt in the last HurtCalm s) and is dropped after WaitMax s (a stale card
 -- is worse than none); one card at a time, a newer one waits for the open one. Presentation only.
 -- Public API: PauseCard.Init(C), PauseCard.Start(), PauseCard.OnFx(kind, data), PauseCard.Show(kind, data) -> bool
--- (kind "Pause" | "Back": queue a card), PauseCard.Tick() (opens a waiting card when the screen is free; the offline
--- test drives it), PauseCard.IsOpen(), PauseCard.Build(parent, info) -> the card (이미지 개발 may restyle it: info =
+-- (kind "Pause" | "Back" | "Tip": queue a card), PauseCard.Tick() (opens a waiting card when the screen is free; the offline
+-- test drives it), PauseCard.IsOpen(), PauseCard.Waiting() (a card waits), PauseCard.Busy() (the screen is talking: the
+-- calm-screen rule, also ComeBack's opt-in), PauseCard.Build(parent, info) -> the card (이미지 개발 may restyle it: info =
 -- { Title, Body, Buttons = { { Id, Text } }, OnButton = fn(id) }), PauseCard.Shown (Util.Signal: kind, button, why;
 -- button = "Keep" | "OK" | "Go" | "Backdrop") for the beta metrics.
 local Players = game:GetService("Players")
@@ -34,6 +38,8 @@ local T = {
 	HurtCalm = 5, -- s after losing health: no card in the middle of a fight
 	Poll = 0.5,
 	NextMax = 60, -- characters of the goal shown
+	TipMax = 120, -- characters of a tip's words
+	TomorrowMax = 40, -- characters of the daily card's tomorrow line
 	ZoneMax = 40,
 	Busy = { "Intro", "FactionPicker", "ClassPicker", "WorldMap", "PlayerListUI" }, -- client modules with IsOpen()
 	BusyGui = { "RewardPopup", "ConfirmDialog" }, -- UIKit.Gui children: something else is talking
@@ -44,12 +50,14 @@ local T = {
 		PauseTitle = "Saved!",
 		PauseNext = "Next time: %s",
 		PausePlain = "Everything is saved.",
+		PauseTomorrow = "Tomorrow: %s",
 		Keep = "Keep playing",
 		OK = "OK",
 		BackTitle = "Welcome back!",
 		BackNext = "Next: %s",
 		BackPlain = "Good to see you again!",
 		Go = "Go",
+		TipTitle = "Tip",
 	},
 }
 local S = { Pending = nil, Card = nil, HurtAt = -math.huge, LastPoll = 0, Health = nil }
@@ -103,6 +111,20 @@ end
 
 function PauseCard.IsOpen()
 	return S.Card ~= nil and S.Card.Parent ~= nil
+end
+
+function PauseCard.Waiting()
+	return S.Pending ~= nil
+end
+
+function PauseCard.Busy()
+	return busy()
+end
+
+-- the return parts (ComeBack.luau): a metric / the opt-in moment, never an error here
+local function comeBack(fn, ...)
+	local cb = C and C.ComeBack
+	if type(cb) == "table" and type(cb[fn]) == "function" then pcall(cb[fn], ...) end
 end
 
 -- the card: a dim backdrop (a tap = "Backdrop"), the DialogBox plate (UIKit.Confirm's look), title, body, buttons of one
@@ -201,6 +223,13 @@ function PauseCard.Build(parent, info)
 	return overlay
 end
 
+-- a tip's [Go]: that window (Panels; e.g. Settings with { Tab = "Keys" })
+local function openWindow(id, arg)
+	local panels = C and C.Panels
+	if type(panels) ~= "table" or type(panels.Open) ~= "function" then return false end
+	return (pcall(panels.Open, id, arg))
+end
+
 -- [Go]: the server's own travel (it says why when it refuses)
 local function travel(zone)
 	local folder = ReplicatedStorage:FindFirstChild("Remotes")
@@ -227,7 +256,10 @@ local function open(card)
 			S.Card = nil
 		end
 		if id == "Go" and card.Zone then travel(card.Zone) end
+		if id == "Go" and card.Window then openWindow(card.Window, card.WindowArg) end
+		if id == "Go" and card.Kind == "Back" then comeBack("Metric", "WelcomeBackGo") end
 		PauseCard.Shown:Fire(card.Kind, id, card.Why)
+		if card.OptIn then task.defer(comeBack, "OptIn", "Daily") end -- after the card, never over it
 		task.defer(PauseCard.Tick) -- a card that waited for this one
 	end
 	local ok, built = pcall(PauseCard.Build, kit.Gui, info)
@@ -260,6 +292,9 @@ function PauseCard.Show(kind, data)
 	if kind == "Pause" then
 		card.Title = T.Text.PauseTitle
 		card.Body = nextGoal and string.format(T.Text.PauseNext, nextGoal) or T.Text.PausePlain
+		local tomorrow = clean(data.Tomorrow, T.TomorrowMax)
+		if tomorrow then card.Body ..= "\n" .. string.format(T.Text.PauseTomorrow, tomorrow) end
+		card.OptIn = data.OptIn == true
 		card.Buttons = { { Id = "Keep", Text = T.Text.Keep }, { Id = "OK", Text = T.Text.OK } }
 	elseif kind == "Back" then
 		card.Title = T.Text.BackTitle
@@ -267,6 +302,18 @@ function PauseCard.Show(kind, data)
 		local zone = type(data.Zone) == "string" and #data.Zone > 0 and #data.Zone <= T.ZoneMax and data.Zone or nil
 		card.Zone = zone
 		card.Buttons = zone and { { Id = "Go", Text = T.Text.Go }, { Id = "OK", Text = T.Text.OK } }
+			or { { Id = "OK", Text = T.Text.OK } }
+	elseif kind == "Tip" then
+		-- A23-81: a one-time tip from a client module ({ Title?, Text, Go = { Text, Window, Arg? } }): [Go] opens that
+		-- window (e.g. Settings on its Keys tab), [OK] closes; it waits for a calm screen like every card
+		local text = clean(data.Text, T.TipMax)
+		if not text then return false end
+		card.Title = clean(data.Title, T.NextMax) or T.Text.TipTitle
+		card.Body = text
+		local go = type(data.Go) == "table" and type(data.Go.Window) == "string" and data.Go or nil
+		card.Window = go and go.Window or nil
+		card.WindowArg = go and go.Arg or nil
+		card.Buttons = go and { { Id = "Go", Text = clean(go.Text, T.NextMax) or T.Text.Go }, { Id = "OK", Text = T.Text.OK } }
 			or { { Id = "OK", Text = T.Text.OK } }
 	else
 		return false

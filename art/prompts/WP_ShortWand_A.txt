@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: individual beginner mage weapon inventory icon for Halo & Horns, a kid-friendly Roblox fantasy RPG.
+Primary request: Generate one completely new short beginner magic wand, from scratch, as a single isolated transparent PNG. Request a 1024 by 1024 square canvas.
+Reference image: Weapon_Mage_T2.png is a style reference only. Match its warm illustrated, gently beveled 3D-painted game-item appearance, clean dark-brown contour and crisp readable material highlights. Do not copy or modify any existing bitmap fragment.
+Subject: One short simple wooden magic wand, clearly a compact handheld wand rather than a walking staff. Simple smooth brown wood body, a small neat light-cloth grip at its lower end, and one small pale violet star-shaped gemstone tip attached directly to the wooden shaft. Simple beginner craftsmanship with no ornate gold fittings. Star tip is small and physically solid, not a glowing effect.
+Composition: Whole wand visible, diagonal from bottom-left to top-right, centered, approximately 80 percent of the square canvas, transparent safety margin on all sides. Use a compact sturdy silhouette with a short handle and readable star-shaped tip; preserve a clearly different shape from a long staff. Readable at 64 pixels.
+Lighting: Soft consistent upper-left object highlights. Smooth crisp game illustration, clean alpha edges.
+Background: Truly transparent alpha, empty surrounding canvas. No ground plane, cast shadow, aura, glow, sparkle particles, detached pieces, gradient or checkerboard.
+Constraints: One wand only, no sheet, no collage, no hands, no human, no text, no letters, no numbers, no logo, no watermark. No oversized gem, elaborate metal, wings, horns, ribbons or extra ornaments. Do not crop any part.

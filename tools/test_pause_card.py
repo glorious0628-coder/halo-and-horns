@@ -42,6 +42,21 @@ MUTATIONS = [
     ("brackets kept in the goal", 'local s = string.gsub(string.gsub(text, "[<>]", ""), "%s+", " ")',
      'local s = string.gsub(text, "%s+", " ")'),
     ("the backdrop does not close", "\toverlay.Activated:Connect(function() pick(\"Backdrop\") end)\n", ""),
+    # A23-81 the tip card
+    ("a tip's [Go] opens nothing", "\t\tif id == \"Go\" and card.Window then openWindow(card.Window, card.WindowArg) end\n", ""),
+    ("a tip without words shows", "\t\tif not text then return false end\n", ""),
+    ("a tip's window loses its tab", "\treturn (pcall(panels.Open, id, arg))\n", "\treturn (pcall(panels.Open, id))\n"),
+    ("a tip always has [Go]",
+     "\t\tcard.Buttons = go and { { Id = \"Go\", Text = clean(go.Text, T.NextMax) or T.Text.Go }, { Id = \"OK\", Text = T.Text.OK } }\n",
+     "\t\tcard.Buttons = { { Id = \"Go\", Text = T.Text.Go }, { Id = \"OK\", Text = T.Text.OK } }\n"),
+    # A23-79 게임성 개발 3's contract
+    ("no tomorrow line", "\t\tif tomorrow then card.Body ..= \"\\n\" .. string.format(T.Text.PauseTomorrow, tomorrow) end\n", ""),
+    ("tomorrow's line not cut", "\t\tlocal tomorrow = clean(data.Tomorrow, T.TomorrowMax)\n", "\t\tlocal tomorrow = clean(data.Tomorrow, 999)\n"),
+    ("the OptIn flag ignored", "\t\tif card.OptIn then task.defer(comeBack, \"OptIn\", \"Daily\") end -- after the card, never over it\n", ""),
+    ("any OptIn value counts", "\t\tcard.OptIn = data.OptIn == true\n", "\t\tcard.OptIn = data.OptIn ~= nil and data.OptIn ~= false\n"),
+    ("WelcomeBackGo never counted", "\t\tif id == \"Go\" and card.Kind == \"Back\" then comeBack(\"Metric\", \"WelcomeBackGo\") end\n", ""),
+    ("every [Go] counted as WelcomeBackGo", "\t\tif id == \"Go\" and card.Kind == \"Back\" then comeBack(", "\t\tif id == \"Go\" then comeBack("),
+    ("Waiting always false", "\treturn S.Pending ~= nil\n", "\treturn false\n"),
 ]
 
 

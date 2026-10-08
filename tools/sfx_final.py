@@ -81,12 +81,22 @@ PICKS = [
     ("ComboMilestone", "ComboMilestone_sA", 7, "ComboMilestone (round-3 confirmation_003; sA ends on C8 4.2 kHz, under the spec's 5 kHz)"),
     ("LevelUp", "LevelUp_sA", 7, "LevelUp (round-3 LevelUp_a; now with the phone body 523 + 785 Hz)"),
     ("Tap", "Tap_kA", 7, "Tap (round-3 select_002; game volume 0.46 keeps it +3 LU over TalkBlip)"),
-    ("WindowOpen", "WindowOpen_sA", 7, "WindowOpen (round-3 maximize_009; the mirror of the new WindowClose)"),
+    ("WindowOpen", "WindowOpen_sA", 7, "WindowOpen (round-3 maximize_009; the mirror of the new WindowClose)"),    ("QuestOpen", "QuestOpen_sA", 8, "new (batch 8: the quest window (Q) opens)"),
+    ("QuestTab", "QuestTab_sA", 8, "new (batch 8: a quest window tab turns)"),
+    ("StampPress", "StampPress_sA", 8, "new (batch 8: the attendance stamp (A23-77))"),
+    ("Chest7Open", "Chest7Open_sA", 8, "new (batch 8: the day-7 attendance chest opens)"),
+    ("WelcomeBack", "WelcomeBack_sA", 8, "new (batch 8: the Welcome back card (A23-79))"),
+    ("DiaryPage", "DiaryPage_sA", 8, "new (batch 8: a King Diary page turns)"),
+    ("CandyPlop", "CandyPlop_sA", 8, "new (batch 8: a candy goes into the candy jar)"),
+    ("KingHelpHome", "KingHelpHome_sA", 8, "new (batch 8: king slime card [Help it hop home])"),
+    ("KingTickleCoins", "KingTickleCoins_sA", 8, "new (batch 8: king slime card [Tickle out its coins])"),
+    ("TipDing", "TipDing_sA", 8, "new (batch 8: the Lv5 key-settings tip (A23-81))"),
 ]
 
 VOLUME = {"Tap": 0.46}  # 검수 2026-10-07: game volume differs from sfx_spec.json (short sound measures 4-5 dB low)
 
-KENNEY = {  # the Kenney CC0 files inside each picked recipe (tools/sfx_recipes.py / sfx_make.py)
+KENNEY = {
+    "Chest7Open_sA": ["Interface Sounds switch_002"],  # the Kenney CC0 files inside each picked recipe (tools/sfx_recipes.py / sfx_make.py)
     "Tap_kA": ["Interface Sounds select_002", "click_003"],
     "ComboCoin_kA": ["Impact Sounds impactMetal_light_000"],
     "HitSoft_kB": ["Impact Sounds impactSoft_medium_004"],

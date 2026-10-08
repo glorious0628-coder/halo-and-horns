@@ -557,6 +557,10 @@
   "BarkBubbleGhostMinion": "rbxassetid://121325988367395",
   "BarkBubbleLittleGhost": "rbxassetid://106182896723807",
   "BarkBubbleGhostKing": "rbxassetid://120140777254240",
+  "Tex_Grass_FF3": "rbxassetid://116841810719907",
+  "Tex_MeadowFlowers_FF3": "rbxassetid://112552326538919",
+  "Tex_GrassShade_FF3": "rbxassetid://100025729953105",
+  "Tex_MeadowDirt_FF3code": "rbxassetid://111724093383818",
   "PassIconExp2": "rbxassetid://84663066597118",
   "PassIconGold2": "rbxassetid://100341080284667",
   "PassIconVIP": "rbxassetid://98036294458431",
@@ -586,9 +590,5 @@
   "LookHornsPlatinum": "rbxassetid://123042000375413",
   "FxHitSpark": "rbxassetid://122673635344930",
   "FxMagicBurst": "rbxassetid://124326448818980",
-  "ShieldHalo": "rbxassetid://73353334079892",
-  "Tex_Grass_FF3": "rbxassetid://116841810719907",
-  "Tex_MeadowFlowers_FF3": "rbxassetid://112552326538919",
-  "Tex_GrassShade_FF3": "rbxassetid://100025729953105",
-  "Tex_MeadowDirt_FF3code": "rbxassetid://111724093383818"
+  "ShieldHalo": "rbxassetid://73353334079892"
 }

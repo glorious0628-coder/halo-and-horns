@@ -2284,6 +2284,12 @@ function ITEMS.OnInventory(payload)
 	if currentId == "Items" then ITEMS.Rebuild(true) end -- the blacksmith polls ITEMS.Data in its update
 end
 
+-- A23-79: another window's look at the cached "Inventory" payload (KingDiary's candy jar): the count of one item id
+function Panels.ItemCount(id)
+	local n = ITEMS.Data and ITEMS.Data.Items and ITEMS.Data.Items[id]
+	return type(n) == "number" and n or 0
+end
+
 -- binds the owner-only remote early (Init) so the first payload after PlayerReady is never missed; an old server
 -- without the remote leaves the cache empty
 function ITEMS.Bind()
@@ -3541,6 +3547,8 @@ function Panels.Open(id, arg)
 	REG.Arg = arg -- BB13: a registered window's Build gets it (e.g. Settings { Tab = "Keys" })
 	currentId = id
 	Panels.Metric(id)
+	-- A23-79 beta metrics: every Shop opening starts / keeps a shop visit (ClientMetric "ShopOpen", ComeBack.luau)
+	if id == "Shop" and C and type(C.ComeBack) == "table" then pcall(C.ComeBack.Metric, "ShopOpen") end
 	-- The nickname result is displayed in its own panel; transient game tips stay behind it.
 	root.ZIndex = id == "Nickname" and 96 or ZINDEX
 	root.Visible = true

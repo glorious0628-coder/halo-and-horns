@@ -1,0 +1,22 @@
+[   0.3] targets: {"Tree": {"Y": 13.09438705444336, "X": 495.3232116699219, "Name": "W_Tree_A", "Z": 83.95023345947266, "SZ": 10.60461711883545, "SX": 2}, "Bush": {"Y": 5.851550102233887, "X": 435, "Name": "Kit_M_BushA", "Z": 28, "SZ": 5.5360002517700195, "SX": 5.599999904632568}}
+[   0.5] fresh on
+[  12.0] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=-1,4,-25 anvilDist=80.8
+[  36.4] fired ChooseFaction
+[  37.7] fired ChooseClass
+[  41.5] closed
+[  42.0] stand y=6.2 on Terrain
+[  48.8] Bush track: start y 6.9 max y 6.9 (climb 0.0) max side 0.0 end x 432.2
+[  49.2] Bush Kit_M_BushA centre x 435.0 (half 2.8) -> player x 432.2
+[  51.1] saved docs\art\verification_2026-10-08\main_apply\block2\Bush_walk_into.png (white 0%)
+[  51.5] stand y=6.9 on Terrain
+[  58.4] Tree track: start y 7.6 max y 7.7 (climb 0.1) max side 0.1 end x 493.8
+[  58.8] Tree W_Tree_A centre x 495.3 (half 1.0) -> player x 493.9
+[  60.5] saved docs\art\verification_2026-10-08\main_apply\block2\Tree_walk_into.png (white 0%)
+[  69.9] slimes 16, within 6 studs of a bush 2, of those not moved in 8 s 0
+[  70.1] console flagged: 9
+Maximum re-entrancy depth (80) exceeded calling task.defer
+[  71.5] play stopped
+[  74.9] fresh off
+[  74.9] OK   Bush (Kit_M_BushA) stops the player (x 432.2 < centre 435.0)
+[  74.9] OK   Tree (W_Tree_A) stops the player (x 493.9 < centre 495.3)
+[  74.9] OK   slimes beside bushes keep moving (2/2 moved in 8 s)

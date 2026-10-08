@@ -107,7 +107,10 @@ local function fixture(saved, opts)
 	local net = { Get = function(name)
 		if not f.Remote[name] then f.Remote[name] = { OnServerEvent = signal(), FireClient = function(_, p, payload)
 			check(p == f.Player, "publication leaked to wrong player")
-			if name == "Quests" then f.LastList = copy(f.Encoding); f.Sends += 1
+			-- A23-81: the payload is { Quests = rows, Book } (an older server sent the JSON of the rows)
+			if name == "Quests" then
+				f.LastList = copy(type(payload) == "table" and payload.Quests or f.Encoding)
+				f.Sends += 1
 			elseif name == "OpenPanel" then table.insert(f.Panels, payload)
 			else error("unexpected server publication " .. name) end
 		end } end

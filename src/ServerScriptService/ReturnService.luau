@@ -319,11 +319,11 @@ local function award(player, key, id)
 	task.spawn(function()
 		local svc = game:GetService("BadgeService")
 		-- 검수 review 2026-10-08: only a real award counts. AwardBadge answers false for a badge that is off / a wrong id
-		-- (the user makes the 8 badges by hand at publishing) - and for one the player already has, so a false asks
-		-- UserHasBadgeAsync before it goes the retry way
+		-- (the user makes the 8 badges by hand at publishing) - and false or an error for one the player already has, so
+		-- either asks UserHasBadgeAsync once before it goes the retry way
 		local ok, res = pcall(svc.AwardBadge, svc, userId, id)
 		local got = ok and res == true
-		if ok and not got then
+		if not got then
 			local okHas, has = pcall(svc.UserHasBadgeAsync, svc, userId, id)
 			got = okHas and has == true
 		end
@@ -333,8 +333,11 @@ local function award(player, key, id)
 			-- the badge id goes with the record: a corrected Config id is a badge this player still has to get
 			if type(data) == "table" then record(data).Badges[key] = { Id = id, At = os.time() } end
 		else
-			T.BadgeRetry[player] = T.BadgeRetry[player] or {}
-			T.BadgeRetry[player][key] = os.clock()
+			-- a player who left while the call ran gets no retry entry (it would keep the Player object alive)
+			if player.Parent ~= nil and T.Conns[player] ~= nil then
+				T.BadgeRetry[player] = T.BadgeRetry[player] or {}
+				T.BadgeRetry[player][key] = os.clock()
+			end
 			Util.Warn(TAG, "badge " .. key .. " (" .. tostring(id) .. "): " .. (ok and "not awarded" or tostring(res)))
 		end
 	end)
@@ -464,6 +467,13 @@ local function connect(service, signal, fn)
 		return true
 	end
 	return false
+end
+
+-- test aid: how many players hold badge retry entries (a player who left must hold none)
+function ReturnService.DebugRetryCount()
+	local n = 0
+	for _ in T.BadgeRetry do n += 1 end
+	return n
 end
 
 function ReturnService.Init(registry)

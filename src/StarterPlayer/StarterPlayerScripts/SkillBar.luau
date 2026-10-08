@@ -91,10 +91,14 @@ local TXT = {
 	LearnKey = "Press %s",
 	LearnTouch = "Tap the new button",
 	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
+	-- A23-81 (user 2026-10-08): once, after the first skill is learned (keyboards): keys can be changed in Settings
+	KeysTip = "Tip: You can change your keys in Settings!",
+	KeysTipGo = "Open Settings",
 }
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
-local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1 }
+local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1,
+	TipSlot = "Q", TipAfterPress = 2.5, TipLate = 25, TipPending = false } -- A23-81 the keys tip
 
 ----------------------------------------------------------------- state
 local S = {
@@ -673,6 +677,23 @@ function LEARN.Show(b, st)
 	local hud = C and C.HUD
 	if type(hud) == "table" and type(hud.Hint) == "function" then pcall(hud.Hint, slot, line) end
 	task.delay(LEARN.SoundDelay, LEARN.Sound)
+	-- A23-81: the first skill (this moment comes once per account: the slot opens while I play) brings the keys tip on
+	-- keyboards, after my first press of it, or TipLate s later if I never press
+	if slot == LEARN.TipSlot and not IS_TOUCH then
+		LEARN.TipPending = true
+		task.delay(LEARN.TipLate, LEARN.Tip)
+	end
+end
+
+-- the keys tip (once): a calm card with [Open Settings] -> the Settings window's Keys tab (PauseCard waits for a free
+-- screen; the same tip stays in Help)
+function LEARN.Tip()
+	if not LEARN.TipPending then return end
+	LEARN.TipPending = false
+	local card = C and C.PauseCard
+	if type(card) == "table" and type(card.Show) == "function" then
+		pcall(card.Show, "Tip", { Text = TXT.KeysTip, Go = { Text = TXT.KeysTipGo, Window = "Settings", Arg = { Tab = "Keys" } } })
+	end
 end
 
 -- the SkillLearn sound (PowerUp until its file is uploaded)
@@ -716,6 +737,7 @@ function SkillBar.Use(slot)
 		and hud.HintShown(slot) then
 		pcall(hud.ClearHint, slot) -- A23-68 #2: "Try your skill!" goes with the first press
 	end
+	if LEARN.TipPending and slot == LEARN.TipSlot then task.delay(LEARN.TipAfterPress, LEARN.Tip) end -- A23-81
 	if type(hud) == "table" and type(hud.InputAllowed) == "function" then
 		local ok, allowed = pcall(hud.InputAllowed)
 		if ok and allowed == false then return false end

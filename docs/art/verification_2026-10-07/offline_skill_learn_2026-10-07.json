@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 27,
+  "checks": 34,
   "failedChecks": [],
   "mutations": {
-    "total": 18,
-    "applied": 18,
-    "caught": 18,
+    "total": 24,
+    "applied": 24,
+    "caught": 24,
     "results": [
       {
         "mutation": "locked slots show again",
@@ -113,6 +113,53 @@
         ]
       },
       {
+        "mutation": "no tip after the first press",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 2.5 s after the first Q press: the keys tip -> Settings / Keys :: 0"
+        ]
+      },
+      {
+        "mutation": "no late tip",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no press: the tip comes 25 s after the learn moment :: 0"
+        ]
+      },
+      {
+        "mutation": "the tip more than once",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the tip shows once (not again at 25 s, not on the next press) :: 3",
+          "CHECK_FAIL a later skill (Z) brings no tip :: 3"
+        ]
+      },
+      {
+        "mutation": "phones get the keys tip",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL phones: no keys tip :: 1"
+        ]
+      },
+      {
+        "mutation": "every new skill brings the tip",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a later skill (Z) brings no tip :: 2"
+        ]
+      },
+      {
+        "mutation": "the tip's button forgets the Keys tab",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
+      {
         "mutation": "key badges ignore Key hints",
         "applied": true,
         "caught": true,
@@ -143,7 +190,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL the learn sound waits for the level-up chime :: SkillLearn,PowerUp",
-          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 0"
+          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 1"
         ]
       },
       {
@@ -167,10 +214,10 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b",
-    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "8e02ad1c6d531aaf159c627f0af5dc8ee40b0ad98c2ad470c99980e4d9a413b1"
+    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
+    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "eb9068fa9a25a72e467a162c5f1ba9be1ef3930d9e4ae952ade3160f3614eccf"
   },
-  "fixtureSHA256": "7da3b06b6562bfecc185af74ce2335b71edd4a85a7e01c06725ac13aaa044c1f",
+  "fixtureSHA256": "a082cd163ab97ad9c3f08a748be3c1888722cb9c45bf22a25ca9d05d45ab7a8b",
   "studioCalls": 0,
   "contract": "A23-71 skill learn offline test (SkillBar.luau; user 2026-10-07 \"스킬도 처음에는 없어야 돼! 레벨 5일 때 하나 배우는 걸로\n하자\", unlocks Q 5 / Z 15 / X 25): no skill button below its unlock level (a key press says \"Skills come at Lv N\",\nnot spammed); unlocking while playing -> \"New skill! <name>\" banner (UIKit.Announce), the button pops in, one line on it\n(C.HUD.Hint(slot, \"Press Q\") / phones \"Tap the new button\"), the SkillLearn sound with PowerUp until its file exists;\nonce per slot; a save loading past the level shows its skills without the moment; reduced motion: no pop.\nRuns the real SkillBar.luau + Config.luau (Config.Skills.Unlock set to the A23-71 numbers) in\ntools/fixtures/skill_learn_offline.luau.",
   "limitations": "The button layout without skill slots is image dev's (HudLayout); the real unlock numbers come with dev2's Config.Skills.Unlock change; the look of the moment is a Studio check."

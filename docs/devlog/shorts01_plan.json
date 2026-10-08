@@ -29,8 +29,8 @@
      "shots": [
       {
        "z": [
-        1.15,
-        1.28
+        1.1,
+        1.2
        ],
        "f": [
         [
@@ -42,15 +42,21 @@
          0.5
         ]
        ],
-       "video": "s40_first_hunt",
-       "ss": 1.1,
-       "in": "flash",
+       "video": "s41_twig_kills",
+       "ss": 11.9,
+       "speed": 0.5,
        "w": 1.2,
+       "note": "twig hits a slime, it pops (12.5)",
+       "in": "flash",
        "sfx": [
         "boom",
         {
          "name": "g_HitHeavy",
-         "at": 0.35
+         "at": 0.25
+        },
+        {
+         "name": "g_KillPop",
+         "at": 1.1
         }
        ],
        "big": {
@@ -58,28 +64,28 @@
         "color": "#FFD650",
         "y": 360,
         "size": 230
-       },
-       "speed": 0.6
+       }
       },
       {
-       "video": "s40_first_weapon",
-       "ss": 6.7,
        "z": [
-        1.15,
-        1.22
+        1.1,
+        1.2
        ],
        "f": [
         [
          0.5,
-         0.3
+         0.5
         ],
         [
          0.5,
-         0.3
+         0.5
         ]
        ],
-       "in": "punch",
+       "video": "s41_first_weapon",
+       "ss": 3.4,
        "w": 0.8,
+       "note": "the Forge: [Twig] + Stronger! (front)",
+       "in": "punch",
        "sfx": [
         {
          "name": "g_PowerUp",
@@ -107,21 +113,30 @@
      ],
      "shots": [
       {
-       "video": "s40_halo_castle",
-       "ss": 1.0,
+       "video": "s41_crown_sky",
+       "ss": 1.6,
        "z": [
-        1.6,
-        1.8
+        1.0,
+        1.1
        ],
        "in": "whip",
        "xmark": true,
        "xy": 820,
+       "note": "the broken crown in the sky",
        "sfx": [
         "whoosh",
         {
          "name": "boom",
          "at": 0.2
         }
+       ]
+      },
+      {
+       "video": "s40_halo_castle",
+       "ss": 1.0,
+       "z": [
+        1.6,
+        1.8
        ],
        "f": [
         [
@@ -132,18 +147,11 @@
          0.5,
          0.45
         ]
-       ]
-      },
-      {
-       "video": "s40_crossroads",
-       "ss": 2.0,
-       "z": [
-        1.15,
-        1.25
        ],
        "in": "whip",
        "xmark": true,
        "xy": 820,
+       "note": "Halo castle",
        "sfx": [
         "whoosh",
         {
@@ -164,25 +172,18 @@
      ],
      "shots": [
       {
-       "video": "s40_horns_castle",
-       "ss": 2.0,
+       "video": "s41_faction_pick",
+       "ss": 1.0,
+       "fit": true,
        "z": [
-        1.6,
-        1.85
+        1.25,
+        1.35
        ],
+       "fit_y": 860,
        "in": "flash",
+       "note": "pick a side",
        "sfx": [
         "ding"
-       ],
-       "f": [
-        [
-         0.5,
-         0.45
-        ],
-        [
-         0.5,
-         0.45
-        ]
        ]
       }
      ],
@@ -242,7 +243,8 @@
         ]
        ],
        "cards": "team_cards",
-       "dim": 0.55
+       "dim": 0.55,
+       "note": "team cards over the Horns castle"
       }
      ],
      "tts_speed": 1.4
@@ -260,27 +262,40 @@
      ],
      "shots": [
       {
-       "video": "s40_first_hunt",
-       "ss": 2.8,
        "z": [
-        1.15,
-        1.28
+        1.1,
+        1.2
        ],
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
+       ],
+       "video": "s41_run_meadow",
+       "ss": 0.0,
+       "w": 1.1,
+       "note": "running down the meadow road",
        "in": "whip",
        "sfx": [
-        "whoosh",
-        {
-         "name": "g_HitHeavy",
-         "at": 0.4
-        }
+        "whoosh"
        ],
-       "w": 1.1,
        "big": {
         "text": "DIRECTOR: ME",
         "color": "#FFD650",
         "y": 470,
         "size": 140
-       },
+       }
+      },
+      {
+       "z": [
+        1.1,
+        1.2
+       ],
        "f": [
         [
          0.5,
@@ -291,22 +306,23 @@
          0.5
         ]
        ],
-       "speed": 0.6
-      },
-      {
-       "video": "s40_first_hunt",
-       "ss": 4.3,
-       "z": [
-        1.15,
-        1.28
-       ],
+       "video": "s41_twig_kills",
+       "ss": 0.0,
+       "speed": 0.6,
+       "w": 1.0,
+       "note": "twig swing running at a slime",
        "in": "punch",
-       "w": 0.9,
        "sfx": [
         {
-         "name": "g_KillPop",
-         "at": 0.3
+         "name": "g_HitHeavy",
+         "at": 0.2
         }
+       ]
+      },
+      {
+       "z": [
+        1.1,
+        1.2
        ],
        "f": [
         [
@@ -318,37 +334,25 @@
          0.5
         ]
        ],
-       "speed": 0.6
-      },
-      {
-       "video": "s40_first_hunt",
-       "ss": 5.95,
-       "z": [
-        1.15,
-        1.28
-       ],
+       "video": "s41_twig_kills",
+       "ss": 8.5,
+       "speed": 0.9,
+       "w": 0.9,
+       "note": "slime gone, +Jelly picked up",
        "in": "punch",
-       "w": 0.8,
        "sfx": [
-        "boom"
+        "boom",
+        {
+         "name": "g_GoldPickup",
+         "at": 0.2
+        }
        ],
        "big": {
         "text": "NO!",
         "color": "#FF5454",
         "y": 470,
         "size": 220
-       },
-       "f": [
-        [
-         0.5,
-         0.5
-        ],
-        [
-         0.5,
-         0.5
-        ]
-       ],
-       "speed": 0.6
+       }
       }
      ]
     },
@@ -460,8 +464,8 @@
      "shots": [
       {
        "z": [
-        1.15,
-        1.28
+        1.1,
+        1.2
        ],
        "f": [
         [
@@ -473,10 +477,11 @@
          0.5
         ]
        ],
-       "video": "s40_first_hunt",
-       "ss": 7.45,
-       "in": "punch",
+       "video": "s41_knight_slimes",
+       "ss": 0.3,
        "w": 0.8,
+       "note": "sword kill, +Jelly",
+       "in": "punch",
        "sfx": [
         {
          "name": "g_Devour",
@@ -488,13 +493,12 @@
         "color": "#FF5454",
         "y": 560,
         "size": 260
-       },
-       "speed": 0.6
+       }
       },
       {
        "z": [
-        1.15,
-        1.28
+        1.1,
+        1.2
        ],
        "f": [
         [
@@ -506,10 +510,11 @@
          0.5
         ]
        ],
-       "video": "s40_first_hunt",
-       "ss": 9.1,
-       "in": "punch",
+       "video": "s41_knight_slimes",
+       "ss": 11.0,
        "w": 1.0,
+       "note": "sword kill, +Slime Core",
+       "in": "punch",
        "sfx": [
         "boom"
        ],
@@ -518,8 +523,7 @@
         "color": "#FFD650",
         "y": 560,
         "size": 150
-       },
-       "speed": 0.6
+       }
       }
      ]
     },
@@ -537,25 +541,9 @@
      ],
      "shots": [
       {
-       "video": "s40_king_fight",
-       "ss": 2.2,
        "z": [
-        1.15,
-        1.28
-       ],
-       "shake": true,
-       "in": "flash",
-       "w": 1.0,
-       "sfx": [
-        "boom",
-        {
-         "name": "g_PumpkinKing",
-         "at": 0.05
-        },
-        {
-         "name": "g_HitHeavy",
-         "at": 0.4
-        }
+        1.1,
+        1.2
        ],
        "f": [
         [
@@ -566,6 +554,22 @@
          0.5,
          0.5
         ]
+       ],
+       "video": "s41_knight_slimes",
+       "ss": 4.9,
+       "w": 1.0,
+       "note": "the knight's sword pops the blue King Slime",
+       "in": "flash",
+       "sfx": [
+        "boom",
+        {
+         "name": "g_HitHeavy",
+         "at": 0.3
+        },
+        {
+         "name": "g_KillPop",
+         "at": 0.6
+        }
        ],
        "big": {
         "text": "A REAL SWORD!",
@@ -582,23 +586,35 @@
         1.1
        ],
        "in": "punch",
-       "w": 0.8,
+       "w": 0.9,
+       "note": "the Pumpkin King",
        "sfx": [
         {
-         "name": "g_HitHeavy",
-         "at": 0.2
+         "name": "g_PumpkinKing",
+         "at": 0.05
         }
        ]
       },
       {
-       "video": "s40_king_fight",
-       "ss": 5.4,
        "z": [
-        1.15,
-        1.28
+        1.1,
+        1.2
        ],
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
+       ],
+       "video": "s40_king_fight",
+       "ss": 2.2,
+       "w": 1.1,
+       "note": "sword vs the Pumpkin King",
        "in": "punch",
-       "w": 1.0,
        "sfx": [
         {
          "name": "g_HitHeavy",
@@ -611,17 +627,7 @@
         "color": "#FF5454",
         "y": 560,
         "size": 200
-       },
-       "f": [
-        [
-         0.5,
-         0.5
-        ],
-        [
-         0.5,
-         0.5
-        ]
-       ]
+       }
       }
      ],
      "emoji": "🎃"
@@ -682,7 +688,7 @@
    "style": "neon",
    "gap": 0.05,
    "sentence_gap": 0.14,
-   "note_v2": "v3 (사용자 2026-10-08 '있는 거 하지 말고 다시 짜서 다시'): 전부 새로 찍은 s40 원본(FilmSet 5df6330). 훅 = 첫 무기 나뭇가지 'A STICK?!', 8 AI 팀원, 감독 NO, 도시락 천사/악마, 호박 대왕 + 10/31, 끝 질문 '돌려줄래 한 입?'. ss 값은 찍은 뒤 확인 시트로 맞춘다."
+   "note_v2": "v6 (검수·사용자 2026-10-08 '가만히 처맞고 있는 중복'): 새 원본 s41_*, 같은 원본 구간 한 번만, 내가 맞는 숫자 없는 구간만(redscan)"
   },
   {
    "id": "short02_picture_to_3d",

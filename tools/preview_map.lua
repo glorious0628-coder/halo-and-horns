@@ -1045,16 +1045,19 @@ map.Parent = workspace
 local Lighting = game:GetService("Lighting")
 local atm = Lighting:FindFirstChildOfClass("Atmosphere")
 if atm then atm:Destroy() end -- A9-3
--- A23-29/30 사용자 선택 E(밝은 장난감 한낮 B + 새 땅 그림): Config.Sky.Neutral·WarService와 같은 값
-Lighting.ClockTime = 14.2
-Lighting.Brightness = 2.0
-Lighting.Ambient = RGB(110, 108, 106)
-Lighting.OutdoorAmbient = RGB(128, 126, 124)
-Lighting.FogColor = RGB(205, 215, 230)
-Lighting.FogStart = 250
-Lighting.FogEnd = 1100
-pcall(function() Lighting.EnvironmentDiffuseScale = 1.0 end)
+-- Config.Sky.Neutral·WarService와 같은 값(2026-10-08 깊이: 낮은 해, 어두운 그늘, 가까운 안개, 또렷한 그림자)
+Lighting.ClockTime = 15.3
+Lighting.Brightness = 2.2
+Lighting.Ambient = RGB(72, 76, 86)
+Lighting.OutdoorAmbient = RGB(110, 120, 135)
+Lighting.FogColor = RGB(150, 205, 228)
+Lighting.FogStart = 150
+Lighting.FogEnd = 950
+Lighting.ExposureCompensation = -0.05
+pcall(function() Lighting.EnvironmentDiffuseScale = 0.5 end)
 pcall(function() Lighting.EnvironmentSpecularScale = 0.6 end)
+pcall(function() Lighting.ShadowSoftness = 0.15 end)
+pcall(function() Lighting.LightingStyle = Enum.LightingStyle.Realistic end)
 Lighting.GlobalShadows = true
 
 return string.format("map v2 full mode: parts %d, lights %d; %s", count, lights, table.concat(report, "; "))

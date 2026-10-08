@@ -171,5 +171,25 @@
   "sheet": "art/review/retex/crossroads_16.jpg",
   "note": "same teal base as StallRed -> wood (awning untouched)"
  },
- "_review": "검수 OK 10/08 (#5 #7 #16 #37 #38; #17 after lavender fix)"
+ "_review": "검수 OK 10/08 (#5 #7 #16 #37 #38; #17 after lavender fix)",
+ "W_Tree_A_Deep_tex.png": {
+  "item": "woods A23-76 ③",
+  "mesh_from": "W_Tree_A (MeshId in import_next3_assets)",
+  "new_name": "W_Tree_A_Deep",
+  "sheet": "art/review/world/woods_colour_0cr.jpg",
+  "note": "Goblin Woods only"
+ },
+ "W_Boulder_A_Moss_tex.png": {
+  "item": "woods A23-76 ③",
+  "mesh_from": "W_Boulder_A",
+  "new_name": "W_Boulder_A_Moss",
+  "sheet": "art/review/world/woods_colour_0cr.jpg",
+  "note": "moss less neon; woods + mountain"
+ },
+ "W_Boulder_B_Moss_tex.png": {
+  "item": "woods A23-76 ③",
+  "mesh_from": "W_Boulder_B",
+  "new_name": "W_Boulder_B_Moss",
+  "sheet": "art/review/world/woods_colour_0cr.jpg"
+ }
 }
