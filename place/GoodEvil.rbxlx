@@ -187916,13 +187916,14 @@ ZXR0bGVkAwE=]]></BinaryString>
 										<G>1</G>
 										<B>1</B>
 									</Color3>
-									<Content name="MetalnessMap"><url>rbxassetid://70504367874253</url></Content>
+									<Content name="MetalnessMap"><null></null></Content>
 									<Content name="NormalMap"><url>rbxassetid://76055883794705</url></Content>
 									<token name="ResampleMode">0</token>
 									<Content name="RoughnessMap"><url>rbxassetid://89877032775579</url></Content>
 									<int name="SurfaceSlot">-1</int>
-									<Content name="TexturePack"><url>rbxassetid://126248738124412</url></Content>
-									<BinaryString name="AttributesSerialize"></BinaryString>
+									<Content name="TexturePack"><url>rbxassetid://105471604943732</url></Content>
+									<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83MDUwNDM2Nzg3NDI1
+Mw==]]></BinaryString>
 									<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 									<bool name="DefinesCapabilities">false</bool>
 									<UniqueId name="HistoryId">2f8372a589ce1f7a0ad87b4e0000a075</UniqueId>
@@ -195887,12 +195888,12 @@ ZXR0bGVkAwE=]]></BinaryString>
 										<G>1</G>
 										<B>1</B>
 									</Color3>
-									<Content name="MetalnessMap"><url>rbxassetid://101709633665550</url></Content>
+									<Content name="MetalnessMap"><null></null></Content>
 									<Content name="NormalMap"><url>rbxassetid://83274352685220</url></Content>
 									<token name="ResampleMode">0</token>
 									<Content name="RoughnessMap"><url>rbxassetid://74235223728837</url></Content>
 									<int name="SurfaceSlot">-1</int>
-									<Content name="TexturePack"><url>rbxassetid://103891846599728</url></Content>
+									<Content name="TexturePack"><url>rbxassetid://116061580742584</url></Content>
 									<BinaryString name="AttributesSerialize"></BinaryString>
 									<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 									<bool name="DefinesCapabilities">false</bool>
@@ -196494,13 +196495,14 @@ ZXR0bGVkAwE=]]></BinaryString>
 										<G>1</G>
 										<B>1</B>
 									</Color3>
-									<Content name="MetalnessMap"><url>rbxassetid://90609978134753</url></Content>
+									<Content name="MetalnessMap"><null></null></Content>
 									<Content name="NormalMap"><url>rbxassetid://105043257476611</url></Content>
 									<token name="ResampleMode">0</token>
 									<Content name="RoughnessMap"><url>rbxassetid://99041724199286</url></Content>
 									<int name="SurfaceSlot">-1</int>
-									<Content name="TexturePack"><url>rbxassetid://136651384430618</url></Content>
-									<BinaryString name="AttributesSerialize"></BinaryString>
+									<Content name="TexturePack"><url>rbxassetid://117681833273009</url></Content>
+									<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly85MDYwOTk3ODEzNDc1
+Mw==]]></BinaryString>
 									<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 									<bool name="DefinesCapabilities">false</bool>
 									<UniqueId name="HistoryId">2f8372a589ce1f7a0ad87b4e0000c717</UniqueId>
@@ -197223,13 +197225,14 @@ ZXR0bGVkAwE=]]></BinaryString>
 										<G>1</G>
 										<B>1</B>
 									</Color3>
-									<Content name="MetalnessMap"><url>rbxassetid://95168589045435</url></Content>
+									<Content name="MetalnessMap"><null></null></Content>
 									<Content name="NormalMap"><url>rbxassetid://105546162710491</url></Content>
 									<token name="ResampleMode">0</token>
 									<Content name="RoughnessMap"><url>rbxassetid://126891444838567</url></Content>
 									<int name="SurfaceSlot">-1</int>
-									<Content name="TexturePack"><url>rbxassetid://86351868573201</url></Content>
-									<BinaryString name="AttributesSerialize"></BinaryString>
+									<Content name="TexturePack"><url>rbxassetid://99834698932117</url></Content>
+									<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly85NTE2ODU4OTA0NTQz
+NQ==]]></BinaryString>
 									<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 									<bool name="DefinesCapabilities">false</bool>
 									<UniqueId name="HistoryId">2f8372a589ce1f7a0ad87b4e0000c71a</UniqueId>
@@ -197448,13 +197451,14 @@ ZXR0bGVkAwE=]]></BinaryString>
 										<G>1</G>
 										<B>1</B>
 									</Color3>
-									<Content name="MetalnessMap"><url>rbxassetid://72302704375509</url></Content>
+									<Content name="MetalnessMap"><null></null></Content>
 									<Content name="NormalMap"><url>rbxassetid://113266697899462</url></Content>
 									<token name="ResampleMode">0</token>
 									<Content name="RoughnessMap"><url>rbxassetid://108194460892735</url></Content>
 									<int name="SurfaceSlot">-1</int>
-									<Content name="TexturePack"><url>rbxassetid://110651556219491</url></Content>
-									<BinaryString name="AttributesSerialize"></BinaryString>
+									<Content name="TexturePack"><url>rbxassetid://114193563473845</url></Content>
+									<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83MjMwMjcwNDM3NTUw
+OQ==]]></BinaryString>
 									<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 									<bool name="DefinesCapabilities">false</bool>
 									<UniqueId name="HistoryId">2f8372a589ce1f7a0ad87b4e0000c723</UniqueId>
@@ -198819,13 +198823,14 @@ ZXR0bGVkAwE=]]></BinaryString>
 										<G>1</G>
 										<B>1</B>
 									</Color3>
-									<Content name="MetalnessMap"><url>rbxassetid://101709633665550</url></Content>
+									<Content name="MetalnessMap"><null></null></Content>
 									<Content name="NormalMap"><url>rbxassetid://83274352685220</url></Content>
 									<token name="ResampleMode">0</token>
 									<Content name="RoughnessMap"><url>rbxassetid://74235223728837</url></Content>
 									<int name="SurfaceSlot">-1</int>
-									<Content name="TexturePack"><url>rbxassetid://93520549913933</url></Content>
-									<BinaryString name="AttributesSerialize"></BinaryString>
+									<Content name="TexturePack"><url>rbxassetid://84362605065100</url></Content>
+									<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMDE3MDk2MzM2NjU1
+NTA=]]></BinaryString>
 									<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 									<bool name="DefinesCapabilities">false</bool>
 									<UniqueId name="HistoryId">2f8372a589ce1f7a0ad87b4e0000c726</UniqueId>
@@ -382359,296 +382364,6 @@ return ChatTags
 					<UniqueId name="UniqueId">4b185826fe752ce90ad88e9700007d09</UniqueId>
 				</Properties>
 			</Item>
-			<Item class="LocalScript" referent="RBX570467A580284368B312CA80574DE252">
-				<Properties>
-					<ProtectedString name="Source"><![CDATA[-- ClientMain.client.luau : the ONLY client entry point.
--- A23-48 English only (검수 2026-10-07): Roblox's automatic translation would show our English text in the player's
--- Roblox language (a Korean account sees Korean). Every GUI object under PlayerGui and in the world gets
--- AutoLocalize = false as it appears (server-made signs and name tags too: translation happens on this client).
--- ProximityPrompts too (검수 audit 2026-10-08: they are no GuiBase2d, so "Switch side" / "Open" still translated).
-do
-	local function off(inst)
-		if inst:IsA("GuiBase2d") or inst:IsA("ProximityPrompt") then inst.AutoLocalize = false end
-	end
-	local function watch(root)
-		root.DescendantAdded:Connect(off)
-		for _, d in root:GetDescendants() do off(d) end
-	end
-	watch(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
-	task.spawn(watch, workspace)
-end
-
-local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "SettingsUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "ChatTags", "Invite", "Passes", "SupporterBoard", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "FirstSteps", "FountainFx", "SkillBar", "Audio" }
-
-local C = {}
-for _, name in ORDER do
-	C[name] = require(script.Parent:WaitForChild(name))
-end
-for _, name in ORDER do
-	local ok, err = pcall(C[name].Init, C)
-	if not ok then
-		warn(("[ClientMain] %s.Init failed: %s"):format(name, tostring(err)))
-	end
-end
-for _, name in ORDER do
-	local ok, err = pcall(C[name].Start)
-	if not ok then
-		warn(("[ClientMain] %s.Start failed: %s"):format(name, tostring(err)))
-	end
-end
-print("[ClientMain] client started")
-]]></ProtectedString>
-					<bool name="Disabled">false</bool>
-					<Content name="LinkedSource"><null></null></Content>
-					<token name="RunContext">0</token>
-					<string name="ScriptGuid">{AAA5955E-7A65-4615-B688-0AAC6F3609D3}</string>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">ClientMain</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
-					<UniqueId name="UniqueId">4b185826fe752ce90ad88e9700012fad</UniqueId>
-				</Properties>
-			</Item>
-			<Item class="ModuleScript" referent="RBX67FB637855554711B6774B4334BC2116">
-				<Properties>
-					<Content name="LinkedSource"><null></null></Content>
-					<ProtectedString name="Source"><![CDATA[-- Invite.luau (게임성 개발 1, SPEC A23-79 #3 "친구 초대 + Go to friend"): Invite.Prompt(source) opens Roblox's own invite
--- window (SocialService:PromptGameInvite) with my UserId as the LaunchData, so the server can tell who invited a friend
--- from the friend's join data (GetJoinData().LaunchData, 게임성 개발 2). No reward for inviting (A23-68). Invite.CanShow()
--- is false while I am knocked out, for FailCalm s after a failed scroll and while the Shop window is open (A23-79: no
--- invite button near a KO, a failed enhance or a purchase) - the buttons (menu, Tab list, goose / war win cards: 이미지
--- 개발's layout) show only while it is true. A friend of mine joining this server fires Invite.FriendJoined(player) and
--- shows one line; Invite.GoTo(player) asks the server to take me there (remote GoToFriend, 게임성 개발 2 - the server keeps
--- the sprout protection and the PvP rules; nothing happens until that remote exists). Presentation + the prompt only.
--- Public API: Invite.Init(C), Invite.Start(), Invite.CanShow() -> bool, Invite.Prompt(source?) -> bool (yields:
--- call it from a button's own thread), Invite.GoTo(player) -> bool, Invite.FriendJoined (Util.Signal: player),
--- Invite.OnFx(kind, data) (the failed-scroll clock; the offline test drives it), Invite.DefaultLine (true: this module
--- shows the plain 'Your friend … joined!' line; 이미지 개발's friend card sets it false and draws its own from FriendJoined).
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local SocialService = game:GetService("SocialService")
-
-local Shared = ReplicatedStorage:WaitForChild("Shared")
-local Net = require(Shared:WaitForChild("Net"))
-local Util = require(Shared:WaitForChild("Util"))
-
-local LocalPlayer = Players.LocalPlayer
-
-local Invite = {}
-local C = nil
-local TAG = "Invite"
-
-local T = {
-	FailCalm = 6, -- s after a failed scroll: no invite button (A23-79)
-	ShopWindow = "Shop", -- the Panels window that sells passes (ShopUI): no invite while it is open
-	Remote = "GoToFriend", -- the server's "take me to my friend" (게임성 개발 2)
-	ToastSeconds = 5,
-	-- game text: English only (A23-48), short and easy
-	Text = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" },
-}
-local S = { FailAt = -math.huge, Seen = {} } -- Seen[userId] = true: that friend's line was shown this session
-
-Invite.FriendJoined = Util.Signal.new()
-Invite.DefaultLine = true -- false once a friend card (이미지 개발) draws FriendJoined itself: never two lines
-
-local function knockedOut()
-	local char = LocalPlayer and LocalPlayer.Character
-	local hum = char and char:FindFirstChildOfClass("Humanoid")
-	return hum == nil or hum.Health <= 0
-end
-
-function Invite.CanShow()
-	if not LocalPlayer or knockedOut() then return false end
-	if os.clock() - S.FailAt < T.FailCalm then return false end
-	local panels = C and C.Panels
-	if type(panels) == "table" and type(panels.CurrentId) == "function" then
-		local ok, id = pcall(panels.CurrentId)
-		if ok and id == T.ShopWindow then return false end
-	end
-	return true
-end
-
--- Roblox's invite window, my UserId as the LaunchData; false when it may not show (CanShow, CanSendGameInviteAsync)
-function Invite.Prompt(source)
-	if not Invite.CanShow() then return false end
-	local okCan, can = pcall(SocialService.CanSendGameInviteAsync, SocialService, LocalPlayer)
-	if not okCan or can ~= true then return false end
-	local ok, err = pcall(function()
-		local options = Instance.new("ExperienceInviteOptions")
-		options.PromptMessage = T.Text.Message
-		options.LaunchData = tostring(LocalPlayer.UserId)
-		SocialService:PromptGameInvite(LocalPlayer, options)
-	end)
-	if not ok then Util.Warn(TAG, "invite (" .. tostring(source) .. ") failed: " .. tostring(err)) end
-	return ok
-end
-
--- [Go to friend]: the server decides (sprout protection, PvP); false until its remote exists
-function Invite.GoTo(player)
-	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players then return false end
-	local folder = ReplicatedStorage:FindFirstChild("Remotes")
-	local remote = folder and folder:FindFirstChild(T.Remote)
-	if not remote or not remote:IsA("RemoteEvent") then return false end
-	local ok = pcall(remote.FireServer, remote, player.UserId)
-	return ok
-end
-
--- the failed-scroll clock (Fx "Enhance" { Success = false } comes to me only)
-function Invite.OnFx(kind, data)
-	if kind == "Enhance" and type(data) == "table" and data.Success == false then S.FailAt = os.clock() end
-end
-
-local function onPlayerAdded(player)
-	if player == LocalPlayer or S.Seen[player.UserId] then return end
-	local ok, friend = pcall(LocalPlayer.IsFriendsWith, LocalPlayer, player.UserId)
-	if not ok or friend ~= true or player.Parent ~= Players or S.Seen[player.UserId] then return end
-	S.Seen[player.UserId] = true
-	Invite.FriendJoined:Fire(player)
-	if Invite.DefaultLine ~= true then return end
-	local kit = C and C.UIKit
-	if type(kit) == "table" and type(kit.Toast) == "function" then
-		pcall(kit.Toast, string.format(T.Text.Joined, Util.PlayerDisplayName(player)), "info", T.ToastSeconds)
-	end
-end
-
-function Invite.Init(registry)
-	C = registry
-end
-
-function Invite.Start()
-	if not LocalPlayer then return end
-	Players.PlayerAdded:Connect(function(player) task.spawn(onPlayerAdded, player) end)
-	task.spawn(function()
-		local ok, err = pcall(function()
-			Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
-				pcall(Invite.OnFx, kind, data)
-			end)
-		end)
-		if not ok then Util.Warn(TAG, "Fx hookup failed: " .. tostring(err)) end
-	end)
-end
-
-return Invite
-]]></ProtectedString>
-					<string name="ScriptGuid">{C9C5B91C-5EE8-4103-AFE6-C5A86A3466AF}</string>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">Invite</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
-					<UniqueId name="UniqueId">4b185826fe752ce90ad88e9700012faf</UniqueId>
-				</Properties>
-			</Item>
-			<Item class="ModuleScript" referent="RBXBF6832E2196C437EA6BB2D2145E8B959">
-				<Properties>
-					<Content name="LinkedSource"><null></null></Content>
-					<ProtectedString name="Source"><![CDATA[-- Passes.luau (게임성 개발 1, SPEC A23-75 "산 뒤 알림"): right after I buy something in this session, the moment the server
--- turns it on - my PassXP2 / PassGold2 / PassVIP attribute (PromptGamePassPurchaseFinished + UserOwnsGamePassAsync on the
--- server, 게임성 개발 2) or a longer LooksOwned (a bought look) - one thank-you line says what it does. Only within
--- BoughtWindow s of a finished purchase of mine (MarketplaceService ...PurchaseFinished, wasPurchased = true): the
--- join-time ownership check that flips a flag late never speaks, and neither does a save. A purchase window closed without
--- buying says nothing (no pressure, A23-75 "강요·속임수 유도 없음"). The HUD chips ('2x XP' / '2x Gold') and the Shop window
--- are 이미지 개발's (HUD L.Fold, ShopUI.luau). Presentation only: the server owns every pass.
--- Public API: Passes.Init(C), Passes.Start(), Passes.LineFor(attr) -> the thank-you text or nil, Passes.Bought(purchased)
--- (a purchase window finished), Passes.OnAttr(attr, prev, value) -> the line shown or nil (the offline test drives them).
-local Players = game:GetService("Players")
-local MarketplaceService = game:GetService("MarketplaceService")
-
-local Passes = {}
-local C = nil
-
-local T = {
-	ToastSeconds = 6,
-	BoughtWindow = 30, -- s after my finished purchase: the server's flag turning on gets its thank-you line
-	-- the server's flags (dev2) -> the thank-you line (game text: English only, A23-48; short and easy)
-	Lines = {
-		PassXP2 = "Thank you! 2x XP is on.",
-		PassGold2 = "Thank you! 2x Gold is on.",
-		PassVIP = "Thank you! You are a VIP now: crown and chat tag.",
-	},
-	Looks = "LooksOwned", -- the server's bought-look list (a string that grows)
-	LookLine = "New look unlocked! Pick it in the Shop.",
-}
-local S = { BoughtAt = -math.huge }
-
-local LocalPlayer = Players.LocalPlayer
-
-function Passes.LineFor(attr)
-	return T.Lines[attr]
-end
-
--- a purchase window of mine finished (wasPurchased = the player really bought)
-function Passes.Bought(purchased)
-	if purchased == true then S.BoughtAt = os.clock() end
-end
-
-local function show(text)
-	local kit = C and C.UIKit
-	if type(kit) == "table" and type(kit.Toast) == "function" then pcall(kit.Toast, text, "good", T.ToastSeconds) end
-end
-
--- one attribute change: a flag that turned on right after my purchase -> its line
-function Passes.OnAttr(attr, prev, value)
-	if os.clock() - S.BoughtAt > T.BoughtWindow then return nil end
-	local line = nil
-	if T.Lines[attr] then
-		if value == true and prev ~= true then line = T.Lines[attr] end
-	elseif attr == T.Looks then
-		local before = type(prev) == "string" and prev or ""
-		if type(value) == "string" and #value > #before then line = T.LookLine end
-	end
-	if line then
-		S.BoughtAt = -math.huge -- one purchase, one thank-you
-		show(line)
-	end
-	return line
-end
-
-local function watch(attr)
-	local last = LocalPlayer:GetAttribute(attr)
-	LocalPlayer:GetAttributeChangedSignal(attr):Connect(function()
-		local prev = last
-		last = LocalPlayer:GetAttribute(attr)
-		pcall(Passes.OnAttr, attr, prev, last)
-	end)
-end
-
-function Passes.Init(registry)
-	C = registry
-end
-
-function Passes.Start()
-	if not LocalPlayer then return end
-	for attr in T.Lines do watch(attr) end
-	watch(T.Looks)
-	pcall(function()
-		MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, _, purchased)
-			if player == LocalPlayer then Passes.Bought(purchased) end
-		end)
-		MarketplaceService.PromptProductPurchaseFinished:Connect(function(userId, _, purchased)
-			if userId == LocalPlayer.UserId then Passes.Bought(purchased) end
-		end)
-	end)
-end
-
-return Passes
-]]></ProtectedString>
-					<string name="ScriptGuid">{CFE28160-B52D-4A83-88B1-BA7767ABB73E}</string>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">Passes</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
-					<UniqueId name="UniqueId">4b185826fe752ce90ad88e9700012fb1</UniqueId>
-				</Properties>
-			</Item>
 			<Item class="ModuleScript" referent="RBXB5214DBF1AE34F3790EF61405237975D">
 				<Properties>
 					<Content name="LinkedSource"><null></null></Content>
@@ -383155,7 +382870,635 @@ return QuestTarget
 					<UniqueId name="UniqueId">4b185826fe752ce90ad88e9700012fb3</UniqueId>
 				</Properties>
 			</Item>
-			<Item class="ModuleScript" referent="RBXC0DC6714F202456A82E302B63EFE3C91">
+			<Item class="ModuleScript" referent="RBX67FB637855554711B6774B4334BC2116">
+				<Properties>
+					<Content name="LinkedSource"><null></null></Content>
+					<ProtectedString name="Source"><![CDATA[-- Invite.luau (게임성 개발 1, SPEC A23-79 #3 "친구 초대 + Go to friend"): Invite.Prompt(source) opens Roblox's own invite
+-- window (SocialService:PromptGameInvite) with my UserId as the LaunchData, so the server can tell who invited a friend
+-- from the friend's join data (GetJoinData().LaunchData, 게임성 개발 2). No reward for inviting (A23-68). Invite.CanShow()
+-- is false while I am knocked out, for FailCalm s after a failed scroll and while the Shop window is open (A23-79: no
+-- invite button near a KO, a failed enhance or a purchase) - the buttons (menu, Tab list, goose / war win cards: 이미지
+-- 개발's layout) show only while it is true. A friend of mine joining this server fires Invite.FriendJoined(player) and
+-- shows one line; Invite.GoTo(player) asks the server to take me there (remote GoToFriend, 게임성 개발 2 - the server keeps
+-- the sprout protection and the PvP rules; nothing happens until that remote exists). Presentation + the prompt only.
+-- Public API: Invite.Init(C), Invite.Start(), Invite.CanShow() -> bool, Invite.Prompt(source?) -> bool (yields:
+-- call it from a button's own thread), Invite.GoTo(player) -> bool, Invite.FriendJoined (Util.Signal: player),
+-- Invite.OnFx(kind, data) (the failed-scroll clock; the offline test drives it), Invite.DefaultLine (true: this module
+-- shows the plain 'Your friend … joined!' line; 이미지 개발's friend card sets it false and draws its own from FriendJoined).
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SocialService = game:GetService("SocialService")
+
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Net = require(Shared:WaitForChild("Net"))
+local Util = require(Shared:WaitForChild("Util"))
+
+local LocalPlayer = Players.LocalPlayer
+
+local Invite = {}
+local C = nil
+local TAG = "Invite"
+
+local T = {
+	FailCalm = 6, -- s after a failed scroll: no invite button (A23-79)
+	ShopWindow = "Shop", -- the Panels window that sells passes (ShopUI): no invite while it is open
+	Remote = "GoToFriend", -- the server's "take me to my friend" (게임성 개발 2)
+	ToastSeconds = 5,
+	-- game text: English only (A23-48), short and easy
+	Text = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" },
+}
+local S = { FailAt = -math.huge, Seen = {} } -- Seen[userId] = true: that friend's line was shown this session
+
+Invite.FriendJoined = Util.Signal.new()
+Invite.DefaultLine = true -- false once a friend card (이미지 개발) draws FriendJoined itself: never two lines
+
+local function knockedOut()
+	local char = LocalPlayer and LocalPlayer.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	return hum == nil or hum.Health <= 0
+end
+
+function Invite.CanShow()
+	if not LocalPlayer or knockedOut() then return false end
+	if os.clock() - S.FailAt < T.FailCalm then return false end
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.CurrentId) == "function" then
+		local ok, id = pcall(panels.CurrentId)
+		if ok and id == T.ShopWindow then return false end
+	end
+	return true
+end
+
+-- Roblox's invite window, my UserId as the LaunchData; false when it may not show (CanShow, CanSendGameInviteAsync)
+function Invite.Prompt(source)
+	if not Invite.CanShow() then return false end
+	local okCan, can = pcall(SocialService.CanSendGameInviteAsync, SocialService, LocalPlayer)
+	if not okCan or can ~= true then return false end
+	local ok, err = pcall(function()
+		local options = Instance.new("ExperienceInviteOptions")
+		options.PromptMessage = T.Text.Message
+		options.LaunchData = tostring(LocalPlayer.UserId)
+		SocialService:PromptGameInvite(LocalPlayer, options)
+	end)
+	if not ok then Util.Warn(TAG, "invite (" .. tostring(source) .. ") failed: " .. tostring(err)) end
+	return ok
+end
+
+-- [Go to friend]: the server decides (sprout protection, PvP); false until its remote exists
+function Invite.GoTo(player)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players then return false end
+	local folder = ReplicatedStorage:FindFirstChild("Remotes")
+	local remote = folder and folder:FindFirstChild(T.Remote)
+	if not remote or not remote:IsA("RemoteEvent") then return false end
+	local ok = pcall(remote.FireServer, remote, player.UserId)
+	return ok
+end
+
+-- the failed-scroll clock (Fx "Enhance" { Success = false } comes to me only)
+function Invite.OnFx(kind, data)
+	if kind == "Enhance" and type(data) == "table" and data.Success == false then S.FailAt = os.clock() end
+end
+
+local function onPlayerAdded(player)
+	if player == LocalPlayer or S.Seen[player.UserId] then return end
+	local ok, friend = pcall(LocalPlayer.IsFriendsWith, LocalPlayer, player.UserId)
+	if not ok or friend ~= true or player.Parent ~= Players or S.Seen[player.UserId] then return end
+	S.Seen[player.UserId] = true
+	Invite.FriendJoined:Fire(player)
+	if Invite.DefaultLine ~= true then return end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Toast) == "function" then
+		pcall(kit.Toast, string.format(T.Text.Joined, Util.PlayerDisplayName(player)), "info", T.ToastSeconds)
+	end
+end
+
+function Invite.Init(registry)
+	C = registry
+end
+
+function Invite.Start()
+	if not LocalPlayer then return end
+	Players.PlayerAdded:Connect(function(player) task.spawn(onPlayerAdded, player) end)
+	task.spawn(function()
+		local ok, err = pcall(function()
+			Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
+				pcall(Invite.OnFx, kind, data)
+			end)
+		end)
+		if not ok then Util.Warn(TAG, "Fx hookup failed: " .. tostring(err)) end
+	end)
+end
+
+return Invite
+]]></ProtectedString>
+					<string name="ScriptGuid">{C9C5B91C-5EE8-4103-AFE6-C5A86A3466AF}</string>
+					<BinaryString name="AttributesSerialize"></BinaryString>
+					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+					<bool name="DefinesCapabilities">false</bool>
+					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
+					<string name="Name">Invite</string>
+					<int64 name="SourceAssetId">-1</int64>
+					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
+					<UniqueId name="UniqueId">4b185826fe752ce90ad88e9700012faf</UniqueId>
+				</Properties>
+			</Item>
+			<Item class="ModuleScript" referent="RBXBF6832E2196C437EA6BB2D2145E8B959">
+				<Properties>
+					<Content name="LinkedSource"><null></null></Content>
+					<ProtectedString name="Source"><![CDATA[-- Passes.luau (게임성 개발 1, SPEC A23-75 "산 뒤 알림"): right after I buy something in this session, the moment the server
+-- turns it on - my PassXP2 / PassGold2 / PassVIP attribute (PromptGamePassPurchaseFinished + UserOwnsGamePassAsync on the
+-- server, 게임성 개발 2) or a longer LooksOwned (a bought look) - one thank-you line says what it does. Only within
+-- BoughtWindow s of a finished purchase of mine (MarketplaceService ...PurchaseFinished, wasPurchased = true): the
+-- join-time ownership check that flips a flag late never speaks, and neither does a save. A purchase window closed without
+-- buying says nothing (no pressure, A23-75 "강요·속임수 유도 없음"). The HUD chips ('2x XP' / '2x Gold') and the Shop window
+-- are 이미지 개발's (HUD L.Fold, ShopUI.luau). Presentation only: the server owns every pass.
+-- Public API: Passes.Init(C), Passes.Start(), Passes.LineFor(attr) -> the thank-you text or nil, Passes.Bought(purchased)
+-- (a purchase window finished), Passes.OnAttr(attr, prev, value) -> the line shown or nil (the offline test drives them).
+local Players = game:GetService("Players")
+local MarketplaceService = game:GetService("MarketplaceService")
+
+local Passes = {}
+local C = nil
+
+local T = {
+	ToastSeconds = 6,
+	BoughtWindow = 30, -- s after my finished purchase: the server's flag turning on gets its thank-you line
+	-- the server's flags (dev2) -> the thank-you line (game text: English only, A23-48; short and easy)
+	Lines = {
+		PassXP2 = "Thank you! 2x XP is on.",
+		PassGold2 = "Thank you! 2x Gold is on.",
+		PassVIP = "Thank you! You are a VIP now: crown and chat tag.",
+	},
+	Looks = "LooksOwned", -- the server's bought-look list (a string that grows)
+	LookLine = "New look unlocked! Pick it in the Shop.",
+}
+local S = { BoughtAt = -math.huge }
+
+local LocalPlayer = Players.LocalPlayer
+
+function Passes.LineFor(attr)
+	return T.Lines[attr]
+end
+
+-- a purchase window of mine finished (wasPurchased = the player really bought)
+function Passes.Bought(purchased)
+	if purchased == true then S.BoughtAt = os.clock() end
+end
+
+local function show(text)
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Toast) == "function" then pcall(kit.Toast, text, "good", T.ToastSeconds) end
+end
+
+-- one attribute change: a flag that turned on right after my purchase -> its line
+function Passes.OnAttr(attr, prev, value)
+	if os.clock() - S.BoughtAt > T.BoughtWindow then return nil end
+	local line = nil
+	if T.Lines[attr] then
+		if value == true and prev ~= true then line = T.Lines[attr] end
+	elseif attr == T.Looks then
+		local before = type(prev) == "string" and prev or ""
+		if type(value) == "string" and #value > #before then line = T.LookLine end
+	end
+	if line then
+		S.BoughtAt = -math.huge -- one purchase, one thank-you
+		show(line)
+	end
+	return line
+end
+
+local function watch(attr)
+	local last = LocalPlayer:GetAttribute(attr)
+	LocalPlayer:GetAttributeChangedSignal(attr):Connect(function()
+		local prev = last
+		last = LocalPlayer:GetAttribute(attr)
+		pcall(Passes.OnAttr, attr, prev, last)
+	end)
+end
+
+function Passes.Init(registry)
+	C = registry
+end
+
+function Passes.Start()
+	if not LocalPlayer then return end
+	for attr in T.Lines do watch(attr) end
+	watch(T.Looks)
+	pcall(function()
+		MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, _, purchased)
+			if player == LocalPlayer then Passes.Bought(purchased) end
+		end)
+		MarketplaceService.PromptProductPurchaseFinished:Connect(function(userId, _, purchased)
+			if userId == LocalPlayer.UserId then Passes.Bought(purchased) end
+		end)
+	end)
+end
+
+return Passes
+]]></ProtectedString>
+					<string name="ScriptGuid">{CFE28160-B52D-4A83-88B1-BA7767ABB73E}</string>
+					<BinaryString name="AttributesSerialize"></BinaryString>
+					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+					<bool name="DefinesCapabilities">false</bool>
+					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
+					<string name="Name">Passes</string>
+					<int64 name="SourceAssetId">-1</int64>
+					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
+					<UniqueId name="UniqueId">4b185826fe752ce90ad88e9700012fb1</UniqueId>
+				</Properties>
+			</Item>
+			<Item class="LocalScript" referent="RBX44A08C36D8124711AF94C5F7C52FF87F">
+				<Properties>
+					<ProtectedString name="Source"><![CDATA[-- ClientMain.client.luau : the ONLY client entry point.
+-- A23-48 English only (검수 2026-10-07): Roblox's automatic translation would show our English text in the player's
+-- Roblox language (a Korean account sees Korean). Every GUI object under PlayerGui and in the world gets
+-- AutoLocalize = false as it appears (server-made signs and name tags too: translation happens on this client).
+-- ProximityPrompts too (검수 audit 2026-10-08: they are no GuiBase2d, so "Switch side" / "Open" still translated).
+do
+	local function off(inst)
+		if inst:IsA("GuiBase2d") or inst:IsA("ProximityPrompt") then inst.AutoLocalize = false end
+	end
+	local function watch(root)
+		root.DescendantAdded:Connect(off)
+		for _, d in root:GetDescendants() do off(d) end
+	end
+	watch(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
+	task.spawn(watch, workspace)
+end
+
+local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "SettingsUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "ChatTags", "Invite", "Passes", "SupporterBoard", "PauseCard", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "FirstSteps", "FountainFx", "SkillBar", "Audio" }
+
+local C = {}
+for _, name in ORDER do
+	C[name] = require(script.Parent:WaitForChild(name))
+end
+for _, name in ORDER do
+	local ok, err = pcall(C[name].Init, C)
+	if not ok then
+		warn(("[ClientMain] %s.Init failed: %s"):format(name, tostring(err)))
+	end
+end
+for _, name in ORDER do
+	local ok, err = pcall(C[name].Start)
+	if not ok then
+		warn(("[ClientMain] %s.Start failed: %s"):format(name, tostring(err)))
+	end
+end
+print("[ClientMain] client started")
+]]></ProtectedString>
+					<bool name="Disabled">false</bool>
+					<Content name="LinkedSource"><null></null></Content>
+					<token name="RunContext">0</token>
+					<string name="ScriptGuid">{EDA62DE9-7D68-46BE-8F39-A1B0A13868B0}</string>
+					<BinaryString name="AttributesSerialize"></BinaryString>
+					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+					<bool name="DefinesCapabilities">false</bool>
+					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
+					<string name="Name">ClientMain</string>
+					<int64 name="SourceAssetId">-1</int64>
+					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
+					<UniqueId name="UniqueId">4b185826fe752ce90ad88e970001b0cf</UniqueId>
+				</Properties>
+			</Item>
+			<Item class="ModuleScript" referent="RBX64BD0D11EDFB40AFA53401FDA64F0FAE">
+				<Properties>
+					<Content name="LinkedSource"><null></null></Content>
+					<ProtectedString name="Source"><![CDATA[-- PauseCard.luau (게임성 개발 1, SPEC A23-79 #1 "멈춤 카드 + Welcome back"): a calm place to stop.
+-- Fx "PauseCard" { Next = "<the next goal>", Why = "Chapter" | "Daily" | "War" } - the server sends it to me after it
+-- SAVED (a chapter's end, the three daily tasks done, a crown war's end; 게임성 개발 2) - shows "Saved!" / "Next time:
+-- <Next>" with [Keep playing] and [OK]: the same size and the same look (stopping is as easy as going on), either one
+-- closes it, a tap beside it too. No clock, no countdown, nothing starts by itself, never a purchase button (A23-79).
+-- Fx "WelcomeBack" { Next = "<goal>", Zone = "<zone id>"? } - the first spawn after 6 h away - shows "Welcome back!" /
+-- "Next: <Next>" with [Go] (the existing Travel channel to Zone; the server checks level, combat, stars) and [OK].
+-- A card waits while the screen is busy (a window, the intro, a picker, the map, a reward popup, a confirm box, the
+-- first steps before [Claim], knocked out, hurt in the last HurtCalm s) and is dropped after WaitMax s (a stale card
+-- is worse than none); one card at a time, a newer one waits for the open one. Presentation only.
+-- Public API: PauseCard.Init(C), PauseCard.Start(), PauseCard.OnFx(kind, data), PauseCard.Show(kind, data) -> bool
+-- (kind "Pause" | "Back": queue a card), PauseCard.Tick() (opens a waiting card when the screen is free; the offline
+-- test drives it), PauseCard.IsOpen(), PauseCard.Build(parent, info) -> the card (이미지 개발 may restyle it: info =
+-- { Title, Body, Buttons = { { Id, Text } }, OnButton = fn(id) }), PauseCard.Shown (Util.Signal: kind, button, why;
+-- button = "Keep" | "OK" | "Go" | "Backdrop") for the beta metrics.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Net = require(Shared:WaitForChild("Net"))
+local Util = require(Shared:WaitForChild("Util"))
+
+local LocalPlayer = Players.LocalPlayer
+
+local PauseCard = {}
+local C = nil
+local TAG = "PauseCard"
+
+local T = {
+	Fx = { Pause = "PauseCard", Back = "WelcomeBack" }, -- the server's Fx kinds (plan doc ab338a20; 게임성 개발 2 decides)
+	Remote = "Travel", -- [Go]
+	WaitMax = 90, -- s a card may wait for a free screen
+	HurtCalm = 5, -- s after losing health: no card in the middle of a fight
+	Poll = 0.5,
+	NextMax = 60, -- characters of the goal shown
+	ZoneMax = 40,
+	Busy = { "Intro", "FactionPicker", "ClassPicker", "WorldMap", "PlayerListUI" }, -- client modules with IsOpen()
+	BusyGui = { "RewardPopup", "ConfirmDialog" }, -- UIKit.Gui children: something else is talking
+	Gui = "PauseCard",
+	Z = 95, -- under UIKit.Confirm (100)
+	-- game text: English only (A23-48), short and easy
+	Text = {
+		PauseTitle = "Saved!",
+		PauseNext = "Next time: %s",
+		PausePlain = "Everything is saved.",
+		Keep = "Keep playing",
+		OK = "OK",
+		BackTitle = "Welcome back!",
+		BackNext = "Next: %s",
+		BackPlain = "Good to see you again!",
+		Go = "Go",
+	},
+}
+local S = { Pending = nil, Card = nil, HurtAt = -math.huge, LastPoll = 0, Health = nil }
+
+PauseCard.Shown = Util.Signal.new()
+
+-- the server's goal line, cleaned: no rich-text brackets, one line, trimmed, at most NextMax characters
+local function clean(text, max)
+	if type(text) ~= "string" then return nil end
+	local s = string.gsub(string.gsub(text, "[<>]", ""), "%s+", " ")
+	s = string.gsub(string.gsub(s, "^ ", ""), " $", "")
+	if s == "" then return nil end
+	local n = utf8.len(s)
+	if n and n > max then
+		s = string.sub(s, 1, utf8.offset(s, max + 1) - 1) .. "…"
+	end
+	return s
+end
+
+local function isOpen(m)
+	if type(m) ~= "table" or type(m.IsOpen) ~= "function" then return false end
+	local ok, open = pcall(m.IsOpen)
+	return ok and open == true
+end
+
+-- true while a card would talk over something else
+local function busy()
+	if not LocalPlayer or LocalPlayer:GetAttribute("DataLoaded") ~= true then return true end
+	local char = LocalPlayer.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not hum or hum.Health <= 0 then return true end
+	if os.clock() - S.HurtAt < T.HurtCalm then return true end
+	local kit = C and C.UIKit
+	if type(kit) == "table" then
+		if type(kit.ShouldHoldBanners) == "function" then
+			local ok, hold = pcall(kit.ShouldHoldBanners)
+			if ok and hold then return true end
+		end
+		if kit.Gui then
+			for _, name in T.BusyGui do
+				if kit.Gui:FindFirstChild(name) then return true end
+			end
+		end
+	end
+	if isOpen(C and C.Panels) then return true end
+	for _, name in T.Busy do
+		if isOpen(C and C[name]) then return true end
+	end
+	return false
+end
+
+function PauseCard.IsOpen()
+	return S.Card ~= nil and S.Card.Parent ~= nil
+end
+
+-- the card: a dim backdrop (a tap = "Backdrop"), the DialogBox plate (UIKit.Confirm's look), title, body, buttons of one
+-- size and one look
+function PauseCard.Build(parent, info)
+	local kit = C and C.UIKit
+	if type(kit) ~= "table" or type(info) ~= "table" then return nil end
+	local theme = kit.Theme or {}
+	local function pick(id)
+		if type(info.OnButton) == "function" then info.OnButton(id) end
+	end
+	local overlay = kit.Create("TextButton", {
+		Name = T.Gui,
+		Text = "",
+		AutoButtonColor = false,
+		Modal = true,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(3, 3),
+		BackgroundColor3 = Color3.new(0, 0, 0),
+		BackgroundTransparency = 0.45,
+		ZIndex = T.Z,
+	})
+	overlay.Activated:Connect(function() pick("Backdrop") end)
+	local box, boxArt = kit.ArtFrame("DialogBox", {
+		Name = "Box",
+		Active = true,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(460, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+	}, { BackgroundColor3 = theme.Bg, BackgroundTransparency = 0.05, CornerRadius = UDim.new(0, 16), StrokeColor = theme.Gold,
+		StrokeThickness = 2, StrokeTransparency = 0.2 }, {
+		kit.Create("UIPadding", {
+			PaddingTop = UDim.new(0, 24),
+			PaddingBottom = UDim.new(0, 22),
+			PaddingLeft = UDim.new(0, 26),
+			PaddingRight = UDim.new(0, 26),
+		}),
+		kit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Vertical,
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 12),
+		}),
+	})
+	box.Parent = overlay
+	-- the "saved" mark when 이미지 개발 has wired its art (Config.UIArt.Parts.IconSaved); no art -> no mark
+	if info.Icon and type(kit.ArtImage) == "function" then
+		kit.ArtImage(info.Icon, { Name = "Icon", LayoutOrder = 0, Size = UDim2.fromOffset(56, 56), Parent = box })
+	end
+	kit.StyledLabel({
+		Name = "Title",
+		LayoutOrder = 1,
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		TextWrapped = true,
+		TextSize = 26,
+		Text = tostring(info.Title or ""),
+		Parent = box,
+	}, "Title", boxArt)
+	kit.StyledLabel({
+		Name = "Body",
+		LayoutOrder = 2,
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		TextWrapped = true,
+		TextSize = 20,
+		Text = tostring(info.Body or ""),
+		Parent = box,
+	}, "Body", boxArt)
+	local row = kit.Create("Frame", {
+		Name = "Buttons",
+		LayoutOrder = 3,
+		Size = UDim2.new(1, 0, 0, 56),
+		BackgroundTransparency = 1,
+		Parent = box,
+	})
+	local buttons = type(info.Buttons) == "table" and info.Buttons or {}
+	for i, b in buttons do
+		local two = #buttons >= 2
+		kit.ArtTextButton("BtnConfirm", {
+			Name = tostring(b.Id),
+			Text = tostring(b.Text),
+			AnchorPoint = two and Vector2.new(i == 1 and 1 or 0, 0) or Vector2.new(0.5, 0),
+			Position = two and UDim2.new(0.5, i == 1 and -8 or 8, 0, 2) or UDim2.new(0.5, 0, 0, 2),
+			Size = UDim2.fromOffset(180, 52),
+			Color = theme.Good,
+			TextColor = Color3.fromRGB(30, 25, 10),
+			TextSize = 20,
+			Parent = row,
+		}, function() pick(b.Id) end)
+		if i >= 2 then break end
+	end
+	if parent then overlay.Parent = parent end
+	return overlay
+end
+
+-- [Go]: the server's own travel (it says why when it refuses)
+local function travel(zone)
+	local folder = ReplicatedStorage:FindFirstChild("Remotes")
+	local remote = folder and folder:FindFirstChild(T.Remote)
+	if not remote or not remote:IsA("RemoteEvent") then return false end
+	return (pcall(remote.FireServer, remote, zone))
+end
+
+local function open(card)
+	local kit = C and C.UIKit
+	if type(kit) ~= "table" or not kit.Gui then return false end
+	local closed = false
+	local info = {
+		Title = card.Title,
+		Body = card.Body,
+		Icon = card.Kind == "Pause" and "IconSaved" or nil,
+		Buttons = card.Buttons,
+	}
+	info.OnButton = function(id)
+		if closed then return end
+		closed = true
+		if S.Card then
+			pcall(function() S.Card:Destroy() end)
+			S.Card = nil
+		end
+		if id == "Go" and card.Zone then travel(card.Zone) end
+		PauseCard.Shown:Fire(card.Kind, id, card.Why)
+		task.defer(PauseCard.Tick) -- a card that waited for this one
+	end
+	local ok, built = pcall(PauseCard.Build, kit.Gui, info)
+	if not ok or not built then
+		Util.Warn(TAG, "card failed: " .. tostring(built))
+		return false
+	end
+	S.Card = built
+	return true
+end
+
+-- opens the waiting card when the screen is free; drops it after WaitMax
+function PauseCard.Tick()
+	local card = S.Pending
+	if not card or PauseCard.IsOpen() then return end
+	if os.clock() - card.At > T.WaitMax then
+		S.Pending = nil
+		return
+	end
+	if busy() then return end
+	S.Pending = nil
+	open(card)
+end
+
+-- queue a card ("Pause" | "Back"); false when the data is not usable
+function PauseCard.Show(kind, data)
+	if type(data) ~= "table" then data = {} end
+	local nextGoal = clean(data.Next, T.NextMax)
+	local card = { Kind = kind, At = os.clock(), Why = type(data.Why) == "string" and data.Why or nil }
+	if kind == "Pause" then
+		card.Title = T.Text.PauseTitle
+		card.Body = nextGoal and string.format(T.Text.PauseNext, nextGoal) or T.Text.PausePlain
+		card.Buttons = { { Id = "Keep", Text = T.Text.Keep }, { Id = "OK", Text = T.Text.OK } }
+	elseif kind == "Back" then
+		card.Title = T.Text.BackTitle
+		card.Body = nextGoal and string.format(T.Text.BackNext, nextGoal) or T.Text.BackPlain
+		local zone = type(data.Zone) == "string" and #data.Zone > 0 and #data.Zone <= T.ZoneMax and data.Zone or nil
+		card.Zone = zone
+		card.Buttons = zone and { { Id = "Go", Text = T.Text.Go }, { Id = "OK", Text = T.Text.OK } }
+			or { { Id = "OK", Text = T.Text.OK } }
+	else
+		return false
+	end
+	S.Pending = card -- the newest waiting card wins
+	PauseCard.Tick()
+	return true
+end
+
+function PauseCard.OnFx(kind, data)
+	if type(data) == "table" and data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return end
+	if kind == T.Fx.Pause then
+		PauseCard.Show("Pause", data)
+	elseif kind == T.Fx.Back then
+		PauseCard.Show("Back", data)
+	end
+end
+
+-- "hurt in the last HurtCalm s": the humanoid's health going down
+local function watchHealth(char)
+	local hum = char and char:WaitForChild("Humanoid", 10)
+	if not hum then return end
+	S.Health = hum.Health
+	hum.HealthChanged:Connect(function(h)
+		if S.Health and h < S.Health then S.HurtAt = os.clock() end
+		S.Health = h
+	end)
+end
+
+function PauseCard.Init(registry)
+	C = registry
+end
+
+function PauseCard.Start()
+	if not LocalPlayer then return end
+	LocalPlayer.CharacterAdded:Connect(function(char) task.spawn(watchHealth, char) end)
+	if LocalPlayer.Character then task.spawn(watchHealth, LocalPlayer.Character) end
+	RunService.Heartbeat:Connect(function()
+		if not S.Pending or os.clock() - S.LastPoll < T.Poll then return end
+		S.LastPoll = os.clock()
+		local ok, err = pcall(PauseCard.Tick)
+		if not ok then Util.Warn(TAG, "tick failed: " .. tostring(err)) end
+	end)
+	task.spawn(function()
+		local ok, err = pcall(function()
+			Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
+				pcall(PauseCard.OnFx, kind, data)
+			end)
+		end)
+		if not ok then Util.Warn(TAG, "Fx hookup failed: " .. tostring(err)) end
+	end)
+end
+
+return PauseCard
+]]></ProtectedString>
+					<string name="ScriptGuid">{2745F0EA-B6FF-4896-A87E-2C8FFC27ECA2}</string>
+					<BinaryString name="AttributesSerialize"></BinaryString>
+					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+					<bool name="DefinesCapabilities">false</bool>
+					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
+					<string name="Name">PauseCard</string>
+					<int64 name="SourceAssetId">-1</int64>
+					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
+					<UniqueId name="UniqueId">4b185826fe752ce90ad88e970001b0d1</UniqueId>
+				</Properties>
+			</Item>
+			<Item class="ModuleScript" referent="RBXC9FC7C366B67463EA50BE4CF4F82B794">
 				<Properties>
 					<Content name="LinkedSource"><null></null></Content>
 					<ProtectedString name="Source"><![CDATA[-- SupporterBoard.luau (게임성 개발 1, SPEC A23-75 the VIP pass: "마을 후원자 게시판 이름"): every board part in the world
@@ -383166,7 +383509,8 @@ return QuestTarget
 -- a board streams in. Nothing to show = a short line inviting nobody to buy (no pressure, A23-75): "Thank you!"
 -- Presentation only; the names come from the server.
 -- Public API: SupporterBoard.Init(C), SupporterBoard.Start(), SupporterBoard.Names(raw) -> { name } (pure: cleaned,
--- at most Max), SupporterBoard.Text(names) -> the panel text (pure; the offline test drives both).
+-- at most Max), SupporterBoard.Rows(names) -> { row text } (three names a row), SupporterBoard.Text(names) -> the rows
+-- joined by line breaks (pure; the offline test drives them).
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -383185,7 +383529,8 @@ local T = {
 	NameMax = 20, -- characters shown of one name
 	Gui = "SupporterGui",
 	PPS = 40, -- canvas pixels per stud: the canvas keeps the face's shape (no stretched letters)
-	Inset = 0.1, -- share of the width kept free on each side (behind the board's posts; 10/08 photo)
+	Inset = { L = 0.08, R = 0.14 }, -- share of the width kept free (behind the posts; the right post + lantern hide more, 10/08 photo)
+	MinRows = 5, -- a row is 1/max(rows, MinRows) of the names' height: a short list is not huge
 	-- game text: English only (A23-48)
 	Title = "Thank you, supporters!",
 	Empty = "Thank you for playing!",
@@ -383211,16 +383556,21 @@ function SupporterBoard.Names(raw)
 	return out
 end
 
--- the panel text: the names in three columns (row by row), or the plain thank-you line
-function SupporterBoard.Text(names)
-	if type(names) ~= "table" or #names == 0 then return T.Empty end
+-- the panel rows: the names three to a row, or the plain thank-you line
+function SupporterBoard.Rows(names)
+	if type(names) ~= "table" or #names == 0 then return { T.Empty } end
 	local rows = {}
 	for i = 1, #names, 3 do
 		local cols = {}
 		for j = i, math.min(i + 2, #names) do table.insert(cols, names[j]) end
 		table.insert(rows, table.concat(cols, "    "))
 	end
-	return table.concat(rows, "\n")
+	return rows
+end
+
+-- the panel text (the rows, one per line)
+function SupporterBoard.Text(names)
+	return table.concat(SupporterBoard.Rows(names), "\n")
 end
 
 local function draw(part)
@@ -383239,35 +383589,48 @@ local function draw(part)
 		panel.BackgroundColor3 = T.Colors.Panel
 		panel.BorderSizePixel = 0
 		panel.Parent = gui
-		-- the words keep Inset of the width free on each side: the 3D board's posts stand in front of the face's edges
+		-- the words keep Inset.L / Inset.R of the width free: the 3D board's posts stand in front of the face's edges
 		local title = Instance.new("TextLabel")
 		title.Name = "Title"
-		title.AnchorPoint = Vector2.new(0.5, 0)
-		title.Size = UDim2.new(1 - 2 * T.Inset, 0, 0, 40)
-		title.Position = UDim2.new(0.5, 0, 0, 10)
+		title.Size = UDim2.new(1 - T.Inset.L - T.Inset.R, 0, 0, 40)
+		title.Position = UDim2.new(T.Inset.L, 0, 0, 10)
 		title.BackgroundTransparency = 1
 		title.Font = Enum.Font.GothamBold
 		title.TextScaled = true
 		title.TextColor3 = T.Colors.Title
 		title.Text = T.Title
 		title.Parent = panel
-		local body = Instance.new("TextLabel")
+		-- one label per row (10/08: one wrapped label broke the rows, one unwrapped label shrank its lines to dots)
+		local body = Instance.new("Frame")
 		body.Name = "Names"
-		body.AnchorPoint = Vector2.new(0.5, 0)
-		body.Size = UDim2.new(1 - 2 * T.Inset, 0, 1, -66)
-		body.Position = UDim2.new(0.5, 0, 0, 56)
+		body.Size = UDim2.new(1 - T.Inset.L - T.Inset.R, 0, 1, -66)
+		body.Position = UDim2.new(T.Inset.L, 0, 0, 56)
 		body.BackgroundTransparency = 1
-		body.Font = Enum.Font.GothamBold
-		body.TextScaled = true
-		body.TextWrapped = false -- a row of three stays one row (wrapping broke the rows on the 10/08 photo)
-		body.TextYAlignment = Enum.TextYAlignment.Top
-		body.TextColor3 = T.Colors.Text
+		local list = Instance.new("UIListLayout")
+		list.FillDirection = Enum.FillDirection.Vertical
+		list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		list.SortOrder = Enum.SortOrder.LayoutOrder
+		list.Parent = body
 		body.Parent = panel
 		gui.Parent = part
 	end
 	local body = gui:FindFirstChild("Names", true)
-	if body then
-		body.Text = SupporterBoard.Text(SupporterBoard.Names(S.GameState and S.GameState:GetAttribute(T.Attr)))
+	if not body then return end
+	for _, ch in body:GetChildren() do
+		if string.sub(ch.Name, 1, 3) == "Row" then ch:Destroy() end
+	end
+	local rows = SupporterBoard.Rows(SupporterBoard.Names(S.GameState and S.GameState:GetAttribute(T.Attr)))
+	for i, text in rows do
+		local row = Instance.new("TextLabel")
+		row.Name = "Row" .. i
+		row.LayoutOrder = i
+		row.Size = UDim2.fromScale(1, 1 / math.max(#rows, T.MinRows))
+		row.BackgroundTransparency = 1
+		row.Font = Enum.Font.GothamBold
+		row.TextScaled = true
+		row.TextColor3 = T.Colors.Text
+		row.Text = text
+		row.Parent = body
 	end
 end
 
@@ -383295,7 +383658,7 @@ end
 
 return SupporterBoard
 ]]></ProtectedString>
-					<string name="ScriptGuid">{A3A374E7-CAAB-4DCD-B3EE-471A5DE7E669}</string>
+					<string name="ScriptGuid">{F9F994C3-F19A-4CE0-A4FC-86B73F598A87}</string>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 					<bool name="DefinesCapabilities">false</bool>
@@ -383303,7 +383666,7 @@ return SupporterBoard
 					<string name="Name">SupporterBoard</string>
 					<int64 name="SourceAssetId">-1</int64>
 					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
-					<UniqueId name="UniqueId">4b185826fe752ce90ad88e970001581b</UniqueId>
+					<UniqueId name="UniqueId">4b185826fe752ce90ad88e970001ea3f</UniqueId>
 				</Properties>
 			</Item>
 		</Item>
@@ -385701,7 +386064,7 @@ return Net
 					<UniqueId name="UniqueId">651f00f5fb550dbf0ad72e530002150f</UniqueId>
 				</Properties>
 			</Item>
-			<Item class="ModuleScript" referent="RBX98A3BC746D33462AA111019B8EF6FA67">
+			<Item class="ModuleScript" referent="RBX259B2575F6B44779A9055F36B2AA5F40">
 				<Properties>
 					<Content name="LinkedSource"><null></null></Content>
 					<ProtectedString name="Source"><![CDATA[-- Config.luau : every tuning number, pure helper formula and player string (English only, A23-48) for Halo & Horns.
@@ -390260,7 +390623,9 @@ Config.UIArt = {
 		FxShockRing = { Id = "rbxassetid://135827777163619", Size = Vector2.new(256, 252) },
 		FxMagicBurst = { Id = "rbxassetid://92519617657939", Size = Vector2.new(256, 256) },
 		FxDust = { Id = "rbxassetid://108076168454993", Size = Vector2.new(222, 256) },
-		EmoOuch = { Id = "rbxassetid://72032537654477", Size = Vector2.new(256, 175) },
+		-- 검수 2026-10-08 (user: "아야 영어로"): 72032537654477 has a Korean "아야!" drawn in and a spiky burst rim (ray rule) -
+		-- off until 이미지 생성 2's round English bubble; empty = Fx's code "Ouch!" bubble (EMO_FALLBACK)
+		EmoOuch = { Id = "", Size = Vector2.new(256, 175) },
 		EmoTears = { Id = "rbxassetid://113193582610345", Size = Vector2.new(512, 512) },
 		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
 		EmoAngry = { Id = "rbxassetid://91062043264397", Size = Vector2.new(512, 512) },
@@ -391142,7 +391507,7 @@ end
 
 return Config
 ]]></ProtectedString>
-					<string name="ScriptGuid">{BC1896DB-35B9-4D5C-8891-950C093C2616}</string>
+					<string name="ScriptGuid">{3192BA89-1242-447E-A912-B17C8D7763DE}</string>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 					<bool name="DefinesCapabilities">false</bool>
@@ -391150,7 +391515,7 @@ return Config
 					<string name="Name">Config</string>
 					<int64 name="SourceAssetId">-1</int64>
 					<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
-					<UniqueId name="UniqueId">2f8372a589ce1f7a0ad87b4e0000c597</UniqueId>
+					<UniqueId name="UniqueId">4b185826fe752ce90ad88e970001ea3d</UniqueId>
 				</Properties>
 			</Item>
 		</Item>
@@ -414885,13 +415250,14 @@ MGUwY2UxYTlk]]></BinaryString>
 									<G>1</G>
 									<B>1</B>
 								</Color3>
-								<Content name="MetalnessMap"><url>rbxassetid://72375642241322</url></Content>
+								<Content name="MetalnessMap"><null></null></Content>
 								<Content name="NormalMap"><url>rbxassetid://90673661592887</url></Content>
 								<token name="ResampleMode">0</token>
 								<Content name="RoughnessMap"><url>rbxassetid://84492255505283</url></Content>
 								<int name="SurfaceSlot">-1</int>
-								<Content name="TexturePack"><url>rbxassetid://77198751368593</url></Content>
-								<BinaryString name="AttributesSerialize"></BinaryString>
+								<Content name="TexturePack"><url>rbxassetid://112317710852501</url></Content>
+								<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83MjM3NTY0MjI0MTMy
+Mg==]]></BinaryString>
 								<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 								<bool name="DefinesCapabilities">false</bool>
 								<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -420366,13 +420732,14 @@ byBzcGVjIDIwMjYtMTAtMDYgKE1vbnN0ZXJNb3Rpb24gY2xpcHMgR29ibGluQnJ1dGVfKik=]]></Bin
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://76877194936423</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://136320076970097</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://124695339778644</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://114095350024447</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://102713738693123</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83Njg3NzE5NDkzNjQy
+Mw==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -425161,13 +425528,14 @@ Kik=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://129730914025559</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://117217058394248</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://83227218580976</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://118799392112183</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://96470590000763</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMjk3MzA5MTQwMjU1
+NTk=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -430447,13 +430815,14 @@ byBzcGVjIDIwMjYtMTAtMDYgKE1vbnN0ZXJNb3Rpb24gY2xpcHMgR29ibGluXyop]]></BinaryStrin
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://73274797783773</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://108705858795646</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://90113251389197</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://126799559905031</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://126663670954972</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83MzI3NDc5Nzc4Mzc3
+Mw==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -441060,13 +441429,14 @@ OS1iZmRhLTU5NTdjY2FmNzczOQ==]]></BinaryString>
 									<G>1</G>
 									<B>1</B>
 								</Color3>
-								<Content name="MetalnessMap"><url>rbxassetid://99292265796269</url></Content>
+								<Content name="MetalnessMap"><null></null></Content>
 								<Content name="NormalMap"><url>rbxassetid://116546690514192</url></Content>
 								<token name="ResampleMode">0</token>
 								<Content name="RoughnessMap"><url>rbxassetid://98238124136264</url></Content>
 								<int name="SurfaceSlot">-1</int>
-								<Content name="TexturePack"><url>rbxassetid://132600823397320</url></Content>
-								<BinaryString name="AttributesSerialize"></BinaryString>
+								<Content name="TexturePack"><url>rbxassetid://99200386661133</url></Content>
+								<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly85OTI5MjI2NTc5NjI2
+OQ==]]></BinaryString>
 								<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 								<bool name="DefinesCapabilities">false</bool>
 								<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -441342,13 +441712,14 @@ OC1iZGUxLTI4NjQ1ZjkzOWRlYg==]]></BinaryString>
 									<G>1</G>
 									<B>1</B>
 								</Color3>
-								<Content name="MetalnessMap"><url>rbxassetid://75572076806737</url></Content>
+								<Content name="MetalnessMap"><null></null></Content>
 								<Content name="NormalMap"><url>rbxassetid://87958878588608</url></Content>
 								<token name="ResampleMode">0</token>
 								<Content name="RoughnessMap"><url>rbxassetid://81264739626823</url></Content>
 								<int name="SurfaceSlot">-1</int>
-								<Content name="TexturePack"><url>rbxassetid://107288174319538</url></Content>
-								<BinaryString name="AttributesSerialize"></BinaryString>
+								<Content name="TexturePack"><url>rbxassetid://134480479428114</url></Content>
+								<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83NTU3MjA3NjgwNjcz
+Nw==]]></BinaryString>
 								<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 								<bool name="DefinesCapabilities">false</bool>
 								<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -473819,13 +474190,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://70504367874253</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://76055883794705</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://89877032775579</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://126248738124412</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://105471604943732</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83MDUwNDM2Nzg3NDI1
+Mw==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -476618,13 +476990,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://87909130067614</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://70740343466331</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://76200712636729</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://120873640151003</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://139013498403239</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly84NzkwOTEzMDA2NzYx
+NA==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -476843,13 +477216,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://134460401647273</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://111042827146571</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://85589147441406</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://103054396589745</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://86550770689906</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMzQ0NjA0MDE2NDcy
+NzM=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -479742,13 +480116,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://78062973297384</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://108019930255072</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://96045440557313</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://109654554896558</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://140653387768509</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83ODA2Mjk3MzI5NzM4
+NA==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -479967,13 +480342,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://123683795687994</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://133591830408430</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://130305419642012</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://122169841761573</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://128522063968828</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMjM2ODM3OTU2ODc5
+OTQ=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -481147,13 +481523,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://71413313691017</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://79898322755766</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://116666062679570</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://70744963943761</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://110821768613425</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83MTQxMzMxMzY5MTAx
+Nw==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -481754,13 +482131,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://121268069361850</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://103885740977365</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://83999446150948</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://83169324213685</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://82664343359271</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMjEyNjgwNjkzNjE4
+NTA=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -482170,13 +482548,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://74439272462729</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://125720381003101</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://80679828902731</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://80184212474251</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://114327858481944</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83NDQzOTI3MjQ2Mjcy
+OQ==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -482777,13 +483156,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://114795525704517</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://111300462904264</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://105022978829086</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://97322349695016</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://118850925334123</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMTQ3OTU1MjU3MDQ1
+MTc=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -483193,13 +483573,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://75289943426247</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://133547197253231</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://139139680533609</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://74081474056657</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://83895496003338</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83NTI4OTk0MzQyNjI0
+Nw==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -483418,13 +483799,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://108638961134199</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://91723063451971</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://73061157487757</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://130548553540657</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://136213424974806</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMDg2Mzg5NjExMzQx
+OTk=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -484025,13 +484407,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://135940384890048</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://111708780893181</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://120516183785880</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://83039171807087</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://83580606957051</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMzU5NDAzODQ4OTAw
+NDg=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -484823,13 +485206,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://114318840059241</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://120682225992474</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://105287257770605</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://125746561752149</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://100322856998411</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMTQzMTg4NDAwNTky
+NDE=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -485048,13 +485432,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://118347864594764</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://115807376190693</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://75458604620236</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://140359570576956</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://108513516793521</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMTgzNDc4NjQ1OTQ3
+NjQ=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -485273,13 +485658,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://90609978134753</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://105043257476611</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://99041724199286</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://136651384430618</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://117681833273009</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly85MDYwOTk3ODEzNDc1
+Mw==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -485498,13 +485884,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://95168589045435</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://105546162710491</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://126891444838567</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://86351868573201</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://99834698932117</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly85NTE2ODU4OTA0NTQz
+NQ==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -485723,13 +486110,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://112251387746689</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://92891903088638</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://119636366820252</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://122376830102271</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://82030631777596</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMTIyNTEzODc3NDY2
+ODk=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -485948,13 +486336,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://76776876429460</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://71032777706470</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://77701138842408</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://75019348821234</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://121478443366672</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83Njc3Njg3NjQyOTQ2
+MA==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -486173,13 +486562,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://72302704375509</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://113266697899462</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://108194460892735</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://110651556219491</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://114193563473845</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCGwAAAHJieGFzc2V0aWQ6Ly83MjMwMjcwNDM3NTUw
+OQ==]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -486398,13 +486788,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://101709633665550</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://83274352685220</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://74235223728837</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://103891846599728</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://116061580742584</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMDE3MDk2MzM2NjU1
+NTA=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
@@ -486623,13 +487014,14 @@ R3VpbGQ=]]></BinaryString>
 								<G>1</G>
 								<B>1</B>
 							</Color3>
-							<Content name="MetalnessMap"><url>rbxassetid://124303979667374</url></Content>
+							<Content name="MetalnessMap"><null></null></Content>
 							<Content name="NormalMap"><url>rbxassetid://87593549317066</url></Content>
 							<token name="ResampleMode">0</token>
 							<Content name="RoughnessMap"><url>rbxassetid://129331233352908</url></Content>
 							<int name="SurfaceSlot">-1</int>
-							<Content name="TexturePack"><url>rbxassetid://105156004175531</url></Content>
-							<BinaryString name="AttributesSerialize"></BinaryString>
+							<Content name="TexturePack"><url>rbxassetid://132974131117187</url></Content>
+							<BinaryString name="AttributesSerialize"><![CDATA[AQAAAA8AAABNZXRhbG5lc3NNYXBXYXMCHAAAAHJieGFzc2V0aWQ6Ly8xMjQzMDM5Nzk2Njcz
+NzQ=]]></BinaryString>
 							<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 							<bool name="DefinesCapabilities">false</bool>
 							<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
