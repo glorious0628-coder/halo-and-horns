@@ -843,8 +843,13 @@ SFX_FILES = {
     "tick": "interface/Audio/tick_004.ogg",
     "sound_card": os.path.join(ROOT, "art", "sfx", "SkillLearn.wav"),   # our own synth (소리 만들기 2026-10-07): the SOUND team card
 }
+# the game's own sounds (art/sfx, 소리 만들기: own synth / Kenney CC0 / Firefly, docs/devlog/sfx_licenses.md) as g_<Name>
+for _g in ("PumpkinKing", "Purify", "Devour", "GoldPickup", "LevelUp", "CrownHalo", "CrownHorns", "KillPop", "HitHeavy",
+           "KingDefeat", "PowerUp"):
+    SFX_FILES["g_" + _g] = os.path.join(ROOT, "art", "sfx", _g + ".wav")
 _SFX = {}
-SFX_GAIN = {"whoosh": 0.3, "boom": 0.3, "hit": 0.26, "pop": 0.22, "card": 0.2, "sound_card": 0.24, "ding": 0.2, "tick": 0.25}  # about -18..-11 dB under the voice
+SFX_GAIN = {"whoosh": 0.3, "boom": 0.3, "hit": 0.26, "pop": 0.22, "card": 0.2, "sound_card": 0.24, "g_PumpkinKing": 0.32, "g_Purify": 0.3, "g_Devour": 0.3, "g_GoldPickup": 0.2, "g_LevelUp": 0.26,
+            "g_CrownHalo": 0.28, "g_CrownHorns": 0.28, "g_KillPop": 0.24, "g_HitHeavy": 0.26, "g_KingDefeat": 0.3, "g_PowerUp": 0.28, "ding": 0.2, "tick": 0.25}  # about -18..-11 dB under the voice
 
 
 def sfx(name):
