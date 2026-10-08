@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 109,
+  "checks": 112,
   "failedChecks": 0,
-  "namedChecks": 109,
+  "namedChecks": 112,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -310,6 +310,24 @@
     {
       "group": "purchase",
       "check": "a look bought: listed at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "purchase",
+      "check": "PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "purchase",
+      "check": "the pass is already on when PassBought fires",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "purchase",
+      "check": "no PassBought for the join check or a Studio override",
       "pass": 1,
       "fail": 0
     },
@@ -666,9 +684,9 @@
   "staticChecks": 22,
   "staticFailures": [],
   "mutations": {
-    "total": 43,
-    "applied": 43,
-    "caught": 43,
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
     "skipped": false,
     "results": [
       {
@@ -986,10 +1004,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "purchase :: PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
           "purchase :: a closed prompt (not bought): nothing",
           "purchase :: an unknown pass id: nothing"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "purchase not saved",
@@ -1179,6 +1198,41 @@
         "newFailingCount": 2
       },
       {
+        "mutation": "no PassBought",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "purchase :: PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
+          "purchase :: the pass is already on when PassBought fires"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PassBought before the pass is on",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "purchase :: PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
+          "purchase :: the pass is already on when PassBought fires"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PassBought at the join check",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "purchase :: no PassBought for the join check or a Studio override"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "no VIP at join",
         "file": "src/ServerScriptService/MonetizationService.luau",
         "applied": true,
@@ -1201,9 +1255,9 @@
     "src/ReplicatedStorage/Shared/Config.luau": "40e15d653e2a79c8b36de88d9ae7379137faa54f6497305d483f2a5cb079fa5d",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/ProgressionService.luau": "aa1dac2814bae7d9171028da22934872ebf6d1d788db19b1ef95615417a2285b",
-    "src/ServerScriptService/MonetizationService.luau": "2741263bb2ab5877a96e1ff6d6e702d5ad179ddd78aa298371c1afe411d8f53c"
+    "src/ServerScriptService/MonetizationService.luau": "05cbf1b3fb987465234565eb6c0baac5b9f15f0bd0a58e1290a17cc112bd5e33"
   },
-  "fixtureSHA256": "6c7d86d126f70c0c24065c9de7155f64564c1f54a6a179abb63c2d0204e097d0",
+  "fixtureSHA256": "b81d0f7b574ab087672c016a2b747e93b68227c5de8143c1fd0c00ef3c9fb576",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

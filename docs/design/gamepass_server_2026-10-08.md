@@ -86,6 +86,7 @@
 - `MonetizationService.HasPass(player, key)`: key는 `XP2`·`Gold2`·`VIP` 또는 판매 치장 id예요.
 - `MonetizationService.OwnsLook(player, id)` / `LooksOwned(player)`
 - `MonetizationService.GrantLook(player, id)`: **A23-77 출석용**이에요. `Unlock`이 있는 치장만 되고, 새로 얻었을 때 true를 돌려줘요.
+- 신호 `MonetizationService.PassBought (player, key)`: 진짜 구매 한 번마다 한 번 쏴요. 패스가 켜진 뒤에 쏴요. key는 kind 또는 판매 치장 id예요. 들어올 때 확인·Studio 덮어쓰기·Id 0에는 안 쏴요(개발 3의 측정 PassShop Bought용).
 
 ## 7-1. 개발 3에게 (A23-77 출석·A23-79에서 2배를 쓸 때)
 

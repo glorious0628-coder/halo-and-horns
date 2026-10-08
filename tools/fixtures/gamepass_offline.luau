@@ -257,6 +257,8 @@ end)
 ------------------------------------------------------------------ purchase
 runGroup("purchase", function()
 	local w = passWorld({ Ids = { XP2 = 11, Gold2 = 12, VIP = 13, HornsLava = 23 }, Owns = { [301] = {} } })
+	local bought = {}
+	w.Ms.PassBought:Connect(function(pl, key) table.insert(bought, pl.Name .. ":" .. tostring(key)) end)
 	local p = w:Join(301, { Faction = "Horns" })
 	check(not w.Ms.HasPass(p, "Gold2"), "(not owned at join)")
 	w.Market.PromptGamePassPurchaseFinished:Fire(p, 12, true)
@@ -270,6 +272,19 @@ runGroup("purchase", function()
 	check(true, "a non-player argument is ignored (no error)")
 	w.Market.PromptGamePassPurchaseFinished:Fire(p, 23, true)
 	check(w.Ms.OwnsLook(p, "HornsLava") and p:GetAttribute("LooksOwned") == "HornsLava", "a look bought: listed at once")
+	-- PassBought (game dev 3's PassShop Bought metric): once per real purchase, with the key, after it is on
+	check(show(bought) == show({ "P301:Gold2", "P301:HornsLava" }),
+		"PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)", show(bought))
+	bought = {}
+	w.Ms.PassBought:Connect(function(pl, key) if not w.Ms.HasPass(pl, key) then table.insert(bought, "off " .. key) end end)
+	w.Market.PromptGamePassPurchaseFinished:Fire(p, 11, true)
+	check(show(bought) == show({ "P301:XP2" }), "the pass is already on when PassBought fires", show(bought))
+	bought = {}
+	w.Ms.DebugSetPass(p, "VIP", "on")
+	local owner = w:Join(305, { NoCheck = true })
+	w.Owns[305] = { [11] = true }
+	w:RunSpawned()
+	check(w.Ms.HasPass(owner, "XP2") and #bought == 0, "no PassBought for the join check or a Studio override", show(bought))
 	-- a purchase while the join check is still asking: the late 'no' never takes it back
 	w = passWorld({ Ids = { XP2 = 11 }, Owns = { [302] = {} } })
 	p = w:Join(302, { NoCheck = true })

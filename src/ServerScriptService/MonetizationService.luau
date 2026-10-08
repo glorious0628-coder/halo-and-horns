@@ -15,6 +15,9 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local TAG = "MonetizationService"
 
 local MonetizationService = {}
+-- A23-75 / A23-79 (game dev 3, metrics PassShop Bought): (player, key) once per real purchase of a game pass (key = a
+-- Config.GamePasses kind or a sold look id), after it is on; never for the join check, a Studio override or Id 0
+MonetizationService.PassBought = Util.Signal.new()
 
 local S = nil
 
@@ -277,6 +280,7 @@ function PASS.Purchased(player, passId, purchased)
 			PASS.Publish(player)
 			if p.Key == "VIP" then PASS.AddSupporter(player) end
 			print(("[MonetizationService] %s bought game pass %s"):format(player.Name, p.Key))
+			MonetizationService.PassBought:Fire(player, p.Key)
 		end
 	end
 end

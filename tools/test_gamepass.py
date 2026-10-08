@@ -225,6 +225,16 @@ MUTATIONS = [
     ("board not capped", M, "\twhile #list > Config.PassBoost.MaxSupporters do table.remove(list) end\n", ""),
     ("debug VIP written to the shared list", M, "\tif localOnly then return end\n", ""),
     ("no refresh", M, "\tif ok then PASS.Show(PASS.Clean(raw)) end\n", ""),
+    # PassBought (game dev 3's metric)
+    ("no PassBought", M, "\t\t\tMonetizationService.PassBought:Fire(player, p.Key)\n", ""),
+    ("PassBought before the pass is on", M,
+     "\t\t\towned[p.Key] = true\n\t\t\tlocal data = S.PlayerService.GetData(player)\n",
+     "\t\t\tMonetizationService.PassBought:Fire(player, p.Key)\n\t\t\towned[p.Key] = true\n"
+     "\t\t\tlocal data = S.PlayerService.GetData(player)\n"),
+    ("PassBought at the join check", M,
+     "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back\n",
+     "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back\n"
+     "\t\tif answer then MonetizationService.PassBought:Fire(player, p.Key) end\n"),
     ("no VIP at join", M, "\tif MonetizationService.HasPass(player, \"VIP\") and PASS.Owned[player].VIP == true then PASS.AddSupporter(player) end\n",
      ""),
 ]
