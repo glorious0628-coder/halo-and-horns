@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 12778,
+  "checks": 12780,
   "failedChecks": 0,
-  "namedChecks": 11830,
+  "namedChecks": 11832,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
@@ -17,15 +17,8 @@
     {
       "screen": "pc_700x720_narrow",
       "check": "PC notify column at least 288 px wide",
-      "reason": "A 700x720 desktop window: the centre column between the left and right blocks is 275 px wide.",
+      "reason": "A 700x720 desktop window (UIScale 0.8): the minimap level with it leaves 275 px around the centre column's middle.",
       "measuredDu": 275.2,
-      "neededDu": 288
-    },
-    {
-      "screen": "pc_655x340_small",
-      "check": "PC notify column at least 288 px wide",
-      "reason": "A 655x340 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 241 px.",
-      "measuredDu": 241,
       "neededDu": 288
     },
     {
@@ -38,15 +31,8 @@
     {
       "screen": "pc_573x354_small",
       "check": "PC notify column at least 288 px wide",
-      "reason": "A 573x354 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 159 px.",
-      "measuredDu": 159,
-      "neededDu": 288
-    },
-    {
-      "screen": "pc_700x450_small",
-      "check": "PC notify column at least 288 px wide",
-      "reason": "A 700x450 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 286 px.",
-      "measuredDu": 286,
+      "reason": "A 573x354 desktop window (UIScale 0.5): the minimap level with it leaves 282 px around the centre column's middle.",
+      "measuredDu": 282,
       "neededDu": 288
     },
     {
@@ -770,9 +756,9 @@
     "DesktopScaleMax": 1.0
   },
   "mutations": {
-    "total": 58,
-    "applied": 58,
-    "caught": 58,
+    "total": 59,
+    "applied": 59,
+    "caught": 59,
     "results": [
       {
         "mutation": "PC potions back in the corner cluster",
@@ -867,16 +853,29 @@
         "newFailingCount": 4
       },
       {
-        "mutation": "PC notify column keeps the sheet width on small windows",
+        "mutation": "PC notify column keeps the top bar's room on small windows",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
           "pc_1024x600 :: PC notify column at least 288 px wide",
+          "pc_655x340_small :: PC notify column at least 288 px wide",
+          "pc_700x450_small :: PC notify column at least 288 px wide",
           "pc_800x600 :: PC notify column at least 288 px wide",
           "pc_991x451_studio :: PC notify column at least 288 px wide"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "PC notify column widens into its row's neighbours",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_573x354_small :: column clear of notify/minimap",
+          "pc_700x720_narrow :: column clear of notify/minimap"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "short desktop windows go to the phone sheet",
@@ -891,7 +890,7 @@
           "pc_573x354_small :: PC quest lines fill the room before their neighbour",
           "pc_573x354_small :: at least 6 tiles on every PC"
         ],
-        "newFailingCount": 35
+        "newFailingCount": 37
       },
       {
         "mutation": "touch targets may shrink to 30",
@@ -1135,10 +1134,10 @@
           "pc_1024x768 :: press gap potion_mp/ghost",
           "pc_1280x720_unibar_wide :: in the top bar war_meter",
           "pc_573x354_small :: PC quest lines fill the room before their neighbour",
-          "pc_573x354_small :: face group centred or stepped aside",
-          "pc_573x354_small :: in the top bar war_meter"
+          "pc_573x354_small :: column clear of notify/minimap",
+          "pc_573x354_small :: face group centred or stepped aside"
         ],
-        "newFailingCount": 44
+        "newFailingCount": 45
       },
       {
         "mutation": "PC face group never steps aside",
@@ -1503,14 +1502,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_1024x600 :: PC notify column at least 288 px wide",
           "pc_1024x600 :: chips right under the bar",
           "pc_1024x600 :: column order event",
           "pc_1024x600 :: no overlap chips/notify",
           "pc_1024x768 :: chips right under the bar",
-          "pc_1024x768 :: column order event",
-          "pc_1024x768 :: no overlap chips/notify"
+          "pc_1024x768 :: column order event"
         ],
-        "newFailingCount": 46
+        "newFailingCount": 51
       },
       {
         "mutation": "fold may cover the war meter",
@@ -2197,8 +2196,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 576,
-        "X": 992,
+        "W": 360,
+        "X": 1100,
         "Y": 188.5
       },
       "portrait": {
@@ -3223,8 +3222,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 318,
-        "X": 336,
+        "W": 564,
+        "X": 213,
         "Y": 188.5
       },
       "portrait": {
@@ -3320,7 +3319,7 @@
       "chips": {
         "H": 27.5,
         "W": 310,
-        "X": 422,
+        "X": 483,
         "Y": 121
       },
       "combo": {
@@ -3332,7 +3331,7 @@
       "event": {
         "H": 27.5,
         "W": 310,
-        "X": 422,
+        "X": 483,
         "Y": 153.5
       },
       "fold": {
@@ -3394,8 +3393,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 482,
-        "X": 336,
+        "W": 576,
+        "X": 350,
         "Y": 188.5
       },
       "portrait": {
@@ -3453,7 +3452,7 @@
       "war_meter": {
         "H": 84,
         "W": 360,
-        "X": 397,
+        "X": 458,
         "Y": 26
       },
       "x": {
@@ -3491,7 +3490,7 @@
       "chips": {
         "H": 27.5,
         "W": 310,
-        "X": 467,
+        "X": 545,
         "Y": 121
       },
       "combo": {
@@ -3503,17 +3502,17 @@
       "event": {
         "H": 27.5,
         "W": 310,
-        "X": 467,
+        "X": 545,
         "Y": 153.5
       },
       "fold": {
-        "Cols": 5,
+        "Cols": 4,
         "Gap": 5,
         "H": 278,
         "Lines": [
           {
-            "Cols": 5,
-            "X": 823,
+            "Cols": 4,
+            "X": 916,
             "Y": 24
           },
           {
@@ -3565,8 +3564,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 572,
-        "X": 336,
+        "W": 576,
+        "X": 412,
         "Y": 188.5
       },
       "portrait": {
@@ -3624,7 +3623,7 @@
       "war_meter": {
         "H": 84,
         "W": 360,
-        "X": 442,
+        "X": 520,
         "Y": 26
       },
       "x": {
@@ -5871,7 +5870,7 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "4157fe192b48e156523a2c038a861f6dc4daa27f278fd41c43ec5b65b4f17338",
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "c18c74780a158e387f7549196e59f3c71bd27a128565e70396d08510ba6a7742",
     "tools/fixtures/hud_layout_offline.luau": "8359a91fe8687f88b10ec4744de231abb3e1b0d31269e66706bd79bc9bafcabb",
     "docs/design/hud_layout_B_imgdev_2026-10-06.json": "47e516357a51684e60f7b7c15329e95fa8f6e409ba29a3dbb143d6c2ce8a88f7",
     "src/ReplicatedStorage/Shared/Config.luau": "81ef391810bdefd274923836367e3cba5743222383a1b5153483939c5a895879"

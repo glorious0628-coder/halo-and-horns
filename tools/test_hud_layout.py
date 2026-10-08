@@ -120,16 +120,12 @@ EXCEPTIONS = [
     ("pc_573x354_small", "PC quest lines at least 250 px wide",
      "A 573x354 desktop window (UIScale 0.5): the combo line sits level with the quest lines 236 px from their left edge, "
      "so they widen only to a GAP before it (236 px instead of 250)."),
-    # 2026-10-08: the notify column's 288 px floor (its 1280x720 width) stops at the centre column's room between the
-    # quest lines / minimap and the right block on windows narrower than ~730 px
+    # 2026-10-08: the notify column's 288 px floor (its 1280x720 width) widens over its own row around the centre column's
+    # middle and stops at the items level with it on the narrowest windows
     ("pc_700x720_narrow", "PC notify column at least 288 px wide",
-     "A 700x720 desktop window: the centre column between the left and right blocks is 275 px wide."),
-    ("pc_655x340_small", "PC notify column at least 288 px wide",
-     "A 655x340 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 241 px."),
+     "A 700x720 desktop window (UIScale 0.8): the minimap level with it leaves 275 px around the centre column's middle."),
     ("pc_573x354_small", "PC notify column at least 288 px wide",
-     "A 573x354 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 159 px."),
-    ("pc_700x450_small", "PC notify column at least 288 px wide",
-     "A 700x450 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 286 px."),
+     "A 573x354 desktop window (UIScale 0.5): the minimap level with it leaves 282 px around the centre column's middle."),
     ("phone_592x360_navbar", "fold holds the menu tiles in one line",
      "Android 640x360 with its 48 px navigation bar (592 px wide): the top bar holds Roblox's buttons, the war meter "
      "and [메뉴] with room for 3 fold squares beside it; the 4th wraps to the line right under the bar."),
@@ -157,8 +153,10 @@ MUTATIONS = [
      "local qw = q.W"),
     ("PC quest lines widen into their neighbours", "qw = math.min(qw, o.X - GAP - q.X)", "qw = qw"),
     ("PC bars keep the sheet height on small windows", "local d = PC_FLOOR.Bar / s - hb.H", "local d = 0"),
-    ("PC notify column keeps the sheet width on small windows",
-     "out.notify.W = math.max(out.notify.W, PC_FLOOR.NotifyW / s)", "out.notify.W = out.notify.W"),
+    ("PC notify column keeps the top bar's room on small windows", "local want = PC_FLOOR.NotifyW / s",
+     "local want = 0"),
+    ("PC notify column widens into its row's neighbours", "local half = math.min(want / 2, cx - l, r - cx)",
+     "local half = want / 2"),
     ("short desktop windows go to the phone sheet", "\tlocal sheet = touch\n",
      "\tlocal sheet = touch or (env.H or 0) * (env.Scale or 1) < 500\n"),
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),

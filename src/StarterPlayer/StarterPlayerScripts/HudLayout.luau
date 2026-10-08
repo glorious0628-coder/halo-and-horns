@@ -227,8 +227,6 @@ function HudLayout.Compute(env)
 			end
 		end
 		q.W = math.max(q.W, qw)
-		-- the notify column widens (the centre column below centres it with the chips and clamps it to its room)
-		out.notify.W = math.max(out.notify.W, PC_FLOOR.NotifyW / s)
 		local hb, mb = out.hp_bar, out.mp_bar
 		local d = PC_FLOOR.Bar / s - hb.H
 		if d > 0 then
@@ -383,6 +381,22 @@ function HudLayout.Compute(env)
 	for _, id in CENTER do
 		local r = out[id]
 		r.X = cx - r.W / 2
+	end
+	-- small PC windows (UiSandbox 2026-10-08): that shared room is the top bar's (Roblox's buttons .. [메뉴]'s fold); the
+	-- notify column sits lower, so it widens back to PC_FLOOR.NotifyW around the same centre over its own row's room
+	if not sheet then
+		local n = out.notify
+		local want = PC_FLOOR.NotifyW / s
+		if n.W < want then
+			local l, r = 0, W
+			for oid, o in out do
+				if oid ~= "notify" and not hidden[oid] and o.Y < n.Y + n.H and o.Y + o.H > n.Y then
+					if o.X + o.W / 2 < cx then l = math.max(l, o.X + o.W + GAP) else r = math.min(r, o.X - GAP) end
+				end
+			end
+			local half = math.min(want / 2, cx - l, r - cx)
+			if half * 2 > n.W then n.X, n.W = cx - half, half * 2 end
+		end
 	end
 
 	-- everything stays on screen and below the top bar (big tablets / very short windows); the top bar items stay in it
