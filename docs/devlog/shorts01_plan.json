@@ -63,7 +63,7 @@
       },
       {
        "video": "s40_first_weapon",
-       "ss": 6.0,
+       "ss": 6.7,
        "z": [
         1.15,
         1.22
@@ -537,46 +537,24 @@
      ],
      "shots": [
       {
-       "video": "s40_king_front",
-       "ss": 1.0,
-       "z": [
-        1.2,
-        1.1
-       ],
-       "in": "flash",
-       "w": 0.8,
-       "sfx": [
-        "boom",
-        {
-         "name": "g_PumpkinKing",
-         "at": 0.05
-        }
-       ],
-       "big": {
-        "text": "...LATER: A REAL SWORD!",
-        "color": "#FFD650",
-        "y": 420,
-        "size": 120
-       }
-      },
-      {
        "video": "s40_king_fight",
-       "ss": 0.0,
+       "ss": 2.2,
        "z": [
         1.15,
         1.28
        ],
        "shake": true,
-       "in": "punch",
+       "in": "flash",
        "w": 1.0,
        "sfx": [
+        "boom",
         {
-         "name": "g_HitHeavy",
-         "at": 0.3
+         "name": "g_PumpkinKing",
+         "at": 0.05
         },
         {
          "name": "g_HitHeavy",
-         "at": 0.8
+         "at": 0.4
         }
        ],
        "f": [
@@ -588,11 +566,33 @@
          0.5,
          0.5
         ]
+       ],
+       "big": {
+        "text": "A REAL SWORD!",
+        "color": "#FFD650",
+        "y": 420,
+        "size": 190
+       }
+      },
+      {
+       "video": "s40_king_front",
+       "ss": 1.0,
+       "z": [
+        1.2,
+        1.1
+       ],
+       "in": "punch",
+       "w": 0.8,
+       "sfx": [
+        {
+         "name": "g_HitHeavy",
+         "at": 0.2
+        }
        ]
       },
       {
        "video": "s40_king_fight",
-       "ss": 17.0,
+       "ss": 5.4,
        "z": [
         1.15,
         1.28
