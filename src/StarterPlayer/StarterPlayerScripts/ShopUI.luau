@@ -416,7 +416,10 @@ local function buildShop(parent, kit)
 		for _, look in looks do
 			local cell = { Look = look }
 			local tile = cardButton(u, kit, tiles, "Look" .. look.Id, function() tapLook(kit, look) end, openedAt)
-			rimSlot(u, "SlotEpic", tostring(look.Def.Icon or "IconRankHonor"), {
+			-- the look's own icon (Config.Looks Icon = 'Look'..id) once drawn, else my side's rank emblem
+			local icon = type(look.Def.Icon) == "string" and u.ArtId(look.Def.Icon) and look.Def.Icon
+				or (look.Def.Faction == "Horns" and "IconRankInfamy" or "IconRankHonor")
+			rimSlot(u, "SlotEpic", icon, {
 				Name = "Slot", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, L.Pad),
 				Size = UDim2.fromOffset(L.LookSlot, L.LookSlot), ScaleType = Enum.ScaleType.Fit, Parent = tile,
 			})
