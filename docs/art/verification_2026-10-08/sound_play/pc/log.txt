@@ -1,0 +1,83 @@
+[   0.1] fresh on
+[   4.2] collector ok, hooked 9, rows 0
+[   4.3] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=5,4,-30 anvilDist=82.8
+[   4.3] collector ok, hooked 9, rows 0
+[   4.4] == opening (first-time intro plays)
+[  28.5] == ChooseFaction Halo
+[  28.5] fired ChooseFaction
+[  28.7] == ChooseClass Warrior
+[  28.7] fired ChooseClass
+[  28.8] chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=5,4,-30 anvilDist=82.8
+[  29.1] == guide talks (TalkBlip expected)
+[  34.8] saved docs\art\verification_2026-10-08\sound_play\pc\01_guide.png
+[  34.9] == AcceptTutorial (QuestNew expected)
+[  34.9] fired AcceptTutorial
+[  38.4] at forge: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=3 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  40.0] == anvil first weapon (PowerUp expected, no QuestDone)
+[  40.2] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  40.3] weapon: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=1 TutorialKills=0 WeaponTier=1 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  43.7] saved docs\art\verification_2026-10-08\sound_play\pc\02_first_weapon.png
+[  43.8] == help window open (WindowOpen)
+[  43.9] Help
+[  45.4] == help window close (WindowClose)
+[  45.5] Help
+[  46.8] == jump (Jump)
+[  46.8] jump
+[  48.4] == hunt slimes (SwingWarrior, HitSoft, KillPop, ComboCoin)
+[  48.5] near: Slime Slime d=5 mine=false
+[  52.6] near: Slime Slime d=5 mine=false
+[  56.9] near: Slime Slime d=12 mine=false
+[  61.0] near: Slime Slime d=4 mine=false
+[  65.2] TutorialKills=5 after 24 presses
+[  66.0] saved docs\art\verification_2026-10-08\sound_play\pc\03_hunt.png
+[  67.7] == ClaimQuest tutorial (QuestDone; level before 2)
+[  67.7] fired ClaimQuest
+[  70.8] after claim: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 Level=2 CarriedGold=18 BankGold=150 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=SlimeMeadow HPPotionCount=0 MPPotionCount=0 pos=238,4,3 anvilDist=203.6
+[  71.6] saved docs\art\verification_2026-10-08\sound_play\pc\04_claim.png
+[  71.7] == Level 5 (LevelUp then SkillLearn ~1.1 s)
+[  71.7] debug Level=5: ok
+[  75.9] == skill Q (SkillCast + SkillHalo + hit)
+[  75.9] SkillQ
+[  80.0] == Mana 0 + Q (Deny)
+[  80.1] debug Mana=0: ok
+[  80.6] SkillQ
+[  82.2] == potion merchant: BuyPotion MP x1 (Spend)
+[  82.3] debug Gold=500: ok
+[  82.3] at 12,3,-39
+[  83.4] fired BuyPotion
+[  85.0] == drink MP potion (Potion)
+[  85.0] fired UsePotion
+[  86.6] debug AutoCombatUnlocked=True: ok
+[  87.2] == auto on (AutoOn)
+[  87.2] Auto
+[  88.8] == auto off (AutoOff)
+[  88.9] Auto
+[  90.4] == Honor +40 (Purify; RankUp if a new title)
+[  90.6] debug Honor=40: ok
+[  92.6] == Honor -10 (RankDown)
+[  92.7] debug Honor=30: ok
+[  94.8] debug Item=Enh70:2: 2
+[  95.3] == UseItem Enh70 on tier 1 (ScrollSuccess / ScrollFail)
+[  95.4] fired UseItem
+[  98.0] fired UseItem
+[ 100.7] saved docs\art\verification_2026-10-08\sound_play\pc\05_scroll.png
+[ 100.8] == Goose (GooseArrive + duck)
+[ 100.8] debug Goose=True: ok
+[ 103.9] at -26,4,30
+[ 104.8] == hit the goose (GooseHonk)
+[ 108.5] saved docs\art\verification_2026-10-08\sound_play\pc\06_goose.png
+[ 108.6] == PumpkinKing appears (PumpkinKing + duck)
+[ 108.6] debug PumpkinKing=True: spawned
+[ 111.7] == GhostKing appears (GhostKing)
+[ 111.8] debug GhostKing=True: spawned
+[ 114.8] == Announce Jackpot:8 (JackpotOther)
+[ 114.9] debug Announce=Jackpot:8: sent Jackpot
+[ 118.8] saved docs\art\verification_2026-10-08\sound_play\pc\07_events.png
+[ 118.8] == end
+[ 119.4] rows: 124
+[ 119.4] console: [RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[RankingService] read Artisan failed: You must publish this place to the web to access DataStore.
+[ 120.5] play stopped
+[ 122.6] fresh off
+[ 122.7] device: default

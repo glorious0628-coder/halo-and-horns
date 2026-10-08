@@ -1,0 +1,87 @@
+[   0.1] fresh on
+[   3.8] collector ok, hooked 9, rows 0
+[   3.9] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=-0,4,-22 anvilDist=77.9
+[   4.0] collector ok, hooked 9, rows 0
+[   4.0] == opening (first-time intro plays)
+[  28.1] == ChooseFaction Halo
+[  28.2] fired ChooseFaction
+[  28.3] == ChooseClass Warrior
+[  28.4] fired ChooseClass
+[  28.6] chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=HaloTown HPPotionCount=0 MPPotionCount=0 pos=-4,4,-423 anvilDist=470.0
+[  28.7] == guide talks (TalkBlip expected)
+[  34.4] saved docs\art\verification_2026-10-08\sound_play\pc\01_guide.png
+[  34.5] == AcceptTutorial (QuestNew expected)
+[  34.6] fired AcceptTutorial
+[  38.0] at forge: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=3 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  39.6] == anvil first weapon (PowerUp expected, no QuestDone)
+[  39.9] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  39.9] weapon: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=1 TutorialKills=0 WeaponTier=1 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  43.3] saved docs\art\verification_2026-10-08\sound_play\pc\02_first_weapon.png
+[  43.4] == bag open (WindowOpen)
+[  43.5] nil
+[  45.0] == bag close (WindowClose)
+[  45.1] nil
+[  46.4] == map open
+[  46.4] Map
+[  48.0] == map close
+[  48.1] Map
+[  49.3] == jump (Jump)
+[  49.4] jump
+[  51.0] == hunt slimes (SwingWarrior, HitSoft, KillPop, ComboCoin)
+[  51.0] near: Slime Slime d=4 mine=false
+[  55.2] near: Slime Slime d=138 mine=false
+[  59.4] near: Slime Slime d=5 mine=false
+[  63.6] near: Slime Slime d=6 mine=false
+[  65.0] TutorialKills=5 after 20 presses
+[  65.8] saved docs\art\verification_2026-10-08\sound_play\pc\03_hunt.png
+[  67.4] == ClaimQuest tutorial (QuestDone; level before 2)
+[  67.5] fired ClaimQuest
+[  70.6] after claim: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 Level=2 CarriedGold=18 BankGold=150 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=SlimeMeadow HPPotionCount=0 MPPotionCount=0 pos=362,4,-21 anvilDist=329.7
+[  71.4] saved docs\art\verification_2026-10-08\sound_play\pc\04_claim.png
+[  71.5] == Level 5 (LevelUp then SkillLearn ~1.1 s)
+[  71.5] debug Level=5: no such ready player
+[  75.7] == skill Q (SkillCast + SkillHalo + hit)
+[  75.7] SkillQ
+[  79.8] == Mana 0 + Q (Deny)
+[  79.9] debug Mana=0: no such ready player
+[  80.4] SkillQ
+[  82.0] == potion merchant: BuyPotion MP x1 (Spend)
+[  82.1] debug Gold=500: no such ready player
+[  82.1] at 12,3,-39
+[  83.2] fired BuyPotion
+[  84.8] == drink MP potion (Potion)
+[  84.8] fired UsePotion
+[  86.4] debug AutoCombatUnlocked=True: no such ready player
+[  87.0] == auto on (AutoOn)
+[  87.0] Auto
+[  88.6] == auto off (AutoOff)
+[  88.7] Auto
+[  90.2] == Honor +40 (Purify; RankUp if a new title)
+[  90.4] debug Honor=40: no such ready player
+[  92.4] == Honor -10 (RankDown)
+[  92.5] debug Honor=30: no such ready player
+[  94.6] debug Item=Enh70:2: no such ready player
+[  95.1] == UseItem Enh70 on tier 1 (ScrollSuccess / ScrollFail)
+[  95.2] fired UseItem
+[  97.8] fired UseItem
+[ 100.6] saved docs\art\verification_2026-10-08\sound_play\pc\05_scroll.png
+[ 100.6] == Goose (GooseArrive + duck)
+[ 100.7] debug Goose=True: no such ready player
+[ 103.8] no target
+[ 104.6] == hit the goose (GooseHonk)
+[ 108.4] saved docs\art\verification_2026-10-08\sound_play\pc\06_goose.png
+[ 108.5] == PumpkinKing appears (PumpkinKing + duck)
+[ 108.5] debug PumpkinKing=True: no such ready player
+[ 111.6] == GhostKing appears (GhostKing)
+[ 111.7] debug GhostKing=True: no such ready player
+[ 114.7] == Announce Jackpot:8 (JackpotOther)
+[ 114.8] debug Announce=Jackpot:8: no such ready player
+[ 118.6] saved docs\art\verification_2026-10-08\sound_play\pc\07_events.png
+[ 118.7] == end
+[ 119.2] rows: 105
+[ 119.3] console: [RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[RankingService] read Artisan failed: You must publish this place to the web to access DataStore.
+[ 120.3] play stopped
+[ 122.4] fresh off
+[ 122.5] device: default

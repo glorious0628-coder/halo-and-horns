@@ -1,0 +1,58 @@
+[   1.3] device: samsung_galaxy_s22_ultra 749x361
+[   1.4] fresh on
+[   5.5] collector ok, hooked 9, rows 0
+[   5.6] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=-5,4,-23 anvilDist=81.1
+[   5.6] collector ok, hooked 9, rows 0
+[   5.7] == opening (first-time intro plays)
+[  29.8] == ChooseFaction Halo
+[  29.8] fired ChooseFaction
+[  30.0] == ChooseClass Warrior
+[  30.0] fired ChooseClass
+[  30.1] chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=HaloTown HPPotionCount=0 MPPotionCount=0 pos=0,4,-415 anvilDist=461.7
+[  30.4] == guide talks (TalkBlip expected)
+[  35.9] saved docs\art\verification_2026-10-08\sound_play\phone\01_guide.png
+[  36.0] == AcceptTutorial (QuestNew expected)
+[  36.1] fired AcceptTutorial
+[  39.5] at forge: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=3 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  41.1] == anvil first weapon (PowerUp expected, no QuestDone)
+[  41.4] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  41.4] weapon: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=1 TutorialKills=0 WeaponTier=1 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  44.6] saved docs\art\verification_2026-10-08\sound_play\phone\02_first_weapon.png
+[  44.6] == help window open (WindowOpen)
+[  44.7] Help
+[  46.2] == help window close (WindowClose)
+[  46.3] Help
+[  47.6] == jump (Jump)
+[  47.6] jump
+[  49.2] == hunt slimes (SwingWarrior, HitSoft, KillPop, ComboCoin)
+[  49.3] near: Slime Slime d=5 mine=false
+[  53.4] near: Slime Slime d=81 mine=false
+[  57.7] near: Slime Slime d=5 mine=false
+[  61.8] near: Slime Slime d=5 mine=false
+[  63.2] TutorialKills=5 after 20 presses
+[  63.8] saved docs\art\verification_2026-10-08\sound_play\phone\03_hunt.png
+[  65.4] == ClaimQuest tutorial (QuestDone; level before 2)
+[  65.5] fired ClaimQuest
+[  68.5] after claim: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 Level=2 CarriedGold=15 BankGold=150 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=SlimeMeadow HPPotionCount=0 MPPotionCount=0 pos=312,4,-23 anvilDist=281.6
+[  69.1] saved docs\art\verification_2026-10-08\sound_play\phone\04_claim.png
+[  69.2] == Level 5 (debug sets the stat: no LevelUp Fx; SkillLearn at the learn moment)
+[  69.2] debug Level=5: ok
+[  73.3] near: Slime Slime d=5 mine=false
+[  75.4] == skill Q after standing still (SkillCast + SkillHalo + hit)
+[  75.4] SkillQ
+[  79.5] == after the cooldown (SkillReady expected at ~3 s)
+[  79.6] == phone: slimes again + Q (HitSoft on phone)
+[  79.6] near: Slime Slime d=5 mine=false
+[  83.8] near: Slime Slime d=38 mine=false
+[  88.0] near: Slime Slime d=5 mine=false
+[  92.1] near: Slime Slime d=4 mine=false
+[  96.3] near: BigSlime BigSlime d=4 mine=false
+[  99.7] hunt end after 29 presses: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 Level=5 CarriedGold=15 BankGold=162 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=SlimeMeadow HPPotionCount=0 MPPotionCount=0 pos=401,4,-27 anvilDist=368.9
+[ 100.3] saved docs\art\verification_2026-10-08\sound_play\phone\05_phone_hunt.png
+[ 100.4] == end
+[ 101.0] rows: 127
+[ 101.0] console: [RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[ 102.0] play stopped
+[ 104.1] fresh off
+[ 104.6] device: default
