@@ -24,11 +24,16 @@ local WARN_INTERVAL = 10
 -- A23-29/30 (user pick 'E' = 'B' bright toy light + the new ground tiles, docs/design/world_blend_2026-10-06.md):
 -- sky light reaches the monsters (EnvironmentDiffuse 1.0, Specular 0.6, ShadowSoftness 0.5), softer bloom and tint.
 -- tools/preview_map.lua bakes the same Neutral values so Edit and the server start look alike.
+-- 2026-10-08 (user: "입체적이지 않아", 검수 depth pass): sharper sun shadows (ShadowSoftness 0.15), half the sky's flat
+-- diffuse fill so the shadow side reads, contrast +0.12 and saturation -0.05 (the neon green calmer). LIGHT_STYLE:
+-- Realistic shades by the sun more than Soft. Lighting.Technology is a place setting (not scriptable): ShadowMap -
+-- sun shadows are what gives the depth, and Future's per-pixel shadows of local lights cost phones for our few lamps.
 local LIGHTING_FIXED = {
-	GlobalShadows = true, ShadowSoftness = 0.5, GeographicLatitude = 35,
-	EnvironmentDiffuseScale = 1.0, EnvironmentSpecularScale = 0.6,
+	GlobalShadows = true, ShadowSoftness = 0.15, GeographicLatitude = 35,
+	EnvironmentDiffuseScale = 0.5, EnvironmentSpecularScale = 0.6,
 }
-local TINT_FIXED = { Brightness = 0, Contrast = 0.05, Saturation = 0.1 } -- only TintColor is tweened
+local LIGHT_STYLE = "Realistic"
+local TINT_FIXED = { Brightness = 0, Contrast = 0.12, Saturation = -0.05 } -- only TintColor is tweened
 local SKY_FIXED = { SunAngularSize = 14, MoonAngularSize = 18, StarCount = 3000 }
 local BLOOM_FIXED = { Size = 24, Threshold = 2.2 }
 -- A23-74 (검수 2026-10-07): no sun rays at all - rays fanning out of the sun break the no-ray-burst rule
@@ -135,7 +140,7 @@ end
 -- ART_DIRECTION 3.1, once in Start
 local function bootstrapLighting()
 	pcall(function()
-		Lighting.LightingStyle = Enum.LightingStyle.Soft
+		Lighting.LightingStyle = Enum.LightingStyle[LIGHT_STYLE]
 	end)
 	pcall(function()
 		Lighting.PrioritizeLightingQuality = true
