@@ -26,7 +26,7 @@ local T = {
 	NameMax = 20, -- characters shown of one name
 	Gui = "SupporterGui",
 	PPS = 40, -- canvas pixels per stud: the canvas keeps the face's shape (no stretched letters)
-	Inset = 0.1, -- share of the width kept free on each side (behind the board's posts; 10/08 photo)
+	Inset = { L = 0.08, R = 0.14 }, -- share of the width kept free (behind the posts; the right post + lantern hide more, 10/08 photo)
 	MinRows = 5, -- a row is 1/max(rows, MinRows) of the names' height: a short list is not huge
 	-- game text: English only (A23-48)
 	Title = "Thank you, supporters!",
@@ -86,12 +86,11 @@ local function draw(part)
 		panel.BackgroundColor3 = T.Colors.Panel
 		panel.BorderSizePixel = 0
 		panel.Parent = gui
-		-- the words keep Inset of the width free on each side: the 3D board's posts stand in front of the face's edges
+		-- the words keep Inset.L / Inset.R of the width free: the 3D board's posts stand in front of the face's edges
 		local title = Instance.new("TextLabel")
 		title.Name = "Title"
-		title.AnchorPoint = Vector2.new(0.5, 0)
-		title.Size = UDim2.new(1 - 2 * T.Inset, 0, 0, 40)
-		title.Position = UDim2.new(0.5, 0, 0, 10)
+		title.Size = UDim2.new(1 - T.Inset.L - T.Inset.R, 0, 0, 40)
+		title.Position = UDim2.new(T.Inset.L, 0, 0, 10)
 		title.BackgroundTransparency = 1
 		title.Font = Enum.Font.GothamBold
 		title.TextScaled = true
@@ -101,9 +100,8 @@ local function draw(part)
 		-- one label per row (10/08: one wrapped label broke the rows, one unwrapped label shrank its lines to dots)
 		local body = Instance.new("Frame")
 		body.Name = "Names"
-		body.AnchorPoint = Vector2.new(0.5, 0)
-		body.Size = UDim2.new(1 - 2 * T.Inset, 0, 1, -66)
-		body.Position = UDim2.new(0.5, 0, 0, 56)
+		body.Size = UDim2.new(1 - T.Inset.L - T.Inset.R, 0, 1, -66)
+		body.Position = UDim2.new(T.Inset.L, 0, 0, 56)
 		body.BackgroundTransparency = 1
 		local list = Instance.new("UIListLayout")
 		list.FillDirection = Enum.FillDirection.Vertical

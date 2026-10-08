@@ -43,13 +43,27 @@ for _, part in CS:GetTagged("SupporterBoard") do
 			if d:IsA("GuiButton") then buttons += 1 end
 		end
 	end
+	-- the rows (one TextLabel per row since b8efe680), in order
+	local rows, fits, smallest = {}, true, math.huge
+	if names then
+		local labels = {}
+		for _, ch in names:GetChildren() do
+			if ch:IsA("TextLabel") and string.sub(ch.Name, 1, 3) == "Row" then table.insert(labels, ch) end
+		end
+		table.sort(labels, function(a, b) return a.LayoutOrder < b.LayoutOrder end)
+		for _, l in labels do
+			table.insert(rows, l.Text)
+			fits = fits and l.TextFits
+			smallest = math.min(smallest, l.TextBounds.Y)
+		end
+	end
 	table.insert(out.Boards, {
 		Pos = { part.Position.X, part.Position.Y, part.Position.Z }, Size = { part.Size.X, part.Size.Y },
 		Look = { part.CFrame.LookVector.X, part.CFrame.LookVector.Z },
 		Gui = gui ~= nil, Face = gui and gui.Face.Name or "", Sizing = gui and gui.SizingMode.Name or "",
 		PPS = gui and gui.PixelsPerStud or 0, Canvas = gui and { gui.AbsoluteSize.X, gui.AbsoluteSize.Y } or { 0, 0 },
-		Title = title and title.Text or "", Text = names and names.Text or "", Fits = names and names.TextFits or false,
-		Buttons = buttons,
+		Title = title and title.Text or "", Text = table.concat(rows, "\n"), Fits = #rows > 0 and fits,
+		RowPx = smallest < math.huge and smallest or 0, Buttons = buttons,
 	})
 end
 return game:GetService("HttpService"):JSONEncode(out)
