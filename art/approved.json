@@ -6668,5 +6668,265 @@
   "tile": "art/ui/Tex_WaterfallFlow_FF2.png (1024, tools/make_tileable.py --search --gap-weight 1 --feather-y 48 --prefer-dark -0.3: wrap step 11.5 -> 1.2 = inside 1.2)",
   "check": "art/review/terrain/waterfall_HQ_3x3.png + _seam.png (100%)",
   "use": "Config key Tex_WaterfallFlow — waterfall faces, flow top -> bottom (texture V down); no rays"
+ },
+ "AccTheme_HaloIce": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "shop: Acc_HaloR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HaloIce/Acc_HaloR1R2.png",
+   "R2": "art/models/acc/themes/HaloIce/Acc_HaloR1R2.png",
+   "R3": "art/models/acc/themes/HaloIce/Acc_HaloR3.png",
+   "R4": "art/models/acc/themes/HaloIce/Acc_HaloR4.png",
+   "R5": "art/models/acc/themes/HaloIce/Acc_HaloR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   170,
+   225,
+   255
+  ],
+  "sparkle": [
+   225,
+   245,
+   255
+  ],
+  "note": "상점 얼음 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+ },
+ "AccTheme_HaloGold": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "shop: Acc_HaloR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HaloGold/Acc_HaloR1R2.png",
+   "R2": "art/models/acc/themes/HaloGold/Acc_HaloR1R2.png",
+   "R3": "art/models/acc/themes/HaloGold/Acc_HaloR3.png",
+   "R4": "art/models/acc/themes/HaloGold/Acc_HaloR4.png",
+   "R5": "art/models/acc/themes/HaloGold/Acc_HaloR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   255,
+   170,
+   110
+  ],
+  "sparkle": [
+   255,
+   120,
+   130
+  ],
+  "note": "상점 황금 후광(호박금 + 루비 무늬). 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음. R2 별은 색판 공용이라 고리와 같은 색(검수 OK, 메시 그대로)."
+ },
+ "AccTheme_HornsLava": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "shop: Acc_HornsR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HornsLava/Acc_HornsR1R2.png",
+   "R2": "art/models/acc/themes/HornsLava/Acc_HornsR1R2.png",
+   "R3": "art/models/acc/themes/HornsLava/Acc_HornsR3.png",
+   "R4": "art/models/acc/themes/HornsLava/Acc_HornsR4.png",
+   "R5": "art/models/acc/themes/HornsLava/Acc_HornsR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   255,
+   120,
+   40
+  ],
+  "sparkle": [
+   255,
+   190,
+   90
+  ],
+  "note": "상점 용암 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+ },
+ "AccTheme_HornsShadow": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "shop: Acc_HornsR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HornsShadow/Acc_HornsR1R2.png",
+   "R2": "art/models/acc/themes/HornsShadow/Acc_HornsR1R2.png",
+   "R3": "art/models/acc/themes/HornsShadow/Acc_HornsR3.png",
+   "R4": "art/models/acc/themes/HornsShadow/Acc_HornsR4.png",
+   "R5": "art/models/acc/themes/HornsShadow/Acc_HornsR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   160,
+   100,
+   255
+  ],
+  "sparkle": [
+   215,
+   190,
+   255
+  ],
+  "note": "상점 그림자 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+ },
+ "AccTheme_HaloSprout": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "attendance 14: Acc_HaloR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HaloSprout/Acc_HaloR1R2.png",
+   "R2": "art/models/acc/themes/HaloSprout/Acc_HaloR1R2.png",
+   "R3": "art/models/acc/themes/HaloSprout/Acc_HaloR3.png",
+   "R4": "art/models/acc/themes/HaloSprout/Acc_HaloR4.png",
+   "R5": "art/models/acc/themes/HaloSprout/Acc_HaloR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   150,
+   235,
+   120
+  ],
+  "sparkle": [
+   210,
+   255,
+   180
+  ],
+  "note": "출석 14일 새싹 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+ },
+ "AccTheme_HornsSprout": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "attendance 14: Acc_HornsR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HornsSprout/Acc_HornsR1R2.png",
+   "R2": "art/models/acc/themes/HornsSprout/Acc_HornsR1R2.png",
+   "R3": "art/models/acc/themes/HornsSprout/Acc_HornsR3.png",
+   "R4": "art/models/acc/themes/HornsSprout/Acc_HornsR4.png",
+   "R5": "art/models/acc/themes/HornsSprout/Acc_HornsR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   150,
+   235,
+   120
+  ],
+  "sparkle": [
+   210,
+   255,
+   180
+  ],
+  "note": "출석 14일 새싹 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+ },
+ "AccTheme_HaloStarlight": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "attendance 50: Acc_HaloR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HaloStarlight/Acc_HaloR1R2.png",
+   "R2": "art/models/acc/themes/HaloStarlight/Acc_HaloR1R2.png",
+   "R3": "art/models/acc/themes/HaloStarlight/Acc_HaloR3.png",
+   "R4": "art/models/acc/themes/HaloStarlight/Acc_HaloR4.png",
+   "R5": "art/models/acc/themes/HaloStarlight/Acc_HaloR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   120,
+   150,
+   255
+  ],
+  "sparkle": [
+   255,
+   220,
+   120
+  ],
+  "note": "출석 50일 별빛 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+ },
+ "AccTheme_HornsStarlight": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "attendance 50: Acc_HornsR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HornsStarlight/Acc_HornsR1R2.png",
+   "R2": "art/models/acc/themes/HornsStarlight/Acc_HornsR1R2.png",
+   "R3": "art/models/acc/themes/HornsStarlight/Acc_HornsR3.png",
+   "R4": "art/models/acc/themes/HornsStarlight/Acc_HornsR4.png",
+   "R5": "art/models/acc/themes/HornsStarlight/Acc_HornsR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   120,
+   150,
+   255
+  ],
+  "sparkle": [
+   255,
+   220,
+   120
+  ],
+  "note": "출석 50일 별빛 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+ },
+ "AccTheme_HaloPlatinum": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "attendance 100: Acc_HaloR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HaloPlatinum/Acc_HaloR1R2.png",
+   "R2": "art/models/acc/themes/HaloPlatinum/Acc_HaloR1R2.png",
+   "R3": "art/models/acc/themes/HaloPlatinum/Acc_HaloR3.png",
+   "R4": "art/models/acc/themes/HaloPlatinum/Acc_HaloR4.png",
+   "R5": "art/models/acc/themes/HaloPlatinum/Acc_HaloR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   210,
+   235,
+   255
+  ],
+  "sparkle": [
+   255,
+   255,
+   255
+  ],
+  "note": "출석 100일 백금 다이아 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음. R1은 무늬 없는 고리라 기본 R1과 비슷 — 반짝이로 구별(검수 OK)."
+ },
+ "AccTheme_HornsPlatinum": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (시트 d40ee73 acc_theme_fix_sheet.jpg + acc_theme_recolor_sheet.jpg; 사용자 고름 A23-75 292051f · A23-77)",
+  "tool": "texture recolor only, 0 credits — tools/img2/acc_recolor.py (+ acc_masks.py emblem / tip masks); meshes unchanged",
+  "use": "attendance 100: Acc_HornsR1-R5 MeshPart.TextureID per rank (shape = rank, colour = theme)",
+  "files": {
+   "R1": "art/models/acc/themes/HornsPlatinum/Acc_HornsR1R2.png",
+   "R2": "art/models/acc/themes/HornsPlatinum/Acc_HornsR1R2.png",
+   "R3": "art/models/acc/themes/HornsPlatinum/Acc_HornsR3.png",
+   "R4": "art/models/acc/themes/HornsPlatinum/Acc_HornsR4.png",
+   "R5": "art/models/acc/themes/HornsPlatinum/Acc_HornsR5.png"
+  },
+  "size": "R1R2 = the shared 64 px palette (AccPalette, one upload for both R1 and R2), R3-R5 = 1024",
+  "glow": [
+   210,
+   235,
+   255
+  ],
+  "sparkle": [
+   255,
+   255,
+   255
+  ],
+  "note": "출석 100일 백금 다이아 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
  }
 }
