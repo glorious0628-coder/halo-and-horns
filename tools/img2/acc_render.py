@@ -3,7 +3,8 @@ Render rank accessories with a swapped base-colour texture, front + 3/4, in one 
 
   blender --background --factory-startup --python tools/img2/acc_render.py -- <jobs.json>
 
-jobs.json = [{"glb": abs path, "tex": abs path or null (= the GLB's own), "out": abs path prefix}, ...]
+jobs.json = [{"glb": abs path, "tex": abs path or null (= the GLB's own), "out": abs path prefix,
+              optional "res": px (448), "views": ["front", "34"] (default) and / or "icon" (az 30, el 34)}, ...]
 -> <out>_front.png, <out>_34.png (448 px, transparent). Same light as tools/tex_compare_render.py (white sky 0.9 + sun 2.2,
 Standard view). The accessory models face -Y in Blender (Roblox -Z), so the front camera sits on -Y.
 """
@@ -16,7 +17,7 @@ from mathutils import Vector
 
 jobs = json.load(open(sys.argv[sys.argv.index("--") + 1], encoding="utf-8"))
 RES = 448
-VIEWS = {"front": (0, 8, 50), "34": (35, 16, 50)}
+VIEWS = {"front": (0, 8, 50), "34": (35, 16, 50), "icon": (30, 34, 50)}  # icon = shop / attendance icon (only when asked)
 
 
 def setup_scene():
@@ -65,7 +66,10 @@ for job in jobs:
     lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
     hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
     centre, radius = (lo + hi) / 2, (hi - lo).length / 2
+    sc.render.resolution_x = sc.render.resolution_y = job.get("res", RES)
     for name, (az, el, lens) in VIEWS.items():
+        if name not in job.get("views", ["front", "34"]):
+            continue
         cd.lens = lens
         fov = 2 * math.atan(cd.sensor_width / 2 / lens)
         dist = radius / math.sin(fov / 2) * 1.02
