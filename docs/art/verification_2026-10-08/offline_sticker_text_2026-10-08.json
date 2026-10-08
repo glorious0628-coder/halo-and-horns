@@ -1,0 +1,73 @@
+{
+  "status": "passed",
+  "checks": 6,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "an art with a TextRect shows EMO_FALLBACK's words in that box",
+      "ok": true
+    },
+    {
+      "check": "the TextRect words fade with the art",
+      "ok": true
+    },
+    {
+      "check": "the code fallback puts the words back in the middle",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 6,
+    "applied": 6,
+    "caught": 6,
+    "results": [
+      {
+        "mutation": "the picture's shape ignored",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a wide art: the box moves into the picture's band :: 0.100 0.200 0.800 0.500",
+          "CHECK_FAIL a tall art: the box moves into the picture's column :: 0.000 0.000 1.000 0.500"
+        ]
+      },
+      {
+        "mutation": "the box not moved into the band",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a wide art: the box moves into the picture's band :: 0.100 0.100 0.800 0.250",
+          "CHECK_FAIL a tall art: the box moves into the picture's column :: 0.000 0.000 0.500 0.500"
+        ]
+      },
+      {
+        "mutation": "a broken TextRect still used",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
+      {
+        "mutation": "the words hidden on a TextRect art",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
+      {
+        "mutation": "the fallback words left where a TextRect put them",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
+      {
+        "mutation": "the TextRect words never fade",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "f7e50b181901b75109f00c32215e6b245f9b9558a6c26fdc40857be943952641"
+  },
+  "studioCalls": 0,
+  "limitations": "The extracted function and the sticker code's text only: the look on the real blank bubble art is a Studio photo once 이미지 개발 sends its id and TextRect."
+}

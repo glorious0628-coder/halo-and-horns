@@ -36,6 +36,8 @@ MUTATIONS = [
     ("the toast is spammed", "\tif os.clock() - LEARN.TellAt < LEARN.TellGap then return end\n", ""),
     ("SkillSlots ignored (a rebirth at Lv1 looks locked)",
      "\tif locked and type(slots) == \"number\" and slots >= (T.SlotIndex[slot] or 99) then locked = false end\n", ""),
+    ("key badges ignore Key hints", "\t\tb.Key.Visible = badges and text ~= \"\"\n", "\t\tb.Key.Visible = text ~= \"\"\n"),
+    ("the badges never follow a settings change", "\t\t\tsrc.Changed:Connect(refreshAll)\n", ""),
     ("SkillSlots changes not watched", '"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }', '"SkillReadyAtX", "SkillBarPreview" }'),
     # sound_gaps A9 / A10 (2026-10-07)
     ("the learn sound plays with the banner", "\ttask.delay(LEARN.SoundDelay, LEARN.Sound)\n", "\tLEARN.Sound()\n"),

@@ -319,9 +319,12 @@ def flow_a(f):
     wait_for(f, lambda s: s.get("ZoneId") == "SlimeMeadow", 20)
     time.sleep(1.0)
     f.clean(())  # world only: my twig, the slimes and their bubbles
-    f.look("angel", focus=13)
+    f.look("angel", focus=9)
+    if os.environ.get("HUNT_LEVEL"):  # a stronger twig: slimes go down in a hit or two, so they hardly hit back ("Ouch!")
+        print("hunt level:", f.debug("Level", int(os.environ["HUNT_LEVEL"])), flush=True)
     print(f.lua(HUNT % 90, "Client"), flush=True)
-    rec("s40_first_hunt", 25, lambda: f.orbit((0, 0, 0), 13, 2.0, -165, -105, 24, look_y=2.4, target="char"))
+    # 검수 2026-10-08: the swing must show — a near camera beside / in front of me (my facing), the twig arm toward it
+    rec("s40_first_hunt", 25, lambda: f.orbit((0, 0, 0), 9, 2.2, -75, -35, 24, look_y=2.0, target=MY_ROOT, front=True))
     st = wait_for(f, lambda s: num(s.get("TutorialKills")) >= 5, 60, 1.0)
     print(f.lua(HUNT_STOP, "Client"), flush=True)
     # a card waits while I fight (the meadow slimes keep hitting me, 2026-10-08): claim from the quiet Crossroads square

@@ -485,17 +485,22 @@ local function paintButton(b)
 	if b.PillText then b.PillText.Text = st.Def.Name end
 	if b.Pill then b.Pill.Visible = not st.Locked end
 	if b.Key then
-		-- only a key that works now (Keybinds.IsLive: SkillZ / SkillX are live once their flags are on)
-		local kb = C and C.Keybinds
+		-- only a key that works now (Keybinds.IsLive: SkillZ / SkillX are live once their flags are on), and only while
+		-- Settings.KeyBadges ('Key hints') is on - A23-78: off by default, like the HUD and potion badges (검수 10/08)
+		local kb, st = C and C.Keybinds, C and C.Settings
 		local action = T.Action[b.Slot]
-		local text = ""
+		local text, badges = "", true
+		if type(st) == "table" and type(st.Get) == "function" then
+			local okB, v = pcall(st.Get, "KeyBadges")
+			badges = not okB or v ~= false
+		end
 		if type(kb) == "table" and type(kb.Label) == "function" and type(kb.IsLive) == "function" then
 			local okLive, live = pcall(kb.IsLive, action)
 			local okLabel, label = pcall(kb.Label, action)
 			if okLive and live and okLabel and type(label) == "string" then text = label end
 		end
 		b.Key.Text = text
-		b.Key.Visible = text ~= ""
+		b.Key.Visible = badges and text ~= ""
 	end
 	-- the disc art follows my faction's rim when that art exists
 	local key = discKey()
@@ -806,6 +811,12 @@ function SkillBar.Start()
 	local hud = C and C.HUD
 	if type(hud) == "table" and type(hud.SkillBarReady) == "function" then guard(hud.SkillBarReady, "hand-off") end
 	UIKit.OnAttr({ "DataLoaded" }, refreshAll) -- the learn moment only starts once the save is in
+	-- the key badges follow key changes and the 'Key hints' setting at once (VitalsUI.RefreshKeys does the same)
+	for _, src in { C and C.Keybinds, C and C.Settings } do
+		if type(src) == "table" and type(src.Changed) == "table" and type(src.Changed.Connect) == "function" then
+			src.Changed:Connect(refreshAll)
+		end
+	end
 	print("[SkillBar] started")
 end
 

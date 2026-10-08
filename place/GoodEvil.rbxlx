@@ -78009,12 +78009,12 @@ sQWAGcGxBYAZwbEFgBnBsQWAGcGxBYD/gP+AWQ==]]></BinaryString>
 				<bool name="SmoothVoxelsUpgraded">false</bool>
 				<AssetContentMap name="VoxelGridAssetContentMap">[]</AssetContentMap>
 				<Color3 name="WaterColor">
-					<R>0.0313725509</R>
-					<G>0.709803939</G>
-					<B>0.839215696</B>
+					<R>0.149019614</R>
+					<G>0.501960814</G>
+					<B>0.690196097</B>
 				</Color3>
-				<float name="WaterReflectance">0.0500000007</float>
-				<float name="WaterTransparency">0.349999994</float>
+				<float name="WaterReflectance">0.150000006</float>
+				<float name="WaterTransparency">0.400000006</float>
 				<float name="WaterWaveSize">0.0500000007</float>
 				<float name="WaterWaveSpeed">6</float>
 				<bool name="Anchored">true</bool>

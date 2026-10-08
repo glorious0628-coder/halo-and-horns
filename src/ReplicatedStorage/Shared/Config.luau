@@ -56,6 +56,9 @@ Config.Player = {
 	MaxHealthPerLevel = 10,
 	PlaytimeTick = 5, -- seconds between PlaytimeSeconds updates
 	CollisionGroup = "Players", -- addendum A7-5: PhysicsService group, not collidable with itself (PlayerService)
+	-- A23-81 (user 2026-10-08 "나무·풀을 뚫으면 안 되지, 비켜 가야지"): decor parts in this group block players only;
+	-- monsters, pets and everything else (Default and every other group) pass through them (PlayerService registers it)
+	DecorGroup = "DecorPlayerOnly",
 }
 
 -- Approved HP/MP HUD. Potions are now purchased stock; prices are provisional balance values.
@@ -1248,10 +1251,11 @@ Config.War = {
 -- ZoneLook base light (Brightness / Ambient / OutdoorAmbient = ZoneLook SKY table, so the 3 s war-sky tween and
 -- ZoneLook agree); Eclipse = the night proposal (blood-red mood, monsters still readable).
 -- Optional keys (WarService applies them only if present): FogStart, ExposureCompensation, BloomIntensity (otherwise
--- WarService SKY_EXTRAS).
+-- WarService SKY_EXTRAS). 2026-10-08 (검수 style drift #18): Neutral's fog = the sky's horizon colour in the photos
+-- (~150, 206, 226 - the old pale 205, 215, 230 drew a grey band where the sea ends) and a slightly warm day tint.
 Config.Sky = {
 	TweenTime = 3,
-	Neutral = { ClockTime = 14.2, Brightness = 2.0, Ambient = Color3.fromRGB(110, 108, 106), OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(205, 215, 230), FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.2, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 255, 255) },
+	Neutral = { ClockTime = 14.2, Brightness = 2.0, Ambient = Color3.fromRGB(110, 108, 106), OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.2, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
 	Dawn = { ClockTime = 7.2, Brightness = 2.1, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(150, 130, 104), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 240, 200) },
 	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(115, 76, 92), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 200, 200) },
 }
@@ -3939,7 +3943,7 @@ Config.Sounds = { -- optional built-in files; client must pcall and ignore failu
 }
 
 -- quality ① (docs/design/quality_ideas_2026-10-06.md §1) with 검수's sound table (docs/design/lines_pack_2026-10-06.md §6):
--- Audio.luau's sound effects. Files: art/sfx/<file>.ogg (tools/sfx_game.py final: Kenney CC0 + our synth; sources in
+-- Audio.luau's sound effects. Files: art/sfx/<file>.wav (tools/sfx_game.py final: Kenney CC0 + our synth; sources in
 -- art/sfx/sources.json and docs/devlog/sfx_licenses.md), each levelled the same (loudest 100 ms RMS -18 dBFS, peak -3 dBFS),
 -- so Volume alone sets the mix: combat 0.28-0.40 < UI 0.42-0.60 < big moments 0.65-0.75 < level up 0.85.
 -- Files[file] = asset id; "" = silent until uploaded (nothing changes before the uploads).

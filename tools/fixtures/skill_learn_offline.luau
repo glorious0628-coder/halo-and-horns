@@ -58,7 +58,8 @@ end
 
 local function run(opts)
 	local W = { Announced = {}, Hints = {}, Played = {}, Toasts = {}, Attr = {}, AttrFns = {}, Now = 100, Reduced = opts.Reduced == true,
-		Tweens = {}, Delays = {}, FxSounds = {}, SkillReadyOk = true }
+		Tweens = {}, Delays = {}, FxSounds = {}, SkillReadyOk = true, Settings = { KeyBadges = opts.Badges },
+		SettingsChanged = signal(), KeysChanged = signal() }
 	local player = { UserId = 7, GetAttribute = function(_, k) return W.Attr[k] end }
 	local gui = inst("ScreenGui", { Name = "MainGui" })
 	local kit = {
@@ -81,7 +82,8 @@ local function run(opts)
 		Audio = { Play = function(e) table.insert(W.Played, e) return e ~= "SkillLearn" and (e ~= "SkillReady" or W.SkillReadyOk) end },
 		Fx = { PlaySound = function(n) table.insert(W.FxSounds, n) end },
 		Keybinds = { Label = function(action) return ({ SkillQ = "Q", SkillZ = "Z", SkillX = "X" })[action] end,
-			IsLive = function() return true end },
+			IsLive = function() return true end, ShowsKeys = function() return opts.ShowKeys == true end, Changed = W.KeysChanged },
+		Settings = { Get = function(k) return W.Settings[k] end, Changed = W.SettingsChanged },
 	}
 	local services = {
 		Players = { LocalPlayer = player },
@@ -230,5 +232,22 @@ local SB3, W3, set3, holder3 = run({ Attr = copy(base), Touch = true, Reduced = 
 set3("Level", 5)
 check(W3.Hints[1] and W3.Hints[1][2] == "Tap the new button", "phones: 'Tap the new button'", W3.Hints[1] and W3.Hints[1][2])
 check(holder3("Q"):FindFirstChild("LearnPop") == nil, "reduced motion: no pop", "")
+
+-- 5. A23-78 / 검수 10/08: the skill key badge follows Settings.KeyBadges ('Key hints', off by default) at once
+do
+	local b7 = copy(base)
+	b7.Level = 5
+	local _, W7, _, holder7 = run({ Attr = b7, ShowKeys = true, Badges = false })
+	local key = holder7("Q") and holder7("Q"):FindFirstChild("Key")
+	check(key ~= nil and key.Visible == false, "Key hints off (A23-78 default): no Q badge on the skill button",
+		key and tostring(key.Visible))
+	W7.Settings.KeyBadges = true
+	W7.SettingsChanged:Fire()
+	check(key ~= nil and key.Visible == true and key.Text == "Q", "Key hints on: the Q badge shows at once (Settings.Changed)",
+		key and (tostring(key.Visible) .. " " .. tostring(key.Text)))
+	W7.Settings.KeyBadges = false
+	W7.KeysChanged:Fire()
+	check(key ~= nil and key.Visible == false, "Key hints off again: hidden (also redrawn on a key change)", key and tostring(key.Visible))
+end
 
 print(string.format("SKILL_LEARN_SUMMARY checks=%d failed=%d", checks, failed))

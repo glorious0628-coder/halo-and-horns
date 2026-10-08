@@ -5,7 +5,7 @@
 -- one Model per name, pivot = bottom centre, front = -Z): two mushroom fairy rings with stumps, a rock / bush rim round
 -- the pond, a picnic, a flower-cart garden, a shard-crystal corner, a crown of rocks on the King Slime Hill, roadside
 -- rest stops, fork sign posts, hedge islands between the hunting lawns, fences along the roads with flower gateposts and
--- a wavy bush edge, tree groves framing every edge, flower front rows and small tufts in the lawns. The concept's blue
+-- bush clumps, tree groves framing every edge, flower front rows and small tufts in the lawns. The concept's blue
 -- drop statue is IP-forbidden and is not built. No faces on props, no ray / fan layouts (rings and blobs only).
 -- Output: Map.Decor.MeadowDress, destroyed and rebuilt on every run ("Big" = solid / large pieces; "Small" = the small
 -- walk-through kinds in 64-stud Cell_x_z Models, ready for a client distance cull). Never touched: Map.Decor.MeadowKit
@@ -35,15 +35,23 @@
 -- solid; fences and BushA at scale 1.6+ = player-only when the "DecorPlayerOnly" collision group is registered (else
 -- walk-through); everything else walk-through (CanCollide / CanQuery / CanTouch false). CastShadow only on pieces with a
 -- longest side of 4+ (ART_DIRECTION 9). Scripts are stripped from every clone.
--- Budget: the layout's per-kind caps and a 490-piece meadow total with MeadowKit's 60 pieces (and the JobBoard)
--- counted (T.CapScale scales them), a meadow triangle cap (T.TriCap, per-kind TRIS, MeadowKit + JobBoard included; phone
--- performance) and the whole-map part cap T.PartCap (2600, 검수 2026-10-08: Config.Map.MaxParts only warns in MapBuilder;
--- the world is being densified per SPEC A23-76). Pieces go in by priority (tiers: 1 vignettes, 2 road fences, 3 edge tree
--- groves, 4 road edges = gatepost flowers / wavy bush edge / shade trees, 5 bushes under the edge trees, 6 hedge bands,
--- 7 road fill + edge front-row flowers, 8 gap fill, 9 lawn tufts); tiers 1-2 may not use the last T.EdgeReserve of the
+-- Budget: the layout's per-kind caps and a 560-piece (pass 1: 490) meadow total with MeadowKit's 60 pieces (and the
+-- JobBoard) counted (T.CapScale scales them), a meadow triangle cap (T.TriCap, per-kind TRIS, MeadowKit + JobBoard
+-- included; phone performance) and the whole-map part cap T.PartCap (2600, 검수 2026-10-08: Config.Map.MaxParts only
+-- warns in MapBuilder; the world is being densified per SPEC A23-76). Pieces go in by priority (tiers: 1 vignettes + pond
+-- lily pads, 2 road fences, 3 corner tree groups + edge tree groves, 4 road edges = gatepost flowers / bush clumps /
+-- shade trees / the loop road, 5 bushes and flowers under the edge trees, 6 hedge bands, 7 road fill + edge front-row
+-- flowers, 8 gap fill, 9 lawn tufts); tiers 1-2 may not use the last T.EdgeReserve of the
 -- piece total, the part budget and the triangle cap (kept for the coast frame, tiers 3-5); the filler passes 5..8 may
 -- each use only a share of what a cap has left. When a cap or a budget runs out, the lower tiers are the ones left out
 -- (reported as cap / quota / reserve / budget / tris).
+-- Pass 2 (2026-10-08, after the pass 1 photos art/review/world/meadow_pass1_2026-10-08.jpg: "flat, bushes small, pond
+-- bare"): bushes at scale 1.8..2.6 in clumps of 3-5 touching bushes (pond rim, hedge islands, behind every fence run,
+-- between the runs with 12+ stud walk-in gaps, along the loop road and the pumpkin path; none at the joins), a stone ring
+-- at the pond's water edge + 8 lily pads (plain SmoothPlastic discs, a few with a white / pink flower, nothing
+-- collides), tree groups in the four corners and denser coast groves, big shade trees by the road, flowers in front of
+-- the clumps and round trees. The triangle cap is the real limit: the new clumps come in the higher tiers, the random
+-- filler of tiers 6-9 gets what is left.
 -- Deterministic: Random.new(20261008), fixed pass order. Missing kit names are skipped and listed, never an error.
 -- MODE "dry" = read only, one-line count; "plan" = read only, rows "name,x,z,r,yaw,tier,coll" for a top-down check
 -- picture; "kit" = (re)build MeadowDress + stashes; "old" = remove MeadowDress and put the stashed pieces back.
@@ -81,10 +89,13 @@ local T = {
 	Grid = 15, Jitter = 4.5,
 	Spacing = 0.8, BushSpacing = 0.55, LowSpacing = 0.5,
 	SolidGap = 6, SparseGap = 10, TreeMin = 12,
-	GroveGap = 50, GroveSizes = { 1, 2, 2, 3, 3 },
+	GroveGap = 36, GroveSizes = { 2, 2, 3, 3, 3 }, GroveEmpty = 0.1, -- pass 2: 50 / { 1, 2, 2, 3, 3 } / 0.2 -> denser frame
+	ClumpTouch = 0.72, -- clump members stand this x (r1 + r2) from the lead bush (touching; BushSpacing allows 0.55)
+	ClumpLen = 20, ClumpGap = 11, -- a road clump is about 20 long; walk-in gaps of 11+ (+ the fence end margin) stay open
+	LilyPads = 8, LilyTris = 100, LilyFlowerEvery = 3, LilyY = -1.2, -- pond lily pads (Part cylinders, ~100 tris each)
 	PostH = 12, PostMin = 8, -- trunk post height = max(PostH x scale, PostMin)
 	Cell = 64,
-	Total = 490, Posts = 78, TallBoulders = 20, JobBoard = 1,
+	Total = 560, Posts = 115, TallBoulders = 20, JobBoard = 1, -- pass 2: 490 / 78 (the triangle cap binds first)
 	CapScale = 1, -- every kind cap and the totals x this; layout Phase 2 (6 most-repeated meshes decimated): 1.25
 	Ground = { Grass = true, LeafyGrass = true },
 	Rocky = { Rock = true, Slate = true, Basalt = true, Limestone = true }, -- never Ground: the hill ramp / path fallback
@@ -97,21 +108,21 @@ local T = {
 
 -- kit kinds: Cap (per name) or Group (shared cap); Tree = trunk post at scale 1 (pivot space, measured 2026-10-08);
 -- Open = may stand in the OpenOnly areas (arrival pocket, first-quest boxes)
-local KIND = {
-	W_Tree_A = { Cap = 18, Tree = { X = 0, Z = 0, D = 5.6 } },
-	W_Tree_B = { Cap = 54, Tree = { X = 1.4, Z = 1.6, D = 7 } },
-	W_Tree_C = { Cap = 6, Tree = { X = -0.4, Z = -0.8, D = 7 } },
+local KIND = { -- pass 2 caps: trees A 18 / B 54 / C 6, bushes A 105 / B 60, jelly rocks 6 (the triangle cap binds first)
+	W_Tree_A = { Cap = 28, Tree = { X = 0, Z = 0, D = 5.6 } },
+	W_Tree_B = { Cap = 76, Tree = { X = 1.4, Z = 1.6, D = 7 } },
+	W_Tree_C = { Cap = 12, Tree = { X = -0.4, Z = -0.8, D = 7 } },
 	W_Boulder_A = { Group = "Boulder", Boulder = true, Rocky = true },
 	W_Boulder_B = { Group = "Boulder", Boulder = true, Rocky = true },
-	Kit_M_BushA = { Cap = 105, Bush = true },
-	Kit_M_BushB = { Cap = 60, Bush = true, Small = true },
+	Kit_M_BushA = { Cap = 150, Bush = true },
+	Kit_M_BushB = { Cap = 90, Bush = true, Small = true },
 	Kit_M_FlowersA = { Group = "Flowers", Low = true, Small = true, Open = true },
 	Kit_M_FlowersB = { Group = "Flowers", Low = true, Small = true, Open = true },
 	Kit_M_Mushrooms = { Cap = 24, Low = true, Small = true },
 	Kit_M_Stump = { Cap = 20, Low = true, Small = true },
 	Kit_M_Fence = { Cap = 36, Fence = true },
 	Kit_M_CrystalPile = { Cap = 10, Low = true, Small = true, Rocky = true },
-	Kit_M_JellyRock = { Cap = 6, Small = true, Rocky = true },
+	Kit_M_JellyRock = { Cap = 10, Small = true, Rocky = true },
 	Kit_M_Pinwheel = { Cap = 10, Small = true, Open = true },
 	Kit_M_LogBench = { Cap = 5, Solid = true },
 	Kit_M_PicnicBasket = { Cap = 2, Low = true, Small = true },
@@ -119,7 +130,7 @@ local KIND = {
 	Kit_M_SignPost = { Cap = 5, Solid = true },
 	Kit_M_PuddleRim = { Cap = 4, Low = true, Small = true },
 }
-local GROUPCAP = { Boulder = 36, Flowers = 85 }
+local GROUPCAP = { Boulder = 54, Flowers = 130 } -- pass 2: 36 / 85 (pond stone ring, flowers along the paths)
 -- triangles per piece (검수 2026-10-08); W_Tree_* / W_Boulder_* 1450, other kinds T.TrisUnknown. Lower these after the
 -- layout Phase 2 decimation, never raise T.TriCap for it
 local TRIS = { Kit_M_BushA = 2800, Kit_M_BushB = 2800, Kit_M_FlowersA = 2800, Kit_M_FlowersB = 2800, Kit_M_Mushrooms = 2900,
@@ -751,7 +762,7 @@ local function group(fn) -- all or nothing: fn() places pieces with try() and re
 end
 local function reject(why, name, x, z, o)
 	stats.Why[why] = (stats.Why[why] or 0) + 1
-	if o.Fixed and #stats.Failed < T.MaxFailed then
+	if o.Fixed and not o.Quiet and #stats.Failed < T.MaxFailed then -- Quiet: optional clump members, not listed
 		table.insert(stats.Failed, string.format("%s %s(%.0f,%.0f) %s", o.Tag or "?", name, x, z, why))
 	end
 	return nil
@@ -768,7 +779,7 @@ for k = 0, 5 do
 	table.insert(NUDGE, { math.cos(a) * 5, math.sin(a) * 5 })
 end
 -- try one piece: o = { S = scale | {lo, hi}, Yaw = deg | Vector2 target | nil (random), YawJitter, Tier, Tag, Fixed,
--- NoNudge, Hill, Sand, Tilt (0..1 toward the ground normal), Sink, SinkFrac, Coll, MaxH, Tuft }
+-- NoNudge, Quiet, Hill, Sand, Tilt (0..1 toward the ground normal), Sink, SinkFrac, Coll, MaxH, Tuft }
 local function try(name, x, z, o)
 	o = o or {}
 	local size = info(name)
@@ -812,7 +823,8 @@ local function fixed(tag, tier)
 		return try(name, x, z, o)
 	end
 end
--- a filler piece; kind.Name may be "Flowers" (a clump of A + B, kind.Three = 3) or "Boulder" (A or B, 1 in 3 sunk 30%)
+-- a filler piece; kind.Name may be "Flowers" (a clump of A + B, kind.Three = 3, kind.One = one piece: flowers cost as
+-- many triangles as a bush) or "Boulder" (A or B, 1 in 3 sunk 30%)
 local function scatter(kind, x, z, tier, tag)
 	local name = kind.Name
 	if name == "Flowers" then
@@ -820,7 +832,7 @@ local function scatter(kind, x, z, tier, tag)
 		local one = rng:NextNumber() < 0.5 and "Kit_M_FlowersA" or "Kit_M_FlowersB"
 		local two = one == "Kit_M_FlowersA" and "Kit_M_FlowersB" or "Kit_M_FlowersA"
 		local c = try(one, x, z, { S = kind.S, Tier = tier, Tag = tag })
-		if c then
+		if c and not kind.One then
 			try(two, c.X + math.cos(a) * 2.2, c.Z + math.sin(a) * 2.2, { S = kind.S, Tier = tier, Tag = tag })
 			if kind.Three then
 				try(one, c.X + math.cos(a + 2.1) * 2.3, c.Z + math.sin(a + 2.1) * 2.3, { S = kind.S, Tier = tier, Tag = tag })
@@ -848,6 +860,47 @@ local function pick(list, dl) -- weighted kind; trees / rocks keep off lawn edge
 		if r <= 0 then return e end
 	end
 	return list[#list]
+end
+-- clumps (pass 2; the concept's big round bushes stand in touching blobs of 3-5): grow() sets n - 1 bushes round a lead
+-- piece already placed, ClumpTouch x (r1 + r2) from it; o.Along / o.Back = unit { x, z } along a road and away from it
+-- (the clump stretches along the road and steps back from it, CLUMP_OFF), else evenly round; o.Walk = BushB only (always
+-- walk-through: shoulders players cross); o.Fixed / o.Quiet as try(). clump() tries the lead (BushA, or BushB for Walk)
+-- at (x, z) shifted along o.Along by each o.Shift in turn, then grows it. Both return the lead (or nil) and the count.
+local CLUMP_OFF = { { 1, 0.12 }, { -1, 0.18 }, { 0.5, 0.92 }, { -0.55, 0.95 } } -- (along, back) x the touch distance
+local function grow(lead, n, tier, tag, o)
+	o = o or {}
+	local made = 1
+	local a0 = rng:NextNumber(0, math.pi * 2)
+	for k = 1, n - 1 do
+		local name = (o.Walk or k % 2 == 0) and "Kit_M_BushB" or "Kit_M_BushA"
+		local size = info(name)
+		if size then
+			local s = rng:NextNumber(o.MS and o.MS[1] or 1.8, o.MS and o.MS[2] or 2.3)
+			local d = (lead.R + math.sqrt(size.X * size.Z) * s / 2) * T.ClumpTouch
+			local mx, mz
+			if o.Along then
+				local off = CLUMP_OFF[(k - 1) % #CLUMP_OFF + 1]
+				mx = lead.X + (o.Along[1] * off[1] + o.Back[1] * off[2]) * d
+				mz = lead.Z + (o.Along[2] * off[1] + o.Back[2] * off[2]) * d
+			else
+				local a = a0 + (k - 1) * 2 * math.pi / (n - 1) + rng:NextNumber(-0.35, 0.35)
+				mx, mz = lead.X + math.cos(a) * d, lead.Z + math.sin(a) * d
+			end
+			if try(name, mx, mz, { S = s, Tier = tier, Tag = tag, Fixed = o.Fixed, Quiet = true }) then made += 1 end
+		end
+	end
+	return lead, made
+end
+local function clump(x, z, n, tier, tag, o)
+	o = o or {}
+	local ux, uz = 1, 0
+	if o.Along then ux, uz = o.Along[1], o.Along[2] end
+	for _, dx in o.Shift or { 0 } do
+		local lead = try(o.Walk and "Kit_M_BushB" or "Kit_M_BushA", x + ux * dx, z + uz * dx,
+			{ S = o.S or { 2.2, 2.6 }, Tier = tier, Tag = tag, Fixed = o.Fixed, Quiet = o.Quiet })
+		if lead then return grow(lead, n, tier, tag, o) end
+	end
+	return nil, 0
 end
 local function shuffle(list)
 	for i = #list, 2, -1 do
@@ -895,7 +948,7 @@ do -- Welcome Green: the view from the bridge opens between two big canopies; th
 	put("W_Tree_B", 233, -42, { S = { 0.5, 0.55 } })
 	put("W_Tree_B", 235, 46, { S = { 0.5, 0.55 } })
 	for _, p in { { 220, -20 }, { 220, 23 }, { 228, 34 }, { 226, 45 } } do
-		put("Kit_M_BushA", p[1], p[2], { S = { 1.8, 2.0 } })
+		put("Kit_M_BushA", p[1], p[2], { S = { 2.0, 2.3 } })
 	end
 	for i, x in { 225, 228.5, 232, 235.5, 239 } do
 		put(i % 2 == 1 and "Kit_M_FlowersA" or "Kit_M_FlowersB", x, i % 2 == 1 and 26 or 28, { S = { 1.3, 1.5 } })
@@ -905,7 +958,8 @@ do -- Welcome Green: the view from the bridge opens between two big canopies; th
 	end
 	-- 검수 10/08: cart and sign moved out of the first-quest / arrival boxes (verify: slimes could spawn hidden inside)
 	put("Kit_M_FlowerCart", 306, -46, { S = 1.2, Yaw = Vector2.new(280, 0), Coll = "none" })
-	put("Kit_M_SignPost", 232, -15, { S = 1.0, Yaw = Vector2.new(210, 0), Coll = "none" })
+	-- pass 2: (232, -15) lay inside the spawn keep-clear circle (r 16 round (230, 0)) and was never built
+	put("Kit_M_SignPost", 231, -18, { S = 1.0, Yaw = Vector2.new(210, 0), Coll = "none" })
 end
 do -- Mushroom fairy ring with stumps (main slime arena; closed ring, open centre, all walk-through)
 	local put = fixed("fairyRing")
@@ -942,43 +996,98 @@ do -- Picnic by the pond (NE of the water, outside the sand rim, looking in thro
 	put("Kit_M_PicnicBasket", px + 33, pz - 21, { S = 1.3 })
 	put("W_Tree_B", px + 48, pz - 34, { S = 0.5 })
 	put("Kit_M_Pinwheel", px + 23, pz - 18, { S = { 1.0, 1.2 } })
-	put("Kit_M_BushA", px + 51, pz - 19, { S = 1.6 })
+	put("Kit_M_BushA", px + 51, pz - 19, { S = 2.2 })
 	put("Kit_M_FlowersA", px + 22, pz - 29, { S = { 1.2, 1.4 } })
 	put("Kit_M_FlowersA", px + 44, pz - 10, { S = { 1.2, 1.4 } })
 end
-do -- Pond rim: rock - bush - rock ring at r 24..30 with the N (road view) and NE (picnic view) openings
+local lily = {} -- pond lily pads { X, Z, Y = water top, D, Flower = { X, Z, D, Pink } | nil } (Parts, built in MODE kit)
+do -- Pond rim (pass 2, concept: grey stones right at the water's edge, big round bushes behind them, lily pads), open
+	-- to the N (road view) and NE (picnic view): bearings -105..-20 get no stone and no bush
 	local put = fixed("pondRim")
 	local px, pz = PT.Pond.X, PT.Pond.Y
-	local slots = {}
-	for k = 0, 17 do
-		local b = -170 + k * 20
-		if not (b >= -105 and b <= -20) then table.insert(slots, b) end -- N + NE openings (one wide gap)
-	end
-	local pattern = { "R", "A", "R", "B", "A", "R", "A", "R", "A", "B", "R", "A", "R", "A" }
-	for i, b in slots do
-		local kind = pattern[(i - 1) % #pattern + 1]
-		local deg = b + rng:NextNumber(-4, 4)
-		if kind == "R" then
-			local x, z = at(px, pz, deg, rng:NextNumber(24, 27))
-			put(rng:NextNumber() < 0.5 and "W_Boulder_A" or "W_Boulder_B", x, z, { S = { 0.22, 0.34 }, MaxH = 3.9, Sand = true, Sink = 0.3 })
-		elseif kind == "A" then
-			local x, z = at(px, pz, deg, rng:NextNumber(25, 30))
-			put("Kit_M_BushA", x, z, { S = { 1.3, 1.9 }, Sand = true })
-		else
-			local x, z = at(px, pz, deg, rng:NextNumber(26, 30))
-			put("Kit_M_BushB", x, z, { S = { 2.0, 2.4 }, Sand = true })
+	local function open(b) return b >= -105 and b <= -20 end
+	-- the stone ring: one stone every 15 degrees on the first dry ground past the water (r 21.4..24.8; the water edge
+	-- is about r 21, pondWater keeps 21 clear), every 4th a half-sunk jelly rock; all under 3.6 tall = walk-through
+	local k = 0
+	for b = -165, 180, 15 do
+		if not open(b) then
+			k += 1
+			local deg = b + rng:NextNumber(-3, 3)
+			local x, z
+			for _, r in { 21.4, 22.2, 23, 23.8, 24.8 } do
+				local tx, tz = at(px, pz, deg, r)
+				if ground(tx, tz, { Sand = true, Rocky = true }) then
+					x, z = tx, tz
+					break
+				end
+			end
+			if x and k % 4 == 2 and (capLeft.Kit_M_JellyRock or 0) > 0 then
+				put("Kit_M_JellyRock", x, z, { S = { 0.95, 1.25 }, Sand = true, Sink = 0.35 })
+			elseif x then
+				put(rng:NextNumber() < 0.5 and "W_Boulder_A" or "W_Boulder_B", x, z, { S = { 0.25, 0.4 }, MaxH = 3.6, Sand = true,
+					Sink = 0.4 })
+			end
 		end
 	end
-	for _, deg in { 80, 110, 140 } do -- half-sunk jelly rocks at the S / SW water edge (always next to rocks)
-		local x, z = at(px, pz, deg, rng:NextNumber(22, 23))
-		put("Kit_M_JellyRock", x, z, { S = { 0.9, 1.2 }, Sand = true, Sink = 0.3 })
+	-- the bush ring behind the stones (r 26.5..29.5): clumps of 2-4 big bushes, three one-slot walk-in gaps to the water
+	local pattern = { "A", "B", "A", "_", "A", "A", "B", "_", "B", "A", "A", "_", "A", "B" }
+	local i = 0
+	for b = -170, 170, 20 do
+		if not open(b) then
+			i += 1
+			local kind = pattern[(i - 1) % #pattern + 1]
+			if kind ~= "_" then
+				local x, z = at(px, pz, b + rng:NextNumber(-3, 3), rng:NextNumber(26.5, 29.5))
+				if kind == "A" then
+					put("Kit_M_BushA", x, z, { S = { 2.0, 2.6 }, Sand = true })
+				else
+					put("Kit_M_BushB", x, z, { S = { 2.2, 2.6 }, Sand = true })
+				end
+			end
+		end
 	end
-	for _, deg in { 120, 190 } do
-		local x, z = at(px, pz, deg, rng:NextNumber(31, 33))
+	for _, deg in { 62, 98 } do -- white flowers between the stones at the S water edge
+		local x, z = at(px, pz, deg, rng:NextNumber(24.5, 25.5))
+		put(deg == 62 and "Kit_M_FlowersA" or "Kit_M_FlowersB", x, z, { S = { 1.2, 1.4 }, Sand = true, Quiet = true })
+	end
+	-- lily pads on the water (r <= 18), every LilyFlowerEvery-th with a white / pink flower; only where a ray finds
+	-- water (the flat meadow without the pond basin gets none). They leave the edge reserve alone like tier 1 does.
+	local tries = 0
+	while #lily < T.LilyPads and tries < 60 do
+		tries += 1
+		local d = rng:NextNumber(3, 5)
+		local r = math.sqrt(rng:NextNumber()) * (18 - d / 2)
+		local a = rng:NextNumber(0, math.pi * 2)
+		local x, z = px + math.cos(a) * r, pz + math.sin(a) * r
+		local free = true
+		for _, l in lily do
+			if (l.X - x) ^ 2 + (l.Z - z) ^ 2 < ((l.D + d) / 2 + 0.8) ^ 2 then
+				free = false
+				break
+			end
+		end
+		local hit = free and workspace:Raycast(Vector3.new(x, 60, z), Vector3.new(0, -120, 0), RAY.Land)
+		if hit and hit.Material == Enum.Material.Water then
+			local flower = (#lily % T.LilyFlowerEvery == 0) and {} or nil
+			local parts = flower and 3 or 1
+			if used.Parts + parts > room - HOLD.Parts or used.Tris + parts * T.LilyTris > CAPS.Tris - HOLD.Tris then break end
+			if flower then
+				local fa, fr = rng:NextNumber(0, math.pi * 2), rng:NextNumber(0, d * 0.18)
+				flower.X, flower.Z = x + math.cos(fa) * fr, z + math.sin(fa) * fr
+				flower.D, flower.Pink = rng:NextNumber(1.2, 1.5), (#lily % (2 * T.LilyFlowerEvery)) ~= 0
+			end
+			local wy = hit.Position.Y -- the water top (Config.Map.WaterTop -1.2); a stray hit keeps the pad at -1.2
+			table.insert(lily, { X = x, Z = z, Y = math.abs(wy - T.LilyY) < 0.6 and wy or T.LilyY, D = d, Flower = flower })
+			used.Parts += parts
+			used.Tris += parts * T.LilyTris
+		end
+	end
+	for _, deg in { 120, 190 } do -- outside the bush ring (pass 1: r 31..33)
+		local x, z = at(px, pz, deg, rng:NextNumber(33, 35))
 		put("Kit_M_Mushrooms", x, z, { S = { 1.0, 1.3 }, Sand = true })
 	end
 	for i, deg in { 15, 65, 155, -145 } do
-		local x, z = at(px, pz, deg, rng:NextNumber(31, 34))
+		local x, z = at(px, pz, deg, rng:NextNumber(33.5, 36))
 		put(i % 2 == 1 and "Kit_M_FlowersA" or "Kit_M_FlowersB", x, z, { S = { 1.2, 1.5 }, Sand = true })
 	end
 	put("Kit_M_PuddleRim", px - 36, pz + 32, { S = { 1.0, 1.3 } })
@@ -1005,8 +1114,8 @@ do -- Flower-cart garden on the south road shoulder (its own fence; the road get
 		end
 		return true
 	end)
-	put("Kit_M_BushA", 435, 28, { S = 1.6 })
-	put("Kit_M_BushA", 470, 28, { S = 1.6 })
+	put("Kit_M_BushA", 435, 28, { S = 2.1 })
+	put("Kit_M_BushA", 470, 28, { S = 2.1 })
 	put("W_Tree_B", 458, 46, { S = 0.5 })
 end
 do -- Shard crystal corner (NE, toward the woods): the slimes ate shard dust here
@@ -1044,7 +1153,7 @@ do -- Shard crystal corner (NE, toward the woods): the slimes ate shard dust her
 		put("Kit_M_JellyRock", ax + p[1], az + p[2], { S = { 0.9, 1.3 } })
 	end
 	for _, p in L.Bush do
-		put("Kit_M_BushB", ax + p[1], az + p[2], { S = 2.0 })
+		put("Kit_M_BushB", ax + p[1], az + p[2], { S = 2.2 })
 	end
 	for _, p in L.Flowers do
 		put("Kit_M_FlowersB", ax + p[1], az + p[2], { S = { 1.2, 1.4 } })
@@ -1079,7 +1188,7 @@ do -- King Slime Hill crown (the concept's hilltop ruin): a rock crown with one 
 	end
 	for _, deg in { 140, 180, 220, 260, 300, 340 } do -- bush ring W / N / E, open to the S (loop road) and the SE
 		local x, z = at(hx, hz, deg + rng:NextNumber(-6, 6), rng:NextNumber(31, 35))
-		put("Kit_M_BushA", x, z, { S = { 1.8, 2.2 }, Hill = true, Tilt = 0.35 })
+		put("Kit_M_BushA", x, z, { S = { 2.0, 2.5 }, Hill = true, Tilt = 0.35 })
 	end
 	for _, deg in { 35, 55 } do -- mushrooms at the SE foot (beyond the skirt on the sculpted hill)
 		local x, z = at(hx, hz, deg, terrainHill and rng:NextNumber(37, 39) or rng:NextNumber(18.5, 20))
@@ -1108,7 +1217,8 @@ do -- Fork sign posts (blank panels; an English SurfaceGui label can come later)
 		put("Kit_M_SignPost", s[1], s[2], { S = { 1.0, 1.1 }, Yaw = Vector2.new(s[3], s[4]) })
 	end
 end
-do -- Hedge islands between lawns: a tree, two big bushes on the lawn-facing sides, flowers in front, a rock or a stump
+do -- Hedge islands between lawns: a tree, a clump of three big bushes on the lawn-facing sides (pass 2: + the BushB
+	-- between them), flowers in front, a rock or a stump
 	local put = fixed("islands")
 	local function lawnDirs(x, z)
 		local list = {}
@@ -1131,8 +1241,13 @@ do -- Hedge islands between lawns: a tree, two big bushes on the lawn-facing sid
 		local x, z = a[1], a[2]
 		local d1x, d1z, d2x, d2z = lawnDirs(x, z)
 		put("W_Tree_B", x, z, { S = { 0.45, 0.55 } })
-		put("Kit_M_BushA", x + d1x * 5.5, z + d1z * 5.5, { S = { 1.6, 2.2 } })
-		put("Kit_M_BushA", x + d2x * 5.5, z + d2z * 5.5, { S = { 1.6, 2.2 } })
+		put("Kit_M_BushA", x + d1x * 5.5, z + d1z * 5.5, { S = { 1.9, 2.5 } })
+		put("Kit_M_BushA", x + d2x * 5.5, z + d2z * 5.5, { S = { 1.9, 2.5 } })
+		local bx, bz = d1x + d2x, d1z + d2z
+		local bm = math.sqrt(bx * bx + bz * bz)
+		if bm > 0.2 then
+			put("Kit_M_BushB", x + bx / bm * 8.5, z + bz / bm * 8.5, { S = { 2.0, 2.4 }, Quiet = true })
+		end
 		put("Kit_M_FlowersA", x + d1x * 9.5 - d1z * 1.5, z + d1z * 9.5 + d1x * 1.5, { S = { 1.2, 1.5 } })
 		if i % 2 == 0 then
 			put("Kit_M_FlowersB", x + d2x * 9.5 + d2z * 1.5, z + d2z * 9.5 - d2x * 1.5, { S = { 1.2, 1.5 } })
@@ -1153,18 +1268,20 @@ do -- East exit into the woods: pines and vine trees hint at the Goblin Woods ah
 	put("W_Tree_C", 634, 44, { S = { 0.45, 0.5 } })
 	put("W_Boulder_A", 630, -24, { S = { 0.4, 0.5 } })
 	put("W_Boulder_A", 628, 26, { S = { 0.4, 0.5 } })
-	put("Kit_M_BushB", 617, -54, { S = { 2.0, 2.4 } })
-	put("Kit_M_BushB", 614, 50, { S = { 2.0, 2.4 } })
+	put("Kit_M_BushB", 617, -54, { S = { 2.2, 2.6 } })
+	put("Kit_M_BushB", 614, 50, { S = { 2.2, 2.6 } })
 end
-do -- Pumpkin path hedges: a clump every 30 studs on alternating sides, 7..10 off the strip, no fences
+do -- Pumpkin path hedges: a clump of three walk-through bushes (pass 2; was one) every 30 studs on alternating sides,
+	-- 7..10 off the strip, stretched along the path, no fences; a stump / mushrooms or flowers beside each
 	local put = fixed("pumpkinHedge")
 	local pp = ROADS.RoadPumpkin
 	for k = 0, 5 do
 		local z = pp[2] + 26 + k * 30
 		local west = k % 2 == 0
 		local x = west and (pp[1] - rng:NextNumber(7, 10)) or (pp[3] + rng:NextNumber(7, 10))
-		put("Kit_M_BushB", x, z, { S = { 2.0, 2.6 } })
-		put(west and mushOr("Kit_M_Stump") or "Kit_M_FlowersB", x + (west and -1.5 or 1.5), z + 4.5, { S = { 1.0, 1.4 } })
+		clump(x, z, 3, 1, "pumpkinHedge", { Walk = true, Fixed = true, S = { 2.2, 2.6 }, MS = { 1.9, 2.3 }, Along = { 0, 1 },
+			Back = { west and -1 or 1, 0 } })
+		put(west and mushOr("Kit_M_Stump") or "Kit_M_FlowersB", x + (west and -2.5 or 2.5), z + 9.5, { S = { 1.0, 1.4 } })
 	end
 end
 do -- Slime puddles inside two lawns (low landmarks, walk-through)
@@ -1175,7 +1292,7 @@ end
 -- (Kit_M_Bridge: not placed; the meadow has no creek yet. Kit_M_JobBoard: MapBuilder's, counted, not placed here.)
 
 ------------------------------------------------------------------ 2. road fences (tier 2): runs along the roads, gaps of 13+
-local runs = {}
+local runs, loopRuns = {}, {} -- main road runs { Side, X0, X1, Third, Ok, Bush }; loop road run starts (built)
 do
 	local fence = info("Kit_M_Fence")
 	local seg = fence and fence.X * 1.15 or 6.9
@@ -1215,7 +1332,7 @@ do
 	end
 	table.sort(runs, function(a, b) return a.X0 < b.X0 end)
 	-- all or nothing: a run's three segments and its bush go in together (r.Ok), or the run is left out whole (no orphan
-	-- segment; the wavy bush edge fills its stretch instead and it gets no gateposts)
+	-- segment; the road clumps fill its stretch instead and it gets no gateposts)
 	for i, r in runs do
 		r.Third = i % 3 == 0
 		r.Ok = group(function()
@@ -1232,10 +1349,11 @@ do
 				end
 			end
 			-- the run's bush: its middle, or its far end when the middle reaches into a first-quest box (OpenOnly)
-			local bz = r.Side * rng:NextNumber(17, 19)
+			local bz = r.Side * rng:NextNumber(17.5, 19)
 			local bx = (r.X0 + r.X1) / 2
-			if openOnlyAt(bx, bz, 3.5) then bx = r.X1 - 3.5 end
-			return try("Kit_M_BushA", bx, bz, { S = { 1.4, 1.8 }, Tier = 2, Tag = "fence", Fixed = true }) ~= nil
+			if openOnlyAt(bx, bz, 4.5) then bx = r.X1 - 4.5 end
+			r.Bush = try("Kit_M_BushA", bx, bz, { S = { 1.9, 2.3 }, Tier = 2, Tag = "fence", Fixed = true }) -- pass 2: 1.4..1.8
+			return r.Bush ~= nil
 		end)
 	end
 	-- loop road: 2-segment runs on the north (hill) side only, none along the hill's bush ring (also all or nothing)
@@ -1244,7 +1362,7 @@ do
 	while x + seg * 2 <= lp[3] + 4 do
 		if not (x + seg * 2 > 392 and x < 470) then
 			local x0 = x
-			group(function()
+			local ok = group(function()
 				for k = 0, 1 do
 					if not try("Kit_M_Fence", x0 + seg * (k + 0.5), lp[2] - 4, { S = 1.15, Yaw = (k % 2) * 180, YawJitter = 3,
 						Tier = 2, Tag = "loopFence", Fixed = true, NoNudge = true }) then
@@ -1253,6 +1371,7 @@ do
 				end
 				return true
 			end)
+			if ok then table.insert(loopRuns, x0) end
 		end
 		x += 42
 	end
@@ -1264,12 +1383,39 @@ end
 ------------------------------------------------------------------ 3. edge belt trees: groves 13..32 from the coast (tier 3)
 local edgeTrees = {} -- { x, z, inland x, inland z, along x, along z } for the bushes under them (pass 5)
 do
+	local function treeKind(x, z) -- vine trees toward the woods, pines in the north / east, round trees elsewhere
+		if x > 590 and rng:NextNumber() < 0.3 then return "W_Tree_C", { 0.45, 0.55 } end
+		if rng:NextNumber() < ((z < -150 or x > 560) and 0.45 or 0.12) then return "W_Tree_A", { 0.45, 0.6 } end
+		return "W_Tree_B", { 0.55, 0.72 }
+	end
+	-- the four corners first (pass 2; concept: big tree groups frame every corner of the view): five trees along each
+	-- rounded corner's arc 19..25 from the coast (12.5 apart), two more a row further in (36..40, the flower row)
+	for _, cn in { { -1, -1 }, { 1, -1 }, { -1, 1 }, { 1, 1 } } do
+		local ccx, ccz = GEO.CX + cn[1] * GEO.HX, GEO.CZ + cn[2] * GEO.HZ -- the corner arc's centre
+		local base = math.atan2(cn[2], cn[1]) -- the diagonal, outward
+		for j, off in { -0.66, -0.33, 0, 0.33, 0.66, -0.25, 0.25 } do
+			local rr = T.Corner - ((j > 5) and rng:NextNumber(36, 40) or rng:NextNumber(19, 25))
+			local a = base + off + rng:NextNumber(-0.05, 0.05)
+			local x, z = ccx + math.cos(a) * rr, ccz + math.sin(a) * rr
+			local nx, nz = -math.cos(a), -math.sin(a) -- inland
+			local name, sc = treeKind(x, z)
+			local t = scatter({ Name = name, S = { sc[1] * 1.1, sc[2] * 1.1 } }, x, z, 3, "cornerTree")
+			if t then
+				table.insert(edgeTrees, { t.X, t.Z, nx, nz, -nz, nx })
+				if j <= 5 then -- the frame: a big bush at the front tree's inland foot now (pass 5 adds more if room is left)
+					local ba = a + math.pi + rng:NextNumber(-0.6, 0.6)
+					local bd = rng:NextNumber(6, 7.5)
+					scatter({ Name = "Kit_M_BushA", S = { 2.0, 2.5 } }, t.X + math.cos(ba) * bd, t.Z + math.sin(ba) * bd, 3, "cornerBush")
+				end
+			end
+		end
+	end
 	local cand = {}
 	for x = LAND.MinX + 12, LAND.MaxX - 12, 8 do
 		for z = LAND.MinZ + 12, LAND.MaxZ - 12, 8 do
 			local px, pz = x + rng:NextNumber(-3, 3), z + rng:NextNumber(-3, 3)
 			local cd = coastDist(px, pz)
-			if cd >= 18 and cd <= 26 then table.insert(cand, { px, pz }) end
+			if cd >= 17 and cd <= 27 then table.insert(cand, { px, pz }) end
 		end
 	end
 	shuffle(cand)
@@ -1286,7 +1432,7 @@ do
 		if open then table.insert(centres, p) end
 	end
 	for _, g in centres do
-		if rng:NextNumber() >= 0.2 then -- about one grove slot in five stays empty (a glimpse of the sea)
+		if rng:NextNumber() >= T.GroveEmpty then -- a few grove slots stay empty (a glimpse of the sea)
 			local nx, nz = inland(g[1], g[2])
 			local tx, tz = -nz, nx -- along the coast
 			local size = T.GroveSizes[rng:NextInteger(1, #T.GroveSizes)]
@@ -1294,14 +1440,7 @@ do
 			for _, along in offs do
 				local a, inl = along + rng:NextNumber(-2, 2), rng:NextNumber(-3, 3)
 				local x, z = g[1] + tx * a + nx * inl, g[2] + tz * a + nz * inl
-				local name, sc
-				if x > 590 and rng:NextNumber() < 0.3 then
-					name, sc = "W_Tree_C", { 0.45, 0.55 }
-				elseif rng:NextNumber() < ((z < -150 or x > 560) and 0.45 or 0.12) then
-					name, sc = "W_Tree_A", { 0.45, 0.6 }
-				else
-					name, sc = "W_Tree_B", { 0.55, 0.72 }
-				end
+				local name, sc = treeKind(x, z)
 				local t = scatter({ Name = name, S = sc }, x, z, 3, "edgeTree")
 				if t then table.insert(edgeTrees, { t.X, t.Z, nx, nz, tx, tz }) end
 			end
@@ -1322,7 +1461,7 @@ do
 	for _, r in runs do
 		if r.Ok then
 			for j, ex in { r.X0 - 1.5, r.X1 + 1.5 } do
-				local z = r.Side * (cr[4] + rng:NextNumber(2, 3))
+				local z = r.Side * (cr[4] + rng:NextNumber(2.3, 3)) -- pass 2: 2..3 (a big flower at 2 touched the road rule)
 				try(j == 1 and "Kit_M_FlowersA" or "Kit_M_FlowersB", ex, z, { S = { 1.3, 1.6 }, Tier = 4, Tag = "gatepost", Fixed = true })
 			end
 			if r.Third then
@@ -1331,56 +1470,112 @@ do
 			end
 		end
 	end
-	-- between the runs the bush / flower line's road-facing edge swings between |z| 14 and 19, so the straight
-	-- strip reads as a winding path
-	local NOWAVE = { { -math.huge, 292, 0 }, { 432, 474, 1 }, { 515, 558, 1 }, { 598, math.huge, 0 } }
-	local cycle = {
-		{ Name = "Kit_M_BushA", S = { 1.4, 1.8 }, R = 2.8 },
-		{ Name = "Flowers", S = { 1.2, 1.5 }, R = 1.3 },
-		{ Name = "Kit_M_BushA", S = { 1.4, 1.8 }, R = 2.8 },
-		{ Name = "Kit_M_BushB", S = { 1.8, 2.2 }, R = 3.1 },
-	}
+	-- the joins stay open (pass 2): no clump, shade tree or flower patch at the arrival, the cart garden, the pumpkin fork,
+	-- the two rest stops and the woods exit { from x, to x, side: 0 both, -1 north, 1 south }
+	local JOINS = { { -math.huge, 296, 0 }, { 432, 474, 1 }, { 515, 558, 1 }, { 496, 516, -1 }, { 582, 602, 1 },
+		{ 600, math.huge, 0 } }
+	local function joinAt(side, x0, x1)
+		for _, e in JOINS do
+			if (e[3] == 0 or e[3] == side) and x1 > e[1] and x0 < e[2] then return true end
+		end
+		return false
+	end
+	local FLOWERS = { Name = "Flowers", S = { 1.2, 1.5 } }
+	local FLOWER = { Name = "Flowers", S = { 1.3, 1.6 }, One = true }
 	for _, side in { -1, 1 } do
-		local phase = side < 0 and 0.7 or 3.6
-		local i = 0
-		for x0 = cr[1] + 84, cr[3] - 22, 12 do
-			local x = x0 + rng:NextNumber(-2, 2)
-			local skip = false
-			for _, e in NOWAVE do
-				if (e[3] == 0 or e[3] == side) and x > e[1] and x < e[2] then skip = true end
-			end
-			for _, r in runs do
-				if r.Ok and r.Side == side and x > r.X0 - 3 and x < r.X1 + 3 then skip = true end
-			end
-			if not skip then
-				i += 1
-				local kind = cycle[(i - 1) % #cycle + 1]
-				local edge = 14 + 5 * (0.5 + 0.5 * math.sin(2 * math.pi * x / 90 + phase))
-				scatter(kind, x, side * (cr[4] - 9 + edge + kind.R), 4, "roadWave")
+		-- bush clumps (pass 2, was the one-piece "wave"; concept: big round bushes in blobs along the path): two more
+		-- bushes beside every built fence run's bush (behind the fence: no way in is lost) and, in every free shoulder
+		-- between the runs and the joins, one clump of 3-5 per ClumpLen + ClumpGap studs, centred so that walk-in gaps
+		-- of ClumpGap+ stay open on both sides; a flower patch in front of each clump, toward the road
+		for _, r in runs do
+			if r.Ok and r.Side == side and r.Bush and math.abs(r.Bush.X - (r.X0 + r.X1) / 2) < 1 then
+				grow(r.Bush, 3, 4, "runClump", { Along = { 1, 0 }, Back = { 0, side } })
 			end
 		end
-		for x = 300 + (side > 0 and 35 or 0), 600, 70 do -- at most one shade tree per 70 studs per side, outside lawns
-			scatter({ Name = "W_Tree_B", S = { 0.42, 0.5 } }, x + rng:NextNumber(-10, 10), side * rng:NextNumber(26, 34), 4, "roadShade")
+		local cuts = {}
+		for _, e in JOINS do
+			if e[3] == 0 or e[3] == side then table.insert(cuts, { e[1], e[2] }) end
+		end
+		for _, r in runs do
+			if r.Ok and r.Side == side then table.insert(cuts, { r.X0 - 1.5, r.X1 + 1.5 }) end
+		end
+		table.sort(cuts, function(p, q) return p[1] < q[1] end)
+		local reach = cr[1]
+		for _, c in cuts do
+			local a, b = reach, c[1]
+			if b - a >= T.ClumpLen + 2 * T.ClumpGap then
+				local k = math.floor((b - a - T.ClumpGap) / (T.ClumpLen + T.ClumpGap))
+				local g = (b - a - T.ClumpLen * k) / (k + 1)
+				for i = 1, k do
+					local cx = a + g * i + T.ClumpLen * (i - 0.5)
+					local lead = clump(cx, side * rng:NextNumber(16.4, 17.6), rng:NextInteger(3, 5), 4, "roadClump",
+						{ Along = { 1, 0 }, Back = { 0, side }, Shift = { 0, 4, -4 } })
+					if lead then
+						scatter(FLOWERS, lead.X + rng:NextNumber(-4, 4), side * rng:NextNumber(12.6, 13.4), 4, "roadFlowers")
+					end
+				end
+			elseif b - a >= 16 then -- a short shoulder: a walk-through clump (BushB only, so no gap is needed)
+				clump((a + b) / 2, side * rng:NextNumber(15.6, 16.6), 3, 4, "roadClump", { Walk = true, S = { 2.0, 2.4 },
+					MS = { 1.8, 2.2 }, Along = { 1, 0 }, Back = { 0, side }, Shift = { 0, 3, -3 } })
+			elseif b - a >= 8 then -- a very short one: a flower
+				scatter(FLOWER, (a + b) / 2, side * rng:NextNumber(12.6, 14), 4, "roadFlowers")
+			end
+			reach = math.max(reach, c[2])
+		end
+		-- big shade trees by the road (pass 2; was one 0.42..0.5 tree per 70 at |z| 26..34): one 0.6..0.75 tree per ~56
+		-- studs, behind the clumps where the shoulder is wide, else between them (|z| 19.5..24, short of the lawns), a
+		-- flower patch at its road side
+		for x0 = 302 + (side > 0 and 28 or 0), 596, 56 do
+			local x = x0 + rng:NextNumber(-6, 6)
+			if not joinAt(side, x - 8, x + 8) then
+				local name = (x > 560 and rng:NextNumber() < 0.5) and "W_Tree_A" or "W_Tree_B"
+				local kind = { Name = name, S = name == "W_Tree_A" and { 0.55, 0.65 } or { 0.6, 0.75 } }
+				local t
+				for _, p in { { 0, 28, 34 }, { 0, 19.5, 24 }, { 9, 19.5, 24 }, { -9, 19.5, 24 } } do
+					t = scatter(kind, x + p[1], side * rng:NextNumber(p[2], p[3]), 4, "roadShade")
+					if t then break end
+				end
+				if t then scatter(FLOWER, t.X + rng:NextNumber(-3, 3), side * rng:NextNumber(12.6, 13.6), 4, "roadFlowers") end
+			end
+		end
+	end
+	-- loop road (pass 2): a clump of three behind every other north fence run (toward the hill lawns); on the south (lawn)
+	-- side one piece every 40 studs, every other one a clump of three (walk-through where it reaches into the lawn), the
+	-- rest a flower
+	for i, x0 in loopRuns do
+		if i % 2 == 1 then
+			clump(x0 + 6.9, lp[2] - rng:NextNumber(9.5, 10.5), 3, 4, "loopClump", { Along = { 1, 0 }, Back = { 0, -1 },
+				Shift = { 0, 3, -3 } })
 		end
 	end
 	local n = 0
-	for x = lp[1] + 10, lp[3] - 10, 40 do -- loop road, south (lawn) side: one bush or flower clump every 40 studs
+	for x = lp[1] + 10, lp[3] - 10, 40 do
 		n += 1
-		local kind = (n % 2 == 1) and { Name = "Kit_M_BushB", S = { 1.8, 2.2 } } or { Name = "Flowers", S = { 1.2, 1.5 } }
-		scatter(kind, x + rng:NextNumber(-3, 3), lp[4] + rng:NextNumber(4, 7), 4, "loopSouth")
+		local xx = x + rng:NextNumber(-3, 3)
+		if n % 2 == 1 then
+			clump(xx, lp[4] + rng:NextNumber(6.8, 7.4), n % 4 == 1 and 3 or 1, 4, "loopSouth", { Along = { 1, 0 }, Back = { 0, 1 },
+				Shift = { 0, 4, -4 } })
+		else
+			scatter({ Name = "Flowers", S = { 1.3, 1.6 }, One = true }, xx, lp[4] + rng:NextNumber(4, 6), 4, "loopSouth")
+		end
 	end
 end
 
 ------------------------------------------------------------------ 5. under the edge trees (tier 5): bushes on the inland side
-setQuota({ Kit_M_BushA = 0.45, Kit_M_BushB = 0.4 })
-for _, e in edgeTrees do -- layering: trees at the back, bushes in the middle, flowers in front (pass 7)
+setQuota({ Kit_M_BushA = 0.45, Kit_M_BushB = 0.4, Flowers = 0.35 })
+for _, e in edgeTrees do -- layering: trees at the back, bushes in the middle, flowers in front (here and pass 7)
 	local x, z, nx, nz, tx, tz = e[1], e[2], e[3], e[4], e[5], e[6]
 	local ang = math.atan2(nz, nx) + math.rad(rng:NextNumber(-55, 55))
 	local d = rng:NextNumber(5.5, 7.5)
-	scatter({ Name = "Kit_M_BushA", S = { 1.8, 2.4 } }, x + math.cos(ang) * d, z + math.sin(ang) * d, 5, "edgeBush")
+	scatter({ Name = "Kit_M_BushA", S = { 1.9, 2.5 } }, x + math.cos(ang) * d, z + math.sin(ang) * d, 5, "edgeBush")
 	if rng:NextNumber() < 0.4 then
 		local sg = rng:NextNumber() < 0.5 and -1 or 1
-		scatter({ Name = "Kit_M_BushB", S = { 2.2, 2.8 } }, x + tx * sg * 7 + nx * 2, z + tz * sg * 7 + nz * 2, 5, "edgeBush")
+		scatter({ Name = "Kit_M_BushB", S = { 2.2, 2.6 } }, x + tx * sg * 7 + nx * 2, z + tz * sg * 7 + nz * 2, 5, "edgeBush")
+	end
+	if rng:NextNumber() < 0.35 then -- pass 2: flowers round the tree's foot, in front of its bushes
+		local fa = math.atan2(nz, nx) + math.rad(rng:NextNumber(-40, 40))
+		local fd = rng:NextNumber(10, 12)
+		scatter({ Name = "Flowers", S = { 1.3, 1.6 }, One = true }, x + math.cos(fa) * fd, z + math.sin(fa) * fd, 5, "edgeFlowers")
 	end
 end
 
@@ -1389,8 +1584,8 @@ setQuota({ Kit_M_BushA = 0.6, Kit_M_BushB = 0.5, Flowers = 0.45, W_Tree_B = 0.7,
 	Boulder = 0.7 })
 do
 	local HEDGE = {
-		{ Name = "Kit_M_BushA", W = 10, S = { 1.6, 2.2 } },
-		{ Name = "Kit_M_BushB", W = 6, S = { 1.8, 2.6 } },
+		{ Name = "Kit_M_BushA", W = 10, S = { 1.9, 2.5 } }, -- pass 2: 1.6..2.2
+		{ Name = "Kit_M_BushB", W = 6, S = { 1.9, 2.6 } },
 		{ Name = "Flowers", W = 7, S = { 1.2, 1.6 } },
 		{ Name = "W_Tree_B", W = 5, S = { 0.42, 0.55 } },
 		{ Name = "Kit_M_Stump", W = 1.5, S = { 0.9, 1.3 } },
@@ -1409,8 +1604,8 @@ setQuota({ Kit_M_BushA = 0.5, Kit_M_BushB = 0.5, Flowers = 0.5, Kit_M_Mushrooms 
 do
 	local cr = ROADS.RoadMeadow
 	local FILL = {
-		{ Name = "Kit_M_BushB", W = 3, S = { 1.8, 2.4 } },
-		{ Name = "Kit_M_BushA", W = 3, S = { 1.6, 2.0 } },
+		{ Name = "Kit_M_BushB", W = 3, S = { 1.9, 2.5 } }, -- pass 2: 1.8..2.4 / 1.6..2.0
+		{ Name = "Kit_M_BushA", W = 3, S = { 1.9, 2.4 } },
 		{ Name = "Flowers", W = 3, S = { 1.2, 1.5 } },
 	}
 	for _, p in gridPoints(T.Grid, T.Jitter, function(x, z)
@@ -1456,7 +1651,7 @@ do
 	for _, p in gaps do
 		if not hasNear(p[1], p[2], 9) then
 			if rng:NextNumber() < 0.6 then
-				scatter({ Name = "Kit_M_BushA", S = { 1.4, 1.8 } }, p[1], p[2], 8, "gapFill")
+				scatter({ Name = "Kit_M_BushA", S = { 1.8, 2.3 } }, p[1], p[2], 8, "gapFill") -- pass 2: 1.4..1.8
 			else
 				scatter({ Name = "Flowers", S = { 1.2, 1.5 } }, p[1], p[2], 8, "gapFill")
 			end
@@ -1546,20 +1741,26 @@ local function terrainNote(built)
 	end
 	return now .. " (same as the dress in place)"
 end
+local lilyFlowers, lilyParts = 0, 0
+for _, l in lily do
+	lilyParts += l.Flower and 3 or 1
+	if l.Flower then lilyFlowers += 1 end
+end
 local function summary(head, mapParts, built)
 	return string.format("%s: %d pieces (%s) | trunk posts %d | by tier %s | player-only %d (%s) | rejected %d spots: %s"
 		.. " | vignette misses: %s | missing kit: %s | caps: meadow total %d/%d (MeadowKit %d + JobBoard counted), tall boulders %d"
 		.. " | meadow triangles %d / cap %d (MeadowKit + JobBoard %d) | edge reserve %d%% (tiers 1-2 stopped %d)"
-		.. " | map parts %s / cap %d (room was %d, used %d) | dressed-band coverage r9 %d%% | lights added 0 | %s",
+		.. " | map parts %s / cap %d (room was %d, used %d) | lily pads %d (%d with a flower; %d parts) | dressed-band"
+		.. " coverage r9 %d%% | lights added 0 | %s",
 		head, #placed, sorted(stats.Made, "%s x%d"), used.Posts, sorted(stats.Tier, "%s:%d"), players,
 		groupOk and "DecorPlayerOnly group" or "group not registered -> walk-through", rejected, sorted(stats.Why, "%s %d"),
 		#stats.Failed > 0 and table.concat(stats.Failed, "; ") or "none",
 		#missingList > 0 and table.concat(missingList, ",") or "none",
 		used.Total + existingTotal + T.JobBoard, CAPS.Total + existingTotal + T.JobBoard, existingTotal, used.Tall,
 		used.Tris + existingTris, T.TriCap, existingTris, math.floor(T.EdgeReserve * 100 + 0.5), stats.Why.reserve or 0,
-		tostring(mapParts), partCap, room, used.Parts, coverage(), terrainNote(built))
+		tostring(mapParts), partCap, room, used.Parts, #lily, lilyFlowers, lilyParts, coverage(), terrainNote(built))
 		.. ((stats.Why.budget or 0) > 0 and string.format(" | NOTE: the map part cap left out %d spots (the lower tiers):"
-			.. " for the full dress set T.PartCap to about %d", stats.Why.budget, baseParts + 520) or "")
+			.. " for the full dress set T.PartCap to about %d", stats.Why.budget, baseParts + 600) or "")
 		.. ((stats.Why.tris or 0) > 0 and string.format(" | NOTE: the meadow triangle cap left out %d spots (the lower tiers):"
 			.. " decimate the most-repeated meshes (layout Phase 2) and lower their TRIS numbers", stats.Why.tris) or "")
 end
@@ -1569,6 +1770,9 @@ if MODE == "plan" then
 	local rows = {}
 	for _, c in placed do
 		table.insert(rows, string.format("%s,%.1f,%.1f,%.1f,%.0f,%d,%s", c.Name, c.X, c.Z, c.Canopy or c.R, c.Yaw, c.Tier, c.Coll))
+	end
+	for _, l in lily do
+		table.insert(rows, string.format("LilyPad%s,%.1f,%.1f,%.1f,0,1,none", l.Flower and "Flower" or "", l.X, l.Z, l.D / 2))
 	end
 	return table.concat(rows, ";")
 end
@@ -1670,6 +1874,44 @@ for _, c in placed do
 	else
 		m.Parent = big
 	end
+end
+-- pond lily pads (pass 2): flat cylinders on the water, nothing collides / is queried / touched, no shadow
+local function disc(name, x, y, z, d, h, rgb, parent)
+	local p = Instance.new("Part")
+	p.Name = name
+	p.Shape = Enum.PartType.Cylinder
+	p.Size = Vector3.new(h, d, d)
+	p.CFrame = CFrame.new(x, y, z) * CFrame.Angles(0, 0, math.rad(90)) -- the cylinder's axis (X) stands up
+	p.Material = Enum.Material.SmoothPlastic
+	p.Color = Color3.fromRGB(rgb[1], rgb[2], rgb[3])
+	p.Anchored = true
+	p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = false, false, false, false
+	p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+	p.Parent = parent
+	return p
+end
+if #lily > 0 then
+	local key = "Cell_" .. math.floor(PT.Pond.X / T.Cell) .. "_" .. math.floor(PT.Pond.Y / T.Cell)
+	local cell = cells[key]
+	if not cell then
+		cell = Instance.new("Model")
+		cell.Name = key
+		cell.Parent = small
+		cells[key] = cell
+	end
+	local pads = Instance.new("Model")
+	pads.Name = "LilyPads"
+	pads:SetAttribute("DressTier", 1)
+	pads:SetAttribute("DressTag", "pondLily")
+	for _, l in lily do -- bottom just under the water top, so the pad floats in the ripples
+		disc("LilyPad", l.X, l.Y + 0.05, l.Z, l.D, 0.2, { 110, 190, 90 }, pads)
+		local f = l.Flower
+		if f then
+			disc("LilyFlower", f.X, l.Y + 0.25, f.Z, f.D, 0.2, f.Pink and { 250, 170, 205 } or { 250, 250, 245 }, pads)
+			disc("LilyFlowerHeart", f.X, l.Y + 0.3, f.Z, f.D * 0.35, 0.2, { 250, 215, 80 }, pads)
+		end
+	end
+	pads.Parent = cell
 end
 root.Parent = decor
 return summary("MeadowDress built", countParts(map), true)

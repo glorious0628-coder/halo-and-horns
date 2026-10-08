@@ -228,8 +228,11 @@ local RS = game:GetService('RunService')
 pcall(RS.UnbindFromRenderStep, RS, 'HHC_FilmClean')
 RS:BindToRenderStep('HHC_FilmClean', Enum.RenderPriority.Last.Value, function()
 	if _G.__filmCleanTok ~= tok then pcall(RS.UnbindFromRenderStep, RS, 'HHC_FilmClean'); return end
+	local ch = game.Players.LocalPlayer.Character
 	for _, g in pg:GetChildren() do
 		if g:IsA('ScreenGui') and g.Name ~= 'Freecam' and g.Name ~= 'MainGui' then hide(g, 'Enabled') end
+		-- the hurt sticker over my head ('Ouch!' / 아야, user 2026-10-08: not in the shorts); the game re-enables it itself
+		if g:IsA('BillboardGui') and ch and g.Adornee and g.Adornee:IsDescendantOf(ch) then g.Enabled = false end
 	end
 	local mg = pg:FindFirstChild('MainGui')
 	if mg then
