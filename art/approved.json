@@ -6604,7 +6604,10 @@
   "file": "art/ui/PassIconExp2.png",
   "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
   "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
-  "note": "경험치 2배 패스 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+  "note": "경험치 2배 패스 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발.",
+  "id": "rbxassetid://84663066597118",
+  "config_key": "IconPassXP2",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); shop card shows the badge alone, no square frame"
  },
  "PassIconGold2": {
   "status": "approved",
@@ -6617,7 +6620,10 @@
   "file": "art/ui/PassIconGold2.png",
   "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
   "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
-  "note": "골드 2배 패스 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+  "note": "골드 2배 패스 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발.",
+  "id": "rbxassetid://100341080284667",
+  "config_key": "IconPassGold2",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); shop card shows the badge alone, no square frame"
  },
  "PassIconVIP": {
   "status": "approved",
@@ -6630,7 +6636,10 @@
   "file": "art/ui/PassIconVIP.png",
   "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
   "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
-  "note": "VIP 패스(왕관) — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+  "note": "VIP 패스(왕관) — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발.",
+  "id": "rbxassetid://98036294458431",
+  "config_key": "IconPassVIP",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); shop card shows the badge alone, no square frame"
  },
  "PassIconBundle": {
   "status": "approved",
@@ -6643,7 +6652,10 @@
   "file": "art/ui/PassIconBundle.png",
   "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
   "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
-  "note": "치장 묶음 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+  "note": "치장 묶음 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발.",
+  "id": "rbxassetid://136373208143894",
+  "config_key": "IconPassLooks",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); shop card shows the badge alone, no square frame"
  },
  "Tex_WaterfallFlow_FF2": {
   "status": "approved (검수 10/08: B) — High done, seamless, to 이미지 개발 for upload",
