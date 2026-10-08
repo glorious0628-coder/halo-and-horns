@@ -4765,7 +4765,7 @@
   "prompt": "art/prompts/PTR_TownBright2_B_HQ.txt",
   "original": "art/out/hq/src/PTR_TownBright2_B_HQ_src.png",
   "file": "art/ui/PTR_TownBright.png",
-  "size": "507x512 RGBA",
+  "size": "512x512 RGBA (507-wide cut padded to a square, transparent margin, 검수)",
   "cutout": "tools/img2/cut_keep.py --long 512 --tol 16 --soft 5 --holes --keep-largest + clean_haze (silver helmet kept); checked 4x light/navy/magenta + PortraitFrame 300/170",
   "preview": "art/review/s2/emo_rays_final.jpg",
   "note": "브라이트(빛 마을 경비 견습, 10살 여자아이, A23-59; 퀘스트 NPC A23-46). 스모키 A 그림체, 은빛 투구+하늘색 깃·후광·해 무늬 하늘색 겉옷·손 흔들기·금보라 땋은 손목 끈(이야기 단서)·볼 주근깨·두 눈 크게, 작게 벌린 웃음(윗니만 살짝), 긴 옆 땋은 머리. 화장 없음. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
