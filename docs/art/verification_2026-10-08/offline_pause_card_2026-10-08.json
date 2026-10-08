@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 35,
+  "checks": 41,
   "failedChecks": [],
   "static": [
     {
@@ -17,9 +17,9 @@
     }
   ],
   "mutations": {
-    "total": 16,
-    "applied": 16,
-    "caught": 16,
+    "total": 20,
+    "applied": 20,
+    "caught": 20,
     "results": [
       {
         "mutation": "a card over an open window",
@@ -124,7 +124,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL [Keep playing] and [OK]: the same size, the same look :: ",
-          "CHECK_FAIL [Go] and [OK]: the same size, the same look :: "
+          "CHECK_FAIL [Go] and [OK]: the same size, the same look :: ",
+          "CHECK_FAIL [Open Settings] and [OK]: the same look :: "
         ]
       },
       {
@@ -162,14 +163,49 @@
           "CHECK_FAIL the 'saved' mark once its art is wired :: ",
           "CHECK_FAIL waits while a window is open, then opens :: false/true"
         ]
+      },
+      {
+        "mutation": "a tip's [Go] opens nothing",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [Open Settings] opens Settings on its Keys tab (no travel) :: ",
+          "CHECK_FAIL [OK] on a tip opens nothing :: "
+        ]
+      },
+      {
+        "mutation": "a tip without words shows",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a tip without words is refused :: ",
+          "CHECK_FAIL a tip without a window: only [OK] :: "
+        ]
+      },
+      {
+        "mutation": "a tip's window loses its tab",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [Open Settings] opens Settings on its Keys tab (no travel) :: "
+        ]
+      },
+      {
+        "mutation": "a tip always has [Go]",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [Open Settings] and [OK]: the same look :: ",
+          "CHECK_FAIL a tip without a window: only [OK] :: "
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/PauseCard.luau": "c3f470b40196f48c84b0e80058b6218e9fe74e4386036b742684e15277edfcf5",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
+    "src/StarterPlayer/StarterPlayerScripts/PauseCard.luau": "b619a945d121a2dd1f459afa35030e5e58a174d8d51183fb638575daf03696eb",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
   },
-  "fixtureSHA256": "0fab76ab3857acc6c9b2275fe2366d76b2ad5e9bfe770181066237ba442b86fa",
+  "fixtureSHA256": "931691a37625edf8d6ed325707114cc6fc882166929dbdfd2172429dd42ae2fd",
   "studioCalls": 0,
   "limitations": "Doubles instead of the engine: the card's look on PC and phone (DialogBox plate, button art) and the server's PauseCard / WelcomeBack Fx (게임성 개발 2, not built yet) are Studio checks."
 }

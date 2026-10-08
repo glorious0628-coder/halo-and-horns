@@ -3056,6 +3056,35 @@ Config.Board = {
 	},
 }
 
+----------------------------------------------------------------- the quest window's tabs (A23-81)
+-- A23-81 (user 2026-10-08 15:05): Q opens the whole quest window, five tabs by kind of quest. One table decides the tab
+-- of a quest: ById (the "Quests" row Id - "story:<id>", "job:<n>", a daily template id, Config.Tutorial.QuestId) wins,
+-- then ByKind (the row's Kind), then Default. Faction = the Halo / Horns / guild stories (deeds of a side); Event = the
+-- goose and crown war stories (and later event quests); every daily / extra slot is Daily. HudLines = the HUD's quest
+-- lines on the left (only quests in progress, main first).
+Config.QuestTabs = {
+	Order = { "Main", "Side", "Daily", "Event", "Faction" },
+	Names = { Main = "Main", Side = "Side", Daily = "Daily", Event = "Event", Faction = "Faction" }, -- game text: English only
+	ByKind = { Tutorial = "Main", Main = "Main", Sub = "Side", Job = "Side", Daily = "Daily", Extra = "Daily", Weekly = "Daily",
+		Event = "Event", Faction = "Faction", Bounty = "Faction" },
+	ById = {
+		["story:S1"] = "Event", ["story:S2"] = "Event", ["story:GW4"] = "Event", ["story:GW5"] = "Event",
+		["story:H1"] = "Faction", ["story:H2"] = "Faction", ["story:H3"] = "Faction", ["story:H5"] = "Faction",
+		["story:H6"] = "Faction", ["story:R1"] = "Faction", ["story:R3"] = "Faction", ["story:R5"] = "Faction",
+		["story:R6"] = "Faction", ["story:R7"] = "Faction", ["story:N1"] = "Faction", ["story:N2"] = "Faction",
+	},
+	Default = "Side",
+	HudLines = 3,
+}
+
+-- the quest window tab of a "Quests" row (id, kind): ById, else ByKind, else Default
+function Config.QuestTab(id, kind)
+	local qt = Config.QuestTabs
+	local byId = type(id) == "string" and qt.ById[id] or nil
+	if byId then return byId end
+	return (type(kind) == "string" and qt.ByKind[kind]) or qt.Default
+end
+
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {
 	Slots = 3,
@@ -3573,6 +3602,8 @@ Config.Help = {
 	Title = "Help", NewsTitle = "News",
 	GuideAgain = "Meet the Guide Again", BackToHelp = "< Help", TalkToGuide = "Talk to the Guide",
 	CameraLine = "Hold the right mouse button and drag to turn the camera.", -- A23-51: right drag only
+	-- A23-81 (user 2026-10-08): the keys tip again (the Lv5 card shows it once): a line under the keys + a button
+	KeysTip = "Tip: You can change your keys in Settings!", KeysButton = "Key settings",
 	TouchLines = {
 		"Tap the buttons on the screen to attack, use skills and drink potions.",
 		"Drag with one finger to turn the camera.",

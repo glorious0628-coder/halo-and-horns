@@ -431,6 +431,7 @@ function H.ControlLines()
 		if #parts > 0 then table.insert(lines, table.concat(parts, " · ")) end
 	end
 	table.insert(lines, help.CameraLine)
+	if type(help.KeysTip) == "string" then table.insert(lines, help.KeysTip) end -- A23-81: the Lv5 tip again
 	return lines
 end
 
@@ -492,6 +493,10 @@ function H.BuildHelp(parent, kit)
 		S.Guide = true
 		kit.Rebuild()
 	end)
+	-- A23-81: the keys tip's button again (keyboards): the Settings window on its Keys tab
+	if UserInputService.KeyboardEnabled and type(help.KeysButton) == "string" then
+		button(kit, row1, help.KeysButton, 200, function() kit.Open("Settings", { Tab = "Keys" }) end)
+	end
 	return nil
 end
 

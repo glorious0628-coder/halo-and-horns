@@ -14,7 +14,7 @@
       "ok": true
     },
     {
-      "check": "#1 quest line 2: story -> claim -> S0 -> daily",
+      "check": "#1 quest lines 2+: story -> claim -> S0 -> daily (A23-81 order)",
       "ok": true
     },
     {
@@ -75,7 +75,7 @@
     }
   ],
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "73d39a075505b7c5224d3533f55b6342772b9ad2d2ad4eec753d81586ad40abd",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "8529ccc7635adc207e7627e6bf16101593bfac085545a0d9596132500b7195bb",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "dedd3121495e9910a7bc015632ea1a43874d6c4d13575601e6f61f28debc1eab"
   },
   "studioCalls": 0,

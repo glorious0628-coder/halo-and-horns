@@ -43,6 +43,27 @@ end
 return "visible key letters: " .. shown .. "\n" .. table.concat(names, "\n")
 ```
 
+## 2번째 묶음 (A23-81 퀘스트 다시 짜기 + Lv5 키 안내, 개발 1 다음 커밋)
+sync 뒤 내 시험 Play(fresh 저장 또는 사용자 저장본) PC·폰 사진:
+| 단계 | 무엇 | Edit/Play | 확인할 것 |
+|---|---|---|---|
+| A | 왼쪽 퀘스트 줄 | Play | 진행 중인 것만, 최대 3줄, 메인(또는 첫 임무) 줄이 맨 위, 한 줄 = 짧은 이름 + 3/5(PC도 안 잘림), "Daily Quests 0/3" 같은 빈 줄 없음. 첫 임무 전(첫 [Claim] 전)에는 1줄만 |
+| B | Q 키(PC) / 줄 탭(폰) / 줄 옆 ▼ | Play | 퀘스트 창이 열림: 탭 Main·Side·Daily·Event·Faction(진행 중 수가 이름 옆), 각 탭에 In progress / Available / Done. Q 다시 → 닫힘 |
+| C | 창에서 일일 줄 누르기 | Play | 창이 닫히고 화면 화살표(QuestMarker)가 그 퀘스트 쪽으로. [Claim]·[New]가 HUD와 같게 동작([New]은 확인 창) |
+| D | Event 탭 | Play | 황금 거위·호박 대왕 등 진행 중이면 그 줄, 왕관 전쟁 다음 왕관 남은 시간 줄 |
+| E | Lv5 첫 스킬 뒤 키 안내(PC) | Play | 진짜 레벨업(DebugCommand Level 4 + XP = XPToNext(4)-1 + 슬라임 1마리)으로 Lv5 → "New skill!" 뒤 Z를 한 번 누르면 2.5초 뒤(안 누르면 25초 뒤) 카드 "Tip / Tip: You can change your keys in Settings!" [Open Settings]·[OK]. [Open Settings] → 설정 창 Keys 탭. 한 번만(다시 Z를 눌러도 안 나옴). 폰은 안 나옴 |
+| F | 메뉴 → Help | Play | 조작 줄 끝에 같은 안내 문장, [Key settings] 버튼 → 설정 Keys 탭(PC) |
+
+## 3번째 묶음 (조명 깊이, 개발 1 가지 lighting) — 같은 자리에서 전후 사진
+- sync(Config.Sky.Neutral: ClockTime 15.3·Ambient 72,76,86·OutdoorAmbient 110,120,135·FogStart 150·FogEnd 950·노출 -0.05,
+  WarService: ShadowSoftness 0.15·EnvironmentDiffuseScale 0.5·Contrast 0.12·Saturation -0.05·LightingStyle Realistic).
+- Edit에서 한 번: `game.Lighting.Technology = Enum.Technology.ShadowMap`(장소 설정 — 게임 스크립트로는 못 바꿈, MCP execute_luau가
+  거절하면 Studio 속성 창에서 Lighting > Technology; 이유 = 깊이는 해 그림자에서
+  나오고, Future의 등불 그림자는 폰에 비싸고 등불이 적음). 그리고 tools/preview_map.lua는 다시 돌리지 않아도 됨(Play에서 WarService가 씀).
+- Play PC·폰: 초원 언덕·길·폭포를 바꾸기 전과 같은 자리·같은 각도로. 확인 = 그늘 쪽이 어두워졌는지(어두운 10% 밝기가 0.5 근처로),
+  그림자가 또렷하고 길어졌는지, 먼 언덕이 하늘색으로 흐려지는지, 연두가 덜 형광인지. 너무 어두우면 노출만 +0.1씩.
+- Atmosphere는 넣지 않음(A9-3: 왕관 전쟁 하늘의 안개색·ZoneLook 구역 안개가 깨짐) — 먼 곳 흐림은 가까워진 안개 거리로.
+
 ## 하지 않을 것
 - tools/worldkit/meadow_terrain.luau, meadow_dress.luau = 검수 도구(검수가 올림).
 - 전사 도발(X, Lv25, 베타 동안 꺼짐)·두 플레이어 붙어 서기 = Play에서 안 봄(오프라인 시험 monster_spacing 몫, 검수 OK).

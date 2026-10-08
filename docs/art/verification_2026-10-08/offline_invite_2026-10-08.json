@@ -116,7 +116,7 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/Invite.luau": "83d418f898410b66d4fa82d4cdbb305b8c5d4cb63c49b9619c90ca951b2e1daf",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
   },
   "fixtureSHA256": "7f75a37ba078e1333846ccfd298fd9a89b8ac2d9791bc03f3cde9716eb276827",
   "studioCalls": 0,

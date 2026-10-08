@@ -31,6 +31,7 @@ local Net = require(Shared:WaitForChild("Net"))
 local LocalPlayer = Players.LocalPlayer
 
 local HUD = {}
+HUD.QuestsChanged = Util.Signal.new() -- A23-81: fired after every quest list redraw (QuestBook listens)
 
 local C = nil -- client registry
 local UIKit = nil
@@ -1494,6 +1495,59 @@ local function buildQuests(root)
 	})
 end
 
+----------------------------------------------------------------- A23-81 quest lines / window helpers
+-- how many quest lines the HUD shows on the left (Config.QuestTabs.HudLines; 2 before A23-81)
+function L.QuestLines()
+	local qt = Config.QuestTabs
+	return math.clamp(math.floor(tonumber(type(qt) == "table" and qt.HudLines) or 2), 1, 5)
+end
+
+-- the quest window module is there (it registered Panels "Journal")
+function L.HasQuestBook()
+	local qb = C and C.QuestBook
+	return type(qb) == "table" and type(qb.Toggle) == "function" and type(qb.IsReady) == "function" and qb.IsReady() == true
+end
+
+-- one quest's identity across redraws (a daily slot gets a new template id when it is claimed)
+function L.EntryKey(e)
+	return tostring(e.Id) .. "|" .. tostring(e.Slot)
+end
+
+-- the lines' order: `first`, then the preferred indexes (skipping repeats / missing), then the rest in order
+function L.QuestLineOrder(entries, first, prefer)
+	local order, seen = {}, {}
+	local function add(i)
+		if type(i) == "number" and entries[i] and not seen[i] then
+			seen[i] = true
+			table.insert(order, i)
+		end
+	end
+	add(first)
+	for k = 1, 5 do add(prefer[k]) end
+	for i = 1, #entries do add(i) end
+	return order
+end
+
+-- A23-81: a quest that left the list after it was ready to claim = finished (the window's 'Done' this session)
+function L.TrackDone(old, new)
+	if type(old) ~= "table" or type(new) ~= "table" then return end
+	local now = {}
+	for _, e in new do now[L.EntryKey(e)] = true end
+	questState.DoneSession = questState.DoneSession or {}
+	for _, e in old do
+		if e.Progress >= e.Target and e.CanClaim and not now[L.EntryKey(e)] and not e.NextGoal then
+			local dup = false
+			for _, d in questState.DoneSession do
+				if d.Id == e.Id and d.Text == e.Text then dup = true break end
+			end
+			if not dup then
+				table.insert(questState.DoneSession, { Id = e.Id, Text = e.Text, ShortName = e.ShortName, Kind = e.Kind })
+				if #questState.DoneSession > 40 then table.remove(questState.DoneSession, 1) end
+			end
+		end
+	end
+end
+
 ----------------------------------------------------------------- building: quest lines (A23-40: no plate)
 -- Two outlined text lines on Rects.quest (PC: under the minimap; phones: beside it, outside the thumbstick zone):
 -- [icon] what to do ... 3/5 | [받기]. Line 1 = the 'now do' row (pinned guide / next goal / waiting story / first
@@ -1520,15 +1574,16 @@ function L.BuildQuestLines(root)
 	ui.qline = {}
 	-- phones: the 12 px name-tag floor (the block is 150 px wide); PC: body text
 	local style = IS_TOUCH and "NameTag" or "Body"
-	for i = 1, 2 do
+	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
+	for i = 1, n do
 		-- one row = [icon][text][3/5 | 받기][▼ on line 1, PC]: a horizontal list; the text keeps its own width (shrinks and
 		-- cuts with … only when the row is full), so the numbers / 받기 / ▼ sit right after it, never at the far edge
 		-- (review 2026-10-06 devlog 15: '101/800' floated apart at the block's right end)
 		local row = UIKit.Create(IS_TOUCH and "Frame" or "TextButton", {
 			Name = "Line" .. i,
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 0.5, 0),
-			Position = UDim2.fromScale(0, (i - 1) * 0.5),
+			Size = UDim2.new(1, 0, 1 / n, 0),
+			Position = UDim2.fromScale(0, (i - 1) / n),
 			ZIndex = 3,
 			Parent = block,
 		}, {
@@ -1600,8 +1655,8 @@ function L.BuildQuestLines(root)
 		-- the soft band sits beside the row in the block (a band inside the row would be a list item), under its text
 		local band = L.SoftBand(block, "Right")
 		band.Name = "Band" .. i
-		band.Size = UDim2.new(1, 64, 0.5, 2)
-		band.Position = UDim2.new(0, -8, (i - 1) * 0.5, -1)
+		band.Size = UDim2.new(1, 64, 1 / n, 2)
+		band.Position = UDim2.new(0, -8, (i - 1) / n, -1)
 		band.Visible = false
 		ui.qline[i] = { Row = row, Icon = icon, Text = text, Nums = nums, Claim = claim, ClaimText = claimText, Entry = nil,
 			Band = band }
@@ -1633,8 +1688,8 @@ function L.LayoutQuestLines(q)
 	local block = ui.questLines
 	if not block then return end
 	block.Position = UDim2.fromOffset(q.X, q.Y)
-	block.Size = UDim2.fromOffset(q.W, q.H)
-	local lh = q.H / 2
+	local lh = q.H / 2 -- the layout's quest rect holds two lines; a third one hangs under it (A23-81)
+	block.Size = UDim2.fromOffset(q.W, lh * L.QuestLines())
 	local iconS = math.floor(lh * 0.9)
 	local textSize = math.max(12, math.floor(lh * 0.6))
 	if IS_TOUCH then
@@ -1685,8 +1740,9 @@ function L.SetQuestLine(l, e, label, nums)
 	l.Row.Visible = label ~= nil
 	if l.Band then l.Band.Visible = label ~= nil end
 	if not label then return end
-	-- phones: the quest's short name when the server gives one ("Supply road"); PC keeps the full line
-	if IS_TOUCH and e and e.ShortName then label = e.ShortName end
+	-- A23-81 (user 2026-10-08 "잘리지 않게"): the quest's short name when the server gives one ("Supply road"), on every
+	-- device; a story's 'talks to you' line keeps its own words
+	if e and e.ShortName and label == e.Text then label = e.ShortName end
 	l.FullText = label
 	l.Text.Text = label
 	local claimable = e ~= nil and e.Progress >= e.Target and e.CanClaim
@@ -1718,6 +1774,8 @@ function L.QuestLineTap(i)
 		L.OnClaim(row) -- assigned with onClaim below
 	elseif (e.Pinned or e.Story) and L.PinnedTap then
 		L.PinnedTap(e, row)
+	elseif HUD.QuestGo then
+		HUD.QuestGo(e) -- A23-81: the marker leads to this quest
 	else
 		toggleQuests()
 	end
@@ -3112,8 +3170,11 @@ local function onQuests(payload)
 			return HttpService:JSONDecode(payload)
 		end)
 		data = ok and decoded or nil
-	elseif type(payload) == "table" and type(payload.Quests) == "table" then
-		data = payload.Quests
+	end
+	if type(data) == "table" and type(data.Quests) == "table" then
+		-- { Quests = rows, Book = { Available, Done } } (A23-81: the quest window's lists, 게임성 개발 3), as a table or JSON
+		if type(data.Book) == "table" then questState.Book = data.Book end
+		data = data.Quests
 	end
 	if type(data) ~= "table" then return end
 	questState.Data = data
@@ -3423,6 +3484,7 @@ end
 refreshQuests = function()
 	if not ui.quests then return end -- Init stopped before buildQuests (CR-L50 binds the remote earlier)
 	local entries = parseQuests()
+	L.TrackDone(questState.Rows, entries) -- A23-81: the quest window's 'Done' this session
 	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing)
 	local call = L.StoryPending()
 	questState.StoryKey = call and (call.Id .. "|" .. tostring(call.St)) or ""
@@ -3521,32 +3583,24 @@ refreshQuests = function()
 	-- A23-40 quest lines: line 1 = the 'now do' row, line 2 = the next one (the waiting story, a claimable, a daily),
 	-- else today's count with 받기 N
 	if ui.qline then
-		if not second and entries[shown] then
-			local alt = callIndex or firstClaim or s0 or firstDaily
-			if alt and alt ~= shown then second = alt end
-		end
-		local function lineFor(i)
-			local e = i and entries[i]
-			if not e then return nil, nil, nil end
-			local label = (i == callIndex and call) and call.Label or e.Text
+		-- A23-81 (user 2026-10-08 "진행 중인 것만, 최대 3줄, 메인 먼저"): line 1 = the 'now do' row, then the waiting
+		-- story, a claimable, S0, the first daily, then the rest in the server's order (main, stories, jobs, dailies); a
+		-- line with nothing in progress stays empty (no 'Daily Quests 0/3' filler; A23-68 #4: the first steps keep one goal)
+		local order = L.QuestLineOrder(entries, shown, { callIndex, second, firstClaim, s0, firstDaily })
+		for li, l in ui.qline do
+			local i = order[li]
+			local e = i and entries[i] or nil
+			local label = e and ((i == callIndex and call) and call.Label or e.Text) or nil
 			local nums = nil
-			if e.ShowProgress then
+			if e and e.ShowProgress then
 				local p, t = questNums(e) -- CR-M27 / CR-L31
 				nums = string.format(TXT.QuestLineNums, p, t)
 			end
-			return e, label, nums
+			if li == 1 and not label then label = head end
+			L.SetQuestLine(l, e, label, nums)
 		end
-		local e1, l1, n1 = lineFor(shown)
-		L.SetQuestLine(ui.qline[1], e1, l1 or head, n1)
-		local e2, l2, n2 = lineFor(second)
-		if not e2 and (questState.Folded or (TUT.FoldOthers ~= false and L.RookieFold())) then
-			-- A23-68 #4: before the first [Claim] line 2 stays empty (no 'Daily Quests 0/3' next to the one goal)
-			L.SetQuestLine(ui.qline[2], nil, nil, nil)
-		else
-			L.SetQuestLine(ui.qline[2], e2, l2 or head, n2)
-		end
-		if ui.questFold then ui.questFold.Text = questExpanded and TXT.QuestCloseList or TXT.QuestOpenList end
-		questState.ShownEntry = e1
+		if ui.questFold then ui.questFold.Text = (questExpanded and not L.HasQuestBook()) and TXT.QuestCloseList or TXT.QuestOpenList end
+		questState.ShownEntry = entries[shown]
 	end
 
 	local visibleBefore = 0
@@ -3636,6 +3690,7 @@ refreshQuests = function()
 	questState.Rows = entries -- HUD.QuestTarget (QuestMarker) reads the 'now do' row
 	questState.Shown = shown
 	refreshRerollTimers()
+	pcall(function() HUD.QuestsChanged:Fire() end) -- A23-81: the quest window redraws
 	-- CR-L36: the block's visibility also moves the war meter column's left edge
 	if visibleBefore ~= visibleNow or blockWasVisible ~= ui.quests.Visible then
 		requestLayout()
@@ -3644,6 +3699,12 @@ end
 
 -- desktop: expand / collapse the list; touch: open / close the overlay (open = nil toggles)
 toggleQuests = function(open)
+	-- A23-81: with the quest window (QuestBook, Panels "Journal") the list IS that window: Q, the ▼ button and a phone
+	-- tap open / close it; without it the old fold-out list / overlay
+	if L.HasQuestBook() then
+		local ok = pcall(C.QuestBook.Toggle, open)
+		if ok then return end
+	end
 	if IS_TOUCH then
 		if open == nil then open = not questState.OverlayOpen end
 		questState.OverlayOpen = open == true
@@ -4656,10 +4717,83 @@ function HUD.QuestTarget()
 	local qt = C and C.QuestTarget
 	local rows = questState.Rows
 	if type(qt) ~= "table" or type(qt.ForEntry) ~= "function" or type(rows) ~= "table" then return nil end
-	local e = rows[questState.Shown or 1]
+	-- A23-81: a quest pressed in the quest window (HUD.QuestGo) leads while it is still in the list
+	local e = nil
+	if questState.GuideKey then
+		for _, r in rows do
+			if L.EntryKey(r) == questState.GuideKey then e = r break end
+		end
+		if not e then questState.GuideKey = nil end
+	end
+	e = e or rows[questState.Shown or 1]
 	if not e then return nil end
 	local ok, target = pcall(qt.ForEntry, e, attr("ZoneId", ""), getFaction())
 	return ok and target or nil
+end
+
+----------------------------------------------------------------- the quest window's side (A23-81, QuestBook)
+-- the HUD's quest rows as the window reads them (the same tables, so a press finds its row)
+function HUD.QuestEntries()
+	local out = {}
+	for i, e in questState.Rows or {} do out[i] = e end
+	return out
+end
+
+-- the server's quest book ({ Available = {...}, Done = {...} }) when it sends one, else nil
+function HUD.QuestBook()
+	return questState.Book
+end
+
+-- quests that left the list after their [Claim] this session (newest last): { Id, Text, ShortName, Kind }
+function HUD.QuestDoneSession()
+	return table.clone(questState.DoneSession or {})
+end
+
+-- the rows' [Claim] / [New] rules (refreshQuests)
+function HUD.QuestCanClaim(e)
+	return type(e) == "table" and e.Progress >= e.Target and e.CanClaim == true
+		and (e.Pinned == true or e.Kind == "Daily" or e.Kind == "Sub")
+end
+
+function HUD.QuestCanReroll(e)
+	return type(e) == "table" and e.Progress < e.Target and not e.Pinned and e.Slot ~= nil
+end
+
+-- [Claim] / [New] from the window: through the HUD's own row (its locks, the reroll question)
+function HUD.QuestClaim(e)
+	if not HUD.QuestCanClaim(e) then return false end
+	for _, r in questRows do
+		if r.Entry == e then
+			onClaim(r)
+			return true
+		end
+	end
+	return false
+end
+
+function HUD.QuestReroll(e)
+	if not HUD.QuestCanReroll(e) then return false end
+	for _, r in questRows do
+		if r.Entry == e then
+			onReroll(r)
+			return true
+		end
+	end
+	return false
+end
+
+-- a quest pressed (window row, or a HUD line that is no guide / story row): the guide and story rows run their
+-- action as on the HUD (L.PinnedTap: the travel window, the beam, the story page); any other quest becomes the
+-- one the marker leads to (HUD.QuestTarget) until it leaves the list
+function HUD.QuestGo(e)
+	if type(e) ~= "table" then return false end
+	if (e.Pinned or e.Story) and L.PinnedTap then
+		L.PinnedTap(e)
+		return true
+	end
+	questState.GuideKey = L.EntryKey(e)
+	pcall(refreshGuides)
+	return true
 end
 
 ----------------------------------------------------------------- lifecycle
