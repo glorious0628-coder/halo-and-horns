@@ -33,15 +33,15 @@ TARGET_LUFS = -17.0
 # the files a scene uses unless the command line names others (soon: the picked candidates; today's game files meanwhile)
 BASE = {  # the game files 검수 picked (art/sfx/<key>.wav, 2026-10-07) + today's game files for keys not remade yet
     "SwingArrow": "art/sfx/SwingArrow.wav",
-    "SwingWarrior": "art/sfx/SwingWarrior.ogg",
+    "SwingWarrior": "art/sfx/SwingWarrior.wav",
     "SwingMageHalo": "art/sfx/SwingMageHalo.wav",
     "SwingMageHorns": "art/sfx/SwingMageHorns.wav",
     "HitSoft": "art/sfx/HitSoft.wav",
     "HitHeavy": "art/sfx/HitHeavy.wav",
     "HitCrit": "art/sfx/HitCrit.wav",
-    "KillPop": "art/sfx/KillPop.ogg",
+    "KillPop": "art/sfx/KillPop.wav",
     "ComboCoin": "art/sfx/ComboCoin.wav",
-    "ComboMilestone": "art/sfx/ComboMilestone.ogg",
+    "ComboMilestone": "art/sfx/ComboMilestone.wav",
 }
 # speeds (Config.Audio ranges, sound_spec where it set new ones)
 SPEED = {"SwingArrow": (0.95, 1.05), "SwingWarrior": (0.92, 1.05), "SwingMageHalo": (1.0, 1.1), "SwingMageHorns": (1.0, 1.1),
