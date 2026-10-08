@@ -6220,10 +6220,10 @@
   "size": "512x333 RGBA",
   "layout": {
    "TextRect": [
-    0.129,
-    0.396,
-    0.752,
-    0.288
+    0.172,
+    0.372,
+    0.689,
+    0.36
    ],
    "TextRect_v1": [
     0.228,
@@ -6231,7 +6231,13 @@
     0.538,
     0.37
    ],
-   "TextRect_note": "2026-10-07 밤: 실제 대사(Config.Barks.Lines + Golden)로 다시 잼 — 게임 104px, Denk One 12~26px, 넘치는 대사 없이 글자 크기 합이 가장 큰 칸(크림 안 3.5% 여유). tools/img2/bark_textrect.py, 시트 art/review/s2/bark_textrect_sheet.jpg"
+   "TextRect_note": "2026-10-08: e13980e 칸(0.288 높이 = 19.5px)이 tools/test_monster_bark.py의 '12px 두 줄 + 폭 40px' 검사에 걸려 다시 잼 → 72×24.3px(크림 여유 2%), 실제 대사(Lines + Golden) 넘침 0, 가장 작은 말 12px('Boo-boo-boo!'·'Okay, share!'), 짧은 말은 커짐(Boo! 19→24px). 시트 art/review/s2/bark_ghostminion_textrect.jpg (옛 값 TextRect_v2 = e13980e, TextRect_v1 = 4547e92)",
+   "TextRect_v2": [
+    0.129,
+    0.396,
+    0.752,
+    0.288
+   ]
   },
   "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
