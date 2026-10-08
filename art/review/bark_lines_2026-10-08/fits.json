@@ -1,0 +1,2386 @@
+[
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "Slime",
+  "Text": "Blub?",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   57.5,
+   26
+  ],
+  "Title": "Slime",
+  "Text": "Boing!",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   69,
+   26
+  ],
+  "Title": "Slime",
+  "Text": "Squish!",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   46.5,
+   26
+  ],
+  "Title": "Slime",
+  "Text": "Plop!",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   78,
+   23
+  ],
+  "Title": "Slime",
+  "Text": "Wobble…",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   76.5,
+   16
+  ],
+  "Title": "Slime",
+  "Text": "Blub… blub…",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   76.5,
+   20
+  ],
+  "Title": "Slime",
+  "Text": "Blub blub~",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   69.5,
+   26
+  ],
+  "Title": "Slime",
+  "Text": "Jiggle~",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "Slime golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   76,
+   22
+  ],
+  "Title": "Slime golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   77.5,
+   23
+  ],
+  "Title": "Slime golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   77,
+   17
+  ],
+  "Title": "Slime golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   74.5,
+   17
+  ],
+  "Title": "Slime golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "Slime",
+  "Fits": true,
+  "Box": [
+   78.20800018310547,
+   26.711999893188477
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   56,
+   23
+  ],
+  "Title": "BigSlime",
+  "Text": "BLOOP!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   32.5,
+   34.19999694824219
+  ],
+  "Title": "BigSlime",
+  "Text": "Bow! Blub!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   56,
+   16
+  ],
+  "Title": "BigSlime",
+  "Text": "SPLOOSH!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   43,
+   34.19999694824219
+  ],
+  "Title": "BigSlime",
+  "Text": "Royal BOING!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   37,
+   34.19999694824219
+  ],
+  "Title": "BigSlime",
+  "Text": "Royal nap…",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   49,
+   34.19999694824219
+  ],
+  "Title": "BigSlime",
+  "Text": "Bloop… zzz",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   43.5,
+   34.19999694824219
+  ],
+  "Title": "BigSlime",
+  "Text": "Ahem. BLOOP.",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   37.5,
+   34.19999694824219
+  ],
+  "Title": "BigSlime",
+  "Text": "Big blub~",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "BigSlime golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   35.5,
+   34.19999694824219
+  ],
+  "Title": "BigSlime golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   39.5,
+   34.19999694824219
+  ],
+  "Title": "BigSlime golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   42.5,
+   34.19999694824219
+  ],
+  "Title": "BigSlime golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   40,
+   34.19999694824219
+  ],
+  "Title": "BigSlime golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "BigSlime",
+  "Fits": true,
+  "Box": [
+   57.09600067138672,
+   35.189998626708984
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Hehe!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   68.5,
+   20
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Blub-kin?",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   67.5,
+   26
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Thump!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   69,
+   24
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Squash!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   68,
+   19
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Squelch…",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   68,
+   15
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Too squishy!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   38,
+   26.599998474121094
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Thump thump~",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   60,
+   26
+  ],
+  "Title": "PumpkinSlime",
+  "Text": "Hehe~",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "PumpkinSlime golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   69,
+   20
+  ],
+  "Title": "PumpkinSlime golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   67.5,
+   20
+  ],
+  "Title": "PumpkinSlime golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   69,
+   15
+  ],
+  "Title": "PumpkinSlime golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   69.5,
+   16
+  ],
+  "Title": "PumpkinSlime golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "PumpkinSlime",
+  "Fits": true,
+  "Box": [
+   70.72000122070312,
+   26.788999557495117
+  ],
+  "Page": "kinds1"
+ },
+ {
+  "Bounds": [
+   59,
+   24
+  ],
+  "Title": "PumpkinKing",
+  "Text": "HA-HA!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   70.5,
+   20
+  ],
+  "Title": "PumpkinKing",
+  "Text": "Welcome!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   71,
+   17
+  ],
+  "Title": "PumpkinKing",
+  "Text": "HA! Tickles!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   57.5,
+   24
+  ],
+  "Title": "PumpkinKing",
+  "Text": "Ho-ho!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   71.5,
+   17
+  ],
+  "Title": "PumpkinKing",
+  "Text": "Candy time!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   70,
+   19
+  ],
+  "Title": "PumpkinKing",
+  "Text": "HA-HA-HA!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   71.5,
+   18
+  ],
+  "Title": "PumpkinKing",
+  "Text": "Best patch!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   48.5,
+   24
+  ],
+  "Title": "PumpkinKing golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   72,
+   21
+  ],
+  "Title": "PumpkinKing golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   71,
+   21
+  ],
+  "Title": "PumpkinKing golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   69,
+   15
+  ],
+  "Title": "PumpkinKing golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   69.5,
+   16
+  ],
+  "Title": "PumpkinKing golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "PumpkinKing",
+  "Fits": true,
+  "Box": [
+   72.27999877929688,
+   24.464000701904297
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   41.5,
+   26
+  ],
+  "Title": "Goblin",
+  "Text": "Heh!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   50.5,
+   26
+  ],
+  "Title": "Goblin",
+  "Text": "Mine!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   36.5,
+   32.29999923706055
+  ],
+  "Title": "Goblin",
+  "Text": "Ooh, shiny!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   33.5,
+   32.29999923706055
+  ],
+  "Title": "Goblin",
+  "Text": "Hey! Mine!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   36.5,
+   26
+  ],
+  "Title": "Goblin",
+  "Text": "Oof!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   49.5,
+   23
+  ],
+  "Title": "Goblin",
+  "Text": "Yikes!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   27,
+   32.29999923706055
+  ],
+  "Title": "Goblin",
+  "Text": "Eep! Run!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   26.5,
+   32.29999923706055
+  ],
+  "Title": "Goblin",
+  "Text": "Heh heh.",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   38,
+   32.29999923706055
+  ],
+  "Title": "Goblin",
+  "Text": "Grab grab~",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   50.5,
+   25
+  ],
+  "Title": "Goblin golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   33.5,
+   32.29999923706055
+  ],
+  "Title": "Goblin golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   37.5,
+   32.29999923706055
+  ],
+  "Title": "Goblin golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   40,
+   32.29999923706055
+  ],
+  "Title": "Goblin golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   37.5,
+   32.29999923706055
+  ],
+  "Title": "Goblin golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "Goblin",
+  "Fits": true,
+  "Box": [
+   50.959999084472656,
+   34.11300277709961
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   40.5,
+   17
+  ],
+  "Title": "BatGoblin",
+  "Text": "Skree!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   22.5,
+   26.599998474121094
+  ],
+  "Title": "BatGoblin",
+  "Text": "Flap flap!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   37.5,
+   26
+  ],
+  "Title": "BatGoblin",
+  "Text": "Eek!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   38.5,
+   14
+  ],
+  "Title": "BatGoblin",
+  "Text": "Skreek!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   29.5,
+   26.599998474121094
+  ],
+  "Title": "BatGoblin",
+  "Text": "Flap away!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   26.5,
+   26.599998474121094
+  ],
+  "Title": "BatGoblin",
+  "Text": "Flap flap~",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   40,
+   15
+  ],
+  "Title": "BatGoblin",
+  "Text": "Skree~",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   40,
+   20
+  ],
+  "Title": "BatGoblin golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   27,
+   26.599998474121094
+  ],
+  "Title": "BatGoblin golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   30.5,
+   26.599998474121094
+  ],
+  "Title": "BatGoblin golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   33,
+   26.599998474121094
+  ],
+  "Title": "BatGoblin golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   30.5,
+   26.599998474121094
+  ],
+  "Title": "BatGoblin golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "BatGoblin",
+  "Fits": true,
+  "Box": [
+   41.60000228881836,
+   28.243000030517578
+  ],
+  "Page": "kinds2"
+ },
+ {
+  "Bounds": [
+   48.5,
+   26
+  ],
+  "Title": "GoblinBrute",
+  "Text": "Grrr!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   31,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute",
+  "Text": "Sack time!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   54.5,
+   24
+  ],
+  "Title": "GoblinBrute",
+  "Text": "Hmph!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   34,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute",
+  "Text": "Ugh! Sack!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   41.5,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute",
+  "Text": "Heavy sack…",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   38,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute",
+  "Text": "Big sack~",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   54,
+   15
+  ],
+  "Title": "GoblinBrute",
+  "Text": "Grumble~",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "GoblinBrute golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   33.5,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   37.5,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   40,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   37.5,
+   32.29999923706055
+  ],
+  "Title": "GoblinBrute golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "GoblinBrute",
+  "Fits": true,
+  "Box": [
+   55.6400032043457,
+   34.111000061035156
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   59.5,
+   26
+  ],
+  "Title": "Skeleton",
+  "Text": "Rattle!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   70.5,
+   16
+  ],
+  "Title": "Skeleton",
+  "Text": "Clack clack!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   57.5,
+   26
+  ],
+  "Title": "Skeleton",
+  "Text": "Clank!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   57.5,
+   26
+  ],
+  "Title": "Skeleton",
+  "Text": "Clack!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   70,
+   22
+  ],
+  "Title": "Skeleton",
+  "Text": "Clatter…",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   67,
+   26
+  ],
+  "Title": "Skeleton",
+  "Text": "Rattle~",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   71,
+   21
+  ],
+  "Title": "Skeleton",
+  "Text": "Tuesday?",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "Skeleton golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   69,
+   20
+  ],
+  "Title": "Skeleton golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   71,
+   21
+  ],
+  "Title": "Skeleton golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   69,
+   15
+  ],
+  "Title": "Skeleton golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   69.5,
+   16
+  ],
+  "Title": "Skeleton golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "Skeleton",
+  "Fits": true,
+  "Box": [
+   71.13600158691406,
+   26.850000381469727
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   42.5,
+   26
+  ],
+  "Title": "SkeletonKnight",
+  "Text": "Halt!",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   41,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight",
+  "Text": "Who goes?",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   53.5,
+   22
+  ],
+  "Title": "SkeletonKnight",
+  "Text": "CLANG!",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   48.5,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight",
+  "Text": "My armor!",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   40,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight",
+  "Text": "Shift over?",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   34,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight",
+  "Text": "On duty.",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   51,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight",
+  "Text": "Clank… yawn.",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   52.5,
+   26
+  ],
+  "Title": "SkeletonKnight golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   37.5,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   41.5,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   45,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   42,
+   36.099998474121094
+  ],
+  "Title": "SkeletonKnight golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "SkeletonKnight",
+  "Fits": true,
+  "Box": [
+   54.07999801635742,
+   36.52000045776367
+  ],
+  "Page": "kinds3"
+ },
+ {
+  "Bounds": [
+   34.5,
+   22
+  ],
+  "Title": "GhostMinion",
+  "Text": "Boo!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   76,
+   21
+  ],
+  "Title": "GhostMinion",
+  "Text": "Team Boo!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   32.5,
+   22
+  ],
+  "Title": "GhostMinion",
+  "Text": "Eep!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   70.5,
+   22
+  ],
+  "Title": "GhostMinion",
+  "Text": "Boo-hoo!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   77.5,
+   19
+  ],
+  "Title": "GhostMinion",
+  "Text": "Float away!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   73,
+   15
+  ],
+  "Title": "GhostMinion",
+  "Text": "Boo-boo-boo!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   77.5,
+   22
+  ],
+  "Title": "GhostMinion",
+  "Text": "Hoo-hoo~",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   44.5,
+   22
+  ],
+  "Title": "GhostMinion golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   76,
+   22
+  ],
+  "Title": "GhostMinion golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   75,
+   22
+  ],
+  "Title": "GhostMinion golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   77,
+   17
+  ],
+  "Title": "GhostMinion golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   74.5,
+   17
+  ],
+  "Title": "GhostMinion golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "GhostMinion",
+  "Fits": true,
+  "Box": [
+   78,
+   22.440000534057617
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   58.5,
+   23
+  ],
+  "Title": "LittleGhost",
+  "Text": "Wooo~",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   57.5,
+   23
+  ],
+  "Title": "LittleGhost",
+  "Text": "Boo…?",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   63.5,
+   23
+  ],
+  "Title": "LittleGhost",
+  "Text": "Tickles!",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   61,
+   23
+  ],
+  "Title": "LittleGhost",
+  "Text": "Oopsie!",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   70,
+   23
+  ],
+  "Title": "LittleGhost",
+  "Text": "Fading…",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   61.5,
+   23
+  ],
+  "Title": "LittleGhost",
+  "Text": "Floaty~",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   78,
+   19
+  ],
+  "Title": "LittleGhost",
+  "Text": "Wooo-ooo~",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   46.5,
+   23
+  ],
+  "Title": "LittleGhost golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   79.5,
+   23
+  ],
+  "Title": "LittleGhost golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   77.5,
+   23
+  ],
+  "Title": "LittleGhost golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   77,
+   17
+  ],
+  "Title": "LittleGhost golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   79,
+   18
+  ],
+  "Title": "LittleGhost golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "LittleGhost",
+  "Fits": true,
+  "Box": [
+   80.80799865722656,
+   23.170000076293945
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   45.5,
+   21
+  ],
+  "Title": "GhostKing",
+  "Text": "OOOH!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   65,
+   21
+  ],
+  "Title": "GhostKing",
+  "Text": "Visitors!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   61.5,
+   21
+  ],
+  "Title": "GhostKing",
+  "Text": "Ow-ooh!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   76.5,
+   21
+  ],
+  "Title": "GhostKing",
+  "Text": "Hoo-ouch!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   72.5,
+   14
+  ],
+  "Title": "GhostKing",
+  "Text": "Ooh… fading…",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   51.5,
+   21
+  ],
+  "Title": "GhostKing",
+  "Text": "OOOH~",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   72.5,
+   14
+  ],
+  "Title": "GhostKing",
+  "Text": "Ooh-hoo-hoo~",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   42.5,
+   21
+  ],
+  "Title": "GhostKing golden",
+  "Text": "Bling!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   72,
+   21
+  ],
+  "Title": "GhostKing golden",
+  "Text": "Shiny me!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   71,
+   21
+  ],
+  "Title": "GhostKing golden",
+  "Text": "My shine!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   77,
+   17
+  ],
+  "Title": "GhostKing golden",
+  "Text": "Okay, share!",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ },
+ {
+  "Bounds": [
+   74.5,
+   17
+  ],
+  "Title": "GhostKing golden",
+  "Text": "Burp. Shiny.",
+  "Scale": 1,
+  "Kind": "GhostKing",
+  "Fits": true,
+  "Box": [
+   77.16799926757812,
+   21.84000015258789
+  ],
+  "Page": "kinds4"
+ }
+]

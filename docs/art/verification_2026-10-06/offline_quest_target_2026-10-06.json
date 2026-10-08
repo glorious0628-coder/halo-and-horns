@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 34,
-  "namedChecks": 34,
+  "checks": 36,
+  "namedChecks": 36,
   "failing": [],
   "mutations": {
-    "total": 9,
-    "caught": 9,
+    "total": 13,
+    "caught": 13,
     "results": [
       {
         "mutation": "claim ignores CanClaim",
@@ -97,6 +97,46 @@
         "newFailingChecks": [
           "plain zones :: meadow from the Halo town -> the bridge"
         ]
+      },
+      {
+        "mutation": "the Forge step points nowhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step from the meadow -> a trip to the Crossroads",
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)"
+        ]
+      },
+      {
+        "mutation": "the Forge step is the meadow step",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step from the meadow -> a trip to the Crossroads",
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)",
+          "rows :: step 1 from the Crossroads -> meadow pad"
+        ]
+      },
+      {
+        "mutation": "the Forge marker sits on the anvil again",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)",
+          "rows :: blacksmith step -> the mark over the anvil (its label clears the pad signs)"
+        ]
+      },
+      {
+        "mutation": "the mark hugs the anvil",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)"
+        ]
       }
     ]
   },
@@ -104,9 +144,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "eb16161a8ac93bdbf0452630ba97e7dbe63ea22c1daeb7717dd061bea4523179",
-    "tools/fixtures/quest_target_offline.luau": "f76ddff00f9a666a0d6d276bd1c0b2d4df8eb73bcc5a5e879fc2a913fe8381d3"
+    "src/ReplicatedStorage/Shared/Config.luau": "3925ea92f632f5469670d6536900a380064e7f316233ddb6078a507c5db5a3d7",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "29cc1bb9619ec13091ce84fe907e5d666c0c63f4e7ca2926622cd782c1d3d782",
+    "tools/fixtures/quest_target_offline.luau": "97348aba6a77eefd3336cb694ebcb38b73a2d96e965660d25b0ace2b50b676b6"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

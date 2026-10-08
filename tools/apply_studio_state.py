@@ -43,7 +43,10 @@ STATIC = {  # no bones: the client WOBBLE layer moves them (slimes hop / squash,
     "84018800442559": "GhostMinion",  # A23-45 MonsterGhostMinion_raw.glb (Studio import 2026-10-06, Upload to Roblox)
     "111999674841692": "GhostKing",  # A23-45 MonsterGhostKing_raw.glb (same import)
 }
-BIG_SLIME_TEXTURE = "rbxassetid://139511730966494"
+# colour fixes (이미지 개발 2026-10-08, 검수 OK a2a97be): less neon, a shade underneath; the king slime sky blue
+BIG_SLIME_TEXTURE = "rbxassetid://75055792951510"  # BigSlimeCube_tex_blue_colorfix (was rbxassetid://139511730966494)
+SLIME_TEXTURE = "rbxassetid://71253753467123"  # MonsterSlimeCube_tex_colorfix
+PUMPKIN_SLIME_TEXTURE = "rbxassetid://100144323661916"  # MonsterPumpkinSlime_tex_colorfix
 # GLBs whose front is not the importer's front: PrimaryPart.PivotOffset yaw in degrees. Applied to EVERY model in
 # ServerStorage.CustomModels on every run (unlisted = 0), so a re-run always ends in the same state (review C-6).
 # Checked in Play 2026-10-06 (camera on the root's LookVector side, then the 4 sides): the Sunburst/Tripo static GLBs and
@@ -115,6 +118,13 @@ if slime and slime:GetAttribute("AssetId") and (not bigMesh or bigMesh.TextureID
 	big.Parent=CM
 	table.insert(out,"BigSlime=blue")
 end
+-- 이미지 개발 2026-10-08 (검수 OK a2a97be): the colour-fixed slime / pumpkin slime bodies, every run (a re-insert keeps them)
+for name,tex in {Slime=%s,PumpkinSlime=%s} do
+	local m=CM:FindFirstChild(name)
+	for _,d in (m and m:GetDescendants() or {}) do
+		if d:IsA("MeshPart") and d.TextureID~=tex then d.TextureID=tex table.insert(out,name.."=colourfix") end
+	end
+end
 -- every model, every run (idempotent): front yaw from FRONT (unlisted = 0)
 local fronts={}
 for _,m in CM:GetChildren() do
@@ -165,7 +175,8 @@ def main():
             print("insert", asset_id, MODELS[asset_id], "error" if r.get("isError") else "ok")
         todo = {k: v for k, v in MODELS.items() if k in need}
         tex = json.dumps(BIG_SLIME_TEXTURE)
-        swap = SWAP % (json.dumps(json.dumps(FRONT_FIX)), json.dumps(json.dumps(todo)), tex, tex)
+        swap = SWAP % (json.dumps(json.dumps(FRONT_FIX)), json.dumps(json.dumps(todo)), tex, tex,
+                       json.dumps(SLIME_TEXTURE), json.dumps(PUMPKIN_SLIME_TEXTURE))
         print(text_of(c.call("execute_luau", {"code": swap, "datamodel_type": "Edit"})))
         # 4. the world look (A23-29/30 E): ground tiles (image dev's tool, run as is), then leaves / roads / lighting /
         # A23-36 sign removal / pumpkin-path props (tools/apply_world_look.lua). Both are idempotent.

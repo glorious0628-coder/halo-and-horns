@@ -139,6 +139,7 @@ local TUT_QUEST_ID = TUT.QuestId or "tutorial"
 local TXT = {
 	LevelTag = "Lv",
 	PowerLine = "Lv %d · %s %s", -- 'Lv 10 · Power 424' (A23-26)
+	PowerLineShort = "Lv %d · %s", -- the narrowest phone rows (2026-10-07): 'Lv 25 · 249' (L.CheckPouch)
 	Pouch = "· %s %s", -- after the power line: '· Pouch 1.2K' (검수 2026-10-06: carried gold can be stolen)
 	PouchLine = "%s %s", -- its own line under the XP bar when the power line is too narrow
 	CarriedTag = "Pouch",
@@ -200,6 +201,7 @@ local TXT = {
 	TileNews = "News",
 	TileTravel = "Travel",
 	TileHelp = "Help",
+	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
 	QuestLineSummary = "Daily Quests %d/%d",
@@ -214,6 +216,7 @@ local TXT = {
 	Traveling = "Traveling...",
 	DailiesOpened = "Daily quests are open!",
 	SmithGuide = "Forge · use the anvil",
+	ForgeGuide = "Your first weapon · the anvil", -- A23-74 weapon first (TutorialStep Forge)
 	NoMana = "Not enough MP.",
 	GoSmith = "Go to the Crossroads and find the anvil at the Forge.",
 	Pond = "Pond",
@@ -595,7 +598,9 @@ function L.PowerValue()
 end
 
 function L.PowerText(n)
-	return string.format(TXT.PowerLine, math.floor(num("Level", 1)), TXT.PowerWord, Util.FormatInt(n))
+	local lv = math.floor(num("Level", 1))
+	if L.Pow.Short then return string.format(TXT.PowerLineShort, lv, Util.FormatInt(n)) end
+	return string.format(TXT.PowerLine, lv, TXT.PowerWord, Util.FormatInt(n))
 end
 
 function L.PowerOpen()
@@ -665,11 +670,22 @@ function L.PowerBuild(parent)
 	ui.pouch:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
 end
 
--- the pouch rides the power line while both fit its rect (2du spare against flicker), else it hides
+-- the pouch rides the power line while both fit its rect (2du spare against flicker), else it hides. When the power
+-- text alone runs past the row (the narrowest phone rows, 2026-10-07) the word 'Power' goes first ('Lv 25 · 249'); it
+-- comes back once the row is wider than the full line's last measured width
 function L.CheckPouch()
 	local R = L.Rects
 	if not R or not ui.power or not ui.pouch or not ui.powerRow then return end
 	local s = currentScale()
+	local P = L.Pow
+	local pw = ui.power.AbsoluteSize.X / s
+	if not P.Short and pw > R.power_line.W + 0.5 then
+		P.Short, P.FullW = true, pw
+		ui.power.Text = L.PowerText(P.Shown or L.PowerValue())
+	elseif P.Short and P.FullW and P.FullW <= R.power_line.W - 2 then
+		P.Short = false
+		ui.power.Text = L.PowerText(P.Shown or L.PowerValue())
+	end
 	local gap = ui.powerRow.List.Padding.Offset
 	local need = (ui.power.AbsoluteSize.X + ui.pouch.AbsoluteSize.X) / s + gap
 	local fits = need <= R.power_line.W - (ui.pouch.Visible and 0 or 2)
@@ -1741,10 +1757,13 @@ function L.LayoutQuestHeader(w, h)
 	end
 	local tx = disc + 4
 	if ui.questHeaderSub then
-		ui.questHeaderText.Position = UDim2.fromOffset(tx, 3)
-		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 0.5, -3)
-		ui.questHeaderSub.Position = UDim2.new(0, tx, 0.5, 0)
-		ui.questHeaderSub.Size = UDim2.new(1, -tx - 26, 0.5, -3)
+		-- the two phone lines stay in the plate's navy body (PanelHeader rows 22..96 of 121 = 0.19h..0.79h): they used to
+		-- start 3 du from the edges and ran over the gold rims (user 2026-10-07: "Dailies 0/3" over the bottom rim)
+		local top, mid, bot = math.floor(h * 0.19 + 0.5), math.floor(h * 0.49 + 0.5), math.floor(h * 0.79 + 0.5)
+		ui.questHeaderText.Position = UDim2.fromOffset(tx, top)
+		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 0, mid - top)
+		ui.questHeaderSub.Position = UDim2.fromOffset(tx, mid)
+		ui.questHeaderSub.Size = UDim2.new(1, -tx - 26, 0, bot - mid)
 	else
 		ui.questHeaderText.Position = UDim2.fromOffset(tx, 4)
 		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 1, -8)
@@ -1974,7 +1993,8 @@ function L.FoldEntries()
 	for i = #(ui.foldTiles or {}), 1, -1 do
 		local f = ui.foldTiles[i]
 		local def = f.Def
-		if (def.Map or L.TileWindow(def) ~= nil) and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
+		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window
+		if (def.Map or f.Row or L.TileWindow(def) ~= nil) and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
 	end
 	return list
 end
@@ -2701,7 +2721,8 @@ function L.SetGlow(key, stroke, on)
 end
 
 ----------------------------------------------------------------- A23-68 the first minutes (user 2026-10-07)
--- #4 one goal at a time: until the first [Claim] (TutorialStep 0 / 1 / 2; QuestService.claimTutorial writes 99 first)
+-- #4 one goal at a time: until the first [Claim] (TutorialStep 0 / 3 Forge / 1 / 2, A23-74; QuestService.claimTutorial
+-- writes 99 first)
 -- the quest lines show the first mission only (parseQuests), the war meter's "Crown in 9:40 · My pts 0" line is hidden
 -- (quality ⑨ minimum; the bar itself stays), EventHUD keeps its next-event line and the world banners wait
 -- (UIKit.ShouldHoldBanners). The first [Claim] brings them in with a NEW! tag (UIKit.NewTag)
@@ -2730,14 +2751,16 @@ end
 -- ring on that button (the L.SetGlow look) and, on the attack button, a short wobble every Every s (none with
 -- ReducedMotion). A press of that button or its key clears the hint, else it goes after Seconds. Bubble text: the
 -- "Button" style on light (navy, >= 16 px). Art 512 x 190: tail tip at (35, 188) -> mirrored (0.932, 0.99); text box
--- = Config TextRect mirrored
+-- = Config TextRect mirrored. Spare = du kept free on each side of the rendered line, FitMax = the most the rendered
+-- check may widen the bubble (L.FitHint)
 L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, TipY = 0.99, Aspect = 512 / 190,
 	TextX = 0.079, TextY = 0.181, TextW = 0.844, TextH = 0.448, MinW = 120, Wobble = { -9, 8, -6, 4, -2, 0 },
-	WobbleStep = 0.06, Breathe = 1.05 }
-L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0 }
+	WobbleStep = 0.06, Breathe = 1.05, Spare = 5, FitMax = 2.5, LineK = 1.4 }
+L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0, Fit }
 
--- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then closes the
--- potions up to the attack button. A change of that button's Visible lays the HUD out again (connected once)
+-- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then leaves it
+-- out of its room checks (the potions keep their place on the thumb ring). A change of that button's Visible lays the
+-- HUD out again (connected once)
 function L.SkillHidden(slot)
 	local bar = C and C.SkillBar
 	if type(bar) ~= "table" or type(bar.Button) ~= "function" then return false end
@@ -2766,7 +2789,8 @@ function L.HintTarget(id)
 end
 
 -- size and place the bubble over its button's rect (MainGui units; the tail tip on the button's top middle). The text
--- width is measured once (h.TextW0 at h.Size0) and scaled, so a relayout never waits for a measurement
+-- width is measured once (h.TextW0 at h.Size0) and scaled, so a relayout never waits for a measurement; h.FitK = the
+-- bubble width per text size unit that the rendered line asked for (L.FitHint), kept for relayouts
 function L.PlaceHint(h)
 	local r = L.Rects and L.Rects[h.Rect]
 	local bubble = h.Bubble
@@ -2775,9 +2799,11 @@ function L.PlaceHint(h)
 	local pf = type(UIKit.PxFloor) == "function" and UIKit.PxFloor() or 1 -- small PC windows: a smaller copy
 	local size = math.max(cfg.Size, math.ceil(cfg.MinPx * pf / currentScale()))
 	local tw = h.TextW0 * size / h.Size0
-	local w = math.max(cfg.MinW, tw / cfg.TextW + 16)
+	local w = math.max(cfg.MinW, tw / cfg.TextW + 16, (h.FitK or 0) * size)
 	local hh = w / cfg.Aspect
-	local need = size * 1.2 / cfg.TextH -- the text box holds one line of the text
+	-- the text box holds one rendered line: Denk One draws a 20du line 1.25-1.33x as tall (UiSandbox 2026-10-07, TextBounds
+	-- 20 px at 16 px on PC, 22 px at 16.5 px on phones), so LineK leaves room above that
+	local need = size * cfg.LineK / cfg.TextH
 	if hh < need then hh, w = need, need * cfg.Aspect end
 	bubble.Size = UDim2.fromOffset(math.ceil(w), math.ceil(hh))
 	h.Label.TextSize = size
@@ -2785,6 +2811,27 @@ function L.PlaceHint(h)
 	-- never past the left edge (the bubble grows to the left of its tail)
 	x = math.max(x, cfg.TipX * w + 4)
 	bubble.Position = UDim2.fromOffset(math.floor(x + 0.5), math.floor(r.Y + r.H * 0.06 + 0.5))
+end
+
+-- the rendered line against its text box (검수 2026-10-07: "Tap the new buttor" - the font-service width ran short of
+-- what Denk One draws on phones): TextBounds and the box are both real px, so the line keeps Spare du free on each side
+-- whatever the UIScale or the pop scale; a short box widens the bubble (h.FitK, at most FitMax times its width).
+-- Returns true when the bubble changed
+function L.FitHint(h)
+	local label, bubble = h.Label, h.Bubble
+	if not (label and label.Parent and bubble and bubble.Parent and h.TextW0) then return false end
+	local cfg = L.HintCfg
+	local box, tb = label.AbsoluteSize.X, label.TextBounds.X
+	local wDu = bubble.Size.X.Offset
+	if box <= 1 or tb <= 0 or wDu <= 1 or label.TextSize <= 0 then return false end
+	local px = box / (cfg.TextW * wDu) -- real px per du inside the bubble
+	local need = tb / px + 2 * cfg.Spare -- du the line needs
+	if need <= cfg.TextW * wDu + 0.5 then return false end
+	local w = math.min(need / cfg.TextW, wDu * cfg.FitMax)
+	if w <= wDu + 0.5 then return false end
+	h.FitK = math.max(h.FitK or 0, w / label.TextSize)
+	L.PlaceHint(h)
+	return true
 end
 
 -- the pulsing gold ring around a round button (the same look as L.SetGlow's rim)
@@ -2904,6 +2951,18 @@ function HUD.Hint(id, text, opts)
 		if L.Hints[id] ~= h or h.Token ~= token then return end
 		h.TextW0, h.Size0 = (ok and type(w) == "number" and w > 0) and w or #text * size * 0.6, size
 		L.PlaceHint(h)
+		-- the rendered line decides before the bubble shows (L.FitHint), and again whenever it renders anew (a face that
+		-- loads late, a relayout's text size)
+		for _ = 1, 3 do
+			task.wait()
+			if L.Hints[id] ~= h or h.Token ~= token then return end
+			if not L.FitHint(h) then break end
+		end
+		h.Label:GetPropertyChangedSignal("TextBounds"):Connect(function()
+			task.defer(function()
+				if L.Hints[id] == h and h.Token == token then L.FitHint(h) end
+			end)
+		end)
 		h.Bubble.Visible = true
 		if not UIKit.ReducedMotion() then
 			h.Pop.Scale = 0.5
@@ -3027,7 +3086,7 @@ local function parseQuests()
 	-- A23-68 #4 (user 2026-10-07 "한 번에 목표 하나"; replaces A23-3's step-0 fold and A23-2's early S0 line): until the
 	-- first [Claim] only the first mission shows. The other rows (S0, dailies) keep progressing on the server, folded.
 	-- One rule only (dev2 324055a): with Config.Tutorial.FoldOthers set the server's Folded flag on each row decides
-	-- (false = no folding at all); without it (older servers) L.RookieFold (TutorialStep 0 / 1 / 2) decides here
+	-- (false = no folding at all); without it (older servers) L.RookieFold (TutorialStep 0 / 3 / 1 / 2) decides here
 	local fold = TUT.FoldOthers == nil and L.RookieFold()
 	local shown = {}
 	for _, e in normal do
@@ -3767,14 +3826,23 @@ function L.NeedsMeadowGuide(step)
 	return step == quest and num("TutorialKills", 0) < (tonumber(TUT.QuestKills) or 5)
 end
 
+-- A23-74 weapon first (dev2 dev2-weapon): after [Accept] the first goal is the Forge (TutorialStep Forge = 3), where
+-- Otto hands over the first weapon at the anvil; then the meadow
+L.ForgeStep = (type(TUT.Steps) == "table" and tonumber(TUT.Steps.Forge)) or 3
+
 -- tutorial step 1: guide to the SlimeMeadow pad; cleared when the step changes or the player enters the zone.
--- Zone guides (Lv 10 / Lv 25) are cleared when the player enters that zone.
+-- The Forge step: the anvil inside the Crossroads, the Crossroads from anywhere else - decided by the step, never by
+-- BlacksmithVisited (a visit before [Accept] already set it). Zone guides (Lv 10 / Lv 25) are cleared when the player
+-- enters that zone.
 local function refreshGuides()
 	if attr("DataLoaded", false) ~= true then return end
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
+	local forge = step == L.ForgeStep
 	if guide then
-		if guide.Tag == "tutorial" and (not L.NeedsMeadowGuide(step) or zone == TUT_GUIDE_ZONE or guide.From ~= zone) then
+		if guide.Tag == "forge" and (not forge or guide.From ~= zone) then
+			HUD.ClearGuide()
+		elseif guide.Tag == "tutorial" and (not L.NeedsMeadowGuide(step) or zone == TUT_GUIDE_ZONE or guide.From ~= zone) then
 			HUD.ClearGuide()
 		elseif isZoneGuide(guide.Tag) and zone == string.sub(guide.Tag, 6) then
 			HUD.ClearGuide()
@@ -3784,7 +3852,12 @@ local function refreshGuides()
 			HUD.ClearGuide()
 		end
 	end
-	if L.NeedsMeadowGuide(step) and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
+	if forge then
+		if not (guide and guide.Tag == "forge") then
+			local target = zone == "Crossroads" and L.BlacksmithTarget() or findTravelTarget("Crossroads")
+			if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end
+		end
+	elseif L.NeedsMeadowGuide(step) and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
 		if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "tutorial", nil) and guide then guide.From = zone end
 	elseif step == 99 and attr("BlacksmithVisited", false) ~= true and zone == "Crossroads"
 		and not (guide and guide.Tag == "blacksmith") then
@@ -4035,8 +4108,9 @@ function L.ClaimableMission(e)
 		and e.Progress >= e.Target
 end
 
--- tapping the pinned guide row: step 0 guide dialogue, step 1/2 travel to the meadow, blacksmith step and the
--- iron-weapon goal -> the existing doUpgrade path, level goals -> the existing beam to the hunting ground.
+-- tapping the pinned guide row: step 0 guide dialogue, the Forge step (A23-74) back to the anvil, step 1/2 travel to the
+-- meadow, blacksmith step and the iron-weapon goal -> the existing doUpgrade path, level goals -> the existing beam to
+-- the hunting ground.
 -- r = the quest row that was tapped (nil from the touch header)
 function L.PinnedTap(e, r)
 	if throttled("pinnedTap", 0.5) then return end
@@ -4061,6 +4135,11 @@ function L.PinnedTap(e, r)
 	end
 	if step == 0 then
 		fire("RequestTutorial")
+	elseif step == L.ForgeStep then
+		-- A23-74: the server walks me to the anvil again (ignored while moving or already there); the beam comes back
+		fire("RequestTutorial")
+		HUD.ClearGuide()
+		refreshGuides()
 	elseif step == 1 or step == 2 then
 		if zone ~= TUT_GUIDE_ZONE then
 			if panels and panels.Open then panels.Open("Travel") end
@@ -4126,7 +4205,19 @@ function L.TileTap(def)
 	end
 	local panels = C and C.Panels
 	local target = L.TileWindow(def)
-	if not target or type(panels) ~= "table" then return end
+	if not target then
+		-- a row tile whose window is not built yet: 랭킹 opens the ranking list (the Tab list), the rest say it is coming
+		if throttled("tileSoon", 0.6) then return end
+		local list = C and C.PlayerListUI
+		if def.Id == "Ranking" and type(list) == "table" and type(list.Toggle) == "function" then
+			local ok, err = pcall(list.Toggle)
+			if not ok then warnThrottled("ranking list failed: " .. tostring(err)) end
+		else
+			UIKit.Toast(TXT.TileSoon, "info", 2)
+		end
+		return
+	end
+	if type(panels) ~= "table" then return end
 	local open = type(panels.IsOpen) == "function" and panels.IsOpen()
 	if not (open or inputAllowed()) or throttled("tile", 0.25) then return end
 	local ok, err
@@ -4292,11 +4383,9 @@ end
 -- Keep (phones: the rest fold out of [메뉴], L.FoldEntries). Returns true when the shown set changed.
 function L.PickTiles()
 	if not ui.tiles then return false end
-	local want = {}
-	for _, t in ui.tiles do
-		local def = t.Def
-		if def.Map or L.TileWindow(def) then table.insert(want, t) end
-	end
+	-- 검수 2026-10-07 (user: "이렇게 하라고" with the reference row): A23-40's six tiles are always on the row; a window
+	-- that is not built yet answers on press (L.TileTap); only the row's room (Count) decides what overflows to [메뉴]
+	local want = table.clone(ui.tiles)
 	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
 	if #want > count then
 		local sorted = table.clone(want)
@@ -4424,9 +4513,10 @@ applyLayout = function()
 		milestone.Size = UDim2.fromOffset(math.min(nt.W, 420), 64)
 	end
 
-	-- CR-L37: top / left edge of the cluster (EventHUD's legacy personal line keeps above ClusterTop)
+	-- CR-L37: top / left edge of the cluster (EventHUD's legacy personal line keeps above ClusterTop). PCs: the potions
+	-- sit by the icon row (HudLayout bottom-centre group), not in the corner cluster
 	local clusterTop, clusterLeft = math.huge, math.huge
-	for _, id in { "attack", "q", "potions", "auto" } do
+	for _, id in (IS_TOUCH and { "attack", "q", "potions", "auto" } or { "attack", "q", "auto" }) do
 		local r = R[id]
 		if r and (id ~= "auto" or ui.auto.Visible) then
 			clusterTop = math.min(clusterTop, r.Y)

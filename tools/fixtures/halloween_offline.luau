@@ -3,8 +3,8 @@
 -- tools/test_halloween.py injects the CURRENT repository sources before this file: whole modules (CONFIG_SOURCE,
 -- NET_SOURCE, UTIL_SOURCE, DATA_SOURCE, QUEST_SOURCE, STORY_SOURCE, LOOT_SOURCE, ANNOUNCE_SOURCE, HALLOWEEN_SOURCE,
 -- MAIN_SOURCE, MONSTER_SOURCE, ANNOUNCE_CLIENT_SOURCE), chunks cut from bigger files (MONSTER_EVENTS_SOURCE,
--- MONSTER_POOL_SOURCE, MONSTER_GOLDEN_SOURCE, MONSTER_POP_SOURCE, MONSTER_TARGET_SOURCE, KING_HUD_SOURCE, WOBBLE_SOURCE,
--- PANELS_ITEMS_SOURCE) and CLIPS (the
+-- MONSTER_POOL_SOURCE, MONSTER_GOLDEN_SOURCE, MONSTER_POP_SOURCE, MONSTER_SWEEP_SOURCE, MONSTER_TARGET_SOURCE,
+-- KING_HUD_SOURCE, WOBBLE_SOURCE, PANELS_ITEMS_SOURCE) and CLIPS (the
 -- BatGoblin_* / Goblin_* MonsterAnims modules). Only engine / service boundaries are doubles: no Studio, no network,
 -- no DataStore. Every check is named and collected (a failure never aborts the run); the result is one JSON line.
 -- Every Config copy reads a pinned server clock (SEASON_CLOCK / a world's own clock), never the machine's date.
@@ -2081,6 +2081,18 @@ runGroup("king-rewards", function()
 	check(#f.Respawns == 0 and f.Mini.aliveCountOf("PumpkinKing") == 0, "a defeated event king never respawns")
 	f:Step(0.5)
 	check(#f.Killed == 3 and #f.Pays == 0, "the defeat line adds no second payout", show({ #f.Killed, #f.Pays }))
+	-- sound_gaps B11 (검수 2026-10-07): the KingDefeat Fx to everyone names the players this kill paid; MonsterService
+	-- keeps them on the record (PaidUserIds) before it clears the tallies, HalloweenService reads them after
+	local want = { mid.UserId, a.UserId, b.UserId }
+	table.sort(want)
+	local kd = nil
+	for _, e in f.RS.Remotes.Fx.Log do
+		if e.All and e.Args[1] == "KingDefeat" then kd = e.Args[2] end
+	end
+	check(kd ~= nil and kd.Kind == "PumpkinKing" and type(kd.Contributors) == "table"
+		and table.concat(kd.Contributors, ",") == table.concat(want, ","),
+		"KingDefeat to everyone: Contributors = the paid players' UserIds (sorted), never empty after the kill",
+		show(kd and kd.Contributors))
 	-- overkill is not damage: 2 x 1 + a 1e9 killing blow on 30 HP = 32 (< 45, unpaid); on 43 HP = 45 (paid)
 	local function overkillRun(name, hpLeft)
 		local rec = f.H.spawnMonster("PumpkinKing", { Event = true, Position = vec(470, 0, 390) })
@@ -2097,6 +2109,18 @@ runGroup("king-rewards", function()
 	check(d1 == true and g1 == 0, "overkill does not count: 1 + 1 + (1e9 on 30 HP) = 32 damage, not paid", show({ d1, g1 }))
 	local d2, g2 = overkillRun("Exact", 43)
 	check(d2 == true and g2 == 1, "the last hit counts up to the HP it took: 1 + 1 + 43 = 45 damage, paid", show({ d2, g2 }))
+	-- SKL-3 (검수 2026-10-07): a cast counts as one hit however often it hits (a field's ticks), also with a swing or
+	-- another cast in between: the casts seen per player are a set, not the last one only
+	local crec = f.H.spawnMonster("PumpkinKing", { Event = true, Position = vec(330, 0, 255) })
+	local cp = f:AddPlayer("Caster")
+	f.MS.DamageMonster(crec, 1, cp, false, 7) -- the field's first tick
+	f.MS.DamageMonster(crec, 1, cp) -- a swing in between
+	f.MS.DamageMonster(crec, 1, cp, false, 7) -- the same field's next ticks
+	f.MS.DamageMonster(crec, 1, cp, false, 8) -- a new cast
+	f.MS.DamageMonster(crec, 1, cp, false, 7)
+	check(crec._hits[cp] == 3 and crec._dmg[cp] == 5,
+		"one cast = one hit however often it hits, other hits in between or not (7, swing, 7, 8, 7 = 3 hits, 5 damage)",
+		show({ crec._hits[cp], crec._dmg[cp] }))
 	-- a regular kind has no RewardMinHits / RewardMinDamageFrac: one hit inside its window is enough
 	local slime = f.H.spawnMonster("Slime", {})
 	local sdef = f.Config.MonsterTypes.Slime
@@ -2115,10 +2139,15 @@ runGroup("king-rewards", function()
 	check(#f.Respawns == 1 and f.Respawns[1] == "Slime", "a regular kill still schedules its respawn", show(f.Respawns))
 end)
 
--- the real MonsterService deathPop: a kill shrinks + bursts; leaving (RemoveEvent(rec, true, true)) marks "Leaving"
--- before the anchor, keeps every part's size, rises and fades a little slower
+-- the real MonsterService deathPop (A23-74, user 2026-10-07 "왜 반투명한 애들이 생기냐고"): a body never goes
+-- see-through (no Transparency tween). A kill holds, then shrinks to 0.2 with a burst, except a slime's CustomVisual
+-- (the clients splat it and shrink the puddle: a server resize replicated over the splat and stood it back up);
+-- leaving (RemoveEvent(rec, true, true)) marks "Leaving" before the anchor, rises and shrinks away a little slower;
+-- GHOST.Dying keeps the body from the ghost sweep until its destroy time
 runGroup("king-leave-visual", function()
-	local function popRun(withParticles, leaving)
+	-- opts.Kind (default PumpkinKing, a slime shape), opts.Custom (default true: the visible mesh is in a CustomVisual)
+	local function popRun(withParticles, leaving, opts)
+		opts = opts or {}
 		local f = { Tweens = {}, Delays = {}, Log = {}, Particles = 0 }
 		local H = {
 			TweenService = { Create = function(_, inst, info, goal)
@@ -2128,57 +2157,129 @@ runGroup("king-leave-visual", function()
 			emitDeathParticles = function() f.Particles += 1 end,
 			task = { delay = function(sec) table.insert(f.Delays, sec) end },
 		}
-		local pop = execute("MonsterService.deathPop", MONSTER_POP_SOURCE, nativeEnv(), CONFIG, CONFIG.Monsters, H)
-		local function part(name, size)
-			return { Name = name, Size = size, Transparency = 0, IsA = function(_, c) return c == "BasePart" end }
+		local pop, ghost = execute("MonsterService.deathPop", MONSTER_POP_SOURCE, nativeEnv(), CONFIG, CONFIG.Monsters, H)
+		local cv = { Name = "CustomVisual" }
+		local model = { Attrs = {} }
+		local function part(name, size, inVisual, transparency)
+			return { Name = name, Size = size, Transparency = transparency or 0, IsA = function(_, c) return c == "BasePart" end,
+				IsDescendantOf = function(_, a) return a == model or (inVisual == true and a == cv) end }
 		end
 		local bar = { Enabled = true }
 		local rootData = { Name = "HumanoidRootPart", Size = vec(2, 2, 1), Transparency = 1, Anchored = false, Parent = true,
 			Position = vec(0, 3, 0), CFrame = vec(0, 3, 0), IsA = function(_, c) return c == "BasePart" end,
+			IsDescendantOf = function() return false end,
 			FindFirstChild = function(_, n) if n == "MonsterBar" then return bar end return nil end }
 		local root = setmetatable({}, { __index = rootData, __newindex = function(_, k, v)
 			if k == "Anchored" then table.insert(f.Log, "anchor") end
 			rootData[k] = v
 		end })
-		local mesh = part("Pumpkin", vec(5, 4, 5))
-		local visualRoot = part("VisualRoot", vec(0.2, 0.2, 0.2))
-		local model = { Attrs = {} }
+		local custom = opts.Custom ~= false
+		local mesh = part("Pumpkin", vec(5, 4, 5), custom)
+		local hitbox = part("Body", vec(3, 3, 3), false, custom and 1 or 0) -- procedural (an invisible hitbox under a custom model)
+		local visualRoot = part("VisualRoot", vec(0.2, 0.2, 0.2), false, 1)
 		function model:SetAttribute(k, v) table.insert(f.Log, "attr:" .. k) self.Attrs[k] = v end
-		function model:GetDescendants() return { root, visualRoot, mesh } end
+		function model:GetDescendants() return { root, visualRoot, hitbox, mesh } end
+		function model:FindFirstChild(n) if n == "CustomVisual" and custom then return cv end return nil end
 		local hum = { Parent = true, WalkSpeed = 7 }
-		pop({ Model = model, Root = root, Humanoid = hum, Def = CONFIG.MonsterTypes.PumpkinKing, _scale = 1 }, withParticles, leaving)
-		f.Model, f.Root, f.Mesh, f.Bar, f.Hum, f.RootData = model, root, mesh, bar, hum, rootData
+		f.Before = os.clock()
+		pop({ Model = model, Root = root, Humanoid = hum, Def = CONFIG.MonsterTypes[opts.Kind or "PumpkinKing"], _scale = 1 },
+			withParticles, leaving)
+		f.Model, f.Root, f.Mesh, f.Hitbox, f.Bar, f.Hum, f.RootData, f.Ghost = model, root, mesh, hitbox, bar, hum, rootData, ghost
 		return f
 	end
 	local function goalOf(f, inst)
 		for _, tw in f.Tweens do if tw.Inst == inst then return tw.Goal end end
 		return nil
 	end
-	local kill = popRun(true, nil)
+	local kill = popRun(true, nil, { Kind = "Goblin" })
 	local kg = goalOf(kill, kill.Mesh)
-	check(kill.Model.Attrs.Leaving == nil and kill.Particles == 1 and kg and kg.Size and near(kg.Size.X, 1) and kg.Transparency == 1,
-		"a kill: the parts shrink to 0.2 and fade, with the particle burst", show(kg))
+	check(kill.Model.Attrs.Leaving == nil and kill.Particles == 1 and kg and kg.Size and near(kg.Size.X, 1) and kg.Transparency == nil,
+		"a kill: the parts shrink to 0.2 with the particle burst and stay opaque (no fade)", show(kg))
 	check(kill.RootData.Anchored == true and kill.Bar.Enabled == false and goalOf(kill, kill.Root) == nil,
 		"a kill: anchored on the spot, name bar off", show(kill.Log))
+	local slime = popRun(true, nil, { Kind = "Slime" })
+	local sh = goalOf(slime, slime.Hitbox)
+	check(goalOf(slime, slime.Mesh) == nil and sh and sh.Size and near(sh.Size.X, 0.6) and near(slime.Delays[1] or 0, 1.15, 1e-9),
+		"a killed slime: its CustomVisual keeps its size on the server (the clients splat it), its hidden parts shrink, removed at 1.15 s",
+		show({ goalOf(slime, slime.Mesh), sh, slime.Delays[1] }))
+	local king = popRun(true, nil, { Kind = "PumpkinKing" })
+	check(goalOf(king, king.Mesh) == nil and king.Particles == 1, "a defeated Pumpkin King (slime shape) is splatted by the clients too",
+		show(goalOf(king, king.Mesh)))
+	local bare = popRun(true, nil, { Kind = "Slime", Custom = false })
+	local bg = goalOf(bare, bare.Mesh)
+	check(bg and bg.Size and near(bg.Size.X, 1), "a slime without a custom model (procedural ball, no client splat) shrinks on the server",
+		show(bg))
 	local leave = popRun(false, true)
 	local lg = goalOf(leave, leave.Mesh)
 	check(leave.Model.Attrs.Leaving == true and leave.Log[1] == "attr:Leaving" and leave.Log[2] == "anchor",
 		"leaving: the model is marked Leaving before the root anchors (clients skip the death splat)", show(leave.Log))
-	check(lg and lg.Size == nil and lg.Transparency == 1 and leave.Particles == 0, "leaving: every part keeps its size and only fades (no burst)", show(lg))
+	check(lg and lg.Size and near(lg.Size.X, 1) and lg.Transparency == nil and leave.Particles == 0,
+		"leaving: no burst, the body shrinks away opaque (the clients do not splat it, nothing fades)", show(lg))
 	local rg = goalOf(leave, leave.Root)
-	check(rg and rg.CFrame and rg.CFrame.Y > 3 + 1, "leaving: it floats up while it fades", show(rg))
+	check(rg and rg.CFrame and rg.CFrame.Y > 3 + 1, "leaving: it floats up while it shrinks away", show(rg))
 	local lInfo = leave.Tweens[#leave.Tweens] and leave.Tweens[#leave.Tweens].Info
 	check(lInfo and type(lInfo.Args[1]) == "number" and lInfo.Args[1] >= 0.8 and leave.Delays[1] and leave.Delays[1] >= lInfo.Args[1],
-		"leaving: a slower fade than a kill, destroyed after it", show({ lInfo and lInfo.Args[1], leave.Delays[1], kill.Delays[1] }))
+		"leaving: slower than a kill, destroyed after it", show({ lInfo and lInfo.Args[1], leave.Delays[1], kill.Delays[1] }))
 	check(leave.Bar.Enabled == false and leave.Hum.WalkSpeed == 0, "leaving: name bar off, it stops walking")
 	-- monster motion review 2026-10-06 (survey 4-1): a killed body stays long enough for the fall / splat to show
 	local kInfo, lInfo0 = nil, nil
 	for _, tw in kill.Tweens do if tw.Inst == kill.Mesh then kInfo = tw.Info end end
 	for _, tw in leave.Tweens do if tw.Inst == leave.Mesh then lInfo0 = tw.Info end end
 	check(kInfo and near(kInfo.Args[1], 0.3) and near(kInfo.Args[6] or 0, 0.75, 1e-9) and near(kill.Delays[1] or 0, 1.15, 1e-9),
-		"a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s",
+		"a kill: the body stays 0.75 s (the fall / splat shows), then shrinks in 0.3 s, removed at 1.15 s",
 		show({ kInfo and kInfo.Args, kill.Delays[1] }))
-	check(lInfo0 and (lInfo0.Args[6] or 0) == 0, "leaving: the fade starts at once (no hold)", show(lInfo0 and lInfo0.Args))
+	check(lInfo0 and (lInfo0.Args[6] or 0) == 0, "leaving: the shrink starts at once (no hold)", show(lInfo0 and lInfo0.Args))
+	local faded = {}
+	for _, f in { kill, slime, king, bare, leave } do
+		for _, tw in f.Tweens do
+			if tw.Goal.Transparency ~= nil then table.insert(faded, tw.Inst.Name) end
+		end
+	end
+	check(#faded == 0, "no death or leave tween touches Transparency (a monster body is never see-through)", show(faded))
+	-- A23-74 ghost sweep: the dying body is held until its destroy time (+ grace), never longer
+	local g = kill.Ghost
+	local kUntil, lUntil = g and g.Dying[kill.Model], leave.Ghost and leave.Ghost.Dying[leave.Model]
+	check(type(kUntil) == "number" and type(g.Grace) == "number" and g.Grace > 0 and g.Grace <= 2
+		and kUntil >= kill.Before + 1.15 + g.Grace - 1e-6 and kUntil <= os.clock() + 1.15 + g.Grace + 1e-6,
+		"a killed body is held from the ghost sweep until its destroy time (1.15 s) + grace", show({ kUntil and kUntil - kill.Before }))
+	check(type(lUntil) == "number" and lUntil >= leave.Before + (leave.Delays[1] or math.huge) + g.Grace - 1e-6,
+		"a leaving body is held until its later destroy + grace", show({ lUntil and lUntil - leave.Before, leave.Delays[1] }))
+end)
+
+-- A23-74 (user 2026-10-07 "점점 합쳐지겠다"): the real GHOST.Sweep leaves only living records' models and dying bodies
+-- inside their time in workspace.Monsters; strays (a body whose destroy never ran, a model saved into the place) go
+runGroup("monster-ghost-sweep", function()
+	local warned = {}
+	local folder = { Children = {} }
+	function folder:GetChildren() return table.clone(self.Children) end
+	local function model(name)
+		local m = { Name = name, Parent = folder, Destroyed = false }
+		function m:Destroy()
+			self.Destroyed = true
+			self.Parent = nil
+			local i = table.find(folder.Children, self)
+			if i then table.remove(folder.Children, i) end
+		end
+		table.insert(folder.Children, m)
+		return m
+	end
+	local live, own, dying, expired, stray = model("Slime"), model("Slime"), model("Slime"), model("BigSlime"), model("PumpkinSlime")
+	local records = { [1] = { Model = live, Alive = true }, [2] = { Model = own, Alive = true, Owner = {} } }
+	local G = execute("MonsterService.GHOST.Sweep", MONSTER_SWEEP_SOURCE, nativeEnv(), {
+		records = records, getMonstersFolder = function() return folder end,
+		warnThrottled = function(key, msg) table.insert(warned, { key, msg }) end })
+	local now = os.clock()
+	G.Dying[dying] = now + 5
+	G.Dying[expired] = now - 0.01
+	local gone = G.Sweep()
+	check(gone == 2 and stray.Destroyed and expired.Destroyed, "the sweep removes a stray copy and a body past its destroy time",
+		show({ gone, stray.Destroyed, expired.Destroyed }))
+	check(not live.Destroyed and not own.Destroyed and not dying.Destroyed,
+		"living records (a personal one too) and a dying body inside its time stay")
+	check(G.Dying[expired] == nil and G.Dying[dying] ~= nil, "the sweep forgets bodies that are gone or past their time")
+	check(#warned == 1 and string.find(tostring(warned[1][2]), "removed 2 stray", 1, true) ~= nil, "it reports how many it removed",
+		show(warned))
+	check(G.Sweep() == 0 and #warned == 1 and #folder.Children == 3, "a clean folder: nothing removed, nothing reported")
 end)
 
 runGroup("king-retry-lost-debug", function()
@@ -3208,12 +3309,16 @@ end)
 -- WOBBLE's helpers are doubles: makePart records the shadow discs, groundY is flat (0), burst records the landing dust,
 -- Feel.isForeign reads m.Foreign (someone else's hidden personal monster, CR-L15)
 local function wobbleWorld(config)
-	local f = { Clock = 100, Models = {}, Parts = {}, Bursts = {}, Rays = 0 }
+	local f = { Clock = 100, Models = {}, Parts = {}, Bursts = {}, Rays = 0, Tweens = {}, Delays = {} }
 	local folder = { GetChildren = function() return f.Models end }
 	local ws = { CurrentCamera = { CFrame = { Position = vec(0, 0, 0) } },
 		FindFirstChild = function(_, n) if n == "Monsters" then return folder end return nil end }
 	local H = { C = { MonsterMotion = { IsRigged = function(m) return m.Rigged == true end } }, MOTION = { HURT_SEQ_ATTR = "HurtSeq" },
-		TweenService = { Create = function() return { Play = function() end } end },
+		TweenService = { Create = function(_, inst, info, goal)
+			local tw = { Inst = inst, Info = info, Goal = goal, Played = false }
+			table.insert(f.Tweens, tw)
+			return { Play = function() tw.Played = true end }
+		end },
 		visualJoint = function(m) return m.Joint end, monsterRoot = function(m) return m.Root end,
 		monsterSize = function(m) return m.H or 4, 2.2 end,
 		makePart = function(props)
@@ -3226,7 +3331,8 @@ local function wobbleWorld(config)
 		groundY = function() f.Rays += 1 return 0 end,
 		burst = function(pos, color, n, opts) table.insert(f.Bursts, { Pos = pos, N = n, Opts = opts }) end,
 		Feel = { isForeign = function(m) return m.Foreign == true end } }
-	local env = nativeEnv({ CFrame = D.CFrame, workspace = ws, os = setmetatable({ clock = function() return f.Clock end }, { __index = os }) })
+	local env = nativeEnv({ CFrame = D.CFrame, workspace = ws, os = setmetatable({ clock = function() return f.Clock end }, { __index = os }),
+		task = { delay = function(sec, fn) table.insert(f.Delays, { Sec = sec, Fn = fn }) end } })
 	f.W = execute("Fx.WOBBLE", WOBBLE_SOURCE, env, config, H)
 	-- opts: Mesh (rest size of the CustomVisual mesh), Rigged, Velocity, Pos, H (body height), Extents, Foreign
 	function f:Model(kind, opts)
@@ -3235,7 +3341,7 @@ local function wobbleWorld(config)
 			Foreign = opts.Foreign, Extents = opts.Extents or vec(2, 4, 2),
 			Joint = { C1 = D.CFrame.identity, Parent = {}, IsA = function(_, c) return c == "Weld" or c == "JointInstance" end },
 			Root = { Anchored = false, Position = opts.Pos or vec(10, 0, 0), AssemblyLinearVelocity = opts.Velocity or vec(5, 0, 0), Parent = {} } }
-		if opts.Mesh then m.Mesh = { Size = opts.Mesh, IsA = function(_, c) return c == "MeshPart" end } end
+		if opts.Mesh then m.Mesh = { Name = "Mesh", Size = opts.Mesh, Parent = {}, IsA = function(_, c) return c == "MeshPart" end } end
 		function m:GetAttribute(k) return self.Attrs[k] end
 		function m:GetAttributeChangedSignal(k) self.Sig[k] = self.Sig[k] or signal() return self.Sig[k] end
 		function m:IsA(c) return c == "Model" end
@@ -3346,6 +3452,48 @@ runGroup("fx-float", function()
 	check(ds and ds.Splat == true and (g:Lift(dying)) < 0, "a killed slime still splats flat", show(ds and { ds.Splat, (g:Lift(dying)) }))
 	check(ls and not ls.Splat and near((g:Lift(leaving)), 0) and near(leaving.Mesh.Size.Y, ls.Base.Y) and near(leaving.Mesh.Size.X, ls.Base.X),
 		"a leaving king: no splat, back to its rest size and pose while it floats away", show(ls and { ls.Splat, leaving.Mesh.Size }))
+	-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): the server no longer resizes / fades a slime body, so the
+	-- client shrinks its puddle: DeathHold s after the splat it goes to 0.2 in DeathShrink s (Quad In), its bottom kept on
+	-- the floor, opaque; the timing is the server's death pop (hold DEATH_DESTROY - DEATH_SHRINK - 0.1, then DEATH_SHRINK)
+	local function tweenOf(inst, from)
+		for i = from or 1, #g.Tweens do
+			if g.Tweens[i].Inst == inst then return g.Tweens[i] end
+		end
+		return nil
+	end
+	local splatTw = tweenOf(dying.Mesh)
+	check(splatTw and splatTw.Played and near(splatTw.Goal.Size.X, 3 * 1.45) and near(splatTw.Goal.Size.Y, 2 * 0.35)
+		and #g.Delays == 1 and near(g.Delays[1].Sec, g.W.DeathHold), "the splat plays at once, the puddle shrink is scheduled DeathHold s later",
+		show({ splatTw and splatTw.Goal.Size, #g.Delays, g.Delays[1] and g.Delays[1].Sec }))
+	local before = #g.Tweens
+	if g.Delays[1] then g.Delays[1].Fn() end
+	local shrinkTw = tweenOf(dying.Mesh, before + 1)
+	local liftTw = tweenOf(dying.Joint, before + 1)
+	check(shrinkTw and shrinkTw.Played and near(shrinkTw.Goal.Size.X, 3 * 1.45 * 0.2) and near(shrinkTw.Goal.Size.Y, 2 * 0.35 * 0.2)
+		and shrinkTw.Info.Args[1] == g.W.DeathShrink and shrinkTw.Info.Args[3] == "EasingDirection.In",
+		"after the hold the puddle shrinks to 0.2 in DeathShrink s", show(shrinkTw and { shrinkTw.Goal.Size, shrinkTw.Info.Args }))
+	local splatBottom = -(2 * 0.32) - 2 * 0.35 / 2
+	local shrunkBottom = liftTw and liftTw.Goal.C1 and (-liftTw.Goal.C1.Y - 2 * 0.35 * 0.2 / 2)
+	check(liftTw and liftTw.Played and shrunkBottom and near(shrunkBottom, splatBottom, 1e-6) and liftTw.Info.Args[1] == g.W.DeathShrink,
+		"the shrinking puddle keeps its bottom on the floor (joint C1 follows)", show({ shrunkBottom, splatBottom }))
+	local faded = false
+	for _, tw in g.Tweens do if tw.Goal.Transparency ~= nil then faded = true end end
+	check(not faded, "the client never fades a dying slime (no Transparency tween)")
+	local destroyAt = tonumber(string.match(MONSTER_POP_SOURCE, "local DEATH_DESTROY = ([%d%.]+)"))
+	local shrinkS = tonumber(string.match(MONSTER_POP_SOURCE, "local DEATH_SHRINK = ([%d%.]+)"))
+	check(destroyAt and shrinkS and near(g.W.DeathHold, destroyAt - shrinkS - 0.1, 1e-9) and near(g.W.DeathShrink, shrinkS, 1e-9),
+		"the client's puddle timing matches MonsterService's death pop (it is gone before the model is removed)",
+		show({ g.W.DeathHold, g.W.DeathShrink, destroyAt, shrinkS }))
+	-- a body already removed when the hold ends gets no tween
+	local h = wobbleWorld(config)
+	local gone = h:Model("Slime", { Mesh = vec(3, 3, 3) })
+	for _ = 1, 3 do h:Step(1 / 30) end
+	gone.Root.Anchored = true
+	h:Step(1 / 30)
+	gone.Mesh.Parent = nil
+	local n0 = #h.Tweens
+	if h.Delays[1] then h.Delays[1].Fn() end
+	check(#h.Delays == 1 and #h.Tweens == n0, "a slime removed before the hold ends gets no shrink tween", show({ #h.Delays, #h.Tweens - n0 }))
 end)
 
 -- the grounded pass (user 2026-10-06 "떠 있는 게 어색해", Fx 71c10bd / f965cd0): slimes hop at most

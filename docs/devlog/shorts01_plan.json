@@ -2,7 +2,10 @@
  "note": "쇼츠 1차 3편 — 바이럴 기준(검수·사용자 2026-10-06): 첫 1초 훅, 컷 0.4~1.2초, 정지 그림은 늘 움직임, 자막 1~3단어 가운데 크게, 효과음(직접 합성), 끝 장면 = 첫 장면(다시 보기) + 'Subscribe for part 2!'. 사실은 ep01_script.md(검수 OK) 기준, 새로 쓴 줄은 new=true. 영상 = py tools/devlog_build.py shorts01. {DAYS} = 빌드 날(KST)부터 2026-10-31 베타까지.",
  "voice": {
   "speaker": "EN-US",
-  "speed": 1.1
+  "speed": 1.0,
+  "noise_scale": 0.5,
+  "noise_scale_w": 0.6,
+  "sdp_ratio": 0.2
  },
  "shorts": [
   {
@@ -161,11 +164,11 @@
     {
      "id": "A0e",
      "from": "ep01 0-4",
-     "en": "So I decided to make my own, with seven AI teammates!",
-     "ko": "그래서 직접 만들기로 했어요, AI 팀원 일곱 명과 함께!",
+     "en": "So I decided to make my own, with eight AI teammates!",
+     "ko": "그래서 직접 만들기로 했어요, AI 팀원 여덟 명과 함께!",
      "hl": [
       "make my own,",
-      "seven AI teammates!"
+      "eight AI teammates!"
      ],
      "shots": [
       {
@@ -215,55 +218,45 @@
     },
     {
      "id": "A3",
-     "from": "7-3..7-9",
+     "from": "7-3..7-9 + sound session (2026-10-07)",
      "new": true,
-     "en": "A boss, two builders, two artists, an art dev, and a film crew!",
-     "ko": "대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 그리고 촬영 담당!",
+     "en": "A boss, two builders, two artists, an art dev, a sound maker, and a film crew!",
+     "ko": "대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 소리 만드는 사람 하나, 그리고 촬영 담당!",
      "hl": [
       "boss,",
       "builders,",
       "artists,",
       "art dev,",
+      "sound maker,",
       "film crew!"
      ],
      "shots": [
       {
        "board": "team_cards",
-       "every": 0.3,
        "z": [
         1.0,
         1.04
        ],
        "in": "punch",
-       "sfx": [
-        {
-         "name": "card",
-         "at": 0.0
-        },
-        {
-         "name": "card",
-         "at": 0.3
-        },
-        {
-         "name": "card",
-         "at": 0.6
-        },
-        {
-         "name": "card",
-         "at": 0.9
-        },
-        {
-         "name": "card",
-         "at": 1.2
-        },
-        {
-         "name": "card",
-         "at": 1.5
-        },
-        {
-         "name": "card",
-         "at": 1.8
-        }
+       "cues": [
+        "boss",
+        "two",
+        "builders",
+        "two",
+        "artists",
+        "art",
+        "sound",
+        "film"
+       ],
+       "cue_sfx": [
+        "card",
+        "card",
+        "card",
+        "card",
+        "card",
+        "card",
+        "sound_card",
+        "card"
        ]
       }
      ]
@@ -457,10 +450,10 @@
    ],
    "tail": 0.3,
    "meta": {
-    "title_en": "I can't code or draw, so 7 AIs help me make a Roblox game 🎃 #shorts",
-    "title_ko": "코딩도 그림도 못 하는 내가, AI 7명과 로블록스 게임 만들기",
-    "desc_en": "I can't code. I can't draw. But I love games — and I spent way too much money on them. So I'm making my own Roblox game, Halo & Horns, with seven AI (Claude) teammates: one boss checks everything, two write the code, two draw the art (Adobe Firefly), one puts it in the game, and one made this video. I'm the director. Halloween beta: October 31! Not sponsored. AI voice narration. Sound effects: Kenney (kenney.nl, CC0).",
-    "desc_ko": "코드의 '코' 자도, 디자인의 '디' 자도 모르지만 게임을 너무 좋아해서 직접 만들기로! AI 팀원 7명과 만드는 로블록스 게임 'Halo & Horns', 베타 10월 31일.",
+    "title_en": "I can't code or draw, so 8 AIs help me make a Roblox game 🎃 #shorts",
+    "title_ko": "코딩도 그림도 못 하는 내가, AI 8명과 로블록스 게임 만들기",
+    "desc_en": "I can't code. I can't draw. But I love games — and I spent way too much money on them. So I'm making my own Roblox game, Halo & Horns, with eight AI (Claude) teammates: one boss checks everything, two write the code, two draw the art (Adobe Firefly), one puts it in the game, one makes the sound effects, and one made this video. I'm the director. Halloween beta: October 31! Not sponsored. AI voice narration. Sound effects: Kenney (kenney.nl, CC0).",
+    "desc_ko": "코드의 '코' 자도, 디자인의 '디' 자도 모르지만 게임을 너무 좋아해서 직접 만들기로! AI 팀원 8명과 만드는 로블록스 게임 'Halo & Horns', 베타 10월 31일.",
     "tags": [
      "#Roblox",
      "#RobloxStudio",
@@ -472,7 +465,9 @@
      "#shorts"
     ]
    },
-   "style": "neon"
+   "style": "neon",
+   "gap": 0.1,
+   "sentence_gap": 0.24
   },
   {
    "id": "short02_picture_to_3d",
@@ -971,7 +966,9 @@
      "#shorts"
     ]
    },
-   "style": "neon"
+   "style": "neon",
+   "gap": 0.1,
+   "sentence_gap": 0.24
   },
   {
    "id": "short03_pumpkin_king",
@@ -1376,7 +1373,9 @@
      "#shorts"
     ]
    },
-   "style": "neon"
+   "style": "neon",
+   "gap": 0.1,
+   "sentence_gap": 0.24
   },
   {
    "id": "short04_monster_reveal",
@@ -1801,7 +1800,9 @@
      "#AIart",
      "#shorts"
     ]
-   }
+   },
+   "gap": 0.1,
+   "sentence_gap": 0.24
   }
  ]
 }

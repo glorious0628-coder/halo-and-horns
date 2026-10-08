@@ -48,6 +48,7 @@ local AC = Config.AntiCheat or {}
 local move = {
 	lastGood = {}, -- [Player] = { Pos = Vector3, T = os.clock(), Char = Model, VY = Y speed of the last interval }
 	graceUntil = {}, -- [Player] = os.clock() until which every move is accepted (server teleport / spawn)
+	extra = {}, -- [Player] = { Studs, Until }: SKL-3 Hop, that many more flat studs until Until (AllowMove)
 	lastLog = {}, -- [Player] = os.clock() of the last suspicious-move log
 }
 
@@ -159,6 +160,8 @@ local function checkMove(player, pos)
 	local flat = Util.FlatDistance(pos, g.Pos)
 	local rise = pos.Y - g.Pos.Y
 	local allowFlat = speed * acNum("MoveMult", 1.6) * dt + acNum("Slack", 8)
+	local extra = move.extra[player]
+	if extra and now < extra.Until then allowFlat += extra.Studs end -- SKL-3 Hop (AllowMove)
 	local allowRise = acNum("RisePerSec", 60) * dt + acNum("RiseSlack", 12)
 	return flat <= allowFlat and rise <= allowRise, flat, rise, allowFlat, allowRise
 end
@@ -354,6 +357,7 @@ local function cleanup(player)
 	move.lastGood[player] = nil -- CR-H2
 	move.graceUntil[player] = nil
 	move.lastLog[player] = nil
+	move.extra[player] = nil
 end
 
 ------------------------------------------------------------------ public API
@@ -388,6 +392,15 @@ end
 function ZoneService.MarkTeleported(player, seconds)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
 	markTeleported(player, seconds)
+end
+
+-- SKL-3 Hop: the movement check accepts `studs` more flat movement for `seconds` (the one hop: the track is kept, no
+-- grace, a later teleport is still caught). At most 30 studs for 2 s
+function ZoneService.AllowMove(player, studs, seconds)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
+	studs, seconds = tonumber(studs), tonumber(seconds) or 1
+	if not studs or studs ~= studs or studs <= 0 or seconds ~= seconds or seconds <= 0 then return end
+	move.extra[player] = { Studs = math.min(studs, 30), Until = os.clock() + math.min(seconds, 2) }
 end
 
 -- true while a server teleport / correction grace runs (PlayerService ignores that movement as "walking")

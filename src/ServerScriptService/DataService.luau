@@ -111,7 +111,8 @@ local function hasStoredData(old)
 	return false
 end
 
--- stepwise v1 -> v2 -> v3 (each step idempotent; a record runs every step it has not reached yet)
+-- stepwise v1 -> v2 -> v3 (each step idempotent; a record runs every step it has not reached yet). A23-69's Stats is
+-- an additive field (fillDefaults), no step of its own (검수 2026-10-07: the version stays 3 in stage 1)
 local function migrate(d, player)
 	if (tonumber(d.Version) or 1) < 2 then
 		d.WeaponTier = d.WeaponTier or d.SwordTier or 1 -- v1 field SwordTier is renamed
@@ -209,9 +210,10 @@ local function fillDefaults(d, playerName)
 	-- speculative earlier purchases.
 	d.WeaponOwnedMask = weaponTier >= 1 and bit32.bor(owned, bit32.lshift(1, weaponTier - 1)) or owned
 	-- Additive onboarding progress. Do not re-open a claimed/legacy tutorial or erase an unclaimed 5/5.
-	local steps = Config.Tutorial and Config.Tutorial.Steps or { Kill = 0, Guide = 1, Quest = 2, Done = 99 }
+	-- A23-74: Forge (3) = accepted, on the way to the first weapon; kept like the other accepted steps
+	local steps = Config.Tutorial and Config.Tutorial.Steps or { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 }
 	if d.TutorialStep ~= steps.Kill and d.TutorialStep ~= steps.Guide
-		and d.TutorialStep ~= steps.Quest and d.TutorialStep ~= steps.Done then
+		and d.TutorialStep ~= steps.Quest and d.TutorialStep ~= steps.Done and d.TutorialStep ~= steps.Forge then
 		d.TutorialStep = TUTORIAL_DONE
 	end
 	local kills = d.TutorialKills
@@ -225,6 +227,10 @@ local function fillDefaults(d, playerName)
 	if Config.SanitizeRank then Config.SanitizeRank(d, os.time()) end
 	-- A23-32 bag '얻은 순' numbers (additive; an old save starts with 0 everywhere)
 	if Config.SanitizeItemSeq then Config.SanitizeItemSeq(d) end
+	-- A23-69 stat points (additive, Version stays 3): Auto a boolean, Order its letters A-Z (at most
+	-- Config.Stats.MaxPoints); no balance is saved
+	-- (guarded like the ranking fields: some offline suites load a cut-down Config)
+	if Config.SanitizeStats then d.Stats = Config.SanitizeStats(d.Stats) end
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.

@@ -190,18 +190,19 @@ function JusticeService.GetPower(player)
 	if not player then return 0 end
 	local level, tier, enhance = levelAndTier(player)
 	local rebirthBonus = tonumber(player:GetAttribute("RebirthBonus")) or 0
-	return Config.PowerOf(level, tier, 1 + rebirthBonus, enhance)
+	return Config.PowerOf(level, tier, 1 + rebirthBonus, enhance, Config.StatAllocOf(player)) -- A23-69: + the stat points
 end
 
--- BB4 "전투력" (integer, Config.CombatPower): the weak-victim (bully) rule and the boldness ratios compare it.
--- CR-L5: the rebirth bonus is gold / XP only, so it is left out
+-- BB4 "전투력" (integer): the weak-victim (bully) rule and the boldness ratios compare it. A23-69: Config.CombatPowerOf,
+-- the one formula of every power number (level, weapon +N, stat points). CR-L5: the rebirth bonus is gold / XP only,
+-- so it is left out
 function JusticeService.GetCombatPower(player)
 	if not player then return 0 end
-	local level, tier, enhance = levelAndTier(player)
-	return Config.CombatPower(level, tier, enhance)
+	return Config.CombatPowerOf(player)
 end
 
--- BB4: the CombatPower attribute follows Level / WeaponTier / WeaponEnhance. One deferred refresh per frame, because
+-- BB4: the CombatPower attribute follows Level / WeaponTier / WeaponEnhance (A23-69: and StatAtk / StatHp, which
+-- StatService writes). One deferred refresh per frame, because
 -- LootService writes WeaponEnhance right after WeaponTier (an equip changes the attribute exactly once).
 local POWER = { Conns = {}, Pending = {} }
 
@@ -226,7 +227,7 @@ end
 function POWER.Watch(player)
 	POWER.Drop(player)
 	local list = {}
-	for _, attr in { "Level", "WeaponTier", "WeaponEnhance" } do
+	for _, attr in { "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp" } do
 		table.insert(list, player:GetAttributeChangedSignal(attr):Connect(function() POWER.Schedule(player) end))
 	end
 	POWER.Conns[player] = list

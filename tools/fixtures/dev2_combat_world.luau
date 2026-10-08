@@ -104,15 +104,38 @@ local function bareWorld(o)
 	local J = execute("JusticeService.extract", JUSTICE_EXTRACT, w:Env(), cfg)
 	reg.JusticeService = { GetDamageMult = function() return 1 end, GetCombatPower = J.GetCombatPower }
 	w.Justice = J
-	reg.ZoneService = { IsPlausible = function() return true end, GetZoneId = function() return "SlimeMeadow" end,
-		IsPvPZone = function() return true end, IsTown = function() return false end }
-	reg.KaijuService = { GetState = function() return "None" end, GetHealthMult = function() return 1 end }
+	-- SKL-3: w.ZoneOf[p] = the zone a player stands in (default the meadow); ZoneChanged (SkillService ends a field on a
+	-- zone change); AllowMove calls are recorded in w.Allowed (the Hop's one move)
+	w.ZoneOf, w.Allowed, w.KaijuOf, w.Sacks = {}, {}, {}, {}
+	reg.ZoneService = { IsPlausible = function() return true end,
+		GetZoneId = function(p) return w.ZoneOf[p] or "SlimeMeadow" end,
+		IsPvPZone = function() return true end, IsTown = function() return false end, ZoneChanged = Signal.new(),
+		AllowMove = function(p, studs, seconds) table.insert(w.Allowed, { P = p, Studs = studs, Sec = seconds }) end }
+	-- SKL-3: w.KaijuOf[p] = that player's kaiju state ("Siren" / "Active"), w.Sacks[p] = true: carrying a grudge sack
+	reg.KaijuService = { GetState = function(p) return w.KaijuOf[p] or "None" end, GetHealthMult = function() return 1 end }
+	reg.GrudgeService = { HasSack = function(p) return w.Sacks[p] == true end }
 	local stage = newInstance("Folder", w)
+	-- SKL-3 monster hooks (the real ones are tested from cut-out MonsterService code): Taunt / Slow calls are recorded in
+	-- w.Taunts / w.Slows (w.TauntRefuse = true: every taunt is refused), HopReach returns w.HopReach (nil = the full hop)
+	w.Taunts, w.Slows, w.HopAsks = {}, {}, {}
 	reg.MonsterService = { MonsterKilled = Signal.new(),
 		Shove = function(rec) table.insert(w.Shoves, { Rec = rec, At = w.Clock }) end,
 		Displace = function(rec, mode, from, studs, player)
 			table.insert(w.Displaced, { Rec = rec, Mode = mode, From = from, Studs = studs, P = player })
 			return studs
+		end,
+		Taunt = function(rec, player, seconds)
+			table.insert(w.Taunts, { Rec = rec, P = player, Sec = seconds })
+			return w.TauntRefuse ~= true
+		end,
+		Slow = function(rec, mult, seconds)
+			table.insert(w.Slows, { Rec = rec, Mult = mult, Sec = seconds })
+			return true
+		end,
+		HopReach = function(from, dir, studs)
+			table.insert(w.HopAsks, { From = from, Dir = dir, Studs = studs })
+			if w.HopReach == nil then return studs end
+			return w.HopReach
 		end }
 	function reg.MonsterService.GetMonstersInRadius(point, radius)
 		local out = {}
@@ -121,8 +144,8 @@ local function bareWorld(o)
 		end
 		return out
 	end
-	function reg.MonsterService.DamageMonster(rec, dealt, player)
-		table.insert(w.Damage, { Rec = rec, N = dealt, P = player })
+	function reg.MonsterService.DamageMonster(rec, dealt, player, crit, castId)
+		table.insert(w.Damage, { Rec = rec, N = dealt, P = player, Cast = castId }) -- SKL-3: the cast id (a field's ticks)
 		rec.HP = math.max(0, rec.HP - dealt)
 		if rec.HP <= 0 and rec.Alive then
 			rec.Alive = false
@@ -131,10 +154,18 @@ local function bareWorld(o)
 		return false
 	end
 	reg.GooseService = { GetPosition = function() return nil end, RegisterHit = function() return 0 end }
+	-- SKL-3 MP steal: AddMana gains are recorded in w.Gained (w.ManaRoom[p] = the MP a player can still take, nil = any)
+	w.Gained, w.ManaRoom = {}, {}
 	reg.VitalsService = { TrySpendMana = function(p, cost)
 		table.insert(w.Mana, { P = p, Cost = cost })
 		return true
-	end }
+	end,
+		AddMana = function(p, n)
+			local got = math.min(n, w.ManaRoom[p] or n)
+			if w.ManaRoom[p] then w.ManaRoom[p] -= got end
+			table.insert(w.Gained, { P = p, N = got })
+			return got
+		end }
 	reg.PvPService = { GetStars = function() return 0 end, HasRevenge = function() return false end,
 		BreakProtection = function() end, CanAttack = function() return o.Hit == true end }
 	reg.ProgressionService = { LevelReset = Signal.new(), Rebirthed = Signal.new(), LeveledUp = Signal.new(),

@@ -68,12 +68,15 @@ MUTATIONS = [
     # anchors that do not lean on the end of the lists (game dev 1: "ChatText" came after them)
     ("BarkService never started", MAIN, "\"BarkService\", \"DamageWindow\",\n", "\"DamageWindow\",\n"),
     ("BarkService never loaded", MAIN, "\"BarkService\", \"DamageWindow\", \"SkillService\",", "\"DamageWindow\", \"SkillService\","),
-    # Config.Barks as written (lines_pack §2-2)
+    # Config.Barks as written (lines_pack §2-2 cadence; A23-74 sound-word lines, user 2026-10-07)
     ("Hit chance 50%", C, "Chance = { Spot = 0.5, Hit = 0.2, Low = 1, Idle = 0.15 },",
      "Chance = { Spot = 0.5, Hit = 0.5, Low = 1, Idle = 0.15 },"),
-    ("a nine-word line", C, "\"Guarding! Guarding what? Not sure. Halt!\"", "\"Guarding! Guarding what? Not sure at all. Halt now!\""),
-    ("a three-dot ellipsis", C, "\"Wobbly… so wobbly… blub.\"", "\"Wobbly... so wobbly... blub.\""),
-    ("a scary word", C, "\"Ow! I'm see-through, not tough!\"", "\"Ow! Scary hit! Not tough!\""),
+    ("a sentence comes back", C, "\"Clack clack!\"", "\"Guarding! Guarding what? Halt!\""),
+    ("a 13-letter word", C, "\"Best patch!\"", "\"Bestest patch!\""),
+    ("a three-dot ellipsis", C, "\"Wobble…\"", "\"Wobble...\""),
+    ("a scary word", C, "\"Hoo-ouch!\"", "\"Scary!\""),
+    ("two kinds share a sound", C, "\"Oopsie!\"", "\"Eep!\""),
+    ("a kind loses its own first sound", C, "Spot = { \"Grrr!\", \"Sack time!\" },", "Spot = { \"Sack time!\", \"Grrr!\" },"),
 ]
 
 
@@ -114,7 +117,9 @@ SUITE = Suite(
              "picks the golden set first for a golden monster, else its kind's, else Config.QuestKind's, never the same "
              "line twice in a row, and writes model attributes Bark, then BarkAt (server time). Every IdleEvery (10) s a "
              "monster with no target within IdleNear (40) of a player (the monsters that player may hit) rolls Idle once. "
-             "Lines never change a score.",
+             "Lines never change a score. A23-74 (user 2026-10-07): every line is a sound word or one short word in the "
+             "monster's own voice (at most 2 words and 12 letters, no two kinds share a line, e.g. Slime 'Blub?', "
+             "King Slime 'BLOOP!', Ghost King 'OOOH!'); the kinds and moments are unchanged.",
     limitations="The bubble is game dev 1's (MonsterLabels: watch BarkAt, show Bark for Show s within MaxDistance). The "
                 "real aiStep / personalStep are checked as source text (the AI needs the engine); DamageMonster runs as "
                 "a cut chunk. The optional goose barks (Lines.Goose, GooseService) are not wired.",

@@ -3,9 +3,10 @@
 Runs the CURRENT Config, Net, Util, DataService, QuestService, StoryQuestService, LootService, AnnounceService,
 HalloweenService, Main.server.luau and the client Announce module, plus chunks cut from MonsterService (event spawn /
 kill / A23-27 contributor hits and damage + payout / regular pool + GlobalCap split + HW-13 season-end sweep / golden
-roll / death pop and leave fade / targetable + landAttack: the A23-27 king safety rule), EventHUD (the Pumpkin King pill,
-never narrower than its text, and its placement beside HUD's columns), Fx (WOBBLE float, grounded slime hop + Sink, blob
-shadows and landing dust, leaving king without the splat) and Panels (drop list loop), and the BatGoblin / Goblin
+roll / opaque death pop and leave shrink + ghost sweep (A23-74) / targetable + landAttack: the A23-27 king safety rule),
+EventHUD (the Pumpkin King pill, never narrower than its text, and its placement beside HUD's columns), Fx (WOBBLE float,
+grounded slime hop + Sink, blob shadows and landing dust, leaving king without the splat, killed slime puddle shrink) and
+Panels (drop list loop), and the BatGoblin / Goblin
 MonsterAnims clip modules. Every Config copy reads a pinned server clock (Config.SeasonNow), so the A23-28 season end
 (Config.Halloween.EndsAt) is checked at EndsAt - 1 / EndsAt / EndsAt + 1 without depending on the machine's date. Everything is injected into
 tools/fixtures/halloween_offline.luau and run with the installed official Luau CLI (build/luau_cli_0_741). No Studio,
@@ -84,6 +85,14 @@ EOL_FILES = [FILES[k] for k in ("CONFIG_SOURCE", "NET_SOURCE", "QUEST_SOURCE", "
 
 # (name, source key, exact text, replacement): each must match exactly once in the current (LF-normalized) source
 MUTATIONS = [
+    # sound_gaps B11 (검수 2026-10-07): the KingDefeat Fx names the players the kill paid
+    ("the kill keeps no paid list (KingDefeat Contributors empty)", "MONSTER_SOURCE", "\trec.PaidUserIds = paid\n", ""),
+    ("KingDefeat reads nothing (the cleared tallies)", "HALLOWEEN_SOURCE",
+     "for _, id in type(rec.PaidUserIds) == \"table\" and rec.PaidUserIds or {} do", "for _, id in {} do"),
+    # SKL-3 (검수 2026-10-07): one cast = one hit, also with other hits in between
+    ("only the last cast remembered (a cast counts again)", "MONSTER_SOURCE", "\t\t\t\tseen = seen or {}\n", "\t\t\t\tseen = {}\n"),
+    ("every cast hit counts", "MONSTER_SOURCE", "\t\tif castId == nil or not (seen and seen[castId]) then\n",
+     "\t\tif true then\n"),
     # A23-45 one family per field: pumpkins in the patch, ghosts in the hollow, bat goblins take 3 goblin slots (as goblins)
     ("a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)", "CONFIG_SOURCE",
      "Zone = \"PumpkinPatch\", Count = 10, QuestAs = \"Slime\",", "Zone = \"SlimeMeadow\", Count = 10, QuestAs = \"Slime\","),
@@ -177,9 +186,25 @@ MUTATIONS = [
      "local ok, err = pcall(svc.RemoveEvent, rec, true, true)", "local ok, err = true, nil"),
     ("leaving king squashes like a kill", "HALLOWEEN_SOURCE",
      "pcall(svc.RemoveEvent, rec, true, true)", "pcall(svc.RemoveEvent, rec, true)"),
-    ("leave fade shrinks the king", "MONSTER_SOURCE",
-     "local goal = leaving and { Transparency = 1 } or { Size = d.Size * 0.2, Transparency = 1 }",
-     "local goal = { Size = d.Size * 0.2, Transparency = 1 }"),
+    # A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고" / "점점 합쳐지겠다"): opaque death pop, slime splat left to
+    # the clients, ghost sweep
+    ("a dying body fades see-through again", "MONSTER_SOURCE",
+     "TweenService:Create(d, info, { Size = d.Size * 0.2 }):Play()",
+     "TweenService:Create(d, info, { Size = d.Size * 0.2, Transparency = 1 }):Play()"),
+    ("the server resizes a killed slime's splatted body", "MONSTER_SOURCE",
+     "and not (splatted and d:IsDescendantOf(splatted)) then", " then"),
+    ("a leaving king is left to a splat it never gets (keeps its size)", "MONSTER_SOURCE",
+     "local splatted = not leaving and type(def)", "local splatted = type(def)"),
+    ("a slime without a custom model never shrinks", "MONSTER_SOURCE",
+     "def.Shape == \"Slime\" and model:FindFirstChild(\"CustomVisual\")\n\t\tor nil", "def.Shape == \"Slime\" and model\n\t\tor nil"),
+    ("a dying body is not held from the ghost sweep", "MONSTER_SOURCE",
+     "GHOST.Dying[model] = os.clock() + life + GHOST.Grace", "GHOST.Dying[model] = nil"),
+    ("the ghost sweep removes dying bodies early", "MONSTER_SOURCE",
+     "if not live[child] and not (untilAt and now < untilAt) then", "if not live[child] then"),
+    ("the ghost sweep keeps a body past its time", "MONSTER_SOURCE",
+     "if not live[child] and not (untilAt and now < untilAt) then", "if not live[child] and not untilAt then"),
+    ("the ghost sweep removes living records", "MONSTER_SOURCE",
+     "\t\tif rec.Model then live[rec.Model] = true end\n", ""),
     ("Leaving set after the anchor", "MONSTER_SOURCE",
      "\tif leaving then model:SetAttribute(\"Leaving\", true) end", "\tif false then end"),
     ("Broadcast also sends non-event keys", "ANNOUNCE_SOURCE",
@@ -271,13 +296,22 @@ MUTATIONS = [
      "if Util.FlatDistance(pos, info.Pos) <= NATURAL.GlanceRange then", "if false then"),
     ("a killed monster vanishes at once again (0.4 s)", "MONSTER_SOURCE",
      "local DEATH_DESTROY = 1.15\n", "local DEATH_DESTROY = 0.4\n"),
-    ("the body shrinks at once (no hold before the fade)", "MONSTER_SOURCE",
-     "local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_FADE - 0.1)", "local hold = 0"),
+    ("the body shrinks at once (no hold before the shrink)", "MONSTER_SOURCE",
+     "local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_SHRINK - 0.1)", "local hold = 0"),
     # Fx WOBBLE: float, grounded slimes, blob shadows, dust (71c10bd / f965cd0)
     ("ghost walks on the floor (Float ignored)", "FX_SOURCE",
      "Float = (float and float > 0 and def.Shape ~= \"Slime\") and float or nil,", "Float = nil,"),
     ("leaving slime still splats", "FX_SOURCE",
      "\n\t\t\t\tand model:GetAttribute(\"Leaving\") ~= true then", " then"),
+    # A23-74: the client shrinks a killed slime's puddle (the server leaves the body to it)
+    ("a killed slime's puddle never shrinks", "FX_SOURCE",
+     "TweenService:Create(mesh, info, { Size = splat * 0.2 }):Play()", ""),
+    ("the shrinking puddle floats off the floor", "FX_SOURCE",
+     "{ C1 = CFrame.new(0, baseY * 0.46, 0) }", "{ C1 = CFrame.new(0, baseY * 0.32, 0) }"),
+    ("puddle shrink drifts from the server's death timing", "FX_SOURCE",
+     "DeathHold = 0.75, DeathShrink = 0.3 }", "DeathHold = 0.5, DeathShrink = 0.3 }"),
+    ("puddle shrinks while the slime is already gone", "FX_SOURCE",
+     "if not mesh.Parent or not joint.Parent then return end", ""),
     ("slime hop not capped at HopMax", "FX_SOURCE",
      "local hopMax = math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)", "local hopMax = st.H * WOBBLE.HopRatio"),
     ("slime sits on the ground surface (no Sink)", "FX_SOURCE",
@@ -389,9 +423,11 @@ def make_harness(sources: dict[str, str]) -> str:
         + "\n\treturn total\nend\n"
         + "return { GLOBAL_CAP = GLOBAL_CAP, targetCount = targetCount, cappedTargets = cappedTargets, reevaluate = reevaluate,"
           " startSpawn = startSpawn, aliveCountOf = aliveCountOf, totalNonPersonal = totalNonPersonal }\n")
-    # the real death pop (kill: shrink + burst; leaving: "Leaving" attribute, size kept, rise + fade)
+    # the real death pop (A23-74: opaque; kill: hold + shrink + burst, a slime's CustomVisual left to the clients;
+    # leaving: "Leaving" attribute, rise + shrink) and the ghost sweep (GHOST.Sweep)
     pop_consts = []
-    for pattern in (r"^local DEATH_FADE = .*$", r"^local DEATH_DESTROY = .*$", r"^local VISUAL_ROOT_NAME = .*$", r"^local LEAVE = \{.*\}$"):
+    for pattern in (r"^local DEATH_SHRINK = .*$", r"^local DEATH_DESTROY = .*$", r"^local VISUAL_ROOT_NAME = .*$",
+                    r"^local LEAVE = \{.*\}$", r"^local GHOST = \{.*\}$"):
         m = re.search(pattern, mon, re.M)
         if not m:
             raise ValueError(f"MonsterService constant {pattern!r} missing; update the test extractor.")
@@ -401,7 +437,13 @@ def make_harness(sources: dict[str, str]) -> str:
         "local TweenService, emitDeathParticles, task = H.TweenService, H.emitDeathParticles, H.task\n"
         + "\n".join(pop_consts) + "\n"
         + function_block(mon, "local function deathPop(") + "\n"
-        + "return deathPop\n")
+        + "return deathPop, GHOST\n")
+    bindings["MONSTER_SWEEP_SOURCE"] = (
+        "local H = ...\n"
+        "local records, getMonstersFolder, warnThrottled = H.records, H.getMonstersFolder, H.warnThrottled\n"
+        + pop_consts[-1] + "\n"
+        + function_block(mon, "function GHOST.Sweep()") + "\n"
+        + "return GHOST\n")
     # targeting (review 2026-10-06: a boss leaves rookies alone): the real targetable, FACE (user 2026-10-06: monsters
     # turn toward their target, hit only within +-30 deg), landAttack, findInfo and isPlayerInTown with their constants
     target_consts = []

@@ -104,9 +104,13 @@ local services = {
 		return { Play = function() for k, v in goal do i[k] = v end end } end },
 }
 local Config
+-- the camera double (TravelDone turns it behind my back); CFrame.lookAt records its points
+local CAM = { CameraType = "CameraType.Scriptable", CFrame = { Position = vec(0, 10, 10) }, Focus = { Position = vec(0, 4.5, 0) } }
+local cframe = setmetatable({ lookAt = function(p, f) return { Ctor = "lookAt", Args = { p, f }, Position = p } end },
+	{ __index = ctor("CFrame") })
 local env = setmetatable({
 	game = { GetService = function(_, n) return assert(services[n], n) end },
-	workspace = { FindFirstChild = function(_, n) if n == "Monsters" then return monsters end return nil end },
+	workspace = { CurrentCamera = CAM, FindFirstChild = function(_, n) if n == "Monsters" then return monsters end return nil end },
 	Vector3 = { new = vec }, Vector2 = { new = function(x, y) return { X = x, Y = y } end },
 	UDim2 = { fromScale = function(x, y) return { x, y } end, new = function(...) return { ... } end,
 		fromOffset = function(x, y) return { x, y } end },
@@ -115,7 +119,7 @@ local env = setmetatable({
 		fromHSV = function() return {} end },
 	BrickColor = { new = function(v) return v end }, Rect = ctor("Rect"), NumberRange = ctor("NumberRange"),
 	NumberSequence = ctor("NumberSequence"), ColorSequence = ctor("ColorSequence"), NumberSequenceKeypoint = ctor("NumberSequenceKeypoint"),
-	ColorSequenceKeypoint = ctor("ColorSequenceKeypoint"), CFrame = ctor("CFrame"), Font = ctor("Font"),
+	ColorSequenceKeypoint = ctor("ColorSequenceKeypoint"), CFrame = cframe, Font = ctor("Font"),
 	TweenInfo = { new = function(...) return { ... } end }, Enum = enum,
 	Instance = { new = function(class) return inst(class) end },
 	os = { clock = function() return W.Now end, time = os.time },
@@ -184,6 +188,38 @@ g = gui()
 check(g and g:FindFirstChild("Black").BackgroundTransparency == 0, "a newer Travel keeps its own timing", g and g:FindFirstChild("Black").BackgroundTransparency)
 fx("TravelDone", { UserId = 77 })
 advance(1)
+-- A23-74 weapon first: the walk to Otto's anvil says where it goes
+fx("Travel", { UserId = 77, To = "Crossroads", Spot = "Forge", T = 3 })
+advance(0.01)
+g = gui()
+line = g and g:FindFirstChild("Line")
+check(line and line.Text == string.format(TXT.Count, string.format(TXT.Travel, "the Forge"), 3), "the Forge walk: 'Off to the Forge!  3'",
+	line and line.Text)
+-- 검수 2026-10-08: the server moved me in front of the anvil, facing it (+X), and the camera was left in front of my
+-- face: TravelDone turns it behind my back, as far (10) and as high (+3.5) over the new focus as before
+root.Position, root.CFrame = vec(10, 3, 0), { LookVector = vec(1, 0, 0) }
+CAM.CameraType, CAM.CFrame, CAM.Focus = "CameraType.Custom", { Position = vec(20, 8, 0) }, { Position = vec(10, 4.5, 0) }
+fx("TravelDone", { UserId = 77 })
+local cf = CAM.CFrame
+local behind = cf.Ctor == "lookAt" and cf.Args[1].X == 0 and cf.Args[1].Y == 8 and cf.Args[1].Z == 0 and cf.Args[2].X == 10
+	and math.abs(cf.Args[2].Y - 4.5) < 1e-6 and cf.Args[2].Z == 0
+check(behind, "TravelDone turns the camera behind my back (same distance and height)",
+	cf.Args and string.format("%s,%s,%s", cf.Args[1].X, cf.Args[1].Y, cf.Args[1].Z) or tostring(cf.Ctor))
+advance(TRAVEL.Again + 0.01)
+check(CAM.CFrame.Args and CAM.CFrame.Args[1].X == 0, "once more a moment later (a late move), still behind", "")
+advance(1)
+-- the time limit (no TravelDone: no move seen) and a Scriptable camera (the opening) leave the camera alone
+CAM.CFrame = { Position = vec(20, 8, 0) }
+fx("Travel", { UserId = 77, To = "Crossroads", Spot = "Forge", T = 3 })
+advance(3 + TRAVEL.MaxExtra + 0.5)
+check(CAM.CFrame.Ctor == nil, "the time limit does not turn the camera", tostring(CAM.CFrame.Ctor))
+CAM.CameraType = "CameraType.Scriptable"
+fx("Travel", { UserId = 77, To = "Crossroads", Spot = "Forge", T = 3 })
+advance(3)
+fx("TravelDone", { UserId = 77 })
+check(CAM.CFrame.Ctor == nil, "a Scriptable camera is left alone", tostring(CAM.CFrame.Ctor))
+advance(1)
+CAM.CameraType = "CameraType.Custom"
 
 ------------------------------------------------------------------ #2 hints in place
 local function step(seconds)
@@ -198,6 +234,9 @@ setAttrs({ TutorialStep = 0, Class = "Warrior", WeaponTier = 0, Faction = "Halo"
 local near = monster("Slime", vec(6, 3, 0), nil) -- inside the punch reach (7 + 2)
 step(7)
 check(#W.Hints == 0 and #W.Focus == 0, "before the first mission: no hints, no marker", #W.Hints .. "/" .. #W.Focus)
+player.Attrs.TutorialStep = 3 -- A23-74: the Forge step comes before the slimes
+step(7)
+check(#W.Hints == 0 and #W.Focus == 0, "the Forge step (on the way to the first weapon): no hints, no marker", #W.Hints .. "/" .. #W.Focus)
 player.Attrs.TutorialStep = 1
 step(4)
 check(#W.Hints == 0, "no attack hint before Idle s", #W.Hints)

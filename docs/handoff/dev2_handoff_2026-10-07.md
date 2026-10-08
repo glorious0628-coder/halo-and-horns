@@ -1,5 +1,22 @@
 # 게임성 개발 2 인계 (2026-10-07 저녁, 계정 바꾸기 전)
 
+## ★ 최신 (2026-10-07 밤, 앱 재시작 뒤 이어서 함) — 아래 절들은 그 전 기록
+
+| 일 | 상태 | 가지 / 커밋 |
+|---|---|---|
+| A23-71 남은 일 S8·S9·S11·S13·S14·S16 | **main에 병합됨**(개발 1, 33bc5f4) | dev2 5c71430 |
+| **A23-74 무기 먼저**(수락 → 대장간 단계 3 → 첫 무기 → 초원, 옛 저장 맨손 안 남김) | 오프라인 55개 통과, **병합 요청 보냄**(검수·개발 1) | 가지 **dev2-weapon** 49d2744 (origin/main 위, Data v4 없음). 계약 `docs/design/weapon_first_server_2026-10-07.md` |
+| SKL-3 마무리(X 스킬 서버 + 시험 `tools/test_skills_x.py`, SK1·SK2, 다음 목표 New skill) | **검수 통과**, 개발 1 병합·Studio 반영 대기 | dev2 94c3870 |
+| A23-69 스탯 1단계(스위치 꺼짐) + 소리 서버 몫 | 검수 검토 → 고칠 것 4개를 dev2-sound에서 고침: ① KingDefeat Contributors(PaidUserIds) ② 환불 Fx Thief = 뺏은 사람 ③ 장판 늦은 Released = 끝날 때 최다 마릿수 한 번 ④ **저장 버전 3 그대로(Stats는 더하기 필드), SanitizeStats A–Z 보존** | 가지 **dev2-sound** (CI 뒤 병합 요청) |
+| A23-69 2단계 | 검수 지시로 **아직 시작 안 함** | — |
+
+- 가지 정리: `dev2` = a698787(스탯 1단계)까지. `dev2-sound` = dev2 + 소리 묶음 + 검수 고칠 것 4개 → 이 끝 하나로 병합 요청. `dev2-weapon` = main 위 무기 먼저(따로 병합). `dev2-skl3-wip`은 dev2에 다 들어가서 더 안 씀. 시험용 worktree: `Game-dev2-ci`(전체 CI), `Game-dev2-mtest`(합쳐 보기·증거 커밋용).
+- 증거 정리 요령: CI 뒤 바뀐 증거 중 **경로·시간만 바뀐 것**(작업 폴더 이름이 다른 것)은 올리지 않는다. 상태·검사 수·변이·sourceSHA256·계약 글이 바뀐 것만 Game-dev2로 복사해 커밋한다.
+- 문서: `docs/design/skills_server_2026-10-07.md` §3-2(X 계약), `docs/design/stats_server_2026-10-07.md`(스탯 1단계, 저장 버전 3 그대로: 서버 종료 필요 없음), `docs/design/sound_server_2026-10-07.md`(소리 계약).
+- 새 시험: `tools/test_skills_x.py`(X 스킬·몬스터 고리·MP·이동 허용), `tools/test_stats.py`(스탯 1단계). `tools/test_notify_sound.py`는 소리 경로표 + Plunder/Crown/KingDefeat까지 본다.
+- 다음 큐(검수 확인 필요): A23-69 2단계(10/16–17: StatService·피해·HP·PvP) 또는 검수가 정하는 다른 일. 소리 묶음 병합 요청이 먼저.
+- 시험 팁(오늘 겪은 것): CI 증거는 **복사한 뒤에** `git -C ../Game-dev2-ci checkout -- docs/art` 할 것(먼저 지우면 다시 돌려야 함). Python으로 고칠 때는 스크립트를 Write로 파일에 쓰고 실행(Bash heredoc은 `\n`을 바꿔 버림). 변이 문구가 소스와 맞는지 한 번에 보는 도구는 scratchpad의 check_mutations.py 같은 것을 다시 만들면 된다(모든 `tools/test_*.py`의 MUTATIONS가 정확히 1번 맞는지).
+
 다음 계정의 게임성 개발 2는 이 파일 → `AGENTS.md` → 검수 목록 `docs/design/skill_unlock_impact_2026-10-07.md`(eb078dd) 순서로 읽고 시작한다.
 
 ## 0. 자리

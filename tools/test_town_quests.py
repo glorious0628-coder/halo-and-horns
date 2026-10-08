@@ -48,6 +48,17 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # SKL-3 the practice subs SK1 / SK2
+    ("SKL-3: SkillHit ignores the Slot", ST,
+     "\t\tif obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)\n", ""),
+    ("SKL-3: Requires.Skill ignores the switch", ST, "local on = req.Skill == \"Q\" or skills[req.Skill .. \"Enabled\"] == true",
+     "local on = true"),
+    ("SKL-3: Requires.Skill ignores the slot", ST, "if not index or not on or num(data.SkillSlots) < index then return false end",
+     "if not index or not on then return false end"),
+    ("SKL-3: SK2 forgotten in the sub list", C, "\t\t\"SK1\", \"SK2\" }, -- SKL-3: the practice subs of a new skill",
+     "\t\t\"SK1\" }, -- SKL-3: the practice subs of a new skill"),
+    # 검수 2026-10-07: SK2's picks have their side
+    ("SK2 'Guard' has no side (no change of mind)", ST, "B = \"Evil\", Guard = \"Good\",", "B = \"Evil\","),
     # A23-71 the first skill at Lv5
     ("A23-71: no 'Skills come' tail", ST,
      "\tif not track.Claim and needsSkill(obj, track) and not Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths) then\n",
@@ -234,6 +245,12 @@ def static() -> tuple[int, list[str]]:
     check("NeutralFaction = false" in features, "A23-57 switch present and off (other switches may share the line)")
     check('Config.FactionOrder = { "Halo", "Horns", "Neutral" }' in config,
           "Config.FactionOrder untouched (game dev 1's picker reads the switch, A23-57)")
+    # 검수 2026-10-07: every story pick has its side (SK2's Guard / Take were missing: no change of mind)
+    side = re.search(r"^local SIDE = \{(.*?)\}", story, re.S | re.M)
+    side_keys = set(re.findall(r'(\w+) = "(?:Good|Evil)"', side.group(1))) if side else set()
+    picks = set(re.findall(r'Pick = "(\w+)"', config))
+    check(bool(picks) and picks <= side_keys,
+          f"every Pick in Config.StoryQuests has a side in SIDE (missing: {sorted(picks - side_keys)})")
     return count, failures
 
 

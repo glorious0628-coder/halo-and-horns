@@ -26,7 +26,8 @@ items = json.load(open(a.list, encoding="utf-8"))["items"]
 prefixes = [p for p in a.only.split(",") if p]
 if prefixes:
     items = [it for it in items if any(it["name"].startswith(p) for p in prefixes)]
-PRECISE = ("Gate", "Bridge", "Wall", "Spawn", "Fountain", "GuildHall", "PadBase", "SpawnPlaza", "Castle")
+PRECISE = ("Gate", "Bridge", "Wall", "Spawn", "Fountain", "GuildHall", "PadBase", "SpawnPlaza", "Castle",
+           "Arch", "NoticeBoard", "Stairs")  # 2026-10-08 검수: walk-through arch, board face ray, steps you climb
 
 
 def fidelity(name):

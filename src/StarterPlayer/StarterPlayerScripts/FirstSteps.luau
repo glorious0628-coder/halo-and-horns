@@ -22,8 +22,13 @@ local FirstSteps = {}
 local LocalPlayer = Players.LocalPlayer
 local C = nil
 
-local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow" }
-local TRAVEL = { Fade = 0.4, MaxExtra = 1.5, FadeIn = 0.5, Token = 0, Gui = nil, Black = nil, Line = nil, Done = false }
+-- Forge: A23-74 weapon first, the walk to Otto's anvil (Fx "Travel" { To = "Crossroads", Spot = "Forge" })
+local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
+-- FocusUp / Again: 검수 2026-10-08 - after the server moves me (TravelDone) the camera stayed where it was, often in front
+-- of my face (CameraFollow never recenters a camera my body faces: its backpedal rule), so under the black it goes round
+-- behind my back once (same distance and height over the focus), and once more Again s later (the move may replicate late)
+local TRAVEL = { Fade = 0.4, MaxExtra = 1.5, FadeIn = 0.5, Token = 0, Gui = nil, Black = nil, Line = nil, Done = false,
+	FocusUp = 1.5, Again = 0.15 }
 local HINT = { Idle = 5, Tick = 0.25, Search = 120, MarkerGap = 0.5, NearSince = nil,
 	AttackShown = false, Killed = false, MarkerAt = -math.huge, Marked = nil }
 
@@ -76,11 +81,42 @@ local function fade(to, seconds)
 		{ BackgroundTransparency = to }):Play()
 end
 
--- back in (TravelDone or the time limit): the black lifts, then the gui goes
-function TRAVEL.Finish(token)
+-- where the camera goes after a server move: behind rootPos (against my facing, flat), as far from and as high over the
+-- new focus as it was over the old one; nil when the camera sits on its focus or I face straight up / down
+function TRAVEL.BehindSpot(camPos, focusPos, rootPos, look)
+	local ox, oy, oz = camPos.X - focusPos.X, camPos.Y - focusPos.Y, camPos.Z - focusPos.Z
+	local dist = math.sqrt(ox * ox + oz * oz)
+	local lx, lz = look.X, look.Z
+	local ll = math.sqrt(lx * lx + lz * lz)
+	if dist < 0.5 or ll < 0.1 then return nil end
+	lx, lz = lx / ll, lz / ll
+	local focus = Vector3.new(rootPos.X, rootPos.Y + TRAVEL.FocusUp, rootPos.Z)
+	return Vector3.new(focus.X - lx * dist, focus.Y + oy, focus.Z - lz * dist), focus
+end
+
+function TRAVEL.Behind()
+	local cam = workspace.CurrentCamera
+	local character = LocalPlayer and LocalPlayer.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not (cam and root) or cam.CameraType ~= Enum.CameraType.Custom then return false end
+	local pos, focus = TRAVEL.BehindSpot(cam.CFrame.Position, cam.Focus.Position, root.Position, root.CFrame.LookVector)
+	if not pos then return false end
+	cam.CFrame = CFrame.lookAt(pos, focus)
+	return true
+end
+
+-- back in (TravelDone or the time limit): the black lifts, then the gui goes; moved = the server's TravelDone (I was
+-- moved): the camera goes behind my back first
+function TRAVEL.Finish(token, moved)
 	if token ~= TRAVEL.Token or TRAVEL.Done then return end
 	TRAVEL.Done = true
 	if TRAVEL.Line then TRAVEL.Line.Text = "" end
+	if moved then
+		pcall(TRAVEL.Behind)
+		task.delay(TRAVEL.Again, function()
+			if token == TRAVEL.Token then pcall(TRAVEL.Behind) end
+		end)
+	end
 	fade(1, TRAVEL.FadeIn)
 	task.delay(TRAVEL.FadeIn + 0.1, function()
 		if token == TRAVEL.Token and TRAVEL.Gui then
@@ -96,7 +132,7 @@ function TRAVEL.Start(data)
 	TRAVEL.Done = false
 	local t = math.clamp(tonumber(data.T) or 3, 0.5, 10)
 	local zone = type(data.To) == "string" and Config.Zones[data.To] or nil
-	local place = zone and zone.Name or TXT.Place
+	local place = (data.Spot == "Forge" and TXT.Forge) or (zone and zone.Name) or TXT.Place
 	TRAVEL.Build()
 	call("Panels", "Close", false) -- the guide window: the walk is over before it could be read
 	local whole = math.floor(t + 0.5)
@@ -114,9 +150,11 @@ function TRAVEL.Start(data)
 end
 
 ------------------------------------------------------------------ #2 hints in place
+-- the slime part of the first mission (A23-74: not the Forge step before it, the hints are about hitting monsters)
 local function firstMission()
 	local step = tonumber(attr("TutorialStep", 0)) or 0
-	return step >= 1 and step < 99
+	local steps = type(Config.Tutorial) == "table" and type(Config.Tutorial.Steps) == "table" and Config.Tutorial.Steps or {}
+	return step >= 1 and step < 99 and step ~= (tonumber(steps.Forge) or 3)
 end
 
 local function myRoot()
@@ -198,7 +236,7 @@ function FirstSteps.OnFx(kind, data)
 	if kind == "Travel" and mine(data) then
 		TRAVEL.Start(data)
 	elseif kind == "TravelDone" and mine(data) then
-		TRAVEL.Finish(TRAVEL.Token)
+		TRAVEL.Finish(TRAVEL.Token, true)
 	elseif (kind == "Swing" or kind == "Release" or kind == "Skill") and mine(data) then
 		HINT.NearSince = nil
 	elseif kind == "Reward" then -- sent only to the killer (ProgressionService)

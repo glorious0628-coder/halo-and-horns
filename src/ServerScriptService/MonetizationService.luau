@@ -49,7 +49,7 @@ end
 
 local function notify(player, textKey)
 	if player.Parent == nil then return end
-	pcall(Net.Notify, player, string.format(Config.Text[textKey]), "reward")
+	pcall(Net.Notify, player, string.format(Config.Text[textKey]), "reward", nil, "None") -- sound_gaps C1: never QuestDone
 end
 
 -- grant step for a NEW PurchaseId (caller holds inFlight[purchaseId]); returns the decision

@@ -786,6 +786,79 @@ runGroup("a23-71 skill quests", function()
 	check(w:Track(nd3, "N1") ~= nil, "at Lv5: N1 is offered")
 end)
 
+-- SKL-3 (skill_kit §2): the practice subs SK1 (Z) / SK2 (X) wait for that skill (its switch on and its slot open);
+-- SkillHit Slot counts only that skill's manual casts that hit
+runGroup("skl3 subs", function()
+	local w = townWorld({ Npcs = false })
+	w.Config.StoryQuests.MaxSubs = 9
+	local K = w.Config.Skills
+	local CS = w.Combat
+	local function story()
+		return { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } }
+	end
+	check(SQ0.Defs.SK1.Requires.Skill == "Z" and SQ0.Defs.SK1.Steps[1].Obj.Slot == "Z" and SQ0.Defs.SK1.Steps[1].Obj.Min == 2
+		and SQ0.Defs.SK2.Requires.Skill == "X" and SQ0.Defs.SK2.Steps[3].Obj.Slot == "X" and table.find(SQ0.Subs, "SK1")
+		and table.find(SQ0.Subs, "SK2"), "SK1: Z hitting 2 once; SK2: the fountain, a pick, X hits x3 (both in the sub list)", "")
+	-- SK1: the Z switch off -> not even with Z's slot saved; on + the slot -> offered; only Q (slot 1) -> not
+	local p, d = w:Join(7301, { Faction = "Halo", Level = 15, Data = { SkillSlots = 2, Story = story() } })
+	w.Story.Refresh(p)
+	w:Flush()
+	check(w:Track(d, "SK1") == nil, "ZEnabled off: no SK1, even with Z's slot saved", "")
+	K.ZEnabled = true
+	local n0 = #w.Notices
+	w.Story.Refresh(p)
+	w:Flush()
+	check(w:Track(d, "SK1") ~= nil and said(w, p, n0, SQ0.Defs.SK1.Start), "the Z switch on and the slot open: SK1 with its Start line",
+		show(w:NoticesFor(p, n0)))
+	local p14, d14 = w:Join(7302, { Faction = "Halo", Level = 14, Data = { SkillSlots = 1, Story = story() } })
+	w.Story.Refresh(p14)
+	w:Flush()
+	check(w:Track(d14, "SK1") == nil, "only Q learned (slot 1): no SK1", "")
+	-- the Slot filter: a Q cast, a Z hitting one, an auto Z never count; a manual Z hitting 2 does
+	local tr = w:Track(d, "SK1")
+	CS.Released:Fire(p, { Slot = "Q", Auto = false, MonstersHit = 4 })
+	CS.Released:Fire(p, { Slot = "Z", Auto = false, MonstersHit = 1 })
+	CS.Released:Fire(p, { Slot = "Z", Auto = true, MonstersHit = 3 })
+	w:Flush()
+	check(w:Track(d, "SK1") ~= nil and (tr.P or 0) == 0 and d.Story.Done.SK1 == nil,
+		"a Q cast hitting 4, a Z hitting 1 or an auto Z: not counted", show({ tr.P, d.Story.Done.SK1 }))
+	CS.Released:Fire(p, { Slot = "Z", Auto = false, MonstersHit = 2 })
+	w:Flush()
+	check(d.Story.Done.SK1 == true and w:Track(d, "SK1") == nil, "a manual Z hitting 2: SK1 done", show(d.Story.Done.SK1))
+	-- SK2: the X switch + slot 3; the fountain, the pick (Halo 'Guard my friends' = Honor +1), then 3 manual X hits
+	local q, e = w:Join(7303, { Faction = "Halo", Level = 25, Data = { SkillSlots = 3, Story = story() }, Pos = vec(60, 0, 60) })
+	w.Story.Refresh(q)
+	w:Flush()
+	check(w:Track(e, "SK2") == nil, "XEnabled off: no SK2", "")
+	K.XEnabled = true
+	w.Story.Refresh(q)
+	w:Flush()
+	local t2 = w:Track(e, "SK2")
+	check(t2 ~= nil and t2.St == 1, "the X switch on and slot 3: SK2 starts at the fountain step", show(t2))
+	w.ZoneOf[q] = "Crossroads"
+	w:MoveTo(q, vec(5, 0, 5))
+	w.Story.Refresh(q)
+	w:Flush()
+	check(t2 and t2.St == 2, "at the Crossroads fountain: the pick", t2 and t2.St)
+	local honor = e.Honor or 0
+	e.Story.LastSide = "Evil" -- an earlier real pick was on the other side
+	local nk = #w.Notices
+	w:Act(q, "SK2", "Choose", "Good")
+	check(e.Story.Pick.SK2 == "Guard" and (e.Honor or 0) == honor + 1 and t2.St == 3, "Halo 'Guard my friends': Pick Guard, Honor +1, then the X step",
+		show({ e.Story.Pick.SK2, e.Honor, t2.St }))
+	-- 검수 2026-10-07: SK2's picks have their side (Guard = Good, Take = Evil), so the pick is a change of mind like the others
+	check(e.Story.LastSide == "Good" and said(w, q, nk, SQ0.Text.ChangedGood),
+		"SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one",
+		show({ e.Story.LastSide, w:NoticesFor(q, nk) }))
+	CS.Released:Fire(q, { Slot = "Z", Auto = false, MonstersHit = 3 })
+	CS.Released:Fire(q, { Slot = "X", Auto = false, MonstersHit = 0 })
+	w:Flush()
+	check((t2.P or 0) == 0, "a Z cast or an X that hit nothing: not counted", t2.P)
+	for _ = 1, 3 do CS.Released:Fire(q, { Slot = "X", Auto = false, MonstersHit = 1 }) end
+	w:Flush()
+	check(e.Story.Done.SK2 == true and w:Track(e, "SK2") == nil, "3 manual X casts that hit: SK2 done", show(e.Story.Done.SK2))
+end)
+
 runGroup("e1-pick-gate", function()
 	local w = townWorld()
 	local CORE = { Text = "Visit the Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } }

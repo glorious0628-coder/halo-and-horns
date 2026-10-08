@@ -4,6 +4,9 @@
 
   blender --background --factory-startup --python-exit-code 1 --python tools/split_uv_tiles.py -- <in.glb> <out.glb> <name>
           [--grid 3] [--tex 4k_base.png] [--kind tripo|web] [--fit h|z|max studs] [--pad 0.02] [--size 1024]
+          [--mr 4k_metal_rough.png] [--normal 4k_normal.png]
+- --mr / --normal(2026-10-07): 같은 UV의 금속·거칠기 맵(glTF: G 거칠기, B 금속 — tex_mr_tune.py 결과)과 노멀 맵도 같은 상자로
+  잘라 조각마다 1024로 붙인다(성 금 테두리 광택). 없으면 색만(거칠기 0.6, 금속 0).
 
 - 면마다 UV 중심이 들어간 칸에 넣고, 칸마다 그 칸 면들의 UV 상자(+여유)를 원본 텍스처에서 잘라 1024로 만든다.
 - 조각 = 따로 된 메시 오브젝트 <name>_t<행><열>(재질 1개씩) → Roblox 3D 가져오기에서 MeshPart 여러 개인 Model 하나.
@@ -20,7 +23,7 @@ from mathutils import Matrix, Vector
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 IN, OUT, NAME = argv[0], os.path.abspath(argv[1]), argv[2]
-opt = {"grid": "3", "tex": None, "kind": "tripo", "fit": None, "pad": "0.02", "size": "1024"}
+opt = {"grid": "3", "tex": None, "kind": "tripo", "fit": None, "pad": "0.02", "size": "1024", "mr": None, "normal": None}
 i = 3
 while i < len(argv):
     k = argv[i][2:]
@@ -60,8 +63,28 @@ for n in mat0.node_tree.nodes:
         img_node = n
 src = bpy.data.images.load(os.path.abspath(opt["tex"])) if opt["tex"] else img_node.image
 W, H = src.size
-px = np.array(src.pixels[:], dtype=np.float32).reshape(H, W, src.channels)[::-1]  # top row first
+
+
+def pixels(img):
+    # foreach_get into a float32 array (pixels[:] makes a huge Python list for 4K images)
+    a = np.empty(img.size[0] * img.size[1] * img.channels, dtype=np.float32)
+    img.pixels.foreach_get(a)
+    return a.reshape(img.size[1], img.size[0], img.channels)[::-1]  # top row first
+
+
+px = pixels(src)
 print("source texture", W, H)
+# optional PBR maps in the same UV layout (glTF metal/rough: G = roughness, B = metal; normal = OpenGL tangent map),
+# cropped with the same boxes so every tile keeps its own 1024 maps (2026-10-07: castle gold trim gloss)
+extra = {}
+for key in ("mr", "normal"):
+    if opt[key]:
+        im = bpy.data.images.load(os.path.abspath(opt[key]))
+        im.colorspace_settings.name = "Non-Color"
+        if tuple(im.size) != (W, H):
+            im.scale(W, H)
+        extra[key] = pixels(im)
+        print(key, "map", im.size[0], im.size[1])
 
 # orientation + size
 turn = math.radians(90) if opt["kind"] == "tripo" else math.radians(180)
@@ -115,31 +138,51 @@ for t in range(N * N):
     # crop in pixel space (v up in Blender UV, row 0 = top in px)
     x0, x1 = int(math.floor(u0 * W)), int(math.ceil(u1 * W))
     y0, y1 = int(math.floor((1 - v1) * H)), int(math.ceil((1 - v0) * H))
-    crop = px[y0:y1, x0:x1]
-    # resize to SIZE x SIZE (area average when shrinking)
     info.append((t, len(faces), (x1 - x0, y1 - y0)))
     tile_name = f"{NAME}_t{t // N}{t % N}"
-    img = bpy.data.images.new(tile_name, SIZE, SIZE, alpha=False)
-    # simple resample with numpy (box filter then nearest to SIZE)
-    ys = np.linspace(0, crop.shape[0], SIZE + 1).astype(int)
-    xs = np.linspace(0, crop.shape[1], SIZE + 1).astype(int)
-    csum = np.cumsum(np.cumsum(np.pad(crop[..., :3], ((1, 0), (1, 0), (0, 0))), 0), 1)
-    A = csum[ys[1:]][:, xs[1:]] - csum[ys[:-1]][:, xs[1:]] - csum[ys[1:]][:, xs[:-1]] + csum[ys[:-1]][:, xs[:-1]]
-    cnt = ((ys[1:] - ys[:-1])[:, None] * (xs[1:] - xs[:-1])[None, :]).astype(np.float32)[..., None]
-    out = A / np.maximum(cnt, 1)
-    rgba = np.concatenate([out, np.ones(out.shape[:2] + (1,), np.float32)], -1)[::-1]
-    img.pixels = rgba.ravel()
-    img.filepath_raw = os.path.join(OUTDIR, tile_name + ".png")
-    img.file_format = "PNG"
-    img.save()
+
+    def tile_image(arr, name, non_color=False):
+        # crop the tile box and resize to SIZE x SIZE (box filter = area average when shrinking)
+        crop = arr[y0:y1, x0:x1]
+        ys = np.linspace(0, crop.shape[0], SIZE + 1).astype(int)
+        xs = np.linspace(0, crop.shape[1], SIZE + 1).astype(int)
+        csum = np.cumsum(np.cumsum(np.pad(crop[..., :3], ((1, 0), (1, 0), (0, 0))), 0), 1)
+        A = csum[ys[1:]][:, xs[1:]] - csum[ys[:-1]][:, xs[1:]] - csum[ys[1:]][:, xs[:-1]] + csum[ys[:-1]][:, xs[:-1]]
+        cnt = ((ys[1:] - ys[:-1])[:, None] * (xs[1:] - xs[:-1])[None, :]).astype(np.float32)[..., None]
+        out = A / np.maximum(cnt, 1)
+        im = bpy.data.images.new(name, SIZE, SIZE, alpha=False, is_data=non_color)
+        if non_color:
+            im.colorspace_settings.name = "Non-Color"
+        rgba = np.concatenate([out, np.ones(out.shape[:2] + (1,), np.float32)], -1)[::-1]
+        im.pixels.foreach_set(rgba.ravel().astype(np.float32))
+        im.filepath_raw = os.path.join(OUTDIR, name + ".png")
+        im.file_format = "PNG"
+        im.save()
+        return im
+
+    img = tile_image(px, tile_name)
     m = bpy.data.materials.new(tile_name)
     m.use_nodes = True
-    bsdf = m.node_tree.nodes["Principled BSDF"]
-    tn = m.node_tree.nodes.new("ShaderNodeTexImage")
+    nt = m.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    tn = nt.nodes.new("ShaderNodeTexImage")
     tn.image = img
-    m.node_tree.links.new(tn.outputs["Color"], bsdf.inputs["Base Color"])
+    nt.links.new(tn.outputs["Color"], bsdf.inputs["Base Color"])
     bsdf.inputs["Roughness"].default_value = 0.6
     bsdf.inputs["Metallic"].default_value = 0.0
+    if "mr" in extra:  # G = roughness, B = metal -> exported as one glTF metallicRoughnessTexture
+        mn = nt.nodes.new("ShaderNodeTexImage")
+        mn.image = tile_image(extra["mr"], tile_name + "_mr", True)
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(mn.outputs["Color"], sep.inputs["Color"])
+        nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+        nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+    if "normal" in extra:
+        nn = nt.nodes.new("ShaderNodeTexImage")
+        nn.image = tile_image(extra["normal"], tile_name + "_n", True)
+        nm = nt.nodes.new("ShaderNodeNormalMap")
+        nt.links.new(nn.outputs["Color"], nm.inputs["Color"])
+        nt.links.new(nm.outputs["Normal"], bsdf.inputs["Normal"])
     me.materials.append(m)
     slot = len(me.materials) - 1
     for fi in faces:

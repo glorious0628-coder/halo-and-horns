@@ -82,8 +82,14 @@ for _, k in keys do table.insert(out, k .. "=" .. tostring(p:GetAttribute(k))) e
 local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
 if root then table.insert(out, string.format("pos=%.0f,%.0f,%.0f", root.Position.X, root.Position.Y, root.Position.Z)) end
 local map = workspace:FindFirstChild("Map")
-local a = map and map:FindFirstChild("Landmarks") and map.Landmarks:FindFirstChild("ArtisanGuild")
-local anvil = a and a:FindFirstChild("Anvil")
+-- the anvil = the part holding the blacksmith prompt (ShopService.Anvil; kit or primitive guild)
+local anvil = nil
+for _, d in (map and map:GetDescendants() or {}) do
+	if d:IsA("ProximityPrompt") and d.Name == "HHC_BlacksmithPrompt" and d.Parent:IsA("BasePart") then
+		anvil = d.Parent
+		break
+	end
+end
 if anvil and root then
 	table.insert(out, string.format("anvilDist=%.1f", ((root.Position - anvil.Position) * Vector3.new(1, 0, 1)).Magnitude))
 end

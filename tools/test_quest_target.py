@@ -54,6 +54,15 @@ MUTATIONS = [
     ("patch sign skipped in the meadow", "if inMeadow then\n", "if false then\n"),
     ("faction-town bridge ignored", "local bridge = zoneId == K.GuideZone and K.HomeBridge[fromZone] or nil",
      "local bridge = nil"),
+    # A23-74 weapon first
+    ("the Forge step points nowhere",
+     '\tif step == K.ForgeStep then\n\t\treturn pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, myZone ~= K.Town)\n\tend\n',
+     ""),
+    ("the Forge step is the meadow step", "ForgeStep = TUT_STEPS.Forge or 3,", "ForgeStep = TUT_STEPS.Guide or 1,"),
+    # 검수 2026-10-08: the 'Forge' label covered the pads' signs
+    ("the Forge marker sits on the anvil again", "if fromZone == K.Town then return QuestTarget.BlacksmithMark() end",
+     "if fromZone == K.Town then return QuestTarget.Blacksmith() end"),
+    ("the mark hugs the anvil", "SmithMarkLift = Vector3.new(0, 9, 0),", "SmithMarkLift = Vector3.new(0, 0, 0),"),
 ]
 
 

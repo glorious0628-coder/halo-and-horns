@@ -52,6 +52,7 @@ local K = {
 	GuideZone = TUT.GuideZone or "SlimeMeadow", -- HUD TUT_GUIDE_ZONE
 	GuideStep = TUT_STEPS.Guide or 1,
 	QuestStep = TUT_STEPS.Quest or 2,
+	ForgeStep = TUT_STEPS.Forge or 3, -- A23-74 weapon first: after [Accept], Otto's anvil before the meadow
 	DoneStep = TUT_STEPS.Done or 99,
 	QuestKills = tonumber(TUT.QuestKills) or 5,
 	Town = "Crossroads", -- the anvil, the fountain and the goose perch stand here
@@ -59,6 +60,9 @@ local K = {
 	AnchorPrefix = "HUDGuideAnchor_", -- HUD localAnchor name
 	Lift = Vector3.new(0, 3, 0), -- anchor above a zone spawn (HUD findTravelTarget)
 	FountainLift = Vector3.new(0, 4, 0), -- HUD L.StoryTap fountain fallback anchor
+	-- 검수 2026-10-08 (weapon-first photos): the marker's 'Forge' label sat on the anvil (2 studs up) and covered the
+	-- nearby pads' '→ Goblin Woods (Lv 10+)' signs; the marker points at an anchor this far above the anvil instead
+	SmithMarkLift = Vector3.new(0, 9, 0),
 	HomeBridge = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }, -- HUD HOME_BRIDGE
 	PadFrom = { Crossroads = true, HaloTown = true, HornsTown = true }, -- pads first from these (HUD order)
 	NearShare = 0.75, -- a Near step's spot counts as reached inside this share of its Radius
@@ -334,8 +338,17 @@ local function guideZone(guide, faction)
 	return guide
 end
 
+-- the marker spot over the anvil (K.SmithMarkLift up), kept on the anvil if it moved; nil without an anvil
+function QuestTarget.BlacksmithMark()
+	local anvil = QuestTarget.Blacksmith()
+	if not anvil then return nil end
+	local a = QuestTarget.Anchor("SmithMark", anvil.Position + K.SmithMarkLift)
+	a.Position = anvil.Position + K.SmithMarkLift
+	return a
+end
+
 local function smithFrom(fromZone, pos)
-	if fromZone == K.Town then return QuestTarget.Blacksmith() end
+	if fromZone == K.Town then return QuestTarget.BlacksmithMark() end
 	if not K.SmithFromAfar then return nil end
 	return QuestTarget.Travel(K.Town, fromZone, pos)
 end
@@ -424,6 +437,11 @@ local function placeFor(entry, myZone, faction, pos)
 	if type(entry.Story) == "table" then return storyEntry(entry.Story, myZone, faction, pos) end
 	if entry.Pinned ~= true then return nil end
 	local step = num(entry.TutorialStep, -1)
+	-- A23-74 weapon first: the Forge step points at the anvil (the Crossroads from elsewhere), whatever
+	-- BlacksmithVisited says (an early visit before [Accept] already set it)
+	if step == K.ForgeStep then
+		return pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, myZone ~= K.Town)
+	end
 	if step == K.GuideStep or step == K.QuestStep then
 		if not needsMeadow(step, entry) or myZone == K.GuideZone then return nil end
 		return pack(QuestTarget.Travel(K.GuideZone, myZone, pos), "tutorial", zoneName(K.GuideZone), K.GuideZone, true)

@@ -68,7 +68,7 @@ def main() -> int:
                           "acceptRemote": "AcceptTutorial", "remoteArgumentCount": 0,
                           "dialoguePagesPerFaction": 3, "worldNpcCreated": False,
                           "newArtOrUploads": 0, "clientPanelAndLiveEngineVerification": "pending_root"},
-        "a23Facts": {"firstMissionRewardGold": 150, "nextGoalAfterBlacksmith": ["NextSkillIron", "NextIronLevel", "NextIronGold", "NextZone", "GuideDone"],
+        "a23Facts": {"firstMissionRewardGold": 150, "nextGoalAfterBlacksmith": ["NextSkillIron", "NextIronLevel", "NextIronGold", "NextSkill", "NextZone", "GuideDone"],
                      "skillQuestCounts": "manual Released with MonstersHit >= 1 only (Auto ~= true)"},
         "coverage": ["real Net registry includes unique RequestTutorial/AcceptTutorial names",
                      "faction guide three-page dialogue, once per session automatic open, explicit reopen/accept",
@@ -80,7 +80,8 @@ def main() -> int:
                      "death/respawn/faction/class changes retain progress",
                      "A23-3 reward is 150 gold and covers the wood weapon price",
                      "A23-3 pinned next-goal row after the visit: NextSkillIron (A23-71 S16, no Q yet; NextIronLevel when Q was kept) -> "
-                     "NextIronGold (live gold) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel",
+                     "NextIronGold (live gold) -> NextSkill (SKL-3: iron owned, the next skill before the next zone; Z / X only "
+                     "with their switch) -> NextZone -> removed with one GuideDone toast; GoalKind SkillIron / IronLevel / Skill",
                      "next-goal row is never claimable, pays nothing, survives save/rejoin and keeps all ordinary quest slots",
                      "A23-3 pre-acceptance quest completion is paid quietly and never accepts the first mission",
                      "saved daily/extra Release quests migrate MinStacks50 to no stack gate and skill wording",
@@ -91,13 +92,22 @@ def main() -> int:
                      "legacy tier4 preserved without inventing earlier purchases", "invalid/nonfinite mask, tier and visit repair",
                      "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any "
                      "bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
-                     "B4 Data Version 3: fresh/v2/v1 records load and save as Version 3 with no field changes (v2 legendary, "
+                     "B4 Data Version 3 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a "
+                     "picked build saves and comes back repaired, A-Z kept): fresh/v2/v1 records load and save as Version 3 "
+                     "with no other field changes (v2 legendary, "
                      "enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
                      "finite-value save serialization guard and migration idempotence",
                      "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly "
                      "Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the "
                      "Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; "
-                     "never outside step 2; the paid state saves and a late claim/rejoin pays nothing more"],
+                     "never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
+                     "A23-74 weapon first (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 "
+                     "(the Forge row, Fx Travel To = Crossroads / Spot = Forge, the instant Crossroads travel); meadow kills "
+                     "before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 (2 in the meadow), once; "
+                     "Forge.TravelDelay later the meadow trip -> the hunt; a save owning tier 1 -> step 1 as before; every "
+                     "claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned "
+                     "(ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial at step 3 = the "
+                     "forge trip; a KO at step 3 respawns at home"],
         "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. "
                        "F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); "
                        "'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again).",

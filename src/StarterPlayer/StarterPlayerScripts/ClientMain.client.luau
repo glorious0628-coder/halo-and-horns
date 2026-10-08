@@ -2,9 +2,10 @@
 -- A23-48 English only (검수 2026-10-07): Roblox's automatic translation would show our English text in the player's
 -- Roblox language (a Korean account sees Korean). Every GUI object under PlayerGui and in the world gets
 -- AutoLocalize = false as it appears (server-made signs and name tags too: translation happens on this client).
+-- ProximityPrompts too (검수 audit 2026-10-08: they are no GuiBase2d, so "Switch side" / "Open" still translated).
 do
 	local function off(inst)
-		if inst:IsA("GuiBase2d") then inst.AutoLocalize = false end
+		if inst:IsA("GuiBase2d") or inst:IsA("ProximityPrompt") then inst.AutoLocalize = false end
 	end
 	local function watch(root)
 		root.DescendantAdded:Connect(off)

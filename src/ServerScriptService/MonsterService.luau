@@ -47,7 +47,7 @@ local TUTORIAL = Config.Tutorial or {}
 local TUT_SPAWN = { Cfg = (Config.SpawnSpread or {}).Tutorial or {}, Hunters = {} }
 local CUSTOM = Config.CustomModels or {}
 local CUSTOM_FOLDER = CUSTOM.FolderName or "CustomModels"
-local GOLDEN_FILL_TRANSPARENCY = CUSTOM.GoldenFillTransparency or 0.5
+local GOLDEN_FILL_TRANSPARENCY = CUSTOM.GoldenFillTransparency or 1
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11
 local NO_REAGGRO_SECONDS = MC.ReaggroDelay or 3 -- A3-M4
 local PERSONAL_DISTANCE = TUTORIAL.SpawnDistance or 8 -- A4: ~8 studs in front of the player
@@ -81,14 +81,20 @@ local SPAWN_TRIES = 8
 
 -- visuals
 local BAR_MAX_DISTANCE = 80
--- monster motion review 2026-10-06 (survey 4-1): a killed monster's body stays DEATH_DESTROY - DEATH_FADE - 0.1 s
--- (0.75: the rigged fall / slime splat shows), then shrinks and fades over DEATH_FADE; destroyed at DEATH_DESTROY
-local DEATH_FADE = 0.3
+-- monster motion review 2026-10-06 (survey 4-1): a killed monster's body stays DEATH_DESTROY - DEATH_SHRINK - 0.1 s
+-- (0.75: the rigged fall / slime splat shows), then shrinks over DEATH_SHRINK; destroyed at DEATH_DESTROY.
+-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): a monster body is never see-through (ART_DIRECTION: part
+-- Transparency is 0 or 1): no fade, it stays opaque until the model is destroyed
+local DEATH_SHRINK = 0.3
 local DEATH_DESTROY = 1.15
 local DEATH_PARTICLES = 15
 -- an event monster that leaves undefeated (RemoveEvent(rec, true, true), the Pumpkin King going home): model attribute
--- "Leaving" (clients skip the dying-slime splat), keeps its size, floats up Rise studs and fades over Fade s, no burst
-local LEAVE = { Fade = 1.2, Rise = 3 }
+-- "Leaving" (clients skip the dying-slime splat), floats up Rise studs while it shrinks away over Time s, no burst
+local LEAVE = { Time = 1.2, Rise = 3 }
+-- A23-74 (user 2026-10-07 "점점 합쳐지겠다"): only living records and dying bodies (Dying[model] = os.clock() after
+-- which it must be gone) may stand in workspace.Monsters; Sweep removes any other copy (a body whose destroy never ran,
+-- a monster model saved into the place) so no ghost stays where the living ones walk into it
+local GHOST = { Dying = {}, Grace = 1 }
 -- every visible part is welded to VisualRoot, which hangs off the root by the Weld VisualJoint (C0 = C1 = identity).
 -- Clients tween VisualJoint.C0 locally (Fx.luau attack lunge / hit recoil); the server never writes C0 after spawn.
 local VISUAL_ROOT_NAME = "VisualRoot"
@@ -948,12 +954,14 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 			visual.Parent = model
 			visualParts = vparts
 			if golden then
+				-- A23-74 (user 2026-10-07): a gold rim only (Config.CustomModels.GoldenFillTransparency 1); a fill is a flat
+				-- half-see-through gold layer over the textured body (green + gold read as an olive ghost)
 				local h = Instance.new("Highlight")
 				h.Name = "GoldenTint"
 				h.FillColor = MC.GoldenColor
 				h.FillTransparency = GOLDEN_FILL_TRANSPARENCY
 				h.OutlineColor = MC.GoldenColor
-				h.OutlineTransparency = 0.3
+				h.OutlineTransparency = 0
 				h.DepthMode = Enum.HighlightDepthMode.Occluded
 				h.Parent = visual
 			end
@@ -1144,7 +1152,12 @@ local function emitDeathParticles(pos, color, scale)
 	Debris:AddItem(fx, 1.5)
 end
 
--- shrink/fade 0.3 s, particle burst, destroy after 0.4 s. leaving = it goes home instead (LEAVE): no shrink, no splat
+-- particle burst, the body holds (fall / splat) then shrinks to 0.2 in DEATH_SHRINK, destroyed at DEATH_DESTROY.
+-- leaving = it goes home instead (LEAVE): no splat, no burst, it floats up while it shrinks away.
+-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): no Transparency tween, the body stays opaque until it is
+-- destroyed. A killed slime's CustomVisual keeps its size here: the clients splat it and shrink the puddle (Fx WOBBLE);
+-- a server resize replicated over the splat and stood the body back up full size while it faded, so a dead slime read
+-- as a living see-through one.
 local function deathPop(rec, withParticles, leaving)
 	local model, root, hum = rec.Model, rec.Root, rec.Humanoid
 	if not model then return end
@@ -1160,24 +1173,29 @@ local function deathPop(rec, withParticles, leaving)
 			emitDeathParticles(root.Position, rec.Golden and MC.GoldenColor or rec.Def.Color, rec._scale or 1)
 		end
 		if leaving then
-			TweenService:Create(root, TweenInfo.new(LEAVE.Fade, Enum.EasingStyle.Sine, Enum.EasingDirection.In),
+			TweenService:Create(root, TweenInfo.new(LEAVE.Time, Enum.EasingStyle.Sine, Enum.EasingDirection.In),
 				{ CFrame = root.CFrame + Vector3.new(0, LEAVE.Rise, 0) }):Play()
 		end
 	end
-	local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_FADE - 0.1) -- TweenInfo DelayTime: the body stays
-	local info = TweenInfo.new(leaving and LEAVE.Fade or DEATH_FADE, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false,
-		hold)
+	local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_SHRINK - 0.1) -- TweenInfo DelayTime: the body stays
+	local info = TweenInfo.new(leaving and LEAVE.Time or DEATH_SHRINK, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0,
+		false, hold)
+	local def = rec.Def
+	local splatted = not leaving and type(def) == "table" and def.Shape == "Slime" and model:FindFirstChild("CustomVisual")
+		or nil
 	for _, d in model:GetDescendants() do
 		if d:IsA("BasePart") then
-			if d ~= root and d.Name ~= VISUAL_ROOT_NAME then -- the invisible joint anchor keeps its size
-				local goal = leaving and { Transparency = 1 } or { Size = d.Size * 0.2, Transparency = 1 }
-				TweenService:Create(d, info, goal):Play()
+			-- the invisible joint anchor keeps its size; so does a slime body the clients splat
+			if d ~= root and d.Name ~= VISUAL_ROOT_NAME and not (splatted and d:IsDescendantOf(splatted)) then
+				TweenService:Create(d, info, { Size = d.Size * 0.2 }):Play()
 			end
 		elseif d:IsA("ParticleEmitter") or d:IsA("Light") or d:IsA("Highlight") then
 			d.Enabled = false
 		end
 	end
-	task.delay(leaving and LEAVE.Fade + 0.1 or DEATH_DESTROY, function()
+	local life = leaving and LEAVE.Time + 0.1 or DEATH_DESTROY
+	GHOST.Dying[model] = os.clock() + life + GHOST.Grace
+	task.delay(life, function()
 		if model then model:Destroy() end
 	end)
 end
@@ -1194,7 +1212,7 @@ end
 
 local scheduleRespawn -- forward
 
--- removes a record without rewards (timeout, owner left, model lost); leaving = fade out as going home (LEAVE)
+-- removes a record without rewards (timeout, owner left, model lost); leaving = float up and shrink away (LEAVE)
 local function despawn(rec, fade, leaving)
 	if not rec.Alive then return end
 	rec.Alive = false
@@ -1205,6 +1223,28 @@ local function despawn(rec, fade, leaving)
 	elseif rec.Model then
 		rec.Model:Destroy()
 	end
+end
+
+-- A23-74 (user 2026-10-07): removes every child of workspace.Monsters that is neither a living record's model nor a
+-- dying body still inside its time (GHOST.Dying); returns how many it removed
+function GHOST.Sweep()
+	local folder = getMonstersFolder()
+	local live = {}
+	for _, rec in records do
+		if rec.Model then live[rec.Model] = true end
+	end
+	local now, removed = os.clock(), 0
+	for _, child in folder:GetChildren() do
+		local untilAt = GHOST.Dying[child]
+		if not live[child] and not (untilAt and now < untilAt) then
+			if pcall(child.Destroy, child) then removed += 1 end
+		end
+	end
+	for model, untilAt in GHOST.Dying do
+		if now >= untilAt or model.Parent == nil then GHOST.Dying[model] = nil end
+	end
+	if removed > 0 then warnThrottled("ghost", ("removed %d stray monster model(s) from workspace.Monsters"):format(removed)) end
+	return removed
 end
 
 scheduleRespawn = function(kind)
@@ -1261,6 +1301,12 @@ local function killRecord(rec)
 			perFaction[f] = (perFaction[f] or 0) + 1
 		end
 	end
+	-- sound_gaps B11 (검수 2026-10-07): the UserIds this kill pays, kept on the record (sorted) for HalloweenService's
+	-- KingDefeat Fx, which runs after the contributor tables below are cleared
+	local paid = {}
+	for _, e in eligible do table.insert(paid, e.Player.UserId) end
+	table.sort(paid)
+	rec.PaidUserIds = paid
 	rec._contributors, rec._hits, rec._dmg = {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
@@ -1295,8 +1341,9 @@ local function markHurt(rec, amount, crit)
 	model:SetAttribute(HURT_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
 end
 
--- crit (optional): the hit was a critical hit (only used for the "HurtBig" pain reaction)
-function MonsterService.DamageMonster(record, amount, player, crit)
+-- crit (optional): the hit was a critical hit (only used for the "HurtBig" pain reaction). castId (optional, SKL-3): a
+-- skill cast that hits the same monster again (a field's ticks) counts as one hit of that player (A23-27 RewardMinHits)
+function MonsterService.DamageMonster(record, amount, player, crit, castId)
 	if type(record) ~= "table" or not record.Alive then return false end
 	if type(amount) ~= "number" or amount ~= amount or amount <= 0 then return false end
 	if record.Owner and record.Owner ~= player then return false end -- A5-C2
@@ -1305,8 +1352,18 @@ function MonsterService.DamageMonster(record, amount, player, crit)
 	if player then
 		record._contributors[player] = os.clock()
 		-- A23-27: own hits and damage per contributor (a def with RewardMinHits / RewardMinDamageFrac pays only those
-		-- who met both); the overkill part of the last hit does not count
-		record._hits[player] = (record._hits[player] or 0) + 1
+		-- who met both); the overkill part of the last hit does not count. SKL-3: a cast counts once however often it
+		-- hits (a field's ticks), also with other hits in between (검수 2026-10-07: the casts seen per player are a set)
+		record._castOf = record._castOf or {}
+		local seen = castId ~= nil and record._castOf[player] or nil
+		if castId == nil or not (seen and seen[castId]) then
+			record._hits[player] = (record._hits[player] or 0) + 1
+			if castId ~= nil then
+				seen = seen or {}
+				seen[castId] = true
+				record._castOf[player] = seen
+			end
+		end
 		record._dmg[player] = (record._dmg[player] or 0) + math.min(amount, math.max(0, record.HP))
 	end
 	record.HP -= amount
@@ -1416,7 +1473,7 @@ end
 -- ZONE_MOVE_INSET and within LeashRadius of its home), on walkable ground, with no wall / decor in the way at body
 -- height; when the full move is not allowed it tries the shorter Steps, else nothing. Slides over Time (ease out) like
 -- Shove, which stays the small hit slide. Returns the studs moved (0 = none).
-local DISPLACE = { Stop = 3, Time = 0.2, Steps = { 1, 0.75, 0.5, 0.25 } }
+local DISPLACE = { Stop = 3, Time = 0.2, Steps = { 1, 0.75, 0.5, 0.25 }, HopDrop = 8 } -- HopDrop: SKL-3 HopReach
 function DISPLACE.Slide(record, root, delta)
 	local start = os.clock()
 	record._shoveReadyAt = math.max(record._shoveReadyAt or 0, start + DISPLACE.Time) -- no hit shove fights the slide
@@ -1472,6 +1529,59 @@ function MonsterService.Displace(record, mode, fromPosition, studs, player)
 		if ok then
 			DISPLACE.Slide(record, root, delta)
 			return dist * part
+		end
+	end
+	return 0
+end
+
+-- SKL-3 Taunt (Roar): the monster chases `player` first for `seconds` (os.clock). Bosses, the golden goose (not a
+-- record) and personal monsters never; a living taunt by someone else is not taken over. True when taunted
+function MonsterService.Taunt(record, player, seconds)
+	if type(record) ~= "table" or not record.Alive or record.Owner ~= nil then return false end
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return false end
+	if type(seconds) ~= "number" or seconds ~= seconds or seconds <= 0 then return false end
+	local def = record.Def or Config.MonsterTypes[record.Kind]
+	if type(def) == "table" and def.Boss then return false end
+	local now = os.clock()
+	if record._tauntBy and record._tauntBy ~= player and now < (record._tauntUntil or 0) then return false end
+	record._tauntBy, record._tauntUntil = player, now + math.min(seconds, 10)
+	return true
+end
+
+-- SKL-3 Slow (fields): walk speed x mult for `seconds` (a boss gets half the slow: 0.5 -> x0.75); the strongest slow
+-- running wins, a refresh extends it
+function MonsterService.Slow(record, mult, seconds)
+	if type(record) ~= "table" or not record.Alive then return false end
+	if type(mult) ~= "number" or mult ~= mult or type(seconds) ~= "number" or seconds ~= seconds or seconds <= 0 then
+		return false
+	end
+	mult = math.clamp(mult, 0.1, 1)
+	local def = record.Def or Config.MonsterTypes[record.Kind]
+	if type(def) == "table" and def.Boss then mult = 1 - (1 - mult) / 2 end
+	local now = os.clock()
+	local running = record._slowUntil and now < record._slowUntil
+	record._slowMult = running and math.min(record._slowMult or 1, mult) or mult
+	record._slowUntil = math.max(running and record._slowUntil or 0, now + math.min(seconds, 10))
+	return true
+end
+
+-- SKL-3 Hop (SkillService): how far a player may hop from `from` along the flat unit `dir`: the longest of `studs` x
+-- DISPLACE.Steps that stays in the zone `from` stands in, lands on walkable ground (no water, ridge or decor; at most
+-- HopDrop studs up or down from the ground under `from`) with no wall in between. 0 = nowhere
+function MonsterService.HopReach(from, dir, studs)
+	if typeof(from) ~= "Vector3" or typeof(dir) ~= "Vector3" then return 0 end
+	if type(studs) ~= "number" or studs ~= studs or studs <= 0 or studs > 40 then return 0 end
+	local here = Config.ZoneAt(from).Id
+	local base = groundPoint(from.X, from.Z)
+	for _, part in DISPLACE.Steps do
+		local delta = dir * (studs * part)
+		local dest = from + delta
+		if Config.ZoneAt(dest).Id == here then
+			local g, noHit = groundPoint(dest.X, dest.Z)
+			local level = g == nil or base == nil or math.abs(g.Y - base.Y) <= DISPLACE.HopDrop
+			if (g ~= nil or noHit) and level and not workspace:Raycast(from, delta + dir * 0.5, getShoveParams()) then
+				return studs * part
+			end
 		end
 	end
 	return 0
@@ -1704,7 +1814,9 @@ function NATURAL.Pace(rec, pace, goal)
 	if typeof(goal) == "Vector3" then
 		arrive = math.clamp(Util.FlatDistance(root.Position, goal) / NATURAL.ArriveSlow, 0.5, 1)
 	end
-	rec.Humanoid.WalkSpeed = (tonumber(rec.Def.Speed) or 12) * pace * ramp * arrive
+	-- SKL-3 Slow (MonsterService.Slow): x _slowMult until _slowUntil
+	local slow = (rec._slowUntil and os.clock() < rec._slowUntil) and (rec._slowMult or 1) or 1
+	rec.Humanoid.WalkSpeed = (tonumber(rec.Def.Speed) or 12) * pace * ramp * arrive * slow
 end
 
 -- NATURAL: true while a monster stops with a '!' for a target it just spotted out of reach (AlertAt), facing it
@@ -2651,9 +2763,14 @@ local function aiStep(rec, plist, now)
 	end
 
 	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a); the
-	-- current one is kept a while and against a player only a little closer (SEP.Pick, A23-74 review 2026-10-08)
+	-- current one is kept a while and against a player only a little closer (SEP.Pick, A23-74 review 2026-10-08);
+	-- SKL-3 Taunt: until _tauntUntil the taunter first (while still a valid target)
 	local best, bestD = nil, nil
-	if now >= rec._noAggroUntil then
+	if rec._tauntUntil and now < rec._tauntUntil then
+		local tinfo = findInfo(plist, rec._tauntBy)
+		if tinfo and targetable(rec, tinfo) then best, bestD = tinfo, Util.FlatDistance(pos, tinfo.Pos) end
+	end
+	if best == nil and now >= rec._noAggroUntil then
 		best, bestD = SEP.Pick(rec, plist, pos, now)
 	end
 
@@ -2778,6 +2895,9 @@ function MonsterService.Init(registry)
 end
 
 function MonsterService.Start()
+	-- A23-74: a monster model left in the place file (saved from a test) never stands among the living ones
+	local okSweep, errSweep = pcall(GHOST.Sweep)
+	if not okSweep then warnThrottled("ghost", errSweep) end
 	for _, id in Config.MonsterTypeOrder do
 		print(("[MonsterService] custom model for %s: %s"):format(id, getCustomTemplate(id) and "yes" or "no"))
 	end
@@ -2822,6 +2942,8 @@ function MonsterService.Start()
 			task.wait(REEVAL_INTERVAL)
 			local ok, err = pcall(reevaluate)
 			if not ok then warnThrottled("density", err) end
+			local okG, errG = pcall(GHOST.Sweep) -- A23-74: no stray copy stays in workspace.Monsters
+			if not okG then warnThrottled("ghost", errG) end
 		end
 	end)
 

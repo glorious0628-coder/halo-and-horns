@@ -476,7 +476,7 @@ local function onEnhanced(player, _tier, before, after, success, id)
 	tags[id] = have > 1 and have - 1 or nil
 	local gain = success == true and math.max(0, math.floor((tonumber(after) or 0) - (tonumber(before) or 0))) or 0
 	if gain > 0 and RankingService.Credit(player, "Artisan", gain, "Enhance") then
-		pcall(Net.Notify, player, string.format(TXT.ArtisanGain, gain), "reward")
+		pcall(Net.Notify, player, string.format(TXT.ArtisanGain, gain), "reward", nil, "RankUp") -- sound_gaps C1
 	end
 end
 
@@ -864,7 +864,7 @@ local function applySettle(p, doc)
 		if f ~= factionOf(p) then -- switched since: the title is given, the +10% waits for that faction
 			text = string.format(TXT.RewardStartOff, TXT.BoardNames[best.Board], best.Rank, Config.Factions[f].Name)
 		end
-		pcall(Net.Notify, p, text, "reward", 8)
+		pcall(Net.Notify, p, text, "reward", 8, "RankUp") -- the weekly top-3 title (sound_gaps C1)
 	end
 	RankingService.RefreshEffects(p)
 end

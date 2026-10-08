@@ -55,8 +55,9 @@ JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained,
                   '\t-- A23-34: found while still bare-handed (e.g. the slime jackpot before the first weapon) -> equipped at once, and\n'
                   '\t-- the line says so (never "equip it in the menu" for a weapon already in hand)\n'
                   '\tlocal before, after = equipIfBare(player, data, tier)\n\tif isJackpot then\n'
+                  '\t\t-- sound_gaps C1: equipped from bare hands = the HUD\'s power-up moment sounds it (None), else Equip\n'
                   '\t\tnotify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))\n'
-                  '\t\t\tor string.format(TXT.JackpotSelf, name), "reward")\n'
+                  '\t\t\tor string.format(TXT.JackpotSelf, name), "reward", before and "None" or "Equip")\n'
                   '\t\tannounce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)\n')
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
@@ -310,13 +311,14 @@ MUTATIONS = [
      "Enh10 = { Kind = \"Enhance\", Name = \"Enhance Scroll 10%\", Chance = 0.1, Plus = 5,",
      "Enh10 = { Kind = \"Enhance\", Name = \"Enhance Scroll 10%\", Chance = 0.1, Plus = 3,"),
     ("PowerOf ignores enhancement", "CONFIG_SOURCE",
-     "Config.WeaponDamage(weaponTier, level, enhance) * Config.BaseHealth(level)",
-     "Config.WeaponDamage(weaponTier, level) * Config.BaseHealth(level)"),
+     "Config.WeaponDamage(weaponTier, level, enhance) * am * Config.BaseHealth(level)",
+     "Config.WeaponDamage(weaponTier, level) * am * Config.BaseHealth(level)"),
     ("JusticeService power ignores WeaponEnhance", "JUSTICE_SOURCE",
      "local enhance = tonumber(player:GetAttribute(\"WeaponEnhance\")) or 0", "local enhance = 0"),
-    ("PvP combatPower fallback ignores WeaponEnhance", "PVP_SOURCE",
-     "return Config.CombatPower(level, tier, tonumber(p:GetAttribute(\"WeaponEnhance\")) or 0)",
-     "return Config.CombatPower(level, tier, 0)"),
+    # A23-69: PvPService's fallback (and every power number) is Config.CombatPowerOf
+    ("the power formula ignores WeaponEnhance", "CONFIG_SOURCE",
+     "\tif enhance == nil then enhance = tonumber(player:GetAttribute(\"WeaponEnhance\")) or 0 end\n",
+     "\tif enhance == nil then enhance = 0 end\n"),
     ("EnhanceMult not clamped", "CONFIG_SOURCE",
      "math.clamp(math.floor(enhance), 0, loot.MaxEnhance)", "math.floor(enhance)"),
     ("PvP power ratio not clamped", "COMBAT_SOURCE",

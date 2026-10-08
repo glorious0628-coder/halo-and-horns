@@ -1,12 +1,55 @@
 {
   "status": "passed",
-  "checks": 201,
-  "namedChecks": 145,
+  "checks": 213,
+  "namedChecks": 157,
   "failing": [],
   "mutations": {
-    "total": 51,
-    "caught": 51,
+    "total": 56,
+    "caught": 56,
     "results": [
+      {
+        "mutation": "every drop rings (materials too)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: materials and potions alone are silent"
+        ]
+      },
+      {
+        "mutation": "the weapon drop at full pitch",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: a weapon drop = one Loot at 0.92x"
+        ]
+      },
+      {
+        "mutation": "the thief hears the victim's sound",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: I took it = GoldPickup"
+        ]
+      },
+      {
+        "mutation": "everyone hears a plunder",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "newFailingChecks": []
+      },
+      {
+        "mutation": "no prize sound for contributors",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: a paid contributor also hears KillPop + coin 0.25 s later"
+        ]
+      },
       {
         "mutation": "auto sounds at full volume",
         "applied": true,
@@ -516,9 +559,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "1fa023045e861c77d97134e4d4d30d74efcc2b4ee45a8c5b5aebf224824abce6",
-    "tools/fixtures/audio_offline.luau": "1f97b8329cee25026a6d52af06bc9061cab88b82126be0caf7e030ca288c5224"
+    "src/ReplicatedStorage/Shared/Config.luau": "40d127a8c2bac2b060c33ed9ae19c90553574928553115cd3a1c80cacd61ebe4",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "440bcffb99611c11dc1e3cf6575cdf3ba3aac1c6c13cea6dbf23230f191d1424",
+    "tools/fixtures/audio_offline.luau": "241734f26179614204e5f93a6211152ac8e3d8455677c9ea2d84edf7e135ae7d"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

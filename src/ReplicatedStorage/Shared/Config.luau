@@ -14,7 +14,9 @@ Config.Game = {
 -- Market = the trading market (RELEASE_PLAN: after the full launch). 검수 2026-10-07: no "coming soon" signs for things
 -- the beta does not have (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
 -- the world map calls the Crossroads anvil spot "Forge" (the weapon shop) instead of "Artisan Guild".
-Config.Features = { NeutralFaction = false, Market = false }
+-- StatPoints (A23-69, user 2026-10-07 "베타에 넣는다, 끌 수 있게"): the stat points (Config.Stats). Off = every number is
+-- the same as without stats (Config.StatMults is 1, 1); the saved picks stay and count again once it is on.
+Config.Features = { NeutralFaction = false, Market = false, StatPoints = false }
 
 function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
@@ -102,7 +104,9 @@ Config.Nickname = {
 Config.Data = {
 	StoreName = "HaloHorns_Player_v1", -- unchanged on purpose: v1 saves are migrated in place by DataService
 	KeyPrefix = "P_",
-	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. An older server refuses a newer record (CR-L3).
+	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. A23-69 (검수 2026-10-07): Stats { Auto, Order } is an
+	-- additive field like Settings / Rank / SkillsA71 (a v3 server keeps it as it is), so the version stays 3; a bump
+	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
 	Version = 3,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
@@ -196,6 +200,10 @@ Config.Data = {
 		SkillSlots = 0,
 		-- A23-71: this save's SkillSlots follow the Lv5 / 15 / 25 rule (older saves are fixed once at load: DataService)
 		SkillsA71 = true,
+		-- A23-69 stat points (an additive field, Version stays 3): Auto = the class pattern places every point (default ON); Order = the letters
+		-- picked by hand, in order ("HAHA...", at most Config.Stats.MaxPoints). No balance is kept: the points come from
+		-- the level (Config.StatPoints), so a level reset shrinks the build and leveling up again rebuilds it
+		Stats = { Auto = true, Order = "" },
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -903,10 +911,99 @@ Config.Justice = {
 	ScaleTick = 0.1,
 }
 
+----------------------------------------------------------------- A23-69 stat points (docs/design/stat_points_2026-10-07.md)
+-- Every level from Lv2 gives one point (Config.StatPoints(L) = L - 1, at most MaxPoints; a rebirth gives none, CR-L5).
+-- Attack (A) = every hit x (1 + f), Health (H) = max HP x (1 + f), f(r) = 1% a point up to 20, 0.5% for 21-40, 0.25%
+-- from 41 (Curve), so a one-stat build is weaker than an even one. Auto (default ON) places the class pattern
+-- (AutoPattern, repeated); by hand the save keeps Order, the letters picked in order (the free points are counted, never
+-- saved). Power (Config.PowerOf / CombatPowerOf), and later the hits and HP, read the points through Config.StatMults,
+-- which is (1, 1) while Config.Features.StatPoints is off. No stat, point or reset is ever sold (A23-69).
+Config.Stats = {
+	MaxPoints = 99,
+	Letters = { A = true, H = true }, -- the beta stats: Attack, Health (Crit "C" comes with the full launch)
+	-- f(points), in order: { up to this many points, + this much a point }
+	Curve = { { 20, 0.01 }, { 40, 0.005 }, { math.huge, 0.0025 } },
+	AutoPattern = { Warrior = "HA", Mage = "HA", Archer = "AH" }, -- repeated: Lv100 = H50 / A49 (Archer A50 / H49)
+}
+
+-- f(points): the bonus of `points` in one stat (0.1 at 10, 0.2 at 20, 0.25 at 30, 0.3 at 40, 0.4475 at 99; more points
+-- than MaxPoints count as MaxPoints, NaN / text as 0)
+function Config.StatBonus(points)
+	local r = math.clamp(math.floor(tonumber(points) or 0), 0, Config.Stats.MaxPoints)
+	if r ~= r then return 0 end
+	local bonus, from = 0, 0
+	for _, step in Config.Stats.Curve do
+		if r <= from then break end
+		bonus += (math.min(r, step[1]) - from) * step[2]
+		from = step[1]
+	end
+	return bonus
+end
+
+-- the stat points a level gives: Lv1 0, then one a level, at most Config.Stats.MaxPoints
+function Config.StatPoints(level)
+	local lv = math.floor(tonumber(level) or 1)
+	if lv ~= lv then lv = 1 end
+	return math.clamp(lv - 1, 0, Config.Stats.MaxPoints)
+end
+
+-- a save's points (A, H, free) at `level`: Auto = the class pattern's first StatPoints(level) letters; by hand = the
+-- first min(#Order, StatPoints(level)) letters of Order, the rest free. stats = data.Stats ({ Auto, Order })
+function Config.StatAlloc(stats, level, classId)
+	local points = Config.StatPoints(level)
+	local letters
+	if type(stats) ~= "table" or stats.Auto ~= false then
+		local pattern = Config.Stats.AutoPattern[classId] or Config.Stats.AutoPattern.Warrior
+		letters = string.sub(string.rep(pattern, math.ceil(points / #pattern)), 1, points)
+	else
+		letters = string.sub(type(stats.Order) == "string" and stats.Order or "", 1, points)
+	end
+	local a, h = 0, 0
+	for i = 1, #letters do
+		local ch = string.sub(letters, i, i)
+		if ch == "A" then a += 1 elseif ch == "H" then h += 1 end
+	end
+	return a, h, points - (a + h)
+end
+
+-- (atkMult, hpMult) of a split: 1 + f each; (1, 1) while Config.Features.StatPoints is off
+function Config.StatMults(a, h)
+	if not Config.FeatureOn("StatPoints") then return 1, 1 end
+	return 1 + Config.StatBonus(a), 1 + Config.StatBonus(h)
+end
+
+-- a player's split from the attributes StatService keeps (StatAtk / StatHp; missing = 0): the alloc of Config.PowerOf
+function Config.StatAllocOf(player)
+	local a, h = tonumber(player:GetAttribute("StatAtk")) or 0, tonumber(player:GetAttribute("StatHp")) or 0
+	if a ~= a then a = 0 end
+	if h ~= h then h = 0 end
+	return { A = math.clamp(math.floor(a), 0, Config.Stats.MaxPoints), H = math.clamp(math.floor(h), 0, Config.Stats.MaxPoints) }
+end
+
+-- a save's Stats repaired (DataService.fillDefaults): Auto a boolean (else true), Order = its uppercase letters A-Z
+-- (검수 2026-10-07: kept for the stats a later stage adds; StatAlloc counts only A / H), at most MaxPoints of them (a
+-- broken or huge Order is cut, never trusted)
+function Config.SanitizeStats(t)
+	local src = type(t) == "table" and t or {}
+	local auto = true
+	if type(src.Auto) == "boolean" then auto = src.Auto end
+	local order = type(src.Order) == "string" and src.Order or ""
+	local kept = {}
+	for i = 1, math.min(#order, 4096) do
+		if #kept >= Config.Stats.MaxPoints then break end
+		local ch = string.sub(order, i, i)
+		if string.match(ch, "^%u$") then table.insert(kept, ch) end
+	end
+	return { Auto = auto, Order = table.concat(kept) }
+end
+
 -- "base power" of a player (no Size Justice, no kaiju); rebirthMult = 1 + RebirthBonus.
 -- enhance = scroll +N of the equipped weapon (the WeaponEnhance attribute); nil counts as +0 (Config.EnhanceMult).
-function Config.PowerOf(level, weaponTier, rebirthMult, enhance)
-	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * Config.BaseHealth(level)) * (rebirthMult or 1)
+-- alloc = { A, H } stat points (A23-69, nil = none): sqrt(attack x atkMult x health x hpMult) like the plain formula
+function Config.PowerOf(level, weaponTier, rebirthMult, enhance, alloc)
+	local am, hm = 1, 1
+	if type(alloc) == "table" then am, hm = Config.StatMults(alloc.A, alloc.H) end
+	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * am * Config.BaseHealth(level) * hm) * (rebirthMult or 1)
 end
 
 -- BB4 "전투력": the one power number players see = level + equipped weapon incl. scroll +N. It leaves out class,
@@ -928,22 +1025,46 @@ Config.Power = {
 -- A23-34 (user 2026-10-06 "처음에는 전투력이 0"): bare hands count from 0 — the Lv1 punch is taken off, so Lv1 with no
 -- weapon (and no pet) shows 0 and every level still adds a little. With a weapon the number is the BB4 value as before,
 -- so armed players keep their numbers and every armed comparison (bully rule, boldness, Tab list) its balance.
-function Config.CombatPower(level, tier, enhance)
-	local raw = Config.PowerOf(level, tier, 1, enhance)
+-- A23-69: alloc = { A, H } stat points (nil = none; Config.StatAllocOf reads a player's)
+function Config.CombatPower(level, tier, enhance, alloc)
+	local raw = Config.PowerOf(level, tier, 1, enhance, alloc)
 	if not (type(tier) == "number" and Config.Weapons[tier]) then raw -= Config.PowerOf(1, 0, 1, 0) end
 	return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))
 end
 
--- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N); cached
+-- BB4 / A23-69: THE power number of a player, from the attributes (Level, WeaponTier, WeaponEnhance and the stat points
+-- StatAtk / StatHp). JusticeService (the CombatPower attribute, the bully rule, boldness), PvPService, the Tab list and
+-- the HUD all use this one formula. tierOverride / enhOverride: the same player with another weapon (LootService's
+-- "Power X -> Y"). Server and client alike.
+function Config.CombatPowerOf(player, tierOverride, enhOverride)
+	local level = tonumber(player:GetAttribute("Level")) or 1
+	if level ~= level then level = 1 end
+	local tier = tierOverride
+	if tier == nil then
+		tier = tonumber(player:GetAttribute("WeaponTier")) or 0
+		if tier ~= tier then tier = 0 end
+		tier = math.clamp(math.floor(tier), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
+	end
+	local enhance = enhOverride
+	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
+	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player))
+end
+
+-- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N; A23-69 with the stat
+-- points on: the even split of every point, the strongest build); cached, one value with and one without stats
 function Config.MaxCombatPower()
-	if not Config.Power.MaxCache then
+	local stats = Config.FeatureOn("StatPoints")
+	local key = stats and "MaxCacheStats" or "MaxCache"
+	if not Config.Power[key] then
+		local points = Config.StatPoints(Config.Levels.MaxLevel)
+		local even = stats and { A = math.floor(points / 2), H = points - math.floor(points / 2) } or nil
 		local best = 0
 		for t = 1, Config.MaxWeaponTier do
-			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance))
+			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even))
 		end
-		Config.Power.MaxCache = best
+		Config.Power[key] = best
 	end
-	return Config.Power.MaxCache
+	return Config.Power[key]
 end
 
 -- S for a faction: weaker side = clamp(sqrt(enemy / ours), 1.0, 1.6); the stronger side naturally clamps to 1.0
@@ -1564,10 +1685,12 @@ function Config.QuestKind(kind)
 	return kind
 end
 
--- quality_ideas ③ monster barks (lines_pack §2-2 as written): BarkService picks a line at MonsterService.Moment
--- (Spot / Hit) and its Idle roll and writes it on the monster model (attributes Bark, BarkAt); game dev 1's
--- MonsterLabels shows it in a BillboardGui bubble.
--- English only (A23-48), <= 8 words a line. Cadence: one bark per monster per PerMonster s, per zone per PerZone s.
+-- quality_ideas ③ monster barks: BarkService picks a line at MonsterService.Moment (Spot / Hit) and its Idle roll and
+-- writes it on the monster model (attributes Bark, BarkAt); game dev 1's MonsterLabels shows it in a BillboardGui bubble.
+-- A23-74 (user 2026-10-07 "몬스터들이 말하는 건 의성어 의태어나 단어 수준이면 좋겠어"): every line is a sound word or one
+-- short word in the monster's own voice - at most 2 words and 12 letters (marks included), English (A23-48), no two
+-- kinds share a line. They replace lines_pack §2-2's sentences; kinds and moments stay, so BarkService is unchanged.
+-- Cadence: one bark per monster per PerMonster s, per zone per PerZone s.
 -- Missing kind -> Config.QuestKind(kind) lines. Golden monsters (Config.Monsters.GoldenChance, incl. the tutorial
 -- golden slime) prefer Lines.Golden for EVERY trigger; a trigger Golden lacks falls back to the kind's lines.
 -- Lines.Goose is for GooseService (the optional goose barks, lines_pack §2-1: not wired yet; BarkService skips it).
@@ -1577,96 +1700,107 @@ Config.Barks = {
 	PerZone = 6, -- s: at most one bark per zone (all monsters in it share this)
 	Show = 3, -- s the bubble stays up
 	MaxDistance = 60, -- studs: bubble visible range
+	-- A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지"): one bubble art per monster kind, Config.UIArt.Parts
+	-- "BarkBubble" .. kind (12 keys). MonsterLabels tries the kind's own key, then its family's key (BubbleFamily = kind ->
+	-- family; a kind not listed uses its Config.QuestKind's family; BubbleArt = family -> the family's base monster key),
+	-- each only while its Id is uploaded (not "") and it is round (no Slice), then the round code bubble - never the
+	-- shared 9-slice BarkBubble (user "말풍선 가로로 길쭉한 거 말고": drawn small its body stays ~2.4 : 1).
+	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
+		Goblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonKnight = "Skeleton",
+		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost" },
+	BubbleArt = { Slime = "BarkBubbleSlime", Pumpkin = "BarkBubblePumpkinSlime", Goblin = "BarkBubbleGoblin",
+		Skeleton = "BarkBubbleSkeleton", Ghost = "BarkBubbleGhostMinion" },
 	LowAt = 0.3, -- HP fraction for Low (once per life)
 	IdleEvery = 10, -- s between Idle rolls (no target, a player within IdleNear)
 	IdleNear = 40,
 	Chance = { Spot = 0.5, Hit = 0.2, Low = 1, Idle = 0.15 },
 	Priority = { "Low", "Spot", "Hit", "Idle" }, -- same moment: only the first one speaks
+	-- A23-74: sound words (Spot = it sees you, Hit = it is hit, Low = HP below LowAt, Idle = just hanging around)
 	Lines = {
-		Slime = {
-			Spot = { "Blub?", "Blub! New friend? Blub!" },
-			Hit = { "Bloop! Rude.", "Squish! Hey, I'm jelly!" },
-			Low = { "Wobbly… so wobbly… blub." },
-			Idle = { "Blub blub. Sparkle snack time." },
+		Slime = { -- a happy jelly
+			Spot = { "Blub?", "Boing!" },
+			Hit = { "Squish!", "Plop!" },
+			Low = { "Wobble…", "Blub… blub…" },
+			Idle = { "Blub blub~", "Jiggle~" },
 		},
-		PumpkinSlime = {
-			Spot = { "Blub-kin? Blub-kin!" },
-			Hit = { "Squish! My stem!" },
-			Low = { "Too squishy! Need a patch nap." },
-			Idle = { "Orange is my best color. Blub.", "Candy smells nice today. Blub-kin." },
+		PumpkinSlime = { -- a giggly pumpkin jelly
+			Spot = { "Hehe!", "Blub-kin?" },
+			Hit = { "Thump!", "Squash!" },
+			Low = { "Squelch…", "Too squishy!" },
+			Idle = { "Thump thump~", "Hehe~" },
 		},
-		BigSlime = { -- King Slime
-			Spot = { "Who dares wobble near the King?", "A visitor! Bow! Or wobble. Either works." },
-			Hit = { "Hey! Royal jelly here!" },
-			Low = { "The King needs… a royal nap." },
-			Idle = { "King of the puddle. Big puddle!", "Royal rule one: more snacks. Blub." },
+		BigSlime = { -- King Slime: big and royal
+			Spot = { "BLOOP!", "Bow! Blub!" },
+			Hit = { "SPLOOSH!", "Royal BOING!" },
+			Low = { "Royal nap…", "Bloop… zzz" },
+			Idle = { "Ahem. BLOOP.", "Big blub~" },
 		},
-		Goblin = {
-			Spot = { "Dibs! Need more glow!", "Ooh, sparkly! Grab Club, grab!" },
-			Hit = { "Hey! I grabbed first!" },
-			Low = { "Wait… why do we grab again?" },
-			Idle = { "Meeting #47: grab more. Same as #46.", "Grab more glow. Then… grab more." },
+		Goblin = { -- Grab Club: wants everything shiny
+			Spot = { "Heh!", "Mine!", "Ooh, shiny!" },
+			Hit = { "Hey! Mine!", "Oof!" },
+			Low = { "Yikes!", "Eep! Run!" },
+			Idle = { "Heh heh.", "Grab grab~" },
 		},
-		BatGoblin = {
-			Spot = { "Flap flap! Candy? Dibs!", "Bat Club? No, Grab Club! Flap!" },
-			Hit = { "Eek! Watch the wings!" },
-			Low = { "Flap away! Grab later!" },
-			Idle = { "Grab Club, night shift. Flap flap." },
+		BatGoblin = { -- a squeaky night goblin
+			Spot = { "Skree!", "Flap flap!" },
+			Hit = { "Eek!", "Skreek!" }, -- A23-74: fits the bat bubble (검수 2026-10-07)
+			Low = { "Flap away!" },
+			Idle = { "Flap flap~", "Skree~" },
 		},
-		GoblinBrute = {
-			Spot = { "New stuff for the sack!", "Not stealing! Surprise collecting!" },
-			Hit = { "Hey! Sack's closed today!", "Ow! Mind the sack!" },
-			Low = { "Sack too heavy… can't run!" },
-			Idle = { "Big sack. Bigger sack. BIGGEST sack!" },
+		GoblinBrute = { -- a grumpy goblin with a big sack
+			Spot = { "Grrr!", "Sack time!" },
+			Hit = { "Hmph!", "Ugh! Sack!" },
+			Low = { "Heavy sack…" },
+			Idle = { "Big sack~", "Grumble~" },
 		},
-		Skeleton = {
-			Spot = { "HALT! …Please?", "Guarding! Guarding what? Not sure. Halt!" },
-			Hit = { "Clank! I'm on duty here!" },
-			Low = { "Clatter clatter! I'm fine. Mostly." },
-			Idle = { "Is it Wednesday yet? …No.", "Tuesday again. Love Tuesdays. I think." },
+		Skeleton = { -- a bony guard who lost track of the days
+			Spot = { "Rattle!", "Clack clack!" },
+			Hit = { "Clank!", "Clack!" },
+			Low = { "Clatter…" },
+			Idle = { "Rattle~", "Tuesday?" },
 		},
-		SkeletonKnight = {
-			Spot = { "Halt! Knight on duty. Since forever." },
-			Hit = { "My armor! I polished it Tuesday!" },
-			Low = { "Is my shift over yet?" },
-			Idle = { "Same post. Same Tuesday. Same me.", "Guarding the Crown. Which Crown? Oh well." },
+		SkeletonKnight = { -- an old knight, always on duty
+			Spot = { "Halt!", "Who goes?" },
+			Hit = { "CLANG!", "My armor!" },
+			Low = { "Shift over?" },
+			Idle = { "On duty.", "Clank… yawn." },
 		},
-		GhostMinion = {
-			Spot = { "Boo! Boo! Boo! …Together now!", "Team Boo, go!" },
-			Hit = { "Hey! Wait for the team!" },
-			Low = { "Float away! Float away!" },
-			Idle = { "Count off! One, two, boo!" },
+		GhostMinion = { -- Team Boo
+			Spot = { "Boo!", "Team Boo!" },
+			Hit = { "Eep!", "Boo-hoo!" },
+			Low = { "Float away!" },
+			Idle = { "Boo-boo-boo!", "Hoo-hoo~" },
 		},
-		LittleGhost = {
-			Spot = { "Boo! …Did that work?" },
-			Hit = { "Eep! That tickles!" },
-			Low = { "I'm see-through enough already!" },
-			Idle = { "Floaty floaty. Candy smells nice.", "Boo practice. Day one hundred." },
+		LittleGhost = { -- a shy little ghost
+			Spot = { "Wooo~", "Boo…?" },
+			Hit = { "Tickles!", "Oopsie!" },
+			Low = { "Fading…" },
+			Idle = { "Floaty~", "Wooo-ooo~" },
 		},
-		GhostKing = {
-			Spot = { "Visitors! Finally! Welcome to my hollow!", "BOO! …The Pumpkin King never does that." },
-			Hit = { "Ow! I'm see-through, not tough!" },
-			Low = { "Fading… dramatically… are you watching?" },
-			Idle = { "My hollow beats his patch. Obviously." },
+		GhostKing = { -- a dramatic ghost king
+			Spot = { "OOOH!", "Visitors!" },
+			Hit = { "Ow-ooh!", "Hoo-ouch!" },
+			Low = { "Ooh… fading…" },
+			Idle = { "OOOH~", "Ooh-hoo-hoo~" },
 		},
-		PumpkinKing = {
-			Spot = { "Welcome to my patch! Pick a pumpkin!" },
-			Hit = { "Ha! You tickle my stem!" },
-			Low = { "Fine, fine! Candy for everyone!" },
-			Idle = { "Ghost King thinks he's the best. Cute.", "Same patch, every year. Best patch!" },
+		PumpkinKing = { -- a jolly pumpkin king
+			Spot = { "HA-HA!", "Welcome!" },
+			Hit = { "HA! Tickles!", "Ho-ho!" },
+			Low = { "Candy time!" },
+			Idle = { "HA-HA-HA!", "Best patch!" },
 		},
 		Golden = { -- any golden monster: used first for every trigger
-			Spot = { "So much sparkle! Not sharing!" },
-			Hit = { "Hey! You're scratching my shine!" },
-			Low = { "Okay, okay! Share the sparkle!" },
-			Idle = { "Ate all the dust. Tummy ache." },
+			Spot = { "Bling!", "Shiny me!" },
+			Hit = { "My shine!" },
+			Low = { "Okay, share!" },
+			Idle = { "Burp. Shiny." },
 		},
 		Goose = { -- GooseService: Spot = appears, Hit = accepted tug (RegisterHit), Idle = hovering,
 			-- Low = co-op gauge >= 0.8, or tug-of-war pivot >= 0.8 of the way to either end
-			Spot = { "HONK! I'm not a piggy bank!" },
-			Hit = { "Honk! Gentle hands, please!", "Tug, tug, HONK!" },
-			Low = { "Okay, okay! You win! Honk!" },
-			Idle = { "No golden eggs today. Honk.", "Both sides want me? Popular goose!" },
+			Spot = { "HONK!" },
+			Hit = { "Honk?!", "Tug-HONK!" },
+			Low = { "Honk… okay!" },
+			Idle = { "Honk honk~", "Waddle~" },
 		},
 	},
 }
@@ -1881,8 +2015,12 @@ end
 -- Step 1: HUD guide beam to the GuideZone pad/entrance; entering GuideZone -> step 2. Step 2: pinned quest
 -- (first quest-list entry, Id = QuestId, Pinned = true, Slot = nil; sent by the "Quests" remote since CR-L50);
 -- claim -> step 99.
+-- A23-74 (user 2026-10-07 "맨 손이니까 무기를 제일 먼저 줘야지"): Forge = 3 sits between the acceptance and the hunt for a
+-- player without the first weapon: [Accept] -> step 3 (the trip to the Crossroads Forge) -> the anvil prompt hands over
+-- the class basic weapon (QuestService.ForgeGift) -> step 1 (the trip to the meadow) -> step 2 -> claim -> step 99.
+-- A save that owns the first weapon already (from before A23-34) goes from [Accept] straight to step 1.
 Config.Tutorial = {
-	Steps = { Kill = 0, Guide = 1, Quest = 2, Done = 99 },
+	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },
 	Monster = "Slime",
 	MonsterHP = 10,
 	Golden = true,
@@ -1895,7 +2033,8 @@ Config.Tutorial = {
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
-		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d" },
+		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
+		Skill = "Skill at Lv %d" },
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
@@ -1908,6 +2047,13 @@ Config.Tutorial = {
 	AcceptTravelSeconds = 3,
 	RespawnInMeadow = true,
 	FoldOthers = true,
+	-- A23-74: the Forge step's trips (the same AcceptTravelSeconds countdown and Fx "Travel" / "TravelDone" contract).
+	-- Landing "Anvil" = Back studs in front of the Crossroads anvil (toward the Crossroads spawn), Lift studs above the
+	-- anvil's bottom, facing it, so its prompt (12 studs) is up at once; "Spawn" = the Crossroads spawn only (game dev 1
+	-- can switch if the landing looks wrong in the live map). Near = a player this close to the anvil is not moved.
+	-- TravelDelay = seconds after the gift before the meadow trip starts (the "Stronger!" moment plays first);
+	-- nil / negative = no automatic meadow trip (the step 1 row and beam still lead there)
+	Forge = { Landing = "Anvil", Back = 8, Lift = 4, Near = 24, TravelDelay = 3 },
 	WelcomeRate = 0.5,
 	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
 	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
@@ -1915,7 +2061,7 @@ Config.Tutorial = {
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- 3rd idea round #2: page 1 = the mission card (검수 2026-10-07), then the catchphrase
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
 				"The Crown of Balance broke. Its shards drew slimes onto the Squishy Meadow road.",
@@ -1924,7 +2070,7 @@ Config.Tutorial = {
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
 				"Slimes chasing Crown Shards took the Squishy Meadow road. No food gets through!",
@@ -1933,7 +2079,7 @@ Config.Tutorial = {
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!",
+				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
 				"Slimes drawn to the Crown Shards have blocked the supply road in the Squishy Meadow.",
@@ -1948,14 +2094,21 @@ Config.Tutorial = {
 		Travel = "Free the supply road · Menu > Travel > Squishy Meadow",
 		QuestStart = "First mission: %s! (Reward: %s gold)",
 		QuestReady = "Supply road mission done! Press [Claim].",
-		-- A23-34: the first weapon waits at the Crossroads blacksmith (M1_1 gift)
-		Claimed = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.",
-		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
-		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! Get your first weapon at the Crossroads Forge.",
+		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
+		-- "You got your first weapon" line with the power change)
+		Forge = "Get your first weapon · Crossroads Forge",
+		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road.",
+		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
+		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
+		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
+		ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
+		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		-- the row after the claim while still bare-handed (no story row yet; A23-74 gives the weapon before that)
 		VisitBlacksmith = "Get your first weapon · Crossroads Forge",
 		VisitBlacksmithEn = "Get your first weapon · Crossroads Forge",
-		-- the same lines for a save that already owns tier 1 (from before A23-34): no first-weapon promise
+		-- the claim lines for a save that owns a better weapon than the first one already (no "new weapon" promise); the
+		-- VisitBlacksmithArmed row is for a save that owns the first weapon (no first-weapon promise)
 		ClaimedArmed = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
 		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
 		AutoClaimedArmed = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
@@ -1968,6 +2121,7 @@ Config.Tutorial = {
 		NextSkillIron = "Next goal · Lv%d: first skill + Iron weapon (now Lv%d)",
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
+		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
 		GuideDone = "That's all from me! Now hunt and get stronger.",
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
@@ -2023,7 +2177,8 @@ Config.StoryQuests = {
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
 	Subs = { "S0", "Lunch1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
-		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8" },
+		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
+		"SK1", "SK2" }, -- SKL-3: the practice subs of a new skill
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -2100,11 +2255,39 @@ Config.StoryQuests = {
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
 		},
+		-- SKL-3 (skill_kit §2): practice a new skill right after learning it. Requires.Skill = that skill is learned (its
+		-- switch on and the slot open: Z at Skills.Unlock.Z, X at Unlock.X). SkillHit Slot = only that skill's casts count
+		SK1 = {
+			Kind = "Sub", Title = "A New Move", ShortName = "New move", Speaker = "Shard", Requires = { Skill = "Z" },
+			Start = "Shard: A new move! Try it on a group.",
+			Steps = { { Text = "Hit 2 monsters at once with your new skill %d/%d", Obj = { Type = "SkillHit", Slot = "Z", Min = 2, Count = 1 } } },
+			Reward = { Gold = 1 },
+		},
+		SK2 = {
+			Kind = "Sub", Title = "The Shard's Gift", ShortName = "Shard's gift", Speaker = "Shard", Requires = { Skill = "X" },
+			Start = "Shard: You grew strong. Come to the Crossroads fountain.",
+			Steps = {
+				{ Text = "Go to the Crossroads fountain (tap for directions)", Guide = "Fountain",
+					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
+				{ Text = "How will you use your power?", Panel = true,
+					Lines = { All = { "You grew strong. Your side's power woke up in you.\nHow will you use it?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Guard my friends", Points = 1, Pick = "Guard" },
+						Evil = { Label = "Take what I want", Points = 1, Pick = "Take" },
+						Neutral = { A = "Build things", B = "Fix things" } } },
+				{ Text = "Hit monsters with your new skill %d/%d", Obj = { Type = "SkillHit", Slot = "X", Min = 1, Count = 3 } },
+			},
+			Reward = { Gold = 1 },
+		},
 		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
+		-- A23-74: the first weapon now comes before the hunt (Tutorial.Steps.Forge), so GiveWeapon is only the safety net
+		-- (owning tier 1 is the record: a no-op then). The visit is the next-weapon moment (the shop opens after the
+		-- lines; the first mission's 150 gold buy tier 2), and the quest pays like its chapter-1 siblings
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The King Slimes ate the most of it.",
+			Reward = { Gold = 1 },
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust", ShortName = "King Slimes",
@@ -3097,9 +3280,10 @@ Config.Analytics = {
 	-- A23-68 #5 (the first 3 minutes; renumbered before the beta, nothing is public yet): MeadowArrive, FirstHit,
 	-- FirstKill, FirstSkillHit and ForgeArrive between the old steps. A23-71 D5 / S13: the first skill comes at Lv5, after
 	-- the first weapon, and Auto Battle opens after it (S0 trial b is a skill hit), so FirstSkillHit sits right before
-	-- AutoUnlocked (in the order players reach it, no false drop-off)
-	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "MeadowArrive", "FirstHit", "FirstKill",
-		"FirstMissionDone", "ForgeArrive", "FirstWeapon", "FirstSkillHit", "AutoUnlocked", "Level10" },
+	-- AutoUnlocked (in the order players reach it, no false drop-off). A23-74: the Forge and the first weapon now come
+	-- right after the acceptance, before the meadow
+	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "ForgeArrive", "FirstWeapon", "MeadowArrive",
+		"FirstHit", "FirstKill", "FirstMissionDone", "FirstSkillHit", "AutoUnlocked", "Level10" },
 	UiIds = { "Menu", "Items", "Bag", "Skills", "Character", "Ranking", "Journal", "Board", "Settings", "Help", "News",
 		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback" },
 	AwayAfter = 300,
@@ -3433,7 +3617,7 @@ Config.Help = {
 		} },
 		{ Title = "New this week", Lines = {
 			"Halloween: the Pumpkin Patch and the new Haunted Hollow with ghosts and the Ghost King.",
-			"New players start bare-handed. The Blacksmith gives you your first weapon after the first mission.",
+			"New players get their first weapon from the Blacksmith before the first hunt.", -- A23-74
 			"New Settings window: change your keys, sound effects and screen shake.",
 		} },
 	},
@@ -3759,7 +3943,8 @@ Config.Audio = {
 	-- these moments lower the combat sounds to Mul for Seconds
 	-- (SecondsBy: sound_spec §4-2 10, the kings hold it a little longer)
 	Duck = { Mul = 0.5, Seconds = 1.2, SecondsBy = { PumpkinKing = 1.6, GhostKing = 1.6 },
-		By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true, GooseArrive = true } },
+		By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true, GooseArrive = true,
+			CrownHalo = true, CrownHorns = true, KaijuSiren = true } },
 	-- combo coin speed = Base x 2^(step / 12), steps of a major scale, held at Top from the 8th kill (phones: no shrill end)
 	Combo = { Base = 0.8, Top = 1.6, Steps = { 0, 2, 4, 5, 7, 9, 11, 12 } },
 	-- sound_spec §4-2 6: a swing that hits From+ monsters plays its material louder and a little lower (it stays
@@ -3774,11 +3959,16 @@ Config.Audio = {
 	-- B13: a Z / X cast (Fx "Skill") has no launch / contact times: the cast at once, the hits right after
 	SkillContact = 0.12,
 	HurtBigFrac = 0.15, -- a hit taking at least this share of my max HP (or leaving me under 30 %) = HurtBig
+	-- sound_wiring_r4 Loot: my drop rings only when it holds a scroll of these Config.Loot kinds or a weapon (a weapon at
+	-- LootWeaponSpeed); materials and potions stay silent. KingPrize: s after KingDefeat, a paid contributor's KillPop + coin
+	LootKinds = { Enhance = true, Transfer = true },
+	LootWeaponSpeed = 0.92,
+	KingPrize = 0.25,
 	-- uploaded 2026-10-07 (Creator Hub, Darugi_S2, Restricted; art/sfx/asset_ids.json): the round-4 picks (picks_r4.json)
 	-- where they are uploaded, the round-3 file otherwise. "" = not uploaded yet: the event stays silent or plays its
 	-- stand-in (Equip -> GoldPickup, GooseArrive -> GooseHonk, SkillReady -> Fx Click, SkillLearn -> PowerUp)
 	Files = {
-		SwingWarrior = "rbxassetid://100665788892468",
+		SwingWarrior = "rbxassetid://114585478722203",
 		SwingMage = "rbxassetid://136838684864577", -- the Guild's alchemist (no faction file)
 		SwingMageHalo = "rbxassetid://101498441090410",
 		SwingMageHorns = "rbxassetid://139514092831666",
@@ -3788,13 +3978,13 @@ Config.Audio = {
 		HitHeavy = "rbxassetid://95463530376920",
 		HitCrit = "rbxassetid://78018534821425",
 		HurtBig = "rbxassetid://73666772845621",
-		KillPop = "rbxassetid://76243013610008",
+		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
-		ComboMilestone = "rbxassetid://120183624157841",
-		LevelUp = "rbxassetid://115723389387503",
+		ComboMilestone = "rbxassetid://73147095978331",
+		LevelUp = "rbxassetid://108525821312554",
 		PowerUp = "rbxassetid://118952858498086",
 		Jump = "rbxassetid://119789949243782",
-		WindowOpen = "rbxassetid://72025655652305",
+		WindowOpen = "rbxassetid://129419018750436",
 		WindowClose = "rbxassetid://86085176622331",
 		Deny = "rbxassetid://124536292557880",
 		AutoOn = "rbxassetid://90300088723425",
@@ -3804,12 +3994,12 @@ Config.Audio = {
 		Devour = "rbxassetid://118262766439187",
 		PumpkinKing = "rbxassetid://112500082253148",
 		GhostKing = "rbxassetid://100319357258743",
-		GooseHonk = "rbxassetid://126013517999832",
+		GooseHonk = "rbxassetid://115693307820380",
 		QuestDone = "rbxassetid://131457371135343",
 		GoldPickup = "rbxassetid://119243238199900",
-		ScrollSuccess = "rbxassetid://75617018211597",
+		ScrollSuccess = "rbxassetid://116061752455414",
 		ScrollFail = "rbxassetid://124525939049830",
-		Tap = "rbxassetid://101266273493121",
+		Tap = "rbxassetid://118436931537673",
 		SkillHalo = "rbxassetid://75898672312875",
 		SkillHorns = "rbxassetid://110780992455213",
 		Potion = "rbxassetid://133789691162407",
@@ -3818,11 +4008,26 @@ Config.Audio = {
 		TalkBlip = "rbxassetid://94593126133806",
 		Equip = "rbxassetid://132294814566104",
 		SkillReady = "rbxassetid://99319219774246",
-		-- coming with the next uploads (sound_gaps A7-A9)
-		Spend = "",
-		RankUp = "",
-		SkillLearn = "",
-		GooseArrive = "",
+		Spend = "rbxassetid://80768400627761",
+		RankUp = "rbxassetid://84902463002053",
+		SkillLearn = "rbxassetid://113535664889883",
+		GooseArrive = "rbxassetid://113800368972766",
+		-- new events (sound_gaps B1-B14): wire their hooks below
+		CrownHalo = "rbxassetid://123752635254582",
+		CrownHorns = "rbxassetid://131150435186247",
+		KingDefeat = "rbxassetid://115530599858312",
+		WarFinal30 = "rbxassetid://102592807006385",
+		CountTick = "rbxassetid://96016194154678",
+		GooseEnd = "rbxassetid://103362677938359",
+		KaijuSiren = "rbxassetid://110447360461794",
+		KaijuStomp = "rbxassetid://82058880758348",
+		ZoneEnterPvP = "rbxassetid://104461336219672",
+		GoldenSpot = "rbxassetid://128057879317544",
+		KO = "rbxassetid://137556643487651",
+		Respawn = "rbxassetid://128867123359602",
+		Plunder = "rbxassetid://74602898707411",
+		JackpotOther = "rbxassetid://99814762304779",
+		Loot = "rbxassetid://114739645345413",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
@@ -3854,13 +4059,13 @@ Config.Audio = {
 		-- sound_gaps A6: each king its own file at 1.0x (never under 0.85x: lower turns scary)
 		PumpkinKing = { File = "PumpkinKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
 		GhostKing = { File = "GhostKing", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 },
-		GooseHonk = { File = "GooseHonk", Volume = 0.55, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
+		GooseHonk = { File = "GooseHonk", Volume = 0.40, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
 		GooseArrive = { File = "GooseArrive", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 3.0 }, -- A7: GooseActive turning on
 		QuestDone = { File = "QuestDone", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
 		GoldPickup = { File = "GoldPickup", Volume = 0.45, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.08 },
 		ScrollSuccess = { File = "ScrollSuccess", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 0.5 },
 		ScrollFail = { File = "ScrollFail", Volume = 0.40, Speed = { 0.90, 0.90 }, Max = 1, Gap = 0.5 },
-		Tap = { File = "Tap", Volume = 0.42, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.05 },
+		Tap = { File = "Tap", Volume = 0.46, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.05 },
 		-- the skill cast plays my class's swing file at 0.85x (the file comes from the class, not from here)
 		SkillCast = { Volume = 0.40, Speed = { 0.85, 0.85 }, Max = 2, Gap = 0.1, Auto = true, Combat = true },
 		SkillHalo = { File = "SkillHalo", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
@@ -3877,6 +4082,21 @@ Config.Audio = {
 		RankUp = { File = "RankUp", Volume = 0.32, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
 		SkillLearn = { File = "SkillLearn", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
 		SkillReady = { File = "SkillReady", Volume = 0.25, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
+		CrownHalo = { File = "CrownHalo", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B6 war round won by Halo (everyone; a draw has none); the chest reward 1.5 s later
+		CrownHorns = { File = "CrownHorns", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B6 war round won by Horns
+		KingDefeat = { File = "KingDefeat", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B11 a king is beaten; contributors' KillPop + coin 0.25 s later
+		WarFinal30 = { File = "WarFinal30", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B7 once per round at 30 s left (WarRoundEndsAt), faction set, joined > 30 s ago
+		CountTick = { File = "CountTick", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- B7 3-2-1 before a reveal: SpeedMul 1.0 / 1.12 / 1.26
+		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
+		KaijuSiren = { File = "KaijuSiren", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B5 KaijuPhase -> 'Siren'; CountTick follows
+		KaijuStomp = { File = "KaijuStomp", Volume = 0.45, Speed = { 0.97, 1.03 }, Max = 2, Gap = 1 }, -- B4 Fx Stomp: Volume x1 within 15 studs -> 0 at 60
+		ZoneEnterPvP = { File = "ZoneEnterPvP", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B9 ZonePvP false->true, not within 3 s of a spawn / teleport, nothing on leaving
+		GoldenSpot = { File = "GoldenSpot", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B8 a golden monster first in view within 50 studs (once per monster); GoldenKill = same file
+		KO = { File = "KO", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- B1 Fx KO (mine): cartoon dizzy, no death jingle
+		Respawn = { File = "Respawn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B1 my character comes back after a KO
+		Plunder = { File = "Plunder", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B2 my sack / pocket is taken (the victim only; the taker hears GoldPickup)
+		JackpotOther = { File = "JackpotOther", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B10 someone else's Jackpot / FirstMax line (not RareWeapon)
+		Loot = { File = "Loot", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- B14 Fx Loot with a scroll or a weapon (weapon SpeedMul 0.92); materials / potions silent
 	},
 	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed); SwingFaction picks the
 	-- caster's faction file when it is uploaded (sound_gaps A2: Halo / Horns mages)
@@ -4024,7 +4244,7 @@ Config.UIArt = {
 		PortraitPotionMerchant = { Id = "rbxassetid://87346642697895", Size = Vector2.new(486, 512) },
 		PortraitMerchantC = { Id = "rbxassetid://85592132165738", Size = Vector2.new(487, 512) },
 		FullPotionMerchant = { Id = "rbxassetid://119279738895658", Size = Vector2.new(449, 768) },
-		FullMerchantC = { Id = "rbxassetid://126082561922667", Size = Vector2.new(494, 768) },
+		-- FullMerchantC (the old blacksmith full body) removed 2026-10-07: unused (검수); 이미지 생성 2 cleans the file
 		-- A23-40 layout B parts (Firefly 2026-10-06: 83eaffb minimap_ring_sheet, ccab705 / a601f39 b12 / b1213 sheets)
 		MinimapRing = { Id = "rbxassetid://79170457332929", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
 		WarMeterFrame = { Id = "rbxassetid://73887778381300", Size = Vector2.new(512, 74), Tone = "Navy", Inner = Rect.new(66, 22, 442, 54) }, -- opaque navy inside: the fills draw above it
@@ -4068,25 +4288,27 @@ Config.UIArt = {
 		GlyphSneakyHorns = { Id = "rbxassetid://101558632670193", Size = Vector2.new(256, 256) },
 		-- monster bark bubble (8e517a6, user OK via review): white + thick navy rim, tail at the bottom left (points down at
 		-- the monster), no letters - dark navy text in TextRect. SliceScale 0.3 keeps the tail the same size at ~52 px and
-		-- lets only the 24 px middle band grow for a second line. MonsterLabels BillboardGui (game dev 1, BarkService)
+		-- lets only the 24 px middle band grow for a second line. Now the HUD hint bubble's only (HUD.luau); monster barks
+		-- no longer use it (A23-74: BarkBubble<Kind> below, else MonsterLabels' round code bubble)
 		BarkBubble = { Id = "rbxassetid://124351323911597", Size = Vector2.new(512, 190), Slice = Rect.new(84, 65, 446, 89), SliceScale = 0.3, TextRect = { 0.077, 0.181, 0.844, 0.448 } },
 		-- A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지" / "가로로 길쭉한 거 말고"): one bark bubble per monster
 		-- kind, "BarkBubble" .. kind. A round chubby bubble (about 1.2-1.5 : 1, small tail at the bottom left, big empty middle),
 		-- NOT 9-sliced: MonsterLabels draws it ~104 px wide with ScaleType Fit, height from Size. Id = "" = not drawn yet:
-		-- the family's key (Config.Barks.BubbleFamily / BubbleArt), else BarkBubble (IMG-R4). With the id add Size (the
-		-- PNG px) and TextRect (the empty middle as fractions); no Slice.
-		BarkBubbleSlime = { Id = "rbxassetid://121607411194048", Size = Vector2.new(512, 415), TextRect = { 0.202, 0.333, 0.562, 0.394 } },
-		BarkBubbleBigSlime = { Id = "rbxassetid://121478824500297", Size = Vector2.new(512, 445), TextRect = { 0.232, 0.385, 0.543, 0.338 } },
-		BarkBubblePumpkinSlime = { Id = "rbxassetid://85044172676856", Size = Vector2.new(512, 438), TextRect = { 0.254, 0.356, 0.486, 0.36 } },
-		BarkBubblePumpkinKing = { Id = "rbxassetid://110500874816557", Size = Vector2.new(512, 431), TextRect = { 0.226, 0.342, 0.543, 0.355 } },
-		BarkBubbleGoblin = { Id = "rbxassetid://135198528423754", Size = Vector2.new(512, 409), TextRect = { 0.202, 0.412, 0.56, 0.344 } },
-		BarkBubbleBatGoblin = { Id = "rbxassetid://136707268128149", Size = Vector2.new(512, 298), TextRect = { 0.294, 0.33, 0.392, 0.413 } },
-		BarkBubbleGoblinBrute = { Id = "rbxassetid://137522622485063", Size = Vector2.new(512, 379), TextRect = { 0.219, 0.243, 0.526, 0.397 } },
-		BarkBubbleSkeleton = { Id = "rbxassetid://128451193232701", Size = Vector2.new(512, 369), TextRect = { 0.237, 0.233, 0.526, 0.429 } },
-		BarkBubbleSkeletonKnight = { Id = "rbxassetid://134713081207957", Size = Vector2.new(512, 409), TextRect = { 0.277, 0.348, 0.447, 0.368 } },
-		BarkBubbleGhostMinion = { Id = "rbxassetid://121325988367395", Size = Vector2.new(512, 333), TextRect = { 0.228, 0.362, 0.538, 0.37 } },
-		BarkBubbleLittleGhost = { Id = "rbxassetid://106182896723807", Size = Vector2.new(512, 344), TextRect = { 0.217, 0.325, 0.497, 0.412 } },
-		BarkBubbleGhostKing = { Id = "rbxassetid://120140777254240", Size = Vector2.new(512, 395), TextRect = { 0.211, 0.383, 0.543, 0.339 } },
+		-- the family's key (Config.Barks.BubbleFamily / BubbleArt), else the round code bubble (IMG-R4; never the wide
+		-- 9-slice BarkBubble above, which only the HUD hint bubble uses). With the id add Size (the PNG px) and TextRect
+		-- (the empty middle as fractions); no Slice (a sliced key is skipped).
+		BarkBubbleSlime = { Id = "rbxassetid://121607411194048", Size = Vector2.new(512, 415), TextRect = { 0.125, 0.376, 0.752, 0.318 } },
+		BarkBubbleBigSlime = { Id = "rbxassetid://121478824500297", Size = Vector2.new(512, 445), TextRect = { 0.232, 0.351, 0.549, 0.391 } },
+		BarkBubblePumpkinSlime = { Id = "rbxassetid://85044172676856", Size = Vector2.new(512, 438), TextRect = { 0.158, 0.384, 0.68, 0.301 } },
+		BarkBubblePumpkinKing = { Id = "rbxassetid://110500874816557", Size = Vector2.new(512, 431), TextRect = { 0.148, 0.376, 0.695, 0.278 } },
+		BarkBubbleGoblin = { Id = "rbxassetid://135198528423754", Size = Vector2.new(512, 409), TextRect = { 0.254, 0.352, 0.49, 0.411 } },
+		BarkBubbleBatGoblin = { Id = "rbxassetid://136707268128149", Size = Vector2.new(512, 298), TextRect = { 0.295, 0.302, 0.4, 0.463 } },
+		BarkBubbleGoblinBrute = { Id = "rbxassetid://137522622485063", Size = Vector2.new(512, 379), TextRect = { 0.217, 0.222, 0.535, 0.443 } },
+		BarkBubbleSkeleton = { Id = "rbxassetid://128451193232701", Size = Vector2.new(512, 369), TextRect = { 0.158, 0.26, 0.684, 0.358 } },
+		BarkBubbleSkeletonKnight = { Id = "rbxassetid://134713081207957", Size = Vector2.new(512, 409), TextRect = { 0.24, 0.308, 0.52, 0.44 } },
+		BarkBubbleGhostMinion = { Id = "rbxassetid://121325988367395", Size = Vector2.new(512, 333), TextRect = { 0.13, 0.37, 0.75, 0.33 } },
+		BarkBubbleLittleGhost = { Id = "rbxassetid://106182896723807", Size = Vector2.new(512, 344), TextRect = { 0.117, 0.366, 0.777, 0.331 } },
+		BarkBubbleGhostKing = { Id = "rbxassetid://120140777254240", Size = Vector2.new(512, 395), TextRect = { 0.127, 0.41, 0.742, 0.273 } },
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
 		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
 		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },
@@ -4558,8 +4780,10 @@ Config.CustomModels = {
 	FolderName = "CustomModels",
 	GooseId = "GoldenGoose",
 	-- golden variant: gold Highlight instead of recoloring parts. 0.5 looked like see-through jelly on the textured cube
-	-- (user 2026-10-06 "투명해 보여"): a stronger fill reads as gold
-	GoldenFillTransparency = 0.25,
+	-- (user 2026-10-06 "투명해 보여"), 0.25 still a flat half-see-through gold layer (an olive ghost on the green slime,
+	-- user 2026-10-07 "왜 반투명한 애들이 생기냐고", A23-74): no fill, the body stays opaque under a solid gold rim
+	-- (with the gold sparkles, light and name)
+	GoldenFillTransparency = 1,
 }
 
 -- A23-5 (2026-10-05): every chibi 3D class costume is out of the game (CostumeService and its folders were removed
@@ -4666,8 +4890,9 @@ Config.Text = {
 	WeaponAutoSwapEn = "That weapon needs Lv %d → switched to %s.",
 	-- A23-34: bare hands (weapon tier 0)
 	BareHands = "Bare hands", BareHandsEn = "Bare hands",
-	WeaponFromQuest = "The Blacksmith gives you your first weapon after your first mission (5 slimes).",
-	WeaponFromQuestEn = "The Blacksmith gives you your first weapon after your first mission (5 slimes).",
+	-- A23-74: the first weapon comes right after the Guide's first quest is accepted (the Forge step)
+	WeaponFromQuest = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
+	WeaponFromQuestEn = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
 	WeaponUsableNow = "You can now use %s! Equip it at the Forge or from your Bag.",
 	WeaponUsableNowEn = "You can now use %s! Equip it at the Forge or from your Bag.",
 	NeedFaction = "Pick a side first.",

@@ -661,7 +661,9 @@ local function ensureAltarPrompt(altar)
 	end
 	prompt.ActionText = "Switch side"
 	prompt.ObjectText = "Altar of Fate"
-	prompt.HoldDuration = 0.5
+	-- 검수 2026-10-08: E opens it at once like the forge / potion / board prompts (the side switch asks again in its window)
+	prompt.HoldDuration = 0
+	prompt.AutoLocalize = false
 	prompt.MaxActivationDistance = 12
 	prompt.RequiresLineOfSight = false
 	prompt.KeyboardKeyCode = ALTAR_PROMPT_KEY

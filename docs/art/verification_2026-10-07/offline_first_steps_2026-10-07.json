@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 29,
+  "checks": 35,
   "failedChecks": [],
   "static": [
     {
@@ -13,9 +13,9 @@
     }
   ],
   "mutations": {
-    "total": 13,
-    "applied": 13,
-    "caught": 13,
+    "total": 19,
+    "applied": 19,
+    "caught": 19,
     "results": [
       {
         "mutation": "other players' Travel shows",
@@ -23,7 +23,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL another player's Travel shows nothing :: ",
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000002c0cd821b40 closed 2"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000023e5a544b40 closed 2"
         ]
       },
       {
@@ -31,7 +31,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001e7fec7ab60 closed 0"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000029223b5aae0 closed 0"
         ]
       },
       {
@@ -50,7 +50,42 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TravelDone lifts the black at once :: 0",
-          "CHECK_FAIL the fade gui goes after the lift :: table: 0x0000021e2251fb10"
+          "CHECK_FAIL the fade gui goes after the lift :: table: 0x0000020777f82ad0",
+          "CHECK_FAIL TravelDone turns the camera behind my back (same distance and height) :: nil"
+        ]
+      },
+      {
+        "mutation": "no camera turn after the server move",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL TravelDone turns the camera behind my back (same distance and height) :: nil",
+          "CHECK_FAIL once more a moment later (a late move), still behind :: "
+        ]
+      },
+      {
+        "mutation": "the camera goes in front of me",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL TravelDone turns the camera behind my back (same distance and height) :: 20,8,0",
+          "CHECK_FAIL once more a moment later (a late move), still behind :: "
+        ]
+      },
+      {
+        "mutation": "the camera loses its height",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL TravelDone turns the camera behind my back (same distance and height) :: 0,4.5,0"
+        ]
+      },
+      {
+        "mutation": "the opening's Scriptable camera turned too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Scriptable camera is left alone :: lookAt"
         ]
       },
       {
@@ -76,8 +111,26 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL before the first mission: no hints, no marker :: 1/1",
+          "CHECK_FAIL the Forge step (on the way to the first weapon): no hints, no marker :: 1/2",
+          "CHECK_FAIL no attack hint before Idle s :: 1"
+        ]
+      },
+      {
+        "mutation": "hints on the way to the Forge (A23-74)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the Forge step (on the way to the first weapon): no hints, no marker :: 1/1",
           "CHECK_FAIL no attack hint before Idle s :: 1",
           "CHECK_FAIL a swing of mine restarts the wait :: 1"
+        ]
+      },
+      {
+        "mutation": "the Forge walk says the zone",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the Forge walk: 'Off to the Forge!  3' :: Off to Crossroads!  3"
         ]
       },
       {
@@ -93,9 +146,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL the attack hint shows once :: 41",
-          "CHECK_FAIL no Q hint after the kill (A23-71: it comes with learning Q at Lv5) :: Attack",
-          "CHECK_FAIL no marker after the kill :: 71"
+          "CHECK_FAIL Idle s near a monster without my swing -> the attack hint :: Attack",
+          "CHECK_FAIL the attack hint shows once :: 42",
+          "CHECK_FAIL no Q hint after the kill (A23-71: it comes with learning Q at Lv5) :: Attack"
         ]
       },
       {
@@ -103,7 +156,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL the marker prefers my own slime over a nearer one :: Slime2"
+          "CHECK_FAIL the marker prefers my own slime over a nearer one :: nil",
+          "CHECK_FAIL then the nearest :: nil"
         ]
       },
       {
@@ -119,7 +173,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000029a3b443850"
+          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000019b293d8520"
         ]
       },
       {
@@ -127,17 +181,17 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my first kill clears the marker :: table: 0x000001e05f36a8a0"
+          "CHECK_FAIL my first kill clears the marker :: table: 0x000001804653a530"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d14ca435e0776dff66d01a92bd404f0fdb6b5c009d8341e8c716e1d0e2ed377e",
-    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "fa6bb2d48ecf24b14a6ee637afdc80a581354eb3ba2e6654222d9f097ccce839",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "c0137c9cc4d887e85d146d631e8cb83939addd9ebe99ac120a61081b83bf78ee"
+    "src/ReplicatedStorage/Shared/Config.luau": "3925ea92f632f5469670d6536900a380064e7f316233ddb6078a507c5db5a3d7",
+    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "c04e9f63caad15cdded9ecd6a50d16478fe4be743251b95e8e9c2561fdd283b5",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "f2df5649759452e4a9e2c6965c88ae7cad0a17329ad38c71270346466c404d8f"
   },
-  "fixtureSHA256": "f81f5c5155457e29c1c9576cc5b4c9e16653c1bc55cde1cfb9ae747461a1f82e",
+  "fixtureSHA256": "07bbb76b1dcba8a01201d1c2a287a3535885eeafa5fdcb4d322e00fc2fbe3c36",
   "studioCalls": 0,
   "contract": "A23-68 first-minutes helpers offline test (FirstSteps.luau; user 2026-10-07 \"ㅇㅇ 모두 좋다 구현하자\").\n#1 travel fade (dev2 324055a contract: Fx \"Travel\" { UserId, To, T } -> the server moves me T s later -> always\nFx \"TravelDone\" { UserId }): only my Travel counts; the guide window closes; 'Off to Squishy Meadow!  3' / 2 / 1;\nblack from T - Fade; TravelDone lifts it at once, else T + MaxExtra; the gui goes afterwards; a newer Travel keeps its\nown timing. #2 hints in place during the first mission (TutorialStep 1..98): Idle s within my reach of a monster\nwithout a swing of mine -> C.HUD.Hint(\"Attack\") once (my swing restarts the wait, others' swings do not); in the meadow\nbefore my first kill a marker over the nearest monster (my own slime first) via C.QuestMarker.Focus, not re-sent while\nunchanged, cleared outside the meadow; my first kill (Reward) clears it (the Q hint moved to the Lv5 learn moment,\nA23-71: no hint after the kill); nothing before / after the first mission. Static: ClientMain loads FirstSteps before SkillBar / Audio.\nRuns the real FirstSteps.luau + Config.luau in tools/fixtures/first_steps_offline.luau.",
   "limitations": "The hint looks (HUD.Hint, QuestMarker.Focus) are image dev's; how the fade and the hints feel with the real server move is a Studio check (accept -> meadow)."

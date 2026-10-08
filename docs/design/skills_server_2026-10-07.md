@@ -15,10 +15,10 @@
   - 사람: `Skills.PvPZX`가 켜지고 **손으로 쓴** Z만(지금은 꺼짐 → Z·X는 사람을 고르지도 때리지도 않음). Q는 지금처럼 사람도 맞힘.
   - `CombatService.Released`를 Z도 쏜다: `{ Slot, Auto, MonstersHit, PlayersHit, Total, Center, Radius, Healed, Stacks = 0, Perfect = false }` → 퀘스트("스킬 쓰기"는 손으로 쓰고 몬스터 1마리 이상)·게시판·괴수 그대로 센다.
 - **새 `DamageWindow.luau`** — 짝(보낸 사람 → 받는 사람)마다 최근 **3초** 합계: 사람 피해 35%(활성 괴수 8%), 빛 치유 동료당 30%, 뿔 흡혈 3%. **Q와 Z(나중에 X)가 같이 센다**(Q의 시전당 상한이 이 창으로 바뀜). 기본 공격(스윙)은 지금 규칙 그대로. 나간 사람은 잊음.
-- **칸(해금):** 저장 `SkillSlots`(1 = Q, 2 = +Z Lv5, 3 = +X Lv8, 환생 1번 이상 = 3), 속성으로 복사(Mirrored). **줄지 않음**(직업·진영 바꾸기, 레벨 초기화, 환생 뒤에도). 옛 저장은 접속 때 따라잡기. 레벨 오를 때 새 칸이 열리면 그 칸의 플래그가 켜져 있을 때만 `Fx "SkillUnlocked"`.
+- **칸(해금):** 저장 `SkillSlots`(1 = Q, 2 = +Z Lv5, 3 = +X Lv8, 환생 1번 이상 = 3 — **A23-71로 0~3: Q Lv5, Z Lv15, X Lv25, 기본 0**, §3-1), 속성으로 복사(Mirrored). **줄지 않음**(직업·진영 바꾸기, 레벨 초기화, 환생 뒤에도). 옛 저장은 접속 때 따라잡기. 레벨 오를 때 새 칸이 열리면 그 칸의 플래그가 켜져 있을 때만 `Fx "SkillUnlocked"`.
 - **자동 전투:** `CombatService.autoTick`이 Q 전에 `SkillService.AutoCast`(Z, ZEnabled일 때) → Z를 쓰면 그 틱은 끝, Q는 간격 뒤. Z 자동 조건(`Defs[kit].Z.Auto`): 전사·대장장이 띠 안 2마리 이상 또는 큰 몬스터 1(Scale 1.5 이상·보스), **끌기 없음** / 궁수·조련사 줄 위 1마리 이상 / 마법사·연금술사 1마리 이상, 흩어진 2마리 이상(첫 대상에서 9칸 밖)이면 Q보다 먼저, 아니면 Q가 준비돼 있으면 Q 먼저. 자동은 사람을 고르지 않는다.
 - **`MonsterService.Displace(rec, "Pull" | "Push", fromPos, studs, player)`**(개발 1 파일, 미리 알림): 끌기는 시전자 쪽 최대 studs, **시전자 3칸 앞에서 멈춤**; 밀기는 반대쪽. 거리 ÷ 몸 크기, **보스는 안 움직임**, 남의 개인 몬스터 안 움직임. 끝 자리가 지금 서 있는 지역, 자기 지역 사각형(안쪽 6칸), 집에서 LeashRadius(60) 안, 땅(물·능선 아님), 벽·장식 없음이어야 함 — 안 되면 3/4·1/2·1/4로 줄여 보고 다 안 되면 안 움직임. 0.2초 미끄러짐(Shove와 같은 방식, Shove는 그대로).
-- 그 밖에: Net `UseSkill`(끝에 한 줄), `RateLimits.UseSkill = 0.1`, `Data.Defaults.SkillSlots = 1` + Mirrored, Main INIT/START에 `DamageWindow`·`SkillService`(PlayerService 앞).
+- 그 밖에: Net `UseSkill`(끝에 한 줄), `RateLimits.UseSkill = 0.1`, `Data.Defaults.SkillSlots = 1`(A23-71: 0) + Mirrored, Main INIT/START에 `DamageWindow`·`SkillService`(PlayerService 앞).
 
 ## 2. 클라 계약 (게임성 개발 1 · 이미지 개발)
 - **보내기:** `Net.Get("UseSkill"):FireServer(slot)` — slot = `"Q"` | `"Z"` | `"X"`, 다른 인자 없음. 한 번 누름 = 한 번(길게 눌러 반복 없음). 옛 Q 버튼의 `Release`도 그대로 동작.
@@ -26,7 +26,7 @@
   - `"SkillPress"` `{ Slot, Result }` — 누른 사람에게만. Result: `"Queued"`(0.5초 흰 테), `"Cooldown"`(흔들기), `"NoMP"`(흔들기 + `Config.Skills.Text.NoMP`), `"NoTarget"`(흔들기 + `Text.NoTarget`), `"Locked"`(흔들기; 보통 버튼이 안 보여서 안 옴).
   - `"Skill"` `{ UserId, Character, Class, Kit, Faction, Slot, Shape, From, Center, Dir, Len, Width, Radius, Points, Life = 0.3, Auto, Total, Hits = { { P, A, C = false, K = "M" | "P", V? } }, Statuses = {} }` — 시전자 + 근처 사람에게(CR-L49 거리). Line: `From`(시전자 자리)·`Dir`(단위 벡터)·`Len`·`Width`·`Center`(띠 가운데). Chain: `Points`(맞은 순서대로 자리)·`Radius`(Jump). `Life` 동안 바닥 표시(§6-2). `Statuses`는 SKL-3(Guard·Taunt·Slow·MP).
   - `"SkillUnlocked"` `{ Slot }` — 그 칸 플래그가 켜져 있을 때만, 레벨업·환생 순간에. 안내 1쪽 + 금빛 링(SKL-7).
-- **속성(플레이어):** `SkillSlots`(1~3, 보일 버튼 수 — 플래그도 함께 볼 것), `SkillReadyAt`(Q, 기존), `SkillReadyAtZ`, `SkillReadyAtX`(서버 시각 `workspace:GetServerTimeNow()` 기준, 진짜 부활 때 0). 재사용 쓸기·남은 초는 이것으로.
+- **속성(플레이어):** `SkillSlots`(A23-71: 0~3, 0 = 아직 스킬 없음; 보일 버튼 수 — 플래그도 함께 볼 것), `SkillReadyAt`(Q, 기존), `SkillReadyAtZ`, `SkillReadyAtX`(서버 시각 `workspace:GetServerTimeNow()` 기준, 진짜 부활 때 0). 재사용 쓸기·남은 초는 이것으로.
 - Q의 기존 `"Release"` Fx는 그대로(SkillFx가 Q도 다시 그릴지는 이미지 개발이 정함).
 
 ## 3. 검사
@@ -56,5 +56,52 @@
 - 클라(개발 1):
   - SkillBar는 지금 레벨만 보고 잠근다. 서버 기준은 `SkillSlots` 속성(환생 3, 레벨 초기화해도 안 줄어듦)이니 그것으로 맞춰 달라고 했다.
 
-## 4. 다음 (SKL-3, 10/13~15)
+## 3-2. SKL-3 X 스킬 서버 (게임성 개발 2, 2026-10-07 밤)
+
+`Config.Skills.XEnabled`는 **꺼진 채**다(10/20 점검에서 정함). 켜기 전에는 게임에서 X가 안 보인다. X 칸은 Lv25(A23-71), 환생하면 3칸 모두. 모든 상태(도발·Guard·느리게·MP)는 **몬스터 싸움에만** 쓴다.
+
+**무엇이 생겼나**
+- **Roar**(전사 X — 빛 Guardian Roar, 뿔 Rage Roar, 대장장이 Anvil Guard):
+  - 12칸 안 몬스터 ×2. 16칸 안 몬스터 4초 도발(`MonsterService.Taunt`: 보스·개인 몬스터·남의 도발 중이면 안 됨, 최대 10초).
+  - 나 Guard 40% 6초. 빛: 16칸 안 빛 동료 20%. 뿔: 맞힌 몬스터마다 MP +5. 대장장이: 모루 모양(6초), 동료·MP 없음.
+- **Field**(마법사 X — Sun / Hex Circle, 연금술사 Jelly Brew):
+  - 35칸 안 겨눈 몬스터 자리(없으면 앞 10칸)에 반지름 12 원. 첫 틱은 바로, 그 뒤 1초마다, 모두 5번 ×1.5.
+  - 모든 틱이 **같은 시전 번호**라 몬스터 보상 기여(A23-27 RewardMinHits)는 1번으로 센다.
+  - `Released`(퀘스트·게시판·괴수·퍼널이 읽음)는 첫 틱 바로 뒤에 한 번 보내요.
+    - 첫 틱이 0마리였던 장판(몬스터보다 먼저 깐 것)은 **끝날 때 한 번 더** 보내요. 마지막 틱이든 일찍 끝났든(나가면 빼고) 같아요.
+    - 그때 MonstersHit = 한 틱에 맞힌 가장 많은 마릿수, Total = 모든 틱 피해 합이에요.
+    - 그래서 나중에 모여 든 무리도 Min 2·3 목표(J4, SK1)에 들어가요. 검수 2026-10-07 고침: 전에는 처음 맞힌 틱의 수만 보냈어요.
+  - 살아 있는 몬스터 느리게 ×0.5(틱 + 0.5초, 보스는 ×0.75). 빛: 원 안 빛 동료 20%(틱 + 0.1초). 뿔: 틱마다 맞힌 몬스터당 MP +2.
+  - **사람은 절대 안 맞고 겨누지도 않는다.** 한 사람 장판 하나(새 장판이 옛것을 끝냄).
+  - 일찍 끝나는 때: 쓰러짐(Died), 다른 지역(Zone), 직업·진영 바꿈(Changed), 괴수가 되거나 캐릭터가 바뀜(다음 틱에 Stop), 새 장판(New). 나가면 조용히 끝남.
+- **Hop**(궁수 X — Light / Shadow Step, 조련사 Big Boing):
+  - 바라보는 반대쪽으로 최대 10칸. 벽·물·높이 차 8 넘는 곳·지역 끝이면 3/4·1/2·1/4로 줄인다(`MonsterService.HopReach`).
+  - **MP 쓰기 전에 거절:** 3칸도 못 뛰면 `CantHop`, 원한 자루를 들었거나 괴수(Siren/Active)면 `TooHeavy`.
+  - 떠난 자리 반지름 7 바람 ×3 + 밀기 6. 빛: 착지 자리 12칸 안 빛 동료 20% 4초. 뿔: 맞힌 몬스터마다 MP +5.
+  - 서버는 `ZoneService.AllowMove(나, 뛴 거리 + 2, 1초)`로 그 한 번의 이동을 허용한다. **자동 전투는 절대 안 뛴다.**
+- MP 훔치기는 시전당 최대 20(`Skills.MPStealCap`), MP 바가 받는 만큼만(`VitalsService.AddMana`).
+- **Guard:** `CombatService.DamagePlayer`가 **몬스터의 공격만** 줄인다(괴수·사람 공격은 그대로). 더 큰 Guard가 이기고, 같은 값은 긴 쪽 시간을 지킨다. 진짜 부활 때 지움.
+- **자동 전투: X → Z → Q** (0.5초 간격). Roar = 16칸 안 3마리, 또는 HP 50% 아래 + 10칸 안 1마리. Field = 원 안 2마리.
+- §10 스위치: `Taunt` 끔 = 도발 없음, `Fields` 끔 = 한 번에 ×7.5 + 3초 느리게, `MoveSkills` 끔 = 제자리 바람(자루가 있어도 시전됨).
+
+**클라 계약 (게임성 개발 1 · 이미지 개발)**
+- `Net.Fx "Skill"`에 더해진 것:
+  - `Shape = "Roar" | "Field" | "Hop"`, `To`(Hop 착지 자리), `Craft`(`"Anvil"` | `"Cauldron"` | `"BigSlime"`), `CraftSec`(Anvil 6)
+  - Field만: `Life = 5`(원이 보이는 시간), `Tick = 1`
+  - `Statuses = { Guard = { { V = UserId, Pct, Sec } }, Taunted = 도발된 몬스터 수, MP = 얻은 MP }`
+- `Net.Fx "SkillTick"` `{ UserId, Slot = "X", Center, Radius, Hits, Total, Statuses }` — 장판 둘째 틱부터, 시전자와 근처 사람에게.
+- `Net.Fx "SkillEnd"` `{ UserId, Slot = "X", Why = "Died" | "Zone" | "Changed" | "Stop" | "New" }` — 장판이 **일찍** 끝날 때 원을 지운다. 다 돌고 끝나면 안 온다(Life로 끝남). 나가면 안 온다.
+- `Net.Fx "Hop"` `{ To, T = 0.25 }` — **시전자에게만**. 클라가 내 캐릭터를 T초 동안 To로 옮긴다.
+- `"SkillPress"` Result에 `"TooHeavy"`, `"CantHop"`이 더해졌다. 글은 `Config.Skills.Text.TooHeavy` / `CantHop`.
+- 속성: `GuardPct`(0~0.9, 0 = 없음), `GuardUntil`(서버 시각) — HP 바 방패 표시용. 진짜 부활 때 0.
+
+**이야기·다음 목표**
+- SK1(Z를 배우면 — Z 스위치 켜짐 + 칸 2: 손으로 쓴 Z로 2마리 한 번), SK2(X — 분수 → 선택(빛 Guard 명예 +1 / 뿔 Take 악명 +1 / 장인 A·B) → X 맞히기 3번). `SkillHit`의 `Slot`으로 그 스킬만 센다.
+- 다음 목표 줄: 철 무기 전 + 첫 스킬 전이면 `SkillIron`(A23-71 S16). 철 무기가 있으면, 다음 스킬이 다음 지역보다 먼저일 때 "Next goal · New skill at Lv%d (now Lv%d)"(GoalKind `"Skill"`, ShortName "Skill at Lv %d"). Z·X는 스위치가 켜져 있을 때만.
+
+**검사**
+- `py tools/test_skills_x.py` — 위 전부 + 몬스터 고리 실제 코드(Taunt·Slow·HopReach·DamageMonster 시전 번호·NATURAL.Pace), VitalsService.AddMana, ZoneService.AllowMove. aiStep 도발은 정적 검사.
+- `tools/test_town_quests.py`(SK1·SK2), `tools/test_onboarding.py`(다음 목표).
+
+## 4. 다음 (SKL-3, 10/13~15 → 위 §3-2로 10/07 밤에 끝남)
 - X: Roar(도발 `_tauntUntil`·Guard)·Field(장판 1Hz, 시전당 1타)·Hop(`ZoneService.AllowMove`, 자루·괴수 거절), X 진영 차이(빛 Guard / 뿔 MP 훔치기 상한 20), 자동 X→Z→Q, SK1·SK2와 SkillHit `Slot` 거르기, 다음 목표 줄, 장판 끝나는 조건, 보스·거위 느리게 ×0.75.

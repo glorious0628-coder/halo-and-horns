@@ -12,7 +12,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL it runs back over P.Back (no one-frame jump of ~14 studs) :: table: 0x000002508dfd2af0"
+          "CHECK_FAIL it runs back over P.Back (no one-frame jump of ~14 studs) :: table: 0x00000233fe88b170"
         ]
       },
       {
@@ -28,8 +28,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL it settles behind-right of its owner (2.6 right, 2.4 back) :: table: 0x000001ea28411bf0",
-          "CHECK_FAIL and ends back behind-right of its owner :: table: 0x000001ea28422740"
+          "CHECK_FAIL it settles behind-right of its owner (2.6 right, 2.4 back) :: table: 0x0000026b50a06000",
+          "CHECK_FAIL and ends back behind-right of its owner :: table: 0x0000026b50a1ab60"
         ]
       },
       {

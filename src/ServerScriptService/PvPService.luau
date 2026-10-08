@@ -221,10 +221,9 @@ local function combatPower(p)
 			return v
 		end
 	end
-	local level = math.max(1, num(p, "Level", 1))
-	local tier = math.clamp(math.floor(num(p, "WeaponTier", 0)), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
-	-- review B5: the equipped scroll +N counts. Read the attribute directly: data.WeaponEnhance is the per-tier table.
-	return Config.CombatPower(level, tier, tonumber(p:GetAttribute("WeaponEnhance")) or 0) -- BB4 (same as Justice)
+	-- BB4 / A23-69: the same formula as JusticeService (level, the equipped weapon +N read from the WeaponEnhance
+	-- attribute - data.WeaponEnhance is the per-tier table - and the stat points)
+	return Config.CombatPowerOf(p)
 end
 
 -- A23-18 boldness: x2 vs a much stronger victim, x0.5 vs a much weaker one (honor / infamy / war points only)
@@ -457,7 +456,7 @@ local function checkGraduation(p)
 	local f = faction(p)
 	if wasRookie[p] == true and not isRookie and (f == "Halo" or f == "Horns") and not graceUntil[p] then
 		startGrace(p, Config.PvP.GraduateGraceSeconds)
-		notify(p, fmt("GraduateStart"), "reward")
+		notify(p, fmt("GraduateStart"), "reward", "None") -- sound_gaps C1
 	end
 	wasRookie[p] = isRookie
 end
@@ -668,7 +667,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 	else
 		-- 5. pair cooldown for minted rewards (CR-M4: kept in the killer's save as "ko:<victimUserId>")
 		local pairOk = pairReady(killer, victim.UserId, "ko", P.PairRewardCooldown)
-		if pairOk and bold > 1 then notify(killer, fmt("BoldStrong"), "reward")
+		if pairOk and bold > 1 then notify(killer, fmt("BoldStrong"), "reward", "None") -- the score line says RankUp
 		elseif pairOk and bold < 1 then notify(killer, fmt("BoldWeak"), "info") end
 		local vLevel = num(victim, "Level", 1)
 
@@ -697,10 +696,11 @@ function PvPService.HandleKO(victim, killer, ctx)
 					end
 					local from, to = rootPos(victim), rootPos(killer)
 					if from and to then
-						Net.Fx(nil, "Plunder", { From = from, To = to, Amount = stolen })
+						-- sound_gaps B2: Victim / Thief = UserIds (the client plays Plunder for the victim, GoldPickup for the thief)
+						Net.Fx(nil, "Plunder", { From = from, To = to, Amount = stolen, Victim = victim.UserId, Thief = killer.UserId })
 					end
 					notify(victim, fmt("Plundered", Util.PlayerDisplayName(killer), Util.FormatNumber(stolen)), "bad", "None")
-					notify(killer, fmt("PlunderGain", Util.FormatNumber(stolen), stars[killer] or 0), "reward")
+					notify(killer, fmt("PlunderGain", Util.FormatNumber(stolen), stars[killer] or 0), "reward", "GoldPickup")
 				end
 			end
 			if stolen == 0 and pairOk then
@@ -726,7 +726,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 				local honor = PvPService.ScalePoints(P.HonorPerKOMin, bold) -- A23-18 boldness
 				if honor > 0 then
 					grantFame(killer, "Honor", honor, verdict, victim)
-					notify(killer, fmt("HonorGain", honor), "reward")
+					notify(killer, fmt("HonorGain", honor), "reward", "RankUp") -- sound_gaps C1: my side's score went up
 				end
 			end
 			info = { Kind = "Honor", Bully = false, VictimStars = 0, Stolen = 0, Bounty = 0, Rewarded = pairOk, BoldMult = bold }

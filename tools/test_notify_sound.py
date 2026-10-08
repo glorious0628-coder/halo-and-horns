@@ -60,6 +60,51 @@ ROUTES = [
     ("LootService.luau", "TXT.MoveOk", "ScrollSuccess"),
     ("LootService.luau", "TXT.MoveFail", "ScrollFail"),
     ("LootService.luau", "string.format(TXT.Equip, weaponName(player, tier))", "Equip"),
+    # sound_gaps_2026-10-07 C1: no "reward" line outside the quest ends may fall back to QuestDone
+    ("LootService.luau", "TXT.DuplicateWeapon, weaponName(player, tier)", "GoldPickup"),
+    ("LootService.luau", "TXT.BareEquip, name", "None"),
+    ("LootService.luau", "TXT.FirstWeapon, name", "None"),
+    ("LootService.luau", "TXT.FirstWeaponBag, name", "Equip"),
+    ("LootService.luau", "pcall(Net.Notify, player, line, \"reward\", num(first.NoticeSeconds, 6)", "None"),
+    ("PetService.luau", "notify(player, TXT.PetGot", "None"),
+    ("PetService.luau", "TXT.BecameFree or TXT.Became", "None"),
+    ("PvPService.luau", "fmt(\"GraduateStart\")", "None"),
+    ("PvPService.luau", "fmt(\"BoldStrong\")", "None"),
+    ("PvPService.luau", "fmt(\"PlunderGain\"", "GoldPickup"),
+    ("PvPService.luau", "fmt(\"HonorGain\", honor)", "RankUp"),
+    ("GrudgeService.luau", "fmt(\"SackPaid\"", "GoldPickup"),
+    ("GrudgeService.luau", "fmt(\"AvengerBonus\"", "GoldPickup"),
+    ("RankingService.luau", "TXT.ArtisanGain, gain", "RankUp"),
+    ("RankingService.luau", "pcall(Net.Notify, p, text, \"reward\", 8", "RankUp"),
+    ("MonetizationService.luau", "string.format(Config.Text[textKey]), \"reward\"", "None"),
+    ("ProgressionService.luau", "Config.Text.RebirthDone", "None"),
+    ("FactionService.luau", "Config.Text.UnderdogSignOn", "GoldPickup"),
+    ("WarService.luau", "Config.Story.WarDraw", "None"),
+    # C3: auto combat switched off by a bully penalty: the AutoOff sound only, no Deny
+    ("CombatService.luau", "outlawOnly and Config.Ranking.Text.OutlawAutoOff or Config.Text.BullyAutoOff", "None"),
+]
+# sound_gaps B2 / B6 / B11 and the weapon lines whose sound depends on the moment: (file, unique piece, description,
+# the old text). Each is checked as written; putting the old text back must fail the check.
+SPECIAL = [
+    ("LootService.luau", "or string.format(TXT.JackpotSelf, name), \"reward\", before and \"None\" or \"Equip\")",
+     "a jackpot weapon: Equip, or None when it is equipped from bare hands (the HUD's power-up moment sounds it)",
+     "or string.format(TXT.JackpotSelf, name), \"reward\")"),
+    ("LootService.luau", "Config.WeaponGrade(tier).Name, name), \"reward\", before and \"None\" or \"Equip\")",
+     "a rare weapon drop: Equip, or None when equipped from bare hands",
+     "Config.WeaponGrade(tier).Name, name), \"reward\")"),
+    ("PvPService.luau", "Net.Fx(nil, \"Plunder\", { From = from, To = to, Amount = stolen, Victim = victim.UserId, Thief = killer.UserId })",
+     "B2: the Plunder Fx says who was robbed (Victim) and by whom (Thief)",
+     "Net.Fx(nil, \"Plunder\", { From = from, To = to, Amount = stolen })"),
+    ("GrudgeService.luau", "Amount = refund, Victim = victim.UserId,\n\t\t\t\t\t\tThief = thief.UserId, Refund = true })",
+     "B2: the grudge refund Fx is marked Refund (the robbed player gets gold back: GoldPickup, not Plunder); "
+     "Thief = the one who stole (검수 2026-10-07, never the avenger)",
+     "Amount = refund })"),
+    ("WarService.luau", "nil, nil, winner == \"Halo\" and \"CrownHalo\" or \"CrownHorns\")",
+     "B6: the war winner line carries CrownHalo / CrownHorns",
+     "nil, nil)"),
+    ("HalloweenService.luau", "local ok, err = pcall(Net.Fx, nil, \"KingDefeat\", { Key = b.Key, Kind = rec.Kind,",
+     "B11: a beaten king sends Fx KingDefeat to everyone (Key, Kind, Pos, Contributors)",
+     "local ok, err = true, nil local _ = ({ Key = b.Key, Kind = rec.Kind,"),
 ]
 # the wrappers that must pass the sound on, and the payload
 WRAPPERS = [
@@ -69,6 +114,7 @@ WRAPPERS = [
     ("PvPService.luau", "local function notify(p, text, kind, sound)", "Net.Notify(p, text, kind, nil, sound)"),
     ("GrudgeService.luau", "local function notify(p, text, kind, sound)", "Net.Notify(p, text, kind, nil, sound)"),
     ("ZoneService.luau", "local function notify(player, text, kind, sound)", "Net.Notify(player, text, kind, nil, sound)"),
+    ("PetService.luau", "local function notify(player, text, kind, sound)", "kind or \"info\", nil, sound)"),
 ]
 
 
@@ -122,14 +168,22 @@ def check_all(sources: dict[str, str], net: str) -> tuple[int, list[str]]:
     story = sources["StoryQuestService.luau"]
     check("pcall(Net.Fx, player, \"Choice\", { Option = option })" in story
           and story.count("choiceFx(player, ") >= 2, "a story pick sends Fx Choice { Option } (Halo / Horns and Neutral)")
+    for name, piece, what, _ in SPECIAL:
+        check(sources[name].count(piece) == 1, f"{name}: {what}")
+    finish = fn_block(sources["HalloweenService.luau"], "local function finish(b, defeated)")
+    check("if defeated and type(rec) == \"table\" then" in finish and "Contributors = ids" in finish
+          and "rec.PaidUserIds" in finish and "rec._contributors" not in finish,
+          "B11: KingDefeat only for a beaten king (not one that leaves), with the paid players' UserIds (MonsterService keeps "
+          "them on the record before it clears the tallies; behavior: test_halloween)")
     return count, failures
 
 
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    names = sorted({r[0] for r in ROUTES} | {w[0] for w in WRAPPERS})
-    sources = {n: (SSS / n).read_text(encoding="utf-8") for n in names}
-    net = NET.read_text(encoding="utf-8")
+    names = sorted({r[0] for r in ROUTES} | {w[0] for w in WRAPPERS} | {s[0] for s in SPECIAL})
+    # LF-normalized (a Windows checkout with core.autocrlf has CRLF files)
+    sources = {n: (SSS / n).read_text(encoding="utf-8").replace("\r\n", "\n") for n in names}
+    net = NET.read_text(encoding="utf-8").replace("\r\n", "\n")
     count, failures = check_all(sources, net)
     mutations = []
     if "--no-mutations" not in sys.argv:
@@ -149,6 +203,19 @@ def main() -> int:
         mutated_net = net.replace("Duration = duration, Sound = sound }", "Duration = duration }", 1)
         _, fails = check_all(sources, mutated_net)
         mutations.append({"mutation": "Net.Notify drops Sound", "caught": bool(fails)})
+        for name, piece, what, old in SPECIAL:
+            if sources[name].count(piece) != 1:
+                mutations.append({"mutation": f"{name}: {what[:40]}", "caught": False, "note": "piece not found"})
+                continue
+            mutated = dict(sources)
+            mutated[name] = sources[name].replace(piece, old, 1)
+            _, fails = check_all(mutated, net)
+            mutations.append({"mutation": f"{name}: {what[:60]}", "caught": bool(fails)})
+        mutated = dict(sources)
+        mutated["HalloweenService.luau"] = sources["HalloweenService.luau"].replace(
+            "\tif defeated and type(rec) == \"table\" then\n\t\tlocal ids = {}", "\tif type(rec) == \"table\" then\n\t\tlocal ids = {}", 1)
+        _, fails = check_all(mutated, net)
+        mutations.append({"mutation": "HalloweenService: KingDefeat also when a king leaves", "caught": bool(fails)})
     caught = sum(1 for m in mutations if m["caught"])
     status = "passed" if not failures and caught == len(mutations) else "failed"
     for f in failures:

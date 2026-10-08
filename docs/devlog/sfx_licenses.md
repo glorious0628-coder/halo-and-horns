@@ -17,7 +17,8 @@
 | boom(쿵) | 호박 대왕 등장·첫 장면·빨간 X | `impact/Audio/impactSoft_heavy_000.ogg` + 우리 합성 저음 | Kenney Impact Sounds · CC0 / 직접 합성 |
 | hit(퍽) | 대왕이 때림·흔들림 컷 | `impact/Audio/impactPunch_heavy_002.ogg` | Kenney Impact Sounds · CC0 |
 | pop(뿅) | 3D 모델 등장·변신 | `interface/Audio/drop_002.ogg` | Kenney Interface Sounds · CC0 |
-| card(톡) | 팀 카드 일곱 장 등장 | `interface/Audio/drop_003.ogg` | Kenney Interface Sounds · CC0 |
+| card(톡) | 팀 카드 등장(SOUND 카드 빼고) | `interface/Audio/drop_003.ogg` | Kenney Interface Sounds · CC0 |
+| sound_card(뽁·샤라락) | 쇼츠 1편 SOUND 팀 카드 | `art/sfx/SkillLearn.wav`(게임 스킬 배우기 소리) | 우리 합성(소리 만들기 세션, 2026-10-07) · 남의 소리 없음 |
 | ding(딩) | 사탕·끝 화면 | `interface/Audio/confirmation_002.ogg` | Kenney Interface Sounds · CC0 |
 | tick(틱) | 동전·5분 칩 | `interface/Audio/tick_004.ogg` | Kenney Interface Sounds · CC0 |
 | whoosh(휙) | 컷 전환 | 직접 합성(`synth_sfx("whoosh")`, 잡음 필터) | 우리가 만듦 · 저작권 걱정 없음 |

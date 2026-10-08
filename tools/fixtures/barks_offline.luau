@@ -99,13 +99,19 @@ runGroup("config", function()
 	end
 	check(#stray == 0 and K0.Lines.Golden ~= nil and K0.Lines.Goose ~= nil, "no lines for a kind that does not exist (Golden, Goose extra)",
 		show(stray))
-	local longest, bad, count = 0, {}, 0
-	for _, set in K0.Lines do
+	-- A23-74 (user 2026-10-07 "의성어 의태어나 단어 수준"): every line a sound word / one short word - at most 2 words and
+	-- 12 letters (marks included, … = one), with a letter in it; no two kinds (Golden / Goose too) share a line
+	local longest, widest, bad, long, count = 0, 0, {}, {}, 0
+	local owner, shared = {}, {}
+	for kind, set in K0.Lines do
 		for moment, list in set do
 			check(moment == "Spot" or moment == "Hit" or moment == "Low" or moment == "Idle", "a known moment: " .. tostring(moment), moment)
 			for _, line in list do
 				count += 1
+				local n = utf8.len(line) or #line
 				longest = math.max(longest, words(line))
+				widest = math.max(widest, n)
+				if words(line) > 2 or n > 12 or not string.find(line, "%a") then table.insert(long, line) end
 				local low = string.lower(line)
 				for _, word in { "kill", "die", "dead", "blood", "scary" } do
 					if string.find(low, word, 1, true) then table.insert(bad, line) end
@@ -113,14 +119,23 @@ runGroup("config", function()
 				if string.find(line, "...", 1, true) or string.find(line, "[\128-\255]") and not string.find(line, "…", 1, true) then
 					table.insert(bad, line)
 				end
+				if owner[low] ~= nil and owner[low] ~= kind then table.insert(shared, line) end
+				owner[low] = kind
 			end
 		end
 	end
-	check(count >= 60 and longest <= 8, "lines_pack §2-2 pasted (60+ lines), each 8 words or fewer", show({ count, longest }))
+	check(count >= 60 and #long == 0 and longest <= 2 and widest <= 12,
+		"A23-74 sound words: 60+ lines, each at most 2 words and 12 letters", show({ count, longest, widest, long }))
 	check(#bad == 0, "no kill / die / dead / blood / scary, the one-glyph ellipsis only", show(bad))
-	check(K0.Lines.Slime.Spot[1] == "Blub?" and K0.Lines.Golden.Spot[1] == "So much sparkle! Not sharing!"
-		and K0.Lines.Golden.Low[1] == "Okay, okay! Share the sparkle!" and K0.Lines.Goblin.Low[1] == "Wait… why do we grab again?",
-		"lines as written (lines_pack §2-2)", show({ K0.Lines.Slime.Spot[1], K0.Lines.Golden.Spot[1] }))
+	check(#shared == 0, "every monster sounds like itself (no two kinds share a line)", show(shared))
+	local L = K0.Lines
+	check(L.Slime.Spot[1] == "Blub?" and L.BigSlime.Spot[1] == "BLOOP!" and L.Goblin.Spot[1] == "Heh!"
+		and L.GoblinBrute.Spot[1] == "Grrr!" and L.Skeleton.Spot[1] == "Rattle!" and L.SkeletonKnight.Spot[1] == "Halt!"
+		and L.PumpkinSlime.Spot[1] == "Hehe!" and L.BatGoblin.Spot[1] == "Skree!" and L.GhostMinion.Spot[1] == "Boo!"
+		and L.LittleGhost.Spot[1] == "Wooo~" and L.PumpkinKing.Spot[1] == "HA-HA!" and L.GhostKing.Spot[1] == "OOOH!",
+		"each kind's first Spot is its own sound (A23-74 examples)", show({ L.Slime.Spot[1], L.BigSlime.Spot[1], L.GhostKing.Spot[1] }))
+	check(L.Golden.Spot[1] == "Bling!" and L.Golden.Low[1] == "Okay, share!" and L.Goblin.Low[1] == "Yikes!"
+		and L.Goose.Spot[1] == "HONK!", "golden / goose lines as written (A23-74)", show({ L.Golden.Spot[1], L.Golden.Low[1] }))
 end)
 
 runGroup("spot and hit", function()
@@ -211,11 +226,11 @@ runGroup("golden and fallback", function()
 	end })
 	local gold = w:Mon("Slime", { Golden = true })
 	w:Moment(gold, "Spot", { 0.1, 0 })
-	check(barkOf(gold) == "So much sparkle! Not sharing!", "a golden slime: 'So much sparkle! Not sharing!'", barkOf(gold))
+	check(barkOf(gold) == "Bling!", "a golden slime: 'Bling!'", barkOf(gold))
 	local gold2 = w:Mon("Goblin", { Golden = true })
 	gold2.HP = gold2.MaxHP * 0.2
 	w:Moment(gold2, "Hit", { 0 })
-	check(barkOf(gold2) == "Okay, okay! Share the sparkle!", "a golden goblin low on HP: 'Share the sparkle!'", barkOf(gold2))
+	check(barkOf(gold2) == "Okay, share!", "a golden goblin low on HP: 'Okay, share!'", barkOf(gold2))
 	local bat = w:Mon("BatGoblin")
 	w:Advance(6)
 	w:Moment(bat, "Spot", { 0.1, 0 })
