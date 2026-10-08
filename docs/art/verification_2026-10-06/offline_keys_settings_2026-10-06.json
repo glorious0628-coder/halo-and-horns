@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9630,
+  "checks": 9658,
   "failedChecks": 0,
-  "namedChecks": 324,
+  "namedChecks": 338,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -423,7 +423,7 @@
     },
     {
       "group": "sanitize",
-      "check": "unknown top-level keys and unknown action ids are dropped (V = 1)",
+      "check": "unknown top-level keys and unknown action ids are dropped (V = 2, A23-78)",
       "pass": 1,
       "fail": 0
     },
@@ -550,7 +550,7 @@
     {
       "group": "sanitize",
       "check": "a non-finite / non-number Sfx -> 1",
-      "pass": 255,
+      "pass": 257,
       "fail": 0
     },
     {
@@ -568,19 +568,19 @@
     {
       "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 934,
+      "pass": 945,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 934,
+      "pass": 945,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 649,
+      "pass": 641,
       "fail": 0
     },
     {
@@ -592,7 +592,7 @@
     {
       "group": "sanitize",
       "check": "Sfx = the nearest step of the clamped value",
-      "pass": 45,
+      "pass": 43,
       "fail": 0
     },
     {
@@ -603,6 +603,90 @@
     },
     {
       "group": "sanitize",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "settings version 2 (Config.Settings + the default blob)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "an old V1 save with key hints on: off once, saved as V2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "every other V1 setting stays as it was",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "no V (a blob from before BB2's V): key hints off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "a broken V (NaN / a string / 1.9) counts as old",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "V2: key hints the player turned on stay on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "a newer V keeps the pick too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "sanitizing again changes nothing (the migration runs once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "after the migration the player turns them on again: kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "off stays off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "load: a V1 save with key hints on -> off, V2, the rest kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "load: a V2 save keeps key hints on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-78 key hints migration",
       "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
       "pass": 1,
       "fail": 0
@@ -1961,9 +2045,9 @@
   "staticChecks": 31,
   "staticFailures": [],
   "mutations": {
-    "total": 55,
-    "applied": 55,
-    "caught": 55,
+    "total": 60,
+    "applied": 60,
+    "caught": 60,
     "results": [
       {
         "mutation": "KeyMap: an explicit key already taken is kept",
@@ -2162,12 +2246,92 @@
         "newFailingChecks": [
           "dataservice-settings :: a broken Settings blob is repaired field by field on load",
           "sanitize :: output fields are exactly V, Keys and the seven settings",
-          "sanitize :: unknown top-level keys and unknown action ids are dropped (V = 1)",
+          "sanitize :: unknown top-level keys and unknown action ids are dropped (V = 2, A23-78)",
           "service-remote :: BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
           "service-remote :: a 16-key blob is accepted (junk dropped) and echoed",
           "service-remote :: the echo carries the cleaned value and the blob's Seq"
         ],
         "newFailingCount": 6,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-78: an old save keeps its key hints on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-78 key hints migration :: a broken V (NaN / a string / 1.9) counts as old",
+          "a23-78 key hints migration :: an old V1 save with key hints on: off once, saved as V2",
+          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
+          "a23-78 key hints migration :: no V (a blob from before BB2's V): key hints off",
+          "a23-78 key hints migration :: sanitizing again changes nothing (the migration runs once)",
+          "sanitize :: bools: a boolean is kept, anything else is the default"
+        ],
+        "newFailingCount": 6,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-78: V2 picks are dropped too",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-78 key hints migration :: V2: key hints the player turned on stay on",
+          "a23-78 key hints migration :: a newer V keeps the pick too",
+          "a23-78 key hints migration :: after the migration the player turns them on again: kept",
+          "a23-78 key hints migration :: load: a V2 save keeps key hints on",
+          "sanitize :: bools: a boolean is kept, anything else is the default"
+        ],
+        "newFailingCount": 5,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-78: a NaN V counts as new",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-78 key hints migration :: a broken V (NaN / a string / 1.9) counts as old",
+          "a23-78 key hints migration :: no V (a blob from before BB2's V): key hints off"
+        ],
+        "newFailingCount": 2,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-78: the version stays 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-78 key hints migration :: after the migration the player turns them on again: kept",
+          "a23-78 key hints migration :: an old V1 save with key hints on: off once, saved as V2",
+          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
+          "a23-78 key hints migration :: load: a V2 save keeps key hints on",
+          "a23-78 key hints migration :: sanitizing again changes nothing (the migration runs once)",
+          "a23-78 key hints migration :: settings version 2 (Config.Settings + the default blob)"
+        ],
+        "newFailingCount": 18,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-78: every setting of an old save is reset",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-78 key hints migration :: after the migration the player turns them on again: kept",
+          "a23-78 key hints migration :: every other V1 setting stays as it was",
+          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
+          "integration :: PlayerReady push: saved keys + settings arrive (Attack Q, Journal 없음)",
+          "sanitize :: Near exists for Tags only",
+          "sanitize :: Sfx = the nearest step of the clamped value"
+        ],
+        "newFailingCount": 22,
         "newFailingStatic": []
       },
       {
@@ -2177,9 +2341,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
           "dataservice-settings :: a broken Settings blob is repaired field by field on load"
         ],
-        "newFailingCount": 1,
+        "newFailingCount": 2,
         "newFailingStatic": []
       },
       {
@@ -2777,7 +2942,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0a677fce31e1a85b9b1594468582d4de1ef5ae11f916c1a4896adc4eff9b3063",
+    "src/ReplicatedStorage/Shared/Config.luau": "d18812028229ee02dcdaed3ca93330fcb9878cbeec7090b79c384df98bb4d7b3",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
@@ -2794,7 +2959,7 @@
     "src/ServerScriptService/StoryQuestService.luau": "23eddde771f72849f90e2b042055f18e36e4a93df6867893022d2b3cd8efb0e3",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1"
   },
-  "fixtureSHA256": "434b60e75ddf4d75136bc4a42cb957f330805cd561b4797769bb802f481bd7d2",
+  "fixtureSHA256": "1f628f07be96774ba66b240483f5377fac3166464a1560e08232756adabe8ce6",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

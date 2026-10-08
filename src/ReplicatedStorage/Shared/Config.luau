@@ -178,7 +178,7 @@ Config.Data = {
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
-		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+		Settings = { V = 2, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 			Cam = "Follow" },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
@@ -3486,7 +3486,9 @@ end
 
 -- BB2 saved settings: value rules (defaults: Config.Data.Defaults.Settings). Text = the settings window (BB3) + toasts.
 Config.Settings = {
-	Version = 1, -- Settings.V
+	-- Settings.V. 2 (A23-78, user 2026-10-08): key hints are off by default now; a blob saved before V2 (V < 2 or no V)
+	-- drops its old KeyBadges once (SanitizeSettings), every other value stays; from V2 on the player's own pick stays
+	Version = 2,
 	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
@@ -3638,8 +3640,11 @@ function Config.SanitizeSettings(t)
 	local defaults = Config.Data.Defaults.Settings
 	local src = type(t) == "table" and t or {}
 	local out = { V = ST.Version, Keys = {} }
+	-- A23-78: a blob from before settings V2 (no V, V < 2, NaN) forgets its KeyBadges once (the old default was on)
+	local before2 = not (type(src.V) == "number" and src.V == src.V and src.V >= 2)
 	for key, def in ST.Defs do
 		local v, d = src[key], defaults[key]
+		if key == "KeyBadges" and before2 then v = d end
 		if def.Type == "Number" then
 			if type(v) == "number" and v == v and v > -math.huge and v < math.huge then
 				v = math.clamp(v, def.Min, def.Max)

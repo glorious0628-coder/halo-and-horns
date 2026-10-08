@@ -285,7 +285,7 @@ do
 end
 local NOT_ALLOWED = { "Home", "End", "Insert", "Delete", "RightControl", "RightAlt", "LeftSuper", "F13", "Keypad1", "Backspace",
 	"NumLock", "ButtonR2", "Unknown", "f", "", " F" }
-local SETTINGS_DEFAULTS = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+local SETTINGS_DEFAULTS = { V = 2, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 	Cam = "Follow" } -- Cam: A23-65
 local SETTINGS_DEFS = {
 	Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
@@ -827,8 +827,8 @@ runGroup("sanitize", function()
 	local out = S({ Foo = 1, Seq = 7, Version = 9, V = 5, Keys = { Nope = "X", [1] = "Y" }, Sfx = 0.5 })
 	local keys = {}
 	for k in out do keys[k] = true end
-	check(deepEq(keys, fieldSet) and out.V == 1 and out.Sfx == 0.5 and count(out.Keys) == 0,
-		"unknown top-level keys and unknown action ids are dropped (V = 1)", show(out))
+	check(deepEq(keys, fieldSet) and out.V == 2 and out.Sfx == 0.5 and count(out.Keys) == 0,
+		"unknown top-level keys and unknown action ids are dropped (V = 2, A23-78)", show(out))
 	-- Keys
 	out = S({ Keys = { Attack = "Escape" } })
 	check(out.Keys.Attack == nil and C.KeyMap(out.Keys, nil).Attack == "F", "BB2 test value Keys.Attack = 'Escape' is rejected (Attack stays F)",
@@ -889,7 +889,7 @@ runGroup("sanitize", function()
 	local keyPool = { "", "X", "F", "Q", "G", "J", "M", "One", "KeypadOne", "Escape", "W", "Home", string.rep("Y", 30), 7, false }
 	local anyPool = { 0 / 0, math.huge, -1, 0.25, 0.55, 2, "All", "Off", "Near", "ko", "en", "Grade", true, false, "x", {} }
 	for _ = 1, 300 do
-		local blob = { Keys = {} }
+		local blob = { Keys = {}, V = if rnd:NextNumber() < 0.5 then 2 else 1 } -- A23-78: V1 and V2 blobs
 		for _, id in ids do
 			if rnd:NextNumber() < 0.3 then blob.Keys[id] = keyPool[rnd:NextInteger(1, #keyPool)] end
 		end
@@ -902,7 +902,7 @@ runGroup("sanitize", function()
 		check(deepEq(blob, before), "SanitizeSettings never changes its input", show(blob))
 		local rk = {}
 		for k in r do rk[k] = true end
-		check(deepEq(rk, fieldSet) and r.V == 1, "output fields are exactly V, Keys and the seven settings", show(rk))
+		check(deepEq(rk, fieldSet) and r.V == 2, "output fields are exactly V, Keys and the seven settings", show(rk))
 		check(SFX_GRID[r.Sfx] == true, "Sfx is always on the 0.1 grid inside 0..1", tostring(r.Sfx))
 		if type(blob.Sfx) == "number" and blob.Sfx == blob.Sfx and math.abs(blob.Sfx) ~= math.huge then
 			check(math.abs(r.Sfx - math.clamp(blob.Sfx, 0, 1)) <= 0.05 + 1e-9, "Sfx = the nearest step of the clamped value", tostring(blob.Sfx))
@@ -911,8 +911,10 @@ runGroup("sanitize", function()
 		end
 		for k, def in SETTINGS_DEFS do
 			if def.Type == "Bool" then
-				check(r[k] == (type(blob[k]) == "boolean" and blob[k] or (type(blob[k]) ~= "boolean" and SETTINGS_DEFAULTS[k])),
-					"bools: a boolean is kept, anything else is the default", k .. " " .. tostring(blob[k]))
+				-- A23-78: a V1 blob's KeyBadges is the default (off) whatever it held
+				local kept = type(blob[k]) == "boolean" and not (k == "KeyBadges" and blob.V < 2)
+				check(r[k] == (if kept then blob[k] else SETTINGS_DEFAULTS[k]),
+					"bools: a boolean is kept, anything else is the default", k .. " " .. tostring(blob[k]) .. " V" .. blob.V)
 			elseif def.Type == "Enum" then
 				local valid = type(blob[k]) == "string" and table.find(def.Options, blob[k]) ~= nil
 				check(r[k] == (valid and blob[k] or SETTINGS_DEFAULTS[k]), "enums: an option is kept, anything else is the default",
@@ -933,6 +935,46 @@ runGroup("sanitize", function()
 	end
 end)
 
+------------------------------------------------------------------ 4b. A23-78 key hints: settings V2 migration
+-- user 2026-10-08: key hints off by default. Saves written before settings V2 still carry the old KeyBadges = true;
+-- SanitizeSettings drops it once (V < 2, no V, NaN) and keeps every other value; a V2 blob keeps the player's pick.
+runGroup("a23-78 key hints migration", function()
+	local S = CONFIG.SanitizeSettings
+	check(CONFIG.Settings.Version == 2 and CONFIG.Data.Defaults.Settings.V == 2, "settings version 2 (Config.Settings + the default blob)",
+		tostring(CONFIG.Settings.Version) .. " / " .. tostring(CONFIG.Data.Defaults.Settings.V))
+	local old = S({ V = 1, KeyBadges = true, Sfx = 0.4, Shake = false, Tags = "Near", Lang = "en", BagSort = "Grade",
+		Cam = "Free", DmgNum = "Off", Keys = { Map = "X" } })
+	check(old.KeyBadges == false and old.V == 2, "an old V1 save with key hints on: off once, saved as V2", show(old))
+	check(old.Sfx == 0.4 and old.Shake == false and old.Tags == "Near" and old.Lang == "en" and old.BagSort == "Grade"
+		and old.Cam == "Free" and old.DmgNum == "Off" and old.Keys.Map == "X", "every other V1 setting stays as it was", show(old))
+	check(S({ KeyBadges = true }).KeyBadges == false, "no V (a blob from before BB2's V): key hints off", "")
+	check(S({ V = 0 / 0, KeyBadges = true }).KeyBadges == false and S({ V = "2", KeyBadges = true }).KeyBadges == false
+		and S({ V = 1.9, KeyBadges = true }).KeyBadges == false, "a broken V (NaN / a string / 1.9) counts as old", "")
+	check(S({ V = 2, KeyBadges = true }).KeyBadges == true, "V2: key hints the player turned on stay on", "")
+	check(S({ V = 7, KeyBadges = true }).KeyBadges == true, "a newer V keeps the pick too", "")
+	check(S(old).KeyBadges == false and S(S(old)).V == 2, "sanitizing again changes nothing (the migration runs once)", "")
+	local back = S({ V = old.V, KeyBadges = true, Sfx = old.Sfx })
+	check(back.KeyBadges == true and back.Sfx == 0.4, "after the migration the player turns them on again: kept", show(back))
+	check(S({ V = 1, KeyBadges = false }).KeyBadges == false and S({ V = 2, KeyBadges = false }).KeyBadges == false,
+		"off stays off", "")
+	-- DataService: an old row (V1 + true) loads with key hints off; the next visit keeps a V2 true
+	local k = function(id) return CONFIG.Data.KeyPrefix .. tostring(id) end
+	local f = dataWorld({
+		[k(601)] = { Version = 3, Level = 3, Faction = "Halo", ClassChosen = true, TutorialStep = 99,
+			Settings = { V = 1, Keys = {}, Sfx = 0.3, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto",
+				BagSort = "Default", Cam = "Follow" } },
+		[k(602)] = { Version = 3, Level = 3, Faction = "Halo", ClassChosen = true, TutorialStep = 99,
+			Settings = { V = 2, Keys = {}, Sfx = 0.3, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto",
+				BagSort = "Default", Cam = "Follow" } },
+	})
+	local d1 = f:Load(601)
+	check(d1 ~= nil and d1.Settings.KeyBadges == false and d1.Settings.V == 2 and d1.Settings.Sfx == 0.3,
+		"load: a V1 save with key hints on -> off, V2, the rest kept", d1 and show(d1.Settings))
+	local d2 = f:Load(602)
+	check(d2 ~= nil and d2.Settings.KeyBadges == true and d2.Settings.V == 2, "load: a V2 save keeps key hints on",
+		d2 and show(d2.Settings))
+end)
+
 ------------------------------------------------------------------ 5. DataService (old saves, Version 3, round trip)
 runGroup("dataservice-settings", function()
 	local k = function(id) return CONFIG.Data.KeyPrefix .. tostring(id) end
@@ -950,7 +992,7 @@ runGroup("dataservice-settings", function()
 		d1 and show(d1.Settings))
 	check(d1 ~= nil and d1.Version == 3, "Version stays 3", d1 and d1.Version)
 	local d2 = f:Load(502)
-	check(d2 ~= nil and deepEq(d2.Settings, { V = 1, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near",
+	check(d2 ~= nil and deepEq(d2.Settings, { V = 2, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near",
 		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Follow" }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
 	local d3 = f:Load(503)
 	check(d3 ~= nil and deepEq(d3.Settings, SETTINGS_DEFAULTS), "Settings = a string -> the defaults", d3 and show(d3.Settings))
@@ -1052,7 +1094,7 @@ runGroup("service-remote", function()
 	s.Clock:Advance(1.1)
 	s:Call(p, { Seq = 30, Keys = { Attack = "Escape", Map = "X", Menu = "X", Foo = "Y", Bag = string.rep("A", 1000) }, Sfx = 5,
 		Shake = "yes", DmgNum = "Near", Tags = "Near", Lang = string.rep("한", 1000), Foo = 1 })
-	local want = { V = 1, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = false,
+	local want = { V = 2, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = false,
 		Lang = "Auto", BagSort = "Default", Cam = "Follow" }
 	e = s.Sent[#s.Sent]
 	check(deepEq(s.Data[p].Settings, want), "BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
