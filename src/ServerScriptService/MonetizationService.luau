@@ -155,8 +155,11 @@ end
 -- screen). Ownership comes from Roblox when the player joins (UserOwnsGamePassAsync, Config.PassBoost.CheckTries with
 -- a doubling wait; when every try fails, the last saved answer data.PassSeen counts) and at once from
 -- PromptGamePassPurchaseFinished (purchased = true). A pass with Id 0 is never asked about (it is not sold yet).
+-- PASS.Seen[player][key] = true: A23-75 review 2026-10-08, the last saved answer (data.PassSeen) set at PlayerReady; it
+-- counts for a sold pass until Roblox answers about it (PASS.Owned), so grants paid while the player joins see it.
 -- PASS.Debug[player][key] = true / false: a Studio DebugCommand "Pass" override (never saved, never on the board).
-local PASS = { Owned = {}, Debug = {}, Board = {}, Store = nil }
+-- PASS.Want / Queued / Wrote [UserId]: the shared supporter list's pending change, its queued write, the last write.
+local PASS = { Owned = {}, Seen = {}, Debug = {}, Board = {}, Store = nil, Want = {}, Queued = {}, Wrote = {} }
 
 -- the passes this server sells: { { Key = kind or look id, Id = game pass id } }
 function PASS.Sold()
@@ -203,7 +206,23 @@ function MonetizationService.HasPass(player, key)
 	local d = PASS.Debug[player]
 	if d and d[key] ~= nil then return d[key] == true end
 	local o = PASS.Owned[player]
-	return o ~= nil and o[key] == true
+	if o ~= nil and o[key] ~= nil then return o[key] == true end
+	local s = PASS.Seen[player] -- not answered yet this session: the last saved answer (A23-75 review 2026-10-08)
+	return s ~= nil and s[key] == true
+end
+
+-- A23-75 review 2026-10-08: PlayerReady, before every later handler (QuestService's day check pays finished dailies and
+-- the chest there, attendance pays at join): the saved answers of the sold passes count at once. PASS.Check then
+-- replaces each with Roblox's answer (a refund turns it off).
+function PASS.Seed(player)
+	local data = S.PlayerService.GetData(player)
+	local seen = {}
+	if data then
+		for _, p in PASS.Sold() do
+			if seenTable(data)[p.Key] == true then seen[p.Key] = true end
+		end
+	end
+	PASS.Seen[player] = seen
 end
 
 -- true when the player may wear the look: its pass is owned, or it was unlocked (attendance, data.Looks.Owned)
@@ -252,7 +271,8 @@ function PASS.Check(player)
 	if not data or player.Parent == nil then return end
 	local owned = PASS.Owned[player] or {}
 	PASS.Owned[player] = owned
-	PASS.Publish(player) -- false / the saved looks first: nothing waits for Roblox
+	local wasVip = seenTable(data).VIP == true
+	PASS.Publish(player) -- the saved answers / looks first: nothing waits for Roblox
 	for _, p in PASS.Sold() do
 		local answer = PASS.Ask(player.UserId, p.Id)
 		if player.Parent == nil or S.PlayerService.GetData(player) ~= data then return end
@@ -264,7 +284,17 @@ function PASS.Check(player)
 		if owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back
 	end
 	PASS.Publish(player)
-	if MonetizationService.HasPass(player, "VIP") and PASS.Owned[player].VIP == true then PASS.AddSupporter(player) end
+	-- a VIP owner who shows their name is listed. A23-75 review 2026-10-08: one who hides it, or a refunded one (Roblox
+	-- now says no to a VIP saved as owned), comes off this server's board and the shared list
+	if owned.VIP == true then
+		if player:GetAttribute("HideAnnounceName") == true then
+			PASS.RemoveSupporter(player)
+		elseif MonetizationService.HasPass(player, "VIP") then
+			PASS.AddSupporter(player)
+		end
+	elseif wasVip and owned.VIP == false then
+		PASS.RemoveSupporter(player)
+	end
 end
 
 -- PromptGamePassPurchaseFinished (server side: a client cannot fake it)
@@ -347,10 +377,26 @@ function PASS.Insert(list, entry)
 	return PASS.Clean(out)
 end
 
+-- `list` without the line of `userId`
+function PASS.Without(list, userId)
+	local out = {}
+	for _, e in list do
+		if e.U ~= userId then table.insert(out, e) end
+	end
+	return out
+end
+
+-- A23-75 review 2026-10-08: a player on this server who hides their name never shows, whatever the shared list still
+-- says (their removal may not have landed yet)
 function PASS.Show(list)
-	PASS.Board = list
+	local shown = {}
+	for _, e in list do
+		local here = Players:GetPlayerByUserId(e.U)
+		if not (here and here:GetAttribute("HideAnnounceName") == true) then table.insert(shown, e) end
+	end
+	PASS.Board = shown
 	local names = {}
-	for _, e in list do table.insert(names, e.N) end
+	for _, e in shown do table.insert(names, e.N) end
 	local ok, err = pcall(function() Net.GameState():SetAttribute("SupporterNames", table.concat(names, "\n")) end)
 	if not ok then Util.Warn(TAG, "supporter board: " .. tostring(err)) end
 end
@@ -370,18 +416,59 @@ function PASS.AddSupporter(player, localOnly)
 	local entry = { U = player.UserId, N = Util.PlayerDisplayName(player), T = os.time() }
 	PASS.Show(PASS.Insert(PASS.Board, entry))
 	if localOnly then return end
-	local store = PASS.GetStore()
-	if not store then return end
-	task.spawn(function()
+	PASS.Write(player.UserId, entry)
+end
+
+-- A23-75 review 2026-10-08: a VIP owner who hides their name (now or when joining) or was refunded: off this server's
+-- board at once, then off the shared list
+function PASS.RemoveSupporter(player)
+	PASS.Show(PASS.Without(PASS.Board, player.UserId))
+	PASS.Write(player.UserId, false)
+end
+
+-- A23-75 review 2026-10-08: the board follows a later P5 hide / show toggle at once (as KaijuService's KaijuName and
+-- RankingService.MarkHideChanged do). Hidden: off this server's board and, for a VIP owner, off the shared list; shown
+-- again: a VIP owner is listed again. Nobody else writes to the shared list.
+function PASS.OnHideChanged(player)
+	if player.Parent == nil then return end
+	local vip = PASS.Owned[player] ~= nil and PASS.Owned[player].VIP == true
+	if player:GetAttribute("HideAnnounceName") == true then
+		if vip then PASS.RemoveSupporter(player) else PASS.Show(PASS.Board) end
+	elseif vip and MonetizationService.HasPass(player, "VIP") then
+		PASS.AddSupporter(player)
+	end
+end
+
+-- the shared list follows the player's latest choice (entry = listed first, false = taken off). A23-75 review
+-- 2026-10-08: at most one write per UserId per Config.PassBoost.WriteGap seconds, so a hide on / off spam cannot use up
+-- the server's DataStore budget; a change inside the gap is written once when the gap ends, with the choice as it is
+-- then (also after the player left)
+function PASS.Write(userId, entry)
+	PASS.Want[userId] = entry
+	if PASS.Queued[userId] then return end
+	PASS.Queued[userId] = true
+	local function run()
+		PASS.Queued[userId] = nil
+		PASS.Wrote[userId] = os.clock()
+		local want = PASS.Want[userId]
+		PASS.Want[userId] = nil
+		local store = PASS.GetStore()
+		if not store then return end
 		local ok, result = pcall(store.UpdateAsync, store, Config.PassBoost.SupporterKey, function(old)
-			return PASS.Insert(PASS.Clean(old), entry)
+			local list = PASS.Clean(old)
+			if want then return PASS.Insert(list, want) end
+			local kept = PASS.Without(list, userId)
+			if #kept == #list then return nil end -- not listed: nothing to write
+			return kept
 		end)
 		if ok and type(result) == "table" then
 			PASS.Show(PASS.Clean(result))
 		elseif not ok then
 			Util.Warn(TAG, "supporter board save: " .. tostring(result))
 		end
-	end)
+	end
+	local wait = (PASS.Wrote[userId] or -math.huge) + Config.PassBoost.WriteGap - os.clock()
+	if wait > 0 then task.delay(wait, run) else task.spawn(run) end
 end
 
 -- every RefreshSeconds: the shared list (other servers' VIPs)
@@ -411,6 +498,11 @@ function MonetizationService.Init(registry)
 	S = registry
 	S.PlayerService.PlayerReady:Connect(function(player)
 		publish(player)
+		PASS.Seed(player) -- A23-75 review 2026-10-08: before QuestService's (later) PlayerReady handler pays anything
+		player:GetAttributeChangedSignal("HideAnnounceName"):Connect(function() -- A23-75 review 2026-10-08
+			local ok, err = pcall(PASS.OnHideChanged, player)
+			if not ok then Util.Warn(TAG, "supporter board: " .. tostring(err)) end
+		end)
 		task.spawn(function() -- A23-75: game pass ownership (Roblox can take a few seconds)
 			local ok, err = pcall(PASS.Check, player)
 			if not ok then Util.Warn(TAG, "pass check: " .. tostring(err)) end
@@ -435,7 +527,7 @@ function MonetizationService.Start()
 		end)
 	end
 	S.PlayerService.PlayerLeaving:Connect(function(player)
-		PASS.Owned[player], PASS.Debug[player] = nil, nil
+		PASS.Owned[player], PASS.Seen[player], PASS.Debug[player] = nil, nil, nil
 	end)
 	task.spawn(function() -- the shared supporter board, now and every RefreshSeconds
 		while true do

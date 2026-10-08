@@ -5,6 +5,8 @@
 -- supporter board, the Studio "Pass" override) run on kit doubles: Players, DataStores, a MarketplaceService double
 -- (UserOwnsGamePassAsync answers / failures per user and pass, the purchase-finished signal) and a PlayerService double.
 -- The sweep over every XP / gold grant in src/ServerScriptService is a source-text check in tools/test_gamepass.py.
+-- A23-75 review 2026-10-08: KAIJU_SURVIVE_SOURCE is KaijuService's REAL survive() (with its call / getNum helpers),
+-- extracted by tools/test_gamepass.py and run on passWorld's real ProgressionService (kaijuSurvive below).
 
 local C0 = execute("Config", CONFIG_SOURCE, nativeEnv())
 local EPS = 1e-9
@@ -132,6 +134,21 @@ local function attrs(p)
 		Looks = p:GetAttribute("LooksOwned"), On = p:GetAttribute("LookOn") }
 end
 
+-- A23-75 review 2026-10-08: KaijuService's real survive(p) on world `w` (its real ProgressionService / MonetizationService
+-- through the real `call`); the rest of the kaiju event is a stand-in: opposed (contested), no participants, finish does
+-- nothing. Returns survive and SURVIVE_BONUS_MINUTES.
+local function kaijuSurvive(w)
+	w.Reg.WarService.AddFactionPoints = function() end
+	local env = w:Env()
+	env.S, env.Config, env.Util, env.Net = w.Reg, w.Config, w.Util, w.Net
+	env.TAG, env.WARN_INTERVAL, env.lastWarnAt = "KaijuService", 10, {}
+	env.contested = true
+	env.publicName = function(p) return p.Name end
+	env.participantList = function() return {} end
+	env.finish = function() end
+	return execute("KaijuSurvive", KAIJU_SURVIVE_SOURCE, env)
+end
+
 ------------------------------------------------------------------ config
 runGroup("config", function()
 	local GP = C0.GamePasses
@@ -151,11 +168,12 @@ runGroup("config", function()
 	for k in want do if B.GoldSources[k] ~= true then same = false end end
 	for k in B.GoldSources do if not want[k] then same = false end end
 	check(same, "2x Gold counts for the earned sources only", show(B.GoldSources))
-	for _, s in { "Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "Penalty", "Other" } do
+	for _, s in { "Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "KaijuBonus", "Penalty", "Other" } do
 		check(B.GoldSources[s] == nil, "never 2x: " .. s)
 	end
 	check(B.CheckTries == 3 and B.CheckWait == 1 and B.MaxSupporters == 30 and B.RefreshSeconds == 300,
 		"3 tries (1 s, then 2 s), a board of 30, read every 5 min", show({ B.CheckTries, B.CheckWait, B.MaxSupporters, B.RefreshSeconds }))
+	check(B.WriteGap == 10, "the shared supporter list: at most one write per player per 10 s (A23-75 review 2026-10-08)", B.WriteGap)
 	-- looks: four sold (99, one pass each), six attendance-only (14 / 50 / 100 days), names fit the shop slot
 	local sold, att, bad = 0, {}, {}
 	for id, look in C0.Looks do
@@ -316,7 +334,7 @@ runGroup("boost", function()
 		"a cap (A23-27) holds after the doubling")
 	-- gold: every source
 	local srcs = { "Monster", "Quest", "Event", "Bounty", "War", "Loot", "Kaiju", "SignOn", "Attendance", "Sale", "Refund",
-		"Plunder", "KaijuBank", "KaijuTransfer", "Penalty", "Other" }
+		"Plunder", "KaijuBank", "KaijuTransfer", "KaijuBonus", "Penalty", "Other" }
 	local wrong = {}
 	for _, s in srcs do
 		local boosted = C0.PassBoost.GoldSources[s] == true
@@ -477,6 +495,170 @@ runGroup("debug override", function()
 	w:Leave(p)
 	local q = w:Join(701)
 	check(not w.Ms.HasPass(q, "Gold2") and w.Ms.HasPass(q, "XP2"), "a new session: the test pass is gone")
+end)
+
+------------------------------------------------------------------ kaiju survive (A23-75 review 2026-10-08)
+-- the pouch already holds the 2x Gold pass (its kills paid x2): the +50% bonus made from it is never doubled again
+-- ("KaijuBonus"), only its cap is
+runGroup("kaiju survive", function()
+	local w = passWorld({ Ids = { Gold2 = 12 }, Owns = { [811] = { [12] = true }, [812] = {} } })
+	local survive, minutes = kaijuSurvive(w)
+	local p = w:Join(811, { Faction = "Horns", Level = 20 })
+	local q = w:Join(812, { Faction = "Horns", Level = 20 })
+	local cap = C0.HuntValue(20, minutes)
+	check(cap > 1000, "(the Lv20 survive bonus cap)", cap)
+	local earned = {}
+	w.Prog.GoldEarned:Connect(function(pl, amount, source)
+		if pl == p then table.insert(earned, source .. "=" .. tostring(amount)) end
+	end)
+	-- the same kills (2000 gold) fill the pass owner's pouch with 4000
+	w.Prog.AddCarriedGold(p, 2000, "Monster")
+	w.Prog.AddCarriedGold(q, 2000, "Monster")
+	check(w.Data[p].CarriedGold == 4000 and w.Data[q].CarriedGold == 2000, "(the pouches: 4000 with 2x Gold, 2000 without)",
+		show({ w.Data[p].CarriedGold, w.Data[q].CarriedGold }))
+	table.clear(earned)
+	local bp, bq, n0 = w.Data[p].BankGold, w.Data[q].BankGold, #w.Notices
+	survive(p)
+	survive(q)
+	local gotP, gotQ = w.Data[p].BankGold - bp, w.Data[q].BankGold - bq
+	check(gotP == 6000 and gotQ == 3000 and w.Data[p].CarriedGold == 0,
+		"survived after the same kills: the bonus is half the pouch (2000 with 2x Gold, 1000 without), the pass counts once",
+		show({ gotP, gotQ }))
+	check(show(earned) == show({ "KaijuBank=4000", "KaijuBonus=2000" }), "the pouch banks as KaijuBank, the bonus as KaijuBonus",
+		show(earned))
+	local lines = w:NoticesFor(p, n0)
+	check(#lines == 1 and has(lines[1], w.Util.FormatNumber(6000)), "the survive line shows what was added", show(lines))
+	-- at the cap: the cap doubles with the pass, so the owner still gets 2x (not 1x, not 4x)
+	w.Prog.AddCarriedGold(p, 10 * cap, "Monster")
+	w.Prog.AddCarriedGold(q, 10 * cap, "Monster")
+	bp, bq = w.Data[p].BankGold, w.Data[q].BankGold
+	survive(p)
+	survive(q)
+	gotP, gotQ = w.Data[p].BankGold - bp, w.Data[q].BankGold - bq
+	check(gotP == 20 * cap + 2 * cap and gotQ == 10 * cap + cap, "at the cap: the bonus cap doubles with 2x Gold",
+		show({ gotP - 20 * cap, gotQ - 10 * cap, cap }))
+end)
+
+------------------------------------------------------------------ the join window (A23-75 review 2026-10-08)
+-- the saved answers count from PlayerReady on: grants paid there (QuestService's day check pays finished dailies and the
+-- chest, attendance) and while Roblox is slow or down see an owned pass
+runGroup("join window", function()
+	local w = passWorld({ Ids = { XP2 = 11, Gold2 = 12, VIP = 13 }, Owns = { [851] = { [11] = true, [12] = true } } })
+	local paid = {}
+	w.Reg.PlayerService.PlayerReady:Connect(function(pl) -- a later handler (connected after MonetizationService's)
+		paid[pl.UserId] = { Gold = w.Prog.AddBankGold(pl, 100, "Quest"), XP = w.Prog.AddXP(pl, 100) }
+	end)
+	local p = w:Join(851, { Data = { PassSeen = { XP2 = true, Gold2 = true } } })
+	check(paid[851] ~= nil and paid[851].Gold == 200 and paid[851].XP == 200,
+		"grants paid inside PlayerReady see the saved passes (2x gold and XP before Roblox answers)", show(paid[851]))
+	check(w.Ms.HasPass(p, "XP2") and w.Ms.HasPass(p, "Gold2") and not w.Ms.HasPass(p, "VIP"), "(Roblox agrees after the check)")
+	-- Roblox down: the saved passes count during every try, not only after their own three
+	w = passWorld({ Ids = { XP2 = 11, Gold2 = 12, VIP = 13 }, FailAll = { [11] = true, [12] = true, [13] = true } })
+	local during, r = {}, nil
+	w.OnAsk = function()
+		table.insert(during, w.Ms.HasPass(r, "XP2") and w.Ms.HasPass(r, "Gold2") and not w.Ms.HasPass(r, "VIP"))
+	end
+	r = w:Join(852, { NoCheck = true, Data = { PassSeen = { XP2 = true, Gold2 = true } } })
+	w:RunSpawned()
+	local all = #during == 9
+	for _, v in during do
+		if v ~= true then all = false end
+	end
+	check(all and w.Ms.HasPass(r, "Gold2") and w.Ms.HasPass(r, "XP2"), "Roblox down: the saved passes count during every try",
+		show(during))
+	-- only a sold pass's saved answer counts; Roblox's answer replaces it (a refund turns it off)
+	w = passWorld({ Ids = { Gold2 = 12 }, Owns = { [853] = {} } })
+	local u = w:Join(853, { NoCheck = true, Data = { PassSeen = { XP2 = true, Gold2 = true } } })
+	check(not w.Ms.HasPass(u, "XP2") and w.Ms.HasPass(u, "Gold2"), "only a sold pass's saved answer counts (XP2 id 0: off)")
+	w:RunSpawned()
+	check(not w.Ms.HasPass(u, "Gold2") and u:GetAttribute("PassGold2") == false and w.Data[u].PassSeen.Gold2 == false,
+		"Roblox says no (refunded): the saved answer is replaced", show(attrs(u)))
+end)
+
+------------------------------------------------------------------ supporter board: a later hide (A23-75 review 2026-10-08)
+-- a hidden name never: hiding later, rejoining hidden or a refund takes it off this board at once and off the shared list
+-- (one write per player per WriteGap, with the latest choice)
+runGroup("supporters: hide later", function()
+	local key, storeName, gap = C0.PassBoost.SupporterKey, C0.PassBoost.SupporterStore, C0.PassBoost.WriteGap
+	local w = passWorld({ Ids = { VIP = 13 }, Owns = { [901] = { [13] = true }, [902] = { [13] = true }, [903] = {}, [904] = {} } })
+	local ps = w.Reg.PlayerService
+	local rows = w.Stores[storeName].Rows
+	local function shared()
+		local ids = {}
+		for _, e in rows[key] or {} do table.insert(ids, e.U) end
+		return ids
+	end
+	local function writes()
+		local n = 0
+		for _, c in w.DSCalls do
+			if c.Op == "Update" and c.Store == storeName then n += 1 end
+		end
+		return n
+	end
+	local a = w:Join(901)
+	check(w:Board() == "P901" and show(shared()) == show({ 901 }), "(a VIP who shows their name: listed here and in the shared list)",
+		show({ w:Board(), shared() }))
+	-- hides the name later (P5: AnnounceService SetStat): off this board at once, off the shared list when the gap ends
+	ps.SetStat(a, "HideAnnounceName", true)
+	w:RunSpawned()
+	check(w:Board() == "", "hidden later: off this server's board at once", w:Board())
+	w:Advance(gap)
+	check(show(shared()) == "{}", "hidden later: off the shared list too (written when the write gap ends)", show(shared()))
+	w:BoardTick()
+	check(w:Board() == "", "a refresh does not bring the hidden name back", w:Board())
+	-- shows it again: listed again
+	w:Advance(gap)
+	ps.SetStat(a, "HideAnnounceName", false)
+	w:RunSpawned()
+	check(w:Board() == "P901" and show(shared()) == show({ 901 }), "shown again: listed again here and in the shared list",
+		show({ w:Board(), shared() }))
+	-- a hide on / off spam (one toggle per frame): nothing written inside the gap, then one write with the last choice
+	local n0 = writes()
+	for i = 1, 10 do
+		ps.SetStat(a, "HideAnnounceName", i % 2 == 1)
+		w:RunSpawned()
+	end
+	check(w:Board() == "P901" and writes() == n0, "toggling inside the write gap: this board follows, the shared list waits",
+		show({ w:Board(), writes() - n0 }))
+	w:Advance(gap)
+	check(writes() == n0 + 1 and show(shared()) == show({ 901 }), "... then one write with the last choice (shown)",
+		show({ writes() - n0, shared() }))
+	-- hidden, then gone before the gap ends: the removal still lands
+	ps.SetStat(a, "HideAnnounceName", true)
+	w:Leave(a)
+	w:Advance(gap)
+	check(show(shared()) == "{}", "hidden and left inside the write gap: the removal is still written", show(shared()))
+	-- listed by an earlier session, rejoins with the name hidden: taken off at once
+	rows[key] = { { U = 902, N = "P902", T = w.Time } }
+	w:BoardTick()
+	check(w:Board() == "P902", "(listed by an earlier session)", w:Board())
+	local b = w:Join(902, { Hide = true })
+	check(w:Board() == "" and show(shared()) == "{}", "a listed VIP who rejoins hidden: off this board and the shared list",
+		show({ w:Board(), shared() }))
+	-- the shared list still carries a hidden player of this server (their removal has not landed): never shown here
+	rows[key] = { { U = 902, N = "P902", T = w.Time } }
+	w:BoardTick()
+	check(w:Board() == "", "a refresh never shows a hidden player of this server, whatever the shared list says", w:Board())
+	-- refunded: Roblox now says no to a VIP saved as owned
+	rows[key] = { { U = 903, N = "P903", T = w.Time } }
+	w:BoardTick()
+	local c = w:Join(903, { Data = { PassSeen = { VIP = true } } })
+	check(not w.Ms.HasPass(c, "VIP") and w:Board() == "" and show(shared()) == "{}",
+		"a refunded VIP comes off this board and the shared list", show({ w:Board(), shared() }))
+	-- no VIP: a hide toggle writes nothing; a hidden buyer of VIP stays off both boards
+	local n1 = writes()
+	ps.SetStat(c, "HideAnnounceName", true)
+	ps.SetStat(c, "HideAnnounceName", false)
+	w:Advance(gap)
+	w:RunSpawned()
+	check(writes() == n1, "a player without VIP toggling the hide writes nothing to the shared list", writes() - n1)
+	local d = w:Join(904, { Hide = true })
+	w.Market.PromptGamePassPurchaseFinished:Fire(d, 13, true)
+	w:RunSpawned()
+	w:Advance(gap)
+	check(w.Ms.HasPass(d, "VIP") and w:Board() == "" and show(shared()) == "{}", "a hidden player who buys VIP stays off both boards",
+		show({ w:Board(), shared() }))
+	local _ = b
 end)
 
 finish()

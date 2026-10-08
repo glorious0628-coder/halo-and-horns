@@ -18,7 +18,7 @@
 | `Config.GamePasses[Kind]` | `{ Id, Price, Name, Attr }` | Kind = `XP2`·`Gold2`·`VIP`. Name "2x XP"·"2x Gold"·"VIP". Attr = 아래 속성 이름 |
 | `Config.Looks[id]` | `{ Faction, PassId?, Price?, Name, Icon, Order, Unlock? }` | 판매 4개: `HaloIce`·`HaloGold`·`HornsLava`·`HornsShadow`(PassId·Price 99). 출석 전용 6개: `HaloSprout`·`HornsSprout`(14일)·`HaloStarlight`·`HornsStarlight`(50일)·`HaloPlatinum`·`HornsPlatinum`(100일), `Unlock = { Attendance = N }`, 가격 없음 |
 | `Config.LookOrder()` | id 배열 | 상점 순서(Order) |
-| `Config.PassBoost` | `{ Mult = 2, GoldSources, CheckTries = 3, CheckWait = 1, SupporterStore, SupporterKey, MaxSupporters = 30, RefreshSeconds = 300 }` | 2배 규칙·확인 재시도·후원자 게시판 |
+| `Config.PassBoost` | `{ Mult = 2, GoldSources, CheckTries = 3, CheckWait = 1, SupporterStore, SupporterKey, MaxSupporters = 30, RefreshSeconds = 300, WriteGap = 10 }` | 2배 규칙·확인 재시도·후원자 게시판(공용 목록은 한 사람당 10초에 한 번까지 씀) |
 
 - 치장 id는 이미지 개발의 `Config.LookThemes` 세트 이름과 같아요.
 - 출석 전용 이름("Sprout Halo"·"Star Halo"·"Plat Halo" 등, 12자 이하)은 화면 쪽에서 바꿔도 돼요.
@@ -29,7 +29,7 @@
 
 | 속성 | 값 |
 |---|---|
-| `PassXP2` · `PassGold2` · `PassVIP` | true / false. 들어올 때 false로 시작하고, Roblox 확인이 끝나면 바뀌어요 |
+| `PassXP2` · `PassGold2` · `PassVIP` | true / false. 들어올 때 마지막으로 저장된 답(`PassSeen`, 판매 중인 패스만)으로 시작하고, Roblox 확인이 끝나면 그 답으로 바뀌어요(검수 2026-10-08) |
 | `LooksOwned` | 가진 치장 id. 쉼표로 이어 붙이고 상점 순서예요(출석으로 받은 것 포함). 없으면 "" |
 | `LookOn` | 지금 입은 치장 id 또는 "". **내 진영 것만** 보여요(진영을 바꾸면 ""가 되고, 돌아오면 다시 보여요) |
 
@@ -38,6 +38,9 @@
 **GameState 속성:**
 - `SupporterNames`: VIP 가진 사람 이름을 줄바꿈으로 나눈 목록이에요. 최신순, 최대 30명이에요. 모든 서버가 같은 목록을 써요(DataStore, 5분마다 다시 읽음).
   - 이름 숨김(P5 `HideAnnounceName`)을 켠 사람은 빠져요.
+  - 검수 2026-10-08: 올라간 뒤에 숨김을 켜도 이 서버 게시판에서 바로 빠지고, 공용 목록에서도 빠져요. 숨긴 채 다시 들어와도, 환불돼도(Roblox가 "아니요") 빠져요. 숨김을 다시 끄면 VIP는 다시 올라가요.
+  - 공용 목록은 한 사람당 `WriteGap`(10초)에 한 번만 써요. 그 사이에 바꾼 건 10초가 끝날 때 마지막 선택으로 한 번 써요(나간 뒤에도). 숨김을 빨리 껐다 켰다 해도 서버 DataStore 예산을 다 쓰지 못해요.
+  - 이 서버에 있는 숨긴 사람은 공용 목록에 아직 남아 있어도 이 서버 게시판에 안 보여요.
   - 이름은 `Util.PlayerDisplayName`(확인된 닉네임 또는 DisplayName)이에요.
 
 **리모트 c→s `SetLook(id)`:**
@@ -53,9 +56,11 @@
   - 실제로 더한 양을 돌려줘요.
 - `AddCarriedGold` / `AddBankGold(player, amount, source)`: 아래 출처일 때만 ×2(`PassGold2`)를 하고, 더한 양을 돌려줘요.
 
-**2배가 되는 출처(번 것):** `Monster`(처치), `Quest`(퀘스트·일일·일일 상자·휴가·게시판·스토리), `Event`(거위), `Bounty`(현상금·복수 대행), `War`(전쟁 상자), `Loot`(겹친 무기 골드), `Kaiju`(괴수 보상 중 새로 생기는 몫), `SignOn`(약한 진영 가입 보너스), `Attendance`(A23-77 출석).
+**2배가 되는 출처(번 것):** `Monster`(처치), `Quest`(퀘스트·일일·일일 상자·휴가·게시판·스토리), `Event`(거위), `Bounty`(현상금·복수 대행), `War`(전쟁 상자), `Loot`(겹친 무기 골드), `Kaiju`(괴수 처치 보상 중 새로 생기는 몫), `SignOn`(약한 진영 가입 보너스), `Attendance`(A23-77 출석).
 
-**절대 2배가 아닌 출처:** `Sale`(팔기), `Refund`(복수 환불), `Plunder`(뺏기), `KaijuBank`(괴수 생존 때 자기 들고 있던 골드를 은행에 넣는 몫), `KaijuTransfer`(괴수 처치 때 넘겨받는 몫), `Penalty`, `Other`(테스트 골드).
+**절대 2배가 아닌 출처:** `Sale`(팔기), `Refund`(복수 환불), `Plunder`(뺏기), `KaijuBank`(괴수 생존 때 자기 들고 있던 골드를 은행에 넣는 몫), `KaijuTransfer`(괴수 처치 때 넘겨받는 몫), `KaijuBonus`(괴수 생존 +50% 보너스), `Penalty`, `Other`(테스트 골드).
+
+- **괴수 생존 보너스(검수 2026-10-08):** 보너스는 주머니 골드의 절반이에요. 주머니는 처치할 때 이미 2배로 받았어요. 그래서 보너스는 다시 곱하지 않고(`KaijuBonus`), **상한만** 2배예요(`HuntValue(레벨, 20분) × PassMult`). 같은 사냥이면 패스가 있는 사람이 보너스를 2배 받아요(4배가 아니에요). 상한에 닿아도 2배예요.
 
 - `GetXPMult` / `GetGoldMult`에는 패스가 없어요. 그래서 두 번 곱해지는 일이 없어요.
 - 2배로 얻은 레벨·골드는 레벨 상한과 랭킹에 그대로 들어가요(사용자: "그래야 사지").
@@ -69,7 +74,8 @@
   - 실패하면 1초, 2초를 기다리며 3번까지 시도해요.
   - 답을 받으면 `data.PassSeen`에 저장해요.
   - 3번 다 실패하면 **마지막으로 받은 답(저장값)**을 써요. Roblox 장애 때 산 사람이 손해 보지 않게 하려는 거예요.
-  - 환불되면 다음 확인에서 false로 바뀌어요.
+  - **검수 2026-10-08:** Roblox 답을 기다리는 동안에도 저장값이 바로 쓰여요(판매 중인 패스만). `PlayerReady` 때 MonetizationService가 먼저 넣어 둬요. 그래서 `PlayerReady` 안에서 주는 보상(QuestService 하루 확인의 끝난 일일·상자 자동 지급, 출석)도, Roblox가 느리거나 멈춘 동안 주는 보상도 2배가 돼요.
+  - 환불되면 다음 확인에서 false로 바뀌어요(저장값보다 Roblox 답이 이겨요).
 - **산 직후:** `PromptGamePassPurchaseFinished`(purchased = true)가 오면 바로 켜고 저장해요. 그 세션에서는 늦게 온 "아니요"가 다시 끄지 않아요.
 - **Id 0:** 묻지 않고 꺼진 상태예요. 화면은 "Coming soon"이에요.
 - **화면이 쓰는 구매 창:** 클라가 `MarketplaceService:PromptGamePassPurchase(player, Id)`를 부르면 돼요. 서버 리모트는 필요 없어요.
@@ -95,6 +101,7 @@
   - 돌려받은 값이 실제로 더한 양이에요. 알림에는 그 값을 쓰세요.
   - 새 출처가 필요하면(번 것이면) `GoldSources`에 한 줄 더하면 돼요. 옮겨지는 골드는 넣지 마세요.
 - **경험치:** `S.ProgressionService.AddXP(player, amount)`. 경험치는 모두 2배 대상이에요. 돌려받은 값을 표시하세요. 세 번째 인자 `cap`을 주면 2배 뒤의 최대치예요.
+- **들어올 때(`PlayerReady`) 주는 출석 보상(검수 2026-10-08):** 저장된 패스 답이 그때 이미 적용돼 있어야 2배가 돼요. MonetizationService가 `PlayerReady`에 먼저 연결돼 있어서 돼요(Main `INIT_ORDER`에서 앞). 출석 서비스는 `INIT_ORDER`에서 **MonetizationService 뒤**에 넣으세요. `task.spawn`이나 `task.defer`로 미루지 않아도 돼요.
 - **패스 확인이 따로 필요할 때:** `S.MonetizationService.HasPass(player, "XP2" | "Gold2" | "VIP")`(서버의 진짜 값)이에요. 배수 값은 `S.ProgressionService.PassMult(player, "XP2" | "Gold2")`(1 또는 2)예요. 플레이어 속성(`PassXP2` 등)은 화면용이라 서버 판단에 쓰지 마세요.
 - **출석 치장(14·50·100일):** `S.MonetizationService.GrantLook(player, "HaloSprout")` 등이에요(`Config.Looks`에서 `Unlock.Attendance`가 있는 id만). 진영에 맞는 쪽을 골라 주세요.
 - **Config / DataService:** 이 묶음의 표는 `Config.luau`의 `----- A23-75 game passes` 블록 하나(`GamePasses`·`PassBoost`·`Looks`·`LookOrder`·`SanitizeLooks`)와 `Defaults`의 `Looks`·`PassSeen` 두 줄, `DataService.fillDefaults` 끝의 `SanitizeLooks` 한 줄이에요. 출석 표·필드는 따로 블록으로 두면 겹치지 않아요.
@@ -127,3 +134,4 @@
 - MarketplaceService·DataStore·플레이어는 오프라인 대역이에요.
 - 실제 패스 Id, 구매 창, 여러 서버 사이의 후원자 목록은 사용자가 패스를 만든 뒤 Studio·게시 시험에서 확인해야 해요.
 - 지급하는 곳 28곳 중 `ProgressionService` 바깥은 소스 글자로 확인했어요(출처, 표시 금액이 실제로 더한 양인지). 직접 돌리지는 않았어요.
+  - 예외: 괴수 생존 보상(`KaijuService` survive)은 함수를 꺼내 진짜 ProgressionService 위에서 돌려요(검수 2026-10-08). 괴수 이벤트 나머지는 대역이에요.

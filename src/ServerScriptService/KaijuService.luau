@@ -425,15 +425,18 @@ local function survive(p)
 		local level = math.max(1, math.floor(getNum(p, "Level")))
 		local okCap, capGold = pcall(Config.HuntValue, level, SURVIVE_BONUS_MINUTES)
 		capGold = (okCap and tonumber(capGold)) or 0
+		-- A23-75 review 2026-10-08: the pouch already holds the 2x Gold pass (its kills paid x2), so the bonus made from
+		-- it is never doubled again; only its cap is (a pass owner at the cap still gets 2x)
+		local passMult = math.max(1, tonumber(call("ProgressionService", "PassMult", p, "Gold2")) or 1)
 		local carried = math.max(0, math.floor(getNum(p, "CarriedGold")))
 		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", p, carried, "Kaiju")) or 0))
 		local fullBonus = math.max(0, math.floor(taken * Config.Kaiju.SurviveBankMult) - taken) -- minted part
-		local bonus = opposed and math.min(fullBonus, math.max(0, math.floor(capGold))) or 0
+		local bonus = opposed and math.min(fullBonus, math.max(0, math.floor(capGold * passMult))) or 0
 		local capped = bonus < fullBonus
-		-- A23-75: the carried gold banked is the player's own ("KaijuBank", never 2x); only the minted bonus is earned
-		-- ("Kaiju": 2x with the 2x Gold pass). The line shows what was added.
+		-- A23-75: the carried gold banked is the player's own ("KaijuBank", never 2x); the minted bonus is "KaijuBonus"
+		-- (never 2x either: see passMult above). The line shows what was added.
 		if taken > 0 then call("ProgressionService", "AddBankGold", p, taken, "KaijuBank") end
-		if bonus > 0 then bonus = tonumber(call("ProgressionService", "AddBankGold", p, bonus, "Kaiju")) or bonus end
+		if bonus > 0 then bonus = tonumber(call("ProgressionService", "AddBankGold", p, bonus, "KaijuBonus")) or bonus end
 		local amount = taken + bonus
 		p:SetAttribute("SessionTitle", Config.Story.SurviveTitle) -- session only
 		call("WarService", "AddFactionPoints", "Horns", Config.Kaiju.HornsWarPoints)

@@ -3216,9 +3216,10 @@ Config.GamePasses = {
 	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
 }
 -- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
--- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of kaiju
--- rewards, the underdog sign-on, attendance). Never: Sale, Refund, Plunder, KaijuBank / KaijuTransfer (gold that was
--- already someone's), Penalty, Other (test gold).
+-- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
+-- hunt reward, the underdog sign-on, attendance). Never: Sale, Refund, Plunder, KaijuBank / KaijuTransfer (gold that was
+-- already someone's), KaijuBonus (the survive bonus: made from a pouch that already holds the pass, only its cap
+-- doubles; A23-75 review 2026-10-08), Penalty, Other (test gold).
 Config.PassBoost = {
 	Mult = 2,
 	GoldSources = { Monster = true, Quest = true, Event = true, Bounty = true, War = true, Loot = true, Kaiju = true,
@@ -3233,6 +3234,9 @@ Config.PassBoost = {
 	SupporterKey = "List",
 	MaxSupporters = 30,
 	RefreshSeconds = 300,
+	-- A23-75 review 2026-10-08: the shared list is written at most once per player per WriteGap seconds (a hide on / off
+	-- spam cannot use up the server's DataStore budget; the write then carries the latest choice)
+	WriteGap = 10,
 }
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters

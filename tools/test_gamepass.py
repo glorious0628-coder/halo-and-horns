@@ -9,8 +9,12 @@ keeps the attributes PassXP2 / PassGold2 / PassVIP / LooksOwned / LookOn, takes 
 (GrantLook) and keeps the VIP supporter board (GameState SupporterNames, a shared DataStore list). ProgressionService
 doubles every XP grant and the gold of earned sources once (never in GetXPMult / GetGoldMult) and returns what was
 added; every grant site shows that amount. The Studio DebugCommand "Pass" / "LookGrant" are test aids.
+A23-75 review 2026-10-08: the kaiju survive bonus is made from a pouch that already holds 2x Gold, so it is never doubled
+again ("KaijuBonus"), only its cap; the saved answers (PassSeen) count from PlayerReady on (grants paid while joining);
+the supporter board follows a later hide toggle, a hidden rejoin and a refund (one shared write per player per WriteGap).
 
-Runs the CURRENT Config, Util, ProgressionService and MonetizationService on tools/fixtures/dev2_kit.luau doubles with
+Runs the CURRENT Config, Util, ProgressionService, MonetizationService and KaijuService's survive() reward (extracted
+with its call / getNum helpers) on tools/fixtures/dev2_kit.luau doubles with
 tools/fixtures/gamepass_offline.luau and the installed official Luau CLI; every XP / gold grant in
 src/ServerScriptService is checked here as source text (its source, and that the line shown uses what was added). No
 Studio, network, DataStore or Roblox API calls; mutations run on in-memory copies of the sources only.
@@ -23,19 +27,32 @@ from __future__ import annotations
 import re
 from collections import Counter
 
-from dev2_offline import ROOT, SHARED, SSS, Suite, function_block, read, run, strip_comments
+from dev2_offline import ROOT, SHARED, SSS, Suite, between, function_block, read, run, strip_comments
 
 FILES = {
     "CONFIG_SOURCE": SHARED / "Config.luau",
     "UTIL_SOURCE": SHARED / "Util.luau",
     "PROGRESSION_SOURCE": SSS / "ProgressionService.luau",
     "MONETIZATION_SOURCE": SSS / "MonetizationService.luau",
+    "KAIJU_SOURCE": SSS / "KaijuService.luau",
 }
-C, P, M = "CONFIG_SOURCE", "PROGRESSION_SOURCE", "MONETIZATION_SOURCE"
+C, P, M, K = "CONFIG_SOURCE", "PROGRESSION_SOURCE", "MONETIZATION_SOURCE", "KAIJU_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
-    return dict(sources)
+    out = {key: value for key, value in sources.items() if key != K}
+    kaiju = sources[K]
+    # A23-75 review 2026-10-08: KaijuService's REAL survive() with its constants and its real warnThrottled / call /
+    # getNum helpers, as one chunk returning survive and SURVIVE_BONUS_MINUTES (the fixture gives the rest as globals)
+    out["KAIJU_SURVIVE_SOURCE"] = "\n".join([
+        between(kaiju, "local SURVIVE_BONUS_MINUTES", "\nlocal KaijuService = {}"),
+        function_block(kaiju, "local function warnThrottled("),
+        function_block(kaiju, "local function call("),
+        function_block(kaiju, "local function getNum("),
+        function_block(kaiju, "local function survive(p)"),
+        "return survive, SURVIVE_BONUS_MINUTES\n",
+    ])
+    return out
 
 
 # every XP / gold grant on the server: (file, call, gold source or None for XP, the line shown uses what was added)
@@ -51,7 +68,7 @@ EXPECTED = [
     ("GrudgeService.luau", "AddCarriedGold", "Plunder", False),
     ("GrudgeService.luau", "AddBankGold", "Bounty", True),
     ("KaijuService.luau", "AddBankGold", "KaijuBank", False),
-    ("KaijuService.luau", "AddBankGold", "Kaiju", True),
+    ("KaijuService.luau", "AddBankGold", "KaijuBonus", True),  # shown as added, never 2x (PRE_BOOSTED)
     ("KaijuService.luau", "AddBankGold", "KaijuTransfer", False),
     ("KaijuService.luau", "AddBankGold", "Kaiju", True),
     ("LootService.luau", "AddCarriedGold", "Loot", True),
@@ -72,6 +89,9 @@ EXPECTED = [
     ("StoryQuestService.luau", "AddBankGold", "Quest", True),
     ("WarService.luau", "AddBankGold", "War", True),
 ]
+# A23-75 review 2026-10-08: shown as added, but never 2x: made from gold that already holds the pass (the kaiju survive
+# bonus is half the pouch; only its cap scales with the pass)
+PRE_BOOSTED = {"KaijuBonus"}
 CALL = re.compile(r"\b(AddXP|AddCarriedGold|AddBankGold)\(|\"(AddXP|AddCarriedGold|AddBankGold)\",")
 
 
@@ -113,9 +133,10 @@ def static() -> tuple[int, list[str]]:
     config = read(SHARED / "Config.luau")
     boost = re.search(r"GoldSources = \{([^}]*)\}", config)
     sources = set(re.findall(r"(\w+) = true", boost.group(1))) if boost else set()
-    earned = {s for f, k, s, sh in EXPECTED if s and sh}
-    check(earned <= sources and not (sources & {"Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "Other", "Penalty"}),
-          f"the shown (earned) sources are the 2x Gold ones, never a transfer ({sorted(sources)})")
+    earned = {s for f, k, s, sh in EXPECTED if s and sh} - PRE_BOOSTED
+    never = {"Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "Other", "Penalty"} | PRE_BOOSTED
+    check(earned <= sources and not (sources & never),
+          f"the shown (earned) sources are the 2x Gold ones, never a transfer or a pre-boosted one ({sorted(sources)})")
     quest = strip_comments(read(SSS / "QuestService.luau"))
     for text in ("cg, cx = payReward(player, cg, cx)", "local gotGold = payReward(player,", "paidGold += (payReward(player, g, x))",
                  "Util.FormatNumber(gotGold)), \"reward\", auto and 6 or nil", "Config.Text.QuestDone, Util.FormatNumber(gotGold)"):
@@ -125,10 +146,14 @@ def static() -> tuple[int, list[str]]:
     check("return math.max(0, gold), math.max(0, xp)" in pay, "payReward returns the gold and XP added")
     kaiju = strip_comments(read(SSS / "KaijuService.luau"))
     check(re.search(r"AddBankGold\", p, taken, \"KaijuBank\"", kaiju) is not None
-          and re.search(r"bonus = tonumber\(call\(\"ProgressionService\", \"AddBankGold\", p, bonus, \"Kaiju\"\)\)", kaiju) is not None
+          and re.search(r"bonus = tonumber\(call\(\"ProgressionService\", \"AddBankGold\", p, bonus, \"KaijuBonus\"\)\)", kaiju)
+          is not None
           and re.search(r"AddBankGold\", p, moved, \"KaijuTransfer\"", kaiju) is not None
           and re.search(r"mintShare = tonumber\(call\(\"ProgressionService\", \"AddBankGold\", p, mintShare, \"Kaiju\"\)\)", kaiju)
           is not None, "kaiju: the carried gold moved is never 2x, only the minted part")
+    check("local passMult = math.max(1, tonumber(call(\"ProgressionService\", \"PassMult\", p, \"Gold2\")) or 1)" in kaiju
+          and "math.min(fullBonus, math.max(0, math.floor(capGold * passMult)))" in kaiju,
+          "kaiju survive: only the bonus cap scales with the 2x Gold pass (A23-75 review 2026-10-08)")
     prog = strip_comments(read(SSS / "ProgressionService.luau"))
     for fn in ("function M.GetGoldMult(", "function M.GetXPMult("):
         body = function_block(prog, fn)
@@ -140,6 +165,10 @@ def static() -> tuple[int, list[str]]:
     check("if Config.SanitizeLooks then d.Looks, d.PassSeen = Config.SanitizeLooks(d.Looks, d.PassSeen) end" in data,
           "DataService repairs Looks / PassSeen on load (additive, Version 3)")
     main = read(SSS / "Main.server.luau")
+    init = re.findall(r"\"(\w+)\"", between(main, "local INIT_ORDER = {", "}"))
+    check(all(n in init and init.index("MonetizationService") < init.index(n)
+              for n in ("ProgressionService", "QuestService", "StoryQuestService", "BoardService")),
+          "MonetizationService connects PlayerReady before the services that pay there (A23-75 review 2026-10-08)")
     studio = main.find("if game:GetService(\"RunService\"):IsStudio() then")
     pass_key = main.find("elseif key == \"Pass\" then")
     look_key = main.find("elseif key == \"LookGrant\" then")
@@ -235,8 +264,35 @@ MUTATIONS = [
      "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back\n",
      "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back\n"
      "\t\tif answer then MonetizationService.PassBought:Fire(player, p.Key) end\n"),
-    ("no VIP at join", M, "\tif MonetizationService.HasPass(player, \"VIP\") and PASS.Owned[player].VIP == true then PASS.AddSupporter(player) end\n",
-     ""),
+    ("no VIP at join", M, "\t\telseif MonetizationService.HasPass(player, \"VIP\") then\n\t\t\tPASS.AddSupporter(player)\n",
+     "\t\telseif false then\n"),
+    # A23-75 review 2026-10-08: the kaiju survive bonus (the pass once), the saved answers at join, the board and a hide
+    ("kaiju bonus doubled again", K, "p, bonus, \"KaijuBonus\")", "p, bonus, \"Kaiju\")"),
+    ("kaiju bonus cap not doubled", K, "math.floor(capGold * passMult)", "math.floor(capGold)"),
+    ("KaijuBonus a 2x source", C, "GoldSources = { Monster = true,", "GoldSources = { KaijuBonus = true, Monster = true,"),
+    ("no saved answers at join", M, "\t\tPASS.Seed(player) -- A23-75 review 2026-10-08", "\t\t-- A23-75 review 2026-10-08"),
+    ("saved answers ignored", M, "\treturn s ~= nil and s[key] == true\n", "\treturn false\n"),
+    ("saved answers outlive Roblox's", M, "\tif o ~= nil and o[key] ~= nil then return o[key] == true end\n",
+     "\tif o ~= nil and o[key] == true then return true end\n"),
+    ("unsold passes seeded", M, "\t\tfor _, p in PASS.Sold() do\n\t\t\tif seenTable(data)[p.Key] == true then seen[p.Key] = true end\n",
+     "\t\tfor k, v in seenTable(data) do\n\t\t\tif v == true then seen[k] = true end\n"),
+    ("hide toggle ignored", M, "GetAttributeChangedSignal(\"HideAnnounceName\")", "GetAttributeChangedSignal(\"Unused\")"),
+    ("shown again not listed", M, "\telseif vip and MonetizationService.HasPass(player, \"VIP\") then\n\t\tPASS.AddSupporter(player)\n",
+     "\telseif false then\n"),
+    ("removal not written to the shared list", M, "\tPASS.Show(PASS.Without(PASS.Board, player.UserId))\n\tPASS.Write(player.UserId, false)\n",
+     "\tPASS.Show(PASS.Without(PASS.Board, player.UserId))\n"),
+    ("hidden VIP rejoining stays listed", M, "\t\tif player:GetAttribute(\"HideAnnounceName\") == true then\n\t\t\tPASS.RemoveSupporter(player)\n",
+     "\t\tif player:GetAttribute(\"HideAnnounceName\") == true then\n"),
+    ("refund stays listed", M, "\telseif wasVip and owned.VIP == false then\n", "\telseif false then\n"),
+    ("board shows a hidden player here", M,
+     "\t\tif not (here and here:GetAttribute(\"HideAnnounceName\") == true) then table.insert(shown, e) end\n",
+     "\t\ttable.insert(shown, e)\n"),
+    ("no write gap", M, "\tif wait > 0 then task.delay(wait, run) else task.spawn(run) end\n", "\ttask.spawn(run)\n"),
+    ("no write gap (config)", C, "\tWriteGap = 10,\n", "\tWriteGap = 0,\n"),
+    ("a queued write keeps the first choice", M, "\tPASS.Want[userId] = entry\n\tif PASS.Queued[userId] then return end\n",
+     "\tif PASS.Queued[userId] then return end\n\tPASS.Want[userId] = entry\n"),
+    ("a queued write dropped after a leave", M, "\t\tlocal want = PASS.Want[userId]\n\t\tPASS.Want[userId] = nil\n",
+     "\t\tlocal want = PASS.Want[userId]\n\t\tPASS.Want[userId] = nil\n\t\tif Players:GetPlayerByUserId(userId) == nil then return end\n"),
 ]
 
 
@@ -249,18 +305,24 @@ SUITE = Suite(
              "PassXP2 / PassGold2 / PassVIP, Id 0 = not sold (never asked, 'Coming soon'). At join the server asks Roblox "
              "(UserOwnsGamePassAsync, 3 tries, waits 1 s then 2 s; every try failing = the last saved answer, "
              "data.PassSeen) and PromptGamePassPurchaseFinished (purchased) turns a pass on at once (a late 'no' never takes "
-             "it back that session). x2 applies once per grant in ProgressionService: every XP grant, and gold from the "
-             "earned sources (Monster, Quest, Event, Bounty, War, Loot, Kaiju minted part, SignOn, Attendance) - never "
-             "Sale / Refund / Plunder / KaijuBank / KaijuTransfer / Penalty / Other; GetXPMult / GetGoldMult leave it out; "
+             "it back that session). Review 2026-10-08: the saved answer of a sold pass counts from PlayerReady until Roblox "
+             "answers (grants paid while joining see it). x2 applies once per grant in ProgressionService: every XP grant, "
+             "and gold from the earned sources (Monster, Quest, Event, Bounty, War, Loot, Kaiju minted hunt part, SignOn, "
+             "Attendance) - never Sale / Refund / Plunder / KaijuBank / KaijuTransfer / KaijuBonus (the survive bonus, half "
+             "a pouch that already holds the pass; only its cap doubles) / Penalty / Other; GetXPMult / GetGoldMult leave it out; "
              "the A23-27 one-level cap holds after it; each grant returns what was added and every line shown uses it. "
              "Looks: 4 sold (99) + 6 attendance-only (14 / 50 / 100 days, GrantLook), LooksOwned in shop order, LookOn = "
              "an owned look of the player's faction (SetLook, 0.5 s; a faction switch hides it). VIP owners go on the "
              "supporter board (GameState SupporterNames, newest first, 30, a shared DataStore list read every 5 min; a "
-             "hidden name never). Studio DebugCommand Pass / LookGrant are session-only test aids.",
+             "hidden name never: hiding later, rejoining hidden or a refund takes it off here at once and off the shared "
+             "list, one shared write per player per 10 s with the latest choice). Studio DebugCommand Pass / LookGrant are "
+             "session-only test aids.",
     limitations="MarketplaceService, DataStores, Players and the PlayerService are doubles; real Roblox answer times, "
                 "purchase prompts, game pass ids and the shared list across real servers are only checkable after the "
                 "user creates the passes (Studio / a published test). The grant sites outside ProgressionService are "
-                "checked as source text (their source and that their line uses the returned amount), not run.",
+                "checked as source text (their source and that their line uses the returned amount), not run, except "
+                "KaijuService's survive() reward (extracted and run on the real ProgressionService; the kaiju event "
+                "around it is a stand-in).",
 )
 
 if __name__ == "__main__":
