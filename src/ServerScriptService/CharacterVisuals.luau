@@ -75,14 +75,13 @@ local WATCH = {
 
 -- A23-75 VIP crown before the name (이미지 개발 2026-10-08). The pass attribute is named by 게임성 개발 2
 -- (Config.GamePasses.VIP.Attr, else PassVIP); the crown is Config.UIArt IconVipCrown once drawn, else the approved Crown.
--- Size: 0.8 of the name's text size tall (the art's own width : height), 3 px before the first letter; Line1's left
--- padding takes the crown's room so crown + name stay one centred group. TextScaled shrinks a long name and the crown
--- follows it (the name's width at 22 px is measured once per text with TextService, off the caller's thread).
+-- The server only adds / removes it (ImageLabel VipCrown + UIPadding VipPad in Line1, hidden); every client sizes and
+-- places it from its own TextBounds (ShopUI: the server cannot measure the client's rendered name - UiSandbox
+-- 2026-10-08, the estimate put the crown over "[S")
 local CROWN = {
 	Attr = (type(Config.GamePasses) == "table" and type(Config.GamePasses.VIP) == "table"
 		and type(Config.GamePasses.VIP.Attr) == "string" and Config.GamePasses.VIP.Attr) or "PassVIP",
-	Art = { "IconVipCrown", "Crown" }, Height = 0.8, Gap = 3, MaxSize = 22, Aspect = 256 / 175, Estimate = 0.55,
-	Text = game:GetService("TextService"), Cache = {}, Pending = {}, CacheMax = 300, Count = 0,
+	Art = { "IconVipCrown", "Crown" }, Aspect = 256 / 175,
 }
 WATCH[CROWN.Attr] = WATCH[CROWN.Attr] or { "Nametag" }
 
@@ -274,38 +273,9 @@ function CROWN.Part()
 	return nil
 end
 
--- the name's width at MaxSize: measured (cached per text) or an estimate while TextService answers; onMeasured
--- runs once the real width is in
-function CROWN.Width(label, text, onMeasured)
-	local w = CROWN.Cache[text]
-	if w then return w end
-	local guess = utf8.len(text) or #text
-	guess *= CROWN.MaxSize * CROWN.Estimate
-	if CROWN.Pending[text] then return guess end
-	CROWN.Pending[text] = true
-	local face = label.FontFace
-	task.spawn(function()
-		local ok, bounds = pcall(function()
-			local params = Instance.new("GetTextBoundsParams")
-			params.Text = text
-			params.Font = face
-			params.Size = CROWN.MaxSize
-			params.Width = 100000
-			return CROWN.Text:GetTextBoundsAsync(params)
-		end)
-		CROWN.Pending[text] = nil
-		if CROWN.Count >= CROWN.CacheMax then CROWN.Cache, CROWN.Count = {}, 0 end
-		CROWN.Count += 1
-		-- a failed measure keeps the estimate (no retry storm on every nametag refresh)
-		CROWN.Cache[text] = (ok and typeof(bounds) == "Vector2" and bounds.X > 0) and bounds.X or guess
-		if not ok then Util.Warn(TAG, "crown text measure failed: " .. tostring(bounds)) end
-		onMeasured()
-	end)
-	return guess
-end
-
--- puts / moves / removes the crown in Line1 for `text` (Line1's visible words, unescaped)
-function CROWN.Place(player, bb, label, text)
+-- adds (hidden; the client fits it) or removes the crown in Line1; the art id follows Config, nothing else is rewritten
+-- so a client's fit is never undone by a nametag refresh
+function CROWN.Place(player, label)
 	local crown, pad = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad")
 	local id, artSize = CROWN.Part()
 	if player:GetAttribute(CROWN.Attr) ~= true or not id then
@@ -313,39 +283,23 @@ function CROWN.Place(player, bb, label, text)
 		if pad then pad:Destroy() end
 		return
 	end
-	label:SetAttribute("CrownText", text)
-	local w = CROWN.Width(label, text, function()
-		if label.Parent and label:GetAttribute("CrownText") == text then CROWN.Place(player, bb, label, text) end
-	end)
-	local aspect = typeof(artSize) == "Vector2" and artSize.Y > 0 and artSize.X / artSize.Y or CROWN.Aspect
-	local boxW = bb.Size.X.Offset
-	-- the size TextScaled picks: MaxSize unless the name is too wide for the room right of the crown (twice: the
-	-- crown's room depends on that size)
-	local size = CROWN.MaxSize
-	for _ = 1, 2 do
-		local room = boxW - size * CROWN.Height * aspect - CROWN.Gap
-		size = math.clamp(CROWN.MaxSize * room / math.max(1, w), MIN_TEXT_SIZE, CROWN.MaxSize)
-	end
-	local ch = size * CROWN.Height
-	local cw = ch * aspect
 	if not pad then
 		pad = Instance.new("UIPadding")
 		pad.Name = "VipPad"
 		pad.Parent = label
 	end
-	pad.PaddingLeft = UDim.new(0, math.floor(cw + CROWN.Gap + 0.5))
 	if not crown then
 		crown = Instance.new("ImageLabel")
 		crown.Name = "VipCrown"
 		crown.BackgroundTransparency = 1
 		crown.ScaleType = Enum.ScaleType.Fit
 		crown.AnchorPoint = Vector2.new(1, 0.5)
+		crown.Position = UDim2.new(0.5, 0, 0.5, -1)
+		crown.Visible = false
+		crown:SetAttribute("Aspect", typeof(artSize) == "Vector2" and artSize.Y > 0 and artSize.X / artSize.Y or CROWN.Aspect)
 		crown.Parent = label
 	end
-	crown.Image = id
-	crown.Size = UDim2.fromOffset(math.floor(cw + 0.5), math.floor(ch + 0.5))
-	-- the padded box's middle is the text's middle: half the text to the left, then the gap
-	crown.Position = UDim2.new(0.5, -math.floor(w * size / CROWN.MaxSize / 2 + CROWN.Gap + 0.5), 0.5, -1)
+	if crown.Image ~= id then crown.Image = id end
 end
 
 local function nametagOffset(player)
@@ -432,7 +386,7 @@ local function updateNametag(player, bb)
 	if l1 then
 		l1.Text = esc(line1)
 		l1.TextColor3 = factionColor(f)
-		CROWN.Place(player, bb, l1, line1)
+		CROWN.Place(player, l1)
 	end
 	if l2 then
 		-- A23-23: a red "무법자" at the end of line 2 (RichText is on; the tag is fixed text, never player input)

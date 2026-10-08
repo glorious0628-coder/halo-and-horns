@@ -4551,6 +4551,11 @@ Config.UIArt = {
 		IconBloodSword = { Id = "rbxassetid://80973759611362", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconGauge = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 70) },
 		IconDemon = { Id = "rbxassetid://101305375688321", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		-- A23-75 round pass badges (user pick "B", 이미지 생성 2 2096b5f, 512 round alpha): the Shop cards show them alone
+		IconPassXP2 = { Id = "", Size = Vector2.new(512, 512) }, -- PassIconExp2.png
+		IconPassGold2 = { Id = "", Size = Vector2.new(512, 512) }, -- PassIconGold2.png
+		IconPassVIP = { Id = "", Size = Vector2.new(512, 512) }, -- PassIconVIP.png
+		IconPassLooks = { Id = "", Size = Vector2.new(512, 512) }, -- PassIconBundle.png (the Looks header)
 		IconNoBuff = { Id = "rbxassetid://125613826056625", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06, re-cut 3f1716b (faction perk row)
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
@@ -4619,6 +4624,7 @@ Config.UIArt = {
 		Tex_TreeLeaves = { Id = "rbxassetid://139379724133324", Size = Vector2.new(1024, 1024) }, -- tree leaf balls (neutral: the part Color tints it)
 		Tex_TreeBark = { Id = "rbxassetid://85265884740870", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
 		Tex_HauntedFloor = { Id = "rbxassetid://78580688016455", Size = Vector2.new(1024, 1024) }, -- A23-45 유령 숲 floor (Tex_HauntedFloor_FF): Asphalt slot GE_HauntedFloor
+		Tex_WaterfallFlow = { Id = "", Size = Vector2.new(1024, 1024) }, -- A23-76 waterfall face (이미지 생성 1 ca0dfea, Tex_WaterfallFlow_FF2): streams run top -> bottom (V down)
 		-- sky sun / moon (black = transparent, additive): WarService Sky.SunTextureId / MoonTextureId per war sky
 		Sky_Sun = { Id = "rbxassetid://104329382887122", Size = Vector2.new(512, 512) }, -- Neutral sun
 		Sky_SunDawn = { Id = "rbxassetid://134904669662412", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun

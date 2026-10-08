@@ -18,22 +18,29 @@
     780,
     354
    ],
-   "CardW": 176.5,
+   "CardW": 175.5,
+   "RowPx": 584.0,
+   "InnerPx": 588.8,
    "ContentH": 307.0,
    "ViewH": 307.0,
    "Checks": {
-    "four cards in one row, no scrolling": true,
+    "four cards in one row (whole-pixel cells)": true,
+    "no scrolling for the cards": true,
     "XP2: name on one line at >= 12 px": true,
     "XP2: lines fit above the capsule": true,
+    "XP2: lines at >= 14 px (rubric)": true,
     "XP2: capsule words on one line at >= 16 px": true,
     "Gold2: name on one line at >= 12 px": true,
     "Gold2: lines fit above the capsule": true,
+    "Gold2: lines at >= 14 px (rubric)": true,
     "Gold2: capsule words on one line at >= 16 px": true,
     "VIP: name on one line at >= 12 px": true,
     "VIP: lines fit above the capsule": true,
+    "VIP: lines at >= 14 px (rubric)": true,
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: lines at >= 14 px (rubric)": true,
     "PrivateServer: capsule words on one line at >= 16 px": true,
     "look tile holds rim, name and capsule": true,
     "look Ice Halo: name on one line at >= 12 px": true,
@@ -47,130 +54,110 @@
    },
    "Cards": {
     "XP2": {
-     "NameSize": 22,
-     "NamePx": 17.6,
+     "NamePx": 22,
      "Lines": [
       "Level up twice as",
       "fast!"
      ],
-     "LineSize": 18,
-     "LinePx": 14.4,
-     "LinesH": 74.0,
+     "LinePx": 14,
+     "LinesHPx": 59.2,
      "Capsule": {
       "199 R$": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       }
      }
     },
     "Gold2": {
-     "NameSize": 22,
-     "NamePx": 17.6,
+     "NamePx": 22,
      "Lines": [
       "Get twice the gold!"
      ],
-     "LineSize": 18,
-     "LinePx": 14.4,
-     "LinesH": 74.0,
+     "LinePx": 14,
+     "LinesHPx": 59.2,
      "Capsule": {
       "149 R$": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       }
      }
     },
     "VIP": {
-     "NameSize": 22,
-     "NamePx": 17.6,
+     "NamePx": 22,
      "Lines": [
       "Crown name tag,",
       "VIP chat and emote."
      ],
-     "LineSize": 18,
-     "LinePx": 14.4,
-     "LinesH": 74.0,
+     "LinePx": 14,
+     "LinesHPx": 59.2,
      "Capsule": {
       "249 R$": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       }
      }
     },
     "PrivateServer": {
-     "NameSize": 22,
-     "NamePx": 17.6,
+     "NamePx": 22,
      "Lines": [
       "Play with just your",
       "friends."
      ],
-     "LineSize": 18,
-     "LinePx": 14.4,
-     "LinesH": 74.0,
+     "LinePx": 14,
+     "LinesHPx": 59.2,
      "Capsule": {
       "100 R$ / mo": {
-       "Size": 22,
-       "Px": 17.6
+       "Px": 22
       }
      }
     }
    },
-   "LookW": 176.5,
+   "Floors": {
+    "Name": 15,
+    "Lines": 14,
+    "Capsule": 15,
+    "BodyStyle": 18
+   },
+   "LookW": 175.5,
    "Looks": {
     "Ice Halo": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     },
     "Gold Halo": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     },
     "Lava Horns": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     },
     "Shadow Horns": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     },
     "99 R$": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     },
     "Wear": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     },
     "Wearing": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     },
     "Coming soon": {
-     "Size": 22,
-     "Px": 17.6
+     "Px": 22
     }
    },
    "Layout": {
@@ -195,22 +182,29 @@
     780,
     354
    ],
-   "CardW": 176.5,
+   "CardW": 175.5,
+   "RowPx": 367.0,
+   "InnerPx": 368.8,
    "ContentH": 307.0,
    "ViewH": 307.0,
    "Checks": {
-    "four cards in one row, no scrolling": true,
+    "four cards in one row (whole-pixel cells)": true,
+    "no scrolling for the cards": true,
     "XP2: name on one line at >= 12 px": true,
     "XP2: lines fit above the capsule": true,
+    "XP2: lines at >= 14 px (rubric)": true,
     "XP2: capsule words on one line at >= 16 px": true,
     "Gold2: name on one line at >= 12 px": true,
     "Gold2: lines fit above the capsule": true,
+    "Gold2: lines at >= 14 px (rubric)": true,
     "Gold2: capsule words on one line at >= 16 px": true,
     "VIP: name on one line at >= 12 px": true,
     "VIP: lines fit above the capsule": true,
+    "VIP: lines at >= 14 px (rubric)": true,
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: lines at >= 14 px (rubric)": true,
     "PrivateServer: capsule words on one line at >= 16 px": true,
     "look tile holds rim, name and capsule": true,
     "look Ice Halo: name on one line at >= 12 px": true,
@@ -224,130 +218,110 @@
    },
    "Cards": {
     "XP2": {
-     "NameSize": 22,
-     "NamePx": 11.0,
+     "NamePx": 14,
      "Lines": [
       "Level up twice as",
       "fast!"
      ],
-     "LineSize": 18,
-     "LinePx": 9.0,
-     "LinesH": 74.0,
+     "LinePx": 9,
+     "LinesHPx": 37.1,
      "Capsule": {
       "199 R$": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 16
       },
       "Owned": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 16
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 14
       }
      }
     },
     "Gold2": {
-     "NameSize": 22,
-     "NamePx": 11.0,
+     "NamePx": 14,
      "Lines": [
       "Get twice the gold!"
      ],
-     "LineSize": 18,
-     "LinePx": 9.0,
-     "LinesH": 74.0,
+     "LinePx": 9,
+     "LinesHPx": 37.1,
      "Capsule": {
       "149 R$": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 16
       },
       "Owned": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 16
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 14
       }
      }
     },
     "VIP": {
-     "NameSize": 22,
-     "NamePx": 11.0,
+     "NamePx": 14,
      "Lines": [
       "Crown name tag,",
       "VIP chat and emote."
      ],
-     "LineSize": 18,
-     "LinePx": 9.0,
-     "LinesH": 74.0,
+     "LinePx": 9,
+     "LinesHPx": 37.1,
      "Capsule": {
       "249 R$": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 16
       },
       "Owned": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 16
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 14
       }
      }
     },
     "PrivateServer": {
-     "NameSize": 22,
-     "NamePx": 11.0,
+     "NamePx": 14,
      "Lines": [
       "Play with just your",
       "friends."
      ],
-     "LineSize": 18,
-     "LinePx": 9.0,
-     "LinesH": 74.0,
+     "LinePx": 9,
+     "LinesHPx": 37.1,
      "Capsule": {
       "100 R$ / mo": {
-       "Size": 22,
-       "Px": 11.0
+       "Px": 16
       }
      }
     }
    },
-   "LookW": 176.5,
+   "Floors": {
+    "Name": 10,
+    "Lines": 9,
+    "Capsule": 10,
+    "BodyStyle": 12
+   },
+   "LookW": 175.5,
    "Looks": {
     "Ice Halo": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 14
     },
     "Gold Halo": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 14
     },
     "Lava Horns": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 14
     },
     "Shadow Horns": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 14
     },
     "99 R$": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 16
     },
     "Wear": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 16
     },
     "Wearing": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 16
     },
     "Coming soon": {
-     "Size": 22,
-     "Px": 11.0
+     "Px": 14
     }
    },
    "Layout": {
@@ -372,22 +346,29 @@
     780,
     354
    ],
-   "CardW": 176.5,
+   "CardW": 175.5,
+   "RowPx": 734.0,
+   "InnerPx": 736.0,
    "ContentH": 307.0,
    "ViewH": 307.0,
    "Checks": {
-    "four cards in one row, no scrolling": true,
+    "four cards in one row (whole-pixel cells)": true,
+    "no scrolling for the cards": true,
     "XP2: name on one line at >= 12 px": true,
     "XP2: lines fit above the capsule": true,
+    "XP2: lines at >= 14 px (rubric)": true,
     "XP2: capsule words on one line at >= 16 px": true,
     "Gold2: name on one line at >= 12 px": true,
     "Gold2: lines fit above the capsule": true,
+    "Gold2: lines at >= 14 px (rubric)": true,
     "Gold2: capsule words on one line at >= 16 px": true,
     "VIP: name on one line at >= 12 px": true,
     "VIP: lines fit above the capsule": true,
+    "VIP: lines at >= 14 px (rubric)": true,
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: lines at >= 14 px (rubric)": true,
     "PrivateServer: capsule words on one line at >= 16 px": true,
     "look tile holds rim, name and capsule": true,
     "look Ice Halo: name on one line at >= 12 px": true,
@@ -401,129 +382,109 @@
    },
    "Cards": {
     "XP2": {
-     "NameSize": 22,
-     "NamePx": 22.0,
+     "NamePx": 22,
      "Lines": [
       "Level up twice as fast!"
      ],
-     "LineSize": 15.0,
      "LinePx": 15.0,
-     "LinesH": 74.0,
+     "LinesHPx": 74.0,
      "Capsule": {
       "199 R$": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       }
      }
     },
     "Gold2": {
-     "NameSize": 22,
-     "NamePx": 22.0,
+     "NamePx": 22,
      "Lines": [
       "Get twice the gold!"
      ],
-     "LineSize": 15.0,
      "LinePx": 15.0,
-     "LinesH": 74.0,
+     "LinesHPx": 74.0,
      "Capsule": {
       "149 R$": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       }
      }
     },
     "VIP": {
-     "NameSize": 22,
-     "NamePx": 22.0,
+     "NamePx": 22,
      "Lines": [
       "Crown name tag, VIP",
       "chat and emote."
      ],
-     "LineSize": 15.0,
      "LinePx": 15.0,
-     "LinesH": 74.0,
+     "LinesHPx": 74.0,
      "Capsule": {
       "249 R$": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       }
      }
     },
     "PrivateServer": {
-     "NameSize": 22,
-     "NamePx": 22.0,
+     "NamePx": 22,
      "Lines": [
       "Play with just your",
       "friends."
      ],
-     "LineSize": 15.0,
      "LinePx": 15.0,
-     "LinesH": 74.0,
+     "LinesHPx": 74.0,
      "Capsule": {
       "100 R$ / mo": {
-       "Size": 22,
-       "Px": 22.0
+       "Px": 22
       }
      }
     }
    },
-   "LookW": 176.5,
+   "Floors": {
+    "Name": 12,
+    "Lines": 11,
+    "Capsule": 12,
+    "BodyStyle": 14
+   },
+   "LookW": 175.5,
    "Looks": {
     "Ice Halo": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     },
     "Gold Halo": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     },
     "Lava Horns": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     },
     "Shadow Horns": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     },
     "99 R$": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     },
     "Wear": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     },
     "Wearing": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     },
     "Coming soon": {
-     "Size": 22,
-     "Px": 22.0
+     "Px": 22
     }
    },
    "Layout": {
@@ -548,22 +509,29 @@
     780,
     354
    ],
-   "CardW": 176.5,
+   "CardW": 175.5,
+   "RowPx": 552.0,
+   "InnerPx": 552.0,
    "ContentH": 307.0,
    "ViewH": 307.0,
    "Checks": {
-    "four cards in one row, no scrolling": true,
+    "four cards in one row (whole-pixel cells)": true,
+    "no scrolling for the cards": true,
     "XP2: name on one line at >= 12 px": true,
     "XP2: lines fit above the capsule": true,
+    "XP2: lines at >= 14 px (rubric)": true,
     "XP2: capsule words on one line at >= 16 px": true,
     "Gold2: name on one line at >= 12 px": true,
     "Gold2: lines fit above the capsule": true,
+    "Gold2: lines at >= 14 px (rubric)": true,
     "Gold2: capsule words on one line at >= 16 px": true,
     "VIP: name on one line at >= 12 px": true,
     "VIP: lines fit above the capsule": true,
+    "VIP: lines at >= 14 px (rubric)": true,
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: lines at >= 14 px (rubric)": true,
     "PrivateServer: capsule words on one line at >= 16 px": true,
     "look tile holds rim, name and capsule": true,
     "look Ice Halo: name on one line at >= 12 px": true,
@@ -577,131 +545,112 @@
    },
    "Cards": {
     "XP2": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
       "Level up twice as",
       "fast!"
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "199 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "Gold2": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
-      "Get twice the gold!"
+      "Get twice the",
+      "gold!"
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "149 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "VIP": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
       "Crown name tag,",
       "VIP chat and",
       "emote."
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "249 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "PrivateServer": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
-      "Play with just your",
-      "friends."
+      "Play with just",
+      "your friends."
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "100 R$ / mo": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     }
    },
-   "LookW": 176.5,
+   "Floors": {
+    "Name": 16,
+    "Lines": 15,
+    "Capsule": 16,
+    "BodyStyle": 19
+   },
+   "LookW": 175.5,
    "Looks": {
     "Ice Halo": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Gold Halo": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Lava Horns": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Shadow Horns": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "99 R$": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Wear": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Wearing": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Coming soon": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     }
    },
    "Layout": {
@@ -726,22 +675,29 @@
     780,
     354
    ],
-   "CardW": 176.5,
+   "CardW": 175.5,
+   "RowPx": 552.0,
+   "InnerPx": 552.0,
    "ContentH": 307.0,
    "ViewH": 307.0,
    "Checks": {
-    "four cards in one row, no scrolling": true,
+    "four cards in one row (whole-pixel cells)": true,
+    "no scrolling for the cards": true,
     "XP2: name on one line at >= 12 px": true,
     "XP2: lines fit above the capsule": true,
+    "XP2: lines at >= 14 px (rubric)": true,
     "XP2: capsule words on one line at >= 16 px": true,
     "Gold2: name on one line at >= 12 px": true,
     "Gold2: lines fit above the capsule": true,
+    "Gold2: lines at >= 14 px (rubric)": true,
     "Gold2: capsule words on one line at >= 16 px": true,
     "VIP: name on one line at >= 12 px": true,
     "VIP: lines fit above the capsule": true,
+    "VIP: lines at >= 14 px (rubric)": true,
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: lines at >= 14 px (rubric)": true,
     "PrivateServer: capsule words on one line at >= 16 px": true,
     "look tile holds rim, name and capsule": true,
     "look Ice Halo: name on one line at >= 12 px": true,
@@ -755,131 +711,112 @@
    },
    "Cards": {
     "XP2": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
       "Level up twice as",
       "fast!"
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "199 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "Gold2": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
-      "Get twice the gold!"
+      "Get twice the",
+      "gold!"
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "149 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "VIP": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
       "Crown name tag,",
       "VIP chat and",
       "emote."
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "249 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "PrivateServer": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
-      "Play with just your",
-      "friends."
+      "Play with just",
+      "your friends."
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "100 R$ / mo": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     }
    },
-   "LookW": 176.5,
+   "Floors": {
+    "Name": 16,
+    "Lines": 15,
+    "Capsule": 16,
+    "BodyStyle": 19
+   },
+   "LookW": 175.5,
    "Looks": {
     "Ice Halo": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Gold Halo": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Lava Horns": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Shadow Horns": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "99 R$": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Wear": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Wearing": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Coming soon": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     }
    },
    "Layout": {
@@ -904,22 +841,29 @@
     780,
     354
    ],
-   "CardW": 176.5,
+   "CardW": 175.5,
+   "RowPx": 552.0,
+   "InnerPx": 552.0,
    "ContentH": 307.0,
    "ViewH": 307.0,
    "Checks": {
-    "four cards in one row, no scrolling": true,
+    "four cards in one row (whole-pixel cells)": true,
+    "no scrolling for the cards": true,
     "XP2: name on one line at >= 12 px": true,
     "XP2: lines fit above the capsule": true,
+    "XP2: lines at >= 14 px (rubric)": true,
     "XP2: capsule words on one line at >= 16 px": true,
     "Gold2: name on one line at >= 12 px": true,
     "Gold2: lines fit above the capsule": true,
+    "Gold2: lines at >= 14 px (rubric)": true,
     "Gold2: capsule words on one line at >= 16 px": true,
     "VIP: name on one line at >= 12 px": true,
     "VIP: lines fit above the capsule": true,
+    "VIP: lines at >= 14 px (rubric)": true,
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: lines at >= 14 px (rubric)": true,
     "PrivateServer: capsule words on one line at >= 16 px": true,
     "look tile holds rim, name and capsule": true,
     "look Ice Halo: name on one line at >= 12 px": true,
@@ -933,131 +877,112 @@
    },
    "Cards": {
     "XP2": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
       "Level up twice as",
       "fast!"
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "199 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "Gold2": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
-      "Get twice the gold!"
+      "Get twice the",
+      "gold!"
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "149 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "VIP": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
       "Crown name tag,",
       "VIP chat and",
       "emote."
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "249 R$": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Owned": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       },
       "Coming soon": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     },
     "PrivateServer": {
-     "NameSize": 22,
-     "NamePx": 16.5,
+     "NamePx": 21,
      "Lines": [
-      "Play with just your",
-      "friends."
+      "Play with just",
+      "your friends."
      ],
-     "LineSize": 19,
-     "LinePx": 14.2,
-     "LinesH": 74.0,
+     "LinePx": 15,
+     "LinesHPx": 55.5,
      "Capsule": {
       "100 R$ / mo": {
-       "Size": 22,
-       "Px": 16.5
+       "Px": 22
       }
      }
     }
    },
-   "LookW": 176.5,
+   "Floors": {
+    "Name": 16,
+    "Lines": 15,
+    "Capsule": 16,
+    "BodyStyle": 19
+   },
+   "LookW": 175.5,
    "Looks": {
     "Ice Halo": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Gold Halo": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Lava Horns": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "Shadow Horns": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 21
     },
     "99 R$": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Wear": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Wearing": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     },
     "Coming soon": {
-     "Size": 22,
-     "Px": 16.5
+     "Px": 22
     }
    },
    "Layout": {

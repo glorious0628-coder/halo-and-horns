@@ -85,10 +85,6 @@ HEAD = Face("DenkOne-Regular.ttf")
 BODY = Face("Montserrat-Regular.ttf")
 
 
-def ceil_floor(px, pxfloor, s):
-    return max(1, math.ceil(px * pxfloor / s - 0.001))
-
-
 def wrap(face, text, size, width):
     words, lines, cur = text.split(" "), [], ""
     for w in words:
@@ -151,9 +147,21 @@ def part_files():
     return out
 
 
+def floors(touch, s):
+    """UIKit STYLE floors as Roblox renders them (UiSandbox 2026-10-08): UITextSizeConstraint is applied in screen px
+    (UIScale does not reach it), so the du floor ceil(MinPx * PxFloor / scale) shows as that many real px; a desktop
+    window under the 0.8 scale shrinks it once more by PxFloor. Returns PxFloor and floor(min_px) -> real px."""
+    pxf = 1.0 if touch else min(1.0, s / 0.8)
+
+    def floor_px(min_px):
+        du = max(1, math.ceil(min_px * pxf / s - 0.001))
+        return du if touch else max(1, math.ceil(du * pxf - 0.001))
+    return pxf, floor_px
+
+
 def check_screen(name, vw, vh, touch, L, passes, names, lines, words):
     s = min(1.25, max(0.75, vh / 720)) if touch else min(1.0, max(0.5, vh / 720 * 0.8))
-    pxf = 1.0 if touch else min(1.0, s / 0.8)
+    pxf, floor_px = floors(touch, s)
     cw, ch = vw / s, vh / s
     top = (INSET + 8) / s
     hang = TITLE_H / 2
@@ -161,52 +169,62 @@ def check_screen(name, vw, vh, touch, L, passes, names, lines, words):
     win_w = max(280, min(WIN_MAX_W, cw - 24))
     max_h = min(WIN_MAX_H, avail_h)
     inner_w = win_w - 2 * PAD - PAD_LEFT - PAD_RIGHT
-    card_w = (inner_w - (L["Cols"] - 1) * L["Gap"]) / L["Cols"]
-    note_lines = wrap(BODY, words["Note"], NOTE_SIZE, inner_w)
+    # ShopUI.grid: each cell 1 du short of its exact share; UIGridLayout lays whole-pixel cells
+    card_w = inner_w / L["Cols"] - L["Gap"] * (L["Cols"] - 1) / L["Cols"] - 1
+    row_px = L["Cols"] * round(card_w * s) + (L["Cols"] - 1) * round(L["Gap"] * s)
+    note_lines = wrap(BODY, words["Note"], NOTE_SIZE * s, inner_w * s)
     content_h = PAD_TOP + L["CardH"] + LIST_GAP + len(note_lines) * NOTE_SIZE + PAD_BOTTOM
     win_h = min(max(math.ceil(hang + 8 + content_h + BOTTOM), MIN_H), max_h)
     view_h = win_h - (hang + 8) - BOTTOM
     res = {"Scale": round(s, 3), "PxFloor": round(pxf, 3), "Canvas": [round(cw), round(ch)], "Window": [win_w, win_h],
-           "CardW": round(card_w, 1), "ContentH": content_h, "ViewH": view_h, "Checks": {}, "Cards": {}}
+           "CardW": round(card_w, 1), "RowPx": row_px, "InnerPx": round(inner_w * s, 1), "ContentH": content_h,
+           "ViewH": view_h, "Checks": {}, "Cards": {}}
     checks = res["Checks"]
-    checks["four cards in one row, no scrolling"] = content_h <= view_h + 0.5 and L["Cols"] == 4 and len(passes) == 4
+    checks["four cards in one row (whole-pixel cells)"] = row_px <= math.floor(inner_w * s) and L["Cols"] == 4 \
+        and len(passes) == 4
+    checks["no scrolling for the cards"] = content_h <= view_h + 0.5
     lines_top = L["Pad"] + L["Slot"] + 4
     lines_h = L["CardH"] - lines_top - L["NameH"] - 2 - 6 - L["CapsH"] - L["Pad"]
-    name_floor = ceil_floor(NAME_MIN_PX, pxf, s)
-    body_size = max(L["LineSize"], ceil_floor(FLOOR_BODY, pxf, s))
-    caps_floor = ceil_floor(CAPS_MIN_PX, pxf, s)
-    caps_w, caps_h = card_w - 2 * L["Pad"] - 20, L["CapsH"] - 8
+    # every text size below is real px
+    name_floor, caps_floor = floor_px(NAME_MIN_PX), floor_px(CAPS_MIN_PX)
+    line_px = max(L["LineSize"] * s, floor_px(L["LinesMinPx"]))
+    name_box = ((card_w - 8) * s, L["NameH"] * s)
+    lines_w, lines_hpx = (card_w - 2 * L["Pad"]) * s, lines_h * s
+    caps_box = ((card_w - 2 * L["Pad"] - 20) * s, (L["CapsH"] - 8) * s)
+    res["Floors"] = {"Name": name_floor, "Lines": floor_px(L["LinesMinPx"]), "Capsule": caps_floor,
+                     "BodyStyle": floor_px(FLOOR_BODY)}
     for p in passes:
         k = p["Kind"]
-        nsize, _ = scaled_size(HEAD, names[k], L["NameSize"], name_floor, card_w - 8, L["NameH"])
-        wl = wrap(BODY, lines[k], body_size, card_w - 2 * L["Pad"])
-        lines_ok = len(wl) * body_size <= lines_h + 0.5 and all(BODY.width(x, body_size) <= card_w - 2 * L["Pad"] for x in wl)
+        npx, _ = scaled_size(HEAD, names[k], L["NameSize"], name_floor, *name_box)
+        wl = wrap(BODY, lines[k], line_px, lines_w)
+        lines_ok = len(wl) * line_px <= lines_hpx + 0.5 and all(BODY.width(x, line_px) <= lines_w for x in wl)
         caps_words = [words["MonthF"].replace("%s", str(p["Price"]))] if p["Info"] else \
             [words["PriceF"].replace("%s", str(p["Price"])), words["Owned"], words["Soon"]]
         caps = {}
         for w in caps_words:
-            size, n = scaled_size(HEAD, w, L["CapsSize"], caps_floor, caps_w, caps_h)
-            caps[w] = {"Size": size, "Px": round(size * s, 1) if size else None}
-        res["Cards"][k] = {"NameSize": nsize, "NamePx": round(nsize * s, 1) if nsize else None, "Lines": wl,
-                           "LineSize": body_size, "LinePx": round(body_size * s, 1), "LinesH": lines_h, "Capsule": caps}
-        checks[k + ": name on one line at >= 12 px"] = nsize is not None and nsize * s >= NAME_MIN_PX * pxf - 0.01
+            size, _ = scaled_size(HEAD, w, L["CapsSize"], caps_floor, *caps_box)
+            caps[w] = {"Px": size}
+        res["Cards"][k] = {"NamePx": npx, "Lines": wl, "LinePx": round(line_px, 1), "LinesHPx": round(lines_hpx, 1),
+                           "Capsule": caps}
+        checks[k + ": name on one line at >= 12 px"] = npx is not None and npx >= NAME_MIN_PX * pxf - 0.01
         checks[k + ": lines fit above the capsule"] = lines_ok
+        checks[k + ": lines at >= 14 px (rubric)"] = line_px >= FLOOR_BODY * pxf - 0.01
         checks[k + ": capsule words on one line at >= 16 px"] = all(
-            c["Size"] is not None and c["Size"] * s >= FLOOR_BUTTON * pxf - 0.01 for c in caps.values())
+            c["Px"] is not None and c["Px"] >= FLOOR_BUTTON * pxf - 0.01 for c in caps.values())
     # looks: LookCols tiles a row (rim slot, one-line name, capsule)
-    look_w = (inner_w - (L["LookCols"] - 1) * L["Gap"]) / L["LookCols"]
+    look_w = inner_w / L["LookCols"] - L["Gap"] * (L["LookCols"] - 1) / L["LookCols"] - 1
     res["LookW"] = round(look_w, 1)
     checks["look tile holds rim, name and capsule"] = \
         L["LookH"] >= L["Pad"] + L["LookSlot"] + 2 + L["NameH"] + 4 + L["CapsH"] + L["Pad"]
     looks = {}
     for n in words["LookNames"]:
-        size, _ = scaled_size(HEAD, n, L["NameSize"], name_floor, look_w - 8, L["NameH"])
-        looks[n] = {"Size": size, "Px": round(size * s, 1) if size else None}
-        checks["look " + n + ": name on one line at >= 12 px"] = size is not None and size * s >= NAME_MIN_PX * pxf - 0.01
+        size, _ = scaled_size(HEAD, n, L["NameSize"], name_floor, (look_w - 8) * s, L["NameH"] * s)
+        looks[n] = {"Px": size}
+        checks["look " + n + ": name on one line at >= 12 px"] = size is not None and size >= NAME_MIN_PX * pxf - 0.01
     for w in (words["PriceF"].replace("%s", "99"), words["Wear"], words["Wearing"], words["Soon"]):
-        size, _ = scaled_size(HEAD, w, L["CapsSize"], caps_floor, look_w - 2 * L["Pad"] - 20, L["CapsH"] - 8)
-        looks[w] = {"Size": size, "Px": round(size * s, 1) if size else None}
-        checks["look capsule '" + w + "' on one line at >= 16 px"] = size is not None and size * s >= FLOOR_BUTTON * pxf - 0.01
+        size, _ = scaled_size(HEAD, w, L["CapsSize"], caps_floor, (look_w - 2 * L["Pad"] - 20) * s, (L["CapsH"] - 8) * s)
+        looks[w] = {"Px": size}
+        checks["look capsule '" + w + "' on one line at >= 16 px"] = size is not None and size >= FLOOR_BUTTON * pxf - 0.01
     res["Looks"] = looks
     res["Layout"] = {"Top": top, "Hang": hang, "AvailH": avail_h, "LinesTop": lines_top, "LinesH": lines_h,
                      "NoteLines": note_lines}
@@ -311,13 +329,13 @@ def mock(name, vw, vh, touch, res, L, passes, names, words, parts):
         card = res["Cards"][k]
         d = ImageDraw.Draw(canvas)
         lt = res["Layout"]["LinesTop"]
-        if card["NameSize"]:
-            draw_text(d, HEAD, names[k], card["NameSize"] * s, x0 + cw / 2, y0 + (lt + L["NameH"] / 2) * s,
+        if card["NamePx"]:
+            draw_text(d, HEAD, names[k], card["NamePx"], x0 + cw / 2, y0 + (lt + L["NameH"] / 2) * s,
                       (255, 255, 255), (27, 33, 64))
         ly = y0 + (lt + L["NameH"] + 2) * s
         for line in card["Lines"]:
-            draw_text(d, BODY, line, card["LineSize"] * s, x0 + cw / 2, ly, (236, 238, 248), (20, 24, 48), "mt", 1)
-            ly += card["LineSize"] * s
+            draw_text(d, BODY, line, card["LinePx"], x0 + cw / 2, ly, (236, 238, 248), (20, 24, 48), "mt", 1)
+            ly += card["LinePx"]
         state = "info" if p["Info"] else ("owned" if k == "VIP" else ("soon" if k == "Gold2" else "buy"))
         word = list(card["Capsule"].keys())[0] if state in ("buy", "info") else (words["Owned"] if state == "owned" else words["Soon"])
         cap, cp = art(caps_art[state])
@@ -333,11 +351,11 @@ def mock(name, vw, vh, touch, res, L, passes, names, words, parts):
                         r_, g_, b_, a_ = px[xx, yy]
                         px[xx, yy] = (int(r_ * 0.59), int(g_ * 0.59), int(b_ * 0.63), a_)
             canvas.alpha_composite(img, (int(bx), int(by)))
-        size = card["Capsule"].get(word, {}).get("Size") or L["CapsSize"]
+        size = card["Capsule"].get(word, {}).get("Px") or L["CapsSize"] * s
         ink = (27, 33, 64) if state == "buy" else (255, 255, 255)
         rim = (255, 240, 200) if state == "buy" else (27, 33, 64)
         d = ImageDraw.Draw(canvas)
-        draw_text(d, HEAD, word, size * s, bx + bw / 2, by + bh * 0.48, ink + ((153,) if state == "soon" else (255,)), rim, "mm", 1)
+        draw_text(d, HEAD, word, size, bx + bw / 2, by + bh * 0.48, ink + ((153,) if state == "soon" else (255,)), rim, "mm", 1)
     ny = oy + (L["CardH"] + LIST_GAP) * s
     for line in res["Layout"]["NoteLines"]:
         draw_text(d, BODY, line, NOTE_SIZE * s, cx, ny, (200, 200, 210), (0, 0, 0), "mt", 0)
@@ -380,7 +398,7 @@ def main():
     sheet.save(OUT_PNG)
     for name in report["Screens"]:
         r = report["Screens"][name]
-        cards = ", ".join(f"{k} {c['NamePx']}px/{len(c['Lines'])}l" for k, c in r["Cards"].items())
+        cards = ", ".join(f"{k} {c['NamePx']}/{c['LinePx']}px x{len(c['Lines'])}" for k, c in r["Cards"].items())
         print(f"{name:15s} scale {r['Scale']:<5} window {r['Window'][0]:.0f}x{r['Window'][1]:.0f} card {r['CardW']} du  {cards}")
     print("FAILED:\n  " + "\n  ".join(failed) if failed else "all checks passed")
     print("wrote", os.path.relpath(OUT_JSON, ROOT), "and", os.path.relpath(OUT_PNG, ROOT))

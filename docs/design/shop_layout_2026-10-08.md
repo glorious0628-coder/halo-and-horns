@@ -9,11 +9,11 @@
 - 팝업·시간 제한·"최고 가치" 딱지 없음(A23-75 강요 없음). 창은 플레이어가 열 때만 열린다.
 
 ## 2. Shop 창 (PC·폰 같은 배치, 창 780 du 너비)
-- **패스 카드 4장을 한 줄로.** 폰(749×361)에서도 한 화면에 다 보이고 스크롤이 없다(카드 176.5 du = 폰 132 px).
+- **패스 카드 4장을 한 줄로.** 폰(749×361)에서도 한 화면에 다 보이고 스크롤이 없다(카드 175.5 du = 폰 132 px). 칸 너비는 몫보다 1 du 작게(UiSandbox 10/08: 정수 픽셀로 반올림되면서 4번째 카드가 안 보이는 둘째 줄로 밀렸음).
 - 카드 하나 = 누르는 곳 하나(카드 전체). 위에서부터:
   - 그림 92 du. **고른 둥근 배지(A23-75 '배지 B')가 올라오면 배지만 보인다**(배지에 테두리가 있어서 사각 칸을 빼요). 그 전에는 테두리 칸 + 대신 그림(칸의 62 %): 2x XP·2x Gold = `RewardSlot`(금), VIP = `SlotLegendary`(왕관 달린 금), 개인 서버 = `SlotRare`(파랑).
   - 이름(Title 글꼴 22 du, 긴 이름은 12 px까지 줄어듦) — "2x XP", "2x Gold", "VIP", "Private Server".
-  - 설명 최대 3줄(Body, 폰 14 px) — "Level up twice as fast!", "Get twice the gold!", "Crown name tag, VIP chat and emote.", "Play with just your friends."
+  - 설명 최대 3줄(Body, 최소 크기 StyleMinPx 11 → 폰 15 px·720p PC 14 px; Body 기본 바닥은 폰에서 19 px라 4줄로 넘침) — "Level up twice as fast!", "Get twice the gold!", "Crown name tag, VIP chat and emote.", "Play with just your friends."
   - 아래 캡슐 버튼(40 du, 글자 22 du = 폰 16.5 px): 금 "199 R$" = 사기 / 초록 "Owned" / 흐린 "Coming soon"(패스 Id 0인 동안) / 개인 서버는 파랑 "100 R$ / mo".
 - 누르면: 사기 → Roblox 구매 창(MarketplaceService:PromptGamePassPurchase, 확인은 Roblox 창이 함). 가졌으면 "You already have this!". Id 0이면 "Not on sale yet. Check back soon!". 개인 서버는 게임 안에서 살 수 없어서 "Get a private server on the game page: open Servers, then Create."
 - 창이 막 열린 0.35 s 동안은 카드 누름을 무시(메뉴 칸 두 번 누름이 카드에 떨어지지 않게).
@@ -23,11 +23,11 @@
 
 ## 3. 2x 상태 칩
 - 위 가운데 상태 칩 줄에 금색 칩 하나: "2x XP" / "2x Gold" / 둘 다면 "2x XP · Gold". 아이콘은 경험치 별(골드만이면 금화 더미).
-- 순서: 위험·보호 칩 다음, 축복 칩 앞(Zone · Luck · Bully · Wanted · Combat · Rookie · Protected · **Boost** · Blessing · Size · Kaiju). 자리가 모자라면 다른 칩처럼 '+N'으로 접힌다(PC 3개, 폰 2개).
+- 순서: 위험 칩 바로 다음(Zone · Luck · Bully · Wanted · Combat · **Boost** · Rookie · Protected · Blessing · Size · Kaiju). UiSandbox 10/08: 보호 칩 뒤에 두니 마을에서 늘 '+N'으로 접혀서 산 사람이 못 봤음. 자리가 모자라면 다른 칩처럼 '+N'으로 접힌다(PC 3개, 폰 2개: 마을의 폰은 Zone·Luck 다음이라 접힘).
 
 ## 4. VIP 왕관 (이름표)
 - 이름표 첫 줄 "[칭호] 이름" **바로 왼쪽**. 높이 = 이름 글자 크기의 0.8, 너비 = 그림 비율, 첫 글자와 3 px. 왕관+이름이 한 묶음으로 가운데.
-- 긴 이름은 TextScaled로 줄어드는데, 왕관도 같이 줄고 따라 움직인다(서버가 TextService로 이름 폭을 한 번 재서 둔다).
+- 긴 이름은 TextScaled로 줄어드는데, 왕관도 같이 줄고 따라 움직인다. 서버는 왕관(숨김)과 여백만 넣고, **각 화면(클라이언트)이 자기 화면에 그려진 이름 폭(TextBounds)으로 크기·자리를 맞춘다**(ShopUI). UiSandbox 10/08: 서버가 잰 폭은 화면 글꼴과 달라서 왕관이 "[S" 위에 겹쳤음.
 - 그림: `IconVipCrown`이 생기면 그것, 없으면 지금 승인된 `Crown`.
 - 자기 이름표는 자기에게 안 보인다(2026-10-06 결정 그대로) — 다른 사람 화면에서 보인다.
 

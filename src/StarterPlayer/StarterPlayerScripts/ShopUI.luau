@@ -16,7 +16,8 @@
 -- Server (게임성 개발 2, docs/design/gamepass_server_2026-10-08.md): Config.GamePasses[Kind] = { Id, Price, Attr } and
 -- the player attributes it sets after UserOwnsGamePassAsync (PassXP2 · PassGold2 · PassVIP, LooksOwned "a,b",
 -- LookOn). Until that lands the A23-75 prices and these proposed names stand in (ids 0 = "Coming soon").
--- Studio only: LocalPlayer attribute ShopPreview = true shows three sample looks per side (layout photos).
+-- Studio only: LocalPlayer attribute ShopPreview = true shows the picked looks (layout photos).
+-- Also here (A23-75 screens): the VIP crown on name tags is fitted on each client (CROWN below).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
@@ -69,9 +70,12 @@ local T = {
 }
 
 -- layout in canvas du (Panels' phone UIScale 0.75: 100 du = 75 px). Card = Pad · Slot · name · three lines · capsule ·
--- Pad; LinesH holds three Body lines at the phone floor (14 px = 18.7 du, ~1.25 line height)
+-- Pad. Text floors are real px (Roblox applies UITextSizeConstraint after UIScale, UiSandbox 2026-10-08): the lines'
+-- StyleMinPx 11 renders 15 px on phones (rubric >= 14) and 14 px on a 720p PC - the Body floor (19 px on phones) wrapped
+-- 'Crown name tag, VIP chat and emote.' into four lines
 local L = {
 	Cols = 4, Gap = 10, CardH = 266, Pad = 10, Slot = 92, Icon = 0.62, NameH = 28, NameSize = 22, NameMinPx = 12,
+	LinesMinPx = 11,
 	LineSize = 15, CapsH = 40, CapsSize = 22, LookCols = 4, LookH = 178, LookSlot = 84, HeadH = 30, HeadSize = 20, TicketH = 64,
 	Guard = 0.35, -- s: a fast second tap on the [메뉴] square must not land on a card (CR-L26)
 }
@@ -218,7 +222,10 @@ local function grid(kit, parent, name, cols, cellH, count)
 	f.Size = UDim2.new(1, 0, 0, rows * cellH + (rows - 1) * L.Gap)
 	f.LayoutOrder = kit.NextOrder()
 	local g = Instance.new("UIGridLayout")
-	g.CellSize = UDim2.new(1 / cols, -L.Gap * (cols - 1) / cols, 0, cellH)
+	-- 1 du short of the exact share: whole-pixel cells must not add up past the row (UiSandbox 2026-10-08: the 4th card
+	-- wrapped to a hidden second row on every screen)
+	g.CellSize = UDim2.new(1 / cols, -L.Gap * (cols - 1) / cols - 1, 0, cellH)
+	g.FillDirectionMaxCells = cols
 	g.CellPadding = UDim2.fromOffset(L.Gap, L.Gap)
 	g.FillDirection = Enum.FillDirection.Horizontal
 	g.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -254,11 +261,12 @@ local function cardWords(u, card, name, lines, top, linesH)
 	local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
 	if tc then tc.MaxTextSize = L.NameSize end
 	if not lines then return end
-	u.StyledLabel({
+	local body = u.StyledLabel({
 		Name = "Lines", Text = lines, Position = UDim2.fromOffset(L.Pad, top + L.NameH + 2),
 		Size = UDim2.new(1, -2 * L.Pad, 0, linesH), TextSize = L.LineSize, TextWrapped = true,
 		TextYAlignment = Enum.TextYAlignment.Top, Parent = card,
 	}, "Body")
+	body:SetAttribute("StyleMinPx", L.LinesMinPx)
 end
 
 -- the capsule at a card's bottom (a Panels button: gold Buy / green Free / blue default, dimmed when disabled); its
@@ -430,6 +438,50 @@ local function buildShop(parent, kit)
 	end
 end
 
+------------------------------------------------------------------ VIP crown on name tags (A23-75)
+-- The server adds VipCrown / VipPad to a VIP's nametag Line1 (CharacterVisuals, hidden); this client sizes and places
+-- it from the name as it renders here: Height of the line's TextBounds (Denk One: about 0.8 of the letters), the art's
+-- own width : height, Gap px before the first letter. The padding takes the crown's room, so crown + name stay one
+-- centred group, and a long name that TextScaled shrinks takes the crown down with it.
+local CROWN = { Height = 0.62, Gap = 3, Watched = setmetatable({}, { __mode = "k" }) }
+
+function CROWN.Fit(label)
+	local crown, pad = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad")
+	if not (crown and pad and crown:IsA("ImageLabel") and pad:IsA("UIPadding")) then return end
+	local tb = label.TextBounds
+	if tb.X < 1 or tb.Y < 1 then return end
+	local ch = math.max(6, math.floor(tb.Y * CROWN.Height + 0.5))
+	local cw = math.floor(ch * (tonumber(crown:GetAttribute("Aspect")) or 1.46) + 0.5)
+	local room = cw + CROWN.Gap
+	if pad.PaddingLeft.Offset ~= room then pad.PaddingLeft = UDim.new(0, room) end -- may re-scale the name: refit
+	crown.Size = UDim2.fromOffset(cw, ch)
+	-- the padded box's middle is the name's middle: half the name to the left, then the gap
+	crown.Position = UDim2.new(0.5, -math.floor(tb.X / 2 + CROWN.Gap + 0.5), 0.5, -1)
+	crown.Visible = true
+end
+
+function CROWN.Watch(label)
+	if CROWN.Watched[label] then return end
+	CROWN.Watched[label] = true
+	local function fit()
+		local ok, err = pcall(CROWN.Fit, label)
+		if not ok then Util.Warn(TAG, "crown fit failed: " .. tostring(err)) end
+	end
+	label:GetPropertyChangedSignal("TextBounds"):Connect(fit)
+	label.ChildAdded:Connect(function(child)
+		if child.Name == "VipCrown" or child.Name == "VipPad" then task.defer(fit) end
+	end)
+	fit()
+end
+
+function CROWN.Start()
+	local function consider(d)
+		if d.Name == "Line1" and d:IsA("TextLabel") and d.Parent and d.Parent.Name == "Nametag" then CROWN.Watch(d) end
+	end
+	workspace.DescendantAdded:Connect(consider)
+	for _, d in workspace:GetDescendants() do consider(d) end
+end
+
 ------------------------------------------------------------------ lifecycle
 function ShopUI.Init(registry)
 	C = registry
@@ -446,6 +498,8 @@ function ShopUI.Init(registry)
 end
 
 function ShopUI.Start()
+	local ok, err = pcall(CROWN.Start)
+	if not ok then Util.Warn(TAG, "crown watch failed: " .. tostring(err)) end
 	print("[ShopUI] started")
 end
 

@@ -204,7 +204,7 @@ local TXT = {
 	TileTravel = "Travel",
 	TileHelp = "Help",
 	TileShop = "Shop",
-	-- A23-75 status chip: the 2x XP / 2x Gold passes (one chip; after the danger / shield chips, before the blessing)
+	-- A23-75 status chip: the 2x XP / 2x Gold passes (one chip, right after the danger chips)
 	BoostXP = "2x XP",
 	BoostGold = "2x Gold",
 	BoostBoth = "2x XP · Gold",
@@ -1317,7 +1317,9 @@ local function buildChips(root)
 	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "IconStar",
 		Boost = "IconExp" }
 	ui.chip = {}
-	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Rookie", "Protected", "Boost", "Blessing", "Size", "Kaiju" }
+	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
+	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
+	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Boost", "Rookie", "Protected", "Blessing", "Size", "Kaiju" }
 	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
