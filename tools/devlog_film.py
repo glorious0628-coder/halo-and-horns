@@ -120,6 +120,29 @@ return 'orbit'
 """ % (center[0], center[1], center[2], r, h, dur, a0, a1, look_y, tgt, "true" if front else "false")
         return self.lua(code, "Client")
 
+    def track(self, p0, p1, target, dur, look_y=2.0):
+        """Scriptable camera sliding slowly from p0 to p1 while it looks at `target` (a Lua expression for an instance)
+        every frame: the world moves past (a runner reads as running, not a treadmill, 검수 v6)"""
+        code = """
+local RS=game:GetService('RunService'); local cam=workspace.CurrentCamera
+local a,b=Vector3.new(%f,%f,%f),Vector3.new(%f,%f,%f); local dur,lookY=%f,%f
+local function tgt() local o=%s; if not o then return nil end; return (o:IsA('Model') and o:GetPivot() or o.CFrame).Position end
+_G.__filmTok=(_G.__filmTok or 0)+1; local tok=_G.__filmTok
+cam.CameraType=Enum.CameraType.Scriptable
+local t0=os.clock(); local name='HHC_Film'..tok
+local function stop() pcall(RS.UnbindFromRenderStep, RS, name) end
+RS:BindToRenderStep(name, Enum.RenderPriority.Last.Value, function()
+  if _G.__filmTok~=tok then stop(); return end
+  if cam.CameraType~=Enum.CameraType.Scriptable then cam.CameraType=Enum.CameraType.Scriptable end
+  local t=math.clamp((os.clock()-t0)/dur,0,1)
+  local p=a:Lerp(b,t); local q=tgt() or p+Vector3.new(0,0,-1)
+  cam.CFrame=CFrame.lookAt(p, q+Vector3.new(0,lookY,0))
+  if t>=1 then stop(); task.delay(0.3,function() if _G.__filmTok==tok then cam.CameraType=Enum.CameraType.Custom end end) end
+end)
+return 'track'
+""" % (*p0, *p1, dur, look_y, target)
+        return self.lua(code, "Client")
+
     def dolly(self, p0, p1, l0, l1, dur):
         """Scriptable camera move from p0 to p1 while looking from l0 to l1 (eased); restores Custom at the end"""
         code = """
@@ -213,6 +236,10 @@ local function world(x)
 		end
 	elseif x:IsA('Beam') and not (mons and x:IsDescendantOf(mons)) then
 		hide(x, 'Enabled')
+	elseif x:IsA('BasePart') and x.Name == 'FxRing' then
+		x.LocalTransparencyModifier = 1   -- the flat yellow attack disc (검수 v6: looks like a glitch); gone with the part
+		for _, s in x:GetDescendants() do if s:IsA('SurfaceGui') then s.Enabled = false end end
+		x.DescendantAdded:Connect(function(s) if s:IsA('SurfaceGui') then s.Enabled = false end end)
 	end
 end
 if not labels then
@@ -271,6 +298,102 @@ d.Enabled = %f > 0
 pcall(RS.UnbindFromRenderStep, RS, 'HHC_FilmLook')
 RS:BindToRenderStep('HHC_FilmLook', Enum.RenderPriority.First.Value, function() L.ClockTime = %f end)
 return 'look %s'""" % (*tint, sat, con, bri, bloom, blur, focus, blur, clock, name), "Client")
+
+    def no_hurt(self, on=True):
+        """FilmSet only (검수 2026-10-08 v6/v7: no shot of the character taking hits): an invisible ForceField on my
+        character, put back every 0.3 s (a character rebuild drops it). CombatService.DamagePlayer uses
+        Humanoid:TakeDamage, which a ForceField stops, and sends the hurt number / pain sticker only when HP really
+        went down -> no red number. (A module wrap from execute_luau does not work: the command context gets its own
+        copy of every ModuleScript.) Nothing in src/ changes"""
+        return self.lua(r"""
+_G.__filmShieldTok = (_G.__filmShieldTok or 0) + 1
+local tok, on = _G.__filmShieldTok, %s
+local function strip(c) local f = c and c:FindFirstChild('FilmShield'); if f then f:Destroy() end end
+local p = game:GetService('Players'):GetPlayers()[1]
+if not on then strip(p and p.Character); return 'no hurt false' end
+task.spawn(function()
+	while _G.__filmShieldTok == tok do
+		local c = p and p.Character
+		if c and not c:FindFirstChild('FilmShield') then
+			local ff = Instance.new('ForceField')
+			ff.Name = 'FilmShield'
+			ff.Visible = false
+			ff.Parent = c
+		end
+		task.wait(0.3)
+	end
+	strip(p and p.Character)
+end)
+return 'no hurt true'""" % ("true" if on else "false"))
+
+    def hurt_watch(self):
+        """client: count every drop of my Humanoid health (a hit I took) since the call -> hurt_count()"""
+        return self.lua(r"""
+_G.__filmHurt = 0
+local c = game.Players.LocalPlayer.Character
+local h = c and c:FindFirstChildOfClass('Humanoid')
+if not h then return 'no hum' end
+if _G.__filmHurtConn then _G.__filmHurtConn:Disconnect() end
+local last = h.Health
+_G.__filmHurtConn = h.HealthChanged:Connect(function(v) if v < last - 0.01 then _G.__filmHurt += 1 end; last = v end)
+return 'hurt watch'""", "Client")
+
+    def motion_start(self):
+        """client: every 0.1 s log my root position, move input and whether an attack / skill animation plays
+        (검수 2026-10-08 v7 rule: the character must walk, run, swing or cast - never stand still > 0.5 s)"""
+        return self.lua(r"""
+_G.__filmMotionTok = (_G.__filmMotionTok or 0) + 1
+local tok, t0 = _G.__filmMotionTok, os.clock()
+_G.__filmMotion = {}
+_G.__filmActs = {}
+-- my own attack / skill events from the game's Fx remote (an instance, so this connection sees the live game; a
+-- require() here would be a separate module copy)
+if _G.__filmActConn then _G.__filmActConn:Disconnect() end
+local me = game.Players.LocalPlayer
+local quiet = { Hurt = true, Pain = true, Travel = true, TravelDone = true, MeadowTravel = true }
+_G.__filmActConn = game:GetService('ReplicatedStorage'):WaitForChild('Remotes'):WaitForChild('Fx').OnClientEvent:Connect(function(kind, data)
+	if type(data) == 'table' and tonumber(data.UserId) == me.UserId and not quiet[kind] then
+		table.insert(_G.__filmActs, string.format('%.2f:%s', os.clock() - t0, tostring(kind)))
+	end
+end)
+task.spawn(function()
+	while _G.__filmMotionTok == tok do
+		local c = game.Players.LocalPlayer.Character
+		local r = c and c:FindFirstChild('HumanoidRootPart')
+		local h = c and c:FindFirstChildOfClass('Humanoid')
+		if r and h then
+			local act = false
+			local an = h:FindFirstChildOfClass('Animator')
+			for _, tr in (an and an:GetPlayingAnimationTracks() or {}) do
+				if tr.Priority == Enum.AnimationPriority.Action or tr.Priority == Enum.AnimationPriority.Action2
+					or tr.Priority == Enum.AnimationPriority.Action3 or tr.Priority == Enum.AnimationPriority.Action4 then
+					act = true
+				end
+			end
+			table.insert(_G.__filmMotion, string.format('%.2f,%.2f,%.2f,%.2f,%d,%d', os.clock() - t0, r.Position.X, r.Position.Y,
+				r.Position.Z, h.MoveDirection.Magnitude > 0.1 and 1 or 0, act and 1 or 0))
+		end
+		task.wait(0.1)
+	end
+end)
+return 'motion on'""", "Client")
+
+    def motion_dump(self):
+        """{samples: [(t, x, y, z, moving, acting)], acts: [(t, Fx kind of MY attack / skill)]} since motion_start"""
+        try:
+            raw = self.lua("_G.__filmMotionTok = (_G.__filmMotionTok or 0) + 1; if _G.__filmActConn then _G.__filmActConn:Disconnect() end; "
+                           "return table.concat(_G.__filmMotion or {}, ';') .. '|' .. table.concat(_G.__filmActs or {}, ';')", "Client")
+            rows, acts = (raw or "|").split("|", 1)
+            return {"samples": [[float(v) for v in row.split(",")] for row in rows.split(";") if row],
+                    "acts": [[float(a.split(":")[0]), a.split(":", 1)[1]] for a in acts.split(";") if a]}
+        except Exception:
+            return {"samples": [], "acts": []}
+
+    def hurt_count(self):
+        try:
+            return int(self.lua("return _G.__filmHurt or 0", "Client"))
+        except Exception:
+            return -1
 
     def unclean(self):
         return self.lua(r"""
