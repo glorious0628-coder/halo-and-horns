@@ -12,7 +12,8 @@
 -- ground ray, walls, Humanoids and Random are doubles; the contract numbers (radii, rings, Overlap 1, 8 studs/s, 3
 -- rounds, lead 0.25 s, 1.5 spawn gap, cell 8) are written here on purpose. Review probe 2026-10-07: a player walking at
 -- 3 / 5 / 8 studs/s with 4 Shard Slimes + 2 King Slimes: mean deepest overlap per AI tick < 0.3 studs. Review
--- 2026-10-08: the zone edge (slides along the move line, rings cut by it) and two players side by side (target hold).
+-- 2026-10-08: the zone edge (slides along the move line, rings cut by it) and two players side by side (target hold,
+-- but never kept out of reach while the other player is in reach).
 
 local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 local MC = C.Monsters
@@ -724,7 +725,9 @@ end)
 -- still in AttackRange, no walk prediction); opts.Measure(now) runs at every AI tick before the passes. Review
 -- 2026-10-08: goals are clamped into the zone like aiStep (the real clampToZone; a no-op away from the zone edge), and
 -- with opts.Players (several players) each monster picks its target with the real SEP.Pick (opts.Nearest: the old rule,
--- the nearest one every tick), counting its target changes in r._switches.
+-- the nearest one every tick), counting its target changes in r._switches, the changes to a player out of reach in
+-- r._farSwitches and (review 2026-10-08) the ticks it chases a target out of reach while another player is in reach
+-- (it swings at nobody: aiStep attacks only its target) in r._idleNear.
 local WINDUP = C.HitReact.MonsterWindup
 local SUB = 8
 local function nearestOf(plist, pos)
@@ -758,8 +761,17 @@ local function simulate(w, info, recs, ticks, opts)
 			if opts.Players then
 				ti = opts.Nearest and nearestOf(plist, pos) or w.SEP.Pick(r, plist, pos, now)
 				if ti and ti.Player ~= r._target then
+					if r._target ~= nil and flat(pos, ti.Pos) > MC.AttackRange then r._farSwitches = (r._farSwitches or 0) + 1 end
 					r._target, r._targetAt = ti.Player, now
 					r._switches = (r._switches or 0) + 1
+				end
+				if ti and flat(pos, ti.Pos) > MC.AttackRange then
+					for _, p in plist do
+						if p ~= ti and flat(pos, p.Pos) <= MC.AttackRange then
+							r._idleNear = (r._idleNear or 0) + 1
+							break
+						end
+					end
 				end
 			else
 				r._target = info.Player
@@ -1340,13 +1352,27 @@ runGroup("target hold", function()
 	r._target = B.Player
 	r.Root.Position = vec(CX, 3, CZ - 5)
 	check(pick(10) == B, "both as close: it keeps the one it has")
-	-- players 6 apart: B 4.5 studs closer
+	-- players 6 apart, both out of reach (AttackRange 5.5): B 5.69 away, 3.27 studs closer than A
 	A, B = playerAt("a", CX - 3, CZ), playerAt("b", CX + 3, CZ)
-	r.Root.Position = vec(CX + 2.5, 3, CZ - 1)
+	r.Root.Position = vec(CX + 4, 3, CZ - 5.6)
 	r._target, r._targetAt = A.Player, 0
 	check(pick(10) == B, "another player more than 3 studs closer, target held 10 s: it switches")
 	r._targetAt = 9
-	check(pick(10) == A, "... but not within 2 s of taking its target")
+	check(pick(10) == A, "... but not within 2 s of taking its target (both out of reach)")
+	-- review 2026-10-08: a held target out of reach never beats a player in reach (else it stood in that player's
+	-- reach and swung at nobody; with players under 3 studs apart the margin can never be met: |dA - dB| <= |AB|)
+	r.Root.Position = vec(CX + 3, 3, CZ - 4)
+	check(MC.AttackRange == 5.5 and pick(10) == B, "within 2 s, its target 7.2 away and another player 4 away (in reach): "
+		.. "it takes the one in reach", pick(10) and pick(10).Player.Name)
+	local nearA, nearB = playerAt("a", CX, CZ), playerAt("b", CX + 2, CZ)
+	r.Root.Position = vec(CX - 3.69, 3, CZ)
+	r._target, r._targetAt = nearB.Player, 0
+	check(pick(10, { nearA, nearB }) == nearA, "players 2 apart, its target 5.69 away (out of reach), the other 3.69: "
+		.. "it switches to the one in reach although only 2 studs closer")
+	r.Root.Position = vec(CX - 3.4, 3, CZ)
+	check(pick(10, { nearA, nearB }) == nearB, "... but its target back in reach (5.4): it keeps it")
+	r.Root.Position = vec(CX + 4, 3, CZ - 5.6)
+	r._target, r._targetAt = A.Player, 9
 	check(pick(10, { B }) == B, "its target gone from the list: the nearest one at once")
 	A.Town = true
 	check(pick(10) == B, "its target in a town (not targetable): the nearest one at once")
@@ -1366,7 +1392,9 @@ end)
 runGroup("two players", function()
 	-- two players side by side (`apart` studs, standing or walking +x together at `speed`), 4 Shard + 2 King Slimes
 	-- coming from behind: the old rule (the nearest one every tick) vs SEP.Pick. Target switches after each monster's
-	-- first pick, and the mean deepest overlap over the last 20 s of 25 (bodies, both players)
+	-- first pick (Switches; Far: to a player out of reach; MaxPer: the most of one monster), the ticks a monster chased a
+	-- target out of reach while the other player was in reach (Idle, review 2026-10-08), all swings, and the mean
+	-- deepest overlap over the last 20 s of 25 (bodies, both players)
 	local FROM = { { "BigSlime", -14, 0 }, { "Slime", -13, -6 }, { "Slime", -13, 6 }, { "Slime", -18, -3 }, { "Slime", -18, 3 },
 		{ "BigSlime", -22, 0.3 } }
 	local function pairProbe(nearest, apart, speed)
@@ -1385,27 +1413,48 @@ runGroup("two players", function()
 			sum += overlapNow(w, recs, { A, B })
 			n += 1
 		end })
-		local switches = 0
-		for _, r in recs do switches += math.max(0, (r._switches or 0) - 1) end -- the first pick is no switch
-		return switches, sum / n
+		local p = { Switches = 0, Far = 0, MaxPer = 0, Idle = 0, Swings = 0, Mean = sum / n }
+		for _, r in recs do
+			local s = math.max(0, (r._switches or 0) - 1) -- the first pick is no switch
+			p.Switches += s
+			p.MaxPer = math.max(p.MaxPer, s)
+			p.Far += r._farSwitches or 0
+			p.Idle += r._idleNear or 0
+			p.Swings += r._swings or 0
+		end
+		return p
 	end
-	local oldStand, oldStandMean = pairProbe(true, 2, 0)
-	local stand, standMean = pairProbe(false, 2, 0)
-	check(oldStand >= 4, "control: standing 2 studs apart, the nearest-every-tick rule makes them swap back and forth", oldStand)
-	check(stand == 0 and standMean < 0.1, "standing 2 studs apart: no monster ever switches target, no overlap",
-		show({ switches = stand, mean = standMean }))
-	local oldWalk, oldWalkMean = pairProbe(true, 2, 5)
-	local walk, walkMean = pairProbe(false, 2, 5)
-	check(oldWalk >= 20, "control: walking side by side, the old rule keeps switching", oldWalk)
-	check(walk == 0 and walkMean < 0.3, "walking side by side at 5 studs/s: no switch, the review bar (mean < 0.3) holds",
-		show({ switches = walk, mean = walkMean }))
+	local oldStand, stand = pairProbe(true, 2, 0), pairProbe(false, 2, 0)
+	check(oldStand.Switches >= 4,
+		"control: standing 2 studs apart, the nearest-every-tick rule makes them swap back and forth", oldStand.Switches)
+	check(stand.Switches < oldStand.Switches and stand.MaxPer <= 1 and stand.Far == 0 and stand.Mean < 0.1,
+		"standing 2 studs apart: no back and forth (a monster switches at most once, only to a player in reach), no overlap",
+		show(stand))
+	local oldWalk, walk = pairProbe(true, 2, 5), pairProbe(false, 2, 5)
+	check(oldWalk.Switches >= 20, "control: walking side by side, the old rule keeps switching", oldWalk.Switches)
+	check(walk.MaxPer <= 1 and walk.Far == 0 and walk.Mean < 0.3,
+		"walking side by side at 5 studs/s: no back and forth, the review bar (mean < 0.3) holds", show(walk))
 	finding(string.format("two players 2 studs apart, 6 monsters, 25 s: target switches standing %d (old rule %d), walking 5 studs/s " ..
-		"%d (old %d); mean deepest overlap standing %.3f (old %.3f), walking %.3f (old %.3f)", stand, oldStand, walk, oldWalk,
-		standMean, oldStandMean, walkMean, oldWalkMean))
-	local s4, m4 = pairProbe(false, 4, 0)
-	local w4, wm4 = pairProbe(false, 4, 5)
-	check(s4 == 0 and w4 == 0 and m4 < 0.1 and wm4 < 0.3, "4 studs apart (standing / walking): no switch either, no pile",
-		show({ s4, m4, w4, wm4 }))
+		"%d (old %d); mean deepest overlap standing %.3f (old %.3f), walking %.3f (old %.3f)", stand.Switches, oldStand.Switches,
+		walk.Switches, oldWalk.Switches, stand.Mean, oldStand.Mean, walk.Mean, oldWalk.Mean))
+	local oldS4, s4 = pairProbe(true, 4, 0), pairProbe(false, 4, 0)
+	local oldW4, w4 = pairProbe(true, 4, 5), pairProbe(false, 4, 5)
+	check(s4.MaxPer <= 1 and w4.MaxPer <= 1 and s4.Far == 0 and w4.Far == 0 and s4.Mean < 0.1 and w4.Mean < 0.3,
+		"4 studs apart (standing / walking): no back and forth either, no pile", show({ s4, w4 }))
+	-- review 2026-10-08: a held target out of reach never keeps a monster idle in the other player's reach (it swung at
+	-- nobody: a King Slime stood 22 s in B's reach chasing A), so they swing about as often as under the old rule
+	local idle, swings, oldSwings = 0, {}, {}
+	for k, pair in { { stand, oldStand }, { walk, oldWalk }, { s4, oldS4 }, { w4, oldW4 } } do
+		idle += pair[1].Idle
+		swings[k], oldSwings[k] = pair[1].Swings, pair[2].Swings
+	end
+	local swingsOk = true
+	for k in swings do swingsOk = swingsOk and swings[k] >= 0.9 * oldSwings[k] end
+	check(idle == 0 and swingsOk, "2 / 4 studs apart, standing / walking: nobody chases a target out of reach while "
+		.. "the other player is in reach, swings >= 90% of the old rule's", show({ idle = idle, swings = swings, old = oldSwings }))
+	finding(string.format("two players, swings standing / walking: 2 apart %d / %d (old rule %d / %d), " ..
+		"4 apart %d / %d (old %d / %d); ticks idle in the other player's reach %d", swings[1], swings[2], oldSwings[1],
+		oldSwings[2], swings[3], swings[4], oldSwings[3], oldSwings[4], idle))
 end)
 
 ------------------------------------------------------------------ spawn points

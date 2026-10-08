@@ -135,7 +135,8 @@ local NATURAL = { WanderPace = 0.5, RampStart = 0.45, RampStep = 0.3, ArriveSlow
 -- is dropped and the other monster of a pair takes it), and a player's rings count only their part inside the line
 -- (SEP.RingArc: fewer fit, the rest wait on the next ring) instead of slots past it all being clamped onto the line;
 -- (2) a zone monster keeps its target TargetHold s and then switches only to a player TargetMargin studs closer
--- (SEP.Pick), so a monster between two players standing together no longer swaps target and slot every tick.
+-- (SEP.Pick), so a monster between two players standing together no longer swaps target and slot every tick; but it
+-- never keeps a target out of AttackRange while another player is in reach (it stood there and swung at nobody).
 local SEP = {
 	Radius = { Slime = 1.5, Humanoid = 1.25 },
 	PlayerRadius = 1,
@@ -2608,6 +2609,9 @@ end
 -- may chase (targetable) within AggroRadius (A10-V3-2 a), but while its current target (rec._target) is still one of
 -- those it keeps it for TargetHold s from when it took it (rec._targetAt) and after that unless another is TargetMargin
 -- studs closer. Before, a monster between two players standing together switched target (and ring slot) every tick.
+-- Review 2026-10-08 (2nd round): never a held target out of AttackRange while another one is in reach: pushed off its
+-- slot (into the other player's body) it stood in that player's reach forever and swung at nobody (aiStep attacks only
+-- its target; with players under TargetMargin apart |dA - dB| <= |AB| keeps the margin from ever being met).
 function SEP.Pick(rec, plist, pos, now)
 	local best, bestD, cur, curD = nil, nil, nil, nil
 	for _, info in plist do
@@ -2620,7 +2624,8 @@ function SEP.Pick(rec, plist, pos, now)
 		end
 	end
 	if cur ~= nil and best ~= cur
-		and (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin) then
+		and (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin)
+		and (curD <= MC.AttackRange or bestD > MC.AttackRange) then
 		return cur, curD
 	end
 	return best, bestD
@@ -2763,7 +2768,8 @@ local function aiStep(rec, plist, now)
 	end
 
 	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a); the
-	-- current one is kept a while and against a player only a little closer (SEP.Pick, A23-74 review 2026-10-08);
+	-- current one is kept a while and against a player only a little closer, unless it is out of reach and another is
+	-- in reach (SEP.Pick, A23-74 review 2026-10-08);
 	-- SKL-3 Taunt: until _tauntUntil the taunter first (while still a valid target)
 	local best, bestD = nil, nil
 	if rec._tauntUntil and now < rec._tauntUntil then

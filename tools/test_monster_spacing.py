@@ -26,7 +26,10 @@ that stays inside the line (checked from where the body stands and where its wal
 takes the dropped part, a body pinned on the line leaves a player body along it, and SEP.Surround counts only the part
 of each ring inside the line (SEP.Arc / SEP.RingArc / SEP.SpreadArc: fewer fit, the rest wait on the next ring).
 (2) With two players standing together, a monster between them took the nearest every tick and swapped target and
-ring slot back and forth; SEP.Pick keeps a target 2 s and then only gives it up for a player 3 studs closer.
+ring slot back and forth; SEP.Pick keeps a target 2 s and then only gives it up for a player 3 studs closer. Review
+2026-10-08 (2nd round): but never a target out of reach while another player is in reach (pushed off its slot into the
+other player's body, a King Slime stood in that player's reach and swung at nobody; with players under 3 studs apart the
+margin can never be met); the two-player probe also asserts no such idle tick and swings >= 90% of the old rule's.
 
 Cuts the SEP table and functions, insideZone and findInfo from the CURRENT MonsterService (with the CURRENT Config), the
 real pickSpawnPoint (the test_tutorial_spawn cut) and the real MonsterService.SpawnEvent, runs them on
@@ -253,10 +256,17 @@ MUTATIONS = [
     ("boss spawns on a monster", M, "\t\t\t\tif SEP.Clear(g, body) then\n", "\t\t\t\tif true then\n"),
     ("crowded boss spawn lost", M, "\t\tpos = pos or crowded\n", ""),
     # target hold (review 2026-10-08: two players side by side)
-    ("no target hold time", M, "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin) then",
-     "\t\tand (bestD > curD - SEP.TargetMargin) then"),
-    ("no target margin", M, "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin) then",
-     "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold) then"),
+    ("no target hold time", M, "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin)\n",
+     "\t\tand (bestD > curD - SEP.TargetMargin)\n"),
+    ("no target margin", M, "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin)\n",
+     "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold)\n"),
+    # review 2026-10-08: a held target out of reach never beats a player in reach
+    ("held target out of reach beats one in reach", M, "\t\tand (curD <= MC.AttackRange or bestD > MC.AttackRange) then",
+     "\t\tthen"),
+    ("a target out of reach always dropped", M, "\t\tand (curD <= MC.AttackRange or bestD > MC.AttackRange) then",
+     "\t\tand (curD <= MC.AttackRange) then"),
+    ("in reach of both: still switches", M, "\t\tand (curD <= MC.AttackRange or bestD > MC.AttackRange) then",
+     "\t\tand (bestD > MC.AttackRange) then"),
     ("always the nearest (old rule)", M, "\tif cur ~= nil and best ~= cur\n", "\tif false and cur ~= nil and best ~= cur\n"),
     ("hold 0 s", M, "\tTargetHold = 2, -- s", "\tTargetHold = 0, -- s"),
     ("margin 1 stud", M, "\tTargetMargin = 3, -- studs", "\tTargetMargin = 1, -- studs"),
@@ -337,7 +347,9 @@ SUITE = Suite(
              "rings count only their arc inside the line (around where the player will be), fewer fit and the rest wait "
              "on the next ring, so no slot needs clamping (a player 3 studs past the line: 6 chasers, none touching, "
              "old clamped slots 2.6 studs inside each other); a zone monster keeps its target 2 s, then switches only "
-             "to a player 3 studs closer (two players side by side: no switching standing or walking together). "
+             "to a player 3 studs closer, but never keeps a target out of AttackRange while another player is in reach "
+             "(two players side by side: no back and forth standing or walking together, nobody idle in the other "
+             "player's reach). "
              "Monster parts stay CanCollide = false.",
     limitations="Roots, Humanoids (MoveTo / WalkSpeed / AutoRotate), the ground ray, walls, Random and the player list "
                 "are doubles; the simulations use a stand-in for aiStep / attack (walk at Def.Speed x the NATURAL ramp, "
