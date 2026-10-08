@@ -4084,12 +4084,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "fx-ground :: the slime's shadow shrinks while it is in the air (0.65 at the top of the hop)",
           "monster-pool :: the king's presence changes no regular spawn",
           "season-end-pool :: at EndsAt reevaluate removes every alive regular Halloween monster (10 + 8 + 4 + 3)",
           "season-end-pool :: one second after EndsAt: nothing left to sweep, the Halloween targets are 0",
           "season-end-pool :: the event king (HalloweenService closes it) and a personal monster are not swept"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "pumpkin slime loses the slime jackpot",
@@ -5348,7 +5349,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3df6deaf08e78df0fa5e6f8d8a1ef8a7f5f91985996080bc5b7f2bd7c7f0a00a",
+    "src/ReplicatedStorage/Shared/Config.luau": "bd09ec674c7f079f8501d3f5fde2ad01f33b6307a6497eec64e44a30c5592ada",
     "src/ReplicatedStorage/Shared/Net.luau": "a5f641ff6b031f6cdcd8a809d61fbb1efd3d5549c80fc4eba6b630556b03793e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
@@ -5361,8 +5362,8 @@
     "src/ServerScriptService/MonsterService.luau": "de5514f3f337753ef8a9cd38ac1c97bc86813a8083410367da5333020c63a037",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "de0638c1776386bd94646570f166825a73aa9ba95b4daaa76c250ba4ec99586d",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "cbe5046ae65283c9d2fcc1ddd0fe75d3f5d76ea12d664b9beed9bf225f041020",
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "f7e50b181901b75109f00c32215e6b245f9b9558a6c26fdc40857be943952641",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "dedd3121495e9910a7bc015632ea1a43874d6c4d13575601e6f61f28debc1eab",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "49d3488a4ae1d6bdb049b5095876f4505d087871d72dcc529e70b7db09ceb8fb",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "a2c2b18fcaf4a0f1024c57da5dd4b28a47c16ae57ddf61a9815114641c73baaa",
