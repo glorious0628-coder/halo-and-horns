@@ -1,8 +1,11 @@
 """
-마을 안 소품 조사(읽기만, 2026-10-08): place/GoodEvil.rbxlx에서 두 마을(Config.Zones HaloTown/HornsTown 상자) 안에 있는
+마을(·존) 안 소품 조사(읽기만, 2026-10-08): place/GoodEvil.rbxlx에서 두 마을(Config.Zones HaloTown/HornsTown 상자) 안에 있는
 보이는 모델·파트를 모아, 원시 파트(Part/Wedge/Cylinder 등)로 된 것과 3D(MeshPart+MeshId)로 된 것을 나눈다.
 
-  py tools/town_props_scan.py [place.rbxlx] > out.json
+  py tools/town_props_scan.py [place.rbxlx] [--zones towns|all] > out.json
+
+- --zones all(2026-10-08 보강): 모든 존 상자(Config.Zones 지도 v2)로 나눈다. 앞 순서가 먼저(교차로 → 마을 → 사냥터),
+  어느 존에도 안 들고 Outskirts 상자 안이면 "Outskirts"(길가·들판). 기본 = towns(두 마을만, 옛 동작).
 
 - 묶는 단위: Workspace 아래에서 '처음 만나는 Model'(폴더는 내려감). 모델이 아닌 낱개 파트는 그 폴더 이름으로 묶는다.
 - 보임: Transparency < 0.95 인 BasePart만 센다(투명 계약 파트·존 바닥 제외). Terrain·SpawnLocation·Camera 제외.
@@ -13,8 +16,15 @@ import sys
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
-PLACE = sys.argv[1] if len(sys.argv) > 1 else "place/GoodEvil.rbxlx"
-TOWNS = {"HaloTown": (0, -515, 200, 185), "HornsTown": (0, 515, 200, 185)}
+args = [a for a in sys.argv[1:] if not a.startswith("--")]
+PLACE = args[0] if args else "place/GoodEvil.rbxlx"
+MODE = sys.argv[sys.argv.index("--zones") + 1] if "--zones" in sys.argv else "towns"
+# (centre x, centre z, half x, half z) from src/ReplicatedStorage/Shared/Config.luau Config.Zones (map v2, 2026-10-07)
+ALL = {"Crossroads": (0, 0, 150, 150), "HaloTown": (0, -515, 200, 185), "HornsTown": (0, 515, 200, 185),
+       "SlimeMeadow": (430, 0, 220, 240), "PumpkinPatch": (535, 335, 115, 95), "HauntedHollow": (320, 342.5, 100, 87.5),
+       "GoblinWoods": (950, 0, 240, 260), "SkeletonRuins": (1520, 0, 260, 290)}
+OUTSKIRTS = (790, 0, 1050, 720)
+TOWNS = ALL if MODE == "all" else {k: ALL[k] for k in ("HaloTown", "HornsTown")}
 PRIM = {"Part", "WedgePart", "CornerWedgePart", "TrussPart", "Seat", "VehicleSeat", "SpawnLocation"}
 
 root = ET.parse(PLACE).getroot()
@@ -54,6 +64,10 @@ def town_of(p):
     for t, (cx, cz, hx, hz) in TOWNS.items():
         if abs(p[0] - cx) <= hx and abs(p[2] - cz) <= hz:
             return t
+    if MODE == "all":
+        cx, cz, hx, hz = OUTSKIRTS
+        if abs(p[0] - cx) <= hx and abs(p[2] - cz) <= hz:
+            return "Outskirts"
     return None
 
 
