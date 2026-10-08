@@ -7,7 +7,7 @@
 ## 이 순서에 들어가는 코드(origin/main)
 - 0f4211a6 dev2 몬스터 겹침 3차(MonsterService) 병합
 - b8efe680 멈춤 카드 PauseCard.luau + 후원자 게시판 이름 줄 글자칸, 6e8bb06d 게시판 글자 여백
-- be1aa0c4 Audio 보류(첫 임무·오프닝·선택 창 동안 경보·3-2-1 소리 없음), SkillBar 키 표시 = Settings.KeyBadges,
+- 8a0853af Audio 보류(첫 임무·오프닝·선택 창 동안 경보·3-2-1 소리 없음), SkillBar 키 표시 = Settings.KeyBadges,
   Fx 스티커 TextRect(EmoOuch 빈 말풍선 그림용), Config.Sky.Neutral 안개 150,205,228·조명 Tint 255,245,230,
   crossroads_3d_swap 게시판 보존 + board_fit, gate_faces_hide 도구, preview_map 물 색
 - (남의 것, 같은 sync) 87f8e6b 개발 3 KeyBadges 설정 V2(옛 저장본 키 표시 한 번 끔), 7fab73be EmoOuch 그림 Id 비움
