@@ -9,7 +9,8 @@
 --     MapBuilder.placePad, touch stays) and the MostWantedBoard SurfaceGui part moves onto the new board face;
 --   * the old KitLight holders (4 lamps + 1 brazier, map light budget 40) are cloned onto the new lamp / brazier;
 --   * Kit_M_SignPost goes on the three roads out of the plaza (new, no old model).
--- Idempotent: Map.Decor.Crossroads3D is rebuilt from the stored old spots on every run.
+-- Idempotent: Map.Decor.Crossroads3D is rebuilt from the stored old spots on every run; models in it that this swap does
+-- not make (X_SupporterBoard, ...) are kept, and the MostWantedBoard part is fitted to the new board's panel each run.
 if game:GetService("RunService"):IsRunning() then error("Edit 모드에서만 실행하세요.") end
 local SS = game:GetService("ServerStorage")
 local kit = SS:FindFirstChild("WorldKit3D")
@@ -111,11 +112,30 @@ for _, d in store:GetChildren() do
 	end
 end
 
+-- 검수 10/08 (watch 3): models this swap does not make (placed into Crossroads3D by other tools: X_SupporterBoard with
+-- its SupporterFace from supporter_board_place.luau) are taken out before the rebuild and put back after it
+local MADE = { Kit_M_SignPost = true }
+for _, rule in SWAP do
+	if rule.new then MADE[rule.new] = true end
+end
+local kept = {}
 local out = D:FindFirstChild("Crossroads3D")
-if out then out:Destroy() end
+if out then
+	for _, ch in out:GetChildren() do
+		if not MADE[ch.Name] then
+			ch.Parent = nil
+			table.insert(kept, ch)
+		end
+	end
+	out:Destroy()
+end
 out = Instance.new("Model")
 out.Name = "Crossroads3D"
 out.Parent = D -- now: the pad / board raycasts below only see parts inside Workspace
+for _, ch in kept do
+	ch.Parent = out
+	table.insert(log, "kept " .. ch.Name)
+end
 
 local function solidOf(old)
 	for _, p in old:GetDescendants() do
@@ -210,21 +230,38 @@ for _, old in store:GetChildren() do
 			end
 		end
 		if m and rule.board then
-			-- the MostWantedBoard (+X SurfaceGui) moves onto the new board's front face, same size / height as before
+			-- the MostWantedBoard (+X SurfaceGui) moves onto the new board's front face and fits its panel under the roof
+			-- (board_fit.luau, 10/08 photo; 검수 watch 3: kit_main puts the old 0.4 x 9.6 x 11.8 part back at Y 8.4, so the
+			-- fit is done here every run): FIT.H / FIT.W of the 3D board's box around FIT.Y of its height, FIT.Depth
+			-- thin, invisible (only the SurfaceGui shows), no collision. The face is found at the panel's own height.
+			local FIT = { H = 0.42, W = 0.72, Y = 0.48, Depth = 0.2 }
 			local board = L:FindFirstChild("MostWantedBoard")
 			if board and board:GetAttribute("KitPrevCF") then
 				padParams.FilterDescendantsInstances = { m }
+				local bcf, bsz = m:GetBoundingBox()
+				local bottom = bcf.Position.Y - bsz.Y / 2
+				local panelY = bottom + bsz.Y * FIT.Y
 				local face = nil
 				for _, dz in { -4, 0, 4 } do
-					local hit = workspace:Raycast(Vector3.new(x + 20, board.Position.Y, z + dz), Vector3.new(-40, 0, 0), padParams)
+					local hit = workspace:Raycast(Vector3.new(x + 20, panelY, z + dz), Vector3.new(-40, 0, 0), padParams)
 					if hit and (not face or hit.Position.X > face) then face = hit.Position.X end
 				end
 				if face then
 					if board:GetAttribute("Swap3DPrevCF") == nil then board:SetAttribute("Swap3DPrevCF", board.CFrame) end
-					local bcf, bsz = m:GetBoundingBox()
-					table.insert(log, string.format("board face x %.2f (model centre x %.2f, box %.1f x %.1f): check a photo",
-						face, bcf.Position.X, bsz.X, bsz.Z))
-					board.CFrame = CFrame.new(face + board.Size.X / 2 + 0.05, board.Position.Y, z) * board.CFrame.Rotation
+					if board:GetAttribute("FitPrevSize") == nil then board:SetAttribute("FitPrevSize", board.Size) end
+					board.Size = Vector3.new(FIT.Depth, bsz.Y * FIT.H, math.max(bsz.X, bsz.Z) * FIT.W)
+					board.CFrame = CFrame.new(face + 0.05 - FIT.Depth / 2, panelY, z) * board.CFrame.Rotation
+					board.Transparency = 1
+					board.CanCollide = false
+					board.CastShadow = false
+					for _, post in board:GetChildren() do
+						if post:IsA("BasePart") and post.Name == "BoardPost" then
+							post.Transparency = 1
+							post.CanCollide = false
+						end
+					end
+					table.insert(log, string.format("board face x %.2f, part %.2f x %.2f at y %.2f (model centre x %.2f, box %.1f x %.1f)",
+						face, board.Size.Z, board.Size.Y, panelY, bcf.Position.X, bsz.X, bsz.Z))
 					boards += 1
 				else
 					table.insert(log, "board face not found")

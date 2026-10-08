@@ -71,6 +71,7 @@ local SOUNDS = type(A.Sounds) == "table" and A.Sounds or {}
 
 ----------------------------------------------------------------- tuning
 local T = {
+	HoldPickers = { "Intro", "FactionPicker", "ClassPicker" }, -- open = the world's alarms are held (Audio.Held)
 	AutoMul = tonumber(A.AutoMul) or 0.5,
 	OthersMul = tonumber(A.OthersMul) or 0.35,
 	OthersRange = tonumber(A.OthersRange) or 40,
@@ -549,6 +550,25 @@ local function myRoot()
 	return root and root:IsA("BasePart") and root or nil
 end
 
+-- A23-68 #4 / A23-3 (검수 10/08): while the screen holds the world's banners (the first steps before the first [Claim] -
+-- UIKit.ShouldHoldBanners, the same rule as HUD.RookieFold - the opening, a faction / class picker) their sounds wait
+-- too: no kaiju siren, war 30 s call, 3-2-1, crown / goose arrival, held announce banner or announce line sound
+function Audio.Held()
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.ShouldHoldBanners) == "function" then
+		local ok, hold = pcall(kit.ShouldHoldBanners)
+		if ok and hold == true then return true end
+	end
+	for _, name in T.HoldPickers do
+		local m = C and C[name]
+		if type(m) == "table" and type(m.IsOpen) == "function" then
+			local ok, open = pcall(m.IsOpen)
+			if ok and open == true then return true end
+		end
+	end
+	return false
+end
+
 -- the monster nearest to a hit position (hits carry positions only)
 local function kindAt(pos)
 	if typeof(pos) ~= "Vector3" then return nil end
@@ -625,8 +645,9 @@ end
 
 -- the sound of one Notify line: payload.Sound wins ("None" = silent), else the kind ("bad" -> Deny, "reward" ->
 -- QuestDone), else nothing
-function Audio.NotifySound(payload)
+function Audio.NotifySound(payload, held)
 	if type(payload) ~= "table" then return nil end
+	if held == true and payload.Kind == "announce" then return nil end -- UIKit keeps that banner for later: no sound now
 	local sound = payload.Sound
 	if type(sound) == "string" and sound ~= "" then
 		if sound == "None" then return nil end
@@ -696,17 +717,17 @@ local function watchGame()
 	local function fresh() return os.clock() - S.StartedAt >= T.QuietStart end
 	for key, event in T.Kings do
 		watch(gs, key, function(prev, v)
-			if v == true and prev ~= true and fresh() then Audio.Play(event) end
+			if v == true and prev ~= true and fresh() and not Audio.Held() then Audio.Play(event) end
 		end)
 	end
 	watch(gs, "GooseActive", function(prev, v)
 		-- sound_gaps A7: the goose arrives (its honk is for hitting it; it stands in until GooseArrive is uploaded)
-		if v == true and prev ~= true and fresh() and not Audio.Play("GooseArrive") then Audio.Play("GooseHonk") end
+		if v == true and prev ~= true and fresh() and not Audio.Held() and not Audio.Play("GooseArrive") then Audio.Play("GooseHonk") end
 		if v ~= true then S.GooseHit = false end
 	end)
 	watch(gs, "KaijuPhase", function(prev, v)
 		-- B5: the kaiju alarm (its 3-2-1 comes from pollWorld)
-		if v == "Siren" and prev ~= "Siren" and fresh() then Audio.Play("KaijuSiren") end
+		if v == "Siren" and prev ~= "Siren" and fresh() and not Audio.Held() then Audio.Play("KaijuSiren") end
 	end)
 	S.GameState = gs
 end
@@ -727,7 +748,7 @@ local function tickFor(key, on, endsAt, nowServer)
 	S.Left[key] = (on and endsAt > 0) and left or nil
 	if not on or endsAt <= 0 then return end
 	local speed = Audio.TickAt(prev, left)
-	if speed then Audio.Play("CountTick", { Speed = speed }) end
+	if speed and not Audio.Held() then Audio.Play("CountTick", { Speed = speed }) end
 end
 
 -- every Poll s: my teleports (ZoneEnterPvP calm), the war round's last 30 s (B7), the 3-2-1 before a war round ends,
@@ -748,7 +769,7 @@ local function pollWorld()
 		local left = warEnds - t
 		local faction = LocalPlayer:GetAttribute("Faction")
 		if warEnds > 0 and S.WarFinalFor ~= warEnds and left <= T.WarFinal and left > T.WarFinal - 3
-			and (faction == "Halo" or faction == "Horns") and t - S.JoinedAt > T.WarFinal then
+			and (faction == "Halo" or faction == "Horns") and t - S.JoinedAt > T.WarFinal and not Audio.Held() then
 			S.WarFinalFor = warEnds
 			Audio.Play("WarFinal30")
 		end
@@ -900,7 +921,7 @@ function Audio.Start()
 	end)
 	task.spawn(function()
 		Net.Get("Notify").OnClientEvent:Connect(function(payload)
-			local event = Audio.NotifySound(payload)
+			local event = Audio.NotifySound(payload, Audio.Held())
 			if event then afterBig(event) end
 		end)
 	end)
@@ -909,7 +930,7 @@ function Audio.Start()
 		if not announce then return end
 		announce.OnClientEvent:Connect(function(payload)
 			local event = Audio.AnnounceSound(payload)
-			if event then Audio.Play(event) end
+			if event and not Audio.Held() then Audio.Play(event) end
 		end)
 	end)
 	task.spawn(function()
