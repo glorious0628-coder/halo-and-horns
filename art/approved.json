@@ -7405,5 +7405,71 @@
   "note": "청록 지붕·기둥 → 금(그늘 호박빛), 갈색 판·보 → 따뜻한 크림(나뭇결 남김), 꼭대기 보석·등불 유리 → 루비. 놋쇠 장식·크림 돌 그대로. 현상수배 판과 한눈에 구별. B(호박색 보석) X_NoticeBoard_Gold_B_tex.png는 안 씀.",
   "id": "rbxassetid://127012447674638",
   "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); given to 게임성 개발 1 for the crossroads supporter board"
+ },
+ "Kit_W_BushA_HQ": {
+  "status": "approved (2D medium = 이미지 생성 2 kit_woods16); High + 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수 10/08: 21종 승인 (docs/design/zones_concept_gap_2026-10-08.md)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst High 5 (reference = art/out/kit/woods/BushA_src.png = Firefly asset 7cf7fda1)",
+  "prompt": "art/prompts/KIT_Woods_set6_HQ.txt",
+  "final": "art/out/hq/HQ_Kit_W_BushA.png (1024)",
+  "model": "art/models/tripo/web/Kit_W_BushA_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D8_WoodsGround6.glb (9.69 x 9.70 x 6.00 studs)",
+  "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
+ },
+ "Kit_W_BushB_HQ": {
+  "status": "approved (2D medium = 이미지 생성 2 kit_woods16); High + 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수 10/08: 21종 승인 (docs/design/zones_concept_gap_2026-10-08.md)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst High 5 (reference = art/out/kit/woods/BushB_src.png = Firefly asset 3ebc0aa7)",
+  "prompt": "art/prompts/KIT_Woods_set6_HQ.txt",
+  "final": "art/out/hq/HQ_Kit_W_BushB.png (1024)",
+  "model": "art/models/tripo/web/Kit_W_BushB_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D8_WoodsGround6.glb (4.75 x 4.64 x 8.00 studs)",
+  "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
+ },
+ "Kit_W_Fern_HQ": {
+  "status": "approved (2D medium = 이미지 생성 2 kit_woods16); High + 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수 10/08: 21종 승인 (docs/design/zones_concept_gap_2026-10-08.md)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst High 5 (reference = art/out/kit/woods/Fern_src.png = Firefly asset e2cf3627)",
+  "prompt": "art/prompts/KIT_Woods_set6_HQ.txt",
+  "final": "art/out/hq/HQ_Kit_W_Fern.png (1024)",
+  "model": "art/models/tripo/web/Kit_W_Fern_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D8_WoodsGround6.glb (4.12 x 3.68 x 3.00 studs)",
+  "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
+ },
+ "Kit_W_Mushrooms_HQ": {
+  "status": "approved (2D medium = 이미지 생성 2 kit_woods16); High + 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수 10/08: 21종 승인 (docs/design/zones_concept_gap_2026-10-08.md)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst High 5 (reference = art/out/kit/woods/Mushrooms_src.png = Firefly asset e4366979)",
+  "prompt": "art/prompts/KIT_Woods_set6_HQ.txt",
+  "final": "art/out/hq/HQ_Kit_W_Mushrooms.png (1024)",
+  "model": "art/models/tripo/web/Kit_W_Mushrooms_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D8_WoodsGround6.glb (2.31 x 1.75 x 2.50 studs)",
+  "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
+ },
+ "Kit_W_MossRock_HQ": {
+  "status": "approved (2D medium = 이미지 생성 2 kit_woods16); High + 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수 10/08: 21종 승인 (docs/design/zones_concept_gap_2026-10-08.md)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst High 5 (reference = art/out/kit/woods/MossRock_src.png = Firefly asset 51014612)",
+  "prompt": "art/prompts/KIT_Woods_set6_HQ.txt",
+  "final": "art/out/hq/HQ_Kit_W_MossRock.png (1024)",
+  "model": "art/models/tripo/web/Kit_W_MossRock_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D8_WoodsGround6.glb (4.77 x 4.11 x 4.00 studs)",
+  "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
+ },
+ "Kit_W_Banner_HQ": {
+  "status": "approved (2D medium = 이미지 생성 2 kit_woods16); High + 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수 10/08: 21종 승인 (docs/design/zones_concept_gap_2026-10-08.md)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst High 5 (reference = art/out/kit/woods/Banner_src.png = Firefly asset d7afaef1)",
+  "prompt": "art/prompts/KIT_Woods_set6_HQ.txt",
+  "final": "art/out/hq/HQ_Kit_W_Banner.png (1024)",
+  "model": "art/models/tripo/web/Kit_W_Banner_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D8_WoodsGround6.glb (3.65 x 1.67 x 8.00 studs)",
+  "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
  }
 }

@@ -5860,5 +5860,137 @@
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 7934740
   }
+ ],
+ "Kit_W_BushA_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "a3d23f47-c72c-437b-8ad6-b4ace823589c",
+   "image": "art/out/hq/HQ_Kit_W_BushA.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 1145,
+   "file": "art/models/tripo/web/Kit_W_BushA_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9500,
+   "derived": [
+    "art/models/tripo/web/Kit_W_BushA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (9.69 x 9.70 x 6.00 studs)"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 7583724
+  }
+ ],
+ "Kit_W_BushB_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "f70693d6-29b4-4918-92ff-2a71b0a7b03d",
+   "image": "art/out/hq/HQ_Kit_W_BushB.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 1090,
+   "file": "art/models/tripo/web/Kit_W_BushB_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9604,
+   "derived": [
+    "art/models/tripo/web/Kit_W_BushB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.75 x 4.64 x 8.00 studs)"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 7642552
+  }
+ ],
+ "Kit_W_Fern_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "66549e01-716e-4ccd-b2be-ec18e1b3bfbb",
+   "image": "art/out/hq/HQ_Kit_W_Fern.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 1035,
+   "file": "art/models/tripo/web/Kit_W_Fern_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9820,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Fern_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.12 x 3.68 x 3.00 studs)"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 8407876
+  }
+ ],
+ "Kit_W_Mushrooms_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "4989f68d-fca8-4937-ae62-12ad7b12ed19",
+   "image": "art/out/hq/HQ_Kit_W_Mushrooms.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 980,
+   "file": "art/models/tripo/web/Kit_W_Mushrooms_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9664,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Mushrooms_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (2.31 x 1.75 x 2.50 studs)"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 5859892
+  }
+ ],
+ "Kit_W_MossRock_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "24b967a7-ce1e-4a94-9556-5724bdc0295d",
+   "image": "art/out/hq/HQ_Kit_W_MossRock.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 925,
+   "file": "art/models/tripo/web/Kit_W_MossRock_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9758,
+   "derived": [
+    "art/models/tripo/web/Kit_W_MossRock_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.77 x 4.11 x 4.00 studs)"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 6880636
+  }
+ ],
+ "Kit_W_Banner_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "7817efd9-16cf-42b9-abfc-79350b4a21a0",
+   "image": "art/out/hq/HQ_Kit_W_Banner.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 870,
+   "file": "art/models/tripo/web/Kit_W_Banner_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9764,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (3.65 x 1.67 x 8.00 studs)"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 7665764
+  }
  ]
 }
