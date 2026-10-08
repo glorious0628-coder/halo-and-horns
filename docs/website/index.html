@@ -70,6 +70,7 @@ p { margin: 0; }
   text-transform: uppercase;
   color: var(--muted);
 }
+html[data-lang="ko"] .eyebrow span[lang="ko"], html[data-lang="ko"] .qt, html[data-lang="ko"] .facts dt span[lang="ko"] { font-family: var(--f-body); letter-spacing: 0.02em; }
 .lead { font-size: 1.15rem; color: var(--ink); max-width: 36em; }
 .muted { color: var(--muted); }
 .balance-line { height: 4px; border: 0; margin: 0; background: linear-gradient(90deg, var(--gold) 0 50%, var(--crimson) 50% 100%); }
@@ -155,7 +156,7 @@ figcaption { font-size: 0.88rem; color: var(--muted); }
 /* game */
 .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
 @media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
-.prose { display: grid; gap: 16px; max-width: 38em; }
+.prose { display: grid; gap: 16px; max-width: 38em; align-content: start; }
 .rule {
   border-radius: var(--radius); padding: 28px; display: grid; gap: 14px; align-self: start;
   background: linear-gradient(90deg, var(--gold-soft), var(--crimson-soft));
@@ -280,8 +281,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
         <div class="hero-copy">
           <p class="eyebrow"><span lang="en">Glorious Studio · Game studio in South Korea</span><span lang="ko">Glorious Studio · 대한민국 게임 스튜디오</span></p>
           <h1><span lang="en">Every choice tilts you toward angel or devil.</span><span lang="ko">모든 선택은 천사 아니면 악마 쪽으로 기운다.</span></h1>
-          <p class="lead" lang="en">We are making <b>Halo &amp; Horns</b>, an action RPG on Roblox. Help other players or rob them, and the result shows as a halo or horns over your own avatar.</p>
-          <p class="lead" lang="ko">로블록스 액션 RPG <b>Halo &amp; Horns(선악 키우기)</b>를 만들고 있습니다. 다른 플레이어를 돕든 빼앗든, 그 결과가 내 아바타 위에 후광이나 뿔로 나타납니다.</p>
+          <p class="lead" lang="en">We are making <b>Halo &amp; Horns</b>, an action RPG on Roblox. Help other players or play the villain, and the result shows as a halo or horns over your own avatar.</p>
+          <p class="lead" lang="ko">로블록스 액션 RPG <b>Halo &amp; Horns(선악 키우기)</b>를 만들고 있습니다. 다른 플레이어를 돕든 악당이 되든, 그 결과가 내 아바타 위에 후광이나 뿔로 나타납니다.</p>
           <div class="status">
             <span class="date"><span lang="en">Beta opens 31 Oct 2026, 11:00 KST</span><span lang="ko">베타 2026년 10월 31일 11:00 (한국 시간)</span></span>
             <span class="pill"><span lang="en">Not public yet</span><span lang="ko">아직 공개 전</span></span>
@@ -381,7 +382,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
             <li><span lang="en">Two factions, three classes each</span><span lang="ko">진영 2개, 진영마다 직업 3개</span></li>
             <li><span lang="en">Guided first mission and the Forge</span><span lang="ko">안내받는 첫 임무와 대장간</span></li>
             <li><span lang="en">Manual combat, plus an auto-combat toggle that hits monsters only</span><span lang="ko">수동 전투 + 몬스터만 때리는 자동 전투 켜고 끄기</span></li>
-            <li><span lang="en">Skills at Lv5, 15 and 25, with MP and cooldowns</span><span lang="ko">Lv5·15·25 스킬(MP·재사용 대기시간)</span></li>
+            <li><span lang="en">First skill at Lv5, with MP and a cooldown</span><span lang="ko">Lv5 첫 스킬(MP·재사용 대기시간)</span></li>
             <li><span lang="en">Monster drops and enhancement scrolls (10/30/70%) that never break gear</span><span lang="ko">몬스터 드롭과 강화 주문서(10/30/70%), 장비 파괴 없음</span></li>
             <li><span lang="en">Blacksmith and potion shop</span><span lang="ko">대장간과 물약 상점</span></li>
             <li><span lang="en">Wanted stars, bounties, revenge and other angel/devil consequences</span><span lang="ko">현상수배 별·현상금·복수 등 선악의 결과</span></li>
@@ -397,6 +398,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
           <h3><span class="dot prog" aria-hidden="true"></span><span lang="en">In progress</span><span lang="ko">만드는 중</span></h3>
           <ul>
             <li><span lang="en">Game passes: 2x XP, 2x Gold, VIP, halo and horn cosmetics</span><span lang="ko">게임 패스: 경험치 2배, 골드 2배, VIP, 후광·뿔 꾸미기</span></li>
+            <li><span lang="en">More skills at Lv15 and Lv25</span><span lang="ko">Lv15·Lv25 추가 스킬</span></li>
             <li><span lang="en">Invite a friend (no rewards for inviting)</span><span lang="ko">친구 초대(초대 보상 없음)</span></li>
             <li><span lang="en">Zones rebuilt to match the concept art: hills, water, waterfalls</span><span lang="ko">시안 그림에 맞춘 구역 다시 만들기: 언덕·물·폭포</span></li>
             <li><span lang="en">Full art redraw with Adobe Firefly, and 3D world props with Tripo</span><span lang="ko">Adobe Firefly로 그림 전부 다시 그리기, Tripo로 3D 소품</span></li>
@@ -407,7 +409,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
           <ul>
             <li><span lang="en">7-day attendance board; your day count never resets</span><span lang="ko">7일 출석판, 모은 날 수는 0으로 돌아가지 않음</span> <span class="note"><span lang="en">before beta</span><span lang="ko">베타 전</span></span></li>
             <li><span lang="en">Roblox badges</span><span lang="ko">로블록스 배지</span> <span class="note"><span lang="en">before beta</span><span lang="ko">베타 전</span></span></li>
-            <li><span lang="en">Private servers</span><span lang="ko">비공개 서버</span> <span class="note"><span lang="en">at release</span><span lang="ko">공개 때</span></span></li>
+            <li><span lang="en">Private servers</span><span lang="ko">비공개 서버</span> <span class="note"><span lang="en">before beta</span><span lang="ko">베타 전</span></span></li>
             <li><span lang="en">Artisan Guild: a third side with crafting and gathering, no PvP</span><span lang="ko">장인 길드: 제작·채집을 하는 세 번째 진영, PvP 없음</span></li>
             <li><span lang="en">Skeleton King boss</span><span lang="ko">해골왕 보스</span></li>
             <li><span lang="en">Player trading market</span><span lang="ko">플레이어 거래 시장</span> <span class="note"><span lang="en">after full launch</span><span lang="ko">정식 출시 뒤</span></span></li>
