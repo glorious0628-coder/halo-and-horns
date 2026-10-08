@@ -29,10 +29,20 @@
      "shots": [
       {
        "video": "s40_first_weapon",
-       "ss": 1.8,
+       "ss": 6.0,
        "z": [
-        1.22,
-        1.28
+        1.15,
+        1.22
+       ],
+       "f": [
+        [
+         0.5,
+         0.3
+        ],
+        [
+         0.5,
+         0.3
+        ]
        ],
        "in": "flash",
        "w": 1.1,
@@ -48,25 +58,25 @@
         "color": "#FFD650",
         "y": 360,
         "size": 230
-       },
+       }
+      },
+      {
+       "z": [
+        1.15,
+        1.28
+       ],
        "f": [
         [
-         0.64,
+         0.5,
          0.5
         ],
         [
-         0.64,
+         0.5,
          0.5
         ]
-       ]
-      },
-      {
+       ],
        "video": "s40_first_hunt",
        "ss": 0.0,
-       "z": [
-        1.1,
-        1.25
-       ],
        "in": "punch",
        "w": 0.9,
        "sfx": [
@@ -99,8 +109,8 @@
        "video": "s40_halo_castle",
        "ss": 1.0,
        "z": [
-        1.2,
-        1.35
+        1.6,
+        1.8
        ],
        "in": "whip",
        "xmark": true,
@@ -111,14 +121,24 @@
          "name": "boom",
          "at": 0.2
         }
+       ],
+       "f": [
+        [
+         0.5,
+         0.45
+        ],
+        [
+         0.5,
+         0.45
+        ]
        ]
       },
       {
        "video": "s40_crossroads",
        "ss": 2.0,
        "z": [
-        1.1,
-        1.2
+        1.15,
+        1.25
        ],
        "in": "whip",
        "xmark": true,
@@ -146,12 +166,22 @@
        "video": "s40_horns_castle",
        "ss": 2.0,
        "z": [
-        1.2,
-        1.4
+        1.6,
+        1.85
        ],
        "in": "flash",
        "sfx": [
         "ding"
+       ],
+       "f": [
+        [
+         0.5,
+         0.45
+        ],
+        [
+         0.5,
+         0.45
+        ]
        ]
       }
      ],
@@ -214,10 +244,10 @@
      "shots": [
       {
        "video": "s40_first_hunt",
-       "ss": 0.0,
+       "ss": 6.0,
        "z": [
-        1.1,
-        1.25
+        1.15,
+        1.28
        ],
        "in": "whip",
        "sfx": [
@@ -233,14 +263,24 @@
         "color": "#FFD650",
         "y": 470,
         "size": 140
-       }
+       },
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
+       ]
       },
       {
        "video": "s40_first_hunt",
-       "ss": 15.0,
+       "ss": 14.0,
        "z": [
         1.15,
-        1.3
+        1.28
        ],
        "in": "punch",
        "w": 0.9,
@@ -249,14 +289,24 @@
          "name": "g_KillPop",
          "at": 0.3
         }
+       ],
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
        ]
       },
       {
        "video": "s40_first_hunt",
-       "ss": 17.0,
+       "ss": 20.0,
        "z": [
-        1.2,
-        1.35
+        1.15,
+        1.28
        ],
        "in": "punch",
        "w": 0.8,
@@ -268,29 +318,40 @@
         "color": "#FF5454",
         "y": 470,
         "size": 220
-       }
+       },
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
+       ]
       }
      ]
     },
     {
      "id": "A7c",
      "new": true,
-     "en": "Every choice makes you an angel... or a devil. Like this lunchbox!",
-     "ko": "모든 선택이 나를 천사… 아니면 악마로 만들어요. 이 도시락처럼!",
+     "en": "Every choice makes you an angel... or a devil!",
+     "ko": "모든 선택이 나를 천사… 아니면 악마로 만들어요!",
      "hl": [
       "angel..."
      ],
      "hlr": [
-      "devil."
+      "devil!"
      ],
      "shots": [
       {
-       "video": "s40_claim_lunchbox",
-       "ss": 3.0,
        "fit": true,
+       "fit_y": 880,
+       "video": "s40_claim_lunchbox_good",
+       "ss": 0.3,
        "z": [
         2.4,
-        3.3
+        3.2
        ],
        "f": [
         [
@@ -302,7 +363,6 @@
          0.66
         ]
        ],
-       "fit_y": 880,
        "in": "flash",
        "w": 1.0,
        "sfx": [
@@ -319,9 +379,10 @@
        }
       },
       {
-       "video": "s40_claim_lunchbox",
-       "ss": 5.0,
        "fit": true,
+       "fit_y": 880,
+       "video": "s40_claim_lunchbox",
+       "ss": 0.3,
        "z": [
         2.6,
         3.4
@@ -336,7 +397,6 @@
          0.66
         ]
        ],
-       "fit_y": 880,
        "shake": true,
        "in": "punch",
        "w": 1.1,
@@ -351,6 +411,56 @@
         "color": "#FF5454",
         "y": 400,
         "size": 190
+       }
+      }
+     ],
+     "note": "v3: 도시락 진짜 반응 두 갈래(돌려주기 → 정화, 한 입 → 삼킴) — ss는 찍은 뒤 맞춤"
+    },
+    {
+     "id": "A7d",
+     "new": true,
+     "silent": 1.6,
+     "en": "(the kid's reply in the game)",
+     "ko": "(게임 속 아이의 대답)",
+     "cap": false,
+     "shots": [
+      {
+       "board": "stage",
+       "z": [
+        1.0,
+        1.06
+       ],
+       "in": "punch",
+       "w": 0.8,
+       "sfx": [
+        {
+         "name": "g_Devour",
+         "at": 0.05
+        }
+       ],
+       "big": {
+        "text": "\"YUM!\"",
+        "color": "#FF5454",
+        "y": 760,
+        "size": 260
+       }
+      },
+      {
+       "board": "stage",
+       "z": [
+        1.04,
+        1.1
+       ],
+       "in": "punch",
+       "w": 1.0,
+       "sfx": [
+        "boom"
+       ],
+       "big": {
+        "text": "NOBODY SAW THAT?",
+        "color": "#FFD650",
+        "y": 760,
+        "size": 150
        }
       }
      ]
@@ -387,10 +497,10 @@
       },
       {
        "video": "s40_king_fight",
-       "ss": 6.0,
+       "ss": 0.0,
        "z": [
-        1.1,
-        1.25
+        1.15,
+        1.28
        ],
        "shake": true,
        "in": "punch",
@@ -404,14 +514,24 @@
          "name": "g_HitHeavy",
          "at": 0.8
         }
+       ],
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
        ]
       },
       {
        "video": "s40_king_fight",
-       "ss": 13.0,
+       "ss": 17.0,
        "z": [
         1.15,
-        1.3
+        1.28
        ],
        "in": "punch",
        "w": 1.0,
@@ -427,7 +547,17 @@
         "color": "#FF5454",
         "y": 560,
         "size": 200
-       }
+       },
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
+       ]
       }
      ],
      "emoji": "🎃"
@@ -468,7 +598,7 @@
      ]
     }
    ],
-   "tail": 0.8,
+   "tail": 0.6,
    "meta": {
     "title_en": "8 AIs made my Roblox game... and gave me a STICK?! 😲 #shorts",
     "title_ko": "AI 8명이 만든 내 로블록스 게임… 첫 무기가 나뭇가지?!",

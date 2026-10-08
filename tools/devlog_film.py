@@ -185,6 +185,99 @@ return 'korean hidden'
 """
         return self.lua(code, "Client")
 
+    def clean(self, keep=(), labels=False):
+        """a clean shot for the 9:16 shorts (user 2026-10-08: no half-cut HUD): every ScreenGui off except MainGui, and in
+        MainGui only `keep` (e.g. 'Announce' for "Stronger!", 'PanelsModal' + 'Toasts' for a story card and its reply);
+        labels=False also hides the map's floating name labels. Held every 0.1 s until unclean()"""
+        keep_lua = "{" + ",".join("[%s]=true" % json.dumps(k) for k in keep) + "}"
+        return self.lua(r"""
+local pg = game.Players.LocalPlayer:WaitForChild('PlayerGui')
+_G.__filmCleanTok = (_G.__filmCleanTok or 0) + 1
+local tok, keep, labels = _G.__filmCleanTok, %s, %s
+_G.__filmCleanHidden = _G.__filmCleanHidden or {}
+local hidden = _G.__filmCleanHidden
+local n = 0
+local function hide(o, prop)
+	if o[prop] then hidden[o] = prop; o[prop] = false end
+end
+pcall(function() game:GetService('StarterGui'):SetCore('TopbarEnabled', false) end)
+-- world labels / the yellow guide line: one scan now + new ones as they appear (a full scan every few frames made
+-- Studio stutter, 2026-10-08)
+local mons = workspace:FindFirstChild('Monsters')
+local function world(x)
+	if _G.__filmCleanTok ~= tok or labels then return end
+	if x:IsA('BillboardGui') then
+		-- map name labels, the guide label; monster bars / bubbles and characters keep theirs
+		if not (mons and x:IsDescendantOf(mons)) and not game.Players:GetPlayerFromCharacter(x:FindFirstAncestorOfClass('Model')) then
+			hide(x, 'Enabled')
+		end
+	elseif x:IsA('Beam') and not (mons and x:IsDescendantOf(mons)) then
+		hide(x, 'Enabled')
+	end
+end
+if not labels then
+	for _, x in workspace:GetDescendants() do world(x) end
+	local con
+	con = workspace.DescendantAdded:Connect(function(x)
+		if _G.__filmCleanTok ~= tok then con:Disconnect(); return end
+		task.defer(world, x)
+	end)
+end
+-- every frame, before it is drawn (a 0.1 s loop let the game's HUD flash back between passes, 2026-10-08)
+local RS = game:GetService('RunService')
+pcall(RS.UnbindFromRenderStep, RS, 'HHC_FilmClean')
+RS:BindToRenderStep('HHC_FilmClean', Enum.RenderPriority.Last.Value, function()
+	if _G.__filmCleanTok ~= tok then pcall(RS.UnbindFromRenderStep, RS, 'HHC_FilmClean'); return end
+	for _, g in pg:GetChildren() do
+		if g:IsA('ScreenGui') and g.Name ~= 'Freecam' and g.Name ~= 'MainGui' then hide(g, 'Enabled') end
+	end
+	local mg = pg:FindFirstChild('MainGui')
+	if mg then
+		for _, c in mg:GetChildren() do
+			if c:IsA('GuiObject') and not keep[c.Name] then hide(c, 'Visible') end
+		end
+	end
+end)
+return 'clean'""" % (keep_lua, "true" if labels else "false"), "Client")
+
+    LOOKS = {  # FilmSet-only grading (검수 2026-10-08 "미장센"): clock, tint, saturation, contrast, brightness, bloom, background blur
+        "angel": (17.4, (255, 232, 196), 0.18, 0.10, 0.03, 0.55, 0.30),   # warm gold, near sunset
+        "devil": (17.7, (244, 214, 250), 0.10, 0.10, 0.02, 0.40, 0.30),  # purple dusk, still readable
+        "king": (17.3, (255, 226, 200), 0.08, 0.08, 0.03, 0.45, 0.25),    # warm sunset, not a red wash
+        "far": (17.4, (255, 232, 196), 0.15, 0.10, 0.03, 0.45, 0.0),      # wide shots: warm, no blur
+    }
+
+    def look(self, name=None, focus=12.0):
+        """grade the shot (client only, never replicates): ClockTime held every frame over ZoneLook, our own ColorCorrection,
+        Bloom and a soft background DepthOfField (focus = studs from the camera to the subject); name=None removes it"""
+        if not name:
+            return self.lua(r"""
+local RS = game:GetService('RunService')
+pcall(RS.UnbindFromRenderStep, RS, 'HHC_FilmLook')
+for _, n in {'FilmCC', 'FilmBloom', 'FilmDOF'} do local e = game.Lighting:FindFirstChild(n); if e then e:Destroy() end end
+return 'look off'""", "Client")
+        clock, tint, sat, con, bri, bloom, blur = self.LOOKS[name]
+        return self.lua(r"""
+local L, RS = game:GetService('Lighting'), game:GetService('RunService')
+local function eff(cls, n) local e = L:FindFirstChild(n) or Instance.new(cls); e.Name = n; e.Parent = L; return e end
+local cc = eff('ColorCorrectionEffect', 'FilmCC')
+cc.TintColor = Color3.fromRGB(%d, %d, %d); cc.Saturation = %f; cc.Contrast = %f; cc.Brightness = %f
+local b = eff('BloomEffect', 'FilmBloom'); b.Intensity = %f; b.Size = 28; b.Threshold = 1.4
+local d = eff('DepthOfFieldEffect', 'FilmDOF'); d.FarIntensity = %f; d.NearIntensity = 0; d.FocusDistance = %f; d.InFocusRadius = 14
+d.Enabled = %f > 0
+pcall(RS.UnbindFromRenderStep, RS, 'HHC_FilmLook')
+RS:BindToRenderStep('HHC_FilmLook', Enum.RenderPriority.First.Value, function() L.ClockTime = %f end)
+return 'look %s'""" % (*tint, sat, con, bri, bloom, blur, focus, blur, clock, name), "Client")
+
+    def unclean(self):
+        return self.lua(r"""
+_G.__filmCleanTok = (_G.__filmCleanTok or 0) + 1
+pcall(game:GetService('RunService').UnbindFromRenderStep, game:GetService('RunService'), 'HHC_FilmClean')
+for o, prop in (_G.__filmCleanHidden or {}) do pcall(function() o[prop] = true end) end
+_G.__filmCleanHidden = {}
+pcall(function() game:GetService('StarterGui'):SetCore('TopbarEnabled', true) end)
+return 'unclean'""", "Client")
+
     def cam_reset(self):
         return self.lua("_G.__filmTok=(_G.__filmTok or 0)+1; workspace.CurrentCamera.CameraType=Enum.CameraType.Custom; return 'cam reset'", "Client")
 
