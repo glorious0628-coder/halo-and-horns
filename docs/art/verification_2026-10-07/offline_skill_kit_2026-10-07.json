@@ -20,7 +20,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x00000177b012cfd0"
+          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x000001d4cbc11f50"
         ]
       },
       {
@@ -64,7 +64,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL SkillX: C / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x000002f1b94d1b30"
+          "CHECK_FAIL SkillX: C / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x0000014eaf544030"
         ]
       },
       {
@@ -97,9 +97,9 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "39977a67d796ce911236add684de520ebe2caf6b0c9d779a91ec7ddd525e4f37"
+    "src/ReplicatedStorage/Shared/Config.luau": "40e15d653e2a79c8b36de88d9ae7379137faa54f6497305d483f2a5cb079fa5d"
   },
-  "fixtureSHA256": "238b5f1f133e582b75ee5cb5e5cbd9f3ca9f8e01823e99566085bfaa4eeb651b",
+  "fixtureSHA256": "b3b41fe2b0490f4b833fa46488cb975c366ba93a7f2c6f2e6b510eed07a5b4b0",
   "studioCalls": 0,
   "contract": "SKL-1 offline test (A23-49 skill kit, docs/design/skill_kit_beta_2026-10-06.md sections 1 / 4 / 5 / 6-3 / 8-1), plus\nmutations: the real Config.luau loaded with engine doubles. Config.Skills flags off (ZEnabled / XEnabled / PvPZX),\nUnlock Q1 / Z5 / X8, 0.5 s gap, MP steal cap 20, 6 kits x 3 slots = 21 skills with the section 4 MP / CD / Mult / shape\nnumbers and the section 5 English names (<= 14 letters) + descriptions, artisan kits with crafted looks only;\nConfig.SkillKit / SkillDef (faction table merged, cached) / SkillNumbers (\"Costs N MP\", A23-60); the SkillX key (X,\npad ButtonR3, Flag Skills.XEnabled, right after SkillZ).",
   "limitations": "Data only: casting, shapes, cooldowns and auto combat are SKL-2 / SKL-3 (dev2's SkillService)."

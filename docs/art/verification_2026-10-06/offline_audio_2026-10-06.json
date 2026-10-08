@@ -395,7 +395,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a 4th HitSoft while 3 still play is skipped (Max 3)"
+          "runtime :: a 4th HitSoft while 3 still play is skipped (Max 3)",
+          "runtime :: the same event inside its cooldown is skipped"
         ]
       },
       {
@@ -703,7 +704,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a LevelUp right after a QuestDone stops it"
+          "runtime :: a LevelUp right after a QuestDone stops it",
+          "runtime :: the same event inside its cooldown is skipped"
         ]
       },
       {
@@ -815,6 +817,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: the same event inside its cooldown is skipped",
           "world listeners :: no faction: no WarFinal30"
         ]
       },
@@ -861,6 +864,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: the same event inside its cooldown is skipped",
           "world listeners :: a golden monster 200 studs away is quiet"
         ]
       },
@@ -880,9 +884,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c4f8de850660c4b8f73e31e9c8fb6f2df1007756ee830abe8b2084921ac293b0",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "1665f6fecb1d16fcfea287848caf0e9c52beb85f3c71a08ca2b487aba9352879",
-    "tools/fixtures/audio_offline.luau": "09789b50994ac4de69658edf74e7d83a82e6e7d5878370ded8f702575781d52a"
+    "src/ReplicatedStorage/Shared/Config.luau": "40e15d653e2a79c8b36de88d9ae7379137faa54f6497305d483f2a5cb079fa5d",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "49ff7ee06734b97074741327ea9c87b784983c4d8803dc983948629252518873",
+    "tools/fixtures/audio_offline.luau": "04787657737b148660890f7eb3596b8769db543c78d1208e45a465acd56608f0"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
