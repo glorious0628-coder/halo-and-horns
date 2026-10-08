@@ -6181,5 +6181,25 @@
    "sheet": "art/review/town5/hollow6_3d.jpg",
    "bytes": 8522340
   }
+ ],
+ "K_CrownShard_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account)",
+   "site": "studio.tripo3d.ai",
+   "task": "5a985f33-e1d3-4635-8cf2-a503dc3237dd",
+   "image": "art/out/hq/HQ_K_CrownShard.png",
+   "at": "2026-10-08 15:5x",
+   "balance_after": 25445,
+   "file": "art/models/tripo/web/K_CrownShard_HD_src.glb",
+   "note": "검수 OK 10/08 (#19 ③-2, Firefly 고급 5 + Tripo 55)",
+   "tris": 9368,
+   "derived": [
+    "art/models/tripo/web/K_CrownShard_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D11/WorldKit_ImportD11.glb = build/import_all/3_third/D11_CrownShard.glb as K_CrownShard_v2 (fit w 7, same as old K_CrownShard); one landmark copy -> HD kept"
+   ]
+  }
  ]
 }

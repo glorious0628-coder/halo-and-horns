@@ -7665,5 +7665,15 @@
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHornsPlatinum)",
   "note": "출석 100일 백금 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+ },
+ "K_CrownShard": {
+  "status": "approved",
+  "by": "검수 10/08 (③-2)",
+  "file": "art/out/hq/HQ_K_CrownShard.png",
+  "medium": "art/out/opening/Shard_Middle_2.png",
+  "model": "art/models/tripo/web/K_CrownShard_HD_src.glb",
+  "sheet": "art/review/opening/crown_shard_3d.jpg",
+  "credits": 5,
+  "points": 55
  }
 }
