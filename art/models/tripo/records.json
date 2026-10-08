@@ -5414,5 +5414,49 @@
    ],
    "sheet": "art/review/town5/plaza_wall_stairs_3d.jpg"
   }
+ ],
+ "Town_Halo_KnightStatue_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "86d752e5-7c25-4d05-a969-6ebf2fa96e7a",
+   "image": "art/out/hq/HQ_Town_Halo_KnightStatue.png",
+   "tris": 18484,
+   "at": "2026-10-08 09:4x",
+   "balance_after": 2300,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Halo_KnightStatue_HD_src.glb",
+   "bytes": 8270612,
+   "note": "검수 OK 10/08 (A 석상 + C 바위 1, Firefly 10 + Tripo 110); poly 20k for wings/halo/sword",
+   "derived": [
+    "art/models/tripo/web/Town_Halo_KnightStatue_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (6.14×5.34×10.0 studs)"
+   ],
+   "sheet": "art/review/town5/statue_rock_3d.jpg"
+  }
+ ],
+ "Town_Horns_SpikeRock_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "a56ec018-a3d4-4807-83cd-5cd7715c0581",
+   "image": "art/out/hq/HQ_Town_Horns_SpikeRock.png",
+   "at": "2026-10-08 09:4x",
+   "balance_after": 2245,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Town_Horns_SpikeRock_HD_src.glb",
+   "note": "검수 OK 10/08",
+   "tris": 9836,
+   "bytes": 8233104,
+   "derived": [
+    "art/models/tripo/web/Town_Horns_SpikeRock_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (12.23×11.78×16.0 studs)"
+   ],
+   "sheet": "art/review/town5/statue_rock_3d.jpg"
+  }
  ]
 }

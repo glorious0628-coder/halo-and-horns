@@ -11,12 +11,12 @@
 |---|---|---|---|---|---|---|
 | 빛 | Map.Gates.Gate_HaloTown | 1 | (0, -330) | 흰 탑 2 + 금 돔 2 + 상인방 + 금 고리 8 | **Town_Halo_Gate** | 업로드됨(3a) — 계약: 상인방(Lintel) = HUD 안내 목표, ZoneService 문(투명으로 남기기) |
 | 빛 | Map.Decor.HaloTower | 4 | (±58, -468), (±58, -362) | 흰 원통 + 금 띠·돔 + 금 고리 8 | **Town_Halo_WallTower**(HD) | 가져오기 D1(3_third) |
-| 빛 | Map.Decor.HeroStatue | 6 | (±13, -350), (±13, -370), (±13, -390) — 마을 길 양옆 | 금 받침 + 흰 블록 몸·머리 + 금 고리(4파트) | **없음** | → 새로 만들 후보 A |
+| 빛 | Map.Decor.HeroStatue | 6 | (±13, -350), (±13, -370), (±13, -390) — 마을 길 양옆 | 금 받침 + 흰 블록 몸·머리 + 금 고리(4파트) | **Town_Halo_KnightStatue**(10/08 만듦, 높이 10) | 가져오기 D4(3_third) — 앞이 마을 길(x=0)을 보게 |
 | 빛 | Map.Decor 낱개 Flower | 8 | (34, -366), (-63, -399), (29, -412), (-32, -447), (-42, -375), (-31, -363), (66, -407), (61, -438) | 분홍 1.6 정육면체 | **Kit_M_FlowersA/B** | 업로드됨(초원 키트) |
 | 빛 | Map.Decor.Bridge_Halo | 1 | (0, -240) 다리(마을 입구 쪽 끝 -330) | 길이 184 상판 + 금 난간·기둥 26·등 12·받침 14 | Town_Halo_Bridge(HD, 22 × 14)는 **184 다리 대신 못 함** | 다리 끝 장식으로만(D1). 다리 몸은 그대로 |
 | 뿔 | Map.Gates.Gate_HornsTown | 1 | (0, 330) | 검은 기둥 2 + 뿔 쐐기 6 + 빨간 눈 2 + 상인방 | **Town_Horns_Gate** | 업로드됨(3a) — 계약은 빛 문과 같음. '빨간 눈 2'는 얼굴처럼 읽힘 → 바꾸면 사라짐 |
 | 뿔 | Map.Decor.HornTower | 2 | (-48, 450), (-46, 365) | 검은 기둥 + 쐐기 왕관 4 + 주황 창 3 | **Town_Horns_WallTower**(HD) | 가져오기 D1(3_third) |
-| 뿔 | Map.Decor 낱개 Spike | 14 | 반지름 62 고리, (0, 410) 둘레: (±56, 437), (±39, 459), (±14, 470), (±62, 410), (±56, 383), (±39, 362), (±14, 350) | 검은 쐐기 4 × 13~22 높이 | **없음**(Town_Horns_Wall은 성벽 조각이라 뾰족 바위가 아님) | → 새로 만들 후보 C |
+| 뿔 | Map.Decor 낱개 Spike | 14 | 반지름 62 고리, (0, 410) 둘레: (±56, 437), (±39, 459), (±14, 470), (±62, 410), (±56, 383), (±39, 362), (±14, 350) | 검은 쐐기 4 × 13~22 높이 | **Town_Horns_SpikeRock**(10/08 만듦, 높이 16) | 가져오기 D4(3_third) — 옛 높이 13~22에 맞춰 ScaleTo 0.8~1.35, 뿔 끝이 바깥(고리 밖)으로 휘게 돌리기 |
 | 뿔 | Map.Decor 낱개 LavaChannel + ChannelRimL/R | 2줄(파트 6) | x = ±48, z 345~475(길이 130) | 주황 띠 + 검은 테 | 없음 | → **Terrain CrackedLava로 칠하기(0)** 추천(개발 1) |
 | 뿔 | Map.Decor 낱개 LavaCrack | 4 | (14, 432), (-29, 428), (-35, 364), (31, 399) | 주황 11 × 2 판 | 없음 | → Terrain CrackedLava(0) |
 | 뿔 | Map.Decor.Bridge_Horns | 1 | (0, 240) | 빛 다리와 같은 꼴(검·빨) | Town_Horns_Bridge(HD) — 다리 끝 장식으로만 | D1 |
@@ -61,3 +61,5 @@ WorldKit 미리보기용 배치 도구 `tools/worldkit/towns_kit_place.luau` + `
 
 - 추천: **A + C(1개)** = Firefly 10 + Tripo 110. B는 짝을 맞추고 싶으면 + 5 + 55.
 - 0원으로 되는 것: 용암 줄·금(Terrain CrackedLava), 꽃(Kit_M_Flowers), 마을 채우기(2번 표 — 배치만).
+
+**10/08 결과:** 후보 A(석상)·C(바위 1개) 만듦 — Firefly 고급 10 + Tripo 웹 110, 시트 `art/review/town5/statue_rock_3d.jpg`. B(뿔 전사 석상)는 검수 결정으로 안 함.

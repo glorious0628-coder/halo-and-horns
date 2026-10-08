@@ -99,6 +99,7 @@
 | D2 | `build/import_D2/WorldKit_ImportD2.glb` | 7 | 23.1MB | X_MarketArch 12.0×2.91×10.36; X_NoticeBoard 16.0×7.04×15.44; X_GooseNest 12.0×11.11×7.57; X_TreeB 9.13×7.49×16.0; X_HouseA 14.0×11.35×14.1; X_HouseB 12.0×9.11×14.39; Town_Horns_Brazier 11.0×10.16×10.35 |
 | E | `build/import_E/WorldKit_ImportE.glb` | 3 | 0.7MB | Kit_M_JobBoard 16.0×7.35×14.94; Kit_W_JobBoard 16.0×7.38×15.69; Kit_W_Campfire_Fire 4.0×3.9×3.31 |
 | D3 (10/08) | `build/import_all/3_third/D3_PlazaWallStairs.glb` (원본 `build/import_D3/`) | 2 | 2.5MB | Kit_X_PlazaWall 9.73×2.81×3.0 (되풀이 — 끝 기둥 1.46 겹쳐 이음); Kit_X_PlazaStairs 7.64×6.36×3.5 (Firefly 고급 + Tripo 웹 HD 각 55, 검수 OK, 시트 `art/review/town5/plaza_wall_stairs_3d.jpg`) |
+| D4 (10/08) | `build/import_all/3_third/D4_TownStatueRock.glb` (원본 `build/import_D4/`) | 2 | | Town_Halo_KnightStatue 6.14×5.34×10.0 (빛 마을 HeroStatue 6자리); Town_Horns_SpikeRock 12.23×11.78×16.0 (뿔 마을 Spike 14자리, ScaleTo 0.8~1.35로 높이 섞기) — Firefly 고급 + Tripo 웹 HD 각 55, 검수 OK, 시트 `art/review/town5/statue_rock_3d.jpg` |
 
 **사용자가 고르기 쉽게(10/07 밤):** 같은 파일을 `build/import_all/1_first`(A·E) → `2_second`(B1·B2·C1·C2) → `3_third`(D1·D2) 폴더에 나눠 둠 — WorldKit 홈 '3D 가져오기'에서 폴더 안 파일을 모두 골라 한 번에 가져오기, 세 번에 나눠서.
 

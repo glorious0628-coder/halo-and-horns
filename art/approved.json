@@ -6513,5 +6513,27 @@
   "candidate": "art/out/kit_x2/Kit_X_PlazaStairs_1.png",
   "final": "art/out/hq/HQ_Kit_X_PlazaStairs.png (1024, High 5 credits)",
   "use": "Tripo web HD → crossroads plaza terrace (튀는 곳 ⑨ 바위 더미 자리), import 3_third"
+ },
+ "Town_Halo_KnightStatue": {
+  "status": "approved (2D) — 3D in progress",
+  "date": "2026-10-08",
+  "approved_by": "검수: '고름 = 기사 석상 1 + 뿔 바위 2' (sheet art/review/town5/statue_rock_cands.jpg)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = town castle 2D), final High 5",
+  "prompt": "art/prompts/Town_Halo_KnightStatue.txt (candidates), art/prompts/Town_Halo_KnightStatue_HQ.txt (final)",
+  "candidate": "art/out/town_v7/Town_Halo_KnightStatue_1.png",
+  "final": "art/out/hq/HQ_Town_Halo_KnightStatue.png (1024, High 5 credits)",
+  "checks": "statue: full armor, smooth visor with one gold T-line, no eyes/mouth; rock: no face reading",
+  "use": "Halo town avenue HeroStatue 6 spots (±13, -350/-370/-390)"
+ },
+ "Town_Horns_SpikeRock": {
+  "status": "approved (2D) — 3D in progress",
+  "date": "2026-10-08",
+  "approved_by": "검수: '고름 = 기사 석상 1 + 뿔 바위 2' (sheet art/review/town5/statue_rock_cands.jpg)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = town castle 2D), final High 5",
+  "prompt": "art/prompts/Town_Horns_SpikeRock.txt (candidates), art/prompts/Town_Horns_SpikeRock_HQ.txt (final)",
+  "candidate": "art/out/town_v7/Town_Horns_SpikeRock_2.png",
+  "final": "art/out/hq/HQ_Town_Horns_SpikeRock.png (1024, High 5 credits)",
+  "checks": "statue: full armor, smooth visor with one gold T-line, no eyes/mouth; rock: no face reading",
+  "use": "Horns town Spike ring 14 spots (radius 62 around (0,410))"
  }
 }
