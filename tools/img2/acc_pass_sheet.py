@@ -41,9 +41,10 @@ def circle(im, d):
     return t
 
 
-rows_acc = [("빛 후광 (지금 R3 · R4 모양 그대로, 색·재질만)", "Halo", HALO), ("뿔 (지금 R3 · R4 모양 그대로, 색·재질만)", "Horns", HORN)]
+rows_acc = [("[상점 판매] 빛 후광 (지금 R3 · R4 모양 그대로, 색·재질만, 99 Robux)", "Halo", HALO), ("[상점 판매] 뿔 (지금 R3 · R4 모양 그대로, 색·재질만, 99 Robux)", "Horns", HORN)]
+ATT = [("14일 출석 (후보 2쌍 중 1쌍)", [("Sprout", "새싹"), ("Blossom", "벚꽃")]), ("50·100일 출석 (더 멋진 것, 후보 2쌍 중 1쌍)", [("Starlight", "별빛"), ("Platinum", "백금 다이아")])]
 W = 30 + (CW + 12) * 5
-H = 120 + 2 * (40 + 2 * (CH + 34)) + 60 + 2 * (300 + 40)
+H = 120 + 2 * (40 + 2 * (CH + 34)) + 60 + 2 * (300 + 40) + 60 + 2 * (40 + CH + 34)
 s = Image.new("RGB", (W, H), BG)
 d = ImageDraw.Draw(s)
 d.text((30, 14), "수익 상품 그림 시안 (A23-75, 중간 0크레딧) — 진영 치장 8종 × 2안 + 게임 패스 아이콘 4종 × 2안", font=F(28, True), fill=NAVY)
@@ -66,6 +67,21 @@ for title, kind, themes in rows_acc:
             d.text((x + 4, y + CH + 4), f"{ko} {v}" + ("  ★ 추천" if rec else ""), font=F(16, rec), fill=RED if rec else NAVY)
         y += CH + 34
     y += 6
+d.text((30, y), "[출석 전용] 상점에 없는 후광·뿔 (A23-77: 모은 날 14일 · 50/100일) — 상점 테마와 겹치지 않는 색", font=F(22, True), fill=NAVY)
+y += 40
+for title, themes in ATT:
+    d.text((30, y), title, font=F(18, True), fill=NAVY)
+    y += 28
+    x = 30
+    for name, ko in themes:
+        for kind, kko in (("Halo", "후광"), ("Horns", "뿔")):
+            tag = f"ATT_{kind}{name}"
+            s.paste(load(D + tag + "_src.png", (CW, CH)), (x, y))
+            rec = tag in REC
+            d.text((x + 4, y + CH + 4), f"{ko} {kko}" + ("  ★ 추천" if rec else ""), font=F(16, rec), fill=RED if rec else NAVY)
+            x += CW + 12
+    y += CH + 40
+y += 10
 d.text((30, y), "게임 패스 아이콘 (512×512용) — 왼쪽 큰 그림 · 가운데 상점 원형 자르기 · 오른쪽 64px·40px", font=F(22, True), fill=NAVY)
 y += 40
 for v in "AB":
