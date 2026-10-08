@@ -1,0 +1,162 @@
+{
+ "HaloIce": {
+  "kind": "Halo",
+  "glow": [
+   170,
+   225,
+   255
+  ],
+  "sparkle": [
+   225,
+   245,
+   255
+  ],
+  "files": [
+   "build/acctex/HaloIce/Acc_HaloR1.png",
+   "build/acctex/HaloIce/Acc_HaloR2.png",
+   "build/acctex/HaloIce/Acc_HaloR3.png",
+   "build/acctex/HaloIce/Acc_HaloR4.png",
+   "build/acctex/HaloIce/Acc_HaloR5.png"
+  ]
+ },
+ "HaloGold": {
+  "kind": "Halo",
+  "glow": [
+   255,
+   200,
+   90
+  ],
+  "sparkle": [
+   255,
+   230,
+   140
+  ],
+  "files": [
+   "build/acctex/HaloGold/Acc_HaloR1.png",
+   "build/acctex/HaloGold/Acc_HaloR2.png",
+   "build/acctex/HaloGold/Acc_HaloR3.png",
+   "build/acctex/HaloGold/Acc_HaloR4.png",
+   "build/acctex/HaloGold/Acc_HaloR5.png"
+  ]
+ },
+ "HornsLava": {
+  "kind": "Horns",
+  "glow": [
+   255,
+   120,
+   40
+  ],
+  "sparkle": [
+   255,
+   190,
+   90
+  ],
+  "files": [
+   "build/acctex/HornsLava/Acc_HornsR1.png",
+   "build/acctex/HornsLava/Acc_HornsR2.png",
+   "build/acctex/HornsLava/Acc_HornsR3.png",
+   "build/acctex/HornsLava/Acc_HornsR4.png",
+   "build/acctex/HornsLava/Acc_HornsR5.png"
+  ]
+ },
+ "HornsShadow": {
+  "kind": "Horns",
+  "glow": [
+   160,
+   100,
+   255
+  ],
+  "sparkle": [
+   215,
+   190,
+   255
+  ],
+  "files": [
+   "build/acctex/HornsShadow/Acc_HornsR1.png",
+   "build/acctex/HornsShadow/Acc_HornsR2.png",
+   "build/acctex/HornsShadow/Acc_HornsR3.png",
+   "build/acctex/HornsShadow/Acc_HornsR4.png",
+   "build/acctex/HornsShadow/Acc_HornsR5.png"
+  ]
+ },
+ "HaloSprout": {
+  "kind": "Halo",
+  "glow": [
+   150,
+   235,
+   120
+  ],
+  "sparkle": [
+   210,
+   255,
+   180
+  ],
+  "files": [
+   "build/acctex/HaloSprout/Acc_HaloR1.png",
+   "build/acctex/HaloSprout/Acc_HaloR2.png",
+   "build/acctex/HaloSprout/Acc_HaloR3.png",
+   "build/acctex/HaloSprout/Acc_HaloR4.png",
+   "build/acctex/HaloSprout/Acc_HaloR5.png"
+  ]
+ },
+ "HornsSprout": {
+  "kind": "Horns",
+  "glow": [
+   150,
+   235,
+   120
+  ],
+  "sparkle": [
+   210,
+   255,
+   180
+  ],
+  "files": [
+   "build/acctex/HornsSprout/Acc_HornsR1.png",
+   "build/acctex/HornsSprout/Acc_HornsR2.png",
+   "build/acctex/HornsSprout/Acc_HornsR3.png",
+   "build/acctex/HornsSprout/Acc_HornsR4.png",
+   "build/acctex/HornsSprout/Acc_HornsR5.png"
+  ]
+ },
+ "HaloStarlight": {
+  "kind": "Halo",
+  "glow": [
+   120,
+   140,
+   255
+  ],
+  "sparkle": [
+   255,
+   220,
+   120
+  ],
+  "files": [
+   "build/acctex/HaloStarlight/Acc_HaloR1.png",
+   "build/acctex/HaloStarlight/Acc_HaloR2.png",
+   "build/acctex/HaloStarlight/Acc_HaloR3.png",
+   "build/acctex/HaloStarlight/Acc_HaloR4.png",
+   "build/acctex/HaloStarlight/Acc_HaloR5.png"
+  ]
+ },
+ "HornsStarlight": {
+  "kind": "Horns",
+  "glow": [
+   120,
+   140,
+   255
+  ],
+  "sparkle": [
+   255,
+   220,
+   120
+  ],
+  "files": [
+   "build/acctex/HornsStarlight/Acc_HornsR1.png",
+   "build/acctex/HornsStarlight/Acc_HornsR2.png",
+   "build/acctex/HornsStarlight/Acc_HornsR3.png",
+   "build/acctex/HornsStarlight/Acc_HornsR4.png",
+   "build/acctex/HornsStarlight/Acc_HornsR5.png"
+  ]
+ }
+}
