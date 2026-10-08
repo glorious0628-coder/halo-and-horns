@@ -44,21 +44,40 @@ def note(msg):
     LOG.append(line)
 
 
+def white_ratio(img):
+    """share of near-white pixels in the middle band (the 3D view; the HUD sits at the top and bottom). A minimized or
+    hidden Studio window captures its 3D view white (10/08: most Play photos came out white)."""
+    small = img.convert("L").resize((64, 36))
+    px = list(small.getdata())[64 * 9:64 * 27]
+    return sum(1 for v in px if v >= 248) / max(1, len(px))
+
+
 def save(c, name):
-    try:
-        res = c.call("screen_capture", {"capture_id": name})
-    except Exception as e:  # noqa: BLE001
-        note("capture failed " + name + " " + str(e)[:120])
-        return
-    for part in res.get("content", []):
-        if part.get("type") == "image":
-            from PIL import Image
+    from PIL import Image
+    for attempt in range(3):
+        restore_studio_window()
+        try:
+            res = c.call("screen_capture", {"capture_id": name})
+        except Exception as e:  # noqa: BLE001
+            note("capture failed " + name + " " + str(e)[:120])
+            return
+        img = None
+        for part in res.get("content", []):
+            if part.get("type") == "image":
+                img = Image.open(io.BytesIO(base64.b64decode(part["data"])))
+                break
+        if img is None:
+            note("capture failed " + name)
+            return
+        white = white_ratio(img)
+        if white < 0.6 or attempt == 2:
             os.makedirs(OUT, exist_ok=True)
             path = os.path.join(OUT, name + ".png")
-            Image.open(io.BytesIO(base64.b64decode(part["data"]))).save(path)
-            note("saved " + os.path.relpath(path, ROOT))
+            img.save(path)
+            note(f"saved {os.path.relpath(path, ROOT)} (white {white:.0%}" + (", STILL WHITE" if white >= 0.6 else "") + ")")
             return
-    note("capture failed " + name)
+        note(f"capture {name} is white ({white:.0%}): the Studio window again, retry")
+        time.sleep(1.5)
 
 
 def restore_studio_window():
@@ -178,6 +197,7 @@ local R = game:GetService("ReplicatedStorage"):WaitForChild("Remotes")
 R:WaitForChild("%s"):FireServer(%s)
 return "fired %s"
 """
+SKILL_KEY = "Z"  # the basic skill key since the user's 10/08 MMO keys (Q = the quest list)
 DISPATCH = r"""
 local ps = game:GetService("Players").LocalPlayer:WaitForChild("PlayerScripts")
 local kb = ps:FindFirstChild("Keybinds")
@@ -329,7 +349,7 @@ def hunt(c, label, kills_key, need, seconds, want="", skill_every=0):
         lua(c, DISPATCH % "F", "Client")
         n += 1
         if skill_every and n % skill_every == 0:
-            lua(c, DISPATCH % "Q", "Client")
+            lua(c, DISPATCH % SKILL_KEY, "Client")
         time.sleep(0.55)
         if kills_key and n % 4 == 0:
             s = lua(c, STATE, "Server")
@@ -404,8 +424,8 @@ def world_flow(c):
     time.sleep(3.0)
     note("near: " + lua(c, NEAR_MONSTER % ("Slime", "nil", "5"), "Client"))
     time.sleep(2.0)
-    mark(c, "skill Q after a real level-up (SkillCast + SkillHalo + hit)")
-    note(lua(c, DISPATCH % "Q", "Client"))
+    mark(c, "skill (Z) after a real level-up (SkillCast + SkillHalo + hit)")
+    note(lua(c, DISPATCH % SKILL_KEY, "Client"))
     time.sleep(4.0)
     mark(c, "after the 3 s cooldown (SkillReady)")
     time.sleep(0.5)
@@ -478,6 +498,8 @@ def main():
             sys.exit("not in Edit: " + st)
         if MODE == "phone":
             note("device: " + lua(c, SET_PHONE, "Edit"))
+        else:
+            note("device before Play: " + lua(c, RESTORE, "Edit"))  # a re-opened Studio may come back on the emulator
         note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh on"', "Edit"))
         c.call("start_stop_play", {"is_start": True})
         for _ in range(40):
@@ -552,8 +574,8 @@ def main():
                 # the server's movement check refuses a cast right after a jump in position: stand still 2 s first
                 note("near: " + lua(c, NEAR_MONSTER % ("Slime", "nil", "5"), "Client"))
                 time.sleep(2.0)
-                mark(c, "skill Q after standing still (SkillCast + SkillHalo + hit)")
-                note(lua(c, DISPATCH % "Q", "Client"))
+                mark(c, "skill (Z) after standing still (SkillCast + SkillHalo + hit)")
+                note(lua(c, DISPATCH % SKILL_KEY, "Client"))
                 time.sleep(4.0)  # basic skill cooldown 3 s -> SkillReady
                 mark(c, "after the cooldown (SkillReady expected at ~3 s)")
                 hunt(c, "phone: slimes again + Q (HitSoft on phone)", None, 0, 20, "Slime", skill_every=6)
@@ -565,13 +587,13 @@ def main():
                 time.sleep(4)
                 # 14 skill Q, ready, MP short (Deny)
                 lua(c, NEAR_MONSTER % ("Slime", "nil", "4"), "Client")
-                mark(c, "skill Q (SkillCast + SkillHalo + hit)")
-                note(lua(c, DISPATCH % "Q", "Client"))
+                mark(c, "skill (Z) (SkillCast + SkillHalo + hit)")
+                note(lua(c, DISPATCH % SKILL_KEY, "Client"))
                 time.sleep(4.0)  # basic skill cooldown 3 s -> SkillReady
-                mark(c, "Mana 0 + Q (Deny)")
+                mark(c, "Mana 0 + skill key (Deny)")
                 debug(c, "Mana", 0)
                 time.sleep(0.5)
-                note(lua(c, DISPATCH % "Q", "Client"))
+                note(lua(c, DISPATCH % SKILL_KEY, "Client"))
                 time.sleep(1.5)
                 # 12 potions: buy (Spend) at the merchant, drink MP (Potion)
                 mark(c, "potion merchant: BuyPotion MP x1 (Spend)")

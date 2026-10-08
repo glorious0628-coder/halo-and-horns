@@ -1,0 +1,70 @@
+[   0.0] studio window restored (no focus)
+[   0.2] fresh on
+[   4.0] collector ok, hooked 9, rows 0
+[   4.1] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=-2,4,-28 anvilDist=84.0
+[   4.2] collector ok, hooked 9, rows 0
+[   4.3] == opening (first-time intro plays)
+[  28.3] == ChooseFaction Halo
+[  28.4] fired ChooseFaction
+[  28.5] == ChooseClass Warrior
+[  28.6] fired ChooseClass
+[  28.7] chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=-2,4,-28 anvilDist=84.0
+[  29.0] == guide talks (TalkBlip expected)
+[  34.5] saved docs\art\verification_2026-10-08\sound_play\world\01_guide.png
+[  34.6] == AcceptTutorial (QuestNew expected)
+[  34.7] fired AcceptTutorial
+[  38.1] at forge: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=3 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  39.7] == anvil first weapon (PowerUp expected, no QuestDone)
+[  40.0] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  40.1] weapon: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=1 TutorialKills=0 WeaponTier=1 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  42.9] saved docs\art\verification_2026-10-08\sound_play\world\02_first_weapon.png
+[  43.0] debug Level=4: ok
+[  43.1] debug XP=103: ok
+[  44.2] == real level-up 4 -> 5 on a slime kill (LevelUp, then SkillLearn ~1.1 s)
+[  44.2] near: Slime Slime d=250 mine=false
+[  48.4] near: Slime Slime d=6 mine=false
+[  49.8] Level=5 after 8 presses
+[  52.9] near: Slime Slime d=6 mine=false
+[  54.9] == skill Q after a real level-up (SkillCast + SkillHalo + hit)
+[  55.0] Journal
+[  59.1] == after the 3 s cooldown (SkillReady)
+[  60.0] saved docs\art\verification_2026-10-08\sound_play\world\03_skill.png
+[  60.1] == KO (KO) then back (Respawn)
+[  60.2] ko
+[  70.2] after respawn: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=2 TutorialKills=1 WeaponTier=1 Level=5 CarriedGold=3 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=SlimeMeadow ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=233,4,2 anvilDist=199.3
+[  71.3] == GooseEnd near me + reward line (GooseEnd, GoldPickup 1.5 s later)
+[  71.4] sent
+[  73.9] == Stomp 10 studs away (KaijuStomp x1.00)
+[  74.0] sent
+[  75.4] == Stomp 30 studs away (KaijuStomp x0.67)
+[  75.4] sent
+[  76.8] == Stomp 80 studs away (KaijuStomp x0.00)
+[  76.9] sent
+[  78.2] == KaijuPhase Siren, ends in 5 s (KaijuSiren, CountTick x3)
+[  78.3] gamestate set
+[  84.4] gamestate set
+[  84.5] == WarRoundEndsAt now+31 (WarFinal30 at 30 s left)
+[  84.5] gamestate set
+[  87.1] == WarRoundEndsAt now+4 (CountTick x3)
+[  87.2] gamestate set
+[  92.2] == Announce Jackpot from someone else (JackpotOther)
+[  92.3] sent
+[  93.9] near: Slime Slime d=69 mine=false
+[  95.0] == a monster near me turns golden (GoldenSpot)
+[  95.0] golden Slime d=12
+[  97.0] saved docs\art\verification_2026-10-08\sound_play\world\04_world.png
+[  97.0] debug Level=12: ok
+[  97.1] at y=0.2 (Deck)
+[ 101.2] outside: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=2 TutorialKills=1 WeaponTier=1 Level=12 CarriedGold=2 BankGold=1 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Outskirts ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=690,4,0 anvilDist=652.6
+[ 101.2] == step into the Goblin Woods (ZoneEnterPvP)
+[ 101.3] at y=-0.0 (Terrain)
+[ 103.9] inside: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=2 TutorialKills=1 WeaponTier=1 Level=12 CarriedGold=2 BankGold=1 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=GoblinWoods ZonePvP=true HPPotionCount=0 MPPotionCount=0 pos=725,4,0 anvilDist=687.5
+[ 104.3] saved docs\art\verification_2026-10-08\sound_play\world\05_pvp.png
+[ 104.4] == end
+[ 104.9] rows: 83
+[ 105.0] console: [RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[RankingService] read Artisan failed: You must publish this place to the web to access DataStore.
+[ 106.3] play stopped
+[ 108.4] fresh off
+[ 108.9] device: default

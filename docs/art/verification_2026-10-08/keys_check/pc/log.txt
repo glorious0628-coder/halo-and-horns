@@ -1,0 +1,65 @@
+[   0.0] studio window restored (no focus)
+[   0.2] fresh on
+[   4.1] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=5,4,-22 anvilDist=75.3
+[  28.2] fired ChooseFaction
+[  28.3] fired ChooseClass
+[  32.5] close guide: Menu
+[  33.5] probe start: {"Prompts":["G"],"PlayerList":false,"Title":"Guide · Take Back the Supply Road","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":false}
+[  33.6] == I (the bag: Items)
+[  33.7] dispatch I: Bag
+[  34.9] probe I (the bag: Items): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":true,"Quests":false}
+[  35.8] saved docs\art\verification_2026-10-08\keys_check\pc\01_I_bag.png
+[  35.9] == I again (closes)
+[  36.0] dispatch I: Bag
+[  37.2] probe I again (closes): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":false}
+[  37.3] == Q (quest list out)
+[  37.4] dispatch Q: Journal
+[  38.6] probe Q (quest list out): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":true}
+[  39.5] saved docs\art\verification_2026-10-08\keys_check\pc\02_Q_quests.png
+[  39.6] == Q again (quest list in)
+[  39.6] dispatch Q: Journal
+[  40.9] probe Q again (quest list in): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":false}
+[  41.0] == E (Hero: Coming soon)
+[  41.0] dispatch E: Character
+[  42.3] probe E (Hero: Coming soon): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":["Coming soon!"],"Panels":false,"Quests":false}
+[  43.2] saved docs\art\verification_2026-10-08\keys_check\pc\03_E_hero.png
+[  45.2] == K (Skills: Coming soon)
+[  45.3] dispatch K: Skills
+[  46.6] probe K (Skills: Coming soon): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":["Coming soon!"],"Panels":false,"Quests":false}
+[  48.6] == L (the ranking list)
+[  48.7] dispatch L: Ranking
+[  50.0] probe L (the ranking list): {"Prompts":["G"],"PlayerList":true,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":false}
+[  50.9] saved docs\art\verification_2026-10-08\keys_check\pc\04_L_ranking.png
+[  50.9] == L again (closes)
+[  51.0] dispatch L: Ranking
+[  52.3] probe L again (closes): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":false}
+[  52.3] == Z (the skill before Lv5)
+[  52.4] dispatch Z: SkillQ
+[  53.7] probe Z (the skill before Lv5): {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":["Skills come at Lv 5"],"Panels":false,"Quests":false}
+[  55.2] probe before real I: {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":false}
+[  55.3] == real I key held 1.5 s
+[  56.8] real I: Success
+[  57.7] probe after real I: {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":false,"Quests":false}
+[  58.6] saved docs\art\verification_2026-10-08\keys_check\pc\05_real_I.png
+[  58.7] close: Bag
+[  59.8] probe before real O: {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":12.5,"Toasts":[],"Panels":true,"Quests":false}
+[  61.0] real O: Success
+[  61.9] probe after real O: {"Prompts":["G"],"PlayerList":false,"Title":"Items","CamDist":40,"Toasts":[],"Panels":true,"Quests":false}
+[  62.0] == end
+[  62.1] console: 
+[  63.1] play stopped
+[  65.2] fresh off
+[  65.3] device: default
+[  65.3] OK   prompts draw G
+[  65.3] OK   I opens the bag (Items)
+[  65.3] OK   I again closes it
+[  65.3] OK   Q folds the quest list out
+[  65.3] OK   Q again folds it in
+[  65.3] OK   E says Coming soon
+[  65.3] OK   K says Coming soon
+[  65.3] OK   L opens the ranking list
+[  65.3] OK   L again closes it
+[  65.3] OK   Z = the skill key (Lv5 note before)
+[  65.3] FAIL real I opens the bag
+[  65.3] OK   real I does not zoom the camera
+[  65.3] OK   real O still zooms out (Roblox's)

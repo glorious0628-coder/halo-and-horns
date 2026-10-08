@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9626,
+  "checks": 9630,
   "failedChecks": 0,
-  "namedChecks": 320,
+  "namedChecks": 324,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1233,6 +1233,30 @@
     },
     {
       "group": "keybinds-live",
+      "check": "the sink hands the I press on as not processed (HUD opens the bag)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "the UserInputService copy of a sunk key is skipped (one press, never two)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "the other keys still come through UserInputService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "typing in a TextBox: the sink passes I on (no bag)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
       "check": "no action on I / O (the bag window not there yet): nothing sunk",
       "pass": 1,
       "fail": 0
@@ -1937,9 +1961,9 @@
   "staticChecks": 31,
   "staticFailures": [],
   "mutations": {
-    "total": 52,
-    "applied": 52,
-    "caught": 52,
+    "total": 55,
+    "applied": 55,
+    "caught": 55,
     "results": [
       {
         "mutation": "KeyMap: an explicit key already taken is kept",
@@ -2635,10 +2659,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "keybinds-live :: group ran to the end without a Lua error",
           "keybinds-live :: the bag back on I: sunk again",
           "keybinds-live :: the bag key I is sunk above the camera's zoom (only I, O stays free)"
         ],
-        "newFailingCount": 2,
+        "newFailingCount": 3,
         "newFailingStatic": []
       },
       {
@@ -2704,6 +2729,47 @@
         "newFailingStatic": [
           "HUD L.WindowSoon: Q (Journal) = the HUD quest list, a tile's key = that tile, else 'Coming soon!'"
         ]
+      },
+      {
+        "mutation": "the sink swallows the key (HUD never sees it)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keybinds-live :: the UserInputService copy of a sunk key is skipped (one press, never two)",
+          "keybinds-live :: the other keys still come through UserInputService",
+          "keybinds-live :: the sink hands the I press on as not processed (HUD opens the bag)",
+          "keybinds-live :: typing in a TextBox: the sink passes I on (no bag)"
+        ],
+        "newFailingCount": 4,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "a sunk key comes twice",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keybinds-live :: the UserInputService copy of a sunk key is skipped (one press, never two)",
+          "keybinds-live :: the other keys still come through UserInputService",
+          "keybinds-live :: typing in a TextBox: the sink passes I on (no bag)"
+        ],
+        "newFailingCount": 3,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "the sink takes I while typing",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keybinds-live :: typing in a TextBox: the sink passes I on (no bag)"
+        ],
+        "newFailingCount": 1,
+        "newFailingStatic": []
       }
     ]
   },
@@ -2711,16 +2777,16 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "39977a67d796ce911236add684de520ebe2caf6b0c9d779a91ec7ddd525e4f37",
+    "src/ReplicatedStorage/Shared/Config.luau": "81ef391810bdefd274923836367e3cba5743222383a1b5153483939c5a895879",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
-    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "cb09c5cc92af16fa458f90e30273773a5edeadc3c3faada0c69883c4ec7dad3f",
+    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "77f83dd8f364ce0234b63c13f14734aa17d6fa570b6f75ea49e7c0dd87cac507",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "f2df5649759452e4a9e2c6965c88ae7cad0a17329ad38c71270346466c404d8f",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "c3bf7bcb4cba48c7b93bff4100bc698c13120d777d903a3030a9ad613ed21af8",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "d8ba268daa72a4a572407e8da92de8f14db76819f42a64b8c9c3929f6ad38e96",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "73d39a075505b7c5224d3533f55b6342772b9ad2d2ad4eec753d81586ad40abd",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "6ba2f0c2cb6317475f5a28084900442c2a5ef25336a5aa1bcfc1f44d0f6353a6",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
@@ -2728,7 +2794,7 @@
     "src/ServerScriptService/StoryQuestService.luau": "64581aab0e0cfaf239a604b201cd1d8245fee49979d37c6e206baa5399203681",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1"
   },
-  "fixtureSHA256": "0f161dc146adae2a3c435e1ce0e600995f71b8381afe7b18387d18cbf267dece",
+  "fixtureSHA256": "582d3257473bb162c3741673d336ffe55f81c88ee0d9af0f2c09cfd7265e313c",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

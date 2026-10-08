@@ -1276,6 +1276,28 @@ runGroup("keybinds-live", function()
 		"O stays Roblox's zoom (reserved): it cannot be set, nothing sunk")
 	all.KB.SetLocal("Bag", "I")
 	check(all.CAS.Bound.HH_CameraKeySink ~= nil, "the bag back on I: sunk again")
+	-- 10/08 Play check: a CAS-sunk key reaches UserInputService as processed (the real I opened nothing), so the sink
+	-- hands the press on itself as not processed and the UserInputService copy is skipped
+	local seenB, seenE = {}, {}
+	all.KB.Began:Connect(function(i, gp) table.insert(seenB, { i, gp }) end)
+	all.KB.Ended:Connect(function(i, gp) table.insert(seenE, { i, gp }) end)
+	local fn = all.CAS.Bound.HH_CameraKeySink.Fn
+	local res = fn("HH_CameraKeySink", ENUM.UserInputState.Begin, key("I"))
+	fn("HH_CameraKeySink", ENUM.UserInputState.End, key("I"))
+	check(res == ENUM.ContextActionResult.Sink and #seenB == 1 and seenB[1][2] == false and seenB[1][1].KeyCode == ENUM.KeyCode.I
+		and #seenE == 1 and seenE[1][2] == false, "the sink hands the I press on as not processed (HUD opens the bag)",
+		show({ #seenB, #seenE }))
+	all.UIS.InputBegan:Fire(key("I"), true)
+	all.UIS.InputEnded:Fire(key("I"), true)
+	check(#seenB == 1 and #seenE == 1, "the UserInputService copy of a sunk key is skipped (one press, never two)",
+		show({ #seenB, #seenE }))
+	all.UIS.InputBegan:Fire(key("K"), false)
+	check(#seenB == 2, "the other keys still come through UserInputService", #seenB)
+	local focused = all.UIS.GetFocusedTextBox
+	all.UIS.GetFocusedTextBox = function() return {} end
+	check(fn("HH_CameraKeySink", ENUM.UserInputState.Begin, key("I")) == ENUM.ContextActionResult.Pass and #seenB == 2,
+		"typing in a TextBox: the sink passes I on (no bag)")
+	all.UIS.GetFocusedTextBox = focused
 	local plain = clientWorld()
 	check(plain.CAS.Bound.HH_CameraKeySink == nil, "no action on I / O (the bag window not there yet): nothing sunk")
 end)

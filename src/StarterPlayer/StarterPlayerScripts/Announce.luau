@@ -160,9 +160,16 @@ end
 
 -- New chat (TextChatService; ChatText.luau covers the legacy chat on the server): Roblox's team line ("You are now on
 -- the ... team.", Metadata Roblox.Team.Success.NowInTeam) comes in the player's Roblox language -> our English line.
--- Every other message comes back nil (untouched).
+-- Every other message goes to ChatTags.Incoming (A23-75 the VIP tag, 게임성 개발 1) - nil when nothing changes.
 function A.Incoming(message)
-	if message.Metadata ~= "Roblox.Team.Success.NowInTeam" then return nil end
+	if message.Metadata ~= "Roblox.Team.Success.NowInTeam" then
+		local tags = C and C.ChatTags -- A23-75: the other lines go to ChatTags; Announce keeps the one callback
+		if type(tags) == "table" and type(tags.Incoming) == "function" then
+			local ok, props = pcall(tags.Incoming, message)
+			if ok then return props end
+		end
+		return nil
+	end
 	local props = Instance.new("TextChatMessageProperties")
 	local team = Players.LocalPlayer.Team
 	local text = Config.ChatText.Choosing

@@ -46,6 +46,7 @@ local K = {
 	CameraKeys = { "I", "O" }, -- Roblox's camera zoom keys (its keypress action at Default priority)
 	SinkAction = "HH_CameraKeySink",
 	SinkPriority = 3000, -- Enum.ContextActionPriority.High: above the camera (Default 2000), under WorldMap / Intro / capture
+	Sunk = {}, -- [key name] = true: the camera zoom keys sunk right now (the sink hands them on itself)
 }
 
 Keybinds.Changed = Util.Signal.new() -- (map copy) after the effective keys changed
@@ -148,18 +149,33 @@ local function applyPrompt(prompt)
 	if prompt.KeyboardKeyCode ~= code then prompt.KeyboardKeyCode = code end
 end
 
--- a camera zoom key one of our live actions holds is sunk above Roblox's camera, so it does our action only
--- (UserInputService still delivers it: Keybinds.Began / HUD as for every key)
+-- a camera zoom key one of our live actions holds is sunk above Roblox's camera, so it does our action only. A sunk key
+-- reaches UserInputService as processed (HUD skips those: the 10/08 Play check, the real I opened nothing), so the
+-- sink hands the press on itself through Began / Ended as NOT processed, and the UserInputService forwarder skips the
+-- keys sunk here (one press, never two). Typing in a TextBox passes the key on untouched.
+local function sinkHandler(_, state, input)
+	if UserInputService:GetFocusedTextBox() then return Enum.ContextActionResult.Pass end
+	if state == Enum.UserInputState.Begin then
+		Keybinds.Began:Fire(input, false)
+	elseif state == Enum.UserInputState.End then
+		Keybinds.Ended:Fire(input, false)
+	end
+	return Enum.ContextActionResult.Sink
+end
+
 local function sinkCameraKeys()
 	local codes = {}
+	K.Sunk = {}
 	for _, name in K.CameraKeys do
-		if K.ByKey[name] then table.insert(codes, Enum.KeyCode[name]) end
+		if K.ByKey[name] then
+			table.insert(codes, Enum.KeyCode[name])
+			K.Sunk[name] = true
+		end
 	end
 	pcall(function() ContextActionService:UnbindAction(K.SinkAction) end)
 	if #codes == 0 then return end
 	local ok, err = pcall(function()
-		ContextActionService:BindActionAtPriority(K.SinkAction, function() return Enum.ContextActionResult.Sink end, false,
-			K.SinkPriority, table.unpack(codes))
+		ContextActionService:BindActionAtPriority(K.SinkAction, sinkHandler, false, K.SinkPriority, table.unpack(codes))
 	end)
 	if not ok then Util.Warn(TAG, "camera key sink failed: " .. tostring(err)) end
 end
@@ -477,10 +493,16 @@ function Keybinds.Start()
 	if K.Started then return end
 	K.Started = true
 	recompute(false) -- every window registered in an Init is live now
+	-- a key the camera sink holds comes through sinkHandler instead (as not processed)
+	local function sunk(input)
+		return input.UserInputType == Enum.UserInputType.Keyboard and K.Sunk[input.KeyCode.Name] == true
+	end
 	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if sunk(input) then return end
 		Keybinds.Began:Fire(input, gameProcessed)
 	end)
 	UserInputService.InputEnded:Connect(function(input, gameProcessed)
+		if sunk(input) then return end
 		Keybinds.Ended:Fire(input, gameProcessed)
 	end)
 	local st = C and C.Settings

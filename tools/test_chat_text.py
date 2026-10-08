@@ -62,9 +62,10 @@ CLIENT_MUTATIONS = [
      [("\tC = registry\n\tA.HookTeamLine()\n", "\tC = registry\n"),
       ('\tprint("[Announce] started")', '\tA.HookTeamLine()\n\tprint("[Announce] started")')]),
     ("the hook is never set", [("\tC = registry\n\tA.HookTeamLine()\n", "\tC = registry\n")]),
+    # A23-75 (2026-10-08): the other lines go to C.ChatTags first (the VIP tag); without ChatTags they stay nil
     ("every message gets new properties",
-     [('if message.Metadata ~= "Roblox.Team.Success.NowInTeam" then return nil end',
-       'if message.Metadata ~= "Roblox.Team.Success.NowInTeam" then return Instance.new("TextChatMessageProperties") end')]),
+     [('\t\treturn nil\n\tend\n\tlocal props = Instance.new("TextChatMessageProperties")',
+       '\t\treturn Instance.new("TextChatMessageProperties")\n\tend\n\tlocal props = Instance.new("TextChatMessageProperties")')]),
     ("the team line keeps Roblox's text",
      [("props.Text = string.format('<font color=", "props.PrefixText = string.format('<font color=")]),
     ("the auto-assigned team gets a Joined line",

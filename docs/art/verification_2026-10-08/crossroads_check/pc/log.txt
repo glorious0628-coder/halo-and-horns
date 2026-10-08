@@ -1,0 +1,42 @@
+[   1.2] saved 00_crossroads_top
+[   2.1] saved 00_crossroads_plaza
+[   2.2] fresh on
+[   6.0] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=1,4,-27 anvilDist=81.4
+[  30.1] fired ChooseFaction
+[  30.2] fired ChooseClass
+[  33.4] closed
+[  33.4] found: {"Prompts": [{"Enabled": true, "Name": "HHC_BlacksmithPrompt", "Dist": 12, "Key": "G", "Hold": 0, "Pos": [39, 1.5, 45]}, {"Enabled": false, "Name": "BoardPrompt", "Dist": 12, "Key": "G", "Hold": 0, "Pos": [636, 3, 0]}, {"Enabled": true, "Name": "AltarPrompt", "Dist": 12, "Key": "G", "Hold": 0, "Pos": [0, 2, 45]}, {"Enabled": false, "Name": "BoardPrompt", "Dist": 12, "Key": "G", "Hold": 0, "Pos": [230, 3, 12]}, {"Enabled": true, "Name": "PotionShopPrompt", "Dist": 12, "Key": "G", "Hold": 0, "Pos": [12, 3.006021738052368, -34]}], "Castles": {"HaloCastle": {"Size": [70, 65.71049499511719, 55.37602996826172], "Pos": [0.0004971623420715332, 32.83965301513672, -630]}, "HornsCastle": {"Size": [83.84300231933594, 65.75699615478516, 84], "Pos": [-1.6689300537109375e-06, 31.967958450317383, 630]}}, "Nest": {"Look": [0.707079291343689, -0.7071342468261719], "Size": [12, 7.565999984741211, 11.112000465393066], "Pos": [-30, 3.7829997539520264, 30]}, "Board": {"Transparency": 0, "Text": "This server · this week\n<b>Knights' Honor</b>  (nobody yet)\n<b>Horns' Infamy</b", "Look": [0, -1], "Face": "Right", "Pos": [-57.100311279296875, 8.399999618530273, 2.3748725652694702e-07]}, "Arch": {"Look": [0.707079291343689, 0.7071342468261719], "Size": [12, 10.357000350952148, 2.9100000858306885], "Pos": [-27.000001907348633, 5.178500175476074, -27.000001907348633]}, "Altar": [0, 2, 45], "Anvil": [39, 1.5, 45]}
+[  33.5] stand y=13.0 on AltarColumn
+[  34.9] saved docs\art\verification_2026-10-08\crossroads_check\pc\01_altar.png
+[  35.1] held Workspace.Map.Landmarks.Altar.AltarPrompt
+[  36.4] altar panel: true Altar of Fate
+[  36.9] saved docs\art\verification_2026-10-08\crossroads_check\pc\02_altar_window.png
+[  36.9] closed
+[  37.0] stand y=22.4 on X_GuildHall
+[  38.3] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  44.6] anvil: false Altar of Fate
+[  44.9] saved docs\art\verification_2026-10-08\crossroads_check\pc\03_anvil.png
+[  45.0] closed
+[  45.1] stand y=3.0 on Terrain
+[  46.7] saved docs\art\verification_2026-10-08\crossroads_check\pc\04_board.png
+[  46.7] stand y=3.0 on Terrain
+[  48.1] saved docs\art\verification_2026-10-08\crossroads_check\pc\05_nest.png
+[  48.2] stand y=14.9 on Kit_X_StallGreen
+[  49.6] saved docs\art\verification_2026-10-08\crossroads_check\pc\06_arch_before.png
+[  55.7] walked to -19,-19: left 10.9 studs after 6.1 s
+[  56.1] saved docs\art\verification_2026-10-08\crossroads_check\pc\07_arch_after.png
+[  56.1] stand y=3.0 on Terrain
+[  57.7] saved docs\art\verification_2026-10-08\crossroads_check\pc\08_plaza_fountain.png
+[  57.8] stand y=3.0 on Terrain
+[  60.2] saved docs\art\verification_2026-10-08\crossroads_check\pc\09_HaloCastle.png
+[  60.3] stand y=2.9 on Terrain
+[  62.6] saved docs\art\verification_2026-10-08\crossroads_check\pc\09_HornsCastle.png
+[  62.7] console: 
+[  63.7] play stopped
+[  65.8] fresh off
+[  65.9] device: default
+[  65.9] OK   every prompt draws G
+[  65.9] OK   the altar prompt opens its window
+[  65.9] FAIL the anvil answers from 10 studs (first weapon or the shop)
+[  65.9] OK   the board has its text
+[  65.9] FAIL the market arch can be walked through

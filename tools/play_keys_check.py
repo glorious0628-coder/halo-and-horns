@@ -101,6 +101,7 @@ def main():
         st = psc.text_of(c.call("get_studio_state", {}))
         if "Current Studio Mode: Edit" not in st:
             sys.exit("not in Edit: " + st)
+        psc.note("device before Play: " + psc.lua(c, psc.RESTORE, "Edit"))
         psc.note(psc.lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh on"', "Edit"))
         c.call("start_stop_play", {"is_start": True})
         for _ in range(40):

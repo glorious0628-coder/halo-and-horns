@@ -1,0 +1,7 @@
+{
+ "every prompt draws G": true,
+ "the altar prompt opens its window": true,
+ "the anvil answers from 10 studs (first weapon or the shop)": false,
+ "the board has its text": true,
+ "the market arch can be walked through": false
+}

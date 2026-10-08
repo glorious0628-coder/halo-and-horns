@@ -1,0 +1,727 @@
+[
+ {
+  "t": 0.232,
+  "k": "mark",
+  "n": "opening (first-time intro plays)"
+ },
+ {
+  "t": 24.314,
+  "k": "mark",
+  "n": "ChooseFaction Halo"
+ },
+ {
+  "t": 24.517,
+  "k": "mark",
+  "n": "ChooseClass Warrior"
+ },
+ {
+  "t": 24.718,
+  "k": "mark",
+  "n": "guide talks (TalkBlip expected)"
+ },
+ {
+  "gv": 1,
+  "t": 24.954,
+  "k": "play",
+  "v": 0.5,
+  "id": "rbxassetid://123199271616228",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_QuestNew_1"
+ },
+ {
+  "gv": 1,
+  "t": 24.966,
+  "k": "play",
+  "v": 0.449,
+  "id": "rbxassetid://129419018750436",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_WindowOpen_1"
+ },
+ {
+  "gv": 1,
+  "t": 24.996,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.075,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.048,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.114,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 25.186,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.1,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_3"
+ },
+ {
+  "gv": 1,
+  "t": 25.347,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.135,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.396,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.112,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 25.446,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.1,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.496,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.11,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 25.547,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.112,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.647,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.056,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.696,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.121,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 25.746,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.102,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.797,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.067,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 25.846,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.109,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.895,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.087,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 25.946,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.126,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 25.996,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.073,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 26.045,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.13,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.145,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.099,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.196,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.09,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 26.296,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.073,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.346,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.104,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 26.397,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.11,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.447,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.09,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 26.496,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.058,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.546,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.123,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 26.646,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.117,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.696,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.111,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 26.747,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.096,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.846,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.092,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.945,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.105,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 26.996,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.087,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 27.047,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.071,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "gv": 1,
+  "t": 27.096,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.065,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_1"
+ },
+ {
+  "gv": 1,
+  "t": 27.146,
+  "k": "play",
+  "v": 0.25,
+  "id": "rbxassetid://94593126133806",
+  "sp": 1.062,
+  "g": "Sfx",
+  "n": "Sfx_TalkBlip_2"
+ },
+ {
+  "t": 30.581,
+  "k": "mark",
+  "n": "AcceptTutorial (QuestNew expected)"
+ },
+ {
+  "gv": 1,
+  "t": 30.716,
+  "k": "play",
+  "v": 0.419,
+  "id": "rbxassetid://86085176622331",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_WindowClose_1"
+ },
+ {
+  "t": 35.679,
+  "k": "mark",
+  "n": "anvil first weapon (PowerUp expected, no QuestDone)"
+ },
+ {
+  "gv": 1,
+  "t": 36.246,
+  "k": "play",
+  "v": 0.6,
+  "id": "rbxassetid://118952858498086",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_PowerUp_1"
+ },
+ {
+  "t": 40.13,
+  "k": "mark",
+  "n": "real level-up 4 -> 5 on a slime kill (LevelUp, then SkillLearn ~1.1 s)"
+ },
+ {
+  "gv": 1,
+  "t": 42.378,
+  "k": "play",
+  "v": 0.3,
+  "id": "rbxassetid://114585478722203",
+  "sp": 1.042,
+  "g": "SfxCombat",
+  "n": "Sfx_SwingWarrior_1"
+ },
+ {
+  "gv": 1,
+  "t": 42.614,
+  "k": "play",
+  "v": 0.319,
+  "id": "rbxassetid://96440842663562",
+  "sp": 1.057,
+  "g": "SfxCombat",
+  "n": "Sfx_HitSoft_1"
+ },
+ {
+  "gv": 1,
+  "t": 43.844,
+  "k": "play",
+  "v": 0.3,
+  "id": "rbxassetid://114585478722203",
+  "sp": 0.933,
+  "g": "SfxCombat",
+  "n": "Sfx_SwingWarrior_1"
+ },
+ {
+  "gv": 1,
+  "t": 44.079,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://96440842663562",
+  "sp": 0.903,
+  "g": "SfxCombat",
+  "n": "Sfx_HitSoft_1"
+ },
+ {
+  "gv": 1,
+  "t": 45.213,
+  "k": "play",
+  "v": 0.85,
+  "id": "rbxassetid://108525821312554",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_LevelUp_1"
+ },
+ {
+  "gv": 0.5,
+  "t": 45.214,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://117802423144289",
+  "sp": 0.984,
+  "g": "SfxCombat",
+  "n": "Sfx_KillPop_1"
+ },
+ {
+  "gv": 0.5,
+  "t": 45.228,
+  "k": "play",
+  "v": 0.3,
+  "id": "rbxassetid://114585478722203",
+  "sp": 0.966,
+  "g": "SfxCombat",
+  "n": "Sfx_SwingWarrior_1"
+ },
+ {
+  "gv": 0.5,
+  "t": 45.278,
+  "k": "play",
+  "v": 0.289,
+  "id": "rbxassetid://132925998560879",
+  "sp": 0.8,
+  "g": "SfxCombat",
+  "n": "Sfx_ComboCoin_1"
+ },
+ {
+  "gv": 0.5,
+  "t": 45.462,
+  "k": "play",
+  "v": 0.319,
+  "id": "rbxassetid://96440842663562",
+  "sp": 1.001,
+  "g": "SfxCombat",
+  "n": "Sfx_HitSoft_1"
+ },
+ {
+  "gv": 1,
+  "t": 46.328,
+  "k": "play",
+  "v": 0.6,
+  "id": "rbxassetid://113535664889883",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_SkillLearn_1"
+ },
+ {
+  "t": 50.912,
+  "k": "mark",
+  "n": "skill Q after a real level-up (SkillCast + SkillHalo + hit)"
+ },
+ {
+  "t": 55.046,
+  "k": "mark",
+  "n": "after the 3 s cooldown (SkillReady)"
+ },
+ {
+  "t": 56.079,
+  "k": "mark",
+  "n": "KO (KO) then back (Respawn)"
+ },
+ {
+  "gv": 1,
+  "t": 56.195,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://137556643487651",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_KO_1"
+ },
+ {
+  "gv": 1,
+  "t": 59.579,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://128867123359602",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_Respawn_1"
+ },
+ {
+  "t": 67.278,
+  "k": "mark",
+  "n": "GooseEnd near me + reward line (GooseEnd, GoldPickup 1.5 s later)"
+ },
+ {
+  "gv": 1,
+  "t": 67.394,
+  "k": "play",
+  "v": 0.5,
+  "id": "rbxassetid://103362677938359",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_GooseEnd_1"
+ },
+ {
+  "gv": 1,
+  "t": 68.894,
+  "k": "play",
+  "v": 0.449,
+  "id": "rbxassetid://119243238199900",
+  "sp": 0.99,
+  "g": "Sfx",
+  "n": "Sfx_GoldPickup_1"
+ },
+ {
+  "t": 69.912,
+  "k": "mark",
+  "n": "Stomp 10 studs away (KaijuStomp x1.00)"
+ },
+ {
+  "gv": 1,
+  "t": 70.01,
+  "k": "play",
+  "v": 0.449,
+  "id": "rbxassetid://82058880758348",
+  "sp": 1.002,
+  "g": "Sfx",
+  "n": "Sfx_KaijuStomp_1"
+ },
+ {
+  "t": 71.345,
+  "k": "mark",
+  "n": "Stomp 30 studs away (KaijuStomp x0.67)"
+ },
+ {
+  "gv": 1,
+  "t": 71.443,
+  "k": "play",
+  "v": 0.3,
+  "id": "rbxassetid://82058880758348",
+  "sp": 1.001,
+  "g": "Sfx",
+  "n": "Sfx_KaijuStomp_1"
+ },
+ {
+  "t": 72.793,
+  "k": "mark",
+  "n": "Stomp 80 studs away (KaijuStomp x0.00)"
+ },
+ {
+  "t": 74.212,
+  "k": "mark",
+  "n": "KaijuPhase Siren, ends in 5 s (KaijuSiren, CountTick x3)"
+ },
+ {
+  "gv": 1,
+  "t": 74.31,
+  "k": "play",
+  "v": 0.699,
+  "id": "rbxassetid://110447360461794",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_KaijuSiren_1"
+ },
+ {
+  "gv": 1,
+  "t": 76.312,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://96016194154678",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_CountTick_1"
+ },
+ {
+  "gv": 1,
+  "t": 77.361,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://96016194154678",
+  "sp": 1.12,
+  "g": "Sfx",
+  "n": "Sfx_CountTick_1"
+ },
+ {
+  "gv": 1,
+  "t": 78.428,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://96016194154678",
+  "sp": 1.259,
+  "g": "Sfx",
+  "n": "Sfx_CountTick_1"
+ },
+ {
+  "t": 80.427,
+  "k": "mark",
+  "n": "WarRoundEndsAt now+31 (WarFinal30 at 30 s left)"
+ },
+ {
+  "t": 83.077,
+  "k": "mark",
+  "n": "WarRoundEndsAt now+4 (CountTick x3)"
+ },
+ {
+  "gv": 1,
+  "t": 87.192,
+  "k": "play",
+  "v": 0.449,
+  "id": "rbxassetid://119243238199900",
+  "sp": 1.04,
+  "g": "Sfx",
+  "n": "Sfx_GoldPickup_1"
+ },
+ {
+  "t": 88.213,
+  "k": "mark",
+  "n": "Announce Jackpot from someone else (JackpotOther)"
+ },
+ {
+  "gv": 1,
+  "t": 88.326,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://99814762304779",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_JackpotOther_1"
+ },
+ {
+  "t": 90.928,
+  "k": "mark",
+  "n": "a monster near me turns golden (GoldenSpot)"
+ },
+ {
+  "gv": 1,
+  "t": 91.161,
+  "k": "play",
+  "v": 0.4,
+  "id": "rbxassetid://128057879317544",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_GoldenSpot_1"
+ },
+ {
+  "t": 97.194,
+  "k": "mark",
+  "n": "step into the Goblin Woods (ZoneEnterPvP)"
+ },
+ {
+  "gv": 1,
+  "t": 97.661,
+  "k": "play",
+  "v": 0.449,
+  "id": "rbxassetid://104461336219672",
+  "sp": 1,
+  "g": "Sfx",
+  "n": "Sfx_ZoneEnterPvP_1"
+ },
+ {
+  "t": 100.329,
+  "k": "mark",
+  "n": "end"
+ }
+]

@@ -163,13 +163,20 @@ MUTATIONS = [
     ("the sink is never lifted", "KEYBINDS_SOURCE",
      "\tpcall(function() ContextActionService:UnbindAction(K.SinkAction) end)\n", ""),
     ("every camera key sunk, held or not", "KEYBINDS_SOURCE",
-     "\t\tif K.ByKey[name] then table.insert(codes, Enum.KeyCode[name]) end\n",
-     "\t\ttable.insert(codes, Enum.KeyCode[name])\n"),
+     "\t\tif K.ByKey[name] then\n\t\t\ttable.insert(codes, Enum.KeyCode[name])\n",
+     "\t\tif true then\n\t\t\ttable.insert(codes, Enum.KeyCode[name])\n"),
     ("an unbuilt window key does nothing again", "HUD", "\t\tL.WindowSoon(action)\n\t\treturn true\n", "\t\treturn true\n"),
     ("Q does not fold the quest list out", "HUD",
      'if inputAllowed() and not throttled("questKey", 0.25) then toggleQuests() end', "if false then end"),
     ("an unbuilt window key skips its tile", "HUD", "\t\tif def.Key == action then\n\t\t\tL.TileTap(def)\n",
      "\t\tif def.Key == action then\n"),
+    # 10/08 Play check: the real I key opened nothing (a CAS-sunk key reaches UserInputService as processed)
+    ("the sink swallows the key (HUD never sees it)", "KEYBINDS_SOURCE", "\t\tKeybinds.Began:Fire(input, false)\n", ""),
+    ("a sunk key comes twice", "KEYBINDS_SOURCE",
+     "\t\tif sunk(input) then return end\n\t\tKeybinds.Began:Fire(input, gameProcessed)\n",
+     "\t\tKeybinds.Began:Fire(input, gameProcessed)\n"),
+    ("the sink takes I while typing", "KEYBINDS_SOURCE",
+     "\tif UserInputService:GetFocusedTextBox() then return Enum.ContextActionResult.Pass end\n", ""),
 ]
 
 

@@ -1,0 +1,80 @@
+{
+  "status": "passed",
+  "checks": 13,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "ClientMain loads ChatTags after Announce",
+      "ok": true
+    },
+    {
+      "check": "Announce hands the non-team lines to C.ChatTags.Incoming",
+      "ok": true
+    },
+    {
+      "check": "only Announce sets TextChatService.OnIncomingMessage",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 5,
+    "applied": 5,
+    "caught": 5,
+    "results": [
+      {
+        "mutation": "everyone is tagged VIP",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no pass: no prefix change :: ",
+          "CHECK_FAIL PassVIP false: no prefix change :: ",
+          "CHECK_FAIL a plain player's line: unchanged (nil, nothing made) :: "
+        ]
+      },
+      {
+        "mutation": "the tag goes after the name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a VIP's prefix gets a gold [VIP] in front of the name :: Vee <font color=\"#FFD24A\">[VIP]</font>",
+          "CHECK_FAIL a name with its own rich text stays after the tag :: ",
+          "CHECK_FAIL a missing prefix is still tagged :: "
+        ]
+      },
+      {
+        "mutation": "system lines are tagged too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a system line (no TextSource): unchanged :: "
+        ]
+      },
+      {
+        "mutation": "the wrong attribute",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a VIP's prefix gets a gold [VIP] in front of the name :: ",
+          "CHECK_FAIL a name with its own rich text stays after the tag :: ",
+          "CHECK_FAIL a missing prefix is still tagged :: "
+        ]
+      },
+      {
+        "mutation": "the prefix is not set",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a VIP's chat line: TextChatMessageProperties with the tagged prefix :: "
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/ChatTags.luau": "ec26ccb5bc777e4104917d3f106fbb56c8ea9d4806e32570e661c0529e14ae13",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "575379af669f07c7a1659433f9db26b4a1526d05a020df0aaaa655065d7f5917",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "c3bf7bcb4cba48c7b93bff4100bc698c13120d777d903a3030a9ad613ed21af8"
+  },
+  "fixtureSHA256": "2ee51414bc6f86a6ee68d856b86b75c8db073de6fc6f0c6f11ccaa29c3308e65",
+  "studioCalls": 0,
+  "limitations": "Doubles instead of TextChatService: how the tag looks in the real chat window (and on phones) is a Studio check with a VIP test player."
+}
