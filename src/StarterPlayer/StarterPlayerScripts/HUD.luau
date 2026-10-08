@@ -87,7 +87,9 @@ local L = {
 	-- squares [메뉴] folds out to its left, left to right. 직업 바꾸기 · 환생 · 오프닝 다시 보기 · 이름 숨기기 · 휴가 are
 	-- 설정 rows and 닉네임 a 내 캐릭터 row (BB13); until 설정 is registered its square opens the old 메뉴 window (Alt),
 	-- which still lists them. A square shows once its window is registered (no silent no-op)
+	-- A23-75 (2026-10-08): the Robux shop (ShopUI) is the first square, left of 새 소식 (IconCoin until its icon is drawn)
 	Fold = {
+		{ Id = "Shop", Icon = "IconCoin", Window = "Shop" },
 		{ Id = "News", Icon = "IconNews", Window = "News" },
 		{ Id = "Travel", Icon = "IconTravel", Window = "Travel" },
 		{ Id = "Help", Icon = "IconHelp", Window = "Help", Key = "Help" },
@@ -201,6 +203,11 @@ local TXT = {
 	TileNews = "News",
 	TileTravel = "Travel",
 	TileHelp = "Help",
+	TileShop = "Shop",
+	-- A23-75 status chip: the 2x XP / 2x Gold passes (one chip; after the danger / shield chips, before the blessing)
+	BoostXP = "2x XP",
+	BoostGold = "2x Gold",
+	BoostBoth = "2x XP · Gold",
 	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
@@ -1307,9 +1314,10 @@ local function buildChips(root)
 	}
 	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
-	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "IconStar" }
+	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "IconStar",
+		Boost = "IconExp" }
 	ui.chip = {}
-	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Rookie", "Protected", "Blessing", "Size", "Kaiju" }
+	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Rookie", "Protected", "Boost", "Blessing", "Size", "Kaiju" }
 	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
@@ -2202,7 +2210,7 @@ local function buildButtons(root)
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
 	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
 		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews,
-		Travel = TXT.TileTravel, Help = TXT.TileHelp }
+		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop }
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
@@ -2559,6 +2567,26 @@ function L.LuckText()
 	return line
 end
 
+-- A23-75: one gold chip while a 2x pass is owned (attribute names from Config.GamePasses, 게임성 개발 2); its icon is
+-- the XP star, or the gold pile for 2x Gold alone
+function L.RefreshBoost()
+	local chip = ui.chip.Boost
+	if not chip then return end
+	local passes = type(Config.GamePasses) == "table" and Config.GamePasses or {}
+	local function owns(kind, default)
+		local def = type(passes[kind]) == "table" and passes[kind] or {}
+		return attr(type(def.Attr) == "string" and def.Attr or default, false) == true
+	end
+	local xp, gold = owns("XP2", "PassXP2"), owns("Gold2", "PassGold2")
+	setChip(chip, xp or gold, (xp and gold) and TXT.BoostBoth or (xp and TXT.BoostXP or TXT.BoostGold), Theme.Gold, true,
+		nil, true)
+	local key = (gold and not xp) and "IconGoldPile" or "IconExp"
+	if chip.Icon and chip.IconKey ~= key then
+		local id = UIKit.ArtId(key)
+		if id then chip.Icon.Image, chip.IconKey = id, key end
+	end
+end
+
 refreshChips = function()
 	local f = getFaction()
 	local now = Util.Now()
@@ -2608,6 +2636,7 @@ refreshChips = function()
 	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
 	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
+	L.RefreshBoost()
 
 	-- A23-40: at most L.MaxChips chips in their order (fewer when they do not fit the row, L.CheckChipFit); the rest fold
 	-- into one '+N' chip (no stacked rows)

@@ -1,0 +1,813 @@
+{
+ "Shop": "src\\StarterPlayer\\StarterPlayerScripts\\ShopUI.luau",
+ "Fonts": {
+  "Head": "C:\\Users\\glori\\AppData\\Local\\Roblox\\Versions\\version-cec3ad5889b447cf\\content\\fonts\\DenkOne-Regular.ttf",
+  "Body": "C:\\Users\\glori\\AppData\\Local\\Roblox\\Versions\\version-cec3ad5889b447cf\\content\\fonts\\Montserrat-Regular.ttf",
+  "HeadRatio": 1.251,
+  "BodyRatio": 1.219
+ },
+ "Screens": {
+  "pc_1280x720": {
+   "Scale": 0.8,
+   "PxFloor": 1.0,
+   "Canvas": [
+    1600,
+    900
+   ],
+   "Window": [
+    780,
+    354
+   ],
+   "CardW": 176.5,
+   "ContentH": 307.0,
+   "ViewH": 307.0,
+   "Checks": {
+    "four cards in one row, no scrolling": true,
+    "XP2: name on one line at >= 12 px": true,
+    "XP2: lines fit above the capsule": true,
+    "XP2: capsule words on one line at >= 16 px": true,
+    "Gold2: name on one line at >= 12 px": true,
+    "Gold2: lines fit above the capsule": true,
+    "Gold2: capsule words on one line at >= 16 px": true,
+    "VIP: name on one line at >= 12 px": true,
+    "VIP: lines fit above the capsule": true,
+    "VIP: capsule words on one line at >= 16 px": true,
+    "PrivateServer: name on one line at >= 12 px": true,
+    "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: capsule words on one line at >= 16 px": true
+   },
+   "Cards": {
+    "XP2": {
+     "NameSize": 22,
+     "NamePx": 17.6,
+     "Lines": [
+      "Level up twice as",
+      "fast!"
+     ],
+     "LineSize": 18,
+     "LinePx": 14.4,
+     "LinesH": 74.0,
+     "Capsule": {
+      "199 R$": {
+       "Size": 22,
+       "Px": 17.6
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 17.6
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 17.6
+      }
+     }
+    },
+    "Gold2": {
+     "NameSize": 22,
+     "NamePx": 17.6,
+     "Lines": [
+      "Get twice the gold!"
+     ],
+     "LineSize": 18,
+     "LinePx": 14.4,
+     "LinesH": 74.0,
+     "Capsule": {
+      "149 R$": {
+       "Size": 22,
+       "Px": 17.6
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 17.6
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 17.6
+      }
+     }
+    },
+    "VIP": {
+     "NameSize": 22,
+     "NamePx": 17.6,
+     "Lines": [
+      "Crown name tag,",
+      "VIP chat and emote."
+     ],
+     "LineSize": 18,
+     "LinePx": 14.4,
+     "LinesH": 74.0,
+     "Capsule": {
+      "249 R$": {
+       "Size": 22,
+       "Px": 17.6
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 17.6
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 17.6
+      }
+     }
+    },
+    "PrivateServer": {
+     "NameSize": 22,
+     "NamePx": 17.6,
+     "Lines": [
+      "Play with just your",
+      "friends."
+     ],
+     "LineSize": 18,
+     "LinePx": 14.4,
+     "LinesH": 74.0,
+     "Capsule": {
+      "100 R$ / mo": {
+       "Size": 22,
+       "Px": 17.6
+      }
+     }
+    }
+   },
+   "Layout": {
+    "Top": 82.5,
+    "Hang": 23.0,
+    "AvailH": 782.5,
+    "LinesTop": 106.0,
+    "LinesH": 74.0,
+    "NoteLines": [
+     "Always ask a grown-up before you buy."
+    ]
+   }
+  },
+  "pc_991x451": {
+   "Scale": 0.501,
+   "PxFloor": 0.626,
+   "Canvas": [
+    1978,
+    900
+   ],
+   "Window": [
+    780,
+    354
+   ],
+   "CardW": 176.5,
+   "ContentH": 307.0,
+   "ViewH": 307.0,
+   "Checks": {
+    "four cards in one row, no scrolling": true,
+    "XP2: name on one line at >= 12 px": true,
+    "XP2: lines fit above the capsule": true,
+    "XP2: capsule words on one line at >= 16 px": true,
+    "Gold2: name on one line at >= 12 px": true,
+    "Gold2: lines fit above the capsule": true,
+    "Gold2: capsule words on one line at >= 16 px": true,
+    "VIP: name on one line at >= 12 px": true,
+    "VIP: lines fit above the capsule": true,
+    "VIP: capsule words on one line at >= 16 px": true,
+    "PrivateServer: name on one line at >= 12 px": true,
+    "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: capsule words on one line at >= 16 px": true
+   },
+   "Cards": {
+    "XP2": {
+     "NameSize": 22,
+     "NamePx": 11.0,
+     "Lines": [
+      "Level up twice as",
+      "fast!"
+     ],
+     "LineSize": 18,
+     "LinePx": 9.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "199 R$": {
+       "Size": 22,
+       "Px": 11.0
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 11.0
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 11.0
+      }
+     }
+    },
+    "Gold2": {
+     "NameSize": 22,
+     "NamePx": 11.0,
+     "Lines": [
+      "Get twice the gold!"
+     ],
+     "LineSize": 18,
+     "LinePx": 9.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "149 R$": {
+       "Size": 22,
+       "Px": 11.0
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 11.0
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 11.0
+      }
+     }
+    },
+    "VIP": {
+     "NameSize": 22,
+     "NamePx": 11.0,
+     "Lines": [
+      "Crown name tag,",
+      "VIP chat and emote."
+     ],
+     "LineSize": 18,
+     "LinePx": 9.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "249 R$": {
+       "Size": 22,
+       "Px": 11.0
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 11.0
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 11.0
+      }
+     }
+    },
+    "PrivateServer": {
+     "NameSize": 22,
+     "NamePx": 11.0,
+     "Lines": [
+      "Play with just your",
+      "friends."
+     ],
+     "LineSize": 18,
+     "LinePx": 9.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "100 R$ / mo": {
+       "Size": 22,
+       "Px": 11.0
+      }
+     }
+    }
+   },
+   "Layout": {
+    "Top": 131.7073170731707,
+    "Hang": 23.0,
+    "AvailH": 733.2926829268292,
+    "LinesTop": 106.0,
+    "LinesH": 74.0,
+    "NoteLines": [
+     "Always ask a grown-up before you buy."
+    ]
+   }
+  },
+  "pc_1920x1080": {
+   "Scale": 1.0,
+   "PxFloor": 1.0,
+   "Canvas": [
+    1920,
+    1080
+   ],
+   "Window": [
+    780,
+    354
+   ],
+   "CardW": 176.5,
+   "ContentH": 307.0,
+   "ViewH": 307.0,
+   "Checks": {
+    "four cards in one row, no scrolling": true,
+    "XP2: name on one line at >= 12 px": true,
+    "XP2: lines fit above the capsule": true,
+    "XP2: capsule words on one line at >= 16 px": true,
+    "Gold2: name on one line at >= 12 px": true,
+    "Gold2: lines fit above the capsule": true,
+    "Gold2: capsule words on one line at >= 16 px": true,
+    "VIP: name on one line at >= 12 px": true,
+    "VIP: lines fit above the capsule": true,
+    "VIP: capsule words on one line at >= 16 px": true,
+    "PrivateServer: name on one line at >= 12 px": true,
+    "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: capsule words on one line at >= 16 px": true
+   },
+   "Cards": {
+    "XP2": {
+     "NameSize": 22,
+     "NamePx": 22.0,
+     "Lines": [
+      "Level up twice as fast!"
+     ],
+     "LineSize": 15.0,
+     "LinePx": 15.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "199 R$": {
+       "Size": 22,
+       "Px": 22.0
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 22.0
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 22.0
+      }
+     }
+    },
+    "Gold2": {
+     "NameSize": 22,
+     "NamePx": 22.0,
+     "Lines": [
+      "Get twice the gold!"
+     ],
+     "LineSize": 15.0,
+     "LinePx": 15.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "149 R$": {
+       "Size": 22,
+       "Px": 22.0
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 22.0
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 22.0
+      }
+     }
+    },
+    "VIP": {
+     "NameSize": 22,
+     "NamePx": 22.0,
+     "Lines": [
+      "Crown name tag, VIP",
+      "chat and emote."
+     ],
+     "LineSize": 15.0,
+     "LinePx": 15.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "249 R$": {
+       "Size": 22,
+       "Px": 22.0
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 22.0
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 22.0
+      }
+     }
+    },
+    "PrivateServer": {
+     "NameSize": 22,
+     "NamePx": 22.0,
+     "Lines": [
+      "Play with just your",
+      "friends."
+     ],
+     "LineSize": 15.0,
+     "LinePx": 15.0,
+     "LinesH": 74.0,
+     "Capsule": {
+      "100 R$ / mo": {
+       "Size": 22,
+       "Px": 22.0
+      }
+     }
+    }
+   },
+   "Layout": {
+    "Top": 66.0,
+    "Hang": 23.0,
+    "AvailH": 979.0,
+    "LinesTop": 106.0,
+    "LinesH": 74.0,
+    "NoteLines": [
+     "Always ask a grown-up before you buy."
+    ]
+   }
+  },
+  "phone_749x361": {
+   "Scale": 0.75,
+   "PxFloor": 1.0,
+   "Canvas": [
+    999,
+    481
+   ],
+   "Window": [
+    780,
+    354
+   ],
+   "CardW": 176.5,
+   "ContentH": 307.0,
+   "ViewH": 307.0,
+   "Checks": {
+    "four cards in one row, no scrolling": true,
+    "XP2: name on one line at >= 12 px": true,
+    "XP2: lines fit above the capsule": true,
+    "XP2: capsule words on one line at >= 16 px": true,
+    "Gold2: name on one line at >= 12 px": true,
+    "Gold2: lines fit above the capsule": true,
+    "Gold2: capsule words on one line at >= 16 px": true,
+    "VIP: name on one line at >= 12 px": true,
+    "VIP: lines fit above the capsule": true,
+    "VIP: capsule words on one line at >= 16 px": true,
+    "PrivateServer: name on one line at >= 12 px": true,
+    "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: capsule words on one line at >= 16 px": true
+   },
+   "Cards": {
+    "XP2": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Level up twice as",
+      "fast!"
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "199 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "Gold2": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Get twice the gold!"
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "149 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "VIP": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Crown name tag,",
+      "VIP chat and",
+      "emote."
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "249 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "PrivateServer": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Play with just your",
+      "friends."
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "100 R$ / mo": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    }
+   },
+   "Layout": {
+    "Top": 88.0,
+    "Hang": 23.0,
+    "AvailH": 358.3333333333333,
+    "LinesTop": 106.0,
+    "LinesH": 74.0,
+    "NoteLines": [
+     "Always ask a grown-up before you buy."
+    ]
+   }
+  },
+  "phone_844x390": {
+   "Scale": 0.75,
+   "PxFloor": 1.0,
+   "Canvas": [
+    1125,
+    520
+   ],
+   "Window": [
+    780,
+    354
+   ],
+   "CardW": 176.5,
+   "ContentH": 307.0,
+   "ViewH": 307.0,
+   "Checks": {
+    "four cards in one row, no scrolling": true,
+    "XP2: name on one line at >= 12 px": true,
+    "XP2: lines fit above the capsule": true,
+    "XP2: capsule words on one line at >= 16 px": true,
+    "Gold2: name on one line at >= 12 px": true,
+    "Gold2: lines fit above the capsule": true,
+    "Gold2: capsule words on one line at >= 16 px": true,
+    "VIP: name on one line at >= 12 px": true,
+    "VIP: lines fit above the capsule": true,
+    "VIP: capsule words on one line at >= 16 px": true,
+    "PrivateServer: name on one line at >= 12 px": true,
+    "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: capsule words on one line at >= 16 px": true
+   },
+   "Cards": {
+    "XP2": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Level up twice as",
+      "fast!"
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "199 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "Gold2": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Get twice the gold!"
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "149 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "VIP": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Crown name tag,",
+      "VIP chat and",
+      "emote."
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "249 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "PrivateServer": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Play with just your",
+      "friends."
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "100 R$ / mo": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    }
+   },
+   "Layout": {
+    "Top": 88.0,
+    "Hang": 23.0,
+    "AvailH": 397.0,
+    "LinesTop": 106.0,
+    "LinesH": 74.0,
+    "NoteLines": [
+     "Always ask a grown-up before you buy."
+    ]
+   }
+  },
+  "phone_667x375": {
+   "Scale": 0.75,
+   "PxFloor": 1.0,
+   "Canvas": [
+    889,
+    500
+   ],
+   "Window": [
+    780,
+    354
+   ],
+   "CardW": 176.5,
+   "ContentH": 307.0,
+   "ViewH": 307.0,
+   "Checks": {
+    "four cards in one row, no scrolling": true,
+    "XP2: name on one line at >= 12 px": true,
+    "XP2: lines fit above the capsule": true,
+    "XP2: capsule words on one line at >= 16 px": true,
+    "Gold2: name on one line at >= 12 px": true,
+    "Gold2: lines fit above the capsule": true,
+    "Gold2: capsule words on one line at >= 16 px": true,
+    "VIP: name on one line at >= 12 px": true,
+    "VIP: lines fit above the capsule": true,
+    "VIP: capsule words on one line at >= 16 px": true,
+    "PrivateServer: name on one line at >= 12 px": true,
+    "PrivateServer: lines fit above the capsule": true,
+    "PrivateServer: capsule words on one line at >= 16 px": true
+   },
+   "Cards": {
+    "XP2": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Level up twice as",
+      "fast!"
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "199 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "Gold2": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Get twice the gold!"
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "149 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "VIP": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Crown name tag,",
+      "VIP chat and",
+      "emote."
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "249 R$": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Owned": {
+       "Size": 22,
+       "Px": 16.5
+      },
+      "Coming soon": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    },
+    "PrivateServer": {
+     "NameSize": 22,
+     "NamePx": 16.5,
+     "Lines": [
+      "Play with just your",
+      "friends."
+     ],
+     "LineSize": 19,
+     "LinePx": 14.2,
+     "LinesH": 74.0,
+     "Capsule": {
+      "100 R$ / mo": {
+       "Size": 22,
+       "Px": 16.5
+      }
+     }
+    }
+   },
+   "Layout": {
+    "Top": 88.0,
+    "Hang": 23.0,
+    "AvailH": 377.0,
+    "LinesTop": 106.0,
+    "LinesH": 74.0,
+    "NoteLines": [
+     "Always ask a grown-up before you buy."
+    ]
+   }
+  }
+ },
+ "Failed": [],
+ "Passed": true
+}
