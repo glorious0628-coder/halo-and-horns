@@ -10,6 +10,8 @@ local MODE = "apply"
 local SPOT = Vector3.new(36, 0, -36)
 local FOUNTAIN = Vector3.new(0, 0, 0)
 local TAG = "SupporterBoard"
+-- X_NoticeBoard_Gold (art/approved.json: the same texture recoloured gold / cream / ruby, uploaded by 이미지 개발 1)
+local GOLD = "rbxassetid://127012447674638"
 local CollectionService = game:GetService("CollectionService")
 local map = workspace:FindFirstChild("Map")
 local c3 = map and map:FindFirstChild("Decor") and map.Decor:FindFirstChild("Crossroads3D")
@@ -57,6 +59,20 @@ for _, d in board:GetDescendants() do
 	end
 end
 if #removed > 0 then table.insert(out, "removed from the clone: " .. table.concat(removed, ", ")) end
+-- the gold look: the bounty board's mesh wears its texture through a SurfaceAppearance ColorMap
+local gold = {}
+for _, d in board:GetDescendants() do
+	-- a name of its own, so a search for the bounty board's mesh never finds this one
+	if d:IsA("MeshPart") and d.Name == "X_NoticeBoard" then d.Name = "X_NoticeBoard_Gold" end
+	if d:IsA("SurfaceAppearance") then
+		local ok, err = pcall(function() d.ColorMap = GOLD end)
+		table.insert(gold, ok and ("ColorMap of " .. d.Parent.Name) or ("ColorMap failed: " .. tostring(err)))
+	elseif d:IsA("MeshPart") and not d:FindFirstChildWhichIsA("SurfaceAppearance") then
+		d.TextureID = GOLD
+		table.insert(gold, "TextureID of " .. d.Name)
+	end
+end
+table.insert(out, "gold texture: " .. (#gold > 0 and table.concat(gold, ", ") or "no mesh found"))
 board:PivotTo(CFrame.lookAt(Vector3.new(SPOT.X, groundY, SPOT.Z), Vector3.new(FOUNTAIN.X, groundY, FOUNTAIN.Z)))
 board.Parent = c3
 

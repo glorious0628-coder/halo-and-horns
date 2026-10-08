@@ -18,6 +18,14 @@ cloned X_NoticeBoard -> X_SupporterBoard
 X_SupporterBoard pivot (36.0, 0.0, -36.0); SupporterFace centre (35.6, 7.4, -35.6) size 11.52 x 6.49, front faces the fountain: dot 1.00; tagged SupporterBoard: true
 tagged parts in the place: 1
 
+## Rerun ~12:45 with the gold texture (X_NoticeBoard_Gold, rbxassetid://127012447674638, a065e277 / 2d040fb8):
+ground at (36, -36): 0.00 (Terrain Cobblestone)
+gold texture: ColorMap of X_NoticeBoard_Gold
+X_SupporterBoard pivot (36.0, 0.0, -36.0); SupporterFace centre (35.6, 7.4, -35.6) size 11.52 x 6.49, front faces the fountain: dot 1.00; tagged SupporterBoard: true
+tagged parts in the place: 1
+# after: X_SupporterBoard > X_NoticeBoard_Gold [MeshPart] MeshId=rbxassetid://79816636314086,
+#        SurfaceAppearance ColorMap=rbxassetid://127012447674638; the bounty board X_NoticeBoard keeps ColorMap 127690556564237.
+
 ## Probe AFTER placing (same script): at (36,-36) the box now holds only Crossroads3D.X_SupporterBoard (nothing else);
 ## the rays at the board's centre hit the board's roof (13.7), the other samples Cobblestone 0.0.
 
