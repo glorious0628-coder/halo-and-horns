@@ -98,6 +98,7 @@
 | D1 | `build/import_D1/WorldKit_ImportD1.glb` | 7 | 21.8MB | Town_Halo_WallTower 12.91×12.63×24.0; Town_Horns_WallTower 15.05×14.39×24.0; Town_Halo_HouseC 16.0×8.13×12.48; Town_Horns_HouseC 16.0×12.35×18.16; Town_Halo_Bridge 22.0×11.93×14.13; Town_Horns_Bridge 13.93×22.0×8.45; X_Altar 9.0×8.55×7.83 |
 | D2 | `build/import_D2/WorldKit_ImportD2.glb` | 7 | 23.1MB | X_MarketArch 12.0×2.91×10.36; X_NoticeBoard 16.0×7.04×15.44; X_GooseNest 12.0×11.11×7.57; X_TreeB 9.13×7.49×16.0; X_HouseA 14.0×11.35×14.1; X_HouseB 12.0×9.11×14.39; Town_Horns_Brazier 11.0×10.16×10.35 |
 | E | `build/import_E/WorldKit_ImportE.glb` | 3 | 0.7MB | Kit_M_JobBoard 16.0×7.35×14.94; Kit_W_JobBoard 16.0×7.38×15.69; Kit_W_Campfire_Fire 4.0×3.9×3.31 |
+| D3 (10/08) | `build/import_all/3_third/D3_PlazaWallStairs.glb` (원본 `build/import_D3/`) | 2 | 2.5MB | Kit_X_PlazaWall 9.73×2.81×3.0 (되풀이 — 끝 기둥 1.46 겹쳐 이음); Kit_X_PlazaStairs 7.64×6.36×3.5 (Firefly 고급 + Tripo 웹 HD 각 55, 검수 OK, 시트 `art/review/town5/plaza_wall_stairs_3d.jpg`) |
 
 **사용자가 고르기 쉽게(10/07 밤):** 같은 파일을 `build/import_all/1_first`(A·E) → `2_second`(B1·B2·C1·C2) → `3_third`(D1·D2) 폴더에 나눠 둠 — WorldKit 홈 '3D 가져오기'에서 폴더 안 파일을 모두 골라 한 번에 가져오기, 세 번에 나눠서.
 
@@ -108,4 +109,4 @@
 |---|---|---|---|
 | 덩굴 나무 아치(초원 입구) | 초원 입구 문(지금은 갈색 막대 문틀, 옛 파트) | 시안 Concept_SlimeMeadow 왼쪽 위의 덩굴·랜턴 나무 아치 | 튀는 곳 시트 ⑭ `art/review/terrain/terrain_standout_2026-10-07.jpg`(e39ba95), 검수 10/07 "목록에만" |
 | ~~파랑·초록 가판대(교차로)~~ → **10/08 만듦**: Kit_X_StallBlue/Green(빨강 차양만 색 바꿈, C2) | 교차로 북서쪽 K_StallBlue (-22.4, -42.7)·K_StallGreen (-36.6, -34.5) | — | `art/review/town5/crossroads_stalls_blue_green.jpg` |
-| 광장 둘레 돌 난간 담 + 계단(교차로) | 튀는 곳 ⑨ 갈색 바위 더미 자리 | 시안의 광장 테라스 담·계단 — 키트에 없음. 검수 OK 10/08: 2조각(Firefly 시안 0 → 고급 5×2 → Tripo 웹 HD 55×2) | `docs/design/crossroads_3d_swap_2026-10-07.md` |
+| ~~광장 둘레 돌 난간 담 + 계단(교차로)~~ → **10/08 만듦**: Kit_X_PlazaWall·Kit_X_PlazaStairs(D3) | 튀는 곳 ⑨ 갈색 바위 더미 자리 | — | `art/review/town5/plaza_wall_stairs_3d.jpg` |

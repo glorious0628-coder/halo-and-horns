@@ -5370,5 +5370,49 @@
    ],
    "sheet": "art/review/town5/horns_castle_mix_compare.jpg"
   }
+ ],
+ "Kit_X_PlazaWall_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "91f8237d-19d3-4232-91be-a1e215b3b085",
+   "image": "art/out/hq/HQ_Kit_X_PlazaWall.png",
+   "tris": 9908,
+   "at": "2026-10-08 09:1x",
+   "balance_after": 2410,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Kit_X_PlazaWall_HD_src.glb",
+   "bytes": 9779144,
+   "note": "검수 OK 10/08 (담 1 + 계단 1, Firefly 10 + Tripo 110). Source = pinia model_url (4K meshopt).",
+   "derived": [
+    "art/models/tripo/web/Kit_X_PlazaWall_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)"
+   ],
+   "sheet": "art/review/town5/plaza_wall_stairs_3d.jpg"
+  }
+ ],
+ "Kit_X_PlazaStairs_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "task": "40923180-bcde-44a1-82cd-504b32244b9e",
+   "image": "art/out/hq/HQ_Kit_X_PlazaStairs.png",
+   "at": "2026-10-08 09:2x",
+   "balance_after": 2355,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "file": "art/models/tripo/web/Kit_X_PlazaStairs_HD_src.glb",
+   "note": "검수 OK 10/08",
+   "tris": 9515,
+   "bytes": 9616040,
+   "derived": [
+    "art/models/tripo/web/Kit_X_PlazaStairs_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)"
+   ],
+   "sheet": "art/review/town5/plaza_wall_stairs_3d.jpg"
+  }
  ]
 }

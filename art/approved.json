@@ -6493,5 +6493,25 @@
   "edit": "awning only: UV triangles of faces above 57% height, red hue (±28°, S>0.3) → 짙은 초록(시안 오른쪽 아래 가판대 쪽); apples/oranges/teal counter/gold gear unchanged",
   "file": "art/models/tripo/kit_crossroads/Kit_X_StallGreen_raw.glb",
   "use": "import C2 (build/import_all/2_second/C2_CrossroadsProps.glb, 8 items) → crossroads K_StallGreen spot (docs/design/crossroads_3d_swap_2026-10-07.md)"
+ },
+ "Kit_X_PlazaWall": {
+  "status": "approved (2D) — 3D in progress",
+  "date": "2026-10-08",
+  "approved_by": "검수: '고름 = 담 1 + 계단 1' (sheet art/review/town5/plaza_wall_stairs_cands.jpg)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_Crossroads steps/wall crop build/stall_colors/plaza_ref.png), final High 5",
+  "prompt": "art/prompts/Kit_X_PlazaWall.txt (candidates), art/prompts/Kit_X_PlazaWall_HQ.txt (final)",
+  "candidate": "art/out/kit_x2/Kit_X_PlazaWall_1.png",
+  "final": "art/out/hq/HQ_Kit_X_PlazaWall.png (1024, High 5 credits)",
+  "use": "Tripo web HD → crossroads plaza terrace (튀는 곳 ⑨ 바위 더미 자리), import 3_third"
+ },
+ "Kit_X_PlazaStairs": {
+  "status": "approved (2D) — 3D in progress",
+  "date": "2026-10-08",
+  "approved_by": "검수: '고름 = 담 1 + 계단 1' (sheet art/review/town5/plaza_wall_stairs_cands.jpg)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_Crossroads steps/wall crop build/stall_colors/plaza_ref.png), final High 5",
+  "prompt": "art/prompts/Kit_X_PlazaStairs.txt (candidates), art/prompts/Kit_X_PlazaStairs_HQ.txt (final)",
+  "candidate": "art/out/kit_x2/Kit_X_PlazaStairs_1.png",
+  "final": "art/out/hq/HQ_Kit_X_PlazaStairs.png (1024, High 5 credits)",
+  "use": "Tripo web HD → crossroads plaza terrace (튀는 곳 ⑨ 바위 더미 자리), import 3_third"
  }
 }
