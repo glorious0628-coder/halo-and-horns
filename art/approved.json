@@ -6644,5 +6644,17 @@
   "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
   "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
   "note": "치장 묶음 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+ },
+ "Tex_WaterfallFlow_FF2": {
+  "status": "approved (검수 10/08: B) — High done, seamless, to 이미지 개발 for upload",
+  "date": "2026-10-08",
+  "approved_by": "검수 10/08: 폭포 = B (sheet art/review/terrain/waterfall_cands.jpg)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates A/B Medium 0, final High 5 (reference = B)",
+  "prompt": "art/prompts/Tex_WaterfallFlow.txt (candidates), art/prompts/Tex_WaterfallFlow_HQ.txt (final)",
+  "candidate": "art/out/terrain_v2/Tex_WaterfallFlow_B.png",
+  "original": "art/out/terrain_v2/Tex_WaterfallFlow_HQ_src.png (1024)",
+  "tile": "art/ui/Tex_WaterfallFlow_FF2.png (1024, tools/make_tileable.py --search --gap-weight 1 --feather-y 48 --prefer-dark -0.3: wrap step 11.5 -> 1.2 = inside 1.2)",
+  "check": "art/review/terrain/waterfall_HQ_3x3.png + _seam.png (100%)",
+  "use": "Config key Tex_WaterfallFlow — waterfall faces, flow top -> bottom (texture V down); no rays"
  }
 }
