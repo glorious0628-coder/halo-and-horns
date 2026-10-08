@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 24,
+  "checks": 27,
   "failedChecks": [],
   "mutations": {
-    "total": 16,
-    "applied": 16,
-    "caught": 16,
+    "total": 18,
+    "applied": 18,
+    "caught": 18,
     "results": [
       {
         "mutation": "locked slots show again",
@@ -113,6 +113,23 @@
         ]
       },
       {
+        "mutation": "key badges ignore Key hints",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Key hints off (A23-78 default): no Q badge on the skill button :: true",
+          "CHECK_FAIL Key hints off again: hidden (also redrawn on a key change) :: true"
+        ]
+      },
+      {
+        "mutation": "the badges never follow a settings change",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Key hints on: the Q badge shows at once (Settings.Changed) :: false Q"
+        ]
+      },
+      {
         "mutation": "SkillSlots changes not watched",
         "applied": true,
         "caught": true,
@@ -151,9 +168,9 @@
   },
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "0a677fce31e1a85b9b1594468582d4de1ef5ae11f916c1a4896adc4eff9b3063",
-    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "f429d7ad0e5827457ea419f8d557e737931de1f339b0f45261be89538b55c930"
+    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "8e02ad1c6d531aaf159c627f0af5dc8ee40b0ad98c2ad470c99980e4d9a413b1"
   },
-  "fixtureSHA256": "7529ed9319468892c09cd5fa2d35d3e55062f1dcdb0e3253892f7479a59be6ec",
+  "fixtureSHA256": "7da3b06b6562bfecc185af74ce2335b71edd4a85a7e01c06725ac13aaa044c1f",
   "studioCalls": 0,
   "contract": "A23-71 skill learn offline test (SkillBar.luau; user 2026-10-07 \"스킬도 처음에는 없어야 돼! 레벨 5일 때 하나 배우는 걸로\n하자\", unlocks Q 5 / Z 15 / X 25): no skill button below its unlock level (a key press says \"Skills come at Lv N\",\nnot spammed); unlocking while playing -> \"New skill! <name>\" banner (UIKit.Announce), the button pops in, one line on it\n(C.HUD.Hint(slot, \"Press Q\") / phones \"Tap the new button\"), the SkillLearn sound with PowerUp until its file exists;\nonce per slot; a save loading past the level shows its skills without the moment; reduced motion: no pop.\nRuns the real SkillBar.luau + Config.luau (Config.Skills.Unlock set to the A23-71 numbers) in\ntools/fixtures/skill_learn_offline.luau.",
   "limitations": "The button layout without skill slots is image dev's (HudLayout); the real unlock numbers come with dev2's Config.Skills.Unlock change; the look of the moment is a Studio check."

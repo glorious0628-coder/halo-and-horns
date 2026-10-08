@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 280,
-  "namedChecks": 214,
+  "checks": 290,
+  "namedChecks": 224,
   "failing": [],
   "mutations": {
-    "total": 89,
-    "caught": 89,
+    "total": 99,
+    "caught": 99,
     "results": [
       {
         "mutation": "every drop rings (materials too)",
@@ -218,6 +218,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "skills :: a Z cast: SkillCast with my class file at once + my faction layer + its hit right after",
           "skills :: an X cast too",
           "skills :: an auto Z / X cast is marked Auto",
@@ -230,6 +232,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "skills :: the cast sounds at the launch, not at the press"
         ]
       },
@@ -249,6 +253,8 @@
         "crashed": false,
         "newFailingChecks": [
           "rewards :: a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)",
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world listeners :: a later weapon -> Equip"
         ]
       },
@@ -452,8 +458,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
           "runtime :: points reset by a faction change are quiet",
-          "runtime :: potion counts arriving with the save are quiet"
+          "runtime :: potion counts arriving with the save are quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
         ]
       },
       {
@@ -540,6 +548,8 @@
         "crashed": false,
         "newFailingChecks": [
           "runtime :: Sound = 'None' keeps even a 'bad' notice quiet",
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "runtime :: the line after a completion stays quiet (Sound None)"
         ]
       },
@@ -549,7 +559,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "held alarms :: NotifySound: a held announce banner has no sound, the same banner later has",
           "runtime :: ... and plays 1.5 s later",
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "runtime :: the line after a completion stays quiet (Sound None)",
           "runtime :: the payload's Sound key plays"
         ]
@@ -570,6 +583,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world :: a goose end without a place is quiet",
           "world :: the goose leaving far away is quiet"
         ]
@@ -580,6 +595,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world :: a stomp 37.5 studs away = half volume",
           "world :: a stomp 60+ studs away is quiet",
           "world listeners :: a kaiju stomp 30 studs away -> KaijuStomp at 2/3 volume (B4)"
@@ -601,6 +618,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world :: TickAt: crossing 3 / 2 / 1 s left = 1.0 / 1.12 / 1.26 (B7)",
           "world listeners :: 1 s left -> CountTick at 1.26x",
           "world listeners :: 2 s left -> CountTick at 1.12x",
@@ -647,6 +666,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world :: a golden kill = KillPop + GoldenKill, its coin 0.1 s later"
         ]
       },
@@ -694,7 +715,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: QuestDone right after a LevelUp is dropped (§4-2 11)"
+          "runtime :: QuestDone right after a LevelUp is dropped (§4-2 11)",
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
         ]
       },
       {
@@ -797,6 +820,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "held alarms :: after the first [Claim] the alarm rings again",
           "world listeners :: the kaiju alarm -> KaijuSiren (B5)"
         ]
       },
@@ -826,6 +850,114 @@
         "newFailingChecks": [
           "world listeners :: 31 s left is quiet",
           "world listeners :: a player in the game only 10 s gets no WarFinal30"
+        ]
+      },
+      {
+        "mutation": "the siren in the first steps",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: no 3-2-1 in the first steps",
+          "held alarms :: no goose or crown arrival in the first steps",
+          "held alarms :: no kaiju alarm in the first steps",
+          "held alarms :: no sound for a held announce banner or an announce line",
+          "held alarms :: no war 30 s call in the first steps",
+          "held alarms :: the opening holds the alarms too"
+        ]
+      },
+      {
+        "mutation": "the war 30 s call in the first steps",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: no goose or crown arrival in the first steps",
+          "held alarms :: no sound for a held announce banner or an announce line",
+          "held alarms :: no war 30 s call in the first steps"
+        ]
+      },
+      {
+        "mutation": "3-2-1 in the first steps",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: no 3-2-1 in the first steps",
+          "held alarms :: no goose or crown arrival in the first steps",
+          "held alarms :: no sound for a held announce banner or an announce line",
+          "held alarms :: no war 30 s call in the first steps"
+        ]
+      },
+      {
+        "mutation": "the goose arrival in the first steps",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: no goose or crown arrival in the first steps",
+          "held alarms :: no sound for a held announce banner or an announce line"
+        ]
+      },
+      {
+        "mutation": "a crown arrival in the first steps",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: no goose or crown arrival in the first steps",
+          "held alarms :: no sound for a held announce banner or an announce line"
+        ]
+      },
+      {
+        "mutation": "a held announce banner rings",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: NotifySound: a held announce banner has no sound, the same banner later has",
+          "held alarms :: no sound for a held announce banner or an announce line"
+        ]
+      },
+      {
+        "mutation": "the hold never reaches NotifySound",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: no sound for a held announce banner or an announce line"
+        ]
+      },
+      {
+        "mutation": "an announce line in the first steps",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: no sound for a held announce banner or an announce line"
+        ]
+      },
+      {
+        "mutation": "the opening does not hold the alarms",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: the opening holds the alarms too"
+        ]
+      },
+      {
+        "mutation": "the first steps do not hold the alarms",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "held alarms :: Audio.Held while the first steps hold the banners",
+          "held alarms :: no 3-2-1 in the first steps",
+          "held alarms :: no goose or crown arrival in the first steps",
+          "held alarms :: no kaiju alarm in the first steps",
+          "held alarms :: no sound for a held announce banner or an announce line",
+          "held alarms :: no war 30 s call in the first steps"
         ]
       },
       {
@@ -870,8 +1002,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "world listeners :: GoldenSpot once per monster",
-          "world listeners :: a golden monster 200 studs away is quiet"
+          "held alarms :: no 3-2-1 in the first steps",
+          "held alarms :: no goose or crown arrival in the first steps",
+          "held alarms :: no sound for a held announce banner or an announce line",
+          "held alarms :: no war 30 s call in the first steps",
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
         ]
       }
     ]
@@ -881,8 +1017,8 @@
   "runtimeError": null,
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "0a677fce31e1a85b9b1594468582d4de1ef5ae11f916c1a4896adc4eff9b3063",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "49ff7ee06734b97074741327ea9c87b784983c4d8803dc983948629252518873",
-    "tools/fixtures/audio_offline.luau": "04787657737b148660890f7eb3596b8769db543c78d1208e45a465acd56608f0"
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "56d1e3f422ded33b89a2fd41e495bd9891d80c606bc71ffb8f36f64ae91ac430",
+    "tools/fixtures/audio_offline.luau": "6d5601d786ec6fb7bff9e352d6f76e358b322fb998794ce1f2e6f7464b2c088d"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
