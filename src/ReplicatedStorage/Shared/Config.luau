@@ -168,7 +168,7 @@ Config.Data = {
 		-- story quests (StoryQuestService): active main + subs, finished ids, choices, one-time firsts
 		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = {} },
 		-- A23-12 drops (LootService): item id -> count, scroll enhancement per weapon tier (array, kept through
-		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first king-slime scroll)
+		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first Slime Prince scroll)
 		Items = {},
 		WeaponEnhance = {},
 		LootFlags = {},
@@ -1092,7 +1092,7 @@ Config.Bully = {
 	BountyMult = 2, -- bounty for KOing a bully is doubled
 	-- A23-22 penalty while BullyStacks >= 1 (ends when every stack decayed): no auto combat, XP and drop rows x0.5.
 	-- Combat power and stats are NOT touched by it (the existing PerStack size / damage cut stays as it was).
-	-- DropMult halves the drop rows AND the slime jackpot (A23-22 has no exception); the first king-slime scroll stays.
+	-- DropMult halves the drop rows AND the slime jackpot (A23-22 has no exception); the first Slime Prince scroll stays.
 	Penalty = { NoAuto = true, XPMult = 0.5, DropMult = 0.5 },
 }
 
@@ -1663,7 +1663,7 @@ Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", 
 -- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
 Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
-	BigSlime = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
+	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
 	Goblin = { Name = "Shard Thief Goblin", Short = "Goblin", Zone = "GoblinWoods", Count = 10, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
 	GoblinBrute = { Name = "Goblin Brute", Short = "Goblin Brute", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
 	Skeleton = { Name = "Old Kingdom Skeleton", Short = "Skeleton", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
@@ -1756,7 +1756,7 @@ Config.Barks = {
 			Low = { "Squelch…", "Too squishy!" },
 			Idle = { "Thump thump~", "Hehe~" },
 		},
-		BigSlime = { -- King Slime: big and royal
+		BigSlime = { -- Slime Prince (A23-84: the big brother; King Slime SlimeKing = the dad): big and royal
 			Spot = { "BLOOP!", "Bow! Blub!" },
 			Hit = { "SPLOOSH!", "Royal BOING!" },
 			Low = { "Royal nap…", "Bloop… zzz" },
@@ -2244,12 +2244,12 @@ Config.StoryQuests = {
 		SkillLater = "%s · Skills come at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
 	},
 	Defs = {
-		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
+		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a Slime Prince (A23-84)
 		S0 = {
 			Kind = "Sub", Title = "The Shard That Learns to Fight", ShortName = "Learn to fight", Speaker = "Shard", Requires = { ClassChosen = true },
 			Steps = {
-				{ Text = "Beat a King Slime and find the shard %d/%d", Guide = "SlimeMeadow",
-					Start = "A King Slime swallowed a shard! Beat it to free the shard.",
+				{ Text = "Beat a Slime Prince and find the shard %d/%d", Guide = "SlimeMeadow",
+					Start = "A Slime Prince swallowed a shard! Beat it to free the shard.",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "The shard's test %d/3", Guide = "SlimeMeadow", Start = "Shard: Show me how you fight!",
 					Obj = { Type = "Trials", List = {
@@ -2313,13 +2313,13 @@ Config.StoryQuests = {
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
-			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The King Slimes ate the most of it.",
+			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!",
 			Reward = { Gold = 1 },
 		},
 		M1_2 = {
-			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust", ShortName = "King Slimes",
-			Start = "King Slimes full of shard dust roam the meadow.",
-			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Kind = "Main", Chapter = 1, Title = "The Prince Who Ate the Dust", ShortName = "Slime Princes",
+			Start = "Slime Princes full of shard dust guard their little brothers and sisters.",
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
@@ -2407,8 +2407,8 @@ Config.StoryQuests = {
 		},
 		M2_6 = {
 			Kind = "Main", Chapter = 2, Title = "Little Footprints on the Hill", ShortName = "Hill tracks",
-			Start = "The King Slime dust is gone. Little footprints lead to the woods…",
-			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Start = "The Slime Prince dust is gone. Little footprints lead to the woods…",
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Goblins stole the dust!", Reward = { Gold = 1 },
 		},
 		M2_7 = {
@@ -2605,8 +2605,8 @@ Config.StoryQuests = {
 						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
 				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
-				{ Text = "King Slimes near the woods %d/%d", Guide = "SlimeMeadow",
-					Start = "A sack fell open… and King Slimes gobbled what was inside!",
+				{ Text = "Slime Princes near the woods %d/%d", Guide = "SlimeMeadow",
+					Start = "A sack fell open… and Slime Princes gobbled what was inside!",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } },
 				{ Text = "Tell Bright what you found", Guide = "HaloTown", Npc = "Bright", Panel = true,
 					Lines = { All = { "Sticky… sweet… is this jelly?",
@@ -2713,8 +2713,8 @@ Config.StoryQuests = {
 			Requires = { Done = { "M1_4" }, Level = 5 },
 			Steps = {
 				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Tiny: A King Slime swallowed a teddy bear!", "Tiny: Noted. Teddy bear: very loved. Very lost." } } },
-				{ Text = "King Slime %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
+					Lines = { All = { "Tiny: A Slime Prince swallowed a teddy bear!", "Tiny: Noted. Teddy bear: very loved. Very lost." } } },
+				{ Text = "Slime Prince %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
 				{ Text = "Bring the bear to Tiny", Guide = "Crossroads", Npc = "Tiny", Panel = true,
 					Lines = { All = { "Tiny: A bit sticky. Still very soft.", "Tiny: So. What now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Return it to its owner", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -2744,10 +2744,10 @@ Config.StoryQuests = {
 		R5 = {
 			Kind = "Sub", Title = "Smokey's Hat Problem", ShortName = "Smokey's hat", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M1_4" }, Level = 8 },
-			Start = "Smokey: A King Slime is wearing my sack as a hat!",
+			Start = "Smokey: A Slime Prince is wearing my sack as a crown!",
 			Steps = {
 				{ Text = "Find the slime by the pond", Guide = "SlimePond", Obj = { Type = "Near", Spot = "SlimePond", Radius = 30 } },
-				{ Text = "King Slime %d/%d", Guide = "SlimePond", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
+				{ Text = "Slime Prince %d/%d", Guide = "SlimePond", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
 				{ Text = "The sack is free!", Panel = true,
 					Lines = { All = { "A sack! A bit slimy. Smokey's name is on it.", "So whose sack is it now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Give it back to Smokey", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -3157,7 +3157,7 @@ Config.Quests = {
 		RewardMinutes = 2,
 		ChestMinutes = 4,
 		Dailies = {
-			{ Id = "Kill", Weight = 3, Monster = "BigSlime", Strict = true, Targets = { 3 } }, -- 왕 슬라임 3마리
+			{ Id = "Kill", Weight = 3, Monster = "BigSlime", Strict = true, Targets = { 3 } }, -- Slime Prince x3
 			{ Id = "Kill", Weight = 1, Monster = "Slime", Targets = { 12, 15 } }, -- sometimes / on reroll: 슬라임 12~15마리
 			{ Id = "Release", Weight = 3, Targets = { 3, 4, 5 } }, -- 몬스터에게 스킬 3~5번 맞히기
 			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
@@ -3889,7 +3889,7 @@ Config.Loot = {
 	-- slimes are level-1 slimes of the PumpkinPatch (A23-30, on top of the meadow's), so they carry the same jackpot;
 	-- the chance per kill is unchanged.
 	Jackpot = { Monsters = { Slime = true, PumpkinSlime = true }, Chance = 1 / 20000, Tier = 8 },
-	-- the first king slime a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
+	-- the first Slime Prince (BigSlime) a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
 	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
 	FirstScroll = { Monster = "BigSlime", Item = "Enh70", NoticeSeconds = 6 },
 	-- a weapon drop the player already owns turns into gold
