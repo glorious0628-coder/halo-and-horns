@@ -24,7 +24,7 @@ local T = {
 	Max = 30,
 	NameMax = 20, -- characters shown of one name
 	Gui = "SupporterGui",
-	Canvas = Vector2.new(420, 300),
+	PPS = 40, -- canvas pixels per stud: the canvas keeps the face's shape (no stretched letters)
 	-- game text: English only (A23-48)
 	Title = "Thank you, supporters!",
 	Empty = "Thank you for playing!",
@@ -69,8 +69,8 @@ local function draw(part)
 		gui = Instance.new("SurfaceGui")
 		gui.Name = T.Gui
 		gui.Face = Enum.NormalId.Front
-		gui.SizingMode = Enum.SurfaceGuiSizingMode.FixedSize
-		gui.CanvasSize = T.Canvas
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = T.PPS
 		gui.LightInfluence = 0
 		local panel = Instance.new("Frame")
 		panel.Name = "Panel"

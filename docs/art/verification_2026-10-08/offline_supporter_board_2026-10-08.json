@@ -82,10 +82,10 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "d0115b1d2146b4f93f2695f63cc81cef63a6635a2a928f4536cd81f36c4de47f",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "f808e92e6373c1b4545b019291af1d436a08b73bd61d1f1a2f7b335acd08f39f"
+    "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "afea6d9271db5216b00e0ce7542218750cec8c5a73d813571cc1cfd600d6ea29",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "414f7ec688f8981d65487a17257b55e0f017756f179e9b30ca01fbbc11cb24ab"
   },
-  "fixtureSHA256": "8dc0a81a83a3976bf930d1bf48d20cc339170ee5a619e9c5ce3a5aa01bb1be3e",
+  "fixtureSHA256": "a69686a5f40db915eb3630ccd96d4bdf648e1927c85f1962cb19543275199dac",
   "studioCalls": 0,
   "limitations": "Doubles instead of the engine: how the names fit on the real 3D board is a Studio photo check after the board is placed (Edit tool) and the server fills SupporterNames."
 }
