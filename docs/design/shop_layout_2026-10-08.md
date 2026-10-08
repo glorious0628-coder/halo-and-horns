@@ -34,7 +34,8 @@
 ## 5. 서버가 주는 것 (게임성 개발 2, docs/design/gamepass_server_2026-10-08.md에서 확정)
 - `Config.GamePasses[Kind] = { Id, Price, Name, Attr }`, Kind = XP2 · Gold2 · VIP.
 - Player 속성(bool): `PassXP2` · `PassGold2` · `PassVIP`. 치장: `LooksOwned`("a,b"), `LookOn`(입은 id 또는 "").
-- `Config.Looks[id] = { Faction = "Halo"|"Horns", PassId, Price, Name, Icon = Config.UIArt 키, Order }`.
+- `Config.Looks[id] = { Faction = "Halo"|"Horns", PassId, Price, Name, Icon = Config.UIArt 키, Order }` — id = 세트 이름(개발 2 확정): 판매 HaloIce · HaloGold · HornsLava · HornsShadow(PassId, Price 99), 출석 전용 HaloSprout · HornsSprout(14일) · HaloStarlight · HornsStarlight(50일) · HaloPlatinum · HornsPlatinum(100일)은 `Unlock = { Attendance = N }`(팔지 않음). Shop의 Looks 칸은 **판매품 + 이미 가진 것**만 보여 준다(출석 치장은 받은 뒤 여기서 입기).
+- 입은 치장 = 계급 장식(후광·뿔) 메시의 TextureID만 세트 텍스처로(`Config.LookThemes`, 이미지 생성 2 dd217fc, R1·R2는 64 px 색판 하나), 후광 빛 = Glow, R5 반짝이 = Sparkle. 모양은 계급 그대로(산 모양 ≠ 번 모양).
 - 입기 리모트 `SetLook`(id, ""면 벗기) — Net.Names에 생기기 전에는 화면이 "Coming soon"만 띄운다.
 - 화면이 쓰는 이름은 Config에서 읽고, 없으면 위 제안 이름을 쓴다.
 

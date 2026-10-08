@@ -116,14 +116,21 @@ local function myFaction()
 	return type(f) == "string" and f or "None"
 end
 
--- the looks to show, in order: my side's (Halo / Horns), else every side's
+local function ownsLook(id)
+	local owned = attrOf("LooksOwned", "")
+	return type(owned) == "string" and table.find(string.split(owned, ","), id) ~= nil
+end
+
+-- the looks to show, in order: my side's (Halo / Horns), else every side's. A look with Unlock (A23-77 attendance:
+-- Sprout 14 · Starlight 50 · Platinum 100 days) is never sold - it shows here only once owned, to wear it
 local function lookList()
 	local defs = Config.Looks
 	if RunService:IsStudio() and attrOf("ShopPreview", false) == true then defs = SAMPLE_LOOKS end
 	local mine = myFaction()
 	local list = {}
 	for id, def in (type(defs) == "table" and defs or {}) do
-		if type(def) == "table" and (mine ~= "Halo" and mine ~= "Horns" or def.Faction == mine) then
+		if type(def) == "table" and (mine ~= "Halo" and mine ~= "Horns" or def.Faction == mine)
+			and (def.Unlock == nil or ownsLook(id)) then
 			table.insert(list, { Id = id, Def = def })
 		end
 	end
@@ -137,10 +144,6 @@ local function lookList()
 	return list
 end
 
-local function ownsLook(id)
-	local owned = attrOf("LooksOwned", "")
-	return type(owned) == "string" and table.find(string.split(owned, ","), id) ~= nil
-end
 
 local function hasRemote(name)
 	return type(Net.Names) == "table" and table.find(Net.Names, name) ~= nil
@@ -492,7 +495,7 @@ function ShopUI.Init(registry)
 	end
 	panels.Register("Shop", {
 		Title = T.Title,
-		Rebuild = { Faction = true, DataLoaded = true, ShopPreview = true },
+		Rebuild = { Faction = true, DataLoaded = true, ShopPreview = true, LooksOwned = true }, -- an earned look appears
 		Build = buildShop,
 	})
 end
