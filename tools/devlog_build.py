@@ -484,6 +484,26 @@ def team_cells():
     return cells
 
 
+def choice_cells():
+    """the end question as two big buttons side by side (검수 2026-10-08): GIVE IT BACK (gold, angel) / ONE BITE! (purple,
+    devil), inside the Shorts safe area even at the pop / bob peak"""
+    emo = ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109)
+    cells = []
+    cw, ch, gap = 410, 330, 40
+    for i, (e, l1, l2, fill, rim, col) in enumerate((("😇", "GIVE IT", "BACK", "#7A5A12", "#FFD650", (255, 236, 150)),
+                                                     ("😈", "ONE", "BITE!", "#4A1E7A", "#C77DFF", (236, 200, 255)))):
+        cell = rounded((cw, ch), 46, hexrgb(fill), outline=hexrgb(rim), width=10)
+        ic = Image.new("RGBA", (150, 150), (0, 0, 0, 0))
+        ImageDraw.Draw(ic).text((10, 8), e, font=emo, embedded_color=True)
+        ic = contain(ic.crop(ic.getbbox() or (0, 0, 1, 1)), 120, 120)
+        cell.alpha_composite(ic, ((cw - ic.width) // 2, 22))
+        for k, word in enumerate((l1, l2)):
+            lab = text_img([(word, col)], fit_size(word, cw - 40, 78))
+            cell.alpha_composite(lab, ((cw - lab.width) // 2, 150 + k * 82))
+        cells.append((cell, CAPX + (-1 if i == 0 else 1) * (cw + gap) // 2, 820))
+    return cells
+
+
 GRID6 = [("Slime", "MonsterSlimeCube"), ("Baby Slime", "PetBabySlime"), ("Pumpkin Slime", "MonsterPumpkinSlime"),
          ("Pumpkin King", "MonsterPumpkinKing"), ("Bat Goblin", "MonsterBatGoblin"), ("Little Ghost", "MonsterLittleGhost")]  # one family per row
 
@@ -607,8 +627,8 @@ def get_board(shot):
         im = board_code()
     elif b == "doodle":
         im = board_doodle()
-    elif b in ("grid6", "stage", "team_cards"):
-        im = board_stage("#5A3A9A", "#140A24") if b == "grid6" else board_stage("#2B3A8A", "#0A0D22") if b == "team_cards" else board_stage()
+    elif b in ("grid6", "stage", "team_cards", "choice2"):
+        im = board_stage("#5A3A9A", "#140A24") if b == "grid6" else board_stage("#2B3A8A", "#0A0D22") if b == "team_cards" else board_stage("#3A2A6A", "#0E0A1E") if b == "choice2" else board_stage()
     elif "image" in shot:
         im = board_image(shot["image"], tuple(shot.get("focus_img", (0.5, 0.5))))
     else:
@@ -1100,7 +1120,7 @@ def build_short(short, voice, out_root, do_tts=True):
         n = max(1, f1 - f0)
         reader = VideoReader(s["video"], float(s.get("ss", 0)), float(s.get("speed", 1.0))) if "video" in s else None
         top = int(s.get("top", 72 if s.get("topbar") else 0))
-        cells = grid6_cells() if s.get("board") == "grid6" else team_cells() if s.get("board") == "team_cards" else None
+        cells = grid6_cells() if s.get("board") == "grid6" else team_cells() if s.get("board") == "team_cards" else choice_cells() if s.get("board") == "choice2" else None
         tframes = None
         shot_prev = last
         if "turn" in s:
@@ -1135,6 +1155,8 @@ def build_short(short, voice, out_root, do_tts=True):
                     for ci, (cell, cx, cy) in enumerate(cells):
                         k = 99 if s.get("static") else fi - math.ceil(cue_t[ci] * FPS - 1e-6) if cue_t and ci < len(cue_t) else i - ci * per
                         if k >= 0:
+                            if s.get("bob"):  # the two end buttons bounce in turn
+                                cy = cy - int(abs(math.sin(math.pi * (fi / FPS) * 1.8 + ci * math.pi / 2)) * 34)
                             paste_center(fr, cell, cx, cy, pop_scale(k))
             # falling / rising icons
             for key, sign in (("rain", 1), ("float", -1)):

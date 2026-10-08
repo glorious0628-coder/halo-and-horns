@@ -26,14 +26,13 @@
      "hlr": [
       "STICK?!"
      ],
-     "gap": 0.1,
      "shots": [
       {
        "video": "s40_first_weapon",
-       "ss": 1.6,
+       "ss": 1.8,
        "z": [
-        1.05,
-        1.12
+        1.22,
+        1.28
        ],
        "in": "flash",
        "w": 1.1,
@@ -49,7 +48,17 @@
         "color": "#FFD650",
         "y": 360,
         "size": 230
-       }
+       },
+       "f": [
+        [
+         0.64,
+         0.5
+        ],
+        [
+         0.64,
+         0.5
+        ]
+       ]
       },
       {
        "video": "s40_first_hunt",
@@ -85,7 +94,6 @@
       "code.",
       "draw."
      ],
-     "gap": 0.08,
      "shots": [
       {
        "video": "s40_halo_castle",
@@ -277,10 +285,12 @@
      ],
      "shots": [
       {
+       "video": "s40_claim_lunchbox",
+       "ss": 3.0,
        "fit": true,
        "z": [
-        2.25,
-        2.4
+        2.4,
+        3.3
        ],
        "f": [
         [
@@ -288,13 +298,11 @@
          0.62
         ],
         [
-         0.5,
-         0.62
+         0.32,
+         0.66
         ]
        ],
        "fit_y": 880,
-       "video": "s40_claim_lunchbox",
-       "ss": 3.0,
        "in": "flash",
        "w": 1.0,
        "sfx": [
@@ -311,10 +319,12 @@
        }
       },
       {
+       "video": "s40_claim_lunchbox",
+       "ss": 5.0,
        "fit": true,
        "z": [
-        2.25,
-        2.4
+        2.6,
+        3.4
        ],
        "f": [
         [
@@ -322,15 +332,14 @@
          0.62
         ],
         [
-         0.5,
-         0.62
+         0.68,
+         0.66
         ]
        ],
        "fit_y": 880,
-       "video": "s40_claim_lunchbox",
-       "ss": 6.0,
+       "shake": true,
        "in": "punch",
-       "w": 1.2,
+       "w": 1.1,
        "sfx": [
         {
          "name": "g_Devour",
@@ -436,47 +445,30 @@
      ],
      "shots": [
       {
-       "fit": true,
+       "board": "choice2",
        "z": [
-        2.25,
-        2.4
+        1.0,
+        1.04
        ],
-       "f": [
-        [
-         0.5,
-         0.62
-        ],
-        [
-         0.5,
-         0.62
-        ]
-       ],
-       "fit_y": 880,
-       "video": "s40_claim_lunchbox_good",
-       "ss": 3.0,
        "in": "whip",
+       "every": 0.25,
+       "bob": true,
        "sfx": [
         "whoosh",
         {
          "name": "g_CrownHalo",
-         "at": 0.3
+         "at": 0.1
         },
         {
          "name": "g_CrownHorns",
-         "at": 1.5
+         "at": 0.35
         }
-       ],
-       "big": {
-        "text": "GIVE IT BACK... or ONE BITE?",
-        "color": "#FFD650",
-        "y": 420,
-        "size": 120
-       }
+       ]
       }
      ]
     }
    ],
-   "tail": 0.6,
+   "tail": 0.8,
    "meta": {
     "title_en": "8 AIs made my Roblox game... and gave me a STICK?! 😲 #shorts",
     "title_ko": "AI 8명이 만든 내 로블록스 게임… 첫 무기가 나뭇가지?!",
@@ -494,8 +486,8 @@
     ]
    },
    "style": "neon",
-   "gap": 0.1,
-   "sentence_gap": 0.24,
+   "gap": 0.05,
+   "sentence_gap": 0.14,
    "note_v2": "v3 (사용자 2026-10-08 '있는 거 하지 말고 다시 짜서 다시'): 전부 새로 찍은 s40 원본(FilmSet 5df6330). 훅 = 첫 무기 나뭇가지 'A STICK?!', 8 AI 팀원, 감독 NO, 도시락 천사/악마, 호박 대왕 + 10/31, 끝 질문 '돌려줄래 한 입?'. ss 값은 찍은 뒤 확인 시트로 맞춘다."
   },
   {
