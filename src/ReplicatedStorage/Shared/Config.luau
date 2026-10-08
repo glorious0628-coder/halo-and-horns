@@ -3227,6 +3227,33 @@ Config.Visuals = {
 	HugeNumberScale = 2.5, -- release total damage number scale
 }
 
+-- A23-75 / A23-77 looks (이미지 생성 2 dd217fc, 검수 OK): a worn look (player attribute LookOn = one of these ids, set by
+-- the server; Config.Looks sells / awards them under the same id) recolours the rank's own mark mesh - TextureID per
+-- rank, R1 and R2 share one 64 px palette - so the shape stays the rank's (a bought look never passes for a higher
+-- rank). Glow = the halo's light, Sparkle = the top rank's sparkles (round, no rays). Ids: UiSandbox upload (이미지 개발)
+Config.LookThemes = {
+	HaloIce = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(170, 225, 255), Sparkle = Color3.fromRGB(225, 245, 255) }, -- shop
+	HaloGold = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(255, 170, 110), Sparkle = Color3.fromRGB(255, 120, 130) }, -- shop
+	HornsLava = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(255, 120, 40), Sparkle = Color3.fromRGB(255, 190, 90) }, -- shop
+	HornsShadow = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(160, 100, 255), Sparkle = Color3.fromRGB(215, 190, 255) }, -- shop
+	HaloSprout = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
+	HornsSprout = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
+	HaloStarlight = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
+	HornsStarlight = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
+	HaloPlatinum = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
+	HornsPlatinum = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
+}
+
 -- 계급 장식 3D (이미지 생성 1 45b6220, user OK "좋아, 넣어"): the rank's own halo / horns model replaces the drawn mark
 -- once it is in Studio. ServerStorage[Folder] holds MeshParts (or Models with one mesh) named as below, imported at their
 -- real size (studs, built for a 1.2-stud head, origin = the bottom center; files art/models/acc/*.glb). Horns sink
