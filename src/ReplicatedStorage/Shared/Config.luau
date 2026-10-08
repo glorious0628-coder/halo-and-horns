@@ -4306,7 +4306,7 @@ Config.UIArt = {
 		BarkBubbleGoblinBrute = { Id = "rbxassetid://137522622485063", Size = Vector2.new(512, 379), TextRect = { 0.217, 0.222, 0.535, 0.443 } },
 		BarkBubbleSkeleton = { Id = "rbxassetid://128451193232701", Size = Vector2.new(512, 369), TextRect = { 0.158, 0.26, 0.684, 0.358 } },
 		BarkBubbleSkeletonKnight = { Id = "rbxassetid://134713081207957", Size = Vector2.new(512, 409), TextRect = { 0.24, 0.308, 0.52, 0.44 } },
-		BarkBubbleGhostMinion = { Id = "rbxassetid://121325988367395", Size = Vector2.new(512, 333), TextRect = { 0.129, 0.396, 0.752, 0.288 } },
+		BarkBubbleGhostMinion = { Id = "rbxassetid://121325988367395", Size = Vector2.new(512, 333), TextRect = { 0.13, 0.37, 0.75, 0.33 } },
 		BarkBubbleLittleGhost = { Id = "rbxassetid://106182896723807", Size = Vector2.new(512, 344), TextRect = { 0.117, 0.366, 0.777, 0.331 } },
 		BarkBubbleGhostKing = { Id = "rbxassetid://120140777254240", Size = Vector2.new(512, 395), TextRect = { 0.127, 0.41, 0.742, 0.273 } },
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
