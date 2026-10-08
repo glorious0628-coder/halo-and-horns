@@ -45,9 +45,9 @@ def main():
                   "* { box-sizing: border-box; }\n:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }\n[hidden] { display: none !important; }", 1)
 
     # real site: a mailto link works, so offer it next to the copy button
-    copy_btn = '<button type="button" class="btn" id="copy-email"><span lang="en">Copy address</span><span lang="ko">주소 복사</span></button>'
+    copy_btn = '<button type="button" class="btn gold" id="copy-email"><span lang="en">Copy address</span><span lang="ko">주소 복사</span></button>'
     assert s.count(copy_btn) == 1
-    s = s.replace(copy_btn, copy_btn + '\n        <a class="btn ghost" href="mailto:jian@glorious.ai.kr"><span lang="en">Open mail app</span><span lang="ko">메일 앱 열기</span></a>')
+    s = s.replace(copy_btn, copy_btn + '\n        <a class="btn light" href="mailto:jian@glorious.ai.kr"><span lang="en">Open mail app</span><span lang="ko">메일 앱 열기</span></a>')
 
     head = ("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"

@@ -5,7 +5,7 @@
 
 ## 순서
 1. **(검수)** 새 **공개** 저장소를 만들고 `docs/website/site/` 안의 파일만 올림. 게임 저장소는 비공개 그대로.
-   - 올라가는 것: `index.html`, `CNAME`(내용 `glorious.ai.kr`), `img/`, `fonts/`.
+   - 올라가는 것: `index.html`, `CNAME`(내용 `glorious.ai.kr`), `img/`(사진 7장 + 링크 미리보기 `og.jpg` + `deco/` 배지 5장), `fonts/`(글꼴 3개 + OFL 라이선스 3개). 합계 약 1.8MB, 외부 연결 없음.
    - 공개는 사용자가 최종 디자인을 본 뒤에.
 2. **(사용자, GitHub)** 그 저장소 › **Settings › Pages**
    - Source = `Deploy from a branch`, 브랜치 `main`, 폴더 `/ (root)` → Save
