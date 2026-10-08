@@ -38,6 +38,8 @@ Net.Names = {
 	-- E11: { Board, Cards = { { Slot, Id, Kind, Sneaky, Goal, Target, RewardGold, RewardXP } }, Held, Hold, Done,
 	-- FullPerDay, Kind, Sneaky, RerollAt } owner only, the answer to BoardAction (Open / Take / Reroll)
 	"Board",
+	-- 게임성 개발 3 (2026-10-08), client -> server:
+	"ClaimAttendance", -- A23-77: no arguments; today's attendance slot (AttendanceService)
 }
 
 Net.GameStateDefaults = {

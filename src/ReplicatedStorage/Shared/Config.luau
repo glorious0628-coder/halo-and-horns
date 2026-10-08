@@ -5434,4 +5434,59 @@ function Config.WalkSpeed(classId, petSpecies, petLv, kaiju)
 	return math.min(raw, base * Config.Speed.Cap)
 end
 
+----------------------------------------------------------------- A23-77 attendance (게임성 개발 3, 2026-10-08)
+-- AttendanceService; contract docs/design/attendance_server_2026-10-08.md. User 2026-10-08: "끊기면 0되면 안 돼" ->
+-- days COLLECTED, never a streak. Additive save field (Version stays 3): Attendance = { Days = days collected (lifetime,
+-- never back to 0), LastDay = Config.DayIndex of the last claim (0 = never), Slot = the board slot the next claim pays
+-- (1..#Board) }. AttendanceService repairs it at PlayerReady (DataService only refills a missing / wrong-type table).
+Config.Data.Defaults.Attendance = { Days = 0, LastDay = 0, Slot = 1 }
+Config.Attendance = {
+	Enabled = true,
+	-- one claim a KST day (Config.DayIndex, 00:00 Korea time); a missed day is simply skipped: the next claim pays the next
+	-- slot and nothing resets. After slot 7 (the weekly box) the board starts at slot 1 again.
+	-- GoldMin / XPMin = Config.HuntValue minutes at the player's level (A23-77: about 3-5 hunting minutes a day, ~30 a
+	-- week). Potion = "HP" | "MP" bottles (bottles that do not fit the bag are paid in gold at Config.Vitals.PotionPrices).
+	-- Item = a Config.Loot.Items id. MaterialMin = the materials that many minutes of hunting the level zone's main monster
+	-- drop on average (Config.Economy.KillsPerMinute x minutes x the drop chance; a slime zone: 14 Jelly for 4 minutes).
+	Board = {
+		{ Potion = "HP", N = 2 },
+		{ GoldMin = 3 },
+		{ Item = "Enh70", N = 1 },
+		{ GoldMin = 3 },
+		{ Potion = "HP", N = 3, MaterialMin = 4 },
+		{ XPMin = 5 },
+		{ GoldMin = 10, XPMin = 10, Item = "Enh30", N = 1, Box = true }, -- the weekly box
+	},
+	-- days collected -> a stat-free reward once: Title = a Config.TitleDefs id, Border = the nametag frame id (drawn by the
+	-- client from the AttendDays attribute). The attendance-only halo / horn looks are Config.Looks entries with
+	-- Unlock.Attendance = days (A23-75's look frame, MonetizationService.GrantLook; both factions' looks, never sold).
+	Milestones = {
+		{ Days = 7, Title = "Regular" },
+		{ Days = 14 },
+		{ Days = 28, Border = "Days28" },
+		{ Days = 50, Title = "SuperRegular" },
+		{ Days = 100, Title = "MegaRegular" },
+	},
+	CheckInterval = 30, -- seconds between the day checks of online players (AttendReady turns on at 00:00 KST)
+	-- game text (English only, A23-48; 검수 owns the words)
+	Text = {
+		Claimed = "Day %d reward! %s", -- (board slot, the parts below joined with " · ")
+		Gold = "+%s gold",
+		XP = "+%s XP",
+		Item = "+%s",
+		ItemN = "+%s x%d",
+		Days = "%d days collected!",
+		NewTitle = "New title: %s!",
+		NewLook = "New look: %s!",
+		NewBorder = "New name frame!",
+	},
+}
+Config.TitleDefs.Regular = { Name = "Regular", NameEn = "Regular", Color = Color3.fromRGB(130, 205, 255) }
+Config.TitleDefs.SuperRegular = { Name = "Super Regular", NameEn = "Super Regular", Color = Color3.fromRGB(150, 230, 170) }
+Config.TitleDefs.MegaRegular = { Name = "Mega Regular", NameEn = "Mega Regular", Color = Color3.fromRGB(255, 200, 90) }
+for _, id in { "Regular", "SuperRegular", "MegaRegular" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
+Config.RateLimits.ClaimAttendance = 1
+
 return Config
