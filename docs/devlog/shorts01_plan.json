@@ -18,10 +18,10 @@
     {
      "id": "H1",
      "new": true,
-     "en": "Nine AIs made my Roblox game... and gave me a STICK?!",
+     "en": "9 AIs made my Roblox game... and gave me a STICK?!",
      "ko": "AI 아홉이 내 로블록스 게임을 만들었는데… 나뭇가지를 줬어요?!",
      "hl": [
-      "Nine AIs"
+      "9 AIs"
      ],
      "hlr": [
       "STICK?!"
@@ -30,7 +30,7 @@
       {
        "z": [
         1.1,
-        1.2
+        1.18
        ],
        "f": [
         [
@@ -43,20 +43,19 @@
         ]
        ],
        "video": "s41_twig_kills",
-       "ss": 11.9,
-       "speed": 0.5,
+       "ss": 12.1,
        "w": 1.2,
-       "note": "twig hits a slime, it pops (12.5)",
+       "note": "twig swing, the slime pops",
        "in": "flash",
        "sfx": [
         "boom",
         {
          "name": "g_HitHeavy",
-         "at": 0.25
+         "at": 0.3
         },
         {
          "name": "g_KillPop",
-         "at": 1.1
+         "at": 0.5
         }
        ],
        "big": {
@@ -69,7 +68,7 @@
       {
        "z": [
         1.1,
-        1.2
+        1.18
        ],
        "f": [
         [
@@ -82,9 +81,9 @@
         ]
        ],
        "video": "s41_first_weapon",
-       "ss": 3.4,
+       "ss": 3.45,
        "w": 0.8,
-       "note": "the Forge: [Twig] + Stronger! (front)",
+       "note": "the Forge: [Twig] + Stronger! sparkles",
        "in": "punch",
        "sfx": [
         {
@@ -100,7 +99,7 @@
        }
       }
      ],
-     "emoji": "😲"
+     "tts": "Nine AIs made my Roblox game... and gave me a STICK?!"
     },
     {
      "id": "A0",
@@ -113,16 +112,15 @@
      ],
      "shots": [
       {
-       "video": "s41_crown_sky",
-       "ss": 1.6,
+       "board": "code",
        "z": [
-        1.0,
-        1.1
+        1.12,
+        1.0
        ],
        "in": "whip",
        "xmark": true,
        "xy": 820,
-       "note": "the broken crown in the sky",
+       "note": "code (not game art)",
        "sfx": [
         "whoosh",
         {
@@ -132,26 +130,15 @@
        ]
       },
       {
-       "video": "s40_halo_castle",
-       "ss": 1.0,
+       "board": "doodle",
        "z": [
-        1.6,
-        1.8
-       ],
-       "f": [
-        [
-         0.5,
-         0.45
-        ],
-        [
-         0.5,
-         0.45
-        ]
+        1.0,
+        1.1
        ],
        "in": "whip",
        "xmark": true,
-       "xy": 820,
-       "note": "Halo castle",
+       "xy": 760,
+       "note": "my doodle",
        "sfx": [
         "whoosh",
         {
@@ -165,29 +152,28 @@
     {
      "id": "A0e",
      "new": true,
-     "en": "So nine AI teammates build it with me!",
+     "en": "So 9 AI teammates build it with me!",
      "ko": "그래서 AI 팀원 아홉이 저랑 같이 만들어요!",
      "hl": [
-      "nine AI teammates"
+      "9 AI teammates"
      ],
      "shots": [
       {
-       "video": "s41_faction_pick",
-       "ss": 1.0,
-       "fit": true,
+       "video": "s41_crown_sky",
+       "ss": 1.4,
        "z": [
-        1.25,
-        1.35
+        1.0,
+        1.1
        ],
-       "fit_y": 860,
        "in": "flash",
-       "note": "pick a side",
+       "note": "the broken crown in the sky",
        "sfx": [
         "ding"
        ]
       }
      ],
-     "emoji": "🤖"
+     "emoji": "🤖",
+     "tts": "So nine AI teammates build it with me!"
     },
     {
      "id": "A3",
@@ -204,8 +190,8 @@
      "shots": [
       {
        "z": [
-        1.3,
-        1.45
+        1.2,
+        1.3
        ],
        "in": "punch",
        "cues": [
@@ -230,7 +216,7 @@
         "sound_card",
         "card"
        ],
-       "video": "s40_horns_castle",
+       "video": "s40_crossroads",
        "ss": 1.0,
        "f": [
         [
@@ -244,7 +230,7 @@
        ],
        "cards": "team_cards",
        "dim": 0.55,
-       "note": "team cards over the Horns castle"
+       "note": "team cards over the Crossroads"
       }
      ],
      "tts_speed": 1.4
@@ -264,7 +250,7 @@
       {
        "z": [
         1.1,
-        1.2
+        1.18
        ],
        "f": [
         [
@@ -276,82 +262,64 @@
          0.5
         ]
        ],
-       "video": "s41_run_meadow",
-       "ss": 0.0,
-       "w": 1.1,
-       "note": "running down the meadow road",
+       "video": "s41_twig_kills",
+       "ss": 6.6,
+       "w": 1.0,
+       "note": "twig swings on a slime",
        "in": "whip",
        "sfx": [
-        "whoosh"
+        "whoosh",
+        {
+         "name": "g_HitHeavy",
+         "at": 0.3
+        }
        ],
        "big": {
-        "text": "DIRECTOR: ME",
+        "text": "DIRECTOR!",
         "color": "#FFD650",
         "y": 470,
-        "size": 140
+        "size": 170
        }
       },
       {
+       "board": "nogrid",
+       "imgs": [
+        "art/out/castle_v2/Town_Horns_Castle_v2A.png",
+        "art/out/castle_v2/Town_Horns_Castle_v2C.png",
+        "art/out/castle_v3/Town_Horns_Castle_v3B_1.png",
+        "art/out/town_v4/Town_Horns_Castle_v4A_1.png"
+       ],
+       "xcells": 0.22,
        "z": [
-        1.1,
-        1.2
+        1.0,
+        1.05
        ],
-       "f": [
-        [
-         0.5,
-         0.5
-        ],
-        [
-         0.5,
-         0.5
-        ]
-       ],
-       "video": "s41_twig_kills",
-       "ss": 0.0,
-       "speed": 0.6,
-       "w": 1.0,
-       "note": "twig swing running at a slime",
+       "w": 1.2,
        "in": "punch",
+       "note": "castle drafts I said NO to",
        "sfx": [
         {
-         "name": "g_HitHeavy",
-         "at": 0.2
-        }
-       ]
-      },
-      {
-       "z": [
-        1.1,
-        1.2
-       ],
-       "f": [
-        [
-         0.5,
-         0.5
-        ],
-        [
-         0.5,
-         0.5
-        ]
-       ],
-       "video": "s41_twig_kills",
-       "ss": 8.5,
-       "speed": 0.9,
-       "w": 0.9,
-       "note": "slime gone, +Jelly picked up",
-       "in": "punch",
-       "sfx": [
-        "boom",
+         "name": "boom",
+         "at": 0.1
+        },
         {
-         "name": "g_GoldPickup",
-         "at": 0.2
+         "name": "boom",
+         "at": 0.32
+        },
+        {
+         "name": "boom",
+         "at": 0.54
+        },
+        {
+         "name": "boom",
+         "at": 0.76
         }
        ],
        "big": {
         "text": "NO!",
         "color": "#FF5454",
-        "y": 470,
-        "size": 220
+        "y": 400,
+        "size": 200
        }
       }
      ]
@@ -371,9 +339,11 @@
       {
        "fit": true,
        "fit_y": 880,
+       "video": "s42_lunch_evil",
+       "ss": 0.0,
        "z": [
-        2.1,
-        2.1
+        2.0,
+        2.15
        ],
        "f": [
         [
@@ -385,21 +355,37 @@
          0.63
         ]
        ],
-       "video": "s40_claim_lunchbox_good",
-       "ss": 1.3,
-       "hl_box": [
-        86,
-        890,
-        498,
-        956
-       ],
-       "hl_col": "#FFD650",
+       "w": 0.8,
+       "note": "the Lost Lunchbox card",
        "in": "flash",
+       "sfx": [
+        "ding"
+       ]
+      },
+      {
+       "z": [
+        1.0,
+        1.08
+       ],
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
+       ],
+       "video": "s42_lunch_good",
+       "ss": 1.3,
        "w": 1.0,
+       "note": "Give it back: I hop and swing (halo)",
+       "in": "punch",
        "sfx": [
         {
          "name": "g_Purify",
-         "at": 0.1
+         "at": 0.05
         }
        ],
        "big": {
@@ -407,80 +393,32 @@
         "color": "#FFD650",
         "y": 400,
         "size": 190
-       }
+       },
+       "speed": 1.3,
+       "tint": [
+        "#FFD27A",
+        0.18
+       ]
       },
       {
-       "fit": true,
-       "fit_y": 880,
        "z": [
-        2.1,
-        2.1
+        1.45,
+        1.6
        ],
        "f": [
         [
-         0.524,
-         0.63
+         0.5,
+         0.6
         ],
         [
-         0.524,
-         0.63
+         0.5,
+         0.6
         ]
        ],
-       "video": "s40_claim_lunchbox",
+       "video": "s42_lunch_evil",
        "ss": 0.8,
-       "hl_box": [
-        516,
-        890,
-        928,
-        956
-       ],
-       "hl_col": "#C77DFF",
-       "in": "punch",
-       "w": 1.1,
-       "sfx": [
-        {
-         "name": "g_Devour",
-         "at": 0.1
-        }
-       ],
-       "big": {
-        "text": "DEVIL",
-        "color": "#FF5454",
-        "y": 400,
-        "size": 190
-       },
-       "speed": 0.65
-      }
-     ],
-     "note": "v3: 도시락 진짜 반응 두 갈래(돌려주기 → 정화, 한 입 → 삼킴) — ss는 찍은 뒤 맞춤"
-    },
-    {
-     "id": "A7d",
-     "new": true,
-     "silent": 1.6,
-     "en": "(the kid's reply in the game)",
-     "ko": "(게임 속 아이의 대답)",
-     "cap": false,
-     "shots": [
-      {
-       "z": [
-        1.1,
-        1.2
-       ],
-       "f": [
-        [
-         0.5,
-         0.5
-        ],
-        [
-         0.5,
-         0.5
-        ]
-       ],
-       "video": "s41_knight_slimes",
-       "ss": 0.3,
-       "w": 0.8,
-       "note": "sword kill, +Jelly",
+       "w": 1.0,
+       "note": "One bite!: I walk off swinging",
        "in": "punch",
        "sfx": [
         {
@@ -489,43 +427,19 @@
         }
        ],
        "big": {
-        "text": "\"YUM!\"",
+        "text": "DEVIL",
         "color": "#FF5454",
-        "y": 560,
-        "size": 260
-       }
-      },
-      {
-       "z": [
-        1.1,
-        1.2
-       ],
-       "f": [
-        [
-         0.5,
-         0.5
-        ],
-        [
-         0.5,
-         0.5
-        ]
-       ],
-       "video": "s41_knight_slimes",
-       "ss": 11.0,
-       "w": 1.0,
-       "note": "sword kill, +Slime Core",
-       "in": "punch",
-       "sfx": [
-        "boom"
-       ],
-       "big": {
-        "text": "NOBODY SAW THAT?",
-        "color": "#FFD650",
-        "y": 560,
-        "size": 150
-       }
+        "y": 400,
+        "size": 190
+       },
+       "speed": 1.3,
+       "tint": [
+        "#7A2BB8",
+        0.32
+       ]
       }
-     ]
+     ],
+     "note": "v3: 도시락 진짜 반응 두 갈래(돌려주기 → 정화, 한 입 → 삼킴) — ss는 찍은 뒤 맞춤"
     },
     {
      "id": "A8",
@@ -543,7 +457,7 @@
       {
        "z": [
         1.1,
-        1.2
+        1.18
        ],
        "f": [
         [
@@ -558,7 +472,7 @@
        "video": "s41_knight_slimes",
        "ss": 4.9,
        "w": 1.0,
-       "note": "the knight's sword pops the blue King Slime",
+       "note": "the sword pops the blue King Slime",
        "in": "flash",
        "sfx": [
         "boom",
@@ -572,33 +486,16 @@
         }
        ],
        "big": {
-        "text": "A REAL SWORD!",
+        "text": "REAL SWORD!",
         "color": "#FFD650",
         "y": 420,
-        "size": 190
+        "size": 200
        }
-      },
-      {
-       "video": "s40_king_front",
-       "ss": 1.0,
-       "z": [
-        1.2,
-        1.1
-       ],
-       "in": "punch",
-       "w": 0.9,
-       "note": "the Pumpkin King",
-       "sfx": [
-        {
-         "name": "g_PumpkinKing",
-         "at": 0.05
-        }
-       ]
       },
       {
        "z": [
         1.1,
-        1.2
+        1.18
        ],
        "f": [
         [
@@ -611,22 +508,49 @@
         ]
        ],
        "video": "s40_king_fight",
-       "ss": 2.2,
-       "w": 1.1,
-       "note": "sword vs the Pumpkin King",
+       "ss": 2.5,
+       "w": 1.0,
+       "note": "sword swing on the Pumpkin King",
        "in": "punch",
        "sfx": [
         {
+         "name": "g_PumpkinKing",
+         "at": 0.05
+        },
+        {
          "name": "g_HitHeavy",
          "at": 0.3
-        },
+        }
+       ]
+      },
+      {
+       "video": "s40_king_front",
+       "ss": 1.0,
+       "z": [
+        1.25,
+        1.15
+       ],
+       "f": [
+        [
+         0.42,
+         0.5
+        ],
+        [
+         0.42,
+         0.5
+        ]
+       ],
+       "w": 1.1,
+       "note": "the Pumpkin King's face",
+       "in": "punch",
+       "sfx": [
         "boom"
        ],
        "big": {
         "text": "OCT 31",
         "color": "#FF5454",
-        "y": 560,
-        "size": 200
+        "y": 330,
+        "size": 220
        }
       }
      ],
@@ -668,7 +592,7 @@
      ]
     }
    ],
-   "tail": 0.6,
+   "tail": 0.4,
    "meta": {
     "title_en": "9 AIs made my Roblox game... and gave me a STICK?! 😲 #shorts",
     "title_ko": "AI 9명이 만든 내 로블록스 게임… 첫 무기가 나뭇가지?!",
@@ -688,7 +612,7 @@
    "style": "neon",
    "gap": 0.05,
    "sentence_gap": 0.14,
-   "note_v2": "v6 (검수·사용자 2026-10-08 '가만히 처맞고 있는 중복'): 새 원본 s41_*, 같은 원본 구간 한 번만, 내가 맞는 숫자 없는 구간만(redscan)"
+   "note_v2": "v7 (검수 v6 불합격 → 검사관 3명 지적 반영): s42 원본(FilmSet 피해 0), 한 원본 최대 2컷, 정지·중복·맞는 숫자 검사"
   },
   {
    "id": "short02_picture_to_3d",
