@@ -2861,6 +2861,9 @@ local function aiStep(rec, plist, now)
 		NATURAL.Pace(rec, NATURAL.WanderPace, rec._goal) -- NATURAL: keeps easing in, slows near the goal
 		rec._walkTo = rec._goal -- A23-74: SEP.Walk (still on its way)
 	else
+		-- A23-74 review 2026-10-08: the last few studs of a wander still walk to its MoveTo point (SEP.Walk / SEP.Add
+		-- must know it, or a push near the zone's move line carried the body past it)
+		if rec._goal then rec._walkTo = rec._goal end
 		NATURAL.Idle(rec, pos, plist, now) -- NATURAL: standing between wanders: look around / glance
 	end
 end

@@ -1810,8 +1810,12 @@ runGroup("ai wiring", function()
 		"aiStep: a monster waiting at its slot faces the player")
 	check(has(ai, "attack(rec, best, now, clampToZone(zone, SEP.Goal(rec, best)))"),
 		"aiStep: in reach, attack() gets its slot (clamped into the zone) for between swings")
-	check(has(ai, "rec._walkTo = homeDest") and has(ai, "rec._walkTo = rec._goal"),
+	check(has(ai, "rec._walkTo = homeDest") and has(ai, "rec._walkTo = rec._goal -- A23-74: SEP.Walk (still on its way)"),
 		"aiStep: the walk home and a wander still on its way tell SEP.Walk where they go")
+	-- review 2026-10-08: the last few studs of a wander too (the Humanoid still walks there; a push near the move line
+	-- carried the body past it when SEP.Add did not know that point)
+	local lastBit = string.find(ai, "if rec._goal then rec._walkTo = rec._goal end\n\t\tNATURAL.Idle(rec, pos, plist, now)", 1, true)
+	check(lastBit ~= nil, "aiStep: a wander's last few studs (the idle branch) also tell SEP.Walk its MoveTo point")
 	local atk = block("local function attack(")
 	local rg = string.find(atk, "local walk = SEP.ReachGoal(rec, now, rec.Root.Position, slot, info)", 1, true)
 	local wu = string.find(atk, "rec._nextAttackAt = now + MC.AttackCooldown", 1, true)

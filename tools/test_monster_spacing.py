@@ -316,6 +316,7 @@ MUTATIONS = [
      "\t\t\t\tif d <= MC.AggroRadius and (bestD == nil or d < bestD) then best, bestD = info, d end\n\t\t\tend\n\t\tend\n"),
     ("new target not stamped", M, "\t\t\trec._targetAt = now -- SEP.Pick holds a new target TargetHold s\n", ""),
     # wiring
+    ("a wander's last studs hide their point", M, "\t\tif rec._goal then rec._walkTo = rec._goal end\n", ""),
     ("aiStep chases the player's position", M, "local goal = clampToZone(zone, SEP.Goal(rec, best))",
      "local goal = clampToZone(zone, best.Pos)"),
     ("waiting monsters do not face the player", M,
@@ -410,7 +411,13 @@ SUITE = Suite(
                 "and the slides take that, and in a crowd a monster may change target about every few seconds (never "
                 "within 2 s). A zone's chasers are assumed to share the player's zone (targetable); the rings take the "
                 "first zone chaser's rect. SEP.Arc keeps only the longest free piece when a narrow zone cuts a ring "
-                "twice (no game zone is that narrow).",
+                "twice (no game zone is that narrow). Final adversarial recheck (minor, left): with a personal monster "
+                "among a player's chasers the zone chasers get whole rings and pile on the move line again (personal "
+                "monsters have no spawner in the game yet); SEP.Body in a corner always tries the z line first (out "
+                "within 4 ticks, sometimes the long way round); the crowd swing bar holds on the 16-run total, single "
+                "runs with players 2 studs apart get 60-87% of the old rule's swings; players standing within ~1 stud "
+                "of each other: about 3% fewer swings than the reach-first order (the hold comes first); a taunt that "
+                "runs out while the monster targets someone else stays recorded until the next pick of the taunter.",
 )
 
 if __name__ == "__main__":
