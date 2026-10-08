@@ -958,9 +958,10 @@ def synth_sfx(name):
 
 # ------------------------------------------------------------------ audio
 def tts_wavs(short, voice, tts_dir, out_dir, do_tts):
-    jobs = [dict({"id": "%s_%s" % (short["id"], l["id"]), "text": fill(l.get("tts", l["en"]), True),
-                  "out": os.path.join(tts_dir, "%s_%s.wav" % (short["id"], l["id"]))},
-                 **{k: voice[k] for k in ("speaker", "speed", "noise_scale", "noise_scale_w", "sdp_ratio") if k in voice})
+    jobs = [{"id": "%s_%s" % (short["id"], l["id"]), "text": fill(l.get("tts", l["en"]), True),
+             "out": os.path.join(tts_dir, "%s_%s.wav" % (short["id"], l["id"])),
+             **{k: voice[k] for k in ("speaker", "speed", "noise_scale", "noise_scale_w", "sdp_ratio") if k in voice},
+             **({"speed": l["tts_speed"]} if "tts_speed" in l else {})}   # a line may talk faster (team list, 검수 v5)
             for l in short["lines"] if not l.get("silent")]
     if do_tts:
         jf = os.path.join(out_dir, "tts_jobs.json")
@@ -1125,7 +1126,8 @@ def build_short(short, voice, out_root, do_tts=True):
         n = max(1, f1 - f0)
         reader = VideoReader(s["video"], float(s.get("ss", 0)), float(s.get("speed", 1.0))) if "video" in s else None
         top = int(s.get("top", 72 if s.get("topbar") else 0))
-        cells = grid6_cells() if s.get("board") == "grid6" else team_cells() if s.get("board") == "team_cards" else choice_cells() if s.get("board") == "choice2" else None
+        cb_ = s.get("board") or s.get("cards")
+        cells = grid6_cells() if cb_ == "grid6" else team_cells() if cb_ == "team_cards" else choice_cells() if cb_ == "choice2" else None
         tframes = None
         shot_prev = last
         if "turn" in s:
@@ -1154,15 +1156,17 @@ def build_short(short, voice, out_root, do_tts=True):
                     m = tframes[k]
                     sc = float(s.get("scale", 1.0))
                     paste_center(fr, m, CX, int(s.get("y", BOX_Y + 560)), sc * pop_scale(i) if s.get("pop") else sc)
-                if cells:
-                    per = int(s["every"] * FPS) if s.get("every") else max(1, int(n * 0.75) // len(cells))
-                    cue_t = sh["cue_t"]
-                    for ci, (cell, cx, cy) in enumerate(cells):
-                        k = 99 if s.get("static") else fi - math.ceil(cue_t[ci] * FPS - 1e-6) if cue_t and ci < len(cue_t) else i - ci * per
-                        if k >= 0:
-                            if s.get("bob"):  # the two end buttons bounce in turn
-                                cy = cy - int(abs(math.sin(math.pi * (fi / FPS) * 1.8 + ci * math.pi / 2)) * 34)
-                            paste_center(fr, cell, cx, cy, pop_scale(k))
+            if cells:
+                if reader and s.get("dim"):  # cards over the game: a dark see-through layer (검수 v5)
+                    fr.alpha_composite(Image.new("RGBA", (W, H), (8, 10, 30, int(255 * float(s["dim"])))))
+                per = int(s["every"] * FPS) if s.get("every") else max(1, int(n * 0.75) // len(cells))
+                cue_t = sh["cue_t"]
+                for ci, (cell, cx, cy) in enumerate(cells):
+                    k = 99 if s.get("static") else fi - math.ceil(cue_t[ci] * FPS - 1e-6) if cue_t and ci < len(cue_t) else i - ci * per
+                    if k >= 0:
+                        if s.get("bob"):  # the two end buttons bounce in turn
+                            cy = cy - int(abs(math.sin(math.pi * (fi / FPS) * 1.8 + ci * math.pi / 2)) * 34)
+                        paste_center(fr, cell, cx, cy, pop_scale(k))
             # falling / rising icons
             for key, sign in (("rain", 1), ("float", -1)):
                 spec = s.get(key)

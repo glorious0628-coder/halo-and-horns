@@ -28,6 +28,40 @@
      ],
      "shots": [
       {
+       "z": [
+        1.15,
+        1.28
+       ],
+       "f": [
+        [
+         0.5,
+         0.5
+        ],
+        [
+         0.5,
+         0.5
+        ]
+       ],
+       "video": "s40_first_hunt",
+       "ss": 1.1,
+       "in": "flash",
+       "w": 1.2,
+       "sfx": [
+        "boom",
+        {
+         "name": "g_HitHeavy",
+         "at": 0.35
+        }
+       ],
+       "big": {
+        "text": "A STICK?!",
+        "color": "#FFD650",
+        "y": 360,
+        "size": 230
+       },
+       "speed": 0.6
+      },
+      {
        "video": "s40_first_weapon",
        "ss": 6.0,
        "z": [
@@ -44,13 +78,12 @@
          0.3
         ]
        ],
-       "in": "flash",
-       "w": 1.1,
+       "in": "punch",
+       "w": 0.8,
        "sfx": [
-        "boom",
         {
          "name": "g_PowerUp",
-         "at": 0.1
+         "at": 0.05
         }
        ],
        "big": {
@@ -59,39 +92,6 @@
         "y": 360,
         "size": 230
        }
-      },
-      {
-       "z": [
-        1.15,
-        1.28
-       ],
-       "f": [
-        [
-         0.5,
-         0.5
-        ],
-        [
-         0.5,
-         0.5
-        ]
-       ],
-       "video": "s40_first_hunt",
-       "ss": 1.15,
-       "in": "punch",
-       "w": 0.9,
-       "sfx": [
-        {
-         "name": "g_HitHeavy",
-         "at": 0.35
-        }
-       ],
-       "big": {
-        "text": "A STICK?!",
-        "color": "#FFD650",
-        "y": 360,
-        "size": 230
-       },
-       "speed": 0.6
       }
      ],
      "emoji": "😲"
@@ -202,10 +202,9 @@
      ],
      "shots": [
       {
-       "board": "team_cards",
        "z": [
-        1.0,
-        1.05
+        1.3,
+        1.45
        ],
        "in": "punch",
        "cues": [
@@ -229,9 +228,24 @@
         "card",
         "sound_card",
         "card"
-       ]
+       ],
+       "video": "s40_horns_castle",
+       "ss": 1.0,
+       "f": [
+        [
+         0.5,
+         0.45
+        ],
+        [
+         0.5,
+         0.45
+        ]
+       ],
+       "cards": "team_cards",
+       "dim": 0.55
       }
-     ]
+     ],
+     "tts_speed": 1.4
     },
     {
      "id": "A7b",
@@ -514,7 +528,7 @@
      "new": true,
      "en": "Beat the Pumpkin King! Halloween beta: October 31!",
      "tts": "Beat the Pumpkin King! Halloween beta: October thirty-first!",
-     "ko": "호박 대왕을 쓰러뜨려요! 핼러윈 베타: 10월 31일!",
+     "ko": "…나중엔: 진짜 칼! 호박 대왕을 쓰러뜨려요! 핼러윈 베타: 10월 31일!",
      "hl": [
       "Pumpkin King!"
      ],
@@ -537,7 +551,13 @@
          "name": "g_PumpkinKing",
          "at": 0.05
         }
-       ]
+       ],
+       "big": {
+        "text": "...LATER: A REAL SWORD!",
+        "color": "#FFD650",
+        "y": 420,
+        "size": 120
+       }
       },
       {
        "video": "s40_king_fight",
