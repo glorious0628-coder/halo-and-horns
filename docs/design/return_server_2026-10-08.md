@@ -3,7 +3,7 @@
 근거: SPEC A23-79 5묶음(사용자 2026-10-08 고름), `docs/design/psychology_retention_2026-10-08.md`,
 `docs/design/retention_round_2026-10-08.md`. 서버 = 새 `ReturnService.luau`(#1 멈춤 카드·Welcome back, #2 My Way·배지, #5 알림
 동의) · `InviteService.luau`(#3) · `DiaryService.luau`(#4). 설정 = Config.luau 맨 끝 "A23-79 coming back" 블록.
-시험 = `py tools/test_return.py`(151검사, 변이 66/66). 능력치 0, 판매 0, 카운트다운 0, 초대 보상 0(A23-68).
+시험 = `py tools/test_return.py`(155검사, 변이 70/70). 능력치 0, 판매 0, 카운트다운 0, 초대 보상 0(A23-68).
 
 ## #1 멈춤 카드 + Welcome back (클라 = 개발 1 `PauseCard.luau`, 이미 main에 있음)
 | 신호 | 언제 | 내용 |
@@ -25,7 +25,9 @@
 - 배지(BadgeService:AwardBadge, pcall): ChoseSide(진영 고름) · FirstSlime(첫 처치) · LostLunchbox(Lunch1 끝) · Stronger(2티어 이상 무기
   보유 — 첫 무료 무기는 아님) · FirstSkill(첫 스킬 배움) · ShardChoice(S0 끝) · Rank2(진영 계급 2) · Halloween2026(2026 시즌에 사탕을
   얻거나 대왕을 함께 잡음). `Config.Badges.Ids`가 0이면 묻지 않음 → **게시 때 사용자가 배지 8개를 만들고 id를 붙여 넣으면** 다음
-  접속에 이미 이룬 것까지 한꺼번에 준다(하루 무료 5개 → 이틀에 나눠 만들기, launch_ops_checklist). 저장 data.Return.Badges, 실패하면 5분 뒤 다시.
+  접속에 이미 이룬 것까지 한꺼번에 준다(하루 무료 5개 → 이틀에 나눠 만들기, launch_ops_checklist). 저장 data.Return.Badges[키] = { Id = 준 배지 id, At }.
+  **AwardBadge가 true일 때만** 받은 것으로 저장(검수 검토 10/08). false(배지 꺼짐·id 틀림)면 UserHasBadgeAsync로 이미 가졌는지 확인 →
+  가졌으면 저장, 아니면 오류처럼 경고 + 5분 뒤 다시. 저장된 Id가 지금 Config id와 다르면(사용자가 id를 고침) 안 받은 것으로 보고 새 id로 다시 준다.
 
 ## #3 친구 초대 + Go to friend (클라 = 개발 1 `Invite.luau`, 이미 main에 있음)
 - 초대 접속: `GetJoinData().LaunchData`가 숫자만(내 id 아님, 20자 이하)이면 초대 접속. 처음 데려온 사람을 data.Invite = { By, At }에 남김(보상 없음).
@@ -54,7 +56,7 @@
     (Roblox는 수락 여부를 알려 주지 않아서 "물어본 사람" 목록이다. 실제로는 동의한 사람에게만 배달됨.)
 
 ## 저장 (추가 칸, Version 3 그대로)
-`Return = { Badges = {}, OptIn = "" | "shown" | "cannot", OptInAt }`, `Diary = { Pages, Done }`, `Invite = { By, At }`.
+`Return = { Badges = { [키] = { Id, At } }, OptIn = "" | "shown" | "cannot", OptInAt }`, `Diary = { Pages, Done }`, `Invite = { By, At }`.
 각 서비스가 접속 때 깨진 값을 고친다(DataService는 안 고침).
 
 ## 다른 파일에 더한 작은 줄 (다른 줄 안 바꿈)

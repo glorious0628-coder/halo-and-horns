@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 126,
+  "checks": 130,
   "failedChecks": 0,
-  "namedChecks": 105,
+  "namedChecks": 109,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -453,31 +453,55 @@
     },
     {
       "group": "ClientMetric rules",
-      "check": "OptIn / WelcomeBackGo count once a session",
+      "check": "OptIn / WelcomeBackGo are logged once a session",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ClientMetric rules",
-      "check": "rate limited per id (0.5 s)",
+      "check": "the signal still fires for every accepted call (ReturnService's state)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ClientMetric rules",
-      "check": "20 calls in 12 s: 10 accepted (the per-minute budget)",
+      "check": "rate limited per id (0.5 s): no signal either",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ClientMetric rules",
-      "check": "a new minute: accepted again",
+      "check": "20 calls in 12 s: 10 logged (the per-minute budget)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ClientMetric rules",
-      "check": "not ready: ignored",
+      "check": "all 20 still reach the ClientMetric signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "a full budget: the opt-in is not logged, but ReturnService still hears it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "the next minute: logged (Once was not used up by the refused call)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "a new minute: logged again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "not ready: ignored (no signal)",
       "pass": 1,
       "fail": 0
     },
@@ -642,9 +666,9 @@
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 62,
-    "applied": 62,
-    "caught": 62,
+    "total": 64,
+    "applied": 64,
+    "caught": 64,
     "skipped": false,
     "results": [
       {
@@ -1044,10 +1068,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
           "ClientMetric rules :: every bad call is ignored",
           "ClientMetric rules :: good calls pass on (ReturnService listens)",
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
         ],
         "newFailingCount": 4
       },
@@ -1058,9 +1082,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: every bad call is ignored"
+          "ClientMetric rules :: every bad call is ignored",
+          "ClientMetric rules :: good calls pass on (ReturnService listens)",
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "any count",
@@ -1069,10 +1096,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
           "ClientMetric rules :: every bad call is ignored",
           "ClientMetric rules :: good calls pass on (ReturnService listens)",
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
         ],
         "newFailingCount": 4
       },
@@ -1094,10 +1121,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
           "ClientMetric rules :: every bad call is ignored",
           "ClientMetric rules :: good calls pass on (ReturnService listens)",
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
         ],
         "newFailingCount": 4
       },
@@ -1108,9 +1135,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: 20 calls in 12 s: 10 accepted (the per-minute budget)",
-          "ClientMetric rules :: a new minute: accepted again",
-          "ClientMetric rules :: not ready: ignored"
+          "ClientMetric rules :: 20 calls in 12 s: 10 logged (the per-minute budget)",
+          "ClientMetric rules :: a full budget: the opt-in is not logged, but ReturnService still hears it",
+          "ClientMetric rules :: a new minute: logged again"
         ],
         "newFailingCount": 3
       },
@@ -1121,8 +1148,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: a new minute: accepted again",
-          "ClientMetric rules :: not ready: ignored"
+          "ClientMetric rules :: a new minute: logged again",
+          "ClientMetric rules :: the next minute: logged (Once was not used up by the refused call)"
         ],
         "newFailingCount": 2
       },
@@ -1133,10 +1160,34 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: OptIn / WelcomeBackGo are logged once a session"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the budget hides the signal",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: a full budget: the opt-in is not logged, but ReturnService still hears it",
+          "ClientMetric rules :: all 20 still reach the ClientMetric signal",
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Once marked before the budget",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: the next minute: logged (Once was not used up by the refused call)"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "PromptNearKO for every buy window",
@@ -1158,10 +1209,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
           "ClientMetric rules :: every bad call is ignored",
           "ClientMetric rules :: good calls pass on (ReturnService listens)",
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
         ],
         "newFailingCount": 4
       },
@@ -1172,7 +1223,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either"
         ],
         "newFailingCount": 1
       },
@@ -1183,7 +1234,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: not ready: ignored"
+          "ClientMetric rules :: not ready: ignored (no signal)"
         ],
         "newFailingCount": 1
       },
@@ -1194,11 +1245,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: 20 calls in 12 s: 10 accepted (the per-minute budget)",
-          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: a full budget: the opt-in is not logged, but ReturnService still hears it",
+          "ClientMetric rules :: all 20 still reach the ClientMetric signal",
           "ClientMetric rules :: good calls pass on (ReturnService listens)",
-          "ClientMetric rules :: not ready: ignored",
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
         ],
         "newFailingCount": 5
       },
@@ -1396,10 +1447,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
-          "ClientMetric rules :: rate limited per id (0.5 s)"
+          "ClientMetric rules :: OptIn / WelcomeBackGo are logged once a session"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       }
     ]
   },
@@ -1407,11 +1457,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b468267abfdfd6d7e6b673e7d1e59a49b842dfc080ede4a41739b7884d89ab49",
+    "src/ReplicatedStorage/Shared/Config.luau": "34099b92ad2610d44bc083e2e7c8639eb6d7db4dccf01b1326080026f55c2872",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/TelemetryService.luau": "1c8ece82009448474c605bf413f59dbebba719d933dbcfeecdd266efefd4aecc"
+    "src/ServerScriptService/TelemetryService.luau": "28c07feba0a8e647a8caa665febbae89ce6acd7fd56177d94c3280588af062a7"
   },
-  "fixtureSHA256": "6952e337faa87ecef02b5e05ab4a9b031666239577283edae8450703c005345a",
+  "fixtureSHA256": "d3041900a3dab3b47471c15dec232344778418e7022ffd5a6980b3bfde58c61f",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

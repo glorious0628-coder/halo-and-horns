@@ -2,7 +2,7 @@
 
 근거: `docs/design/retention_round_2026-10-08.md` "베타에서 잴 것"(검수 결정, 10/24 전에 넣기). 서버 = 기존
 `src/ServerScriptService/TelemetryService.luau` 위에 덧붙임(관찰만, 게임 상태는 안 바꿈). 설정 = `Config.Analytics.Funnels`
-등(Config.luau 맨 끝 "A23-79 beta metrics" 블록). 시험 = `py tools/test_beta_metrics.py`(126검사, 변이 62/62) +
+등(Config.luau 맨 끝 "A23-79 beta metrics" 블록). 시험 = `py tools/test_beta_metrics.py`(130검사, 변이 64/64) +
 기존 `py tools/test_metrics.py`(BB38, 95검사, 변이 51/51, 허용 이벤트 목록에 새 이름 추가).
 Roblox 기록은 **게시된 서버에서만** 쌓인다(Studio Play는 기록 안 됨). Studio에서는 `[Metrics] …` 줄이 출력창에 찍힌다.
 
@@ -48,7 +48,9 @@ TimedReward, Sale·Refund = Shop(들어옴), Weapon·Potion·LookChange = Shop(�
 | PurchasePrompt | 같은 id | Roblox 구매 창을 열 때 |
 | OptIn | "shown" / "cannot" | 알림 동의: `CanPromptOptInAsync`가 true면 `PromptOptIn` 뒤 OptInPromptClosed에서 "shown", false면 "cannot" |
 | WelcomeBackGo | (없음) | Welcome back 카드의 [Go] (PauseCard.Shown의 button "Go") |
-- 같은 id는 0.5초에 한 번, 한 사람이 1분에 10번까지만 받는다(한 사람이 게임 전체 기록 한도를 못 채우게). OptIn·WelcomeBackGo는 판마다 한 번.
+- 같은 id는 0.5초에 한 번. **기록**은 한 사람이 1분에 10번까지만 남긴다(한 사람이 게임 전체 기록 한도를 못 채우게), OptIn·WelcomeBackGo 기록은
+  판마다 한 번(한도에 걸려 안 남긴 건 다음에 남김). 한도와 상관없이 받아들인 호출은 모두 `TelemetryService.ClientMetric` 신호로 넘긴다
+  (ReturnService가 OptIn 결과·구매 창 시각을 놓치지 않게, 검수 검토 10/08).
   목록 밖·인자 틀림은 조용히 버린다.
 - 상점 방문은 `ClientMetric("ShopOpen")` 또는 `UiMetric("Shop")`(지금 클라는 창마다 판에 한 번만 보냄) 또는 첫 PassView로 시작한다. 10분 지나면 방문 끝.
 

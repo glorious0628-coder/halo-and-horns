@@ -13,7 +13,7 @@
 --      a failed scroll / a purchase prompt. 13+ and the prompt itself are the client's (ExperienceNotificationService);
 --      it reports back with ClientMetric "OptIn" ("shown" | "cannot"); a shown prompt adds the UserId to the asked list
 --      (DataStore Config.Notify.Store) for the launch-day send.
--- Save (additive, Version stays 3): data.Return = { Badges = { [badge key] = os.time() awarded }, OptIn = "" | "shown"
+-- Save (additive, Version stays 3): data.Return = { Badges = { [badge key] = { Id, At } }, OptIn = "" | "shown"
 -- | "cannot", OptInAt = os.time() } (repaired here at PlayerReady).
 -- Signals: ReturnService.CardShown(player, why), ReturnService.Welcomed(player) (TelemetryService).
 local DataStoreService = game:GetService("DataStoreService")
@@ -61,7 +61,8 @@ local function getData(player)
 	return type(d) == "table" and d or nil
 end
 
--- data.Return repaired in place (Badges: known keys with a time only; OptIn one of the three values)
+-- data.Return repaired in place (Badges: known keys with { Id = the badge id awarded, At = os.time() } only; OptIn one of
+-- the three values)
 local function record(data)
 	local r = data.Return
 	if type(r) ~= "table" then
@@ -70,9 +71,10 @@ local function record(data)
 	end
 	local badges = {}
 	if type(r.Badges) == "table" then
-		for key, t in r.Badges do
-			if type(key) == "string" and type(B.Ids) == "table" and B.Ids[key] ~= nil and type(t) == "number" and t == t then
-				badges[key] = math.floor(t)
+		for key, b in r.Badges do
+			if type(key) == "string" and type(B.Ids) == "table" and B.Ids[key] ~= nil and type(b) == "table"
+				and num(b.Id) > 0 and num(b.At, -1) >= 0 then
+				badges[key] = { Id = math.floor(b.Id), At = math.floor(b.At) }
 			end
 		end
 	end
@@ -316,15 +318,24 @@ local function award(player, key, id)
 	busy[key] = true
 	task.spawn(function()
 		local svc = game:GetService("BadgeService")
-		local ok, err = pcall(svc.AwardBadge, svc, userId, id)
+		-- 검수 review 2026-10-08: only a real award counts. AwardBadge answers false for a badge that is off / a wrong id
+		-- (the user makes the 8 badges by hand at publishing) - and for one the player already has, so a false asks
+		-- UserHasBadgeAsync before it goes the retry way
+		local ok, res = pcall(svc.AwardBadge, svc, userId, id)
+		local got = ok and res == true
+		if ok and not got then
+			local okHas, has = pcall(svc.UserHasBadgeAsync, svc, userId, id)
+			got = okHas and has == true
+		end
 		busy[key] = nil
-		if ok then
+		if got then
 			local data = S.PlayerService.GetData(player)
-			if type(data) == "table" then record(data).Badges[key] = os.time() end
+			-- the badge id goes with the record: a corrected Config id is a badge this player still has to get
+			if type(data) == "table" then record(data).Badges[key] = { Id = id, At = os.time() } end
 		else
 			T.BadgeRetry[player] = T.BadgeRetry[player] or {}
 			T.BadgeRetry[player][key] = os.clock()
-			Util.Warn(TAG, "badge " .. key .. ": " .. tostring(err))
+			Util.Warn(TAG, "badge " .. key .. " (" .. tostring(id) .. "): " .. (ok and "not awarded" or tostring(res)))
 		end
 	end)
 end
@@ -338,7 +349,9 @@ local function checkBadges(player)
 	for _, key in B.Order or {} do
 		local id = math.floor(num(B.Ids[key]))
 		local retry = T.BadgeRetry[player] and T.BadgeRetry[player][key]
-		if id > 0 and r.Badges[key] == nil and (retry == nil or os.clock() - retry >= num(B.RetrySeconds, 300))
+		local rec = r.Badges[key]
+		local have = type(rec) == "table" and rec.Id == id -- awarded under today's Config id
+		if id > 0 and not have and (retry == nil or os.clock() - retry >= num(B.RetrySeconds, 300))
 			and badgeTest(key, player, data) then
 			award(player, key, id)
 		end

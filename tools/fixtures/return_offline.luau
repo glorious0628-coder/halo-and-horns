@@ -13,12 +13,19 @@ local function retWorld(o)
 	w.Pinned = {} -- [Player] = the row QuestService.PinnedRow returns
 	w.Reg.QuestService = { PinnedRow = function(p) return w.Pinned[p] end }
 	w.Reg.TelemetryService = { ClientMetric = Signal.new() }
-	w.Badges, w.BadgeFail = {}, false
-	w.Services.BadgeService = { AwardBadge = function(_, uid, id)
-		if w.BadgeFail then error("offline badge failure") end
-		table.insert(w.Badges, uid .. ":" .. id)
-		return true
-	end }
+	w.Badges, w.BadgeFail, w.BadgeAnswer, w.HasBadge, w.HasAsks = {}, false, true, {}, 0
+	w.Services.BadgeService = {
+		AwardBadge = function(_, uid, id)
+			if w.BadgeFail then error("offline badge failure") end
+			if w.BadgeAnswer ~= true then return false end -- the badge is off / a wrong id (or already owned)
+			table.insert(w.Badges, uid .. ":" .. id)
+			return true
+		end,
+		UserHasBadgeAsync = function(_, uid, id)
+			w.HasAsks += 1
+			return w.HasBadge[uid .. ":" .. id] == true
+		end,
+	}
 	w:Service("TitleService", TITLE_SOURCE)
 	w:Service("ReturnService", RETURN_SOURCE)
 	w:Service("InviteService", INVITE_SOURCE)
@@ -256,7 +263,8 @@ runGroup("badges", function()
 	p:SetAttribute("Faction", "Halo")
 	w.Reg.FactionService.FactionChanged:Fire(p, "Halo", "None", "Choose")
 	w:RunSpawned()
-	check(table.concat(w.Badges, ",") == "1:101" and d.Return.Badges.ChoseSide == w.Time, "Chose a Side once the side is picked",
+	check(table.concat(w.Badges, ",") == "1:101" and d.Return.Badges.ChoseSide.Id == 101 and d.Return.Badges.ChoseSide.At == w.Time,
+		"Chose a Side once the side is picked (saved with its badge id)",
 		table.concat(w.Badges, ","))
 	w.Reg.FactionService.FactionChanged:Fire(p, "Halo", "None", "Choose")
 	w:RunSpawned()
@@ -311,6 +319,28 @@ runGroup("badges", function()
 	w2:RunSpawned()
 	check(#w2.Badges == 6, "after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
 		table.concat(w2.Badges, ","))
+	-- AwardBadge answers false (the badge is off / a wrong id): not saved, tried again later; false for a badge the
+	-- player already has: UserHasBadgeAsync says so and it is saved
+	local w4 = retWorld({ EditConfig = withBadges })
+	w4.BadgeAnswer = false
+	w4.AllowWarn = "badge"
+	local s4, ds4 = hero(w4, 4, { Data = { TotalKills = 3 } })
+	check(next(ds4.Return.Badges) == nil and w4.HasAsks >= 1, "false from AwardBadge: nothing saved (UserHasBadgeAsync asked)",
+		show(ds4.Return.Badges))
+	check(#w4.Warnings >= 1, "a not-awarded badge is warned like an error", tostring(w4.Warnings[1]))
+	w4.HasBadge["4:101"] = true
+	w4:Advance(301)
+	ds4.TotalKills = 4
+	s4:SetAttribute("TotalKills", 4)
+	w4:RunSpawned()
+	check(ds4.Return.Badges.ChoseSide and ds4.Return.Badges.ChoseSide.Id == 101 and ds4.Return.Badges.FirstSlime == nil,
+		"after RetrySeconds: the one the player already has is saved, the others wait", show(ds4.Return.Badges))
+	-- a corrected Config id (the user fixed a wrong id): the old record does not count, the new badge is given
+	local w5 = retWorld({ EditConfig = function(c) withBadges(c); c.Badges.Ids.ChoseSide = 201 end })
+	local s5, ds5 = hero(w5, 5, { Data = { Return = { Badges = { ChoseSide = { Id = 101, At = 1 } }, OptIn = "", OptInAt = 0 } } })
+	check(table.find(w5.Badges, "5:201") ~= nil and ds5.Return.Badges.ChoseSide.Id == 201,
+		"a record under another id is not the badge: awarded again with the new id", table.concat(w5.Badges, ","))
+	local _45 = { s5 }
 	-- after the season: candy no longer opens Halloween 2026
 	local w3 = retWorld({ EditConfig = withBadges, Time = w.Config.Halloween.EndsAt + 100 })
 	local r = hero(w3, 3)
@@ -363,10 +393,12 @@ runGroup("broken saves are repaired", function()
 	local p, d = hero(w, 1, { Data = { Return = "x", Diary = 5 } })
 	check(type(d.Return) == "table" and type(d.Return.Badges) == "table" and d.Return.OptIn == "" and d.Return.OptInAt == 0,
 		"a non-table Return starts fresh", show(d.Return))
-	local q, dq = hero(w, 2, { Data = { Return = { Badges = { Nope = 1, ChoseSide = "x", FirstSlime = 5 }, OptIn = "maybe",
-		OptInAt = -3 } } })
-	check(dq.Return.Badges.Nope == nil and dq.Return.Badges.ChoseSide == nil and dq.Return.Badges.FirstSlime == 5
-		and dq.Return.OptIn == "" and dq.Return.OptInAt == 0, "unknown badges / bad values dropped, OptIn reset", show(dq.Return))
+	local q, dq = hero(w, 2, { Data = { Return = { Badges = { Nope = { Id = 1, At = 1 }, ChoseSide = "x", Stronger = 7,
+		FirstSlime = { Id = 102, At = 5 }, Rank2 = { Id = 0, At = 5 } }, OptIn = "maybe", OptInAt = -3 } } })
+	check(dq.Return.Badges.Nope == nil and dq.Return.Badges.ChoseSide == nil and dq.Return.Badges.Stronger == nil
+		and dq.Return.Badges.Rank2 == nil and dq.Return.Badges.FirstSlime.Id == 102 and dq.Return.Badges.FirstSlime.At == 5
+		and dq.Return.OptIn == "" and dq.Return.OptInAt == 0, "unknown badges / bad values dropped, { Id, At } kept, OptIn reset",
+		show(dq.Return))
 	check(type(d.Diary) == "table" and d.Diary.Pages == 0, "a broken Diary starts at page 0", show(d.Diary))
 	local _ = { p, q }
 end)

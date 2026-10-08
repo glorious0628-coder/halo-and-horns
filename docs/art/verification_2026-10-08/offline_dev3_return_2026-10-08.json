@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 151,
+  "checks": 155,
   "failedChecks": 0,
-  "namedChecks": 151,
+  "namedChecks": 155,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -429,7 +429,7 @@
     },
     {
       "group": "badges",
-      "check": "Chose a Side once the side is picked",
+      "check": "Chose a Side once the side is picked (saved with its badge id)",
       "pass": 1,
       "fail": 0
     },
@@ -502,6 +502,30 @@
     {
       "group": "badges",
       "check": "after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "false from AwardBadge: nothing saved (UserHasBadgeAsync asked)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a not-awarded badge is warned like an error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "after RetrySeconds: the one the player already has is saved, the others wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a record under another id is not the badge: awarded again with the new id",
       "pass": 1,
       "fail": 0
     },
@@ -615,7 +639,7 @@
     },
     {
       "group": "broken saves are repaired",
-      "check": "unknown badges / bad values dropped, OptIn reset",
+      "check": "unknown badges / bad values dropped, { Id, At } kept, OptIn reset",
       "pass": 1,
       "fail": 0
     },
@@ -918,9 +942,9 @@
   "staticChecks": 19,
   "staticFailures": [],
   "mutations": {
-    "total": 66,
-    "applied": 66,
-    "caught": 66,
+    "total": 70,
+    "applied": 70,
+    "caught": 70,
     "skipped": false,
     "results": [
       {
@@ -1256,7 +1280,7 @@
         "crashed": false,
         "newFailingChecks": [
           "badges :: ids 0 (badges not made yet): BadgeService is never asked",
-          "broken saves are repaired :: unknown badges / bad values dropped, OptIn reset"
+          "broken saves are repaired :: unknown badges / bad values dropped, { Id, At } kept, OptIn reset"
         ],
         "newFailingCount": 2
       },
@@ -1280,9 +1304,62 @@
         "crashed": false,
         "newFailingChecks": [
           "badges :: a failing BadgeService: nothing saved",
-          "badges :: after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)"
+          "badges :: a not-awarded badge is warned like an error",
+          "badges :: after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "AwardBadge false counts as awarded",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a not-awarded badge is warned like an error",
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no UserHasBadgeAsync check",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the badge id is not saved",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: Chose a Side once the side is picked (saved with its badge id)",
+          "badges :: a record under another id is not the badge: awarded again with the new id",
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: all 8, each once",
+          "badges :: never asked twice"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "any record counts under a new id",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a record under another id is not the badge: awarded again with the new id"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "a failed badge retried at once",
@@ -1313,7 +1390,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "badges :: Chose a Side once the side is picked",
+          "badges :: Chose a Side once the side is picked (saved with its badge id)",
           "badges :: after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
           "badges :: never asked twice"
         ],
@@ -1337,9 +1414,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "badges :: a not-awarded badge is warned like an error",
+          "badges :: a record under another id is not the badge: awarded again with the new id",
+          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)",
           "badges :: no retry within RetrySeconds"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "opt-in in the first 10 minutes",
@@ -1709,14 +1789,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b468267abfdfd6d7e6b673e7d1e59a49b842dfc080ede4a41739b7884d89ab49",
+    "src/ReplicatedStorage/Shared/Config.luau": "34099b92ad2610d44bc083e2e7c8639eb6d7db4dccf01b1326080026f55c2872",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/ReturnService.luau": "82456669447612e62b82c6278ed358e659548246ceb534f45430dfdfe04a211c",
+    "src/ServerScriptService/ReturnService.luau": "9d651456c78f1b264d3d4c0854d4558d4bf5c7ad7a5181b8c478a389f8d29322",
     "src/ServerScriptService/InviteService.luau": "5078c549ea94977105df673faba86c6735ecc99fff50a028f151bd58ec6c01fe",
     "src/ServerScriptService/DiaryService.luau": "fd9f53510f32d93ad79d0377db2aa813bc298c7536428a6ffb34504bddb297e7",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257"
   },
-  "fixtureSHA256": "f77b99c5a22ff5933b5618ad5d10a6db806ee3718811708f72dbd0a9b161f33b",
+  "fixtureSHA256": "00b5c317299086af600141eff93f6a5a15395e72042a2f94dc98138627428328",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -342,26 +342,36 @@ runGroup("ClientMetric rules", function()
 	check(field(w:Named("NotifyOptIn", p)[1], 1) == "shown" and #w:Named("WelcomeBackGo", p) == 1, "NotifyOptIn / WelcomeBackGo events", "")
 	w:Metric(p, "OptIn", "cannot")
 	w:Metric(p, "WelcomeBackGo")
-	check(#w:Named("NotifyOptIn", p) == 1 and #w:Named("WelcomeBackGo", p) == 1 and #seen == 2,
-		"OptIn / WelcomeBackGo count once a session", #w:Named("WelcomeBackGo", p))
+	check(#w:Named("NotifyOptIn", p) == 1 and #w:Named("WelcomeBackGo", p) == 1,
+		"OptIn / WelcomeBackGo are logged once a session", #w:Named("WelcomeBackGo", p))
+	check(#seen == 4 and seen[3] == "OptIn:cannot", "the signal still fires for every accepted call (ReturnService's state)",
+		table.concat(seen, ","))
 	w.Gap = 0.2
 	w:Metric(p, "InviteSeen", "Menu")
 	w:Metric(p, "InviteSeen", "Menu")
-	check(#seen == 3, "rate limited per id (0.5 s)", #seen)
-	-- one client cannot flood the budget: at most ClientMetricPerMinute accepted calls a minute
+	check(#seen == 5, "rate limited per id (0.5 s): no signal either", #seen)
+	-- one client cannot flood the budget: at most ClientMetricPerMinute logged calls a minute; the signal is not limited
 	w.Gap = 0.6
 	local q = hero(w, 2)
 	local before = #seen
 	for _ = 1, 20 do w:Metric(q, "InviteSent", 2) end
-	check(#seen - before == 10 and #w:Named("InviteSent", q) == 10, "20 calls in 12 s: 10 accepted (the per-minute budget)",
-		#seen - before)
+	check(#w:Named("InviteSent", q) == 10, "20 calls in 12 s: 10 logged (the per-minute budget)", #w:Named("InviteSent", q))
+	check(#seen - before == 20, "all 20 still reach the ClientMetric signal", #seen - before)
+	-- a once-id refused by the full budget is not marked: the next minute it is logged
+	w:Metric(q, "OptIn", "shown")
+	check(#w:Named("NotifyOptIn", q) == 0 and seen[#seen] == "OptIn:shown",
+		"a full budget: the opt-in is not logged, but ReturnService still hears it", tostring(seen[#seen]))
 	w:Advance(61)
+	w:Metric(q, "OptIn", "shown")
+	check(#w:Named("NotifyOptIn", q) == 1, "the next minute: logged (Once was not used up by the refused call)",
+		#w:Named("NotifyOptIn", q))
 	w:Metric(q, "InviteSent", 2)
-	check(#w:Named("InviteSent", q) == 11, "a new minute: accepted again", #w:Named("InviteSent", q))
+	check(#w:Named("InviteSent", q) == 11, "a new minute: logged again", #w:Named("InviteSent", q))
 	w.Gap = 1.1
+	local n0 = #seen
 	w.Ready[p] = nil
 	w:Metric(p, "InviteSeen", "Menu")
-	check(#seen - before == 11, "not ready: ignored", "")
+	check(#seen == n0, "not ready: ignored (no signal)", "")
 end)
 
 runGroup("leave: context + KOLeave60", function()

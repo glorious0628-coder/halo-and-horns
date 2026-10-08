@@ -572,29 +572,22 @@ local function argOk(rule, arg)
 end
 
 -- review 2026-10-08: one client must never flood the game's analytics budget (Roblox: 120 + 20 x CCU events a minute
--- for the whole game). Every accepted ClientMetric spends one of ClientMetricPerMinute; the once-ids count once a session.
-local function clientBudget(player, s, id)
+-- for the whole game). The budget only limits LOGGING (ClientMetricPerMinute logged calls a minute; the once-ids are
+-- logged once a session, marked only when one was logged); the ClientMetric signal (ReturnService's state: OptIn,
+-- PurchasePrompt) fires for every accepted call (검수 review: a full budget must not hide an opt-in or a buy window).
+local function clientBudget(s, id)
 	if s.Once[id] then return false end
-	if table.find(A.ClientMetricOnce or {}, id) then s.Once[id] = true end
 	local now = os.clock()
 	local b = s.Budget
 	if now - b.Start >= 60 then b.Start, b.N = now, 0 end
 	if b.N >= num(A.ClientMetricPerMinute, 10) then return false end
 	b.N += 1
+	if table.find(A.ClientMetricOnce or {}, id) then s.Once[id] = true end
 	return true
 end
 
-local function onClientMetric(player, ...)
-	local n = select("#", ...)
-	if n < 1 or n > 2 then return end
-	local id, arg = ...
-	if type(id) ~= "string" then return end
-	local rule = (A.ClientMetrics or {})[id]
-	if rule == nil or not argOk(rule, arg) then return end
-	if not S.PlayerService.IsReady(player) then return end
-	if not Util.RateLimit(player, "ClientMetric:" .. id, num(Config.RateLimits.ClientMetric, 0.5)) then return end
-	local s = session(player)
-	if not s or not clientBudget(player, s, id) then return end
+-- the funnel steps / custom events of one accepted ClientMetric call (within the budget)
+local function logClientMetric(player, s, id, arg)
 	local Custom = TelemetryService.Custom
 	if id == "InviteSeen" or id == "InvitePrompt" then
 		funnel(player, "Social", id)
@@ -621,7 +614,23 @@ local function onClientMetric(player, ...)
 	elseif id == "WelcomeBackGo" then
 		Custom(player, "WelcomeBackGo", 1)
 	end
-	T.ClientMetric:Fire(player, id, arg)
+end
+
+local function onClientMetric(player, ...)
+	local n = select("#", ...)
+	if n < 1 or n > 2 then return end
+	local id, arg = ...
+	if type(id) ~= "string" then return end
+	local rule = (A.ClientMetrics or {})[id]
+	if rule == nil or not argOk(rule, arg) then return end
+	if not S.PlayerService.IsReady(player) then return end
+	if not Util.RateLimit(player, "ClientMetric:" .. id, num(Config.RateLimits.ClientMetric, 0.5)) then return end
+	local s = session(player)
+	if s and clientBudget(s, id) then
+		local okLog, errLog = pcall(logClientMetric, player, s, id, arg)
+		if not okLog then Util.Warn("TelemetryService", "ClientMetric log: " .. tostring(errLog)) end
+	end
+	T.ClientMetric:Fire(player, id, arg) -- every accepted call (the state of ReturnService), budget or not
 end
 
 local function onKilled(player, info)
