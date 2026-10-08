@@ -65,6 +65,9 @@ local LAY = {
 	BobTime = 1.4, -- seconds per half bob
 	BlurSize = 10, -- camera blur behind the picker (mockup background is blurred)
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
+	-- the "Outfit coming later" note: a navy pill at the top of the picture window (Y = its top, fraction of the window
+	-- height), as wide as its words (at most MaxW of the window; two lines when one does not fit)
+	Outfit = { Y = 0.035, MaxW = 0.86, PadX = 6, Color = Color3.fromRGB(27, 33, 64), Alpha = 0.22 },
 }
 
 -- per-faction look of the class card art: text style ("ink" = brown on parchment, "light" = white with a dark outline)
@@ -97,7 +100,7 @@ local PANEL = { Title = "FactionTitle", Footer = "FactionFooter" }
 -- stat rows on the card body (DisplayStats keys, 5 segments each); Alt = second icon part when the first is missing
 local STAT_ROWS = {
 	{ Key = "HP", Label = "HP", Icon = "IconHeart", Emoji = "❤", Fill = Color3.fromRGB(255, 196, 40) },
-	{ Key = "Atk", Label = "ATK", Icon = "IconAttack", Alt = "IconSword", Emoji = "⚔", Fill = Color3.fromRGB(246, 118, 32) },
+	{ Key = "Atk", Label = "ATK", Icon = "IconAttack", Emoji = "⚔", Fill = Color3.fromRGB(246, 118, 32) },
 	{ Key = "Spd", Label = "SPD", Icon = "IconBoot", Emoji = "👟", Fill = Color3.fromRGB(52, 124, 236) },
 }
 
@@ -119,6 +122,8 @@ local T = {
 	FooterShort = "Change class later: Menu > Change Class", -- short screens (검수 2026-10-06: the menu square is Change Class)
 	Wait = "One moment...",
 	Recommend = "Best for beginners",
+	-- 그림체 #42 (검수 2026-10-08): the cards show class outfits; players wear their own avatar until those come
+	Outfit = "Outfit coming later",
 	StartWeaponF = "First weapon: %s (from the Blacksmith)", -- A23-34 (검수 2026-10-06)
 	Male = "Boy",
 	Female = "Girl",
@@ -736,7 +741,7 @@ local function buildHeader()
 	head.Ribbon, head.Title = ribbon, title
 
 	-- 남 | 여 pill (cosmetic: swaps the portraits)
-	local pill = sliceFrame(root, "GenderPill", "Pill", 3)
+	local pill = sliceFrame(root, "GenderPill", "Chip", 3)
 	local sel = Instance.new("Frame")
 	sel.Name = "Selected"
 	sel.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -765,9 +770,9 @@ end
 
 local function buildNote()
 	local navy = artId(PANEL.Footer) ~= nil
-	local f = sliceFrame(root, "Note", navy and PANEL.Footer or "PanelParchment", 2)
+	local f = sliceFrame(root, "Note", navy and PANEL.Footer or "PanelMain", 2)
 	local icon = newImage(f, "Icon", 1)
-	icon.Image = artId("IconScroll") or ""
+	icon.Image = artId("IconNews") or ""
 	local text = artLabel(f, "Text", 1)
 	text.TextScaled = false
 	text.Text = T.Footer
@@ -852,9 +857,9 @@ local function wireCard(c, id)
 	end)
 end
 
--- small parchment chip (Pill art) with ink text; tint = gold badge
+-- small chip (the white Firefly Chip art) with ink text; tint = gold badge
 local function buildChip(parent, name, text, tint)
-	local chip = sliceFrame(parent, name, "Pill", 5)
+	local chip = sliceFrame(parent, name, "Chip", 5)
 	if tint then
 		if chip:IsA("ImageLabel") then
 			chip.ImageColor3 = tint
@@ -960,10 +965,25 @@ local function buildArtCard(id)
 			Color3.fromRGB(255, 214, 92))
 	end
 
+	-- 그림체 #42: "Outfit coming later" on the picture (LAY.Outfit)
+	local outfit = Instance.new("Frame")
+	outfit.Name = "OutfitNote"
+	outfit.BackgroundColor3 = LAY.Outfit.Color
+	outfit.BackgroundTransparency = LAY.Outfit.Alpha
+	outfit.BorderSizePixel = 0
+	outfit.ZIndex = 4
+	local oc = Instance.new("UICorner")
+	oc.CornerRadius = UDim.new(0.5, 0)
+	oc.Parent = outfit
+	outfit.Parent = card
+	local outfitText = artLabel(outfit, "Text", 5)
+	outfitText.Text = T.Outfit
+	styleText(outfitText, "light")
+
 	local c = {
 		Card = card, Scale = scale, Bg = bg, Clip = clip, Holder = holder, Char = char, Emoji = emoji, Crop = crop,
 		Name = name, Desc = desc, Rows = rows, Shade = shade, Label = label, Hit = hit,
-		Chip = chip, ChipText = chipText, Badge = badge, BadgeText = badgeText,
+		Chip = chip, ChipText = chipText, Badge = badge, BadgeText = badgeText, Outfit = outfit, OutfitText = outfitText,
 		DescFull = (def and type(def.Desc) == "string" and def.Desc ~= "") and def.Desc or pickLine(id),
 		DescShort = pickLine(id),
 		Hover = false, Down = false, PopUntil = 0, Id = id,
@@ -1116,7 +1136,7 @@ local function applyFaction()
 	local redraw = string.sub(key, 1, 9) == "ClassPick"
 	mode = complete(key) and "art" or "old"
 
-	local shieldId = artId("Shield" .. faction)
+	local shieldId = artId("LevelBadge" .. faction) -- 그림체 #11: the Firefly badge until the new shield is drawn
 	head.Shield.Image = shieldId or ""
 	head.ShieldDisc.Visible = shieldId == nil
 	head.ShieldDisc.BackgroundColor3 = factionColor(faction)
@@ -1167,7 +1187,7 @@ end
 local function layoutHeader(w, top, headH, minT, s)
 	local rs = partSize(LAY.RibbonKey or "TitleRibbon")
 	local ribbonAspect = rs and rs.X / rs.Y or 4
-	local ss = partSize("Shield" .. (shownFaction or "Halo"))
+	local ss = partSize("LevelBadge" .. (shownFaction or "Halo"))
 	local shieldAspect = ss and ss.X / ss.Y or 1
 	local unit = math.min(headH, LAY.HeadMax) -- shield and pill keep their size when the bundle 2 ribbon is taller
 	local shieldH = unit
@@ -1330,6 +1350,17 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 		place(c.Chip, px + pw * 0.03, ny - chipH * 0.85, gw, chipH)
 	end
 	setTextRange(c.ChipText, minT, chipT)
+	-- the outfit note: one line at the text floor when it fits the window, else two (phones: the side column instead)
+	c.Outfit.Visible = LAY.OutfitOnCards ~= false
+	local O = LAY.Outfit
+	local maxW = pw * O.MaxW
+	local th, tw = textBounds(T.Outfit, minT, c.OutfitText.Font, maxW - 2 * O.PadX)
+	local lines = (tw > maxW - 2 * O.PadX or th > minT * 1.6) and 2 or 1
+	local ow = math.min(maxW, tw + 2 * O.PadX + minT)
+	local oh = math.ceil(minT * (lines == 1 and 1.5 or 2.6))
+	place(c.Outfit, px + (pw - ow) / 2, py + ph * O.Y, ow, oh)
+	place(c.OutfitText, O.PadX, 1, ow - 2 * O.PadX, oh - 2)
+	setTextRange(c.OutfitText, minT, minT)
 	if c.Badge then
 		local bw2 = math.min(chipW(c.BadgeText), W * 0.9)
 		place(c.Badge, (W - bw2) / 2, H * 0.012, bw2, chipH)
@@ -1425,7 +1456,7 @@ local function layoutSide(w, h, top, minT, s)
 	local rowW = layoutArtCards(w, top + 2, bottom, minT, s) or w * 0.6
 	local side = math.max(0, (w - rowW) / 2)
 	local colW = math.max(1, side - 2 * LAY.Gutter)
-	local ss = partSize("Shield" .. (shownFaction or "Halo"))
+	local ss = partSize("LevelBadge" .. (shownFaction or "Halo"))
 	local shieldAspect = ss and ss.X / ss.Y or 1
 	local shieldH = math.floor(math.min(colW * 0.6 / shieldAspect, 96))
 	local cy = top + (bottom - top) * 0.4
@@ -1508,7 +1539,12 @@ local function layout()
 		headH = math.max(headH, math.ceil((#T.Title * 0.58 + 1) * minT / band / aspect / 0.92))
 	end
 	note.Text.Text = compact and T.FooterShort or T.Footer
+	LAY.OutfitOnCards = true
 	if compact and mode == "art" and shownKey and string.sub(shownKey, 1, 9) == "ClassPick" then
+		-- 그림체 #42 on phones: the picture windows are too narrow for the outfit note (UiSandbox 749x361: 3 lines, cut),
+		-- so the side column says it once under the class-change line
+		LAY.OutfitOnCards = false
+		note.Text.Text = T.FooterShort .. "\n" .. T.Outfit
 		layoutSide(w, h, top, minT, s)
 		return
 	end

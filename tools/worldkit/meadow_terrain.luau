@@ -13,9 +13,43 @@
 -- north coast), and every meadow road + the hill path painted with terrain Sand (GE_Sand, the concept's warm tan dirt
 -- path) instead of Ground (grey ruins tile); RoadPumpkin stays Mud. Road edges: one column of soft blend (sand / grass
 -- in small noise clumps), not a hard stripe.
--- Run this BEFORE tools/worldkit/meadow_dress.luau (props are grounded by rays on this terrain; nothing here reads props).
+-- Pass 3 (검수 2026-10-08, main-Studio photos vs the concept: "너무 초록초록해, 입체적이지 않아" = too evenly green, flat):
+-- four terrain materials paint the meadow (이미지 생성 1 makes the tiles, imgdev wires the MaterialVariants): Grass = the
+-- softer, less neon grass (global), Salt = flower grass (big cartoon flowers), Sandstone = shade grass (darker, bluer),
+-- Pavement = the warm tan dirt path; Sand stays the beach / pond / river sand (PAINT). RoadMeadow, RoadMeadowLoop, the
+-- King Hill path and their road-end pads (arrival pocket, woods quay / edge) paint Pavement, their soft edge dithers
+-- Pavement / grass; RoadPumpkin stays Mud; PATH_TILE stays off. Flower patches (Salt, FLOWERS): organic clusters about
+-- 6..14 studs wide (noisy-outlined blobs on a staggered, jittered spot grid, kept FLOWERS.Gap apart so neighbours do not
+-- merge into one big patch; the spots with the best low-frequency math.noise score + a bias toward the lawn edges, the
+-- tree groves, the pond rim and the arrival pocket get flowers, so flowery and bare stretches alternate),
+-- FLOWERS.Cover (14%) of the meadow's grass columns, at most FLOWERS.LawnMax (8%) of each hunting lawn and of the two
+-- first-quest spawn boxes inside the arrival pocket (FLOWERS.Spawn: slimes stay easy to see); never on a road, its soft
+-- edge, the hill path, water or rock, nor within FLOWERS.RoadClear studs of a road. Shade (Sandstone, SHADE): (a) under
+-- the trees of Map.Decor.MeadowDress / MeadowKit (names with Tree / Pine / Willow; canopy radius = 0.5 x the smaller
+-- bbox side; columns within TreeFrac x that radius, dithered rim; skipped offline), (b) grass slopes over MinSlope
+-- degrees whose normal faces away from the fixed light SHADE.Light (every hill gets a lit and a shaded side); never on
+-- roads, water, rock or the lawns / spawn boxes (their columns get (a) only). Paint priority per column: water > road
+-- (+ soft edge) > rock > shade > flowers > grass. Relief: the rolling hills between the lawns rise higher (RELIEF.Peak
+-- where there is room, never over the boulder-ring mound or the rocky knolls, whose pass-2 rock stays on top;
+-- RELIEF.MaxGrade keeps them grass slopes: p90 about 8, max about 13), the edge knolls stay up to about 18, and
+-- OUTCROP.List adds 6 small grassy-topped rock outcrops (rock skirt 3.5..6 studs high; the voxels under the grass top
+-- are Rock, so the sides read as rock; a grass-top column steeper than 45 deg shows Rock; the foot ring only retags
+-- untagged inland ground, never a knoll or the beach) on knoll / hill flanks 20+ studs from the lawns and roads, so the
+-- meadow reads 3D from the road. Apply / rebase refuse (nothing written) until Pavement, Salt and Sandstone carry a
+-- MaterialVariant override (imgdev: tools/apply_surface_materials.lua, terrain colour 235), or the live meadow would
+-- show salt crust, sandstone and grey pavement; FORCE = true paints anyway. The report lists the three slots and how
+-- far SHADE.Light is from the sun Studio has now (check once with the Neutral sky: ClockTime 15.3, latitude 35).
+-- Pass 3 reads the tree props (X / Z only; no height depends on a prop): run this tool once more after meadow_dress so
+-- the shade follows the trees. The store's PlanHash is now the SHAPE hash (heights + water: what meadow_dress grounds on),
+-- so a paint-only re-run does not call for a new dress run; ChunkHash (materials too) decides which chunks are rewritten.
+-- meadow_dress T.Ground MUST accept Salt and Sandstone (flower / shade grass) before this pass-3 workflow runs: otherwise
+-- the dress refuses props on about 28% of the meadow grass, the trees move off the tree shade, the shade follows them on
+-- the next terrain run and the two tools never settle (Pavement stays out of T.Ground: no props on the roads / path).
+-- Run this BEFORE tools/worldkit/meadow_dress.luau (props are grounded by rays on this terrain), then once more after it
+-- (pass 3 tree shade; the heights stay the same, so the dress stays grounded).
 -- For the props tool the store keeps the spots as attributes: HillTop, HillPathFoot, PlateauTop, FallsLip, FallsPool,
--- SecretNook (dry ledge behind the falling water), RiverMouth, RiverLine ("x,z;x,z;..."), PathSlot.
+-- SecretNook (dry ledge behind the falling water), RiverMouth, RiverLine ("x,z;x,z;..."), PathSlot, Outcrops (pass 3:
+-- "x,z,r;..." rock outcrops).
 --
 -- Contracts kept (Config / MonsterService / ZoneService / MapBuilder, checked 2026-10-08):
 --  * flat Y 0 round the arrival (230, 0) (root spawn at absolute Y 4, MeadowArrival kill radius 40, J10 radius 14, job
@@ -43,8 +77,9 @@
 --   "rebase"  store the CURRENT terrain as the new baseline (only after tools/preview_map.lua "terrain" made it flat
 --             again), then apply
 -- Idempotent and deterministic: math.noise only, no random seeds. ServerStorage.MeadowTerrainStore keeps the baseline
--- (per 4x4 column: solid top + top material + water top, from ReadVoxelChannels), the last written result and a hash per
--- 64x64 chunk; a re-run rewrites only chunks whose plan or terrain changed and refuses (lists them) when someone else
+-- (per 4x4 column: solid top + top material + water top, from ReadVoxelChannels), the last written result and two hashes
+-- per 64x64 chunk (ChunkHash: heights + materials + water; PlanHash: heights + water only, read by meadow_dress); a
+-- re-run rewrites only chunks whose plan or terrain changed and refuses (lists them) when someone else
 -- edited terrain inside the box since the last run (set FORCE = true to overwrite such hand edits).
 -- Offline check: build/luau_cli_0_741/luau.exe tools/worldkit/meadow_terrain.luau runs the plan on a synthetic flat
 -- meadow and prints the numbers plus one "C,x,z,V,W,mat,tag" row per column (for a top-down check picture).
@@ -101,8 +136,13 @@ local QUIET = { { 235, -40, 300, 40 }, { 428, 8, 476, 50 }, { 540, -234, 590, -1
 -- from the King Slime Hill (HillClear + HillBank), the river / plunge pool (RiverClear + RiverBank past the water's half
 -- width), the pins and the coasts (EDGE.K*); along the Pumpkin Patch seam (x > SeamX0) everything fades over SeamBank
 -- studs. The banks are long enough that a 7-stud rise stays a grass slope (about 33 deg at most, Rock only above 40)
+-- Pass 3: Peak = extra height (0..H, its own noise) where there is room: its own mask is the same with the lawn / road /
+-- coast banks starting Extra studs farther out. MaxGrade: afterwards every untagged column the relief raised is lowered
+-- (never below its pass-1 ground) until it is at most MaxGrade degrees above each of its 8 neighbours, so the taller
+-- hills stay grass slopes (Rock only shows above RockSlope + 5 there) instead of rock-faced cones in the narrow gaps
 local RELIEF = { Min = 4, Max = 9, Gain = 1.15, LawnBank = 13, RoadEdge = 2, RoadBank = 14, HillClear = 44, HillBank = 12,
-	RiverClear = 12, RiverBank = 12, SeamX0 = 396, SeamBank = 30 }
+	RiverClear = 12, RiverBank = 12, SeamX0 = 396, SeamBank = 30,
+	Peak = { H = 8, Extra = 8, Scale = 46, Gain = 1.3 }, MaxGrade = 35 }
 -- knolls and the mound never climb into a lawn: x smooth((lawn distance + In) / Bank) (In studs inside the box = 0)
 local KNOLL_LAWN = { In = 4, Bank = 18 }
 -- edge / corner highlands 10..18: centres 12..16 studs in from the coast (rock cliff to the sea, EDGE.C*), RX / RZ = an
@@ -158,21 +198,62 @@ local FALLS_LOOK = { Tex = "rbxassetid://86909517913668", TileU = 12, TileV = 15
 -- the river: plunge pool -> along the plateau's south foot -> the east channel (x 650..710) north of the woods bridge
 local RIVER = { Ctrl = { { 590, -140 }, { 606, -133 }, { 628, -128 }, { 650, -122 }, { 672, -118 }, { 700, -116 } },
 	HW0 = 6, HW1 = 8.5, Depth = 2.6, Sand = 2.5, Bank = 8, Levee = 1.0, LeveeFall = 0.15 }
--- painted roads (Config.Map.Roads rects): Mat = terrain material (Sand = GE_Sand, the concept's warm tan dirt path;
--- Ground would show GE_Ground, the grey ruins tile), HW = levelled half width = the middle of the soft edge (solid paint
--- to HW - ROAD_BLEND, then sand / grass clumps to HW + ROAD_BLEND: one 4-stud column), Bend = centre-line bend
+-- pass 3 terrain materials (the MaterialVariants are imgdev's; this tool only paints the slots): Road / Path = the warm
+-- tan dirt path, Flower = flower grass, Shade = shade grass; Grass = the global grass; Sand stays beach / pond / river
+local PAINT = { Road = "Pavement", Path = "Pavement", Flower = "Salt", Shade = "Sandstone", Grass = "Grass" }
+-- painted roads (Config.Map.Roads rects): Mat = terrain material (pass 3: PAINT.Road = Pavement, the warm tan dirt path;
+-- pass 2 used Sand), HW = levelled half width = the middle of the soft edge (solid paint
+-- to HW - ROAD_BLEND, then path / grass clumps to HW + ROAD_BLEND: one 4-stud column), Bend = centre-line bend
 -- amplitude, From..To = the stretch along the road that is levelled / painted (square ends at the rect ends, no round caps)
 local ROADS = {
-	{ Name = "RoadMeadow", Mat = "Sand", HW = 10, Bend = 1, From = 210, To = 650, Mid = 0, AlongX = true },
-	{ Name = "RoadMeadowLoop", Mat = "Sand", HW = 6, Bend = 0.4, From = 260, To = 600, Mid = -120, AlongX = true },
+	{ Name = "RoadMeadow", Mat = PAINT.Road, HW = 10, Bend = 1, From = 210, To = 650, Mid = 0, AlongX = true },
+	{ Name = "RoadMeadowLoop", Mat = PAINT.Road, HW = 6, Bend = 0.4, From = 260, To = 600, Mid = -120, AlongX = true },
 	{ Name = "RoadPumpkin", Mat = "Mud", HW = 6, Bend = 0.6, From = 7, To = 246, Mid = 535, AlongX = false },
 }
 local ROAD_BLEND = 2 -- half width of the soft painted edge (the hill path too): HW - 2 .. HW + 2 = one column
 local LEVEL = 5 -- studs past a road's painted edge over which its levelled cross-section blends into the ground
 -- path tile (pass 1): Use = true put the GE_DirtPath ColorMap on a free terrain slot as a base override for "Path" columns;
--- pass 2 paints the roads with terrain Sand (GE_Sand) instead, so Use = false and an apply drops pass 1's slot again
+-- pass 2 paints the roads with terrain Sand, pass 3 with PAINT.Road, so Use = false and an apply drops pass 1's slot
+-- again. Slots is empty since pass 3: Pavement / Salt / Sandstone are now the meadow's own materials (imgdev variants)
 local PATH_TILE = { Use = false, Name = "GE_MeadowPath", Source = "GE_DirtPath", ConfigKey = "Tex_DirtPath",
-	Slots = { "Pavement", "Salt", "Sandstone" }, StudsPerTile = 16 }
+	Slots = {}, StudsPerTile = 16 }
+-- pass 3 flower patches (PAINT.Flower): patch spots on a Cell-stud grid (+- Jitter studs), each a blob RMin..RMax studs
+-- in radius with a Ragged outline, shrunk to keep Gap studs off the blobs already painted (dropped below RLow), so the
+-- patches stay apart at about 6..14 studs (diameter; at most 4 columns = 16 studs across); spot score = a low-frequency
+-- noise (Scale studs) + Bias near the lawn edges (EdgeBand studs either side of a lawn's border), the trees (TreeBand
+-- studs past the shade), the pond rim (Pond R0..R1) and the arrival pocket (QUIET[1]); the best spots get flowers until
+-- Cover of the meadow's grass columns are painted, at most LawnMax of any hunting lawn's (and Spawn box's) grass
+-- columns; never within RoadClear studs of a road (the column's near side past the road's soft edge) nor next to a
+-- road / hill path column
+local FLOWERS = { Cover = 0.14, LawnMax = 0.08, Cell = 17, Jitter = 3.5, RMin = 4.5, RMax = 7, Ragged = 0.2, Gap = 2,
+	RLow = 3, Scale = 52, Seed = 12.7, RoadClear = 3, EdgeBand = 12, TreeBand = 12, Pond = { X = 290, Z = 150, R0 = 23, R1 = 44 },
+	Bias = { Edge = 0.1, Tree = 0.12, Pond = 0.14, Arrival = 0.18, Lawn = -0.06 },
+	-- meadow_dress firstQuestN / firstQuestS (OpenOnly: the first slimes spawn there): capped at LawnMax and kept free of
+	-- slope shade like a hunting lawn, although they sit in the arrival pocket the Arrival bias favours
+	Spawn = { { 240, -30, 300, -14 }, { 240, 14, 300, 30 } } }
+-- pass 3 shade (PAINT.Shade): Light = the fixed light direction (unit, pointing down; normalised below); slope shade on
+-- grass steeper than MinSlope whose lighting n . -Light is at least Drop below flat ground's (Jitter x a small noise
+-- softens the line); tree shade within TreeFrac x canopy radius, a TreeRim-stud dithered rim, trees up to MaxR canopy
+local SHADE = { Light = { -0.45, -0.8, 0.4 }, MinSlope = 12, Drop = 0.07, Jitter = 0.035, JitterScale = 6, Seed = 5.9,
+	TreeFrac = 0.55, TreeRim = 2, MaxR = 24, Words = { "Tree", "Pine", "Willow" }, Roots = { "MeadowDress", "MeadowKit" } }
+do
+	local L = SHADE.Light
+	local l = math.sqrt(L[1] ^ 2 + L[2] ^ 2 + L[3] ^ 2)
+	SHADE.Light = { L[1] / l, L[2] / l, L[3] / l }
+	SHADE.Flat = -SHADE.Light[2] -- flat ground's lighting n . -Light
+end
+-- pass 3 rock outcrops: { X, Z, R (outer radius), H (rock skirt height over the local ground) }; inside TopFrac x R the
+-- grass top (it follows the slope it sits on), out to R the rock skirt, out to (1 + Foot) x R its foot (rock where
+-- steep, like any feature); Wobble = an uneven outline. On knoll / hill flanks 20+ studs from every lawn, QUIET box and
+-- road (centre), off the pins, the hill, the plateau and the river
+local OUTCROP = { TopFrac = 0.5, Wobble = 0.18, Foot = 0.35, List = {
+	{ X = 226, Z = -138, R = 10, H = 5 }, -- west-coast ridge, south flank (west of lawns H and A)
+	{ X = 320, Z = -228, R = 9, H = 4 }, -- the NW lookout hill's east flank (north of lawn H)
+	{ X = 500, Z = -228, R = 9, H = 5.5 }, -- north coast, the knoll's west flank (north of lawn I)
+	{ X = 340, Z = 138, R = 9, H = 4 }, -- the rolling hill between the pond and lawn F (seen from the pond road view)
+	{ X = 404, Z = 30, R = 9, H = 3.5 }, -- the rolling hill south of the crown road, west of the first-quest box
+	{ X = 636, Z = 78, R = 10, H = 4.5 }, -- the east-coast knoll's north flank (south of the woods bridge)
+} }
 local HIDE = { { "Decor", "KingSlimeHill" }, { "Decor", "Roads", "RoadMeadow" }, { "Decor", "Roads", "RoadMeadowLoop" } }
 
 ------------------------------------------------------------------ helpers
@@ -293,6 +374,26 @@ end
 local function ridge(x, z) -- the rolling hills' height between the lawns (RELIEF.Min..Max)
 	local n = 0.6 * math.noise(x / 72, z / 72, 5.3) + 0.4 * math.noise(x / 33, z / 33, 1.9)
 	return RELIEF.Min + (RELIEF.Max - RELIEF.Min) * smooth(0.5 + RELIEF.Gain * n)
+end
+local function peak(x, z) -- pass 3: the extra height on the roomy rolling hills (0..RELIEF.Peak.H)
+	local K = RELIEF.Peak
+	return K.H * smooth(0.5 + K.Gain * math.noise(x / K.Scale, z / K.Scale, 8.6))
+end
+local function outcrop(x, z) -- pass 3: rock outcrop height over the ground (0 outside), on its grass top?, at its foot?
+	local best, top, foot = 0, false, false
+	for n, o in OUTCROP.List do
+		local d = math.sqrt((x - o.X) ^ 2 + (z - o.Z) ^ 2)
+		if d < o.R * (1.3 + OUTCROP.Foot) then
+			local r = d / o.R * (1 + OUTCROP.Wobble * math.noise(x / 7, z / 7, 20.5 + n))
+			if r < 1 then
+				local h = o.H * (1 - smooth((r - OUTCROP.TopFrac) / (1 - OUTCROP.TopFrac)))
+					* (1 + 0.1 * math.noise(x / 4.5, z / 4.5, 30.5 + n))
+				if h > best then best, top = h, r <= OUTCROP.TopFrac end
+			end
+			if r < 1 + OUTCROP.Foot then foot = true end
+		end
+	end
+	return best, top, foot
 end
 local function mound(x, z) -- the boulder-ringed mound: height (0 outside), on a ring rock?
 	local r = math.sqrt((x - MOUND.X) ^ 2 + (z - MOUND.Z) ^ 2) / MOUND.R
@@ -466,11 +567,12 @@ local function roadDist(x, z) -- studs past the nearest road's HW (the rects' ce
 	end
 	return best
 end
--- 0..1: how much of the pass-2 rolling relief a spot gets (0 on the lawns, the roads, the hill, the water and the pins)
-local function reliefMask(x, z, d, pin)
-	local m = pin * ease((lawnDist(x, z) - 1) / RELIEF.LawnBank) * smooth((d - EDGE.K0) / EDGE.K1)
+-- 0..1: how much of the pass-2 rolling relief a spot gets (0 on the lawns, the roads, the hill, the water and the pins);
+-- ex > 0 (pass 3 peaks): the lawn / road / coast banks start ex studs farther out
+local function reliefMask(x, z, d, pin, ex)
+	local m = pin * ease((lawnDist(x, z) - 1 - ex) / RELIEF.LawnBank) * smooth((d - EDGE.K0 - ex) / EDGE.K1)
 	if m <= 0 then return 0 end
-	m *= ease((roadDist(x, z) - RELIEF.RoadEdge) / RELIEF.RoadBank) * seamFade(x, z)
+	m *= ease((roadDist(x, z) - RELIEF.RoadEdge - ex) / RELIEF.RoadBank) * seamFade(x, z)
 	if m <= 0 then return 0 end
 	m *= smooth((math.sqrt((x - HILL.X) ^ 2 + (z - HILL.Z) ^ 2) - RELIEF.HillClear) / RELIEF.HillBank)
 	-- the plateau and its shoulder keep their pass-1 cliffs and talus (the relief starts past the talus foot)
@@ -478,6 +580,16 @@ local function reliefMask(x, z, d, pin)
 		m *= smooth((mesaG(M, x, z) - M.CliffOut - M.Talus - M.Wobble) / RELIEF.HillBank)
 	end
 	if m <= 0 then return 0 end
+	if ex > 0 then -- pass 3 peaks keep off the boulder-ring mound and the rocky knolls (their pass-2 rock stays on top)
+		m *= smooth((math.sqrt((x - MOUND.X) ^ 2 + (z - MOUND.Z) ^ 2) - 1.3 * MOUND.R) / ex)
+		for _, k in KNOLLS do
+			if k.Rocky then
+				local r = math.sqrt(((x - k.X) / (k.RX or k.R)) ^ 2 + ((z - k.Z) / (k.RZ or k.R)) ^ 2)
+				m *= smooth((r - 1) * math.min(k.RX or k.R, k.RZ or k.R) / ex)
+			end
+		end
+		if m <= 0 then return 0 end
+	end
 	local reach = RELIEF.RiverClear + RELIEF.RiverBank
 	local dr = nearest(RIVER_LINE, x, z, RIVER.HW1 + reach)
 	local dq = math.sqrt((x - FALLS.QX) ^ 2 + (z - FALLS.QZ) ^ 2)
@@ -490,7 +602,8 @@ local function colX(i) return G.X0 + (i - 0.5) * G.R end
 local function colZ(k) return G.Z0 + (k - 0.5) * G.R end
 local function colIdx(i, k) return (i - 1) * G.NZ + k end
 
-local function plan(base)
+local paint -- pass 3 shade + flower paint (below)
+local function plan(base, trees)
 	local function baseV(x, z)
 		local i = math.clamp(math.floor((x - G.X0) / G.R) + 1, 1, G.NX)
 		local k = math.clamp(math.floor((z - G.Z0) / G.R) + 1, 1, G.NZ)
@@ -502,10 +615,14 @@ local function plan(base)
 		local pin = pinFactor(x, z)
 		local d = edgeDist(x, z)
 		local h, tag = interior(x, z) * smooth((d - EDGE.I0) / EDGE.I1) * pin, nil
-		-- pass 2: the rolling hills between the lawns rise over the pass-1 ground (never below it)
-		local rm = reliefMask(x, z, d, pin)
+		local h1 = vb + kb * h -- the pass-1 ground (the pass-3 slope limit never goes below it)
+		-- pass 2: the rolling hills between the lawns rise over the pass-1 ground (never below it); pass 3: + a peak
+		-- where the banks leave room (its own mask starts RELIEF.Peak.Extra studs farther out)
+		local rm = reliefMask(x, z, d, pin, 0)
 		if rm > 0 then
 			local hr = ridge(x, z)
+			local pm = reliefMask(x, z, d, pin, RELIEF.Peak.Extra)
+			if pm > 0 then hr += peak(x, z) * pm end
 			if hr > h then h += (hr - h) * rm end
 		end
 		local kf = smooth((d - EDGE.C0) / EDGE.C1) * pin * seamFade(x, z)
@@ -521,6 +638,17 @@ local function plan(base)
 			h, tag = hv, ramp and "ramp" or "hill"
 		elseif ramp then
 			tag = "ramp" -- the path's foot past the ramp (hill height ~0) still shows as path, down to the loop road
+		end
+		-- pass 3: the small rock outcrops stand on whatever ground is there (grass top, rock skirt)
+		local oh, otop, ofoot = outcrop(x, z)
+		oh *= pin
+		if oh > 0.05 then
+			h += oh
+			tag = (otop and oh > 0.3) and "crop" or "cropRock"
+		elseif ofoot and pin > 0 and tag == nil and kb >= 1 then
+			-- the ground round a skirt: rock only where it is steep (the generic feature rule); never over a knoll / mound /
+			-- hill tag (their own rock rule stays) nor on the beach (kb < 1: Sand stays Sand)
+			tag = "cropFoot"
 		end
 		local v = vb + kb * h
 		local pv, top = plateau(x, z, vb)
@@ -538,16 +666,18 @@ local function plan(base)
 				if ctag and not (ftag == "ledge" and ctag == "bank") then tag = ctag end
 			end
 		end
-		return v, w, tag, vb
+		return v, w, tag, vb, h1, oh
 	end
 
 	local V, W, Tag, VB = table.create(G.NCOL), table.create(G.NCOL), table.create(G.NCOL), table.create(G.NCOL)
+	local H1, Crop = table.create(G.NCOL), table.create(G.NCOL, 0) -- pass-1 ground, outcrop rise
 	for i = 1, G.NX do
 		local x = colX(i)
 		for k = 1, G.NZ do
 			local z = colZ(k)
 			local idx = colIdx(i, k)
-			local v, w, tag, vb = field(x, z)
+			local v, w, tag, vb, h1, oh = field(x, z)
+			H1[idx], Crop[idx] = h1, oh
 			-- roads level and paint land only (never the sea past a bridge quay) and only between their ends (no round
 			-- caps); the ramp's foot is levelled into the loop road. Every road in reach levels the column, the first one
 			-- that paints it wins (the crown road over the pumpkin path at their joint, which still joins up)
@@ -574,9 +704,50 @@ local function plan(base)
 			V[idx], W[idx], Tag[idx], VB[idx] = v, w, tag, vb
 		end
 	end
+	-- pass 3: the taller rolling hills stay grass slopes: a dry untagged column the relief raised over its pass-1 ground
+	-- is lowered to at most RELIEF.MaxGrade from each of its 8 neighbours (cones, alternating sweeps; never below the
+	-- pass-1 ground, never raised). Lawns, roads, features and water are not touched
+	do
+		local step = math.tan(math.rad(RELIEF.MaxGrade)) * G.R
+		local free = {}
+		for i = 1, G.NX do
+			for k = 1, G.NZ do
+				local idx = colIdx(i, k)
+				if Tag[idx] == nil and not (W[idx] and W[idx] > V[idx] - 0.3) and V[idx] > H1[idx] + 0.05
+					and lawnDist(colX(i), colZ(k)) > 0 then
+					table.insert(free, idx)
+				end
+			end
+		end
+		for pass = 1, 10 do
+			local changed = 0
+			local a, b, s = 1, #free, 1
+			if pass % 2 == 0 then a, b, s = #free, 1, -1 end
+			for n = a, b, s do
+				local idx = free[n]
+				local i, k = (idx - 1) // G.NZ + 1, (idx - 1) % G.NZ + 1
+				local lim = math.huge
+				for di = -1, 1 do
+					for dk = -1, 1 do
+						local ii, kk = i + di, k + dk
+						if (di ~= 0 or dk ~= 0) and ii >= 1 and ii <= G.NX and kk >= 1 and kk <= G.NZ then
+							lim = math.min(lim, V[colIdx(ii, kk)] + ((di ~= 0 and dk ~= 0) and step * 1.4142 or step))
+						end
+					end
+				end
+				local nv = math.min(V[idx], math.max(H1[idx], lim))
+				if nv < V[idx] - 0.01 then
+					V[idx] = nv
+					changed += 1
+				end
+			end
+			if changed == 0 then break end
+		end
+	end
 
-	-- slopes (degrees) and materials
-	local S, M, Slope = table.create(G.NCOL), table.create(G.NCOL), table.create(G.NCOL)
+	-- slopes (degrees), light drop (pass 3 slope shade: flat ground's lighting minus this column's) and materials
+	local S, M, Slope, Drop = table.create(G.NCOL), table.create(G.NCOL), table.create(G.NCOL), table.create(G.NCOL)
+	local LT = SHADE.Light
 	for i = 1, G.NX do
 		for k = 1, G.NZ do
 			local idx = colIdx(i, k)
@@ -586,6 +757,8 @@ local function plan(base)
 			local gz = (V[colIdx(i, kb)] - V[colIdx(i, ka)]) / ((kb - ka) * G.R)
 			local sl = math.deg(math.atan(math.sqrt(gx * gx + gz * gz)))
 			Slope[idx] = sl
+			-- the ground normal (-gx, 1, -gz) / len lit by -Light
+			Drop[idx] = SHADE.Flat + (-gx * LT[1] + LT[2] - gz * LT[3]) / math.sqrt(gx * gx + 1 + gz * gz)
 			local tag, mat = Tag[idx], base.M[idx]
 			if mat == "Mud" and colZ(k) < G.Zone.MaxZ then mat = "Grass" end -- the old straight pumpkin strip
 			if tag == "bed" or tag == "sand" or tag == "ledge" then
@@ -596,11 +769,15 @@ local function plan(base)
 				-- a feature's foot under the sea level (talus, banks): keep the sea floor, no green stripes under water
 				if mat == "Grass" or mat == "Mud" then mat = "Sand" end
 			elseif tag == "ramp" then
-				mat = "Sand" -- the hill path: the same warm dirt as the roads (GE_Sand)
+				mat = PAINT.Path -- the hill path: the same warm dirt as the roads
 			elseif tag and string.sub(tag, 1, 5) == "road:" then
 				mat = string.sub(tag, 6)
-			elseif tag == "ring" then
-				mat = "Rock" -- the mound's ring of rock outcrops
+			elseif tag == "ring" or tag == "cropRock" then
+				mat = "Rock" -- the mound's ring of rock outcrops, the pass-3 outcrops' rock skirts
+			elseif tag == "crop" then
+				-- a pass-3 outcrop's grass top (its edge columns read the skirt's drop as slope): Rock above RockSlope + 10
+				-- (45 deg), so no grass column stands over the 46-degree climb limit
+				mat = sl > G.RockSlope + 10 and "Rock" or PAINT.Grass
 			elseif tag then
 				mat = sl > (tag == "rocky" and G.RockySlope or G.RockSlope) and "Rock" or "Grass"
 			elseif V[idx] - VB[idx] > 0.3 and mat ~= "Sand" then
@@ -609,7 +786,187 @@ local function plan(base)
 			S[idx], M[idx] = V[idx] - G.Lift, mat
 		end
 	end
-	return { V = V, S = S, M = M, W = W, Tag = Tag, VB = VB, Slope = Slope }
+	local P = { V = V, S = S, M = M, W = W, Tag = Tag, VB = VB, Slope = Slope, Drop = Drop, Crop = Crop }
+	paint(P, trees or {})
+	return P
+end
+
+------------------------------------------------------------------ pass 3 paint: shade (Sandstone) + flower patches (Salt)
+local function isWay(tag) return tag ~= nil and (tag == "ramp" or string.sub(tag, 1, 5) == "road:") end
+local NLAWN = #LAWNS + #FLOWERS.Spawn -- the capped boxes: the hunting lawns, then the first-quest spawn boxes
+local function lawnIndex(x, z) -- the capped box (index into LAWNS, then #LAWNS + FLOWERS.Spawn) a column centre is in, or 0
+	for li, L in LAWNS do
+		if x >= L[1] and x <= L[3] and z >= L[2] and z <= L[4] then return li end
+	end
+	for n, L in FLOWERS.Spawn do
+		if x >= L[1] and x <= L[3] and z >= L[2] and z <= L[4] then return #LAWNS + n end
+	end
+	return 0
+end
+local function flowerBias(x, z, li, treeNear)
+	local B = FLOWERS.Bias
+	local edge = math.huge -- studs to the nearest lawn border (inside or outside)
+	for _, L in LAWNS do
+		local dx, dz = math.max(L[1] - x, 0, x - L[3]), math.max(L[2] - z, 0, z - L[4])
+		local out = math.sqrt(dx * dx + dz * dz)
+		edge = math.min(edge, out > 0 and out or math.min(x - L[1], L[3] - x, z - L[2], L[4] - z))
+	end
+	local b = B.Edge * (1 - smooth(edge / FLOWERS.EdgeBand)) + B.Tree * treeNear
+	if li > 0 then b += B.Lawn * smooth(edge / FLOWERS.EdgeBand) end -- a lawn's open middle stays clear
+	local Pd = FLOWERS.Pond
+	local rp = math.sqrt((x - Pd.X) ^ 2 + (z - Pd.Z) ^ 2)
+	local half = (Pd.R1 - Pd.R0) / 2
+	b += B.Pond * (1 - smooth(math.abs(rp - Pd.R0 - half) / half))
+	local A = QUIET[1] -- the arrival pocket
+	local ax, az = math.max(A[1] - x, 0, x - A[3]), math.max(A[2] - z, 0, z - A[4])
+	return b + B.Arrival * (1 - smooth(math.sqrt(ax * ax + az * az) / 8))
+end
+-- P.M: grass -> PAINT.Shade / PAINT.Flower; P.Shade[idx] = "tree" / "slope" / false; P.Green = the meadow's grass
+-- columns the paint looked at; P.Trees = trees used
+paint = function(P, trees)
+	local V, M, W, Tag = P.V, P.M, P.W, P.Tag
+	local green, lawnOf, shade, near = table.create(G.NCOL, false), table.create(G.NCOL, 0), table.create(G.NCOL, false),
+		table.create(G.NCOL, 0)
+	local nGreen = 0
+	-- the meadow's grass: Grass in the zone, dry, not a road / the hill path (rock, sand, water are other materials)
+	for i = 1, G.NX do
+		local x = colX(i)
+		for k = 1, G.NZ do
+			local z = colZ(k)
+			local idx = colIdx(i, k)
+			if M[idx] == PAINT.Grass and x >= G.Zone.MinX and x <= G.Zone.MaxX and z >= G.Zone.MinZ and z <= G.Zone.MaxZ
+				and not (W[idx] and W[idx] > V[idx] - 0.3) and not isWay(Tag[idx]) then
+				green[idx] = true
+				lawnOf[idx] = lawnIndex(x, z)
+				nGreen += 1
+			end
+		end
+	end
+	local function wayNear(i, k) -- a road / hill path column among the 8 neighbours (its soft edge too)?
+		for di = -1, 1 do
+			for dk = -1, 1 do
+				local ii, kk = i + di, k + dk
+				if (di ~= 0 or dk ~= 0) and ii >= 1 and ii <= G.NX and kk >= 1 and kk <= G.NZ
+					and isWay(Tag[colIdx(ii, kk)]) then
+					return true
+				end
+			end
+		end
+		return false
+	end
+	-- (a) tree shade (+ the closeness to a grove for the flower bias)
+	local nTree, nSlope = 0, 0
+	for _, t in trees do
+		local r0 = SHADE.TreeFrac * t.R
+		local reach = r0 + FLOWERS.TreeBand
+		local i0 = math.max(1, math.floor((t.X - reach - G.X0) / G.R) + 1)
+		local i1 = math.min(G.NX, math.floor((t.X + reach - G.X0) / G.R) + 1)
+		local k0 = math.max(1, math.floor((t.Z - reach - G.Z0) / G.R) + 1)
+		local k1 = math.min(G.NZ, math.floor((t.Z + reach - G.Z0) / G.R) + 1)
+		for i = i0, i1 do
+			local x = colX(i)
+			for k = k0, k1 do
+				local idx = colIdx(i, k)
+				if green[idx] then
+					local z = colZ(k)
+					local d = math.sqrt((x - t.X) ^ 2 + (z - t.Z) ^ 2)
+					near[idx] = math.max(near[idx], 1 - smooth((d - r0) / FLOWERS.TreeBand))
+					local own = math.abs(x - t.X) <= G.R / 2 and math.abs(z - t.Z) <= G.R / 2 -- the trunk's column
+					local rim = SHADE.TreeRim * (2 * clamp01(0.5 + 1.7 * math.noise(x / 5.3, z / 5.3, 6.4)) - 1)
+					if not shade[idx] and (own or d < r0 + rim) and not wayNear(i, k) then
+						shade[idx] = "tree"
+						nTree += 1
+					end
+				end
+			end
+		end
+	end
+	-- (b) slope shade: steeper than MinSlope and turned away from the light (never on a lawn, never by a way)
+	for i = 1, G.NX do
+		local x = colX(i)
+		for k = 1, G.NZ do
+			local idx = colIdx(i, k)
+			if green[idx] and not shade[idx] and lawnOf[idx] == 0 and Tag[idx] ~= "crop" and P.Slope[idx] > SHADE.MinSlope then
+				local z = colZ(k)
+				local j = SHADE.Jitter * math.noise(x / SHADE.JitterScale, z / SHADE.JitterScale, SHADE.Seed)
+				if P.Drop[idx] + j > SHADE.Drop and not wayNear(i, k) then
+					shade[idx] = "slope"
+					nSlope += 1
+				end
+			end
+		end
+	end
+	-- flower patches: a jittered grid of patch spots (FLOWERS.Cell apart), each a blob RMin..RMax in radius with a noisy
+	-- outline; the spots are ranked by a low-frequency noise score + the bias (flowery stretches and bare ones), and the
+	-- best get their flowers until Cover of the meadow's grass is painted (a lawn's columns past LawnMax are skipped)
+	local okCol, lawnGreen = table.create(G.NCOL, false), table.create(NLAWN, 0)
+	local clear = ROAD_BLEND + FLOWERS.RoadClear + G.R / 2 -- column centre past a road's HW
+	for i = 1, G.NX do
+		local x = colX(i)
+		for k = 1, G.NZ do
+			local idx = colIdx(i, k)
+			if green[idx] then
+				local li = lawnOf[idx]
+				if li > 0 then lawnGreen[li] += 1 end
+				okCol[idx] = not shade[idx] and roadDist(x, colZ(k)) >= clear and not wayNear(i, k)
+			end
+		end
+	end
+	local spots, C, row = {}, FLOWERS.Cell, 0
+	for cx = G.Zone.MinX + C / 2, G.Zone.MaxX, C * 0.87 do -- staggered rows (hex spacing): no square dot grid
+		row += 1
+		for cz = G.Zone.MinZ + C * (row % 2 == 0 and 1 or 0.5), G.Zone.MaxZ, C do
+			local sx = cx + 2 * FLOWERS.Jitter * math.noise(cx / 7.3, cz / 7.3, 41.5)
+			local sz = cz + 2 * FLOWERS.Jitter * math.noise(cx / 7.3, cz / 7.3, 43.5)
+			local i = math.clamp(math.floor((sx - G.X0) / G.R) + 1, 1, G.NX)
+			local k = math.clamp(math.floor((sz - G.Z0) / G.R) + 1, 1, G.NZ)
+			local idx = colIdx(i, k)
+			if okCol[idx] then
+				table.insert(spots, { X = sx, Z = sz, N = #spots + 1,
+					R = lerp(FLOWERS.RMin, FLOWERS.RMax, clamp01(0.5 + 1.6 * math.noise(sx / 9.1, sz / 9.1, 45.5))),
+					S = math.noise(sx / FLOWERS.Scale, sz / FLOWERS.Scale, FLOWERS.Seed)
+						+ flowerBias(sx, sz, lawnOf[idx], near[idx]) })
+			end
+		end
+	end
+	table.sort(spots, function(a, b)
+		if a.S ~= b.S then return a.S > b.S end
+		return a.N < b.N
+	end)
+	local want, quota = math.floor(FLOWERS.Cover * nGreen + 0.5), table.create(NLAWN, 0)
+	for li = 1, NLAWN do quota[li] = math.floor(FLOWERS.LawnMax * lawnGreen[li]) end
+	local got, taken = 0, {}
+	for _, sp in spots do
+		if got >= want then break end
+		-- a spot keeps Gap studs off the blobs already painted (shrunk to fit, dropped below RLow): no merged patches
+		for _, o in taken do
+			local d = math.sqrt((sp.X - o.X) ^ 2 + (sp.Z - o.Z) ^ 2)
+			sp.R = math.min(sp.R, (d - FLOWERS.Gap) / (1 + FLOWERS.Ragged) - o.R)
+		end
+		if sp.R < FLOWERS.RLow then continue end
+		table.insert(taken, sp)
+		local reach = sp.R * (1 + FLOWERS.Ragged)
+		for i = math.max(1, math.floor((sp.X - reach - G.X0) / G.R) + 1), math.min(G.NX, math.floor((sp.X + reach - G.X0) / G.R) + 1) do
+			local x = colX(i)
+			for k = math.max(1, math.floor((sp.Z - reach - G.Z0) / G.R) + 1), math.min(G.NZ, math.floor((sp.Z + reach - G.Z0) / G.R) + 1) do
+				local idx = colIdx(i, k)
+				local z = colZ(k)
+				local d = math.sqrt((x - sp.X) ^ 2 + (z - sp.Z) ^ 2)
+				local rr = math.max(G.R * 0.72, sp.R * (1 + FLOWERS.Ragged * math.noise(x / 4.1, z / 4.1, FLOWERS.Seed + 4.4)))
+				local li = lawnOf[idx]
+				if okCol[idx] and M[idx] ~= PAINT.Flower and d < rr and (li == 0 or quota[li] > 0) then
+					if li > 0 then quota[li] -= 1 end
+					M[idx] = PAINT.Flower
+					got += 1
+				end
+			end
+		end
+	end
+	for idx = 1, G.NCOL do
+		if shade[idx] then M[idx] = PAINT.Shade end
+	end
+	P.Shade, P.Green, P.LawnOf, P.LawnGreen = shade, nGreen, lawnOf, lawnGreen
+	P.ShadeTree, P.ShadeSlope, P.Flowers, P.Trees = nTree, nSlope, got, #trees
 end
 
 ------------------------------------------------------------------ numbers for the report
@@ -701,6 +1058,68 @@ local function stats(P, base)
 	st.SlopeP95 = pct(st.Slopes, 0.95)
 	st.SlopeP99 = pct(st.Slopes, 0.99)
 	st.RampDeg = math.deg(math.atan(HILL.Top / HILL.Face.Run))
+	-- pass 3 paint: flower / shade shares of the meadow's grass, the busiest lawn's flowers, patch sizes, outcrops
+	local green = math.max(1, P.Green or 0)
+	st.FlowerPct, st.ShadeSlopePct, st.ShadeTreePct = 100 * (P.Flowers or 0) / green, 100 * (P.ShadeSlope or 0) / green,
+		100 * (P.ShadeTree or 0) / green
+	local lawnFlowers = table.create(NLAWN, 0)
+	for idx = 1, G.NCOL do
+		local li = P.LawnOf and P.LawnOf[idx] or 0
+		if li > 0 and P.M[idx] == PAINT.Flower then lawnFlowers[li] += 1 end
+	end
+	st.LawnFlowerMax = 0
+	for li = 1, NLAWN do
+		st.LawnFlowerMax = math.max(st.LawnFlowerMax, 100 * lawnFlowers[li] / math.max(1, P.LawnGreen and P.LawnGreen[li] or 0))
+	end
+	-- flower patches = 4-connected Salt columns; size = the longer side of the patch's box in studs
+	local seen, sizes, singles = table.create(G.NCOL, false), {}, 0
+	for start = 1, G.NCOL do
+		if P.M[start] == PAINT.Flower and not seen[start] then
+			local stack, i0, i1, k0, k1, cols = { start }, math.huge, -math.huge, math.huge, -math.huge, 0
+			seen[start] = true
+			while #stack > 0 do
+				local idx = table.remove(stack)
+				local i, k = (idx - 1) // G.NZ + 1, (idx - 1) % G.NZ + 1
+				i0, i1, k0, k1, cols = math.min(i0, i), math.max(i1, i), math.min(k0, k), math.max(k1, k), cols + 1
+				for _, o in { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } } do
+					local ii, kk = i + o[1], k + o[2]
+					if ii >= 1 and ii <= G.NX and kk >= 1 and kk <= G.NZ then
+						local nb = colIdx(ii, kk)
+						if P.M[nb] == PAINT.Flower and not seen[nb] then
+							seen[nb] = true
+							table.insert(stack, nb)
+						end
+					end
+				end
+			end
+			table.insert(sizes, G.R * (math.max(i1 - i0, k1 - k0) + 1))
+			if cols == 1 then singles += 1 end
+		end
+	end
+	table.sort(sizes)
+	st.Patches, st.PatchP50, st.PatchP90, st.PatchMax, st.PatchSingles = #sizes, pct(sizes, 0.5), pct(sizes, 0.9),
+		sizes[#sizes] or 0, singles
+	-- outcrops: placed = some grass-top column; height = its grass top's highest rise over the ground under it
+	st.Outcrops, st.OutcropLow, st.OutcropHigh = 0, math.huge, 0
+	for _, o in OUTCROP.List do
+		local rise = 0
+		for i = 1, G.NX do
+			local x = colX(i)
+			if math.abs(x - o.X) <= o.R then
+				for k = 1, G.NZ do
+					local idx = colIdx(i, k)
+					if P.Tag[idx] == "crop" and math.sqrt((x - o.X) ^ 2 + (colZ(k) - o.Z) ^ 2) <= o.R then
+						rise = math.max(rise, P.Crop[idx])
+					end
+				end
+			end
+		end
+		if rise > 0 then
+			st.Outcrops += 1
+			st.OutcropLow, st.OutcropHigh = math.min(st.OutcropLow, rise), math.max(st.OutcropHigh, rise)
+		end
+	end
+	if st.Outcrops == 0 then st.OutcropLow = 0 end
 	local function at(x, z)
 		local v, m = sampleAt(P, x, z)
 		return string.format("%.1f%s", v, m == "Grass" and "" or ("/" .. tostring(m)))
@@ -715,13 +1134,18 @@ local function report(P, st, extra)
 		.. " %.0f studs high; hunting lawns %.1f%% walkable, top %.1f (slope max %.0f, p99 %.0f, p95 %.0f deg; %d lawn columns"
 		.. " are the plunge pool / falls arms); between the lawns p50 %.1f / p90 %.1f / max %.1f (slope p95 %.0f deg, %d rock"
 		.. " columns); whole hunting inset %.0f%% walkable (slope max %.0f, p99 %.0f, p95 %.0f deg); roads max %.0f deg, %d"
-		.. " painted columns (%d on a soft edge); %s%s",
+		.. " painted columns (%d on a soft edge), material %s (hill path %s, pumpkin path Mud); pass 3 paint of %d meadow"
+		.. " grass columns: flowers (%s) %.1f%% in %d patches (size p50 %d / p90 %d / max %d studs, %d single columns),"
+		.. " busiest lawn %.1f%%; shade (%s) slope %.1f%% / tree %.1f%% (%d trees read); %d rock outcrops (skirt %.1f..%.1f"
+		.. " studs); %s%s",
 		MODE, st.Changed, st.Cells, HILL.Top, st.RampDeg, PL.Top, #KNOLLS, st.KnollTop, st.MoundTop, #MOUNDS,
 		RIVER_LINE.Total, st.Water, FALLS.WTop - FALLS.PoolW, 100 * st.LawnValid / math.max(1, st.Lawn), st.LawnTop,
 		st.LawnSlopes[#st.LawnSlopes] or 0, pct(st.LawnSlopes, 0.99), pct(st.LawnSlopes, 0.95), st.LawnFalls,
 		pct(st.Between, 0.5), pct(st.Between, 0.9), st.Between[#st.Between] or 0, pct(st.BetweenSlopes, 0.95),
 		st.BetweenRock, 100 * st.Valid / math.max(1, st.Inset), st.SlopeMax, st.SlopeP99, st.SlopeP95, st.RoadMax,
-		st.RoadCols, st.RoadEdge, st.Contract, extra or "")
+		st.RoadCols, st.RoadEdge, PAINT.Road, PAINT.Path, P.Green or 0, PAINT.Flower, st.FlowerPct, st.Patches,
+		st.PatchP50, st.PatchP90, st.PatchMax, st.PatchSingles, st.LawnFlowerMax, PAINT.Shade, st.ShadeSlopePct,
+		st.ShadeTreePct, P.Trees or 0, st.Outcrops, st.OutcropLow, st.OutcropHigh, st.Contract, extra or "")
 end
 
 ------------------------------------------------------------------ offline (luau.exe): synthetic flat meadow, dump
@@ -763,7 +1187,7 @@ if not STUDIO then
 			base.S[colIdx(i, k)], base.M[colIdx(i, k)] = v - G.Lift, mat
 		end
 	end
-	local P = plan(base)
+	local P = plan(base, {}) -- no Studio: no tree props to read, the tree shade (pass 3 (a)) is skipped
 	print(report(P, stats(P, base)))
 	print(string.format("P0 %.1f %.1f Q %.1f %.1f", FALLS.P0X, FALLS.P0Z, FALLS.QX, FALLS.QZ))
 	local rows = {}
@@ -782,6 +1206,7 @@ end
 local SS = game:GetService("ServerStorage")
 local Terrain = workspace.Terrain
 local AIR = Enum.Material.Air
+local ROCK = Enum.Material.Rock -- pass 3: the body under an outcrop's grass top
 local B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 local DEC = {}
 for p = 1, 64 do DEC[string.byte(B64, p)] = p - 1 end
@@ -876,7 +1301,9 @@ local function matEnum(name)
 	return m
 end
 local useChannels = true
-local function writeChunk(ci, ck, colFn) -- colFn(idx) -> S, material enum, water top
+-- colFn(idx) -> S, material enum, water top[, sub material enum: the voxels more than one voxel under the surface
+-- (pass 3: an outcrop's grass top over its rock body, so its sides read as rock)]
+local function writeChunk(ci, ck, colFn)
 	local i0, k0 = (ci - 1) * G.Chunk + 1, (ck - 1) * G.Chunk + 1
 	local i1, k1 = math.min(G.NX, i0 + G.Chunk - 1), math.min(G.NZ, k0 + G.Chunk - 1)
 	local ni, nk = i1 - i0 + 1, k1 - k0 + 1
@@ -885,11 +1312,12 @@ local function writeChunk(ci, ck, colFn) -- colFn(idx) -> S, material enum, wate
 		local mI, oI, lI = table.create(G.NY), table.create(G.NY), table.create(G.NY)
 		for j = 1, G.NY do mI[j], oI[j], lI[j] = table.create(nk), table.create(nk), table.create(nk) end
 		for c = 1, nk do
-			local S, mat, W = colFn(colIdx(i0 + a - 1, k0 + c - 1))
+			local S, top, W, sub = colFn(colIdx(i0 + a - 1, k0 + c - 1))
 			for j = 1, G.NY do
 				local cy = G.Y0 + (j - 0.5) * G.R
 				local occ = clamp01((S - cy) / G.R + 0.5)
 				local lw = occ < 1 and clamp01((W - cy) / G.R + 0.5) or 0
+				local mat = (sub and S - cy > G.R) and sub or top
 				if useChannels then
 					mI[j][c], oI[j][c], lI[j][c] = occ > 0 and mat or AIR, occ, lw
 				elseif occ >= 0.5 or lw <= 0 then
@@ -979,6 +1407,48 @@ if store then
 		"MeadowTerrainStore was made for another box: restore with the old script first, or delete the store after preview_map terrain")
 end
 
+-- pass 3: the painted slots need imgdev's MaterialVariant overrides (tools/apply_surface_materials.lua: GE_MeadowDirt /
+-- GE_MeadowFlowers / GE_MeadowShade, terrain colour 235) before anything is painted with them; without them the meadow
+-- would show white salt crust, sandstone and grey pavement. Pass 1's GE_MeadowPath on a slot counts as missing (the
+-- apply drops it). Checked before any write; FORCE = true paints anyway
+local function slotState()
+	local MS = game:GetService("MaterialService")
+	local missing, notes, seen = {}, {}, {}
+	for _, name in { PAINT.Road, PAINT.Flower, PAINT.Shade } do
+		if not seen[name] then
+			seen[name] = true
+			local slot = Enum.Material[name]
+			local ok, o = pcall(function() return MS:GetBaseMaterialOverride(slot) end)
+			o = ok and type(o) == "string" and o or ""
+			local v = o ~= "" and MS:FindFirstChild(o, true) or nil
+			if o == "" or o == PATH_TILE.Name or not (v and v:IsA("MaterialVariant")) then table.insert(missing, name) end
+			local okC, c = pcall(function() return Terrain:GetMaterialColor(slot) end)
+			table.insert(notes, string.format("%s = %s (colour %s)", name, o ~= "" and o or "none",
+				okC and typeof(c) == "Color3" and c:ToHex() or "?"))
+		end
+	end
+	return missing, table.concat(notes, ", ")
+end
+-- SHADE.Light against the sun of the lighting Studio has now (Edit mode: the saved lighting; the game's Neutral sky is
+-- ClockTime 15.3 at GeographicLatitude 35): the angle between them and between their ground directions (the second
+-- decides which hill side is shaded). Read only
+local function sunNote()
+	local Lighting = game:GetService("Lighting")
+	local ok, d = pcall(function() return Lighting:GetSunDirection() end)
+	if not ok or typeof(d) ~= "Vector3" then return "sun ?" end
+	local L = SHADE.Light
+	local cosA = math.clamp(-(d.X * L[1] + d.Y * L[2] + d.Z * L[3]), -1, 1)
+	local hd, hl = math.sqrt(d.X ^ 2 + d.Z ^ 2), math.sqrt(L[1] ^ 2 + L[3] ^ 2)
+	local cosH = (hd > 1e-3 and hl > 1e-3) and math.clamp(-(d.X * L[1] + d.Z * L[3]) / (hd * hl), -1, 1) or 1
+	return string.format("light vs sun (ClockTime %.1f, latitude %.0f, sun %.2f,%.2f,%.2f): %.0f deg, %.0f deg on the ground",
+		Lighting.ClockTime, Lighting.GeographicLatitude, d.X, d.Y, d.Z, math.deg(math.acos(cosA)), math.deg(math.acos(cosH)))
+end
+local slotMissing, slotInfo = slotState()
+if (MODE == "apply" or MODE == "rebase") and not FORCE and #slotMissing > 0 then
+	error("no MaterialVariant on terrain " .. table.concat(slotMissing, " / ") .. " yet (imgdev wires them: "
+		.. "tools/apply_surface_materials.lua): nothing written; FORCE = true paints anyway (" .. slotInfo .. ")")
+end
+
 local skipped = {}
 local cur = readSummary()
 local function flatCheck(sum)
@@ -1002,8 +1472,10 @@ if MODE == "rebase" or (base == nil and MODE ~= "restore") then
 	base = cur
 	if MODE ~= "plan" then
 		saveSummary("Base", base)
+		base = loadSummary("Base") -- plan from the stored (0.05-quantised) baseline, as every later run does
 		setStoreText("Last", nil)
 		store:SetAttribute("PlanHash", nil)
+		store:SetAttribute("ChunkHash", nil)
 		store:SetAttribute("CapturedAt", DateTime.now():ToIsoDate())
 	end
 end
@@ -1114,9 +1586,9 @@ local function dropPathSlot()
 	return true
 end
 local function pathSlot()
-	if not PATH_TILE.Use then -- pass 2: roads = terrain Sand; pass 1's tile slot (if any) is no longer used
+	if not PATH_TILE.Use then -- pass 2: roads = terrain Sand, pass 3: PAINT.Road; pass 1's tile slot is no longer used
 		local dropped = dropPathSlot()
-		return "Ground", "off, roads = terrain Sand (GE_Sand)" .. (dropped and "; pass-1 path slot dropped" or "")
+		return "Ground", "off, roads = terrain " .. PAINT.Road .. (dropped and "; pass-1 path slot dropped" or "")
 	end
 	local MS = game:GetService("MaterialService")
 	local src = MS:FindFirstChild(PATH_TILE.Source)
@@ -1412,6 +1884,56 @@ local function unsettleKit()
 	return n
 end
 
+-- pass 3 (a): the trees standing in Map.Decor.MeadowDress / MeadowKit (outermost Model / part whose name has a
+-- SHADE.Words word): X / Z = the pivot (the bbox's bottom centre when the pivot sits off the trunk), R = canopy radius
+-- = 0.5 x the bbox's smaller side. Kit trees an earlier run hid (store Hidden) are not in Decor and cast no shade
+local function readTrees()
+	local out = {}
+	local decor = mapRoot and mapRoot:FindFirstChild("Decor")
+	if not decor then
+		table.insert(skipped, "tree shade (no Map.Decor)")
+		return out
+	end
+	local function treeName(n)
+		for _, w in SHADE.Words do
+			if string.find(n, w, 1, true) then return true end
+		end
+		return false
+	end
+	local function isTree(inst) return (inst:IsA("Model") or inst:IsA("BasePart")) and treeName(inst.Name) end
+	for _, rootName in SHADE.Roots do
+		local root = decor:FindFirstChild(rootName)
+		for _, d in (root and root:GetDescendants() or {}) do
+			if isTree(d) then
+				local p, nested = d.Parent, false
+				while p and p ~= root do
+					if isTree(p) then
+						nested = true
+						break
+					end
+					p = p.Parent
+				end
+				local ok, cf, size = pcall(function()
+					if d:IsA("Model") then return d:GetBoundingBox() end
+					return d.CFrame, d.Size
+				end)
+				if not nested and ok and typeof(cf) == "CFrame" and typeof(size) == "Vector3" then
+					local r = 0.5 * math.min(size.X, size.Z)
+					local foot = cf:PointToWorldSpace(Vector3.new(0, -size.Y / 2, 0))
+					local pv = d:GetPivot().Position
+					local x, z = pv.X, pv.Z
+					if (x - foot.X) ^ 2 + (z - foot.Z) ^ 2 > (0.5 * r) ^ 2 then x, z = foot.X, foot.Z end
+					if r >= 1 and r <= SHADE.MaxR and x >= G.Zone.MinX - 10 and x <= G.Zone.MaxX + 10
+						and z >= G.Zone.MinZ - 10 and z <= G.Zone.MaxZ + 10 then
+						table.insert(out, { X = x, Z = z, R = r })
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
 local function writeInfo()
 	local st = getStore()
 	local function v3(x, y, z) return Vector3.new(math.floor(x * 10 + 0.5) / 10, y, math.floor(z * 10 + 0.5) / 10) end
@@ -1428,6 +1950,10 @@ local function writeInfo()
 	local pts = {}
 	for _, p in RIVER_LINE.Pts do table.insert(pts, string.format("%.0f,%.0f", p[1], p[2])) end
 	st:SetAttribute("RiverLine", table.concat(pts, ";"))
+	-- pass 3: the rock outcrops ("x,z,r;..."), so props can keep off their rock skirts
+	local crops = {}
+	for _, o in OUTCROP.List do table.insert(crops, string.format("%.0f,%.0f,%.0f", o.X, o.Z, o.R)) end
+	st:SetAttribute("Outcrops", table.concat(crops, ";"))
 end
 
 ------------------------------------------------------------------ run
@@ -1453,6 +1979,7 @@ if MODE == "restore" then
 	dropPathSlot()
 	setStoreText("Last", nil)
 	store:SetAttribute("PlanHash", nil)
+	store:SetAttribute("ChunkHash", nil)
 	return string.format("meadow terrain restore: %d chunks back to the baseline, waterfall removed, %d MeadowKit pivots + %d hidden pieces back%s%s",
 		wrote, kitBack, back, left > 0 and (" (" .. left .. " left in the store: their folder is gone or taken)") or "",
 		#skipped > 0 and ("; " .. table.concat(skipped, "; ")) or "")
@@ -1460,7 +1987,9 @@ end
 
 local slotName, slotNote = "Ground", "plan"
 if MODE ~= "plan" then slotName, slotNote = pathSlot() end
-local P = plan(base)
+slotNote ..= "; slots " .. slotInfo .. (#slotMissing > 0 and (" (missing: " .. table.concat(slotMissing, " / ") .. ")") or "")
+	.. "; " .. sunNote()
+local P = plan(base, readTrees()) -- pass 3: the shade follows the trees standing in Decor now
 for idx = 1, G.NCOL do
 	if P.M[idx] == "Path" then P.M[idx] = slotName end
 end
@@ -1468,9 +1997,11 @@ local st = stats(P, base)
 if MODE == "plan" then return report(P, st, " | path tile: " .. slotNote) end
 
 -- write a chunk when its plan changed since the last run or its terrain is not our last result any more (preview_map
--- terrain ran again, ...), and only if it differs from the baseline at all (plan or current terrain)
-local hashes, planDiff, curDiff, curNotLast = {}, {}, {}, {}
-for c = 1, G.CX * G.CZ do hashes[c] = 7 end
+-- terrain ran again, ...), and only if it differs from the baseline at all (plan or current terrain).
+-- hashes = heights + materials + water (ChunkHash, decides the rewrites); shapes = heights + water only (PlanHash, the
+-- ground meadow_dress stands on: a paint-only change such as the pass-3 tree shade keeps it)
+local hashes, shapes, planDiff, curDiff, curNotLast = {}, {}, {}, {}, {}
+for c = 1, G.CX * G.CZ do hashes[c], shapes[c] = 7, 7 end
 local palette, nPal = {}, 0
 for idx = 1, G.NCOL do
 	local m = P.M[idx]
@@ -1480,29 +2011,32 @@ for idx = 1, G.NCOL do
 	end
 	local c = chunkOf(idx)
 	local w = P.W[idx] or G.WaterTop
-	local q = math.floor((P.S[idx] - G.Y0) * 20 + 0.5) * 131 + palette[m] * 7 + math.floor((w - G.Y0) * 20 + 0.5)
-	hashes[c] = (hashes[c] * 31 + q) % 16777213
+	local qs = math.floor((P.S[idx] - G.Y0) * 20 + 0.5) * 131 + math.floor((w - G.Y0) * 20 + 0.5)
+	hashes[c] = (hashes[c] * 31 + qs + palette[m] * 7) % 16777213
+	shapes[c] = (shapes[c] * 31 + qs) % 16777213
 	if math.abs(P.S[idx] - base.S[idx]) > 0.01 or m ~= base.M[idx] or math.abs(w - G.WaterTop) > 0.01 then planDiff[c] = true end
 	if not sameCol(cur, base, idx) then curDiff[c] = true end
 	if not (last and sameCol(cur, last, idx)) then curNotLast[c] = true end
 end
-local oldHashes = string.split(store:GetAttribute("PlanHash") or "", ",")
+-- before pass 3 the store had only PlanHash (heights + materials + water, the same sum as ChunkHash)
+local oldHashes = string.split(store:GetAttribute("ChunkHash") or store:GetAttribute("PlanHash") or "", ",")
 local wrote = 0
 for c = 1, G.CX * G.CZ do
 	local ci, ck = chunkCR(c)
 	if (tostring(hashes[c]) ~= oldHashes[c] or curNotLast[c]) and (planDiff[c] or curDiff[c]) then
 		writeChunk(ci, ck, function(idx)
-			return P.S[idx], matEnum(P.M[idx]), P.W[idx] or G.WaterTop
+			return P.S[idx], matEnum(P.M[idx]), P.W[idx] or G.WaterTop, P.Tag[idx] == "crop" and ROCK or nil
 		end)
 		wrote += 1
 		task.wait()
 	end
 end
-local hashText = {}
-for c = 1, G.CX * G.CZ do hashText[c] = tostring(hashes[c]) end
+local hashText, shapeText = {}, {}
+for c = 1, G.CX * G.CZ do hashText[c], shapeText[c] = tostring(hashes[c]), tostring(shapes[c]) end
 task.wait()
 saveSummary("Last", readSummary())
-store:SetAttribute("PlanHash", table.concat(hashText, ","))
+store:SetAttribute("ChunkHash", table.concat(hashText, ","))
+store:SetAttribute("PlanHash", table.concat(shapeText, ","))
 store:SetAttribute("AppliedAt", DateTime.now():ToIsoDate())
 
 local moved = hidePieces()

@@ -80,7 +80,7 @@ local L = {
 		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
 		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
 		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
-		{ Id = "Map", Icon = "IconMap", Map = true, Key = "Map", Keep = 1 },
+		{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },
 		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
 		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
 	},
@@ -88,7 +88,9 @@ local L = {
 	-- squares [메뉴] folds out to its left, left to right. 직업 바꾸기 · 환생 · 오프닝 다시 보기 · 이름 숨기기 · 휴가 are
 	-- 설정 rows and 닉네임 a 내 캐릭터 row (BB13); until 설정 is registered its square opens the old 메뉴 window (Alt),
 	-- which still lists them. A square shows once its window is registered (no silent no-op)
+	-- A23-75 (2026-10-08): the Robux shop (ShopUI) is the first square, left of 새 소식 (IconCoin until its icon is drawn)
 	Fold = {
+		{ Id = "Shop", Icon = "IconCoin", Window = "Shop" },
 		{ Id = "News", Icon = "IconNews", Window = "News" },
 		{ Id = "Travel", Icon = "IconTravel", Window = "Travel" },
 		{ Id = "Help", Icon = "IconHelp", Window = "Help", Key = "Help" },
@@ -124,7 +126,7 @@ local COL = {
 -- quest Id -> icon part (slime for monster kills, scroll otherwise)
 -- kill rows use their monster head (IconMon<Unit>) when it exists; these are the fallbacks per row type. 28c6324 (High):
 -- the golden monster, Halo's Hunt (Catch Wanted) and Horns' Plunder (Rob Knights) rows; gold = coin, skill hits = Skills
-local QUEST_ICON = { tutorial = "IconMonSlime", Kill = "IconScroll", Golden = "IconGoldenMon", Goose = "IconGoose",
+local QUEST_ICON = { tutorial = "IconMonSlime", Kill = "GlyphQuest", Golden = "IconGoldenMon", Goose = "IconGoose",
 	Gold = "IconCoin", Release = "IconSkills", Hunt = "IconHunt", Plunder = "IconPlunder" }
 
 local GUIDE_SECONDS = NEXT.GuideSeconds or 90
@@ -202,6 +204,11 @@ local TXT = {
 	TileNews = "News",
 	TileTravel = "Travel",
 	TileHelp = "Help",
+	TileShop = "Shop",
+	-- A23-75 status chip: the 2x XP / 2x Gold passes (one chip, right after the danger chips)
+	BoostXP = "2x XP",
+	BoostGold = "2x Gold",
+	BoostBoth = "2x XP · Gold",
 	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
@@ -441,8 +448,9 @@ end
 
 -- Keep approved HUD art and the active UIKit font family. Caps are physical pixels, so a large GUI scale
 -- cannot turn small HUD captions into oversized letters. Table members avoid adding chunk locals (200 limit).
--- minPixels: the smallest real px the fit may pick (default 11)
-function L.FitText(label, pixels, bold, minPixels)
+-- minPixels: the smallest real px the fit may pick (default 11). keepPx: the floor and ceiling stay real px on small PC
+-- windows too (2026-10-08, main Studio 991x451 at UIScale 0.5: the HP / MP numbers shrank to ~6 px)
+function L.FitText(label, pixels, bold, minPixels, keepPx)
 	if not label then return label end
 	ui.textFits = ui.textFits or setmetatable({}, { __mode = "k" })
 	local fit = ui.textFits[label]
@@ -453,9 +461,9 @@ function L.FitText(label, pixels, bold, minPixels)
 			if not label.Parent then return end
 			local s = currentScale()
 			-- small PC windows: the real-px floor and ceiling shrink with the scale (UIKit.PxFloor, review 2026-10-07)
-			local pf = type(UIKit.PxFloor) == "function" and UIKit.PxFloor() or 1
+			local pf = (not fit.KeepPx and type(UIKit.PxFloor) == "function") and UIKit.PxFloor() or 1
 			local mp = (fit.MinPixels or 11) * pf
-			local minSize = math.max(1, math.min(mp, math.floor(mp / s)))
+			local minSize = fit.KeepPx and math.max(1, math.ceil(mp / s)) or math.max(1, math.min(mp, math.floor(mp / s)))
 			local maxSize = math.max(minSize, math.floor(fit.Pixels * pf / s))
 			if fit.Min == minSize and fit.Max == maxSize then return end
 			fit.Min, fit.Max = minSize, maxSize
@@ -478,6 +486,7 @@ function L.FitText(label, pixels, bold, minPixels)
 	end
 	fit.Pixels = pixels or 12
 	fit.MinPixels = minPixels
+	fit.KeepPx = keepPx == true
 	UIKit.ApplyFont(label, bold and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
 	label.TextWrapped = false
 	label.TextStrokeTransparency = 1
@@ -992,6 +1001,7 @@ end
 
 -- gold 빛 fill from the left and crimson 뿔 fill from the right inside the BarTrack capsule, the faction badges (bundle 6)
 -- over both ends, the crown riding the split, info pills under it. applyLayout sizes it from Rects.war_meter (L.LayoutWar).
+-- 검수 2026-10-08: on a navy plate like a game's top bar, the badges big with the scores inside them (L.WarTop)
 local function buildWar(root)
 	local W = 360
 	local w = UIKit.Create("Frame", {
@@ -1002,12 +1012,23 @@ local function buildWar(root)
 		Parent = root,
 	})
 	ui.war = w
-	local shieldW, barY, barH = 30, 8, 22
+	local TB = L.WarTop
+	local barY, barH = 8, 22
+	-- the plate under everything (missing art: a navy rounded panel, the same idea)
+	local plate, plateArt = UIKit.ArtFrame("PanelCard", {
+		Name = "Plate",
+		Position = UDim2.fromOffset(0, -TB.PlateUp),
+		Size = UDim2.new(1, 0, 1, TB.PlateUp + TB.PlateDown),
+		SliceScale = TB.PlateSlice,
+		ZIndex = 0,
+		Parent = w,
+	}, { Color = ac("Navy", Theme.Bg), BackgroundTransparency = 0.1, CornerRadius = UDim.new(0, 14) })
+	ui.warPlate, ui.warPlateArt = plate, plateArt
 	-- Bar / Info follow the meter's width; L.LayoutWar fits them to its height
 	local bar, barArt = UIKit.ArtFrame("BarTrack", {
 		Name = "Bar",
-		Position = UDim2.fromOffset(shieldW - 10, barY),
-		Size = UDim2.new(1, -2 * (shieldW - 10), 0, barH),
+		Position = UDim2.fromOffset(TB.BarIn, barY),
+		Size = UDim2.new(1, -2 * TB.BarIn, 0, barH),
 		Parent = w,
 	}, {
 		Color = COL.WarFill,
@@ -1058,46 +1079,55 @@ local function buildWar(root)
 		ZIndex = 2,
 		Parent = inner,
 	}, { corner(UDim.new(0, 2)) })
-	-- crown on the split, its base at the bar's middle
-	ui.warCrown = UIKit.ArtImage("Crown", {
+	-- crown on the split (WarCrownPip, 그림체 #15): the crown's base (0.74 of the art) at the bar's middle, its point
+	-- going down into the bar
+	ui.warCrown = UIKit.ArtImage("WarCrownPip", {
 		Name = "Crown",
-		AnchorPoint = Vector2.new(0.5, 1),
+		AnchorPoint = Vector2.new(0.5, 0.74),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(27, 18),
+		Size = UDim2.fromOffset(TB.Crown, TB.Crown),
 		ZIndex = 3,
 		Parent = inner,
 	})
-	ui.haloNum = artLabel(false, {
-		Name = "HaloScore",
-		Position = UDim2.fromOffset(16, 0),
-		Size = UDim2.new(0.5, -20, 1, 0),
-		TextSize = 15,
-		Number = true,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		ZIndex = 2,
-		Parent = bar,
-	})
-	ui.hornsNum = artLabel(false, {
-		Name = "HornsScore",
-		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.new(1, -16, 0, 0),
-		Size = UDim2.new(0.5, -20, 1, 0),
-		TextSize = 15,
-		Number = true,
-		TextXAlignment = Enum.TextXAlignment.Right,
-		ZIndex = 2,
-		Parent = bar,
-	})
-	-- faction shields over both ends of the bar
-	for _, s in { { "LevelBadgeHalo", 0, "ShieldHalo" }, { "LevelBadgeHorns", 1, "ShieldHorns" } } do
-		UIKit.ArtImage(s[1], {
+	-- the faction badges big over both ends; each side's score sits in its badge's centre (the part's Inner rect: dark
+	-- words on Halo's ivory, light ones on Horns' plum). Missing badge art: the old "Halo 14" / "14 Horns" in the bar ends
+	L.WarNumOnly = true
+	for _, s in { { "LevelBadgeHalo", 0, "ShieldHalo", "haloNum", true }, { "LevelBadgeHorns", 1, "ShieldHorns", "hornsNum", false } } do
+		local badge = UIKit.ArtImage(s[1], {
 			Name = s[3],
 			AnchorPoint = Vector2.new(s[2], 0.5),
-			Position = UDim2.new(s[2], 0, 0, barY + barH / 2),
-			Size = UDim2.fromOffset(shieldW + 4, shieldW + 4),
+			Position = UDim2.new(s[2], s[2] == 0 and -TB.BadgeOut or TB.BadgeOut, 0, barY + barH / 2),
+			Size = UDim2.fromOffset(TB.Badge, TB.Badge),
 			ZIndex = 3,
 			Parent = w,
 		})
+		local def = badge and UIKit.ArtPart(s[1]) or nil
+		local inner = def and typeof(def.Inner) == "Rect" and typeof(def.Size) == "Vector2" and def.Inner or nil
+		if inner then
+			ui[s[4]] = artLabel(s[5], {
+				Name = s[2] == 0 and "HaloScore" or "HornsScore",
+				Position = UDim2.fromScale(inner.Min.X / def.Size.X, inner.Min.Y / def.Size.Y),
+				Size = UDim2.fromScale(inner.Width / def.Size.X, inner.Height / def.Size.Y),
+				TextScaled = true,
+				MaxTextSize = 22,
+				Number = true,
+				ZIndex = 4,
+				Parent = badge,
+			})
+		else
+			L.WarNumOnly = false
+			ui[s[4]] = artLabel(false, {
+				Name = s[2] == 0 and "HaloScore" or "HornsScore",
+				AnchorPoint = Vector2.new(s[2], 0),
+				Position = UDim2.new(s[2], s[2] == 0 and 16 or -16, 0, 0),
+				Size = UDim2.new(0.5, -20, 1, 0),
+				TextSize = 15,
+				Number = true,
+				TextXAlignment = s[2] == 0 and Enum.TextXAlignment.Left or Enum.TextXAlignment.Right,
+				ZIndex = 2,
+				Parent = bar,
+			})
+		end
 	end
 	ui.warBar = bar
 
@@ -1106,12 +1136,13 @@ local function buildWar(root)
 	-- Neutral / None earn no points: no 내 점수). L.WarLine writes it
 	local row = UIKit.Create("Frame", {
 		Name = "Info",
-		Position = UDim2.fromOffset(0, barY + barH + 3),
-		Size = UDim2.new(1, 0, 0, 20),
+		Position = UDim2.fromOffset(TB.BarIn, barY + barH + 3),
+		Size = UDim2.new(1, -2 * TB.BarIn, 0, 20),
 		BackgroundTransparency = 1,
 		Parent = w,
 	})
-	ui.warBand = L.SoftBand(row, "Center")
+	-- on the navy plate the line needs no soft band; without the plate art it keeps one
+	ui.warBand = (not plateArt) and L.SoftBand(row, "Center") or nil
 	ui.warLine = UIKit.StyledLabel({
 		Name = "Text",
 		Size = UDim2.fromScale(1, 1),
@@ -1127,11 +1158,22 @@ end
 
 -- the bar keeps 22du, the info line takes the rest of the meter's height (Rects.war_meter: 52.5du PC, 50.7du phone):
 -- 19.5du = 15.6 px on the PC, 17.7du = 13.3 px on the reference phone (NameTag floor 12 px)
+-- the top bar plate: the whole meter with the info line, only the bar while the line is folded (A23-68 #4)
+function L.SizeWarPlate()
+	local plate, TB = ui.warPlate, L.WarTop
+	if not plate then return end
+	if ui.warInfo and ui.warInfo.Visible then
+		plate.Size = UDim2.new(1, 0, 1, TB.PlateUp + TB.PlateDown)
+	else
+		plate.Size = UDim2.new(1, 0, 0, TB.PlateUp + 8 + 22 + TB.PlateFold)
+	end
+end
+
 function L.LayoutWar(h)
 	L.WarH = h
 	local info = math.clamp(h - 8 - 22 - 3, 14, 22)
-	ui.warInfo.Position = UDim2.fromOffset(0, 8 + 22 + 3)
-	ui.warInfo.Size = UDim2.new(1, 0, 0, info)
+	ui.warInfo.Position = UDim2.fromOffset(L.WarTop.BarIn, 8 + 22 + 3)
+	ui.warInfo.Size = UDim2.new(1, -2 * L.WarTop.BarIn, 0, info)
 	-- the band hugs the text: as wide as the line plus a margin that fades out
 	local tb = ui.warLine.TextBounds.X
 	if ui.warBand and tb > 0 then
@@ -1306,14 +1348,18 @@ local function buildChips(root)
 	}
 	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
-	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "IconStar" }
+	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
+		Boost = "IconExp" }
 	ui.chip = {}
-	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Rookie", "Protected", "Blessing", "Size", "Kaiju" }
+	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
+	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
+	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Boost", "Rookie", "Protected", "Blessing", "Size", "Kaiju" }
 	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
 	end
 	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
+	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
 end
 
@@ -1374,11 +1420,12 @@ local function buildQuests(root)
 		toggleQuests()
 	end, { CornerRadius = UDim.new(0, 10) })
 	-- the star sits in the plate's left disc; L.LayoutQuestHeader follows the header height
-	ui.questHeaderIcon = UIKit.ArtImage("IconStar", {
+	ui.questHeaderIcon = UIKit.ArtImage("Star", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.new(0, hh * 0.47, 0.5, 0),
 		Size = UDim2.fromOffset(hh * 0.6, hh * 0.6),
+		ImageColor3 = ac("StarGold", Theme.Gold),
 		ZIndex = 2,
 		Parent = ui.questHeader,
 	})
@@ -1425,9 +1472,9 @@ local function buildQuests(root)
 	local listParent = ui.quests
 	ui.questRowW = 300 -- applyLayout: Rects.quest width (desktop)
 	if IS_TOUCH then
-		local pad = 10
+		local pad = 14 -- PanelMain's navy rim is ~12 du at its 0.35 slice scale
 		ui.questRowW = L.OverlayW - 2 * pad
-		ui.questOverlay = UIKit.ArtFrame("PanelParchment", {
+		ui.questOverlay = UIKit.ArtFrame("PanelMain", {
 			Name = "QuestOverlay",
 			Size = UDim2.fromOffset(L.OverlayW, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
@@ -1464,7 +1511,7 @@ local function buildQuests(root)
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			Parent = top,
 		})
-		local _, closeLabel = UIKit.ArtButton("Pill", {
+		local _, closeLabel = UIKit.ArtButton("Chip", {
 			Name = "Close",
 			AnchorPoint = Vector2.new(1, 0),
 			Position = UDim2.fromScale(1, 0),
@@ -1644,7 +1691,7 @@ function L.BuildQuestLines(root)
 			row.AutoButtonColor = false
 			row.Activated:Connect(function() L.QuestLineTap(i) end)
 		end
-		local icon = UIKit.ArtImage("IconScroll", {
+		local icon = UIKit.ArtImage("GlyphQuest", {
 			Name = "Icon",
 			LayoutOrder = 1,
 			Size = UDim2.fromOffset(24, 24),
@@ -1682,7 +1729,7 @@ function L.BuildQuestLines(root)
 			Parent = row,
 		}, "Number")
 		-- 받기: the green candy pill (same art as the list rows' 받기), text on it
-		local claim = UIKit.ArtFrame("Pill", {
+		local claim = UIKit.ArtFrame("Chip", {
 			Name = "Claim",
 			LayoutOrder = 4,
 			ImageColor3 = COL.HotTint,
@@ -1797,8 +1844,9 @@ function L.SetQuestLine(l, e, label, nums)
 	l.Nums.Text = nums or ""
 	if l.Icon then
 		local head = e and e.Unit and UIKit.ArtId("IconMon" .. e.Unit)
-		local key = e and (QUEST_ICON[e.Id] or "IconScroll") or "IconStar"
-		l.Icon.Image = head or UIKit.ArtId(key) or UIKit.ArtId("IconScroll") or l.Icon.Image
+		local key = e and (QUEST_ICON[e.Id] or "GlyphQuest") or "Star"
+		l.Icon.Image = head or UIKit.ArtId(key) or UIKit.ArtId("GlyphQuest") or l.Icon.Image
+		l.Icon.ImageColor3 = (not head and key == "Star") and ac("StarGold", Theme.Gold) or COL.White
 	end
 	task.defer(L.FitQuestLine, l) -- after the row's list layout placed the numbers / 받기
 end
@@ -1876,7 +1924,7 @@ end
 
 ----------------------------------------------------------------- building: travel bar
 local function buildTravel(root)
-	ui.travel = UIKit.ArtFrame("PanelParchment", {
+	ui.travel = UIKit.ArtFrame("ListRow", {
 		Name = "Travel",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, IS_TOUCH and 0.42 or 0.6), -- U3: touch stays above the thumbstick zone
@@ -2025,12 +2073,14 @@ local function tileButton(def, onClick)
 	-- 내 캐릭터 follows CharacterGender (IconCharacterF) through UIKit.CharacterIcon
 	local img = (def.Id == "Character" and type(UIKit.CharacterIcon) == "function") and UIKit.CharacterIcon(iconProps)
 		or UIKit.ArtImage(def.Icon, iconProps)
-	-- A23-48: English names ('Settings', 'Ranking') may reach a little past the tile's rim and shrink to 10 px (검수)
+	-- 검수 2026-10-08 (user: 'Settings' / 'Ranking' ran out of their buttons): the name stays inside the tile's gold rim
+	-- (L.TileNameInset du in all) and shrinks down to L.TileNamePx real px - 'Settings' needs ~8.5 px in the 44 px top
+	-- bar squares; under L.TileLabelMinPx px tiles show icons only (L.LayoutTiles). It was 1.08 x the tile at >= 10 px
 	local label = artLabel(false, {
 		Name = "Label",
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -2),
-		Size = UDim2.new(1.16, 0, 0.3, 0),
+		Position = UDim2.new(0.5, 0, 1, -3),
+		Size = UDim2.new(1, -L.TileNameInset, 0.3, 0),
 		TextScaled = true,
 		MaxTextSize = 14,
 		Title = true,
@@ -2038,8 +2088,8 @@ local function tileButton(def, onClick)
 		ZIndex = 4,
 		Parent = btn,
 	})
-	label:SetAttribute("StyleMinPx", 10)
-	L.FitText(label, 12, true, 10)
+	label:SetAttribute("StyleMinPx", L.TileNamePx)
+	L.FitText(label, 12, true, L.TileNamePx)
 	if type(UIKit.StyleText) == "function" then UIKit.StyleText(label, "NameTag") end -- A23-38: white name, navy rim
 	if def.Key then keyHint(btn, def.Key, UDim2.new(1, -2, 0, 2), Vector2.new(1, 0)) end
 	return btn, label, img
@@ -2302,7 +2352,7 @@ local function buildButtons(root)
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
 	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
 		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews,
-		Travel = TXT.TileTravel, Help = TXT.TileHelp }
+		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop }
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
@@ -2316,11 +2366,11 @@ local function buildButtons(root)
 	-- A23-1 auto combat ON/OFF (round, Firefly BtnRound): hidden until the crown-shard quest unlocks it (no "unlocks at
 	-- ..." teaser); ON = gold ring, OFF = dimmed disc
 	ui.auto, ui.autoArt = roundButton("Auto", L.Square, "BtnRound", COL.ReleaseFill)
-	UIKit.ArtImage("Crown", {
+	UIKit.ArtImage("GlyphAuto", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.4),
-		Size = UDim2.fromScale(0.5, 0.34),
+		Size = UDim2.fromScale(0.46, 0.46),
 		ZIndex = 3,
 		Parent = ui.auto,
 	})
@@ -2363,24 +2413,24 @@ function L.RefreshAttackGlyph()
 	})
 end
 
--- the Q button's icon: my class's skill art (bundle 14 Skill_<Class>_Q, a square icon) or the winged IconSpecial before a
--- class is chosen / for a class without its own art (the Artisan pet tamer's 펫 돌진 waits for its icon, A23-39)
+-- the Q button's icon: my class's skill art (bundle 14 Skill_<Class>_Q, a square icon), else the Warrior's Q icon before a
+-- class is chosen / for a class without its own art (the Artisan pet tamer's 펫 돌진 waits for its icon, A23-39;
+-- 그림체 #15: it was the old winged IconSpecial)
 function L.RefreshSkillIcon()
 	local rel = ui.release
 	if not rel then return end
 	local class = attr("ClassChosen", false) == true and getClass() or nil
 	local key = (class and not (class == "Archer" and getFaction() == "Neutral")) and ("Skill_" .. class .. "_Q") or nil
-	if not (key and UIKit.ArtId(key)) then key = "IconSpecial" end
+	if not (key and UIKit.ArtId(key)) then key = "Skill_Warrior_Q" end
 	if ui.releaseIconKey == key and ui.releaseIcon and ui.releaseIcon.Parent then return end
 	ui.releaseIconKey = key
 	local visible = not ui.releaseIcon or ui.releaseIcon.Visible
 	if ui.releaseIcon then ui.releaseIcon:Destroy() end
-	local square = key ~= "IconSpecial"
 	ui.releaseIcon = UIKit.ArtImage(key, {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, square and 0.4 or 0.42),
-		Size = square and UDim2.fromScale(0.5, 0.5) or UDim2.fromScale(0.56, 0.34),
+		Position = UDim2.fromScale(0.5, 0.4),
+		Size = UDim2.fromScale(0.5, 0.5),
 		Visible = visible,
 		ZIndex = 3,
 		Parent = rel,
@@ -2537,8 +2587,10 @@ function L.PortraitRebuild(state, revision)
 	copy.Parent = state.World
 	state.View:SetAttribute("CharacterName", character.Name)
 	local up = root.CFrame.UpVector
-	local focus = head.Position - up * head.Size.Y * 0.04
-	local span = math.max(head.Size.X, head.Size.Y) * 0.85
+	-- 검수 2026-10-08 (user: the face filled the whole ring): a bust - the head and the shoulders. The frame's centre
+	-- drops PortraitDrop head heights below the head's middle and it spans PortraitSpan head heights
+	local focus = head.Position - up * head.Size.Y * L.PortraitDrop
+	local span = math.max(head.Size.X, head.Size.Y) * L.PortraitSpan
 	local distance = span / (2 * math.tan(math.rad(state.Camera.FieldOfView / 2))) + head.Size.Z * 0.5
 	state.Camera.CFrame = CFrame.lookAt(focus + root.CFrame.LookVector * distance, focus, up)
 	state.Camera.Focus = CFrame.new(focus)
@@ -2659,6 +2711,26 @@ function L.LuckText()
 	return line
 end
 
+-- A23-75: one gold chip while a 2x pass is owned (attribute names from Config.GamePasses, 게임성 개발 2); its icon is
+-- the XP star, or the gold pile for 2x Gold alone
+function L.RefreshBoost()
+	local chip = ui.chip.Boost
+	if not chip then return end
+	local passes = type(Config.GamePasses) == "table" and Config.GamePasses or {}
+	local function owns(kind, default)
+		local def = type(passes[kind]) == "table" and passes[kind] or {}
+		return attr(type(def.Attr) == "string" and def.Attr or default, false) == true
+	end
+	local xp, gold = owns("XP2", "PassXP2"), owns("Gold2", "PassGold2")
+	setChip(chip, xp or gold, (xp and gold) and TXT.BoostBoth or (xp and TXT.BoostXP or TXT.BoostGold), Theme.Gold, true,
+		nil, true)
+	local key = (gold and not xp) and "IconGoldPile" or "IconExp"
+	if chip.Icon and chip.IconKey ~= key then
+		local id = UIKit.ArtId(key)
+		if id then chip.Icon.Image, chip.IconKey = id, key end
+	end
+end
+
 refreshChips = function()
 	local f = getFaction()
 	local now = Util.Now()
@@ -2708,6 +2780,7 @@ refreshChips = function()
 	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
 	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
+	L.RefreshBoost()
 
 	-- A23-40: at most L.MaxChips chips in their order (fewer when they do not fit the row, L.CheckChipFit); the rest fold
 	-- into one '+N' chip (no stacked rows)
@@ -2759,8 +2832,8 @@ local function refreshWar()
 	ui.hornsFill.Visible = frac < 0.999
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
 	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(frac, 0.5) end
-	ui.haloNum.Text = string.format(TXT.WarHalo, fmtScore(h))
-	ui.hornsNum.Text = string.format(TXT.WarHorns, fmtScore(r))
+	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or string.format(TXT.WarHalo, fmtScore(h))
+	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or string.format(TXT.WarHorns, fmtScore(r))
 
 	local mode = UIKit.GameAttr("WarMode", "Idle")
 	L.WarParts.Siege = mode == "Siege" and string.format(TXT.Siege, Config.War.SiegeTarget or 150) or nil
@@ -2840,6 +2913,7 @@ HUD.RookieFold = L.RookieFold -- EventHUD reads the same rule
 function L.ApplyFold(changed)
 	local fold = L.RookieFold()
 	if ui.warInfo and ui.warInfo.Visible == fold then ui.warInfo.Visible = not fold end
+	L.SizeWarPlate()
 	if changed and L.WasFolded == true and not fold and type(UIKit.NewTag) == "function" then
 		pcall(UIKit.NewTag, ui.warBand or ui.warInfo)
 		task.delay(0.6, function() -- after the quest lines were rebuilt with the unfolded rows
@@ -3341,7 +3415,7 @@ end
 local function makeQuestRow(index)
 	local W, R = ui.questRowW, L.QuestMetrics(currentScale())
 	local H = R.Height
-	local row, isArt = UIKit.ArtFrame("PanelParchment", {
+	local row, isArt = UIKit.ArtFrame("ListRow", {
 		Name = "Quest" .. index,
 		LayoutOrder = index,
 		Size = UDim2.fromOffset(W, H),
@@ -3362,7 +3436,7 @@ local function makeQuestRow(index)
 		if r.Entry and (r.Entry.Pinned or r.Entry.Story) and L.PinnedTap then L.PinnedTap(r.Entry, r) end
 	end)
 	local iconS = L.QuestRowH - 20
-	r.Icon = UIKit.ArtImage("IconScroll", {
+	r.Icon = UIKit.ArtImage("GlyphQuest", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(0, 8, 0.5, 0),
@@ -3438,7 +3512,7 @@ local function makeQuestRow(index)
 	})
 	-- 받기: green candy pill over the reward (bottom-right)
 	local claimH = R.BtnH + 4
-	local claim, claimLabel = UIKit.ArtButton("Pill", {
+	local claim, claimLabel = UIKit.ArtButton("Chip", {
 		Name = "Claim",
 		Position = UDim2.fromOffset(rx - 6, H - claimH - 4),
 		Size = UDim2.fromOffset(R.Reward + 10, claimH),
@@ -3454,8 +3528,8 @@ local function makeQuestRow(index)
 	end, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
 	r.Claim = claim
 	L.FitText(claimLabel, 12)
-	-- 교체: small parchment pill (top-right)
-	local reroll, rerollLabel = UIKit.ArtButton("Pill", {
+	-- 교체: small white chip (top-right)
+	local reroll, rerollLabel = UIKit.ArtButton("Chip", {
 		Name = "Reroll",
 		Position = UDim2.fromOffset(W - R.Reroll - 8, 4),
 		Size = UDim2.fromOffset(R.Reroll, R.BtnH),
@@ -3687,7 +3761,7 @@ refreshQuests = function()
 		if r.Icon then
 			-- a kill quest shows its monster's head (IconMon<Kind>) when that art exists, else the row type's icon
 			local head = e.Unit and UIKit.ArtId("IconMon" .. e.Unit)
-			r.Icon.Image = head or UIKit.ArtId(QUEST_ICON[e.Id] or "IconScroll") or UIKit.ArtId("IconSlime") or r.Icon.Image
+			r.Icon.Image = head or UIKit.ArtId(QUEST_ICON[e.Id] or "GlyphQuest") or UIKit.ArtId("IconSlime") or r.Icon.Image
 		end
 		r.Text.Text = (i == callIndex) and call.Label or e.Text
 		r.Text.TextWrapped = not e.ShowProgress
@@ -4546,11 +4620,25 @@ function L.LayoutTiles(tr)
 	local size, gap = tr.Size or tr.H, tr.Gap or 4
 	local total = n * size + (n - 1) * gap
 	local x0 = IS_TOUCH and (tr.X + tr.W - total) or (tr.X + (tr.W - total) / 2)
+	-- small PC windows (main Studio 2026-10-08: 991x451 -> UIScale 0.5, 33 px tiles): a name no longer fits under its icon
+	-- and ran under the next tile ("Map?ankin("); below L.TileLabelMinPx real px the tiles show their icons only
+	local named = size * currentScale() >= L.TileLabelMinPx
 	for i, t in shown do
 		t.Button.Size = UDim2.fromOffset(size, size)
 		t.Button.Position = UDim2.fromOffset(x0 + (i - 1) * (size + gap) + size / 2, tr.Y + size / 2)
+		if t.Label and t.Label.Visible ~= named then t.Label.Visible = named end
 	end
 end
+L.TileLabelMinPx = 40
+-- tile names inside the rim (tileButton): the inset du in all (the rim is ~4 px a side; phones keep their 11 px floor,
+-- so their names may touch the rim's inner edge: 'Settings' is 41 px at 11 px in a 45 px square)
+L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
+-- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
+-- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du
+-- (their centres BadgeOut du outside the meter's ends... negative = inside), the bar and the info line BarIn du in from
+-- each end, the crown Crown du
+L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40 }
+L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
 applyLayout = function()

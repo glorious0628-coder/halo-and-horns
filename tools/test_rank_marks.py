@@ -38,6 +38,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
             "charScale, buildNeutralGear = ...\nlocal V = Config.Visuals\nlocal NEUTRAL_ID = \"Neutral\"\n"
             + head_slots + "\n"
             + function_block(visuals, "local function attrNum(")
+            + function_block(visuals, "local function attrStr(")
+            + function_block(visuals, "local function lookTheme(")  # A23-75 / A23-77: the worn look's theme (shop)
             + function_block(visuals, "local function markTemplate(")
             + function_block(visuals, "local function markFloor(")
             + function_block(visuals, "local function buildMarkModel(")

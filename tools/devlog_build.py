@@ -502,6 +502,12 @@ def choice_cells():
             lab = text_img([(word, col)], fit_size(word, cw - 40, 92))
             cell.alpha_composite(lab, ((cw - lab.width) // 2, 190 + k * 96))
         cells.append((cell, CAPX + (-1 if i == 0 else 1) * (cw + gap) // 2, 820))
+    box = Image.new("RGBA", (190, 190), (0, 0, 0, 0))   # the lost lunchbox the choice is about
+    ImageDraw.Draw(box).text((8, 8), "🍱", font=ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109), embedded_color=True)
+    box = contain(box.crop(box.getbbox() or (0, 0, 1, 1)), 240, 240)
+    cells.insert(0, (box, CAPX, 470))
+    com = text_img([("COMMENT ", WHITE), ("😇", WHITE), (" OR ", WHITE), ("😈", WHITE)], 70) if False else text_img([("COMMENT BELOW!", WHITE)], 72)
+    cells.append((com, CAPX, 1100))
     return cells
 
 
@@ -599,6 +605,20 @@ def board_pic_full(img, crop=None):
     return bg
 
 
+NOGRID = [(CAPX - 215, 560), (CAPX + 215, 560), (CAPX - 215, 1000), (CAPX + 215, 1000)]  # cell centres, 400 px cells
+
+
+def board_nogrid(imgs):
+    """up to 4 candidate pictures on a stage (the director's NO pile)"""
+    c = board_stage("#3A3F66", "#10122A")
+    for (cx, cy), f in zip(NOGRID, imgs):
+        card = rounded((400, 400), 30, hexrgb("#F4EEDF"), outline=hexrgb("#2A2F55"), width=6)
+        im = contain(load_rgba(os.path.join(ROOT, f)), 360, 360)
+        card.alpha_composite(im, ((400 - im.width) // 2, (400 - im.height) // 2))
+        soft_shadow_paste(c, card, (cx - 200, cy - 200))
+    return c
+
+
 def board_image(img, focus=(0.5, 0.5)):
     c = Image.new("RGBA", (W, H))
     c.alpha_composite(cover(Image.open(os.path.join(ROOT, img)).convert("RGBA"), W, H, focus))
@@ -628,6 +648,8 @@ def get_board(shot):
         im = board_code()
     elif b == "doodle":
         im = board_doodle()
+    elif b == "nogrid":
+        im = board_nogrid(shot["imgs"])
     elif b in ("grid6", "stage", "team_cards", "choice2"):
         im = board_stage("#5A3A9A", "#140A24") if b == "grid6" else board_stage("#2B3A8A", "#0A0D22") if b == "team_cards" else board_stage("#3A2A6A", "#0E0A1E") if b == "choice2" else board_stage()
     elif "image" in shot:
@@ -789,6 +811,12 @@ def caption_chunks(text, hl, hlr, max_chars=14, max_words=3):
     return out
 
 
+def cap_upper(t):
+    """caption caps, but a plural acronym keeps its small s ('AIs', not 'AIS')"""
+    keep = set(m.group(1).upper() for m in re.finditer(r"(?<![A-Za-z])([A-Z]{2,})s(?![A-Za-z])", t))
+    return re.sub(r"(?<![A-Z])([A-Z]{2,})S(?![A-Z])", lambda m: m.group(1) + "s" if m.group(1) in keep else m.group(0), t.upper())
+
+
 def word_times(it):
     """(WORD, start s) of each spoken word of a timeline line, timed exactly like the neon karaoke captions"""
     line = it["line"]
@@ -837,7 +865,7 @@ def build_caption_events(timeline, style="band"):
                             max_words=NEON_CHUNK[1] if style == "neon" else 3)
         if style == "neon":
             ncol = NEON.get(line.get("neon", "yellow"), NEON["yellow"])
-            words_all = [[(t.upper(), c) for t, c in ch_] for ch_ in cs]
+            words_all = [[(cap_upper(t), c) for t, c in ch_] for ch_ in cs]
             lens = [sum(len(t) for t, _ in c) + 3 for c in words_all]
             t0, t1 = it["start"], it["speech_end"]
             t = t0
@@ -1154,6 +1182,9 @@ def build_short(short, voice, out_root, do_tts=True):
             if reader:
                 comp = compose_video_fit if s.get("fit") else compose_video_full if s.get("full") else compose_video_band if style == "neon" else compose_video_frame
                 fr = comp(reader.next(), s, t, top).convert("RGBA")
+                if s.get("tint"):   # a colour wash for the shot (devil = purple, 검수 v7: the two lunchbox results must differ)
+                    tc = hexrgb(s["tint"][0])[:3]
+                    fr = Image.blend(fr, Image.new("RGBA", (W, H), tc + (255,)), float(s["tint"][1]))
             else:
                 base = get_board(s)
                 z0, z1 = s.get("z", [1.0, 1.06])
@@ -1188,6 +1219,20 @@ def build_short(short, voice, out_root, do_tts=True):
                         yy = y0_ + sign * sp_ * i
                         if -200 < yy < H + 200:
                             paste_center(fr, im_.rotate(rot_ * i, resample=Image.BICUBIC, expand=True) if rot_ else im_, x_, yy)
+            if s.get("xcells"):  # a red X on each NO-pile picture in turn
+                xm = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                dx = ImageDraw.Draw(xm)
+                for ci_, (cx_, cy_) in enumerate(NOGRID[:len(s.get("imgs", []))]):
+                    if ci_ in s.get("keep", []):
+                        continue
+                    prog = ease((i - 3 - ci_ * float(s["xcells"]) * FPS) / 4)
+                    if prog > 0:
+                        r_ = 150
+                        for p0, p1 in (((cx_ - r_, cy_ - r_), (cx_ + r_, cy_ + r_)), ((cx_ + r_, cy_ - r_), (cx_ - r_, cy_ + r_))):
+                            e_ = (lerp(p0[0], p1[0], prog), lerp(p0[1], p1[1], prog))
+                            dx.line([p0, e_], fill=(20, 0, 0, 200), width=46)
+                            dx.line([p0, e_], fill=(235, 40, 40, 255), width=34)
+                fr.alpha_composite(xm)
             if s.get("xmark"):
                 xm = Image.new("RGBA", (W, H), (0, 0, 0, 0))
                 dx = ImageDraw.Draw(xm)
@@ -1299,7 +1344,7 @@ def build_short(short, voice, out_root, do_tts=True):
     m = short.get("meta", {})
     dur = probe_duration(final)
     open(os.path.join(out_dir, "meta.txt"), "w", encoding="utf-8").write(
-        "TITLE (EN): %s\n제목 (KO): %s\n\nDESCRIPTION (EN):\n%s\n\n설명 (KO): %s\n\nHASHTAGS: %s\n\nLENGTH %.1f s · 1080x1920 · 30 fps · {DAYS}=%d (built %s KST)\n"
+        "TITLE (EN): %s\n제목 (KO): %s\n\nDESCRIPTION (EN):\n%s\n\n설명 (KO): %s\n\nHASHTAGS: %s\n\nLENGTH %.1f s · 1080x1920 · 30 fps · beta in %d days (built %s KST)\n"
         % (m.get("title_en", ""), m.get("title_ko", ""), m.get("desc_en", ""), m.get("desc_ko", ""), " ".join(m.get("tags", [])),
            dur, days_left(), dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).strftime("%Y-%m-%d %H:%M")))
     print("%s  %.1fs  %.1f MB" % (final, dur, os.path.getsize(final) / 1e6), flush=True)
@@ -1355,9 +1400,11 @@ def srt_time(t):
 
 def write_srts(timeline, out_dir):
     en, ko = [], []
-    timeline = [it for it in timeline if not it["line"].get("silent") and it["line"].get("cap") is not False]
+    timeline = [it for it in timeline if (it["line"].get("srt") or not it["line"].get("silent")) and it["line"].get("cap") is not False
+                or it["line"].get("srt")]
     for n, it in enumerate(timeline, 1):
-        span = "%s --> %s" % (srt_time(it["start"]), srt_time(it["speech_end"] + 0.05))
+        end_ = it["speech_end"] + 0.05 if not it["line"].get("silent") else it["start"] + float(it["line"]["silent"])
+        span = "%s --> %s" % (srt_time(it["start"]), srt_time(end_))
         en.append("%d\n%s\n%s\n" % (n, span, fill(it["line"]["en"])))
         ko.append("%d\n%s\n%s\n" % (n, span, fill(it["line"]["ko"])))
     open(os.path.join(out_dir, "en.srt"), "w", encoding="utf-8").write("\n".join(en))

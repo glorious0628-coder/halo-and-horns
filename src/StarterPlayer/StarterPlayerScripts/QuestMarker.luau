@@ -104,11 +104,13 @@ T.Fit(1)
 -- HUD layout B blocks the edge indicator stays out of (C.HUD.Layout.Rects ids, each group = one union box)
 local AVOID = {
 	{ "minimap", "quest" }, -- top-left minimap + quest lines
-	{ "portrait", "hp_bar", "mp_bar", "power_line", "xp_bar", "tiles" }, -- plate + icon tiles (PC bottom, phone top-right)
+	{ "portrait", "hp_bar", "mp_bar", "power_line", "xp_bar", "tiles" }, -- the bottom-centre face / bars / icon row
 	{ "war_meter", "chips", "event", "notify" }, -- top centre column
-	{ "potions", "ghost", "q", "z", "x", "auto", "attack" }, -- bottom-right combat cluster (x: A23-49 SkillBar)
-	{ "menu" }, -- [Menu] (A23-40 정정: PC top-right corner, phones the tile row's right end)
+	{ "ghost", "q", "z", "x", "auto", "attack" }, -- bottom-right combat cluster (x: A23-49 SkillBar)
+	{ "menu" }, -- [Menu] in the Roblox top bar's right end (A23-40 보강)
 }
+-- the potion pair (HudLayout 2026-10-07): PCs end the bottom-centre row with it, phones put it on the thumb ring
+table.insert(IS_TOUCH and AVOID[4] or AVOID[2], "potions")
 
 ----------------------------------------------------------------- colours / text
 local COL = {
@@ -458,6 +460,7 @@ local function readAvoid(W, H)
 		table.insert(boxes, { layout.ClusterLeft, layout.ClusterTop, W, H })
 		table.insert(raw, { layout.ClusterLeft, layout.ClusterTop, W, H })
 	end
+	local hudCount = #boxes -- the HUD blocks only (the on-screen marker rises above them; not above the thumbstick zone)
 	if IS_TOUCH then
 		table.insert(boxes, { 0, H * T.StickTop, W * T.StickX, H })
 		table.insert(raw, { 0, H * T.StickTop, W * T.StickX, H })
@@ -466,6 +469,7 @@ local function readAvoid(W, H)
 		b[1], b[2], b[3], b[4] = b[1] - T.HalfX, b[2] - T.HalfY, b[3] + T.HalfX, b[4] + T.HalfY
 	end
 	S.avoid, S.raw = boxes, raw
+	S.hud = table.move(boxes, 1, hudCount, 1, {})
 end
 
 local function hitAny(px, py, list)
@@ -677,6 +681,14 @@ local function moveStep()
 		S.posX, S.rot, S.labelUp = nil, nil, nil -- the next placement writes everything
 	end
 	if onScreen then
+		-- 2026-10-08 (main Studio phone: the marker and "19m" sat on "Lv 1 · 245"): a target behind a HUD block keeps its
+		-- column but rises just above that block (S.hud = the HUD blocks inflated by the indicator's footprint)
+		readAvoid(W, H)
+		for _ = 1, 2 do
+			for _, b in S.hud or {} do
+				if lx > b[1] and lx < b[3] and ly > b[2] and ly < b[4] then ly = b[2] end
+			end
+		end
 		moveTo(lx, ly)
 		labelAbove(false)
 	else
