@@ -556,5 +556,10 @@
   "BarkBubbleSkeletonKnight": "rbxassetid://134713081207957",
   "BarkBubbleGhostMinion": "rbxassetid://121325988367395",
   "BarkBubbleLittleGhost": "rbxassetid://106182896723807",
-  "BarkBubbleGhostKing": "rbxassetid://120140777254240"
+  "BarkBubbleGhostKing": "rbxassetid://120140777254240",
+  "PassIconExp2": "rbxassetid://84663066597118",
+  "PassIconGold2": "rbxassetid://100341080284667",
+  "PassIconVIP": "rbxassetid://98036294458431",
+  "PassIconBundle": "rbxassetid://136373208143894",
+  "Tex_WaterfallFlow_FF2": "rbxassetid://86909517913668"
 }
