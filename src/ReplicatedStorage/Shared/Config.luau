@@ -3940,7 +3940,7 @@ Config.Sounds = { -- optional built-in files; client must pcall and ignore failu
 }
 
 -- quality ① (docs/design/quality_ideas_2026-10-06.md §1) with 검수's sound table (docs/design/lines_pack_2026-10-06.md §6):
--- Audio.luau's sound effects. Files: art/sfx/<file>.ogg (tools/sfx_game.py final: Kenney CC0 + our synth; sources in
+-- Audio.luau's sound effects. Files: art/sfx/<file>.wav (tools/sfx_game.py final: Kenney CC0 + our synth; sources in
 -- art/sfx/sources.json and docs/devlog/sfx_licenses.md), each levelled the same (loudest 100 ms RMS -18 dBFS, peak -3 dBFS),
 -- so Volume alone sets the mix: combat 0.28-0.40 < UI 0.42-0.60 < big moments 0.65-0.75 < level up 0.85.
 -- Files[file] = asset id; "" = silent until uploaded (nothing changes before the uploads).

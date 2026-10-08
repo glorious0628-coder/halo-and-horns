@@ -90,6 +90,22 @@ return game:GetService("HttpService"):JSONEncode({ N = #near, MinRatio = minRati
 	Past = past, Line = line, Me = { root.Position.X, root.Position.Z }, Pos = pos })
 """
 # client: set me down at (x, z) on the ground facing (fx, fz) - pcc.STAND; walk to (x, z) - pcc's WALK
+# client: the camera for a horizon photo (style drift #18: the fog against the sky), then back to the player
+CAM_LOOK = r"""
+local cam = workspace.CurrentCamera
+cam.CameraType = Enum.CameraType.Scriptable
+cam.CFrame = CFrame.lookAt(Vector3.new(%s, %s, %s), Vector3.new(%s, %s, %s))
+return "camera set"
+"""
+CAM_BACK = r"""
+local cam = workspace.CurrentCamera
+local p = game:GetService("Players").LocalPlayer
+cam.CameraType = Enum.CameraType.Custom
+local hum = p.Character and p.Character:FindFirstChildOfClass("Humanoid")
+if hum then cam.CameraSubject = hum end
+return "camera back"
+"""
+HORIZON = [("03_horizon_sea", (0, 30, -60), (-900, 10, -600)), ("04_high_view", (80, 160, 120), (900, 0, 600))]
 
 
 def main():
@@ -154,6 +170,12 @@ def main():
             results["the slimes are not frozen (positions change over 6 s)"] = first_pos != last_pos
         else:
             results["at least two slimes followed me to the edge"] = False
+        # the fog against the sky (Config.Sky.Neutral FogColor = the horizon colour, 10/08)
+        for name, (cx, cy, cz), (lx, ly, lz) in HORIZON:
+            psc.note(psc.lua(c, CAM_LOOK % (cx, cy, cz, lx, ly, lz), "Client"))
+            time.sleep(1.0)
+            psc.save(c, name)
+        psc.note(psc.lua(c, CAM_BACK, "Client"))
         con = psc.text_of(c.call("get_console_output", {}))
         errs = [ln for ln in con.splitlines() if any(k in ln.lower() for k in ("error", "failed", "infinite yield"))
                 and "DataStore" not in ln]
