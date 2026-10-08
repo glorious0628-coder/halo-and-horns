@@ -1,0 +1,9 @@
+{
+ "the pause card opens: Saved! / Next time: <goal>": true,
+ "[Keep playing] and [OK], one size, no other button": true,
+ "a real click on [OK] closes it": true,
+ "Welcome back opens: Welcome back! / Next: <goal>": true,
+ "[Go] and [OK], one size": true,
+ "a real click on [Go] closes it and starts the travel": true,
+ "no PauseCard error in the console": true
+}
