@@ -7774,5 +7774,63 @@
   "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/emo_rays_final.jpg",
   "note": "직업 고르기 머리 방패(빛): 금 방패 + 후광 + 하늘 보석, 해·빛살 없음. 옛 UIP_ShieldHalo 대체. #11 때 Horns와 짝 맞추기(검수)."
+ },
+ "Tex_SkeletonKnight_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/SkeletonKnight_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "해골 기사: 검은 갑옷 → 짙은 남보라(보라 빛·금 유지), --lift 0.26 --clean 0.4 --keep-hues 255-305,30-60 --tint 248,0.38 (style drift #35)"
+ },
+ "Tex_Goblin_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/Goblin_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "고블린: 얼룩 줄이고 조금 밝게, --lift 0.15 --sat 1.1 --clean 0.65 (style drift #35)"
+ },
+ "Tex_GoblinBrute_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/GoblinBrute_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "고블린 브루트: --lift 0.18 --sat 1.08 --clean 0.6 (style drift #35)"
+ },
+ "Tex_Skeleton_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/Skeleton_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "옷 입은 해골(SkeletonClothed 텍스처): --lift 0.15 --sat 1.05 --clean 0.65 (style drift #35)"
+ },
+ "KingSlimeCrown": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — Blender, tools/img2/slime_crown.py",
+  "file": "art/models/tripo/KingSlimeCrown.glb",
+  "use": "BigSlime only, welded on; how-to docs/design/king_slime_crown_2026-10-08.md",
+  "note": "왕 슬라임 금 왕관(둥근 끝 5개 + 공), 머리 크리스탈을 둘러쌈. WorldKit 가져오기 4묶음(검수)."
+ },
+ "MonsterSlimeCube_backfix": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (8d2aafe art/review/monsters/slime_back_face_fix.jpg)",
+  "tool": "0 credits — Blender, tools/img2/mon_back_flatten.py",
+  "file": "art/models/tripo/MonsterSlimeCube_backfix.glb",
+  "note": "A23-81: 슬라임·왕 슬라임 공용 메시의 뒷면 얼굴 볼록 자국을 매끈하게 폄(앞 얼굴·UV 그대로). WorldKit 가져오기 4묶음(검수)."
+ },
+ "SlimeEyeHighlight_rejected": {
+  "status": "rejected",
+  "date": "2026-10-08",
+  "note": "#25 눈: 사용자 거절(10/08 '눈 초롱거리는 건 전이 나은데?'), 옛 눈 유지. art/models/tripo/MonsterSlimeCube_tex_eyes.png · BigSlimeCube_tex_blue_eyes.png 는 올리지 않음."
  }
 }
