@@ -38,9 +38,22 @@ def fidelity(name):
     return "Hull"
 
 
-rows = ",\n".join(
-    '  {name = "%s", mesh = "%s", tex = "%s", size = Vector3.new(%s, %s, %s), col = Enum.CollisionFidelity.%s}'
-    % (it["name"], it["meshId"], it["textureId"], *it["size_studs"], fidelity(it["name"])) for it in items)
+# 2026-10-08 (검수): "sa" = SurfaceAppearance maps (PBR import, e.g. the fountain); "group" + "offset" = one tile of a
+# multi-mesh model (castles cut in 9 texture tiles): every tile of a group goes into ONE Model named after the group,
+# at its offset (studs, tile centre relative to the group's bottom centre); the group pivot is that bottom centre.
+def row(it):
+    sa = it.get("sa") or {}
+    extra = ""
+    if sa:
+        extra += ", sa = {%s}" % ", ".join('%s = "%s"' % (k, v) for k, v in sa.items())
+    if it.get("group"):
+        extra += ', group = "%s", offset = Vector3.new(%s, %s, %s)' % (it["group"], *it["offset"])
+    return ('  {name = "%s", mesh = "%s", tex = "%s", size = Vector3.new(%s, %s, %s), col = Enum.CollisionFidelity.%s%s}'
+            % (it["name"], it["meshId"], it.get("textureId", ""), *it["size_studs"],
+               fidelity(it.get("group") or it["name"]), extra))
+
+
+rows = ",\n".join(row(it) for it in items)
 code = f'''local AssetService = game:GetService("AssetService")
 local PARENT, REPLACE = "{a.parent}", {"true" if a.replace else "false"}
 local node = nil
@@ -61,9 +74,12 @@ local items = {{
 {rows}
 }}
 local made, skipped, failed = 0, 0, {{}}
+local groups = {{}}  -- group name -> Model filled this run
 for _, it in ipairs(items) do
-  local old = node:FindFirstChild(it.name)
-  if old and not REPLACE then
+  local old = node:FindFirstChild(it.group or it.name)
+  if it.group and groups[it.group] then
+    old = nil
+  elseif old and not REPLACE then
     skipped += 1
     continue
   end
@@ -81,6 +97,31 @@ for _, it in ipairs(items) do
   mp.TextureID = it.tex
   mp.Size = it.size
   mp.Anchored = true
+  if it.sa then
+    local sa = Instance.new("SurfaceAppearance")
+    local okSa, errSa = pcall(function()
+      if it.sa.color then sa.ColorMap = it.sa.color end
+      if it.sa.normal then sa.NormalMap = it.sa.normal end
+      if it.sa.metal then sa.MetalnessMap = it.sa.metal end
+      if it.sa.rough then sa.RoughnessMap = it.sa.rough end
+    end)
+    if okSa then sa.Parent = mp else table.insert(failed, it.name .. " SurfaceAppearance: " .. tostring(errSa)) end
+  end
+  if it.group then
+    local g = groups[it.group]
+    if not g then
+      g = Instance.new("Model")
+      g.Name = it.group
+      g:SetAttribute("Front", "-Z")
+      g.WorldPivot = CFrame.new()
+      g.Parent = node
+      groups[it.group] = g
+    end
+    mp.CFrame = CFrame.new(it.offset)
+    mp.Parent = g
+    made += 1
+    continue
+  end
   mp.PivotOffset = CFrame.new(0, -it.size.Y / 2, 0)
   local m = Instance.new("Model")
   m.Name = it.name

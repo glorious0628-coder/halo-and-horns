@@ -1,0 +1,343 @@
+{
+ "made": "2026-10-08 검수 — WorldKit 3D 가져오기 첫 묶음(build/import_all/1_first: A 빛 성 9조각 + 분수 ②, E 게시판 2·모닥불, H 뿔 성 ③ v6mv 9조각), 가져오기 클릭 = 사용자, 업로드 계정 = 새 계정",
+ "convention": "MeshPart + 텍스처(또는 SurfaceAppearance). 크기 = 스터드. 앞 = -Z. 피벗 = 밑면 가운데. group 항목은 한 Model(group 이름) 안 타일, offset = 타일 가운데 - 묶음 밑면 가운데(WorldKit 자리에서 잼).",
+ "build": "py tools/build_kit_from_ids.py --list art/models/worldkit/import_first_assets_2026-10-08.json --parent ServerStorage/WorldKit3D --out build/kit_first_args.json → py tools/studio_mcp.py call execute_luau @build/kit_first_args.json",
+ "decision": "뿔 성 = ③ v6mv(사용자 10/08 '섞은 판 하자', SPEC A23-74)",
+ "items": [
+  {
+   "name": "Kit_M_JobBoard",
+   "meshId": "rbxassetid://138811329528887",
+   "textureId": "rbxassetid://73528761972961",
+   "size_studs": [
+    16.0,
+    14.936,
+    7.345
+   ]
+  },
+  {
+   "name": "Kit_W_Campfire_Fire",
+   "meshId": "rbxassetid://120066958109712",
+   "textureId": "rbxassetid://110765327962242",
+   "size_studs": [
+    4.0,
+    3.312,
+    3.896
+   ]
+  },
+  {
+   "name": "Kit_W_JobBoard",
+   "meshId": "rbxassetid://133466376538482",
+   "textureId": "rbxassetid://96878269286241",
+   "size_studs": [
+    16.0,
+    15.693,
+    7.376
+   ]
+  },
+  {
+   "name": "Town_Halo_Fountain",
+   "meshId": "rbxassetid://80450386554208",
+   "textureId": "",
+   "size_studs": [
+    21.0,
+    16.299,
+    20.889
+   ],
+   "sa": {
+    "color": "rbxassetid://81147547648492",
+    "normal": "rbxassetid://76055883794705",
+    "metal": "rbxassetid://70504367874253",
+    "rough": "rbxassetid://89877032775579"
+   },
+   "note": "분수 ②(PBR SurfaceAppearance, TextureID 없음)"
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t00",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://124454734543273",
+   "textureId": "rbxassetid://134419389217899",
+   "size_studs": [
+    67.781,
+    59.697,
+    81.696
+   ],
+   "offset": [
+    1.872,
+    29.849,
+    -1.152
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t01",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://82184696470328",
+   "textureId": "rbxassetid://105201858561213",
+   "size_studs": [
+    71.846,
+    65.731,
+    71.488
+   ],
+   "offset": [
+    -0.829,
+    32.892,
+    -3.111
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t02",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://108141363894781",
+   "textureId": "rbxassetid://99413839069076",
+   "size_studs": [
+    71.681,
+    61.789,
+    68.879
+   ],
+   "offset": [
+    0.147,
+    30.903,
+    -1.276
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t10",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://103172834549115",
+   "textureId": "rbxassetid://124279305888437",
+   "size_studs": [
+    68.09,
+    65.53,
+    73.379
+   ],
+   "offset": [
+    -2.151,
+    32.964,
+    1.334
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t11",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://82357297809741",
+   "textureId": "rbxassetid://138813861809302",
+   "size_studs": [
+    83.843,
+    53.737,
+    76.723
+   ],
+   "offset": [
+    0.0,
+    26.876,
+    2.669
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t12",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://82950113188800",
+   "textureId": "rbxassetid://137481792891527",
+   "size_studs": [
+    83.047,
+    54.661,
+    78.29
+   ],
+   "offset": [
+    -0.085,
+    27.335,
+    2.285
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t20",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://105724898461564",
+   "textureId": "rbxassetid://117478422099294",
+   "size_studs": [
+    70.036,
+    65.114,
+    73.954
+   ],
+   "offset": [
+    2.014,
+    32.565,
+    1.293
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t21",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://107661624278694",
+   "textureId": "rbxassetid://136251594480941",
+   "size_studs": [
+    76.989,
+    60.222,
+    76.247
+   ],
+   "offset": [
+    -1.462,
+    30.119,
+    -2.508
+   ]
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv_t22",
+   "group": "Town_Horns_Castle_v6mv",
+   "meshId": "rbxassetid://86006282381070",
+   "textureId": "rbxassetid://86294322079168",
+   "size_studs": [
+    76.67,
+    57.513,
+    83.726
+   ],
+   "offset": [
+    -1.303,
+    28.782,
+    0.137
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t00",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://73392603030080",
+   "textureId": "rbxassetid://75210649472985",
+   "size_studs": [
+    68.615,
+    60.927,
+    45.48
+   ],
+   "offset": [
+    0.692,
+    35.225,
+    1.489
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t01",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://80265794328379",
+   "textureId": "rbxassetid://128905127734079",
+   "size_studs": [
+    62.182,
+    57.827,
+    48.621
+   ],
+   "offset": [
+    1.674,
+    34.635,
+    -2.595
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t02",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://105505702311341",
+   "textureId": "rbxassetid://120121113408829",
+   "size_studs": [
+    60.567,
+    64.281,
+    51.5
+   ],
+   "offset": [
+    -3.331,
+    33.57,
+    -1.325
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t10",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://125142662923569",
+   "textureId": "rbxassetid://87714676154350",
+   "size_studs": [
+    58.695,
+    63.862,
+    48.6
+   ],
+   "offset": [
+    3.652,
+    33.779,
+    -3.293
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t11",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://109198545825491",
+   "textureId": "rbxassetid://137813019141563",
+   "size_studs": [
+    62.281,
+    53.16,
+    50.118
+   ],
+   "offset": [
+    1.037,
+    26.58,
+    2.629
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t12",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://130976739748248",
+   "textureId": "rbxassetid://133425518186056",
+   "size_studs": [
+    66.313,
+    57.04,
+    55.376
+   ],
+   "offset": [
+    1.843,
+    30.828,
+    0.0
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t20",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://113887214328826",
+   "textureId": "rbxassetid://88065023260380",
+   "size_studs": [
+    67.818,
+    52.551,
+    40.315
+   ],
+   "offset": [
+    -0.394,
+    30.098,
+    -1.897
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t21",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://128714894732892",
+   "textureId": "rbxassetid://133903927363243",
+   "size_studs": [
+    68.081,
+    53.039,
+    47.14
+   ],
+   "offset": [
+    -0.96,
+    26.64,
+    0.639
+   ]
+  },
+  {
+   "name": "Town_Halo_Castle_t22",
+   "group": "Town_Halo_Castle_T9",
+   "meshId": "rbxassetid://76491848718207",
+   "textureId": "rbxassetid://72324489068087",
+   "size_studs": [
+    66.314,
+    60.884,
+    46.245
+   ],
+   "offset": [
+    -0.867,
+    32.232,
+    -1.424
+   ]
+  }
+ ]
+}
