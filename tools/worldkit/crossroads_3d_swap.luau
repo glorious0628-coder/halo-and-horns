@@ -43,6 +43,7 @@ local SWAP = {
 	Curb = { new = "Kit_X_Curb", yaw = "face", noCollide = true }, -- walk-through ring like the old one
 }
 local SIGNS = { { 11, -70 }, { -11, 70 }, { 86, -11 } } -- Kit_M_SignPost, front toward the plaza
+local PAD_MAX_TOP = 1.45 -- old K_PadBase walk top above the plaza (saved place: pad TopY 1.4245)
 
 local store = SS:FindFirstChild("CrossroadsKOld") or Instance.new("Folder")
 store.Name = "CrossroadsKOld"
@@ -177,6 +178,12 @@ for _, old in store:GetChildren() do
 			-- the neon pad nearest this base sits on the new top (same as crossroads_kit_main.luau)
 			padParams.FilterDescendantsInstances = { m }
 			local hit = workspace:Raycast(Vector3.new(x, y + 40, z), Vector3.new(0, -80, 0), padParams)
+			-- X_PadBase's walk top is ~5.1 studs up: too high to step on (new players would have to jump). Sink the base so
+			-- its top sits where the old K_PadBase top was (~1.45 above the plaza); the sides go into the ground.
+			if hit and hit.Position.Y - y > PAD_MAX_TOP then
+				m:PivotTo(m:GetPivot() - Vector3.new(0, hit.Position.Y - y - PAD_MAX_TOP, 0))
+				hit = workspace:Raycast(Vector3.new(x, y + 40, z), Vector3.new(0, -80, 0), padParams)
+			end
 			local topY = hit and (hit.Position.Y + 0.05)
 			local best, bestD = nil, 8
 			for _, pad in (map:FindFirstChild("Pads") and map.Pads:GetChildren() or {}) do
