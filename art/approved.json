@@ -6695,7 +6695,15 @@
    245,
    255
   ],
-  "note": "상점 얼음 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "상점 얼음 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://137659488563185",
+   "R3": "rbxassetid://108650983430092",
+   "R4": "rbxassetid://76422994410695",
+   "R5": "rbxassetid://130485697124157"
+  },
+  "config_key": "Config.LookThemes.HaloIce",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HaloGold": {
   "status": "approved",
@@ -6721,7 +6729,15 @@
    120,
    130
   ],
-  "note": "상점 황금 후광(호박금 + 루비 무늬). 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음. R2 별은 색판 공용이라 고리와 같은 색(검수 OK, 메시 그대로)."
+  "note": "상점 황금 후광(호박금 + 루비 무늬). 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음. R2 별은 색판 공용이라 고리와 같은 색(검수 OK, 메시 그대로).",
+  "ids": {
+   "R1R2": "rbxassetid://124557820913278",
+   "R3": "rbxassetid://124586271258304",
+   "R4": "rbxassetid://110992671351515",
+   "R5": "rbxassetid://126895446255168"
+  },
+  "config_key": "Config.LookThemes.HaloGold",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HornsLava": {
   "status": "approved",
@@ -6747,7 +6763,15 @@
    190,
    90
   ],
-  "note": "상점 용암 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "상점 용암 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://80238307725390",
+   "R3": "rbxassetid://82767525442280",
+   "R4": "rbxassetid://78943828071190",
+   "R5": "rbxassetid://85082048989349"
+  },
+  "config_key": "Config.LookThemes.HornsLava",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HornsShadow": {
   "status": "approved",
@@ -6773,7 +6797,15 @@
    190,
    255
   ],
-  "note": "상점 그림자 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "상점 그림자 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://77090857785800",
+   "R3": "rbxassetid://134445622258892",
+   "R4": "rbxassetid://97761533502616",
+   "R5": "rbxassetid://112202207856048"
+  },
+  "config_key": "Config.LookThemes.HornsShadow",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HaloSprout": {
   "status": "approved",
@@ -6799,7 +6831,15 @@
    255,
    180
   ],
-  "note": "출석 14일 새싹 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "출석 14일 새싹 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://86617186225584",
+   "R3": "rbxassetid://126112718924134",
+   "R4": "rbxassetid://70457193636840",
+   "R5": "rbxassetid://84485205872223"
+  },
+  "config_key": "Config.LookThemes.HaloSprout",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HornsSprout": {
   "status": "approved",
@@ -6825,7 +6865,15 @@
    255,
    180
   ],
-  "note": "출석 14일 새싹 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "출석 14일 새싹 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://98729066506053",
+   "R3": "rbxassetid://111198088905000",
+   "R4": "rbxassetid://92425781835056",
+   "R5": "rbxassetid://88143987545459"
+  },
+  "config_key": "Config.LookThemes.HornsSprout",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HaloStarlight": {
   "status": "approved",
@@ -6851,7 +6899,15 @@
    220,
    120
   ],
-  "note": "출석 50일 별빛 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "출석 50일 별빛 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://79900622177360",
+   "R3": "rbxassetid://106125508143560",
+   "R4": "rbxassetid://120783323880170",
+   "R5": "rbxassetid://112919940044810"
+  },
+  "config_key": "Config.LookThemes.HaloStarlight",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HornsStarlight": {
   "status": "approved",
@@ -6877,7 +6933,15 @@
    220,
    120
   ],
-  "note": "출석 50일 별빛 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "출석 50일 별빛 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://87973276568961",
+   "R3": "rbxassetid://120704216649593",
+   "R4": "rbxassetid://77284887873440",
+   "R5": "rbxassetid://114837008556596"
+  },
+  "config_key": "Config.LookThemes.HornsStarlight",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HaloPlatinum": {
   "status": "approved",
@@ -6903,7 +6967,15 @@
    255,
    255
   ],
-  "note": "출석 100일 백금 다이아 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음. R1은 무늬 없는 고리라 기본 R1과 비슷 — 반짝이로 구별(검수 OK)."
+  "note": "출석 100일 백금 다이아 후광. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음. R1은 무늬 없는 고리라 기본 R1과 비슷 — 반짝이로 구별(검수 OK).",
+  "ids": {
+   "R1R2": "rbxassetid://129286691726526",
+   "R3": "rbxassetid://125145984859168",
+   "R4": "rbxassetid://116074292544544",
+   "R5": "rbxassetid://73047553511936"
+  },
+  "config_key": "Config.LookThemes.HaloPlatinum",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "AccTheme_HornsPlatinum": {
   "status": "approved",
@@ -6929,7 +7001,15 @@
    255,
    255
   ],
-  "note": "출석 100일 백금 다이아 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음."
+  "note": "출석 100일 백금 다이아 뿔. 둥근 빛(glow)·작은 별(sparkle) 색만, 빛살 없음.",
+  "ids": {
+   "R1R2": "rbxassetid://118578097813756",
+   "R3": "rbxassetid://98158447043587",
+   "R4": "rbxassetid://88887895520232",
+   "R5": "rbxassetid://127877205287600"
+  },
+  "config_key": "Config.LookThemes.HornsPlatinum",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json"
  },
  "PassIconPrivate": {
   "status": "approved",
@@ -6942,7 +7022,10 @@
   "file": "art/ui/PassIconPrivate.png",
   "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (tools/img2/round512.py)",
   "preview": "art/review/s2/badges_private_sheet.jpg",
-  "note": "개인 서버 패스(텐트 + 모닥불 + 후광·뿔 깃발) — 게임 안 상점 IconPrivateServer. 글자·숫자·빛살 없음, 소품에 얼굴 없음. Roblox 패스 이미지 + 게임 안 상점(이미지 개발)."
+  "note": "개인 서버 패스(텐트 + 모닥불 + 후광·뿔 깃발) — 게임 안 상점 IconPrivateServer. 글자·숫자·빛살 없음, 소품에 얼굴 없음. Roblox 패스 이미지 + 게임 안 상점(이미지 개발).",
+  "id": "rbxassetid://95789432053642",
+  "config_key": "IconPrivateServer",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK)"
  },
  "BadgeChoseSide": {
   "status": "approved",
