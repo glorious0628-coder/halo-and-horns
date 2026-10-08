@@ -18,6 +18,7 @@ from studio_mcp import Client  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFEST = os.path.join(ROOT, "art", "models", "worldkit", "manifest.json")
 PLACE_LUA = os.path.join(ROOT, "tools", "worldkit", "crossroads_kit_main.luau")
+SWAP_LUA = os.path.join(ROOT, "tools", "worldkit", "crossroads_3d_swap.luau")
 
 HAVE = """local SS=game:GetService("ServerStorage")
 local k=SS:FindFirstChild("KitStage") or Instance.new("Folder")
@@ -65,6 +66,11 @@ def run(c):
     with open(PLACE_LUA, encoding="utf-8") as f:
         res = c.call("execute_luau", {"code": f.read(), "datamodel_type": "Edit"})
     print("crossroads_kit_main:", ("ERROR " if res.get("isError") else "") + text_of(res)[:600])
+    # 2026-10-08 (검수): the K_ kit is only the fallback now; the Tripo swap goes right back on top of it
+    # (crossroads_3d_swap.luau drops the fresh K_ copies kit_main just rebuilt and re-seats pads / board / lights).
+    with open(SWAP_LUA, encoding="utf-8") as f:
+        res = c.call("execute_luau", {"code": f.read(), "datamodel_type": "Edit"})
+    print("crossroads_3d_swap:", ("ERROR " if res.get("isError") else "") + text_of(res)[:600])
 
 
 def main():
