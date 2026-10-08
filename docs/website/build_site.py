@@ -69,6 +69,8 @@ def main():
     (OUT / "img" / "deco").mkdir(parents=True)
     (OUT / "fonts").mkdir()
     (OUT / "index.html").write_text(page, encoding="utf-8", newline="\n")
+    # GitHub Pages custom domain (the repo's Pages settings read this file)
+    (OUT / "CNAME").write_text("glorious.ai.kr\n", encoding="ascii", newline="\n")
     for f in IMGS:
         shutil.copy2(HERE / "img" / f, OUT / "img" / f)
     for f in FONTS + OFL:
