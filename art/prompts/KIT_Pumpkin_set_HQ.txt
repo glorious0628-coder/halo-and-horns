@@ -1,0 +1,16 @@
+[호박밭 9종 고급 — 검수 고름 10/08: 절벽 A1·절벽 B1·간판 1·건초 1·수레 1·가을 나무 A1·가을 나무 B2·소나무 1·해바라기 1. 각 고급 5크레딧, 참조 = 고른 중간본(art/out/kit/pumpkin/<이름>_<번호>.png). 해바라기: 꽃잎이 줄무늬·빛살처럼 반듯하게 퍼지지 않게(검수).
+ 문구 = HEAD + 물건 + TAIL]
+
+HEAD: Redraw the attached reference image as the same object, cleaner, sharper and more polished: keep its exact silhouette, proportions, camera angle, colors and every part in the same place and the same size in the frame.
+
+TAIL: Glossy chunky toy 3D render, soft warm light, plain flat medium gray background, whole object in frame with margin. No faces, no eyes, no skulls. Wordless, blank surfaces.
+
+P_Cliff_A (1): A wide chunk of rounded gray-beige rock cliff of stacked smooth boulders with soft cracks, a thick green grass and moss cap on top with two small orange autumn bushes.
+P_Cliff_B (1): A tall rounded gray-beige rock cliff pillar of three stacked smooth boulders with soft cracks, a grassy mossy top with a small round orange bush.
+Kit_P_EntranceSign (1): A rustic honey-brown wooden entrance sign, two thick posts with iron brackets, a wide blank plank board hanging on short chains under the crossbeam, a small iron lantern with a warm glow on one post, plain little pumpkins and grass tufts at the post feet.
+Kit_P_HayBales (1): A stack of three golden rectangular hay bales tied with twine, two on the bottom and one on top, soft straw texture.
+Kit_P_PumpkinCart (1): A small wooden farm hand cart with a big wooden wheel and two handles, loaded with plain smooth orange pumpkins with green stems, no carved faces.
+P_TreeAutumn_A (1): A big round autumn tree, thick curvy brown trunk with roots and one small smooth knot, fluffy rounded canopy of bright orange and golden leaf clumps.
+P_TreeAutumn_B (2): A big slender autumn tree, thick curvy brown trunk with roots and one small smooth knot, fluffy rounded canopy of deep red and orange leaf clumps.
+P_Pine (1): A chunky toy pine tree, short brown trunk, stacked rounded layers of dark green needles with soft rounded tips.
+Kit_P_Sunflowers (1): A clump of three tall sunflowers with natural soft rounded yellow petals of slightly different sizes and plain brown seed centers, broad green leaves, small orange marigolds at the base; petals look like a real soft flower, not a striped or ray pattern.
