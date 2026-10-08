@@ -110,6 +110,7 @@
 - **만든 3D를 메인 게임에 넣는다(사용자: "나무 버섯 장식이 왜 저따위냐고 / 지금까지 그린 거 다 어디갔어 / 저거 성 왜 저래? / 이 분수대도 더 화려하게 해, 구리잖아"):**
   - 초원의 옛 임시 장식(빨간 버섯, 덩어리 나무)을 만든 Tripo 장식(Kit_M_* 등)으로 바꾼다.
   - 성(Town_Halo_Castle·Town_Horns_Castle_v4)은 시안과 다르게 보이는 원인을 찾아 질감 고친 판(A23-73)으로 바꾼다.
+  - **뿔 성 = ③ 섞은 판으로 확정(사용자 2026-10-08 "섞은 판 하자"):** 앞 = 사용자 고른 v4 산성 2D, 뒤 = 새 뒷모습 2D(Firefly 고급) → Tripo 웹 멀티뷰 HD 38,432면 9조각 `Town_Horns_Castle_v6mv_t00..t22`(가져오기 `build/import_all/1_first/H_HornsCastle_v6mv.glb`, 비교 `art/review/town5/horns_castle_mix_compare.jpg`). ①(묶음2)·② v4 HD는 쓰지 않는다.
   - 교차로 분수는 빛 분수 HD(② 질감)로 바꾼다.
   - 배치 도구 = 검수(tools/place_kit_main.lua), id·질감 = 이미지 생성 1.
 - **말풍선은 몬스터마다 다르게(사용자: "몬스터마다 다른 말풍선 그려야지"):** 12종 각각 그 몬스터가 떠오르는 빈 풍선을 쓴다. 키는 `BarkBubble<Kind>`이고, 없으면 기본 BarkBubble을 쓴다.
