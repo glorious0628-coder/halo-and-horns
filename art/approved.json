@@ -7269,7 +7269,10 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 64/48/40/32px",
   "preview": "art/review/s2/attendance_return_final.jpg",
-  "note": "출석판 7칸째 주간 상자 — 흰(금 리본)·자주(빨간 리본) 반반 + 금 리본 위 후광 고리·붉은 뿔, 빛·뿔 둘 다. 글자·숫자·빛살 없음. 첫 A의 뿔이 핏방울처럼 보여 A2로 다시 그림."
+  "note": "출석판 7칸째 주간 상자 — 흰(금 리본)·자주(빨간 리본) 반반 + 금 리본 위 후광 고리·붉은 뿔, 빛·뿔 둘 다. 글자·숫자·빛살 없음. 첫 A의 뿔이 핏방울처럼 보여 A2로 다시 그림.",
+  "id": "rbxassetid://134725206012544",
+  "config_key": "IconWeeklyBox",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
  },
  "StampClaimed": {
   "status": "approved",
@@ -7283,7 +7286,10 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 64/48/40/32px",
   "preview": "art/review/s2/attendance_return_final.jpg",
-  "note": "출석판 '받음' 도장 — 받은 칸 위에 얹는 초록 물결 테 도장 + 흰 체크(줄무늬·빛살 없는 매끈한 물결 테)."
+  "note": "출석판 '받음' 도장 — 받은 칸 위에 얹는 초록 물결 테 도장 + 흰 체크(줄무늬·빛살 없는 매끈한 물결 테).",
+  "id": "rbxassetid://133963492491506",
+  "config_key": "StampClaimed",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
  },
  "RibbonDays": {
   "status": "approved",
@@ -7305,7 +7311,17 @@
    "50": "art/ui/RibbonDays50.png",
    "100": "art/ui/RibbonDays100.png"
   },
-  "tiers_tool": "tools/img2/ribbon_tiers.py (gold pixels hue 28-62 -> 7 (24,0.72,0.80) · 14 (215,0.06,1.0) · 50 (222,0.70,0.95) · 100 (190,0.40,1.12))"
+  "tiers_tool": "tools/img2/ribbon_tiers.py (gold pixels hue 28-62 -> 7 (24,0.72,0.80) · 14 (215,0.06,1.0) · 50 (222,0.70,0.95) · 100 (190,0.40,1.12))",
+  "ids": {
+   "7": "rbxassetid://74039691524147",
+   "14": "rbxassetid://128474383322866",
+   "28": "rbxassetid://105857078981391",
+   "50": "rbxassetid://127528019933746",
+   "100": "rbxassetid://104467679017156"
+  },
+  "config_key": "RibbonDays7 / RibbonDays14 / RibbonDays28 / RibbonDays50 / RibbonDays100",
+  "number_slot": "cream disc centre x 0.497 y 0.407, size 0.432 x 0.412 of the image; number box = inner ~70%",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
  },
  "IconKingDiary": {
   "status": "approved",
@@ -7319,7 +7335,10 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 64/48/40/32px",
   "preview": "art/review/s2/attendance_return_final.jpg",
-  "note": "호박 대왕 일기 [King Diary] 책 — 주황 표지 + 호박 장식(얼굴 없음) + 작은 금관, 초록 책등, 보라 책갈피."
+  "note": "호박 대왕 일기 [King Diary] 책 — 주황 표지 + 호박 장식(얼굴 없음) + 작은 금관, 초록 책등, 보라 책갈피.",
+  "id": "rbxassetid://82663430349001",
+  "config_key": "IconKingDiary",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
  },
  "IconCandyJar": {
   "status": "approved",
@@ -7333,7 +7352,10 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 64/48/40/32px",
   "preview": "art/review/s2/attendance_return_final.jpg",
-  "note": "사탕 단지 — 유리 단지 + 금 뚜껑 + 주황 리본, 주황·보라·연두 사탕(얼굴 없음). 11/09 뒤에도 쓰는 그림이라 할로윈 색만 살짝."
+  "note": "사탕 단지 — 유리 단지 + 금 뚜껑 + 주황 리본, 주황·보라·연두 사탕(얼굴 없음). 11/09 뒤에도 쓰는 그림이라 할로윈 색만 살짝.",
+  "id": "rbxassetid://94570617639866",
+  "config_key": "IconCandyJar",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
  },
  "IconInviteFriend": {
   "status": "approved",
@@ -7347,7 +7369,10 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 64/48/40/32px",
   "preview": "art/review/s2/attendance_return_final.jpg",
-  "note": "친구 초대 — 열린 하늘색 편지 + 하트 카드, 왼쪽 크림 스티커에 금 후광, 오른쪽 자주 스티커에 큰 붉은 뿔(끝이 스티커 위로 나옴). 검수 지적(첫 뿔 스티커가 작게 보면 빨간 두 눈)으로 고침 — 32px에서도 뿔로 보임. 고급 2장 쓴 셈(10크레딧)."
+  "note": "친구 초대 — 열린 하늘색 편지 + 하트 카드, 왼쪽 크림 스티커에 금 후광, 오른쪽 자주 스티커에 큰 붉은 뿔(끝이 스티커 위로 나옴). 검수 지적(첫 뿔 스티커가 작게 보면 빨간 두 눈)으로 고침 — 32px에서도 뿔로 보임. 고급 2장 쓴 셈(10크레딧).",
+  "id": "rbxassetid://72491188968210",
+  "config_key": "IconInviteFriend",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
  },
  "IconSaved": {
   "status": "approved",
@@ -7361,6 +7386,9 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 64/48/40/32px",
   "preview": "art/review/s2/attendance_return_final.jpg",
-  "note": "멈춤 카드 'Saved!' 표시 — 초록 책갈피 + 금 테 + 흰 체크. 글자는 게임 TextLabel."
+  "note": "멈춤 카드 'Saved!' 표시 — 초록 책갈피 + 금 테 + 흰 체크. 글자는 게임 TextLabel.",
+  "id": "rbxassetid://112371750811683",
+  "config_key": "IconSaved",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
  }
 }
