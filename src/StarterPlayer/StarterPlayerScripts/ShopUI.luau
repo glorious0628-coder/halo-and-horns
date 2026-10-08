@@ -32,12 +32,14 @@ local TAG = "ShopUI"
 local C = nil
 local player = Players.LocalPlayer
 
--- the pass cards, left to right (Price = the A23-75 price; Config.GamePasses[Kind] overrides Id / Price / Attr)
+-- the pass cards, left to right (Price = the A23-75 price; Config.GamePasses[Kind] overrides Id / Price / Attr).
+-- Badge = the picked round pass badge (A23-75 "둥근 배지 B", 이미지 생성 2): once its Config.UIArt key has an id the
+-- card shows it alone (it has its own rim); until then the stand-in Icon sits in the Slot rim
 local PASSES = {
-	{ Kind = "XP2", Icon = "IconExp", Slot = "RewardSlot", Price = 199, Attr = "PassXP2" },
-	{ Kind = "Gold2", Icon = "IconGoldPile", Slot = "RewardSlot", Price = 149, Attr = "PassGold2" },
-	{ Kind = "VIP", Icon = "Crown", Slot = "SlotLegendary", Price = 249, Attr = "PassVIP" },
-	{ Kind = "PrivateServer", Icon = "IconTravel", Slot = "SlotRare", Price = 100, Info = true },
+	{ Kind = "XP2", Badge = "IconPassXP2", Icon = "IconExp", Slot = "RewardSlot", Price = 199, Attr = "PassXP2" },
+	{ Kind = "Gold2", Badge = "IconPassGold2", Icon = "IconGoldPile", Slot = "RewardSlot", Price = 149, Attr = "PassGold2" },
+	{ Kind = "VIP", Badge = "IconPassVIP", Icon = "Crown", Slot = "SlotLegendary", Price = 249, Attr = "PassVIP" },
+	{ Kind = "PrivateServer", Badge = "IconPrivateServer", Icon = "IconTravel", Slot = "SlotRare", Price = 100, Info = true },
 }
 
 -- English only (A23-48), short words for kids (glossary 2026-10-06)
@@ -73,14 +75,13 @@ local L = {
 	LineSize = 15, CapsH = 40, CapsSize = 22, LookCols = 5, LookH = 178, LookSlot = 84, HeadH = 30, HeadSize = 20, TicketH = 64,
 	Guard = 0.35, -- s: a fast second tap on the [메뉴] square must not land on a card (CR-L26)
 }
--- Studio-only sample looks for the layout photos (ids 0 = "Coming soon"; the art is a stand-in)
+-- Studio-only sample looks for the layout photos: the four the user picked (A23-75, 2026-10-08: halo Ice · Gold,
+-- horns Lava · Shadow; ids 0 = "Coming soon", the pictures are stand-ins until their badges are drawn)
 local SAMPLE_LOOKS = {
-	GoldHalo = { Faction = "Halo", Name = "Gold Halo", Icon = "IconRankHonor", Price = 99, Order = 1 },
-	StarHalo = { Faction = "Halo", Name = "Star Halo", Icon = "IconRankHonor", Price = 99, Order = 2 },
-	WingHalo = { Faction = "Halo", Name = "Wing Halo", Icon = "IconWings", Price = 99, Order = 3 },
-	EmberHorns = { Faction = "Horns", Name = "Ember Horns", Icon = "IconDemon", Price = 99, Order = 1 },
-	MoonHorns = { Faction = "Horns", Name = "Moon Horns", Icon = "IconDemon", Price = 99, Order = 2 },
-	RamHorns = { Faction = "Horns", Name = "Ram Horns", Icon = "IconRankInfamy", Price = 99, Order = 3 },
+	IceHalo = { Faction = "Halo", Name = "Ice Halo", Icon = "IconRankHonor", Price = 99, Order = 1 },
+	GoldHalo = { Faction = "Halo", Name = "Gold Halo", Icon = "IconRankHonor", Price = 99, Order = 2 },
+	LavaHorns = { Faction = "Horns", Name = "Lava Horns", Icon = "IconRankInfamy", Price = 99, Order = 1 },
+	ShadowHorns = { Faction = "Horns", Name = "Shadow Horns", Icon = "IconRankInfamy", Price = 99, Order = 2 },
 }
 
 ------------------------------------------------------------------ helpers
@@ -175,6 +176,15 @@ local function rimSlot(u, part, icon, props)
 	return slot
 end
 
+-- a pass card's picture: the round badge alone once it is uploaded, else the stand-in icon in its rim slot
+local function passArt(u, p, props)
+	if p.Badge and u.ArtId(p.Badge) then
+		local badge = u.ArtImage(p.Badge, props)
+		if badge then return badge end
+	end
+	return rimSlot(u, p.Slot, p.Icon, props)
+end
+
 -- a whole-card tap target: the PanelCard plate, the press feel, the click sound; `onTap` after the open guard
 local function cardButton(u, kit, parent, name, onTap, openedAt)
 	local card = Instance.new("TextButton")
@@ -218,11 +228,19 @@ local function grid(kit, parent, name, cols, cellH, count)
 	return f
 end
 
-local function header(u, kit, parent, text)
-	return u.StyledLabel({
+-- a section title; `badge` = a Config.UIArt key drawn left of the words once it has an id (the looks badge)
+local function header(u, kit, parent, text, badge)
+	local label = u.StyledLabel({
 		Name = "Header", Text = text, Size = UDim2.new(1, 0, 0, L.HeadH), TextSize = L.HeadSize,
 		TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = kit.NextOrder(), Parent = parent,
 	}, "Title")
+	if badge and u.ArtId(badge) then
+		u.ArtImage(badge, { Name = "Badge", Size = UDim2.fromOffset(L.HeadH, L.HeadH), Parent = label })
+		local pad = Instance.new("UIPadding")
+		pad.PaddingLeft = UDim.new(0, L.HeadH + 6)
+		pad.Parent = label
+	end
+	return label
 end
 
 -- the words of a card / tile: the name (Title style, one line: a long name shrinks to L.NameMinPx instead of the
@@ -365,7 +383,7 @@ local function buildShop(parent, kit)
 	for _, p in PASSES do
 		local cell = { Pass = p }
 		local card = cardButton(u, kit, cards, "Pass" .. p.Kind, function() tapPass(kit, p) end, openedAt)
-		rimSlot(u, p.Slot, p.Icon, {
+		passArt(u, p, {
 			Name = "Slot", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, L.Pad),
 			Size = UDim2.fromOffset(L.Slot, L.Slot), ScaleType = Enum.ScaleType.Fit, Parent = card,
 		})
@@ -382,7 +400,7 @@ local function buildShop(parent, kit)
 	local mine = myFaction()
 	local side = (mine == "Halo" or mine == "Horns") and Config.Factions[mine] or nil
 	if #looks > 0 then
-		header(u, kit, parent, side and string.format(T.LooksSideF, tostring(side.Name)) or T.Looks)
+		header(u, kit, parent, side and string.format(T.LooksSideF, tostring(side.Name)) or T.Looks, "IconPassLooks")
 		local tiles = grid(kit, parent, "Looks", L.LookCols, L.LookH, #looks)
 		for _, look in looks do
 			local cell = { Look = look }

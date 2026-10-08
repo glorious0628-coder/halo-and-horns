@@ -117,7 +117,7 @@ def parse_shop():
     s = open(SHOP, encoding="utf-8").read()
     block = re.search(r"\nlocal L = \{(.*?)\n\}", s, re.S).group(1)
     L = {k: float(v) for k, v in re.findall(r"(\w+) = (-?[\d.]+)", block)}
-    passes = re.findall(r'\{ Kind = "(\w+)", Icon = "(\w+)", Slot = "(\w+)", Price = (\d+)(, Attr = "\w+")?(, Info = true)? \}', s)
+    passes = re.findall(r'\{ Kind = "(\w+)", Badge = "\w+", Icon = "(\w+)", Slot = "(\w+)", Price = (\d+)(, Attr = "\w+")?(, Info = true)? \}', s)
     names = dict(re.findall(r'(\w+) = "([^"]+)"', re.search(r"Names = \{([^}]*)\}", s).group(1)))
     lines_block = re.search(r"Lines = \{(.*?)\n\t\}", s, re.S).group(1)
     lines = dict(re.findall(r'(\w+) = "([^"]+)"', lines_block))
@@ -345,7 +345,7 @@ def main():
     report["Failed"] = failed
     report["Passed"] = not failed
     os.makedirs(OUT_DIR, exist_ok=True)
-    json.dump(report, open(OUT_JSON, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(report, open(OUT_JSON, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
     # sheet: the screens at their real size, two per row
     col_w = max(i.size[0] for i in shots)
     rows = [shots[i:i + 2] for i in range(0, len(shots), 2)]
