@@ -4347,7 +4347,9 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked 24/48px on navy/gray/beige",
   "preview": "art/review/s2/rank_badges_fix_sheet.png",
-  "note": "지도 표시: 원한 자루(분홍 원 + 금화 자루 + 작은 유령, 제단 보라와 겹치지 않게 분홍). 15개 세트와 같은 흰 테 원 틀."
+  "note": "지도 표시: 원한 자루(산딸기색 원 + 금화 자루 + 작은 유령, 제단 보라와 겹치지 않게). 15개 세트와 같은 흰 테 원 틀. 처음 판의 형광 자홍은 10/08 산딸기로 바꿈.",
+  "recolor": "2026-10-08 검수 OK B 산딸기 (style drift #43, 0 credits): neon magenta disc (253,2,157) -> berry hue 338, sat 0.8, value x0.74 (soft hue mask 285-355); sack, coins, ghost, rim untouched. Candidates art/out/s2/mapfix/, sheet art/review/s2/map_grudgesack_recolor.jpg (7c3b421)",
+  "reupload": "2026-10-08: 이미지 개발 re-uploads the recoloured file"
  },
  "MapPvP": {
   "status": "approved",
