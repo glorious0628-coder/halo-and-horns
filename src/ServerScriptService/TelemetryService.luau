@@ -17,6 +17,14 @@
 --     EnhanceFailLeave (left within EnhanceFailLeave s of a failed enhance), GoldIn / GoldOut (per source / sink),
 --     FriendMinutes (a friend on the server), KillsTogether / KillsWithFriend, ZoneMinutes (per zone), RankingViews
 --     (per board)
+--   A23-79 beta metrics (게임성 개발 3, 2026-10-08; docs/design/retention_round_2026-10-08.md "베타에서 잴 것", contract
+--   docs/design/beta_metrics_server_2026-10-08.md): the funnels Config.Analytics.Funnels (LogFunnelStepEvent;
+--   LongRoad / Social / KingDiary once per account in data.Telemetry.F, DailyVisit per KST day in data.Telemetry.Visit,
+--   PassShop per shop visit), the events DaysPlayed / ReturnGap (join), PauseCard / WelcomeBack, Attendance,
+--   FriendJoin / GoToFriend, DiaryPage / CandyTrade, NotifyOptIn, InviteSent / WelcomeBackGo (c->s "ClientMetric"),
+--   PromptNearKO, and at leave KOLeave60 + LeaveContext. Gold goes to the economy dashboard too (LogEconomyEvent,
+--   currency "Gold", the sums per source / sink every Config.Analytics.EconomyFlush s and at the leave).
+local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
@@ -42,7 +50,18 @@ local T = {
 	Conns = {}, -- [Player] = { RBXScriptConnection } (attribute watchers, dropped on leave)
 	Session = {}, -- [Player] = per-session sums and once-flags (see newSession)
 	Friend = {}, -- ["<lowId>:<highId>"] = true / false (IsFriendsWith, cached for the server's life)
+	-- A23-79 (게임성 개발 3)
+	Funnels = A.Funnels or {}, -- Config.Analytics.Funnels
+	Shop = {}, -- [Player] = { Id = PassShop funnel session id, Done = { [step] = true } } of the open shop visit
+	KOAt = {}, -- [Player] = { At = os.clock(), Zone } of the last KO
+	CardAt = {}, -- [Player] = os.clock() of the last pause card
+	DailyDoneAt = {}, -- [Player] = os.clock() the day's last daily was claimed
+	WindowAt = {}, -- [Player] = { Id, At } of the last window opened
+	Econ = {}, -- [Player] = { In = { [source] = gold }, Out = { [sink] = gold } } since the last economy flush
+	Day = {}, -- [Player] = the KST day of the DailyVisit funnel session in use
+	ClientMetric = Util.Signal.new(), -- (player, id, arg) after validation (TelemetryService.ClientMetric)
 }
+TelemetryService.ClientMetric = T.ClientMetric
 for _, id in A.UiIds or {} do T.UiIds[id] = true end
 
 local function num(v, default)
@@ -127,6 +146,153 @@ function TelemetryService.Step(player, name)
 	pcall(svc.LogOnboardingFunnelStepEvent, svc, player, index, name)
 end
 
+------------------------------------------------------------------ A23-79 funnels (게임성 개발 3)
+local function today()
+	return Config.DayIndex(os.time())
+end
+
+-- the DailyVisit session of `data` for `day` (a new day starts a new step set)
+local function visitOf(data, day)
+	local tel = telemetryOf(data)
+	if type(tel.Visit) ~= "table" or tel.Visit.D ~= day then tel.Visit = { D = day, S = {} } end
+	if type(tel.Visit.S) ~= "table" then tel.Visit.S = {} end
+	return tel.Visit
+end
+
+-- one step of a Config.Analytics.Funnels funnel, at most once per funnel session: Once funnels = one session per account
+-- (data.Telemetry.F), DailyVisit = the KST day now (data.Telemetry.Visit), PassShop = the open shop visit (T.Shop, see
+-- shopStep). Roblox completes the earlier steps of a later one, so every funnel holds only steps that always come in
+-- order (review 2026-10-08: optional moments such as the attendance claim or the story's end are custom events).
+-- Returns true when it was logged now.
+function TelemetryService.Funnel(player, funnel, name)
+	local def = T.Funnels[funnel]
+	local index = type(def) == "table" and type(def.Steps) == "table" and table.find(def.Steps, name) or nil
+	if not index then return false end
+	local data = getData(player)
+	if not data then return false end
+	local sessionId, done
+	if def.Once then
+		local tel = telemetryOf(data)
+		if type(tel.F) ~= "table" then tel.F = {} end
+		if type(tel.F[funnel]) ~= "table" then tel.F[funnel] = {} end
+		sessionId, done = "once", tel.F[funnel]
+	elseif funnel == "DailyVisit" then
+		local day = today()
+		local visit = visitOf(data, day)
+		sessionId, done = tostring(day), visit.S
+	elseif funnel == "PassShop" then
+		local shop = T.Shop[player]
+		if not shop then return false end -- PassShop steps belong to an open shop visit
+		sessionId, done = shop.Id, shop.Done
+	else
+		return false
+	end
+	if done[name] then return false end
+	done[name] = true
+	if debugOn() then print(string.format("[Metrics] %s %s step %d %s", funnel, sessionId, index, name)) end
+	local svc = analytics()
+	if svc then pcall(svc.LogFunnelStepEvent, svc, player, funnel, sessionId, index, name) end
+	return true
+end
+
+local function funnel(player, name, step)
+	return TelemetryService.Funnel(player, name, step)
+end
+
+-- PassShop (review 2026-10-08: the client reports a window once a session, so a visit starts from the shop open OR the
+-- first pass card / buy window when no fresh visit is open). A shop open within ShopVisitGap s of the last start keeps
+-- that visit (no new session per click); a visit older than ShopVisitMax s is over. Bought only counts in an open visit.
+local function shopStep(player, name)
+	local now = os.clock()
+	local v = T.Shop[player]
+	local open = v ~= nil and now - v.At < num(A.ShopVisitMax, 600)
+	if name == "Bought" then
+		if open then funnel(player, "PassShop", "Bought") end
+		return
+	end
+	if not open or (name == "ShopOpen" and now - v.At >= num(A.ShopVisitGap, 30)) then
+		local okId, sid = pcall(HttpService.GenerateGUID, HttpService, false)
+		T.Shop[player] = { Id = okId and sid or tostring(os.time()), Done = {}, At = now }
+		funnel(player, "PassShop", "ShopOpen")
+	end
+	if name ~= "ShopOpen" then funnel(player, "PassShop", name) end
+end
+
+local function bandOf(level)
+	level = math.floor(num(level, 1))
+	return level < 10 and "1-9" or level < 25 and "10-24" or level < 50 and "25-49" or "50+"
+end
+
+-- DaysPlayed (the first visit of a KST day: lifetime days played, the level band, the faction) and the day's
+-- DailyVisit Join step; also for a player still online when the day turns
+local function dayStart(player, data)
+	local day = today()
+	T.Day[player] = day
+	local tel = telemetryOf(data)
+	if math.floor(num(tel.LastDay)) ~= day then
+		tel.LastDay = day
+		tel.Days = math.floor(num(tel.Days)) + 1
+		TelemetryService.Custom(player, "DaysPlayed", tel.Days, bandOf(data.Level), tostring(data.Faction))
+	end
+	funnel(player, "DailyVisit", "Join")
+end
+
+local function gapBucket(seconds)
+	local h = seconds / 3600
+	return h < 6 and "<6h" or h < 24 and "6-24h" or h < 72 and "1-3d" or "3d+"
+end
+
+-- LongRoad steps the save already passed (an old save catches up). Only the level path (always in order) is a funnel;
+-- the story's chapter ends and the first ruins daily are the custom events ChapterEnd / RuinsDaily.
+local ROAD_LEVELS = { 15, 25, 30, 40, 50 }
+local function roadCatchUp(player, data)
+	local level = math.floor(num(data.Level, 1))
+	for _, at in ROAD_LEVELS do
+		if level >= at then funnel(player, "LongRoad", "Level" .. at) end
+	end
+	if num(data.Rebirths) >= 1 then funnel(player, "LongRoad", "Rebirth1") end
+end
+
+-- the last main quest of each chapter (Config.StoryQuests.Main order + Defs[id].Chapter) -> ChapterEnd
+local CHAPTER_END = {}
+do
+	local SQ = Config.StoryQuests or {}
+	local last = {}
+	for _, id in SQ.Main or {} do
+		local def = SQ.Defs and SQ.Defs[id]
+		local ch = def and math.floor(num(def.Chapter))
+		if ch and ch > 0 then last[ch] = id end
+	end
+	for ch, id in last do CHAPTER_END[id] = ch end
+end
+
+local function diaryCatchUp(player, pages)
+	pages = math.floor(num(pages))
+	if pages >= 1 then funnel(player, "KingDiary", "Page1") end
+	if pages >= 3 then funnel(player, "KingDiary", "Page3") end
+	if pages >= 6 then funnel(player, "KingDiary", "Page6") end
+	if pages >= 9 then funnel(player, "KingDiary", "Page9") end
+end
+
+-- DailyVisit: Daily1 (a daily claimed), Daily3 (all of the day's dailies done, claimed or not), SetChest (all claimed:
+-- the chest). Only while the dailies are today's (data.DailyDay = today): right after 00:00 KST, before QuestService
+-- made the new day's set, the counts are still yesterday's (review 2026-10-08)
+local function dailyCheck(player)
+	local data = getData(player)
+	if not data or math.floor(num(data.DailyDay)) ~= today() then return end
+	local slots = math.floor(num(Config.Quests and Config.Quests.Slots, 3))
+	local claims = math.floor(num(data.DailyClaims))
+	local complete = 0
+	for _, q in type(data.Quests) == "table" and data.Quests or {} do
+		if type(q) == "table" and q.Kind == "Daily" and num(q.Target) > 0 and num(q.Progress) >= num(q.Target) then
+			complete += 1
+		end
+	end
+	if claims >= 1 then funnel(player, "DailyVisit", "Daily1") end
+	if claims + complete >= slots then funnel(player, "DailyVisit", "Daily3") end
+	if claims >= slots then funnel(player, "DailyVisit", "SetChest") end
+end
+
 ------------------------------------------------------------------ per-session state
 local function newSession(player, data)
 	local tel = telemetryOf(data)
@@ -145,6 +311,8 @@ local function newSession(player, data)
 		ZoneMin = {}, -- [zone id] = minutes
 		Rankings = {}, -- [board] = views
 		Streak = { Kind = nil, N = 0, Logged = {} },
+		Once = {}, -- A23-79: [ClientMetric id] = true (Config.Analytics.ClientMetricOnce: once a session)
+		Budget = { Start = -math.huge, N = 0 }, -- A23-79: accepted ClientMetric calls this minute
 	}
 end
 
@@ -237,10 +405,89 @@ local function onReady(player, data)
 	watch(player, "AutoCombatEnabled", function(v)
 		if not throttled(player, "auto", 10) then TelemetryService.Custom(player, v == true and "AutoOn" or "AutoOff", 1) end
 	end)
+	-- A23-79 (게임성 개발 3): the day, the gap since the last visit, the long road, the diary, the dailies
+	dayStart(player, data)
+	local last = num(data.LastLogoutTime)
+	if last > 0 then TelemetryService.Custom(player, "ReturnGap", 1, gapBucket(math.max(0, os.time() - last))) end
+	roadCatchUp(player, data)
+	diaryCatchUp(player, type(data.Diary) == "table" and data.Diary.Pages or 0)
+	watch(player, "Level", function(v)
+		v = num(v, 1)
+		for _, at in ROAD_LEVELS do
+			if v >= at then funnel(player, "LongRoad", "Level" .. at) end
+		end
+	end)
+	watch(player, "Rebirths", function(v) if num(v) >= 1 then funnel(player, "LongRoad", "Rebirth1") end end)
+	watch(player, "DailyClaims", function(v)
+		v = num(v)
+		-- RuinsDaily: the first daily claimed at Lv25+ (once per account; Lv25 is LongRoad's Level25)
+		local d = getData(player)
+		local tel = d and telemetryOf(d)
+		if tel and not tel.RuinsDaily and v >= 1 and num(player:GetAttribute("Level"), 1) >= 25 then
+			tel.RuinsDaily = true
+			TelemetryService.Custom(player, "RuinsDaily", 1)
+		end
+		if v >= num(Config.Quests and Config.Quests.Slots, 3) then T.DailyDoneAt[player] = os.clock() end
+		dailyCheck(player)
+	end)
+	dailyCheck(player)
 	task.spawn(function()
 		local ok, err = pcall(checkFriends, player)
 		if not ok then Util.Warn("TelemetryService", "friends: " .. tostring(err)) end
 	end)
+end
+
+------------------------------------------------------------------ A23-79 economy + leave context (게임성 개발 3)
+local function econOf(player)
+	local e = T.Econ[player]
+	if not e then
+		e = { In = {}, Out = {} }
+		T.Econ[player] = e
+	end
+	return e
+end
+
+-- the gold sums since the last flush -> LogEconomyEvent (currency "Gold", item SKU = the ProgressionService tag,
+-- transaction type Config.Analytics.EconomySources / EconomySinks or Gameplay; ending balance = carried + bank now)
+local function flushEconomy(player)
+	local e = T.Econ[player]
+	if not e or (next(e.In) == nil and next(e.Out) == nil) then return end
+	T.Econ[player] = { In = {}, Out = {} }
+	local balance = 0
+	pcall(function() balance = math.max(0, math.floor(num(S.ProgressionService.GetTotalGold(player)))) end)
+	local svc = analytics()
+	local flows = { { e.In, "Source", A.EconomySources or {} }, { e.Out, "Sink", A.EconomySinks or {} } }
+	for _, f in flows do
+		for tag, gold in f[1] do
+			local kind = f[3][tag] or "Gameplay"
+			if debugOn() then print(string.format("[Metrics] economy %s %s %d (%s, balance %d)", f[2], tag, gold, kind, balance)) end
+			if svc then
+				pcall(function()
+					svc:LogEconomyEvent(player, Enum.AnalyticsEconomyFlowType[f[2]], "Gold", gold, balance, kind, tag)
+				end)
+			end
+		end
+	end
+end
+
+-- where the player was when they left (one of a fixed list; '어디서 그만두는지')
+local function leaveContext(player)
+	local now = os.clock()
+	local recent = num(A.LeaveRecent, 120)
+	local ko = T.KOAt[player]
+	if ko and now - ko.At <= num(A.KOLeave, 60) then return "KO" end
+	if T.CardAt[player] and now - T.CardAt[player] <= recent then return "StopCard" end
+	if T.DailyDoneAt[player] and now - T.DailyDoneAt[player] <= recent then return "DailyDone" end
+	local combat = S.CombatService
+	if type(combat) == "table" and type(combat.IsInCombat) == "function" then
+		local ok, res = pcall(combat.IsInCombat, player)
+		if ok and res == true then return "Combat" end
+	end
+	local win = T.WindowAt[player]
+	if win and now - win.At <= 60 then return win.Id == "Shop" and "Shop" or "Menu" end
+	local okOwn, own = pcall(S.PlayerService.GetLastOwnActive, player)
+	if now - math.max(okOwn and num(own) or 0, T.JoinedAt[player] or 0) >= num(A.IdleAfter, 120) then return "Idle" end
+	return "Play"
 end
 
 local function bucketOf(minutes)
@@ -254,6 +501,19 @@ local function onLeaving(player)
 		local minutes = math.floor((os.clock() - joined) / 60)
 		Custom(player, "SessionMinutes", minutes, bucketOf(minutes))
 	end
+	-- A23-79: the context of the leave and a leave right after a KO (not when the server itself closes: every player
+	-- "leaves" then), the last gold sums
+	local okClose, closing = pcall(S.PlayerService.IsShuttingDown)
+	if not (okClose and closing == true) then
+		if joined then
+			local minutes = math.floor((os.clock() - joined) / 60)
+			Custom(player, "LeaveContext", 1, leaveContext(player), bucketOf(minutes))
+		end
+		local ko = T.KOAt[player]
+		if ko and os.clock() - ko.At <= num(A.KOLeave, 60) then Custom(player, "KOLeave60", 1, tostring(ko.Zone)) end
+	end
+	flushEconomy(player)
+	for _, t in { T.Shop, T.KOAt, T.CardAt, T.DailyDoneAt, T.WindowAt, T.Econ, T.Day } do t[player] = nil end
 	local failAt = T.EnhanceFailAt[player]
 	if failAt and os.clock() - failAt <= num(A.EnhanceFailLeave, 300) then
 		Custom(player, "EnhanceFailLeave", math.floor(os.clock() - failAt))
@@ -286,11 +546,82 @@ local function onUiMetric(player, ...)
 	if type(id) ~= "string" or not T.UiIds[id] then return end
 	if not S.PlayerService.IsReady(player) then return end
 	if not Util.RateLimit(player, "UiMetric", num(Config.RateLimits.UiMetric, 2)) then return end
+	-- A23-79: every open (not only the first of a session): the leave context; the Shop may start a PassShop visit
+	T.WindowAt[player] = { Id = id, At = os.clock() }
+	if id == "Shop" then shopStep(player, "ShopOpen") end
 	local s = session(player)
 	if not s or s.Windows[id] then return end
 	s.Windows[id] = true
 	TelemetryService.Custom(player, "WindowOpen_" .. id, 1)
 	returnAct(player, "Window", id)
+end
+
+-- A23-79: c->s "ClientMetric"(id, arg?) = what only the client sees (Config.Analytics.ClientMetrics: the id and the
+-- rule for its one argument). Ready, rate limited per id; anything off the list is ignored.
+local function argOk(rule, arg)
+	if rule == "None" then return arg == nil end
+	if rule == "Count" then return type(arg) == "number" and arg == math.floor(arg) and arg >= 1 and arg <= 50 end
+	if rule == "Source" then return type(arg) == "string" and table.find(A.InviteSources or {}, arg) ~= nil end
+	if rule == "Pass" then
+		return type(arg) == "string" and #arg <= 32 and (table.find(A.PassIds or {}, arg) ~= nil
+			or (type(Config.GamePasses) == "table" and Config.GamePasses[arg] ~= nil)
+			or (type(Config.Looks) == "table" and Config.Looks[arg] ~= nil))
+	end
+	if type(rule) == "table" then return type(arg) == "string" and table.find(rule, arg) ~= nil end
+	return false
+end
+
+-- review 2026-10-08: one client must never flood the game's analytics budget (Roblox: 120 + 20 x CCU events a minute
+-- for the whole game). Every accepted ClientMetric spends one of ClientMetricPerMinute; the once-ids count once a session.
+local function clientBudget(player, s, id)
+	if s.Once[id] then return false end
+	if table.find(A.ClientMetricOnce or {}, id) then s.Once[id] = true end
+	local now = os.clock()
+	local b = s.Budget
+	if now - b.Start >= 60 then b.Start, b.N = now, 0 end
+	if b.N >= num(A.ClientMetricPerMinute, 10) then return false end
+	b.N += 1
+	return true
+end
+
+local function onClientMetric(player, ...)
+	local n = select("#", ...)
+	if n < 1 or n > 2 then return end
+	local id, arg = ...
+	if type(id) ~= "string" then return end
+	local rule = (A.ClientMetrics or {})[id]
+	if rule == nil or not argOk(rule, arg) then return end
+	if not S.PlayerService.IsReady(player) then return end
+	if not Util.RateLimit(player, "ClientMetric:" .. id, num(Config.RateLimits.ClientMetric, 0.5)) then return end
+	local s = session(player)
+	if not s or not clientBudget(player, s, id) then return end
+	local Custom = TelemetryService.Custom
+	if id == "InviteSeen" or id == "InvitePrompt" then
+		funnel(player, "Social", id)
+	elseif id == "InviteSent" then
+		funnel(player, "Social", "InviteSent")
+		Custom(player, "InviteSent", arg)
+	elseif id == "ShopOpen" or id == "PassView" then
+		shopStep(player, id)
+	elseif id == "PurchasePrompt" then
+		shopStep(player, "PurchasePrompt")
+		-- A23-79 rule watch: a buy window right after a KO or a failed scroll must never happen (0 expected); one event per
+		-- KO / failed scroll at most
+		local near = num(A.PromptNearKO, 30)
+		local ko, fail = T.KOAt[player], T.EnhanceFailAt[player]
+		if ko and not ko.Prompted and os.clock() - ko.At <= near then
+			ko.Prompted = true
+			Custom(player, "PromptNearKO", 1, "KO", arg)
+		elseif fail and s.FailPrompted ~= fail and os.clock() - fail <= near then
+			s.FailPrompted = fail
+			Custom(player, "PromptNearKO", 1, "EnhanceFail", arg)
+		end
+	elseif id == "OptIn" then
+		Custom(player, "NotifyOptIn", 1, arg)
+	elseif id == "WelcomeBackGo" then
+		Custom(player, "WelcomeBackGo", 1)
+	end
+	T.ClientMetric:Fire(player, id, arg)
 end
 
 local function onKilled(player, info)
@@ -354,6 +685,10 @@ local function minuteTick()
 			end
 			local zone = p:GetAttribute("ZoneId")
 			if type(zone) == "string" and Config.Zones[zone] then s.ZoneMin[zone] = (s.ZoneMin[zone] or 0) + 1 end
+			-- A23-79: a KST day that turned while playing is a new play day; the dailies' progress (Daily3)
+			local data = getData(p)
+			if data and T.Day[p] ~= today() then dayStart(p, data) end
+			dailyCheck(p)
 		end
 	end
 end
@@ -410,10 +745,65 @@ function TelemetryService.Start()
 	connect("ProgressionService", "GoldEarned", function(player, amount, source)
 		local s = session(player)
 		if s and type(source) == "string" then s.GoldIn[source] = (s.GoldIn[source] or 0) + math.max(0, num(amount)) end
+		-- A23-79: the economy dashboard sums (flushed every EconomyFlush s and at the leave)
+		if s and type(source) == "string" and num(amount) > 0 then
+			local e = econOf(player).In
+			e[source] = (e[source] or 0) + math.floor(num(amount))
+		end
 	end)
 	connect("ProgressionService", "GoldSpent", function(player, amount, sink)
 		local s = session(player)
 		if s and type(sink) == "string" then s.GoldOut[sink] = (s.GoldOut[sink] or 0) + math.max(0, num(amount)) end
+		if s and type(sink) == "string" and num(amount) > 0 then
+			local e = econOf(player).Out
+			e[sink] = (e[sink] or 0) + math.floor(num(amount))
+		end
+	end)
+	-- A23-79 (게임성 개발 3): the new services' moments
+	Net.Get("ClientMetric").OnServerEvent:Connect(function(player, ...)
+		local ok, err = pcall(onClientMetric, player, ...)
+		if not ok then Util.Warn("TelemetryService", "ClientMetric: " .. tostring(err)) end
+	end)
+	connect("CombatService", "KnockedOut", function(player)
+		T.KOAt[player] = { At = os.clock(), Zone = player:GetAttribute("ZoneId") }
+	end)
+	connect("AttendanceService", "Claimed", function(player, slot, days)
+		TelemetryService.Custom(player, "Attendance", num(days), tostring(slot)) -- an optional moment: no funnel step
+	end)
+	connect("ReturnService", "CardShown", function(player, why)
+		T.CardAt[player] = os.clock()
+		-- only the daily card ends the day's funnel (it comes right after SetChest; a chapter / war card would complete
+		-- the earlier steps by Roblox's skip rule)
+		if why == "Daily" then funnel(player, "DailyVisit", "StopCardSeen") end
+		TelemetryService.Custom(player, "PauseCard", 1, tostring(why))
+	end)
+	connect("ReturnService", "Welcomed", function(player)
+		TelemetryService.Custom(player, "WelcomeBack", 1)
+	end)
+	connect("InviteService", "InviteJoined", function(invitee, _by, inviter)
+		TelemetryService.Custom(invitee, "FriendJoin", 1, inviter and "InviterHere" or "InviterAway")
+		if typeof(inviter) == "Instance" then funnel(inviter, "Social", "InviteeJoined") end
+	end)
+	connect("InviteService", "PlayedTogether", function(inviter)
+		funnel(inviter, "Social", "PlayedTogether10m")
+	end)
+	connect("InviteService", "WentToFriend", function(player, zone)
+		TelemetryService.Custom(player, "GoToFriend", 1, tostring(zone))
+	end)
+	connect("DiaryService", "PageOpened", function(player, page, late)
+		diaryCatchUp(player, page)
+		TelemetryService.Custom(player, "DiaryPage", num(page), late and "Late" or "OnTime")
+	end)
+	connect("DiaryService", "CandyTraded", function(player, id, candy)
+		TelemetryService.Custom(player, "CandyTrade", num(candy), tostring(id))
+	end)
+	connect("StoryQuestService", "QuestDone", function(player, id)
+		local ch = CHAPTER_END[id]
+		if ch then TelemetryService.Custom(player, "ChapterEnd", ch) end -- the story's chapter ends (3 = the tombs, Lv25)
+	end)
+	-- A23-75 (게임성 개발 2's MonetizationService, when it fires it): a pass bought during the open shop visit
+	connect("MonetizationService", "PassBought", function(player)
+		shopStep(player, "Bought")
 	end)
 	-- A23-68 #5: the first hit that landed, the first manual skill that hit a monster
 	connect("CombatService", "MonsterHit", function(player)
@@ -456,6 +846,8 @@ function TelemetryService.Start()
 					end
 				end
 				if ready[1] then TelemetryService.Custom(ready[1], "ServerPopulation", #ready, halo, horns) end
+				-- A23-79: the economy dashboard (Config.Analytics.EconomyFlush = this loop's 300 s)
+				for _, p in ready do flushEconomy(p) end
 			end)
 			if not ok then Util.Warn("TelemetryService", "population: " .. tostring(err)) end
 		end

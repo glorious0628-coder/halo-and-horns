@@ -78,7 +78,9 @@ MUTATIONS = [
     # --- Config
     ("Config: the 70% scroll on day 3 becomes a 10%", C, "\t\t{ Item = \"Enh70\", N = 1 },\n", "\t\t{ Item = \"Enh10\", N = 1 },\n"),
     ("Config: 'Regular' at 10 days", C, "\t\t{ Days = 7, Title = \"Regular\" },\n", "\t\t{ Days = 10, Title = \"Regular\" },\n"),
-    ("Config: titles not pickable", C, "\tif not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end\n", ""),
+    ("Config: titles not pickable", C,
+     "for _, id in { \"Regular\", \"SuperRegular\", \"MegaRegular\" } do\n\tif not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end\n",
+     "for _, id in { \"Regular\", \"SuperRegular\", \"MegaRegular\" } do\n"),
 ]
 
 

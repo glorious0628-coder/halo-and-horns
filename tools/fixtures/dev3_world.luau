@@ -40,6 +40,7 @@ local function dev3World(o)
 	function ps.MarkActive(p) ps.Active[p] = w.Clock end
 	function ps.GetLastOwnActive(p) return ps.Active[p] or 0 end
 	function ps.GetLastActive(p) return ps.Active[p] or 0 end
+	function ps.IsShuttingDown() return w.Closing == true end
 
 	local prog = { GoldEarned = Signal.new(), GoldSpent = Signal.new(), LeveledUp = Signal.new(), Rebirthed = Signal.new() }
 	function prog.AddBankGold(p, n, src)

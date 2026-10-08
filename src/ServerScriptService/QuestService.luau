@@ -1379,6 +1379,20 @@ function M.MarkDirty(player)
 	if typeof(player) == "Instance" and player:IsA("Player") then dirty[player] = true end
 end
 
+-- A23-79 (게임성 개발 3): the row publish() pins first (the story main row after the first mission, else the first-mission
+-- / next-goal entry), nil when nothing is pinned. ReturnService's pause card / welcome back "Next" line.
+function M.PinnedRow(player)
+	local data = getData(player)
+	if not data then return nil end
+	local row = tutorialEntry(player, data)
+	local story = S.StoryQuestService
+	if getStep(player) == TUT_DONE and story and type(story.MainRow) == "function" then
+		local ok, main = pcall(story.MainRow, player, data)
+		if ok and main then row = main end
+	end
+	return row
+end
+
 function M.Start()
 	Net.Get("RequestTutorial").OnServerEvent:Connect(onRequestTutorial)
 	Net.Get("AcceptTutorial").OnServerEvent:Connect(onAcceptTutorial)

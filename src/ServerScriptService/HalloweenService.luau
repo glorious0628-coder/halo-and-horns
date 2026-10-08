@@ -19,6 +19,8 @@ local Util = require(Shared:WaitForChild("Util"))
 local Net = require(Shared:WaitForChild("Net"))
 
 local HalloweenService = {}
+-- A23-79 (게임성 개발 3): a king beaten (not one that left): (Key, Kind, { UserIds the kill paid }) - the King Diary
+HalloweenService.KingDefeated = Util.Signal.new()
 local S = nil
 local TAG = "HalloweenService"
 local H = Config.Halloween or {}
@@ -183,6 +185,7 @@ local function finish(b, defeated)
 		local ok, err = pcall(Net.Fx, nil, "KingDefeat", { Key = b.Key, Kind = rec.Kind,
 			Pos = root and typeof(root.Position) == "Vector3" and root.Position or nil, Contributors = ids })
 		if not ok then warnThrottled("defeat", err) end
+		HalloweenService.KingDefeated:Fire(b.Key, rec.Kind, table.clone(ids))
 	end
 	announce(b.Key .. (defeated and "Defeat" or "Leave"))
 end

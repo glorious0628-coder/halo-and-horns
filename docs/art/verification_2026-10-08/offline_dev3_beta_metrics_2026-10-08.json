@@ -1,0 +1,1420 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 126,
+  "failedChecks": 0,
+  "namedChecks": 105,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "5 funnels + the onboarding one (Roblox: at most 10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "LongRoad: the level path (6 steps), once per account",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "DailyVisit: 5 steps, a session per KST day (attendance = an event)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Social: 5 steps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "KingDiary: 4 steps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PassShop: 4 steps, a session per shop visit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Shop window is a UiMetric id (it opens a PassShop visit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "limits: 0.5 s, 60 s, 30 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "the join: DailyVisit Join, session = the KST day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "DaysPlayed: lifetime day 1, level band, faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "the attendance claim is no funnel step (optional)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "Attendance event: days collected, the slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "the first daily claimed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "1 claimed + 2 done = all 3 done: Daily3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "a chapter card is no StopCardSeen (it would fill SetChest)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "all claimed (the chest) + the daily card: the whole day's funnel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "PauseCard events with Why (every card)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "each step once a day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "the same KST day again: no Join, no DaysPlayed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "after the day check: the new day's steps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DailyVisit + DaysPlayed",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ReturnGap",
+      "check": "a brand-new save: no ReturnGap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ReturnGap",
+      "check": "ReturnGap bucket <6h",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ReturnGap",
+      "check": "ReturnGap bucket 6-24h",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ReturnGap",
+      "check": "ReturnGap bucket 1-3d",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "ReturnGap",
+      "check": "ReturnGap bucket 3d+",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ReturnGap",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ReturnGap",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "Lv14: nothing yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "ChapterEnd events for each chapter's last quest (no step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "a daily at Lv16: no RuinsDaily",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "the first daily at Lv25+: RuinsDaily once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "the level path in order, each once (a skipped level counts: 41 >= 40)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "one session per account",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "an old save catches up what it passed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "the next visit logs nothing again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "RuinsDaily once per account (saved)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "LongRoad",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "InviteSeen needs a known source",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "seen, prompt, sent (InviteSent event value = friends picked)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "the invitee: FriendJoin; the inviter here: InviteeJoined",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "an inviter on another server: InviterAway",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "10 minutes together",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "GoToFriend event with the zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "no UserId in any field",
+      "pass": 21,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KingDiary",
+      "check": "page 2: still only Page1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KingDiary",
+      "check": "pages 1 and 3 (2 is no step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KingDiary",
+      "check": "DiaryPage events: the page, late or on time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KingDiary",
+      "check": "a save with 7 pages catches up at join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KingDiary",
+      "check": "CandyTrade: candy, the jar id",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KingDiary",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KingDiary",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "the Shop window opens a visit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "one visit: the 4 steps once each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "the shop again within ShopVisitGap (30 s): the same visit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "a shop open 30 s later = a new visit (a new session id)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "an unknown pass id is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "a pass card with no visit open starts one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "a visit 10 minutes old is over: Bought outside it is not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "buy windows 10 s after a KO: PromptNearKO once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "a buy window 35 s after a KO: not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "right after a failed scroll: EnhanceFail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PassShop",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "every bad call is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "good calls pass on (ReturnService listens)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "NotifyOptIn / WelcomeBackGo events",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "OptIn / WelcomeBackGo count once a session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "rate limited per id (0.5 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "20 calls in 12 s: 10 accepted (the per-minute budget)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "a new minute: accepted again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "not ready: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ClientMetric rules",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "a leave 5 s after a KO: KO + KOLeave60 (zone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "70 s after a KO: not a KO leave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "after a pause card: StopCard",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "after the day's last daily: DailyDone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "in a fight: Combat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "in the Shop: Shop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "in another window: Menu",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "no own action for 2 minutes: Idle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "otherwise: Play",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "a shutdown: no LeaveContext / KOLeave60 (the session sums stay)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave: context + KOLeave60",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "nothing logged per coin",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "one event per source / sink",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "Monster 10 + 20 = 30, Gameplay, balance = carried + bank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "Attendance = TimedReward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "Weapon = Shop sink, Plunder = Gameplay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "nothing new: nothing logged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "the leave flushes the rest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "economy dashboard",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no AnalyticsService (Studio)",
+      "check": "nothing logged, nothing breaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no AnalyticsService (Studio)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no AnalyticsService (Studio)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 6,
+  "staticFailures": [],
+  "mutations": {
+    "total": 62,
+    "applied": 62,
+    "caught": 62,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Once funnels logged again on every call",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: 1 claimed + 2 done = all 3 done: Daily3",
+          "DailyVisit + DaysPlayed :: a chapter card is no StopCardSeen (it would fill SetChest)",
+          "DailyVisit + DaysPlayed :: a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps",
+          "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel",
+          "DailyVisit + DaysPlayed :: each step once a day"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "DailyVisit session = UTC day",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DailyVisit never starts a new day",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a new shop visit on every click",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: a shop open 30 s later = a new visit (a new session id)",
+          "PassShop :: an unknown pass id is ignored",
+          "PassShop :: the shop again within ShopVisitGap (30 s): the same visit"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a visit never ends",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: a visit 10 minutes old is over: Bought outside it is not counted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "one PassShop visit forever",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: a shop open 30 s later = a new visit (a new session id)",
+          "PassShop :: an unknown pass id is ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a pass card without a visit is lost",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: a pass card with no visit open starts one",
+          "PassShop :: a visit 10 minutes old is over: Bought outside it is not counted"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Bought outside an open visit",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: a visit 10 minutes old is over: Bought outside it is not counted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the Shop window opens no visit",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: the Shop window opens a visit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "step numbers from 0",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: 1 claimed + 2 done = all 3 done: Daily3",
+          "DailyVisit + DaysPlayed :: a chapter card is no StopCardSeen (it would fill SetChest)",
+          "DailyVisit + DaysPlayed :: a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps",
+          "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel",
+          "DailyVisit + DaysPlayed :: the attendance claim is no funnel step (optional)"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "DaysPlayed every join",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+          "DailyVisit + DaysPlayed :: the same KST day again: no Join, no DaysPlayed"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no day turn while online",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Daily3 only counts claims",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: 1 claimed + 2 done = all 3 done: Daily3",
+          "DailyVisit + DaysPlayed :: a chapter card is no StopCardSeen (it would fill SetChest)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Daily1",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: 1 claimed + 2 done = all 3 done: Daily3",
+          "DailyVisit + DaysPlayed :: a chapter card is no StopCardSeen (it would fill SetChest)",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps",
+          "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel",
+          "DailyVisit + DaysPlayed :: the first daily claimed"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "yesterday's dailies counted for today",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: a day that turns while playing: DaysPlayed 2 + the new day's Join only",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "attendance as a funnel step",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: the attendance claim is no funnel step (optional)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no pause-card step",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every card ends the day's funnel",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: a chapter card is no StopCardSeen (it would fill SetChest)",
+          "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DaysPlayed without the level band",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: DaysPlayed: lifetime day 1, level band, faction"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ReturnGap for a brand-new save",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ReturnGap :: a brand-new save: no ReturnGap"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ReturnGap buckets off by a day",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ReturnGap :: ReturnGap bucket 1-3d"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no long-road catch-up",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "LongRoad :: an old save catches up what it passed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "level steps only on the exact level",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "LongRoad :: the level path in order, each once (a skipped level counts: 41 >= 40)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RuinsDaily at any level",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "LongRoad :: a daily at Lv16: no RuinsDaily"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RuinsDaily every claim",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "LongRoad :: RuinsDaily once per account (saved)",
+          "LongRoad :: the first daily at Lv25+: RuinsDaily once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no ChapterEnd",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "LongRoad :: ChapterEnd events for each chapter's last quest (no step)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ChapterEnd for every main quest",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "LongRoad :: ChapterEnd events for each chapter's last quest (no step)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Rebirth1",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "LongRoad :: the level path in order, each once (a skipped level counts: 41 >= 40)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "InviteeJoined logged for the invitee",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Social + invites :: the invitee: FriendJoin; the inviter here: InviteeJoined"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "FriendJoin says nothing about the inviter",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Social + invites :: an inviter on another server: InviterAway",
+          "Social + invites :: the invitee: FriendJoin; the inviter here: InviteeJoined"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no PlayedTogether",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Social + invites :: 10 minutes together"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no diary catch-up",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KingDiary :: a save with 7 pages catches up at join"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every diary page is a step",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KingDiary :: page 2: still only Page1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any client metric id",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: every bad call is ignored",
+          "ClientMetric rules :: good calls pass on (ReturnService listens)",
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "three arguments",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: every bad call is ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any count",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: every bad call is ignored",
+          "ClientMetric rules :: good calls pass on (ReturnService listens)",
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "any invite source",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Social + invites :: InviteSeen needs a known source"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any pass id",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: every bad call is ignored",
+          "ClientMetric rules :: good calls pass on (ReturnService listens)",
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no per-minute budget",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: 20 calls in 12 s: 10 accepted (the per-minute budget)",
+          "ClientMetric rules :: a new minute: accepted again",
+          "ClientMetric rules :: not ready: ignored"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the budget never refills",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: a new minute: accepted again",
+          "ClientMetric rules :: not ready: ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "once-ids every call",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PromptNearKO for every buy window",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: a buy window 35 s after a KO: not counted",
+          "PassShop :: buy windows 10 s after a KO: PromptNearKO once",
+          "PassShop :: right after a failed scroll: EnhanceFail"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "None takes an argument",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: every bad call is ignored",
+          "ClientMetric rules :: good calls pass on (ReturnService listens)",
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not-ready players count",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: not ready: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ClientMetric not passed on",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: 20 calls in 12 s: 10 accepted (the per-minute budget)",
+          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: good calls pass on (ReturnService listens)",
+          "ClientMetric rules :: not ready: ignored",
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "PromptNearKO at any time",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: a buy window 35 s after a KO: not counted",
+          "PassShop :: right after a failed scroll: EnhanceFail"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no PromptNearKO after a failed scroll",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PassShop :: right after a failed scroll: EnhanceFail"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KOLeave60 at any time",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave: context + KOLeave60 :: 70 s after a KO: not a KO leave"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no leave context",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave: context + KOLeave60 :: a leave 5 s after a KO: KO + KOLeave60 (zone)",
+          "leave: context + KOLeave60 :: after a pause card: StopCard",
+          "leave: context + KOLeave60 :: after the day's last daily: DailyDone",
+          "leave: context + KOLeave60 :: in a fight: Combat",
+          "leave: context + KOLeave60 :: in another window: Menu",
+          "leave: context + KOLeave60 :: in the Shop: Shop"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "a shutdown counts as leaves",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave: context + KOLeave60 :: a shutdown: no LeaveContext / KOLeave60 (the session sums stay)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a pause card never names the leave",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave: context + KOLeave60 :: after a pause card: StopCard"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "idle never",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave: context + KOLeave60 :: no own action for 2 minutes: Idle"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the Shop is just a menu",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave: context + KOLeave60 :: in the Shop: Shop"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an event per coin",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "economy dashboard :: Monster 10 + 20 = 30, Gameplay, balance = carried + bank",
+          "economy dashboard :: nothing logged per coin",
+          "economy dashboard :: nothing new: nothing logged",
+          "economy dashboard :: one event per source / sink",
+          "economy dashboard :: the leave flushes the rest"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no flush at the leave",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "economy dashboard :: the leave flushes the rest"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "sums never reset",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "economy dashboard :: nothing new: nothing logged",
+          "economy dashboard :: the leave flushes the rest"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no 5-minute flush",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "economy dashboard :: Attendance = TimedReward",
+          "economy dashboard :: Monster 10 + 20 = 30, Gameplay, balance = carried + bank",
+          "economy dashboard :: Weapon = Shop sink, Plunder = Gameplay",
+          "economy dashboard :: nothing new: nothing logged",
+          "economy dashboard :: one event per source / sink",
+          "economy dashboard :: the leave flushes the rest"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "every flow a Gameplay type",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "economy dashboard :: Attendance = TimedReward",
+          "economy dashboard :: Weapon = Shop sink, Plunder = Gameplay"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: Attendance gold as Gameplay",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "economy dashboard :: Attendance = TimedReward"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: DailyVisit steps out of order",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DailyVisit + DaysPlayed :: 1 claimed + 2 done = all 3 done: Daily3",
+          "DailyVisit + DaysPlayed :: a chapter card is no StopCardSeen (it would fill SetChest)",
+          "DailyVisit + DaysPlayed :: after the day check: the new day's steps",
+          "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel",
+          "DailyVisit + DaysPlayed :: the first daily claimed",
+          "config :: DailyVisit: 5 steps, a session per KST day (attendance = an event)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Config: once-ids forgotten",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMetric rules :: OptIn / WelcomeBackGo count once a session",
+          "ClientMetric rules :: rate limited per id (0.5 s)"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "b468267abfdfd6d7e6b673e7d1e59a49b842dfc080ede4a41739b7884d89ab49",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/TelemetryService.luau": "1c8ece82009448474c605bf413f59dbebba719d933dbcfeecdd266efefd4aecc"
+  },
+  "fixtureSHA256": "6952e337faa87ecef02b5e05ab4a9b031666239577283edae8450703c005345a",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-79 beta metrics (only always-in-order steps in a funnel: Roblox completes the earlier steps of a later one): funnels LongRoad (Level15/25/30/40/50, Rebirth1; once per account, old saves catch up), DailyVisit (Join, Daily1, Daily3, SetChest, StopCardSeen = the daily card; session = the KST day now, the dailies only while DailyDay is today, a day that turns online starts a new one), Social (InviteSeen, InvitePrompt, InviteSent, InviteeJoined for the inviter, PlayedTogether10m), KingDiary (Page1/3/6/9, caught up), PassShop (ShopOpen = every Shop open = a new GUID session, PassView, PurchasePrompt, Bought from MonetizationService.PassBought); events DaysPlayed (lifetime days, level band, faction), ReturnGap (<6h / 6-24h / 1-3d / 3d+), Attendance, PauseCard, WelcomeBack, FriendJoin, GoToFriend, DiaryPage, CandyTrade, NotifyOptIn, InviteSent, WelcomeBackGo, PromptNearKO (30 s after a KO / failed scroll), KOLeave60 and LeaveContext (KO / StopCard / DailyDone / Combat / Shop / Menu / Idle / Play + session bucket) at the leave; c->s ClientMetric(id, arg) with fixed rules (ready, 0.5 s per id); gold sums per source / sink -> LogEconomyEvent every 5 minutes and at the leave (Gold, SKU = tag, TimedReward / Shop / Gameplay). No UserId, name or free text in any field.",
+  "limitations": "The real Roblox dashboards are not reached offline (Studio logs nothing). The client sends ClientMetric / UiMetric (game dev 1); MonetizationService.PassBought is game dev 2's signal to add. Signals of the new services are doubles here (their own suites test them)."
+}

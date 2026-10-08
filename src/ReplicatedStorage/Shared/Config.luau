@@ -5496,4 +5496,146 @@ for _, id in { "Regular", "SuperRegular", "MegaRegular" } do
 end
 Config.RateLimits.ClaimAttendance = 1
 
+----------------------------------------------------------------- A23-79 beta metrics (게임성 개발 3, 2026-10-08)
+-- TelemetryService; docs/design/retention_round_2026-10-08.md "베타에서 잴 것", contract
+-- docs/design/beta_metrics_server_2026-10-08.md. Roblox limits: 10 funnels (the onboarding one is
+-- Config.Analytics.Steps), 100 custom event names, 3 fields; events only from published servers (never Studio).
+-- Funnels: steps in order, each logged once per funnel session. Once = one session per account; DailyVisit's session =
+-- the KST day; PassShop's = one shop visit. Roblox completes the earlier steps of a later one, so a funnel holds only
+-- steps that always come in order (review 2026-10-08): the attendance claim, the story's chapter ends and the first
+-- ruins daily are custom events (Attendance, ChapterEnd, RuinsDaily), not steps.
+Config.Analytics.Funnels = {
+	LongRoad = { Once = true, Steps = { "Level15", "Level25", "Level30", "Level40", "Level50", "Rebirth1" } },
+	DailyVisit = { Steps = { "Join", "Daily1", "Daily3", "SetChest", "StopCardSeen" } },
+	Social = { Once = true, Steps = { "InviteSeen", "InvitePrompt", "InviteSent", "InviteeJoined", "PlayedTogether10m" } },
+	KingDiary = { Once = true, Steps = { "Page1", "Page3", "Page6", "Page9" } },
+	PassShop = { Steps = { "ShopOpen", "PassView", "PurchasePrompt", "Bought" } },
+}
+-- c->s "ClientMetric"(id, arg?): what only the client sees. The rule for the one argument: "None" (no argument),
+-- "Count" (a whole number 1..50), "Source" (one of InviteSources), "Pass" (a Config.GamePasses / Config.Looks id or
+-- "Look"), or a list of the allowed strings. Anything else is ignored.
+Config.Analytics.ClientMetrics = {
+	ShopOpen = "None", -- the Shop window opened (every open; a visit lasts until ShopVisitGap s after its start)
+	InviteSeen = "Source", -- an [Invite a friend] button showed
+	InvitePrompt = "Source", -- Roblox's invite window opened
+	InviteSent = "Count", -- the invite window closed with this many friends picked (SocialService.GameInvitePromptClosed)
+	PassView = "Pass", -- a pass card was looked at in the Shop (a visit starts here when none is open)
+	PurchasePrompt = "Pass", -- Roblox's buy window opened for a pass
+	OptIn = { "shown", "cannot" }, -- the notification prompt was shown / could not be (CanPromptOptInAsync false)
+	WelcomeBackGo = "None", -- [Go] on the welcome-back card
+}
+Config.Analytics.InviteSources = { "Menu", "PlayerList", "GooseWin", "WarWin" }
+Config.Analytics.PassIds = { "XP2", "Gold2", "VIP", "Look" } -- "Pass" args besides Config.GamePasses / Config.Looks ids
+-- review 2026-10-08 (one client must not flood the whole game's analytics budget): accepted ClientMetric calls a minute
+-- per player; these ids count once a session
+Config.Analytics.ClientMetricPerMinute = 10
+Config.Analytics.ClientMetricOnce = { "OptIn", "WelcomeBackGo" }
+Config.Analytics.ShopVisitGap = 30 -- s: a shop open within this of the visit's start keeps the visit
+Config.Analytics.ShopVisitMax = 600 -- s: a visit older than this is over
+Config.Analytics.KOLeave = 60 -- s after a KO a leave counts as KOLeave60 (and LeaveContext "KO")
+Config.Analytics.PromptNearKO = 30 -- s after a KO / a failed scroll a purchase prompt is logged (must stay 0)
+Config.Analytics.LeaveRecent = 120 -- s a pause card / the day's last daily still names the leave (LeaveContext)
+Config.Analytics.IdleAfter = 120 -- s with no own action = an "Idle" leave
+-- gold on the Roblox economy dashboard (LogEconomyEvent, currency "Gold"): the sums per source / sink every 5 minutes and
+-- at the leave; item SKU = the ProgressionService tag, transaction type from these tables (else "Gameplay")
+Config.Analytics.EconomySources = { Attendance = "TimedReward", Sale = "Shop", Refund = "Shop" }
+Config.Analytics.EconomySinks = { Weapon = "Shop", Potion = "Shop", LookChange = "Shop" }
+Config.RateLimits.ClientMetric = 0.5 -- per metric id
+
+----------------------------------------------------------------- A23-79 coming back (게임성 개발 3, 2026-10-08)
+-- ReturnService / InviteService / DiaryService; contract docs/design/return_server_2026-10-08.md. Additive save fields
+-- (Version stays 3), each repaired by its service at PlayerReady:
+--   Return = { Badges = { [Config.Badges key] = os.time() awarded }, OptIn = "" | "shown" | "cannot", OptInAt = os.time() }
+--   Diary = { Pages = King Diary pages open (0..9), Done = the full book's title was given }
+--   Invite = { By = the UserId whose invite brought this player first, At = os.time() } (empty when never invited)
+Config.Data.Defaults.Return = { Badges = {}, OptIn = "", OptInAt = 0 }
+Config.Data.Defaults.Diary = { Pages = 0, Done = false }
+Config.Data.Defaults.Invite = {}
+-- #1 the pause card + welcome back (no clock numbers, no automatic next dialogue, never a buy button near it)
+Config.Return = {
+	CardDelay = 1.5, -- s after the moment (the quest list has moved on to the next goal by then)
+	MinGap = 120, -- s between two pause cards of one player
+	CombatWaitSeconds = 3, -- a card that comes in a fight waits for the fight to end (this often, at most this many times)
+	CombatWaitTries = 10,
+	War = { MinSession = 900, MinGap = 1800 }, -- a crown-war end: only after 15 minutes of play, at most one in 30 minutes
+	WelcomeAfter = 6 * 3600, -- "Welcome back!" when the last leave was at least this long ago (after the first mission)
+	WelcomeDelay = 4, -- s after the join (the HUD is up by then)
+	NextZone = "GoblinWoods", -- the next-goal row "Lv10 · Goblin Woods" travels there
+	SeasonFallback = "SlimeMeadow", -- a seasonal field (no Travel destination): its entrance field
+	-- quest guide spots that are not zones / landmarks ("Home" = the player's own town)
+	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home",
+		Goose = "Crossroads" },
+	Text = {
+		NextHunt = "Hunt and get stronger!", -- nothing pinned
+		TomorrowDaily = "New dailies", -- the daily card's tomorrow line (the King Diary's page while one waits)
+	},
+}
+-- #2 "My Way" (A23-79, psychology 2a): a name from the player's own good / evil story picks, no stats, no judging.
+-- At least MinPicks picks; |good - evil| <= floor(picks x BalanceShare) = Balance Walker; else by faction and lean.
+Config.MyWay = {
+	MinPicks = 2,
+	BalanceShare = 0.2,
+	Names = { TrueKnight = "True Knight", RebelAngel = "Rebel Angel", ProudRascal = "Proud Rascal",
+		SoftDevil = "Soft-Hearted Devil", BalanceWalker = "Balance Walker" },
+}
+-- #2 the 8 Roblox badges (one badge for the angel and the devil path alike). Ids = the badge ids the user creates on
+-- create.roblox.com at publishing (5 free a day: two days; launch_ops_checklist). 0 = not made yet: never asked, awarded
+-- at a later join once the id is set. Stronger = a weapon above the first tier owned; FirstSkill = the first skill
+-- learned (Lv5); Rank2 = faction rank 2 (Config.Titles.Thresholds); Halloween2026 = candy or a king beaten together in
+-- the 2026 season.
+Config.Badges = {
+	Order = { "ChoseSide", "FirstSlime", "LostLunchbox", "Stronger", "FirstSkill", "ShardChoice", "Rank2", "Halloween2026" },
+	Ids = { ChoseSide = 0, FirstSlime = 0, LostLunchbox = 0, Stronger = 0, FirstSkill = 0, ShardChoice = 0, Rank2 = 0,
+		Halloween2026 = 0 },
+	RetrySeconds = 300, -- a failed AwardBadge is tried again after this long
+}
+-- #5 the notification opt-in moment (13+ only: Roblox decides in CanPromptOptInAsync on the client). Once a shown prompt,
+-- again after RetryCannot s when the client could not prompt; never in the first MinPlaySeconds of play or within Calm s
+-- of a KO / a failed scroll / a purchase prompt. Store = the asked list (UserId -> { At }) for the launch-day send
+-- (Open Cloud, 11/09 update; the key lives in Secrets, never in the code).
+Config.Notify = {
+	MinPlaySeconds = 600,
+	Calm = 60,
+	RetryCannot = 30 * 86400,
+	Store = "HaloHorns_NotifyAsked_v1",
+}
+-- #3 invites (A23-68: no reward for inviting). TogetherMinutes = an invite pair on one server this long -> the
+-- PlayedTogether metric. SeasonZone = where "Go to friend" goes for a friend in a seasonal field.
+Config.Invite = {
+	TogetherMinutes = 10,
+	SeasonZone = "SlimeMeadow",
+	Text = {
+		NotHere = "Your friend is not on this server.",
+		Away = "Your friend is exploring far away. Try again soon!",
+		OtherTown = "Your friend is in the other side's town.",
+		SproutPvP = "Your friend is in a PvP zone. Come at Lv %d!",
+		SameZone = "You're already there!",
+	},
+}
+-- #4 the King Diary (Config.Halloween.Banter.Days = its pages) and the candy jar (open after the season too)
+Config.Diary = {
+	Title = "PartyGuest2026", -- all 9 pages
+	Text = {
+		Page = "King Diary: page %d!",
+		Tomorrow = "King Diary page %d",
+		NewTitle = "New title: %s!",
+		JarOwned = "You already have it!",
+		JarNeed = "You need %d candy.",
+	},
+}
+Config.CandyJar = {
+	Trades = {
+		{ Id = "PumpkinPal", Title = "PumpkinPal", Candy = 50 },
+		{ Id = "CandyKeeper", Title = "CandyKeeper", Candy = 200 },
+	},
+}
+Config.TitleDefs.PartyGuest2026 = { Name = "Party Guest 2026", NameEn = "Party Guest 2026", Color = Color3.fromRGB(255, 160, 70) }
+Config.TitleDefs.PumpkinPal = { Name = "Pumpkin Pal", NameEn = "Pumpkin Pal", Color = Color3.fromRGB(255, 140, 60) }
+Config.TitleDefs.CandyKeeper = { Name = "Candy Keeper", NameEn = "Candy Keeper", Color = Color3.fromRGB(240, 120, 200) }
+for _, id in { "PartyGuest2026", "PumpkinPal", "CandyKeeper" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
+Config.RateLimits.GoToFriend = 3
+Config.RateLimits.CandyTrade = 1
+
 return Config

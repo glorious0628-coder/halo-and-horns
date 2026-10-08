@@ -17,6 +17,9 @@ local Util = require(Shared:WaitForChild("Util"))
 local Net = require(Shared:WaitForChild("Net"))
 
 local StoryQuestService = {}
+-- A23-79 (게임성 개발 3): (player, quest id) a story quest finished / (player, quest id, saved pick) a choice was made
+StoryQuestService.QuestDone = Util.Signal.new()
+StoryQuestService.Picked = Util.Signal.new()
 local S = nil
 local TAG = "StoryQuestService"
 local SQ = Config.StoryQuests
@@ -337,6 +340,7 @@ local function complete(player, data, id)
 		if not ok then Util.Warn(TAG, "GrantFirstWeapon: " .. tostring(err)) end
 	end
 	dirty(player)
+	StoryQuestService.QuestDone:Fire(player, id)
 end
 
 -- manual = the player asked (StoryAction "Open"); a step talked through a town NPC (Npc) never pops up by itself
@@ -827,6 +831,7 @@ local function onStoryAction(player, id, action, option, ...)
 			changedMind(player, st, obj, option)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
+		StoryQuestService.Picked:Fire(player, id, st.Pick[id]) -- A23-79: My Way
 		advance(player, data, id, tr)
 		if type(reply) == "string" then replyLater(player, reply) end
 	end
