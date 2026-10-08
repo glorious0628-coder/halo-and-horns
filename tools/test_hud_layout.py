@@ -225,7 +225,7 @@ MUTATIONS = [
      "if c.Y < bar.Y1 and c.Y + c.H > bar.Y0 then leftEdge = math.max(leftEdge, bar.X0 + GAP) end", ""),
     ("no fold room left beside [메뉴]", "rightEdge = math.min(rightEdge, o.X - FOLD_MIN * (o.W + fGapRow) - GAP)",
      "rightEdge = math.min(rightEdge, o.X - GAP)"),
-    ("info rows not under the bar", 'chips = { "TC", { 516, 62, 248, 22 }', 'chips = { "TC", { 516, 112, 248, 22 }'),
+    ("info rows not under the bar", 'chips = { "TC", { 496, 62, 288, 22 }', 'chips = { "TC", { 496, 112, 288, 22 }'),
     # (the fold's Roblox-buttons blocker is defensive: the war meter always sits between them and [메뉴] in the bar, so no
     # supported screen reaches it; "fold first line in the top bar" still checks that the line stays right of them)
     ("fold may cover the war meter", "local FOLD_OVER = { menu = true,", "local FOLD_OVER = { war_meter = true, menu = true,"),

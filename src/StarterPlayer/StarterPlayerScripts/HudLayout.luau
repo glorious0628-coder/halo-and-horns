@@ -38,10 +38,12 @@ local ITEMS = {
 	-- TB = in the Roblox top bar: x like TC, centred on the bar's middle, its height in REAL px (Roblox's buttons do not
 	-- follow our UIScale); the sheet's y = on the middle line of Roblox's buttons (34 px)
 	war_meter = { "TB", { 496, 13, 288, 42 }, { 255, 15, 240, 38 } },
-	chips = { "TC", { 516, 62, 248, 22 }, { 255, 62, 240, 17 } },
+	-- 검수 2026-10-08 (A23-75 2x chip): the PC chip row as wide as the war meter, so Safe Zone · Rare · 2x XP and '+N' fit
+	-- in town (248 px folded the 2x chip into '+2'); the next-event line keeps the chip row's width (A23-63)
+	chips = { "TC", { 496, 62, 288, 22 }, { 255, 62, 240, 17 } },
 	-- A23-63 (2026-10-07): as wide as the chip row on PC and the whole column on phones - Montserrat runs wider and the
 	-- king pill ("Pumpkin King is here! 4:54 left") was squeezed to 150 x 16 px with its words spilling out
-	event = { "TC", { 516, 88, 248, 22 }, { 255, 81, 240, 18 } },
+	event = { "TC", { 496, 88, 288, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
 	portrait = { "BC", { 387, 586, 50, 50 }, { 225, 248, 45, 45 } },
 	power_line = { "BC", { 445, 578, 449, 16 }, { 275, 250, 140, 14 } },
