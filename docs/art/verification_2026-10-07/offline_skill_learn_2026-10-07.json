@@ -214,10 +214,10 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ff8f5decaa4fe971c8f539c5bf5d817f2a5b1bd22db54f92f99f7f1ad3a4a55e",
+    "src/ReplicatedStorage/Shared/Config.luau": "4cd9fe9db93fd441236f12cbbbdf48aca0a518b783739b3ba3fd1cb5ce78e842",
     "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "eb9068fa9a25a72e467a162c5f1ba9be1ef3930d9e4ae952ade3160f3614eccf"
   },
-  "fixtureSHA256": "a4df3edf9491f67e4aa30b0d0bfe921ffe5acc5cd68ab7cf6408b967eed26470",
+  "fixtureSHA256": "a082cd163ab97ad9c3f08a748be3c1888722cb9c45bf22a25ca9d05d45ab7a8b",
   "studioCalls": 0,
   "contract": "A23-71 skill learn offline test (SkillBar.luau; user 2026-10-07 \"스킬도 처음에는 없어야 돼! 레벨 5일 때 하나 배우는 걸로\n하자\", unlocks Q 5 / Z 15 / X 25): no skill button below its unlock level (a key press says \"Skills come at Lv N\",\nnot spammed); unlocking while playing -> \"New skill! <name>\" banner (UIKit.Announce), the button pops in, one line on it\n(C.HUD.Hint(slot, \"Press Q\") / phones \"Tap the new button\"), the SkillLearn sound with PowerUp until its file exists;\nonce per slot; a save loading past the level shows its skills without the moment; reduced motion: no pop.\nRuns the real SkillBar.luau + Config.luau (Config.Skills.Unlock set to the A23-71 numbers) in\ntools/fixtures/skill_learn_offline.luau.",
   "limitations": "The button layout without skill slots is image dev's (HudLayout); the real unlock numbers come with dev2's Config.Skills.Unlock change; the look of the moment is a Studio check."

@@ -205,7 +205,7 @@
     "src/StarterPlayer/StarterPlayerScripts/PauseCard.luau": "b619a945d121a2dd1f459afa35030e5e58a174d8d51183fb638575daf03696eb",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
   },
-  "fixtureSHA256": "931691a37625edf8d6ed325707114cc6fc882166929dbdfd2172429dd42ae2fd",
+  "fixtureSHA256": "3561dd42bb7bd526bb54d40fce2ab2c5cb6f70779d0b575326d895d533a4fd94",
   "studioCalls": 0,
   "limitations": "Doubles instead of the engine: the card's look on PC and phone (DialogBox plate, button art) and the server's PauseCard / WelcomeBack Fx (게임성 개발 2, not built yet) are Studio checks."
 }

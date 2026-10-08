@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 41,
+  "checks": 44,
   "failedChecks": [],
   "static": [
     {
@@ -9,6 +9,10 @@
     },
     {
       "check": "the window's words are English (A23-48)",
+      "ok": true
+    },
+    {
+      "check": "the Main tab draws no Available section (검수 10/08)",
       "ok": true
     },
     {
@@ -29,9 +33,9 @@
     }
   ],
   "mutations": {
-    "total": 21,
-    "applied": 21,
-    "caught": 21,
+    "total": 26,
+    "applied": 26,
+    "caught": 26,
     "results": [
       {
         "mutation": "every quest in every tab",
@@ -77,9 +81,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL book: Side available = the story title and the job :: ",
-          "CHECK_FAIL book: Side done = the S0 title only (the book replaces the guesses) :: ",
-          "CHECK_FAIL book: Main done = M1_1 only :: "
+          "CHECK_FAIL book: Side available = the server's 'Opens at Lv' words, else the story title :: ",
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: Golden Jelly",
+          "CHECK_FAIL book: Faction available = the Halo story :: "
         ]
       },
       {
@@ -88,9 +92,56 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL book: Side done = the S0 title only (the book replaces the guesses) :: The Shard That Learns to Fight | Sparkly Jelly | Slimes",
-          "CHECK_FAIL book: Main done = M1_1 only :: ",
-          "CHECK_FAIL book: Daily done = the daily row :: "
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: Sparkly Jelly | The Shard That Learns to Fight | First Crown War Chest",
+          "CHECK_FAIL book: Event done = the goose story :: ",
+          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly | The Shard That Learns to Fight | First Crown War Chest | First mission"
+        ]
+      },
+      {
+        "mutation": "the book's Available rows in every tab",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side available = the server's 'Opens at Lv' words, else the story title :: Lost thing · Opens at Lv 8 | The Shard Fights for You | Lantern · Opens at Lv 12 | Report to Your Side",
+          "CHECK_FAIL book: Faction available = the Halo story :: "
+        ]
+      },
+      {
+        "mutation": "the Main tab lists Available",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: the Main tab has no Available (the chain has no level gate) :: Report to Your Side"
+        ]
+      },
+      {
+        "mutation": "the book's words replaced by the title",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side available = the server's 'Opens at Lv' words, else the story title :: Keep the Path Safe | The Shard Fights for You",
+          "CHECK_FAIL book: Faction available = the Halo story :: "
+        ]
+      },
+      {
+        "mutation": "with a book the main chain is still guessed",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly | First mission | The King Who Ate the Dust"
+        ]
+      },
+      {
+        "mutation": "session stories listed next to the book",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: The Shard That Learns to Fight | Golden Jelly"
         ]
       },
       {
@@ -110,6 +161,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL Main done: the first mission and the main chain before M1_3 :: Sparkly Jelly | The King Who Ate the Dust",
+          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly",
           "CHECK_FAIL Main body: the main quest row + 3 done rows :: 3"
         ]
       },
@@ -128,7 +180,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Side done: a story finished this session, by its title (not the daily) :: The Shard Fights for You | Slimes 5/5"
+          "CHECK_FAIL Side done: a story finished this session, by its title (not the daily) :: The Shard Fights for You | Slimes 5/5",
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: The Shard That Learns to Fight | Slimes 5/5"
         ]
       },
       {
@@ -138,8 +191,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL Daily done: today's count :: ",
-          "CHECK_FAIL Daily tab: two quest rows + today's count :: 2",
-          "CHECK_FAIL the quest list changes -> the open window redraws (Daily: only today's count left) :: 0"
+          "CHECK_FAIL book: Daily done = today's count + the dailies finished this session :: Slimes 5/5",
+          "CHECK_FAIL Daily tab: two quest rows + today's count :: 2"
         ]
       },
       {
@@ -243,12 +296,12 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "d0ceb9fec43b150a8d30c969360cbd2b966d6984fa9d04478bec6760dd442ea9",
-    "src/ReplicatedStorage/Shared/Config.luau": "ff8f5decaa4fe971c8f539c5bf5d817f2a5b1bd22db54f92f99f7f1ad3a4a55e",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "8529ccc7635adc207e7627e6bf16101593bfac085545a0d9596132500b7195bb",
+    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "0065c2fb6b2457359a87ea21866e43be079cb77bb0a07af75680c2141dd917f3",
+    "src/ReplicatedStorage/Shared/Config.luau": "4cd9fe9db93fd441236f12cbbbdf48aca0a518b783739b3ba3fd1cb5ce78e842",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
   },
-  "fixtureSHA256": "0eae80a4000ccc01b927133d93689569a035c0b1aa5b7365c246d64678632ce9",
+  "fixtureSHA256": "29bf8487fe54050693e0363c2479ee8db3c49e01f2f9e8a3d5dc3199ed853a21",
   "studioCalls": 0,
-  "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows are a Studio photo check (메인 반영). Available / Done need the server's quest book (게임성 개발 3); until then Done is what the client can tell."
+  "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows are a Studio photo check (메인 반영). The book rows follow 게임성 개발 3's contract (tools/test_quest_book.py checks the server side); before a book comes Done is what the client can tell."
 }

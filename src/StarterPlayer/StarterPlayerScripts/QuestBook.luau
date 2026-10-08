@@ -5,10 +5,12 @@
 --   In progress = the HUD's quest rows of that tab (HUD.QuestEntries: the server's rows - quests in progress or ready to
 --   claim, the same tables the HUD lines use) + info lines nobody claims: the live world events on Event (golden goose,
 --   Pumpkin / Ghost King, kaiju, the crown war's next crown) and my wanted stars on Faction.
---   Available / Done = the server's quest book (HUD.QuestBook: { Available = { row }, Done = { id | row } }, row =
---   { Id, Text, Tab? }, 게임성 개발 3) when it comes; until then Done = the main chain before my main quest
---   (Config.StoryQuests.Main), the first mission once it is over, what I finished this session (HUD.QuestDoneSession)
---   and today's daily count.
+--   Available / Done = the server's quest book (HUD.QuestBook, 게임성 개발 3's contract on the "Quests" remote:
+--   { Available = { { Id = "story:<id>", Kind = "Sub", Level?, Text? } }, Done = { "story:<id>" } }; a sub waiting for
+--   a level comes with Text "Title · Opens at Lv N", a ready one with no Text = its story title). The main chain has no
+--   level gate, so the Main tab has no Available section (검수 10/08). Done also lists what the book does not keep: the
+--   first mission once it is over, today's daily count and what I finished this session that is no story quest
+--   (HUD.QuestDoneSession). Until a book comes, Done = the main chain before my main quest (Config.StoryQuests.Main) too.
 -- A row = the quest's words and 3/5; [Claim] / [New] when the HUD's rules allow (HUD.QuestCanClaim / QuestCanReroll ->
 -- HUD.QuestClaim / QuestReroll); a press on the row closes the window and guides me there like the HUD lines
 -- (HUD.QuestGo). Redraws on HUD.QuestsChanged while open. Game text: English only (A23-48), short and easy.
@@ -54,6 +56,7 @@ local T = {
 		TabCount = "%s %d",
 	},
 }
+T.NoAvailable = { Main = true } -- tabs without an Available section (the main chain is never waiting to be picked up)
 local S = { Ready = false, Tab = "Main", Conn = nil }
 local VIEW = { Parent = nil, Kit = nil, Tabs = nil, Body = nil } -- the open window's parts (nil while closed)
 
@@ -136,23 +139,8 @@ function QuestBook.Sections(tab, ctx)
 		local stars = math.floor(tonumber(attr("WantedStars")) or 0)
 		if stars > 0 then table.insert(out.InProgress, { Kind = "Info", Text = string.format(T.Text.Wanted, stars) }) end
 	end
-	-- the server's book, when it sends one
+	-- the server's book, when it sends one (story quests only; newest first)
 	local book = type(ctx.Book) == "table" and ctx.Book or nil
-	if book then
-		for _, r in type(book.Available) == "table" and book.Available or {} do
-			local row = bookRow(r)
-			if row and row.Tab == tab then
-				row.Kind = "Available"
-				table.insert(out.Available, row)
-			end
-		end
-		for _, r in type(book.Done) == "table" and book.Done or {} do
-			local row = bookRow(r)
-			if row and row.Tab == tab then table.insert(out.Done, row) end
-		end
-		return out
-	end
-	-- no book yet: what the client can tell
 	local seen = {}
 	local function done(text)
 		if type(text) == "string" and text ~= "" and not seen[text] then
@@ -160,13 +148,29 @@ function QuestBook.Sections(tab, ctx)
 			table.insert(out.Done, { Kind = "Done", Text = text })
 		end
 	end
+	if book then
+		if not T.NoAvailable[tab] then
+			for _, r in type(book.Available) == "table" and book.Available or {} do
+				local row = bookRow(r)
+				if row and row.Tab == tab then
+					row.Kind = "Available"
+					table.insert(out.Available, row)
+				end
+			end
+		end
+		for _, r in type(book.Done) == "table" and book.Done or {} do
+			local row = bookRow(r)
+			if row and row.Tab == tab then done(row.Text) end
+		end
+	end
+	-- what the book does not keep (and, with no book yet, what the client can tell)
 	if tab == "Main" then
 		local steps = Config.Tutorial and Config.Tutorial.Steps
 		local doneStep = type(steps) == "table" and tonumber(steps.Done) or 99
 		local step = tonumber(attr("TutorialStep"))
 		if (step and step >= doneStep) or mainId then done(T.Text.FirstMission) end
 		local chain = Config.StoryQuests and Config.StoryQuests.Main
-		if mainId and type(chain) == "table" then
+		if not book and mainId and type(chain) == "table" then
 			for _, id in chain do
 				if id == mainId then break end
 				done(titleOf("story:" .. id, nil))
@@ -178,7 +182,8 @@ function QuestBook.Sections(tab, ctx)
 		if claims > 0 then table.insert(out.Done, { Kind = "Info", Text = string.format(T.Text.DailyToday, math.min(claims, slots), slots) }) end
 	end
 	for _, d in type(ctx.DoneSession) == "table" and ctx.DoneSession or {} do
-		if type(d) == "table" and Config.QuestTab(d.Id, d.Kind) == tab then
+		local story = type(d) == "table" and storyDef(d.Id) ~= nil
+		if type(d) == "table" and Config.QuestTab(d.Id, d.Kind) == tab and not (book and story) then
 			local _, def = storyDef(d.Id)
 			done((def and def.Title) or d.Text)
 		end
@@ -312,7 +317,7 @@ local function drawBody()
 	end
 	local sec = QuestBook.Sections(S.Tab, context())
 	section(kit, body, T.Text.InProgress, sec.InProgress, T.Text.EmptyInProgress)
-	section(kit, body, T.Text.Available, sec.Available, T.Text.EmptyAvailable)
+	if not T.NoAvailable[S.Tab] then section(kit, body, T.Text.Available, sec.Available, T.Text.EmptyAvailable) end
 	section(kit, body, T.Text.Done, sec.Done, T.Text.EmptyDone)
 	paintTabs()
 end

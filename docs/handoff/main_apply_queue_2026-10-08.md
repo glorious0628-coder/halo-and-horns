@@ -53,6 +53,10 @@ sync 뒤 내 시험 Play(fresh 저장 또는 사용자 저장본) PC·폰 사진
 | D | Event 탭 | Play | 황금 거위·호박 대왕 등 진행 중이면 그 줄, 왕관 전쟁 다음 왕관 남은 시간 줄 |
 | E | Lv5 첫 스킬 뒤 키 안내(PC) | Play | 진짜 레벨업(DebugCommand Level 4 + XP = XPToNext(4)-1 + 슬라임 1마리)으로 Lv5 → "New skill!" 뒤 Z를 한 번 누르면 2.5초 뒤(안 누르면 25초 뒤) 카드 "Tip / Tip: You can change your keys in Settings!" [Open Settings]·[OK]. [Open Settings] → 설정 창 Keys 탭. 한 번만(다시 Z를 눌러도 안 나옴). 폰은 안 나옴 |
 | F | 메뉴 → Help | Play | 조작 줄 끝에 같은 안내 문장, [Key settings] 버튼 → 설정 Keys 탭(PC) |
+| G | 사용자 저장본(옛 한국어 일일 퀘스트가 남은 저장)으로 Play | Play | 왼쪽 줄·퀘스트 창의 일일 퀘스트 글이 영어(예: "Rob 1 Knight of Light 0/1"). 옛 저장의 한국어 글("빛의 기사단 1명 털기")이 화면에 안 보임 — 화면이 Config 영어 틀로 다시 씀(서버 쪽 고침은 개발 3) |
+| H | 퀘스트 창 Side / Faction / Event 탭 | Play | Available = 레벨을 기다리는 서브 "제목 · Opens at Lv N"(개발 3 Book), Done = 끝낸 이야기 퀘스트(최신 먼저). **Main 탭에는 Available 칸이 없음**(메인 줄은 레벨 문이 없음). Daily 탭 Done = 오늘 몇 개 + 이번 접속에 끝낸 일일 |
+
+같은 묶음 뒤 슬라임 간격 Play(검수 10/08 "구역 선 근처 슬라임 무리"): `py tools/play_separation_check.py pc` 그다음 `phone` (내 시험 Play, fresh 저장. 도구가 초원 서쪽 끝 슬라임 옆으로 가장 가까운 슬라임 3마리를 몇 스터드씩만 모아 옴 → 서쪽 끝으로 걸어가 6초 표본). 확인 = results.json의 슬라임 2마리 이상·몸 겹침 비율 ≥ 0.90·이동선 넘은 슬라임 0·멈춰 있지 않음 + 사진 02_at_the_edge. Config.Monsters → Config.MonsterTypes로 고쳐서 이번엔 슬라임을 찾음(전에는 0마리).
 
 ## 3번째 묶음 (조명 깊이, 개발 1 가지 lighting) — 같은 자리에서 전후 사진
 - sync(Config.Sky.Neutral: ClockTime 15.3·Ambient 72,76,86·OutdoorAmbient 110,120,135·FogStart 150·FogEnd 950·노출 -0.05,

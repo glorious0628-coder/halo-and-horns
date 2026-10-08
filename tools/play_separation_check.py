@@ -1,6 +1,8 @@
 """Monster spacing check at the zone edge (A23-74 separation, 게임성 개발 2's dev2-separation3, 검수 10/08: "구역 선 근처
 슬라임 무리") in the main Studio, my own test Play with a FRESH in-memory save. A Warrior (DebugCommand Level 20 for the
-hit points; this Play only) is set down beside the nearest slimes of Squishy Meadow, lets them see him, walks to the
+hit points; this Play only) is set down beside the westmost slime of Squishy Meadow - the 3 slimes nearest to it are
+first brought together there (검수 10/08: one slime alone tests no spacing; each moves only a few studs, inside its
+60-stud leash) - lets them see him, walks to the
 meadow's west edge (x = Center - Size/2 + 2, where the monsters' move line is 6 studs further in) and stands there. The
 server is sampled every 0.5 s for 6 s: the slimes within ChaseR studs, their smallest flat gap / (rA + rB) (1 = bodies
 touch; SEP.Overlap 1), how many stand past the move line, and whether they still move. Photos from behind the player.
@@ -42,7 +44,7 @@ local out = { MinX = zone.Center.X - zone.Size.X / 2, MinZ = zone.Center.Z - zon
 	Slimes = {} }
 for _, m in workspace:WaitForChild("Monsters"):GetChildren() do
 	local kind = m:GetAttribute("MonsterKind")
-	local def = kind and Config.Monsters and Config.Monsters[kind]
+	local def = kind and Config.MonsterTypes[kind]
 	local root = m.PrimaryPart or m:FindFirstChild("HumanoidRootPart")
 	local hum = m:FindFirstChildOfClass("Humanoid")
 	if root and def and def.Zone == "SlimeMeadow" and (not hum or hum.Health > 0) then
@@ -51,6 +53,43 @@ for _, m in workspace:WaitForChild("Monsters"):GetChildren() do
 end
 table.sort(out.Slimes, function(a, b) return a.X < b.X end)
 return game:GetService("HttpService"):JSONEncode(out)
+"""
+# server: bring the 3 live meadow slimes nearest to (x, z) together there (a few studs apart, on the ground)
+SRV_BRING = r"""
+local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
+local tx, tz = %s, %s
+local params = RaycastParams.new()
+params.FilterType = Enum.RaycastFilterType.Exclude
+local skip = { workspace.Monsters }
+for _, pl in game:GetService("Players"):GetPlayers() do if pl.Character then table.insert(skip, pl.Character) end end
+params.FilterDescendantsInstances = skip
+local function floorY(x, z, y)
+	local hit = workspace:Raycast(Vector3.new(x, y + 40, z), Vector3.new(0, -120, 0), params)
+	return hit and hit.Position.Y or nil
+end
+local list = {}
+for _, m in workspace.Monsters:GetChildren() do
+	local kind = m:GetAttribute("MonsterKind")
+	local def = kind and Config.MonsterTypes[kind]
+	local root = m.PrimaryPart or m:FindFirstChild("HumanoidRootPart")
+	local hum = m:FindFirstChildOfClass("Humanoid")
+	if root and def and def.Zone == "SlimeMeadow" and (not hum or hum.Health > 0) then
+		table.insert(list, { M = m, Root = root, Kind = kind, D = Vector3.new(root.Position.X - tx, 0, root.Position.Z - tz).Magnitude })
+	end
+end
+table.sort(list, function(a, b) return a.D < b.D end)
+local OFF = { Vector3.new(0, 0, 0), Vector3.new(5, 0, 6), Vector3.new(5, 0, -6) }
+local moved = {}
+for i = 1, math.min(3, #list) do
+	local r = list[i]
+	local from = r.Root.Position
+	local to = Vector3.new(tx, from.Y, tz) + OFF[i]
+	local f0, f1 = floorY(from.X, from.Z, from.Y), floorY(to.X, to.Z, from.Y)
+	local dy = (f0 and f1) and (f1 - f0 + 0.5) or 0.5
+	r.M:PivotTo(r.M:GetPivot() + Vector3.new(to.X - from.X, dy, to.Z - from.Z))
+	table.insert(moved, string.format("%%s moved %%.0f studs", r.Kind, r.D))
+end
+return "brought " .. #moved .. ": " .. table.concat(moved, ", ")
 """
 # server: one sample of the slimes near the player: gaps / (rA + rB), past the move line
 SRV_SAMPLE = r"""
@@ -64,7 +103,7 @@ local R = { Slime = 1.5, Humanoid = 1.25 }
 local near = {}
 for _, m in workspace.Monsters:GetChildren() do
 	local kind = m:GetAttribute("MonsterKind")
-	local def = kind and Config.Monsters and Config.Monsters[kind]
+	local def = kind and Config.MonsterTypes[kind]
 	local mr = m.PrimaryPart or m:FindFirstChild("HumanoidRootPart")
 	local hum = m:FindFirstChildOfClass("Humanoid")
 	if mr and def and (not hum or hum.Health > 0) then
@@ -143,7 +182,9 @@ def main():
             return
         edge_x = info["MinX"] + 2
         first = slimes[0]
-        # beside the nearest slimes (west side), facing them, then a few seconds to be seen
+        psc.note(psc.lua(c, SRV_BRING % (first["X"], first["Z"]), "Server"))
+        time.sleep(1.0)
+        # beside the slimes (west side), facing them, then a few seconds to be seen
         pcc.stand(c, first["X"] - 8, first["Z"], first["X"], first["Z"])
         time.sleep(3)
         psc.save(c, "01_beside_slimes")

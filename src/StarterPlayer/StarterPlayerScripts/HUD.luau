@@ -1508,6 +1508,51 @@ function L.HasQuestBook()
 	return type(qb) == "table" and type(qb.Toggle) == "function" and type(qb.IsReady) == "function" and qb.IsReady() == true
 end
 
+-- 검수 10/08 (the user's own save showed "빛의 기사단 1명 털기 0/1"): a daily / extra slot keeps the text it was made with,
+-- so a save from before A23-48 still holds Korean. The screen never trusts saved words: those rows are written again
+-- from Config's English template the way QuestService.newQuest writes them (Gold: the plain number; Kill / Golden: the
+-- monster's short name and the count; others: the count; then Config.Plural). Other rows keep the server's text.
+function L.QuestTemplate(id)
+	local q = Config.Quests
+	for _, t in type(q) == "table" and type(q.Templates) == "table" and q.Templates or {} do
+		if t.Id == id then return t end
+	end
+	return nil
+end
+
+function L.EnglishQuestText(e, text)
+	if type(e) ~= "table" or (e.Kind ~= "Daily" and e.Kind ~= "Extra") then return text end
+	local t = L.QuestTemplate(e.Id)
+	local target = tonumber(e.Target)
+	if not t or type(t.Text) ~= "string" or not target then return text end
+	local ok, out
+	if e.Id == "Gold" then
+		ok, out = pcall(string.format, t.Text, tostring(math.floor(target)))
+	elseif e.Id == "Kill" or e.Id == "Golden" then
+		local def = type(Config.MonsterTypes) == "table" and Config.MonsterTypes[e.Unit] or nil
+		local name = type(def) == "table" and (def.Short or def.Name) or nil
+		if type(name) ~= "string" then return text end
+		ok, out = pcall(string.format, t.Text, name, math.floor(target))
+	else
+		ok, out = pcall(string.format, t.Text, math.floor(target))
+	end
+	if not ok or type(out) ~= "string" then return text end
+	if type(Config.Plural) == "function" then
+		local okP, plural = pcall(Config.Plural, out)
+		if okP and type(plural) == "string" then out = plural end
+	end
+	return out
+end
+
+-- the short name of a row: a daily / extra slot's template's English one, else the server's
+function L.EnglishShortName(e)
+	if type(e) == "table" and (e.Kind == "Daily" or e.Kind == "Extra") then
+		local t = L.QuestTemplate(e.Id)
+		if t and type(t.ShortName) == "string" and t.ShortName ~= "" then return t.ShortName end
+	end
+	return (type(e) == "table" and type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or nil
+end
+
 -- one quest's identity across redraws (a daily slot gets a new template id when it is claimed)
 function L.EntryKey(e)
 	return tostring(e.Id) .. "|" .. tostring(e.Slot)
@@ -3119,7 +3164,7 @@ local function parseQuests()
 			local entry = {
 				Id = tostring(e.Id or ""),
 				Kind = tostring(e.Kind or "Extra"),
-				Text = L.QuestText(tostring(e.Text or "")),
+				Text = L.QuestText(L.EnglishQuestText(e, tostring(e.Text or ""))),
 				Progress = math.max(0, finite(e.Progress, 0)),
 				Target = math.max(1, finite(e.Target, 1)),
 				RewardGold = math.max(0, finite(e.RewardGold, 0)),
@@ -3131,7 +3176,7 @@ local function parseQuests()
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
-				ShortName = (type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or nil,
+				ShortName = L.EnglishShortName(e),
 				-- dev2 2c5e84e: ShowProgress rows carry no "%d/%d" in Text; a seconds row says ProgressUnit = "s"
 				ProgressUnit = (type(e.ProgressUnit) == "string" and #e.ProgressUnit > 0 and #e.ProgressUnit <= 3)
 					and e.ProgressUnit or nil,
@@ -3170,11 +3215,12 @@ local function onQuests(payload)
 			return HttpService:JSONDecode(payload)
 		end)
 		data = ok and decoded or nil
+		payload = data -- a JSON payload is read like a table payload below
 	end
-	if type(data) == "table" and type(data.Quests) == "table" then
+	if type(payload) == "table" and type(payload.Quests) == "table" then
 		-- { Quests = rows, Book = { Available, Done } } (A23-81: the quest window's lists, 게임성 개발 3), as a table or JSON
-		if type(data.Book) == "table" then questState.Book = data.Book end
-		data = data.Quests
+		if type(payload.Book) == "table" then questState.Book = payload.Book end
+		data = payload.Quests
 	end
 	if type(data) ~= "table" then return end
 	questState.Data = data

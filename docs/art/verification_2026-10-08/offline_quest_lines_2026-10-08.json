@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 21,
+  "checks": 28,
   "failedChecks": [],
   "static": [
     {
@@ -32,14 +32,18 @@
       "ok": true
     },
     {
+      "check": "a daily / extra row's words + short name come from the English template (an old save may hold Korean)",
+      "ok": true
+    },
+    {
       "check": "the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
       "ok": true
     }
   ],
   "mutations": {
-    "total": 13,
-    "applied": 13,
-    "caught": 13,
+    "total": 20,
+    "applied": 20,
+    "caught": 20,
     "results": [
       {
         "mutation": "lines never capped",
@@ -151,11 +155,70 @@
         "failures": [
           "CHECK_FAIL [Claim]: finished daily / sub / pinned only :: "
         ]
+      },
+      {
+        "mutation": "saved daily words trusted",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an old Korean Plunder daily is shown in English (count, then Config.Plural) :: 빛의 기사단 1명 털기",
+          "CHECK_FAIL a Kill row names its monster by its short name (else its name) :: 빛의 기사단 1명 털기",
+          "CHECK_FAIL a Gold row shows the plain number :: 빛의 기사단 1명 털기"
+        ]
+      },
+      {
+        "mutation": "extra slots keep saved words",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an extra slot is written again too :: "
+        ]
+      },
+      {
+        "mutation": "every row written again",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL story / tutorial / job rows and unknown templates keep the server's text :: "
+        ]
+      },
+      {
+        "mutation": "Kill shows the long name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Kill row names its monster by its short name (else its name) :: Defeat Green Slime ×50"
+        ]
+      },
+      {
+        "mutation": "no Config.Plural",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an old Korean Plunder daily is shown in English (count, then Config.Plural) :: Rob 1 Knights of Light"
+        ]
+      },
+      {
+        "mutation": "Gold shows 60.0",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Gold row shows the plain number :: Earn 60.0 gold by hunting",
+          "CHECK_FAIL an extra slot is written again too :: "
+        ]
+      },
+      {
+        "mutation": "short name from the saved row",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a daily's short name comes from its English template :: "
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "8529ccc7635adc207e7627e6bf16101593bfac085545a0d9596132500b7195bb"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

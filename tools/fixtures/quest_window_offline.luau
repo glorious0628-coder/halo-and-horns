@@ -182,15 +182,26 @@ check("Side done: a story finished this session, by its title (not the daily)", 
 check("Daily done: the daily finished this session", string.find(texts(Book.Sections("Daily",
 	ctx({ DoneSession = { { Id = "Kill", Text = "Slimes 5/5", Kind = "Daily" } } })).Done), "Slimes 5/5", 1, true) ~= nil)
 check("Available without a book: empty", #Book.Sections("Side", ctx()).Available == 0)
--- 5) the server's book
-local BOOK = { Available = { { Id = "story:S6", Kind = "Sub" }, { Id = "job:2", Text = "Carry crates", Kind = "Job" } },
-	Done = { "story:S0", "story:M1_1", { Id = "Kill", Text = "Slimes", Kind = "Daily" } } }
-s = Book.Sections("Side", ctx({ Book = BOOK }))
-check("book: Side available = the story title and the job", texts(s.Available) == Config.StoryQuests.Defs.S6.Title .. " | Carry crates",
-	texts(s.Available))
-check("book: Side done = the S0 title only (the book replaces the guesses)", texts(s.Done) == Config.StoryQuests.Defs.S0.Title, texts(s.Done))
-check("book: Main done = M1_1 only", texts(Book.Sections("Main", ctx({ Book = BOOK })).Done) == Config.StoryQuests.Defs.M1_1.Title)
-check("book: Daily done = the daily row", texts(Book.Sections("Daily", ctx({ Book = BOOK })).Done) == "Slimes")
+-- 5) the server's book (게임성 개발 3's contract: Available = subs waiting for a level (Text "Title · Opens at Lv N") or
+-- ready (no Text), Done = "story:<id>", mains newest first then subs newest first)
+local D = Config.StoryQuests.Defs
+local BOOK = { Available = { { Id = "story:S6", Kind = "Sub", Level = 8, Text = "Lost thing · Opens at Lv 8" }, { Id = "story:S4", Kind = "Sub" },
+	{ Id = "story:H2", Kind = "Sub", Level = 12, Text = "Lantern · Opens at Lv 12" }, { Id = "story:M1_4", Kind = "Main" } },
+	Done = { "story:M1_1", "story:S0", "story:S2" } }
+local SESSION = { { Id = "story:S3", Kind = "Sub", Text = "x" }, { Id = "Kill", Text = "Slimes 5/5", Kind = "Daily" } }
+s = Book.Sections("Side", ctx({ Book = BOOK, DoneSession = SESSION }))
+check("book: Side available = the server's 'Opens at Lv' words, else the story title", texts(s.Available) == "Lost thing · Opens at Lv 8 | "
+	.. D.S4.Title, texts(s.Available))
+check("book: Side done = the book's stories only (a story finished this session is in the book, no guesses)",
+	texts(s.Done) == D.S0.Title, texts(s.Done))
+check("book: Faction available = the Halo story", texts(Book.Sections("Faction", ctx({ Book = BOOK })).Available) == "Lantern · Opens at Lv 12")
+check("book: Event done = the goose story", texts(Book.Sections("Event", ctx({ Book = BOOK })).Done) == D.S2.Title)
+s = Book.Sections("Main", ctx({ Book = BOOK }))
+check("book: the Main tab has no Available (the chain has no level gate)", #s.Available == 0, texts(s.Available))
+check("book: Main done = the book's mains, then the first mission (no guessed chain)", texts(s.Done) == D.M1_1.Title .. " | First mission",
+	texts(s.Done))
+s = Book.Sections("Daily", ctx({ Book = BOOK, DoneSession = SESSION }))
+check("book: Daily done = today's count + the dailies finished this session", texts(s.Done) == "Daily quests today: 1/3 | Slimes 5/5", texts(s.Done))
 
 -- 6) the window
 local REGISTERED, OPENED, CLOSED, CURRENT = {}, {}, 0, nil

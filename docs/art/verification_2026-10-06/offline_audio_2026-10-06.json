@@ -267,6 +267,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -695,7 +696,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: QuestDone right after a LevelUp is dropped (§4-2 11)"
+          "runtime :: QuestDone right after a LevelUp is dropped (§4-2 11)",
+          "runtime :: the same event inside its cooldown is skipped"
         ]
       },
       {
@@ -732,10 +734,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: a reward line right after GooseEnd waits (the big one first)",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
-          "runtime :: the same event inside its cooldown is skipped"
+          "runtime :: a reward line right after GooseEnd waits (the big one first)"
         ]
       },
       {
@@ -997,8 +996,8 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ff8f5decaa4fe971c8f539c5bf5d817f2a5b1bd22db54f92f99f7f1ad3a4a55e",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "56d1e3f422ded33b89a2fd41e495bd9891d80c606bc71ffb8f36f64ae91ac430",
+    "src/ReplicatedStorage/Shared/Config.luau": "4cd9fe9db93fd441236f12cbbbdf48aca0a518b783739b3ba3fd1cb5ce78e842",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "fe19f90766778c1dfca3b660eedf7528da426c458d1228a8f2f946f8c887a63b",
     "tools/fixtures/audio_offline.luau": "6d5601d786ec6fb7bff9e352d6f76e358b322fb998794ce1f2e6f7464b2c088d"
   },
   "sourcesChangedDuringRun": [],

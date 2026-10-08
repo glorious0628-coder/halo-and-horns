@@ -28,6 +28,17 @@ local function check(name, ok, detail)
 	if not ok then failed += 1; print(("CHECK_FAIL %s :: %s"):format(name, tostring(detail or ""))) end
 end
 local Config = { QuestTabs = { HudLines = 3 } }
+Config.Quests = { Templates = {
+	{ Id = "Kill", ShortName = "Monster hunt", Text = "Defeat %s ×%d" },
+	{ Id = "Gold", ShortName = "Earn gold", Text = "Earn %s gold by hunting" },
+	{ Id = "Plunder", ShortName = "Rob Knights", Text = "Rob %d Knights of Light" },
+} }
+Config.MonsterTypes = { Slime = { Name = "Green Slime", Short = "Slime" }, Goblin = { Name = "Goblin" } }
+Config.PluralWords = { ["Knights"] = "Knight" }
+function Config.Plural(text)
+	for many, one in Config.PluralWords do text = string.gsub(text, "%f[%d]1 " .. many, "1 " .. one) end
+	return text
+end
 local questState = { Rows = nil, Shown = 1 }
 local questRows = {}
 local C = {}
@@ -102,6 +113,25 @@ check("any other quest becomes the marker's quest", questState.GuideKey == "gold
 questState.Rows = { rows[1], rows[2] }
 check("when that quest leaves the list the marker goes back to the 'now do' row", HUD.QuestTarget().Id == "main" and questState.GuideKey == nil)
 check("QuestGo without a quest: false", HUD.QuestGo(nil) == false)
+-- 검수 10/08: a daily / extra slot saved before A23-48 keeps Korean words; the screen writes it again in English
+local KO = "\235\185\155\236\157\152 \234\184\176\236\130\172\235\139\168 1\235\170\133 \237\132\184\234\184\176" -- "빛의 기사단 1명 털기"
+check("an old Korean Plunder daily is shown in English (count, then Config.Plural)",
+	L.EnglishQuestText(e("Plunder", 1, 0, 1, { Text = KO }), KO) == "Rob 1 Knight of Light", L.EnglishQuestText(e("Plunder", 1, 0, 1), KO))
+check("a Kill row names its monster by its short name (else its name)",
+	L.EnglishQuestText(e("Kill", 2, 0, 50, { Unit = "Slime" }), KO) == "Defeat Slime ×50"
+	and L.EnglishQuestText(e("Kill", 2, 0, 3, { Unit = "Goblin" }), KO) == "Defeat Goblin ×3",
+	L.EnglishQuestText(e("Kill", 2, 0, 50, { Unit = "Slime" }), KO))
+check("a Gold row shows the plain number", L.EnglishQuestText(e("Gold", 3, 0, 60), KO) == "Earn 60 gold by hunting",
+	L.EnglishQuestText(e("Gold", 3, 0, 60), KO))
+check("an extra slot is written again too", L.EnglishQuestText(e("Gold", 4, 0, 50, { Kind = "Extra" }), KO) == "Earn 50 gold by hunting")
+check("a Kill row whose monster is unknown keeps the server's text", L.EnglishQuestText(e("Kill", 2, 0, 5, { Unit = "Nope" }), "keep") == "keep")
+check("story / tutorial / job rows and unknown templates keep the server's text",
+	L.EnglishQuestText(e("Gold", nil, 0, 1, { Kind = "Sub" }), "Sub text") == "Sub text"
+	and L.EnglishQuestText(e("Tutorial", 1, 0, 1), "First mission") == "First mission"
+	and L.EnglishQuestText(e("Plunder", 1, 0, 1, { Target = "?" }), "no target") == "no target")
+check("a daily's short name comes from its English template", L.EnglishShortName(e("Plunder", 1, 0, 1, { ShortName = KO })) == "Rob Knights"
+	and L.EnglishShortName(e("x", nil, 0, 1, { Kind = "Job", ShortName = "Board" })) == "Board"
+	and L.EnglishShortName(e("x", nil, 0, 1, { Kind = "Job" })) == nil)
 print(("QUEST_LINES_SUMMARY checks=%d failed=%d"):format(checks, failed))
 """
 
@@ -123,6 +153,18 @@ MUTATIONS = [
     ("a story row loses its own action", "\tif (e.Pinned or e.Story) and L.PinnedTap then\n\t\tL.PinnedTap(e)\n\t\treturn true\n\tend\n", ""),
     ("a gone quest keeps the marker", "\t\tif not e then questState.GuideKey = nil end\n", ""),
     ("[Claim] on a board job", "\t\tand (e.Pinned == true or e.Kind == \"Daily\" or e.Kind == \"Sub\")\n", "\n"),
+    ("saved daily words trusted", "\tif type(e) ~= \"table\" or (e.Kind ~= \"Daily\" and e.Kind ~= \"Extra\") then return text end\n",
+     "\tif true then return text end\n"),
+    ("extra slots keep saved words", "\tif type(e) ~= \"table\" or (e.Kind ~= \"Daily\" and e.Kind ~= \"Extra\") then return text end\n",
+     "\tif type(e) ~= \"table\" or e.Kind ~= \"Daily\" then return text end\n"),
+    ("every row written again", "\tif type(e) ~= \"table\" or (e.Kind ~= \"Daily\" and e.Kind ~= \"Extra\") then return text end\n",
+     "\tif type(e) ~= \"table\" then return text end\n"),
+    ("Kill shows the long name", "local name = type(def) == \"table\" and (def.Short or def.Name) or nil\n",
+     "local name = type(def) == \"table\" and def.Name or nil\n"),
+    ("no Config.Plural", "\t\tif okP and type(plural) == \"string\" then out = plural end\n", ""),
+    ("Gold shows 60.0", "ok, out = pcall(string.format, t.Text, tostring(math.floor(target)))\n",
+     "ok, out = pcall(string.format, t.Text, tostring(target + 0.0) .. \".0\")\n"),
+    ("short name from the saved row", "\t\tif t and type(t.ShortName) == \"string\" and t.ShortName ~= \"\" then return t.ShortName end\n", ""),
 ]
 
 
@@ -165,9 +207,13 @@ def static_checks(src):
          and "L.SetQuestLine(ui.qline[2], e2, l2 or head, n2)" not in refresh),
         ("a HUD line that is no claim / guide / story row asks HUD.QuestGo", "elseif HUD.QuestGo then\n\t\tHUD.QuestGo(e)" in tap),
         ("the 'Done this session' list follows every redraw", "L.TrackDone(questState.Rows, entries)" in refresh),
+        ("a daily / extra row's words + short name come from the English template (an old save may hold Korean)",
+         "Text = L.QuestText(L.EnglishQuestText(e, tostring(e.Text or \"\")))," in src
+         and "ShortName = L.EnglishShortName(e)," in src),
         ("the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
-         'if type(data) == "table" and type(data.Quests) == "table" then' in src
-         and "if type(data.Book) == \"table\" then questState.Book = data.Book end\n\t\tdata = data.Quests" in src),
+         "payload = data -- a JSON payload is read like a table payload below" in src
+         and 'if type(payload) == "table" and type(payload.Quests) == "table" then' in src
+         and "if type(payload.Book) == \"table\" then questState.Book = payload.Book end\n\t\tdata = payload.Quests" in src),
     ]
 
 

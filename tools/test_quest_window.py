@@ -32,14 +32,21 @@ MUTATIONS = [
     ("BOOK", "the crown war line without a round", "\t\tif warEnds > now then\n", "\t\tif true then\n"),
     ("BOOK", "wanted stars ignored", "\t\tif stars > 0 then table.insert(out.InProgress, { Kind = \"Info\", Text = string.format(T.Text.Wanted, stars) }) end\n", ""),
     ("BOOK", "the server's book ignored", "\tlocal book = type(ctx.Book) == \"table\" and ctx.Book or nil\n", "\tlocal book = nil\n"),
-    ("BOOK", "the book's rows in every tab", "\t\t\tif row and row.Tab == tab then table.insert(out.Done, row) end\n",
-     "\t\t\tif row then table.insert(out.Done, row) end\n"),
+    ("BOOK", "the book's rows in every tab", "\t\t\tif row and row.Tab == tab then done(row.Text) end\n",
+     "\t\t\tif row then done(row.Text) end\n"),
+    ("BOOK", "the book's Available rows in every tab", "\t\t\t\tif row and row.Tab == tab then\n\t\t\t\t\trow.Kind = \"Available\"\n",
+     "\t\t\t\tif row then\n\t\t\t\t\trow.Kind = \"Available\"\n"),
+    ("BOOK", "the Main tab lists Available", "T.NoAvailable = { Main = true }", "T.NoAvailable = {}"),
+    ("BOOK", "the book's words replaced by the title", "\tif type(text) == \"string\" and text ~= \"\" then return text end\n", ""),
+    ("BOOK", "with a book the main chain is still guessed", "\t\tif not book and mainId and type(chain) == \"table\" then\n",
+     "\t\tif mainId and type(chain) == \"table\" then\n"),
+    ("BOOK", "session stories listed next to the book", " and not (book and story) then\n", " then\n"),
     ("BOOK", "the whole main chain counted done", "\t\t\t\tif id == mainId then break end\n", ""),
     ("BOOK", "the first mission never done", "\t\tif (step and step >= doneStep) or mainId then done(T.Text.FirstMission) end\n", ""),
     ("BOOK", "the first mission done while it runs", "\t\tif (step and step >= doneStep) or mainId then done(T.Text.FirstMission) end\n",
      "\t\tdone(T.Text.FirstMission)\n"),
-    ("BOOK", "this session's finished quests in every tab", "\t\tif type(d) == \"table\" and Config.QuestTab(d.Id, d.Kind) == tab then\n",
-     "\t\tif type(d) == \"table\" then\n"),
+    ("BOOK", "this session's finished quests in every tab", "\t\tif type(d) == \"table\" and Config.QuestTab(d.Id, d.Kind) == tab and not (book and story) then\n",
+     "\t\tif type(d) == \"table\" and not (book and story) then\n"),
     ("BOOK", "no daily count", "\t\tif claims > 0 then table.insert(out.Done", "\t\tif false then table.insert(out.Done"),
     ("BOOK", "a row press does not close the window", "\t\t\tif hudCall(\"QuestGo\", row.Entry) and VIEW.Kit then VIEW.Kit.Close() end\n",
      "\t\t\thudCall(\"QuestGo\", row.Entry)\n"),
@@ -101,6 +108,8 @@ def main():
         ("ClientMain loads QuestBook after Panels and HUD", "QuestBook" in names and "Panels" in names and "HUD" in names
          and names.index("QuestBook") > names.index("Panels") and names.index("QuestBook") > names.index("HUD")),
         ("the window's words are English (A23-48)", bool(words) and not re.search(r"[가-힣]", words[1])),
+        ("the Main tab draws no Available section (검수 10/08)",
+         "if not T.NoAvailable[S.Tab] then section(kit, body, T.Text.Available, sec.Available, T.Text.EmptyAvailable) end" in book),
         ("the HUD's quest list opens the window (toggleQuests -> QuestBook.Toggle)",
          "if L.HasQuestBook() then\n\t\tlocal ok = pcall(C.QuestBook.Toggle, open)" in hud),
         ("the HUD offers the window's API", all(f"function HUD.{fn}(" in hud for fn in
@@ -123,8 +132,8 @@ def main():
                                for p in (BOOK, CONFIG, HUD, CLIENT_MAIN)},
               "fixtureSHA256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(), "studioCalls": 0,
               "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows "
-                             "are a Studio photo check (메인 반영). Available / Done need the server's quest book (게임성 개발 3); "
-                             "until then Done is what the client can tell."}
+                             "are a Studio photo check (메인 반영). The book rows follow 게임성 개발 3's contract "
+                             "(tools/test_quest_book.py checks the server side); before a book comes Done is what the client can tell."}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Status: {report['status']} (mutations {report['mutations']['caught']}/{report['mutations']['total']})")
