@@ -354,6 +354,20 @@ function LootService.GrantItem(player, id, n)
 	return given
 end
 
+-- A23-79 (게임성 개발 3, the candy jar): take `n` (1..ItemCap) of one Config.Loot.Items id; false = not enough (nothing
+-- taken). The bag push follows like after a drop.
+function LootService.TakeItem(player, id, n)
+	local data = getData(player)
+	n = math.floor(num(n))
+	if not data or type(id) ~= "string" or not LOOT.Items[id] or n < 1 or n > LOOT.ItemCap then return false end
+	ensureTables(data)
+	local have = math.floor(num(data.Items[id]))
+	if have < n then return false end
+	data.Items[id] = have > n and have - n or nil
+	publish(player, data)
+	return true
+end
+
 -- one roll for one contributor of one kill
 function LootService.RollKill(player, info)
 	local data = getData(player)

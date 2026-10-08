@@ -544,8 +544,9 @@ end
 do
 	local g = "runtime"
 	local settings = { Sfx = 1 }
-	local open = { Panels = false }
-	local C = { Settings = { Get = function(k) return settings[k] end }, Panels = { IsOpen = function() return open.Panels end } }
+	local open = { Panels = false, Hold = false, Intro = false }
+	local C = { Settings = { Get = function(k) return settings[k] end }, Panels = { IsOpen = function() return open.Panels end },
+		UIKit = { ShouldHoldBanners = function() return open.Hold end }, Intro = { IsOpen = function() return open.Intro end } }
 	-- every file gets an id except SwingMage (to check a silent event)
 	for f in A.Files do A.Files[f] = "rbxassetid://" .. f end
 	A.Files.SwingMage = ""
@@ -998,6 +999,51 @@ do
 	PLAYER:SetAttribute("WeaponTier", 0)
 	REMOTES.Fx.OnClientEvent:Fire("Upgrade", { Tier = 1 })
 	check(w, "an Upgrade while still bare-handed is quiet too", #asked == 0, encode(asked))
+	-- A23-68 #4 / A23-3 (검수 10/08): while the first steps (or the opening, a picker) hold the world's banners, their
+	-- sounds wait too; a normal toast still shows, so it still sounds
+	local h = "held alarms"
+	check(h, "NotifySound: a held announce banner has no sound, the same banner later has", Audio.NotifySound({ Kind = "announce",
+		Sound = "GooseArrive" }, true) == nil and Audio.NotifySound({ Kind = "announce", Sound = "GooseArrive" }, false) == "GooseArrive"
+		and Audio.NotifySound({ Kind = "bad" }, true) == "Deny", "")
+	open.Hold = true
+	check(h, "Audio.Held while the first steps hold the banners", Audio.Held() == true, "")
+	clear()
+	GAMESTATE:SetAttribute("KaijuPhase", "Siren")
+	check(h, "no kaiju alarm in the first steps", #asked == 0, encode(asked))
+	GAMESTATE:SetAttribute("KaijuEndsAt", 10010)
+	poll(10006.8)
+	poll(10007.1)
+	check(h, "no 3-2-1 in the first steps", #asked == 0, encode(asked))
+	GAMESTATE:SetAttribute("KaijuPhase", "Active")
+	GAMESTATE:SetAttribute("KaijuEndsAt", 0)
+	GAMESTATE:SetAttribute("WarRoundEndsAt", 11031)
+	poll(11000)
+	poll(11001.5)
+	check(h, "no war 30 s call in the first steps", #asked == 0, encode(asked))
+	GAMESTATE:SetAttribute("WarRoundEndsAt", 0)
+	GAMESTATE:SetAttribute("GooseActive", false)
+	GAMESTATE:SetAttribute("GooseActive", true)
+	GAMESTATE:SetAttribute("PumpkinKingActive", false)
+	GAMESTATE:SetAttribute("PumpkinKingActive", true)
+	check(h, "no goose or crown arrival in the first steps", #asked == 0, encode(asked))
+	GAMESTATE:SetAttribute("GooseActive", false)
+	GAMESTATE:SetAttribute("PumpkinKingActive", false)
+	REMOTES.Notify.OnClientEvent:Fire({ Text = "The goose is here!", Kind = "announce", Sound = "GooseArrive" })
+	REMOTES.Announce.OnClientEvent:Fire({ Key = "Jackpot", Args = { Name = "Bo" }, Grade = "Epic" })
+	check(h, "no sound for a held announce banner or an announce line", #asked == 0, encode(asked))
+	REMOTES.Notify.OnClientEvent:Fire({ Text = "Not enough gold", Kind = "bad" })
+	check(h, "a normal toast still sounds in the first steps (it still shows)", last() == "Deny", tostring(last()))
+	open.Hold = false
+	open.Intro = true
+	clear()
+	GAMESTATE:SetAttribute("KaijuPhase", "Siren")
+	check(h, "the opening holds the alarms too", #asked == 0, encode(asked))
+	GAMESTATE:SetAttribute("KaijuPhase", "Active")
+	open.Intro = false
+	clear()
+	GAMESTATE:SetAttribute("KaijuPhase", "Siren")
+	check(h, "after the first [Claim] the alarm rings again", last() == "KaijuSiren", tostring(last()))
+	GAMESTATE:SetAttribute("KaijuPhase", "Active")
 	Audio.Play = real
 end
 

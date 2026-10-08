@@ -1,0 +1,42 @@
+[   1.3] device: samsung_galaxy_s22_ultra 749x361
+[   1.3] fresh on
+[   6.4] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=-5,4,-30 anvilDist=86.6
+[  30.4] fired ChooseFaction
+[  30.6] fired ChooseClass
+[  33.7] fired AcceptTutorial
+[  39.0] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  41.1] == hunt 5 slimes
+[  41.2] near: BigSlime BigSlime d=239 mine=false
+[  45.4] near: BigSlime BigSlime d=4 mine=false
+[  49.7] near: BigSlime BigSlime d=4 mine=false
+[  53.8] near: BigSlime BigSlime d=4 mine=false
+[  58.1] near: Slime Slime d=5 mine=false
+[  62.2] near: BigSlime BigSlime d=4 mine=false
+[  66.4] TutorialKills=5 after 36 presses
+[  67.9] fired ClaimQuest
+[  72.0] lunch before: {"Lunch1": {"Claim": false, "P": 0, "St": 1, "T": []}, "Pick": null, "Done": false}
+[  72.1] probe after claim (the lunchbox card?): {"Panel":false,"Title":"Guide · Take Back the Supply Road","Texts":["Lost lunchbox","Golden Goose 3:50"]}
+[  73.1] saved docs\art\verification_2026-10-08\lunch_check\phone\01_lunch_card.png (white 0%)
+[  73.2] == StoryAction without the quest id (the film call)
+[  73.2] fired StoryAction
+[  74.8] lunch after the id-less call: {"Lunch1": {"Claim": false, "P": 0, "St": 1, "T": []}, "Pick": null, "Done": false}
+[  75.5] == StoryAction(Lunch1, Choose, Evil) = [One bite!]
+[  75.5] fired StoryAction
+[  75.6] probe watching for the answer: {"Panel":false,"Title":"Guide · Take Back the Supply Road","Texts":["+25 gold","Lost lunchbox","Golden Goose 3:46"]}
+[  75.9] probe watching for the answer: {"Panel":false,"Title":"Guide · Take Back the Supply Road","Texts":["Lost Lunchbox! done!","Lost lunchbox","Golden Goose 3:46"]}
+[  76.1] probe watching for the answer: {"Panel":false,"Title":"Guide · Take Back the Supply Road","Texts":["Lost Lunchbox! done!","Yum! ...Nobody saw that, right?","Golden Goose 3:46"]}
+[  76.8] saved docs\art\verification_2026-10-08\lunch_check\phone\02_answer_on_screen.png (white 0%)
+[  76.8] answer seen after 0.5999894142150879 s
+[  77.9] probe 1 s later: {"Panel":false,"Title":"Guide · Take Back the Supply Road","Texts":["Yum! ...Nobody saw that, right?","Golden Goose 3:44"]}
+[  77.9] lunch after [One bite!]: {"Lunch1": null, "Pick": "Bite", "Done": true}
+[  78.0] bank gold 150 -> 175
+[  78.1] console: 
+[  79.4] play stopped
+[  81.5] fresh off
+[  82.0] device: default
+[  82.0] OK   a call without the quest id changes nothing (call problem, not a game bug)
+[  82.0] OK   the answer is still on screen 1 s later
+[  82.0] OK   [One bite!] is recorded (Pick Bite) and the card moves on
+[  82.0] OK   the reply line shows (Yum! ...)
+[  82.0] OK   +25 bank gold
+[  82.0] OK   the Devour sound plays with the pick

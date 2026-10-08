@@ -1,0 +1,124 @@
+{
+  "status": "passed",
+  "checks": 22,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "ClientMain loads Invite",
+      "ok": true
+    },
+    {
+      "check": "no invite reward in the client (A23-68)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 11,
+    "applied": 11,
+    "caught": 11,
+    "results": [
+      {
+        "mutation": "the invite shows while knocked out",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL knocked out: no invite button (A23-79) :: "
+        ]
+      },
+      {
+        "mutation": "the invite right after a failed scroll",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL right after a failed scroll: no invite button :: ",
+          "CHECK_FAIL ... still 3 s later :: ",
+          "CHECK_FAIL the real Fx remote moves the clock too :: "
+        ]
+      },
+      {
+        "mutation": "the invite inside the Shop",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the Shop window (passes) is open: no invite button :: "
+        ]
+      },
+      {
+        "mutation": "no LaunchData (the server cannot tell who invited)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the LaunchData is my UserId (the server finds the inviter) :: "
+        ]
+      },
+      {
+        "mutation": "Roblox's 'no invites' ignored",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Roblox says no invites (CanSendGameInviteAsync false): nothing opens :: ",
+          "CHECK_FAIL knocked out: no invite button (A23-79) :: "
+        ]
+      },
+      {
+        "mutation": "every newcomer is a friend",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a stranger joins: nothing :: ",
+          "CHECK_FAIL my own join: nothing :: ",
+          "CHECK_FAIL DefaultLine false: FriendJoined fires, the plain line stays off :: 2"
+        ]
+      },
+      {
+        "mutation": "the friend line repeats",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the same friend again (rejoin): no second line this session :: ",
+          "CHECK_FAIL a stranger joins: nothing :: ",
+          "CHECK_FAIL my own join: nothing :: "
+        ]
+      },
+      {
+        "mutation": "a scroll that worked hides it too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a scroll that worked does not hide it :: "
+        ]
+      },
+      {
+        "mutation": "Go to friend fires for a friend who left",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a friend who left: nothing sent :: "
+        ]
+      },
+      {
+        "mutation": "Go to friend without the UserId",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL with the server's remote: GoTo asks it with the friend's UserId :: "
+        ]
+      },
+      {
+        "mutation": "the plain line under the friend card too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL DefaultLine false: FriendJoined fires, the plain line stays off :: 2"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/Invite.luau": "83d418f898410b66d4fa82d4cdbb305b8c5d4cb63c49b9619c90ca951b2e1daf",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
+  },
+  "fixtureSHA256": "7f75a37ba078e1333846ccfd298fd9a89b8ac2d9791bc03f3cde9716eb276827",
+  "studioCalls": 0,
+  "limitations": "Doubles instead of SocialService: Roblox's invite window (and whether a friend's join carries the LaunchData) is a Studio / live check with two accounts; the buttons' places are 이미지 개발's layout."
+}

@@ -44,10 +44,10 @@ def stage(inner="#4A5BC4", outer="#10122A"):
 
 
 def team_cells():
-    """the 8 team cards (the 8 sessions) in one centred row"""
+    """the team cards (one per session, 9 since 2026-10-08) in one centred row"""
     emo = ImageFont.truetype(B.EMOJI_FONT, 109)
     cells = []
-    cw, ch, gap = 206, 290, 14
+    cw, ch, gap = 190, 290, 12  # 9 cards since 2026-10-08
     n = len(B.TEAM_CARDS)
     x0 = CX - (n * cw + (n - 1) * gap) // 2
     for i, (e, word, col) in enumerate(B.TEAM_CARDS):

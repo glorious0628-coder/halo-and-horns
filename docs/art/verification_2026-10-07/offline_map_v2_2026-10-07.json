@@ -45,7 +45,7 @@
       "ok": true
     },
     {
-      "check": "the terrain pond is a round basin on the story's slime pond (no flat plate), jelly stones round it; no grass blades, the A2_2 sea colour, no gold / red road stripes",
+      "check": "the terrain pond is a round basin on the story's slime pond (no flat plate), jelly stones round it; no grass blades, the 10/08 water colour (38, 128, 176), no gold / red road stripes",
       "ok": true
     },
     {
@@ -130,7 +130,7 @@
           "places :: the slime pond lies in the meadow",
           "HUD's pond guide spot and QuestTarget's pond fallback = Config.StoryQuests.Landmarks.SlimePond + 3",
           "the mover puts the pond and the three goblin camps on the story spots (Config.StoryQuests.Landmarks), MeadowKit piece by piece, the kit swap's spots too, and notes the old ground height",
-          "the terrain pond is a round basin on the story's slime pond (no flat plate), jelly stones round it; no grass blades, the A2_2 sea colour, no gold / red road stripes"
+          "the terrain pond is a round basin on the story's slime pond (no flat plate), jelly stones round it; no grass blades, the 10/08 water colour (38, 128, 176), no gold / red road stripes"
         ]
       },
       {
@@ -378,15 +378,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "40e15d653e2a79c8b36de88d9ae7379137faa54f6497305d483f2a5cb079fa5d",
+    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b",
     "src/ServerScriptService/MapBuilder.luau": "9744a900fb69b0d5580740238a027a841e3c5e6a624541d08c37964cdf00caac",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "29cc1bb9619ec13091ce84fe907e5d666c0c63f4e7ca2926622cd782c1d3d782",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a3ccb455977324f2c001e87247eaaa73aaa99a6dd2e19e8117bebb63f7f2e337",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "73d39a075505b7c5224d3533f55b6342772b9ad2d2ad4eec753d81586ad40abd",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1",
-    "tools/preview_map.lua": "86823d9bc469f41fb6a21633056a4a00d16c49644ea2e7cb8bdde4ce5fa4cfae",
+    "tools/preview_map.lua": "868c52806f697d928c85452a8b5ce80792b869591cccf54d982fb6a16bb105f9",
     "tools/map_v2_move.lua": "12d1ead5ada6e5a75380efef7fb31d5585cd40c6b17b55abcf88adfde39e1183",
     "tools/map_v2_apply.py": "2b5e5ac141356e0ab8d9725465070638378ed5af852ed53648cc4fcd3c648362",
-    "src/ServerScriptService/WarService.luau": "12dff33959309e91f1f7562525c07a4a83fc657abfe117b45c378d1a817524c1",
+    "src/ServerScriptService/WarService.luau": "d0fb4ae0f7bb4c4487fb7a7ab0587b29b4dce326b6871e225316d03edf489939",
     "docs/design/world_map_v2_2026-10-06.json": "d5e196575a82adcac70a771866899a9bfa146a66868b8ec6b2996664381cbe2f",
     "tools/fixtures/map_v2_offline.luau": "a57200280c8db9f45a6145e2715ed219fe3c2b4fabfdea3731b5ab5448c8446f"
   },

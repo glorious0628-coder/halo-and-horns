@@ -3778,7 +3778,10 @@
    "credits": 40.0,
    "file": "art\\models\\tripo\\Kit_M_FlowersA_raw.glb",
    "bytes": 1900556,
-   "at": "2026-10-06 18:39:04"
+   "at": "2026-10-06 18:39:04",
+   "derived": [
+    "art/models/tripo/Kit_M_FlowersA_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 600 --weld 1e-5, 2752 → 596, raw API GLB, no --rotz; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_M_FlowersA_LOD"
+   ]
   }
  ],
  "Kit_M_BushA": [
@@ -3816,7 +3819,10 @@
    "credits": 40.0,
    "file": "art\\models\\tripo\\Kit_M_FlowersB_raw.glb",
    "bytes": 1899380,
-   "at": "2026-10-06 18:40:30"
+   "at": "2026-10-06 18:40:30",
+   "derived": [
+    "art/models/tripo/Kit_M_FlowersB_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 600 --weld 1e-5, 2936 → 598, raw API GLB, no --rotz; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_M_FlowersB_LOD"
+   ]
   }
  ],
  "Kit_M_Mushrooms": [
@@ -5388,7 +5394,8 @@
    "note": "검수 OK 10/08 (담 1 + 계단 1, Firefly 10 + Tripo 110). Source = pinia model_url (4K meshopt).",
    "derived": [
     "art/models/tripo/web/Kit_X_PlazaWall_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)"
+    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)",
+    "art/models/tripo/web/Kit_X_PlazaWall_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 6000 --weld 1e-5, 9908 → 6000; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_X_PlazaWall_LOD"
    ],
    "sheet": "art/review/town5/plaza_wall_stairs_3d.jpg"
   }
@@ -5410,7 +5417,8 @@
    "bytes": 9616040,
    "derived": [
     "art/models/tripo/web/Kit_X_PlazaStairs_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)"
+    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)",
+    "art/models/tripo/web/Kit_X_PlazaStairs_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 6000 --weld 1e-5, 9515 → 5997; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_X_PlazaStairs_LOD"
    ],
    "sheet": "art/review/town5/plaza_wall_stairs_3d.jpg"
   }
@@ -5432,7 +5440,8 @@
    "note": "검수 OK 10/08 (A 석상 + C 바위 1, Firefly 10 + Tripo 110); poly 20k for wings/halo/sword",
    "derived": [
     "art/models/tripo/web/Town_Halo_KnightStatue_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (6.14×5.34×10.0 studs)"
+    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (6.14×5.34×10.0 studs)",
+    "art/models/tripo/web/Town_Halo_KnightStatue_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 3000 --weld 1e-5, 18484 → 3000; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Town_Halo_KnightStatue_LOD"
    ],
    "sheet": "art/review/town5/statue_rock_3d.jpg"
   }
@@ -5454,7 +5463,8 @@
    "bytes": 8233104,
    "derived": [
     "art/models/tripo/web/Town_Horns_SpikeRock_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (12.23×11.78×16.0 studs)"
+    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (12.23×11.78×16.0 studs)",
+    "art/models/tripo/web/Town_Horns_SpikeRock_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 3000 --weld 1e-5, 9836 → 3000; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Town_Horns_SpikeRock_LOD"
    ],
    "sheet": "art/review/town5/statue_rock_3d.jpg"
   }
@@ -5497,7 +5507,8 @@
    "tris": 14755,
    "derived": [
     "art/models/tripo/web/Kit_P_PumpkinCluster_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D5/WorldKit_ImportD5.glb = build/import_all/3_third/D5_MeadowArchPumpkin.glb (7.0 x 5.73 x 3.5 studs)"
+    "build/import_D5/WorldKit_ImportD5.glb = build/import_all/3_third/D5_MeadowArchPumpkin.glb (7.0 x 5.73 x 3.5 studs)",
+    "art/models/tripo/web/Kit_P_PumpkinCluster_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/meadow_arch_pumpkin_3d.jpg",
    "bytes": 7679456
@@ -5578,7 +5589,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9398,
    "derived": [
-    "art/models/tripo/web/Kit_R_PillarA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_PillarA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_PillarA_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 9794496
   }
@@ -5598,7 +5610,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9356,
    "derived": [
-    "art/models/tripo/web/Kit_R_PillarB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_PillarB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_PillarB_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 8345608
   }
@@ -5618,7 +5631,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9676,
    "derived": [
-    "art/models/tripo/web/Kit_R_StoneMarker_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_StoneMarker_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_StoneMarker_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 9399068
   }
@@ -5638,7 +5652,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9650,
    "derived": [
-    "art/models/tripo/web/Kit_R_SpiritBowl_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_SpiritBowl_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_SpiritBowl_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 8450556
   }
@@ -5658,7 +5673,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9768,
    "derived": [
-    "art/models/tripo/web/Kit_R_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_Banner_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 8091848
   }
@@ -5679,7 +5695,8 @@
    "tris": 19692,
    "derived": [
     "art/models/tripo/web/P_Cliff_A_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (32.00 x 21.38 x 18.17 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (32.00 x 21.38 x 18.17 studs)",
+    "art/models/tripo/web/P_Cliff_A_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 8998612
@@ -5701,7 +5718,8 @@
    "tris": 19009,
    "derived": [
     "art/models/tripo/web/P_Cliff_B_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (15.75 x 17.31 x 26.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (15.75 x 17.31 x 26.00 studs)",
+    "art/models/tripo/web/P_Cliff_B_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 8170064
@@ -5745,7 +5763,8 @@
    "tris": 9602,
    "derived": [
     "art/models/tripo/web/Kit_P_HayBales_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (6.34 x 4.02 x 5.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (6.34 x 4.02 x 5.00 studs)",
+    "art/models/tripo/web/Kit_P_HayBales_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 9030760
@@ -5767,7 +5786,8 @@
    "tris": 13900,
    "derived": [
     "art/models/tripo/web/Kit_P_PumpkinCart_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (8.00 x 6.69 x 6.21 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (8.00 x 6.69 x 6.21 studs)",
+    "art/models/tripo/web/Kit_P_PumpkinCart_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 6854400
@@ -5789,7 +5809,8 @@
    "tris": 18740,
    "derived": [
     "art/models/tripo/web/P_TreeAutumn_A_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.88 x 19.73 x 26.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.88 x 19.73 x 26.00 studs)",
+    "art/models/tripo/web/P_TreeAutumn_A_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 7870768
@@ -5811,7 +5832,8 @@
    "tris": 19603,
    "derived": [
     "art/models/tripo/web/P_TreeAutumn_B_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.38 x 18.85 x 30.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.38 x 18.85 x 30.00 studs)",
+    "art/models/tripo/web/P_TreeAutumn_B_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 7258856
@@ -5833,7 +5855,8 @@
    "tris": 9714,
    "derived": [
     "art/models/tripo/web/P_Pine_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (13.67 x 13.43 x 22.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (13.67 x 13.43 x 22.00 studs)",
+    "art/models/tripo/web/P_Pine_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 5750356
@@ -5855,10 +5878,328 @@
    "tris": 14190,
    "derived": [
     "art/models/tripo/web/Kit_P_Sunflowers_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (4.90 x 2.84 x 6.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (4.90 x 2.84 x 6.00 studs)",
+    "art/models/tripo/web/Kit_P_Sunflowers_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 7934740
+  }
+ ],
+ "Kit_W_BushA_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "a3d23f47-c72c-437b-8ad6-b4ace823589c",
+   "image": "art/out/hq/HQ_Kit_W_BushA.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 1145,
+   "file": "art/models/tripo/web/Kit_W_BushA_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9500,
+   "derived": [
+    "art/models/tripo/web/Kit_W_BushA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (9.69 x 9.70 x 6.00 studs)",
+    "art/models/tripo/web/Kit_W_BushA_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 7583724
+  }
+ ],
+ "Kit_W_BushB_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "f70693d6-29b4-4918-92ff-2a71b0a7b03d",
+   "image": "art/out/hq/HQ_Kit_W_BushB.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 1090,
+   "file": "art/models/tripo/web/Kit_W_BushB_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9604,
+   "derived": [
+    "art/models/tripo/web/Kit_W_BushB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.75 x 4.64 x 8.00 studs)",
+    "art/models/tripo/web/Kit_W_BushB_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 7642552
+  }
+ ],
+ "Kit_W_Fern_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "66549e01-716e-4ccd-b2be-ec18e1b3bfbb",
+   "image": "art/out/hq/HQ_Kit_W_Fern.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 1035,
+   "file": "art/models/tripo/web/Kit_W_Fern_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9820,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Fern_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.12 x 3.68 x 3.00 studs)",
+    "art/models/tripo/web/Kit_W_Fern_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 8407876
+  }
+ ],
+ "Kit_W_Mushrooms_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "4989f68d-fca8-4937-ae62-12ad7b12ed19",
+   "image": "art/out/hq/HQ_Kit_W_Mushrooms.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 980,
+   "file": "art/models/tripo/web/Kit_W_Mushrooms_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9664,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Mushrooms_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (2.31 x 1.75 x 2.50 studs)",
+    "art/models/tripo/web/Kit_W_Mushrooms_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 5859892
+  }
+ ],
+ "Kit_W_MossRock_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "24b967a7-ce1e-4a94-9556-5724bdc0295d",
+   "image": "art/out/hq/HQ_Kit_W_MossRock.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 925,
+   "file": "art/models/tripo/web/Kit_W_MossRock_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9758,
+   "derived": [
+    "art/models/tripo/web/Kit_W_MossRock_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.77 x 4.11 x 4.00 studs)",
+    "art/models/tripo/web/Kit_W_MossRock_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 6880636
+  }
+ ],
+ "Kit_W_Banner_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "7817efd9-16cf-42b9-abfc-79350b4a21a0",
+   "image": "art/out/hq/HQ_Kit_W_Banner.png",
+   "at": "2026-10-08 12:1x (6 jobs run together)",
+   "balance_after": 870,
+   "file": "art/models/tripo/web/Kit_W_Banner_v1plus_HD_src.glb (renamed 10/08: + look, not used — see Kit_W_Banner_T_web_hd)",
+   "note": "검수 OK 10/08 (숲 6종)",
+   "tris": 9764,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (3.65 x 1.67 x 8.00 studs)"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "bytes": 7665764
+  }
+ ],
+ "H_TreeTwisted_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "e5bd7b57-8214-4f3f-8bff-a9b704845106",
+   "image": "art/out/hq/HQ_H_TreeTwisted.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 815,
+   "file": "art/models/tripo/web/H_TreeTwisted_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 19060,
+   "derived": [
+    "art/models/tripo/web/H_TreeTwisted_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/H_TreeTwisted_LOD.glb (폰 규칙 6000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (35.47 x 28.04 x 32.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 10264400
+  }
+ ],
+ "H_Willow_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "9aa7b178-aa2e-4b35-82c8-e4dd7946ab5d",
+   "image": "art/out/hq/HQ_H_Willow.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 760,
+   "file": "art/models/tripo/web/H_Willow_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 19098,
+   "derived": [
+    "art/models/tripo/web/H_Willow_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/H_Willow_LOD.glb (폰 규칙 6000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (23.91 x 13.01 x 26.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 9583936
+  }
+ ],
+ "H_TreeArch_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "9919a520-1432-458e-812a-12d69b981700",
+   "image": "art/out/hq/HQ_H_TreeArch.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 705,
+   "file": "art/models/tripo/web/H_TreeArch_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 18880,
+   "derived": [
+    "art/models/tripo/web/H_TreeArch_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_all/3_third/D9_Hollow6.glb (36.00 x 20.18 x 30.41 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 10382100
+  }
+ ],
+ "Kit_H_StumpTable_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "bcd6c5dc-42f3-4783-852d-879c9144382b",
+   "image": "art/out/hq/HQ_Kit_H_StumpTable.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 650,
+   "file": "art/models/tripo/web/Kit_H_StumpTable_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 14776,
+   "derived": [
+    "art/models/tripo/web/Kit_H_StumpTable_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_H_StumpTable_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (12.00 x 11.94 x 2.82 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 10846256
+  }
+ ],
+ "Kit_H_LanternPost_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "a8324567-0f85-451b-ad2f-db0194ed5bed",
+   "image": "art/out/hq/HQ_Kit_H_LanternPost.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 595,
+   "file": "art/models/tripo/web/Kit_H_LanternPost_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 9438,
+   "derived": [
+    "art/models/tripo/web/Kit_H_LanternPost_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_H_LanternPost_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (5.61 x 2.96 x 9.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 7883780
+  }
+ ],
+ "Kit_H_GlowShrooms_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "69605c3c-d47a-4bab-9565-ef815fc0e6e3",
+   "image": "art/out/hq/HQ_Kit_H_GlowShrooms.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 540,
+   "file": "art/models/tripo/web/Kit_H_GlowShrooms_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 9650,
+   "derived": [
+    "art/models/tripo/web/Kit_H_GlowShrooms_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_H_GlowShrooms_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (3.32 x 3.14 x 3.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 8207116
+  }
+ ],
+ "Kit_W_Banner_T_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "ea0f0381-e5aa-4fc3-901c-43e057e2e1e7",
+   "image": "art/out/hq/HQ_Kit_W_Banner.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 485,
+   "file": "art/models/tripo/web/Kit_W_Banner_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 깃발 T자 다시)",
+   "tris": 9538,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_W_Banner_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D8_WoodsGround6.glb (3.13 x 1.69 x 8.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 8522340
+  }
+ ],
+ "K_CrownShard_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account)",
+   "site": "studio.tripo3d.ai",
+   "task": "5a985f33-e1d3-4635-8cf2-a503dc3237dd",
+   "image": "art/out/hq/HQ_K_CrownShard.png",
+   "at": "2026-10-08 15:5x",
+   "balance_after": 25445,
+   "file": "art/models/tripo/web/K_CrownShard_HD_src.glb",
+   "note": "검수 OK 10/08 (#19 ③-2, Firefly 고급 5 + Tripo 55)",
+   "tris": 9368,
+   "derived": [
+    "art/models/tripo/web/K_CrownShard_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D11/WorldKit_ImportD11.glb = build/import_all/3_third/D11_CrownShard.glb as K_CrownShard_v2 (fit w 7, same as old K_CrownShard); one landmark copy -> HD kept"
+   ]
   }
  ]
 }

@@ -1,0 +1,13 @@
+[고블린 숲 6종 고급 — 검수 OK 10/08(21종 승인, 순서 호박밭 → 숲 → 유령 숲). 2D 중간본 = 이미지 생성 2 kit_woods16(art/out/kit/woods/<이름>_src.png, Firefly asset을 그림 비교로 찾아 참조로 씀). 각 고급 5크레딧.
+ BushA 7cf7fda1 · BushB 3ebc0aa7 · Fern e2cf3627 · Mushrooms e4366979 · MossRock 51014612 · Banner d7afaef1]
+
+HEAD: Redraw the attached reference image as the same object, cleaner, sharper and more polished: keep its exact silhouette, proportions, camera angle, colors and every part in the same place and the same size in the frame.
+
+TAIL: Deep forest colors, dark green and soft moss green, chunky rounded toy shapes. Glossy chunky toy 3D render, soft even light, plain flat medium gray background, whole object in frame with margin. No faces, no eyes, no skulls. Wordless, blank surfaces.
+
+Kit_W_BushA: A lumpy dark green forest bush made of four round leafy clumps, deep green leaves with lighter moss-green highlights.
+Kit_W_BushB: A tall bumpy dark green forest bush shaped like a rounded cone of stacked leafy clumps, deep green leaves with moss-green highlights.
+Kit_W_Fern: A big low clump of soft moss-green fern fronds with a few curled fiddlehead tips, a natural leafy plant, not a striped or ray pattern.
+Kit_W_Mushrooms: A cluster of three toadstool mushrooms of different heights, brown caps with round cream spots, thick cream stems, a little moss at the base.
+Kit_W_MossRock: A rounded gray boulder with a thick soft moss-green cap on top and a few small gray pebbles at its base.
+Kit_W_Banner: A tall dark wooden pole with a plain hanging cloth banner of brown and muted olive patches, stitched edges, a torn notch at the bottom, no symbols or pictures.

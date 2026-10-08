@@ -2041,6 +2041,23 @@ function Feel.art(name)
 	return nil
 end
 
+-- 이미지 개발 10/08: a blank bubble art carries its words' box in Config.UIArt.Parts[name].TextRect ({ x, y, w, h },
+-- fractions of the picture, like BarkBubble). The sticker's square shows the picture with Fit, so the box is mapped into
+-- the square by the picture's shape (Size). nil without a TextRect (the art has its own words, or none)
+function Feel.textRect(name)
+	local ui = C and C.UIKit
+	local part = ui and type(ui.ArtPart) == "function" and ui.ArtPart(name) or nil
+	local r = type(part) == "table" and part.TextRect or nil
+	if type(r) ~= "table" or type(r[1]) ~= "number" or type(r[2]) ~= "number" or type(r[3]) ~= "number" or type(r[4]) ~= "number" then
+		return nil
+	end
+	local aspect = (typeof(part.Size) == "Vector2" and part.Size.Y > 0) and part.Size.X / part.Size.Y or 1
+	local w, h = 1, 1
+	if aspect >= 1 then h = 1 / aspect else w = aspect end
+	local ox, oy = (1 - w) / 2, (1 - h) / 2
+	return { ox + r[1] * w, oy + r[2] * h, r[3] * w, r[4] * h }
+end
+
 function Feel.near(pos, dist)
 	local cam = workspace.CurrentCamera
 	if not cam then return true end
@@ -3304,7 +3321,19 @@ function Feel.sticker(adornee, emo, size, offset)
 		e.Image.ImageTransparency = 0
 		e.Image.Visible = true
 		e.Bubble.Visible = false
-		e.Text.Visible = false
+		-- a blank bubble art (EmoOuch, 이미지 개발 10/08) gets its words in the art's TextRect; an art without one has its own
+		local rect = Feel.textRect(emo)
+		local words = rect and MOTION.EMO_FALLBACK[emo]
+		e.Text.Visible = words ~= nil
+		if words then
+			e.Text.Text = words.Text
+			e.Text.TextColor3 = words.Color
+			e.Text.Position = UDim2.fromScale(rect[1] + rect[3] / 2, rect[2] + rect[4] / 2)
+			e.Text.Size = UDim2.fromScale(rect[3], rect[4])
+			e.Text.TextTransparency = 0
+			e.Text.TextStrokeTransparency = 0
+			tween(e.Text, fade, { TextTransparency = 1, TextStrokeTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt)
+		end
 		tween(e.Image, fade, { ImageTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt)
 	else
 		local fb = MOTION.EMO_FALLBACK[emo] or MOTION.EMO_FALLBACK.EmoOuch
@@ -3314,6 +3343,7 @@ function Feel.sticker(adornee, emo, size, offset)
 		e.Text.Visible = true
 		e.Text.Text = fb.Text
 		e.Text.TextColor3 = fb.Color
+		e.Text.Position = UDim2.fromScale(0.5, 0.5) -- a TextRect sticker may have moved it
 		e.Text.Size = bubble and UDim2.fromScale(0.84, 0.46) or UDim2.fromScale(1, 1)
 		e.Text.TextTransparency = 0
 		e.Text.TextStrokeTransparency = 0

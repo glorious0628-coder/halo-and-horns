@@ -454,7 +454,7 @@ def board_stage(color_in="#4A5BC4", color_out="#10122A"):
     return c
 
 
-TEAM_CARDS = [("🔍", "BOSS", "#F2C94C"), ("🔨", "BUILDER", "#6FCF97"), ("🖥️", "BUILDER", "#6FCF97"), ("🖌️", "ARTIST", "#56CCF2"),
+TEAM_CARDS = [("🔍", "BOSS", "#F2C94C"), ("🔨", "BUILDER", "#6FCF97"), ("🖥️", "BUILDER", "#6FCF97"), ("⚙️", "BUILDER", "#6FCF97"), ("🖌️", "ARTIST", "#56CCF2"),
               ("✏️", "ARTIST", "#56CCF2"), ("🧩", "ART DEV", "#BB86FC"), ("🔊", "SOUND", "#FF7FC8"), ("🎥", "FILM CREW", "#FF8A65")]
 
 
@@ -464,7 +464,7 @@ def team_cells():
     emo = ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109)
     cells = []
     cw, ch, gx, gy = 246, 270, 20, 20
-    rows = [TEAM_CARDS[0:3], TEAM_CARDS[3:6], TEAM_CARDS[6:8]]
+    rows = [TEAM_CARDS[k:k + 3] for k in range(0, len(TEAM_CARDS), 3)]  # 9 sessions (game dev 3 added 2026-10-08): 3 + 3 + 3
     flat = []
     for r, row in enumerate(rows):
         x0 = CAPX - (len(row) * cw + (len(row) - 1) * gx) // 2
@@ -489,17 +489,18 @@ def choice_cells():
     devil), inside the Shorts safe area even at the pop / bob peak"""
     emo = ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109)
     cells = []
-    cw, ch, gap = 410, 330, 40
+    cw, ch, gap = 425, 400, 30
     for i, (e, l1, l2, fill, rim, col) in enumerate((("😇", "GIVE IT", "BACK", "#7A5A12", "#FFD650", (255, 236, 150)),
                                                      ("😈", "ONE", "BITE!", "#4A1E7A", "#C77DFF", (236, 200, 255)))):
         cell = rounded((cw, ch), 46, hexrgb(fill), outline=hexrgb(rim), width=10)
         ic = Image.new("RGBA", (150, 150), (0, 0, 0, 0))
         ImageDraw.Draw(ic).text((10, 8), e, font=emo, embedded_color=True)
         ic = contain(ic.crop(ic.getbbox() or (0, 0, 1, 1)), 120, 120)
-        cell.alpha_composite(ic, ((cw - ic.width) // 2, 22))
+        ic = contain(ic, 150, 150)
+        cell.alpha_composite(ic, ((cw - ic.width) // 2, 24))
         for k, word in enumerate((l1, l2)):
-            lab = text_img([(word, col)], fit_size(word, cw - 40, 78))
-            cell.alpha_composite(lab, ((cw - lab.width) // 2, 150 + k * 82))
+            lab = text_img([(word, col)], fit_size(word, cw - 40, 92))
+            cell.alpha_composite(lab, ((cw - lab.width) // 2, 190 + k * 96))
         cells.append((cell, CAPX + (-1 if i == 0 else 1) * (cw + gap) // 2, 820))
     return cells
 
@@ -812,12 +813,16 @@ def cue_times(it, cues):
     if not cues:
         return None
     wt = word_times(it)
-    out, j = [], 0
+    out, j, last = [], 0, it["start"]
     for cue in cues:
+        if cue.startswith("+"):  # "+0.2" = the card before + 0.2 s (two cards on one word: "three BUILDERS")
+            out.append(last + float(cue[1:]))
+            continue
         key = cue.upper().strip(".,!?:…")
         while j < len(wt) and wt[j][0] != key:
             j += 1
-        out.append(wt[j][1] if j < len(wt) else it["start"])
+        last = wt[j][1] if j < len(wt) else it["start"]
+        out.append(last)
         j += 1
     return out
 
@@ -953,9 +958,10 @@ def synth_sfx(name):
 
 # ------------------------------------------------------------------ audio
 def tts_wavs(short, voice, tts_dir, out_dir, do_tts):
-    jobs = [dict({"id": "%s_%s" % (short["id"], l["id"]), "text": fill(l.get("tts", l["en"]), True),
-                  "out": os.path.join(tts_dir, "%s_%s.wav" % (short["id"], l["id"]))},
-                 **{k: voice[k] for k in ("speaker", "speed", "noise_scale", "noise_scale_w", "sdp_ratio") if k in voice})
+    jobs = [{"id": "%s_%s" % (short["id"], l["id"]), "text": fill(l.get("tts", l["en"]), True),
+             "out": os.path.join(tts_dir, "%s_%s.wav" % (short["id"], l["id"])),
+             **{k: voice[k] for k in ("speaker", "speed", "noise_scale", "noise_scale_w", "sdp_ratio") if k in voice},
+             **({"speed": l["tts_speed"]} if "tts_speed" in l else {})}   # a line may talk faster (team list, 검수 v5)
             for l in short["lines"] if not l.get("silent")]
     if do_tts:
         jf = os.path.join(out_dir, "tts_jobs.json")
@@ -1056,6 +1062,18 @@ def build_short(short, voice, out_root, do_tts=True):
             n = (f1 - acc) if k == len(ss) - 1 else round((f1 - f0) * ws[k] / sum(ws))
             shots.append({"shot": s, "f0": acc, "f1": acc + n, "cue_t": cue_times(it, s.get("cues"))})
             acc += n
+    # the cut list (검수 v6: every cut's source and part, for tools/devlog_cutlist.py)
+    cuts = []
+    for sh in shots:
+        s_ = sh["shot"]
+        n_ = sh["f1"] - sh["f0"]
+        sp_ = float(s_.get("speed", 1.0))
+        cuts.append({"t0": round(sh["f0"] / FPS, 2), "t1": round(sh["f1"] / FPS, 2),
+                     "source": s_.get("video") or ("board:" + str(s_.get("board") or s_.get("cards"))),
+                     "src0": round(float(s_.get("ss", 0)), 2) if "video" in s_ else None,
+                     "src1": round(float(s_.get("ss", 0)) + n_ / FPS * sp_, 2) if "video" in s_ else None,
+                     "big": (s_.get("big") or {}).get("text"), "note": s_.get("note", "")})
+    json.dump(cuts, open(os.path.join(out_dir, "cuts.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     # audio: narration + effects
     mix = np.zeros(int(total * SR) + SR)
     for it in timeline:
@@ -1120,7 +1138,8 @@ def build_short(short, voice, out_root, do_tts=True):
         n = max(1, f1 - f0)
         reader = VideoReader(s["video"], float(s.get("ss", 0)), float(s.get("speed", 1.0))) if "video" in s else None
         top = int(s.get("top", 72 if s.get("topbar") else 0))
-        cells = grid6_cells() if s.get("board") == "grid6" else team_cells() if s.get("board") == "team_cards" else choice_cells() if s.get("board") == "choice2" else None
+        cb_ = s.get("board") or s.get("cards")
+        cells = grid6_cells() if cb_ == "grid6" else team_cells() if cb_ == "team_cards" else choice_cells() if cb_ == "choice2" else None
         tframes = None
         shot_prev = last
         if "turn" in s:
@@ -1149,15 +1168,17 @@ def build_short(short, voice, out_root, do_tts=True):
                     m = tframes[k]
                     sc = float(s.get("scale", 1.0))
                     paste_center(fr, m, CX, int(s.get("y", BOX_Y + 560)), sc * pop_scale(i) if s.get("pop") else sc)
-                if cells:
-                    per = int(s["every"] * FPS) if s.get("every") else max(1, int(n * 0.75) // len(cells))
-                    cue_t = sh["cue_t"]
-                    for ci, (cell, cx, cy) in enumerate(cells):
-                        k = 99 if s.get("static") else fi - math.ceil(cue_t[ci] * FPS - 1e-6) if cue_t and ci < len(cue_t) else i - ci * per
-                        if k >= 0:
-                            if s.get("bob"):  # the two end buttons bounce in turn
-                                cy = cy - int(abs(math.sin(math.pi * (fi / FPS) * 1.8 + ci * math.pi / 2)) * 34)
-                            paste_center(fr, cell, cx, cy, pop_scale(k))
+            if cells:
+                if reader and s.get("dim"):  # cards over the game: a dark see-through layer (검수 v5)
+                    fr.alpha_composite(Image.new("RGBA", (W, H), (8, 10, 30, int(255 * float(s["dim"])))))
+                per = int(s["every"] * FPS) if s.get("every") else max(1, int(n * 0.75) // len(cells))
+                cue_t = sh["cue_t"]
+                for ci, (cell, cx, cy) in enumerate(cells):
+                    k = 99 if s.get("static") else fi - math.ceil(cue_t[ci] * FPS - 1e-6) if cue_t and ci < len(cue_t) else i - ci * per
+                    if k >= 0:
+                        if s.get("bob"):  # the two end buttons bounce in turn
+                            cy = cy - int(abs(math.sin(math.pi * (fi / FPS) * 1.8 + ci * math.pi / 2)) * 34)
+                        paste_center(fr, cell, cx, cy, pop_scale(k))
             # falling / rising icons
             for key, sign in (("rain", 1), ("float", -1)):
                 spec = s.get(key)
@@ -1211,6 +1232,17 @@ def build_short(short, voice, out_root, do_tts=True):
                 # left-aligned, far enough in that the pop (x 1.1 around its centre) never crosses the safe edge
                 paste_center(fr, pill, SAFE[0] + 14 + pill.width * 0.55, chip_y, pop_scale(i),
                              check=(safe_log, "chip", fi) if check_on else None)
+            hb = s.get("hl_box")  # a pulsing glow around one button of a card shot (x0, y0, x1, y1 in the 9:16 frame)
+            if hb:
+                pulse = 0.5 + 0.5 * math.sin(fi / FPS * 2 * math.pi * 2.0)
+                ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                dv = ImageDraw.Draw(ov)
+                hc = hexrgb(s.get("hl_col", "#FFD650"))[:3]
+                pad = int(6 + 10 * pulse)
+                for wd, al in ((22, 50), (12, 110), (6, 255)):
+                    dv.rounded_rectangle([hb[0] - pad, hb[1] - pad, hb[2] + pad, hb[3] + pad], radius=26,
+                                         outline=hc + (int(al * (0.55 + 0.45 * pulse)),), width=wd)
+                fr.alpha_composite(ov.filter(ImageFilter.GaussianBlur(2)))
             bg_ = s.get("big")
             if bg_:
                 txt = fill(bg_["text"])

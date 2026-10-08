@@ -1,0 +1,98 @@
+{
+  "status": "passed",
+  "checks": 12,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "ClientMain loads Passes",
+      "ok": true
+    },
+    {
+      "check": "Passes never opens a purchase window (it only thanks)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 7,
+    "applied": 7,
+    "caught": 7,
+    "results": [
+      {
+        "mutation": "the join-time check speaks too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a flag turning on without a purchase of mine (the join check) says nothing :: Thank you! You are a VIP now: crown and chat tag.",
+          "CHECK_FAIL bought 2x XP: the server turns it on -> 'Thank you! 2x XP is on.' :: Thank you! 2x XP is on.",
+          "CHECK_FAIL one purchase, one thank-you (another flag right after stays quiet) :: Thank you! 2x Gold is on."
+        ]
+      },
+      {
+        "mutation": "a closed window counts as bought",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a purchase window closed without buying says nothing :: Thank you! 2x Gold is on.",
+          "CHECK_FAIL another player's purchase says nothing here :: Thank you! 2x Gold is on.",
+          "CHECK_FAIL a flag that turns on 31 s after the purchase stays quiet :: Thank you! 2x Gold is on."
+        ]
+      },
+      {
+        "mutation": "one purchase, many thank-yous",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL one purchase, one thank-you (another flag right after stays quiet) :: Thank you! 2x Gold is on.",
+          "CHECK_FAIL a purchase window closed without buying says nothing :: Thank you! 2x Gold is on.",
+          "CHECK_FAIL another player's purchase says nothing here :: Thank you! 2x Gold is on."
+        ]
+      },
+      {
+        "mutation": "another player's purchase counts",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL another player's purchase says nothing here :: Thank you! 2x Gold is on.",
+          "CHECK_FAIL a flag that turns on 31 s after the purchase stays quiet :: Thank you! 2x Gold is on.",
+          "CHECK_FAIL a bought look -> 'New look unlocked!' :: New look unlocked! Pick it in the Shop."
+        ]
+      },
+      {
+        "mutation": "a look list that did not grow speaks",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the same look list again (nothing new) says nothing :: New look unlocked! Pick it in the Shop.",
+          "CHECK_FAIL a shorter / empty list says nothing :: New look unlocked! Pick it in the Shop.",
+          "CHECK_FAIL a flag turning off says nothing :: New look unlocked! Pick it in the Shop."
+        ]
+      },
+      {
+        "mutation": "a flag turning off speaks",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a flag turning off says nothing :: Thank you! 2x XP is on.",
+          "CHECK_FAIL bought VIP -> its line :: Thank you! You are a VIP now: crown and chat tag."
+        ]
+      },
+      {
+        "mutation": "looks bought as products are ignored",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a bought look -> 'New look unlocked!' :: Thank you! 2x XP is on.",
+          "CHECK_FAIL the same look list again (nothing new) says nothing :: Thank you! 2x XP is on.",
+          "CHECK_FAIL a shorter / empty list says nothing :: Thank you! 2x XP is on."
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/Passes.luau": "7e25a4c57113bfdeb16ce60169bacc25d6f168ce840d9b7132576e41557076db",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
+  },
+  "fixtureSHA256": "25a07e238fa439fd3b63558cee1441407fe24bf18408ae10311898b8d7202529",
+  "studioCalls": 0,
+  "limitations": "Doubles instead of MarketplaceService: a real purchase (and the server turning the flag on) is a live check with Robux test purchases after the pass ids exist (launch_ops_checklist)."
+}

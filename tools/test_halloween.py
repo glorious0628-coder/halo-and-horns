@@ -385,6 +385,10 @@ def make_harness(sources: dict[str, str]) -> str:
         "local groundPoint, pickSpawnPoint, spawnMonster, warnThrottled = H.groundPoint, H.pickSpawnPoint, H.spawnMonster, H.warnThrottled\n"
         "local updateBar, deathPop, factionOf, removePersonalRef = H.updateBar, H.deathPop, H.factionOf, H.removePersonalRef\n"
         "local markHurt, zoneIdOf, scheduleRespawn = H.markHurt, H.zoneIdOf, H.scheduleRespawn\n"
+        # A23-74 review 2026-10-07: SpawnEvent keeps the spawn clearance (the real SEP.Clear over these records)
+        + between(mon, "local SEP = {\n", "\n}\n") + "\n}\n"
+        + function_block(mon, "function SEP.RadiusOf(")
+        + function_block(mon, "function SEP.Clear(")
         + counting
         + function_block(mon, "local function despawn(") + "\n"
         + between(mon, "local function killRecord(rec)", "-- A15: pain reaction for clients")

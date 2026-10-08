@@ -39,6 +39,11 @@ Net.Names = {
 	-- E11: { Board, Cards = { { Slot, Id, Kind, Sneaky, Goal, Target, RewardGold, RewardXP } }, Held, Hold, Done,
 	-- FullPerDay, Kind, Sneaky, RerollAt } owner only, the answer to BoardAction (Open / Take / Reroll)
 	"Board",
+	-- 게임성 개발 3 (2026-10-08), client -> server:
+	"ClaimAttendance", -- A23-77: no arguments; today's attendance slot (AttendanceService)
+	"ClientMetric", -- A23-79: (id: Config.Analytics.ClientMetrics, arg?) what only the client sees (TelemetryService, metrics)
+	"GoToFriend", -- A23-79 #3: (userId) travel to a Roblox friend on this server (InviteService; the travel rules apply)
+	"CandyTrade", -- A23-79 #4: (jar id: Config.CandyJar.Trades[].Id) candy for a stat-free title (DiaryService)
 }
 
 Net.GameStateDefaults = {

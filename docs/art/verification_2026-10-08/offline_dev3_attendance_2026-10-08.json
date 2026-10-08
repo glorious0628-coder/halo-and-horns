@@ -1,0 +1,1071 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 98,
+  "failedChecks": 0,
+  "namedChecks": 98,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the board has 7 slots (A23-77)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "slots: 2 potions · 3 min gold · 70% scroll · 3 min gold · 3 potions + 4 min materials · 5 min XP · box (10 min gold + XP + 30% scroll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "milestones at 7 / 14 / 28 / 50 / 100 days",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "7 = 'Regular', 28 = the name frame, 50 / 100 = titles",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "title Regular defined and pickable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "title SuperRegular defined and pickable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "title MegaRegular defined and pickable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "older titles keep their place",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save default { Days 0, LastDay 0, Slot 1 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "data version stays 3 (additive field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ClaimAttendance 1 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the week's gold + XP is about 15 hunting minutes (items make the rest)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "a new hero: a claim is open, slot 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 1: 2 HP potions; days 1, next slot 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "claimed: no claim open until 00:00 KST",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "Fx Attendance { Slot 1, Days 1, Items HP x2 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "the line says what came",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "the same day: more claims pay nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "00:00 KST: the claim opens for the online player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 2: 3 hunting minutes of gold, source 'Attendance'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 3: one 70% enhance scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 4: 3 more minutes of gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 5: 3 HP potions + 4 minutes of the zone's materials (slime zone: 14 Jelly)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 6: 5 hunting minutes of XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "6 days: no 'Regular' yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 7: the weekly box = 10 minutes of gold + XP + a 30% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "7 days collected: the stat-free title 'Regular'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "7 days: one milestone line + one title line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "after the box the board starts at slot 1 again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "day 8 = slot 1 again (2 potions)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "XP only on day 6 and the box",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a week, day by day",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "missed days never reset",
+      "check": "two days: slot 3 next",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "missed days never reset",
+      "check": "back after 9 days: the same slot waits, nothing lost",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "missed days never reset",
+      "check": "the claim pays slot 3 and counts one more day (missed days are just skipped)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "missed days never reset",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "missed days never reset",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the KST day line",
+      "check": "a claim at 23:59:30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the KST day line",
+      "check": "before the day check runs the attribute still says claimed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the KST day line",
+      "check": "the day check turns the claim on after 00:00 KST",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the KST day line",
+      "check": "a new KST day = a new claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the KST day line",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the KST day line",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "before the class pick: no claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "a claim before the class pick is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "the class pick opens the claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "ClaimAttendance is rate limited (1 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "any argument: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "then a plain call claims",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "a player who is not ready: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who may claim",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "a non-table record starts fresh",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "negative days, a LastDay far in the future, slot 99 -> 0, 0 (claim open), 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "fractions floor; claimed today stays claimed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "NaN -> 0, 0, 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "a LastDay one day ahead (another server's clock) is kept: no double claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A23-75 2x passes",
+      "check": "the service asks for the plain amounts (the pass doubles them inside ProgressionService)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A23-75 2x passes",
+      "check": "Fx / line show what was really added (doubled)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A23-75 2x passes",
+      "check": "the line shows the doubled gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A23-75 2x passes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A23-75 2x passes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full potion bag",
+      "check": "one bottle fits, the other is paid at the potion price",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full potion bag",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full potion bag",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rewards follow the level zone",
+      "check": "Lv30: 3 minutes of skeleton-ruins gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rewards follow the level zone",
+      "check": "Lv30: the materials of the skeleton table (no jelly)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rewards follow the level zone",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rewards follow the level zone",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "13 days: no attendance look yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "14 days: both factions' 14-day looks (never a sold one)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "the lines name my own faction's look only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "120 days: every attendance title at join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "120 days: all 6 attendance looks at join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "the join catch-up says nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "a sold look (no Unlock) is never asked for",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "28 days: the name frame line + AttendDays 28 for the nametag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "without A23-75's looks (main today)",
+      "check": "no Config.Looks / GrantLook: the claim still works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "without A23-75's looks (main today)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "without A23-75's looks (main today)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a claim never pays twice",
+      "check": "a failing payment after the commit: the day is used, no retry the same day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a claim never pays twice",
+      "check": "a second call the same day pays nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a claim never pays twice",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a claim never pays twice",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "signal for the metrics",
+      "check": "Claimed(player, slot, days) once per real claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "signal for the metrics",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "signal for the metrics",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug next day (Studio aid)",
+      "check": "DebugNextDay opens today's claim again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug next day (Studio aid)",
+      "check": "and the next slot pays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug next day (Studio aid)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug next day (Studio aid)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 9,
+  "staticFailures": [],
+  "mutations": {
+    "total": 36,
+    "applied": 36,
+    "caught": 36,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "a claim every call (no day check)",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a claim never pays twice :: a failing payment after the commit: the day is used, no retry the same day",
+          "a claim never pays twice :: a second call the same day pays nothing",
+          "a week, day by day :: 00:00 KST: the claim opens for the online player",
+          "a week, day by day :: 6 days: no 'Regular' yet",
+          "a week, day by day :: 7 days: one milestone line + one title line",
+          "a week, day by day :: after the box the board starts at slot 1 again"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "the day is not recorded",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a claim never pays twice :: a failing payment after the commit: the day is used, no retry the same day",
+          "a claim never pays twice :: a second call the same day pays nothing",
+          "a week, day by day :: 00:00 KST: the claim opens for the online player",
+          "a week, day by day :: 6 days: no 'Regular' yet",
+          "a week, day by day :: 7 days: one milestone line + one title line",
+          "a week, day by day :: after the box the board starts at slot 1 again"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "a missed day resets the board (a streak)",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "missed days never reset :: the claim pays slot 3 and counts one more day (missed days are just skipped)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a missed day resets the days collected",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "missed days never reset :: the claim pays slot 3 and counts one more day (missed days are just skipped)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the board never wraps",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: XP only on day 6 and the box",
+          "a week, day by day :: after the box the board starts at slot 1 again",
+          "a week, day by day :: day 8 = slot 1 again (2 potions)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the board does not move",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a claim never pays twice :: a failing payment after the commit: the day is used, no retry the same day",
+          "a week, day by day :: 00:00 KST: the claim opens for the online player",
+          "a week, day by day :: XP only on day 6 and the box",
+          "a week, day by day :: claimed: no claim open until 00:00 KST",
+          "a week, day by day :: day 1: 2 HP potions; days 1, next slot 2",
+          "a week, day by day :: day 2: 3 hunting minutes of gold, source 'Attendance'"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "paid before the commit",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a claim never pays twice :: a failing payment after the commit: the day is used, no retry the same day",
+          "a claim never pays twice :: a second call the same day pays nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the day line uses UTC",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: 00:00 KST: the claim opens for the online player",
+          "a week, day by day :: 7 days collected: the stat-free title 'Regular'",
+          "a week, day by day :: 7 days: one milestone line + one title line",
+          "a week, day by day :: after the box the board starts at slot 1 again",
+          "a week, day by day :: day 2: 3 hunting minutes of gold, source 'Attendance'",
+          "a week, day by day :: day 3: one 70% enhance scroll"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "no day check for online players",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: 00:00 KST: the claim opens for the online player",
+          "the KST day line :: the day check turns the claim on after 00:00 KST"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no class pick needed",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who may claim :: ClaimAttendance is rate limited (1 s)",
+          "who may claim :: a claim before the class pick is ignored",
+          "who may claim :: any argument: ignored",
+          "who may claim :: before the class pick: no claim",
+          "who may claim :: the class pick opens the claim"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the class pick does not open the claim",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who may claim :: the class pick opens the claim"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "arguments accepted",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who may claim :: any argument: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who may claim :: ClaimAttendance is rate limited (1 s)",
+          "who may claim :: any argument: ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "not-ready players claim",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who may claim :: a player who is not ready: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a far-future LastDay blocks forever",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "broken saves are repaired :: negative days, a LastDay far in the future, slot 99 -> 0, 0 (claim open), 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a broken slot stays broken",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "broken saves are repaired :: negative days, a LastDay far in the future, slot 99 -> 0, 0 (claim open), 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "negative days kept",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "broken saves are repaired :: negative days, a LastDay far in the future, slot 99 -> 0, 0 (claim open), 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gold tagged as a quest",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "A23-75 2x passes :: the service asks for the plain amounts (the pass doubles them inside ProgressionService)",
+          "a full potion bag :: one bottle fits, the other is paid at the potion price",
+          "a week, day by day :: day 2: 3 hunting minutes of gold, source 'Attendance'",
+          "a week, day by day :: day 4: 3 more minutes of gold"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the line shows the asked gold, not the added",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "A23-75 2x passes :: Fx / line show what was really added (doubled)",
+          "A23-75 2x passes :: the line shows the doubled gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "XP minutes paid as gold minutes",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "A23-75 2x passes :: Fx / line show what was really added (doubled)",
+          "A23-75 2x passes :: the service asks for the plain amounts (the pass doubles them inside ProgressionService)",
+          "a week, day by day :: day 6: 5 hunting minutes of XP",
+          "a week, day by day :: day 7: the weekly box = 10 minutes of gold + XP + a 30% scroll"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "bottles over the cap are lost",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full potion bag :: one bottle fits, the other is paid at the potion price"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no materials",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: day 5: 3 HP potions + 4 minutes of the zone's materials (slime zone: 14 Jelly)",
+          "rewards follow the level zone :: Lv30: the materials of the skeleton table (no jelly)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "materials of slimes for everyone",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards follow the level zone :: Lv30: the materials of the skeleton table (no jelly)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no box flag",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: day 7: the weekly box = 10 minutes of gold + XP + a 30% scroll"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Fx",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "A23-75 2x passes :: group ran to the end without a Lua error",
+          "a week, day by day :: Fx Attendance { Slot 1, Days 1, Items HP x2 }",
+          "a week, day by day :: group ran to the end without a Lua error",
+          "a week, day by day :: the same day: more claims pay nothing"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no signal",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "signal for the metrics :: Claimed(player, slot, days) once per real claim"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no catch-up at join",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "milestones and attendance looks :: 120 days: all 6 attendance looks at join",
+          "milestones and attendance looks :: 120 days: every attendance title at join"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the catch-up talks",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "milestones and attendance looks :: the join catch-up says nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a look only on the exact day",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "milestones and attendance looks :: 120 days: all 6 attendance looks at join"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "sold looks given too",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "milestones and attendance looks :: a sold look (no Unlock) is never asked for"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every faction's look is announced",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "milestones and attendance looks :: the lines name my own faction's look only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no milestone line",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: 7 days: one milestone line + one title line",
+          "milestones and attendance looks :: 28 days: the name frame line + AttendDays 28 for the nametag",
+          "milestones and attendance looks :: the lines name my own faction's look only"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "titles only on the exact day",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "milestones and attendance looks :: 120 days: every attendance title at join"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: the 70% scroll on day 3 becomes a 10%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: day 3: one 70% enhance scroll",
+          "config :: slots: 2 potions · 3 min gold · 70% scroll · 3 min gold · 3 potions + 4 min materials · 5 min XP · box (10 min gold + XP + 30% scroll)",
+          "missed days never reset :: the claim pays slot 3 and counts one more day (missed days are just skipped)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: 'Regular' at 10 days",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: 7 days collected: the stat-free title 'Regular'",
+          "a week, day by day :: 7 days: one milestone line + one title line",
+          "config :: milestones at 7 / 14 / 28 / 50 / 100 days"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: titles not pickable",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: 7 days collected: the stat-free title 'Regular'",
+          "config :: title MegaRegular defined and pickable",
+          "config :: title Regular defined and pickable",
+          "config :: title SuperRegular defined and pickable"
+        ],
+        "newFailingCount": 4
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3236a57567741cf1ac416c93ccd4c96f851ea0c437dc59d6bf2333a939afa4ab",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/AttendanceService.luau": "60a7e6745f24b36a2e3763b76d0f1cc9ee641890f5a5639f3acff8955e669595",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257"
+  },
+  "fixtureSHA256": "cd8ad672045386c29360614cc5781f432b40a1d8ed44c844c92da1e0108f06f0",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-77: one claim a KST day (Config.DayIndex) of the next slot of the 7-slot board (2 HP potions, 3 min gold, Enh70, 3 min gold, 3 HP potions + 4 min of the level zone's materials, 5 min XP, the weekly box = 10 min gold + XP + Enh30), a missed day is skipped (no streak, nothing resets), slot 7 -> slot 1; committed before paying (never twice); class chosen, ready, no arguments, 1 s; data.Attendance { Days, LastDay, Slot } repaired at join; gold source 'Attendance' through ProgressionService (A23-75 2x inside it, the line shows what was added); bottles over the bag cap paid at the potion price; days collected 7 'Regular', 14, 28 name frame, 50 / 100 titles, attendance looks (Config.Looks Unlock.Attendance) via GrantLook for both factions, caught up silently at join; attributes AttendDays / AttendSlot / AttendReady (turns on at 00:00 KST for online players); Fx Attendance; signal Claimed.",
+  "limitations": "The attendance window and the name frame are client work (game dev 1 / image dev). A23-75's Config.Looks / MonetizationService.GrantLook and the 2x passes are doubles here (game dev 2's branch is not on main). The real DataStore save of the field is DataService's (unchanged)."
+}

@@ -1,0 +1,14 @@
+[유령 숲 6종 — 검수 OK 10/08(비교표 docs/design/zones_concept_gap_2026-10-08.md, 순서 호박밭 → 숲 → 유령 숲). Firefly 시안 중간 0 × 2씩 → 검수 → 고급 5 → Tripo 웹 HD 55.
+ 참조 이미지 = 유령 숲 시안 원본 art/out/concept/Concept_HauntedHollow_2.png (Firefly asset 4a50c21f). 지금 있는 무료 메시 GF_Tree·GF_Willow·GF_Arch·GF_Lantern·GF_Mushrooms 대신.
+ 얼굴·눈·해골·유령 없음(유령 몬스터와 겹치지 않게), 빛은 둥근 은은한 빛만(빛살 금지). 문구 = HEAD + 물건 + TAIL]
+
+HEAD: In the same style and soft moonlit purple and blue colors as the reference image (a cozy toy-world night forest), draw only this one object:
+
+TAIL: Single standalone game prop for a cute toy-world kids RPG, chunky rounded toy proportions, smooth hand-painted toy materials, simple clean shapes, soft even light. Three-quarter front view from slightly above, the whole object fully inside the frame with a wide margin, centered. Isolated on a plain flat medium gray background, no ground, no shadow, no other objects. No faces, no eyes, no skulls, no ghosts. Any glow is a soft round halo, no rays. Wordless, blank unmarked surfaces.
+
+H_TreeTwisted: one big tree with a thick twisting dark plum-brown trunk and roots, a huge puffy rounded canopy of lavender and violet leaf clumps.
+H_Willow: one weeping willow tree with a curvy dark trunk and long hanging curtains of soft periwinkle-blue leaves.
+H_TreeArch: two twisting dark trees leaning together to form a wide walk-through arch, their branches meeting overhead with a few violet leaves, three small round glowing pale-blue paper lanterns hanging from the arch.
+Kit_H_LanternPost: one wooden post with a short crossbar and rope, a round pale-blue paper lantern hanging from it, glowing softly.
+Kit_H_StumpTable: one wide old tree stump table with a smooth ring-carved top and moss on its sides, three short log benches around it.
+Kit_H_GlowShrooms: a small cluster of five glowing pale-blue mushrooms of different heights with round caps, on a little mossy mound.

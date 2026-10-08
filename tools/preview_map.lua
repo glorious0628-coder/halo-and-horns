@@ -245,11 +245,12 @@ do
 		Lift = 2,
 	}
 	Terrain:Clear()
-	-- water and grass from the A2_2 map (이미지 생성 1's table, 2026-10-07): bright sea, the sand shows through the
-	-- shallow ring; no realistic grass blades (they made the "default terrain" look; the art is smooth painted grass)
-	Terrain.WaterColor = RGB(8, 181, 214)
-	Terrain.WaterTransparency = 0.35
-	Terrain.WaterReflectance = 0.05
+	-- water and grass from the A2_2 map (이미지 생성 1's table, 2026-10-07): the sand shows through the shallow ring;
+	-- no realistic grass blades (they made the "default terrain" look; the art is smooth painted grass). Water colour
+	-- 2026-10-08 (이미지 생성 1 style #3, 검수 applied in the main Edit): a deeper blue, less see-through, a little shine
+	Terrain.WaterColor = RGB(38, 128, 176)
+	Terrain.WaterTransparency = 0.4
+	Terrain.WaterReflectance = 0.15
 	Terrain.WaterWaveSize = 0.05
 	Terrain.WaterWaveSpeed = 6
 	pcall(function() Terrain.Decoration = false end)

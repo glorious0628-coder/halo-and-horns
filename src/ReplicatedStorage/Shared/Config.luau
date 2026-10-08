@@ -56,6 +56,9 @@ Config.Player = {
 	MaxHealthPerLevel = 10,
 	PlaytimeTick = 5, -- seconds between PlaytimeSeconds updates
 	CollisionGroup = "Players", -- addendum A7-5: PhysicsService group, not collidable with itself (PlayerService)
+	-- A23-81 (user 2026-10-08 "나무·풀을 뚫으면 안 되지, 비켜 가야지"): decor parts in this group block players only;
+	-- monsters, pets and everything else (Default and every other group) pass through them (PlayerService registers it)
+	DecorGroup = "DecorPlayerOnly",
 }
 
 -- Approved HP/MP HUD. Potions are now purchased stock; prices are provisional balance values.
@@ -178,7 +181,7 @@ Config.Data = {
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
-		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+		Settings = { V = 2, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 			Cam = "Follow" },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
@@ -1252,10 +1255,11 @@ Config.War = {
 -- ZoneLook base light (Brightness / Ambient / OutdoorAmbient = ZoneLook SKY table, so the 3 s war-sky tween and
 -- ZoneLook agree); Eclipse = the night proposal (blood-red mood, monsters still readable).
 -- Optional keys (WarService applies them only if present): FogStart, ExposureCompensation, BloomIntensity (otherwise
--- WarService SKY_EXTRAS).
+-- WarService SKY_EXTRAS). 2026-10-08 (검수 style drift #18): Neutral's fog = the sky's horizon colour in the photos
+-- (~150, 206, 226 - the old pale 205, 215, 230 drew a grey band where the sea ends) and a slightly warm day tint.
 Config.Sky = {
 	TweenTime = 3,
-	Neutral = { ClockTime = 14.2, Brightness = 2.0, Ambient = Color3.fromRGB(110, 108, 106), OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(205, 215, 230), FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.2, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 255, 255) },
+	Neutral = { ClockTime = 14.2, Brightness = 2.0, Ambient = Color3.fromRGB(110, 108, 106), OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.2, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
 	Dawn = { ClockTime = 7.2, Brightness = 2.1, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(150, 130, 104), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 240, 200) },
 	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(115, 76, 92), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 200, 200) },
 }
@@ -3585,7 +3589,9 @@ end
 
 -- BB2 saved settings: value rules (defaults: Config.Data.Defaults.Settings). Text = the settings window (BB3) + toasts.
 Config.Settings = {
-	Version = 1, -- Settings.V
+	-- Settings.V. 2 (A23-78, user 2026-10-08): key hints are off by default now; a blob saved before V2 (V < 2 or no V)
+	-- drops its old KeyBadges once (SanitizeSettings), every other value stays; from V2 on the player's own pick stays
+	Version = 2,
 	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
@@ -3737,8 +3743,11 @@ function Config.SanitizeSettings(t)
 	local defaults = Config.Data.Defaults.Settings
 	local src = type(t) == "table" and t or {}
 	local out = { V = ST.Version, Keys = {} }
+	-- A23-78: a blob from before settings V2 (no V, V < 2, NaN) forgets its KeyBadges once (the old default was on)
+	local before2 = not (type(src.V) == "number" and src.V == src.V and src.V >= 2)
 	for key, def in ST.Defs do
 		local v, d = src[key], defaults[key]
+		if key == "KeyBadges" and before2 then v = d end
 		if def.Type == "Number" then
 			if type(v) == "number" and v == v and v > -math.huge and v < math.huge then
 				v = math.clamp(v, def.Min, def.Max)
@@ -4033,7 +4042,7 @@ Config.Sounds = { -- optional built-in files; client must pcall and ignore failu
 }
 
 -- quality ① (docs/design/quality_ideas_2026-10-06.md §1) with 검수's sound table (docs/design/lines_pack_2026-10-06.md §6):
--- Audio.luau's sound effects. Files: art/sfx/<file>.ogg (tools/sfx_game.py final: Kenney CC0 + our synth; sources in
+-- Audio.luau's sound effects. Files: art/sfx/<file>.wav (tools/sfx_game.py final: Kenney CC0 + our synth; sources in
 -- art/sfx/sources.json and docs/devlog/sfx_licenses.md), each levelled the same (loudest 100 ms RMS -18 dBFS, peak -3 dBFS),
 -- so Volume alone sets the mix: combat 0.28-0.40 < UI 0.42-0.60 < big moments 0.65-0.75 < level up 0.85.
 -- Files[file] = asset id; "" = silent until uploaded (nothing changes before the uploads).
@@ -4653,7 +4662,9 @@ Config.UIArt = {
 		FxShockRing = { Id = "rbxassetid://135827777163619", Size = Vector2.new(256, 252) },
 		FxMagicBurst = { Id = "rbxassetid://92519617657939", Size = Vector2.new(256, 256) },
 		FxDust = { Id = "rbxassetid://108076168454993", Size = Vector2.new(222, 256) },
-		EmoOuch = { Id = "rbxassetid://72032537654477", Size = Vector2.new(256, 175) },
+		-- 검수 2026-10-08 (user: "아야 영어로"): 72032537654477 has a Korean "아야!" drawn in and a spiky burst rim (ray rule) -
+		-- off until 이미지 생성 2's round English bubble; empty = Fx's code "Ouch!" bubble (EMO_FALLBACK)
+		EmoOuch = { Id = "", Size = Vector2.new(256, 175) },
 		EmoTears = { Id = "rbxassetid://113193582610345", Size = Vector2.new(512, 512) },
 		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
 		EmoAngry = { Id = "rbxassetid://91062043264397", Size = Vector2.new(512, 512) },
@@ -5532,5 +5543,211 @@ function Config.WalkSpeed(classId, petSpecies, petLv, kaiju)
 	local raw = base * (c.WalkSpeedMult or 1) * (1 + pet)
 	return math.min(raw, base * Config.Speed.Cap)
 end
+
+----------------------------------------------------------------- A23-77 attendance (게임성 개발 3, 2026-10-08)
+-- AttendanceService; contract docs/design/attendance_server_2026-10-08.md. User 2026-10-08: "끊기면 0되면 안 돼" ->
+-- days COLLECTED, never a streak. Additive save field (Version stays 3): Attendance = { Days = days collected (lifetime,
+-- never back to 0), LastDay = Config.DayIndex of the last claim (0 = never), Slot = the board slot the next claim pays
+-- (1..#Board) }. AttendanceService repairs it at PlayerReady (DataService only refills a missing / wrong-type table).
+Config.Data.Defaults.Attendance = { Days = 0, LastDay = 0, Slot = 1 }
+Config.Attendance = {
+	Enabled = true,
+	-- one claim a KST day (Config.DayIndex, 00:00 Korea time); a missed day is simply skipped: the next claim pays the next
+	-- slot and nothing resets. After slot 7 (the weekly box) the board starts at slot 1 again.
+	-- GoldMin / XPMin = Config.HuntValue minutes at the player's level (A23-77: about 3-5 hunting minutes a day, ~30 a
+	-- week). Potion = "HP" | "MP" bottles (bottles that do not fit the bag are paid in gold at Config.Vitals.PotionPrices).
+	-- Item = a Config.Loot.Items id. MaterialMin = the materials that many minutes of hunting the level zone's main monster
+	-- drop on average (Config.Economy.KillsPerMinute x minutes x the drop chance; a slime zone: 14 Jelly for 4 minutes).
+	Board = {
+		{ Potion = "HP", N = 2 },
+		{ GoldMin = 3 },
+		{ Item = "Enh70", N = 1 },
+		{ GoldMin = 3 },
+		{ Potion = "HP", N = 3, MaterialMin = 4 },
+		{ XPMin = 5 },
+		{ GoldMin = 10, XPMin = 10, Item = "Enh30", N = 1, Box = true }, -- the weekly box
+	},
+	-- days collected -> a stat-free reward once: Title = a Config.TitleDefs id, Border = the nametag frame id (drawn by the
+	-- client from the AttendDays attribute). The attendance-only halo / horn looks are Config.Looks entries with
+	-- Unlock.Attendance = days (A23-75's look frame, MonetizationService.GrantLook; both factions' looks, never sold).
+	Milestones = {
+		{ Days = 7, Title = "Regular" },
+		{ Days = 14 },
+		{ Days = 28, Border = "Days28" },
+		{ Days = 50, Title = "SuperRegular" },
+		{ Days = 100, Title = "MegaRegular" },
+	},
+	CheckInterval = 30, -- seconds between the day checks of online players (AttendReady turns on at 00:00 KST)
+	-- game text (English only, A23-48; 검수 owns the words)
+	Text = {
+		Claimed = "Day %d reward! %s", -- (board slot, the parts below joined with " · ")
+		Gold = "+%s gold",
+		XP = "+%s XP",
+		Item = "+%s",
+		ItemN = "+%s x%d",
+		Days = "%d days collected!",
+		NewTitle = "New title: %s!",
+		NewLook = "New look: %s!",
+		NewBorder = "New name frame!",
+	},
+}
+Config.TitleDefs.Regular = { Name = "Regular", NameEn = "Regular", Color = Color3.fromRGB(130, 205, 255) }
+Config.TitleDefs.SuperRegular = { Name = "Super Regular", NameEn = "Super Regular", Color = Color3.fromRGB(150, 230, 170) }
+Config.TitleDefs.MegaRegular = { Name = "Mega Regular", NameEn = "Mega Regular", Color = Color3.fromRGB(255, 200, 90) }
+for _, id in { "Regular", "SuperRegular", "MegaRegular" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
+Config.RateLimits.ClaimAttendance = 1
+
+----------------------------------------------------------------- A23-79 beta metrics (게임성 개발 3, 2026-10-08)
+-- TelemetryService; docs/design/retention_round_2026-10-08.md "베타에서 잴 것", contract
+-- docs/design/beta_metrics_server_2026-10-08.md. Roblox limits: 10 funnels (the onboarding one is
+-- Config.Analytics.Steps), 100 custom event names, 3 fields; events only from published servers (never Studio).
+-- Funnels: steps in order, each logged once per funnel session. Once = one session per account; DailyVisit's session =
+-- the KST day; PassShop's = one shop visit. Roblox completes the earlier steps of a later one, so a funnel holds only
+-- steps that always come in order (review 2026-10-08): the attendance claim, the story's chapter ends and the first
+-- ruins daily are custom events (Attendance, ChapterEnd, RuinsDaily), not steps.
+Config.Analytics.Funnels = {
+	LongRoad = { Once = true, Steps = { "Level15", "Level25", "Level30", "Level40", "Level50", "Rebirth1" } },
+	DailyVisit = { Steps = { "Join", "Daily1", "Daily3", "SetChest", "StopCardSeen" } },
+	Social = { Once = true, Steps = { "InviteSeen", "InvitePrompt", "InviteSent", "InviteeJoined", "PlayedTogether10m" } },
+	KingDiary = { Once = true, Steps = { "Page1", "Page3", "Page6", "Page9" } },
+	PassShop = { Steps = { "ShopOpen", "PassView", "PurchasePrompt", "Bought" } },
+}
+-- c->s "ClientMetric"(id, arg?): what only the client sees. The rule for the one argument: "None" (no argument),
+-- "Count" (a whole number 1..50), "Source" (one of InviteSources), "Pass" (a Config.GamePasses / Config.Looks id or
+-- "Look"), or a list of the allowed strings. Anything else is ignored.
+Config.Analytics.ClientMetrics = {
+	ShopOpen = "None", -- the Shop window opened (every open; a visit lasts until ShopVisitGap s after its start)
+	InviteSeen = "Source", -- an [Invite a friend] button showed
+	InvitePrompt = "Source", -- Roblox's invite window opened
+	InviteSent = "Count", -- the invite window closed with this many friends picked (SocialService.GameInvitePromptClosed)
+	PassView = "Pass", -- a pass card was looked at in the Shop (a visit starts here when none is open)
+	PurchasePrompt = "Pass", -- Roblox's buy window opened for a pass
+	OptIn = { "shown", "cannot" }, -- the notification prompt was shown / could not be (CanPromptOptInAsync false)
+	WelcomeBackGo = "None", -- [Go] on the welcome-back card
+}
+Config.Analytics.InviteSources = { "Menu", "PlayerList", "GooseWin", "WarWin" }
+Config.Analytics.PassIds = { "XP2", "Gold2", "VIP", "Look" } -- "Pass" args besides Config.GamePasses / Config.Looks ids
+-- review 2026-10-08 (one client must not flood the whole game's analytics budget): ClientMetric calls LOGGED a minute per
+-- player, and the ids logged once a session; every accepted call still fires TelemetryService.ClientMetric (no limit)
+Config.Analytics.ClientMetricPerMinute = 10
+Config.Analytics.ClientMetricOnce = { "OptIn", "WelcomeBackGo" }
+Config.Analytics.ShopVisitGap = 30 -- s: a shop open within this of the visit's start keeps the visit
+Config.Analytics.ShopVisitMax = 600 -- s: a visit older than this is over
+Config.Analytics.KOLeave = 60 -- s after a KO a leave counts as KOLeave60 (and LeaveContext "KO")
+Config.Analytics.PromptNearKO = 30 -- s after a KO / a failed scroll a purchase prompt is logged (must stay 0)
+Config.Analytics.LeaveRecent = 120 -- s a pause card / the day's last daily still names the leave (LeaveContext)
+Config.Analytics.IdleAfter = 120 -- s with no own action = an "Idle" leave
+-- gold on the Roblox economy dashboard (LogEconomyEvent, currency "Gold"): the sums per source / sink every 5 minutes and
+-- at the leave; item SKU = the ProgressionService tag, transaction type from these tables (else "Gameplay")
+Config.Analytics.EconomySources = { Attendance = "TimedReward", Sale = "Shop", Refund = "Shop" }
+Config.Analytics.EconomySinks = { Weapon = "Shop", Potion = "Shop", LookChange = "Shop" }
+Config.RateLimits.ClientMetric = 0.5 -- per metric id
+
+----------------------------------------------------------------- A23-79 coming back (게임성 개발 3, 2026-10-08)
+-- ReturnService / InviteService / DiaryService; contract docs/design/return_server_2026-10-08.md. Additive save fields
+-- (Version stays 3), each repaired by its service at PlayerReady:
+--   Return = { Badges = { [Config.Badges key] = { Id = the badge id awarded, At } }, OptIn = "" | "shown" | "cannot", OptInAt }
+--   Diary = { Pages = King Diary pages open (0..9), Done = the full book's title was given }
+--   Invite = { By = the UserId whose invite brought this player first, At = os.time() } (empty when never invited)
+Config.Data.Defaults.Return = { Badges = {}, OptIn = "", OptInAt = 0 }
+Config.Data.Defaults.Diary = { Pages = 0, Done = false }
+Config.Data.Defaults.Invite = {}
+-- #1 the pause card + welcome back (no clock numbers, no automatic next dialogue, never a buy button near it)
+Config.Return = {
+	CardDelay = 1.5, -- s after the moment (the quest list has moved on to the next goal by then)
+	MinGap = 120, -- s between two pause cards of one player
+	CombatWaitSeconds = 3, -- a card that comes in a fight waits for the fight to end (this often, at most this many times)
+	CombatWaitTries = 10,
+	War = { MinSession = 900, MinGap = 1800 }, -- a crown-war end: only after 15 minutes of play, at most one in 30 minutes
+	WelcomeAfter = 6 * 3600, -- "Welcome back!" when the last leave was at least this long ago (after the first mission)
+	WelcomeDelay = 4, -- s after the join (the HUD is up by then)
+	NextZone = "GoblinWoods", -- the next-goal row "Lv10 · Goblin Woods" travels there
+	SeasonFallback = "SlimeMeadow", -- a seasonal field (no Travel destination): its entrance field
+	-- quest guide spots that are not zones / landmarks ("Home" = the player's own town)
+	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home",
+		Goose = "Crossroads" },
+	Text = {
+		NextHunt = "Hunt and get stronger!", -- nothing pinned
+		TomorrowDaily = "New dailies", -- the daily card's tomorrow line (the King Diary's page while one waits)
+	},
+}
+-- #2 "My Way" (A23-79, psychology 2a): a name from the player's own good / evil story picks, no stats, no judging.
+-- At least MinPicks picks; |good - evil| <= floor(picks x BalanceShare) = Balance Walker; else by faction and lean.
+Config.MyWay = {
+	MinPicks = 2,
+	BalanceShare = 0.2,
+	Names = { TrueKnight = "True Knight", RebelAngel = "Rebel Angel", ProudRascal = "Proud Rascal",
+		SoftDevil = "Soft-Hearted Devil", BalanceWalker = "Balance Walker" },
+}
+-- #2 the 8 Roblox badges (one badge for the angel and the devil path alike). Ids = the badge ids the user creates on
+-- create.roblox.com at publishing (5 free a day: two days; launch_ops_checklist). 0 = not made yet: never asked, awarded
+-- at a later join once the id is set. Stronger = a weapon above the first tier owned; FirstSkill = the first skill
+-- learned (Lv5); Rank2 = faction rank 2 (Config.Titles.Thresholds); Halloween2026 = candy or a king beaten together in
+-- the 2026 season.
+Config.Badges = {
+	Order = { "ChoseSide", "FirstSlime", "LostLunchbox", "Stronger", "FirstSkill", "ShardChoice", "Rank2", "Halloween2026" },
+	Ids = { ChoseSide = 0, FirstSlime = 0, LostLunchbox = 0, Stronger = 0, FirstSkill = 0, ShardChoice = 0, Rank2 = 0,
+		Halloween2026 = 0 },
+	RetrySeconds = 300, -- a failed AwardBadge is tried again after this long
+}
+-- #5 the notification opt-in moment (13+ only: Roblox decides in CanPromptOptInAsync on the client). Once a shown prompt,
+-- again after RetryCannot s when the client could not prompt; never in the first MinPlaySeconds of play or within Calm s
+-- of a KO / a failed scroll / a purchase prompt. Store = the asked list (UserId -> { At }) for the launch-day send
+-- (Open Cloud, 11/09 update; the key lives in Secrets, never in the code).
+Config.Notify = {
+	MinPlaySeconds = 600,
+	Calm = 60,
+	RetryCannot = 30 * 86400,
+	Store = "HaloHorns_NotifyAsked_v1",
+}
+-- #3 invites (A23-68: no reward for inviting). TogetherMinutes = an invite pair on one server this long -> the
+-- PlayedTogether metric. SeasonZone = where "Go to friend" goes for a friend in a seasonal field.
+Config.Invite = {
+	TogetherMinutes = 10,
+	SeasonZone = "SlimeMeadow",
+	Text = {
+		NotHere = "Your friend is not on this server.",
+		Away = "Your friend is exploring far away. Try again soon!",
+		OtherTown = "Your friend is in the other side's town.",
+		SproutPvP = "Your friend is in a PvP zone. Come at Lv %d!",
+		SameZone = "You're already there!",
+	},
+}
+-- #4 the King Diary (Config.Halloween.Banter.Days = its pages) and the candy jar (open after the season too)
+Config.Diary = {
+	Title = "PartyGuest2026", -- all 9 pages
+	Text = {
+		Page = "King Diary: page %d!",
+		Tomorrow = "King Diary page %d",
+		NewTitle = "New title: %s!",
+		JarOwned = "You already have it!",
+		JarNeed = "You need %d candy.",
+	},
+}
+Config.CandyJar = {
+	Trades = {
+		{ Id = "PumpkinPal", Title = "PumpkinPal", Candy = 50 },
+		{ Id = "CandyKeeper", Title = "CandyKeeper", Candy = 200 },
+	},
+}
+Config.TitleDefs.PartyGuest2026 = { Name = "Party Guest 2026", NameEn = "Party Guest 2026", Color = Color3.fromRGB(255, 160, 70) }
+Config.TitleDefs.PumpkinPal = { Name = "Pumpkin Pal", NameEn = "Pumpkin Pal", Color = Color3.fromRGB(255, 140, 60) }
+Config.TitleDefs.CandyKeeper = { Name = "Candy Keeper", NameEn = "Candy Keeper", Color = Color3.fromRGB(240, 120, 200) }
+for _, id in { "PartyGuest2026", "PumpkinPal", "CandyKeeper" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
+Config.RateLimits.GoToFriend = 3
+Config.RateLimits.CandyTrade = 1
+
+----------------------------------------------------------------- A23-81 quest window book (게임성 개발 3, 2026-10-08)
+-- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
+-- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
+Config.QuestBook = {
+	DoneMax = 40,
+	AvailableMax = 10,
+	Text = { OpensAt = "%s · Opens at Lv %d" }, -- (quest Title, level)
+}
 
 return Config

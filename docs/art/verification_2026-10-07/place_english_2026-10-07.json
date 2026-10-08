@@ -52,6 +52,26 @@
       "detail": ""
     },
     {
+      "check": "an attribute's number bytes are never read as words (a CFrame holding EC 83 84 = U+C0C4)",
+      "ok": true,
+      "detail": [
+        "MT_OrigPivot"
+      ]
+    },
+    {
+      "check": "mutation: reading the whole blob as UTF-8 (the old scan) reports that false Hangul",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "a Korean String attribute is still found",
+      "ok": true,
+      "detail": [
+        "Label",
+        "말"
+      ]
+    },
+    {
       "check": "the place from before 84c7dbdd: its Korean labels are found again (9; the old scan said 0)",
       "ok": true,
       "detail": {
@@ -62,7 +82,7 @@
   ],
   "source": {
     "place": "place/GoodEvil.rbxlx",
-    "placeSHA256": "cfcfc723084d92a0479077595bc03ad6cd77d66e359bf41a63a11dff95c482b6"
+    "placeSHA256": "22d12d434093d0cf7fddede862239efc50ff9ec29caf73e39916f0e3187a5e2d"
   },
   "contract": "The place shows English only (A23-48; 검수 2026-10-07: find every Hangul text inside the place, not only in src).\n\nOffline (default): reads a saved place file (place/GoodEvil.rbxlx, or --place <file>) and lists every Hangul string in\nany property of any object (TextLabel / TextButton / SurfaceGui / BillboardGui texts, ProximityPrompt texts, names,\nStringValues, string attributes, ...) except script sources (comments there are never shown). --studio runs the same\nsearch live in the open Studio's Edit DataModel through Studio MCP (Edit mode only; it changes nothing).\nStatic: beta signs (Config.Features): no \"Market\" landmark on the world map while Market is off; the Crossroads anvil spot\nis called \"Forge\" while NeutralFaction (the artisan guild) is off.",
   "limitations": "Script sources are skipped (comments are never shown); text that code makes at run time is covered by the src text tests (test_english, test_ko_screen)."

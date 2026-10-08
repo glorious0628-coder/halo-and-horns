@@ -1,0 +1,9 @@
+{
+ "the tagged face gets SupporterGui on its Front face": true,
+ "the canvas keeps the face's shape (PixelsPerStud 40)": true,
+ "no supporters -> the plain thank-you line": true,
+ "no button on the board (no pressure)": true,
+ "seven names in rows of three": true,
+ "thirty names, the long one cut, the text fits": true,
+ "no SupporterBoard error in the console": true
+}

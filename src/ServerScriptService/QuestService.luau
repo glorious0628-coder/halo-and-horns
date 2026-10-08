@@ -896,19 +896,28 @@ local function publish(player)
 			if row.Id ~= TUT_ID then row.Folded = true end
 		end
 	end
+	-- A23-81 quest window (게임성 개발 3): the book's "Available" / "Done" lists (StoryQuestService.BookRows)
+	local book = nil
+	if story and type(story.BookRows) == "function" then
+		local okBook, rows = pcall(story.BookRows, player, data)
+		if okBook and type(rows) == "table" then book = rows end
+	end
 	local ok, json = pcall(HttpService.JSONEncode, HttpService, list)
 	if not ok then
 		Util.Warn(TAG, "quest list encode failed: " .. tostring(json))
 		return
 	end
+	local okBookJson, bookJson = pcall(HttpService.JSONEncode, HttpService, book or {})
+	local sentKey = json .. "|" .. (okBookJson and bookJson or "")
 	-- CR-L50: owner-only remote instead of the QuestsJson attribute (which replicated to every client), fired only
-	-- on change. Payload = the same JSON string the attribute held.
-	if lastSent[player] == json then return end
+	-- on change. A23-81: payload = { Quests = the rows, Book = { Available, Done } } (HUD / Audio read .Quests; a JSON
+	-- string of the bare rows is the older payload clients still accept)
+	if lastSent[player] == sentKey then return end
 	local okF, err = pcall(function()
-		Net.Get("Quests"):FireClient(player, json)
+		Net.Get("Quests"):FireClient(player, { Quests = list, Book = book })
 	end)
 	if okF then
-		lastSent[player] = json
+		lastSent[player] = sentKey
 	else
 		Util.Warn(TAG, "Quests fire failed: " .. tostring(err))
 	end
@@ -1379,6 +1388,20 @@ end
 -- StoryQuestService asks for a fresh quest list after story progress
 function M.MarkDirty(player)
 	if typeof(player) == "Instance" and player:IsA("Player") then dirty[player] = true end
+end
+
+-- A23-79 (게임성 개발 3): the row publish() pins first (the story main row after the first mission, else the first-mission
+-- / next-goal entry), nil when nothing is pinned. ReturnService's pause card / welcome back "Next" line.
+function M.PinnedRow(player)
+	local data = getData(player)
+	if not data then return nil end
+	local row = tutorialEntry(player, data)
+	local story = S.StoryQuestService
+	if getStep(player) == TUT_DONE and story and type(story.MainRow) == "function" then
+		local ok, main = pcall(story.MainRow, player, data)
+		if ok and main then row = main end
+	end
+	return row
 end
 
 function M.Start()

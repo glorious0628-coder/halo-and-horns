@@ -257,7 +257,8 @@ def boss(f, key, kind, name):
     x, y, z = [float(v) for v in kp.split(",")]
     f.teleport((x - 45, 6, z - 45), (x, 6, z))
     time.sleep(2)
-    rec(name, 12, lambda: f.orbit((0, 0, 0), 12, 4.2, -50, 50, 11.2, look_y=4.2, target=KING % kind, front=True))
+    f.look("king", focus=12)
+    rec(name, 12, lambda: f.orbit((0, 0, 0), 12, 2.0, -50, 50, 11.2, look_y=5.0, target=KING % kind, front=True))
     return kp
 
 
@@ -282,6 +283,7 @@ def flow_a(f):
     wait_for(f, lambda s: s.get("Faction") == "Halo", 20)
     print(f.lua(FIRE % ("ChooseClass", '"Warrior", "M"', "ChooseClass"), "Client"), flush=True)
     wait_for(f, lambda s: s.get("ClassChosen") == "true", 20)
+    f.look("angel", focus=9)  # 검수 2026-10-08 "미장센": warm gold, soft background
     for i in range(16):  # the guide's mission card opens after the pick
         time.sleep(0.5)
         if f.lua(MODAL, "Client") == "true":
@@ -289,32 +291,40 @@ def flow_a(f):
     time.sleep(1.0)
     rec("s40_guide_card", 6)
 
-    # [I'm In!] -> 'Off to the Forge! 3·2·1' -> the landing in front of the anvil (the game's own camera, behind me)
-    rec("s40_forge_trip", 10, lambda: (time.sleep(0.8), print(f.lua(FIRE % ("AcceptTutorial", "", "AcceptTutorial"), "Client"), flush=True)))
-    st = wait_for(f, lambda s: s.get("TutorialStep") == "3", 10)
-    time.sleep(1.0)
-
-    # the first weapon: a close camera in front of me, then the anvil prompt -> [Twig] + "Stronger!" + Power counting up
+    # [I'm In!] -> 'Off to the Forge!' -> the landing in front of the anvil -> the game presses the anvil for me when I
+    # land near it (HUD L.PressAnvil) -> [Twig] + "Stronger!": all in one clip, the close front camera set up during the
+    # fade so the moment is never missed (2026-10-08: a separate forge clip swallowed the gift)
     def gift():
-        # the prompt only shows (and so only fires) while the anvil is on screen: press it with the game's own camera
-        # behind me looking at the anvil (2026-10-08: a front camera with the anvil behind it gave nothing), then turn
-        # to the close front camera for the "Stronger!" moment
-        time.sleep(0.6)
-        print(f.lua(ANVIL, "Client"), flush=True)
-        time.sleep(0.4)
-        if state(f).get("WeaponTier") in (None, "nil", "0"):
+        f.clean(("Announce", "Toasts"))  # 9:16 shorts: no half-cut HUD, only the banner and the weapon toast
+        print(f.lua(FIRE % ("AcceptTutorial", "", "AcceptTutorial"), "Client"), flush=True)
+        wait_for(f, lambda s: s.get("TutorialStep") == "3", 6, 0.3)
+        time.sleep(2.6)  # the 3·2·1 fade and the trip
+        # the anvil button only shows while the anvil is on screen: the game's own camera (behind me, facing it) until
+        # the gift, then at once the close front camera for "Stronger!"
+        got = wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0"), 2.5, 0.2)
+        if got.get("WeaponTier") in (None, "nil", "0"):
+            print("anvil:", f.lua(ANVIL, "Client"), flush=True)
+            got = wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0"), 1.5, 0.2)
+        if got.get("WeaponTier") in (None, "nil", "0"):
             print("forge key U:", f.lua(DISPATCH % "U", "Client"), flush=True)
-            time.sleep(0.4)
-        # far and low enough that the twig in my hand sits mid-screen, above the HUD bars (2026-10-08 user: "왜 무기도 안 들고")
-        f.orbit((0, 0, 0), 9, 1.6, -30, 30, 8.0, look_y=0.2, target=MY_ROOT, front=True)
-    rec("s40_first_weapon", 10, gift)
+        f.orbit((0, 0, 0), 9, 1.0, -30, 30, 9.0, look_y=1.9, target=MY_ROOT, front=True)  # low = heroic, me centred
+        time.sleep(2.4)
+        for k in range(2):  # not standing still: two swings with the new twig
+            f.lua(DISPATCH % "F", "Client")
+            time.sleep(1.1)
+    rec("s40_first_weapon", 14, gift)
     print("first weapon:", wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0") and s.get("Held") == "true", 10), flush=True)
 
     # the meadow trip (Forge.TravelDelay) and the first hunt with the twig (the game's own camera follows behind)
     wait_for(f, lambda s: s.get("ZoneId") == "SlimeMeadow", 20)
     time.sleep(1.0)
+    f.clean(())  # world only: my twig, the slimes and their bubbles
+    f.look("angel", focus=9)
+    if os.environ.get("HUNT_LEVEL"):  # a stronger twig: slimes go down in a hit or two, so they hardly hit back ("Ouch!")
+        print("hunt level:", f.debug("Level", int(os.environ["HUNT_LEVEL"])), flush=True)
     print(f.lua(HUNT % 90, "Client"), flush=True)
-    rec("s40_first_hunt", 25)
+    # 검수 2026-10-08: the swing must show — a near camera beside / in front of me (my facing), the twig arm toward it
+    rec("s40_first_hunt", 25, lambda: f.orbit((0, 0, 0), 9, 2.2, -75, -35, 24, look_y=2.0, target=MY_ROOT, front=True))
     st = wait_for(f, lambda s: num(s.get("TutorialKills")) >= 5, 60, 1.0)
     print(f.lua(HUNT_STOP, "Client"), flush=True)
     # a card waits while I fight (the meadow slimes keep hitting me, 2026-10-08): claim from the quiet Crossroads square
@@ -323,6 +333,8 @@ def flow_a(f):
     f.teleport((cx + 10, 5, cz - 28), (cx, 5, cz))
     time.sleep(5.5)  # Panels STORY.CalmSeconds: a card right after a fight waits for a tap instead of opening
 
+    f.clean(("PanelsModal", "Toasts"))  # the card and the kid's reply only
+    f.look("angel", focus=10)
     # [Claim] (+150 gold) -> the Lost Lunchbox card -> [One bite!] -> the kid's line
     def claim():
         print(f.lua(FIRE % ("ClaimQuest", '"tutorial"', "ClaimQuest"), "Client"), flush=True)
@@ -333,12 +345,18 @@ def flow_a(f):
         else:
             print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Open"', "StoryAction"), "Client"), flush=True)
         time.sleep(3.0)
+        # the server takes the pick, but only the card's own button closes the card on the client (2026-10-08 test):
+        # press by remote, then close it ourselves -> the kid's reply toast shows (A23-70, d8b6a590)
         print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Choose", "%s"' % LUNCH, "StoryAction"), "Client"), flush=True)
+        time.sleep(0.15)
+        print(f.lua("local mg=game.Players.LocalPlayer.PlayerGui:FindFirstChild('MainGui'); local m=mg and mg:FindFirstChild('PanelsModal'); "
+                    "if m then m.Visible=false end; return 'card closed'", "Client"), flush=True)
     rec("s40_claim_lunchbox" + ("_good" if LUNCH == "Good" else ""), 14, claim)
     if LUNCH == "Good" or os.environ.get("LUNCH_ONLY") == "1":
         return
     time.sleep(1.0)
 
+    f.unclean()
     # Lv5: "New skill!" + the Q button pops in (A23-71)
     rec("s40_new_skill", 8, lambda: (time.sleep(0.8), print("level 5:", f.debug("Level", 5), flush=True)))
     time.sleep(1.0)
@@ -363,10 +381,12 @@ def knight(f):
 def flow_c(f):
     """C: places and monsters, HUD off, map v2 positions"""
     f.hud(False)
+    f.clean(())
+    f.look("far")
     cx, cz = zc("Crossroads")
     f.teleport((cx + 8, 4, cz - 24), (cx, 4, cz))
     time.sleep(1)
-    rec("s40_crossroads", 12, lambda: f.orbit((cx, 4, cz), 46, 20, -60, 60, 11.4, look_y=6))
+    rec("s40_crossroads", 12, lambda: f.orbit((cx, 4, cz), 40, 9, -60, 60, 11.4, look_y=8))
     approach(f, "HaloTown", "s40_halo_town")
     approach(f, "HornsTown", "s40_horns_town")
 
@@ -416,9 +436,115 @@ def flow_c(f):
     return kp
 
 
+# FilmSet-only filming aid (검수 v6, user "가만히 처맞고"): monsters near me keep at most `cap` HP (server record
+# field only: no number, no reward change) so every swing visibly finishes a slime before it can hit me back
+WEAK = r"""
+local MS = require(game.ServerScriptService.MonsterService)
+_G.__filmWeak = (_G.__filmWeak or 0) + 1
+local tok, cap, kinds = _G.__filmWeak, %f, %s
+task.spawn(function()
+	while _G.__filmWeak == tok do
+		local p = game.Players:GetPlayers()[1]
+		local r = p and p.Character and p.Character:FindFirstChild('HumanoidRootPart')
+		if r then
+			for _, rec in MS.GetMonstersInRadius(r.Position, 60, p) do
+				local k = rec.Model and rec.Model:GetAttribute('MonsterKind')
+				if (kinds == nil or kinds[k]) and rec.HP and rec.HP > cap then rec.HP = cap end
+			end
+		end
+		task.wait(0.15)
+	end
+end)
+return 'weak on'
+"""
+WEAK_OFF = "_G.__filmWeak = (_G.__filmWeak or 0) + 1; return 'weak off'"
+
+
+def flow_v6(f):
+    """검수 v6 (2026-10-08): one Play, every scene its own clip, the character always moving / attacking, never standing
+    still taking hits. a faction pick, b first weapon, c run to the meadow, d twig kills, e knight vs King Slime / many,
+    g the crown in the sky over the Crossroads (h = the Pumpkin King fight, f = lunchbox: earlier s40 clips)"""
+    rec("s41_faction_pick", 6)
+    print(f.lua(FIRE % ("ChooseFaction", '"Halo"', "ChooseFaction"), "Client"), flush=True)
+    wait_for(f, lambda s: s.get("Faction") == "Halo", 20)
+    print(f.lua(FIRE % ("ChooseClass", '"Warrior", "M"', "ChooseClass"), "Client"), flush=True)
+    wait_for(f, lambda s: s.get("ClassChosen") == "true", 20)
+    f.look("angel", focus=9)
+    time.sleep(2.0)
+
+    def gift():
+        f.clean(("Announce", "Toasts"))
+        print(f.lua(FIRE % ("AcceptTutorial", "", "AcceptTutorial"), "Client"), flush=True)
+        wait_for(f, lambda s: s.get("TutorialStep") == "3", 6, 0.3)
+        time.sleep(2.6)
+        got = wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0"), 2.5, 0.2)
+        if got.get("WeaponTier") in (None, "nil", "0"):
+            print("anvil:", f.lua(ANVIL, "Client"), flush=True)
+            got = wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0"), 1.5, 0.2)
+        if got.get("WeaponTier") in (None, "nil", "0"):
+            print("forge key U:", f.lua(DISPATCH % "U", "Client"), flush=True)
+        f.orbit((0, 0, 0), 8, 1.0, -35, 35, 9.0, look_y=1.9, target=MY_ROOT, front=True)
+        time.sleep(2.4)
+        for k in range(2):
+            f.lua(DISPATCH % "F", "Client")
+            time.sleep(1.1)
+    rec("s41_first_weapon", 13, gift)
+    print("first weapon:", wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0") and s.get("Held") == "true", 10), flush=True)
+
+    # c: the meadow trip, then I run along the path (camera beside me, 3/4 front)
+    wait_for(f, lambda s: s.get("ZoneId") == "SlimeMeadow", 20)
+    time.sleep(1.2)
+    f.clean(())
+    ms, mz = zs("SlimeMeadow")
+    pos = f.lua("local r=" + MY_ROOT + "; return r and string.format('%.1f,%.1f,%.1f', r.Position.X, r.Position.Y, r.Position.Z) or ''", "Client")
+    x0, y0, z0 = [float(v) for v in pos.split(",")] if pos else (ms, 4, mz)
+    rec("s41_run_meadow", 7, lambda: (f.orbit((0, 0, 0), 9, 2.0, -60, -20, 6.4, look_y=2.0, target=MY_ROOT, front=True),
+                                      f.walk([(x0 + 20, y0, z0 + 4), (x0 + 42, y0, z0 + 10), (x0 + 60, y0, z0 + 6)], speed=20)))
+
+    # d: the twig finishes slime after slime (weak slimes: one swing each), never a hit on me
+    print(f.lua(WEAK % (1, "{ Slime = true }"), "Server"), flush=True)
+    print(f.lua(HUNT % 60, "Client"), flush=True)
+    rec("s41_twig_kills", 20, lambda: f.orbit((0, 0, 0), 9, 2.2, -80, -20, 19.4, look_y=2.0, target=MY_ROOT, front=True))
+    print(f.lua(HUNT_STOP, "Client"), flush=True)
+    print(f.lua(WEAK_OFF, "Server"), flush=True)
+    f.unclean()
+
+    # e: the knight (Lv30, T6 sword, auto combat + skills) through the King Slimes / a crowd
+    for k, v in (("Level", 30), ("PlaytimeSeconds", 1500), ("WeaponTier", 6)):
+        f.debug(k, v)
+    f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatUnlocked',true); return 'ok'")
+    print(f.lua(HIDE_MODAL, "Client"), flush=True)
+    print("knight weapon:", wait_for(f, lambda s: s.get("Held") == "true" and s.get("WeaponTier") == "6", 10), flush=True)
+    f.clean(())
+    f.look("angel", focus=11)
+    kp = tag_nearest(f, "BigSlime", zc("SlimeMeadow"), "f_big")
+    if kp:
+        x, y, z = [float(v) for v in kp.split(",")]
+        f.teleport((x - 8, 5, z - 8), (x, 5, z))
+        time.sleep(1.0)
+    print(f.lua(WEAK % (12, "nil"), "Server"), flush=True)
+    f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',true); return 'auto'")
+    rec("s41_knight_slimes", 16, lambda: (f.orbit((0, 0, 0), 11, 2.5, -110, -40, 15.4, look_y=2.4, target=MY_ROOT, front=True),
+                                          f.walk([(x + 6, 4, z + 10), (x + 16, 4, z + 18)], speed=14) if kp else None))
+    f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',false); return 'off'")
+    print(f.lua(WEAK_OFF, "Server"), flush=True)
+
+    # g: the broken crown in the sky over the Crossroads (from the fountain up)
+    f.hud(False)
+    f.look("far")
+    f.teleport((30, 5, -70), (0, 5, 0))
+    time.sleep(1.5)
+    crown = f.lua("local c=workspace.Map.Landmarks:FindFirstChild('CrownOfBalance'); if not c then return '' end; local p=c:GetPivot().Position; "
+                  "return string.format('%.1f,%.1f,%.1f', p.X, p.Y, p.Z)") or "15,344,-18"
+    cx, cy, cz = [float(v) for v in crown.split(",")]
+    rec("s41_crown_sky", 8, lambda: f.dolly((34, 7, -58), (22, 10, -46), (0, 12, 0), (cx, cy, cz), 7.4))
+    f.hud(True)
+
+
 def flow_k(f):
     """K: the two new castles up close (2026-10-08: the entrance dolly showed them small and far), HUD off, me out of frame"""
     f.hud(False)
+    f.clean(())
     for zone, model, name, a0, a1 in (("HaloTown", "HaloCastle", "s40_halo_castle", 55, 125), ("HornsTown", "HornsCastle", "s40_horns_castle", -125, -55)):
         box = f.lua("local m=workspace.Map.Landmarks:FindFirstChild('%s'); if not m then return '' end; local cf,sz=m:GetBoundingBox(); "
                     "return string.format('%%.1f,%%.1f,%%.1f,%%.1f', cf.X, cf.Y, cf.Z, math.max(sz.X, sz.Z))" % model)
@@ -430,7 +556,8 @@ def flow_k(f):
         f.teleport((sx + 40, 6, sz), (bx, 6, bz))
         time.sleep(2.0)
         r = bw * 1.25
-        rec(name, 10, lambda: f.orbit((bx, 0, bz), r, by * 0.9, a0, a1, 9.4, look_y=by * 0.6))
+        f.look("far" if zone == "HaloTown" else "devil", focus=r)
+        rec(name, 10, lambda: f.orbit((bx, 0, bz), r, 6, a0, a1, 9.4, look_y=by * 0.75))
     f.hud(True)
 
 
@@ -451,7 +578,10 @@ def flow_b(f, kp=""):
         f.teleport((x - 6, 5, z - 6), (x, 5, z))
         time.sleep(1.0)
         f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',true); return 'auto'")
-        rec("s40_king_fight", 25, lambda: f.orbit((0, 0, 0), 15, 7.5, -150, -80, 24, look_y=2.5, target="char"))
+        f.clean(())
+        f.look("king", focus=15)
+        rec("s40_king_fight", 25, lambda: f.orbit((0, 0, 0), 15, 3.5, -150, -80, 24, look_y=4.0, target="char"))
+    f.unclean()
     ms, mz = zs("SlimeMeadow")
     f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',true); return 'auto'")
     f.teleport((ms + 106, 4, mz - 2), (ms + 117, 4, mz + 13))
@@ -462,9 +592,9 @@ def flow_b(f, kp=""):
 
 
 def main():
-    groups = [g for g in sys.argv[1:] if g in ("A", "B", "C", "K")] or ["A", "C", "B"]
+    groups = [g for g in sys.argv[1:] if g in ("A", "B", "C", "K", "V")] or ["A", "C", "B"]
     f = D.Film()
-    fresh = "A" in groups
+    fresh = "A" in groups or "V" in groups
     try:
         if fresh:
             print(f.lua(FRESH % ("true", "on"), "Edit"), flush=True)
@@ -479,6 +609,9 @@ def main():
                 pass
         time.sleep(1.5)
         load_zones(f)
+        if "V" in groups:
+            flow_v6(f)
+            return
         if "A" in groups:
             flow_a(f)
         knight(f)

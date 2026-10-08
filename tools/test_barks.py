@@ -59,8 +59,10 @@ MUTATIONS = [
     ("no Spot moment in aiStep", M, "\t\t\tMonsterService.Moment:Fire(rec, \"Spot\") -- ③ barks: a new target\n", ""),
     ("Spot on every AI tick", M,
      "\t\tif rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n"
+     "\t\t\trec._targetAt = now -- SEP.Pick holds a new target TargetHold s\n"
      "\t\t\tMonsterService.Moment:Fire(rec, \"Spot\") -- ③ barks: a new target\n\t\tend",
-     "\t\tMonsterService.Moment:Fire(rec, \"Spot\")\n\t\tif rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n\t\tend"),
+     "\t\tMonsterService.Moment:Fire(rec, \"Spot\")\n\t\tif rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n"
+     "\t\t\trec._targetAt = now -- SEP.Pick holds a new target TargetHold s\n\t\tend"),
     ("a personal monster spots on every tick", M, "\t\trec._spotted = true\n", ""),
     # Main order lists (the module file and the lists go in the same commit)
     # anchors that do not lean on the end of the lists (game dev 1: "ChatText" came after them)

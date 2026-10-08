@@ -1,0 +1,175 @@
+{
+  "status": "passed",
+  "checks": 35,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "ClientMain loads PauseCard",
+      "ok": true
+    },
+    {
+      "check": "no purchase prompt near the pause card (A23-79)",
+      "ok": true
+    },
+    {
+      "check": "no number in the card's words (no clock, no countdown)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
+    "results": [
+      {
+        "mutation": "a card over an open window",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL waits while a window is open, then opens :: false/true",
+          "CHECK_FAIL a card that waited over 90 s is dropped :: ",
+          "CHECK_FAIL one card at a time :: 1"
+        ]
+      },
+      {
+        "mutation": "a card on the KO screen",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL waits while knocked out, then opens :: false/true"
+        ]
+      },
+      {
+        "mutation": "a card in the middle of a fight",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL waits 5 s after a hit (no card in a fight) :: false/false/true"
+        ]
+      },
+      {
+        "mutation": "a card over a reward popup",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL waits while a reward popup shows, then opens :: false/true",
+          "CHECK_FAIL waits while a confirm box is open, then opens :: false/true"
+        ]
+      },
+      {
+        "mutation": "a card during the first steps",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL waits while the first steps hold banners, then opens :: false/true"
+        ]
+      },
+      {
+        "mutation": "a card before the data loaded",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL waits while the data is not loaded, then opens :: false/true"
+        ]
+      },
+      {
+        "mutation": "a stale card still shows",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a card that waited over 90 s is dropped :: ",
+          "CHECK_FAIL one card at a time :: 1",
+          "CHECK_FAIL the newer card opens after the first closes :: Next time: Goal"
+        ]
+      },
+      {
+        "mutation": "two cards at once",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL one card at a time :: 2",
+          "CHECK_FAIL the newer card opens after the first closes :: Next time: First",
+          "CHECK_FAIL Welcome back with the next goal :: Saved! | Next time: First"
+        ]
+      },
+      {
+        "mutation": "the waiting card never comes",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the newer card opens after the first closes :: "
+        ]
+      },
+      {
+        "mutation": "[Go] goes nowhere",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [Go] asks the server to travel to the zone :: "
+        ]
+      },
+      {
+        "mutation": "another player's card shows",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL another player's card is not mine :: ",
+          "CHECK_FAIL other Fx kinds open nothing :: ",
+          "CHECK_FAIL an unknown card kind is refused :: "
+        ]
+      },
+      {
+        "mutation": "the two buttons look different",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [Keep playing] and [OK]: the same size, the same look :: ",
+          "CHECK_FAIL [Go] and [OK]: the same size, the same look :: "
+        ]
+      },
+      {
+        "mutation": "no metrics signal",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [OK] closes it and tells the metrics :: 0",
+          "CHECK_FAIL [Keep playing] closes it too :: ",
+          "CHECK_FAIL a tap beside the card closes it (Backdrop) :: "
+        ]
+      },
+      {
+        "mutation": "a long goal is not cut",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a long goal is cut at 60 with … :: Next time: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      },
+      {
+        "mutation": "brackets kept in the goal",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the goal: no rich-text brackets, no line breaks :: Next time: <b>Iron</b> Sword"
+        ]
+      },
+      {
+        "mutation": "the backdrop does not close",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a tap beside the card closes it (Backdrop) :: ",
+          "CHECK_FAIL the 'saved' mark once its art is wired :: ",
+          "CHECK_FAIL waits while a window is open, then opens :: false/true"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/PauseCard.luau": "c3f470b40196f48c84b0e80058b6218e9fe74e4386036b742684e15277edfcf5",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
+  },
+  "fixtureSHA256": "0fab76ab3857acc6c9b2275fe2366d76b2ad5e9bfe770181066237ba442b86fa",
+  "studioCalls": 0,
+  "limitations": "Doubles instead of the engine: the card's look on PC and phone (DialogBox plate, button art) and the server's PauseCard / WelcomeBack Fx (게임성 개발 2, not built yet) are Studio checks."
+}

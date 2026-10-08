@@ -397,7 +397,12 @@ runGroup("privacy and robustness", function()
 	for _, n in { "AutoOn", "AutoOff", "Plunder_Kept", "Plunder_Avenged", "Plunder_Returned", "KeyRebind", "ReturnAct",
 		"RookieFirstKillSeconds", "HighLevelInMeadow", "ServerPopulation", "CrownTrialMiss", "SameKindStreak",
 		"SessionMinutes", "AutoAwayMinutes", "EnhanceFailLeave", "GoldIn", "GoldOut", "FriendMinutes", "KillsTogether",
-		"KillsWithFriend", "ZoneMinutes", "RankingViews" } do allowed[n] = true end
+		"KillsWithFriend", "ZoneMinutes", "RankingViews",
+		-- A23-79 (게임성 개발 3, tools/test_beta_metrics.py)
+		"DaysPlayed", "ReturnGap", "PauseCard", "WelcomeBack", "Attendance", "FriendJoin", "GoToFriend", "DiaryPage",
+		"CandyTrade", "NotifyOptIn", "InviteSent", "WelcomeBackGo", "PromptNearKO", "KOLeave60", "LeaveContext" } do
+		allowed[n] = true
+	end
 	local bad = {}
 	for _, c in w.Calls do
 		local ok = allowed[c.Name] or (string.sub(c.Name, 1, 11) == "WindowOpen_" and table.find(A0.UiIds, string.sub(c.Name, 12)))

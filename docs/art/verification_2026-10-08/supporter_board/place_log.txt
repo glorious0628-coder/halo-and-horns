@@ -1,0 +1,33 @@
+# Supporter board placement (게임성 개발 1, main Studio, Edit mode, 2026-10-08 ~12:35)
+# Spot rule from 검수 (12:25): crossroads fountain plaza, one board, the side opposite the bounty board (-57.5, 0, 0),
+# not blocking the pads (x 52-76, z +-24), roads or stalls, facing the fountain.
+
+## Probe BEFORE placing (scratchpad sb_probe.luau; box 20 x 14 x 11 around each candidate, facing the fountain;
+## Zones and Terrain excluded; ground = ray down at the centre and footprint corners)
+pivot (-57.50,0.00,0.00) look(1.00,-0.00,-0.00) | bbox centre rel (0.00,7.72,0.00) size (16.00,15.44,7.04)
+bounty rel pos (0.00,7.41,-0.50) rotYXZ (-0.0,90.0,0.0) size (0.20,6.49,11.52) transp 1.0
+ground at bounty board front (-50,0): 0.0 Terrain:Cobblestone | under board (-58,0): 0.0 Terrain:Cobblestone
+spot (36,-36): ground 0.0 Cobblestone at all 6 samples | overlaps: none          <- chosen
+spot (40,-32): ground 0.0 Cobblestone | overlaps: Workspace.Map.Pads, Crossroads3D.X_PadBase
+spot (33,-40): ground 0.0 Cobblestone | overlaps: none
+spot (44,-40): ground 0.0 Cobblestone | overlaps: Crossroads3D.X_PadBase
+
+## tools/worldkit/supporter_board_place.luau output
+ground at (36, -36): 0.00 (Terrain Cobblestone)
+cloned X_NoticeBoard -> X_SupporterBoard
+X_SupporterBoard pivot (36.0, 0.0, -36.0); SupporterFace centre (35.6, 7.4, -35.6) size 11.52 x 6.49, front faces the fountain: dot 1.00; tagged SupporterBoard: true
+tagged parts in the place: 1
+
+## Rerun ~12:45 with the gold texture (X_NoticeBoard_Gold, rbxassetid://127012447674638, a065e277 / 2d040fb8):
+ground at (36, -36): 0.00 (Terrain Cobblestone)
+gold texture: ColorMap of X_NoticeBoard_Gold
+X_SupporterBoard pivot (36.0, 0.0, -36.0); SupporterFace centre (35.6, 7.4, -35.6) size 11.52 x 6.49, front faces the fountain: dot 1.00; tagged SupporterBoard: true
+tagged parts in the place: 1
+# after: X_SupporterBoard > X_NoticeBoard_Gold [MeshPart] MeshId=rbxassetid://79816636314086,
+#        SurfaceAppearance ColorMap=rbxassetid://127012447674638; the bounty board X_NoticeBoard keeps ColorMap 127690556564237.
+
+## Probe AFTER placing (same script): at (36,-36) the box now holds only Crossroads3D.X_SupporterBoard (nothing else);
+## the rays at the board's centre hit the board's roof (13.7), the other samples Cobblestone 0.0.
+
+## Not yet: saved to build/GoodEvil.rbxlx / place/ (next Studio window), photos (the main Studio window was minimized,
+## so an Edit capture came out white; the names panel only exists in Play - SupporterBoard.luau draws it on the client).

@@ -1,0 +1,1859 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 159,
+  "failedChecks": 0,
+  "namedChecks": 159,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "pause card: chapter end",
+      "check": "a main quest in the middle of a chapter: no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "the card waits CardDelay (the next goal is pinned by then)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "chapter 1's last quest (M1_4): Saved card, Next = the pinned row's short name, Zone = its guide",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "MinGap 120 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "another card within MinGap: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "chapter 3's last quest after the gap: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "in a fight: no card yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "the fight is over: the card comes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: chapter end",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "two dailies claimed: no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "the third daily claimed: the card with tomorrow's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "20 minutes played: the opt-in moment rides on the daily card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "no separate opt-in Fx when the card carries it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "shown -> saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "the asked list keeps the UserId for the launch day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "the next day: a card, no second opt-in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "the tomorrow line names the King Diary page",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: the day's dailies",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "took part, 20 minutes in: the war card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "no chest points (or not in the war): no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "a war card needs the chest points (30)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "just joined: no war card (a long session first)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "the next round 10 minutes later: none (one war card in 30 minutes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "an idle round (no war): none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "30 minutes later: a war card again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pause card: crown war end",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "not before WelcomeDelay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "7 hours away: Welcome back + Next + [Go] zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "5 hours away / a brand-new save: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "the first mission not done yet: the guide leads (no card)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "9 hours: one card, Welcomed fires",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "nothing pinned: the hunting line, to the level's field",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "welcome back",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "the Blacksmith -> Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "a landmark -> its zone (SlimePond)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "the woods gate stands in the meadow (outside the PvP woods)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "a spot in my own town -> Home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "the other side's town: no [Go]",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "OwnTown -> Home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "Lv3 and the Lv10 woods: no [Go]",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "Lv10: the woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "a seasonal field -> the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "the next-goal row 'Zone' -> the woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "the iron weapon -> the Forge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "no short name: the text; no guide: the hunting field",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal zones",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "Halo + good picks = True Knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "Halo + devil picks = Rebel Angel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "Horns + devil picks = Proud Rascal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "Horns + good picks = Soft-Hearted Devil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "one each = Balance Walker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "one pick: no name yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "the Artisan Guild: no My Way name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "no side: no name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "3 good / 2 devil of 5: within a fifth = Balance Walker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "4 good / 1 devil: True Knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "A / B picks count as the good / devil side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "unknown quests / picks do not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "the join sets MyWay to the display name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "a new pick changes it at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "a faction change re-reads it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "ids 0 (badges not made yet): BadgeService is never asked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a brand-new player: nothing yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "Chose a Side once the side is picked (saved with its badge id)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "never asked twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "the first slime (the first kill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "the first (free) weapon is not 'Stronger!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a tier-2 weapon: Stronger!",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "the first skill learned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "Lost Lunchbox and Shard Choice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "faction rank 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "candy during the 2026 season: Halloween 2026",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "all 8, each once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a failing BadgeService: nothing saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "no retry within RetrySeconds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "false from AwardBadge: nothing saved (UserHasBadgeAsync asked)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a not-awarded badge is warned like an error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "after RetrySeconds: the one the player already has is saved, the others wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a record under another id is not the badge: awarded again with the new id",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "an error for an owned badge: saved after the check",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "no warning for the owned badge (it would repeat every 5 minutes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a player who left during the call keeps no retry entry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a player still here does get the retry entry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "after the season: no Halloween 2026 from new candy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "the first 10 minutes: never",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "20 minutes played: Fx OptInMoment",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "one a session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "right after a KO: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "a minute later: yes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "right after a failed scroll: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "right after a purchase prompt: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "cannot saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "cannot: not again the next day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "cannot: again after 30 days",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "shown once: never asked again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "an unknown result is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "opt-in moment",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "a non-table Return starts fresh",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "unknown badges / bad values dropped, { Id, At } kept, OptIn reset",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "a broken Diary starts at page 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "broken saves are repaired",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "LaunchData '1': an invite join, the inviter is here",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "an inviter on another server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "my own id / text / a fraction / too long / hex / a space: not an invite",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "the first invite that brought a player is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "9 minutes: not yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "10 minutes on one server: PlayedTogether(inviter, invitee) once each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "invite join",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "a friend in the meadow: ZoneService.Travel there (the normal channel and its rules)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "not a Roblox friend: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "a sprout and a friend in the PvP woods: never sent there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "the other side's town: a line, no trip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "a string / two arguments / a fraction / myself: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "Lv20: to the woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "ZoneService's no is said as it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "GoToFriend is rate limited (3 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "already in that zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "a friend in my own town: Home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "a friend in a seasonal field: its entrance field",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "a friend who left: one line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "WentToFriend(player, the friend's zone) for the metrics",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "my invitee: no friend web call needed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Go to friend",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "day 1: a king beaten together opens page 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "day 1: page 1 is today's last page (no more before tomorrow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "the other contributor gets their page 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "after the first page the opt-in moment may come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "day 5: caught up to page 5 (one per king), not past it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "PageOpened(player, page, late): late while catching up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "the pause card line: the next page",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "page 9: 'Party Guest 2026' + Fx DiaryDone once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "a player the kill did not pay: no page",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "day 9: no tomorrow line (a full book / no day 10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "after 11/09: no new pages, no line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "King Diary",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "50 candy -> 'Pumpkin Pal'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "a title owned: no candy taken (enough candy for it again)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "not enough candy: nothing taken, one line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "unknown id / two arguments / a number: ignored (even with candy for it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "200 candy -> 'Candy Keeper'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "after 11/09: still open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "candy jar",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 19,
+  "staticFailures": [],
+  "mutations": {
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "a card for every main quest",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: chapter end :: a main quest in the middle of a chapter: no card",
+          "pause card: chapter end :: the card waits CardDelay (the next goal is pinned by then)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the first main of a chapter counts as its end",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal zones :: Lv10: the woods",
+          "next goal zones :: OwnTown -> Home",
+          "next goal zones :: a landmark -> its zone (SlimePond)",
+          "next goal zones :: a seasonal field -> the meadow",
+          "next goal zones :: a spot in my own town -> Home",
+          "next goal zones :: no short name: the text; no guide: the hunting field"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "no gap between cards",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: chapter end :: another card within MinGap: none",
+          "pause card: chapter end :: chapter 3's last quest after the gap: a card",
+          "pause card: chapter end :: in a fight: no card yet",
+          "pause card: chapter end :: the fight is over: the card comes"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a card in the middle of a fight",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: chapter end :: in a fight: no card yet"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the card comes at once (old goal)",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: chapter end :: the card waits CardDelay (the next goal is pinned by then)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a daily card on every claim",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: the day's dailies :: two dailies claimed: no card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a war card without war points",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: crown war end :: no chest points (or not in the war): no card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a war card in the first minutes",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: crown war end :: just joined: no war card (a long session first)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a war card every round",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: crown war end :: 30 minutes later: a war card again",
+          "pause card: crown war end :: an idle round (no war): none",
+          "pause card: crown war end :: the next round 10 minutes later: none (one war card in 30 minutes)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a war card for an idle round",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: crown war end :: an idle round (no war): none"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no tomorrow line",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: the day's dailies :: the third daily claimed: the card with tomorrow's line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the diary line ignored",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: the day's dailies :: the tomorrow line names the King Diary page"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "welcome back after 5 hours",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "welcome back :: 5 hours away / a brand-new save: none",
+          "welcome back :: 9 hours: one card, Welcomed fires"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "welcome back for a brand-new save",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "welcome back :: 5 hours away / a brand-new save: none",
+          "welcome back :: 9 hours: one card, Welcomed fires"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "welcome back before the first mission",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "welcome back :: 9 hours: one card, Welcomed fires",
+          "welcome back :: the first mission not done yet: the guide leads (no card)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "welcome back at once",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "welcome back :: 7 hours away: Welcome back + Next + [Go] zone",
+          "welcome back :: not before WelcomeDelay"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "[Go] into the other side's town",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal zones :: a spot in my own town -> Home",
+          "next goal zones :: the other side's town: no [Go]"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "[Go] past a level gate",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal zones :: Lv3 and the Lv10 woods: no [Go]"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "[Go] into a seasonal field",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal zones :: a seasonal field -> the meadow"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "landmarks ignored",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal zones :: a spot in my own town -> Home",
+          "next goal zones :: the other side's town: no [Go]"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the long text over the short name",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: chapter end :: chapter 1's last quest (M1_4): Saved card, Next = the pinned row's short name, Zone = its guide"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "My Way from one pick",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: one pick: no name yet",
+          "My Way names :: unknown quests / picks do not count"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Balance Walker",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: 3 good / 2 devil of 5: within a fifth = Balance Walker",
+          "My Way names :: a new pick changes it at once",
+          "My Way names :: one each = Balance Walker"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Horns names swapped",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: Horns + devil picks = Proud Rascal",
+          "My Way names :: Horns + good picks = Soft-Hearted Devil",
+          "My Way names :: a faction change re-reads it"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "named picks ignored",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: 3 good / 2 devil of 5: within a fifth = Balance Walker",
+          "My Way names :: 4 good / 1 devil: True Knight",
+          "My Way names :: Halo + good picks = True Knight",
+          "My Way names :: Horns + good picks = Soft-Hearted Devil",
+          "My Way names :: a new pick changes it at once",
+          "My Way names :: one each = Balance Walker"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "a Neutral name",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: no side: no name",
+          "My Way names :: the Artisan Guild: no My Way name"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "My Way not refreshed on a pick",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: a new pick changes it at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "badge id 0 asked anyway",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: ids 0 (badges not made yet): BadgeService is never asked",
+          "broken saves are repaired :: unknown badges / bad values dropped, { Id, At } kept, OptIn reset"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a badge asked again and again",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: all 8, each once",
+          "badges :: never asked twice"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a failed badge is saved as awarded",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a failing BadgeService: nothing saved",
+          "badges :: a not-awarded badge is warned like an error",
+          "badges :: a player still here does get the retry entry",
+          "badges :: after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "AwardBadge false counts as awarded",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a not-awarded badge is warned like an error",
+          "badges :: a player still here does get the retry entry",
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no owned-badge check after an error",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: an error for an owned badge: saved after the check",
+          "badges :: no warning for the owned badge (it would repeat every 5 minutes)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a retry entry for a player who left",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a player who left during the call keeps no retry entry"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no UserHasBadgeAsync check",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: an error for an owned badge: saved after the check",
+          "badges :: no warning for the owned badge (it would repeat every 5 minutes)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the badge id is not saved",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: Chose a Side once the side is picked (saved with its badge id)",
+          "badges :: a record under another id is not the badge: awarded again with the new id",
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: all 8, each once",
+          "badges :: an error for an owned badge: saved after the check",
+          "badges :: never asked twice"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "any record counts under a new id",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a record under another id is not the badge: awarded again with the new id"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a failed badge retried at once",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: no retry within RetrySeconds"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the first weapon is Stronger!",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: the first (free) weapon is not 'Stronger!'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Rank 2 at rank 1",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: Chose a Side once the side is picked (saved with its badge id)",
+          "badges :: after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
+          "badges :: never asked twice"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Halloween after the season",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: after the season: no Halloween 2026 from new candy"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no catch-up at join",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a not-awarded badge is warned like an error",
+          "badges :: a player still here does get the retry entry",
+          "badges :: a player who left during the call keeps no retry entry",
+          "badges :: a record under another id is not the badge: awarded again with the new id",
+          "badges :: an error for an owned badge: saved after the check",
+          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "opt-in in the first 10 minutes",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "opt-in moment :: the first 10 minutes: never"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "opt-in right after a KO",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "opt-in moment :: a minute later: yes",
+          "opt-in moment :: right after a KO: no",
+          "opt-in moment :: right after a failed scroll: no",
+          "opt-in moment :: right after a purchase prompt: no"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "opt-in twice a session",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "opt-in moment :: one a session"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "opt-in again after shown",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "opt-in moment :: shown once: never asked again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "cannot is never asked again",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "opt-in moment :: cannot: again after 30 days"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the card's opt-in also as its own Fx",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: the day's dailies :: no separate opt-in Fx when the card carries it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an unknown opt-in result saved",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "opt-in moment :: an unknown result is ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no asked list",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pause card: the day's dailies :: the asked list keeps the UserId for the launch day"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text LaunchData accepted",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "invite join :: 10 minutes on one server: PlayedTogether(inviter, invitee) once each",
+          "invite join :: my own id / text / a fraction / too long / hex / a space: not an invite",
+          "invite join :: never again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "my own id as an invite",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "invite join :: 10 minutes on one server: PlayedTogether(inviter, invitee) once each",
+          "invite join :: my own id / text / a fraction / too long / hex / a space: not an invite",
+          "invite join :: never again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the last invite overwrites the first",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "invite join :: the first invite that brought a player is kept"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PlayedTogether every minute after 10",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "invite join :: never again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PlayedTogether at once",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "invite join :: 9 minutes: not yet"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Go to a stranger",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: not a Roblox friend: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a sprout sent into PvP",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: a sprout and a friend in the PvP woods: never sent there"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Go into the other side's town",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: the other side's town: a line, no trip"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Go skips the travel rules (instant)",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: a friend in the meadow: ZoneService.Travel there (the normal channel and its rules)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Go without a rate limit",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: GoToFriend is rate limited (3 s)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Go accepts a string id",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Go to a seasonal field itself",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: a friend in a seasonal field: its entrance field"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the invite pair needs a friend call",
+        "file": "src/ServerScriptService/InviteService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Go to friend :: my invitee: no friend web call needed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pages past today's",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "King Diary :: PageOpened(player, page, late): late while catching up",
+          "King Diary :: day 1: page 1 is today's last page (no more before tomorrow)",
+          "King Diary :: day 5: caught up to page 5 (one per king), not past it",
+          "King Diary :: the pause card line: the next page"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pages after the season",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "King Diary :: after 11/09: no new pages, no line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no opt-in after page 1",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "King Diary :: after the first page the opt-in moment may come"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "late never flagged",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "King Diary :: PageOpened(player, page, late): late while catching up"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the jar takes candy for an owned title",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "candy jar :: 200 candy -> 'Candy Keeper'",
+          "candy jar :: a title owned: no candy taken (enough candy for it again)",
+          "candy jar :: not enough candy: nothing taken, one line",
+          "candy jar :: unknown id / two arguments / a number: ignored (even with candy for it)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the jar closes after the season",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "candy jar :: after 11/09: still open"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the jar ignores the cost",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "candy jar :: 200 candy -> 'Candy Keeper'",
+          "candy jar :: 50 candy -> 'Pumpkin Pal'",
+          "candy jar :: a title owned: no candy taken (enough candy for it again)",
+          "candy jar :: after 11/09: still open",
+          "candy jar :: not enough candy: nothing taken, one line",
+          "candy jar :: unknown id / two arguments / a number: ignored (even with candy for it)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the jar accepts two arguments",
+        "file": "src/ServerScriptService/DiaryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "candy jar :: unknown id / two arguments / a number: ignored (even with candy for it)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: welcome back after 1 hour",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "welcome back :: 5 hours away / a brand-new save: none",
+          "welcome back :: 9 hours: one card, Welcomed fires"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: Pumpkin Pal for 5 candy",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "candy jar :: 50 candy -> 'Pumpkin Pal'",
+          "candy jar :: a title owned: no candy taken (enough candy for it again)",
+          "candy jar :: not enough candy: nothing taken, one line"
+        ],
+        "newFailingCount": 3
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3236a57567741cf1ac416c93ccd4c96f851ea0c437dc59d6bf2333a939afa4ab",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/ReturnService.luau": "c03f201c8263cd941a09360cb9b4a63f93985486cd6ac19e69c8d21f2a225c2e",
+    "src/ServerScriptService/InviteService.luau": "5078c549ea94977105df673faba86c6735ecc99fff50a028f151bd58ec6c01fe",
+    "src/ServerScriptService/DiaryService.luau": "fd9f53510f32d93ad79d0377db2aa813bc298c7536428a6ffb34504bddb297e7",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257"
+  },
+  "fixtureSHA256": "98ec4b592b3ef40dbec01b3618b69f1992c6d8a69d1975327a5a9292ac133698",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-79 server: Fx PauseCard { Why Chapter|Daily|War, Next = the pinned row's short name, Zone = a Travel destination I may enter (Home for my town, none for the other side's / a gated zone, seasonal -> meadow), Tomorrow (daily: the King Diary page while one waits), OptIn? } 1.5 s after a chapter's last main quest / the day's last daily claim / a war round I scored in after 15 min of play (one war card in 30 min), 120 s apart, waits out a fight; Fx WelcomeBack { Next, Zone } 4 s after a join 6 h+ after the last leave (first mission done); attribute MyWay from the story picks (2+ picks, a fifth = Balance Walker, Halo True Knight / Rebel Angel, Horns Proud Rascal / Soft-Hearted Devil, Neutral none); 8 badges via BadgeService (id 0 never asked, saved once, failures retried after 300 s, caught up at join); the opt-in moment once (10 min played, 60 s after a KO / failed scroll / purchase prompt, 'cannot' again after 30 days, a shown prompt -> the asked DataStore list); invite joins from LaunchData (digits, not mine, the first kept) + PlayedTogether at 10 minutes; GoToFriend(userId): ready, 3 s, a friend / invite pair here, PvP zones only from Lv15, never the other town, ZoneService.Travel with the channel; King Diary pages per king beaten together up to today's page in the season, page 9 title once; candy jar titles for candy, after the season too.",
+  "limitations": "The cards / book / jar windows and the opt-in prompt are client work (game dev 1; PauseCard.luau exists). BadgeService ids are made by the user at publishing. The real QuestService / StoryQuestService / WarService / HalloweenService run in their own suites; here their new signals are doubles (static checks cover the hooks)."
+}

@@ -13,6 +13,8 @@ local Util = require(ReplicatedStorage.Shared.Util)
 local Net = require(ReplicatedStorage.Shared.Net)
 
 local WarService = {}
+-- A23-79 (게임성 개발 3): a round ended: (winner, mode, { [Player] = round points }) - ReturnService's pause card
+WarService.RoundEnded = Util.Signal.new()
 
 local TAG = "WarService"
 local WAR_FACTIONS = { Halo = true, Horns = true }
@@ -355,6 +357,7 @@ local function endRound(mode, haloScore, hornsScore, halo, horns, curHalo, curHo
 	end
 
 	publish(curHalo or halo, curHorns or horns) -- new round: no averages yet
+	WarService.RoundEnded:Fire(winner, mode, snapshot)
 end
 
 local function tick()

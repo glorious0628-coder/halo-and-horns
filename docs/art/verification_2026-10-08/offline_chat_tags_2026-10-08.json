@@ -72,7 +72,7 @@
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/ChatTags.luau": "ec26ccb5bc777e4104917d3f106fbb56c8ea9d4806e32570e661c0529e14ae13",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "de0638c1776386bd94646570f166825a73aa9ba95b4daaa76c250ba4ec99586d",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "a4da5997619d0ea306b6ba9e7af4765d32d4aa5520c6ca414cf17e144792ee74"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
   },
   "fixtureSHA256": "2ee51414bc6f86a6ee68d856b86b75c8db073de6fc6f0c6f11ccaa29c3308e65",
   "studioCalls": 0,

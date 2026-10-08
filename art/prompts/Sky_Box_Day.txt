@@ -1,0 +1,6 @@
+[#12 하늘 6면 스카이박스(그림체 흔들림 2026-10-08). 시안 = Firefly 중간(0) 2~4장 → 검수 고름 → 고급(5)×필요 장수(최대 6, 30) → 파노라마를 4옆면 + 위(그라데이션) + 아래(수평선 색)로 나눔, 좌우 이음매 make_tileable.
+ 빛살 금지(욱일기 규칙): 해는 Sky_Sun(따로 있음), 이 그림에는 해·빛줄기 없음. 둥근 구름만.]
+
+MAIN (가로 16:9, 중간): A wide panoramic daytime sky for a cheerful kids' toy game, painted in soft stylized 3D toy style. Clear bright sky blue at the top fading smoothly to a pale warm cream-blue near the bottom horizon line. A band of big puffy rounded cartoon cumulus clouds near the bottom, chunky soft cotton shapes with gentle lavender-gray shading and bright white tops, a few small round clouds floating higher up. The horizontal edges continue the same sky so the left and right sides can join. No sun, no light rays, no beams, no land, no mountains, no birds, no text. Wordless.
+
+TOP (정사각, 중간): Looking straight up into a clear bright sky blue sky, smooth soft gradient a little deeper blue in the middle, two or three tiny soft round white clouds near the edges, painted soft stylized toy style. No sun, no rays, no text.

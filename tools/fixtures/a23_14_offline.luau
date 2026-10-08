@@ -159,7 +159,12 @@ local function questWorld(saved, seed, opts)
 	function net.Get(name)
 		if not remotes[name] then
 			remotes[name] = { OnServerEvent = signal(), FireClient = function(_, p, payload)
-				if name == "Quests" then f.LastJson = payload; f.QuestSends = (f.QuestSends or 0) + 1 end
+				if name == "Quests" then
+					f.LastJson = payload
+					f.QuestSends = (f.QuestSends or 0) + 1
+					-- A23-81: the payload is { Quests = rows, Book } (the JSONEncode double saw the book last)
+					if type(payload) == "table" and type(payload.Quests) == "table" then f.LastList = deepCopy(payload.Quests) end
+				end
 			end }
 		end
 		return remotes[name]

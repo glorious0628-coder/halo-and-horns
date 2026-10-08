@@ -21,6 +21,7 @@ import base64
 import hashlib
 import json
 import re
+import struct
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -82,6 +83,68 @@ def roblox_text(text: str) -> str:
         return text
 
 
+# Roblox's AttributesSerialize blob: u32 count, then per attribute a key (u32 length + bytes), a type byte and the value.
+# Only keys and String values can hold words; every other type is skipped by its size (2026-10-08: reading the whole blob
+# as UTF-8 turned a CFrame attribute's float bytes (MeadowKit W_Tree_A MT_OrigPivot) into a "Hangul" false alarm).
+ATTR_FIXED = {0x03: 1, 0x04: 4, 0x05: 4, 0x06: 8, 0x09: 8, 0x0A: 16, 0x0B: 24, 0x0C: 4, 0x0D: 4, 0x0E: 4, 0x0F: 12,
+              0x10: 8, 0x11: 12, 0x12: 4, 0x13: 6, 0x1B: 8, 0x1C: 16}
+
+
+def attr_strings(blob: bytes):
+    """(texts, complete): the attribute names and String values of an AttributesSerialize blob, and False when an
+    unknown type or a short blob stopped the reading (the texts read so far are still returned)."""
+    texts, i = [], 0
+
+    def u32(at):
+        if at + 4 > len(blob):
+            raise ValueError("short")
+        return int.from_bytes(blob[at:at + 4], "little"), at + 4
+
+    def string(at):
+        n, at = u32(at)
+        if at + n > len(blob):
+            raise ValueError("short")
+        return blob[at:at + n].decode("utf-8", errors="replace"), at + n
+
+    try:
+        count, i = u32(0)
+        for _ in range(count):
+            key, i = string(i)
+            texts.append(key)
+            kind = blob[i]
+            i += 1
+            if kind == 0x02:  # String
+                value, i = string(i)
+                texts.append(value)
+            elif kind in ATTR_FIXED:
+                i += ATTR_FIXED[kind]
+            elif kind == 0x14:  # CFrame: position, a rotation id, 9 floats only when the id is 0
+                i += 12
+                rot = blob[i]
+                i += 1 + (36 if rot == 0 else 0)
+            elif kind == 0x15:  # EnumItem: enum name + u32
+                _, i = string(i)
+                i += 4
+            elif kind == 0x17:  # NumberSequence: u32 count x (envelope, time, value)
+                n, i = u32(i)
+                i += 12 * n
+            elif kind == 0x19:  # ColorSequence: u32 count x (envelope, time, r, g, b)
+                n, i = u32(i)
+                i += 20 * n
+            elif kind == 0x1D:  # Font: u16 weight, u8 style, family, cached face id
+                i += 3
+                family, i = string(i)
+                _, i = string(i)
+                texts.append(family)
+            else:
+                return texts, False
+            if i > len(blob):
+                return texts, False
+    except (ValueError, IndexError):
+        return texts, False
+    return texts, True
+
+
 def scan_tree(root, decode=roblox_text):
     hits = []
 
@@ -101,10 +164,11 @@ def scan_tree(root, decode=roblox_text):
                 text = decode(p.text or "")
                 if p.tag == "BinaryString" and pname == "AttributesSerialize" and text.strip():
                     try:
-                        text = base64.b64decode(text).decode("utf-8", errors="ignore")
+                        texts, complete = attr_strings(base64.b64decode(text))
                     except ValueError:
-                        text = ""
-                    pname = "Attributes"
+                        texts, complete = [], False
+                    text = " | ".join(texts)
+                    pname = "Attributes" if complete else "Attributes (partly read)"
                 if HANGUL.search(text):
                     hits.append({"class": item.get("class"), "path": "/".join(here), "property": pname, "value": text[:160]})
         for child in item.findall("Item"):
@@ -144,6 +208,17 @@ def self_test():
     out.append(("mutation: the old Latin-1 reading misses it (the self test catches that bug)", len(old) == 0, len(old)))
     out.append(("non-Hangul bytes ('→') are decoded and not reported",
                 all("→" not in h["value"] for h in fixed) and not any("Forge" in h["value"] for h in fixed), ""))
+    # attributes (2026-10-08): number bytes are no words, a Korean String attribute still is
+    cf = (struct.pack("<I", 1) + struct.pack("<I", 12) + b"MT_OrigPivot" + bytes([0x14]) + struct.pack("<3f", 1.0, 2.0, 3.0)
+          + bytes([0]) + b"\x00\xec\x83\x84" + struct.pack("<8f", *([0.0] * 8)))
+    texts, complete = attr_strings(cf)
+    out.append(("an attribute's number bytes are never read as words (a CFrame holding EC 83 84 = U+C0C4)",
+                complete and not any(HANGUL.search(t) for t in texts), texts))
+    out.append(("mutation: reading the whole blob as UTF-8 (the old scan) reports that false Hangul",
+                bool(HANGUL.search(cf.decode("utf-8", errors="ignore"))), ""))
+    ko = struct.pack("<I", 1) + struct.pack("<I", 5) + b"Label" + bytes([0x02]) + struct.pack("<I", 3) + "말".encode()
+    texts, complete = attr_strings(ko)
+    out.append(("a Korean String attribute is still found", complete and any(HANGUL.search(t) for t in texts), texts))
     try:
         data = subprocess.run(["git", "show", OLD_PLACE], cwd=ROOT, capture_output=True, check=True, timeout=120).stdout
         root = ET.fromstring(data)
