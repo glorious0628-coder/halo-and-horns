@@ -14,3 +14,9 @@
 - [ ] 새 계정 흐름 세부(개발 2): [Accept] → 3초 페이드 → 교차로 모루 앞 착지 → E/탭 → "Otto: …" + 첫 무기 Power 0 → N(Stronger!) → 3초 뒤 초원 → 슬라임 5 → [Claim] 150골드 → M1_1 대장간에서 상점 창. 착지가 이상하면 Config.Tutorial.Forge.Landing = "Spawn".
 - [ ] `py tools/test_place_english.py --place build/GoodEvil.rbxlx` passed(자체 시험 포함).
 - 문서: dev2-sound 892fa28에서 stat_points·stats_server의 버전·서버 종료 문구 정리됨.
+
+## 수익 상품(A23-75, 2026-10-08) — 게시 때 사용자
+- [ ] Creator Dashboard → 수익 창출 → **게임 패스** 만들기: 경험치 2배, 골드 2배, VIP, 진영 치장(고른 것) — 가격은 사용자가 정한 값. 아이콘 512×512(이미지 생성 2).
+- [ ] 나온 패스 ID를 Config(게임 패스 표)에 붙여 넣기(ID 0이면 버튼 "Coming soon").
+- [ ] **개인 서버** 켜기 + 월 가격(사용자).
+- [ ] 변경권 Developer Products 2개(GDD §10) ID도 같이.
