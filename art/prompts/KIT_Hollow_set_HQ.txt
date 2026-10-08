@@ -1,0 +1,15 @@
+[유령 숲 6종 고급 — 검수 고름 10/08: 모두 1번. 각 고급 5, 참조 = 고른 중간본(art/out/kit/hollow/<이름>_1.png). + 숲 깃발 다시(검수 10/08: '+' 십자처럼 보임 → 가로대를 막대 맨 위 'T'자, 꼭지 없음) 고급 5, 참조 = art/out/hq/HQ_Kit_W_Banner.png(첫 고급본).
+ 폰 규칙(검수 10/08): Tripo 뒤 나무 ≤ 6,000 삼각형, 작은 것 ≤ 3,000, 나무 아치는 랜드마크라 그대로]
+
+HEAD: Redraw the attached reference image as the same object, cleaner, sharper and more polished: keep its exact silhouette, proportions, camera angle, colors and every part in the same place and the same size in the frame.
+
+TAIL: Soft moonlit purple and blue toy colors. Glossy chunky toy 3D render, soft even light, plain flat medium gray background, whole object in frame with margin. No faces, no eyes, no skulls, no ghosts. Any glow is a soft round halo, no rays. Wordless, blank surfaces.
+
+H_TreeTwisted (1): A big tree with a thick twisting dark plum-brown trunk and roots, a huge puffy rounded canopy of lavender and violet leaf clumps, a few small purple flowers and moss at the roots.
+H_Willow (1): A weeping willow tree with a curvy dark trunk and long hanging curtains of soft periwinkle-blue leaves.
+H_TreeArch (1): Two twisting dark trees leaning together into a wide walk-through arch, branches meeting overhead with violet leaves and small purple flowers, three small round glowing pale-blue paper lanterns hanging from the arch.
+Kit_H_LanternPost (1): A wooden post with a short crossbar and rope, a round pale-blue paper lantern hanging from it, glowing softly.
+Kit_H_StumpTable (1): A wide old tree stump table with a smooth ring-carved top and moss and small purple flowers on its sides, three short log benches around it.
+Kit_H_GlowShrooms (1): A small cluster of five glowing pale-blue mushrooms of different heights with round caps on a little mossy mound with tiny purple flowers.
+
+Kit_W_Banner (T 판): Redraw the attached reference image as the same forest banner pole with one change: the wooden crossbar sits at the very top end of the pole, making a simple T shape, with nothing sticking up above the crossbar; the two crossbar ends have small round wooden caps. Keep the plain hanging cloth banner of brown and muted olive patches with stitched edges and a torn notch at the bottom, the dark wooden pole and the round base. Deep forest colors. Glossy chunky toy 3D render, soft even light, plain flat medium gray background, whole object in frame with margin. No faces, no symbols, no pictures. Wordless, blank surfaces.

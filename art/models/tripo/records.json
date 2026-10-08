@@ -5497,7 +5497,8 @@
    "tris": 14755,
    "derived": [
     "art/models/tripo/web/Kit_P_PumpkinCluster_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D5/WorldKit_ImportD5.glb = build/import_all/3_third/D5_MeadowArchPumpkin.glb (7.0 x 5.73 x 3.5 studs)"
+    "build/import_D5/WorldKit_ImportD5.glb = build/import_all/3_third/D5_MeadowArchPumpkin.glb (7.0 x 5.73 x 3.5 studs)",
+    "art/models/tripo/web/Kit_P_PumpkinCluster_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/meadow_arch_pumpkin_3d.jpg",
    "bytes": 7679456
@@ -5578,7 +5579,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9398,
    "derived": [
-    "art/models/tripo/web/Kit_R_PillarA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_PillarA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_PillarA_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 9794496
   }
@@ -5598,7 +5600,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9356,
    "derived": [
-    "art/models/tripo/web/Kit_R_PillarB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_PillarB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_PillarB_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 8345608
   }
@@ -5618,7 +5621,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9676,
    "derived": [
-    "art/models/tripo/web/Kit_R_StoneMarker_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_StoneMarker_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_StoneMarker_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 9399068
   }
@@ -5638,7 +5642,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9650,
    "derived": [
-    "art/models/tripo/web/Kit_R_SpiritBowl_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_SpiritBowl_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_SpiritBowl_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 8450556
   }
@@ -5658,7 +5663,8 @@
    "note": "검수 OK 10/08 (R1+P+M)",
    "tris": 9768,
    "derived": [
-    "art/models/tripo/web/Kit_R_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+    "art/models/tripo/web/Kit_R_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_R_Banner_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "bytes": 8091848
   }
@@ -5679,7 +5685,8 @@
    "tris": 19692,
    "derived": [
     "art/models/tripo/web/P_Cliff_A_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (32.00 x 21.38 x 18.17 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (32.00 x 21.38 x 18.17 studs)",
+    "art/models/tripo/web/P_Cliff_A_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 8998612
@@ -5701,7 +5708,8 @@
    "tris": 19009,
    "derived": [
     "art/models/tripo/web/P_Cliff_B_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (15.75 x 17.31 x 26.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (15.75 x 17.31 x 26.00 studs)",
+    "art/models/tripo/web/P_Cliff_B_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 8170064
@@ -5745,7 +5753,8 @@
    "tris": 9602,
    "derived": [
     "art/models/tripo/web/Kit_P_HayBales_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (6.34 x 4.02 x 5.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (6.34 x 4.02 x 5.00 studs)",
+    "art/models/tripo/web/Kit_P_HayBales_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 9030760
@@ -5767,7 +5776,8 @@
    "tris": 13900,
    "derived": [
     "art/models/tripo/web/Kit_P_PumpkinCart_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (8.00 x 6.69 x 6.21 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (8.00 x 6.69 x 6.21 studs)",
+    "art/models/tripo/web/Kit_P_PumpkinCart_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 6854400
@@ -5789,7 +5799,8 @@
    "tris": 18740,
    "derived": [
     "art/models/tripo/web/P_TreeAutumn_A_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.88 x 19.73 x 26.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.88 x 19.73 x 26.00 studs)",
+    "art/models/tripo/web/P_TreeAutumn_A_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 7870768
@@ -5811,7 +5822,8 @@
    "tris": 19603,
    "derived": [
     "art/models/tripo/web/P_TreeAutumn_B_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.38 x 18.85 x 30.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.38 x 18.85 x 30.00 studs)",
+    "art/models/tripo/web/P_TreeAutumn_B_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 7258856
@@ -5833,7 +5845,8 @@
    "tris": 9714,
    "derived": [
     "art/models/tripo/web/P_Pine_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (13.67 x 13.43 x 22.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (13.67 x 13.43 x 22.00 studs)",
+    "art/models/tripo/web/P_Pine_LOD.glb (폰 규칙 검수 10/08: glb_decimate 6000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 5750356
@@ -5855,7 +5868,8 @@
    "tris": 14190,
    "derived": [
     "art/models/tripo/web/Kit_P_Sunflowers_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (4.90 x 2.84 x 6.00 studs)"
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (4.90 x 2.84 x 6.00 studs)",
+    "art/models/tripo/web/Kit_P_Sunflowers_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/town5/pumpkin9_3d.jpg",
    "bytes": 7934740
@@ -5877,7 +5891,8 @@
    "tris": 9500,
    "derived": [
     "art/models/tripo/web/Kit_W_BushA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (9.69 x 9.70 x 6.00 studs)"
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (9.69 x 9.70 x 6.00 studs)",
+    "art/models/tripo/web/Kit_W_BushA_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/kit_woods/woods6_3d.jpg",
    "bytes": 7583724
@@ -5899,7 +5914,8 @@
    "tris": 9604,
    "derived": [
     "art/models/tripo/web/Kit_W_BushB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.75 x 4.64 x 8.00 studs)"
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.75 x 4.64 x 8.00 studs)",
+    "art/models/tripo/web/Kit_W_BushB_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/kit_woods/woods6_3d.jpg",
    "bytes": 7642552
@@ -5921,7 +5937,8 @@
    "tris": 9820,
    "derived": [
     "art/models/tripo/web/Kit_W_Fern_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.12 x 3.68 x 3.00 studs)"
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.12 x 3.68 x 3.00 studs)",
+    "art/models/tripo/web/Kit_W_Fern_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/kit_woods/woods6_3d.jpg",
    "bytes": 8407876
@@ -5943,7 +5960,8 @@
    "tris": 9664,
    "derived": [
     "art/models/tripo/web/Kit_W_Mushrooms_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (2.31 x 1.75 x 2.50 studs)"
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (2.31 x 1.75 x 2.50 studs)",
+    "art/models/tripo/web/Kit_W_Mushrooms_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/kit_woods/woods6_3d.jpg",
    "bytes": 5859892
@@ -5965,7 +5983,8 @@
    "tris": 9758,
    "derived": [
     "art/models/tripo/web/Kit_W_MossRock_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.77 x 4.11 x 4.00 studs)"
+    "build/import_D8/WorldKit_ImportD8.glb = build/import_all/3_third/D8_WoodsGround6.glb (4.77 x 4.11 x 4.00 studs)",
+    "art/models/tripo/web/Kit_W_MossRock_LOD.glb (폰 규칙 검수 10/08: glb_decimate 3000 --weld 1e-5 on _HD_plain, textures kept; check art/review/town5/lod_compare.jpg) — used in the import instead of HD"
    ],
    "sheet": "art/review/kit_woods/woods6_3d.jpg",
    "bytes": 6880636
