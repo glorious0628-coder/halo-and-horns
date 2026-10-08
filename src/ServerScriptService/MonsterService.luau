@@ -1310,11 +1310,14 @@ local function killRecord(rec)
 	for _, e in eligible do table.insert(paid, e.Player.UserId) end
 	table.sort(paid)
 	rec.PaidUserIds = paid
-	rec._contributors, rec._hits, rec._dmg = {}, {}, {}
+	local manualAt = type(rec._manualAt) == "table" and rec._manualAt or {}
+	rec._contributors, rec._hits, rec._dmg, rec._manualAt = {}, {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
 		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
 		i.SkillHit = type(rec._skillBy) == "table" and rec._skillBy[e.Player] == true -- story S0: "basic attacks only"
+		-- king finisher card (docs/design/king_finisher_2026-10-08.md): an accepted manual hit within the window
+		i.Manual = manualAt[e.Player] ~= nil and now - manualAt[e.Player] <= window
 		-- BB38 metrics (TelemetryService: kills together / with a friend): how many earned this kill, and the others
 		i.Party, i.Others = #eligible, {}
 		for _, o in eligible do
@@ -1345,8 +1348,10 @@ local function markHurt(rec, amount, crit)
 end
 
 -- crit (optional): the hit was a critical hit (only used for the "HurtBig" pain reaction). castId (optional, SKL-3): a
--- skill cast that hits the same monster again (a field's ticks) counts as one hit of that player (A23-27 RewardMinHits)
-function MonsterService.DamageMonster(record, amount, player, crit, castId)
+-- skill cast that hits the same monster again (a field's ticks) counts as one hit of that player (A23-27 RewardMinHits).
+-- manual (optional, king finisher card): true = the player's own press (a swing / skill, never auto combat); the time of
+-- the last accepted manual hit per player is kept (record._manualAt) and the kill passes info.Manual
+function MonsterService.DamageMonster(record, amount, player, crit, castId, manual)
 	if type(record) ~= "table" or not record.Alive then return false end
 	if type(amount) ~= "number" or amount ~= amount or amount <= 0 then return false end
 	if record.Owner and record.Owner ~= player then return false end -- A5-C2
@@ -1354,6 +1359,10 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId)
 	if record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then return false end
 	if player then
 		record._contributors[player] = os.clock()
+		if manual == true then
+			record._manualAt = record._manualAt or {}
+			record._manualAt[player] = os.clock()
+		end
 		-- A23-27: own hits and damage per contributor (a def with RewardMinHits / RewardMinDamageFrac pays only those
 		-- who met both); the overkill part of the last hit does not count. SKL-3: a cast counts once however often it
 		-- hits (a field's ticks), also with other hits in between (검수 2026-10-07: the casts seen per player are a set)

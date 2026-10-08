@@ -3307,6 +3307,40 @@ Config.RateLimits = {
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
 }
 
+----------------------------------------------------------------- king finisher card (게임성 개발 2, 2026-10-08)
+-- docs/design/king_finisher_2026-10-08.md (rpg_success_analysis §4-3 #9, 검수 2026-10-08 kid-safe cut): a King Slime
+-- kill stays the same kill for everyone; each paid contributor with a manual hit in the last ContributorWindow s also
+-- gets a card only they see (FinisherService): Help (the Good side: Jelly) or Tickle (the Evil side: bank gold, never
+-- 2x), the same size (Help.N x Loot.Items[Help.Item].Sell == Tickle.Gold). Not picked within Seconds (+ Grace for the
+-- network, server only) = no gift, no points. Points: my own side's score +Points (inside Config.ScoreBudget) or -Points
+-- off side (A23-58, never below 0); Neutral / no side: the gift only. One open card a player at a time.
+Config.Finisher = {
+	Kinds = { BigSlime = true },
+	Seconds = 10,
+	Grace = 1,
+	Points = 1,
+	Help = { Item = "Jelly", N = 2 }, -- (proposed)
+	Tickle = { Gold = 4 }, -- (proposed) = 2 Jelly x Sell 2
+	Text = {
+		Title = "The King Slime is dizzy!",
+		Help = "Help it hop home",
+		Tickle = "Tickle out its coins",
+		HelpDone = "It hops home happy!",
+		TickleDone = "Coins pop out!",
+		Score = "%s +%d", -- ("Honor" | "Infamy", points)
+		ScoreDown = "%s -%d", -- the other side's pick on the card ("Honor -1")
+		-- the card's Hint per option (FinisherCard Help / Tickle .Hint)
+		HintFull = "No more points today. Your shard still leans.",
+		HintZero = "Nothing to lose. Your shard still leans.",
+		HintNeutral = "Just the gift. No good or evil points.",
+	},
+}
+-- P9 (mmorpg_painpoints_ideas_2026-10-05): ONE daily cap (KST day) for every repeated Honor / Infamy rise
+-- (ScoreBudget.luau); drops never count. The finisher card is its first user. (proposed)
+Config.ScoreBudget = { PerDay = 5 }
+Config.Data.Defaults.ScoreBudget = { Day = 0, N = 0 }
+Config.RateLimits.FinisherPick = 0.3
+
 ----------------------------------------------------------------- beta metrics (BB38, TelemetryService)
 -- docs/design/beta_basics_2026-10-05.md BB38 + 검수 2026-10-07 (economy, friends) + emergent_play_watch §2. Roblox
 -- AnalyticsService only; no names, UserIds or free text: every event name and field comes from these lists, zone /

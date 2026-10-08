@@ -262,7 +262,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ff8f5decaa4fe971c8f539c5bf5d817f2a5b1bd22db54f92f99f7f1ad3a4a55e",
+    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
     "src/StarterPlayer/StarterPlayerScripts/MonsterLabels.luau": "9dfb1ce7d655f796b9ca595d25145947abc0facac4e97bdfa6e6a7a91eb5d167"
   },
   "fixtureSHA256": "3dabd4d99778a69d593e2393eff260b326bf659c858950ccde644e1209c111b3",

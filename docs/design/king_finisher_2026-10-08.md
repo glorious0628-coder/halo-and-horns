@@ -53,11 +53,19 @@
   Seconds = 10,            -- 카드가 열려 있는 시간(이 뒤엔 서버가 받지 않음, 지연 여유 Grace 1초는 서버만 앎)
   Stat = "Honor",          -- "Honor" | "Infamy" | "None"(중립·진영 없음)
   Help   = { Item = "Jelly", N = 2, Score = 1 },   -- Score = 지금 고르면 바뀔 내 점수(+1, -1, 0)
-  Tickle = { Gold = 4, Score = -1 },
+  Tickle = { Gold = 4, Score = 0, Hint = "Zero" }, -- Hint = Score만으로 모자랄 때의 안내(아래)
 }
 ```
-- 글은 `Config.Finisher.Text`(공유 Config)에 있어요: `Title`, `Help`, `Tickle`, `HintFull`(오늘 점수 꽉 참), `HintNeutral`.
-  - 화면에 점수 힌트를 보이려면 `Score`를 쓰세요. 0이면 Stat에 따라 `HintFull`이나 `HintNeutral`을 보여요.
+- 글은 `Config.Finisher.Text`(공유 Config)에 있어요: `Title`, `Help`, `Tickle`, `Score`("Honor +1"), `ScoreDown`("Honor -1"),
+  `HintFull`, `HintZero`, `HintNeutral`.
+- **점수 힌트(반박 검토 2026-10-08):** 버튼마다 `Score`가 0이 아니면 `Score`(+는 `Score`, −는 `ScoreDown` 글)를 보여 주세요.
+  0이면 버튼의 `Hint`를 보여 주세요.
+  - `"Full"`: 내 편 버튼인데 오늘 점수(하루 5)를 다 썼어요 → `HintFull`.
+  - `"Zero"`: 반대 편 버튼인데 잃을 점수가 없어요(명예·악명 0, A23-58 바닥) → `HintZero`.
+  - `"Neutral"`: 중립·진영 없음이에요(두 버튼 모두) → `HintNeutral`.
+  - `Hint`가 없으면(nil) 점수가 있는 버튼이에요.
+- 고른 뒤의 보상 줄은 서버가 Notify(소리 `"None"`)로 보내요. 고른 순간의 소리는 클라가 `FinisherEnd`로 틀어요.
+  - 반대 편을 골랐는데 잃을 점수가 없으면, 이야기 선택처럼 안내 줄 뒤에 "Your shard leaned to …"가 붙어요.
 - **한 번에 한 장:** 카드가 열려 있는 동안 또 왕 슬라임을 잡으면 새 카드는 없어요. 열린 카드가 바뀌지 않게 하려는 거예요.
 
 ### 클라 → 서버: 리모트 `"FinisherPick"` (id, option)

@@ -15,6 +15,7 @@
 | `Plunder_Kept` / `_Avenged` / `_Returned` | 골드 | 원한 돈자루 결과 |
 | `SameKindStreak` | 30, 칸1 = 종류 | 같은 종류를 30마리 연달아(세션당 종류별 1번) — 의도하지 않은 반복 |
 | `ReturnAct` | 1~3, 칸1 = Zone/Window, 칸2 = id | **다시 온** 플레이어(세션 2번째부터)의 처음 3가지 행동(지역 들어가기·창 열기) |
+| `FinisherPick` | 1, 칸1 = Halo(Help)·Horns(Tickle)·None(시간 끝·나감), 칸2 = 내 진영 | 왕 슬라임 마무리 카드 한 장의 끝(`FinisherService`, `docs/design/king_finisher_2026-10-08.md`). 카드 골드는 `GoldIn` 출처 **Finisher**로 들어가요(경제 대시보드 거래 종류 Gameplay, 2배 아님) |
 | (그대로) `RookieFirstKillSeconds`, `CrownTrialMiss`, 5분마다 `HighLevelInMeadow`·`ServerPopulation` | | |
 
 ## 3. 나갈 때 보내는 세션 합계

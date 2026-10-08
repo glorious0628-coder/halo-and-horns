@@ -118,7 +118,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
+    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
     "src/ServerScriptService/WarService.luau": "fb412b8690ebfb87bdbaa7f49fedeec60eaa84b16df4dae26bdeb7bd8a0e3b24",
     "tools/preview_map.lua": "4bd38a3f88e6fc31e9b9b587407df9ba54c7afce0b6654acac51b5185660d726"
   },

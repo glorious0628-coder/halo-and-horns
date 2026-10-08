@@ -15,6 +15,7 @@ local INIT_ORDER = {
 	"ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
+	"ScoreBudget", "FinisherService", -- 게임성 개발 2: the King Slime finisher card + the P9 daily score cap
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -27,6 +28,7 @@ local START_ORDER = {
 	"SkillService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
+	"ScoreBudget", "FinisherService", -- 게임성 개발 2 (before PlayerService too)
 	"PlayerService",
 }
 
@@ -61,7 +63,7 @@ end
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Level", 20)
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
---   A23-77: AttendNext (today's attendance claim opens again)
+--   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill)
 --   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
 --   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1).
 if game:GetService("RunService"):IsStudio() then
@@ -136,6 +138,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.MonetizationService.AddTickets(player, "Faction", value)
 		elseif key == "Absent" then
 			S.QuestService.DebugSimulateAbsence(player, value)
+		elseif key == "Finisher" then -- Studio test aid: a King Slime finisher card without a kill (FinisherService)
+			return S.FinisherService.DebugOffer(player) and "ok" or "a card is open"
 		elseif key == "AttendNext" then -- A23-77 Studio test aid: today's attendance claim opens again
 			return S.AttendanceService.DebugNextDay(player)
 		elseif key == "Goose" then
