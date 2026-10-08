@@ -88,12 +88,15 @@ EXPECTED = [
     ("ShopService.luau", "AddCarriedGold", "Sale", False),
     ("StoryQuestService.luau", "AddBankGold", "Quest", True),
     ("StoryQuestService.luau", "AddXP", None, True),
-    ("StoryQuestService.luau", "AddBankGold", "Quest", True),
+    ("StoryQuestService.luau", "AddBankGold", "Choice", True),  # a pick's gold: shown as added, never 2x
     ("WarService.luau", "AddBankGold", "War", True),
 ]
 # A23-75 review 2026-10-08: shown as added, but never 2x: made from gold that already holds the pass (the kaiju survive
 # bonus is half the pouch; only its cap scales with the pass)
 PRE_BOOSTED = {"KaijuBonus"}
+# A23-75 review 2026-10-08 (검수 3rd look): shown as added, never 2x - a good / evil pick's gold (story picks "Choice",
+# the King Slime finisher card "Finisher" on its own branch) must not pay one side more for a paying child
+NOT_DOUBLED = {"Choice", "Finisher"}
 CALL = re.compile(r"\b(AddXP|AddCarriedGold|AddBankGold)\(|\"(AddXP|AddCarriedGold|AddBankGold)\",")
 
 
@@ -135,8 +138,8 @@ def static() -> tuple[int, list[str]]:
     config = read(SHARED / "Config.luau")
     boost = re.search(r"GoldSources = \{([^}]*)\}", config)
     sources = set(re.findall(r"(\w+) = true", boost.group(1))) if boost else set()
-    earned = {s for f, k, s, sh in EXPECTED if s and sh} - PRE_BOOSTED
-    never = {"Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "Other", "Penalty"} | PRE_BOOSTED
+    earned = {s for f, k, s, sh in EXPECTED if s and sh} - PRE_BOOSTED - NOT_DOUBLED
+    never = {"Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "Other", "Penalty"} | PRE_BOOSTED | NOT_DOUBLED
     check(earned <= sources and not (sources & never),
           f"the shown (earned) sources are the 2x Gold ones, never a transfer or a pre-boosted one ({sorted(sources)})")
     quest = strip_comments(read(SSS / "QuestService.luau"))
@@ -238,7 +241,7 @@ MUTATIONS = [
     ("a purchase taken back", M, "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end", "\t\towned[p.Key] = answer"),
     ("left player written", M, "\t\tif player.Parent == nil or S.PlayerService.GetData(player) ~= data then return end\n", ""),
     ("closed prompt counts", M, "\tif purchased ~= true or typeof(player)", "\tif typeof(player)"),
-    ("purchase not saved", M, "\t\t\tif data then seenTable(data)[p.Key] = true end\n", ""),
+    ("purchase not saved", M, "\t\tif answer == true and data then seenTable(data)[p.Key] = true end\n", ""),
     ("debug override ignored", M, "\tif d and d[key] ~= nil then return d[key] == true end\n", ""),
     # looks
     ("SetLook: any faction", M, "\t\tif not look or look.Faction ~= player:GetAttribute(\"Faction\") or not MonetizationService.OwnsLook(player, id) then\n\t\t\treturn\n",
@@ -266,8 +269,8 @@ MUTATIONS = [
     # PassBought (game dev 3's metric)
     ("no PassBought", M, "\t\t\tMonetizationService.PassBought:Fire(player, p.Key)\n", ""),
     ("PassBought before the pass is on", M,
-     "\t\t\towned[p.Key] = true\n\t\t\tlocal data = S.PlayerService.GetData(player)\n",
-     "\t\t\tMonetizationService.PassBought:Fire(player, p.Key)\n\t\t\towned[p.Key] = true\n"
+     "\t\towned[p.Key] = true\n\t\tlocal data = S.PlayerService.GetData(player)\n",
+     "\t\tMonetizationService.PassBought:Fire(player, p.Key)\n\t\towned[p.Key] = true\n"
      "\t\t\tlocal data = S.PlayerService.GetData(player)\n"),
     ("PassBought at the join check", M,
      "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back\n",
@@ -283,6 +286,31 @@ MUTATIONS = [
      "\t\tif tries > 0 and not PASS.Queued[userId] then\n"),
     ("no duplicate id warning", M, "\t\t\tif ids[p.Id] then Util.Warn(", "\t\t\tif false then Util.Warn("),
     ("top level returns the full amount", P, "\t\tamount = math.max(0, amount - math.max(0, xp - full))\n", ""),
+    # review 3rd look (검수 2026-10-08)
+    ("a purchase trusted without asking Roblox", M,
+     "\t\tlocal answer = PASS.Ask(player.UserId, p.Id)\n\t\tif player.Parent == nil then return end\n",
+     "\t\tlocal answer = true\n\t\tif player.Parent == nil then return end\n"),
+    ("a refused purchase kept", M, "\t\tif answer == false then\n\t\t\tUtil.Warn(", "\t\tif false then\n\t\t\tUtil.Warn("),
+    ("an unanswered purchase saved", M, "if answer == true and data then seenTable(data)[p.Key] = true end",
+     "if data then seenTable(data)[p.Key] = true end"),
+    ("an unanswered VIP shared", M, "if p.Key == \"VIP\" then PASS.AddSupporter(player, answer ~= true) end",
+     "if p.Key == \"VIP\" then PASS.AddSupporter(player) end"),
+    ("PassBought without Roblox's yes", M, "\t\tif answer == true then\n\t\t\tprint(", "\t\tif true then\n\t\t\tprint("),
+    ("Studio purchases saved for real", M,
+     "\t\tif RunService:IsStudio() then\n\t\t\tlocal data = S.PlayerService.GetData(player)\n",
+     "\t\tif false then\n\t\t\tlocal data = S.PlayerService.GetData(player)\n"),
+    ("a Studio purchase not tainted", M, "\t\t\tif data then data.DebugTainted = true end\n", ""),
+    ("Studio shares the live list", M, "(RunService:IsStudio() and \"_STUDIO\" or \"\")", "\"\""),
+    ("names never follow the nickname", M, "\tend\n\tPASS.AddSupporter(player, not PASS.Confirmed(player))\nend\n",
+     "\tend\nend\n"),
+    ("an unchanged name written again", M, "\t\tif e.U == player.UserId and e.N == name then return end\n", ""),
+    ("a renamed unconfirmed VIP shared", M, "\tend\n\tPASS.AddSupporter(player, not PASS.Confirmed(player))\nend\n",
+     "\tend\n\tPASS.AddSupporter(player)\nend\n"),
+    ("a hide toggle shares an unconfirmed VIP", M,
+     "\telseif vip and MonetizationService.HasPass(player, \"VIP\") then\n\t\tPASS.AddSupporter(player, not PASS.Confirmed(player))\n",
+     "\telseif vip and MonetizationService.HasPass(player, \"VIP\") then\n\t\tPASS.AddSupporter(player)\n"),
+    ("names follow an unverified nickname", M, "\tlocal name = Util.PlayerDisplayName(player)\n\tfor _, e in PASS.Board do\n",
+     "\tlocal name = player:GetAttribute(\"Nickname\") or player.DisplayName\n\tfor _, e in PASS.Board do\n"),
     ("no VIP at join", M, "\t\telseif MonetizationService.HasPass(player, \"VIP\") then\n\t\t\tPASS.AddSupporter(player)\n",
      "\t\telseif false then\n"),
     # A23-75 review 2026-10-08: the kaiju survive bonus (the pass once), the saved answers at join, the board and a hide
@@ -296,7 +324,8 @@ MUTATIONS = [
     ("unsold passes seeded", M, "\t\tfor _, p in PASS.Sold() do\n\t\t\tif seenTable(data)[p.Key] == true then seen[p.Key] = true end\n",
      "\t\tfor k, v in seenTable(data) do\n\t\t\tif v == true then seen[k] = true end\n"),
     ("hide toggle ignored", M, "GetAttributeChangedSignal(\"HideAnnounceName\")", "GetAttributeChangedSignal(\"Unused\")"),
-    ("shown again not listed", M, "\telseif vip and MonetizationService.HasPass(player, \"VIP\") then\n\t\tPASS.AddSupporter(player)\n",
+    ("shown again not listed", M,
+     "\telseif vip and MonetizationService.HasPass(player, \"VIP\") then\n\t\tPASS.AddSupporter(player, not PASS.Confirmed(player))\n",
      "\telseif false then\n"),
     ("removal not written to the shared list", M, "\tPASS.Show(PASS.Without(PASS.Board, player.UserId))\n\tPASS.Write(player.UserId, false)\n",
      "\tPASS.Show(PASS.Without(PASS.Board, player.UserId))\n"),

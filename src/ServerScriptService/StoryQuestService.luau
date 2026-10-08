@@ -797,7 +797,9 @@ local function payChoice(player, obj, side)
 	end
 	local gold = math.floor(num(r.Gold))
 	if gold > 0 then
-		gold = S.ProgressionService.AddBankGold(player, gold, "Quest") or gold -- A23-75: as added (2x Gold)
+		-- A23-75 review 2026-10-08 (검수 3rd look): a pick's gold is "Choice", never 2x (many Evil picks are gold: a
+		-- paying child must not gain more from one side, GDD §0 / A23-70); the quest's own reward stays "Quest"
+		gold = S.ProgressionService.AddBankGold(player, gold, "Choice") or gold
 		table.insert(parts, string.format(TXT.ChoiceGold, Util.FormatNumber(gold)))
 	end
 	if #parts > 0 then notify(player, table.concat(parts, " · "), "reward", "None") end -- the pick's own Choice sound

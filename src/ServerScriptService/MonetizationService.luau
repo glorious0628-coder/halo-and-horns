@@ -225,6 +225,13 @@ function PASS.Seed(player)
 	PASS.Seen[player] = seen
 end
 
+-- A23-75 review 2026-10-08 (검수 3rd look): Roblox has said yes to VIP (the saved answer); an unconfirmed VIP (Roblox
+-- did not answer after a purchase) is shown on this server's board only
+function PASS.Confirmed(player)
+	local data = S.PlayerService.GetData(player)
+	return data ~= nil and seenTable(data).VIP == true
+end
+
 -- true when the player may wear the look: its pass is owned, or it was unlocked (attendance, data.Looks.Owned)
 function MonetizationService.OwnsLook(player, id)
 	if type(id) ~= "string" or not Config.Looks[id] then return false end
@@ -298,18 +305,35 @@ function PASS.Check(player)
 	end
 end
 
--- PromptGamePassPurchaseFinished (server side: a client cannot fake it)
+-- PromptGamePassPurchaseFinished. A23-75 review 2026-10-08 (검수 3rd look): its `purchased` comes from the client's
+-- prompt, so Roblox is asked again (PASS.Ask) before anything is kept: yes = the purchase (on, saved in PassSeen, the
+-- shared supporter list, PassBought); no answer = on for this session only (nothing saved, this server's board only,
+-- no PassBought; the next join asks again); no = ignored with a warning. Studio: the DebugSetPass road (this session
+-- only, nothing saved or shared, no PassBought, the save marked DebugTainted) - the main Studio is the real place.
 function PASS.Purchased(player, passId, purchased)
 	if purchased ~= true or typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent == nil then return end
 	for _, p in PASS.Sold() do
-		if p.Id == passId then
-			local owned = PASS.Owned[player] or {}
-			PASS.Owned[player] = owned
-			owned[p.Key] = true
+		if p.Id ~= passId then continue end
+		if RunService:IsStudio() then
 			local data = S.PlayerService.GetData(player)
-			if data then seenTable(data)[p.Key] = true end
-			PASS.Publish(player)
-			if p.Key == "VIP" then PASS.AddSupporter(player) end
+			if data then data.DebugTainted = true end
+			MonetizationService.DebugSetPass(player, p.Key, "on")
+			continue
+		end
+		local answer = PASS.Ask(player.UserId, p.Id)
+		if player.Parent == nil then return end
+		if answer == false then
+			Util.Warn(TAG, ("%s: a purchase of %s that Roblox does not confirm (ignored)"):format(player.Name, p.Key))
+			continue
+		end
+		local owned = PASS.Owned[player] or {}
+		PASS.Owned[player] = owned
+		owned[p.Key] = true
+		local data = S.PlayerService.GetData(player)
+		if answer == true and data then seenTable(data)[p.Key] = true end
+		PASS.Publish(player)
+		if p.Key == "VIP" then PASS.AddSupporter(player, answer ~= true) end
+		if answer == true then
 			print(("[MonetizationService] %s bought game pass %s"):format(player.Name, p.Key))
 			MonetizationService.PassBought:Fire(player, p.Key)
 		end
@@ -404,7 +428,9 @@ end
 
 function PASS.GetStore()
 	if PASS.Store == nil then
-		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.PassBoost.SupporterStore)
+		-- A23-75 review 2026-10-08 (검수 3rd look): Studio writes its own list (like RankingService's STUDIO season)
+		local name = Config.PassBoost.SupporterStore .. (RunService:IsStudio() and "_STUDIO" or "")
+		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, name)
 		PASS.Store = ok and store or false
 	end
 	return PASS.Store or nil
@@ -436,8 +462,20 @@ function PASS.OnHideChanged(player)
 	if player:GetAttribute("HideAnnounceName") == true then
 		if vip then PASS.RemoveSupporter(player) else PASS.Show(PASS.Board) end
 	elseif vip and MonetizationService.HasPass(player, "VIP") then
-		PASS.AddSupporter(player)
+		PASS.AddSupporter(player, not PASS.Confirmed(player))
 	end
+end
+
+-- A23-75 review 2026-10-08 (검수 3rd look): the board shows the verified nickname (Util.PlayerDisplayName): a listed VIP
+-- owner's line follows a later NicknameVerified / Nickname change (unchanged names write nothing)
+function PASS.OnNameChanged(player)
+	if player.Parent == nil or PASS.Owned[player] == nil or PASS.Owned[player].VIP ~= true then return end
+	if player:GetAttribute("HideAnnounceName") == true or not MonetizationService.HasPass(player, "VIP") then return end
+	local name = Util.PlayerDisplayName(player)
+	for _, e in PASS.Board do
+		if e.U == player.UserId and e.N == name then return end
+	end
+	PASS.AddSupporter(player, not PASS.Confirmed(player))
 end
 
 -- the shared list follows the player's latest choice (entry = listed first, false = taken off). A23-75 review
@@ -513,6 +551,12 @@ function MonetizationService.Init(registry)
 			local ok, err = pcall(PASS.OnHideChanged, player)
 			if not ok then Util.Warn(TAG, "supporter board: " .. tostring(err)) end
 		end)
+		for _, attr in { "NicknameVerified", "Nickname" } do -- A23-75 review 2026-10-08 (검수 3rd look)
+			player:GetAttributeChangedSignal(attr):Connect(function()
+				local ok, err = pcall(PASS.OnNameChanged, player)
+				if not ok then Util.Warn(TAG, "supporter board: " .. tostring(err)) end
+			end)
+		end
 		task.spawn(function() -- A23-75: game pass ownership (Roblox can take a few seconds)
 			local ok, err = pcall(PASS.Check, player)
 			if not ok then Util.Warn(TAG, "pass check: " .. tostring(err)) end

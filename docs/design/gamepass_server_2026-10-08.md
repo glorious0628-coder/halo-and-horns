@@ -44,6 +44,8 @@
   - 이름은 확인된 닉네임(최대 20글자, 80바이트)까지 들어가요.
   - 이 서버에 있는 숨긴 사람은 공용 목록에 아직 남아 있어도 이 서버 게시판에 안 보여요.
   - 이름은 `Util.PlayerDisplayName`(확인된 닉네임 또는 DisplayName)이에요.
+  - **검수 2026-10-08(3차):** 닉네임이 나중에 확인되거나 바뀌면(`NicknameVerified`·`Nickname`) 게시판 줄도 바로 바뀌어요. 공용 목록도 바뀌어요(10초 간격 규칙 그대로). 이름이 그대로면 쓰지 않아요.
+  - Roblox가 VIP를 아직 "예"라고 확인하지 않은 사람(산 직후 답이 없었던 사람)은 이 서버 게시판에만 올라가요. 숨김을 껐다 켜거나 이름을 바꿔도 마찬가지예요.
 
 **리모트 c→s `SetLook(id)`:**
 - 인자는 한 개예요. 가진 치장이면서 내 진영 것인 id, 또는 ""(벗기)만 받아요. 나머지는 조용히 무시해요.
@@ -61,7 +63,12 @@
 
 **2배가 되는 출처(번 것):** `Monster`(처치), `Quest`(퀘스트·일일·일일 상자·휴가·게시판·스토리), `Event`(거위), `Bounty`(현상금·복수 대행), `War`(전쟁 상자), `Loot`(겹친 무기 골드), `Kaiju`(괴수 처치 보상 중 새로 생기는 몫), `SignOn`(약한 진영 가입 보너스), `Attendance`(A23-77 출석).
 
-**절대 2배가 아닌 출처:** `Sale`(팔기), `Refund`(복수 환불), `Plunder`(뺏기), `KaijuBank`(괴수 생존 때 자기 들고 있던 골드를 은행에 넣는 몫), `KaijuTransfer`(괴수 처치 때 넘겨받는 몫), `KaijuBonus`(괴수 생존 +50% 보너스), `Penalty`, `Other`(테스트 골드).
+**절대 2배가 아닌 출처:** `Sale`(팔기), `Refund`(복수 환불), `Plunder`(뺏기), `KaijuBank`(괴수 생존 때 자기 들고 있던 골드를 은행에 넣는 몫), `KaijuTransfer`(괴수 처치 때 넘겨받는 몫), `KaijuBonus`(괴수 생존 +50% 보너스), `Penalty`, `Other`(테스트 골드), `Choice`(이야기 선택의 골드), `Finisher`(왕 슬라임 마무리 카드 골드, 브랜치 dev2-kingfinish).
+
+- **선택 골드는 2배가 아니에요(검수 2026-10-08, 3차).**
+  - 이야기 선택(StoryQuestService `payChoice`)과 마무리 카드의 골드는 2배가 아니에요.
+  - 악마 쪽 선택에 골드가 많아요(도시락 One bite 25, M2 금고 192, 마을 선택 60). 2배가 되면 돈을 낸 아이에게 악마 선택이 더 이득이 돼요. GDD §0과 A23-70에 어긋나요.
+  - 퀘스트를 끝낸 보상 골드(`GoldN`, `Quest`)는 그대로 2배예요.
 
 - **괴수 생존 보너스(검수 2026-10-08):** 보너스는 주머니 골드의 절반이에요. 주머니는 처치할 때 이미 2배로 받았어요. 그래서 보너스는 다시 곱하지 않고(`KaijuBonus`), **상한만** 2배예요(`HuntValue(레벨, 20분) × PassMult`). 같은 사냥이면 패스가 있는 사람이 보너스를 2배 받아요(4배가 아니에요). 상한에 닿아도 2배예요.
 
@@ -81,7 +88,14 @@
   - 3번 다 실패하면 **마지막으로 받은 답(저장값)**을 써요. Roblox 장애 때 산 사람이 손해 보지 않게 하려는 거예요.
   - **검수 2026-10-08:** Roblox 답을 기다리는 동안에도 저장값이 바로 쓰여요(판매 중인 패스만). `PlayerReady` 때 MonetizationService가 먼저 넣어 둬요. 그래서 `PlayerReady` 안에서 주는 보상(QuestService 하루 확인의 끝난 일일·상자 자동 지급, 출석)도, Roblox가 느리거나 멈춘 동안 주는 보상도 2배가 돼요.
   - 환불되면 다음 확인에서 false로 바뀌어요(저장값보다 Roblox 답이 이겨요).
-- **산 직후:** `PromptGamePassPurchaseFinished`(purchased = true)가 오면 바로 켜고 저장해요. 그 세션에서는 늦게 온 "아니요"가 다시 끄지 않아요.
+- **산 직후(검수 2026-10-08 3차):** `PromptGamePassPurchaseFinished`(purchased = true)의 값은 클라 쪽 구매 창에서 와요. 그래서 서버가 `UserOwnsGamePassAsync`로 **다시 물어봐요**(같은 3번 재시도).
+  - "예": 켜고 저장해요(`PassSeen`). VIP면 공용 후원자 목록에 올리고 `PassBought`를 쏴요. 그 세션에서는 늦게 온 "아니요"가 다시 끄지 않아요.
+  - 답이 없음(3번 실패): 이번 접속에서만 켜요. 저장, 공용 목록, `PassBought`는 없고 이 서버 게시판에만 올라가요. 다음에 들어올 때 다시 물어봐요.
+  - "아니요": 아무것도 하지 않고 경고(`Util.Warn`)만 남겨요. 위조된 신호예요.
+- **Studio에서 산 시험 구매:** `DebugSetPass` 길로 가요.
+  - 이번 세션에만 켜지고, 저장되지 않아요(`PassSeen` 없음, 저장본에 `DebugTainted`).
+  - 이 서버 게시판에만 올라가고, `PassBought`도 없어요. 메인 Studio는 DataStore가 켜진 진짜 장소이기 때문이에요.
+  - Studio의 공용 후원자 목록은 `HaloHorns_Supporters_v1_STUDIO`라는 따로 된 사본을 써요(RankingService의 STUDIO 시즌처럼).
 - **Id 0:** 묻지 않고 꺼진 상태예요. 화면은 "Coming soon"이에요.
 - **화면이 쓰는 구매 창:** 클라가 `MarketplaceService:PromptGamePassPurchase(player, Id)`를 부르면 돼요. 서버 리모트는 필요 없어요.
 

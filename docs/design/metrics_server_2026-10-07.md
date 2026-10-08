@@ -23,7 +23,7 @@
 | `SessionMinutes` | 분, 칸1 = 0-5·5-15·15-30·30-60·60+ |
 | `AutoAwayMinutes` | 자동 ON인데 내 입력 없이 5분(`AwayAfter` 300초) 넘은 분 수 — 0이면 안 보냄 |
 | `EnhanceFailLeave` | 강화 실패 뒤 300초 안에 나가면 그 초 |
-| `GoldIn` | 출처별 합계, 칸1 = Monster·Loot·Sale·Quest·Refund·Plunder·Bounty·War·Event·Kaiju·KaijuBonus·KaijuBank·KaijuTransfer·SignOn·Other (`ProgressionService.GoldEarned`, A23-75: 2x Gold 패스가 곱한 뒤의 양. 가입 보너스는 Other → SignOn, 괴수는 새로 생긴 몫 Kaiju·생존 보너스 KaijuBonus와 옮겨진 골드 KaijuBank·KaijuTransfer로 나뉨) |
+| `GoldIn` | 출처별 합계, 칸1 = Monster·Loot·Sale·Quest·Choice·Refund·Plunder·Bounty·War·Event·Kaiju·KaijuBonus·KaijuBank·KaijuTransfer·SignOn·Other (`ProgressionService.GoldEarned`, A23-75: 2x Gold 패스가 곱한 뒤의 양. 가입 보너스는 Other → SignOn, 괴수는 새로 생긴 몫 Kaiju·생존 보너스 KaijuBonus와 옮겨진 골드 KaijuBank·KaijuTransfer로 나뉨. 검수 2026-10-08 3차: 이야기 선택의 골드는 Quest → Choice(2배 아님)) |
 | `GoldOut` | 쓴 곳별 합계, 칸1 = Weapon·Potion·Plunder·Penalty·Kaiju·Taken·Other (새 `ProgressionService.GoldSpent`) |
 | `FriendMinutes` | 친구가 같은 서버에 있던 분, 칸1 = WithFriend / Solo |
 | `KillsTogether` / `KillsWithFriend` | 2명 이상이 함께 잡은 처치 / 그중 친구와 함께(새 `MonsterKilled` info.Party·Others) |

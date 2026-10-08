@@ -2956,7 +2956,7 @@
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "dedd3121495e9910a7bc015632ea1a43874d6c4d13575601e6f61f28debc1eab",
-    "src/ServerScriptService/StoryQuestService.luau": "c9d0a348a29c7c78cfb045e3018f732c3e76a9e910c7ecfbf42c8d5cf87f4592",
+    "src/ServerScriptService/StoryQuestService.luau": "aa08760758e8d0d4ca4c4806287e53df6419a8a7d2d312745e4ba505c761fe78",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1"
   },
   "fixtureSHA256": "1f628f07be96774ba66b240483f5377fac3166464a1560e08232756adabe8ce6",

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 156,
+  "checks": 180,
   "failedChecks": 0,
-  "namedChecks": 156,
+  "namedChecks": 180,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -88,6 +88,18 @@
     {
       "group": "config",
       "check": "never 2x: Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "never 2x: Choice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "never 2x: Finisher",
       "pass": 1,
       "fail": 0
     },
@@ -942,15 +954,147 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "a purchase signal asks Roblox again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "Roblox says no: no pass, no saved yes, no board, no shared write, no PassBought",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "each refused purchase is warned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "no answer: on for this session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "no answer: no saved yes, no PassBought",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "no answer: this server's board only (no shared write)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "an unconfirmed VIP's hide / name changes stay on this board only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "Studio: the test purchase is on (no ask)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "Studio: nothing saved as owned, the save is DebugTainted, no PassBought",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "Studio: the test VIP on this server's board only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "Studio writes the _STUDIO copy of the supporter list, never the live one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "(listed with the Roblox display name before the nickname)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "a nickname not verified yet: unchanged, nothing written",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "verified: this server's board shows it at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "and the shared list (one line, renamed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "unverified then verified again: back to the nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "the same name again: nothing written",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "a later nickname change follows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "no VIP: a nickname writes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "2x Gold: a pick's gold 60 -> 60, a quest reward 60 -> 120",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 25,
   "staticFailures": [],
   "mutations": {
-    "total": 69,
-    "applied": 69,
-    "caught": 69,
+    "total": 82,
+    "applied": 82,
+    "caught": 82,
     "skipped": false,
     "results": [
       {
@@ -995,7 +1139,7 @@
           "boost :: a kill with both passes: +20 gold, +60 XP shown",
           "boost :: the amount is floored before doubling (7 -> 14)"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 14
       },
       {
         "mutation": "one try",
@@ -1097,7 +1241,7 @@
           "kaiju survive :: (the pouches: 4000 with 2x Gold, 2000 without)",
           "kaiju survive :: at the cap: the bonus cap doubles with 2x Gold"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 10
       },
       {
         "mutation": "every source doubled",
@@ -1113,7 +1257,7 @@
           "kaiju survive :: the pouch banks as KaijuBank, the bonus as KaijuBonus",
           "kaiju survive :: the survive line shows what was added"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "pass ignored (always x2)",
@@ -1200,14 +1344,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "debug override :: no service warnings (pcall-swallowed handler errors)",
           "debug override :: on: a test pass, never saved",
-          "join window :: no service warnings (pcall-swallowed handler errors)",
           "join window :: only a sold pass's saved answer counts (XP2 id 0: off)",
-          "kaiju survive :: no service warnings (pcall-swallowed handler errors)",
-          "looks :: no service warnings (pcall-swallowed handler errors)"
+          "not sold yet :: ids 0: Roblox is never asked",
+          "not sold yet :: no service warnings (pcall-swallowed handler errors)",
+          "ownership at join :: Roblox down: the saved answer counts (XP2 yes, Gold2 unknown = no)",
+          "ownership at join :: fails twice, the third try answers (waits 1 s, 2 s)"
         ],
-        "newFailingCount": 17
+        "newFailingCount": 6
       },
       {
         "mutation": "no retry",
@@ -1254,9 +1398,12 @@
         "newFailingChecks": [
           "join window :: Roblox says no (refunded): the saved answer is replaced",
           "ownership at join :: Roblox says no (refunded): off, saved",
-          "ownership at join :: the answers are saved (PassSeen)"
+          "ownership at join :: the answers are saved (PassSeen)",
+          "review 3rd look :: Roblox says no: no pass, no saved yes, no board, no shared write, no PassBought",
+          "review 3rd look :: a later nickname change follows",
+          "review 3rd look :: and the shared list (one line, renamed)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 10
       },
       {
         "mutation": "a purchase taken back",
@@ -1265,10 +1412,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "purchase :: bought during the join check: stays on, and its saved answer stays yes",
-          "supporters :: the shared list failing: the local board still shows it"
+          "purchase :: bought during the join check: stays on, and its saved answer stays yes"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "left player written",
@@ -1288,11 +1434,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "purchase :: PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
-          "purchase :: a closed prompt (not bought): nothing",
-          "purchase :: an unknown pass id: nothing"
+          "purchase :: no service warnings (pcall-swallowed handler errors)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 1
       },
       {
         "mutation": "purchase not saved",
@@ -1314,9 +1458,11 @@
         "newFailingChecks": [
           "debug override :: off: the owned pass is off for the test",
           "debug override :: on: a test pass, never saved",
+          "review 3rd look :: Studio: the test VIP on this server's board only",
+          "review 3rd look :: Studio: the test purchase is on (no ask)",
           "supporters :: a Studio VIP override: on this server's board only"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "SetLook: any faction",
@@ -1465,9 +1611,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "review 3rd look :: Studio writes the _STUDIO copy of the supporter list, never the live one",
+          "review 3rd look :: Studio: the test VIP on this server's board only",
+          "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only",
+          "review 3rd look :: no answer: this server's board only (no shared write)",
           "supporters :: (and nothing written to the shared list)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 5
       },
       {
         "mutation": "no refresh",
@@ -1502,9 +1652,10 @@
         "crashed": false,
         "newFailingChecks": [
           "purchase :: PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
-          "purchase :: the pass is already on when PassBought fires"
+          "purchase :: the pass is already on when PassBought fires",
+          "review 3rd look :: no answer: no saved yes, no PassBought"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "PassBought at the join check",
@@ -1586,6 +1737,165 @@
         "newFailingCount": 2
       },
       {
+        "mutation": "a purchase trusted without asking Roblox",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: Roblox says no: no pass, no saved yes, no board, no shared write, no PassBought",
+          "review 3rd look :: a purchase signal asks Roblox again",
+          "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only",
+          "review 3rd look :: each refused purchase is warned",
+          "review 3rd look :: no answer: no saved yes, no PassBought",
+          "review 3rd look :: no answer: this server's board only (no shared write)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "a refused purchase kept",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: Roblox says no: no pass, no saved yes, no board, no shared write, no PassBought",
+          "review 3rd look :: each refused purchase is warned"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "an unanswered purchase saved",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only",
+          "review 3rd look :: no answer: no saved yes, no PassBought"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "an unanswered VIP shared",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only",
+          "review 3rd look :: no answer: this server's board only (no shared write)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PassBought without Roblox's yes",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: no answer: no saved yes, no PassBought"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Studio purchases saved for real",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: Studio: nothing saved as owned, the save is DebugTainted, no PassBought",
+          "review 3rd look :: Studio: the test VIP on this server's board only",
+          "review 3rd look :: Studio: the test purchase is on (no ask)",
+          "review 3rd look :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a Studio purchase not tainted",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: Studio: nothing saved as owned, the save is DebugTainted, no PassBought"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Studio shares the live list",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: Studio writes the _STUDIO copy of the supporter list, never the live one"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "names never follow the nickname",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: a later nickname change follows",
+          "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only",
+          "review 3rd look :: and the shared list (one line, renamed)",
+          "review 3rd look :: unverified then verified again: back to the nickname",
+          "review 3rd look :: verified: this server's board shows it at once"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "an unchanged name written again",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: a nickname not verified yet: unchanged, nothing written"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a renamed unconfirmed VIP shared",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a hide toggle shares an unconfirmed VIP",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "names follow an unverified nickname",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: a nickname not verified yet: unchanged, nothing written",
+          "review 3rd look :: unverified then verified again: back to the nickname"
+        ],
+        "newFailingCount": 2
+      },
+      {
         "mutation": "no VIP at join",
         "file": "src/ServerScriptService/MonetizationService.luau",
         "applied": true,
@@ -1595,11 +1905,11 @@
           "review 2nd look :: (listed)",
           "review 2nd look :: group ran to the end without a Lua error",
           "review 2nd look :: no service warnings (pcall-swallowed handler errors)",
-          "supporters :: a VIP joins: on this server's board and in the shared list",
-          "supporters :: group ran to the end without a Lua error",
-          "supporters :: joining again moves the name up (one line per player)"
+          "review 3rd look :: (listed with the Roblox display name before the nickname)",
+          "review 3rd look :: Studio writes the _STUDIO copy of the supporter list, never the live one",
+          "review 3rd look :: a nickname not verified yet: unchanged, nothing written"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 11
       },
       {
         "mutation": "kaiju bonus doubled again",
@@ -1807,9 +2117,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "review 3rd look :: unverified then verified again: back to the nickname",
           "supporters: hide later :: ... then one write with the last choice (shown)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "a queued write dropped after a leave",
@@ -1831,10 +2142,10 @@
     "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13",
-    "src/ServerScriptService/MonetizationService.luau": "1a4e64c31448e978d70449fe036efaae3e914ab3b98b592911afa56650e23e0a",
+    "src/ServerScriptService/MonetizationService.luau": "c4dc614faa7cc52bd7be507754103a145622326df3f67376213ff7c4202f366d",
     "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8"
   },
-  "fixtureSHA256": "b935a0c005d59158aefd41762bef5f375ff6fc8c880fa4372cad486608fe73cc",
+  "fixtureSHA256": "2046f70928e66e57274700901fd340d6a71dbf7afafb92acd3630cbc705e463c",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

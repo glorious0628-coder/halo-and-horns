@@ -5353,7 +5353,7 @@
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
     "src/ServerScriptService/QuestService.luau": "02c85155636b159f4a8682d7706da788454c59ef97340110dd92276204af296d",
-    "src/ServerScriptService/StoryQuestService.luau": "c9d0a348a29c7c78cfb045e3018f732c3e76a9e910c7ecfbf42c8d5cf87f4592",
+    "src/ServerScriptService/StoryQuestService.luau": "aa08760758e8d0d4ca4c4806287e53df6419a8a7d2d312745e4ba505c761fe78",
     "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "28a85b9f636fde698c971e484b51ade893b02dad1c0dd0e3990047ae319a8e34",

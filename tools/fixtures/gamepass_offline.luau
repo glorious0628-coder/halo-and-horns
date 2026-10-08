@@ -12,10 +12,11 @@ local C0 = execute("Config", CONFIG_SOURCE, nativeEnv())
 local EPS = 1e-9
 
 -- the world. opts: Ids = { [kind or look id] = pass id } (EditConfig), Owns = { [userId] = { [passId] = true } },
--- FailAll = { [passId] = true } (every ask errors), FailTimes = { [passId] = n } (the first n asks error)
+-- FailAll = { [passId] = true } (every ask errors), FailTimes = { [passId] = n } (the first n asks error), Studio = true
+-- (RunService:IsStudio(); default a live server: A23-75 review 3rd look, Studio purchases take the DebugSetPass road)
 local function passWorld(opts)
 	opts = opts or {}
-	local w = newWorld({ Studio = true, EditConfig = function(cfg)
+	local w = newWorld({ Studio = opts.Studio == true, EditConfig = function(cfg)
 		for key, id in opts.Ids or {} do
 			if cfg.GamePasses[key] then cfg.GamePasses[key].Id = id else cfg.Looks[key].PassId = id end
 		end
@@ -126,6 +127,12 @@ local function passWorld(opts)
 		self:Remove(p)
 	end
 	function w:Board() return self.GameState:GetAttribute("SupporterNames") or "" end
+	-- A23-75 review 2026-10-08 (검수 3rd look): a real purchase = Roblox now says yes, then the purchase signal
+	function w:Buy(p, passId)
+		self.Owns[p.UserId] = self.Owns[p.UserId] or {}
+		self.Owns[p.UserId][passId] = true
+		self.Market.PromptGamePassPurchaseFinished:Fire(p, passId, true)
+	end
 	return w
 end
 
@@ -168,7 +175,9 @@ runGroup("config", function()
 	for k in want do if B.GoldSources[k] ~= true then same = false end end
 	for k in B.GoldSources do if not want[k] then same = false end end
 	check(same, "2x Gold counts for the earned sources only", show(B.GoldSources))
-	for _, s in { "Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "KaijuBonus", "Penalty", "Other" } do
+	-- Choice / Finisher (검수 3rd look): a good / evil pick's gold never pays one side more for a paying child
+	for _, s in { "Sale", "Refund", "Plunder", "KaijuBank", "KaijuTransfer", "KaijuBonus", "Penalty", "Other", "Choice",
+		"Finisher" } do
 		check(B.GoldSources[s] == nil, "never 2x: " .. s)
 	end
 	check(B.CheckTries == 3 and B.CheckWait == 1 and B.MaxSupporters == 30 and B.RefreshSeconds == 300,
@@ -279,7 +288,7 @@ runGroup("purchase", function()
 	w.Ms.PassBought:Connect(function(pl, key) table.insert(bought, pl.Name .. ":" .. tostring(key)) end)
 	local p = w:Join(301, { Faction = "Horns" })
 	check(not w.Ms.HasPass(p, "Gold2"), "(not owned at join)")
-	w.Market.PromptGamePassPurchaseFinished:Fire(p, 12, true)
+	w:Buy(p, 12)
 	check(w.Ms.HasPass(p, "Gold2") and p:GetAttribute("PassGold2") == true and w.Data[p].PassSeen.Gold2 == true,
 		"bought: on at once (attribute too) and saved", show(attrs(p)))
 	w.Market.PromptGamePassPurchaseFinished:Fire(p, 11, false)
@@ -288,14 +297,14 @@ runGroup("purchase", function()
 	check(not w.Ms.HasPass(p, "VIP") and not w.Ms.HasPass(p, "XP2"), "an unknown pass id: nothing")
 	w.Market.PromptGamePassPurchaseFinished:Fire({ Name = "fake" }, 11, true)
 	check(true, "a non-player argument is ignored (no error)")
-	w.Market.PromptGamePassPurchaseFinished:Fire(p, 23, true)
+	w:Buy(p, 23)
 	check(w.Ms.OwnsLook(p, "HornsLava") and p:GetAttribute("LooksOwned") == "HornsLava", "a look bought: listed at once")
 	-- PassBought (game dev 3's PassShop Bought metric): once per real purchase, with the key, after it is on
 	check(show(bought) == show({ "P301:Gold2", "P301:HornsLava" }),
 		"PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)", show(bought))
 	bought = {}
 	w.Ms.PassBought:Connect(function(pl, key) if not w.Ms.HasPass(pl, key) then table.insert(bought, "off " .. key) end end)
-	w.Market.PromptGamePassPurchaseFinished:Fire(p, 11, true)
+	w:Buy(p, 11)
 	check(show(bought) == show({ "P301:XP2" }), "the pass is already on when PassBought fires", show(bought))
 	bought = {}
 	w.Ms.DebugSetPass(p, "VIP", "on")
@@ -306,14 +315,15 @@ runGroup("purchase", function()
 	-- a purchase while the join check is still asking: the late 'no' never takes it back
 	w = passWorld({ Ids = { XP2 = 11 }, Owns = { [302] = {} } })
 	p = w:Join(302, { NoCheck = true })
-	w.Market.PromptGamePassPurchaseFinished:Fire(p, 11, true)
+	w:Buy(p, 11)
+	w.Owns[302][11] = nil -- the join check's (older) answer: no
 	w:RunSpawned()
 	check(w.Ms.HasPass(p, "XP2") and p:GetAttribute("PassXP2") == true and w.Data[p].PassSeen.XP2 == true,
 		"bought during the join check: stays on, and its saved answer stays yes", show(w.Data[p].PassSeen))
 	-- VIP bought: on the supporter board at once
 	w = passWorld({ Ids = { VIP = 13 }, Owns = { [303] = {} } })
 	p = w:Join(303)
-	w.Market.PromptGamePassPurchaseFinished:Fire(p, 13, true)
+	w:Buy(p, 13)
 	w:RunSpawned()
 	check(w:Board() == "P303", "VIP bought: the name is on the supporter board", w:Board())
 end)
@@ -473,7 +483,7 @@ runGroup("supporters", function()
 	w.Ms.DebugSetPass(c, "VIP", "on")
 	check(string.find(w:Board(), "P604", 1, true) ~= nil, "a Studio VIP override: on this server's board only", w:Board())
 	check(#w.Spawned == n0, "(and nothing written to the shared list)", #w.Spawned - n0)
-	w.Market.PromptGamePassPurchaseFinished:Fire(c, 13, true)
+	w:Buy(c, 13)
 	w:RunSpawned()
 	check(string.find(w:Board(), "P604", 1, true) ~= nil, "the shared list failing: the local board still shows it")
 	w.AllowWarn = "supporter board"
@@ -654,7 +664,7 @@ runGroup("supporters: hide later", function()
 	w:RunSpawned()
 	check(writes() == n1, "a player without VIP toggling the hide writes nothing to the shared list", writes() - n1)
 	local d = w:Join(904, { Hide = true })
-	w.Market.PromptGamePassPurchaseFinished:Fire(d, 13, true)
+	w:Buy(d, 13)
 	w:RunSpawned()
 	w:Advance(gap)
 	check(w.Ms.HasPass(d, "VIP") and w:Board() == "" and show(shared()) == "{}", "a hidden player who buys VIP stays off both boards",
@@ -705,7 +715,7 @@ runGroup("review 2nd look", function()
 	w2:RunSpawned()
 	check(w2:Board() == long, "a 20-letter Hangul nickname (60 bytes) is on the board", #w2:Board())
 	-- the same pass id in two entries: a warning at Start
-	local w3 = passWorld({ Ids = { XP2 = 11, HaloIce = 11 } })
+	local w3 = passWorld({ Ids = { XP2 = 11, HaloIce = 11 }, Studio = true })
 	local warned = false
 	for _, text in w3.Warnings do if string.find(text, "used twice", 1, true) then warned = true end end
 	check(warned, "one game pass id in two entries: a warning at Start")
@@ -716,6 +726,131 @@ runGroup("review 2nd look", function()
 	check(w4.Prog.AddXP(top, 50) == 0, "a full bar at the top level: AddXP returns 0 (nothing added)", w4.Prog.AddXP(top, 50))
 	local r = w4:Join(972, { Level = C0.Levels.MaxLevel, Data = { XP = C0.XPToNext(C0.Levels.MaxLevel) - 30 } })
 	check(w4.Prog.AddXP(r, 50) == 30, "30 short of full at the top level: AddXP returns 30", w4.Prog.AddXP(r, 50))
+end)
+
+------------------------------------------------------------------ review 3rd look (검수 2026-10-08)
+runGroup("review 3rd look", function()
+	local storeName, key, gap = C0.PassBoost.SupporterStore, C0.PassBoost.SupporterKey, C0.PassBoost.WriteGap
+	local function writes(w, name)
+		local n = 0
+		for _, c in w.DSCalls do if c.Store == (name or storeName) and c.Op == "Update" then n += 1 end end
+		return n
+	end
+	-- 1. a forged purchase signal (Roblox says no): nothing kept, a warning
+	local w = passWorld({ Ids = { XP2 = 11, VIP = 13 }, Owns = { [1001] = {} } })
+	local bought = {}
+	w.Ms.PassBought:Connect(function(_, k) table.insert(bought, k) end)
+	local p = w:Join(1001)
+	local asks = #w.Asks
+	w.Market.PromptGamePassPurchaseFinished:Fire(p, 11, true)
+	w.Market.PromptGamePassPurchaseFinished:Fire(p, 13, true)
+	w:RunSpawned()
+	check(#w.Asks == asks + 2, "a purchase signal asks Roblox again", #w.Asks - asks)
+	check(not w.Ms.HasPass(p, "XP2") and not w.Ms.HasPass(p, "VIP") and p:GetAttribute("PassXP2") == false
+		and w.Data[p].PassSeen.XP2 == false and w:Board() == "" and writes(w) == 0 and #bought == 0,
+		"Roblox says no: no pass, no saved yes, no board, no shared write, no PassBought",
+		show({ attrs(p), w.Data[p].PassSeen, w:Board(), writes(w), bought }))
+	local warned = 0
+	for _, text in w.Warnings do if string.find(text, "does not confirm", 1, true) then warned += 1 end end
+	check(warned == 2, "each refused purchase is warned", warned)
+	w.AllowWarn = "does not confirm"
+	-- 2. Roblox does not answer the purchase check: this session only (nothing saved, this board only, no PassBought)
+	local w2 = passWorld({ Ids = { VIP = 13, XP2 = 11 }, FailAll = { [13] = true, [11] = true } })
+	local b2 = {}
+	w2.Ms.PassBought:Connect(function(_, k) table.insert(b2, k) end)
+	local q = w2:Join(1002)
+	w2.Market.PromptGamePassPurchaseFinished:Fire(q, 13, true)
+	w2.Market.PromptGamePassPurchaseFinished:Fire(q, 11, true)
+	w2:RunSpawned()
+	w2:Advance(gap)
+	check(w2.Ms.HasPass(q, "VIP") and w2.Ms.HasPass(q, "XP2") and q:GetAttribute("PassVIP") == true,
+		"no answer: on for this session", show(attrs(q)))
+	check(w2.Data[q].PassSeen.VIP ~= true and w2.Data[q].PassSeen.XP2 ~= true and #b2 == 0,
+		"no answer: no saved yes, no PassBought", show({ w2.Data[q].PassSeen, b2 }))
+	check(w2:Board() == "P1002" and writes(w2) == 0, "no answer: this server's board only (no shared write)",
+		show({ w2:Board(), writes(w2) }))
+	-- a hide toggle and a nickname for that unconfirmed VIP stay local too
+	w2.Reg.PlayerService.SetStat(q, "HideAnnounceName", true)
+	w2.Reg.PlayerService.SetStat(q, "HideAnnounceName", false)
+	q:SetAttribute("Nickname", "Sunny")
+	q:SetAttribute("NicknameVerified", true)
+	w2:RunSpawned()
+	w2:Advance(gap)
+	w2:RunSpawned()
+	local rows2 = w2.Stores[storeName] and w2.Stores[storeName].Rows[key] or nil
+	check(w2:Board() == "Sunny" and (rows2 == nil or #rows2 == 0),
+		"an unconfirmed VIP's hide / name changes stay on this board only", show({ w2:Board(), writes(w2) }))
+	-- 3. Studio: a purchase takes the DebugSetPass road; the shared list is the Studio copy
+	local w3 = passWorld({ Ids = { XP2 = 11, VIP = 13 }, Owns = { [1003] = {}, [1004] = { [13] = true } }, Studio = true })
+	local b3 = {}
+	w3.Ms.PassBought:Connect(function(_, k) table.insert(b3, k) end)
+	local s = w3:Join(1003)
+	local a3 = #w3.Asks
+	w3.Market.PromptGamePassPurchaseFinished:Fire(s, 11, true)
+	w3.Market.PromptGamePassPurchaseFinished:Fire(s, 13, true)
+	w3:RunSpawned()
+	w3:Advance(gap)
+	check(w3.Ms.HasPass(s, "XP2") and w3.Ms.HasPass(s, "VIP") and #w3.Asks == a3, "Studio: the test purchase is on (no ask)",
+		show({ attrs(s), #w3.Asks - a3 }))
+	check(w3.Data[s].PassSeen.XP2 ~= true and w3.Data[s].PassSeen.VIP ~= true and w3.Data[s].DebugTainted == true and #b3 == 0,
+		"Studio: nothing saved as owned, the save is DebugTainted, no PassBought",
+		show({ w3.Data[s].PassSeen, w3.Data[s].DebugTainted, b3 }))
+	check(string.find(w3:Board(), "P1003", 1, true) ~= nil and writes(w3) == 0 and writes(w3, storeName .. "_STUDIO") == 0,
+		"Studio: the test VIP on this server's board only", show({ w3:Board(), writes(w3) }))
+	w3:Join(1004) -- a real VIP owner joining Studio: the Studio copy of the shared list
+	w3:RunSpawned()
+	local studioRows = w3.Stores[storeName .. "_STUDIO"] and w3.Stores[storeName .. "_STUDIO"].Rows[key] or {}
+	check(writes(w3, storeName .. "_STUDIO") == 1 and writes(w3) == 0 and studioRows[1] ~= nil and studioRows[1].U == 1004,
+		"Studio writes the _STUDIO copy of the supporter list, never the live one",
+		show({ writes(w3, storeName .. "_STUDIO"), writes(w3) }))
+	-- 4. the board follows the verified nickname
+	local w4 = passWorld({ Ids = { VIP = 13 }, Owns = { [1005] = { [13] = true } } })
+	local n = w4:Join(1005)
+	local rows = w4.Stores[storeName].Rows
+	check(w4:Board() == "P1005" and rows[key][1].N == "P1005", "(listed with the Roblox display name before the nickname)")
+	local w0 = writes(w4)
+	n:SetAttribute("Nickname", "Sunny")
+	w4:RunSpawned()
+	w4:Advance(gap)
+	w4:RunSpawned()
+	check(w4:Board() == "P1005" and writes(w4) == w0, "a nickname not verified yet: unchanged, nothing written",
+		show({ w4:Board(), writes(w4) - w0 }))
+	n:SetAttribute("NicknameVerified", true)
+	check(w4:Board() == "Sunny", "verified: this server's board shows it at once", w4:Board())
+	w4:RunSpawned()
+	w4:Advance(gap)
+	w4:RunSpawned()
+	check(rows[key][1].N == "Sunny" and #rows[key] == 1, "and the shared list (one line, renamed)", show(rows[key]))
+	local before = writes(w4)
+	n:SetAttribute("NicknameVerified", false)
+	n:SetAttribute("NicknameVerified", true)
+	w4:Advance(gap)
+	w4:RunSpawned()
+	check(w4:Board() == "Sunny" and writes(w4) == before + 1, "unverified then verified again: back to the nickname",
+		show({ w4:Board(), writes(w4) - before }))
+	local before2 = writes(w4)
+	n:SetAttribute("Nickname", "Sunny")
+	w4:Advance(gap)
+	w4:RunSpawned()
+	check(writes(w4) == before2, "the same name again: nothing written", writes(w4) - before2)
+	n:SetAttribute("Nickname", "Moon")
+	w4:Advance(gap)
+	w4:RunSpawned()
+	check(w4:Board() == "Moon" and rows[key][1].N == "Moon", "a later nickname change follows", show({ w4:Board(), rows[key][1].N }))
+	-- a player without VIP changing the nickname: nothing written
+	local w5 = passWorld({ Ids = { VIP = 13 }, Owns = { [1006] = {} } })
+	local o = w5:Join(1006)
+	o:SetAttribute("Nickname", "Star")
+	o:SetAttribute("NicknameVerified", true)
+	w5:Advance(gap)
+	w5:RunSpawned()
+	check(w5:Board() == "" and writes(w5) == 0, "no VIP: a nickname writes nothing", show({ w5:Board(), writes(w5) }))
+	-- 5. a story pick's gold ("Choice") is never 2x; the quest's own reward ("Quest") is
+	local w6 = passWorld({ Ids = { Gold2 = 12 }, Owns = { [1007] = { [12] = true } } })
+	local g = w6:Join(1007)
+	local choice = w6.Prog.AddBankGold(g, 60, "Choice")
+	local quest = w6.Prog.AddBankGold(g, 60, "Quest")
+	check(choice == 60 and quest == 120, "2x Gold: a pick's gold 60 -> 60, a quest reward 60 -> 120", show({ choice, quest }))
 end)
 
 finish()
