@@ -57,6 +57,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 # every XP / gold grant on the server: (file, call, gold source or None for XP, the line shown uses what was added)
 EXPECTED = [
+    ("AttendanceService.luau", "AddBankGold", "Attendance", True),  # A23-77, game dev 3 (main)
+    ("AttendanceService.luau", "AddXP", None, True),
     ("BoardService.luau", "AddBankGold", "Quest", True),
     ("BoardService.luau", "AddXP", None, True),
     ("FactionService.luau", "AddBankGold", "SignOn", True),
@@ -159,6 +161,13 @@ def static() -> tuple[int, list[str]]:
         body = function_block(prog, fn)
         check("PassMult" not in body and "HasPass" not in body, f"{fn} leaves the pass out (it is applied once, in the grant)")
     check(prog.count("* M.PassMult(player,") == 2, "the pass is applied in two places only: AddXP and boostGold")
+    # 검수 2026-10-08: quest rewards double their gold (and XP) only; items (scrolls, jelly, potions, materials) never.
+    # Item grants (LootService.GrantItem / drops, the quest / board / story item rewards) never read the pass: outside
+    # ProgressionService / MonetizationService only KaijuService's survive cap reads PassMult
+    readers = sorted(p.name for p in SSS.glob("*.luau")
+                     if p.name not in ("ProgressionService.luau", "MonetizationService.luau")
+                     and re.search(r"PassMult|HasPass|PassBoost|PassGold2|PassXP2", strip_comments(read(p))))
+    check(readers == ["KaijuService.luau"], f"items are never 2x: no grant path but the kaiju cap reads the pass ({readers})")
     net = read(SHARED / "Net.luau")
     check("\"SetLook\"," in net and "SupporterNames = \"\"," in net, "Net: c->s SetLook, GameState SupporterNames")
     data = read(SSS / "DataService.luau")
