@@ -79,7 +79,7 @@ local L = {
 		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
 		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
 		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
-		{ Id = "Map", Icon = "IconMap", Map = true, Key = "Map", Keep = 1 },
+		{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },
 		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
 		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
 	},
@@ -125,7 +125,7 @@ local COL = {
 -- quest Id -> icon part (slime for monster kills, scroll otherwise)
 -- kill rows use their monster head (IconMon<Unit>) when it exists; these are the fallbacks per row type. 28c6324 (High):
 -- the golden monster, Halo's Hunt (Catch Wanted) and Horns' Plunder (Rob Knights) rows; gold = coin, skill hits = Skills
-local QUEST_ICON = { tutorial = "IconMonSlime", Kill = "IconScroll", Golden = "IconGoldenMon", Goose = "IconGoose",
+local QUEST_ICON = { tutorial = "IconMonSlime", Kill = "GlyphQuest", Golden = "IconGoldenMon", Goose = "IconGoose",
 	Gold = "IconCoin", Release = "IconSkills", Hunt = "IconHunt", Plunder = "IconPlunder" }
 
 local GUIDE_SECONDS = NEXT.GuideSeconds or 90
@@ -1066,12 +1066,13 @@ local function buildWar(root)
 		ZIndex = 2,
 		Parent = inner,
 	}, { corner(UDim.new(0, 2)) })
-	-- crown on the split, its base at the bar's middle
-	ui.warCrown = UIKit.ArtImage("Crown", {
+	-- crown on the split (WarCrownPip, 그림체 #15): the crown's base (0.74 of the art) at the bar's middle, its point
+	-- going down into the bar
+	ui.warCrown = UIKit.ArtImage("WarCrownPip", {
 		Name = "Crown",
-		AnchorPoint = Vector2.new(0.5, 1),
+		AnchorPoint = Vector2.new(0.5, 0.74),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(27, 18),
+		Size = UDim2.fromOffset(30, 30),
 		ZIndex = 3,
 		Parent = inner,
 	})
@@ -1314,7 +1315,7 @@ local function buildChips(root)
 	}
 	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
-	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "IconStar",
+	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
 		Boost = "IconExp" }
 	ui.chip = {}
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
@@ -1325,6 +1326,7 @@ local function buildChips(root)
 		ui.chip[key] = makeChip(key, i, icons[key])
 	end
 	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
+	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
 end
 
@@ -1385,11 +1387,12 @@ local function buildQuests(root)
 		toggleQuests()
 	end, { CornerRadius = UDim.new(0, 10) })
 	-- the star sits in the plate's left disc; L.LayoutQuestHeader follows the header height
-	ui.questHeaderIcon = UIKit.ArtImage("IconStar", {
+	ui.questHeaderIcon = UIKit.ArtImage("Star", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.new(0, hh * 0.47, 0.5, 0),
 		Size = UDim2.fromOffset(hh * 0.6, hh * 0.6),
+		ImageColor3 = ac("StarGold", Theme.Gold),
 		ZIndex = 2,
 		Parent = ui.questHeader,
 	})
@@ -1436,9 +1439,9 @@ local function buildQuests(root)
 	local listParent = ui.quests
 	ui.questRowW = 300 -- applyLayout: Rects.quest width (desktop)
 	if IS_TOUCH then
-		local pad = 10
+		local pad = 14 -- PanelMain's navy rim is ~12 du at its 0.35 slice scale
 		ui.questRowW = L.OverlayW - 2 * pad
-		ui.questOverlay = UIKit.ArtFrame("PanelParchment", {
+		ui.questOverlay = UIKit.ArtFrame("PanelMain", {
 			Name = "QuestOverlay",
 			Size = UDim2.fromOffset(L.OverlayW, 0),
 			AutomaticSize = Enum.AutomaticSize.Y,
@@ -1475,7 +1478,7 @@ local function buildQuests(root)
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			Parent = top,
 		})
-		local _, closeLabel = UIKit.ArtButton("Pill", {
+		local _, closeLabel = UIKit.ArtButton("Chip", {
 			Name = "Close",
 			AnchorPoint = Vector2.new(1, 0),
 			Position = UDim2.fromScale(1, 0),
@@ -1556,7 +1559,7 @@ function L.BuildQuestLines(root)
 			row.AutoButtonColor = false
 			row.Activated:Connect(function() L.QuestLineTap(i) end)
 		end
-		local icon = UIKit.ArtImage("IconScroll", {
+		local icon = UIKit.ArtImage("GlyphQuest", {
 			Name = "Icon",
 			LayoutOrder = 1,
 			Size = UDim2.fromOffset(24, 24),
@@ -1594,7 +1597,7 @@ function L.BuildQuestLines(root)
 			Parent = row,
 		}, "Number")
 		-- 받기: the green candy pill (same art as the list rows' 받기), text on it
-		local claim = UIKit.ArtFrame("Pill", {
+		local claim = UIKit.ArtFrame("Chip", {
 			Name = "Claim",
 			LayoutOrder = 4,
 			ImageColor3 = COL.HotTint,
@@ -1708,8 +1711,9 @@ function L.SetQuestLine(l, e, label, nums)
 	l.Nums.Text = nums or ""
 	if l.Icon then
 		local head = e and e.Unit and UIKit.ArtId("IconMon" .. e.Unit)
-		local key = e and (QUEST_ICON[e.Id] or "IconScroll") or "IconStar"
-		l.Icon.Image = head or UIKit.ArtId(key) or UIKit.ArtId("IconScroll") or l.Icon.Image
+		local key = e and (QUEST_ICON[e.Id] or "GlyphQuest") or "Star"
+		l.Icon.Image = head or UIKit.ArtId(key) or UIKit.ArtId("GlyphQuest") or l.Icon.Image
+		l.Icon.ImageColor3 = (not head and key == "Star") and ac("StarGold", Theme.Gold) or COL.White
 	end
 	task.defer(L.FitQuestLine, l) -- after the row's list layout placed the numbers / 받기
 end
@@ -1785,7 +1789,7 @@ end
 
 ----------------------------------------------------------------- building: travel bar
 local function buildTravel(root)
-	ui.travel = UIKit.ArtFrame("PanelParchment", {
+	ui.travel = UIKit.ArtFrame("ListRow", {
 		Name = "Travel",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, IS_TOUCH and 0.42 or 0.6), -- U3: touch stays above the thumbstick zone
@@ -2226,11 +2230,11 @@ local function buildButtons(root)
 	-- A23-1 auto combat ON/OFF (round, Firefly BtnRound): hidden until the crown-shard quest unlocks it (no "unlocks at
 	-- ..." teaser); ON = gold ring, OFF = dimmed disc
 	ui.auto, ui.autoArt = roundButton("Auto", L.Square, "BtnRound", COL.ReleaseFill)
-	UIKit.ArtImage("Crown", {
+	UIKit.ArtImage("GlyphAuto", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.4),
-		Size = UDim2.fromScale(0.5, 0.34),
+		Size = UDim2.fromScale(0.46, 0.46),
 		ZIndex = 3,
 		Parent = ui.auto,
 	})
@@ -2273,24 +2277,24 @@ function L.RefreshAttackGlyph()
 	})
 end
 
--- the Q button's icon: my class's skill art (bundle 14 Skill_<Class>_Q, a square icon) or the winged IconSpecial before a
--- class is chosen / for a class without its own art (the Artisan pet tamer's 펫 돌진 waits for its icon, A23-39)
+-- the Q button's icon: my class's skill art (bundle 14 Skill_<Class>_Q, a square icon), else the Warrior's Q icon before a
+-- class is chosen / for a class without its own art (the Artisan pet tamer's 펫 돌진 waits for its icon, A23-39;
+-- 그림체 #15: it was the old winged IconSpecial)
 function L.RefreshSkillIcon()
 	local rel = ui.release
 	if not rel then return end
 	local class = attr("ClassChosen", false) == true and getClass() or nil
 	local key = (class and not (class == "Archer" and getFaction() == "Neutral")) and ("Skill_" .. class .. "_Q") or nil
-	if not (key and UIKit.ArtId(key)) then key = "IconSpecial" end
+	if not (key and UIKit.ArtId(key)) then key = "Skill_Warrior_Q" end
 	if ui.releaseIconKey == key and ui.releaseIcon and ui.releaseIcon.Parent then return end
 	ui.releaseIconKey = key
 	local visible = not ui.releaseIcon or ui.releaseIcon.Visible
 	if ui.releaseIcon then ui.releaseIcon:Destroy() end
-	local square = key ~= "IconSpecial"
 	ui.releaseIcon = UIKit.ArtImage(key, {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, square and 0.4 or 0.42),
-		Size = square and UDim2.fromScale(0.5, 0.5) or UDim2.fromScale(0.56, 0.34),
+		Position = UDim2.fromScale(0.5, 0.4),
+		Size = UDim2.fromScale(0.5, 0.5),
 		Visible = visible,
 		ZIndex = 3,
 		Parent = rel,
@@ -3268,7 +3272,7 @@ end
 local function makeQuestRow(index)
 	local W, R = ui.questRowW, L.QuestMetrics(currentScale())
 	local H = R.Height
-	local row, isArt = UIKit.ArtFrame("PanelParchment", {
+	local row, isArt = UIKit.ArtFrame("ListRow", {
 		Name = "Quest" .. index,
 		LayoutOrder = index,
 		Size = UDim2.fromOffset(W, H),
@@ -3289,7 +3293,7 @@ local function makeQuestRow(index)
 		if r.Entry and (r.Entry.Pinned or r.Entry.Story) and L.PinnedTap then L.PinnedTap(r.Entry, r) end
 	end)
 	local iconS = L.QuestRowH - 20
-	r.Icon = UIKit.ArtImage("IconScroll", {
+	r.Icon = UIKit.ArtImage("GlyphQuest", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(0, 8, 0.5, 0),
@@ -3365,7 +3369,7 @@ local function makeQuestRow(index)
 	})
 	-- 받기: green candy pill over the reward (bottom-right)
 	local claimH = R.BtnH + 4
-	local claim, claimLabel = UIKit.ArtButton("Pill", {
+	local claim, claimLabel = UIKit.ArtButton("Chip", {
 		Name = "Claim",
 		Position = UDim2.fromOffset(rx - 6, H - claimH - 4),
 		Size = UDim2.fromOffset(R.Reward + 10, claimH),
@@ -3381,8 +3385,8 @@ local function makeQuestRow(index)
 	end, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
 	r.Claim = claim
 	L.FitText(claimLabel, 12)
-	-- 교체: small parchment pill (top-right)
-	local reroll, rerollLabel = UIKit.ArtButton("Pill", {
+	-- 교체: small white chip (top-right)
+	local reroll, rerollLabel = UIKit.ArtButton("Chip", {
 		Name = "Reroll",
 		Position = UDim2.fromOffset(W - R.Reroll - 8, 4),
 		Size = UDim2.fromOffset(R.Reroll, R.BtnH),
@@ -3621,7 +3625,7 @@ refreshQuests = function()
 		if r.Icon then
 			-- a kill quest shows its monster's head (IconMon<Kind>) when that art exists, else the row type's icon
 			local head = e.Unit and UIKit.ArtId("IconMon" .. e.Unit)
-			r.Icon.Image = head or UIKit.ArtId(QUEST_ICON[e.Id] or "IconScroll") or UIKit.ArtId("IconSlime") or r.Icon.Image
+			r.Icon.Image = head or UIKit.ArtId(QUEST_ICON[e.Id] or "GlyphQuest") or UIKit.ArtId("IconSlime") or r.Icon.Image
 		end
 		r.Text.Text = (i == callIndex) and call.Label or e.Text
 		r.Text.TextWrapped = not e.ShowProgress

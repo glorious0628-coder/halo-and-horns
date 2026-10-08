@@ -4300,8 +4300,8 @@ Config.UIArt = {
 		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 85, 448, 87), FitHeight = true, Tone = "Gold" }, -- b: deep gold
 		Toast = { Id = "rbxassetid://92139413642355", Size = Vector2.new(512, 102), Slice = Rect.new(100, 50, 460, 52), FitHeight = true, Tone = "Navy" }, -- icon disc centre (49,51) r~37
 		-- 2026-10-06 uploads (bundles 12/13 rest, 15/16 tamer staffs, 17, 18, map markers 9a8b47a, skill Q ae9a7ea; sheets in
-		-- art/review/s2/): new keys. EmoOuch (now a blank burst for an '아야!' TextLabel) and TitleRibbon (slice [118,40,394,95])
-		-- wait for their screens (Fx text overlay, faction / class screens)
+		-- art/review/s2/): new keys. EmoOuch (now a blank burst for an '아야!' TextLabel) waits for its screen (Fx text
+		-- overlay); TitleRibbon is in use since 2026-10-08 (the nickname window)
 		Weapon_Tamer_T1 = { Id = "rbxassetid://71978061313848", Size = Vector2.new(512, 512) }, -- A23-39 pet tamer staff (Artisan Archer)
 		Weapon_Tamer_T2 = { Id = "rbxassetid://121246970163140", Size = Vector2.new(512, 512) },
 		Weapon_Tamer_T3 = { Id = "rbxassetid://127142057835154", Size = Vector2.new(512, 512) },
@@ -4535,7 +4535,11 @@ Config.UIArt = {
 		FactionPremise = { Id = "rbxassetid://75757875574311", Size = Vector2.new(1024, 434), Slice = Rect.new(120, 120, 904, 314), SliceScale = 0.22, Tone = "Navy" },
 		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 70, 924, 72), FitHeight = true, Tone = "Navy" },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
-		TitleRibbon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
+		-- empty cream title ribbon (Firefly, 2026-10-06; 그림체 #44 2026-10-08 put it in: the nickname window). Only the
+		-- middle stretches (FitHeight): the folded tails x 75-110 / 402-437 stay out of the stretched band. TextRect = the
+		-- words' box inside the front band (fractions of the ribbon)
+		TitleRibbon = { Id = "rbxassetid://80637744024215", Size = Vector2.new(512, 135), Slice = Rect.new(118, 40, 394, 95),
+			FitHeight = true, Tone = "Parchment", TextRect = { 0.19, 0.13, 0.62, 0.55 } },
 		-- class characters (Firefly blocky toy style, bundles 10 / 19, 50bf8ea + af64891 clean + 2975f24, user OK):
 		-- Char<Faction><Class><M|F>. The Artisan Archer slot is the pet tamer (A23-39: same class id, Artisan look).
 		CharHaloWarriorM = { Id = "rbxassetid://99834593537592", Size = Vector2.new(476, 663) },
@@ -4618,7 +4622,7 @@ Config.UIArt = {
 		EmoStress = { Id = "rbxassetid://108308024766302", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T1 = { Id = "rbxassetid://128452607217223", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T2 = { Id = "rbxassetid://115882263046090", Size = Vector2.new(512, 512) },
-		Weapon_Warrior_T3 = { Id = "rbxassetid://118676171420516", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T3 = { Id = "rbxassetid://118676171420516", Size = Vector2.new(512, 512) }, -- 그림체 #28: the approved b1 master (navy rim, blue grip)
 		Weapon_Warrior_T4 = { Id = "rbxassetid://104179222312415", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T5 = { Id = "rbxassetid://94672890742115", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T6 = { Id = "rbxassetid://90778236753102", Size = Vector2.new(512, 512) },
@@ -4677,12 +4681,14 @@ Config.UIArt = {
 	-- picked from the mockup (UI_HUD_Final.png) and the part images
 	Colors = {
 		-- text
-		Ink = Color3.fromRGB(66, 40, 18), -- brown ink text on parchment
-		InkSoft = Color3.fromRGB(122, 84, 46), -- secondary text on parchment (3/5, hints)
+		-- 그림체 #44 (검수 2026-10-08): the words, rims and outlines are navy like the Firefly frames (UIKit STYLE.Navy);
+		-- they were the old GPT art's brown (66,40,18 / 110,66,24 / 34,20,10)
+		Ink = Color3.fromRGB(27, 33, 64), -- navy words on light plates (parchment, cream rows, chips)
+		InkSoft = Color3.fromRGB(70, 78, 110), -- secondary words on light plates (3/5, hints)
 		InkOutline = Color3.fromRGB(255, 247, 228), -- light halo around ink text
 		Light = Color3.fromRGB(255, 255, 255), -- white text on navy / red / ribbon
 		LightSub = Color3.fromRGB(226, 222, 206), -- labels on navy (금고, 주머니)
-		TextOutline = Color3.fromRGB(34, 20, 10), -- dark outline for white / gold text
+		TextOutline = Color3.fromRGB(27, 33, 64), -- navy outline for white / gold text
 		GoldText = Color3.fromRGB(255, 228, 100), -- numbers on navy (금고 1,250 / Lv)
 		GoldInk = Color3.fromRGB(236, 164, 16), -- gold numbers on parchment (150G, +120); use with TextOutline
 		GoodInk = Color3.fromRGB(40, 140, 60), -- done / 받기 on parchment
@@ -4691,10 +4697,13 @@ Config.UIArt = {
 		Parchment = Color3.fromRGB(242, 221, 178),
 		ParchmentDark = Color3.fromRGB(214, 182, 128), -- dividers / empty slots on parchment
 		Ribbon = Color3.fromRGB(241, 207, 132),
-		Rim = Color3.fromRGB(110, 66, 24), -- hand-inked brown outline (fallback stroke)
+		Rim = Color3.fromRGB(27, 33, 64), -- navy outline (fallback stroke)
 		Navy = Color3.fromRGB(26, 40, 79),
 		NavyDeep = Color3.fromRGB(19, 31, 56), -- bar track interior
 		Gold = Color3.fromRGB(240, 190, 60), -- gold trim
+		-- 그림체 #14: the white Firefly 'Star' part tinted (ImageColor3): a filled star / an empty star
+		StarGold = Color3.fromRGB(245, 197, 66),
+		StarEmpty = Color3.fromRGB(70, 78, 110),
 		Red = Color3.fromRGB(225, 40, 36), -- attack button face (pre-Firefly)
 		Orange = Color3.fromRGB(246, 130, 32), -- Firefly attack disc face (bundle 6)
 		Confirm = Color3.fromRGB(76, 175, 60), -- Firefly green capsule (BtnConfirm)

@@ -862,7 +862,7 @@ local function buildArtCard(c, id, lay, img, imageId)
 	hit.Parent = body
 
 	-- weaker-faction sign-on badge: a parchment pill over the top ornament
-	local badge = sliceFrame(body, "WeakerBadge", "Pill", 7)
+	local badge = sliceFrame(body, "WeakerBadge", "Chip", 7)
 	badge.Visible = false
 	local badgeText = artLabel(badge, "Text", 1)
 	badgeText.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1521,7 +1521,7 @@ local function build()
 
 	-- premise lines on the navy premise panel (bundle 2; parchment before it); they fade in one by one (playPremise)
 	local navyPremise = artId(PANEL.Premise) ~= nil
-	premiseFrame = sliceFrame(root, "Premise", navyPremise and PANEL.Premise or "PanelParchment", 2)
+	premiseFrame = sliceFrame(root, "Premise", navyPremise and PANEL.Premise or "PanelMain", 2)
 	premiseFrame.ClipsDescendants = true
 	premiseLabels = {}
 	local premise = Config.Story.Premise
@@ -1596,7 +1596,7 @@ local function build()
 
 	-- altar note at the bottom (bundle 2 navy capsule: white text)
 	local navyFooter = artId(PANEL.Footer) ~= nil
-	local nf = sliceFrame(root, "Footer", navyFooter and PANEL.Footer or "PanelParchment", 2)
+	local nf = sliceFrame(root, "Footer", navyFooter and PANEL.Footer or "PanelMain", 2)
 	local icon = newImage(nf, "Icon", 1)
 	icon.Image = artId("IconAltar") or ""
 	icon.Visible = icon.Image ~= ""

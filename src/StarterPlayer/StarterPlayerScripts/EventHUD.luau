@@ -62,9 +62,8 @@ local L = {
 	StripMinW = 200, -- CR-L36: narrowest strip (HUD clamps its war meter to 200..WarW on narrow phones)
 	Clover = 26,
 	StarMax = 15, StarCap = 10,
-	-- luck panel: fixed thin rim (PanelParchment rim = 19 / 24 image px at top / bottom -> 5.7 / 7.2 px) and the two
-	-- line rows inside it
-	LuckSlice = 0.3, LuckLine1Y = 9, LuckLine2Y = 29,
+	-- luck panel (ListRow: its rim follows the 58 du height, ~7 du at top / bottom): the two line rows inside it
+	LuckLine1Y = 9, LuckLine2Y = 29,
 	KaijuNameMax = IS_TOUCH and 6 or 8, -- kaiju chip: longer names are cut ("Player..")
 	TrimH = 3, -- siren gold trim
 	-- U3 / HUD v2 spec: Roblox's real DynamicThumbstick area = left 40% x bottom two thirds (x < 0.4W, y > H/3);
@@ -100,7 +99,9 @@ local AC = {
 	-- not in ArtColors: ink versions of the status colours for text on parchment
 	SackInk = (Config.Visuals and Config.Visuals.GrudgeSackColor) or Color3.fromRGB(110, 40, 150),
 	RevengeInk = Color3.fromRGB(196, 92, 10),
-	KaijuTint = Color3.fromRGB(255, 196, 186), -- ImageColor3 on the kaiju pill
+	KaijuTint = Color3.fromRGB(255, 196, 186), -- ImageColor3 on the kaiju chip
+	StarGold = Color3.fromRGB(245, 197, 66), -- the white 'Star' part tinted: a filled / an empty cheer star
+	StarEmpty = Color3.fromRGB(70, 78, 110),
 }
 
 -- private strings (TECH_SPEC §4.23 EventHUD; A23-48: English only, names from docs/design/glossary_en_2026-10-06.md)
@@ -480,8 +481,8 @@ local function build()
 		ZIndex = 3,
 	}, root)
 
-	-- goose countdown: parchment pill + goose icon + ink text ("황금 거위까지 3:24")
-	ui.GooseChip = Art.frame("Pill", {
+	-- goose countdown: white chip + goose icon + ink text ("황금 거위까지 3:24")
+	ui.GooseChip = Art.frame("Chip", {
 		Name = "GooseChip",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.fromScale(0.5, 0),
@@ -602,8 +603,8 @@ local function build()
 		ZIndex = 3,
 	}, 13, ui.Strip)
 
-	-- kaiju chip (right of the strip): red-tinted parchment pill with red ink
-	ui.KaijuChip = Art.frame("Pill", {
+	-- kaiju chip (right of the strip): red-tinted chip with red ink
+	ui.KaijuChip = Art.frame("Chip", {
 		Name = "KaijuChip",
 		Position = UDim2.new(1, 8, 0, 0),
 		Size = UDim2.fromOffset(KAIJU_CHIP_W, L.PillH),
@@ -624,9 +625,9 @@ local function build()
 		ZIndex = 4,
 	}, 15, ui.KaijuChip)
 
-	-- Halloween Pumpkin King countdown / time left (Config.Halloween; KING.update places and fills it): parchment pill
+	-- Halloween Pumpkin King countdown / time left (Config.Halloween; KING.update places and fills it): white chip
 	-- with orange-brown ink, same look as the goose / kaiju pills
-	ui.KingChip = Art.frame("Pill", {
+	ui.KingChip = Art.frame("Chip", {
 		Name = "PumpkinKingChip",
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(0, -L.KingGap, 0, 0),
@@ -676,10 +677,10 @@ local function build()
 		ZIndex = 7,
 	}, 28, ui.Siren)
 
-	-- personal line: parchment pill with coloured ink (bottom-center at 72%, above HUD's bottom button cluster; touch:
+	-- personal line: white chip with coloured ink (bottom-center at 72%, above HUD's bottom button cluster; touch:
 	-- top-centre under HUD's status chips, clear of the thumbstick zone (U3) and the right-hand button column; layout()
 	-- sets the y and the width). CR-L37: drawn above HUD's root frame (PERSONAL_Z) so nothing covers the sack seconds.
-	ui.Personal = Art.frame("Pill", {
+	ui.Personal = Art.frame("Chip", {
 		Name = "PersonalLine",
 		AnchorPoint = IS_TOUCH and Vector2.new(0.5, 0) or Vector2.new(0.5, 0.5),
 		Position = IS_TOUCH and UDim2.new(0.5, 0, 0, L.ChipsY + TOP_FALLBACK + L.ChipsH + L.StripGap)
@@ -701,14 +702,13 @@ local function build()
 		ui.PersonalInk = { Sack = SACK_PURPLE, Kaiju = KAIJU_ARROW, Revenge = REVENGE_ORANGE }
 	end
 
-	-- Regular's Luck corner (top-right): parchment panel, clover, ink lines, cheer stars. Hidden on touch (U5; the
-	-- menu can show EventHUD.LuckSummary instead). Fixed thin rim so both lines sit on the parchment (mockup).
-	ui.Luck = Art.frame("PanelParchment", {
+	-- Regular's Luck corner (top-right): cream ListRow plate (그림체 #10; its rim follows the height, ~7 du), clover, ink
+	-- lines, cheer stars. Hidden on touch (U5; the menu can show EventHUD.LuckSummary instead).
+	ui.Luck = Art.frame("ListRow", {
 		Name = "LuckCorner",
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(1, -LUCK_RIGHT, 0, LUCK_Y),
 		Size = UDim2.fromOffset(LUCK_W, LUCK_H),
-		SliceScale = L.LuckSlice,
 		Visible = not IS_TOUCH,
 		ZIndex = 3,
 	}, nil, root)
@@ -728,7 +728,7 @@ local function build()
 		TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 4,
 	}, 15, ui.Luck)
-	ui.StarFull, ui.StarEmpty = Art.id("IconStar"), Art.id("IconStarEmpty")
+	ui.StarFull, ui.StarEmpty = Art.id("Star"), Art.id("Star") -- one white star, tinted by setStars
 	if ui.StarFull and ui.StarEmpty then
 		-- "응원별" + star icons + "2/5" (mockup)
 		local labelW, countW = 42, 30
@@ -1263,7 +1263,7 @@ local function setStars(filled, need)
 	for i = 1, math.max(#pool, shown) do
 		local star = pool[i]
 		if not star and i <= shown then
-			star = Art.image("IconStar", { Name = "Star" .. i, LayoutOrder = i, Size = sz, ZIndex = 4 }, ui.CheerStars)
+			star = Art.image("Star", { Name = "Star" .. i, LayoutOrder = i, Size = sz, ZIndex = 4 }, ui.CheerStars)
 			if not star then break end
 			pool[i] = star
 		end
@@ -1272,6 +1272,8 @@ local function setStars(filled, need)
 			if i <= shown then
 				local id = (i <= filled) and ui.StarFull or ui.StarEmpty
 				if star.Image ~= id then star.Image = id end
+				local tint = (i <= filled) and AC.StarGold or AC.StarEmpty
+				if star.ImageColor3 ~= tint then star.ImageColor3 = tint end
 				if star.Size ~= sz then star.Size = sz end
 			end
 		end

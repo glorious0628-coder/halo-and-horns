@@ -230,7 +230,7 @@ local NOTIFY = {
 	PreloadArt = { "DialogBox", "PanelCard", "RibbonHeader", "BtnRound", "GlyphClose", "GlyphBack", "BtnPrimary",
 		"BtnSecondary", "BtnConfirm", "BannerGold", "SlotCommon", "IconCoin", "IconExp", "Chip", "BarkBubble",
 		"RewardPanelHalo", "RewardPanelHorns", "RewardRibbonHalo", "RewardRibbonHorns", "RewardSlot", "RewardGlow",
-		"RewardSparkle", "Toast", "BannerAlert", "GlyphCheck", "GlyphExclaim", "IconStar", "IconAnnounce" },
+		"RewardSparkle", "Toast", "BannerAlert", "GlyphCheck", "GlyphExclaim", "Star", "IconAnnounce" },
 	-- handoff queue 3 (notice art): the approved Toast capsule (navy, gold rim, a gold ring socket on the left; 9-slice
 	-- FitHeight, so the socket stays round and grows with the height) behind every toast once uploaded. The item / monster
 	-- icon (or the kind's glyph) sits in the socket (centre DiscX x the height; GlyphK / IconK x the height), the words
@@ -241,7 +241,7 @@ local NOTIFY = {
 		CapL = 0.94, CapR = 0.42, Lines = 3, Slack = 10, -- Slack: du added to the measured words (rounding, the stroke)
 		WidthMult = 1.45, ScreenFrac = 0.62,
 		Glyph = { good = { "GlyphCheck", Color3.fromRGB(80, 220, 120) }, bad = { "GlyphExclaim", Color3.fromRGB(255, 96, 86) },
-			reward = { "IconStar" }, info = { "IconAnnounce" } } },
+			reward = { "Star", Color3.fromRGB(245, 197, 66) }, info = { "IconAnnounce" } } }, -- Star: white art, gold tint
 	-- the big banner's red BannerAlert ribbon (world news: war, kaiju, bounty, the Pumpkin King). Its ends keep the size of
 	-- the one-line banner (the column's banner height = "base"; SliceScale base / Base): more lines stretch only the 2 px
 	-- middle band, so the words keep their room (FitHeight grew the tails with every line: UiSandbox phone 749x361 cut a

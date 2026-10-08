@@ -339,7 +339,7 @@ local function build()
 		Parent = titleRow,
 	})
 	-- [닫기] only when opened by Show / Toggle (phone menu row); a held Tab closes on release
-	ui.close = k.ArtButton("Pill", {
+	ui.close = k.ArtButton("Chip", {
 		Name = "Close",
 		AnchorPoint = Vector2.new(1, 0.5),
 		Position = UDim2.fromScale(1, 0.5),
