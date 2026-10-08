@@ -562,5 +562,16 @@
   "PassIconVIP": "rbxassetid://98036294458431",
   "PassIconBundle": "rbxassetid://136373208143894",
   "Tex_WaterfallFlow_FF2": "rbxassetid://86909517913668",
-  "PassIconPrivate": "rbxassetid://95789432053642"
+  "PassIconPrivate": "rbxassetid://95789432053642",
+  "IconWeeklyBox": "rbxassetid://134725206012544",
+  "StampClaimed": "rbxassetid://133963492491506",
+  "RibbonDays7": "rbxassetid://74039691524147",
+  "RibbonDays14": "rbxassetid://128474383322866",
+  "RibbonDays28": "rbxassetid://105857078981391",
+  "RibbonDays50": "rbxassetid://127528019933746",
+  "RibbonDays100": "rbxassetid://104467679017156",
+  "IconKingDiary": "rbxassetid://82663430349001",
+  "IconCandyJar": "rbxassetid://94570617639866",
+  "IconInviteFriend": "rbxassetid://72491188968210",
+  "IconSaved": "rbxassetid://112371750811683"
 }

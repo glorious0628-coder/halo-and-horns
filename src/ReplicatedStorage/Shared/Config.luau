@@ -4585,18 +4585,19 @@ Config.UIArt = {
 		IconPassLooks = { Id = "rbxassetid://136373208143894", Size = Vector2.new(512, 512) }, -- PassIconBundle.png (the Looks header)
 		IconPrivateServer = { Id = "rbxassetid://95789432053642", Size = Vector2.new(512, 512) }, -- PassIconPrivate.png (이미지 생성 2 c5150fa, 검수 고름 A23-79)
 		-- A23-77 attendance board / A23-79 come-back art (이미지 생성 2 514737f, 검수 OK; 512, no letters - numbers are TextLabels)
-		IconWeeklyBox = { Id = "", Size = Vector2.new(512, 512) }, -- the 7th slot's weekly box
-		StampClaimed = { Id = "", Size = Vector2.new(512, 512) }, -- laid over a claimed slot
-		-- collected-days ribbons: the number sits in the empty cream disc, centre ~(0.50, 0.41), diameter ~0.44 of the width
-		RibbonDays7 = { Id = "", Size = Vector2.new(512, 512) },
-		RibbonDays14 = { Id = "", Size = Vector2.new(512, 512) },
-		RibbonDays28 = { Id = "", Size = Vector2.new(512, 512) },
-		RibbonDays50 = { Id = "", Size = Vector2.new(512, 512) },
-		RibbonDays100 = { Id = "", Size = Vector2.new(512, 512) },
-		IconKingDiary = { Id = "", Size = Vector2.new(512, 512) }, -- [King Diary] book
-		IconCandyJar = { Id = "", Size = Vector2.new(512, 512) }, -- candy jar
-		IconInviteFriend = { Id = "", Size = Vector2.new(512, 512) }, -- [Invite a friend]
-		IconSaved = { Id = "", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'
+		IconWeeklyBox = { Id = "rbxassetid://134725206012544", Size = Vector2.new(512, 512) }, -- the 7th slot's weekly box
+		StampClaimed = { Id = "rbxassetid://133963492491506", Size = Vector2.new(512, 512) }, -- laid over a claimed slot
+		-- collected-days ribbons: the number sits in the empty cream disc - centre (0.497, 0.407), size 0.432 x 0.412 of the
+		-- picture (이미지 생성 2 measured all five); keep the digits inside ~70 % of it so they never touch the rim
+		RibbonDays7 = { Id = "rbxassetid://74039691524147", Size = Vector2.new(512, 512) },
+		RibbonDays14 = { Id = "rbxassetid://128474383322866", Size = Vector2.new(512, 512) },
+		RibbonDays28 = { Id = "rbxassetid://105857078981391", Size = Vector2.new(512, 512) },
+		RibbonDays50 = { Id = "rbxassetid://127528019933746", Size = Vector2.new(512, 512) },
+		RibbonDays100 = { Id = "rbxassetid://104467679017156", Size = Vector2.new(512, 512) },
+		IconKingDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- [King Diary] book
+		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
+		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]
+		IconSaved = { Id = "rbxassetid://112371750811683", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'
 		IconNoBuff = { Id = "rbxassetid://125613826056625", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06, re-cut 3f1716b (faction perk row)
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
