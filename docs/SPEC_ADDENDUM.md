@@ -89,6 +89,19 @@
   - 물약 가격: 25골드.
   - 내 이름표: 나한테만 숨기기.
 
+### A23-79. 다시 오게 만들기 — 베타 전 5묶음 (사용자 2026-10-08 고름)
+- 근거: `docs/design/psychology_retention_2026-10-08.md`(심리학 12원리), `docs/design/retention_round_2026-10-08.md`(점검·Roblox 조사·순위 10). 사용자: "어떻게 하면 사람들을 붙잡을지도 계속 생각해줘", "심리학 관련한 것도 넣어야 할듯", "끊기면 0되면 안 돼".
+- **베타 전에 만든다(사용자 고름):**
+  1. **멈춤 카드 + Welcome back:** 장 끝·일일 3칸 끝·왕관전 끝에 "Saved! ✓ Next time: <다음 목표>" 카드([Keep playing]·[OK] 같은 크기, 시계 숫자 없음, 다음 대화가 저절로 이어지지 않음). 6시간 뒤 다시 오면 "Welcome back! Next: … [Go]"(Go = 그 목표 구역으로 이동).
+  2. **My Way 이름 + 배지 8개:** 선택 기록으로 정하는 이름(True Knight·Rebel Angel·Proud Rascal·Soft-Hearted Devil·Balance Walker, 바뀔 때 2초 알림, 판단·설교 없음, 능력치 없음). Roblox 배지 8개(Chose a Side·First Slime·Lost Lunchbox·Stronger!·First Skill·Shard Choice·Rank 2·Halloween 2026, 천사·악마 길 같은 배지) — 아이콘 Firefly(시안 0 → 고급 8×5=40), 배지 만들기는 게시 때 사용자(하루 5개 무료 → 이틀에 나눔).
+  3. **친구 초대 + Go to friend:** 메뉴·Tab 목록·거위/왕관전 승리 카드에 [Invite a friend](SocialService 기본 창, LaunchData = 초대한 사람). 친구가 들어오면 "Your friend joined! [Go to friend]"(새싹 보호·PvP 규칙 그대로, 새싹을 고렙 구역으로 보내지 않음). **초대 보상 0**(A23-68). KO·강화 실패·구매 창 근처에는 버튼 없음.
+  4. **호박 대왕 일기 + 사탕 단지:** 9일 대왕 수다를 [King Diary] 책으로(대왕 함께 잡으면 다음 쪽, 오늘 날짜 쪽까지, 늦게 와도 잡은 만큼 몰아 읽기 — 연속 접속 필요 없음). 9쪽 다 모으면 칭호 'Party Guest 2026'. 사탕 단지 = 사탕 → 칭호(예: Pumpkin Pal, Candy Keeper), 11/09 뒤에도 열림(한정 압박 없음).
+  5. **정식 날 알림 동의 모으기:** 13세 이상에게만, 일일 3칸을 끝냈을 때나 대왕 일기 첫 쪽 뒤에 한 번만 ExperienceNotificationService 동의 창(첫 10분·KO·강화 실패·구매 근처 금지, 거절하면 다시 안 물음). 보내기(Open Cloud, 키는 Secrets)·문구는 11/09 업데이트 + 사용자 Creator Hub.
+- 고르지 않음(나중): Almost there 막대, Ready?·KO 팁·Thanks 하트, Lv25~49 일일 띠 → idea_backlog. 베타 뒤 후보: 진영 주간, 무기고·모양 바꾸기, 조각 길, 봉인된 무덤, 새싹 구조 신호, 스쿼드.
+- **측정(검수 결정, 베타 전):** 퍼널 LongRoad·DailyVisit·Social·KingDiary·PassShop + 이벤트 DaysPlayed·ReturnGap 등(`retention_round` '베타에서 잴 것'), 10/24 전에 넣는다(개발 2).
+- **구매 버튼 금지 자리(규칙):** 멈춤 카드·KO·강화 실패·Almost there 근처. 번 모양 ≠ 산 모양(A23-75).
+- 담당: 서버 = 게임성 개발 2(A23-75 → A23-77 다음), 화면 = 게임성 개발 1·이미지 개발 1, 배지 아이콘 = 이미지 생성 2, 문구 = 검수.
+
 ### A23-78. PC 키 배치 (사용자 2026-10-08, 게임성 개발 1 창에서 직접)
 - 사용자: "아이템 I, 여야지" / "K 스킬, E 장비(캐릭터), M 지도, Q 퀘스트 목록" / "이게 기본이고 키 세팅은 자기 마음대로 바꿀 수 있으니, 조그맣게 키 뭐다 표시할 필요 없어".
 - 기본 키: **I 아이템, K 스킬, E 장비(캐릭터), M 지도, Q 퀘스트 목록**(HUD 퀘스트 목록 펼치기/접기). 키는 설정에서 바꿀 수 있다. 버튼 옆 작은 키 표시(KeyBadges)는 기본 끔(설정에서 켤 수 있음).

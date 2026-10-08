@@ -20,3 +20,7 @@
 - [ ] 나온 패스 ID를 Config(게임 패스 표)에 붙여 넣기(ID 0이면 버튼 "Coming soon").
 - [ ] **개인 서버** 켜기 + 월 가격(사용자).
 - [ ] 변경권 Developer Products 2개(GDD §10) ID도 같이.
+
+## 다시 오게 만들기(A23-79) — 게시 때 사용자
+- [ ] Roblox 배지 8개 만들기(하루 5개 무료 → 이틀에 나눔), 나온 배지 ID를 Config에 붙여 넣기.
+- [ ] (11/09 업데이트 때) Experience Notifications 문구 틀 + Open Cloud 키(Secrets) — 키는 채팅에 붙여 넣지 않기.
