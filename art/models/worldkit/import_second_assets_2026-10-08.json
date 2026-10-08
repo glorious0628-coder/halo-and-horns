@@ -1,0 +1,627 @@
+{
+ "made": "2026-10-08 검수 — WorldKit 3D 가져오기 2·3 묶음(build/import_all/2_second B1·B2·C1·C2, 3_third D1~D5), 가져오기 클릭 = 사용자, 업로드 계정 = 새 계정",
+ "convention": "MeshPart + TextureID 또는 SurfaceAppearance(sa). 크기 = 스터드. 앞 = -Z. 피벗 = 밑면 가운데.",
+ "build": "py tools/build_kit_from_ids.py --list art/models/worldkit/import_second_assets_2026-10-08.json --parent ServerStorage/WorldKit3D --out build/kit_second_args.json → py tools/studio_mcp.py call execute_luau @build/kit_second_args.json",
+ "items": [
+  {
+   "name": "Kit_M_MeadowArch",
+   "meshId": "rbxassetid://71597680731455",
+   "textureId": "",
+   "size_studs": [
+    40.0,
+    24.46,
+    12.348
+   ],
+   "sa": {
+    "color": "rbxassetid://72017902959669",
+    "normal": "rbxassetid://70740343466331",
+    "metal": "rbxassetid://87909130067614",
+    "rough": "rbxassetid://76200712636729"
+   }
+  },
+  {
+   "name": "Kit_P_PumpkinCluster",
+   "meshId": "rbxassetid://89810854398359",
+   "textureId": "",
+   "size_studs": [
+    7.0,
+    3.502,
+    5.727
+   ],
+   "sa": {
+    "color": "rbxassetid://82484802063257",
+    "normal": "rbxassetid://111042827146571",
+    "metal": "rbxassetid://134460401647273",
+    "rough": "rbxassetid://85589147441406"
+   }
+  },
+  {
+   "name": "Kit_X_Anvil",
+   "meshId": "rbxassetid://122740703468344",
+   "textureId": "rbxassetid://97131803573058",
+   "size_studs": [
+    4.5,
+    4.154,
+    3.614
+   ]
+  },
+  {
+   "name": "Kit_X_BannerHalo",
+   "meshId": "rbxassetid://116665653645796",
+   "textureId": "rbxassetid://112673371569390",
+   "size_studs": [
+    5.537,
+    14.0,
+    2.14
+   ]
+  },
+  {
+   "name": "Kit_X_BannerHorns",
+   "meshId": "rbxassetid://139216586086245",
+   "textureId": "rbxassetid://123092536726966",
+   "size_studs": [
+    5.656,
+    14.0,
+    1.788
+   ]
+  },
+  {
+   "name": "Kit_X_Barrel",
+   "meshId": "rbxassetid://135330751212432",
+   "textureId": "rbxassetid://101526241842952",
+   "size_studs": [
+    2.821,
+    3.0,
+    2.98
+   ]
+  },
+  {
+   "name": "Kit_X_Bench",
+   "meshId": "rbxassetid://112067323172333",
+   "textureId": "rbxassetid://101368982752494",
+   "size_studs": [
+    6.5,
+    4.308,
+    3.122
+   ]
+  },
+  {
+   "name": "Kit_X_Brazier",
+   "meshId": "rbxassetid://105101832472696",
+   "textureId": "rbxassetid://74083025215265",
+   "size_studs": [
+    3.805,
+    4.0,
+    3.805
+   ]
+  },
+  {
+   "name": "Kit_X_Bush",
+   "meshId": "rbxassetid://96362638027695",
+   "textureId": "rbxassetid://109568056695965",
+   "size_studs": [
+    3.448,
+    3.0,
+    3.321
+   ]
+  },
+  {
+   "name": "Kit_X_Crate",
+   "meshId": "rbxassetid://85688993407461",
+   "textureId": "rbxassetid://97735926646948",
+   "size_studs": [
+    3.036,
+    2.5,
+    2.937
+   ]
+  },
+  {
+   "name": "Kit_X_Curb",
+   "meshId": "rbxassetid://86115190561763",
+   "textureId": "rbxassetid://125239963201677",
+   "size_studs": [
+    6.0,
+    1.48,
+    2.78
+   ]
+  },
+  {
+   "name": "Kit_X_Fence",
+   "meshId": "rbxassetid://94142969546944",
+   "textureId": "rbxassetid://109654423532257",
+   "size_studs": [
+    6.0,
+    2.227,
+    1.172
+   ]
+  },
+  {
+   "name": "Kit_X_FlowerPot",
+   "meshId": "rbxassetid://105916681994387",
+   "textureId": "rbxassetid://94152432383901",
+   "size_studs": [
+    2.445,
+    2.5,
+    2.104
+   ]
+  },
+  {
+   "name": "Kit_X_Forge",
+   "meshId": "rbxassetid://84215251380453",
+   "textureId": "rbxassetid://98483885925645",
+   "size_studs": [
+    6.0,
+    6.921,
+    5.884
+   ]
+  },
+  {
+   "name": "Kit_X_FruitCart",
+   "meshId": "rbxassetid://106238847865025",
+   "textureId": "rbxassetid://81513445116506",
+   "size_studs": [
+    5.0,
+    3.645,
+    4.285
+   ]
+  },
+  {
+   "name": "Kit_X_Lamp",
+   "meshId": "rbxassetid://74540086750787",
+   "textureId": "rbxassetid://99653204264812",
+   "size_studs": [
+    5.102,
+    11.0,
+    2.814
+   ]
+  },
+  {
+   "name": "Kit_X_PlazaStairs",
+   "meshId": "rbxassetid://113321734375247",
+   "textureId": "",
+   "size_studs": [
+    7.636,
+    3.5,
+    6.356
+   ],
+   "sa": {
+    "color": "rbxassetid://110645105325169",
+    "normal": "rbxassetid://108019930255072",
+    "metal": "rbxassetid://78062973297384",
+    "rough": "rbxassetid://96045440557313"
+   }
+  },
+  {
+   "name": "Kit_X_PlazaWall",
+   "meshId": "rbxassetid://128654646686577",
+   "textureId": "",
+   "size_studs": [
+    9.731,
+    3.0,
+    2.814
+   ],
+   "sa": {
+    "color": "rbxassetid://137391731782281",
+    "normal": "rbxassetid://133591830408430",
+    "metal": "rbxassetid://123683795687994",
+    "rough": "rbxassetid://130305419642012"
+   }
+  },
+  {
+   "name": "Kit_X_PotionCart",
+   "meshId": "rbxassetid://72221369981039",
+   "textureId": "rbxassetid://132814538685236",
+   "size_studs": [
+    5.73,
+    7.5,
+    4.245
+   ]
+  },
+  {
+   "name": "Kit_X_StallBlue",
+   "meshId": "rbxassetid://103591985665791",
+   "textureId": "rbxassetid://113946789748158",
+   "size_studs": [
+    10.0,
+    12.915,
+    7.483
+   ]
+  },
+  {
+   "name": "Kit_X_StallGreen",
+   "meshId": "rbxassetid://97981452542774",
+   "textureId": "rbxassetid://101214166226680",
+   "size_studs": [
+    10.0,
+    12.915,
+    7.483
+   ]
+  },
+  {
+   "name": "Kit_X_StallRed",
+   "meshId": "rbxassetid://120002161726108",
+   "textureId": "rbxassetid://83077941775574",
+   "size_studs": [
+    10.0,
+    12.915,
+    7.483
+   ]
+  },
+  {
+   "name": "Town_Halo_Bakery",
+   "meshId": "rbxassetid://87937910410066",
+   "textureId": "rbxassetid://122664932890016",
+   "size_studs": [
+    14.0,
+    14.209,
+    12.027
+   ]
+  },
+  {
+   "name": "Town_Halo_Bridge",
+   "meshId": "rbxassetid://88918790646376",
+   "textureId": "",
+   "size_studs": [
+    22.0,
+    14.132,
+    11.928
+   ],
+   "sa": {
+    "color": "rbxassetid://115381269910310",
+    "normal": "rbxassetid://79898322755766",
+    "metal": "rbxassetid://71413313691017",
+    "rough": "rbxassetid://116666062679570"
+   }
+  },
+  {
+   "name": "Town_Halo_HouseA",
+   "meshId": "rbxassetid://83915685074031",
+   "textureId": "rbxassetid://73011384734152",
+   "size_studs": [
+    12.0,
+    11.921,
+    9.975
+   ]
+  },
+  {
+   "name": "Town_Halo_HouseB",
+   "meshId": "rbxassetid://87205651750840",
+   "textureId": "rbxassetid://113254042555990",
+   "size_studs": [
+    11.846,
+    16.0,
+    10.623
+   ]
+  },
+  {
+   "name": "Town_Halo_HouseC",
+   "meshId": "rbxassetid://74895822115743",
+   "textureId": "",
+   "size_studs": [
+    16.0,
+    12.483,
+    8.127
+   ],
+   "sa": {
+    "color": "rbxassetid://76338163721765",
+    "normal": "rbxassetid://103885740977365",
+    "metal": "rbxassetid://121268069361850",
+    "rough": "rbxassetid://83999446150948"
+   }
+  },
+  {
+   "name": "Town_Halo_JuiceBar",
+   "meshId": "rbxassetid://114974649127706",
+   "textureId": "rbxassetid://95270698722662",
+   "size_studs": [
+    12.0,
+    13.075,
+    11.787
+   ]
+  },
+  {
+   "name": "Town_Halo_KnightStatue",
+   "meshId": "rbxassetid://137364062754874",
+   "textureId": "",
+   "size_studs": [
+    6.141,
+    10.0,
+    5.34
+   ],
+   "sa": {
+    "color": "rbxassetid://100627623418448",
+    "normal": "rbxassetid://125720381003101",
+    "metal": "rbxassetid://74439272462729",
+    "rough": "rbxassetid://80679828902731"
+   }
+  },
+  {
+   "name": "Town_Halo_Potion",
+   "meshId": "rbxassetid://110723412242109",
+   "textureId": "rbxassetid://84369945399504",
+   "size_studs": [
+    13.412,
+    16.0,
+    13.515
+   ]
+  },
+  {
+   "name": "Town_Halo_Smithy",
+   "meshId": "rbxassetid://82531202959314",
+   "textureId": "rbxassetid://79157208775403",
+   "size_studs": [
+    14.0,
+    13.996,
+    12.528
+   ]
+  },
+  {
+   "name": "Town_Halo_WallTower",
+   "meshId": "rbxassetid://102184988775480",
+   "textureId": "",
+   "size_studs": [
+    12.912,
+    24.0,
+    12.63
+   ],
+   "sa": {
+    "color": "rbxassetid://132697149083188",
+    "normal": "rbxassetid://111300462904264",
+    "metal": "rbxassetid://114795525704517",
+    "rough": "rbxassetid://105022978829086"
+   }
+  },
+  {
+   "name": "Town_Horns_Bakery",
+   "meshId": "rbxassetid://114069203785642",
+   "textureId": "rbxassetid://114476708094689",
+   "size_studs": [
+    14.0,
+    13.935,
+    12.719
+   ]
+  },
+  {
+   "name": "Town_Horns_Brazier",
+   "meshId": "rbxassetid://110201757998032",
+   "textureId": "",
+   "size_studs": [
+    11.0,
+    10.348,
+    10.161
+   ],
+   "sa": {
+    "color": "rbxassetid://104741455632310",
+    "normal": "rbxassetid://133547197253231",
+    "metal": "rbxassetid://75289943426247",
+    "rough": "rbxassetid://139139680533609"
+   }
+  },
+  {
+   "name": "Town_Horns_Bridge",
+   "meshId": "rbxassetid://99557624862611",
+   "textureId": "",
+   "size_studs": [
+    13.934,
+    8.447,
+    22.0
+   ],
+   "sa": {
+    "color": "rbxassetid://104599772155164",
+    "normal": "rbxassetid://91723063451971",
+    "metal": "rbxassetid://108638961134199",
+    "rough": "rbxassetid://73061157487757"
+   }
+  },
+  {
+   "name": "Town_Horns_HouseA",
+   "meshId": "rbxassetid://74540301106193",
+   "textureId": "rbxassetid://89419622817718",
+   "size_studs": [
+    12.0,
+    10.554,
+    9.808
+   ]
+  },
+  {
+   "name": "Town_Horns_HouseB",
+   "meshId": "rbxassetid://101740366834808",
+   "textureId": "rbxassetid://92797877941416",
+   "size_studs": [
+    13.159,
+    16.0,
+    11.764
+   ]
+  },
+  {
+   "name": "Town_Horns_HouseC",
+   "meshId": "rbxassetid://132523278818943",
+   "textureId": "",
+   "size_studs": [
+    16.0,
+    18.159,
+    12.351
+   ],
+   "sa": {
+    "color": "rbxassetid://93309813286201",
+    "normal": "rbxassetid://111708780893181",
+    "metal": "rbxassetid://135940384890048",
+    "rough": "rbxassetid://120516183785880"
+   }
+  },
+  {
+   "name": "Town_Horns_JuiceBar",
+   "meshId": "rbxassetid://106558695274291",
+   "textureId": "rbxassetid://119262352245047",
+   "size_studs": [
+    12.0,
+    11.168,
+    11.119
+   ]
+  },
+  {
+   "name": "Town_Horns_Potion",
+   "meshId": "rbxassetid://106717702861982",
+   "textureId": "rbxassetid://86937100085695",
+   "size_studs": [
+    14.312,
+    16.0,
+    12.444
+   ]
+  },
+  {
+   "name": "Town_Horns_Smithy",
+   "meshId": "rbxassetid://81899763709891",
+   "textureId": "rbxassetid://99788253782955",
+   "size_studs": [
+    14.0,
+    13.273,
+    12.14
+   ]
+  },
+  {
+   "name": "Town_Horns_SpikeRock",
+   "meshId": "rbxassetid://133648774497000",
+   "textureId": "",
+   "size_studs": [
+    12.233,
+    16.0,
+    11.781
+   ],
+   "sa": {
+    "color": "rbxassetid://120024242420329",
+    "normal": "rbxassetid://120682225992474",
+    "metal": "rbxassetid://114318840059241",
+    "rough": "rbxassetid://105287257770605"
+   }
+  },
+  {
+   "name": "Town_Horns_WallTower",
+   "meshId": "rbxassetid://97743736270182",
+   "textureId": "",
+   "size_studs": [
+    15.049,
+    24.0,
+    14.39
+   ],
+   "sa": {
+    "color": "rbxassetid://129584168868651",
+    "normal": "rbxassetid://115807376190693",
+    "metal": "rbxassetid://118347864594764",
+    "rough": "rbxassetid://75458604620236"
+   }
+  },
+  {
+   "name": "X_Altar",
+   "meshId": "rbxassetid://114809330257656",
+   "textureId": "",
+   "size_studs": [
+    9.0,
+    7.833,
+    8.554
+   ],
+   "sa": {
+    "color": "rbxassetid://125831667355206",
+    "normal": "rbxassetid://105043257476611",
+    "metal": "rbxassetid://90609978134753",
+    "rough": "rbxassetid://99041724199286"
+   }
+  },
+  {
+   "name": "X_GooseNest",
+   "meshId": "rbxassetid://93125144948936",
+   "textureId": "",
+   "size_studs": [
+    12.0,
+    7.566,
+    11.112
+   ],
+   "sa": {
+    "color": "rbxassetid://131006906260646",
+    "normal": "rbxassetid://105546162710491",
+    "metal": "rbxassetid://95168589045435",
+    "rough": "rbxassetid://126891444838567"
+   }
+  },
+  {
+   "name": "X_HouseA",
+   "meshId": "rbxassetid://102008937070436",
+   "textureId": "",
+   "size_studs": [
+    14.0,
+    14.097,
+    11.352
+   ],
+   "sa": {
+    "color": "rbxassetid://108750468027475",
+    "normal": "rbxassetid://92891903088638",
+    "metal": "rbxassetid://112251387746689",
+    "rough": "rbxassetid://119636366820252"
+   }
+  },
+  {
+   "name": "X_HouseB",
+   "meshId": "rbxassetid://89019257679040",
+   "textureId": "",
+   "size_studs": [
+    12.0,
+    14.388,
+    9.113
+   ],
+   "sa": {
+    "color": "rbxassetid://108557302381164",
+    "normal": "rbxassetid://71032777706470",
+    "metal": "rbxassetid://76776876429460",
+    "rough": "rbxassetid://77701138842408"
+   }
+  },
+  {
+   "name": "X_MarketArch",
+   "meshId": "rbxassetid://94935342771594",
+   "textureId": "",
+   "size_studs": [
+    12.0,
+    10.357,
+    2.91
+   ],
+   "sa": {
+    "color": "rbxassetid://127378039117064",
+    "normal": "rbxassetid://113266697899462",
+    "metal": "rbxassetid://72302704375509",
+    "rough": "rbxassetid://108194460892735"
+   }
+  },
+  {
+   "name": "X_NoticeBoard",
+   "meshId": "rbxassetid://79816636314086",
+   "textureId": "",
+   "size_studs": [
+    16.0,
+    15.441,
+    7.039
+   ],
+   "sa": {
+    "color": "rbxassetid://127690556564237",
+    "normal": "rbxassetid://83274352685220",
+    "metal": "rbxassetid://101709633665550",
+    "rough": "rbxassetid://74235223728837"
+   }
+  },
+  {
+   "name": "X_TreeB",
+   "meshId": "rbxassetid://135911661558227",
+   "textureId": "",
+   "size_studs": [
+    9.129,
+    16.0,
+    7.488
+   ],
+   "sa": {
+    "color": "rbxassetid://136086303497724",
+    "normal": "rbxassetid://87593549317066",
+    "metal": "rbxassetid://124303979667374",
+    "rough": "rbxassetid://129331233352908"
+   }
+  }
+ ]
+}
