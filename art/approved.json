@@ -7132,7 +7132,7 @@
   "note": "Roblox 배지 Halloween 2026(호박 얼굴 없음). 글자·숫자·빛살 없음, 소품에 얼굴 없음. Roblox 배지는 사용자가 Creator Dashboard에서 배지를 만들며 이 파일을 올림(launch 체크리스트)."
  },
  "P_Cliff_A": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7140,10 +7140,13 @@
   "candidate": "art/out/kit/pumpkin/P_Cliff_A_1.png",
   "final": "art/out/hq/HQ_P_Cliff_A.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/P_Cliff_A_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (32.00 x 21.38 x 18.17 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "P_Cliff_B": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7151,10 +7154,13 @@
   "candidate": "art/out/kit/pumpkin/P_Cliff_B_1.png",
   "final": "art/out/hq/HQ_P_Cliff_B.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/P_Cliff_B_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (15.75 x 17.31 x 26.00 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "Kit_P_EntranceSign": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7162,10 +7168,13 @@
   "candidate": "art/out/kit/pumpkin/Kit_P_EntranceSign_1.png",
   "final": "art/out/hq/HQ_Kit_P_EntranceSign.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/Kit_P_EntranceSign_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (16.00 x 7.18 x 12.66 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "Kit_P_HayBales": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7173,10 +7182,13 @@
   "candidate": "art/out/kit/pumpkin/Kit_P_HayBales_1.png",
   "final": "art/out/hq/HQ_Kit_P_HayBales.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/Kit_P_HayBales_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (6.34 x 4.02 x 5.00 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "Kit_P_PumpkinCart": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7184,10 +7196,13 @@
   "candidate": "art/out/kit/pumpkin/Kit_P_PumpkinCart_1.png",
   "final": "art/out/hq/HQ_Kit_P_PumpkinCart.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/Kit_P_PumpkinCart_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (8.00 x 6.69 x 6.21 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "P_TreeAutumn_A": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7195,10 +7210,13 @@
   "candidate": "art/out/kit/pumpkin/P_TreeAutumn_A_1.png",
   "final": "art/out/hq/HQ_P_TreeAutumn_A.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/P_TreeAutumn_A_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (25.88 x 19.73 x 26.00 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "P_TreeAutumn_B": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7206,10 +7224,13 @@
   "candidate": "art/out/kit/pumpkin/P_TreeAutumn_B_2.png",
   "final": "art/out/hq/HQ_P_TreeAutumn_B.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/P_TreeAutumn_B_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (25.38 x 18.85 x 30.00 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "P_Pine": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7217,10 +7238,13 @@
   "candidate": "art/out/kit/pumpkin/P_Pine_1.png",
   "final": "art/out/hq/HQ_P_Pine.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/P_Pine_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (13.67 x 13.43 x 22.00 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  },
  "Kit_P_Sunflowers": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web next",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 호박밭 9종 추천대로 (sheet art/review/town5/pumpkin9_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_PumpkinPatch_1), final High 5 (reference = picked candidate)",
@@ -7228,6 +7252,9 @@
   "candidate": "art/out/kit/pumpkin/Kit_P_Sunflowers_1.png",
   "final": "art/out/hq/HQ_Kit_P_Sunflowers.png (1024)",
   "check": "art/review/town5/pumpkin9_hq.jpg; no faces/eyes, single trunk knots, sunflower petals soft (no ray pattern)",
-  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)"
+  "use": "PumpkinPatch (SPEC A23-76, docs/design/zones_concept_gap_2026-10-08.md)",
+  "model": "art/models/tripo/web/Kit_P_Sunflowers_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D7_PumpkinPatch9.glb (4.90 x 2.84 x 6.00 studs)",
+  "sheet_3d": "art/review/town5/pumpkin9_3d.jpg"
  }
 }

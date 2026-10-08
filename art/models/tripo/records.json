@@ -5662,5 +5662,203 @@
    ],
    "bytes": 8091848
   }
+ ],
+ "P_Cliff_A_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "bffcfa5e-0a8b-40a9-8908-6c3f998c83f1",
+   "image": "art/out/hq/HQ_P_Cliff_A.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1640,
+   "file": "art/models/tripo/web/P_Cliff_A_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 19692,
+   "derived": [
+    "art/models/tripo/web/P_Cliff_A_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (32.00 x 21.38 x 18.17 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 8998612
+  }
+ ],
+ "P_Cliff_B_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "b0318dd6-3102-4330-bbd3-68852f3f64cf",
+   "image": "art/out/hq/HQ_P_Cliff_B.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1585,
+   "file": "art/models/tripo/web/P_Cliff_B_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 19009,
+   "derived": [
+    "art/models/tripo/web/P_Cliff_B_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (15.75 x 17.31 x 26.00 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 8170064
+  }
+ ],
+ "Kit_P_EntranceSign_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "b814c981-bccc-4fa6-994e-f8313df1c817",
+   "image": "art/out/hq/HQ_Kit_P_EntranceSign.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1530,
+   "file": "art/models/tripo/web/Kit_P_EntranceSign_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 18368,
+   "derived": [
+    "art/models/tripo/web/Kit_P_EntranceSign_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (16.00 x 7.18 x 12.66 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 8134248
+  }
+ ],
+ "Kit_P_HayBales_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "73cfd6de-cd0b-4b5f-8f7a-6e58a1c86e36",
+   "image": "art/out/hq/HQ_Kit_P_HayBales.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1475,
+   "file": "art/models/tripo/web/Kit_P_HayBales_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 9602,
+   "derived": [
+    "art/models/tripo/web/Kit_P_HayBales_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (6.34 x 4.02 x 5.00 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 9030760
+  }
+ ],
+ "Kit_P_PumpkinCart_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "cd2c0bb3-291f-43ce-b9d4-e4a1b24b85c0",
+   "image": "art/out/hq/HQ_Kit_P_PumpkinCart.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1420,
+   "file": "art/models/tripo/web/Kit_P_PumpkinCart_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 13900,
+   "derived": [
+    "art/models/tripo/web/Kit_P_PumpkinCart_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (8.00 x 6.69 x 6.21 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 6854400
+  }
+ ],
+ "P_TreeAutumn_A_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "0093687d-e346-43f9-af17-46852e092310",
+   "image": "art/out/hq/HQ_P_TreeAutumn_A.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1365,
+   "file": "art/models/tripo/web/P_TreeAutumn_A_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 18740,
+   "derived": [
+    "art/models/tripo/web/P_TreeAutumn_A_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.88 x 19.73 x 26.00 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 7870768
+  }
+ ],
+ "P_TreeAutumn_B_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "f1a9518d-7736-4cfc-bdbf-fd6c10bce3c1",
+   "image": "art/out/hq/HQ_P_TreeAutumn_B.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1310,
+   "file": "art/models/tripo/web/P_TreeAutumn_B_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 19603,
+   "derived": [
+    "art/models/tripo/web/P_TreeAutumn_B_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (25.38 x 18.85 x 30.00 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 7258856
+  }
+ ],
+ "P_Pine_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "362f551a-9b5d-46b4-a651-613d4f54d898",
+   "image": "art/out/hq/HQ_P_Pine.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1255,
+   "file": "art/models/tripo/web/P_Pine_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 9714,
+   "derived": [
+    "art/models/tripo/web/P_Pine_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (13.67 x 13.43 x 22.00 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 5750356
+  }
+ ],
+ "Kit_P_Sunflowers_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "5c5da58d-54eb-4d25-a9c9-67abbb3d5648",
+   "image": "art/out/hq/HQ_Kit_P_Sunflowers.png",
+   "at": "2026-10-08 11:4x (9 jobs run together)",
+   "balance_after": 1200,
+   "file": "art/models/tripo/web/Kit_P_Sunflowers_HD_src.glb",
+   "note": "검수 OK 10/08 (호박밭 9종)",
+   "tris": 14190,
+   "derived": [
+    "art/models/tripo/web/Kit_P_Sunflowers_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D7/WorldKit_ImportD7.glb = build/import_all/3_third/D7_PumpkinPatch9.glb (4.90 x 2.84 x 6.00 studs)"
+   ],
+   "sheet": "art/review/town5/pumpkin9_3d.jpg",
+   "bytes": 7934740
+  }
  ]
 }
