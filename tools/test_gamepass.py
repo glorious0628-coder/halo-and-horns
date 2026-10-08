@@ -225,7 +225,7 @@ MUTATIONS = [
     ("no retry", M, "\tfor i = 1, Config.PassBoost.CheckTries do\n", "\tfor i = 1, 1 do\n"),
     ("no wait between tries", M, "\t\t\ttask.wait(wait)\n\t\t\twait *= 2\n", ""),
     ("no saved fallback", M, "\t\t\tanswer = seenTable(data)[p.Key] == true -- Roblox did not answer", "\t\t\tanswer = false -- Roblox did not answer"),
-    ("answers not saved", M, "\t\t\tseenTable(data)[p.Key] = answer\n", ""),
+    ("answers not saved", M, "\t\t\tseenTable(data)[p.Key] = answer or owned[p.Key] == true\n", ""),
     ("a purchase taken back", M, "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end", "\t\towned[p.Key] = answer"),
     ("left player written", M, "\t\tif player.Parent == nil or S.PlayerService.GetData(player) ~= data then return end\n", ""),
     ("closed prompt counts", M, "\tif purchased ~= true or typeof(player)", "\tif typeof(player)"),
@@ -264,6 +264,16 @@ MUTATIONS = [
      "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back\n",
      "\t\tif owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back\n"
      "\t\tif answer then MonetizationService.PassBought:Fire(player, p.Key) end\n"),
+    # review 2nd look
+    ("a purchase during the check saved as no", M, "\t\t\tseenTable(data)[p.Key] = answer or owned[p.Key] == true\n",
+     "\t\t\tseenTable(data)[p.Key] = answer\n"),
+    ("long names dropped", M, "#e.N <= 80", "#e.N <= 40"),
+    ("failed writes never retried", M, "\t\tif tries > 0 and tries <= Config.PassBoost.WriteRetries and not PASS.Queued[userId] then\n",
+     "\t\tif false then\n"),
+    ("retries without end", M, "\t\tif tries > 0 and tries <= Config.PassBoost.WriteRetries and not PASS.Queued[userId] then\n",
+     "\t\tif tries > 0 and not PASS.Queued[userId] then\n"),
+    ("no duplicate id warning", M, "\t\t\tif ids[p.Id] then Util.Warn(", "\t\t\tif false then Util.Warn("),
+    ("top level returns the full amount", P, "\t\tamount = math.max(0, amount - math.max(0, xp - full))\n", ""),
     ("no VIP at join", M, "\t\telseif MonetizationService.HasPass(player, \"VIP\") then\n\t\t\tPASS.AddSupporter(player)\n",
      "\t\telseif false then\n"),
     # A23-75 review 2026-10-08: the kaiju survive bonus (the pass once), the saved answers at join, the board and a hide

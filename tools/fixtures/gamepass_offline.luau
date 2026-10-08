@@ -308,7 +308,8 @@ runGroup("purchase", function()
 	p = w:Join(302, { NoCheck = true })
 	w.Market.PromptGamePassPurchaseFinished:Fire(p, 11, true)
 	w:RunSpawned()
-	check(w.Ms.HasPass(p, "XP2") and p:GetAttribute("PassXP2") == true, "bought during the join check: stays on")
+	check(w.Ms.HasPass(p, "XP2") and p:GetAttribute("PassXP2") == true and w.Data[p].PassSeen.XP2 == true,
+		"bought during the join check: stays on, and its saved answer stays yes", show(w.Data[p].PassSeen))
 	-- VIP bought: on the supporter board at once
 	w = passWorld({ Ids = { VIP = 13 }, Owns = { [303] = {} } })
 	p = w:Join(303)
@@ -659,6 +660,62 @@ runGroup("supporters: hide later", function()
 	check(w.Ms.HasPass(d, "VIP") and w:Board() == "" and show(shared()) == "{}", "a hidden player who buys VIP stays off both boards",
 		show({ w:Board(), shared() }))
 	local _ = b
+end)
+
+------------------------------------------------------------------ review 2nd look
+runGroup("review 2nd look", function()
+	local storeName, key, gap = C0.PassBoost.SupporterStore, C0.PassBoost.SupporterKey, C0.PassBoost.WriteGap
+	check(C0.PassBoost.WriteRetries == 3, "a failed shared-list write is tried again 3 times", C0.PassBoost.WriteRetries)
+	-- a hide whose removal write fails once: tried again after the gap, the shared list loses the name
+	local w = passWorld({ Ids = { VIP = 13 }, Owns = { [951] = { [13] = true }, [952] = { [13] = true } } })
+	local rows = w.Stores[storeName].Rows
+	local a = w:Join(951)
+	check(rows[key] and #rows[key] == 1, "(listed)")
+	w:Advance(gap)
+	w.Fail[storeName .. ":Update"] = 1
+	w.Reg.PlayerService.SetStat(a, "HideAnnounceName", true)
+	w:RunSpawned()
+	check(#rows[key] == 1, "(the removal write failed once)")
+	w:Advance(gap)
+	w:RunSpawned()
+	check(#rows[key] == 0, "the failed removal is written on the next try", #rows[key])
+	-- every try failing: at most WriteRetries more tries, then it stops
+	local b = w:Join(952)
+	w:Advance(gap)
+	w.Fail[storeName .. ":Update"] = 99
+	w.Reg.PlayerService.SetStat(b, "HideAnnounceName", true)
+	w:RunSpawned()
+	for _ = 1, 6 do
+		w:Advance(gap)
+		w:RunSpawned()
+	end
+	local n = 0
+	for _, c in w.DSCalls do if c.Store == storeName and c.Op == "Update" then n += 1 end end
+	check(w.Fail[storeName .. ":Update"] == 99 - 4, "a write that keeps failing: 1 + 3 tries, then it stops", 99 - w.Fail[storeName .. ":Update"])
+	w.AllowWarn = "supporter board"
+	local _ = n
+	-- a long verified nickname (Hangul, 3 bytes a letter) is listed
+	local w2 = passWorld({ Ids = { VIP = 13 }, Owns = { [961] = { [13] = true } } })
+	local long = string.rep("가", 20) -- the longest nickname (20 letters, 60 bytes; Config.Nickname)
+	local p = w2:NewPlayer(960, {})
+	p:Destroy()
+	local q = w2:Join(961, { NoCheck = true })
+	q:SetAttribute("Nickname", long)
+	q:SetAttribute("NicknameVerified", true)
+	w2:RunSpawned()
+	check(w2:Board() == long, "a 20-letter Hangul nickname (60 bytes) is on the board", #w2:Board())
+	-- the same pass id in two entries: a warning at Start
+	local w3 = passWorld({ Ids = { XP2 = 11, HaloIce = 11 } })
+	local warned = false
+	for _, text in w3.Warnings do if string.find(text, "used twice", 1, true) then warned = true end end
+	check(warned, "one game pass id in two entries: a warning at Start")
+	w3.AllowWarn = "used twice"
+	-- the top level with a full bar: nothing is added and nothing is shown
+	local w4 = passWorld({ Ids = { XP2 = 11 }, Owns = { [971] = { [11] = true } } })
+	local top = w4:Join(971, { Level = C0.Levels.MaxLevel, Data = { XP = C0.XPToNext(C0.Levels.MaxLevel) } })
+	check(w4.Prog.AddXP(top, 50) == 0, "a full bar at the top level: AddXP returns 0 (nothing added)", w4.Prog.AddXP(top, 50))
+	local r = w4:Join(972, { Level = C0.Levels.MaxLevel, Data = { XP = C0.XPToNext(C0.Levels.MaxLevel) - 30 } })
+	check(w4.Prog.AddXP(r, 50) == 30, "30 short of full at the top level: AddXP returns 30", w4.Prog.AddXP(r, 50))
 end)
 
 finish()

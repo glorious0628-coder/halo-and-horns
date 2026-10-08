@@ -196,7 +196,10 @@ function M.AddXP(player, amount, cap)
 	end
 	if level >= maxLevel then
 		level = maxLevel
-		xp = math.min(xp, Config.XPToNext(maxLevel))
+		-- A23-75 review 2026-10-08 (2nd look): what the full bar at the top level cannot take was never added
+		local full = Config.XPToNext(maxLevel)
+		amount = math.max(0, amount - math.max(0, xp - full))
+		xp = math.min(xp, full)
 	end
 
 	if level ~= data.Level then

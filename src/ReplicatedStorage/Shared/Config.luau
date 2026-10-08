@@ -3237,6 +3237,9 @@ Config.PassBoost = {
 	-- A23-75 review 2026-10-08: the shared list is written at most once per player per WriteGap seconds (a hide on / off
 	-- spam cannot use up the server's DataStore budget; the write then carries the latest choice)
 	WriteGap = 10,
+	-- a failed write of the shared list is tried again this many times (each after WriteGap), unless a newer choice
+	-- is queued by then
+	WriteRetries = 3,
 }
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters

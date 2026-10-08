@@ -159,7 +159,7 @@ end
 -- counts for a sold pass until Roblox answers about it (PASS.Owned), so grants paid while the player joins see it.
 -- PASS.Debug[player][key] = true / false: a Studio DebugCommand "Pass" override (never saved, never on the board).
 -- PASS.Want / Queued / Wrote [UserId]: the shared supporter list's pending change, its queued write, the last write.
-local PASS = { Owned = {}, Seen = {}, Debug = {}, Board = {}, Store = nil, Want = {}, Queued = {}, Wrote = {} }
+local PASS = { Owned = {}, Seen = {}, Debug = {}, Board = {}, Store = nil, Want = {}, Queued = {}, Wrote = {}, Tries = {} }
 
 -- the passes this server sells: { { Key = kind or look id, Id = game pass id } }
 function PASS.Sold()
@@ -279,7 +279,8 @@ function PASS.Check(player)
 		if answer == nil then
 			answer = seenTable(data)[p.Key] == true -- Roblox did not answer: the last answer it gave
 		else
-			seenTable(data)[p.Key] = answer
+			-- A23-75 review 2026-10-08 (2nd look): a purchase while Roblox was asked keeps its saved yes
+			seenTable(data)[p.Key] = answer or owned[p.Key] == true
 		end
 		if owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back
 	end
@@ -353,7 +354,7 @@ function PASS.Clean(raw)
 	local list, seen = {}, {}
 	if type(raw) == "table" then
 		for _, e in raw do
-			if type(e) == "table" and type(e.U) == "number" and type(e.N) == "string" and e.N ~= "" and #e.N <= 40
+			if type(e) == "table" and type(e.U) == "number" and type(e.N) == "string" and e.N ~= "" and #e.N <= 80
 				and type(e.T) == "number" and not seen[e.U] then
 				seen[e.U] = true
 				table.insert(list, { U = e.U, N = e.N, T = e.T })
@@ -466,6 +467,15 @@ function PASS.Write(userId, entry)
 		elseif not ok then
 			Util.Warn(TAG, "supporter board save: " .. tostring(result))
 		end
+		-- A23-75 review 2026-10-08 (2nd look): a failed write (a hide's removal too) is tried again WriteRetries times,
+		-- unless a newer choice is queued by then
+		local tries = ok and 0 or (PASS.Tries[userId] or 0) + 1
+		if tries > 0 and tries <= Config.PassBoost.WriteRetries and not PASS.Queued[userId] then
+			PASS.Tries[userId] = tries
+			PASS.Write(userId, want)
+		else
+			PASS.Tries[userId] = nil
+		end
 	end
 	local wait = (PASS.Wrote[userId] or -math.huge) + Config.PassBoost.WriteGap - os.clock()
 	if wait > 0 then task.delay(wait, run) else task.spawn(run) end
@@ -544,6 +554,11 @@ function MonetizationService.Start()
 		end
 		if missing then
 			print("[MonetizationService] Developer Product ids are 0: buy buttons show 'This item isn't ready yet'. Create 2 Developer Products on create.roblox.com (your game > Monetization > Developer Products) and paste their ids into Config.Products.")
+		end
+		local ids = {}
+		for _, p in PASS.Sold() do -- A23-75 review 2026-10-08 (2nd look): one id in two entries = one purchase, both on
+			if ids[p.Id] then Util.Warn(TAG, ("game pass id %d is used twice: %s and %s"):format(p.Id, ids[p.Id], p.Key)) end
+			ids[p.Id] = p.Key
 		end
 		if #PASS.Sold() == 0 then
 			print("[MonetizationService] A23-75 game pass ids are 0: the shop shows 'Coming soon'. Create the passes on create.roblox.com (your game > Monetization > Passes) and paste their ids into Config.GamePasses / Config.Looks PassId.")
