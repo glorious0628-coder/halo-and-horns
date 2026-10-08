@@ -6475,5 +6475,23 @@
   "final": "art/out/hq/HQ_Town_Horns_Castle_v6_back.png (1024, High 5 credits)",
   "use": "Tripo web multi-view back slot with front = HQ_Town_Horns_Castle_v4B.png (task 852535df-361c-4ee2-a2c4-14a1e3d683ce)",
   "checks": "no paired windows / faces; banners only on the keep"
+ },
+ "Kit_X_StallBlue": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "approved_by": "검수 (sheet art/review/town5/crossroads_stalls_blue_green.jpg, 37dfdf3: '차양만 바뀜, 사과·톱니 그대로, 이음 자국 없음')",
+  "source": "art/models/tripo/kit_crossroads/Kit_X_StallRed_raw.glb (Tripo batch 2) — 0 points, 0 credits",
+  "edit": "awning only: UV triangles of faces above 57% height, red hue (±28°, S>0.3) → 파랑; apples/oranges/teal counter/gold gear unchanged",
+  "file": "art/models/tripo/kit_crossroads/Kit_X_StallBlue_raw.glb",
+  "use": "import C2 (build/import_all/2_second/C2_CrossroadsProps.glb, 8 items) → crossroads K_StallBlue spot (docs/design/crossroads_3d_swap_2026-10-07.md)"
+ },
+ "Kit_X_StallGreen": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "approved_by": "검수 (sheet art/review/town5/crossroads_stalls_blue_green.jpg, 37dfdf3: '차양만 바뀜, 사과·톱니 그대로, 이음 자국 없음')",
+  "source": "art/models/tripo/kit_crossroads/Kit_X_StallRed_raw.glb (Tripo batch 2) — 0 points, 0 credits",
+  "edit": "awning only: UV triangles of faces above 57% height, red hue (±28°, S>0.3) → 짙은 초록(시안 오른쪽 아래 가판대 쪽); apples/oranges/teal counter/gold gear unchanged",
+  "file": "art/models/tripo/kit_crossroads/Kit_X_StallGreen_raw.glb",
+  "use": "import C2 (build/import_all/2_second/C2_CrossroadsProps.glb, 8 items) → crossroads K_StallGreen spot (docs/design/crossroads_3d_swap_2026-10-07.md)"
  }
 }
