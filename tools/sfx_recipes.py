@@ -745,6 +745,124 @@ def window_open(f0=1080.0, f1=1730.0, dur=0.21, att=0.022, dec=11.0):
     return finish(osc(fr) * env(n, att, dec) + 0.3 * osc(2 * fr) * env(n, att, dec + 6), 300)
 
 
+# ---------------------------------------------------------------- batch 8 (screens of A23-77 / A23-79 / A23-81, 검수 2026-10-08)
+def swish(dur, f0, f1, seed, flutter=0.0, q=1.2):
+    """a paper / air swish: band noise whose centre glides f0 -> f1, rise-and-fall envelope, optional flutter (Hz)"""
+    n = N(dur)
+    t = secs(n)
+    x = norm(svf_bp(noise(n, seed), glide(n, f0, f1), q)) * np.sin(np.pi * np.linspace(0, 1, n)) ** 0.8
+    if flutter:
+        x *= 0.65 + 0.35 * np.sin(2 * np.pi * flutter * t)
+    return x
+
+
+def quest_open(seed=401, dur=0.28):
+    """'seu-reu-reuk': a scroll unrolls (rising swish with flutter) + two paper flicks"""
+    return finish(at([(swish(dur, 1500, 4200, seed, 26.0), 0, 1.0), (paper(seed + 1)[0], 0.0, 0.7), (paper(seed + 2)[0], dur * 0.8, 0.5)]), 400, 9000)
+
+
+def quest_tab(seed=411, f=3400.0):
+    """'pallang': one paper flick + a tiny dry tick"""
+    n = N(0.09)
+    x = band(n, f, 0.8, seed) * env(n, 0.002, 38)
+    tick = band(N(0.004), 2200, 1.0, seed + 1) * 0.5
+    return finish(at([(x, 0, 1.0), (tick, 0, 1.0)]), 600, 7000)
+
+
+def stamp_press(seed=421, body=420.0):
+    """'kung-chak': a rubber thump (mid body for phones) then a small paper click"""
+    n = N(0.2)
+    thump = osc(glide(n, body * 1.6, body, 0.4)) * env(n, 0.002, 17) + 0.7 * norm(svf_bp(noise(n, seed), 900, 1.2)) * env(n, 0.001, 32)
+    click = band(N(0.006), 2600, 1.2, seed + 1) * env(N(0.006), 0.0005, 300)
+    return finish(at([(thump, 0, 1.0), (click, 0.06, 0.6)]), 150, 7000)
+
+
+def creak(dur=0.26, f0=520.0, f1=820.0, seed=431, vib=28.0):
+    """a short cartoon creak: a gliding triangle with a little wobble + a soft noise edge (smooth: few onsets)"""
+    n = N(dur)
+    t = secs(n)
+    f = glide(n, f0, f1) * (1 + 0.035 * np.sin(2 * np.pi * vib * t))
+    x = 0.6 * tri(f) + 0.2 * norm(svf_bp(noise(n, seed), glide(n, f0 * 2, f1 * 2), 6.0))
+    return FF.lowpass(x, 3000, 2) * np.sin(np.pi * np.linspace(0, 1, n)) ** 1.5
+
+
+def chest_open(seed=441):
+    """'ttalkkak kkiik jjan!': latch (Kenney switch_002) + creak + a rising sparkle run and a gleam"""
+    latch = FF.highpass(kenney("interface/switch_002"), 500, 2)
+    run = glass_run(("G6", "B6", "E7"), 0.045)
+    return finish(at([(latch, 0, 1.0), (creak(seed=seed), 0.06, 0.5), (run, 0.3, 0.6), (gleam(2640.0, 0.5), 0.45, 0.55)]), 300, 8000)
+
+
+def pluck(f, dur=0.35):
+    """a warm kalimba-like pluck: triangle + soft 2nd harmonic, quick decay"""
+    n = N(dur)
+    t = secs(n)
+    x = 0.8 * tri(np.full(n, f)) + 0.25 * np.sin(2 * np.pi * 2 * f * t) * np.exp(-14 * t)
+    return x * np.minimum(t / 0.002, 1.0) * np.exp(-7.0 * t)
+
+
+def welcome_back(notes=("A5", "C#6", "E6"), gap=0.09):
+    """'ttirring~': three warm plucks going up (a major chord) + a soft held top"""
+    parts = [(pluck(note_hz(nm) if "#" not in nm else note_hz(nm.replace("#", "")) * 2 ** (1 / 12)), i * gap, 1.0 - 0.15 * i)
+             for i, nm in enumerate(notes)]
+    top = note_hz(notes[-1].replace("#", "")) * (2 ** (1 / 12) if "#" in notes[-1] else 1)
+    parts.append((pluck(top, 0.45), len(notes) * gap, 0.2))
+    return finish(at(parts), 400, 7000)
+
+
+def diary_page(seed=451):
+    """'chwarak': a big page turns (swish falling 4 -> 1.5 kHz with flutter) and lands with a soft paper thup"""
+    land = band(N(0.05), 700, 1.0, seed + 2) * env(N(0.05), 0.002, 45)
+    return finish(at([(swish(0.26, 4200, 1500, seed, 18.0, 1.0), 0, 1.0), (land, 0.22, 0.5)]), 300, 10000)
+
+
+def candy_plop(seed=461, f=2600.0):
+    """'pong-ttallang': a small pop as the candy lands + glass plinks of the jar"""
+    pop = osc(glide(N(0.05), 950, 1300, 0.5)) * env(N(0.05), 0.001, 70)
+    plink = bell(f, 0.25, 22.0, ((1.0, 1.0, 1.0), (2.71, 0.35, 1.6), (5.1, 0.12, 2.4)))
+    rattle = bell(f * 1.19, 0.12, 40.0, ((1.0, 1.0, 1.0), (2.71, 0.3, 1.6)))
+    return finish(at([(pop, 0, 0.8), (plink, 0.012, 0.8), (rattle, 0.075, 0.35)]), 500, 9000)
+
+
+def boing(f0, f1, dur=0.16):
+    n = N(dur)
+    f = glide(n, f0, f1, 0.6) * (1 + 0.03 * np.sin(2 * np.pi * 18 * secs(n)))
+    return osc(f) * env(n, 0.003, 14)
+
+
+def king_help_home(gaps=(0.0, 0.2, 0.37), base=520.0):
+    """'ppoyong ppoyong banjjak': three jelly boings hopping away (each a little higher, quieter, duller) + a gleam"""
+    parts = []
+    for i, t in enumerate(gaps):
+        b = base * 2 ** (2 * i / 12)
+        parts.append((FF.lowpass(boing(b, b * 1.5), 4000 - 800 * i, 2), t, 1.0 * 0.78 ** i))
+    parts.append((gleam(2350.0, 0.35), gaps[-1] + 0.16, 0.4))
+    return finish(at(parts), 300, 7000)
+
+
+def squeak(f0=1150.0, f1=1750.0, dur=0.07):
+    n = N(dur)
+    return (0.7 * osc(glide(n, f0, f1, 0.5)) + 0.3 * tri(glide(n, f0, f1, 0.5))) * np.sin(np.pi * np.linspace(0, 1, n))
+
+
+def tickle_coins(seed=471, n_coins=8):
+    """'ppik! jjallang-jjallang': a toy squeak, then our coins tumble out in a random little cascade"""
+    rng = np.random.default_rng(seed)
+    names = ("C7", "D7", "E7", "G7", "A7")
+    t, parts = 0.1, [(squeak(), 0, 0.7)]
+    for i in range(n_coins):
+        parts.append((coin(note_hz(names[rng.integers(0, len(names))]), 0.16), t, 0.95 - 0.06 * i))
+        t += rng.uniform(0.04, 0.075)
+    return finish(FF.lowpass(at(parts), 7000, 2), 400)
+
+
+def tip_ding(name="G6", dur=0.3):
+    """'ding': one soft chime with a gentle start"""
+    c = bell(note_hz(name), dur, 9.0, ((1.0, 1.0, 1.0), (2.0, 0.18, 1.5), (3.0, 0.05, 2.2)))
+    n = len(c)
+    return finish(c * np.minimum(secs(n) / 0.003, 1.0), 400, 7000)
+
+
 RECIPES = {
     "GoldPickup": {"sA": ("our coins D7-E7-G7 stepping up, 55 ms apart (sound_spec)", lambda: gold(("D7", "E7", "G7"))),
                    "sB": ("our coins E7-D7-G7 (the other order, sound_spec)", lambda: gold(("E7", "D7", "G7"))),
@@ -844,4 +962,24 @@ RECIPES = {
             "kB": ("same, a hair lower (0.97x) and a softer click (-12 dB), 42 ms", lambda: tap(0.97, -12.0, 0.042))},
     "WindowOpen": {"sA": ("round tone 1080 -> 1730 Hz + soft octave, 22 ms attack, 0.21 s (mirror of the new WindowClose)", lambda: window_open()),
                    "sB": ("round tone 1000 -> 1600 Hz, 25 ms attack, 0.2 s", lambda: window_open(1000.0, 1600.0, 0.2, 0.025, 12.0))},
+    "QuestOpen": {"sA": ("scroll unroll: swish 1.5 -> 4.2 kHz with 26 Hz flutter + two paper flicks, 0.28 s", lambda: quest_open()),
+                  "sB": ("same, a little longer and another seed", lambda: quest_open(403, 0.34))},
+    "QuestTab": {"sA": ("one paper flick 3.4 kHz + tiny tick", lambda: quest_tab()),
+                 "sB": ("a lower flick 2.8 kHz", lambda: quest_tab(413, 2800.0))},
+    "StampPress": {"sA": ("rubber thump 670 -> 420 Hz + 900 Hz body noise, paper click @45 ms", lambda: stamp_press()),
+                   "sB": ("a higher thump (body 520 Hz)", lambda: stamp_press(423, 520.0))},
+    "Chest7Open": {"sA": ("latch (Kenney switch_002) + creak 520 -> 820 Hz + glass run E6-G6-B6-D7-E7 + gleam", lambda: chest_open()),
+                   "sB": ("same with another creak", lambda: chest_open(443))},
+    "WelcomeBack": {"sA": ("three warm plucks A5-C#6-E6 90 ms apart + a soft held top", lambda: welcome_back()),
+                    "sB": ("plucks D6-F#6-A6", lambda: welcome_back(("D6", "F#6", "A6")))},
+    "DiaryPage": {"sA": ("page swish 4.2 -> 1.5 kHz with flutter + soft paper thup", lambda: diary_page()),
+                  "sB": ("another page", lambda: diary_page(453))},
+    "CandyPlop": {"sA": ("pop 950 -> 1300 Hz + glass plink 2.6 kHz + small rattle", lambda: candy_plop()),
+                  "sB": ("a higher jar 3.1 kHz", lambda: candy_plop(463, 3100.0))},
+    "KingHelpHome": {"sA": ("three jelly boings 520 Hz up by 2 semitones, 0 / 200 / 370 ms, duller + gleam", lambda: king_help_home()),
+                     "sB": ("boings a little lower and wider apart", lambda: king_help_home((0.0, 0.22, 0.42), 470.0))},
+    "KingTickleCoins": {"sA": ("toy squeak 1.15 -> 1.75 kHz + 8 coins tumbling 40-75 ms apart", lambda: tickle_coins()),
+                        "sB": ("squeak + 7 coins, another order", lambda: tickle_coins(473, 7))},
+    "TipDing": {"sA": ("one soft chime G6 1568 Hz, 0.3 s", lambda: tip_ding()),
+                "sB": ("a lower chime E6", lambda: tip_ding("E6"))},
 }

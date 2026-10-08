@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: one beginner archer weapon inventory icon for the cute Roblox fantasy RPG Halo & Horns.
+Primary request: create a completely NEW standalone illustration of exactly ONE plain wooden HUNTING BOW. New artwork from scratch, not a partial edit and not a collage.
+Style reference observation: the project's existing Weapon_Archer_T1 and T2 icons use chunky warm honey-brown wood, a brown leather grip, a thick dark brown contour, softly painted volumetric 3D-cartoon shading and large readable material shapes. Match this established illustrated style, while drawing a new bow from scratch.
+Subject: one simple continuous curved wooden hunting bow, with two springy wooden limbs connected by ONE leather-wrapped grip exactly at the center. One taut off-white cord attaches securely to both limb tips and crosses the open space in a single straight line. Broad clear C-like bow silhouette. No arrow, no second handle, no disconnected rope, no dangling spare parts. Carefully carved, worn low-tier wood and ordinary leather, not a prestigious or magical weapon.
+Composition: exactly 1024 x 1024 pixels, square canvas, full object diagonally from lower-left to upper-right, bow curve toward upper-left and straight cord on lower-right, almost flat side view with subtle depth. Centered object occupying 78 to 82 percent of canvas, all edges generously clear of cropping, one object only.
+Lighting: soft diffuse upper-left light, legible warm wood grain, matte leather, restrained highlights, no metallic sheen.
+Background: truly transparent PNG alpha, including the open space between limbs and string. Crisp anti-aliased outline; no painted checkerboard or opaque backdrop.
+Avoid: characters, hands, floor, cast shadow, glow, haze, sparkles, detached specks, text, numbers, watermarks, panels, borders, gems, ornate gold fittings, blood, gore. Keep the mechanism coherent and the silhouette readable at 52 pixels.
