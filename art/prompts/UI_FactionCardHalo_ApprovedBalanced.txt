@@ -1,0 +1,13 @@
+Create ONE completely newly drawn, full standalone transparent PNG fantasy faction card. Use the attached approved light-knight card ONLY as the mandatory design reference. This is a full redraw, not a partial patch and not an alternative design. The owner explicitly rejected different emblems, frames and ornament silhouettes: faithfully keep the exact existing eight-ray sun with convex gold center, laurel, feather wings, tall ivory columns, gold spear finials, ivory scroll, narrow subtitle plaque, brown motto plaque, cream benefit rectangle, yellow capsule button and bottom spear. Do not simplify, add new ornaments, replace the frame, detach the crest, redesign icons, or change the style.
+
+Full tall portrait card, front orthographic, symmetrical and crisp, approximately 570:954 canvas aspect ratio, transparent background and clear margins. Draw all the artwork anew at high resolution. Keep the full top tip and bottom tip within the image.
+
+Precise shared layout measured on an imagined 570 by 954 canvas (scale these coordinates proportionally if higher resolution):
+- Overall card top tip y12, bottom tip y942, body centered x285.
+- Keep the large approved crest in the top third. Name ivory ribbon text opening centered at y363; subtitle plate centered y425; brown motto centered y467. Keep all these surfaces BLANK.
+- The large LOWER BENEFIT RECTANGLE must have the same dimensions as companion cards: INNER RECTANGULAR CREAM SURFACE x85 to485, y500 to755, so width400 height255; its enclosing gold border must stay just outside that common inner rectangle. Straight symmetric sides, smooth light cream fill, same approved border styling.
+- Exactly four original benefit icons, as pictured: green upward arrow, red heart, cyan gem with white feather wings, coin stack. Their centers all x134 and y530,595,660,725. Each fits within a46x46 area. Keep the area x180 to455 blank for clean separate typesetting.
+- The rounded yellow BUTTON's main gold capsule OUTER EDGE must be x95 to475, y773 to861: width380 height88, centered x285,y817. Keep its original polished gold-yellow face and rounded gold rim. Same body size as all companion buttons; surrounding leaf ornaments are outside this measured capsule.
+- Continue the existing approved lower ornament to the bottom tip at y942.
+
+No letters, text, numbers, words, gibberish or watermark anywhere: all lettering will be typeset separately using the approved real Korean font. Existing four icons must be redrawn faithfully, no extra icons. Smooth clean blank surfaces with no mottled paper texture or dirty blotches. No background pixels, no checkerboard, no detached bits. Transparent alpha outside the single complete card.

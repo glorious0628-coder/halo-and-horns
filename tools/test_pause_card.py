@@ -42,6 +42,13 @@ MUTATIONS = [
     ("brackets kept in the goal", 'local s = string.gsub(string.gsub(text, "[<>]", ""), "%s+", " ")',
      'local s = string.gsub(text, "%s+", " ")'),
     ("the backdrop does not close", "\toverlay.Activated:Connect(function() pick(\"Backdrop\") end)\n", ""),
+    # A23-81 the tip card
+    ("a tip's [Go] opens nothing", "\t\tif id == \"Go\" and card.Window then openWindow(card.Window, card.WindowArg) end\n", ""),
+    ("a tip without words shows", "\t\tif not text then return false end\n", ""),
+    ("a tip's window loses its tab", "\treturn (pcall(panels.Open, id, arg))\n", "\treturn (pcall(panels.Open, id))\n"),
+    ("a tip always has [Go]",
+     "\t\tcard.Buttons = go and { { Id = \"Go\", Text = clean(go.Text, T.NextMax) or T.Text.Go }, { Id = \"OK\", Text = T.Text.OK } }\n",
+     "\t\tcard.Buttons = { { Id = \"Go\", Text = T.Text.Go }, { Id = \"OK\", Text = T.Text.OK } }\n"),
 ]
 
 

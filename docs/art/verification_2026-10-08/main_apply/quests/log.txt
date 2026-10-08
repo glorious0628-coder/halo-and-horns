@@ -1,0 +1,21 @@
+[   0.3] fresh attr: nil
+[   0.4] device: default
+[   7.7] loaded: DataLoaded=true Faction=Horns Class=Mage ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 Level=19 CarriedGold=0 BankGold=11651 Honor=0 Infamy=2 Au
+[  21.8] G left lines - hangul visible: []
+[  23.0] saved docs\art\verification_2026-10-08\main_apply\quests\01_left_lines.png (white 0%)
+[  24.6] Q window tabs: ["Main 1", "Side 2", "Daily 3", "Event 1", "Faction 1"]
+[  24.6] hangul in window: []
+[  25.3] saved docs\art\verification_2026-10-08\main_apply\quests\02_window_first.png (white 0%)
+[  26.9] tab Main 1: hangul 0 | 224/224 ; 100/100 ; <font color="#ff9628">Siege: 150 each</font> · 9:35 ; 0/1 ; In progress ; Done
+[  27.6] saved docs\art\verification_2026-10-08\main_apply\quests\03_tab_0.png (white 0%)
+[  29.0] tab Side 2: hangul 0 | 224/224 ; 100/100 ; <font color="#ff9628">Siege: 150 each</font> · 9:33 ; 0/1 ; In progress ; Done
+[  29.7] saved docs\art\verification_2026-10-08\main_apply\quests\03_tab_1.png (white 0%)
+[  31.0] tab Daily 3: hangul 0 | 224/224 ; 100/100 ; <font color="#ff9628">Siege: 150 each</font> · 9:31 ; 0/1 ; In progress ; Done
+[  31.7] saved docs\art\verification_2026-10-08\main_apply\quests\03_tab_2.png (white 0%)
+[  33.0] tab Event 1: hangul 0 | 224/224 ; 100/100 ; <font color="#ff9628">Siege: 150 each</font> · 9:29 ; 0/1 ; In progress ; Done
+[  33.8] saved docs\art\verification_2026-10-08\main_apply\quests\03_tab_3.png (white 0%)
+[  35.1] tab Faction 1: hangul 0 | 224/224 ; 100/100 ; <font color="#ff9628">Siege: 150 each</font> · 9:27 ; 0/1 ; In progress ; Done
+[  35.8] saved docs\art\verification_2026-10-08\main_apply\quests\03_tab_4.png (white 0%)
+[  37.0] after Q again tabs visible: 0
+[  37.0] console flagged: Maximum re-entrancy depth (80) exceeded calling task.defer
+[  38.3] play stopped

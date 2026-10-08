@@ -1253,11 +1253,26 @@ Config.War = {
 -- Optional keys (WarService applies them only if present): FogStart, ExposureCompensation, BloomIntensity (otherwise
 -- WarService SKY_EXTRAS). 2026-10-08 (검수 style drift #18): Neutral's fog = the sky's horizon colour in the photos
 -- (~150, 206, 226 - the old pale 205, 215, 230 drew a grey band where the sea ends) and a slightly warm day tint.
+-- 2026-10-08 later (user on the meadow photo: "입체적이지 않아"; 검수: the darkest 10% of our picture was 0.69-0.74 bright vs
+-- the concept's 0.41): depth for Neutral - the sun lower (15.3: longer shadows), a darker, cooler shade (Ambient /
+-- OutdoorAmbient: the sky fill no longer lights the shadow side flat), a little more sun (Brightness 2.2, exposure
+-- -0.05) so the lit side stays bright, the haze closer (FogStart 150, FogEnd 950: far hills fade into the horizon
+-- colour). WarService pairs it with sharper shadows (ShadowSoftness 0.15), less sky diffuse, contrast +0.12 and a
+-- touch less saturation. Still no Atmosphere (A9-3): it would replace FogColor / FogStart / FogEnd and break the war
+-- skies' fog and ZoneLook's zone fog; the closer classic fog does the far haze.
 Config.Sky = {
 	TweenTime = 3,
-	Neutral = { ClockTime = 14.2, Brightness = 2.0, Ambient = Color3.fromRGB(110, 108, 106), OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.2, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
+	Neutral = { ClockTime = 15.3, Brightness = 2.2, Ambient = Color3.fromRGB(72, 76, 86), OutdoorAmbient = Color3.fromRGB(110, 120, 135), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 150, FogEnd = 950, ExposureCompensation = -0.05, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
 	Dawn = { ClockTime = 7.2, Brightness = 2.1, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(150, 130, 104), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 240, 200) },
 	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(115, 76, 92), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 200, 200) },
+}
+-- 2026-10-08 (이미지 생성 1 a333f3f, 검수 OK): the painted day sky's six faces for Lighting.Sky (SkyboxFt / Bk / Lf / Rt /
+-- Up / Dn; seen from above Ft 0, Rt 90, Bk 180, Lf 270 degrees clockwise; Up has Ft at its bottom - turn Up by 90 if its
+-- seam is off, swap Lf / Rt if the sides run backwards; Dn = FogColor 150, 205, 228). No rays; the sun stays Sky_Sun.
+-- 메인 반영 sets them on Lighting.Sky
+Config.Sky.Faces = {
+	Ft = "rbxassetid://86737469798577", Bk = "rbxassetid://106230772458054", Lf = "rbxassetid://113124022425103",
+	Rt = "rbxassetid://80981399991828", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
 }
 
 -- addendum A9-2: client hit feel (Fx only). White flash of monsters within FlashRadius of my own Swing/Release hit
@@ -3056,6 +3071,35 @@ Config.Board = {
 	},
 }
 
+----------------------------------------------------------------- the quest window's tabs (A23-81)
+-- A23-81 (user 2026-10-08 15:05): Q opens the whole quest window, five tabs by kind of quest. One table decides the tab
+-- of a quest: ById (the "Quests" row Id - "story:<id>", "job:<n>", a daily template id, Config.Tutorial.QuestId) wins,
+-- then ByKind (the row's Kind), then Default. Faction = the Halo / Horns / guild stories (deeds of a side); Event = the
+-- goose and crown war stories (and later event quests); every daily / extra slot is Daily. HudLines = the HUD's quest
+-- lines on the left (only quests in progress, main first).
+Config.QuestTabs = {
+	Order = { "Main", "Side", "Daily", "Event", "Faction" },
+	Names = { Main = "Main", Side = "Side", Daily = "Daily", Event = "Event", Faction = "Faction" }, -- game text: English only
+	ByKind = { Tutorial = "Main", Main = "Main", Sub = "Side", Job = "Side", Daily = "Daily", Extra = "Daily", Weekly = "Daily",
+		Event = "Event", Faction = "Faction", Bounty = "Faction" },
+	ById = {
+		["story:S1"] = "Event", ["story:S2"] = "Event", ["story:GW4"] = "Event", ["story:GW5"] = "Event",
+		["story:H1"] = "Faction", ["story:H2"] = "Faction", ["story:H3"] = "Faction", ["story:H5"] = "Faction",
+		["story:H6"] = "Faction", ["story:R1"] = "Faction", ["story:R3"] = "Faction", ["story:R5"] = "Faction",
+		["story:R6"] = "Faction", ["story:R7"] = "Faction", ["story:N1"] = "Faction", ["story:N2"] = "Faction",
+	},
+	Default = "Side",
+	HudLines = 3,
+}
+
+-- the quest window tab of a "Quests" row (id, kind): ById, else ByKind, else Default
+function Config.QuestTab(id, kind)
+	local qt = Config.QuestTabs
+	local byId = type(id) == "string" and qt.ById[id] or nil
+	if byId then return byId end
+	return (type(kind) == "string" and qt.ByKind[kind]) or qt.Default
+end
+
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {
 	Slots = 3,
@@ -3573,6 +3617,8 @@ Config.Help = {
 	Title = "Help", NewsTitle = "News",
 	GuideAgain = "Meet the Guide Again", BackToHelp = "< Help", TalkToGuide = "Talk to the Guide",
 	CameraLine = "Hold the right mouse button and drag to turn the camera.", -- A23-51: right drag only
+	-- A23-81 (user 2026-10-08): the keys tip again (the Lv5 card shows it once): a line under the keys + a button
+	KeysTip = "Tip: You can change your keys in Settings!", KeysButton = "Key settings",
 	TouchLines = {
 		"Tap the buttons on the screen to attack, use skills and drink potions.",
 		"Drag with one finger to turn the camera.",
@@ -4600,7 +4646,13 @@ Config.UIArt = {
 		Weapon_Warrior_T8 = { Id = "rbxassetid://73318746668169", Size = Vector2.new(512, 512) }, -- jelly-crown legendary (bundle 9)
 		Weapon_Mage_T8 = { Id = "rbxassetid://109033955946235", Size = Vector2.new(512, 512) },
 		Weapon_Archer_T8 = { Id = "rbxassetid://118154781260735", Size = Vector2.new(512, 512) },
-		Tex_Grass = { Id = "rbxassetid://72716790388998", Size = Vector2.new(1024, 1024) }, -- A23-30 E: Firefly painted meadow (Tex_Grass_FF)
+		-- 2026-10-08 meadow terrain v3 (이미지 생성 1, 검수 OK; user: "너무 초록, 입체적이지 않아"): Tex_Grass_FF3 on Grass and three
+		-- new meadow tiles on base materials no part uses (Salt / Sandstone / Pavement, 검수 checked the main save);
+		-- tools/apply_surface_materials.lua pairs them (Organic, 22 / 16 studs a tile)
+		Tex_Grass = { Id = "rbxassetid://116841810719907", Size = Vector2.new(1024, 1024) }, -- Tex_Grass_FF3 (was FF2)
+		Tex_MeadowFlowers = { Id = "rbxassetid://112552326538919", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowFlowers_FF3 -> Salt (GE_MeadowFlowers)
+		Tex_MeadowShade = { Id = "rbxassetid://100025729953105", Size = Vector2.new(1024, 1024) }, -- Tex_GrassShade_FF3 -> Sandstone (GE_MeadowShade)
+		Tex_MeadowDirt = { Id = "rbxassetid://111724093383818", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowDirt_FF3code -> Pavement (GE_MeadowDirt)
 		Tex_LeafyGrass = { Id = "rbxassetid://99820027824650", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
 		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
 		Tex_Ground = { Id = "rbxassetid://140158008208812", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins dirt (Tex_Ground_FF)

@@ -1286,6 +1286,167 @@
     "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
    },
    "notes": {"pairs": "bounces (light paper-roll knocks, gaps getting shorter) + one gleam: no coins (GoldPickup / ComboCoin), no marimba two-note (QuestNew), no rising sweep (ScrollSuccess), no confetti (JackpotOther)"}
+  },
+  "QuestOpen": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "rare",
+   "say": "스르륵 (a quest scroll unrolls)",
+   "moment": "The quest window (Q) opens.",
+   "rules": {
+    "durMs": {"range": [220, 420], "hard": [150, 600]},
+    "firstOnsetMs": [0, 15],
+    "centroidHz": [1500, 5000],
+    "lt150": [0, 0.02],
+    "gt8k": [0, 0.1],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
+   }
+  },
+  "QuestTab": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "quiet",
+   "volume": 0.3,
+   "repeat": "rare",
+   "say": "팔랑 (one paper flick)",
+   "moment": "A tab of the quest window is turned.",
+   "rules": {
+    "durMs": {"range": [60, 160], "hard": [40, 250]},
+    "attackMs": {"range": [0, 8], "hard": [0, 15]},
+    "centroidHz": [1500, 5000],
+    "lt300": [0, 0.02],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
+   }
+  },
+  "StampPress": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "ui",
+   "volume": 0.5,
+   "repeat": "rare",
+   "say": "쿵-착 (a rubber stamp)",
+   "moment": "Today's attendance stamp lands on the 7-day board.",
+   "rules": {
+    "durMs": {"range": [150, 350], "hard": [100, 500]},
+    "attackMs": {"range": [0, 10], "hard": [0, 20]},
+    "nOnsets": {"range": [1, 3], "hard": [1, 4]},
+    "centroidHz": [500, 2500],
+    "lt150": [0, 0.03],
+    "phoneDropDb": {"range": [0, 2.5], "hard": [0, 4]}
+   }
+  },
+  "Chest7Open": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "big",
+   "volume": 0.6,
+   "repeat": "rare",
+   "say": "딸깍 끼익 짠! (the day-7 chest opens with a sparkle)",
+   "moment": "The 7th attendance chest opens.",
+   "rules": {
+    "durMs": {"range": [700, 1100], "hard": [500, 1400]},
+    "firstOnsetMs": [0, 20],
+    "nOnsets": {"range": [2, 8], "hard": [2, 10]},
+    "centDir": "up",
+    "centroidHz": [1000, 4000],
+    "lt150": [0, 0.02],
+    "gt8k": [0, 0.08],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3.5]}
+   }
+  },
+  "WelcomeBack": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "ui",
+   "volume": 0.5,
+   "repeat": "rare",
+   "say": "띠리링~ (a warm hello, three notes up)",
+   "moment": "The Welcome back card after 6 h away.",
+   "rules": {
+    "durMs": {"range": [450, 750], "hard": [350, 900]},
+    "attackMs": {"range": [0, 10], "hard": [0, 20]},
+    "nOnsets": {"range": [3, 6], "hard": [2, 8]},
+    "pitchDir": "up",
+    "centroidHz": [900, 3000],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
+   }
+  },
+  "DiaryPage": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "ui",
+   "volume": 0.4,
+   "repeat": "rare",
+   "say": "촤락 (a big book page turns)",
+   "moment": "A page of the King Diary turns.",
+   "rules": {
+    "durMs": {"range": [200, 420], "hard": [120, 600]},
+    "firstOnsetMs": [0, 20],
+    "centroidHz": [1200, 5000],
+    "lt150": [0, 0.02],
+    "gt8k": [0, 0.15],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
+   }
+  },
+  "CandyPlop": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "ui",
+   "volume": 0.45,
+   "repeat": "rare",
+   "say": "퐁·딸랑 (a candy drops into a glass jar)",
+   "moment": "A candy goes into the candy jar.",
+   "rules": {
+    "durMs": {"range": [200, 400], "hard": [120, 550]},
+    "attackMs": {"range": [0, 8], "hard": [0, 15]},
+    "nOnsets": {"range": [1, 4], "hard": [1, 6]},
+    "centroidHz": [1200, 4500],
+    "lt300": [0, 0.02],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]}
+   }
+  },
+  "KingHelpHome": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "big",
+   "volume": 0.55,
+   "repeat": "rare",
+   "say": "뽀용 뽀용 반짝 (the king slime hops home)",
+   "moment": "King slime finish card: [Help it hop home].",
+   "rules": {
+    "durMs": {"range": [600, 950], "hard": [450, 1200]},
+    "nOnsets": {"range": [3, 7], "hard": [2, 9]},
+    "centroidHz": [700, 3000],
+    "pitchMinHz": [250, null],
+    "lt150": [0, 0.02],
+    "phoneDropDb": {"range": [0, 2], "hard": [0, 3.5]}
+   }
+  },
+  "KingTickleCoins": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "ui",
+   "volume": 0.5,
+   "repeat": "rare",
+   "say": "삑! 짤랑짤랑 (a toy squeak, coins tumble out)",
+   "moment": "King slime finish card: [Tickle out its coins].",
+   "rules": {
+    "durMs": {"range": [500, 850], "hard": [350, 1100]},
+    "nOnsets": {"range": [4, 12], "hard": [3, 16]},
+    "centroidHz": [1800, 4000],
+    "lt300": [0, 0.02],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2]}
+   }
+  },
+  "TipDing": {
+   "status": "new key, batch 8 (검수 2026-10-08: screens of A23-77 / A23-79 / A23-81)",
+   "tier": "normal",
+   "volume": 0.35,
+   "repeat": "rare",
+   "say": "띵 (a soft tip chime)",
+   "moment": "The Lv5 key-settings tip appears.",
+   "rules": {
+    "durMs": {"range": [150, 320], "hard": [100, 450]},
+    "attackMs": {"range": [0, 6], "hard": [0, 12]},
+    "nOnsets": {"range": [1, 2], "hard": [1, 3]},
+    "centroidHz": [1000, 3000],
+    "lt300": [0, 0.01],
+    "phoneDropDb": {"range": [0, 1], "hard": [0, 2]}
+   }
   }
  },
  "pairs": [
@@ -1718,6 +1879,111 @@
    "b": "GoldenSpot",
    "require": {"score": 1.0},
    "why": "my drop is not a golden monster in view"
+  },
+  {
+   "kind": "distinct",
+   "a": "QuestOpen",
+   "b": "WindowOpen",
+   "require": {"score": 1.0},
+   "why": "a quest scroll is not a plain window"
+  },
+  {
+   "kind": "distinct",
+   "a": "QuestTab",
+   "b": "Tap",
+   "require": {"score": 1.0},
+   "why": "a tab flick is not a button tap"
+  },
+  {
+   "kind": "distinct",
+   "a": "WelcomeBack",
+   "b": "QuestNew",
+   "require": {"score": 1.0},
+   "why": "hello is not a new quest"
+  },
+  {
+   "kind": "distinct",
+   "a": "WelcomeBack",
+   "b": "QuestDone",
+   "require": {"score": 1.0},
+   "why": "hello is not a finished quest"
+  },
+  {
+   "kind": "distinct",
+   "a": "TipDing",
+   "b": "SkillReady",
+   "require": {"score": 1.0},
+   "why": "a tip is not a skill ready pip"
+  },
+  {
+   "kind": "distinct",
+   "a": "TipDing",
+   "b": "QuestNew",
+   "require": {"score": 1.0},
+   "why": "a tip is not a new quest"
+  },
+  {
+   "kind": "distinct",
+   "a": "KingTickleCoins",
+   "b": "GoldPickup",
+   "require": {"score": 1.0},
+   "why": "tickled coins are their own moment"
+  },
+  {
+   "kind": "distinct",
+   "a": "KingTickleCoins",
+   "b": "Plunder",
+   "require": {"score": 1.0},
+   "why": "not losing coins"
+  },
+  {
+   "kind": "distinct",
+   "a": "KingHelpHome",
+   "b": "Jump",
+   "require": {"score": 1.0},
+   "why": "hopping home is not my jump"
+  },
+  {
+   "kind": "distinct",
+   "a": "KingHelpHome",
+   "b": "Respawn",
+   "require": {"score": 1.0},
+   "why": "not coming back"
+  },
+  {
+   "kind": "distinct",
+   "a": "CandyPlop",
+   "b": "ComboCoin",
+   "require": {"score": 1.0},
+   "why": "candy is not gold"
+  },
+  {
+   "kind": "distinct",
+   "a": "Chest7Open",
+   "b": "ScrollSuccess",
+   "require": {"score": 1.0},
+   "why": "a chest is not an enhance"
+  },
+  {
+   "kind": "distinct",
+   "a": "Chest7Open",
+   "b": "Loot",
+   "require": {"score": 1.0},
+   "why": "a chest is not a drop"
+  },
+  {
+   "kind": "distinct",
+   "a": "StampPress",
+   "b": "Equip",
+   "require": {"score": 1.0},
+   "why": "a stamp is not an equip"
+  },
+  {
+   "kind": "distinct",
+   "a": "DiaryPage",
+   "b": "QuestTab",
+   "require": {"score": 1.0},
+   "why": "a book page is not a quest tab"
   }
  ]
 }

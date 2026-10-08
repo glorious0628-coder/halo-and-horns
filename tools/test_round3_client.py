@@ -52,7 +52,9 @@ def main():
         ("#1 S0 is looked up only until auto combat is unlocked",
          'if attr("AutoCombatUnlocked", false) ~= true then' in refresh and 'e.Story and e.Story.Id == "S0"' in refresh),
         ("#1 phone header line 2: story -> claim -> S0 -> daily", "second = callIndex or firstClaim or s0 or firstDaily" in refresh),
-        ("#1 quest line 2: story -> claim -> S0 -> daily", "local alt = callIndex or firstClaim or s0 or firstDaily" in refresh),
+        # A23-81 (2026-10-08): up to Config.QuestTabs.HudLines lines; after line 1 the same order (story, claim, S0, daily)
+        ("#1 quest lines 2+: story -> claim -> S0 -> daily (A23-81 order)",
+         "L.QuestLineOrder(entries, shown, { callIndex, second, firstClaim, s0, firstDaily })" in refresh),
         ("#1 PC: no daily header at step 0",
          "ui.questHeader.Visible = not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)" in refresh),
         ("ProgressUnit kept from the server row (<= 3 letters)",

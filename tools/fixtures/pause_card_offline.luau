@@ -302,5 +302,25 @@ Card.Show("Pause", { Next = string.rep("a", 80) })
 check("a long goal is cut at 60 with …", text("Body") == "Next time: " .. string.rep("a", 60) .. "…", text("Body"))
 click("OK")
 
+-- 5) a tip card (A23-81: the keys tip after the first skill)
+reset()
+local OPENED = {}
+Cdouble.Panels.Open = function(id, arg) table.insert(OPENED, { id, arg }) end
+Card.Show("Tip", { Text = "Tip: You can change your keys in Settings!",
+	Go = { Text = "Open Settings", Window = "Settings", Arg = { Tab = "Keys" } } })
+check("a tip card: 'Tip' and its words", text("Title") == "Tip" and text("Body") == "Tip: You can change your keys in Settings!",
+	tostring(text("Title")) .. " | " .. tostring(text("Body")))
+check("[Open Settings] and [OK]: the same look", BUTTONS.Go and BUTTONS.OK and BUTTONS.Go.Button.Text == "Open Settings"
+	and BUTTONS.Go.Part == BUTTONS.OK.Part)
+click("Go")
+check("[Open Settings] opens Settings on its Keys tab (no travel)", OPENED[1] and OPENED[1][1] == "Settings" and OPENED[1][2]
+	and OPENED[1][2].Tab == "Keys" and #TRAVEL == 0 and not Card.IsOpen())
+reset()
+check("a tip without words is refused", Card.Show("Tip", { Go = { Text = "Open", Window = "Settings" } }) == false and not Card.IsOpen())
+Card.Show("Tip", { Text = "Hello" })
+check("a tip without a window: only [OK]", BUTTONS.OK ~= nil and BUTTONS.Go == nil)
+click("OK")
+check("[OK] on a tip opens nothing", #OPENED == 1)
+
 print(("PAUSE_CARD_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("PAUSE_CARD_OFFLINE_OK") end

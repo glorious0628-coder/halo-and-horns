@@ -823,8 +823,10 @@ function Audio.OnQuests(payload)
 	if type(payload) == "string" then
 		local ok, decoded = pcall(HttpService.JSONDecode, HttpService, payload)
 		list = ok and decoded or nil
-	elseif type(payload) == "table" and type(payload.Quests) == "table" then
-		list = payload.Quests
+		payload = list -- a JSON payload is read like a table payload below
+	end
+	if type(payload) == "table" and type(payload.Quests) == "table" then
+		list = payload.Quests -- { Quests, Book } (A23-81), as a table or its JSON
 	end
 	if type(list) ~= "table" then return end
 	local ids, fresh = {}, false
