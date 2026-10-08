@@ -3232,25 +3232,25 @@ Config.Visuals = {
 -- rank, R1 and R2 share one 64 px palette - so the shape stays the rank's (a bought look never passes for a higher
 -- rank). Glow = the halo's light, Sparkle = the top rank's sparkles (round, no rays). Ids: UiSandbox upload (이미지 개발)
 Config.LookThemes = {
-	HaloIce = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HaloIce = { Faction = "Halo", R1R2 = "rbxassetid://137659488563185", R3 = "rbxassetid://108650983430092", R4 = "rbxassetid://76422994410695", R5 = "rbxassetid://130485697124157",
 		Glow = Color3.fromRGB(170, 225, 255), Sparkle = Color3.fromRGB(225, 245, 255) }, -- shop
-	HaloGold = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HaloGold = { Faction = "Halo", R1R2 = "rbxassetid://124557820913278", R3 = "rbxassetid://124586271258304", R4 = "rbxassetid://110992671351515", R5 = "rbxassetid://126895446255168",
 		Glow = Color3.fromRGB(255, 170, 110), Sparkle = Color3.fromRGB(255, 120, 130) }, -- shop
-	HornsLava = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HornsLava = { Faction = "Horns", R1R2 = "rbxassetid://80238307725390", R3 = "rbxassetid://82767525442280", R4 = "rbxassetid://78943828071190", R5 = "rbxassetid://85082048989349",
 		Glow = Color3.fromRGB(255, 120, 40), Sparkle = Color3.fromRGB(255, 190, 90) }, -- shop
-	HornsShadow = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HornsShadow = { Faction = "Horns", R1R2 = "rbxassetid://77090857785800", R3 = "rbxassetid://134445622258892", R4 = "rbxassetid://97761533502616", R5 = "rbxassetid://112202207856048",
 		Glow = Color3.fromRGB(160, 100, 255), Sparkle = Color3.fromRGB(215, 190, 255) }, -- shop
-	HaloSprout = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HaloSprout = { Faction = "Halo", R1R2 = "rbxassetid://86617186225584", R3 = "rbxassetid://126112718924134", R4 = "rbxassetid://70457193636840", R5 = "rbxassetid://84485205872223",
 		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
-	HornsSprout = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HornsSprout = { Faction = "Horns", R1R2 = "rbxassetid://98729066506053", R3 = "rbxassetid://111198088905000", R4 = "rbxassetid://92425781835056", R5 = "rbxassetid://88143987545459",
 		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
-	HaloStarlight = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HaloStarlight = { Faction = "Halo", R1R2 = "rbxassetid://79900622177360", R3 = "rbxassetid://106125508143560", R4 = "rbxassetid://120783323880170", R5 = "rbxassetid://112919940044810",
 		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
-	HornsStarlight = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HornsStarlight = { Faction = "Horns", R1R2 = "rbxassetid://87973276568961", R3 = "rbxassetid://120704216649593", R4 = "rbxassetid://77284887873440", R5 = "rbxassetid://114837008556596",
 		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
-	HaloPlatinum = { Faction = "Halo", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HaloPlatinum = { Faction = "Halo", R1R2 = "rbxassetid://129286691726526", R3 = "rbxassetid://125145984859168", R4 = "rbxassetid://116074292544544", R5 = "rbxassetid://73047553511936",
 		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
-	HornsPlatinum = { Faction = "Horns", R1R2 = "", R3 = "", R4 = "", R5 = "",
+	HornsPlatinum = { Faction = "Horns", R1R2 = "rbxassetid://118578097813756", R3 = "rbxassetid://98158447043587", R4 = "rbxassetid://88887895520232", R5 = "rbxassetid://127877205287600",
 		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
 }
 
@@ -4583,6 +4583,7 @@ Config.UIArt = {
 		IconPassGold2 = { Id = "rbxassetid://100341080284667", Size = Vector2.new(512, 512) }, -- PassIconGold2.png
 		IconPassVIP = { Id = "rbxassetid://98036294458431", Size = Vector2.new(512, 512) }, -- PassIconVIP.png
 		IconPassLooks = { Id = "rbxassetid://136373208143894", Size = Vector2.new(512, 512) }, -- PassIconBundle.png (the Looks header)
+		IconPrivateServer = { Id = "rbxassetid://95789432053642", Size = Vector2.new(512, 512) }, -- PassIconPrivate.png (이미지 생성 2 c5150fa, 검수 고름 A23-79)
 		IconNoBuff = { Id = "rbxassetid://125613826056625", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06, re-cut 3f1716b (faction perk row)
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
