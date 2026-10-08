@@ -103,7 +103,7 @@ local function bbox(piece)
 end
 
 local stats = { pieces = #pieces, solid = 0, solidParts = 0, trees = 0, postsMade = 0, postsReused = 0, meshOff = 0,
-	keptPass = 0, keptSolid = 0, restored = 0, removed = 0 }
+	keptPass = 0, keptSolid = 0, restored = 0, removed = 0, unanchored = 0 }
 local kinds = {}
 local function note(kind, name)
 	local base = (string.gsub(string.gsub(name, "_%d+$", ""), "%d+$", ""))
@@ -141,6 +141,12 @@ local function remember(p)
 	end
 end
 local function makeSolid(p)
+	-- 게임성 개발 3 review: the group never collides with Default (terrain), so an unanchored part would fall through the
+	-- ground; such parts stay as they are and are counted
+	if not p.Anchored then
+		stats.unanchored += 1
+		return
+	end
 	remember(p)
 	p.CanCollide, p.CanQuery, p.CanTouch = true, false, false
 	p.CollisionGroup = T.Group
@@ -247,6 +253,7 @@ local keys = {}
 for k, n in kinds do table.insert(keys, string.format("%s=%d", k, n)) end
 table.sort(keys)
 return string.format("%s: %d pieces | solid now %d (%d parts) | trees %d (posts made %d, reused %d, canopy meshes off %d)"
-	.. " | walk-through kept %d | already solid kept %d | group %s\n%s", MODE, stats.pieces, stats.solid, stats.solidParts,
-	stats.trees, stats.postsMade, stats.postsReused, stats.meshOff, stats.keptPass, stats.keptSolid, T.Group,
+	.. " | walk-through kept %d | already solid kept %d | unanchored skipped %d | group %s\n%s", MODE, stats.pieces,
+	stats.solid, stats.solidParts, stats.trees, stats.postsMade, stats.postsReused, stats.meshOff, stats.keptPass,
+	stats.keptSolid, stats.unanchored, T.Group,
 	table.concat(keys, ", "))
