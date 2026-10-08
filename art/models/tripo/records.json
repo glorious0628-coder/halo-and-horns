@@ -5562,5 +5562,105 @@
    ],
    "bytes": 8428328
   }
+ ],
+ "Kit_R_PillarA_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "727d1fdc-ddeb-4b46-968a-bb9bd48bc9e8",
+   "image": "build/ruins_r1/Kit_R_PillarA.png (kit_ruins PillarA HQ on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 10:5x",
+   "balance_after": 1915,
+   "file": "art/models/tripo/web/Kit_R_PillarA_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 9398,
+   "derived": [
+    "art/models/tripo/web/Kit_R_PillarA_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 9794496
+  }
+ ],
+ "Kit_R_PillarB_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "564ebe95-08b4-4e41-b7d3-6111b14cfd0f",
+   "image": "build/ruins_r1/Kit_R_PillarB.png (kit_ruins PillarB HQ on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 11:0x",
+   "balance_after": 1860,
+   "file": "art/models/tripo/web/Kit_R_PillarB_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 9356,
+   "derived": [
+    "art/models/tripo/web/Kit_R_PillarB_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 8345608
+  }
+ ],
+ "Kit_R_StoneMarker_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "a49b52e1-322e-4111-97af-651eec5ad153",
+   "image": "build/ruins_r1/Kit_R_StoneMarker.png (kit_ruins StoneMarker_C_HQ on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 11:1x",
+   "balance_after": 1805,
+   "file": "art/models/tripo/web/Kit_R_StoneMarker_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 9676,
+   "derived": [
+    "art/models/tripo/web/Kit_R_StoneMarker_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 9399068
+  }
+ ],
+ "Kit_R_SpiritBowl_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "03403854-45cb-4dd1-8140-05352300a6dc",
+   "image": "build/ruins_r1/Kit_R_SpiritBowl.png (kit_ruins SpiritBowl HQ on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 11:2x",
+   "balance_after": 1750,
+   "file": "art/models/tripo/web/Kit_R_SpiritBowl_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 9650,
+   "derived": [
+    "art/models/tripo/web/Kit_R_SpiritBowl_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 8450556
+  }
+ ],
+ "Kit_R_Banner_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "3ef1583f-306c-41c6-93a0-d8a51ee25f03",
+   "image": "build/ruins_r1/Kit_R_Banner.png (art/out/kit/ruins/Banner_HQ.png on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 11:3x",
+   "balance_after": 1695,
+   "file": "art/models/tripo/web/Kit_R_Banner_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 9768,
+   "derived": [
+    "art/models/tripo/web/Kit_R_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 8091848
+  }
  ]
 }
