@@ -1,7 +1,9 @@
--- MonetizationService.luau : Robux change tickets ("변경권"). The ONLY server user of MarketplaceService:
--- owns ProcessReceipt (idempotent; grants only after a successful save) and the ticket counters.
+-- MonetizationService.luau : Robux change tickets ("변경권") and A23-75 game passes. The ONLY server user of
+-- MarketplaceService: owns ProcessReceipt (idempotent; grants only after a successful save), the ticket counters,
+-- game pass ownership (2x XP / 2x Gold / VIP / faction looks), SetLook and the VIP supporter board.
 -- data.Tickets and data.ProcessedReceipts are mutated directly here (documented exception).
 local MarketplaceService = game:GetService("MarketplaceService")
+local DataStoreService = game:GetService("DataStoreService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -144,16 +146,300 @@ local function publish(player)
 	end
 end
 
+------------------------------------------------------------------ A23-75 game passes, looks, supporter board
+-- docs/design/gamepass_server_2026-10-08.md. PASS.Owned[player][key] = true while the player owns that pass (key =
+-- a Config.GamePasses kind or a sold Config.Looks id): the server's truth for HasPass (the attributes are only for the
+-- screen). Ownership comes from Roblox when the player joins (UserOwnsGamePassAsync, Config.PassBoost.CheckTries with
+-- a doubling wait; when every try fails, the last saved answer data.PassSeen counts) and at once from
+-- PromptGamePassPurchaseFinished (purchased = true). A pass with Id 0 is never asked about (it is not sold yet).
+-- PASS.Debug[player][key] = true / false: a Studio DebugCommand "Pass" override (never saved, never on the board).
+local PASS = { Owned = {}, Debug = {}, Board = {}, Store = nil }
+
+-- the passes this server sells: { { Key = kind or look id, Id = game pass id } }
+function PASS.Sold()
+	local list = {}
+	for kind, p in Config.GamePasses do
+		local id = tonumber(p.Id)
+		if id and id > 0 then table.insert(list, { Key = kind, Id = id }) end
+	end
+	for lookId, look in Config.Looks do
+		local id = tonumber(look.PassId)
+		if id and id > 0 then table.insert(list, { Key = lookId, Id = id }) end
+	end
+	return list
+end
+
+-- one answer from Roblox: true / false, or nil when every try failed
+function PASS.Ask(userId, passId)
+	local wait = Config.PassBoost.CheckWait
+	for i = 1, Config.PassBoost.CheckTries do
+		local ok, owns = pcall(MarketplaceService.UserOwnsGamePassAsync, MarketplaceService, userId, passId)
+		if ok and type(owns) == "boolean" then return owns end
+		if i < Config.PassBoost.CheckTries then
+			task.wait(wait)
+			wait *= 2
+		end
+	end
+	return nil
+end
+
+local function seenTable(data)
+	if type(data.PassSeen) ~= "table" then data.PassSeen = {} end
+	return data.PassSeen
+end
+
+local function looksTable(data)
+	if type(data.Looks) ~= "table" then data.Looks = { Owned = {}, On = "" } end
+	if type(data.Looks.Owned) ~= "table" then data.Looks.Owned = {} end
+	if type(data.Looks.On) ~= "string" then data.Looks.On = "" end
+	return data.Looks
+end
+
+-- true while the player owns the pass `key` (a Config.GamePasses kind or a sold look id); a Studio override first
+function MonetizationService.HasPass(player, key)
+	local d = PASS.Debug[player]
+	if d and d[key] ~= nil then return d[key] == true end
+	local o = PASS.Owned[player]
+	return o ~= nil and o[key] == true
+end
+
+-- true when the player may wear the look: its pass is owned, or it was unlocked (attendance, data.Looks.Owned)
+function MonetizationService.OwnsLook(player, id)
+	if type(id) ~= "string" or not Config.Looks[id] then return false end
+	if MonetizationService.HasPass(player, id) then return true end
+	local data = S.PlayerService.GetData(player)
+	return data ~= nil and looksTable(data).Owned[id] ~= nil
+end
+
+-- the owned look ids in shop order
+function MonetizationService.LooksOwned(player)
+	local list = {}
+	for _, id in Config.LookOrder() do
+		if MonetizationService.OwnsLook(player, id) then table.insert(list, id) end
+	end
+	return list
+end
+
+-- the worn look: the saved one while it is owned and of the player's faction (a faction switch hides it; switching back
+-- shows it again), else ""
+function PASS.Worn(player)
+	local data = S.PlayerService.GetData(player)
+	if not data then return "" end
+	local id = looksTable(data).On
+	local look = Config.Looks[id]
+	if not look or look.Faction ~= player:GetAttribute("Faction") or not MonetizationService.OwnsLook(player, id) then
+		return ""
+	end
+	return id
+end
+
+-- the screen's copy: PassXP2 / PassGold2 / PassVIP (Config.GamePasses Attr), LooksOwned, LookOn
+function PASS.Publish(player)
+	if player.Parent == nil then return end
+	for kind, p in Config.GamePasses do
+		player:SetAttribute(p.Attr, MonetizationService.HasPass(player, kind))
+	end
+	player:SetAttribute("LooksOwned", table.concat(MonetizationService.LooksOwned(player), ","))
+	player:SetAttribute("LookOn", PASS.Worn(player))
+end
+
+-- the join check (its own thread: Roblox can take a few seconds)
+function PASS.Check(player)
+	local data = S.PlayerService.GetData(player)
+	if not data or player.Parent == nil then return end
+	local owned = PASS.Owned[player] or {}
+	PASS.Owned[player] = owned
+	PASS.Publish(player) -- false / the saved looks first: nothing waits for Roblox
+	for _, p in PASS.Sold() do
+		local answer = PASS.Ask(player.UserId, p.Id)
+		if player.Parent == nil or S.PlayerService.GetData(player) ~= data then return end
+		if answer == nil then
+			answer = seenTable(data)[p.Key] == true -- Roblox did not answer: the last answer it gave
+		else
+			seenTable(data)[p.Key] = answer
+		end
+		if owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back
+	end
+	PASS.Publish(player)
+	if MonetizationService.HasPass(player, "VIP") and PASS.Owned[player].VIP == true then PASS.AddSupporter(player) end
+end
+
+-- PromptGamePassPurchaseFinished (server side: a client cannot fake it)
+function PASS.Purchased(player, passId, purchased)
+	if purchased ~= true or typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent == nil then return end
+	for _, p in PASS.Sold() do
+		if p.Id == passId then
+			local owned = PASS.Owned[player] or {}
+			PASS.Owned[player] = owned
+			owned[p.Key] = true
+			local data = S.PlayerService.GetData(player)
+			if data then seenTable(data)[p.Key] = true end
+			PASS.Publish(player)
+			if p.Key == "VIP" then PASS.AddSupporter(player) end
+			print(("[MonetizationService] %s bought game pass %s"):format(player.Name, p.Key))
+		end
+	end
+end
+
+-- c->s SetLook(id): one string <= 32, an owned look of the player's faction, or "" (wear none); anything else ignored
+function PASS.OnSetLook(player, ...)
+	if select("#", ...) ~= 1 then return end
+	local id = ...
+	if type(id) ~= "string" or #id > 32 then return end
+	if not S.PlayerService.IsReady(player) or not Util.RateLimit(player, "SetLook", Config.RateLimits.SetLook) then return end
+	local data = S.PlayerService.GetData(player)
+	if not data then return end
+	if id ~= "" then
+		local look = Config.Looks[id]
+		if not look or look.Faction ~= player:GetAttribute("Faction") or not MonetizationService.OwnsLook(player, id) then
+			return
+		end
+	end
+	looksTable(data).On = id
+	player:SetAttribute("LookOn", PASS.Worn(player))
+end
+
+-- A23-77 (AttendanceService): unlock an attendance look (Config.Looks with Unlock, never a sold one). True when new.
+function MonetizationService.GrantLook(player, id)
+	local look = type(id) == "string" and Config.Looks[id] or nil
+	if not look or type(look.Unlock) ~= "table" then return false end
+	local data = S.PlayerService.GetData(player)
+	if not data then return false end
+	local owned = looksTable(data).Owned
+	if owned[id] ~= nil then return false end
+	owned[id] = os.time()
+	PASS.Publish(player)
+	return true
+end
+
+------------------------------------------------------------------ supporter board (VIP owners of every server)
+-- a clean board list: { { U = UserId, N = name, T = os.time() } }, one entry per UserId (the newest), newest first,
+-- at most MaxSupporters; anything broken is dropped
+function PASS.Clean(raw)
+	local list, seen = {}, {}
+	if type(raw) == "table" then
+		for _, e in raw do
+			if type(e) == "table" and type(e.U) == "number" and type(e.N) == "string" and e.N ~= "" and #e.N <= 40
+				and type(e.T) == "number" and not seen[e.U] then
+				seen[e.U] = true
+				table.insert(list, { U = e.U, N = e.N, T = e.T })
+			end
+		end
+	end
+	table.sort(list, function(a, b)
+		if a.T ~= b.T then return a.T > b.T end
+		return a.U < b.U
+	end)
+	while #list > Config.PassBoost.MaxSupporters do table.remove(list) end
+	return list
+end
+
+-- `list` with `entry` put first (its older line removed)
+function PASS.Insert(list, entry)
+	local out = { entry }
+	for _, e in list do
+		if e.U ~= entry.U then table.insert(out, e) end
+	end
+	return PASS.Clean(out)
+end
+
+function PASS.Show(list)
+	PASS.Board = list
+	local names = {}
+	for _, e in list do table.insert(names, e.N) end
+	local ok, err = pcall(function() Net.GameState():SetAttribute("SupporterNames", table.concat(names, "\n")) end)
+	if not ok then Util.Warn(TAG, "supporter board: " .. tostring(err)) end
+end
+
+function PASS.GetStore()
+	if PASS.Store == nil then
+		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.PassBoost.SupporterStore)
+		PASS.Store = ok and store or false
+	end
+	return PASS.Store or nil
+end
+
+-- a VIP owner joined or bought VIP: on this server's board at once, then in the shared list (a player who hides
+-- their name in announcements, P5, stays off the board)
+function PASS.AddSupporter(player, localOnly)
+	if player.Parent == nil or player:GetAttribute("HideAnnounceName") == true then return end
+	local entry = { U = player.UserId, N = Util.PlayerDisplayName(player), T = os.time() }
+	PASS.Show(PASS.Insert(PASS.Board, entry))
+	if localOnly then return end
+	local store = PASS.GetStore()
+	if not store then return end
+	task.spawn(function()
+		local ok, result = pcall(store.UpdateAsync, store, Config.PassBoost.SupporterKey, function(old)
+			return PASS.Insert(PASS.Clean(old), entry)
+		end)
+		if ok and type(result) == "table" then
+			PASS.Show(PASS.Clean(result))
+		elseif not ok then
+			Util.Warn(TAG, "supporter board save: " .. tostring(result))
+		end
+	end)
+end
+
+-- every RefreshSeconds: the shared list (other servers' VIPs)
+function PASS.Refresh()
+	local store = PASS.GetStore()
+	if not store then return end
+	local ok, raw = pcall(store.GetAsync, store, Config.PassBoost.SupporterKey)
+	if ok then PASS.Show(PASS.Clean(raw)) end
+end
+
+-- Studio test aid (Main DebugCommand "Pass", value "XP2:on" / "VIP:off" / "HaloIce:clear"): overrides the pass for
+-- this session only (never saved, never on the shared board)
+function MonetizationService.DebugSetPass(player, key, mode)
+	if not (Config.GamePasses[key] or (Config.Looks[key] and Config.Looks[key].PassId ~= nil)) then
+		return "unknown pass: " .. tostring(key)
+	end
+	local d = PASS.Debug[player] or {}
+	PASS.Debug[player] = d
+	if mode == "on" then d[key] = true elseif mode == "off" then d[key] = false else d[key] = nil end
+	PASS.Publish(player)
+	if key == "VIP" and MonetizationService.HasPass(player, "VIP") then PASS.AddSupporter(player, true) end
+	return ("%s %s (HasPass = %s)"):format(key, tostring(mode), tostring(MonetizationService.HasPass(player, key)))
+end
+
 ------------------------------------------------------------------ public API
 function MonetizationService.Init(registry)
 	S = registry
 	S.PlayerService.PlayerReady:Connect(function(player)
 		publish(player)
+		task.spawn(function() -- A23-75: game pass ownership (Roblox can take a few seconds)
+			local ok, err = pcall(PASS.Check, player)
+			if not ok then Util.Warn(TAG, "pass check: " .. tostring(err)) end
+		end)
 	end)
 end
 
 function MonetizationService.Start()
 	MarketplaceService.ProcessReceipt = processReceipt -- assigned ONCE, only here
+	-- A23-75 game passes
+	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
+		local ok, err = pcall(PASS.Purchased, player, passId, purchased)
+		if not ok then Util.Warn(TAG, "pass purchase: " .. tostring(err)) end
+	end)
+	Net.Get("SetLook").OnServerEvent:Connect(function(player, ...)
+		local ok, err = pcall(PASS.OnSetLook, player, ...)
+		if not ok then Util.Warn(TAG, "SetLook: " .. tostring(err)) end
+	end)
+	if S.FactionService and S.FactionService.FactionChanged then -- a look of the other side comes off (and back)
+		S.FactionService.FactionChanged:Connect(function(player)
+			pcall(PASS.Publish, player)
+		end)
+	end
+	S.PlayerService.PlayerLeaving:Connect(function(player)
+		PASS.Owned[player], PASS.Debug[player] = nil, nil
+	end)
+	task.spawn(function() -- the shared supporter board, now and every RefreshSeconds
+		while true do
+			local ok, err = pcall(PASS.Refresh)
+			if not ok then Util.Warn(TAG, "supporter board: " .. tostring(err)) end
+			task.wait(Config.PassBoost.RefreshSeconds)
+		end
+	end)
 
 	if RunService:IsStudio() then
 		local missing = false
@@ -162,6 +448,9 @@ function MonetizationService.Start()
 		end
 		if missing then
 			print("[MonetizationService] Developer Product ids are 0: buy buttons show 'This item isn't ready yet'. Create 2 Developer Products on create.roblox.com (your game > Monetization > Developer Products) and paste their ids into Config.Products.")
+		end
+		if #PASS.Sold() == 0 then
+			print("[MonetizationService] A23-75 game pass ids are 0: the shop shows 'Coming soon'. Create the passes on create.roblox.com (your game > Monetization > Passes) and paste their ids into Config.GamePasses / Config.Looks PassId.")
 		end
 	end
 

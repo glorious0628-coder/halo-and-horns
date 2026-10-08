@@ -231,6 +231,8 @@ local function fillDefaults(d, playerName)
 	-- Config.Stats.MaxPoints); no balance is saved
 	-- (guarded like the ranking fields: some offline suites load a cut-down Config)
 	if Config.SanitizeStats then d.Stats = Config.SanitizeStats(d.Stats) end
+	-- A23-75 looks / last known pass answers (additive, Version stays 3; guarded like the fields above)
+	if Config.SanitizeLooks then d.Looks, d.PassSeen = Config.SanitizeLooks(d.Looks, d.PassSeen) end
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.

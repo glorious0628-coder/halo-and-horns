@@ -314,7 +314,7 @@ local function payChests(winner, snapshot)
 			local perLevel = (winner ~= "None" and f == winner) and Config.War.WinnerChestPerLevel or Config.War.LoserChestPerLevel
 			local amount = math.floor(level * perLevel)
 			if amount <= 0 then return end
-			S.ProgressionService.AddBankGold(player, amount, "War")
+			amount = S.ProgressionService.AddBankGold(player, amount, "War") or amount -- A23-75: as added (2x Gold)
 			Net.Notify(player, string.format(Config.Text.WarChest, Util.FormatNumber(amount)), "reward", nil, "GoldPickup")
 		end)
 		if not ok then

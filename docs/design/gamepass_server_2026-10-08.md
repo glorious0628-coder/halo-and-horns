@@ -1,0 +1,117 @@
+# A23-75 게임 패스 서버 (게임성 개발 2, 2026-10-08)
+
+스펙: `docs/SPEC_ADDENDUM.md` A23-75(가격은 사용자가 "추천 가격대로" 정함), A23-77(출석 전용 치장).
+시험: `py tools/test_gamepass.py`. 증거: `docs/art/verification_2026-10-08/offline_dev2_gamepass_2026-10-08.json`.
+
+## 1. 한 줄 요약
+
+- 경험치 2배(199)·골드 2배(149)·VIP(249) 패스와 진영 치장 4개(각 99)를 서버가 확인해요.
+- 플레이어 속성으로 화면에 알려 줘요.
+- 2배는 **버는 것에만, 한 번만** 곱해요.
+- 능력치는 팔지 않아요.
+- 패스 Id가 0인 동안은 Roblox에 묻지 않아요. 화면은 "Coming soon"이에요.
+
+## 2. Config (서버·클라 공용, `src/ReplicatedStorage/Shared/Config.luau`)
+
+| 이름 | 모양 | 뜻 |
+|---|---|---|
+| `Config.GamePasses[Kind]` | `{ Id, Price, Name, Attr }` | Kind = `XP2`·`Gold2`·`VIP`. Name "2x XP"·"2x Gold"·"VIP". Attr = 아래 속성 이름 |
+| `Config.Looks[id]` | `{ Faction, PassId?, Price?, Name, Icon, Order, Unlock? }` | 판매 4개: `HaloIce`·`HaloGold`·`HornsLava`·`HornsShadow`(PassId·Price 99). 출석 전용 6개: `HaloSprout`·`HornsSprout`(14일)·`HaloStarlight`·`HornsStarlight`(50일)·`HaloPlatinum`·`HornsPlatinum`(100일), `Unlock = { Attendance = N }`, 가격 없음 |
+| `Config.LookOrder()` | id 배열 | 상점 순서(Order) |
+| `Config.PassBoost` | `{ Mult = 2, GoldSources, CheckTries = 3, CheckWait = 1, SupporterStore, SupporterKey, MaxSupporters = 30, RefreshSeconds = 300 }` | 2배 규칙·확인 재시도·후원자 게시판 |
+
+- 치장 id는 이미지 개발의 `Config.LookThemes` 세트 이름과 같아요.
+- 출석 전용 이름("Sprout Halo"·"Star Halo"·"Plat Halo" 등, 12자 이하)은 화면 쪽에서 바꿔도 돼요.
+
+## 3. 클라가 읽는 신호
+
+**플레이어 속성(서버만 씀):**
+
+| 속성 | 값 |
+|---|---|
+| `PassXP2` · `PassGold2` · `PassVIP` | true / false. 들어올 때 false로 시작하고, Roblox 확인이 끝나면 바뀌어요 |
+| `LooksOwned` | 가진 치장 id. 쉼표로 이어 붙이고 상점 순서예요(출석으로 받은 것 포함). 없으면 "" |
+| `LookOn` | 지금 입은 치장 id 또는 "". **내 진영 것만** 보여요(진영을 바꾸면 ""가 되고, 돌아오면 다시 보여요) |
+
+- 다른 플레이어의 속성도 복제돼요. 그래서 이름표 왕관(`PassVIP`)과 치장(`LookOn`)은 모두에게 보여요.
+
+**GameState 속성:**
+- `SupporterNames`: VIP 가진 사람 이름을 줄바꿈으로 나눈 목록이에요. 최신순, 최대 30명이에요. 모든 서버가 같은 목록을 써요(DataStore, 5분마다 다시 읽음).
+  - 이름 숨김(P5 `HideAnnounceName`)을 켠 사람은 빠져요.
+  - 이름은 `Util.PlayerDisplayName`(확인된 닉네임 또는 DisplayName)이에요.
+
+**리모트 c→s `SetLook(id)`:**
+- 인자는 한 개예요. 가진 치장이면서 내 진영 것인 id, 또는 ""(벗기)만 받아요. 나머지는 조용히 무시해요.
+- 0.5초에 한 번이에요. 저장돼요.
+
+**고마움 팝업은 서버 신호가 없어요.** 개발 1의 Passes.luau가 구매 뒤 30초 안에 속성이 false→true로 바뀌거나 `LooksOwned`가 길어지면 띄워요.
+
+## 4. 2배 규칙 (`ProgressionService`)
+
+- `AddXP(player, amount, cap?)`: 모든 경험치 지급이에요.
+  - `PassXP2`면 ×2를 한 뒤 `cap`을 적용해요(A23-27의 '신규 플레이어가 대왕을 잡아도 한 레벨치까지'는 2배여도 그대로예요).
+  - 실제로 더한 양을 돌려줘요.
+- `AddCarriedGold` / `AddBankGold(player, amount, source)`: 아래 출처일 때만 ×2(`PassGold2`)를 하고, 더한 양을 돌려줘요.
+
+**2배가 되는 출처(번 것):** `Monster`(처치), `Quest`(퀘스트·일일·일일 상자·휴가·게시판·스토리), `Event`(거위), `Bounty`(현상금·복수 대행), `War`(전쟁 상자), `Loot`(겹친 무기 골드), `Kaiju`(괴수 보상 중 새로 생기는 몫), `SignOn`(약한 진영 가입 보너스), `Attendance`(A23-77 출석).
+
+**절대 2배가 아닌 출처:** `Sale`(팔기), `Refund`(복수 환불), `Plunder`(뺏기), `KaijuBank`(괴수 생존 때 자기 들고 있던 골드를 은행에 넣는 몫), `KaijuTransfer`(괴수 처치 때 넘겨받는 몫), `Penalty`, `Other`(테스트 골드).
+
+- `GetXPMult` / `GetGoldMult`에는 패스가 없어요. 그래서 두 번 곱해지는 일이 없어요.
+- 2배로 얻은 레벨·골드는 레벨 상한과 랭킹에 그대로 들어가요(사용자: "그래야 사지").
+- **보상 줄은 실제로 더한 양을 보여 줘요.** 처치 Fx `Reward`(Gold·XP), 퀘스트·일일·상자·휴가·게시판·스토리·거위·현상금·전쟁·괴수·가입 보너스 알림 모두 그래요.
+- **미리보기 숫자는 기본값이에요.** 퀘스트 목록·게시판 카드의 `RewardGold`/`RewardXP`는 패스 전 값이에요. 화면에서 2배로 보여 주려면 `PassGold2`/`PassXP2`일 때 `Config.PassBoost.Mult`를 곱하면 돼요(퀘스트는 2배가 되는 출처예요).
+
+## 5. 소유 확인 (`MonetizationService`, 서버에서 MarketplaceService를 쓰는 유일한 곳)
+
+- **들어올 때(PlayerReady):**
+  - 판매 중인(Id > 0) 패스·치장마다 `UserOwnsGamePassAsync`를 불러요.
+  - 실패하면 1초, 2초를 기다리며 3번까지 시도해요.
+  - 답을 받으면 `data.PassSeen`에 저장해요.
+  - 3번 다 실패하면 **마지막으로 받은 답(저장값)**을 써요. Roblox 장애 때 산 사람이 손해 보지 않게 하려는 거예요.
+  - 환불되면 다음 확인에서 false로 바뀌어요.
+- **산 직후:** `PromptGamePassPurchaseFinished`(purchased = true)가 오면 바로 켜고 저장해요. 그 세션에서는 늦게 온 "아니요"가 다시 끄지 않아요.
+- **Id 0:** 묻지 않고 꺼진 상태예요. 화면은 "Coming soon"이에요.
+- **화면이 쓰는 구매 창:** 클라가 `MarketplaceService:PromptGamePassPurchase(player, Id)`를 부르면 돼요. 서버 리모트는 필요 없어요.
+
+## 6. 저장 (덧붙이는 필드만, 버전 3 그대로)
+
+- `Looks = { Owned = { [id] = os.time() }, On = "" }`: Owned는 패스 없이 얻은 치장(출석)이에요.
+- `PassSeen = { [kind 또는 치장 id] = true/false }`: 마지막으로 받은 Roblox 답이에요.
+- `Config.SanitizeLooks`가 불러올 때 고쳐요. 모르는 id와 깨진 값은 버려요.
+- 이전 버전 저장도 그대로 불러와요. 이 묶음만으로는 게시 때 **모든 서버 종료가 필요 없어요**(덧붙이는 필드라 v3 서버도 보존해요).
+
+## 7. 서버 API (다른 서비스용)
+
+- `MonetizationService.HasPass(player, key)`: key는 `XP2`·`Gold2`·`VIP` 또는 판매 치장 id예요.
+- `MonetizationService.OwnsLook(player, id)` / `LooksOwned(player)`
+- `MonetizationService.GrantLook(player, id)`: **A23-77 출석용**이에요. `Unlock`이 있는 치장만 되고, 새로 얻었을 때 true를 돌려줘요.
+
+## 8. Studio 테스트 키 (DebugCommand, Studio 전용)
+
+- `DebugCommand:Invoke("Player1", "Pass", "XP2:on")`: on / off / clear(Roblox 답으로 되돌림)이에요.
+  - 이번 세션에만 적용돼요. 저장되지 않고 공용 후원자 목록에도 안 올라가요(이 서버 게시판에만 보여요).
+  - `Gold2`, `VIP`, 판매 치장 id도 돼요.
+- `DebugCommand:Invoke("Player1", "LookGrant", "HaloSprout")`: 출석 치장을 열어요(저장돼요).
+- 모든 DebugCommand와 마찬가지로 그 저장본에 `DebugTainted`가 붙어서 정식 랭킹에 안 들어가요.
+
+## 9. 게시할 때 (사용자, `docs/design/launch_ops_checklist.md`)
+
+1. create.roblox.com → 게임 → Monetization → Passes에서 패스 7개를 만들어요.
+   - 2x XP 199, 2x Gold 149, VIP 249, 치장 4개 각 99
+   - 아이콘은 이미지 생성 2가 만든 512 그림이에요.
+2. 각 Id를 `Config.GamePasses[Kind].Id`와 `Config.Looks[id].PassId`에 붙여 넣어요.
+3. 개인 서버: Creator Dashboard에서 켜고 한 달 100 Robux로 해요(코드 없음).
+
+## 10. 화면 몫 (개발 1·이미지 개발 1)
+
+- **상점 탭:** 패스 카드 4개(4번째는 개인 서버 안내 카드), 치장 칸(판매품 + `LooksOwned`에 있는 출석 치장, Wear = `SetLook`)이에요. Id 0이면 "Coming soon"이에요.
+- **상태 칩:** 상태 칩 '2x XP / 2x Gold'(속성)이에요.
+- **VIP:** 이름표 왕관(이미지 개발, `CharacterVisuals`의 `PassVIP`), 채팅 VIP(개발 1, main 6aa5ba1), 전용 감정 표현(클라에서 `PassVIP` 확인), 후원자 게시판 글자판(`SupporterNames`)이에요.
+- **치장 겉모습:** 이미지 개발 `LookThemes`가 `LookOn`을 읽어 계급 메시의 TextureID만 바꿔요.
+
+## 11. 한계
+
+- MarketplaceService·DataStore·플레이어는 오프라인 대역이에요.
+- 실제 패스 Id, 구매 창, 여러 서버 사이의 후원자 목록은 사용자가 패스를 만든 뒤 Studio·게시 시험에서 확인해야 해요.
+- 지급하는 곳 28곳 중 `ProgressionService` 바깥은 소스 글자로 확인했어요(출처, 표시 금액이 실제로 더한 양인지). 직접 돌리지는 않았어요.

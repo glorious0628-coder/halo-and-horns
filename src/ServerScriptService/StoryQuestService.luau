@@ -293,8 +293,9 @@ local function payReward(player, def)
 	-- A23-46: exact gold and a share of the current level's XP bar (the town people's quests)
 	if num(r.GoldN) > 0 then g += math.floor(num(r.GoldN)) end
 	if num(r.XPBar) > 0 then x += math.floor(Config.XPToNext(level) * num(r.XPBar)) end
-	if g > 0 then S.ProgressionService.AddBankGold(player, g, "Quest") end
-	if x > 0 then S.ProgressionService.AddXP(player, x) end
+	-- A23-75: what was really added (the 2x passes) is what the lines below show
+	if g > 0 then g = S.ProgressionService.AddBankGold(player, g, "Quest") or g end
+	if x > 0 then x = S.ProgressionService.AddXP(player, x) or x end
 	if g > 0 and x > 0 then return string.format(TXT.RewardXP, def.Title, Util.FormatNumber(g), Util.FormatNumber(x)) end
 	if g > 0 then return string.format(TXT.Reward, def.Title, Util.FormatNumber(g)) end
 	if x > 0 then return string.format(TXT.RewardOnlyXP, def.Title, Util.FormatNumber(x)) end
@@ -750,7 +751,7 @@ local function payChoice(player, obj, side)
 	end
 	local gold = math.floor(num(r.Gold))
 	if gold > 0 then
-		S.ProgressionService.AddBankGold(player, gold, "Quest")
+		gold = S.ProgressionService.AddBankGold(player, gold, "Quest") or gold -- A23-75: as added (2x Gold)
 		table.insert(parts, string.format(TXT.ChoiceGold, Util.FormatNumber(gold)))
 	end
 	if #parts > 0 then notify(player, table.concat(parts, " · "), "reward", "None") end -- the pick's own Choice sound

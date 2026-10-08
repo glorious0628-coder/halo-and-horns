@@ -161,13 +161,27 @@ function M.GetXPMult(player)
 	return math.max(0, mult)
 end
 
+-- A23-75 (user 2026-10-08): x Config.PassBoost.Mult while the player owns that game pass (MonetizationService), applied
+-- here once per grant: every XP grant (kind "XP2"), and gold from an earned source (kind "Gold2",
+-- Config.PassBoost.GoldSources). Never part of GetXPMult / GetGoldMult, so nothing is doubled twice.
+function M.PassMult(player, kind)
+	local ms = S.MonetizationService
+	if not ms or type(ms.HasPass) ~= "function" then return 1 end
+	local ok, has = pcall(ms.HasPass, player, kind)
+	return (ok and has == true) and math.max(1, num(Config.PassBoost.Mult, 1)) or 1
+end
+
 ------------------------------------------------------------------ XP / levels
--- raw amount (no multiplier); handles level-ups
-function M.AddXP(player, amount)
+-- the amount before the pass (the caller's multipliers already in); handles level-ups. A23-75: x2 with the 2x XP
+-- pass, then at most `cap` when given (A23-27's one-level cap holds with the pass too). Returns the XP added (0 = none)
+function M.AddXP(player, amount, cap)
 	amount = math.floor(num(amount))
-	if amount <= 0 then return end
+	if amount <= 0 then return 0 end
 	local data = getData(player)
-	if not data then return end
+	if not data then return 0 end
+	amount = math.floor(amount * M.PassMult(player, "XP2"))
+	if cap ~= nil then amount = math.min(amount, math.max(0, math.floor(num(cap)))) end
+	if amount <= 0 then return 0 end
 
 	local maxLevel = Config.Levels.MaxLevel
 	local startLevel = math.clamp(math.floor(num(data.Level, 1)), 1, maxLevel)
@@ -202,6 +216,7 @@ function M.AddXP(player, amount)
 		})
 		M.LeveledUp:Fire(player, level)
 	end
+	return amount
 end
 
 -- Level 1, XP 0, full heal (free class change). Gold, bank, weapon, rebirth bonus, marks, tickets, quests are kept
@@ -215,20 +230,38 @@ function M.ResetLevel(player)
 end
 
 ------------------------------------------------------------------ gold
-function M.AddCarriedGold(player, amount, source)
-	amount = math.floor(num(amount))
-	if amount <= 0 then return end
-	if not getData(player) then return end
-	S.PlayerService.AddStat(player, "CarriedGold", amount)
-	M.GoldEarned:Fire(player, amount, source or "Other")
+-- A23-75: gold from an earned source (Config.PassBoost.GoldSources) x2 with the 2x Gold pass; sales, refunds,
+-- plunder and other moves of gold that already existed never
+local function boostGold(player, amount, source)
+	local sources = Config.PassBoost and Config.PassBoost.GoldSources
+	if type(sources) == "table" and sources[source] == true then
+		return math.floor(amount * M.PassMult(player, "Gold2"))
+	end
+	return amount
 end
 
+-- returns the gold added (0 = none)
+function M.AddCarriedGold(player, amount, source)
+	amount = math.floor(num(amount))
+	if amount <= 0 then return 0 end
+	if not getData(player) then return 0 end
+	source = source or "Other"
+	amount = boostGold(player, amount, source)
+	S.PlayerService.AddStat(player, "CarriedGold", amount)
+	M.GoldEarned:Fire(player, amount, source)
+	return amount
+end
+
+-- returns the gold added (0 = none)
 function M.AddBankGold(player, amount, source)
 	amount = math.floor(num(amount))
-	if amount <= 0 then return end
-	if not getData(player) then return end
+	if amount <= 0 then return 0 end
+	if not getData(player) then return 0 end
+	source = source or "Other"
+	amount = boostGold(player, amount, source)
 	S.PlayerService.AddStat(player, "BankGold", amount)
-	M.GoldEarned:Fire(player, amount, source or "Other")
+	M.GoldEarned:Fire(player, amount, source)
+	return amount
 end
 
 -- clamped to [0, carried]. Returns the amount actually taken. reason (optional) = the GoldSpent sink ("Taken")
@@ -447,15 +480,17 @@ local function onMonsterKilled(player, info)
 	if type(info) ~= "table" or not getData(player) then return end
 	local gold = math.floor(num(info.Gold) * M.GetGoldMult(player) + 0.5)
 	local xp = math.floor(num(info.XP) * M.GetXPMult(player) + 0.5)
-	-- A23-27: below def.XPCapBelowLevel a kill gives at most one level's XP (the Pumpkin King and a Lv1 player)
+	-- A23-27: below def.XPCapBelowLevel a kill gives at most one level's XP (the Pumpkin King and a Lv1 player), with
+	-- the 2x XP pass too (A23-75: AddXP applies the cap after the pass)
 	local def = type(info.Kind) == "string" and Config.MonsterTypes[info.Kind] or nil
 	local capBelow = def and tonumber(def.XPCapBelowLevel)
+	local cap = nil
 	if capBelow then
 		local level = math.floor(num(getData(player).Level, 1))
-		if level < capBelow then xp = math.min(xp, math.floor(Config.XPToNext(level))) end
+		if level < capBelow then cap = math.floor(Config.XPToNext(level)) end
 	end
-	M.AddCarriedGold(player, gold, "Monster")
-	M.AddXP(player, xp)
+	gold = M.AddCarriedGold(player, gold, "Monster") -- A23-75: what was added (2x Gold / 2x XP), shown below
+	xp = M.AddXP(player, xp, cap)
 	S.PlayerService.AddStat(player, "TotalKills", 1)
 	local pos = info.Position
 	if typeof(pos) ~= "Vector3" then
