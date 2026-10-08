@@ -63,6 +63,8 @@ local K = {
 	-- 검수 2026-10-08 (weapon-first photos): the marker's 'Forge' label sat on the anvil (2 studs up) and covered the
 	-- nearby pads' '→ Goblin Woods (Lv 10+)' signs; the marker points at an anchor this far above the anvil instead
 	SmithMarkLift = Vector3.new(0, 9, 0),
+	SmithNear = 14, -- studs (flat) from the anvil: standing there, no 'Forge' marker - the anvil's own prompt is right in front
+	-- (10/08 Play photo: seen from behind the anvil the mark lined up with the Goblin Woods pad sign)
 	HomeBridge = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }, -- HUD HOME_BRIDGE
 	PadFrom = { Crossroads = true, HaloTown = true, HornsTown = true }, -- pads first from these (HUD order)
 	NearShare = 0.75, -- a Near step's spot counts as reached inside this share of its Radius
@@ -348,7 +350,14 @@ function QuestTarget.BlacksmithMark()
 end
 
 local function smithFrom(fromZone, pos)
-	if fromZone == K.Town then return QuestTarget.BlacksmithMark() end
+	if fromZone == K.Town then
+		local anvil = QuestTarget.Blacksmith()
+		if anvil and typeof(pos) == "Vector3" then
+			local dx, dz = pos.X - anvil.Position.X, pos.Z - anvil.Position.Z
+			if dx * dx + dz * dz <= K.SmithNear * K.SmithNear then return nil end
+		end
+		return QuestTarget.BlacksmithMark()
+	end
 	if not K.SmithFromAfar then return nil end
 	return QuestTarget.Travel(K.Town, fromZone, pos)
 end

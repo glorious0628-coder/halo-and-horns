@@ -1,0 +1,91 @@
+{
+  "status": "passed",
+  "checks": 11,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "ClientMain loads SupporterBoard",
+      "ok": true
+    },
+    {
+      "check": "no purchase prompt on the board (no pressure)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 7,
+    "applied": 7,
+    "caught": 7,
+    "results": [
+      {
+        "mutation": "no cap of 30",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Names: at most 30 (newest first kept) :: "
+        ]
+      },
+      {
+        "mutation": "empty lines kept",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Names: lines trimmed, empty and blank lines dropped, brackets removed :: Ann|Bo||Cy|bDee/b"
+        ]
+      },
+      {
+        "mutation": "the board never redraws",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the list changes -> the board redraws (newest first) :: Ann    Bo",
+          "CHECK_FAIL a redraw reuses the same SurfaceGui (no pile-up) :: 1",
+          "CHECK_FAIL an empty list -> the thank-you line on every board :: "
+        ]
+      },
+      {
+        "mutation": "a late board stays blank",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a board that streams in later draws at once :: "
+        ]
+      },
+      {
+        "mutation": "a new SurfaceGui every redraw",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the list changes -> the board redraws (newest first) :: Ann    Bo",
+          "CHECK_FAIL a redraw reuses the same SurfaceGui (no pile-up) :: 3",
+          "CHECK_FAIL an empty list -> the thank-you line on every board :: "
+        ]
+      },
+      {
+        "mutation": "no names shown",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a tagged board gets the SurfaceGui with the title and the names :: Thank you for playing!",
+          "CHECK_FAIL the list changes -> the board redraws (newest first) :: Thank you for playing!",
+          "CHECK_FAIL a redraw reuses the same SurfaceGui (no pile-up) :: 1"
+        ]
+      },
+      {
+        "mutation": "long names not cut",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Names: a very long name is cut with … :: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "d0115b1d2146b4f93f2695f63cc81cef63a6635a2a928f4536cd81f36c4de47f",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "f808e92e6373c1b4545b019291af1d436a08b73bd61d1f1a2f7b335acd08f39f"
+  },
+  "fixtureSHA256": "8dc0a81a83a3976bf930d1bf48d20cc339170ee5a619e9c5ce3a5aa01bb1be3e",
+  "studioCalls": 0,
+  "limitations": "Doubles instead of the engine: how the names fit on the real 3D board is a Studio photo check after the board is placed (Edit tool) and the server fills SupporterNames."
+}

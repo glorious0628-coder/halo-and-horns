@@ -60,8 +60,10 @@ MUTATIONS = [
      ""),
     ("the Forge step is the meadow step", "ForgeStep = TUT_STEPS.Forge or 3,", "ForgeStep = TUT_STEPS.Guide or 1,"),
     # 검수 2026-10-08: the 'Forge' label covered the pads' signs
-    ("the Forge marker sits on the anvil again", "if fromZone == K.Town then return QuestTarget.BlacksmithMark() end",
-     "if fromZone == K.Town then return QuestTarget.Blacksmith() end"),
+    ("the Forge marker sits on the anvil again", "\t\treturn QuestTarget.BlacksmithMark()\n\tend\n",
+     "\t\treturn QuestTarget.Blacksmith()\n\tend\n"),
+    # 10/08 Play photo: at the anvil the mark lined up with the Goblin Woods pad sign
+    ("the marker shows right at the anvil", "\t\t\tif dx * dx + dz * dz <= K.SmithNear * K.SmithNear then return nil end\n", ""),
     ("the mark hugs the anvil", "SmithMarkLift = Vector3.new(0, 9, 0),", "SmithMarkLift = Vector3.new(0, 0, 0),"),
 ]
 

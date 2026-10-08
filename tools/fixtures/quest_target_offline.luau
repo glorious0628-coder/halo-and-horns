@@ -278,6 +278,13 @@ do
 	check(g, "Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)", type(e) == "table"
 		and isNamed(e.Part, "HUDGuideAnchor_SmithMark") and at(e.Part, -30, 10) and math.abs(e.Part.Position.Y - 11) <= 0.5
 		and e.Travel == false and e.Tag == "blacksmith" and e.Claim == false, where(e and e.Part))
+	-- 10/08 Play photo: standing at the anvil the mark lined up with the Goblin Woods pad sign -> no marker there
+	e = QT.ForEntry(forgeRow, "Crossroads", "Halo", vec(-22, 3, 14))
+	check(g, "Forge step standing at the anvil (9 studs) -> no marker (its own prompt is right there)", e == nil,
+		e and encode({ Tag = e.Tag }) or "nil")
+	e = QT.ForEntry(forgeRow, "Crossroads", "Halo", vec(-30, 3, 30))
+	check(g, "... 20 studs away -> the mark again", type(e) == "table" and isNamed(e.Part, "HUDGuideAnchor_SmithMark"),
+		where(e and e.Part))
 	e = QT.ForEntry(forgeRow, "SlimeMeadow", "Halo", vec(330, 3, 0))
 	check(g, "Forge step from the meadow -> a trip to the Crossroads", type(e) == "table" and e.Travel == true and e.Zone == "Crossroads",
 		e and encode({ Tag = e.Tag, Zone = e.Zone, Travel = e.Travel }) or "nil")
