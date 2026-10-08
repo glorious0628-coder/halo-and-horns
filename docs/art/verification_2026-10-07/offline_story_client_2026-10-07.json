@@ -460,7 +460,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b",
+    "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "de0638c1776386bd94646570f166825a73aa9ba95b4daaa76c250ba4ec99586d",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "dedd3121495e9910a7bc015632ea1a43874d6c4d13575601e6f61f28debc1eab",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641",

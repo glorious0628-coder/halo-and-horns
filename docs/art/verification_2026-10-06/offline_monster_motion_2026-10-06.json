@@ -12,7 +12,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL a second attack while Slash still plays restarts it from the wind-up point :: table: 0x0000024657a9de10"
+          "CHECK_FAIL a second attack while Slash still plays restarts it from the wind-up point :: table: 0x0000015eb8e8ddd0"
         ]
       },
       {
@@ -21,7 +21,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL the wind-up starts Slash at HitTime - wind-up (its first part skipped) :: 0.5706666666666668",
-          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x000002163d44acd0",
+          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x000001fef4b8d7d0",
           "CHECK_FAIL the impact (AttackSeq) right after its wind-up does not restart the swing :: 0.876666666666667"
         ]
       },
@@ -31,8 +31,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL the wind-up starts Slash at HitTime - wind-up (its first part skipped) :: 0.016666666666666666",
-          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x00000219f14e7c70",
-          "CHECK_FAIL a second attack while Slash still plays restarts it from the wind-up point :: table: 0x00000219f15c9940"
+          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x00000244d6a9bed0",
+          "CHECK_FAIL a second attack while Slash still plays restarts it from the wind-up point :: table: 0x00000244d6b99980"
         ]
       },
       {
@@ -50,7 +50,7 @@
         "failures": [
           "CHECK_FAIL Slash HitTime = the clip's fastest frame (from the clip data) :: 0.03333333333333333",
           "CHECK_FAIL the wind-up starts Slash at HitTime - wind-up (its first part skipped) :: 0.016666666666666666",
-          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x000001ee9db8bc50"
+          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x000001a8edf4bbe0"
         ]
       },
       {
@@ -58,7 +58,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL walking at half its chase speed: the Walk clip runs at half speed (no sliding feet) :: table: 0x0000021bf0098480",
+          "CHECK_FAIL walking at half its chase speed: the Walk clip runs at half speed (no sliding feet) :: table: 0x000001ebb142a1c0",
           "CHECK_FAIL a very fast slide is capped at 1.5x :: 0.018000000000000016"
         ]
       },
@@ -67,7 +67,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL dying: Fall at 1.8x from the point where the body hits the ground 0.5 s later :: table: 0x000001e4ca49be60"
+          "CHECK_FAIL dying: Fall at 1.8x from the point where the body hits the ground 0.5 s later :: table: 0x0000020b0fc37160"
         ]
       },
       {
@@ -75,7 +75,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL dying: Fall at 1.8x from the point where the body hits the ground 0.5 s later :: table: 0x0000022b760bbc10"
+          "CHECK_FAIL dying: Fall at 1.8x from the point where the body hits the ground 0.5 s later :: table: 0x000002b8d9603f20"
         ]
       },
       {
@@ -91,8 +91,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL a standing goblin plays Idle from its own phase (0.25 of the loop) at its own speed (+8%) :: table: 0x0000023af55b54f0",
-          "CHECK_FAIL a second goblin starts its loop elsewhere and runs 8% slower (a group never moves in step) :: table: 0x0000023af55ba580"
+          "CHECK_FAIL a standing goblin plays Idle from its own phase (0.25 of the loop) at its own speed (+8%) :: table: 0x000001aca8d92b30",
+          "CHECK_FAIL a second goblin starts its loop elsewhere and runs 8% slower (a group never moves in step) :: table: 0x000001aca8da7c00"
         ]
       },
       {
@@ -100,8 +100,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL a standing goblin plays Idle from its own phase (0.25 of the loop) at its own speed (+8%) :: table: 0x0000026ce60bb590",
-          "CHECK_FAIL a second goblin starts its loop elsewhere and runs 8% slower (a group never moves in step) :: table: 0x0000026ce60c8640"
+          "CHECK_FAIL a standing goblin plays Idle from its own phase (0.25 of the loop) at its own speed (+8%) :: table: 0x0000021d67d78d40",
+          "CHECK_FAIL a second goblin starts its loop elsewhere and runs 8% slower (a group never moves in step) :: table: 0x0000021d67d89e00"
         ]
       },
       {
@@ -110,7 +110,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL a very fast slide is capped at 1.5x :: 0.027000000000000024",
-          "CHECK_FAIL chasing at its full speed: the Run clip at its own pace :: table: 0x000001d09d5c7310"
+          "CHECK_FAIL chasing at its full speed: the Run clip at its own pace :: table: 0x000001917a558f90"
         ]
       },
       {
@@ -118,7 +118,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x000002921ee5b800"
+          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x0000021040c784c0"
         ]
       },
       {
@@ -127,7 +127,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL standing before its look time: Idle :: LookAround",
-          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x000002c238a73fb0",
+          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x000001b2c8ace210",
           "CHECK_FAIL walking off cuts the LookAround :: Walk"
         ]
       },
@@ -136,14 +136,14 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x00000294db896d60"
+          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x000001ea97300380"
         ]
       }
     ]
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/MonsterMotion.luau": "cd3431be1b65f8987b5155d4dd5236c24c73ef4397956f0f9e4d89beae4028fe",
-    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b",
+    "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Walk.luau": "ed3a6d0e425b1ebba0c9aea730b9b84d6135a4b2058ed3c7b2c9a0a0cad4264e",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Run.luau": "adad6a1a476aeb7644cbf21b0141042cd0390d7f4bd69c67ce6594c3d5d2fd47",

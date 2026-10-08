@@ -16,13 +16,13 @@
   "liveValidation": "pending: merchant/UI, real datastore/reconnect and engine play",
   "contract": "A23-6 MerchantEnabled=true, prices 25/25, merchant = MapBuilder default R15 NPC from HumanoidDescription (no costume rig), E key + HoldDuration 0 prompt; costume modules, SetCostume remote/rate limit and CostumeEnabled removed",
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b",
-    "src/ReplicatedStorage/Shared/Net.luau": "7c2fa004e9c97937cdbac2a6f527945a21bb5fbd1ced91ce6322f765719ffad5",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
+    "src/ReplicatedStorage/Shared/Net.luau": "ca17228a669a691c8ee57632c0917fbf57bb7335a85a4e70a9632989b2a7e04c",
+    "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",
-    "src/ServerScriptService/ProgressionService.luau": "227961d963eb15c19e96eda039fc662a2220110a7020274397ed1ab69e078b94",
-    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
+    "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13",
+    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
     "src/ServerScriptService/MapBuilder.luau": "9744a900fb69b0d5580740238a027a841e3c5e6a624541d08c37964cdf00caac"
   },
   "fixtureSHA256": "14837e184f80d37ecc086318cd14c1875c772ca205978f42bcaee75f5fd20920"
