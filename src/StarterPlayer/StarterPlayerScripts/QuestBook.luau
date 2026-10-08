@@ -53,6 +53,8 @@ local T = {
 		Kaiju = "A kaiju is loose!",
 		War = "Crown War: next crown in %s",
 		Wanted = "Wanted stars: %d",
+		Diary = "King Diary · %d/%d pages",
+		Jar = "Candy Jar · trade candy for a title",
 		TabCount = "%s %d",
 	},
 }
@@ -135,6 +137,17 @@ function QuestBook.Sections(tab, ctx)
 		if warEnds > now then
 			table.insert(out.InProgress, { Kind = "Info", Text = string.format(T.Text.War, clock(warEnds - now)) })
 		end
+		-- A23-79 #4: the King Diary (a page opens when a king is beaten together) and the candy jar, while the season runs
+		-- or once I have a page (the jar stays open after the season); a press opens that window (KingDiary.luau)
+		local hw = Config.Halloween
+		local pages = math.floor(tonumber(attr("DiaryPages")) or 0)
+		local live = type(hw) == "table" and hw.Enabled ~= false and now < (tonumber(hw.EndsAt) or 0)
+		local total = type(hw) == "table" and type(hw.Banter) == "table" and type(hw.Banter.Days) == "table" and #hw.Banter.Days or 0
+		if ctx.HasDiary == true and total > 0 and (live or pages > 0) then
+			table.insert(out.InProgress, { Kind = "Link", Text = string.format(T.Text.Diary, math.min(pages, total), total),
+				Window = "Diary", Arg = { Tab = "Diary" } })
+			table.insert(out.InProgress, { Kind = "Link", Text = T.Text.Jar, Window = "Diary", Arg = { Tab = "Jar" } })
+		end
 	elseif tab == "Faction" then
 		local stars = math.floor(tonumber(attr("WantedStars")) or 0)
 		if stars > 0 then table.insert(out.InProgress, { Kind = "Info", Text = string.format(T.Text.Wanted, stars) }) end
@@ -208,6 +221,7 @@ local function context()
 		Entries = hudCall("QuestEntries") or {},
 		Book = hudCall("QuestBook"),
 		DoneSession = hudCall("QuestDoneSession") or {},
+		HasDiary = C and type(C.KingDiary) == "table" and type(C.KingDiary.IsReady) == "function" and C.KingDiary.IsReady() or false,
 		Attr = function(name) return kit and kit.Attr(name, nil) end,
 		GameAttr = function(name) return kit and kit.GameAttr(name, nil) end,
 		Now = Util.Now(),
@@ -232,10 +246,11 @@ end
 
 -- one row: the words (+ 3/5), [Claim] / [New]; a press on a quest row guides me there and closes the window
 local function drawRow(kit, parent, row)
-	local f = Instance.new(row.Kind == "Quest" and "TextButton" or "Frame")
+	local press = row.Kind == "Quest" or row.Kind == "Link"
+	local f = Instance.new(press and "TextButton" or "Frame")
 	f.Name = row.Kind
 	f.BackgroundColor3 = kit.Palette.Button
-	f.BackgroundTransparency = row.Kind == "Quest" and 0.55 or 0.8
+	f.BackgroundTransparency = press and 0.55 or 0.8
 	f.BorderSizePixel = 0
 	f.Size = UDim2.new(1, 0, 0, 0)
 	f.AutomaticSize = Enum.AutomaticSize.Y
@@ -281,6 +296,10 @@ local function drawRow(kit, parent, row)
 		f.Activated:Connect(function()
 			if hudCall("QuestGo", row.Entry) and VIEW.Kit then VIEW.Kit.Close() end
 		end)
+	elseif row.Kind == "Link" then
+		f.Activated:Connect(function()
+			if VIEW.Kit then VIEW.Kit.Open(row.Window, row.Arg) end -- with a back button to the quests
+		end)
 	end
 	f.Parent = parent
 	return f
@@ -303,7 +322,10 @@ local function paintTabs()
 	for id, b in VIEW.Tabs do
 		local on = S.Tab == id
 		kit.Paint(b, on and kit.Theme.Gold or kit.Palette.Button, on and kit.Palette.DarkText or kit.Theme.Text)
-		local n = #QuestBook.Sections(id, ctx).InProgress
+		local n = 0
+		for _, r in QuestBook.Sections(id, ctx).InProgress do
+			if r.Kind ~= "Link" then n += 1 end -- a window link is no quest to count
+		end
 		local name = Config.QuestTabs.Names[id] or id
 		b.Text = n > 0 and string.format(T.Text.TabCount, name, n) or name
 	end
@@ -416,7 +438,7 @@ function QuestBook.Init(registry)
 	S.Ready = panels.Register(T.Window, {
 		Title = T.Text.Title,
 		FixedBody = true,
-		Rebuild = { DailyClaims = true, TutorialStep = true, WantedStars = true },
+		Rebuild = { DailyClaims = true, TutorialStep = true, WantedStars = true, DiaryPages = true },
 		Build = build,
 		Cleanup = cleanup,
 	}) == true

@@ -68,6 +68,24 @@ sync 뒤 내 시험 Play(fresh 저장 또는 사용자 저장본) PC·폰 사진
   그림자가 또렷하고 길어졌는지, 먼 언덕이 하늘색으로 흐려지는지, 연두가 덜 형광인지. 너무 어두우면 노출만 +0.1씩.
 - Atmosphere는 넣지 않음(A9-3: 왕관 전쟁 하늘의 안개색·ZoneLook 구역 안개가 깨짐) — 먼 곳 흐림은 가까워진 안개 거리로.
 
+## 4번째 묶음 (A23-79 다시 오기 화면: ComeBack·KingDiary + 멈춤 카드·초대·퀘스트 창, 개발 1)
+sync 뒤 내 시험 Play(fresh 저장), PC·폰 사진. 서버 신호는 Server 쪽 execute_luau로 직접 쏘면 됨
+(`local Net = require(game.ReplicatedStorage.Shared.Net) local p = game.Players:GetPlayers()[1]` 다음 아래 줄):
+| 단계 | 무엇(Server) | 확인할 것 |
+|---|---|---|
+| A | `Net.Fx(p, "PauseCard", { Why = "Daily", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })` | 카드 몸글 2줄 "Next time: …" / "Tomorrow: New dailies". [OK] 뒤 오류 없음(Studio는 Roblox 알림 동의 창을 못 띄움 → 출력창 `[Metrics]` 줄에 OptIn cannot 또는 아무것도 없음, 둘 다 정상) |
+| B | `Net.Fx(p, "WelcomeBack", { Next = "Lv 10", Zone = "SlimeMeadow" })` → [Go] | 이동 + 출력창 `[Metrics]` WelcomeBackGo(Studio에서도 찍힘) |
+| C | `p:SetAttribute("MyWay", "")` 다음 `p:SetAttribute("MyWay", "True Knight")` | 2초 알림 "Your way: True Knight" 한 번(첫 값은 조용) |
+| D | `p:SetAttribute("DiaryPages", 2)` + `Net.Fx(p, "DiaryPage", { Page = 2, Today = 2, Late = false })` | 조용한 카드 "King Diary / Page 2 is open!" [Read]·[OK]. [Read] → 일기 창 Diary 탭, 1·2쪽 대왕 두 줄씩, 3쪽부터 "Beat a king together…" 또는 "Opens on …" |
+| E | 일기 창 Candy Jar 탭 | "Your candy: N"(가방의 Candy 수), Pumpkin Pal 50 / Candy Keeper 200, 모자라면 [Trade] 꺼짐 |
+| F | Q → Event 탭 | "King Diary · 2/9 pages"·"Candy Jar · …" 줄(누르면 일기 창, 뒤로 가기), Event 탭 이름 옆 숫자에 이 두 줄은 안 셈 |
+| G | `p:SetAttribute("DiaryPages", 9)` + `Net.Fx(p, "DiaryDone", {})` | 보상 팝업(빛 무리·반짝이, 햇살 무늬 없음) "You read all 9 pages!" / "New title: Party Guest 2026" [Yay!] |
+| H | Shop 창을 열기(있으면) | 출력창 `[Metrics]` ShopOpen |
+- 시험: test_come_back(39·변이 27), test_king_diary(34·변이 21), test_pause_card(53·변이 27), test_invite(34·변이 18), test_quest_window(51·변이 30).
+- 남은 연결(다른 세션): 이미지 개발 ShopUI = 패스 칸 볼 때 `C.ComeBack.Metric("PassView", id)`, 구매 창 열 때 `C.ComeBack.Metric("PurchasePrompt", id)`;
+  [Invite a friend] 버튼 = 보일 때 `C.Invite.Seen(source)`, 누를 때 `C.Invite.Prompt(source)`(source = Menu / PlayerList / GooseWin / WarWin);
+  일기 메뉴 칸은 아이콘 그림이 오면(지금은 퀘스트 창 Event 탭과 새 쪽 카드로 엶).
+
 ## 하지 않을 것
 - tools/worldkit/meadow_terrain.luau, meadow_dress.luau = 검수 도구(검수가 올림).
 - 전사 도발(X, Lv25, 베타 동안 꺼짐)·두 플레이어 붙어 서기 = Play에서 안 봄(오프라인 시험 monster_spacing 몫, 검수 OK).
