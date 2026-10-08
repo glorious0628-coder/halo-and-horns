@@ -11,62 +11,74 @@
   {
    "id": "short01_ai_team",
    "band": [
-    "8 AIs MADE THIS?!",
+    "A STICK?!",
     "8 AI teammates make my Roblox game"
    ],
    "lines": [
     {
      "id": "H1",
      "new": true,
-     "en": "Eight AIs are making my Roblox game!",
-     "ko": "AI 여덟이 내 로블록스 게임을 만들고 있어요!",
+     "en": "Eight AIs made my Roblox game... and gave me a STICK?!",
+     "ko": "AI 여덟이 내 로블록스 게임을 만들었는데… 나뭇가지를 줬어요?!",
      "hl": [
       "Eight AIs"
      ],
      "hlr": [
-      "Roblox game!"
+      "STICK?!"
      ],
      "gap": 0.1,
      "shots": [
       {
-       "video": "s30_king_front",
-       "ss": 1.5,
-       "topbar": true,
+       "video": "s40_first_weapon",
+       "ss": 1.6,
        "z": [
-        1.35,
-        1.15
-       ],
-       "f": [
-        [
-         0.5,
-         0.9
-        ],
-        [
-         0.5,
-         0.9
-        ]
+        1.05,
+        1.12
        ],
        "in": "flash",
-       "shake": true,
+       "w": 1.1,
        "sfx": [
         "boom",
         {
-         "name": "g_PumpkinKing",
-         "at": 0.05
+         "name": "g_PowerUp",
+         "at": 0.1
         }
        ],
        "big": {
-        "text": "8 AIs?!",
+        "text": "A STICK?!",
         "color": "#FFD650",
         "y": 360,
-        "size": 240
+        "size": 230
+       }
+      },
+      {
+       "video": "s40_first_hunt",
+       "ss": 0.0,
+       "z": [
+        1.1,
+        1.25
+       ],
+       "in": "punch",
+       "w": 0.9,
+       "sfx": [
+        {
+         "name": "g_HitHeavy",
+         "at": 0.35
+        }
+       ],
+       "big": {
+        "text": "A STICK?!",
+        "color": "#FFD650",
+        "y": 360,
+        "size": 230
        }
       }
      ],
-     "emoji": "🤖"
+     "emoji": "😲"
     },
     {
      "id": "A0",
+     "new": true,
      "en": "I can't code. I can't draw.",
      "ko": "저는 코딩도 못 하고, 그림도 못 그려요.",
      "hlr": [
@@ -76,10 +88,11 @@
      "gap": 0.08,
      "shots": [
       {
-       "board": "code",
+       "video": "s40_halo_castle",
+       "ss": 1.0,
        "z": [
-        1.12,
-        1.0
+        1.2,
+        1.35
        ],
        "in": "whip",
        "xmark": true,
@@ -90,123 +103,56 @@
          "name": "boom",
          "at": 0.2
         }
-       ],
-       "w": 1.0
+       ]
       },
       {
-       "board": "doodle",
+       "video": "s40_crossroads",
+       "ss": 2.0,
        "z": [
-        1.0,
-        1.1
+        1.1,
+        1.2
        ],
        "in": "whip",
        "xmark": true,
-       "xy": 760,
+       "xy": 820,
        "sfx": [
         "whoosh",
         {
          "name": "boom",
          "at": 0.2
         }
-       ],
-       "w": 1.0
+       ]
       }
      ]
     },
     {
-     "id": "A1",
+     "id": "A0e",
      "new": true,
-     "en": "But I love games... way too much!",
-     "ko": "그런데 게임을 너무… 너무 좋아해요!",
+     "en": "So eight AI teammates build it with me!",
+     "ko": "그래서 AI 팀원 여덟이 저랑 같이 만들어요!",
      "hl": [
-      "love"
-     ],
-     "hlr": [
-      "too much!"
+      "eight AI teammates"
      ],
      "shots": [
       {
-       "video": "s30_meadow_auto",
-       "ss": 3.0,
+       "video": "s40_horns_castle",
+       "ss": 2.0,
        "z": [
-        1.15,
-        1.35
+        1.2,
+        1.4
        ],
        "in": "flash",
        "sfx": [
-        {
-         "name": "g_LevelUp",
-         "at": 0.0
-        }
-       ],
-       "w": 1.0,
-       "float": {
-        "icon": "art/ui/IconHeart.png",
-        "count": 14,
-        "down": false,
-        "speed": 1.1,
-        "spin": false,
-        "min": 90,
-        "max": 150
-       }
-      },
-      {
-       "board": "stage",
-       "z": [
-        1.0,
-        1.08
-       ],
-       "in": "whip",
-       "w": 1.0,
-       "sfx": [
-        "whoosh",
-        {
-         "name": "g_GoldPickup",
-         "at": 0.0
-        },
-        {
-         "name": "g_GoldPickup",
-         "at": 0.12
-        },
-        {
-         "name": "g_GoldPickup",
-         "at": 0.24
-        },
-        {
-         "name": "g_GoldPickup",
-         "at": 0.36
-        },
-        {
-         "name": "g_GoldPickup",
-         "at": 0.48
-        },
-        {
-         "name": "g_GoldPickup",
-         "at": 0.6
-        }
-       ],
-       "rain": {
-        "icon": "art/ui/IconCoin.png",
-        "count": 26,
-        "speed": 1.0,
-        "min": 90,
-        "max": 170
-       },
-       "big": {
-        "text": "$ $ $",
-        "color": "#FFD650",
-        "y": 760,
-        "size": 230
-       }
+        "ding"
+       ]
       }
      ],
-     "emoji": "💸"
+     "emoji": "🤖"
     },
     {
      "id": "A3",
-     "new": true,
-     "en": "My team: a boss, two builders, two artists, an art dev, a sound maker, and a film crew!",
-     "ko": "내 팀: 대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 소리 만드는 사람 하나, 그리고 촬영 담당!",
+     "en": "A boss, two builders, two artists, an art dev, a sound maker, and a film crew!",
+     "ko": "대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 소리 만드는 사람 하나, 그리고 촬영 담당!",
      "hl": [
       "boss,",
       "builders,",
@@ -248,38 +194,32 @@
     },
     {
      "id": "A7b",
-     "en": "And me? I'm the director. I just say yes... or NO!",
-     "ko": "그럼 저는? 감독이에요. 좋다… 아니면 싫다! 만 말해요.",
+     "new": true,
+     "en": "I'm the director. I play... and I say NO a lot!",
+     "ko": "저는 감독이에요. 플레이하고… 싫다는 말을 많이 해요!",
      "hl": [
-      "director.",
-      "yes..."
+      "director."
      ],
      "hlr": [
-      "NO!"
+      "NO"
      ],
      "shots": [
       {
-       "video": "s30_meadow_auto",
-       "ss": 1.0,
+       "video": "s40_first_hunt",
+       "ss": 0.0,
        "z": [
-        1.2,
-        1.4
-       ],
-       "f": [
-        [
-         0.5,
-         0.6
-        ],
-        [
-         0.5,
-         0.62
-        ]
+        1.1,
+        1.25
        ],
        "in": "whip",
        "sfx": [
-        "whoosh"
+        "whoosh",
+        {
+         "name": "g_HitHeavy",
+         "at": 0.4
+        }
        ],
-       "w": 1.2,
+       "w": 1.1,
        "big": {
         "text": "DIRECTOR: ME",
         "color": "#FFD650",
@@ -288,21 +228,27 @@
        }
       },
       {
-       "video": "s30_meadow_auto",
-       "ss": 13.0,
+       "video": "s40_first_hunt",
+       "ss": 15.0,
        "z": [
-        1.25,
-        1.45
+        1.15,
+        1.3
        ],
-       "f": [
-        [
-         0.5,
-         0.6
-        ],
-        [
-         0.5,
-         0.62
-        ]
+       "in": "punch",
+       "w": 0.9,
+       "sfx": [
+        {
+         "name": "g_KillPop",
+         "at": 0.3
+        }
+       ]
+      },
+      {
+       "video": "s40_first_hunt",
+       "ss": 17.0,
+       "z": [
+        1.2,
+        1.35
        ],
        "in": "punch",
        "w": 0.8,
@@ -313,7 +259,7 @@
         "text": "NO!",
         "color": "#FF5454",
         "y": 470,
-        "size": 200
+        "size": 220
        }
       }
      ]
@@ -321,33 +267,36 @@
     {
      "id": "A7c",
      "new": true,
-     "en": "In our game, every choice makes you an angel... or a devil!",
-     "ko": "우리 게임에선 모든 선택이 나를 천사… 아니면 악마로 만들어요!",
+     "en": "Every choice makes you an angel... or a devil. Like this lunchbox!",
+     "ko": "모든 선택이 나를 천사… 아니면 악마로 만들어요. 이 도시락처럼!",
      "hl": [
       "angel..."
      ],
      "hlr": [
-      "devil!"
+      "devil."
      ],
      "shots": [
       {
-       "board": "angel_devil",
+       "fit": true,
        "z": [
-        1.3,
-        1.2
+        2.25,
+        2.4
        ],
        "f": [
         [
          0.5,
-         0.25
+         0.62
         ],
         [
          0.5,
-         0.25
+         0.62
         ]
        ],
+       "fit_y": 880,
+       "video": "s40_claim_lunchbox",
+       "ss": 3.0,
        "in": "flash",
-       "w": 1.2,
+       "w": 1.0,
        "sfx": [
         {
          "name": "g_Purify",
@@ -357,30 +306,32 @@
        "big": {
         "text": "ANGEL",
         "color": "#FFD650",
-        "y": 330,
+        "y": 400,
         "size": 190
        }
       },
       {
-       "board": "angel_devil",
+       "fit": true,
        "z": [
-        1.2,
-        1.3
+        2.25,
+        2.4
        ],
        "f": [
         [
          0.5,
-         0.85
+         0.62
         ],
         [
          0.5,
-         0.85
+         0.62
         ]
        ],
-       "in": "whip",
-       "w": 1.0,
+       "fit_y": 880,
+       "video": "s40_claim_lunchbox",
+       "ss": 6.0,
+       "in": "punch",
+       "w": 1.2,
        "sfx": [
-        "whoosh",
         {
          "name": "g_Devour",
          "at": 0.1
@@ -389,7 +340,7 @@
        "big": {
         "text": "DEVIL",
         "color": "#FF5454",
-        "y": 330,
+        "y": 400,
         "size": 190
        }
       }
@@ -398,9 +349,9 @@
     {
      "id": "A8",
      "new": true,
-     "en": "Team up and beat the Pumpkin King! Halloween beta: October 31!",
-     "tts": "Team up and beat the Pumpkin King! Halloween beta: October thirty-first!",
-     "ko": "힘을 모아 호박 대왕을 쓰러뜨려요! 핼러윈 베타: 10월 31일!",
+     "en": "Beat the Pumpkin King! Halloween beta: October 31!",
+     "tts": "Beat the Pumpkin King! Halloween beta: October thirty-first!",
+     "ko": "호박 대왕을 쓰러뜨려요! 핼러윈 베타: 10월 31일!",
      "hl": [
       "Pumpkin King!"
      ],
@@ -409,34 +360,46 @@
      ],
      "shots": [
       {
-       "video": "s30_king_fight",
-       "ss": 1.5,
+       "video": "s40_king_front",
+       "ss": 1.0,
+       "z": [
+        1.2,
+        1.1
+       ],
+       "in": "flash",
+       "w": 0.8,
+       "sfx": [
+        "boom",
+        {
+         "name": "g_PumpkinKing",
+         "at": 0.05
+        }
+       ]
+      },
+      {
+       "video": "s40_king_fight",
+       "ss": 6.0,
        "z": [
         1.1,
         1.25
        ],
        "shake": true,
-       "in": "flash",
-       "w": 1.3,
+       "in": "punch",
+       "w": 1.0,
        "sfx": [
-        "boom",
         {
          "name": "g_HitHeavy",
-         "at": 0.4
+         "at": 0.3
         },
         {
          "name": "g_HitHeavy",
-         "at": 0.9
-        },
-        {
-         "name": "g_HitHeavy",
-         "at": 1.4
+         "at": 0.8
         }
        ]
       },
       {
-       "video": "s30_king_fight",
-       "ss": 20.4,
+       "video": "s40_king_fight",
+       "ss": 13.0,
        "z": [
         1.15,
         1.3
@@ -445,9 +408,10 @@
        "w": 1.0,
        "sfx": [
         {
-         "name": "g_KingDefeat",
-         "at": 0.9
-        }
+         "name": "g_HitHeavy",
+         "at": 0.3
+        },
+        "boom"
        ],
        "big": {
         "text": "OCT 31",
@@ -462,21 +426,34 @@
     {
      "id": "A9",
      "new": true,
-     "en": "So, which one are you? Angel... or devil?",
-     "ko": "그럼 당신은 어느 쪽? 천사… 아니면 악마?",
+     "en": "Would you give it back... or take a bite?",
+     "ko": "당신이라면 돌려줄래요… 아니면 한 입 먹을래요?",
      "hl": [
-      "Angel..."
+      "give it back..."
      ],
      "hlr": [
-      "devil?"
+      "take a bite?"
      ],
      "shots": [
       {
-       "board": "angel_devil",
+       "fit": true,
        "z": [
-        1.0,
-        1.08
+        2.25,
+        2.4
        ],
+       "f": [
+        [
+         0.5,
+         0.62
+        ],
+        [
+         0.5,
+         0.62
+        ]
+       ],
+       "fit_y": 880,
+       "video": "s40_claim_lunchbox_good",
+       "ss": 3.0,
        "in": "whip",
        "sfx": [
         "whoosh",
@@ -486,14 +463,14 @@
         },
         {
          "name": "g_CrownHorns",
-         "at": 1.6
+         "at": 1.5
         }
        ],
        "big": {
-        "text": "ANGEL or DEVIL?",
+        "text": "GIVE IT BACK... or ONE BITE?",
         "color": "#FFD650",
-        "y": 960,
-        "size": 150
+        "y": 420,
+        "size": 120
        }
       }
      ]
@@ -501,8 +478,8 @@
    ],
    "tail": 0.6,
    "meta": {
-    "title_en": "8 AIs are making my Roblox game 🤖 Angel or Devil? #shorts",
-    "title_ko": "AI 8명이 만드는 내 로블록스 게임 — 천사 vs 악마",
+    "title_en": "8 AIs made my Roblox game... and gave me a STICK?! 😲 #shorts",
+    "title_ko": "AI 8명이 만든 내 로블록스 게임… 첫 무기가 나뭇가지?!",
     "desc_en": "I can't code. I can't draw. So eight AI (Claude) sessions are making my Roblox game, Halo & Horns: a boss who checks everything, two who write the code, two who draw the art (Adobe Firefly), one who puts it in the game, one who makes the sound effects, and one who made this video. I'm the director. In the game, every choice makes you an angel or a devil. Which one are you? Halloween beta: October 31! Not sponsored. AI voice narration. Sound effects: our own, Adobe Firefly and Kenney (kenney.nl, CC0).",
     "desc_ko": "코딩도 그림도 못 하지만, AI 세션 8개와 로블록스 게임 'Halo & Horns'를 만들어요. 모든 선택이 천사 아니면 악마! 당신은 어느 쪽? 베타 10월 31일.",
     "tags": [
@@ -519,7 +496,7 @@
    "style": "neon",
    "gap": 0.1,
    "sentence_gap": 0.24,
-   "note_v2": "v2 (검수·사용자 2026-10-08 '첫 쇼츠 더 재밌게, 8세션'): 첫 1초 훅(대왕 쿵 + 큰 질문), 컷 1~2초, 게임 소리(art/sfx g_*), 천사·악마 확실히, 끝은 질문(구독 강요 없음)"
+   "note_v2": "v3 (사용자 2026-10-08 '있는 거 하지 말고 다시 짜서 다시'): 전부 새로 찍은 s40 원본(FilmSet 5df6330). 훅 = 첫 무기 나뭇가지 'A STICK?!', 8 AI 팀원, 감독 NO, 도시락 천사/악마, 호박 대왕 + 10/31, 끝 질문 '돌려줄래 한 입?'. ss 값은 찍은 뒤 확인 시트로 맞춘다."
   },
   {
    "id": "short02_picture_to_3d",

@@ -700,6 +700,26 @@ def compose_video_band(fr, shot, t, top):
     return bg
 
 
+def compose_video_fit(fr, shot, t, top):
+    """a window / card shot: the source's full aspect (zoom / focus animated) fitted to the frame width at fit_y, on a
+    blurred, darker copy (the 9:16 band would cut the sides of a wide card)"""
+    sw, sh = fr.size
+    ah = sh - top
+    z0, z1 = shot.get("zf", shot.get("z", [1.0, 1.0]))
+    z = lerp(z0, z1, ease(t))
+    f0 = shot.get("f", [[0.5, 0.5], [0.5, 0.5]])
+    fx, fy = lerp(f0[0][0], f0[1][0], ease(t)), lerp(f0[0][1], f0[1][1], ease(t))
+    cw, ch = sw / z, ah / z
+    x0 = (sw - cw) * fx
+    y0 = top + (ah - ch) * fy
+    h = int(round(W * ch / cw))
+    small = fr.crop((0, top, sw, sh)).resize((96, 170), Image.BILINEAR)
+    bg = small.filter(ImageFilter.GaussianBlur(5)).resize((W, H), Image.BILINEAR)
+    bg = Image.eval(bg, lambda v: int(v * 0.5))
+    bg.paste(fr.resize((W, h), Image.BICUBIC, box=(x0, y0, x0 + cw, y0 + ch)), (0, int(shot.get("fit_y", 900)) - h // 2))
+    return bg
+
+
 def compose_video_frame(fr, shot, t, top):
     sw, sh = fr.size
     small = fr.crop((0, top, sw, sh)).resize((96, 170), Image.BILINEAR, reducing_gap=None)
@@ -1093,7 +1113,7 @@ def build_short(short, voice, out_root, do_tts=True):
             fi = f0 + i
             t = i / max(1, n - 1)
             if reader:
-                comp = compose_video_full if s.get("full") else compose_video_band if style == "neon" else compose_video_frame
+                comp = compose_video_fit if s.get("fit") else compose_video_full if s.get("full") else compose_video_band if style == "neon" else compose_video_frame
                 fr = comp(reader.next(), s, t, top).convert("RGBA")
             else:
                 base = get_board(s)

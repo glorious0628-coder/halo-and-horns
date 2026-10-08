@@ -61,6 +61,7 @@ local out = {}
 for _, k in { 'DataLoaded', 'Faction', 'ClassChosen', 'TutorialStep', 'TutorialKills', 'WeaponTier', 'Level', 'ZoneId' } do
 	table.insert(out, k .. '=' .. tostring(p:GetAttribute(k)))
 end
+table.insert(out, 'Held=' .. tostring(p.Character ~= nil and p.Character:FindFirstChild('WeaponModel') ~= nil))
 return table.concat(out, ' ')
 """
 FIRE = "local R=game:GetService('ReplicatedStorage'):WaitForChild('Remotes'); R:WaitForChild('%s'):FireServer(%s); return 'fired %s'"
@@ -142,8 +143,11 @@ SKIP = set(s for s in os.environ.get("SKIP", "").split(",") if s)
 # the Lost Lunchbox pick: Evil = [One bite!] (the first run), Good = [Give it back] (a second fresh Play that films only
 # that card: 검수 2026-10-08 "둘 다 찍기")
 LUNCH = "Good" if os.environ.get("LUNCH") == "Good" else "Evil"
-if LUNCH == "Good":
-    SKIP |= {"s40_faction_pick", "s40_guide_card", "s40_forge_trip", "s40_first_weapon", "s40_first_hunt", "s40_new_skill", "s40_world_map"}
+# LUNCH_ONLY=1: film only the lunchbox card (a re-take); LUNCH=Good always does
+if LUNCH == "Good" or os.environ.get("LUNCH_ONLY") == "1":
+    SKIP |= {"s40_faction_pick", "s40_guide_card", "s40_forge_trip", "s40_first_hunt", "s40_new_skill", "s40_world_map"}
+    if os.environ.get("KEEP_WEAPON") == "1":
+        SKIP.add("s40_first_weapon")
 LOG = []
 Z = {}
 
@@ -154,8 +158,12 @@ def sheet(name):
 
 
 def rec(name, sec, cam=None):
-    if name in SKIP:
+    if name in SKIP:  # no recording, but the shot's actions (a remote, the anvil, a claim) still run on time
         print("skip", name, flush=True)
+        t0 = time.time()
+        if cam:
+            cam()
+        time.sleep(max(0.0, sec - (time.time() - t0)))
         return
     p, out = D.start_rec(name, sec)
     time.sleep(0.5)
@@ -288,15 +296,19 @@ def flow_a(f):
 
     # the first weapon: a close camera in front of me, then the anvil prompt -> [Twig] + "Stronger!" + Power counting up
     def gift():
-        f.orbit((0, 0, 0), 6, 2.4, -35, 35, 9.0, look_y=1.6, target=MY_ROOT, front=True)
-        time.sleep(1.2)
-        r = f.lua(ANVIL, "Client")
-        print(r, flush=True)
-        time.sleep(1.5)
+        # the prompt only shows (and so only fires) while the anvil is on screen: press it with the game's own camera
+        # behind me looking at the anvil (2026-10-08: a front camera with the anvil behind it gave nothing), then turn
+        # to the close front camera for the "Stronger!" moment
+        time.sleep(0.6)
+        print(f.lua(ANVIL, "Client"), flush=True)
+        time.sleep(0.4)
         if state(f).get("WeaponTier") in (None, "nil", "0"):
             print("forge key U:", f.lua(DISPATCH % "U", "Client"), flush=True)
+            time.sleep(0.4)
+        # far and low enough that the twig in my hand sits mid-screen, above the HUD bars (2026-10-08 user: "왜 무기도 안 들고")
+        f.orbit((0, 0, 0), 9, 1.6, -30, 30, 8.0, look_y=0.2, target=MY_ROOT, front=True)
     rec("s40_first_weapon", 10, gift)
-    wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0"), 10)
+    print("first weapon:", wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0") and s.get("Held") == "true", 10), flush=True)
 
     # the meadow trip (Forge.TravelDelay) and the first hunt with the twig (the game's own camera follows behind)
     wait_for(f, lambda s: s.get("ZoneId") == "SlimeMeadow", 20)
@@ -305,7 +317,11 @@ def flow_a(f):
     rec("s40_first_hunt", 25)
     st = wait_for(f, lambda s: num(s.get("TutorialKills")) >= 5, 60, 1.0)
     print(f.lua(HUNT_STOP, "Client"), flush=True)
-    time.sleep(4.5)  # Panels STORY.CalmSeconds: a card right after a fight waits for a tap instead of opening
+    # a card waits while I fight (the meadow slimes keep hitting me, 2026-10-08): claim from the quiet Crossroads square
+    # in front of the new fountain, after Panels STORY.CalmSeconds
+    cx, cz = zc("Crossroads")
+    f.teleport((cx + 10, 5, cz - 28), (cx, 5, cz))
+    time.sleep(5.5)  # Panels STORY.CalmSeconds: a card right after a fight waits for a tap instead of opening
 
     # [Claim] (+150 gold) -> the Lost Lunchbox card -> [One bite!] -> the kid's line
     def claim():
@@ -319,7 +335,7 @@ def flow_a(f):
         time.sleep(3.0)
         print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Choose", "%s"' % LUNCH, "StoryAction"), "Client"), flush=True)
     rec("s40_claim_lunchbox" + ("_good" if LUNCH == "Good" else ""), 14, claim)
-    if LUNCH == "Good":
+    if LUNCH == "Good" or os.environ.get("LUNCH_ONLY") == "1":
         return
     time.sleep(1.0)
 
@@ -341,6 +357,7 @@ def knight(f):
     f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatUnlocked',true); return 'ok'")
     print(f.lua(HIDE_MODAL, "Client"), flush=True)
     time.sleep(1.0)
+    print("knight weapon:", wait_for(f, lambda s: s.get("Held") == "true", 10), flush=True)
 
 
 def flow_c(f):
@@ -399,6 +416,24 @@ def flow_c(f):
     return kp
 
 
+def flow_k(f):
+    """K: the two new castles up close (2026-10-08: the entrance dolly showed them small and far), HUD off, me out of frame"""
+    f.hud(False)
+    for zone, model, name, a0, a1 in (("HaloTown", "HaloCastle", "s40_halo_castle", 55, 125), ("HornsTown", "HornsCastle", "s40_horns_castle", -125, -55)):
+        box = f.lua("local m=workspace.Map.Landmarks:FindFirstChild('%s'); if not m then return '' end; local cf,sz=m:GetBoundingBox(); "
+                    "return string.format('%%.1f,%%.1f,%%.1f,%%.1f', cf.X, cf.Y, cf.Z, math.max(sz.X, sz.Z))" % model)
+        if not box:
+            print("no", model, flush=True)
+            continue
+        bx, by, bz, bw = [float(v) for v in box.split(",")]
+        sx, sz = zs(zone)
+        f.teleport((sx + 40, 6, sz), (bx, 6, bz))
+        time.sleep(2.0)
+        r = bw * 1.25
+        rec(name, 10, lambda: f.orbit((bx, 0, bz), r, by * 0.9, a0, a1, 9.4, look_y=by * 0.6))
+    f.hud(True)
+
+
 def flow_b(f, kp=""):
     """B: the strong knight fights (HUD on, auto combat)"""
     f.hud(True)
@@ -427,7 +462,7 @@ def flow_b(f, kp=""):
 
 
 def main():
-    groups = [g for g in sys.argv[1:] if g in ("A", "B", "C")] or ["A", "C", "B"]
+    groups = [g for g in sys.argv[1:] if g in ("A", "B", "C", "K")] or ["A", "C", "B"]
     f = D.Film()
     fresh = "A" in groups
     try:
@@ -448,6 +483,8 @@ def main():
             flow_a(f)
         knight(f)
         kp = ""
+        if "K" in groups:
+            flow_k(f)
         if "C" in groups:
             kp = flow_c(f) or ""
         if "B" in groups:

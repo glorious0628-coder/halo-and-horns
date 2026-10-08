@@ -281,6 +281,8 @@ def crop_now():
     """the viewport rect, measured once per run and reused: a scene whose colours match Studio's gray pad (a white town,
     a bright path) made per-shot detection cut some clips short (2026-10-07: s30_bat_goblin 1082 wide, s30_halo_town 580 high)"""
     os.makedirs(RAW, exist_ok=True)
+    if os.environ.get("FILM_RECT"):  # x,y,w,h measured by hand (2026-10-08: hazy sky matched the gray pad -> 486 px high)
+        return tuple(int(v) for v in os.environ["FILM_RECT"].split(","))
     probe = os.path.join(RAW, "_probe.png")
     grab_window(probe)
     rect = viewport_rect(probe)
