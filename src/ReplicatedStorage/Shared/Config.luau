@@ -3234,7 +3234,7 @@ Config.Visuals = {
 Config.LookThemes = {
 	HaloIce = { Faction = "Halo", R1R2 = "rbxassetid://137659488563185", R3 = "rbxassetid://108650983430092", R4 = "rbxassetid://76422994410695", R5 = "rbxassetid://130485697124157",
 		Glow = Color3.fromRGB(170, 225, 255), Sparkle = Color3.fromRGB(225, 245, 255) }, -- shop
-	HaloGold = { Faction = "Halo", R1R2 = "rbxassetid://124557820913278", R3 = "rbxassetid://124586271258304", R4 = "rbxassetid://110992671351515", R5 = "rbxassetid://126895446255168",
+	HaloGold = { Faction = "Halo", R1R2 = "rbxassetid://124557820913278", R3 = "rbxassetid://124870710556969", R4 = "rbxassetid://104125803475842", R5 = "rbxassetid://121454866183175",
 		Glow = Color3.fromRGB(255, 170, 110), Sparkle = Color3.fromRGB(255, 120, 130) }, -- shop
 	HornsLava = { Faction = "Horns", R1R2 = "rbxassetid://80238307725390", R3 = "rbxassetid://82767525442280", R4 = "rbxassetid://78943828071190", R5 = "rbxassetid://85082048989349",
 		Glow = Color3.fromRGB(255, 120, 40), Sparkle = Color3.fromRGB(255, 190, 90) }, -- shop
@@ -4455,7 +4455,7 @@ Config.UIArt = {
 		MapZonePumpkinField = { Id = "rbxassetid://137146546854171", Size = Vector2.new(512, 512) },
 		MapZoneHauntedHollow = { Id = "rbxassetid://126361608809712", Size = Vector2.new(512, 512) },
 		MapKaiju = { Id = "rbxassetid://105547922444119", Size = Vector2.new(512, 512) },
-		MapGrudgeSack = { Id = "rbxassetid://93012481707250", Size = Vector2.new(512, 512) },
+		MapGrudgeSack = { Id = "rbxassetid://84005598517360", Size = Vector2.new(512, 512) },
 		MapPvP = { Id = "rbxassetid://118074682518530", Size = Vector2.new(512, 512) },
 		IconChipPumpkinKing = { Id = "rbxassetid://137587017958008", Size = Vector2.new(512, 512) }, -- event chip heads (left of '호박 대왕까지 m:ss' / the ghost king's chip)
 		IconChipGhostKing = { Id = "rbxassetid://139986664903918", Size = Vector2.new(512, 512) },
@@ -4533,18 +4533,18 @@ Config.UIArt = {
 		FactionPickHorns = { Id = "rbxassetid://111143659498431", Size = Vector2.new(624, 1024) },
 		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
 		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
-		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://83476661743336", Size = Vector2.new(460, 550) },
-		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://88805775159569", Size = Vector2.new(460, 550) },
-		CLS_HaloMage_M_Card = { Id = "rbxassetid://126336881237120", Size = Vector2.new(460, 550) },
-		CLS_HaloMage_F_Card = { Id = "rbxassetid://123314243302195", Size = Vector2.new(460, 550) },
+		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://113804016014809", Size = Vector2.new(460, 550) },
+		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://129768786563436", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_M_Card = { Id = "rbxassetid://118225411450017", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_F_Card = { Id = "rbxassetid://113800216565552", Size = Vector2.new(460, 550) },
 		CLS_HaloArcher_M_Card = { Id = "rbxassetid://115817198015355", Size = Vector2.new(460, 550) },
 		CLS_HaloArcher_F_Card = { Id = "rbxassetid://126666354590986", Size = Vector2.new(460, 550) },
-		CLS_HornsWarrior_M_Card = { Id = "rbxassetid://91103879889186", Size = Vector2.new(460, 550) },
-		CLS_HornsWarrior_F_Card = { Id = "rbxassetid://94079237131593", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_M_Card = { Id = "rbxassetid://74863399200858", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_F_Card = { Id = "rbxassetid://74943559632831", Size = Vector2.new(460, 550) },
 		CLS_HornsMage_M_Card = { Id = "rbxassetid://87840664026840", Size = Vector2.new(460, 550) },
 		CLS_HornsMage_F_Card = { Id = "rbxassetid://136362714347322", Size = Vector2.new(460, 550) },
-		CLS_HornsArcher_M_Card = { Id = "rbxassetid://81732631379103", Size = Vector2.new(460, 550) },
-		CLS_HornsArcher_F_Card = { Id = "rbxassetid://100853653295965", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_M_Card = { Id = "rbxassetid://75310398708603", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_F_Card = { Id = "rbxassetid://71626258615966", Size = Vector2.new(460, 550) },
 		FactionPremise = { Id = "rbxassetid://75757875574311", Size = Vector2.new(1024, 434), Slice = Rect.new(120, 120, 904, 314), SliceScale = 0.22, Tone = "Navy" },
 		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 70, 924, 72), FitHeight = true, Tone = "Navy" },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
@@ -4583,6 +4583,18 @@ Config.UIArt = {
 		IconPassGold2 = { Id = "rbxassetid://100341080284667", Size = Vector2.new(512, 512) }, -- PassIconGold2.png
 		IconPassVIP = { Id = "rbxassetid://98036294458431", Size = Vector2.new(512, 512) }, -- PassIconVIP.png
 		IconPassLooks = { Id = "rbxassetid://136373208143894", Size = Vector2.new(512, 512) }, -- PassIconBundle.png (the Looks header)
+		-- A23-75 / A23-77 look icons (이미지 생성 2 5cd9d28 / 565e19f, 검수 OK): 'Look' .. the Config.LookThemes id; the
+		-- shop's Looks tiles and the attendance board draw them (R3 shape render, navy rim)
+		LookHaloIce = { Id = "rbxassetid://131721415854040", Size = Vector2.new(512, 512) },
+		LookHaloGold = { Id = "rbxassetid://90123867490784", Size = Vector2.new(512, 512) },
+		LookHornsLava = { Id = "rbxassetid://110647559507483", Size = Vector2.new(512, 512) },
+		LookHornsShadow = { Id = "rbxassetid://135507968189284", Size = Vector2.new(512, 512) },
+		LookHaloSprout = { Id = "rbxassetid://83263248829283", Size = Vector2.new(512, 512) },
+		LookHornsSprout = { Id = "rbxassetid://116226794293707", Size = Vector2.new(512, 512) },
+		LookHaloStarlight = { Id = "rbxassetid://132781328122100", Size = Vector2.new(512, 512) },
+		LookHornsStarlight = { Id = "rbxassetid://140058187507403", Size = Vector2.new(512, 512) },
+		LookHaloPlatinum = { Id = "rbxassetid://78646024449809", Size = Vector2.new(512, 512) },
+		LookHornsPlatinum = { Id = "rbxassetid://123042000375413", Size = Vector2.new(512, 512) },
 		IconPrivateServer = { Id = "rbxassetid://95789432053642", Size = Vector2.new(512, 512) }, -- PassIconPrivate.png (이미지 생성 2 c5150fa, 검수 고름 A23-79)
 		-- A23-77 attendance board / A23-79 come-back art (이미지 생성 2 514737f, 검수 OK; 512, no letters - numbers are TextLabels)
 		IconWeeklyBox = { Id = "rbxassetid://134725206012544", Size = Vector2.new(512, 512) }, -- the 7th slot's weekly box

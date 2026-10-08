@@ -82,10 +82,10 @@ local L = {
 -- Studio-only sample looks for the layout photos: the four the user picked (A23-75, 2026-10-08: halo Ice · Gold,
 -- horns Lava · Shadow; ids 0 = "Coming soon", the pictures are stand-ins until their badges are drawn)
 local SAMPLE_LOOKS = {
-	IceHalo = { Faction = "Halo", Name = "Ice Halo", Icon = "IconRankHonor", Price = 99, Order = 1 },
-	GoldHalo = { Faction = "Halo", Name = "Gold Halo", Icon = "IconRankHonor", Price = 99, Order = 2 },
-	LavaHorns = { Faction = "Horns", Name = "Lava Horns", Icon = "IconRankInfamy", Price = 99, Order = 1 },
-	ShadowHorns = { Faction = "Horns", Name = "Shadow Horns", Icon = "IconRankInfamy", Price = 99, Order = 2 },
+	HaloIce = { Faction = "Halo", Name = "Ice Halo", Price = 99, Order = 1 }, -- ids = Config.LookThemes (icons Look..id)
+	HaloGold = { Faction = "Halo", Name = "Gold Halo", Price = 99, Order = 2 },
+	HornsLava = { Faction = "Horns", Name = "Lava Horns", Price = 99, Order = 1 },
+	HornsShadow = { Faction = "Horns", Name = "Shadow Horns", Price = 99, Order = 2 },
 }
 
 ------------------------------------------------------------------ helpers
@@ -245,7 +245,10 @@ local function header(u, kit, parent, text, badge)
 		TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = kit.NextOrder(), Parent = parent,
 	}, "Title")
 	if badge and u.ArtId(badge) then
-		u.ArtImage(badge, { Name = "Badge", Size = UDim2.fromOffset(L.HeadH, L.HeadH), Parent = label })
+		-- the label's UIPadding moves its children too: the badge goes back into the padded room (UiSandbox 2026-10-08:
+		-- it sat on "Lo" of "Looks for Knights of Light")
+		u.ArtImage(badge, { Name = "Badge", Position = UDim2.fromOffset(-(L.HeadH + 6), 0),
+			Size = UDim2.fromOffset(L.HeadH, L.HeadH), Parent = label })
 		local pad = Instance.new("UIPadding")
 		pad.PaddingLeft = UDim.new(0, L.HeadH + 6)
 		pad.Parent = label
@@ -416,9 +419,9 @@ local function buildShop(parent, kit)
 		for _, look in looks do
 			local cell = { Look = look }
 			local tile = cardButton(u, kit, tiles, "Look" .. look.Id, function() tapLook(kit, look) end, openedAt)
-			-- the look's own icon (Config.Looks Icon = 'Look'..id) once drawn, else my side's rank emblem
-			local icon = type(look.Def.Icon) == "string" and u.ArtId(look.Def.Icon) and look.Def.Icon
-				or (look.Def.Faction == "Horns" and "IconRankInfamy" or "IconRankHonor")
+			-- the look's own icon (Config.Looks Icon, else the UIArt key 'Look'..id) once drawn, else my side's rank emblem
+			local own = type(look.Def.Icon) == "string" and look.Def.Icon or ("Look" .. look.Id)
+			local icon = u.ArtId(own) and own or (look.Def.Faction == "Horns" and "IconRankInfamy" or "IconRankHonor")
 			rimSlot(u, "SlotEpic", icon, {
 				Name = "Slot", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, L.Pad),
 				Size = UDim2.fromOffset(L.LookSlot, L.LookSlot), ScaleType = Enum.ScaleType.Fit, Parent = tile,
