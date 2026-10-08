@@ -5646,7 +5646,7 @@ Config.RateLimits.CandyTrade = 1
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
 Config.QuestBook = {
-	DoneMax = 40,
+	DoneMax = 60, -- every main (19) + every sub (~35) of a finished save still fits (검수 2026-10-08)
 	AvailableMax = 10,
 	Text = { OpensAt = "%s · Opens at Lv %d" }, -- (quest Title, level)
 }

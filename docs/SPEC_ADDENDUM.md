@@ -1265,9 +1265,10 @@ Config values below are the ones in Config.luau.
 - [CR-L23] The server no longer sends the LevelUp / Banked / HaloCourier Notify or NotifyAll(KaijuSiren); Fx LevelUp / Bank
   and the EventHUD siren banner announce them. The Halo courier sends Fx `Bank { Amount, Courier = true }` →
   `Config.Text.HaloCourier` toast.
-- [CR-L50] The `QuestsJson` attribute is gone. New server → client remote `Quests` (`Net.Names`):
-  `FireClient(player, json)` (same JSON array string as before) only when it changes, plus once after each
-  CharacterSpawned. HUD accepts the JSON string, an array or `{ Quests = array }`.
+- [CR-L50] The `QuestsJson` attribute is gone. New server → client remote `Quests` (`Net.Names`): fired only when it
+  changes, plus once after each CharacterSpawned. Since A23-81 (2026-10-08) the value is the table
+  `{ Quests = array of entries, Book = { Available, Done } }` (docs/design/quest_book_server_2026-10-08.md; before: the
+  JSON array string). HUD and Audio accept the JSON string, an array or `{ Quests = array }`.
 
 ### A16-11 Client / UI [CR-L15, CR-L26–L30, CR-L32, CR-L34, CR-L36–L48]
 - [CR-M24] Quest claim and reroll buttons use separate positions. After a claim, reroll input is ignored for 1.5 s;
