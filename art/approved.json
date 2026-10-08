@@ -7402,6 +7402,8 @@
   "size": "1024x1024 RGB (upload size); normal + metal/rough maps stay the GLB's own",
   "use": "crossroads supporter board (A23-75 VIP): copy of the X_NoticeBoard MeshPart with TextureID = this texture; supporter names = game text (SurfaceGui), no lettering on the art",
   "preview": "art/review/s2/supporter_board_sheet.jpg",
-  "note": "청록 지붕·기둥 → 금(그늘 호박빛), 갈색 판·보 → 따뜻한 크림(나뭇결 남김), 꼭대기 보석·등불 유리 → 루비. 놋쇠 장식·크림 돌 그대로. 현상수배 판과 한눈에 구별. B(호박색 보석) X_NoticeBoard_Gold_B_tex.png는 안 씀."
+  "note": "청록 지붕·기둥 → 금(그늘 호박빛), 갈색 판·보 → 따뜻한 크림(나뭇결 남김), 꼭대기 보석·등불 유리 → 루비. 놋쇠 장식·크림 돌 그대로. 현상수배 판과 한눈에 구별. B(호박색 보석) X_NoticeBoard_Gold_B_tex.png는 안 씀.",
+  "id": "rbxassetid://127012447674638",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); given to 게임성 개발 1 for the crossroads supporter board"
  }
 }
