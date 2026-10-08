@@ -489,17 +489,18 @@ def choice_cells():
     devil), inside the Shorts safe area even at the pop / bob peak"""
     emo = ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109)
     cells = []
-    cw, ch, gap = 410, 330, 40
+    cw, ch, gap = 425, 400, 30
     for i, (e, l1, l2, fill, rim, col) in enumerate((("😇", "GIVE IT", "BACK", "#7A5A12", "#FFD650", (255, 236, 150)),
                                                      ("😈", "ONE", "BITE!", "#4A1E7A", "#C77DFF", (236, 200, 255)))):
         cell = rounded((cw, ch), 46, hexrgb(fill), outline=hexrgb(rim), width=10)
         ic = Image.new("RGBA", (150, 150), (0, 0, 0, 0))
         ImageDraw.Draw(ic).text((10, 8), e, font=emo, embedded_color=True)
         ic = contain(ic.crop(ic.getbbox() or (0, 0, 1, 1)), 120, 120)
-        cell.alpha_composite(ic, ((cw - ic.width) // 2, 22))
+        ic = contain(ic, 150, 150)
+        cell.alpha_composite(ic, ((cw - ic.width) // 2, 24))
         for k, word in enumerate((l1, l2)):
-            lab = text_img([(word, col)], fit_size(word, cw - 40, 78))
-            cell.alpha_composite(lab, ((cw - lab.width) // 2, 150 + k * 82))
+            lab = text_img([(word, col)], fit_size(word, cw - 40, 92))
+            cell.alpha_composite(lab, ((cw - lab.width) // 2, 190 + k * 96))
         cells.append((cell, CAPX + (-1 if i == 0 else 1) * (cw + gap) // 2, 820))
     return cells
 
@@ -1211,6 +1212,17 @@ def build_short(short, voice, out_root, do_tts=True):
                 # left-aligned, far enough in that the pop (x 1.1 around its centre) never crosses the safe edge
                 paste_center(fr, pill, SAFE[0] + 14 + pill.width * 0.55, chip_y, pop_scale(i),
                              check=(safe_log, "chip", fi) if check_on else None)
+            hb = s.get("hl_box")  # a pulsing glow around one button of a card shot (x0, y0, x1, y1 in the 9:16 frame)
+            if hb:
+                pulse = 0.5 + 0.5 * math.sin(fi / FPS * 2 * math.pi * 2.0)
+                ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                dv = ImageDraw.Draw(ov)
+                hc = hexrgb(s.get("hl_col", "#FFD650"))[:3]
+                pad = int(6 + 10 * pulse)
+                for wd, al in ((22, 50), (12, 110), (6, 255)):
+                    dv.rounded_rectangle([hb[0] - pad, hb[1] - pad, hb[2] + pad, hb[3] + pad], radius=26,
+                                         outline=hc + (int(al * (0.55 + 0.45 * pulse)),), width=wd)
+                fr.alpha_composite(ov.filter(ImageFilter.GaussianBlur(2)))
             bg_ = s.get("big")
             if bg_:
                 txt = fill(bg_["text"])
