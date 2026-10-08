@@ -72,7 +72,7 @@ local T = {
 -- Pad; LinesH holds three Body lines at the phone floor (14 px = 18.7 du, ~1.25 line height)
 local L = {
 	Cols = 4, Gap = 10, CardH = 266, Pad = 10, Slot = 92, Icon = 0.62, NameH = 28, NameSize = 22, NameMinPx = 12,
-	LineSize = 15, CapsH = 40, CapsSize = 22, LookCols = 5, LookH = 178, LookSlot = 84, HeadH = 30, HeadSize = 20, TicketH = 64,
+	LineSize = 15, CapsH = 40, CapsSize = 22, LookCols = 4, LookH = 178, LookSlot = 84, HeadH = 30, HeadSize = 20, TicketH = 64,
 	Guard = 0.35, -- s: a fast second tap on the [메뉴] square must not land on a card (CR-L26)
 }
 -- Studio-only sample looks for the layout photos: the four the user picked (A23-75, 2026-10-08: halo Ice · Gold,

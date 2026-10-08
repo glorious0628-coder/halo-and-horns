@@ -34,7 +34,16 @@
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
-    "PrivateServer: capsule words on one line at >= 16 px": true
+    "PrivateServer: capsule words on one line at >= 16 px": true,
+    "look tile holds rim, name and capsule": true,
+    "look Ice Halo: name on one line at >= 12 px": true,
+    "look Gold Halo: name on one line at >= 12 px": true,
+    "look Lava Horns: name on one line at >= 12 px": true,
+    "look Shadow Horns: name on one line at >= 12 px": true,
+    "look capsule '99 R$' on one line at >= 16 px": true,
+    "look capsule 'Wear' on one line at >= 16 px": true,
+    "look capsule 'Wearing' on one line at >= 16 px": true,
+    "look capsule 'Coming soon' on one line at >= 16 px": true
    },
    "Cards": {
     "XP2": {
@@ -127,6 +136,41 @@
        "Px": 17.6
       }
      }
+    }
+   },
+   "LookW": 176.5,
+   "Looks": {
+    "Ice Halo": {
+     "Size": 22,
+     "Px": 17.6
+    },
+    "Gold Halo": {
+     "Size": 22,
+     "Px": 17.6
+    },
+    "Lava Horns": {
+     "Size": 22,
+     "Px": 17.6
+    },
+    "Shadow Horns": {
+     "Size": 22,
+     "Px": 17.6
+    },
+    "99 R$": {
+     "Size": 22,
+     "Px": 17.6
+    },
+    "Wear": {
+     "Size": 22,
+     "Px": 17.6
+    },
+    "Wearing": {
+     "Size": 22,
+     "Px": 17.6
+    },
+    "Coming soon": {
+     "Size": 22,
+     "Px": 17.6
     }
    },
    "Layout": {
@@ -167,7 +211,16 @@
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
-    "PrivateServer: capsule words on one line at >= 16 px": true
+    "PrivateServer: capsule words on one line at >= 16 px": true,
+    "look tile holds rim, name and capsule": true,
+    "look Ice Halo: name on one line at >= 12 px": true,
+    "look Gold Halo: name on one line at >= 12 px": true,
+    "look Lava Horns: name on one line at >= 12 px": true,
+    "look Shadow Horns: name on one line at >= 12 px": true,
+    "look capsule '99 R$' on one line at >= 16 px": true,
+    "look capsule 'Wear' on one line at >= 16 px": true,
+    "look capsule 'Wearing' on one line at >= 16 px": true,
+    "look capsule 'Coming soon' on one line at >= 16 px": true
    },
    "Cards": {
     "XP2": {
@@ -262,6 +315,41 @@
      }
     }
    },
+   "LookW": 176.5,
+   "Looks": {
+    "Ice Halo": {
+     "Size": 22,
+     "Px": 11.0
+    },
+    "Gold Halo": {
+     "Size": 22,
+     "Px": 11.0
+    },
+    "Lava Horns": {
+     "Size": 22,
+     "Px": 11.0
+    },
+    "Shadow Horns": {
+     "Size": 22,
+     "Px": 11.0
+    },
+    "99 R$": {
+     "Size": 22,
+     "Px": 11.0
+    },
+    "Wear": {
+     "Size": 22,
+     "Px": 11.0
+    },
+    "Wearing": {
+     "Size": 22,
+     "Px": 11.0
+    },
+    "Coming soon": {
+     "Size": 22,
+     "Px": 11.0
+    }
+   },
    "Layout": {
     "Top": 131.7073170731707,
     "Hang": 23.0,
@@ -300,7 +388,16 @@
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
-    "PrivateServer: capsule words on one line at >= 16 px": true
+    "PrivateServer: capsule words on one line at >= 16 px": true,
+    "look tile holds rim, name and capsule": true,
+    "look Ice Halo: name on one line at >= 12 px": true,
+    "look Gold Halo: name on one line at >= 12 px": true,
+    "look Lava Horns: name on one line at >= 12 px": true,
+    "look Shadow Horns: name on one line at >= 12 px": true,
+    "look capsule '99 R$' on one line at >= 16 px": true,
+    "look capsule 'Wear' on one line at >= 16 px": true,
+    "look capsule 'Wearing' on one line at >= 16 px": true,
+    "look capsule 'Coming soon' on one line at >= 16 px": true
    },
    "Cards": {
     "XP2": {
@@ -394,6 +491,41 @@
      }
     }
    },
+   "LookW": 176.5,
+   "Looks": {
+    "Ice Halo": {
+     "Size": 22,
+     "Px": 22.0
+    },
+    "Gold Halo": {
+     "Size": 22,
+     "Px": 22.0
+    },
+    "Lava Horns": {
+     "Size": 22,
+     "Px": 22.0
+    },
+    "Shadow Horns": {
+     "Size": 22,
+     "Px": 22.0
+    },
+    "99 R$": {
+     "Size": 22,
+     "Px": 22.0
+    },
+    "Wear": {
+     "Size": 22,
+     "Px": 22.0
+    },
+    "Wearing": {
+     "Size": 22,
+     "Px": 22.0
+    },
+    "Coming soon": {
+     "Size": 22,
+     "Px": 22.0
+    }
+   },
    "Layout": {
     "Top": 66.0,
     "Hang": 23.0,
@@ -432,7 +564,16 @@
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
-    "PrivateServer: capsule words on one line at >= 16 px": true
+    "PrivateServer: capsule words on one line at >= 16 px": true,
+    "look tile holds rim, name and capsule": true,
+    "look Ice Halo: name on one line at >= 12 px": true,
+    "look Gold Halo: name on one line at >= 12 px": true,
+    "look Lava Horns: name on one line at >= 12 px": true,
+    "look Shadow Horns: name on one line at >= 12 px": true,
+    "look capsule '99 R$' on one line at >= 16 px": true,
+    "look capsule 'Wear' on one line at >= 16 px": true,
+    "look capsule 'Wearing' on one line at >= 16 px": true,
+    "look capsule 'Coming soon' on one line at >= 16 px": true
    },
    "Cards": {
     "XP2": {
@@ -526,6 +667,41 @@
        "Px": 16.5
       }
      }
+    }
+   },
+   "LookW": 176.5,
+   "Looks": {
+    "Ice Halo": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Gold Halo": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Lava Horns": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Shadow Horns": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "99 R$": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Wear": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Wearing": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Coming soon": {
+     "Size": 22,
+     "Px": 16.5
     }
    },
    "Layout": {
@@ -566,7 +742,16 @@
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
-    "PrivateServer: capsule words on one line at >= 16 px": true
+    "PrivateServer: capsule words on one line at >= 16 px": true,
+    "look tile holds rim, name and capsule": true,
+    "look Ice Halo: name on one line at >= 12 px": true,
+    "look Gold Halo: name on one line at >= 12 px": true,
+    "look Lava Horns: name on one line at >= 12 px": true,
+    "look Shadow Horns: name on one line at >= 12 px": true,
+    "look capsule '99 R$' on one line at >= 16 px": true,
+    "look capsule 'Wear' on one line at >= 16 px": true,
+    "look capsule 'Wearing' on one line at >= 16 px": true,
+    "look capsule 'Coming soon' on one line at >= 16 px": true
    },
    "Cards": {
     "XP2": {
@@ -662,6 +847,41 @@
      }
     }
    },
+   "LookW": 176.5,
+   "Looks": {
+    "Ice Halo": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Gold Halo": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Lava Horns": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Shadow Horns": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "99 R$": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Wear": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Wearing": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Coming soon": {
+     "Size": 22,
+     "Px": 16.5
+    }
+   },
    "Layout": {
     "Top": 88.0,
     "Hang": 23.0,
@@ -700,7 +920,16 @@
     "VIP: capsule words on one line at >= 16 px": true,
     "PrivateServer: name on one line at >= 12 px": true,
     "PrivateServer: lines fit above the capsule": true,
-    "PrivateServer: capsule words on one line at >= 16 px": true
+    "PrivateServer: capsule words on one line at >= 16 px": true,
+    "look tile holds rim, name and capsule": true,
+    "look Ice Halo: name on one line at >= 12 px": true,
+    "look Gold Halo: name on one line at >= 12 px": true,
+    "look Lava Horns: name on one line at >= 12 px": true,
+    "look Shadow Horns: name on one line at >= 12 px": true,
+    "look capsule '99 R$' on one line at >= 16 px": true,
+    "look capsule 'Wear' on one line at >= 16 px": true,
+    "look capsule 'Wearing' on one line at >= 16 px": true,
+    "look capsule 'Coming soon' on one line at >= 16 px": true
    },
    "Cards": {
     "XP2": {
@@ -794,6 +1023,41 @@
        "Px": 16.5
       }
      }
+    }
+   },
+   "LookW": 176.5,
+   "Looks": {
+    "Ice Halo": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Gold Halo": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Lava Horns": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Shadow Horns": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "99 R$": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Wear": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Wearing": {
+     "Size": 22,
+     "Px": 16.5
+    },
+    "Coming soon": {
+     "Size": 22,
+     "Px": 16.5
     }
    },
    "Layout": {

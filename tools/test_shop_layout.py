@@ -9,6 +9,8 @@ UiSandbox TextBounds of the bark lines: within 3 %). Checks, on every screen:
   - each card name fits one line at >= 12 px (TextScaled from 22 du down to its StyleMinPx floor)
   - each card's lines wrap into the room above the capsule at the Body floor (14 px; PC floors shrink with the window)
   - every capsule word ('199 R$', 'Owned', 'Coming soon', '100 R$ / mo') fits one line at >= 16 px
+  - the look tiles (the Studio preview's picked looks): names on one line at >= 12 px, '99 R$' / 'Wear' / 'Wearing' /
+    'Coming soon' on one line at >= 16 px, rim + name + capsule inside the tile height
 Writes docs/art/verification_2026-10-08/shop_layout_offline_2026-10-08.json and a mock sheet (.png) drawn with the
 approved art and the fonts - an approximation for the layout, the Studio photos are the real check.
 
@@ -121,7 +123,10 @@ def parse_shop():
     names = dict(re.findall(r'(\w+) = "([^"]+)"', re.search(r"Names = \{([^}]*)\}", s).group(1)))
     lines_block = re.search(r"Lines = \{(.*?)\n\t\}", s, re.S).group(1)
     lines = dict(re.findall(r'(\w+) = "([^"]+)"', lines_block))
-    words = {k: re.search(r"\n\t" + k + r' = "([^"]+)"', s).group(1) for k in ("PriceF", "MonthF", "Owned", "Soon", "Note", "Title")}
+    words = {k: re.search(r"\n\t" + k + r' = "([^"]+)"', s).group(1)
+             for k in ("PriceF", "MonthF", "Owned", "Soon", "Note", "Title", "Wear", "Wearing")}
+    # the looks shown in the Studio preview (the user's picks): their names must fit the narrower look tiles
+    words["LookNames"] = re.findall(r'\w+ = \{ Faction = "\w+", Name = "([^"]+)"', s)
     return L, [{"Kind": p[0], "Icon": p[1], "Slot": p[2], "Price": int(p[3]), "Info": bool(p[5])} for p in passes], names, lines, words
 
 
@@ -188,6 +193,21 @@ def check_screen(name, vw, vh, touch, L, passes, names, lines, words):
         checks[k + ": lines fit above the capsule"] = lines_ok
         checks[k + ": capsule words on one line at >= 16 px"] = all(
             c["Size"] is not None and c["Size"] * s >= FLOOR_BUTTON * pxf - 0.01 for c in caps.values())
+    # looks: LookCols tiles a row (rim slot, one-line name, capsule)
+    look_w = (inner_w - (L["LookCols"] - 1) * L["Gap"]) / L["LookCols"]
+    res["LookW"] = round(look_w, 1)
+    checks["look tile holds rim, name and capsule"] = \
+        L["LookH"] >= L["Pad"] + L["LookSlot"] + 2 + L["NameH"] + 4 + L["CapsH"] + L["Pad"]
+    looks = {}
+    for n in words["LookNames"]:
+        size, _ = scaled_size(HEAD, n, L["NameSize"], name_floor, look_w - 8, L["NameH"])
+        looks[n] = {"Size": size, "Px": round(size * s, 1) if size else None}
+        checks["look " + n + ": name on one line at >= 12 px"] = size is not None and size * s >= NAME_MIN_PX * pxf - 0.01
+    for w in (words["PriceF"].replace("%s", "99"), words["Wear"], words["Wearing"], words["Soon"]):
+        size, _ = scaled_size(HEAD, w, L["CapsSize"], caps_floor, look_w - 2 * L["Pad"] - 20, L["CapsH"] - 8)
+        looks[w] = {"Size": size, "Px": round(size * s, 1) if size else None}
+        checks["look capsule '" + w + "' on one line at >= 16 px"] = size is not None and size * s >= FLOOR_BUTTON * pxf - 0.01
+    res["Looks"] = looks
     res["Layout"] = {"Top": top, "Hang": hang, "AvailH": avail_h, "LinesTop": lines_top, "LinesH": lines_h,
                      "NoteLines": note_lines}
     return res
