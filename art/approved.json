@@ -3327,7 +3327,15 @@
   "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/emo_rays_final.jpg",
   "note": "맞을 때 스티커: 글자 없는 둥근 흰 말풍선 + 굵은 남색 테두리 + 작은 빨간 별. 'Ouch!'는 게임 TextLabel. 옛 UIP_EmoOuch(한국어 '아야!', 뾰족 폭발) 대체.",
-  "medium_pick": "art/out/s2/emo2/EmoOuch2_A1_src.png"
+  "medium_pick": "art/out/s2/emo2/EmoOuch2_A1_src.png",
+  "id": "rbxassetid://114387365320855",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)",
+  "text_rect": [
+   0.17,
+   0.26,
+   0.66,
+   0.42
+  ]
  },
  "EmoTears": {
   "status": "approved",
@@ -3364,7 +3372,9 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/emo_rays_final.jpg",
-  "note": "화남 스티커: 둥근 혈관 4개(둘레 짧은 선 없음). 빨간 십자 안은 구급 표시로 읽혀 안 씀."
+  "note": "화남 스티커: 둥근 혈관 4개(둘레 짧은 선 없음). 빨간 십자 안은 구급 표시로 읽혀 안 씀.",
+  "id": "rbxassetid://79994000943963",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "EmoStress": {
   "status": "approved",
@@ -3377,7 +3387,9 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/emo_rays_final.jpg",
-  "note": "스트레스 스티커: 번개 하나 비스듬히(부채꼴 번개 3개 대체, 빛살 규칙)."
+  "note": "스트레스 스티커: 번개 하나 비스듬히(부채꼴 번개 3개 대체, 빛살 규칙).",
+  "id": "rbxassetid://132610409379166",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "IconGoose": {
   "status": "approved",
@@ -4178,7 +4190,8 @@
   "note": "칭호 배지 빛 R4 성자. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음.",
   "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
   "redraw_note": "가운데 가시 해 → 하늘 보석(빛살 규칙)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads"
+  "id": "rbxassetid://118999354181738",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "BadgeHaloR5": {
   "status": "approved",
@@ -4193,7 +4206,8 @@
   "note": "칭호 배지 빛 R5 대천사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 단계 기준 그림(R5 먼저).",
   "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
   "redraw_note": "가운데 가시 해 → 하늘 보석, 구운 바깥 빛 뺌(남색 테두리)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads"
+  "id": "rbxassetid://74618033435632",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "BadgeHornsR1": {
   "status": "approved",
@@ -4774,7 +4788,8 @@
   "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg",
   "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
   "redraw_note": "가슴 문양 가시 해 → 링 안 금별(빛살 규칙). 얼굴·옷 그대로, 옷차림 검사 통과(얼굴·손만).",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads"
+  "id": "rbxassetid://121040553911308",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "FactionPickHalo": {
   "status": "approved",
@@ -4812,7 +4827,8 @@
   "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg",
   "medal_fix": "2026-10-08 검수 OK (style drift #2): medallion inside redrawn (Firefly High, ref = Medium pick FactionPickHalo_Medal_A, art/out/hq/src/FactionPickHalo_Medal_A_HQ_src.png) and pasted into the original card with tools/img2/medal_swap.py — rays / spiked sun gone, card silhouette, ribbon, layout regions unchanged",
   "preview_medal": "art/review/s2/faction_medal_rays_fix.jpg",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads"
+  "id": "rbxassetid://78441813872022",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "FactionPickHorns": {
   "status": "approved",
@@ -4850,7 +4866,8 @@
   "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg",
   "medal_fix": "2026-10-08 검수 OK (style drift #2): medallion inside redrawn (Firefly High, ref = Medium pick FactionPickHorns_Medal_A, art/out/hq/src/FactionPickHorns_Medal_A_HQ_src.png) and pasted into the original card with tools/img2/medal_swap.py — rays / spiked sun gone, card silhouette, ribbon, layout regions unchanged",
   "preview_medal": "art/review/s2/faction_medal_rays_fix.jpg",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads"
+  "id": "rbxassetid://92021424719072",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "ClassPickHalo": {
   "status": "approved",
@@ -7747,7 +7764,9 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/emo_rays_final.jpg",
-  "note": "타격 효과: 둥근 흰·노랑 뭉게 퍼프 + 작은 별 3개(뾰족 폭발 대체). 옛 UIP_FxHitSpark 대체."
+  "note": "타격 효과: 둥근 흰·노랑 뭉게 퍼프 + 작은 별 3개(뾰족 폭발 대체). 옛 UIP_FxHitSpark 대체.",
+  "id": "rbxassetid://122673635344930",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "FxMagicBurst": {
   "status": "approved",
@@ -7760,7 +7779,9 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/emo_rays_final.jpg",
-  "note": "마법 효과: 둥근 흰·연보라 구름 + 반짝이(빛살 터짐 대체, 색 입히기 쉬움). 옛 UIP_FxMagicBurst 대체."
+  "note": "마법 효과: 둥근 흰·연보라 구름 + 반짝이(빛살 터짐 대체, 색 입히기 쉬움). 옛 UIP_FxMagicBurst 대체.",
+  "id": "rbxassetid://124326448818980",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "ShieldHalo": {
   "status": "approved",
@@ -7773,7 +7794,9 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/emo_rays_final.jpg",
-  "note": "직업 고르기 머리 방패(빛): 금 방패 + 후광 + 하늘 보석, 해·빛살 없음. 옛 UIP_ShieldHalo 대체. #11 때 Horns와 짝 맞추기(검수)."
+  "note": "직업 고르기 머리 방패(빛): 금 방패 + 후광 + 하늘 보석, 해·빛살 없음. 옛 UIP_ShieldHalo 대체. #11 때 Horns와 짝 맞추기(검수).",
+  "id": "rbxassetid://73353334079892",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "Tex_SkeletonKnight_tone": {
   "status": "approved",
@@ -7782,7 +7805,9 @@
   "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
   "file": "art/models/tone/SkeletonKnight_basecolor_tone.png",
   "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
-  "note": "해골 기사: 검은 갑옷 → 짙은 남보라(보라 빛·금 유지), --lift 0.26 --clean 0.4 --keep-hues 255-305,30-60 --tint 248,0.38 (style drift #35)"
+  "note": "해골 기사: 검은 갑옷 → 짙은 남보라(보라 빛·금 유지), --lift 0.26 --clean 0.4 --keep-hues 255-305,30-60 --tint 248,0.38 (style drift #35)",
+  "id": "rbxassetid://87068638465313",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "Tex_Goblin_tone": {
   "status": "approved",
@@ -7791,7 +7816,9 @@
   "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
   "file": "art/models/tone/Goblin_basecolor_tone.png",
   "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
-  "note": "고블린: 얼룩 줄이고 조금 밝게, --lift 0.15 --sat 1.1 --clean 0.65 (style drift #35)"
+  "note": "고블린: 얼룩 줄이고 조금 밝게, --lift 0.15 --sat 1.1 --clean 0.65 (style drift #35)",
+  "id": "rbxassetid://102220766968886",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "Tex_GoblinBrute_tone": {
   "status": "approved",
@@ -7809,7 +7836,9 @@
   "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
   "file": "art/models/tone/Skeleton_basecolor_tone.png",
   "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
-  "note": "옷 입은 해골(SkeletonClothed 텍스처): --lift 0.15 --sat 1.05 --clean 0.65 (style drift #35)"
+  "note": "옷 입은 해골(SkeletonClothed 텍스처): --lift 0.15 --sat 1.05 --clean 0.65 (style drift #35)",
+  "id": "rbxassetid://123485992243980",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (Config id swapped)"
  },
  "KingSlimeCrown": {
   "status": "approved",
