@@ -1,0 +1,14 @@
+[   5.3] saved edit_02_king_hill_1850
+[   7.7] saved edit_04_road_1850
+[  10.4] saved edit_05_crossroads_sky_1850
+[  10.4] edit sky: Ft=rbxassetid://86737469798577 Up=rbxassetid://139860275275280 Bk=rbxassetid://106230772458054
+[  24.2] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTi
+[  48.6] fired ChooseFaction
+[  48.9] fired ChooseClass
+[  52.9] closed
+[  53.0] play sky (client): Ft=rbxassetid://86737469798577 Up=rbxassetid://139860275275280 Bk=rbxassetid://106230772458054
+[  55.2] saved docs\art\verification_2026-10-08\main_apply\surface_sky_1850\play_01_town_view_1850.png (white 0%)
+[  55.3] stand y=3.0 on Terrain
+[  59.8] saved docs\art\verification_2026-10-08\main_apply\surface_sky_1850\play_02_crossroads_1850.png (white 1%)
+[  59.9] console flagged: Maximum re-entrancy depth (80) exceeded calling task.defer
+[  61.0] play stopped
