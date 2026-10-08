@@ -7728,10 +7728,10 @@
  },
  "Sky_Box_Day": {
   "status": "approved",
-  "by": "검수 10/08 (#12, 1번)",
+  "by": "검수 10/08 (#12, 1번; 정수리 진하기 절반·Dn = FogColor 150,205,228)",
   "file": "art/out/hq/HQ_Sky_Box_Day.png",
   "medium": "art/out/sky/Sky_Box_Day_1.png",
-  "faces": "art/out/sky/faces/Sky_Day_{Ft,Bk,Lf,Rt,Up,Dn}.png (tools/sky_cubemap.py --top-deg 72 --wrap 8 --repeat 3)",
+  "faces": "art/out/sky/faces/Sky_Day_{Ft,Bk,Lf,Rt,Up,Dn}.png (tools/sky_cubemap.py --top-deg 72 --wrap 8 --repeat 3 --zenith-soften 0.5 --down-color 150,205,228)",
   "sheet": "art/review/sky/sky_day_turnaround.jpg",
   "credits": 5,
   "note": "no sun, no rays; high sky = code gradient"
