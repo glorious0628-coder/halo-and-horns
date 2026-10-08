@@ -94,7 +94,7 @@
 | B1 | `build/import_B1/WorldKit_ImportB1.glb` | 6 | 2.6MB | Town_Halo_Bakery 14.0×12.03×14.21; Town_Halo_Potion 13.41×13.51×16.0; Town_Halo_Smithy 14.0×12.53×14.0; Town_Halo_JuiceBar 12.0×11.79×13.08; Town_Halo_HouseA 12.0×9.98×11.92; Town_Halo_HouseB 11.85×10.62×16.0 |
 | B2 | `build/import_B2/WorldKit_ImportB2.glb` | 6 | 2.6MB | Town_Horns_Bakery 14.0×12.72×13.93; Town_Horns_Potion 14.31×12.44×16.0; Town_Horns_Smithy 14.0×12.14×13.27; Town_Horns_JuiceBar 12.0×11.12×11.17; Town_Horns_HouseA 12.0×9.81×10.55; Town_Horns_HouseB 13.16×11.76×16.0 |
 | C1 | `build/import_C1/WorldKit_ImportC1.glb` | 10 | 2.1MB | Kit_X_StallRed 10.0×7.48×12.91; Kit_X_PotionCart 5.73×4.25×7.5; Kit_X_Bench 6.5×3.12×4.31; Kit_X_Lamp 5.1×2.81×11.0; Kit_X_Barrel 2.82×2.98×3.0; Kit_X_Crate 3.04×2.94×2.5; Kit_X_FruitCart 5.0×4.29×3.65; Kit_X_FlowerPot 2.44×2.1×2.5; Kit_X_BannerHalo 5.54×2.14×14.0; Kit_X_BannerHorns 5.66×1.79×14.0 |
-| C2 | `build/import_C2/WorldKit_ImportC2.glb` | 6 | 1.1MB | Kit_X_Brazier 3.8×3.8×4.0; Kit_X_Anvil 4.5×3.61×4.15; Kit_X_Forge 6.0×5.88×6.92; Kit_X_Curb 6.0×2.78×1.48; Kit_X_Fence 6.0×1.17×2.23; Kit_X_Bush 3.45×3.32×3.0 |
+| C2 | `build/import_C2/WorldKit_ImportC2.glb` | 8 | 4.1MB | Kit_X_Brazier 3.8×3.8×4.0; Kit_X_Anvil 4.5×3.61×4.15; Kit_X_Forge 6.0×5.88×6.92; Kit_X_Curb 6.0×2.78×1.48; Kit_X_Fence 6.0×1.17×2.23; Kit_X_Bush 3.45×3.32×3.0; **Kit_X_StallBlue 10.0×7.48×12.91; Kit_X_StallGreen 10.0×7.48×12.91 (10/08: 빨강 가판대 차양만 색 바꿈, 0포인트, 검수 OK 안 A)** |
 | D1 | `build/import_D1/WorldKit_ImportD1.glb` | 7 | 21.8MB | Town_Halo_WallTower 12.91×12.63×24.0; Town_Horns_WallTower 15.05×14.39×24.0; Town_Halo_HouseC 16.0×8.13×12.48; Town_Horns_HouseC 16.0×12.35×18.16; Town_Halo_Bridge 22.0×11.93×14.13; Town_Horns_Bridge 13.93×22.0×8.45; X_Altar 9.0×8.55×7.83 |
 | D2 | `build/import_D2/WorldKit_ImportD2.glb` | 7 | 23.1MB | X_MarketArch 12.0×2.91×10.36; X_NoticeBoard 16.0×7.04×15.44; X_GooseNest 12.0×11.11×7.57; X_TreeB 9.13×7.49×16.0; X_HouseA 14.0×11.35×14.1; X_HouseB 12.0×9.11×14.39; Town_Horns_Brazier 11.0×10.16×10.35 |
 | E | `build/import_E/WorldKit_ImportE.glb` | 3 | 0.7MB | Kit_M_JobBoard 16.0×7.35×14.94; Kit_W_JobBoard 16.0×7.38×15.69; Kit_W_Campfire_Fire 4.0×3.9×3.31 |
@@ -107,4 +107,5 @@
 | 이름 | 어디 | 왜 | 출처 |
 |---|---|---|---|
 | 덩굴 나무 아치(초원 입구) | 초원 입구 문(지금은 갈색 막대 문틀, 옛 파트) | 시안 Concept_SlimeMeadow 왼쪽 위의 덩굴·랜턴 나무 아치 | 튀는 곳 시트 ⑭ `art/review/terrain/terrain_standout_2026-10-07.jpg`(e39ba95), 검수 10/07 "목록에만" |
-| 파랑·초록 가판대(교차로) | 교차로 북서쪽 가판대 K_StallBlue (-22.4, -42.7)·K_StallGreen (-36.6, -34.5) | Tripo 3D는 빨강 가판대(Kit_X_StallRed)만 있음 — 시안 Concept_Crossroads의 파랑·초록 줄무늬 차양 | `docs/design/crossroads_3d_swap_2026-10-07.md`(a8f5cd8) |
+| ~~파랑·초록 가판대(교차로)~~ → **10/08 만듦**: Kit_X_StallBlue/Green(빨강 차양만 색 바꿈, C2) | 교차로 북서쪽 K_StallBlue (-22.4, -42.7)·K_StallGreen (-36.6, -34.5) | — | `art/review/town5/crossroads_stalls_blue_green.jpg` |
+| 광장 둘레 돌 난간 담 + 계단(교차로) | 튀는 곳 ⑨ 갈색 바위 더미 자리 | 시안의 광장 테라스 담·계단 — 키트에 없음. 검수 OK 10/08: 2조각(Firefly 시안 0 → 고급 5×2 → Tripo 웹 HD 55×2) | `docs/design/crossroads_3d_swap_2026-10-07.md` |
