@@ -7827,7 +7827,9 @@
   "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
   "file": "art/models/tone/GoblinBrute_basecolor_tone.png",
   "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
-  "note": "고블린 브루트: --lift 0.18 --sat 1.08 --clean 0.6 (style drift #35)"
+  "note": "고블린 브루트: --lift 0.18 --sat 1.08 --clean 0.6 (style drift #35)",
+  "id": "rbxassetid://86148893395459",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (third try)"
  },
  "Tex_Skeleton_tone": {
   "status": "approved",
