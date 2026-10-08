@@ -6,6 +6,13 @@
 -- 22-degree grass ramp with a dirt path up from the loop road, a rock plateau in the NE corner (top Y 26..35) with a
 -- WATERFALL (anchored non-colliding water parts, scrolling beams, soft mist) into a plunge pool, a river along the cliff
 -- foot into the east channel, and the three meadow roads painted into the terrain so they rise and fall with the ground.
+-- Pass 2 (검수 2026-10-08, main-Studio photos art/review/world/meadow_pass1_2026-10-08.jpg "still reads flat, roads grey"):
+-- rolling hills 4..9 studs BETWEEN the nine hunting lawns of meadow_dress (the lawns keep the gentle pass-1 ground, the
+-- roads keep their pass-1 heights and get grassy banks), edge knolls / rock outcrops 10..18 studs that never climb into a
+-- lawn, a raised grassy mound with a ring of rock outcrops NW of the King Slime Hill (between lawn H and the hill, on the
+-- north coast), and every meadow road + the hill path painted with terrain Sand (GE_Sand, the concept's warm tan dirt
+-- path) instead of Ground (grey ruins tile); RoadPumpkin stays Mud. Road edges: one column of soft blend (sand / grass
+-- in small noise clumps), not a hard stripe.
 -- Run this BEFORE tools/worldkit/meadow_dress.luau (props are grounded by rays on this terrain; nothing here reads props).
 -- For the props tool the store keeps the spots as attributes: HillTop, HillPathFoot, PlateauTop, FallsLip, FallsPool,
 -- SecretNook (dry ledge behind the falling water), RiverMouth, RiverLine ("x,z;x,z;..."), PathSlot.
@@ -15,11 +22,14 @@
 --    board anchor (230, 3, 12)), the woods bridge end / woods edge (650 / 636, 0), the pond (290, 150) basin + rim
 --    (pond quests radius 30 / 40), the PumpkinPatchSign (525, 226) (bottom fixed at Y 0) and the whole z 240 seam with
 --    the Halloween fields (MapBuilder checks: (535, 240) top <= 3, (535, 124.5) = Mud)
---  * every hunting column stays inside MonsterService GROUND_MIN_Y..GROUND_MAX_Y (-2..6) and gentle (players and slimes
---    MaxSlopeAngle 46); only the edge knolls, the hill and the plateau rise above 6 (no spawns there, like a ridge)
+--  * every hunting LAWN column (meadow_dress LAWNS) stays inside MonsterService GROUND_MIN_Y..GROUND_MAX_Y (-2..6) and
+--    gentle (players and slimes MaxSlopeAngle 46; lawn slope p95 <= 18); the rolling hills between the lawns, the edge
+--    knolls, the mound, the hill and the plateau may rise above 6 (no spawns there, like a ridge; their grass sides stay
+--    under the 46-degree climb limit except the rock outcrops' and the plateau's cliffs)
 --  * the roads keep the Config.Map.Roads footprints (minimap / world map / meadow_dress read those rects): RoadMeadow
---    x 210..650 |z| <= 9, RoadMeadowLoop x 260..600 z -125..-115, RoadPumpkin x 529..541 (Mud) — painted a little
---    narrower than the rect with a gentle bend inside it, levelled across, following the hills along. The old flat road
+--    x 210..650 |z| <= 9, RoadMeadowLoop x 260..600 z -125..-115, RoadPumpkin x 529..541 (Mud) — the solid paint stays
+--    inside the rect with a gentle bend, its one-column soft edge may show a sand clump up to 3 studs past it; levelled
+--    across, following the pass-1 ground along (the new relief stays off the roads). The old flat road
 --    parts (Decor.Roads RoadMeadow / RoadMeadowLoop) and the KingSlimeHill ball part go to the store's Hidden folder.
 --  * the river crosses no road, so no new bridge; water parts are anchored, CanCollide / CanQuery / CanTouch false (so
 --    MonsterService occupied() never sees them), no ray bursts (soft round mist puffs only)
@@ -66,22 +76,53 @@ local PINS = {
 	{ 290, 150, 30, 54 }, -- slime pond basin + sand rim (kept exactly as preview_map made it)
 	{ 525, 226, 10, 24 }, -- PumpkinPatchSign (MapBuilder: bottom at Y 0)
 }
-local EDGE = { I0 = 8, I1 = 34, K0 = 3, K1 = 16 } -- interior / knoll fade from the zone edge (coasts + the z 240 seam)
+-- interior / pass-2 relief / knoll + mound fade from the zone edge (coasts + the z 240 seam): the knolls stand close to
+-- the coast and drop to it as rock cliffs over C1 studs (their lawn side stays a long grass slope)
+local EDGE = { I0 = 8, I1 = 34, K0 = 3, K1 = 16, C0 = 0, C1 = 12 }
 local ROLL = { Amp = 4.0, Gain = 1.4, Cap = 5.5 } -- rolling ground 0..Amp, mounds added, soft cap (hunting ground <= 5.5)
 local MOUNDS = { -- grass hummocks { x, z, height, radius } (the concept's bumps), centres off the road rects
 	{ 318, 58, 5.0, 26 }, { 392, 112, 5.5, 30 }, { 468, 58, 4.6, 24 }, { 356, -56, 5.4, 28 }, { 462, -66, 5.0, 26 },
 	{ 590, 56, 4.8, 24 }, { 450, 186, 4.2, 26 }, { 360, 192, 4.0, 24 }, { 518, -170, 5.0, 24 }, { 300, -150, 4.2, 22 },
 	{ 570, 128, 4.4, 22 }, { 600, -40, 4.2, 22 }, { 284, 92, 4.0, 22 },
 }
-local KNOLLS = { -- edge / corner highlands (no hunting lawn of meadow_dress lies under a part higher than 6)
-	{ X = 246, Z = -212, H = 11, R = 40 }, -- NW lookout (kit_meadow M_Watchtower corner)
-	{ X = 345, Z = -224, H = 8.5, R = 24, Rocky = true }, -- north-coast rock outcrop
-	{ X = 238, Z = 202, H = 7, R = 32 }, -- SW corner
-	{ X = 628, Z = 178, H = 8, R = 36 }, -- SE corner, east of the pumpkin path
-	{ X = 628, Z = 82, H = 6, R = 28, Rocky = true }, -- east-coast rocks south of the woods bridge
-	{ X = 236, Z = -98, H = 6, R = 30 }, -- west coast north of the arrival
-	{ X = 234, Z = 104, H = 5, R = 28 }, -- west coast south of the arrival
+-- hunting lawns { minX, minZ, maxX, maxZ } = tools/worldkit/meadow_dress.luau LAWNS (open fighting ground): they keep the
+-- gentle pass-1 ground; the pass-2 relief, the knolls and the mound fade out before them (keep both lists equal)
+local LAWNS = {
+	{ 250, -104, 328, -30 }, { 252, 30, 318, 110 }, { 348, -104, 500, -30 }, { 524, -104, 608, -30 },
+	{ 352, 54, 512, 110 }, { 362, 126, 512, 200 }, { 555, 44, 608, 196 }, { 252, -200, 388, -140 },
+	{ 476, -200, 580, -140 },
 }
+-- kept as gentle as a lawn: the meadow_dress arrival pocket + the two first-quest boxes (OpenOnly: the first slimes
+-- spawn there), its flower-cart garden on the south road shoulder and its shard-crystal corner at the plateau's NW foot
+-- (flowers / pinwheels stand no higher than Y 8 there; the corner is laid out on flat grass Y 0..4)
+local QUIET = { { 235, -40, 300, 40 }, { 428, 8, 476, 50 }, { 540, -234, 590, -196 } }
+-- pass 2 rolling hills between the lawns: Min..Max studs (two noise octaves) over the pass-1 ground (never lower), at full
+-- height LawnBank studs out from a lawn / QUIET box, RoadBank past a road's soft edge (RoadEdge past its HW) and away
+-- from the King Slime Hill (HillClear + HillBank), the river / plunge pool (RiverClear + RiverBank past the water's half
+-- width), the pins and the coasts (EDGE.K*); along the Pumpkin Patch seam (x > SeamX0) everything fades over SeamBank
+-- studs. The banks are long enough that a 7-stud rise stays a grass slope (about 33 deg at most, Rock only above 40)
+local RELIEF = { Min = 4, Max = 9, Gain = 1.15, LawnBank = 13, RoadEdge = 2, RoadBank = 14, HillClear = 44, HillBank = 12,
+	RiverClear = 12, RiverBank = 12, SeamX0 = 396, SeamBank = 30 }
+-- knolls and the mound never climb into a lawn: x smooth((lawn distance + In) / Bank) (In studs inside the box = 0)
+local KNOLL_LAWN = { In = 4, Bank = 18 }
+-- edge / corner highlands 10..18: centres 12..16 studs in from the coast (rock cliff to the sea, EDGE.C*), RX / RZ = an
+-- oval whose lawn side (radius > 2.2 x H) stays grass under 35 deg; Rocky = rock outcrop (flat top, rock above 28 deg)
+local KNOLLS = {
+	{ X = 292, Z = -226, RX = 42, RZ = 34, H = 14 }, -- NW lookout hill north of lawn H
+	{ X = 356, Z = -228, RX = 22, RZ = 18, H = 12, Rocky = true }, -- north-coast rock outcrop
+	{ X = 510, Z = -228, RX = 34, RZ = 30, H = 13 }, -- north coast between lawn I and the crystal corner
+	{ X = 224, Z = -162, RX = 30, RZ = 46, H = 13 }, -- west-coast ridge west of lawn H
+	{ X = 224, Z = 106, RX = 30, RZ = 36, H = 13 }, -- west coast south of the arrival
+	{ X = 238, Z = 204, R = 34, H = 14 }, -- SW corner
+	{ X = 636, Z = -74, RX = 26, RZ = 28, H = 13, Rocky = true }, -- east-coast rocks north of the woods bridge
+	{ X = 636, Z = 100, RX = 26, RZ = 36, H = 14 }, -- east coast south of the woods bridge (the exit trees stay flat)
+	{ X = 632, Z = 202, R = 36, H = 16 }, -- SE corner, east of the pumpkin path
+}
+-- the raised grassy mound with a ring of rock outcrops (the concept's boulder-ringed mound) NW of the King Slime Hill,
+-- between lawn H and the hill on the north coast: a dome Top high over R, Rocks bumps (RockH high, RockR wide) on a ring
+-- at RingR x R, none within GapW of the angle Gap (the open side toward lawn H's corner and the hill, a way up)
+local MOUND = { X = 398, Z = -218, R = 26, Top = 12, RingR = 0.58, Rocks = 9, A0 = math.rad(10), RockH = 3.6, RockR = 6,
+	Gap = math.rad(110), GapW = math.rad(25) }
 -- King Slime Hill (kit_meadow M_KingHill (430, -170)): a round grass top (r <= TopR at Top), a rock band down to
 -- Foot at CoreR (lumpy outline) and a grass skirt to SkirtR on the back and sides; the FACE toward the loop road
 -- (direction Dir, full within +-Full, fading over Fade) is the ramp: an even grass slope Run long (about 22 deg) with a
@@ -90,7 +131,7 @@ local KNOLLS = { -- edge / corner highlands (no hunting lawn of meadow_dress lie
 -- a monster walking straight at a player on the top still gets there (no safe spot); Rock shows only above RockSlope.
 -- PathOut = studs past the ramp's foot the path runs on, so it meets the loop road's painted strip
 local HILL = { X = 430, Z = -170, Top = 14, TopR = 10, CoreR = 26, Foot = 3, SkirtR = 38, Lumps = 0.1,
-	Face = { Dir = math.rad(113), Full = math.rad(28), Fade = math.rad(26), Run = 34, PathHW = 4, Bend = 4, PathOut = 7 } }
+	Face = { Dir = math.rad(113), Full = math.rad(28), Fade = math.rad(26), Run = 34, PathHW = 4.5, Bend = 4, PathOut = 7 } }
 -- NE rock plateau (superellipse mesas): cliff band CliffIn..CliffOut studs round the outline, grass talus beyond.
 -- PL = the high block with the waterfall; SHOULDER = a lower rock step on its SE side above the river (layered cliffs)
 -- Tilt = extra height toward the north (sea) side, Dome = extra height at the middle: the top rolls up behind the falls
@@ -113,22 +154,24 @@ local FALLS = { DirX = -0.72, DirZ = 0.69, Band = 5.5, Fade = 2.5, Ledge = 8, Le
 -- streak beams stay (a Texture cannot scroll in Edit). Top-face textures put the image top toward the part's front, so
 -- the curls look upstream: set CurlFlip = true if the curl texture runs backward in Studio
 local FALLS_LOOK = { Tex = "rbxassetid://86909517913668", TileU = 12, TileV = 15, TexTransparency = 0.25,
-	Transparency = 0.3, Tint = 0.35, FoamTransparency = 0.15, CurlFlip = false, BeamOut = 1.9 }
+	Transparency = 0.3, Tint = 0.45, FoamTransparency = 0.15, CurlFlip = false, BeamOut = 1.9 }
 -- the river: plunge pool -> along the plateau's south foot -> the east channel (x 650..710) north of the woods bridge
 local RIVER = { Ctrl = { { 590, -140 }, { 606, -133 }, { 628, -128 }, { 650, -122 }, { 672, -118 }, { 700, -116 } },
 	HW0 = 6, HW1 = 8.5, Depth = 2.6, Sand = 2.5, Bank = 8, Levee = 1.0, LeveeFall = 0.15 }
--- painted roads (inside the Config.Map.Roads rects): HW = painted half width, Bend = centre-line bend amplitude,
--- From..To = the stretch along the road that is levelled / painted (square ends at the rect ends, no round caps)
+-- painted roads (Config.Map.Roads rects): Mat = terrain material (Sand = GE_Sand, the concept's warm tan dirt path;
+-- Ground would show GE_Ground, the grey ruins tile), HW = levelled half width = the middle of the soft edge (solid paint
+-- to HW - ROAD_BLEND, then sand / grass clumps to HW + ROAD_BLEND: one 4-stud column), Bend = centre-line bend
+-- amplitude, From..To = the stretch along the road that is levelled / painted (square ends at the rect ends, no round caps)
 local ROADS = {
-	{ Name = "RoadMeadow", Mat = "Path", HW = 8, Bend = 1, From = 210, To = 650, Mid = 0, AlongX = true },
-	{ Name = "RoadMeadowLoop", Mat = "Path", HW = 4.5, Bend = 0.4, From = 260, To = 600, Mid = -120, AlongX = true },
+	{ Name = "RoadMeadow", Mat = "Sand", HW = 10, Bend = 1, From = 210, To = 650, Mid = 0, AlongX = true },
+	{ Name = "RoadMeadowLoop", Mat = "Sand", HW = 6, Bend = 0.4, From = 260, To = 600, Mid = -120, AlongX = true },
 	{ Name = "RoadPumpkin", Mat = "Mud", HW = 6, Bend = 0.6, From = 7, To = 246, Mid = 535, AlongX = false },
 }
+local ROAD_BLEND = 2 -- half width of the soft painted edge (the hill path too): HW - 2 .. HW + 2 = one column
 local LEVEL = 5 -- studs past a road's painted edge over which its levelled cross-section blends into the ground
--- path tile: terrain Ground shows GE_Ground (grey ruins dirt); the roads' own tile GE_DirtPath is only a part variant.
--- Use = true puts the approved GE_DirtPath ColorMap on a free terrain slot (first of Slots no part uses) as a base
--- override named Name, so the painted roads look like today's road strips. false = paint with terrain Ground.
-local PATH_TILE = { Use = true, Name = "GE_MeadowPath", Source = "GE_DirtPath", ConfigKey = "Tex_DirtPath",
+-- path tile (pass 1): Use = true put the GE_DirtPath ColorMap on a free terrain slot as a base override for "Path" columns;
+-- pass 2 paints the roads with terrain Sand (GE_Sand) instead, so Use = false and an apply drops pass 1's slot again
+local PATH_TILE = { Use = false, Name = "GE_MeadowPath", Source = "GE_DirtPath", ConfigKey = "Tex_DirtPath",
 	Slots = { "Pavement", "Salt", "Sandstone" }, StudsPerTile = 16 }
 local HIDE = { { "Decor", "KingSlimeHill" }, { "Decor", "Roads", "RoadMeadow" }, { "Decor", "Roads", "RoadMeadowLoop" } }
 
@@ -215,7 +258,7 @@ end
 local function knolls(x, z)
 	local best, rocky = 0, false
 	for _, k in KNOLLS do
-		local r = math.sqrt((x - k.X) ^ 2 + (z - k.Z) ^ 2) / k.R
+		local r = math.sqrt(((x - k.X) / (k.RX or k.R)) ^ 2 + ((z - k.Z) / (k.RZ or k.R)) ^ 2)
 		if r < 1 then
 			local h
 			if k.Rocky then
@@ -227,6 +270,48 @@ local function knolls(x, z)
 		end
 	end
 	return best, rocky
+end
+local function lawnDist(x, z) -- studs outside the nearest hunting lawn / QUIET box (0 inside)
+	local best = math.huge
+	for _, list in { LAWNS, QUIET } do
+		for _, L in list do
+			local dx, dz = math.max(L[1] - x, 0, x - L[3]), math.max(L[2] - z, 0, z - L[4])
+			best = math.min(best, math.sqrt(dx * dx + dz * dz))
+		end
+	end
+	return best
+end
+local function ease(t) -- half linear, half smoothstep: a bank without a steep middle (1.25 x the mean slope at most)
+	t = clamp01(t)
+	return 0.5 * t + 0.5 * smooth(t)
+end
+local function seamFade(x, z) -- 1, or a long gentle fade toward the z 240 seam with the Pumpkin Patch (x 420..650)
+	local w = smooth((x - RELIEF.SeamX0) / 20)
+	if w <= 0 then return 1 end
+	return lerp(1, smooth((G.Zone.MaxZ - z - 4) / RELIEF.SeamBank), w)
+end
+local function ridge(x, z) -- the rolling hills' height between the lawns (RELIEF.Min..Max)
+	local n = 0.6 * math.noise(x / 72, z / 72, 5.3) + 0.4 * math.noise(x / 33, z / 33, 1.9)
+	return RELIEF.Min + (RELIEF.Max - RELIEF.Min) * smooth(0.5 + RELIEF.Gain * n)
+end
+local function mound(x, z) -- the boulder-ringed mound: height (0 outside), on a ring rock?
+	local r = math.sqrt((x - MOUND.X) ^ 2 + (z - MOUND.Z) ^ 2) / MOUND.R
+	if r >= 1.3 then return 0, false end
+	local h = r < 1 and MOUND.Top * (1 - smooth(r)) or 0
+	local rock = 0
+	for i = 1, MOUND.Rocks do
+		local a = MOUND.A0 + 2 * math.pi * (i - 1) / MOUND.Rocks
+		if math.abs((a - MOUND.Gap + math.pi) % (2 * math.pi) - math.pi) > MOUND.GapW then
+			local cx = MOUND.X + math.cos(a) * MOUND.RingR * MOUND.R
+			local cz = MOUND.Z + math.sin(a) * MOUND.RingR * MOUND.R
+			local q = ((x - cx) ^ 2 + (z - cz) ^ 2) / (MOUND.RockR * MOUND.RockR)
+			if q < 1 then rock = math.max(rock, MOUND.RockH * (1 - q) ^ 2 * (1 + 0.25 * math.noise(x / 5, z / 5, i + 0.5))) end
+		end
+	end
+	return h + rock, rock > 0.8
+end
+local function dither(x, z) -- 0..1 in small clumps: where a road's soft edge puts sand or grass
+	return clamp01(0.5 + 1.7 * math.noise(x / 5.3, z / 5.3, 2.2))
 end
 
 local function hillCore(r)
@@ -255,7 +340,9 @@ local function hill(x, z) -- visual height above the flat meadow (0 outside), on
 	local reach = HILL.TopR + F.Run + F.PathOut
 	if r >= HILL.TopR - 3 and r <= reach then
 		local off = F.Bend * math.sin(2 * math.pi * (r - HILL.TopR) / (reach - HILL.TopR))
-		if math.abs(r * math.sin(da) - off) < F.PathHW and math.abs(da) < math.pi / 2 then return v, true end
+		-- the path's soft edge: solid to PathHW - ROAD_BLEND, sand / grass clumps to PathHW + ROAD_BLEND
+		local edge = F.PathHW - ROAD_BLEND + 2 * ROAD_BLEND * dither(x, z)
+		if math.abs(r * math.sin(da) - off) < edge and math.abs(da) < math.pi / 2 then return v, true end
 	end
 	return v, false
 end
@@ -369,6 +456,34 @@ for _, rd in ROADS do
 	end
 	table.insert(ROAD_LINES, { Road = rd, Line = polyline(pts) })
 end
+local function roadDist(x, z) -- studs past the nearest road's HW (the rects' centre lines; the bends are 1 stud or less)
+	local best = math.huge
+	for _, rd in ROADS do
+		local along, across = rd.AlongX and x or z, rd.AlongX and z or x
+		local da = math.max(rd.From - along, along - rd.To, 0)
+		local dc = math.max(math.abs(across - rd.Mid) - rd.HW, 0)
+		best = math.min(best, math.sqrt(da * da + dc * dc))
+	end
+	return best
+end
+-- 0..1: how much of the pass-2 rolling relief a spot gets (0 on the lawns, the roads, the hill, the water and the pins)
+local function reliefMask(x, z, d, pin)
+	local m = pin * ease((lawnDist(x, z) - 1) / RELIEF.LawnBank) * smooth((d - EDGE.K0) / EDGE.K1)
+	if m <= 0 then return 0 end
+	m *= ease((roadDist(x, z) - RELIEF.RoadEdge) / RELIEF.RoadBank) * seamFade(x, z)
+	if m <= 0 then return 0 end
+	m *= smooth((math.sqrt((x - HILL.X) ^ 2 + (z - HILL.Z) ^ 2) - RELIEF.HillClear) / RELIEF.HillBank)
+	-- the plateau and its shoulder keep their pass-1 cliffs and talus (the relief starts past the talus foot)
+	for _, M in { PL, SHOULDER } do
+		m *= smooth((mesaG(M, x, z) - M.CliffOut - M.Talus - M.Wobble) / RELIEF.HillBank)
+	end
+	if m <= 0 then return 0 end
+	local reach = RELIEF.RiverClear + RELIEF.RiverBank
+	local dr = nearest(RIVER_LINE, x, z, RIVER.HW1 + reach)
+	local dq = math.sqrt((x - FALLS.QX) ^ 2 + (z - FALLS.QZ) ^ 2)
+	return m * smooth((dr - RIVER.HW1 - RELIEF.RiverClear) / RELIEF.RiverBank)
+		* smooth((dq - FALLS.PoolR - RELIEF.RiverClear) / RELIEF.RiverBank)
+end
 
 ------------------------------------------------------------------ the plan (baseline -> new columns)
 local function colX(i) return G.X0 + (i - 0.5) * G.R end
@@ -387,9 +502,20 @@ local function plan(base)
 		local pin = pinFactor(x, z)
 		local d = edgeDist(x, z)
 		local h, tag = interior(x, z) * smooth((d - EDGE.I0) / EDGE.I1) * pin, nil
+		-- pass 2: the rolling hills between the lawns rise over the pass-1 ground (never below it)
+		local rm = reliefMask(x, z, d, pin)
+		if rm > 0 then
+			local hr = ridge(x, z)
+			if hr > h then h += (hr - h) * rm end
+		end
+		local kf = smooth((d - EDGE.C0) / EDGE.C1) * pin * seamFade(x, z)
+			* smooth((lawnDist(x, z) + KNOLL_LAWN.In) / KNOLL_LAWN.Bank)
 		local kh, rocky = knolls(x, z)
-		kh *= smooth((d - EDGE.K0) / EDGE.K1) * pin
+		kh *= kf
 		if kh > h and kh > 0.3 then h, tag = kh, rocky and "rocky" or "knoll" end
+		local mh, ring = mound(x, z)
+		mh *= kf
+		if mh > h and mh > 0.3 then h, tag = mh, ring and "ring" or "mound" end
 		local hv, ramp = hill(x, z)
 		if hv > h and hv > 0.05 then
 			h, tag = hv, ramp and "ramp" or "hill"
@@ -435,8 +561,10 @@ local function plan(base)
 					if d < hw + LEVEL then
 						local vc = field(px, pz)
 						v = lerp(v, vc, 1 - smooth((d - hw) / LEVEL))
-						-- soft painted edge: 0..1 stud inside the half width (never outside the Config rect)
-						if d < hw - 1 + clamp01(0.5 + math.noise(x / 7, z / 7, 2.2)) then
+						-- solid paint to hw - ROAD_BLEND, then one column of soft edge: sand / grass in small clumps
+						-- (no soft-edge clump on a river bank: the loop road's east end runs past the plunge pool)
+						local soft = d >= hw - ROAD_BLEND
+						if d < hw - ROAD_BLEND + 2 * ROAD_BLEND * dither(x, z) and not (soft and tag == "bank") then
 							tag = "road:" .. rd.Mat
 							break
 						end
@@ -468,9 +596,11 @@ local function plan(base)
 				-- a feature's foot under the sea level (talus, banks): keep the sea floor, no green stripes under water
 				if mat == "Grass" or mat == "Mud" then mat = "Sand" end
 			elseif tag == "ramp" then
-				mat = "Path"
+				mat = "Sand" -- the hill path: the same warm dirt as the roads (GE_Sand)
 			elseif tag and string.sub(tag, 1, 5) == "road:" then
 				mat = string.sub(tag, 6)
+			elseif tag == "ring" then
+				mat = "Rock" -- the mound's ring of rock outcrops
 			elseif tag then
 				mat = sl > (tag == "rocky" and G.RockySlope or G.RockSlope) and "Rock" or "Grass"
 			elseif V[idx] - VB[idx] > 0.3 and mat ~= "Sand" then
@@ -489,8 +619,21 @@ local function sampleAt(P, x, z)
 	local idx = colIdx(i, k)
 	return P.V[idx], P.M[idx], P.W[idx]
 end
+local function inLawn(x, z)
+	for _, L in LAWNS do
+		if x >= L[1] and x <= L[3] and z >= L[2] and z <= L[4] then return true end
+	end
+	return false
+end
+local FALLS_TAGS = { bed = true, sand = true, bank = true, fin = true, cliff = true, top = true, ledge = true, chan = true }
+local function pct(list, q) -- sorted list -> the q quantile (0 when empty)
+	local n = #list
+	return n > 0 and list[math.clamp(math.floor(n * q), 1, n)] or 0
+end
 local function stats(P, base)
-	local st = { Changed = 0, Cells = 0, Valid = 0, Inset = 0, Slopes = {}, RoadMax = 0, Water = 0 }
+	local st = { Changed = 0, Cells = 0, Valid = 0, Inset = 0, Slopes = {}, RoadMax = 0, Water = 0, Lawn = 0, LawnValid = 0,
+		LawnSlopes = {}, LawnTop = -math.huge, LawnFalls = 0, Between = {}, BetweenSlopes = {}, BetweenRock = 0,
+		KnollTop = 0, MoundTop = 0, RoadCols = 0, RoadEdge = 0 }
 	for i = 1, G.NX do
 		local x = colX(i)
 		for k = 1, G.NZ do
@@ -502,23 +645,61 @@ local function stats(P, base)
 				st.Cells += math.max(1, math.ceil(dS / G.R))
 			end
 			local v, w = P.V[idx], P.W[idx] or G.WaterTop
+			local dry = w <= v
 			if w > v then st.Water += 1 end
 			if x > G.Zone.MinX + G.Inset and x < G.Zone.MaxX - G.Inset and z > G.Zone.MinZ + G.Inset and z < G.Zone.MaxZ - G.Inset then
 				st.Inset += 1
-				if v >= G.GroundMin and v <= G.GroundMax and w <= v then
+				if v >= G.GroundMin and v <= G.GroundMax and dry then
 					st.Valid += 1
 					table.insert(st.Slopes, P.Slope[idx])
 				end
 			end
 			local tag = P.Tag[idx]
-			if tag and string.sub(tag, 1, 5) == "road:" then st.RoadMax = math.max(st.RoadMax, P.Slope[idx]) end
+			local lawn = inLawn(x, z)
+			if lawn and tag and FALLS_TAGS[tag] then
+				st.LawnFalls += 1 -- lawn I's east end reaches the plunge pool / the falls' rock arms (pass 1, kept as is)
+			elseif lawn then
+				st.Lawn += 1
+				st.LawnTop = math.max(st.LawnTop, v)
+				if v >= G.GroundMin and v <= G.GroundMax and dry then st.LawnValid += 1 end
+				table.insert(st.LawnSlopes, P.Slope[idx])
+			elseif tag == nil and dry and v > 0.5 and edgeDist(x, z) > 0 then
+				table.insert(st.Between, v) -- the rolling ground between the lawns (no road / feature / water)
+				table.insert(st.BetweenSlopes, P.Slope[idx])
+				if P.M[idx] == "Rock" then st.BetweenRock += 1 end
+			end
+			if tag == "knoll" or tag == "rocky" then st.KnollTop = math.max(st.KnollTop, v) end
+			if tag == "mound" or tag == "ring" then st.MoundTop = math.max(st.MoundTop, v) end
+			if tag and string.sub(tag, 1, 5) == "road:" then
+				st.RoadMax = math.max(st.RoadMax, P.Slope[idx])
+				st.RoadCols += 1
+			end
+		end
+	end
+	-- the soft edge: painted road columns with an unpainted 4-neighbour (a hard stripe would make every edge straight)
+	for i = 2, G.NX - 1 do
+		for k = 2, G.NZ - 1 do
+			local idx = colIdx(i, k)
+			local tag = P.Tag[idx]
+			if tag and string.sub(tag, 1, 5) == "road:" then
+				for _, nb in { colIdx(i - 1, k), colIdx(i + 1, k), colIdx(i, k - 1), colIdx(i, k + 1) } do
+					local t2 = P.Tag[nb]
+					if not (t2 and string.sub(t2, 1, 5) == "road:") then
+						st.RoadEdge += 1
+						break
+					end
+				end
+			end
 		end
 	end
 	table.sort(st.Slopes)
+	table.sort(st.LawnSlopes)
+	table.sort(st.Between)
+	table.sort(st.BetweenSlopes)
 	local n = #st.Slopes
 	st.SlopeMax = n > 0 and st.Slopes[n] or 0
-	st.SlopeP95 = n > 0 and st.Slopes[math.max(1, math.floor(n * 0.95))] or 0
-	st.SlopeP99 = n > 0 and st.Slopes[math.max(1, math.floor(n * 0.99))] or 0
+	st.SlopeP95 = pct(st.Slopes, 0.95)
+	st.SlopeP99 = pct(st.Slopes, 0.99)
 	st.RampDeg = math.deg(math.atan(HILL.Top / HILL.Face.Run))
 	local function at(x, z)
 		local v, m = sampleAt(P, x, z)
@@ -529,12 +710,18 @@ local function stats(P, base)
 	return st
 end
 local function report(P, st, extra)
-	return string.format("meadow terrain %s: %d columns changed (~%d voxels); hills: King %d (ramp %.0f deg) + plateau %d + %d knolls + %d mounds; "
-		.. "river %.0f studs (%d water columns), falls %.0f studs high; hunting ground %.0f%% walkable (slope max %.0f, p99 %.0f, p95 %.0f deg), "
-		.. "roads max %.0f deg; %s%s",
-		MODE, st.Changed, st.Cells, HILL.Top, st.RampDeg, PL.Top, #KNOLLS, #MOUNDS, RIVER_LINE.Total, st.Water,
-		FALLS.WTop - FALLS.PoolW, 100 * st.Valid / math.max(1, st.Inset), st.SlopeMax, st.SlopeP99, st.SlopeP95, st.RoadMax,
-		st.Contract, extra or "")
+	return string.format("meadow terrain %s: %d columns changed (~%d voxels); hills: King %d (ramp %.0f deg) + plateau %d"
+		.. " + %d knolls (top %.1f) + boulder-ring mound (top %.1f) + %d mounds; river %.0f studs (%d water columns), falls"
+		.. " %.0f studs high; hunting lawns %.1f%% walkable, top %.1f (slope max %.0f, p99 %.0f, p95 %.0f deg; %d lawn columns"
+		.. " are the plunge pool / falls arms); between the lawns p50 %.1f / p90 %.1f / max %.1f (slope p95 %.0f deg, %d rock"
+		.. " columns); whole hunting inset %.0f%% walkable (slope max %.0f, p99 %.0f, p95 %.0f deg); roads max %.0f deg, %d"
+		.. " painted columns (%d on a soft edge); %s%s",
+		MODE, st.Changed, st.Cells, HILL.Top, st.RampDeg, PL.Top, #KNOLLS, st.KnollTop, st.MoundTop, #MOUNDS,
+		RIVER_LINE.Total, st.Water, FALLS.WTop - FALLS.PoolW, 100 * st.LawnValid / math.max(1, st.Lawn), st.LawnTop,
+		st.LawnSlopes[#st.LawnSlopes] or 0, pct(st.LawnSlopes, 0.99), pct(st.LawnSlopes, 0.95), st.LawnFalls,
+		pct(st.Between, 0.5), pct(st.Between, 0.9), st.Between[#st.Between] or 0, pct(st.BetweenSlopes, 0.95),
+		st.BetweenRock, 100 * st.Valid / math.max(1, st.Inset), st.SlopeMax, st.SlopeP99, st.SlopeP95, st.RoadMax,
+		st.RoadCols, st.RoadEdge, st.Contract, extra or "")
 end
 
 ------------------------------------------------------------------ offline (luau.exe): synthetic flat meadow, dump
@@ -915,8 +1102,22 @@ local function partsUse(mat)
 	end
 	return false
 end
+local function dropPathSlot()
+	local name = store and store:GetAttribute("PathSlot")
+	if type(name) ~= "string" then return false end
+	local MS = game:GetService("MaterialService")
+	local slot = Enum.Material[name]
+	if MS:GetBaseMaterialOverride(slot) == PATH_TILE.Name then MS:SetBaseMaterialOverride(slot, "") end
+	local v = MS:FindFirstChild(PATH_TILE.Name)
+	if v then v:Destroy() end
+	store:SetAttribute("PathSlot", nil)
+	return true
+end
 local function pathSlot()
-	if not PATH_TILE.Use then return "Ground", "Ground (tile off)" end
+	if not PATH_TILE.Use then -- pass 2: roads = terrain Sand; pass 1's tile slot (if any) is no longer used
+		local dropped = dropPathSlot()
+		return "Ground", "off, roads = terrain Sand (GE_Sand)" .. (dropped and "; pass-1 path slot dropped" or "")
+	end
 	local MS = game:GetService("MaterialService")
 	local src = MS:FindFirstChild(PATH_TILE.Source)
 	local colorMap = (src and src:IsA("MaterialVariant")) and src.ColorMap or ""
@@ -950,16 +1151,6 @@ local function pathSlot()
 		end
 	end
 	return "Ground", "Ground (no free terrain slot)"
-end
-local function dropPathSlot()
-	local name = store and store:GetAttribute("PathSlot")
-	if type(name) ~= "string" then return end
-	local MS = game:GetService("MaterialService")
-	local slot = Enum.Material[name]
-	if MS:GetBaseMaterialOverride(slot) == PATH_TILE.Name then MS:SetBaseMaterialOverride(slot, "") end
-	local v = MS:FindFirstChild(PATH_TILE.Name)
-	if v then v:Destroy() end
-	store:SetAttribute("PathSlot", nil)
 end
 
 local FALLS_NAME = "MeadowWaterfall"
@@ -1068,7 +1259,7 @@ local function buildFalls()
 	e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.65), NumberSequenceKeypoint.new(0.5, 0.78),
 		NumberSequenceKeypoint.new(1, 1) })
 	e.Lifetime = NumberRange.new(1.8, 3)
-	e.Rate = 9
+	e.Rate = 6 -- 2026-10-08 검수: ART_DIRECTION §9 caps a looping emitter at Rate 6 (phone budget)
 	e.Speed = NumberRange.new(2, 4.5)
 	e.SpreadAngle = Vector2.new(30, 30)
 	e.EmissionDirection = Enum.NormalId.Top
@@ -1120,12 +1311,21 @@ local function settleKit(P)
 			inst.Parent = kit
 		end
 	end
-	local function onWay(x, z) -- a painted road or the hill path column?
+	local function tagAt(x, z)
 		local i = math.floor((x - G.X0) / G.R) + 1
 		local k = math.floor((z - G.Z0) / G.R) + 1
-		if i < 1 or i > G.NX or k < 1 or k > G.NZ then return false end
-		local tag = P.Tag[colIdx(i, k)]
+		if i < 1 or i > G.NX or k < 1 or k > G.NZ then return nil end
+		return P.Tag[colIdx(i, k)]
+	end
+	local function onWay(x, z) -- a painted road or the hill path column?
+		local tag = tagAt(x, z)
 		return tag == "ramp" or (tag ~= nil and string.sub(tag, 1, 5) == "road:")
+	end
+	-- too high: above 12 on the King Slime Hill / the plateau / the falls, above 20 anywhere (the pass-2 knolls and the
+	-- mound keep their trees and flowers)
+	local HIGH = { hill = true, ramp = true, top = true, cliff = true, chan = true, fin = true, ledge = true }
+	local function tooHigh(x, z, y)
+		return y > 20 or (y > 12 and HIGH[tagAt(x, z) or ""] == true)
 	end
 	local function solid(piece)
 		if piece:IsA("BasePart") then return piece.CanCollide end
@@ -1178,7 +1378,7 @@ local function settleKit(P)
 					end
 				end
 			end
-			if wet or y > 12 or hi - lo > 3.5 or blocks then
+			if wet or tooHigh(x, z, y) or hi - lo > 3.5 or blocks then
 				piece:SetAttribute("MT_From", KIT_KEY .. piece.Name)
 				piece:SetAttribute("MT_Multi", true) -- kit names repeat: put back even when a sibling has the name
 				piece.Parent = hiddenFolder()

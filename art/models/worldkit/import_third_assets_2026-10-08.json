@@ -1,0 +1,569 @@
+{
+ "note": "2026-10-08 검수: WorldKit import batch D5b, D6-D10 (36 meshes, user clicked import 14:21). LOD names replace the HD ones where a prop repeats (phone rule). Probe: build/import_all/probe.lua.",
+ "items": [
+  {
+   "name": "R_Gate",
+   "meshId": "rbxassetid://112332380384091",
+   "textureId": "",
+   "size_studs": [
+    48.0,
+    28.68,
+    17.47
+   ],
+   "sa": {
+    "color": "rbxassetid://93646287358965",
+    "normal": "rbxassetid://129452753448992",
+    "metal": "rbxassetid://97372727452443",
+    "rough": "rbxassetid://75186702601343"
+   }
+  },
+  {
+   "name": "R_Arch_A",
+   "meshId": "rbxassetid://100199960156475",
+   "textureId": "",
+   "size_studs": [
+    19.48,
+    19.0,
+    14.17
+   ],
+   "sa": {
+    "color": "rbxassetid://111265768195992",
+    "normal": "rbxassetid://124482460495386",
+    "metal": "rbxassetid://121743299260437",
+    "rough": "rbxassetid://73975243833410"
+   }
+  },
+  {
+   "name": "R_Arch_B",
+   "meshId": "rbxassetid://139933970100773",
+   "textureId": "",
+   "size_studs": [
+    19.29,
+    19.0,
+    9.99
+   ],
+   "sa": {
+    "color": "rbxassetid://120457251778114",
+    "normal": "rbxassetid://90163396450020",
+    "metal": "rbxassetid://91187955798618",
+    "rough": "rbxassetid://108339222844369"
+   }
+  },
+  {
+   "name": "Kit_R_PillarA",
+   "meshId": "rbxassetid://122817362913113",
+   "textureId": "",
+   "size_studs": [
+    5.88,
+    8.0,
+    5.78
+   ],
+   "sa": {
+    "color": "rbxassetid://93948075179955",
+    "normal": "rbxassetid://127572438257895",
+    "metal": "rbxassetid://130997200795915",
+    "rough": "rbxassetid://104954735817519"
+   }
+  },
+  {
+   "name": "Kit_R_PillarB",
+   "meshId": "rbxassetid://80717986314426",
+   "textureId": "",
+   "size_studs": [
+    4.69,
+    12.0,
+    4.77
+   ],
+   "sa": {
+    "color": "rbxassetid://105773054115150",
+    "normal": "rbxassetid://137320402923440",
+    "metal": "rbxassetid://91358860108547",
+    "rough": "rbxassetid://83847155596695"
+   }
+  },
+  {
+   "name": "Kit_R_StoneMarker",
+   "meshId": "rbxassetid://97341881948907",
+   "textureId": "",
+   "size_studs": [
+    1.95,
+    4.0,
+    1.94
+   ],
+   "sa": {
+    "color": "rbxassetid://128080054963172",
+    "normal": "rbxassetid://110196483399018",
+    "metal": "rbxassetid://107966469784661",
+    "rough": "rbxassetid://99576339655303"
+   }
+  },
+  {
+   "name": "Kit_R_SpiritBowl",
+   "meshId": "rbxassetid://107266211571924",
+   "textureId": "",
+   "size_studs": [
+    4.09,
+    3.0,
+    4.03
+   ],
+   "sa": {
+    "color": "rbxassetid://85226364991277",
+    "normal": "rbxassetid://134879435390235",
+    "metal": "rbxassetid://91939756897676",
+    "rough": "rbxassetid://104832945165669"
+   }
+  },
+  {
+   "name": "Kit_R_Banner",
+   "meshId": "rbxassetid://130112324877567",
+   "textureId": "",
+   "size_studs": [
+    3.68,
+    9.0,
+    4.16
+   ],
+   "sa": {
+    "color": "rbxassetid://128676979469071",
+    "normal": "rbxassetid://108161991270230",
+    "metal": "rbxassetid://111284626087016",
+    "rough": "rbxassetid://86001994321242"
+   }
+  },
+  {
+   "name": "P_Cliff_A",
+   "meshId": "rbxassetid://137862459919376",
+   "textureId": "",
+   "size_studs": [
+    32.0,
+    18.18,
+    21.32
+   ],
+   "sa": {
+    "color": "rbxassetid://106977213942450",
+    "normal": "rbxassetid://84568526124954",
+    "metal": "rbxassetid://105756614144286",
+    "rough": "rbxassetid://93849110070877"
+   }
+  },
+  {
+   "name": "P_Cliff_B",
+   "meshId": "rbxassetid://75406000167151",
+   "textureId": "",
+   "size_studs": [
+    15.78,
+    26.0,
+    17.33
+   ],
+   "sa": {
+    "color": "rbxassetid://111731085658988",
+    "normal": "rbxassetid://129095058638904",
+    "metal": "rbxassetid://125367282317975",
+    "rough": "rbxassetid://73743714371140"
+   }
+  },
+  {
+   "name": "Kit_P_EntranceSign",
+   "meshId": "rbxassetid://85043911136801",
+   "textureId": "",
+   "size_studs": [
+    16.0,
+    12.66,
+    7.18
+   ],
+   "sa": {
+    "color": "rbxassetid://121132739210573",
+    "normal": "rbxassetid://110879405863051",
+    "metal": "rbxassetid://123486978898861",
+    "rough": "rbxassetid://71544767722781"
+   }
+  },
+  {
+   "name": "Kit_P_HayBales",
+   "meshId": "rbxassetid://80906770091938",
+   "textureId": "",
+   "size_studs": [
+    6.32,
+    5.0,
+    4.01
+   ],
+   "sa": {
+    "color": "rbxassetid://123504869283696",
+    "normal": "rbxassetid://118817770850776",
+    "metal": "rbxassetid://71167215554511",
+    "rough": "rbxassetid://101566630347084"
+   }
+  },
+  {
+   "name": "Kit_P_PumpkinCart",
+   "meshId": "rbxassetid://106935198498193",
+   "textureId": "",
+   "size_studs": [
+    8.0,
+    6.26,
+    6.71
+   ],
+   "sa": {
+    "color": "rbxassetid://121850439249258",
+    "normal": "rbxassetid://108310162702957",
+    "metal": "rbxassetid://123205530652854",
+    "rough": "rbxassetid://108682916626467"
+   }
+  },
+  {
+   "name": "P_TreeAutumn_A",
+   "meshId": "rbxassetid://81686354412556",
+   "textureId": "",
+   "size_studs": [
+    26.16,
+    26.0,
+    19.8
+   ],
+   "sa": {
+    "color": "rbxassetid://119904455463592",
+    "normal": "rbxassetid://95847451107403",
+    "metal": "rbxassetid://90239985263623",
+    "rough": "rbxassetid://116658662208300"
+   }
+  },
+  {
+   "name": "P_TreeAutumn_B",
+   "meshId": "rbxassetid://104509283487449",
+   "textureId": "",
+   "size_studs": [
+    25.46,
+    30.0,
+    18.67
+   ],
+   "sa": {
+    "color": "rbxassetid://110987605608083",
+    "normal": "rbxassetid://89831134364846",
+    "metal": "rbxassetid://126860003151834",
+    "rough": "rbxassetid://86360888464461"
+   }
+  },
+  {
+   "name": "P_Pine",
+   "meshId": "rbxassetid://134095741183085",
+   "textureId": "",
+   "size_studs": [
+    13.68,
+    22.0,
+    13.44
+   ],
+   "sa": {
+    "color": "rbxassetid://78690319532044",
+    "normal": "rbxassetid://79774464791412",
+    "metal": "rbxassetid://117209768846744",
+    "rough": "rbxassetid://84891926019157"
+   }
+  },
+  {
+   "name": "Kit_P_Sunflowers",
+   "meshId": "rbxassetid://130523825145512",
+   "textureId": "",
+   "size_studs": [
+    4.91,
+    6.0,
+    2.86
+   ],
+   "sa": {
+    "color": "rbxassetid://78711403741518",
+    "normal": "rbxassetid://127448715430633",
+    "metal": "rbxassetid://121139384956329",
+    "rough": "rbxassetid://138146803724073"
+   }
+  },
+  {
+   "name": "Kit_P_PumpkinCluster_LOD",
+   "meshId": "rbxassetid://110792749342224",
+   "textureId": "",
+   "size_studs": [
+    7.0,
+    3.49,
+    5.72
+   ],
+   "sa": {
+    "color": "rbxassetid://72598784031544",
+    "normal": "rbxassetid://138365128865230",
+    "metal": "rbxassetid://140422018794710",
+    "rough": "rbxassetid://110502576189419"
+   }
+  },
+  {
+   "name": "Kit_W_BushA",
+   "meshId": "rbxassetid://118193982954797",
+   "textureId": "",
+   "size_studs": [
+    9.67,
+    6.0,
+    9.67
+   ],
+   "sa": {
+    "color": "rbxassetid://79159996030264",
+    "normal": "rbxassetid://128704571044223",
+    "metal": "rbxassetid://110520176307613",
+    "rough": "rbxassetid://124907959735157"
+   }
+  },
+  {
+   "name": "Kit_W_BushB",
+   "meshId": "rbxassetid://97234906360169",
+   "textureId": "",
+   "size_studs": [
+    4.73,
+    8.0,
+    4.63
+   ],
+   "sa": {
+    "color": "rbxassetid://99576113307165",
+    "normal": "rbxassetid://115972377188904",
+    "metal": "rbxassetid://87673219106710",
+    "rough": "rbxassetid://77341770466922"
+   }
+  },
+  {
+   "name": "Kit_W_Fern",
+   "meshId": "rbxassetid://133261822545218",
+   "textureId": "",
+   "size_studs": [
+    4.12,
+    3.0,
+    3.69
+   ],
+   "sa": {
+    "color": "rbxassetid://95775068755141",
+    "normal": "rbxassetid://77673327967330",
+    "metal": "rbxassetid://123100868164993",
+    "rough": "rbxassetid://75589210423531"
+   }
+  },
+  {
+   "name": "Kit_W_Mushrooms",
+   "meshId": "rbxassetid://87306480045119",
+   "textureId": "",
+   "size_studs": [
+    2.32,
+    2.5,
+    1.76
+   ],
+   "sa": {
+    "color": "rbxassetid://106521187955919",
+    "normal": "rbxassetid://75244063573919",
+    "metal": "rbxassetid://91497172594902",
+    "rough": "rbxassetid://124244767263896"
+   }
+  },
+  {
+   "name": "Kit_W_MossRock",
+   "meshId": "rbxassetid://78103743578901",
+   "textureId": "",
+   "size_studs": [
+    4.78,
+    4.0,
+    4.11
+   ],
+   "sa": {
+    "color": "rbxassetid://78495149023992",
+    "normal": "rbxassetid://76124420782113",
+    "metal": "rbxassetid://131065208552275",
+    "rough": "rbxassetid://79399559571171"
+   }
+  },
+  {
+   "name": "Kit_W_Banner",
+   "meshId": "rbxassetid://134188970360834",
+   "textureId": "",
+   "size_studs": [
+    3.13,
+    8.0,
+    1.69
+   ],
+   "sa": {
+    "color": "rbxassetid://108357750763048",
+    "normal": "rbxassetid://126400281988905",
+    "metal": "rbxassetid://128018792158141",
+    "rough": "rbxassetid://100705956222160"
+   }
+  },
+  {
+   "name": "H_TreeTwisted",
+   "meshId": "rbxassetid://121021214853948",
+   "textureId": "",
+   "size_studs": [
+    35.47,
+    32.0,
+    28.04
+   ],
+   "sa": {
+    "color": "rbxassetid://76811506537019",
+    "normal": "rbxassetid://71147386166416",
+    "metal": "rbxassetid://124918874889564",
+    "rough": "rbxassetid://97201505493922"
+   }
+  },
+  {
+   "name": "H_Willow",
+   "meshId": "rbxassetid://96413543869385",
+   "textureId": "",
+   "size_studs": [
+    23.91,
+    26.0,
+    13.01
+   ],
+   "sa": {
+    "color": "rbxassetid://140425949629323",
+    "normal": "rbxassetid://100796696268880",
+    "metal": "rbxassetid://85092526029074",
+    "rough": "rbxassetid://101036058407280"
+   }
+  },
+  {
+   "name": "H_TreeArch",
+   "meshId": "rbxassetid://100655029018768",
+   "textureId": "",
+   "size_studs": [
+    36.0,
+    30.41,
+    20.18
+   ],
+   "sa": {
+    "color": "rbxassetid://137066148210479",
+    "normal": "rbxassetid://138735605701993",
+    "metal": "rbxassetid://103456850325991",
+    "rough": "rbxassetid://85144417205271"
+   }
+  },
+  {
+   "name": "Kit_H_LanternPost",
+   "meshId": "rbxassetid://100051405724120",
+   "textureId": "",
+   "size_studs": [
+    5.61,
+    9.0,
+    2.96
+   ],
+   "sa": {
+    "color": "rbxassetid://118573849335258",
+    "normal": "rbxassetid://90282132379213",
+    "metal": "rbxassetid://137727698660508",
+    "rough": "rbxassetid://87912269513528"
+   }
+  },
+  {
+   "name": "Kit_H_StumpTable",
+   "meshId": "rbxassetid://83126328542239",
+   "textureId": "",
+   "size_studs": [
+    12.0,
+    2.82,
+    11.94
+   ],
+   "sa": {
+    "color": "rbxassetid://96253692014213",
+    "normal": "rbxassetid://72450514456647",
+    "metal": "rbxassetid://104891114842358",
+    "rough": "rbxassetid://91510641574084"
+   }
+  },
+  {
+   "name": "Kit_H_GlowShrooms",
+   "meshId": "rbxassetid://114376855676017",
+   "textureId": "",
+   "size_studs": [
+    3.32,
+    3.0,
+    3.14
+   ],
+   "sa": {
+    "color": "rbxassetid://131552847975380",
+    "normal": "rbxassetid://102063307828459",
+    "metal": "rbxassetid://71416605061840",
+    "rough": "rbxassetid://78631526919531"
+   }
+  },
+  {
+   "name": "Kit_X_PlazaWall_LOD",
+   "meshId": "rbxassetid://110178696787777",
+   "textureId": "",
+   "size_studs": [
+    9.73,
+    3.0,
+    2.81
+   ],
+   "sa": {
+    "color": "rbxassetid://133268085254825",
+    "normal": "rbxassetid://93749605715673",
+    "metal": "rbxassetid://83058353901973",
+    "rough": "rbxassetid://140323721092978"
+   }
+  },
+  {
+   "name": "Kit_X_PlazaStairs_LOD",
+   "meshId": "rbxassetid://113910349356966",
+   "textureId": "",
+   "size_studs": [
+    7.64,
+    3.5,
+    6.36
+   ],
+   "sa": {
+    "color": "rbxassetid://119410406328993",
+    "normal": "rbxassetid://100338438477700",
+    "metal": "rbxassetid://128291640728310",
+    "rough": "rbxassetid://135614659254257"
+   }
+  },
+  {
+   "name": "Town_Halo_KnightStatue_LOD",
+   "meshId": "rbxassetid://108791856570303",
+   "textureId": "",
+   "size_studs": [
+    6.14,
+    10.0,
+    5.33
+   ],
+   "sa": {
+    "color": "rbxassetid://101272929892554",
+    "normal": "rbxassetid://124733032980092",
+    "metal": "rbxassetid://75322287977235",
+    "rough": "rbxassetid://109331566976801"
+   }
+  },
+  {
+   "name": "Town_Horns_SpikeRock_LOD",
+   "meshId": "rbxassetid://105650577485479",
+   "textureId": "",
+   "size_studs": [
+    12.24,
+    16.0,
+    11.8
+   ],
+   "sa": {
+    "color": "rbxassetid://76154232279054",
+    "normal": "rbxassetid://95684554013765",
+    "metal": "rbxassetid://105264432554825",
+    "rough": "rbxassetid://83730799831505"
+   }
+  },
+  {
+   "name": "Kit_M_FlowersA_LOD",
+   "meshId": "rbxassetid://121905461293230",
+   "textureId": "rbxassetid://95001423954031",
+   "size_studs": [
+    1.89,
+    2.0,
+    1.82
+   ]
+  },
+  {
+   "name": "Kit_M_FlowersB_LOD",
+   "meshId": "rbxassetid://108272211160515",
+   "textureId": "rbxassetid://79591404904842",
+   "size_studs": [
+    1.46,
+    2.0,
+    1.31
+   ]
+  }
+ ]
+}
