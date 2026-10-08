@@ -62,9 +62,20 @@
     "ComboMilestone": "rbxassetid://73147095978331",
     "LevelUp": "rbxassetid://108525821312554",
     "Tap": "rbxassetid://118436931537673",
-    "WindowOpen": "rbxassetid://129419018750436"
+    "WindowOpen": "rbxassetid://129419018750436",
+    "QuestOpen": "rbxassetid://132431286215692",
+    "QuestTab": "rbxassetid://80849245770259",
+    "StampPress": "rbxassetid://76569480136584",
+    "Chest7Open": "rbxassetid://137266411071976",
+    "WelcomeBack": "rbxassetid://86644525324244"
   },
-  "pending": [],
+  "pending": [
+    "DiaryPage",
+    "CandyPlop",
+    "KingHelpHome",
+    "KingTickleCoins",
+    "TipDing"
+  ],
   "kept": {
     "about": "round-3 sounds that have no round-4 file yet; still current in Config.Audio.Files (do not retire)",
     "ids": {
