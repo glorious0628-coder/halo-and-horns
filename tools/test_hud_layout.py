@@ -79,6 +79,8 @@ SCREENS = [
     ("pc_655x340_small", False, 655, 340, False, True, INSET, None),
     ("pc_573x354_small", False, 573, 354, False, True, INSET, None),
     ("pc_700x450_small", False, 700, 450, False, True, INSET, None),
+    # the main Studio game view the user plays in (검수 2026-10-08 photos: 991x451 -> UIScale 0.5)
+    ("pc_991x451_studio", False, 991, 451, False, True, INSET, None),
     # a very short window: overlaps are accepted there, but everything must stay on screen below the top bar
     ("pc_1280x240_short", False, 1280, 240, False, False, INSET, None),
     ("phone_749x361", True, 749, 361, True, True, INSET, None),
@@ -118,6 +120,16 @@ EXCEPTIONS = [
     ("pc_573x354_small", "PC quest lines at least 250 px wide",
      "A 573x354 desktop window (UIScale 0.5): the combo line sits level with the quest lines 236 px from their left edge, "
      "so they widen only to a GAP before it (236 px instead of 250)."),
+    # 2026-10-08: the notify column's 288 px floor (its 1280x720 width) stops at the centre column's room between the
+    # quest lines / minimap and the right block on windows narrower than ~730 px
+    ("pc_700x720_narrow", "PC notify column at least 288 px wide",
+     "A 700x720 desktop window: the centre column between the left and right blocks is 275 px wide."),
+    ("pc_655x340_small", "PC notify column at least 288 px wide",
+     "A 655x340 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 241 px."),
+    ("pc_573x354_small", "PC notify column at least 288 px wide",
+     "A 573x354 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 159 px."),
+    ("pc_700x450_small", "PC notify column at least 288 px wide",
+     "A 700x450 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 286 px."),
     ("phone_592x360_navbar", "fold holds the menu tiles in one line",
      "Android 640x360 with its 48 px navigation bar (592 px wide): the top bar holds Roblox's buttons, the war meter "
      "and [메뉴] with room for 3 fold squares beside it; the 4th wraps to the line right under the bar."),
@@ -145,6 +157,8 @@ MUTATIONS = [
      "local qw = q.W"),
     ("PC quest lines widen into their neighbours", "qw = math.min(qw, o.X - GAP - q.X)", "qw = qw"),
     ("PC bars keep the sheet height on small windows", "local d = PC_FLOOR.Bar / s - hb.H", "local d = 0"),
+    ("PC notify column keeps the sheet width on small windows",
+     "out.notify.W = math.max(out.notify.W, PC_FLOOR.NotifyW / s)", "out.notify.W = out.notify.W"),
     ("short desktop windows go to the phone sheet", "\tlocal sheet = touch\n",
      "\tlocal sheet = touch or (env.H or 0) * (env.Scale or 1) < 500\n"),
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),

@@ -419,6 +419,19 @@ for _, case in CASES do
 			end
 			check(g, "PC HP / MP bars at least 14 px tall", out.hp_bar.H * s >= 14 - 0.5 and out.mp_bar.H * s >= 14 - 0.5,
 				("%.1f / %.1f px"):format(out.hp_bar.H * s, out.mp_bar.H * s))
+			local ch = out.chips
+			check(g, "PC notify column centred with the chips", math.abs((out.notify.X + out.notify.W / 2)
+				- (ch.X + ch.W / 2)) <= 1, fmt(out.notify) .. " " .. fmt(ch))
+			local nName = "PC notify column at least 288 px wide"
+			local nPx = out.notify.W * s
+			if nPx >= 288 - 0.5 then
+				check(g, nName, true)
+			elseif excepted(case, nName) then
+				table.insert(exceptions, { Screen = g, Check = nName, Reason = excepted(case, nName).Reason, Measured = nPx,
+					Need = 288 })
+			else
+				check(g, nName, false, ("%.1f px %s"):format(nPx, fmt(out.notify)))
+			end
 			-- the potions stay a lead gap right of the tile row, the bars end with the pair (one block)
 			check(g, "PC potions follow the icon row", hp.X - (t.X + t.W) >= MIN_PRESS_GAP - 0.01 and hp.X - (t.X + t.W) <= 16,
 				fmt(hp) .. " " .. fmt(t))

@@ -111,9 +111,11 @@ local RING_BUTTONS = { "potion_hp", "potion_mp", "q", "z", "x" } -- the buttons 
 local BARS = { "power_line", "hp_bar", "mp_bar", "xp_bar" } -- touch: they run from the face to the tile row's right end
 local BAR_GAP = 5 -- real px between the face and the bars, and between HP and MP, on the phone sheet
 local ROW_MAX = 6 -- touch: the bottom group grows up to this many tiles wide where the room allows (the icon row's windows)
--- small PC windows (main Studio 2026-10-08, 991x451 -> UIScale 0.5): real-px floors for the quest lines' width and the
--- HP / MP bars' height ("Get your first wea...", bar numbers ~6 px)
-local PC_FLOOR = { QuestW = 250, Bar = 14 }
+-- small PC windows (main Studio 2026-10-08, 991x451 -> UIScale 0.5): real-px floors for the quest lines' width, the
+-- HP / MP bars' height ("Get your first wea...", bar numbers ~6 px) and the notify column's width: as wide as on the
+-- 1280x720 sheet (a two-line notice kept one cut line, "First mission: Free the...": its words never go under 11 real px,
+-- Config.UI.MinTextSize); the centre column's room still clamps it on the narrowest windows
+local PC_FLOOR = { QuestW = 250, Bar = 14, NotifyW = 288 }
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
 -- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
 -- While open it may run over the centre column's info rows (chips / next event / notify), but never over the war meter,
@@ -225,6 +227,8 @@ function HudLayout.Compute(env)
 			end
 		end
 		q.W = math.max(q.W, qw)
+		-- the notify column widens (the centre column below centres it with the chips and clamps it to its room)
+		out.notify.W = math.max(out.notify.W, PC_FLOOR.NotifyW / s)
 		local hb, mb = out.hp_bar, out.mp_bar
 		local d = PC_FLOOR.Bar / s - hb.H
 		if d > 0 then

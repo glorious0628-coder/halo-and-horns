@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 12248,
+  "checks": 12778,
   "failedChecks": 0,
-  "namedChecks": 11338,
+  "namedChecks": 11830,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
@@ -15,11 +15,39 @@
       "neededDu": 6
     },
     {
+      "screen": "pc_700x720_narrow",
+      "check": "PC notify column at least 288 px wide",
+      "reason": "A 700x720 desktop window: the centre column between the left and right blocks is 275 px wide.",
+      "measuredDu": 275.2,
+      "neededDu": 288
+    },
+    {
+      "screen": "pc_655x340_small",
+      "check": "PC notify column at least 288 px wide",
+      "reason": "A 655x340 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 241 px.",
+      "measuredDu": 241,
+      "neededDu": 288
+    },
+    {
       "screen": "pc_573x354_small",
       "check": "PC quest lines at least 250 px wide",
       "reason": "A 573x354 desktop window (UIScale 0.5): the combo line sits level with the quest lines 236 px from their left edge, so they widen only to a GAP before it (236 px instead of 250).",
       "measuredDu": 236.25,
       "neededDu": 250
+    },
+    {
+      "screen": "pc_573x354_small",
+      "check": "PC notify column at least 288 px wide",
+      "reason": "A 573x354 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 159 px.",
+      "measuredDu": 159,
+      "neededDu": 288
+    },
+    {
+      "screen": "pc_700x450_small",
+      "check": "PC notify column at least 288 px wide",
+      "reason": "A 700x450 desktop window (UIScale 0.5): the centre column between the minimap and the right block is 286 px.",
+      "measuredDu": 286,
+      "neededDu": 288
     },
     {
       "screen": "phone_568x320",
@@ -409,6 +437,32 @@
       }
     },
     {
+      "name": "pc_991x451_studio",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        991,
+        451
+      ],
+      "uiScale": 0.5011,
+      "logical": [
+        1977.61,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 7.5,
+        "Pair": "potion_hp/potion_mp"
+      }
+    },
+    {
       "name": "pc_1280x240_short",
       "touch": false,
       "reference": false,
@@ -716,9 +770,9 @@
     "DesktopScaleMax": 1.0
   },
   "mutations": {
-    "total": 57,
-    "applied": 57,
-    "caught": 57,
+    "total": 58,
+    "applied": 58,
+    "caught": 58,
     "results": [
       {
         "mutation": "PC potions back in the corner cluster",
@@ -773,7 +827,7 @@
           "pc_1280x1024 :: PC potions side by side",
           "pc_1280x1024 :: potions box published"
         ],
-        "newFailingCount": 39
+        "newFailingCount": 41
       },
       {
         "mutation": "PC quest lines keep the sheet width on small windows",
@@ -783,9 +837,10 @@
         "newFailingChecks": [
           "pc_573x354_small :: PC quest lines fill the room before their neighbour",
           "pc_655x340_small :: PC quest lines at least 250 px wide",
-          "pc_700x450_small :: PC quest lines at least 250 px wide"
+          "pc_700x450_small :: PC quest lines at least 250 px wide",
+          "pc_991x451_studio :: PC quest lines at least 250 px wide"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "PC quest lines widen into their neighbours",
@@ -806,7 +861,20 @@
         "newFailingChecks": [
           "pc_573x354_small :: PC HP / MP bars at least 14 px tall",
           "pc_655x340_small :: PC HP / MP bars at least 14 px tall",
-          "pc_700x450_small :: PC HP / MP bars at least 14 px tall"
+          "pc_700x450_small :: PC HP / MP bars at least 14 px tall",
+          "pc_991x451_studio :: PC HP / MP bars at least 14 px tall"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "PC notify column keeps the sheet width on small windows",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: PC notify column at least 288 px wide",
+          "pc_800x600 :: PC notify column at least 288 px wide",
+          "pc_991x451_studio :: PC notify column at least 288 px wide"
         ],
         "newFailingCount": 3
       },
@@ -823,7 +891,7 @@
           "pc_573x354_small :: PC quest lines fill the room before their neighbour",
           "pc_573x354_small :: at least 6 tiles on every PC"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 35
       },
       {
         "mutation": "touch targets may shrink to 30",
@@ -897,7 +965,7 @@
           "pc_1280x720 :: reference tile count",
           "pc_1280x720 :: tiles fit the row"
         ],
-        "newFailingCount": 26
+        "newFailingCount": 27
       },
       {
         "mutation": "tiles touch",
@@ -912,7 +980,7 @@
           "pc_1280x720 :: matches sheet tile gap",
           "pc_1280x720 :: tile gap"
         ],
-        "newFailingCount": 26
+        "newFailingCount": 27
       },
       {
         "mutation": "touch quest lines may shrink below a thumb",
@@ -941,7 +1009,7 @@
           "pc_573x354_small :: top rows hug the top bar",
           "pc_655x340_small :: no overlap minimap/quest"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 28
       },
       {
         "mutation": "phone group wider than the room right of 0.4 W",
@@ -1202,7 +1270,7 @@
           "pc_1024x600 :: press gap tiles/potion_hp",
           "pc_1024x600 :: press gap tiles/potion_mp"
         ],
-        "newFailingCount": 87
+        "newFailingCount": 93
       },
       {
         "mutation": "phone skill Q rect drifted",
@@ -1277,7 +1345,7 @@
           "pc_1280x720 :: matches sheet potion gap",
           "pc_1280x720_inset36 :: PC potions side by side"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 16
       },
       {
         "mutation": "menu not at the bar's right end",
@@ -1292,7 +1360,7 @@
           "pc_1280x720 :: menu at the top bar's right end",
           "pc_1280x720_inset36 :: menu at the top bar's right end"
         ],
-        "newFailingCount": 29
+        "newFailingCount": 30
       },
       {
         "mutation": "menu under the bar",
@@ -1307,7 +1375,7 @@
           "pc_1280x720 :: matches sheet menu",
           "pc_1280x720 :: on Roblox's button middle menu"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 26
       },
       {
         "mutation": "touch menu may shrink below a thumb",
@@ -1337,7 +1405,7 @@
           "pc_1024x768 :: menu as big as a Roblox button",
           "pc_1024x768 :: no taller than a Roblox button menu"
         ],
-        "newFailingCount": 95
+        "newFailingCount": 99
       },
       {
         "mutation": "war meter not in the top bar",
@@ -1352,7 +1420,7 @@
           "pc_1024x600 :: on Roblox's button middle war_meter",
           "pc_1024x768 :: column order chips"
         ],
-        "newFailingCount": 128
+        "newFailingCount": 133
       },
       {
         "mutation": "top bar items follow the UIScale",
@@ -1382,7 +1450,7 @@
           "pc_1280x720 :: matches sheet war_meter",
           "pc_1280x720 :: on Roblox's button middle war_meter"
         ],
-        "newFailingCount": 26
+        "newFailingCount": 27
       },
       {
         "mutation": "bar row on the bar's middle, not Roblox's buttons'",
@@ -1397,7 +1465,7 @@
           "pc_1280x1024 :: on Roblox's button middle menu",
           "pc_1280x1024 :: on Roblox's button middle war_meter"
         ],
-        "newFailingCount": 50
+        "newFailingCount": 52
       },
       {
         "mutation": "Roblox's buttons not kept clear",
@@ -1442,7 +1510,7 @@
           "pc_1024x768 :: column order event",
           "pc_1024x768 :: no overlap chips/notify"
         ],
-        "newFailingCount": 43
+        "newFailingCount": 46
       },
       {
         "mutation": "fold may cover the war meter",
@@ -1457,7 +1525,7 @@
           "pc_1280x720_inset36 :: fold clear of war_meter",
           "pc_1280x720_unibar_wide :: fold clear of war_meter"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 26
       },
       {
         "mutation": "fold lines ignore every item",
@@ -1472,7 +1540,7 @@
           "pc_1024x768 :: fold clear of war_meter",
           "pc_1024x768 :: fold first line in the top bar"
         ],
-        "newFailingCount": 81
+        "newFailingCount": 84
       },
       {
         "mutation": "fold one square too many",
@@ -1487,7 +1555,7 @@
           "pc_1280x1024 :: fold clear of war_meter",
           "pc_1280x720 :: fold clear of war_meter"
         ],
-        "newFailingCount": 45
+        "newFailingCount": 47
       },
       {
         "mutation": "fold lines go up",
@@ -1502,7 +1570,7 @@
           "pc_1280x720_inset36 :: fold lines go down",
           "pc_1280x720_unibar_wide :: fold lines go down"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 24
       },
       {
         "mutation": "fold squares touch",
@@ -1517,7 +1585,7 @@
           "pc_1280x720_inset36 :: fold gap",
           "pc_1280x720_unibar_wide :: fold gap"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 24
       }
     ]
   },
@@ -1616,8 +1684,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 360,
-        "X": 588,
+        "W": 432,
+        "X": 552,
         "Y": 159.5
       },
       "portrait": {
@@ -2129,8 +2197,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 360,
-        "X": 1100,
+        "W": 576,
+        "X": 992,
         "Y": 188.5
       },
       "portrait": {
@@ -3252,7 +3320,7 @@
       "chips": {
         "H": 27.5,
         "W": 310,
-        "X": 483,
+        "X": 422,
         "Y": 121
       },
       "combo": {
@@ -3264,7 +3332,7 @@
       "event": {
         "H": 27.5,
         "W": 310,
-        "X": 483,
+        "X": 422,
         "Y": 153.5
       },
       "fold": {
@@ -3326,8 +3394,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 360,
-        "X": 458,
+        "W": 482,
+        "X": 336,
         "Y": 188.5
       },
       "portrait": {
@@ -3385,7 +3453,7 @@
       "war_meter": {
         "H": 84,
         "W": 360,
-        "X": 458,
+        "X": 397,
         "Y": 26
       },
       "x": {
@@ -3423,7 +3491,7 @@
       "chips": {
         "H": 27.5,
         "W": 310,
-        "X": 545,
+        "X": 467,
         "Y": 121
       },
       "combo": {
@@ -3435,17 +3503,17 @@
       "event": {
         "H": 27.5,
         "W": 310,
-        "X": 545,
+        "X": 467,
         "Y": 153.5
       },
       "fold": {
-        "Cols": 4,
+        "Cols": 5,
         "Gap": 5,
         "H": 278,
         "Lines": [
           {
-            "Cols": 4,
-            "X": 916,
+            "Cols": 5,
+            "X": 823,
             "Y": 24
           },
           {
@@ -3497,8 +3565,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 360,
-        "X": 520,
+        "W": 572,
+        "X": 336,
         "Y": 188.5
       },
       "portrait": {
@@ -3556,7 +3624,7 @@
       "war_meter": {
         "H": 84,
         "W": 360,
-        "X": 520,
+        "X": 442,
         "Y": 26
       },
       "x": {
@@ -3839,8 +3907,8 @@
       },
       "notify": {
         "H": 57.5,
-        "W": 360,
-        "X": 420,
+        "W": 432,
+        "X": 384,
         "Y": 159.5
       },
       "portrait": {
@@ -4088,6 +4156,177 @@
         "H": 82.5,
         "W": 82.5,
         "X": 898.75,
+        "Y": 582.5
+      }
+    },
+    "pc_991x451_studio": {
+      "attack": {
+        "H": 100,
+        "W": 100,
+        "X": 1860.1053,
+        "Y": 775
+      },
+      "auto": {
+        "H": 65,
+        "W": 65,
+        "X": 1782.6053,
+        "Y": 792.5
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 833.8027,
+        "Y": 120.7428
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 913.8027,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 310,
+        "X": 833.8027,
+        "Y": 153.2428
+      },
+      "fold": {
+        "Cols": 7,
+        "Gap": 5,
+        "H": 277.4058,
+        "Lines": [
+          {
+            "Cols": 7,
+            "X": 1216.2195,
+            "Y": 23.9468
+          },
+          {
+            "Cols": 17,
+            "X": 288.1707,
+            "Y": 120.7428
+          },
+          {
+            "Cols": 17,
+            "X": 288.1707,
+            "Y": 213.5477
+          }
+        ],
+        "Rows": 3,
+        "Size": 87.8049,
+        "W": 1572.6829,
+        "X": 288.1707,
+        "Y": 23.9468
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1690.1053,
+        "Y": 787.5
+      },
+      "hp_bar": {
+        "H": 27.9379,
+        "W": 275,
+        "X": 745.0527,
+        "Y": 744.5621
+      },
+      "menu": {
+        "H": 87.8049,
+        "W": 87.8049,
+        "X": 1865.8537,
+        "Y": 23.9468
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 125.7428
+      },
+      "mp_bar": {
+        "H": 27.9379,
+        "W": 276.25,
+        "X": 1030.0527,
+        "Y": 744.5621
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 574.7228,
+        "X": 701.4412,
+        "Y": 188.2428
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 672.5527,
+        "Y": 729.5621
+      },
+      "potion_hp": {
+        "H": 65,
+        "W": 65,
+        "X": 1168.8027,
+        "Y": 800
+      },
+      "potion_mp": {
+        "H": 65,
+        "W": 65,
+        "X": 1241.3027,
+        "Y": 800
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 65,
+        "W": 137.5,
+        "X": 1168.8027,
+        "Y": 800
+      },
+      "power_line": {
+        "H": 20,
+        "W": 561.25,
+        "X": 745.0527,
+        "Y": 719.5621
+      },
+      "q": {
+        "H": 82.5,
+        "W": 82.5,
+        "X": 1876.3553,
+        "Y": 490
+      },
+      "quest": {
+        "H": 65,
+        "W": 498.8914,
+        "X": 17.5,
+        "Y": 325.7428
+      },
+      "tiles": {
+        "Count": 6,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 408.75,
+        "X": 745.0527,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 83.8137,
+        "W": 360,
+        "X": 808.8027,
+        "Y": 25.9424
+      },
+      "x": {
+        "H": 82.5,
+        "W": 82.5,
+        "X": 1876.3553,
+        "Y": 675
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 561.25,
+        "X": 745.0527,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 82.5,
+        "W": 82.5,
+        "X": 1876.3553,
         "Y": 582.5
       }
     },
@@ -5632,10 +5871,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "7b662e6ada2b82548f571912e8a48a8be1da5bda5cc2030368bcb790fbe9f31f",
-    "tools/fixtures/hud_layout_offline.luau": "a8a4a28dcf3e057cc090ab42048b9b37ee09f8c15d1f73bc5ff6282af400c415",
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "4157fe192b48e156523a2c038a861f6dc4daa27f278fd41c43ec5b65b4f17338",
+    "tools/fixtures/hud_layout_offline.luau": "8359a91fe8687f88b10ec4744de231abb3e1b0d31269e66706bd79bc9bafcabb",
     "docs/design/hud_layout_B_imgdev_2026-10-06.json": "47e516357a51684e60f7b7c15329e95fa8f6e409ba29a3dbb143d6c2ce8a88f7",
-    "src/ReplicatedStorage/Shared/Config.luau": "3925ea92f632f5469670d6536900a380064e7f316233ddb6078a507c5db5a3d7"
+    "src/ReplicatedStorage/Shared/Config.luau": "81ef391810bdefd274923836367e3cba5743222383a1b5153483939c5a895879"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

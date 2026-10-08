@@ -1622,6 +1622,13 @@ function STYLE.Refresh(label)
 	local minPx = (tonumber(label:GetAttribute("StyleMinPx")) or def.MinPx) * UIKit.PxFloor()
 	-- ceil, not floor: floor(14 / 0.75) = 18 would render 13.5 px, under the rubric's 14
 	local floorSize = math.clamp(math.ceil(minPx / scale - 0.001), 1, 100)
+	-- UiSandbox 2026-10-08 (TextBounds at 991x451): Roblox applies UITextSizeConstraint in screen px - UIScale does not
+	-- reach it - so this floor renders as floorSize real px (the approved PC 0.8 and phone 0.75 looks were judged that
+	-- way). A PC window under the 0.8 desktop scale shrinks it once more with the window, so the words shrink with the
+	-- halved boxes instead of spilling out of them (the quest line, notices, the Shop cards)
+	if not UserInputService.TouchEnabled then
+		floorSize = math.clamp(math.ceil(floorSize * UIKit.PxFloor() - 0.001), 1, 100)
+	end
 	Art.StyleFloor[label] = floorSize
 	local tc = STYLE.Constraint(label, st)
 	local fit = Art.TextFits[label]
