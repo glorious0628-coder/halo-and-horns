@@ -3545,19 +3545,6 @@
   "hq_note": "고급 2026-10-07(검수 통과): 같은 키·같은 캔버스, Id만 교체.",
   "user_seen_hq": "2026-10-07 검수가 사용자에게 시트(art/review/s2/story_speakers_hq_sheet.jpg)를 보여 줌, 검수 적용 지시(반대 오면 되돌림)"
  },
- "FB_MerchantC": {
-  "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
-  "prompt": "art/prompts/FB_MerchantC.txt",
-  "original": "art/out/s2/FB_MerchantC_a_src.png (Adobe MCP presigned download)",
-  "file": "art/ui/FB_MerchantC.png",
-  "size": "494x768 RGBA",
-  "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
-  "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인(지친 베테랑 대장장이) 전신(콧수염·주황 두건, 가죽 앞치마, 망치·코코아 머그). 3D/NPC 외형 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택. 쓰임: 상점 초상·대화창용(지금 임시 NPC HumanoidDescription은 그대로, 3D 모습은 게임성 개발 1과 정함).",
-  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
- },
  "PTR_MerchantC": {
   "status": "approved",
   "date": "2026-10-07",
