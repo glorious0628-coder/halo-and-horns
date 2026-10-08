@@ -1,0 +1,17 @@
+[호박밭 9종 — 검수 OK 10/08(비교표 docs/design/zones_concept_gap_2026-10-08.md, 순서 호박밭 먼저). Firefly 시안 중간 0 × 2씩 → 검수 → 고급 5 → Tripo 웹 HD 55.
+ 참조 이미지 = 호박밭 시안 원본 art/out/concept/Concept_PumpkinPatch_1.png (Firefly asset 52903f8a, 그림체·색 맞추기). 얼굴·눈·해골 없음, 새긴 호박 없음, 빛살 없음.
+ 문구 = HEAD + 물건 한 문장 + TAIL (1000자 미만)]
+
+HEAD: In the same style, colors and warm sunset light as the reference image (a cozy toy-world pumpkin harvest field), draw only this one object:
+
+TAIL: Single standalone game prop for a cute toy-world kids RPG, chunky rounded toy proportions, smooth hand-painted toy materials, simple clean shapes, rich warm autumn colors, soft even light from the top left. Three-quarter front view from slightly above, the whole object fully inside the frame with a wide margin, centered. Isolated on a plain flat medium gray background, no ground, no shadow, no other objects. No faces, no eyes, no skulls. Wordless, blank unmarked surfaces.
+
+P_Cliff_A: one big chunk of rounded gray-beige rock cliff made of a few stacked smooth boulders with soft cracks, a thick cap of green grass and moss on top with two small orange autumn bushes, wider than tall, flat back side so it can line a field edge.
+P_Cliff_B: one tall rounded gray-beige rock cliff pillar made of three stacked smooth boulders with soft cracks, a grassy mossy top with a small round orange bush, flat back side so it can line a field edge.
+Kit_P_EntranceSign: one big rustic wooden entrance sign: two thick honey-brown wooden posts with a wide blank wooden board hanging between them under a crossbeam, a small iron lantern with a warm glow hanging from one post, two little plain pumpkins and a tuft of grass at the post feet.
+Kit_P_HayBales: a small stack of three golden rectangular hay bales tied with twine, two on the bottom and one on top, soft straw texture, a few loose straws.
+Kit_P_PumpkinCart: one small wooden farm hand cart with two big wooden wheels and two handles, loaded with plain smooth orange pumpkins of mixed sizes with green stems, no carved faces.
+P_TreeAutumn_A: one big round autumn tree with a thick curvy brown trunk and a fluffy rounded canopy of bright orange and golden leaves in soft puffy clumps, a few roots.
+P_TreeAutumn_B: one big autumn tree, a bit taller and narrower, with a thick curvy brown trunk and a fluffy rounded canopy of deep red and orange leaves in soft puffy clumps, a few roots.
+P_Pine: one chunky toy pine tree with a short brown trunk and three stacked rounded layers of dark green needles with soft rounded tips, a simple cone shape.
+Kit_P_Sunflowers: a small clump of three tall cheerful sunflowers with big yellow petals and plain brown centers, broad green leaves, and a few small orange marigold flowers at the base.
