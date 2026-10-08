@@ -82,8 +82,8 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "afea6d9271db5216b00e0ce7542218750cec8c5a73d813571cc1cfd600d6ea29",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "414f7ec688f8981d65487a17257b55e0f017756f179e9b30ca01fbbc11cb24ab"
+    "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "50224442d83f50a30fdeb6aba9cdd67aab7e57f6385d5ba4ef35d5e4fef1f0a1",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
   },
   "fixtureSHA256": "a69686a5f40db915eb3630ccd96d4bdf648e1927c85f1962cb19543275199dac",
   "studioCalls": 0,

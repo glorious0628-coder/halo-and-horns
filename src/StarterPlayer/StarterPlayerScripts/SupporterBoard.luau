@@ -25,6 +25,7 @@ local T = {
 	NameMax = 20, -- characters shown of one name
 	Gui = "SupporterGui",
 	PPS = 40, -- canvas pixels per stud: the canvas keeps the face's shape (no stretched letters)
+	Inset = 0.1, -- share of the width kept free on each side (behind the board's posts; 10/08 photo)
 	-- game text: English only (A23-48)
 	Title = "Thank you, supporters!",
 	Empty = "Thank you for playing!",
@@ -78,10 +79,12 @@ local function draw(part)
 		panel.BackgroundColor3 = T.Colors.Panel
 		panel.BorderSizePixel = 0
 		panel.Parent = gui
+		-- the words keep Inset of the width free on each side: the 3D board's posts stand in front of the face's edges
 		local title = Instance.new("TextLabel")
 		title.Name = "Title"
-		title.Size = UDim2.new(1, -20, 0, 44)
-		title.Position = UDim2.fromOffset(10, 8)
+		title.AnchorPoint = Vector2.new(0.5, 0)
+		title.Size = UDim2.new(1 - 2 * T.Inset, 0, 0, 40)
+		title.Position = UDim2.new(0.5, 0, 0, 10)
 		title.BackgroundTransparency = 1
 		title.Font = Enum.Font.GothamBold
 		title.TextScaled = true
@@ -90,12 +93,13 @@ local function draw(part)
 		title.Parent = panel
 		local body = Instance.new("TextLabel")
 		body.Name = "Names"
-		body.Size = UDim2.new(1, -20, 1, -64)
-		body.Position = UDim2.fromOffset(10, 56)
+		body.AnchorPoint = Vector2.new(0.5, 0)
+		body.Size = UDim2.new(1 - 2 * T.Inset, 0, 1, -66)
+		body.Position = UDim2.new(0.5, 0, 0, 56)
 		body.BackgroundTransparency = 1
 		body.Font = Enum.Font.GothamBold
 		body.TextScaled = true
-		body.TextWrapped = true
+		body.TextWrapped = false -- a row of three stays one row (wrapping broke the rows on the 10/08 photo)
 		body.TextYAlignment = Enum.TextYAlignment.Top
 		body.TextColor3 = T.Colors.Text
 		body.Parent = panel
