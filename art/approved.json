@@ -6592,5 +6592,57 @@
   "model": "art/models/tripo/web/Kit_R_Banner_HD_src.glb -> _HD_plain.glb",
   "import": "build/import_all/3_third/D6_RuinsR1.glb (3.68 x 4.16 x 9.00 studs)",
   "sheet_3d": "art/review/town5/ruins_r1_3d.jpg"
+ },
+ "PassIconExp2": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "사용자 고름 B(둥근 배지) — SPEC A23-75 292051f, 검수 전달",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium PassIcon_Exp2_B",
+  "prompt": "art/prompts/PassIcon_Exp2_HQ.txt",
+  "original": "art/out/hq/src/PassIcon_Exp2_HQ_src.png (Firefly asset e291a285…)",
+  "medium_pick": "art/out/s2/shop/PassIcon_Exp2_B_src.png (prompt art/prompts/PassIcon_Exp2_B.txt, Firefly asset b18eab7c…)",
+  "file": "art/ui/PassIconExp2.png",
+  "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
+  "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
+  "note": "경험치 2배 패스 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+ },
+ "PassIconGold2": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "사용자 고름 B(둥근 배지) — SPEC A23-75 292051f, 검수 전달",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium PassIcon_Gold2_B",
+  "prompt": "art/prompts/PassIcon_Gold2_HQ.txt",
+  "original": "art/out/hq/src/PassIcon_Gold2_HQ_src.png (Firefly asset 6107e6c1…)",
+  "medium_pick": "art/out/s2/shop/PassIcon_Gold2_B_src.png (prompt art/prompts/PassIcon_Gold2_B.txt, Firefly asset 476a4fc5…)",
+  "file": "art/ui/PassIconGold2.png",
+  "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
+  "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
+  "note": "골드 2배 패스 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+ },
+ "PassIconVIP": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "사용자 고름 B(둥근 배지) — SPEC A23-75 292051f, 검수 전달",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium PassIcon_VIP_B",
+  "prompt": "art/prompts/PassIcon_VIP_HQ.txt",
+  "original": "art/out/hq/src/PassIcon_VIP_HQ_src.png (Firefly asset 65105eb3…)",
+  "medium_pick": "art/out/s2/shop/PassIcon_VIP_B_src.png (prompt art/prompts/PassIcon_VIP_B.txt, Firefly asset 0f5b647b…)",
+  "file": "art/ui/PassIconVIP.png",
+  "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
+  "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
+  "note": "VIP 패스(왕관) — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
+ },
+ "PassIconBundle": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "사용자 고름 B(둥근 배지) — SPEC A23-75 292051f, 검수 전달",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium PassIcon_Bundle_B",
+  "prompt": "art/prompts/PassIcon_Bundle_HQ.txt",
+  "original": "art/out/hq/src/PassIcon_Bundle_HQ_src.png (Firefly asset 61caceba…)",
+  "medium_pick": "art/out/s2/shop/PassIcon_Bundle_B_src.png (prompt art/prompts/PassIcon_Bundle_B.txt, Firefly asset 3400cd8f…)",
+  "file": "art/ui/PassIconBundle.png",
+  "size": "512x512 RGBA, round: the badge disc fills the square, corners transparent (circle alpha, no cutout of the art)",
+  "preview": "art/review/s2/shop_acc_pass_sheet.jpg",
+  "note": "치장 묶음 — Roblox 게임 패스 이미지(상점이 원형으로 자름) + 게임 안 상점 버튼. 글자·숫자 없음, 빛살 없음. 패스 만들기·이미지 올리기는 게시 때 사용자(launch_ops_checklist), 게임 안 UI는 이미지 개발."
  }
 }
