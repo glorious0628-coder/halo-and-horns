@@ -18,10 +18,10 @@
     {
      "id": "H1",
      "new": true,
-     "en": "Eight AIs made my Roblox game... and gave me a STICK?!",
-     "ko": "AI 여덟이 내 로블록스 게임을 만들었는데… 나뭇가지를 줬어요?!",
+     "en": "Nine AIs made my Roblox game... and gave me a STICK?!",
+     "ko": "AI 아홉이 내 로블록스 게임을 만들었는데… 나뭇가지를 줬어요?!",
      "hl": [
-      "Eight AIs"
+      "Nine AIs"
      ],
      "hlr": [
       "STICK?!"
@@ -76,7 +76,7 @@
         ]
        ],
        "video": "s40_first_hunt",
-       "ss": 8.0,
+       "ss": 1.15,
        "in": "punch",
        "w": 0.9,
        "sfx": [
@@ -90,7 +90,8 @@
         "color": "#FFD650",
         "y": 360,
         "size": 230
-       }
+       },
+       "speed": 0.6
       }
      ],
      "emoji": "😲"
@@ -156,10 +157,10 @@
     {
      "id": "A0e",
      "new": true,
-     "en": "So eight AI teammates build it with me!",
-     "ko": "그래서 AI 팀원 여덟이 저랑 같이 만들어요!",
+     "en": "So nine AI teammates build it with me!",
+     "ko": "그래서 AI 팀원 아홉이 저랑 같이 만들어요!",
      "hl": [
-      "eight AI teammates"
+      "nine AI teammates"
      ],
      "shots": [
       {
@@ -189,8 +190,8 @@
     },
     {
      "id": "A3",
-     "en": "A boss, two builders, two artists, an art dev, a sound maker, and a film crew!",
-     "ko": "대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 소리 만드는 사람 하나, 그리고 촬영 담당!",
+     "en": "A boss, three builders, two artists, an art dev, a sound maker, and a film crew!",
+     "ko": "대장 하나, 만드는 사람 셋, 그리는 사람 둘, 그림 넣는 사람 하나, 소리 만드는 사람 하나, 그리고 촬영 담당!",
      "hl": [
       "boss,",
       "builders,",
@@ -209,8 +210,9 @@
        "in": "punch",
        "cues": [
         "boss",
-        "two",
+        "three",
         "builders",
+        "+0.22",
         "two",
         "artists",
         "art",
@@ -218,6 +220,7 @@
         "film"
        ],
        "cue_sfx": [
+        "card",
         "card",
         "card",
         "card",
@@ -244,7 +247,7 @@
      "shots": [
       {
        "video": "s40_first_hunt",
-       "ss": 6.0,
+       "ss": 2.8,
        "z": [
         1.15,
         1.28
@@ -273,11 +276,12 @@
          0.5,
          0.5
         ]
-       ]
+       ],
+       "speed": 0.6
       },
       {
        "video": "s40_first_hunt",
-       "ss": 14.0,
+       "ss": 4.3,
        "z": [
         1.15,
         1.28
@@ -299,11 +303,12 @@
          0.5,
          0.5
         ]
-       ]
+       ],
+       "speed": 0.6
       },
       {
        "video": "s40_first_hunt",
-       "ss": 20.0,
+       "ss": 5.95,
        "z": [
         1.15,
         1.28
@@ -328,7 +333,8 @@
          0.5,
          0.5
         ]
-       ]
+       ],
+       "speed": 0.6
       }
      ]
     },
@@ -454,7 +460,7 @@
         ]
        ],
        "video": "s40_first_hunt",
-       "ss": 9.0,
+       "ss": 7.45,
        "in": "punch",
        "w": 0.8,
        "sfx": [
@@ -468,7 +474,8 @@
         "color": "#FF5454",
         "y": 560,
         "size": 260
-       }
+       },
+       "speed": 0.6
       },
       {
        "z": [
@@ -486,7 +493,7 @@
         ]
        ],
        "video": "s40_first_hunt",
-       "ss": 10.0,
+       "ss": 9.1,
        "in": "punch",
        "w": 1.0,
        "sfx": [
@@ -497,7 +504,8 @@
         "color": "#FFD650",
         "y": 560,
         "size": 150
-       }
+       },
+       "speed": 0.6
       }
      ]
     },
@@ -636,10 +644,10 @@
    ],
    "tail": 0.6,
    "meta": {
-    "title_en": "8 AIs made my Roblox game... and gave me a STICK?! 😲 #shorts",
-    "title_ko": "AI 8명이 만든 내 로블록스 게임… 첫 무기가 나뭇가지?!",
-    "desc_en": "I can't code. I can't draw. So eight AI (Claude) sessions are making my Roblox game, Halo & Horns: a boss who checks everything, two who write the code, two who draw the art (Adobe Firefly), one who puts it in the game, one who makes the sound effects, and one who made this video. I'm the director. In the game, every choice makes you an angel or a devil. Which one are you? Halloween beta: October 31! Not sponsored. AI voice narration. Sound effects: our own, Adobe Firefly and Kenney (kenney.nl, CC0).",
-    "desc_ko": "코딩도 그림도 못 하지만, AI 세션 8개와 로블록스 게임 'Halo & Horns'를 만들어요. 모든 선택이 천사 아니면 악마! 당신은 어느 쪽? 베타 10월 31일.",
+    "title_en": "9 AIs made my Roblox game... and gave me a STICK?! 😲 #shorts",
+    "title_ko": "AI 9명이 만든 내 로블록스 게임… 첫 무기가 나뭇가지?!",
+    "desc_en": "I can't code. I can't draw. So nine AI (Claude) sessions are making my Roblox game, Halo & Horns: a boss who checks everything, three who write the code, two who draw the art (Adobe Firefly), one who puts it in the game, one who makes the sound effects, and one who made this video. I'm the director. In the game, every choice makes you an angel or a devil. Which one are you? Halloween beta: October 31! Not sponsored. AI voice narration. Sound effects: our own, Adobe Firefly and Kenney (kenney.nl, CC0).",
+    "desc_ko": "코딩도 그림도 못 하지만, AI 세션 9개와 로블록스 게임 'Halo & Horns'를 만들어요. 모든 선택이 천사 아니면 악마! 당신은 어느 쪽? 베타 10월 31일.",
     "tags": [
      "#Roblox",
      "#RobloxStudio",
