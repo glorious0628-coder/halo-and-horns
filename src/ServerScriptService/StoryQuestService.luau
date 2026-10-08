@@ -767,6 +767,17 @@ local function changedMind(player, st, obj, pick)
 	st.LastSide = side
 end
 
+-- 10/08 Play check (게임성 개발 1): while the story card is open the client keeps only the newest toast
+-- (UIKit NOTIFY.ToastCap), and the pick's answer came first - the gold line and the step's "done!" pushed it off at
+-- once. The answer (A23-70: the other person answers) now goes last, ReplyAfter s after the step moved on (the card
+-- has closed by then): the newest line, so it stays.
+local REPLY_AFTER = 0.35
+local function replyLater(player, text)
+	task.delay(REPLY_AFTER, function()
+		if player.Parent == Players then notify(player, text, "good", "None") end
+	end)
+end
+
 local function onStoryAction(player, id, action, option, ...)
 	if select("#", ...) ~= 0 then return end
 	if type(id) ~= "string" or type(action) ~= "string" or (option ~= nil and type(option) ~= "string") then return end
@@ -788,6 +799,7 @@ local function onStoryAction(player, id, action, option, ...)
 		advance(player, data, id, tr)
 	elseif action == "Choose" and obj.Type == "Choice" then
 		local f = faction(player)
+		local reply = nil -- the other person's answer, sent after the step moved on (replyLater)
 		if f == "Halo" or f == "Horns" then
 			if option ~= "Good" and option ~= "Evil" then return end
 			local pick = obj[option]
@@ -799,7 +811,7 @@ local function onStoryAction(player, id, action, option, ...)
 			elseif not pick.Reply then
 				notify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans
 			end
-			if pick.Reply then notify(player, pick.Reply, "good", "None") end -- A23-70: the other person answers
+			reply = pick.Reply -- A23-70: the other person answers (last, replyLater)
 			changedMind(player, st, obj, st.Pick[id])
 			payChoice(player, obj, option)
 		else
@@ -808,7 +820,7 @@ local function onStoryAction(player, id, action, option, ...)
 			choiceFx(player, option == "A" and "Good" or "Evil")
 			local side = obj[option == "A" and "Good" or "Evil"]
 			if type(side) == "table" and side.Reply then
-				notify(player, side.Reply, "good", "None") -- A23-70: the other person answers
+				reply = side.Reply -- A23-70: the other person answers (last, replyLater)
 			else
 				notify(player, TXT.Recorded, "info")
 			end
@@ -816,6 +828,7 @@ local function onStoryAction(player, id, action, option, ...)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
 		advance(player, data, id, tr)
+		if type(reply) == "string" then replyLater(player, reply) end
 	end
 end
 

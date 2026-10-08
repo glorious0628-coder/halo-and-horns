@@ -91,7 +91,12 @@ MUTATIONS = [
      "\tif req.TutorialDone and num(data.TutorialStep) ~= TUT_DONE then return false end\n", ""),
     ("players past the Forge get the lunchbox", ST, "\t\tif st.Done[gone] then return false end\n", ""),
     ("the card waits in the list", ST, "\t\t\tif def.Pop then openStep(player, id, st.Subs[id]) end -- A23-70: the card opens by itself, once\n", ""),
-    ("no answer from the kid", ST, "\t\t\tif pick.Reply then notify(player, pick.Reply, \"good\", \"None\") end -- A23-70: the other person answers\n", ""),
+    ("no answer from the kid", ST, "\t\t\treply = pick.Reply -- A23-70: the other person answers (last, replyLater)\n", ""),
+    # 10/08 Play check: the answer was pushed off by the gold / done lines while the card was open
+    ("the answer comes first again", ST, "\t\t\treply = pick.Reply -- A23-70: the other person answers (last, replyLater)\n",
+     "\t\t\tif pick.Reply then notify(player, pick.Reply, \"good\", \"None\") end\n"),
+    ("the answer never waits", ST, "local REPLY_AFTER = 0.35\n", "local REPLY_AFTER = 0\n"),
+    ("the answer is never sent", ST, "\t\tif type(reply) == \"string\" then replyLater(player, reply) end\n", ""),
     ("the lunchbox scores Honor", C, 'Good = { Label = "Give it back", Points = 0,', 'Good = { Label = "Give it back", Points = 1,'),
     ("a bite pays nothing", C, "Reward = { Gold = 25 } },", "Reward = { Gold = 0 } },"),
     # 3rd idea round + sound_spec §4-1

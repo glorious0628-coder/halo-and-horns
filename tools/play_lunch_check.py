@@ -4,7 +4,8 @@ the anvil's first weapon -> 5 slimes -> [Claim] -> the Lunch1 sub ("Lost Lunchbo
 panel) -> StoryAction("Lunch1", "Choose", "Evil") (the remote's real argument order: quest id, action, option) -> the
 reply line ("Yum! ...Nobody saw that, right?"), +25 bank gold, the sub moves on; and what a call without the quest id
 does (StoryAction("Choose", "Evil") = nothing, the film call). Captures + probes; Play stopped in finally.
-Usage: py tools/play_lunch_check.py   Out: docs/art/verification_2026-10-08/lunch_check/"""
+Usage: py tools/play_lunch_check.py pc|phone   Out: docs/art/verification_2026-10-08/lunch_check/<mode>/
+(after the reply-order fix: the answer is polled on screen for 3 s and photographed when it shows)"""
 import json
 import os
 import sys
@@ -15,7 +16,8 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import play_sound_check as psc  # noqa: E402
 from studio_mcp import Client  # noqa: E402
 
-OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-08", "lunch_check")
+MODE = sys.argv[1] if len(sys.argv) > 1 else "pc"  # pc | phone (749x361, back to default at the end)
+OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-08", "lunch_check", MODE)
 LOG = []
 psc.OUT, psc.LOG = OUT, LOG
 
@@ -90,7 +92,10 @@ def main():
         st = psc.text_of(c.call("get_studio_state", {}))
         if "Current Studio Mode: Edit" not in st:
             sys.exit("not in Edit: " + st)
-        psc.note("device before Play: " + psc.lua(c, psc.RESTORE, "Edit"))
+        if MODE == "phone":
+            psc.note("device: " + psc.lua(c, psc.SET_PHONE, "Edit"))
+        else:
+            psc.note("device before Play: " + psc.lua(c, psc.RESTORE, "Edit"))
         psc.note(psc.lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh on"', "Edit"))
         c.call("start_stop_play", {"is_start": True})
         for _ in range(40):  # the sound collector (the Devour check)
@@ -131,11 +136,24 @@ def main():
         # the real call
         psc.mark(c, "StoryAction(Lunch1, Choose, Evil) = [One bite!]")
         psc.note(psc.lua(c, psc.FIRE % ("StoryAction", '"Lunch1", "Choose", "Evil"', "StoryAction"), "Client"))
-        time.sleep(1.5)
+        # the answer comes 0.35 s after the step moved on (the reply-order fix): watch the screen for 3 s
+        seen_at, p1, t0 = None, {}, time.time()
+        while time.time() - t0 < 3.0:
+            p1 = probe(c, "watching for the answer")
+            if any("Yum" in t for t in p1.get("Texts", [])):
+                seen_at = time.time() - t0
+                psc.save(c, "02_answer_on_screen")
+                break
+            time.sleep(0.2)
+        psc.note(f"answer seen after {seen_at} s" if seen_at is not None else "answer never seen in 3 s")
+        time.sleep(1.0)
+        held = probe(c, "1 s later")
+        results["the answer is still on screen 1 s later"] = any("Yum" in t for t in held.get("Texts", []))
         after = lunch_state(c)
         psc.note("lunch after [One bite!]: " + after)
-        p1 = probe(c, "after [One bite!]")
-        psc.save(c, "02_after_bite")
+        if seen_at is None:
+            psc.save(c, "02_after_bite")
+        p1 = {"Texts": ["Yum"]} if seen_at is not None else p1
         bank1 = psc.attr(psc.lua(c, psc.STATE, "Server"), "BankGold")
         psc.note(f"bank gold {bank0} -> {bank1}")
         results["[One bite!] is recorded (Pick Bite) and the card moves on"] = after != before and "Bite" in after
