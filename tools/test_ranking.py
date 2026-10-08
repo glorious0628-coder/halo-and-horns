@@ -46,8 +46,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         + between(player, "function PlayerService.MarkActive(", "-- CR-M2: true once BindToClose started")
         + "\nreturn PlayerService\n")
     visuals = sources["VISUALS_SOURCE"]
+    # A23-75 VIP: updateNametag calls CROWN.Place (the table and its two functions come along)
+    crown_at = visuals.find("local CROWN = {")
+    crown_end = visuals.find("\n}\n", crown_at)
+    if crown_at < 0 or crown_end < 0:
+        raise ValueError("CharacterVisuals CROWN table missing; update the test extractor.")
     out["NAMETAG_SOURCE"] = (
         "local Config, Util = ...\nlocal NEUTRAL_ID = \"Neutral\"\nlocal NEUTRAL_EMBLEM = \"A\"\n"
+        + visuals[crown_at:crown_end + 3]
+        + function_block(visuals, "function CROWN.Part(") + function_block(visuals, "function CROWN.Place(")
         + "".join(function_block(visuals, f"local function {name}(") for name in
                   ("attrNum", "attrStr", "getFaction", "getClass", "factionColor", "esc", "nametagOffset", "updateNametag"))
         + "\nreturn updateNametag\n")

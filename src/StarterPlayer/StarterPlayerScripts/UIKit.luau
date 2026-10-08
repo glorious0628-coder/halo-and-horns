@@ -240,7 +240,8 @@ local NOTIFY = {
 	-- The capsule may be WidthMult x the notify column (at most ScreenFrac of the screen; it stays centred on the column):
 	-- phones have a narrow column and the socket + round end take room (UiSandbox 749x361: 2 lines cut a world toast)
 	ToastArt = { Part = "Toast", MinH = 40, MinHIcon = 46, PadY = 7, DiscX = 49 / 102, GlyphK = 0.42, IconK = 0.5,
-		CapL = 0.94, CapR = 0.42, Lines = 3, Slack = 10, -- Slack: du added to the measured words (rounding, the stroke)
+		CapL = 0.94, CapR = 0.42, Lines = 4, Slack = 10, -- Slack: du added to the measured words (rounding, the stroke)
+		-- Lines 4 (검수 2026-10-08): on a narrow window a 2-part notice needs 4 lines; the reward words must not be cut
 		WidthMult = 1.45, ScreenFrac = 0.62,
 		Glyph = { good = { "GlyphCheck", Color3.fromRGB(80, 220, 120) }, bad = { "GlyphExclaim", Color3.fromRGB(255, 96, 86) },
 			reward = { "Star", Color3.fromRGB(245, 197, 66) }, info = { "IconAnnounce" } } }, -- Star: white art, gold tint
