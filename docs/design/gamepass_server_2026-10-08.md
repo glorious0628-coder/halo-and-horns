@@ -87,6 +87,17 @@
 - `MonetizationService.OwnsLook(player, id)` / `LooksOwned(player)`
 - `MonetizationService.GrantLook(player, id)`: **A23-77 출석용**이에요. `Unlock`이 있는 치장만 되고, 새로 얻었을 때 true를 돌려줘요.
 
+## 7-1. 개발 3에게 (A23-77 출석·A23-79에서 2배를 쓸 때)
+
+- **골드:** `S.ProgressionService.AddBankGold(player, amount, "Attendance")`(또는 `AddCarriedGold`). 출처 `"Attendance"`는 `Config.PassBoost.GoldSources`에 이미 있어요.
+  - 2배는 함수 안에서 한 번만 곱해져요. **부르는 쪽에서 곱하지 마세요.**
+  - 돌려받은 값이 실제로 더한 양이에요. 알림에는 그 값을 쓰세요.
+  - 새 출처가 필요하면(번 것이면) `GoldSources`에 한 줄 더하면 돼요. 옮겨지는 골드는 넣지 마세요.
+- **경험치:** `S.ProgressionService.AddXP(player, amount)`. 경험치는 모두 2배 대상이에요. 돌려받은 값을 표시하세요. 세 번째 인자 `cap`을 주면 2배 뒤의 최대치예요.
+- **패스 확인이 따로 필요할 때:** `S.MonetizationService.HasPass(player, "XP2" | "Gold2" | "VIP")`(서버의 진짜 값)이에요. 배수 값은 `S.ProgressionService.PassMult(player, "XP2" | "Gold2")`(1 또는 2)예요. 플레이어 속성(`PassXP2` 등)은 화면용이라 서버 판단에 쓰지 마세요.
+- **출석 치장(14·50·100일):** `S.MonetizationService.GrantLook(player, "HaloSprout")` 등이에요(`Config.Looks`에서 `Unlock.Attendance`가 있는 id만). 진영에 맞는 쪽을 골라 주세요.
+- **Config / DataService:** 이 묶음의 표는 `Config.luau`의 `----- A23-75 game passes` 블록 하나(`GamePasses`·`PassBoost`·`Looks`·`LookOrder`·`SanitizeLooks`)와 `Defaults`의 `Looks`·`PassSeen` 두 줄, `DataService.fillDefaults` 끝의 `SanitizeLooks` 한 줄이에요. 출석 표·필드는 따로 블록으로 두면 겹치지 않아요.
+
 ## 8. Studio 테스트 키 (DebugCommand, Studio 전용)
 
 - `DebugCommand:Invoke("Player1", "Pass", "XP2:on")`: on / off / clear(Roblox 답으로 되돌림)이에요.
