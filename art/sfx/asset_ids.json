@@ -67,10 +67,10 @@
     "QuestTab": "rbxassetid://80849245770259",
     "StampPress": "rbxassetid://76569480136584",
     "Chest7Open": "rbxassetid://137266411071976",
-    "WelcomeBack": "rbxassetid://86644525324244"
+    "WelcomeBack": "rbxassetid://86644525324244",
+    "DiaryPage": "rbxassetid://75472701527108"
   },
   "pending": [
-    "DiaryPage",
     "CandyPlop",
     "KingHelpHome",
     "KingTickleCoins",
