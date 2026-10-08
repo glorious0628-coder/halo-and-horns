@@ -1292,7 +1292,8 @@ end
 -- addendum U7: avatar headshot thumbnail id (no upload needed); userId defaults to the local player
 function UIKit.HeadshotImage(userId)
 	local id = tonumber(userId) or (LocalPlayer and LocalPlayer.UserId) or 0
-	return "rbxthumb://type=AvatarHeadShot&id=" .. tostring(math.floor(id)) .. "&w=150&h=150"
+	-- 검수 2026-10-08: the bust (head + shoulders) like the 3D portrait, not the face-filling head shot
+	return "rbxthumb://type=AvatarBust&id=" .. tostring(math.floor(id)) .. "&w=150&h=150"
 end
 
 -- ImageLabel for a part, or nil when the part is missing (the caller falls back). Frames (parts with Slice) use

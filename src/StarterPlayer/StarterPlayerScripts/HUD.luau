@@ -2451,8 +2451,10 @@ function L.PortraitRebuild(state, revision)
 	copy.Parent = state.World
 	state.View:SetAttribute("CharacterName", character.Name)
 	local up = root.CFrame.UpVector
-	local focus = head.Position - up * head.Size.Y * 0.04
-	local span = math.max(head.Size.X, head.Size.Y) * 0.85
+	-- 검수 2026-10-08 (user: the face filled the whole ring): a bust - the head and the shoulders. The frame's centre
+	-- drops PortraitDrop head heights below the head's middle and it spans PortraitSpan head heights
+	local focus = head.Position - up * head.Size.Y * L.PortraitDrop
+	local span = math.max(head.Size.X, head.Size.Y) * L.PortraitSpan
 	local distance = span / (2 * math.tan(math.rad(state.Camera.FieldOfView / 2))) + head.Size.Z * 0.5
 	state.Camera.CFrame = CFrame.lookAt(focus + root.CFrame.LookVector * distance, focus, up)
 	state.Camera.Focus = CFrame.new(focus)
@@ -4487,6 +4489,7 @@ function L.LayoutTiles(tr)
 	end
 end
 L.TileLabelMinPx = 36
+L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
 applyLayout = function()
