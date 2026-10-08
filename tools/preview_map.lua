@@ -1047,13 +1047,13 @@ local atm = Lighting:FindFirstChildOfClass("Atmosphere")
 if atm then atm:Destroy() end -- A9-3
 -- Config.Sky.Neutral·WarService와 같은 값(2026-10-08 깊이: 낮은 해, 어두운 그늘, 가까운 안개, 또렷한 그림자)
 Lighting.ClockTime = 15.3
-Lighting.Brightness = 2.2
+Lighting.Brightness = 2
 Lighting.Ambient = RGB(72, 76, 86)
-Lighting.OutdoorAmbient = RGB(110, 120, 135)
+Lighting.OutdoorAmbient = RGB(95, 104, 118)
 Lighting.FogColor = RGB(150, 205, 228)
 Lighting.FogStart = 150
 Lighting.FogEnd = 950
-Lighting.ExposureCompensation = -0.05
+Lighting.ExposureCompensation = -0.25
 pcall(function() Lighting.EnvironmentDiffuseScale = 0.5 end)
 pcall(function() Lighting.EnvironmentSpecularScale = 0.6 end)
 pcall(function() Lighting.ShadowSoftness = 0.15 end)

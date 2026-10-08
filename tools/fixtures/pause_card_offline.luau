@@ -139,7 +139,10 @@ local env = setmetatable({
 	UDim2 = { new = function(...) return { ... } end, fromScale = function(...) return { ... } end,
 		fromOffset = function(x, y) return { "offset", x, y } end },
 	os = { clock = function() return NOW end, time = os.time },
-	task = { spawn = function(fn, ...) fn(...) end, defer = function(fn) table.insert(DEFERRED, fn) end },
+	task = { spawn = function(fn, ...) fn(...) end, defer = function(fn, ...)
+		local a = table.pack(...)
+		table.insert(DEFERRED, function() fn(table.unpack(a, 1, a.n)) end)
+	end },
 	require = function(m)
 		if m.__module == "Net" then return { Get = function(name) if name == "Fx" then return { OnClientEvent = FX } end return {} end } end
 		return { Signal = { new = signal }, Warn = function() end }
@@ -321,6 +324,49 @@ Card.Show("Tip", { Text = "Hello" })
 check("a tip without a window: only [OK]", BUTTONS.OK ~= nil and BUTTONS.Go == nil)
 click("OK")
 check("[OK] on a tip opens nothing", #OPENED == 1)
+
+-- 6) 게임성 개발 3's contract (return_server_2026-10-08.md): the daily card's Tomorrow line + OptIn, [Go] counted
+reset()
+local CB = {}
+Cdouble.ComeBack = { Metric = function(id) table.insert(CB, "Metric:" .. tostring(id)) return true end,
+	OptIn = function(why) table.insert(CB, "OptIn:" .. tostring(why)) return true end }
+FX:Fire("PauseCard", { Why = "Daily", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })
+check("the daily card: the next goal, then tomorrow's line", text("Body") == "Next time: Hunt and get stronger!\nTomorrow: New dailies",
+	text("Body"))
+check("no opt-in moment while the card is open", #CB == 0, table.concat(CB, ","))
+click("OK")
+check("the card closed -> the opt-in moment 'Daily', once", #CB == 1 and CB[1] == "OptIn:Daily" and not Card.IsOpen(), table.concat(CB, ","))
+table.clear(CB)
+FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", Tomorrow = "King Diary page 3", OptIn = false })
+check("the King Diary page as tomorrow's line", text("Body") == "Next time: Goal\nTomorrow: King Diary page 3", text("Body"))
+click("Keep")
+check("OptIn false: no moment", #CB == 0, table.concat(CB, ","))
+FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", OptIn = "yes" })
+card().Activated:Fire()
+flush()
+check("OptIn must be true (a string is not)", #CB == 0, table.concat(CB, ","))
+FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "<b>" .. string.rep("z", 50) })
+check("tomorrow's line cleaned and cut at 40", text("Body") == "Next time: Goal\nTomorrow: b" .. string.rep("z", 39) .. "…", text("Body"))
+click("OK")
+FX:Fire("PauseCard", { Why = "War", Next = "Goal", Tomorrow = "   " })
+check("an empty tomorrow line adds nothing", text("Body") == "Next time: Goal", text("Body"))
+click("OK")
+FX:Fire("WelcomeBack", { Next = "Goal", Zone = "SlimeMeadow" })
+click("Go")
+check("[Go] on welcome back counts WelcomeBackGo", #CB == 1 and CB[1] == "Metric:WelcomeBackGo", table.concat(CB, ","))
+FX:Fire("WelcomeBack", { Next = "Goal", Zone = "SlimeMeadow" })
+click("OK")
+Card.Show("Tip", { Text = "Hi", Go = { Text = "Open", Window = "Settings" } })
+click("Go")
+check("[OK] on welcome back and a tip's [Go] count nothing", #CB == 1, table.concat(CB, ","))
+-- Waiting / Busy (ComeBack's opt-in waits on them)
+OPEN.Panels = true
+Card.Show("Pause", { Next = "x" })
+check("a card waits behind a window: Waiting and Busy say so", Card.Waiting() == true and Card.Busy() == true and not Card.IsOpen())
+OPEN.Panels = false
+Card.Tick()
+check("the window closed: the card opens, nothing waits", Card.IsOpen() and Card.Waiting() == false and Card.Busy() == false)
+click("OK")
 
 print(("PAUSE_CARD_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("PAUSE_CARD_OFFLINE_OK") end

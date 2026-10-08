@@ -32,9 +32,12 @@ ME.Character = CHAR
 function ME:IsFriendsWith(id) return FRIENDS[id] == true end
 local PLAYERS = { LocalPlayer = ME, PlayerAdded = signal() }
 ME.Parent = PLAYERS
-local SOCIAL = { Can = true, Prompts = {} }
+local SOCIAL = { Can = true, Prompts = {}, GameInvitePromptClosed = signal() }
 function SOCIAL:CanSendGameInviteAsync(p) return self.Can end
-function SOCIAL:PromptGameInvite(p, options) table.insert(self.Prompts, { Player = p, Options = options }) end
+function SOCIAL:PromptGameInvite(p, options)
+	if self.Fail then error("prompt failed") end
+	table.insert(self.Prompts, { Player = p, Options = options })
+end
 local FIRED = {}
 local REMOTE = { __kind = "Instance", ClassName = "RemoteEvent" }
 function REMOTE:IsA(c) return c == "RemoteEvent" or c == "Instance" end
@@ -66,14 +69,18 @@ local env = setmetatable({
 local fn = assert(loadstring(INVITE_SOURCE, "=Invite"))
 setfenv(fn, env)
 local Invite = fn()
+local METRICS = {}
 local C = { UIKit = { Toast = function(text, kind, secs) table.insert(TOASTS, { text, kind, secs }) end },
-	Panels = { CurrentId = function() return WINDOW.Id end } }
+	Panels = { CurrentId = function() return WINDOW.Id end },
+	ComeBack = { Metric = function(id, arg) table.insert(METRICS, { id, arg }) return true end } }
+local function lastMetric() local m = METRICS[#METRICS] return m and (tostring(m[1]) .. ":" .. tostring(m[2])) or "none" end
 Invite.Init(C)
 Invite.Start()
 
 -- CanShow / Prompt
 check("a calm moment: the invite button may show", Invite.CanShow() == true)
 check("Prompt opens Roblox's invite window", Invite.Prompt("Menu") == true and #SOCIAL.Prompts == 1, #SOCIAL.Prompts)
+check("an opened invite window counts (InvitePrompt + its source)", #METRICS == 1 and lastMetric() == "InvitePrompt:Menu", lastMetric())
 local opts = SOCIAL.Prompts[1] and SOCIAL.Prompts[1].Options
 check("the LaunchData is my UserId (the server finds the inviter)", opts and opts.LaunchData == "11" and opts.ClassName == "ExperienceInviteOptions",
 	opts and opts.LaunchData)
@@ -81,6 +88,7 @@ check("the invite message is short English", opts and type(opts.PromptMessage) =
 	opts and opts.PromptMessage)
 SOCIAL.Can = false
 check("Roblox says no invites (CanSendGameInviteAsync false): nothing opens", Invite.Prompt("Menu") == false and #SOCIAL.Prompts == 1)
+check("... and nothing is counted", #METRICS == 1, lastMetric())
 SOCIAL.Can = true
 HUM.Health = 0
 check("knocked out: no invite button (A23-79)", Invite.CanShow() == false and Invite.Prompt("Tab") == false and #SOCIAL.Prompts == 1)
@@ -135,6 +143,29 @@ check("with the server's remote: GoTo asks it with the friend's UserId", Invite.
 friend.Parent = nil
 check("a friend who left: nothing sent", Invite.GoTo(friend) == false and #FIRED == 1)
 check("not a player: nothing", Invite.GoTo({}) == false and Invite.GoTo(nil) == false)
+
+-- beta metrics (A23-79 Social funnel): the button seen, the window closed with friends picked
+METRICS = {}
+check("a button shown: InviteSeen with its source", Invite.Seen("Menu") == true and lastMetric() == "InviteSeen:Menu", lastMetric())
+check("the same source again this session: not counted twice", Invite.Seen("Menu") == false and #METRICS == 1)
+check("another source counts once too", Invite.Seen("PlayerList") == true and lastMetric() == "InviteSeen:PlayerList" and #METRICS == 2)
+check("no source: nothing", Invite.Seen(nil) == false and #METRICS == 2)
+METRICS = {}
+SOCIAL.GameInvitePromptClosed:Fire(ME, { 101, 102, 103 })
+check("the invite window closed with 3 friends: InviteSent 3", lastMetric() == "InviteSent:3", lastMetric())
+SOCIAL.GameInvitePromptClosed:Fire(ME, {})
+check("closed with nobody picked: nothing", #METRICS == 1, lastMetric())
+SOCIAL.GameInvitePromptClosed:Fire(friend, { 101 })
+check("someone else's window: nothing", #METRICS == 1, lastMetric())
+local many = {}
+for i = 1, 70 do many[i] = i end
+check("70 friends picked: counted as 50 (the server's 1..50)", Invite.Closed(ME, many) == 50 and lastMetric() == "InviteSent:50", lastMetric())
+METRICS = {}
+SOCIAL.Prompts = {}
+check("a prompt without a source opens but counts nothing", Invite.Prompt(nil) == true and #SOCIAL.Prompts == 1 and #METRICS == 0, lastMetric())
+SOCIAL.Fail = true
+check("Roblox's window failed to open: not counted", Invite.Prompt("Menu") == false and #METRICS == 0, lastMetric())
+SOCIAL.Fail = false
 
 print(("INVITE_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("INVITE_OFFLINE_OK") end

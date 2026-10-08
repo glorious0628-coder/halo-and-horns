@@ -252,10 +252,10 @@ local function buildMain(kit, frame)
 	-- A23-65: Camera Follow (turns behind me while I walk) / Free; one button switches
 	local _, hc = row(kit, frame, ST.CamEn or ST.Cam)
 	local cb = button(kit, hc, "", nil, function()
-		settingsSet("Cam", settingsGet("Cam", "Follow") == "Free" and "Follow" or "Free")
+		settingsSet("Cam", settingsGet("Cam", "Free") == "Free" and "Follow" or "Free")
 	end)
 	table.insert(refresh, function()
-		local v = settingsGet("Cam", "Follow") == "Free" and "Free" or "Follow"
+		local v = settingsGet("Cam", "Free") == "Free" and "Free" or "Follow"
 		cb.Text = ST.Options[v .. "En"] or ST.Options[v] or v
 	end)
 

@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "checks": 10,
+  "failedChecks": [],
+  "mutations": {
+    "total": 7,
+    "applied": 7,
+    "caught": 7,
+    "results": [
+      {
+        "mutation": "the Warrior disc back",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Warrior swing (mine) draws no floor disc :: 1",
+          "CHECK_FAIL another player's Warrior swing draws none :: 1"
+        ]
+      },
+      {
+        "mutation": "others' punches draw",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL another player's punch: none :: "
+        ]
+      },
+      {
+        "mutation": "others' magic draws",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL another player's magic: none :: "
+        ]
+      },
+      {
+        "mutation": "a loud mark",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the mark is faint and quick (transparency >= 0.75, gone within 0.25 s, thin) :: 0.45 0.14 0.06"
+        ]
+      },
+      {
+        "mutation": "a slow mark",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the mark is faint and quick (transparency >= 0.75, gone within 0.25 s, thin) :: 0.78 0.3 0.06"
+        ]
+      },
+      {
+        "mutation": "a big mark",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL my magic hit: one small mark at the target :: 4",
+          "CHECK_FAIL my punch hit: one small mark at the target :: 4"
+        ]
+      },
+      {
+        "mutation": "a thick disc",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the mark is faint and quick (transparency >= 0.75, gone within 0.25 s, thin) :: 0.78 0.14 0.2"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d"
+  },
+  "studioCalls": 0,
+  "limitations": "The handler with doubles: whether the hit still feels clear in play (slash / sparks / numbers) and that no floor oval shows on the hills is a Studio Play photo / video check (메인 반영, 촬영 편집)."
+}

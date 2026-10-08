@@ -55,7 +55,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL 20% HP: the edges throb slowly between 0.55 and 0.85 over 1.1 s :: table: 0x000001278cb570d0",
+          "CHECK_FAIL 20% HP: the edges throb slowly between 0.55 and 0.85 over 1.1 s :: table: 0x0000029921513080",
           "CHECK_FAIL shake off at 20% HP: a steady faint edge (0.82), no throb :: 1"
         ]
       },
@@ -94,7 +94,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "f7e50b181901b75109f00c32215e6b245f9b9558a6c26fdc40857be943952641"
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d"
   },
   "fixtureSHA256": "5ed49d20bfb8218252229ca5664a5a194e4a6d592471af53b3feb39fe77ef7ba",
   "studioCalls": 0,

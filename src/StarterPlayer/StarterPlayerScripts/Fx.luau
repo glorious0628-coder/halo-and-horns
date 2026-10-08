@@ -203,6 +203,11 @@ local MOTION = {
 	SLASH_SIZE = 5.5, SLASH_TIME = 0.18, SLASH_DIST = 2.6, SLASH_ROT0 = -35, SLASH_ROT1 = 15,
 	SLASH_FROM = -45, SLASH_TO = 115, SLASH_PLANE_TILT = 30, -- fallback Trail sweep (degrees around the look axis)
 	SLASH_VFX_AT = 0.17, -- approved wind-up -> diagonal cut
+	-- 검수 10/08 (촬영 편집 + the user's HUD photo: a yellow floor oval after every attack looked like a glitch): a basic
+	-- attack draws no floor disc around the attacker any more (the slash / arrow / orb and the hit sparks show the hit; a
+	-- flat disc half sank into the new hills). Only MY punch / magic hit keeps a small, faint, quick mark at the target;
+	-- other players' basic attacks draw none. Skills keep their area rings (the area matters there).
+	HIT_RING = { Grow = 0.08, Fade = 0.14, Transparency = 0.78, Thickness = 0.06, Radius = 1.3 },
 	SLASH_CONTACT = 0.23,
 	SMASH_VFX_AT = 0.17, SMASH_AT = 0.24, -- Warrior release: big slash, then the shockwave impact
 	CAST_DELAY = 0.24, -- left-hand gather -> staff-tip cast
@@ -3537,7 +3542,6 @@ handlers.Swing = function(data)
 	end
 	local classId = asStr(data.Class, "Warrior")
 	local color = factionColor(data.Faction)
-	local radius = math.clamp(asNum(data.Radius, 0), 0, 60)
 	local targets = validTargets(data.Targets)
 	local hits = data.Hits
 	-- my manual hits: hit-stop / camera kick; auto-combat hits stay quiet (A23-1: no shake, no hit-stop)
@@ -3557,8 +3561,7 @@ handlers.Swing = function(data)
 		-- PET-3: the tamer's pet runs to the targets and bumps them at the contact time (no pet drawn: the punch)
 		if style == "PetHeadbutt" then MOTION.PetMove("Attack", data, #targets > 0 and targets or { pos }, showAt) end
 		Feel.after(ctx, showAt, function()
-			local target = targets[1] or pos
-			ring(target, 1.2, color, { Grow = 0.12, Fade = 0.2, Transparency = own and 0.45 or 0.65 })
+			if own and targets[1] then ring(targets[1], MOTION.HIT_RING.Radius, color, MOTION.HIT_RING) end
 			showHits(hits, own, false, feel)
 		end)
 	elseif classId == "Mage" then
@@ -3567,11 +3570,9 @@ handlers.Swing = function(data)
 			local target = targets[1]
 			if target and origin and (target - origin).Magnitude > 0.05 then orb(origin, target, flight, color) end
 			Feel.after(ctx, math.max(0, showAt - launch), function()
-				if target then
-					ring(target, math.max(radius, 2), color, { Grow = 0.15, Fade = 0.3, Transparency = own and 0.4 or 0.6 })
-					if own then Feel.magicBurst(target + Vector3.new(0, 1, 0), false) end
-				else
-					ring(origin or pos, 2, color, { Grow = 0.1, Fade = 0.2, Transparency = 0.6 })
+				if target and own then
+					ring(target, MOTION.HIT_RING.Radius, color, MOTION.HIT_RING)
+					Feel.magicBurst(target + Vector3.new(0, 1, 0), false)
 				end
 				showHits(hits, own, false, feel)
 			end)
@@ -3597,7 +3598,6 @@ handlers.Swing = function(data)
 			end)
 		end
 		Feel.after(ctx, showAt, function()
-			ring(pos, math.max(radius, 1), color, { Grow = 0.15, Fade = 0.25, Transparency = own and 0.45 or 0.65 })
 			showHits(hits, own, false, feel)
 		end)
 	end

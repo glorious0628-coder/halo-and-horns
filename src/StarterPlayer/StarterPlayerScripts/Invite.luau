@@ -6,8 +6,13 @@
 -- 개발's layout) show only while it is true. A friend of mine joining this server fires Invite.FriendJoined(player) and
 -- shows one line; Invite.GoTo(player) asks the server to take me there (remote GoToFriend, 게임성 개발 2 - the server keeps
 -- the sprout protection and the PvP rules; nothing happens until that remote exists). Presentation + the prompt only.
+-- Beta metrics (A23-79, beta_metrics_server_2026-10-08.md; ComeBack.Metric): Invite.Seen(source) when an [Invite a friend]
+-- button shows (once a session per source; the buttons' owner calls it), "InvitePrompt" when Roblox's window opened,
+-- "InviteSent" = how many friends were picked when it closed (SocialService.GameInvitePromptClosed, 1..50). source =
+-- one of Config.Analytics.InviteSources ("Menu" / "PlayerList" / "GooseWin" / "WarWin").
 -- Public API: Invite.Init(C), Invite.Start(), Invite.CanShow() -> bool, Invite.Prompt(source?) -> bool (yields:
--- call it from a button's own thread), Invite.GoTo(player) -> bool, Invite.FriendJoined (Util.Signal: player),
+-- call it from a button's own thread), Invite.Seen(source) -> bool, Invite.Closed(player, recipientIds) -> the count sent
+-- or nil, Invite.GoTo(player) -> bool, Invite.FriendJoined (Util.Signal: player),
 -- Invite.OnFx(kind, data) (the failed-scroll clock; the offline test drives it), Invite.DefaultLine (true: this module
 -- shows the plain 'Your friend … joined!' line; 이미지 개발's friend card sets it false and draws its own from FriendJoined).
 local Players = game:GetService("Players")
@@ -32,7 +37,8 @@ local T = {
 	-- game text: English only (A23-48), short and easy
 	Text = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" },
 }
-local S = { FailAt = -math.huge, Seen = {} } -- Seen[userId] = true: that friend's line was shown this session
+local S = { FailAt = -math.huge, Seen = {}, Shown = {} } -- Seen[userId] = that friend's line was shown this session;
+-- Shown[source] = that source's button was counted this session
 
 Invite.FriendJoined = Util.Signal.new()
 Invite.DefaultLine = true -- false once a friend card (이미지 개발) draws FriendJoined itself: never two lines
@@ -54,6 +60,28 @@ function Invite.CanShow()
 	return true
 end
 
+local function metric(id, arg)
+	local cb = C and C.ComeBack
+	if type(cb) ~= "table" or type(cb.Metric) ~= "function" then return false end
+	local ok, sent = pcall(cb.Metric, id, arg)
+	return ok and sent == true
+end
+
+-- an [Invite a friend] button is on screen (counted once a session per source)
+function Invite.Seen(source)
+	if type(source) ~= "string" or S.Shown[source] then return false end
+	S.Shown[source] = true
+	return metric("InviteSeen", source)
+end
+
+-- Roblox's invite window closed (SocialService.GameInvitePromptClosed): friends picked -> "InviteSent"
+function Invite.Closed(player, recipientIds)
+	if player ~= LocalPlayer or type(recipientIds) ~= "table" or #recipientIds < 1 then return nil end
+	local n = math.min(#recipientIds, 50)
+	metric("InviteSent", n)
+	return n
+end
+
 -- Roblox's invite window, my UserId as the LaunchData; false when it may not show (CanShow, CanSendGameInviteAsync)
 function Invite.Prompt(source)
 	if not Invite.CanShow() then return false end
@@ -66,6 +94,7 @@ function Invite.Prompt(source)
 		SocialService:PromptGameInvite(LocalPlayer, options)
 	end)
 	if not ok then Util.Warn(TAG, "invite (" .. tostring(source) .. ") failed: " .. tostring(err)) end
+	if ok and source ~= nil then metric("InvitePrompt", source) end
 	return ok
 end
 
@@ -104,6 +133,11 @@ end
 function Invite.Start()
 	if not LocalPlayer then return end
 	Players.PlayerAdded:Connect(function(player) task.spawn(onPlayerAdded, player) end)
+	pcall(function()
+		SocialService.GameInvitePromptClosed:Connect(function(player, recipientIds)
+			pcall(Invite.Closed, player, recipientIds)
+		end)
+	end)
 	task.spawn(function()
 		local ok, err = pcall(function()
 			Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
