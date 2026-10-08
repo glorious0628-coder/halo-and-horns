@@ -66,7 +66,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "f7e50b181901b75109f00c32215e6b245f9b9558a6c26fdc40857be943952641"
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d"
   },
   "studioCalls": 0,
   "limitations": "The extracted function and the sticker code's text only: the look on the real blank bubble art is a Studio photo once 이미지 개발 sends its id and TextRect."

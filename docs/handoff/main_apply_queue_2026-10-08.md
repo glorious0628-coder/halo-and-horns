@@ -86,6 +86,10 @@ sync 뒤 내 시험 Play(fresh 저장), PC·폰 사진. 서버 신호는 Server 
   [Invite a friend] 버튼 = 보일 때 `C.Invite.Seen(source)`, 누를 때 `C.Invite.Prompt(source)`(source = Menu / PlayerList / GooseWin / WarWin);
   일기 메뉴 칸은 아이콘 그림이 오면(지금은 퀘스트 창 Event 탭과 새 쪽 카드로 엶).
 
+## 5번째 묶음 (노란 바닥 원 FxRing 줄이기, 검수 10/08 촬영 편집 관찰)
+- sync 뒤 내 시험 Play PC·폰: 빛 진영 전사로 초원 언덕에서 슬라임을 10번쯤 때리기 → 공격자 발밑에 노란 원판이 더는 안 생김(베기 자국·맞은 불꽃·숫자는 그대로). 마법사·주먹(펫 박치기)은 맞은 몬스터 밑에 작고 옅은 표시만 0.2초. 다른 플레이어의 기본 공격엔 원 없음. 스킬(Z) 범위 원은 그대로. 사진: 언덕 위 전사 공격 직후 1장, 마법사 1장.
+- 시험: tools/test_hit_ring.py(10·변이 7/7).
+
 ## 하지 않을 것
 - tools/worldkit/meadow_terrain.luau, meadow_dress.luau = 검수 도구(검수가 올림).
 - 전사 도발(X, Lv25, 베타 동안 꺼짐)·두 플레이어 붙어 서기 = Play에서 안 봄(오프라인 시험 monster_spacing 몫, 검수 OK).
