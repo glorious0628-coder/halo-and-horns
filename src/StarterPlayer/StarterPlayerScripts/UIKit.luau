@@ -1440,13 +1440,22 @@ function UIKit.MeasureRenderedText(text, size, fontOrFontFace, scale, width)
 	return height, measuredWidth, exact, pixelSize
 end
 
+-- UIKit.FitText passes: a label runs at most one pass a frame (Frame counts Heartbeats; a 2nd request in the same frame
+-- waits for the next one) and at most BurstPasses follow-ups within BurstSeconds (the next real change starts a new
+-- burst). Main Play 2026-10-08: 9x "Maximum re-entrancy depth (80) exceeded calling task.defer" - each pass changed
+-- TextSize, whose deferred signals deferred the next pass from inside the last one, 80 deep in one frame
+local FIT = { BurstPasses = 24, BurstSeconds = 1, Frame = 0 }
+game:GetService("RunService").Heartbeat:Connect(function() FIT.Frame += 1 end)
+function FIT.NextFrame(fn) task.delay(0, fn) end
+
 -- Designated picker labels only. Start at the layout's maximum and shrink from rendered TextBounds. A label
 -- may request whole FontFace metrics too: clipped/wrapped TextBounds can describe just the visible prefix.
 -- Only successful font-service measurements participate; fallback estimates never pin a label to its minimum.
 function UIKit.FitText(label, minSize, maxSize)
 	local fit = Art.TextFits[label]
 	if not fit then
-		fit = { Connections = {}, Queued = false, Running = false, Pending = false, Reset = false, Dead = false, Version = 0 }
+		fit = { Connections = {}, Queued = false, Running = false, Pending = false, Reset = false, Dead = false, Version = 0,
+			Burst = 0, BurstAt = -math.huge, Settle = false }
 		Art.TextFits[label] = fit
 		fit.Request = function(reset)
 			if fit.Dead then return end
@@ -1454,10 +1463,29 @@ function UIKit.FitText(label, minSize, maxSize)
 			if reset then fit.Version += 1 end
 			if fit.Queued or fit.Running then fit.Pending = true; return end
 			fit.Queued = true
-			task.defer(function()
+			-- this frame's pass already ran: the next one waits a frame (task.delay 0) instead of deferring again
+			local schedule = fit.PassFrame == FIT.Frame and FIT.NextFrame or task.defer
+			schedule(function()
 				fit.Queued = false
 				if fit.Dead or not label.Parent then return end
+				-- at most FIT.BurstPasses passes in FIT.BurstSeconds (whoever asks: a follow-up or a signal), then one more
+				-- when the burst is over, so a label whose size and box keep changing each other cannot run every frame and
+				-- is never left at a reset's maximum
+				local now = os.clock()
+				if now - fit.BurstAt > FIT.BurstSeconds then fit.BurstAt, fit.Burst = now, 0 end
+				fit.Burst += 1
+				if fit.Burst > FIT.BurstPasses then
+					if not fit.Settle then
+						fit.Settle = true
+						task.delay(FIT.BurstSeconds, function()
+							fit.Settle = false
+							fit.Request(false)
+						end)
+					end
+					return
+				end
 				fit.Running = true
+				fit.PassFrame = FIT.Frame
 				pcall(function()
 					local box = label.AbsoluteSize
 					if box.X <= 0 or box.Y <= 0 then return end
@@ -1498,6 +1526,7 @@ function UIKit.FitText(label, minSize, maxSize)
 					end
 				end)
 				fit.Running = false
+				-- the follow-up goes to the next frame (Request sees PassFrame == FIT.Frame)
 				if not fit.Dead and (fit.Pending or fit.Reset) then fit.Pending = false; fit.Request(false) end
 			end)
 		end
