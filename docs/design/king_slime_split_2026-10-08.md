@@ -62,7 +62,7 @@
 |---|---|---|
 | 1 | Config | `MonsterTypes.SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true, Shape = "Slime", Scale = 3.2, ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime", … }`. `MonsterTypeOrder`에서 BigSlime 다음에 넣어요 |
 | 2 | 체력·보상(제안, 구현 때 호박 대왕 계산 방식으로 다시) | 초원은 Lv1~10이고 무기는 1~2단계예요. 혼자면 약 4분, 셋이면 약 1분 20초가 되게 **HP 2500 안팎**이에요. 공격 6(왕자의 1.5배, 느림), XP 120 / Gold 60 (Lv8 아래는 한 레벨치까지, A23-27). 드롭 표는 `Loot.Tables.SlimeKing`(SlimeCore ×2, Jelly ×4, 70% 주문서는 왕자보다 높은 확률) |
-| 3 | 나오는 법 | **한 서버에 하나만** 있어요. 초원에 사람이 있으면 **8분마다** 나오고, 5분 머문 뒤 떠나요(제안). 자리는 King Slime Hill 꼭대기예요(`ServerStorage.MeadowTerrainStore`의 `HillTop` 속성, 없으면 Config 기본 (430, 14.6, −170)). `MonsterService.SpawnEvent`/`RemoveEvent`는 호박 대왕 것을 그대로 써요. 시계는 새 `SlimeKingService`가 맡거나 HalloweenService의 보스 시계를 시즌 없이 나눠 써요 |
+| 3 | 나오는 법 | **한 서버에 하나만** 있어요. 초원에 사람이 있으면 **8분마다** 나오고, 5분 머문 뒤 떠나요(제안). **자리는 §3-1이에요**(사용자 결정: 언덕 위 왕관 모양 돌 사당 앞 공터). `MonsterService.SpawnEvent`/`RemoveEvent`는 호박 대왕 것을 그대로 써요. 시계는 새 `SlimeKingService`가 맡거나 HalloweenService의 보스 시계를 시즌 없이 나눠 써요 |
 | 4 | 알림 | 나올 때 초원에 있는 사람에게 "The King Slime is on the hill!"을 보내요(서버 전체가 아니라 초원만). 잡으면 "The King Slime hopped home!"이에요. `GameState SlimeKingActive / SlimeKingNextAt / SlimeKingEndsAt`(호박 대왕과 같은 틀) |
 | 5 | 아이 안전 | 새싹 보호를 그대로 지켜요. 보스 공격은 느리게 하고 미리 보이게 해요. 쓰러져도 마을로 돌아가는 규칙은 그대로예요. 자동 전투로도 기여할 수 있고 카드만 수동이에요 |
 | 6 | 마무리 카드 | `Config.Finisher.Kinds = { SlimeKing = true }`. 기여자(120초 안)이면서 수동 공격을 1번 이상 한 사람만 받아요 |
@@ -70,9 +70,25 @@
 | 8 | 측정 | 커스텀 이벤트 1개, `SlimeKingDefeat`(값 = 기여자 수, 칸1 = 진영 구성 Halo/Horns/Mixed)예요. 100개 이름 예산 안이에요 | 
 | 9 | 퀘스트(나중, 선택) | 개발 3에게: Lv5 이상 선택 퀘스트 1개를 만들어요. 예: "Help beat the King Slime 1/1", 기여만 해도 돼요. 메인·일일·S0에는 넣지 않아요 |
 
+### 3-1. 등장 자리 (사용자 2026-10-08: "저기 왕관처럼 있는 돌 성 앞에서 나오게 해 줘")
+
+새 King Slime은 King Slime Hill 꼭대기, 왕관 모양 돌 사당 **앞 공터**에서 나와요.
+사당 3D는 이미지 생성 1이 만들고, 검수 도구가 그 자리에 놓아요.
+
+| 순서 | 자리 | 어디서 읽나 |
+|---|---|---|
+| 1 | 사당 모델의 속성 `KingSpawn`(Vector3, 사당 앞 6~8스터드) | `workspace.Map` 아래에서 `KingSpawn` 속성을 가진 첫 인스턴스를 서버 시작 때와 스폰마다 찾아요. 사당을 다시 놓아도 따라가요 |
+| 2 (사당이 오기 전) | `ServerStorage.MeadowTerrainStore`의 `HillTop`에서 **길 쪽으로 8스터드** | 길 쪽 = 같은 store의 `HillPathFoot` 방향(수평)이에요. 언덕 왕관 돌의 틈도 이쪽을 향해요(`meadow_dress.luau`) |
+| 3 (둘 다 없을 때) | Config 기본값: `M_KingHill` (430, −170) 꼭대기 + 길 쪽 8 | `Config.SlimeKing.Spawn`(새 블록) |
+
+- 나올 때 바닥을 레이로 다시 찾아요. 호박 대왕의 `Near`/`Radius` 틀과 같고, 반지름은 2스터드라 사당 안이나 돌 위에 서지 않아요.
+- 사당·왕관 돌은 몬스터가 들어가지 않는 단단한 장식이에요(CR-L14 목록에 사당 모델 이름 한 줄 추가).
+- 잡으면 그 자리에서 퐁 사라져요. 떠날 때(시간 끝)는 사당 쪽으로 뒷걸음질 없이 그 자리에서 흐려져요(호박 대왕과 같아요).
+- 검수 도구에 부탁해요: 사당을 놓을 때 `KingSpawn` 속성을 사당 모델(Model)에 Vector3 월드 좌표로 써 주세요. 이름이 정해지면 문서에 적을게요.
+
 ## 4. 몫 나누기
 - **개발 2(서버):**
-  - §1 #1·#13·#24, §3 #1~#8(Config, 스폰 시계, 알림 키, GameState, 드롭 표, 카드 옮기기)
+  - §1 #1·#13·#24, §3 #1~#8, §3-1 등장 자리(KingSpawn → HillTop+8 → Config)(Config, 스폰 시계, 알림 키, GameState, 드롭 표, 카드 옮기기)
   - 시험 + 변이
 - **개발 3(퀘스트 데이터):**
   - §2의 글 바꾸기(목표 종류는 그대로)
@@ -84,7 +100,8 @@
   - 마무리 카드 화면(이미 보냄)
 - **이미지 생성 2 → 이미지 개발:** 새 King 아이콘·말풍선·3D(Tripo), 왕자 왕관 크기 정하기(§1 #17·#18)
 - **소리 만들기:** 새 King 등장·쓰러짐 소리(선택)
-- **검수:** 문구(왕자·왕 말, 알림), 숫자 확정(§3 #2·#3), News 한 줄
+- **검수:** 문구(왕자·왕 말, 알림), 숫자 확정(§3 #2·#3), News 한 줄, 사당을 놓을 때 `KingSpawn` 속성 쓰기(§3-1)
+- **이미지 생성 1:** 왕관 모양 돌 사당 3D(사당 앞 공터 6~8스터드를 비워 두기)
 
 ## 5. 확인 부탁(검수)
 1. 첫 10분 묶음(S0, 첫 주문서, M1_2, 일일, 게시판)을 모두 Slime Prince에 두는 것.
