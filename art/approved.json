@@ -7947,5 +7947,35 @@
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 64-32 px",
   "preview": "art/review/s2/quest_tabs_final.jpg",
   "note": "직업 고르기 머리 방패(뿔): ShieldHalo와 짝 — 숯색 방패 + 금 원판 + 빨간 보석 + 작은 뿔, 해골·빛살 없음. 옛 UIP_ShieldHorns 대체."
+ },
+ "Kit_W_Awning": {
+  "status": "approved",
+  "by": "검수 10/08 밤",
+  "file": "art/out/hq/HQ_Kit_W_Awning.png",
+  "medium": "art/out/kit/woods/Awning_2.png",
+  "model": "art/models/tripo/web/Kit_W_Awning_HD_src.glb",
+  "sheet": "art/review/kit_woods/woods_camp3_3d.jpg",
+  "credits": 5,
+  "points": 55
+ },
+ "Kit_W_StepStones": {
+  "status": "approved",
+  "by": "검수 10/08 밤",
+  "file": "art/out/hq/HQ_Kit_W_StepStones.png",
+  "medium": "art/out/kit/woods/StepStones_1.png",
+  "model": "art/models/tripo/web/Kit_W_StepStones_HD_src.glb",
+  "sheet": "art/review/kit_woods/woods_camp3_3d.jpg",
+  "credits": 5,
+  "points": 55
+ },
+ "Kit_W_LogStool": {
+  "status": "approved",
+  "by": "검수 10/08 밤",
+  "file": "art/out/hq/HQ_Kit_W_LogStool.png",
+  "medium": "art/out/kit/woods/LogStool_B_src.png",
+  "model": "art/models/tripo/web/Kit_W_LogStool_HD_src.glb",
+  "sheet": "art/review/kit_woods/woods_camp3_3d.jpg",
+  "credits": 5,
+  "points": 55
  }
 }
