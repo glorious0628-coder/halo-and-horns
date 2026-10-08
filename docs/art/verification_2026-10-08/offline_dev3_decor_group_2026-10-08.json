@@ -1,0 +1,300 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 27,
+  "failedChecks": 0,
+  "namedChecks": 27,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Player: DecorGroup DecorPlayerOnly next to Players",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "the players' group is set up (collisionGroupOk)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "both groups registered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "decor x Players: collide (players can't walk through)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "decor x Default: pass (monsters, pets, the rest)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "decor x decor: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "Players x Players stays off (A7-5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "Players x Default untouched (the world still blocks players)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "groups already registered (saved in the place): same pairs, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pairs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an unknown list shape",
+      "check": "GetRegisteredCollisionGroups without names: Default / itself / Players still set by name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an unknown list shape",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an unknown list shape",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other groups",
+      "check": "a monster / pet group registered before: decor lets it pass too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other groups",
+      "check": "the other groups' own pairs are not touched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other groups",
+      "check": "players still blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other groups",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other groups",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a decor failure never takes the players' group down",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "one warning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a players' group failure: collisionGroupOk false; decor still set where it can",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "the players' group failure has its own warning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 2,
+  "staticFailures": [],
+  "mutations": {
+    "total": 8,
+    "applied": 8,
+    "caught": 8,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "decor never registered",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an unknown list shape :: GetRegisteredCollisionGroups without names: Default / itself / Players still set by name",
+          "an unknown list shape :: no service warnings (pcall-swallowed handler errors)",
+          "failures :: a players' group failure: collisionGroupOk false; decor still set where it can",
+          "other groups :: a monster / pet group registered before: decor lets it pass too",
+          "other groups :: no service warnings (pcall-swallowed handler errors)",
+          "pairs :: both groups registered"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "players walk through decor",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an unknown list shape :: GetRegisteredCollisionGroups without names: Default / itself / Players still set by name",
+          "other groups :: players still blocked",
+          "pairs :: decor x Players: collide (players can't walk through)",
+          "pairs :: groups already registered (saved in the place): same pairs, no error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "monsters blocked by decor",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an unknown list shape :: GetRegisteredCollisionGroups without names: Default / itself / Players still set by name"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "decor collides with itself",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an unknown list shape :: GetRegisteredCollisionGroups without names: Default / itself / Players still set by name"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "other groups blocked",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "other groups :: a monster / pet group registered before: decor lets it pass too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "one pcall for both groups",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: the players' group failure has its own warning"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "decor registered twice",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pairs :: groups already registered (saved in the place): same pairs, no error",
+          "pairs :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: another group name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an unknown list shape :: GetRegisteredCollisionGroups without names: Default / itself / Players still set by name",
+          "config :: Config.Player: DecorGroup DecorPlayerOnly next to Players",
+          "failures :: a players' group failure: collisionGroupOk false; decor still set where it can",
+          "failures :: one warning",
+          "other groups :: a monster / pet group registered before: decor lets it pass too",
+          "pairs :: both groups registered"
+        ],
+        "newFailingCount": 9
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "f3098934991ed211514b1dd5c5482686d4e1df98943b62bdc6084a9ac03ac57e",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da"
+  },
+  "fixtureSHA256": "2fa4265acc25ed10a383dbcb8e88f6d4a56b48b64c346cb2c90b68c109d91210",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-81: PlayerService registers DecorPlayerOnly (Config.Player.DecorGroup) next to Players: collidable with Players, not with Default, not with itself, not with any other group registered by then; Players x Players stays off; idempotent when the groups are already registered (saved in the place); a decor failure has its own pcall and never takes the players' group down.",
+  "limitations": "The real physics are not run offline. Putting decor parts into the group is the 검수 tool (tools/worldkit/decor_collision.luau) in Studio Edit; in Edit the group must be registered there too (the server registers it again at runtime). Anchored decor only: a group that skips Default also skips the terrain."
+}

@@ -39,6 +39,7 @@ local deathBound = setmetatable({}, { __mode = "k" }) -- [Humanoid] = death list
 local closing = false
 
 local COLLISION_GROUP = Config.Player.CollisionGroup or "Players"
+local DECOR_GROUP = Config.Player.DecorGroup or "DecorPlayerOnly" -- A23-81
 local collisionGroupOk = false
 
 local CHILD_TIMEOUT = 5 -- seconds to wait for Humanoid / HumanoidRootPart / parenting
@@ -266,6 +267,26 @@ local function setupCollisionGroup()
 	collisionGroupOk = ok
 	if not ok then
 		Util.Warn(TAG, "collision group setup failed: " .. tostring(err))
+	end
+	-- A23-81: decor (bushes, rocks, tree trunks) in DECOR_GROUP blocks players only. Collidable with the players' group,
+	-- not with Default (monsters, pets, the rest), not with itself and not with any other group registered by now (a
+	-- monster / pet group of later work). Its own pcall: a failure here never takes the players' group down.
+	local okDecor, errDecor = pcall(function()
+		if not PhysicsService:IsCollisionGroupRegistered(DECOR_GROUP) then
+			PhysicsService:RegisterCollisionGroup(DECOR_GROUP)
+		end
+		for _, g in PhysicsService:GetRegisteredCollisionGroups() do
+			local name = type(g) == "table" and g.name or nil
+			if type(name) == "string" and name ~= COLLISION_GROUP then
+				PhysicsService:CollisionGroupSetCollidable(DECOR_GROUP, name, false)
+			end
+		end
+		PhysicsService:CollisionGroupSetCollidable(DECOR_GROUP, "Default", false)
+		PhysicsService:CollisionGroupSetCollidable(DECOR_GROUP, DECOR_GROUP, false)
+		PhysicsService:CollisionGroupSetCollidable(DECOR_GROUP, COLLISION_GROUP, true)
+	end)
+	if not okDecor then
+		Util.Warn(TAG, "decor collision group setup failed: " .. tostring(errDecor))
 	end
 end
 

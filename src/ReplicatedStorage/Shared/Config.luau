@@ -56,6 +56,9 @@ Config.Player = {
 	MaxHealthPerLevel = 10,
 	PlaytimeTick = 5, -- seconds between PlaytimeSeconds updates
 	CollisionGroup = "Players", -- addendum A7-5: PhysicsService group, not collidable with itself (PlayerService)
+	-- A23-81 (user 2026-10-08 "나무·풀을 뚫으면 안 되지, 비켜 가야지"): decor parts in this group block players only;
+	-- monsters, pets and everything else (Default and every other group) pass through them (PlayerService registers it)
+	DecorGroup = "DecorPlayerOnly",
 }
 
 -- Approved HP/MP HUD. Potions are now purchased stock; prices are provisional balance values.
