@@ -2576,10 +2576,13 @@ runGroup("king-safety", function()
 	check(live ~= nil and live.HP == hp - 10 and live._contributors[hitter] ~= nil and live._hits[hitter] == 1 and live._dmg[hitter] == 10,
 		"a new player can still hit the king and counts as a contributor", show({ hp, live and live.HP }))
 
-	-- the AI uses the same rule for keeping and picking a target (aiStep), and landAttack checks it again at impact
+	-- the AI uses the same rule for keeping and picking a target (aiStep; A23-74 review 2026-10-08: the pick is
+	-- SEP.Pick, which holds a target a while), and landAttack checks it again at impact
 	local mon = MONSTER_SOURCE
 	check(string.find(mon, "elseif not targetable(rec, tinfo) then", 1, true) ~= nil
-		and string.find(mon, "\t\tfor _, info in plist do\n\t\t\tif targetable(rec, info) then", 1, true) ~= nil,
+		and string.find(mon, "\t\tbest, bestD = SEP.Pick(rec, plist, pos, now)\n", 1, true) ~= nil
+		and string.find(mon, "function SEP.Pick(rec, plist, pos, now)\n\tlocal best, bestD, cur, curD = nil, nil, nil, nil\n"
+			.. "\tfor _, info in plist do\n\t\tif targetable(rec, info) then", 1, true) ~= nil,
 		"aiStep drops a current target and picks a new one only through targetable()")
 end)
 

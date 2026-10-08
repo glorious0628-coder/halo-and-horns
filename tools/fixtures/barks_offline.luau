@@ -319,7 +319,9 @@ runGroup("monster service hooks", function()
 	check(string.find(src, "\nMonsterService.Moment = Util.Signal.new()\n", 1, true) ~= nil, "MonsterService.Moment is a top-level signal")
 	-- Spot: aiStep, only when the target changes (a new target)
 	local ai = block("local function aiStep(")
-	check(string.find(ai, "if rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n\t\t\tMonsterService.Moment:Fire(rec, \"Spot\")",
+	-- (A23-74 review 2026-10-08: SEP.Pick holds a target, so a new one is also stamped rec._targetAt)
+	check(string.find(ai, "if rec._target ~= best.Player then\n\t\t\trec._chaseStuck = 0\n\t\t\trec._targetAt = now -- SEP.Pick holds"
+		.. " a new target TargetHold s\n\t\t\tMonsterService.Moment:Fire(rec, \"Spot\")",
 		1, true) ~= nil, "aiStep fires Spot when a monster picks a new target", #ai)
 	local _, spots = string.gsub(ai, "Moment:Fire", "")
 	check(spots == 1, "aiStep fires one moment only", spots)

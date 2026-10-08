@@ -19,6 +19,15 @@ used to keep chasers overlapping 1-3 studs behind them; the probe now asserts a 
 0.3 studs (full bodies, monster pairs and the player body), 30 slimes on one player settle without overlap (10 in
 reach), and a boss spawned on a monster keeps the clearance.
 
+Review 2026-10-08 (검수, two more): (1) monsters crowded on a zone's move line (ZONE_MOVE_INSET inside the zone edge)
+never came apart: SEP.CanSlide refused a whole slide whose end crossed the line, also its part along the line, and the
+ring slots of a player near the edge were all clamped onto the line. Now SEP.Fit / SEP.Add keep only the part of a slide
+that stays inside the line (checked from where the body stands and where its walk ends), the other monster of a pair
+takes the dropped part, a body pinned on the line leaves a player body along it, and SEP.Surround counts only the part
+of each ring inside the line (SEP.Arc / SEP.RingArc / SEP.SpreadArc: fewer fit, the rest wait on the next ring).
+(2) With two players standing together, a monster between them took the nearest every tick and swapped target and
+ring slot back and forth; SEP.Pick keeps a target 2 s and then only gives it up for a player 3 studs closer.
+
 Cuts the SEP table and functions, insideZone and findInfo from the CURRENT MonsterService (with the CURRENT Config), the
 real pickSpawnPoint (the test_tutorial_spawn cut) and the real MonsterService.SpawnEvent, runs them on
 tools/fixtures/dev2_kit.luau doubles with tools/fixtures/monster_spacing_offline.luau and the installed official Luau
@@ -51,7 +60,8 @@ def const(mon: str, pattern: str) -> str:
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     mon = sources[M]
-    consts = [const(mon, p) for p in (r"^local PERSONAL_FOLLOW_RADIUS = .*$", r"^local ZONE_MOVE_INSET = .*$")]
+    consts = [const(mon, p) for p in (r"^local PERSONAL_FOLLOW_RADIUS = .*$", r"^local ZONE_MOVE_INSET = .*$",
+                                       r"^local OUT_Y = .*$")]
     sep = between(mon, "local SEP = {\n", "\n}\n") + "\n}\n"
     return {
         "CONFIG_SOURCE": sources["CONFIG_SOURCE"],
@@ -64,12 +74,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
             + "\n".join(consts) + "\n"
             + sep
             + function_block(mon, "local function insideZone(")
+            + function_block(mon, "local function clampToZone(")
             + function_block(mon, "local function findInfo(")
+            + function_block(mon, "local function targetable(")
             + function_block(mon, "function SEP.RadiusOf(")
             + function_block(mon, "function SEP.Clear(")
             + between(mon, "------------------------------------------------------------------ A23-74 spacing",
                       "local function personalStep(")
-            + "return SEP\n"),
+            # review 2026-10-08: the real zone clamp of aiStep for the stand-in chase at the zone edge
+            + "return SEP, clampToZone\n"),
         "SPAWN_EXTRACT": spawn_bindings(sources)["SPAWN_EXTRACT"],
         # review 2026-10-07: the real SpawnEvent (bosses) with the real SEP.Clear over the test world's records
         "EVENT_EXTRACT": (
@@ -117,14 +130,15 @@ MUTATIONS = [
     # rings (review: capacity measured in reach, any number of rings)
     ("full inner ring never widens", M,
      "\t\t\t\tfor _, e in ring do e.R = MC.AttackRange - SEP.RingInside end\n", ""),
-    ("no waiting rings", M, "\t\twhile #ring > 1 and SEP.Need(ring) > tau do", "\t\twhile false do"),
-    ("only one waiting ring", M, "\t\twhile #ring > 1 and SEP.Need(ring) > tau do", "\t\twhile inner and #ring > 1 and SEP.Need(ring) > tau do"),
+    ("no waiting rings", M, "\t\twhile #ring > 1 and not SEP.Fits(ring, arc) do", "\t\twhile false do"),
+    ("only one waiting ring", M, "\t\twhile #ring > 1 and not SEP.Fits(ring, arc) do",
+     "\t\twhile inner and #ring > 1 and not SEP.Fits(ring, arc) do"),
     ("waiting ring ignores the ring before", M, "\t\t\tfor _, e in ring do e.R = edge + SEP.RingGap + e.Rad end\n",
      "\t\t\tfor _, e in ring do e.R += 2 * e.Rad + SEP.RingGap end\n"),
     ("ring edge not tracked", M, "\t\t\tedge = math.max(edge, e.R + e.Rad)\n", ""),
     ("the closest do not keep the ring", M,
-     "\t\tif a.D ~= b.D then return a.D < b.D end\n\t\treturn a.Id < b.Id\n\tend)\n\tlocal tau",
-     "\t\tif a.D ~= b.D then return a.D > b.D end\n\t\treturn a.Id < b.Id\n\tend)\n\tlocal tau"),
+     "\t\tif a.D ~= b.D then return a.D < b.D end\n\t\treturn a.Id < b.Id\n\tend)\n\tlocal cx, cz",
+     "\t\tif a.D ~= b.D then return a.D > b.D end\n\t\treturn a.Id < b.Id\n\tend)\n\tlocal cx, cz"),
     ("far personal monsters chase", M,
      "\t\tif rec.Owner ~= nil and d > PERSONAL_FOLLOW_RADIUS then continue end -- a personal monster too far: it stands\n", ""),
     ("returning monsters get slots", M, "local target = rec.Owner or (not rec._returning and rec._target or nil)",
@@ -134,7 +148,7 @@ MUTATIONS = [
     # lead (review: slots move with a walking player)
     ("no lead", M, "\tLead = 0.25, -- s", "\tLead = 0, -- s"),
     ("lead not capped", M, "local k = lead > SEP.LeadMax and SEP.LeadMax / lead or 1", "local k = 1"),
-    ("goal ignores the lead", M, "\tlocal cx, cz = SEP.Ahead(info)\n", "\tlocal cx, cz = p.X, p.Z\n"),
+    ("goal ignores the lead", M, "\tlocal cx, cz = SEP.Ahead(info)\n\tlocal x, z", "\tlocal cx, cz = p.X, p.Z\n\tlocal x, z"),
     ("body push ignores the lead", M, "local ax, az = SEP.Ahead(info) -- the body", "local ax, az = info.Pos.X, info.Pos.Z -- the body"),
     # in reach (review: step on to the slot between swings)
     ("stands still in reach", M,
@@ -165,9 +179,9 @@ MUTATIONS = [
     ("walk ignores WalkSpeed", M, "local step = math.min(d, (tonumber(hum.WalkSpeed) or 0) * MC.AIInterval)", "local step = d"),
     ("last tick's walk kept", M, "\t\t\trec._walkTo = nil -- this tick's step", "\t\t\t-- this tick's step"),
     ("MoveTo point not moved along", M, "\t\t\t\t\t\t\trec.Humanoid:MoveTo(rec._walkTo)\n", ""),
-    ("MoveTo point moved into water", M,
-     "if goal ~= nil and rec.Humanoid and SEP.CanSlide(rec, Vector3.new(goal.X, pos.Y, goal.Z), step) then",
-     "if goal ~= nil and rec.Humanoid then"),
+    ("MoveTo point moved into water / past the line", M,
+     "local follow = goal ~= nil and rec.Humanoid and SEP.Fit(rec, Vector3.new(goal.X, pos.Y, goal.Z), step)",
+     "local follow = goal ~= nil and rec.Humanoid and step"),
     ("steer() hides its walk", M, "\trec._walkTo = dest -- A23-74: SEP.Walk\n", ""),
     ("attack() hides its step", M, "\t\trec._walkTo = walk\n", ""),
     ("personal walk hides its goal", M, "rec._walkTo = SEP.Goal(rec, info) -- A23-74", "rec._walkTo = nil -- A23-74"),
@@ -181,9 +195,9 @@ MUTATIONS = [
     ("pairs counted twice", M, "if b.Id > a.Id and SEP.Pair(a, b) then moved = true end",
      "if b.Id ~= a.Id and SEP.Pair(a, b) then moved = true end"),
     ("own cell only", M,
-     "\t\t\tlocal pa = from[a]\n\t\t\tlocal cx, cz = math.floor(pa.X / cellSize), math.floor(pa.Z / cellSize)\n"
+     "\t\t\tlocal pa = a._sepFrom\n\t\t\tlocal cx, cz = math.floor(pa.X / cellSize), math.floor(pa.Z / cellSize)\n"
      "\t\t\tfor ox = -1, 1 do\n\t\t\t\tfor oz = -1, 1 do",
-     "\t\t\tlocal pa = from[a]\n\t\t\tlocal cx, cz = math.floor(pa.X / cellSize), math.floor(pa.Z / cellSize)\n"
+     "\t\t\tlocal pa = a._sepFrom\n\t\t\tlocal cx, cz = math.floor(pa.X / cellSize), math.floor(pa.Z / cellSize)\n"
      "\t\t\tfor ox = 0, 0 do\n\t\t\t\tfor oz = 0, 0 do"),
     ("same spot never separates", M, "\t\tdx, dz, o = math.cos(ang), math.sin(ang), need\n", "\t\tdx, dz, o = 0, 0, need\n"),
     ("no speed cap", M, "local k = math.min(1, SEP.Speed * MC.AIInterval / m)", "local k = 1"),
@@ -191,12 +205,42 @@ MUTATIONS = [
     ("slides teleported monsters", M, "if Util.FlatDistance(pos, rec._sepPos) <= 1 then -- not teleported home this tick",
      "if true then"),
     ("no half step", M, "for _, part in { 1, 0.5 } do", "for _, part in { 1 } do"),
-    ("slides into water", M, "\tif not g and not noHit then return false end\n\tlocal m = delta.Magnitude", "\tlocal m = delta.Magnitude"),
-    ("slides past the zone inset", M,
-     "if here ~= rec.ZoneId or (zone and not insideZone(zone, dest, ZONE_MOVE_INSET)) then return false end",
-     "if here ~= rec.ZoneId then return false end"),
-    ("slides through walls", M, "return workspace:Raycast(pos, delta * ((m + 0.5) / m), getShoveParams()) == nil",
-     "return true"),
+    ("slides into water", M, "\tif not g and not noHit then return nil end\n\tif workspace:Raycast", "\tif workspace:Raycast"),
+    ("slides through walls", M,
+     "\tif workspace:Raycast(pos, delta * ((m + 0.5) / m), getShoveParams()) ~= nil then return nil end\n", ""),
+    ("a zone monster out of its zone slides", M, "\tif rec.Owner == nil and here ~= rec.ZoneId then return nil end\n", ""),
+    # zone edge (review 2026-10-08: along the move line, never across it)
+    ("slide check ignores the move line", M, "\tlocal box = SEP.Box(rec, pos)\n", "\tlocal box = nil\n"),
+    ("slide check refuses the whole slide at the line (old)", M,
+     "\t\tdelta = Vector3.new(math.clamp(x, box.X0, box.X1) - pos.X, delta.Y, math.clamp(z, box.Z0, box.Z1) - pos.Z)\n",
+     "\t\treturn nil\n"),
+    ("slide check: a body past the line can never slide", M, "\tlocal box = SEP.Box(rec, pos)\n", "\tlocal box = SEP.Box(rec)\n"),
+    ("push rounds ignore the move line", M, "\tlocal box = rec._sepBox\n\tif box then\n", "\tlocal box = rec._sepBox\n\tif false then\n"),
+    ("move line checked from the start only", M,
+     "\t\tlocal cx = math.clamp(sx, box.X0 - math.min(q.X, from.X), box.X1 - math.max(q.X, from.X))\n"
+     "\t\tlocal cz = math.clamp(sz, box.Z0 - math.min(q.Z, from.Z), box.Z1 - math.max(q.Z, from.Z))\n",
+     "\t\tlocal cx = math.clamp(sx, box.X0 - q.X, box.X1 - q.X)\n"
+     "\t\tlocal cz = math.clamp(sz, box.Z0 - q.Z, box.Z1 - q.Z)\n"),
+    ("box not grown to the walk end", M, "rec._sepBox = SEP.Box(rec, rec._sepPos, at)", "rec._sepBox = SEP.Box(rec, rec._sepPos)"),
+    ("no box in the push rounds", M, "rec._sepBox = SEP.Box(rec, rec._sepPos, at)", "rec._sepBox = nil"),
+    ("a pinned one's part is lost", M, "local sx, sz = SEP.Add(b, -dx * o * wb - rx, -dz * o * wb - rz)",
+     "local sx, sz = SEP.Add(b, -dx * o * wb, -dz * o * wb)"),
+    ("a pinned second one's part is lost", M, "\t\tif not fa and (sx ~= 0 or sz ~= 0) then SEP.Add(a, -sx, -sz) end\n", ""),
+    ("pinned in a player body: stays", M, "\tif rx ~= 0 or rz ~= 0 then\n\t\tlocal at = rec._sepAt", "\tif false then\n\t\tlocal at = rec._sepAt"),
+    ("rings never cut by the move line", M, "\t\tbox = box or SEP.Box(rec)\n", ""),
+    ("rings cut around the player, not where it will be", M,
+     "\tlocal cx, cz = SEP.Ahead(info)\n\tlocal edge, inner", "\tlocal cx, cz = p.X, p.Z\n\tlocal edge, inner"),
+    ("arc: a ring inside is cut anyway", M, "\tif r <= dx1 and r <= dx0 and r <= dz1 and r <= dz0 then return nil end\n", ""),
+    ("arc: no wrap over 0", M, "\twhile #merged > 1 and merged[#merged].E >= merged[1].S + tau do", "\twhile false do"),
+    ("arc: a ring with no room counts as room", M, "\t\tif dist <= -r then return false end\n", "\t\tif dist <= -r then return nil end\n"),
+    ("ring arc: the last member's only", M, "a0, a1 = math.max(a0, arc.A0 + shift), math.min(a1, arc.A1 + shift)",
+     "a0, a1 = arc.A0 + shift, arc.A1 + shift"),
+    ("ring arc: one member without room ignored", M, "\t\tif arc == false then return false end\n\t\tif arc then",
+     "\t\tif arc == false then continue end\n\t\tif arc then"),
+    ("fits where there is no room", M, "\tif arc == false then return false end\n\tlocal run", "\tif arc == false then return true end\n\tlocal run"),
+    ("long arc ends may touch", M, "\t\tif short > 0 then a0, a1 = a0 + short / 2, a1 - short / 2 end\n", ""),
+    ("spread not kept inside the arc", M, "\t\te.A = math.max(a0 + before, math.min(a1 - (total - before), e.A))\n", ""),
+    ("arc rings spread on the whole ring", M, "\t\telseif arc then\n\t\t\tSEP.SpreadArc(ring, arc)", "\t\telseif arc then\n\t\t\tSEP.Spread(ring)"),
     ("snaps instead of sliding", M, "local f = math.min(1 - p.Done, dt / p.Time)", "local f = 1 - p.Done"),
     ("dead monsters keep sliding", M, "\t\tif not rec.Alive or not root or not root.Parent or root.Anchored then\n\t\t\tSEP.Push[rec] = nil",
      "\t\tif not root or not root.Parent then\n\t\t\tSEP.Push[rec] = nil"),
@@ -208,6 +252,21 @@ MUTATIONS = [
      "local root = rec.Root\n\t\tif root and root.Parent\n"),
     ("boss spawns on a monster", M, "\t\t\t\tif SEP.Clear(g, body) then\n", "\t\t\t\tif true then\n"),
     ("crowded boss spawn lost", M, "\t\tpos = pos or crowded\n", ""),
+    # target hold (review 2026-10-08: two players side by side)
+    ("no target hold time", M, "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin) then",
+     "\t\tand (bestD > curD - SEP.TargetMargin) then"),
+    ("no target margin", M, "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin) then",
+     "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold) then"),
+    ("always the nearest (old rule)", M, "\tif cur ~= nil and best ~= cur\n", "\tif false and cur ~= nil and best ~= cur\n"),
+    ("hold 0 s", M, "\tTargetHold = 2, -- s", "\tTargetHold = 0, -- s"),
+    ("margin 1 stud", M, "\tTargetMargin = 3, -- studs", "\tTargetMargin = 1, -- studs"),
+    ("a target past AggroRadius kept", M, "\t\t\tif d <= MC.AggroRadius then\n\t\t\t\tif bestD == nil", "\t\t\tif true then\n\t\t\t\tif bestD == nil"),
+    ("pick ignores targetable", M, "\t\tif targetable(rec, info) then\n\t\t\tlocal d = Util.FlatDistance(pos, info.Pos)\n\t\t\tif d <= MC.AggroRadius then",
+     "\t\tif true then\n\t\t\tlocal d = Util.FlatDistance(pos, info.Pos)\n\t\t\tif d <= MC.AggroRadius then"),
+    ("aiStep picks the nearest itself", M, "\t\tbest, bestD = SEP.Pick(rec, plist, pos, now)\n",
+     "\t\tfor _, info in plist do\n\t\t\tif targetable(rec, info) then\n\t\t\t\tlocal d = Util.FlatDistance(pos, info.Pos)\n"
+     "\t\t\t\tif d <= MC.AggroRadius and (bestD == nil or d < bestD) then best, bestD = info, d end\n\t\t\tend\n\t\tend\n"),
+    ("new target not stamped", M, "\t\t\trec._targetAt = now -- SEP.Pick holds a new target TargetHold s\n", ""),
     # wiring
     ("aiStep chases the player's position", M, "local goal = clampToZone(zone, SEP.Goal(rec, best))",
      "local goal = clampToZone(zone, best.Pos)"),
@@ -244,6 +303,9 @@ def static() -> tuple[int, list[str]]:
     check(mon.count("A23-74") >= 12, "the spacing code cites A23-74 (user 2026-10-07)")
     sep = between(mon, "------------------------------------------------------------------ A23-74 spacing", "local function personalStep(")
     check("SEP.Pair(a, b, push)" not in sep and "push[rec]" not in sep, "Resolve keeps no stale push table (end points move)")
+    check("SEP.CanSlide" not in mon and "math.clamp(" not in function_block(mon, "function SEP.SpreadArc("),
+          "review 2026-10-08: slides go through SEP.Fit (the old all-or-nothing CanSlide is gone); SpreadArc never "
+          "calls math.clamp (it throws when min > max)")
     return count, failures
 
 
@@ -268,11 +330,20 @@ SUITE = Suite(
              "grid; a new monster spawns at least rA + rB + 1.5 from every living one, else the first crowded ground "
              "point; SpawnEvent (bosses) keeps the same clearance within its radius, else its spot (the slides clear "
              "it). Review probe: walking 3 / 5 / 8 studs/s with 4 Shard + 2 King Slimes, mean deepest overlap per AI "
-             "tick < 0.3 studs. Monster parts stay CanCollide = false.",
+             "tick < 0.3 studs. Review 2026-10-08: a zone monster's slide keeps its part along the zone's move line "
+             "(ZONE_MOVE_INSET inside the zone edge) and drops only the part crossing it, checked from where the body "
+             "stands and where its walk ends; the other monster of a pair takes the dropped part; a body pinned on the "
+             "line leaves a player body along it; a MoveTo point moved along a slide stays inside the line; a player's "
+             "rings count only their arc inside the line (around where the player will be), fewer fit and the rest wait "
+             "on the next ring, so no slot needs clamping (a player 3 studs past the line: 6 chasers, none touching, "
+             "old clamped slots 2.6 studs inside each other); a zone monster keeps its target 2 s, then switches only "
+             "to a player 3 studs closer (two players side by side: no switching standing or walking together). "
+             "Monster parts stay CanCollide = false.",
     limitations="Roots, Humanoids (MoveTo / WalkSpeed / AutoRotate), the ground ray, walls, Random and the player list "
                 "are doubles; the simulations use a stand-in for aiStep / attack (walk at Def.Speed x the NATURAL ramp, "
                 "a wind-up of MonsterWindup s, a Humanoid that stops once it reached its MoveTo point) around the real "
-                "SEP passes. Real Humanoid MoveTo / AutoRotate behaviour, replication smoothness of the server slides, "
+                "SEP passes (with aiStep's real zone clamp, and the real SEP.Pick for several players). Real Humanoid "
+                "MoveTo / AutoRotate behaviour, replication smoothness of the server slides, "
                 "the FACE turn while stepping sideways and the Tripo mesh footprints are only checkable in Studio Play "
                 "(game dev 1). SEP.Need sorting ties by id (like Spread) is asserted but has no mutation: Luau's "
                 "table.sort happens to order the test ties the same way with an angle-only comparator.",

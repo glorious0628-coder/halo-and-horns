@@ -125,6 +125,11 @@ local NATURAL = { WanderPace = 0.5, RampStart = 0.45, RampStep = 0.3, ArriveSlow
 -- Body radius = Radius[Def.Shape] x Def.Scale (a slime ball 1.5 x s: the Tripo meshes measure 3.0 / 3.5 / 5.4 studs).
 -- Neighbours come from a Cell-stud grid rebuilt every AI tick (never every pair of the world). Review 2026-10-07: with
 -- these, a player walking at 3 / 5 / 8 studs/s keeps 4 Shard + 2 King Slimes apart (tools/test_monster_spacing.py).
+-- Review 2026-10-08: (1) at the zone edge a slide keeps the part along the zone's move line (only the part crossing it
+-- is dropped and the other monster of a pair takes it), and a player's rings count only their part inside the line
+-- (SEP.RingArc: fewer fit, the rest wait on the next ring) instead of slots past it all being clamped onto the line;
+-- (2) a zone monster keeps its target TargetHold s and then switches only to a player TargetMargin studs closer
+-- (SEP.Pick), so a monster between two players standing together no longer swaps target and slot every tick.
 local SEP = {
 	Radius = { Slime = 1.5, Humanoid = 1.25 },
 	PlayerRadius = 1,
@@ -139,6 +144,8 @@ local SEP = {
 	LeadMax = 4, -- studs
 	SpawnGap = 1.5,
 	Cell = 8, -- >= the largest pair distance (two Pumpkin Kings: 2 x 3.75 x Overlap)
+	TargetHold = 2, -- s: review 2026-10-08: a zone monster keeps a new target at least this long ...
+	TargetMargin = 3, -- studs: ... and then switches only to a player this much closer (side by side never swap)
 	Grid = {}, -- [cell key] = { rec, ... } this AI tick
 	Live = {}, -- every movable living rec this AI tick
 	Slots = {}, -- [rec] = { Player, Angle, Ring } this AI tick
@@ -2027,39 +2034,177 @@ function SEP.Spread(list)
 	end
 end
 
+-- A23-74 review 2026-10-08 (zone edge): the rect a zone monster's MoveTo points and slides stay in (its zone rect inset
+-- ZONE_MOVE_INSET, A10-V3-2 b) as { X0, X1, Z0, Z1 }, grown to take in the points given (a body already past the line
+-- slides along it or back in, never further out); nil for a personal monster (it follows its owner anywhere)
+function SEP.Box(rec, ...)
+	if rec.Owner ~= nil then return nil end
+	local zone = Config.Zones[rec.ZoneId]
+	if not zone then return nil end
+	local hx = math.max(0, zone.Size.X / 2 - ZONE_MOVE_INSET)
+	local hz = math.max(0, zone.Size.Z / 2 - ZONE_MOVE_INSET)
+	local box = { X0 = zone.Center.X - hx, X1 = zone.Center.X + hx, Z0 = zone.Center.Z - hz, Z1 = zone.Center.Z + hz }
+	for _, at in { ... } do
+		box.X0, box.X1 = math.min(box.X0, at.X), math.max(box.X1, at.X)
+		box.Z0, box.Z1 = math.min(box.Z0, at.Z), math.max(box.Z1, at.Z)
+	end
+	return box
+end
+
+-- A23-74 review 2026-10-08 (zone edge): the part of the ring of radius r around (cx, cz) inside box, as the angles
+-- { A0, A1 } (A0 < A1; the longest piece when the box cuts the ring more than once); nil when the whole ring is inside
+-- (or no box), false when none of it is. Each side the ring crosses cuts out the arc around that side's outward
+-- direction (half width acos(distance to the side / r)).
+function SEP.Arc(cx, cz, r, box)
+	if box == nil then return nil end
+	local dx1, dx0, dz1, dz0 = box.X1 - cx, cx - box.X0, box.Z1 - cz, cz - box.Z0
+	if r <= dx1 and r <= dx0 and r <= dz1 and r <= dz0 then return nil end
+	local tau = 2 * math.pi
+	local cuts = {}
+	for i, dist in { dx1, dx0, dz1, dz0 } do
+		if dist <= -r then return false end
+		if dist < r then
+			local hw = math.acos(dist / r)
+			local s = (({ 0, math.pi, math.pi / 2, -math.pi / 2 })[i] - hw) % tau
+			table.insert(cuts, { S = s, E = s + 2 * hw })
+		end
+	end
+	table.sort(cuts, function(a, b) return a.S < b.S end)
+	local merged = {}
+	for _, c in cuts do
+		local last = merged[#merged]
+		if last and c.S <= last.E then last.E = math.max(last.E, c.E) else table.insert(merged, c) end
+	end
+	while #merged > 1 and merged[#merged].E >= merged[1].S + tau do -- the last cut wraps over the first
+		local last = table.remove(merged)
+		merged[1] = { S = last.S - tau, E = math.max(merged[1].E, last.E - tau) }
+	end
+	local best = nil
+	for i, c in merged do
+		local nextS = (i < #merged) and merged[i + 1].S or merged[1].S + tau
+		if nextS - c.E > 0 and (best == nil or nextS - c.E > best.A1 - best.A0) then best = { A0 = c.E, A1 = nextS } end
+	end
+	return best or false
+end
+
+-- the angles inside the box the members of a ring (entries with R) all have: the overlap of their SEP.Arc pieces (each
+-- taken within pi of the first one's middle); nil = the whole ring for every member, false = none
+function SEP.RingArc(ring, cx, cz, box)
+	if box == nil then return nil end
+	local a0, a1, ref = -math.huge, math.huge, nil
+	for _, e in ring do
+		local arc = SEP.Arc(cx, cz, e.R, box)
+		if arc == false then return false end
+		if arc then
+			local mid = (arc.A0 + arc.A1) / 2
+			ref = ref or mid
+			local shift = (mid - ref + math.pi) % (2 * math.pi) - math.pi - (mid - ref)
+			a0, a1 = math.max(a0, arc.A0 + shift), math.min(a1, arc.A1 + shift)
+		end
+	end
+	if ref == nil then return nil end
+	if a1 <= a0 then return false end
+	return { A0 = a0, A1 = a1 }
+end
+
+-- the run of `list` along arc: its members (copies when `copy`) with their angles moved by whole turns to within pi of
+-- the arc's middle (the cut lies opposite, outside the arc), in order; and the angles A0..A1 the run may use: the arc,
+-- narrowed at both ends when its ends lie closer around the back than the last and the first member need (a long arc)
+function SEP.Run(list, arc, copy)
+	local mid, tau = (arc.A0 + arc.A1) / 2, 2 * math.pi
+	local run = {}
+	for _, e in list do
+		local m = copy and { Id = e.Id, R = e.R, Rad = e.Rad } or e
+		m.A = mid + (e.A - mid + math.pi) % tau - math.pi
+		table.insert(run, m)
+	end
+	table.sort(run, SEP.Before)
+	local a0, a1 = arc.A0, arc.A1
+	if #run > 1 then
+		local short = SEP.Gap(run[#run], run[1]) - (tau - (a1 - a0))
+		if short > 0 then a0, a1 = a0 + short / 2, a1 - short / 2 end
+	end
+	return run, a0, a1
+end
+
+-- true when the members of `list` fit on their ring: the whole ring (arc nil, SEP.Need <= 2 pi), or inside the arc
+-- (the n - 1 SEP.Gap between neighbours along SEP.Run within its angles); never on a ring with no room (false). The list
+-- is left alone.
+function SEP.Fits(list, arc)
+	if arc == nil then return SEP.Need(list) <= 2 * math.pi end
+	if arc == false then return false end
+	local run, a0, a1 = SEP.Run(list, arc, true)
+	local need = 0
+	for k = 2, #run do need += SEP.Gap(run[k - 1], run[k]) end
+	return need <= a1 - a0
+end
+
+-- spread the angles A of `list` (in place) inside arc, like SEP.Spread on the whole ring: order kept, neighbours SEP.Gap
+-- apart, each moving as little as possible (SEP.Pack on the run), then the run moved inside its angles (SEP.Run; needs
+-- SEP.Fits)
+function SEP.SpreadArc(list, arc)
+	local run, a0, a1 = SEP.Run(list, arc, false)
+	SEP.Pack(run)
+	local total = 0
+	for k = 2, #run do total += SEP.Gap(run[k - 1], run[k]) end
+	local before = 0
+	for k, e in run do
+		if k > 1 then before += SEP.Gap(run[k - 1], e) end
+		e.A = math.max(a0 + before, math.min(a1 - (total - before), e.A))
+	end
+	for _, e in run do
+		e.A = (e.A + math.pi) % (2 * math.pi) - math.pi
+	end
+end
+
 -- slots for the chasers of one player, closest first. The inner ring (in reach) stands at each one's own ring (r + 1 + 1);
 -- A23-74 review: when they do not all fit there, it moves out to the widest ring still in reach (AttackRange -
 -- RingInside, more of them can attack). Whoever does not fit waits on the next ring, just outside the bodies of the ring
--- before it (RingGap between), and so on: any number of chasers gets a slot that touches no other.
+-- before it (RingGap between), and so on: any number of chasers gets a slot that touches no other. Review 2026-10-08
+-- (zone edge): the rings are taken around where the player will be (SEP.Ahead, like SEP.Goal) and only their part
+-- inside the zone's move line counts (SEP.RingArc): near the edge fewer fit on a ring and the rest wait on the next
+-- ones, every slot inside the line (before, slots past it were clamped onto the line and piled up there). A ring with
+-- no room inside the line keeps its closest one (aiStep clamps it onto the line: only for a player more than
+-- AttackRange - RingInside past the line, at most ZONE_MOVE_INSET, so it lands at most RingGap past its ring and the
+-- next ring still clears it).
 function SEP.Surround(info, chasers)
 	local p = info.Pos
 	local rest = {}
+	local box = nil -- the zone's move rect (a player's zone monsters all share its zone)
 	for _, rec in chasers do
 		local pos = rec._sepPos
 		local d = Util.FlatDistance(pos, p)
 		if rec.Owner ~= nil and d > PERSONAL_FOLLOW_RADIUS then continue end -- a personal monster too far: it stands
 		table.insert(rest, { Rec = rec, Id = rec.Id, D = d, A = math.atan2(pos.Z - p.Z, pos.X - p.X), R = SEP.Ring(rec),
 			Rad = rec._radius or SEP.Radius.Slime })
+		box = box or SEP.Box(rec)
 	end
 	table.sort(rest, function(a, b)
 		if a.D ~= b.D then return a.D < b.D end
 		return a.Id < b.Id
 	end)
-	local tau, edge, inner = 2 * math.pi, 0, true
+	local cx, cz = SEP.Ahead(info)
+	local edge, inner = 0, true
 	while #rest > 0 do
 		local ring = rest
 		rest = {}
 		if inner then
-			if SEP.Need(ring) > tau then
+			if not SEP.Fits(ring, SEP.RingArc(ring, cx, cz, box)) then
 				for _, e in ring do e.R = MC.AttackRange - SEP.RingInside end
 			end
 		else
 			for _, e in ring do e.R = edge + SEP.RingGap + e.Rad end
 		end
-		while #ring > 1 and SEP.Need(ring) > tau do
+		local arc = SEP.RingArc(ring, cx, cz, box)
+		while #ring > 1 and not SEP.Fits(ring, arc) do
 			table.insert(rest, 1, table.remove(ring)) -- the farthest waits on the next ring (rest stays closest first)
+			arc = SEP.RingArc(ring, cx, cz, box)
 		end
-		SEP.Spread(ring)
+		if arc == nil then
+			SEP.Spread(ring)
+		elseif arc then
+			SEP.SpreadArc(ring, arc)
+		end
 		for _, e in ring do
 			edge = math.max(edge, e.R + e.Rad)
 			SEP.Slots[e.Rec] = { Player = info.Player, Angle = e.A, Ring = e.R }
@@ -2147,10 +2292,28 @@ function SEP.Rotate(rec)
 	if hum and hum.Parent and hum.AutoRotate ~= want then hum.AutoRotate = want end
 end
 
--- moves rec's end point for this tick by (x, z) (a Resolve pass; the sum becomes its slide)
+-- moves rec's end point for this tick by (x, z) (a Resolve pass; the sum becomes its slide). Review 2026-10-08 (zone
+-- edge): the slide (end point - _sepFrom) keeps the body in its box (_sepBox, SEP.Box) both from where it stands
+-- (_sepPos) and at the end of its walk (_sepFrom): only the part that would cross the zone's move line is dropped, so
+-- the body slides along the line. Returns the dropped part (0, 0 when it all fit) for the other monster of a pair.
 function SEP.Add(rec, x, z)
 	local at = rec._sepAt
-	rec._sepAt = Vector3.new(at.X + x, at.Y, at.Z + z)
+	local nx, nz = at.X + x, at.Z + z
+	local box = rec._sepBox
+	if box then
+		local q, from = rec._sepPos, rec._sepFrom
+		local sx, sz = nx - from.X, nz - from.Z
+		local cx = math.clamp(sx, box.X0 - math.min(q.X, from.X), box.X1 - math.max(q.X, from.X))
+		local cz = math.clamp(sz, box.Z0 - math.min(q.Z, from.Z), box.Z1 - math.max(q.Z, from.Z))
+		if cx ~= sx or cz ~= sz then
+			cx = cx ~= sx and from.X + cx or nx
+			cz = cz ~= sz and from.Z + cz or nz
+			rec._sepAt = Vector3.new(cx, at.Y, cz)
+			return nx - cx, nz - cz
+		end
+	end
+	rec._sepAt = Vector3.new(nx, at.Y, nz)
+	return 0, 0
 end
 
 -- A23-74 review: where a monster's own walk takes it by the end of this AI tick (the point this tick's step sent it to,
@@ -2168,7 +2331,8 @@ function SEP.Walk(rec)
 end
 
 -- a pair whose end points are closer than (rA + rB) x Overlap: each end point moves its share of the overlap away from
--- the other (the smaller moves more, a boss never); true when it moved them
+-- the other (the smaller moves more, a boss never; review 2026-10-08: what one may not take, pinned at the zone's move
+-- line, the other takes); true when it moved them
 function SEP.Pair(a, b)
 	local pa, pb = a._sepAt, b._sepAt
 	local ra, rb = a._radius or SEP.Radius.Slime, b._radius or SEP.Radius.Slime
@@ -2188,56 +2352,80 @@ function SEP.Pair(a, b)
 	end
 	local wa = fa and 0 or (fb and 1 or rb / (ra + rb))
 	local wb = fb and 0 or (fa and 1 or ra / (ra + rb))
-	SEP.Add(a, dx * o * wa, dz * o * wa)
-	SEP.Add(b, -dx * o * wb, -dz * o * wb)
+	local rx, rz = SEP.Add(a, dx * o * wa, dz * o * wa)
+	if not fb then
+		local sx, sz = SEP.Add(b, -dx * o * wb - rx, -dz * o * wb - rz)
+		if not fa and (sx ~= 0 or sz ~= 0) then SEP.Add(a, -sx, -sz) end
+	end
 	return true
 end
 
 -- a monster whose end point is closer than (r + PlayerRadius) x Overlap to the player body at (ax, az) (where the
--- player will be, SEP.Ahead) moves out, away from it (a boss never); true when it moved
+-- player will be, SEP.Ahead) moves out, away from it (a boss never); review 2026-10-08: pinned at the zone's move line
+-- it moves along the line out of the body instead (to its own side, by id when right in line); true when it moved
 function SEP.Body(rec, ax, az, y)
 	local pr = rec._sepAt
 	local need = ((rec._radius or SEP.Radius.Slime) + SEP.PlayerRadius) * SEP.Overlap
 	local dx, dz = pr.X - ax, pr.Z - az
 	local d = math.sqrt(dx * dx + dz * dz)
 	if d >= need or math.abs(pr.Y - y) >= 8 or SEP.Fixed(rec) then return false end
+	local rx, rz
 	if d < 0.05 then -- right on the player: a fixed direction per monster
 		local ang = (rec.Id * 2.39996) % (2 * math.pi)
-		SEP.Add(rec, math.cos(ang) * need, math.sin(ang) * need)
+		rx, rz = SEP.Add(rec, math.cos(ang) * need, math.sin(ang) * need)
 	else
-		SEP.Add(rec, dx * (need - d) / d, dz * (need - d) / d)
+		rx, rz = SEP.Add(rec, dx * (need - d) / d, dz * (need - d) / d)
+	end
+	if rx ~= 0 or rz ~= 0 then
+		local at = rec._sepAt
+		local alongZ = rx ~= 0 -- pinned across x: out along z (else along x)
+		local across = alongZ and at.X - ax or at.Z - az
+		local along = alongZ and at.Z - az or at.X - ax
+		local room = need * need - across * across
+		if room > along * along then
+			local side = along > 0 and 1 or (along < 0 and -1 or (rec.Id % 2 == 0 and 1 or -1))
+			local step = side * math.sqrt(room) - along
+			if alongZ then SEP.Add(rec, 0, step) else SEP.Add(rec, step, 0) end
+		end
 	end
 	return true
 end
 
--- the slide may go there: same zone (a zone monster inside its own rect inset ZONE_MOVE_INSET), walkable ground, no
--- wall / decor in the way at body height (the Shove rules)
-function SEP.CanSlide(rec, pos, delta)
-	local dest = pos + delta
+-- the slide a monster at `pos` may make of `delta`, or nil: a zone monster in its own zone, kept in its box (SEP.Box
+-- grown to take in pos; review 2026-10-08: only the part crossing the zone's move line is dropped, so it slides along
+-- the line, where the old check refused the whole slide), staying in the zone it stands in, on walkable ground, no wall
+-- / decor in the way at body height (the Shove rules)
+function SEP.Fit(rec, pos, delta)
 	local here = Config.ZoneAt(pos).Id
-	if Config.ZoneAt(dest).Id ~= here then return false end
-	if rec.Owner == nil then
-		local zone = Config.Zones[rec.ZoneId]
-		if here ~= rec.ZoneId or (zone and not insideZone(zone, dest, ZONE_MOVE_INSET)) then return false end
+	if rec.Owner == nil and here ~= rec.ZoneId then return nil end
+	local box = SEP.Box(rec, pos)
+	local x, z = pos.X + delta.X, pos.Z + delta.Z
+	if box and (x < box.X0 or x > box.X1 or z < box.Z0 or z > box.Z1) then
+		delta = Vector3.new(math.clamp(x, box.X0, box.X1) - pos.X, delta.Y, math.clamp(z, box.Z0, box.Z1) - pos.Z)
 	end
-	local g, noHit = groundPoint(dest.X, dest.Z)
-	if not g and not noHit then return false end
 	local m = delta.Magnitude
-	return workspace:Raycast(pos, delta * ((m + 0.5) / m), getShoveParams()) == nil
+	if m < 1e-3 then return nil end
+	local dest = pos + delta
+	if Config.ZoneAt(dest).Id ~= here then return nil end
+	local g, noHit = groundPoint(dest.X, dest.Z)
+	if not g and not noHit then return nil end
+	if workspace:Raycast(pos, delta * ((m + 0.5) / m), getShoveParams()) ~= nil then return nil end
+	return delta
 end
 
 -- end of an AI tick: where every monster will be at the end of the coming tick (its walk end point, SEP.Walk), up to
 -- Passes rounds of moving overlapping end points apart (grid neighbours only; one move can push into a third monster,
 -- the next round fixes that) and out of player bodies (where the player will be, SEP.Ahead); each monster's total move
 -- becomes its slide, played smoothly by SEP.Step over that tick (at most Speed x AIInterval studs), so no pile builds
--- up behind a walking player
+-- up behind a walking player. Review 2026-10-08: every slide stays in the monster's box (SEP.Add / SEP.Fit: along the
+-- zone's move line, never across it)
 function SEP.Resolve(plist)
 	local cellSize = SEP.Cell
-	local from = {}
 	table.clear(SEP.Grid)
 	for _, rec in SEP.Live do
 		local at = SEP.Walk(rec)
-		rec._sepAt, from[rec] = at, at
+		rec._sepAt, rec._sepFrom = at, at
+		rec._sepBox = SEP.Box(rec, rec._sepPos, at)
 		local key = SEP.Key(math.floor(at.X / cellSize), math.floor(at.Z / cellSize))
 		local cell = SEP.Grid[key]
 		if cell then table.insert(cell, rec) else SEP.Grid[key] = { rec } end
@@ -2245,7 +2433,7 @@ function SEP.Resolve(plist)
 	for _ = 1, SEP.Passes do
 		local moved = false
 		for _, a in SEP.Live do
-			local pa = from[a]
+			local pa = a._sepFrom
 			local cx, cz = math.floor(pa.X / cellSize), math.floor(pa.Z / cellSize)
 			for ox = -1, 1 do
 				for oz = -1, 1 do
@@ -2275,7 +2463,7 @@ function SEP.Resolve(plist)
 		if not moved then break end
 	end
 	for _, rec in SEP.Live do
-		local q, at = from[rec], rec._sepAt
+		local q, at = rec._sepFrom, rec._sepAt
 		local vx, vz = at.X - q.X, at.Z - q.Z
 		local m = math.sqrt(vx * vx + vz * vz)
 		local root = rec.Root
@@ -2285,13 +2473,15 @@ function SEP.Resolve(plist)
 				local k = math.min(1, SEP.Speed * MC.AIInterval / m)
 				local delta = Vector3.new(vx * k, 0, vz * k)
 				for _, part in { 1, 0.5 } do
-					local step = delta * part
-					if SEP.CanSlide(rec, pos, step) then
+					local step = SEP.Fit(rec, pos, delta * part)
+					if step then
 						SEP.Push[rec] = { Delta = step, Done = 0, Time = MC.AIInterval }
 						-- a walk ends at its MoveTo point wherever the slide put the body, so that point moves along
+						-- (kept in the box too)
 						local goal = rec._walkTo
-						if goal ~= nil and rec.Humanoid and SEP.CanSlide(rec, Vector3.new(goal.X, pos.Y, goal.Z), step) then
-							rec._walkTo = goal + step
+						local follow = goal ~= nil and rec.Humanoid and SEP.Fit(rec, Vector3.new(goal.X, pos.Y, goal.Z), step)
+						if follow then
+							rec._walkTo = goal + follow
 							rec.Humanoid:MoveTo(rec._walkTo)
 						end
 						break
@@ -2300,6 +2490,28 @@ function SEP.Resolve(plist)
 			end
 		end
 	end
+end
+
+-- A23-74 review 2026-10-08 (two players side by side): the player a zone monster chases now, or nil: the nearest one it
+-- may chase (targetable) within AggroRadius (A10-V3-2 a), but while its current target (rec._target) is still one of
+-- those it keeps it for TargetHold s from when it took it (rec._targetAt) and after that unless another is TargetMargin
+-- studs closer. Before, a monster between two players standing together switched target (and ring slot) every tick.
+function SEP.Pick(rec, plist, pos, now)
+	local best, bestD, cur, curD = nil, nil, nil, nil
+	for _, info in plist do
+		if targetable(rec, info) then
+			local d = Util.FlatDistance(pos, info.Pos)
+			if d <= MC.AggroRadius then
+				if bestD == nil or d < bestD then best, bestD = info, d end
+				if info.Player == rec._target then cur, curD = info, d end
+			end
+		end
+	end
+	if cur ~= nil and best ~= cur
+		and (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin) then
+		return cur, curD
+	end
+	return best, bestD
 end
 
 -- every Heartbeat: move each sliding root along its Delta (spread evenly over Time)
@@ -2438,22 +2650,17 @@ local function aiStep(rec, plist, now)
 		end
 	end
 
-	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a)
+	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a); the
+	-- current one is kept a while and against a player only a little closer (SEP.Pick, A23-74 review 2026-10-08)
 	local best, bestD = nil, nil
 	if now >= rec._noAggroUntil then
-		for _, info in plist do
-			if targetable(rec, info) then
-				local d = Util.FlatDistance(pos, info.Pos)
-				if d <= MC.AggroRadius and (bestD == nil or d < bestD) then
-					best, bestD = info, d
-				end
-			end
-		end
+		best, bestD = SEP.Pick(rec, plist, pos, now)
 	end
 
 	if best then
 		if rec._target ~= best.Player then
 			rec._chaseStuck = 0
+			rec._targetAt = now -- SEP.Pick holds a new target TargetHold s
 			MonsterService.Moment:Fire(rec, "Spot") -- ③ barks: a new target
 		end
 		local alerting = NATURAL.Alert(rec, best, bestD, now) -- a new target: stop with a '!' for a moment first
