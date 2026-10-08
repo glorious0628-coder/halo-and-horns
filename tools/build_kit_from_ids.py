@@ -102,7 +102,9 @@ for _, it in ipairs(items) do
     local okSa, errSa = pcall(function()
       if it.sa.color then sa.ColorMap = it.sa.color end
       if it.sa.normal then sa.NormalMap = it.sa.normal end
-      if it.sa.metal then sa.MetalnessMap = it.sa.metal end
+      -- 2026-10-08 검수: Tripo's imported metalness maps render the whole model chrome-grey (notice board, nest, houses);
+      -- stylized props look right without one, so the metal map is never applied
+
       if it.sa.rough then sa.RoughnessMap = it.sa.rough end
     end)
     if okSa then sa.Parent = mp else table.insert(failed, it.name .. " SurfaceAppearance: " .. tostring(errSa)) end
