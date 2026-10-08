@@ -6545,5 +6545,40 @@
   "import": "build/import_all/1_first/H_HornsCastle_v6mv.glb",
   "not_used": "①(nowin HD) and ②(v4 HD) — files kept",
   "replaces": "Town_Horns_Castle_v4 (API, in main now)"
+ },
+ "Kit_M_MeadowArch": {
+  "status": "approved (2D); 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수: 아치 = 1 (sheet art/review/town5/meadow_arch_cands.jpg)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = concept crop), final High 5",
+  "prompt": "art/prompts/Kit_M_EntranceArch.txt (candidates), art/prompts/Kit_M_MeadowArch_HQ.txt (final)",
+  "candidate": "art/out/kit_x3/Kit_M_EntranceArch_1.png",
+  "final": "art/out/hq/HQ_Kit_M_MeadowArch.png (1024, High 5 credits)",
+  "use": "meadow gate Gate_SlimeMeadow (200, 0) — replaces wooden posts + slime statue with eyes; name has Arch → precise collision, walk through the middle",
+  "model": "art/models/tripo/web/Kit_M_MeadowArch_HD_src.glb (Tripo web HD 55, task abad89b6) -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D5_MeadowArchPumpkin.glb (40.0 x 12.35 x 24.46 studs, passage 18.6 wide / 15.2 high)",
+  "sheet_3d": "art/review/town5/meadow_arch_pumpkin_3d.jpg"
+ },
+ "Kit_P_PumpkinCluster": {
+  "status": "approved (2D); 3D made 2026-10-08, sent to 검수",
+  "date": "2026-10-08",
+  "approved_by": "검수: 호박 = 무더기 2 (sheet art/review/town5/pumpkin_cands.jpg)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = concept crop), final High 5",
+  "prompt": "art/prompts/Kit_P_PumpkinCluster.txt (candidates), art/prompts/Kit_P_PumpkinCluster_HQ.txt (final)",
+  "candidate": "art/out/kit_x3/Kit_P_PumpkinCluster_2.png",
+  "final": "art/out/hq/HQ_Kit_P_PumpkinCluster.png (1024, High 5 credits)",
+  "use": "PumpkinPatch 37 pumpkin spots (mixed sizes) — plain uncarved pumpkins, unlike the pumpkin monsters",
+  "model": "art/models/tripo/web/Kit_P_PumpkinCluster_HD_src.glb (Tripo web HD 55, task 66e89208) -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D5_MeadowArchPumpkin.glb (7.0 x 5.73 x 3.5 studs)",
+  "sheet_3d": "art/review/town5/meadow_arch_pumpkin_3d.jpg"
+ },
+ "Kit_R_Banner": {
+  "status": "approved (2D medium by 검수, kit_ruins) — final High redraw done 2026-10-08, Tripo web next",
+  "date": "2026-10-08",
+  "approved_by": "검수 OK 10/08 (R1: Banner was the only medium one -> High 5)",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High 5 credits, reference = art/out/kit/ruins/Banner_src.png",
+  "prompt": "art/prompts/KIT_Ruins_Banner_HQ.txt",
+  "final": "art/out/kit/ruins/Banner_HQ.png",
+  "use": "Skeleton Ruins TornFlag + TornPole x4 (road sides) — no faces, no skulls"
  }
 }

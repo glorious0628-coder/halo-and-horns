@@ -5458,5 +5458,109 @@
    ],
    "sheet": "art/review/town5/statue_rock_3d.jpg"
   }
+ ],
+ "Kit_M_MeadowArch_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "abad89b6-7ac2-400f-a1f2-b5d5cb969b1d",
+   "image": "art/out/hq/HQ_Kit_M_MeadowArch.png",
+   "at": "2026-10-08 10:0x",
+   "balance_after": 2190,
+   "file": "art/models/tripo/web/Kit_M_MeadowArch_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 19453,
+   "derived": [
+    "art/models/tripo/web/Kit_M_MeadowArch_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D5/WorldKit_ImportD5.glb = build/import_all/3_third/D5_MeadowArchPumpkin.glb (40.0 x 12.35 x 24.46 studs, passage 18.6 wide / 15.2 high)"
+   ],
+   "sheet": "art/review/town5/meadow_arch_pumpkin_3d.jpg",
+   "bytes": 8980712
+  }
+ ],
+ "Kit_P_PumpkinCluster_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "66e89208-7283-4a5a-8fc2-6618f105f814",
+   "image": "art/out/hq/HQ_Kit_P_PumpkinCluster.png",
+   "at": "2026-10-08 10:1x",
+   "balance_after": 2135,
+   "file": "art/models/tripo/web/Kit_P_PumpkinCluster_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 14755,
+   "derived": [
+    "art/models/tripo/web/Kit_P_PumpkinCluster_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_D5/WorldKit_ImportD5.glb = build/import_all/3_third/D5_MeadowArchPumpkin.glb (7.0 x 5.73 x 3.5 studs)"
+   ],
+   "sheet": "art/review/town5/meadow_arch_pumpkin_3d.jpg",
+   "bytes": 7679456
+  }
+ ],
+ "R_Gate_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "efa0c2ee-f9b3-4a92-83d0-8722acdb8181",
+   "image": "build/ruins_r1/R_Gate.png (art/out/hq/HQ_R_Gate.png on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 10:2x",
+   "balance_after": 2080,
+   "file": "art/models/tripo/web/R_Gate_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 19021,
+   "derived": [
+    "art/models/tripo/web/R_Gate_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 9908032
+  }
+ ],
+ "R_Arch_A_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "97813ca1-bdc7-41f3-b72c-00bc22041c80",
+   "image": "build/ruins_r1/R_Arch_A.png (art/out/hq/HQ_R_Arch_A.png on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 10:3x",
+   "balance_after": 2025,
+   "file": "art/models/tripo/web/R_Arch_A_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 19041,
+   "derived": [
+    "art/models/tripo/web/R_Arch_A_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 9977960
+  }
+ ],
+ "R_Arch_B_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "7118b8ca-21b9-4137-a798-6ff9140b39da",
+   "image": "build/ruins_r1/R_Arch_B.png (art/out/hq/HQ_R_Arch_B.png on gray 200,200,204, padded 1.25x)",
+   "at": "2026-10-08 10:4x",
+   "balance_after": 1970,
+   "file": "art/models/tripo/web/R_Arch_B_HD_src.glb",
+   "note": "검수 OK 10/08 (R1+P+M)",
+   "tris": 19172,
+   "derived": [
+    "art/models/tripo/web/R_Arch_B_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)"
+   ],
+   "bytes": 8428328
+  }
  ]
 }
