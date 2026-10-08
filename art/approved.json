@@ -7390,5 +7390,18 @@
   "id": "rbxassetid://112371750811683",
   "config_key": "IconSaved",
   "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); game key = file name"
+ },
+ "X_NoticeBoard_Gold": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK A(금빛 + 크림 판 + 루비) — 시트 3a77aa1 art/review/s2/supporter_board_sheet.jpg",
+  "tool": "texture recolor only, 0 credits — tools/img2/nboard_recolor.py --crystal ruby --crystal-mask art/models/tripo/web_fixed/X_NoticeBoard_crystal_mask.png (mask: tools/img2/prop_mask.py 0.10 0.10)",
+  "mesh": "art/models/tripo/web_fixed/X_NoticeBoard_fixed.glb (same mesh as the wanted board X_NoticeBoard; unchanged)",
+  "base_texture": "the base colour of X_NoticeBoard_fixed.glb (1024)",
+  "file": "art/models/tripo/web_fixed/X_NoticeBoard_Gold_A_tex.png",
+  "size": "1024x1024 RGB (upload size); normal + metal/rough maps stay the GLB's own",
+  "use": "crossroads supporter board (A23-75 VIP): copy of the X_NoticeBoard MeshPart with TextureID = this texture; supporter names = game text (SurfaceGui), no lettering on the art",
+  "preview": "art/review/s2/supporter_board_sheet.jpg",
+  "note": "청록 지붕·기둥 → 금(그늘 호박빛), 갈색 판·보 → 따뜻한 크림(나뭇결 남김), 꼭대기 보석·등불 유리 → 루비. 놋쇠 장식·크림 돌 그대로. 현상수배 판과 한눈에 구별. B(호박색 보석) X_NoticeBoard_Gold_B_tex.png는 안 씀."
  }
 }
