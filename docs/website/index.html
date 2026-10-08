@@ -3,13 +3,16 @@
      src/**/*.luau 110 files / 65,151 lines; tools/test_*.py 66 (54 with MUTATIONS / no-mutations);
      commits 1,027 (first 2026-10-02 17:53 KST); art/approved.json 503 live approved/picked (405 Firefly);
      art/models/tripo/records.json 199 records, 194 with .glb (30 retired Costume_*); art/sfx/asset_ids.json 57;
-     Config.MonsterTypeOrder 12; game sessions 9 (HANDOFF_CODEX top). Growing counts are shown rounded down ("1,000+"). -->
+     Config.MonsterTypeOrder 12; game sessions 9 (HANDOFF_CODEX top). Growing counts are shown rounded down ("1,000+").
+     Decoration badges in img/deco/ are approved Firefly art from art/ui (BadgeHaloR3, BadgeHornsR3, BadgeLunchbox,
+     BadgeChoseSide, BadgeFirstSlime, BadgeHalloween2026), trimmed and downscaled 512 -> 192 px. -->
 <meta name="description" content="Glorious Studio is a game studio in South Korea making Halo & Horns, a Roblox action RPG where every choice tilts you toward angel or devil.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
-/* Layout: one 1120px column. A two-tone balance line (gold | crimson) marks the page's two sides; everything else stays quiet. */
+/* Layout: a poster hero (the game's world map under a night-navy veil), then a gold | crimson split band,
+   then quiet 1120px sections. Gold and crimson only ever appear as the two sides of the scale. */
 :root {
   --bg: #F3F5FB;
   --surface: #FFFFFF;
@@ -23,21 +26,30 @@
   --crimson: #C8364A;
   --crimson-soft: #F8DDE1;
   --focus: #3B5BDB;
+  --shadow: 0 1px 2px rgba(28, 24, 48, .06), 0 10px 28px rgba(28, 24, 48, .10);
+  /* hero and contact band are one fixed night look in both themes */
+  --night: #14111F;
+  --night-2: #221B3A;
+  --night-ink: #F4F1FB;
+  --night-muted: #C9C3DD;
   --f-display: "Fredoka", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --f-body: "Figtree", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  --radius: 14px;
+  --radius: 16px;
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #14111F; --surface: #1C182C; --panel: #221D37; --ink: #EDEAF5; --muted: #A7A1BE; --line: #302A47;
-    --gold: #F2C55C; --gold-ink: #F2C55C; --gold-soft: #2E2716; --crimson: #E2566A; --crimson-soft: #351A24; --focus: #8EA6FF;
+    --bg: #14111F; --surface: #1D192F; --panel: #241F3B; --ink: #EDEAF5; --muted: #A9A3C0; --line: #322B4A;
+    --gold: #F2C55C; --gold-ink: #F2C55C; --gold-soft: #2D2617; --crimson: #E2566A; --crimson-soft: #361B26; --focus: #8EA6FF;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px rgba(0, 0, 0, .35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #14111F; --surface: #1C182C; --panel: #221D37; --ink: #EDEAF5; --muted: #A7A1BE; --line: #302A47;
-  --gold: #F2C55C; --gold-ink: #F2C55C; --gold-soft: #2E2716; --crimson: #E2566A; --crimson-soft: #351A24; --focus: #8EA6FF;
+  --bg: #14111F; --surface: #1D192F; --panel: #241F3B; --ink: #EDEAF5; --muted: #A9A3C0; --line: #322B4A;
+  --gold: #F2C55C; --gold-ink: #F2C55C; --gold-soft: #2D2617; --crimson: #E2566A; --crimson-soft: #361B26; --focus: #8EA6FF;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px rgba(0, 0, 0, .35);
   color-scheme: dark;
 }
 
@@ -59,9 +71,9 @@ img { max-width: 100%; height: auto; display: block; }
 .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 24px; }
 @media (max-width: 480px) { .wrap { padding-inline: 16px; } }
 
-h1, h2, h3 { font-family: var(--f-display); font-weight: 600; line-height: 1.15; margin: 0; text-wrap: balance; }
-h1 { font-size: clamp(2.2rem, 5.2vw, 3.6rem); letter-spacing: -0.01em; }
-h2 { font-size: clamp(1.7rem, 3.4vw, 2.4rem); }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; line-height: 1.12; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.4rem, 5.6vw, 4.1rem); letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
 h3 { font-size: 1.2rem; }
 p { margin: 0; }
 .eyebrow {
@@ -71,22 +83,24 @@ p { margin: 0; }
   color: var(--muted);
 }
 html[data-lang="ko"] .eyebrow span[lang="ko"], html[data-lang="ko"] .qt, html[data-lang="ko"] .facts dt span[lang="ko"] { font-family: var(--f-body); letter-spacing: 0.02em; }
-.lead { font-size: 1.15rem; color: var(--ink); max-width: 36em; }
 .muted { color: var(--muted); }
-.balance-line { height: 4px; border: 0; margin: 0; background: linear-gradient(90deg, var(--gold) 0 50%, var(--crimson) 50% 100%); }
 
 /* header */
 .top {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(8px);
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .top .wrap { display: flex; align-items: center; gap: 16px; padding-block: 12px; }
 .brand { display: flex; align-items: center; gap: 10px; font: 600 1.25rem/1 var(--f-display); text-decoration: none; white-space: nowrap; }
-.brand svg { flex: none; }
-.nav { display: flex; gap: 20px; margin-left: auto; font-weight: 500; font-size: 0.95rem; }
-.nav a { text-decoration: none; color: var(--muted); }
+.brand svg { flex: none; transition: transform .45s var(--spring); }
+.brand:hover svg { transform: rotate(-8deg) scale(1.08); }
+.nav { display: flex; gap: 22px; margin-left: auto; font-weight: 500; font-size: 0.95rem; }
+.nav a { text-decoration: none; color: var(--muted); position: relative; }
+.nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: linear-gradient(90deg, var(--gold) 0 50%, var(--crimson) 50%); transform: scaleX(0); transition: transform .25s ease-out; }
 .nav a:hover { color: var(--ink); }
+.nav a:hover::after { transform: scaleX(1); }
 @media (max-width: 860px) { .nav { display: none; } .lang { margin-left: auto; } }
 .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); }
 .lang button {
@@ -95,50 +109,82 @@ html[data-lang="ko"] .eyebrow span[lang="ko"], html[data-lang="ko"] .qt, html[da
   padding: 7px 12px; border-radius: 999px; cursor: pointer;
 }
 .lang button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.balance-line { height: 4px; border: 0; margin: 0; background: linear-gradient(90deg, var(--gold) 0 50%, var(--crimson) 50% 100%); }
 
-section { padding-block: 72px; }
-section + section { border-top: 1px solid var(--line); }
-.section-head { display: grid; gap: 10px; margin-bottom: 36px; max-width: 46em; }
-
-/* hero */
-.hero { padding-block: 56px 40px; }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; align-items: start; }
-@media (max-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } }
-.hero-copy { display: grid; gap: 20px; }
-.status {
-  display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
-  font: 500 0.9rem/1.4 var(--f-mono);
-}
-.status .date { color: var(--ink); }
-.pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 1px dashed var(--muted); color: var(--muted); font: 500 0.78rem/1.3 var(--f-mono); }
-.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+/* buttons: spring lift on hover, squash on press */
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
   font: 600 1rem/1 var(--f-body);
-  padding: 13px 20px; border-radius: 12px; text-decoration: none; cursor: pointer;
+  padding: 14px 22px; border-radius: 12px; text-decoration: none; cursor: pointer;
   border: 1.5px solid var(--ink); background: var(--ink); color: var(--bg);
+  transition: transform .4s var(--spring), box-shadow .2s;
 }
 .btn.ghost { background: transparent; color: var(--ink); }
+.btn.gold { background: var(--gold); border-color: var(--gold); color: #1C1830; }
+.btn.light { background: transparent; border-color: var(--night-ink); color: var(--night-ink); }
+@media (hover: hover) { .btn:hover, .choice:hover { transform: scale(1.08); } }
+.btn:active, .choice:active { transform: scale(.94); transition-duration: .08s; }
 
-/* scale */
+section { padding-block: 80px; }
+.section-head { display: grid; gap: 12px; margin-bottom: 40px; max-width: 46em; }
+
+/* hero: one poster */
+.hero { position: relative; isolation: isolate; color: var(--night-ink); padding-block: 64px 72px; overflow: hidden; background: var(--night); }
+.hero-bg { position: absolute; inset: 0; z-index: -2; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; transform: scale(1.04); }
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(20, 17, 31, .94) 0%, rgba(20, 17, 31, .82) 45%, rgba(20, 17, 31, .55) 100%),
+    linear-gradient(0deg, rgba(20, 17, 31, .85) 0%, rgba(20, 17, 31, 0) 35%);
+}
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 48px; align-items: center; }
+.hero-copy { display: grid; gap: 22px; align-content: start; }
+.hero .eyebrow { color: var(--night-muted); }
+.hero h1 { color: var(--night-ink); }
+.hero h1 .gold { color: #F2C55C; }
+.hero h1 .crim { color: #F0707F; }
+.hero .lead { font-size: 1.18rem; color: var(--night-ink); max-width: 34em; }
+.crown { width: 168px; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .45)); animation: bob 4.5s ease-in-out infinite alternate; }
+@keyframes bob { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-10px) rotate(2deg); } }
+.status { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font: 500 0.92rem/1.4 var(--f-mono); color: var(--night-ink); }
+.pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 1px dashed currentColor; font: 500 0.78rem/1.3 var(--f-mono); opacity: .85; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-map { display: none; }
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  /* on narrow screens the map would be zoomed far in as a backdrop, so show it whole instead */
+  .hero-bg { display: none; }
+  .hero { background: radial-gradient(120% 70% at 20% 0%, var(--night-2), var(--night) 70%); }
+  .hero::before { display: none; }
+  .hero-map { display: grid; gap: 8px; margin: 0; }
+  .hero-map img { border-radius: 14px; }
+  .hero-map figcaption { color: var(--night-muted); font-size: 0.85rem; }
+  .crown { width: 128px; }
+}
+
+/* scale card */
 .scale-card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 22px; display: grid; gap: 14px;
+  background: var(--surface); color: var(--ink); border-radius: 20px;
+  padding: 22px; display: grid; gap: 14px; box-shadow: 0 30px 60px rgba(0, 0, 0, .35);
 }
 .scale-card header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .scale-svg { width: 100%; height: auto; display: block; }
-.scale-readout { display: flex; justify-content: space-between; font: 500 0.9rem/1.3 var(--f-mono); }
+.scale-readout { display: flex; justify-content: space-between; align-items: center; font: 500 0.9rem/1.3 var(--f-mono); }
+.scale-readout span { display: inline-flex; align-items: center; gap: 8px; }
+.scale-readout img { width: 30px; height: 30px; object-fit: contain; }
 .scale-readout .h { color: var(--gold-ink); }
 .scale-readout .d { color: var(--crimson); }
 .lean { text-align: center; font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; min-height: 1.5em; }
-.quest { background: var(--panel); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; }
+.quest { background: var(--panel); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; }
 .quest .qt { font: 500 0.75rem/1.3 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .quest .qx { font-size: 0.98rem; }
 .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 @media (max-width: 420px) { .choices { grid-template-columns: 1fr; } }
 .choice {
   font: 600 0.95rem/1.25 var(--f-body); text-align: left;
-  padding: 12px 14px; border-radius: 10px; cursor: pointer; border: 1.5px solid;
+  padding: 12px 14px; border-radius: 12px; cursor: pointer; border: 1.5px solid;
+  transition: transform .4s var(--spring);
 }
 .choice small { display: block; font: 500 0.72rem/1.3 var(--f-mono); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 4px; }
 .choice.halo { background: var(--gold-soft); border-color: var(--gold); color: var(--ink); }
@@ -149,27 +195,41 @@ section + section { border-top: 1px solid var(--line); }
 .scale-foot p { font-size: 0.85rem; color: var(--muted); max-width: 30em; }
 .linkbtn { font: 500 0.85rem/1 var(--f-mono); background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 6px 0; }
 
-.map { margin: 40px 0 0; display: grid; gap: 10px; }
-.map img { border-radius: var(--radius); width: 100%; aspect-ratio: 1400 / 933; object-fit: cover; }
-figcaption { font-size: 0.88rem; color: var(--muted); }
+/* the split band: the two sides of the scale */
+.split { display: grid; grid-template-columns: 1fr 1fr; }
+.side { padding: 44px max(24px, calc((100vw - 1120px) / 2 + 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: center; }
+.side.halo { background: var(--gold-soft); padding-right: 40px; }
+.side.horns { background: var(--crimson-soft); padding-left: 40px; }
+.side img { width: 92px; height: 92px; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .18)); transition: transform .45s var(--spring); }
+.side:hover img { transform: scale(1.1) rotate(-4deg); }
+.side h3 { font-size: 1.6rem; }
+.side.halo h3 { color: var(--gold-ink); }
+.side.horns h3 { color: var(--crimson); }
+.side p { color: var(--ink); font-size: 0.98rem; margin-top: 6px; }
+.split-note { grid-column: 1 / -1; text-align: center; padding: 14px 24px; font-size: 0.92rem; color: var(--muted); background: var(--surface); border-bottom: 1px solid var(--line); }
+@media (max-width: 760px) {
+  .split { grid-template-columns: 1fr; }
+  .side, .side.halo, .side.horns { padding: 28px 16px; }
+  .side img { width: 72px; height: 72px; }
+}
 
 /* game */
-.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; }
 @media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
 .prose { display: grid; gap: 16px; max-width: 38em; align-content: start; }
 .rule {
-  border-radius: var(--radius); padding: 28px; display: grid; gap: 14px; align-self: start;
-  background: linear-gradient(90deg, var(--gold-soft), var(--crimson-soft));
+  border-radius: var(--radius); padding: 30px; display: grid; gap: 16px; align-self: start;
+  background: linear-gradient(100deg, var(--gold-soft) 15%, var(--crimson-soft) 85%);
+  position: relative; overflow: hidden;
 }
-.rule blockquote { margin: 0; font: 600 1.45rem/1.25 var(--f-display); text-wrap: balance; }
-.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
-.steps li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr); gap: 8px; counter-increment: s; }
-.steps li::before { content: counter(s); font: 500 0.85rem/1.9 var(--f-mono); color: var(--muted); }
+.rule::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, var(--gold) 0 50%, var(--crimson) 50%); }
+.rule blockquote { margin: 0; font: 600 1.6rem/1.2 var(--f-display); text-wrap: balance; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto; gap: 10px; align-items: center; counter-increment: s; }
+.steps li::before { content: counter(s); font: 500 0.85rem/1 var(--f-mono); color: var(--muted); width: 2em; height: 2em; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; }
+.steps img { width: 44px; height: 44px; object-fit: contain; }
 
-.status-cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 48px; }
-.col.wide ul { display: block; columns: 2; column-gap: 28px; }
-.col.wide li { break-inside: avoid; }
-@media (max-width: 560px) { .col.wide ul { columns: 1; } }
+.status-cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 56px; }
 @media (max-width: 860px) { .status-cols { grid-template-columns: minmax(0, 1fr); } }
 .col { display: grid; gap: 12px; align-content: start; }
 .col h3 { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; }
@@ -177,27 +237,33 @@ figcaption { font-size: 0.88rem; color: var(--muted); }
 .dot.built { background: var(--ink); }
 .dot.prog { background: var(--gold); }
 .dot.plan { border: 2px dashed var(--muted); }
-.col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.col ul { list-style: none; margin: 0; padding: 0; }
+.col.wide ul { columns: 2; column-gap: 28px; }
+.col.wide li { break-inside: avoid; }
+@media (max-width: 560px) { .col.wide ul { columns: 1; } }
 .col li { padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
 .col:not(.wide) li:last-child { border-bottom: 0; }
 .col .note { font: 500 0.72rem/1.3 var(--f-mono); color: var(--muted); letter-spacing: 0.03em; }
 
-.fair { margin-top: 48px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; display: grid; gap: 18px; }
+.fair { margin-top: 56px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px; display: grid; gap: 18px; box-shadow: var(--shadow); }
 .fair ul { margin: 0; padding-left: 1.2em; columns: 2; column-gap: 40px; }
 .fair li { break-inside: avoid; margin-bottom: 6px; }
 @media (max-width: 720px) { .fair ul { columns: 1; } }
 
 /* gallery */
-.gallery { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; }
+.gallery { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 20px; }
 .gallery figure { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.g-a { grid-column: span 4; } .g-b { grid-column: span 2; } .g-full { grid-column: span 6; } .g-half { grid-column: span 3; }
-@media (max-width: 760px) { .g-a, .g-b, .g-full, .g-half { grid-column: span 6; } }
-.gallery .shot img { border-radius: 12px; width: 100%; }
-.gallery .art { flex: 1; background: var(--panel); border-radius: 12px; padding: 20px; display: grid; place-items: center; }
-.gallery .art img { max-height: 340px; width: auto; }
-.gallery .sheet { display: grid; place-items: center; background: linear-gradient(180deg, #272C52, #161A35); border-radius: 12px; }
-.gallery .sheet img { border-radius: 12px; }
-.g-note { margin-top: 18px; font-size: 0.88rem; color: var(--muted); }
+.gallery .frame { border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); transition: transform .35s var(--spring), box-shadow .25s; flex: 1; }
+@media (hover: hover) { .gallery figure:hover .frame { transform: translateY(-6px); box-shadow: 0 24px 40px rgba(28, 24, 48, .22); } }
+.g-12 { grid-column: span 12; } .g-7 { grid-column: span 7; } .g-5 { grid-column: span 5; } .g-6 { grid-column: span 6; }
+@media (max-width: 760px) { .g-12, .g-7, .g-5, .g-6 { grid-column: span 12; } }
+.frame img { width: 100%; }
+.frame.crop img { aspect-ratio: 2 / 1; object-fit: cover; height: 100%; }
+.frame.art { background: var(--panel); padding: 22px; display: grid; place-items: center; }
+.frame.art img { max-height: 300px; width: auto; }
+.frame.sheet { background: linear-gradient(180deg, #272C52, #161A35); display: grid; place-items: center; }
+figcaption { font-size: 0.88rem; color: var(--muted); }
+.g-note { margin-top: 20px; font-size: 0.88rem; color: var(--muted); }
 
 /* build */
 .roles { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
@@ -206,56 +272,82 @@ figcaption { font-size: 0.88rem; color: var(--muted); }
 .roles td:first-child { font-weight: 600; white-space: nowrap; padding-right: 20px; }
 .roles tr.human td:first-child { color: var(--gold-ink); }
 .table-scroll { overflow-x: auto; }
-.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 40px; }
-.tool { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 4px; }
+.habits { margin: 0; padding-left: 1.2em; display: grid; gap: 10px; }
+.tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 44px; }
+@media (max-width: 860px) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .tools { grid-template-columns: minmax(0, 1fr); } }
+.tool { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; gap: 4px; transition: transform .35s var(--spring); }
+@media (hover: hover) { .tool:hover { transform: translateY(-4px); } }
 .tool b { font-family: var(--f-display); font-weight: 600; font-size: 1.05rem; }
 .tool span { font-size: 0.9rem; color: var(--muted); }
-.habits { margin: 0; padding-left: 1.2em; display: grid; gap: 10px; }
 
-.numbers { margin-top: 48px; display: grid; gap: 14px; }
-.numbers dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0 28px; }
-.numbers dl > div { display: grid; gap: 2px; padding: 14px 0; border-top: 1px solid var(--line); }
+.numbers { margin-top: 56px; display: grid; gap: 16px; }
+.numbers dl { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .numbers dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.numbers dl > div { display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.numbers dl > div.big { grid-column: span 2; background: linear-gradient(120deg, var(--gold-soft), var(--crimson-soft)); border-color: transparent; }
 .numbers dt { order: 2; font-size: 0.9rem; color: var(--muted); }
-.numbers dd { order: 1; margin: 0; font: 500 1.6rem/1.2 var(--f-mono); font-variant-numeric: tabular-nums; }
+.numbers dd { order: 1; margin: 0; font: 600 clamp(1.8rem, 4vw, 2.6rem)/1.05 var(--f-display); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.numbers dl > div.big dd { font-size: clamp(2.2rem, 5vw, 3.4rem); }
+@media (max-width: 420px) { .numbers dl > div { padding: 16px; } }
 
 /* roadmap */
-.road { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-width: 820px; }
-.road li { display: grid; grid-template-columns: 11em minmax(0, 1fr); gap: 20px; padding: 18px 0; border-top: 1px solid var(--line); }
+.road { list-style: none; margin: 0; padding: 0; display: grid; max-width: 860px; position: relative; }
+.road li { display: grid; grid-template-columns: 12em minmax(0, 1fr); gap: 24px; padding: 20px 0; border-top: 1px solid var(--line); }
 .road li:last-child { border-bottom: 1px solid var(--line); }
 @media (max-width: 600px) { .road li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
-.road time, .road .when { font: 500 0.92rem/1.5 var(--f-mono); color: var(--muted); }
-.road b { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; display: block; margin-bottom: 2px; }
+.road .when { font: 500 0.92rem/1.5 var(--f-mono); color: var(--muted); }
+.road b { font-family: var(--f-display); font-weight: 600; font-size: 1.2rem; display: block; margin-bottom: 2px; }
 .road li.key .when { color: var(--ink); }
-.road li.key b::after { content: ""; display: inline-block; width: 10px; height: 10px; margin-left: 10px; border-radius: 50%; background: linear-gradient(90deg, var(--gold) 0 50%, var(--crimson) 50%); vertical-align: middle; }
+.road li.key b::after { content: ""; display: inline-block; width: 11px; height: 11px; margin-left: 10px; border-radius: 50%; background: linear-gradient(90deg, var(--gold) 0 50%, var(--crimson) 50%); vertical-align: middle; }
 
-/* about + contact */
-.facts { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 24px; align-content: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+/* about */
+.facts { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 24px; align-content: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow); }
 .facts dt { font: 500 0.78rem/1.9 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .facts dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
 
+/* contact: night band */
+.contact { background: radial-gradient(90% 120% at 15% 0%, var(--night-2), var(--night) 70%); color: var(--night-ink); position: relative; }
+.contact::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: linear-gradient(90deg, #F2C55C 0 50%, #E2566A 50%); }
 .contact-box { display: grid; gap: 20px; justify-items: start; }
+.contact .eyebrow, .contact .muted { color: var(--night-muted); }
+.contact-badges { display: flex; gap: 10px; }
+.contact-badges img { width: 56px; height: 56px; object-fit: contain; }
 .email-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .email {
-  font: 500 clamp(1.25rem, 4vw, 2rem)/1.2 var(--f-mono);
-  user-select: all; overflow-wrap: anywhere;
-  padding: 14px 18px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line);
+  font: 500 clamp(1.2rem, 4vw, 2rem)/1.2 var(--f-mono);
+  user-select: all; overflow-wrap: anywhere; color: var(--night-ink);
+  padding: 14px 18px; border-radius: 12px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .18);
 }
-.copied { font: 500 0.85rem/1 var(--f-mono); color: var(--gold-ink); min-height: 1em; }
+.copied { font: 500 0.85rem/1 var(--f-mono); color: #F2C55C; min-height: 1em; }
 
-footer { padding-block: 32px 48px; font-size: 0.85rem; color: var(--muted); }
+footer { padding-block: 28px 44px; font-size: 0.85rem; color: var(--night-muted); background: var(--night); }
 footer .wrap { display: grid; gap: 6px; }
 
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+/* entrance: content is complete at rest; elements that scroll into view replay a short rise */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.in { animation: rise .28s ease-out both; }
+.in.stagger > * { animation: rise .28s ease-out both; animation-delay: calc(var(--i, 0) * 30ms); }
+.in.stagger { animation: none; }
+
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
 </style>
 
 <div class="top">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Glorious Studio">
-      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
-        <path d="M14 2a12 12 0 0 0 0 24z" fill="var(--gold)"/>
-        <path d="M14 2a12 12 0 0 1 0 24z" fill="var(--crimson)"/>
-        <circle cx="14" cy="14" r="4.5" fill="var(--bg)"/>
+      <svg width="32" height="30" viewBox="-1 0 33 30" aria-hidden="true">
+        <ellipse cx="4" cy="2.6" rx="3.4" ry="1.2" fill="none" stroke="var(--gold)" stroke-width="1.4"/>
+        <path d="M4 27 L4 8.5 L10.2 16 L16 7 L14.6 13 L17.2 18 L15 22.5 L16.4 27 Z" fill="var(--gold)"/>
+        <circle cx="4" cy="7.4" r="2.3" fill="var(--gold)"/>
+        <path d="M17.2 7 L22 16 L28 8.5 L28 27 L17.6 27 L16.2 22.5 L18.4 18 L15.8 13 Z" fill="var(--crimson)"/>
+        <path d="M26.3 10.5 C25.8 6.8 27.1 4 30.2 2.4 C29.2 5 29.4 7.6 30.1 10.2 Z" fill="var(--crimson)"/>
+        <rect x="4" y="23" width="12.6" height="4" fill="#000" opacity=".16"/>
+        <rect x="17.4" y="23" width="10.6" height="4" fill="#000" opacity=".22"/>
       </svg>
       Glorious Studio
     </a>
@@ -276,20 +368,22 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
 <main id="top">
   <section class="hero">
+    <div class="hero-bg" aria-hidden="true"><img src="img/hero.jpg" width="1400" height="933" alt=""></div>
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero-copy">
+          <img class="crown" src="img/shot3.png" width="478" height="427" alt="The broken crown from Halo & Horns: half gold with a halo, half red with horns.">
           <p class="eyebrow"><span lang="en">Glorious Studio · Game studio in South Korea</span><span lang="ko">Glorious Studio · 대한민국 게임 스튜디오</span></p>
-          <h1><span lang="en">Every choice tilts you toward angel or devil.</span><span lang="ko">모든 선택은 천사 아니면 악마 쪽으로 기운다.</span></h1>
+          <h1><span lang="en">Every choice tilts you toward <span class="gold">angel</span> or <span class="crim">devil</span>.</span><span lang="ko">모든 선택은 <span class="gold">천사</span> 아니면 <span class="crim">악마</span> 쪽으로 기운다.</span></h1>
           <p class="lead" lang="en">We are making <b>Halo &amp; Horns</b>, an action RPG on Roblox. Help other players or play the villain, and the result shows as a halo or horns over your own avatar.</p>
           <p class="lead" lang="ko">로블록스 액션 RPG <b>Halo &amp; Horns(선악 키우기)</b>를 만들고 있습니다. 다른 플레이어를 돕든 악당이 되든, 그 결과가 내 아바타 위에 후광이나 뿔로 나타납니다.</p>
           <div class="status">
-            <span class="date"><span lang="en">Beta opens 31 Oct 2026, 11:00 KST</span><span lang="ko">베타 2026년 10월 31일 11:00 (한국 시간)</span></span>
+            <span><span lang="en">Beta opens 31 Oct 2026, 11:00 KST</span><span lang="ko">베타 2026년 10월 31일 11:00 (한국 시간)</span></span>
             <span class="pill"><span lang="en">Not public yet</span><span lang="ko">아직 공개 전</span></span>
           </div>
           <div class="actions">
-            <a class="btn" href="#game"><span lang="en">See the game</span><span lang="ko">게임 보기</span></a>
-            <a class="btn ghost" href="#contact"><span lang="en">Contact us</span><span lang="ko">연락하기</span></a>
+            <a class="btn gold" href="#game"><span lang="en">See the game</span><span lang="ko">게임 보기</span></a>
+            <a class="btn light" href="#contact"><span lang="en">Contact us</span><span lang="ko">연락하기</span></a>
           </div>
         </div>
 
@@ -319,8 +413,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
             </g>
           </svg>
           <div class="scale-readout" aria-live="polite">
-            <span class="h">Halo <span id="n-halo">0</span></span>
-            <span class="d">Horns <span id="n-horns">0</span></span>
+            <span class="h"><img src="img/deco/halo.png" width="192" height="153" alt="">Halo <b id="n-halo">0</b></span>
+            <span class="d">Horns <b id="n-horns">0</b><img src="img/deco/horns.png" width="179" height="192" alt=""></span>
           </div>
           <p class="lean" id="lean" aria-live="polite"></p>
           <div class="quest">
@@ -336,37 +430,57 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
             <button type="button" class="linkbtn" id="reset"><span lang="en">Reset</span><span lang="ko">처음으로</span></button>
           </div>
         </div>
-      </div>
 
-      <figure class="map">
-        <img src="img/hero.jpg" width="1400" height="933" alt="Painted world map of Halo & Horns: the white Halo town at the top left, the lava Horns fortress at the bottom left, and meadow, pumpkin patch, woods and ruins islands joined by bridges.">
-        <figcaption><span lang="en">The world map from the game. The Halo town sits at the top left and the Horns fortress at the bottom left. Hunting grounds spread east over islands joined by bridges.</span><span lang="ko">게임 속 세계 지도. 왼쪽 위가 Halo 마을, 왼쪽 아래가 Horns 요새이고, 사냥터 섬들이 다리로 이어져 동쪽으로 펼쳐집니다.</span></figcaption>
-      </figure>
+        <figure class="hero-map">
+          <img src="img/hero.jpg" width="1400" height="933" alt="Painted world map of Halo & Horns: the white Halo town at the top left, the lava Horns fortress at the bottom left, and hunting islands joined by bridges.">
+          <figcaption><span lang="en">The world map from the game.</span><span lang="ko">게임 속 세계 지도.</span></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
+  <div class="split" data-reveal>
+    <div class="side halo">
+      <img src="img/deco/halo.png" width="192" height="153" alt="Halo rank badge from the game">
+      <div>
+        <h3>Halo</h3>
+        <p lang="en">Angel choices: give things back, help new players, and chase down anyone with Wanted stars.</p>
+        <p lang="ko">천사 쪽 선택: 물건을 돌려주고, 새 플레이어를 돕고, 현상수배 별이 붙은 사람을 쫓습니다.</p>
+      </div>
+    </div>
+    <div class="side horns">
+      <img src="img/deco/horns.png" width="179" height="192" alt="Horns rank badge from the game">
+      <div>
+        <h3>Horns</h3>
+        <p lang="en">Devil choices: finders keepers, play the villain, and carry a bounty on your head.</p>
+        <p lang="ko">악마 쪽 선택: 주운 건 내 것, 악당 노릇, 그리고 머리 위에 붙는 현상금.</p>
+      </div>
+    </div>
+    <p class="split-note"><span lang="en">Two teams, the Knights of Light and the Horn Legion, share one scale. Players on either team can lean either way.</span><span lang="ko">두 팀(빛의 기사단, 뿔 군단)이 저울 하나를 함께 씁니다. 어느 팀이든 어느 쪽으로나 기울 수 있습니다.</span></p>
+  </div>
+
   <section id="game">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <p class="eyebrow"><span lang="en">The game</span><span lang="ko">게임</span></p>
         <h2>Halo &amp; Horns</h2>
       </div>
       <div class="two">
-        <div class="prose">
+        <div class="prose" data-reveal>
           <p lang="en">You join the Knights of Light (Halo) or the Horn Legion (Horns), pick a Warrior, Mage or Archer, hunt cute monsters, and collect loot to grow stronger. Combat is simple: one tap is one attack. An optional quest unlocks auto-combat, which only ever hits monsters. Fights against other players happen only in marked PvP zones, and new players are protected.</p>
           <p lang="ko">빛의 기사단(Halo)이나 뿔 군단(Horns)에 들어가 전사·마법사·궁수 중 하나를 고르고, 귀여운 몬스터를 사냥하고, 전리품을 모아 강해집니다. 전투는 쉽습니다. 한 번 누르면 한 번 공격합니다. 선택 퀘스트를 깨면 자동 전투가 열리는데, 자동 전투는 몬스터만 때립니다. 플레이어끼리 싸움은 표시된 PvP 구역에서만 일어나고, 새로 온 플레이어는 보호받습니다.</p>
           <h3><span lang="en">The first ten minutes</span><span lang="ko">처음 10분</span></h3>
-          <ol class="steps">
-            <li><span lang="en">A short 3D intro (skippable): the broken crown in the sky splits into shards.</span><span lang="ko">짧은 3D 인트로(건너뛰기 가능): 하늘의 깨진 왕관이 조각으로 흩어집니다.</span></li>
-            <li><span lang="en">Pick a faction and a class. A guide from your side gives the first mission.</span><span lang="ko">진영과 직업을 고릅니다. 내 진영의 안내자가 첫 임무를 줍니다.</span></li>
-            <li><span lang="en">Get your first weapon at the Forge.</span><span lang="ko">대장간에서 첫 무기를 받습니다.</span></li>
-            <li><span lang="en">Hunt slimes in the Squishy Meadow.</span><span lang="ko">말랑 초원에서 슬라임을 사냥합니다.</span></li>
-            <li><span lang="en">The first choice, about 3 minutes in: a slime drops a kid's lunchbox. Give it back, or take one bite?</span><span lang="ko">약 3분째 첫 선택: 슬라임이 아이의 도시락을 떨어뜨렸습니다. 돌려줄까, 한 입 먹을까?</span></li>
+          <ol class="steps" data-stagger>
+            <li><span><span lang="en">A short 3D intro (skippable): the broken crown in the sky splits into shards.</span><span lang="ko">짧은 3D 인트로(건너뛰기 가능): 하늘의 깨진 왕관이 조각으로 흩어집니다.</span></span><span></span></li>
+            <li><span><span lang="en">Pick a faction and a class. A guide from your side gives the first mission.</span><span lang="ko">진영과 직업을 고릅니다. 내 진영의 안내자가 첫 임무를 줍니다.</span></span><img src="img/deco/choseside.png" width="192" height="192" alt="" loading="lazy"></li>
+            <li><span><span lang="en">Get your first weapon at the Forge.</span><span lang="ko">대장간에서 첫 무기를 받습니다.</span></span><span></span></li>
+            <li><span><span lang="en">Hunt slimes in the Squishy Meadow.</span><span lang="ko">말랑 초원에서 슬라임을 사냥합니다.</span></span><img src="img/deco/firstslime.png" width="192" height="192" alt="" loading="lazy"></li>
+            <li><span><span lang="en">The first choice, about 3 minutes in: a slime drops a kid's lunchbox. Give it back, or take one bite?</span><span lang="ko">약 3분째 첫 선택: 슬라임이 아이의 도시락을 떨어뜨렸습니다. 돌려줄까, 한 입 먹을까?</span></span><img src="img/deco/lunchbox.png" width="192" height="192" alt="" loading="lazy"></li>
           </ol>
           <p class="muted" lang="en">After that: loot and enhancement scrolls, harder zones (Goblin Woods at Lv10, Skeleton Ruins at Lv25), Halloween minibosses, and a crown war between the two sides every 10 minutes that turns the sky the winner's color.</p>
           <p class="muted" lang="ko">그다음: 전리품과 강화 주문서, 더 어려운 구역(고블린 숲 Lv10, 해골 폐허 Lv25), 할로윈 미니 보스, 그리고 10분마다 열리는 두 진영의 왕관 전쟁(이긴 쪽 색으로 하늘이 바뀜).</p>
         </div>
-        <div class="rule">
+        <div class="rule" data-reveal>
           <p class="eyebrow"><span lang="en">Our one design rule</span><span lang="ko">우리의 단 하나의 디자인 규칙</span></p>
           <blockquote><span lang="en">Every action tilts toward angel or devil.</span><span lang="ko">모든 행동은 천사 아니면 악마 쪽으로 기운다.</span></blockquote>
           <p lang="en">A new system goes into the game only if it follows this rule. Devil acts earn Wanted stars and a bounty, and angel-side players can hunt you down. Revenge and justice systems grow from the same choices, and everything you do shows over your own Roblox avatar.</p>
@@ -375,7 +489,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
       </div>
 
       <div class="status-cols">
-        <div class="col wide">
+        <div class="col wide" data-reveal>
           <h3><span class="dot built" aria-hidden="true"></span><span lang="en">Built</span><span lang="ko">만듦</span></h3>
           <ul>
             <li><span lang="en">Skippable first-time 3D intro</span><span lang="ko">처음 한 번 나오는 3D 인트로(건너뛰기 가능)</span></li>
@@ -394,7 +508,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
             <li><span lang="en">One HUD layout for PC and phone</span><span lang="ko">PC와 폰에 같은 HUD 배치</span></li>
           </ul>
         </div>
-        <div class="col">
+        <div class="col" data-reveal>
           <h3><span class="dot prog" aria-hidden="true"></span><span lang="en">In progress</span><span lang="ko">만드는 중</span></h3>
           <ul>
             <li><span lang="en">Game passes: 2x XP, 2x Gold, VIP, halo and horn cosmetics</span><span lang="ko">게임 패스: 경험치 2배, 골드 2배, VIP, 후광·뿔 꾸미기</span></li>
@@ -404,7 +518,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
             <li><span lang="en">Full art redraw with Adobe Firefly, and 3D world props with Tripo</span><span lang="ko">Adobe Firefly로 그림 전부 다시 그리기, Tripo로 3D 소품</span></li>
           </ul>
         </div>
-        <div class="col">
+        <div class="col" data-reveal>
           <h3><span class="dot plan" aria-hidden="true"></span><span lang="en">Planned</span><span lang="ko">계획</span></h3>
           <ul>
             <li><span lang="en">7-day attendance board; your day count never resets</span><span lang="ko">7일 출석판, 모은 날 수는 0으로 돌아가지 않음</span> <span class="note"><span lang="en">before beta</span><span lang="ko">베타 전</span></span></li>
@@ -417,7 +531,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
         </div>
       </div>
 
-      <div class="fair">
+      <div class="fair" data-reveal>
         <h3><span lang="en">Fair play, by design</span><span lang="ko">공정하게, 처음부터</span></h3>
         <ul lang="en">
           <li>Stats are never for sale.</li>
@@ -446,33 +560,33 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
   <section id="gallery">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <p class="eyebrow"><span lang="en">Gallery</span><span lang="ko">사진</span></p>
         <h2><span lang="en">From our play tests</span><span lang="ko">시험 플레이에서</span></h2>
       </div>
       <div class="gallery">
-        <figure class="g-a">
-          <div class="shot"><img src="img/shot1.jpg" width="900" height="442" loading="lazy" alt="A player fights the crowned Pumpkin King boss in the pumpkin patch while pumpkin slimes hop nearby, with the English game HUD."></div>
+        <figure class="g-12" data-reveal>
+          <div class="frame"><img src="img/hero.jpg" width="1400" height="933" loading="lazy" alt="Painted world map of Halo & Horns: the white Halo town at the top left, the lava Horns fortress at the bottom left, and meadow, pumpkin patch, woods and ruins islands joined by bridges."></div>
+          <figcaption><span lang="en">The world map. The Halo town sits at the top left and the Horns fortress at the bottom left. Hunting grounds spread east over islands joined by bridges.</span><span lang="ko">세계 지도. 왼쪽 위가 Halo 마을, 왼쪽 아래가 Horns 요새이고, 사냥터 섬들이 다리로 이어져 동쪽으로 펼쳐집니다.</span></figcaption>
+        </figure>
+        <figure class="g-7" data-reveal>
+          <div class="frame crop"><img src="img/shot1.jpg" width="900" height="442" loading="lazy" alt="A player fights the crowned Pumpkin King boss in the pumpkin patch while pumpkin slimes hop nearby, with the English game HUD."></div>
           <figcaption><span lang="en">Fighting the Pumpkin King in the pumpkin patch.</span><span lang="ko">호박밭에서 호박왕과 싸우는 장면.</span></figcaption>
         </figure>
-        <figure class="g-b">
-          <div class="art"><img src="img/shot3.png" width="478" height="427" loading="lazy" alt="3D model of a broken crown, half gold with a floating halo and half red with devil horns."></div>
-          <figcaption><span lang="en">The broken crown, the game's symbol: half halo, half horns.</span><span lang="ko">게임의 상징, 깨진 왕관: 반은 후광, 반은 뿔.</span></figcaption>
-        </figure>
-        <figure class="g-full">
-          <div class="shot"><img src="img/shot2.jpg" width="900" height="344" loading="lazy" alt="A player meets two green slimes in the starting meadow; one says 'Blub?' in a speech bubble."></div>
-          <figcaption><span lang="en">Meeting Shard Slimes in the starting meadow.</span><span lang="ko">시작 초원에서 조각 슬라임을 만난 장면.</span></figcaption>
-        </figure>
-        <figure class="g-half">
-          <div class="art"><img src="img/shot4.png" width="700" height="270" loading="lazy" alt="Three friendly 3D monsters: a crystal-topped slime cube, a little ghost with a lantern, and a smiling pumpkin slime."></div>
-          <figcaption><span lang="en">3D monsters: crystal slime, little ghost, pumpkin slime.</span><span lang="ko">3D 몬스터: 수정 슬라임, 꼬마 유령, 호박 슬라임.</span></figcaption>
-        </figure>
-        <figure class="g-half">
-          <div class="art"><img src="img/shot5.png" width="700" height="336" loading="lazy" alt="The white winged Halo town gate and the dark lava Horns town gate as 3D models."></div>
+        <figure class="g-5" data-reveal>
+          <div class="frame art"><img src="img/shot5.png" width="700" height="336" loading="lazy" alt="The white winged Halo town gate and the dark lava Horns town gate as 3D models."></div>
           <figcaption><span lang="en">The Halo and Horns town gates in 3D.</span><span lang="ko">Halo 마을 문과 Horns 마을 문(3D).</span></figcaption>
         </figure>
-        <figure class="g-full">
-          <div class="sheet"><img src="img/shot6.jpg" width="900" height="384" loading="lazy" alt="A sheet of the game's UI art: attack and skill buttons, halo and horns level badges, a jelly sword, a gold coin and monster icons."></div>
+        <figure class="g-5" data-reveal>
+          <div class="frame art"><img src="img/shot4.png" width="700" height="270" loading="lazy" alt="Three friendly 3D monsters: a crystal-topped slime cube, a little ghost with a lantern, and a smiling pumpkin slime."></div>
+          <figcaption><span lang="en">3D monsters: crystal slime, little ghost, pumpkin slime.</span><span lang="ko">3D 몬스터: 수정 슬라임, 꼬마 유령, 호박 슬라임.</span></figcaption>
+        </figure>
+        <figure class="g-7" data-reveal>
+          <div class="frame crop"><img src="img/shot2.jpg" width="900" height="344" loading="lazy" alt="A player meets two green slimes in the starting meadow; one says 'Blub?' in a speech bubble."></div>
+          <figcaption><span lang="en">Meeting Shard Slimes in the starting meadow.</span><span lang="ko">시작 초원에서 조각 슬라임을 만난 장면.</span></figcaption>
+        </figure>
+        <figure class="g-12" data-reveal>
+          <div class="frame sheet"><img src="img/shot6.jpg" width="900" height="384" loading="lazy" alt="A sheet of the game's UI art: attack and skill buttons, halo and horns level badges, a jelly sword, a gold coin and monster icons."></div>
           <figcaption><span lang="en">Some of the game's UI art: buttons, level badges, items and monster icons.</span><span lang="ko">게임 UI 그림 일부: 버튼, 레벨 배지, 아이템, 몬스터 아이콘.</span></figcaption>
         </figure>
       </div>
@@ -482,14 +596,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
   <section id="build">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <p class="eyebrow"><span lang="en">How we build</span><span lang="ko">만드는 방법</span></p>
         <h2><span lang="en">One director, nine Claude Code sessions</span><span lang="ko">디렉터 1명, Claude Code 세션 9개</span></h2>
         <p lang="en">Glorious Studio is one person. The founder makes the big calls: design, art picks, money and the schedule. A team of Claude Code agent sessions writes the code, makes the art and sound, and tests the game. Each session has one job, and no session approves its own work.</p>
         <p lang="ko">Glorious Studio는 사람 한 명입니다. 창업자가 큰 결정(디자인, 그림 선택, 돈, 일정)을 하고, Claude Code 에이전트 세션 팀이 코드를 쓰고 그림과 소리를 만들고 게임을 시험합니다. 세션마다 맡은 일이 하나씩 있고, 어떤 세션도 자기 일을 스스로 승인하지 못합니다.</p>
       </div>
       <div class="two">
-        <div class="table-scroll">
+        <div class="table-scroll" data-reveal>
           <table class="roles">
             <thead><tr><th><span lang="en">Role</span><span lang="ko">역할</span></th><th><span lang="en">What it does</span><span lang="ko">하는 일</span></th></tr></thead>
             <tbody>
@@ -505,7 +619,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
             </tbody>
           </table>
         </div>
-        <div class="prose">
+        <div class="prose" data-reveal>
           <h3><span lang="en">How we keep it honest</span><span lang="ko">정직하게 만드는 습관</span></h3>
           <ul class="habits" lang="en">
             <li>Offline tests run the game's Luau code without Studio. Most of them break the code on purpose to prove the test catches it.</li>
@@ -522,7 +636,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
         </div>
       </div>
 
-      <div class="tools">
+      <div class="tools" data-stagger>
         <div class="tool"><b>Claude Code</b><span lang="en">All code, tools and coordination between sessions</span><span lang="ko">모든 코드·도구, 세션 사이 조율</span></div>
         <div class="tool"><b>Adobe Firefly</b><span lang="en">2D art and sound effects</span><span lang="ko">2D 그림과 효과음</span></div>
         <div class="tool"><b>Tripo</b><span lang="en">3D models from approved 2D art</span><span lang="ko">승인된 2D 그림으로 3D 모델</span></div>
@@ -533,16 +647,17 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
       <div class="numbers">
         <p class="eyebrow"><span lang="en">Counted from our repository on 8 Oct 2026</span><span lang="ko">2026년 10월 8일 저장소에서 센 숫자</span></p>
-        <dl>
-          <div><dt><span lang="en">First commit</span><span lang="ko">첫 커밋</span></dt><dd>2026-10-02</dd></div>
-          <div><dt><span lang="en">Commits</span><span lang="ko">커밋</span></dt><dd>1,000+</dd></div>
+        <dl data-stagger>
+          <div class="big"><dt><span lang="en">Commits since the first one on 2 Oct 2026</span><span lang="ko">2026년 10월 2일 첫 커밋부터 쌓인 커밋</span></dt><dd>1,000+</dd></div>
+          <div class="big"><dt><span lang="en">Lines of Luau game code</span><span lang="ko">Luau 게임 코드 줄 수</span></dt><dd>65,000+</dd></div>
           <div><dt><span lang="en">Luau source files</span><span lang="ko">Luau 소스 파일</span></dt><dd>110</dd></div>
-          <div><dt><span lang="en">Lines of Luau</span><span lang="ko">Luau 코드 줄</span></dt><dd>65,000+</dd></div>
           <div><dt><span lang="en">Offline test suites (54 with mutation checks)</span><span lang="ko">오프라인 시험 묶음 (54개는 일부러 망가뜨리기 검사 포함)</span></dt><dd>66</dd></div>
           <div><dt><span lang="en">Approved 2D images (405 from Adobe Firefly)</span><span lang="ko">승인된 2D 그림 (405개는 Adobe Firefly)</span></dt><dd>500+</dd></div>
           <div><dt><span lang="en">3D models generated with Tripo</span><span lang="ko">Tripo로 만든 3D 모델</span></dt><dd>190+</dd></div>
           <div><dt><span lang="en">Sound effects made</span><span lang="ko">만든 효과음</span></dt><dd>57</dd></div>
           <div><dt><span lang="en">Monster kinds</span><span lang="ko">몬스터 종류</span></dt><dd>12</dd></div>
+          <div><dt><span lang="en">Claude Code sessions</span><span lang="ko">Claude Code 세션</span></dt><dd>9</dd></div>
+          <div><dt><span lang="en">Days until the beta</span><span lang="ko">베타까지 남은 날</span></dt><dd id="days-left">23</dd></div>
         </dl>
       </div>
     </div>
@@ -550,11 +665,11 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
   <section id="roadmap">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <p class="eyebrow"><span lang="en">Roadmap</span><span lang="ko">로드맵</span></p>
         <h2><span lang="en">From beta to Steam</span><span lang="ko">베타에서 스팀까지</span></h2>
       </div>
-      <ol class="road">
+      <ol class="road" data-stagger>
         <li><time class="when" datetime="2026-10-24">2026-10-24</time><div><b><span lang="en">Feature freeze</span><span lang="ko">기능 마감</span></b><span lang="en">Then a week of testing and bug fixes only.</span><span lang="ko">그 뒤 일주일은 시험과 버그 수정만 합니다.</span></div></li>
         <li class="key"><time class="when" datetime="2026-10-31T11:00+09:00">2026-10-31 11:00 KST</time><div><b><span lang="en">Beta on Roblox</span><span lang="ko">로블록스 베타</span></b><span lang="en">The first public release, on Halloween weekend.</span><span lang="ko">첫 공개, 할로윈 주말.</span></div></li>
         <li><span class="when"><span lang="en">Late Nov 2026 (target)</span><span lang="ko">2026년 11월 말 (목표)</span></span><div><b><span lang="en">Artisan update</span><span lang="ko">장인 업데이트</span></b><span lang="en">A third side with crafting and gathering. If it slips, it ships with the full launch.</span><span lang="ko">제작·채집을 하는 세 번째 진영. 늦어지면 정식 출시 때 함께 나옵니다.</span></div></li>
@@ -567,7 +682,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 
   <section id="about">
     <div class="wrap two">
-      <div class="prose">
+      <div class="prose" data-reveal>
         <p class="eyebrow"><span lang="en">About</span><span lang="ko">소개</span></p>
         <h2>Glorious Studio</h2>
         <p lang="en">Glorious Studio is a one-person game studio in South Korea. The founder has no programming or art background, just a long love of games. After spending a lot of time and money on other people's games, they decided to make one.</p>
@@ -575,7 +690,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
         <p lang="en">The founder directs, and Claude Code sessions build, draw and test. Halo &amp; Horns on Roblox is the first game. Next, we want to make a PC game for Steam.</p>
         <p lang="ko">창업자가 방향을 정하고, Claude Code 세션들이 만들고 그리고 시험합니다. 첫 게임은 로블록스의 Halo &amp; Horns이고, 다음에는 스팀용 PC 게임을 만들고 싶습니다.</p>
       </div>
-      <dl class="facts">
+      <dl class="facts" data-reveal>
         <dt><span lang="en">Studio</span><span lang="ko">스튜디오</span></dt><dd>Glorious Studio</dd>
         <dt><span lang="en">Country</span><span lang="ko">나라</span></dt><dd><span lang="en">South Korea</span><span lang="ko">대한민국</span></dd>
         <dt><span lang="en">Started</span><span lang="ko">시작</span></dt><dd><span lang="en">October 2026</span><span lang="ko">2026년 10월</span></dd>
@@ -586,14 +701,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
     </div>
   </section>
 
-  <section id="contact">
-    <div class="wrap contact-box">
+  <section id="contact" class="contact">
+    <div class="wrap contact-box" data-reveal>
+      <div class="contact-badges" aria-hidden="true">
+        <img src="img/deco/halo.png" width="192" height="153" alt="" loading="lazy">
+        <img src="img/deco/horns.png" width="179" height="192" alt="" loading="lazy">
+      </div>
       <p class="eyebrow"><span lang="en">Contact</span><span lang="ko">연락</span></p>
       <h2><span lang="en">Write to us</span><span lang="ko">메일 보내기</span></h2>
       <p class="muted"><span lang="en">Questions about Halo &amp; Horns, partnerships or press.</span><span lang="ko">Halo &amp; Horns, 협업, 취재 문의.</span></p>
       <div class="email-row">
         <span class="email" id="email">jian@glorious.ai.kr</span>
-        <button type="button" class="btn" id="copy-email"><span lang="en">Copy address</span><span lang="ko">주소 복사</span></button>
+        <button type="button" class="btn gold" id="copy-email"><span lang="en">Copy address</span><span lang="ko">주소 복사</span></button>
       </div>
       <p class="copied" id="copied" aria-live="polite"></p>
     </div>
@@ -660,9 +779,12 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
     panL.setAttribute("transform", "translate(" + (PX - ARM * c).toFixed(2) + " " + (PY - ARM * s).toFixed(2) + ")");
     panR.setAttribute("transform", "translate(" + (PX + ARM * c).toFixed(2) + " " + (PY + ARM * s).toFixed(2) + ")");
   }
+  /* a damped spring, so the beam overshoots a little and settles like a real scale */
+  var vel = 0;
   function step() {
-    angle += (target - angle) * 0.14;
-    if (Math.abs(target - angle) < 0.05) { angle = target; draw(angle); raf = 0; return; }
+    vel = (vel + (target - angle) * 0.08) * 0.82;
+    angle += vel;
+    if (Math.abs(target - angle) < 0.03 && Math.abs(vel) < 0.03) { angle = target; vel = 0; draw(angle); raf = 0; return; }
     draw(angle);
     raf = requestAnimationFrame(step);
   }
@@ -700,6 +822,12 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
     state.halo = 0; state.horns = 0; state.q = 0; renderQuest(); renderLean(); tilt();
   });
 
+  /* days until the beta (31 Oct 2026, 11:00 KST) */
+  var left = Math.ceil((Date.UTC(2026, 9, 31, 2, 0) - Date.now()) / 86400000);
+  var dl = document.getElementById("days-left");
+  if (left > 0) dl.textContent = String(left);
+  else dl.closest("div").hidden = true;
+
   /* copy email */
   var copied = document.getElementById("copied");
   function selectEmail() {
@@ -715,6 +843,23 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
         function () { selectEmail(); copied.textContent = manual; });
     } catch (e) { selectEmail(); copied.textContent = manual; }
   });
+
+  /* entrance: everything is visible at rest; only things that scroll into view later replay a short rise */
+  document.querySelectorAll("[data-stagger]").forEach(function (list) {
+    Array.prototype.forEach.call(list.children, function (c, i) { c.style.setProperty("--i", i); });
+    list.classList.add("stagger");
+  });
+  if (!reduce && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    var vh = window.innerHeight || 800;
+    document.querySelectorAll("[data-reveal], [data-stagger]").forEach(function (el) {
+      if (el.getBoundingClientRect().top > vh) io.observe(el);
+    });
+  }
 
   var saved = null;
   try { saved = localStorage.getItem("gs-lang"); } catch (e) {}
