@@ -2280,22 +2280,28 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 		state.Token += 1
 		local token = state.Token
 		task.spawn(function()
-			local width = label.AbsoluteSize.X / currentScale()
+			-- measured in real px at the size the engine draws (TextSize x UIScale, rounded): on a small PC window (UIScale
+			-- 0.5) the logical measure gave a 2-line toast 1 px too little and its 2nd line became "..." (UiSandbox 991x451
+			-- 2026-10-08, after the window closed)
+			local s = currentScale()
+			local width = label.AbsoluteSize.X
 			if width <= 1 or not label.Parent then return end
+			local px = math.max(1, math.floor(label.TextSize * s + 0.5))
 			local params = Instance.new("GetTextBoundsParams")
 			params.Text = label.Text
 			params.Font = label.FontFace
-			params.Size = label.TextSize
+			params.Size = px
 			params.Width = width
 			local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
 			params:Destroy()
 			if token ~= state.Token or not ok or not label.Parent then return end
-			local lines = math.max(1, math.floor(bounds.Y / math.max(1, label.TextSize) + 0.5))
-			local h = math.ceil(bounds.Y + lines * label.TextSize * NOTIFY.WrapSlack)
+			local lines = math.max(1, math.floor(bounds.Y / px + 0.5))
+			local h = math.ceil((bounds.Y + lines * px * NOTIFY.WrapSlack) / s)
 			-- maxLines may be a function: a toast reads NOTIFY.Avoid again on every fit (one line only while a window is open)
 			local cap = type(maxLines) == "function" and maxLines() or maxLines
 			if cap then
-				h = math.min(h, math.ceil(label.TextSize * (NOTIFY.WrapLineH + NOTIFY.WrapSlack) * cap))
+				local lineH = math.max(label.TextSize * NOTIFY.WrapLineH, bounds.Y / lines / s)
+				h = math.min(h, math.ceil((lineH + label.TextSize * NOTIFY.WrapSlack) * cap))
 			end
 			if minH then h = math.max(h, minH) end
 			local size = label.Size
