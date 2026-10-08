@@ -4,8 +4,8 @@
   "namedChecks": 36,
   "failing": [],
   "mutations": {
-    "total": 11,
-    "caught": 11,
+    "total": 13,
+    "caught": 13,
     "results": [
       {
         "mutation": "claim ignores CanClaim",
@@ -105,7 +105,7 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: Forge step from the meadow -> a trip to the Crossroads",
-          "rows :: Forge step in the Crossroads -> the anvil (BlacksmithVisited ignored)"
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)"
         ]
       },
       {
@@ -115,8 +115,27 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: Forge step from the meadow -> a trip to the Crossroads",
-          "rows :: Forge step in the Crossroads -> the anvil (BlacksmithVisited ignored)",
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)",
           "rows :: step 1 from the Crossroads -> meadow pad"
+        ]
+      },
+      {
+        "mutation": "the Forge marker sits on the anvil again",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)",
+          "rows :: blacksmith step -> the mark over the anvil (its label clears the pad signs)"
+        ]
+      },
+      {
+        "mutation": "the mark hugs the anvil",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)"
         ]
       }
     ]
@@ -125,9 +144,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "40d127a8c2bac2b060c33ed9ae19c90553574928553115cd3a1c80cacd61ebe4",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "07650e58a225edc333fbbe86813a928cf878882ee7e04d6eba0d8992f52d8c02",
-    "tools/fixtures/quest_target_offline.luau": "2d3fd42ecd6c63283d7e068b06b3c6dff55a3643ffbfb9538b8dd51725921d51"
+    "src/ReplicatedStorage/Shared/Config.luau": "69e021f572f6c682117431405e029a8faa9177b7bc4c9936c8dd3d92b0eeee48",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "29cc1bb9619ec13091ce84fe907e5d666c0c63f4e7ca2926622cd782c1d3d782",
+    "tools/fixtures/quest_target_offline.luau": "97348aba6a77eefd3336cb694ebcb38b73a2d96e965660d25b0ace2b50b676b6"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

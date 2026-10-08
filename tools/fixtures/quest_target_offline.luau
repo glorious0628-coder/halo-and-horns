@@ -275,7 +275,8 @@ do
 	local forgeRow = { Id = "tutorial", Kind = "Tutorial", Pinned = true, TutorialStep = 3, Text = "Get your first weapon · Crossroads Forge",
 		ShortName = "To the Forge", CanClaim = false, Progress = 0, Target = 1 }
 	e = QT.ForEntry(forgeRow, "Crossroads", "Halo", vec(0, 3, 0))
-	check(g, "Forge step in the Crossroads -> the anvil (BlacksmithVisited ignored)", type(e) == "table" and isNamed(e.Part, "Anvil")
+	check(g, "Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)", type(e) == "table"
+		and isNamed(e.Part, "HUDGuideAnchor_SmithMark") and at(e.Part, -30, 10) and math.abs(e.Part.Position.Y - 11) <= 0.5
 		and e.Travel == false and e.Tag == "blacksmith" and e.Claim == false, where(e and e.Part))
 	e = QT.ForEntry(forgeRow, "SlimeMeadow", "Halo", vec(330, 3, 0))
 	check(g, "Forge step from the meadow -> a trip to the Crossroads", type(e) == "table" and e.Travel == true and e.Zone == "Crossroads",
@@ -289,7 +290,8 @@ do
 	-- step 99 blacksmith visit inside the Crossroads: the anvil, labelled in English
 	e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = false, Text = "Visit the Forge", Progress = 0, Target = 1,
 		CanClaim = true }, "Crossroads", "Halo", vec(0, 3, 0))
-	check(g, "blacksmith step -> the anvil", type(e) == "table" and isNamed(e.Part, "Anvil") and e.Travel == false, where(e and e.Part))
+	check(g, "blacksmith step -> the mark over the anvil (its label clears the pad signs)", type(e) == "table"
+		and isNamed(e.Part, "HUDGuideAnchor_SmithMark") and at(e.Part, -30, 10) and e.Travel == false, where(e and e.Part))
 	check(g, "blacksmith label is English", type(e) == "table" and e.Label == "Forge" and not hangul(e.Label), e and tostring(e.Label) or "nil")
 	-- the same row done and waiting for [Claim]: gold marker
 	e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = false, Text = "Visit the Forge", Progress = 1, Target = 1,

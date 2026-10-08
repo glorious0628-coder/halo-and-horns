@@ -60,6 +60,9 @@ local K = {
 	AnchorPrefix = "HUDGuideAnchor_", -- HUD localAnchor name
 	Lift = Vector3.new(0, 3, 0), -- anchor above a zone spawn (HUD findTravelTarget)
 	FountainLift = Vector3.new(0, 4, 0), -- HUD L.StoryTap fountain fallback anchor
+	-- 검수 2026-10-08 (weapon-first photos): the marker's 'Forge' label sat on the anvil (2 studs up) and covered the
+	-- nearby pads' '→ Goblin Woods (Lv 10+)' signs; the marker points at an anchor this far above the anvil instead
+	SmithMarkLift = Vector3.new(0, 9, 0),
 	HomeBridge = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }, -- HUD HOME_BRIDGE
 	PadFrom = { Crossroads = true, HaloTown = true, HornsTown = true }, -- pads first from these (HUD order)
 	NearShare = 0.75, -- a Near step's spot counts as reached inside this share of its Radius
@@ -335,8 +338,17 @@ local function guideZone(guide, faction)
 	return guide
 end
 
+-- the marker spot over the anvil (K.SmithMarkLift up), kept on the anvil if it moved; nil without an anvil
+function QuestTarget.BlacksmithMark()
+	local anvil = QuestTarget.Blacksmith()
+	if not anvil then return nil end
+	local a = QuestTarget.Anchor("SmithMark", anvil.Position + K.SmithMarkLift)
+	a.Position = anvil.Position + K.SmithMarkLift
+	return a
+end
+
 local function smithFrom(fromZone, pos)
-	if fromZone == K.Town then return QuestTarget.Blacksmith() end
+	if fromZone == K.Town then return QuestTarget.BlacksmithMark() end
 	if not K.SmithFromAfar then return nil end
 	return QuestTarget.Travel(K.Town, fromZone, pos)
 end
