@@ -4237,8 +4237,25 @@ end
 
 -- BB1: the window keys (Keybinds group "Window") and the menu key run before inputAllowed() (a window covers the
 -- screen). The same key closes its window, another window's key switches to it, a window that does not exist yet
--- (not registered in Panels) does nothing. The menu key keeps U1: it closes any open window, else opens the menu.
+-- (not registered in Panels) answers like its tile (L.WindowSoon). The menu key keeps U1: it closes any open window,
+-- else opens the menu.
 -- Returns true when the action was one of these keys.
+-- User 2026-10-08 (MMO keys): a window key whose window is not built yet answers like its HUD tile (Hero / Skills:
+-- 'coming soon', Ranking: the ranking list); the quest list key folds the HUD quest rows out until a journal exists
+function L.WindowSoon(action)
+	if action == "Journal" then
+		if inputAllowed() and not throttled("questKey", 0.25) then toggleQuests() end
+		return
+	end
+	for _, def in L.Tiles do
+		if def.Key == action then
+			L.TileTap(def)
+			return
+		end
+	end
+	if not throttled("tileSoon", 0.6) then UIKit.Toast(TXT.TileSoon, "info", 2) end
+end
+
 function L.WindowKey(action)
 	local kb, panels = C and C.Keybinds, C and C.Panels
 	local target = kb and kb.WindowFor(action)
@@ -4250,7 +4267,10 @@ function L.WindowKey(action)
 		if open or inputAllowed() then openMenu() end
 		return true
 	end
-	if type(panels.Has) ~= "function" or not panels.Has(target) then return true end
+	if type(panels.Has) ~= "function" or not panels.Has(target) then
+		L.WindowSoon(action)
+		return true
+	end
 	if not (open or inputAllowed()) or throttled("windowKey", 0.25) then return true end
 	local ok, err
 	if type(panels.CurrentId) == "function" and panels.CurrentId() == target then

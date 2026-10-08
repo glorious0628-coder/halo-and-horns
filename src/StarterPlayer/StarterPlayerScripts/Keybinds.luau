@@ -2,7 +2,9 @@
 -- A23-21: PC keyboard keys can be changed (saved through BB2 Settings.Keys), the gamepad layout is fixed (Config
 -- .Keybinds Pad; PadWired = the pad buttons that work today, BB21 wires the rest) and touch-only devices show button
 -- names instead of keys. The map is Config.KeyMap(saved sparse keys, live set): an action is live when its Flag is on
--- and, for the Window group, its Panels window is registered (call Keybinds.Refresh() after registering a window).
+-- and, for the Window group, its Panels window (or its Alt) is registered or it is Soon (answers like its HUD tile before
+-- the window exists) - call Keybinds.Refresh() after registering a window. Roblox's I / O camera zoom is sunk while one
+-- of our live actions holds that key (user 2026-10-08: I = the bag).
 -- Every UserInputService press / release is forwarded through Keybinds.Began / Keybinds.Ended (HUD, VitalsUI and
 -- GrudgeGhost listen there), so Keybinds.Dispatch(fakeInput) reaches the same handlers as a real key.
 -- API: Get(action) -> Enum.KeyCode? | KeyName(action) -> name or "" | ActionFor(input) -> action id? | Label(action)
@@ -41,6 +43,9 @@ local K = {
 	CaptureAction = "HH_KeyCapture",
 	CapturePriority = 4000, -- above WorldMap (High + 10) and Intro (3000)
 	CaptureSeconds = 5,
+	CameraKeys = { "I", "O" }, -- Roblox's camera zoom keys (its keypress action at Default priority)
+	SinkAction = "HH_CameraKeySink",
+	SinkPriority = 3000, -- Enum.ContextActionPriority.High: above the camera (Default 2000), under WorldMap / Intro / capture
 }
 
 Keybinds.Changed = Util.Signal.new() -- (map copy) after the effective keys changed
@@ -111,10 +116,11 @@ local function liveSet()
 	local set = {}
 	for _, def in KB.Actions do
 		if Config.KeyFlagOn(def) then
-			if def.Group ~= "Window" then
+			if def.Group ~= "Window" or def.Soon == true then
 				set[def.Id] = true
 			elseif type(panels) == "table" and type(panels.Has) == "function" then
 				local ok, has = pcall(panels.Has, def.Window)
+				if not (ok and has) and def.Alt then ok, has = pcall(panels.Has, def.Alt) end
 				if ok and has then set[def.Id] = true end
 			end
 		end
@@ -142,6 +148,22 @@ local function applyPrompt(prompt)
 	if prompt.KeyboardKeyCode ~= code then prompt.KeyboardKeyCode = code end
 end
 
+-- a camera zoom key one of our live actions holds is sunk above Roblox's camera, so it does our action only
+-- (UserInputService still delivers it: Keybinds.Began / HUD as for every key)
+local function sinkCameraKeys()
+	local codes = {}
+	for _, name in K.CameraKeys do
+		if K.ByKey[name] then table.insert(codes, Enum.KeyCode[name]) end
+	end
+	pcall(function() ContextActionService:UnbindAction(K.SinkAction) end)
+	if #codes == 0 then return end
+	local ok, err = pcall(function()
+		ContextActionService:BindActionAtPriority(K.SinkAction, function() return Enum.ContextActionResult.Sink end, false,
+			K.SinkPriority, table.unpack(codes))
+	end)
+	if not ok then Util.Warn(TAG, "camera key sink failed: " .. tostring(err)) end
+end
+
 local function recompute(silent)
 	local live = liveSet()
 	local map, collisions = Config.KeyMap(K.Sparse, live)
@@ -154,6 +176,7 @@ local function recompute(silent)
 	for _, def in KB.Actions do
 		if live[def.Id] and KB.PadWired[def.Id] and def.Pad ~= "" then K.ByPad[def.Pad] = def.Id end
 	end
+	sinkCameraKeys()
 	toastCollisions()
 	if changed and not silent then
 		for prompt in K.Prompts do
@@ -218,9 +241,18 @@ function Keybinds.PadFor(action)
 end
 
 -- the Panels id a window key opens (Group "Window"), or nil
+-- (its own window once registered, else its Alt while that one is - the HUD tile's rule -, else its own id: a Soon key
+-- whose window is not built yet, the HUD answers like the tile)
 function Keybinds.WindowFor(action)
 	local def = KB.ById[action]
-	return def and def.Group == "Window" and def.Window or nil
+	if not def or def.Group ~= "Window" then return nil end
+	local panels = C and C.Panels
+	if def.Alt and type(panels) == "table" and type(panels.Has) == "function" then
+		local okW, hasW = pcall(panels.Has, def.Window)
+		local okA, hasA = pcall(panels.Has, def.Alt)
+		if not (okW and hasW) and okA and hasA then return def.Alt end
+	end
+	return def.Window
 end
 
 function Keybinds.Collisions()

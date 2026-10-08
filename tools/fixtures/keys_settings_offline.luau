@@ -238,18 +238,21 @@ local function flagLive(config, id)
 end
 
 ------------------------------------------------------------------ contract tables (docs/design/beta_basics_2026-10-05.md)
--- BB1 defaults: Id, Key, Pad (A23-21: the pad layout is fixed; "" = none in the contract table)
+-- BB1 defaults: Id, Key, Pad (A23-21: the pad layout is fixed; "" = none in the contract table). User 2026-10-08 (MMO keys):
+-- I bag, E hero (equipment), K skills, M map, Q quest list -> the skills Z / X / C, Interact G; I no longer reserved
 local CONTRACT_ACTIONS = {
-	{ "Attack", "F", "ButtonR2" }, { "SkillQ", "Q", "ButtonL2" }, { "SkillZ", "Z", "ButtonL1" }, { "SkillX", "X", "ButtonR3" },
+	{ "Attack", "F", "ButtonR2" }, { "SkillQ", "Z", "ButtonL2" }, { "SkillZ", "X", "ButtonL1" }, { "SkillX", "C", "ButtonR3" },
 	{ "Auto", "R", "ButtonR1" },
 	{ "GhostHold", "T", "DPadRight" }, { "PotionHP", "One", "DPadUp" }, { "PotionMP", "Two", "DPadDown" },
-	{ "Interact", "E", "ButtonX" }, { "Upgrade", "U", "" }, { "Bag", "G", "" }, { "Character", "C", "" }, { "Skills", "K", "" },
-	{ "Ranking", "L", "" }, { "Help", "H", "" }, { "Journal", "J", "" }, { "Map", "M", "DPadLeft" }, { "Menu", "B", "ButtonY" },
+	{ "Interact", "G", "ButtonX" }, { "Upgrade", "U", "" }, { "Bag", "I", "" }, { "Character", "E", "" }, { "Skills", "K", "" },
+	{ "Ranking", "L", "" }, { "Help", "H", "" }, { "Journal", "Q", "" }, { "Map", "M", "DPadLeft" }, { "Menu", "B", "ButtonY" },
 }
 local WINDOWS = { Bag = true, Character = true, Skills = true, Ranking = true, Help = true, Journal = true }
+-- user 2026-10-08: these answer before their windows exist (like their HUD tiles), so they are live without Panels
+local SOON = { Character = true, Skills = true, Ranking = true, Journal = true }
 local ALL_WINDOWS = { "Bag", "Character", "Skills", "Ranking", "Help", "Journal" }
 local CONTRACT_RESERVED = { "Escape", "Slash", "Tab", "Backquote", "Return", "KeypadEnter", "Space", "LeftShift", "RightShift",
-	"W", "A", "S", "D", "I", "O", "Comma", "Period", "PageUp", "PageDown", "Up", "Down", "Left", "Right", "F9", "F10", "F11", "F12" }
+	"W", "A", "S", "D", "O", "Comma", "Period", "PageUp", "PageDown", "Up", "Down", "Left", "Right", "F9", "F10", "F11", "F12" }
 local DIGITS = { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" }
 local EXPECTED_USABLE, RESERVED_SET, ALLOWED_LIST = {}, {}, {}
 do
@@ -282,7 +285,7 @@ do
 end
 local NOT_ALLOWED = { "Home", "End", "Insert", "Delete", "RightControl", "RightAlt", "LeftSuper", "F13", "Keypad1", "Backspace",
 	"NumLock", "ButtonR2", "Unknown", "f", "", " F" }
-local SETTINGS_DEFAULTS = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default",
+local SETTINGS_DEFAULTS = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 	Cam = "Follow" } -- Cam: A23-65
 local SETTINGS_DEFS = {
 	Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
@@ -454,10 +457,10 @@ local function clientWorld(opts)
 		if later then ws.DescendantAdded:Fire(p) end
 		return p
 	end
-	function w:Capture() -- the keyboard capture binding (BB3) currently bound, or nil
+	function w:Capture() -- the keyboard capture binding (BB3) currently bound, or nil (not the camera key sink)
 		for i = #cas.Order, 1, -1 do
 			local b = cas.Bound[cas.Order[i]]
-			if b then return b, cas.Order[i] end
+			if b and cas.Order[i] ~= "HH_CameraKeySink" then return b, cas.Order[i] end
 		end
 		return nil
 	end
@@ -675,7 +678,7 @@ runGroup("config-contract", function()
 	local zmap = CONFIG.KeyMap({}, liveAll(freshConfig(true)))
 	local zc = freshConfig(true)
 	local zmap2 = zc.KeyMap({}, nil)
-	check(zmap.SkillZ == "Z" and zmap2.SkillZ == "Z", "with Config.Skills.ZEnabled the Z skill gets Z", show({ zmap.SkillZ, zmap2.SkillZ }))
+	check(zmap.SkillZ == "X" and zmap2.SkillZ == "X", "with Config.Skills.ZEnabled the Z skill gets its key X", show({ zmap.SkillZ, zmap2.SkillZ }))
 end)
 
 ------------------------------------------------------------------ 2. KeyMap collision rule
@@ -683,38 +686,38 @@ runGroup("keymap-rules", function()
 	local C = CONFIG
 	local live = liveAll(C)
 	-- 1. explicit first in Actions order; an explicit key already taken becomes "" (and is not a collision)
-	local map, col = C.KeyMap({ Attack = "Q", SkillQ = "Q" }, live)
-	check(map.Attack == "Q" and map.SkillQ == "" and #col == 0,
+	local map, col = C.KeyMap({ Attack = "Z", SkillQ = "Z" }, live)
+	check(map.Attack == "Z" and map.SkillQ == "" and #col == 0,
 		"explicit entries first in Actions order: the later explicit holder of a taken key gets '' (not reported)", show({ map.Attack, map.SkillQ, col }))
 	map, col = C.KeyMap({ Menu = "F" }, live)
 	check(map.Menu == "F" and map.Attack == "" and col[1] == "Attack" and #col == 1,
 		"an explicit key beats an earlier action's default; that default-only action is '' and reported", show({ map.Menu, map.Attack, col }))
-	-- BB2 acceptance: Keys = { Attack = 'J' } loaded after Journal = J was added
-	map, col = C.KeyMap({ Attack = "J" }, live)
-	check(map.Attack == "J" and map.Journal == "" and #col == 1 and col[1] == "Journal",
-		"BB2: a saved Attack = J keeps J; the new Journal action gets '' and is reported once", show({ map.Attack, map.Journal, col }))
-	map, col = C.KeyMap({ Attack = "J" }, nil)
-	check(map.Attack == "J" and map.Journal == "" and col[1] == "Journal", "server view (liveSet nil = every Flag-on action) gives the same",
+	-- BB2 acceptance: Keys = { Attack = 'Q' } loaded after Journal = Q came (the 10/08 layout)
+	map, col = C.KeyMap({ Attack = "Q" }, live)
+	check(map.Attack == "Q" and map.Journal == "" and #col == 1 and col[1] == "Journal",
+		"BB2: a saved Attack = Q keeps Q; the Journal action gets '' and is reported once", show({ map.Attack, map.Journal, col }))
+	map, col = C.KeyMap({ Attack = "Q" }, nil)
+	check(map.Attack == "Q" and map.Journal == "" and col[1] == "Journal", "server view (liveSet nil = every Flag-on action) gives the same",
 		show({ map.Attack, map.Journal, col }))
 	-- non-live actions hold no key and take no part
 	local noBag = liveAll(C, { Bag = true })
 	map, col = C.KeyMap({ Bag = "X" }, noBag)
 	check(map.Bag == "" and boundCount(map) == 15 and #col == 0, "a non-live window holds no key even with a saved key", show({ map.Bag, col }))
-	map, col = C.KeyMap({ Map = "G" }, noBag)
-	check(map.Map == "G" and map.Bag == "" and #col == 0, "a non-live window's default key blocks nothing (no collision)", show({ map.Map, col }))
-	map, col = C.KeyMap({ Map = "G" }, live)
-	check(map.Map == "G" and map.Bag == "" and col[1] == "Bag", "once the window is live, its default-only key collides and is reported",
+	map, col = C.KeyMap({ Map = "I" }, noBag)
+	check(map.Map == "I" and map.Bag == "" and #col == 0, "a non-live window's default key blocks nothing (no collision)", show({ map.Map, col }))
+	map, col = C.KeyMap({ Map = "I" }, live)
+	check(map.Map == "I" and map.Bag == "" and col[1] == "Bag", "once the window is live, its default-only key collides and is reported",
 		show({ map.Map, map.Bag, col }))
 	-- the Z skill flag
-	map, col = C.KeyMap({ Attack = "Z" }, nil)
-	check(map.Attack == "Z" and map.SkillZ == "" and #col == 0, "Flag off: SkillZ is not live (no key, no collision)", show({ map.SkillZ, col }))
+	map, col = C.KeyMap({ Attack = "X" }, nil)
+	check(map.Attack == "X" and map.SkillZ == "" and #col == 0, "Flag off: SkillZ is not live (no key, no collision)", show({ map.SkillZ, col }))
 	map = C.KeyMap({ SkillZ = "X" }, nil)
 	local xHolder = nil
 	for id, v in map do if v == "X" then xHolder = id end end
 	check(map.SkillZ == "" and xHolder == nil, "Flag off: a saved SkillZ key binds nothing", show({ map.SkillZ, xHolder }))
 	local zc = freshConfig(true)
-	map, col = zc.KeyMap({ Attack = "Z" }, nil)
-	check(map.SkillZ == "" and col[1] == "SkillZ", "Flag on: the new SkillZ default collides with my Attack = Z and is reported", show({ map.SkillZ, col }))
+	map, col = zc.KeyMap({ Attack = "X" }, nil)
+	check(map.SkillZ == "" and col[1] == "SkillZ", "Flag on: the new SkillZ default collides with my Attack = X and is reported", show({ map.SkillZ, col }))
 	-- explicit "" = unbound by choice (never reported, its default stays free)
 	map, col = C.KeyMap({ Attack = "" }, live)
 	local fHolder = nil
@@ -734,10 +737,10 @@ runGroup("keymap-rules", function()
 	local all = {}
 	for _, a in C.Keybinds.Actions do all[a.Id] = "X" end
 	map = C.KeyMap(all, live)
-	check(map.Attack == "X" and map.Interact == "E" and boundCount(map) == 2,
-		"every action saved on one key: the first live action keeps it, Interact keeps E (never all blank)",
+	check(map.Attack == "X" and map.Interact == "G" and boundCount(map) == 2,
+		"every action saved on one key: the first live action keeps it, Interact keeps G (never all blank)",
 		show(map))
-	map = C.KeyMap({ Attack = "Q" }, live)
+	map = C.KeyMap({ Attack = "Z" }, live)
 	check(boundCount(map) == 15 and map.SkillQ == "", "one changed key costs at most the one colliding default", boundCount(map))
 	-- fuzz against the contract rule
 	local rnd = seededRandom(424242)
@@ -843,7 +846,7 @@ runGroup("sanitize", function()
 	for _, v in { 5, true, {}, false } do
 		check(S({ Keys = { Attack = v } }).Keys.Attack == nil, "non-string key values are dropped", show(v))
 	end
-	out = S({ Keys = { Attack = "F", Map = "M", SkillQ = "Q", Menu = "X" } })
+	out = S({ Keys = { Attack = "F", Map = "M", SkillQ = "Z", Menu = "X" } })
 	check(deepEq(out.Keys, { Menu = "X" }), "entries equal to the default are dropped (sparse)", show(out.Keys))
 	out = S({ Keys = { Attack = "" } })
 	check(out.Keys.Attack == "", "'' (unbound by choice) is kept")
@@ -864,7 +867,8 @@ runGroup("sanitize", function()
 	-- bools / enums
 	for _, v in { "true", 1, 0, {} } do
 		local o = S({ Shake = v, KeyBadges = v })
-		check(o.Shake == true and o.KeyBadges == true, "bools must be boolean (else the default)", show(v))
+		check(o.Shake == true and o.KeyBadges == false, "bools must be boolean (else the default; key hints off since 10/08)",
+			show(v))
 	end
 	local o = S({ Shake = false, KeyBadges = false })
 	check(o.Shake == false and o.KeyBadges == false, "false is kept")
@@ -947,7 +951,7 @@ runGroup("dataservice-settings", function()
 	check(d1 ~= nil and d1.Version == 3, "Version stays 3", d1 and d1.Version)
 	local d2 = f:Load(502)
 	check(d2 ~= nil and deepEq(d2.Settings, { V = 1, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near",
-		KeyBadges = true, Lang = "en", BagSort = "Grade", Cam = "Follow" }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
+		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Follow" }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
 	local d3 = f:Load(503)
 	check(d3 ~= nil and deepEq(d3.Settings, SETTINGS_DEFAULTS), "Settings = a string -> the defaults", d3 and show(d3.Settings))
 	local d4 = f:Load(504)
@@ -1048,7 +1052,7 @@ runGroup("service-remote", function()
 	s.Clock:Advance(1.1)
 	s:Call(p, { Seq = 30, Keys = { Attack = "Escape", Map = "X", Menu = "X", Foo = "Y", Bag = string.rep("A", 1000) }, Sfx = 5,
 		Shake = "yes", DmgNum = "Near", Tags = "Near", Lang = string.rep("한", 1000), Foo = 1 })
-	local want = { V = 1, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = true,
+	local want = { V = 1, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = false,
 		Lang = "Auto", BagSort = "Default", Cam = "Follow" }
 	e = s.Sent[#s.Sent]
 	check(deepEq(s.Data[p].Settings, want), "BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
@@ -1082,13 +1086,18 @@ runGroup("keybinds-core", function()
 	check(K.Get("Attack") == ENUM.KeyCode.F and K.Get("Map") == ENUM.KeyCode.M and K.Get("PotionHP") == ENUM.KeyCode.One,
 		"Get(action) = the Enum.KeyCode of the default key")
 	check(K.Get("SkillZ") == nil and K.Get("Bag") == nil and K.Get("Nope") == nil, "Get = nil for unbound / non-live / unknown actions")
-	for _, pair in { { "F", "Attack" }, { "Q", "SkillQ" }, { "R", "Auto" }, { "T", "GhostHold" }, { "One", "PotionHP" }, { "Two", "PotionMP" },
-		{ "E", "Interact" }, { "U", "Upgrade" }, { "M", "Map" }, { "B", "Menu" } } do
-		check(K.ActionFor(key(pair[1])) == pair[2], "default keys F Q R T 1 2 E U M B -> their actions (no regression)",
+	for _, pair in { { "F", "Attack" }, { "Z", "SkillQ" }, { "R", "Auto" }, { "T", "GhostHold" }, { "One", "PotionHP" }, { "Two", "PotionMP" },
+		{ "G", "Interact" }, { "U", "Upgrade" }, { "M", "Map" }, { "B", "Menu" } } do
+		check(K.ActionFor(key(pair[1])) == pair[2], "default keys F Z R T 1 2 G U M B -> their actions (the 10/08 layout)",
 			pair[1] .. " -> " .. tostring(K.ActionFor(key(pair[1]))))
 	end
-	for _, n in { "G", "C", "K", "L", "H", "J", "Z", "X", "W", "Escape" } do
-		check(K.ActionFor(key(n)) == nil, "keys of windows that do not exist yet, the flagged Z and free keys do nothing", n)
+	-- user 2026-10-08: the Soon window keys answer before their windows exist (like their HUD tiles)
+	for _, pair in { { "E", "Character" }, { "K", "Skills" }, { "L", "Ranking" }, { "Q", "Journal" } } do
+		check(K.ActionFor(key(pair[1])) == pair[2] and K.IsLive(pair[2]), "Soon window keys E K L Q are live before their windows",
+			pair[1] .. " -> " .. tostring(K.ActionFor(key(pair[1]))))
+	end
+	for _, n in { "I", "H", "J", "X", "C", "W", "Escape" } do
+		check(K.ActionFor(key(n)) == nil, "keys of windows that do not exist yet (bag, help), the flagged skills and free keys do nothing", n)
 	end
 	check(K.ActionFor(pad("ButtonR2")) == "Attack" and K.ActionFor(pad("ButtonL2")) == "SkillQ", "pad R2 = attack, L2 = skill (as before BB1)")
 	for _, b in { "ButtonR1", "ButtonL1", "DPadUp", "DPadDown", "DPadLeft", "DPadRight", "ButtonX", "ButtonY" } do
@@ -1124,7 +1133,8 @@ runGroup("keybinds-core", function()
 		"Fill: '{GhostHold}' -> T, '{Auto}' -> R, unknown tokens stay")
 	check(K.StripKeys(w.Config.Text.GhostButton) == "Ghost grab", "StripKeys drops the '(T)' group")
 	check(#K.Collisions() == 0 and K.IsCapturing() == false, "no collisions by default; not capturing")
-	check(K.IsLive("Attack") and not K.IsLive("Bag") and not K.IsLive("SkillZ"), "IsLive: Flag on and (windows) registered")
+	check(K.IsLive("Attack") and not K.IsLive("Bag") and not K.IsLive("SkillZ") and K.IsLive("Journal"),
+		"IsLive: Flag on and (windows) registered or Soon")
 	check(K.WindowFor("Bag") == "Bag" and K.WindowFor("Journal") == "Journal" and K.WindowFor("Attack") == nil and K.WindowFor("Menu") == nil,
 		"WindowFor: the Panels id of a window action only")
 end)
@@ -1135,16 +1145,16 @@ runGroup("keybinds-setlocal", function()
 	w:Echo(0, {})
 	local K = w.KB
 	local fires = w.ChangedFires
-	local ok, reason, other = K.SetLocal("Attack", "Q")
+	local ok, reason, other = K.SetLocal("Attack", "Z")
 	check(ok == true and reason == "Swap" and other == "SkillQ", "SetLocal onto a live holder's key = swap", show({ ok, reason, other }))
-	check(K.KeyName("Attack") == "Q" and K.KeyName("SkillQ") == "F", "swap: the holder gets my old key", show({ K.KeyName("Attack"), K.KeyName("SkillQ") }))
-	check(K.ActionFor(key("Q")) == "Attack" and K.ActionFor(key("F")) == "SkillQ", "the keys work at once")
-	check(w.ChangedFires == fires + 1 and w.LastMap and w.LastMap.Attack == "Q", "Changed fires once with the new map")
-	check(deepEq(w.ST.Get("Keys"), { Attack = "Q", SkillQ = "F" }), "Settings.Keys holds only the changes", show(w.ST.Get("Keys")))
-	w.LastMap.Attack = "Z"
-	check(K.KeyName("Attack") == "Q", "the Changed map is a copy")
+	check(K.KeyName("Attack") == "Z" and K.KeyName("SkillQ") == "F", "swap: the holder gets my old key", show({ K.KeyName("Attack"), K.KeyName("SkillQ") }))
+	check(K.ActionFor(key("Z")) == "Attack" and K.ActionFor(key("F")) == "SkillQ", "the keys work at once")
+	check(w.ChangedFires == fires + 1 and w.LastMap and w.LastMap.Attack == "Z", "Changed fires once with the new map")
+	check(deepEq(w.ST.Get("Keys"), { Attack = "Z", SkillQ = "F" }), "Settings.Keys holds only the changes", show(w.ST.Get("Keys")))
+	w.LastMap.Attack = "V"
+	check(K.KeyName("Attack") == "Z", "the Changed map is a copy")
 	ok, reason, other = K.SetLocal("Attack", ENUM.KeyCode.F)
-	check(ok == true and reason == "Swap" and other == "SkillQ" and K.KeyName("Attack") == "F" and K.KeyName("SkillQ") == "Q",
+	check(ok == true and reason == "Swap" and other == "SkillQ" and K.KeyName("Attack") == "F" and K.KeyName("SkillQ") == "Z",
 		"swap back with an Enum.KeyCode argument", show({ ok, reason, other }))
 	check(deepEq(w.ST.Get("Keys"), {}), "back on the defaults: nothing saved", show(w.ST.Get("Keys")))
 	fires = w.ChangedFires
@@ -1177,7 +1187,7 @@ runGroup("keybinds-setlocal", function()
 	K.Reset()
 	local allDefault = true
 	for _, want in CONTRACT_ACTIONS do
-		local expected = (SKILL_FLAGS[want[1]] or WINDOWS[want[1]]) and "" or want[2]
+		local expected = (SKILL_FLAGS[want[1]] or (WINDOWS[want[1]] and not SOON[want[1]])) and "" or want[2]
 		if K.KeyName(want[1]) ~= expected then allDefault = false end
 	end
 	check(allDefault and deepEq(w.ST.Get("Keys"), {}) and w.ChangedFires == fires + 1, "Reset: every key back to the default (Changed once)")
@@ -1195,18 +1205,29 @@ runGroup("keybinds-live", function()
 	local w = clientWorld()
 	w:Echo(0, {})
 	local K = w.KB
-	check(K.ActionFor(key("G")) == nil and K.ActionFor(key("T")) == "GhostHold", "before the bag exists: G does nothing, T = ghost hold")
+	check(K.ActionFor(key("I")) == nil and K.ActionFor(key("T")) == "GhostHold", "before the bag exists: I does nothing, T = ghost hold")
+	-- the bag key opens the older Items window until a Bag window is registered (Alt, the HUD tile's rule)
+	w.Registered.Items = true
+	K.Refresh()
+	check(K.ActionFor(key("I")) == "Bag" and K.IsLive("Bag") and K.WindowFor("Bag") == "Items",
+		"Items registered (Alt): I = bag, it opens Items", show({ K.ActionFor(key("I")), K.WindowFor("Bag") }))
+	w.Registered.Items = nil
+	K.Refresh()
+	check(K.ActionFor(key("I")) == nil and K.WindowFor("Bag") == "Bag", "Items gone: I does nothing again")
 	w.Registered.Bag = true
 	local fires = w.ChangedFires
 	K.Refresh()
-	check(K.ActionFor(key("G")) == "Bag" and K.IsLive("Bag") and w.ChangedFires == fires + 1,
-		"Refresh after Panels registers Bag: G = bag (Changed fired)")
-	check(K.ActionFor(key("T")) == "GhostHold", "G = bag only, T = ghost hold")
-	local ok, reason, other = K.SetLocal("Attack", "G")
+	check(K.ActionFor(key("I")) == "Bag" and K.IsLive("Bag") and w.ChangedFires == fires + 1,
+		"Refresh after Panels registers Bag: I = bag (Changed fired)")
+	w.Registered.Items = true
+	check(K.WindowFor("Bag") == "Bag", "its own window wins over the Alt once both exist")
+	w.Registered.Items = nil
+	check(K.ActionFor(key("T")) == "GhostHold", "I = bag only, T = ghost hold")
+	local ok, reason, other = K.SetLocal("Attack", "I")
 	check(ok and reason == "Swap" and other == "Bag" and K.KeyName("Bag") == "F", "a window key swaps like any key", show({ ok, reason, other }))
 	w.Registered.Bag = nil
 	K.Refresh()
-	check(K.KeyName("Bag") == "" and K.KeyName("Attack") == "G" and K.ActionFor(key("F")) == nil,
+	check(K.KeyName("Bag") == "" and K.KeyName("Attack") == "I" and K.ActionFor(key("F")) == nil,
 		"a window that is no longer registered holds no key")
 	-- a saved key of a window that is not registered must not block a later live action (BB1: non-live actions hold no key
 	-- and take no part in swaps)
@@ -1223,7 +1244,7 @@ runGroup("keybinds-live", function()
 	check(ok3 == true and w2.KB.KeyName("Attack") == "X", "the same with an action before Bag in the Actions order")
 	w2.Registered.Bag = true
 	w2.KB.Refresh()
-	check(w2.KB.KeyName("Bag") == "G" and #w2.KB.Collisions() == 0, "once registered, Bag gets its default key G")
+	check(w2.KB.KeyName("Bag") == "I" and #w2.KB.Collisions() == 0, "once registered, Bag gets its default key I")
 	-- a stale entry on the key the swapped holder receives (my old key) must not blank that holder
 	local w3 = clientWorld()
 	w3:Echo(0, { Keys = { Bag = "F" } })
@@ -1234,16 +1255,29 @@ runGroup("keybinds-live", function()
 	check(w3.ST.Get("Keys").Bag == nil, "and that stale entry goes back to its default", show(w3.ST.Get("Keys")))
 	-- Flag on: the Z skill is live (its pad button is not wired yet)
 	local xw = clientWorld({ XEnabled = true })
-	check(xw.KB.ActionFor(key("X")) == "SkillX" and xw.KB.Label("SkillX") == "X" and xw.KB.ActionFor(key("Z")) == nil,
-		"Config.Skills.XEnabled (SKL-1): X = SkillX, Z stays free while ZEnabled is off")
+	check(xw.KB.ActionFor(key("C")) == "SkillX" and xw.KB.Label("SkillX") == "C" and xw.KB.ActionFor(key("X")) == nil,
+		"Config.Skills.XEnabled (SKL-1): C = SkillX, X (the Z skill's key) stays free while ZEnabled is off")
 	local z = clientWorld({ ZEnabled = true })
-	check(z.KB.ActionFor(key("Z")) == "SkillZ" and z.KB.ActionFor(pad("ButtonL1")) == nil and z.KB.Label("SkillZ") == "Z",
-		"Config.Skills.ZEnabled: Z = SkillZ")
+	check(z.KB.ActionFor(key("X")) == "SkillZ" and z.KB.ActionFor(pad("ButtonL1")) == nil and z.KB.Label("SkillZ") == "X",
+		"Config.Skills.ZEnabled: X = SkillZ")
 	-- every window registered at Start
 	local all = clientWorld({ Windows = ALL_WINDOWS })
-	for _, pair in { { "G", "Bag" }, { "C", "Character" }, { "K", "Skills" }, { "L", "Ranking" }, { "H", "Help" }, { "J", "Journal" } } do
-		check(all.KB.ActionFor(key(pair[1])) == pair[2], "registered windows: G C K L H J open their windows", pair[1])
+	for _, pair in { { "I", "Bag" }, { "E", "Character" }, { "K", "Skills" }, { "L", "Ranking" }, { "H", "Help" }, { "Q", "Journal" } } do
+		check(all.KB.ActionFor(key(pair[1])) == pair[2], "registered windows: I E K L H Q open their windows", pair[1])
 	end
+	-- user 2026-10-08: I = the bag, so Roblox's I camera zoom is sunk above the camera (O stays the camera's)
+	local sink = all.CAS.Bound.HH_CameraKeySink
+	check(sink ~= nil and #sink.Inputs == 1 and sink.Inputs[1] == ENUM.KeyCode.I and sink.Priority == 3000
+		and sink.Fn() == ENUM.ContextActionResult.Sink, "the bag key I is sunk above the camera's zoom (only I, O stays free)",
+		sink and show({ sink.Priority, #sink.Inputs }))
+	all.KB.SetLocal("Bag", "V")
+	check(all.CAS.Bound.HH_CameraKeySink == nil, "the bag moved off I: no sink, Roblox zooms on I again")
+	check(all.KB.SetLocal("Map", "O") == false and all.CAS.Bound.HH_CameraKeySink == nil,
+		"O stays Roblox's zoom (reserved): it cannot be set, nothing sunk")
+	all.KB.SetLocal("Bag", "I")
+	check(all.CAS.Bound.HH_CameraKeySink ~= nil, "the bag back on I: sunk again")
+	local plain = clientWorld()
+	check(plain.CAS.Bound.HH_CameraKeySink == nil, "no action on I / O (the bag window not there yet): nothing sunk")
 end)
 
 ------------------------------------------------------------------ 10. collisions + the once-per-session toast
@@ -1251,16 +1285,16 @@ runGroup("keybinds-collisions", function()
 	local w = clientWorld({ Windows = ALL_WINDOWS })
 	local K = w.KB
 	check(#w.Toasts == 0, "no toast on a clean start")
-	w:Echo(0, { Keys = { Attack = "J" } })
-	check(K.KeyName("Attack") == "J" and K.KeyName("Journal") == "" and deepEq(K.Collisions(), { "Journal" }),
-		"BB2: saved Attack = J keeps J; Journal = 없음 and is reported", show({ K.KeyName("Attack"), K.KeyName("Journal"), K.Collisions() }))
-	local want = string.format(w.Config.Settings.Text.KeyCollision, "Quest journal", "J")
-	check(#w.Toasts == 1 and w.Toasts[1].Text == want, "one toast: 'New action [Quest journal] has no key: …'", show(w.Toasts))
-	w:Echo(0, { Keys = { Attack = "J" } })
+	w:Echo(0, { Keys = { Attack = "Q" } })
+	check(K.KeyName("Attack") == "Q" and K.KeyName("Journal") == "" and deepEq(K.Collisions(), { "Journal" }),
+		"BB2: saved Attack = Q keeps Q; Journal = 없음 and is reported", show({ K.KeyName("Attack"), K.KeyName("Journal"), K.Collisions() }))
+	local want = string.format(w.Config.Settings.Text.KeyCollision, "Quest list", "Q")
+	check(#w.Toasts == 1 and w.Toasts[1].Text == want, "one toast: 'New action [Quest list] has no key: …'", show(w.Toasts))
+	w:Echo(0, { Keys = { Attack = "Q" } })
 	K.Refresh()
-	K.Apply({ Attack = "J" })
+	K.Apply({ Attack = "Q" })
 	check(#w.Toasts == 1, "the toast shows once per action per session", #w.Toasts)
-	K.Apply({ Attack = "J", Menu = "M" })
+	K.Apply({ Attack = "Q", Menu = "M" })
 	check(K.KeyName("Map") == "" and #w.Toasts == 2 and string.find(w.Toasts[2].Text, "[Map]", 1, true) ~= nil,
 		"another action's collision gets its own toast", show(w.Toasts))
 	local c = K.Collisions()
@@ -1268,8 +1302,8 @@ runGroup("keybinds-collisions", function()
 	check(#K.Collisions() == 2, "Collisions() returns a copy")
 	-- Init alone (before Start) never toasts; Start shows the pending collision once
 	local late = clientWorld({ Windows = ALL_WINDOWS, NoStart = true })
-	late.ST.Set("Keys", { Attack = "J" })
-	late.KB.Apply({ Attack = "J" })
+	late.ST.Set("Keys", { Attack = "Q" })
+	late.KB.Apply({ Attack = "Q" })
 	check(#late.Toasts == 0, "no toast before Start")
 	late:Start()
 	check(#late.Toasts == 1, "Start shows the pending collision toast once", #late.Toasts)
@@ -1292,10 +1326,10 @@ runGroup("keybinds-capture", function()
 		and w:Capture() == nil, "a free key: Set, the binding is removed, prompts on again", show(res[1]))
 	res = {}
 	K.Capture("Attack", cb)
-	w:Capture().Fn("capture", ENUM.UserInputState.Begin, key("Q"))
-	check(res[1] and res[1][1] == "Swap" and res[1][2] == "Q" and res[1][3] == "SkillQ" and K.KeyName("SkillQ") == "F",
+	w:Capture().Fn("capture", ENUM.UserInputState.Begin, key("Z"))
+	check(res[1] and res[1][1] == "Swap" and res[1][2] == "Z" and res[1][3] == "SkillQ" and K.KeyName("SkillQ") == "F",
 		"a held key: Swap (the other action reported)", show(res[1]))
-	check(w.Toasts[#w.Toasts] and w.Toasts[#w.Toasts].Text == string.format(w.Config.Settings.Text.Swapped, "Q", "F"),
+	check(w.Toasts[#w.Toasts] and w.Toasts[#w.Toasts].Text == string.format(w.Config.Settings.Text.Swapped, "Z", "F"),
 		"swap toast names both keys", show(w.Toasts[#w.Toasts]))
 	for _, c in { { "W", "Reserved", "Reserved" }, { "Space", "Reserved", "Reserved" }, { "Home", "NotAllowed", "NotAllowed" } } do
 		res = {}
@@ -1327,7 +1361,7 @@ runGroup("keybinds-prompts-dispatch", function()
 	w:Start()
 	w:Echo(0, {})
 	local K = w.KB
-	check(early.KeyboardKeyCode == ENUM.KeyCode.E, "prompts already in the world use the Interact key (E)")
+	check(early.KeyboardKeyCode == ENUM.KeyCode.G, "prompts already in the world use the Interact key (G since 10/08)")
 	K.SetLocal("Interact", "Y")
 	local late = w:Prompt(true)
 	local shown = { __kind = "Instance", ClassName = "ProximityPrompt", KeyboardKeyCode = ENUM.KeyCode.E, Parent = w.Workspace,
@@ -1500,7 +1534,7 @@ end)
 
 ------------------------------------------------------------------ 14. client + server over a fake network
 runGroup("integration", function()
-	local saved = CONFIG.SanitizeSettings({ Keys = { Attack = "J" }, Sfx = 0.3 })
+	local saved = CONFIG.SanitizeSettings({ Keys = { Attack = "Q" }, Sfx = 0.3 })
 	local L = linkedWorld({ Windows = ALL_WINDOWS, Data = { Version = 3, Settings = deepCopy(saved) } })
 	local client, server, p = L.Client, L.Server, L.Player
 	client:Start()
@@ -1508,15 +1542,15 @@ runGroup("integration", function()
 	check(client.ST.Loaded() == false and #server.Sent == 0, "the pull reaches the server before the player is ready: no answer")
 	server:MakeReady(p)
 	L.Clock:Advance(0.5)
-	check(client.ST.Loaded() and client.ST.Get("Sfx") == 0.3 and client.KB.KeyName("Attack") == "J" and client.KB.KeyName("Journal") == "",
-		"PlayerReady push: saved keys + settings arrive (Attack J, Journal 없음)")
+	check(client.ST.Loaded() and client.ST.Get("Sfx") == 0.3 and client.KB.KeyName("Attack") == "Q" and client.KB.KeyName("Journal") == "",
+		"PlayerReady push: saved keys + settings arrive (Attack Q, Journal 없음)")
 	check(#client.Toasts == 1, "the Journal collision is told once", #client.Toasts)
 	-- change a key, close the window 0.3 s later
 	client.KB.SetLocal("Map", "N")
 	L.Clock:Advance(0.3)
 	client.ST.Flush()
 	L.Clock:Advance(3)
-	check(server.Data[p].Settings.Keys.Map == "N" and server.Data[p].Settings.Keys.Attack == "J", "the key change is saved on the server",
+	check(server.Data[p].Settings.Keys.Map == "N" and server.Data[p].Settings.Keys.Attack == "Q", "the key change is saved on the server",
 		show(server.Data[p].Settings.Keys))
 	-- spam: 20 changes in 2 s
 	for i = 1, 20 do
@@ -1546,7 +1580,7 @@ runGroup("integration", function()
 	again.Server:MakeReady(again.Player)
 	again.Client:Start()
 	again.Clock:Advance(2)
-	check(again.Client.KB.KeyName("Map") == "N" and again.Client.KB.KeyName("Attack") == "J" and again.Client.ST.Get("Sfx") == 0.9,
+	check(again.Client.KB.KeyName("Map") == "N" and again.Client.KB.KeyName("Attack") == "Q" and again.Client.ST.Get("Sfx") == 0.9,
 		"rejoin: the keys and settings are the same")
 	-- network jitter beyond the 0.05 s margin (finding only: the contract fixes the margin)
 	local up = { 0.08, 0.3, 0.05 }
@@ -1641,7 +1675,7 @@ runGroup("key-hints-one-rule", function()
 		check(ghost == (keys and "Ghost grab (T)" or "Ghost grab") and auto == (keys and "R키" or autoBtn .. "키"),
 			"Keybinds.Fill: the '(T)' key part and '{Auto}' follow ShowsKeys", d.Name .. " " .. show({ ghost, auto }))
 		local cw = clientWorld({ Device = d, Windows = ALL_WINDOWS })
-		cw:Echo(0, { Keys = { Attack = "J" } })
+		cw:Echo(0, { Keys = { Attack = "Q" } })
 		check(deepEq(cw.KB.Collisions(), { "Journal" }) and #cw.Toasts == (keys and 1 or 0),
 			"the key-collision toast shows only where keys are shown", d.Name .. " " .. show(cw.Toasts))
 		-- HUD quest rows (L.QuestText; IS_TOUCH / UserInputService are there only for the old device test)
@@ -1699,41 +1733,41 @@ runGroup("keybinds-interact-guard", function()
 	w:Echo(0, {})
 	local K = w.KB
 	local prompt = w:Prompt(true)
-	local E, G = ENUM.KeyCode.E, ENUM.KeyCode.G
-	check(prompt.KeyboardKeyCode == E and K.KeyName("Interact") == "E", "start: Interact = E, the prompt draws E")
+	local G, V = ENUM.KeyCode.G, ENUM.KeyCode.V
+	check(prompt.KeyboardKeyCode == G and K.KeyName("Interact") == "G", "start: Interact = G, the prompt draws G")
 	for _, old in { "CapsLock", "KeypadOne", "Minus", "" } do
 		local tag = old == "" and "(none)" or old
 		K.Reset()
 		if old == "" then K.Clear("Attack") else K.SetLocal("Attack", old) end
 		local saved = deepCopy(w.ST.Get("Keys"))
 		local fires = w.ChangedFires
-		local ok, reason, other = K.SetLocal("Attack", "E")
+		local ok, reason, other = K.SetLocal("Attack", "G")
 		check(K.KeyName("Attack") == old and ok == false and reason == "NotAllowed" and other == nil,
-			"swap guard: an action whose old key Interact cannot hold (CapsLock, KeypadOne, Minus, none) cannot take E",
+			"swap guard: an action whose old key Interact cannot hold (CapsLock, KeypadOne, Minus, none) cannot take G",
 			tag .. " " .. show({ ok = ok, reason = reason, other = other, attack = K.KeyName("Attack"), interact = K.KeyName("Interact") }))
-		check(K.KeyName("Interact") == "E" and K.KeyName("Attack") == old and K.ActionFor(key("E")) == "Interact"
-			and prompt.KeyboardKeyCode == E and deepEq(w.ST.Get("Keys"), saved) and #K.Collisions() == 0 and w.ChangedFires == fires,
-			"a refused swap changes nothing: Interact and its prompt keep E, nothing saved, no collision, no Changed",
+		check(K.KeyName("Interact") == "G" and K.KeyName("Attack") == old and K.ActionFor(key("G")) == "Interact"
+			and prompt.KeyboardKeyCode == G and deepEq(w.ST.Get("Keys"), saved) and #K.Collisions() == 0 and w.ChangedFires == fires,
+			"a refused swap changes nothing: Interact and its prompt keep G, nothing saved, no collision, no Changed",
 			tag .. " " .. show({ K.KeyName("Interact"), K.KeyName("Attack"), w.ST.Get("Keys"), K.Collisions() }))
 	end
 	K.Reset()
-	K.SetLocal("Attack", "G")
-	local ok, reason, other = K.SetLocal("Attack", "E")
-	check(ok == true and reason == "Swap" and other == "Interact" and K.KeyName("Attack") == "E" and K.KeyName("Interact") == "G"
-		and prompt.KeyboardKeyCode == G, "swap guard lets a key the prompt draws through: Attack G -> E, Interact and its prompt get G",
+	K.SetLocal("Attack", "V")
+	local ok, reason, other = K.SetLocal("Attack", "G")
+	check(ok == true and reason == "Swap" and other == "Interact" and K.KeyName("Attack") == "G" and K.KeyName("Interact") == "V"
+		and prompt.KeyboardKeyCode == V, "swap guard lets a key the prompt draws through: Attack V -> G, Interact and its prompt get V",
 		show({ ok, reason, other, K.KeyName("Interact") }))
 	K.Reset()
 	K.SetLocal("Attack", "CapsLock")
 	ok, reason = K.SetLocal("Interact", "CapsLock")
-	check(ok == false and reason == "NotAllowed" and K.KeyName("Interact") == "E" and K.KeyName("Attack") == "CapsLock"
-		and prompt.KeyboardKeyCode == E, "Interact cannot be swapped onto another action's key the prompt cannot draw (CapsLock)",
+	check(ok == false and reason == "NotAllowed" and K.KeyName("Interact") == "G" and K.KeyName("Attack") == "CapsLock"
+		and prompt.KeyboardKeyCode == G, "Interact cannot be swapped onto another action's key the prompt cannot draw (CapsLock)",
 		show({ ok, reason }))
 	K.Reset()
-	ok, reason, other = K.SetLocal("Interact", "Q")
-	check(ok == true and reason == "Swap" and other == "SkillQ" and K.KeyName("Interact") == "Q" and K.KeyName("SkillQ") == "E"
-		and prompt.KeyboardKeyCode == ENUM.KeyCode.Q, "Interact swapped onto a drawable key (Q): the holder gets E, the prompt Q",
+	ok, reason, other = K.SetLocal("Interact", "Z")
+	check(ok == true and reason == "Swap" and other == "SkillQ" and K.KeyName("Interact") == "Z" and K.KeyName("SkillQ") == "G"
+		and prompt.KeyboardKeyCode == ENUM.KeyCode.Z, "Interact swapped onto a drawable key (Z): the holder gets G, the prompt Z",
 		show({ ok, reason, other }))
-	-- capture (BB3): keys Interact cannot hold are refused with a NotAllowed toast; G is taken
+	-- capture (BB3): keys Interact cannot hold are refused with a NotAllowed toast; V is taken
 	K.Reset()
 	local res = {}
 	local function cb(...) table.insert(res, table.pack(...)) end
@@ -1750,17 +1784,17 @@ runGroup("keybinds-interact-guard", function()
 		local last = w.Toasts[#w.Toasts]
 		check(#w.Toasts == toasts + 1 and last ~= nil and last.Text == w.Config.Settings.Text.NotAllowed and last.Kind == "bad",
 			"the capture refusal tells the player (one NotAllowed toast)", tag .. " " .. show(last))
-		check(K.KeyName("Interact") == "E" and prompt.KeyboardKeyCode == E and deepEq(w.ST.Get("Keys"), {}),
-			"a refused capture keeps Interact on E (its prompt too), nothing saved", tag .. " " .. show(w.ST.Get("Keys")))
+		check(K.KeyName("Interact") == "G" and prompt.KeyboardKeyCode == G and deepEq(w.ST.Get("Keys"), {}),
+			"a refused capture keeps Interact on G (its prompt too), nothing saved", tag .. " " .. show(w.ST.Get("Keys")))
 	end
 	res = {}
 	local toasts = #w.Toasts
 	check(K.Capture("Interact", cb) == true, "capture of Interact starts")
 	local b = w:Capture()
-	if b then b.Fn("capture", ENUM.UserInputState.Begin, key("G")) end
-	check(res[1] ~= nil and res[1][1] == "Set" and res[1][2] == "G" and K.KeyName("Interact") == "G" and prompt.KeyboardKeyCode == G
-		and #w.Toasts == toasts and deepEq(w.ST.Get("Keys"), { Interact = "G" }) and not K.IsCapturing(),
-		"capture accepts G for Interact: Set, the prompt draws G, saved, no toast", show(res[1]))
+	if b then b.Fn("capture", ENUM.UserInputState.Begin, key("V")) end
+	check(res[1] ~= nil and res[1][1] == "Set" and res[1][2] == "V" and K.KeyName("Interact") == "V" and prompt.KeyboardKeyCode == V
+		and #w.Toasts == toasts and deepEq(w.ST.Get("Keys"), { Interact = "V" }) and not K.IsCapturing(),
+		"capture accepts V for Interact: Set, the prompt draws V, saved, no toast", show(res[1]))
 end)
 
 ------------------------------------------------------------------ summary

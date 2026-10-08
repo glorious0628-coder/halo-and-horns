@@ -178,7 +178,7 @@ Config.Data = {
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
-		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default",
+		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 			Cam = "Follow" },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
@@ -3300,37 +3300,43 @@ Config.Analytics = {
 -- Actions (in order: the KeyMap order and the settings list order):
 --   Id, Group ("Combat" | "Potion" | "Window" | "Other"), Key = Enum.KeyCode name ("" = unbound), Pad = fixed gamepad
 --   button ("" = none), Label / LabelEn = the action's name, Button / ButtonEn = what a touch-only device calls it,
---   Flag = "Table.Field" under Config (the action exists only while that is true), Window = Panels id (Group "Window").
--- Live rule: Flag on and, for the Window group, the Panels window registered (client). Non-live actions hold no key and
--- never take part in swaps. PadWired = the pad buttons that already work (BB21 wires the rest of the Pad column).
+--   Flag = "Table.Field" under Config (the action exists only while that is true), Window = Panels id (Group "Window"),
+--   Alt = an older Panels window the key opens until Window is registered (the HUD tile's Alt), Soon = the key answers
+--   before its window exists, like its HUD tile ('coming soon'; Ranking = the ranking list, Journal = the HUD quest list).
+-- Live rule: Flag on and, for the Window group, the Panels window (or its Alt) registered or Soon (client). Non-live
+-- actions hold no key and never take part in swaps. PadWired = the pad buttons that already work (BB21 wires the rest).
+-- User 2026-10-08 (MMO keys): I items, E equipment (Hero), K skills, M map, Q quest list -> the skills moved to Z / X / C
+-- and Interact (the prompts) to G; I is no longer reserved (Keybinds sinks Roblox's I / O camera zoom while one of our
+-- actions holds the key).
 Config.Keybinds = {
 	Actions = {
 		{ Id = "Attack", Group = "Combat", Key = "F", Pad = "ButtonR2", Label = "Attack", LabelEn = "Attack", Button = "Attack button", ButtonEn = "Attack button" },
-		{ Id = "SkillQ", Group = "Combat", Key = "Q", Pad = "ButtonL2", Label = "Skill", LabelEn = "Skill", Button = "Skill button", ButtonEn = "Skill button" },
-		{ Id = "SkillZ", Group = "Combat", Key = "Z", Pad = "ButtonL1", Label = "Skill 2", LabelEn = "Skill 2", Button = "Skill 2 button", ButtonEn = "Skill 2 button", Flag = "Skills.ZEnabled" },
-		{ Id = "SkillX", Group = "Combat", Key = "X", Pad = "ButtonR3", Label = "Skill 3", LabelEn = "Skill 3", Button = "Skill 3 button", ButtonEn = "Skill 3 button", Flag = "Skills.XEnabled" },
+		{ Id = "SkillQ", Group = "Combat", Key = "Z", Pad = "ButtonL2", Label = "Skill", LabelEn = "Skill", Button = "Skill button", ButtonEn = "Skill button" },
+		{ Id = "SkillZ", Group = "Combat", Key = "X", Pad = "ButtonL1", Label = "Skill 2", LabelEn = "Skill 2", Button = "Skill 2 button", ButtonEn = "Skill 2 button", Flag = "Skills.ZEnabled" },
+		{ Id = "SkillX", Group = "Combat", Key = "C", Pad = "ButtonR3", Label = "Skill 3", LabelEn = "Skill 3", Button = "Skill 3 button", ButtonEn = "Skill 3 button", Flag = "Skills.XEnabled" },
 		{ Id = "Auto", Group = "Combat", Key = "R", Pad = "ButtonR1", Label = "Auto Battle", LabelEn = "Auto Battle", Button = "Auto Battle button", ButtonEn = "Auto Battle button" },
 		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "Ghost hold", LabelEn = "Ghost hold", Button = "Ghost button", ButtonEn = "Ghost button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP potion", LabelEn = "HP potion", Button = "HP potion button", ButtonEn = "HP potion button" },
 		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP potion", LabelEn = "MP potion", Button = "MP potion button", ButtonEn = "MP potion button" },
 		-- KeySet "Prompt" + NoClear: the default ProximityPrompt UI must be able to draw the key (review of 27246d1)
-		{ Id = "Interact", Group = "Other", Key = "E", Pad = "ButtonX", Label = "Interact", LabelEn = "Interact", Button = "Interact button", ButtonEn = "Interact button",
+		{ Id = "Interact", Group = "Other", Key = "G", Pad = "ButtonX", Label = "Interact", LabelEn = "Interact", Button = "Interact button", ButtonEn = "Interact button",
 			KeySet = "Prompt", NoClear = true },
 		{ Id = "Upgrade", Group = "Other", Key = "U", Pad = "", Label = "Next weapon", LabelEn = "Next weapon", Button = "Next weapon card", ButtonEn = "Next weapon card" },
-		{ Id = "Bag", Group = "Window", Key = "G", Pad = "", Label = "Bag", LabelEn = "Bag", Button = "Bag button", ButtonEn = "Bag button", Window = "Bag" },
-		{ Id = "Character", Group = "Window", Key = "C", Pad = "", Label = "Hero", LabelEn = "Hero", Button = "Menu → Hero", ButtonEn = "Menu → Hero", Window = "Character" },
-		{ Id = "Skills", Group = "Window", Key = "K", Pad = "", Label = "Skills", LabelEn = "Skills", Button = "Menu → Skills", ButtonEn = "Menu → Skills", Window = "Skills" },
-		{ Id = "Ranking", Group = "Window", Key = "L", Pad = "", Label = "Ranking", LabelEn = "Ranking", Button = "Menu → Ranking", ButtonEn = "Menu → Ranking", Window = "Ranking" },
+		{ Id = "Bag", Group = "Window", Key = "I", Pad = "", Label = "Bag", LabelEn = "Bag", Button = "Bag button", ButtonEn = "Bag button", Window = "Bag", Alt = "Items" },
+		{ Id = "Character", Group = "Window", Key = "E", Pad = "", Label = "Hero", LabelEn = "Hero", Button = "Menu → Hero", ButtonEn = "Menu → Hero", Window = "Character", Soon = true },
+		{ Id = "Skills", Group = "Window", Key = "K", Pad = "", Label = "Skills", LabelEn = "Skills", Button = "Menu → Skills", ButtonEn = "Menu → Skills", Window = "Skills", Soon = true },
+		{ Id = "Ranking", Group = "Window", Key = "L", Pad = "", Label = "Ranking", LabelEn = "Ranking", Button = "Menu → Ranking", ButtonEn = "Menu → Ranking", Window = "Ranking", Soon = true },
 		{ Id = "Help", Group = "Window", Key = "H", Pad = "", Label = "Help", LabelEn = "Help", Button = "Menu → Help", ButtonEn = "Menu → Help", Window = "Help" },
-		{ Id = "Journal", Group = "Window", Key = "J", Pad = "", Label = "Quest journal", LabelEn = "Quest journal", Button = "Menu → Quest journal", ButtonEn = "Menu → Quest journal", Window = "Journal" },
+		{ Id = "Journal", Group = "Window", Key = "Q", Pad = "", Label = "Quest list", LabelEn = "Quest list", Button = "Quest list", ButtonEn = "Quest list", Window = "Journal", Soon = true },
 		{ Id = "Map", Group = "Other", Key = "M", Pad = "DPadLeft", Label = "Map", LabelEn = "Map", Button = "Map button", ButtonEn = "Map button" },
 		{ Id = "Menu", Group = "Other", Key = "B", Pad = "ButtonY", Label = "Menu", LabelEn = "Menu", Button = "Menu button", ButtonEn = "Menu button" },
 	},
-	-- Roblox / the default camera use these (I/O zoom, Comma/Period + arrows + PageUp/PageDown camera, W A S D move,
+	-- Roblox / the default camera use these (O zoom - I is the bag key since 10/08, its zoom sunk by Keybinds -, Comma /
+	-- Period + arrows + PageUp/PageDown camera, W A S D move,
 	-- Space jump, Shift lock, Tab player list, / and ` chat, Esc menu, F9-F12 Studio / developer keys). A key Roblox
 	-- turns out to swallow in a Studio Play check moves here.
 	Reserved = { "Escape", "Slash", "Tab", "Backquote", "Return", "KeypadEnter", "Space", "LeftShift", "RightShift",
-		"W", "A", "S", "D", "I", "O", "Comma", "Period", "PageUp", "PageDown", "Up", "Down", "Left", "Right",
+		"W", "A", "S", "D", "O", "Comma", "Period", "PageUp", "PageDown", "Up", "Down", "Left", "Right",
 		"F9", "F10", "F11", "F12" },
 	-- filled below: A-Z, Zero-Nine, F1-F8, KeypadZero-KeypadNine, symbols, LeftControl, LeftAlt, CapsLock (minus Reserved)
 	Allowed = {},
@@ -3487,7 +3493,7 @@ Config.Settings = {
 		Shake = { Type = "Bool" },
 		DmgNum = { Type = "Enum", Options = { "All", "Off" } },
 		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
-		KeyBadges = { Type = "Bool" },
+		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
 		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: the camera turns behind me while I walk

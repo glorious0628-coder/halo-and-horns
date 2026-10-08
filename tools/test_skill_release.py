@@ -22,24 +22,27 @@ CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 
 
 def key_checks():
-    """2026-10-06: the skill key is Q only; E stays the Roblox interact key for prompts (static HUD check).
-    BB1 (2026-10-05 beta basics): keys live in Config.Keybinds and HUD dispatches by action id through Keybinds, so the
-    default skill key Q / pad L2 and the interact key E are checked in Config.Keybinds and the action wiring in HUD."""
+    """User 2026-10-08 (MMO keys: I bag, E hero, K skills, M map, Q quest list): the basic skill's default key is Z, the
+    interact key (the prompts) is G and nothing in HUD binds a key code directly (static HUD check; replaces the 10/06
+    'skill = Q, E = interact' rule). BB1 (2026-10-05 beta basics): keys live in Config.Keybinds and HUD dispatches by
+    action id through Keybinds, so the defaults are checked in Config.Keybinds and the action wiring in HUD."""
     hud = HUD.read_text(encoding="utf-8-sig")
     code = "\n".join(line.split("--", 1)[0] for line in hud.splitlines())  # ignore comments
     config = "\n".join(line.split("--", 1)[0] for line in CONFIG.read_text(encoding="utf-8-sig").splitlines())
     failures = []
     if not re.search(r'action == "SkillQ" then\s*doRelease\(\)', code):
         failures.append("HUD does not bind the skill (doRelease) to the SkillQ action")
-    if not re.search(r'\{ Id = "SkillQ",[^\n}]*Key = "Q", Pad = "ButtonL2"', config) \
+    if not re.search(r'\{ Id = "SkillQ",[^\n}]*Key = "Z", Pad = "ButtonL2"', config) \
             or not re.search(r"PadWired = \{[^}]*\bSkillQ = true", config):
-        failures.append("Config.Keybinds: the SkillQ default is not Q / gamepad L2 (wired)")
-    if re.search(r"KeyCode\.E\b", code) or not re.search(r'\{ Id = "Interact",[^\n}]*Key = "E"', config) \
-            or re.search(r'\{ Id = "(?!Interact")\w+",[^\n}]*Key = "E"', config):
-        failures.append("E is not kept as the interact key (HUD binds KeyCode.E or another action defaults to E)")
+        failures.append("Config.Keybinds: the SkillQ default is not Z / gamepad L2 (wired)")
+    if re.search(r"KeyCode\.[EGQ]\b", code) or not re.search(r'\{ Id = "Interact",[^\n}]*Key = "G"', config) \
+            or re.search(r'\{ Id = "(?!Interact")\w+",[^\n}]*Key = "G"', config):
+        failures.append("G is not kept as the interact key (HUD binds a key code or another action defaults to G)")
+    if not re.search(r'\{ Id = "Journal",[^\n}]*Key = "Q"', config) or not re.search(r'\{ Id = "Character",[^\n}]*Key = "E"', config):
+        failures.append("the 10/08 window keys are not Q = quest list / E = hero")
     if len(re.findall(r"doRelease\(\)", code)) < 2:  # keyboard Q / gamepad L2 action + the touch button
         failures.append("skill input bindings missing")
-    return 4, failures
+    return 5, failures
 
 
 def literal(value):

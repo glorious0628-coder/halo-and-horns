@@ -150,6 +150,26 @@ MUTATIONS = [
      "\telseif not Config.KeyAllowedFor(cap.Action, name) then\n"
      '\t\ttoast(text("NotAllowed"), "bad", 3)\n'
      '\t\tKeybinds.EndCapture("NotAllowed", name)\n', ""),
+    # user 2026-10-08 (MMO keys): Soon window keys, the bag's Alt window, the I / O camera zoom sink
+    ("Soon window keys stay dead until their windows exist", "KEYBINDS_SOURCE",
+     'if def.Group ~= "Window" or def.Soon == true then', 'if def.Group ~= "Window" then'),
+    ("the Alt window does not make the bag key live", "KEYBINDS_SOURCE",
+     "\t\t\t\tif not (ok and has) and def.Alt then ok, has = pcall(panels.Has, def.Alt) end\n", ""),
+    ("WindowFor ignores the Alt window", "KEYBINDS_SOURCE",
+     "\t\tif not (okW and hasW) and okA and hasA then return def.Alt end\n", ""),
+    ("the Alt window beats the real one", "KEYBINDS_SOURCE",
+     "if not (okW and hasW) and okA and hasA then return def.Alt end", "if okA and hasA then return def.Alt end"),
+    ("no camera key sink", "KEYBINDS_SOURCE", "\tsinkCameraKeys()\n\ttoastCollisions()\n", "\ttoastCollisions()\n"),
+    ("the sink is never lifted", "KEYBINDS_SOURCE",
+     "\tpcall(function() ContextActionService:UnbindAction(K.SinkAction) end)\n", ""),
+    ("every camera key sunk, held or not", "KEYBINDS_SOURCE",
+     "\t\tif K.ByKey[name] then table.insert(codes, Enum.KeyCode[name]) end\n",
+     "\t\ttable.insert(codes, Enum.KeyCode[name])\n"),
+    ("an unbuilt window key does nothing again", "HUD", "\t\tL.WindowSoon(action)\n\t\treturn true\n", "\t\treturn true\n"),
+    ("Q does not fold the quest list out", "HUD",
+     'if inputAllowed() and not throttled("questKey", 0.25) then toggleQuests() end', "if false then end"),
+    ("an unbuilt window key skips its tile", "HUD", "\t\tif def.Key == action then\n\t\t\tL.TileTap(def)\n",
+     "\t\tif def.Key == action then\n"),
 ]
 
 
@@ -302,7 +322,13 @@ def static_checks(over: dict[str, str] | None = None) -> tuple[int, list[str]]:
           "HUD: input through Keybinds.ActionFor; window and menu keys run before inputAllowed()")
     window = function_body(hud, "function L.WindowKey")
     check("CurrentId()" in window and "panels.Close, true" in window and "panels.Open, target" in window and "Has(target)" in window,
-          "HUD L.WindowKey: same window key closes, another switches, an unregistered window does nothing")
+          "HUD L.WindowKey: same window key closes, another switches")
+    # user 2026-10-08: a window key whose window is not built yet answers like its HUD tile; Q folds the quest list
+    check("L.WindowSoon(action)" in window, "HUD L.WindowKey: an unregistered window answers through L.WindowSoon")
+    soon = function_body(hud, "function L.WindowSoon")
+    check('action == "Journal"' in soon and "toggleQuests()" in soon and "L.TileTap(def)" in soon
+          and "def.Key == action" in soon and "TXT.TileSoon" in soon,
+          "HUD L.WindowSoon: Q (Journal) = the HUD quest list, a tile's key = that tile, else 'Coming soon!'")
     check("kb.Changed:Connect(L.RefreshKeys)" in hud and "KeyBadges" in hud,
           "HUD key badges follow Keybinds.Changed and Settings.KeyBadges")
     vitals = text_of("VITALS")

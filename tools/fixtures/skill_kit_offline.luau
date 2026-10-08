@@ -151,7 +151,8 @@ for k, v in T or {} do
 	check(type(v) == "string" and not v:find("[\234-\237][\128-\191][\128-\191]"), "no Korean in Config.Skills.Text", k)
 end
 
--- section 6-3: the SkillX key (X, pad R3, flag XEnabled), after SkillZ
+-- section 6-3: the SkillX key (C since the user's 10/08 MMO keys - Q is the quest list, the skills are Z / X / C -,
+-- pad R3, flag XEnabled), after SkillZ
 local KB = Config.Keybinds
 local iz, ix = nil, nil
 for i, a in KB.Actions do
@@ -159,10 +160,10 @@ for i, a in KB.Actions do
 	if a.Id == "SkillX" then ix = i end
 end
 local ax = ix and KB.Actions[ix]
-check(ax and ix == iz + 1 and ax.Key == "X" and ax.Pad == "ButtonR3" and ax.Flag == "Skills.XEnabled" and ax.Group == "Combat"
-	and ax.LabelEn == "Skill 3" and ax.ButtonEn == "Skill 3 button", "SkillX: X / ButtonR3, Flag Skills.XEnabled, right after SkillZ",
+check(ax and ix == iz + 1 and ax.Key == "C" and ax.Pad == "ButtonR3" and ax.Flag == "Skills.XEnabled" and ax.Group == "Combat"
+	and ax.LabelEn == "Skill 3" and ax.ButtonEn == "Skill 3 button", "SkillX: C / ButtonR3, Flag Skills.XEnabled, right after SkillZ",
 	ax and { ax.Key, ax.Pad, ax.Flag })
 local reserved = {}
 for _, n in KB.Reserved do reserved[n] = true end
-check(not reserved.X and not reserved.ButtonR3, "X is not a reserved key")
+check(not reserved.C and not reserved.ButtonR3, "C is not a reserved key")
 print("SKILL_KIT_SUMMARY checks=" .. checks .. " failed=" .. failed)
