@@ -1157,6 +1157,17 @@ end
 
 -- the bar keeps 22du, the info line takes the rest of the meter's height (Rects.war_meter: 52.5du PC, 50.7du phone):
 -- 19.5du = 15.6 px on the PC, 17.7du = 13.3 px on the reference phone (NameTag floor 12 px)
+-- the top bar plate: the whole meter with the info line, only the bar while the line is folded (A23-68 #4)
+function L.SizeWarPlate()
+	local plate, TB = ui.warPlate, L.WarTop
+	if not plate then return end
+	if ui.warInfo and ui.warInfo.Visible then
+		plate.Size = UDim2.new(1, 0, 1, TB.PlateUp + TB.PlateDown)
+	else
+		plate.Size = UDim2.new(1, 0, 0, TB.PlateUp + 8 + 22 + TB.PlateFold)
+	end
+end
+
 function L.LayoutWar(h)
 	L.WarH = h
 	local info = math.clamp(h - 8 - 22 - 3, 14, 22)
@@ -2799,6 +2810,7 @@ HUD.RookieFold = L.RookieFold -- EventHUD reads the same rule
 function L.ApplyFold(changed)
 	local fold = L.RookieFold()
 	if ui.warInfo and ui.warInfo.Visible == fold then ui.warInfo.Visible = not fold end
+	L.SizeWarPlate()
 	if changed and L.WasFolded == true and not fold and type(UIKit.NewTag) == "function" then
 		pcall(UIKit.NewTag, ui.warBand or ui.warInfo)
 		task.delay(0.6, function() -- after the quest lines were rebuilt with the unfolded rows
@@ -4511,12 +4523,14 @@ function L.LayoutTiles(tr)
 	end
 end
 L.TileLabelMinPx = 40
-L.TileNameInset, L.TileNamePx = 10, 8 -- tile names inside the rim (tileButton)
+-- tile names inside the rim (tileButton): the inset du in all (the rim is ~4 px a side; phones keep their 11 px floor,
+-- so their names may touch the rim's inner edge: 'Settings' is 41 px at 11 px in a 45 px square)
+L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
 -- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
 -- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du
 -- (their centres BadgeOut du outside the meter's ends... negative = inside), the bar and the info line BarIn du in from
 -- each end, the crown Crown du
-L.WarTop = { PlateUp = 4, PlateDown = 3, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40 }
+L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40 }
 L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)

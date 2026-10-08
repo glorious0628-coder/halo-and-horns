@@ -1350,7 +1350,8 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 		place(c.Chip, px + pw * 0.03, ny - chipH * 0.85, gw, chipH)
 	end
 	setTextRange(c.ChipText, minT, chipT)
-	-- the outfit note: one line at the text floor when it fits the window, else two
+	-- the outfit note: one line at the text floor when it fits the window, else two (phones: the side column instead)
+	c.Outfit.Visible = LAY.OutfitOnCards ~= false
 	local O = LAY.Outfit
 	local maxW = pw * O.MaxW
 	local th, tw = textBounds(T.Outfit, minT, c.OutfitText.Font, maxW - 2 * O.PadX)
@@ -1538,7 +1539,12 @@ local function layout()
 		headH = math.max(headH, math.ceil((#T.Title * 0.58 + 1) * minT / band / aspect / 0.92))
 	end
 	note.Text.Text = compact and T.FooterShort or T.Footer
+	LAY.OutfitOnCards = true
 	if compact and mode == "art" and shownKey and string.sub(shownKey, 1, 9) == "ClassPick" then
+		-- 그림체 #42 on phones: the picture windows are too narrow for the outfit note (UiSandbox 749x361: 3 lines, cut),
+		-- so the side column says it once under the class-change line
+		LAY.OutfitOnCards = false
+		note.Text.Text = T.FooterShort .. "\n" .. T.Outfit
 		layoutSide(w, h, top, minT, s)
 		return
 	end

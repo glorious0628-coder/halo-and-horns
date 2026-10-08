@@ -214,6 +214,8 @@ local NOTIFY = {
 	-- the measured height gets this much room per line: at small real sizes (10-12 px) the engine's rounded line
 	-- height is taller than the measurement and the last line was dropped for "..." (UiSandbox 655x340, 2026-10-06)
 	WrapSlack = 0.15,
+	WrapSlackPx = 2.5, -- the least room per line in real px (UIKit.WrapHeight)
+	WrapWidthSlackPx = 6, -- UIKit.WrapHeight measures this much narrower than the label (real px)
 	TrimQueued = false,
 	-- UI round 2 #4 (검수 2026-10-07: "창이 열려 있으면 알림은 창 위 한 줄로"): the open window's rect (MainGui du, its title
 	-- ribbon included; UIKit.SetNotifyAvoid from Panels) - toasts then show one line, one at a time, just above the window
@@ -2321,12 +2323,16 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			params.Text = label.Text
 			params.Font = label.FontFace
 			params.Size = px
-			params.Width = width
+			-- a few px narrower than the box: the engine wraps a little earlier than TextService (991x451: TextService said
+			-- 2 lines at 142 px, the label drew 3)
+			params.Width = math.max(1, width - NOTIFY.WrapWidthSlackPx)
 			local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
 			params:Destroy()
 			if token ~= state.Token or not ok or not label.Parent then return end
 			local lines = math.max(1, math.floor(bounds.Y / px + 0.5))
-			local h = math.ceil((bounds.Y + lines * px * NOTIFY.WrapSlack) / s)
+			-- per line at least WrapSlackPx real px more: TextService gives a 9 px line 9 px, the engine draws it 11 px
+			-- (UiSandbox 991x451 2026-10-08: two 9 px lines got 21 px and the 2nd became "...")
+			local h = math.ceil((bounds.Y + lines * math.max(px * NOTIFY.WrapSlack, NOTIFY.WrapSlackPx)) / s)
 			-- maxLines may be a function: a toast reads NOTIFY.Avoid again on every fit (one line only while a window is open)
 			local cap = type(maxLines) == "function" and maxLines() or maxLines
 			if cap then
