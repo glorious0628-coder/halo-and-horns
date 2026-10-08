@@ -54,7 +54,7 @@
 | 메인 반영 1 | high | Game(공유) + 메인 Studio 주인 | 19:35 파일 저장 후 Studio 닫힘 | §1 → 초원 3차 apply |
 | 게임성 개발 1 | xhigh | `Game-wtc`(branch invite), **코드만**(메인 Studio는 메인 반영) | **안 올림:** HUD.luau 퀘스트 줄. 빈 이름 원인은 받기 알약 때문에 글자 칸이 0으로 줄어드는 것(flex shrink). `tools/test_quest_lines.py` 36개, 변이 25/25 통과. | 퀘스트 줄 push → 이미지 개발에 커밋 번호 → 카메라 Settings V3 이전 → 교차로 RoadSouth/North → 퀘스트 창 시험 훅 → separation 시험 → King 클라 몫 |
 | 게임성 개발 2 | xhigh + Ultracode | `Game-dev2`(branch dev2-kingfinish) | 올림: 5bda0d47(마무리 카드 고침). **안 올림:** `SlimeKingService.luau`(새) + Config, Net, FinisherService, Main, finisher 시험. King Slime 보스 패치를 시험하다 끊김. 게임 패스 고침 3f5dd020(`Game-dev2-mtest`)은 **검수 검증 미완**. | 보스 패치 시험 끝 → push → 계약 문서(대사 표) → 검수 |
-| 게임성 개발 3 | xhigh | `Game-dev3`(branch dev3) | **origin보다 4커밋 앞(push 안 함)** + 수정 13개(Slime Prince 글, glossary, 증거). 보고서 다시 만들기는 끝남. | 퀘스트 글 고침 main push → Slime Prince 글 15곳 + `test_slime_prince.py` |
+| 게임성 개발 3 | xhigh | `Game-dev3`(branch dev3) | 커밋 4개는 21:00에 검수가 origin/dev3에 push함(93865039) + **안 올린 수정 13개**(Slime Prince 글, glossary, 증거). 보고서 다시 만들기는 끝남. | 퀘스트 글 고침 main push → Slime Prince 글 15곳 + `test_slime_prince.py` |
 | 이미지 개발 1 | xhigh | `Game-imgdev*`(hudfb는 main에 들어감) | fc890f88 main에 올림(메인 반영 sync 대기). 업로드 10장은 시트 검사까지 끝, 아직 안 올림. hud3 미커밋 패치는 백업함. | 10장 업로드(UiSandbox) → 퀘스트 줄 판(개발 1 push 뒤) → QuestTabIcon 5개 → 패드 안내 판 → 미니맵 몬스터 아이콘 → 측정 훅 → 숲 질감 |
 | 이미지 생성 1 | high | Game(공유) | Tripo 웹에서 **왕관 돌 성(Crown Shrine) 3D 생성 시작**: Firefly 고급 3장 `art/out/hq/HQ_M_CrownShrine_{front,side,back}.png`, 폴리 20,000, 55포인트. 결과 받기 전 끊김. | Tripo 웹 기록에서 GLB 받기 → Blender 앞 렌더 → 검수 → 숲 도구(`docs/design/woods_layout_plan_2026-10-08.json`) |
 | 이미지 생성 2 | high | Game(공유) | King Slime 심술 표정 A/B/C(5762c7a2, `art/review/monsters/king_slime_grumpy_sheet.jpg`). 사용자 고르기 대기, 검수 추천 A. | 고르면 멀티뷰 고급 4장(20크레딧) → 이미지 생성 1에 Tripo용으로 |
@@ -123,7 +123,7 @@
 ```
 ### 5-5. 게임성 개발 3 (xhigh)
 ```
-너는 Halo & Horns의 '게임성 개발 3' 세션이야(서버 전용 worktree C:/Users/glori/Documents/Roblox/Game-dev3, branch dev3). 먼저 읽어: AGENTS.md, docs/handoff/account_switch_2026-10-08_2100.md §2, build/handoff_2026-10-08/dev3_tail.md, docs/SPEC_ADDENDUM.md A23-84·A23-85. origin보다 4커밋 앞 + 수정 13개(Slime Prince 글·glossary)가 있어: 퀘스트 글 고침을 main에 push → Slime Prince 글 15곳 + tools/test_slime_prince.py 통과 → push → 검수에 보고.
+너는 Halo & Horns의 '게임성 개발 3' 세션이야(서버 전용 worktree C:/Users/glori/Documents/Roblox/Game-dev3, branch dev3). 먼저 읽어: AGENTS.md, docs/handoff/account_switch_2026-10-08_2100.md §2, build/handoff_2026-10-08/dev3_tail.md, docs/SPEC_ADDENDUM.md A23-84·A23-85. 커밋은 origin/dev3에 올라가 있고(93865039), 안 올린 수정 13개(Slime Prince 글·glossary)가 있어: 퀘스트 글 고침을 main에 push → Slime Prince 글 15곳 + tools/test_slime_prince.py 통과 → push → 검수에 보고.
 ```
 ### 5-6. 이미지 개발 1 (xhigh)
 ```
