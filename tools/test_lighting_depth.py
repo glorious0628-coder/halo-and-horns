@@ -20,9 +20,19 @@ OUT = ROOT / "docs/art/verification_2026-10-08/offline_lighting_depth_2026-10-08
 
 MUTATIONS = [
     ("CONFIG", "the noon sun back", "Neutral = { ClockTime = 15.3,", "Neutral = { ClockTime = 14.2,"),
-    ("CONFIG", "the bright flat shade back", "OutdoorAmbient = Color3.fromRGB(110, 120, 135), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 150",
+    ("CONFIG", "the bright flat shade back", "OutdoorAmbient = Color3.fromRGB(95, 104, 118), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 150",
      "OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 150"),
-    ("CONFIG", "the far haze back", "FogStart = 150, FogEnd = 950, ExposureCompensation = -0.05", "FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.05"),
+    ("CONFIG", "the far haze back", "FogStart = 150, FogEnd = 950, ExposureCompensation = -0.25", "FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.25"),
+    ("CONFIG", "the too-bright day back (user 10/08)", "FogEnd = 950, ExposureCompensation = -0.25", "FogEnd = 950, ExposureCompensation = -0.05"),
+    ("CONFIG", "the bright sun back", "Neutral = { ClockTime = 15.3, Brightness = 2,", "Neutral = { ClockTime = 15.3, Brightness = 2.2,"),
+    ("CONFIG", "a war dawn brighter than the day's step", "OutdoorAmbient = Color3.fromRGB(130, 113, 90)", "OutdoorAmbient = Color3.fromRGB(150, 130, 104)"),
+    ("CONFIG", "a war dawn without its own exposure", "FogEnd = 650, ExposureCompensation = -0.35,", "FogEnd = 650,"),
+    ("WAR", "the sky faces never set", "\t\tif type(id) == \"string\" and id ~= \"\" then setProps(sky, { [\"Skybox\" .. side] = id }) end\n", ""),
+    ("WAR", "an empty face blanks the place's sky", "\t\tif type(id) == \"string\" and id ~= \"\" then setProps(sky, { [\"Skybox\" .. side] = id }) end\n",
+     "\t\tsetProps(sky, { [\"Skybox\" .. side] = tostring(id or \"\") })\n"),
+    ("CONFIG", "the eclipse night as dark as the day's step", "FogEnd = 650, ExposureCompensation = 0.35,", "FogEnd = 650, ExposureCompensation = 0.1,"),
+    ("WAR", "a war sky paints over the faces", "\tlocal goals = { { Lighting, lightingGoal } }\n",
+     "\tlocal goals = { { Lighting, lightingGoal } }\n\tLighting.Sky.SkyboxUp = \"\"\n"),
     ("WAR", "soft shadows back", "GlobalShadows = true, ShadowSoftness = 0.15,", "GlobalShadows = true, ShadowSoftness = 0.5,"),
     ("WAR", "full sky fill back", "\tEnvironmentDiffuseScale = 0.5, EnvironmentSpecularScale = 0.6,\n", "\tEnvironmentDiffuseScale = 1.0, EnvironmentSpecularScale = 0.6,\n"),
     ("WAR", "low contrast back", "Contrast = 0.12, Saturation = -0.05", "Contrast = 0.05, Saturation = -0.05"),
@@ -54,7 +64,8 @@ def checks_for(config, war, preview):
         ("a shade the sky does not flatten (OutdoorAmbient every channel <= 140)", max(outamb) <= 140),
         ("a darker indoor / cave shade (Ambient every channel <= 100)", max(amb) <= 100),
         ("the shade a little cool (OutdoorAmbient blue > red)", outamb[2] > outamb[0]),
-        ("the lit side stays bright (Brightness >= 2, exposure >= -0.15)", bright >= 2.0 and exp >= -0.15),
+        ("one step darker than 10/08 noon (user 'too bright'): Brightness 1.8-2.1, exposure -0.4..-0.15, OutdoorAmbient <= 120",
+         1.8 <= bright <= 2.1 and -0.4 <= exp <= -0.15 and max(outamb) <= 120),
         ("a closer haze (FogStart <= 200, FogEnd <= 1000) in the horizon colour 150, 205, 228",
          fs <= 200 and fe <= 1000 and fog == (150, 205, 228)),
         ("sharper sun shadows (ShadowSoftness <= 0.2)", bool(lf) and float(lf[1]) <= 0.2),
@@ -78,6 +89,21 @@ def checks_for(config, war, preview):
     out.append(("preview_map bakes Config's Neutral and WarService's values (" + ", ".join(k for k, v in baked.items() if not v) + ")"
                 if not all(baked.values()) else "preview_map bakes Config's Neutral and WarService's values", all(baked.values())))
     out.append(("no Atmosphere is made anywhere (A9-3)", 'Instance.new("Atmosphere")' not in config + war + preview))
+    # user 10/08 "too bright": the crown-war skies take the same step; the painted sky's faces (Config.Sky.Faces)
+    dawn = re.search(r"\tDawn = \{[^\n]*Brightness = ([\d.]+),[^\n]*OutdoorAmbient = Color3\.fromRGB\(([\d, ]+)\)", config)
+    dawn_exp = re.search(r"\tDawn = \{[^\n]*ExposureCompensation = (-?[\d.]+)", config)
+    ecl_exp = re.search(r"\tEclipse = \{[^\n]*ExposureCompensation = (-?[\d.]+)", config)
+    apply = war[war.find("local function applySky("):war.find("------------------------------------------------------------------ round state")]
+    out += [
+        ("the crown-war dawn takes the same step (Brightness <= 2.0, OutdoorAmbient <= 135, its own exposure <= -0.25)",
+         bool(dawn) and bool(dawn_exp) and float(dawn[1]) <= 2.0 and max(rgb(dawn[2])) <= 135 and float(dawn_exp[1]) <= -0.25),
+        ("the eclipse night keeps its light (its own exposure 0.2..0.45)", bool(ecl_exp) and 0.2 <= float(ecl_exp[1]) <= 0.45),
+        ("Lighting.Sky gets Config.Sky.Faces' six faces at Start (an empty face keeps the place's)",
+         "local faces = type(Config.Sky.Faces) == \"table\" and Config.Sky.Faces or {}" in war
+         and 'for _, side in { "Ft", "Bk", "Lf", "Rt", "Up", "Dn" } do' in war
+         and 'if type(id) == "string" and id ~= "" then setProps(sky, { ["Skybox" .. side] = id }) end' in war),
+        ("the war skies never touch the faces (applySky has no Skybox)", bool(apply) and "Skybox" not in apply),
+    ]
     return out
 
 

@@ -42,6 +42,7 @@ local SWAP = {
 	K_NoticeBoard2 = { new = "X_NoticeBoard", yaw = "face", board = true },
 	K_PadBase = { new = "X_PadBase", yaw = 0, pad = true },
 	Curb = { new = "Kit_X_Curb", yaw = "face", noCollide = true }, -- walk-through ring like the old one
+	K_CrownShard = { new = "K_CrownShard_v2", yaw = 0, noCollide = true }, -- 검수 10/08: Tripo crown shard (이미지 생성 1 ③-2) floating over the fountain
 }
 local SIGNS = { { 11, -70 }, { -11, 70 }, { 86, -11 } } -- Kit_M_SignPost, front toward the plaza
 local PAD_MAX_TOP = 1.45 -- old K_PadBase walk top above the plaza (saved place: pad TopY 1.4245)

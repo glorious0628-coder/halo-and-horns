@@ -5348,7 +5348,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
+    "src/ReplicatedStorage/Shared/Config.luau": "69b7b40b6fd5e45821d32f0bce935bfa8419d38a710c03418b51c36dce6677b7",
     "src/ReplicatedStorage/Shared/Net.luau": "a5f641ff6b031f6cdcd8a809d61fbb1efd3d5549c80fc4eba6b630556b03793e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
@@ -5361,7 +5361,7 @@
     "src/ServerScriptService/MonsterService.luau": "de5514f3f337753ef8a9cd38ac1c97bc86813a8083410367da5333020c63a037",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "de0638c1776386bd94646570f166825a73aa9ba95b4daaa76c250ba4ec99586d",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "cbe5046ae65283c9d2fcc1ddd0fe75d3f5d76ea12d664b9beed9bf225f041020",
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "f7e50b181901b75109f00c32215e6b245f9b9558a6c26fdc40857be943952641",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "49d3488a4ae1d6bdb049b5095876f4505d087871d72dcc529e70b7db09ceb8fb",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",

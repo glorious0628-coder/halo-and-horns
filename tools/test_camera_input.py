@@ -83,7 +83,7 @@ HUD_MUTATIONS = [
 # no second walking turn under Roblox's Follow camera, (4) a 0.5 s hitch turns as if 1/20 s.
 STOP_BOOK = ("\tif walking then\n\t\tFOLLOW.StopAt = math.huge\n\telseif FOLLOW.StopAt == math.huge then\n"
              "\t\tFOLLOW.StopAt = now\n\tend\n")
-FREE_LINE = '\tif setting("Cam", "Follow") == "Free" or blocked() then return end\n'
+FREE_LINE = '\tif setting("Cam", "Free") == "Free" or blocked() then return end -- default Free (user 10/08)\n'
 HOLD_LINE = ("\tif now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end\n")
 FOLLOW_MUTATIONS = [
     # walking
@@ -104,10 +104,12 @@ FOLLOW_MUTATIONS = [
      " then return end"),
     ("no turn-speed cap while walking", "return math.clamp(angle * math.min(1, ease * dt), -rate * dt, rate * dt)",
      "return angle * math.min(1, ease * dt)"),
-    ("(c) Settings Free ignored (walk and recenter)", 'if setting("Cam", "Follow") == "Free" or blocked() then return end',
+    ("(c) Settings Free ignored (walk and recenter)", 'if setting("Cam", "Free") == "Free" or blocked() then return end',
      "if blocked() then return end"),
-    ("(c) windows / scripted camera no longer block", 'if setting("Cam", "Follow") == "Free" or blocked() then return end',
-     'if setting("Cam", "Follow") == "Free" then return end'),
+    ("(c) windows / scripted camera no longer block", 'if setting("Cam", "Free") == "Free" or blocked() then return end',
+     'if setting("Cam", "Free") == "Free" then return end'),
+    ("no camera setting yet follows (the default is Free, user 10/08)", 'if setting("Cam", "Free") == "Free" or blocked() then return end',
+     'if setting("Cam", "Follow") == "Free" or blocked() then return end'),
     ("'Screen shake' off ignored", 'local slow = setting("Shake", true) == false', "local slow = false"),
     ("other players' swings hold my camera", "\t\tand data.UserId == LocalPlayer.UserId then\n", "\t\tthen\n"),
     ("the move stick holds it", "if width > 0 and input.Position.X > width * FOLLOW.CameraSide then", "if true then"),

@@ -1,0 +1,5 @@
+[초원 King Slime Hill 꼭대기 '왕관 돌 사당' (사용자 요청 10/08 밤, 검수). 시안 Concept_SlimeMeadow 가운데 위(윗부분은 IP 표시에 가려짐 → 몸통만 잘라 참조 art/out/kit/meadow/Shrine_concept_crop.png).
+ A23-80: 앞 3/4 중간 시안 2장 → 고른 판의 옆·뒤 중간 → 고급(앞 + 옆 + 뒤) → Tripo 웹 HD(멀티뷰). 지름 14~18스터드, 앞 = -Z(언덕 길).
+ 얼굴 금지: 창 두 개 + 문 = 얼굴처럼 보일 수 있어서 창 없이 문 하나만. 빛살 금지.]
+
+M_CrownShrine (medium, ref = concept crop): A small round stone shrine shaped like a big crown, standing on a grassy hilltop: a short wide drum of pale grey carved stone blocks on a thicker round stone base ring, the top rim cut into six wide pointed crown peaks with a small round stone ball on the tip of each peak, one small arched doorway with a closed wooden door at the front, no windows, soft green moss patches and grass tufts with tiny white flowers around the base. Keep the stone color and soft rounded carving style of the attached reference. Glossy chunky toy 3D render, soft even light, plain flat medium gray background, whole object in frame with margin, three-quarter front view. No faces, no eyes, no symbols, no text, no rays.
