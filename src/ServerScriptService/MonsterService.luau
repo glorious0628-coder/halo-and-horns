@@ -135,8 +135,10 @@ local NATURAL = { WanderPace = 0.5, RampStart = 0.45, RampStep = 0.3, ArriveSlow
 -- is dropped and the other monster of a pair takes it), and a player's rings count only their part inside the line
 -- (SEP.RingArc: fewer fit, the rest wait on the next ring) instead of slots past it all being clamped onto the line;
 -- (2) a zone monster keeps its target TargetHold s and then switches only to a player TargetMargin studs closer
--- (SEP.Pick), so a monster between two players standing together no longer swaps target and slot every tick; but it
--- never keeps a target out of AttackRange while another player is in reach (it stood there and swung at nobody).
+-- (SEP.Pick), so a monster between two players standing together no longer swaps target and slot every tick; after
+-- the hold it never keeps a target out of AttackRange while another player is in reach (it stood there and swung at
+-- nobody), and each player's rings are cut by the other players' bodies (SEP.Surround: a slot inside one was shoved
+-- off, across the reach edge, and the monster went A -> B -> A in a crowd).
 local SEP = {
 	Radius = { Slime = 1.5, Humanoid = 1.25 },
 	PlayerRadius = 1,
@@ -2167,21 +2169,36 @@ end
 -- A23-74 review 2026-10-08 (zone edge): the part of the ring of radius r around (cx, cz) inside box, as the angles
 -- { A0, A1 } (A0 < A1; the longest piece when the box cuts the ring more than once); nil when the whole ring is inside
 -- (or no box), false when none of it is. Each side the ring crosses cuts out the arc around that side's outward
--- direction (half width acos(distance to the side / r)).
-function SEP.Arc(cx, cz, r, box)
-	if box == nil then return nil end
-	local dx1, dx0, dz1, dz0 = box.X1 - cx, cx - box.X0, box.Z1 - cz, cz - box.Z0
-	if r <= dx1 and r <= dx0 and r <= dz1 and r <= dz0 then return nil end
+-- direction (half width acos(distance to the side / r)). Review 2026-10-08 (3rd round, two players): each of `bodies`
+-- (the other players, { X, Z } where they will be) cuts out the arc where a body of radius rad would be inside it
+-- (closer than rad + PlayerRadius: the Resolve body push would shove it off its slot, out of its target's reach).
+function SEP.Arc(cx, cz, r, box, bodies, rad)
 	local tau = 2 * math.pi
 	local cuts = {}
-	for i, dist in { dx1, dx0, dz1, dz0 } do
-		if dist <= -r then return false end
-		if dist < r then
-			local hw = math.acos(dist / r)
-			local s = (({ 0, math.pi, math.pi / 2, -math.pi / 2 })[i] - hw) % tau
+	if box ~= nil then
+		local dx1, dx0, dz1, dz0 = box.X1 - cx, cx - box.X0, box.Z1 - cz, cz - box.Z0
+		for i, dist in { dx1, dx0, dz1, dz0 } do
+			if dist <= -r then return false end
+			if dist < r then
+				local hw = math.acos(dist / r)
+				local s = (({ 0, math.pi, math.pi / 2, -math.pi / 2 })[i] - hw) % tau
+				table.insert(cuts, { S = s, E = s + 2 * hw })
+			end
+		end
+	end
+	for _, o in bodies or {} do
+		local ox, oz = o.X - cx, o.Z - cz
+		local d, q = math.sqrt(ox * ox + oz * oz), (rad or SEP.Radius.Slime) + SEP.PlayerRadius
+		-- cos of the half width: ring points closer than q to the body (law of cosines); <= -1 all, >= 1 none
+		local k = d < 1e-6 and (r < q and -1 or 1) or (r * r + d * d - q * q) / (2 * r * d)
+		if k <= -1 then return false end
+		if k < 1 then
+			local hw = math.acos(k)
+			local s = (math.atan2(oz, ox) - hw) % tau
 			table.insert(cuts, { S = s, E = s + 2 * hw })
 		end
 	end
+	if #cuts == 0 then return nil end
 	table.sort(cuts, function(a, b) return a.S < b.S end)
 	local merged = {}
 	for _, c in cuts do
@@ -2200,13 +2217,14 @@ function SEP.Arc(cx, cz, r, box)
 	return best or false
 end
 
--- the angles inside the box the members of a ring (entries with R) all have: the overlap of their SEP.Arc pieces (each
--- taken within pi of the first one's middle); nil = the whole ring for every member, false = none
-function SEP.RingArc(ring, cx, cz, box)
-	if box == nil then return nil end
+-- the angles inside the box (and clear of `bodies`) the members of a ring (entries with R, Rad) all have: the overlap
+-- of their SEP.Arc pieces (each taken within pi of the first one's middle); nil = the whole ring for every member,
+-- false = none
+function SEP.RingArc(ring, cx, cz, box, bodies)
+	if box == nil and bodies == nil then return nil end
 	local a0, a1, ref = -math.huge, math.huge, nil
 	for _, e in ring do
-		local arc = SEP.Arc(cx, cz, e.R, box)
+		local arc = SEP.Arc(cx, cz, e.R, box, bodies, e.Rad)
 		if arc == false then return false end
 		if arc then
 			local mid = (arc.A0 + arc.A1) / 2
@@ -2279,8 +2297,10 @@ end
 -- ones, every slot inside the line (before, slots past it were clamped onto the line and piled up there). A ring with
 -- no room inside the line keeps its closest one (aiStep clamps it onto the line: only for a player more than
 -- AttackRange - RingInside past the line, at most ZONE_MOVE_INSET, so it lands at most RingGap past its ring and the
--- next ring still clears it).
-function SEP.Surround(info, chasers)
+-- next ring still clears it). Review 2026-10-08 (3rd round, two players): the other players' bodies (where they will
+-- be, within 8 studs up / down like SEP.Body) cut the rings too (SEP.Arc): a slot inside another player was shoved off
+-- by the body push, out of its target's reach and into the other one's (70% of the target switches in a crowd).
+function SEP.Surround(info, chasers, plist)
 	local p = info.Pos
 	local rest = {}
 	local box = nil -- the zone's move rect (a player's zone monsters all share its zone)
@@ -2297,21 +2317,29 @@ function SEP.Surround(info, chasers)
 		return a.Id < b.Id
 	end)
 	local cx, cz = SEP.Ahead(info)
+	local bodies = nil
+	for _, o in plist or {} do
+		if o ~= info and math.abs(o.Pos.Y - p.Y) < 8 then
+			local ox, oz = SEP.Ahead(o)
+			bodies = bodies or {}
+			table.insert(bodies, { X = ox, Z = oz })
+		end
+	end
 	local edge, inner = 0, true
 	while #rest > 0 do
 		local ring = rest
 		rest = {}
 		if inner then
-			if not SEP.Fits(ring, SEP.RingArc(ring, cx, cz, box)) then
+			if not SEP.Fits(ring, SEP.RingArc(ring, cx, cz, box, bodies)) then
 				for _, e in ring do e.R = MC.AttackRange - SEP.RingInside end
 			end
 		else
 			for _, e in ring do e.R = edge + SEP.RingGap + e.Rad end
 		end
-		local arc = SEP.RingArc(ring, cx, cz, box)
+		local arc = SEP.RingArc(ring, cx, cz, box, bodies)
 		while #ring > 1 and not SEP.Fits(ring, arc) do
 			table.insert(rest, 1, table.remove(ring)) -- the farthest waits on the next ring (rest stays closest first)
-			arc = SEP.RingArc(ring, cx, cz, box)
+			arc = SEP.RingArc(ring, cx, cz, box, bodies)
 		end
 		if arc == nil then
 			SEP.Spread(ring)
@@ -2347,7 +2375,7 @@ function SEP.Begin(list, plist)
 	end
 	for player, recs in chasers do
 		local info = findInfo(plist, player)
-		if info then SEP.Surround(info, recs) end
+		if info then SEP.Surround(info, recs, plist) end
 	end
 end
 
@@ -2609,9 +2637,12 @@ end
 -- may chase (targetable) within AggroRadius (A10-V3-2 a), but while its current target (rec._target) is still one of
 -- those it keeps it for TargetHold s from when it took it (rec._targetAt) and after that unless another is TargetMargin
 -- studs closer. Before, a monster between two players standing together switched target (and ring slot) every tick.
--- Review 2026-10-08 (2nd round): never a held target out of AttackRange while another one is in reach: pushed off its
--- slot (into the other player's body) it stood in that player's reach forever and swung at nobody (aiStep attacks only
--- its target; with players under TargetMargin apart |dA - dB| <= |AB| keeps the margin from ever being met).
+-- Review 2026-10-08 (2nd round): after the hold, never a target out of AttackRange while another one is in reach:
+-- pushed off its slot (into the other player's body) it stood in that player's reach forever and swung at nobody
+-- (aiStep attacks only its target; with players under TargetMargin apart |dA - dB| <= |AB| keeps the margin from ever
+-- being met). Review 2026-10-08 (3rd round): only after the hold, though: in a crowd a monster shoved across the reach
+-- edge switched A -> B -> A every 0.5 s (its slot jumping each time); now it waits out TargetHold first (at most 2 s
+-- idle), and SEP.Surround keeps slots out of the other player's body (the shove that caused most of it).
 function SEP.Pick(rec, plist, pos, now)
 	local best, bestD, cur, curD = nil, nil, nil, nil
 	for _, info in plist do
@@ -2624,8 +2655,8 @@ function SEP.Pick(rec, plist, pos, now)
 		end
 	end
 	if cur ~= nil and best ~= cur
-		and (now < (rec._targetAt or -math.huge) + SEP.TargetHold or bestD > curD - SEP.TargetMargin)
-		and (curD <= MC.AttackRange or bestD > MC.AttackRange) then
+		and (now < (rec._targetAt or -math.huge) + SEP.TargetHold
+			or (bestD > curD - SEP.TargetMargin and (curD <= MC.AttackRange or bestD > MC.AttackRange))) then
 		return cur, curD
 	end
 	return best, bestD
@@ -2768,8 +2799,8 @@ local function aiStep(rec, plist, now)
 	end
 
 	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a); the
-	-- current one is kept a while and against a player only a little closer, unless it is out of reach and another is
-	-- in reach (SEP.Pick, A23-74 review 2026-10-08);
+	-- current one is kept TargetHold s, then against a player only a little closer unless it is out of reach and another
+	-- is in reach (SEP.Pick, A23-74 review 2026-10-08);
 	-- SKL-3 Taunt: until _tauntUntil the taunter first (while still a valid target)
 	local best, bestD = nil, nil
 	if rec._tauntUntil and now < rec._tauntUntil then

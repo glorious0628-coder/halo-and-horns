@@ -13,7 +13,8 @@
 -- rounds, lead 0.25 s, 1.5 spawn gap, cell 8) are written here on purpose. Review probe 2026-10-07: a player walking at
 -- 3 / 5 / 8 studs/s with 4 Shard Slimes + 2 King Slimes: mean deepest overlap per AI tick < 0.3 studs. Review
 -- 2026-10-08: the zone edge (slides along the move line, rings cut by it) and two players side by side (target hold,
--- but never kept out of reach while the other player is in reach).
+-- after it never kept out of reach while the other player is in reach; rings cut by the other player's body; a crowd
+-- of 16 around them).
 
 local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 local MC = C.Monsters
@@ -727,7 +728,9 @@ end)
 -- with opts.Players (several players) each monster picks its target with the real SEP.Pick (opts.Nearest: the old rule,
 -- the nearest one every tick), counting its target changes in r._switches, the changes to a player out of reach in
 -- r._farSwitches and (review 2026-10-08) the ticks it chases a target out of reach while another player is in reach
--- (it swings at nobody: aiStep attacks only its target) in r._idleNear.
+-- (it swings at nobody: aiStep attacks only its target) in r._idleNear. Review 2026-10-08 (3rd round): also the
+-- switches within 2 s (TargetHold) of taking its target in r._quick, the switches back to the target before
+-- (A -> B -> A) in r._flips and its longest run of such idle ticks in r._idleMax.
 local WINDUP = C.HitReact.MonsterWindup
 local SUB = 8
 local function nearestOf(plist, pos)
@@ -761,18 +764,27 @@ local function simulate(w, info, recs, ticks, opts)
 			if opts.Players then
 				ti = opts.Nearest and nearestOf(plist, pos) or w.SEP.Pick(r, plist, pos, now)
 				if ti and ti.Player ~= r._target then
-					if r._target ~= nil and flat(pos, ti.Pos) > MC.AttackRange then r._farSwitches = (r._farSwitches or 0) + 1 end
+					if r._target ~= nil then
+						if flat(pos, ti.Pos) > MC.AttackRange then r._farSwitches = (r._farSwitches or 0) + 1 end
+						if now - (r._targetAt or -math.huge) < 2 then r._quick = (r._quick or 0) + 1 end
+						if ti.Player == r._before then r._flips = (r._flips or 0) + 1 end
+					end
+					r._before = r._target
 					r._target, r._targetAt = ti.Player, now
 					r._switches = (r._switches or 0) + 1
 				end
+				local idle = false
 				if ti and flat(pos, ti.Pos) > MC.AttackRange then
 					for _, p in plist do
 						if p ~= ti and flat(pos, p.Pos) <= MC.AttackRange then
-							r._idleNear = (r._idleNear or 0) + 1
+							idle = true
 							break
 						end
 					end
 				end
+				r._idleRun = idle and (r._idleRun or 0) + 1 or 0
+				r._idleNear = (r._idleNear or 0) + (idle and 1 or 0)
+				r._idleMax = math.max(r._idleMax or 0, r._idleRun)
 			else
 				r._target = info.Player
 			end
@@ -1359,18 +1371,26 @@ runGroup("target hold", function()
 	check(pick(10) == B, "another player more than 3 studs closer, target held 10 s: it switches")
 	r._targetAt = 9
 	check(pick(10) == A, "... but not within 2 s of taking its target (both out of reach)")
-	-- review 2026-10-08: a held target out of reach never beats a player in reach (else it stood in that player's
-	-- reach and swung at nobody; with players under 3 studs apart the margin can never be met: |dA - dB| <= |AB|)
+	-- review 2026-10-08: after the hold a target out of reach never beats a player in reach (else it stood in that
+	-- player's reach and swung at nobody; with players under 3 studs apart the margin can never be met: |dA - dB| <= |AB|).
+	-- Review 2026-10-08 (3rd round): within the hold it keeps its target anyway (taking the one in reach at once, a monster
+	-- shoved across the reach edge in a crowd went A -> B -> A every 0.5 s); it idles at most those 2 s
 	r.Root.Position = vec(CX + 3, 3, CZ - 4)
-	check(MC.AttackRange == 5.5 and pick(10) == B, "within 2 s, its target 7.2 away and another player 4 away (in reach): "
-		.. "it takes the one in reach", pick(10) and pick(10).Player.Name)
+	check(MC.AttackRange == 5.5 and pick(10) == A, "within 2 s, its target 7.2 away and another player 4 away (in reach): "
+		.. "it keeps its target (the hold comes first)", pick(10) and pick(10).Player.Name)
 	local nearA, nearB = playerAt("a", CX, CZ), playerAt("b", CX + 2, CZ)
 	r.Root.Position = vec(CX - 3.69, 3, CZ)
 	r._target, r._targetAt = nearB.Player, 0
-	check(pick(10, { nearA, nearB }) == nearA, "players 2 apart, its target 5.69 away (out of reach), the other 3.69: "
-		.. "it switches to the one in reach although only 2 studs closer")
+	check(pick(10, { nearA, nearB }) == nearA, "players 2 apart, its target 5.69 away (out of reach), the other 3.69, "
+		.. "target held 10 s: it switches to the one in reach although only 2 studs closer")
+	r._targetAt = 8.5
+	check(pick(10, { nearA, nearB }) == nearB, "... but not within 2 s of taking its target")
+	r._targetAt = 0
 	r.Root.Position = vec(CX - 3.4, 3, CZ)
-	check(pick(10, { nearA, nearB }) == nearB, "... but its target back in reach (5.4): it keeps it")
+	check(pick(10, { nearA, nearB }) == nearB, "... and not with its target back in reach (5.4): it keeps it")
+	r.Root.Position = vec(CX - 6, 3, CZ)
+	check(pick(10, { nearA, nearB }) == nearB, "both out of reach (6 / 8), the other only 2 studs closer, held 10 s: it keeps "
+		.. "its target")
 	r.Root.Position = vec(CX + 4, 3, CZ - 5.6)
 	r._target, r._targetAt = A.Player, 9
 	check(pick(10, { B }) == B, "its target gone from the list: the nearest one at once")
@@ -1389,12 +1409,86 @@ runGroup("target hold", function()
 		"aiStep: the target comes from SEP.Pick, a new one is stamped (rec._targetAt)")
 end)
 
+runGroup("two players rings", function()
+	-- review 2026-10-08 (3rd round): another player's body (where it will be) cuts a player's chase rings like the zone's
+	-- move line does: a slot inside it was shoved off by the body push, out of its target's reach and into the other
+	-- player's (70% of the target switches in a crowd of 16 around two players 2-4 studs apart)
+	local SEP = spacingWorld().SEP
+	local function wrap(a) return (a + math.pi) % TAU - math.pi end
+	-- a Shard Slime ring (3.5) around (CX, CZ), another player 2 studs east: the ring points closer than 1.5 + 1 = 2.5 to
+	-- it are cut, half width acos((3.5^2 + 2^2 - 2.5^2) / (2 x 3.5 x 2)) = 44.4 deg each side of east
+	local east = { { X = CX + 2, Z = CZ } }
+	local hw = math.acos((3.5 ^ 2 + 2 ^ 2 - 2.5 ^ 2) / (2 * 3.5 * 2))
+	local arc = SEP.Arc(CX, CZ, 3.5, nil, east, 1.5)
+	check(arc and math.abs(wrap((arc.A0 + arc.A1) / 2 - math.pi)) < 1e-9 and math.abs(arc.A1 - arc.A0 - (TAU - 2 * hw)) < 1e-9
+		and math.abs(math.deg(hw) - 44.4) < 0.05, "another player 2 studs east: the 44.4 deg each side of east are cut out", show(arc))
+	-- a King Slime (r 2.7, ring 4.7): the cut takes its bigger body (2.7 + 1)
+	local kw = math.acos((4.7 ^ 2 + 2 ^ 2 - 3.7 ^ 2) / (2 * 4.7 * 2))
+	arc = SEP.Arc(CX, CZ, 4.7, nil, east, 2.7)
+	check(arc and math.abs(arc.A1 - arc.A0 - (TAU - 2 * kw)) < 1e-9, "a King Slime's ring: the cut of its bigger body (48.7 deg)",
+		show({ arc, math.deg(kw) }))
+	check(SEP.Arc(CX, CZ, 3.5, nil, { { X = CX + 6.5, Z = CZ } }, 1.5) == nil and SEP.Arc(CX, CZ, 5, nil, east, 1.5) == nil,
+		"a player farther than ring + body (6 + 0.5), or a ring passing outside its body (5 = 2 + 2.5 + 0.5): no cut")
+	check(SEP.Arc(CX, CZ, 2, nil, { { X = CX, Z = CZ } }, 1.5) == false
+		and SEP.Arc(CX, CZ, 1, nil, { { X = CX + 0.5, Z = CZ } }, 1.5) == false, "a ring inside another player's body: no room at all")
+	-- with the zone's move line 3 studs east and the other player 2 studs west: both cut, the longer piece is used
+	local box = { X0 = CX - 200, X1 = CX + 3, Z0 = CZ - 200, Z1 = CZ + 200 }
+	arc = SEP.Arc(CX, CZ, 3.5, box, { { X = CX - 2, Z = CZ } }, 1.5)
+	check(arc and math.abs(arc.A1 - arc.A0 - (math.pi - math.acos(3 / 3.5) - hw)) < 1e-9,
+		"the move line and another player: both cut the ring, one of the two pieces between them", show(arc))
+	-- every member's room without a zone box: the overlap of their arcs (the King's bigger cut)
+	arc = SEP.RingArc({ { R = 3.5, Rad = 1.5 }, { R = 4.7, Rad = 2.7 } }, CX, CZ, nil, east)
+	check(arc and math.abs(arc.A1 - arc.A0 - (TAU - 2 * math.max(hw, kw))) < 1e-9,
+		"no zone box, another player near: the ring is cut all the same (the members' overlap)", show(arc))
+
+	-- the slots (SEP.Begin with the player list, like aiTick): player a's six chasers (4 Shard + 2 King Slimes, or six
+	-- Shard Slimes) coming from b's side (b 2 studs east); the deepest a slot reaches into b's body (r + 1 around where b
+	-- will be; < 0 = inside) and the slots
+	local function slotsAround(bPos, bVel, withB, slimesOnly)
+		local w = spacingWorld()
+		local A, B = playerAt("a", CX, CZ), playerAt("b", bPos.X, bPos.Z)
+		B.Pos, B.Vel = bPos, bVel
+		local recs = {}
+		for i, kind in { "Slime", "BigSlime", "Slime", "Slime", "BigSlime", "Slime" } do
+			local ang = (i - 3.5) * 0.5
+			kind = slimesOnly and "Slime" or kind
+			table.insert(recs, mon(w, kind, CX + math.cos(ang) * 10, CZ + math.sin(ang) * 10, { _target = A.Player }))
+		end
+		w.SEP.Begin(list(w), withB and { A, B } or { A })
+		local bx, bz = w.SEP.Ahead(B)
+		local inside, slots, pts = math.huge, {}, {}
+		for _, r in recs do
+			local s = w.SEP.Slots[r]
+			pts[r] = vec(CX + math.cos(s.Angle) * s.Ring, 0, CZ + math.sin(s.Angle) * s.Ring)
+			inside = math.min(inside, flat(pts[r], vec(bx, 0, bz)) - (r._radius + 1))
+			table.insert(slots, { s.Angle, s.Ring })
+		end
+		return inside, worstPair(recs, 1, function(r) return pts[r] end), slots
+	end
+	local oldInside = slotsAround(vec(CX + 2, 3, CZ), nil, false)
+	check(oldInside < -0.5, "control: rings blind to b (b not in the list) put a slot inside b's body", oldInside)
+	local inside, apart, slots = slotsAround(vec(CX + 2, 3, CZ), nil, true)
+	local reach = 0
+	for _, s in slots do reach += s[2] <= MC.AttackRange and 1 or 0 end
+	check(inside >= -1e-9 and apart >= -1e-9 and reach == 6, "b 2 studs east: no slot inside b's body, all six apart and "
+		.. "in reach (the cut own rings are full: the ring moves out to 5)", show({ inside, apart, reach }))
+	-- b walking west at 16 studs/s from 6 studs east, six Shard Slimes: cut where b will be (SEP.Ahead: 4 studs on, 2 east
+	-- of a; their own 3.5 ring minus 2 x 44 deg still holds all six). Cut where b stands (6 east, touching that ring),
+	-- they spread over the whole ring, one 25 deg off east, 1.9 from where b will be (inside, needs 2.5)
+	local inWalk = slotsAround(vec(CX + 6, 3, CZ), vec(-16, 0, 0), true, true)
+	check(inWalk >= -1e-9, "b walking in from 6 studs east: no slot inside b's body where it will be", inWalk)
+	-- b 10 studs up (a bridge, another floor; SEP.Body skips it too): the same slots as without b
+	local _, _, above = slotsAround(vec(CX + 2, 13, CZ), nil, true)
+	local _, _, alone = slotsAround(vec(CX + 2, 3, CZ), nil, false)
+	check(show(above) == show(alone) and show(slots) ~= show(alone), "b on another floor (10 studs up): it cuts nothing")
+end)
+
 runGroup("two players", function()
 	-- two players side by side (`apart` studs, standing or walking +x together at `speed`), 4 Shard + 2 King Slimes
 	-- coming from behind: the old rule (the nearest one every tick) vs SEP.Pick. Target switches after each monster's
-	-- first pick (Switches; Far: to a player out of reach; MaxPer: the most of one monster), the ticks a monster chased a
-	-- target out of reach while the other player was in reach (Idle, review 2026-10-08), all swings, and the mean
-	-- deepest overlap over the last 20 s of 25 (bodies, both players)
+	-- first pick (Switches; Quick: within 2 s of taking its target, review 2026-10-08 3rd round; Far: to a player out of
+	-- reach), the longest run of ticks a monster chased a target out of reach while the other player was in reach
+	-- (IdleMax, review 2026-10-08), all swings, and the mean deepest overlap over the last 20 s of 25 (bodies, both players)
 	local FROM = { { "BigSlime", -14, 0 }, { "Slime", -13, -6 }, { "Slime", -13, 6 }, { "Slime", -18, -3 }, { "Slime", -18, 3 },
 		{ "BigSlime", -22, 0.3 } }
 	local function pairProbe(nearest, apart, speed)
@@ -1413,13 +1507,12 @@ runGroup("two players", function()
 			sum += overlapNow(w, recs, { A, B })
 			n += 1
 		end })
-		local p = { Switches = 0, Far = 0, MaxPer = 0, Idle = 0, Swings = 0, Mean = sum / n }
+		local p = { Switches = 0, Quick = 0, Far = 0, IdleMax = 0, Swings = 0, Mean = sum / n }
 		for _, r in recs do
-			local s = math.max(0, (r._switches or 0) - 1) -- the first pick is no switch
-			p.Switches += s
-			p.MaxPer = math.max(p.MaxPer, s)
+			p.Switches += math.max(0, (r._switches or 0) - 1) -- the first pick is no switch
+			p.Quick += r._quick or 0
 			p.Far += r._farSwitches or 0
-			p.Idle += r._idleNear or 0
+			p.IdleMax = math.max(p.IdleMax, r._idleMax or 0)
 			p.Swings += r._swings or 0
 		end
 		return p
@@ -1427,34 +1520,106 @@ runGroup("two players", function()
 	local oldStand, stand = pairProbe(true, 2, 0), pairProbe(false, 2, 0)
 	check(oldStand.Switches >= 4,
 		"control: standing 2 studs apart, the nearest-every-tick rule makes them swap back and forth", oldStand.Switches)
-	check(stand.Switches < oldStand.Switches and stand.MaxPer <= 1 and stand.Far == 0 and stand.Mean < 0.1,
-		"standing 2 studs apart: no back and forth (a monster switches at most once, only to a player in reach), no overlap",
+	check(stand.Switches * 2 <= oldStand.Switches and stand.Quick == 0 and stand.Far == 0 and stand.Mean < 0.1,
+		"standing 2 studs apart: no back and forth (never again within 2 s, only to a player in reach), no overlap",
 		show(stand))
 	local oldWalk, walk = pairProbe(true, 2, 5), pairProbe(false, 2, 5)
-	check(oldWalk.Switches >= 20, "control: walking side by side, the old rule keeps switching", oldWalk.Switches)
-	check(walk.MaxPer <= 1 and walk.Far == 0 and walk.Mean < 0.3,
+	check(oldWalk.Switches >= 10, "control: walking side by side, the old rule keeps switching", oldWalk.Switches)
+	check(walk.Switches * 2 <= oldWalk.Switches and walk.Quick == 0 and walk.Far == 0 and walk.Mean < 0.3,
 		"walking side by side at 5 studs/s: no back and forth, the review bar (mean < 0.3) holds", show(walk))
 	finding(string.format("two players 2 studs apart, 6 monsters, 25 s: target switches standing %d (old rule %d), walking 5 studs/s " ..
 		"%d (old %d); mean deepest overlap standing %.3f (old %.3f), walking %.3f (old %.3f)", stand.Switches, oldStand.Switches,
 		walk.Switches, oldWalk.Switches, stand.Mean, oldStand.Mean, walk.Mean, oldWalk.Mean))
 	local oldS4, s4 = pairProbe(true, 4, 0), pairProbe(false, 4, 0)
 	local oldW4, w4 = pairProbe(true, 4, 5), pairProbe(false, 4, 5)
-	check(s4.MaxPer <= 1 and w4.MaxPer <= 1 and s4.Far == 0 and w4.Far == 0 and s4.Mean < 0.1 and w4.Mean < 0.3,
+	check(s4.Quick == 0 and w4.Quick == 0 and s4.Far == 0 and w4.Far == 0 and s4.Mean < 0.1 and w4.Mean < 0.3,
 		"4 studs apart (standing / walking): no back and forth either, no pile", show({ s4, w4 }))
-	-- review 2026-10-08: a held target out of reach never keeps a monster idle in the other player's reach (it swung at
-	-- nobody: a King Slime stood 22 s in B's reach chasing A), so they swing about as often as under the old rule
+	-- review 2026-10-08: a held target out of reach keeps a monster idle in the other player's reach at most the 2 s hold
+	-- (8 AI ticks; before, a King Slime stood 22 s in B's reach chasing A), so they swing about as often as under the
+	-- old rule
 	local idle, swings, oldSwings = 0, {}, {}
 	for k, pair in { { stand, oldStand }, { walk, oldWalk }, { s4, oldS4 }, { w4, oldW4 } } do
-		idle += pair[1].Idle
+		idle = math.max(idle, pair[1].IdleMax)
 		swings[k], oldSwings[k] = pair[1].Swings, pair[2].Swings
 	end
 	local swingsOk = true
 	for k in swings do swingsOk = swingsOk and swings[k] >= 0.9 * oldSwings[k] end
-	check(idle == 0 and swingsOk, "2 / 4 studs apart, standing / walking: nobody chases a target out of reach while "
-		.. "the other player is in reach, swings >= 90% of the old rule's", show({ idle = idle, swings = swings, old = oldSwings }))
+	check(idle <= 2 / MC.AIInterval and swingsOk, "2 / 4 studs apart, standing / walking: nobody chases a target out of "
+		.. "reach for longer than the 2 s hold while the other player is in reach, swings >= 90% of the old rule's",
+		show({ idleMax = idle, swings = swings, old = oldSwings }))
 	finding(string.format("two players, swings standing / walking: 2 apart %d / %d (old rule %d / %d), " ..
-		"4 apart %d / %d (old %d / %d); ticks idle in the other player's reach %d", swings[1], swings[2], oldSwings[1],
+		"4 apart %d / %d (old %d / %d); longest idle in the other player's reach %d ticks", swings[1], swings[2], oldSwings[1],
 		oldSwings[2], swings[3], swings[4], oldSwings[3], oldSwings[4], idle))
+end)
+
+runGroup("two players crowd", function()
+	-- review 2026-10-08 (3rd round): the 6-monster pack above is too small to show it. The meadow mix (12 Shard + 4 King
+	-- Slimes from spots 8-20 studs around, a fixed pseudo-random draw per seed) around two players 2 / 4 studs apart, side
+	-- by side or in line, standing or walking 5 studs/s together, 40 s, seeds 12345 / 4242 (16 runs): SEP.Pick vs the old
+	-- rule (the nearest one every tick). With the reach rule ahead of the hold (2nd round) a monster shoved across the reach
+	-- edge (mostly off a slot inside the other player's body) went A -> B -> A every 0.5 s, its slot jumping each time.
+	local function crowd(nearest, seed, apart, speed, inline)
+		local w = spacingWorld()
+		local x0 = CX - (speed > 0 and 60 or 0)
+		local ax, az, bx, bz = x0, CZ - apart / 2, x0, CZ + apart / 2
+		if inline then ax, az, bx, bz = x0 - apart / 2, CZ, x0 + apart / 2, CZ end
+		local A, B = playerAt("a", ax, az), playerAt("b", bx, bz)
+		A.Path = function(t) return vec(ax + speed * t, 3, az) end
+		B.Path = function(t) return vec(bx + speed * t, 3, bz) end
+		local recs = {}
+		for i = 1, 16 do
+			seed = (seed * 1103515245 + 12345) % 2147483648
+			local ang = TAU * seed / 2147483648
+			seed = (seed * 1103515245 + 12345) % 2147483648
+			local rr = 8 + 12 * seed / 2147483648
+			table.insert(recs, mon(w, i <= 12 and "Slime" or "BigSlime", x0 + math.cos(ang) * rr, CZ + math.sin(ang) * rr,
+				{ ZoneId = "SlimeMeadow", _nextAttackAt = 0 }))
+		end
+		local sum, n = 0, 0
+		simulate(w, nil, recs, 160, { Players = { A, B }, Nearest = nearest, Measure = function(now)
+			if now < 5 then return end
+			sum += overlapNow(w, recs, { A, B })
+			n += 1
+		end })
+		local p = { Switches = 0, Quick = 0, Flips = 0, IdleMax = 0, Swings = 0, Mean = sum / n }
+		for _, r in recs do
+			p.Switches += math.max(0, (r._switches or 0) - 1)
+			p.Quick += r._quick or 0
+			p.Flips += r._flips or 0
+			p.IdleMax = math.max(p.IdleMax, r._idleMax or 0)
+			p.Swings += r._swings or 0
+		end
+		return p
+	end
+	local new = { Switches = 0, Quick = 0, Flips = 0, IdleMax = 0, Swings = 0, Mean = 0, Worst = 0 }
+	local old = table.clone(new)
+	for _, seed in { 12345, 4242 } do
+		for _, apart in { 2, 4 } do
+			for _, speed in { 0, 5 } do
+				for _, inline in { false, true } do
+					for t, p in { [new] = crowd(false, seed, apart, speed, inline), [old] = crowd(true, seed, apart, speed, inline) } do
+						for _, k in { "Switches", "Quick", "Flips", "Swings", "Mean" } do t[k] += p[k] end
+						t.IdleMax = math.max(t.IdleMax, p.IdleMax)
+						t.Worst = math.max(t.Worst, p.Mean)
+					end
+				end
+			end
+		end
+	end
+	check(old.Flips >= 1000, "control: the old rule flips them A -> B -> A all the time", show(old))
+	check(new.Quick == 0, "nobody switches target again within 2 s of taking one (the hold comes first)", show(new))
+	check(new.Flips * 20 <= old.Flips, "back to the target before (A -> B -> A) at most 5% as often as the old rule "
+		.. "(slots stay out of the other player's body)", show({ new = new.Flips, old = old.Flips }))
+	check(new.IdleMax <= 2 / MC.AIInterval, "nobody chases a target out of reach for longer than the 2 s hold while the "
+		.. "other player is in reach", new.IdleMax)
+	check(new.Swings >= 0.9 * old.Swings, "they swing at least 90% as often as under the old rule",
+		show({ new = new.Swings, old = old.Swings }))
+	check(new.Mean <= 1.25 * old.Mean and new.Worst < 1, "about the old rule's pile (the runs' mean deepest overlap at most "
+		.. "1.25x its, every run < 1 stud)", show({ new = new.Mean, old = old.Mean, worst = new.Worst }))
+	finding(string.format("crowd of 12 + 4 around two players 2 / 4 apart, 16 runs of 40 s: target switches %d (old rule %d), "
+		.. "within 2 s %d (old %d), A -> B -> A %d (old %d), longest idle in the other player's reach %d ticks, swings %d (old %d), "
+		.. "mean deepest overlap %.3f (old %.3f) per run", new.Switches, old.Switches, new.Quick, old.Quick, new.Flips, old.Flips,
+		new.IdleMax, new.Swings, old.Swings, new.Mean / 16, old.Mean / 16))
 end)
 
 ------------------------------------------------------------------ spawn points
