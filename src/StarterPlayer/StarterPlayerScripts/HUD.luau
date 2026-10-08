@@ -1000,6 +1000,7 @@ end
 
 -- gold 빛 fill from the left and crimson 뿔 fill from the right inside the BarTrack capsule, the faction badges (bundle 6)
 -- over both ends, the crown riding the split, info pills under it. applyLayout sizes it from Rects.war_meter (L.LayoutWar).
+-- 검수 2026-10-08: on a navy plate like a game's top bar, the badges big with the scores inside them (L.WarTop)
 local function buildWar(root)
 	local W = 360
 	local w = UIKit.Create("Frame", {
@@ -1010,12 +1011,23 @@ local function buildWar(root)
 		Parent = root,
 	})
 	ui.war = w
-	local shieldW, barY, barH = 30, 8, 22
+	local TB = L.WarTop
+	local barY, barH = 8, 22
+	-- the plate under everything (missing art: a navy rounded panel, the same idea)
+	local plate, plateArt = UIKit.ArtFrame("PanelCard", {
+		Name = "Plate",
+		Position = UDim2.fromOffset(0, -TB.PlateUp),
+		Size = UDim2.new(1, 0, 1, TB.PlateUp + TB.PlateDown),
+		SliceScale = TB.PlateSlice,
+		ZIndex = 0,
+		Parent = w,
+	}, { Color = ac("Navy", Theme.Bg), BackgroundTransparency = 0.1, CornerRadius = UDim.new(0, 14) })
+	ui.warPlate, ui.warPlateArt = plate, plateArt
 	-- Bar / Info follow the meter's width; L.LayoutWar fits them to its height
 	local bar, barArt = UIKit.ArtFrame("BarTrack", {
 		Name = "Bar",
-		Position = UDim2.fromOffset(shieldW - 10, barY),
-		Size = UDim2.new(1, -2 * (shieldW - 10), 0, barH),
+		Position = UDim2.fromOffset(TB.BarIn, barY),
+		Size = UDim2.new(1, -2 * TB.BarIn, 0, barH),
 		Parent = w,
 	}, {
 		Color = COL.WarFill,
@@ -1072,41 +1084,49 @@ local function buildWar(root)
 		Name = "Crown",
 		AnchorPoint = Vector2.new(0.5, 0.74),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(30, 30),
+		Size = UDim2.fromOffset(TB.Crown, TB.Crown),
 		ZIndex = 3,
 		Parent = inner,
 	})
-	ui.haloNum = artLabel(false, {
-		Name = "HaloScore",
-		Position = UDim2.fromOffset(16, 0),
-		Size = UDim2.new(0.5, -20, 1, 0),
-		TextSize = 15,
-		Number = true,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		ZIndex = 2,
-		Parent = bar,
-	})
-	ui.hornsNum = artLabel(false, {
-		Name = "HornsScore",
-		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.new(1, -16, 0, 0),
-		Size = UDim2.new(0.5, -20, 1, 0),
-		TextSize = 15,
-		Number = true,
-		TextXAlignment = Enum.TextXAlignment.Right,
-		ZIndex = 2,
-		Parent = bar,
-	})
-	-- faction shields over both ends of the bar
-	for _, s in { { "LevelBadgeHalo", 0, "ShieldHalo" }, { "LevelBadgeHorns", 1, "ShieldHorns" } } do
-		UIKit.ArtImage(s[1], {
+	-- the faction badges big over both ends; each side's score sits in its badge's centre (the part's Inner rect: dark
+	-- words on Halo's ivory, light ones on Horns' plum). Missing badge art: the old "Halo 14" / "14 Horns" in the bar ends
+	L.WarNumOnly = true
+	for _, s in { { "LevelBadgeHalo", 0, "ShieldHalo", "haloNum", true }, { "LevelBadgeHorns", 1, "ShieldHorns", "hornsNum", false } } do
+		local badge = UIKit.ArtImage(s[1], {
 			Name = s[3],
 			AnchorPoint = Vector2.new(s[2], 0.5),
-			Position = UDim2.new(s[2], 0, 0, barY + barH / 2),
-			Size = UDim2.fromOffset(shieldW + 4, shieldW + 4),
+			Position = UDim2.new(s[2], s[2] == 0 and -TB.BadgeOut or TB.BadgeOut, 0, barY + barH / 2),
+			Size = UDim2.fromOffset(TB.Badge, TB.Badge),
 			ZIndex = 3,
 			Parent = w,
 		})
+		local def = badge and UIKit.ArtPart(s[1]) or nil
+		local inner = def and typeof(def.Inner) == "Rect" and typeof(def.Size) == "Vector2" and def.Inner or nil
+		if inner then
+			ui[s[4]] = artLabel(s[5], {
+				Name = s[2] == 0 and "HaloScore" or "HornsScore",
+				Position = UDim2.fromScale(inner.Min.X / def.Size.X, inner.Min.Y / def.Size.Y),
+				Size = UDim2.fromScale(inner.Width / def.Size.X, inner.Height / def.Size.Y),
+				TextScaled = true,
+				MaxTextSize = 22,
+				Number = true,
+				ZIndex = 4,
+				Parent = badge,
+			})
+		else
+			L.WarNumOnly = false
+			ui[s[4]] = artLabel(false, {
+				Name = s[2] == 0 and "HaloScore" or "HornsScore",
+				AnchorPoint = Vector2.new(s[2], 0),
+				Position = UDim2.new(s[2], s[2] == 0 and 16 or -16, 0, 0),
+				Size = UDim2.new(0.5, -20, 1, 0),
+				TextSize = 15,
+				Number = true,
+				TextXAlignment = s[2] == 0 and Enum.TextXAlignment.Left or Enum.TextXAlignment.Right,
+				ZIndex = 2,
+				Parent = bar,
+			})
+		end
 	end
 	ui.warBar = bar
 
@@ -1115,12 +1135,13 @@ local function buildWar(root)
 	-- Neutral / None earn no points: no 내 점수). L.WarLine writes it
 	local row = UIKit.Create("Frame", {
 		Name = "Info",
-		Position = UDim2.fromOffset(0, barY + barH + 3),
-		Size = UDim2.new(1, 0, 0, 20),
+		Position = UDim2.fromOffset(TB.BarIn, barY + barH + 3),
+		Size = UDim2.new(1, -2 * TB.BarIn, 0, 20),
 		BackgroundTransparency = 1,
 		Parent = w,
 	})
-	ui.warBand = L.SoftBand(row, "Center")
+	-- on the navy plate the line needs no soft band; without the plate art it keeps one
+	ui.warBand = (not plateArt) and L.SoftBand(row, "Center") or nil
 	ui.warLine = UIKit.StyledLabel({
 		Name = "Text",
 		Size = UDim2.fromScale(1, 1),
@@ -1139,8 +1160,8 @@ end
 function L.LayoutWar(h)
 	L.WarH = h
 	local info = math.clamp(h - 8 - 22 - 3, 14, 22)
-	ui.warInfo.Position = UDim2.fromOffset(0, 8 + 22 + 3)
-	ui.warInfo.Size = UDim2.new(1, 0, 0, info)
+	ui.warInfo.Position = UDim2.fromOffset(L.WarTop.BarIn, 8 + 22 + 3)
+	ui.warInfo.Size = UDim2.new(1, -2 * L.WarTop.BarIn, 0, info)
 	-- the band hugs the text: as wide as the line plus a margin that fades out
 	local tb = ui.warLine.TextBounds.X
 	if ui.warBand and tb > 0 then
@@ -1938,13 +1959,14 @@ local function tileButton(def, onClick)
 	-- 내 캐릭터 follows CharacterGender (IconCharacterF) through UIKit.CharacterIcon
 	local img = (def.Id == "Character" and type(UIKit.CharacterIcon) == "function") and UIKit.CharacterIcon(iconProps)
 		or UIKit.ArtImage(def.Icon, iconProps)
-	-- A23-48: English names ('Settings', 'Ranking') may reach a little past the tile's rim and shrink to 10 px (검수); at most
-	-- the gap's width past it (2026-10-08: at 1.16 a long name ran under the next tile, "Map?ankin(")
+	-- 검수 2026-10-08 (user: 'Settings' / 'Ranking' ran out of their buttons): the name stays inside the tile's gold rim
+	-- (L.TileNameInset du in all) and shrinks down to L.TileNamePx real px - 'Settings' needs ~8.5 px in the 44 px top
+	-- bar squares; under L.TileLabelMinPx px tiles show icons only (L.LayoutTiles). It was 1.08 x the tile at >= 10 px
 	local label = artLabel(false, {
 		Name = "Label",
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -2),
-		Size = UDim2.new(1.08, 0, 0.3, 0),
+		Position = UDim2.new(0.5, 0, 1, -3),
+		Size = UDim2.new(1, -L.TileNameInset, 0.3, 0),
 		TextScaled = true,
 		MaxTextSize = 14,
 		Title = true,
@@ -1952,8 +1974,8 @@ local function tileButton(def, onClick)
 		ZIndex = 4,
 		Parent = btn,
 	})
-	label:SetAttribute("StyleMinPx", 10)
-	L.FitText(label, 12, true, 10)
+	label:SetAttribute("StyleMinPx", L.TileNamePx)
+	L.FitText(label, 12, true, L.TileNamePx)
 	if type(UIKit.StyleText) == "function" then UIKit.StyleText(label, "NameTag") end -- A23-38: white name, navy rim
 	if def.Key then keyHint(btn, def.Key, UDim2.new(1, -2, 0, 2), Vector2.new(1, 0)) end
 	return btn, label, img
@@ -2696,8 +2718,8 @@ local function refreshWar()
 	ui.hornsFill.Visible = frac < 0.999
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
 	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(frac, 0.5) end
-	ui.haloNum.Text = string.format(TXT.WarHalo, fmtScore(h))
-	ui.hornsNum.Text = string.format(TXT.WarHorns, fmtScore(r))
+	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or string.format(TXT.WarHalo, fmtScore(h))
+	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or string.format(TXT.WarHorns, fmtScore(r))
 
 	local mode = UIKit.GameAttr("WarMode", "Idle")
 	L.WarParts.Siege = mode == "Siege" and string.format(TXT.Siege, Config.War.SiegeTarget or 150) or nil
@@ -4488,7 +4510,13 @@ function L.LayoutTiles(tr)
 		if t.Label and t.Label.Visible ~= named then t.Label.Visible = named end
 	end
 end
-L.TileLabelMinPx = 36
+L.TileLabelMinPx = 40
+L.TileNameInset, L.TileNamePx = 10, 8 -- tile names inside the rim (tileButton)
+-- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
+-- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du
+-- (their centres BadgeOut du outside the meter's ends... negative = inside), the bar and the info line BarIn du in from
+-- each end, the crown Crown du
+L.WarTop = { PlateUp = 4, PlateDown = 3, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40 }
 L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
