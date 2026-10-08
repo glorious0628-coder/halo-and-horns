@@ -6001,7 +6001,7 @@
    "image": "art/out/hq/HQ_Kit_W_Banner.png",
    "at": "2026-10-08 12:1x (6 jobs run together)",
    "balance_after": 870,
-   "file": "art/models/tripo/web/Kit_W_Banner_HD_src.glb",
+   "file": "art/models/tripo/web/Kit_W_Banner_v1plus_HD_src.glb (renamed 10/08: + look, not used — see Kit_W_Banner_T_web_hd)",
    "note": "검수 OK 10/08 (숲 6종)",
    "tris": 9764,
    "derived": [
@@ -6010,6 +6010,166 @@
    ],
    "sheet": "art/review/kit_woods/woods6_3d.jpg",
    "bytes": 7665764
+  }
+ ],
+ "H_TreeTwisted_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "e5bd7b57-8214-4f3f-8bff-a9b704845106",
+   "image": "art/out/hq/HQ_H_TreeTwisted.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 815,
+   "file": "art/models/tripo/web/H_TreeTwisted_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 19060,
+   "derived": [
+    "art/models/tripo/web/H_TreeTwisted_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/H_TreeTwisted_LOD.glb (폰 규칙 6000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (35.47 x 28.04 x 32.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 10264400
+  }
+ ],
+ "H_Willow_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "9aa7b178-aa2e-4b35-82c8-e4dd7946ab5d",
+   "image": "art/out/hq/HQ_H_Willow.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 760,
+   "file": "art/models/tripo/web/H_Willow_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 19098,
+   "derived": [
+    "art/models/tripo/web/H_Willow_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/H_Willow_LOD.glb (폰 규칙 6000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (23.91 x 13.01 x 26.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 9583936
+  }
+ ],
+ "H_TreeArch_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "9919a520-1432-458e-812a-12d69b981700",
+   "image": "art/out/hq/HQ_H_TreeArch.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 705,
+   "file": "art/models/tripo/web/H_TreeArch_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 18880,
+   "derived": [
+    "art/models/tripo/web/H_TreeArch_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "build/import_all/3_third/D9_Hollow6.glb (36.00 x 20.18 x 30.41 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 10382100
+  }
+ ],
+ "Kit_H_StumpTable_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "bcd6c5dc-42f3-4783-852d-879c9144382b",
+   "image": "art/out/hq/HQ_Kit_H_StumpTable.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 650,
+   "file": "art/models/tripo/web/Kit_H_StumpTable_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 14776,
+   "derived": [
+    "art/models/tripo/web/Kit_H_StumpTable_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_H_StumpTable_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (12.00 x 11.94 x 2.82 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 10846256
+  }
+ ],
+ "Kit_H_LanternPost_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "a8324567-0f85-451b-ad2f-db0194ed5bed",
+   "image": "art/out/hq/HQ_Kit_H_LanternPost.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 595,
+   "file": "art/models/tripo/web/Kit_H_LanternPost_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 9438,
+   "derived": [
+    "art/models/tripo/web/Kit_H_LanternPost_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_H_LanternPost_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (5.61 x 2.96 x 9.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 7883780
+  }
+ ],
+ "Kit_H_GlowShrooms_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "69605c3c-d47a-4bab-9565-ef815fc0e6e3",
+   "image": "art/out/hq/HQ_Kit_H_GlowShrooms.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 540,
+   "file": "art/models/tripo/web/Kit_H_GlowShrooms_HD_src.glb",
+   "note": "검수 OK 10/08 (유령 숲 6종)",
+   "tris": 9650,
+   "derived": [
+    "art/models/tripo/web/Kit_H_GlowShrooms_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_H_GlowShrooms_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D9_Hollow6.glb (3.32 x 3.14 x 3.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 8207116
+  }
+ ],
+ "Kit_W_Banner_T_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "ea0f0381-e5aa-4fc3-901c-43e057e2e1e7",
+   "image": "art/out/hq/HQ_Kit_W_Banner.png",
+   "at": "2026-10-08 12:5x (7 jobs run together)",
+   "balance_after": 485,
+   "file": "art/models/tripo/web/Kit_W_Banner_HD_src.glb",
+   "note": "검수 OK 10/08 (숲 깃발 T자 다시)",
+   "tris": 9538,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Banner_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_W_Banner_LOD.glb (폰 규칙 3000, --weld 1e-5) — used in the import",
+    "build/import_all/3_third/D8_WoodsGround6.glb (3.13 x 1.69 x 8.00 studs)"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "bytes": 8522340
   }
  ]
 }

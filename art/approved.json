@@ -7462,18 +7462,19 @@
   "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
  },
  "Kit_W_Banner_HQ": {
-  "status": "approved (2D) — redrawn as T (검수 10/08: first High looked like a + cross); 3D redo running",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 21종 승인 (docs/design/zones_concept_gap_2026-10-08.md)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst High 5 (reference = art/out/kit/woods/Banner_src.png = Firefly asset d7afaef1)",
   "prompt": "art/prompts/KIT_Woods_set6_HQ.txt, T redraw art/prompts/KIT_Hollow_set_HQ.txt (Kit_W_Banner T 판)",
   "final": "art/out/hq/HQ_Kit_W_Banner.png (T: crossbar at the very top, round caps, nothing above) — first High kept as art/out/hq/HQ_Kit_W_Banner_v1plus.png (not used)",
-  "model": "art/models/tripo/web/Kit_W_Banner_HD_src.glb -> _HD_plain.glb",
-  "import": "build/import_all/3_third/D8_WoodsGround6.glb (3.65 x 1.67 x 8.00 studs)",
-  "sheet_3d": "art/review/kit_woods/woods6_3d.jpg"
+  "model": "art/models/tripo/web/Kit_W_Banner_HD_src.glb -> _HD_plain.glb -> _LOD.glb (3000)",
+  "import": "build/import_all/3_third/D8_WoodsGround6.glb (3.13 x 1.69 x 8.00 studs)",
+  "sheet_3d": "art/review/town5/hollow6_3d.jpg",
+  "note_v1plus": "first 3D (+ look) kept as art/models/tripo/web/Kit_W_Banner_v1plus_HD_src.glb (task 7817efd9), not used"
  },
  "H_TreeTwisted": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web running",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 유령 숲 6종 추천대로 모두 1 (sheet art/review/town5/hollow6_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_HauntedHollow_2), final High 5 (reference = picked candidate)",
@@ -7481,10 +7482,13 @@
   "candidate": "art/out/kit/hollow/H_TreeTwisted_1.png",
   "final": "art/out/hq/HQ_H_TreeTwisted.png (1024)",
   "check": "art/review/town5/hollow6_hq.jpg; no faces/eyes/ghosts, round soft glow only",
-  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)"
+  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)",
+  "model": "art/models/tripo/web/H_TreeTwisted_HD_src.glb -> _HD_plain.glb -> _LOD.glb (6000)",
+  "import": "build/import_all/3_third/D9_Hollow6.glb (35.47 x 28.04 x 32.00 studs)",
+  "sheet_3d": "art/review/town5/hollow6_3d.jpg"
  },
  "H_Willow": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web running",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 유령 숲 6종 추천대로 모두 1 (sheet art/review/town5/hollow6_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_HauntedHollow_2), final High 5 (reference = picked candidate)",
@@ -7492,10 +7496,13 @@
   "candidate": "art/out/kit/hollow/H_Willow_1.png",
   "final": "art/out/hq/HQ_H_Willow.png (1024)",
   "check": "art/review/town5/hollow6_hq.jpg; no faces/eyes/ghosts, round soft glow only",
-  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)"
+  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)",
+  "model": "art/models/tripo/web/H_Willow_HD_src.glb -> _HD_plain.glb -> _LOD.glb (6000)",
+  "import": "build/import_all/3_third/D9_Hollow6.glb (23.91 x 13.01 x 26.00 studs)",
+  "sheet_3d": "art/review/town5/hollow6_3d.jpg"
  },
  "H_TreeArch": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web running",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 유령 숲 6종 추천대로 모두 1 (sheet art/review/town5/hollow6_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_HauntedHollow_2), final High 5 (reference = picked candidate)",
@@ -7503,10 +7510,13 @@
   "candidate": "art/out/kit/hollow/H_TreeArch_1.png",
   "final": "art/out/hq/HQ_H_TreeArch.png (1024)",
   "check": "art/review/town5/hollow6_hq.jpg; no faces/eyes/ghosts, round soft glow only",
-  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)"
+  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)",
+  "model": "art/models/tripo/web/H_TreeArch_HD_src.glb -> _HD_plain.glb",
+  "import": "build/import_all/3_third/D9_Hollow6.glb (36.00 x 20.18 x 30.41 studs)",
+  "sheet_3d": "art/review/town5/hollow6_3d.jpg"
  },
  "Kit_H_LanternPost": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web running",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 유령 숲 6종 추천대로 모두 1 (sheet art/review/town5/hollow6_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_HauntedHollow_2), final High 5 (reference = picked candidate)",
@@ -7514,10 +7524,13 @@
   "candidate": "art/out/kit/hollow/Kit_H_LanternPost_1.png",
   "final": "art/out/hq/HQ_Kit_H_LanternPost.png (1024)",
   "check": "art/review/town5/hollow6_hq.jpg; no faces/eyes/ghosts, round soft glow only",
-  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)"
+  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)",
+  "model": "art/models/tripo/web/Kit_H_LanternPost_HD_src.glb -> _HD_plain.glb -> _LOD.glb (3000)",
+  "import": "build/import_all/3_third/D9_Hollow6.glb (5.61 x 2.96 x 9.00 studs)",
+  "sheet_3d": "art/review/town5/hollow6_3d.jpg"
  },
  "Kit_H_StumpTable": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web running",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 유령 숲 6종 추천대로 모두 1 (sheet art/review/town5/hollow6_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_HauntedHollow_2), final High 5 (reference = picked candidate)",
@@ -7525,10 +7538,13 @@
   "candidate": "art/out/kit/hollow/Kit_H_StumpTable_1.png",
   "final": "art/out/hq/HQ_Kit_H_StumpTable.png (1024)",
   "check": "art/review/town5/hollow6_hq.jpg; no faces/eyes/ghosts, round soft glow only",
-  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)"
+  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)",
+  "model": "art/models/tripo/web/Kit_H_StumpTable_HD_src.glb -> _HD_plain.glb -> _LOD.glb (3000)",
+  "import": "build/import_all/3_third/D9_Hollow6.glb (12.00 x 11.94 x 2.82 studs)",
+  "sheet_3d": "art/review/town5/hollow6_3d.jpg"
  },
  "Kit_H_GlowShrooms": {
-  "status": "approved (2D, 검수 10/08) — High done, Tripo web running",
+  "status": "approved (2D); 3D made 2026-10-08 (Tripo web HD 55), sent to 검수",
   "date": "2026-10-08",
   "approved_by": "검수 10/08: 유령 숲 6종 추천대로 모두 1 (sheet art/review/town5/hollow6_cands.jpg)",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst — candidates Medium 0 (reference = Concept_HauntedHollow_2), final High 5 (reference = picked candidate)",
@@ -7536,6 +7552,9 @@
   "candidate": "art/out/kit/hollow/Kit_H_GlowShrooms_1.png",
   "final": "art/out/hq/HQ_Kit_H_GlowShrooms.png (1024)",
   "check": "art/review/town5/hollow6_hq.jpg; no faces/eyes/ghosts, round soft glow only",
-  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)"
+  "use": "HauntedHollow (replaces free GF_* meshes; phone rule: trees <= 6000 tris, small <= 3000, arch kept)",
+  "model": "art/models/tripo/web/Kit_H_GlowShrooms_HD_src.glb -> _HD_plain.glb -> _LOD.glb (3000)",
+  "import": "build/import_all/3_third/D9_Hollow6.glb (3.32 x 3.14 x 3.00 studs)",
+  "sheet_3d": "art/review/town5/hollow6_3d.jpg"
  }
 }
