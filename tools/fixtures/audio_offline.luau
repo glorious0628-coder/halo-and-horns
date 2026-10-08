@@ -156,7 +156,10 @@ addMonster("Goblin", 80, 0)
 addMonster("LittleGhost", 120, 0)
 addMonster("Slime", 11, 1)
 addMonster("Slime", 9, -1)
-local WORKSPACE = { FindFirstChild = function(_, n) if n == "Monsters" then return MONSTERS end return nil end }
+local CAMERA = { OnScreen = true } -- what WorldToViewportPoint answers for "on screen"
+local WORKSPACE = { FindFirstChild = function(_, n) if n == "Monsters" then return MONSTERS end return nil end,
+	CurrentCamera = { WorldToViewportPoint = function(_, p) return p, CAMERA.OnScreen end } }
+local SERVER = { T = 1000 } -- Util.Now() (server time) for the world timers
 
 local ME = 111
 local ROOT = { Position = vec(0, 3, 0), IsA = function(_, c) return c == "BasePart" end }
@@ -170,7 +173,8 @@ local CHAR = {
 local PLAYER = attrHolder({ UserId = ME, Name = "Me", Character = CHAR, CharacterAdded = signal(),
 	Attr = { Faction = "Halo", DataLoaded = true, Honor = 3, Infamy = 0 } })
 local GAMESTATE = attrHolder({ Name = "GameState", Attr = { PumpkinKingActive = false, GhostKingActive = false, GooseActive = false } })
-local REMOTES = { Fx = { OnClientEvent = signal() }, Notify = { OnClientEvent = signal() }, Quests = { OnClientEvent = signal() } }
+local REMOTES = { Fx = { OnClientEvent = signal() }, Notify = { OnClientEvent = signal() }, Quests = { OnClientEvent = signal() },
+	Announce = { OnClientEvent = signal() } }
 local HEART = signal()
 local PRELOADED = 0
 
@@ -207,7 +211,7 @@ local function load()
 	local env = envFor()
 	local Config = execute("Config", CONFIG_SOURCE, env)
 	local Net = { Get = function(n) return REMOTES[n] end, GameState = function() return GAMESTATE end }
-	local Util = { Warn = function() end }
+	local Util = { Warn = function() end, Now = function() return SERVER.T end }
 	env.require = function(m)
 		local n = type(m) == "table" and m.__module
 		if n == "Net" then return Net end
@@ -447,6 +451,48 @@ do
 end
 
 do
+	-- the world sounds (sound_gaps B1-B10; server signals of docs/design/sound_server_2026-10-07.md)
+	local g = "world"
+	check(g, "my KO = KO (B1)", events(Audio.Plan("KO", { By = 222, Lost = 10 }, ctx)) == "KO", "")
+	check(g, "the goose leaving 30 studs away = GooseEnd (B3)", events(Audio.Plan("GooseEnd", { Pos = vec(30, 3, 0) }, ctx)) == "GooseEnd", "")
+	check(g, "the goose leaving far away is quiet", #Audio.Plan("GooseEnd", { Pos = vec(400, 3, 0) }, ctx) == 0, "")
+	check(g, "a goose end without a place is quiet", #Audio.Plan("GooseEnd", { Winner = "Halo" }, ctx) == 0, "")
+	local s = Audio.Plan("Stomp", { UserId = 222, Pos = vec(10, 3, 0) }, ctx)
+	check(g, "a stomp within 15 studs = KaijuStomp at full volume (B4)", events(s) == "KaijuStomp" and near(s[1].Volume, 1), encode(s))
+	s = Audio.Plan("Stomp", { UserId = 222, Pos = vec(37.5, 3, 0) }, ctx)
+	check(g, "a stomp 37.5 studs away = half volume", events(s) == "KaijuStomp" and near(s[1].Volume, 0.5), encode(s))
+	check(g, "a stomp 60+ studs away is quiet", #Audio.Plan("Stomp", { UserId = 222, Pos = vec(70, 3, 0) }, ctx) == 0, "")
+	check(g, "StompVolume: 1 up to 15 studs, 0 from 60", near(Audio.StompVolume(0), 1) and near(Audio.StompVolume(15), 1)
+		and near(Audio.StompVolume(60), 0) and near(Audio.StompVolume(500), 0), "")
+	check(g, "TickAt: crossing 3 / 2 / 1 s left = 1.0 / 1.12 / 1.26 (B7)", near(Audio.TickAt(3.1, 2.9), 1)
+		and near(Audio.TickAt(2.1, 1.9), 1.12) and near(Audio.TickAt(1.1, 0.9), 1.26), "")
+	check(g, "TickAt: no crossing, no first value, no tick after 0", Audio.TickAt(2.9, 2.6) == nil and Audio.TickAt(nil, 2.9) == nil
+		and Audio.TickAt(0.9, 0.1) == nil and Audio.TickAt(0.5, -0.2) == nil, "")
+	check(g, "AnnounceSound: someone else's Jackpot / FirstMax only (B10)", Audio.AnnounceSound({ Key = "Jackpot" }) == "JackpotOther"
+		and Audio.AnnounceSound({ Key = "FirstMax" }) == "JackpotOther" and Audio.AnnounceSound({ Key = "RareWeapon" }) == nil
+		and Audio.AnnounceSound({ Key = "Jackpot", Self = true }) == nil and Audio.AnnounceSound({ Key = "Jackpot", Event = true }) == nil
+		and Audio.AnnounceSound("Jackpot") == nil, "")
+	ctx.Combo = 1
+	local r = Audio.Plan("Reward", { Gold = 30, Golden = true }, ctx)
+	check(g, "a golden kill = KillPop + GoldenKill, its coin 0.1 s later", events(r) == "KillPop,GoldenKill,ComboCoin"
+		and near(find(r, "ComboCoin").At, 0.1), encode(r))
+	r = Audio.Plan("Reward", { Gold = 3 }, ctx)
+	check(g, "a plain kill: no golden sound, the coin at 0.05 s", find(r, "GoldenKill") == nil and near(find(r, "ComboCoin").At, 0.05), encode(r))
+	ctx.FirstWeapon = true
+	check(g, "my first weapon's Upgrade is quiet (C1: HUD's first-weapon moment plays PowerUp)", #Audio.Plan("Upgrade", { Tier = 1 }, ctx) == 0, "")
+	ctx.FirstWeapon = nil
+	check(g, "a later weapon's Upgrade still rings", #Audio.Plan("Upgrade", { Tier = 2 }, ctx) == 1, "")
+	for _, e in { "KO", "Respawn", "GooseEnd", "KaijuStomp", "KaijuSiren", "WarFinal30", "CountTick", "GoldenSpot", "GoldenKill",
+		"ZoneEnterPvP", "JackpotOther" } do
+		local d = A.Sounds[e]
+		check(g, "every world sound has an entry with an uploaded id and sane numbers", type(d) == "table" and type(d.File) == "string"
+			and type(A.Files[d.File]) == "string" and A.Files[d.File] ~= "" and d.Volume > 0 and d.Volume <= 0.85 and (d.Max or 0) >= 1, e)
+	end
+	check(g, "the golden kill keeps its own pool (the spot's 10 s gap never eats it)", A.Sounds.GoldenKill.File == "GoldenSpot"
+		and A.Sounds.GoldenKill.Gap < 1 and A.Sounds.GoldenSpot.Gap >= 10, "")
+end
+
+do
 	local g = "config"
 	local used = { "SwingWarrior", "SwingMage", "SwingMageHalo", "SwingMageHorns", "SwingArrow", "SwingTamer", "HitSoft",
 		"HitHeavy", "HitCrit", "KillPop", "ComboCoin", "ComboMilestone", "LevelUp", "PowerUp", "Jump", "WindowOpen", "WindowClose",
@@ -613,6 +659,56 @@ do
 		encode({ PLAYS[1] and PLAYS[1].Id, ids[#ids - 1] }))
 	endAll()
 
+	-- sound_spec §4-2 11 overlaps (real plays; the cooldowns opened for the check)
+	local gaps = {}
+	for _, k in { "LevelUp", "QuestDone", "QuestNew" } do
+		gaps[k] = A.Sounds[k].Gap
+		A.Sounds[k].Gap = 0
+	end
+	local function playedName(word)
+		for _, pl in PLAYS do
+			if string.find(pl.Name, word, 1, true) then return true end
+		end
+		return false
+	end
+	table.clear(PLAYS)
+	table.clear(DELAYS)
+	Audio.Play("LevelUp")
+	check(g, "QuestDone right after a LevelUp is dropped (§4-2 11)", Audio.Play("QuestDone") == false and not playedName("QuestDone"),
+		encode(PLAYS))
+	waitClock(0.45)
+	endAll()
+	check(g, "QuestDone 0.45 s after it plays", Audio.Play("QuestDone") == true, encode(PLAYS))
+	local qd = PLAYS[#PLAYS] and PLAYS[#PLAYS].Sound
+	Audio.Play("LevelUp")
+	check(g, "a LevelUp right after a QuestDone stops it", qd ~= nil and qd.IsPlaying == false and playedName("LevelUp"),
+		tostring(qd and qd.IsPlaying))
+	endAll()
+	waitClock(0.45)
+	table.clear(PLAYS)
+	table.clear(DELAYS)
+	Audio.Play("QuestDone")
+	check(g, "QuestNew right after QuestDone waits", Audio.Play("QuestNew") == false and not playedName("QuestNew"), encode(PLAYS))
+	local waited = nil
+	for _, d in DELAYS do
+		if d.Args[1] == "QuestNew" then waited = d end
+	end
+	check(g, "... until 0.6 s after the QuestDone", waited ~= nil and waited.T > 0.5 and waited.T <= 0.6, tostring(waited and waited.T))
+	runDelays(0.7)
+	check(g, "then it plays", playedName("QuestNew"), encode(PLAYS))
+	for k, v in gaps do A.Sounds[k].Gap = v end
+	endAll()
+	-- the goose's reward line waits until 1.5 s after GooseEnd (§4-2 11)
+	table.clear(PLAYS)
+	table.clear(DELAYS)
+	Audio.Play("GooseEnd")
+	REMOTES.Notify.OnClientEvent:Fire({ Text = "Goose gold!", Kind = "good", Sound = "GoldPickup" })
+	check(g, "a reward line right after GooseEnd waits (the big one first)", playedName("GooseEnd") and not playedName("GoldPickup"),
+		encode(PLAYS))
+	runDelays(1.6)
+	check(g, "... and plays 1.5 s later", playedName("GoldPickup"), encode(PLAYS))
+	endAll()
+
 	-- listeners: what Audio.Play is asked for
 	local asked = {}
 	local real = Audio.Play
@@ -754,6 +850,154 @@ do
 	check(g, "the swing plays now, the hit waits for the contact", last() == "SwingWarrior" and #asked == 1, encode(asked))
 	runDelays(0.3)
 	check(g, "then the slime squishes", last() == "HitSoft", tostring(last()))
+
+	-- the world listeners (sound_gaps B1-B10)
+	local w = "world listeners"
+	local function poll(t)
+		SERVER.T = t
+		waitClock(0.26) -- Audio's Poll (0.25 s)
+		HEART:Fire(0.016)
+	end
+	clear()
+	-- B9: into a PvP place, not right after a teleport, nothing on the way out
+	PLAYER:SetAttribute("ZonePvP", false)
+	check(w, "the first ZonePvP value is quiet", #asked == 0, tostring(last()))
+	PLAYER:SetAttribute("ZonePvP", true)
+	check(w, "into a PvP place -> ZoneEnterPvP (B9)", last() == "ZoneEnterPvP" and #asked == 1, encode(asked))
+	clear()
+	PLAYER:SetAttribute("ZonePvP", false)
+	check(w, "leaving a PvP place is quiet", #asked == 0, tostring(last()))
+	poll(1001) -- the poll keeps my position
+	ROOT.Position = vec(300, 3, 0)
+	PLAYER:SetAttribute("ZonePvP", true)
+	check(w, "a PvP place reached by a teleport (300 studs at once) is quiet", #asked == 0, tostring(last()))
+	ROOT.Position = vec(0, 3, 0)
+	PLAYER:SetAttribute("ZonePvP", false)
+	-- B1: knocked out, then back
+	clear()
+	REMOTES.Fx.OnClientEvent:Fire("KO", { By = 222, Lost = 10 })
+	check(w, "knocked out -> KO (B1)", last() == "KO", tostring(last()))
+	PLAYER.CharacterAdded:Fire(CHAR)
+	check(w, "my next character after the KO -> Respawn", last() == "Respawn", tostring(last()))
+	clear()
+	PLAYER.CharacterAdded:Fire(CHAR)
+	check(w, "a later character without a KO is quiet", #asked == 0, tostring(last()))
+	-- B3 / B4 through the real Fx remote
+	REMOTES.Fx.OnClientEvent:Fire("GooseEnd", { Pos = vec(30, 3, 0), Winner = "Halo" })
+	check(w, "the goose leaves near me -> GooseEnd (B3)", last() == "GooseEnd", tostring(last()))
+	clear()
+	REMOTES.Fx.OnClientEvent:Fire("Stomp", { UserId = 222, Pos = vec(30, 3, 0), Radius = 12 })
+	local st = asked[1]
+	check(w, "a kaiju stomp 30 studs away -> KaijuStomp at 2/3 volume (B4)", st ~= nil and st.Event == "KaijuStomp"
+		and near(st.Opts.Volume, 2 / 3), encode(asked))
+	-- B5: the kaiju alarm
+	clear()
+	GAMESTATE:SetAttribute("KaijuPhase", "Siren")
+	check(w, "the kaiju alarm -> KaijuSiren (B5)", last() == "KaijuSiren", tostring(last()))
+	clear()
+	GAMESTATE:SetAttribute("KaijuPhase", "Active")
+	check(w, "the kaiju walking is quiet (its stomps come as Fx)", #asked == 0, tostring(last()))
+	-- B7: the war round's last 30 s (faction, in the game 30 s+) and the 3-2-1
+	clear()
+	GAMESTATE:SetAttribute("WarRoundEndsAt", 1040) -- joined at 1000 (server time)
+	poll(1009)
+	poll(1010.5)
+	check(w, "a player in the game only 10 s gets no WarFinal30", #asked == 0, encode(asked))
+	GAMESTATE:SetAttribute("WarRoundEndsAt", 5031)
+	poll(5000)
+	check(w, "31 s left is quiet", #asked == 0, encode(asked))
+	poll(5001.5)
+	check(w, "30 s left -> WarFinal30 (B7)", last() == "WarFinal30", encode(asked))
+	clear()
+	poll(5002)
+	check(w, "WarFinal30 once per round", #asked == 0, encode(asked))
+	poll(5027.8)
+	poll(5028.1)
+	local tk = asked[#asked]
+	check(w, "3 s left -> CountTick at 1.0x", tk ~= nil and tk.Event == "CountTick" and near(tk.Opts.Speed, 1), encode(asked))
+	poll(5029.1)
+	tk = asked[#asked]
+	check(w, "2 s left -> CountTick at 1.12x", tk ~= nil and tk.Event == "CountTick" and near(tk.Opts.Speed, 1.12), encode(asked))
+	poll(5030.1)
+	tk = asked[#asked]
+	check(w, "1 s left -> CountTick at 1.26x", tk ~= nil and tk.Event == "CountTick" and near(tk.Opts.Speed, 1.26), encode(asked))
+	clear()
+	poll(5031.2)
+	check(w, "the end itself adds no tick", #asked == 0, encode(asked))
+	PLAYER:SetAttribute("Faction", "Neutral")
+	GAMESTATE:SetAttribute("WarRoundEndsAt", 6031)
+	poll(6000)
+	poll(6001.5)
+	check(w, "no faction: no WarFinal30", #asked == 0, encode(asked))
+	PLAYER:SetAttribute("Faction", "Halo")
+	GAMESTATE:SetAttribute("WarRoundEndsAt", 0)
+	-- the kaiju siren's 3-2-1
+	GAMESTATE:SetAttribute("KaijuPhase", "Siren")
+	GAMESTATE:SetAttribute("KaijuEndsAt", 7010)
+	clear()
+	poll(7006.8)
+	poll(7007.1)
+	tk = asked[#asked]
+	check(w, "the kaiju siren's 3-2-1 (B5 + B7)", tk ~= nil and tk.Event == "CountTick" and near(tk.Opts.Speed, 1), encode(asked))
+	GAMESTATE:SetAttribute("KaijuPhase", "Active")
+	GAMESTATE:SetAttribute("KaijuEndsAt", 0)
+	-- the goose's 3-2-1 is for its hitters
+	GAMESTATE:SetAttribute("GooseActive", false)
+	GAMESTATE:SetAttribute("GooseActive", true)
+	GAMESTATE:SetAttribute("GooseEndsAt", 8010)
+	clear()
+	poll(8006.8)
+	poll(8007.1)
+	check(w, "the goose's 3-2-1 is quiet for players who never hit it", #asked == 0, encode(asked))
+	REMOTES.Fx.OnClientEvent:Fire("Swing", { UserId = ME, Class = "Warrior", Manual = true, Pos = vec(5, 3, 0),
+		Hits = { hit(0, 0, false, "G") } })
+	poll(8007.5)
+	clear()
+	poll(8008.1)
+	tk = asked[#asked]
+	check(w, "a goose hitter hears its 3-2-1", tk ~= nil and tk.Event == "CountTick" and near(tk.Opts.Speed, 1.12), encode(asked))
+	GAMESTATE:SetAttribute("GooseActive", false)
+	GAMESTATE:SetAttribute("GooseEndsAt", 0)
+	-- B8: golden monsters coming into view
+	clear()
+	local gold = addMonster("Slime", 20, 0)
+	gold:SetAttribute("Golden", true)
+	CAMERA.OnScreen = false
+	poll(9000)
+	check(w, "a golden monster off screen is quiet", #asked == 0, encode(asked))
+	CAMERA.OnScreen = true
+	poll(9000.3)
+	check(w, "a golden monster on screen within 50 studs -> GoldenSpot (B8)", last() == "GoldenSpot", encode(asked))
+	clear()
+	poll(9000.6)
+	check(w, "GoldenSpot once per monster", #asked == 0, encode(asked))
+	local far = addMonster("Slime", 200, 0)
+	far:SetAttribute("Golden", true)
+	poll(9000.9)
+	check(w, "a golden monster 200 studs away is quiet", #asked == 0, encode(asked))
+	-- B10: someone else's jackpot line
+	clear()
+	REMOTES.Announce.OnClientEvent:Fire({ Key = "Jackpot", Args = { Name = "Bo" }, Grade = "Epic" })
+	check(w, "someone else's jackpot line -> JackpotOther (B10)", last() == "JackpotOther", tostring(last()))
+	clear()
+	REMOTES.Announce.OnClientEvent:Fire({ Key = "Jackpot", Args = {}, Self = true })
+	REMOTES.Announce.OnClientEvent:Fire({ Key = "RareWeapon", Args = {} })
+	REMOTES.Announce.OnClientEvent:Fire({ Key = "PumpkinKing", Args = {}, Event = true })
+	check(w, "my own line, rare-weapon lines and event lines are quiet", #asked == 0, encode(asked))
+	-- C1: my first weapon's Upgrade is quiet (HUD's first-weapon moment plays PowerUp)
+	clear()
+	PLAYER:SetAttribute("WeaponTier", 0)
+	PLAYER:SetAttribute("WeaponTier", 1)
+	REMOTES.Fx.OnClientEvent:Fire("Upgrade", { Tier = 1 })
+	check(w, "my first weapon's Upgrade is quiet", #asked == 0, encode(asked))
+	waitClock(1.55)
+	PLAYER:SetAttribute("WeaponTier", 2)
+	REMOTES.Fx.OnClientEvent:Fire("Upgrade", { Tier = 2 })
+	check(w, "a later weapon -> Equip", last() == "Equip", encode(asked))
+	clear()
+	PLAYER:SetAttribute("WeaponTier", 0)
+	REMOTES.Fx.OnClientEvent:Fire("Upgrade", { Tier = 1 })
+	check(w, "an Upgrade while still bare-handed is quiet too", #asked == 0, encode(asked))
 	Audio.Play = real
 end
 

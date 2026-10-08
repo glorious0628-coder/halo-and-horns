@@ -24,6 +24,17 @@
 --   sound; without it kind "bad" -> Deny, "reward" -> QuestDone; "Quests" remote: a new quest id -> QuestNew;
 --   Fx "Choice" { Option = "Good" | "Evil" } (the story choice itself, to the chooser) -> Purify / Devour
 --   windows: C.Panels / C.WorldMap / C.PlayerListUI IsOpen() turning on / off -> WindowOpen / WindowClose
+--   world (sound_gaps B1-B10, server signals of docs/design/sound_server_2026-10-07.md): Fx KO (mine) -> KO, my next
+--     character within RespawnWithin s -> Respawn; Fx GooseEnd near me -> GooseEnd; Fx Stomp -> KaijuStomp by distance
+--     (Audio.StompVolume); GameState KaijuPhase -> 'Siren' -> KaijuSiren; 30 s left of WarRoundEndsAt (once per round,
+--     faction set, joined 30 s ago) -> WarFinal30; CountTick 3-2-1 (1.0 / 1.12 / 1.26x) before a war round ends, before a
+--     kaiju siren ends and - for players who hit it - before the goose leaves; ZonePvP false -> true (not within SpawnCalm
+--     s of a spawn / teleport) -> ZoneEnterPvP; a golden monster first on screen within GoldenRange studs -> GoldenSpot
+--     (once per monster), a golden kill -> GoldenKill (the same file) with its coin 0.1 s later; the "Announce" remote:
+--     someone else's Jackpot / FirstMax line -> JackpotOther
+--   overlaps (sound_spec §4-2 11): QuestDone within LevelSkip s of a LevelUp is dropped (a LevelUp right after it stops
+--     it); QuestNew waits until QuestNewAfter s after QuestDone; a reward line right after GooseEnd / a crown waits until
+--     BigFirst s after it; my first weapon's Upgrade is quiet (HUD's first-weapon moment plays PowerUp)
 -- Rules (§6): every event keeps its own pool of Max copies (a new play is skipped when all are busy) and its cooldown;
 -- at most MaxPlaying sounds at once; auto combat plays Auto sounds at AutoMul; the big moments (Duck.By) lower the
 -- combat sounds to Duck.Mul for Duck.Seconds; the Sound effects setting (Settings "Sfx" 0..1) scales everything and 0
@@ -33,7 +44,8 @@
 -- Public API: Audio.Init(C), Audio.Start(), Audio.Play(event, opts?) -> bool (opts { File, Speed, SpeedMul, Volume,
 --   Auto, Others }), Audio.Talk(speaker?) -> bool (typewriter blips, quality ②), Audio.Plan(kind, data, ctx) -> list of
 --   { Event, At, File?, SpeedMul?, Speed?, Volume, Auto?, Others? } (pure: what one Fx packet plays; the offline test
---   drives it), Audio.OnFx(kind, data). "No" (SkillBar) is an alias of Deny.
+--   drives it), Audio.OnFx(kind, data), Audio.StompVolume(studs) -> 0..1, Audio.TickAt(prevLeft, left) -> CountTick speed?,
+--   Audio.AnnounceSound(payload) -> event? (pure helpers of the world sounds). "No" (SkillBar) is an alias of Deny.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -88,6 +100,23 @@ local T = {
 	NearMonster = 8, -- studs: the monster a hit belongs to
 	Life = 4, -- s: a copy that never ends (an id that does not load) is freed after this
 	Aliases = { No = "Deny" },
+	-- overlaps (sound_spec §4-2 11)
+	FirstWeaponHold = 1.5, -- s: an Upgrade this soon after my first weapon (WeaponTier 0 -> 1+) stays quiet
+	LevelSkip = 0.4, -- s: QuestDone this close to a LevelUp is dropped
+	QuestNewAfter = 0.6, -- s: a new quest waits this long after QuestDone
+	BigFirst = 1.5, -- s: a reward line right after one of BigEvents waits this long
+	BigEvents = { GooseEnd = true, CrownHalo = true, CrownHorns = true },
+	-- the world (sound_gaps B1-B10)
+	RespawnWithin = 60, -- s after my KO: my next character = Respawn
+	GooseEndRange = 120, -- studs: the goose's goodbye is heard this near
+	Stomp = { Full = 15, Zero = 60 }, -- studs: KaijuStomp x1 within Full, fading to silence at Zero
+	SpawnCalm = 3, -- s after a spawn / teleport: no ZoneEnterPvP
+	Jump = 40, -- studs moved between two polls = a teleport (pads, travel)
+	WarFinal = 30, -- s left in a war round = WarFinal30
+	Ticks = { 1, 1.12, 1.26 }, -- CountTick speeds at 3 / 2 / 1 s left
+	GoldenRange = 50, -- studs: a golden monster this near and on screen = GoldenSpot
+	Poll = 0.25, -- s between the timer / golden checks
+	JackpotKeys = { Jackpot = true, FirstMax = true }, -- Announce lines of others that ring (not RareWeapon)
 }
 
 -- monster kinds whose hit is the soft one (slimes, ghosts, pumpkins); everything else is heavy
@@ -119,6 +148,14 @@ local S = {
 	FactionAt = -math.huge,
 	StartedAt = 0, WarnAt = {},
 	Turn = {}, -- [event] = plays so far of an Alternate event (its files taken in turn)
+	FirstWeaponAt = -math.huge, KOAt = -math.huge, SpawnAt = -math.huge, MovedAt = -math.huge, BigAt = -math.huge,
+	PollAt = -math.huge, LastPos = nil, -- the timer / golden poll and my last polled position (teleport check)
+	JoinedAt = math.huge, -- server time of Start (WarFinal30 needs WarFinal s in the game)
+	Left = {}, -- [timer] = its seconds left at the last poll (CountTick)
+	WarFinalFor = nil, -- the WarRoundEndsAt whose WarFinal30 already rang
+	GooseHit = false, -- I hit the goose this visit (its 3-2-1 is for the hitters)
+	GoldenSeen = setmetatable({}, { __mode = "k" }), -- golden monsters already announced
+	GameState = nil,
 }
 
 local function num(v, default)
@@ -271,8 +308,10 @@ function Audio.Plan(kind, data, ctx)
 		local steps = T.Combo.Steps
 		local step = num(steps[math.min(combo, #steps)], 0)
 		local speed = math.min(num(T.Combo.Top, 1.6), num(T.Combo.Base, 0.8) * 2 ^ (step / 12))
+		local golden = data.Golden == true -- sound_spec GoldenKill: the GoldenSpot file, the coin 0.1 s later
 		add(out, "KillPop", 0)
-		add(out, "ComboCoin", 0.05, { Speed = speed })
+		if golden then add(out, "GoldenKill", 0) end
+		add(out, "ComboCoin", golden and 0.1 or 0.05, { Speed = speed })
 		if MILESTONES[combo] then add(out, "ComboMilestone", 0.15) end
 	elseif kind == "Choice" then -- the story choice itself (sound_spec §4-1; the server sends it to the chooser only)
 		if data.Option == "Good" then
@@ -283,6 +322,7 @@ function Audio.Plan(kind, data, ctx)
 	elseif kind == "Enhance" then
 		add(out, data.Success == true and "ScrollSuccess" or "ScrollFail", 0)
 	elseif kind == "Upgrade" then -- sound_gaps C2: a weapon bought / equipped = Equip (GoldPickup until its file)
+		if ctx.FirstWeapon == true then return out end -- my first weapon: HUD's first-weapon moment plays PowerUp (C1)
 		local equip = SOUNDS.Equip
 		add(out, (type(equip) == "table" and idOf(equip.File)) and "Equip" or "GoldPickup", 0)
 	elseif kind == "Loot" then -- sound_wiring_r4: my drop rings only for a scroll or a weapon (the weapon a little lower)
@@ -318,6 +358,15 @@ function Audio.Plan(kind, data, ctx)
 				break
 			end
 		end
+	elseif kind == "KO" then -- sound_gaps B1 (BB14: the server sends it to the one knocked out only)
+		add(out, "KO", 0)
+	elseif kind == "GooseEnd" then -- B3 { Pos, Winner, Coop } to everyone: heard near the goose only
+		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
+		if d ~= nil and d <= T.GooseEndRange then add(out, "GooseEnd", 0) end
+	elseif kind == "Stomp" then -- B4 { UserId, Pos, Radius } to everyone: loud near the kaiju, silent far away
+		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
+		local v = d ~= nil and Audio.StompVolume(d) or 0
+		if v > 0 then add(out, "KaijuStomp", 0, { Volume = v }) end
 	elseif kind == "Bank" or kind == "Rare" then
 		add(out, "GoldPickup", 0)
 	elseif kind == "LevelUp" then
@@ -330,6 +379,31 @@ function Audio.Plan(kind, data, ctx)
 		end
 	end
 	return out
+end
+
+-- KaijuStomp's volume factor d studs from the stomp (B4): 1 within Stomp.Full, 0 from Stomp.Zero, a straight line between
+function Audio.StompVolume(d)
+	d = num(d, math.huge)
+	local full, zero = num(T.Stomp.Full, 15), num(T.Stomp.Zero, 60)
+	if d <= full then return 1 end
+	if d >= zero then return 0 end
+	return (zero - d) / (zero - full)
+end
+
+-- a timer going from prevLeft to left seconds: crossing 3 / 2 / 1 s left -> that CountTick's speed (B7), else nil
+function Audio.TickAt(prevLeft, left)
+	if type(prevLeft) ~= "number" or type(left) ~= "number" then return nil end
+	for i, at in { 3, 2, 1 } do
+		if prevLeft > at and left <= at and left > at - 1 then return T.Ticks[i] end
+	end
+	return nil
+end
+
+-- the sound of one "Announce" line ({ Key, Args, Grade, Self?, Event? }): someone else's Jackpot / FirstMax -> JackpotOther
+-- (B10; my own line and the server-wide event lines stay quiet here)
+function Audio.AnnounceSound(payload)
+	if type(payload) ~= "table" or payload.Self == true or payload.Event == true then return nil end
+	return T.JackpotKeys[payload.Key] == true and "JackpotOther" or nil
 end
 
 ----------------------------------------------------------------- playback
@@ -397,6 +471,15 @@ function Audio.Play(event, opts)
 	local mult = sfxMult()
 	if mult <= 0 then return false end
 	local now = os.clock()
+	-- §4-2 11: QuestDone this close to a LevelUp is dropped; QuestNew waits until QuestNewAfter s after QuestDone
+	if event == "QuestDone" and now - (S.Last.LevelUp or -math.huge) < T.LevelSkip then return false end
+	if event == "QuestNew" and opts.Waited ~= true then
+		local wait = T.QuestNewAfter - (now - (S.Last.QuestDone or -math.huge))
+		if wait > 0 then
+			task.delay(wait, Audio.Play, "QuestNew", { Waited = true })
+			return false
+		end
+	end
 	local last = S.Last[event]
 	if last and now - last < num(def.Gap, 0.03) then return false end
 	if playingCount() >= T.MaxPlaying then return false end
@@ -433,6 +516,13 @@ function Audio.Play(event, opts)
 		warnThrottled("play", "play " .. event .. " failed: " .. tostring(err))
 		return false
 	end
+	-- §4-2 11: a LevelUp right after a QuestDone stops it; a big moment holds the reward lines right after it (afterBig)
+	if event == "LevelUp" and now - (S.Last.QuestDone or -math.huge) < T.LevelSkip then
+		for _, q in S.Pools.QuestDone or {} do
+			if q.IsPlaying then q:Stop() end
+		end
+	end
+	if T.BigEvents[event] then S.BigAt = now end
 	-- the big moments lower the combat sounds for a moment (§6)
 	if T.Duck.By and T.Duck.By[event] and S.Groups.Combat then
 		S.DuckToken += 1
@@ -483,6 +573,14 @@ local function nearMe(pos)
 	return (root.Position - pos).Magnitude
 end
 
+-- a spawn / teleport in the last SpawnCalm s (a jump of more than Jump studs since the last poll counts as one now)
+local function movedJustNow()
+	local root = myRoot()
+	local now = os.clock()
+	if root and S.LastPos and (root.Position - S.LastPos).Magnitude > T.Jump then S.MovedAt = now end
+	return now - math.max(S.SpawnAt, S.MovedAt) < T.SpawnCalm
+end
+
 local function bumpCombo()
 	S.Combo += 1
 	S.ComboToken += 1
@@ -494,9 +592,21 @@ end
 
 function Audio.OnFx(kind, data)
 	if kind == "Reward" then bumpCombo() end
+	local me = LocalPlayer and LocalPlayer.UserId
+	local own = type(data) == "table" and data.UserId ~= nil and data.UserId == me
+	if kind == "KO" then S.KOAt = os.clock() end -- my next character = Respawn
+	if kind == "TravelDone" and own then S.MovedAt = os.clock() end -- the server moved me: no ZoneEnterPvP right now
+	if own and type(data.Hits) == "table" then
+		for _, h in data.Hits do
+			if type(h) == "table" and h.K == "G" then S.GooseHit = true end -- the goose's 3-2-1 is for its hitters
+		end
+	end
 	local hum = LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 	local plan = Audio.Plan(kind, data, {
-		Me = LocalPlayer and LocalPlayer.UserId,
+		-- my first weapon (WeaponTier 0 -> 1+ just now, or still 0 when its Upgrade arrives): HUD plays PowerUp
+		FirstWeapon = os.clock() - S.FirstWeaponAt < T.FirstWeaponHold
+			or num(LocalPlayer and LocalPlayer:GetAttribute("WeaponTier"), 0) == 0,
+		Me = me,
 		Faction = LocalPlayer and LocalPlayer:GetAttribute("Faction"),
 		Combo = S.Combo,
 		KindAt = kindAt,
@@ -552,6 +662,14 @@ local function watchMe()
 		end
 	end)
 	watch(LocalPlayer, "Faction", function() S.FactionAt = os.clock() end)
+	watch(LocalPlayer, "WeaponTier", function(prev, v)
+		if loaded() and num(prev, -1) == 0 and num(v, 0) >= 1 then S.FirstWeaponAt = os.clock() end
+	end)
+	watch(LocalPlayer, "ZonePvP", function(prev, v)
+		-- B9: into a place where the other side may fight me (not right after a spawn / teleport; nothing on the way out)
+		if v ~= true or prev ~= false or not loaded() then return end
+		if not movedJustNow() then Audio.Play("ZoneEnterPvP") end
+	end)
 	for _, stat in { "Honor", "Infamy" } do
 		watch(LocalPlayer, stat, function(prev, v)
 			if type(prev) ~= "number" or type(v) ~= "number" or not loaded() then return end
@@ -584,7 +702,13 @@ local function watchGame()
 	watch(gs, "GooseActive", function(prev, v)
 		-- sound_gaps A7: the goose arrives (its honk is for hitting it; it stands in until GooseArrive is uploaded)
 		if v == true and prev ~= true and fresh() and not Audio.Play("GooseArrive") then Audio.Play("GooseHonk") end
+		if v ~= true then S.GooseHit = false end
 	end)
+	watch(gs, "KaijuPhase", function(prev, v)
+		-- B5: the kaiju alarm (its 3-2-1 comes from pollWorld)
+		if v == "Siren" and prev ~= "Siren" and fresh() then Audio.Play("KaijuSiren") end
+	end)
+	S.GameState = gs
 end
 
 -- sound_gaps A11 (user): my own jumps (the moment the humanoid leaves the ground by a jump)
@@ -594,6 +718,69 @@ local function watchJump(char)
 	hum.StateChanged:Connect(function(_, new)
 		if new == Enum.HumanoidStateType.Jumping then Audio.Play("Jump") end
 	end)
+end
+
+-- one timer's CountTick (3-2-1 before endsAt) while `on`; the seconds left are kept for the next poll
+local function tickFor(key, on, endsAt, nowServer)
+	local left = endsAt - nowServer
+	local prev = S.Left[key]
+	S.Left[key] = (on and endsAt > 0) and left or nil
+	if not on or endsAt <= 0 then return end
+	local speed = Audio.TickAt(prev, left)
+	if speed then Audio.Play("CountTick", { Speed = speed }) end
+end
+
+-- every Poll s: my teleports (ZoneEnterPvP calm), the war round's last 30 s (B7), the 3-2-1 before a war round ends,
+-- before a kaiju siren ends and - for its hitters - before the goose leaves, and golden monsters coming into view (B8)
+local function pollWorld()
+	local now = os.clock()
+	if now - S.PollAt < T.Poll then return end
+	S.PollAt = now
+	local root = myRoot()
+	if root then
+		if S.LastPos and (root.Position - S.LastPos).Magnitude > T.Jump then S.MovedAt = now end
+		S.LastPos = root.Position
+	end
+	local gs = S.GameState
+	if gs and LocalPlayer then
+		local t = Util.Now()
+		local warEnds = num(gs:GetAttribute("WarRoundEndsAt"), 0)
+		local left = warEnds - t
+		local faction = LocalPlayer:GetAttribute("Faction")
+		if warEnds > 0 and S.WarFinalFor ~= warEnds and left <= T.WarFinal and left > T.WarFinal - 3
+			and (faction == "Halo" or faction == "Horns") and t - S.JoinedAt > T.WarFinal then
+			S.WarFinalFor = warEnds
+			Audio.Play("WarFinal30")
+		end
+		tickFor("War", warEnds > 0, warEnds, t)
+		tickFor("Kaiju", gs:GetAttribute("KaijuPhase") == "Siren", num(gs:GetAttribute("KaijuEndsAt"), 0), t)
+		tickFor("Goose", gs:GetAttribute("GooseActive") == true and S.GooseHit, num(gs:GetAttribute("GooseEndsAt"), 0), t)
+	end
+	local folder = root and workspace:FindFirstChild("Monsters")
+	local cam = workspace.CurrentCamera
+	if not folder or not cam then return end
+	for _, m in folder:GetChildren() do
+		if m:GetAttribute("Golden") == true and not S.GoldenSeen[m] then
+			local ok, pivot = pcall(m.GetPivot, m)
+			if ok and (pivot.Position - root.Position).Magnitude <= T.GoldenRange then
+				local _, onScreen = cam:WorldToViewportPoint(pivot.Position)
+				if onScreen then
+					S.GoldenSeen[m] = true -- once per monster (seen while the event's Gap holds it = still seen)
+					Audio.Play("GoldenSpot")
+				end
+			end
+		end
+	end
+end
+
+-- §4-2 11: a reward line right after GooseEnd / a crown waits until BigFirst s after that sound (the big one first)
+local function afterBig(event)
+	local wait = T.BigFirst - (os.clock() - S.BigAt)
+	if wait > 0 and not T.BigEvents[event] and event ~= "Deny" then
+		task.delay(wait, Audio.Play, event)
+	else
+		Audio.Play(event)
+	end
 end
 
 local function pollWindows()
@@ -652,6 +839,7 @@ end
 
 function Audio.Start()
 	S.StartedAt = os.clock()
+	S.JoinedAt = Util.Now()
 	local folder = Instance.new("Folder")
 	folder.Name = "AudioSfx"
 	folder.Parent = SoundService
@@ -685,7 +873,14 @@ function Audio.Start()
 	if LocalPlayer then
 		watchMe()
 		pcall(function()
-			LocalPlayer.CharacterAdded:Connect(function(char) task.spawn(watchJump, char) end)
+			LocalPlayer.CharacterAdded:Connect(function(char)
+				S.SpawnAt = os.clock()
+				if os.clock() - S.KOAt < T.RespawnWithin then -- B1: back after my KO
+					S.KOAt = -math.huge
+					Audio.Play("Respawn")
+				end
+				task.spawn(watchJump, char)
+			end)
 			if LocalPlayer.Character then task.spawn(watchJump, LocalPlayer.Character) end
 		end)
 	end
@@ -693,6 +888,8 @@ function Audio.Start()
 	RunService.Heartbeat:Connect(function()
 		local ok, err = pcall(pollWindows)
 		if not ok then warnThrottled("windows", "window watch failed: " .. tostring(err)) end
+		ok, err = pcall(pollWorld)
+		if not ok then warnThrottled("world", "world watch failed: " .. tostring(err)) end
 	end)
 	-- the remotes normally exist already; never block the other client modules' Start on them
 	task.spawn(function()
@@ -704,6 +901,14 @@ function Audio.Start()
 	task.spawn(function()
 		Net.Get("Notify").OnClientEvent:Connect(function(payload)
 			local event = Audio.NotifySound(payload)
+			if event then afterBig(event) end
+		end)
+	end)
+	task.spawn(function()
+		local announce = Net.Get("Announce")
+		if not announce then return end
+		announce.OnClientEvent:Connect(function(payload)
+			local event = Audio.AnnounceSound(payload)
 			if event then Audio.Play(event) end
 		end)
 	end)

@@ -15,6 +15,11 @@ our files exist, Click -> Tap, silent without an id, volume / speed from the tab
 Max copies per event, 8 at once, the Sound effects setting, ducking and its return, the 'No' alias, typewriter voices;
 listeners: auto on / off, purify / devour / RankDown (A23-58, not on a faction change), potions, kings / goose (not at
 the join), Notify bad / reward, a new quest id (not the first list), windows, the combo across real Fx packets.
+2026-10-08 (main-Studio sound Play check + sound_gaps B1-B10): KO / Respawn, GooseEnd near me, KaijuStomp by distance,
+KaijuSiren, WarFinal30 (once per round, faction, 30 s in the game), CountTick 3-2-1 (war, kaiju siren, goose for its
+hitters), ZoneEnterPvP (not after a teleport, not on the way out), GoldenSpot (on screen, 50 studs, once per monster) /
+GoldenKill, JackpotOther (others' Jackpot / FirstMax only), the first weapon's Upgrade quiet (HUD plays PowerUp), §4-2 11
+overlaps (QuestDone vs LevelUp ±0.4 s, QuestNew 0.6 s after QuestDone, a reward line 1.5 s after GooseEnd / a crown).
 Mutations: in-memory copies of Audio.luau with one rule broken each; each must make a check fail that passes on the real
 source. --no-mutations skips them and the status is then "passed-no-mutations" (never "passed").
 
@@ -125,6 +130,54 @@ MUTATIONS = [
      "\t\t\t\tAudio.Play(stat == \"Honor\" and \"Purify\" or \"Devour\") return --"),
     ("Sound None still plays", '\t\tif sound == "None" then return nil end\n', ""),
     ("the payload's Sound is ignored", "\t\treturn sound\n\tend\n", "\tend\n"),
+    # sound Play check 2026-10-08 + the world sounds (sound_gaps B1-B10, sound_spec §4-2 11)
+    ("KO is silent", '\t\tadd(out, "KO", 0)\n', ""),
+    ("the goose's goodbye heard from anywhere", 'if d ~= nil and d <= T.GooseEndRange then add(out, "GooseEnd", 0) end',
+     'add(out, "GooseEnd", 0)'),
+    ("stomps at full volume everywhere", 'if v > 0 then add(out, "KaijuStomp", 0, { Volume = v }) end', 'add(out, "KaijuStomp", 0)'),
+    ("no fade between 15 and 60 studs", "\treturn (zero - d) / (zero - full)\n", "\treturn 1\n"),
+    ("every tick at one speed", "if prevLeft > at and left <= at and left > at - 1 then return T.Ticks[i] end",
+     "if prevLeft > at and left <= at and left > at - 1 then return 1 end"),
+    ("ticks without a crossing", "if prevLeft > at and left <= at and left > at - 1 then", "if left <= at then"),
+    ("my own jackpot line rings", 'if type(payload) ~= "table" or payload.Self == true or payload.Event == true then return nil end',
+     'if type(payload) ~= "table" then return nil end'),
+    ("rare-weapon lines ring", 'return T.JackpotKeys[payload.Key] == true and "JackpotOther" or nil',
+     'return payload.Key ~= nil and "JackpotOther" or nil'),
+    ("a golden kill sounds plain", 'if golden then add(out, "GoldenKill", 0) end', ""),
+    ("the golden coin not later", 'add(out, "ComboCoin", golden and 0.1 or 0.05, { Speed = speed })',
+     'add(out, "ComboCoin", 0.05, { Speed = speed })'),
+    ("the first weapon plays Equip too", "if ctx.FirstWeapon == true then return out end", "if false then return out end"),
+    ("the first-weapon moment never noted",
+     "if loaded() and num(prev, -1) == 0 and num(v, 0) >= 1 then S.FirstWeaponAt = os.clock() end", ""),
+    ("a bare-handed Upgrade rings", 'or num(LocalPlayer and LocalPlayer:GetAttribute("WeaponTier"), 0) == 0,', "or false,"),
+    ("QuestDone over a LevelUp",
+     'if event == "QuestDone" and now - (S.Last.LevelUp or -math.huge) < T.LevelSkip then return false end', ""),
+    ("a LevelUp leaves QuestDone ringing", "if q.IsPlaying then q:Stop() end", ""),
+    ("QuestNew right on top of QuestDone", "local wait = T.QuestNewAfter - (now - (S.Last.QuestDone or -math.huge))",
+     "local wait = 0"),
+    ("a waited QuestNew waits again", 'if event == "QuestNew" and opts.Waited ~= true then', 'if event == "QuestNew" then'),
+    ("the reward line never waits for the big one",
+     'if wait > 0 and not T.BigEvents[event] and event ~= "Deny" then', "if false then"),
+    ("big moments never mark their time", "if T.BigEvents[event] then S.BigAt = now end", ""),
+    ("no Respawn after a KO", "if os.clock() - S.KOAt < T.RespawnWithin then -- B1: back after my KO",
+     "if false then -- B1"),
+    ("every new character says Respawn", "\t\t\t\t\tS.KOAt = -math.huge\n", ""),
+    ("PvP chime right after a teleport", 'if not movedJustNow() then Audio.Play("ZoneEnterPvP") end',
+     'Audio.Play("ZoneEnterPvP")'),
+    ("no teleport check at the PvP edge",
+     "if root and S.LastPos and (root.Position - S.LastPos).Magnitude > T.Jump then S.MovedAt = now end", ""),
+    ("PvP chime on the way out", "if v ~= true or prev ~= false or not loaded() then return end",
+     "if not loaded() then return end"),
+    ("no kaiju alarm", 'if v == "Siren" and prev ~= "Siren" and fresh() then Audio.Play("KaijuSiren") end', ""),
+    ("WarFinal30 every poll", "\t\t\tS.WarFinalFor = warEnds\n", ""),
+    ("WarFinal30 without a faction", '(faction == "Halo" or faction == "Horns")', "true"),
+    ("WarFinal30 for a player who just came", "and t - S.JoinedAt > T.WarFinal then", "then"),
+    ("the goose's 3-2-1 for everyone", 'gs:GetAttribute("GooseActive") == true and S.GooseHit,',
+     'gs:GetAttribute("GooseActive") == true,'),
+    ("a goose hit never noted", 'if type(h) == "table" and h.K == "G" then S.GooseHit = true end', ""),
+    ("golden spotted off screen", "\t\t\t\tif onScreen then\n", "\t\t\t\tif true then\n"),
+    ("golden spotted from anywhere", "if ok and (pivot.Position - root.Position).Magnitude <= T.GoldenRange then", "if ok then"),
+    ("golden spot repeats", "\t\t\t\t\tS.GoldenSeen[m] = true", "\t\t\t\t\t--"),
 ]
 
 

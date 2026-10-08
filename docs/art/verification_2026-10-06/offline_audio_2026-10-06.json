@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 213,
-  "namedChecks": 157,
+  "checks": 280,
+  "namedChecks": 214,
   "failing": [],
   "mutations": {
-    "total": 56,
-    "caught": 56,
+    "total": 89,
+    "caught": 89,
     "results": [
       {
         "mutation": "every drop rings (materials too)",
@@ -248,7 +248,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rewards :: a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)"
+          "rewards :: a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)",
+          "world listeners :: a later weapon -> Equip"
         ]
       },
       {
@@ -266,7 +267,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -549,8 +549,329 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: ... and plays 1.5 s later",
           "runtime :: the line after a completion stays quiet (Sound None)",
           "runtime :: the payload's Sound key plays"
+        ]
+      },
+      {
+        "mutation": "KO is silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: my KO = KO (B1)",
+          "world listeners :: knocked out -> KO (B1)"
+        ]
+      },
+      {
+        "mutation": "the goose's goodbye heard from anywhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: a goose end without a place is quiet",
+          "world :: the goose leaving far away is quiet"
+        ]
+      },
+      {
+        "mutation": "stomps at full volume everywhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: a stomp 37.5 studs away = half volume",
+          "world :: a stomp 60+ studs away is quiet",
+          "world listeners :: a kaiju stomp 30 studs away -> KaijuStomp at 2/3 volume (B4)"
+        ]
+      },
+      {
+        "mutation": "no fade between 15 and 60 studs",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: a stomp 37.5 studs away = half volume",
+          "world listeners :: a kaiju stomp 30 studs away -> KaijuStomp at 2/3 volume (B4)"
+        ]
+      },
+      {
+        "mutation": "every tick at one speed",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: TickAt: crossing 3 / 2 / 1 s left = 1.0 / 1.12 / 1.26 (B7)",
+          "world listeners :: 1 s left -> CountTick at 1.26x",
+          "world listeners :: 2 s left -> CountTick at 1.12x",
+          "world listeners :: a goose hitter hears its 3-2-1"
+        ]
+      },
+      {
+        "mutation": "ticks without a crossing",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: TickAt: crossing 3 / 2 / 1 s left = 1.0 / 1.12 / 1.26 (B7)",
+          "world :: TickAt: no crossing, no first value, no tick after 0",
+          "world listeners :: 1 s left -> CountTick at 1.26x",
+          "world listeners :: 2 s left -> CountTick at 1.12x",
+          "world listeners :: a goose hitter hears its 3-2-1",
+          "world listeners :: no faction: no WarFinal30"
+        ]
+      },
+      {
+        "mutation": "my own jackpot line rings",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: AnnounceSound: someone else's Jackpot / FirstMax only (B10)",
+          "world listeners :: my own line, rare-weapon lines and event lines are quiet"
+        ]
+      },
+      {
+        "mutation": "rare-weapon lines ring",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: AnnounceSound: someone else's Jackpot / FirstMax only (B10)",
+          "world listeners :: my own line, rare-weapon lines and event lines are quiet"
+        ]
+      },
+      {
+        "mutation": "a golden kill sounds plain",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: a golden kill = KillPop + GoldenKill, its coin 0.1 s later"
+        ]
+      },
+      {
+        "mutation": "the golden coin not later",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: a golden kill = KillPop + GoldenKill, its coin 0.1 s later"
+        ]
+      },
+      {
+        "mutation": "the first weapon plays Equip too",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world :: my first weapon's Upgrade is quiet (C1: HUD's first-weapon moment plays PowerUp)",
+          "world listeners :: an Upgrade while still bare-handed is quiet too",
+          "world listeners :: my first weapon's Upgrade is quiet"
+        ]
+      },
+      {
+        "mutation": "the first-weapon moment never noted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: my first weapon's Upgrade is quiet"
+        ]
+      },
+      {
+        "mutation": "a bare-handed Upgrade rings",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: an Upgrade while still bare-handed is quiet too"
+        ]
+      },
+      {
+        "mutation": "QuestDone over a LevelUp",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: QuestDone right after a LevelUp is dropped (§4-2 11)"
+        ]
+      },
+      {
+        "mutation": "a LevelUp leaves QuestDone ringing",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a LevelUp right after a QuestDone stops it"
+        ]
+      },
+      {
+        "mutation": "QuestNew right on top of QuestDone",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: ... until 0.6 s after the QuestDone",
+          "runtime :: QuestNew right after QuestDone waits"
+        ]
+      },
+      {
+        "mutation": "a waited QuestNew waits again",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: then it plays"
+        ]
+      },
+      {
+        "mutation": "the reward line never waits for the big one",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a reward line right after GooseEnd waits (the big one first)"
+        ]
+      },
+      {
+        "mutation": "big moments never mark their time",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a reward line right after GooseEnd waits (the big one first)"
+        ]
+      },
+      {
+        "mutation": "no Respawn after a KO",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: my next character after the KO -> Respawn"
+        ]
+      },
+      {
+        "mutation": "every new character says Respawn",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: a later character without a KO is quiet"
+        ]
+      },
+      {
+        "mutation": "PvP chime right after a teleport",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: a PvP place reached by a teleport (300 studs at once) is quiet"
+        ]
+      },
+      {
+        "mutation": "no teleport check at the PvP edge",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: a PvP place reached by a teleport (300 studs at once) is quiet"
+        ]
+      },
+      {
+        "mutation": "PvP chime on the way out",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: a PvP place reached by a teleport (300 studs at once) is quiet",
+          "world listeners :: into a PvP place -> ZoneEnterPvP (B9)",
+          "world listeners :: leaving a PvP place is quiet",
+          "world listeners :: the first ZonePvP value is quiet"
+        ]
+      },
+      {
+        "mutation": "no kaiju alarm",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: the kaiju alarm -> KaijuSiren (B5)"
+        ]
+      },
+      {
+        "mutation": "WarFinal30 every poll",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: WarFinal30 once per round"
+        ]
+      },
+      {
+        "mutation": "WarFinal30 without a faction",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: no faction: no WarFinal30"
+        ]
+      },
+      {
+        "mutation": "WarFinal30 for a player who just came",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: 31 s left is quiet",
+          "world listeners :: a player in the game only 10 s gets no WarFinal30"
+        ]
+      },
+      {
+        "mutation": "the goose's 3-2-1 for everyone",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: the goose's 3-2-1 is quiet for players who never hit it"
+        ]
+      },
+      {
+        "mutation": "a goose hit never noted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: a goose hitter hears its 3-2-1"
+        ]
+      },
+      {
+        "mutation": "golden spotted off screen",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: a golden monster off screen is quiet"
+        ]
+      },
+      {
+        "mutation": "golden spotted from anywhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: a golden monster 200 studs away is quiet"
+        ]
+      },
+      {
+        "mutation": "golden spot repeats",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "world listeners :: GoldenSpot once per monster",
+          "world listeners :: a golden monster 200 studs away is quiet"
         ]
       }
     ]
@@ -559,9 +880,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "40d127a8c2bac2b060c33ed9ae19c90553574928553115cd3a1c80cacd61ebe4",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "440bcffb99611c11dc1e3cf6575cdf3ba3aac1c6c13cea6dbf23230f191d1424",
-    "tools/fixtures/audio_offline.luau": "241734f26179614204e5f93a6211152ac8e3d8455677c9ea2d84edf7e135ae7d"
+    "src/ReplicatedStorage/Shared/Config.luau": "c4f8de850660c4b8f73e31e9c8fb6f2df1007756ee830abe8b2084921ac293b0",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "1665f6fecb1d16fcfea287848caf0e9c52beb85f3c71a08ca2b487aba9352879",
+    "tools/fixtures/audio_offline.luau": "09789b50994ac4de69658edf74e7d83a82e6e7d5878370ded8f702575781d52a"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

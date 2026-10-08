@@ -4092,6 +4092,7 @@ Config.Audio = {
 		KaijuStomp = { File = "KaijuStomp", Volume = 0.45, Speed = { 0.97, 1.03 }, Max = 2, Gap = 1 }, -- B4 Fx Stomp: Volume x1 within 15 studs -> 0 at 60
 		ZoneEnterPvP = { File = "ZoneEnterPvP", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B9 ZonePvP false->true, not within 3 s of a spawn / teleport, nothing on leaving
 		GoldenSpot = { File = "GoldenSpot", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B8 a golden monster first in view within 50 studs (once per monster); GoldenKill = same file
+		GoldenKill = { File = "GoldenSpot", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- a golden kill (Reward Golden): the GoldenSpot file in its own pool (the spot's 10 s gap never eats it); the coin 0.1 s later
 		KO = { File = "KO", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- B1 Fx KO (mine): cartoon dizzy, no death jingle
 		Respawn = { File = "Respawn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B1 my character comes back after a KO
 		Plunder = { File = "Plunder", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B2 my sack / pocket is taken (the victim only; the taker hears GoldPickup)

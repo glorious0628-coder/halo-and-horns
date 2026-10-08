@@ -5,7 +5,8 @@ cached ones Fx_<name>) and records name / SoundId / Volume / PlaybackSpeed / Sou
 stamp; the flow below fires the first-10-minutes moments and the world events (DebugCommand, Studio only), and every
 step writes a marker row so each sound can be matched to its scene. No mouse / keyboard: remotes, Keybinds.Dispatch,
 ProximityPrompt:InputHoldBegin, DebugCommand. Stops Play in a finally block.
-Usage: py tools/play_sound_check.py pc|phone [outdir-name]
+Usage: py tools/play_sound_check.py pc|phone|world [outdir-name]   (world = after the first weapon: a real level-up to
+Lv5 + the Q skill, then the world sounds sent the way their services send them and a step into a PvP zone)
 Out: docs/art/verification_2026-10-08/sound_play/<mode>/ (log.txt, sounds.json, captures)"""
 import base64
 import ctypes
@@ -109,7 +110,7 @@ STATE = r"""
 local p = game:GetService("Players"):GetPlayers()[1]
 if not p then return "no player" end
 local keys = { "DataLoaded", "Faction", "Class", "ClassChosen", "TutorialStep", "TutorialKills", "WeaponTier", "Level",
-	"CarriedGold", "BankGold", "Honor", "Infamy", "AutoCombatUnlocked", "AutoCombatEnabled", "ZoneId", "HPPotionCount",
+	"CarriedGold", "BankGold", "Honor", "Infamy", "AutoCombatUnlocked", "AutoCombatEnabled", "ZoneId", "ZonePvP", "HPPotionCount",
 	"MPPotionCount" }
 local out = {}
 for _, k in keys do table.insert(out, k .. "=" .. tostring(p:GetAttribute(k))) end
@@ -341,6 +342,129 @@ def hunt(c, label, kills_key, need, seconds, want="", skill_every=0):
     return s
 
 
+# server: what the world services send, sent the same way (Net.Fx = Remotes.Fx, Net.Notify = Remotes.Notify)
+SRV_SEND = r"""
+local p = game:GetService("Players"):GetPlayers()[1]
+local root = p and p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+if not root then return "no root" end
+local R = game:GetService("ReplicatedStorage"):WaitForChild("Remotes")
+local pos = root.Position + Vector3.new(%s)
+%s
+return "sent"
+"""
+SRV_GS = r"""
+local gs = game:GetService("ReplicatedStorage"):WaitForChild("GameState")
+local now = workspace:GetServerTimeNow()
+%s
+return "gamestate set"
+"""
+SRV_XP = r"""
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Config"))
+return tostring(Config.XPToNext(%d))
+"""
+SRV_GOLDEN = r"""
+local p = game:GetService("Players"):GetPlayers()[1]
+local root = p and p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+local best, bd = nil, math.huge
+for _, m in workspace:WaitForChild("Monsters"):GetChildren() do
+	if m:IsA("Model") and m:GetAttribute("Leaving") ~= true and root then
+		local d = (m:GetPivot().Position - root.Position).Magnitude
+		if d < bd then best, bd = m, d end
+	end
+end
+if not best then return "no monster" end
+best:SetAttribute("Golden", true)
+return string.format("golden %s d=%.0f", best.Name, bd)
+"""
+GROUND_TP = r"""
+local p = game:GetService("Players").LocalPlayer
+local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+if not root then return "no root" end
+local params = RaycastParams.new()
+params.FilterDescendantsInstances = { p.Character }
+local hit = workspace:Raycast(Vector3.new(%s, 300, %s), Vector3.new(0, -600, 0), params)
+local y = hit and hit.Position.Y or 5
+root.CFrame = CFrame.new(%s, y + 3, %s)
+root.AssemblyLinearVelocity = Vector3.zero
+return string.format("at y=%%.1f (%%s)", y, hit and hit.Instance.Name or "no ground")
+"""
+
+
+def world_flow(c):
+    """after the first weapon: a real level-up to Lv5 (SkillLearn, the server's Q slot), the Q skill and its cooldown,
+    then the world sounds sent the way their services send them (KO, GooseEnd + its reward line, Stomp, the kaiju
+    alarm and its 3-2-1, the war round's last 30 s and 3-2-1, someone else's jackpot, a golden monster in view) and
+    the walk into a PvP zone"""
+    xp = lua(c, SRV_XP % 4, "Server")
+    debug(c, "Level", 4)
+    need = int(xp) if xp.isdigit() else 0
+    debug(c, "XP", max(0, need - 1))
+    time.sleep(1.0)
+    hunt(c, "real level-up 4 -> 5 on a slime kill (LevelUp, then SkillLearn ~1.1 s)", "Level", 5, 40, "Slime")
+    time.sleep(3.0)
+    note("near: " + lua(c, NEAR_MONSTER % ("Slime", "nil", "5"), "Client"))
+    time.sleep(2.0)
+    mark(c, "skill Q after a real level-up (SkillCast + SkillHalo + hit)")
+    note(lua(c, DISPATCH % "Q", "Client"))
+    time.sleep(4.0)
+    mark(c, "after the 3 s cooldown (SkillReady)")
+    time.sleep(0.5)
+    save(c, "03_skill")
+    # B1: KO and back (the real death path: my humanoid at 0 on the server)
+    mark(c, "KO (KO) then back (Respawn)")
+    note(lua(c, 'local p = game:GetService("Players"):GetPlayers()[1] local h = p.Character and '
+                'p.Character:FindFirstChildOfClass("Humanoid") if h then h.Health = 0 end return "ko"', "Server"))
+    time.sleep(10.0)  # Config.Death respawn wait
+    note("after respawn: " + lua(c, STATE, "Server"))
+    time.sleep(1.0)
+    # B3: the goose leaves 20 studs away, its reward line right after (waits 1.5 s)
+    mark(c, "GooseEnd near me + reward line (GooseEnd, GoldPickup 1.5 s later)")
+    note(lua(c, SRV_SEND % ("20, 0, 0", 'R.Fx:FireAllClients("GooseEnd", { Pos = pos, Winner = "Halo", Coop = false })\n'
+                            'R.Notify:FireClient(p, { Text = "Goose gold!", Kind = "good", Sound = "GoldPickup" })'),
+             "Server"))
+    time.sleep(2.5)
+    # B4: kaiju stomps 10 / 30 / 80 studs away
+    for d in (10, 30, 80):
+        mark(c, f"Stomp {d} studs away (KaijuStomp x{max(0, min(1, (60 - d) / 45)):.2f})")
+        note(lua(c, SRV_SEND % (f"{d}, 0, 0", 'R.Fx:FireAllClients("Stomp", { UserId = 0, Pos = pos, Radius = 12 })'),
+                 "Server"))
+        time.sleep(1.3)
+    # B5 + B7: the kaiju alarm and its 3-2-1
+    mark(c, "KaijuPhase Siren, ends in 5 s (KaijuSiren, CountTick x3)")
+    note(lua(c, SRV_GS % 'gs:SetAttribute("KaijuEndsAt", now + 5)\ngs:SetAttribute("KaijuPhase", "Siren")', "Server"))
+    time.sleep(6.0)
+    note(lua(c, SRV_GS % 'gs:SetAttribute("KaijuPhase", "None")\ngs:SetAttribute("KaijuEndsAt", 0)', "Server"))
+    # B7: the war round's last 30 s, then a round that ends in 4 s (3-2-1)
+    mark(c, "WarRoundEndsAt now+31 (WarFinal30 at 30 s left)")
+    note(lua(c, SRV_GS % 'gs:SetAttribute("WarRoundEndsAt", now + 31)', "Server"))
+    time.sleep(2.5)
+    mark(c, "WarRoundEndsAt now+4 (CountTick x3)")
+    note(lua(c, SRV_GS % 'gs:SetAttribute("WarRoundEndsAt", now + 4)', "Server"))
+    time.sleep(5.0)
+    # B10: someone else's jackpot line
+    mark(c, "Announce Jackpot from someone else (JackpotOther)")
+    note(lua(c, SRV_SEND % ("0, 0, 0", 'R.Announce:FireClient(p, { Key = "Jackpot", Args = { Name = "Bo", Weapon = "Iron Sword" }, '
+                            'Grade = "Epic" })'), "Server"))
+    time.sleep(1.5)
+    # B8: a golden monster in view
+    note("near: " + lua(c, NEAR_MONSTER % ("Slime", "nil", "12"), "Client"))
+    time.sleep(1.0)
+    mark(c, "a monster near me turns golden (GoldenSpot)")
+    note(lua(c, SRV_GOLDEN, "Server"))
+    time.sleep(1.5)
+    save(c, "04_world")
+    # B9: walk into the Goblin Woods (PvP, Lv 10+): stand outside 3.5 s, then a small step in
+    debug(c, "Level", 12)
+    note(lua(c, GROUND_TP % ("690", "0", "690", "0"), "Client"))
+    time.sleep(4.0)
+    note("outside: " + lua(c, STATE, "Server"))
+    mark(c, "step into the Goblin Woods (ZoneEnterPvP)")
+    note(lua(c, GROUND_TP % ("725", "0", "725", "0"), "Client"))
+    time.sleep(2.5)
+    note("inside: " + lua(c, STATE, "Server"))
+    save(c, "05_pvp")
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     os.makedirs(OUT, exist_ok=True)
@@ -391,122 +515,125 @@ def main():
         note("weapon: " + s)
         time.sleep(2.5)
         save(c, "02_first_weapon")
-        # 2 windows
-        # (G / C / K / L / J window keys are not live: their Panels windows are not registered; M is a
-        # ContextAction bind that Dispatch does not reach -> the Help window (H) is the window-key path here)
-        mark(c, "help window open (WindowOpen)")
-        note(lua(c, DISPATCH % "H", "Client"))
-        time.sleep(1.5)
-        mark(c, "help window close (WindowClose)")
-        note(lua(c, DISPATCH % "H", "Client"))
-        time.sleep(1.2)
-        # 5 jump
-        mark(c, "jump (Jump)")
-        note(lua(c, JUMP, "Client"))
-        time.sleep(1.5)
-        # 6-8 the first mission: slimes (Swing / HitSoft / HitCrit / KillPop / ComboCoin)
-        s = hunt(c, "hunt slimes (SwingWarrior, HitSoft, KillPop, ComboCoin)", "TutorialKills", 5, 75 if MODE == "pc" else 60,
-                 "Slime")
-        save(c, "03_hunt")
-        time.sleep(1.5)
-        # 9 claim -> QuestDone (+ reward lines; LevelUp overlap rule)
-        lvl0 = attr(lua(c, STATE, "Server"), "Level")
-        mark(c, f"ClaimQuest tutorial (QuestDone; level before {lvl0})")
-        note(lua(c, FIRE % ("ClaimQuest", '"tutorial"', "ClaimQuest"), "Client"))
-        time.sleep(3.0)
-        s = lua(c, STATE, "Server")
-        note("after claim: " + s)
-        save(c, "04_claim")
-        if MODE == "phone":
-            # the phone run: HitSoft again on the phone screen, then Level 5 + the skill
-            mark(c, "Level 5 (debug sets the stat: no LevelUp Fx; SkillLearn at the learn moment)")
-            debug(c, "Level", 5)
-            time.sleep(4)
-            # the server's movement check refuses a cast right after a jump in position: stand still 2 s first
-            note("near: " + lua(c, NEAR_MONSTER % ("Slime", "nil", "5"), "Client"))
-            time.sleep(2.0)
-            mark(c, "skill Q after standing still (SkillCast + SkillHalo + hit)")
-            note(lua(c, DISPATCH % "Q", "Client"))
-            time.sleep(4.0)  # basic skill cooldown 3 s -> SkillReady
-            mark(c, "after the cooldown (SkillReady expected at ~3 s)")
-            hunt(c, "phone: slimes again + Q (HitSoft on phone)", None, 0, 20, "Slime", skill_every=6)
-            save(c, "05_phone_hunt")
+        if MODE == "world":
+            world_flow(c)
         else:
-            # 13 Level 5 -> LevelUp + SkillLearn
-            mark(c, "Level 5 (LevelUp then SkillLearn ~1.1 s)")
-            debug(c, "Level", 5)
-            time.sleep(4)
-            # 14 skill Q, ready, MP short (Deny)
-            lua(c, NEAR_MONSTER % ("Slime", "nil", "4"), "Client")
-            mark(c, "skill Q (SkillCast + SkillHalo + hit)")
-            note(lua(c, DISPATCH % "Q", "Client"))
-            time.sleep(4.0)  # basic skill cooldown 3 s -> SkillReady
-            mark(c, "Mana 0 + Q (Deny)")
-            debug(c, "Mana", 0)
-            time.sleep(0.5)
-            note(lua(c, DISPATCH % "Q", "Client"))
+            # 2 windows
+            # (G / C / K / L / J window keys are not live: their Panels windows are not registered; M is a
+            # ContextAction bind that Dispatch does not reach -> the Help window (H) is the window-key path here)
+            mark(c, "help window open (WindowOpen)")
+            note(lua(c, DISPATCH % "H", "Client"))
             time.sleep(1.5)
-            # 12 potions: buy (Spend) at the merchant, drink MP (Potion)
-            mark(c, "potion merchant: BuyPotion MP x1 (Spend)")
-            debug(c, "Gold", 500)
-            note(lua(c, GOTO % MERCHANT, "Client"))
-            time.sleep(1.0)
-            note(lua(c, FIRE % ("BuyPotion", '"MP", 1', "BuyPotion"), "Client"))
+            mark(c, "help window close (WindowClose)")
+            note(lua(c, DISPATCH % "H", "Client"))
+            time.sleep(1.2)
+            # 5 jump
+            mark(c, "jump (Jump)")
+            note(lua(c, JUMP, "Client"))
             time.sleep(1.5)
-            mark(c, "drink MP potion (Potion)")
-            note(lua(c, FIRE % ("UsePotion", '"MP"', "UsePotion"), "Client"))
+            # 6-8 the first mission: slimes (Swing / HitSoft / HitCrit / KillPop / ComboCoin)
+            s = hunt(c, "hunt slimes (SwingWarrior, HitSoft, KillPop, ComboCoin)", "TutorialKills", 5, 75 if MODE == "pc" else 60,
+                     "Slime")
+            save(c, "03_hunt")
             time.sleep(1.5)
-            # 15 auto on / off
-            debug(c, "AutoCombatUnlocked", True)
-            time.sleep(0.5)
-            mark(c, "auto on (AutoOn)")
-            note(lua(c, DISPATCH % "R", "Client"))
-            time.sleep(1.5)
-            mark(c, "auto off (AutoOff)")
-            note(lua(c, DISPATCH % "R", "Client"))
-            time.sleep(1.5)
-            # 16 faction points: Honor up (Purify), down (RankDown)
-            mark(c, "Honor +40 (Purify; RankUp if a new title)")
-            honor = attr(lua(c, STATE, "Server"), "Honor")
-            base = int(honor) if honor and honor.isdigit() else 0
-            debug(c, "Honor", base + 40)
-            time.sleep(2.0)
-            mark(c, "Honor -10 (RankDown)")
-            debug(c, "Honor", base + 30)
-            time.sleep(2.0)
-            # 18 scroll: Item Enh70 + use on the tier-1 weapon (ScrollSuccess / ScrollFail)
-            debug(c, "Item", "Enh70:2")
-            time.sleep(0.5)
-            mark(c, "UseItem Enh70 on tier 1 (ScrollSuccess / ScrollFail)")
-            note(lua(c, FIRE % ("UseItem", '"Enh70", 1', "UseItem"), "Client"))
-            time.sleep(2.5)
-            note(lua(c, FIRE % ("UseItem", '"Enh70", 1', "UseItem"), "Client"))
-            time.sleep(2.0)
-            save(c, "05_scroll")
-            # 19 the goose: arrive / honk / (end unwired)
-            mark(c, "Goose (GooseArrive + duck)")
-            debug(c, "Goose", True)
+            # 9 claim -> QuestDone (+ reward lines; LevelUp overlap rule)
+            lvl0 = attr(lua(c, STATE, "Server"), "Level")
+            mark(c, f"ClaimQuest tutorial (QuestDone; level before {lvl0})")
+            note(lua(c, FIRE % ("ClaimQuest", '"tutorial"', "ClaimQuest"), "Client"))
             time.sleep(3.0)
-            note(lua(c, GOTO % GOOSE_POS, "Client"))
-            time.sleep(0.8)
-            mark(c, "hit the goose (GooseHonk)")
-            for _ in range(4):
-                lua(c, GOOSE_FACE, "Client")
-                lua(c, DISPATCH % "F", "Client")
-                time.sleep(0.6)
-            save(c, "06_goose")
-            # 20 kings appear
-            mark(c, "PumpkinKing appears (PumpkinKing + duck)")
-            debug(c, "PumpkinKing", True)
-            time.sleep(3.0)
-            mark(c, "GhostKing appears (GhostKing)")
-            debug(c, "GhostKing", True)
-            time.sleep(3.0)
-            # 25 jackpot announce (JackpotOther: not wired yet)
-            mark(c, "Announce Jackpot:8 (JackpotOther)")
-            debug(c, "Announce", "Jackpot:8")
-            time.sleep(3.0)
-            save(c, "07_events")
+            s = lua(c, STATE, "Server")
+            note("after claim: " + s)
+            save(c, "04_claim")
+            if MODE == "phone":
+                # the phone run: HitSoft again on the phone screen, then Level 5 + the skill
+                mark(c, "Level 5 (debug sets the stat: no LevelUp Fx; SkillLearn at the learn moment)")
+                debug(c, "Level", 5)
+                time.sleep(4)
+                # the server's movement check refuses a cast right after a jump in position: stand still 2 s first
+                note("near: " + lua(c, NEAR_MONSTER % ("Slime", "nil", "5"), "Client"))
+                time.sleep(2.0)
+                mark(c, "skill Q after standing still (SkillCast + SkillHalo + hit)")
+                note(lua(c, DISPATCH % "Q", "Client"))
+                time.sleep(4.0)  # basic skill cooldown 3 s -> SkillReady
+                mark(c, "after the cooldown (SkillReady expected at ~3 s)")
+                hunt(c, "phone: slimes again + Q (HitSoft on phone)", None, 0, 20, "Slime", skill_every=6)
+                save(c, "05_phone_hunt")
+            else:
+                # 13 Level 5 -> LevelUp + SkillLearn
+                mark(c, "Level 5 (LevelUp then SkillLearn ~1.1 s)")
+                debug(c, "Level", 5)
+                time.sleep(4)
+                # 14 skill Q, ready, MP short (Deny)
+                lua(c, NEAR_MONSTER % ("Slime", "nil", "4"), "Client")
+                mark(c, "skill Q (SkillCast + SkillHalo + hit)")
+                note(lua(c, DISPATCH % "Q", "Client"))
+                time.sleep(4.0)  # basic skill cooldown 3 s -> SkillReady
+                mark(c, "Mana 0 + Q (Deny)")
+                debug(c, "Mana", 0)
+                time.sleep(0.5)
+                note(lua(c, DISPATCH % "Q", "Client"))
+                time.sleep(1.5)
+                # 12 potions: buy (Spend) at the merchant, drink MP (Potion)
+                mark(c, "potion merchant: BuyPotion MP x1 (Spend)")
+                debug(c, "Gold", 500)
+                note(lua(c, GOTO % MERCHANT, "Client"))
+                time.sleep(1.0)
+                note(lua(c, FIRE % ("BuyPotion", '"MP", 1', "BuyPotion"), "Client"))
+                time.sleep(1.5)
+                mark(c, "drink MP potion (Potion)")
+                note(lua(c, FIRE % ("UsePotion", '"MP"', "UsePotion"), "Client"))
+                time.sleep(1.5)
+                # 15 auto on / off
+                debug(c, "AutoCombatUnlocked", True)
+                time.sleep(0.5)
+                mark(c, "auto on (AutoOn)")
+                note(lua(c, DISPATCH % "R", "Client"))
+                time.sleep(1.5)
+                mark(c, "auto off (AutoOff)")
+                note(lua(c, DISPATCH % "R", "Client"))
+                time.sleep(1.5)
+                # 16 faction points: Honor up (Purify), down (RankDown)
+                mark(c, "Honor +40 (Purify; RankUp if a new title)")
+                honor = attr(lua(c, STATE, "Server"), "Honor")
+                base = int(honor) if honor and honor.isdigit() else 0
+                debug(c, "Honor", base + 40)
+                time.sleep(2.0)
+                mark(c, "Honor -10 (RankDown)")
+                debug(c, "Honor", base + 30)
+                time.sleep(2.0)
+                # 18 scroll: Item Enh70 + use on the tier-1 weapon (ScrollSuccess / ScrollFail)
+                debug(c, "Item", "Enh70:2")
+                time.sleep(0.5)
+                mark(c, "UseItem Enh70 on tier 1 (ScrollSuccess / ScrollFail)")
+                note(lua(c, FIRE % ("UseItem", '"Enh70", 1', "UseItem"), "Client"))
+                time.sleep(2.5)
+                note(lua(c, FIRE % ("UseItem", '"Enh70", 1', "UseItem"), "Client"))
+                time.sleep(2.0)
+                save(c, "05_scroll")
+                # 19 the goose: arrive / honk / (end unwired)
+                mark(c, "Goose (GooseArrive + duck)")
+                debug(c, "Goose", True)
+                time.sleep(3.0)
+                note(lua(c, GOTO % GOOSE_POS, "Client"))
+                time.sleep(0.8)
+                mark(c, "hit the goose (GooseHonk)")
+                for _ in range(4):
+                    lua(c, GOOSE_FACE, "Client")
+                    lua(c, DISPATCH % "F", "Client")
+                    time.sleep(0.6)
+                save(c, "06_goose")
+                # 20 kings appear
+                mark(c, "PumpkinKing appears (PumpkinKing + duck)")
+                debug(c, "PumpkinKing", True)
+                time.sleep(3.0)
+                mark(c, "GhostKing appears (GhostKing)")
+                debug(c, "GhostKing", True)
+                time.sleep(3.0)
+                # 25 jackpot announce (JackpotOther: not wired yet)
+                mark(c, "Announce Jackpot:8 (JackpotOther)")
+                debug(c, "Announce", "Jackpot:8")
+                time.sleep(3.0)
+                save(c, "07_events")
         mark(c, "end")
         time.sleep(0.5)
         # collect everything
