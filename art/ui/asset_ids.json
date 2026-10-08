@@ -556,5 +556,9 @@
   "BarkBubbleSkeletonKnight": "rbxassetid://134713081207957",
   "BarkBubbleGhostMinion": "rbxassetid://121325988367395",
   "BarkBubbleLittleGhost": "rbxassetid://106182896723807",
-  "BarkBubbleGhostKing": "rbxassetid://120140777254240"
+  "BarkBubbleGhostKing": "rbxassetid://120140777254240",
+  "Tex_Grass_FF3": "rbxassetid://116841810719907",
+  "Tex_MeadowFlowers_FF3": "rbxassetid://112552326538919",
+  "Tex_GrassShade_FF3": "rbxassetid://100025729953105",
+  "Tex_MeadowDirt_FF3code": "rbxassetid://111724093383818"
 }

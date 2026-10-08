@@ -17,7 +17,15 @@ if not okConfig or type(Config) ~= "table" then error("Config를 읽지 못했�
 -- dark tints would darken it twice) and StudsPerTile is the size checked in docs/design/world_blend_2026-10-06.md.
 local PAINTED = Color3.fromRGB(235, 235, 235)
 local definitions = {
+	-- meadow terrain v3 (2026-10-08, 검수): Grass = Tex_Grass_FF3, Organic at 22 studs; the flowers / shade / dirt tiles
+	-- on Salt / Sandstone / Pavement (no part uses them in the main save) for 검수's meadow terrain painting
 	{ Key = "Tex_Grass", Name = "GE_Grass", Material = Enum.Material.Grass, Override = true, Fresh = true,
+		StudsPerTile = 22, Pattern = Enum.MaterialPattern.Organic, TerrainColor = PAINTED },
+	{ Key = "Tex_MeadowFlowers", Name = "GE_MeadowFlowers", Material = Enum.Material.Salt, Override = true, Fresh = true,
+		StudsPerTile = 22, Pattern = Enum.MaterialPattern.Organic, TerrainColor = PAINTED },
+	{ Key = "Tex_MeadowShade", Name = "GE_MeadowShade", Material = Enum.Material.Sandstone, Override = true, Fresh = true,
+		StudsPerTile = 22, Pattern = Enum.MaterialPattern.Organic, TerrainColor = PAINTED },
+	{ Key = "Tex_MeadowDirt", Name = "GE_MeadowDirt", Material = Enum.Material.Pavement, Override = true, Fresh = true,
 		StudsPerTile = 16, TerrainColor = PAINTED },
 	{ Key = "Tex_LeafyGrass", Name = "GE_LeafyGrass", Material = Enum.Material.LeafyGrass, Override = true, Fresh = true,
 		StudsPerTile = 16, TerrainColor = PAINTED },
