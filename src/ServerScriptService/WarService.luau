@@ -42,9 +42,9 @@ local SUNRAYS_FIXED = { Spread = 0.4, Intensity = 0, Enabled = false }
 -- for everything it carries: FogStart / ExposureCompensation / BloomIntensity are read from the preset first).
 -- Exposures = the client ZoneLook base light (SKY table there) so a war-sky change never flickers between the two.
 local SKY_EXTRAS = {
-	Neutral = { Exposure = -0.2, Bloom = 0.2, SunRays = 0, Clouds = Color3.fromRGB(255, 255, 255) },
-	Dawn = { Exposure = -0.15, Bloom = 0.6, SunRays = 0, Clouds = Color3.fromRGB(255, 225, 190) },
-	Eclipse = { Exposure = 0.45, Bloom = 0.5, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
+	Neutral = { Exposure = -0.25, Bloom = 0.2, SunRays = 0, Clouds = Color3.fromRGB(255, 255, 255) },
+	Dawn = { Exposure = -0.35, Bloom = 0.6, SunRays = 0, Clouds = Color3.fromRGB(255, 225, 190) },
+	Eclipse = { Exposure = 0.35, Bloom = 0.5, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
 }
 
 local S = nil
@@ -147,7 +147,15 @@ local function bootstrapLighting()
 	end)
 	setProps(Lighting, LIGHTING_FIXED)
 	setProps(ensureTint(), TINT_FIXED)
-	setProps(findOrCreate(Lighting, "Sky"), SKY_FIXED)
+	local sky = findOrCreate(Lighting, "Sky")
+	setProps(sky, SKY_FIXED)
+	-- the painted day sky's six faces (Config.Sky.Faces, 이미지 생성 1); a face left empty keeps what the place has. Only
+	-- here: the war skies (applySky) change light, fog and tint, never these faces
+	local faces = type(Config.Sky.Faces) == "table" and Config.Sky.Faces or {}
+	for _, side in { "Ft", "Bk", "Lf", "Rt", "Up", "Dn" } do
+		local id = faces[side]
+		if type(id) == "string" and id ~= "" then setProps(sky, { ["Skybox" .. side] = id }) end
+	end
 	setProps(findOrCreate(Lighting, "BloomEffect"), BLOOM_FIXED)
 	setProps(findOrCreate(Lighting, "SunRaysEffect"), SUNRAYS_FIXED)
 	if Lighting:FindFirstChildOfClass("Atmosphere") then

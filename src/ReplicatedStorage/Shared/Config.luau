@@ -181,8 +181,10 @@ Config.Data = {
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
+		-- Cam (A23-65): user 10/08 "카메라 뒤 따라가게 하는 거 없는 게 나을까? 좀 어색한데?" -> the default is Free (Roblox's own
+		-- camera); Follow stays in Settings for whoever wants it (only test accounts had saves: no migration)
 		Settings = { V = 2, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Follow" },
+			Cam = "Free" },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -1260,16 +1262,22 @@ Config.War = {
 -- colour). WarService pairs it with sharper shadows (ShadowSoftness 0.15), less sky diffuse, contrast +0.12 and a
 -- touch less saturation. Still no Atmosphere (A9-3): it would replace FogColor / FogStart / FogEnd and break the war
 -- skies' fog and ZoneLook's zone fog; the closer classic fog does the far haze.
+-- user 10/08 (the cloud main's Play) "조명이 전체적으로 밝아" -> one step darker: Neutral exposure -0.05 -> -0.25, Brightness
+-- 2.2 -> 2.0, OutdoorAmbient 110,120,135 -> 95,104,118 (shadows and Contrast 0.12 kept). The crown-war skies take the same
+-- step (Dawn: -0.2 exposure, Brightness -0.2, OutdoorAmbient x0.87; the Eclipse night only half of it so monsters stay
+-- visible); their exposures are now in the presets (WarService / ZoneLook read the preset first). The Halloween fields'
+-- moods are ZoneLook factors on this base, so they follow by themselves.
 Config.Sky = {
 	TweenTime = 3,
-	Neutral = { ClockTime = 15.3, Brightness = 2.2, Ambient = Color3.fromRGB(72, 76, 86), OutdoorAmbient = Color3.fromRGB(110, 120, 135), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 150, FogEnd = 950, ExposureCompensation = -0.05, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
-	Dawn = { ClockTime = 7.2, Brightness = 2.1, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(150, 130, 104), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 240, 200) },
-	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(115, 76, 92), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 200, 200) },
+	Neutral = { ClockTime = 15.3, Brightness = 2, Ambient = Color3.fromRGB(72, 76, 86), OutdoorAmbient = Color3.fromRGB(95, 104, 118), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 150, FogEnd = 950, ExposureCompensation = -0.25, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
+	Dawn = { ClockTime = 7.2, Brightness = 1.9, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(130, 113, 90), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, ExposureCompensation = -0.35, Tint = Color3.fromRGB(255, 240, 200) },
+	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(104, 68, 83), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, ExposureCompensation = 0.35, Tint = Color3.fromRGB(255, 200, 200) },
 }
 -- 2026-10-08 (이미지 생성 1 a333f3f, 검수 OK): the painted day sky's six faces for Lighting.Sky (SkyboxFt / Bk / Lf / Rt /
 -- Up / Dn; seen from above Ft 0, Rt 90, Bk 180, Lf 270 degrees clockwise; Up has Ft at its bottom - turn Up by 90 if its
 -- seam is off, swap Lf / Rt if the sides run backwards; Dn = FogColor 150, 205, 228). No rays; the sun stays Sky_Sun.
--- 메인 반영 sets them on Lighting.Sky
+-- WarService puts them on Lighting.Sky at Start (an empty / missing face keeps what the place has); the war skies never
+-- touch the faces
 Config.Sky.Faces = {
 	Ft = "rbxassetid://86737469798577", Bk = "rbxassetid://106230772458054", Lf = "rbxassetid://113124022425103",
 	Rt = "rbxassetid://80981399991828", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
@@ -3546,7 +3554,7 @@ Config.Settings = {
 		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
-		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: the camera turns behind me while I walk
+		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: Follow = the camera turns behind me while I walk (default Free, user 10/08)
 	},
 	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {

@@ -90,6 +90,12 @@ sync 뒤 내 시험 Play(fresh 저장), PC·폰 사진. 서버 신호는 Server 
 - sync 뒤 내 시험 Play PC·폰: 빛 진영 전사로 초원 언덕에서 슬라임을 10번쯤 때리기 → 공격자 발밑에 노란 원판이 더는 안 생김(베기 자국·맞은 불꽃·숫자는 그대로). 마법사·주먹(펫 박치기)은 맞은 몬스터 밑에 작고 옅은 표시만 0.2초. 다른 플레이어의 기본 공격엔 원 없음. 스킬(Z) 범위 원은 그대로. 사진: 언덕 위 전사 공격 직후 1장, 마법사 1장.
 - 시험: tools/test_hit_ring.py(10·변이 7/7).
 
+## 6번째 묶음 (조명 한 단계 어둡게 + 카메라 기본 Free + 하늘 6면 코드로, 사용자 10/08)
+- sync 뒤 Play PC·폰: 3번째 묶음과 같은 자리·각도 전후 사진(초원 언덕·길·폭포, 교차로 분수). 확인 = 전체가 한 단계 어두움(노출 -0.25, 해 밝기 2.0, 그늘 95,104,118), 그림자·대비 그대로. 왕관 전쟁 새벽(Dawn)·일식(Eclipse) 하늘도 같은 단계(일식은 반만: 밤에도 몬스터 보임).
+- 하늘 6면: WarService가 Start에 Config.Sky.Faces를 Lighting.Sky에 넣음(빈 칸은 그대로) → Edit에서 손으로 넣은 값과 같으면 정상. 왕관 전쟁 하늘 바뀔 때 면은 안 바뀜.
+- 카메라: 새 저장(fresh)은 Free(로블록스 기본). **이미 저장된 계정은 저장된 값 그대로(Follow였으면 Follow)** — 검수 결정대로 옮기기 없음, 설정 Camera에서 Free로.
+- 시험: lighting_depth 변이 18/18, camera_input 69/69(설정 없음 = Free 검사 추가), keys_settings 60/60, map_v2·zone_look·notify_sound·return 통과.
+
 ## 하지 않을 것
 - tools/worldkit/meadow_terrain.luau, meadow_dress.luau = 검수 도구(검수가 올림).
 - 전사 도발(X, Lv25, 베타 동안 꺼짐)·두 플레이어 붙어 서기 = Play에서 안 봄(오프라인 시험 monster_spacing 몫, 검수 OK).

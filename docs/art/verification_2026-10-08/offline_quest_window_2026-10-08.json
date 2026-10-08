@@ -339,7 +339,7 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "3798fecd2d17676833f48812b5d9f47c225ca9b4a5454a93946dcc358fc11e2c",
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
+    "src/ReplicatedStorage/Shared/Config.luau": "32a004c288ad7861b92816e284d070d051ca3c46fb17b3af0c1b25602dfdb198",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
   },

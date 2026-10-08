@@ -2942,7 +2942,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
+    "src/ReplicatedStorage/Shared/Config.luau": "32a004c288ad7861b92816e284d070d051ca3c46fb17b3af0c1b25602dfdb198",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "a5f641ff6b031f6cdcd8a809d61fbb1efd3d5549c80fc4eba6b630556b03793e",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
@@ -2959,7 +2959,7 @@
     "src/ServerScriptService/StoryQuestService.luau": "be8f4d4b8c6c0145f9d51e3e7251f87fe35e5f74607cd04a5949dadf2cd6b52d",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1"
   },
-  "fixtureSHA256": "1f628f07be96774ba66b240483f5377fac3166464a1560e08232756adabe8ce6",
+  "fixtureSHA256": "4a1cc4331e94e5f3c5f0453feb7a5f1ae27894f9f3d24536fc20ebc8b156892e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

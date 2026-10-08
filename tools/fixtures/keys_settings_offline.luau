@@ -286,7 +286,7 @@ end
 local NOT_ALLOWED = { "Home", "End", "Insert", "Delete", "RightControl", "RightAlt", "LeftSuper", "F13", "Keypad1", "Backspace",
 	"NumLock", "ButtonR2", "Unknown", "f", "", " F" }
 local SETTINGS_DEFAULTS = { V = 2, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-	Cam = "Follow" } -- Cam: A23-65
+	Cam = "Free" } -- Cam: A23-65 (default Free, user 10/08)
 local SETTINGS_DEFS = {
 	Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 	Shake = { Type = "Bool" },
@@ -993,7 +993,7 @@ runGroup("dataservice-settings", function()
 	check(d1 ~= nil and d1.Version == 3, "Version stays 3", d1 and d1.Version)
 	local d2 = f:Load(502)
 	check(d2 ~= nil and deepEq(d2.Settings, { V = 2, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near",
-		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Follow" }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
+		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Free" }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
 	local d3 = f:Load(503)
 	check(d3 ~= nil and deepEq(d3.Settings, SETTINGS_DEFAULTS), "Settings = a string -> the defaults", d3 and show(d3.Settings))
 	local d4 = f:Load(504)
@@ -1095,7 +1095,7 @@ runGroup("service-remote", function()
 	s:Call(p, { Seq = 30, Keys = { Attack = "Escape", Map = "X", Menu = "X", Foo = "Y", Bag = string.rep("A", 1000) }, Sfx = 5,
 		Shake = "yes", DmgNum = "Near", Tags = "Near", Lang = string.rep("한", 1000), Foo = 1 })
 	local want = { V = 2, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = false,
-		Lang = "Auto", BagSort = "Default", Cam = "Follow" }
+		Lang = "Auto", BagSort = "Default", Cam = "Free" }
 	e = s.Sent[#s.Sent]
 	check(deepEq(s.Data[p].Settings, want), "BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
 		show(s.Data[p].Settings))
