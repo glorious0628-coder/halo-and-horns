@@ -2784,7 +2784,7 @@
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "a960d549e93568363ca5232c8fa6449ef807eff79927d05325328398550f30d2",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "f808e92e6373c1b4545b019291af1d436a08b73bd61d1f1a2f7b335acd08f39f",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641",
     "src/ServerScriptService/Main.server.luau": "342c089700786fca4496c545090e21fde30bd52b3b30095436532fbf00784def",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "73d39a075505b7c5224d3533f55b6342772b9ad2d2ad4eec753d81586ad40abd",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "6ba2f0c2cb6317475f5a28084900442c2a5ef25336a5aa1bcfc1f44d0f6353a6",

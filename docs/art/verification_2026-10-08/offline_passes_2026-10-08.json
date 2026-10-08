@@ -90,9 +90,9 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/Passes.luau": "7e25a4c57113bfdeb16ce60169bacc25d6f168ce840d9b7132576e41557076db",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "f808e92e6373c1b4545b019291af1d436a08b73bd61d1f1a2f7b335acd08f39f"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
   },
-  "fixtureSHA256": "594036a5821381acab421c5666c772923c68860c720c6be78128a512b7e57e4c",
+  "fixtureSHA256": "25a07e238fa439fd3b63558cee1441407fe24bf18408ae10311898b8d7202529",
   "studioCalls": 0,
   "limitations": "Doubles instead of MarketplaceService: a real purchase (and the server turning the flag on) is a live check with Robux test purchases after the pass ids exist (launch_ops_checklist)."
 }

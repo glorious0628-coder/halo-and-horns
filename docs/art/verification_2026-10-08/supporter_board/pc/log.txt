@@ -1,0 +1,53 @@
+[   0.7] device before Play: default
+[   3.3] saved 00_edit_front
+[   5.4] saved 00_edit_plaza
+[   5.4] fresh on
+[  15.7] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=2,4,-29 anvilDist=82.7
+[  39.8] fired ChooseFaction
+[  40.0] fired ChooseClass
+[  43.1] closed
+[  43.2] board: [{"Canvas": [460.8000183105469, 259.40875244140625], "Sizing": "PixelsPerStud", "Face": "Front", "Buttons": 0, "Fits": true, "Text": "Thank you for playing!", "Title": "Thank you, supporters!", "PPS": 40, "Gui": true, "Look": [-0.707079291343689, 0.7071342468261719], "Size": [11.520000457763672, 6.4852190017700195], "Pos": [35.64666748046875, 7.411676406860352, -35.64666748046875]}]
+[  43.3] SupporterNames = nil
+[  44.3] board: [{"Canvas": [460.8000183105469, 259.40875244140625], "Sizing": "PixelsPerStud", "Face": "Front", "Buttons": 0, "Fits": true, "Text": "Thank you for playing!", "Title": "Thank you, supporters!", "PPS": 40, "Gui": true, "Look": [-0.707079291343689, 0.7071342468261719], "Size": [11.520000457763672, 6.4852190017700195], "Pos": [35.64666748046875, 7.411676406860352, -35.64666748046875]}]
+[  44.4] stand y=3.0 on Terrain
+[  47.2] saved docs\art\verification_2026-10-08\supporter_board\pc\01_board_empty.png (white 0%)
+[  47.3] SupporterNames = LunaStar
+Mika_99
+BraveToast
+Kai
+PixelPanda
+SunnyDays
+Rowan
+[  48.4] board: [{"Canvas": [460.8000183105469, 259.40875244140625], "Sizing": "PixelsPerStud", "Face": "Front", "Buttons": 0, "Fits": true, "Text": "LunaStar    Mika_99    BraveToast\nKai    PixelPanda    SunnyDays\nRowan", "Title": "Thank you, supporters!", "PPS": 40, "Gui": true, "Look": [-0.707079291343689, 0.7071342468261719], "Size": [11.520000457763672, 6.4852190017700195], "Pos": [35.64666748046875, 7.411676406860352, -35.64666748046875]}]
+[  50.3] saved docs\art\verification_2026-10-08\supporter_board\pc\02_board_seven.png (white 0%)
+[  50.4] SupporterNames = LunaStar
+Mika_99
+BraveToast
+Kai
+PixelPanda
+SunnyDays
+Rowan
+C
+[  51.5] board: [{"Canvas": [460.8000183105469, 259.40875244140625], "Sizing": "PixelsPerStud", "Face": "Front", "Buttons": 0, "Fits": true, "Text": "LunaStar    Mika_99    BraveToast\nKai    PixelPanda    SunnyDays\nRowan    CaptainNoodle    Hana\nZoeTheBrave    Milo    StarlightSam\nIvy_2014    Jun    TacoKnight\nPip    AuroraWings    Bo\nMossyMushroom    Nia    Dash\nThisNameIsWayTooLong…    Kiko    Ollie\nRubyRaccoon    Tess    Gale\nYuna    Finn    Lark", "Title": "Thank you, supporters!", "PPS": 40, "Gui": true, "Look": [-0.707079291343689, 0.7071342468261719], "Size": [11.520000457763672, 6.48521900177
+[  53.1] saved docs\art\verification_2026-10-08\supporter_board\pc\03_board_thirty.png (white 0%)
+[  53.1] SupporterNames = LunaStar
+Mika_99
+BraveToast
+Kai
+PixelPanda
+SunnyDays
+Rowan
+[  54.2] stand y=8.0 on Town_Halo_Fountain
+[  57.2] saved docs\art\verification_2026-10-08\supporter_board\pc\04_from_fountain.png (white 10%)
+[  57.2] console: 
+[  57.3] SupporterNames back
+[  59.1] play stopped
+[  61.2] fresh off
+[  61.4] device: default
+[  61.4] OK   the tagged face gets SupporterGui on its Front face
+[  61.4] OK   the canvas keeps the face's shape (PixelsPerStud 40)
+[  61.4] OK   no supporters -> the plain thank-you line
+[  61.4] OK   no button on the board (no pressure)
+[  61.4] OK   seven names in rows of three
+[  61.4] OK   thirty names, the long one cut, the text fits
+[  61.4] OK   no SupporterBoard error in the console

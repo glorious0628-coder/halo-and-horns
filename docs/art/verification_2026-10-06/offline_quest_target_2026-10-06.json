@@ -157,8 +157,8 @@
   "runtimeError": null,
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "81ef391810bdefd274923836367e3cba5743222383a1b5153483939c5a895879",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "5b4360cba90035ef2bfb6e59549fa96bee1566b52b4065119163399671ff932b",
-    "tools/fixtures/quest_target_offline.luau": "1a318f617d32c7183e112b0c2575a756c126d0b7aa6591f66df8269af4c73be6"
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a3ccb455977324f2c001e87247eaaa73aaa99a6dd2e19e8117bebb63f7f2e337",
+    "tools/fixtures/quest_target_offline.luau": "b12b552550c4496bea2c0f7c997dfbbc84cb9fe9a97ff541babc716d78428cc3"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

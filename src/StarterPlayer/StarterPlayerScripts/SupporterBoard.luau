@@ -6,7 +6,8 @@
 -- a board streams in. Nothing to show = a short line inviting nobody to buy (no pressure, A23-75): "Thank you!"
 -- Presentation only; the names come from the server.
 -- Public API: SupporterBoard.Init(C), SupporterBoard.Start(), SupporterBoard.Names(raw) -> { name } (pure: cleaned,
--- at most Max), SupporterBoard.Text(names) -> the panel text (pure; the offline test drives both).
+-- at most Max), SupporterBoard.Rows(names) -> { row text } (three names a row), SupporterBoard.Text(names) -> the rows
+-- joined by line breaks (pure; the offline test drives them).
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -26,6 +27,7 @@ local T = {
 	Gui = "SupporterGui",
 	PPS = 40, -- canvas pixels per stud: the canvas keeps the face's shape (no stretched letters)
 	Inset = 0.1, -- share of the width kept free on each side (behind the board's posts; 10/08 photo)
+	MinRows = 5, -- a row is 1/max(rows, MinRows) of the names' height: a short list is not huge
 	-- game text: English only (A23-48)
 	Title = "Thank you, supporters!",
 	Empty = "Thank you for playing!",
@@ -51,16 +53,21 @@ function SupporterBoard.Names(raw)
 	return out
 end
 
--- the panel text: the names in three columns (row by row), or the plain thank-you line
-function SupporterBoard.Text(names)
-	if type(names) ~= "table" or #names == 0 then return T.Empty end
+-- the panel rows: the names three to a row, or the plain thank-you line
+function SupporterBoard.Rows(names)
+	if type(names) ~= "table" or #names == 0 then return { T.Empty } end
 	local rows = {}
 	for i = 1, #names, 3 do
 		local cols = {}
 		for j = i, math.min(i + 2, #names) do table.insert(cols, names[j]) end
 		table.insert(rows, table.concat(cols, "    "))
 	end
-	return table.concat(rows, "\n")
+	return rows
+end
+
+-- the panel text (the rows, one per line)
+function SupporterBoard.Text(names)
+	return table.concat(SupporterBoard.Rows(names), "\n")
 end
 
 local function draw(part)
@@ -91,23 +98,38 @@ local function draw(part)
 		title.TextColor3 = T.Colors.Title
 		title.Text = T.Title
 		title.Parent = panel
-		local body = Instance.new("TextLabel")
+		-- one label per row (10/08: one wrapped label broke the rows, one unwrapped label shrank its lines to dots)
+		local body = Instance.new("Frame")
 		body.Name = "Names"
 		body.AnchorPoint = Vector2.new(0.5, 0)
 		body.Size = UDim2.new(1 - 2 * T.Inset, 0, 1, -66)
 		body.Position = UDim2.new(0.5, 0, 0, 56)
 		body.BackgroundTransparency = 1
-		body.Font = Enum.Font.GothamBold
-		body.TextScaled = true
-		body.TextWrapped = false -- a row of three stays one row (wrapping broke the rows on the 10/08 photo)
-		body.TextYAlignment = Enum.TextYAlignment.Top
-		body.TextColor3 = T.Colors.Text
+		local list = Instance.new("UIListLayout")
+		list.FillDirection = Enum.FillDirection.Vertical
+		list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		list.SortOrder = Enum.SortOrder.LayoutOrder
+		list.Parent = body
 		body.Parent = panel
 		gui.Parent = part
 	end
 	local body = gui:FindFirstChild("Names", true)
-	if body then
-		body.Text = SupporterBoard.Text(SupporterBoard.Names(S.GameState and S.GameState:GetAttribute(T.Attr)))
+	if not body then return end
+	for _, ch in body:GetChildren() do
+		if string.sub(ch.Name, 1, 3) == "Row" then ch:Destroy() end
+	end
+	local rows = SupporterBoard.Rows(SupporterBoard.Names(S.GameState and S.GameState:GetAttribute(T.Attr)))
+	for i, text in rows do
+		local row = Instance.new("TextLabel")
+		row.Name = "Row" .. i
+		row.LayoutOrder = i
+		row.Size = UDim2.fromScale(1, 1 / math.max(#rows, T.MinRows))
+		row.BackgroundTransparency = 1
+		row.Font = Enum.Font.GothamBold
+		row.TextScaled = true
+		row.TextColor3 = T.Colors.Text
+		row.Text = text
+		row.Parent = body
 	end
 end
 
