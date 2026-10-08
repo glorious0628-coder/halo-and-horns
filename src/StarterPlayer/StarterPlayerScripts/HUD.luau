@@ -440,8 +440,9 @@ end
 
 -- Keep approved HUD art and the active UIKit font family. Caps are physical pixels, so a large GUI scale
 -- cannot turn small HUD captions into oversized letters. Table members avoid adding chunk locals (200 limit).
--- minPixels: the smallest real px the fit may pick (default 11)
-function L.FitText(label, pixels, bold, minPixels)
+-- minPixels: the smallest real px the fit may pick (default 11). keepPx: the floor and ceiling stay real px on small PC
+-- windows too (2026-10-08, main Studio 991x451 at UIScale 0.5: the HP / MP numbers shrank to ~6 px)
+function L.FitText(label, pixels, bold, minPixels, keepPx)
 	if not label then return label end
 	ui.textFits = ui.textFits or setmetatable({}, { __mode = "k" })
 	local fit = ui.textFits[label]
@@ -452,9 +453,9 @@ function L.FitText(label, pixels, bold, minPixels)
 			if not label.Parent then return end
 			local s = currentScale()
 			-- small PC windows: the real-px floor and ceiling shrink with the scale (UIKit.PxFloor, review 2026-10-07)
-			local pf = type(UIKit.PxFloor) == "function" and UIKit.PxFloor() or 1
+			local pf = (not fit.KeepPx and type(UIKit.PxFloor) == "function") and UIKit.PxFloor() or 1
 			local mp = (fit.MinPixels or 11) * pf
-			local minSize = math.max(1, math.min(mp, math.floor(mp / s)))
+			local minSize = fit.KeepPx and math.max(1, math.ceil(mp / s)) or math.max(1, math.min(mp, math.floor(mp / s)))
 			local maxSize = math.max(minSize, math.floor(fit.Pixels * pf / s))
 			if fit.Min == minSize and fit.Max == maxSize then return end
 			fit.Min, fit.Max = minSize, maxSize
@@ -477,6 +478,7 @@ function L.FitText(label, pixels, bold, minPixels)
 	end
 	fit.Pixels = pixels or 12
 	fit.MinPixels = minPixels
+	fit.KeepPx = keepPx == true
 	UIKit.ApplyFont(label, bold and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
 	label.TextWrapped = false
 	label.TextStrokeTransparency = 1
@@ -1922,12 +1924,13 @@ local function tileButton(def, onClick)
 	-- 내 캐릭터 follows CharacterGender (IconCharacterF) through UIKit.CharacterIcon
 	local img = (def.Id == "Character" and type(UIKit.CharacterIcon) == "function") and UIKit.CharacterIcon(iconProps)
 		or UIKit.ArtImage(def.Icon, iconProps)
-	-- A23-48: English names ('Settings', 'Ranking') may reach a little past the tile's rim and shrink to 10 px (검수)
+	-- A23-48: English names ('Settings', 'Ranking') may reach a little past the tile's rim and shrink to 10 px (검수); at most
+	-- the gap's width past it (2026-10-08: at 1.16 a long name ran under the next tile, "Map?ankin(")
 	local label = artLabel(false, {
 		Name = "Label",
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -2),
-		Size = UDim2.new(1.16, 0, 0.3, 0),
+		Size = UDim2.new(1.08, 0, 0.3, 0),
 		TextScaled = true,
 		MaxTextSize = 14,
 		Title = true,
@@ -4439,11 +4442,16 @@ function L.LayoutTiles(tr)
 	local size, gap = tr.Size or tr.H, tr.Gap or 4
 	local total = n * size + (n - 1) * gap
 	local x0 = IS_TOUCH and (tr.X + tr.W - total) or (tr.X + (tr.W - total) / 2)
+	-- small PC windows (main Studio 2026-10-08: 991x451 -> UIScale 0.5, 33 px tiles): a name no longer fits under its icon
+	-- and ran under the next tile ("Map?ankin("); below L.TileLabelMinPx real px the tiles show their icons only
+	local named = size * currentScale() >= L.TileLabelMinPx
 	for i, t in shown do
 		t.Button.Size = UDim2.fromOffset(size, size)
 		t.Button.Position = UDim2.fromOffset(x0 + (i - 1) * (size + gap) + size / 2, tr.Y + size / 2)
+		if t.Label and t.Label.Visible ~= named then t.Label.Visible = named end
 	end
 end
+L.TileLabelMinPx = 36
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
 applyLayout = function()

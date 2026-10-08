@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 12220,
+  "checks": 12248,
   "failedChecks": 0,
-  "namedChecks": 11310,
+  "namedChecks": 11338,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
@@ -13,6 +13,13 @@
       "reason": "A narrow desktop window (700x720 px, UIScale 0.8): the bottom block (face, bars, six tiles and the potion pair, 634du) does not fit between the left margin and the corner cluster (571du), so its right end comes in: the potion pair keeps its size at the right end and the row keeps 5 tiles; the sixth folds out of [메뉴].",
       "measuredDu": 5,
       "neededDu": 6
+    },
+    {
+      "screen": "pc_573x354_small",
+      "check": "PC quest lines at least 250 px wide",
+      "reason": "A 573x354 desktop window (UIScale 0.5): the combo line sits level with the quest lines 236 px from their left edge, so they widen only to a GAP before it (236 px instead of 250).",
+      "measuredDu": 236.25,
+      "neededDu": 250
     },
     {
       "screen": "phone_568x320",
@@ -709,9 +716,9 @@
     "DesktopScaleMax": 1.0
   },
   "mutations": {
-    "total": 54,
-    "applied": 54,
-    "caught": 54,
+    "total": 57,
+    "applied": 57,
+    "caught": 57,
     "results": [
       {
         "mutation": "PC potions back in the corner cluster",
@@ -769,19 +776,54 @@
         "newFailingCount": 39
       },
       {
+        "mutation": "PC quest lines keep the sheet width on small windows",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_573x354_small :: PC quest lines fill the room before their neighbour",
+          "pc_655x340_small :: PC quest lines at least 250 px wide",
+          "pc_700x450_small :: PC quest lines at least 250 px wide"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "PC quest lines widen into their neighbours",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_573x354_small :: exception still needed: PC quest lines at least 250 px wide",
+          "pc_573x354_small :: no overlap quest/combo"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PC bars keep the sheet height on small windows",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_573x354_small :: PC HP / MP bars at least 14 px tall",
+          "pc_655x340_small :: PC HP / MP bars at least 14 px tall",
+          "pc_700x450_small :: PC HP / MP bars at least 14 px tall"
+        ],
+        "newFailingCount": 3
+      },
+      {
         "mutation": "short desktop windows go to the phone sheet",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_573x354_small :: PC HP / MP bars at least 14 px tall",
           "pc_573x354_small :: PC bars end with the potion pair",
           "pc_573x354_small :: PC potions follow the icon row",
           "pc_573x354_small :: PC potions side by side",
-          "pc_573x354_small :: at least 6 tiles on every PC",
-          "pc_573x354_small :: attack in corner",
-          "pc_573x354_small :: face group centred or stepped aside"
+          "pc_573x354_small :: PC quest lines fill the room before their neighbour",
+          "pc_573x354_small :: at least 6 tiles on every PC"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 25
       },
       {
         "mutation": "touch targets may shrink to 30",
@@ -893,13 +935,13 @@
         "crashed": false,
         "newFailingChecks": [
           "pc_1024x600 :: top rows hug the top bar",
+          "pc_573x354_small :: exception still needed: PC quest lines at least 250 px wide",
           "pc_573x354_small :: no overlap minimap/quest",
           "pc_573x354_small :: quest under the minimap",
           "pc_573x354_small :: top rows hug the top bar",
-          "pc_655x340_small :: no overlap minimap/quest",
-          "pc_655x340_small :: quest under the minimap"
+          "pc_655x340_small :: no overlap minimap/quest"
         ],
-        "newFailingCount": 24
+        "newFailingCount": 25
       },
       {
         "mutation": "phone group wider than the room right of 0.4 W",
@@ -1024,11 +1066,11 @@
           "pc_1024x768 :: face group centred or stepped aside",
           "pc_1024x768 :: press gap potion_mp/ghost",
           "pc_1280x720_unibar_wide :: in the top bar war_meter",
+          "pc_573x354_small :: PC quest lines fill the room before their neighbour",
           "pc_573x354_small :: face group centred or stepped aside",
-          "pc_573x354_small :: in the top bar war_meter",
-          "pc_573x354_small :: press gap potion_mp/ghost"
+          "pc_573x354_small :: in the top bar war_meter"
         ],
-        "newFailingCount": 43
+        "newFailingCount": 44
       },
       {
         "mutation": "PC face group never steps aside",
@@ -1295,7 +1337,7 @@
           "pc_1024x768 :: menu as big as a Roblox button",
           "pc_1024x768 :: no taller than a Roblox button menu"
         ],
-        "newFailingCount": 94
+        "newFailingCount": 95
       },
       {
         "mutation": "war meter not in the top bar",
@@ -2044,8 +2086,8 @@
             "Y": 121
           },
           {
-            "Cols": 24,
-            "X": 216,
+            "Cols": 9,
+            "X": 1611,
             "Y": 214
           }
         ],
@@ -2062,10 +2104,10 @@
         "Y": 367.5
       },
       "hp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 275,
         "X": 1036.25,
-        "Y": 327.5
+        "Y": 324.5
       },
       "menu": {
         "H": 88,
@@ -2080,10 +2122,10 @@
         "Y": 126
       },
       "mp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 276.25,
         "X": 1321.25,
-        "Y": 327.5
+        "Y": 324.5
       },
       "notify": {
         "H": 57.5,
@@ -2095,7 +2137,7 @@
         "H": 62.5,
         "W": 62.5,
         "X": 963.75,
-        "Y": 312.5
+        "Y": 309.5
       },
       "potion_hp": {
         "H": 65,
@@ -2120,7 +2162,7 @@
         "H": 20,
         "W": 561.25,
         "X": 1036.25,
-        "Y": 302.5
+        "Y": 299.5
       },
       "q": {
         "H": 82.5,
@@ -2130,7 +2172,7 @@
       },
       "quest": {
         "H": 65,
-        "W": 375,
+        "W": 500,
         "X": 17.5,
         "Y": 326
       },
@@ -3088,10 +3130,10 @@
         "Y": 595.5
       },
       "hp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 275,
         "X": 289.25,
-        "Y": 555.5
+        "Y": 552.5
       },
       "menu": {
         "H": 88,
@@ -3106,10 +3148,10 @@
         "Y": 126
       },
       "mp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 276.25,
         "X": 574.25,
-        "Y": 555.5
+        "Y": 552.5
       },
       "notify": {
         "H": 57.5,
@@ -3121,7 +3163,7 @@
         "H": 62.5,
         "W": 62.5,
         "X": 216.75,
-        "Y": 540.5
+        "Y": 537.5
       },
       "potion_hp": {
         "H": 65,
@@ -3146,7 +3188,7 @@
         "H": 20,
         "W": 561.25,
         "X": 289.25,
-        "Y": 530.5
+        "Y": 527.5
       },
       "q": {
         "H": 82.5,
@@ -3156,7 +3198,7 @@
       },
       "quest": {
         "H": 65,
-        "W": 375,
+        "W": 472.5,
         "X": 17.5,
         "Y": 326
       },
@@ -3259,10 +3301,10 @@
         "Y": 567.5
       },
       "hp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 275,
         "X": 411.25,
-        "Y": 527.5
+        "Y": 524.5
       },
       "menu": {
         "H": 88,
@@ -3277,10 +3319,10 @@
         "Y": 126
       },
       "mp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 276.25,
         "X": 696.25,
-        "Y": 527.5
+        "Y": 524.5
       },
       "notify": {
         "H": 57.5,
@@ -3292,7 +3334,7 @@
         "H": 62.5,
         "W": 62.5,
         "X": 338.75,
-        "Y": 512.5
+        "Y": 509.5
       },
       "potion_hp": {
         "H": 65,
@@ -3317,7 +3359,7 @@
         "H": 20,
         "W": 561.25,
         "X": 411.25,
-        "Y": 502.5
+        "Y": 499.5
       },
       "q": {
         "H": 82.5,
@@ -3327,7 +3369,7 @@
       },
       "quest": {
         "H": 65,
-        "W": 375,
+        "W": 500,
         "X": 17.5,
         "Y": 326
       },
@@ -3430,10 +3472,10 @@
         "Y": 787.5
       },
       "hp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 275,
         "X": 456.25,
-        "Y": 747.5
+        "Y": 744.5
       },
       "menu": {
         "H": 88,
@@ -3448,10 +3490,10 @@
         "Y": 126
       },
       "mp_bar": {
-        "H": 25,
+        "H": 28,
         "W": 276.25,
         "X": 741.25,
-        "Y": 747.5
+        "Y": 744.5
       },
       "notify": {
         "H": 57.5,
@@ -3463,7 +3505,7 @@
         "H": 62.5,
         "W": 62.5,
         "X": 383.75,
-        "Y": 732.5
+        "Y": 729.5
       },
       "potion_hp": {
         "H": 65,
@@ -3488,7 +3530,7 @@
         "H": 20,
         "W": 561.25,
         "X": 456.25,
-        "Y": 722.5
+        "Y": 719.5
       },
       "q": {
         "H": 82.5,
@@ -3498,7 +3540,7 @@
       },
       "quest": {
         "H": 65,
-        "W": 375,
+        "W": 500,
         "X": 17.5,
         "Y": 326
       },
@@ -5590,10 +5632,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "3417605bd7b7817094c1d23bcbb8952cbd29d2095913bd6fb5f7128667fa9690",
-    "tools/fixtures/hud_layout_offline.luau": "a9906c3afb3b1f8f385be6705a3557615a8b1359a3758bd3ea0902dafe7e24fd",
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "7b662e6ada2b82548f571912e8a48a8be1da5bda5cc2030368bcb790fbe9f31f",
+    "tools/fixtures/hud_layout_offline.luau": "a8a4a28dcf3e057cc090ab42048b9b37ee09f8c15d1f73bc5ff6282af400c415",
     "docs/design/hud_layout_B_imgdev_2026-10-06.json": "47e516357a51684e60f7b7c15329e95fa8f6e409ba29a3dbb143d6c2ce8a88f7",
-    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b"
+    "src/ReplicatedStorage/Shared/Config.luau": "3925ea92f632f5469670d6536900a380064e7f316233ddb6078a507c5db5a3d7"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

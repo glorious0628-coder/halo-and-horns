@@ -114,6 +114,10 @@ EXCEPTIONS = [
      "4-inch phone (568x320 px): the room between 0.4 W (227 px) and the thumb ring's MP "
      "potion (kept at thumb size) is 85 px, one 45 px tile with the face and bars above it; the other icon windows "
      "fold out of [메뉴]."),
+    # 2026-10-08: the quest lines' 250 px floor on small PC windows stops GAP before an item level with them
+    ("pc_573x354_small", "PC quest lines at least 250 px wide",
+     "A 573x354 desktop window (UIScale 0.5): the combo line sits level with the quest lines 236 px from their left edge, "
+     "so they widen only to a GAP before it (236 px instead of 250)."),
     ("phone_592x360_navbar", "fold holds the menu tiles in one line",
      "Android 640x360 with its 48 px navigation bar (592 px wide): the top bar holds Roblox's buttons, the war meter "
      "and [메뉴] with room for 3 fold squares beside it; the 4th wraps to the line right under the bar."),
@@ -136,6 +140,11 @@ MUTATIONS = [
     ("PC potions left behind when the block's right end comes in", "\t\t\t\tmp.X -= cut\n\t\t\t\thp.X -= cut\n", ""),
     ("PC bars keep their length when the block's right end comes in", "\t\t\t\tout.power_line.W -= cut\n", ""),
     ("potions box not published", "Cells = { HP = ph, MP = pm }", "Cells = { HP = pm, MP = ph }"),
+    # 2026-10-08 small PC windows: real-px floors for the quest lines and the HP / MP bars
+    ("PC quest lines keep the sheet width on small windows", "local qw = math.max(q.W, PC_FLOOR.QuestW / s)",
+     "local qw = q.W"),
+    ("PC quest lines widen into their neighbours", "qw = math.min(qw, o.X - GAP - q.X)", "qw = qw"),
+    ("PC bars keep the sheet height on small windows", "local d = PC_FLOOR.Bar / s - hb.H", "local d = 0"),
     ("short desktop windows go to the phone sheet", "\tlocal sheet = touch\n",
      "\tlocal sheet = touch or (env.H or 0) * (env.Scale or 1) < 500\n"),
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),

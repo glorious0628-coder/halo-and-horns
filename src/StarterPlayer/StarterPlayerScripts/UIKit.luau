@@ -219,6 +219,7 @@ local NOTIFY = {
 	-- ribbon included; UIKit.SetNotifyAvoid from Panels) - toasts then show one line, one at a time, just above the window
 	-- (else just below it; else in the column as before) and big banners come as that one line
 	Avoid = nil,
+	WrapFits = setmetatable({}, { __mode = "k" }), -- [label] = its UIKit.WrapHeight fit (toasts: fit again on Avoid)
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
 	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4,
 		ThinK = 1.6, ThinDY = 4 }, -- a target up to ThinK tag heights tall wears it beside its right end (UIKit.NewTag)
@@ -2284,8 +2285,10 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			if token ~= state.Token or not ok or not label.Parent then return end
 			local lines = math.max(1, math.floor(bounds.Y / math.max(1, label.TextSize) + 0.5))
 			local h = math.ceil(bounds.Y + lines * label.TextSize * NOTIFY.WrapSlack)
-			if maxLines then
-				h = math.min(h, math.ceil(label.TextSize * (NOTIFY.WrapLineH + NOTIFY.WrapSlack) * maxLines))
+			-- maxLines may be a function: a toast reads NOTIFY.Avoid again on every fit (one line only while a window is open)
+			local cap = type(maxLines) == "function" and maxLines() or maxLines
+			if cap then
+				h = math.min(h, math.ceil(label.TextSize * (NOTIFY.WrapLineH + NOTIFY.WrapSlack) * cap))
 			end
 			if minH then h = math.max(h, minH) end
 			local size = label.Size
@@ -2303,6 +2306,7 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			fit()
 		end
 	end)
+	NOTIFY.WrapFits[label] = fit -- UIKit.SetNotifyAvoid fits the live toasts again when a window opens / closes
 	fit()
 	return label
 end
@@ -2417,7 +2421,7 @@ function NOTIFY.BuildArtToast(text, kind, icon, color)
 	end)
 	frame.Parent = toastHolder
 	local t = { Frame = frame, Label = label, Art = art, Icon = img, Text = text, Token = 0, Dead = false, MinH = minH }
-	UIKit.WrapHeight(label, NOTIFY.Avoid and 1 or ta.Lines, minH - 2 * ta.PadY)
+	UIKit.WrapHeight(label, function() return NOTIFY.Avoid and 1 or ta.Lines end, minH - 2 * ta.PadY)
 	task.spawn(function()
 		local s = currentScale()
 		local col = toastHolder.AbsoluteSize.X / s
@@ -2534,7 +2538,7 @@ function UIKit.Toast(text, kind, duration, icon)
 			label.Text = (string.gsub(text, " · ", "\n"))
 		end
 	end
-	UIKit.WrapHeight(label, NOTIFY.Avoid and 1 or NOTIFY.ToastLines, img and TOAST_ICON or nil)
+	UIKit.WrapHeight(label, function() return NOTIFY.Avoid and 1 or NOTIFY.ToastLines end, img and TOAST_ICON or nil)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
@@ -2699,6 +2703,12 @@ function UIKit.SetNotifyAvoid(rect)
 	if (old == nil) == (new == nil) and (new == nil or (math.abs(old.X - new.X) < 1 and math.abs(old.Y - new.Y) < 1
 		and math.abs(old.W - new.W) < 1 and math.abs(old.H - new.H) < 1)) then return end
 	NOTIFY.Avoid = new
+	-- a toast made while a window was open keeps one line; when the window closes the live toasts get all their lines
+	-- back (main Studio 2026-10-08: "First mission: Free the..." stayed cut after the forge window closed)
+	for _, t in toasts do
+		local fit = not t.Dead and NOTIFY.WrapFits[t.Label]
+		if fit then fit() end
+	end
 	NOTIFY.PlaceToasts()
 	NOTIFY.TrimToasts()
 end
@@ -3104,6 +3114,15 @@ function UIKit.Init(registry)
 			Padding = UDim.new(0, NOTIFY.ToastGap), -- 6, also used by UIKit.PlaceNotify's fit count
 		}),
 	})
+	-- Studio-only check hook (UiSandbox captures, 2026-10-08): the local attribute NotifyAvoidPreview = "x,y,w,h" (MainGui
+	-- du) acts like an open window for the toasts, "" like its close (the same path as Panels' FRAME.TellNotify)
+	if game:GetService("RunService"):IsStudio() and LocalPlayer then
+		LocalPlayer:GetAttributeChangedSignal("NotifyAvoidPreview"):Connect(function()
+			local v = LocalPlayer:GetAttribute("NotifyAvoidPreview")
+			local x, y, w, h = string.match(type(v) == "string" and v or "", "^(%-?[%d%.]+),(%-?[%d%.]+),([%d%.]+),([%d%.]+)$")
+			UIKit.SetNotifyAvoid(x and { X = tonumber(x), Y = tonumber(y), W = tonumber(w), H = tonumber(h) } or nil)
+		end)
+	end
 
 	-- announce banner (30% screen height until UIKit.PlaceNotify moves it into the HUD v2 notify column)
 	announceFrame = UIKit.Create("Frame", {

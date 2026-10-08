@@ -111,6 +111,9 @@ local RING_BUTTONS = { "potion_hp", "potion_mp", "q", "z", "x" } -- the buttons 
 local BARS = { "power_line", "hp_bar", "mp_bar", "xp_bar" } -- touch: they run from the face to the tile row's right end
 local BAR_GAP = 5 -- real px between the face and the bars, and between HP and MP, on the phone sheet
 local ROW_MAX = 6 -- touch: the bottom group grows up to this many tiles wide where the room allows (the icon row's windows)
+-- small PC windows (main Studio 2026-10-08, 991x451 -> UIScale 0.5): real-px floors for the quest lines' width and the
+-- HP / MP bars' height ("Get your first wea...", bar numbers ~6 px)
+local PC_FLOOR = { QuestW = 250, Bar = 14 }
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
 -- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
 -- While open it may run over the centre column's info rows (chips / next event / notify), but never over the war meter,
@@ -209,6 +212,28 @@ function HudLayout.Compute(env)
 		out[id] = rect(X, Y, w, h)
 	end
 	local tileGap = TILE_GAP * k
+
+	-- PC floors (PC_FLOOR): the quest lines widen to the right; the HP / MP bars grow upwards with the power line and the
+	-- face, so the XP bar and the tile row keep their places
+	if not sheet then
+		-- the quest lines widen only up to a GAP before an item level with them (the combo line on short windows)
+		local q = out.quest
+		local qw = math.max(q.W, PC_FLOOR.QuestW / s)
+		for oid, o in out do
+			if oid ~= "quest" and oid ~= "minimap" and o.X > q.X and o.Y < q.Y + q.H and o.Y + o.H > q.Y then
+				qw = math.min(qw, o.X - GAP - q.X)
+			end
+		end
+		q.W = math.max(q.W, qw)
+		local hb, mb = out.hp_bar, out.mp_bar
+		local d = PC_FLOOR.Bar / s - hb.H
+		if d > 0 then
+			hb.Y, hb.H = hb.Y - d, hb.H + d
+			mb.Y, mb.H = mb.Y - d, mb.H + d
+			out.power_line.Y -= d
+			out.portrait.Y -= d
+		end
+	end
 
 	if touch then
 		-- quest lines: one MIN_TAP target (two text lines), grown downward
