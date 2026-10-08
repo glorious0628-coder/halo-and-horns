@@ -6535,5 +6535,15 @@
   "final": "art/out/hq/HQ_Town_Horns_SpikeRock.png (1024, High 5 credits)",
   "checks": "statue: full armor, smooth visor with one gold T-line, no eyes/mouth; rock: no face reading",
   "use": "Horns town Spike ring 14 spots (radius 62 around (0,410))"
+ },
+ "Town_Horns_Castle_v6mv": {
+  "status": "approved (3D) — user pick",
+  "date": "2026-10-08",
+  "approved_by": "사용자 via 검수: '섞은 판 하자' (SPEC A23-74, c605010; sheet art/review/town5/horns_castle_mix_compare.jpg)",
+  "source": "Tripo web multi-view HD (front art/out/hq/HQ_Town_Horns_Castle_v4B.png + back art/out/hq/HQ_Town_Horns_Castle_v6_back.png), task 852535df-361c-4ee2-a2c4-14a1e3d683ce, 38,432 tris",
+  "file": "art/models/tripo/web/Town_Horns_Castle_v6mv_HD_src.glb → art/models/tripo/web_fixed/Town_Horns_Castle_v6mv_tiles.glb (9 parts × 1024)",
+  "import": "build/import_all/1_first/H_HornsCastle_v6mv.glb",
+  "not_used": "①(nowin HD) and ②(v4 HD) — files kept",
+  "replaces": "Town_Horns_Castle_v4 (API, in main now)"
  }
 }
