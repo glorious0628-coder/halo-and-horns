@@ -3,6 +3,7 @@ weapon first, the Lost Lunchbox card, the first skill at Lv5, map v2).
 
   FILM_OK=1 STUDIO_NAME=FilmSet py tools/devlog_shots_s40.py [A] [C] [B]      (no letter = all, always run A -> C -> B)
   SKIP=s40_crossroads,s40_halo_town  ...                                       (leave these shots out)
+  LUNCH=Good ... A                                                            (2nd fresh Play: only [Give it back])
 
 A  the new player's first minutes in one Play (ServerStorage StudioFreshSave on = fresh in-memory data, nothing saved):
    faction pick -> the guide's mission card -> 'Off to the Forge!' -> the first weapon [Twig] + "Stronger!" -> the first
@@ -138,6 +139,11 @@ BARK = ("local m=%s; if not m then return 'no monster' end; m:SetAttribute('Bark
 MAP_OPEN = "local M = require(game.Players.LocalPlayer.PlayerScripts:WaitForChild('WorldMap')); M.Open(); return 'map open'"
 MAP_CLOSE = "local M = require(game.Players.LocalPlayer.PlayerScripts:WaitForChild('WorldMap')); M.Close(); return 'map closed'"
 SKIP = set(s for s in os.environ.get("SKIP", "").split(",") if s)
+# the Lost Lunchbox pick: Evil = [One bite!] (the first run), Good = [Give it back] (a second fresh Play that films only
+# that card: 검수 2026-10-08 "둘 다 찍기")
+LUNCH = "Good" if os.environ.get("LUNCH") == "Good" else "Evil"
+if LUNCH == "Good":
+    SKIP |= {"s40_faction_pick", "s40_guide_card", "s40_forge_trip", "s40_first_weapon", "s40_first_hunt", "s40_new_skill", "s40_world_map"}
 LOG = []
 Z = {}
 
@@ -311,8 +317,10 @@ def flow_a(f):
         else:
             print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Open"', "StoryAction"), "Client"), flush=True)
         time.sleep(3.0)
-        print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Choose", "Evil"', "StoryAction"), "Client"), flush=True)
-    rec("s40_claim_lunchbox", 14, claim)
+        print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Choose", "%s"' % LUNCH, "StoryAction"), "Client"), flush=True)
+    rec("s40_claim_lunchbox" + ("_good" if LUNCH == "Good" else ""), 14, claim)
+    if LUNCH == "Good":
+        return
     time.sleep(1.0)
 
     # Lv5: "New skill!" + the Q button pops in (A23-71)
