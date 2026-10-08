@@ -446,7 +446,7 @@ end
 -- it from the name as it renders here: Height of the line's TextBounds (Denk One: about 0.8 of the letters), the art's
 -- own width : height, Gap px before the first letter. The padding takes the crown's room, so crown + name stay one
 -- centred group, and a long name that TextScaled shrinks takes the crown down with it.
-local CROWN = { Height = 0.62, Gap = 3, Watched = setmetatable({}, { __mode = "k" }) }
+local CROWN = { Height = 0.62, Gap = 3, Sweep = 1, Watched = setmetatable({}, { __mode = "k" }) }
 
 function CROWN.Fit(label)
 	local crown, pad = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad")
@@ -457,10 +457,12 @@ function CROWN.Fit(label)
 	local cw = math.floor(ch * (tonumber(crown:GetAttribute("Aspect")) or 1.46) + 0.5)
 	local room = cw + CROWN.Gap
 	if pad.PaddingLeft.Offset ~= room then pad.PaddingLeft = UDim.new(0, room) end -- may re-scale the name: refit
-	crown.Size = UDim2.fromOffset(cw, ch)
+	local size = UDim2.fromOffset(cw, ch)
 	-- the padded box's middle is the name's middle: half the name to the left, then the gap
-	crown.Position = UDim2.new(0.5, -math.floor(tb.X / 2 + CROWN.Gap + 0.5), 0.5, -1)
-	crown.Visible = true
+	local pos = UDim2.new(0.5, -math.floor(tb.X / 2 + CROWN.Gap + 0.5), 0.5, -1)
+	if crown.Size ~= size then crown.Size = size end
+	if crown.Position ~= pos then crown.Position = pos end
+	if not crown.Visible then crown.Visible = true end
 end
 
 function CROWN.Watch(label)
@@ -471,6 +473,7 @@ function CROWN.Watch(label)
 		if not ok then Util.Warn(TAG, "crown fit failed: " .. tostring(err)) end
 	end
 	label:GetPropertyChangedSignal("TextBounds"):Connect(fit)
+	label:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit)
 	label.ChildAdded:Connect(function(child)
 		if child.Name == "VipCrown" or child.Name == "VipPad" then task.defer(fit) end
 	end)
@@ -483,6 +486,16 @@ function CROWN.Start()
 	end
 	workspace.DescendantAdded:Connect(consider)
 	for _, d in workspace:GetDescendants() do consider(d) end
+	-- UiSandbox 2026-10-08: a tag first laid out while it is not drawn (out of range, hidden) can change its TextBounds
+	-- without the signal reaching us - a slow sweep over the crowned tags fits them again (writes only on a change)
+	task.spawn(function()
+		while true do
+			task.wait(CROWN.Sweep)
+			for label in CROWN.Watched do
+				if label.Parent and label:FindFirstChild("VipCrown") then pcall(CROWN.Fit, label) end
+			end
+		end
+	end)
 end
 
 ------------------------------------------------------------------ lifecycle
