@@ -4554,7 +4554,9 @@ Config.UIArt = {
 		FxShockRing = { Id = "rbxassetid://135827777163619", Size = Vector2.new(256, 252) },
 		FxMagicBurst = { Id = "rbxassetid://92519617657939", Size = Vector2.new(256, 256) },
 		FxDust = { Id = "rbxassetid://108076168454993", Size = Vector2.new(222, 256) },
-		EmoOuch = { Id = "rbxassetid://72032537654477", Size = Vector2.new(256, 175) },
+		-- 검수 2026-10-08 (user: "아야 영어로"): 72032537654477 has a Korean "아야!" drawn in and a spiky burst rim (ray rule) -
+		-- off until 이미지 생성 2's round English bubble; empty = Fx's code "Ouch!" bubble (EMO_FALLBACK)
+		EmoOuch = { Id = "", Size = Vector2.new(256, 175) },
 		EmoTears = { Id = "rbxassetid://113193582610345", Size = Vector2.new(512, 512) },
 		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
 		EmoAngry = { Id = "rbxassetid://91062043264397", Size = Vector2.new(512, 512) },
