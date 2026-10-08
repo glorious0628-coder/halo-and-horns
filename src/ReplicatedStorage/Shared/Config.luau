@@ -4465,19 +4465,6 @@ Config.UIArt = {
 		IconRankArtisan = { Id = "rbxassetid://96372902638765", Size = Vector2.new(512, 512) },
 		IconRankPvP = { Id = "rbxassetid://118972460416266", Size = Vector2.new(512, 512) }, -- redrawn 2026-10-06 (blades cross in an X)
 		-- User-approved E sprites; shared legacy keys remain unchanged.
-		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
-		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
-		FactionCardNeutralE = { Id = "rbxassetid://78748710982730", Size = Vector2.new(380, 636) },
-		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
-		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
-		FactionPremiseFreshTyped = { Id = "rbxassetid://105024415024705", Size = Vector2.new(1024, 174) },
-		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
-		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },
-		FactionCardNeutralFreshTyped = { Id = "rbxassetid://127475794518664", Size = Vector2.new(570, 954) },
-		FactionTitleFreshTypedBalanced = { Id = "rbxassetid://81044633324158", Size = Vector2.new(1024, 210) },
-		FactionTitleFreshTyped = { Id = "rbxassetid://111239293270560", Size = Vector2.new(1024, 210) },
-		FactionFooterFreshTyped = { Id = "rbxassetid://128423642459976", Size = Vector2.new(1024, 126) },
-		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
 		-- pick screens: bundle 2 (5d16034, Firefly, wordless) text-free card backgrounds, regions in CardLayout; A23-48 the
 		-- game writes every word on them in English (the baked Korean FactionE cards are off)
 		CardHalo = { Id = "rbxassetid://116448859963324", Size = Vector2.new(622, 1024) },
@@ -4737,53 +4724,6 @@ Config.UIArt.FactionPerks = {
 
 -- E approval: 2026-10-04. Fixed Korean glyphs preserve the approved illustration.
 -- English/localized sprites are a separate release item; live fallbacks stay available.
-Config.UIArt.FactionE = {
-    -- A23-48 (English only): off. These cards carry baked Korean letters; the bundle 2 wordless cards (CardLayout)
-    -- show the game's English text instead
-    Enabled = false,
-    Locale = "ko",
-    BakedText = true,
-    BakedPerkIcons = true,
-    BakedFooterIcon = true,
-    CardAspect = 380 / 636,
-    Parts = {
-        Halo = "FactionCardHaloFreshTyped", Horns = "FactionCardHornsFreshTyped", Neutral = "FactionCardNeutralFreshTyped",
-        Title = "FactionTitleFreshTypedBalanced", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterFreshTyped",
-    },
-    ButtonRects = {
-		Halo = { 0.24793872, 0.80211072, 0.50513279, 0.07605582 },
-		Horns = { 0.20268785, 0.78690554, 0.59458409, 0.07466372 },
-		Neutral = { 0.17223303, 0.81271190, 0.65554510, 0.07833555 },
-    },
-    -- Last benefit glyph bottom + 6px in each 570x954 export; enlarged touch hitboxes stay below it.
-    ButtonHitTop = { Halo = 0.76277029, Horns = 0.75550551, Neutral = 0.77759915 },
-    MinBakedWidth = { Premise = 460 },
-    Layout = {
-        ReferenceSize = Vector2.new(1584, 1050),
-        Title = { 514/1584, 5/1050, 557/1584, 111/1050 },
-        Premise = { 240/1584, 124/1050, 1100/1584, 187/1050 },
-        Cards = { 238/1584, 318/1050, 1102/1584, 627/1050 },
-        Footer = { 326/1584, 929/1050, 929/1584, 116/1050 },
-    },
-    SemanticText = {
-        Title = "어느 편에 설래요?",
-        Premise = {
-            "세상을 지키던 균형의 왕관이 부서졌다.",
-            "조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.",
-            "조각을 더 많이 모으는 쪽이 세상을 다시 만든다.",
-        },
-        Footer = "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
-        Cards = {
-            Halo = {Name="빛의 기사단",Desc="후광을 얻은 자들.",Motto="지키고, 치유하고, 되찾아 줘라!",Button="이 편으로!",
-                Perks={"경험치 +30%","체력 +20%, 계속 회복","스킬로 동료 치유","주머니 골드 자동 저금"}},
-            Horns = {Name="뿔 군단",Desc="뿔을 얻은 자들.",Motto="털고, 버티고, 괴수가 되어라!",Button="이 편으로!",
-                Perks={"골드 +25%","공격력 +15%, 체력 흡수","약탈한 골드 지켜내기","별 5개면 괴수 변신!"}},
-            Neutral = {Name="장인 길드",Desc="조각을 다듬는 자들.",Motto="줍지 말고, 다듬고, 만들어라!",Button="이 편으로!",
-                Perks={"싸움 버프 없음","PvP 없음 (안전)","약탈·현상수배 걱정 없음","제작 특화 (곧 추가)"}},
-        },
-    },
-}
-
 -- addendum A1: optional custom visual models in ServerStorage[FolderName] named by monster id or GooseId
 Config.CustomModels = {
 	FolderName = "CustomModels",
