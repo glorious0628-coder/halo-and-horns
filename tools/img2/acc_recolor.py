@@ -28,8 +28,8 @@ THEMES = {
     # shop (A23-75, user pick 292051f)
     "HaloIce": {"kind": "Halo", "gold": ("set", 198, 0.42, 1.08), "orange": ("set", 192, 0.45, 1.05), "white": ("set", 203, 0.26, 1.0),
                 "red": ("set", 205, 0.5, 1.0), "glow": (170, 225, 255), "sparkle": (225, 245, 255)},
-    "HaloGold": {"kind": "Halo", "gold": ("set", 41, 0.9, 1.0), "orange": ("set", 36, 0.95, 1.0), "white": ("set", 45, 0.5, 1.0),
-                 "red": ("set", 0, 0.85, 1.0), "glow": (255, 200, 90), "sparkle": (255, 230, 140)},
+    "HaloGold": {"kind": "Halo", "gold": ("set", 33, 0.86, 0.93), "orange": ("set", 30, 0.88, 0.93), "white": ("set", 44, 0.55, 1.0),
+                 "red": ("set", 352, 0.85, 0.9), "emblem": ("set", 352, 0.88, 0.95), "glow": (255, 170, 110), "sparkle": (255, 120, 130)},
     "HornsLava": {"kind": "Horns", "tcurve": (0.5, 0.95), "red": ("blend", (6, 0.5, 0.17), (26, 0.98, 1.0)), "gold": ("set", 30, 1.0, 1.08),
                   "orange": ("set", 28, 1.0, 1.1), "white": ("set", 30, 0.35, 1.0), "glow": (255, 120, 40), "sparkle": (255, 190, 90)},
     "HornsShadow": {"kind": "Horns", "tcurve": (0.35, 1.0), "red": ("blend", (270, 0.6, 0.12), (283, 0.68, 0.6)), "gold": ("set", 270, 0.18, 1.0),
@@ -39,10 +39,16 @@ THEMES = {
                    "red": ("set", 100, 0.6, 1.0), "glow": (150, 235, 120), "sparkle": (210, 255, 180)},
     "HornsSprout": {"kind": "Horns", "red": ("blend", (108, 0.75, 0.42), (90, 0.6, 0.95)), "gold": ("set", 70, 0.65, 1.0),
                     "orange": ("set", 60, 0.7, 1.0), "white": ("set", 95, 0.12, 1.0), "glow": (150, 235, 120), "sparkle": (210, 255, 180)},
-    "HaloStarlight": {"kind": "Halo", "gold": ("set", 226, 0.72, 0.5), "orange": ("set", 44, 0.85, 1.0), "white": ("set", 220, 0.06, 1.0),
-                      "red": ("set", 44, 0.85, 1.0), "glow": (120, 140, 255), "sparkle": (255, 220, 120)},
-    "HornsStarlight": {"kind": "Horns", "red": ("blend", (228, 0.75, 0.2), (226, 0.62, 0.55)), "gold": ("set", 44, 0.85, 1.05),
-                       "orange": ("set", 44, 0.9, 1.05), "white": ("set", 44, 0.4, 1.0), "glow": (120, 140, 255), "sparkle": (255, 220, 120)},
+    "HaloStarlight": {"kind": "Halo", "gold": ("set", 221, 0.72, 0.88), "orange": ("set", 44, 0.85, 1.0), "white": ("set", 220, 0.05, 1.0),
+                      "red": ("set", 44, 0.85, 1.0), "emblem": ("set", 44, 0.88, 1.08), "vfloor": 0.3, "glow": (120, 150, 255), "sparkle": (255, 220, 120)},
+    "HornsStarlight": {"kind": "Horns", "red": ("blend", (222, 0.78, 0.42), (219, 0.62, 0.86)), "gold": ("set", 44, 0.85, 1.05),
+                       "orange": ("set", 44, 0.9, 1.05), "white": ("set", 44, 0.4, 1.0), "tips": ("set", 44, 0.85, 1.05),
+                       "glow": (120, 150, 255), "sparkle": (255, 220, 120)},
+    "HaloPlatinum": {"kind": "Halo", "gold": ("set", 214, 0.15, 1.1), "orange": ("set", 195, 0.4, 1.1), "white": ("set", 225, 0.04, 1.03),
+                     "red": ("set", 195, 0.4, 1.1), "emblem": ("set", 195, 0.45, 1.15), "vfloor": 0.45, "glow": (210, 235, 255), "sparkle": (255, 255, 255)},
+    "HornsPlatinum": {"kind": "Horns", "red": ("blend", (216, 0.16, 0.55), (214, 0.1, 0.98)), "gold": ("set", 222, 0.06, 1.15),
+                      "orange": ("set", 195, 0.4, 1.12), "white": ("set", 220, 0.06, 1.0), "tips": ("set", 195, 0.42, 1.18),
+                      "glow": (210, 235, 255), "sparkle": (255, 255, 255)},
 }
 
 
@@ -73,7 +79,7 @@ def to_rgb(hh, ss, vv):
     return cv2.cvtColor(x, cv2.COLOR_HSV2RGB_FULL).astype(np.float32)
 
 
-def recolor(rgb, theme, palette=False):
+def recolor(rgb, theme, palette=False, masks=None):
     th = THEMES[theme]
     h, s, v = hsv(rgb)
     w = classes(h, s, v)
@@ -109,6 +115,19 @@ def recolor(rgb, theme, palette=False):
     k = np.clip(wsum, 0, 1)
     mixed = np.where(wsum[..., None] > 1e-6, acc / np.maximum(wsum, 1e-6)[..., None], 0)
     out = rgb.astype(np.float32) * (1 - k[..., None]) + mixed * k[..., None]
+    if "vfloor" in th:  # lift dark shading of a recoloured ring (dark navy read as black at 40 px)
+        lift = th["vfloor"] * w["gold"][..., None]
+        out = out * (1 - lift) + (out * 0 + 255 * th["vfloor"] + out * (1 - th["vfloor"])) * lift
+    for key in ("emblem", "tips"):
+        rule = th.get(key)
+        if not rule or not masks or key not in masks:
+            continue
+        m = masks[key]
+        if key == "emblem":  # only the gem / emblem pixels inside the front region (not the ring around R3's gems)
+            m = m * np.maximum(w["gold"] * (1 if "R3" not in masks.get("name", "") else 0), w["white"])
+        _, H, S, Vm = rule
+        c = to_rgb(np.full_like(h, H), np.full_like(h, S), np.clip(v * Vm, 0, 1))
+        out = out * (1 - m[..., None]) + c * m[..., None]
     return np.clip(out + 0.5, 0, 255).astype(np.uint8)
 
 
@@ -128,7 +147,12 @@ def main(themes):
             src = Image.open(SRC + f"{name}_base.png").convert("RGB")
             if r >= 3:
                 src = src.resize((1024, 1024), Image.LANCZOS)
-            Image.fromarray(recolor(np.asarray(src), theme, palette=r <= 2)).save(d + f"{name}.png")
+            masks = {"name": name}
+            for mk in ("emblem", "tips"):
+                mp = SRC + f"masks/{name}_{mk}.png"
+                if r >= 3 and os.path.exists(mp):
+                    masks[mk] = np.asarray(Image.open(mp).convert("L").resize(src.size, Image.BILINEAR)).astype(np.float32) / 255
+            Image.fromarray(recolor(np.asarray(src), theme, palette=r <= 2, masks=masks)).save(d + f"{name}.png")
         meta[theme] = {"kind": th["kind"], "glow": th["glow"], "sparkle": th["sparkle"],
                        "files": [f"build/acctex/{theme}/Acc_{th['kind']}R{r}.png" for r in range(1, 6)]}
         print(theme, "ok")

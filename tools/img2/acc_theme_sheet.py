@@ -14,12 +14,19 @@ R = ROOT + "build/acctex/r/"
 META = json.load(open(ROOT + "build/acctex/themes.json"))
 F = lambda s, b=False: ImageFont.truetype("C:/Windows/Fonts/malgunbd.ttf" if b else "C:/Windows/Fonts/malgun.ttf", s)
 NAVY, BG = (24, 30, 64), (250, 245, 236)
-SECTIONS = [
+FULL = [
     ("[상점 판매] 빛 후광 — 사용자 고름: 얼음 · 황금 (모양 = 계급 R1~R5 그대로, 색만)", [("Now", "Halo", "지금 게임(비교)"), ("HaloIce", "Halo", "얼음"), ("HaloGold", "Halo", "황금")]),
     ("[상점 판매] 뿔 — 사용자 고름: 용암 · 그림자", [("Now", "Horns", "지금 게임(비교)"), ("HornsLava", "Horns", "용암"), ("HornsShadow", "Horns", "그림자")]),
-    ("[출석 전용 후보] 상점에 없는 색 — 14일 새싹 / 50·100일 별빛 (같은 방식, 색만)", [("HaloSprout", "Halo", "새싹 후광"), ("HornsSprout", "Horns", "새싹 뿔"),
-                                                                    ("HaloStarlight", "Halo", "별빛 후광"), ("HornsStarlight", "Horns", "별빛 뿔")]),
+    ("[출석 전용] 14일 새싹 · 50일 별빛 · 100일 백금 다이아 (같은 방식, 색만)", [("HaloSprout", "Halo", "14일 새싹 후광"), ("HornsSprout", "Horns", "14일 새싹 뿔"),
+                                                                    ("HaloStarlight", "Halo", "50일 별빛 후광"), ("HornsStarlight", "Horns", "50일 별빛 뿔"),
+                                                                    ("HaloPlatinum", "Halo", "100일 백금 후광"), ("HornsPlatinum", "Horns", "100일 백금 뿔")]),
 ]
+FIX = [
+    ("고친 칸 ① 황금 후광: 호박금 고리 + 무늬 루비(R3 보석·R4/R5 해 문양) + 금 날개 / ② 별빛: 밝은 코발트 + 금 무늬 / ③ 백금: 은백 + 하늘빛 다이아 무늬",
+     [("Now", "Halo", "지금 게임(비교)"), ("HaloGold", "Halo", "① 황금"), ("HaloStarlight", "Halo", "② 50일 별빛"), ("HaloPlatinum", "Halo", "③ 100일 백금")]),
+    ("뿔: ② 별빛(코발트 + 금테·금 끝) / ③ 백금(은빛 + 다이아 끝)", [("Now", "Horns", "지금 게임(비교)"), ("HornsStarlight", "Horns", "② 50일 별빛"), ("HornsPlatinum", "Horns", "③ 100일 백금")]),
+]
+SECTIONS = FIX if "--fix" in sys.argv else FULL
 V = 170          # render cell
 G1, G2 = 64, 40  # game-size previews
 CELL = 2 * V + G1 + 14
