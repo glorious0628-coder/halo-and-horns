@@ -4237,7 +4237,7 @@ Config.UIArt = {
 		Star = { Id = "rbxassetid://121090596161898", Size = Vector2.new(512, 512) }, -- white star: filled = gold 245,197,66, empty = 70,78,110
 		IconWantedStar = { Id = "rbxassetid://110523293522605", Size = Vector2.new(512, 512) }, -- Horns wanted star
 		-- emblems
-		ShieldHalo = { Id = "rbxassetid://137212311874878", Size = Vector2.new(490, 512) },
+		ShieldHalo = { Id = "rbxassetid://73353334079892", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: no rays (halo + gem)
 		ShieldHorns = { Id = "rbxassetid://134547958841068", Size = Vector2.new(497, 512) },
 		Crown = { Id = "rbxassetid://87428837580998", Size = Vector2.new(256, 175) },
 		-- icons
@@ -4435,8 +4435,8 @@ Config.UIArt = {
 		BadgeHaloR1 = { Id = "rbxassetid://127364191131841", Size = Vector2.new(512, 512) },
 		BadgeHaloR2 = { Id = "rbxassetid://137484666307607", Size = Vector2.new(512, 512) },
 		BadgeHaloR3 = { Id = "rbxassetid://129437049523618", Size = Vector2.new(512, 512) },
-		BadgeHaloR4 = { Id = "rbxassetid://124991404420192", Size = Vector2.new(512, 512) },
-		BadgeHaloR5 = { Id = "rbxassetid://94247608535976", Size = Vector2.new(512, 512) },
+		BadgeHaloR4 = { Id = "rbxassetid://118999354181738", Size = Vector2.new(512, 512) },
+		BadgeHaloR5 = { Id = "rbxassetid://74618033435632", Size = Vector2.new(512, 512) },
 		BadgeHornsR1 = { Id = "rbxassetid://99890678318399", Size = Vector2.new(512, 512) },
 		BadgeHornsR2 = { Id = "rbxassetid://136024745343474", Size = Vector2.new(512, 512) },
 		BadgeHornsR3 = { Id = "rbxassetid://89904764899716", Size = Vector2.new(512, 512) },
@@ -4465,7 +4465,7 @@ Config.UIArt = {
 		PortraitFrame = { Id = "rbxassetid://128161442754384", Size = Vector2.new(512, 498) }, -- dialogue NPC portrait frame: the portrait sits on Window (0.107, 0.116, 0.783, 0.759)
 		-- A23-46 / A23-59 town quest NPC portraits (이미지 생성 2, user OK 2026-10-06: 91cc2c9 · 309c692), transparent, no
 		-- lettering: UIKit.Portrait draws one on PortraitFrame's window (bottom-aligned, centred, rounded corners)
-		PTR_TownBright = { Id = "rbxassetid://86154525392813", Size = Vector2.new(509, 512) }, -- Halo town guard trainee
+		PTR_TownBright = { Id = "rbxassetid://121040553911308", Size = Vector2.new(512, 512) }, -- Halo town guard trainee (chest star, 2026-10-08)
 		PTR_TownSmokey = { Id = "rbxassetid://91810571998991", Size = Vector2.new(400, 512) }, -- Horns den lookout
 		PTR_TownTiny = { Id = "rbxassetid://107434856525614", Size = Vector2.new(445, 512) }, -- Crossroads artisan trainee
 		PTR_CrownShard = { Id = "rbxassetid://131966294834604", Size = Vector2.new(443, 512) }, -- the Crown Shard speaker (Speakers.Shard / Fountain; High, d9aec52)
@@ -4516,8 +4516,8 @@ Config.UIArt = {
 		-- (CardHalo / ClassCardHalo ...) meanwhile (IMG-R4). The 12 class pictures are already cut to the card's window
 		-- (eyes at 20 %, feet at 92 %): drawn exactly on ClassPick*'s Portrait region, by the player's chosen gender.
 		FactionPickTitle = { Id = "rbxassetid://109240387368574", Size = Vector2.new(1024, 373), TextRect = { 0.148, 0.41, 0.704, 0.343 } }, -- HQ redraw 4ceaabf: the band sits a little higher
-		FactionPickHalo = { Id = "rbxassetid://105227426103706", Size = Vector2.new(624, 1024) },
-		FactionPickHorns = { Id = "rbxassetid://111143659498431", Size = Vector2.new(624, 1024) },
+		FactionPickHalo = { Id = "rbxassetid://78441813872022", Size = Vector2.new(624, 1024) },
+		FactionPickHorns = { Id = "rbxassetid://92021424719072", Size = Vector2.new(624, 1024) },
 		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
 		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
 		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://113804016014809", Size = Vector2.new(460, 550) },
@@ -4609,17 +4609,18 @@ Config.UIArt = {
 		IconBoot = { Id = "rbxassetid://121630849275556", Size = Vector2.new(512, 512) }, -- Firefly winged boot (bundle 5): class speed / pet speed
 		-- A15 hit/pain art; empty IDs retain the code fallback.
 		FxSlash = { Id = "rbxassetid://99494789057875", Size = Vector2.new(256, 251) },
-		FxHitSpark = { Id = "rbxassetid://76401646477744", Size = Vector2.new(254, 256) },
+		FxHitSpark = { Id = "rbxassetid://122673635344930", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: a puff + stars, no rays
 		FxShockRing = { Id = "rbxassetid://135827777163619", Size = Vector2.new(256, 252) },
-		FxMagicBurst = { Id = "rbxassetid://92519617657939", Size = Vector2.new(256, 256) },
+		FxMagicBurst = { Id = "rbxassetid://124326448818980", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: a round cloud
 		FxDust = { Id = "rbxassetid://108076168454993", Size = Vector2.new(222, 256) },
 		-- 검수 2026-10-08 (user: "아야 영어로"): 72032537654477 has a Korean "아야!" drawn in and a spiky burst rim (ray rule) -
 		-- off until 이미지 생성 2's round English bubble; empty = Fx's code "Ouch!" bubble (EMO_FALLBACK)
-		EmoOuch = { Id = "", Size = Vector2.new(256, 175) },
+		-- 2026-10-08: a blank round bubble; Fx draws "Ouch!" in TextRect (x, y, w, h of the art, 0..1)
+		EmoOuch = { Id = "rbxassetid://114387365320855", Size = Vector2.new(512, 512), TextRect = { 0.17, 0.26, 0.66, 0.42 } },
 		EmoTears = { Id = "rbxassetid://113193582610345", Size = Vector2.new(512, 512) },
 		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
-		EmoAngry = { Id = "rbxassetid://91062043264397", Size = Vector2.new(512, 512) },
-		EmoStress = { Id = "rbxassetid://108308024766302", Size = Vector2.new(512, 512) },
+		EmoAngry = { Id = "rbxassetid://79994000943963", Size = Vector2.new(512, 512) },
+		EmoStress = { Id = "rbxassetid://132610409379166", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T1 = { Id = "rbxassetid://128452607217223", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T2 = { Id = "rbxassetid://115882263046090", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T3 = { Id = "rbxassetid://99916196093265", Size = Vector2.new(512, 512) }, -- 그림체 #28: the approved b1 master (navy rim, blue grip)
@@ -4650,7 +4651,13 @@ Config.UIArt = {
 		Weapon_Warrior_T8 = { Id = "rbxassetid://73318746668169", Size = Vector2.new(512, 512) }, -- jelly-crown legendary (bundle 9)
 		Weapon_Mage_T8 = { Id = "rbxassetid://109033955946235", Size = Vector2.new(512, 512) },
 		Weapon_Archer_T8 = { Id = "rbxassetid://118154781260735", Size = Vector2.new(512, 512) },
-		Tex_Grass = { Id = "rbxassetid://72716790388998", Size = Vector2.new(1024, 1024) }, -- A23-30 E: Firefly painted meadow (Tex_Grass_FF)
+		-- 2026-10-08 meadow terrain v3 (이미지 생성 1, 검수 OK; user: "너무 초록, 입체적이지 않아"): Tex_Grass_FF3 on Grass and three
+		-- new meadow tiles on base materials no part uses (Salt / Sandstone / Pavement, 검수 checked the main save);
+		-- tools/apply_surface_materials.lua pairs them (Organic, 22 / 16 studs a tile)
+		Tex_Grass = { Id = "rbxassetid://116841810719907", Size = Vector2.new(1024, 1024) }, -- Tex_Grass_FF3 (was FF2)
+		Tex_MeadowFlowers = { Id = "rbxassetid://112552326538919", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowFlowers_FF3 -> Salt (GE_MeadowFlowers)
+		Tex_MeadowShade = { Id = "rbxassetid://100025729953105", Size = Vector2.new(1024, 1024) }, -- Tex_GrassShade_FF3 -> Sandstone (GE_MeadowShade)
+		Tex_MeadowDirt = { Id = "rbxassetid://111724093383818", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowDirt_FF3code -> Pavement (GE_MeadowDirt)
 		Tex_LeafyGrass = { Id = "rbxassetid://99820027824650", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
 		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
 		Tex_Ground = { Id = "rbxassetid://140158008208812", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins dirt (Tex_Ground_FF)
