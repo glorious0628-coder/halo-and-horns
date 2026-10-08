@@ -1,0 +1,41 @@
+[   0.5] device before Play: default
+[   0.7] fresh on
+[   6.5] collector ok, hooked 9, rows 0
+[   6.7] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=0,4,-30 anvilDist=84.6
+[   6.9] collector ok, hooked 9, rows 0
+[   7.1] == opening (first-time intro plays)
+[  31.2] == ChooseFaction Halo
+[  31.4] fired ChooseFaction
+[  31.9] == ChooseClass Warrior
+[  32.2] fired ChooseClass
+[  32.4] chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=HaloTown ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=3,4,-416 anvilDist=462.9
+[  32.5] == guide talks (TalkBlip expected)
+[  38.8] saved docs\art\verification_2026-10-08\sound_play\skill\01_guide.png (white 0%)
+[  38.9] == AcceptTutorial (QuestNew expected)
+[  39.1] fired AcceptTutorial
+[  42.6] at forge: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=3 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  44.3] == anvil first weapon (PowerUp expected, no QuestDone)
+[  44.7] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  44.9] weapon: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=1 TutorialKills=0 WeaponTier=1 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=35,4,38 anvilDist=8.0
+[  49.0] saved docs\art\verification_2026-10-08\sound_play\skill\02_first_weapon.png (white 0%)
+[  49.3] debug Level=4: ok
+[  49.5] debug XP=103: ok
+[  50.7] == real level-up 4 -> 5 on a slime kill (LevelUp, then SkillLearn ~1.1 s)
+[  50.9] near: BigSlime BigSlime d=11 mine=false
+[  56.7] near: Slime Slime d=5 mine=false
+[  62.5] Level=5 after 12 presses
+[  65.7] near: Slime Slime d=3 mine=false
+[  67.8] == skill (Z) after a real level-up (SkillCast + SkillHalo + hit)
+[  68.0] SkillQ
+[  72.2] == after the 3 s cooldown (SkillReady)
+[  74.0] saved docs\art\verification_2026-10-08\sound_play\skill\03_skill.png (white 0%)
+[  74.2] == Mana 0 + skill key (Deny)
+[  74.3] debug Mana=0: ok
+[  75.0] SkillQ
+[  76.7] == end
+[  77.4] rows: 82
+[  77.5] console: [RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[  79.0] play stopped
+[  81.2] fresh off
+[  81.5] device: default

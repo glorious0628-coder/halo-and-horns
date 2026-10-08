@@ -10,14 +10,14 @@
   "L opens the ranking list": true,
   "L again closes it": true,
   "Z = the skill key (Lv5 note before)": true,
-  "real I opens the bag": false,
+  "real I opens the bag": true,
   "real I does not zoom the camera": true,
   "real O still zooms out (Roblox's)": true
  },
  "sounds": [
   {
    "gv": 1,
-   "t": 24.825,
+   "t": 25.41,
    "k": "play",
    "v": 0.449,
    "id": "rbxassetid://129419018750436",
@@ -27,121 +27,21 @@
   },
   {
    "gv": 1,
-   "t": 24.854,
-   "k": "play",
-   "v": 0.5,
-   "id": "rbxassetid://123199271616228",
-   "sp": 1,
-   "g": "Sfx",
-   "n": "Sfx_QuestNew_1"
-  },
-  {
-   "gv": 1,
-   "t": 24.855,
+   "t": 25.465,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.1,
+   "sp": 1.115,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
-   "t": 24.911,
+   "t": 25.605,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.121,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_2"
-  },
-  {
-   "gv": 1,
-   "t": 25.055,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.098,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_3"
-  },
-  {
-   "gv": 1,
-   "t": 25.205,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.063,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.255,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.066,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.304,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.094,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_2"
-  },
-  {
-   "gv": 1,
-   "t": 25.355,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.092,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.406,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.117,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.505,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.079,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.556,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.068,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.604,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.081,
+   "sp": 1.124,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_2"
   },
@@ -151,19 +51,9 @@
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.109,
+   "sp": 1.067,
    "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.704,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.063,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
+   "n": "Sfx_TalkBlip_3"
   },
   {
    "gv": 1,
@@ -171,9 +61,19 @@
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.136,
+   "sp": 1.096,
    "g": "Sfx",
-   "n": "Sfx_TalkBlip_2"
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 25.802,
+   "k": "play",
+   "v": 0.5,
+   "id": "rbxassetid://123199271616228",
+   "sp": 1,
+   "g": "Sfx",
+   "n": "Sfx_QuestNew_1"
   },
   {
    "gv": 1,
@@ -181,29 +81,29 @@
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.12,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.856,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.114,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 25.905,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.077,
+   "sp": 1.127,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 25.854,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.089,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 25.954,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.089,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
@@ -211,67 +111,57 @@
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.062,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 26.055,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.13,
+   "sp": 1.081,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_2"
   },
   {
    "gv": 1,
-   "t": 26.157,
+   "t": 26.054,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.073,
+   "sp": 1.076,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
-   "t": 26.205,
+   "t": 26.104,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.073,
+   "sp": 1.061,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_2"
   },
   {
    "gv": 1,
-   "t": 26.255,
+   "t": 26.204,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.139,
+   "sp": 1.076,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
-   "t": 26.305,
+   "t": 26.303,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.057,
+   "sp": 1.129,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
-   "t": 26.355,
+   "t": 26.353,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.08,
+   "sp": 1.126,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_2"
   },
@@ -281,63 +171,23 @@
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.068,
+   "sp": 1.094,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
-   "t": 26.504,
+   "t": 26.453,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.134,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 26.555,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.114,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 26.605,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.128,
+   "sp": 1.132,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_2"
   },
   {
    "gv": 1,
-   "t": 26.704,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.142,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 26.807,
-   "k": "play",
-   "v": 0.25,
-   "id": "rbxassetid://94593126133806",
-   "sp": 1.064,
-   "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
-  },
-  {
-   "gv": 1,
-   "t": 26.856,
+   "t": 26.504,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
@@ -347,13 +197,53 @@
   },
   {
    "gv": 1,
-   "t": 26.906,
+   "t": 26.604,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.069,
+   "sp": 1.102,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 26.654,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.124,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 26.704,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.141,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 26.754,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.116,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 26.905,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.135,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
@@ -361,23 +251,123 @@
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.142,
+   "sp": 1.105,
    "g": "Sfx",
-   "n": "Sfx_TalkBlip_1"
+   "n": "Sfx_TalkBlip_2"
   },
   {
    "gv": 1,
-   "t": 27.006,
+   "t": 27.004,
    "k": "play",
    "v": 0.25,
    "id": "rbxassetid://94593126133806",
-   "sp": 1.086,
+   "sp": 1.143,
    "g": "Sfx",
    "n": "Sfx_TalkBlip_1"
   },
   {
    "gv": 1,
-   "t": 28.405,
+   "t": 27.053,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.065,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 27.154,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.061,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 27.204,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.115,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 27.253,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.097,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 27.303,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.13,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 27.357,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.067,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 27.403,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.099,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 27.454,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.085,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 27.553,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.067,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_1"
+  },
+  {
+   "gv": 1,
+   "t": 27.604,
+   "k": "play",
+   "v": 0.25,
+   "id": "rbxassetid://94593126133806",
+   "sp": 1.14,
+   "g": "Sfx",
+   "n": "Sfx_TalkBlip_2"
+  },
+  {
+   "gv": 1,
+   "t": 29.405,
    "k": "play",
    "v": 0.419,
    "id": "rbxassetid://86085176622331",
@@ -386,13 +376,13 @@
    "n": "Sfx_WindowClose_1"
   },
   {
-   "t": 29.524,
+   "t": 30.753,
    "k": "mark",
    "n": "I (the bag: Items)"
   },
   {
    "gv": 1,
-   "t": 29.604,
+   "t": 31.005,
    "k": "play",
    "v": 0.449,
    "id": "rbxassetid://129419018750436",
@@ -401,13 +391,13 @@
    "n": "Sfx_WindowOpen_1"
   },
   {
-   "t": 31.823,
+   "t": 33.755,
    "k": "mark",
    "n": "I again (closes)"
   },
   {
    "gv": 1,
-   "t": 31.904,
+   "t": 34.005,
    "k": "play",
    "v": 0.419,
    "id": "rbxassetid://86085176622331",
@@ -416,33 +406,33 @@
    "n": "Sfx_WindowClose_1"
   },
   {
-   "t": 33.226,
+   "t": 35.553,
    "k": "mark",
    "n": "Q (quest list out)"
   },
   {
-   "t": 35.506,
+   "t": 38.653,
    "k": "mark",
    "n": "Q again (quest list in)"
   },
   {
-   "t": 36.907,
+   "t": 40.451,
    "k": "mark",
    "n": "E (Hero: Coming soon)"
   },
   {
-   "t": 41.173,
+   "t": 45.451,
    "k": "mark",
    "n": "K (Skills: Coming soon)"
   },
   {
-   "t": 44.572,
+   "t": 49.204,
    "k": "mark",
    "n": "L (the ranking list)"
   },
   {
    "gv": 1,
-   "t": 44.655,
+   "t": 49.454,
    "k": "play",
    "v": 0.449,
    "id": "rbxassetid://129419018750436",
@@ -451,13 +441,13 @@
    "n": "Sfx_WindowOpen_1"
   },
   {
-   "t": 46.856,
+   "t": 52.254,
    "k": "mark",
    "n": "L again (closes)"
   },
   {
    "gv": 1,
-   "t": 46.937,
+   "t": 52.452,
    "k": "play",
    "v": 0.419,
    "id": "rbxassetid://86085176622331",
@@ -466,18 +456,18 @@
    "n": "Sfx_WindowClose_1"
   },
   {
-   "t": 48.257,
+   "t": 54.002,
    "k": "mark",
    "n": "Z (the skill before Lv5)"
   },
   {
-   "t": 51.221,
+   "t": 57.554,
    "k": "mark",
    "n": "real I key held 1.5 s"
   },
   {
    "gv": 1,
-   "t": 54.654,
+   "t": 57.759,
    "k": "play",
    "v": 0.449,
    "id": "rbxassetid://129419018750436",
@@ -486,7 +476,17 @@
    "n": "Sfx_WindowOpen_1"
   },
   {
-   "t": 57.89,
+   "gv": 1,
+   "t": 61.452,
+   "k": "play",
+   "v": 0.419,
+   "id": "rbxassetid://86085176622331",
+   "sp": 1,
+   "g": "Sfx",
+   "n": "Sfx_WindowClose_1"
+  },
+  {
+   "t": 65.154,
    "k": "mark",
    "n": "end"
   }

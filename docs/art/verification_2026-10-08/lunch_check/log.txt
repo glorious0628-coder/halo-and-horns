@@ -1,0 +1,35 @@
+[   0.5] device before Play: default
+[   0.7] fresh on
+[   6.5] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=-3,4,-23 anvilDist=79.4
+[  30.6] fired ChooseFaction
+[  31.0] fired ChooseClass
+[  34.5] fired AcceptTutorial
+[  39.9] held Workspace.Map.Landmarks.ArtisanGuild.Anvil.HHC_BlacksmithPrompt
+[  42.3] == hunt 5 slimes
+[  42.5] near: Slime Slime d=257 mine=false
+[  48.4] near: Slime Slime d=6 mine=false
+[  54.4] near: Slime Slime d=13 mine=false
+[  60.4] near: Slime Slime d=5 mine=false
+[  62.2] TutorialKills=5 after 20 presses
+[  63.9] fired ClaimQuest
+[  68.1] lunch before: {"Lunch1": {"Claim": false, "P": 0, "St": 1, "T": []}, "Pick": null, "Done": false}
+[  68.4] probe after claim (the lunchbox card?): {"Panel":false,"Title":"Guide · Take Back the Supply Road","Texts":["Golden Goose 3:54"]}
+[  69.8] saved docs\art\verification_2026-10-08\lunch_check\01_lunch_card.png (white 0%)
+[  70.2] == StoryAction without the quest id (the film call)
+[  70.4] fired StoryAction
+[  72.1] lunch after the id-less call: {"Lunch1": {"Claim": false, "P": 0, "St": 1, "T": []}, "Pick": null, "Done": false}
+[  72.9] == StoryAction(Lunch1, Choose, Evil) = [One bite!]
+[  73.1] fired StoryAction
+[  74.7] lunch after [One bite!]: {"Lunch1": null, "Pick": "Bite", "Done": true}
+[  74.9] probe after [One bite!]: {"Panel":false,"Title":"Guide · Take Back the Supply Road","Texts":["Lost Lunchbox! done!","Golden Goose 3:47"]}
+[  76.2] saved docs\art\verification_2026-10-08\lunch_check\02_after_bite.png (white 0%)
+[  76.3] bank gold 150 -> 175
+[  76.6] console: 
+[  77.7] play stopped
+[  79.9] fresh off
+[  80.3] device: default
+[  80.3] OK   a call without the quest id changes nothing (call problem, not a game bug)
+[  80.3] OK   [One bite!] is recorded (Pick Bite) and the card moves on
+[  80.3] FAIL the reply line shows (Yum! ...)
+[  80.3] OK   +25 bank gold
+[  80.3] OK   the Devour sound plays with the pick

@@ -6,7 +6,7 @@
 -- height / width are fractions of the 3D board's box (FitH / FitW) around FitY of its height, its face stays where the
 -- swap put it. Idempotent (the size comes from the 3D board every run). MODE = "survey" only reports the boxes.
 local MODE = "apply"
-local T = { FitH = 0.42, FitW = 0.78, FitY = 0.62, Depth = 0.2 }
+local T = { FitH = 0.42, FitW = 0.72, FitY = 0.48, Depth = 0.2 } -- the panel under the 3D board's roof (10/08 photo)
 local map = workspace:FindFirstChild("Map")
 local board = map and map:FindFirstChild("Landmarks") and map.Landmarks:FindFirstChild("MostWantedBoard")
 local c3 = map and map:FindFirstChild("Decor") and map.Decor:FindFirstChild("Crossroads3D")

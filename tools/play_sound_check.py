@@ -5,7 +5,7 @@ cached ones Fx_<name>) and records name / SoundId / Volume / PlaybackSpeed / Sou
 stamp; the flow below fires the first-10-minutes moments and the world events (DebugCommand, Studio only), and every
 step writes a marker row so each sound can be matched to its scene. No mouse / keyboard: remotes, Keybinds.Dispatch,
 ProximityPrompt:InputHoldBegin, DebugCommand. Stops Play in a finally block.
-Usage: py tools/play_sound_check.py pc|phone|world [outdir-name]   (world = after the first weapon: a real level-up to
+Usage: py tools/play_sound_check.py pc|phone|world|skill [outdir-name]   (skill = the world run up to the Lv5 skill)   (world = after the first weapon: a real level-up to
 Lv5 + the Q skill, then the world sounds sent the way their services send them and a step into a PvP zone)
 Out: docs/art/verification_2026-10-08/sound_play/<mode>/ (log.txt, sounds.json, captures)"""
 import base64
@@ -430,6 +430,13 @@ def world_flow(c):
     mark(c, "after the 3 s cooldown (SkillReady)")
     time.sleep(0.5)
     save(c, "03_skill")
+    if MODE == "skill":  # the skill part only: MP short -> Deny, then stop
+        mark(c, "Mana 0 + skill key (Deny)")
+        debug(c, "Mana", 0)
+        time.sleep(0.5)
+        note(lua(c, DISPATCH % SKILL_KEY, "Client"))
+        time.sleep(1.5)
+        return
     # B1: KO and back (the real death path: my humanoid at 0 on the server)
     mark(c, "KO (KO) then back (Respawn)")
     note(lua(c, 'local p = game:GetService("Players"):GetPlayers()[1] local h = p.Character and '
@@ -537,7 +544,7 @@ def main():
         note("weapon: " + s)
         time.sleep(2.5)
         save(c, "02_first_weapon")
-        if MODE == "world":
+        if MODE in ("world", "skill"):
             world_flow(c)
         else:
             # 2 windows
