@@ -16,6 +16,7 @@ local function retWorld(o)
 	w.Badges, w.BadgeFail, w.BadgeAnswer, w.HasBadge, w.HasAsks = {}, false, true, {}, 0
 	w.Services.BadgeService = {
 		AwardBadge = function(_, uid, id)
+			if w.OnAward then w.OnAward(uid, id) end -- what happens while the web call runs (e.g. the player leaves)
 			if w.BadgeFail then error("offline badge failure") end
 			if w.BadgeAnswer ~= true then return false end -- the badge is off / a wrong id (or already owned)
 			table.insert(w.Badges, uid .. ":" .. id)
@@ -341,6 +342,31 @@ runGroup("badges", function()
 	check(table.find(w5.Badges, "5:201") ~= nil and ds5.Return.Badges.ChoseSide.Id == 201,
 		"a record under another id is not the badge: awarded again with the new id", table.concat(w5.Badges, ","))
 	local _45 = { s5 }
+	-- AwardBadge throws for a badge the player already has (seen on live servers): UserHasBadgeAsync says so, it is saved
+	local w6 = retWorld({ EditConfig = withBadges })
+	w6.BadgeFail = true
+	w6.HasBadge["6:101"] = true
+	w6.AllowWarn = "badge"
+	local s6, ds6 = hero(w6, 6)
+	check(ds6.Return.Badges.ChoseSide and ds6.Return.Badges.ChoseSide.Id == 101, "an error for an owned badge: saved after the check",
+		show(ds6.Return.Badges))
+	local warned = false
+	for _, text in w6.Warnings do if string.find(text, "ChoseSide", 1, true) then warned = true end end
+	check(not warned, "no warning for the owned badge (it would repeat every 5 minutes)", show(w6.Warnings))
+	-- the player leaves while the badge call runs: no retry entry is kept for the gone Player
+	local w7 = retWorld({ EditConfig = withBadges })
+	w7.BadgeAnswer = false
+	w7.AllowWarn = "badge"
+	w7.OnAward = function(uid)
+		local gone = uid == 7 and w7.Players:GetPlayerByUserId(7) or nil
+		if gone then w7:Leave(gone) end
+	end
+	local s7 = hero(w7, 7) -- the join's badge check calls AwardBadge, and the player leaves during that call
+	check(s7.Parent == nil and w7.Reg.ReturnService.DebugRetryCount() == 0, "a player who left during the call keeps no retry entry",
+		tostring(w7.Reg.ReturnService.DebugRetryCount()))
+	local stay = hero(w7, 8)
+	check(w7.Reg.ReturnService.DebugRetryCount() >= 1, "a player still here does get the retry entry", tostring(w7.Reg.ReturnService.DebugRetryCount()))
+	local _67 = { s6, stay }
 	-- after the season: candy no longer opens Halloween 2026
 	local w3 = retWorld({ EditConfig = withBadges, Time = w.Config.Halloween.EndsAt + 100 })
 	local r = hero(w3, 3)

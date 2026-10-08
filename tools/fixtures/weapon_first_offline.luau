@@ -99,7 +99,11 @@ local function forgeWorld()
 		self:QuestTick()
 		for i = #self.Fired, 1, -1 do
 			local f = self.Fired[i]
-			if f.Remote == "Quests" and f.Player == p then return jsonDecode(f.Payload) end
+			if f.Remote == "Quests" and f.Player == p then
+				-- A23-81: the payload is { Quests = rows, Book } (an older server sent the JSON of the rows)
+				if type(f.Payload) == "table" then return f.Payload.Quests end
+				return jsonDecode(f.Payload)
+			end
 		end
 		return {}
 	end

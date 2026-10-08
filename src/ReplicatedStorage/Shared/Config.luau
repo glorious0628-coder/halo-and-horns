@@ -5530,8 +5530,8 @@ Config.Analytics.ClientMetrics = {
 }
 Config.Analytics.InviteSources = { "Menu", "PlayerList", "GooseWin", "WarWin" }
 Config.Analytics.PassIds = { "XP2", "Gold2", "VIP", "Look" } -- "Pass" args besides Config.GamePasses / Config.Looks ids
--- review 2026-10-08 (one client must not flood the whole game's analytics budget): accepted ClientMetric calls a minute
--- per player; these ids count once a session
+-- review 2026-10-08 (one client must not flood the whole game's analytics budget): ClientMetric calls LOGGED a minute per
+-- player, and the ids logged once a session; every accepted call still fires TelemetryService.ClientMetric (no limit)
 Config.Analytics.ClientMetricPerMinute = 10
 Config.Analytics.ClientMetricOnce = { "OptIn", "WelcomeBackGo" }
 Config.Analytics.ShopVisitGap = 30 -- s: a shop open within this of the visit's start keeps the visit
@@ -5641,5 +5641,14 @@ for _, id in { "PartyGuest2026", "PumpkinPal", "CandyKeeper" } do
 end
 Config.RateLimits.GoToFriend = 3
 Config.RateLimits.CandyTrade = 1
+
+----------------------------------------------------------------- A23-81 quest window book (게임성 개발 3, 2026-10-08)
+-- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
+-- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
+Config.QuestBook = {
+	DoneMax = 40,
+	AvailableMax = 10,
+	Text = { OpensAt = "%s · Opens at Lv %d" }, -- (quest Title, level)
+}
 
 return Config

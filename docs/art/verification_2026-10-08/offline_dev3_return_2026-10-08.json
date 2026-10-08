@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 155,
+  "checks": 159,
   "failedChecks": 0,
-  "namedChecks": 155,
+  "namedChecks": 159,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -531,6 +531,30 @@
     },
     {
       "group": "badges",
+      "check": "an error for an owned badge: saved after the check",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "no warning for the owned badge (it would repeat every 5 minutes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a player who left during the call keeps no retry entry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
+      "check": "a player still here does get the retry entry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "badges",
       "check": "after the season: no Halloween 2026 from new candy",
       "pass": 1,
       "fail": 0
@@ -942,9 +966,9 @@
   "staticChecks": 19,
   "staticFailures": [],
   "mutations": {
-    "total": 70,
-    "applied": 70,
-    "caught": 70,
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
     "skipped": false,
     "results": [
       {
@@ -1305,11 +1329,12 @@
         "newFailingChecks": [
           "badges :: a failing BadgeService: nothing saved",
           "badges :: a not-awarded badge is warned like an error",
+          "badges :: a player still here does get the retry entry",
           "badges :: after RetrySeconds: the 6 earned ones (side, slime, lunchbox, stronger, skill, shard)",
           "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
           "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "AwardBadge false counts as awarded",
@@ -1319,10 +1344,34 @@
         "crashed": false,
         "newFailingChecks": [
           "badges :: a not-awarded badge is warned like an error",
+          "badges :: a player still here does get the retry entry",
           "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
           "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no owned-badge check after an error",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: an error for an owned badge: saved after the check",
+          "badges :: no warning for the owned badge (it would repeat every 5 minutes)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a retry entry for a player who left",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "badges :: a player who left during the call keeps no retry entry"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "no UserHasBadgeAsync check",
@@ -1331,9 +1380,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "badges :: after RetrySeconds: the one the player already has is saved, the others wait"
+          "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
+          "badges :: an error for an owned badge: saved after the check",
+          "badges :: no warning for the owned badge (it would repeat every 5 minutes)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "the badge id is not saved",
@@ -1346,9 +1397,10 @@
           "badges :: a record under another id is not the badge: awarded again with the new id",
           "badges :: after RetrySeconds: the one the player already has is saved, the others wait",
           "badges :: all 8, each once",
+          "badges :: an error for an owned badge: saved after the check",
           "badges :: never asked twice"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "any record counts under a new id",
@@ -1415,11 +1467,13 @@
         "crashed": false,
         "newFailingChecks": [
           "badges :: a not-awarded badge is warned like an error",
+          "badges :: a player still here does get the retry entry",
+          "badges :: a player who left during the call keeps no retry entry",
           "badges :: a record under another id is not the badge: awarded again with the new id",
-          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)",
-          "badges :: no retry within RetrySeconds"
+          "badges :: an error for an owned badge: saved after the check",
+          "badges :: false from AwardBadge: nothing saved (UserHasBadgeAsync asked)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 7
       },
       {
         "mutation": "opt-in in the first 10 minutes",
@@ -1789,14 +1843,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "52d0bf9a0f490c257a18edfdf321c4b4da368404a9d0b9681c1fe4aa0c78fc3b",
+    "src/ReplicatedStorage/Shared/Config.luau": "3236a57567741cf1ac416c93ccd4c96f851ea0c437dc59d6bf2333a939afa4ab",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/ReturnService.luau": "9d651456c78f1b264d3d4c0854d4558d4bf5c7ad7a5181b8c478a389f8d29322",
+    "src/ServerScriptService/ReturnService.luau": "c03f201c8263cd941a09360cb9b4a63f93985486cd6ac19e69c8d21f2a225c2e",
     "src/ServerScriptService/InviteService.luau": "5078c549ea94977105df673faba86c6735ecc99fff50a028f151bd58ec6c01fe",
     "src/ServerScriptService/DiaryService.luau": "fd9f53510f32d93ad79d0377db2aa813bc298c7536428a6ffb34504bddb297e7",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257"
   },
-  "fixtureSHA256": "00b5c317299086af600141eff93f6a5a15395e72042a2f94dc98138627428328",
+  "fixtureSHA256": "98ec4b592b3ef40dbec01b3618b69f1992c6d8a69d1975327a5a9292ac133698",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
