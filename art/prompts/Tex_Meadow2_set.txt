@@ -1,0 +1,9 @@
+[초원 지형 2차 — 사용자 판정 10/08 "너무 초록초록해, 입체적이지 않아" (검수). 시안 잔디 밝기 0.63, 어두운 10% 0.41 / 지금 0.75, 0.69~0.74.
+ 목표: 잔디 평균 밝기 ~0.62, 채도 ~0.55, 색상 ~100°, 명암 크게. 시안 = Firefly 중간(0) → 검수 → 고급(5)×3 (그늘 잔디는 고른 잔디에서 코드로 25% 어둡고 푸르게, 또는 고급 1장).
+ 재질 짝(제안): Grass = 잔디 / Salt = 꽃 잔디 / Sandstone = 그늘 잔디 / Pavement = 흙길. 이음매 없는 정사각 타일, 3×3 확인.]
+
+GRASS: Seamless tileable square texture of a stylized cartoon meadow lawn seen straight from above, for a kids' 3D toy game ground. Medium natural green grass, not neon and not yellow, made of soft painted clumps and tufts with strong depth: deep green shadows between the clumps, lighter green tips on top, a few darker bluish-green patches. Even coverage with no focal point, no flowers, no stones, no dirt, no object shadows, no light rays, no text. Fills the whole square edge to edge; the left edge continues into the right edge and the top into the bottom.
+
+FLOWERS: Seamless tileable square texture of a stylized cartoon meadow lawn seen straight from above, for a kids' 3D toy game ground. Medium natural green grass clumps with deep green shadows and lighter tips, sprinkled evenly with many tiny simple flowers in white, yellow, pink and light blue covering about a tenth of the ground, each flower a small round five-petal blossom. Even coverage with no focal point, no stones, no dirt, no light rays, no text. Fills the whole square edge to edge; the left edge continues into the right edge and the top into the bottom.
+
+DIRT: Seamless tileable square texture of a stylized cartoon dirt footpath seen straight from above, for a kids' 3D toy game ground. Warm brown packed earth with soft painted bumps and gentle darker cracks, a few small smooth grey and tan pebbles scattered thinly. Even coverage with no focal point, no grass, no footprints, no light rays, no text. Fills the whole square edge to edge; the left edge continues into the right edge and the top into the bottom.

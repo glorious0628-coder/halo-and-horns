@@ -35,7 +35,7 @@ def load_pano(path, wrap):
 
 
 class Sky:
-    def __init__(self, pano, horizon, top_deg):
+    def __init__(self, pano, horizon, top_deg, zenith_soften=0.0, down_color=None):
         self.p = pano
         self.H, self.W, _ = pano.shape
         self.hy = horizon * self.H
@@ -43,11 +43,17 @@ class Sky:
         self.top_deg = top_deg
         self.top_col = pano[:6].reshape(-1, 3).mean(0)
         self.low_col = pano[-6:].reshape(-1, 3).mean(0)
-        self.dn_col = self.low_col * 0.92
+        self.dn_col = np.array(down_color, np.float32) if down_color is not None else self.low_col * 0.92
         # pure vertical gradient (row median) for the high sky: near the zenith all directions meet, so any
         # left-right colour change in the picture would draw a fan of wedges there (no ray-burst rule)
         self.grad = np.median(pano, axis=1)
         self.fade0 = 36.0
+        if zenith_soften > 0:  # make the darker round zenith spot weaker: pull the top colour toward the ring colour
+            ring = self.grad[int(np.clip(self.hy - (top_deg - 14) * self.ppd, 0, self.H - 1))]
+            self.top_col = self.top_col * (1 - zenith_soften) + ring * zenith_soften
+            n = max(1, int(self.hy - (top_deg - 14) * self.ppd))
+            w = np.linspace(zenith_soften, 0, n)[:, None]
+            self.grad[:n] = self.grad[:n] * (1 - w) + ring * w
 
     def sample(self, az, el):
         """az, el in degrees (arrays). bilinear sample with code gradients outside the picture."""
@@ -127,11 +133,14 @@ def main():
     ap.add_argument("--name", default="Sky_Day")
     ap.add_argument("--repeat", type=int, default=3, help="how many times the picture goes round the 360 degrees (keeps clouds round)")
     ap.add_argument("--check")
+    ap.add_argument("--zenith-soften", type=float, default=0.0, help="0..1: weaken the darker blue round spot straight up")
+    ap.add_argument("--down-color", help="R,G,B for below the horizon (match Lighting/Atmosphere fog colour)")
     a = ap.parse_args()
     pano = load_pano(a.pano, a.wrap)
     if a.repeat > 1:
         pano = np.concatenate([pano] * a.repeat, 1)
-    sky = Sky(pano, a.horizon, a.top_deg)
+    dc = [float(v) for v in a.down_color.split(",")] if a.down_color else None
+    sky = Sky(pano, a.horizon, a.top_deg, a.zenith_soften, dc)
     os.makedirs(a.out_dir, exist_ok=True)
     faces = {}
     for face in ["Ft", "Rt", "Bk", "Lf", "Up", "Dn"]:
@@ -142,6 +151,7 @@ def main():
     if a.check:
         f = ImageFont.truetype("C:/Windows/Fonts/malgun.ttf", 16)
         views = [(yaw, pitch) for pitch in (8, 35, 70) for yaw in (0, 45, 90, 180, 270)]
+        views[-1] = (0, 89)
         w, h = 360, 225
         sh = Image.new("RGB", (w * 5 + 60, h * 3 + 40 + 330), (236, 236, 236))
         d = ImageDraw.Draw(sh)

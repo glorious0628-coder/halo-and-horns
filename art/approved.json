@@ -3317,15 +3317,17 @@
  },
  "EmoOuch": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/Emo_Ouch.txt",
-  "original": "art/out/s2/Emo_Ouch_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-08",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/EmoOuch2_A1_HQ.txt",
+  "original": "art/out/hq/src/EmoOuch2_A1_HQ_src.png",
   "file": "art/ui/EmoOuch.png",
   "size": "512x512 RGBA",
-  "cutout": "tools/img2/cut_icon.py --holes --frac 0.001 (red marks kept); checked light/navy/magenta/green + 28px",
-  "preview": "art/review/s2/b17_sheet.png",
-  "note": "묶음 17. 감정 스티커 아야(빈 터짐 말풍선 + 빨간 스트레스 표시). 옛 EmoOuch(글자 박힘) 대체 — 글자 '아야!/Ouch!'는 TextLabel로 가운데 얹기(가운데 빈칸 약 60%). 이미지 생성 2가 고름(1장 생성, 바로 채택). 글자 없음."
+  "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "맞을 때 스티커: 글자 없는 둥근 흰 말풍선 + 굵은 남색 테두리 + 작은 빨간 별. 'Ouch!'는 게임 TextLabel. 옛 UIP_EmoOuch(한국어 '아야!', 뾰족 폭발) 대체.",
+  "medium_pick": "art/out/s2/emo2/EmoOuch2_A1_src.png"
  },
  "EmoTears": {
   "status": "approved",
@@ -3353,27 +3355,29 @@
  },
  "EmoAngry": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/Emo_Angry.txt",
-  "original": "art/out/s2/Emo_Angry_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-08",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/EmoAngry2_B_HQ.txt",
+  "original": "art/out/hq/src/EmoAngry2_B_HQ_src.png",
   "file": "art/ui/EmoAngry.png",
   "size": "512x512 RGBA",
-  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 28px",
-  "preview": "art/review/s2/b17_sheet.png",
-  "note": "묶음 17. 감정 스티커 화남(빨간 핏대 표시). 옛 EmoAngry 대체. 이미지 생성 2가 고름(1장 생성, 바로 채택). 글자 없음."
+  "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "화남 스티커: 둥근 혈관 4개(둘레 짧은 선 없음). 빨간 십자 안은 구급 표시로 읽혀 안 씀."
  },
  "EmoStress": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/Emo_Stress.txt",
-  "original": "art/out/s2/Emo_Stress_a_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-08",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/EmoStress2_A_HQ.txt",
+  "original": "art/out/hq/src/EmoStress2_A_HQ_src.png",
   "file": "art/ui/EmoStress.png",
   "size": "512x512 RGBA",
-  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 28px",
-  "preview": "art/review/s2/b17_sheet.png",
-  "note": "묶음 17. 감정 스티커 당황(빨간 번쩍 줄 셋). 옛 EmoStress('!!' 글자) 대체. 이미지 생성 2가 고름(1장 생성, 바로 채택). 글자 없음."
+  "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "스트레스 스티커: 번개 하나 비스듬히(부채꼴 번개 3개 대체, 빛살 규칙)."
  },
  "IconGoose": {
   "status": "approved",
@@ -4163,27 +4167,33 @@
  },
  "BadgeHaloR4": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/Badge_HaloR4.txt",
-  "original": "art/out/s2/Badge_HaloR4_1_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-08",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate (reference = current Medium badge redrawn)",
+  "prompt": "art/prompts/BadgeHaloR4b_A_HQ.txt",
+  "original": "art/out/hq/src/BadgeHaloR4b_A_HQ_src.png",
   "file": "art/ui/BadgeHaloR4.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_sheet.png",
-  "note": "칭호 배지 빛 R4 성자. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음."
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "칭호 배지 빛 R4 성자. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음.",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "redraw_note": "가운데 가시 해 → 하늘 보석(빛살 규칙)",
+  "reupload": "2026-10-08: 이미지 개발 re-uploads"
  },
  "BadgeHaloR5": {
   "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
-  "prompt": "art/prompts/Badge_HaloR5.txt",
-  "original": "art/out/s2/Badge_HaloR5_1_src.png (Adobe MCP presigned download)",
+  "date": "2026-10-08",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate (reference = current Medium badge redrawn)",
+  "prompt": "art/prompts/BadgeHaloR5b_A_HQ.txt",
+  "original": "art/out/hq/src/BadgeHaloR5b_A_HQ_src.png",
   "file": "art/ui/BadgeHaloR5.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px; tools/img2/outer_glow.py로 바깥 금빛 빛 한 겹(최고 단계 강조, 검수 지적)",
-  "preview": "art/review/s2/rank_badges_fix_sheet.png",
-  "note": "칭호 배지 빛 R5 대천사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 단계 기준 그림(R5 먼저)."
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "칭호 배지 빛 R5 대천사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 단계 기준 그림(R5 먼저).",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "redraw_note": "가운데 가시 해 → 하늘 보석, 구운 바깥 빛 뺌(남색 테두리)",
+  "reupload": "2026-10-08: 이미지 개발 re-uploads"
  },
  "BadgeHornsR1": {
   "status": "approved",
@@ -4349,7 +4359,8 @@
   "preview": "art/review/s2/rank_badges_fix_sheet.png",
   "note": "지도 표시: 원한 자루(산딸기색 원 + 금화 자루 + 작은 유령, 제단 보라와 겹치지 않게). 15개 세트와 같은 흰 테 원 틀. 처음 판의 형광 자홍은 10/08 산딸기로 바꿈.",
   "recolor": "2026-10-08 검수 OK B 산딸기 (style drift #43, 0 credits): neon magenta disc (253,2,157) -> berry hue 338, sat 0.8, value x0.74 (soft hue mask 285-355); sack, coins, ghost, rim untouched. Candidates art/out/s2/mapfix/, sheet art/review/s2/map_grudgesack_recolor.jpg (7c3b421)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the recoloured file"
+  "id": "rbxassetid://84005598517360",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "MapPvP": {
   "status": "approved",
@@ -4749,18 +4760,21 @@
  },
  "PTR_TownBright": {
   "status": "approved",
-  "date": "2026-10-07",
+  "date": "2026-10-08",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the in-game Medium original _src + PTR_TownSmokey_A (style)",
-  "prompt": "art/prompts/PTR_TownBright_HQ.txt",
-  "original": "art/out/hq/src/PTR_TownBright_HQ_src.png (Adobe MCP presigned download)",
+  "prompt": "art/prompts/PTR_TownBright2_B_HQ.txt",
+  "original": "art/out/hq/src/PTR_TownBright2_B_HQ_src.png",
   "file": "art/ui/PTR_TownBright.png",
-  "size": "509x512 RGBA",
+  "size": "512x512 RGBA (507-wide cut padded to a square, transparent margin, 검수)",
   "cutout": "tools/img2/cut_keep.py --long 512 --tol 16 --soft 5 --holes --keep-largest + clean_haze (silver helmet kept); checked 4x light/navy/magenta + PortraitFrame 300/170",
-  "preview": "art/review/s2/a2359_bright_girl_long_hair_frames.png",
+  "preview": "art/review/s2/emo_rays_final.jpg",
   "note": "브라이트(빛 마을 경비 견습, 10살 여자아이, A23-59; 퀘스트 NPC A23-46). 스모키 A 그림체, 은빛 투구+하늘색 깃·후광·해 무늬 하늘색 겉옷·손 흔들기·금보라 땋은 손목 끈(이야기 단서)·볼 주근깨·두 눈 크게, 작게 벌린 웃음(윗니만 살짝), 긴 옆 땋은 머리. 화장 없음. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: 'L1 긴 땋은 머리 확정')",
   "medium_original": "art/out/s2/PTR_TownBright_GS_L1_src.png (Adobe MCP presigned download)",
-  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "redraw_note": "가슴 문양 가시 해 → 링 안 금별(빛살 규칙). 얼굴·옷 그대로, 옷차림 검사 통과(얼굴·손만).",
+  "reupload": "2026-10-08: 이미지 개발 re-uploads"
  },
  "FactionPickHalo": {
   "status": "approved",
@@ -4795,7 +4809,10 @@
   "note": "A23-57 진영 고르기 새 카드(빛). 글자 없음 — Name 리본(흰 글자)·Panel 크림 판(짙은 글자)·Button 금 버튼. 뿔 카드와 같은 실루엣·같은 칸. 글자는 게임 TextLabel(영어).",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "medium_original": "art/out/s2/UIP_FactionCardHalo_A_src.png (Adobe MCP presigned download)",
-  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg",
+  "medal_fix": "2026-10-08 검수 OK (style drift #2): medallion inside redrawn (Firefly High, ref = Medium pick FactionPickHalo_Medal_A, art/out/hq/src/FactionPickHalo_Medal_A_HQ_src.png) and pasted into the original card with tools/img2/medal_swap.py — rays / spiked sun gone, card silhouette, ribbon, layout regions unchanged",
+  "preview_medal": "art/review/s2/faction_medal_rays_fix.jpg",
+  "reupload": "2026-10-08: 이미지 개발 re-uploads"
  },
  "FactionPickHorns": {
   "status": "approved",
@@ -4830,7 +4847,10 @@
   "note": "A23-57 진영 고르기 새 카드(뿔). 빛 카드를 Firefly 참조로 색·장식만 바꿈(실루엣 일치도 0.998), 같은 624x1024 캔버스·같은 칸. Panel은 짙은 숯색 판 → 밝은 글자. 글자는 게임 TextLabel(영어).",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "medium_original": "art/out/s2/UIP_FactionCardHorns_C_src.png (Adobe MCP presigned download)",
-  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg"
+  "hq_note": "고급 다시 그리기 2026-10-07(검수 승인 26개, 130크레딧 + 로고 다시 5): 같은 키·같은 캔버스, Id만 교체. 비교 시트 art/review/s2/hq_rerender_sheet{1,2,3}.jpg",
+  "medal_fix": "2026-10-08 검수 OK (style drift #2): medallion inside redrawn (Firefly High, ref = Medium pick FactionPickHorns_Medal_A, art/out/hq/src/FactionPickHorns_Medal_A_HQ_src.png) and pasted into the original card with tools/img2/medal_swap.py — rays / spiked sun gone, card silhouette, ribbon, layout regions unchanged",
+  "preview_medal": "art/review/s2/faction_medal_rays_fix.jpg",
+  "reupload": "2026-10-08: 이미지 개발 re-uploads"
  },
  "ClassPickHalo": {
   "status": "approved",
@@ -4948,7 +4968,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py light — deeper cloth shading, richer blue sash / gold trim, 3 px dark rim inside the silhouette; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://113804016014809",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "CLS_HaloWarrior_F_Card": {
   "status": "approved",
@@ -4961,7 +4982,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py light — deeper cloth shading, richer blue sash / gold trim, 3 px dark rim inside the silhouette; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://129768786563436",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "CLS_HaloMage_M_Card": {
   "status": "approved",
@@ -4974,7 +4996,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py light — deeper cloth shading, richer blue sash / gold trim, 3 px dark rim inside the silhouette; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://118225411450017",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "CLS_HaloMage_F_Card": {
   "status": "approved",
@@ -4987,7 +5010,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py light — deeper cloth shading, richer blue sash / gold trim, 3 px dark rim inside the silhouette; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://113800216565552",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "CLS_HaloArcher_M_Card": {
   "status": "approved",
@@ -5022,7 +5046,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py dark — lifted cloth shadows (+15-25 % value), brighter red trim; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://74863399200858",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "CLS_HornsWarrior_F_Card": {
   "status": "approved",
@@ -5035,7 +5060,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py dark — lifted cloth shadows (+15-25 % value), brighter red trim; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://74943559632831",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "CLS_HornsMage_M_Card": {
   "status": "approved",
@@ -5070,7 +5096,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py dark — lifted cloth shadows (+15-25 % value), brighter red trim; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://75310398708603",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "CLS_HornsArcher_F_Card": {
   "status": "approved",
@@ -5083,7 +5110,8 @@
   "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)",
   "contrast_fix": "2026-10-08 검수 OK (style drift #24, 0 credits): tools/img2/cls_contrast.py dark — lifted cloth shadows (+15-25 % value), brighter red trim; skin untouched. Sheet art/review/s2/cls_contrast_fix.jpg (d64173b)",
-  "reupload": "2026-10-08: 이미지 개발 re-uploads the fixed file"
+  "id": "rbxassetid://71626258615966",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "Tex_Basalt_FF2": {
   "status": "approved",
@@ -6736,16 +6764,18 @@
   ],
   "note": "상점 황금 후광(호박금 고리 + 밝은 금 가운데 장식, 금 날개). 빨강 없음 — 처음 판의 루비 장식이 R4·R5에서 '빨간 뾰족 해'로 보여 밝은 금으로 고침(10/08 검수). 둥근 빛(glow)·작은 별(sparkle) 색만 바꿈. 주의: R4·R5 계급 메시의 가운데 장식은 원래 뾰족한 해 모양(모든 후광 테마·기본 후광 공통, 메시 그대로)이라 텍스처로는 모양을 못 바꿈. R2 별은 색판 공용이라 고리와 같은 색(검수 OK).",
   "ids": {
-   "R1R2": "rbxassetid://124557820913278"
+   "R1R2": "rbxassetid://124557820913278",
+   "R3": "rbxassetid://124870710556969",
+   "R4": "rbxassetid://104125803475842",
+   "R5": "rbxassetid://121454866183175"
   },
   "config_key": "Config.LookThemes.HaloGold",
-  "uploaded": "2026-10-08 by 이미지 개발 1 (검수 OK); R1 and R2 both use the R1R2 id; list art/models/acc/themes/asset_ids.json",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox) (R3-R5 fixed emblem)",
   "ids_old_red": {
    "R3": "rbxassetid://124586271258304",
    "R4": "rbxassetid://110992671351515",
    "R5": "rbxassetid://126895446255168"
   },
-  "reupload": "2026-10-08: R3 / R4 / R5 repainted (emblem ruby -> pale gold, 검수 지적) -> 이미지 개발 re-uploads these 3 after 검수 OK; R1R2 unchanged (renders identical)",
   "preview_fix": "art/review/s2/halogold_emblem_fix.jpg"
  },
  "AccTheme_HornsLava": {
@@ -7574,7 +7604,9 @@
   "file": "art/ui/LookHaloIce.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHaloIce)",
-  "note": "상점 얼음 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "상점 얼음 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://131721415854040",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHaloGold": {
   "status": "approved",
@@ -7584,7 +7616,9 @@
   "file": "art/ui/LookHaloGold.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHaloGold)",
-  "note": "상점 황금 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "상점 황금 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://90123867490784",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHornsLava": {
   "status": "approved",
@@ -7594,7 +7628,9 @@
   "file": "art/ui/LookHornsLava.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHornsLava)",
-  "note": "상점 용암 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "상점 용암 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://110647559507483",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHornsShadow": {
   "status": "approved",
@@ -7604,7 +7640,9 @@
   "file": "art/ui/LookHornsShadow.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHornsShadow)",
-  "note": "상점 그림자 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "상점 그림자 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://135507968189284",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHaloSprout": {
   "status": "approved",
@@ -7614,7 +7652,9 @@
   "file": "art/ui/LookHaloSprout.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHaloSprout)",
-  "note": "출석 14일 새싹 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "출석 14일 새싹 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://83263248829283",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHornsSprout": {
   "status": "approved",
@@ -7624,7 +7664,9 @@
   "file": "art/ui/LookHornsSprout.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHornsSprout)",
-  "note": "출석 14일 새싹 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "출석 14일 새싹 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://116226794293707",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHaloStarlight": {
   "status": "approved",
@@ -7634,7 +7676,9 @@
   "file": "art/ui/LookHaloStarlight.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHaloStarlight)",
-  "note": "출석 50일 별빛 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "출석 50일 별빛 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://132781328122100",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHornsStarlight": {
   "status": "approved",
@@ -7644,7 +7688,9 @@
   "file": "art/ui/LookHornsStarlight.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHornsStarlight)",
-  "note": "출석 50일 별빛 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "출석 50일 별빛 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://140058187507403",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHaloPlatinum": {
   "status": "approved",
@@ -7654,7 +7700,9 @@
   "file": "art/ui/LookHaloPlatinum.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHaloPlatinum)",
-  "note": "출석 100일 백금 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "출석 100일 백금 후광 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://78646024449809",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "LookHornsPlatinum": {
   "status": "approved",
@@ -7664,7 +7712,9 @@
   "file": "art/ui/LookHornsPlatinum.png",
   "size": "512x512 RGBA",
   "use": "shop cosmetic slot / attendance board icon (Config key LookHornsPlatinum)",
-  "note": "출석 100일 백금 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리."
+  "note": "출석 100일 백금 뿔 아이콘 — 새로 그리지 않고 색 바꾼 R3 3D를 그대로 렌더. 글자 없음, 남색 테두리.",
+  "id": "rbxassetid://123042000375413",
+  "uploaded": "2026-10-08 by 이미지 개발 1 (UiSandbox)"
  },
  "K_CrownShard": {
   "status": "approved",
@@ -7678,12 +7728,109 @@
  },
  "Sky_Box_Day": {
   "status": "approved",
-  "by": "검수 10/08 (#12, 1번)",
+  "by": "검수 10/08 (#12, 1번; 정수리 진하기 절반·Dn = FogColor 150,205,228)",
   "file": "art/out/hq/HQ_Sky_Box_Day.png",
   "medium": "art/out/sky/Sky_Box_Day_1.png",
-  "faces": "art/out/sky/faces/Sky_Day_{Ft,Bk,Lf,Rt,Up,Dn}.png (tools/sky_cubemap.py --top-deg 72 --wrap 8 --repeat 3)",
+  "faces": "art/out/sky/faces/Sky_Day_{Ft,Bk,Lf,Rt,Up,Dn}.png (tools/sky_cubemap.py --top-deg 72 --wrap 8 --repeat 3 --zenith-soften 0.5 --down-color 150,205,228)",
   "sheet": "art/review/sky/sky_day_turnaround.jpg",
   "credits": 5,
   "note": "no sun, no rays; high sky = code gradient"
+ },
+ "FxHitSpark": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/FxHitSpark2_A_HQ.txt",
+  "original": "art/out/hq/src/FxHitSpark2_A_HQ_src.png",
+  "file": "art/ui/FxHitSpark.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "타격 효과: 둥근 흰·노랑 뭉게 퍼프 + 작은 별 3개(뾰족 폭발 대체). 옛 UIP_FxHitSpark 대체."
+ },
+ "FxMagicBurst": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/FxMagicBurst2_B_HQ.txt",
+  "original": "art/out/hq/src/FxMagicBurst2_B_HQ_src.png",
+  "file": "art/ui/FxMagicBurst.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "마법 효과: 둥근 흰·연보라 구름 + 반짝이(빛살 터짐 대체, 색 입히기 쉬움). 옛 UIP_FxMagicBurst 대체."
+ },
+ "ShieldHalo": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 고름(추천대로) 2026-10-08 — 빛살 정리 / Emo (시트 7061908 art/review/s2/emo_rays_sheet.jpg)",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/ShieldHalo2_HQ.txt",
+  "original": "art/out/hq/src/ShieldHalo2_HQ_src.png",
+  "file": "art/ui/ShieldHalo.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes (portrait: cut_keep.py --long 512); checked light/navy/magenta + 64-32 px",
+  "preview": "art/review/s2/emo_rays_final.jpg",
+  "note": "직업 고르기 머리 방패(빛): 금 방패 + 후광 + 하늘 보석, 해·빛살 없음. 옛 UIP_ShieldHalo 대체. #11 때 Horns와 짝 맞추기(검수)."
+ },
+ "Tex_SkeletonKnight_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/SkeletonKnight_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "해골 기사: 검은 갑옷 → 짙은 남보라(보라 빛·금 유지), --lift 0.26 --clean 0.4 --keep-hues 255-305,30-60 --tint 248,0.38 (style drift #35)"
+ },
+ "Tex_Goblin_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/Goblin_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "고블린: 얼룩 줄이고 조금 밝게, --lift 0.15 --sat 1.1 --clean 0.65 (style drift #35)"
+ },
+ "Tex_GoblinBrute_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/GoblinBrute_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "고블린 브루트: --lift 0.18 --sat 1.08 --clean 0.6 (style drift #35)"
+ },
+ "Tex_Skeleton_tone": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — tools/img2/mon_tone.py on the GLB base colour",
+  "file": "art/models/tone/Skeleton_basecolor_tone.png",
+  "use": "SurfaceAppearance.ColorMap (normal / roughness maps unchanged)",
+  "note": "옷 입은 해골(SkeletonClothed 텍스처): --lift 0.15 --sat 1.05 --clean 0.65 (style drift #35)"
+ },
+ "KingSlimeCrown": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK 2026-10-08 (ca30b97 art/review/monsters/monster_fix_25_35.jpg)",
+  "tool": "0 credits — Blender, tools/img2/slime_crown.py",
+  "file": "art/models/tripo/KingSlimeCrown.glb",
+  "use": "BigSlime only, welded on; how-to docs/design/king_slime_crown_2026-10-08.md",
+  "note": "왕 슬라임 금 왕관(둥근 끝 5개 + 공), 머리 크리스탈을 둘러쌈. WorldKit 가져오기 4묶음(검수)."
+ },
+ "MonsterSlimeCube_backfix": {
+  "status": "approved",
+  "date": "2026-10-08",
+  "review": "검수 OK (8d2aafe art/review/monsters/slime_back_face_fix.jpg)",
+  "tool": "0 credits — Blender, tools/img2/mon_back_flatten.py",
+  "file": "art/models/tripo/MonsterSlimeCube_backfix.glb",
+  "note": "A23-81: 슬라임·왕 슬라임 공용 메시의 뒷면 얼굴 볼록 자국을 매끈하게 폄(앞 얼굴·UV 그대로). WorldKit 가져오기 4묶음(검수)."
+ },
+ "SlimeEyeHighlight_rejected": {
+  "status": "rejected",
+  "date": "2026-10-08",
+  "note": "#25 눈: 사용자 거절(10/08 '눈 초롱거리는 건 전이 나은데?'), 옛 눈 유지. art/models/tripo/MonsterSlimeCube_tex_eyes.png · BigSlimeCube_tex_blue_eyes.png 는 올리지 않음."
  }
 }
