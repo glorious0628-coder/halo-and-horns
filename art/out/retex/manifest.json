@@ -1,0 +1,175 @@
+{
+ "_note": "style drift color shifts 2026-10-08 (이미지 생성 1, 0 credits). Each PNG is 1024 and uses the SAME UV as the source mesh: upload it and use it as the TextureID/ColorMap on a copy of the existing MeshPart (same MeshId). Sheets in art/review/retex/.",
+ "M_Tree_tex.png": {
+  "item": "#5",
+  "mesh_from": "W_Tree_B (MeshId 119752494377465)",
+  "new_name": "M_Tree",
+  "replaces_tex": "128194951234486",
+  "sheet": "art/review/retex/m_tree_5.jpg",
+  "note": "meadow only; W_Tree_C cap 0 in meadow"
+ },
+ "Kit_M_BushB_M_tex.png": {
+  "item": "#7",
+  "mesh_from": "Kit_M_BushB",
+  "sheet": "art/review/retex/kit_m_7.jpg"
+ },
+ "Kit_M_Fence_M_tex.png": {
+  "item": "#7",
+  "mesh_from": "Kit_M_Fence",
+  "sheet": "art/review/retex/kit_m_7.jpg"
+ },
+ "Kit_M_Bridge_M_tex.png": {
+  "item": "#7",
+  "mesh_from": "Kit_M_Bridge",
+  "sheet": "art/review/retex/kit_m_7.jpg"
+ },
+ "Kit_M_Mushrooms_M_tex.png": {
+  "item": "#7",
+  "mesh_from": "Kit_M_Mushrooms",
+  "sheet": "art/review/retex/kit_m_7.jpg"
+ },
+ "Kit_M_PuddleRim_M_tex.png": {
+  "item": "#7",
+  "mesh_from": "Kit_M_PuddleRim",
+  "sheet": "art/review/retex/kit_m_7.jpg"
+ },
+ "Kit_M_JobBoard_M_tex.png": {
+  "item": "#7",
+  "mesh_from": "Kit_M_JobBoard",
+  "sheet": "art/review/retex/kit_m_7.jpg"
+ },
+ "Kit_M_FlowerCart_M_tex.png": {
+  "item": "#7",
+  "mesh_from": "Kit_M_FlowerCart",
+  "sheet": "art/review/retex/kit_m_7.jpg"
+ },
+ "Tex_Cobblestone_FF3.png": {
+  "item": "#17",
+  "replaces": "Tex_Cobblestone_FF2 (crossroads floor MaterialVariant ColorMap)",
+  "sheet": "art/review/retex/cobble_17.jpg",
+  "note": "seamless tile kept; ~17% stones light grey-lavender like the concept rings (검수 10/08), rest warm tan; consider bigger StudsPerTile"
+ },
+ "W_Boulder_Sea_tex.png": {
+  "item": "#37",
+  "mesh_from": "W_Boulder_A",
+  "new_name": "W_Boulder_Sea",
+  "sheet": "art/review/retex/boulders_37.jpg"
+ },
+ "W_Boulder_Halo_tex.png": {
+  "item": "#37",
+  "mesh_from": "W_Boulder_A",
+  "new_name": "W_Boulder_Halo",
+  "sheet": "art/review/retex/boulders_37.jpg"
+ },
+ "W_Boulder_Horns_tex.png": {
+  "item": "#37",
+  "mesh_from": "W_Boulder_A",
+  "new_name": "W_Boulder_Horns",
+  "sheet": "art/review/retex/boulders_37.jpg"
+ },
+ "Town_Halo_Tree_M_tex.png": {
+  "item": "#38",
+  "mesh_from": "Town_Halo_Tree",
+  "sheet": "art/review/retex/halo_38.jpg"
+ },
+ "Kit_X_PlazaWall_Marble_tex.png": {
+  "item": "#38",
+  "mesh_from": "Kit_X_PlazaWall (also fits Kit_X_PlazaWall_LOD, same UV)",
+  "new_name": "Kit_X_PlazaWall_Marble",
+  "sheet": "art/review/retex/halo_38.jpg",
+  "note": "instead of Town_Halo_Wall"
+ },
+ "Kit_X_Bench_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_Bench",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_Brazier_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_Brazier",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_Bush_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_Bush",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_Curb_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_Curb",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_Fence_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_Fence",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_FruitCart_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_FruitCart",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_Lamp_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_Lamp",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_PotionCart_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_PotionCart",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_StallRed_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_StallRed",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "X_GuildHall_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "X_GuildHall",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "X_SpawnPlaza_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "X_SpawnPlaza",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "X_TreeA_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "X_TreeA",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "X_HouseA_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "X_HouseA",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "X_HouseB_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "X_HouseB",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "X_MarketArch_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "X_MarketArch",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "X_NoticeBoard_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "X_NoticeBoard",
+  "sheet": "art/review/retex/crossroads_16.jpg"
+ },
+ "Kit_X_StallBlue_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_StallBlue",
+  "sheet": "art/review/retex/crossroads_16.jpg",
+  "note": "same teal base as StallRed -> wood (awning untouched)"
+ },
+ "Kit_X_StallGreen_M_tex.png": {
+  "item": "#16",
+  "mesh_from": "Kit_X_StallGreen",
+  "sheet": "art/review/retex/crossroads_16.jpg",
+  "note": "same teal base as StallRed -> wood (awning untouched)"
+ },
+ "_review": "검수 OK 10/08 (#5 #7 #16 #37 #38; #17 after lavender fix)"
+}
