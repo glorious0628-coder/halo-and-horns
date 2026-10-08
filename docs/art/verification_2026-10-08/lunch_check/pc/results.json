@@ -1,0 +1,8 @@
+{
+ "a call without the quest id changes nothing (call problem, not a game bug)": true,
+ "the answer is still on screen 1 s later": true,
+ "[One bite!] is recorded (Pick Bite) and the card moves on": true,
+ "the reply line shows (Yum! ...)": true,
+ "+25 bank gold": true,
+ "the Devour sound plays with the pick": true
+}

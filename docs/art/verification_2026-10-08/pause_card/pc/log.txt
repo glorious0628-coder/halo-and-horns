@@ -1,0 +1,30 @@
+[   0.2] device before Play: default
+[   0.3] fresh on
+[   5.0] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=-6,4,-22 anvilDist=80.7
+[  29.0] fired ChooseFaction
+[  29.2] fired ChooseClass
+[  32.9] closed
+[  33.0] TutorialStep = 99
+[  34.1] fired PauseCard
+[  35.3] card: {"Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard", "Title": "Saved!", "Buttons": [{"H": 26.057777404785156, "Name": "Keep", "Text": "Keep playing", "W": 90.19999694824219, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.Keep"}, {"H": 26.057777404785156, "Name": "OK", "Text": "OK", "W": 90.19999694824219, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.OK"}], "Open": true, "Body": "Next time: King Slime (2 of 3)"}
+[  36.8] saved docs\art\verification_2026-10-08\pause_card\pc\01_pause_card.png (white 1%)
+[  37.3] click OK: Success
+[  38.4] card: {"Open": false}
+[  38.5] fired WelcomeBack
+[  39.8] card: {"Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard", "Title": "Welcome back!", "Buttons": [{"H": 26.057777404785156, "Name": "Go", "Text": "Go", "W": 90.19999694824219, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.Go"}, {"H": 26.057777404785156, "Name": "OK", "Text": "OK", "W": 90.19999694824219, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.OK"}], "Open": true, "Body": "Next: Slime jelly 2 of 5"}
+[  41.1] saved docs\art\verification_2026-10-08\pause_card\pc\02_welcome_back.png (white 1%)
+[  41.6] click Go: Success
+[  42.7] TravelingUntil 1791433075.4 now 1791433073.4 zone nil
+[  42.8] card: {"Open": false}
+[  46.6] saved docs\art\verification_2026-10-08\pause_card\pc\03_after_go.png (white 1%)
+[  46.7] console: 
+[  47.7] play stopped
+[  49.9] fresh off
+[  50.0] device: default
+[  50.0] OK   the pause card opens: Saved! / Next time: <goal>
+[  50.0] OK   [Keep playing] and [OK], one size, no other button
+[  50.0] OK   a real click on [OK] closes it
+[  50.0] OK   Welcome back opens: Welcome back! / Next: <goal>
+[  50.0] OK   [Go] and [OK], one size
+[  50.0] OK   a real click on [Go] closes it and starts the travel
+[  50.0] OK   no PauseCard error in the console

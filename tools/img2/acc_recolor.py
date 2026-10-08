@@ -28,8 +28,11 @@ THEMES = {
     # shop (A23-75, user pick 292051f)
     "HaloIce": {"kind": "Halo", "gold": ("set", 198, 0.42, 1.08), "orange": ("set", 192, 0.45, 1.05), "white": ("set", 203, 0.26, 1.0),
                 "red": ("set", 205, 0.5, 1.0), "glow": (170, 225, 255), "sparkle": (225, 245, 255)},
+    # HaloGold emblem: was ruby (352) = a red spiky sun on R4 / R5 (검수 10/08) -> bright pale gold, and on R4 / R5 only the
+    # round centre (emblemcore mask), not the side pieces along the ring
     "HaloGold": {"kind": "Halo", "gold": ("set", 33, 0.86, 0.93), "orange": ("set", 30, 0.88, 0.93), "white": ("set", 44, 0.55, 1.0),
-                 "red": ("set", 352, 0.85, 0.9), "emblem": ("set", 352, 0.88, 0.95), "glow": (255, 170, 110), "sparkle": (255, 120, 130)},
+                 "red": ("set", 44, 0.6, 1.1), "emblem": ("set", 46, 0.6, 1.15), "emblem_mask": "emblemcore",
+                 "glow": (255, 170, 110), "sparkle": (255, 210, 120)},
     "HornsLava": {"kind": "Horns", "tcurve": (0.5, 0.95), "red": ("blend", (6, 0.5, 0.17), (26, 0.98, 1.0)), "gold": ("set", 30, 1.0, 1.08),
                   "orange": ("set", 28, 1.0, 1.1), "white": ("set", 30, 0.35, 1.0), "glow": (255, 120, 40), "sparkle": (255, 190, 90)},
     "HornsShadow": {"kind": "Horns", "tcurve": (0.35, 1.0), "red": ("blend", (270, 0.6, 0.12), (283, 0.68, 0.6)), "gold": ("set", 270, 0.18, 1.0),
@@ -150,6 +153,8 @@ def main(themes):
             masks = {"name": name}
             for mk in ("emblem", "tips"):
                 mp = SRC + f"masks/{name}_{mk}.png"
+                if mk == "emblem" and th.get("emblem_mask") and os.path.exists(SRC + f"masks/{name}_{th['emblem_mask']}.png"):
+                    mp = SRC + f"masks/{name}_{th['emblem_mask']}.png"
                 if r >= 3 and os.path.exists(mp):
                     masks[mk] = np.asarray(Image.open(mp).convert("L").resize(src.size, Image.BILINEAR)).astype(np.float32) / 255
             Image.fromarray(recolor(np.asarray(src), theme, palette=r <= 2, masks=masks)).save(d + f"{name}.png")

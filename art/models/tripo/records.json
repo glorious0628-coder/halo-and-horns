@@ -3778,7 +3778,10 @@
    "credits": 40.0,
    "file": "art\\models\\tripo\\Kit_M_FlowersA_raw.glb",
    "bytes": 1900556,
-   "at": "2026-10-06 18:39:04"
+   "at": "2026-10-06 18:39:04",
+   "derived": [
+    "art/models/tripo/Kit_M_FlowersA_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 600 --weld 1e-5, 2752 → 596, raw API GLB, no --rotz; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_M_FlowersA_LOD"
+   ]
   }
  ],
  "Kit_M_BushA": [
@@ -3816,7 +3819,10 @@
    "credits": 40.0,
    "file": "art\\models\\tripo\\Kit_M_FlowersB_raw.glb",
    "bytes": 1899380,
-   "at": "2026-10-06 18:40:30"
+   "at": "2026-10-06 18:40:30",
+   "derived": [
+    "art/models/tripo/Kit_M_FlowersB_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 600 --weld 1e-5, 2936 → 598, raw API GLB, no --rotz; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_M_FlowersB_LOD"
+   ]
   }
  ],
  "Kit_M_Mushrooms": [
@@ -5388,7 +5394,8 @@
    "note": "검수 OK 10/08 (담 1 + 계단 1, Firefly 10 + Tripo 110). Source = pinia model_url (4K meshopt).",
    "derived": [
     "art/models/tripo/web/Kit_X_PlazaWall_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)"
+    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)",
+    "art/models/tripo/web/Kit_X_PlazaWall_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 6000 --weld 1e-5, 9908 → 6000; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_X_PlazaWall_LOD"
    ],
    "sheet": "art/review/town5/plaza_wall_stairs_3d.jpg"
   }
@@ -5410,7 +5417,8 @@
    "bytes": 9616040,
    "derived": [
     "art/models/tripo/web/Kit_X_PlazaStairs_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)"
+    "build/import_D3/WorldKit_ImportD3.glb = build/import_all/3_third/D3_PlazaWallStairs.glb (wall fit z 3.0 → 9.73×2.81×3.0, stairs fit z 3.5 → 7.64×6.36×3.5)",
+    "art/models/tripo/web/Kit_X_PlazaStairs_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 6000 --weld 1e-5, 9515 → 5997; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Kit_X_PlazaStairs_LOD"
    ],
    "sheet": "art/review/town5/plaza_wall_stairs_3d.jpg"
   }
@@ -5432,7 +5440,8 @@
    "note": "검수 OK 10/08 (A 석상 + C 바위 1, Firefly 10 + Tripo 110); poly 20k for wings/halo/sword",
    "derived": [
     "art/models/tripo/web/Town_Halo_KnightStatue_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (6.14×5.34×10.0 studs)"
+    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (6.14×5.34×10.0 studs)",
+    "art/models/tripo/web/Town_Halo_KnightStatue_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 3000 --weld 1e-5, 18484 → 3000; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Town_Halo_KnightStatue_LOD"
    ],
    "sheet": "art/review/town5/statue_rock_3d.jpg"
   }
@@ -5454,7 +5463,8 @@
    "bytes": 8233104,
    "derived": [
     "art/models/tripo/web/Town_Horns_SpikeRock_HD_plain.glb (glb_decimate 100000 = no change, --rotz -90: front -Y)",
-    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (12.23×11.78×16.0 studs)"
+    "build/import_D4/WorldKit_ImportD4.glb = build/import_all/3_third/D4_TownStatueRock.glb (12.23×11.78×16.0 studs)",
+    "art/models/tripo/web/Town_Horns_SpikeRock_LOD.glb (폰 규칙 검수 10/08 2차: glb_decimate 3000 --weld 1e-5, 9836 → 3000; check art/review/town5/lod_fix2_compare.jpg) — build/import_D10/WorldKit_ImportD10.glb = build/import_all/3_third/D10_LODFix.glb as Town_Horns_SpikeRock_LOD"
    ],
    "sheet": "art/review/town5/statue_rock_3d.jpg"
   }

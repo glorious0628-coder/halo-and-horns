@@ -30,14 +30,34 @@ local function newInst(class)
 		end
 		return nil
 	end
+	function o:GetChildren() return table.clone(self.Children) end
+	function o:Destroy() self.Parent = nil end
 	return setmetatable(o, { __newindex = function(t, k, v)
 		if k == "Parent" then
+			local old = rawget(t, "_parent")
+			if old then
+				local i = table.find(old.Children, t)
+				if i then table.remove(old.Children, i) end
+			end
 			rawset(t, "_parent", v)
 			if v then table.insert(v.Children, t) end
 			return
 		end
 		rawset(t, k, v)
 	end, __index = function(t, k) if k == "Parent" then return rawget(t, "_parent") end return nil end })
+end
+-- the board's rows (Row1..RowN labels in the Names frame) joined by line breaks; nil when there is no Names frame
+local function rowsText(part)
+	local names = part:FindFirstChild("Names", true)
+	if not names then return nil end
+	local rows = {}
+	for _, ch in names.Children do
+		if string.sub(ch.Name, 1, 3) == "Row" then table.insert(rows, ch) end
+	end
+	table.sort(rows, function(a, b) return a.LayoutOrder < b.LayoutOrder end)
+	local out = {}
+	for _, r in rows do table.insert(out, r.Text) end
+	return table.concat(out, "\n"), #rows
 end
 local GS = { Attr = {}, Signals = {} }
 function GS:GetAttribute(k) return self.Attr[k] end
@@ -87,6 +107,7 @@ check("Names: a very long name is cut with …", Board.Names(string.rep("x", 40)
 check("Names: not a string -> empty", #Board.Names(nil) == 0 and #Board.Names(5) == 0)
 check("Text: no supporters -> the plain thank-you line (no buy button, no pressure)", Board.Text({}) == "Thank you for playing!")
 check("Text: names in rows of three", Board.Text({ "A", "B", "C", "D" }) == "A    B    C\nD", Board.Text({ "A", "B", "C", "D" }))
+check("Rows: one entry per row", #Board.Rows({ "A", "B", "C", "D" }) == 2 and #Board.Rows({}) == 1)
 
 -- the boards
 local part = newInst("Part")
@@ -95,22 +116,28 @@ GS.Attr.SupporterNames = "Ann\nBo"
 Board.Init({})
 Board.Start()
 local gui = part:FindFirstChild("SupporterGui")
-local body = part:FindFirstChild("Names", true)
 local title = part:FindFirstChild("Title", true)
 check("a tagged board gets the SurfaceGui with the title and the names", gui ~= nil and gui.ClassName == "SurfaceGui"
-	and title and title.Text == "Thank you, supporters!" and body and body.Text == "Ann    Bo", body and body.Text)
-setNames("Cy\nAnn\nBo")
-check("the list changes -> the board redraws (newest first)", body.Text == "Cy    Ann    Bo", body.Text)
+	and title and title.Text == "Thank you, supporters!" and rowsText(part) == "Ann    Bo", rowsText(part))
+setNames("Cy\nAnn\nBo\nDee")
+check("the list changes -> the board redraws (newest first, three a row)", rowsText(part) == "Cy    Ann    Bo\nDee", rowsText(part))
 local count = #part.Children
 setNames("Cy")
-check("a redraw reuses the same SurfaceGui (no pile-up)", #part.Children == count and body.Text == "Cy", #part.Children)
+local text1, n1 = rowsText(part)
+check("a redraw reuses the same SurfaceGui and drops the old rows (no pile-up)", #part.Children == count and text1 == "Cy"
+	and n1 == 1, tostring(#part.Children) .. " / " .. tostring(n1))
 local late = newInst("Part")
 table.insert(TAGGED, late)
 ADDED:Fire(late)
-local lateBody = late:FindFirstChild("Names", true)
-check("a board that streams in later draws at once", lateBody ~= nil and lateBody.Text == "Cy", lateBody and lateBody.Text)
+check("a board that streams in later draws at once", rowsText(late) == "Cy", rowsText(late))
 setNames("")
-check("an empty list -> the thank-you line on every board", body.Text == "Thank you for playing!" and lateBody.Text == "Thank you for playing!")
+check("an empty list -> the thank-you line on every board", rowsText(part) == "Thank you for playing!"
+	and rowsText(late) == "Thank you for playing!")
+local thirty = {}
+for i = 1, 30 do table.insert(thirty, "N" .. i) end
+setNames(table.concat(thirty, "\n"))
+local _, n30 = rowsText(part)
+check("thirty names -> ten rows", n30 == 10, n30)
 
 print(("SUPPORTER_BOARD_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("SUPPORTER_BOARD_OFFLINE_OK") end

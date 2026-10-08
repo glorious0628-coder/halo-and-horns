@@ -2,11 +2,13 @@
 Geometry masks baked into a rank accessory's UV space (white = selected), so a recolor can treat small parts on
 their own (0 credits). Blender, Cycles EMIT bake of a per-face vertex colour.
 
-  blender --background --factory-startup --python tools/img2/acc_masks.py -- <in.glb> <out_dir> [size=1024]
+  blender --background --factory-startup --python tools/img2/acc_masks.py -- <in.glb> <out_dir> [size=1024] [core=0.0]
 
 -> <out_dir>/<name>_emblem.png : halo parts sticking out in front of the ring near the front centre (R3 gems,
                                  R4 / R5 sun emblem). The model faces -Y (Roblox -Z).
    <out_dir>/<name>_tips.png   : horn tips (the top 14 % of the height).
+   <out_dir>/<name>_emblemcore.png (only when core > 0): the emblem faces within core * width of the centre line
+                                 (HaloGold R4 / R5: the round centre only, not the side pieces along the ring).
 Only meaningful for the textured R3-R5 meshes (R1 / R2 sample whole cells of the shared 64 px palette).
 """
 import os
@@ -18,6 +20,7 @@ from mathutils import Vector
 argv = sys.argv[sys.argv.index("--") + 1:]
 IN, OUT = os.path.abspath(argv[0]), os.path.abspath(argv[1])
 SIZE = int(argv[2]) if len(argv) > 2 else 1024
+CORE = float(argv[3]) if len(argv) > 3 else 0.0
 name = os.path.splitext(os.path.basename(IN))[0]
 os.makedirs(OUT, exist_ok=True)
 
@@ -90,6 +93,9 @@ def bake(sel, label):
     img.save()
 
 
-bake(sel_emblem, "emblem")
-bake(sel_tips, "tips")
+if CORE > 0:
+    bake({(o.name, i) for o, i, c in centres if (o.name, i) in sel_emblem and abs(c.x - cx) < CORE * W}, "emblemcore")
+else:
+    bake(sel_emblem, "emblem")
+    bake(sel_tips, "tips")
 print("[acc_masks] ok", name, "emblem faces", len(sel_emblem), "tip faces", len(sel_tips), "ring front y", round(rf, 4), flush=True)

@@ -23,7 +23,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL another player's Travel shows nothing :: ",
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000020c54416aa0 closed 2"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000015c6b664b10 closed 2"
         ]
       },
       {
@@ -31,7 +31,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001f4ecde0ae0 closed 0"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x00000270d476eac0 closed 0"
         ]
       },
       {
@@ -50,7 +50,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TravelDone lifts the black at once :: 0",
-          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000001bda2ec8ac0",
+          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000002226b0e4ae0",
           "CHECK_FAIL TravelDone turns the camera behind my back (same distance and height) :: nil"
         ]
       },
@@ -173,7 +173,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x000001779a7524f0"
+          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x0000022e6a193510"
         ]
       },
       {
@@ -181,15 +181,15 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my first kill clears the marker :: table: 0x00000257fb0b24a0"
+          "CHECK_FAIL my first kill clears the marker :: table: 0x000001aef1c3f4c0"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "81ef391810bdefd274923836367e3cba5743222383a1b5153483939c5a895879",
+    "src/ReplicatedStorage/Shared/Config.luau": "0a677fce31e1a85b9b1594468582d4de1ef5ae11f916c1a4896adc4eff9b3063",
     "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "c04e9f63caad15cdded9ecd6a50d16478fe4be743251b95e8e9c2561fdd283b5",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "2f78ca3172a6cb789f9378eab09034b3ca5c0f1f7d3c4611f2d86c7c5b38c888"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
   },
   "fixtureSHA256": "07bbb76b1dcba8a01201d1c2a287a3535885eeafa5fdcb4d322e00fc2fbe3c36",
   "studioCalls": 0,

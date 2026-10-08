@@ -1,0 +1,23 @@
+[   4.7] device: samsung_galaxy_s22_ultra 749x361
+[   4.8] fresh on
+[  15.7] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=1,4,-25 anvilDist=80.0
+[  40.2] fired ChooseFaction
+[  40.5] fired ChooseClass
+[  44.6] closed
+[  44.6] TutorialStep = 99
+[  45.8] fired PauseCard
+[  47.2] card: {"Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard", "Title": "Saved!", "Buttons": [{"H": 39, "Name": "Keep", "Text": "Keep playing", "W": 135, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.Keep"}, {"H": 39, "Name": "OK", "Text": "OK", "W": 135, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.OK"}], "Open": true, "Body": "Next time: King Slime (2 of 3)"}
+[  51.2] saved docs\art\verification_2026-10-08\pause_card\phone\01_pause_card.png (white 1%)
+[  51.3] card taken away
+[  52.5] fired WelcomeBack
+[  53.7] card: {"Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard", "Title": "Welcome back!", "Buttons": [{"H": 39, "Name": "Go", "Text": "Go", "W": 135, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.Go"}, {"H": 39, "Name": "OK", "Text": "OK", "W": 135, "Path": "Players.Darugi_S2.PlayerGui.MainGui.PauseCard.Box.Buttons.OK"}], "Open": true, "Body": "Next: Slime jelly 2 of 5"}
+[  55.3] saved docs\art\verification_2026-10-08\pause_card\phone\02_welcome_back.png (white 2%)
+[  55.3] console: 
+[  56.9] play stopped
+[  59.8] fresh off
+[  61.2] device: default
+[  61.2] OK   the pause card opens: Saved! / Next time: <goal>
+[  61.2] OK   [Keep playing] and [OK], one size, no other button
+[  61.2] OK   Welcome back opens: Welcome back! / Next: <goal>
+[  61.2] OK   [Go] and [OK], one size
+[  61.2] OK   no PauseCard error in the console

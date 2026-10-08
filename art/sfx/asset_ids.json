@@ -73,7 +73,7 @@
     }
   },
   "old": {
-    "about": "round-3 uploads replaced by round-4 files (art/sfx/*.ogg masters). Retire these ids / files only after 게임성 개발 1 wires the round-4 ids and the Play check passes (tools/sfx_wiring_check.py, tools/sfx_loadcheck.py).",
+    "about": "RETIRED 2026-10-08: round-3 uploads replaced by round-4 files. 게임성 개발 1 wired the new ids (ab70833) and the main Studio Play check passed (10/08); the 30 art/sfx/*.ogg masters were deleted. Ids kept here as a record only (the assets stay Restricted on Creator Hub, unused).",
     "uploaded": "2026-10-07",
     "format": "wav (pcm_s16le from the art/sfx/*.ogg masters; Chrome sent .ogg as an unknown type)",
     "ids": {

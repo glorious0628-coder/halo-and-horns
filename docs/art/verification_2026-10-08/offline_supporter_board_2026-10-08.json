@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 11,
+  "checks": 13,
   "failedChecks": [],
   "static": [
     {
@@ -13,9 +13,9 @@
     }
   ],
   "mutations": {
-    "total": 7,
-    "applied": 7,
-    "caught": 7,
+    "total": 9,
+    "applied": 9,
+    "caught": 9,
     "results": [
       {
         "mutation": "no cap of 30",
@@ -38,8 +38,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL the list changes -> the board redraws (newest first) :: Ann    Bo",
-          "CHECK_FAIL a redraw reuses the same SurfaceGui (no pile-up) :: 1",
+          "CHECK_FAIL the list changes -> the board redraws (newest first, three a row) :: Ann    Bo",
+          "CHECK_FAIL a redraw reuses the same SurfaceGui and drops the old rows (no pile-up) :: 1 / 1",
           "CHECK_FAIL an empty list -> the thank-you line on every board :: "
         ]
       },
@@ -56,8 +56,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL the list changes -> the board redraws (newest first) :: Ann    Bo",
-          "CHECK_FAIL a redraw reuses the same SurfaceGui (no pile-up) :: 3",
+          "CHECK_FAIL the list changes -> the board redraws (newest first, three a row) :: Ann    Bo",
+          "CHECK_FAIL a redraw reuses the same SurfaceGui and drops the old rows (no pile-up) :: 3 / 1",
           "CHECK_FAIL an empty list -> the thank-you line on every board :: "
         ]
       },
@@ -67,8 +67,26 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL a tagged board gets the SurfaceGui with the title and the names :: Thank you for playing!",
-          "CHECK_FAIL the list changes -> the board redraws (newest first) :: Thank you for playing!",
-          "CHECK_FAIL a redraw reuses the same SurfaceGui (no pile-up) :: 1"
+          "CHECK_FAIL the list changes -> the board redraws (newest first, three a row) :: Thank you for playing!",
+          "CHECK_FAIL a redraw reuses the same SurfaceGui and drops the old rows (no pile-up) :: 1 / 1"
+        ]
+      },
+      {
+        "mutation": "old rows pile up",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the list changes -> the board redraws (newest first, three a row) :: Ann    Bo",
+          "CHECK_FAIL a redraw reuses the same SurfaceGui and drops the old rows (no pile-up) :: 1 / 4",
+          "CHECK_FAIL an empty list -> the thank-you line on every board :: "
+        ]
+      },
+      {
+        "mutation": "all rows in one label",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the list changes -> the board redraws (newest first, three a row) :: Cy    Ann    Bo"
         ]
       },
       {
@@ -82,10 +100,10 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "50224442d83f50a30fdeb6aba9cdd67aab7e57f6385d5ba4ef35d5e4fef1f0a1",
+    "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "7e60722dacb4834f28f23b78a05e64892a40cd43cc0ac776df6b21a7411d83a4",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
   },
-  "fixtureSHA256": "a69686a5f40db915eb3630ccd96d4bdf648e1927c85f1962cb19543275199dac",
+  "fixtureSHA256": "34d820501d3462ce7fe3f2b2ce569d98d35d3e994723619b74e6bb2033a0246d",
   "studioCalls": 0,
   "limitations": "Doubles instead of the engine: how the names fit on the real 3D board is a Studio photo check after the board is placed (Edit tool) and the server fills SupporterNames."
 }

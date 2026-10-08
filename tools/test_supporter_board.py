@@ -27,8 +27,10 @@ MUTATIONS = [
     ("the board never redraws", "\t\tgs:GetAttributeChangedSignal(T.Attr):Connect(redrawAll)\n", ""),
     ("a late board stays blank", "\t\tCollectionService:GetInstanceAddedSignal(T.Tag):Connect(function(part) pcall(draw, part) end)\n", ""),
     ("a new SurfaceGui every redraw", "\tlocal gui = part:FindFirstChild(T.Gui)\n", "\tlocal gui = nil\n"),
-    ("no names shown", "\t\tbody.Text = SupporterBoard.Text(SupporterBoard.Names(S.GameState and S.GameState:GetAttribute(T.Attr)))\n",
-     "\t\tbody.Text = T.Empty\n"),
+    ("no names shown", "\tlocal rows = SupporterBoard.Rows(SupporterBoard.Names(S.GameState and S.GameState:GetAttribute(T.Attr)))\n",
+     "\tlocal rows = { T.Empty }\n"),
+    ("old rows pile up", "\t\tif string.sub(ch.Name, 1, 3) == \"Row\" then ch:Destroy() end\n", ""),
+    ("all rows in one label", "\t\trow.Text = text\n", "\t\trow.Text = table.concat(rows, \"\\n\")\n"),
     ("long names not cut", "\t\t\tif utf8.len(name) and utf8.len(name) > T.NameMax then\n", "\t\t\tif false then\n"),
 ]
 
