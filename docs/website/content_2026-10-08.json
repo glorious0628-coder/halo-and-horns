@@ -1,0 +1,470 @@
+{
+ "gather:images": {
+  "images": [
+   {
+    "out": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\scratchpad\\site\\img\\hero.jpg",
+    "source": "C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\ui\\UIP_WorldMapV2_1536.png",
+    "shows": "A bird's-eye painted map of the Halo & Horns world: the white Halo town at the top and the lava Horns fortress at the bottom, with the Crossroads, meadow, pumpkin patch, woods and ruins islands joined by bridges.",
+    "px": "1400x933",
+    "bytes": 329033,
+    "safeBecause": "Approved Firefly art in art/approved.json (key UIP_WorldMapV2, user OK via review, A23-53). It is the active in-game world map. It has no lettering, no people and no rays: the Crossroads roads are four straight paths, not a sunburst. Not from art/out/v1."
+   },
+   {
+    "out": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\scratchpad\\site\\img\\shot1.jpg",
+    "source": "C:\\Users\\glori\\Documents\\Roblox\\Game\\docs\\art\\verification_2026-10-06\\studio_round_evening\\front_PumpkinKing.png",
+    "shows": "Gameplay: a player fights the crowned Pumpkin King boss in the pumpkin patch while smiling pumpkin slimes hop nearby, with the English HUD, minimap, quests and attack/skill buttons visible.",
+    "px": "900x442",
+    "bytes": 78893,
+    "safeBecause": "A real Studio Play photo, not debug art. All text is English and there is no Korean or debug overlay. The only person is a blocky Roblox avatar in a long-sleeve jacket and long pants with a small halo, so the clothing is modest. Monsters are cute, with no gore and no rays. Small flaw: a few name labels overlap and the event banner is cut off ('...appeared in the')."
+   },
+   {
+    "out": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\scratchpad\\site\\img\\shot2.jpg",
+    "source": "C:\\Users\\glori\\Documents\\Roblox\\Game\\docs\\art\\verification_2026-10-07\\studio_round_evening\\pc\\03_crossroads.jpg",
+    "shows": "Gameplay in the starting meadow: a player meets two green Shard Slimes, one says 'Blub?' in a speech bubble, with green hills, trees and a pond behind them.",
+    "px": "900x344",
+    "bytes": 49584,
+    "safeBecause": "A real Studio Play photo with the English HUD and no Korean or debug overlay. The avatar is a blocky Roblox figure fully covered by a jacket and jeans. Friendly slime monsters, no rays. Note: the file name says crossroads but the photo shows the meadow. It is a wide strip (about 2.6:1) because it is the uncropped PC screen."
+   },
+   {
+    "out": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\scratchpad\\site\\img\\shot3.png",
+    "source": "C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\Crown_Broken_B_preview.png",
+    "shows": "The game's symbol as a 3D model: a broken crown that is half gold with a floating halo and half red with devil horns.",
+    "px": "478x427 (transparent PNG cutout, cropped to the object, not upscaled)",
+    "bytes": 201476,
+    "safeBecause": "A 3D model front render (Tripo record Crown_Broken_B in art/models/tripo/records.json). It is an object with no character and no text. The halo is a plain ring with no rays. I checked the cutout edges on light and dark backgrounds and found no fringes."
+   },
+   {
+    "out": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\scratchpad\\site\\img\\shot4.png",
+    "source": "C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\MonsterSlimeCube_preview.png; C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\MonsterLittleGhost_preview.png; C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\MonsterPumpkinSlime_preview.png",
+    "shows": "Three friendly 3D monsters from the game in a row: a green crystal-topped slime cube, a little ghost in a striped nightcap holding a lantern, and a smiling pumpkin slime.",
+    "px": "700x270 (transparent PNG cutout, composite of three renders)",
+    "bytes": 202913,
+    "safeBecause": "3D front renders of monsters used in the game, with approved Firefly concepts (CON_SlimeCube, CON_LittleGhost, CON_PumpkinSlime). They are cute non-human creatures with no gore, no text and no rays. I left out the bat goblin (bare belly) and skeletons. Cutout edges checked on light and dark backgrounds."
+   },
+   {
+    "out": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\scratchpad\\site\\img\\shot5.png",
+    "source": "C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\Town_Halo_Gate_preview.png; C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\Town_Horns_Gate_preview.png",
+    "shows": "The two town gates as 3D models side by side: the white winged Halo gate on clouds and the dark lava-cracked Horns gate with curled horns and red banners.",
+    "px": "700x336 (transparent PNG cutout, composite of two renders)",
+    "bytes": 269841,
+    "safeBecause": "3D building renders (Tripo records Town_Halo_Gate and Town_Horns_Gate) with no characters and no text. Wings and horns are solid shapes, with no rays fanning from a center. Cutout edges checked on light and dark backgrounds."
+   },
+   {
+    "out": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\scratchpad\\site\\img\\shot6.jpg",
+    "source": "C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\ui\\BtnAttack.png + GlyphSword.png; art\\ui\\BtnSkill.png + Skill_Warrior_Q.png; art\\ui\\BtnSkill.png + Skill_Mage_Q.png; art\\ui\\LevelBadgeHalo.png; art\\ui\\LevelBadgeHorns.png; art\\ui\\Weapon_Warrior_T8.png; art\\ui\\IconCoin.png; art\\ui\\IconMonSlime.png; art\\ui\\IconMonPumpkinKing.png; art\\ui\\IconMonLittleGhost.png (all under C:\\Users\\glori\\Documents\\Roblox\\Game)",
+    "shows": "A sheet of the game's UI art: attack and skill buttons, halo and horns level badges, a jelly sword, a gold coin, and slime, Pumpkin King and little ghost icons, on a dark navy background.",
+    "px": "900x384",
+    "bytes": 52183,
+    "safeBecause": "Every part is approved Firefly art in art/approved.json and none has lettering. The skill icons sit inside the buttons at the in-game size (about 74%). The navy gradient behind them is only the web image's background, not game styling. I left out Skill_Archer_Q because its three arrows fan out from one point."
+   }
+  ],
+  "totalBytes": 1183923
+ },
+ "gather:research": {
+  "programName": "Claude Startups (landing page title \"Claude for Startups\"), run by Anthropic. Anthropic expanded it on 2026-10-06; the post says it launched \"earlier this year\" (2026). The old anthropic.com/startups URL now 301-redirects to the claude.com page.",
+  "url": "https://claude.com/programs/startups (Korean locale: https://claude.com/ko-kr/programs/startups; application in the Console: https://platform.claude.com/offers/startups-application)",
+  "offers": [
+   "$1,000 one-time Claude API credit for every approved company. Credits expire 6 months after they are granted (official FAQ).",
+   "One free year of Claude Team, up to 5 Premium seats. Only organizations new to Claude Team qualify (official FAQ; the 2026-10-06 blog values Claude products + credits at 'up to $7,000').",
+   "Claude Startup Stack: up to $45K in partner offers, redeemed with codes in the Claude Console. Examples on the page: ClickHouse $5K credits, ElevenLabs 12 months free + 33M characters, Gamma 25% off Pro, Granola 3 months Business, Hex 6 months Enterprise, Firecrawl, Augment Code, Emergent, Attention. Third parties provide these, not Anthropic; each is generally once per member, non-transferable and not combinable (Additional Benefits Addendum, effective 2026-10-06).",
+   "Higher API rate limits, automatic for members who receive program credits (official FAQ).",
+   "Up to $100K in additional API credits, only for startups backed by a VC in Anthropic's partner network; claimed through the VC (official FAQ). Partner VCs are not named publicly.",
+   "Applied AI office hours: 45-minute live sessions every other week, booked through a link sent by email and in the Claude Startups portal.",
+   "Help building and submitting a connector/plugin listing for Claude Marketplace (2026-10-06 blog).",
+   "Events: Claude Founder House San Francisco (Oct 6-8, 2026), Anthropic events, hackathons, community meetups (luma.com/claudecommunity), webinars/AMAs, plus a Startup Newsletter with a chance to be featured. Space is limited.",
+   "Credits work ONLY on the first-party Claude API through the Claude Console, not on AWS Bedrock, Google Vertex AI or other third-party platforms. After the credits run out, normal API pricing applies."
+  ],
+  "eligibility": [
+   "Startups founded in the last 5 years OR funded in the last 2 years (official FAQ, 2026-10-06 blog, Korean page).",
+   "VC funding NOT required: 'open to bootstrapped, pre-seed, and venture-backed startups' (official FAQ). A partner VC is needed only for the extra up-to-$100K credits.",
+   "Must have a Claude Console account (the API console at platform.claude.com, not the consumer Claude app).",
+   "Must have a company email that matches the company website's domain, so the company needs its own website domain (official FAQ).",
+   "Must comply with 'Anthropic's supportability policies'. The page does not link or define them.",
+   "Free Claude Team year only for orgs new to Claude Team. Existing program members do not reapply; they redeem the new offers in the Console.",
+   "Official terms (last updated 2025-05-22): Anthropic decides eligibility at its sole discretion and weighs business traction, investment and funding, and Claude integration and usage. The person accepting must have authority to bind the company. Incomplete applications may be disqualified. Selected awardees may have to sign an affidavit and a publicity/liability release within 14 days, and Anthropic may use the company's name and logo as a customer.",
+   "Regional exclusions in the terms: entities established or operating in, or serving people in, Belarus, China, Cuba, Iran, Myanmar, North Korea, Russia, Sudan, Syria, Crimea, Donetsk or Luhansk, and entities barred by US or other law or export controls. South Korea is on Anthropic's supported-countries list for both the API and Claude.ai. Anthropic may refuse entities whose majority ownership traces to unlisted nations.",
+   "Korea: the official Seoul-office announcement (2026-06-17) says 'Claude for Startups is live in Korea'. It lists no Korea-specific terms; the Korean-locale program page shows the same terms as the English page.",
+   "The official page says nothing about solo founders, pre-revenue status, incorporation or legal entity type."
+  ],
+  "applicationAsks": [
+   "Where: sign in to the Claude Console and fill out the application (https://platform.claude.com/offers/startups-application). The page renders client-side; I could not see the live form fields without logging in, and I did not log in.",
+   "Officially listed inputs: a Claude Console account, a company email matching the website's domain (so a company website/domain), and a short description of what you are building.",
+   "From the official terms: the applicant company's name, the name and contact details of the person Anthropic will correspond with (notices go to the registration email), and confirmation that this person can bind the company.",
+   "A third-party guide (hub.causo.ai, updated 2026-10-07) describes the form as company email + website + description, and advises describing Claude usage, traction, funding and integration in the description. Unofficial.",
+   "Founding date / funding date are implied by the 5-year/2-year rule, and the investor name is likely asked for VC-backed applicants. I could not confirm these as explicit fields.",
+   "Review: most applications are decided within minutes; the rest go to manual review, usually 2-3 business days. Accepted startups get an email linking to the Claude Startups page in the Console to claim credits and the Team offer."
+  ],
+  "websiteShould": [
+   "Run on the company's OWN domain, with a matching company email address (e.g. name@studio-domain). This is the one hard official requirement. A Gmail address, a Roblox game page, an itch.io/Steam page or a social profile alone will not give a matching domain.",
+   "Clearly name the company/studio and show it is a real, current business: studio name, short 'what we build' statement, contact email on the same domain, and country (South Korea is supported).",
+   "Show the product: the live Roblox game (link, screenshots or trailer) and any planned Steam title, so the 'short description of what you're building' can be checked against the site.",
+   "Inferred from the terms' evaluation factors (traction, funding, Claude integration/usage), not an official site requirement: say how the studio builds with Claude, e.g. Claude Code for game code and tools, or Claude API features in the game or pipeline.",
+   "Inferred from the 5-year/2-year rule: show when the studio was founded (or funded), plus traction signals such as player counts, visits, devlog videos and community links.",
+   "Practical suggestions, not official: an English version (the application and review are in English), a basic About/Team section, and privacy/terms pages, so the business looks legitimate in a manual review."
+  ],
+  "uncertain": [
+   "Game studios: no official page mentions game studios or games-specific terms. The only game mention I found: the Seoul announcement names Nexon as a Claude Code user. A small new studio building with Claude seems to fit the general startup definition, but that is my inference.",
+   "Solo founders, individuals and sole proprietorships (Korean 개인사업자): not addressed. The terms speak of a 'company' and someone with 'authority to bind the company', which suggests an organization is expected, but no rule on incorporation or entity type is published.",
+   "Pre-revenue: not addressed; the FAQ talks only about funding stage (bootstrapped / pre-seed / VC).",
+   "'Anthropic's supportability policies' are cited but not linked or defined anywhere I could find.",
+   "Exact application form fields: the Console page renders client-side and was not visible without logging in.",
+   "Partner VC list and how the up-to-$100K VC credits are claimed: not published. The VC Partner Program terms (2025-05-23) list no amounts and no claim mechanism.",
+   "Older or third-party information conflicts with the current page. A former anthropic.com/startups FAQ and some guides (guptadeepak.com, hub.causo.ai) say credits need institutional equity funding, founding within 4 years and no prior Anthropic startup credits, and quote tiers like $5K/$25K/$100K or 12-month validity. The current official page (2026-10-06) says $1,000, 6-month expiry, no VC needed and 5-year/2-year age, so the third-party tiers look outdated.",
+   "Whether the main terms (dated 2025-05-22) have been updated for the October 2026 expansion: only the Additional Benefits Addendum carries the new 2026-10-06 date. The separate 'Claude Promotional Credit Offer Terms' that govern the credits were not found as a public page.",
+   "Whether the API credits can pay for Claude Code usage depends on Console API billing; the page only says 'first-party Claude API through Claude Console'.",
+   "The Korean program: the Seoul announcement says it is 'live in Korea' but does not say whether it differs from the global program. The ko-kr page looks identical."
+  ],
+  "sources": [
+   "https://claude.com/programs/startups",
+   "https://claude.com/ko-kr/programs/startups",
+   "https://claude.com/blog/were-expanding-the-claude-startups-program-to-help-founders-build (also at https://claude.com/resources/articles/were-expanding-the-claude-startups-program-to-help-founders-build), dated 2026-10-06",
+   "https://www.anthropic.com/startup-program-official-terms (last updated 2025-05-22)",
+   "https://www.anthropic.com/legal/startup-program-addendum (effective 2026-10-06)",
+   "https://platform.claude.com/offers/startups-application",
+   "https://claude.com/contact-sales/vc-partner",
+   "https://www.anthropic.com/vc-partner-program-official-terms (2025-05-23)",
+   "https://www.anthropic.com/supported-countries",
+   "https://www.anthropic.com/news/seoul-office-partnerships-korean-ai-ecosystem (2026-06-17)",
+   "https://www.anthropic.com/news/claude-for-small-business (2026-05-13)",
+   "https://www.anthropic.com/events/claude-founder-house-san-francisco",
+   "https://hub.causo.ai/guides/how-to-apply-to-claude-for-startups-2026 (third-party, unofficial)",
+   "https://guptadeepak.com/anthropic-claude-for-startups-the-complete-guide-to-credits-tiers-and-eligibility-2026/ (third-party, conflicting/outdated tiers)"
+  ],
+  "otherPrograms": [
+   "Anthropic VC Partner Program: VC firms apply (claude.com/contact-sales/vc-partner); their portfolio startups can get up to $100K extra API credits through the VC. Partner names are not public.",
+   "Claude for Startups in Korea: per the 2026-06-17 Seoul announcement it is live in Korea, alongside Claude Meetups, a Claude Build Day with BASS Ventures, and a 'Push to Prod' hackathon with Replit, Korea Investment Partners and Korea Investment Accelerator (no date given). These are possible routes to Anthropic contacts and partner investors.",
+   "Claude for Small Business (2026-05-13): a Cowork connector and workflow package for small businesses, not a credit program. Credits went only to specific cohorts (the Workday Foundation Solopreneurship Accelerator, CDFI partners). Info at claude.com/solutions/small-business.",
+   "Regional partner example: Amii (Canada) says participants in its ML Exploration or Level Up programs may get up to $30K in Claude API credits (https://www.amii.ca/startups-investors/claude-for-startups-program). This comes from Amii's page, not Anthropic's, and is not relevant for Korea.",
+   "Separate Claude plan promotions (e.g. the Artifact usage promotion Oct 1-15, 2026 for Pro/Max/Team) are not startup programs."
+  ]
+ },
+ "gather:facts": {
+  "pitch": "Halo & Horns is a Roblox action RPG where every choice you make tilts you toward angel or devil, and everyone can see it over your own avatar.",
+  "description": "Halo & Horns (Korean name: 선악 키우기) is an online Roblox adventure. You join the Knights of Light (Halo) or the Horn Legion (Horns), pick a Warrior, Mage or Archer, hunt cute monsters like slimes, goblins and pumpkin slimes, and collect loot to grow stronger. Whether you help other players or rob them builds up on your side of the scale and shows as a halo or horns over your own Roblox avatar. Combat is simple: one tap is one attack, and an optional quest unlocks auto-combat, which only ever hits monsters. Fights against other players happen only in marked PvP zones, and new players are protected. The game is not public yet: beta opens 2026-10-31.",
+  "coreRule": "\"Every action tilts toward angel or devil\" (docs/GDD.md §0, set by the founder 2026-10-04, never changed). New systems go in only if they follow it. Choices pile up on the Halo (angel) or Horns (devil) side. They have consequences: devil acts earn Wanted stars and a bounty, angel-side players hunt you down, and this feeds the bully/justice, wanted, revenge (grudge sack) and size-justice systems. They also show on you: halo or horns over your own Roblox avatar. The first good/evil choice comes about 3 minutes in (\"Lost Lunchbox!\": give it back or take a bite). Controls stay easy: manual combat by default, with auto-combat as an optional unlock.",
+  "loop": "The first time you join, a skippable 15-25 s in-engine 3D intro plays (the broken balance crown, shards flying to Halo and Horns). Then you pick a faction and a class, and a guide from your faction offers the first mission. You get your first class weapon at the Forge, travel to the Squishy Meadow and hunt slimes for the mission reward (150 gold). The main loop is: hunt, then loot (enhancement scrolls, rare drops, a tiny-chance legendary weapon even from slimes), then prepare and choose in town (blacksmith weapons, potions, scroll enhancement), then take on a harder zone or boss (Goblin Woods Lv10, Skeleton Ruins Lv25, Halloween minibosses). Choices along the way (help or rob, purify or devour the crown shard) tilt you angel or devil. Every 10 minutes a server-wide crown war decides which faction holds the crown and turns the sky its color. Golden goose events and daily quests add short goals on top. Skills unlock at Lv5, Lv15 and Lv25 and use MP and cooldowns. Auto-combat unlocks through the optional quest \"The Shard That Learns to Fight\", which can only be finished after the first skill at Lv5.",
+  "features": [
+   {
+    "name": "First-time 3D intro (skippable, replayable from menu)",
+    "status": "built",
+    "evidence": "src/StarterPlayer/StarterPlayerScripts/Intro.luau (A23-9 header)"
+   },
+   {
+    "name": "Faction pick: Knights of Light (Halo) / Horn Legion (Horns)",
+    "status": "built",
+    "evidence": "FactionPicker.luau, FactionService.luau; names in Config.luau lines 762-785"
+   },
+   {
+    "name": "Three classes per faction (Paladin/Berserker, Light/Dark Mage, Ranger/Shadow Hunter)",
+    "status": "built",
+    "evidence": "Config.luau lines 405-444, ClassService.luau, ClassPicker.luau"
+   },
+   {
+    "name": "Guided first mission: guide dialog, accept, travel to meadow, weapon first at the Forge",
+    "status": "built",
+    "evidence": "FirstSteps.luau, StoryQuestService.luau, QuestService.luau; tools/test_weapon_first.py"
+   },
+   {
+    "name": "'Lost Lunchbox!' first good/evil choice",
+    "status": "built",
+    "evidence": "Config.luau Lunch1 (line ~2244), StoryQuestService.luau"
+   },
+   {
+    "name": "Manual combat (one press = one attack, front half-circle hit)",
+    "status": "built",
+    "evidence": "CombatService.luau; tools/test_aim_cone.py"
+   },
+   {
+    "name": "Auto-combat ON/OFF toggle, monsters only, unlocked by optional quest 'The Shard That Learns to Fight'",
+    "status": "built",
+    "evidence": "CombatService.luau AutoCombatUnlocked/AutoCombatEnabled; Config.luau S0 quest line 2221 with Unlock = \"AutoCombat\""
+   },
+   {
+    "name": "Class skills with MP and cooldown, learned at Lv5 / 15 / 25",
+    "status": "built",
+    "evidence": "SkillService.luau; Config.luau line 564 Unlock = { Q = 5, Z = 15, X = 25 }"
+   },
+   {
+    "name": "Monster drops and enhancement scrolls 10% / 30% / 70% (no item destruction), transfer scrolls",
+    "status": "built",
+    "evidence": "LootService.luau; Config.luau Enh10/Enh30/Enh70, Move10.. lines 3697-3707"
+   },
+   {
+    "name": "Rare 'jackpot' legendary weapon drop from slimes",
+    "status": "built",
+    "evidence": "LootService.luau (LOOT.Jackpot, grantWeapon isJackpot)"
+   },
+   {
+    "name": "Blacksmith weapon shop (buy, keep, re-equip, sell) and potion merchant",
+    "status": "built",
+    "evidence": "ShopService.luau"
+   },
+   {
+    "name": "Angel/devil consequence systems: honor/infamy, Wanted stars and bounty, revenge marks, grudge sack, size justice, kaiju transformation",
+    "status": "built",
+    "evidence": "PvPService.luau, GrudgeService.luau, JusticeService.luau, KaijuService.luau"
+   },
+   {
+    "name": "10-minute crown war between factions (sky changes color)",
+    "status": "built",
+    "evidence": "WarService.luau"
+   },
+   {
+    "name": "Golden goose tug-of-war event",
+    "status": "built",
+    "evidence": "GooseService.luau"
+   },
+   {
+    "name": "Halloween season: pumpkin slimes, bat goblins, ghosts, Pumpkin King and Ghost King minibosses",
+    "status": "built",
+    "evidence": "HalloweenService.luau; Config.MonsterTypes"
+   },
+   {
+    "name": "12 monster kinds (6 regular + 6 Halloween) plus golden goose, with motion data",
+    "status": "built",
+    "evidence": "Config.MonsterTypes (Config.luau ~1637-1676); 35 files in src/ReplicatedStorage/MonsterAnims"
+   },
+   {
+    "name": "Baby slime pet",
+    "status": "built",
+    "evidence": "PetService.luau, PetFollow.luau"
+   },
+   {
+    "name": "Daily quests and story quests",
+    "status": "built",
+    "evidence": "QuestService.luau, StoryQuestService.luau"
+   },
+   {
+    "name": "Weekly rankings and stat-free titles",
+    "status": "built",
+    "evidence": "RankingService.luau, TitleService.luau"
+   },
+   {
+    "name": "Unique, filtered game nicknames",
+    "status": "built",
+    "evidence": "NicknameService.luau (FilterStringAsync broadcast filter)"
+   },
+   {
+    "name": "Saving with DataStore session lock, retries and migration",
+    "status": "built",
+    "evidence": "DataService.luau header; tools/test_save_lock.py"
+   },
+   {
+    "name": "Minimap, world map, camera that follows behind the character, rebindable PC keys",
+    "status": "built",
+    "evidence": "MiniMap.luau, WorldMap.luau, CameraFollow.luau, Keybinds.luau"
+   },
+   {
+    "name": "One HUD layout for PC and phone",
+    "status": "built",
+    "evidence": "HudLayout.luau, HUD.luau; tools/test_hud_layout.py"
+   },
+   {
+    "name": "Monster speech bubbles (short sound-word lines)",
+    "status": "built",
+    "evidence": "BarkService.luau; tools/test_monster_bark.py"
+   },
+   {
+    "name": "Sound effects wired into the game",
+    "status": "built",
+    "evidence": "Audio.luau; 59 rbxassetid entries in Config.Audio.Files (Config.luau lines 3976-4037)"
+   },
+   {
+    "name": "Rebirth (switching sides) and free class change",
+    "status": "built",
+    "evidence": "ProgressionService.luau header"
+   },
+   {
+    "name": "Analytics funnel with no personal data",
+    "status": "built",
+    "evidence": "TelemetryService.luau header"
+   },
+   {
+    "name": "Robux change tickets (class/faction change), not live because the game is not public",
+    "status": "built",
+    "evidence": "MonetizationService.luau (ProcessReceipt)"
+   },
+   {
+    "name": "Game passes: 2x XP, 2x Gold, VIP, faction halo/horn cosmetics",
+    "status": "in_progress",
+    "evidence": "Client side only: Passes.luau, ChatTags.luau, SupporterBoard.luau. No UserOwnsGamePassAsync in src/ServerScriptService yet (the server session is building it). Products are created at publish time."
+   },
+   {
+    "name": "Pause card and 'Welcome back' card",
+    "status": "in_progress",
+    "evidence": "Client PauseCard.luau exists; no server sender in src/ServerScriptService yet"
+   },
+   {
+    "name": "Invite a friend / Go to friend (no invite rewards)",
+    "status": "in_progress",
+    "evidence": "Client Invite.luau (SocialService) exists; no server GetJoinData/LaunchData handling yet"
+   },
+   {
+    "name": "Stat points (manual or auto)",
+    "status": "in_progress",
+    "evidence": "Code present but switched off: Config.Features.StatPoints = false (Config.luau line 19)"
+   },
+   {
+    "name": "Zones rebuilt to match concept art (hills, water, waterfalls)",
+    "status": "in_progress",
+    "evidence": "SPEC A23-76; meadow second pass running (HANDOFF_CODEX top section); tools/worldkit/meadow_terrain.luau"
+   },
+   {
+    "name": "Full art redraw with Adobe Firefly, plus Tripo 3D world props",
+    "status": "in_progress",
+    "evidence": "art/approved.json (405 live Firefly entries), art/models/tripo/records.json"
+   },
+   {
+    "name": "7-day attendance board plus lifetime day count that never resets",
+    "status": "planned",
+    "evidence": "SPEC A23-77 (before beta); 'Attendance' not found in src/; queued for 게임성 개발 3"
+   },
+   {
+    "name": "'My Way' titles plus 8 Roblox badges",
+    "status": "planned",
+    "evidence": "SPEC A23-79 #2 (before beta); no BadgeService/MyWay in src/"
+   },
+   {
+    "name": "Pumpkin King diary and candy jar",
+    "status": "planned",
+    "evidence": "SPEC A23-79 #4; not in src/"
+   },
+   {
+    "name": "Opt-in launch-day notifications (13+ only, asked once)",
+    "status": "planned",
+    "evidence": "SPEC A23-79 #5; no ExperienceNotificationService in src/"
+   },
+   {
+    "name": "Private servers (turned on in Creator Dashboard at publish, no code)",
+    "status": "planned",
+    "evidence": "SPEC A23-75"
+   },
+   {
+    "name": "Artisan Guild third faction (no PvP), crafting and gathering",
+    "status": "planned",
+    "evidence": "Faction coded but off: Config.Features.NeutralFaction = false; crafting shows 'coming soon'; target late November or 12/19 (RELEASE_PLAN, A23-57)"
+   },
+   {
+    "name": "Skeleton King boss, 27 final 3D weapons, Roblox-style class outfits, Christmas decor",
+    "status": "planned",
+    "evidence": "RELEASE_PLAN 'by full launch'; 'SkeletonKing' not in src/"
+   },
+   {
+    "name": "Player trading market",
+    "status": "planned",
+    "evidence": "After full launch (RELEASE_PLAN); Config.Features.Market = false"
+   },
+   {
+    "name": "Gacha / paid random items",
+    "status": "planned",
+    "evidence": "Later updates, documented only (GDD §10-1, RELEASE_PLAN); nothing in src/"
+   }
+  ],
+  "dates": [
+   "Feature freeze: 2026-10-24 (Sat). 10/25-10/30 is testing and bug fixing only.",
+   "Beta (first public release): 2026-10-31 (Sat) 11:00 KST, which is 2026-10-30 (Fri) 19:00 US West, Halloween weekend.",
+   "Full launch: 2026-12-19 (Sat) 11:00 KST, around the start of winter break.",
+   "Artisan update (third faction, crafting, gathering): target late November, falling back to the 12/19 full launch (RELEASE_PLAN, A23-57). Not in the beta."
+  ],
+  "monetization": [
+   "The game is not public yet, so nothing has been sold.",
+   "Never for sale: stats (attack, health, stat points, stat resets). This holds even after A23-75 (founder, 2026-10-08).",
+   "Planned before the beta (SPEC A23-75, replaces A23-72): 2x XP pass, 2x Gold pass, VIP pass (crown by your name, VIP chat tag, own emote, your name on the town supporter board), faction halo/horn cosmetics, and private servers. Planned prices: 199 / 149 / 249 / 99 each / 100 Robux per month. The founder sets prices, and products are created at publish time. Until a product exists its button says 'Coming soon'.",
+   "Stated openly: levels and gold earned with the 2x passes count toward the level cap and rankings like any other.",
+   "Cosmetics keep the halo/horn shape tied to the rank you earned. Only color and material change (ice and gold halos, lava and shadow horns), so money cannot make you look higher-ranked.",
+   "The only Robux product in the code today: class/faction change tickets (MonetizationService.luau).",
+   "No gacha or paid random items now. If they come later, odds will be shown and Roblox country rules (PolicyService) followed (GDD §10-1).",
+   "Banned pressure tactics (A23-68 / A23-79): countdown timers, limited-time shops, fake discounts and 'Buy now' pressure; buy buttons near a KO, a failed enhancement or the pause card; rewards for how many friends you invite; login streaks that reset to zero; paid auto-progress or paid chance-based enhancement. Equipment never breaks.",
+   "Kid safety: purchases are checked on the server. All character art has modest, kid-friendly clothing. In-game text is short, simple English. Nicknames go through Roblox's text filter. Analytics hold no personal data. Auto-combat never hits players."
+  ],
+  "howWeWork": [
+   "One human director, no programmer. The founder makes the big calls (design, art picks, money, schedule) and talks only to the reviewer session. A team of Claude Code agent sessions does the work.",
+   "Nine sessions as of 2026-10-08 (AGENTS.md still says eight; HANDOFF_CODEX adds 게임성 개발 3): Reviewer/lead (검수: hands out work queues, reviews every commit and art sheet, keeps the docs, relays decisions), Gameplay dev 1 (client and the main Roblox Studio place), Gameplay dev 2 and 3 (server code in separate git worktrees), Image gen 1 (world art, terrain, 3D world props), Image gen 2 (UI, icons, characters), Image dev (uploads, UI wiring, HUD layout), Film/edit (devlog videos), Sound (sound effects).",
+   "Tools: Claude Code for all code and coordination. Adobe Firefly (web, through the connected browser) for 2D art and sound effects: draft candidates at no credit cost, every final picked image at High quality. Tripo (API, then the web app) for 3D models from approved 2D art, with front/side/back views first for big objects. Blender 5.2 command line for render checks against the 2D concept. Roblox Studio MCP (run Luau, screen capture, start/stop Play) to apply changes to the live Studio. Kenney CC0 and own synthesis as backup sound sources. Git with a private GitHub repo.",
+   "Written rule order: the founder's newest decision wins, then AGENTS.md, RELEASE_PLAN, SPEC_ADDENDUM (newest first), and the GDD.",
+   "Offline tests: 65 Python test suites (tools/test_*.py) run the game's Luau through the official Luau compiler/CLI, no Studio needed. At least 53 of them have a mutation step: they break the source on purpose and check that the tests catch it. A report run without mutations is never counted as 'passed'.",
+   "'Fixed' means photos from real Play in the main Studio on both PC and phone (emulated phone screens such as 749x361 and 844x390), and the device emulator is reset afterwards (A23-74). Evidence goes in dated folders (docs/art/verification_2026-10-03 to _2026-10-08).",
+   "No session signs off its own work. The reviewer (or the founder) re-checks it from the evidence files.",
+   "Art safety: every image is looked at before upload, uploads go in small batches of 10 or fewer, cutouts are checked enlarged on light and dark backgrounds, and old or rejected images are never reused as references."
+  ],
+  "numbers": [
+   {
+    "label": "Luau source files in src/",
+    "value": "110",
+    "how": "find src -name '*.luau' | wc -l"
+   },
+   {
+    "label": "Lines of Luau code in src/",
+    "value": "64,396",
+    "how": "find src -name '*.luau' -print0 | xargs -0 cat | wc -l"
+   },
+   {
+    "label": "Server modules / client scripts",
+    "value": "36 files in src/ServerScriptService, 35 in src/StarterPlayer/StarterPlayerScripts",
+    "how": "ls src/ServerScriptService | wc -l ; ls src/StarterPlayer/StarterPlayerScripts | wc -l"
+   },
+   {
+    "label": "Offline test suites",
+    "value": "65 (at least 53 with an explicit mutation step)",
+    "how": "ls tools/test_*.py | wc -l ; grep -l \"MUTATIONS\\|no-mutations\\|no_mutations\" tools/test_*.py | wc -l"
+   },
+   {
+    "label": "Git commits on main",
+    "value": "1,007 (first commit 2026-10-02 17:53 KST; checked at origin/main 08ae2a86, 2026-10-08 13:41 KST)",
+    "how": "git rev-list --count origin/main ; git log --reverse --format='%ci %s' origin/main | head -1"
+   },
+   {
+    "label": "Approved/picked 2D art entries",
+    "value": "543 entries in art/approved.json; 503 currently approved or picked and not deleted, 405 of those made with Adobe Firefly",
+    "how": "Python json load of art/approved.json: count dict entries whose status starts with 'approved' or 'picked' and that have no 'deleted' field; Firefly = 'firefly' in the 'tool' field"
+   },
+   {
+    "label": "3D model records (Tripo)",
+    "value": "199 entries in art/models/tripo/records.json, 193 with a .glb file recorded (30 of the entries are retired chibi costumes, no longer in the game)",
+    "how": "Python json load of art/models/tripo/records.json: len(keys), keys with an event whose 'file' ends in .glb, keys starting 'Costume_'"
+   },
+   {
+    "label": "Sound effects",
+    "value": "57 final WAVs in art/sfx (57 uploaded ids in art/sfx/asset_ids.json); 59 sound asset ids wired in Config.Audio.Files; 151 candidate WAVs in art/sfx/cand",
+    "how": "ls art/sfx/*.wav | wc -l ; asset_ids.json 'ids' (57) ; count of rbxassetid lines in src/ReplicatedStorage/Shared/Config.luau lines 3976-4037 ; find art/sfx/cand -name '*.wav' | wc -l"
+   },
+   {
+    "label": "Monster kinds",
+    "value": "12 (6 regular + 6 Halloween), plus the golden goose event",
+    "how": "Config.MonsterTypeOrder / Config.MonsterTypes in src/ReplicatedStorage/Shared/Config.luau (~line 1631)"
+   },
+   {
+    "label": "Agent sessions",
+    "value": "9",
+    "how": "docs/HANDOFF_CODEX.md top section (2026-10-08 13:40), list of session local ids"
+   }
+  ],
+  "founderStory": "The founder has no programming or art background, just a long love of games. After spending a lot of time and money playing other people's games, they decided to make one instead. They work as the director, making the big calls while a team of AI agent sessions builds, draws and tests. Halo & Horns on Roblox is the first game, and later the studio hopes to make PC games for Steam as well."
+ },
+ "verify:images": {
+  "ok": true,
+  "problems": [
+   {
+    "item": "hero.jpg",
+    "problem": "The safeBecause text is wrong. It says the Crossroads roads are 'four straight paths', but at 100% the round plaza has 8 grey stone streets: 4 main roads plus 4 short diagonal lanes, with houses between them. This is the closest thing to the no-ray rule in the set. Judged a pass: it reads as a town roundabout rather than light rays or stripes, it covers only about a fifth of the width, and the map is the approved in-game UIP_WorldMapV2 (approved.json, 2026-10-07, High). No lettering, no people, and the halo over the castle is a plain ring.",
+    "fix": "Corrected the safeBecause text. Show the whole map and never crop or zoom the hero onto the plaza."
+   },
+   {
+    "item": "shot1.jpg",
+    "problem": "Not a reject (English HUD, no Korean, no debug overlay; the '92m' diamond is the in-game quest waypoint; modest avatar in a long-sleeve jacket and long pants). But 10/06 UI bugs show on a public page: name labels overlap ('Pumpkin Slimekin Sli'), the event banner is cut off ('...appeared in the') and covers the boss name, and the quest tracker shows '0/2 0/2' and a cut 'Hit monsters with...'.",
+    "fix": "Kept, and the flaws are listed in safeBecause. If there is a newer Pumpkin King capture without the overlaps, use it instead."
+   },
+   {
+    "item": "shot2.jpg",
+    "problem": "Not a reject (English HUD, fully clothed blocky avatar, friendly slimes). Small issues: the quest line is cut off ('Free the supply r...'), the file name says crossroads but the photo shows the meadow, it is a 2.6:1 strip, and the lower part is mostly flat dirt.",
+    "fix": "Kept, and the notes were added to safeBecause. The layout should allow a wide strip."
+   },
+   {
+    "item": "shot4.png",
+    "problem": "Cutout is clean on light and dark backgrounds, but the composite leaves only 1 px between the figures and the image edges (ghost hat at the top, pumpkin leaf at the right). The source renders are not clipped (bbox inside 512x512), so nothing is cut off.",
+    "fix": "Kept. Give the image padding on the page, or re-composite it with an 8-12 px margin."
+   }
+  ],
+  "corrected": "{\"images\": [{\"out\": \"C:\\\\Users\\\\glori\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-glori-Documents-Roblox-Game\\\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\\\scratchpad\\\\site\\\\img\\\\hero.jpg\", \"source\": \"C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\ui\\\\UIP_WorldMapV2_1536.png\", \"shows\": \"A bird's-eye painted map of the Halo & Horns world: the white Halo town at the top and the lava Horns fortress at the bottom, with the Crossroads, meadow, pumpkin patch, woods and ruins islands joined by bridges.\", \"px\": \"1400x933\", \"bytes\": 329033, \"safeBecause\": \"Approved Firefly art in art/approved.json (key UIP_WorldMapV2, 2026-10-07, High). It is the active in-game world map. It has no lettering and no people. The halo over the castle is a plain ring. The Crossroads plaza is a round square with 8 grey stone streets (4 main roads plus 4 short diagonal lanes), with houses between them. It reads as a town roundabout, not as light rays or stripes, and covers only about a fifth of the image width. Keep the whole map in view: do not crop or zoom the hero onto the plaza. Not from art/out/v1.\"}, {\"out\": \"C:\\\\Users\\\\glori\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-glori-Documents-Roblox-Game\\\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\\\scratchpad\\\\site\\\\img\\\\shot1.jpg\", \"source\": \"C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\docs\\\\art\\\\verification_2026-10-06\\\\studio_round_evening\\\\front_PumpkinKing.png\", \"shows\": \"Gameplay: a player fights the crowned Pumpkin King boss in the pumpkin patch while smiling pumpkin slimes hop nearby, with the English HUD, minimap, quests and attack/skill buttons visible.\", \"px\": \"900x442\", \"bytes\": 78893, \"safeBecause\": \"A real Studio Play photo, not debug art. All text is English and there is no Korean or debug overlay; the '92m' diamond is the in-game quest waypoint. The only person is a blocky avatar in a long-sleeve jacket and long pants with a small halo, so the clothing is modest. Monsters are cute, with no gore and no rays. UI flaws from the 10/06 build are visible: two name labels overlap ('Pumpkin Slimekin Sli'), the event banner is cut off ('...appeared in the') and covers the boss name, and the quest tracker shows '0/2 0/2' and a cut 'Hit monsters with...'. Swap in a newer capture if one exists.\"}, {\"out\": \"C:\\\\Users\\\\glori\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-glori-Documents-Roblox-Game\\\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\\\scratchpad\\\\site\\\\img\\\\shot2.jpg\", \"source\": \"C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\docs\\\\art\\\\verification_2026-10-07\\\\studio_round_evening\\\\pc\\\\03_crossroads.jpg\", \"shows\": \"Gameplay in the starting meadow: a player meets two green Shard Slimes, one says 'Blub?' in a speech bubble, with green hills, trees and a pond behind them.\", \"px\": \"900x344\", \"bytes\": 49584, \"safeBecause\": \"A real Studio Play photo with the English HUD and no Korean or debug overlay. The avatar is a blocky figure fully covered by a jacket and jeans. Friendly slime monsters, no rays. Notes: the file name says crossroads but the photo shows the meadow; the quest line is cut off ('Free the supply r...'); it is a wide strip (about 2.6:1) because it is the uncropped PC screen, and the lower part is mostly flat dirt.\"}, {\"out\": \"C:\\\\Users\\\\glori\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-glori-Documents-Roblox-Game\\\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\\\scratchpad\\\\site\\\\img\\\\shot3.png\", \"source\": \"C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\models\\\\tripo\\\\Crown_Broken_B_preview.png\", \"shows\": \"The game's symbol as a 3D model: a broken crown that is half gold with a floating halo and half red with devil horns.\", \"px\": \"478x427 (transparent PNG cutout, cropped to the object, not upscaled)\", \"bytes\": 201476, \"safeBecause\": \"A 3D model front render (Tripo record Crown_Broken_B in art/models/tripo/records.json). It is an object with no character and no text. The halo is a plain ring with no rays. Cutout re-checked on light and dark backgrounds: clean edges, no fringes, 6 px margin.\"}, {\"out\": \"C:\\\\Users\\\\glori\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-glori-Documents-Roblox-Game\\\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\\\scratchpad\\\\site\\\\img\\\\shot4.png\", \"source\": \"C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\models\\\\tripo\\\\MonsterSlimeCube_preview.png; C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\models\\\\tripo\\\\MonsterLittleGhost_preview.png; C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\models\\\\tripo\\\\MonsterPumpkinSlime_preview.png\", \"shows\": \"Three friendly 3D monsters from the game in a row: a green crystal-topped slime cube, a little ghost in a striped nightcap holding a lantern, and a smiling pumpkin slime.\", \"px\": \"700x270 (transparent PNG cutout, composite of three renders)\", \"bytes\": 202913, \"safeBecause\": \"3D front renders of monsters used in the game, with approved Firefly concepts (CON_SlimeCube, CON_LittleGhost, CON_PumpkinSlime). They are cute non-human creatures with no gore, no text and no rays. The bat goblin (bare belly) and skeletons are left out. Cutout re-checked on light and dark backgrounds: clean. The figures sit only 1 px from the image edges (the source renders are not clipped), so give the image some padding on the page.\"}, {\"out\": \"C:\\\\Users\\\\glori\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-glori-Documents-Roblox-Game\\\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\\\scratchpad\\\\site\\\\img\\\\shot5.png\", \"source\": \"C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\models\\\\tripo\\\\Town_Halo_Gate_preview.png; C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\models\\\\tripo\\\\Town_Horns_Gate_preview.png\", \"shows\": \"The two town gates as 3D models side by side: the white winged Halo gate on clouds and the dark lava-cracked Horns gate with curled horns and red banners.\", \"px\": \"700x336 (transparent PNG cutout, composite of two renders)\", \"bytes\": 269841, \"safeBecause\": \"3D building renders (Tripo records Town_Halo_Gate and Town_Horns_Gate) with no characters and no text. Wings and horns are solid shapes, with no rays fanning from a center. Cutout re-checked on light and dark backgrounds: clean edges.\"}, {\"out\": \"C:\\\\Users\\\\glori\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-glori-Documents-Roblox-Game\\\\8b6ac5a0-6fdf-4c2a-8878-e7a17c6d9406\\\\scratchpad\\\\site\\\\img\\\\shot6.jpg\", \"source\": \"C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game\\\\art\\\\ui\\\\BtnAttack.png + GlyphSword.png; art\\\\ui\\\\BtnSkill.png + Skill_Warrior_Q.png; art\\\\ui\\\\BtnSkill.png + Skill_Mage_Q.png; art\\\\ui\\\\LevelBadgeHalo.png; art\\\\ui\\\\LevelBadgeHorns.png; art\\\\ui\\\\Weapon_Warrior_T8.png; art\\\\ui\\\\IconCoin.png; art\\\\ui\\\\IconMonSlime.png; art\\\\ui\\\\IconMonPumpkinKing.png; art\\\\ui\\\\IconMonLittleGhost.png (all under C:\\\\Users\\\\glori\\\\Documents\\\\Roblox\\\\Game)\", \"shows\": \"A sheet of the game's UI art: attack and skill buttons, halo and horns level badges, a jelly sword, a gold coin, and slime, Pumpkin King and little ghost icons, on a dark navy background.\", \"px\": \"900x384\", \"bytes\": 52183, \"safeBecause\": \"Every part is approved Firefly art in art/approved.json and none has lettering. The skill icons sit inside the buttons at the in-game size (about 74%). The meteor's flame trail and the cracked stone ring under the sword are not rays from a center. The navy gradient behind them is only the web image's background, not game styling. Skill_Archer_Q is left out because its three arrows fan out from one point.\"}], \"totalBytes\": 1183923}"
+ }
+}
