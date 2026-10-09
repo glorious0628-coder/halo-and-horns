@@ -3612,6 +3612,43 @@ function L.QuestText(text)
 	return Config.FillKeys(text, (Config.KeyMap(nil, nil)))
 end
 
+-- A23-94 (user 2026-10-09: one quest big at the left middle; 이미지 개발 draws it from line 1): the goal as one easy
+-- sentence - the server's Goal when it sends one, else the row's words without their " · ..." tail, ending with a
+-- full stop. Pure: tools/test_now_quest.py runs it
+function HUD.QuestGoal(text, serverGoal)
+	if type(serverGoal) == "string" and serverGoal ~= "" then return serverGoal end
+	if type(text) ~= "string" or text == "" then return nil end
+	local main = string.match(text, "^(.-)%s+·%s") or text
+	main = string.gsub(main, "%s+$", "")
+	if main == "" then return nil end
+	if not string.find(main, "[%.!%?]$") then main ..= "." end
+	return main
+end
+
+-- A23-94: which row is "the quest now" (line 1) when no row is pinned: the waiting story, else the main story, else a
+-- row ready to [Claim], else the unfinished row closest to done (the larger share; the earlier row on a tie).
+-- rows = { Progress, Target, CanClaim, Pinned, Kind, Story }; claimRule(e) = the 받기 rule. Pure (the offline test)
+function HUD.NowQuestIndex(rows, callIndex, claimRule)
+	if type(rows) ~= "table" or #rows == 0 then return nil end
+	if rows[1].Pinned then return 1 end
+	if callIndex and rows[callIndex] then return callIndex end
+	for i, e in rows do
+		local main = e.Kind == "Main" or (type(e.Story) == "table" and e.Story.Kind == "Main")
+		if main and (e.Progress < e.Target or claimRule(e)) then return i end
+	end
+	for i, e in rows do
+		if claimRule(e) then return i end
+	end
+	local best, bestShare = nil, -1
+	for i, e in rows do
+		if e.Progress < e.Target then
+			local share = e.Progress / math.max(1, e.Target)
+			if share > bestShare then best, bestShare = i, share end
+		end
+	end
+	return best or 1
+end
+
 local function parseQuests()
 	local data = questState.Data -- CR-L50: last "Quests" remote payload (array of entries)
 	if type(data) ~= "table" then return {} end
@@ -3648,6 +3685,7 @@ local function parseQuests()
 				Folded = e.Folded == true, -- A23-68 #4: the server folds every row but the first mission (dev2)
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
+			entry.Goal = HUD.QuestGoal(entry.Text, type(e.Goal) == "string" and L.QuestText(e.Goal) or nil) -- A23-94
 			table.insert(isPinned and pinned or normal, entry)
 		end
 	end
@@ -4057,7 +4095,10 @@ refreshQuests = function()
 	elseif callIndex then
 		shown = callIndex -- B15: the collapsed list shows the story that is waiting
 	else
-		shown = firstClaim or firstDaily or 1
+		-- A23-94: pinned > the waiting story > main > ready to claim > the unfinished row closest to done
+		shown = HUD.NowQuestIndex(entries, nil, function(e)
+			return e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub")
+		end) or 1
 	end
 
 	-- header: progress, claimable count (turns green so claiming stays 1-2 clicks), expand chevron
