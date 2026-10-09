@@ -5233,7 +5233,7 @@ L.TileLabelMinPx = 40
 L.QuestPlate = { On = false, PadL = 6, PadR = 10, Gap = 4 }
 -- A23-94 quest tracker (L.BuildTracker): On = the big left-middle 'now do' quest instead of the lines; du gap between its
 -- lines, build heights, title / body size per quest-rect line height, the in-progress (p/t) colour
-L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = 1.05, BodyK = 0.66,
+L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = IS_TOUCH and 1.05 or 1.45, BodyK = IS_TOUCH and 0.66 or 0.8,
 	ProgColor = Color3.fromRGB(255, 96, 72), Rect = nil }
 L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
 -- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on

@@ -18,7 +18,7 @@
  ],
  "items": [
   { "id": "minimap", "label_ko": "둥근 실시간 지도", "shape": "round", "pc": { "x": 14, "y": 66, "w": 150, "h": 150 }, "phone": { "x": 8, "y": 62, "w": 80, "h": 80 } },
-  { "id": "quest", "label_ko": "퀘스트 2줄 (판 없이 글자만)", "pc": { "x": 14, "y": 296, "w": 300, "h": 52 }, "phone": { "x": 8, "y": 146, "w": 240, "h": 45 }, "note": "A23-94 (2026-10-09): PC moved to the left middle for the big quest tracker" },
+  { "id": "quest", "label_ko": "퀘스트 2줄 (판 없이 글자만)", "pc": { "x": 14, "y": 320, "w": 300, "h": 52 }, "phone": { "x": 8, "y": 146, "w": 240, "h": 45 }, "note": "A23-94 (2026-10-09): PC moved to the left middle for the big quest tracker" },
   { "id": "war_meter", "label_ko": "전쟁 미터 (Roblox 위 버튼 줄 안, 버튼 가운데 높이)", "pc": { "x": 496, "y": 13, "w": 288, "h": 42 }, "phone": { "x": 250, "y": 15, "w": 240, "h": 38 } },
   { "id": "chips", "label_ko": "칩 3개까지 (+N)", "pc": { "x": 496, "y": 62, "w": 288, "h": 22 }, "phone": { "x": 250, "y": 62, "w": 240, "h": 17 }, "note_2026_10_08": "검수 결정 (가): PC 칩 줄을 전쟁 미터 폭 288로(248에서는 마을의 Safe Zone · Rare 5% · 2x XP · +1이 안 들어가 2x 칩이 +2로 접혔음, A23-75)" },
   { "id": "event", "label_ko": "다음 이벤트 1줄", "pc": { "x": 496, "y": 88, "w": 288, "h": 22 }, "phone": { "x": 250, "y": 81, "w": 240, "h": 18 }, "note_2026_10_07": "A23-63 글꼴: 다음 이벤트 줄을 PC는 칩 줄 폭, 폰은 가운데 열 전체 폭으로(호박 대왕 알약이 150x16에서 글자가 넘쳤음)" },
