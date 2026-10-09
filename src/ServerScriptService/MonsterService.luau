@@ -367,10 +367,11 @@ end
 -- walkable ground point at (x, z) or nil (water, ridge, shore, inside solid decor). Second result: true when the ray
 -- hit nothing at all (bare test place without Terrain / Map.Ground), so callers can fall back to the legacy flat Y = 0
 -- behaviour.
-local function groundPoint(x, z)
+-- maxY (optional): a higher top for this call (검수 2026-10-09: an event / boss spot on a hill, opts.MaxY of SpawnEvent)
+local function groundPoint(x, z, maxY)
 	local y, water = probeGround(x, z)
 	if y == nil then return nil, true end
-	if water or y < GROUND_MIN_Y or y > GROUND_MAX_Y then return nil, false end
+	if water or y < GROUND_MIN_Y or y > math.max(GROUND_MAX_Y, tonumber(maxY) or GROUND_MAX_Y) then return nil, false end
 	if occupied(x, y, z) then return nil, false end -- CR-L14
 	return Vector3.new(x, y, z), false
 end
@@ -1610,7 +1611,8 @@ end
 ------------------------------------------------------------------ event monsters (HalloweenService miniboss)
 -- Spawns `kind` outside the regular pool: not in the density counts, never respawns, never golden unless opts.Golden.
 -- opts.Near (Vector3) + opts.Radius: a walkable ground point in def.Zone within Radius of Near (never water, a ridge
--- or solid decor); falls back to a normal spawn point of the zone. Returns the record, or nil when no ground was found
+-- or solid decor; opts.MaxY = a higher ground top allowed there, e.g. the King Slime's hill-top shrine); falls back to a
+-- normal spawn point of the zone. Returns the record, or nil when no ground was found
 -- this time (the caller retries). Otherwise it is a normal zone monster (AI, damage, rewards per contributor).
 function MonsterService.SpawnEvent(kind, opts)
 	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
@@ -1627,7 +1629,7 @@ function MonsterService.SpawnEvent(kind, opts)
 			local a = Util.Random:NextNumber(0, math.pi * 2)
 			local d = (i == 1) and 0 or Util.Random:NextNumber(0, radius)
 			local x, z = near.X + math.cos(a) * d, near.Z + math.sin(a) * d
-			local g, noHit = groundPoint(x, z)
+			local g, noHit = groundPoint(x, z, opts.MaxY)
 			if noHit then g = Vector3.new(x, 0, z) end -- bare test place: legacy flat ground
 			if g and Config.ZoneAt(g).Id == def.Zone then
 				if SEP.Clear(g, body) then

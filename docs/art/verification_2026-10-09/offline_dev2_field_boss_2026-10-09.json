@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 128,
+  "checks": 143,
   "failedChecks": 0,
-  "namedChecks": 128,
+  "namedChecks": 143,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -249,6 +249,96 @@
     },
     {
       "group": "waits for a hunter",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "a Part named KingSpawn: its Position",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "SpawnEvent gets the boss's MaxY (the hill top stands above normal ground)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "a Part with KingSpawn = true: its Position",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "a Vector3 KingSpawn attribute first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "KingSpawn = false: not a marker (the hill / Spawn instead)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "the meadow hill top (14.6) is walkable ground (max 26)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "30 is above normal ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "... but fine with a boss's MaxY 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "a lower MaxY never narrows the normal range",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "below GROUND_MIN_Y (the shore): never",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "no ground hit: nil, noHit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -780,9 +870,9 @@
   "staticChecks": 11,
   "staticFailures": [],
   "mutations": {
-    "total": 42,
-    "applied": 42,
-    "caught": 42,
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
     "skipped": false,
     "results": [
       {
@@ -838,9 +928,12 @@
         "newFailingChecks": [
           "schedule :: at the shrine's KingSpawn, radius 2",
           "spot fallbacks :: the shrine wins over the hill",
+          "the shrine marker part :: a Part named KingSpawn: its Position",
+          "the shrine marker part :: a Part with KingSpawn = true: its Position",
+          "the shrine marker part :: a Vector3 KingSpawn attribute first",
           "two bosses :: the King Slime at its shrine"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 6
       },
       {
         "mutation": "hill for every boss",
@@ -949,9 +1042,9 @@
           "retry / off / debug :: group ran to the end without a Lua error",
           "schedule :: group ran to the end without a Lua error",
           "spot fallbacks :: group ran to the end without a Lua error",
-          "time up / lost :: group ran to the end without a Lua error"
+          "the shrine marker part :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "no Defeated signal",
@@ -1111,6 +1204,52 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: King Slime: a meadow boss outside the regular pool"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no marker part",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: a Part named KingSpawn: its Position",
+          "the shrine marker part :: a Part with KingSpawn = true: its Position"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any part is a marker",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: a Part named KingSpawn: its Position",
+          "the shrine marker part :: a Part with KingSpawn = true: its Position"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no MaxY to SpawnEvent",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: SpawnEvent gets the boss's MaxY (the hill top stands above normal ground)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the King without MaxY",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 1
       },
@@ -1319,13 +1458,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "68ab8ae8bb617566f6f9bf7ac944486dd9de8d1778fa8c2d8c98310dc320539d",
+    "src/ReplicatedStorage/Shared/Config.luau": "d3ee2e6e00777d348dd727e6867981e5b0b8b0e4275eb108efc3f4b3805d3e82",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ReplicatedStorage/Shared/Net.luau": "aa7d771dc7846724a106da98a44ff5d87ffc26cda2d3df9b9e89e40096ff9153",
-    "src/ServerScriptService/Main.server.luau": "14ed47773943dd6fd1b4cb80c1fcf4c47cca0661a1dfce89b2d29a48a5a3f468",
-    "src/ServerScriptService/FieldBossService.luau": "f25222403d7b1832eab845ca15c1bf13508047d2f7555ff6c21444398972892b"
+    "src/ReplicatedStorage/Shared/Net.luau": "542dd78b90d90cd89011c8273261106b81d10ee994f48706b9c1a1a4a2a9ae11",
+    "src/ServerScriptService/Main.server.luau": "e5d5cfc945bca9b5964e5bef9a8dcdb9dae2dd757b0eb1be933b31c8229c25f0",
+    "src/ServerScriptService/FieldBossService.luau": "0ed1467abb0f9cb5f537e50ed6ceed41179a8846b222e57a348d11547f91956b"
   },
-  "fixtureSHA256": "21aa11ad61b2cb32ddfb0ddaa851df992677024c6a2d60510a7c3aa31f195e02",
+  "fixtureSHA256": "1541675155f623c9c80b73b78d570321de0c3865eaedeccce331eddd705506b6",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

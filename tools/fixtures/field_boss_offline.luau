@@ -18,8 +18,11 @@ local function near(a, b, eps)
 		and math.abs(a.Y - b.Y) < (eps or 1e-6) and math.abs(a.Z - b.Z) < (eps or 1e-6)
 end
 
-local function attrHolder(attrs)
-	return { Attrs = attrs or {}, GetAttribute = function(self, k) return self.Attrs[k] end }
+local function attrHolder(attrs, part)
+	-- part = { Name, Position } makes it a BasePart (the shrine tool's marker part)
+	return { Attrs = attrs or {}, Name = part and part.Name or "Folder", Position = part and part.Position or nil,
+		GetAttribute = function(self, k) return self.Attrs[k] end,
+		IsA = function(self, c) return part ~= nil and (c == "BasePart" or c == "Part") end }
 end
 
 -- a boss world. opts: Shrine (Vector3 KingSpawn on a Map descendant), Hill = { Top, Foot } (MeadowTerrainStore),
@@ -29,6 +32,11 @@ local function bossWorld(opts)
 	local w = newWorld({ EditConfig = opts.EditConfig })
 	local map = { Desc = {} }
 	if opts.Shrine then table.insert(map.Desc, attrHolder({ Other = 1 })); table.insert(map.Desc, attrHolder({ KingSpawn = opts.Shrine })) end
+	-- 검수's shrine tool: a Part named KingSpawn, or a Part with KingSpawn = true (opts.MarkPart = { Name, Position, Attr })
+	if opts.MarkPart then
+		table.insert(map.Desc, attrHolder({ Other = 2 }, { Name = "Rock", Position = vec(9, 9, 9) }))
+		table.insert(map.Desc, attrHolder(opts.MarkPart.Attr or {}, opts.MarkPart))
+	end
 	function map.GetDescendants(self) return self.Desc end
 	local store = nil
 	if opts.Hill then store = attrHolder({ HillTop = opts.Hill.Top, HillPathFoot = opts.Hill.Foot }) end
@@ -198,6 +206,47 @@ runGroup("waits for a hunter", function()
 	w.ReadyMap[w.PlayerList[2]] = true
 	w:Tick(0.5)
 	check(#w.Spawns == 1, "the first ready hunter in the meadow brings it")
+end)
+
+runGroup("the shrine marker part", function()
+	-- a Part named KingSpawn on the hill top (y 14.6): its Position, with the higher MaxY for the hill
+	local top = vec(426, 14.6, -170)
+	local w = bossWorld({ MarkPart = { Name = "KingSpawn", Position = top } })
+	w:Hunter(1)
+	w:Tick(180)
+	check(#w.Spawns == 1 and near(w.Spawns[1].Opts.Near, top), "a Part named KingSpawn: its Position", show(w.Spawns[1] and w.Spawns[1].Opts.Near))
+	check(w.Spawns[1].Opts.MaxY == w.Config.FieldBosses.SlimeKing.MaxY and w.Config.FieldBosses.SlimeKing.MaxY >= 30,
+		"SpawnEvent gets the boss's MaxY (the hill top stands above normal ground)", show(w.Spawns[1].Opts.MaxY))
+	-- a differently named Part with KingSpawn = true
+	local w2 = bossWorld({ MarkPart = { Name = "ShrineDoor", Position = vec(5, 6, 7), Attr = { KingSpawn = true } } })
+	w2:Hunter(1)
+	w2:Tick(180)
+	check(#w2.Spawns == 1 and near(w2.Spawns[1].Opts.Near, vec(5, 6, 7)), "a Part with KingSpawn = true: its Position")
+	-- a Vector3 attribute still wins over a marker part
+	local w3 = bossWorld({ Shrine = vec(1, 2, 3), MarkPart = { Name = "KingSpawn", Position = top } })
+	w3:Hunter(1)
+	w3:Tick(180)
+	check(near(w3.Spawns[1].Opts.Near, vec(1, 2, 3)), "a Vector3 KingSpawn attribute first")
+	-- a Part with KingSpawn = false is not a marker; a non-part named KingSpawn is not either
+	local w4 = bossWorld({ MarkPart = { Name = "Other", Position = top, Attr = { KingSpawn = false } } })
+	w4:Hunter(1)
+	w4:Tick(180)
+	check(not near(w4.Spawns[1].Opts.Near, top), "KingSpawn = false: not a marker (the hill / Spawn instead)")
+end)
+
+runGroup("ground on a hill (MonsterService.groundPoint)", function()
+	local G = execute("groundPoint", GROUND_EXTRACT, nativeEnv())
+	G.SetY(14.6)
+	check(G.Point(430, -170) ~= nil and G.Point(430, -170).Y == 14.6, "the meadow hill top (14.6) is walkable ground (max 26)")
+	G.SetY(30)
+	check(G.Point(430, -170) == nil, "30 is above normal ground")
+	check(G.Point(430, -170, 40) ~= nil, "... but fine with a boss's MaxY 40")
+	check(G.Point(430, -170, 10) == nil, "a lower MaxY never narrows the normal range")
+	G.SetY(-3)
+	check(G.Point(430, -170, 40) == nil, "below GROUND_MIN_Y (the shore): never")
+	G.SetY(nil)
+	local g, noHit = G.Point(1, 1)
+	check(g == nil and noHit == true, "no ground hit: nil, noHit")
 end)
 
 runGroup("spot fallbacks", function()
