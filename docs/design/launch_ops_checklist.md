@@ -40,3 +40,7 @@
 - [ ] Roblox 배지 8개 만들기(하루 5개 무료 → 이틀에 나눔), 나온 배지 ID를 Config에 붙여 넣기.
   - 배지 그림: `art/ui/Badge*.png`(이미지 생성 2, 512 원형 — 고른 것: Chose a Side A·First Slime A·Lost Lunchbox A·Stronger! B·First Skill A·Shard Choice A·Rank 2 A·Halloween 2026 A, 시트 art/review/s2/badges_private_sheet.jpg). 개인 서버·게임 패스 그림 = `art/ui/PassIcon*.png`.
 - [ ] (11/09 업데이트 때) Experience Notifications 문구 틀 + Open Cloud 키(Secrets) — 키는 채팅에 붙여 넣지 않기.
+
+## 게임 페이지 영상·업데이트 표시(뜯어보기 2026-10-10, docs/design/roblox_teardown_2026-10-10.md §4)
+- [ ] 게임 페이지 플레이 영상 30~60초: 지금 게임 안 모습만(해설·글·가사 음악·예고편 없이). 10/24 기능 마감 직후 베타 화면으로 촬영 편집이 찍고, 사용자가 Creator Hub → Videos에 올림(심사 시간 여유). 홈 추천 칸에서 바로 재생돼 플레이가 늘어남(DevForum 홈 공지).
+- [ ] 베타 뒤 매주 수요일 업데이트(A23-83) 때 게임 이름·설명 첫 줄에 사실만 짧게(예: "OUT NOW: …") — 사용자가 Creator Hub에서.
