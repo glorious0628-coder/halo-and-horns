@@ -319,8 +319,8 @@ local function applyZone(player, zone, pos)
 		else
 			notify(player, fmt("EnteredPvP"), "bad", "None") -- happens to me: no Deny
 		end
-	elseif not pvp and wasPvP then
-		notify(player, fmt("EnteredSafe"), "good")
+	elseif not pvp and wasPvP and (Config.Nudges or {}).SafeZone ~= false then
+		notify(player, fmt("EnteredSafe"), "good") -- off by default (Config.Nudges.SafeZone, 검수 10/09)
 	end
 	if zone.Id ~= old then ZoneService.ZoneChanged:Fire(player, zone.Id, old) end
 end
