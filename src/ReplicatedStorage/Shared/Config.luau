@@ -4627,6 +4627,9 @@ Config.UIArt = {
 		BarkBubbleGhostMinion = { Id = "rbxassetid://121325988367395", Size = Vector2.new(512, 333), TextRect = { 0.13, 0.37, 0.75, 0.33 } },
 		BarkBubbleLittleGhost = { Id = "rbxassetid://106182896723807", Size = Vector2.new(512, 344), TextRect = { 0.117, 0.366, 0.777, 0.331 } },
 		BarkBubbleGhostKing = { Id = "rbxassetid://120140777254240", Size = Vector2.new(512, 395), TextRect = { 0.127, 0.41, 0.742, 0.273 } },
+		-- King Slime (SlimeKing, A23-84; 이미지 생성 2 189998d): crown + cape bubble. TextRect = the white middle (measured
+		-- 10/09: 0.07-0.92 wide at mid height), wider than the first 0.506 so a 2-line line reads at ~104 px
+		BarkBubbleSlimeKing = { Id = "rbxassetid://98179139339766", Size = Vector2.new(512, 473), TextRect = { 0.15, 0.4, 0.7, 0.33 } },
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
 		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
 		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },

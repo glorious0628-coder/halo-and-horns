@@ -157,6 +157,7 @@ local TXT = {
 	Wanted = "Wanted %s", -- danger chip (Horns): the wanted stars
 	WantedBounty = " · %s",
 	WarTime = "Crown in %s", -- short: the phone meter is 240 px (UiSandbox 2026-10-06: 'My points' was cut)
+	WarIntro = "Crown War: win points for your side!", -- 검수 10/09: the one line when the war bar first shows
 	Siege = "Siege: %d each",
 	MyWar = "My pts %s",
 	WarSep = " · ",
@@ -3179,8 +3180,25 @@ function L.RookieFold()
 end
 HUD.RookieFold = L.RookieFold -- EventHUD reads the same rule
 
+-- 검수 2026-10-09 (UI clutter review ③, "show it when it is needed"): the crown war bar first shows after the Forge
+-- visit - hidden while the first mission is at its first fight or on the way to the Forge (TutorialStep Kill / Forge,
+-- A23-74 order Kill -> Forge -> Guide -> Quest -> Done); no step yet (not loaded) or any later step = shown, so it
+-- stays for good once it came. Pure: the offline test runs it.
+function HUD.WarHidden(step, steps)
+	if type(step) ~= "number" or type(steps) ~= "table" then return false end
+	return step == tonumber(steps.Kill) or step == tonumber(steps.Forge)
+end
+
 -- changed = the TutorialStep attribute just changed (a fold that ends in this session pops the parts in)
 function L.ApplyFold(changed)
+	local hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)
+	if ui.war and ui.war.Visible == hideWar then
+		ui.war.Visible = not hideWar
+		if changed and not hideWar then -- it comes in during play: one short line says what it is
+			pcall(UIKit.Toast, TXT.WarIntro, "info")
+			if type(UIKit.NewTag) == "function" then pcall(UIKit.NewTag, ui.war) end
+		end
+	end
 	local fold = L.RookieFold()
 	if ui.warInfo and ui.warInfo.Visible == fold then ui.warInfo.Visible = not fold end
 	L.SizeWarPlate()
