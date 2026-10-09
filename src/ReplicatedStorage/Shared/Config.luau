@@ -6084,4 +6084,37 @@ Config.KillCards = {
 	FlowerPatch = { Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 600 },
 }
 
+----------------------------------------------------------------- monster levels (게임성 개발 2, system_review_round1 #6)
+-- docs/design/system_review_round1_2026-10-09.md #6: every monster model carries a Level attribute (MonsterService)
+-- so the nametag can show a danger colour (game dev 1; the server's fights never read it). Inside each field's band
+-- (meadow Lv1-9, woods 10-24, ruins 25+; the Halloween fields are Lv1 fields): the field's plain kind lowest, the
+-- bigger / ranged ones higher, the bosses on top. A kind not listed falls back to its zone's MinLevel.
+Config.MonsterLevels = {
+	Slime = 2, FlowerSlime = 3, BigSlime = 5, SlimeKing = 8,
+	PumpkinSlime = 3, GhostMinion = 6, LittleGhost = 7, PumpkinKing = 10, GhostKing = 12,
+	Goblin = 12, BatGoblin = 13, SlingshotGoblin = 14, GoblinBrute = 18,
+	Skeleton = 26, SkeletonArcher = 28, SkeletonKnight = 30, CaptainClatter = 32,
+}
+
+function Config.MonsterLevel(kind)
+	local lv = Config.MonsterLevels[kind]
+	if type(lv) == "number" then return lv end
+	local def = Config.MonsterTypes[kind]
+	local zone = def and Config.Zones[def.Zone]
+	return zone and zone.MinLevel or 1
+end
+
+-- the nametag's danger band for a player of level `myLevel` looking at a monster of level `monsterLevel`:
+-- "Weak" (gray: Weak or more levels below), "Even" (white), "Strong" (yellow: Strong or more above), "Deadly" (red:
+-- Deadly or more above)
+Config.MonsterDangerBands = { Weak = -6, Strong = 3, Deadly = 8 }
+function Config.MonsterDanger(myLevel, monsterLevel)
+	local B = Config.MonsterDangerBands
+	local d = (tonumber(monsterLevel) or 1) - (tonumber(myLevel) or 1)
+	if d >= B.Deadly then return "Deadly" end
+	if d >= B.Strong then return "Strong" end
+	if d <= B.Weak then return "Weak" end
+	return "Even"
+end
+
 return Config

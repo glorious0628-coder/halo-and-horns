@@ -1,0 +1,292 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 71,
+  "failedChecks": 0,
+  "namedChecks": 23,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "levels",
+      "check": "every kind has its own level",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "inside its field's band (bosses up to 3 above)",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "a whole level",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "meadow: slime < flower < prince < king",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "woods: goblin < slingshot < brute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "ruins: skeleton < archer < knight < captain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "Halloween: the kings on top",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "not listed: the zone's MinLevel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "an unknown kind: 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levels",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "spawnMonster puts Level on every model before it is parented",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "near the player's level: Even (white)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "3 or more above: Strong (yellow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "8 or more above: Deadly (red)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "6 or more below: Weak (gray)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "bad numbers read as Lv1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "Lv1: green slimes white, the Slime Prince yellow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "Lv10 at the brute red, Lv25 at Captain Clatter yellow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "danger",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 2,
+  "staticFailures": [],
+  "mutations": {
+    "total": 10,
+    "applied": 10,
+    "caught": 10,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the slime as strong as the prince",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "danger :: Lv1: green slimes white, the Slime Prince yellow",
+          "levels :: meadow: slime < flower < prince < king"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the brute out of the woods band",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: inside its field's band (bosses up to 3 above)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a kind without a level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: every kind has its own level",
+          "levels :: ruins: skeleton < archer < knight < captain"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the captain under the knight",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: ruins: skeleton < archer < knight < captain"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no zone fallback",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levels :: not listed: the zone's MinLevel"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Strong from 2 above",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "danger :: near the player's level: Even (white)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Deadly never",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "danger :: 8 or more above: Deadly (red)",
+          "danger :: Lv10 at the brute red, Lv25 at Captain Clatter yellow"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Weak never",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "danger :: 6 or more below: Weak (gray)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the bands reversed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "danger :: 3 or more above: Strong (yellow)",
+          "danger :: 6 or more below: Weak (gray)",
+          "danger :: 8 or more above: Deadly (red)",
+          "danger :: Lv10 at the brute red, Lv25 at Captain Clatter yellow",
+          "danger :: Lv1: green slimes white, the Slime Prince yellow",
+          "danger :: bad numbers read as Lv1"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "no Level attribute",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: spawnMonster puts Level on every model before it is parented"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "e8a63c6b60001957282c286a97809bfc1ff6dcb2eb46d853376ee961a7f12108",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/MonsterService.luau": "19a807fcef14898c0d39029621a76ea704ce40dc098d73b9624c67d6246c3ad2"
+  },
+  "fixtureSHA256": "8a9b198d91d06be5076f433e068bf40fd9ea0743bd8893d86bc4d498d8f56654",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "system_review_round1 #6: every monster model has the attribute Level = Config.MonsterLevel(kind) (Config.MonsterLevels, else the zone's MinLevel); Config.MonsterDanger(myLevel, monsterLevel) = Weak (6+ below, gray) / Even (white) / Strong (3+ above, yellow) / Deadly (8+ above, red) for the nametag (game dev 1). The server's fights never read it.",
+  "limitations": "Config only + MonsterService as source text; the nametag colour is game dev 1's."
+}

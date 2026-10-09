@@ -1068,6 +1068,8 @@ local function spawnMonster(kind, opts)
 	if owner then
 		rig.Model:SetAttribute("OwnerUserId", owner.UserId)
 	end
+	-- system_review_round1 #6: the nametag's danger colour (game dev 1); the fights never read it
+	rig.Model:SetAttribute("Level", Config.MonsterLevel(kind))
 
 	-- parent, weld (visible parts to VisualRoot, which is jointed to the root), network owner, humanoid states.
 	-- Gameplay (hits, AI, knockback) only uses the root; parts follow it through the joints.
