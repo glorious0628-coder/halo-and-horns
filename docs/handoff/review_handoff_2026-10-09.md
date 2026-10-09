@@ -59,7 +59,7 @@
 - 이미지 개발: faction bg/mascots on imgdev-facbg (unpushed to main), UiSandbox photo pending. Minimap A23-95 UI done (rotation proven).
 - Weekly usage 98% at 14:00; user switching the desktop app to Console API billing (Developer Mode → Third-Party Inference → Anthropic API).
 
-## 8. 16:15 — 10/08 계정으로 옮김 (검수 = local_2d0d02e0-5f88-4010-8d14-3b57167f5f94)
+## 8. 16:15 — 10/08 계정으로 옮김 (16:30 사용자가 세션을 전부 지우고 새로 만듦 → 옛 id 모두 무효)
 - 10/09 구독 계정은 16:11 KST에 주간 한도에 닿았어요(10/12 21:00 초기화). 이 계정은 주간 96%예요(10/13 16:00 초기화).
 - 이 계정 세션은 10/08 대화가 남아 있는 옛 세션 9개예요. **/clear 뒤** 아래 한 줄로 다시 시작해요(/clear 하면 id가 바뀔 수 있음 → 검수가 list_sessions로 다시 찾음).
 - 모델·노력(16:15 검수가 설정): Opus xhigh = 게임성 개발 1·2·이미지 개발 1 (개발 2는 사용자가 막대를 Ultracode로), Sonnet xhigh = 게임성 개발 3, Sonnet high = 메인 반영 1·이미지 생성 1·2·촬영 편집 1·소리 생성 1.
@@ -77,4 +77,4 @@
 | 메인 반영 1 | 16:11 저장 push는 검수가 함. 다음: 빛 마을 halo_materials → halo_terrain apply(새 모델과 함께), 카메라 A23-91 확인 ③ |
 | 소리·촬영 | 쉼 |
 
-한 줄 프롬프트: `너는 '<세션 이름>'이야. docs/handoff/review_handoff_2026-10-09.md §8의 네 줄과 build/handoff_2026-10-09b/<역할>_tail.md를 읽고 이어서 해. 보고는 검수(local_2d0d02e0)에게 덩어리마다 한 번.`
+한 줄 프롬프트: `너는 '<세션 이름>'이야. docs/handoff/review_handoff_2026-10-09.md §8의 네 줄과 build/handoff_2026-10-09b/<역할>_tail.md를 읽고 이어서 해. 보고는 '모든 것 검수' 세션에게(id는 list_sessions로 찾기) 덩어리마다 한 번.`
