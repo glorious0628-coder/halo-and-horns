@@ -1574,6 +1574,8 @@ local function build()
 	root.Active = true
 	root.ZIndex = ZINDEX
 	root.Visible = false
+	-- the dim over the whole screen, phone side edges included (UIKit.FullScreenDim)
+	if UIKit and type(UIKit.FullScreenDim) == "function" then LAY.ShowDim = UIKit.FullScreenDim(root, "ClassPickerDim") end
 
 	cardsRow = Instance.new("ScrollingFrame")
 	cardsRow.Name = "Cards"
@@ -1669,6 +1671,18 @@ local function refresh()
 	visible = open
 	root.Visible = open
 	setBlur(open)
+	if LAY.ShowDim then LAY.ShowDim(open) end
+	-- like FactionPicker (user 10/09): no thumbstick / jump button over the cards, put back as they were on close
+	if open then
+		local ok, was = pcall(function() return GuiService.TouchControlsEnabled end)
+		if ok and was == true then
+			LAY.TouchWas = true
+			pcall(function() GuiService.TouchControlsEnabled = false end)
+		end
+	elseif LAY.TouchWas then
+		LAY.TouchWas = nil
+		pcall(function() GuiService.TouchControlsEnabled = true end)
+	end
 	-- the chat window (bottom-left) covered the first card's button on small screens: hide it like FactionPicker
 	local fp = C and C.FactionPicker
 	if type(fp) == "table" and type(fp.HoldWorld) == "function" then pcall(fp.HoldWorld, "class", open) end

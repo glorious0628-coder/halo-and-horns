@@ -3141,6 +3141,43 @@ function UIKit.Tx(t, key, ...)
 	return s
 end
 
+-- full-screen pickers (FactionPicker, ClassPicker; 검수 10/09, RELEASE_PLAN 10/07): MainGui keeps to DeviceSafeInsets, so
+-- a dim on a picker's root left the phone's side edges undimmed. This moves the root's dim onto its own layer that
+-- covers the whole screen (no insets), just under MainGui. Returns show(open) (nil when it could not be made: the root
+-- keeps its own dim then).
+function UIKit.FullScreenDim(root, name)
+	if typeof(root) ~= "Instance" or not root:IsA("GuiObject") then return nil end
+	local pg = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if not pg then return nil end
+	local ok, frame = pcall(function()
+		local g = Instance.new("ScreenGui")
+		g.Name = name
+		g.ResetOnSpawn = false
+		g.IgnoreGuiInset = true
+		pcall(function() -- after IgnoreGuiInset (which rewrites ScreenInsets)
+			g.ScreenInsets = Enum.ScreenInsets.None
+			g.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
+		end)
+		g.DisplayOrder = (UIKit.Gui and UIKit.Gui.DisplayOrder or 10) - 1
+		g.Enabled = false
+		local f = Instance.new("Frame")
+		f.Name = "Dim"
+		f.Size = UDim2.fromScale(1, 1)
+		f.BorderSizePixel = 0
+		f.BackgroundColor3 = root.BackgroundColor3
+		f.BackgroundTransparency = root.BackgroundTransparency
+		f.Parent = g
+		g.Parent = pg
+		return f
+	end)
+	if not ok or not frame then return nil end
+	root.BackgroundTransparency = 1
+	return function(open)
+		local g = frame.Parent
+		if g and g:IsA("ScreenGui") then g.Enabled = open == true end
+	end
+end
+
 ----------------------------------------------------------------- lifecycle
 function UIKit.Init(registry)
 	C = registry
