@@ -10,7 +10,8 @@
 -- Idempotent: parts already swapped (BackfixWas) and an existing KingCrown are skipped.
 
 local MODE = "__MODE__"
-local ADD_CROWN = false -- 2026-10-09 user: the Slime Prince (BigSlime) wears a crown OR ore, not both: ore only; the real King Slime has its own 3D
+local ADD_CROWN = true -- 2026-10-09 (later) user: the Slime Prince (BigSlime) wears a crown, not ore (the ore-free body mesh comes from 이미지 생성 1); the real King Slime has its own 3D
+local CROWN_SCALE = 0.7 -- the Prince crown is smaller than the King crown (the one the King model carries); 1 = the old size
 if MODE ~= "plan" and MODE ~= "restore" then MODE = "apply" end
 if game:GetService("RunService"):IsRunning() then error("Edit 모드에서만 실행하세요.") end
 local AssetService = game:GetService("AssetService")
@@ -84,7 +85,7 @@ if king then
 	if MODE == "restore" then
 		if existing then existing:Destroy() crownNote = "crown removed" else crownNote = "no crown" end
 	elseif not ADD_CROWN then
-		crownNote = existing and "crown left (ADD_CROWN off; remove by hand)" or "no crown (ADD_CROWN off)"
+		crownNote = existing and "crown left (ADD_CROWN off)" or "no crown (ADD_CROWN off)"
 	elseif existing then
 		crownNote = "crown already there"
 	else
@@ -104,8 +105,11 @@ if king then
 			else
 				local H = body.Size.Y
 				crown.Name = "KingCrown"
-				crown.Size = T.CrownSize * H
-				crown.CFrame = body.CFrame * CFrame.new(T.CrownOffset * H)
+				crown.Size = T.CrownSize * H * CROWN_SCALE
+				-- the crown base stays on the body: bottom y = offset.y - half height (unscaled), the centre follows the smaller height
+				local half = T.CrownSize.Y / 2
+				local off = Vector3.new(T.CrownOffset.X, (T.CrownOffset.Y - half) + half * CROWN_SCALE, T.CrownOffset.Z)
+				crown.CFrame = body.CFrame * CFrame.new(off * H)
 				crown.Color = T.CrownColor
 				crown.Material = Enum.Material.SmoothPlastic
 				crown.Anchored = false
