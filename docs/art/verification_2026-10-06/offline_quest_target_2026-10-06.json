@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 50,
-  "namedChecks": 50,
+  "checks": 55,
+  "namedChecks": 55,
   "failing": [],
   "mutations": {
-    "total": 20,
-    "caught": 20,
+    "total": 23,
+    "caught": 23,
     "results": [
       {
         "mutation": "claim ignores CanClaim",
@@ -95,7 +95,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "plain zones :: meadow from the Halo town -> the bridge"
+          "plain zones :: meadow from the Halo town -> the bridge",
+          "town pads :: no town pad yet: the meadow from the Halo town -> its bridge as before"
         ]
       },
       {
@@ -223,6 +224,34 @@
           "rows :: HeroStatue inside the town -> the anchor over the statue spot",
           "rows :: WoodsGate in its zone -> the anchor over the woods' edge"
         ]
+      },
+      {
+        "mutation": "the town pad is skipped",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "town pads :: with the Halo plaza pad: the meadow -> that pad (no bridge walk)"
+        ]
+      },
+      {
+        "mutation": "a pad in another zone counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "town pads :: TownPad finds it for the Halo town only"
+        ]
+      },
+      {
+        "mutation": "any pad counts, whatever it goes to",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "town pads :: TownPad finds it for the Halo town only",
+          "town pads :: a zone the town pads do not go to -> the usual route"
+        ]
       }
     ]
   },
@@ -230,9 +259,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "974f66ac3649f2e49dcc6cbcccb6444a6b2bb44e7c5f2575893fc516031c5a75",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "c591e0e3bbe394b2b65cae3f7f1298a498caebf0e61d3487f907b24b9942782c",
-    "tools/fixtures/quest_target_offline.luau": "73e16d3f81201bcc4ed2c668037f7c2d4da1b0bfe604a0b9a19655011ab65f92"
+    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "87b58ecb538c4ed7a75e392126bc525ee35a8a93f9a596ce0e7bc3861749afda",
+    "tools/fixtures/quest_target_offline.luau": "f0570afe0fa328a04875112083a6967544371ede66038af39f7d2f1992e1d2c1"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

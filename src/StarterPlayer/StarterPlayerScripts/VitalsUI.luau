@@ -16,6 +16,8 @@ local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, 
 } }
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245), Dim = Color3.fromRGB(150, 150, 160) }
 local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
+-- the potion count on the BtnPotion socket (real px: box W x H at least, text Min..Max, outline thickness)
+local COUNT_PX = { W = 24, H = 18, Min = 14, Max = 18, Outline = 1.5 }
 -- UI round 2 #3 (검수 2026-10-07): with no potions the [Buy] press shows the way to the merchant (HUD.ShowGuide)
 local WAY = { Label = "Potion shop", Gap = 1, At = -math.huge }
 
@@ -121,7 +123,10 @@ function VitalsUI.LayoutPotions()
 	local s = scale and math.max(0.1, scale.Scale) or 1
 	for _, potion in ui.Potions do
 		local d = potion.Size or 72
-		potion.Count.Size = UDim2.fromOffset(math.max(d * 0.3, math.ceil(14 / s)), math.max(d * 0.24, math.ceil(12 / s)))
+		-- 이미지 개발 10/09 (main PC photo: the '0' was a ~9 px speck on the ring): the count box covers the socket and a
+		-- little of the ring around it, at least COUNT_PX real px tall
+		potion.Count.Size = UDim2.fromOffset(math.max(d * 0.5, math.ceil(COUNT_PX.W / s)),
+			math.max(d * 0.38, math.ceil(COUNT_PX.H / s)))
 		potion.Status.Size = UDim2.fromOffset(d * 0.86, math.max(d * 0.26, math.ceil(12 / s)))
 		if potion.Key then
 			local keyH = math.max(15, math.ceil(12 / s))
@@ -144,12 +149,19 @@ function VitalsUI.BuildPotions(parent, touch)
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.48, 0.47), Size = UDim2.fromScale(0.56, 0.56),
 			ZIndex = 3 })
 		local count = UIKit.LightText({ Name = "Count", Parent = button, Text = "0",
-			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.83, 0.8), Size = UDim2.fromOffset(22, 18),
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromOffset(22, 18),
 			TextScaled = true, Number = true, MaxTextSize = touch and 18 or 16, ZIndex = 5 })
 		local status = UIKit.LightText({ Name = "Status", Parent = button, Text = "",
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(60, 18),
 			TextScaled = true, Title = true, MaxTextSize = touch and 16 or 14, ZIndex = 6, Visible = false })
-		C.HUD.FitText(count, 13, true)
+		C.HUD.FitText(count, COUNT_PX.Max, true, COUNT_PX.Min, true)
+		-- a full dark outline (FitText's default is a faint 0.4 px one): the digit sits on the gold ring. UIKit's fit pass
+		-- re-caps the stroke at PickerOutlineThickness on every pass, so the cap is raised too
+		local countLine = count:FindFirstChild("Outline")
+		if countLine and countLine:IsA("UIStroke") then
+			count:SetAttribute("PickerOutlineThickness", COUNT_PX.Outline)
+			countLine.Thickness, countLine.Transparency = COUNT_PX.Outline, 0
+		end
 		C.HUD.FitText(status, 12, true)
 		local key = nil
 		local kbm = C and C.Keybinds

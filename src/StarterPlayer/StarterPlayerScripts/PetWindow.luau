@@ -29,7 +29,7 @@ local T = {
 	Window = "Pet",
 	Remote = "EquipPet",
 	Gap = 0.6, -- s: one press at a time (Config.RateLimits.EquipPet 0.5 + a margin)
-	Icon = 72, ButtonW = 132, ButtonH = 40, BarH = 16,
+	Icon = 72, ButtonW = 132, ButtonH = 40, BarH = 20, BarText = 15, -- 검수 10/10: the XP numbers >= 15 px
 	DefaultIcon = "IconPetBabySlime",
 	-- game text: English only (A23-48)
 	Text = {
@@ -37,6 +37,7 @@ local T = {
 		Empty = "No pets yet.",
 		Level = "Lv %d",
 		Speed = "Walk speed +%d%%",
+		SpeedRest = "Follow: +%d%% speed", -- a resting pet: what following would give (검수 10/10)
 		XP = "%d/%d XP",
 		Max = "MAX",
 		Following = "Following you",
@@ -44,8 +45,8 @@ local T = {
 		PutAway = "Put away",
 	},
 }
-local S = { Ready = false, List = nil, Sig = "", PressAt = -math.huge }
-local VIEW = { Kit = nil }
+local S = { Ready = false, List = nil, Sig = "", Shape = "", PressAt = -math.huge }
+local VIEW = { Kit = nil, Bars = {} } -- Bars[uid] = { Set = setFraction, Text = its TextLabel } of the open window
 
 local function num(v, d)
 	v = tonumber(v)
@@ -200,17 +201,18 @@ local function petRow(kit, parent, row)
 	name.TextWrapped = false
 	name.TextTruncate = Enum.TextTruncate.AtEnd
 	local line = string.format(T.Text.Level, row.Lv)
-	if row.Speed > 0 then line ..= " · " .. string.format(T.Text.Speed, row.Speed) end
+	if row.Speed > 0 then line ..= " · " .. string.format(row.Equipped and T.Text.Speed or T.Text.SpeedRest, row.Speed) end
 	label(kit, mid, line, 16, kit.Theme.SubText)
 	if row.XP ~= nil or row.Max then
 		local ui = C and C.UIKit
 		if type(ui) == "table" and type(ui.Bar) == "function" then
-			local ok, bar, setFill = pcall(ui.Bar, { Name = "XP", Size = UDim2.new(1, 0, 0, T.BarH), TextSize = 13,
-				Color = kit.Theme.Gold, Text = row.Max and T.Text.Max or string.format(T.Text.XP, row.XP, row.Need) })
+			local ok, bar, setFill, text = pcall(ui.Bar, { Name = "XP", Size = UDim2.new(1, 0, 0, T.BarH), TextSize = T.BarText,
+				Color = kit.Theme.Gold, Text = PetWindow.BarText(row) })
 			if ok and bar then
 				bar.LayoutOrder = kit.NextOrder()
 				setFill(row.Fill)
 				bar.Parent = mid
+				if row.Uid then VIEW.Bars[row.Uid] = { Set = setFill, Text = text } end
 			end
 		end
 	end
@@ -242,8 +244,9 @@ end
 
 local function build(parent, kit)
 	VIEW.Kit = kit
+	VIEW.Bars = {}
 	local rows = PetWindow.Rows(S.List, context())
-	S.Sig = PetWindow.Sig(rows)
+	S.Sig, S.Shape = PetWindow.Sig(rows), PetWindow.Sig(rows, true)
 	if #rows == 0 then
 		local l = label(kit, parent, T.Text.Empty, 18, kit.Theme.SubText)
 		l.TextXAlignment = Enum.TextXAlignment.Center
@@ -253,18 +256,24 @@ local function build(parent, kit)
 	return nil
 end
 
--- what the window shows (a PetList with nothing new for it - e.g. the same XP - skips the redraw)
-function PetWindow.Sig(rows)
+-- the XP bar's words of a row
+function PetWindow.BarText(row)
+	return row.Max and T.Text.Max or string.format(T.Text.XP, row.XP or 0, row.Need or 0)
+end
+
+-- what the window shows (a PetList with nothing new for it skips the redraw); shapeOnly = without the XP numbers (an
+-- XP-only change updates the bars in place: a rebuild would drop a button press in progress, 검수 10/10)
+function PetWindow.Sig(rows, shapeOnly)
 	local parts = {}
 	for _, r in rows do
-		table.insert(parts, table.concat({ tostring(r.Uid), r.Name, r.Lv, tostring(r.XP), tostring(r.Need),
-			tostring(r.Equipped), tostring(r.CanPutAway), tostring(r.CanFollow) }, "|"))
+		table.insert(parts, table.concat({ tostring(r.Uid), r.Name, r.Lv, tostring(r.Max), tostring(r.Equipped),
+			tostring(r.CanPutAway), tostring(r.CanFollow), shapeOnly and "" or tostring(r.XP), shapeOnly and "" or tostring(r.Need) }, "|"))
 	end
 	return table.concat(parts, ";")
 end
 
 local function cleanup()
-	VIEW.Kit = nil
+	VIEW.Kit, VIEW.Bars = nil, {}
 end
 
 function PetWindow.IsReady()
@@ -277,18 +286,30 @@ function PetWindow.Open()
 	return (pcall(panels.Open, T.Window))
 end
 
--- the owner's "PetList": kept; the open window redraws when what it shows changed
+-- the owner's "PetList": kept; the open window redraws when what it shows changed (XP only: the bars in place)
 function PetWindow.OnList(payload)
 	if type(payload) ~= "table" or type(payload.List) ~= "table" then return false end
 	S.List = payload
 	local kit = VIEW.Kit
 	local panels = C and C.Panels
 	local open = kit ~= nil and type(panels) == "table" and type(panels.CurrentId) == "function" and panels.CurrentId() == T.Window
-	if open and PetWindow.Sig(PetWindow.Rows(payload, context())) ~= S.Sig then
-		pcall(kit.Rebuild, true)
+	if not open then return false end
+	local rows = PetWindow.Rows(payload, context())
+	local sig = PetWindow.Sig(rows)
+	if sig == S.Sig then return false end
+	if PetWindow.Sig(rows, true) == S.Shape then -- only XP moved: the bars, in place
+		for _, r in rows do
+			local b = r.Uid and VIEW.Bars[r.Uid]
+			if b then
+				pcall(b.Set, r.Fill)
+				if b.Text then b.Text.Text = PetWindow.BarText(r) end
+			end
+		end
+		S.Sig = sig
 		return true
 	end
-	return false
+	pcall(kit.Rebuild, true)
+	return true
 end
 
 function PetWindow.Init(registry)

@@ -898,6 +898,15 @@ local function drawWorld()
 			padSum += pad.Position
 		end
 	end
+	-- 빛 마을 점검 #52 (2026-10-10): the town plazas' own pads (Map.Pads children with TravelTo outside the Crossroads,
+	-- placed by the world tool, not in Config.Map.Pads) get the same mark
+	local live = workspace:FindFirstChild("Map")
+	live = live and live:FindFirstChild("Pads")
+	for i, p in (live and live:GetChildren() or {}) do
+		local part = p:IsA("BasePart") and p or (p:IsA("Model") and (p.PrimaryPart or p:FindFirstChildWhichIsA("BasePart", true))) or nil
+		local zone = part and type(p:GetAttribute("TravelTo")) == "string" and Config.ZoneAt(part.Position) or nil
+		if zone and zone.Id ~= "Crossroads" then landmark("TownPad" .. i, GLYPH.Pad, COL.Pad, part.Position, nil, 15) end
+	end
 	if padCount > 0 then
 		local mid = padSum / padCount
 		local cap = label({

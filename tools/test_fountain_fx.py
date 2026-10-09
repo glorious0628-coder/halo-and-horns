@@ -1,12 +1,13 @@
 """FountainFx: the 3-tier Halo fountain (검수 2026-10-09 night; 이미지 생성 1's measurements of Halo_Fountain_HD_plain,
 docs/design/halo_town_plan_2026-10-09.md last section), offline.
 
-Runs, in the official Luau CLI, the CURRENT FountainFx.luau in tools/fixtures/fountain_fx_offline.luau. Checks: a
-Town_Halo_Fountain marked as the new model (its mesh "Halo_Fountain", or attribute FountainSpec =
-"Town_Halo_Fountain3") gets the 3-tier spec: the jet at the gold ball (Y 0.80), 8 streams from the top bowl rim
+Runs, in the official Luau CLI, the CURRENT FountainFx.luau in tools/fixtures/fountain_fx_offline.luau. Checks (검수
+2026-10-10: each fountain by its own kit Model name, no mark guessing): Town_Halo_Fountain3 gets the 3-tier spec: a
+small jet off the spike tip (Y 1.0; inside the gold ball it never shows), 8 streams from the top bowl rim
 (Y 0.76, R 0.145) into the middle bowl (Y 0.54), 12 from the middle rim (Y 0.55, R 0.25) into the pool with ripples,
 pool twinkles on the water (Y 0.165) inside the round pool, more of them in a deeper blue, and no halo ring glow / light;
-an unmarked Town_Halo_Fountain (the cloud model still in the main place) keeps the cloud spec with its ring glow; the
+Town_Halo_Fountain (the cloud fountain, now in the Crossroads plaza) keeps the cloud spec with its ring glow whatever is
+inside it; the
 Crossroads K_Fountain is unchanged. Mutations: each must be caught.
 
 Usage: py tools/test_fountain_fx.py
@@ -30,10 +31,8 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-09/offline_fountain_fx_2026-10-09.json"
 
 MUTATIONS = [
-    ("FX", "the new model gets the cloud spec (no mesh mark)", "or model:FindFirstChild(v.Mesh, true) ~= nil", ""),
-    ("FX", "the attribute mark ignored", "model:GetAttribute(\"FountainSpec\") == v.Spec or ", ""),
-    ("FX", "every Town_Halo_Fountain is the new one", "\tif v and (model:GetAttribute", "\tif v or (model:GetAttribute"),
-    ("FX", "the jet at the old height", "\t\tJet = { Y = 0.80, Up = 8 },", "\t\tJet = { Y = 0.86, Up = 8 },"),
+    ("FX", "the 3-tier spec under another name", "\tTown_Halo_Fountain3 = {\n", "\tTown_Halo_Fountain_X = {\n"),
+    ("FX", "the jet back inside the gold ball", "\t\tJet = { Y = 1.0, Up = 5 },", "\t\tJet = { Y = 0.80, Up = 5 },"),
     ("FX", "the top bowl streams from the wrong rim", "{ FromY = 0.76, FromR = 0.145,", "{ FromY = 0.76, FromR = 0.24,"),
     ("FX", "the pool at the old height", "Pool = { Y = 0.165, R = 0.45, Rate = 8, Deep = true },",
      "Pool = { Y = 0.17, R = 0.45, Rate = 8, Deep = true },"),
@@ -42,6 +41,8 @@ MUTATIONS = [
     ("FX", "no more twinkles", "Rate = spec.Pool.Rate or 4,", "Rate = 4,"),
     ("FX", "the new one keeps a halo ring", "\t\tPool = { Y = 0.165, R = 0.45, Rate = 8, Deep = true },\n",
      "\t\tPool = { Y = 0.165, R = 0.45, Rate = 8, Deep = true },\n\t\tHalo = { Y = 1.02, R = 0.18 },\n"),
+    ("FX", "the cloud fountain swapped for the new one by a mark", "\treturn SPECS[model.Name], model.Name\n",
+     "\tif model:GetAttribute(\"FountainSpec\") then return SPECS.Town_Halo_Fountain3, \"Town_Halo_Fountain3\" end\n\treturn SPECS[model.Name], model.Name\n"),
 ]
 
 
