@@ -2098,7 +2098,11 @@ local SIGN = { -- shop sign boards: SurfaceGui images by 이미지 개발 (Confi
 	Potion = "rbxassetid://122788599616130", Bakery = "rbxassetid://77116902671887", Juice = "rbxassetid://133684891699718", Flower = "rbxassetid://93642542767036",
 }
 local NOSHADOW = { PotFlowers = true } -- A23-105 (ShadowMap): everything casts a shadow except the tiny flat ones
-local LAMP = { Lantern = Vector3.new(0, 6.3, 0) } -- local offset of the lamp glass: a PointLight goes here at night (attribute LampLight, 개발 1 lights it)
+local LAMP = { -- scale-1 model-local lamp spots (approximate for the bridge / gate: read off the 2D fronts)
+	Lantern = { Vector3.new(0, 6.3, 0) },
+	ArchBridge = { Vector3.new(13.2, 12.6, 9.0), Vector3.new(-13.2, 12.6, 9.0), Vector3.new(13.2, 12.6, -9.0), Vector3.new(-13.2, 12.6, -9.0) },
+	Gate = { Vector3.new(13.5, 6.0, -13.0), Vector3.new(-13.5, 6.0, -13.0), Vector3.new(16.5, 6.0, -9.5), Vector3.new(-16.5, 6.0, -9.5) },
+} -- local offset of the lamp glass: a PointLight goes here at night (attribute LampLight, 개발 1 lights it)
 local OLD = { HaloTower = true, HeroStatue = true, HaloCastle = true, HaloTownTrees = true, Flower = true, ZoneSwap_halo = true, Cathedral = true, Cloud = true } -- Cathedral = the old Landmarks dome, Cloud = the old cloud puffs (only inside the Halo rect)
 
 local function inRect(p)
@@ -2313,23 +2317,25 @@ for _, e in PLAN.placements do
 		m:SetAttribute("DoorFront", Vector3.new(0, dd[3] * e.s, -(sz.Z / 2) - 1.5)) -- a point 1.5 studs in front of the door, model-local (pivot = bottom centre, front = -Z)
 		if dd[4] then m:SetAttribute("DoorTooSmall", true) end
 	end
-	if LAMP[e.kind] then -- night lamp (이미지 개발 WeatherFx switches it on): LampLight = true + one PointLight, Enabled = false, at the lamp glass
+	if LAMP[e.kind] then -- night lamps (이미지 개발 WeatherFx switches them on): LampLight = true + one disabled PointLight per lamp spot
 		m:SetAttribute("LampLight", true)
-		local lp = Instance.new("Part")
-		lp.Name = "LampLightPart"
-		lp.Size = Vector3.new(0.4, 0.4, 0.4)
-		lp.Transparency = 1
-		lp.Anchored, lp.CanCollide, lp.CanQuery, lp.CanTouch, lp.CastShadow = true, false, false, false, false
-		lp.CFrame = m:GetPivot() * CFrame.new(LAMP[e.kind] * e.s)
-		local pl = Instance.new("PointLight")
-		pl.Name = "LampLight"
-		pl.Color = Color3.fromRGB(255, 214, 130)
-		pl.Brightness = 1.2
-		pl.Range = 16
-		pl.Shadows = false
-		pl.Enabled = false
-		pl.Parent = lp
-		lp.Parent = m
+		for i, off in LAMP[e.kind] do
+			local lp = Instance.new("Part")
+			lp.Name = "LampLightPart" .. i
+			lp.Size = Vector3.new(0.4, 0.4, 0.4)
+			lp.Transparency = 1
+			lp.Anchored, lp.CanCollide, lp.CanQuery, lp.CanTouch, lp.CastShadow = true, false, false, false, false
+			lp.CFrame = m:GetPivot() * CFrame.new(off * e.s)
+			local pl = Instance.new("PointLight")
+			pl.Name = "LampLight"
+			pl.Color = Color3.fromRGB(255, 214, 130)
+			pl.Brightness = 1.2
+			pl.Range = 16
+			pl.Shadows = false
+			pl.Enabled = false
+			pl.Parent = lp
+			lp.Parent = m
+		end
 	end
 	if NOSHADOW[e.kind] then
 		for _, p in m:GetDescendants() do
@@ -2408,6 +2414,18 @@ for _, e in PLAN.placements do
 	local ts = e.tower_size
 	for i, t in e.towers do
 		inv("TowerBlock" .. i, Vector3.new(ts[1], ts[2], ts[3]), base * CFrame.new(t[1], t[2], t[3]), true)
+	end
+	g:SetAttribute("LampLight", true)
+	for i, off in LAMP.Gate do
+		local lpart = inv("LampLightPart" .. i, Vector3.new(0.4, 0.4, 0.4), base * CFrame.new(off), false)
+		local pl = Instance.new("PointLight")
+		pl.Name = "LampLight"
+		pl.Color = Color3.fromRGB(255, 214, 130)
+		pl.Brightness = 1.2
+		pl.Range = 16
+		pl.Shadows = false
+		pl.Enabled = false
+		pl.Parent = lpart
 	end
 	g.Parent = gates
 	gateInfo = string.format("Gate_HaloTown at (%.1f, %.1f) lintel (%.1f, %.1f, %.1f), opening free between the two tower blocks", e.x, e.z, lp[1], lp[2] + base.Y, lp[3])
