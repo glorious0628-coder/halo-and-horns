@@ -1815,7 +1815,9 @@ function L.BuildQuestLines(root)
 	-- phones: the 12 px name-tag floor (the block is 150 px wide); PC: body text
 	local style = IS_TOUCH and "NameTag" or "Body"
 	-- 검수 2026-10-08: each line on the cream ListRow plate (L.QuestPlate), its words navy (light-plate text)
-	local onPlate = UIKit.ArtId("ListRow") ~= nil
+	-- 검수 10/09 (user on the cream plates: "이거 왜 이래"): back to the soft dark band + white outlined words; the plate
+	-- path stays behind L.QuestPlate.On
+	local onPlate = L.QuestPlate.On == true and UIKit.ArtId("ListRow") ~= nil
 	ui.questOnPlate = onPlate
 	-- 검수 10/08 (user "퀘스트 창도 이상해": the ▼ beside line 1 did not say what it opens): a head line "Quests (3) ▼" over
 	-- the lines; a press opens the quest window (Q) / the list. The lines sit right under it (LayoutQuestLines)
@@ -1850,8 +1852,15 @@ function L.BuildQuestLines(root)
 	}, style, onPlate)
 	-- 검수 10/09 (5c1756fb 머리 줄 판): the head line sits on its own small plate too
 	local headPlate = onPlate and UIKit.ArtFrame("ListRow", { Name = "HeadPlate", ZIndex = 2, Visible = false, Parent = root }) or nil
+	-- no plate: the head line gets the same soft band as the lines (same left end, same width rule; LayoutQuestLines)
+	local headBand = nil
+	if not onPlate then
+		headBand = L.SoftBand(root, "Right")
+		headBand.Name = "HeadBand"
+		headBand.Visible = false
+	end
 	if onPlate then UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = headRow }) end
-	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate }
+	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate, Band = headBand }
 	-- the head plate lives beside the head line (not inside it): follow its showing / hiding at once (검수 10/09)
 	headRow:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.LayoutQuestPlates) end)
 	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
@@ -1970,6 +1979,166 @@ function L.BuildQuestLines(root)
 		if toggleQuests then toggleQuests() end
 	end)
 	ui.questFold = fold
+	if L.Tracker.On then L.BuildTracker(root) end
+end
+
+----------------------------------------------------------------- building: quest tracker (A23-94)
+-- user 10/09 (a reference shot from another game): the 'now do' quest big at the left middle, no plate - line 1 = the
+-- kind icon + the quest's name (bold, outlined, a soft dark band behind it), line 2 = one goal sentence, line 3 =
+-- (p/t) in red-orange, green Done! + [Claim] when it can be claimed. It draws HUD line 1's entry (L.SetQuestLine li 1,
+-- 개발 1 picks it); the head line 'Quests (n) ▼' sits under it and opens the quest window. Lines 2-3 are not drawn.
+function L.BuildTracker(root)
+	local T = L.Tracker
+	local frame = UIKit.Create("TextButton", {
+		Name = "QuestTracker",
+		Text = "",
+		AutoButtonColor = false,
+		BackgroundTransparency = 1,
+		AutomaticSize = Enum.AutomaticSize.Y,
+		Size = UDim2.fromOffset(300, 0),
+		Visible = false,
+		ZIndex = 3,
+		Parent = root,
+	}, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Vertical,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, T.Gap),
+		}),
+	})
+	frame.Activated:Connect(function()
+		if IS_TOUCH then L.QuestBlockTap() else L.QuestLineTap(1) end
+	end)
+	-- line 1: the band (behind) + a horizontal row of icon and name
+	local head = UIKit.Create("Frame", { Name = "Head", LayoutOrder = 1, BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0, T.TitleH), ZIndex = 3, Parent = frame })
+	local band = L.SoftBand(head, "Right")
+	band.Size = UDim2.new(1, 64, 1, 4)
+	band.Position = UDim2.new(0, -8, 0, -2)
+	local row = UIKit.Create("Frame", { Name = "Row", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 4,
+		Parent = head }, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 6),
+		}),
+	})
+	local icon = UIKit.ArtImage("GlyphQuest", { Name = "Icon", LayoutOrder = 1, Size = UDim2.fromOffset(T.TitleH, T.TitleH),
+		ZIndex = 5, Parent = row })
+	local title = UIKit.StyledLabel({ Name = "Title", LayoutOrder = 2, Size = UDim2.new(1, -T.TitleH - 6, 1, 0),
+		TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 5, Parent = row }, "Title")
+	-- line 2: the goal sentence (wraps)
+	local goal = UIKit.StyledLabel({ Name = "Goal", LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4,
+		Parent = frame }, "Body")
+	-- line 3: (p/t) + the Claim pill
+	local prog = UIKit.Create("Frame", { Name = "Progress", LayoutOrder = 3, BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0, T.ProgH), ZIndex = 4, Parent = frame }, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 8),
+		}),
+	})
+	local nums = UIKit.StyledLabel({ Name = "Nums", LayoutOrder = 1, Size = UDim2.new(0, 0, 1, 0),
+		AutomaticSize = Enum.AutomaticSize.X, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = prog }, "Number")
+	local claim = UIKit.ArtFrame("Chip", { Name = "Claim", LayoutOrder = 2, ImageColor3 = COL.HotTint, Visible = false,
+		ZIndex = 5, Parent = prog }, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
+	local claimText = UIKit.StyledLabel({ Name = "Text", Size = UDim2.fromScale(1, 1), Text = TXT.Claim, ZIndex = 6,
+		Parent = claim }, "Number")
+	if IS_TOUCH then -- phones: the game's 11 px floor for the sentence and the numbers (the block sits beside the minimap)
+		goal:SetAttribute("StyleMinPx", 11)
+		nums:SetAttribute("StyleMinPx", 11)
+		title:SetAttribute("StyleMinPx", 13)
+	end
+	frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() L.PlaceTrackerHead() end)
+	ui.tracker = { Frame = frame, Band = band, Icon = icon, Title = title, Goal = goal, Nums = nums, Claim = claim,
+		ClaimText = claimText }
+end
+
+-- line 1's entry -> the tracker (called from L.SetQuestLine)
+function L.SetTracker(e, label, nums)
+	local t = ui.tracker
+	if not t then return end
+	t.Frame.Visible = label ~= nil
+	if not label then return end
+	local title = (type(e) == "table" and type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or label
+	local goal = (type(e) == "table" and type(e.Goal) == "string" and e.Goal ~= "") and e.Goal
+		or (type(e) == "table" and type(e.Text) == "string" and e.Text ~= "" and e.Text) or label
+	t.Title.Text = title
+	t.Goal.Text = goal
+	t.Goal.Visible = goal ~= title
+	local claimable, pill = L.LineFinish(e, 1)
+	t.Claim.Visible = pill
+	t.Nums.Visible = claimable or nums ~= nil
+	t.Nums.Text = claimable and TXT.QuestDone or ("(" .. tostring(nums or "") .. ")")
+	t.Nums.TextColor3 = claimable and Theme.Good or L.Tracker.ProgColor
+	if t.Icon then
+		local img = nil
+		for _, key in L.LineIconKeys(e) do
+			img = UIKit.ArtId(key)
+			if img then break end
+		end
+		t.Icon.Image = img or t.Icon.Image
+	end
+	task.defer(L.PlaceTrackerHead)
+end
+
+-- the tracker at the quest rect (PC: the left middle; phones: beside the minimap), text sizes from the rect's line height
+function L.LayoutTracker(q)
+	local t = ui.tracker
+	if not t then return end
+	local T = L.Tracker
+	local lh = q.H / 2
+	local titleSize = math.max(14, math.floor(lh * T.TitleK))
+	local bodySize = math.max(12, math.floor(lh * T.BodyK))
+	if IS_TOUCH then bodySize = math.max(12, math.ceil(11 / currentScale())) end
+	-- small PC windows: the tracker (taller than the rect: up to two goal lines + the head line) moves up so it ends
+	-- above the bottom group (portrait / power line), never above the minimap's bottom
+	local y = q.Y
+	local R = L.Rects
+	if not IS_TOUCH and R and R.power_line and R.minimap then
+		local need = math.ceil(titleSize * 1.25) + math.ceil(bodySize * 1.2) * 2 + math.ceil(bodySize * 1.35) + T.Gap * 4
+			+ math.floor(lh * 0.75) + 8
+		local floorY = math.min(R.power_line.Y, (R.portrait and R.portrait.Y) or R.power_line.Y) - 6
+		y = math.max(R.minimap.Y + R.minimap.H + 6, math.min(q.Y, floorY - need))
+	end
+	q = { X = q.X, Y = y, W = q.W, H = q.H }
+	t.Frame.Position = UDim2.fromOffset(q.X, q.Y)
+	t.Frame.Size = UDim2.fromOffset(q.W, 0)
+	local iconS = math.ceil(titleSize * 1.15)
+	local head = t.Title.Parent and t.Title.Parent.Parent
+	if head then head.Size = UDim2.new(1, 0, 0, math.ceil(titleSize * 1.25)) end
+	if t.Icon then t.Icon.Size = UDim2.fromOffset(iconS, iconS) end
+	t.Title.Size = UDim2.new(1, -iconS - 6, 1, 0)
+	t.Title.TextSize = titleSize
+	t.Goal.TextSize = bodySize
+	t.Nums.TextSize = bodySize
+	local prog = t.Nums.Parent
+	if prog then prog.Size = UDim2.new(1, 0, 0, math.ceil(bodySize * 1.35)) end
+	t.Claim.Size = UDim2.fromOffset(math.floor(bodySize * 4.2), math.ceil(bodySize * 1.3))
+	t.ClaimText.TextSize = math.max(12, math.floor(bodySize * 0.85))
+	T.Rect = q
+	task.defer(L.PlaceTrackerHead)
+end
+
+-- the head line 'Quests (n) ▼' (and its band) right under the tracker; L.QuestBottom = where the list / overlay start
+function L.PlaceTrackerHead()
+	local t, q = ui.tracker, L.Tracker.Rect
+	if not (t and q and ui.questHead) then return end
+	local s = currentScale()
+	local th = t.Frame.Visible and (t.Frame.AbsoluteSize.Y / s) or 0
+	local hh = ui.questHead.Frame.Size.Y.Offset
+	local y = q.Y + (th > 0 and th + L.Tracker.Gap * 2 or 0)
+	ui.questHead.Frame.Position = UDim2.fromOffset(q.X, y)
+	if ui.questHead.Band then ui.questHead.Band.Position = UDim2.fromOffset(q.X - 8, y - 1) end
+	L.QuestBottom = y + hh
+	if ui.quests then ui.quests.Position = UDim2.fromOffset(q.X, L.QuestBottom + 4) end
+	if ui.questOverlay and ui.questOverlay.Position.Y.Offset ~= L.QuestBottom + 4 then
+		ui.questOverlay.Position = UDim2.fromOffset(ui.questOverlay.Position.X.Offset, L.QuestBottom + 4)
+	end
 end
 
 -- line metrics follow the rect (logical units): icon about the line height, text size from it (the style floors keep
@@ -1983,6 +2152,11 @@ function L.LayoutQuestLines(q)
 		ui.questHead.Frame.Position = UDim2.fromOffset(q.X, q.Y)
 		ui.questHead.Frame.Size = UDim2.fromOffset(q.W, hh)
 		ui.questHead.Text.TextSize = math.max(12, math.floor(lh * 0.5))
+		-- the lines' band rule (BuildQuestLines: 8 du left of the text, 64 du past the block's right end)
+		if ui.questHead.Band then
+			ui.questHead.Band.Position = UDim2.fromOffset(q.X - 8, q.Y - 1)
+			ui.questHead.Band.Size = UDim2.fromOffset(q.W + 64, hh + 2)
+		end
 	end
 	block.Position = UDim2.fromOffset(q.X, q.Y + hh)
 	block.Size = UDim2.fromOffset(q.W, lh * L.QuestLines())
@@ -2004,6 +2178,7 @@ function L.LayoutQuestLines(q)
 	if ui.questFold then ui.questFold.TextSize = math.max(12, math.floor(lh * 0.55)) end
 	for _, l in ui.qline do task.defer(L.FitQuestLine, l) end
 	task.defer(L.LayoutQuestPlates)
+	if ui.tracker then L.LayoutTracker(q) end
 end
 
 -- each line's plate: as wide as the line's content (+ L.QuestPlate pads), its height the line minus the gap, hidden with
@@ -2027,8 +2202,9 @@ function L.LayoutQuestPlates()
 			if plate.Visible ~= shown then plate.Visible = shown end
 		end
 	end
-	-- the head line "Quests (3) ▼" on its own plate (same pads, sits where the head frame is)
+	-- the head line "Quests (3) ▼" on its own plate (same pads, sits where the head frame is); or its band
 	local head = ui.questHead
+	if head and head.Band and head.Band.Visible ~= head.Frame.Visible then head.Band.Visible = head.Frame.Visible end
 	if head and head.Plate then
 		local list = head.Frame:FindFirstChildOfClass("UIListLayout")
 		local w = list and list.AbsoluteContentSize.X / s or 0
@@ -2100,6 +2276,7 @@ function L.SetQuestLine(l, e, label, nums)
 	l.Entry = e
 	l.Row.Visible = label ~= nil
 	if l.Band then l.Band.Visible = label ~= nil end
+	if not label and ui.tracker and l == ui.qline[1] then L.SetTracker(e, nil, nil) end
 	if not label then return end
 	-- A23-81 (user 2026-10-08 "잘리지 않게"): the quest's short name when the server gives one ("Supply road"), on every
 	-- device; a story's 'talks to you' line keeps its own words
@@ -2121,6 +2298,7 @@ function L.SetQuestLine(l, e, label, nums)
 		l.Icon.ImageColor3 = COL.White -- the art keys are colored (the old "Star" key needed a gold tint)
 	end
 	task.defer(L.FitQuestLine, l) -- after the row's list layout placed the numbers / 받기
+	if ui.tracker and li == 1 then L.SetTracker(e, label, nums) end
 	task.delay(0, L.LayoutQuestPlates) -- next frame: after the fit and the list layout
 end
 
@@ -2392,12 +2570,14 @@ function L.BuildMenu(names)
 		local copy = table.clone(def)
 		copy.Text = names[def.Id]
 		local b = tileButton(copy, function()
+			if copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done
 			L.FoldTap(copy)
 		end)
 		b.Name = "Fold" .. def.Id
 		b.Parent = ui.fold
 		local entry = { Def = copy, Button = b, Row = row }
 		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
+		if def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88
 		table.insert(ui.foldTiles, entry)
 	end
 	for _, def in L.Tiles do add(def, true) end
@@ -3552,9 +3732,16 @@ function HUD.HintShown(id)
 end
 
 -- 환생 ready / 휴가 days are 설정 rows now (A23-40 정정): [메뉴] and its 설정 square glow; the scroll hint (B14) glows 가방
+-- A23-88 (검수 10/09): after the first weapon (the meadow step) [Menu] + Travel pulse until Travel was opened once
+function HUD.TravelPulse(step, seen, on)
+	return on ~= false and seen ~= true and step == TUT_GUIDE_STEP
+end
+
 local function refreshMenuGlow()
 	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
-	L.SetGlow("menu", ui.menuGlow, settings)
+	local travel = HUD.TravelPulse(num("TutorialStep", 99), L.TravelSeen, (Config.Nudges or {}).TravelPulse)
+	L.SetGlow("menu", ui.menuGlow, settings or travel)
+	L.SetGlow("travel", ui.travelGlow, travel)
 	L.SetGlow("settings", ui.settingsGlow, settings)
 	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
 end
@@ -3586,6 +3773,43 @@ function L.QuestText(text)
 		if ok and type(out) == "string" then return out end
 	end
 	return Config.FillKeys(text, (Config.KeyMap(nil, nil)))
+end
+
+-- A23-94 (user 2026-10-09: one quest big at the left middle; 이미지 개발 draws it from line 1): the goal as one easy
+-- sentence - the server's Goal when it sends one, else the row's words without their " · ..." tail, ending with a
+-- full stop. Pure: tools/test_now_quest.py runs it
+function HUD.QuestGoal(text, serverGoal)
+	if type(serverGoal) == "string" and serverGoal ~= "" then return serverGoal end
+	if type(text) ~= "string" or text == "" then return nil end
+	local main = string.match(text, "^(.-)%s+·%s") or text
+	main = string.gsub(main, "%s+$", "")
+	if main == "" then return nil end
+	if not string.find(main, "[%.!%?]$") then main ..= "." end
+	return main
+end
+
+-- A23-94: which row is "the quest now" (line 1) when no row is pinned: the waiting story, else the main story, else a
+-- row ready to [Claim], else the unfinished row closest to done (the larger share; the earlier row on a tie).
+-- rows = { Progress, Target, CanClaim, Pinned, Kind, Story }; claimRule(e) = the 받기 rule. Pure (the offline test)
+function HUD.NowQuestIndex(rows, callIndex, claimRule)
+	if type(rows) ~= "table" or #rows == 0 then return nil end
+	if rows[1].Pinned then return 1 end
+	if callIndex and rows[callIndex] then return callIndex end
+	for i, e in rows do
+		local main = e.Kind == "Main" or (type(e.Story) == "table" and e.Story.Kind == "Main")
+		if main and (e.Progress < e.Target or claimRule(e)) then return i end
+	end
+	for i, e in rows do
+		if claimRule(e) then return i end
+	end
+	local best, bestShare = nil, -1
+	for i, e in rows do
+		if e.Progress < e.Target then
+			local share = e.Progress / math.max(1, e.Target)
+			if share > bestShare then best, bestShare = i, share end
+		end
+	end
+	return best or 1
 end
 
 local function parseQuests()
@@ -3624,6 +3848,7 @@ local function parseQuests()
 				Folded = e.Folded == true, -- A23-68 #4: the server folds every row but the first mission (dev2)
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
+			entry.Goal = HUD.QuestGoal(entry.Text, type(e.Goal) == "string" and L.QuestText(e.Goal) or nil) -- A23-94
 			table.insert(isPinned and pinned or normal, entry)
 		end
 	end
@@ -3996,7 +4221,8 @@ refreshQuests = function()
 	-- A23-40: the two quest lines always show; the parchment list (header + rows) folds out under them on PC only
 	-- (phones open the overlay from the lines)
 	ui.quests.Visible = #entries > 0 and not IS_TOUCH and questExpanded
-	if ui.questLines then ui.questLines.Visible = #entries > 0 end
+	if ui.questLines then ui.questLines.Visible = #entries > 0 and not ui.tracker end
+	if ui.tracker and #entries == 0 then ui.tracker.Frame.Visible = false end
 	if #entries == 0 and ui.questOverlay then
 		questState.OverlayOpen = false
 		ui.questOverlay.Visible = false
@@ -4033,7 +4259,10 @@ refreshQuests = function()
 	elseif callIndex then
 		shown = callIndex -- B15: the collapsed list shows the story that is waiting
 	else
-		shown = firstClaim or firstDaily or 1
+		-- A23-94: pinned > the waiting story > main > ready to claim > the unfinished row closest to done
+		shown = HUD.NowQuestIndex(entries, nil, function(e)
+			return e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub")
+		end) or 1
 	end
 
 	-- header: progress, claimable count (turns green so claiming stays 1-2 clicks), expand chevron
@@ -4303,67 +4532,75 @@ local function showGuide(target, text, tag, seconds)
 	a1.Parent = part
 	g.Att1 = a1
 
-	local beam = Instance.new("Beam") -- no texture asset: the default renders a solid band
-	beam.Name = "HUDGuideBeam"
-	beam.Attachment1 = a1
-	beam.Color = ColorSequence.new(Theme.Gold)
-	-- 2026-10-06 photos (검수): the 1.2-stud glowing band crossed the whole meadow and fought the quest marker; a thin,
-	-- softer line still shows the way
-	beam.Transparency = NumberSequence.new(0.35)
-	beam.Width0 = 0.35
-	beam.Width1 = 0.35
-	beam.FaceCamera = true
-	beam.LightEmission = 0.45
-	beam.LightInfluence = 0
-	beam.Parent = part
-	g.Beam = beam
+	-- 검수 10/09 (user: "목적지까지 이거 없으면 좋겠어"): no gold line on the ground any more (Config.Nudges.GuideBeam);
+	-- the way = the quest line + QuestMarker's diamond + distance + the minimap
+	if (Config.Nudges or {}).GuideBeam ~= false then
+		local beam = Instance.new("Beam") -- no texture asset: the default renders a solid band
+		beam.Name = "HUDGuideBeam"
+		beam.Attachment1 = a1
+		beam.Color = ColorSequence.new(Theme.Gold)
+		-- 2026-10-06 photos (검수): the 1.2-stud glowing band crossed the whole meadow and fought the quest marker; a thin,
+		-- softer line still shows the way
+		beam.Transparency = NumberSequence.new(0.35)
+		beam.Width0 = 0.35
+		beam.Width1 = 0.35
+		beam.FaceCamera = true
+		beam.LightEmission = 0.45
+		beam.LightInfluence = 0
+		beam.Parent = part
+		g.Beam = beam
+	end
 
-	-- 검수 2026-10-08 (user: "이거 별로야"): a small white Chip (navy rim) with a down arrow and one short navy line,
-	-- about half the old 220 x 64 gold words; it hides within L.GuideHide studs (the pad glow and the gold line stay)
-	local G = L.GuideLabel
-	local words = tostring(text or TUT_GUIDE_TEXT)
-	local _, textW = UIKit.MeasureText(words, G.TextPx, Enum.Font.GothamBold, 10000)
-	local w = math.ceil((tonumber(textW) or #words * G.TextPx * 0.6) + G.H + G.PadX * 2)
-	local bb = Instance.new("BillboardGui")
-	bb.Name = "HUDGuideLabel"
-	bb.Adornee = part
-	bb.AlwaysOnTop = true
-	bb.LightInfluence = 0
-	bb.MaxDistance = 100000
-	bb.Size = UDim2.fromOffset(w, G.H)
-	bb.StudsOffset = Vector3.new(0, part.Size.Y / 2 + G.Lift, 0)
-	local plate = UIKit.ArtFrame("Chip", { Name = "Plate", Size = UDim2.fromScale(1, 1), Parent = bb },
-		{ Color = Color3.new(1, 1, 1), CornerRadius = UDim.new(0.5, 0), StrokeColor = ac("Navy", Theme.Bg), StrokeThickness = 2 })
-	local arrow = UIKit.ArtImage("IconQuestMarkerArrow", {
-		Name = "Arrow", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, G.PadX - 2, 0.5, 0),
-		Size = UDim2.fromOffset(G.H - 8, G.H - 8), Rotation = 180, ImageColor3 = ac("StarGold", Theme.Gold), ZIndex = 2,
-		Parent = plate,
-	})
-	local left = arrow and (G.PadX - 2 + G.H - 8 + 3) or G.PadX
-	UIKit.Create("TextLabel", {
-		Name = "Text",
-		Position = UDim2.fromOffset(left, 0),
-		Size = UDim2.new(1, -left - G.PadX, 1, 0),
-		BackgroundTransparency = 1,
-		Font = Enum.Font.GothamBold,
-		TextSize = G.TextPx,
-		TextColor3 = ac("Ink", COL.Dark),
-		Text = words,
-		ZIndex = 2,
-		Parent = plate,
-	})
-	bb.Parent = part
-	g.Billboard = bb
-	g.Near = game:GetService("RunService").Heartbeat:Connect(function()
-		local char = LocalPlayer.Character
-		local root = char and char:FindFirstChild("HumanoidRootPart")
-		local far = not (root and root:IsA("BasePart")) or (root.Position - part.Position).Magnitude > L.GuideHide
-		if bb.Enabled ~= far then bb.Enabled = far end
-	end)
-	g.Tween = TweenService:Create(bb, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-		StudsOffset = bb.StudsOffset + Vector3.new(0, 1.5, 0),
-	})
-	g.Tween:Play()
+	-- 검수 10/09 (user: "이런 거 없어도 된다니까"): the floating name chip ("First weapon", "Squishy Meadow") is off
+	-- (Config.Nudges.GuideLabel); QuestMarker's diamond + distance still show the way
+	if (Config.Nudges or {}).GuideLabel ~= false then
+		-- 검수 2026-10-08 (user: "이거 별로야"): a small white Chip (navy rim) with a down arrow and one short navy line,
+		-- about half the old 220 x 64 gold words; it hides within L.GuideHide studs (the pad glow and the gold line stay)
+		local G = L.GuideLabel
+		local words = tostring(text or TUT_GUIDE_TEXT)
+		local _, textW = UIKit.MeasureText(words, G.TextPx, Enum.Font.GothamBold, 10000)
+		local w = math.ceil((tonumber(textW) or #words * G.TextPx * 0.6) + G.H + G.PadX * 2)
+		local bb = Instance.new("BillboardGui")
+		bb.Name = "HUDGuideLabel"
+		bb.Adornee = part
+		bb.AlwaysOnTop = true
+		bb.LightInfluence = 0
+		bb.MaxDistance = 100000
+		bb.Size = UDim2.fromOffset(w, G.H)
+		bb.StudsOffset = Vector3.new(0, part.Size.Y / 2 + G.Lift, 0)
+		local plate = UIKit.ArtFrame("Chip", { Name = "Plate", Size = UDim2.fromScale(1, 1), Parent = bb },
+			{ Color = Color3.new(1, 1, 1), CornerRadius = UDim.new(0.5, 0), StrokeColor = ac("Navy", Theme.Bg), StrokeThickness = 2 })
+		local arrow = UIKit.ArtImage("IconQuestMarkerArrow", {
+			Name = "Arrow", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, G.PadX - 2, 0.5, 0),
+			Size = UDim2.fromOffset(G.H - 8, G.H - 8), Rotation = 180, ImageColor3 = ac("StarGold", Theme.Gold), ZIndex = 2,
+			Parent = plate,
+		})
+		local left = arrow and (G.PadX - 2 + G.H - 8 + 3) or G.PadX
+		UIKit.Create("TextLabel", {
+			Name = "Text",
+			Position = UDim2.fromOffset(left, 0),
+			Size = UDim2.new(1, -left - G.PadX, 1, 0),
+			BackgroundTransparency = 1,
+			Font = Enum.Font.GothamBold,
+			TextSize = G.TextPx,
+			TextColor3 = ac("Ink", COL.Dark),
+			Text = words,
+			ZIndex = 2,
+			Parent = plate,
+		})
+		bb.Parent = part
+		g.Billboard = bb
+		g.Near = game:GetService("RunService").Heartbeat:Connect(function()
+			local char = LocalPlayer.Character
+			local root = char and char:FindFirstChild("HumanoidRootPart")
+			local far = not (root and root:IsA("BasePart")) or (root.Position - part.Position).Magnitude > L.GuideHide
+			if bb.Enabled ~= far then bb.Enabled = far end
+		end)
+		g.Tween = TweenService:Create(bb, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+			StudsOffset = bb.StudsOffset + Vector3.new(0, 1.5, 0),
+		})
+		g.Tween:Play()
+	end
 
 	guide = g
 	attachGuideToCharacter()
@@ -4404,6 +4641,38 @@ function L.MeadowTarget(zone)
 	return part or findTravelTarget(TUT_GUIDE_ZONE)
 end
 
+-- A23-88 (검수 10/09, user: no lines, no words): after the first weapon (TutorialStep Guide) the meadow travel pad in
+-- the Crossroads glows softly by itself (a local Highlight on the pad, a slow breath); gone at the next step / away
+function HUD.PadGlowOn(step, zone, on)
+	return on ~= false and step == TUT_GUIDE_STEP and zone == "Crossroads"
+end
+
+L.PadGlowState = { Pad = nil, Light = nil, Tween = nil }
+function L.PadGlow(on)
+	local st = L.PadGlowState
+	local map = workspace:FindFirstChild("Map")
+	local pads = map and map:FindFirstChild("Pads")
+	local pad = on and resolvePart(pads and pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE)) or nil
+	if st.Pad == pad and (pad == nil or (st.Light and st.Light.Parent)) then return end
+	if st.Tween then st.Tween:Cancel() end
+	if st.Light then st.Light:Destroy() end
+	st.Pad, st.Light, st.Tween = pad, nil, nil
+	if not pad then return end
+	local h = Instance.new("Highlight")
+	h.Name = "HUDPadGlow"
+	h.Adornee = pad
+	h.FillColor = ac("Gold", Theme.Gold)
+	h.FillTransparency = 0.85
+	h.OutlineColor = ac("Gold", Theme.Gold)
+	h.OutlineTransparency = 0.7
+	h.DepthMode = Enum.HighlightDepthMode.Occluded
+	h.Parent = pad
+	st.Light = h
+	st.Tween = TweenService:Create(h, TweenInfo.new(1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{ FillTransparency = 0.65, OutlineTransparency = 0.45 })
+	st.Tween:Play()
+end
+
 -- step 1, or step 2 with kills left (e.g. died mid-mission and respawned in town): guide back to the meadow
 function L.NeedsMeadowGuide(step)
 	if step == TUT_GUIDE_STEP then return true end
@@ -4423,6 +4692,7 @@ local function refreshGuides()
 	if attr("DataLoaded", false) ~= true then return end
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
+	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))
 	local forge = step == L.ForgeStep
 	if guide then
 		if guide.Tag == "forge" and (not forge or guide.From ~= zone) then
@@ -5054,7 +5324,11 @@ function L.LayoutTiles(tr)
 end
 L.TileLabelMinPx = 40
 -- the quest lines' plates (검수 2026-10-08): du of plate left / right of a line's content, the gap between two lines
-L.QuestPlate = { PadL = 6, PadR = 10, Gap = 4 }
+L.QuestPlate = { On = false, PadL = 6, PadR = 10, Gap = 4 }
+-- A23-94 quest tracker (L.BuildTracker): On = the big left-middle 'now do' quest instead of the lines; du gap between its
+-- lines, build heights, title / body size per quest-rect line height, the in-progress (p/t) colour
+L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = IS_TOUCH and 1.05 or 1.45, BodyK = IS_TOUCH and 0.66 or 0.8,
+	ProgColor = Color3.fromRGB(255, 96, 72), Rect = nil }
 L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
 -- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
 -- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would
@@ -5108,13 +5382,14 @@ applyLayout = function()
 	-- quest lines (no plate) + the fold-out list under them (PC) / the overlay beside them (phones)
 	local q = R.quest
 	L.LayoutQuestLines(q)
-	ui.quests.Position = UDim2.fromOffset(q.X, q.Y + q.H + 4)
+	ui.quests.Position = UDim2.fromOffset(q.X, (ui.tracker and L.QuestBottom or (q.Y + q.H)) + 4)
 	ui.quests.Size = UDim2.fromOffset(q.W, 0)
 	if IS_TOUCH then
 		L.LayoutQuestHeader(q.W, q.H)
 		-- the rows' overlay opens under the quest lines, kept on screen (CR-M25)
 		if ui.questOverlay then
-			ui.questOverlay.Position = UDim2.fromOffset(math.clamp(q.X, 8, math.max(8, W - L.OverlayW - 8)), q.Y + q.H + 4)
+			ui.questOverlay.Position = UDim2.fromOffset(math.clamp(q.X, 8, math.max(8, W - L.OverlayW - 8)),
+				(ui.tracker and L.QuestBottom or (q.Y + q.H)) + 4)
 		end
 	else
 		ui.questRowW = q.W

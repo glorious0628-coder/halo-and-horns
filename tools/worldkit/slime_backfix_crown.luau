@@ -108,7 +108,8 @@ if king then
 				crown.Size = T.CrownSize * H * CROWN_SCALE
 				-- the crown base stays on the body: bottom y = offset.y - half height (unscaled), the centre follows the smaller height
 				local half = T.CrownSize.Y / 2
-				local off = Vector3.new(T.CrownOffset.X, (T.CrownOffset.Y - half) + half * CROWN_SCALE, T.CrownOffset.Z)
+				-- 검수 10/09: the Prince crown sits in the MIDDLE of the head (x = z = 0; the old ore spot offset is gone)
+				local off = Vector3.new(0, (T.CrownOffset.Y - half) + half * CROWN_SCALE, 0)
 				crown.CFrame = body.CFrame * CFrame.new(off * H)
 				crown.Color = T.CrownColor
 				crown.Material = Enum.Material.SmoothPlastic
