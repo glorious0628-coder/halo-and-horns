@@ -218,32 +218,36 @@ local function buildMain(kit, frame)
 	_, h = row(kit, frame, W.Keys)
 	button(kit, h, W.Open, nil, function() SettingsUI.ShowTab("Keys") end)
 
-	-- 효과음 크기: 0 .. 1 in steps of 0.1 (Config.Settings.Defs.Sfx); a click previews the new volume
-	local def = Config.Settings.Defs.Sfx
-	local _, hs = row(kit, frame, ST.SfxEn or ST.Sfx)
-	local valueBtn
-	local function stepSfx(dir)
-		local v = math.clamp((tonumber(settingsGet("Sfx", 1)) or 1) + dir * def.Step, def.Min, def.Max)
-		v = math.floor(v * 10 + 0.5) / 10
-		settingsSet("Sfx", v)
-		local fx = C and C.Fx
-		if type(fx) == "table" and type(fx.PlaySound) == "function" then pcall(fx.PlaySound, "Click") end
+	-- 효과음 크기 / A23-100 음악 크기: 0 .. 1 in steps of 0.1 (Config.Settings.Defs.Sfx / Music); a click on the
+	-- effects row previews the new volume (the music row is heard at once)
+	for _, key in { "Sfx", "Music" } do
+		local def = Config.Settings.Defs[key]
+		if type(def) == "table" then
+			local _, hs = row(kit, frame, ST[key .. "En"] or ST[key] or key)
+			local function step(dir)
+				local v = math.clamp((tonumber(settingsGet(key, 1)) or 1) + dir * def.Step, def.Min, def.Max)
+				v = math.floor(v * 10 + 0.5) / 10
+				settingsSet(key, v)
+				local fx = C and C.Fx
+				if key == "Sfx" and type(fx) == "table" and type(fx.PlaySound) == "function" then pcall(fx.PlaySound, "Click") end
+			end
+			button(kit, hs, "-", L.SmallW, function() step(-1) end)
+			local valueBtn = Instance.new("TextLabel")
+			valueBtn.Name = "Value"
+			valueBtn.BackgroundTransparency = 1
+			valueBtn.Size = UDim2.fromOffset(L.SmallW + 16, L.BtnH)
+			valueBtn.Font = kit.Theme.Font
+			valueBtn.TextSize = L.LabelSize
+			valueBtn.TextColor3 = kit.Theme.Text
+			valueBtn.LayoutOrder = kit.NextOrder()
+			valueBtn.Parent = hs
+			button(kit, hs, "+", L.SmallW, function() step(1) end)
+			table.insert(refresh, function()
+				local v = tonumber(settingsGet(key, 1)) or 1
+				valueBtn.Text = string.format(W.SfxValue, math.floor(v * 100 + 0.5))
+			end)
+		end
 	end
-	button(kit, hs, "-", L.SmallW, function() stepSfx(-1) end)
-	valueBtn = Instance.new("TextLabel")
-	valueBtn.Name = "Value"
-	valueBtn.BackgroundTransparency = 1
-	valueBtn.Size = UDim2.fromOffset(L.SmallW + 16, L.BtnH)
-	valueBtn.Font = kit.Theme.Font
-	valueBtn.TextSize = L.LabelSize
-	valueBtn.TextColor3 = kit.Theme.Text
-	valueBtn.LayoutOrder = kit.NextOrder()
-	valueBtn.Parent = hs
-	button(kit, hs, "+", L.SmallW, function() stepSfx(1) end)
-	table.insert(refresh, function()
-		local v = tonumber(settingsGet("Sfx", 1)) or 1
-		valueBtn.Text = string.format(W.SfxValue, math.floor(v * 100 + 0.5))
-	end)
 
 	local _, hk = row(kit, frame, ST.ShakeEn or ST.Shake)
 	local sb = button(kit, hk, W.On, nil, function() settingsSet("Shake", settingsGet("Shake", true) == false) end)

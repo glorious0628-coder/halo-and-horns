@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 10005,
+  "checks": 9885,
   "failedChecks": 0,
   "namedChecks": 352,
   "namedChecksFailing": 0,
@@ -160,7 +160,7 @@
     {
       "group": "config-contract",
       "check": "every setting has Korean + English text",
-      "pass": 9,
+      "pass": 10,
       "fail": 0
     },
     {
@@ -537,7 +537,7 @@
     },
     {
       "group": "sanitize",
-      "check": "output fields are exactly V, Keys and the seven settings",
+      "check": "output fields are exactly V, Keys and the settings (Music too, A23-100)",
       "pass": 300,
       "fail": 0
     },
@@ -550,7 +550,7 @@
     {
       "group": "sanitize",
       "check": "a non-finite / non-number Sfx -> 1",
-      "pass": 253,
+      "pass": 254,
       "fail": 0
     },
     {
@@ -568,19 +568,19 @@
     {
       "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 949,
+      "pass": 904,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 949,
+      "pass": 904,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 665,
+      "pass": 634,
       "fail": 0
     },
     {
@@ -592,7 +592,7 @@
     {
       "group": "sanitize",
       "check": "Sfx = the nearest step of the clamped value",
-      "pass": 47,
+      "pass": 46,
       "fail": 0
     },
     {
@@ -2329,7 +2329,7 @@
         "crashed": false,
         "newFailingChecks": [
           "dataservice-settings :: a broken Settings blob is repaired field by field on load",
-          "sanitize :: output fields are exactly V, Keys and the seven settings",
+          "sanitize :: output fields are exactly V, Keys and the settings (Music too, A23-100)",
           "sanitize :: unknown top-level keys and unknown action ids are dropped (V = 4, A23-78 / A23-91)",
           "service-remote :: BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
           "service-remote :: a 16-key blob is accepted (junk dropped) and echoed",
@@ -3120,24 +3120,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7227ac149b6075178dea10d91d3e5ba40e5daa9b115224eb830b9dc36bdba56d",
+    "src/ReplicatedStorage/Shared/Config.luau": "2299a1ade44a3a3b3da23fc2650e9282899159fd9eae0a714cca2f3f17d4bd4c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
+    "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "a960d549e93568363ca5232c8fa6449ef807eff79927d05325328398550f30d2",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b",
-    "src/ServerScriptService/Main.server.luau": "ad3494f82e251b5f389f8304cfdcf354b2c04e5b23251aa540cf3fae03d19dea",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "3bc75a787587be59e1a53719f4076081cf3ed31b86cbaa05a5b2fdf2384cb2f3",
-    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "7cb856b79f03d50f5f439d6179d0ebb1c502035bddbdb43ed049c53ee138151e",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "342bcc7b0eea5f666c66fff6caaa59685097441fdb30073dc682f8e2a1f5cfd0",
+    "src/ServerScriptService/Main.server.luau": "9c7d6de331a34a82c6220ba87a608f85420c868eb18348465ef0476aaab0bc7d",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "2f8581f332c545b697ac6f10d7a0ab0974ce68e0335df4e124a3f042b96739f9",
+    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "03e9f5b3fee22d7eb5aa710a372f4ad0e21a05fa3f0e53090d9bbdaa50158cd9",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
-    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "197597c32d61c48bcaccc0d75d8e3a73c74bf1d062e18681b25911ce8f9b5a69",
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "f2947a4e13f0047943fb3751f74d823c421e8f366a089ea751a7b190c6ec1fe5",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "9ee257e0f0304207dca77a2bd541a285158cbb654b20b004a6b5225d6a9c9830",
-    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
+    "src/ServerScriptService/StoryQuestService.luau": "beaba43294e412e9783939f0f81f3600dada8161ff3ab44554d51d7d1e9e7137",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "9b0b07c7474ca4cdfbfa2213644e1d143d11b4cb8cd39bfeec169f351f6ace49"
   },
-  "fixtureSHA256": "3816e9fdb36d09e0f091237297e87e05e9c2d1b36bc052b5be4ab525663becd1",
+  "fixtureSHA256": "6ac17782c8b84e2104857d979564db242b11fe8944621c977e4597e9d0386415",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
