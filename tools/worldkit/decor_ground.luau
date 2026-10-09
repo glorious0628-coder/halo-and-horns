@@ -7,6 +7,7 @@
 -- Only pieces that float more than FLOAT_MIN above the lowest ground, or are buried deeper than BURY_MAX, are moved.
 -- MODE is one string: "<plan|apply|restore>|<roots>|<box>"
 --   roots = comma list of paths under workspace (default "Map.Decor.MeadowDress,Map.Decor.MeadowKit"), e.g. "Map.Decor.WoodsKit"
+--   4th field "floatonly" = never move a buried piece (only list the most buried)
 --   box   = "minX,minZ,maxX,maxZ" (a piece is used when its centre is inside) or "all" (default)
 -- plan = read only; apply = move (attribute GroundDelta keeps the move so restore can undo it); restore = undo.
 -- Idempotent: a piece already within tolerance is not touched. Reports floating count, max height, buried count.
@@ -21,6 +22,7 @@ if parts[3] and parts[3] ~= "" and parts[3] ~= "all" then
 	BOX = { tonumber(n[1]), tonumber(n[2]), tonumber(n[3]), tonumber(n[4]) }
 end
 if game:GetService("RunService"):IsRunning() then error("Edit 모드에서만 실행하세요.") end
+local FLOAT_ONLY = parts[4] == "floatonly" -- 4th field: only lower pieces that float; buried pieces are listed, never moved
 local FLOAT_MIN, BURY_MAX = 0.3, 1.6
 
 local params = RaycastParams.new()
@@ -88,7 +90,7 @@ end
 
 local checked, floating, moved, buried, restored, noGround = 0, 0, 0, 0, 0, 0
 local maxFloat, maxBury, sumFloat = 0, 0, 0
-local worst = {}
+local worst, buriedList = {}, {}
 for _, m in pieces do
 	local pv = m:GetPivot().Position
 	if BOX and not (pv.X >= BOX[1] and pv.X <= BOX[3] and pv.Z >= BOX[2] and pv.Z <= BOX[4]) then continue end
@@ -131,7 +133,8 @@ for _, m in pieces do
 		buried += 1
 		if bury > maxBury then maxBury = bury end
 	end
-	if float > FLOAT_MIN or bury > BURY_MAX then
+	if bury > BURY_MAX then table.insert(buriedList, { bury, m:GetFullName() .. string.format(" @(%.0f,%.0f)", pv.X, pv.Z) }) end
+	if float > FLOAT_MIN or (bury > BURY_MAX and not FLOAT_ONLY) then
 		if MODE == "apply" then
 			m:PivotTo(m:GetPivot() + Vector3.new(0, delta, 0))
 			m:SetAttribute("GroundDelta", (m:GetAttribute("GroundDelta") or 0) + delta)
@@ -140,10 +143,14 @@ for _, m in pieces do
 	end
 end
 table.sort(worst, function(a, b) return a[1] > b[1] end)
+table.sort(buriedList, function(a, b) return a[1] > b[1] end)
+local btop = {}
+for i = 1, math.min(8, #buriedList) do table.insert(btop, string.format("%.1f %s", buriedList[i][1], buriedList[i][2])) end
 local top = {}
 for i = 1, math.min(5, #worst) do table.insert(top, string.format("%.1f %s", worst[i][1], worst[i][2])) end
 if MODE == "restore" then return string.format("restore: %d pieces moved back", restored) end
 return string.format("%s: roots %s box %s | checked %d, floating (> %.1f) %d (max %.1f, avg %.1f), buried (> %.1f) %d (max %.1f), moved %d, no ground %d%s",
 	MODE, table.concat(ROOTS, "+"), BOX and table.concat(BOX, ",") or "all", checked, FLOAT_MIN, floating, maxFloat,
 	floating > 0 and sumFloat / floating or 0, BURY_MAX, buried, maxBury, moved, noGround,
-	#top > 0 and ("\nworst: " .. table.concat(top, " | ")) or "")
+	(#top > 0 and ("\nworst floating: " .. table.concat(top, " | ")) or "")
+		.. (#btop > 0 and ("\nmost buried: " .. table.concat(btop, " | ")) or ""))
