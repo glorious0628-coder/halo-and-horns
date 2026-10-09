@@ -20,7 +20,7 @@ local T = {
 	Cube = { "101084943554251", "100045743344061" },
 	-- the Prince's patched blue texture (art/models/tripo/BigSlimeCube_tex_blue_colorfix_noore.png, uploaded by 이미지 개발): the new
 	-- mesh's top uses a texture block the old texture does not have painted, so the texture must change with the mesh. Fill in.
-	NewTexture = "rbxassetid://__NEWTEX__",
+	NewTexture = "rbxassetid://101248064145914", -- BigSlimeCube_tex_blue_colorfix_noore.png (이미지 개발 upload, asset_ids.json)
 }
 assert(not string.find(T.NewMesh, "__NEWMESH__", 1, true), "T.NewMesh is not filled in yet: import E8_SlimePrinceBody.glb, then set the mesh id")
 assert(not string.find(T.NewTexture, "__NEWTEX__", 1, true), "T.NewTexture is not filled in yet: upload BigSlimeCube_tex_blue_colorfix_noore.png")
