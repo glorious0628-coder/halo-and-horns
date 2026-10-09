@@ -58,15 +58,16 @@ local function myPos()
 	return cam and cam.Focus.Position or nil
 end
 
--- 검수 10/09 (system review ④): the shown name tag in its danger colour (Config.MonsterDanger; a golden monster keeps
--- the server's gold)
+-- 검수 10/09 (system review ④): the shown name tag in its danger colour (Config.MonsterDangerLook: dev2's
+-- Config.MonsterDanger(myLevel, monsterLevel) band; a monster of unknown level stays white; a golden one keeps the gold)
 function S.Danger(r)
 	local model = r.Model
 	if not model or model:GetAttribute("Golden") == true then return end
-	local D = Config.MonsterDanger
+	local D = Config.MonsterDangerLook
 	local lp = Players.LocalPlayer
 	local myLv = lp and type(lp.GetAttribute) == "function" and lp:GetAttribute("Level") or nil
-	local color = D.Colors[D.Tier(D.LevelOf(r.Kind, model:GetAttribute("Level")), myLv)] or D.Colors.Even
+	local monLv = D.LevelOf(r.Kind, model:GetAttribute("Level"))
+	local color = (monLv and myLv) and D.Colors[D.Tier(myLv, monLv)] or D.Colors.Even
 	if r.Name.TextColor3 ~= color then r.Name.TextColor3 = color end
 end
 

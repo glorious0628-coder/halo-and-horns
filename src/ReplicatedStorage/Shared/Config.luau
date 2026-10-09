@@ -1726,29 +1726,34 @@ Config.MonsterTypeOrder = { "Slime", "FlowerSlime", "PumpkinSlime", "BigSlime", 
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
 -- QuestAs = the kind quests count it as (Config.QuestKind); Float = studs the client hovers it above the floor (no
 -- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
--- 검수 2026-10-09 (system review ④): a monster's name tag colour says how risky it is for me - Weak (gray, Weak or more
--- levels below me), Even (white), Strong (yellow, Strong+ levels above), Deadly (red, Deadly+ above). Its level = the
--- model's "Level" attribute (게임성 개발 2, later), else its zone's MinLevel (+ Boss for a boss). Pure: the client
--- (MonsterLabels) and the offline test call Config.MonsterDanger.Tier / .LevelOf
-Config.MonsterDanger = { Weak = -5, Strong = 3, Deadly = 8, Boss = 5,
+-- 검수 2026-10-09 (system review ④): a monster's name tag colour says how risky it is for me. The band is 게임성 개발 2's
+-- Config.MonsterDanger(myLevel, monsterLevel) -> "Weak" | "Even" | "Strong" | "Deadly" and the level its "Level" attribute
+-- / Config.MonsterLevel(kind) (dev2-mlevel); this table only holds the colours (MonsterLabels). Until dev2-mlevel is in
+-- main, Tier / LevelOf use Fallback (the same bands) - DELETE Fallback and the two fallback branches at that merge.
+Config.MonsterDangerLook = {
 	Colors = { Weak = Color3.fromRGB(165, 165, 170), Even = Color3.fromRGB(255, 255, 255),
-		Strong = Color3.fromRGB(255, 220, 70), Deadly = Color3.fromRGB(255, 80, 70) } }
-function Config.MonsterDanger.LevelOf(kind, attrLevel)
+		Strong = Color3.fromRGB(255, 220, 70), Deadly = Color3.fromRGB(255, 80, 70) },
+	Fallback = { Weak = -6, Strong = 3, Deadly = 8, Boss = 5 }, -- DELETE when dev2-mlevel is merged
+}
+function Config.MonsterDangerLook.LevelOf(kind, attrLevel)
 	local lv = tonumber(attrLevel)
 	if lv and lv == lv and lv > 0 then return math.floor(lv) end
+	if type(Config.MonsterLevel) == "function" then return Config.MonsterLevel(kind) end
+	-- fallback until dev2-mlevel (DELETE then): the zone's MinLevel (+ Boss for a boss)
 	local def = type(Config.MonsterTypes) == "table" and Config.MonsterTypes[kind] or nil
 	local zone = type(def) == "table" and type(Config.Zones) == "table" and Config.Zones[def.Zone] or nil
 	local base = type(zone) == "table" and tonumber(zone.MinLevel) or nil
 	if not base then return nil end
-	return math.floor(base) + ((def.Boss == true) and Config.MonsterDanger.Boss or 0)
+	return math.floor(base) + ((def.Boss == true) and Config.MonsterDangerLook.Fallback.Boss or 0)
 end
-function Config.MonsterDanger.Tier(monsterLevel, myLevel)
-	local m, me = tonumber(monsterLevel), tonumber(myLevel)
-	if not m or not me then return "Even" end
-	local d = m - me
-	if d >= Config.MonsterDanger.Deadly then return "Deadly" end
-	if d >= Config.MonsterDanger.Strong then return "Strong" end
-	if d <= Config.MonsterDanger.Weak then return "Weak" end
+function Config.MonsterDangerLook.Tier(myLevel, monsterLevel)
+	if type(Config.MonsterDanger) == "function" then return Config.MonsterDanger(myLevel, monsterLevel) end
+	-- fallback until dev2-mlevel (DELETE then): dev2's rule with the same bands
+	local B = Config.MonsterDangerLook.Fallback
+	local d = (tonumber(monsterLevel) or 1) - (tonumber(myLevel) or 1)
+	if d >= B.Deadly then return "Deadly" end
+	if d >= B.Strong then return "Strong" end
+	if d <= B.Weak then return "Weak" end
 	return "Even"
 end
 
