@@ -33,6 +33,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
     zone = sources[Z]
     out["ZONE_EXTRACT"] = (
         "local Config, Util, AC, move, zoneIds, lastGateNotify, lastPadTouch, channels = ...\nlocal ZoneService = {}\n"
+        "local pvpNow = {} -- A23-90 (cleanup forgets it too)\n"
         + function_block(zone, "local function acNum(")
         + function_block(zone, "local function checkMove(")
         + function_block(zone, "local function cleanup(")

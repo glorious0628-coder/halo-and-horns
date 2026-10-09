@@ -576,6 +576,9 @@ local function rewardPlayer(p, result, f, share)
 	local gold, xp = Config.GooseReward(level, f, won, rare, share)
 	-- A23-75: what was really added (the 2x passes) is what the lines below show
 	if gold > 0 then gold = tonumber(call("ProgressionService", "AddBankGold", p, gold, "Event")) or gold end
+	-- A23-90: a private server halves the goose's XP too (its gold: ProgressionService.AddBankGold "Event")
+	local prog = S and S.ProgressionService
+	xp = math.floor(xp * (prog and type(prog.PrivateMult) == "function" and tonumber(prog.PrivateMult()) or 1))
 	if xp > 0 then xp = tonumber(call("ProgressionService", "AddXP", p, xp)) or xp end
 	local msg = (share ~= nil) and txt("CoopReward", f, Util.FormatNumber(gold), Util.FormatNumber(xp)) or nil
 	Net.Notify(p, msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp)), "reward", nil,

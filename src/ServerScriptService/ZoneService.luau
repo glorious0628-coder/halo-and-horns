@@ -37,6 +37,7 @@ local KAIJU_TOWN_FALLBACK = "A Kaiju can't enter towns!" -- TODO(config): Config
 
 local S = nil
 local zoneIds = {} -- [Player] = cached zone id
+local pvpNow = {} -- [Player] = PvP where the player stood at the last zone sample (A23-90: zone PvP or a PvP area)
 local lastGateNotify = {} -- [Player] = os.clock() of the last bounce toast
 local lastPadTouch = {} -- [Player] = os.clock() of the last handled pad touch
 local hookedPads = setmetatable({}, { __mode = "k" }) -- [BasePart] = true
@@ -125,9 +126,9 @@ end
 -- (meadow, towns) a slime's bite no longer cancels the trip home; kaiju / sack / stars rules still apply.
 local function combatBlocksTravel(player, start)
 	local zoneId = zoneIds[player] or DEFAULT_ZONE
-	local zone = Config.Zones[zoneId]
-	-- Outskirts touch the PvP woods: a fight that spills out of them still blocks the escape there
-	if zone and zone.PvP ~= true and zoneId ~= "Outskirts" then return false end
+	-- Outskirts touch the PvP woods: a fight that spills out of them still blocks the escape there (A23-90: where
+	-- PvP is on now, so the ruins' safe ring is like the meadow)
+	if pvpNow[player] ~= true and zoneId ~= "Outskirts" then return false end
 	return lastDamagedAt(player) >= start or inCombat(player)
 end
 
@@ -296,6 +297,34 @@ local function cancelChannel(player)
 	end
 end
 
+-- the zone / PvP bookkeeping of one zone-loop sample at `pos` in `zone`: attributes, the entered-PvP / safe lines and
+-- ZoneChanged (A23-90: a function of its own so its rules are tested offline)
+local function applyZone(player, zone, pos)
+	local old = zoneIds[player] or DEFAULT_ZONE
+	-- A23-90: PvP follows the position (a PvP zone, or a PvP area inside a zone: the ruins' Crown Pit), so crossing the
+	-- pit's edge inside the ruins changes it too
+	local pvp = Config.PvPAt(pos, zone)
+	local wasPvP = pvpNow[player] == true
+	if zone.Id == old and pvp == wasPvP then return end
+	if zone.Id ~= old then
+		zoneIds[player] = zone.Id
+		player:SetAttribute("ZoneId", zone.Id)
+		player:SetAttribute("ZoneTown", zone.Town == true)
+	end
+	pvpNow[player] = pvp
+	player:SetAttribute("ZonePvP", pvp)
+	if pvp and not wasPvP then
+		if getFaction(player) == "Neutral" then
+			notify(player, fmt("EnteredPvPNeutral"), "info") -- CR-L24: 장인 길드 is immune to PvP
+		else
+			notify(player, fmt("EnteredPvP"), "bad", "None") -- happens to me: no Deny
+		end
+	elseif not pvp and wasPvP then
+		notify(player, fmt("EnteredSafe"), "good")
+	end
+	if zone.Id ~= old then ZoneService.ZoneChanged:Fire(player, zone.Id, old) end
+end
+
 -- the zone-loop body (also run on CharacterSpawned and right after a teleport)
 local function updateZone(player)
 	if not S.PlayerService.IsReady(player) then return end
@@ -328,29 +357,12 @@ local function updateZone(player)
 		return
 	end
 
-	local old = zoneIds[player] or DEFAULT_ZONE
-	if zone.Id == old then return end
-	zoneIds[player] = zone.Id
-	player:SetAttribute("ZoneId", zone.Id)
-	player:SetAttribute("ZonePvP", zone.PvP == true)
-	player:SetAttribute("ZoneTown", zone.Town == true)
-
-	local oldZone = Config.Zones[old]
-	local wasPvP = oldZone ~= nil and oldZone.PvP == true
-	if zone.PvP and not wasPvP then
-		if getFaction(player) == "Neutral" then
-			notify(player, fmt("EnteredPvPNeutral"), "info") -- CR-L24: 장인 길드 is immune to PvP
-		else
-			notify(player, fmt("EnteredPvP"), "bad", "None") -- happens to me: no Deny
-		end
-	elseif not zone.PvP and wasPvP then
-		notify(player, fmt("EnteredSafe"), "good")
-	end
-	ZoneService.ZoneChanged:Fire(player, zone.Id, old)
+	applyZone(player, zone, root.Position)
 end
 
 local function cleanup(player)
 	zoneIds[player] = nil
+	pvpNow[player] = nil -- A23-90
 	lastGateNotify[player] = nil
 	lastPadTouch[player] = nil
 	channels[player] = nil -- CR-L18
@@ -369,8 +381,9 @@ function ZoneService.GetZone(player)
 	return Config.Zones[ZoneService.GetZoneId(player)] or Config.Zones[DEFAULT_ZONE]
 end
 
+-- A23-90: where the player stands now (the zone loop's last sample), a PvP zone or a PvP area
 function ZoneService.IsPvPZone(player)
-	return ZoneService.GetZone(player).PvP == true
+	return pvpNow[player] == true
 end
 
 function ZoneService.IsTown(player)
@@ -602,6 +615,7 @@ function ZoneService.Init(registry)
 	S = registry
 	S.PlayerService.PlayerReady:Connect(function(player)
 		zoneIds[player] = DEFAULT_ZONE
+		pvpNow[player] = false -- A23-90
 		player:SetAttribute("ZoneId", DEFAULT_ZONE)
 		player:SetAttribute("ZonePvP", false)
 		player:SetAttribute("ZoneTown", true)

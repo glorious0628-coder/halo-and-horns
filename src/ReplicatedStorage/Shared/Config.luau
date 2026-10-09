@@ -1487,8 +1487,12 @@ Config.Zones = {
 	GoblinWoods = { Id = "GoblinWoods", Name = "Goblin Woods", Center = Vector3.new(950, 0, 0), Size = Vector3.new(480, 0, 520),
 		MinLevel = 10, PvP = true, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(60, 125, 55), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(730, 0, 0) },
+	-- A23-90 (user 2026-10-09): the outer hunting ring is safe (no PvP); only the inner Crown Pit around the crown altar
+	-- ruin (1700, 0) is a PvP area (Config.PvPAt): wanted stars, sacks and grudges happen there only; its kills roll
+	-- their drop rows x LootMult; Captain Clatter appears there (Config.FieldBosses.Clatter.Spawn)
 	SkeletonRuins = { Id = "SkeletonRuins", Name = "Skeleton Ruins", Center = Vector3.new(1520, 0, 0), Size = Vector3.new(520, 0, 580),
-		MinLevel = 25, PvP = true, Town = false, Faction = nil,
+		MinLevel = 25, PvP = false, Town = false, Faction = nil,
+		PvPArea = { Name = "Crown Pit", Center = Vector3.new(1660, 0, 0), Size = Vector3.new(200, 0, 240), LootMult = 1.25 },
 		FloorColor = Color3.fromRGB(135, 125, 108), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(1280, 0, 0) },
 	-- = Config.Map.Bounds
 	Outskirts = { Id = "Outskirts", Name = "Outskirts", Center = Vector3.new(790, 0, 0), Size = Vector3.new(2100, 0, 1440),
@@ -1505,6 +1509,26 @@ function Config.ZoneAt(pos)
 		end
 	end
 	return Config.Zones.Outskirts
+end
+
+-- A23-90: the zone's PvP area (zone.PvPArea) that holds pos, else nil
+function Config.PvPAreaAt(pos, zone)
+	zone = zone or Config.ZoneAt(pos)
+	local a = zone and zone.PvPArea
+	if type(a) ~= "table" then return nil end
+	if math.abs(pos.X - a.Center.X) <= a.Size.X / 2 and math.abs(pos.Z - a.Center.Z) <= a.Size.Z / 2 then return a end
+	return nil
+end
+
+-- A23-90: true where players may fight players: a PvP zone, or the PvP area inside a zone (the ruins' Crown Pit)
+function Config.PvPAt(pos, zone)
+	zone = zone or Config.ZoneAt(pos)
+	return zone ~= nil and (zone.PvP == true or Config.PvPAreaAt(pos, zone) ~= nil)
+end
+
+-- A23-90: a zone with PvP anywhere in it (a PvP zone, or one with a PvP area): maps, travel info, gates
+function Config.ZoneHasPvP(zone)
+	return type(zone) == "table" and (zone.PvP == true or type(zone.PvPArea) == "table")
 end
 
 function Config.HomeZoneId(factionId)
@@ -3599,7 +3623,7 @@ Config.FieldBosses = {
 	-- side's crown-war points (WarService.AddPoints; one side online = the siege count), +1 Kills (Titles at 1 / 10 / 50),
 	-- and the Weekly item: a week's first kill always gives one, untaken weeks bank up to Max (a skipped week loses nothing)
 	Clatter = { Enabled = true, Kind = "CaptainClatter", FirstDelay = 300, Interval = 1200, Lifetime = 360, Radius = 6,
-		RetryDelay = 10, Attr = "ClatterSpawn", MinLevel = 25, War = 20,
+		RetryDelay = 10, Attr = "ClatterSpawn", Spawn = Vector3.new(1670, 0, 0), MinLevel = 25, War = 20, -- A23-90: the Crown Pit
 		Weekly = { Item = "CaptainBadge", N = 1, Max = 2 },
 		Titles = { [1] = "ClatterStopper", [10] = "ClatterStopper10", [50] = "ClatterStopper50" } },
 }
@@ -6116,5 +6140,16 @@ function Config.MonsterDanger(myLevel, monsterLevel)
 	if d <= B.Weak then return "Weak" end
 	return "Even"
 end
+
+----------------------------------------------------------------- private servers (게임성 개발 2, A23-90)
+-- A23-90 (user 2026-10-09): in a private server (game.PrivateServerId ~= "") the golden goose, the crown-war chests
+-- (incl. the siege chest) and the bounties pay x RewardMult (gold by these sources in ProgressionService.AddBankGold,
+-- before the 2x gold pass; the goose's XP in GooseService). Hunting, quests, drops and playing with friends stay
+-- as they are. Text = the line the shop's private-server card shows before buying (game dev 1).
+Config.PrivateServer = {
+	RewardMult = 0.5,
+	HalfSources = { Event = true, War = true, Bounty = true },
+	Text = "Rewards are halved in private servers",
+}
 
 return Config

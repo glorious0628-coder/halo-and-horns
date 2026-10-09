@@ -219,7 +219,7 @@ end
 local function rollRows(info, onHit)
 	local mult = info.Golden == true and LOOT.GoldenMult or 1
 	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows and the jackpot; not the first scroll)
-	local rowBonus = num(info.RowBonus, 1)
+	local rowBonus = num(info.RowBonus, 1) * num(info.AreaMult, 1) -- A23-90: the Crown Pit's better drops (rows only)
 	for _, row in LOOT.Tables[info.Kind] or {} do
 		if row.Weapon and type(row.BelowLevel) == "table" and info.Level ~= nil
 			and not Config.WeaponUsable(row.Weapon, info.Level) then

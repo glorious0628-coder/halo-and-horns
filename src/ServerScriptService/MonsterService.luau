@@ -1293,6 +1293,8 @@ local function killRecord(rec)
 		Gold = def.Gold * (rec.Golden and MC.GoldenGoldMult or 1),
 		WarPoints = warPoints,
 		Personal = isPersonal,
+		-- A23-90: a kill inside a PvP area (the ruins' Crown Pit) rolls its drop rows x the area's LootMult
+		AreaMult = typeof(pos) == "Vector3" and (Config.PvPAreaAt(pos) or {}).LootMult or nil,
 	}
 
 	-- CR-M18: every contributor keeps the full personal WarPoints, but one kill adds WarPoints to a faction pool only

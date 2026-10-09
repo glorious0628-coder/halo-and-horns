@@ -200,7 +200,7 @@ end
 
 ------------------------------------------------------------------ text helpers
 local function dangerColor(zone)
-	if not zone.PvP then return DANGER.Safe end
+	if not Config.ZoneHasPvP(zone) then return DANGER.Safe end -- A23-90: the ruins keep their colour (a PvP pit inside)
 	if zone.MinLevel >= EXTREME_MIN_LEVEL then return DANGER.Extreme end
 	return DANGER.PvP
 end
@@ -423,7 +423,7 @@ end
 
 local function buildGate(ctx, parent, entry, zone)
 	local gate = model("Gate_" .. entry.Zone)
-	local style = GATE_STYLE[entry.Zone] or (zone.PvP and "Goblin" or "Meadow")
+	local style = GATE_STYLE[entry.Zone] or (Config.ZoneHasPvP(zone) and "Goblin" or "Meadow")
 	local pos = entry.Position
 	-- the path runs from the gate toward the zone center; the pillars stand across it
 	local alongX = math.abs(zone.Center.X - pos.X) >= math.abs(zone.Center.Z - pos.Z)
