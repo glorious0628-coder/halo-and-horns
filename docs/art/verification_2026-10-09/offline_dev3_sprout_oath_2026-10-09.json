@@ -809,11 +809,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7983a3702c0816fd88972fd29dc9a4e164db639e1839ea7ef3523d2989609463",
+    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308"
+    "src/ServerScriptService/StoryQuestService.luau": "0a00f634e31d9f38700bd1e3f0b2c11e62dbe424079a48972de1ad85d1d0bacc"
   },
-  "fixtureSHA256": "7643d7a8eba0815770c77936f352b22fd4f9dd694f88c05fd2e46ac6d1a0a79e",
+  "fixtureSHA256": "fcb6b2242bad275f0fb21852c4524b6e81e616c34a6b1e63273894a572dd6c28",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

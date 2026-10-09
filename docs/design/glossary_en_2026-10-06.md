@@ -70,3 +70,11 @@
 | 클래터 대장 / 대장 배지 / 꽃잎 | **Captain Clatter / Captain's Badge / Flower Petal** | 유적 필드 보스와 재료(`captain_clatter_2026-10-09.md`) |
 | 왕관 구덩이 | **Crown Pit** | 유적 안쪽 PvP 자리(A23-90) |
 | 마을 꼬마 | **Bright · Smokey · Tiny** | Bright·Smokey = she(A23-59), Tiny = he. 왕관을 깬 두 아이 = Bright + Smokey(단짝, 연애 표현 없음) |
+
+## 쉬운 영어 고침 (빛 마을 점검표 #44·#55, 검수 결정 2026-10-10)
+| 한국어 | English | 메모 |
+|---|---|---|
+| 새싹 맹세(퀘스트) | **The Sprout Promise** (phone: Sprout promise) | `oath`는 어려운 낱말이라 `promise`. 단계 "Make your promise to Bright / Smokey", Bright·Smokey 줄 "Make your promise." (마무리 줄은 개발 2가 #54에서 고침) |
+| 첫 임무 줄(대장간 가기) | **Go to Otto's Forge in the Crossroads** (phone: To the Forge) | 대장간이 마을 밖 교차로에 있다는 것을 줄에서 알려 줌(#44). 새 알림·이름표는 안 만듦 |
+| 빛 마을 영웅 동상(H6) | **Look at the hero statues in Halo Citadel** | 장소를 줄에 넣음(#55) |
+| 안내자 첫 대화(진영마다 2쪽) | page 1 = 임무 카드 "First, get a weapon from Otto the Blacksmith! / Then beat 5 slimes to free the supply road.", page 2 = 안내자 말버릇 | 4쪽 → 2쪽(A23-99 덜 친절하게). **Hallie의 "Hallie here! Now you know my name."는 고정 말버릇이라 그대로**(M1_4 첫 줄, M3_5 "So now I give mine."의 짝) |

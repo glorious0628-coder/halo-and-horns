@@ -214,6 +214,42 @@ def auto_loop(x, bpm, beats=4, bars=None, xfade_s=2.0, starts=(1.0, 2.0, 3.0, 4.
     return best
 
 
+# ---------- water ambience (fountain / waterfall loops, synthesized) ----------
+def water_loop(kind="fountain", seconds=20.0, seed=7):
+    """Seamless water loop: pink-ish noise through a band, a slow swell, and (fountain) tiny droplet plinks.
+    Built 2 s longer, then the extra tail is cross-faded into the head so the loop has no tick."""
+    from scipy.signal import butter, sosfilt
+    rng = np.random.default_rng(seed)
+    xf = int(2.0 * SR)
+    n = int(seconds * SR) + xf
+    white = rng.standard_normal(n)
+    if kind == "waterfall":
+        bands = [(150, 700, 1.0), (700, 3000, 0.9), (3000, 9000, 0.45)]
+        swell = 0.12
+    else:
+        bands = [(500, 2500, 0.8), (2500, 7000, 0.7), (7000, 12000, 0.25)]
+        swell = 0.25
+    y = np.zeros(n)
+    for lo, hi, g in bands:
+        sos = butter(2, [lo / (SR / 2), hi / (SR / 2)], btype="band", output="sos")
+        y += g * sosfilt(sos, white)
+    t = np.arange(n) / SR
+    mod = 1.0 + swell * (0.6 * np.sin(2 * np.pi * 0.11 * t + 1.0) + 0.4 * np.sin(2 * np.pi * 0.27 * t))
+    y *= mod
+    if kind != "waterfall":
+        for _ in range(int(seconds * 5)):  # droplet plinks
+            pos = int(rng.uniform(0, n - 4000))
+            f0 = rng.uniform(1800, 4200)
+            tt = np.arange(3000) / SR
+            plink = np.sin(2 * np.pi * f0 * (1 + 0.6 * np.exp(-tt * 90)) * tt) * np.exp(-tt * 55) * rng.uniform(0.15, 0.5)
+            y[pos:pos + 3000] += plink * y.std() * 1.5
+    t_ = np.linspace(0, math.pi / 2, xf)
+    body = y[:n - xf].copy()
+    body[:xf] = body[:xf] * np.sin(t_) + y[n - xf:] * np.cos(t_)
+    body /= np.abs(body).max()
+    return np.stack([body * 0.5, body * 0.5], axis=1)
+
+
 def tempo(x):
     from scipy.signal import stft
     m = x.mean(axis=1)
@@ -257,6 +293,12 @@ def main():
     l.add_argument("--start", type=float, default=0.0)
     l.add_argument("--xfade", type=float, default=2.0)
     l.add_argument("--out", required=True)
+    w = sub.add_parser("water")
+    w.add_argument("--kind", choices=["fountain", "waterfall"], default="fountain")
+    w.add_argument("--seconds", type=float, default=20.0)
+    w.add_argument("--seed", type=int, default=7)
+    w.add_argument("--lufs", type=float, default=-30.0)
+    w.add_argument("--out", required=True)
     t = sub.add_parser("tempo")
     t.add_argument("inp")
     c = sub.add_parser("check")
@@ -268,6 +310,11 @@ def main():
         print(json.dumps(seam_check(y)))
     elif a.cmd == "loop":
         y = make_loop(read_wav(a.inp), a.bpm, a.bars, a.beats, a.start, a.xfade)
+        write_wav(a.out, y)
+        print(json.dumps(seam_check(y)))
+    elif a.cmd == "water":
+        y = water_loop(a.kind, a.seconds, a.seed)
+        y = y * 10 ** ((a.lufs - lufs(y)) / 20)
         write_wav(a.out, y)
         print(json.dumps(seam_check(y)))
     elif a.cmd == "tempo":

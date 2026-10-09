@@ -30,7 +30,7 @@ OUT = ROOT / "docs/art/verification_2026-10-09/offline_walk_forge_client_2026-10
 
 STATIC = [
     ("the Forge step points at the anvil (QuestTarget)", "QT",
-     ['\tif step == K.ForgeStep then\n\t\treturn pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, myZone ~= K.Town)\n']),
+     ['\tif step == K.ForgeStep then\n\t\treturn pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, not smithWalk(myZone))\n']),
     ("refreshGuides drives the pad glow", "HUD",
      ['\tL.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))\n']),
     ("the pad glow is a soft local Highlight on the meadow pad (no line, no words)", "HUD",

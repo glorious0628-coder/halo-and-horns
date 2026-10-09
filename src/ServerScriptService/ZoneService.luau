@@ -442,7 +442,9 @@ function ZoneService.RestoreMovementTrack(player, snapshot, character)
 end
 
 -- zone.Spawn + random XZ offset in [-6, 6] + (0, 4, 0), facing into the zone. Pure: safe to call any time.
-function ZoneService.GetSpawnCFrame(zoneId)
+-- faceOut = true (the first mission is still open: PlayerService) faces zone.SpawnLook (the way out of a town: the gate at the
+-- bridge end, where the Crossroads Forge lies) instead of the zone middle; a zone without SpawnLook keeps the middle.
+function ZoneService.GetSpawnCFrame(zoneId, faceOut)
 	local zone = Config.Zones[zoneId] or Config.Zones[DEFAULT_ZONE]
 	local base = zone.Spawn
 	local pos = Vector3.new(
@@ -450,7 +452,8 @@ function ZoneService.GetSpawnCFrame(zoneId)
 		base.Y + SPAWN_LIFT,
 		base.Z + Util.Random:NextNumber(-SPAWN_JITTER, SPAWN_JITTER)
 	)
-	local look = Vector3.new(zone.Center.X, pos.Y, zone.Center.Z)
+	local target = faceOut == true and typeof(zone.SpawnLook) == "Vector3" and zone.SpawnLook or zone.Center
+	local look = Vector3.new(target.X, pos.Y, target.Z)
 	if (look - pos).Magnitude > 1 then
 		return CFrame.lookAt(pos, look)
 	end

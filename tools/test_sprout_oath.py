@@ -52,7 +52,7 @@ MUTATIONS = [
     ("Sprout inverted", ST, 'if req.Sprout and stateTrue(player, "Graduated") then return false end', 'if req.Sprout and not stateTrue(player, "Graduated") then return false end'),
     # --- the training
     ("config: the bridge guard 5 s", C, "Radius = 14, Stay = 15 } },\n\t\t\t\t{ Text = \"Goblin Brute %d/%d\"", "Radius = 14, Stay = 5 } },\n\t\t\t\t{ Text = \"Goblin Brute %d/%d\""),
-    ("config: Halo kills a plain goblin", C, 'Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your oath to Bright"', 'Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your oath to Bright"'),
+    ("config: Halo kills a plain goblin", C, 'Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your promise to Bright"', 'Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your promise to Bright"'),
     ("config: Horns may use skills", C, 'Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 }', 'Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 }'),
     ("config: Horns skip a camp", C, '{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },\n', ''),
     # --- the oath
