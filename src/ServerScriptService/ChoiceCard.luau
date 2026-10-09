@@ -178,18 +178,7 @@ local function finish(player, card, side)
 		if gold > 0 then table.insert(parts, string.format(STORY.ChoiceGold, Util.FormatNumber(gold))) end
 		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
 		notify(player, table.concat(parts, " · "), "reward", "None")
-		local f = player:GetAttribute("Faction")
-		if stat ~= "None" and not mine then
-			if change < 0 then
-				notify(player, string.format(f == "Halo" and STORY.OffSideHalo or STORY.OffSideHorns, -change), "info")
-			else
-				notify(player, (f == "Halo" and STORY.OffSideHaloZero or STORY.OffSideHornsZero) .. " "
-					.. (side == "Good" and STORY.LeanGood or STORY.LeanEvil), "info")
-			end
-			if down then notify(player, f == "Halo" and STORY.RankDownHalo or STORY.RankDownHorns, "info") end
-		elseif mine and full then
-			notify(player, TXT.Full, "info")
-		end
+		S.Deeds.Say(player, side, stat, change, mine, down, full) -- the other side's line, a lost rank, a full day
 	end
 	if player.Parent == Players then fx(player, "CardEnd", out) end
 	ChoiceCard.Picked:Fire(player, card.Kind, out.Side, out)

@@ -3183,6 +3183,7 @@ Config.Board = {
 		Done = "Job done! +%s gold · +%s XP",
 		LeanKind = "Your shard leaned to the light.",
 		LeanSneaky = "Your shard leaned to the dark.",
+		Score = "%s +%d", -- A23-86: ("Honor" | "Infamy", points) one deed of the daily ledger
 		Bonus = "5th job today! +%s",
 		Full = "You carry 3 jobs. Finish one first!",
 		Hint = "Job Board · tap for directions",
@@ -5959,6 +5960,7 @@ Config.Deeds = {
 	PerDay = 6,
 	Points = 1, -- a deed's default size
 	CheckInterval = 60, -- seconds between the day checks of online players (DeedsToday goes back to 0 at 00:00 KST)
+	Text = { Full = "Your shard is full for today. Come back tomorrow!" },
 }
 -- ChoiceCard.luau (contract docs/design/choice_card_server_2026-10-09.md): a card only the player sees, Good and Evil of
 -- the same size, a FIXED reward. Kinds[kind] = { Title, Seconds? (timed, not saved), Good / Evil = { Label, Done?,
@@ -5972,10 +5974,14 @@ Config.ChoiceCard = {
 		GoodDone = "Kind choice!",
 		EvilDone = "Sneaky choice!",
 		Score = "%s +%d", -- ("Honor" | "Infamy", points)
-		Full = "Your shard is full for today. Come back tomorrow!",
+		Full = "Your shard is full for today. Come back tomorrow!", -- (the same line as Config.Deeds.Text.Full)
 	},
 }
 Config.RateLimits.CardAction = 0.3
+-- A23-86 D (content_beyond_10min D): the monster kill record from the first beta day (KillLog.luau). Additive save field
+-- (Version stays 3): KillLog = { Total, M (by hand), A (auto combat), Golden, ByKind = { [monster kind] = n },
+-- ByTier = { ["tier"] = { M, A } } }. The sticker book screen comes 11/04; nothing is paid for it here.
+Config.Data.Defaults.KillLog = { Total = 0, M = 0, A = 0, Golden = 0, ByKind = {}, ByTier = {} }
 -- A23-86 decision 2 = A (user 2026-10-09): Otto's commissions (CommissionService, content_beyond_10min H). The golden / crystal
 -- / spirit weapons (T4-T6) can be ordered at the Forge: gold (the weapon's own Price) + materials + the weapon's MinLevel.
 -- The numbers below are PROPOSED (decision 2-2 is 검수's): T4 as designed (3,000 gold + 10 Brute Horn + 20 Goblin Tooth), T5 /

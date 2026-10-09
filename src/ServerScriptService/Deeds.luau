@@ -7,6 +7,8 @@
 --   Deeds.Preview(player, side, n?) -> stat, change, mine  what Add would change right now ("None", 0, false = no side)
 --   Deeds.Add(player, side, n?)     -> stat, change, mine, down, full  what really changed (side "Good" | "Evil";
 --                                      down = a rank was lost; full = my own side's rise was cut by the day's cap)
+--   Deeds.Say(player, side, stat, change, mine, down, full)  the answer lines of an Add (the other side's line, a lost rank,
+--                                      "your shard is full for today"); the caller adds its own score / reward line
 --   Deeds.Left(player) / Deeds.Used(player)   points still open / used today
 --   Deeds.Take(player, n) -> how much of n fits today (booked); the caller adds that much (ScoreBudget-compatible)
 -- Save: data.Deeds = { Day, N } (Config.Data.Defaults; a new day starts at 0, repaired on every read).
@@ -17,6 +19,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Util = require(Shared:WaitForChild("Util"))
+local Net = require(Shared:WaitForChild("Net"))
 
 local Deeds = {}
 
@@ -135,6 +138,28 @@ function Deeds.Add(player, side, n)
 		down = rankOf(f, have - take) < rankOf(f, have)
 	end
 	return stat, -take, false, down, false
+end
+
+-- the answer lines of an Add (A23-58): a pick against my own side says so (Hallie / Magpie), a lost rank gets its line, and a
+-- full day says to come back tomorrow. The score line itself ("Honor +1") is the caller's.
+function Deeds.Say(player, side, stat, change, mine, down, full)
+	if stat ~= "Honor" and stat ~= "Infamy" then return end
+	local STORY = Config.StoryQuests.Text
+	local function say(text, kind)
+		local ok, err = pcall(Net.Notify, player, text, kind)
+		if not ok then Util.Warn(TAG, "notify: " .. tostring(err)) end
+	end
+	local halo = stat == "Honor"
+	if not mine then
+		if change < 0 then
+			say(string.format(halo and STORY.OffSideHalo or STORY.OffSideHorns, -change), "info")
+		else
+			say((halo and STORY.OffSideHaloZero or STORY.OffSideHornsZero) .. " " .. (side == "Good" and STORY.LeanGood or STORY.LeanEvil), "info")
+		end
+		if down then say(halo and STORY.RankDownHalo or STORY.RankDownHorns, "info") end
+	elseif full then
+		say(Config.Deeds.Text.Full, "info")
+	end
 end
 
 function Deeds.Init(registry)

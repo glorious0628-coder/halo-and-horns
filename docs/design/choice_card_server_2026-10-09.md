@@ -9,6 +9,7 @@ SPEC A23-86 결정 1(하루 선행·장난 장부) + `content_beyond_10min_2026-
 - 함수(서비스 `S.Deeds`):
   - `Deeds.Add(player, side, n?)` → `stat, change, mine, down, full` — `side` = `"Good"` | `"Evil"`, `n` 기본 1. `stat` = `"Honor"`|`"Infamy"`|`"None"`(편 없음), `change` = 실제로 바뀐 값(+/−/0), `mine` = 내 편 쪽, `down` = 계급이 내려갔는지, `full` = 내 편 쪽 상승이 하루 상한에 잘렸는지.
   - `Deeds.Preview(player, side, n?)` → `stat, change, mine` (Add가 지금 바꿀 값, 화면의 미리보기용).
+  - `Deeds.Say(player, side, stat, change, mine, down, full)` — Add 결과의 안내 줄(반대 편 선택 Hallie/Magpie 줄, 계급 하락 줄, 하루 가득 줄). 점수 줄("Honor +1")은 부르는 쪽 몫.
   - `Deeds.Left(player)` / `Deeds.Used(player)` — 오늘 남은/쓴 점수.
   - `Deeds.Take(player, n)` → 상한에 들어가는 만큼(예약). `ScoreBudget.Take`와 같은 모양이라 개발 2가 마무리 카드를 옮길 때 그대로 바꿔 끼울 수 있어요.
 - 저장(추가 칸, Version 3 그대로): `data.Deeds = { Day = Config.DayIndex, N = 오늘 쓴 점수 }`. 읽을 때마다 고쳐 쓰고 새 날은 0부터.
@@ -31,6 +32,10 @@ SPEC A23-86 결정 1(하루 선행·장난 장부) + `content_beyond_10min_2026-
 - 신호: `ChoiceCard.Picked(player, kind, side, result)` (고름과 시간 끝 모두).
 - 저장: `data.Cards = { Serial, Pending }` (Serial은 카드 Id, 줄어들지 않음).
 - Studio 도움: `DebugCommand("Card", "<kind>")`.
+
+## 2-1. 이미 장부를 쓰는 곳
+- 일감 게시판(`BoardService`): 끝낸 [Kind] 일 = 좋은 행동 1점, [Sneaky] 일 = 장난 1점(내 편 +1 / 반대 편 −1, 하루 6점 안, 보상은 계속). `Config.Board.Text.Score = "%s +%d"`. 주간 랭킹 점수는 여전히 없음(A23-23 D1).
+- 견습생 카드(오토의 의뢰, `docs/design/commission_server_2026-10-09.md`)와 앞으로의 잃어버린 물건·클래터 카드는 `ChoiceCard`를 거쳐요.
 
 ## 3. 개발 2 마무리 카드와 합치기 (순서)
 1. 지금은 따로: `FinisherService`의 Net 이름(`FinisherCard/FinisherPick/FinisherEnd`, `Help`/`Tickle`)을 안 바꿔요. 개발 1 화면이 그걸 써요.

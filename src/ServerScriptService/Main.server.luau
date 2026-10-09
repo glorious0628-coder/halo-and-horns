@@ -15,7 +15,7 @@ local INIT_ORDER = {
 	"ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
-	"Deeds", "ChoiceCard", "CommissionService", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
+	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -28,7 +28,7 @@ local START_ORDER = {
 	"SkillService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
-	"Deeds", "ChoiceCard", "CommissionService", -- 게임성 개발 3: A23-86 (before PlayerService too)
+	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"PlayerService",
 }
 

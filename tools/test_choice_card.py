@@ -86,9 +86,9 @@ MUTATIONS = [
     ("the count resets", K, "\tst.N[kind][side] = math.min(1000000, math.max(0, math.floor(num(st.N[kind][side]))) + 1)\n", "\tst.N[kind][side] = 1\n"),
     ("a time up pays", K, "\tif side and d and data then\n", "\tif d and data then\n\t\tside = side or \"Good\"\n"),
     ("the Evil option pays the Good reward", K, "\t\tlocal given, gold, id = pay(player, concrete(player, o.Reward))\n", "\t\tlocal given, gold, id = pay(player, concrete(player, d.Good.Reward))\n"),
-    ("the full-day line is missing", K, "\t\telseif mine and full then\n\t\t\tnotify(player, TXT.Full, \"info\")\n", "\t\telseif false then\n"),
-    ("no off-side line", K, "\t\tif stat ~= \"None\" and not mine then\n", "\t\tif false then\n"),
-    ("no rank line", K, "\t\t\tif down then notify(player, f == \"Halo\" and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n", ""),
+    ("the full-day line is missing", D, "\telseif full then\n\t\tsay(Config.Deeds.Text.Full, \"info\")\n", "\telseif false then\n"),
+    ("no off-side line", D, "\tif not mine then\n\t\tif change < 0 then", "\tif false then\n\t\tif change < 0 then"),
+    ("no rank line", D, "\t\tif down then say(halo and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n", ""),
     ("the end is not sent", K, "\tif player.Parent == Players then fx(player, \"CardEnd\", out) end\n", ""),
     ("the signal never fires", K, "\tChoiceCard.Picked:Fire(player, card.Kind, out.Side, out)\n", ""),
     ("the card shows no preview score", K, "local stat, score, mine = S.Deeds.Preview(player, side, o.Points)", "local stat, score, mine = S.Deeds.Preview(player, side, o.Points) score = 0"),
@@ -96,7 +96,7 @@ MUTATIONS = [
     ("a not-ready player gets a card", K, "\tif not data or not S.PlayerService.IsReady(player) then return false, \"notready\" end\n", ""),
     ("any kind", K, "\tif not d then return false, \"kind\" end\n", ""),
     # --- config
-    ("config: the cap line is different", C, "Your shard is full for today. Come back tomorrow!", "You are done."),
+    ("config: the cap line is different", C, 'Text = { Full = "Your shard is full for today. Come back tomorrow!" },', 'Text = { Full = "You are done." },'),
     ("config: no card rate limit", C, "Config.RateLimits.CardAction = 0.3\n", ""),
 ]
 

@@ -921,10 +921,10 @@
           "card: offer, pick, reward :: Evil side (the other side for a Halo): 4 gold, -1",
           "card: offer, pick, reward :: Fx Card { Id 1, Kind, Title, no Seconds, Stat Honor }",
           "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
-          "card: offer, pick, reward :: one line: Kind choice! … Honor +1",
-          "card: offer, pick, reward :: the same card twice: paid once"
+          "card: offer, pick, reward :: off-side answer + counted",
+          "card: offer, pick, reward :: one line: Kind choice! … Honor +1"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 21
       },
       {
         "mutation": "a loss can go below 0",
@@ -1329,7 +1329,7 @@
       },
       {
         "mutation": "the full-day line is missing",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "file": "src/ServerScriptService/Deeds.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
@@ -1340,7 +1340,7 @@
       },
       {
         "mutation": "no off-side line",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "file": "src/ServerScriptService/Deeds.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
@@ -1351,7 +1351,7 @@
       },
       {
         "mutation": "no rank line",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "file": "src/ServerScriptService/Deeds.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
@@ -1441,7 +1441,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the full line (A23-86)"
+          "card: a full day keeps the reward :: the 'shard is full' line"
         ],
         "newFailingCount": 1
       },
@@ -1462,10 +1462,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "57945b7348d2ebda51fca4592a608190676a53caa0a85e2597290c377c9aa360",
+    "src/ReplicatedStorage/Shared/Config.luau": "3db96a33509834ef6b58378743ea2166a2e91548fccdb6d6035ead185c8fb368",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/Deeds.luau": "2592b6c99f5f0579e4d66ce2f9167fbf15fe15e1f81830eb038e88038a5fd69e",
-    "src/ServerScriptService/ChoiceCard.luau": "cf5ba129ecd3cb30f3c664139f1bdf1aef4d47791d73b275f18f4a921ba1b36f"
+    "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
+    "src/ServerScriptService/ChoiceCard.luau": "da892aeb3fa5ae57de67bea52693e6b5bac974a0ded6ff572970a876a3a330be"
   },
   "fixtureSHA256": "c58dd0dd7d96139da626e9ba3815bc299e1fbf3a4f14aba3518c2ef6e7153f54",
   "sourcesChangedDuringRun": [],

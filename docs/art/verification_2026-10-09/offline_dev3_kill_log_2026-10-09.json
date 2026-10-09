@@ -1,0 +1,461 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 28,
+  "failedChecks": 0,
+  "namedChecks": 28,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "save default KillLog",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "data version stays 3 (additive field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "three kills by hand",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "by monster kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "by weapon tier 3: M 3 / A 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "auto kills are counted apart (A)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "a golden monster",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "a new weapon tier gets its own row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "tier 0 (bare hands)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counting",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "a personal (tutorial) monster",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "an unknown kind, no kind, a broken info",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "and no warning from any of it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two players",
+      "check": "each save is its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two players",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two players",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save is repaired",
+      "check": "numbers are whole and between 0 and a billion",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save is repaired",
+      "check": "unknown kinds dropped, whole numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save is repaired",
+      "check": "only real weapon tiers with a table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save is repaired",
+      "check": "a broken table is replaced",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save is repaired",
+      "check": "a billion is the ceiling",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save is repaired",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save is repaired",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 6,
+  "staticFailures": [],
+  "mutations": {
+    "total": 21,
+    "applied": 21,
+    "caught": 21,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "personal monsters count",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what does not count :: a personal (tutorial) monster",
+          "what does not count :: an unknown kind, no kind, a broken info"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "unknown kinds count",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what does not count :: an unknown kind, no kind, a broken info"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no total",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: a golden monster",
+          "counting :: auto kills are counted apart (A)",
+          "counting :: three kills by hand",
+          "the save is repaired :: a billion is the ceiling",
+          "two players :: each save is its own"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "auto counted as hand",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: a new weapon tier gets its own row",
+          "counting :: auto kills are counted apart (A)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hand counted as auto",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: a new weapon tier gets its own row",
+          "counting :: auto kills are counted apart (A)",
+          "counting :: by weapon tier 3: M 3 / A 0",
+          "counting :: three kills by hand",
+          "counting :: tier 0 (bare hands)",
+          "the save is repaired :: a billion is the ceiling"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "no per-kind count",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: by monster kind",
+          "the save is repaired :: a billion is the ceiling"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no golden count",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: a golden monster"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "golden for every kill",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: a golden monster",
+          "counting :: three kills by hand"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no per-tier count",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: a new weapon tier gets its own row",
+          "counting :: auto kills are counted apart (A)",
+          "counting :: by weapon tier 3: M 3 / A 0",
+          "counting :: tier 0 (bare hands)",
+          "the save is repaired :: a billion is the ceiling",
+          "two players :: each save is its own"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the tier is always 1",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counting :: group ran to the end without a Lua error",
+          "the save is repaired :: a billion is the ceiling",
+          "two players :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no ceiling on the total",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: a billion is the ceiling"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no ceiling on the kind",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: a billion is the ceiling"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no ceiling on the tier row",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: a billion is the ceiling"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no repair of the numbers",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: a broken table is replaced",
+          "the save is repaired :: numbers are whole and between 0 and a billion"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "unknown kinds kept",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: unknown kinds dropped, whole numbers"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any tier key kept",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: only real weapon tiers with a table"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tiers above the last kept",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: only real weapon tiers with a table"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "fractions kept",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: a broken table is replaced",
+          "the save is repaired :: numbers are whole and between 0 and a billion"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a broken table is kept",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: a broken table is replaced",
+          "the save is repaired :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "not repaired at join",
+        "file": "src/ServerScriptService/KillLog.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save is repaired :: a broken table is replaced",
+          "the save is repaired :: numbers are whole and between 0 and a billion",
+          "the save is repaired :: only real weapon tiers with a table",
+          "the save is repaired :: unknown kinds dropped, whole numbers"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: no default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3db96a33509834ef6b58378743ea2166a2e91548fccdb6d6035ead185c8fb368",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/KillLog.luau": "0c517d98afbe72b6db265add7a78644b2bf2ba5a2486df18d6a16f516de967a0"
+  },
+  "fixtureSHA256": "8920735f890aec1a9a36742ecda4b8ea903f6e4125b353b20c39a587c501cc7e",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-86 D: every kill that paid the player (MonsterService.MonsterKilled, not personal tutorial monsters, only known monster kinds) adds to data.KillLog = { Total, M (by hand) / A (auto combat: the player attribute AutoCombatEnabled at that moment), Golden, ByKind[kind], ByTier[weapon tier 0..8] = { M, A } }; whole numbers 0..1,000,000,000; the table is repaired at join (known kinds / tiers only); pays nothing.",
+  "limitations": "The sticker book screen, rewards and titles come 11/04. Auto-combat is the attribute at the kill, as the story's AutoKill (MonsterKilled carries no auto flag)."
+}
