@@ -142,7 +142,10 @@ MUTATIONS = [
     ("20 s to pick", C, "\tSeconds = 10,\n\tGrace = 1,\n", "\tSeconds = 20,\n\tGrace = 1,\n"),
     ("2 points a pick", C, "\tGrace = 1,\n\tPoints = 1,\n", "\tGrace = 1,\n\tPoints = 2,\n"),
     ("3 Jelly (not the same size)", C, "Help = { Item = \"Jelly\", N = 2 }, -- (proposed)", "Help = { Item = \"Jelly\", N = 3 }, -- (proposed)"),
-    ("the slime gives a card too", C, "\tKinds = { BigSlime = true },\n", "\tKinds = { BigSlime = true, Slime = true },\n"),
+    ("the Slime Prince gives a card too", C, "\tKinds = { SlimeKing = true }, -- the King Slime boss only",
+     "\tKinds = { SlimeKing = true, BigSlime = true }, -- the King Slime boss only"),
+    ("the card on the Slime Prince instead", C, "\tKinds = { SlimeKing = true }, -- the King Slime boss only",
+     "\tKinds = { BigSlime = true }, -- the King Slime boss only"),
     ("cap 50", C, "Config.ScoreBudget = { PerDay = 5 }", "Config.ScoreBudget = { PerDay = 50 }"),
 ]
 

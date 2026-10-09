@@ -1,0 +1,802 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 74,
+  "failedChecks": 0,
+  "namedChecks": 74,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "MonsterTypes.SlimeKing exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "King Slime: a meadow boss outside the regular pool",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "borrows the Slime Prince model until its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "in MonsterTypeOrder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the old King Slime (BigSlime) is now the Slime Prince",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Slime Prince's numbers are unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the finisher card is the King Slime's only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the King Slime has a drop table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "announce line + event style: SlimeKingAppear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-85 no mom line: SlimeKingAppear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "announce line + event style: SlimeKingDefeat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-85 no mom line: SlimeKingDefeat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "announce line + event style: SlimeKingLeave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-85 no mom line: SlimeKingLeave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "appear line = the dad line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "toast only when it appears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "slime bubbles + dad lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "soft hit sound",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "schedule 3 min / every 8 min / stays 5 min",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Net GameState defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Main INIT_ORDER has it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Main START_ORDER has it before PlayerService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Studio DebugCommand SlimeKing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "start: next in 180 s, none here",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "nothing before the first slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "appears at the slot with a hunter in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "at the shrine's KingSpawn, radius 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "Active, leaves in 300 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "next slot 480 s from this appearance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "Appear line once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "IsActive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "only one at a time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "no spawn: nobody ready in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "due slot kept in the past (waiting)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "the first ready hunter in the meadow brings it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "no shrine: hill top moved 8 studs toward the path foot (flat)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "neither: Config.SlimeKing.Spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "the shrine wins over the hill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "a kill is not removed again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Fx KingDefeat to everyone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Fx carries the paid ids (numbers only) and the spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Defeated signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Defeat line, not Leave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Active off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "IsActive false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "still here at 299 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "time up: goes home (fade, leaving)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "Leave line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "no Defeated",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "the next slot comes 480 s after the last appearance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "a lost model is a Leave, not a defeat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "no ground: nothing appears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "retry in 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "no Appear line without a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "the retry spawns it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "Enabled = false: never, NextAt 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "DebugSpawn now (no hunter needed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "DebugSpawn twice: already here",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "a slot while one is here is skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "NextAt moved forward past the skipped slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 6,
+  "staticFailures": [],
+  "mutations": {
+    "total": 27,
+    "applied": 27,
+    "caught": 27,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no hunter check",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "waits for a hunter :: due slot kept in the past (waiting)",
+          "waits for a hunter :: no spawn: nobody ready in the meadow"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any zone counts",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "waits for a hunter :: due slot kept in the past (waiting)",
+          "waits for a hunter :: no spawn: nobody ready in the meadow"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "not-ready players count",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "waits for a hunter :: due slot kept in the past (waiting)",
+          "waits for a hunter :: no spawn: nobody ready in the meadow"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "shrine ignored",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: at the shrine's KingSpawn, radius 2",
+          "spot fallbacks :: the shrine wins over the hill"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hill step ignored",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot fallbacks :: no shrine: hill top moved 8 studs toward the path foot (flat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hill step goes away from the path",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot fallbacks :: no shrine: hill top moved 8 studs toward the path foot (flat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hill step not flat",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot fallbacks :: no shrine: hill top moved 8 studs toward the path foot (flat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "radius lost",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: at the shrine's KingSpawn, radius 2"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "never leaves",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time up / lost :: Leave line",
+          "time up / lost :: a lost model is a Leave, not a defeat",
+          "time up / lost :: the next slot comes 480 s after the last appearance",
+          "time up / lost :: time up: goes home (fade, leaving)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "leaving with a splat",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time up / lost :: time up: goes home (fade, leaving)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a lost model counts as a defeat",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time up / lost :: a lost model is a Leave, not a defeat"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no defeat Fx",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: group ran to the end without a Lua error",
+          "retry / off / debug :: group ran to the end without a Lua error",
+          "schedule :: group ran to the end without a Lua error",
+          "spot fallbacks :: group ran to the end without a Lua error",
+          "time up / lost :: group ran to the end without a Lua error",
+          "waits for a hunter :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "no Defeated signal",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Defeated signal"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Defeat and Leave swapped",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Defeat line, not Leave",
+          "time up / lost :: Leave line",
+          "time up / lost :: a lost model is a Leave, not a defeat"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no Appear line",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: Appear line once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "next slot not set",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: next slot 480 s from this appearance"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no retry delay",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry / off / debug :: retry in 10 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "debug spawns twice",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry / off / debug :: DebugSpawn twice: already here",
+          "retry / off / debug :: a slot while one is here is skipped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Active not published",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Active off",
+          "retry / off / debug :: no ground: nothing appears",
+          "retry / off / debug :: the retry spawns it",
+          "schedule :: Active, leaves in 300 s",
+          "schedule :: start: next in 180 s, none here"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "first slot at once",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: Active, leaves in 300 s",
+          "schedule :: next slot 480 s from this appearance",
+          "schedule :: nothing before the first slot",
+          "schedule :: start: next in 180 s, none here"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "string ids in Contributors",
+        "file": "src/ServerScriptService/SlimeKingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Defeated signal",
+          "defeat :: Fx carries the paid ids (numbers only) and the spot"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "card back on the Prince",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the finisher card is the King Slime's only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Prince renamed back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the old King Slime (BigSlime) is now the Slime Prince"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a mom line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-85 no mom line: SlimeKingLeave"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "King in the regular pool",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: King Slime: a meadow boss outside the regular pool"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not in Main START",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Main START_ORDER has it before PlayerService"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Net default",
+        "file": "src/ReplicatedStorage/Shared/Net.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Net GameState defaults"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "30b04a70bcd7c91a0567e73c6eedfcfe27b321b12f4869f0d30cff68f72d4ce0",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Net.luau": "8bb6de74e8185a1b0d59a351ff6ec2d9dfbb5237f310183101ba5fae014df8a0",
+    "src/ServerScriptService/Main.server.luau": "9af3c70551026daff36a374b1b225f2a88bc77a75fbb8cd8431144128855643f",
+    "src/ServerScriptService/SlimeKingService.luau": "6e414acd2573a40eac3fa773d1a18f2fd000075306bf7cbc6d786402a9cf48d9"
+  },
+  "fixtureSHA256": "5e562b49bc867a0083a0a355ec8de299fae392b84b964cff5f93d60b97306614",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "King Slime boss (A23-84/85, king_slime_split §3): one on the server, first slot 180 s after start, then every 480 s from its last appearance, a due slot waits for a ready hunter in SlimeMeadow, stays 300 s; spot shrine KingSpawn > HillTop + 8 toward HillPathFoot (flat) > Config.SlimeKing.Spawn, radius 2; no ground = retry in 10 s; defeat = Fx KingDefeat { Key, Kind, Pos, Contributors (numbers) } to all + SlimeKingDefeat + Defeated signal; time up / lost model = RemoveEvent(fade, leaving) + SlimeKingLeave; GameState SlimeKingActive / EndsAt / NextAt. BigSlime = Slime Prince; the finisher card is SlimeKing's only.",
+  "limitations": "MonsterService (SpawnEvent ground pick, kill payout, model borrow), PlayerService, ZoneService and AnnounceService are doubles; the client (boss chip, minimap icon) and the shrine placement are not here."
+}

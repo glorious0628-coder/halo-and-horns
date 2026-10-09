@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "config",
-      "check": "the King Slime gives the card",
+      "check": "the King Slime boss gives the card, the Slime Prince not",
       "pass": 1,
       "fail": 0
     },
@@ -93,7 +93,7 @@
     },
     {
       "group": "who gets a card",
-      "check": "a manual swing kill: one card (Id 1, BigSlime, 10 s)",
+      "check": "a manual swing kill: one card (Id 1, SlimeKing, 10 s)",
       "pass": 1,
       "fail": 0
     },
@@ -123,7 +123,13 @@
     },
     {
       "group": "who gets a card",
-      "check": "the first King Slime scroll (A23-12) comes with or without a card",
+      "check": "a manual Slime Prince kill: paid, no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets a card",
+      "check": "A23-12: the first 70% scroll stays the Slime Prince's (not the boss's)",
       "pass": 1,
       "fail": 0
     },
@@ -135,13 +141,7 @@
     },
     {
       "group": "who gets a card",
-      "check": "a golden King Slime: a card",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "who gets a card",
-      "check": "a personal King Slime: a card",
+      "check": "real rules: the 4-hit hunter is paid with a card, the 1-hit tapper neither",
       "pass": 1,
       "fail": 0
     },
@@ -159,7 +159,7 @@
     },
     {
       "group": "manual hits and the window",
-      "check": "a manual hit 20 s before the (auto) kill: no card",
+      "check": "a manual hit 130 s before the (auto) kill: no card",
       "pass": 1,
       "fail": 0
     },
@@ -171,7 +171,7 @@
     },
     {
       "group": "manual hits and the window",
-      "check": "a manual hit 10 s before the (auto) kill: a card",
+      "check": "a manual hit 100 s before the (auto) kill: a card",
       "pass": 1,
       "fail": 0
     },
@@ -339,7 +339,7 @@
     },
     {
       "group": "picks",
-      "check": "Picked signal (Help, BigSlime)",
+      "check": "Picked signal (Help, SlimeKing)",
       "pass": 1,
       "fail": 0
     },
@@ -732,9 +732,9 @@
   "staticChecks": 22,
   "staticFailures": [],
   "mutations": {
-    "total": 61,
-    "applied": 61,
-    "caught": 61,
+    "total": 62,
+    "applied": 62,
+    "caught": 62,
     "skipped": false,
     "results": [
       {
@@ -744,14 +744,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "manual hits and the window :: a manual hit 10 s before the (auto) kill: a card",
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
           "manual hits and the window :: manual c gets a card, auto-only d does not",
           "manual presses :: a manual Q kill: a card",
           "manual presses :: a manual Z kill: a card",
           "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
           "one card at a time :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 9
       },
       {
         "mutation": "auto hits marked manual",
@@ -761,13 +761,13 @@
         "crashed": false,
         "newFailingChecks": [
           "manual hits and the window :: (still paid, Manual = false)",
-          "manual hits and the window :: a manual hit 20 s before the (auto) kill: no card",
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: a manual hit 130 s before the (auto) kill: no card",
           "manual hits and the window :: a refused manual hit + an auto kill: no card",
           "manual hits and the window :: manual c gets a card, auto-only d does not",
-          "manual presses :: an auto Q kill: no card",
-          "manual presses :: an auto Z kill: no card"
+          "manual presses :: an auto Q kill: no card"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "Manual ignores the window",
@@ -777,9 +777,10 @@
         "crashed": false,
         "newFailingChecks": [
           "manual hits and the window :: (still paid, Manual = false)",
-          "manual hits and the window :: a manual hit 20 s before the (auto) kill: no card"
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: a manual hit 130 s before the (auto) kill: no card"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "the kill keeps the manual hits",
@@ -812,12 +813,10 @@
         "newFailingChecks": [
           "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
           "one card at a time :: group ran to the end without a Lua error",
-          "who gets a card :: a golden King Slime: a card",
-          "who gets a card :: a manual swing kill: one card (Id 1, BigSlime, 10 s)",
-          "who gets a card :: a personal King Slime: a card",
+          "who gets a card :: a manual swing kill: one card (Id 1, SlimeKing, 10 s)",
           "who gets a card :: the kill is paid as before, info.Manual = true"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 4
       },
       {
         "mutation": "an auto swing passes true",
@@ -864,10 +863,10 @@
           "manual presses :: a manual Z kill: a card",
           "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
           "one card at a time :: group ran to the end without a Lua error",
-          "who gets a card :: a golden King Slime: a card",
-          "who gets a card :: a manual swing kill: one card (Id 1, BigSlime, 10 s)"
+          "who gets a card :: a manual swing kill: one card (Id 1, SlimeKing, 10 s)",
+          "who gets a card :: the kill is paid as before, info.Manual = true"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 6
       },
       {
         "mutation": "Z always manual",
@@ -898,9 +897,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "who gets a card :: a manual Shard Slime kill: no card"
+          "who gets a card :: a manual Shard Slime kill: no card",
+          "who gets a card :: a manual Slime Prince kill: paid, no card"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "auto-only kills give a card",
@@ -909,14 +909,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "manual hits and the window :: a manual hit 20 s before the (auto) kill: no card",
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: a manual hit 130 s before the (auto) kill: no card",
           "manual hits and the window :: a refused manual hit + an auto kill: no card",
           "manual hits and the window :: manual c gets a card, auto-only d does not",
           "manual presses :: an auto Q kill: no card",
-          "manual presses :: an auto Z kill: no card",
-          "who gets a card :: an auto-combat-only kill: no card"
+          "manual presses :: an auto Z kill: no card"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "two cards at once",
@@ -1277,7 +1277,7 @@
         "crashed": false,
         "newFailingChecks": [
           "leaving :: group ran to the end without a Lua error",
-          "picks :: Picked signal (Help, BigSlime)",
+          "picks :: Picked signal (Help, SlimeKing)",
           "time :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 3
@@ -1507,16 +1507,33 @@
         "newFailingCount": 9
       },
       {
-        "mutation": "the slime gives a card too",
+        "mutation": "the Slime Prince gives a card too",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
           "config :: only the King Slime (no other monster)",
-          "who gets a card :: a manual Shard Slime kill: no card"
+          "config :: the King Slime boss gives the card, the Slime Prince not",
+          "who gets a card :: a manual Slime Prince kill: paid, no card"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the card on the Slime Prince instead",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the King Slime boss gives the card, the Slime Prince not",
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: manual c gets a card, auto-only d does not",
+          "manual presses :: a manual Q kill: a card",
+          "manual presses :: a manual Z kill: a card",
+          "one card at a time :: a second king kill while the card is open: no new card (both kills paid)"
+        ],
+        "newFailingCount": 11
       },
       {
         "mutation": "cap 50",
@@ -1540,7 +1557,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
+    "src/ReplicatedStorage/Shared/Config.luau": "30b04a70bcd7c91a0567e73c6eedfcfe27b321b12f4869f0d30cff68f72d4ce0",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
     "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
@@ -1553,10 +1570,10 @@
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
     "src/ServerScriptService/SkillService.luau": "4cf5a2e8efc95cb99cc3138db33135d6b49b5d6763cbca5a3ed880d621d16a48",
     "src/ServerScriptService/MonsterService.luau": "d683c80d45eecf71b3d9e6a213e3dc91dc6b34a940755196c705dfc962a17457",
-    "src/ServerScriptService/FinisherService.luau": "dce1ee8d01f64d6aa6731f2c4b46421aaf36f82d3ec4e0f615b1615d4bcabe2d",
+    "src/ServerScriptService/FinisherService.luau": "319b78a3298eb9f41113ff72d95c93cfbdea57a4a146751b7146fed1e58c3709",
     "src/ServerScriptService/ScoreBudget.luau": "74e102ea42f229668650f3a836e9a68f9d81a167868500852047f582c7d91e2f"
   },
-  "fixtureSHA256": "a25bcb43409e1ea8d26d01d6f5c3a4a66061d0ee69bbcdcabdd92e34b23a0830",
+  "fixtureSHA256": "b3ab1c3e6392d9b9cc70e8b3e9a24851dc3fea9e75d13400685a73ccb0025750",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

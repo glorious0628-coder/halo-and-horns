@@ -1,0 +1,259 @@
+-- slime_king_offline.luau : the King Slime boss (SlimeKingService, A23-84 / A23-85), offline. tools/test_slime_king.py
+-- puts the source bindings + dev2_kit.luau in front of this file. Only the engine and the neighbour services
+-- (MonsterService SpawnEvent / RemoveEvent, PlayerService, ZoneService, AnnounceService) are doubles; Config, Util and
+-- SlimeKingService run from the CURRENT sources.
+
+-- the kit's Vector3 double has no Unit
+local oldIndex = vmt.__index
+vmt.__index = function(v, key)
+	if key == "Unit" then
+		local m = math.sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z)
+		return vec(v.X / m, v.Y / m, v.Z / m)
+	end
+	return oldIndex(v, key)
+end
+
+local function near(a, b, eps)
+	return typeofDouble(a) == "Vector3" and typeofDouble(b) == "Vector3" and math.abs(a.X - b.X) < (eps or 1e-6)
+		and math.abs(a.Y - b.Y) < (eps or 1e-6) and math.abs(a.Z - b.Z) < (eps or 1e-6)
+end
+
+local function attrHolder(attrs)
+	return { Attrs = attrs or {}, GetAttribute = function(self, k) return self.Attrs[k] end }
+end
+
+-- a boss world. opts: Shrine (Vector3 KingSpawn on a Map descendant), Hill = { Top, Foot } (MeadowTerrainStore),
+-- EditConfig(config), SpawnFails (n next SpawnEvent calls return nil)
+local function bossWorld(opts)
+	opts = opts or {}
+	local w = newWorld({ EditConfig = opts.EditConfig })
+	local map = { Desc = {} }
+	if opts.Shrine then table.insert(map.Desc, attrHolder({ Other = 1 })); table.insert(map.Desc, attrHolder({ KingSpawn = opts.Shrine })) end
+	function map.GetDescendants(self) return self.Desc end
+	local store = nil
+	if opts.Hill then store = attrHolder({ HillTop = opts.Hill.Top, HillPathFoot = opts.Hill.Foot }) end
+	w.Services.ServerStorage = { FindFirstChild = function(_, n) return n == "MeadowTerrainStore" and store or nil end }
+
+	w.Spawns, w.Removes, w.Broadcasts, w.DefeatedFired = {}, {}, {}, {}
+	w.SpawnFails = opts.SpawnFails or 0
+	w.ReadyMap, w.ZoneOf = {}, {}
+	local registry = {
+		MonsterService = {
+			SpawnEvent = function(kind, o)
+				table.insert(w.Spawns, { Kind = kind, Opts = o })
+				if w.SpawnFails > 0 then w.SpawnFails -= 1; return nil end
+				local rec = { Kind = kind, Alive = true, HP = 2500, Event = true, Root = { Position = vec(1, 2, 3) } }
+				w.Rec = rec
+				return rec
+			end,
+			RemoveEvent = function(rec, fade, leaving)
+				table.insert(w.Removes, { Rec = rec, Fade = fade, Leaving = leaving })
+				rec.Alive = false
+				return true
+			end,
+		},
+		PlayerService = { IsReady = function(p) return w.ReadyMap[p] == true end },
+		ZoneService = { GetZoneId = function(p) return w.ZoneOf[p] end },
+		AnnounceService = { Broadcast = function(k, args) table.insert(w.Broadcasts, k) end },
+	}
+	w.Registry = registry
+
+	local env = w:Env()
+	env.workspace = { GetServerTimeNow = function() return w.Time end,
+		FindFirstChild = function(_, n) return n == "Map" and map or nil end }
+	env.task = table.clone(env.task)
+	env.task.wait = function() coroutine.yield() end
+	local mod = execute("SlimeKingService", SLIMEKING_SOURCE, env)
+	w.King = mod
+	mod.Defeated:Connect(function(kind, ids) table.insert(w.DefeatedFired, { Kind = kind, Ids = ids }) end)
+	mod.Init(registry)
+	mod.Start()
+	local job = table.remove(w.Spawned, 1)
+	if job then
+		w.Loop = coroutine.create(job[1])
+		assert(coroutine.resume(w.Loop)) -- runs to its first wait
+	end
+	-- one tick after `seconds` more
+	function w:Tick(seconds)
+		self.Time += seconds or 0.5
+		self.Clock += seconds or 0.5
+		if self.Loop then
+			local ok, err = coroutine.resume(self.Loop)
+			if not ok then error(err) end
+		end
+	end
+	function w:Hunter(id, zone, ready)
+		local p = self:NewPlayer(id)
+		self.ReadyMap[p] = ready ~= false
+		self.ZoneOf[p] = zone or "SlimeMeadow"
+		return p
+	end
+	function w:GS(k) return self.GameState:GetAttribute(k) end
+	return w
+end
+
+local function count(list, value)
+	local n = 0
+	for _, v in list do if v == value then n += 1 end end
+	return n
+end
+
+runGroup("config", function()
+	local w = newWorld()
+	local C = w.Config
+	local def = C.MonsterTypes.SlimeKing
+	check(type(def) == "table", "MonsterTypes.SlimeKing exists")
+	check(def.Name == "King Slime" and def.Boss == true and def.Count == 0 and def.Zone == "SlimeMeadow",
+		"King Slime: a meadow boss outside the regular pool", show(def))
+	check(def.ModelFrom == "BigSlime" and def.Shape == "Slime", "borrows the Slime Prince model until its own", show(def.ModelFrom))
+	check(table.find(C.MonsterTypeOrder, "SlimeKing") ~= nil, "in MonsterTypeOrder")
+	check(C.MonsterTypes.BigSlime.Name == "Slime Prince" and C.MonsterTypes.BigSlime.Short == "Slime Prince",
+		"the old King Slime (BigSlime) is now the Slime Prince", show(C.MonsterTypes.BigSlime.Name))
+	check(C.MonsterTypes.BigSlime.Count == 4 and C.MonsterTypes.BigSlime.HP == 40, "the Slime Prince's numbers are unchanged")
+	local kinds = {}
+	for k in C.Finisher.Kinds do table.insert(kinds, k) end
+	check(#kinds == 1 and kinds[1] == "SlimeKing", "the finisher card is the King Slime's only", show(kinds))
+	check(type(C.Loot.Tables.SlimeKing) == "table" and #C.Loot.Tables.SlimeKing > 0,
+		"the King Slime has a drop table")
+	local A = C.Announce
+	for _, suffix in { "Appear", "Defeat", "Leave" } do
+		local k = "SlimeKing" .. suffix
+		check(type(A.Text[k]) == "string" and type(A.Text[k .. "En"]) == "string" and type(A.Events[k]) == "table",
+			"announce line + event style: " .. k)
+		local t = string.lower((A.Text[k] or "") .. " " .. (A.Text[k .. "En"] or ""))
+		check(not string.find(t, "mom", 1, true) and not string.find(t, "mother", 1, true) and not string.find(t, "wife", 1, true),
+			"A23-85 no mom line: " .. k, t)
+	end
+	check(string.find(A.Text.SlimeKingAppear, "Who's bothering my kids?!", 1, true) ~= nil, "appear line = the dad line")
+	check(A.Events.SlimeKingAppear.Toast == true and A.Events.SlimeKingLeave.Toast ~= true, "toast only when it appears")
+	check(C.Barks.BubbleFamily.SlimeKing == "Slime" and type(C.Barks.Lines.SlimeKing) == "table", "slime bubbles + dad lines")
+	check(C.Audio.SoftKinds.SlimeKing == true, "soft hit sound")
+	local K = C.SlimeKing
+	check(K.Enabled == true and K.Kind == "SlimeKing" and K.FirstDelay == 180 and K.Interval == 480 and K.Lifetime == 300,
+		"schedule 3 min / every 8 min / stays 5 min", show(K))
+	-- Net defaults + Main lists
+	check(string.find(NET_SOURCE, "SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0", 1, true) ~= nil,
+		"Net GameState defaults")
+	local init = string.match(MAIN_SOURCE, "local INIT_ORDER = (%b{})")
+	local start = string.match(MAIN_SOURCE, "local START_ORDER = (%b{})")
+	check(init and string.find(init, "\"SlimeKingService\"", 1, true) ~= nil, "Main INIT_ORDER has it")
+	check(start and string.find(start, "\"SlimeKingService\"", 1, true) ~= nil
+		and string.find(start, "\"SlimeKingService\"", 1, true) < string.find(start, "\"PlayerService\"", 1, true),
+		"Main START_ORDER has it before PlayerService")
+	check(string.find(MAIN_SOURCE, "S.SlimeKingService.DebugSpawn()", 1, true) ~= nil, "Studio DebugCommand SlimeKing")
+end)
+
+runGroup("schedule", function()
+	local w = bossWorld({ Shrine = vec(500, 20, -100) })
+	local t0 = w.Time
+	check(w:GS("SlimeKingNextAt") == t0 + 180 and w:GS("SlimeKingActive") == false and w:GS("SlimeKingEndsAt") == 0,
+		"start: next in 180 s, none here", show(w:GS("SlimeKingNextAt")))
+	w:Hunter(1, "SlimeMeadow")
+	w:Tick(179)
+	check(#w.Spawns == 0, "nothing before the first slot")
+	w:Tick(1)
+	check(#w.Spawns == 1 and w.Spawns[1].Kind == "SlimeKing", "appears at the slot with a hunter in the meadow", show(#w.Spawns))
+	check(near(w.Spawns[1].Opts.Near, vec(500, 20, -100)) and w.Spawns[1].Opts.Radius == 2, "at the shrine's KingSpawn, radius 2")
+	check(w:GS("SlimeKingActive") == true and w:GS("SlimeKingEndsAt") == w.Time + 300, "Active, leaves in 300 s")
+	check(w:GS("SlimeKingNextAt") == w.Time + 480, "next slot 480 s from this appearance")
+	check(count(w.Broadcasts, "SlimeKingAppear") == 1, "Appear line once")
+	check(w.King.IsActive() == true, "IsActive")
+	w:Tick(10)
+	check(#w.Spawns == 1, "only one at a time")
+end)
+
+runGroup("waits for a hunter", function()
+	local w = bossWorld({ Shrine = vec(0, 0, 0) })
+	w:Hunter(1, "GoblinWoods")
+	w:Hunter(2, "SlimeMeadow", false)
+	w:Tick(200)
+	check(#w.Spawns == 0, "no spawn: nobody ready in the meadow")
+	check(w:GS("SlimeKingNextAt") < w.Time and w:GS("SlimeKingNextAt") > 0, "due slot kept in the past (waiting)")
+	w.ReadyMap[w.PlayerList[2]] = true
+	w:Tick(0.5)
+	check(#w.Spawns == 1, "the first ready hunter in the meadow brings it")
+end)
+
+runGroup("spot fallbacks", function()
+	local w = bossWorld({ Hill = { Top = vec(430, 14.6, -170), Foot = vec(430, 5, -150) } })
+	w:Hunter(1)
+	w:Tick(180)
+	check(#w.Spawns == 1 and near(w.Spawns[1].Opts.Near, vec(430, 14.6, -162), 1e-4),
+		"no shrine: hill top moved 8 studs toward the path foot (flat)", show(w.Spawns[1] and w.Spawns[1].Opts.Near))
+	local w2 = bossWorld({})
+	w2:Hunter(1)
+	w2:Tick(180)
+	check(#w2.Spawns == 1 and near(w2.Spawns[1].Opts.Near, w2.Config.SlimeKing.Spawn), "neither: Config.SlimeKing.Spawn")
+	local w3 = bossWorld({ Shrine = vec(1, 1, 1), Hill = { Top = vec(430, 14.6, -170), Foot = vec(430, 5, -150) } })
+	w3:Hunter(1)
+	w3:Tick(180)
+	check(near(w3.Spawns[1].Opts.Near, vec(1, 1, 1)), "the shrine wins over the hill")
+end)
+
+runGroup("defeat", function()
+	local w = bossWorld({ Shrine = vec(0, 0, 0) })
+	w:Hunter(1)
+	w:Tick(180)
+	local rec = w.Rec
+	rec.Alive, rec.HP, rec.PaidUserIds = false, 0, { 11, 12, "x" }
+	w:Tick(0.5)
+	check(#w.Removes == 0, "a kill is not removed again")
+	local fx = nil
+	for _, f in w.Fx do if f.Kind == "KingDefeat" then fx = f end end
+	check(fx ~= nil and fx.Player == nil and fx.Data.Key == "SlimeKing" and fx.Data.Kind == "SlimeKing",
+		"Fx KingDefeat to everyone", show(fx))
+	check(fx and #fx.Data.Contributors == 2 and fx.Data.Contributors[1] == 11 and near(fx.Data.Pos, vec(1, 2, 3)),
+		"Fx carries the paid ids (numbers only) and the spot")
+	check(#w.DefeatedFired == 1 and w.DefeatedFired[1].Kind == "SlimeKing" and #w.DefeatedFired[1].Ids == 2, "Defeated signal")
+	check(count(w.Broadcasts, "SlimeKingDefeat") == 1 and count(w.Broadcasts, "SlimeKingLeave") == 0, "Defeat line, not Leave")
+	check(w:GS("SlimeKingActive") == false and w:GS("SlimeKingEndsAt") == 0, "Active off")
+	check(w.King.IsActive() == false, "IsActive false")
+end)
+
+runGroup("time up / lost", function()
+	local w = bossWorld({ Shrine = vec(0, 0, 0) })
+	w:Hunter(1)
+	w:Tick(180)
+	local rec = w.Rec
+	w:Tick(299)
+	check(#w.Removes == 0, "still here at 299 s")
+	w:Tick(1)
+	check(#w.Removes == 1 and w.Removes[1].Rec == rec and w.Removes[1].Fade == true and w.Removes[1].Leaving == true,
+		"time up: goes home (fade, leaving)")
+	check(count(w.Broadcasts, "SlimeKingLeave") == 1 and count(w.Broadcasts, "SlimeKingDefeat") == 0, "Leave line")
+	check(#w.DefeatedFired == 0, "no Defeated")
+	for _, f in w.Fx do check(f.Kind ~= "KingDefeat", "no defeat Fx on leave") end
+	-- next slot still 480 s after the appearance
+	w:Tick(180)
+	check(#w.Spawns == 2, "the next slot comes 480 s after the last appearance", show(#w.Spawns))
+	-- a lost model (fell out): HP kept
+	w.Rec.Alive = false
+	w:Tick(0.5)
+	check(count(w.Broadcasts, "SlimeKingLeave") == 2 and #w.DefeatedFired == 0, "a lost model is a Leave, not a defeat")
+end)
+
+runGroup("retry / off / debug", function()
+	local w = bossWorld({ Shrine = vec(0, 0, 0), SpawnFails = 1 })
+	w:Hunter(1)
+	w:Tick(180)
+	check(#w.Spawns == 1 and w:GS("SlimeKingActive") == false, "no ground: nothing appears")
+	check(w:GS("SlimeKingNextAt") == w.Time + 10, "retry in 10 s", show(w:GS("SlimeKingNextAt") - w.Time))
+	check(count(w.Broadcasts, "SlimeKingAppear") == 0, "no Appear line without a boss")
+	w:Tick(10)
+	check(#w.Spawns == 2 and w:GS("SlimeKingActive") == true, "the retry spawns it")
+
+	local off = bossWorld({ EditConfig = function(c) c.SlimeKing.Enabled = false end })
+	off:Hunter(1)
+	off:Tick(2000)
+	check(#off.Spawns == 0 and off:GS("SlimeKingNextAt") == 0, "Enabled = false: never, NextAt 0")
+
+	local d = bossWorld({ Shrine = vec(0, 0, 0) })
+	check(d.King.DebugSpawn() == "spawned" and #d.Spawns == 1, "DebugSpawn now (no hunter needed)")
+	check(d.King.DebugSpawn() == "already here" and #d.Spawns == 1, "DebugSpawn twice: already here")
+	d:Hunter(1)
+	d:Tick(180)
+	check(#d.Spawns == 1, "a slot while one is here is skipped")
+	check(d:GS("SlimeKingNextAt") > d.Time, "NextAt moved forward past the skipped slot", show(d:GS("SlimeKingNextAt") - d.Time))
+end)
+
+finish()

@@ -16,6 +16,7 @@ local INIT_ORDER = {
 	"AttendanceService", -- 게임성 개발 3: A23-77
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
 	"ScoreBudget", "FinisherService", -- 게임성 개발 2: the King Slime finisher card + the P9 daily score cap
+	"SlimeKingService", -- 게임성 개발 2: the King Slime boss of the meadow
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -28,7 +29,7 @@ local START_ORDER = {
 	"SkillService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
-	"ScoreBudget", "FinisherService", -- 게임성 개발 2 (before PlayerService too)
+	"ScoreBudget", "FinisherService", "SlimeKingService", -- 게임성 개발 2 (before PlayerService too)
 	"PlayerService",
 }
 
@@ -63,7 +64,7 @@ end
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Level", 20)
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
---   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill)
+--   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill); SlimeKing (the boss now)
 --   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
 --   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1).
 if game:GetService("RunService"):IsStudio() then
@@ -144,6 +145,8 @@ if game:GetService("RunService"):IsStudio() then
 			return S.AttendanceService.DebugNextDay(player)
 		elseif key == "Goose" then
 			S.GooseService.DebugStart()
+		elseif key == "SlimeKing" then -- Studio test aid: the King Slime boss appears now (SlimeKingService)
+			return S.SlimeKingService.DebugSpawn()
 		elseif key == "PumpkinKing" or key == "GhostKing" then -- Studio test aid: that Halloween miniboss appears now
 			return S.HalloweenService.DebugSpawn(key)
 		elseif key == "Faction" then

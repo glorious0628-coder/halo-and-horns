@@ -985,6 +985,7 @@ runGroup("rollkill", function()
 	-- every contributor gets an own roll (MonsterService fires once per contributor)
 	local p2, d2 = f:Join(f.UserId + 100000)
 	local n = #L.Tables.Slime + 1
+	local jellyBefore = f:Count("Jelly") -- the every-kind loop above may have paid Jelly (King Slime)
 	local script = {}
 	for i = 1, n do script[i] = 0 end
 	for i = 1, n do script[n + i] = 0.999999 end
@@ -992,8 +993,8 @@ runGroup("rollkill", function()
 	f:Kill("Slime")
 	f:Kill("Slime", nil, p2)
 	check(f.Draws == 2 * n and #f.Script == 0, "two contributors = two independent rolls", f.Draws)
-	check(f:Count("Jelly") == 1 and (d2.Items.Jelly or 0) == 0, "contributor rolls are independent (own result each)",
-		show({ f:Count("Jelly"), d2.Items.Jelly }))
+	check(f:Count("Jelly") - jellyBefore == 1 and (d2.Items.Jelly or 0) == 0, "contributor rolls are independent (own result each)",
+		show({ f:Count("Jelly") - jellyBefore, d2.Items.Jelly }))
 	f.Script = {}
 
 	-- unknown / malformed kinds give nothing

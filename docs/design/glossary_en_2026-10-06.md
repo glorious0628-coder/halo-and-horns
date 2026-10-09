@@ -31,7 +31,7 @@
 | 해골 유적 | Skeleton Ruins | |
 | 빛의 성채 / 뿔 소굴 | Halo Citadel / Horns Den | |
 | 호박밭 | Pumpkin Patch | 핼러윈 |
-| 슬라임 / 왕 슬라임 / 아기 슬라임 | Slime / King Slime / Baby Slime | |
+| 슬라임 / 왕 슬라임 / 아기 슬라임 | Slime / King Slime / Baby Slime | A23-84 (2026-10-08): `BigSlime` = **Slime Prince**(첫째), 새 보스 `SlimeKing` = **King Slime**(아빠) |
 | 호박 슬라임 / 꼬마 유령 / 박쥐 고블린 / 호박 대왕 | Pumpkin Slime / Little Ghost / Bat Goblin / Pumpkin King | |
 | 고블린 / 고블린 우두머리 | Goblin / Goblin Brute | |
 | 해골 병사 / 해골 기사 | Skeleton / Skeleton Knight | |

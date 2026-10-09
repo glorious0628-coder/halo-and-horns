@@ -209,9 +209,9 @@ local function onPick(player, id, option, ...)
 	finish(player, card, option)
 end
 
--- Studio test aid (Main.server DebugCommand "Finisher"): a card without a kill
+-- Studio test aid (Main.server DebugCommand "Finisher"): a card without a kill (the King Slime's)
 function FinisherService.DebugOffer(player)
-	return offer(player, "BigSlime")
+	return offer(player, F.Kinds.SlimeKing and "SlimeKing" or next(F.Kinds) or "SlimeKing")
 end
 
 function FinisherService.Init(services)

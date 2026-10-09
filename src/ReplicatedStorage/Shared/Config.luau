@@ -1639,7 +1639,7 @@ Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDi
 
 -- seasonal kinds sit right after the base kind of their zone (drop table / UI order); they spawn only while their
 -- season is on (Config.MonsterActive / Config.EffectiveMonsterCounts)
-Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", "Goblin", "BatGoblin", "GoblinBrute",
+Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "SlimeKing", "PumpkinKing", "Goblin", "BatGoblin", "GoblinBrute",
 	"GhostMinion", "LittleGhost", "GhostKing", "Skeleton", "SkeletonKnight" }
 -- Name = full name (nametag, lore); Short = short name for quest / HUD lines (optional: use `def.Short or def.Name`)
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
@@ -1647,7 +1647,9 @@ Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", 
 -- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
 Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
-	BigSlime = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
+	-- A23-84 (user 2026-10-08): the slime family - the green Shard Slime is the youngest, the Slime Prince (this id, the
+	-- old "King Slime": its quests, the first 70% scroll and the dailies stay) the eldest, the King Slime the dad
+	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
 	Goblin = { Name = "Shard Thief Goblin", Short = "Goblin", Zone = "GoblinWoods", Count = 10, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
 	GoblinBrute = { Name = "Goblin Brute", Short = "Goblin Brute", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
 	Skeleton = { Name = "Old Kingdom Skeleton", Short = "Skeleton", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
@@ -1668,6 +1670,14 @@ Config.MonsterTypes = {
 		HP = 40, Damage = 3, XP = 13, Gold = 7, Speed = 12, Shape = "Humanoid", Scale = 0.6, Color = Color3.fromRGB(190, 220, 255), Float = 1.2 },
 	LittleGhost = { Name = "Little Ghost", Short = "Little Ghost", Zone = "HauntedHollow", Count = 4, Season = "Halloween", HP = 70, Damage = 5,
 		XP = 24, Gold = 14, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
+	-- the King Slime (A23-84 the slime family's dad; docs/design/king_slime_split_2026-10-08.md §3, 검수 OK 2026-10-08):
+	-- a boss of the meadow (SlimeKingService: one on the server, every 8 min at the King Slime Hill shrine, 5 min stay),
+	-- never in the regular pool. Its own model comes later (image gen 2 -> Tripo): until then the Slime Prince's crowned
+	-- cube x Scale (2.5 = the Pumpkin King's body: 3.0 put the body past the attack ring, test_monster_spacing). HP 2500 = about 4 minutes for one Lv 5-8 hunter with a tier 1-2 weapon (~15 DPS x 0.75 uptime),
+	-- about 75 s for three (proposed, tune after play). The finisher card is its (Config.Finisher.Kinds)
+	SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true,
+		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime",
+		HP = 2500, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 2.5, Color = Color3.fromRGB(55, 120, 225) },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
 	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
 	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per
@@ -1716,7 +1726,7 @@ Config.Barks = {
 	-- family; a kind not listed uses its Config.QuestKind's family; BubbleArt = family -> the family's base monster key),
 	-- each only while its Id is uploaded (not "") and it is round (no Slice), then the round code bubble - never the
 	-- shared 9-slice BarkBubble (user "말풍선 가로로 길쭉한 거 말고": drawn small its body stays ~2.4 : 1).
-	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
+	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", SlimeKing = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
 		Goblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonKnight = "Skeleton",
 		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost" },
 	BubbleArt = { Slime = "BarkBubbleSlime", Pumpkin = "BarkBubblePumpkinSlime", Goblin = "BarkBubbleGoblin",
@@ -1740,7 +1750,13 @@ Config.Barks = {
 			Low = { "Squelch…", "Too squishy!" },
 			Idle = { "Thump thump~", "Hehe~" },
 		},
-		BigSlime = { -- King Slime: big and royal
+		SlimeKing = { -- A23-84 the slime family's dad (A23-85: he raises the two kids alone): scary but playful
+			Spot = { "MY KIDS?!", "Dad's here!" },
+			Hit = { "OOF! BLUB!", "Daddy BOING!" },
+			Low = { "Dad nap…", "Ugh… kids…" },
+			Idle = { "Big hug~", "Hmm. Kids?" },
+		},
+		BigSlime = { -- Slime Prince (A23-84 the eldest; the old King Slime): big and royal
 			Spot = { "BLOOP!", "Bow! Blub!" },
 			Hit = { "SPLOOSH!", "Royal BOING!" },
 			Low = { "Royal nap…", "Bloop… zzz" },
@@ -3315,7 +3331,7 @@ Config.RateLimits = {
 -- network, server only) = no gift, no points. Points: my own side's score +Points (inside Config.ScoreBudget) or -Points
 -- off side (A23-58, never below 0); Neutral / no side: the gift only. One open card a player at a time.
 Config.Finisher = {
-	Kinds = { BigSlime = true },
+	Kinds = { SlimeKing = true }, -- the King Slime boss only (검수 2026-10-08: the Slime Prince has no card)
 	Seconds = 10,
 	Grace = 1,
 	Points = 1,
@@ -3340,6 +3356,13 @@ Config.Finisher = {
 Config.ScoreBudget = { PerDay = 5 }
 Config.Data.Defaults.ScoreBudget = { Day = 0, N = 0 }
 Config.RateLimits.FinisherPick = 0.3
+-- the King Slime boss (SlimeKingService; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08).
+-- One on the server: the first slot FirstDelay s after the start, then every Interval s from its last appearance (a
+-- due slot waits for a ready player in the meadow); it stays Lifetime s. Spot: the shrine's KingSpawn attribute (under
+-- workspace.Map), else ServerStorage.MeadowTerrainStore HillTop moved PathStep studs toward HillPathFoot, else Spawn
+-- (the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees). Radius = studs around the spot for ground.
+Config.SlimeKing = { Enabled = true, Kind = "SlimeKing", Key = "SlimeKing", FirstDelay = 180, Interval = 480,
+	Lifetime = 300, Radius = 2, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), Tick = 0.5, RetryDelay = 10 }
 
 ----------------------------------------------------------------- beta metrics (BB38, TelemetryService)
 -- docs/design/beta_basics_2026-10-05.md BB38 + 검수 2026-10-07 (economy, friends) + emergent_play_watch §2. Roblox
@@ -3806,6 +3829,13 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.01 }, { Item = "Move30", P = 0.003 }, { Item = "Move10", P = 0.0007 },
 			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
 		},
+		-- the King Slime boss (each paid contributor rolls; proposed, tune after play): more of the Prince's things
+		SlimeKing = {
+			{ Item = "SlimeCore", P = 1, N = 2 }, { Item = "Jelly", P = 1, N = 4 },
+			{ Item = "Enh70", P = 0.25 }, { Item = "Enh30", P = 0.06 }, { Item = "Enh10", P = 0.015 },
+			{ Item = "Move70", P = 0.08 }, { Item = "Move30", P = 0.02 }, { Item = "Move10", P = 0.005 },
+			{ Potion = "HP", P = 0.3 }, { Potion = "MP", P = 0.3 },
+		},
 		Goblin = {
 			{ Item = "GoblinTooth", P = 0.4 },
 			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
@@ -3964,6 +3994,13 @@ Config.Announce = {
 		GhostKingDefeatEn = "The Ghost King dropped a shower of candy!",
 		GhostKingLeave = "The Ghost King faded away. See you next time!",
 		GhostKingLeaveEn = "The Ghost King faded away. See you next time!",
+		-- the King Slime boss (A23-84 the slime family's dad, A23-85 he raises the two kids alone; scary but playful)
+		SlimeKingAppear = "King Slime: \"Who's bothering my kids?!\" Go to King Slime Hill!",
+		SlimeKingAppearEn = "King Slime: \"Who's bothering my kids?!\" Go to King Slime Hill!",
+		SlimeKingDefeat = "King Slime: \"Okay, okay! Dad needs a nap!\"",
+		SlimeKingDefeatEn = "King Slime: \"Okay, okay! Dad needs a nap!\"",
+		SlimeKingLeave = "King Slime: \"Hmph! Bedtime, kids!\"",
+		SlimeKingLeaveEn = "King Slime: \"Hmph! Bedtime, kids!\"",
 		NameHidden = "Announcements and rankings now show your side's name instead of your name.",
 		NameShown = "Announcements and rankings now show your name.",
 		MenuShow = "My name in announcements and rankings: shown",
@@ -3991,6 +4028,10 @@ Config.Announce = {
 		GhostKingAppear = { Color = Color3.fromRGB(170, 160, 255), Toast = true, Icon = "IconMonGhostKing" },
 		GhostKingDefeat = { Color = Color3.fromRGB(170, 160, 255), Toast = true, Icon = "IconMonGhostKing" },
 		GhostKingLeave = { Color = Color3.fromRGB(200, 195, 255), Icon = "IconMonGhostKing" },
+		-- the King Slime (every 8 min: a toast only when it appears). Icon: the Slime Prince's head until the King's art
+		SlimeKingAppear = { Color = Color3.fromRGB(90, 160, 255), Toast = true, Icon = "IconMonBigSlime" },
+		SlimeKingDefeat = { Color = Color3.fromRGB(90, 160, 255), Icon = "IconMonBigSlime" },
+		SlimeKingLeave = { Color = Color3.fromRGB(150, 195, 255), Icon = "IconMonBigSlime" },
 	},
 }
 
@@ -4194,7 +4235,7 @@ Config.Audio = {
 	PunchSpeed = 1.3, -- bare hands: a short swish (volume x0.6)
 	NeutralSpeed = { Warrior = 0.85, Mage = 0.9 },
 	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else and players = heavy
-	SoftKinds = { Slime = true, BigSlime = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
+	SoftKinds = { Slime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
 	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },

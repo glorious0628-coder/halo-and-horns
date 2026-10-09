@@ -9,11 +9,15 @@
 local C0F = execute("Config", CONFIG_SOURCE, nativeEnv())
 local FIN = C0F.Finisher
 
--- the world: o.Z = Z skills on; o.Edit(cfg) before the services see Config
+-- the world: o.Z = Z skills on; o.Edit(cfg) before the services see Config; o.RealRules = keep the King Slime's A23-27
+-- reward rules (3 own hits, 0.5% of MaxHP): the other groups kill one-hit records, so they turn them off
 local function finWorld(o)
 	o = o or {}
 	local w = bareWorld({})
 	local cfg = w.Config
+	if not o.RealRules then
+		cfg.MonsterTypes.SlimeKing.RewardMinHits, cfg.MonsterTypes.SlimeKing.RewardMinDamageFrac = 0, 0
+	end
 	local K = cfg.Skills
 	K.ZEnabled = o.Z == true
 	K.Unlock = { Q = 1, Z = 5, X = 8 }
@@ -63,11 +67,11 @@ local function finWorld(o)
 	fin.Picked:Connect(function(p, pick, kind) table.insert(w.PickedLog, { P = p, Pick = pick, Kind = kind }) end)
 
 	w.Serial = 0
-	-- a King Slime (or o2.Kind) record dz studs in front of the origin, HP 1 (one hit kills), in the meadow
+	-- a King Slime boss (or o2.Kind) record dz studs in front of the origin, HP 1 (one hit kills), in the meadow
 	function w:King(o2)
 		o2 = o2 or {}
 		self.Serial += 1
-		local kind = o2.Kind or "BigSlime"
+		local kind = o2.Kind or "SlimeKing"
 		local rec = self:Monster(kind, o2.Dz or 3, o2.Dx or 0, o2.HP or 1)
 		rec.Id, rec.MaxHP = self.Serial, cfg.MonsterTypes[kind].HP
 		rec.Home, rec.Owner, rec.Golden = rec.Root.Position, o2.Owner, o2.Golden == true
@@ -144,7 +148,7 @@ end
 
 ------------------------------------------------------------------ config
 runGroup("config", function()
-	check(FIN.Kinds.BigSlime == true, "the King Slime gives the card")
+	check(FIN.Kinds.SlimeKing == true and FIN.Kinds.BigSlime == nil, "the King Slime boss gives the card, the Slime Prince not")
 	local kinds = 0
 	for _ in FIN.Kinds do kinds += 1 end
 	check(kinds == 1, "only the King Slime (no other monster)", kinds)
@@ -179,10 +183,10 @@ runGroup("who gets a card", function()
 	w:Swing(p)
 	check(king.Alive == false, "(a manual swing killed the king)")
 	local cards = w:Cards(p)
-	check(#cards == 1 and cards[1].Kind == "BigSlime" and cards[1].Seconds == FIN.Seconds and cards[1].Id == 1,
-		"a manual swing kill: one card (Id 1, BigSlime, 10 s)", show(cards[1]))
-	check(#w.Kills == 1 and w.Kills[1].P == p and w.Kills[1].Info.Manual == true and w.Kills[1].Info.Kind == "BigSlime"
-		and w.Kills[1].Info.XP == C0F.MonsterTypes.BigSlime.XP, "the kill is paid as before, info.Manual = true",
+	check(#cards == 1 and cards[1].Kind == "SlimeKing" and cards[1].Seconds == FIN.Seconds and cards[1].Id == 1,
+		"a manual swing kill: one card (Id 1, SlimeKing, 10 s)", show(cards[1]))
+	check(#w.Kills == 1 and w.Kills[1].P == p and w.Kills[1].Info.Manual == true and w.Kills[1].Info.Kind == "SlimeKing"
+		and w.Kills[1].Info.XP == C0F.MonsterTypes.SlimeKing.XP, "the kill is paid as before, info.Manual = true",
 		show({ #w.Kills, w.Kills[1] and w.Kills[1].Info.Manual }))
 	-- auto combat only: no card, the kill still paid
 	local a = finWorld()
@@ -198,46 +202,51 @@ runGroup("who gets a card", function()
 	check(#a:Cards(ap) == 0, "an auto-combat-only kill: no card", #a:Cards(ap))
 	check(#a.Kills == 1 and a.Kills[1].Info.Manual == false, "the auto kill is still paid (Manual = false)",
 		show({ #a.Kills, a.Kills[1] and a.Kills[1].Info.Manual }))
-	-- A23-12: the first King Slime's 70% scroll comes either way (card or not)
-	check((w.Data[p].LootFlags or {}).FirstScroll == true and (a.Data[ap].LootFlags or {}).FirstScroll == true,
-		"the first King Slime scroll (A23-12) comes with or without a card")
+	-- the Slime Prince (the old King Slime, BigSlime): no card, and A23-12's first 70% scroll is still its
+	local pr = finWorld()
+	local prp = pr:Hero(106)
+	local prince = pr:King({ Kind = "BigSlime" })
+	pr:Swing(prp)
+	check(prince.Alive == false and #pr:Cards(prp) == 0 and #pr.Kills == 1, "a manual Slime Prince kill: paid, no card",
+		show({ #pr:Cards(prp), #pr.Kills }))
+	check((pr.Data[prp].LootFlags or {}).FirstScroll == true and (w.Data[p].LootFlags or {}).FirstScroll ~= true,
+		"A23-12: the first 70% scroll stays the Slime Prince's (not the boss's)")
 	-- a Shard Slime (not the king): no card
 	local s = finWorld()
 	local sp = s:Hero(103)
 	local slime = s:King({ Kind = "Slime" })
 	s:Swing(sp)
 	check(slime.Alive == false and #s:Cards(sp) == 0, "a manual Shard Slime kill: no card", #s:Cards(sp))
-	-- a golden king and a personal king give a card too
-	local g = finWorld()
-	local gp = g:Hero(104)
-	g:King({ Golden = true })
-	g:Swing(gp)
-	check(#g:Cards(gp) == 1, "a golden King Slime: a card", #g:Cards(gp))
-	local pw = finWorld()
-	local pp = pw:Hero(105)
-	pw:King({ Owner = pp })
-	pw:Swing(pp)
-	check(#pw:Cards(pp) == 1, "a personal King Slime: a card", #pw:Cards(pp))
+	-- the boss's own reward rules (A23-27) come first: a 1-hit manual helper is not paid and gets no card
+	local r = finWorld({ RealRules = true })
+	local tap = r:Hero(104)
+	local hunter = r:Hero(105)
+	local big = r:King({ HP = 20 })
+	r:Hit(big, tap, 1, true)
+	for _ = 1, 3 do r:Hit(big, hunter, 5, true) end
+	r:Hit(big, hunter, 5, true)
+	check(big.Alive == false and #r:Cards(hunter) == 1 and #r:Cards(tap) == 0 and #r.Kills == 1 and r.Kills[1].P == hunter,
+		"real rules: the 4-hit hunter is paid with a card, the 1-hit tapper neither", show({ #r:Cards(hunter), #r:Cards(tap), #r.Kills }))
 end)
 
 runGroup("manual hits and the window", function()
 	local w = finWorld()
 	local a = w:Hero(111)
 	local b = w:Hero(112)
-	-- a manual hit 20 s before an auto finish: outside the 15 s window -> no card
+	-- a manual hit 130 s before an auto finish: outside the King's 120 s window -> no card
 	local k1 = w:King({ HP = 3 })
 	w:Hit(k1, a, 1, true)
-	w:Advance(20)
+	w:Advance(130)
 	w:Hit(k1, a, 1, false)
 	w:Hit(k1, a, 5, false)
-	check(k1.Alive == false and #w:Cards(a) == 0, "a manual hit 20 s before the (auto) kill: no card", #w:Cards(a))
+	check(k1.Alive == false and #w:Cards(a) == 0, "a manual hit 130 s before the (auto) kill: no card", #w:Cards(a))
 	check(#w.Kills == 1 and w.Kills[1].Info.Manual == false, "(still paid, Manual = false)")
-	-- a manual hit 10 s before an auto finish: inside -> a card
+	-- a manual hit 100 s before an auto finish: inside -> a card
 	local k2 = w:King({ HP = 3 })
 	w:Hit(k2, a, 1, true)
-	w:Advance(10)
+	w:Advance(100)
 	w:Hit(k2, a, 5, false)
-	check(#w:Cards(a) == 1, "a manual hit 10 s before the (auto) kill: a card", #w:Cards(a))
+	check(#w:Cards(a) == 1, "a manual hit 100 s before the (auto) kill: a card", #w:Cards(a))
 	-- two hunters: a manual, b auto only -> only a's card; both paid
 	local w2 = finWorld()
 	local c = w2:Hero(113)
@@ -338,7 +347,7 @@ runGroup("picks", function()
 	check(w:SoundsFor(h, n0)[1] == "None", "the pick line is silent (never QuestDone; the client plays the pick)",
 		show(w:SoundsFor(h, n0)))
 	check(w:MetricsOf(h, m0) == "FinisherPick:Halo:Halo", "metric FinisherPick (Halo, my faction Halo)", w:MetricsOf(h, m0))
-	check(#w.PickedLog == 1 and w.PickedLog[1].Pick == "Help" and w.PickedLog[1].Kind == "BigSlime", "Picked signal (Help, BigSlime)")
+	check(#w.PickedLog == 1 and w.PickedLog[1].Pick == "Help" and w.PickedLog[1].Kind == "SlimeKing", "Picked signal (Help, SlimeKing)")
 	-- Halo + Tickle with Honor 5: 4 bank gold (source Finisher), Honor -1, the guide's off-side line
 	local h2 = w:Hero(142, { Faction = "Halo", Data = { Honor = 5 } })
 	local _, c2 = w:Offer(h2)

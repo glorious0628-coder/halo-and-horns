@@ -98,7 +98,7 @@ runGroup("glossary names", function()
 	for _, d in C.Travel.Destinations do
 		if d.Id ~= "Home" then check(d.Name == Z[d.Id].Name, "travel " .. d.Id .. " = the zone name", tostring(d.Name)) end
 	end
-	local mons = { Slime = "Slime", BigSlime = "King Slime", Goblin = "Goblin", GoblinBrute = "Goblin Brute",
+	local mons = { Slime = "Slime", BigSlime = "Slime Prince", SlimeKing = "King Slime", Goblin = "Goblin", GoblinBrute = "Goblin Brute",
 		Skeleton = "Skeleton", SkeletonKnight = "Skeleton Knight", PumpkinSlime = "Pumpkin Slime", LittleGhost = "Little Ghost",
 		BatGoblin = "Bat Goblin", PumpkinKing = "Pumpkin King" }
 	for id, name in mons do

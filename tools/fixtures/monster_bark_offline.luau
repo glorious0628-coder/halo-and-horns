@@ -148,9 +148,13 @@ check(type(B) == "table" and type(B.Check) == "function", "MonsterLabels exposes
 -- 1.8 : 1, never the 2.4 : 1 pill), and a text box with room for 2 lines at TextMin (one sound word, at most 2 lines)
 local parts = Config.UIArt.Parts
 local real = {} -- [key] = { Id, Size, TextRect } as uploaded
+-- A23-84: the King Slime boss (2026-10-09) has no bubble art of its own yet (image gen 2 -> image dev): it uses its
+-- family's slime bubble until then (checked below); the others each have their own
+local PENDING_ART = { SlimeKing = "BarkBubbleSlime" }
 local kindCount, badArt, tight = 0, {}, {}
 for kind in Config.MonsterTypes do
 	kindCount += 1
+	if PENDING_ART[kind] then continue end
 	local key = "BarkBubble" .. kind
 	local p = parts[key]
 	local r = type(p) == "table" and p.TextRect or nil
@@ -168,13 +172,13 @@ for kind in Config.MonsterTypes do
 		table.insert(badArt, kind)
 	end
 end
-check(kindCount == 12 and #badArt == 0, "all 12 BarkBubble<Kind> uploaded (Id, Size, TextRect, no Slice), drawn in their own round "
+check(kindCount == 13 and #badArt == 0, "all 12 BarkBubble<Kind> (+ the King Slime pending) uploaded (Id, Size, TextRect, no Slice), drawn in their own round "
 	.. "shape (ArtW wide, height from Size, no clamp, at most 1.8 : 1)", kindCount .. " " .. table.concat(badArt, ","))
 check(#tight == 0, "every uploaded bubble's TextRect fits 2 lines at TextMin and is at least 40 px wide", table.concat(tight, ","))
 local ownNow = {}
 for kind in Config.MonsterTypes do
 	local keys = B.ArtKeys(kind)
-	if keys[1] ~= "BarkBubble" .. kind or table.find(keys, "BarkBubble") then table.insert(ownNow, kind) end
+	if keys[1] ~= (PENDING_ART[kind] or ("BarkBubble" .. kind)) or table.find(keys, "BarkBubble") then table.insert(ownNow, kind) end
 end
 check(#ownNow == 0, "as uploaded: every monster kind draws its own bubble first, never the shared BarkBubble", table.concat(ownNow, ","))
 

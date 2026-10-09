@@ -273,7 +273,7 @@
     },
     {
       "group": "take and finish",
-      "check": "the quest list row: 'King Slime 0/2', Kind Job, no [Claim]",
+      "check": "the quest list row: 'Slime Prince 0/2' (A23-84), Kind Job, no [Claim]",
       "pass": 1,
       "fail": 0
     },
@@ -891,7 +891,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
+    "src/ReplicatedStorage/Shared/Config.luau": "30b04a70bcd7c91a0567e73c6eedfcfe27b321b12f4869f0d30cff68f72d4ce0",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
     "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
@@ -903,7 +903,7 @@
     "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
     "src/ServerScriptService/BoardService.luau": "d3d7e1da653b52a330cab1d88f70b2b72cc1e4fb1614b1051c6c3e258b3953cb"
   },
-  "fixtureSHA256": "9b9f69a182851a88f5c5fa2e5e683ef0011f0faa256b105ae9e3608448e0b3bc",
+  "fixtureSHA256": "485b0d3b7a728a26785404deff89e50585eed6fb7fba2c6b4bc5c24eab2d75d4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -60,7 +60,7 @@
 
 | # | 무엇 | 제안 |
 |---|---|---|
-| 1 | Config | `MonsterTypes.SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true, Shape = "Slime", Scale = 3.2, ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime", … }`. `MonsterTypeOrder`에서 BigSlime 다음에 넣어요 |
+| 1 | Config | `MonsterTypes.SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true, Shape = "Slime", Scale = 2.5 (§3-2), ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime", … }`. `MonsterTypeOrder`에서 BigSlime 다음에 넣어요 |
 | 2 | 체력·보상(제안, 구현 때 호박 대왕 계산 방식으로 다시) | 초원은 Lv1~10이고 무기는 1~2단계예요. 혼자면 약 4분, 셋이면 약 1분 20초가 되게 **HP 2500 안팎**이에요. 공격 6(왕자의 1.5배, 느림), XP 120 / Gold 60 (Lv8 아래는 한 레벨치까지, A23-27). 드롭 표는 `Loot.Tables.SlimeKing`(SlimeCore ×2, Jelly ×4, 70% 주문서는 왕자보다 높은 확률) |
 | 3 | 나오는 법 | **한 서버에 하나만** 있어요. 초원에 사람이 있으면 **8분마다** 나오고, 5분 머문 뒤 떠나요(제안). **자리는 §3-1이에요**(사용자 결정: 언덕 위 왕관 모양 돌 사당 앞 공터). `MonsterService.SpawnEvent`/`RemoveEvent`는 호박 대왕 것을 그대로 써요. 시계는 새 `SlimeKingService`가 맡거나 HalloweenService의 보스 시계를 시즌 없이 나눠 써요 |
 | 4 | 알림 | 나올 때 초원에 있는 사람에게 "The King Slime is on the hill!"을 보내요(서버 전체가 아니라 초원만). 잡으면 "The King Slime hopped home!"이에요. `GameState SlimeKingActive / SlimeKingNextAt / SlimeKingEndsAt`(호박 대왕과 같은 틀) |
@@ -85,6 +85,28 @@
 - 사당·왕관 돌은 몬스터가 들어가지 않는 단단한 장식이에요(CR-L14 목록에 사당 모델 이름 한 줄 추가).
 - 잡으면 그 자리에서 퐁 사라져요. 떠날 때(시간 끝)는 사당 쪽으로 뒷걸음질 없이 그 자리에서 흐려져요(호박 대왕과 같아요).
 - 검수 도구에 부탁해요: 사당을 놓을 때 `KingSpawn` 속성을 사당 모델(Model)에 Vector3 월드 좌표로 써 주세요. 이름이 정해지면 문서에 적을게요.
+
+### 3-2. 구현 계약 (개발 2, 2026-10-09) — 위 제안과 달라진 점 포함
+
+- 서버: `SlimeKingService.luau`(새), `Config.SlimeKing`, `Config.MonsterTypes.SlimeKing`, `Net` GameState 3개, `Main` 목록(PlayerService 앞), Studio 명령 `DebugCommand:Invoke("Player1", "SlimeKing")`.
+- 시계: 시작 180초 뒤 첫 자리 → 나온 때부터 480초마다. 자리가 왔는데 초원에 준비된 사람이 없으면 기다려요(NextAt이 과거 = 대기). 300초 머물러요. 바닥을 못 찾으면 10초 뒤 다시.
+- **크기 2.5**(제안 3.2 → 3.0 → 2.5): 3.0이면 몸 반지름 4.5라 공격 거리 5.5 안의 자리에 선 플레이어가 몸에 묻혀요(`test_monster_spacing` 실패). 호박 대왕과 같은 몸이고 Slime Prince(1.8)보다 커요.
+- 알림은 서버 전체 채팅 줄 + 나올 때만 토스트(호박 대왕 틀, `AnnounceService.Broadcast`). 제안 §3-4의 "초원만"은 쓰지 않았어요(다른 곳 사람도 오게).
+- 쓰러짐: `Fx "KingDefeat" { Key = "SlimeKing", Kind, Pos, Contributors }` 모두에게 + 마무리 카드(FinisherService) + `Defeated` 신호. 시간 끝·모델 잃음: 떠남(흐려짐, 터짐 없음), 보상 없음.
+- 새싹 보호: 보스 공통 규칙 그대로(Lv5 미만 또는 10분 미만은 안 때림, 시즌과 무관).
+- 측정 `SlimeKingDefeat`(§3-8)와 퀘스트(§3-9)는 아직 없어요.
+
+| 때 | 채팅 줄(`Config.Announce.Text`) | 말풍선(`Config.Barks.Lines.SlimeKing`) |
+|---|---|---|
+| 나올 때 | King Slime: "Who's bothering my kids?!" Go to King Slime Hill! (토스트) | Spot: "MY KIDS?!", "Dad's here!" |
+| 맞을 때 | — | Hit: "OOF! BLUB!", "Daddy BOING!" |
+| 체력 적을 때 | — | Low: "Dad nap…", "Ugh… kids…" |
+| 가만히 | — | Idle: "Big hug~", "Hmm. Kids?" |
+| 쓰러졌을 때 | King Slime: "Okay, okay! Dad needs a nap!" | — |
+| 시간이 다 돼 떠날 때 | King Slime: "Hmph! Bedtime, kids!" | — |
+
+- 가족(A23-84·A23-85): 아빠 King Slime이 혼자 첫째 Slime Prince·막내 Shard Slime을 키워요. 엄마 언급 없음, 가족 모양 설명·놀림 없음(시험이 "mom/mother/wife"가 없는지 봐요).
+- 시험: `py tools/test_slime_king.py`(74개 + 변이 27), `py tools/test_finisher.py`(120 + 62), `test_halloween`(보스 3종·드롭 목록 13/7로 기대값 갱신), `test_monster_spacing`.
 
 ## 4. 몫 나누기
 - **개발 2(서버):**
