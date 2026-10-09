@@ -189,6 +189,9 @@ local KIND = {
 	Kit_W_CampFence = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.2, Coll = "player" },
 	Kit_W_LogStool = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.1 },
 	Kit_W_Campfire = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0 },
+	-- the campfire from the picked concept HQ_Woods_Campfire_FB2 (stone ring + logs + a baked flame, 4.0 x 3.9 x 3.3): it is the
+	-- kit's campfire (batch E); the Roblox Fire / light on top stay woods_kit_place's CampfireTemp
+	Kit_W_Campfire_Fire = { Tris = 6000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0 },
 	Kit_W_Awning = { Tris = 3000, S = { 1.1, 1.1 }, Ground = GRASS, Tilt = 0.1, Coll = "player" },
 	Kit_W_Banner = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.1 },
 	Kit_W_LanternPost = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.1, Coll = "player" },
@@ -414,7 +417,7 @@ for i, c in CAMPS do
 		local p = c.Pos + Vector3.new(math.cos(a) * 6.2, 0, math.sin(a) * 6.2)
 		put("Kit_W_LogStool", p.X, p.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0.4, Yaw = yawToward(p, c.Pos) + rng:NextNumber(-12, 12), S = 1 })
 	end
-	put("Kit_W_Campfire", c.Pos.X, c.Pos.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0, Yaw = i * 40, S = 1, NoSpace = true, NoReserve = true })
+	put(kitModel("Kit_W_Campfire_Fire") and "Kit_W_Campfire_Fire" or "Kit_W_Campfire", c.Pos.X, c.Pos.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0, Yaw = i * 40, S = 1, NoSpace = true, NoReserve = true })
 	local aw = at(10, -9.5)
 	put("Kit_W_Awning", aw.X, aw.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0.3, Yaw = yawToward(aw, c.Pos), S = 1.1 })
 	for _, s in { 1, -1 } do
