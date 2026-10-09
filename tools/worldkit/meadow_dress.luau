@@ -1,4 +1,9 @@
 -- meadow_dress.luau (2026-10-08; user 10/08 "세계관 디자인 자체가 이상해, 너무 휑하지 않아?", SPEC A23-76)
+-- PIPELINE ORDER (검수 2026-10-09, 메인 반영): after ANY run of this tool (MODE "kit") run, in this order:
+--   1. tools/worldkit/meadow_bush_scale.luau   (bushes x1.6, kept off lawns / roads / other pieces)
+--   2. tools/worldkit/decor_collision.luau     (solid / player-only collision)
+--   3. tools/worldkit/decor_ground.luau        (re-ground on the terrain: py runner string "apply|Map.Decor.MeadowDress,Map.Decor.MeadowKit|all")
+-- a new dress run rebuilds MeadowDress from scratch, so steps 1-3 are lost until they are run again.
 -- Studio MCP execute_luau, MAIN place, Edit mode (검수 runs it, like tools/worldkit/woods_kit_place.luau).
 -- Dresses the Slime Meadow (Config LandMeadow x 210..650, z -240..240; +X east, -Z north) toward the concept
 -- art/review/concept/Concept_SlimeMeadow.jpg with the uploaded kit in ServerStorage.WorldKit3D (tools/build_kit_from_ids.py;
@@ -973,21 +978,32 @@ do -- Welcome Green: the view from the bridge opens between two big canopies; th
 	-- pass 2: (232, -15) lay inside the spawn keep-clear circle (r 16 round (230, 0)) and was never built
 	put("Kit_M_SignPost", 231, -18, { S = 1.0, Yaw = Vector2.new(210, 0), Coll = "none" })
 end
-do -- Mushroom fairy ring with stumps (main slime arena; closed ring, open centre, all walk-through)
+do -- Mushroom fairy ring with stumps (main slime arena; pass 4 검수 10/09: 4 big mushrooms x2.5..3.5, big stumps between, a
+	-- stone + bush ring outside with the road side (bearing 60..120 = south) left open; all walk-through at the ground)
 	local put = fixed("fairyRing")
 	local cx, cz = freeCentre(385, -64, 14) -- MeadowKit's W_Tree_A (393, -69) stands near the layout centre
-	for k = 0, 5 do
-		local x, z = at(cx, cz, k * 60, 11)
-		put("Kit_M_Mushrooms", x, z, { S = (k % 2 == 0) and 1.1 or 1.6 })
-		x, z = at(cx, cz, k * 60 + 30, 11.5)
-		put("Kit_M_Stump", x, z, { S = { 0.9, 1.3 } })
+	for k = 0, 3 do
+		local x, z = at(cx, cz, k * 90 + 20, 13)
+		put("Kit_M_Mushrooms", x, z, { S = { 2.5, 3.5 } })
+		x, z = at(cx, cz, k * 90 + 65, 13.5)
+		put("Kit_M_Stump", x, z, { S = { 1.7, 2.2 } })
 	end
-	for i, deg in { -135, -110, -50 } do
-		local x, z = at(cx, cz, deg, rng:NextNumber(15, 17))
+	for k = 0, 5 do
+		local deg = k * 60 + 10
+		if deg < 55 or deg > 125 then
+			local x, z = at(cx, cz, deg, rng:NextNumber(21, 23))
+			if k % 2 == 0 then
+				put("W_Boulder_B", x, z, { S = { 0.28, 0.38 } })
+			else
+				local lead = put("Kit_M_BushA", x, z, { S = { 2.2, 2.6 } })
+				if lead then grow(lead, 3, 1, "fairyRing", { Fixed = true }) end
+			end
+		end
+	end
+	for i, deg in { -135, -110, -50, 150 } do
+		local x, z = at(cx, cz, deg, rng:NextNumber(17, 19))
 		put(i == 2 and "Kit_M_FlowersB" or "Kit_M_FlowersA", x, z, { S = { 1.2, 1.4 } })
 	end
-	local x, z = at(cx, cz, -85, 19)
-	put("Kit_M_BushB", x, z, { S = 2.2 })
 end
 do -- Mini fairy ring in the east lawn
 	local put = fixed("miniRing")

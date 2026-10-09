@@ -61,6 +61,7 @@ EXPECTED = [
     ("AttendanceService.luau", "AddXP", None, True),
     ("BoardService.luau", "AddBankGold", "Quest", True),
     ("BoardService.luau", "AddXP", None, True),
+    ("CommissionService.luau", "AddBankGold", "Refund", False),  # A23-86 H: the order's gold back if a material cannot be taken (never 2x)
     ("FactionService.luau", "AddBankGold", "SignOn", True),
     ("FinisherService.luau", "AddBankGold", "Finisher", True),  # the field bosses' card: shown as added, never 2x
     ("GooseService.luau", "AddBankGold", "Event", True),

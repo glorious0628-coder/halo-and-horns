@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 125,
+  "checks": 117,
   "failedChecks": 0,
-  "namedChecks": 125,
+  "namedChecks": 117,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -297,54 +297,6 @@
     },
     {
       "group": "deeds: the save",
-      "check": "no service warnings (pcall-swallowed handler errors)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
-      "check": "(the card opens)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
-      "check": "the card shows Good XP 6",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
-      "check": "AddXP(6, cap 6): the 2x pass never doubles a card's XP",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
-      "check": "CardEnd says XP 6",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
-      "check": "the reward line names the XP",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
-      "check": "Config.ChoiceCard.Kinds.FlowerPatch: Replant = XP, Pick = 2 petals",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
-      "check": "group ran to the end without a Lua error",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "card: an XP reward, never 2x (A23-87)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -762,68 +714,11 @@
   "staticChecks": 18,
   "staticFailures": [],
   "mutations": {
-    "total": 63,
-    "applied": 63,
-    "caught": 63,
+    "total": 58,
+    "applied": 58,
+    "caught": 58,
     "skipped": false,
     "results": [
-      {
-        "mutation": "card XP doubled by the pass",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "card: an XP reward, never 2x (A23-87) :: AddXP(6, cap 6): the 2x pass never doubles a card's XP",
-          "card: an XP reward, never 2x (A23-87) :: CardEnd says XP 6",
-          "card: an XP reward, never 2x (A23-87) :: the reward line names the XP"
-        ],
-        "newFailingCount": 3
-      },
-      {
-        "mutation": "card XP never paid",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "card: an XP reward, never 2x (A23-87) :: AddXP(6, cap 6): the 2x pass never doubles a card's XP"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "no XP on the card",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "card: an XP reward, never 2x (A23-87) :: the card shows Good XP 6"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "no XP in CardEnd",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "card: an XP reward, never 2x (A23-87) :: CardEnd says XP 6"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "no XP in the line",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "card: an XP reward, never 2x (A23-87) :: the reward line names the XP"
-        ],
-        "newFailingCount": 1
-      },
       {
         "mutation": "config: 7 points a day",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
@@ -1026,10 +921,10 @@
           "card: offer, pick, reward :: Evil side (the other side for a Halo): 4 gold, -1",
           "card: offer, pick, reward :: Fx Card { Id 1, Kind, Title, no Seconds, Stat Honor }",
           "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
-          "card: offer, pick, reward :: one line: Kind choice! … Honor +1",
-          "card: offer, pick, reward :: the same card twice: paid once"
+          "card: offer, pick, reward :: off-side answer + counted",
+          "card: offer, pick, reward :: one line: Kind choice! … Honor +1"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 21
       },
       {
         "mutation": "a loss can go below 0",
@@ -1094,13 +989,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "card: an XP reward, never 2x (A23-87) :: group ran to the end without a Lua error",
           "card: the signal :: group ran to the end without a Lua error",
           "card: timed :: group ran to the end without a Lua error",
           "deeds: sides, floor, ranks :: group ran to the end without a Lua error",
           "deeds: the day's six points :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 4
       },
       {
         "mutation": "Preview ignores the day",
@@ -1435,7 +1329,7 @@
       },
       {
         "mutation": "the full-day line is missing",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "file": "src/ServerScriptService/Deeds.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
@@ -1446,7 +1340,7 @@
       },
       {
         "mutation": "no off-side line",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "file": "src/ServerScriptService/Deeds.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
@@ -1457,7 +1351,7 @@
       },
       {
         "mutation": "no rank line",
-        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "file": "src/ServerScriptService/Deeds.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
@@ -1474,13 +1368,13 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: group ran to the end without a Lua error",
-          "card: an XP reward, never 2x (A23-87) :: CardEnd says XP 6",
           "card: no faction, bag full :: group ran to the end without a Lua error",
           "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
           "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
-          "card: offer, pick, reward :: the same card twice: paid once"
+          "card: offer, pick, reward :: the same card twice: paid once",
+          "card: rate limit and rank :: two picks at once: the first counts only"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 7
       },
       {
         "mutation": "the signal never fires",
@@ -1547,7 +1441,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the full line (A23-86)"
+          "card: a full day keeps the reward :: the 'shard is full' line"
         ],
         "newFailingCount": 1
       },
@@ -1568,12 +1462,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a10d97987ed0601e030d8cff0a06c991588dd03aaf3aaca1e59b33c394c705b",
+    "src/ReplicatedStorage/Shared/Config.luau": "3db96a33509834ef6b58378743ea2166a2e91548fccdb6d6035ead185c8fb368",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/Deeds.luau": "2592b6c99f5f0579e4d66ce2f9167fbf15fe15e1f81830eb038e88038a5fd69e",
-    "src/ServerScriptService/ChoiceCard.luau": "31d53cb4993ac8ccca4af9ba55065d7a5e0f244b2823be5be9d4d947bef210a5"
+    "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
+    "src/ServerScriptService/ChoiceCard.luau": "da892aeb3fa5ae57de67bea52693e6b5bac974a0ded6ff572970a876a3a330be"
   },
-  "fixtureSHA256": "54620efee9114cd61543504d1fec628308f18fbbcae1bc64be24876b3f058be3",
+  "fixtureSHA256": "c58dd0dd7d96139da626e9ba3815bc299e1fbf3a4f14aba3518c2ef6e7153f54",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

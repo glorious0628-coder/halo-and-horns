@@ -86,10 +86,23 @@ local function count(data, kind, side)
 end
 
 ------------------------------------------------------------------ the card
+-- the reward as it is paid now: GoldMin = that many minutes of hunting gold at the player's level (Config.HuntValue), added
+-- to Gold; everything else as written
+local function concrete(player, reward)
+	local r = type(reward) == "table" and reward or {}
+	local out = { Item = r.Item, Potion = r.Potion, N = r.N, Gold = r.Gold, XP = r.XP } -- XP: A23-87
+	if num(r.GoldMin) > 0 then
+		local data = S.PlayerService.GetData(player)
+		local level = math.max(1, math.floor(num(data and data.Level, 1)))
+		out.Gold = math.max(0, math.floor(num(r.Gold))) + select(1, Config.HuntValue(level, num(r.GoldMin)))
+	end
+	return out
+end
+
 -- one option as the screen shows it
 local function optionView(player, d, side)
 	local o = d[side]
-	local r = type(o.Reward) == "table" and o.Reward or {}
+	local r = concrete(player, o.Reward)
 	local stat, score, mine = S.Deeds.Preview(player, side, o.Points)
 	local hint = nil
 	if stat == "None" then hint = "Neutral" elseif score == 0 then hint = mine and "Full" or "Zero" end
@@ -165,7 +178,7 @@ local function finish(player, card, side)
 	local d = def(card.Kind)
 	if side and d and data then
 		local o = d[side]
-		local given, gold, id, xp = pay(player, o.Reward)
+		local given, gold, id, xp = pay(player, concrete(player, o.Reward))
 		out.Item, out.N, out.Gold, out.XP = id, given, gold, xp
 		local stat, change, mine, down, full = S.Deeds.Add(player, side, o.Points)
 		out.Stat, out.Score, out.Full = stat, change, full
@@ -179,18 +192,7 @@ local function finish(player, card, side)
 		if xp > 0 then table.insert(parts, string.format(TXT.XP or "+%s XP", Util.FormatNumber(xp))) end
 		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
 		notify(player, table.concat(parts, " · "), "reward", "None")
-		local f = player:GetAttribute("Faction")
-		if stat ~= "None" and not mine then
-			if change < 0 then
-				notify(player, string.format(f == "Halo" and STORY.OffSideHalo or STORY.OffSideHorns, -change), "info")
-			else
-				notify(player, (f == "Halo" and STORY.OffSideHaloZero or STORY.OffSideHornsZero) .. " "
-					.. (side == "Good" and STORY.LeanGood or STORY.LeanEvil), "info")
-			end
-			if down then notify(player, f == "Halo" and STORY.RankDownHalo or STORY.RankDownHorns, "info") end
-		elseif mine and full then
-			notify(player, TXT.Full, "info")
-		end
+		S.Deeds.Say(player, side, stat, change, mine, down, full) -- the other side's line, a lost rank, a full day
 	end
 	if player.Parent == Players then fx(player, "CardEnd", out) end
 	ChoiceCard.Picked:Fire(player, card.Kind, out.Side, out)

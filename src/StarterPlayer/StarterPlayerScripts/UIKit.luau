@@ -149,7 +149,7 @@ local TOAST_ICON = 34 -- item / monster art left of a toast's text (UIKit.Toast 
 local ANNOUNCE_ICON = 64 -- the same left of the big banner's text (UIKit.Announce icon)
 -- CR-L38: short (phone) viewports keep fewer toasts; the stack never takes more than WidthFrac of the screen width
 local TOAST_PHONE = { Height = 500, Max = 2, WidthFrac = 0.45 }
-local DEFAULT_TOAST_SECONDS = 2.5
+local DEFAULT_TOAST_SECONDS = 3 -- 검수 10/09 (UI clutter review ②): one toast at a time, 3 s (NOTIFY.OneAtATime)
 local DEFAULT_ANNOUNCE_SECONDS = 3.5
 local MAX_ANNOUNCE_QUEUE = 3
 
@@ -190,6 +190,12 @@ local STYLE = {
 
 -- HUD v2 notify column (UIKit.PlaceNotify). Rect == nil = the old TOAST_Y stack + 30% banner (before the first call).
 local NOTIFY = {
+	-- 검수 2026-10-09 (user: "not too kind, not too unkind"; UI clutter review ②): one toast at a time for at most
+	-- ShowSeconds; the next ones wait in Queue (newest kept, at most QueueMax: a burst never fills half a minute)
+	OneAtATime = true,
+	ShowSeconds = 3,
+	QueueMax = 3,
+	Queue = {}, -- { { Text, Kind, Duration, Icon } } oldest first
 	Rect = nil, -- copy of HUD.Layout.Rects.notify { X, Y, W, H } (logical MainGui units, incl. the top bar)
 	Y = nil, -- live top of the column = max(topY, Rect.Y)
 	ToastGap = 6, -- the toast UIListLayout padding
@@ -2295,6 +2301,14 @@ local function removeToast(t)
 	task.delay(0.22, function()
 		t.Frame:Destroy()
 	end)
+	NOTIFY.ShowNext()
+end
+
+-- the next waiting toast once the column is empty (NOTIFY.OneAtATime)
+function NOTIFY.ShowNext()
+	if #toasts > 0 or #NOTIFY.Queue == 0 then return end
+	local q = table.remove(NOTIFY.Queue, 1)
+	task.defer(UIKit.Toast, q.Text, q.Kind, q.Duration, q.Icon)
 end
 
 -- HUD v2: how many toasts fit between NOTIFY.Y and the bottom of the notify column, counted from the newest (top)
@@ -2513,12 +2527,22 @@ function UIKit.Toast(text, kind, duration, icon)
 	if text == "" or not toastHolder then return end
 	duration = tonumber(duration) or DEFAULT_TOAST_SECONDS
 	if duration <= 0 then duration = DEFAULT_TOAST_SECONDS end
+	if NOTIFY.OneAtATime then duration = math.min(duration, NOTIFY.ShowSeconds) end
 
 	for _, t in toasts do
 		if t.Text == text and not t.Dead then
 			scheduleToast(t, duration)
 			return
 		end
+	end
+	if NOTIFY.OneAtATime and #toasts > 0 then
+		-- a toast is showing: wait in line (the same words already waiting: nothing new)
+		for _, q in NOTIFY.Queue do
+			if q.Text == text then return end
+		end
+		table.insert(NOTIFY.Queue, { Text = text, Kind = kind, Duration = duration, Icon = icon })
+		while #NOTIFY.Queue > NOTIFY.QueueMax do table.remove(NOTIFY.Queue, 1) end
+		return
 	end
 
 	toastCounter += 1
@@ -3115,6 +3139,43 @@ function UIKit.Tx(t, key, ...)
 		return ok and out or s
 	end
 	return s
+end
+
+-- full-screen pickers (FactionPicker, ClassPicker; 검수 10/09, RELEASE_PLAN 10/07): MainGui keeps to DeviceSafeInsets, so
+-- a dim on a picker's root left the phone's side edges undimmed. This moves the root's dim onto its own layer that
+-- covers the whole screen (no insets), just under MainGui. Returns show(open) (nil when it could not be made: the root
+-- keeps its own dim then).
+function UIKit.FullScreenDim(root, name)
+	if typeof(root) ~= "Instance" or not root:IsA("GuiObject") then return nil end
+	local pg = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if not pg then return nil end
+	local ok, frame = pcall(function()
+		local g = Instance.new("ScreenGui")
+		g.Name = name
+		g.ResetOnSpawn = false
+		g.IgnoreGuiInset = true
+		pcall(function() -- after IgnoreGuiInset (which rewrites ScreenInsets)
+			g.ScreenInsets = Enum.ScreenInsets.None
+			g.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
+		end)
+		g.DisplayOrder = (UIKit.Gui and UIKit.Gui.DisplayOrder or 10) - 1
+		g.Enabled = false
+		local f = Instance.new("Frame")
+		f.Name = "Dim"
+		f.Size = UDim2.fromScale(1, 1)
+		f.BorderSizePixel = 0
+		f.BackgroundColor3 = root.BackgroundColor3
+		f.BackgroundTransparency = root.BackgroundTransparency
+		f.Parent = g
+		g.Parent = pg
+		return f
+	end)
+	if not ok or not frame then return nil end
+	root.BackgroundTransparency = 1
+	return function(open)
+		local g = frame.Parent
+		if g and g:IsA("ScreenGui") then g.Enabled = open == true end
+	end
 end
 
 ----------------------------------------------------------------- lifecycle

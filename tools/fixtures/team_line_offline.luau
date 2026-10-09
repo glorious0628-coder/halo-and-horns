@@ -120,7 +120,8 @@ for _, case in { { "LegacyChatService (auto-migrated place)", enum.ChatVersion.L
 end
 W.Version = enum.ChatVersion.LegacyChatService
 
--- 2. the team line itself (through the hook the engine would call)
+-- 2. the team line itself (through the hook the engine would call); the chat line as it was before TeamToast
+Config.ChatText.TeamToast = false
 local mod = loadAnnounce()
 mod.Init({})
 local hook = W.Hook
@@ -161,6 +162,28 @@ if type(hook) == "function" then
 else
 	check(false, "the team line can be tested (Init set no hook)", tostring(hook))
 end
+
+-- 2b. 검수 10/09 (UI clutter review ②): TeamToast - no team line in the chat, one toast on the first side pick
+Config.ChatText.TeamToast = true
+do
+	local m2 = loadAnnounce()
+	m2.Init({})
+	localPlayer.Team = knights
+	local okH, props = pcall(W.Hook, { Metadata = TEAM_META, Text = KOREAN })
+	check(okH and type(props) == "table" and props.Text == "", "TeamToast: the chat's team line is emptied (not drawn)", show(props))
+	local okO, other = pcall(W.Hook, { Metadata = "", Text = "hi" })
+	check(okO and other == nil, "TeamToast: other chat lines untouched", show(other))
+	local J = m2.JoinToast
+	check(J(choosing, knights) == "You joined the Knights of Light!", "the first pick (Choosing -> a side): the toast", tostring(J(choosing, knights)))
+	check(J(nil, knights) == nil, "the login (no team -> my side): no toast")
+	check(J(knights, choosing) == nil and J(nil, choosing) == nil and J(choosing, choosing) == nil, "to the auto-assigned team: no toast")
+	check(J(knights, odd) == nil, "a switch between sides: no toast here (FactionService has its own notice)")
+	check(J(choosing, nil) == nil, "no team: no toast")
+	Config.ChatText.TeamToast = false
+	check(J(choosing, knights) == nil, "TeamToast off: no toast")
+	Config.ChatText.TeamToast = true
+end
+check(Config.ChatText.TeamToast == true and type(Config.ChatText.Joined) == "string", "Config: TeamToast on by default (the real Config)")
 
 -- 3. a TextChatService that refuses the callback: Init only warns
 W.SetThrows = true

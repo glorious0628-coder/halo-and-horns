@@ -9,6 +9,7 @@ SPEC A23-86 결정 1(하루 선행·장난 장부) + `content_beyond_10min_2026-
 - 함수(서비스 `S.Deeds`):
   - `Deeds.Add(player, side, n?)` → `stat, change, mine, down, full` — `side` = `"Good"` | `"Evil"`, `n` 기본 1. `stat` = `"Honor"`|`"Infamy"`|`"None"`(편 없음), `change` = 실제로 바뀐 값(+/−/0), `mine` = 내 편 쪽, `down` = 계급이 내려갔는지, `full` = 내 편 쪽 상승이 하루 상한에 잘렸는지.
   - `Deeds.Preview(player, side, n?)` → `stat, change, mine` (Add가 지금 바꿀 값, 화면의 미리보기용).
+  - `Deeds.Say(player, side, stat, change, mine, down, full)` — Add 결과의 안내 줄(반대 편 선택 Hallie/Magpie 줄, 계급 하락 줄, 하루 가득 줄). 점수 줄("Honor +1")은 부르는 쪽 몫.
   - `Deeds.Left(player)` / `Deeds.Used(player)` — 오늘 남은/쓴 점수.
   - `Deeds.Take(player, n)` → 상한에 들어가는 만큼(예약). `ScoreBudget.Take`와 같은 모양이라 개발 2가 마무리 카드를 옮길 때 그대로 바꿔 끼울 수 있어요.
 - 저장(추가 칸, Version 3 그대로): `data.Deeds = { Day = Config.DayIndex, N = 오늘 쓴 점수 }`. 읽을 때마다 고쳐 쓰고 새 날은 0부터.
@@ -27,10 +28,14 @@ SPEC A23-86 결정 1(하루 선행·장난 장부) + `content_beyond_10min_2026-
   - s→c `Fx "CardEnd"` `{ Id, Kind, Side = "Good"|"Evil"|"None", Stat, Score, Item?, N, Gold, Full }` — 실제로 일어난 일.
   - c→s `"CardAction"`(id: number, side: "Good"|"Evil") — 열린 카드의 Id만, 한 번만, 0.3초 속도 제한. 인자 수·종류가 다르면 무시.
 - 보상: 아이템은 `LootService.GrantItem`(가방이 차면 남은 만큼 판매값 골드), 골드는 `AddBankGold(..., "Choice")`(2배 패스 안 탐). 점수는 **오직 `Deeds.Add`** 로만. 한 줄 알림 "Kind choice! · +Jelly x2 · Honor +1"(Done 글은 카드마다 바꿀 수 있어요), 반대 편 선택은 A23-58 안내 줄(Hallie/Magpie), 계급이 내리면 계급 줄.
-- 기록: 고를 때마다 `data.Story.N[kind][side] += 1`. **My Way는 아직 읽지 않아요.** 무게(검수 결정 2026-10-09): 되풀이 카드 5번 = 이야기 선택 1번, 되풀이 몫 합계는 이야기 몫을 넘지 않게 상한 — 다음 덩어리.
+- 기록: 고를 때마다 `data.Story.N[kind][side] += 1`. **My Way가 읽어요**(검수 결정 2026-10-09, `ReturnService.MyWayOf(faction, picks, repeated)`): 되풀이 5번(`Config.MyWay.RepeatPer`) = 이야기 선택 1번, 되풀이 몫 합계는 이야기 몫을 넘지 않게 상한(둘 다 같은 비율로 줄임), 이야기 선택 2개 이상이 먼저 필요. 게시판의 `N.Kind`(좋은 일)·`N.Sneaky`(장난)도 같은 규칙. 카드를 고르거나 게시판 일을 끝내면 이름이 바로 다시 계산돼요(`ChoiceCard.Picked`, `ReturnService.RefreshMyWay`).
 - 신호: `ChoiceCard.Picked(player, kind, side, result)` (고름과 시간 끝 모두).
 - 저장: `data.Cards = { Serial, Pending }` (Serial은 카드 Id, 줄어들지 않음).
 - Studio 도움: `DebugCommand("Card", "<kind>")`.
+
+## 2-1. 이미 장부를 쓰는 곳
+- 일감 게시판(`BoardService`): 끝낸 [Kind] 일 = 좋은 행동 1점, [Sneaky] 일 = 장난 1점(내 편 +1 / 반대 편 −1, 하루 6점 안, 보상은 계속). `Config.Board.Text.Score = "%s +%d"`. 주간 랭킹 점수는 여전히 없음(A23-23 D1).
+- 견습생 카드(오토의 의뢰, `docs/design/commission_server_2026-10-09.md`)와 앞으로의 잃어버린 물건·클래터 카드는 `ChoiceCard`를 거쳐요.
 
 ## 3. 개발 2 마무리 카드와 합치기 (순서)
 1. 지금은 따로: `FinisherService`의 Net 이름(`FinisherCard/FinisherPick/FinisherEnd`, `Help`/`Tickle`)을 안 바꿔요. 개발 1 화면이 그걸 써요.

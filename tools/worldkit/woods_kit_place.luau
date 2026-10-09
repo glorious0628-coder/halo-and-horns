@@ -96,7 +96,7 @@ local function ground(x, z)
 	local hit = workspace:Raycast(Vector3.new(x, 300, z), Vector3.new(0, -600, 0), params)
 	if not hit or hit.Material == Enum.Material.Water then return nil end
 	local y = hit.Position.Y
-	if y < -0.8 or y > 6 then return nil end
+	if y < -0.8 or y > 24 then return nil end -- terraces (woods_terrain tiers): was 6
 	return y, hit.Material
 end
 

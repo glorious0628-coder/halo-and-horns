@@ -188,7 +188,7 @@ Config.Data = {
 		-- camera); Follow stays in Settings for whoever wants it. Settings V3 (검수 10/09): a save from before V3 gets Cam = Free
 		-- once (SanitizeSettings); a Follow picked after that is kept
 		Settings = { V = 3, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Free" },
+			Cam = "Free", PvPCards = false },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -302,9 +302,9 @@ Config.WeaponInfo = {
 	{ Grade = "Common", Source = "Your first weapon, a gift from the Blacksmith", SourceEn = "Your first weapon, a gift from the Blacksmith" }, -- A23-34
 	{ Grade = "Common", Source = "Sold at the Forge" },
 	{ Grade = "Fine", Source = "Sold at the Forge (from Lv5)" },
-	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes" },
-	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights" },
-	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights" },
+	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes, or a Forge commission" },
+	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights, or a Forge commission" },
+	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
 	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
 }
@@ -791,7 +791,7 @@ Config.Factions = {
 			"Half your pouch gold goes to the vault",
 			"Catch Grudge Sack thieves to win gold back",
 		},
-		Pitch = "Guard, heal, and take it back!",
+		Pitch = "Heal friends and catch thieves!", -- 검수 10/09 (system review ①): the card's one big easy line
 	},
 	Horns = {
 		Id = "Horns", Name = "Horn Legion", Short = "Horn Legion", Emblem = "H",
@@ -813,7 +813,7 @@ Config.Factions = {
 			"Rob the Knights and guard the Grudge Sack",
 			"5 Wanted stars = turn into a Kaiju!",
 		},
-		Pitch = "Steal, hold on, and become a Kaiju!",
+		Pitch = "Sneaky tricks and grab gold in PvP zones!", -- 검수 10/09 (system review ①)
 	},
 	-- addendum A6: third playable faction "장인 길드". No combat/economy perks, PvP-immune both ways, no plunder,
 	-- sacks, stars, bounty, bully stacks, revenge or kaiju; excluded from war points, blessing, power sums and ratios
@@ -1385,6 +1385,23 @@ end
 -- A23-18 "오늘의 운" (replaces the per-server "단골 운" minutes): golden-goose / kaiju events I took part in TODAY
 -- (KST day, saved with the day so a server hop or a dropped phone keeps it). 3 events = 11%, 4 events = the 12.5% cap
 -- ("15~30분 동안 이벤트 3~4번이면 거의 최대").
+-- 검수 2026-10-09 (UI clutter review ④, "show it when it is needed"): the potion pair shows once I hold a potion, my HP
+-- fell under LowHP once this session, or from Level on; the pouch line once I carry gold or from Level on
+-- (Config.HudReveal.Shows, pure: VitalsUI / HUD and the offline test call it)
+Config.HudReveal = { Level = 5, LowHP = 0.5 }
+function Config.HudReveal.Shows(kind, s)
+	s = type(s) == "table" and s or {}
+	local lv = tonumber(s.Level) or 0
+	if lv >= Config.HudReveal.Level then return true end
+	if kind == "Potions" then
+		local hp, maxHP = tonumber(s.HP) or 0, tonumber(s.MaxHP) or 0
+		return (tonumber(s.Potions) or 0) > 0 or (maxHP > 0 and hp > 0 and hp < maxHP * Config.HudReveal.LowHP)
+	elseif kind == "Pouch" then
+		return (tonumber(s.Carried) or 0) > 0
+	end
+	return true
+end
+
 Config.Luck = {
 	BaseRare = 0.05,
 	PerEvent = 0.02, -- +2 percentage points per event today
@@ -2149,33 +2166,43 @@ Config.Tutorial = {
 	SpawnDistance = 8, -- studs in front of the player's spawn
 	Lifetime = 120, -- personal monster despawns after this many seconds (then the tutorial advances to step 1)
 	GuideZone = "SlimeMeadow",
-	GuideText = "Squishy Meadow · Step on the glowing pad", -- plain
+	GuideText = "Squishy Meadow", -- the guide label: one short line on a small chip (검수 2026-10-08)
 	QuestId = "tutorial",
 	QuestKills = 5,
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
-	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
+	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
-		Skill = "Skill at Lv %d" },
+		Skill = "Skill at Lv %d", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
+		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
+		Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
+	-- A23-86 F (content_beyond_10min): the next-goal ladder once the early goals (iron weapon, first skills, the woods) are
+	-- done and no story row is pinned. Hooks, in order: a feature row asks its service for its line (S[Service].NextGoal(
+	-- player, data) -> text or nil) and only while Config.Features[Feature] is on (the features are not built yet, so the
+	-- rows wait switched off); then the rebirth line from Warn levels below the rebirth level. No clock, no minute numbers,
+	-- no purchase or 2x button near it (A23-79).
+	Ladder = {
+		Hooks = {
+			{ Kind = "Commission", Service = "CommissionService", Feature = "Commission" },
+			{ Kind = "Clatter", Service = "ClatterService", Feature = "Clatter" },
+			{ Kind = "Crystal", Service = "CrystalService", Feature = "Crystal" },
+		},
+		Rebirth = { Warn = 5 },
+	},
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
 	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
 	AutoClaimSeconds = 60,
-	-- A23-68 (user 2026-10-07, early churn): #1 the guide's [Accept] moves the player to the meadow entrance (GuideZone
-	-- spawn) after AcceptTravelSeconds (the client fades; Fx "MeadowTravel" { In }), 0 / nil = off; RespawnInMeadow:
-	-- while the first mission runs (accepted, not claimed) a KO respawns at the meadow entrance; #4 FoldOthers: until the
-	-- first [Claim] every other quest-list row is sent with Folded = true (kept, only its line is folded)
-	AcceptTravelSeconds = 3,
+	-- A23-68 (user 2026-10-07, early churn): RespawnInMeadow: while the first mission runs (accepted, not claimed) a KO
+	-- respawns at the meadow entrance; #4 FoldOthers: until the first [Claim] every other quest-list row is sent with
+	-- Folded = true (kept, only its line is folded). A23-88 (user 2026-10-09): the server never moves the player by itself
+	-- any more (the old [Accept] -> Forge / meadow trips are gone); walking to the Forge and the travel pad are the lessons.
 	RespawnInMeadow = true,
 	FoldOthers = true,
-	-- A23-74: the Forge step's trips (the same AcceptTravelSeconds countdown and Fx "Travel" / "TravelDone" contract).
-	-- Landing "Anvil" = Back studs in front of the Crossroads anvil (toward the Crossroads spawn), Lift studs above the
-	-- anvil's bottom, facing it, so its prompt (12 studs) is up at once; "Spawn" = the Crossroads spawn only (game dev 1
-	-- can switch if the landing looks wrong in the live map). Near = a player this close to the anvil is not moved.
-	-- TravelDelay = seconds after the gift before the meadow trip starts (the "Stronger!" moment plays first);
-	-- nil / negative = no automatic meadow trip (the step 1 row and beam still lead there)
-	Forge = { Landing = "Anvil", Back = 8, Lift = 4, Near = 24, TravelDelay = 3 },
+	-- A23-88: Near = how close to the Crossroads anvil counts as "arrived" (the walked_to_forge metric: Custom event
+	-- ForgeWalk, the seconds since [I'm In!]); the step itself ends when the blacksmith hands over the first weapon.
+	Forge = { Near = 24 },
 	WelcomeRate = 0.5,
 	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
 	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
@@ -2213,13 +2240,13 @@ Config.Tutorial = {
 		-- A23-40: the guide is met by tapping this quest line (the menu moved to the top-right fold)
 		-- 3rd idea round #3: %s = the faction guide's name (Welcome[faction].Name), there is no guide NPC to look for
 		Welcome = "Tap here: first quest from %s", WelcomeEn = "Tap here: first quest from %s",
-		Travel = "Free the supply road · Menu > Travel > Squishy Meadow",
+		Travel = "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)", -- A23-88
 		QuestStart = "First mission: %s! (Reward: %s gold)",
 		QuestReady = "Supply road mission done! Press [Claim].",
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
-		Forge = "Get your first weapon · Crossroads Forge",
-		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road.",
+		Forge = "Go to Otto's Forge", -- A23-88: walking; Otto hands over the first weapon
+		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next.",
 		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
 		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
 		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
@@ -2244,6 +2271,11 @@ Config.Tutorial = {
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
+		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)
+		NextRebirth = "Next goal · Lv%d: Rebirth, choose your side again (now Lv%d)",
+		NextRebirthReady = "Next goal · Rebirth is open! Choose your side again",
+		RebirthNoteHalo = "Stay a knight, or not?", -- a second line under the rebirth goal, by side
+		RebirthNoteHorns = "Stay a rascal, or not?",
 		GuideDone = "That's all from me! Now hunt and get stronger.",
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
@@ -2293,14 +2325,16 @@ Config.StoryQuests = {
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
 	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
-		"M3_1", "M3_2", "M3_3", "M3_4", "M3_5", "M3_6", "M3_7", "M3_8" },
+		"M3_1", "M3_2", "M3_3", "M3_4", "M3_6", "M3_7", "M3_8" }, -- A23-86: M3_5 (graduation) is a side line now
 	-- story_depth E0: an old save that reaches the story at Level >= Level skips the main chapters <= UpTo (once)
-	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },
+	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
 	Subs = { "S0", "Lunch1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
-		"SK1", "SK2" }, -- SKL-3: the practice subs of a new skill
+		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
+		"WB1", -- A23-86 Call of the Woods: the lantern on the woods bridge
+		"M3_5", "OathH", "OathR" }, -- A23-86 Sprout Oath: the graduation side line + one oath a side
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -2503,7 +2537,13 @@ Config.StoryQuests = {
 		M2_6 = {
 			Kind = "Main", Chapter = 2, Title = "Little Footprints on the Hill", ShortName = "Hill tracks",
 			Start = "The Slime Prince dust is gone. Little footprints lead to the woods…",
-			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			-- A23-86 "Call of the Woods" (content_beyond_10min A): from Lv10 the woods can fill this step too (Alt.Pairs = a
+			-- kind AND its zone that count as well: Goblin Brutes in the Goblin Woods), so a Lv10 hunter is not tied to the
+			-- meadow. AltText is the row from that level.
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow",
+				AltText = "Slime Princes or Goblin Brutes %d/%d",
+				Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2,
+					Alt = { MinLevel = 10, Pairs = { { Kind = "GoblinBrute", Zone = "GoblinWoods" } } } } } },
 			Finish = "Goblins stole the dust!", Reward = { Gold = 1 },
 		},
 		M2_7 = {
@@ -2588,10 +2628,13 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 2, XP = 2 },
 		},
+		-- A23-86 (content_beyond_10min G): the graduation clock is a side line, not a wall in the main chain. The row says
+		-- what ends the shield, with no minute numbers (no clock, A23-68 / A23-79). Saved in-progress tracks move here.
 		M3_5 = {
-			Kind = "Main", Chapter = 3, Title = "Sprout Graduation", ShortName = "Graduation",
+			Kind = "Sub", Chapter = 3, Title = "Sprout Graduation", ShortName = "Graduation",
+			Requires = { Done = { "M3_4" } },
 			Steps = {
-				{ Text = "Sprout Shield ends · Lv15 + 1 hour of play", Obj = { Type = "State", Key = "Graduated" } },
+				{ Text = "Sprout Shield on · ends at Lv15 + 1 hour of play", Obj = { Type = "State", Key = "Graduated" } },
 				{ Text = "Talk with the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
 					Halo = { "No more Sprout Shield. Now you can catch Wanted villains!",
 						"When the crown broke, I was lost. A stranger gave me their lamp.\nI never knew their name. So now I give mine.",
@@ -2636,6 +2679,7 @@ Config.StoryQuests = {
 				} },
 			},
 			Reward = { Gold = 2, XP = 2 },
+			Finish = "Chapter 4 is coming!", -- A23-86 F: one closing line, no date, no clock
 		},
 		S1 = {
 			Kind = "Sub", Title = "The Golden Goose With a Shard", ShortName = "Golden Goose", Factions = { Halo = true, Horns = true },
@@ -2778,6 +2822,67 @@ Config.StoryQuests = {
 					Lines = { All = { "Pip: Look! My own lamp! It glows purple. I never knew purple!" } } },
 			},
 			Reward = { Item = "Enh70", N = 1 },
+		},
+		-- A23-86 Sprout Oath (content_beyond_10min G): while the Sprout Shield is still on (Requires.Sprout) at Lv15 after M3_4,
+		-- a small training that shows the player's graduation role (Halo: guard + catch, Horns: raid) and ends with an oath.
+		-- Same steps count and walking for both sides' rewards: a stat-free title and 2 points (A23-58: the other side -2).
+		OathH = {
+			Kind = "Sub", Title = "The Sprout Oath", ShortName = "Sprout oath", Speaker = "Bright", Factions = { Halo = true },
+			Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },
+			Start = "Bright has a last lesson before your Sprout Shield ends.",
+			Steps = {
+				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Bright: Almost a graduate! Soon you can catch Wanted villains.",
+						"Bright: First, guard the woods bridge. Then face a Goblin Brute!" } } },
+				{ Text = "Guard the woods bridge %d/%d s", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 15 } },
+				{ Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
+				{ Text = "Make your oath to Bright", Guide = "HaloTown", Npc = "Bright", Panel = true,
+					Lines = { All = { "Bright: You did it! Say your oath. What kind of Halo are you?" } },
+					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
+						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
+			Finish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",
+		},
+		OathR = {
+			Kind = "Sub", Title = "The Sprout Oath", ShortName = "Sprout oath", Speaker = "Smokey", Factions = { Horns = true },
+			Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },
+			Start = "Smokey has a last lesson before your Sprout Shield ends.",
+			Steps = {
+				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Smokey: Almost a graduate! When the shield ends, you can raid knights.",
+						"Smokey: Hold the sack for 45 seconds and it's yours!",
+						"Smokey: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only!" } } },
+				{ Text = "Find the first goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
+				{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },
+				{ Text = "Basic hits on a Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
+				{ Text = "Make your oath to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "Smokey: Not bad, rascal! Say your oath. What kind of Horn are you?" } },
+					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
+						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
+			Finish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",
+		},
+		-- A23-86 Call of the Woods (content_beyond_10min A): the first time a Lv10 hunter stands on the woods bridge, one
+		-- small card. Same size, fixed reward: A (angel) one 70% scroll / B (devil) 3 HP potions + 1 minute of hunting gold at
+		-- Lv10 (Config.HuntValue(10, 1) = 192, a test holds it). The bridge is outside the PvP woods (WoodsGate).
+		WB1 = {
+			Kind = "Sub", Title = "The Dropped Lantern", ShortName = "Bridge lamp", Factions = { Halo = true, Horns = true, Neutral = true },
+			Requires = { Done = { "M1_4" }, Level = 10 },
+			Start = "A light flickers on the woods bridge…",
+			Steps = {
+				{ Text = "Step onto the woods bridge", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14 } },
+				{ Text = "Pick up the lantern?", Panel = true,
+					Lines = { All = { "A goblin dropped his lantern on the bridge. It is still warm." } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Hand it back", Points = 1, Reply = "A grateful grunt echoes from the trees.",
+							Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Finders keepers!", Points = 1, Reply = "The lantern glows brighter in your hands.",
+							Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Hand it back", B = "Finders keepers!" } } },
+			},
+			Finish = "The woods feel a little less dark.",
 		},
 		-- quest_volume §3-2 (A23-56, 검수 2026-10-06): 12 new subs + 6 pulled from story_depth §3 / town_npc_quests, each once,
 		-- ending in an A (angel) / B (devil) pick with the same size of reward in a different kind (A23-58 scores the pick).
@@ -3167,6 +3272,7 @@ Config.Board = {
 		Done = "Job done! +%s gold · +%s XP",
 		LeanKind = "Your shard leaned to the light.",
 		LeanSneaky = "Your shard leaned to the dark.",
+		Score = "%s +%d", -- A23-86: ("Honor" | "Infamy", points) one deed of the daily ledger
 		Bonus = "5th job today! +%s",
 		Full = "You carry 3 jobs. Finish one first!",
 		Hint = "Job Board · tap for directions",
@@ -3838,6 +3944,8 @@ Config.Settings = {
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
 		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: Follow = the camera turns behind me while I walk (default Free, user 10/08)
+		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
+		PvPCards = { Type = "Bool" },
 	},
 	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
@@ -3849,6 +3957,7 @@ Config.Settings = {
 		Lang = "Language", LangEn = "Language",
 		BagSort = "Bag order", BagSortEn = "Bag order",
 		Cam = "Camera", CamEn = "Camera",
+		PvPCards = "PvP zone cards seen", PvPCardsEn = "PvP zone cards seen", -- not a row in the window (Order)
 		Options = {
 			All = "All", AllEn = "All", Off = "Off", OffEn = "Off", Near = "Nearby only", NearEn = "Nearby only",
 			Auto = "Auto", AutoEn = "Auto", ko = "한국어", koEn = "한국어", en = "English", enEn = "English",
@@ -3916,6 +4025,13 @@ Config.Help = {
 	},
 	Topics = {
 		{ Id = "Controls", Title = "Controls", Lines = {} },
+		-- 검수 2026-10-09 (system review ③ Help & Safety): right after Controls, so kids and parents find it
+		{ Id = "Safety", Title = "Safety", Lines = {
+			"Block or report someone: open the Roblox menu (Esc), then Players.",
+			"Player list (Tab): press a name for Add friend or Block.",
+			"PvP zones (orange and red on the map): other players can fight you there.",
+			"Ask a parent before using Robux. Never share your password.",
+		} },
 		{ Id = "Combat", Title = "Combat & Auto Battle", Lines = {
 			"One press = one attack. Holding it down won't repeat it.",
 			"Your first skill comes at Lv 5. It costs 20 MP; wait 3 s to use it again.", -- A23-71 D6 / S14
@@ -4241,6 +4357,9 @@ Config.Loot = {
 Config.ChatText = {
 	Joined = "You joined the %s!", -- team name: "You joined the Horn Legion!"
 	Choosing = "Pick a side to start!", -- TextChatService only: the line for the auto-assigned "Choosing a side" team
+	-- 검수 2026-10-09 (UI clutter review ②: the team line stayed in the chat over the phone's joystick): the chat gets no
+	-- team line (TextChatService, Announce.Incoming); the first side pick shows "You joined ...!" as one 3 s toast
+	TeamToast = true,
 }
 
 -- A23-15 server-wide chat announcements (AnnounceService -> remote "Announce" -> client Announce.luau). Server sends
@@ -4614,7 +4733,7 @@ Config.UIArt = {
 		IconWantedStar = { Id = "rbxassetid://110523293522605", Size = Vector2.new(512, 512) }, -- Horns wanted star
 		-- emblems
 		ShieldHalo = { Id = "rbxassetid://73353334079892", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: no rays (halo + gem)
-		ShieldHorns = { Id = "rbxassetid://134547958841068", Size = Vector2.new(497, 512) },
+		ShieldHorns = { Id = "rbxassetid://100359282407005", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw (horn shield, gem)
 		Crown = { Id = "rbxassetid://87428837580998", Size = Vector2.new(256, 175) },
 		-- icons
 		IconCoin = { Id = "rbxassetid://86252987066467", Size = Vector2.new(512, 512) }, -- Firefly (bundle 8)
@@ -4671,6 +4790,11 @@ Config.UIArt = {
 		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 61, 388, 63), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (425,48)-(489,80)
 		AutoRingOn = { Id = "rbxassetid://82348810388598", Size = Vector2.new(512, 512) }, -- turns around the auto button while ON
 		GlyphQuest = { Id = "rbxassetid://85735330851016", Size = Vector2.new(512, 512) },
+		QuestTabIconMain = { Id = "rbxassetid://89637504554244", Size = Vector2.new(512, 512) }, -- quest window tabs + HUD line icons (Config.QuestTabs; 이미지 생성 2, 2026-10-08): crown book
+		QuestTabIconSide = { Id = "rbxassetid://98437304116587", Size = Vector2.new(512, 512) }, -- ribbon scroll
+		QuestTabIconDaily = { Id = "rbxassetid://103609446225386", Size = Vector2.new(512, 512) }, -- calendar + check
+		QuestTabIconEvent = { Id = "rbxassetid://123628411800049", Size = Vector2.new(512, 512) }, -- pumpkin + bow
+		QuestTabIconFaction = { Id = "rbxassetid://111149297376842", Size = Vector2.new(512, 512) }, -- halo | horns shield
 		GlyphAuto = { Id = "rbxassetid://125607651991448", Size = Vector2.new(512, 512) },
 		NameTag = { Id = "rbxassetid://101536515759381", Size = Vector2.new(512, 153), Slice = Rect.new(80, 75, 432, 77), FitHeight = true, Tone = "Navy" },
 		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 85, 448, 87), FitHeight = true, Tone = "Gold" }, -- b: deep gold
@@ -4728,6 +4852,9 @@ Config.UIArt = {
 		BarkBubbleGhostMinion = { Id = "rbxassetid://121325988367395", Size = Vector2.new(512, 333), TextRect = { 0.13, 0.37, 0.75, 0.33 } },
 		BarkBubbleLittleGhost = { Id = "rbxassetid://106182896723807", Size = Vector2.new(512, 344), TextRect = { 0.117, 0.366, 0.777, 0.331 } },
 		BarkBubbleGhostKing = { Id = "rbxassetid://120140777254240", Size = Vector2.new(512, 395), TextRect = { 0.127, 0.41, 0.742, 0.273 } },
+		-- King Slime (SlimeKing, A23-84; 이미지 생성 2 189998d): crown + cape bubble. TextRect = the white middle (measured
+		-- 10/09: 0.07-0.92 wide at mid height), wider than the first 0.506 so a 2-line line reads at ~104 px
+		BarkBubbleSlimeKing = { Id = "rbxassetid://98179139339766", Size = Vector2.new(512, 473), TextRect = { 0.15, 0.4, 0.7, 0.33 } },
 		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
 		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
 		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },
@@ -4974,6 +5101,7 @@ Config.UIArt = {
 		RibbonDays50 = { Id = "rbxassetid://127528019933746", Size = Vector2.new(512, 512) },
 		RibbonDays100 = { Id = "rbxassetid://104467679017156", Size = Vector2.new(512, 512) },
 		IconKingDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- [King Diary] book
+		IconDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- 검수 10/08: the menu square / Diary window = the same King Diary book
 		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
 		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]
 		IconSaved = { Id = "rbxassetid://112371750811683", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'
@@ -5034,7 +5162,7 @@ Config.UIArt = {
 		Tex_MeadowFlowers = { Id = "rbxassetid://112552326538919", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowFlowers_FF3 -> Salt (GE_MeadowFlowers)
 		Tex_MeadowShade = { Id = "rbxassetid://100025729953105", Size = Vector2.new(1024, 1024) }, -- Tex_GrassShade_FF3 -> Sandstone (GE_MeadowShade)
 		Tex_MeadowDirt = { Id = "rbxassetid://111724093383818", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowDirt_FF3code -> Pavement (GE_MeadowDirt)
-		Tex_LeafyGrass = { Id = "rbxassetid://99820027824650", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
+		Tex_LeafyGrass = { Id = "rbxassetid://96379070214723", Size = Vector2.new(1024, 1024) }, -- forest floor Tex_LeafyGrass_FF3 (2026-10-08 woods gap ④: mossier, fewer brown spots; was FF2)
 		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
 		Tex_Ground = { Id = "rbxassetid://140158008208812", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins dirt (Tex_Ground_FF)
 		Tex_DirtPath = { Id = "rbxassetid://140356696032031", Size = Vector2.new(1024, 1024) }, -- A23-30 E: road (Tex_DirtPath_FF)
@@ -5961,6 +6089,9 @@ Config.Return = {
 	-- quest guide spots that are not zones / landmarks ("Home" = the player's own town)
 	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home",
 		Goose = "Crossroads" },
+	-- A23-86 F: the zone a next-goal ladder row (QuestService GoalKind) leads to; other kinds use the level's hunting zone
+	GoalZones = { Rebirth = "Crossroads", RebirthReady = "Crossroads", Commission = "Crossroads", Commission4 = "Crossroads",
+		Commission5 = "Crossroads", Commission6 = "Crossroads", Crystal = "Crossroads" },
 	Text = {
 		NextHunt = "Hunt and get stronger!", -- nothing pinned
 		TomorrowDaily = "New dailies", -- the daily card's tomorrow line (the King Diary's page while one waits)
@@ -5971,6 +6102,10 @@ Config.Return = {
 Config.MyWay = {
 	MinPicks = 2,
 	BalanceShare = 0.2,
+	-- A23-86 (검수 2026-10-09): repeated cards (ChoiceCard picks data.Story.N[kind][side], the job board's N.Kind = good /
+	-- N.Sneaky = devil) count one story pick for every RepeatPer of them, and all of them together never weigh more than
+	-- the story picks do (so a grinder cannot out-vote the story; the story picks decide first, 2+ are still needed)
+	RepeatPer = 5,
 	Names = { TrueKnight = "True Knight", RebelAngel = "Rebel Angel", ProudRascal = "Proud Rascal",
 		SoftDevil = "Soft-Hearted Devil", BalanceWalker = "Balance Walker" },
 }
@@ -6052,6 +6187,7 @@ Config.Deeds = {
 	PerDay = 6,
 	Points = 1, -- a deed's default size
 	CheckInterval = 60, -- seconds between the day checks of online players (DeedsToday goes back to 0 at 00:00 KST)
+	Text = { Full = "Your shard is full for today. Come back tomorrow!" },
 }
 -- ChoiceCard.luau (contract docs/design/choice_card_server_2026-10-09.md): a card only the player sees, Good and Evil of
 -- the same size, a FIXED reward. Kinds[kind] = { Title, Seconds? (timed, not saved), Good / Evil = { Label, Done?,
@@ -6072,10 +6208,54 @@ Config.ChoiceCard = {
 		EvilDone = "Sneaky choice!",
 		Score = "%s +%d", -- ("Honor" | "Infamy", points)
 		XP = "+%s XP", -- A23-87: a Reward.XP (never 2x)
-		Full = "Your shard is full for today. Come back tomorrow!",
+		Full = "Your shard is full for today. Come back tomorrow!", -- (the same line as Config.Deeds.Text.Full)
 	},
 }
 Config.RateLimits.CardAction = 0.3
+-- A23-86 D (content_beyond_10min D): the monster kill record from the first beta day (KillLog.luau). Additive save field
+-- (Version stays 3): KillLog = { Total, M (by hand), A (auto combat), Golden, ByKind = { [monster kind] = n },
+-- ByTier = { ["tier"] = { M, A } } }. The sticker book screen comes 11/04; nothing is paid for it here.
+Config.Data.Defaults.KillLog = { Total = 0, M = 0, A = 0, Golden = 0, ByKind = {}, ByTier = {} }
+-- A23-86 decision 2 = A (user 2026-10-09): Otto's commissions (CommissionService, content_beyond_10min H). The golden / crystal
+-- / spirit weapons (T4-T6) can be ordered at the Forge: gold (the weapon's own Price) + materials + the weapon's MinLevel.
+-- The numbers below are PROPOSED (decision 2-2 is 검수's): T4 as designed (3,000 gold + 10 Brute Horn + 20 Goblin Tooth), T5 /
+-- T6 from the Skeleton Ruins drops (Bone P 0.4, Knight Crest P 0.5; about 20 kills a minute in a zone => T5 ~6 min of bones
+-- + 2 of crests, T6 ~13 + 5). The gold is far below a first day's stack, so the door is materials and level (A23 H).
+-- Switched by Config.Features.Commission (OFF until the Forge window shows its [Commission] row: the client is game dev 1's).
+-- ShowLevel = from which level the next-goal ladder names the order. Card = the ChoiceCard kind that opens after the order.
+Config.Features.Commission = false
+Config.Commission = {
+	Card = "ApprenticeScratch",
+	CardDelay = 1.5, -- seconds after the equip line
+	Orders = {
+		[4] = { Gold = 3000, Items = { BruteHorn = 10, GoblinTooth = 20 }, ShowLevel = 10 }, -- Lv12 (the weapon's MinLevel)
+		[5] = { Gold = 10000, Items = { KnightCrest = 12, Bone = 30 }, ShowLevel = 25 }, -- Lv20
+		[6] = { Gold = 30000, Items = { KnightCrest = 30, Bone = 60 }, ShowLevel = 25 }, -- Lv30
+	},
+	Text = {
+		Done = "Otto made your %s!",
+		NeedLevel = "Otto says: come back at Lv %d!",
+		NeedMaterials = "Otto needs more materials for this one.",
+		Owned = "You already have this weapon.",
+		GoalLabel = { [4] = "Golden weapon", [5] = "Crystal weapon", [6] = "Spirit weapon" },
+		GoalMaterial = "Next goal · %s: %s %d/%d · %s/%s gold",
+		GoalGold = "Next goal · %s: %s/%s gold",
+		GoalLevel = "Next goal · %s: Lv%d (now Lv%d)",
+		GoalReady = "Next goal · %s is ready at the Forge!",
+	},
+}
+Config.RateLimits.Commission = 1
+Config.ChoiceCard.Kinds.ApprenticeScratch = {
+	Title = "The apprentice scratched the hilt a little.",
+	Good = { Label = "It's fine. Thank you!", Reward = { Item = "Enh70", N = 1 }, Points = 1, Done = "Otto's apprentice beams." },
+	Evil = { Label = "Fix it AND give me a discount!", Reward = { GoldMin = 2 }, Points = 1, Done = "A discount, just for you." },
+}
+-- A23-86 Sprout Oath titles (stat-free; the oath's pick decides which: Good = Guardian Cadet, Evil = Rascal Cadet)
+Config.TitleDefs.GuardianCadet = { Name = "Guardian Cadet", NameEn = "Guardian Cadet", Color = Color3.fromRGB(255, 225, 120) }
+Config.TitleDefs.RascalCadet = { Name = "Rascal Cadet", NameEn = "Rascal Cadet", Color = Color3.fromRGB(190, 120, 235) }
+for _, id in { "GuardianCadet", "RascalCadet" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
 
 ----------------------------------------------------------------- kill cards (게임성 개발 2, A23-87)
 -- KillCardService: a kill of one of Kinds (by a paid contributor) offers that ChoiceCard kind with chance Chance, at

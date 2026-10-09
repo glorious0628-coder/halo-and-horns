@@ -16,12 +16,14 @@ from test_unarmed_start import FILES as UNARMED_FILES, bindings as unarmed_bindi
 
 FILES = dict(UNARMED_FILES)
 FILES["BOARD_SOURCE"] = SSS / "BoardService.luau"
+FILES["DEEDS_SOURCE"] = SSS / "Deeds.luau"  # A23-86: a finished job is one deed of the daily ledger
 BD, C, ST = "BOARD_SOURCE", "CONFIG_SOURCE", "STORY_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     out = unarmed_bindings(sources)
     out["BOARD_SOURCE"] = sources[BD]
+    out["DEEDS_SOURCE"] = sources["DEEDS_SOURCE"]
     return out
 
 

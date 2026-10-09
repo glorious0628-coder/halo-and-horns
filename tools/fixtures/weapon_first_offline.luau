@@ -3,7 +3,8 @@
 -- ShopService extract with the anvil prompt); this file adds the real QuestService (its three loops stepped by hand), a
 -- ZoneService travel double (Travel / MarkTeleported / ZoneChanged) and the Crossroads anvil part.
 -- Rate limits are onboarding's (tools/test_onboarding.py): here Util.RateLimit always allows, so a remote call never has
--- to move the clocks (the trips' 3 s timers are stepped exactly with w:Advance).
+-- to move the clocks. A23-88 (user 2026-10-09): nothing moves the player by itself - [I'm In!] starts "Go to Otto's
+-- Forge" (walking), the gift starts "Travel to the Squishy Meadow" (pad or map), and the walker's arrival is a metric.
 
 local TC = C0.Tutorial
 local STEP = TC.Steps
@@ -154,16 +155,18 @@ runGroup("config", function()
 	check(STEP.Forge == 3 and seen[3] == 1 and STEP.Kill == 0 and STEP.Guide == 1 and STEP.Quest == 2 and STEP.Done == 99,
 		"Steps.Forge = 3, its own value", show(STEP))
 	local F = TC.Forge
-	check(F.Landing == "Anvil" and F.Back == 8 and F.Lift == 4 and F.Near == 24 and F.TravelDelay == 3,
-		"Forge: lands 8 studs in front of the anvil, 4 up; no trip within 24; the meadow trip 3 s after the gift", show(F))
-	check(F.Back < 12, "the landing is inside the anvil prompt's reach (12 studs): the prompt is up at once", F.Back)
+	check(F.Near == 24 and F.Landing == nil and F.Back == nil and F.Lift == nil and F.TravelDelay == nil and TC.AcceptTravelSeconds == nil,
+		"A23-88: Forge = { Near = 24 } only; no landing, no trip delay, no accept trip", show(F))
 	for _, side in { "Halo", "Horns", "Neutral" } do
 		local line = TC.Welcome[side].Lines[1]
 		check(string.find(line, "First, get a weapon", 1, true) == 1 and string.find(line, "5 slimes", 1, true) ~= nil
 			and not string.find(line, "fists", 1, true), side .. ": page 1 = the weapon first, then 5 slimes", line)
 	end
-	check(TC.Text.Forge == "Get your first weapon · Crossroads Forge" and TC.ShortNames.Forge == "To the Forge"
-		and #TC.ShortNames.Forge <= 14, "the Forge row: text + phone ShortName", show({ TC.Text.Forge, TC.ShortNames.Forge }))
+	check(TC.Text.Forge == "Go to Otto's Forge" and TC.ShortNames.Forge == "To the Forge" and #TC.ShortNames.Forge <= 14,
+		"the Forge row: text + phone ShortName", show({ TC.Text.Forge, TC.ShortNames.Forge }))
+	check(TC.Text.Travel == "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)" and TC.ShortNames.Travel == "To the meadow"
+		and #TC.ShortNames.Travel <= 14, "the travel row (A23-88): the pad or the map, phone ShortName", show({ TC.Text.Travel, TC.ShortNames.Travel }))
+	check(string.find(TC.Text.ForgeGift, "Squishy Meadow is next", 1, true) ~= nil, "Otto points to the meadow", TC.Text.ForgeGift)
 	check(string.sub(TC.Text.ForgeGift, 1, 6) == "Otto: " and string.find(TC.Text.ForgeGift, "Clang, clang", 1, true) ~= nil,
 		"Otto hands it over in his own voice (his catchphrase)", TC.Text.ForgeGift)
 	-- the 150 gold: the next weapon (tier 2, Lv1) now that the first one is in hand
@@ -190,14 +193,12 @@ runGroup("weapon first", function()
 	check(step(p) == 0 and d.WeaponTier == 0 and d.WeaponOwnedMask == 0 and w:Panels(p, "Welcome") == 1,
 		"a new player: bare-handed at the welcome (the guide opens)", show({ step(p), d.WeaponTier }))
 	local t0, fx0, n0 = w.Time, #w.Fx, #w.Notices
+	local arrivals = {}
+	w.Quest.ForgeReached:Connect(function(player, seconds) table.insert(arrivals, seconds) end)
 	w:Accept(p)
-	local trip = w:FxFor(p, "Travel", fx0)
 	check(step(p) == T.Steps.Forge and d.TutorialStep == 3, "[Accept] bare-handed -> the Forge step (3)", step(p))
-	check(#trip == 1 and trip[1].Data.To == "Crossroads" and trip[1].Data.Spot == "Forge" and trip[1].Data.T == 3
-		and trip[1].Data.UserId == p.UserId, "the forge trip: Fx Travel { UserId, To = Crossroads, Spot = Forge, T = 3 }",
-		show(trip[1] and trip[1].Data))
-	check(p:GetAttribute("MoveLockUntil") == t0 + 4.5 and #w.Travels == 0, "the fade's lock (now + 4.5), nobody moved yet",
-		p:GetAttribute("MoveLockUntil"))
+	check(#w:FxFor(p, "Travel", fx0) == 0 and #w:FxFor(p, "TravelDone", fx0) == 0 and p:GetAttribute("MoveLockUntil") == nil and #w.Travels == 0,
+		"A23-88: no automatic trip - no Fx Travel, no lock, nobody moved", show({ #w:FxFor(p, "Travel", fx0), #w.Travels }))
 	local rows = w:Rows(p)
 	local row = rows[1] or {}
 	check(row.Id == "tutorial" and row.Pinned == true and row.TutorialStep == 3 and row.Text == T.Text.Forge
@@ -206,30 +207,25 @@ runGroup("weapon first", function()
 	local folded = 0
 	for i = 2, #rows do if rows[i].Folded == true then folded += 1 end end
 	check(#rows > 1 and folded == #rows - 1, "every other row stays folded until the first claim", show(#rows))
-	-- the trip: 3 s, then the Crossroads, then in front of the anvil
-	w:Advance(2.9)
-	check(#w.Travels == 0, "nobody moves before T", #w.Travels)
-	w:Advance(0.1)
-	check(#w.Travels == 1 and w.Travels[1].Dest == "Crossroads" and w.Travels[1].Instant == true and w.ZoneOf[p] == "Crossroads",
-		"T s later: an instant Travel to the Crossroads", show(w.Travels[1] and { w.Travels[1].Dest, w.Travels[1].Instant }))
-	local root = rootOf(p)
-	local pivot = p.Character.Pivot
-	check(pivot ~= nil and math.abs(flat(root.Position, ANVIL_POS) - 8) < 1e-6 and math.abs(root.Position.Y - 4) < 1e-6,
-		"then 8 studs in front of the anvil, 4 above its bottom", show(root.Position))
-	local spawn = w.Config.Zones.Crossroads.Spawn
-	check(flat(root.Position, spawn) < flat(ANVIL_POS, spawn), "on the anvil's Crossroads-spawn side (the way players come)",
-		show(root.Position))
-	check(pivot and pivot.Target and pivot.Target.X == ANVIL_POS.X and pivot.Target.Z == ANVIL_POS.Z and pivot.Target.Y == root.Position.Y,
-		"facing the anvil (level)", show(pivot and pivot.Target))
-	check(#w.Marked == 1 and w.Marked[1] == p, "the jump is a server teleport (MarkTeleported)", #w.Marked)
-	local done = w:FxFor(p, "TravelDone", fx0)
-	check(#done == 1 and p:GetAttribute("MoveLockUntil") == 0, "TravelDone and the lock lifted", #done)
+	-- time passes, nothing moves the player; the walker arrives at the anvil on foot
+	w:Advance(30)
+	w:QuestTick()
+	check(#w.Travels == 0 and w.ZoneOf[p] == "HaloTown" and #arrivals == 0, "30 s later: still where they stand, no arrival yet", show({ #w.Travels, #arrivals }))
+	w:Walk(p, "Crossroads")
+	rootOf(p).Position = vec(39, 3, 37) -- 8 studs from the anvil (inside Forge.Near)
+	w:Advance(5)
+	w:QuestTick()
+	check(#arrivals == 1 and math.abs(arrivals[1] - 35) < 1.5, "the walker arrives: ForgeReached once, about 35 s after [I'm In!]", show(arrivals))
+	w:QuestTick()
+	w:QuestTick()
+	check(#arrivals == 1, "and only once", #arrivals)
 	-- the meadow before the Forge: nothing counts
 	w:Walk(p, "SlimeMeadow")
 	w:Drop(p, "Slime")
 	check(step(p) == 3 and d.TutorialKills == 0, "a meadow kill before the weapon counts nothing (still the Forge step)",
 		show({ step(p), d.TutorialKills }))
 	w:Walk(p, "Crossroads")
+	rootOf(p).Position = vec(39, 3, 37)
 	-- the anvil prompt: Otto's line, the first weapon in hand, no shop window, the mission goes on
 	local n1, f1 = #w.Notices, #w.Fired
 	w:Press(p)
@@ -241,17 +237,18 @@ runGroup("weapon first", function()
 		"Otto's line, then 'You got your first weapon, [Twig]! Power 0 → N'", show(said))
 	check(w:Panels(p, "WeaponShop", f1) == 0, "no weapon window at the gift (the Stronger! moment)", w:Panels(p, "WeaponShop", f1))
 	check(step(p) == T.Steps.Guide, "the mission goes on: step 1", step(p))
-	-- Forge.TravelDelay later the usual meadow trip
+	-- A23-88: "Travel to the Squishy Meadow": nothing moves the player; the pad / the map / a walk end the step
 	local fx1 = #w.Fx
-	w:Advance(2.9)
-	check(#w:FxFor(p, "Travel", fx1) == 0, "no meadow trip before Forge.TravelDelay", #w:FxFor(p, "Travel", fx1))
-	w:Advance(0.1)
-	local meadow = w:FxFor(p, "Travel", fx1)
-	check(#meadow == 1 and meadow[1].Data.To == "SlimeMeadow" and meadow[1].Data.Spot == nil and meadow[1].Data.T == 3,
-		"then the meadow trip (Fx Travel To = SlimeMeadow)", show(meadow[1] and meadow[1].Data))
-	w:Advance(3)
-	check(w.ZoneOf[p] == "SlimeMeadow" and step(p) == T.Steps.Quest and p:GetAttribute("MoveLockUntil") == 0,
-		"arrived: the hunt (step 2)", show({ w.ZoneOf[p], step(p) }))
+	w:Advance(10)
+	check(#w:FxFor(p, "Travel", fx1) == 0 and #w.Travels == 0 and step(p) == T.Steps.Guide, "10 s after the gift: no automatic trip, still step 1",
+		show({ #w:FxFor(p, "Travel", fx1), #w.Travels, step(p) }))
+	local grow = (w:Rows(p) or {})[1] or {}
+	check(grow.Text == T.Text.Travel and grow.ShortName == T.ShortNames.Travel and grow.TutorialStep == 1 and grow.CanClaim == false,
+		"the step-1 row teaches the pad / the map", show(grow))
+	-- the player's own travel (the pad and Map -> Travel both call ZoneService.Travel) lands in the meadow: the hunt
+	w.Registry.ZoneService.Travel(p, "SlimeMeadow", false)
+	w:Flush()
+	check(w.ZoneOf[p] == "SlimeMeadow" and step(p) == T.Steps.Quest, "the travel pad / the map: the hunt (step 2)", show({ w.ZoneOf[p], step(p) }))
 	for _ = 1, 5 do w:Drop(p, "Slime") end
 	check(d.TutorialKills == 5, "5 slimes with the weapon", d.TutorialKills)
 	-- the claim: 150 gold, the visit cleared, the next-weapon line
@@ -277,106 +274,104 @@ runGroup("weapon first", function()
 	check(d.WeaponTier == 2 and d.WeaponOwnedMask == 3, "the 150 gold buy the tier-2 weapon right there", show({ d.WeaponTier, d.WeaponOwnedMask }))
 end)
 
------------------------------------------------------------------- 3. the forge trip: where, when, and when not
-runGroup("forge trip", function()
-	-- Landing "Spawn": the Crossroads spawn only (no pivot, no teleport mark)
+------------------------------------------------------------------ 3. the forge walk (A23-88): nothing moves, the arrival is a metric
+runGroup("forge walk", function()
+	-- a bare-handed player waits at the Forge step wherever they stand; nothing moves them, even much later
 	local w = forgeWorld()
-	w.Config.Tutorial.Forge.Landing = "Spawn"
 	local p = w:Newbie(1)
+	local fx = #w.Fx
+	local seen = {}
+	w.Quest.ForgeReached:Connect(function(player, seconds) table.insert(seen, seconds) end)
 	w:Accept(p)
-	w:Advance(3)
-	local spawn = w.Config.Zones.Crossroads.Spawn
-	check(w.ZoneOf[p] == "Crossroads" and p.Character.Pivot == nil and #w.Marked == 0
-		and flat(rootOf(p).Position, spawn) < 1e-6, "Landing 'Spawn': the Crossroads spawn only", show(rootOf(p).Position))
-	-- the anvil gone between [Accept] and the move: the Crossroads spawn only, then (검수 2026-10-07: never stuck at the
-	-- Forge step) the next check gives the weapon and the mission goes on
+	w:Advance(120)
+	w:QuestTick()
+	check(step(p) == 3 and #w.Travels == 0 and #w:FxFor(p, "Travel", fx) == 0 and p.Character.Pivot == nil and #w.Marked == 0 and #seen == 0,
+		"2 minutes at home: still the Forge step, nobody moved, no arrival", show({ step(p), #w.Travels, #seen }))
+	-- already next to the anvil at [Accept]: the arrival is counted at once (0 s), once
+	local w3 = forgeWorld()
+	local p3 = w3:Newbie(3, { Pos = vec(39, 3, 30) })
+	local seen3 = {}
+	w3.Quest.ForgeReached:Connect(function(player, seconds) table.insert(seen3, seconds) end)
+	local fx3 = #w3.Fx
+	w3:Accept(p3)
+	w3:QuestTick()
+	check(step(p3) == 3 and #w3:FxFor(p3, "Travel", fx3) == 0 and #seen3 == 1 and seen3[1] < 1, "15 studs from the anvil: the Forge step, the arrival counted (0 s)",
+		show({ step(p3), seen3 }))
+	w3:QuestTick()
+	check(#seen3 == 1 and #w3.Travels == 0, "once; nothing moves later either", show({ #seen3, #w3.Travels }))
+	-- a save waiting at the Forge step (an old one, or a rejoin): no walk began this session, so no arrival metric
+	local w4 = forgeWorld()
+	local seen4 = {}
+	w4.Quest.ForgeReached:Connect(function(player, seconds) table.insert(seen4, seconds) end)
+	local p4 = w4:Newbie(4, { Tutorial = 3, Pos = vec(39, 3, 37) })
+	w4:QuestTick()
+	check(step(p4) == 3 and #seen4 == 0 and #w4.Travels == 0, "a saved Forge step near the anvil: no arrival metric (the walk was not timed)", show({ step(p4), #seen4 }))
+	-- a second [Accept]-like walk after a re-accept starts the clock again
+	local w4b = forgeWorld()
+	local seen4b = {}
+	w4b.Quest.ForgeReached:Connect(function(player, seconds) table.insert(seen4b, seconds) end)
+	local p4b = w4b:Newbie(41)
+	w4b:Accept(p4b)
+	w4b:Advance(12)
+	rootOf(p4b).Position = vec(39, 3, 30)
+	w4b:QuestTick()
+	check(#seen4b == 1 and math.abs(seen4b[1] - 12) < 1.5, "the clock starts at [I'm In!]", show(seen4b))
+	-- far from the anvil (24 studs is the line): not yet
+	local w4c = forgeWorld()
+	local seen4c = {}
+	w4c.Quest.ForgeReached:Connect(function(player, seconds) table.insert(seen4c, seconds) end)
+	local p4c = w4c:Newbie(42)
+	w4c:Accept(p4c)
+	rootOf(p4c).Position = vec(39, 3, 45 - 30)
+	w4c:QuestTick()
+	check(#seen4c == 0, "30 studs away: not arrived", #seen4c)
+	rootOf(p4c).Position = vec(39, 3, 45 - 20)
+	w4c:QuestTick()
+	check(#seen4c == 1, "20 studs: arrived", #seen4c)
+	-- the anvil gone: the gift comes at once, never stuck at the Forge step (검수 2026-10-07)
 	local w2 = forgeWorld()
 	local p2, d2 = w2:Newbie(2)
 	w2:Accept(p2)
 	check(step(p2) == 3, "setup: the Forge step with the anvil there", step(p2))
 	w2.ShopClosed = true
-	w2:Advance(3)
-	check(w2.ZoneOf[p2] == "Crossroads" and p2.Character.Pivot == nil, "the anvil gone before the move: the Crossroads spawn only",
-		show(rootOf(p2).Position))
 	w2:QuestTick()
 	check(step(p2) == 1 and d2.WeaponTier == 1 and d2.WeaponOwnedMask == 1 and firstLines(w2:NoticesFor(p2)) == 1,
 		"no anvil at the Forge step: the first weapon at once (Power 0 → N), then step 1", show({ step(p2), d2.WeaponTier }))
-	-- already next to the anvil: no trip, no fade, no lock
-	local w3 = forgeWorld()
-	local p3 = w3:Newbie(3, { Pos = vec(39, 3, 30) })
-	local fx3 = #w3.Fx
-	w3:Accept(p3)
-	check(step(p3) == 3 and #w3:FxFor(p3, "Travel", fx3) == 0 and p3:GetAttribute("MoveLockUntil") == nil,
-		"15 studs from the anvil: the Forge step without a trip", show({ step(p3), p3:GetAttribute("MoveLockUntil") }))
-	w3:Advance(3)
-	check(#w3.Travels == 0, "nothing moves later either", #w3.Travels)
-	-- a new character before the move (a KO): nobody is moved, the fade still ends
-	local w4 = forgeWorld()
-	local p4 = w4:Newbie(4)
-	local fx4 = #w4.Fx
-	w4:Accept(p4)
-	w4:Body(p4)
-	w4:Advance(3)
-	check(#w4.Travels == 0 and #w4:FxFor(p4, "TravelDone", fx4) == 1 and p4:GetAttribute("MoveLockUntil") == 0,
-		"a respawned character is not moved; TravelDone, the lock lifted", #w4.Travels)
-	-- the zone rules refuse the trip: no landing at the anvil, still the Forge step
-	local w5 = forgeWorld()
-	w5.TravelRefused = true
-	local p5 = w5:Newbie(5)
-	w5:Accept(p5)
-	w5:Advance(3)
-	check(#w5.Travels == 1 and w5.ZoneOf[p5] == "HaloTown" and p5.Character.Pivot == nil and step(p5) == 3,
-		"a refused Travel: no jump to the anvil, still the Forge step (the beam leads)", show({ #w5.Travels, w5.ZoneOf[p5] }))
-	-- the step moved on before the move (e.g. the gift happened): nobody moves
-	local w6 = forgeWorld()
-	w6.Config.Tutorial.Forge.TravelDelay = nil
-	local p6 = w6:Newbie(6)
-	w6:Accept(p6)
-	check(w6.Quest.ForgeGift(p6) == true and step(p6) == 1, "the gift before the trip ended", step(p6))
-	w6:Advance(3)
-	check(#w6.Travels == 0, "a trip for a step that moved on moves nobody", #w6.Travels)
-	check(#w6:FxFor(p6, "Travel") == 1, "TravelDelay nil: no automatic meadow trip after the gift", #w6:FxFor(p6, "Travel"))
-	-- the row's tap (RequestTutorial) at the Forge step: the trip again, never twice at once, never next to the anvil
+	-- the row's tap (RequestTutorial) at the Forge step: nothing is asked for (the client's beam / path light leads)
 	local w7 = forgeWorld()
 	local p7 = w7:Newbie(7)
 	w7:Accept(p7)
-	w7:Advance(3)
-	-- a rejoin-like state: back home, far away
-	w7.ZoneOf[p7] = "HaloTown"
 	rootOf(p7).Position = vec(0, 4, -410)
 	local fx7 = #w7.Fx
 	w7:Request(p7)
-	w7:Request(p7)
-	check(#w7:FxFor(p7, "Travel", fx7) == 1, "a tap: one forge trip (a second tap during the fade does nothing)",
-		#w7:FxFor(p7, "Travel", fx7))
 	w7:Request(p7, "extra")
-	check(#w7:FxFor(p7, "Travel", fx7) == 1, "a tap with arguments does nothing", #w7:FxFor(p7, "Travel", fx7))
-	w7:Advance(3)
-	check(w7.ZoneOf[p7] == "Crossroads" and math.abs(flat(rootOf(p7).Position, ANVIL_POS) - 8) < 1e-6,
-		"the tap's trip lands at the anvil too", show(rootOf(p7).Position))
-	local fx8 = #w7.Fx
-	w7:Request(p7)
-	check(#w7:FxFor(p7, "Travel", fx8) == 0 and w7:Panels(p7, "Welcome") == 1, "at the anvil a tap does nothing (no trip, no welcome)",
-		#w7:FxFor(p7, "Travel", fx8))
-	-- at another step the tap is the old one (step 1: nothing; step 0: the welcome)
+	check(#w7:FxFor(p7, "Travel", fx7) == 0 and #w7.Travels == 0 and w7:Panels(p7, "Welcome") == 1 and step(p7) == 3,
+		"a tap at the Forge step: no trip, no second welcome", show({ #w7:FxFor(p7, "Travel", fx7), #w7.Travels, w7:Panels(p7, "Welcome") }))
+	-- a respawned character at the Forge step is simply home (the player walks again)
 	local w8 = forgeWorld()
-	local p8 = w8:Newbie(8, { Tutorial = 1, Tier = 1, Mask = 1 })
-	local fx9 = #w8.Fx
-	w8:Request(p8)
-	check(#w8:FxFor(p8, "Travel", fx9) == 0 and w8:Panels(p8, "Welcome") == 0, "step 1: a tap asks for nothing", step(p8))
+	local p8 = w8:Newbie(8)
+	w8:Accept(p8)
+	w8:Body(p8)
+	w8:Advance(10)
+	check(#w8.Travels == 0 and step(p8) == 3, "a KO at the Forge step: nobody moved, still the Forge step", show({ #w8.Travels, step(p8) }))
+	-- at another step the tap is the old one (step 1: nothing)
+	local w9 = forgeWorld()
+	local p9 = w9:Newbie(9, { Tutorial = 1, Tier = 1, Mask = 1 })
+	local fx9 = #w9.Fx
+	w9:Request(p9)
+	check(#w9:FxFor(p9, "Travel", fx9) == 0 and w9:Panels(p9, "Welcome") == 0, "step 1: a tap asks for nothing", step(p9))
 end)
 
 ------------------------------------------------------------------ 4. the gift: only at the Forge step
 runGroup("gift", function()
 	local w = forgeWorld()
 	local T = w.Config.Tutorial
-	-- a save that owns the first weapon (from before A23-34): [Accept] -> step 1 + the meadow trip, as before
+	-- a save that owns the first weapon (from before A23-34): [Accept] -> step 1 (A23-88: no trip, the pad lesson)
 	local old, od = w:Newbie(1, { Tier = 1, Mask = 1 })
 	local fx0 = #w.Fx
 	w:Accept(old)
-	local trip = w:FxFor(old, "Travel", fx0)
-	check(step(old) == T.Steps.Guide and #trip == 1 and trip[1].Data.To == "SlimeMeadow", "owns tier 1: [Accept] -> the meadow trip (step 1)",
-		show({ step(old), trip[1] and trip[1].Data }))
+	check(step(old) == T.Steps.Guide and #w:FxFor(old, "Travel", fx0) == 0 and #w.Travels == 0, "owns tier 1: [Accept] -> step 1, no trip",
+		show({ step(old), #w:FxFor(old, "Travel", fx0) }))
 	-- the anvil at the welcome step / after the first mission: the usual shop, no gift, the step kept
 	local p0, d0 = w:Newbie(2)
 	local f0 = #w.Fired
@@ -395,7 +390,7 @@ runGroup("gift", function()
 	w:Press(pc)
 	check(dc.WeaponTier == 0 and dc.WeaponOwnedMask == 0 and step(pc) == 3 and w:Panels(pc, "WeaponShop", fc) == 1,
 		"no class chosen: no gift", show({ dc.WeaponTier, step(pc) }))
-	-- the hunt began before Forge.TravelDelay (walked into the meadow): no meadow trip
+	-- the hunt begins on a walk into the meadow too (the step ends however the player got there)
 	local w2 = forgeWorld()
 	local p2 = w2:Newbie(5, { Pos = vec(39, 3, 37) })
 	w2:Accept(p2)
@@ -403,27 +398,8 @@ runGroup("gift", function()
 	local fx2 = #w2.Fx
 	w2:Walk(p2, "SlimeMeadow")
 	check(step(p2) == 2, "walking in after the gift starts the hunt", step(p2))
-	w2:Advance(3)
-	check(#w2:FxFor(p2, "Travel", fx2) == 0, "then no meadow trip", #w2:FxFor(p2, "Travel", fx2))
-	-- a trip already running when the delay ends: no second one
-	local w3 = forgeWorld()
-	local p3 = w3:Newbie(6, { Pos = vec(39, 3, 37) })
-	w3:Accept(p3)
-	w3:Press(p3)
-	w3:Advance(1)
-	p3:SetAttribute("MoveLockUntil", w3.Time + 10)
-	local fx3 = #w3.Fx
-	w3:Advance(2)
-	check(#w3:FxFor(p3, "Travel", fx3) == 0, "a running trip (lock ahead): no meadow trip on top", #w3:FxFor(p3, "Travel", fx3))
-	-- a player who left before the delay: nothing
-	local w4 = forgeWorld()
-	local p4 = w4:Newbie(7, { Pos = vec(39, 3, 37) })
-	w4:Accept(p4)
-	w4:Press(p4)
-	w4:Remove(p4)
-	local fx4 = #w4.Fx
-	w4:Advance(3)
-	check(#w4:FxFor(p4, "Travel", fx4) == 0, "left before the delay: no trip", #w4:FxFor(p4, "Travel", fx4))
+	w2:Advance(10)
+	check(#w2:FxFor(p2, "Travel", fx2) == 0 and #w2.Travels == 0, "and nothing ever moved them", #w2:FxFor(p2, "Travel", fx2))
 	-- the gift once: a second press at step 1 opens the shop, gives nothing more
 	local w5 = forgeWorld()
 	local p5, d5 = w5:Newbie(8, { Pos = vec(39, 3, 37) })
@@ -445,11 +421,9 @@ runGroup("no anvil / held weapon", function()
 	local p, d = w:Newbie(1)
 	local fx0 = #w.Fx
 	w:Accept(p)
-	local trip = w:FxFor(p, "Travel", fx0)
 	check(step(p) == 1 and d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(p)) == 1,
 		"no anvil at [Accept]: the first weapon at once, step 1 (never stuck at the Forge step)", show({ step(p), d.WeaponTier }))
-	check(#trip == 1 and trip[1].Data.To == "SlimeMeadow" and trip[1].Data.Spot == nil, "then the meadow trip",
-		show(trip[1] and trip[1].Data))
+	check(#w:FxFor(p, "Travel", fx0) == 0, "and no trip (A23-88)", #w:FxFor(p, "Travel", fx0))
 	-- a save waiting at the Forge step when the shop is closed: the join gives the weapon and moves on
 	local q, e = w:Newbie(2, { Tutorial = 3 })
 	check(step(q) == 1 and e.WeaponTier == 1 and e.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(q)) == 1,
@@ -460,10 +434,9 @@ runGroup("no anvil / held weapon", function()
 	local h, hd = w2:Newbie(3, { Tier = 2, Mask = 2 })
 	local fx1 = #w2.Fx
 	w2:Accept(h)
-	local htrip = w2:FxFor(h, "Travel", fx1)
-	check(step(h) == 1 and #htrip == 1 and htrip[1].Data.To == "SlimeMeadow" and hd.WeaponOwnedMask == 2 and hd.WeaponTier == 2,
-		"holding tier 2 (no tier 1): [Accept] -> step 1 and the meadow trip, no Forge step, nothing given yet",
-		show({ step(h), hd.WeaponOwnedMask, htrip[1] and htrip[1].Data.To }))
+	check(step(h) == 1 and #w2:FxFor(h, "Travel", fx1) == 0 and hd.WeaponOwnedMask == 2 and hd.WeaponTier == 2,
+		"holding tier 2 (no tier 1): [Accept] -> step 1, no trip, no Forge step, nothing given yet",
+		show({ step(h), hd.WeaponOwnedMask, #w2:FxFor(h, "Travel", fx1) }))
 	w2:QuestTick()
 	check(hd.WeaponOwnedMask == 2, "and no late gift either (the same rule for both)", hd.WeaponOwnedMask)
 	-- owning the first weapon but holding nothing (a v3 save may keep tier 0 with weapons owned): it is no gift case,
@@ -471,10 +444,9 @@ runGroup("no anvil / held weapon", function()
 	local o, od = w2:Newbie(4, { Tier = 0, Mask = 1 })
 	local fx2 = #w2.Fx
 	w2:Accept(o)
-	local otrip = w2:FxFor(o, "Travel", fx2)
-	check(step(o) == 1 and #otrip == 1 and otrip[1].Data.To == "SlimeMeadow" and od.WeaponOwnedMask == 1,
-		"owns tier 1, holds nothing: [Accept] -> step 1 and the meadow trip (no Forge step)",
-		show({ step(o), od.WeaponOwnedMask, otrip[1] and otrip[1].Data.To }))
+	check(step(o) == 1 and #w2:FxFor(o, "Travel", fx2) == 0 and od.WeaponOwnedMask == 1,
+		"owns tier 1, holds nothing: [Accept] -> step 1, no trip (no Forge step)",
+		show({ step(o), od.WeaponOwnedMask, #w2:FxFor(o, "Travel", fx2) }))
 end)
 
 ------------------------------------------------------------------ 5. old saves: never left bare-handed

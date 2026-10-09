@@ -61,11 +61,13 @@ def main():
          re.search(r"ProgressUnit = \(type\(e\.ProgressUnit\) == \"string\" and #e\.ProgressUnit > 0 and #e\.ProgressUnit <= 3\)", hud)
          is not None),
         ("ProgressUnit follows the target: '5/10 s'", 'if e.ProgressUnit then t = t .. " " .. e.ProgressUnit end' in nums),
-        ("#2 [I'm In!] is the wide button (half the row)",
-         "nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(0.5, -4, 0, 60)" in welcome),
-        ("#2 Next and Later are a quarter each",
-         "readMore = makeButton(actions, T.WelcomeNext, PALETTE.Button, UDim2.new(0.25, -8, 0, 60)" in welcome
-         and "later = makeButton(actions, T.WelcomeLater, PALETTE.Button, UDim2.new(0.25, -8, 0, 60)" in welcome),
+        ("#2 / 검수 10/09: [I'm In!] is the one big button (the row minus the small next button), first in the row",
+         "nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(1, -74, 0, 60)" in welcome
+         and "nextButton.LayoutOrder = 1" in welcome),
+        ("검수 10/09: a small ▶ (64 du) for the next page, no 'Later' (the window's X closes)",
+         "readMore = makeButton(actions, T.WelcomeMore, PALETTE.Button, UDim2.new(0, 64, 0, 60)" in welcome
+         and "readMore.LayoutOrder = 2" in welcome and 'WelcomeMore = "▶",' in panels
+         and "WelcomeLater" not in panels and "later" not in welcome),
         ("#2 short screens keep a 64 px face", "local face = short and 64 or 170" in welcome
          and "Size = UDim2.fromOffset(face, face)" in welcome and "portraitRow.Visible = not short" not in welcome),
         ("UI round 2 #8: weapons of 100+ gold buy on a second press within 3 s",
@@ -95,7 +97,7 @@ def main():
          and 'if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end' in forge_branch
          and 0 < guides.find("\tif forge then") < guides.find("\telseif L.NeedsMeadowGuide(step)")
          and "BlacksmithVisited" not in forge_branch
-         and 'ForgeGuide = "Your first weapon · the anvil",' in hud),
+         and 'ForgeGuide = "First weapon",' in hud),
         ("A23-74 weapon first: tapping the Forge row asks the server for the walk again and brings the beam back",
          "\telseif step == L.ForgeStep then\n" in pinned
          and "\telseif step == L.ForgeStep then\n\t\t-- A23-74: the server walks me to the anvil again (ignored while moving "
