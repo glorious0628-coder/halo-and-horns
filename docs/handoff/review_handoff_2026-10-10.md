@@ -13,8 +13,8 @@
 | 모든 것 검수 | local_25173e83-839d-42de-ba5f-b43fe53de111 | Opus xhigh + Ultracode | md 309개 정리(aecf3da), A23-99~102, 세션 8개 시작, 빛 마을 게임성 점검표 | §4 결정 → 각 세션에 점검표 줄 나눠 주기, 미검 커밋 검수 |
 | 메인 반영 1 | local_3c07b98d-eaee-4868-934e-32ff89062bea | Sonnet high | 메인 sync 9e8c3fd3(펫 서버·공격 돌기), 카메라 A23-91·공격 돌기 Play 통과 | a2c30908·f7df9412 sync → Play(펫 창·분수) → 빛 마을 새 모델 들어오면 halo_materials → halo_terrain → 모델 → 시안 각도 사진 → 사용자 저장 → place/ push; 열린 풀밭 고리 사진 |
 | 게임성 개발 1 | local_c625d44a-ed0e-4733-bdf8-2c907267c239 | Opus xhigh | 24ab349a 공격 돌기, a2c30908 펫 창, f7df9412/0efa4259 분수 FountainFx | PET-4 클라 → 효과음 8번 10개 연결 → PvP 밧줄(WIP dev1-wip-pvprope ae8f9d78) → King/Clatter 클라 → 게시판 창 → 배경 음악. 틈틈이 Perf 보내기·이스터 에그 두 줄. **빛 마을 점검표 dev1 줄이 앞으로** |
-| 게임성 개발 2 | local_9294f31c-c238-4aa9-92b8-66c6b412e4c3 | Opus xhigh + Ultracode(사용자 켬) | PET-2b → origin/dev2-pet2b b028afc6(163 통과·변이 86/86) | 개발 3 검증 기다림 → 서버 대상 힌트(A23-91, 개발 1 제안서 dev1_autoface_server_hint_2026-10-09.md) → IDEA-TITLE. **빛 마을 점검표 dev2 줄** |
-| 게임성 개발 3 | local_5f21845d-0b0f-4e04-a4aa-b64773d87c56 | Sonnet xhigh | 7788eb57 폰 성능 서버(검수 통과), 이스터 에그 목록 | PET-2b 검증 → Welcome 4→2줄 → 건강 보고 → 출시 운영 문서 → 이스터 에그 서버. **빛 마을 점검표 dev3 줄** |
+| 게임성 개발 2 | local_9294f31c-c238-4aa9-92b8-66c6b412e4c3 | Opus xhigh + Ultracode(사용자 켬) | PET-2b → origin/dev2-pet2b b028afc6(163 통과·변이 86/86) | (PET-2b는 main 9fee60ac) → 서버 대상 힌트(A23-91, 개발 1 제안서 dev1_autoface_server_hint_2026-10-09.md) → IDEA-TITLE. **빛 마을 점검표 dev2 줄** |
+| 게임성 개발 3 | local_5f21845d-0b0f-4e04-a4aa-b64773d87c56 | Sonnet xhigh | 7788eb57 폰 성능 서버(검수 통과), 이스터 에그 목록 | (PET-2b 검증 끝) Welcome 4→2줄 → test_pet_speed 패턴 고침 push → 건강 보고 → 출시 운영 문서 → 이스터 에그 서버. **빛 마을 점검표 dev3 줄** |
 | 이미지 개발 | local_979f7ab0-631c-415d-951f-032e5707c823 | Opus xhigh | 마름모 겹침·물약 숫자·마름모 거리 크기·목표 글자(origin/imgdev-pcfix2 1fc1942f WIP), phone_round 문서 b6249ab | 뒤쪽 마름모 겹침 고치기 → UiSandbox Play 4번 → main push → 메인 반영 sync |
 | 이미지 생성 1 | local_d22452a9-189d-4d44-850f-051b52c9ad9e | Sonnet high | 빛 마을 새 Tripo 7/20(분수·문·탑·대성당·돔집 A·B·가게, 385포인트), 교차로 시안 후보(중간) | 석상·다리 Tripo → 가져오기 묶음(A 7개 + B 2개, **사용자 WorldKit '3D 가져오기' 클릭 1번**) → 소품 도착분. **빛 마을 점검표 img1 줄(다리·문 계약 등)이 먼저** |
 | 이미지 생성 2 | local_ff8cb386-c462-4353-adf0-23f8447e395d | Sonnet high | 빛 마을 멀티뷰 24장(고급 120) | 한 장 소품 11개 → 뿔 마을 |
@@ -35,7 +35,7 @@
 
 ## 5. main·병합·미검
 - origin/main 마지막: 214e7d70(이미지 생성 1). 메인 Studio = 9e8c3fd3 sync, **저장 안 함(코드 sync뿐이라 잃는 것 없음)**, sync 대기 a2c30908·f7df9412·0efa4259.
-- 병합 대기: dev2-pet2b b028afc6 → 개발 3 검증 → 검수 병합.
+- **병합 끝: dev2-pet2b b028afc6 → main 9fee60ac**(개발 3 검증 통과 dbd3c9ac, 검수가 병합 뒤 test_tamer 163/163·변이 86/86 다시 확인). 메인 Studio sync 대기(a2c30908·f7df9412·0efa4259·9fee60ac — 메인 반영 1 내일 첫 일).
 - 검수 아직 안 본 커밋: a2c30908(펫 창), f7df9412·0efa4259(분수), 214e7d70(교차로 후보 — 고르기 포함), 개발 3·이미지 생성 2의 마지막 push.
 - WIP 브랜치: dev1-wip-pvprope ae8f9d78, imgdev-pcfix2 1fc1942f.
 
