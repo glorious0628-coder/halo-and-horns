@@ -47,5 +47,6 @@ Credits: no per-batch report to the user; 검수 tells the user only when a bala
 - Speech bubbles: Captain Clatter, Flower Slime, Slingshot Goblin, Skeleton Archer get their own (now family bubbles).
 - World map pond slimes are pasted concept cutouts → goes away with the minimap/big-map tile set (A23-95, MapTilesFull).
 
-## Order
-P1 #1–3 (already started) → P1 #4–6 → P2 swap of existing Tripo models (cheap, big visual gain) → P5 icons → P2 zone kits with the A23-93 concept sets → P3 weapons → P1 #7, P2 hack-fixes, P4 → P1 #10.
+## Order — one zone at a time (A23-97, user 10/09)
+Zone by zone, each finished like its concept before the next: ① Slime Meadow (P1 #1–3, #5 slimes; meadow's own trees/boulders/stepping stones/sign/bridge/gate; Kit_M_SignPost fresh; minimap tiles) → ② Crossroads (own signposts, X_Fountain or fresh, supporter board, stalls solid roofs) → ③ Goblin Woods (P1 #6–7 goblins, woods flowers, DarkBush/RedEye, Kit_W_JobBoard/CampFence fresh) → ④ Halo / Horns towns (existing Town_* Tripo swaps) → ⑤ Skeleton Ruins (#4 Clatter, #7 skeletons, R_* swaps) → ⑥ Pumpkin Patch → ⑦ Haunted Hollow.
+Zone-free items run in the gaps by 이미지 생성 2 / 이미지 개발: P5 icons, P3 weapons, P4 NPCs (after approval). P1 #10 last.
