@@ -5440,7 +5440,10 @@ function HUD.Start()
 		end)
 		-- ChipsFoldPreview = true / false folds / unfolds the status chips (이미지 개발 photos, ui_clutter_review ③)
 		LocalPlayer:GetAttributeChangedSignal("ChipsFoldPreview"):Connect(function()
-			HUD.SetChipsFolded(LocalPlayer:GetAttribute("ChipsFoldPreview") == true)
+			-- a photo preview turns 개발 1's automatic fold off (L.ChipFold.Auto) so it cannot fold / unfold mid-shot
+			local v = LocalPlayer:GetAttribute("ChipsFoldPreview")
+			L.ChipFold.Auto = v == nil
+			HUD.SetChipsFolded(v == true)
 		end)
 	end
 
