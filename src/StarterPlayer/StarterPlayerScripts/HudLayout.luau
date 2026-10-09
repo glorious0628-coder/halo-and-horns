@@ -34,7 +34,8 @@ local REF = {
 -- anchors: TL top-left, TC top-centre, TB the Roblox top bar, BC bottom-centre, BR bottom-right (touch: the jump button)
 local ITEMS = {
 	minimap = { "TL", { 14, 66, 150, 150 }, { 8, 62, 80, 80 } },
-	quest = { "TL", { 14, 226, 300, 52 }, { 8, 146, 240, 45 } },
+	-- A23-94 (user 10/09): PC = the left middle (the big quest tracker, HUD L.BuildTracker); phones stay beside the minimap
+	quest = { "TL", { 14, 296, 300, 52 }, { 8, 146, 240, 45 } },
 	-- TB = in the Roblox top bar: x like TC, centred on the bar's middle, its height in REAL px (Roblox's buttons do not
 	-- follow our UIScale); the sheet's y = on the middle line of Roblox's buttons (34 px)
 	war_meter = { "TB", { 496, 13, 288, 42 }, { 255, 15, 240, 38 } },

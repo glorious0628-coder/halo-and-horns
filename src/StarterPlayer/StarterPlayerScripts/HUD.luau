@@ -1979,6 +1979,155 @@ function L.BuildQuestLines(root)
 		if toggleQuests then toggleQuests() end
 	end)
 	ui.questFold = fold
+	if L.Tracker.On then L.BuildTracker(root) end
+end
+
+----------------------------------------------------------------- building: quest tracker (A23-94)
+-- user 10/09 (a reference shot from another game): the 'now do' quest big at the left middle, no plate - line 1 = the
+-- kind icon + the quest's name (bold, outlined, a soft dark band behind it), line 2 = one goal sentence, line 3 =
+-- (p/t) in red-orange, green Done! + [Claim] when it can be claimed. It draws HUD line 1's entry (L.SetQuestLine li 1,
+-- 개발 1 picks it); the head line 'Quests (n) ▼' sits under it and opens the quest window. Lines 2-3 are not drawn.
+function L.BuildTracker(root)
+	local T = L.Tracker
+	local frame = UIKit.Create("TextButton", {
+		Name = "QuestTracker",
+		Text = "",
+		AutoButtonColor = false,
+		BackgroundTransparency = 1,
+		AutomaticSize = Enum.AutomaticSize.Y,
+		Size = UDim2.fromOffset(300, 0),
+		Visible = false,
+		ZIndex = 3,
+		Parent = root,
+	}, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Vertical,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, T.Gap),
+		}),
+	})
+	frame.Activated:Connect(function()
+		if IS_TOUCH then L.QuestBlockTap() else L.QuestLineTap(1) end
+	end)
+	-- line 1: the band (behind) + a horizontal row of icon and name
+	local head = UIKit.Create("Frame", { Name = "Head", LayoutOrder = 1, BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0, T.TitleH), ZIndex = 3, Parent = frame })
+	local band = L.SoftBand(head, "Right")
+	band.Size = UDim2.new(1, 64, 1, 4)
+	band.Position = UDim2.new(0, -8, 0, -2)
+	local row = UIKit.Create("Frame", { Name = "Row", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 4,
+		Parent = head }, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 6),
+		}),
+	})
+	local icon = UIKit.ArtImage("GlyphQuest", { Name = "Icon", LayoutOrder = 1, Size = UDim2.fromOffset(T.TitleH, T.TitleH),
+		ZIndex = 5, Parent = row })
+	local title = UIKit.StyledLabel({ Name = "Title", LayoutOrder = 2, Size = UDim2.new(1, -T.TitleH - 6, 1, 0),
+		TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 5, Parent = row }, "Title")
+	-- line 2: the goal sentence (wraps)
+	local goal = UIKit.StyledLabel({ Name = "Goal", LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4,
+		Parent = frame }, "Body")
+	-- line 3: (p/t) + the Claim pill
+	local prog = UIKit.Create("Frame", { Name = "Progress", LayoutOrder = 3, BackgroundTransparency = 1,
+		Size = UDim2.new(1, 0, 0, T.ProgH), ZIndex = 4, Parent = frame }, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 8),
+		}),
+	})
+	local nums = UIKit.StyledLabel({ Name = "Nums", LayoutOrder = 1, Size = UDim2.new(0, 0, 1, 0),
+		AutomaticSize = Enum.AutomaticSize.X, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = prog }, "Number")
+	local claim = UIKit.ArtFrame("Chip", { Name = "Claim", LayoutOrder = 2, ImageColor3 = COL.HotTint, Visible = false,
+		ZIndex = 5, Parent = prog }, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
+	local claimText = UIKit.StyledLabel({ Name = "Text", Size = UDim2.fromScale(1, 1), Text = TXT.Claim, ZIndex = 6,
+		Parent = claim }, "Number")
+	if IS_TOUCH then -- phones: the game's 11 px floor for the sentence and the numbers (the block sits beside the minimap)
+		goal:SetAttribute("StyleMinPx", 11)
+		nums:SetAttribute("StyleMinPx", 11)
+		title:SetAttribute("StyleMinPx", 13)
+	end
+	frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() L.PlaceTrackerHead() end)
+	ui.tracker = { Frame = frame, Band = band, Icon = icon, Title = title, Goal = goal, Nums = nums, Claim = claim,
+		ClaimText = claimText }
+end
+
+-- line 1's entry -> the tracker (called from L.SetQuestLine)
+function L.SetTracker(e, label, nums)
+	local t = ui.tracker
+	if not t then return end
+	t.Frame.Visible = label ~= nil
+	if not label then return end
+	local title = (type(e) == "table" and type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or label
+	local goal = (type(e) == "table" and type(e.Goal) == "string" and e.Goal ~= "") and e.Goal
+		or (type(e) == "table" and type(e.Text) == "string" and e.Text ~= "" and e.Text) or label
+	t.Title.Text = title
+	t.Goal.Text = goal
+	t.Goal.Visible = goal ~= title
+	local claimable, pill = L.LineFinish(e, 1)
+	t.Claim.Visible = pill
+	t.Nums.Visible = claimable or nums ~= nil
+	t.Nums.Text = claimable and TXT.QuestDone or ("(" .. tostring(nums or "") .. ")")
+	t.Nums.TextColor3 = claimable and Theme.Good or L.Tracker.ProgColor
+	if t.Icon then
+		local img = nil
+		for _, key in L.LineIconKeys(e) do
+			img = UIKit.ArtId(key)
+			if img then break end
+		end
+		t.Icon.Image = img or t.Icon.Image
+	end
+	task.defer(L.PlaceTrackerHead)
+end
+
+-- the tracker at the quest rect (PC: the left middle; phones: beside the minimap), text sizes from the rect's line height
+function L.LayoutTracker(q)
+	local t = ui.tracker
+	if not t then return end
+	local T = L.Tracker
+	local lh = q.H / 2
+	local titleSize = math.max(14, math.floor(lh * T.TitleK))
+	local bodySize = math.max(12, math.floor(lh * T.BodyK))
+	if IS_TOUCH then bodySize = math.max(12, math.ceil(11 / currentScale())) end
+	t.Frame.Position = UDim2.fromOffset(q.X, q.Y)
+	t.Frame.Size = UDim2.fromOffset(q.W, 0)
+	local iconS = math.ceil(titleSize * 1.15)
+	local head = t.Title.Parent and t.Title.Parent.Parent
+	if head then head.Size = UDim2.new(1, 0, 0, math.ceil(titleSize * 1.25)) end
+	if t.Icon then t.Icon.Size = UDim2.fromOffset(iconS, iconS) end
+	t.Title.Size = UDim2.new(1, -iconS - 6, 1, 0)
+	t.Title.TextSize = titleSize
+	t.Goal.TextSize = bodySize
+	t.Nums.TextSize = bodySize
+	local prog = t.Nums.Parent
+	if prog then prog.Size = UDim2.new(1, 0, 0, math.ceil(bodySize * 1.35)) end
+	t.Claim.Size = UDim2.fromOffset(math.floor(bodySize * 4.2), math.ceil(bodySize * 1.3))
+	t.ClaimText.TextSize = math.max(12, math.floor(bodySize * 0.85))
+	T.Rect = q
+	task.defer(L.PlaceTrackerHead)
+end
+
+-- the head line 'Quests (n) ▼' (and its band) right under the tracker; L.QuestBottom = where the list / overlay start
+function L.PlaceTrackerHead()
+	local t, q = ui.tracker, L.Tracker.Rect
+	if not (t and q and ui.questHead) then return end
+	local s = currentScale()
+	local th = t.Frame.Visible and (t.Frame.AbsoluteSize.Y / s) or 0
+	local hh = ui.questHead.Frame.Size.Y.Offset
+	local y = q.Y + (th > 0 and th + L.Tracker.Gap * 2 or 0)
+	ui.questHead.Frame.Position = UDim2.fromOffset(q.X, y)
+	if ui.questHead.Band then ui.questHead.Band.Position = UDim2.fromOffset(q.X - 8, y - 1) end
+	L.QuestBottom = y + hh
+	if ui.quests then ui.quests.Position = UDim2.fromOffset(q.X, L.QuestBottom + 4) end
+	if ui.questOverlay and ui.questOverlay.Position.Y.Offset ~= L.QuestBottom + 4 then
+		ui.questOverlay.Position = UDim2.fromOffset(ui.questOverlay.Position.X.Offset, L.QuestBottom + 4)
+	end
 end
 
 -- line metrics follow the rect (logical units): icon about the line height, text size from it (the style floors keep
@@ -2018,6 +2167,7 @@ function L.LayoutQuestLines(q)
 	if ui.questFold then ui.questFold.TextSize = math.max(12, math.floor(lh * 0.55)) end
 	for _, l in ui.qline do task.defer(L.FitQuestLine, l) end
 	task.defer(L.LayoutQuestPlates)
+	if ui.tracker then L.LayoutTracker(q) end
 end
 
 -- each line's plate: as wide as the line's content (+ L.QuestPlate pads), its height the line minus the gap, hidden with
@@ -2115,6 +2265,7 @@ function L.SetQuestLine(l, e, label, nums)
 	l.Entry = e
 	l.Row.Visible = label ~= nil
 	if l.Band then l.Band.Visible = label ~= nil end
+	if not label and ui.tracker and l == ui.qline[1] then L.SetTracker(e, nil, nil) end
 	if not label then return end
 	-- A23-81 (user 2026-10-08 "잘리지 않게"): the quest's short name when the server gives one ("Supply road"), on every
 	-- device; a story's 'talks to you' line keeps its own words
@@ -2136,6 +2287,7 @@ function L.SetQuestLine(l, e, label, nums)
 		l.Icon.ImageColor3 = COL.White -- the art keys are colored (the old "Star" key needed a gold tint)
 	end
 	task.defer(L.FitQuestLine, l) -- after the row's list layout placed the numbers / 받기
+	if ui.tracker and li == 1 then L.SetTracker(e, label, nums) end
 	task.delay(0, L.LayoutQuestPlates) -- next frame: after the fit and the list layout
 end
 
@@ -4011,7 +4163,8 @@ refreshQuests = function()
 	-- A23-40: the two quest lines always show; the parchment list (header + rows) folds out under them on PC only
 	-- (phones open the overlay from the lines)
 	ui.quests.Visible = #entries > 0 and not IS_TOUCH and questExpanded
-	if ui.questLines then ui.questLines.Visible = #entries > 0 end
+	if ui.questLines then ui.questLines.Visible = #entries > 0 and not ui.tracker end
+	if ui.tracker and #entries == 0 then ui.tracker.Frame.Visible = false end
 	if #entries == 0 and ui.questOverlay then
 		questState.OverlayOpen = false
 		ui.questOverlay.Visible = false
@@ -5078,6 +5231,10 @@ end
 L.TileLabelMinPx = 40
 -- the quest lines' plates (검수 2026-10-08): du of plate left / right of a line's content, the gap between two lines
 L.QuestPlate = { On = false, PadL = 6, PadR = 10, Gap = 4 }
+-- A23-94 quest tracker (L.BuildTracker): On = the big left-middle 'now do' quest instead of the lines; du gap between its
+-- lines, build heights, title / body size per quest-rect line height, the in-progress (p/t) colour
+L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = 1.05, BodyK = 0.66,
+	ProgColor = Color3.fromRGB(255, 96, 72), Rect = nil }
 L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
 -- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
 -- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would
@@ -5131,13 +5288,14 @@ applyLayout = function()
 	-- quest lines (no plate) + the fold-out list under them (PC) / the overlay beside them (phones)
 	local q = R.quest
 	L.LayoutQuestLines(q)
-	ui.quests.Position = UDim2.fromOffset(q.X, q.Y + q.H + 4)
+	ui.quests.Position = UDim2.fromOffset(q.X, (ui.tracker and L.QuestBottom or (q.Y + q.H)) + 4)
 	ui.quests.Size = UDim2.fromOffset(q.W, 0)
 	if IS_TOUCH then
 		L.LayoutQuestHeader(q.W, q.H)
 		-- the rows' overlay opens under the quest lines, kept on screen (CR-M25)
 		if ui.questOverlay then
-			ui.questOverlay.Position = UDim2.fromOffset(math.clamp(q.X, 8, math.max(8, W - L.OverlayW - 8)), q.Y + q.H + 4)
+			ui.questOverlay.Position = UDim2.fromOffset(math.clamp(q.X, 8, math.max(8, W - L.OverlayW - 8)),
+				(ui.tracker and L.QuestBottom or (q.Y + q.H)) + 4)
 		end
 	else
 		ui.questRowW = q.W
