@@ -50,3 +50,11 @@
 - **E8:** 사용자가 아직 가져오지 말 것 — 이미지 생성 1이 슬라임 얼굴 둘레 음영을 매끈하게 고친 판(E8 + 작은 Slime E9)을 만드는 중. 다 되면 둘을 한 번에 가져오기 부탁 → id 장부 → 메인 반영(slime_prince_body.luau: T.NewMesh, T.NewTexture = 101248064145914, 왕관 머리 가운데 0.7배).
 - 메인 Studio: sync 1c8e56c4, King 분홍, E7 몬스터 2개(CustomModels) 들어감. **저장 전** → 사용자에게 클라우드 + 파일 저장 부탁해 둠. 클라우드 확인은 create.roblox.com 버전 기록(12:13 확인됨).
 - 이미지 생성 2: King 분홍 겉면 매끈하게 → 토템 문 고급 → 배경·마스코트 → 장소 묶음. 이미지 생성 1: 얼굴 음영 → 토템 문 Tripo(55) → 장소 묶음(초원부터).
+
+## 7. 15:00 — before the API switch (검수)
+- New rules today: A23-96 remake every reused asset (docs/design/remake_list_2026-10-09.md), A23-97 one zone at a time, user order Halo → Horns → Crossroads → Meadow → Woods → (Ruins) → Pumpkin → Haunted; A23-98 UI = PC first. Credits: tell the user only at ~500 left (AGENTS 11afcf3).
+- Current zone = Halo town: plan docs/design/halo_town_plan_2026-10-09.md (20 new Tripo models; 2D by 이미지 생성 2). zone_swap halo applied in main (interim old Town_Halo models, old parts in ServerStorage.ZoneSwapOld).
+- Merge pending: dev2-a2392 03582a38 (nudge + a2392 + review fixes: Mobs3Ranged=false, FlowerPatch off, WindupTime, PvP toast 20 s, EnteredSafe) → 개발 3 verify → 검수 merges (Game-gpm worktree recipe).
+- To sync next: 개발 1 camera c3be8e44 (A23-91), King pink smooth SurfaceAppearance (Color 128274585331361, Normal 93520326212789). Then user saves (Save to Roblox + Ctrl+S) → 메인 반영 copies build→place/ and pushes.
+- 이미지 개발: faction bg/mascots on imgdev-facbg (unpushed to main), UiSandbox photo pending. Minimap A23-95 UI done (rotation proven).
+- Weekly usage 98% at 14:00; user switching the desktop app to Console API billing (Developer Mode → Third-Party Inference → Anthropic API).
