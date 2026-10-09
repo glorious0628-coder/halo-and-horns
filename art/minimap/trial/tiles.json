@@ -1,0 +1,51 @@
+{
+ "tileStuds": 160.0,
+ "overlapStuds": 12.0,
+ "strideStuds": 148.0,
+ "fovDeg": 15.0,
+ "camHeight": 607.6603290180121,
+ "axes": "image right = +X (east), image up = -Z (north)",
+ "tiles": [
+  {
+   "id": "crossroads",
+   "cx": 0,
+   "cz": 0,
+   "x0": -80.0,
+   "x1": 80.0,
+   "z0": -80.0,
+   "z1": 80.0,
+   "file": "tile_crossroads.png"
+  },
+  {
+   "id": "meadow_arrival",
+   "cx": 260,
+   "cz": 0,
+   "x0": 180.0,
+   "x1": 340.0,
+   "z0": -80.0,
+   "z1": 80.0,
+   "file": "tile_meadow_arrival.png"
+  },
+  {
+   "id": "woods_camp",
+   "cx": 840,
+   "cz": 106,
+   "x0": 760.0,
+   "x1": 920.0,
+   "z0": 26.0,
+   "z1": 186.0,
+   "file": "tile_woods_camp.png"
+  },
+  {
+   "id": "pond",
+   "cx": 290,
+   "cz": 150,
+   "x0": 210.0,
+   "x1": 370.0,
+   "z0": 70.0,
+   "z1": 230.0,
+   "file": "tile_pond.png"
+  }
+ ],
+ "px": 680
+}
