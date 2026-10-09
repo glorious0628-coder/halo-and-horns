@@ -65,7 +65,7 @@ Net.GameStateDefaults = {
 	-- HalloweenService (Config.Halloween): server time (Util.Now) of the next Pumpkin King, 0 = season off / none
 	PumpkinKingNextAt = 0, PumpkinKingActive = false, PumpkinKingEndsAt = 0,
 	GhostKingNextAt = 0, GhostKingActive = false, GhostKingEndsAt = 0, -- A23-45: the HauntedHollow miniboss
-	-- SlimeKingService (게임성 개발 2, 2026-10-08): the King Slime boss of the meadow (NextAt in the past = due, waiting for
+	-- FieldBossService (게임성 개발 2): per Config.FieldBosses key; the King Slime boss of the meadow (NextAt in the past = due, waiting for
 	-- a hunter in the meadow; 0 = off)
 	SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0,
 	-- RankingService (BB10): the current ranking week (Config.WeekIndex) and when it ends (Monday 00:00 KST, os.time)

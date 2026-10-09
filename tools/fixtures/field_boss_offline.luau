@@ -1,7 +1,7 @@
--- slime_king_offline.luau : the King Slime boss (SlimeKingService, A23-84 / A23-85), offline. tools/test_slime_king.py
+-- field_boss_offline.luau : the field bosses (FieldBossService; the King Slime A23-84 / A23-85), offline. tools/test_field_boss.py
 -- puts the source bindings + dev2_kit.luau in front of this file. Only the engine and the neighbour services
 -- (MonsterService SpawnEvent / RemoveEvent, PlayerService, ZoneService, AnnounceService) are doubles; Config, Util and
--- SlimeKingService run from the CURRENT sources.
+-- FieldBossService run from the CURRENT sources.
 
 -- the kit's Vector3 double has no Unit
 local oldIndex = vmt.__index
@@ -63,9 +63,9 @@ local function bossWorld(opts)
 		FindFirstChild = function(_, n) return n == "Map" and map or nil end }
 	env.task = table.clone(env.task)
 	env.task.wait = function() coroutine.yield() end
-	local mod = execute("SlimeKingService", SLIMEKING_SOURCE, env)
+	local mod = execute("FieldBossService", FIELDBOSS_SOURCE, env)
 	w.King = mod
-	mod.Defeated:Connect(function(kind, ids) table.insert(w.DefeatedFired, { Kind = kind, Ids = ids }) end)
+	mod.Defeated:Connect(function(key, kind, ids, rec) table.insert(w.DefeatedFired, { Key = key, Kind = kind, Ids = ids, Rec = rec }) end)
 	mod.Init(registry)
 	mod.Start()
 	local job = table.remove(w.Spawned, 1)
@@ -128,19 +128,19 @@ runGroup("config", function()
 	check(A.Events.SlimeKingAppear.Toast == true and A.Events.SlimeKingLeave.Toast ~= true, "toast only when it appears")
 	check(C.Barks.BubbleFamily.SlimeKing == "Slime" and type(C.Barks.Lines.SlimeKing) == "table", "slime bubbles + dad lines")
 	check(C.Audio.SoftKinds.SlimeKing == true, "soft hit sound")
-	local K = C.SlimeKing
-	check(K.Enabled == true and K.Kind == "SlimeKing" and K.FirstDelay == 180 and K.Interval == 480 and K.Lifetime == 300,
+	local K = C.FieldBosses.SlimeKing
+	check(table.find(C.FieldBosses.Order, "SlimeKing") ~= nil and K.Enabled == true and K.Kind == "SlimeKing" and K.FirstDelay == 180 and K.Interval == 480 and K.Lifetime == 300,
 		"schedule 3 min / every 8 min / stays 5 min", show(K))
 	-- Net defaults + Main lists
 	check(string.find(NET_SOURCE, "SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0", 1, true) ~= nil,
 		"Net GameState defaults")
 	local init = string.match(MAIN_SOURCE, "local INIT_ORDER = (%b{})")
 	local start = string.match(MAIN_SOURCE, "local START_ORDER = (%b{})")
-	check(init and string.find(init, "\"SlimeKingService\"", 1, true) ~= nil, "Main INIT_ORDER has it")
-	check(start and string.find(start, "\"SlimeKingService\"", 1, true) ~= nil
-		and string.find(start, "\"SlimeKingService\"", 1, true) < string.find(start, "\"PlayerService\"", 1, true),
+	check(init and string.find(init, "\"FieldBossService\"", 1, true) ~= nil, "Main INIT_ORDER has it")
+	check(start and string.find(start, "\"FieldBossService\"", 1, true) ~= nil
+		and string.find(start, "\"FieldBossService\"", 1, true) < string.find(start, "\"PlayerService\"", 1, true),
 		"Main START_ORDER has it before PlayerService")
-	check(string.find(MAIN_SOURCE, "S.SlimeKingService.DebugSpawn()", 1, true) ~= nil, "Studio DebugCommand SlimeKing")
+	check(string.find(MAIN_SOURCE, "S.FieldBossService.DebugSpawn(key)", 1, true) ~= nil, "Studio DebugCommand SlimeKing")
 end)
 
 runGroup("schedule", function()
@@ -157,7 +157,7 @@ runGroup("schedule", function()
 	check(w:GS("SlimeKingActive") == true and w:GS("SlimeKingEndsAt") == w.Time + 300, "Active, leaves in 300 s")
 	check(w:GS("SlimeKingNextAt") == w.Time + 480, "next slot 480 s from this appearance")
 	check(count(w.Broadcasts, "SlimeKingAppear") == 1, "Appear line once")
-	check(w.King.IsActive() == true, "IsActive")
+	check(w.King.IsActive("SlimeKing") == true, "IsActive")
 	w:Tick(10)
 	check(#w.Spawns == 1, "only one at a time")
 end)
@@ -183,7 +183,7 @@ runGroup("spot fallbacks", function()
 	local w2 = bossWorld({})
 	w2:Hunter(1)
 	w2:Tick(180)
-	check(#w2.Spawns == 1 and near(w2.Spawns[1].Opts.Near, w2.Config.SlimeKing.Spawn), "neither: Config.SlimeKing.Spawn")
+	check(#w2.Spawns == 1 and near(w2.Spawns[1].Opts.Near, w2.Config.FieldBosses.SlimeKing.Spawn), "neither: Config.FieldBosses.SlimeKing.Spawn")
 	local w3 = bossWorld({ Shrine = vec(1, 1, 1), Hill = { Top = vec(430, 14.6, -170), Foot = vec(430, 5, -150) } })
 	w3:Hunter(1)
 	w3:Tick(180)
@@ -204,10 +204,10 @@ runGroup("defeat", function()
 		"Fx KingDefeat to everyone", show(fx))
 	check(fx and #fx.Data.Contributors == 2 and fx.Data.Contributors[1] == 11 and near(fx.Data.Pos, vec(1, 2, 3)),
 		"Fx carries the paid ids (numbers only) and the spot")
-	check(#w.DefeatedFired == 1 and w.DefeatedFired[1].Kind == "SlimeKing" and #w.DefeatedFired[1].Ids == 2, "Defeated signal")
+	check(#w.DefeatedFired == 1 and w.DefeatedFired[1].Key == "SlimeKing" and w.DefeatedFired[1].Kind == "SlimeKing" and w.DefeatedFired[1].Rec == rec and #w.DefeatedFired[1].Ids == 2, "Defeated signal")
 	check(count(w.Broadcasts, "SlimeKingDefeat") == 1 and count(w.Broadcasts, "SlimeKingLeave") == 0, "Defeat line, not Leave")
 	check(w:GS("SlimeKingActive") == false and w:GS("SlimeKingEndsAt") == 0, "Active off")
-	check(w.King.IsActive() == false, "IsActive false")
+	check(w.King.IsActive("SlimeKing") == false, "IsActive false")
 end)
 
 runGroup("time up / lost", function()
@@ -242,18 +242,53 @@ runGroup("retry / off / debug", function()
 	w:Tick(10)
 	check(#w.Spawns == 2 and w:GS("SlimeKingActive") == true, "the retry spawns it")
 
-	local off = bossWorld({ EditConfig = function(c) c.SlimeKing.Enabled = false end })
+	local off = bossWorld({ EditConfig = function(c) c.FieldBosses.SlimeKing.Enabled = false end })
 	off:Hunter(1)
 	off:Tick(2000)
 	check(#off.Spawns == 0 and off:GS("SlimeKingNextAt") == 0, "Enabled = false: never, NextAt 0")
 
 	local d = bossWorld({ Shrine = vec(0, 0, 0) })
-	check(d.King.DebugSpawn() == "spawned" and #d.Spawns == 1, "DebugSpawn now (no hunter needed)")
-	check(d.King.DebugSpawn() == "already here" and #d.Spawns == 1, "DebugSpawn twice: already here")
+	check(d.King.DebugSpawn("SlimeKing") == "spawned" and #d.Spawns == 1, "DebugSpawn now (no hunter needed)")
+	check(d.King.DebugSpawn("SlimeKing") == "already here" and #d.Spawns == 1, "DebugSpawn twice: already here")
 	d:Hunter(1)
 	d:Tick(180)
 	check(#d.Spawns == 1, "a slot while one is here is skipped")
 	check(d:GS("SlimeKingNextAt") > d.Time, "NextAt moved forward past the skipped slot", show(d:GS("SlimeKingNextAt") - d.Time))
+end)
+
+runGroup("two bosses", function()
+	-- a second boss (no Hill, no Attr, no Spawn) on its own schedule in another zone
+	local w = bossWorld({ Shrine = vec(5, 5, 5), Hill = { Top = vec(430, 14.6, -170), Foot = vec(430, 5, -150) },
+		EditConfig = function(c)
+			c.FieldBosses.Order = { "SlimeKing", "Ruin" }
+			c.FieldBosses.Ruin = { Kind = "Skeleton", FirstDelay = 60, Interval = 600, Lifetime = 120, Radius = 6 }
+		end })
+	w:Hunter(1, "SkeletonRuins")
+	check(w:GS("RuinNextAt") == w.Time + 60 and w:GS("SlimeKingNextAt") == w.Time + 180, "each boss its own first slot")
+	w:Tick(60)
+	check(#w.Spawns == 1 and w.Spawns[1].Kind == "Skeleton", "the ruins boss comes for a ruins hunter", show(#w.Spawns))
+	check(w.Spawns[1].Opts.Near == nil and w.Spawns[1].Opts.Radius == 6,
+		"no Attr / Hill / Spawn: a zone spawn point (no Near), its own Radius", show(w.Spawns[1].Opts.Near))
+	check(count(w.Broadcasts, "RuinAppear") == 1 and w:GS("RuinActive") == true and w:GS("SlimeKingActive") == false,
+		"its own lines and GameState")
+	w:Tick(120)
+	check(#w.Spawns == 1, "the King Slime waits: nobody in the meadow")
+	check(count(w.Broadcasts, "RuinLeave") == 1 and w:GS("RuinActive") == false, "the ruins boss leaves after 120 s")
+	w:Hunter(2, "SlimeMeadow")
+	w:Tick(0.5)
+	check(#w.Spawns == 2 and w.Spawns[2].Kind == "SlimeKing" and near(w.Spawns[2].Opts.Near, vec(5, 5, 5)),
+		"the King Slime at its shrine")
+	check(w.King.IsActive("SlimeKing") and not w.King.IsActive("Ruin"), "IsActive per key")
+	check(w.King.DebugSpawn("Nope") == "no field boss Nope", "DebugSpawn of an unknown key")
+	-- the ruins boss alone with the hill store present: still no hill
+	local h = bossWorld({ Hill = { Top = vec(430, 14.6, -170), Foot = vec(430, 5, -150) },
+		EditConfig = function(c)
+			c.FieldBosses.Order = { "Ruin" }
+			c.FieldBosses.Ruin = { Kind = "Skeleton", FirstDelay = 10, Interval = 600, Lifetime = 120 }
+		end })
+	h:Hunter(1, "SkeletonRuins")
+	h:Tick(10)
+	check(#h.Spawns == 1 and h.Spawns[1].Opts.Near == nil, "the meadow hill is the King Slime's only (Hill = true)")
 end)
 
 finish()

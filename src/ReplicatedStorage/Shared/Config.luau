@@ -1688,7 +1688,7 @@ Config.MonsterTypes = {
 	LittleGhost = { Name = "Little Ghost", Short = "Little Ghost", Zone = "HauntedHollow", Count = 4, Season = "Halloween", HP = 70, Damage = 5,
 		XP = 24, Gold = 14, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
 	-- the King Slime (A23-84 the slime family's dad; docs/design/king_slime_split_2026-10-08.md §3, 검수 OK 2026-10-08):
-	-- a boss of the meadow (SlimeKingService: one on the server, every 8 min at the King Slime Hill shrine, 5 min stay),
+	-- a boss of the meadow (FieldBossService: one on the server, every 8 min at the King Slime Hill shrine, 5 min stay),
 	-- never in the regular pool. Its own model comes later (image gen 2 -> Tripo): until then the Slime Prince's crowned
 	-- cube x Scale (2.5 = the Pumpkin King's body: 3.0 put the body past the attack ring, test_monster_spacing). HP 2500 = about 4 minutes for one Lv 5-8 hunter with a tier 1-2 weapon (~15 DPS x 0.75 uptime),
 	-- about 75 s for three (proposed, tune after play). The finisher card is its (Config.Finisher.Kinds)
@@ -3400,13 +3400,21 @@ Config.Finisher = {
 Config.ScoreBudget = { PerDay = 5 }
 Config.Data.Defaults.ScoreBudget = { Day = 0, N = 0 }
 Config.RateLimits.FinisherPick = 0.3
--- the King Slime boss (SlimeKingService; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08).
--- One on the server: the first slot FirstDelay s after the start, then every Interval s from its last appearance (a
--- due slot waits for a ready player in the meadow); it stays Lifetime s. Spot: the shrine's KingSpawn attribute (under
--- workspace.Map), else ServerStorage.MeadowTerrainStore HillTop moved PathStep studs toward HillPathFoot, else Spawn
--- (the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees). Radius = studs around the spot for ground.
-Config.SlimeKing = { Enabled = true, Kind = "SlimeKing", Key = "SlimeKing", FirstDelay = 180, Interval = 480,
-	Lifetime = 300, Radius = 2, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), Tick = 0.5, RetryDelay = 10 }
+-- the year-round field bosses (FieldBossService; content_beyond_10min_2026-10-08 FB). Order = the boss keys (each key
+-- names its GameState <Key>Active / EndsAt / NextAt and its Announce <Key>Appear / Defeat / Leave lines). Per boss: one
+-- on the server; the first slot FirstDelay s after the start, then every Interval s from its last appearance (a due
+-- slot waits for a ready player in its zone); it stays Lifetime s. Spot: the Vector3 attribute Attr on an instance
+-- under workspace.Map, else (Hill) ServerStorage.MeadowTerrainStore HillTop moved PathStep studs toward HillPathFoot,
+-- else Spawn, else a normal spawn point of the zone. Radius = studs around the spot for ground. MinLevel = the client
+-- chip shows it from this level (the boss itself never checks it).
+Config.FieldBosses = {
+	Order = { "SlimeKing" },
+	Tick = 0.5,
+	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
+	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
+	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
+		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0 },
+}
 
 ----------------------------------------------------------------- beta metrics (BB38, TelemetryService)
 -- docs/design/beta_basics_2026-10-05.md BB38 + 검수 2026-10-07 (economy, friends) + emergent_play_watch §2. Roblox
