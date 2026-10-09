@@ -2,7 +2,7 @@
 -- Studio MCP execute_luau, MAIN place, Edit mode only (메인 반영 runs it; the runner replaces "__MODE__").
 -- Slime Prince (BigSlime) gets the ore-free body: every MeshPart under ServerStorage.CustomModels.BigSlime that uses the slime cube
 -- mesh (old 101084943554251 or the back-fixed 100045743344061) gets the no-ore mesh (art/models/tripo/MonsterSlimeCube_noore.glb,
--- WorldKit import E8 "SlimePrinceBody2", same axes / bounding box as the back-fixed one) by MeshPart:ApplyMesh. Size, CFrame and
+-- WorldKit import E8 "SlimePrinceBody3", same axes / bounding box as the back-fixed one) by MeshPart:ApplyMesh. Size, CFrame and
 -- TextureID stay (ApplyMesh clears TextureID: put back); the old id is kept in the attribute PrinceBodyWas.
 -- The small Shard Slime ("Slime") and PetBabySlime keep their ore: only the model named T.Model is touched.
 -- The small crown on the Prince is slime_backfix_crown.luau's job (ADD_CROWN) / 메인 반영; this tool never adds or removes a crown.
@@ -18,8 +18,12 @@ local T = {
 	-- the E8 import's mesh id (MeshPart SlimePrinceBody2 in the WorldKit place): filled in by the id ledger
 	NewMesh = "rbxassetid://__NEWMESH__",
 	Cube = { "101084943554251", "100045743344061" },
+	-- the Prince's patched blue texture (art/models/tripo/BigSlimeCube_tex_blue_colorfix_noore.png, uploaded by 이미지 개발): the new
+	-- mesh's top uses a texture block the old texture does not have painted, so the texture must change with the mesh. Fill in.
+	NewTexture = "rbxassetid://__NEWTEX__",
 }
 assert(not string.find(T.NewMesh, "__NEWMESH__", 1, true), "T.NewMesh is not filled in yet: import E8_SlimePrinceBody.glb, then set the mesh id")
+assert(not string.find(T.NewTexture, "__NEWTEX__", 1, true), "T.NewTexture is not filled in yet: upload BigSlimeCube_tex_blue_colorfix_noore.png")
 
 local root = game:GetService("ServerStorage"):FindFirstChild("CustomModels")
 local model = root and root:FindFirstChild(T.Model)
@@ -54,7 +58,10 @@ for _, d in parts do
 				local size, cf, tex = d.Size, d.CFrame, d.TextureID
 				d:ApplyMesh(oldMp)
 				d.Size, d.CFrame, d.TextureID = size, cf, tex
+				local texWas = d:GetAttribute("PrinceTexWas")
+				if type(texWas) == "string" then d.TextureID = texWas end
 				d:SetAttribute("PrinceBodyWas", nil)
+				d:SetAttribute("PrinceTexWas", nil)
 				restored += 1
 			end
 		end
@@ -70,7 +77,8 @@ for _, d in parts do
 	local size, cf, oldId, tex = d.Size, d.CFrame, d.MeshId, d.TextureID
 	local ok, e = pcall(function() d:ApplyMesh(newMesh) end)
 	if ok then
-		d.Size, d.CFrame, d.TextureID = size, cf, tex
+		d.Size, d.CFrame, d.TextureID = size, cf, T.NewTexture
+		d:SetAttribute("PrinceTexWas", tex)
 		d:SetAttribute("PrinceBodyWas", oldId)
 		swapped += 1
 		table.insert(names, d:GetFullName())

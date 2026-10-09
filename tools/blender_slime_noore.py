@@ -14,6 +14,10 @@ from mathutils import Vector
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 IN, OUT = argv[0], argv[1]
+PATCH_UV = tuple(float(v) for v in argv[argv.index("--patch-uv") + 1].split(",")) if "--patch-uv" in argv else None  # block centre u,v and block size (uv units)
+RING_JSON = argv[argv.index("--ring-json") + 1] if "--ring-json" in argv else None
+NEW_TEX = argv[argv.index("--tex") + 1] if "--tex" in argv else None
+NAME = argv[argv.index("--name") + 1] if "--name" in argv else None
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=IN)
 obj = [o for o in bpy.context.scene.objects if o.type == "MESH"][0]
@@ -83,19 +87,22 @@ for f in bm.faces:
     if 0.17 < c.z < 0.285 and (CR * 1.05) ** 2 < d2 < (CR * 1.5) ** 2:
         u_ = sum(l[uv].uv.x for l in f.loops) / len(f.loops)
         v_ = sum(l[uv].uv.y for l in f.loops) / len(f.loops)
-        cand.append((u_, v_))
-cols = [col(u_, v_) for u_, v_ in cand]
+        cand.append((u_, v_, c.x, c.y))
+cols = [col(c_[0], c_[1]) for c_ in cand]
 med = [sorted(c[i] for c in cols)[len(cols) // 2] for i in range(3)]
 best = min(range(len(cand)), key=lambda i: sum((cols[i][k] - med[k]) ** 2 for k in range(3)))
-U, V = cand[best]
+U, V = cand[best][0], cand[best][1]
 print("top texels", len(cand), "median", med)
+if RING_JSON:
+    import json
+    json.dump(cand, open(RING_JSON, "w"))
+if PATCH_UV:
+    U, V = PATCH_UV[0], PATCH_UV[1]
 print("fill uv", U, V, col(U, V))
+old_faces = set(bm.faces)
 res = bmesh.ops.holes_fill(bm, edges=boundary, sides=0)
 newf = res["faces"]
 print("fill faces", len(newf))
-for f in newf:
-    for l in f.loops:
-        l[uv].uv = (U, V)
 tri = bmesh.ops.triangulate(bm, faces=newf)
 # the fill is a big flat n-gon (the cleared circle covers most of the top): cut it into small triangles and relax the inside
 # (Laplacian, boundary fixed) so the top is the smooth surface between the body's own rim heights, plus a soft dome
@@ -123,6 +130,18 @@ for _ in range(2):
     ringv = ring2
 for _ in range(3):
     bmesh.ops.smooth_vert(bm, verts=list(ringv), factor=0.4, use_axis_x=False, use_axis_y=False, use_axis_z=True)
+# UVs of every face made by the fill: planar (x, y) -> the free texture block, which python paints as a colour blend of the body top
+# round the hole (so the top has no flat patch): block centre PATCH_UV[:2], size PATCH_UV[2], mapped radius MAPR round CC
+MAPR = CR * 1.05
+for f in bm.faces:
+    if f in old_faces or not f.is_valid:
+        continue
+    for l in f.loops:
+        x, y = l.vert.co.x, l.vert.co.y
+        if PATCH_UV:
+            l[uv].uv = (PATCH_UV[0] + (x - CC[0]) / (2 * MAPR) * PATCH_UV[2], PATCH_UV[1] + (y - CC[1]) / (2 * MAPR) * PATCH_UV[2])
+        else:
+            l[uv].uv = (U, V)
 # keep the body's own normals (recalculating flipped parts of this multi-shell mesh); only the fill faces face outward
 cen = Vector((0, 0, 0))
 for f in bm.faces:
@@ -144,10 +163,19 @@ b = bm.verts.new((cx + 0.002, cy, zmax - 0.002))
 c = bm.verts.new((cx, cy + 0.002, zmax - 0.002))
 mf = bm.faces.new((a, b, c))
 for l in mf.loops:
-    l[uv].uv = (U, V)
+    l[uv].uv = (PATCH_UV[0], PATCH_UV[1]) if PATCH_UV else (U, V)
 bm.to_mesh(me)
 bm.free()
 me.update()
+if NEW_TEX:
+    newim = bpy.data.images.load(NEW_TEX)
+    for m in me.materials:
+        for n in m.node_tree.nodes:
+            if n.type == "TEX_IMAGE":
+                n.image = newim
+if NAME:
+    obj.name = NAME
+    me.name = NAME
 bpy.ops.export_scene.gltf(filepath=OUT, export_format="GLB", export_image_format="AUTO", export_apply=True)
 pts = [v.co for v in me.vertices]
 print("out bbox z", min(p.z for p in pts), max(p.z for p in pts), "wrote", OUT)
