@@ -1699,6 +1699,32 @@ Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "SlimeKing", "P
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
 -- QuestAs = the kind quests count it as (Config.QuestKind); Float = studs the client hovers it above the floor (no
 -- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
+-- 검수 2026-10-09 (system review ④): a monster's name tag colour says how risky it is for me - Weak (gray, Weak or more
+-- levels below me), Even (white), Strong (yellow, Strong+ levels above), Deadly (red, Deadly+ above). Its level = the
+-- model's "Level" attribute (게임성 개발 2, later), else its zone's MinLevel (+ Boss for a boss). Pure: the client
+-- (MonsterLabels) and the offline test call Config.MonsterDanger.Tier / .LevelOf
+Config.MonsterDanger = { Weak = -5, Strong = 3, Deadly = 8, Boss = 5,
+	Colors = { Weak = Color3.fromRGB(165, 165, 170), Even = Color3.fromRGB(255, 255, 255),
+		Strong = Color3.fromRGB(255, 220, 70), Deadly = Color3.fromRGB(255, 80, 70) } }
+function Config.MonsterDanger.LevelOf(kind, attrLevel)
+	local lv = tonumber(attrLevel)
+	if lv and lv == lv and lv > 0 then return math.floor(lv) end
+	local def = type(Config.MonsterTypes) == "table" and Config.MonsterTypes[kind] or nil
+	local zone = type(def) == "table" and type(Config.Zones) == "table" and Config.Zones[def.Zone] or nil
+	local base = type(zone) == "table" and tonumber(zone.MinLevel) or nil
+	if not base then return nil end
+	return math.floor(base) + ((def.Boss == true) and Config.MonsterDanger.Boss or 0)
+end
+function Config.MonsterDanger.Tier(monsterLevel, myLevel)
+	local m, me = tonumber(monsterLevel), tonumber(myLevel)
+	if not m or not me then return "Even" end
+	local d = m - me
+	if d >= Config.MonsterDanger.Deadly then return "Deadly" end
+	if d >= Config.MonsterDanger.Strong then return "Strong" end
+	if d <= Config.MonsterDanger.Weak then return "Weak" end
+	return "Even"
+end
+
 Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
 	-- A23-84 (user 2026-10-08): the slime family - the green Shard Slime is the youngest, the Slime Prince (this id, the
