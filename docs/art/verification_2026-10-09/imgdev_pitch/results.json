@@ -1,0 +1,5 @@
+{
+ "pc": "{\"touch\":\"false\",\"You can swit\":\"pos=336,610 size=637x40 fits=true\",\"Choose your \":\"pos=515,60 size=248x44 fits=true\",\"inset\":\"164, 0, 1280, 58\",\"Altar of Fat\":\"pos=127,351 size=88x12 fits=true\"}",
+ "phone": "{\"touch\":\"false\",\"Switch sides\":\"pos=245,256 size=186x19 fits=true\",\"Choose your \":\"pos=274,-22 size=105x18 fits=true\",\"inset\":\"164, 0, 655, 58\",\"Altar of Fat\":\"pos=49,147 size=82x12 fits=true\"}",
+ "844": "{\"touch\":\"false\",\"Switch sides\":\"pos=292,306 size=186x19 fits=true\",\"Choose your \":\"pos=322,-22 size=105x18 fits=true\",\"inset\":\"164, 0, 750, 58\",\"Altar of Fat\":\"pos=61,174 size=82x12 fits=true\"}"
+}
