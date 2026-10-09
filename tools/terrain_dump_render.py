@@ -13,7 +13,7 @@ import bmesh
 import bpy
 from mathutils import Vector
 
-argv = sys.argv[sys.argv.index("--") + 1:]
+argv = [a for a in sys.argv[sys.argv.index("--") + 1:] if a != "--halo"]
 DUMP, PREFIX = argv[0], argv[1]
 X0, X1, Z0, Z1 = (float(v) for v in argv[2:6]) if len(argv) >= 6 else (206, 654, -244, 244)
 ZS = float(argv[6]) if len(argv) >= 7 else 1.6
@@ -39,7 +39,8 @@ for i in range(len(xs) - 1):
         bm.faces.new((idx[(i, k)], idx[(i + 1, k)], idx[(i + 1, k + 1)], idx[(i, k + 1)]))
 col = bm.loops.layers.color.new("c")
 COL = {"Grass": (0.25, 0.5, 0.15), "LeafyGrass": (0.22, 0.45, 0.15), "Rock": (0.45, 0.45, 0.48), "Sand": (0.78, 0.68, 0.45),
-       "Pavement": (0.62, 0.48, 0.32), "Mud": (0.4, 0.3, 0.2), "Salt": (0.8, 0.8, 0.5), "Sandstone": (0.2, 0.4, 0.12)}
+       "Pavement": (0.62, 0.48, 0.32), "Mud": (0.4, 0.3, 0.2), "Salt": (0.8, 0.8, 0.5), "Sandstone": (0.2, 0.4, 0.12),
+       "Marble": (0.93, 0.92, 0.88), "Concrete": (0.93, 0.9, 0.8), "Limestone": (0.78, 0.76, 0.70)}
 for f in bm.faces:
     for loop in f.loops:
         x, z = loop.vert.co.x, loop.vert.co.y
@@ -77,7 +78,10 @@ def hypso(v):  # height colour ramp for the top view: low = blue-green, high = r
             u = (t - a) / (b - a)
             return tuple(ca[i] + (cb[i] - ca[i]) * u for i in range(3))
     return stops[-1][1]
-for name, kind in (("top", "top"), ("sw", "oblique_sw"), ("ne", "oblique_ne")):
+VIEWS = (("top", "top"), ("sw", "oblique_sw"), ("ne", "oblique_ne"))
+if "--halo" in sys.argv:  # camera on the gate side (south of the island) looking north, like the Halo concept
+    VIEWS = (("top", "top"), ("gate", "oblique_gate"), ("side", "oblique_side"))
+for name, kind in VIEWS:
     if kind == "top":
         sc.render.resolution_x, sc.render.resolution_y = 1100, 1200
         sc.display.shading.light = "FLAT"
@@ -94,7 +98,7 @@ for name, kind in (("top", "top"), ("sw", "oblique_sw"), ("ne", "oblique_ne")):
         sc.display.shading.light = "STUDIO"
         cd.type, cd.ortho_scale = "ORTHO", span * 0.95
         d = 700
-        az = math.radians(225 if kind == "oblique_sw" else 45)
+        az = math.radians({"oblique_sw": 225, "oblique_ne": 45, "oblique_gate": 90, "oblique_side": 160}.get(kind, 45))
         el = math.radians(33)
         cam.location = (cx + d * math.cos(el) * math.cos(az), cz + d * math.cos(el) * math.sin(az), d * math.sin(el))
         cam.rotation_euler = (Vector((cx, cz, 0)) - cam.location).to_track_quat("-Z", "Y").to_euler()
