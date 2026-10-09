@@ -273,7 +273,7 @@
     },
     {
       "group": "take and finish",
-      "check": "the quest list row: 'Slime Prince 0/2', Kind Job, no [Claim]",
+      "check": "the quest list row: 'Slime Prince 0/2' (A23-84), Kind Job, no [Claim]",
       "pass": 1,
       "fail": 0
     },
@@ -903,9 +903,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "be96c0704be9d1cd595c08adc376bfa690fbc557f20de3f9a8af70dccbea77b7",
+    "src/ReplicatedStorage/Shared/Config.luau": "e48f9268247cdf36b2ee8027076f608f96d0d14ddc5156304c3fb4e31067233f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
+    "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
     "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
     "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
@@ -916,7 +916,7 @@
     "src/ServerScriptService/BoardService.luau": "c38b299c2ae7e375a45a427d1ca6b566a4cdf45f4db488015b0da296643f7cd9",
     "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7"
   },
-  "fixtureSHA256": "e1044d0b79143c580c47469115d7c4a194efd6738f3590a7aafdf8585a168d1b",
+  "fixtureSHA256": "1d8c06cd42807830ef9cd108d987bfa8e9c5b17c40e3ccc60023f0a1c6dc89fe",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

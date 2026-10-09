@@ -51,7 +51,7 @@ local function notices(w, p) return table.concat(w:NoticesFor(p), " | ") end
 local function fullKit(tier)
 	if tier == 4 then return { BruteHorn = 10, GoblinTooth = 20 } end
 	if tier == 5 then return { KnightCrest = 12, Bone = 30 } end
-	return { KnightCrest = 30, Bone = 60 }
+	return { KnightCrest = 30, Bone = 60, CaptainBadge = 1 }
 end
 
 runGroup("config", function()
@@ -60,6 +60,8 @@ runGroup("config", function()
 	check(C.Features.Commission == false and not C.FeatureOn("Commission"), "the switch is off until the Forge window has its row", tostring(C.Features.Commission))
 	check(K.Orders[4].Gold == 3000 and K.Orders[4].Items.BruteHorn == 10 and K.Orders[4].Items.GoblinTooth == 20
 		and K.Orders[5].Gold == 10000 and K.Orders[6].Gold == 30000, "T4: 3,000 + 10 Brute Horn + 20 Goblin Tooth; T5 10,000; T6 30,000", show(K.Orders))
+	check(K.Orders[6].Items.CaptainBadge == 1 and K.Orders[6].Items.KnightCrest == 30 and K.Orders[6].Items.Bone == 60 and K.Orders[5].Items.CaptainBadge == nil,
+		"T6 also asks 1 Captain's Badge (Captain Clatter's weekly gift); T5 does not", show(K.Orders[6].Items))
 	for tier = 4, 6 do
 		check(K.Orders[tier].Gold == C.Weapons[tier].Price, "T" .. tier .. ": the gold is the weapon's own Price", show({ K.Orders[tier].Gold, C.Weapons[tier].Price }))
 		for id, n in K.Orders[tier].Items do
@@ -120,14 +122,23 @@ end)
 
 runGroup("T5 and T6", function()
 	local w = commWorld()
-	local p, d = hero(w, 2, "Horns", 30, { BankGold = 50000, Items = { KnightCrest = 50, Bone = 100 } })
+	local p, d = hero(w, 2, "Horns", 30, { BankGold = 50000, Items = { KnightCrest = 50, Bone = 100, CaptainBadge = 2 } })
 	order(w, p, 5)
 	check(bit32.btest(d.WeaponOwnedMask, 16) and d.WeaponTier == 5 and d.BankGold == 40000 and d.Items.KnightCrest == 38 and d.Items.Bone == 70,
 		"T5: 10,000 + 12 Knight Crest + 30 Bone", show({ d.WeaponTier, d.BankGold, d.Items }))
 	order(w, p, 6)
-	check(bit32.btest(d.WeaponOwnedMask, 32) and d.WeaponTier == 6 and d.BankGold == 10000 and d.Items.KnightCrest == 8 and d.Items.Bone == 10,
-		"T6: 30,000 + 30 Knight Crest + 60 Bone", show({ d.WeaponTier, d.BankGold, d.Items }))
+	check(bit32.btest(d.WeaponOwnedMask, 32) and d.WeaponTier == 6 and d.BankGold == 10000 and d.Items.KnightCrest == 8 and d.Items.Bone == 10 and d.Items.CaptainBadge == 1,
+		"T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)", show({ d.WeaponTier, d.BankGold, d.Items }))
 	check(lastFx(w, "Commission", p).Name == "Guardian Spirit Sword", "T6 name", show(lastFx(w, "Commission", p)))
+	-- T6 without the badge: refused, nothing taken
+	local w2 = commWorld()
+	local q, qd = hero(w2, 3, "Halo", 30, { BankGold = 30000, WeaponOwnedMask = 31, Items = { KnightCrest = 30, Bone = 60 } })
+	order(w2, q, 6)
+	check(qd.WeaponTier == 3 and qd.BankGold == 30000 and qd.Items.KnightCrest == 30 and string.find(notices(w2, q), "more materials", 1, true) ~= nil,
+		"T6 without the Captain's Badge: refused, nothing taken", show({ qd.WeaponTier, qd.BankGold, qd.Items }))
+	-- the ladder line names the badge when it is the missing piece
+	local line = w2.Reg.CommissionService.NextGoal(q, qd)
+	check(line == "Next goal · Spirit weapon: Captain's Badge 0/1 · 30K/30K gold", "the next goal names the badge", tostring(line))
 	-- the card is already waiting from T5 (one at a time): no second card
 	w:Advance(2)
 	check(#w:FxOf("Card", p) == 1, "one card open at a time: T6 does not add a second", #w:FxOf("Card", p))

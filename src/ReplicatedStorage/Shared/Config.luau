@@ -6230,7 +6230,7 @@ Config.Commission = {
 	Orders = {
 		[4] = { Gold = 3000, Items = { BruteHorn = 10, GoblinTooth = 20 }, ShowLevel = 10 }, -- Lv12 (the weapon's MinLevel)
 		[5] = { Gold = 10000, Items = { KnightCrest = 12, Bone = 30 }, ShowLevel = 25 }, -- Lv20
-		[6] = { Gold = 30000, Items = { KnightCrest = 30, Bone = 60 }, ShowLevel = 25 }, -- Lv30
+		[6] = { Gold = 30000, Items = { KnightCrest = 30, Bone = 60, CaptainBadge = 1 }, ShowLevel = 25 }, -- Lv30 (the Captain's Badge: Captain Clatter's weekly gift, 검수 2026-10-09)
 	},
 	Text = {
 		Done = "Otto made your %s!",
