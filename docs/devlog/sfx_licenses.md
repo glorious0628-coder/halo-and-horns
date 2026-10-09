@@ -135,3 +135,6 @@
 - **업로드:** 4차 51개 끝(Creator Hub Darugi_S2, 비공개, 'HH SFX <키>', 상점 배포 안 함; id = `art/sfx/asset_ids.json` "ids").
   7번 묶음 6개도 올림(id = asset_ids.json "ids", 연결표 `docs/design/sound_wiring_r4_2026-10-07.md` 7번 절). 개발 1이 연결하고
   Play로 확인하면 옛 id("old")와 옛 `art/sfx/*.ogg`를 지운다. (→ 10/08 끝남: 옛 .ogg 30개는 55fe9a11에서 지웠고, "old" id는 기록으로만 남김. 남은 SwingMage·SwingTamer .ogg는 지금도 쓰는 "kept"라 지우지 않는다.)
+
+## 배경 음악 (A23-100, 소리 만들기)
+- 2026-10-09 빛 마을 1차 시험: Firefly 음악 만들기(앱 브라우저, Darugi 아닌 사용자 Adobe 계정), 1회 20크레딧(1:00, 후보 4개 동시). 태그: bright / peaceful / magical · orchestral fantasy / harp and celesta / flute and soft bells no vocals · fantasy game town · 낮은 에너지 · 중간 템포. 잔액 7790 → 7770. 원본 wav는 art/sfx/bgm/cand/(git 밖 큰 파일), 확인 그림 docs/review/bgm_HaloTown_t1_sheet_2026-10-09.png.

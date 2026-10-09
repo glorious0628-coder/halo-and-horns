@@ -180,6 +180,40 @@ def make_loop(x, bpm, bars, beats, start_s, xfade_s):
     return body
 
 
+
+def _feat(x, hop=480):
+    """log band energies (64 bands, 100 Hz-8 kHz) every 10 ms: used to compare two moments of the music."""
+    from scipy.signal import stft
+    m = x.mean(axis=1)
+    f, t, Z = stft(m, fs=SR, nperseg=2048, noverlap=2048 - hop)
+    mag = np.abs(Z)
+    edges = np.geomspace(100, 8000, 65)
+    bands = np.stack([mag[(f >= edges[i]) & (f < edges[i + 1])].sum(axis=0) for i in range(64)])
+    return np.log1p(30 * bands), hop / SR
+
+
+def auto_loop(x, bpm, beats=4, bars=None, xfade_s=2.0, starts=(1.0, 2.0, 3.0, 4.0, 6.0, 8.0)):
+    """Search start s0 and loop length N (about `bars` bars, +-3 %) so that the music after the cut point looks like
+    the music after the loop start; returns (score, start_s, length_s). Score = mean cosine similarity of 10 ms frames."""
+    F, hs = _feat(x)
+    nf = int(xfade_s / hs)
+    Fn = F / (np.linalg.norm(F, axis=0, keepdims=True) + 1e-9)
+    beat = 60.0 / bpm
+    base = bars * beats * beat
+    best = None
+    for s0 in starts:
+        i0 = int(round(s0 / hs))
+        for dN in np.arange(-0.03, 0.0301, 0.0005):
+            N = base * (1 + dN)
+            i1 = int(round((s0 + N) / hs))
+            if i1 + nf >= Fn.shape[1] or N + s0 + xfade_s > len(x) / SR:
+                continue
+            sc = float(np.mean(np.sum(Fn[:, i0:i0 + nf] * Fn[:, i1:i1 + nf], axis=0)))
+            if best is None or sc > best[0]:
+                best = (sc, s0, N)
+    return best
+
+
 def tempo(x):
     from scipy.signal import stft
     m = x.mean(axis=1)
