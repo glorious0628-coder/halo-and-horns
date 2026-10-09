@@ -789,6 +789,10 @@ function TelemetryService.Start()
 	connect("ReturnService", "Welcomed", function(player)
 		TelemetryService.Custom(player, "WelcomeBack", 1)
 	end)
+	-- A23-88 (walking to the Forge): the seconds from [I'm In!] to the first time the walker stands at Otto's anvil
+	connect("QuestService", "ForgeReached", function(player, seconds)
+		TelemetryService.Custom(player, "ForgeWalk", math.floor(num(seconds)))
+	end)
 	connect("InviteService", "InviteJoined", function(invitee, _by, inviter)
 		TelemetryService.Custom(invitee, "FriendJoin", 1, inviter and "InviterHere" or "InviterAway")
 		if typeof(inviter) == "Instance" then funnel(inviter, "Social", "InviteeJoined") end

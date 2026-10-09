@@ -1,0 +1,24 @@
+"""Run a tools/worldkit/*.luau Edit-mode tool in a Studio window, replacing "__MODE__" (no screen control).
+
+  py tools/run_worldkit_tool.py <tool.luau> <MODE> [--studio WorldKit]      (default window name: GoodEvil, like studio_mcp.py)
+
+Writes build/_run_<tool>.json and calls execute_luau through tools/studio_mcp.py; prints the tool's return string.
+Use `--studio WorldKit` for the practice place; the main place is run by 메인 반영 only.
+"""
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+tool, mode = sys.argv[1], sys.argv[2]
+env = dict(os.environ)
+if "--studio" in sys.argv:
+    env["STUDIO_NAME"] = sys.argv[sys.argv.index("--studio") + 1]
+code = Path(ROOT / tool).read_text(encoding="utf-8").replace("__MODE__", mode)
+out = ROOT / "build" / f"_run_{Path(tool).stem}.json"
+out.write_text(json.dumps({"code": code, "datamodel_type": "Edit"}, ensure_ascii=False), encoding="utf-8")
+r = subprocess.run([sys.executable, str(ROOT / "tools/studio_mcp.py"), "call", "execute_luau", f"@{out}"],
+                   capture_output=True, text=True, encoding="utf-8", env=env, cwd=ROOT)
+print((r.stdout or "") + (r.stderr or ""))

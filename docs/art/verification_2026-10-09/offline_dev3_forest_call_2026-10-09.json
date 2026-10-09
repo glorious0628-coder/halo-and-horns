@@ -1,0 +1,669 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 51,
+  "failedChecks": 0,
+  "namedChecks": 51,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "M2_6: from Lv10 a Goblin Brute in the Goblin Woods counts too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "M2_6 still asks 2 Slime Princes in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the row texts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the row text passes Plural",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the kinds live in those zones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WB1 is a sub, listed once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WB1: after M1_4, Lv10, every side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 1: the woods bridge (WoodsGate, outside the PvP woods)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 2: one card, 1 point each way",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A: one 70% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B: 3 HP potions + 1 minute of Lv10 hunting gold (192) - the same worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "labels",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "English only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every main + sub still fits in the book's Done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no sub listed twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "a Slime Prince in the meadow counts at Lv9 and Lv10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "Lv9: a Goblin Brute in the woods does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "Lv10: a Goblin Brute in the woods counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "Lv10: a plain goblin does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "a Goblin Brute in the wrong zone does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "a Slime Prince in the woods does not (kind AND zone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "a personal monster never counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "level drops under 10 (data): no more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "a step without Alt never takes the woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "Alt only works on kill steps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "Near still applies to the alternative",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alt kills (EventAmount)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pinned row",
+      "check": "Lv9: the row names the Slime Prince only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pinned row",
+      "check": "Lv10: the row names both, progress kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pinned row",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pinned row",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the kill fills the step",
+      "check": "one Goblin Brute: 1/2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the kill fills the step",
+      "check": "then a Slime Prince finishes it (2/2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the kill fills the step",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the kill fills the step",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "before M1_4: not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "Lv9: not started",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "Lv10 after M1_4: started at the bridge step",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "Halo A: a 70% scroll, done, pick Good",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "Honor +1 (A23-58)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "Horns A: the scroll, Infamy stays 0 (floor)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "Horns B: 3 HP potions + 192 gold, Infamy +1, pick Evil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "the pick's gold is source 'Choice' (never 2x)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "Neutral B: the reward, no score",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "a second pick pays nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "a wrong option for a Halo: ignored, the card stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "WB1: the lantern",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 26,
+    "applied": 26,
+    "caught": 26,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: Alt level 9",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv9: a Goblin Brute in the woods does not count",
+          "alt kills (EventAmount) :: level drops under 10 (data): no more",
+          "config :: M2_6: from Lv10 a Goblin Brute in the Goblin Woods counts too",
+          "the pinned row :: Lv9: the row names the Slime Prince only"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: Alt level 11",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv10: a Goblin Brute in the woods counts",
+          "config :: M2_6: from Lv10 a Goblin Brute in the Goblin Woods counts too",
+          "the kill fills the step :: one Goblin Brute: 1/2",
+          "the kill fills the step :: then a Slime Prince finishes it (2/2)",
+          "the pinned row :: Lv10: the row names both, progress kept"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: Alt takes any goblin",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv10: a Goblin Brute in the woods counts",
+          "alt kills (EventAmount) :: Lv10: a plain goblin does not",
+          "config :: M2_6: from Lv10 a Goblin Brute in the Goblin Woods counts too",
+          "the kill fills the step :: one Goblin Brute: 1/2",
+          "the kill fills the step :: then a Slime Prince finishes it (2/2)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: Alt brute in the meadow",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv10: a Goblin Brute in the woods counts",
+          "alt kills (EventAmount) :: a Goblin Brute in the wrong zone does not",
+          "config :: M2_6: from Lv10 a Goblin Brute in the Goblin Woods counts too",
+          "the kill fills the step :: one Goblin Brute: 1/2",
+          "the kill fills the step :: then a Slime Prince finishes it (2/2)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: the meadow step changed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: M2_6 still asks 2 Slime Princes in the meadow",
+          "the kill fills the step :: then a Slime Prince finishes it (2/2)",
+          "the pinned row :: Lv10: the row names both, progress kept",
+          "the pinned row :: Lv9: the row names the Slime Prince only"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: no alt row text",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the row texts",
+          "the pinned row :: Lv10: the row names both, progress kept"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no level check on the alternative",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv9: a Goblin Brute in the woods does not count",
+          "alt kills (EventAmount) :: level drops under 10 (data): no more"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the alternative ignores the zone",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: a Goblin Brute in the wrong zone does not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the alternative ignores the kind",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv10: a plain goblin does not",
+          "alt kills (EventAmount) :: a Slime Prince in the woods does not (kind AND zone)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the alternative never counts",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv10: a Goblin Brute in the woods counts",
+          "the kill fills the step :: one Goblin Brute: 1/2",
+          "the kill fills the step :: then a Slime Prince finishes it (2/2)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the alternative skips the base kind check",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: Lv10: a plain goblin does not",
+          "alt kills (EventAmount) :: Lv9: a Goblin Brute in the woods does not count",
+          "alt kills (EventAmount) :: a Goblin Brute in the wrong zone does not",
+          "alt kills (EventAmount) :: a Slime Prince in the woods does not (kind AND zone)",
+          "alt kills (EventAmount) :: a step without Alt never takes the woods",
+          "alt kills (EventAmount) :: level drops under 10 (data): no more"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "personal monsters count",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alt kills (EventAmount) :: a personal monster never counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the row never names the woods",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pinned row :: Lv10: the row names both, progress kept"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the row names the woods for everyone",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pinned row :: Lv9: the row names the Slime Prince only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "WB1 is not listed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Lv10 after M1_4: started at the bridge step",
+          "config :: WB1 is a sub, listed once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 at Lv5",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Lv9: not started",
+          "config :: WB1: after M1_4, Lv10, every side"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 without M1_4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: before M1_4: not offered",
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 not for Neutral",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Neutral B: the reward, no score",
+          "config :: WB1: after M1_4, Lv10, every side"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 at the pond, not the bridge",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 1: the woods bridge (WoodsGate, outside the PvP woods)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "WB1 A pays two scrolls",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Halo A: a 70% scroll, done, pick Good",
+          "WB1: the lantern :: Horns A: the scroll, Infamy stays 0 (floor)",
+          "WB1: the lantern :: a second pick pays nothing",
+          "config :: A: one 70% scroll"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "WB1 B pays less gold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Horns B: 3 HP potions + 192 gold, Infamy +1, pick Evil",
+          "WB1: the lantern :: the pick's gold is source 'Choice' (never 2x)",
+          "config :: B: 3 HP potions + 1 minute of Lv10 hunting gold (192) - the same worth"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "WB1 B pays more gold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: the pick's gold is source 'Choice' (never 2x)",
+          "config :: B: 3 HP potions + 1 minute of Lv10 hunting gold (192) - the same worth"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 A scores 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Honor +1 (A23-58)",
+          "config :: step 2: one card, 1 point each way"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 B scores 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Horns B: 3 HP potions + 192 gold, Infamy +1, pick Evil",
+          "config :: step 2: one card, 1 point each way"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 B scores 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "WB1: the lantern :: Horns B: 3 HP potions + 192 gold, Infamy +1, pick Evil",
+          "config :: step 2: one card, 1 point each way"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WB1 has no Neutral labels",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3af6d7c98c282d16a48e24b8ae51be7a44cbe59172d4c73a7791c8f44be7ae8b",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/StoryQuestService.luau": "f61024e13cebf1cc7680e687c79acea32aec5f68b8d6be731ebeec3a29f05309"
+  },
+  "fixtureSHA256": "b069697dba12494ec68ef25b20d0e6def2042cdaa06be026a5cb41fdf49f3f19",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-86 Call of the Woods: M2_6 (2 Slime Princes in the meadow) can also be filled from Lv10 by Goblin Brutes in the Goblin Woods (Obj.Alt { MinLevel 10, Pairs { GoblinBrute / GoblinWoods } }, the row names both from that level, progress kept, the kind AND the zone must match, personal monsters never count, Near / Golden rules still apply); sub WB1 'The Dropped Lantern' (after M1_4 at Lv10, every side): step 1 the woods bridge (WoodsGate), step 2 a Choice card, A hand it back = one 70% scroll, B finders keepers = 3 HP potions + 1 minute of Lv10 hunting gold (192, source 'Choice'), 1 point each way (A23-58), Neutral A / B reward only, once.",
+  "limitations": "The bridge card is the normal story card (client already draws it); the lantern art / sounds are not part of this change. Real walking onto the bridge is the Near step of the existing engine (not simulated)."
+}

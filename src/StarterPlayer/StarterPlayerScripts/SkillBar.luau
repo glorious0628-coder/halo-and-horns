@@ -98,7 +98,10 @@ local TXT = {
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
 local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1,
-	TipSlot = "Q", TipAfterPress = 2.5, TipLate = 25, TipPending = false } -- A23-81 the keys tip
+	TipSlot = "Q", TipAfterPress = 2.5, TipLate = 25, TipPending = false, -- A23-81 the keys tip
+	-- 검수 10/09 (UI clutter review ④, "help only when stuck"): the "Press Q" line waits HintAfter s and shows only
+	-- when the new skill was not used by then (HintWait[slot] = its line; SkillBar.Use clears it)
+	HintAfter = 45, HintWait = {} }
 
 ----------------------------------------------------------------- state
 local S = {
@@ -674,8 +677,8 @@ function LEARN.Show(b, st)
 		if type(kb) == "table" and type(kb.Label) == "function" then ok, label = pcall(kb.Label, T.Action[slot]) end
 		line = string.format(TXT.LearnKey, (ok and type(label) == "string" and label ~= "") and label or slot)
 	end
-	local hud = C and C.HUD
-	if type(hud) == "table" and type(hud.Hint) == "function" then pcall(hud.Hint, slot, line) end
+	LEARN.HintWait[slot] = line
+	task.delay(LEARN.HintAfter, LEARN.LateHint, slot)
 	task.delay(LEARN.SoundDelay, LEARN.Sound)
 	-- A23-81: the first skill (this moment comes once per account: the slot opens while I play) brings the keys tip on
 	-- keyboards, after my first press of it, or TipLate s later if I never press
@@ -683,6 +686,15 @@ function LEARN.Show(b, st)
 		LEARN.TipPending = true
 		task.delay(LEARN.TipLate, LEARN.Tip)
 	end
+end
+
+-- the learn line, HintAfter s after the learn moment, only if the skill is still unused
+function LEARN.LateHint(slot)
+	local line = LEARN.HintWait[slot]
+	if not line then return end
+	LEARN.HintWait[slot] = nil
+	local hud = C and C.HUD
+	if type(hud) == "table" and type(hud.Hint) == "function" then pcall(hud.Hint, slot, line) end
 end
 
 -- the keys tip (once): a calm card with [Open Settings] -> the Settings window's Keys tab (PauseCard waits for a free
@@ -732,6 +744,7 @@ function SkillBar.Use(slot)
 		if st.On and st.Locked then LEARN.Tell(st.Unlock) end
 		return false
 	end
+	LEARN.HintWait[slot] = nil -- used before the learn line came: it never comes
 	local hud = C and C.HUD
 	if type(hud) == "table" and type(hud.ClearHint) == "function" and type(hud.HintShown) == "function"
 		and hud.HintShown(slot) then

@@ -155,7 +155,8 @@ local function nextGoal(player, data)
 	local zone = zoneOfGuide(guide)
 	if zone == nil then
 		local kind = row.GoalKind
-		zone = (kind == "Zone" and (R.NextZone or "GoblinWoods")) or (kind == "IronGold" and "Crossroads") or hunt
+		zone = (kind == "Zone" and (R.NextZone or "GoblinWoods")) or (kind == "IronGold" and "Crossroads")
+			or (R.GoalZones or {})[kind] or hunt
 	end
 	return text, travelZone(player, zone)
 end
@@ -258,8 +259,27 @@ local function sideOf(id, pick)
 	return nil
 end
 
--- the My Way id from the saved picks and the faction ("" = none yet: Neutral / None, or fewer than MinPicks picks)
-function ReturnService.MyWayOf(faction, picks)
+-- the repeated picks of a save (data.Story.N): the board's flat N.Kind (good) / N.Sneaky (devil) and every ChoiceCard kind's
+-- N[kind] = { Good, Evil }
+local function repeatedCounts(repeated)
+	local good, evil = 0, 0
+	for key, v in type(repeated) == "table" and repeated or {} do
+		if key == "Kind" and type(v) == "number" then
+			good += math.max(0, math.floor(v))
+		elseif key == "Sneaky" and type(v) == "number" then
+			evil += math.max(0, math.floor(v))
+		elseif type(v) == "table" then
+			good += math.max(0, math.floor(num(v.Good)))
+			evil += math.max(0, math.floor(num(v.Evil)))
+		end
+	end
+	return good, evil
+end
+
+-- the My Way id from the saved picks and the faction ("" = none yet: Neutral / None, or fewer than MinPicks picks).
+-- `repeated` (data.Story.N, optional): A23-86 repeated cards weigh 1 story pick per MW.RepeatPer and never more than the
+-- story picks together
+function ReturnService.MyWayOf(faction, picks, repeated)
 	if faction ~= "Halo" and faction ~= "Horns" then return "" end
 	local good, evil = 0, 0
 	for id, pick in type(picks) == "table" and picks or {} do
@@ -268,19 +288,33 @@ function ReturnService.MyWayOf(faction, picks)
 	end
 	local total = good + evil
 	if total < num(MW.MinPicks, 2) then return "" end
+	local per = math.max(1, math.floor(num(MW.RepeatPer, 5)))
+	local rg, re = repeatedCounts(repeated)
+	local wg, we = math.floor(rg / per), math.floor(re / per)
+	if wg + we > total then -- never more than the story picks together: both sides shrink in the same proportion
+		local f = total / (wg + we)
+		wg, we = math.floor(wg * f), math.floor(we * f)
+	end
+	good, evil = good + wg, evil + we
+	total = good + evil
 	local lean = good - evil
 	if math.abs(lean) <= math.floor(total * num(MW.BalanceShare, 0.2)) then return "BalanceWalker" end
 	if faction == "Halo" then return lean > 0 and "TrueKnight" or "RebelAngel" end
 	return lean < 0 and "ProudRascal" or "SoftDevil"
 end
 
+-- (public: BoardService calls it after a finished job - its Kind / Sneaky count is a repeated pick too)
 local function refreshMyWay(player)
 	local data = getData(player)
 	if not data then return end
 	local story = type(data.Story) == "table" and data.Story or {}
-	local id = ReturnService.MyWayOf(data.Faction, story.Pick)
+	local id = ReturnService.MyWayOf(data.Faction, story.Pick, story.N)
 	local name = id ~= "" and (MW.Names or {})[id] or ""
 	player:SetAttribute("MyWay", name or "")
+end
+
+function ReturnService.RefreshMyWay(player)
+	if typeof(player) == "Instance" and player:IsA("Player") then refreshMyWay(player) end
 end
 
 ------------------------------------------------------------------ #2 badges
@@ -489,6 +523,7 @@ function ReturnService.Start()
 		checkBadges(player)
 	end)
 	connect("StoryQuestService", "Picked", function(player) refreshMyWay(player) end)
+	connect("ChoiceCard", "Picked", function(player) refreshMyWay(player) end) -- A23-86: repeated cards weigh in too
 	connect("FactionService", "FactionChanged", function(player)
 		refreshMyWay(player)
 		checkBadges(player)

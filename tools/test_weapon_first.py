@@ -1,5 +1,6 @@
-"""A23-74 weapon first (server side): the first mission's Forge step — [Accept] -> the trip to the Crossroads Forge ->
-the anvil prompt hands over the class basic weapon -> the trip to the meadow -> the hunt, offline.
+"""A23-74 weapon first (server side) + A23-88 (no automatic move): the first mission's Forge step — [Accept] -> "Go to
+Otto's Forge" on foot -> the anvil prompt hands over the class basic weapon -> "Travel to the Squishy Meadow" (the pad or
+the map) -> the hunt, offline.
 
 Runs the CURRENT QuestService (whole module, its loops stepped by hand) with the Config, Util, CombatService,
 LootService, StoryQuestService and PvPService sources and the ShopService / DataService / JusticeService /
@@ -34,7 +35,6 @@ MUTATIONS = [
     # --- Config
     ("Config: no Forge step", C, "Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },",
      "Steps = { Kill = 0, Guide = 1, Quest = 2, Done = 99 },"),
-    ("Config: no meadow trip after the gift", C, "Near = 24, TravelDelay = 3 },", "Near = 24, TravelDelay = nil },"),
     ("Config: the claim line promises the first weapon again", C,
      "\t\tClaimed = \"Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!\",",
      "\t\tClaimed = \"Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.\","),
@@ -51,11 +51,6 @@ MUTATIONS = [
     ("needs the weapon: tier 1 owned is not enough", Q,
      "return type(data) == \"table\" and not hasFirstWeapon(data) and math.floor(num(data.WeaponTier, 0)) <= 0",
      "return type(data) == \"table\" and math.floor(num(data.WeaponTier, 0)) <= 0"),
-    ("accept: no forge trip", Q,
-     "\t\t\tif not FORGE.Near(player) then trip(player, FORGE.Zone, \"Forge\", FORGE.Move) end\n\t\t\treturn\n", "\t\t\treturn\n"),
-    ("accept: a trip even next to the anvil", Q,
-     "\t\t\tif not FORGE.Near(player) then trip(player, FORGE.Zone, \"Forge\", FORGE.Move) end\n",
-     "\t\t\ttrip(player, FORGE.Zone, \"Forge\", FORGE.Move)\n"),
     # 검수 2026-10-07 minor 2: no anvil in the world = the gift at once, never stuck at the Forge step
     ("no anvil at [Accept]: stuck at the Forge step (the old rule)", Q, "\t\tif FORGE.Anvil() then\n\t\t\tsetStep(player, STEP_FORGE)\n",
      "\t\tif true then\n\t\t\tsetStep(player, STEP_FORGE)\n"),
@@ -65,39 +60,25 @@ MUTATIONS = [
      "\t\tif false then\n\t\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n"),
     ("no anvil at the Forge step: moves on without the weapon", Q,
      "\t\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n\t\t\tsetStep(player, STEP_GUIDE)\n", "\t\t\tsetStep(player, STEP_GUIDE)\n"),
-    ("trip: no Spot in the Fx", Q, "{ UserId = player.UserId, To = to, Spot = spot, T = wait }",
-     "{ UserId = player.UserId, To = to, T = wait }"),
     # --- the forge trip's landing
-    ("spot: away from the Crossroads spawn", Q, "\tlocal dx, dz = from.X - a.X, from.Z - a.Z\n",
-     "\tlocal dx, dz = a.X - from.X, a.Z - from.Z\n"),
-    ("spot: no lift (inside the floor)", Q, "\tlocal foot = a.Y - anvil.Size.Y / 2 + num(FORGE.Cfg.Lift, 4)\n",
-     "\tlocal foot = a.Y - anvil.Size.Y / 2\n"),
-    ("spot: Landing 'Spawn' ignored", Q,
-     "\tlocal anvil = FORGE.Cfg.Landing == \"Anvil\" and FORGE.Anvil() or nil\n", "\tlocal anvil = FORGE.Anvil()\n"),
-    ("spot: not facing the anvil", Q, "\treturn CFrame.lookAt(pos, Vector3.new(a.X, foot, a.Z))\n",
-     "\treturn CFrame.lookAt(pos, Vector3.new(from.X, foot, from.Z))\n"),
-    ("move: no zone travel first", Q, "\tlocal ok, moved = pcall(S.ZoneService.Travel, player, FORGE.Zone, true)\n",
-     "\tlocal ok, moved = true, true\n"),
-    ("move: a refused travel still lands at the anvil", Q, "\tif not ok or moved ~= true then return end\n", ""),
-    ("move: a respawned character is moved", Q,
-     "then return end\n\tif getStep(player) ~= STEP_FORGE or FORGE.Near(player) then return end\n\tlocal ok, moved",
-     "then end\n\tif getStep(player) ~= STEP_FORGE or FORGE.Near(player) then return end\n\tlocal ok, moved"),
-    ("move: after the step moved on", Q,
-     "\tif getStep(player) ~= STEP_FORGE or FORGE.Near(player) then return end\n\tlocal ok, moved",
-     "\tif FORGE.Near(player) then return end\n\tlocal ok, moved"),
-    ("move: no teleport grace", Q,
-     "\tif type(S.ZoneService.MarkTeleported) == \"function\" then pcall(S.ZoneService.MarkTeleported, player) end\n", ""),
     # --- the forge row and its tap
     ("row: no Forge row", Q, "\telseif step == STEP_FORGE then\n\t\t-- A23-74: a tap sends RequestTutorial",
      "\telseif false then\n\t\t-- A23-74: a tap sends RequestTutorial"),
-    ("tap: no forge trip on RequestTutorial", Q, "\tif getStep(player) == STEP_FORGE then\n\t\tif Util.RateLimit(player, \"RequestTutorial\"",
-     "\tif false then\n\t\tif Util.RateLimit(player, \"RequestTutorial\""),
-    ("tap: a second trip during the fade", Q,
-     "\tif num(player:GetAttribute(\"MoveLockUntil\")) > Util.Now() or FORGE.Near(player) then return end\n\ttrip(",
-     "\tif FORGE.Near(player) then return end\n\ttrip("),
-    ("tap: a trip next to the anvil", Q,
-     "\tif num(player:GetAttribute(\"MoveLockUntil\")) > Util.Now() or FORGE.Near(player) then return end\n\ttrip(",
-     "\tif num(player:GetAttribute(\"MoveLockUntil\")) > Util.Now() then return end\n\ttrip("),
+    # --- A23-88: nothing moves the player; the walker's arrival is a metric
+    ("Config: the Forge text is the old one", C, "Forge = \"Go to Otto's Forge\",", "Forge = \"Get your first weapon · Crossroads Forge\","),
+    ("Config: the travel row is the old one", C, "Travel = \"Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)\",", "Travel = \"Free the supply road · Menu > Travel > Squishy Meadow\","),
+    ("Config: the accept trip is back", C, "\tRespawnInMeadow = true,\n\tFoldOthers = true,\n", "\tRespawnInMeadow = true,\n\tFoldOthers = true,\n\tAcceptTravelSeconds = 3,\n"),
+    ("Config: the forge landing is back", C, "Forge = { Near = 24 },", "Forge = { Landing = \"Anvil\", Back = 8, Lift = 4, Near = 24 },"),
+    ("Config: the meadow trip delay is back", C, "Forge = { Near = 24 },", "Forge = { Near = 24, TravelDelay = 3 },"),
+    ("Config: arrival within 60 studs", C, "Forge = { Near = 24 },", "Forge = { Near = 60 },"),
+    ("Config: Otto no longer points to the meadow", C, "The Squishy Meadow is next.", "Now go free the supply road."),
+    ("accept: the arrival clock never starts", Q, "\tFORGE.AcceptedAt[player] = os.clock()\n", ""),
+    ("arrival: every tick", Q, "if from and not FORGE.Reached[player] and FORGE.Near(player) then", "if from and FORGE.Near(player) then"),
+    ("arrival: from afar", Q, "if from and not FORGE.Reached[player] and FORGE.Near(player) then", "if from and not FORGE.Reached[player] then"),
+    ("arrival: a saved step counts too", Q, "local from = FORGE.AcceptedAt[player]\n", "local from = FORGE.AcceptedAt[player] or os.clock()\n"),
+    ("arrival: not counted", Q, "\t\t\tM.ForgeReached:Fire(player, math.max(0, os.clock() - from))\n", ""),
+    ("arrival: the seconds are the clock", Q, "M.ForgeReached:Fire(player, math.max(0, os.clock() - from))", "M.ForgeReached:Fire(player, os.clock())"),
+    ("gift: the mission stays at the Forge", Q, "\tsetStep(player, STEP_GUIDE)\n\treturn true", "\treturn true"),
     # --- the gift (QuestService.ForgeGift via the anvil prompt)
     ("gift at any step", Q,
      "or not player:IsA(\"Player\") or getStep(player) ~= STEP_FORGE then return false end",
@@ -107,18 +88,6 @@ MUTATIONS = [
     ("gift: no weapon", Q, "\t\tlocal ok, err = pcall(loot.GrantFirstWeapon, player, 1)\n\t\tif not ok then Util.Warn(TAG, \"GrantFirstWeapon: \"",
      "\t\tlocal ok, err = true, nil\n\t\tif not ok then Util.Warn(TAG, \"GrantFirstWeapon: \""),
     ("gift: no Otto line", Q, "\tNet.Notify(player, TUT_MESSAGES.ForgeGift or \"Take this weapon!\", \"info\")\n", ""),
-    ("gift: the mission stays at the Forge", Q, "\tsetStep(player, STEP_GUIDE)\n\tlocal delay = tonumber(FORGE.Cfg.TravelDelay)\n",
-     "\tlocal delay = tonumber(FORGE.Cfg.TravelDelay)\n"),
-    ("gift: the meadow trip at once", Q, "\t\ttask.delay(delay, function()\n\t\t\tif player.Parent ~= Players or getStep(player) ~= STEP_GUIDE",
-     "\t\ttask.delay(0, function()\n\t\t\tif player.Parent ~= Players or getStep(player) ~= STEP_GUIDE"),
-    ("gift: no meadow trip", Q,
-     "\t\t\tif num(player:GetAttribute(\"MoveLockUntil\")) > Util.Now() then return end\n\t\t\ttrip(player, TUT_ZONE, nil, travelToMeadow)\n",
-     "\t\t\tif num(player:GetAttribute(\"MoveLockUntil\")) > Util.Now() then return end\n"),
-    ("gift: the meadow trip after the hunt began", Q,
-     "\t\t\tif player.Parent ~= Players or getStep(player) ~= STEP_GUIDE then return end\n",
-     "\t\t\tif player.Parent ~= Players then return end\n"),
-    ("gift: the meadow trip over a running one", Q,
-     "\t\t\tif num(player:GetAttribute(\"MoveLockUntil\")) > Util.Now() then return end\n\t\t\ttrip(", "\t\t\ttrip("),
     ("shop: the window opens at the gift", SH, "\t\tif ok and handled == true then return end\n", ""),
     ("shop: never asks for the gift", SH, "if type(quest) == \"table\" and type(quest.ForgeGift) == \"function\" then",
      "if false then"),
@@ -162,8 +131,9 @@ def static() -> tuple[int, list[str]]:
     check("(step == steps.Guide or step == steps.Quest)" in player,
           "a KO at the Forge step respawns at home (only steps 1 / 2 respawn in the meadow; behavior: test_onboarding)")
     quest = strip_comments(read(SSS / "QuestService.luau"))
-    check(quest.count("trip(player, TUT_ZONE, nil, travelToMeadow)") == 2 and quest.count("FORGE.Move)") == 2,
-          "two meadow trips (accept with the first weapon, after the gift) and two forge trips (accept, the row's tap)")
+    check("trip(" not in quest and "travelToMeadow" not in quest and "FORGE.Move" not in quest and "FORGE.Request" not in quest
+          and "MoveLockUntil" not in quest, "A23-88: QuestService has no trip, no forced move, no lock left")
+    check("ZoneService.Travel" not in quest, "QuestService never calls ZoneService.Travel any more (nothing moves the player by itself)")
     tele = strip_comments(read(SSS / "TelemetryService.luau"))
     check("local function pastMeadow(v) return v == tutSteps.Quest or v == tutSteps.Done end" in tele,
           "the funnel's MeadowArrive never counts the Forge step (behavior: test_metrics)")
@@ -176,26 +146,25 @@ SUITE = Suite(
     world=ROOT / "tools/fixtures/dev2_combat_world.luau",
     out=ROOT / "docs/art/verification_2026-10-07/offline_dev2_weapon_first_2026-10-07.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="A23-74 server: Config.Tutorial.Steps.Forge = 3. [Accept] (step 0, no tier 1 owned) -> step 3 + the forge "
-             "trip (Fx Travel { UserId, To = 'Crossroads', Spot = 'Forge', T = 3 }, MoveLockUntil now + 4.5, 3 s later "
-             "ZoneService.Travel('Crossroads', instant) then, with Forge.Landing 'Anvil', ZoneService.MarkTeleported + "
-             "PivotTo Forge.Back 8 studs in front of the anvil toward the Crossroads spawn, Forge.Lift 4 above its bottom, "
-             "facing it; then Fx TravelDone + lock 0; no trip within Forge.Near 24 studs; a refused travel or a new "
-             "character moves nobody); a save owning tier 1 -> step 1 + the meadow trip as before. Step 3 row: Pinned, "
-             "Text.Forge, ShortName 'To the Forge', not claimable; RequestTutorial at step 3 = the forge trip again (not "
-             "during a fade, not next to the anvil); meadow kills before the gift count nothing. The anvil prompt at "
-             "step 3 (ShopService -> QuestService.ForgeGift): Otto's ForgeGift line, LootService.GrantFirstWeapon "
-             "(tier 1 equipped, 'Power 0 -> N'), step 1 (2 when standing in the meadow), no weapon window; "
-             "Forge.TravelDelay 3 s later the meadow trip unless the hunt began or a trip runs. The claim always clears "
+    contract="A23-74 + A23-88 server: Config.Tutorial.Steps.Forge = 3. [Accept] (step 0, no tier 1 owned) -> step 3 with "
+             "NO automatic trip (no Fx Travel, no lock, nobody moved; Config.Tutorial.Forge = { Near = 24 } only); a save "
+             "owning a weapon -> step 1, no trip. Step 3 row 'Go to Otto's Forge' (Pinned, ShortName 'To the Forge', not "
+             "claimable); the walker's first arrival within 24 studs of the anvil fires QuestService.ForgeReached(player, "
+             "seconds since [I'm In!]) once (TelemetryService: Custom ForgeWalk) - only for a walk begun this session; "
+             "RequestTutorial at step 3 does nothing; meadow kills before the gift count nothing. The anvil prompt at step 3 "
+             "(ShopService -> QuestService.ForgeGift): Otto's line ('The Squishy Meadow is next.'), "
+             "LootService.GrantFirstWeapon (tier 1 equipped, 'Power 0 -> N'), step 1 'Travel to Squishy Meadow - step on the "
+             "glowing travel pad (or Map -> Travel)' (ShortName 'To the meadow'), no weapon window, no automatic trip; any "
+             "arrival in the meadow (the pad, Map -> Travel, a walk) starts the hunt (step 2). The claim always clears "
              "BlacksmithVisited (M1_1 = a new visit: Otto's lines, Gold 1, then the shop where the 150 gold buy tier 2) "
              "and says Claimed (next weapon) unless a better weapon is owned (ClaimedArmed). Old saves at steps 1 / 2 / "
              "99, class chosen, bare-handed without tier 1 get the gift at the join (once a session; never at steps 0 / "
-             "3, never when armed). The Forge step survives a save / load.",
-    limitations="Offline doubles for Players, characters, the anvil part, ZoneService (Travel / MarkTeleported / "
-                "ZoneChanged) and the services the combat world stubs; StoryQuestService runs without its 1 s loop (the "
-                "test calls Refresh, as the anvil does). The client side (the forge beam, the row's tap, the fade's "
-                "place name, the Stronger! moment) is game dev 1's contract; the landing spot is checked in the live map "
-                "after the merge.",
+             "3, never when armed). No anvil: the gift at once. The Forge step survives a save / load.",
+    limitations="Offline doubles for Players, characters, the anvil part, ZoneService (Travel / ZoneChanged) and the "
+                "services the combat world stubs; StoryQuestService runs without its 1 s loop (the test calls Refresh, as "
+                "the anvil does). The client side (the path light to the Forge, the glowing travel pad, the one-time speech "
+                "bubble, the Stronger! moment) is game dev 1's contract; the walking time (20-40 s) and an unblocked path "
+                "are checked in the live map (main Play).",
 )
 
 if __name__ == "__main__":

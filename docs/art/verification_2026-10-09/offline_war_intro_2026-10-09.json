@@ -1,0 +1,42 @@
+{
+  "checks": 11,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "hidden on the way to the Forge only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "hidden at the first fight only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "hidden until the first Claim (too long)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "hidden while not loaded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no toast",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the bar never hidden",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a toast on every login",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}

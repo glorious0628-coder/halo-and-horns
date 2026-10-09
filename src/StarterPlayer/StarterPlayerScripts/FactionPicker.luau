@@ -68,9 +68,6 @@ local LAY = {
 	NeedCardKNew = 18,
 	-- the title words must fit the ribbon's text band (TextRect) at the readable size: about this many em per letter
 	TitleEm = 0.58,
-	-- phones (side layout): the gutter inside the side columns, and the note column at least this many text sizes wide
-	SideGutter = 8,
-	SideNoteEm = 7,
 	PremiseMaxW = 1600, PremiseFrac = 0.66,
 	TitleFrac = 0.10, TitleMin = 40, TitleMax = 140, -- compact ribbon on short viewports
 	TitleFracArt = 0.2, TitleMaxArt = 220, -- bundle 2 FactionTitle (crown + halo + horn over the scroll)
@@ -1279,34 +1276,21 @@ local function noteSideLook(side)
 	end
 end
 
--- the narrowest width (at least half of maxW) that keeps the words on as few lines as maxW does: no lone last word
--- ("...at the Altar of / Fate." on a 749 phone, 2026-10-07)
-local function balancedWidth(text, size, font, maxW)
-	local lines = textBounds(text, size, font, maxW)
-	local lo, hi = maxW * 0.5, maxW
-	for _ = 1, 7 do
-		local mid = (lo + hi) / 2
-		if textBounds(text, size, font, mid) > lines + 0.5 then lo = mid else hi = mid end
-	end
-	return hi
-end
-
--- the side-column note centred at (cx, cy), wrapped to colW; returns its height
-local function placeSideNote(cx, cy, colW, minT)
+-- the short-screen note: one line centred at cx, its bottom at `bottom`, icon left of the words, in the light side look
+-- (no capsule: on a phone the capsule art stretched); returns its height
+local function placeLineNote(cx, bottom, maxW, minT)
 	noteSideLook(true)
 	local size = minT
-	local iconW = note.Icon.Visible and math.floor(size * 2.2) or 0
-	local gapY = iconW > 0 and math.floor(size * 0.3) or 0
-	local fitW = balancedWidth(note.Text.Text, size, note.Text.FontFace, colW)
-	local th, tw = textBounds(note.Text.Text, size, note.Text.FontFace, fitW)
-	local textW = math.min(colW, tw + size)
-	th = math.ceil(th * 1.15) + 2 -- the wrap slack (UIKit NOTIFY.WrapSlack): rendered lines run a little wider
-	local noteW = math.max(textW, iconW)
-	local noteH = iconW + gapY + th
-	place(note.Frame, cx - noteW / 2, cy - noteH / 2, noteW, noteH)
-	place(note.Icon, (noteW - iconW) / 2, 0, iconW, iconW)
-	place(note.Text, (noteW - textW) / 2, iconW + gapY, textW, th)
-	note.Text.TextWrapped = true
+	local iconW = note.Icon.Visible and math.floor(size * 1.6) or 0
+	local gapW = iconW > 0 and math.floor(size * 0.4) or 0
+	local th, tw = textBounds(note.Text.Text, size, note.Text.FontFace, 100000)
+	local textW = math.min(maxW - iconW - gapW, tw + size)
+	local noteH = math.ceil(math.max(th * 1.15, iconW)) + 2
+	local noteW = iconW + gapW + textW
+	place(note.Frame, cx - noteW / 2, bottom - noteH, noteW, noteH)
+	place(note.Icon, 0, (noteH - iconW) / 2, iconW, iconW)
+	place(note.Text, iconW + gapW, 0, textW, noteH)
+	note.Text.TextWrapped = false
 	setTextRange(note.Text, size, size)
 	return noteH
 end
@@ -1431,38 +1415,30 @@ local function layoutNow()
 	local bottom = h - 8
 
 	if newArt and compact then
-		-- phones (wide but short) with the A23-57 cards: the cards as tall as the screen allows, the title ribbon left of
-		-- them and the altar note right of them. Stacked, the cards shrank until their names, perks and buttons no
-		-- longer fit (UiSandbox 749x361, 2026-10-06). The left column is as wide as the title's words need (measured at
-		-- the readable size: the old estimate kept that room on both sides and the cards came out 115 px wide on a 749
-		-- phone, 2026-10-07), the right one at least LAY.SideNoteEm text sizes for the note.
+		-- short screens (phones, short PC windows) with the A23-57 cards. User 10/09 (title on top, not at the side): the title
+		-- ribbon centred ABOVE the cards, the altar note one line centred UNDER them (they sat in side columns, 2026-10-06/07).
+		-- The ribbon goes up into the Roblox top bar row when its centre span clears the Roblox buttons there
+		-- (GuiService.TopbarInset); the cards take the rest of the height.
 		premiseFrame.Visible = false
 		note.Text.Text = T.FooterShort
-		prepareCardBalance()
-		local n = 0
-		for _, id in FACTION_IDS do
-			if cards[id] then n += 1 end
-		end
 		local part = Art.Parts.FactionPickTitle
 		local band = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect[3] or 0.7
 		local _, wordsW = textBounds(T.Title, minT, heading.Text.FontFace, 100000)
-		local titleW = (wordsW + minT * 1.5) / band -- the ribbon width its words need at minT
-		local gs = LAY.SideGutter
-		local leftNeed, rightNeed = titleW + 2 * gs, LAY.SideNoteEm * minT + 2 * gs
-		local gaps = LAY.Gap * math.max(0, n - 1)
-		local cardsH = math.max(1, bottom - top - 4)
-		local cardH = math.min(cardsH / (LAY.BalancedHeight + 2 * LAY.Lift), LAY.CardMaxH / s)
-		cardH = math.max(1, math.min(cardH, (w - leftNeed - rightNeed - gaps) / (n * LAY.CardAspect + 2 * LAY.Lift)))
-		local lift = math.ceil(cardH * LAY.Lift)
-		local cardsW = n * math.floor(cardH * LAY.CardAspect) + gaps + 2 * lift
-		-- centred when both columns have their room, else pushed off the title
-		local left = math.min(math.max((w - cardsW) / 2, leftNeed), math.max(leftNeed, w - cardsW - rightNeed))
-		local rightW = math.max(0, w - left - cardsW)
-		local colL, colR = math.max(1, left - 2 * gs), math.max(1, rightW - 2 * gs)
-		local tH = math.floor(math.min(colL, titleW * 1.15) / heading.Aspect)
-		placeTitle(left / 2, top + math.max(4, (bottom - top) * 0.3 - tH / 2), colL, tH, minT)
-		placeSideNote(w - rightW / 2, top + (bottom - top) * 0.42, colR, minT)
-		placeCards(left, top + 2, cardsW, cardsH, 0, minT, s)
+		local titleW = math.min(w - g * 2, (wordsW + minT * 1.5) / band) -- the ribbon width its words need at minT
+		local tH = math.floor(titleW / heading.Aspect)
+		local barH = top - TOP_PAD / s -- the Roblox top bar row (canvas units)
+		local okI, free = pcall(function() return GuiService.TopbarInset end)
+		local freeL = (okI and typeof(free) == "Rect" and free.Width > 0) and free.Min.X / s or w * 0.4
+		local titleY = top
+		-- in the bar row its bottom sits on the old card top (top + 2), so the cards keep the height they had beside it
+		if (w - titleW) / 2 >= freeL + 6 and barH >= tH * 0.5 then titleY = math.max(2, top + 2 - tH) end
+		tH = placeTitle(w / 2, titleY, titleW, tH, minT)
+		local noteH = placeLineNote(w / 2, bottom, w - g * 2, minT)
+		-- the cards' empty glow room above and below them (LAY.Lift) may run under the ribbon's tail and the note
+		local slack = math.floor((bottom - top) * LAY.Lift)
+		local cardsTop = math.max(0, titleY + tH - slack)
+		local cardsBottom = bottom - noteH + slack
+		placeCards(g, cardsTop, w - g * 2, math.max(1, cardsBottom - cardsTop), 0, minT, s)
 		return
 	end
 	noteSideLook(false)
@@ -1593,6 +1569,8 @@ local function build()
 		if cards[id] and cards[id].Art then anyArt = true end
 	end
 	if anyArt then root.BackgroundTransparency = LAY.DimArt end
+	-- the dim over the whole screen, phone side edges included (UIKit.FullScreenDim)
+	if type(UIKit.FullScreenDim) == "function" then LAY.ShowDim = UIKit.FullScreenDim(root, "FactionPickerDim") end
 
 	-- altar note at the bottom (bundle 2 navy capsule: white text)
 	local navyFooter = artId(PANEL.Footer) ~= nil
@@ -1658,6 +1636,18 @@ local function refresh()
 	visible = open
 	root.Visible = open
 	setBlur(open)
+	if LAY.ShowDim then LAY.ShowDim(open) end
+	-- user 10/09: no thumbstick / jump button over the cards (put back as they were when the picker closes)
+	if open then
+		local ok, was = pcall(function() return GuiService.TouchControlsEnabled end)
+		if ok and was == true then
+			LAY.TouchWas = true
+			pcall(function() GuiService.TouchControlsEnabled = false end)
+		end
+	elseif LAY.TouchWas then
+		LAY.TouchWas = nil
+		pcall(function() GuiService.TouchControlsEnabled = true end)
+	end
 	FactionPicker.HoldWorld("faction", open)
 	chosenId = nil
 	for _, c in cards do
@@ -1672,6 +1662,11 @@ local function refresh()
 		playPremise()
 		task.delay(OPEN_LOCK + 0.05, function()
 			if built and visible then refreshButtons() end
+		end)
+		-- UiSandbox 10/09 (phone 749: 'Knights of Ligh'): the first pass can measure before the card fonts loaded; lay
+		-- out once more when they have
+		task.delay(1, function()
+			if built and visible then layout() end
 		end)
 		local panels = C and C.Panels
 		if panels and type(panels.Close) == "function" then pcall(panels.Close) end

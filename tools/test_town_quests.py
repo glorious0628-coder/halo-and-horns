@@ -55,8 +55,8 @@ MUTATIONS = [
      "local on = true"),
     ("SKL-3: Requires.Skill ignores the slot", ST, "if not index or not on or num(data.SkillSlots) < index then return false end",
      "if not index or not on then return false end"),
-    ("SKL-3: SK2 forgotten in the sub list", C, "\t\t\"SK1\", \"SK2\" }, -- SKL-3: the practice subs of a new skill",
-     "\t\t\"SK1\" }, -- SKL-3: the practice subs of a new skill"),
+    ("SKL-3: SK2 forgotten in the sub list", C, "\t\t\"SK1\", \"SK2\", -- SKL-3: the practice subs of a new skill",
+     "\t\t\"SK1\", -- SKL-3: the practice subs of a new skill"),
     # 검수 2026-10-07: SK2's picks have their side
     ("SK2 'Guard' has no side (no change of mind)", ST, "B = \"Evil\", Guard = \"Good\",", "B = \"Evil\","),
     # A23-71 the first skill at Lv5
@@ -132,7 +132,7 @@ MUTATIONS = [
     ("a rank line without a drop", ST, "if rank(have - take) < rank(have) then", "if rank(have - take) <= rank(have) then"),
     ("E0: an old save skips every chapter (the old bug)", ST,
      "\t\t\tif def and num(def.Chapter) <= upTo then st.Done[id] = true end\n", "\t\t\tst.Done[id] = true\n"),
-    ("E0: Lv25+ skips only chapters 1-2", C, "SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },",
+    ("E0: Lv25+ skips only chapters 1-2", C, "SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { \"M3_5\" } } },",
      "SkipChapters = { { Level = 10, UpTo = 2 } },"),
     ("no clue toast", ST, "\tif def.Clue then notify(player, def.Clue, \"info\") end", "\tlocal _ = def.Clue"),
     ("the Halo bridge spot moves away", C, "Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -138)",

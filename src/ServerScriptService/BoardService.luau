@@ -1,7 +1,8 @@
 -- BoardService.luau : E11 hunting-field job boards (docs/design/quest_volume_2026-10-06.md §3-3 / §4, 검수 OK
 -- 2026-10-07). Config.Board: each field's board (Meadow, Woods) shows this player Cards cards built from the J1..J10
--- templates with the field's own values; a card is taken as [Kind] or [Sneaky] (the side is only counted in
--- data.Story.N: no honor / infamy / ranking points, A23-23 D1); a player carries up to Hold jobs. A finished job pays
+-- templates with the field's own values; a card is taken as [Kind] or [Sneaky] (the side is counted in data.Story.N and,
+-- A23-86 decision 1, is one deed of the daily ledger: Deeds.Add +1 own side / -1 other side, six points a day; still no
+-- ranking points, A23-23 D1); a player carries up to Hold jobs. A finished job pays
 -- at once (HuntValue(the board's Level, 1); x AfterMult after FullPerDay jobs a KST day; the BonusAt-th job of a day
 -- also gives BonusItem, once) and says which way the shard leaned. A taken or swapped card is replaced by a template
 -- that is not one of that board's last two. Nothing ever times out, fails or disappears (kid-friendly).
@@ -250,7 +251,17 @@ local function finish(player, data, index)
 	local T = B.Text or {}
 	notify(player, string.format(T.Done or "Job done! +%s gold · +%s XP", Util.FormatNumber(g), Util.FormatNumber(x)), "reward",
 		"QuestDone")
+	-- A23-86 decision 1 (the daily deeds ledger): a Kind job is a good deed, a Sneaky job a naughty one, +1 on my own side /
+	-- -1 on the other (A23-58), inside the day's six points; the job's gold and XP keep coming when the day is full
+	local deed = h.Side == "Kind" and "Good" or "Evil"
+	local okD, stat, change, mine, down, full = pcall(S.Deeds.Add, player, deed, 1)
 	notify(player, h.Side == "Kind" and T.LeanKind or T.LeanSneaky, "info")
+	if okD then
+		if change > 0 then notify(player, string.format(T.Score or "%s +%d", stat, change), "good") end
+		pcall(S.Deeds.Say, player, deed, stat, change, mine, down, full)
+	end
+	local ret = S.ReturnService
+	if type(ret) == "table" and type(ret.RefreshMyWay) == "function" then pcall(ret.RefreshMyWay, player) end -- A23-86 My Way
 	if st.Done == num(B.BonusAt, 5) and not st.Bonus then
 		st.Bonus = true -- saved before the scroll
 		local loot = S.LootService

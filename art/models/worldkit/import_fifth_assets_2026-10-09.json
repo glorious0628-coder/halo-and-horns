@@ -1,0 +1,37 @@
+{
+ "note": "2026-10-09 WorldKit import batch 5 (E5 Crown Shrine = Kit_M_CrownShrine on ServerStorage.WorldKit3D; E6 King Slime = monster model, named by its monster id SlimeKing, goes to ServerStorage.CustomModels (Config.CustomModels, MonsterService.getCustomTemplate) and is NOT a kit prop). Studio sizes X,Y(height),Z read from the imported MeshParts.",
+ "items": [
+  {
+   "name": "Kit_M_CrownShrine",
+   "meshId": "rbxassetid://71822604424117",
+   "textureId": "",
+   "size_studs": [
+    16.0,
+    10.39,
+    15.97
+   ],
+   "sa": {
+    "color": "rbxassetid://138142489048950",
+    "normal": "rbxassetid://123559760022034",
+    "metal": "rbxassetid://128778894244262",
+    "rough": "rbxassetid://132123282110438"
+   }
+  },
+  {
+   "name": "SlimeKing",
+   "meshId": "rbxassetid://109274264047083",
+   "textureId": "",
+   "size_studs": [
+    13.46,
+    14.0,
+    10.53
+   ],
+   "sa": {
+    "color": "rbxassetid://114206351622678",
+    "normal": "rbxassetid://92539235573214",
+    "metal": "rbxassetid://127900303848065",
+    "rough": "rbxassetid://73770540451595"
+   }
+  }
+ ]
+}

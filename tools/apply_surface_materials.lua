@@ -27,8 +27,10 @@ local definitions = {
 		StudsPerTile = 22, Pattern = Enum.MaterialPattern.Organic, TerrainColor = PAINTED },
 	{ Key = "Tex_MeadowDirt", Name = "GE_MeadowDirt", Material = Enum.Material.Pavement, Override = true, Fresh = true,
 		StudsPerTile = 16, TerrainColor = PAINTED },
+	-- woods floor FF3 (docs/design/woods_concept_gap_2026-10-08.md ④): Organic at 22 studs like the meadow, the even
+	-- repeat of the old spots broken up
 	{ Key = "Tex_LeafyGrass", Name = "GE_LeafyGrass", Material = Enum.Material.LeafyGrass, Override = true, Fresh = true,
-		StudsPerTile = 16, TerrainColor = PAINTED },
+		StudsPerTile = 22, Pattern = Enum.MaterialPattern.Organic, TerrainColor = PAINTED },
 	{ Key = "Tex_HaloTiles", Name = "GE_HaloTiles", Material = Enum.Material.Limestone },
 	{ Key = "Tex_Ground", Name = "GE_Ground", Material = Enum.Material.Ground, Override = true, Fresh = true,
 		StudsPerTile = 16, TerrainColor = PAINTED },

@@ -17,7 +17,7 @@ local INIT_ORDER = {
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
 	"FinisherService", -- 게임성 개발 2: the field bosses' finisher card (points: Deeds)
 	"FieldBossService", -- 게임성 개발 2: the year-round field bosses (the King Slime, ...)
-	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
+	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 	"KillCardService", -- 게임성 개발 2: A23-87 cards some kills offer (after ChoiceCard)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
@@ -32,7 +32,7 @@ local START_ORDER = {
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
 	"FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
-	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (before PlayerService too)
+	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"KillCardService", -- 게임성 개발 2: A23-87 (before PlayerService too)
 	"PlayerService",
 }

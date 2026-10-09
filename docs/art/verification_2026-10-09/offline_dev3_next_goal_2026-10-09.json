@@ -1,0 +1,580 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 52,
+  "failedChecks": 0,
+  "namedChecks": 52,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "hooks in order: golden weapon, Captain Clatter, crystal weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Commission: switched off until its feature exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Commission: a short name <= 14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Clatter: switched off until its feature exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Clatter: a short name <= 14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Crystal: switched off until its feature exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Crystal: a short name <= 14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the rebirth line starts 5 levels before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rebirth lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the side questions",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rebirth short names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the pause card leads a rebirth goal to the Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "M3_8 closes with 'Chapter 4 is coming!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no clock or minute in the rebirth lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "English only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "Lv47 (Halo): the rebirth goal with the level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "short name + the knight question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "no reward, no claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "Lv50: 'Rebirth is open' (short: Rebirth ready)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "and it stays open above Lv50",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "Lv44: nothing yet (five levels before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "Lv45: the line starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "Horns: the rascal question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "Neutral: the goal, no side question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "second rebirth: Lv55 asked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "a high rebirth count: the level cap (100) applies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the rebirth rung",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "which levels show what",
+      "check": "Lv25-44 is the blank stretch of a veteran with all chapters done (the Commission / Clatter / Crystal rows fill it when built)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "which levels show what",
+      "check": "Lv1-9 always shows a goal (the woods row)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "which levels show what",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "which levels show what",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "switches on, no service yet: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "a crystal service answers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "Clatter comes before the crystal weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "the golden weapon comes first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "a service with nothing to say is skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "a service that errors is skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "an empty line is skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "and the rebirth line comes last",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "the switch off: the hook is never asked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feature hooks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the early goals and the story keep their place",
+      "check": "no iron weapon: the iron goal first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the early goals and the story keep their place",
+      "check": "a pending skill is before the ladder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the early goals and the story keep their place",
+      "check": "the woods goal is before the ladder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the early goals and the story keep their place",
+      "check": "a story main row wins over the ladder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the early goals and the story keep their place",
+      "check": "before the forge visit: the forge row, not the ladder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the early goals and the story keep their place",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the early goals and the story keep their place",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 18,
+    "applied": 18,
+    "caught": 18,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: rebirth line 10 levels early",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the rebirth line starts 5 levels before",
+          "the rebirth rung :: Lv44: nothing yet (five levels before)",
+          "which levels show what :: Lv25-44 is the blank stretch of a veteran with all chapters done (the Commission / Clatter / Crystal rows fill it when built)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: rebirth line only at the level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the rebirth line starts 5 levels before",
+          "feature hooks :: and the rebirth line comes last",
+          "the rebirth rung :: Horns: the rascal question",
+          "the rebirth rung :: Lv45: the line starts",
+          "the rebirth rung :: Lv47 (Halo): the rebirth goal with the level",
+          "the rebirth rung :: Neutral: the goal, no side question"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "config: Clatter before the golden weapon",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: hooks in order: golden weapon, Captain Clatter, crystal weapon",
+          "feature hooks :: the golden weapon comes first"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: the Clatter switch is on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Clatter: switched off until its feature exists"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: no side question for knights",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the side questions",
+          "the rebirth rung :: short name + the knight question"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: long rebirth short name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: rebirth short names",
+          "the rebirth rung :: short name + the knight question"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: no Chapter 4 line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: M3_8 closes with 'Chapter 4 is coming!'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: rebirth zone missing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error",
+          "feature hooks :: group ran to the end without a Lua error",
+          "the early goals and the story keep their place :: group ran to the end without a Lua error",
+          "the rebirth rung :: group ran to the end without a Lua error",
+          "which levels show what :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "hooks ignore their switch",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feature hooks :: the switch off: the hook is never asked"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an erroring hook breaks the row",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feature hooks :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an empty hook line is shown",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feature hooks :: an empty line is skipped",
+          "feature hooks :: and the rebirth line comes last"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the rebirth level ignores rebirths",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the rebirth rung :: a high rebirth count: the level cap (100) applies",
+          "the rebirth rung :: second rebirth: Lv55 asked"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "never 'ready'",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the rebirth rung :: Lv50: 'Rebirth is open' (short: Rebirth ready)",
+          "the rebirth rung :: and it stays open above Lv50"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the rebirth line shows at any level",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feature hooks :: an empty line is skipped",
+          "feature hooks :: switches on, no service yet: nothing",
+          "feature hooks :: the switch off: the hook is never asked",
+          "the rebirth rung :: Lv44: nothing yet (five levels before)",
+          "which levels show what :: Lv25-44 is the blank stretch of a veteran with all chapters done (the Commission / Clatter / Crystal rows fill it when built)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no side question",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the rebirth rung :: Horns: the rascal question",
+          "the rebirth rung :: short name + the knight question"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the side question for everyone",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the rebirth rung :: Horns: the rascal question",
+          "the rebirth rung :: Neutral: the goal, no side question"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the ladder before the early goals",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feature hooks :: Clatter comes before the crystal weapon",
+          "feature hooks :: a crystal service answers",
+          "feature hooks :: a service that errors is skipped",
+          "feature hooks :: a service with nothing to say is skipped",
+          "feature hooks :: an empty line is skipped",
+          "feature hooks :: and the rebirth line comes last"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "the goal kind is not published",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feature hooks :: Clatter comes before the crystal weapon",
+          "feature hooks :: a crystal service answers",
+          "feature hooks :: a service that errors is skipped",
+          "feature hooks :: a service with nothing to say is skipped",
+          "feature hooks :: and the rebirth line comes last",
+          "feature hooks :: the golden weapon comes first"
+        ],
+        "newFailingCount": 15
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "57945b7348d2ebda51fca4592a608190676a53caa0a85e2597290c377c9aa360",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/QuestService.luau": "199060b524e103939e72df7e50f1870f6fc5a6ff100c27361ec53a8d145adb1b",
+    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308"
+  },
+  "fixtureSHA256": "0c2ef0c50939cf61671fc1ff80ec5d82cc4e3972dc0e149f165daf529c36aea9",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-86 F: with no story row pinned and the early goals done, the pinned next-goal row walks Config.Tutorial.Ladder: feature hooks in order (golden weapon / Captain Clatter / crystal weapon: S[Service].NextGoal(player, data), only while Config.Features[Feature] is on, errors and empty lines skipped), then 'Next goal · Lv50: Rebirth, choose your side again (now Lv47)' from 5 levels before Config.RebirthLevel(rebirths), then 'Rebirth is open' (GoalKind Rebirth / RebirthReady, short names, GoalNote = the side's question 'Stay a knight, or not?' / 'Stay a rascal, or not?'); the early goals (iron weapon, skills, the woods) and the story row keep their place; ReturnService leads the goal to Config.Return.GoalZones; M3_8 closes with 'Chapter 4 is coming!'.",
+  "limitations": "Which level shows what (a veteran who finished every chapter): Lv1-24 the early goals, Lv25-44 BLANK until the Commission / Clatter / Crystal features exist, Lv45-49 Rebirth, Lv50+ Rebirth is open. The golden weapon (commission), Captain Clatter and crystal weapon rows only answer once their service exposes NextGoal and their switch is on. The client's tap-to-guide per GoalKind is game dev 1's (no client reads GoalKind yet)."
+}

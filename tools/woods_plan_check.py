@@ -1,6 +1,6 @@
 """Goblin Woods layout plan: validate + top-down render (A23-76).
 
-py tools/woods_plan_check.py [plan.json] [--png out.png]
+py tools/woods_plan_check.py [plan.json] [--png out.png] [--concept]  (--concept also writes woods_plan_vs_concept.jpg next to the png)
 
 Reads docs/design/woods_layout_plan_2026-10-08.json (world studs, X east, Z south) and checks that
 the pieces do not fight each other, then draws a top-down sheet. Exit code 1 if any check fails.
@@ -9,6 +9,8 @@ import json
 import math
 import sys
 from pathlib import Path
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 PLAN = ROOT / "docs/design/woods_layout_plan_2026-10-08.json"
@@ -137,7 +139,7 @@ def check(plan):
 
 
 def render(plan, out):
-    from PIL import Image, ImageDraw
+    from PIL import ImageDraw
 
     land = plan["land"]
     S = 2.0  # px per stud
@@ -154,6 +156,8 @@ def render(plan, out):
         x, y = P(c)
         d.ellipse([x - r * S, y - r * S, x + r * S, y + r * S], fill=fill, outline=outline)
 
+    road_z = plan["keep"]["crown_road_z"]
+    d.rectangle([P((land["MinX"], road_z - 9)), P((land["MaxX"], road_z + 9))], fill=(120, 105, 90, 255))
     ins = plan["edge_rim"]["inset"]
     d.rectangle([P((land["MinX"] + ins, land["MinZ"] + ins)), P((land["MaxX"] - ins, land["MaxZ"] - ins))],
                 outline=(40, 90, 40, 255), width=2)
@@ -178,10 +182,17 @@ def render(plan, out):
         circ(q, 4, col, (0, 0, 0, 255))
     for q in k["camps"]:
         circ(q, 3, (255, 140, 30, 255), (0, 0, 0, 255))
+    for i, q in enumerate(k["camps"]):
+        d.text((P(q)[0] + 8, P(q)[1] - 22), f"camp {i + 1}", fill=(255, 255, 255, 255))
+    d.text((P(k["boss"])[0] + 10, P(k["boss"])[1] - 26), "boss", fill=(255, 255, 255, 255))
+    d.text((P(k["giant"])[0] + 8, P(k["giant"])[1] - 18), "giant", fill=(255, 255, 255, 255))
+    d.text((P(k["arrival"])[0] + 8, P(k["arrival"])[1] - 18), "arrival", fill=(255, 255, 255, 255))
+    d.text((P(wf["c"])[0] - 70, P(wf["c"])[1] + 14), "waterfall", fill=(255, 255, 255, 255))
     d.rectangle([P((land["MinX"], land["MinZ"])), P((land["MaxX"], land["MaxZ"]))], outline=(0, 0, 0, 255), width=2)
     d.text((pad, 6), "Goblin Woods plan (N = up; red giant, yellow arrival, purple boss, orange camps)", fill=(255, 255, 255, 255))
     out.parent.mkdir(parents=True, exist_ok=True)
     im.save(out)
+    return im
 
 
 def main():
@@ -193,6 +204,8 @@ def main():
         if args[i] == "--png":
             out = Path(args[i + 1])
             i += 2
+        elif args[i] == "--concept":
+            i += 1
         else:
             plan_path = Path(args[i])
             i += 1
@@ -202,7 +215,15 @@ def main():
         print("ERROR", e)
     for w in warns:
         print("warn ", w)
-    render(plan, out)
+    im = render(plan, out)
+    if "--concept" in args:
+        c = Image.open(ROOT / "art/review/concept/Concept_GoblinWoods.jpg").convert("RGB")
+        h = im.height
+        c = c.resize((int(c.width * h / c.height), h))
+        sheet = Image.new("RGB", (c.width + im.width, h), (255, 255, 255))
+        sheet.paste(c, (0, 0))
+        sheet.paste(im.convert("RGB"), (c.width, 0))
+        sheet.save(out.with_name("woods_plan_vs_concept.jpg"), quality=88)
     print(f"{len(errs)} errors, {len(warns)} warnings; sheet {out}")
     return 1 if errs else 0
 

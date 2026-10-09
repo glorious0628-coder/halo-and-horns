@@ -27,6 +27,8 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-08/offline_quest_window_2026-10-08.json"
 
 MUTATIONS = [
+    ("BOOK", "no tab icons", "\t\ttabIcon(b, id)\n", ""),
+    ("BOOK", "an icon without art", '\tif not ok or type(img) ~= "string" or img == "" then return nil end\n', ""),
     # 검수 10/09: the Studio-only preview hook
     ("BOOK", "the preview hook outside Studio", "\tif RunService:IsStudio() then\n\t\tlocal lp = Players.LocalPlayer\n",
      "\tif true then\n\t\tlocal lp = Players.LocalPlayer\n"),

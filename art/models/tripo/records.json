@@ -6264,5 +6264,107 @@
     "build/import_D12/WorldKit_ImportD12.glb = build/import_all/4_fourth/E4_WoodsCamp3.glb (LOD only, name without _LOD)"
    ]
   }
+ ],
+ "Kit_M_CrownShrine_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (485-point account, nick 12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "614173e1-4e9e-4835-9ce0-18624f28ac86",
+   "image": "art/out/hq/HQ_M_CrownShrine_{front,side,back}.png",
+   "at": "2026-10-09 10:0x",
+   "balance_after": 430,
+   "file": "art/models/tripo/web/Kit_M_CrownShrine_HD_src.glb",
+   "tris": 19781,
+   "note": "검수 OK 10/09 (A23-84 왕관 돌 사당, 옛 계정 때 끊긴 작업 다시)",
+   "derived": [
+    "art/models/tripo/web/Kit_M_CrownShrine_HD_plain.glb (--rotz -90: front -Y, target 100000 = plain re-save; NOTE target 0 collapses to 38 tris)",
+    "art/models/tripo/web/Kit_M_CrownShrine_HD_capped.glb (tools/glb_cap_crown.py: stone floor + moss patches over the open pit, 검수 10/09; used for build/import_all/5_fifth/E5_CrownShrine.glb)"
+   ]
+  }
+ ],
+ "Mon_KingSlime_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (485-point account, nick 12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "3ec0e249-9af3-4298-b165-d8574785529b",
+   "image": "art/out/s2/king/KingSlimeMV_{front,side,back}_HQ_src.png",
+   "at": "2026-10-09 10:1x",
+   "balance_after": 375,
+   "file": "art/models/tripo/web/Mon_KingSlime_HD_src.glb",
+   "tris": 14334,
+   "note": "검수 OK 10/09 (A23-84 새 King Slime 보스, 표정 A)",
+   "derived": [
+    "art/models/tripo/web/Mon_KingSlime_HD_plain.glb (--rotz -90, front -Y)",
+    "build/import_all/5_fifth/E6_KingSlime.glb (fit max 14 studs)"
+   ]
+  }
+ ],
+ "Mon_SlingshotGoblin_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account; the user logged in there for the totem gate, 검수 said stop switching)",
+   "site": "studio.tripo3d.ai",
+   "task": "2aaaa8e3-b280-4cc8-bc73-dd81c78e0b96",
+   "image": "art/out/s2/mon3/hq/MON_SlingshotGoblin_HQ_src.png + _MV_side/_MV_back",
+   "at": "2026-10-09 11:0x",
+   "balance_after": 25225,
+   "file": "art/models/tripo/web/Mon_SlingshotGoblin_HD_src.glb",
+   "tris": 14646,
+   "note": "검수 승인 8ebc0ca. FAIL CHECK: a face shows on the BACK of the head in the 3D (back reference had none) -> see art/review/monsters/*_3d_compare.jpg"
+  },
+  {
+   "event": "web_generation (retry v2: input = front + back only)",
+   "mode": "HD multiview front+back, H3.1 (poly 15000 typed, 4K, PBR, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "task": "d28edd56-0496-41ed-8937-5d68fcacc647",
+   "at": "2026-10-09 11:3x",
+   "balance_after": 25115,
+   "file": "art/models/tripo/web/Mon_SlingshotGoblin_v2_HD_src.glb",
+   "tris": 14283,
+   "note": "검수 재승인 10/09; back of the head clean (no face) -> USE THIS (v2); v1 had a face on the back",
+   "derived": [
+    "build/import_all/5_fifth/E7_NewMonsters.glb (fit z 10)"
+   ]
+  }
+ ],
+ "Mon_SkeletonArcherB_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account; the user logged in there for the totem gate, 검수 said stop switching)",
+   "site": "studio.tripo3d.ai",
+   "task": "5eb59543-ead5-46b0-9380-29a69b8a15e4",
+   "image": "art/out/s2/mon3/hq/MON_SkeletonArcherB_HQ_src.png + _MV_side/_MV_back",
+   "at": "2026-10-09 11:0x",
+   "balance_after": 25170,
+   "file": "art/models/tripo/web/Mon_SkeletonArcherB_HD_src.glb",
+   "tris": 14664,
+   "note": "검수 승인 8ebc0ca. FAIL CHECK: a face shows on the BACK of the head in the 3D (back reference had none) -> see art/review/monsters/*_3d_compare.jpg"
+  },
+  {
+   "event": "web_generation (retry v2: input = front + back only)",
+   "mode": "HD multiview front+back, H3.1 (poly 15000 typed, 4K, PBR, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "task": "0d96022f-4e1d-44c6-86b4-e0ae37051cfd",
+   "at": "2026-10-09 11:3x",
+   "balance_after": 25060,
+   "file": "art/models/tripo/web/Mon_SkeletonArcherB_v2_HD_src.glb",
+   "tris": 14406,
+   "note": "검수 재승인 10/09; back of the head clean (no face) -> USE THIS (v2); v1 had a face on the back",
+   "derived": [
+    "build/import_all/5_fifth/E7_NewMonsters.glb (fit z 10)"
+   ]
+  }
  ]
 }
