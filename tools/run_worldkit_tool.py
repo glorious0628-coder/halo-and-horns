@@ -3,7 +3,7 @@
   py tools/run_worldkit_tool.py <tool.luau> <MODE> [--studio WorldKit]      (default window name: GoodEvil, like studio_mcp.py)
 
 Writes build/_run_<tool>.json and calls execute_luau through tools/studio_mcp.py; prints the tool's return string.
-Use `--studio WorldKit` for the practice place; the main place is run by 메인 반영 only.
+Add `--zone <name>` for zone_swap.luau. Use `--studio WorldKit` for the practice place; the main place is run by 메인 반영 only.
 """
 import json
 import os
@@ -17,6 +17,8 @@ env = dict(os.environ)
 if "--studio" in sys.argv:
     env["STUDIO_NAME"] = sys.argv[sys.argv.index("--studio") + 1]
 code = Path(ROOT / tool).read_text(encoding="utf-8").replace("__MODE__", mode)
+if "--zone" in sys.argv:  # zone_swap.luau: halo | horns | ruins | pumpkin | hollow
+    code = code.replace("__ZONE__", sys.argv[sys.argv.index("--zone") + 1])
 out = ROOT / "build" / f"_run_{Path(tool).stem}.json"
 out.write_text(json.dumps({"code": code, "datamodel_type": "Edit"}, ensure_ascii=False), encoding="utf-8")
 r = subprocess.run([sys.executable, str(ROOT / "tools/studio_mcp.py"), "call", "execute_luau", f"@{out}"],
