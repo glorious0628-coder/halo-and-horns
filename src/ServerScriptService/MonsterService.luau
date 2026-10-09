@@ -75,7 +75,7 @@ local CHASE_STUCK_GIVEUP = 2 -- stuck this many times on one target -> give up a
 -- ground probing (A11-R1: Include only Terrain, Map.Ground and the Map.Decor "Bridge_*" models)
 local GROUND_RAY_TOP = 150 -- above every ridge top
 local GROUND_RAY_LENGTH = 320
-local GROUND_MIN_Y, GROUND_MAX_Y = -2, 6 -- walkable valley floor (zone ground top is Y = 0); higher = ridge, lower = shore
+local GROUND_MIN_Y, GROUND_MAX_Y = -2, 26 -- walkable ground (zone ground top Y = 0; 검수 2026-10-09: the meadow v4 hunting grass rises in 3 layers to 17.4, so up to 26); lower = shore
 local GROUND_PARAMS_REFRESH = 10
 local SPAWN_TRIES = 8
 
