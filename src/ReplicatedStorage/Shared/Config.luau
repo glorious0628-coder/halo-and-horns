@@ -3361,6 +3361,40 @@ Config.StoryQuests.Defs.EG14 = {
 }
 for _, id in { "EG01", "EG02", "EG03", "EG04", "EG14" } do table.insert(Config.StoryQuests.Subs, id) end
 
+-- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
+-- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
+-- are remake P4). At = the spot (X, Z; the height comes from a ray onto the ground at build time), Look = what it faces.
+--   Story = a quest NPC (tag StoryNpc, NpcId, a "Talk" prompt); Folk = a townsperson who only stands there (tag TownFolk);
+--   Merchant = a potion stall seller (tag PotionMerchant; Enabled = false until ShopService accepts more than the one named
+--   seller: game dev 2); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
+-- Halo Citadel spots (halo_layout.py: the spine's tier 2 starts at z -444 (Y 5), the plaza terrace is z -524..-606, the fountain
+-- (0,-565), the shop stalls x +-44, z -546 / -584): Bright at the foot of the plaza stairs, Sir Gleam beside the gate road.
+Config.TownNpcs = {
+	Enabled = true,
+	PromptDistance = 10, -- studs (< Config.StoryQuests.NpcRange 16: a trigger is always near enough for the story's own check)
+	RayTop = 150, -- the ground ray starts this high and goes RayTop + RayDepth down
+	RayDepth = 60,
+	MaxCoord = 3000,
+	List = {
+		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),
+			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
+		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
+			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546),
+			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584),
+			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(34, 0, -584), Look = Vector3.new(44, 0, -584),
+			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565),
+			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false,
+			At = Vector3.new(-34, 0, -546), Look = Vector3.new(0, 0, -546) },
+		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
+			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
+	},
+}
+
 -- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
 -- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that
 -- role. A card is taken as [Kind] or [Sneaky]: only the side is counted (data.Story.N), no honor / infamy / ranking.

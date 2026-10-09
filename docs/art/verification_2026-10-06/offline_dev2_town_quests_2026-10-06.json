@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 609,
+  "checks": 627,
   "failedChecks": 0,
-  "namedChecks": 605,
+  "namedChecks": 623,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -3636,15 +3636,123 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H1 waits at Bright (its first card)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a step talked through an NPC never pops up by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "talking to Bright opens H1's card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "80 studs away: nothing opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "another NPC, a bad id or a bad player: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "(the same player with a class: H1 opens)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a player who has not chosen a class: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "the prompt's trigger opens the card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a second trigger within 0.4 s is ignored (rate limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a prompt without a StoryNpcId, a bad id, no player: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H1 moved on (no more card at Bright): nothing opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "two cards wait at Bright: the newest quest (last in Subs) first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "then the next one waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a quest waiting for [Claim] is skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a nil / non-string NPC id never opens a dialogue that names no NPC",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "an NPC id nobody waits at: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 136,
-    "applied": 136,
-    "caught": 136,
+    "total": 145,
+    "applied": 145,
+    "caught": 145,
     "skipped": false,
     "results": [
       {
@@ -4825,6 +4933,112 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "npc talk: any distance",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: 80 studs away: nothing opens",
+          "npc-talk :: another NPC, a bad id or a bad player: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "npc talk: any NPC",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: (the same player with a class: H1 opens)",
+          "npc-talk :: H1 moved on (no more card at Bright): nothing opens",
+          "npc-talk :: a quest waiting for [Claim] is skipped",
+          "npc-talk :: an NPC id nobody waits at: nothing",
+          "npc-talk :: another NPC, a bad id or a bad player: nothing",
+          "npc-talk :: talking to Bright opens H1's card"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "npc talk: a quest waiting for [Claim]",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a quest waiting for [Claim] is skipped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: the oldest quest first",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: two cards wait at Bright: the newest quest (last in Subs) first"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: a player without a class",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a player who has not chosen a class: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: a non-string id",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a nil / non-string NPC id never opens a dialogue that names no NPC"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: the prompt is never heard",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: any prompt",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a prompt without a StoryNpcId, a bad id, no player: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: no rate limit",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a prompt without a StoryNpcId, a bad id, no player: nothing",
+          "npc-talk :: a second trigger within 0.4 s is ignored (rate limit)"
+        ],
+        "newFailingCount": 2
+      },
+      {
         "mutation": "egg: the scroll titles are swapped",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
@@ -5412,11 +5626,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9da8fdd8dabc691bcc7ea7d8b1a8916556812e81a5aa3023b4617911e90c0086",
+    "src/ReplicatedStorage/Shared/Config.luau": "736fb66ff61e70946105c3c6506e4154c3ca30277b67684ae9e7d71a5c351cc8",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "beaba43294e412e9783939f0f81f3600dada8161ff3ab44554d51d7d1e9e7137",
+    "src/ServerScriptService/StoryQuestService.luau": "710e864a0c2c4541d8d65958560c8df97020b24a355c63a99acd0969dc7c81b3",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
@@ -5425,7 +5639,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "905f50db91d7f453f1cf0e154675364e90d31aae0f47926c13c039c8d199557b",
+  "fixtureSHA256": "f402c2419c4b056650a36f956232cc0167ba319b75e042f5ca5ab21738ae124b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
