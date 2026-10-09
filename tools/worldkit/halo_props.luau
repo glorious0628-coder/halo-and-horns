@@ -2313,31 +2313,55 @@ for _, e in PLAN.placements do
 		m:SetAttribute("DoorFront", Vector3.new(0, dd[3] * e.s, -(sz.Z / 2) - 1.5)) -- a point 1.5 studs in front of the door, model-local (pivot = bottom centre, front = -Z)
 		if dd[4] then m:SetAttribute("DoorTooSmall", true) end
 	end
-	if LAMP[e.kind] then m:SetAttribute("LampLight", LAMP[e.kind] * e.s) end
+	if LAMP[e.kind] then -- night lamp (이미지 개발 WeatherFx switches it on): LampLight = true + one PointLight, Enabled = false, at the lamp glass
+		m:SetAttribute("LampLight", true)
+		local lp = Instance.new("Part")
+		lp.Name = "LampLightPart"
+		lp.Size = Vector3.new(0.4, 0.4, 0.4)
+		lp.Transparency = 1
+		lp.Anchored, lp.CanCollide, lp.CanQuery, lp.CanTouch, lp.CastShadow = true, false, false, false, false
+		lp.CFrame = m:GetPivot() * CFrame.new(LAMP[e.kind] * e.s)
+		local pl = Instance.new("PointLight")
+		pl.Name = "LampLight"
+		pl.Color = Color3.fromRGB(255, 214, 130)
+		pl.Brightness = 1.2
+		pl.Range = 16
+		pl.Shadows = false
+		pl.Enabled = false
+		pl.Parent = lp
+		lp.Parent = m
+	end
 	if NOSHADOW[e.kind] then
 		for _, p in m:GetDescendants() do
 			if p:IsA("BasePart") then p.CastShadow = false end
 		end
 	end
-	if e.shopkind and SIGN[e.shopkind] then
+	if e.shopkind and SIGN[e.shopkind] then -- a thin board standing OUT of the wall (perpendicular), readable from both sides while walking past (검수)
 		m:SetAttribute("ShopKind", e.shopkind)
+		local side = 7 * e.s / 1.9
 		local board = Instance.new("Part")
 		board.Name = "SignBoard"
-		board.Size = Vector3.new(7, 7, 0.2) * e.s / 1.9
+		board.Size = Vector3.new(0.2, side, side) -- X thickness, Y height, Z reach out of the wall
 		board.Transparency = 1
 		board.Anchored, board.CanCollide, board.CanQuery, board.CanTouch, board.CastShadow = true, false, false, false, false
-		board.CFrame = m:GetPivot() * CFrame.new(sz.X / 2 - 1.2, sz.Y * 0.40, -(sz.Z / 2) - 0.4)
-		local gui = Instance.new("SurfaceGui")
-		gui.Face = Enum.NormalId.Front
-		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-		gui.PixelsPerStud = 60
-		gui.LightInfluence = 0
-		gui.Parent = board
-		local img = Instance.new("ImageLabel")
-		img.BackgroundTransparency = 1
-		img.Size = UDim2.fromScale(1, 1)
-		img.Image = SIGN[e.shopkind]
-		img.Parent = gui
+		board.CFrame = m:GetPivot() * CFrame.new(sz.X / 2 - 3.5, sz.Y * 0.40, -(sz.Z / 2) - side / 2)
+		for _, face in { Enum.NormalId.Right, Enum.NormalId.Left } do
+			local gui = Instance.new("SurfaceGui")
+			gui.Face = face
+			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+			gui.PixelsPerStud = 60
+			gui.LightInfluence = 0
+			gui.Parent = board
+			local img = Instance.new("ImageLabel")
+			img.BackgroundTransparency = 1
+			img.Size = UDim2.fromScale(1, 1)
+			img.Image = SIGN[e.shopkind]
+			if face == Enum.NormalId.Left then -- the far side shows the board mirrored so the wall bracket still sits at the wall
+				img.ImageRectOffset = Vector2.new(1024, 0)
+				img.ImageRectSize = Vector2.new(-1024, 1024)
+			end
+			img.Parent = gui
+		end
 		board.Parent = m
 	end
 	if e.backdrop then m:SetAttribute("Backdrop", true) end
