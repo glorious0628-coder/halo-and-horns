@@ -1882,6 +1882,11 @@ function L.BuildQuestLines(root)
 		-- cut inside a word when it must ('AtEnd' drops whole words: "Free the…" left half the row empty). No flex shrink:
 		-- L.FitQuestLine gives the words their width (검수 10/08: shrink squeezed a finished line's name to nothing)
 		text.TextTruncate = Enum.TextTruncate.SplitWord
+		-- 검수 10/09 (main: 'To the F…'): a width measured before the font loaded is too small -> measure again when the
+		-- words stop fitting (FitQuestLine only changes Size, so this settles after one pass)
+		text:GetPropertyChangedSignal("TextFits"):Connect(function()
+			if not text.TextFits and ui.qline[i] then task.defer(L.FitQuestLine, ui.qline[i]) end
+		end)
 		local nums = UIKit.StyledLabel({
 			Name = "Nums",
 			LayoutOrder = 3,
@@ -1911,7 +1916,7 @@ function L.BuildQuestLines(root)
 		-- on the plate (L.QuestPlate) the line needs no band: the plate is laid out by L.LayoutQuestLines
 		local band, plate = nil, nil
 		if onPlate then
-			plate = UIKit.ArtFrame("ListRow", { Name = "Plate" .. i, ZIndex = 3, Visible = false, Parent = block })
+			plate = UIKit.ArtFrame("ListRow", { Name = "Plate" .. i, ZIndex = 2, Visible = false, Parent = block }) -- under the row (Z 3)
 			UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = row })
 		else
 			band = L.SoftBand(block, "Right")
@@ -2020,12 +2025,18 @@ function L.FitQuestLine(l)
 	if type(full) ~= "string" or not l.Row.Visible then return end
 	local s = currentScale()
 	local rowW = l.Row.AbsoluteSize.X / s
+	local pad = l.Row:FindFirstChildOfClass("UIPadding") -- the plate's left pad (L.QuestPlate.PadL)
+	if pad then rowW -= pad.PaddingLeft.Offset + pad.PaddingRight.Offset end
 	if rowW <= 1 then return end
 	local used = (l.Icon and l.Icon.Visible) and (l.Icon.AbsoluteSize.X / s + 4) or 0
 	if l.Nums.Visible then used += l.Nums.AbsoluteSize.X / s + 4 end
 	if l.Claim.Visible then used += l.Claim.AbsoluteSize.X / s + 4 end
 	local tc = l.Text:FindFirstChildOfClass("UITextSizeConstraint")
 	local size = math.max(l.Text.TextSize, tc and tc.MinTextSize or 0)
+	-- UiSandbox 10/09 ('Meet H…' / main 'To the F…'): the screen-px floor draws the words bigger than TextSize under
+	-- UIScale - measure at the size actually drawn (the one-line TextBounds height, back in logical units)
+	local drawn = l.Text.TextBounds.Y / s
+	if drawn > size and drawn < size * 3 then size = math.ceil(drawn) end
 	local text = full
 	local short = string.match(full, "^(.-)%s+·%s")
 	local avail = math.max(10, rowW - used)
