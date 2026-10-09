@@ -1,0 +1,644 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 45,
+  "failedChecks": 0,
+  "namedChecks": 45,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the ruins: no zone PvP, the Crown Pit area (loot x1.25)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the pit is inside the ruins, well away from the west entrance (a safe ring to hunt)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the crown altar / pit centre: PvP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the ruins' entrance, spawn and far corner: safe",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the woods still PvP, the meadow and Crossroads safe",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the pit's west edge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the pit's south edge (north and south of the pit, still in the ruins: safe)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PvPAreaAt: the pit only inside it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ZoneHasPvP: ruins (a pit) and woods yes, meadow no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Captain Clatter's fallback spot is in the pit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "private servers: goose / war / bounty x0.5 (not hunting / quests), the shop line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "the ruins' ring: ZonePvP false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "entering the ring: no PvP line, ZoneChanged once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "into the Crown Pit: ZonePvP true + the PvP line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "IsPvPZone: in the pit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "the same zone: no ZoneChanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "moving inside the pit: nothing new",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "IsPvPZone: the ring; still one ZoneChanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "a Neutral entering the pit: the immune line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "back into the pit within 20 s: ZonePvP true, no second PvP line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "20 s later: the PvP line again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "Nudges.SafeZone = true: the safe line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "EnteredSafe is off by default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "the woods: PvP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "the meadow: safe",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zone PvP follows the position",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "a public server: x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "a public server: the goose / bounty full",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "a private server: x0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "goose / war chest / bounty gold halved (rounded down)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "hunting / quests / cards: full",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "the bank got exactly that",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "1 gold halved is 0 (nothing added)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "with the 2x gold pass: 100 -> 50 -> 100",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "the goose: gold 'Event', XP x PrivateMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "the war chests: 'War'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "the bounties: 'Bounty'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "MonsterService: a kill's info.AreaMult = the PvP area's LootMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "LootService: the drop rows x info.AreaMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "private servers",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 25,
+    "applied": 25,
+    "caught": 25,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the ruins all PvP again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the pit's south edge (north and south of the pit, still in the ruins: safe)",
+          "config :: the pit's west edge",
+          "config :: the ruins' entrance, spawn and far corner: safe",
+          "config :: the ruins: no zone PvP, the Crown Pit area (loot x1.25)",
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: IsPvPZone: the ring; still one ZoneChanged"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "no pit",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Captain Clatter's fallback spot is in the pit",
+          "config :: the crown altar / pit centre: PvP",
+          "config :: the pit's south edge (north and south of the pit, still in the ruins: safe)",
+          "config :: the pit's west edge",
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: IsPvPZone: in the pit"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "the pit is the whole ruins",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: PvPAreaAt: the pit only inside it",
+          "config :: the pit is inside the ruins, well away from the west entrance (a safe ring to hunt)",
+          "config :: the pit's south edge (north and south of the pit, still in the ruins: safe)",
+          "config :: the ruins' entrance, spawn and far corner: safe",
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: IsPvPZone: the ring; still one ZoneChanged"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "the pit test on X only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the pit's south edge (north and south of the pit, still in the ruins: safe)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ZoneHasPvP ignores the pit",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ZoneHasPvP: ruins (a pit) and woods yes, meadow no"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Clatter outside the pit",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Captain Clatter's fallback spot is in the pit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "zone PvP by zone only",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: IsPvPZone: in the pit",
+          "zone PvP follows the position :: Nudges.SafeZone = true: the safe line",
+          "zone PvP follows the position :: a Neutral entering the pit: the immune line",
+          "zone PvP follows the position :: back into the pit within 20 s: ZonePvP true, no second PvP line",
+          "zone PvP follows the position :: back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "no change inside a zone",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: IsPvPZone: in the pit",
+          "zone PvP follows the position :: Nudges.SafeZone = true: the safe line",
+          "zone PvP follows the position :: a Neutral entering the pit: the immune line",
+          "zone PvP follows the position :: back into the pit within 20 s: ZonePvP true, no second PvP line",
+          "zone PvP follows the position :: back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "no PvP line",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: Nudges.SafeZone = true: the safe line",
+          "zone PvP follows the position :: a Neutral entering the pit: the immune line",
+          "zone PvP follows the position :: back into the pit within 20 s: ZonePvP true, no second PvP line",
+          "zone PvP follows the position :: back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)",
+          "zone PvP follows the position :: into the Crown Pit: ZonePvP true + the PvP line"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "no safe line even when wanted",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: Nudges.SafeZone = true: the safe line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the safe line ignores Nudges",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: a Neutral entering the pit: the immune line",
+          "zone PvP follows the position :: back into the pit within 20 s: ZonePvP true, no second PvP line",
+          "zone PvP follows the position :: back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the safe line back on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: EnteredSafe is off by default",
+          "zone PvP follows the position :: a Neutral entering the pit: the immune line",
+          "zone PvP follows the position :: back into the pit within 20 s: ZonePvP true, no second PvP line",
+          "zone PvP follows the position :: back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the PvP line on every crossing",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: 20 s later: the PvP line again",
+          "zone PvP follows the position :: back into the pit within 20 s: ZonePvP true, no second PvP line"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ZoneChanged inside a zone",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: IsPvPZone: the ring; still one ZoneChanged",
+          "zone PvP follows the position :: the same zone: no ZoneChanged"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ZonePvP not set",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: back into the pit within 20 s: ZonePvP true, no second PvP line",
+          "zone PvP follows the position :: back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)",
+          "zone PvP follows the position :: into the Crown Pit: ZonePvP true + the PvP line",
+          "zone PvP follows the position :: the meadow: safe",
+          "zone PvP follows the position :: the ruins' ring: ZonePvP false",
+          "zone PvP follows the position :: the woods: PvP"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "IsPvPZone by zone",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zone PvP follows the position :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "never halved",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "private servers :: 1 gold halved is 0 (nothing added)",
+          "private servers :: a private server: x0.5",
+          "private servers :: goose / war chest / bounty gold halved (rounded down)",
+          "private servers :: the bank got exactly that",
+          "private servers :: with the 2x gold pass: 100 -> 50 -> 100"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "always halved",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "private servers :: a public server: the goose / bounty full",
+          "private servers :: a public server: x1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "every source halved",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "private servers :: hunting / quests / cards: full",
+          "private servers :: the bank got exactly that"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "halved after the pass",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "private servers :: hunting / quests / cards: full",
+          "private servers :: the bank got exactly that"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "goose XP full",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "private servers :: the goose: gold 'Event', XP x PrivateMult"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a quarter",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: private servers: goose / war / bounty x0.5 (not hunting / quests), the shop line",
+          "private servers :: a private server: x0.5",
+          "private servers :: goose / war chest / bounty gold halved (rounded down)",
+          "private servers :: the bank got exactly that",
+          "private servers :: with the 2x gold pass: 100 -> 50 -> 100"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "quests halved",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: private servers: goose / war / bounty x0.5 (not hunting / quests), the shop line",
+          "private servers :: hunting / quests / cards: full",
+          "private servers :: the bank got exactly that"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no AreaMult on kills",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "private servers :: MonsterService: a kill's info.AreaMult = the PvP area's LootMult"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "AreaMult unused",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "private servers :: LootService: the drop rows x info.AreaMult"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "514b54609ee5a4c55e1f1ba2c56a8f544b7c1b8109a4460c7abaabf850c5a9b5",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/ProgressionService.luau": "70be8c02f970f8fec9f03b859fa2db927d3215e3152c7a91dd5be429fcd39bda",
+    "src/ServerScriptService/ZoneService.luau": "fcb98635553265b47d2931d308171ae15eb445eb381737129456032bcd8bb9ce",
+    "src/ServerScriptService/GooseService.luau": "3567fcfcaa1e7a7277cab9088bfbeca0697e2e78089bacdcd627926bcc6f2539",
+    "src/ServerScriptService/WarService.luau": "2d333c18991d9a119b26aa4dc06d6f2221b652adad760c91ed0b7726bf53d3e2",
+    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d"
+  },
+  "fixtureSHA256": "d60343ead788fb2ed6dc3e75d4d68c4b81f722704d9ccc08c6f5b8c1295e4b55",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-90: SkeletonRuins PvP false + PvPArea Crown Pit { Center (1660, 0), Size 200 x 240, LootMult 1.25 }; Config.PvPAt(pos) = zone PvP or inside a PvP area; ZoneService ZonePvP / IsPvPZone follow the position (EnteredPvP / EnteredSafe lines when crossing the pit's edge, ZoneChanged only on a zone change); kills in the pit roll drop rows x LootMult (info.AreaMult); Captain Clatter's fallback spot (1670, 0) in the pit. Config.PrivateServer: with game.PrivateServerId ~= '' ProgressionService.AddBankGold x0.5 for sources Event / War / Bounty (before the 2x gold pass), the goose's XP x0.5; Text for the shop card.",
+  "limitations": "ZoneService runs only applyZone (the zone loop, travel and anti-cheat are not here); the reward sites are checked as source text; the client (boundary marker, minimap colour, shop line) is game dev 1's."
+}

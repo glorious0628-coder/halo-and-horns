@@ -170,7 +170,8 @@ do
 			else
 				check(g, "every other spawn = the v2 layout spawn", near(z.Spawn.X, lz.spawn[1]) and near(z.Spawn.Z, lz.spawn[2]), lz.id .. " " .. show(z.Spawn))
 			end
-			check(g, "PvP follows the layout", (z.PvP == true) == (lz.pvp == true), lz.id)
+			-- A23-90: the ruins keep PvP in their Crown Pit (Config.ZoneHasPvP), the ring around it is safe
+			check(g, "PvP follows the layout", C.ZoneHasPvP(z) == (lz.pvp == true), lz.id)
 			local lvl = ({ ["1"] = 1, ["1+"] = 1, ["8-14"] = 1, ["10+"] = 10, ["25+"] = 25 })[lz.lv]
 			check(g, "MinLevel follows the layout (8-14 is a recommendation, no gate)", z.MinLevel == lvl, lz.id .. " " .. tostring(z.MinLevel))
 			check(g, "a seasonal layout zone is a seasonal Config zone", (lz.season or "") == (z.Season or ""), lz.id)
@@ -191,7 +192,7 @@ do
 	check(g, "the Outskirts spawn = the Crossroads spawn", near(Z.Outskirts.Spawn.X, Z.Crossroads.Spawn.X) and near(Z.Outskirts.Spawn.Z, Z.Crossroads.Spawn.Z))
 	-- PvP / safe borders
 	local pvp = {}
-	for _, id in C.ZoneOrder do if Z[id].PvP then table.insert(pvp, id) end end
+	for _, id in C.ZoneOrder do if C.ZoneHasPvP(Z[id]) then table.insert(pvp, id) end end -- A23-90: zone or area PvP
 	table.sort(pvp)
 	check(g, "PvP zones are exactly the Goblin Woods and the Skeleton Ruins", table.concat(pvp, ",") == "GoblinWoods,SkeletonRuins", table.concat(pvp, ","))
 	for _, a in C.ZoneOrder do
@@ -413,7 +414,7 @@ do
 		local a, b = P.ZONES[id], Z[id]
 		check(g, "preview ZONES = Config.Zones (centre, size, spawn, level, PvP, season)", a ~= nil and near(a.Center.X, b.Center.X) and near(a.Center.Z, b.Center.Z)
 			and near(a.Size.X, b.Size.X) and near(a.Size.Z, b.Size.Z) and near(a.Spawn.X, b.Spawn.X) and near(a.Spawn.Z, b.Spawn.Z)
-			and a.MinLevel == b.MinLevel and (a.PvP == true) == (b.PvP == true) and (a.Season or "") == (b.Season or ""), id)
+			and a.MinLevel == b.MinLevel and (a.PvP == true) == C.ZoneHasPvP(b) and (a.Season or "") == (b.Season or ""), id)
 	end
 	check(g, "preview ZONE_ORDER = Config.ZoneOrder", table.concat(P.ZONE_ORDER, ",") == table.concat(C.ZoneOrder, ","))
 	check(g, "preview BOUNDS / WALL_HEIGHT / WATER_TOP = Config.Map", sameRect(P.BOUNDS, M.Bounds) and P.WALL_HEIGHT == M.WallHeight and P.WATER_TOP == M.WaterTop)

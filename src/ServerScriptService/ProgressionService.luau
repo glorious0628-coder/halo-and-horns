@@ -256,11 +256,24 @@ function M.AddCarriedGold(player, amount, source)
 end
 
 -- returns the gold added (0 = none)
+-- A23-90: x Config.PrivateServer.RewardMult in a private server (the goose, war chests, bounties), else 1
+function M.PrivateMult()
+	local P = Config.PrivateServer
+	if type(P) ~= "table" or game.PrivateServerId == "" then return 1 end
+	return math.clamp(num(P.RewardMult, 1), 0, 1)
+end
+
 function M.AddBankGold(player, amount, source)
 	amount = math.floor(num(amount))
 	if amount <= 0 then return 0 end
 	if not getData(player) then return 0 end
 	source = source or "Other"
+	-- A23-90: a private server halves the goose / war chest / bounty gold (before the 2x gold pass)
+	local P = Config.PrivateServer
+	if type(P) == "table" and type(P.HalfSources) == "table" and P.HalfSources[source] then
+		amount = math.floor(amount * M.PrivateMult())
+		if amount <= 0 then return 0 end
+	end
 	amount = boostGold(player, amount, source)
 	S.PlayerService.AddStat(player, "BankGold", amount)
 	M.GoldEarned:Fire(player, amount, source)

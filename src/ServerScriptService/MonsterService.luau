@@ -139,6 +139,8 @@ local NATURAL = { WanderPace = 0.5, RampStart = 0.45, RampStep = 0.3, ArriveSlow
 -- the hold it never keeps a target out of AttackRange while another player is in reach (it stood there and swung at
 -- nobody). Cutting a player's rings by the other players' bodies was tried and dropped: in groups of 3-4 it left most
 -- chasers out of reach.
+-- A23-87 the new kinds' extras (ranged shots, the flower ambush, partner spots): filled in its own section below
+local MOB3 = {}
 local SEP = {
 	Radius = { Slime = 1.5, Humanoid = 1.25 },
 	PlayerRadius = 1,
@@ -152,7 +154,8 @@ local SEP = {
 	Lead = 0.25, -- s: the chase ring and the player body are taken where a walking player will be (one AI tick on)
 	LeadMax = 4, -- studs
 	SpawnGap = 1.5,
-	Cell = 8, -- >= the largest pair distance (two Pumpkin Kings: 2 x 3.75 x Overlap)
+	Cell = 8, -- >= the largest pair distance (two big regular kinds, or a boss + the biggest regular kind: A23-92 King
+	-- Slime 4.8 + Slime Prince 2.7; a zone holds one boss at a time)
 	TargetHold = 2, -- s: review 2026-10-08: a zone monster keeps a new target at least this long ...
 	TargetMargin = 3, -- studs: ... and then switches only to a player this much closer (side by side never swap)
 	Grid = {}, -- [cell key] = { rec, ... } this AI tick
@@ -553,6 +556,15 @@ local function cappedTargets(zoneCounts)
 end
 
 ------------------------------------------------------------------ public queries
+-- A23-92 (검수 2026-10-09): a big boss is hit at its body's edge, not only near its centre: the studs its body is wider
+-- than a normal monster of its shape (0 for every other monster). GetMonstersInRadius / GetNearest and CombatService's
+-- target search add it to the reach.
+function MonsterService.HitPad(rec)
+	local def = type(rec) == "table" and rec.Def or nil
+	if type(def) ~= "table" or def.Boss ~= true then return 0 end
+	return math.max(0, (tonumber(rec._radius) or SEP.RadiusOf(def)) - SEP.RadiusOf({ Shape = def.Shape, Scale = 1 }))
+end
+
 -- forPlayer (optional): only the monsters that player may hit (own personal ones + zone monsters of the zone the
 -- player stands in, CR-M5). nil = every alive monster.
 function MonsterService.GetMonstersInRadius(position, radius, forPlayer)
@@ -562,7 +574,7 @@ function MonsterService.GetMonstersInRadius(position, radius, forPlayer)
 	for _, rec in records do
 		if rec.Alive and visibleTo(rec, forPlayer, fz) then
 			local root = rec.Root
-			if root and root.Parent and Util.FlatDistance(root.Position, position) <= radius then
+			if root and root.Parent and Util.FlatDistance(root.Position, position) <= radius + MonsterService.HitPad(rec) then
 				table.insert(out, rec)
 			end
 		end
@@ -580,7 +592,7 @@ function MonsterService.GetNearest(position, radius, maxCount, forPlayer)
 			local root = rec.Root
 			if root and root.Parent then
 				local d = Util.FlatDistance(root.Position, position)
-				if d <= radius then
+				if d <= radius + MonsterService.HitPad(rec) then
 					table.insert(found, { Rec = rec, D = d })
 				end
 			end
@@ -1051,7 +1063,8 @@ local function spawnMonster(kind, opts)
 	-- point is ON the ground (its Y = ground height); never assume a flat Part floor (A10/A11 Terrain world)
 	local point = opts.Position
 	if typeof(point) ~= "Vector3" then
-		point = pickSpawnPoint(def, kind)
+		-- A23-87: a flower patch (Ambush) / a partner's side (PartnerOf) first, else a normal spawn point
+		point = ((def.Ambush or def.PartnerOf) and MOB3.Spot(def, kind)) or pickSpawnPoint(def, kind)
 		if not point then return nil end
 	end
 	local rig = buildRig(kind, def, golden, point, opts.FaceTo)
@@ -1066,6 +1079,8 @@ local function spawnMonster(kind, opts)
 	if owner then
 		rig.Model:SetAttribute("OwnerUserId", owner.UserId)
 	end
+	-- system_review_round1 #6: the nametag's danger colour (game dev 1); the fights never read it
+	rig.Model:SetAttribute("Level", Config.MonsterLevel(kind))
 
 	-- parent, weld (visible parts to VisualRoot, which is jointed to the root), network owner, humanoid states.
 	-- Gameplay (hits, AI, knockback) only uses the root; parts follow it through the joints.
@@ -1128,6 +1143,7 @@ local function spawnMonster(kind, opts)
 		_radius = SEP.RadiusOf(def), -- A23-74: flat body radius (spacing)
 	}
 	records[rec.Id] = rec
+	if type(def.Ambush) == "table" and owner == nil then MOB3.Hide(rec) end -- A23-87: waits hidden in the flowers
 	return rec
 end
 
@@ -1288,21 +1304,30 @@ local function killRecord(rec)
 		Gold = def.Gold * (rec.Golden and MC.GoldenGoldMult or 1),
 		WarPoints = warPoints,
 		Personal = isPersonal,
+		-- A23-90: a kill inside a PvP area (the ruins' Crown Pit) rolls its drop rows x the area's LootMult
+		AreaMult = typeof(pos) == "Vector3" and (Config.PvPAreaAt(pos) or {}).LootMult or nil,
 	}
 
 	-- CR-M18: every contributor keeps the full personal WarPoints, but one kill adds WarPoints to a faction pool only
 	-- once: WarShare = WarPoints / (contributors of that faction) (WarService.AddPoints(player, n, poolN))
 	local now = os.clock()
-	local eligible, perFaction = {}, {}
+	local eligible, perFaction, minors = {}, {}, {}
 	local window = tonumber(def.ContributorWindow) or MC.ContributorWindow -- a miniboss fight is longer
 	local minHits = tonumber(def.RewardMinHits) or 0
 	local minDamage = (tonumber(def.RewardMinDamageFrac) or 0) * rec.MaxHP
+	-- 검수 2026-10-09 (Captain Clatter free riders): def.MinorShare > 0 = a contributor with the hits but under the
+	-- damage share still gets MinorShare of the XP / gold (info.Minor: no drops, no card, no war points, not paid)
+	local minorShare = math.clamp(tonumber(def.MinorShare) or 0, 0, 1)
 	for p, t in rec._contributors do
-		if p.Parent and now - t <= window and (rec._hits[p] or 0) >= minHits and (rec._dmg[p] or 0) >= minDamage then
-			local okF, f = pcall(factionOf, p)
-			if not okF or type(f) ~= "string" then f = "None" end
-			table.insert(eligible, { Player = p, Faction = f })
-			perFaction[f] = (perFaction[f] or 0) + 1
+		if p.Parent and now - t <= window and (rec._hits[p] or 0) >= minHits then
+			if (rec._dmg[p] or 0) >= minDamage then
+				local okF, f = pcall(factionOf, p)
+				if not okF or type(f) ~= "string" then f = "None" end
+				table.insert(eligible, { Player = p, Faction = f })
+				perFaction[f] = (perFaction[f] or 0) + 1
+			elseif minorShare > 0 and (rec._dmg[p] or 0) > 0 then
+				table.insert(minors, p)
+			end
 		end
 	end
 	-- sound_gaps B11 (검수 2026-10-07): the UserIds this kill pays, kept on the record (sorted) for HalloweenService's
@@ -1333,6 +1358,16 @@ local function killRecord(rec)
 			if o.Player ~= e.Player then table.insert(i.Others, o.Player) end
 		end
 		MonsterService.MonsterKilled:Fire(e.Player, i)
+	end
+	-- the free riders' small share (MinorShare of XP / gold only; LootService rolls nothing for info.Minor)
+	for _, p in minors do
+		local i = table.clone(info)
+		i.Minor = true
+		i.XP, i.Gold = info.XP * minorShare, info.Gold * minorShare
+		i.WarPoints, i.WarShare = 0, 0
+		i.Manual, i.SkillHit = false, false
+		i.Party, i.Others = #eligible, {}
+		MonsterService.MonsterKilled:Fire(p, i)
 	end
 
 	deathPop(rec, true)
@@ -1366,6 +1401,7 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId, manu
 	if record.Owner and record.Owner ~= player then return false end -- A5-C2
 	-- CR-M5: a zone monster takes no damage from a player standing outside its zone (no HP change, no contribution)
 	if record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then return false end
+	if record._hidden then MOB3.Show(record) end -- A23-87: a hit flower slime pops out
 	if player then
 		record._contributors[player] = os.clock()
 		if manual == true then
@@ -2734,6 +2770,184 @@ local function personalStep(rec, plist, now, pos)
 	end
 end
 
+------------------------------------------------------------------ A23-87 new kinds (ranged shots, flower ambush, partners)
+-- Kid-safe ranged (검수 2026-10-09): a slow, big, telegraphed shot at where the target stood at the release; stepping
+-- aside dodges it; only that target can be hit, with the same town / zone / water / new-player rules as a swing. The
+-- client draws the shot from Fx "MonsterShot" { Id, Kind, From, To, Speed, Radius, Travel } (game dev 1).
+MOB3.Serial = 0
+
+function MOB3.Ranged(rec)
+	local r = type(rec.Def) == "table" and rec.Def.Ranged or nil
+	return type(r) == "table" and r or nil
+end
+
+local function num3(v, default)
+	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
+	return default
+end
+
+-- where a ranged monster stands: Stand studs from the target on its own side (flat)
+function MOB3.StandGoal(pos, tpos, stand)
+	local d = Vector3.new(pos.X - tpos.X, 0, pos.Z - tpos.Z)
+	if d.Magnitude < 0.01 then d = Vector3.new(1, 0, 0) end
+	return Vector3.new(tpos.X, pos.Y, tpos.Z) + d.Unit * math.max(0, num3(stand, 15))
+end
+
+-- the target's position when it may still be shot by rec (alive, in the world, within `reach`, a valid target), else nil
+function MOB3.TargetPos(rec, target, reach)
+	if not rec.Alive or records[rec.Id] ~= rec or rec._returning then return nil end
+	local model, root = rec.Model, rec.Root
+	if not model or not model.Parent or not root or not root.Parent or root.Anchored then return nil end
+	if typeof(target) ~= "Instance" or not target:IsA("Player") or target.Parent == nil or not Util.IsAlive(target) then
+		return nil
+	end
+	local troot = Util.GetRoot(target)
+	if not troot then return nil end
+	local tpos = troot.Position
+	if reach and Util.FlatDistance(root.Position, tpos) > reach then return nil end
+	local seen = { Player = target, Pos = tpos, Town = isPlayerInTown(target, tpos), Zone = Config.ZoneAt(tpos).Id }
+	if not targetable(rec, seen) then return nil end
+	return tpos
+end
+
+-- in range: stand still facing the target, wind up (WindupAt, as a swing) when the cooldown allows
+function MOB3.Shoot(rec, info, now)
+	local R = MOB3.Ranged(rec)
+	rec._goal = nil
+	rec.Humanoid:MoveTo(rec.Root.Position)
+	rec._inReach = true -- standing to shoot
+	FACE.Active[rec] = { Until = os.clock() + FACE.Keep, Target = info.Player }
+	if rec._windup ~= nil or now < rec._nextAttackAt then return end
+	rec._nextAttackAt = now + math.max(0.5, num3(R.Cooldown, 3))
+	if rec.Model then rec.Model:SetAttribute(WINDUP_AT_ATTR, workspace:GetServerTimeNow()) end
+	local token = {}
+	rec._windup = token
+	local target = info.Player
+	task.delay(math.max(0.1, num3(R.Windup, 0.9)), function()
+		local ok, err = pcall(MOB3.Release, rec, token, target)
+		if not ok then
+			if rec._windup == token then rec._windup = nil end
+			warnThrottled("shot", err)
+		end
+	end)
+end
+
+-- the release: the shot flies to where the target stands now (a miss when it moved out of range meanwhile)
+function MOB3.Release(rec, token, target)
+	if rec._windup ~= token then return end
+	rec._windup = nil
+	local R = MOB3.Ranged(rec)
+	local tpos = R and MOB3.TargetPos(rec, target, num3(R.Range, 20) + REACT.WINDUP_LEEWAY)
+	if not tpos then return end
+	local from = rec.Root.Position
+	local travel = Util.FlatDistance(from, tpos) / math.max(1, num3(R.Speed, 18))
+	local seq = rec.Model:GetAttribute(ATTACK_SEQ_ATTR)
+	rec.Model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
+	MOB3.Serial += 1
+	MOB3.Net = MOB3.Net or require(ReplicatedStorage.Shared.Net)
+	local ok, err = pcall(MOB3.Net.Fx, nil, "MonsterShot", { Id = MOB3.Serial, Kind = rec.Kind, From = from, To = tpos,
+		Speed = num3(R.Speed, 18), Radius = num3(R.Radius, 3), Travel = travel })
+	if not ok then warnThrottled("shot_fx", err) end
+	task.delay(travel, function()
+		local okL, errL = pcall(MOB3.Land, rec, target, tpos)
+		if not okL then warnThrottled("shot", errL) end
+	end)
+end
+
+-- the landing: the target only, still within Radius of the landing point (flat, Y within 6) and still a valid target
+-- (a shot from a monster that died meanwhile still lands: it was already flying)
+function MOB3.Land(rec, target, to)
+	local R = MOB3.Ranged(rec)
+	if not R or typeof(target) ~= "Instance" or target.Parent == nil or not Util.IsAlive(target) then return false end
+	local troot = Util.GetRoot(target)
+	if not troot then return false end
+	local p = troot.Position
+	if Util.FlatDistance(p, to) > num3(R.Radius, 3) or math.abs(p.Y - to.Y) > 6 then return false end
+	local info = { Player = target, Pos = p, Town = isPlayerInTown(target, p), Zone = Config.ZoneAt(p).Id }
+	if not targetable(rec, info) then return false end
+	if S and S.CombatService then
+		S.CombatService.DamagePlayer(target, rec.Def.Damage, nil, false, rec.Kind)
+	end
+	return true
+end
+
+-- the flower ambush (def.Ambush): hidden = no move, no attack, model attribute Hidden (the client hides the nametag)
+function MOB3.Hide(rec)
+	rec._hidden = true
+	if rec.Model then rec.Model:SetAttribute("Hidden", true) end
+end
+
+-- pops out: Hidden off, PopAt = server time (the client: a small sparkle + a 0.4 s pop; no loud sound, no shake)
+function MOB3.Show(rec)
+	if not rec._hidden then return end
+	rec._hidden = nil
+	if rec.Model then
+		rec.Model:SetAttribute("Hidden", false)
+		rec.Model:SetAttribute("PopAt", workspace:GetServerTimeNow())
+	end
+	MonsterService.Moment:Fire(rec, "Spot")
+end
+
+-- true when a hidden monster wakes this tick (a player it may chase within Pop studs)
+function MOB3.Wake(rec, plist, pos)
+	local A = rec.Def.Ambush
+	local pop = math.max(1, num3(type(A) == "table" and A.Pop, 8))
+	for _, info in plist do
+		if Util.FlatDistance(pos, info.Pos) <= pop and targetable(rec, info) then
+			MOB3.Show(rec)
+			return true
+		end
+	end
+	return false
+end
+
+-- the ground material under a ground point (nil when nothing is hit)
+function MOB3.MaterialAt(pt)
+	local hit = workspace:Raycast(pt + Vector3.new(0, 4, 0), Vector3.new(0, -10, 0), getGroundParams())
+	return hit and hit.Material or nil
+end
+
+-- A23-87 spawn spots: Ambush = a normal spawn point standing on Material (Tries draws), PartnerOf = beside (4-8 studs)
+-- a living monster of that kind with no partner of this kind within 10 studs. nil = use a normal spawn point.
+function MOB3.Spot(def, kind)
+	local A = def.Ambush
+	if type(A) == "table" then
+		local okM, mat = pcall(function() return Enum.Material[A.Material] end)
+		if not okM or mat == nil then return nil end
+		for _ = 1, math.max(1, math.floor(num3(A.Tries, 12))) do
+			local pt = pickSpawnPoint(def, kind)
+			if not pt then return nil end
+			if MOB3.MaterialAt(pt) == mat then return pt end
+		end
+		return nil
+	end
+	local with = def.PartnerOf
+	if type(with) ~= "string" then return nil end
+	local mates, partners = {}, {}
+	for _, r in records do
+		if r.Alive and r.Owner == nil and r.Root and r.Root.Parent then
+			if r.Kind == with then table.insert(mates, r.Root.Position) end
+			if r.Kind == kind then table.insert(partners, r.Root.Position) end
+		end
+	end
+	local zone = Config.Zones[def.Zone]
+	for _, m in mates do
+		local taken = false
+		for _, q in partners do
+			if Util.FlatDistance(m, q) <= 10 then taken = true end
+		end
+		if not taken and zone then
+			for _ = 1, 6 do
+				local a = Util.Random:NextNumber(0, math.pi * 2)
+				local d = Util.Random:NextNumber(4, 8)
+				local g = groundPoint(m.X + math.cos(a) * d, m.Z + math.sin(a) * d)
+				if g and Config.ZoneAt(g).Id == def.Zone and SEP.Clear(g, SEP.RadiusOf(def)) then return g end
+			end
+		end
+	end
+	return nil
+end
+
 local function aiStep(rec, plist, now)
 	local root, hum = rec.Root, rec.Humanoid
 	if not root or not root.Parent or not hum or not hum.Parent or not rec.Model or not rec.Model.Parent then
@@ -2750,6 +2964,12 @@ local function aiStep(rec, plist, now)
 
 	if rec.Owner then
 		personalStep(rec, plist, now, pos)
+		return
+	end
+
+	-- A23-87: a hidden flower slime stays put until a player it may chase comes close (or it is hit)
+	if rec._hidden and not MOB3.Wake(rec, plist, pos) then
+		hum:MoveTo(pos)
 		return
 	end
 
@@ -2853,6 +3073,16 @@ local function aiStep(rec, plist, now)
 		local alerting = NATURAL.Alert(rec, best, bestD, now) -- a new target: stop with a '!' for a moment first
 		rec._target = best.Player
 		if alerting then return end
+		local ranged = rec.Def.Ranged -- A23-87: shoots within Range, otherwise walks to Stand studs from the target
+		if type(ranged) == "table" then
+			if bestD <= (tonumber(ranged.Range) or 20) then
+				rec._chaseStuck = 0
+				MOB3.Shoot(rec, best, now)
+			else
+				steer(rec, clampToZone(zone, MOB3.StandGoal(pos, best.Pos, ranged.Stand)), pos, now)
+			end
+			return
+		end
 		if bestD <= MC.AttackRange then
 			rec._chaseStuck = 0
 			attack(rec, best, now, clampToZone(zone, SEP.Goal(rec, best))) -- A23-74: between swings it keeps to its slot

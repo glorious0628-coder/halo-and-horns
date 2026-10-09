@@ -53,8 +53,10 @@ local function dev3World(o)
 		return nil
 	end
 	prog.AddCarriedGold = prog.AddBankGold
-	function prog.AddXP(p, n)
+	-- cap: at most this much after the pass (the real AddXP applies the cap after the 2x XP pass)
+	function prog.AddXP(p, n, cap)
 		local got = math.floor(n * (w.XPMult or 1))
+		if cap ~= nil then got = math.min(got, math.max(0, math.floor(cap))) end
 		table.insert(w.XPs, { P = p, N = n, Got = got })
 		ps.AddStat(p, "XP", got)
 		if w.XPMult then return got end

@@ -29,6 +29,13 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # --- A23-87 (게임성 개발 2): a card's XP reward, never 2x
+    ("card XP doubled by the pass", K, "pcall(S.ProgressionService.AddXP, player, xp, xp)",
+     "pcall(S.ProgressionService.AddXP, player, xp)"),
+    ("card XP never paid", K, "\tif xp > 0 then\n\t\tlocal ok, added = pcall(S.ProgressionService.AddXP", "\tif false then\n\t\tlocal ok, added = pcall(S.ProgressionService.AddXP"),
+    ("no XP on the card", K, "Gold = r.Gold, XP = r.XP, Score", "Gold = r.Gold, Score"),
+    ("no XP in CardEnd", K, "out.Item, out.N, out.Gold, out.XP = id, given, gold, xp", "out.Item, out.N, out.Gold = id, given, gold"),
+    ("no XP in the line", K, "\t\tif xp > 0 then table.insert(parts, string.format(TXT.XP or \"+%s XP\", Util.FormatNumber(xp))) end\n", ""),
     # --- Deeds: the cap
     ("config: 7 points a day", C, "\tPerDay = 6,\n\tPoints = 1,", "\tPerDay = 7,\n\tPoints = 1,"),
     ("config: a deed is 2", C, "\tPerDay = 6,\n\tPoints = 1,", "\tPerDay = 6,\n\tPoints = 2,"),
@@ -85,7 +92,7 @@ MUTATIONS = [
     ("the pick is not counted", K, "\t\tcount(data, card.Kind, side)\n", ""),
     ("the count resets", K, "\tst.N[kind][side] = math.min(1000000, math.max(0, math.floor(num(st.N[kind][side]))) + 1)\n", "\tst.N[kind][side] = 1\n"),
     ("a time up pays", K, "\tif side and d and data then\n", "\tif d and data then\n\t\tside = side or \"Good\"\n"),
-    ("the Evil option pays the Good reward", K, "\t\tlocal given, gold, id = pay(player, concrete(player, o.Reward))\n", "\t\tlocal given, gold, id = pay(player, concrete(player, d.Good.Reward))\n"),
+    ("the Evil option pays the Good reward", K, "\t\tlocal given, gold, id, xp = pay(player, concrete(player, o.Reward))\n", "\t\tlocal given, gold, id, xp = pay(player, concrete(player, d.Good.Reward))\n"),
     ("the full-day line is missing", D, "\telseif full then\n\t\tsay(Config.Deeds.Text.Full, \"info\")\n", "\telseif false then\n"),
     ("no off-side line", D, "\tif not mine then\n\t\tif change < 0 then", "\tif false then\n\t\tif change < 0 then"),
     ("no rank line", D, "\t\tif down then say(halo and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n", ""),

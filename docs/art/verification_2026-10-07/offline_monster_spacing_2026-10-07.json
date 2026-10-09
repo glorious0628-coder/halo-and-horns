@@ -81,13 +81,13 @@
     },
     {
       "group": "contract numbers",
-      "check": "every kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)",
+      "check": "every regular kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "contract numbers",
-      "check": "the biggest pair / player overlap fits in one grid cell (neighbour cells see every overlap)",
+      "check": "the biggest pair (two regular kinds / a boss + the biggest regular) and player overlap fit in one grid cell",
       "pass": 1,
       "fail": 0
     },
@@ -1785,7 +1785,7 @@
         "crashed": false,
         "newFailingChecks": [
           "chase slots :: a monster without a slot walks to its own side at its ring distance",
-          "contract numbers :: every kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)",
+          "contract numbers :: every regular kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)",
           "contract numbers :: rings: Shard Slime 3.5, King Slime 4.7, Pumpkin King capped at AttackRange - 0.5",
           "lead :: the chase slot moves with a walking player (ring centred where it will be)",
           "ring capacity :: 7 slimes: all on their own ring r + 2 = 3.5",
@@ -1801,12 +1801,11 @@
         "crashed": false,
         "newFailingChecks": [
           "chase slots :: a monster without a slot walks to its own side at its ring distance",
-          "contract numbers :: every kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)",
           "contract numbers :: rings: Shard Slime 3.5, King Slime 4.7, Pumpkin King capped at AttackRange - 0.5",
           "lead :: the chase slot moves with a walking player (ring centred where it will be)",
           "ring capacity :: 7 slimes: all on their own ring r + 2 = 3.5"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 4
       },
       {
         "mutation": "goal = the player's position",
@@ -3311,10 +3310,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db",
-    "src/ServerScriptService/MonsterService.luau": "c502f7ed18d6bc72967f0eb2976bc790273307a355427c466c06e93305c02614"
+    "src/ReplicatedStorage/Shared/Config.luau": "514b54609ee5a4c55e1f1ba2c56a8f544b7c1b8109a4460c7abaabf850c5a9b5",
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391"
   },
-  "fixtureSHA256": "a1ee92e0b89c75d933b94197773cb53bbdfabf73898e973d87f695e8f8e33418",
+  "fixtureSHA256": "2f22a272e2f2ba5ca1a83ab34e5dd3c39397de79700bc8fbddefcc4eb0c11048",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

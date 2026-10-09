@@ -137,18 +137,27 @@ runGroup("contract numbers", function()
 	end
 	check(SEP.RadiusOf(nil) == 1.5, "RadiusOf without a def: a slime's 1.5", SEP.RadiusOf(nil))
 	-- every kind: the grid sees every overlap, the ring stands outside the player body and in reach
-	local bad, maxR = {}, 0
+	-- A23-92: a boss never walks to a ring slot (it never moves) and players reach its body's edge (HitPad), so only
+	-- the regular kinds' rings are checked; a zone holds one boss at a time, so the biggest pair is two regular kinds
+	-- or a boss + the biggest regular kind
+	local bad, maxR, maxB = {}, 0, 0
 	for kind, def in C.MonsterTypes do
 		local r = SEP.RadiusOf(def)
-		maxR = math.max(maxR, r)
-		local ring = SEP.Ring({ _radius = r })
-		if ring < r + SEP.PlayerRadius - EPS or ring > MC.AttackRange - SEP.RingInside + EPS then
-			table.insert(bad, kind .. "=" .. ring)
+		if def.Boss then
+			maxB = math.max(maxB, r)
+		else
+			maxR = math.max(maxR, r)
+			local ring = SEP.Ring({ _radius = r })
+			if ring < r + SEP.PlayerRadius - EPS or ring > MC.AttackRange - SEP.RingInside + EPS then
+				table.insert(bad, kind .. "=" .. ring)
+			end
 		end
 	end
-	check(#bad == 0, "every kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)", show(bad))
-	check(2 * maxR * SEP.Overlap <= SEP.Cell and (maxR + SEP.PlayerRadius) * SEP.Overlap <= SEP.Cell,
-		"the biggest pair / player overlap fits in one grid cell (neighbour cells see every overlap)", maxR)
+	check(#bad == 0, "every regular kind's ring is outside the player body (>= r + 1) and in reach (<= AttackRange - 0.5)", show(bad))
+	check(2 * maxR * SEP.Overlap <= SEP.Cell and (maxB + maxR) * SEP.Overlap <= SEP.Cell
+		and (math.max(maxR, maxB) + SEP.PlayerRadius) * SEP.Overlap <= SEP.Cell,
+		"the biggest pair (two regular kinds / a boss + the biggest regular) and player overlap fit in one grid cell",
+		show({ maxR, maxB }))
 	check(math.abs(SEP.Ring({ _radius = 1.5 }) - 3.5) < EPS and math.abs(SEP.Ring({ _radius = 2.7 }) - 4.7) < EPS
 		and math.abs(SEP.Ring({ _radius = 3.75 }) - (MC.AttackRange - 0.5)) < EPS,
 		"rings: Shard Slime 3.5, King Slime 4.7, Pumpkin King capped at AttackRange - 0.5",

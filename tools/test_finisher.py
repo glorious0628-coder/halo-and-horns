@@ -142,6 +142,12 @@ MUTATIONS = [
     ("the day never resets", D, "\tif b.Day ~= day then b.Day, b.N = day, 0 end\n", ""),
     ("the cap never fills", D, "local give = math.min(n, math.max(0, perDay() - b.N))", "local give = n"),
     ("Take never books", D, "\tb.N += give\n", ""),
+    # --- 검수 2026-10-09: Clatter's free riders (MonsterService's real kill)
+    ("free riders get nothing", M, "\t\t\telseif minorShare > 0 and (rec._dmg[p] or 0) > 0 then\n\t\t\t\ttable.insert(minors, p)\n", "\t\t\telseif false then\n"),
+    ("free riders paid in full", M, "\t\ti.XP, i.Gold = info.XP * minorShare, info.Gold * minorShare\n", ""),
+    ("free riders get war points", M, "\t\ti.WarPoints, i.WarShare = 0, 0\n", ""),
+    ("free riders not marked Minor", M, "\t\ti.Minor = true\n", ""),
+    ("Clatter pays from 0.5%", C, "RewardMinDamageFrac = 0.02, MinorShare = 0.15,", "RewardMinDamageFrac = 0.005, MinorShare = 0.15,"),
     # --- Config
     ("20 s to pick", C, "\tSeconds = 10,\n\tGrace = 1,\n", "\tSeconds = 20,\n\tGrace = 1,\n"),
     ("2 points a pick", C, "\tGrace = 1,\n\tPoints = 1,\n", "\tGrace = 1,\n\tPoints = 2,\n"),
