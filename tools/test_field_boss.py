@@ -16,7 +16,9 @@ Report: docs/art/verification_2026-10-09/offline_dev2_field_boss_2026-10-09.json
 """
 from __future__ import annotations
 
-from dev2_offline import ROOT, SHARED, SSS, Suite, read, run
+import re
+
+from dev2_offline import ROOT, SHARED, SSS, Suite, function_block, read, run
 
 FILES = {
     "CONFIG_SOURCE": SHARED / "Config.luau",
@@ -29,7 +31,20 @@ C, K, N, M = "CONFIG_SOURCE", "FIELDBOSS_SOURCE", "NET_SOURCE", "MAIN_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
-    return dict(sources)
+    out = dict(sources)
+    mon = read(SSS / "MonsterService.luau")
+    lim = re.search(r"^local GROUND_MIN_Y, GROUND_MAX_Y = .*$", mon, re.M)
+    if not lim:
+        raise ValueError("MonsterService GROUND_MIN_Y / GROUND_MAX_Y missing; update the test extractor.")
+    # MonsterService's real groundPoint on a probe double (SetY(y): the ground there; nil = no hit)
+    out["GROUND_EXTRACT"] = (
+        "local Y = nil\n"
+        "local function probeGround() if Y == nil then return nil, false end return Y, false end\n"
+        "local function occupied() return false end\n"
+        + lim.group(0) + "\n"
+        + function_block(mon, "local function groundPoint(")
+        + "\nreturn { SetY = function(y) Y = y end, Point = groundPoint }\n")
+    return out
 
 
 MUTATIONS = [
@@ -42,7 +57,7 @@ MUTATIONS = [
     ("hill step goes away from the path", K, "\treturn top + d.Unit * math.max(0, num(step, 8))",
      "\treturn top - d.Unit * math.max(0, num(step, 8))"),
     ("hill step not flat", K, "local d = Vector3.new(foot.X - top.X, 0, foot.Z - top.Z)", "local d = foot - top"),
-    ("radius lost", K, "{ Near = near, Radius = math.max(0, num(c.Radius, 2)) }", "{ Near = near }"),
+    ("radius lost", K, "{ Near = near, Radius = math.max(0, num(c.Radius, 2)),", "{ Near = near,"),
     ("never leaves", K, "\t\telseif now >= b.EndsAt then\n\t\t\tfinish(key, false)\n", "\t\telseif false then\n"),
     ("leaving with a splat", K, "pcall(svc.RemoveEvent, rec, true, true)", "pcall(svc.RemoveEvent, rec, true, false)"),
     ("a lost model counts as a defeat", K, "finish(key, num(rec.HP, 1) <= 0) -- a lost", "finish(key, true) -- a lost"),
@@ -63,6 +78,11 @@ MUTATIONS = [
     ("a mom line", C, "SlimeKingLeaveEn = \"King Slime: \\\"Hmph! Bedtime, kids!\\\"\"",
      "SlimeKingLeaveEn = \"King Slime: \\\"Hmph! Mom says bedtime!\\\"\""),
     ("King in the regular pool", C, "Zone = \"SlimeMeadow\", Count = 0, Boss = true,", "Zone = \"SlimeMeadow\", Count = 2, Boss = true,"),
+    # 검수 2026-10-09: the shrine marker part, the hill's MaxY
+    ("no marker part", K, "\t\tif part == nil and d:IsA(\"BasePart\") and (d.Name == attr or v == true) then part = d end\n", ""),
+    ("any part is a marker", K, "(d.Name == attr or v == true) then part = d end", "(true) then part = d end"),
+    ("no MaxY to SpawnEvent", K, "\t\tMaxY = c.MaxY })", "\t\tMaxY = nil })"),
+    ("the King without MaxY", C, "\t\tMaxY = 40 }, -- the hill-top shrine", "\t\tMaxY = nil }, -- the hill-top shrine"),
     ("not in Main START", M, "\"FinisherService\", \"FieldBossService\", -- 게임성 개발 2 (before",
      "\"FinisherService\", -- 게임성 개발 2 (before"),
     ("no Net default", N, "SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0,", ""),

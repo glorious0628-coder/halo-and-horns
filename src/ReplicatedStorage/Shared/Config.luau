@@ -3682,7 +3682,8 @@ Config.FieldBosses = {
 	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
 	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
 	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
-		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0 },
+		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0,
+		MaxY = 40 }, -- the hill-top shrine stands above normal ground (MonsterService.SpawnEvent opts.MaxY)
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): every 20 min, stays 6 min, a ruins spawn
 	-- point until 검수's tool marks ClatterSpawn. The chip shows from Lv25. On a defeat every paid contributor: +War own
 	-- side's crown-war points (WarService.AddPoints; one side online = the siege count), +1 Kills (Titles at 1 / 10 / 50),
