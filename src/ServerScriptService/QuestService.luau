@@ -14,6 +14,7 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local TAG = "QuestService"
 
 local M = {}
+M.ForgeReached = Util.Signal.new() -- A23-88 (player, seconds since [I'm In!]): the walker first stood at Otto's anvil (metrics: ForgeWalk)
 
 local S = nil
 
@@ -33,7 +34,7 @@ local STEP_FORGE = TUT_CFG.Steps.Forge -- 3 (A23-74): to the Crossroads Forge fo
 local TUT_DONE = TUT_CFG.Steps.Done -- 99
 -- A23-74: the Forge step's settings (Config.Tutorial.Forge) and its session state (Late[Player] = the late gift for an
 -- old save was tried this session)
-local FORGE = { Cfg = TUT_CFG.Forge or {}, Zone = "Crossroads", Late = {} }
+local FORGE = { Cfg = TUT_CFG.Forge or {}, Zone = "Crossroads", Late = {}, AcceptedAt = {}, Reached = {} }
 local TUT_TARGET = TUT_CFG.QuestKills
 local TUT_GOLD = TUT_CFG.QuestRewardGold
 local TUT_XP = TUT_CFG.QuestRewardXP or 0
@@ -479,12 +480,6 @@ end
 
 local function onRequestTutorial(player, ...)
 	if select("#", ...) ~= 0 then return end
-	-- A23-74: at the Forge step the same tap (the pinned forge row) asks for the forge trip again, e.g. after a rejoin
-	-- at home (FORGE.Request, below)
-	if getStep(player) == STEP_FORGE then
-		if Util.RateLimit(player, "RequestTutorial", TUT_CFG.WelcomeRate or 0.5) then FORGE.Request(player) end
-		return
-	end
 	if not canWelcome(player) then return end
 	if not Util.RateLimit(player, "RequestTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
 	openWelcome(player)
@@ -499,38 +494,9 @@ local function onIntroSeen(player, ...)
 	S.PlayerService.SetStat(player, "IntroSeen", true)
 end
 
--- A23-68 #1: AcceptTravelSeconds after [Accept] the player is moved to the meadow entrance (an instant Travel: the
--- usual level / kaiju / sack / stars / combat rules still refuse it, and the HUD guide beam stays the way there).
--- Contract with game dev 1 (client fade): Fx "Travel" { UserId, To, T } at the accept, Fx "TravelDone" { UserId } when
--- the move ran (or was skipped); MoveLockUntil (server time) refuses swings and skills in between (CombatService).
--- A23-74: the same trip goes to the Forge first (To = "Crossroads", Spot = "Forge"), and to the meadow after the gift
-local function travelToMeadow(player, character)
-	if player.Parent ~= Players or Util.GetCharacter(player) ~= character or not Util.IsAlive(player) then return end
-	if getStep(player) ~= STEP_GUIDE or S.ZoneService.GetZoneId(player) == TUT_ZONE then return end
-	local ok, err = pcall(S.ZoneService.Travel, player, TUT_ZONE, true)
-	if not ok then Util.Warn(TAG, "meadow travel: " .. tostring(err)) end
-end
-
-local function travelDone(player)
-	if player.Parent ~= Players then return end
-	player:SetAttribute("MoveLockUntil", 0)
-	pcall(Net.Fx, player, "TravelDone", { UserId = player.UserId })
-end
-
--- one trip: Fx "Travel" now, the mover AcceptTravelSeconds later, then TravelDone (false = trips are off)
-local function trip(player, to, spot, mover)
-	local wait = tonumber(TUT_CFG.AcceptTravelSeconds) or 0
-	if wait <= 0 then return false end
-	local character = Util.GetCharacter(player)
-	player:SetAttribute("MoveLockUntil", Util.Now() + wait + 1.5) -- the client's fade lasts at most T + 1.5 s
-	pcall(Net.Fx, player, "Travel", { UserId = player.UserId, To = to, Spot = spot, T = wait })
-	task.delay(wait, function()
-		local ok, err = pcall(mover, player, character)
-		if not ok then Util.Warn(TAG, "first-mission travel: " .. tostring(err)) end
-		travelDone(player)
-	end)
-	return true
-end
+-- A23-88 (user 2026-10-09): nothing moves the player by itself any more. [I'm In!] starts "Go to Otto's Forge" (walking,
+-- the step ends when the blacksmith hands over the first weapon), and after the weapon "Travel to the Squishy Meadow" teaches
+-- the travel pad / the map (the step ends when the player stands in the meadow, however they got there).
 
 -- A23-74: the Crossroads anvil (ShopService.Anvil; nil while the weapon shop is closed)
 function FORGE.Anvil()
@@ -548,36 +514,6 @@ function FORGE.Near(player)
 	return anvil ~= nil and root ~= nil and Util.FlatDistance(root.Position, anvil.Position) <= num(FORGE.Cfg.Near, 24)
 end
 
--- where the forge trip lands: Forge.Back studs in front of the anvil toward the Crossroads spawn, Forge.Lift studs above
--- the anvil's bottom, facing it; nil = the Crossroads spawn only (Landing ~= "Anvil", or no anvil)
-function FORGE.Spot()
-	local anvil = FORGE.Cfg.Landing == "Anvil" and FORGE.Anvil() or nil
-	if not anvil then return nil end
-	local a = anvil.Position
-	local from = Config.Zones[FORGE.Zone].Spawn
-	local dx, dz = from.X - a.X, from.Z - a.Z
-	local len = math.sqrt(dx * dx + dz * dz)
-	if len < 0.5 then dx, dz, len = 0, -1, 1 end
-	local back = num(FORGE.Cfg.Back, 8)
-	local foot = a.Y - anvil.Size.Y / 2 + num(FORGE.Cfg.Lift, 4)
-	local pos = Vector3.new(a.X + dx / len * back, foot, a.Z + dz / len * back)
-	return CFrame.lookAt(pos, Vector3.new(a.X, foot, a.Z))
-end
-
--- the forge trip's move: to the Crossroads (ZoneService.Travel and its rules), then the spot in front of the anvil
-function FORGE.Move(player, character)
-	if player.Parent ~= Players or Util.GetCharacter(player) ~= character or not Util.IsAlive(player) then return end
-	if getStep(player) ~= STEP_FORGE or FORGE.Near(player) then return end
-	local ok, moved = pcall(S.ZoneService.Travel, player, FORGE.Zone, true)
-	if not ok then Util.Warn(TAG, "forge travel: " .. tostring(moved)) end
-	if not ok or moved ~= true then return end
-	local spot, root = FORGE.Spot(), Util.GetRoot(player)
-	if not spot or not root then return end
-	if type(S.ZoneService.MarkTeleported) == "function" then pcall(S.ZoneService.MarkTeleported, player) end
-	character:PivotTo(spot)
-	root.AssemblyLinearVelocity = Vector3.zero
-end
-
 -- the blacksmith's gift without the Forge visit (no anvil in the world, or an old save past the Forge step):
 -- LootService.GrantFirstWeapon pays once (owning tier 1 is the record); `why` names the warning when it fails
 function FORGE.Give(player, why)
@@ -587,37 +523,29 @@ function FORGE.Give(player, why)
 	if not ok then Util.Warn(TAG, why .. ": " .. tostring(err)) end
 end
 
--- a forge trip, unless one is running (MoveLockUntil ahead) or the player stands at the Forge already
-function FORGE.Request(player)
-	if not S.PlayerService.IsReady(player) or not Util.IsAlive(player) or getStep(player) ~= STEP_FORGE then return end
-	if num(player:GetAttribute("MoveLockUntil")) > Util.Now() or FORGE.Near(player) then return end
-	trip(player, FORGE.Zone, "Forge", FORGE.Move)
-end
-
 local function onAcceptTutorial(player, ...)
 	if select("#", ...) ~= 0 or not canWelcome(player) then return end
 	if not Util.RateLimit(player, "AcceptTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
 	welcomeShown[player] = true
 	S.PlayerService.SetStat(player, "TutorialKills", 0) -- a fresh acceptance never inherits stale kills
-	-- A23-74 weapon first: a bare-handed player without the first weapon goes to the Forge; one holding a weapon already
-	-- hunts at once, as before. 검수 2026-10-07: with no anvil in the world (the weapon shop closed) the gift comes at
-	-- once and the mission goes on, never stuck at the Forge step
+	-- A23-74 weapon first: a bare-handed player without the first weapon walks to the Forge (A23-88: no automatic move);
+	-- one holding a weapon already goes on to the travel step. 검수 2026-10-07: with no anvil in the world (the weapon shop
+	-- closed) the gift comes at once and the mission goes on, never stuck at the Forge step
+	FORGE.AcceptedAt[player] = os.clock()
 	if STEP_FORGE and needsFirstWeapon(getData(player)) then
 		if FORGE.Anvil() then
 			setStep(player, STEP_FORGE)
-			if not FORGE.Near(player) then trip(player, FORGE.Zone, "Forge", FORGE.Move) end
 			return
 		end
 		FORGE.Give(player, "first weapon (no anvil)")
 	end
 	setStep(player, STEP_GUIDE) -- acceptance in the meadow can enter step 2, without crediting any kill
-	if getStep(player) == STEP_GUIDE then trip(player, TUT_ZONE, nil, travelToMeadow) end
 end
 
 -- A23-74: ShopService runs this when the anvil prompt is used. At the Forge step the blacksmith hands over the class
 -- basic weapon (LootService.GrantFirstWeapon: equipped with "Power 0 → N", the client's "Stronger!" moment), the first
--- mission moves on to step 1 and Forge.TravelDelay s later the meadow trip starts. true = handled here (the caller
--- opens no shop window this time)
+-- mission moves on to step 1, "Travel to the Squishy Meadow" (A23-88: the player travels by the pad or the map, nothing
+-- moves them). true = handled here (the caller opens no shop window this time)
 function M.ForgeGift(player)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or getStep(player) ~= STEP_FORGE then return false end
 	local data = getData(player)
@@ -629,14 +557,6 @@ function M.ForgeGift(player)
 		if not ok then Util.Warn(TAG, "GrantFirstWeapon: " .. tostring(err)) end
 	end
 	setStep(player, STEP_GUIDE)
-	local delay = tonumber(FORGE.Cfg.TravelDelay)
-	if delay and delay >= 0 then
-		task.delay(delay, function()
-			if player.Parent ~= Players or getStep(player) ~= STEP_GUIDE then return end
-			if num(player:GetAttribute("MoveLockUntil")) > Util.Now() then return end
-			trip(player, TUT_ZONE, nil, travelToMeadow)
-		end)
-	end
 	return true
 end
 
@@ -685,6 +605,14 @@ local function tryTutorial(player)
 		if not FORGE.Anvil() then
 			FORGE.Give(player, "first weapon (no anvil)")
 			setStep(player, STEP_GUIDE)
+			return
+		end
+		-- A23-88: the first time the walker stands at the anvil (a metric: seconds since [I'm In!]; only for a walk begun
+		-- this session)
+		local from = FORGE.AcceptedAt[player]
+		if from and not FORGE.Reached[player] and FORGE.Near(player) then
+			FORGE.Reached[player] = true
+			M.ForgeReached:Fire(player, math.max(0, os.clock() - from))
 		end
 		return
 	end
@@ -1250,6 +1178,7 @@ local function onPlayerLeaving(player)
 	TUT_READY_AT[player] = nil
 	hadNextGoal[player] = nil
 	FORGE.Late[player] = nil
+	FORGE.AcceptedAt[player], FORGE.Reached[player] = nil, nil
 end
 
 local function onCharacterSpawned(player)

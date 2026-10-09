@@ -101,13 +101,13 @@ def main() -> int:
                      "Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the "
                      "Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; "
                      "never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
-                     "A23-74 weapon first (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 "
-                     "(the Forge row, Fx Travel To = Crossroads / Spot = Forge, the instant Crossroads travel); meadow kills "
-                     "before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 (2 in the meadow), once; "
-                     "Forge.TravelDelay later the meadow trip -> the hunt; a save owning tier 1 -> step 1 as before; every "
-                     "claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned "
-                     "(ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial at step 3 = the "
-                     "forge trip; a KO at step 3 respawns at home"],
+                     "A23-74 + A23-88 weapon first, walking (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 "
+                     "(the Forge row 'Go to Otto's Forge', NO automatic trip: no Fx Travel, no lock, nobody moved); meadow kills "
+                     "before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 'Travel to Squishy Meadow' "
+                     "(2 in the meadow), once, no meadow trip; arriving in the meadow (the pad, Map -> Travel or a walk) -> the "
+                     "hunt; a save owning tier 1 -> step 1, no trip; every claim clears BlacksmithVisited, Claimed = the next "
+                     "weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); "
+                     "RequestTutorial asks for no trip at any step; a KO at step 3 respawns at home"],
         "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. "
                        "F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); "
                        "'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again).",

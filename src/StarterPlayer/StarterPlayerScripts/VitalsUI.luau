@@ -12,6 +12,7 @@ local player = Players.LocalPlayer
 local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, WatchedAttributes = {
 	Mana = true, MaxMana = true, HPPotionCount = true, MPPotionCount = true,
 	HPPotionReadyAt = true, MPPotionReadyAt = true, ClassChosen = true, DataLoaded = true, KaijuState = true,
+	Level = true, -- Config.HudReveal: the potion pair from its level on
 } }
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245), Dim = Color3.fromRGB(150, 150, 160) }
 local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
@@ -229,6 +230,13 @@ local function refresh()
 	local hp, maxHP = humanoid and humanoid.Health or 0, humanoid and humanoid.MaxHealth or 1
 	local mana = math.max(0, finiteNumber(player:GetAttribute("Mana"), 0))
 	local maxMana = math.max(1, finiteNumber(player:GetAttribute("MaxMana"), Config.Vitals.MaxMana))
+	-- 검수 10/09 (UI clutter review ④): the pair comes when it is needed and then stays (Config.HudReveal)
+	if ui.Row and not ui.PotionSeen then
+		local held = potionState("HP") + potionState("MP")
+		ui.PotionSeen = Config.HudReveal.Shows("Potions", { Level = player:GetAttribute("Level"), Potions = held,
+			HP = hp, MaxHP = maxHP })
+		if ui.Row.Visible ~= ui.PotionSeen then ui.Row.Visible = ui.PotionSeen end
+	end
 	for kind, values in { HP = { hp, maxHP }, MP = { mana, maxMana } } do
 		local bar = ui[kind]
 		if bar then

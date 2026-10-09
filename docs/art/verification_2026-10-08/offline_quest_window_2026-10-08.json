@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 80,
+  "checks": 84,
   "failedChecks": [],
   "static": [
     {
@@ -33,10 +33,30 @@
     }
   ],
   "mutations": {
-    "total": 38,
-    "applied": 38,
-    "caught": 38,
+    "total": 40,
+    "applied": 40,
+    "caught": 40,
     "results": [
+      {
+        "mutation": "no tab icons",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the Main tab shows its icon :: nil",
+          "CHECK_FAIL the Daily tab shows its icon :: ",
+          "CHECK_FAIL the word moves right of the icon (padding) :: "
+        ]
+      },
+      {
+        "mutation": "an icon without art",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a tab without art: no icon, no padding :: "
+        ]
+      },
       {
         "mutation": "the preview hook outside Studio",
         "source": "BOOK",
@@ -419,12 +439,12 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "919dc10db8a679e2dd571a844d4d8a839f786950da9b9a3f3e9ab402fc14353b",
-    "src/ReplicatedStorage/Shared/Config.luau": "57945b7348d2ebda51fca4592a608190676a53caa0a85e2597290c377c9aa360",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "0e02278a9388fe41b69fbfb00c5e337f1f6e1fc9730d708c7df57bdcba3587e5",
+    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "1def77fcbea18dc892c95c0ec9e69b8ca3035eb00f6291699c8e62591f5b8a09",
+    "src/ReplicatedStorage/Shared/Config.luau": "62229b692d706d93c4211aa179aa79e4249d3de00dc8f5fc7e38a1210dafe21e",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "d369f73b3b3be3dbdd3983966f6c260945849d107acb2adaf3b01a34cadc948c",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
   },
-  "fixtureSHA256": "da76f81bfcbc4e6b53c30a7328033f6e9d92369ea09be5d3d27d401b6e4e8638",
+  "fixtureSHA256": "f53d518aff0ec2395a218c71e7c1533c795a5b634132ee270df2f6ca131f1821",
   "studioCalls": 0,
   "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows are a Studio photo check (메인 반영). The book rows follow 게임성 개발 3's contract (tools/test_quest_book.py checks the server side); before a book comes Done is what the client can tell."
 }

@@ -6319,6 +6319,21 @@
    "file": "art/models/tripo/web/Mon_SlingshotGoblin_HD_src.glb",
    "tris": 14646,
    "note": "검수 승인 8ebc0ca. FAIL CHECK: a face shows on the BACK of the head in the 3D (back reference had none) -> see art/review/monsters/*_3d_compare.jpg"
+  },
+  {
+   "event": "web_generation (retry v2: input = front + back only)",
+   "mode": "HD multiview front+back, H3.1 (poly 15000 typed, 4K, PBR, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "task": "d28edd56-0496-41ed-8937-5d68fcacc647",
+   "at": "2026-10-09 11:3x",
+   "balance_after": 25115,
+   "file": "art/models/tripo/web/Mon_SlingshotGoblin_v2_HD_src.glb",
+   "tris": 14283,
+   "note": "검수 재승인 10/09; back of the head clean (no face) -> USE THIS (v2); v1 had a face on the back",
+   "derived": [
+    "build/import_all/5_fifth/E7_NewMonsters.glb (fit z 10)"
+   ]
   }
  ],
  "Mon_SkeletonArcherB_web_hd": [
@@ -6335,6 +6350,21 @@
    "file": "art/models/tripo/web/Mon_SkeletonArcherB_HD_src.glb",
    "tris": 14664,
    "note": "검수 승인 8ebc0ca. FAIL CHECK: a face shows on the BACK of the head in the 3D (back reference had none) -> see art/review/monsters/*_3d_compare.jpg"
+  },
+  {
+   "event": "web_generation (retry v2: input = front + back only)",
+   "mode": "HD multiview front+back, H3.1 (poly 15000 typed, 4K, PBR, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "task": "0d96022f-4e1d-44c6-86b4-e0ae37051cfd",
+   "at": "2026-10-09 11:3x",
+   "balance_after": 25060,
+   "file": "art/models/tripo/web/Mon_SkeletonArcherB_v2_HD_src.glb",
+   "tris": 14406,
+   "note": "검수 재승인 10/09; back of the head clean (no face) -> USE THIS (v2); v1 had a face on the back",
+   "derived": [
+    "build/import_all/5_fifth/E7_NewMonsters.glb (fit z 10)"
+   ]
   }
  ]
 }

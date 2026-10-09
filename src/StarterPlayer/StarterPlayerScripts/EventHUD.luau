@@ -120,7 +120,9 @@ local TXT = {
 	KaijuSelf = "You are a Kaiju! Last %s to become a legend",
 	Revenge = "Revenge: %s · %s",
 	Luck = "Today's Luck · Rare %s%%", -- A23-18 (events taken part in today, KST day)
-	LuckShort = "Rare %s%%", -- HUD v2 phone luck chip (EventHUD.LuckShort)
+	-- 검수 10/09 (UI clutter review: 'Rare 5%' meant nothing to kids): the chip says the bonus over the base rare chance
+	-- and shows only when there is one (EventHUD.LuckShort)
+	LuckShort = "Lucky +%s%%",
 	Cheer = "Cheer Stars %s (%d/%d)",
 	CheerLabel = "Cheer Stars",
 	CheerCount = "%d/%d",
@@ -1765,9 +1767,12 @@ end
 
 -- HUD v2 phone luck chip: the short form of LuckSummary's first line, "희귀 10.75%" (nil on error)
 function EventHUD.LuckShort()
-	local ok, _, _, _, _, pct = pcall(luckData)
-	if not ok or pct == nil then return nil end
-	return safeFormat(TXT.LuckShort, pct)
+	local ok, bonus = pcall(function()
+		local events = math.max(0, math.floor(num(myAttr("LuckEvents", 0))))
+		return Config.RareChance(events) - ((Config.Luck and Config.Luck.BaseRare) or 0)
+	end)
+	if not ok or type(bonus) ~= "number" or bonus <= 1e-9 then return nil end -- no bonus today: no chip
+	return safeFormat(TXT.LuckShort, Util.FormatPercent(bonus))
 end
 
 -- HUD calls this right after each layout pass (HUD v2: re-reads C.HUD.Layout.Rects.notify; legacy: the old layout)

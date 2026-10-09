@@ -36,6 +36,7 @@ local TAG = "QuestBook"
 local T = {
 	Window = "Journal",
 	TabH = 40,
+	TabIcon = 22, -- 검수 10/09 (user OK): the tab's QuestTabIcon<tab> left of its word
 	RowText = 18,
 	NumText = 16,
 	BtnW = 84,
@@ -436,6 +437,28 @@ local function startTab()
 	return first and QuestBook.TabOf(first) or "Main"
 end
 
+-- the tab's icon (Config.UIArt QuestTabIcon<tab>, 이미지 생성 2) left of its word; no art = the word alone
+local function tabIcon(b, id)
+	local ui = C and C.UIKit
+	local ok, img = false, nil
+	if type(ui) == "table" and type(ui.ArtId) == "function" then ok, img = pcall(ui.ArtId, "QuestTabIcon" .. id) end
+	if not ok or type(img) ~= "string" or img == "" then return nil end
+	local pad = Instance.new("UIPadding")
+	pad.PaddingLeft = UDim.new(0, T.TabIcon + 6)
+	pad.Parent = b
+	local icon = Instance.new("ImageLabel")
+	icon.Name = "TabIcon"
+	icon.BackgroundTransparency = 1
+	icon.Image = img
+	icon.ScaleType = Enum.ScaleType.Fit
+	icon.AnchorPoint = Vector2.new(1, 0.5)
+	icon.Position = UDim2.new(0, -3, 0.5, 0) -- in the padding, just left of the word
+	icon.Size = UDim2.fromOffset(T.TabIcon, T.TabIcon)
+	icon.ZIndex = (tonumber(b.ZIndex) or 1) + 2
+	icon.Parent = b
+	return icon
+end
+
 local function build(parent, kit, arg)
 	VIEW.Parent, VIEW.Kit = parent, kit
 	if type(arg) == "table" and table.find(tabs(), arg.Tab) then
@@ -460,6 +483,7 @@ local function build(parent, kit, arg)
 		local b = kit.Button(bar, Config.QuestTabs.Names[id] or id, kit.Palette.Button,
 			UDim2.new(1 / n, -6 * (n - 1) / n, 1, 0), function() QuestBook.ShowTab(id) end)
 		b.LayoutOrder = i
+		tabIcon(b, id)
 		VIEW.Tabs[id] = b
 	end
 	local body = Instance.new("ScrollingFrame")
