@@ -26,13 +26,15 @@ FILES = {
     "NET_SOURCE": SHARED / "Net.luau",
     "MAIN_SOURCE": SSS / "Main.server.luau",
     "FIELDBOSS_SOURCE": SSS / "FieldBossService.luau",
+    "MONSTER_SOURCE": SSS / "MonsterService.luau",
+    "COMBAT_SOURCE": SSS / "CombatService.luau",
 }
 C, K, N, M = "CONFIG_SOURCE", "FIELDBOSS_SOURCE", "NET_SOURCE", "MAIN_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
-    out = dict(sources)
-    mon = read(SSS / "MonsterService.luau")
+    out = {k: v for k, v in sources.items() if k not in ("MONSTER_SOURCE", "COMBAT_SOURCE")}
+    mon = sources["MONSTER_SOURCE"]
     lim = re.search(r"^local GROUND_MIN_Y, GROUND_MAX_Y = .*$", mon, re.M)
     if not lim:
         raise ValueError("MonsterService GROUND_MIN_Y / GROUND_MAX_Y missing; update the test extractor.")
@@ -44,6 +46,14 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         + lim.group(0) + "\n"
         + function_block(mon, "local function groundPoint(")
         + "\nreturn { SetY = function(y) Y = y end, Point = groundPoint }\n")
+    # A23-92: MonsterService.HitPad with the real SEP.RadiusOf, and CombatService's target search text
+    out["HITPAD_EXTRACT"] = (
+        "local Config = ...\nlocal MonsterService = {}\nlocal SEP = { Radius = { Slime = 1.5, Humanoid = 1.25 } }\n"
+        + function_block(mon, "function SEP.RadiusOf(")
+        + function_block(mon, "function MonsterService.HitPad(")
+        + "\nreturn { HitPad = MonsterService.HitPad, RadiusOf = SEP.RadiusOf }\n")
+    out["COMBAT_NEAR_TEXT"] = function_block(sources["COMBAT_SOURCE"], "local function monstersNear(")
+    out["MONSTER_QUERY_TEXT"] = function_block(mon, "function MonsterService.GetMonstersInRadius(")
     return out
 
 
@@ -83,6 +93,16 @@ MUTATIONS = [
     ("any part is a marker", K, "(d.Name == attr or v == true) then part = d end", "(true) then part = d end"),
     ("no MaxY to SpawnEvent", K, "\t\tMaxY = c.MaxY })", "\t\tMaxY = nil })"),
     ("the King without MaxY", C, "\t\tMaxY = 40 }, -- the hill-top shrine", "\t\tMaxY = nil }, -- the hill-top shrine"),
+    # A23-92: a big boss is reached at its body's edge
+    ("no hit pad", "MONSTER_SOURCE", "\tif type(def) ~= \"table\" or def.Boss ~= true then return 0 end\n\treturn math.max(0,",
+     "\tif true then return 0 end\n\treturn math.max(0,"),
+    ("hit pad for every monster", "MONSTER_SOURCE", "\tif type(def) ~= \"table\" or def.Boss ~= true then return 0 end\n",
+     "\tif type(def) ~= \"table\" then return 0 end\n"),
+    ("the query ignores the pad", "MONSTER_SOURCE", "<= radius + MonsterService.HitPad(rec) then\n\t\t\t\ttable.insert(out, rec)",
+     "<= radius then\n\t\t\t\ttable.insert(out, rec)"),
+    ("combat ignores the pad", "COMBAT_SOURCE", "\t\t\t\tif d <= radius + pad then\n", "\t\t\t\tif d <= radius then\n"),
+    ("the King as small as before", C, "Shape = \"Slime\", Scale = 3.2, Color = Color3.fromRGB(255, 140, 190) },",
+     "Shape = \"Slime\", Scale = 2.5, Color = Color3.fromRGB(255, 140, 190) },"),
     ("not in Main START", M, "\"FinisherService\", \"FieldBossService\", -- 게임성 개발 2 (before",
      "\"FinisherService\", -- 게임성 개발 2 (before"),
     ("no Net default", N, "SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0,", ""),

@@ -154,7 +154,8 @@ local SEP = {
 	Lead = 0.25, -- s: the chase ring and the player body are taken where a walking player will be (one AI tick on)
 	LeadMax = 4, -- studs
 	SpawnGap = 1.5,
-	Cell = 8, -- >= the largest pair distance (two Pumpkin Kings: 2 x 3.75 x Overlap)
+	Cell = 8, -- >= the largest pair distance (two big regular kinds, or a boss + the biggest regular kind: A23-92 King
+	-- Slime 4.8 + Slime Prince 2.7; a zone holds one boss at a time)
 	TargetHold = 2, -- s: review 2026-10-08: a zone monster keeps a new target at least this long ...
 	TargetMargin = 3, -- studs: ... and then switches only to a player this much closer (side by side never swap)
 	Grid = {}, -- [cell key] = { rec, ... } this AI tick
@@ -555,6 +556,15 @@ local function cappedTargets(zoneCounts)
 end
 
 ------------------------------------------------------------------ public queries
+-- A23-92 (검수 2026-10-09): a big boss is hit at its body's edge, not only near its centre: the studs its body is wider
+-- than a normal monster of its shape (0 for every other monster). GetMonstersInRadius / GetNearest and CombatService's
+-- target search add it to the reach.
+function MonsterService.HitPad(rec)
+	local def = type(rec) == "table" and rec.Def or nil
+	if type(def) ~= "table" or def.Boss ~= true then return 0 end
+	return math.max(0, (tonumber(rec._radius) or SEP.RadiusOf(def)) - SEP.RadiusOf({ Shape = def.Shape, Scale = 1 }))
+end
+
 -- forPlayer (optional): only the monsters that player may hit (own personal ones + zone monsters of the zone the
 -- player stands in, CR-M5). nil = every alive monster.
 function MonsterService.GetMonstersInRadius(position, radius, forPlayer)
@@ -564,7 +574,7 @@ function MonsterService.GetMonstersInRadius(position, radius, forPlayer)
 	for _, rec in records do
 		if rec.Alive and visibleTo(rec, forPlayer, fz) then
 			local root = rec.Root
-			if root and root.Parent and Util.FlatDistance(root.Position, position) <= radius then
+			if root and root.Parent and Util.FlatDistance(root.Position, position) <= radius + MonsterService.HitPad(rec) then
 				table.insert(out, rec)
 			end
 		end
@@ -582,7 +592,7 @@ function MonsterService.GetNearest(position, radius, maxCount, forPlayer)
 			local root = rec.Root
 			if root and root.Parent then
 				local d = Util.FlatDistance(root.Position, position)
-				if d <= radius then
+				if d <= radius + MonsterService.HitPad(rec) then
 					table.insert(found, { Rec = rec, D = d })
 				end
 			end

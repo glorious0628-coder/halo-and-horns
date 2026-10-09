@@ -301,7 +301,9 @@ local function monstersNear(player, point, radius)
 			if root and root.Parent then
 				local pos = root.Position
 				local d = Util.FlatDistance(pos, point)
-				if d <= radius then
+				-- A23-92: a big boss is reached at its body's edge (MonsterService.HitPad)
+				local pad = type(S.MonsterService.HitPad) == "function" and S.MonsterService.HitPad(rec) or 0
+				if d <= radius + pad then
 					table.insert(out, { Rec = rec, Pos = pos, Dist = d })
 				end
 			end

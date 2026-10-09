@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 147,
+  "checks": 157,
   "failedChecks": 0,
-  "namedChecks": 147,
+  "namedChecks": 157,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -339,6 +339,66 @@
     },
     {
       "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "the King Slime is bigger (Scale 3.2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "HitPad = its body radius - a normal slime's (3.3 at Scale 3.2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "a player at the body's edge is reached",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "regular monsters: no pad (the Slime Prince too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "other big bosses get theirs too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "GetMonstersInRadius adds the pad",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "CombatService's target search adds the pad",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "the Flower Slime is purple (A23-92)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -894,9 +954,9 @@
   "staticChecks": 11,
   "staticFailures": [],
   "mutations": {
-    "total": 48,
-    "applied": 48,
-    "caught": 48,
+    "total": 53,
+    "applied": 53,
+    "caught": 53,
     "skipped": false,
     "results": [
       {
@@ -1278,6 +1338,63 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "no hit pad",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: HitPad = its body radius - a normal slime's (3.3 at Scale 3.2)",
+          "a big boss is hit at its body's edge (A23-92) :: a player at the body's edge is reached",
+          "a big boss is hit at its body's edge (A23-92) :: other big bosses get theirs too"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "hit pad for every monster",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: regular monsters: no pad (the Slime Prince too)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the query ignores the pad",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: GetMonstersInRadius adds the pad"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "combat ignores the pad",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: CombatService's target search adds the pad"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the King as small as before",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: the King Slime is bigger (Scale 3.2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "not in Main START",
         "file": "src/ServerScriptService/Main.server.luau",
         "applied": true,
@@ -1508,13 +1625,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9549ec436f7ba8ce30334a0b18066b7a2f38f25ab7b9afd6b9dd172345abaf39",
+    "src/ReplicatedStorage/Shared/Config.luau": "3216500439fe4fb910d16a3841769d899e139f102128dbb067a1a01e0386915c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
     "src/ServerScriptService/Main.server.luau": "c26fb8a2fd6ac56666307349b161dd8fb894f0fa93eda218962ed4a63b11fb2f",
-    "src/ServerScriptService/FieldBossService.luau": "e71028364ab6330af6c42af21c7092e7f4e32acef0ad6ceb42579c35e916f920"
+    "src/ServerScriptService/FieldBossService.luau": "e71028364ab6330af6c42af21c7092e7f4e32acef0ad6ceb42579c35e916f920",
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
+    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137"
   },
-  "fixtureSHA256": "97928d4d227bf9f203ba9bf0fb074b342c729ec20cd54c9d39fa29b49464615b",
+  "fixtureSHA256": "3ab0f229878965cee587eb5b1c3896f97dcf4c544e3feea69cf8c018382eb6e0",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

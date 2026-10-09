@@ -1777,7 +1777,7 @@ Config.MonsterTypes = {
 	-- until a player it may chase comes within Pop or it is hit. PartnerOf = spawns beside a living one of that kind
 	-- that has no partner of this kind yet (else anywhere in the zone).
 	FlowerSlime = { Name = "Flower Slime", Short = "Flower Slime", Zone = "SlimeMeadow", Count = 2, HP = 14, Damage = 2,
-		XP = 7, Gold = 4, Speed = 10, Shape = "Slime", Scale = 0.9, Color = Color3.fromRGB(255, 150, 200), ModelFrom = "Slime",
+		XP = 7, Gold = 4, Speed = 10, Shape = "Slime", Scale = 0.9, Color = Color3.fromRGB(165, 105, 230), ModelFrom = "Slime", -- A23-92 purple
 		QuestAs = "Slime", Ambush = { Material = "Salt", Tries = 12, Pop = 8 } },
 	SlingshotGoblin = { Name = "Slingshot Goblin", Short = "Slingshot Goblin", Zone = "GoblinWoods", Count = 3, HP = 70,
 		Damage = 4, XP = 26, Gold = 15, Speed = 11, Shape = "Humanoid", Scale = 0.9, Color = Color3.fromRGB(150, 175, 70),
@@ -1821,7 +1821,9 @@ Config.MonsterTypes = {
 	-- about 75 s for three (proposed, tune after play). The finisher card is its (Config.Finisher.Kinds)
 	SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true,
 		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime",
-		HP = 2500, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 2.5, Color = Color3.fromRGB(55, 120, 225) },
+		-- A23-92 (user 2026-10-09 "조금 더 크면"): Scale 2.5 -> 3.2; players reach its body's edge (MonsterService.HitPad);
+		-- pink body (its texture: image gen 2 -> image dev; until then this Color tints the borrowed model)
+		HP = 2500, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 3.2, Color = Color3.fromRGB(255, 140, 190) },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
 	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
 	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per

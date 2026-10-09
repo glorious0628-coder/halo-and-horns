@@ -249,6 +249,30 @@ runGroup("ground on a hill (MonsterService.groundPoint)", function()
 	check(g == nil and noHit == true, "no ground hit: nil, noHit")
 end)
 
+runGroup("a big boss is hit at its body's edge (A23-92)", function()
+	local C = newWorld().Config
+	local H = execute("HitPad", HITPAD_EXTRACT, nativeEnv(), C)
+	local king = C.MonsterTypes.SlimeKing
+	check(king.Scale >= 3.2 and king.Boss == true, "the King Slime is bigger (Scale 3.2)", king.Scale)
+	local r = H.RadiusOf(king)
+	local pad = H.HitPad({ Def = king, _radius = r })
+	check(math.abs(r - 1.5 * king.Scale) < 1e-6 and math.abs(pad - (r - 1.5)) < 1e-6,
+		"HitPad = its body radius - a normal slime's (3.3 at Scale 3.2)", show({ r, pad }))
+	-- a player standing just outside its body (r + 1) is inside the normal reach + pad (the combat reach is measured
+	-- to the monster's centre)
+	check(r + 1 <= C.Monsters.AttackRange + pad, "a player at the body's edge is reached", show({ r + 1, C.Monsters.AttackRange + pad }))
+	check(H.HitPad({ Def = C.MonsterTypes.BigSlime, _radius = H.RadiusOf(C.MonsterTypes.BigSlime) }) == 0
+		and H.HitPad({ Def = C.MonsterTypes.Slime }) == 0, "regular monsters: no pad (the Slime Prince too)")
+	check(H.HitPad({ Def = C.MonsterTypes.CaptainClatter, _radius = H.RadiusOf(C.MonsterTypes.CaptainClatter) }) > 0,
+		"other big bosses get theirs too")
+	check(string.find(MONSTER_QUERY_TEXT, "<= radius + MonsterService.HitPad(rec)", 1, true) ~= nil,
+		"GetMonstersInRadius adds the pad")
+	check(string.find(COMBAT_NEAR_TEXT, "if d <= radius + pad then", 1, true) ~= nil
+		and string.find(COMBAT_NEAR_TEXT, "S.MonsterService.HitPad(rec)", 1, true) ~= nil, "CombatService's target search adds the pad")
+	check(C.MonsterTypes.FlowerSlime.Color.X < C.MonsterTypes.FlowerSlime.Color.Z
+		and C.MonsterTypes.FlowerSlime.Color.Z > 200, "the Flower Slime is purple (A23-92)", show(C.MonsterTypes.FlowerSlime.Color))
+end)
+
 runGroup("spot fallbacks", function()
 	local w = bossWorld({ Hill = { Top = vec(430, 14.6, -170), Foot = vec(430, 5, -150) } })
 	w:Hunter(1)
