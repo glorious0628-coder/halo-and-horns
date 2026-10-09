@@ -5304,7 +5304,7 @@ Config.UIArt = {
 -- whole map follows when the dressing is done
 Config.UIArt.MapTilesFull = false -- true when MapTiles cover the whole world: then the big map (M) draws them too
 Config.UIArt.MapTiles = {
-	{ Id = "rbxassetid://115502330444601", X0 = -80, X1 = 80, Z0 = -80, Z1 = 80 }, -- crossroads
+	-- crossroads: re-shot with --solid-parasols first (its striped stall roofs read as rays from above, 검수 10/09)
 	{ Id = "rbxassetid://133694892661834", X0 = 180, X1 = 340, Z0 = -80, Z1 = 80 }, -- meadow arrival
 	{ Id = "rbxassetid://73887725585820", X0 = 210, X1 = 370, Z0 = 70, Z1 = 230 }, -- pond
 	{ Id = "rbxassetid://106974672450070", X0 = 760, X1 = 920, Z0 = 26, Z1 = 186 }, -- woods camp
