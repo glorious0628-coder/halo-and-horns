@@ -6264,6 +6264,36 @@
   "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
   "note": "Skeleton Archer 최종(사용자 선택 B): 활 + 등에 딱 붙은 둥근 화살통(굵고 짧은 화살 3개) + 투구 초록 깃털. 콘셉트/3D 참조용. 활 시위는 3D에서 굵게. 기존 Skeleton 뼈대 재사용."
  },
+ "FactionBgA": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/Fac_FactionBg_A_HQ.txt",
+  "original": "art/out/s2/fac/hq/Fac_FactionBg_A_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/fac/Fac_FactionBg_A_src.png (검수 고름 2026-10-09)",
+  "size": "1536x1024",
+  "note": "진영 고르기 배경 A(왼쪽 금빛 하늘·오른쪽 붉은 어스름, 가운데·아래 비움). 빛살 없음. 업로드/배치는 이미지 개발."
+ },
+ "FacMascotHaloA": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/Fac_MascotHalo_A_HQ.txt",
+  "original": "art/out/s2/fac/hq/Fac_MascotHalo_A_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/fac/Fac_MascotHalo_A_src.png (검수 고름 2026-10-09)",
+  "size": "1024x1536",
+  "note": "빛 마스코트(블록 아바타 기사, 날개·후광·별 방패). 컷아웃 art/out/s2/fac/hq/Fac_MascotHalo_A_HQ_cut.png (617x1024), 확인 art/review/s2/fac_mascot_cut_check.jpg"
+ },
+ "FacMascotHornsA": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/Fac_MascotHorns_A_HQ.txt",
+  "original": "art/out/s2/fac/hq/Fac_MascotHorns_A_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/fac/Fac_MascotHorns_A_src.png (검수 고름 2026-10-09)",
+  "size": "1024x1536",
+  "note": "뿔 마스코트(블록 아바타 장난꾸러기, 후드·뿔·꼬리·삼지창). 컷아웃 art/out/s2/fac/hq/Fac_MascotHorns_A_HQ_cut.png (675x1024), 확인 art/review/s2/fac_mascot_cut_check.jpg"
+ },
  "BarkBubblePumpkinSlime": {
   "status": "approved",
   "date": "2026-10-07",

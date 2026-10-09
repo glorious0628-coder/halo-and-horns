@@ -4383,6 +4383,10 @@ Config.Nudges = {
 	KeysTip = false, -- the keys tip card after the first skill (SkillBar LEARN.Tip)
 	GuideLabel = false, -- 검수 10/09: the floating name chip over the guide target / pad ("First weapon"; HUD showGuide)
 	GuideBeam = false, -- 검수 10/09 (user): the gold line on the ground to the target (HUD showGuide); A23-88 too
+	-- A23-88 (검수 10/09, no lines / words): after the first weapon (TutorialStep Guide) the meadow travel pad itself glows
+	-- softly while I am in the Crossroads, and [Menu] + its Travel square pulse until I open Travel once
+	PadGlow = true,
+	TravelPulse = true,
 	-- server (the service owners read these keys; nil / true = shown as before)
 	GuideDone = false, -- "That's all from me! Now hunt and get stronger." (QuestService)
 	EnteredSafe = false, -- "Safe zone." on every safe-zone entry (ZoneService)

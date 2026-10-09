@@ -2559,12 +2559,14 @@ function L.BuildMenu(names)
 		local copy = table.clone(def)
 		copy.Text = names[def.Id]
 		local b = tileButton(copy, function()
+			if copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done
 			L.FoldTap(copy)
 		end)
 		b.Name = "Fold" .. def.Id
 		b.Parent = ui.fold
 		local entry = { Def = copy, Button = b, Row = row }
 		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
+		if def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88
 		table.insert(ui.foldTiles, entry)
 	end
 	for _, def in L.Tiles do add(def, true) end
@@ -3719,9 +3721,16 @@ function HUD.HintShown(id)
 end
 
 -- 환생 ready / 휴가 days are 설정 rows now (A23-40 정정): [메뉴] and its 설정 square glow; the scroll hint (B14) glows 가방
+-- A23-88 (검수 10/09): after the first weapon (the meadow step) [Menu] + Travel pulse until Travel was opened once
+function HUD.TravelPulse(step, seen, on)
+	return on ~= false and seen ~= true and step == TUT_GUIDE_STEP
+end
+
 local function refreshMenuGlow()
 	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
-	L.SetGlow("menu", ui.menuGlow, settings)
+	local travel = HUD.TravelPulse(num("TutorialStep", 99), L.TravelSeen, (Config.Nudges or {}).TravelPulse)
+	L.SetGlow("menu", ui.menuGlow, settings or travel)
+	L.SetGlow("travel", ui.travelGlow, travel)
 	L.SetGlow("settings", ui.settingsGlow, settings)
 	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
 end
@@ -3753,6 +3762,43 @@ function L.QuestText(text)
 		if ok and type(out) == "string" then return out end
 	end
 	return Config.FillKeys(text, (Config.KeyMap(nil, nil)))
+end
+
+-- A23-94 (user 2026-10-09: one quest big at the left middle; 이미지 개발 draws it from line 1): the goal as one easy
+-- sentence - the server's Goal when it sends one, else the row's words without their " · ..." tail, ending with a
+-- full stop. Pure: tools/test_now_quest.py runs it
+function HUD.QuestGoal(text, serverGoal)
+	if type(serverGoal) == "string" and serverGoal ~= "" then return serverGoal end
+	if type(text) ~= "string" or text == "" then return nil end
+	local main = string.match(text, "^(.-)%s+·%s") or text
+	main = string.gsub(main, "%s+$", "")
+	if main == "" then return nil end
+	if not string.find(main, "[%.!%?]$") then main ..= "." end
+	return main
+end
+
+-- A23-94: which row is "the quest now" (line 1) when no row is pinned: the waiting story, else the main story, else a
+-- row ready to [Claim], else the unfinished row closest to done (the larger share; the earlier row on a tie).
+-- rows = { Progress, Target, CanClaim, Pinned, Kind, Story }; claimRule(e) = the 받기 rule. Pure (the offline test)
+function HUD.NowQuestIndex(rows, callIndex, claimRule)
+	if type(rows) ~= "table" or #rows == 0 then return nil end
+	if rows[1].Pinned then return 1 end
+	if callIndex and rows[callIndex] then return callIndex end
+	for i, e in rows do
+		local main = e.Kind == "Main" or (type(e.Story) == "table" and e.Story.Kind == "Main")
+		if main and (e.Progress < e.Target or claimRule(e)) then return i end
+	end
+	for i, e in rows do
+		if claimRule(e) then return i end
+	end
+	local best, bestShare = nil, -1
+	for i, e in rows do
+		if e.Progress < e.Target then
+			local share = e.Progress / math.max(1, e.Target)
+			if share > bestShare then best, bestShare = i, share end
+		end
+	end
+	return best or 1
 end
 
 local function parseQuests()
@@ -3791,6 +3837,7 @@ local function parseQuests()
 				Folded = e.Folded == true, -- A23-68 #4: the server folds every row but the first mission (dev2)
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
+			entry.Goal = HUD.QuestGoal(entry.Text, type(e.Goal) == "string" and L.QuestText(e.Goal) or nil) -- A23-94
 			table.insert(isPinned and pinned or normal, entry)
 		end
 	end
@@ -4201,7 +4248,10 @@ refreshQuests = function()
 	elseif callIndex then
 		shown = callIndex -- B15: the collapsed list shows the story that is waiting
 	else
-		shown = firstClaim or firstDaily or 1
+		-- A23-94: pinned > the waiting story > main > ready to claim > the unfinished row closest to done
+		shown = HUD.NowQuestIndex(entries, nil, function(e)
+			return e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub")
+		end) or 1
 	end
 
 	-- header: progress, claimable count (turns green so claiming stays 1-2 clicks), expand chevron
@@ -4580,6 +4630,38 @@ function L.MeadowTarget(zone)
 	return part or findTravelTarget(TUT_GUIDE_ZONE)
 end
 
+-- A23-88 (검수 10/09, user: no lines, no words): after the first weapon (TutorialStep Guide) the meadow travel pad in
+-- the Crossroads glows softly by itself (a local Highlight on the pad, a slow breath); gone at the next step / away
+function HUD.PadGlowOn(step, zone, on)
+	return on ~= false and step == TUT_GUIDE_STEP and zone == "Crossroads"
+end
+
+L.PadGlowState = { Pad = nil, Light = nil, Tween = nil }
+function L.PadGlow(on)
+	local st = L.PadGlowState
+	local map = workspace:FindFirstChild("Map")
+	local pads = map and map:FindFirstChild("Pads")
+	local pad = on and resolvePart(pads and pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE)) or nil
+	if st.Pad == pad and (pad == nil or (st.Light and st.Light.Parent)) then return end
+	if st.Tween then st.Tween:Cancel() end
+	if st.Light then st.Light:Destroy() end
+	st.Pad, st.Light, st.Tween = pad, nil, nil
+	if not pad then return end
+	local h = Instance.new("Highlight")
+	h.Name = "HUDPadGlow"
+	h.Adornee = pad
+	h.FillColor = ac("Gold", Theme.Gold)
+	h.FillTransparency = 0.85
+	h.OutlineColor = ac("Gold", Theme.Gold)
+	h.OutlineTransparency = 0.7
+	h.DepthMode = Enum.HighlightDepthMode.Occluded
+	h.Parent = pad
+	st.Light = h
+	st.Tween = TweenService:Create(h, TweenInfo.new(1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{ FillTransparency = 0.65, OutlineTransparency = 0.45 })
+	st.Tween:Play()
+end
+
 -- step 1, or step 2 with kills left (e.g. died mid-mission and respawned in town): guide back to the meadow
 function L.NeedsMeadowGuide(step)
 	if step == TUT_GUIDE_STEP then return true end
@@ -4599,6 +4681,7 @@ local function refreshGuides()
 	if attr("DataLoaded", false) ~= true then return end
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
+	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))
 	local forge = step == L.ForgeStep
 	if guide then
 		if guide.Tag == "forge" and (not forge or guide.From ~= zone) then

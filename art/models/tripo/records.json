@@ -6366,5 +6366,24 @@
     "build/import_all/5_fifth/E7_NewMonsters.glb (fit z 10)"
    ]
   }
+ ],
+ "W_GateOpen_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+back, H3.1 (poly 20000 typed, 4K, PBR, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "task": "d9eee2e7-39e2-4209-ab02-2094aca9b320",
+   "image": "art/out/s2/gate/GoblinGateOpen_{front,back}_HQ_src.png",
+   "at": "2026-10-09 13:0x",
+   "balance_after": 25005,
+   "file": "art/models/tripo/web/W_GateOpen_HD_src.glb",
+   "tris": 17934,
+   "note": "검수 선택 A 열린 아치 (A23-76 고블린 숲 도착점 랜드마크; 얼굴 있는 토템 문, 사용자 '소품 얼굴 금지 규칙 없음')",
+   "derived": [
+    "art/models/tripo/web/W_GateOpen_HD_plain.glb (--rotz -90)",
+    "build/import_all/5_fifth/E9_GoblinGateOpen.glb (fit max 48)"
+   ]
+  }
  ]
 }

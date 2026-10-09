@@ -1,0 +1,42 @@
+{
+  "checks": 16,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "main ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "claim before main",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the first unfinished, not the closest",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the story waiting ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the tail kept",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no full stop",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the server's Goal ignored",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}
