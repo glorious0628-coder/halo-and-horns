@@ -35,7 +35,7 @@
 -- opening), when the monster is gone or dead, and while it is off screen.
 --
 -- Public API: QuestMarker.Init(C), QuestMarker.Start(), QuestMarker.Refresh(), QuestMarker.IsShown(),
--- QuestMarker.Focus(model | nil)
+-- QuestMarker.Focus(model | nil), QuestMarker.Pulse() -> bool
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -57,6 +57,7 @@ local IS_TOUCH = UserInputService.TouchEnabled
 local T = {
 	TargetDt = 1 / 2, -- ask HUD for the target
 	StudsPerMeter = 3.5, -- A23-36: metres = studs / 3.5, rounded
+	PulseFrom = 1.7, PulseTime = 0.45, -- 빛 마을 점검 #20: a row tap pops the icon from this size back to 1 (s)
 	FadeM = 10, -- starts fading inside this many metres...
 	HideM = 6, -- ...and is gone inside this many
 	Lift = 3, -- studs above the target part's top (or above a bare position)
@@ -912,6 +913,20 @@ function QuestMarker.Focus(target)
 		if bb and bb:IsA("BillboardGui") then S.focusBar = bb end
 	end
 	if target == nil and ui.focus then ui.focus.Visible = false end
+end
+
+-- 빛 마을 점검 #20 (2026-10-10): a tap on the pinned row whose place is already marked pops the icon once (grows,
+-- then settles with a small overshoot; no text, nothing new on screen). ReducedMotion: no pop. False when the marker
+-- is not shown
+function QuestMarker.Pulse()
+	if not (S.shown and ui.iconBox and ui.iconBox.Parent) then return false end
+	if UIKit.ReducedMotion() then return true end
+	local sc = ui.iconBox:FindFirstChild("PulseScale")
+	if not sc then sc = UIKit.Create("UIScale", { Name = "PulseScale", Scale = 1, Parent = ui.iconBox }) end
+	sc.Scale = T.PulseFrom
+	game:GetService("TweenService"):Create(sc, TweenInfo.new(T.PulseTime, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+		{ Scale = 1 }):Play()
+	return true
 end
 
 return QuestMarker

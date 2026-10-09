@@ -288,6 +288,39 @@ do
 	e = QT.ForEntry(forgeRow, "SlimeMeadow", "Halo", vec(330, 3, 0))
 	check(g, "Forge step from the meadow -> a trip to the Crossroads", type(e) == "table" and e.Travel == true and e.Zone == "Crossroads",
 		e and encode({ Tag = e.Tag, Zone = e.Zone, Travel = e.Travel }) or "nil")
+	-- 빛 마을 점검 #16 (2026-10-10): from a zone that walks to the forge the mark over the anvil at once (it pointed at
+	-- the Crossroads spawn plaza and the distance jumped up at the bridge end)
+	for _, z in { "HaloTown", "HornsTown", "Outskirts" } do
+		e = QT.ForEntry(forgeRow, z, "Halo", vec(0, 3, z == "HornsTown" and 420 or -420))
+		check(g, "Forge step from " .. z .. " -> the mark over the anvil, no trip", type(e) == "table"
+			and isNamed(e.Part, "HUDGuideAnchor_SmithMark") and at(e.Part, -30, 10) and e.Travel == false,
+			e and encode({ Tag = e.Tag, Zone = e.Zone, Travel = e.Travel }) or "nil")
+	end
+	-- walking home -> forge (spawn (0,-420) up the road through the bridge to the plaza, then to the anvil): the
+	-- target never changes and the distance only goes down
+	local walk, last, same, firstPart = {}, math.huge, true, nil
+	for zz = -420, 0, 20 do table.insert(walk, { Zone = zz < -200 and "HaloTown" or (zz < -60 and "Outskirts" or "Crossroads"), P = vec(0, 3, zz) }) end
+	for k = 1, 5 do table.insert(walk, { Zone = "Crossroads", P = vec(-30 * k / 6, 3, 10 * k / 6) }) end
+	local down = true
+	for _, w in walk do
+		e = QT.ForEntry(forgeRow, w.Zone, "Halo", w.P)
+		if e then
+			firstPart = firstPart or e.Part
+			if e.Part ~= firstPart then same = false end
+			local d = math.sqrt((w.P.X - e.Position.X) ^ 2 + (w.P.Z - e.Position.Z) ^ 2)
+			if d > last + 1e-6 then down = false end
+			last = d
+		end
+	end
+	check(g, "walking from the Halo spawn to the anvil: the same mark all the way", same and firstPart ~= nil)
+	check(g, "... and the distance only goes down", down, last)
+	local guild = WORKSPACE:FindFirstChild("Map"):FindFirstChild("Landmarks"):FindFirstChild("ArtisanGuild")
+	local kept = guild.Children
+	rawset(guild, "Children", {})
+	e = QT.ForEntry(forgeRow, "HaloTown", "Halo", vec(0, 3, -420))
+	check(g, "no anvil (not built yet) -> the Crossroads trip as before", type(e) == "table" and e.Travel == true and e.Zone == "Crossroads",
+		e and encode({ Tag = e.Tag, Zone = e.Zone, Travel = e.Travel }) or "nil")
+	rawset(guild, "Children", kept)
 	ATTR.BlacksmithVisited = nil
 	-- step 2 with every kill done: nothing to walk to
 	ATTR.TutorialKills = 5
@@ -328,6 +361,32 @@ do
 		vec(0, 3, 0)) == nil, "not nil")
 	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "SlimePond" } }, "SlimeMeadow", "Halo", vec(330, 3, 120))
 	check(g, "pond step label is English", type(e) == "table" and e.Label == "Slime Pond", e and tostring(e.Label) or "nil")
+	-- 빛 마을 점검 #17 / #21 / #29 (2026-10-10): a guide that is a story landmark spot (H6 HeroStatue, WoodsGate,
+	-- GoblinCamp1, ...) -> a trip to its zone from elsewhere, an anchor over the spot inside it, nothing inside the
+	-- Near radius share
+	local hero = { Story = { Id = "H6", St = 1, Guide = "HeroStatue" } }
+	local spot = Config.StoryQuests.Landmarks.HeroStatue
+	local heroZone = Config.ZoneAt(spot).Id
+	e = QT.ForEntry(hero, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "HeroStatue from the Crossroads -> a trip to its town", type(e) == "table" and e.Travel == true and e.Zone == heroZone
+		and heroZone == "HaloTown", e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
+	e = QT.ForEntry(hero, heroZone, "Halo", vec(0, 3, -470))
+	check(g, "HeroStatue inside the town -> the anchor over the statue spot", type(e) == "table" and e.Travel == false
+		and isNamed(e.Part, "HUDGuideAnchor_Spot_HeroStatue") and at(e.Part, spot.X, spot.Z) and math.abs(e.Part.Position.Y - 3) <= 0.5,
+		where(e and e.Part))
+	e = QT.ForEntry(hero, heroZone, "Halo", vec(spot.X + 4, 3, spot.Z))
+	check(g, "... standing at the statues (inside the Near radius share) -> nothing", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	local gate = Config.StoryQuests.Landmarks.WoodsGate
+	local gateZone = Config.ZoneAt(gate).Id
+	e = QT.ForEntry({ Story = { Id = "H1", St = 2, Guide = "WoodsGate" } }, gateZone, "Halo", vec(gate.X - 60, 3, gate.Z))
+	check(g, "WoodsGate in its zone -> the anchor over the woods' edge", type(e) == "table" and e.Travel == false
+		and isNamed(e.Part, "HUDGuideAnchor_Spot_WoodsGate") and at(e.Part, gate.X, gate.Z), where(e and e.Part))
+	local camp = Config.StoryQuests.Landmarks.GoblinCamp1
+	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "GoblinCamp1" } }, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "GoblinCamp1 from the Crossroads -> a trip to the goblin woods", type(e) == "table" and e.Travel == true
+		and e.Zone == Config.ZoneAt(camp).Id and e.Zone == "GoblinWoods", e and encode({ Zone = e.Zone }) or "nil")
+	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "HaloTown" } }, "HaloTown", "Halo", vec(0, 3, -470))
+	check(g, "a plain zone guide inside its zone -> still nothing", e == nil, e and encode({ Tag = e.Tag }) or "nil")
 end
 
 local named = {}

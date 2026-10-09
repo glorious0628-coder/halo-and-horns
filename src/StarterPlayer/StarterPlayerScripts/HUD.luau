@@ -4630,6 +4630,16 @@ function L.BlacksmithTarget()
 	return anvil and anvil:IsA("BasePart") and anvil or nil
 end
 
+-- 빛 마을 점검 #16 (2026-10-10): the Forge step's guide. From a zone that walks to the forge (QuestTarget K.SmithWalk:
+-- the Crossroads, both towns, the outskirts) the anvil itself, else a trip to the Crossroads. Returns the target and
+-- the guide's From key (one key for every walk zone: crossing a bridge keeps the same guide, no flicker)
+L.ForgeWalk = { Crossroads = true, HaloTown = true, HornsTown = true, Outskirts = true }
+function L.ForgeTarget(zone)
+	local anvil = L.ForgeWalk[zone] and L.BlacksmithTarget() or nil
+	if anvil then return anvil, "walk" end
+	return findTravelTarget("Crossroads"), zone
+end
+
 -- the meadow beam from a faction town first points at that island's bridge (a straight line crossed the water);
 -- from the Crossroads it points at the meadow pad
 local HOME_BRIDGE = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }
@@ -4695,7 +4705,7 @@ local function refreshGuides()
 	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))
 	local forge = step == L.ForgeStep
 	if guide then
-		if guide.Tag == "forge" and (not forge or guide.From ~= zone) then
+		if guide.Tag == "forge" and (not forge or guide.From ~= select(2, L.ForgeTarget(zone))) then
 			HUD.ClearGuide()
 		elseif guide.Tag == "tutorial" and (not L.NeedsMeadowGuide(step) or zone == TUT_GUIDE_ZONE or guide.From ~= zone) then
 			HUD.ClearGuide()
@@ -4709,8 +4719,8 @@ local function refreshGuides()
 	end
 	if forge then
 		if not (guide and guide.Tag == "forge") then
-			local target = zone == "Crossroads" and L.BlacksmithTarget() or findTravelTarget("Crossroads")
-			if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end
+			local target, from = L.ForgeTarget(zone)
+			if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = from end
 		end
 	elseif L.NeedsMeadowGuide(step) and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
 		if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "tutorial", nil) and guide then guide.From = zone end
@@ -5060,6 +5070,12 @@ function L.StoryTap(st, zone, panels)
 	if g == "OwnTown" then target = Config.HomeZoneId(getFaction()) end
 	if g == "SlimePond" then target = "SlimeMeadow" end
 	if g == "Fountain" or g == "Goose" then target = "Crossroads" end
+	-- 빛 마을 점검 #17 / #21 / #29: a Config.StoryQuests.Landmarks spot (HeroStatue, WoodsGate, GoblinCamp1, ...): its
+	-- zone (Config.ZoneAt), then the spot itself (QuestTarget.Story does the same for the marker)
+	local lms = Config.StoryQuests and Config.StoryQuests.Landmarks
+	local spot = not Config.Zones[target] and type(lms) == "table" and lms[g] or nil
+	if typeof(spot) ~= "Vector3" then spot = nil end
+	if spot then target = Config.ZoneAt(spot).Id end
 	if Config.Zones[target] and zone ~= target then
 		if panels and panels.Open then panels.Open("Travel") end
 		if target == TUT_GUIDE_ZONE then
@@ -5067,6 +5083,14 @@ function L.StoryTap(st, zone, panels)
 		else
 			showGuide(findTravelTarget(target), tostring(Config.Zones[target].Name), "zone:" .. target, 30)
 		end
+		return
+	end
+	if spot then
+		local a = Instance.new("Part")
+		a.Name, a.Anchored, a.CanCollide, a.CanQuery, a.CanTouch, a.Transparency = "HUDStoryAnchor", true, false, false, false, 1
+		a.Size, a.Position, a.Parent = Vector3.new(1, 1, 1), spot + Vector3.new(0, 3, 0), workspace
+		game:GetService("Debris"):AddItem(a, 35)
+		showGuide(a, tostring(Config.Zones[target] and Config.Zones[target].Name or g), "story", 30)
 		return
 	end
 	if g == "SlimePond" then
@@ -5153,10 +5177,13 @@ function L.PinnedTap(e, r)
 	if step == 0 then
 		fire("RequestTutorial")
 	elseif step == L.ForgeStep then
-		-- A23-74: the server walks me to the anvil again (ignored while moving or already there); the beam comes back
-		fire("RequestTutorial")
+		-- 빛 마을 점검 #20 (2026-10-10): since A23-88 I walk to the forge myself (the server ignores a tutorial request after
+		-- the welcome, so none is sent): the guide comes back and the quest marker pops once over the forge - the tap
+		-- shows where to go without a word
 		HUD.ClearGuide()
 		refreshGuides()
+		local qm = C and C.QuestMarker
+		if type(qm) == "table" and type(qm.Pulse) == "function" then pcall(qm.Pulse) end
 	elseif step == 1 or step == 2 then
 		if zone ~= TUT_GUIDE_ZONE then
 			if panels and panels.Open then panels.Open("Travel") end
