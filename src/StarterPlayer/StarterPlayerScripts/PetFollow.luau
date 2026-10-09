@@ -6,9 +6,13 @@
 -- The pet floats behind my right shoulder, hops while it moves and snaps back after a teleport. Fx drives the attack
 -- moves of the pet tamer: PetFollow.Attack(userId, targets, contact) for "PetHeadbutt" (runs to each target, bumps it
 -- at the contact time, comes back) and PetFollow.Dash(userId, pos, contact) for "PetDash" (skill Q).
+-- PET-4 (검수 2026-10-09): a name tag over MY pet only - its story name (Good Buddy / Little Minion, PetWindow's PetList;
+-- none = no tag); phones (touch, no keyboard) draw only the nearest PhoneMax other players' pets within PhoneRange studs
+-- of the camera (re-ranked every RankEvery s); my own pet always shows (within Range).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
 local PetFollow = {}
 local TAG = "PetFollow"
@@ -24,8 +28,10 @@ local P = {
 	Back = 0.3, -- s to run back after a bump
 	Bump = 0.12, -- s the bump squash lasts at the target
 	RayEvery = 0.25, -- s between ground rays per pet
+	PhoneRange = 80, PhoneMax = 6, RankEvery = 0.5, -- PET-4: phones draw the nearest 6 other pets within 80 studs
+	TagLift = 0.9, TagW = 170, TagH = 26, TagText = 17, TagDistance = 60, -- PET-4: the name over my pet (studs / px)
 }
-local S = { Started = false, Pets = {}, Folder = nil, Models = nil, Warned = {} } -- Pets[userId] = state
+local S = { Started = false, Pets = {}, Folder = nil, Models = nil, Warned = {}, C = nil, Near = {}, RankAt = 0 } -- Pets[userId] = state
 
 local function warnOnce(key, msg)
 	if S.Warned[key] then return end
@@ -123,10 +129,88 @@ local function spot(st, root)
 	return root.Position + right * P.Offset.X - flat * P.Offset.Z
 end
 
+-- PET-4: the other players allowed on a phone: the nearest `max` within `range` (pure; list = { { Uid, D } })
+function PetFollow.Rank(list, max, range)
+	table.sort(list, function(a, b) return a.D < b.D end)
+	local out = {}
+	for i, e in list do
+		if i > max or e.D > range then break end
+		out[e.Uid] = true
+	end
+	return out
+end
+
+local function isPhone()
+	return UserInputService.TouchEnabled == true and UserInputService.KeyboardEnabled ~= true
+end
+
+-- PET-4: my pet's story name (PetWindow.FollowerName), nil without one
+local function myPetName()
+	local pw = S.C and S.C.PetWindow
+	if type(pw) ~= "table" or type(pw.FollowerName) ~= "function" then return nil end
+	local ok, name = pcall(pw.FollowerName)
+	return (ok and type(name) == "string" and name ~= "") and name or nil
+end
+
+-- the tag over my pet: shown with its story name, hidden without one (made once per pet model)
+local function refreshTag()
+	local st = LocalPlayer and S.Pets[LocalPlayer.UserId]
+	if not st or not st.Model or not st.Model.Parent then return end
+	local name = myPetName()
+	local tag = st.Tag
+	if not name then
+		if tag then tag.Enabled = false end
+		return
+	end
+	if not tag then
+		local m = st.Model
+		local part = m.PrimaryPart
+		if not part and type(m.FindFirstChildWhichIsA) == "function" then part = m:FindFirstChildWhichIsA("BasePart", true) end
+		tag = Instance.new("BillboardGui")
+		tag.Name = "PetNameTag"
+		tag.Adornee = part
+		tag.Size = UDim2.fromOffset(P.TagW, P.TagH)
+		tag.StudsOffsetWorldSpace = Vector3.new(0, (st.Half or 0.9) + P.TagLift, 0)
+		tag.LightInfluence = 0
+		tag.MaxDistance = P.TagDistance
+		tag.AlwaysOnTop = false
+		local label = Instance.new("TextLabel")
+		label.Name = "Name"
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.fromScale(1, 1)
+		local ui = S.C and S.C.UIKit
+		local theme = type(ui) == "table" and ui.Theme or nil
+		label.Font = (type(theme) == "table" and typeof(theme.Font) == "EnumItem") and theme.Font or Enum.Font.GothamBold
+		label.TextSize = P.TagText
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextStrokeTransparency = 0.35
+		label.Parent = tag
+		tag.Parent = m
+		st.Tag, st.TagLabel = tag, label
+	end
+	tag.Enabled = true
+	if st.TagLabel and st.TagLabel.Text ~= name then st.TagLabel.Text = name end
+end
+
 local function step(dt)
 	local cam = workspace.CurrentCamera
 	local camPos = cam and cam.CFrame.Position
 	local now = os.clock()
+	local me = LocalPlayer and LocalPlayer.UserId
+	local phone = isPhone()
+	if now >= S.RankAt then
+		S.RankAt = now + P.RankEvery
+		if phone and camPos then
+			local list = {}
+			for uid, st in S.Pets do
+				local char = uid ~= me and st.Player.Parent and st.Player.Character
+				local r = char and char:FindFirstChild("HumanoidRootPart")
+				if r then table.insert(list, { Uid = uid, D = (r.Position - camPos).Magnitude }) end
+			end
+			S.Near = PetFollow.Rank(list, P.PhoneMax, P.PhoneRange)
+		end
+		pcall(refreshTag)
+	end
 	for uid, st in S.Pets do
 		local player = st.Player
 		local char = player.Parent and player.Character
@@ -140,7 +224,7 @@ local function step(dt)
 			m:PivotTo(CFrame.new(0, -500, 0))
 			continue
 		end
-		local far = camPos and (root.Position - camPos).Magnitude > P.Range
+		local far = (camPos and (root.Position - camPos).Magnitude > P.Range) or (phone and uid ~= me and not S.Near[uid])
 		if far then
 			if not st.Hidden then
 				st.Hidden = true
@@ -220,7 +304,9 @@ function PetFollow.Has(userId)
 	return st ~= nil and st.Model ~= nil and st.Model.Parent ~= nil and not st.Hidden
 end
 
-function PetFollow.Init(_registry) end
+function PetFollow.Init(registry)
+	S.C = registry
+end
 
 function PetFollow.Start()
 	if S.Started then return end

@@ -65,8 +65,13 @@ local RS = { FindFirstChild = function(_, n) if n == "PetModels" then return pet
 local folder = { Name = "ClientPets" }
 local WS = { CurrentCamera = { CFrame = { Position = vec(0, 10, 20) } },
 	FindFirstChild = function(_, n) if n == "ClientPets" then return folder end end, Raycast = function() return nil end }
+local UIS = { TouchEnabled = false, KeyboardEnabled = true }
+local PLAYERS = { owner }
+local INSTS = {}
+local REG = { PetWindow = { FollowerName = function() return W.name end }, UIKit = { Theme = {} } }
 local services = {
-	Players = { LocalPlayer = owner, PlayerAdded = signal(), PlayerRemoving = signal(), GetPlayers = function() return { owner } end },
+	Players = { LocalPlayer = owner, PlayerAdded = signal(), PlayerRemoving = signal(), GetPlayers = function() return PLAYERS end },
+	UserInputService = UIS,
 	ReplicatedStorage = RS,
 	RunService = { RenderStepped = { Connect = function(_, fn) render = fn; return {} end } },
 }
@@ -74,15 +79,17 @@ local fn = assert(loadstring(SOURCE))
 setfenv(fn, setmetatable({
 	game = { GetService = function(_, n) return assert(services[n], n) end }, workspace = WS,
 	Vector3 = { new = vec, yAxis = vec(0, 1, 0) }, CFrame = CF,
-	RaycastParams = { new = function() return {} end }, Enum = { RaycastFilterType = { Exclude = "Exclude" } },
-	Instance = { new = function() return {} end },
+	RaycastParams = { new = function() return {} end }, Enum = { RaycastFilterType = { Exclude = "Exclude" }, Font = { GothamBold = "GothamBold" } },
+	Instance = { new = function(c) local o = { ClassName = c } table.insert(INSTS, o) return o end },
+	UDim2 = { fromOffset = function(x, y) return { X = x, Y = y } end, fromScale = function(x, y) return { SX = x, SY = y } end },
+	Color3 = { new = function(r, g, b) return { r, g, b } end },
 	os = { clock = function() return W.clock end },
 	task = { defer = function(f, ...) f(...) end, spawn = function(f, ...) f(...) end },
 	warn = function(...) print("WARN", ...) end, print = function() end,
 	typeof = function(v) if getmetatable(v) == vmt then return "Vector3" end return type(v) end,
 }, { __index = getfenv() }))
 local PF = fn()
-PF.Init({})
+PF.Init(REG)
 PF.Start()
 check(type(render) == "function", "PetFollow draws on RenderStepped")
 local pet = made[1]
@@ -120,4 +127,72 @@ check(maxStep < 4 and backSteps >= 10, "it runs back over P.Back (no one-frame j
 check(math.abs(home.X - 2.6) < 1 and math.abs(home.Z - 2.4) < 1, "and ends back behind-right of its owner", { home.X, home.Z })
 check(PF.Dash(7, vec(5, 3, -5), 0.35) == true and PF.Attack(99, { target }, 0.3) == false and PF.Dash(7, "x", 0.3) == false,
 	"Dash runs one move; no pet / bad position -> false (the punch shows instead)")
+-- PET-4 (검수 2026-10-09): the name tag over MY pet only, the phone limit on other players' pets
+local r = PF.Rank({ { Uid = 1, D = 50 }, { Uid = 2, D = 10 }, { Uid = 3, D = 90 }, { Uid = 4, D = 30 } }, 2, 80)
+check(r[2] and r[4] and not r[1] and not r[3], "Rank: the nearest `max` within `range` only")
+local r2 = PF.Rank({ { Uid = 1, D = 85 }, { Uid = 2, D = 90 } }, 6, 80)
+check(next(r2) == nil, "Rank: nothing past `range`, however few")
+local function tagOf(m)
+	for _, o in INSTS do if o.ClassName == "BillboardGui" and o.Parent == m then return o end end
+	return nil
+end
+local function labelOf(tag)
+	for _, o in INSTS do if o.ClassName == "TextLabel" and o.Parent == tag then return o end end
+	return nil
+end
+W.name = nil
+for _ = 1, 40 do frame() end
+check(tagOf(pet) == nil, "no story name (a tamer's plain Baby Slime): no tag over my pet")
+W.name = "Good Buddy"
+for _ = 1, 40 do frame() end
+local tag = tagOf(pet)
+local label = tag and labelOf(tag)
+check(tag and tag.Enabled == true and label and label.Text == "Good Buddy" and tag.MaxDistance == 60 and label.TextSize >= 16,
+	"my pet's story name floats over it (only near, readable)", label and label.Text)
+W.name = "Little Minion"
+for _ = 1, 40 do frame() end
+check(label and label.Text == "Little Minion" and #(function() local n = {} for _, o in INSTS do if o.ClassName == "BillboardGui" then table.insert(n, o) end end return n end)() == 1,
+	"... a new name updates the same tag (no second one)", label and label.Text)
+W.name = nil
+for _ = 1, 40 do frame() end
+check(tag.Enabled == false, "... and hides when the pet has no story name any more")
+-- other players: 9 pets at 10..90 studs from the camera (0, 10, 20)
+local others = {}
+for i = 1, 9 do
+	local d = i * 10
+	local o = { UserId = 100 + i, Name = "P" .. i, Attrs = { EquippedPet = "BabySlime" }, Sigs = {}, Parent = true }
+	local rr = { Position = vec(d, 10, 20), CFrame = cfAt(vec(d, 10, 20), vec(0, 0, -1)) }
+	o.Character = { FindFirstChild = function(_, n) if n == "HumanoidRootPart" then return rr end end }
+	function o:GetAttribute(k) return self.Attrs[k] end
+	function o:GetAttributeChangedSignal(k) self.Sigs[k] = self.Sigs[k] or signal(); return self.Sigs[k] end
+	table.insert(PLAYERS, o)
+	services.Players.PlayerAdded:Fire(o)
+	table.insert(others, o)
+end
+local function petOf(uid)
+	for _, m in made do if m.Name == "Pet_" .. uid and m.Parent then return m end end
+	return nil
+end
+local function shown(uid)
+	local m = petOf(uid)
+	return m ~= nil and m.Pivot ~= nil and m.Pivot.Position.Y > -400
+end
+for _ = 1, 60 do frame() end
+local pcAll = true
+for _, o in others do if not shown(o.UserId) then pcAll = false end end
+check(pcAll, "PC: every other pet within Range shows (no phone limit)")
+UIS.TouchEnabled, UIS.KeyboardEnabled = true, false
+for _ = 1, 60 do frame() end
+local near6, farHidden = true, true
+for i, o in others do
+	if i <= 6 and not shown(o.UserId) then near6 = false end
+	if i > 6 and shown(o.UserId) then farHidden = false end
+end
+check(near6 and farHidden, "phone: only the nearest 6 other pets within 80 studs show (70 / 80 / 90 hidden)")
+check(shown(7), "phone: my own pet always shows")
+others[1].Character = nil -- the nearest one leaves: the 7th nearest (70) comes in
+for _ = 1, 60 do frame() end
+check(shown(others[7].UserId) and not shown(others[8].UserId) and not shown(others[9].UserId),
+	"phone: re-ranked every RankEvery s (the next one in, 80 / 90 still out)")
+UIS.TouchEnabled, UIS.KeyboardEnabled = false, true
 print("PET_FOLLOW_SUMMARY checks=" .. checks .. " failed=" .. failed)
