@@ -13,7 +13,7 @@ Credits: no per-batch report to the user; 검수 tells the user only when a bala
 | 2 | Flower Slime (dev2 branch) | Shard Slime model ×0.9 purple | own purple slime + flower bouquet |
 | 3 | Shard Slime | 10/05 mesh with a Blender-flattened back | fresh Tripo of the same design, smooth, yellow shard |
 | 4 | Captain Clatter (field boss) | Skeleton Knight mesh + rig ×2.2 | own captain skeleton (hat/coat, modest, not scary-gory), rigged |
-| 5 | King Slime | own E6 mesh, pink by recolour script | fresh Tripo from a pink 2D multiview (bigger readable face) |
+| 5 | King Slime | own E6 mesh, pink by recolour script; bubble bumps on the body are in the mesh (user 10/09 photo: "이런 거 나중에 없애줘야 돼", fix at the Slime Meadow turn) | fresh Tripo from a pink 2D multiview: smooth body, **no bumps/bubbles/blisters**, bigger readable face |
 | 6 | Slingshot Goblin, Skeleton Archer | own static meshes, borrow Goblin/Skeleton clips | Tripo rig (+ animation) so they move with their own body |
 | 7 | Goblin, Goblin Brute, Skeleton, Skeleton Knight | own 10/05 meshes with tone-fix scripts | regenerate from the user-picked 2D at today's HD settings |
 | 8 | E8 SlimePrinceBody, E10 SlimeBodySmooth | edited old GLBs | **cancelled** — replaced by #1 and #3 (do not import) |
