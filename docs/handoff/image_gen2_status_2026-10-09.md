@@ -10,9 +10,11 @@
 - 결과 받기: asset_search(GenAIAsset, 이미지 mediaType 필터, createDate desc)가 소리 세션 오디오·이미지 생성 1 그림과 섞이므로 query/시각으로 구분 → asset_get_presigned_urls의 **downloadUrl**(1024 PNG; renditionURL은 600px JPEG라 쓰지 말 것).
 - 한 장 약 50~60초. 기다릴 때 javascript_tool은 45초 안에 끝나야 함.
 
+- 한 장짜리 소품 11개(고급): `art/out/s2/halo/HaloProp_<이름>_front_HQ_src.png`, 시트 `art/review/s2/halo_props_singles_sheet.jpg`. 구름 덤불·바다 바위 아치·둥근 나무는 첫 판이 어긋나(화분·탑·받침대가 붙음) v2로 다시 그림: `..._front_v2_HQ_src.png`, 시트 `halo_props_redo_sheet.jpg` → 이 셋은 v2를 쓸 것.
+- 뿔 성채 시안 1장(고급): `art/out/s2/horns/HornsProp_Castle_front_HQ_src.png`, 시트 `art/review/s2/horns_castle_front.jpg`, 프롬프트 `art/prompts/HornsProp_Castle_front.txt`(뿔 마을 시안 문 패널을 스타일 참조).
+
 ## 크레딧
-- 이번 묶음 120(고급 24장) + 시험 포함 총 120. 잔액은 마지막 확인값 7885(10/09 06:29 UTC 계정 전환 전) 기준 약 7,700대 추정 — 정확한 값은 Firefly 화면에서 다음에 확인.
+- 오늘 밤 고급: 뒤·좌·우 24 + 소품 11 + 성채 1 + 소품 다시 3 = 39장 = 195크레딧. 잔액은 마지막 확인값 7885(10/09 06:29 UTC 계정 전환 전) 기준 약 7,700대 추정 — 정확한 값은 Firefly 화면에서 다음에 확인.
 
 ## 남은 것 (검수 큐)
-1. 한 장짜리 소품 11개(앞면 20장 중 건물 9개를 뺀 나머지) — `art/prompts/HaloProp_{Balustrade,BannerPole,CloudBush,FarArch,Islet,Lantern,Planter,PotFlowers,RoundTree,Stairs,Topiary}_front.txt`.
-2. 뿔 성채 시안 1장(고급) — 보라 현무암·붉은 천·큰 뿔·용암 빛, 빛살·글씨·사람 없음. 그다음 뿔 마을 소품 멀티뷰(`docs/design/horns_town_plan_2026-10-09.md`).
+1. 뿔 마을 소품 멀티뷰·한 장짜리(`docs/design/horns_town_plan_2026-10-09.md` 표): 문·감시탑·전쟁 천막·노점·나무집·돌다리는 멀티뷰, 모닥불·말뚝 울타리·화로·등불·깃대·침엽수·현무암 기둥·통/상자는 한 장.
