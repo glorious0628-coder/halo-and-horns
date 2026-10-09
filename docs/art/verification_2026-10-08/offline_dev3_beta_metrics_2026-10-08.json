@@ -1457,7 +1457,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3236a57567741cf1ac416c93ccd4c96f851ea0c437dc59d6bf2333a939afa4ab",
+    "src/ReplicatedStorage/Shared/Config.luau": "d15222613df576289436fad84b59cab196ca1d5a2068b06447db9766bc2a3da7",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/TelemetryService.luau": "28c07feba0a8e647a8caa665febbae89ce6acd7fd56177d94c3280588af062a7"
   },
