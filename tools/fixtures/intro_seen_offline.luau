@@ -62,6 +62,7 @@ local function fixture(saved)
 	end, wait = function(delay) return coroutine.yield(delay or 0) end,
 		delay = function() end, defer = function(fn, ...) fn(...) end }
 	local util = { DeepCopy = copy, Warn = function(tag, msg) if tag ~= "DataService" then error(tag .. ": " .. msg) end end,
+		Signal = { new = signal }, -- QuestService.ForgeReached (A23-88 metrics) is made at load
 		IsAlive = function() return f.Alive end, FormatNumber = tostring, Now = function() return 100 end,
 		GetCharacter = function() return nil end, -- A23-68 #1: the accept's delayed move (never run here: task.delay is a no-op)
 		RateLimit = function(p, key, interval) table.insert(f.RateCalls, { p, key, interval }); return f.RateAllowed end,
