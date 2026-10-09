@@ -1,0 +1,1033 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 73,
+  "failedChecks": 0,
+  "namedChecks": 73,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the switch is off until the Forge window has its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T4: 3,000 + 10 Brute Horn + 20 Goblin Tooth; T5 10,000; T6 30,000",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T4: the gold is the weapon's own Price",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T4: GoblinTooth is a material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T4: BruteHorn is a material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T4: the weapon's source names the commission",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T5: the gold is the weapon's own Price",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T5: KnightCrest is a material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T5: Bone is a material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T5: the weapon's source names the commission",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T6: the gold is the weapon's own Price",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T6: KnightCrest is a material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T6: Bone is a material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T6: the weapon's source names the commission",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "levels 12 / 20 / 30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the shop still sells only up to T3 (gold alone never buys T4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the apprentice card kind exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card: scroll vs 2 minutes of gold, 1 point each, saved (no time limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Commission 1 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ladder names + the Forge as the place",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "English only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "the golden weapon is owned and equipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "3,000 gold: the carried 1,000 first, then 2,000 of the vault",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "10 Brute Horn and 20 Goblin Tooth taken (2 horns left)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "one spend, reason 'Commission'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "Fx Commission { Tier 4, the class name }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "and the existing Upgrade fx (power A -> B)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "the line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "Made signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "no card yet (the equip line first)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "the apprentice card: scroll / 2 minutes of gold at Lv12",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "saved (waits with no time limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "the discount: 2 minutes of gold back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "gold source 'Choice' (never 2x)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "Halo took the Evil option: -1 floors at 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "ordering it again pays nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "an order, start to end",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "T5: 10,000 + 12 Knight Crest + 30 Bone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "T6: 30,000 + 30 Knight Crest + 60 Bone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "T6 name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "one card open at a time: T6 does not add a second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "the switch off: nothing happens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "away from the Forge: refused with the shop's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "Lv11: refused (the weapon needs Lv12)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "one tooth short: refused, nothing taken (gold untouched too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "one gold short: refused, no material taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "in combat: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "already owned (mask): refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "bad tiers / arguments are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "two calls inside 1 s: the second is rate limited",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "a player who is not ready: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "refusals pay nothing",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "the design's line (worst material, then gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "the furthest material is named; gold capped at the price",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "two materials short: the furthest one (not the first) is named",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "materials done: the gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "all done: ready",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "Lv11 with everything: the level line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "below Lv10: not named yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "T4 owned, Lv24: the next order is not named yet (Ruins open at 25)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "Lv26: Crystal weapon, Knight Crest 4/12",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "T5 owned: the spirit weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "all three owned: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "the switch off: no line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "no data: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "next goal",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 11,
+  "staticFailures": [],
+  "mutations": {
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: the switch is on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the switch is off until the Forge window has its row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: T4 costs 2,000",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: 3,000 gold: the carried 1,000 first, then 2,000 of the vault",
+          "an order, start to end :: one spend, reason 'Commission'",
+          "an order, start to end :: the discount: 2 minutes of gold back",
+          "config :: T4: 3,000 + 10 Brute Horn + 20 Goblin Tooth; T5 10,000; T6 30,000",
+          "config :: T4: the gold is the weapon's own Price",
+          "next goal :: materials done: the gold"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "config: T4 needs 5 horns",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: 10 Brute Horn and 20 Goblin Tooth taken (2 horns left)",
+          "config :: T4: 3,000 + 10 Brute Horn + 20 Goblin Tooth; T5 10,000; T6 30,000",
+          "next goal :: the design's line (worst material, then gold)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: T5 asks for jelly",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "next goal :: Lv26: Crystal weapon, Knight Crest 4/12"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: no commission in the T4 source",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: T4: the weapon's source names the commission"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the card scroll is 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: card: scroll vs 2 minutes of gold, 1 point each, saved (no time limit)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the discount is 5 minutes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: the apprentice card: scroll / 2 minutes of gold at Lv12",
+          "an order, start to end :: the discount: 2 minutes of gold back",
+          "config :: card: scroll vs 2 minutes of gold, 1 point each, saved (no time limit)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: the card is timed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: saved (waits with no time limit)",
+          "config :: card: scroll vs 2 minutes of gold, 1 point each, saved (no time limit)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: no rate limit entry",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Commission 1 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the card scores 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: card: scroll vs 2 minutes of gold, 1 point each, saved (no time limit)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: no card kind",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: one card open at a time: T6 does not add a second",
+          "an order, start to end :: group ran to the end without a Lua error",
+          "an order, start to end :: saved (waits with no time limit)",
+          "an order, start to end :: the apprentice card: scroll / 2 minutes of gold at Lv12",
+          "config :: the apprentice card kind exists"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the switch is ignored",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: the switch off: nothing happens"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any argument count",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: bad tiers / arguments are ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not ready players order",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: a player who is not ready: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: two calls inside 1 s: the second is rate limited"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "anywhere in the world",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: away from the Forge: refused with the shop's line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an owned weapon is paid again",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: ordering it again pays nothing",
+          "refusals pay nothing :: already owned (mask): refused"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no level check",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: Lv11: refused (the weapon needs Lv12)",
+          "refusals pay nothing :: two calls inside 1 s: the second is rate limited"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "level one lower",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: Lv11: refused (the weapon needs Lv12)",
+          "refusals pay nothing :: two calls inside 1 s: the second is rate limited"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "in combat",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: in combat: refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "materials not checked",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: no service warnings (pcall-swallowed handler errors)",
+          "refusals pay nothing :: one tooth short: refused, nothing taken (gold untouched too)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "one material short is enough",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "refusals pay nothing :: no service warnings (pcall-swallowed handler errors)",
+          "refusals pay nothing :: one tooth short: refused, nothing taken (gold untouched too)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gold not spent",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "an order, start to end :: 3,000 gold: the carried 1,000 first, then 2,000 of the vault",
+          "an order, start to end :: one spend, reason 'Commission'",
+          "an order, start to end :: the discount: 2 minutes of gold back",
+          "refusals pay nothing :: one gold short: refused, no material taken"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the spend is tagged as a sale",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: one spend, reason 'Commission'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "materials not taken",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "an order, start to end :: 10 Brute Horn and 20 Goblin Tooth taken (2 horns left)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "only one material taken",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "an order, start to end :: 10 Brute Horn and 20 Goblin Tooth taken (2 horns left)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the weapon is not owned",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "an order, start to end :: ordering it again pays nothing",
+          "an order, start to end :: the golden weapon is owned and equipped"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the wrong bit",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
+          "T5 and T6 :: T6 name",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "an order, start to end :: ordering it again pays nothing",
+          "an order, start to end :: the golden weapon is owned and equipped"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "not equipped",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "an order, start to end :: the golden weapon is owned and equipped"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no Forge visit",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: the golden weapon is owned and equipped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no equip line",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: the line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Upgrade fx",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: and the existing Upgrade fx (power A -> B)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Commission fx",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: group ran to the end without a Lua error",
+          "an order, start to end :: Fx Commission { Tier 4, the class name }"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Made signal",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: Made signal",
+          "an order, start to end :: ordering it again pays nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no card",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "T5 and T6 :: one card open at a time: T6 does not add a second",
+          "an order, start to end :: group ran to the end without a Lua error",
+          "an order, start to end :: saved (waits with no time limit)",
+          "an order, start to end :: the apprentice card: scroll / 2 minutes of gold at Lv12"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the card at once",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: no card yet (the equip line first)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the card gold ignores the level",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: the apprentice card: scroll / 2 minutes of gold at Lv12",
+          "an order, start to end :: the discount: 2 minutes of gold back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the card pays xp-minutes as gold",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: the apprentice card: scroll / 2 minutes of gold at Lv12",
+          "an order, start to end :: the discount: 2 minutes of gold back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the preview forgets GoldMin",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: the apprentice card: scroll / 2 minutes of gold at Lv12"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the pick forgets GoldMin",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "an order, start to end :: gold source 'Choice' (never 2x)",
+          "an order, start to end :: the discount: 2 minutes of gold back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "next goal ignores the switch",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal :: the switch off: no line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "next goal names owned weapons",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal :: Lv26: Crystal weapon, Knight Crest 4/12",
+          "next goal :: T4 owned, Lv24: the next order is not named yet (Ruins open at 25)",
+          "next goal :: T5 owned: the spirit weapon",
+          "next goal :: all three owned: nothing"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "next goal ignores ShowLevel",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal :: T4 owned, Lv24: the next order is not named yet (Ruins open at 25)",
+          "next goal :: below Lv10: not named yet"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "next goal names the first material",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal :: two materials short: the furthest one (not the first) is named"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "next goal never says ready",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal :: all done: ready"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "next goal has no kind",
+        "file": "src/ServerScriptService/CommissionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "next goal :: Lv11 with everything: the level line"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3db96a33509834ef6b58378743ea2166a2e91548fccdb6d6035ead185c8fb368",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
+    "src/ServerScriptService/ChoiceCard.luau": "da892aeb3fa5ae57de67bea52693e6b5bac974a0ded6ff572970a876a3a330be",
+    "src/ServerScriptService/CommissionService.luau": "8bffe67db248cfef2b293e56bcd6d4a197d7a857de8fdb65e8106952119adf02"
+  },
+  "fixtureSHA256": "00d69efcf6b0869d4fff1787786c6ade2a9e00042b6eccc953ded4b6456b5e21",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-86 decision 2 = A: c->s Commission(tier) (T4-T6, one integer, 1 s, switched by Config.Features.Commission, off for now): at the Forge, ready, alive, not in combat, the weapon not owned, Level >= its MinLevel, every material, the gold; all checked first then taken in one go (gold through SpendGold 'Commission' carried first, materials through TakeItem), the weapon owned + equipped (WeaponOwnedMask bit, WeaponTier, BlacksmithVisited), line + Fx Upgrade + Fx Commission, signal Made, then the saved apprentice card (ChoiceCard 'ApprenticeScratch': a 70% scroll or 2 minutes of hunting gold, 1 point each way); orders T4 3,000 + 10 Brute Horn + 20 Goblin Tooth, T5 10,000 + 12 Knight Crest + 30 Bone, T6 30,000 + 30 Knight Crest + 60 Bone (T5 / T6 proposed); the shop still sells up to T3; NextGoal(player, data) for the ladder ('Next goal · Golden weapon: Brute Horn 6/10 · 2,140/3,000 gold').",
+  "limitations": "The Forge window's [Commission] row and the 'power A -> B' show are game dev 1's (the switch stays off until the row exists). T5 / T6 materials and the T4 card numbers are proposals for 검수's decision 2-2."
+}

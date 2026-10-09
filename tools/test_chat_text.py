@@ -54,6 +54,12 @@ MUTATIONS = [
 
 # Announce.luau (client): each mutation is a list of (old, new) replacements, every old text must appear exactly once
 CLIENT_MUTATIONS = [
+    # 검수 10/09: TeamToast
+    ("TeamToast keeps the chat line", [("\tif Config.ChatText.TeamToast == true then\n\t\tprops.Text = \"\"\n",
+                                       "\tif false then\n\t\tprops.Text = \"\"\n")]),
+    ("a toast on every login", [("or not (was and was.AutoAssignable) then return nil end", "then return nil end")]),
+    ("a toast while TeamToast is off", [("\tif Config.ChatText.TeamToast ~= true then return nil end\n", "")]),
+    ("a toast for the auto-assigned team", [("\tif not team or team.AutoAssignable or not", "\tif not team or not")]),
     ("the hook waits for ChatVersion = TextChatService (the A23-74 bug)",
      [("pcall(function() TextChatService.OnIncomingMessage = A.Incoming end)",
        "pcall(function() if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then "

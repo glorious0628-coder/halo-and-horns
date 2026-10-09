@@ -95,7 +95,7 @@ local G = {
 	R = 4, Lift = 2, WaterTop = -1.2, -- tools/preview_map.lua T.Res / T.Lift (solid surface draws 2 above the voxels) / Config.Map.WaterTop
 	X0 = 208, X1 = 688, Z0 = -268, Z1 = 240, Y0 = -28, Y1 = 44, Chunk = 16,
 	Zone = { MinX = 210, MaxX = 650, MinZ = -240, MaxZ = 240 }, -- Config.Zones.SlimeMeadow = LandMeadow
-	Inset = 25, GroundMin = -2, GroundMax = 6, -- MonsterService SpawnInset, GROUND_MIN_Y / GROUND_MAX_Y
+	Inset = 25, GroundMin = -2, GroundMax = 26, -- (4th terrain: tiers; was 6) MonsterService SpawnInset, GROUND_MIN_Y / GROUND_MAX_Y
 	RockSlope = 35, RockySlope = 28, -- degrees: steeper feature ground shows Rock (GE_Rock), the rest Grass
 	ForeignMax = 40, -- columns edited by someone else since the last run before the run stops (FORCE = false)
 	FlatTol = 1.2, -- capture check: the baseline meadow must be flat (preview_map: Y 0) at the feature centres
@@ -145,6 +145,23 @@ local RELIEF = { Min = 4, Max = 9, Gain = 1.15, LawnBank = 13, RoadEdge = 2, Roa
 	Peak = { H = 8, Extra = 8, Scale = 46, Gain = 1.3 }, MaxGrade = 35 }
 -- knolls and the mound never climb into a lawn: x smooth((lawn distance + In) / Bank) (In studs inside the box = 0)
 local KNOLL_LAWN = { In = 4, Bank = 18 }
+-- pass 4 (the 4th meadow terrain, 검수 2026-10-09 "초원 위에서 보면 납작해", SPEC A23-76): TIERS = the hunting grass in steps.
+-- Offsets over the pass-1..3 ground by |z| from the crown road (z 0): Rise studs over A.Len (|z| A.From..) up to the first lawn
+-- rows (+5, 13 deg mean), then BN / BS more between the lawn rows (north 36 studs with the loop road inside the ramp, south 24),
+-- so the lawns stand at about +5 and +10: three floors (corridor / first rows / far rows) joined by 12-20 deg ramps (ease: 1.25 x
+-- the mean slope at most). They fade out at the pins (arrival, woods quay, pond, sign), the coasts, the pumpkin seam and the
+-- river / plunge pool / plateau (the water features keep their designed shape; the land climbs away from them, so the river
+-- valley gets deeper by RiverBank studs of bank). WALL = a raised edge rim (H0..H1, up over Up studs from EDGE.C, down over
+-- Down) like the woods, fading at the pins / seam / river mouth and farther than LawnBank from a lawn. TIERS.On = false gives
+-- the old flat-lawn result. MonsterService GROUND_MIN_Y / GROUND_MAX_Y (-2..6) and meadow_dress T.MaxY / MaxYLow must follow.
+local TIERS = { On = true,
+	A = { From = 6, Len = 24, Rise = 6 },
+	BN = { From = 104, Len = 36, Rise = 6 }, BS = { From = 110, Len = 28, Rise = 6 },
+	-- the terraces keep away from the pins farther than the pass-1 relief does (the gentle first-minutes ground round the arrival):
+	-- { x, z, flat radius, full radius }
+	Pins = { { 230, 0, 70, 160 }, { 650, 0, 45, 115 }, { 290, 150, 45, 95 }, { 525, 226, 20, 55 } },
+	Coast = { 10, 24 }, River = { 22, 30 }, Mesa = 20, SeamBank = 110, -- the pumpkin path (x 535) must not drop steeply to the seam: tiers fade over 110 studs
+	Wall = { H0 = 8, H1 = 17, Up0 = 2, UpGrass = 28, UpRock = 13, Down0 = 30, Down = 18, LawnBank = 20, Scale = 70 } }
 -- edge / corner highlands 10..18: centres 12..16 studs in from the coast (rock cliff to the sea, EDGE.C*), RX / RZ = an
 -- oval whose lawn side (radius > 2.2 x H) stays grass under 35 deg; Rocky = rock outcrop (flat top, rock above 28 deg)
 local KNOLLS = {
@@ -197,7 +214,7 @@ local FALLS_LOOK = { Tex = "rbxassetid://86909517913668", TileU = 12, TileV = 15
 	Transparency = 0.3, Tint = 0.45, FoamTransparency = 0.15, CurlFlip = false, BeamOut = 1.9 }
 -- the river: plunge pool -> along the plateau's south foot -> the east channel (x 650..710) north of the woods bridge
 local RIVER = { Ctrl = { { 590, -140 }, { 606, -133 }, { 628, -128 }, { 650, -122 }, { 672, -118 }, { 700, -116 } },
-	HW0 = 6, HW1 = 8.5, Depth = 2.6, Sand = 2.5, Bank = 8, Levee = 1.0, LeveeFall = 0.15 }
+	HW0 = 6, HW1 = 8.5, Depth = 3.4, Sand = 2.5, Bank = 8, Levee = 2.2, LeveeFall = 0.12 } -- pass 4: deeper bed (was 2.6) and banks 2.2 above the water (was 1.0)
 -- pass 3 terrain materials (the MaterialVariants are imgdev's; this tool only paints the slots): Road / Path = the warm
 -- tan dirt path, Flower = flower grass, Shade = shade grass; Grass = the global grass; Sand stays beach / pond / river
 local PAINT = { Road = "Pavement", Path = "Pavement", Flower = "Salt", Shade = "Sandstone", Grass = "Grass" }
@@ -569,6 +586,47 @@ local function roadDist(x, z) -- studs past the nearest road's HW (the rects' ce
 end
 -- 0..1: how much of the pass-2 rolling relief a spot gets (0 on the lawns, the roads, the hill, the water and the pins);
 -- ex > 0 (pass 3 peaks): the lawn / road / coast banks start ex studs farther out
+local function seamLong(x, z) -- like seamFade with TIERS.SeamBank: no rim / terrace toward the pumpkin patch (x > 396)
+	local sw = smooth((x - RELIEF.SeamX0) / 20)
+	return sw <= 0 and 1 or lerp(1, smooth((G.Zone.MaxZ - z - 4) / TIERS.SeamBank), sw)
+end
+local function tierOf(x, z, d, pin) -- pass 4: the terrace offset (0 outside the meadow's interior)
+	if not TIERS.On then return 0 end
+	local az = math.abs(z)
+	local T2 = z < 0 and TIERS.BN or TIERS.BS
+	local t = TIERS.A.Rise * ease((az - TIERS.A.From) / TIERS.A.Len) + T2.Rise * ease((az - T2.From) / T2.Len)
+	if t <= 0 then return 0 end
+	for _, p in TIERS.Pins do
+		local r = math.sqrt((x - p[1]) ^ 2 + (z - p[2]) ^ 2)
+		if r < p[4] then t *= smooth((r - p[3]) / (p[4] - p[3])) end
+	end
+	t *= seamLong(x, z) * smooth((d - TIERS.Coast[1]) / TIERS.Coast[2])
+	if t <= 0 then return 0 end
+	for _, M in { PL, SHOULDER } do
+		t *= smooth(mesaG(M, x, z) - M.CliffOut - M.Talus - M.Wobble)
+	end
+	if t <= 0 then return 0 end
+	local dr = nearest(RIVER_LINE, x, z, RIVER.HW1 + TIERS.River[1] + TIERS.River[2])
+	local dq = math.sqrt((x - FALLS.QX) ^ 2 + (z - FALLS.QZ) ^ 2)
+	t *= smooth((dr - RIVER.HW1 - TIERS.River[1]) / TIERS.River[2]) * smooth((dq - FALLS.PoolR - TIERS.River[1]) / TIERS.River[2])
+	return t
+end
+local function wallOf(x, z, d, pin) -- pass 4: the raised edge rim (0 away from the coast and at the gaps)
+	local W = TIERS.Wall
+	if not TIERS.On or d > W.Down0 + W.Down then return 0 end
+	-- steep stretches (rock faces: Up = UpRock) alternate with long grass slopes (UpGrass); some stretches stay low
+	local face = 0.5 + 0.5 * math.noise(x / 55 + 0.9, z / 55 + 0.2, 8.8)
+	local up = smooth((d - W.Up0) / lerp(W.UpGrass, W.UpRock, smooth((face - 0.35) / 0.3)))
+	local down = 1 - smooth((d - W.Down0) / W.Down)
+	local low = 0.35 + 0.65 * smooth((0.5 + 0.5 * math.noise(x / 90 + 0.4, z / 90 + 0.8, 2.7) - 0.15) / 0.5)
+	local h = lerp(W.H0, W.H1, 0.5 + 0.5 * math.noise(x / W.Scale + 0.3, z / W.Scale + 0.7, 5.2)) * up * down * low
+	if h <= 0 then return 0 end
+	h *= pin * seamLong(x, z) * smooth(lawnDist(x, z) / W.LawnBank) -- nothing inside a lawn
+	if h <= 0 then return 0 end
+	local dr = nearest(RIVER_LINE, x, z, RIVER.HW1 + TIERS.River[1] + TIERS.River[2])
+	return h * smooth((dr - RIVER.HW1 - TIERS.River[1]) / TIERS.River[2])
+end
+
 local function reliefMask(x, z, d, pin, ex)
 	local m = pin * ease((lawnDist(x, z) - 1 - ex) / RELIEF.LawnBank) * smooth((d - EDGE.K0 - ex) / EDGE.K1)
 	if m <= 0 then return 0 end
@@ -615,7 +673,8 @@ local function plan(base, trees)
 		local pin = pinFactor(x, z)
 		local d = edgeDist(x, z)
 		local h, tag = interior(x, z) * smooth((d - EDGE.I0) / EDGE.I1) * pin, nil
-		local h1 = vb + kb * h -- the pass-1 ground (the pass-3 slope limit never goes below it)
+		local t4 = tierOf(x, z, d, pin) -- pass 4 terraces (0 when TIERS.On is false)
+		local h1 = vb + kb * (h + t4) -- the pass-1 ground + terraces (the pass-3 slope limit never goes below it)
 		-- pass 2: the rolling hills between the lawns rise over the pass-1 ground (never below it); pass 3: + a peak
 		-- where the banks leave room (its own mask starts RELIEF.Peak.Extra studs farther out)
 		local rm = reliefMask(x, z, d, pin, 0)
@@ -630,6 +689,8 @@ local function plan(base, trees)
 		local kh, rocky = knolls(x, z)
 		kh *= kf
 		if kh > h and kh > 0.3 then h, tag = kh, rocky and "rocky" or "knoll" end
+		local wh = wallOf(x, z, d, pin)
+		if wh > h and wh > 0.3 then h, tag = wh, "knoll" end -- the raised edge rim reads like the knolls (rock where steep)
 		local mh, ring = mound(x, z)
 		mh *= kf
 		if mh > h and mh > 0.3 then h, tag = mh, ring and "ring" or "mound" end
@@ -650,7 +711,7 @@ local function plan(base, trees)
 			-- hill tag (their own rock rule stays) nor on the beach (kb < 1: Sand stays Sand)
 			tag = "cropFoot"
 		end
-		local v = vb + kb * h
+		local v = vb + kb * (h + t4)
 		local pv, top = plateau(x, z, vb)
 		if pv and pv > v then v, tag = pv, top and "top" or "cliff" end
 		local w
@@ -1937,7 +1998,10 @@ end
 local function writeInfo()
 	local st = getStore()
 	local function v3(x, y, z) return Vector3.new(math.floor(x * 10 + 0.5) / 10, y, math.floor(z * 10 + 0.5) / 10) end
-	st:SetAttribute("HillTop", v3(HILL.X, HILL.Top + 0.6, HILL.Z))
+	-- pass 4: the hill stands on its terrace (tierOf at the hill centre), so the shrine / crown pieces sit on the real top
+	local hillTier = tierOf(HILL.X, HILL.Z, edgeDist(HILL.X, HILL.Z), pinFactor(HILL.X, HILL.Z))
+	st:SetAttribute("HillTop", v3(HILL.X, HILL.Top + 0.6 + hillTier, HILL.Z))
+	st:SetAttribute("TierAtHill", hillTier)
 	local foot = HILL.TopR + HILL.Face.Run + HILL.Face.PathOut
 	st:SetAttribute("HillPathFoot", v3(HILL.X + math.cos(HILL.Face.Dir) * foot, 0, HILL.Z + math.sin(HILL.Face.Dir) * foot))
 	st:SetAttribute("PlateauTop", v3(PL.X, PL.Top, PL.Z))

@@ -150,7 +150,7 @@ local parts = Config.UIArt.Parts
 local real = {} -- [key] = { Id, Size, TextRect } as uploaded
 -- A23-84: the King Slime boss (2026-10-09) has no bubble art of its own yet (image gen 2 -> image dev): it uses its
 -- family's slime bubble until then (checked below); the others each have their own
-local PENDING_ART = { SlimeKing = "BarkBubbleSlime", CaptainClatter = "BarkBubbleSkeleton", -- + J Captain Clatter
+local PENDING_ART = { CaptainClatter = "BarkBubbleSkeleton", -- SlimeKing art uploaded 2026-10-09 (98179139339766)
 	FlowerSlime = "BarkBubbleSlime", SlingshotGoblin = "BarkBubbleGoblin", SkeletonArcher = "BarkBubbleSkeleton" } -- + A23-87
 local kindCount, badArt, tight = 0, {}, {}
 for kind in Config.MonsterTypes do

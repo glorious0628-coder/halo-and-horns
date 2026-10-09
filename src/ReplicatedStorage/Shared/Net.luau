@@ -47,6 +47,7 @@ Net.Names = {
 	-- 게임성 개발 2 (2026-10-08), client -> server:
 	"FinisherPick", -- (card id: number, "Help" | "Tickle") the King Slime finisher card (FinisherService)
 	"CardAction", -- A23-86 CC: (card id: number, "Good" | "Evil") the open choice card (ChoiceCard)
+	"Commission", -- A23-86 H: (tier: integer) order the golden / crystal / spirit weapon at the Forge (CommissionService)
 }
 
 Net.GameStateDefaults = {

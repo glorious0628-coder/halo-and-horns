@@ -26,6 +26,7 @@ local function metricsWorld(o)
 		}
 	end
 	w.Reg.AttendanceService = { Claimed = Signal.new() }
+	w.Reg.QuestService = { ForgeReached = Signal.new() } -- A23-88 (walking to the Forge)
 	w.Reg.ReturnService = { CardShown = Signal.new(), Welcomed = Signal.new() }
 	w.Reg.InviteService = { InviteJoined = Signal.new(), PlayedTogether = Signal.new(), WentToFriend = Signal.new() }
 	w.Reg.DiaryService = { PageOpened = Signal.new(), CandyTraded = Signal.new() }
@@ -237,6 +238,9 @@ runGroup("Social + invites", function()
 	check(string.find(w:Steps(p, "Social"), "5:PlayedTogether10m") ~= nil, "10 minutes together", w:Steps(p, "Social"))
 	w.Reg.InviteService.WentToFriend:Fire(q, "SlimeMeadow")
 	check(field(w:Named("GoToFriend", q)[1], 1) == "SlimeMeadow", "GoToFriend event with the zone", "")
+	-- A23-88: the walk to the Forge: the seconds from [I'm In!] to the anvil
+	w.Reg.QuestService.ForgeReached:Fire(p, 31.7)
+	check(#w:Named("ForgeWalk", p) == 1 and w:Named("ForgeWalk", p)[1].Value == 31, "ForgeWalk = the whole seconds of the walk (31.7 -> 31)", "")
 	for _, c in w.Custom do
 		for i = 1, 3 do
 			local v = field(c, i)

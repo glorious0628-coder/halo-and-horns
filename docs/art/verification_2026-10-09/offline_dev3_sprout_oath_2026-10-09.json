@@ -1,0 +1,822 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 72,
+  "failedChecks": 0,
+  "namedChecks": 72,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the main chain goes M3_4 -> M3_6 (M3_5 is a side line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "M3_5 is a sub: wait for Graduated, then the Guide's talk (the same two steps)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "its row text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no minute count or clock in the shield row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "M3_5 / OathH / OathR listed once each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "an old Lv25+ save skips M3_5 too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathH: after M3_4, Lv15, while a sprout",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathH: ends with the oath card, 2 points each way",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathH: stat-free titles by the pick, the town-sub reward size",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathH: the closing line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathH: English only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathR: after M3_4, Lv15, while a sprout",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathR: ends with the oath card, 2 points each way",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathR: stat-free titles by the pick, the town-sub reward size",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathR: the closing line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathR: English only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "one oath per side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Bright (Halo) / Smokey (Horns) open and close it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Halo: guard the woods bridge 15 s, one Goblin Brute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Horns: two goblin camps, one Goblin Brute with basic hits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the landmarks exist",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "title GuardianCadet defined and pickable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "title RascalCadet defined and pickable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "title names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "older titles keep their place",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every main + sub still fits in the book's Done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the main chain skips M3_5",
+      "check": "after M3_4 the main quest is M3_6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the main chain skips M3_5",
+      "check": "and the graduation line runs beside it (step 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the main chain skips M3_5",
+      "check": "no oath below Lv15",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the main chain skips M3_5",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the main chain skips M3_5",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "waits while the shield is on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "graduated: step 2 (the Guide's talk)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "the talk finishes it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "meanwhile M3_6 ran",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "a saved main M3_5 (step 2) moves to the side lines and M3_6 starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "step 1 moves too (still waiting)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "a sub that exists is not overwritten by the old main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "an old finished M3_5 stays finished",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "Lv26 old save: chapters 1-3 and M3_5 skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "no graduation line starts for it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "Lv12 old save: chapter 3 and M3_5 are still ahead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "graduation as a side line",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "Halo Lv15 sprout: OathH only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "Horns Lv15 sprout: OathR only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "Lv14: no oath yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "at Lv15 it starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "without M3_4: no oath",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "already graduated: no oath",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "Neutral: no oath (the guild has its own graduation lines)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "a running oath is not cancelled by graduating",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "a finished oath never restarts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "a plain goblin or a brute in the wrong zone: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "a Goblin Brute in the woods: on to the oath",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "oath A: Honor +2, done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "title Guardian Cadet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "the town-sub gold is paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "oath B for a Halo: Honor -2 (A23-58), Rascal Cadet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "oath B at Honor 1: floor 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathH: kill, then the oath",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathR: basic hits, then the oath",
+      "check": "a kill with a skill does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathR: basic hits, then the oath",
+      "check": "a basic-hit kill: on to the oath",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathR: basic hits, then the oath",
+      "check": "oath B: Infamy +2, Rascal Cadet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathR: basic hits, then the oath",
+      "check": "oath A for a Horn: Infamy -2 (A23-58), Guardian Cadet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathR: basic hits, then the oath",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "OathR: basic hits, then the oath",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 6,
+  "staticFailures": [],
+  "mutations": {
+    "total": 29,
+    "applied": 29,
+    "caught": 29,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "M3_5 back in the main chain",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the main chain goes M3_4 -> M3_6 (M3_5 is a side line)",
+          "graduation as a side line :: a saved main M3_5 (step 2) moves to the side lines and M3_6 starts",
+          "graduation as a side line :: a sub that exists is not overwritten by the old main",
+          "graduation as a side line :: meanwhile M3_6 ran",
+          "the main chain skips M3_5 :: after M3_4 the main quest is M3_6"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "M3_5 is a main again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: M3_5 is a sub: wait for Graduated, then the Guide's talk (the same two steps)",
+          "graduation as a side line :: a saved main M3_5 (step 2) moves to the side lines and M3_6 starts",
+          "graduation as a side line :: a sub that exists is not overwritten by the old main"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "M3_5 not in the sub list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: M3_5 / OathH / OathR listed once each",
+          "graduation as a side line :: graduated: step 2 (the Guide's talk)",
+          "graduation as a side line :: the talk finishes it",
+          "graduation as a side line :: waits while the shield is on",
+          "the main chain skips M3_5 :: and the graduation line runs beside it (step 1)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "M3_5 opens without M3_4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the shield row has a clock",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: its row text",
+          "config :: no minute count or clock in the shield row"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the old-save skip forgets M3_5",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error",
+          "graduation as a side line :: Lv26 old save: chapters 1-3 and M3_5 skipped",
+          "graduation as a side line :: no graduation line starts for it"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the skip applies at Lv10",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error",
+          "graduation as a side line :: Lv12 old save: chapter 3 and M3_5 are still ahead"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no skip code for subs",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "graduation as a side line :: Lv26 old save: chapters 1-3 and M3_5 skipped",
+          "graduation as a side line :: no graduation line starts for it"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no migration of a saved main",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "graduation as a side line :: a saved main M3_5 (step 2) moves to the side lines and M3_6 starts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the migration forgets the step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "graduation as a side line :: a saved main M3_5 (step 2) moves to the side lines and M3_6 starts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the migration overwrites a sub",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "graduation as a side line :: a sub that exists is not overwritten by the old main"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: oath at Lv14",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: OathH: after M3_4, Lv15, while a sprout",
+          "the main chain skips M3_5 :: no oath below Lv15",
+          "who gets an oath :: Lv14: no oath yet"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: oath without M3_4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: oath for graduates too",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: OathH: after M3_4, Lv15, while a sprout",
+          "who gets an oath :: already graduated: no oath"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: OathH for Horns",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: one oath per side",
+          "who gets an oath :: Horns Lv15 sprout: OathR only"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: OathR for Neutral",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who gets an oath :: Neutral: no oath (the guild has its own graduation lines)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Sprout is not checked",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who gets an oath :: already graduated: no oath"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Sprout inverted",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who gets an oath :: Halo Lv15 sprout: OathH only",
+          "who gets an oath :: Horns Lv15 sprout: OathR only",
+          "who gets an oath :: already graduated: no oath",
+          "who gets an oath :: at Lv15 it starts",
+          "who gets an oath :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: the bridge guard 5 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Halo: guard the woods bridge 15 s, one Goblin Brute"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: Halo kills a plain goblin",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "OathH: kill, then the oath :: a plain goblin or a brute in the wrong zone: no",
+          "config :: Halo: guard the woods bridge 15 s, one Goblin Brute"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Horns may use skills",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "OathR: basic hits, then the oath :: a kill with a skill does not count",
+          "config :: Horns: two goblin camps, one Goblin Brute with basic hits"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Horns skip a camp",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "OathR: basic hits, then the oath :: a basic-hit kill: on to the oath",
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Halo oath A scores 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "OathH: kill, then the oath :: oath A: Honor +2, done",
+          "config :: OathH: ends with the oath card, 2 points each way"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: the titles are swapped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "OathH: kill, then the oath :: oath B for a Halo: Honor -2 (A23-58), Rascal Cadet",
+          "OathH: kill, then the oath :: title Guardian Cadet",
+          "config :: OathH: stat-free titles by the pick, the town-sub reward size"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: the oath gives no titles",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "OathH: kill, then the oath :: oath B for a Halo: Honor -2 (A23-58), Rascal Cadet",
+          "OathH: kill, then the oath :: title Guardian Cadet",
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: no Rascal Cadet title",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "OathH: kill, then the oath :: oath B for a Halo: Honor -2 (A23-58), Rascal Cadet",
+          "OathR: basic hits, then the oath :: oath B: Infamy +2, Rascal Cadet",
+          "config :: group ran to the end without a Lua error",
+          "config :: title RascalCadet defined and pickable"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: Guardian Cadet not pickable",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: title GuardianCadet defined and pickable"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the closing line changed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: OathH: the closing line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: no sprout oath for Horns in the list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: M3_5 / OathH / OathR listed once each",
+          "who gets an oath :: Horns Lv15 sprout: OathR only"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "7983a3702c0816fd88972fd29dc9a4e164db639e1839ea7ef3523d2989609463",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308"
+  },
+  "fixtureSHA256": "7643d7a8eba0815770c77936f352b22fd4f9dd694f88c05fd2e46ac6d1a0a79e",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-86 G: M3_5 'Sprout Graduation' is a side line (Kind Sub, after M3_4, the same two steps; main chain M3_4 -> M3_6; row 'Sprout Shield on · ends at Lv15 + 1 hour of play' without numbers; a saved in-progress main M3_5 moves to the side lines keeping its step; an old Lv25+ save skips it; a finished one stays finished); Requires.Sprout = the Sprout Shield is still on; OathH (Halo, Bright) / OathR (Horns, Smokey) open at Lv15 after M3_4 while a sprout, once, not for graduates / Neutral / below Lv15; Halo: talk, guard the woods bridge 15 s, one Goblin Brute in the woods, the oath; Horns: talk, goblin camp 1, camp 2, one Goblin Brute with basic hits only, the oath; the oath card 2 points each way (A23-58 floor), Reward TitleBy (Good Guardian Cadet / Evil Rascal Cadet), the town-sub gold, 'Oath sworn! Your Sprout Shield ends after 1 hour of play.'.",
+  "limitations": "Walking steps (Near) are the existing engine's 1 s loop and are not simulated; the fixture sets the track to the step it tests. No 'Playtime' objective type was added: the shield clock is the existing State 'Graduated' (PvPService.IsRookie). The NPC lines are new English text for 검수's review."
+}

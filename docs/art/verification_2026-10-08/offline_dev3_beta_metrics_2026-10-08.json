@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 130,
+  "checks": 134,
   "failedChecks": 0,
-  "namedChecks": 109,
+  "namedChecks": 110,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -303,8 +303,14 @@
     },
     {
       "group": "Social + invites",
+      "check": "ForgeWalk = the whole seconds of the walk (31.7 -> 31)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Social + invites",
       "check": "no UserId in any field",
-      "pass": 21,
+      "pass": 24,
       "fail": 0
     },
     {
@@ -666,9 +672,9 @@
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 64,
-    "applied": 64,
-    "caught": 64,
+    "total": 66,
+    "applied": 66,
+    "caught": 66,
     "skipped": false,
     "results": [
       {
@@ -1348,6 +1354,28 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "the Forge walk is not logged",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Social + invites :: ForgeWalk = the whole seconds of the walk (31.7 -> 31)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the Forge walk logs fractions",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Social + invites :: ForgeWalk = the whole seconds of the walk (31.7 -> 31)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "an event per coin",
         "file": "src/ServerScriptService/TelemetryService.luau",
         "applied": true,
@@ -1457,11 +1485,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
+    "src/ReplicatedStorage/Shared/Config.luau": "6ded4912845255bcae9b68c6f7ebb22448bf43aadb58948b504bae7e1c59602f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/TelemetryService.luau": "28c07feba0a8e647a8caa665febbae89ce6acd7fd56177d94c3280588af062a7"
+    "src/ServerScriptService/TelemetryService.luau": "308eed5b3a0dbf8f66c5ec5966a90d420610888602451cdecf92349b3d297012"
   },
-  "fixtureSHA256": "d3041900a3dab3b47471c15dec232344778418e7022ffd5a6980b3bfde58c61f",
+  "fixtureSHA256": "c7d2c5648df1f3e1a3f80fbf23c045da48df5a8d6171ce597cb918bc991145f3",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

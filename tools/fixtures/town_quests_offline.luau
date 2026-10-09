@@ -1074,7 +1074,7 @@ runGroup("e5-hidden", function()
 end)
 
 ------------------------------------------------------------------ 13. chapter 3 "Grab Club" (A23-56 main advance + story_depth beta)
-local CH3 = { "M3_1", "M3_2", "M3_3", "M3_4", "M3_5", "M3_6", "M3_7", "M3_8" }
+local CH3 = { "M3_1", "M3_2", "M3_3", "M3_4", "M3_6", "M3_7", "M3_8" } -- A23-86: M3_5 is a side line now (checked below)
 
 runGroup("ch3-data", function()
 	local SQ = SQ0
@@ -1197,13 +1197,13 @@ runGroup("ch3-halo-good", function()
 	check(main().Claim == true, "M3_4 waits for [Claim] (chapter part end)", show(main()))
 	w.Story.Claim(p, "M3_4")
 	check(d.Story.Done.M3_4, "claimed")
-	-- M3_5: the Sprout Shield must be over (E7)
+	-- M3_5 (A23-86: a side line, the main chain goes on): the Sprout Shield must be over (E7)
 	w.Story.Refresh(p)
-	check(main().Id == "M3_5" and main().St == 1, "M3_5 waits for graduation", show(main()))
+	check(main().Id == "M3_6" and w:Track(d, "M3_5") ~= nil and w:Track(d, "M3_5").St == 1, "M3_5 waits for graduation beside M3_6", show({ main(), d.Story.Subs.M3_5 }))
 	rookie[p] = false
 	w.Story.Refresh(p)
 	w:Flush()
-	check(main().St == 2 and panels[#panels].Arg.Id == "M3_5", "graduated: the Guide's talk opens", show(main()))
+	check(w:Track(d, "M3_5").St == 2 and panels[#panels].Arg.Id == "M3_5", "graduated: the Guide's talk opens", show(d.Story.Subs.M3_5))
 	w:Act(p, "M3_5", "Talk")
 	check(d.Story.Done.M3_5, "M3_5 done")
 	-- Pip1 waits for Lv15

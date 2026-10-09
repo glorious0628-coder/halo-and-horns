@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 159,
+  "checks": 178,
   "failedChecks": 0,
-  "namedChecks": 159,
+  "namedChecks": 178,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -411,6 +411,120 @@
     },
     {
       "group": "My Way names",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "4 repeated picks are not enough for a story pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "5 repeated = 1 story pick (2 good + 1 devil of 3: still True Knight)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "10 repeated devil picks = 2 story picks: 2 / 2 = Balance Walker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "100 repeated picks never weigh more than the 2 story picks together",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "the job board's Kind count is a good deed (10 = 2 story picks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "the board's Sneaky count is a devil deed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "10 board Sneaky jobs against 2 good picks = Balance Walker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "negative counts weigh nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "repeated picks alone name nobody (2 story picks come first)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "one story pick is still not enough",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "several kinds add up, then the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "broken counts are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "no / broken repeated table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "Neutral still has no name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "start: True Knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "a card pick refreshes it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "RefreshMyWay (called by the job board) re-reads it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way: repeated cards (A23-86)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -966,9 +1080,9 @@
   "staticChecks": 19,
   "staticFailures": [],
   "mutations": {
-    "total": 72,
-    "applied": 72,
-    "caught": 72,
+    "total": 83,
+    "applied": 83,
+    "caught": 83,
     "skipped": false,
     "results": [
       {
@@ -1227,9 +1341,11 @@
         "crashed": false,
         "newFailingChecks": [
           "My Way names :: one pick: no name yet",
-          "My Way names :: unknown quests / picks do not count"
+          "My Way names :: unknown quests / picks do not count",
+          "My Way: repeated cards (A23-86) :: one story pick is still not enough",
+          "My Way: repeated cards (A23-86) :: repeated picks alone name nobody (2 story picks come first)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "no Balance Walker",
@@ -1240,9 +1356,12 @@
         "newFailingChecks": [
           "My Way names :: 3 good / 2 devil of 5: within a fifth = Balance Walker",
           "My Way names :: a new pick changes it at once",
-          "My Way names :: one each = Balance Walker"
+          "My Way names :: one each = Balance Walker",
+          "My Way: repeated cards (A23-86) :: 10 board Sneaky jobs against 2 good picks = Balance Walker",
+          "My Way: repeated cards (A23-86) :: 10 repeated devil picks = 2 story picks: 2 / 2 = Balance Walker",
+          "My Way: repeated cards (A23-86) :: 100 repeated picks never weigh more than the 2 story picks together"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 9
       },
       {
         "mutation": "Horns names swapped",
@@ -1271,7 +1390,7 @@
           "My Way names :: a new pick changes it at once",
           "My Way names :: one each = Balance Walker"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 19
       },
       {
         "mutation": "a Neutral name",
@@ -1281,9 +1400,10 @@
         "crashed": false,
         "newFailingChecks": [
           "My Way names :: no side: no name",
-          "My Way names :: the Artisan Guild: no My Way name"
+          "My Way names :: the Artisan Guild: no My Way name",
+          "My Way: repeated cards (A23-86) :: Neutral still has no name"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "My Way not refreshed on a pick",
@@ -1295,6 +1415,139 @@
           "My Way names :: a new pick changes it at once"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "My Way not refreshed on a card pick",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: a card pick refreshes it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "repeated picks have no cap",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: 100 repeated picks never weigh more than the 2 story picks together",
+          "My Way: repeated cards (A23-86) :: several kinds add up, then the cap"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "repeated picks weigh 1 each",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: 4 repeated picks are not enough for a story pick",
+          "My Way: repeated cards (A23-86) :: 5 repeated = 1 story pick (2 good + 1 devil of 3: still True Knight)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "repeated picks weigh 10 each",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: 10 board Sneaky jobs against 2 good picks = Balance Walker",
+          "My Way: repeated cards (A23-86) :: 10 repeated devil picks = 2 story picks: 2 / 2 = Balance Walker",
+          "My Way: repeated cards (A23-86) :: a card pick refreshes it",
+          "My Way: repeated cards (A23-86) :: the job board's Kind count is a good deed (10 = 2 story picks)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the board's Kind is a devil deed",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: RefreshMyWay (called by the job board) re-reads it",
+          "My Way: repeated cards (A23-86) :: the job board's Kind count is a good deed (10 = 2 story picks)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the board's Sneaky is ignored",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: 10 board Sneaky jobs against 2 good picks = Balance Walker"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a card's Good counts as devil",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: 10 repeated devil picks = 2 story picks: 2 / 2 = Balance Walker",
+          "My Way: repeated cards (A23-86) :: 100 repeated picks never weigh more than the 2 story picks together",
+          "My Way: repeated cards (A23-86) :: a card pick refreshes it",
+          "My Way: repeated cards (A23-86) :: several kinds add up, then the cap"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the repeated table is not passed",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: a card pick refreshes it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "negative repeated counts",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: negative counts weigh nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RefreshMyWay does nothing",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way: repeated cards (A23-86) :: RefreshMyWay (called by the job board) re-reads it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "repeated picks alone name someone",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: one pick: no name yet",
+          "My Way names :: unknown quests / picks do not count",
+          "My Way: repeated cards (A23-86) :: one story pick is still not enough",
+          "My Way: repeated cards (A23-86) :: repeated picks alone name nobody (2 story picks come first)"
+        ],
+        "newFailingCount": 4
       },
       {
         "mutation": "badge id 0 asked anyway",
@@ -1843,14 +2096,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ccb8752506326a4e22c7844ab9e9edae2f49fc84c1a068bf37ba8f78bf71957a",
+    "src/ReplicatedStorage/Shared/Config.luau": "6ded4912845255bcae9b68c6f7ebb22448bf43aadb58948b504bae7e1c59602f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/ReturnService.luau": "c03f201c8263cd941a09360cb9b4a63f93985486cd6ac19e69c8d21f2a225c2e",
+    "src/ServerScriptService/ReturnService.luau": "31a94a1a92ecd4d4ac843d8f464388fc08a9e591e9c21a9b822ea6d0a8294350",
     "src/ServerScriptService/InviteService.luau": "5078c549ea94977105df673faba86c6735ecc99fff50a028f151bd58ec6c01fe",
     "src/ServerScriptService/DiaryService.luau": "fd9f53510f32d93ad79d0377db2aa813bc298c7536428a6ffb34504bddb297e7",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257"
   },
-  "fixtureSHA256": "98ec4b592b3ef40dbec01b3618b69f1992c6d8a69d1975327a5a9292ac133698",
+  "fixtureSHA256": "aeb1b93a222b3f0aa648a455a71c29fce19b5e053489343f3d34141db34f836a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

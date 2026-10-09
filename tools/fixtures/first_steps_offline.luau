@@ -248,6 +248,12 @@ step(1)
 check(#W.Hints == 1 and W.Hints[1][1] == "Attack", "Idle s near a monster without my swing -> the attack hint", W.Hints[1] and W.Hints[1][1])
 step(10)
 check(#W.Hints == 1, "the attack hint shows once", #W.Hints)
+-- 검수 10/09: the marker only after 45 s in the meadow without a kill (19.5 s so far)
+check(#W.Focus == 0, "no marker in the first 45 s in the meadow", #W.Focus)
+step(24)
+check(#W.Focus == 0, "still none at 43.5 s", #W.Focus)
+step(2)
+check(#W.Focus == 1 and W.Focus[1] ~= false, "45 s in the meadow without a kill: the marker comes", #W.Focus)
 -- the marker: mine first, then the nearest
 local other = monster("Slime2", vec(3, 3, 0), 999)
 local minefar = monster("Slime3", vec(40, 3, 0), 77)
@@ -279,5 +285,44 @@ check(#W.Hints == 1 and W.Focus[#W.Focus] == false, "no marker after the kill", 
 player.Attrs.TutorialStep = 99
 step(6)
 check(#W.Hints == 1, "after the first mission: no hints", #W.Hints)
+
+-- 검수 10/09 (system review ②): the first PvP zone - three calm cards in a row, then the saved flag
+do
+	local P = FS.PvP
+	local shown, saved = {}, {}
+	local seen = false
+	registry.PauseCard = { Show = function(kind, data) table.insert(shown, { kind, data }) return true end }
+	registry.Settings = { Loaded = function() return true end, Get = function(k) return k == "PvPCards" and seen or nil end,
+		Set = function(k, v) table.insert(saved, { k, v }) if k == "PvPCards" then seen = v end return true end }
+	setAttrs({ Faction = "Halo", ZonePvP = false })
+	P.Check()
+	check(#shown == 0, "a safe zone: no PvP card", #shown)
+	player.Attrs.ZonePvP = true
+	P.Check()
+	check(#shown == 1 and shown[1][1] == "Tip" and shown[1][2].Text == P.Cards[1] and shown[1][2].Why == "PvPIntro",
+		"first PvP zone: card 1 as a calm Tip card", shown[1] and shown[1][2].Text)
+	P.Check()
+	check(#shown == 1, "no second start while the cards run", #shown)
+	P.OnShown("Tip", "OK", "Other")
+	check(#shown == 1, "another card's close does nothing", #shown)
+	P.OnShown("Tip", "OK", "PvPIntro")
+	check(#shown == 2 and shown[2][2].Text == P.Cards[2], "card 1 closed -> card 2", #shown)
+	P.OnShown("Tip", "Backdrop", "PvPIntro")
+	check(#shown == 3 and shown[3][2].Text == P.Cards[3] and string.find(P.Cards[3], "bank", 1, true) ~= nil,
+		"card 2 closed -> card 3 (the bank)", #shown)
+	check(#saved == 0, "nothing saved before the last card closes", #saved)
+	P.OnShown("Tip", "OK", "PvPIntro")
+	check(#saved == 1 and saved[1][1] == "PvPCards" and saved[1][2] == true, "the last card closed -> PvPCards saved", #saved)
+	P.OnShown("Tip", "OK", "PvPIntro")
+	check(#shown == 3 and #saved == 1, "done: nothing more", #shown)
+	P.Step = 0
+	P.Check()
+	check(#shown == 3, "a later visit (saved flag): no cards", #shown)
+	seen = false
+	player.Attrs.Faction = "Neutral"
+	P.Check()
+	check(#shown == 3, "the Artisan Guild (can't be attacked): no cards", #shown)
+	check(#P.Cards == 3 and not string.find(table.concat(P.Cards), "[\128-\255]"), "three cards, plain English", #P.Cards)
+end
 
 print(string.format("FIRST_STEPS_SUMMARY checks=%d failed=%d", checks, failed))

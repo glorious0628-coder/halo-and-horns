@@ -1,0 +1,57 @@
+{
+  "checks": 21,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "potions from Lv1",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "low HP never counts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pouch always shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every fight unfolds the chips",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a zone change is no change",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never folds",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a change does not unfold",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the total chance again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the potion row hides again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pouch hides again",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}

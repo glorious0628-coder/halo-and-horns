@@ -12,6 +12,7 @@ local player = Players.LocalPlayer
 local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, WatchedAttributes = {
 	Mana = true, MaxMana = true, HPPotionCount = true, MPPotionCount = true,
 	HPPotionReadyAt = true, MPPotionReadyAt = true, ClassChosen = true, DataLoaded = true, KaijuState = true,
+	Level = true, -- Config.HudReveal: the potion pair from its level on
 } }
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245), Dim = Color3.fromRGB(150, 150, 160) }
 local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
@@ -229,6 +230,13 @@ local function refresh()
 	local hp, maxHP = humanoid and humanoid.Health or 0, humanoid and humanoid.MaxHealth or 1
 	local mana = math.max(0, finiteNumber(player:GetAttribute("Mana"), 0))
 	local maxMana = math.max(1, finiteNumber(player:GetAttribute("MaxMana"), Config.Vitals.MaxMana))
+	-- 검수 10/09 (UI clutter review ④): the pair comes when it is needed and then stays (Config.HudReveal)
+	if ui.Row and not ui.PotionSeen then
+		local held = potionState("HP") + potionState("MP")
+		ui.PotionSeen = Config.HudReveal.Shows("Potions", { Level = player:GetAttribute("Level"), Potions = held,
+			HP = hp, MaxHP = maxHP })
+		if ui.Row.Visible ~= ui.PotionSeen then ui.Row.Visible = ui.PotionSeen end
+	end
 	for kind, values in { HP = { hp, maxHP }, MP = { mana, maxMana } } do
 		local bar = ui[kind]
 		if bar then
@@ -240,13 +248,17 @@ local function refresh()
 			local count, status, available = potionState(kind)
 			potion.Count.Text = tostring(count)
 			potion.Status.Text = status
-			potion.Status.Visible = not available
+			-- ui_clutter_review ④ (검수 10/09): no 'Buy' / 'Full' words over the button - the potion picture + its count say
+			-- it (0 = a dim potion); only the cooldown seconds stay as text. A full bar keeps the potion bright (nothing wrong)
+			local cooling = string.match(status, "^%d+s$") ~= nil
+			local dim = not available and (count <= 0 or cooling or status ~= "Full")
+			potion.Status.Visible = cooling
 			potion.Button.Active = available
 			potion.Button:SetAttribute("Disabled", not available)
 			if potion.Button:IsA("ImageButton") then
-				potion.Button.ImageColor3 = not available and Color3.fromRGB(178, 174, 166) or Color3.new(1, 1, 1)
+				potion.Button.ImageColor3 = dim and Color3.fromRGB(178, 174, 166) or Color3.new(1, 1, 1)
 			end
-			if potion.Icon then potion.Icon.ImageColor3 = available and Color3.new(1, 1, 1) or COL.Dim end
+			if potion.Icon then potion.Icon.ImageColor3 = dim and COL.Dim or Color3.new(1, 1, 1) end
 		end
 	end
 end

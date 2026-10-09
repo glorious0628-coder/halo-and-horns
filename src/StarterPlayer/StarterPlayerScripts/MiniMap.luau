@@ -61,6 +61,10 @@ local T = {
 	StrongDot = 8, -- big monsters (Scale >= StrongScale): a bigger dot with a dark rim
 	StrongScale = 1.4,
 	BossIcon = IS_TOUCH and 18 or 20, -- event bosses (MonsterTypes Boss): their IconMon<Kind> head
+	-- 검수 2026-10-08 (user: "몹들 … 아이콘으로"): every monster is its IconMon<Kind> head on a cream disc with a navy rim
+	-- (du: ~15-16 px normal, ~19 px big, ~22 px bosses); same-kind marks closer than MonMerge x their size merge into
+	-- one with a count
+	MonIcon = 20, MonStrong = 24, MonBoss = 28, MonMerge = 0.8, MonRim = 1.5,
 	SlowDt = 1, -- merchant / anvil, relayout
 	MinMove = 0.25, -- du: smaller canvas / chevron moves are not written
 	MinTurn = 1, -- degrees: smaller arrow turns are not written
@@ -107,6 +111,8 @@ local COL = {
 	Extreme = Color3.fromRGB(255, 60, 60),
 	-- marks (Theme values copied in at build)
 	Monster = Color3.fromRGB(255, 80, 80),
+	MonDisc = Color3.fromRGB(255, 247, 228), -- the cream disc under a monster's head icon
+	MonRim = Color3.fromRGB(27, 33, 64), -- its navy rim and the count badge
 	Golden = Color3.fromRGB(255, 200, 30),
 	Quest = Color3.fromRGB(255, 210, 60), -- the "★" fallback text and the player dots
 	-- the quest diamond / edge chevron like the screen marker (QuestMarker): in progress white, waiting for [Claim] light
@@ -154,7 +160,7 @@ local S = {
 	lastWarnAt = -math.huge,
 }
 local ui = {} -- root, view, canvas, rim, me, star, chev, potion, smith
-local pool = { players = {}, monsters = {}, bosses = {} }
+local pool = { players = {}, monsters = {}, bosses = {}, monIcons = {} }
 local acc = { Move = 0, Scan = 0, Slow = 0 }
 
 ----------------------------------------------------------------- helpers
@@ -765,6 +771,81 @@ local function byDistance(a, b)
 	return a[2] < b[2]
 end
 
+-- 검수 2026-10-08: monsters as head icons (T.MonIcon ...). MON.Draw returns false when no kind has art (the old dots)
+local MON = {}
+function MON.Mark(i)
+	local m = pool.monIcons[i]
+	if m then return m end
+	local disc = UIKit.Create("Frame", {
+		Name = "Mon" .. i, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.MonIcon, T.MonIcon),
+		BackgroundColor3 = COL.MonDisc, ZIndex = 7, Active = false, Visible = false, Parent = ui.canvas,
+	}, { corner(0.5, 0), stroke(COL.MonRim, T.MonRim, 0) })
+	local icon = UIKit.Create("ImageLabel", {
+		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.94, 0.94), BackgroundTransparency = 1, ScaleType = Enum.ScaleType.Fit, ZIndex = 7,
+		Parent = disc,
+	})
+	local count = UIKit.Create("TextLabel", {
+		Name = "Count", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.92, 0.88),
+		Size = UDim2.fromScale(0.62, 0.62), BackgroundColor3 = COL.MonRim, TextColor3 = Color3.new(1, 1, 1),
+		Font = Enum.Font.GothamBold, TextScaled = true, Text = "", ZIndex = 8, Visible = false, Parent = disc,
+	}, { corner(0.5, 0) })
+	m = { Disc = disc, Icon = icon, Count = count }
+	pool.monIcons[i] = m
+	return m
+end
+
+function MON.Draw(list, used)
+	-- nearest first, so a merged mark sits on the closest one of its group
+	table.sort(list, byDistance)
+	local marks, any = {}, false
+	for i = 1, used do
+		local e = list[i]
+		local key = "IconMon" .. tostring(e[6])
+		local id = UIKit.ArtId(key)
+		if id then
+			any = true
+			local size = e[4] and T.MonBoss or (e[5] and T.MonStrong or T.MonIcon)
+			local reach = size * T.MonMerge / math.max(0.01, S.pps) -- studs
+			local merged = nil
+			for _, mk in marks do
+				if mk.Kind == e[6] and mk.Golden == e[3] and (mk.Pos - e[1]).Magnitude <= reach then merged = mk break end
+			end
+			if merged then
+				merged.N += 1
+			else
+				table.insert(marks, { Kind = e[6], Pos = e[1], Id = id, Size = size, Golden = e[3], N = 1 })
+			end
+		end
+	end
+	if not any then
+		hideRest(MON.Discs(), 0)
+		return false
+	end
+	for i, mk in marks do
+		local m = MON.Mark(i)
+		if m.Icon.Image ~= mk.Id then m.Icon.Image = mk.Id end
+		m.Disc.Position = toScale(mk.Pos)
+		if m.Disc.Size.X.Offset ~= mk.Size then m.Disc.Size = UDim2.fromOffset(mk.Size, mk.Size) end
+		local fill = mk.Golden and COL.Golden or COL.MonDisc
+		if m.Disc.BackgroundColor3 ~= fill then m.Disc.BackgroundColor3 = fill end
+		m.Disc.Rotation = S.heading or 0
+		local text = mk.N > 1 and tostring(math.min(mk.N, 9)) or ""
+		if m.Count.Text ~= text then m.Count.Text = text end
+		if m.Count.Visible ~= (mk.N > 1) then m.Count.Visible = mk.N > 1 end
+		if not m.Disc.Visible then m.Disc.Visible = true end
+	end
+	hideRest(MON.Discs(), #marks)
+	return true
+end
+
+-- the disc frames of the pooled marks (hideRest takes frames)
+function MON.Discs()
+	local out = {}
+	for i, m in pool.monIcons do out[i] = m.Disc end
+	return out
+end
+
 local function scanMonsters(x, z)
 	local folder = workspace:FindFirstChild("Monsters")
 	local list = {}
@@ -794,6 +875,11 @@ local function scanMonsters(x, z)
 	end
 	if #list > T.MaxMonsters then table.sort(list, byDistance) end
 	local used = math.min(#list, T.MaxMonsters)
+	if MON.Draw(list, used) then
+		hideRest(pool.monsters, 0)
+		hideRest(pool.bosses, 0)
+		return
+	end
 	-- user 2026-10-06: normal monsters = small red dots, big ones (Scale >= StrongScale) = bigger dots with a dark rim,
 	-- event bosses (MonsterTypes Boss, e.g. the Pumpkin King) = their head icon (IconMon<Kind>, kept upright)
 	local usedDots, usedBoss = 0, 0

@@ -1,15 +1,15 @@
 {
   "status": "passed",
-  "checks": 875,
+  "checks": 847,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "bd09ec674c7f079f8501d3f5fde2ad01f33b6307a6497eec64e44a30c5592ada",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/QuestService.luau": "31db12ace1c3eaf4d3f72d79703e7f3d858b7afa9a23f34664c899d16a559d18",
-    "src/ReplicatedStorage/Shared/Net.luau": "a5f641ff6b031f6cdcd8a809d61fbb1efd3d5549c80fc4eba6b630556b03793e",
+    "src/ReplicatedStorage/Shared/Config.luau": "6ded4912845255bcae9b68c6f7ebb22448bf43aadb58948b504bae7e1c59602f",
+    "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
+    "src/ServerScriptService/QuestService.luau": "7d2f7503d791275a07660a406a3b1fd3e75f6789a26bdb2d5bb9a7864602d474",
+    "src/ReplicatedStorage/Shared/Net.luau": "390dec93230c07f615639e0ac23e7296e7221b1933e43c2691163aa93ea81d61",
     "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da"
   },
-  "fixtureSHA256": "cffd9c600150eca26b3dcbdc80cb672a75f0309a0c698f43ede57fa52e5e3f88",
+  "fixtureSHA256": "68477bcea6557d21813b2d8a26443e24935f025f5f643298eb429551534e58de",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,
@@ -64,7 +64,7 @@
     "B4 Data Version 3 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a picked build saves and comes back repaired, A-Z kept): fresh/v2/v1 records load and save as Version 3 with no other field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
     "finite-value save serialization guard and migration idempotence",
     "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
-    "A23-74 weapon first (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 (the Forge row, Fx Travel To = Crossroads / Spot = Forge, the instant Crossroads travel); meadow kills before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 (2 in the meadow), once; Forge.TravelDelay later the meadow trip -> the hunt; a save owning tier 1 -> step 1 as before; every claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial at step 3 = the forge trip; a KO at step 3 respawns at home"
+    "A23-74 + A23-88 weapon first, walking (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 (the Forge row 'Go to Otto's Forge', NO automatic trip: no Fx Travel, no lock, nobody moved); meadow kills before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 'Travel to Squishy Meadow' (2 in the meadow), once, no meadow trip; arriving in the meadow (the pad, Map -> Travel or a walk) -> the hunt; a save owning tier 1 -> step 1, no trip; every claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial asks for no trip at any step; a KO at step 3 respawns at home"
   ],
   "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); 'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again)."
 }

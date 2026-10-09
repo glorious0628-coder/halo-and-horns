@@ -91,7 +91,11 @@ local L = {
 	-- A23-75 (2026-10-08): the Robux shop (ShopUI) is the first square, left of 새 소식 (IconCoin until its icon is drawn)
 	Fold = {
 		{ Id = "Shop", Icon = "IconCoin", Window = "Shop" },
+		-- A23-79 #3: [Invite a friend] while Invite.CanShow() (no KO, no failed scroll just now, not in the Shop)
+		{ Id = "Invite", Icon = "IconInviteFriend", Invite = true },
 		{ Id = "News", Icon = "IconNews", Window = "News" },
+		-- A23-79: the King Diary (KingDiary.luau window "Diary"; the square shows once it is registered)
+		{ Id = "Diary", Icon = "IconDiary", Window = "Diary" },
 		{ Id = "Travel", Icon = "IconTravel", Window = "Travel" },
 		{ Id = "Help", Icon = "IconHelp", Window = "Help", Key = "Help" },
 		{ Id = "Settings", Icon = "IconSettings", Window = "Settings", Alt = "Menu" },
@@ -153,6 +157,8 @@ local TXT = {
 	Wanted = "Wanted %s", -- danger chip (Horns): the wanted stars
 	WantedBounty = " · %s",
 	WarTime = "Crown in %s", -- short: the phone meter is 240 px (UiSandbox 2026-10-06: 'My points' was cut)
+	LuckTap = "Rare drops come a bit more often today!", -- 검수 10/09: a press on the Lucky chip
+	WarIntro = "Crown War: win points for your side!", -- 검수 10/09: the one line when the war bar first shows
 	Siege = "Siege: %d each",
 	MyWar = "My pts %s",
 	WarSep = " · ",
@@ -202,9 +208,11 @@ local TXT = {
 	TileRanking = "Ranking",
 	TileSettings = "Settings",
 	TileNews = "News",
+	TileDiary = "Diary",
 	TileTravel = "Travel",
 	TileHelp = "Help",
 	TileShop = "Shop",
+	TileInvite = "Invite", -- A23-79 #3 the [Menu] square
 	-- A23-75 status chip: the 2x XP / 2x Gold passes (one chip, right after the danger chips)
 	BoostXP = "2x XP",
 	BoostGold = "2x Gold",
@@ -219,14 +227,14 @@ local TXT = {
 	QuestDone = "Done!", -- a finished line: its name + Done! (+ the Claim pill where a press claims it)
 	MoreChips = "+%d",
 	TravelLeft = "%s %.1fs",
-	ZoneGuide = "To %s!",
+	ZoneGuide = "%s", -- the guide label: one short line (검수 2026-10-08)
 	Monster = "Monster",
 	-- texts used once in the code below
 	GuideHere = "This way!",
 	Traveling = "Traveling...",
 	DailiesOpened = "Daily quests are open!",
-	SmithGuide = "Forge · use the anvil",
-	ForgeGuide = "Your first weapon · the anvil", -- A23-74 weapon first (TutorialStep Forge)
+	SmithGuide = "Forge",
+	ForgeGuide = "First weapon", -- A23-74 weapon first (TutorialStep Forge)
 	NoMana = "Not enough MP.",
 	GoSmith = "Go to the Crossroads and find the anvil at the Forge.",
 	Pond = "Pond",
@@ -700,7 +708,7 @@ function L.CheckPouch()
 	end
 	local gap = ui.powerRow.List.Padding.Offset
 	local need = (ui.power.AbsoluteSize.X + ui.pouch.AbsoluteSize.X) / s + gap
-	local fits = need <= R.power_line.W - (ui.pouch.Visible and 0 or 2)
+	local fits = L.PouchOn == true and need <= R.power_line.W - (ui.pouch.Visible and 0 or 2)
 	if ui.pouch.Visible ~= fits then ui.pouch.Visible = fits end
 end
 
@@ -1352,6 +1360,7 @@ local function buildChips(root)
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
 	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
 		Boost = "IconExp" }
+	L.ChipIcons = icons
 	ui.chip = {}
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
 	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
@@ -1361,8 +1370,110 @@ local function buildChips(root)
 		ui.chip[key] = makeChip(key, i, icons[key])
 	end
 	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
+	L.BuildChipFold()
+	-- 검수 10/09: a press on the Lucky chip says what it means (one toast)
+	local luckChip = ui.chip.Luck and ui.chip.Luck.Frame
+	if luckChip then
+		luckChip.Active = true
+		luckChip.InputBegan:Connect(function(input)
+			local t = input.UserInputType
+			if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(UIKit.Toast, TXT.LuckTap, "info") end
+		end)
+	end
 	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
+end
+
+-- ui_clutter_review ③ (검수 10/09; look = 이미지 개발, when = 개발 1): folded, the chip row is one small round candy chip
+-- with the icons of the chips that want to show (at most L.ChipFold.MaxIcons, then '+N'); a press calls
+-- L.ChipFold.OnTap (개발 1's rule, HUD.OnChipsFoldTap) or unfolds. HUD.SetChipsFolded(true/false) switches it
+function L.BuildChipFold()
+	local frame = UIKit.Create("TextButton", {
+		Name = "Fold",
+		Text = "",
+		AutoButtonColor = false,
+		LayoutOrder = 0,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.fromOffset(0, L.ChipH),
+		BackgroundColor3 = ac("ChipSafe", Theme.Good):Lerp(COL.White, 0.55),
+		Visible = false,
+		Parent = ui.chips,
+	}, {
+		corner(UDim.new(0.5, 0)),
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 2),
+		}),
+		UIKit.Create("UIStroke", { Thickness = 2, Color = Theme.SubText, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		UIKit.Create("UIGradient", { Rotation = 90, Color = ColorSequence.new(COL.White, Color3.fromRGB(222, 222, 222)) }),
+		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 4), PaddingRight = UDim.new(0, 4) }),
+	})
+	local fold = { Frame = frame, Icons = {} }
+	for i = 1, L.ChipFold.MaxIcons do
+		fold.Icons[i] = UIKit.ArtImage("IconSafe", {
+			Name = "Icon" .. i,
+			LayoutOrder = i,
+			Size = UDim2.fromOffset(L.ChipH - 4, L.ChipH - 4),
+			Visible = false,
+			Parent = frame,
+		})
+	end
+	fold.More = artLabel(true, {
+		Name = "More",
+		LayoutOrder = 10,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.new(0, 0, 1, 0),
+		TextSize = 12,
+		Outline = false,
+		TextColor3 = COL.Dark,
+		Visible = false,
+		Parent = frame,
+	})
+	frame.Activated:Connect(function()
+		local fn = L.ChipFold.OnTap
+		if type(fn) == "function" then
+			local ok, err = pcall(fn)
+			if not ok then warnThrottled("chip fold tap failed: " .. tostring(err)) end
+		else
+			HUD.SetChipsFolded(false)
+		end
+	end)
+	ui.chipFold = fold
+end
+
+-- folded: hide the chips (after refreshChips decided which want to show) and show their icons on the fold chip
+function L.ApplyChipFold()
+	local fold = ui.chipFold
+	if not fold then return end
+	local want = {}
+	if L.ChipFold.Folded then
+		for _, key in L.ChipOrder do
+			local chip = ui.chip[key]
+			if chip and chip.Frame.Visible then
+				table.insert(want, key)
+				chip.Frame.Visible = false
+			end
+		end
+		if ui.chipMore then ui.chipMore.Frame.Visible = false end
+	end
+	-- the icons: the chips' own art; a chip without one (In Combat, Bully, ...) shows the warning star
+	local shown = 0
+	for i, img in fold.Icons do
+		local key = want[i]
+		img.Visible = key ~= nil
+		if key then
+			shown += 1
+			local id = UIKit.ArtId(L.ChipIcons[key] or "Star")
+			if id then img.Image = id end
+			img.ImageColor3 = (L.ChipIcons[key] == nil or key == "Wanted") and ac("StarGold", Theme.Gold) or COL.White
+		end
+	end
+	local extra = #want - shown
+	fold.More.Visible = extra > 0
+	fold.More.Text = extra > 0 and string.format(TXT.MoreChips, extra) or ""
+	fold.Frame.Visible = #want > 0
 end
 
 -- A23-40: the row is too wide for its rect -> one chip fewer (the '+N' chip takes it); refreshChips starts again from
@@ -1691,6 +1802,9 @@ function L.BuildQuestLines(root)
 	ui.qline = {}
 	-- phones: the 12 px name-tag floor (the block is 150 px wide); PC: body text
 	local style = IS_TOUCH and "NameTag" or "Body"
+	-- 검수 2026-10-08: each line on the cream ListRow plate (L.QuestPlate), its words navy (light-plate text)
+	local onPlate = UIKit.ArtId("ListRow") ~= nil
+	ui.questOnPlate = onPlate
 	-- 검수 10/08 (user "퀘스트 창도 이상해": the ▼ beside line 1 did not say what it opens): a head line "Quests (3) ▼" over
 	-- the lines; a press opens the quest window (Q) / the list. The lines sit right under it (LayoutQuestLines)
 	local headRow = UIKit.Create("TextButton", {
@@ -1721,8 +1835,13 @@ function L.BuildQuestLines(root)
 		TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 4,
 		Parent = headRow,
-	}, style)
-	ui.questHead = { Frame = headRow, Text = headText }
+	}, style, onPlate)
+	-- 검수 10/09 (5c1756fb 머리 줄 판): the head line sits on its own small plate too
+	local headPlate = onPlate and UIKit.ArtFrame("ListRow", { Name = "HeadPlate", ZIndex = 2, Visible = false, Parent = root }) or nil
+	if onPlate then UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = headRow }) end
+	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate }
+	-- the head plate lives beside the head line (not inside it): follow its showing / hiding at once (검수 10/09)
+	headRow:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.LayoutQuestPlates) end)
 	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
 	for i = 1, n do
 		-- one row = [icon][text][3/5 | 받기][▼ on line 1, PC]: a horizontal list; the text keeps its own width (shrinks and
@@ -1764,7 +1883,7 @@ function L.BuildQuestLines(root)
 			TextWrapped = false,
 			ZIndex = 4,
 			Parent = row,
-		}, style)
+		}, style, onPlate)
 		text.AutomaticSize = Enum.AutomaticSize.X
 		-- phones: the game's 11 px floor (Config.UI.MinTextSize) instead of the 12 px name-tag floor - the 150 px block
 		-- beside the minimap fits "Free the supply road" only at 11 px (A23-63 Montserrat, 2026-10-07)
@@ -1776,6 +1895,11 @@ function L.BuildQuestLines(root)
 		-- cut inside a word when it must ('AtEnd' drops whole words: "Free the…" left half the row empty). No flex shrink:
 		-- L.FitQuestLine gives the words their width (검수 10/08: shrink squeezed a finished line's name to nothing)
 		text.TextTruncate = Enum.TextTruncate.SplitWord
+		-- 검수 10/09 (main: 'To the F…'): a width measured before the font loaded is too small -> measure again when the
+		-- words stop fitting (FitQuestLine only changes Size, so this settles after one pass)
+		text:GetPropertyChangedSignal("TextFits"):Connect(function()
+			if not text.TextFits and ui.qline[i] then task.defer(L.FitQuestLine, ui.qline[i]) end
+		end)
 		local nums = UIKit.StyledLabel({
 			Name = "Nums",
 			LayoutOrder = 3,
@@ -1784,7 +1908,7 @@ function L.BuildQuestLines(root)
 			TextXAlignment = Enum.TextXAlignment.Right,
 			ZIndex = 4,
 			Parent = row,
-		}, "Number")
+		}, "Number", onPlate)
 		-- 받기: the green candy pill (same art as the list rows' 받기), text on it
 		local claim = UIKit.ArtFrame("Chip", {
 			Name = "Claim",
@@ -1801,14 +1925,21 @@ function L.BuildQuestLines(root)
 			ZIndex = 5,
 			Parent = claim,
 		}, "Number")
-		-- the soft band sits beside the row in the block (a band inside the row would be a list item), under its text
-		local band = L.SoftBand(block, "Right")
-		band.Name = "Band" .. i
-		band.Size = UDim2.new(1, 64, 1 / n, 2)
-		band.Position = UDim2.new(0, -8, (i - 1) / n, -1)
-		band.Visible = false
+		-- the soft band sits beside the row in the block (a band inside the row would be a list item), under its text;
+		-- on the plate (L.QuestPlate) the line needs no band: the plate is laid out by L.LayoutQuestLines
+		local band, plate = nil, nil
+		if onPlate then
+			plate = UIKit.ArtFrame("ListRow", { Name = "Plate" .. i, ZIndex = 2, Visible = false, Parent = block }) -- under the row (Z 3)
+			UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = row })
+		else
+			band = L.SoftBand(block, "Right")
+			band.Name = "Band" .. i
+			band.Size = UDim2.new(1, 64, 1 / n, 2)
+			band.Position = UDim2.new(0, -8, (i - 1) / n, -1)
+			band.Visible = false
+		end
 		ui.qline[i] = { Row = row, Icon = icon, Text = text, Nums = nums, Claim = claim, ClaimText = claimText, Entry = nil,
-			Band = band }
+			Band = band, Plate = plate }
 	end
 	-- the ▼ / ▲ on the head line (every device): the quest window, or the old fold-out list without it
 	local fold = UIKit.Create("TextButton", {
@@ -1822,7 +1953,7 @@ function L.BuildQuestLines(root)
 		ZIndex = 5,
 		Parent = headRow,
 	}, { UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }) })
-	if type(UIKit.StyleText) == "function" then UIKit.StyleText(fold, "Number") end
+	if type(UIKit.StyleText) == "function" then UIKit.StyleText(fold, "Number", onPlate) end
 	fold.Activated:Connect(function()
 		if toggleQuests then toggleQuests() end
 	end)
@@ -1860,6 +1991,43 @@ function L.LayoutQuestLines(q)
 	end
 	if ui.questFold then ui.questFold.TextSize = math.max(12, math.floor(lh * 0.55)) end
 	for _, l in ui.qline do task.defer(L.FitQuestLine, l) end
+	task.defer(L.LayoutQuestPlates)
+end
+
+-- each line's plate: as wide as the line's content (+ L.QuestPlate pads), its height the line minus the gap, hidden with
+-- an empty line
+function L.LayoutQuestPlates()
+	if not ui.qline then return end
+	local s = currentScale()
+	local P = L.QuestPlate
+	for _, l in ui.qline do
+		local plate = l.Plate
+		if plate then
+			local list = l.Row:FindFirstChildOfClass("UIListLayout")
+			local w = list and list.AbsoluteContentSize.X / s or 0
+			local shown = l.Row.Visible and w > 1
+			if shown then
+				local h = l.Row.AbsoluteSize.Y / s
+				plate.Position = UDim2.new(l.Row.Position.X.Scale, l.Row.Position.X.Offset, l.Row.Position.Y.Scale,
+					l.Row.Position.Y.Offset + P.Gap / 2)
+				plate.Size = UDim2.fromOffset(math.ceil(w + P.PadL + P.PadR), math.max(1, h - P.Gap))
+			end
+			if plate.Visible ~= shown then plate.Visible = shown end
+		end
+	end
+	-- the head line "Quests (3) ▼" on its own plate (same pads, sits where the head frame is)
+	local head = ui.questHead
+	if head and head.Plate then
+		local list = head.Frame:FindFirstChildOfClass("UIListLayout")
+		local w = list and list.AbsoluteContentSize.X / s or 0
+		local shown = head.Frame.Visible and w > 1
+		if shown then
+			local h = head.Frame.AbsoluteSize.Y / s
+			head.Plate.Position = head.Frame.Position + UDim2.fromOffset(0, P.Gap / 2)
+			head.Plate.Size = UDim2.fromOffset(math.ceil(w + P.PadL + P.PadR), math.max(1, h - P.Gap))
+		end
+		if head.Plate.Visible ~= shown then head.Plate.Visible = shown end
+	end
 end
 
 -- A23-63 (2026-10-07): a line wider than its row first drops its " · ..." tail (the count says it: "Free the supply road
@@ -1870,12 +2038,18 @@ function L.FitQuestLine(l)
 	if type(full) ~= "string" or not l.Row.Visible then return end
 	local s = currentScale()
 	local rowW = l.Row.AbsoluteSize.X / s
+	local pad = l.Row:FindFirstChildOfClass("UIPadding") -- the plate's left pad (L.QuestPlate.PadL)
+	if pad then rowW -= pad.PaddingLeft.Offset + pad.PaddingRight.Offset end
 	if rowW <= 1 then return end
 	local used = (l.Icon and l.Icon.Visible) and (l.Icon.AbsoluteSize.X / s + 4) or 0
 	if l.Nums.Visible then used += l.Nums.AbsoluteSize.X / s + 4 end
 	if l.Claim.Visible then used += l.Claim.AbsoluteSize.X / s + 4 end
 	local tc = l.Text:FindFirstChildOfClass("UITextSizeConstraint")
 	local size = math.max(l.Text.TextSize, tc and tc.MinTextSize or 0)
+	-- UiSandbox 10/09 ('Meet H…' / main 'To the F…'): the screen-px floor draws the words bigger than TextSize under
+	-- UIScale - measure at the size actually drawn (the one-line TextBounds height, back in logical units)
+	local drawn = l.Text.TextBounds.Y / s
+	if drawn > size and drawn < size * 3 then size = math.ceil(drawn) end
 	local text = full
 	local short = string.match(full, "^(.-)%s+·%s")
 	local avail = math.max(10, rowW - used)
@@ -1926,6 +2100,7 @@ function L.SetQuestLine(l, e, label, nums)
 		l.Icon.ImageColor3 = COL.White -- the art keys are colored (the old "Star" key needed a gold tint)
 	end
 	task.defer(L.FitQuestLine, l) -- after the row's list layout placed the numbers / 받기
+	task.delay(0, L.LayoutQuestPlates) -- next frame: after the fit and the list layout
 end
 
 -- PC line press: claim / pinned or story action / fold the list
@@ -2224,7 +2399,8 @@ function L.FoldEntries()
 		local f = ui.foldTiles[i]
 		local def = f.Def
 		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window
-		if (def.Map or f.Row or L.TileWindow(def) ~= nil) and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
+		if (def.Map or f.Row or L.TileWindow(def) ~= nil or (def.Invite and L.InviteOk()))
+			and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
 	end
 	return list
 end
@@ -2306,6 +2482,13 @@ function L.SetFold(open)
 		L.PlaceFold(not reduced)
 		local panels = C and C.Panels
 		if type(panels) == "table" and type(panels.Metric) == "function" then pcall(panels.Metric, "Menu") end -- BB38
+		-- A23-79 metrics: the [Invite] square showed
+		for _, f in ui.foldShown or {} do
+			if f.Def and f.Def.Invite then
+				local inv = C and C.Invite
+				if type(inv) == "table" and type(inv.Seen) == "function" then pcall(inv.Seen, "Menu") end
+			end
+		end
 	elseif reduced then
 		ui.fold.Visible = false
 		for _, f in ui.foldTiles do
@@ -2428,8 +2611,8 @@ local function buildButtons(root)
 	-- A23-40 icon tile row (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map). A window tile
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
 	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
-		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews,
-		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop }
+		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews, Diary = TXT.TileDiary,
+		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite }
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
@@ -2769,6 +2952,8 @@ local function refreshStats()
 	L.PowerSet(L.Pow.Shown or L.PowerValue())
 	local carried = math.max(0, num("CarriedGold", 0))
 	ui.pouch.Text = string.format(TXT.Pouch, TXT.CarriedTag, fmtNum(carried))
+	-- 검수 10/09 (UI clutter review ④): the pouch line once I carry gold (or from Config.HudReveal.Level), then for good
+	L.PouchOn = L.PouchOn or Config.HudReveal.Shows("Pouch", { Level = num("Level", 0), Carried = carried })
 	ui.pouch.TextColor3 = carried > 0 and (Theme.Sack or ac("GoldText", Theme.Gold)) or ac("LightSub", Theme.SubText)
 	L.CheckPouch()
 	if ui.chip then refreshChips() end -- the wanted chip follows stars / bounty
@@ -2882,6 +3067,59 @@ refreshChips = function()
 		end
 	end
 	setChip(ui.chipMore, folded > 0, string.format(TXT.MoreChips, folded), Theme.SubText)
+	L.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))
+	L.ApplyChipFold()
+end
+
+-- the chips' "what changed" key (pure): the chip set without In Combat, the zone kind, the luck words
+function HUD.ChipFoldSig(wantKey, town, pvp, luck)
+	local keys = string.gsub(tostring(wantKey or ""), "Combat,", "")
+	return keys .. "|" .. (town and "T" or (pvp and "P" or "W")) .. "|" .. tostring(luck or "")
+end
+L.ChipFoldSig = HUD.ChipFoldSig
+
+-- a new key unfolds the chips now and folds them ShowSeconds later (a newer change or a press restarts the wait)
+function L.WatchChipFold(sig)
+	local cf = L.ChipFold
+	if not cf.Auto or sig == cf.Sig then return end
+	cf.Sig = sig
+	cf.Folded = false -- refreshChips applies it right after
+	L.FoldLater(cf.ShowSeconds)
+end
+
+function L.FoldLater(seconds)
+	local cf = L.ChipFold
+	cf.Token += 1
+	local token = cf.Token
+	task.delay(seconds, function()
+		if cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end
+	end)
+end
+
+-- the fold chip's press: show them TapSeconds, then fold again
+function L.ChipFoldTap()
+	HUD.SetChipsFolded(false)
+	L.FoldLater(L.ChipFold.TapSeconds)
+end
+
+-- ui_clutter_review ③: fold / unfold the status chips (개발 1 decides when; 3 s after a change -> fold, press -> unfold)
+function HUD.SetChipsFolded(folded)
+	folded = folded == true
+	if L.ChipFold.Folded == folded then return end
+	L.ChipFold.Folded = folded
+	if ui.chip then
+		local ok, err = pcall(refreshChips)
+		if not ok then warnThrottled("chip fold failed: " .. tostring(err)) end
+	end
+end
+
+function HUD.ChipsFolded()
+	return L.ChipFold.Folded
+end
+
+-- the fold chip's press (nil = just unfold)
+function HUD.OnChipsFoldTap(fn)
+	L.ChipFold.OnTap = type(fn) == "function" and fn or nil
 end
 
 ----------------------------------------------------------------- refresh: war meter
@@ -2986,8 +3224,25 @@ function L.RookieFold()
 end
 HUD.RookieFold = L.RookieFold -- EventHUD reads the same rule
 
+-- 검수 2026-10-09 (UI clutter review ③, "show it when it is needed"): the crown war bar first shows after the Forge
+-- visit - hidden while the first mission is at its first fight or on the way to the Forge (TutorialStep Kill / Forge,
+-- A23-74 order Kill -> Forge -> Guide -> Quest -> Done); no step yet (not loaded) or any later step = shown, so it
+-- stays for good once it came. Pure: the offline test runs it.
+function HUD.WarHidden(step, steps)
+	if type(step) ~= "number" or type(steps) ~= "table" then return false end
+	return step == tonumber(steps.Kill) or step == tonumber(steps.Forge)
+end
+
 -- changed = the TutorialStep attribute just changed (a fold that ends in this session pops the parts in)
 function L.ApplyFold(changed)
+	local hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)
+	if ui.war and ui.war.Visible == hideWar then
+		ui.war.Visible = not hideWar
+		if changed and not hideWar then -- it comes in during play: one short line says what it is
+			pcall(UIKit.Toast, TXT.WarIntro, "info")
+			if type(UIKit.NewTag) == "function" then pcall(UIKit.NewTag, ui.war) end
+		end
+	end
 	local fold = L.RookieFold()
 	if ui.warInfo and ui.warInfo.Visible == fold then ui.warInfo.Visible = not fold end
 	L.SizeWarPlate()
@@ -3801,6 +4056,7 @@ refreshQuests = function()
 			-- the head line: how many quests there are (before the first mission is accepted, only that one line shows)
 			ui.questHead.Frame.Visible = #entries > 0 and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
 			ui.questHead.Text.Text = string.format(TXT.QuestHead, #entries)
+			task.delay(0, L.LayoutQuestPlates) -- the head plate follows the head line
 		end
 		questState.ShownEntry = entries[shown]
 	end
@@ -3966,6 +4222,7 @@ end
 
 local function destroyGuide(g)
 	if g.Tween then g.Tween:Cancel() end
+	if g.Near then g.Near:Disconnect() end
 	for _, inst in { g.Beam, g.Att0, g.Att1, g.Billboard } do
 		if inst then inst:Destroy() end
 	end
@@ -4019,25 +4276,48 @@ local function showGuide(target, text, tag, seconds)
 	beam.Parent = part
 	g.Beam = beam
 
+	-- 검수 2026-10-08 (user: "이거 별로야"): a small white Chip (navy rim) with a down arrow and one short navy line,
+	-- about half the old 220 x 64 gold words; it hides within L.GuideHide studs (the pad glow and the gold line stay)
+	local G = L.GuideLabel
+	local words = tostring(text or TUT_GUIDE_TEXT)
+	local _, textW = UIKit.MeasureText(words, G.TextPx, Enum.Font.GothamBold, 10000)
+	local w = math.ceil((tonumber(textW) or #words * G.TextPx * 0.6) + G.H + G.PadX * 2)
 	local bb = Instance.new("BillboardGui")
 	bb.Name = "HUDGuideLabel"
 	bb.Adornee = part
 	bb.AlwaysOnTop = true
 	bb.LightInfluence = 0
 	bb.MaxDistance = 100000
-	bb.Size = UDim2.fromOffset(220, 64)
-	bb.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 5, 0)
+	bb.Size = UDim2.fromOffset(w, G.H)
+	bb.StudsOffset = Vector3.new(0, part.Size.Y / 2 + G.Lift, 0)
+	local plate = UIKit.ArtFrame("Chip", { Name = "Plate", Size = UDim2.fromScale(1, 1), Parent = bb },
+		{ Color = Color3.new(1, 1, 1), CornerRadius = UDim.new(0.5, 0), StrokeColor = ac("Navy", Theme.Bg), StrokeThickness = 2 })
+	local arrow = UIKit.ArtImage("IconQuestMarkerArrow", {
+		Name = "Arrow", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, G.PadX - 2, 0.5, 0),
+		Size = UDim2.fromOffset(G.H - 8, G.H - 8), Rotation = 180, ImageColor3 = ac("StarGold", Theme.Gold), ZIndex = 2,
+		Parent = plate,
+	})
+	local left = arrow and (G.PadX - 2 + G.H - 8 + 3) or G.PadX
 	UIKit.Create("TextLabel", {
-		Size = UDim2.fromScale(1, 1),
+		Name = "Text",
+		Position = UDim2.fromOffset(left, 0),
+		Size = UDim2.new(1, -left - G.PadX, 1, 0),
 		BackgroundTransparency = 1,
-		TextScaled = true,
-		Text = tostring(text or TUT_GUIDE_TEXT),
-		TextColor3 = Theme.Gold,
-		TextStrokeTransparency = 0,
-		Parent = bb,
+		Font = Enum.Font.GothamBold,
+		TextSize = G.TextPx,
+		TextColor3 = ac("Ink", COL.Dark),
+		Text = words,
+		ZIndex = 2,
+		Parent = plate,
 	})
 	bb.Parent = part
 	g.Billboard = bb
+	g.Near = game:GetService("RunService").Heartbeat:Connect(function()
+		local char = LocalPlayer.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		local far = not (root and root:IsA("BasePart")) or (root.Position - part.Position).Magnitude > L.GuideHide
+		if bb.Enabled ~= far then bb.Enabled = far end
+	end)
 	g.Tween = TweenService:Create(bb, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
 		StudsOffset = bb.StudsOffset + Vector3.new(0, 1.5, 0),
 	})
@@ -4210,7 +4490,7 @@ end
 -- (M1_1) and hands the first weapon over before the shop shows. Near the anvil the prompt is pressed for me; farther
 -- away the guide beam shows the way (no shop).
 L.Smith = { Prompt = "HHC_BlacksmithPrompt", Reach = 12,
-	Travel = "Go to the Crossroads and find the Forge anvil.", Guide = "Forge · use the anvil",
+	Travel = "Go to the Crossroads and find the Forge anvil.", Guide = "Forge",
 	Walk = "Walk to the Forge anvil and press its button." }
 
 function L.PressAnvil()
@@ -4448,6 +4728,14 @@ openMap = function()
 end
 
 -- A23-40 tiles: the window a tile opens right now (its own once registered, else its Alt), or nil (the tile hides)
+-- A23-79 #3: the [Invite] square shows while Invite.CanShow() says so
+function L.InviteOk()
+	local inv = C and C.Invite
+	if type(inv) ~= "table" or type(inv.CanShow) ~= "function" then return false end
+	local ok, can = pcall(inv.CanShow)
+	return ok and can == true
+end
+
 function L.TileWindow(def)
 	local panels = C and C.Panels
 	local has = type(panels) == "table" and type(panels.Has) == "function" and panels.Has or nil
@@ -4460,6 +4748,11 @@ end
 -- a tile press: 지도 = the world map toggle, window tiles open their window (the same tile closes it; another window
 -- switches)
 function L.TileTap(def)
+	if def.Invite then
+		local inv = C and C.Invite
+		if type(inv) == "table" and type(inv.Prompt) == "function" then task.spawn(inv.Prompt, "Menu") end
+		return
+	end
 	if def.Map then
 		local wm = C and C.WorldMap
 		local mapOpen = type(wm) == "table" and type(wm.IsOpen) == "function" and wm.IsOpen()
@@ -4712,6 +5005,17 @@ function L.LayoutTiles(tr)
 	end
 end
 L.TileLabelMinPx = 40
+-- the quest lines' plates (검수 2026-10-08): du of plate left / right of a line's content, the gap between two lines
+L.QuestPlate = { PadL = 6, PadR = 10, Gap = 4 }
+L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
+-- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
+-- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would
+-- unfold them), the zone kind or the luck words (L.ChipFoldSig). Auto = the rule is on
+L.ChipFold.Auto, L.ChipFold.ShowSeconds, L.ChipFold.TapSeconds, L.ChipFold.Token = true, 3, 5, 0
+L.ChipFold.OnTap = L.ChipFoldTap -- defined above (the chips section); HUD.OnChipsFoldTap may replace it
+-- the guide label (showGuide): px tall, its words' px, side room, studs above the target; hidden within GuideHide studs
+L.GuideLabel = { H = 28, TextPx = 15, PadX = 10, Lift = 4.5 }
+L.GuideHide = 15
 -- tile names inside the rim (tileButton): the inset du in all (the rim is ~4 px a side; phones keep their 11 px floor,
 -- so their names may touch the rim's inner edge: 'Settings' is 41 px at 11 px in a 45 px square)
 L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
@@ -5133,6 +5437,13 @@ function HUD.Start()
 		LocalPlayer:GetAttributeChangedSignal("HintPreview"):Connect(function()
 			local v = LocalPlayer:GetAttribute("HintPreview")
 			if v == "Attack" or v == "Q" or v == "Z" or v == "X" then HUD.Hint(v) else HUD.ClearHint(nil) end
+		end)
+		-- ChipsFoldPreview = true / false folds / unfolds the status chips (이미지 개발 photos, ui_clutter_review ③)
+		LocalPlayer:GetAttributeChangedSignal("ChipsFoldPreview"):Connect(function()
+			-- a photo preview turns 개발 1's automatic fold off (L.ChipFold.Auto) so it cannot fold / unfold mid-shot
+			local v = LocalPlayer:GetAttribute("ChipsFoldPreview")
+			L.ChipFold.Auto = v == nil
+			HUD.SetChipsFolded(v == true)
 		end)
 	end
 

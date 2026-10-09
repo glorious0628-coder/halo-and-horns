@@ -1,12 +1,38 @@
 {
   "status": "passed",
-  "checks": 34,
+  "checks": 37,
   "failedChecks": [],
   "mutations": {
-    "total": 24,
-    "applied": 24,
-    "caught": 24,
+    "total": 27,
+    "applied": 27,
+    "caught": 27,
     "results": [
+      {
+        "mutation": "the learn line at once (5 s)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the learn line waits 45 s :: 2",
+          "CHECK_FAIL 45 s later, still unused: one line 'Press Q' :: nil",
+          "CHECK_FAIL the moment shows once :: 1"
+        ]
+      },
+      {
+        "mutation": "a press does not cancel the learn line",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 검수 10/09: Q used within 45 s -> the learn line never comes :: 1"
+        ]
+      },
+      {
+        "mutation": "the learn line never waits",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 검수 10/09: Q used within 45 s -> the learn line never comes :: 1"
+        ]
+      },
       {
         "mutation": "locked slots show again",
         "applied": true,
@@ -31,8 +57,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL a 'New skill! <name>' banner :: nil",
-          "CHECK_FAIL one line on the new button: 'Press Q' :: nil",
-          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 0"
+          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 0",
+          "CHECK_FAIL the SkillLearn sound (PowerUp until its file exists) :: "
         ]
       },
       {
@@ -50,7 +76,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL one line on the new button: 'Press Q' :: nil",
+          "CHECK_FAIL 45 s later, still unused: one line 'Press Q' :: nil",
           "CHECK_FAIL the moment shows once :: 1"
         ]
       },
@@ -190,7 +216,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL the learn sound waits for the level-up chime :: SkillLearn,PowerUp",
-          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 1"
+          "CHECK_FAIL the learn sound comes about 1.1 s after the level up (sound_gaps A9) :: 2"
         ]
       },
       {
@@ -214,10 +240,10 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
-    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "eb9068fa9a25a72e467a162c5f1ba9be1ef3930d9e4ae952ade3160f3614eccf"
+    "src/ReplicatedStorage/Shared/Config.luau": "a97255a4659e3dd2700ea42f00690af19338a0ecb2591adcc620ac7167158a08",
+    "src/StarterPlayer/StarterPlayerScripts/SkillBar.luau": "a866927709ec9db3b3c741def00be22fae214d4254a0b5f42f5a32ebd6cac5fa"
   },
-  "fixtureSHA256": "a082cd163ab97ad9c3f08a748be3c1888722cb9c45bf22a25ca9d05d45ab7a8b",
+  "fixtureSHA256": "11cd3d9ee93ab42b85c58eae361b471469218773108cebfede483a1c0e2f14fe",
   "studioCalls": 0,
   "contract": "A23-71 skill learn offline test (SkillBar.luau; user 2026-10-07 \"스킬도 처음에는 없어야 돼! 레벨 5일 때 하나 배우는 걸로\n하자\", unlocks Q 5 / Z 15 / X 25): no skill button below its unlock level (a key press says \"Skills come at Lv N\",\nnot spammed); unlocking while playing -> \"New skill! <name>\" banner (UIKit.Announce), the button pops in, one line on it\n(C.HUD.Hint(slot, \"Press Q\") / phones \"Tap the new button\"), the SkillLearn sound with PowerUp until its file exists;\nonce per slot; a save loading past the level shows its skills without the moment; reduced motion: no pop.\nRuns the real SkillBar.luau + Config.luau (Config.Skills.Unlock set to the A23-71 numbers) in\ntools/fixtures/skill_learn_offline.luau.",
   "limitations": "The button layout without skill slots is image dev's (HudLayout); the real unlock numbers come with dev2's Config.Skills.Unlock change; the look of the moment is a Studio check."
