@@ -4134,6 +4134,26 @@ Config.Switches = {
 	},
 }
 
+-- HealthService (검수 2026-10-09, system_review_round1 더하기 9; contract docs/design/health_report_server_2026-10-09.md): hourly
+-- sums of what the game does (gold in / out per source, XP per level band, the goose's wins and pay, plunder amounts, pass
+-- view -> prompt -> bought), merged by every server into one DataStore document per UTC hour (Store, key "H<YYYYMMDDHH>") every
+-- FlushSeconds (x0.5..1.5 random) and when the server closes. Read in Studio: DebugCommand("Health"[, "stored" | "live"[:hours]]).
+-- Bands = the level bands of the player-minutes / XP (the same cut as the analytics' level band). MaxKeys = the most keys a sums
+-- table (gold sources, passes) may hold in a document; more fall into "Other". Alerts (starter numbers, tune after the first
+-- tests): MinPlayerMinutes = the player-minutes a band needs in an hour before its rates count; SurgeRatio = the newest full hour's
+-- gold / XP per player-minute vs the earlier hours' average (MinBaseline hours needed); GooseMinRounds / GooseSkew = a goose
+-- side that won at least this share of at least this many decided rounds; QuietHours = no server wrote for this long.
+Config.Health = {
+	Enabled = true,
+	Store = "HaloHorns_Health_v1",
+	FlushSeconds = 600,
+	ReadHours = 24,
+	MaxReadHours = 72,
+	MaxKeys = 40,
+	Bands = { { Name = "1-9", Max = 9 }, { Name = "10-24", Max = 24 }, { Name = "25-49", Max = 49 }, { Name = "50+", Max = 1000 } },
+	Alerts = { MinPlayerMinutes = 60, SurgeRatio = 2, MinBaseline = 3, GooseMinRounds = 10, GooseSkew = 0.75, QuietHours = 3 },
+}
+
 -- BB3 settings window (user 2026-10-06: class change, rebirth, opening, name hiding and vacation are settings rows;
 -- A23-48: no language row). SettingsUI.luau builds it; Sfx / Shake / KeyBadges labels come from Config.Settings.Text*En.
 Config.Settings.Window = {

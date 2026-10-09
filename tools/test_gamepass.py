@@ -226,8 +226,8 @@ MUTATIONS = [
     ("cap dropped", P, "\tif cap ~= nil then amount = math.min(amount, math.max(0, math.floor(num(cap)))) end\n", ""),
     ("doubled twice (in GetXPMult)", P, "\t\t+ num(data.RedeemMarks) * Config.Rebirth.RedeemXPPer\n",
      "\t\t+ num(data.RedeemMarks) * Config.Rebirth.RedeemXPPer + (M.PassMult(player, \"XP2\") - 1)\n"),
-    ("AddXP returns nothing", P, "\t\tM.LeveledUp:Fire(player, level)\n\tend\n\treturn amount\nend\n",
-     "\t\tM.LeveledUp:Fire(player, level)\n\tend\nend\n"),
+    ("AddXP returns nothing", P, "\t\tM.LeveledUp:Fire(player, level)\n\tend\n\tM.XPEarned:Fire(player, amount)\n\treturn amount\nend\n",
+     "\t\tM.LeveledUp:Fire(player, level)\n\tend\n\tM.XPEarned:Fire(player, amount)\nend\n"),
     ("kill line shows the old amount", P, "\tgold = M.AddCarriedGold(player, gold, \"Monster\")", "\tM.AddCarriedGold(player, gold, \"Monster\")"),
     ("GoldEarned before the pass", P,
      "\tamount = boostGold(player, amount, source)\n\tS.PlayerService.AddStat(player, \"BankGold\", amount)\n"

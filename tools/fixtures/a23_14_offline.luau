@@ -849,7 +849,7 @@ end)
 
 ------------------------------------------------------------------ B. golden goose co-op
 local function gooseWorld(roster)
-	local f = { Now = 5000, Clock = 100, Notices = {}, All = {}, Fx = {}, Gold = {}, XP = {}, War = {}, Finished = {}, Players = {},
+	local f = { Now = 5000, Clock = 100, Notices = {}, All = {}, Fx = {}, Gold = {}, XP = {}, War = {}, Finished = {}, Paid = {}, Players = {},
 		GS = {}, Loop = nil }
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
 	f.Config = config
@@ -914,6 +914,10 @@ local function gooseWorld(roster)
 	local goose = execute("GooseService", GOOSE_SOURCE, env)
 	goose.GooseFinished:Connect(function(result, rewarded, info)
 		table.insert(f.Finished, { Result = result, Rewarded = rewarded, Info = info })
+	end)
+	-- HealthService (2026-10-09): one GooseRewarded(player, { Won, Rare, Gold, XP, Level, Mode }) per paid player
+	goose.GooseRewarded:Connect(function(p, info)
+		table.insert(f.Paid, { P = p, Info = info })
 	end)
 	f.Goose, f.Registry = goose, registry
 	local serial = 0
@@ -986,6 +990,10 @@ runGroup("goose-coop", function()
 	check(f.Gold[f.H1] == g and f.XP[f.H1] == x and g < fullG and g == math.floor(select(1, CONFIG.HuntValue(1, 10)) * G.OffShare * 0.7),
 		"co-op success pays 70% of the winner reward", show({ f.Gold[f.H1], f.XP[f.H1], fullG, fullX }))
 	check(#f.War == 0, "co-op never gives war points", show(f.War))
+	local pay = f.Paid[1]
+	check(#f.Paid == 1 and pay.P == f.H1 and pay.Info.Won == true and pay.Info.Rare == false and pay.Info.Gold == g and pay.Info.XP == x
+		and pay.Info.Level == 1 and pay.Info.Mode == "Coop", "GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
+		show(pay and pay.Info))
 	check(f.H1.Data.CheerStars == 0, "co-op success gives no cheer star", f.H1.Data.CheerStars)
 	check(f:NoticeTo(f.H1, string.format(GT.CoopReward.Halo, tostring(g), tostring(x))) == 1, "personal co-op reward toast")
 	check(fin and fin.Result == "Halo" and fin.Rewarded[f.H1] == 20 and fin.Info and fin.Info.Mode == "Coop" and fin.Info.Success == true
@@ -1070,6 +1078,13 @@ runGroup("goose-modes", function()
 	check(v.Gold[v.H1] == select(1, reward(2, "Halo", true, nil)) and v.Gold[v.R1] == select(1, reward(2, "Horns", false, nil)),
 		"versus pays 100% / 40%", show({ v.Gold[v.H1], v.Gold[v.R1] }))
 	check(#v.War == 1 and v.War[1][1] == "Halo" and v.War[1][2] == G.WinWarPoints, "versus win gives war points", show(v.War))
+	local vh, vr
+	for _, e in v.Paid do
+		if e.P == v.H1 then vh = e.Info elseif e.P == v.R1 then vr = e.Info end
+	end
+	check(#v.Paid == 2 and vh and vh.Won == true and vh.Mode == "Versus" and vh.Level == 2 and vh.Gold == v.Gold[v.H1] and vh.XP == v.XP[v.H1]
+		and vr and vr.Won == false and vr.Mode == "Versus" and vr.Gold == v.Gold[v.R1], "GooseRewarded in a versus round: the winner won, the loser did not, both with their pay",
+		show({ vh, vr }))
 	-- a rival arriving during co-op pulls 0 and is told once
 	local c = gooseWorld({ { "H1", "Halo", 1 } })
 	c:Begin()

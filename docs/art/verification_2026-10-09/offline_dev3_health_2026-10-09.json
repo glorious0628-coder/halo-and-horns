@@ -1,0 +1,2407 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 147,
+  "failedChecks": 0,
+  "namedChecks": 147,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "config: on, HaloHorns_Health_v1, flush 600 s, read 24 h (max 72), 40 keys",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the four level bands (the analytics cut)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "alert starter numbers: 60 player-min, 2x, 3 baseline hours, goose 10 rounds / 75%, quiet 3 h",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "four players joined = Joins 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "gold in per source (whole gold, odd source names cleaned, zero / negative / non-string ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "gold out per sink (a zero is nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "gold in / out per level band of the player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "XP per level band (whole XP, zero / negative ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "a minute: one player-minute per player in its band, Peak = 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "a player left: 3 counted, Peak stays the larger",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "goose rounds: versus by winner, co-op with its wins, nobody eligible, no info = versus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "goose pay: paid / won / not won / rare, gold and XP sums (bad payloads ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "goose pay per level band of the payee's level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "plunder sacks: count and gold per outcome (unknown outcomes ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "45 new sources: at most 40 keys + Other, nothing lost",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "a document carries its version",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level bands and key cleaning",
+      "check": "XP bands at the edges: 9 | 10, 24 | 25, 49 | 50, 1000 and above, Lv 0, fractions floor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level bands and key cleaning",
+      "check": "a source name is cut to 24 letters; nothing left after cleaning = Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level bands and key cleaning",
+      "check": "45 pass ids: 40 + Other, no view lost",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level bands and key cleaning",
+      "check": "a player with no Level attribute counts as level 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level bands and key cleaning",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level bands and key cleaning",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing leaks: no names, no ids",
+      "check": "the saved document holds no name and no user id",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing leaks: no names, no ids",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing leaks: no names, no ids",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "nothing + nothing = just the version",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "numbers are added, Peak takes the larger one, the version stays 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "Peak: the older larger value stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "the inputs are not changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "keys cleaned, NaN / infinite / over 1e12 / text / non-string keys dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "three levels deep at most",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "a sums table of a document holds at most 40 keys + Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "non-number values are not sums",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "39 keys + Other: the 40th key still fits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "40 keys + Other: the 41st goes to Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "nothing is written before the flush (sums stay in memory)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "a flush succeeds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "after a flush nothing is pending",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "a flush with nothing new writes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "a second flush adds to the same document; this server is still counted once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "a new UTC hour is a new document (this server counted in it too); the old hour is not touched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "ReadRows: oldest hour first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "ReadRows(1) is the current hour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "merged with another server's sums (Servers 2 + 1, Peak the larger, the rest added)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "a failed write: false, a warning, nothing saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "the failed sums are still pending (plus what came since)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "the next flush succeeds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "saved exactly once: 105 gold, this server counted once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "two failures in a row, then it lands once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "an event during the write is not in this document",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "... it goes in the next flush",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "fail, new event, flush: 11 gold in total",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "a write that fails while an event comes in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "both the old sums and the new event are pending",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "saved once: 13 gold, this server counted once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: other servers, failures, events during a write",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: store names",
+      "check": "Studio writes its own _STUDIO copy only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: store names",
+      "check": "a Beta place writes HaloHorns_Health_v1_Beta (Config.StoreName)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: store names",
+      "check": "a Live place writes HaloHorns_Health_v1_Live",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: store names",
+      "check": "the dev place keeps the plain name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: store names",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flush: store names",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "no write yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "the next flush wait is 0.5x..1.5x of 600 s (servers do not all write together)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "the minute loop waits 60 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "20 more waits: all 300..900 s and not all the same",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "the flush loop writes after its random wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "when the server closes, the rest is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "Config.Health.Enabled = false: nothing is recorded, nothing is bound",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "no TelemetryService in the registry: everything else still works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start: loops, close, switch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "ReadRows reads the last hours, oldest first, skipping hours with no document",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "header: hours, server-hours, joins, the most ready on one server (Korea time)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "player-hours per band (30 minutes each)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "XP per player-hour per band",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "gold in / out with the biggest sources and the net",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "gold in per player-hour per band",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "goose line: rounds, winners, pay, the average pay per paid player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "goose pay per level band",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "plunder amounts per outcome",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "pass funnel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "no alert for a quiet hour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "no rows: a plain line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "report (end to end)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "3x XP per player-hour: one SURGE line (the quiet check is not triggered)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "3x gold in: a SURGE line for gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "exactly 2.0x flags (>= SurgeRatio)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "1.99x does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "only 2 baseline hours: no alert (not enough to compare)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "the newest hour has 30 player-minutes: skipped, the one before is judged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "an hour still running is not judged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "thin hours are not a baseline (only 1 qualifying earlier hour)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "just under 3 quiet hours: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "3 quiet hours: a QUIET line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "no rows: no alert lines (the report says no data)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "one side wins 9 of 10: a GOOSE line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "8 of 12 (67%): fine",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "7 rounds: too few to judge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "Horns can be the lopsided side too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "ties are not decided rounds: 9 of 10 decided still flags",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "ties do not count as a win for anyone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "3 baseline hours, 60 player-minutes each, the hour ends exactly now: judged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "one second before the hour ends: not judged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "59 player-minutes is not a baseline hour (2 left)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "exactly 75% of 12 decided rounds flags",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "exactly 10 decided rounds are enough",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "9 decided rounds are too few",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "net can be negative; the biggest source first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "the report lists the alert lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "alerts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "no value: this server's unsaved sums",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "after the flush nothing is unsaved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "'stored' reads this environment's saved documents",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "'stored:5' reads the last 5 hours",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "hours are capped at 72",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "no hours: 24",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "0 hours is read as 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "'live' reads the plain store name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "reading live never writes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "ReadRows repairs a document (cleaned keys, no huge numbers, no text)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "a read that fails on its second hour: the first hour's row and the error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "... and a report from it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "a failed read: the rows so far and a note",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "an unreadable value falls back to this server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Debug (the Studio command)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ProgressionService.AddXP fires XPEarned",
+      "check": "AddXP fires XPEarned(player, the XP really added)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ProgressionService.AddXP fires XPEarned",
+      "check": "zero and negative XP fire nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ProgressionService.AddXP fires XPEarned",
+      "check": "the amount after the cap is what is fired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ProgressionService.AddXP fires XPEarned",
+      "check": "a level-up still fires it once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ProgressionService.AddXP fires XPEarned",
+      "check": "the XP of the real AddXP lands in the player's band",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ProgressionService.AddXP fires XPEarned",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ProgressionService.AddXP fires XPEarned",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 31,
+  "staticFailures": [],
+  "mutations": {
+    "total": 121,
+    "applied": 121,
+    "caught": 121,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "an hour is a day",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: 'live' reads the plain store name",
+          "Debug (the Studio command) :: ... and a report from it",
+          "Debug (the Studio command) :: ReadRows repairs a document (cleaned keys, no huge numbers, no text)",
+          "Debug (the Studio command) :: a read that fails on its second hour: the first hour's row and the error",
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "flush :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "the hour is missing from the key",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: 'live' reads the plain store name",
+          "Debug (the Studio command) :: 'stored' reads this environment's saved documents",
+          "Debug (the Studio command) :: ReadRows repairs a document (cleaned keys, no huge numbers, no text)",
+          "Debug (the Studio command) :: a read that fails on its second hour: the first hour's row and the error",
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "flush :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "the report time is not Korea time",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3 quiet hours: a QUIET line",
+          "report (end to end) :: header: hours, server-hours, joins, the most ready on one server (Korea time)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the band edge belongs to the next band",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: XP bands at the edges: 9 | 10, 24 | 25, 49 | 50, 1000 and above, Lv 0, fractions floor",
+          "level bands and key cleaning :: a player with no Level attribute counts as level 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a level is never floored",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: XP bands at the edges: 9 | 10, 24 | 25, 49 | 50, 1000 and above, Lv 0, fractions floor",
+          "level bands and key cleaning :: a player with no Level attribute counts as level 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the last band is the first",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: XP bands at the edges: 9 | 10, 24 | 25, 49 | 50, 1000 and above, Lv 0, fractions floor",
+          "level bands and key cleaning :: a player with no Level attribute counts as level 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "keys are not cleaned",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: ReadRows repairs a document (cleaned keys, no huge numbers, no text)",
+          "level bands and key cleaning :: a source name is cut to 24 letters; nothing left after cleaning = Other",
+          "merge :: keys cleaned, NaN / infinite / over 1e12 / text / non-string keys dropped",
+          "recorders :: 45 new sources: at most 40 keys + Other, nothing lost",
+          "recorders :: gold in per source (whole gold, odd source names cleaned, zero / negative / non-string ignored)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "keys are not cut",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: a source name is cut to 24 letters; nothing left after cleaning = Other"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an empty key stays empty",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: a source name is cut to 24 letters; nothing left after cleaning = Other"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the cap counts Other too",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "merge :: 39 keys + Other: the 40th key still fits",
+          "merge :: 40 keys + Other: the 41st goes to Other"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a player with no level is level 99",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: a player with no Level attribute counts as level 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a join counts twice",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "flush :: a second flush adds to the same document; this server is still counted once",
+          "flush: other servers, failures, events during a write :: merged with another server's sums (Servers 2 + 1, Peak the larger, the rest added)",
+          "flush: other servers, failures, events during a write :: saved exactly once: 105 gold, this server counted once",
+          "recorders :: four players joined = Joins 4",
+          "report (end to end) :: ReadRows reads the last hours, oldest first, skipping hours with no document"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "a minute counts every player in band 1",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: a minute: one player-minute per player in its band, Peak = 4",
+          "recorders :: a player left: 3 counted, Peak stays the larger",
+          "report (end to end) :: XP per player-hour per band",
+          "report (end to end) :: gold in per player-hour per band",
+          "report (end to end) :: player-hours per band (30 minutes each)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Peak is the last count, not the most",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: a player left: 3 counted, Peak stays the larger"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a zero gold is a key",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: gold in per source (whole gold, odd source names cleaned, zero / negative / non-string ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gold in is not floored",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: 45 new sources: at most 40 keys + Other, nothing lost",
+          "recorders :: gold in / out per level band of the player",
+          "recorders :: gold in per source (whole gold, odd source names cleaned, zero / negative / non-string ignored)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "gold in has no band",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: gold in / out per level band of the player",
+          "report (end to end) :: gold in per player-hour per band"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gold out is counted as in",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: group ran to the end without a Lua error",
+          "recorders :: gold in per source (whole gold, odd source names cleaned, zero / negative / non-string ignored)",
+          "recorders :: group ran to the end without a Lua error",
+          "report (end to end) :: gold in / out with the biggest sources and the net"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "gold out has no band",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: gold in / out per level band of the player"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a non-string sink is counted",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: gold out per sink (a zero is nothing)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "XP goes to band 1",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: XP bands at the edges: 9 | 10, 24 | 25, 49 | 50, 1000 and above, Lv 0, fractions floor",
+          "level bands and key cleaning :: a player with no Level attribute counts as level 1",
+          "recorders :: XP per level band (whole XP, zero / negative ignored)",
+          "report (end to end) :: XP per player-hour per band"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "XP is not floored",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: XP per level band (whole XP, zero / negative ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a zero XP is a key",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: XP per level band (whole XP, zero / negative ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "goose: the winners are swapped",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose rounds: versus by winner, co-op with its wins, nobody eligible, no info = versus",
+          "report (end to end) :: goose line: rounds, winners, pay, the average pay per paid player"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "goose: a tie is a Halo win",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose rounds: versus by winner, co-op with its wins, nobody eligible, no info = versus"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "goose: nobody-eligible rounds are versus",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose rounds: versus by winner, co-op with its wins, nobody eligible, no info = versus"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "goose: every co-op round is won",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose rounds: versus by winner, co-op with its wins, nobody eligible, no info = versus"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "goose: co-op rounds are not counted",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose rounds: versus by winner, co-op with its wins, nobody eligible, no info = versus"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "goose: rounds are not counted",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose rounds: versus by winner, co-op with its wins, nobody eligible, no info = versus",
+          "report (end to end) :: goose line: rounds, winners, pay, the average pay per paid player"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "goose: lost and won swapped",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose pay: paid / won / not won / rare, gold and XP sums (bad payloads ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "goose: every pay is rare",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose pay: paid / won / not won / rare, gold and XP sums (bad payloads ignored)",
+          "report (end to end) :: goose line: rounds, winners, pay, the average pay per paid player"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "goose: gold is not floored",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose pay per level band of the payee's level",
+          "recorders :: goose pay: paid / won / not won / rare, gold and XP sums (bad payloads ignored)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "goose: the band is the first one",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose pay per level band of the payee's level",
+          "report (end to end) :: goose pay per level band"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "goose: a bad payload is a pay",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose pay per level band of the payee's level",
+          "recorders :: goose pay: paid / won / not won / rare, gold and XP sums (bad payloads ignored)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "plunder: returned sacks are lost",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: plunder sacks: count and gold per outcome (unknown outcomes ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "plunder: an unknown outcome counts as paid",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: plunder sacks: count and gold per outcome (unknown outcomes ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "plunder: gold is not floored",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: plunder sacks: count and gold per outcome (unknown outcomes ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pass: a view is a prompt",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: 45 pass ids: 40 + Other, no view lost",
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+          "report (end to end) :: pass funnel"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "pass: no prompts",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+          "report (end to end) :: pass funnel"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pass: a number is a pass id",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pass: any kind",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "merge: Peak is added",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush: other servers, failures, events during a write :: merged with another server's sums (Servers 2 + 1, Peak the larger, the rest added)",
+          "merge :: Peak: the older larger value stays",
+          "merge :: numbers are added, Peak takes the larger one, the version stays 1"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "merge: huge numbers pass",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: ReadRows repairs a document (cleaned keys, no huge numbers, no text)",
+          "merge :: keys cleaned, NaN / infinite / over 1e12 / text / non-string keys dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "merge: non-string keys pass",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "merge :: keys cleaned, NaN / infinite / over 1e12 / text / non-string keys dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "merge: any depth",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "merge :: three levels deep at most"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "merge: no key cap",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: 45 pass ids: 40 + Other, no view lost",
+          "merge :: 40 keys + Other: the 41st goes to Other",
+          "merge :: a sums table of a document holds at most 40 keys + Other",
+          "recorders :: 45 new sources: at most 40 keys + Other, nothing lost"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "merge: no version",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: ReadRows repairs a document (cleaned keys, no huge numbers, no text)",
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "merge :: nothing + nothing = just the version",
+          "recorders :: a document carries its version"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "merge: text values are sums",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: group ran to the end without a Lua error",
+          "merge :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "flush: Studio writes the real store",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: 'stored' reads this environment's saved documents",
+          "Debug (the Studio command) :: reading live never writes",
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "flush :: group ran to the end without a Lua error",
+          "flush: other servers, failures, events during a write :: a failed write: false, a warning, nothing saved",
+          "flush: other servers, failures, events during a write :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "flush: no environment in the store name",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush: store names :: a Beta place writes HaloHorns_Health_v1_Beta (Config.StoreName)",
+          "flush: store names :: a Live place writes HaloHorns_Health_v1_Live"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "flush: servers are never counted",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "flush :: a new UTC hour is a new document (this server counted in it too); the old hour is not touched",
+          "flush :: a second flush adds to the same document; this server is still counted once",
+          "flush: other servers, failures, events during a write :: merged with another server's sums (Servers 2 + 1, Peak the larger, the rest added)",
+          "flush: other servers, failures, events during a write :: saved exactly once: 105 gold, this server counted once",
+          "flush: other servers, failures, events during a write :: saved once: 13 gold, this server counted once"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "flush: a server is counted at every flush",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: a second flush adds to the same document; this server is still counted once",
+          "flush: other servers, failures, events during a write :: two failures in a row, then it lands once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "flush: sums stay after a write",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: after the flush nothing is unsaved",
+          "flush :: a flush with nothing new writes nothing",
+          "flush :: a second flush adds to the same document; this server is still counted once",
+          "flush :: after a flush nothing is pending",
+          "flush: other servers, failures, events during a write :: ... it goes in the next flush",
+          "flush: other servers, failures, events during a write :: an event during the write is not in this document"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "flush: a failed write loses the sums",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush: other servers, failures, events during a write :: fail, new event, flush: 11 gold in total",
+          "flush: other servers, failures, events during a write :: group ran to the end without a Lua error",
+          "flush: other servers, failures, events during a write :: saved exactly once: 105 gold, this server counted once",
+          "flush: other servers, failures, events during a write :: the failed sums are still pending (plus what came since)",
+          "flush: other servers, failures, events during a write :: two failures in a row, then it lands once"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "flush: the news since a failure are lost",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush: other servers, failures, events during a write :: both the old sums and the new event are pending",
+          "flush: other servers, failures, events during a write :: saved once: 13 gold, this server counted once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "flush: a failure is reported as success",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush: other servers, failures, events during a write :: a failed write: false, a warning, nothing saved",
+          "flush: other servers, failures, events during a write :: a write that fails while an event comes in"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "flush: no warning on a failure",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush: other servers, failures, events during a write :: a failed write: false, a warning, nothing saved"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "flush: the document is overwritten",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: a second flush adds to the same document; this server is still counted once",
+          "flush: other servers, failures, events during a write :: ... it goes in the next flush",
+          "flush: other servers, failures, events during a write :: merged with another server's sums (Servers 2 + 1, Peak the larger, the rest added)",
+          "flush: other servers, failures, events during a write :: two failures in a row, then it lands once",
+          "start: loops, close, switch :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "flush: empty hours are written",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: a flush with nothing new writes nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "read: live reads the Studio copy",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: 'live' reads the plain store name"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "read: no hour cap",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: hours are capped at 72"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "read: zero hours read nothing",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: 0 hours is read as 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "read: newest first",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: ... and a report from it",
+          "Debug (the Studio command) :: a read that fails on its second hour: the first hour's row and the error",
+          "flush :: ReadRows: oldest hour first"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "read: the default is 6 hours",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: no hours: 24"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "read: a failed read throws the rows away",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: ... and a report from it",
+          "Debug (the Studio command) :: a read that fails on its second hour: the first hour's row and the error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "read: a document is not repaired",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: ReadRows repairs a document (cleaned keys, no huge numbers, no text)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: quiet needs 4 hours",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3 quiet hours: a QUIET line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: an hour still running is judged",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: an hour still running is not judged",
+          "alerts :: one second before the hour ends: not judged"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "alerts: the end of the hour is not full yet",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3 baseline hours, 60 player-minutes each, the hour ends exactly now: judged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: 60 player-minutes are not enough",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3 baseline hours, 60 player-minutes each, the hour ends exactly now: judged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: thin hours are a baseline",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 59 player-minutes is not a baseline hour (2 left)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: the newest hour may be thin",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: the newest hour has 30 player-minutes: skipped, the one before is judged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: no baseline needed",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 59 player-minutes is not a baseline hour (2 left)",
+          "alerts :: only 2 baseline hours: no alert (not enough to compare)",
+          "alerts :: thin hours are not a baseline (only 1 qualifying earlier hour)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "alerts: one more baseline hour needed",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3 baseline hours, 60 player-minutes each, the hour ends exactly now: judged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: exactly 2x does not flag",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: exactly 2.0x flags (>= SurgeRatio)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: 1.5x flags",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 1.99x does not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: rate per minute, not per hour",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3x XP per player-hour: one SURGE line (the quiet check is not triggered)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: the goose needs 11 rounds",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: exactly 10 decided rounds are enough",
+          "alerts :: one side wins 9 of 10: a GOOSE line",
+          "alerts :: the report lists the alert lines",
+          "alerts :: ties are not decided rounds: 9 of 10 decided still flags"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "alerts: 75% is not lopsided",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: exactly 75% of 12 decided rounds flags"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: ties count against the winner",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: ties are not decided rounds: 9 of 10 decided still flags"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: the lopsided side is always Halo",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: Horns can be the lopsided side too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "alerts: gold surges use the XP",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3 baseline hours, 60 player-minutes each, the hour ends exactly now: judged",
+          "alerts :: 3x XP per player-hour: one SURGE line (the quiet check is not triggered)",
+          "alerts :: 3x gold in: a SURGE line for gold",
+          "alerts :: exactly 2.0x flags (>= SurgeRatio)",
+          "alerts :: the newest hour has 30 player-minutes: skipped, the one before is judged"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "text: the biggest source is last",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: net can be negative; the biggest source first",
+          "report (end to end) :: gold in / out with the biggest sources and the net"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "text: the net is always plus",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: net can be negative; the biggest source first"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text: the net is in versus out",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: net can be negative; the biggest source first",
+          "report (end to end) :: gold in / out with the biggest sources and the net"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "text: player-hours are minutes",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "report (end to end) :: player-hours per band (30 minutes each)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text: goose pay is the sum, not the average",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "report (end to end) :: goose line: rounds, winners, pay, the average pay per paid player"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text: plunder average over the wrong count",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "report (end to end) :: plunder amounts per outcome"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text: no alert lines",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: the report lists the alert lines"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text: the pending label is stored",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: an unreadable value falls back to this server",
+          "Debug (the Studio command) :: no value: this server's unsaved sums"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "text: a bad value reads the live store",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: an unreadable value falls back to this server",
+          "Debug (the Studio command) :: no value: this server's unsaved sums"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "text: the read failure is not shown",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: a failed read: the rows so far and a note"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: no join count",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "flush :: a second flush adds to the same document; this server is still counted once",
+          "flush: other servers, failures, events during a write :: merged with another server's sums (Servers 2 + 1, Peak the larger, the rest added)",
+          "flush: other servers, failures, events during a write :: saved exactly once: 105 gold, this server counted once",
+          "flush: store names :: a Beta place writes HaloHorns_Health_v1_Beta (Config.StoreName)",
+          "recorders :: four players joined = Joins 4"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "start: no gold in",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: 'stored' reads this environment's saved documents",
+          "Debug (the Studio command) :: no value: this server's unsaved sums",
+          "flush :: group ran to the end without a Lua error",
+          "flush: other servers, failures, events during a write :: group ran to the end without a Lua error",
+          "flush: other servers, failures, events during a write :: merged with another server's sums (Servers 2 + 1, Peak the larger, the rest added)",
+          "level bands and key cleaning :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "start: no gold out",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: group ran to the end without a Lua error",
+          "recorders :: group ran to the end without a Lua error",
+          "report (end to end) :: gold in / out with the biggest sources and the net"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "start: no XP",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: XP bands at the edges: 9 | 10, 24 | 25, 49 | 50, 1000 and above, Lv 0, fractions floor",
+          "level bands and key cleaning :: group ran to the end without a Lua error",
+          "recorders :: group ran to the end without a Lua error",
+          "report (end to end) :: XP per player-hour per band"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "start: no goose rounds",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: group ran to the end without a Lua error",
+          "report (end to end) :: goose line: rounds, winners, pay, the average pay per paid player"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: no goose pay",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: goose pay: paid / won / not won / rare, gold and XP sums (bad payloads ignored)",
+          "recorders :: group ran to the end without a Lua error",
+          "report (end to end) :: goose line: rounds, winners, pay, the average pay per paid player",
+          "report (end to end) :: goose pay per level band"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "start: no plunder",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: group ran to the end without a Lua error",
+          "report (end to end) :: plunder amounts per outcome"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: no pass views",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level bands and key cleaning :: group ran to the end without a Lua error",
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+          "report (end to end) :: pass funnel"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "start: no bought passes",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+          "report (end to end) :: pass funnel"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: no minute loop",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flush :: group ran to the end without a Lua error",
+          "recorders :: group ran to the end without a Lua error",
+          "report (end to end) :: XP per player-hour per band",
+          "report (end to end) :: gold in per player-hour per band",
+          "report (end to end) :: header: hours, server-hours, joins, the most ready on one server (Korea time)",
+          "report (end to end) :: player-hours per band (30 minutes each)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "start: the minute loop waits 10",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start: loops, close, switch :: the minute loop waits 60 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: every server writes at once",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start: loops, close, switch :: 20 more waits: all 300..900 s and not all the same"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: the wait is 10x",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start: loops, close, switch :: 20 more waits: all 300..900 s and not all the same",
+          "start: loops, close, switch :: the next flush wait is 0.5x..1.5x of 600 s (servers do not all write together)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: no flush loop",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start: loops, close, switch :: the flush loop writes after its random wait"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: no flush at the close",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start: loops, close, switch :: when the server closes, the rest is saved"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: the switch is ignored",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start: loops, close, switch :: Config.Health.Enabled = false: nothing is recorded, nothing is bound"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: another store",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: 'live' reads the plain store name",
+          "Debug (the Studio command) :: group ran to the end without a Lua error",
+          "config :: config: on, HaloHorns_Health_v1, flush 600 s, read 24 h (max 72), 40 keys",
+          "flush :: ONE document for the UTC hour, key H<YYYYMMDDHH> in the Studio copy: sums and this server counted once",
+          "flush :: group ran to the end without a Lua error",
+          "flush: other servers, failures, events during a write :: a failed write: false, a warning, nothing saved"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "Config: flush every 60 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: config: on, HaloHorns_Health_v1, flush 600 s, read 24 h (max 72), 40 keys",
+          "start: loops, close, switch :: 20 more waits: all 300..900 s and not all the same",
+          "start: loops, close, switch :: the next flush wait is 0.5x..1.5x of 600 s (servers do not all write together)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: read 6 hours",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Debug (the Studio command) :: no hours: 24",
+          "config :: config: on, HaloHorns_Health_v1, flush 600 s, read 24 h (max 72), 40 keys"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: 10 keys",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: config: on, HaloHorns_Health_v1, flush 600 s, read 24 h (max 72), 40 keys",
+          "level bands and key cleaning :: 45 pass ids: 40 + Other, no view lost",
+          "merge :: 39 keys + Other: the 40th key still fits",
+          "merge :: 40 keys + Other: the 41st goes to Other",
+          "recorders :: 45 new sources: at most 40 keys + Other, nothing lost",
+          "recorders :: goose pay: paid / won / not won / rare, gold and XP sums (bad payloads ignored)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Config: the first band ends at 10",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the four level bands (the analytics cut)",
+          "level bands and key cleaning :: XP bands at the edges: 9 | 10, 24 | 25, 49 | 50, 1000 and above, Lv 0, fractions floor",
+          "level bands and key cleaning :: a player with no Level attribute counts as level 1"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: no top band cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the four level bands (the analytics cut)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: the surge ratio is 3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: exactly 2.0x flags (>= SurgeRatio)",
+          "config :: alert starter numbers: 60 player-min, 2x, 3 baseline hours, goose 10 rounds / 75%, quiet 3 h"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: 2 baseline hours",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 59 player-minutes is not a baseline hour (2 left)",
+          "alerts :: only 2 baseline hours: no alert (not enough to compare)",
+          "config :: alert starter numbers: 60 player-min, 2x, 3 baseline hours, goose 10 rounds / 75%, quiet 3 h"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: 30 player-minutes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 59 player-minutes is not a baseline hour (2 left)",
+          "alerts :: the newest hour has 30 player-minutes: skipped, the one before is judged",
+          "config :: alert starter numbers: 60 player-min, 2x, 3 baseline hours, goose 10 rounds / 75%, quiet 3 h"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: goose skew 90%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: group ran to the end without a Lua error",
+          "config :: alert starter numbers: 60 player-min, 2x, 3 baseline hours, goose 10 rounds / 75%, quiet 3 h"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: quiet after 6 hours",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "alerts :: 3 quiet hours: a QUIET line",
+          "config :: alert starter numbers: 60 player-min, 2x, 3 baseline hours, goose 10 rounds / 75%, quiet 3 h"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "XP is never fired",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ProgressionService.AddXP fires XPEarned :: AddXP fires XPEarned(player, the XP really added)",
+          "ProgressionService.AddXP fires XPEarned :: a level-up still fires it once",
+          "ProgressionService.AddXP fires XPEarned :: group ran to the end without a Lua error",
+          "ProgressionService.AddXP fires XPEarned :: the amount after the cap is what is fired",
+          "ProgressionService.AddXP fires XPEarned :: zero and negative XP fire nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "XP is fired double",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ProgressionService.AddXP fires XPEarned :: AddXP fires XPEarned(player, the XP really added)",
+          "ProgressionService.AddXP fires XPEarned :: the XP of the real AddXP lands in the player's band",
+          "ProgressionService.AddXP fires XPEarned :: the amount after the cap is what is fired"
+        ],
+        "newFailingCount": 3
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "0742b53aedb434aa3c1a5e61323913391929b5e4c76d065ac31f2fb980fa73d3",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/HealthService.luau": "ad2e18db9559659eb59d6fe421dc06cbe5069e23347334c6a2afeb8662eadaeb",
+    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
+  },
+  "fixtureSHA256": "da1946ba1c92b5b137af907b89f9a39cc976c4f4f2114fdea091571cd8680a08",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "HealthService: read-only observer. Per UTC hour it sums joins, player-minutes per level band, the most ready players on one server, gold in / out per source / sink and per band, XP per band (ProgressionService.XPEarned), the goose (rounds, Halo / Horns wins, ties, co-op, nobody paid; pay per player: GooseService.GooseRewarded) , plunder sacks (count / gold per outcome), pass view -> prompt -> bought. Sums tables hold at most 40 keys (+ Other), keys are cleaned, no name or id. Every FlushSeconds (x0.5..1.5) and at the close the unsaved sums are merged (UpdateAsync) into ONE document per UTC hour 'H<YYYYMMDDHH>' in Config.StoreName('HaloHorns_Health_v1') (Studio: _STUDIO); numbers added, Peak the larger, Servers counted once per server and hour; a failed write keeps the sums for the next flush; events during a write go to the next. DebugCommand('Health'[, 'stored' | 'live'[:hours]]) prints totals, rates per player-hour and ALERT lines (QUIET, SURGE of XP / gold per player-hour vs the earlier hours, GOOSE lopsided).",
+  "limitations": "Real DataStore limits and throttling are not simulated (one UpdateAsync per hour per server per flush is far under them); the Studio command (DebugCommand) is wired by source (static). The alert numbers are starter values (Config.Health.Alerts) to tune after the first real tests."
+}

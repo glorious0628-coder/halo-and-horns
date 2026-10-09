@@ -63,6 +63,8 @@ local PROCEDURAL_PARTS = {
 
 local GooseService = {}
 GooseService.GooseFinished = Util.Signal.new() -- (result: "Halo" | "Horns" | "Tie", counts: { [Player]: number })
+-- HealthService (2026-10-09): one paid player of a finished goose: (player, { Won, Rare, Gold, XP, Level, Mode = "Versus" | "Coop" })
+GooseService.GooseRewarded = Util.Signal.new()
 
 local S = nil
 local gameState = nil
@@ -597,6 +599,8 @@ local function rewardPlayer(p, result, f, share)
 		end
 		Net.Notify(p, string.format(Config.Text.GooseCheer, math.floor(cheer)), "info")
 	end
+	GooseService.GooseRewarded:Fire(p, { Won = won, Rare = rare == true, Gold = gold, XP = xp, Level = level,
+		Mode = share ~= nil and "Coop" or "Versus" })
 end
 
 local function finish()

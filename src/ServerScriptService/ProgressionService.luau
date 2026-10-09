@@ -19,6 +19,8 @@ M.GoldEarned = Util.Signal.new() -- (player, amount, source)
 -- not yield
 M.GoldSpent = Util.Signal.new()
 M.LeveledUp = Util.Signal.new() -- (player, newLevel)
+-- HealthService (2026-10-09): the XP AddXP really added (after the pass and the cap): (player, amount). Handlers must not yield
+M.XPEarned = Util.Signal.new()
 M.Rebirthed = Util.Signal.new() -- (player, rebirths, { From, To, Bonus, Mark })
 M.LevelReset = Util.Signal.new() -- (player) CR-M6: free class change dropped the player to Lv1 (QuestService remakes extras)
 
@@ -219,6 +221,7 @@ function M.AddXP(player, amount, cap)
 		})
 		M.LeveledUp:Fire(player, level)
 	end
+	M.XPEarned:Fire(player, amount)
 	return amount
 end
 

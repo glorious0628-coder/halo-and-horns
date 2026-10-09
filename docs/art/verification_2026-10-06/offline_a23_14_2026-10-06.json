@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3945,
+  "checks": 3947,
   "failedChecks": 0,
-  "namedChecks": 201,
+  "namedChecks": 203,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -813,6 +813,12 @@
     },
     {
       "group": "goose-coop",
+      "check": "GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
       "check": "co-op success gives no cheer star",
       "pass": 1,
       "fail": 0
@@ -1023,6 +1029,12 @@
     },
     {
       "group": "goose-modes",
+      "check": "GooseRewarded in a versus round: the winner won, the loser did not, both with their pay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
       "check": "a rival who arrives during co-op pulls 0",
       "pass": 1,
       "fail": 0
@@ -1223,9 +1235,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 45,
-    "applied": 45,
-    "caught": 45,
+    "total": 48,
+    "applied": 48,
+    "caught": 48,
     "results": [
       {
         "mutation": "A23-71: a skill daily before the first skill",
@@ -1497,13 +1509,48 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "goose-coop :: GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
           "goose-coop :: Horns co-op success: 70%, no war points",
           "goose-coop :: co-op success pays 70% of the winner reward",
           "goose-coop :: personal co-op reward toast",
           "goose-coop-rules :: exactly 3 manual hits are paid",
           "goose-modes :: rival left: 70%, no war points"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the pay is not reported (HealthService)",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
+          "goose-modes :: GooseRewarded in a versus round: the winner won, the loser did not, both with their pay"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the pay report says Versus for co-op",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the pay report always says won",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-modes :: GooseRewarded in a versus round: the winner won, the loser did not, both with their pay"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "co-op gives war points",
@@ -1564,12 +1611,12 @@
         "newFailingChecks": [
           "goose-coop :: 'gauge full' announced exactly once",
           "goose-coop :: GooseFinished('Halo', { H1 = 20 }, { Mode Coop, Success })",
+          "goose-coop :: GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
           "goose-coop :: Horns co-op success: 70%, no war points",
           "goose-coop :: co-op result line announced",
-          "goose-coop :: co-op start line announced (Halo: 함께 구조)",
-          "goose-coop :: co-op success gives no cheer star"
+          "goose-coop :: co-op start line announced (Halo: 함께 구조)"
         ],
-        "newFailingCount": 22
+        "newFailingCount": 23
       },
       {
         "mutation": "rival-left tug is a forced tie again",
@@ -1835,14 +1882,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "514b54609ee5a4c55e1f1ba2c56a8f544b7c1b8109a4460c7abaabf850c5a9b5",
-    "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
+    "src/ReplicatedStorage/Shared/Config.luau": "0742b53aedb434aa3c1a5e61323913391929b5e4c76d065ac31f2fb980fa73d3",
+    "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/QuestService.luau": "ae446675bd824b5750eb5198827e97becced66388ee5187b83bbc41e25d28fcf",
-    "src/ServerScriptService/GooseService.luau": "3567fcfcaa1e7a7277cab9088bfbeca0697e2e78089bacdcd627926bcc6f2539",
+    "src/ServerScriptService/GooseService.luau": "a256d44b3346a44f1e058de0f6ee6e55d582b7462fc9cfe74643883eb450a585",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005"
   },
-  "fixtureSHA256": "bd12273381e7e060ab22d4266bdee73a040a69132bb3b7a8d0fea65c3e56696f",
+  "fixtureSHA256": "6919ecb26d457dc07c12bf90b27ab2996c54735be533cee938489b377b5b1b99",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
