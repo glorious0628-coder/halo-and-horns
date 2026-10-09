@@ -128,6 +128,81 @@ local function hunterHere(key)
 	return false
 end
 
+------------------------------------------------------------------ defeat extras (J: Captain Clatter)
+-- the side share of the boss's damage (MonsterService rec.FactionDamage): { Halo = %, Horns = % } (whole numbers that
+-- add up to 100), nil when no side hit it
+local function shareOf(rec)
+	local d = type(rec.FactionDamage) == "table" and rec.FactionDamage or {}
+	local h, r = math.max(0, num(d.Halo)), math.max(0, num(d.Horns))
+	if h + r <= 0 then return nil end
+	local hp = math.floor(h * 100 / (h + r) + 0.5)
+	return { Halo = hp, Horns = 100 - hp }
+end
+
+-- one paid contributor's extras (Config.FieldBosses[key]): War points for the own side (WarService.AddPoints: None /
+-- Neutral get none), Kills +1 and the Titles it reaches, the Weekly item (data.FieldBoss[key] = { Kills, Week, Owed }:
+-- the first kill opens a week's guarantee, every later week adds one, banked up to Max; a kill takes one)
+local function extraOne(key, c, player)
+	if num(c.War) > 0 and S.WarService and type(S.WarService.AddPoints) == "function" then
+		local ok, err = pcall(S.WarService.AddPoints, player, math.floor(num(c.War)))
+		if not ok then warnThrottled("war", err) end
+	end
+	local data = S.PlayerService.GetData(player)
+	if type(data) ~= "table" then return end
+	if type(data.FieldBoss) ~= "table" then data.FieldBoss = {} end
+	local row = data.FieldBoss[key]
+	if type(row) ~= "table" then
+		row = {}
+		data.FieldBoss[key] = row
+	end
+	row.Kills = math.max(0, math.floor(num(row.Kills))) + 1
+	row.Week = math.max(0, math.floor(num(row.Week)))
+	row.Owed = math.max(0, math.floor(num(row.Owed)))
+	if type(c.Titles) == "table" and S.TitleService and type(S.TitleService.Grant) == "function" then
+		for at, id in c.Titles do
+			if type(at) == "number" and row.Kills >= at then
+				local ok, err = pcall(S.TitleService.Grant, player, id)
+				if not ok then warnThrottled("title", err) end
+			end
+		end
+	end
+	local W = c.Weekly
+	if type(W) ~= "table" or type(W.Item) ~= "string" then return end
+	local max = math.max(1, math.floor(num(W.Max, 1)))
+	local week = Config.WeekIndex(os.time())
+	if row.Week <= 0 then
+		row.Owed = math.min(max, row.Owed + 1)
+	elseif week > row.Week then
+		row.Owed = math.min(max, row.Owed + (week - row.Week))
+	end
+	row.Week = math.max(row.Week, week)
+	row.Owed = math.min(max, row.Owed) -- a broken save never banks more than Max
+	if row.Owed <= 0 then return end
+	local n = math.max(1, math.floor(num(W.N, 1)))
+	local ok, got = pcall(S.LootService.GrantItem, player, W.Item, n)
+	if not ok then
+		warnThrottled("weekly", got)
+		return
+	end
+	if num(got) < 1 then return end -- a full bag: the guarantee waits for the next kill
+	row.Owed -= 1
+	local item = Config.Loot.Items[W.Item]
+	local name = item and item.Name or W.Item
+	pcall(Net.Notify, player, n > 1 and string.format(Config.Loot.Text.GotN, name, n)
+		or string.format(Config.Loot.Text.Got, name), "reward")
+end
+
+local function payExtras(key, ids)
+	local c = cfg(key)
+	for _, id in ids do
+		local p = Players:GetPlayerByUserId(id)
+		if p then
+			local ok, err = pcall(extraOne, key, c, p)
+			if not ok then warnThrottled("extra_" .. key, err) end
+		end
+	end
+end
+
 ------------------------------------------------------------------ appear / finish
 -- spawns the boss at its spot; true when it appeared
 local function appear(key, now)
@@ -172,8 +247,10 @@ local function finish(key, defeated)
 		end
 		local root = rec.Root
 		local ok, err = pcall(Net.Fx, nil, "KingDefeat", { Key = key, Kind = rec.Kind,
-			Pos = root and typeof(root.Position) == "Vector3" and root.Position or nil, Contributors = ids })
+			Pos = root and typeof(root.Position) == "Vector3" and root.Position or nil, Contributors = ids,
+			Share = shareOf(rec) })
 		if not ok then warnThrottled("defeat", err) end
+		payExtras(key, ids)
 		FieldBossService.Defeated:Fire(key, rec.Kind, table.clone(ids), rec)
 	end
 	announce(key .. (defeated and "Defeat" or "Leave"))

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 120,
+  "checks": 129,
   "failedChecks": 0,
-  "namedChecks": 120,
+  "namedChecks": 128,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -15,7 +15,13 @@
     },
     {
       "group": "config",
-      "check": "only the King Slime (no other monster)",
+      "check": "every card kind has its Cards entry",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "only the field bosses (King Slime, Captain Clatter)",
       "pass": 1,
       "fail": 0
     },
@@ -81,6 +87,48 @@
     },
     {
       "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Captain Clatter's card",
+      "check": "(a manual swing finished Captain Clatter)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Captain Clatter's card",
+      "check": "his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Captain Clatter's card",
+      "check": "a full bag: the scroll paid at its Worth (300)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Captain Clatter's card",
+      "check": "his own HelpDone line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Captain Clatter's card",
+      "check": "Tickle: 300 bank gold and his TickleDone line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Captain Clatter's card",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Captain Clatter's card",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -732,9 +780,9 @@
   "staticChecks": 22,
   "staticFailures": [],
   "mutations": {
-    "total": 62,
-    "applied": 62,
-    "caught": 62,
+    "total": 64,
+    "applied": 64,
+    "caught": 64,
     "skipped": false,
     "results": [
       {
@@ -744,14 +792,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold",
           "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
           "manual hits and the window :: manual c gets a card, auto-only d does not",
           "manual presses :: a manual Q kill: a card",
-          "manual presses :: a manual Z kill: a card",
-          "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
-          "one card at a time :: group ran to the end without a Lua error"
+          "manual presses :: a manual Z kill: a card"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 11
       },
       {
         "mutation": "auto hits marked manual",
@@ -811,12 +859,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold",
           "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
           "one card at a time :: group ran to the end without a Lua error",
           "who gets a card :: a manual swing kill: one card (Id 1, SlimeKing, 10 s)",
           "who gets a card :: the kill is paid as before, info.Manual = true"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "an auto swing passes true",
@@ -859,14 +909,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold",
           "manual presses :: a manual Q kill: a card",
           "manual presses :: a manual Z kill: a card",
           "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
-          "one card at a time :: group ran to the end without a Lua error",
-          "who gets a card :: a manual swing kill: one card (Id 1, SlimeKing, 10 s)",
-          "who gets a card :: the kill is paid as before, info.Manual = true"
+          "one card at a time :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "Z always manual",
@@ -1067,12 +1117,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "Captain Clatter's card :: Tickle: 300 bank gold and his TickleDone line",
           "jelly full :: AddBankGold returning the added amount: that is shown",
           "picks :: FinisherEnd: Score -1, Gold 4",
           "picks :: Halo Tickle: +4 bank gold, Honor 5 -> 4 (A23-58)",
           "picks :: Tickle line + the off-side line (Honor -1)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "a full bag loses the rest",
@@ -1081,11 +1132,37 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "Captain Clatter's card :: a full bag: the scroll paid at its Worth (300)",
           "jelly full :: GrantItem failing: paid as gold, warned",
           "jelly full :: a full bag: all of it as gold (4)",
           "jelly full :: one room left: 1 Jelly + the other at its sell price (2 gold)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a scroll's full bag pays nothing (no Worth)",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: a full bag: the scroll paid at its Worth (300)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every boss gets the King Slime's card",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: Tickle: 300 bank gold and his TickleDone line",
+          "Captain Clatter's card :: a full bag: the scroll paid at its Worth (300)",
+          "Captain Clatter's card :: his own HelpDone line",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold"
+        ],
+        "newFailingCount": 4
       },
       {
         "mutation": "a GrantItem error is not caught",
@@ -1260,14 +1337,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
           "daily cap :: group ran to the end without a Lua error",
           "jelly full :: group ran to the end without a Lua error",
           "pick validation :: (and goes through after the gap)",
           "pick validation :: a pick right after another call (0.3 s) is dropped",
-          "pick validation :: picked once; a second pick is ignored",
-          "picks :: FinisherEnd says what happened"
+          "pick validation :: picked once; a second pick is ignored"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 14
       },
       {
         "mutation": "no Picked signal",
@@ -1319,14 +1396,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "Captain Clatter's card :: Tickle: 300 bank gold and his TickleDone line",
+          "Captain Clatter's card :: his own HelpDone line",
           "daily cap :: the 6th: no points line + 'No more points today'",
           "picks :: Halo Tickle at Honor 0: stays 0, the zero line",
           "picks :: Honor 10 -> 9 crosses a rank: the rank-down line",
-          "picks :: Horns Help: Infamy -1 + the off-side line",
-          "picks :: Tickle line + the off-side line (Honor -1)",
-          "picks :: one line: 'It hops home happy! · +Jelly ×2 · Honor +1'"
+          "picks :: Horns Help: Infamy -1 + the off-side line"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "the pick line plays QuestDone",
@@ -1513,11 +1590,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: only the King Slime (no other monster)",
+          "config :: every card kind has its Cards entry",
+          "config :: only the field bosses (King Slime, Captain Clatter)",
           "config :: the King Slime boss gives the card, the Slime Prince not",
           "who gets a card :: a manual Slime Prince kill: paid, no card"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "the card on the Slime Prince instead",
@@ -1526,14 +1604,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "config :: every card kind has its Cards entry",
           "config :: the King Slime boss gives the card, the Slime Prince not",
-          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
-          "manual hits and the window :: manual c gets a card, auto-only d does not",
-          "manual presses :: a manual Q kill: a card",
-          "manual presses :: a manual Z kill: a card",
-          "one card at a time :: a second king kill while the card is open: no new card (both kills paid)"
+          "daily cap :: the 6th Help: the Jelly, no point",
+          "jelly full :: AddBankGold returning the added amount: that is shown",
+          "jelly full :: GrantItem failing: paid as gold, warned"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 27
       },
       {
         "mutation": "cap 50",
@@ -1557,7 +1635,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8f8edd90eb574c1ccf3c2dd83559aab6061817cb78f9872f7002a983017ae35",
+    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
     "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
@@ -1569,11 +1647,11 @@
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
     "src/ServerScriptService/SkillService.luau": "4cf5a2e8efc95cb99cc3138db33135d6b49b5d6763cbca5a3ed880d621d16a48",
-    "src/ServerScriptService/MonsterService.luau": "d683c80d45eecf71b3d9e6a213e3dc91dc6b34a940755196c705dfc962a17457",
-    "src/ServerScriptService/FinisherService.luau": "319b78a3298eb9f41113ff72d95c93cfbdea57a4a146751b7146fed1e58c3709",
+    "src/ServerScriptService/MonsterService.luau": "c502f7ed18d6bc72967f0eb2976bc790273307a355427c466c06e93305c02614",
+    "src/ServerScriptService/FinisherService.luau": "3277e3f3d28ba253145ae37d03ae4f58175c560d4a23e07fd0b641c3564296ac",
     "src/ServerScriptService/ScoreBudget.luau": "74e102ea42f229668650f3a836e9a68f9d81a167868500852047f582c7d91e2f"
   },
-  "fixtureSHA256": "a6323dc7a4b2e4093453afee81a7fad0e558c21f99f3b1fb6ecba85e6e8db0a9",
+  "fixtureSHA256": "95d2fbaef2f8d33eebbbe4d599229356511becbc40f7d832d3fda6650b891211",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -56,8 +56,9 @@
   Tickle = { Gold = 4, Score = 0, Hint = "Zero" }, -- Hint = Score만으로 모자랄 때의 안내(아래)
 }
 ```
-- 글은 `Config.Finisher.Text`(공유 Config)에 있어요: `Title[카드 Kind]`(2026-10-09부터 보스 종류별 표: `Title.SlimeKing`), `Help`, `Tickle`, `Score`("Honor +1"), `ScoreDown`("Honor -1"),
-  `HintFull`, `HintZero`, `HintNeutral`.
+- 2026-10-09부터 보스마다 카드 데이터가 따로예요: `Config.Finisher.Cards[카드 Kind]` = `Help`·`Tickle`(선물)과
+  `Text`(`Title`, `Help`, `Tickle`, `HelpDone`, `TickleDone`). 공용 글은 `Config.Finisher.Text`: `Score`("Honor +1"),
+  `ScoreDown`("Honor -1"), `HintFull`, `HintZero`, `HintNeutral`. (Captain Clatter: `docs/design/captain_clatter_2026-10-09.md`)
 - **점수 힌트(반박 검토 2026-10-08):** 버튼마다 `Score`가 0이 아니면 `Score`(+는 `Score`, −는 `ScoreDown` 글)를 보여 주세요.
   0이면 버튼의 `Hint`를 보여 주세요.
   - `"Full"`: 내 편 버튼인데 오늘 점수(하루 5)를 다 썼어요 → `HintFull`.

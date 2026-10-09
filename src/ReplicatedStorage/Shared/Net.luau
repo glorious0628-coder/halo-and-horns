@@ -68,6 +68,7 @@ Net.GameStateDefaults = {
 	-- FieldBossService (게임성 개발 2): per Config.FieldBosses key; the King Slime boss of the meadow (NextAt in the past = due, waiting for
 	-- a hunter in the meadow; 0 = off)
 	SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0,
+	ClatterNextAt = 0, ClatterActive = false, ClatterEndsAt = 0, -- J Captain Clatter (the ruins)
 	-- RankingService (BB10): the current ranking week (Config.WeekIndex) and when it ends (Monday 00:00 KST, os.time)
 	RankWeekId = 0, RankWeekEndsAt = 0,
 	-- SettingsService (BB3 footer): false while this server runs without a DataStore (DataService memory mode)

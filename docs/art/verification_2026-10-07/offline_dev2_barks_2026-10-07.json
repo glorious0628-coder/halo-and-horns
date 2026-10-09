@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 130,
+  "checks": 138,
   "failedChecks": 0,
   "namedChecks": 78,
   "namedChecksFailing": 0,
@@ -40,25 +40,25 @@
     {
       "group": "config",
       "check": "a known moment: Spot",
-      "pass": 14,
+      "pass": 16,
       "fail": 0
     },
     {
       "group": "config",
       "check": "a known moment: Low",
-      "pass": 14,
+      "pass": 16,
       "fail": 0
     },
     {
       "group": "config",
       "check": "a known moment: Idle",
-      "pass": 14,
+      "pass": 16,
       "fail": 0
     },
     {
       "group": "config",
       "check": "a known moment: Hit",
-      "pass": 14,
+      "pass": 16,
       "fail": 0
     },
     {
@@ -890,11 +890,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
+    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/BarkService.luau": "41ea24e363ec7d3eba787f511a4083726437211eed96dc19653291cacc8bccb2",
-    "src/ServerScriptService/MonsterService.luau": "d683c80d45eecf71b3d9e6a213e3dc91dc6b34a940755196c705dfc962a17457",
-    "src/ServerScriptService/Main.server.luau": "5ca37d4ad1c7c0575ff9b1757cd8f3c1950501a2ece0d5f972e75d2e1f36338e"
+    "src/ServerScriptService/MonsterService.luau": "c502f7ed18d6bc72967f0eb2976bc790273307a355427c466c06e93305c02614",
+    "src/ServerScriptService/Main.server.luau": "b8a675aa27f7903fae2defa972720e8801f0d16b65fba8089983268edbf430a1"
   },
   "fixtureSHA256": "60b4e5242336d1c96fa0485f81d891b974191493a1c1d20ce67ad56a3f11e9ef",
   "sourcesChangedDuringRun": [],

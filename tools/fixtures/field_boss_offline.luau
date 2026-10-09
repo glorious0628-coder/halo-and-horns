@@ -52,10 +52,25 @@ local function bossWorld(opts)
 				return true
 			end,
 		},
-		PlayerService = { IsReady = function(p) return w.ReadyMap[p] == true end },
+		PlayerService = { IsReady = function(p) return w.ReadyMap[p] == true end,
+			GetData = function(p) return w.DataOf[p] end },
 		ZoneService = { GetZoneId = function(p) return w.ZoneOf[p] end },
 		AnnounceService = { Broadcast = function(k, args) table.insert(w.Broadcasts, k) end },
+		-- J extras: crown-war points, titles, the weekly item (GrantItem returns w.GrantReturn or n)
+		WarService = { AddPoints = function(p, n) table.insert(w.WarAdds, { P = p, N = n }) end },
+		TitleService = { Grant = function(p, id)
+			w.TitlesOf[p] = w.TitlesOf[p] or {}
+			if w.TitlesOf[p][id] then return false end
+			w.TitlesOf[p][id] = true
+			return true
+		end },
+		LootService = { GrantItem = function(p, id, n)
+			table.insert(w.Grants, { P = p, Id = id, N = n })
+			if w.GrantReturn ~= nil then return w.GrantReturn end
+			return n
+		end },
 	}
+	w.DataOf, w.WarAdds, w.TitlesOf, w.Grants = {}, {}, {}, {}
 	w.Registry = registry
 
 	local env = w:Env()
@@ -86,7 +101,16 @@ local function bossWorld(opts)
 		local p = self:NewPlayer(id)
 		self.ReadyMap[p] = ready ~= false
 		self.ZoneOf[p] = zone or "SlimeMeadow"
+		self.DataOf[p] = {}
 		return p
+	end
+	-- the boss `key` appears (Studio aid) and dies: paid ids, side damage
+	function w:Kill(key, paid, sideDmg)
+		local said = self.King.DebugSpawn(key)
+		local rec = self.Rec
+		rec.Alive, rec.HP, rec.PaidUserIds, rec.FactionDamage = false, 0, paid, sideDmg
+		self:Tick(0.5)
+		return said, rec
 	end
 	function w:GS(k) return self.GameState:GetAttribute(k) end
 	return w
@@ -112,7 +136,9 @@ runGroup("config", function()
 	check(C.MonsterTypes.BigSlime.Count == 4 and C.MonsterTypes.BigSlime.HP == 40, "the Slime Prince's numbers are unchanged")
 	local kinds = {}
 	for k in C.Finisher.Kinds do table.insert(kinds, k) end
-	check(#kinds == 1 and kinds[1] == "SlimeKing", "the finisher card is the King Slime's only", show(kinds))
+	table.sort(kinds)
+	check(#kinds == 2 and kinds[1] == "CaptainClatter" and kinds[2] == "SlimeKing",
+		"the finisher cards are the field bosses' only (never the Slime Prince)", show(kinds))
 	check(type(C.Loot.Tables.SlimeKing) == "table" and #C.Loot.Tables.SlimeKing > 0,
 		"the King Slime has a drop table")
 	local A = C.Announce
@@ -289,6 +315,120 @@ runGroup("two bosses", function()
 	h:Hunter(1, "SkeletonRuins")
 	h:Tick(10)
 	check(#h.Spawns == 1 and h.Spawns[1].Opts.Near == nil, "the meadow hill is the King Slime's only (Hill = true)")
+end)
+
+runGroup("clatter config", function()
+	local w = newWorld()
+	local C = w.Config
+	local K = C.FieldBosses.Clatter
+	local def = C.MonsterTypes.CaptainClatter
+	check(table.find(C.FieldBosses.Order, "Clatter") ~= nil and K.Kind == "CaptainClatter", "Clatter is a field boss key")
+	check(K.FirstDelay == 300 and K.Interval == 1200 and K.Lifetime == 360 and K.MinLevel == 25 and K.War == 20
+		and K.Attr == "ClatterSpawn" and K.Hill ~= true, "every 20 min, stays 6 min, chip from Lv25, +20 war, own mark", show(K))
+	check(type(K.Weekly) == "table" and K.Weekly.Item == "CaptainBadge" and K.Weekly.Max == 2
+		and K.Titles[1] == "ClatterStopper" and K.Titles[10] == "ClatterStopper10" and K.Titles[50] == "ClatterStopper50",
+		"weekly badge banked up to 2, titles 1 / 10 / 50")
+	check(def and def.Boss == true and def.Count == 0 and def.Zone == "SkeletonRuins" and def.HP == 20000
+		and def.Scale == 2.2 and def.ModelFrom == "SkeletonKnight" and def.AnimFrom == "SkeletonKnight"
+		and def.RewardMinHits == 3 and def.XP == 3900 and def.Gold == 3900, "Captain Clatter: a ruins boss on the knight", show(def))
+	check(table.find(C.MonsterTypeOrder, "CaptainClatter") ~= nil and C.Barks.BubbleFamily.CaptainClatter == "Skeleton"
+		and type(C.Barks.Lines.CaptainClatter) == "table", "order, bubble family, barks")
+	local T = C.Loot.Tables.CaptainClatter
+	local row = {}
+	for _, r in T or {} do row[r.Item or (r.Weapon and ("W" .. r.Weapon)) or r.Potion] = r end
+	check(row.KnightCrest and row.KnightCrest.P == 1 and row.KnightCrest.N == 3 and row.Enh30 and row.Enh30.P == 0.2
+		and row.Enh10 and row.Enh10.P == 0.05 and row.W5 and row.W5.P == 0.03 and row.W6 and row.W6.P == 0.005
+		and row.W5.BelowLevel.Item == "KnightCrest" and row.W5.BelowLevel.N == 2, "drops: 3 crests, Enh30 20%, Enh10 5%, T5 3%, T6 0.5%")
+	check(C.Loot.Items.CaptainBadge and C.Loot.Items.CaptainBadge.Kind == "Material"
+		and table.find(C.Loot.Order, "CaptainBadge") ~= nil, "Captain's Badge is a listed material")
+	for _, s in { "Appear", "Defeat", "Leave" } do
+		local k = "Clatter" .. s
+		check(type(C.Announce.Text[k]) == "string" and C.Announce.Text[k] == C.Announce.Text[k .. "En"]
+			and type(C.Announce.Events[k]) == "table", "announce " .. k)
+	end
+	check(C.Announce.Events.ClatterAppear.Toast == true and C.Announce.Events.ClatterLeave.Toast ~= true, "toast on appear only")
+	for _, id in { "ClatterStopper", "ClatterStopper10", "ClatterStopper50" } do
+		check(C.TitleDefs[id] ~= nil and table.find(C.TitleOrder, id) ~= nil, "title " .. id)
+	end
+	check(string.find(NET_SOURCE, "ClatterNextAt = 0, ClatterActive = false, ClatterEndsAt = 0", 1, true) ~= nil, "Net defaults")
+	-- the finisher cards: both bosses, the same size each
+	local F = C.Finisher
+	check(F.Kinds.SlimeKing == true and F.Kinds.CaptainClatter == true and F.Kinds.BigSlime == nil, "card kinds")
+	for kind, card in F.Cards do
+		local item = C.Loot.Items[card.Help.Item]
+		local worth = (item and item.Sell) or card.Help.Worth or 0
+		check(card.Help.N * worth == card.Tickle.Gold and card.Tickle.Gold > 0, "card " .. kind .. ": the same size",
+			show({ card.Help, card.Tickle }))
+		check(type(card.Text.Title) == "string" and type(card.Text.Help) == "string" and type(card.Text.Tickle) == "string"
+			and type(card.Text.HelpDone) == "string" and type(card.Text.TickleDone) == "string", "card " .. kind .. ": words")
+	end
+	check(F.Cards.CaptainClatter.Text.Help == "Let him rest" and F.Cards.CaptainClatter.Text.Tickle == "Count the old treasure!",
+		"Clatter's buttons")
+end)
+
+runGroup("clatter extras", function()
+	local w = bossWorld({})
+	local a, b = w:Hunter(1, "SkeletonRuins"), w:Hunter(2, "SkeletonRuins")
+	local said, rec = w:Kill("Clatter", { 1, 2, 999 }, { Halo = 62, Horns = 38 })
+	check(said == "spawned" and w.Spawns[#w.Spawns].Kind == "CaptainClatter", "DebugSpawn Clatter", said)
+	local fx = nil
+	for _, f in w.Fx do if f.Kind == "KingDefeat" then fx = f end end
+	check(fx and fx.Data.Key == "Clatter" and fx.Data.Share and fx.Data.Share.Halo == 62 and fx.Data.Share.Horns == 38,
+		"defeat Fx carries the side share", show(fx and fx.Data.Share))
+	check(#w.WarAdds == 2 and w.WarAdds[1].N == 20 and w.WarAdds[2].N == 20, "+20 crown-war points each (own side)", #w.WarAdds)
+	local da, db = w.DataOf[a].FieldBoss.Clatter, w.DataOf[b].FieldBoss.Clatter
+	check(da.Kills == 1 and db.Kills == 1 and w.TitlesOf[a].ClatterStopper and w.TitlesOf[b].ClatterStopper,
+		"first kill: Kills 1, Clatter Stopper", show(da))
+	check(#w.Grants == 2 and w.Grants[1].Id == "CaptainBadge" and w.Grants[1].N == 1 and da.Owed == 0,
+		"the week's first kill always gives the badge", #w.Grants)
+	check(#w:NoticesFor(a) == 1, "a badge line", #w:NoticesFor(a))
+	-- same week: no badge
+	w:Kill("Clatter", { 1 }, { Halo = 10 })
+	check(#w.Grants == 2 and da.Kills == 2, "a second kill that week: no badge")
+	-- next week: one again
+	w.Time += 604800
+	w:Kill("Clatter", { 1 }, { Halo = 10 })
+	check(#w.Grants == 3 and da.Owed == 0, "next week: the badge again", show(da))
+	-- three weeks skipped: two banked (Max), one now, one left for the next kill the same week
+	w.Time += 3 * 604800
+	w:Kill("Clatter", { 1 }, {})
+	check(#w.Grants == 4 and da.Owed == 1, "skipped weeks bank up to 2: one now, one waits", show(da))
+	w:Kill("Clatter", { 1 }, {})
+	check(#w.Grants == 5 and da.Owed == 0, "the banked one comes with the next kill", show(da))
+	-- a full bag: the guarantee waits
+	w.Time += 604800
+	w.GrantReturn = 0
+	w:Kill("Clatter", { 1 }, {})
+	check(da.Owed == 1, "a full bag keeps the guarantee", show(da))
+	w.GrantReturn = nil
+	w:Kill("Clatter", { 1 }, {})
+	check(da.Owed == 0, "the next kill gives it", show(da))
+	-- no side hit it: no share
+	local last = nil
+	for _, f in w.Fx do if f.Kind == "KingDefeat" then last = f end end
+	check(last and last.Data.Share == nil, "no side damage: no share line")
+	-- kill 10: the second title
+	for _ = da.Kills + 1, 10 do w:Kill("Clatter", { 1 }, {}) end
+	check(da.Kills == 10 and w.TitlesOf[a].ClatterStopper10 == true and not w.TitlesOf[a].ClatterStopper50,
+		"10 kills: Clatter Stopper 10", show(da))
+	-- the King Slime has no war / weekly / titles
+	local before = #w.WarAdds
+	local grants = #w.Grants
+	w:Kill("SlimeKing", { 2 }, { Horns = 5 })
+	check(#w.WarAdds == before and #w.Grants == grants and w.DataOf[b].FieldBoss.SlimeKing.Kills == 1,
+		"King Slime: kills counted, no war points / weekly item")
+	-- an old save without the table, broken numbers
+	w.DataOf[b].FieldBoss = { Clatter = { Kills = "x", Week = -3, Owed = 99 } }
+	w:Kill("Clatter", { 2 }, {})
+	local fixed = w.DataOf[b].FieldBoss.Clatter
+	check(fixed.Kills == 1 and fixed.Owed <= 2, "broken save numbers repaired", show(fixed))
+	-- this week already counted but a broken bank of 99: capped at Max (2), one given now
+	local week = w.Config.WeekIndex(math.floor(w.Time))
+	w.DataOf[b].FieldBoss = { Clatter = { Kills = 3, Week = week, Owed = 99 } }
+	local g0 = #w.Grants
+	w:Kill("Clatter", { 2 }, {})
+	check(#w.Grants == g0 + 1 and w.DataOf[b].FieldBoss.Clatter.Owed == 1, "a broken bank is capped at Max",
+		show(w.DataOf[b].FieldBoss.Clatter))
 end)
 
 finish()

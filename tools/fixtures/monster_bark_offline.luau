@@ -150,7 +150,7 @@ local parts = Config.UIArt.Parts
 local real = {} -- [key] = { Id, Size, TextRect } as uploaded
 -- A23-84: the King Slime boss (2026-10-09) has no bubble art of its own yet (image gen 2 -> image dev): it uses its
 -- family's slime bubble until then (checked below); the others each have their own
-local PENDING_ART = { SlimeKing = "BarkBubbleSlime" }
+local PENDING_ART = { SlimeKing = "BarkBubbleSlime", CaptainClatter = "BarkBubbleSkeleton" } -- + J Captain Clatter
 local kindCount, badArt, tight = 0, {}, {}
 for kind in Config.MonsterTypes do
 	kindCount += 1
@@ -172,7 +172,7 @@ for kind in Config.MonsterTypes do
 		table.insert(badArt, kind)
 	end
 end
-check(kindCount == 13 and #badArt == 0, "all 12 BarkBubble<Kind> (+ the King Slime pending) uploaded (Id, Size, TextRect, no Slice), drawn in their own round "
+check(kindCount == 14 and #badArt == 0, "all 12 BarkBubble<Kind> (+ the King Slime, Captain Clatter pending) uploaded (Id, Size, TextRect, no Slice), drawn in their own round "
 	.. "shape (ArtW wide, height from Size, no clamp, at most 1.8 : 1)", kindCount .. " " .. table.concat(badArt, ","))
 check(#tight == 0, "every uploaded bubble's TextRect fits 2 lines at TextMin and is at least 40 px wide", table.concat(tight, ","))
 local ownNow = {}

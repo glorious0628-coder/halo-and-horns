@@ -39,7 +39,7 @@
     },
     {
       "group": "no King Slime left",
-      "check": "no game text calls the Slime Prince 'King Slime' (4763 strings)",
+      "check": "no game text calls the Slime Prince 'King Slime' (4830 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -224,7 +224,7 @@
         "newFailingChecks": [
           "names :: BigSlime = 'Slime Prince' (nametag + quest / board / daily name)",
           "names :: the rookie daily row reads 'Slime Prince'",
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)"
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)"
         ],
         "newFailingCount": 3
       },
@@ -237,7 +237,7 @@
         "newFailingChecks": [
           "names :: BigSlime = 'Slime Prince' (nametag + quest / board / daily name)",
           "names :: the rookie daily row reads 'Slime Prince'",
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)"
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)"
         ],
         "newFailingCount": 3
       },
@@ -248,7 +248,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)",
           "quest texts :: S0: a Slime Prince swallowed the shard"
         ],
         "newFailingCount": 2
@@ -260,7 +260,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)",
           "quest texts :: M1_2: 'The Prince Who Ate the Dust' / 'Slime Princes'"
         ],
         "newFailingCount": 2
@@ -272,7 +272,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)",
           "quest texts :: M1_2: 'The Prince Who Ate the Dust' / 'Slime Princes'"
         ],
         "newFailingCount": 2
@@ -284,7 +284,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)"
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)"
         ],
         "newFailingCount": 1
       },
@@ -295,7 +295,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)",
           "quest texts :: H1: its Slime Prince step says 'Slime Prince'"
         ],
         "newFailingCount": 2
@@ -307,7 +307,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)",
           "quest texts :: XR1: Tiny's line names the Slime Prince"
         ],
         "newFailingCount": 2
@@ -319,7 +319,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4763 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (4830 strings)",
           "quest texts :: R5: its Slime Prince step says 'Slime Prince'"
         ],
         "newFailingCount": 2
@@ -387,7 +387,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f8f8edd90eb574c1ccf3c2dd83559aab6061817cb78f9872f7002a983017ae35"
+    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db"
   },
   "fixtureSHA256": "41f82e846c890fe65ed99aec799662260a92d3791ecbb6e9233c635a87988841",
   "sourcesChangedDuringRun": [],

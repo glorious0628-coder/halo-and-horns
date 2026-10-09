@@ -1567,8 +1567,14 @@ runGroup("weapons", function()
 					local min = C.Weapons[row.Weapon].MinLevel
 					b:Set("Level", min - 1)
 					local bg, unused = b:Force(kind, { [i] = true })
+					-- every BelowLevel weapon row of this table above the killer's level skips its draw (Captain Clatter
+					-- has two: T5 and T6)
+					local skipped = 0
+					for _, r in rows do
+						if r.Weapon and type(r.BelowLevel) == "table" and C.Weapons[r.Weapon].MinLevel > min - 1 then skipped += 1 end
+					end
 					check(b.Data.WeaponOwnedMask == 1 and b:Gained(bg, "Weapon", row.Weapon) == 0 and #b.Announces == 0 and #b.GoldLog == 0
-						and unused == 1, "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
+						and unused == skipped, "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
 						kind .. " tier " .. row.Weapon .. " Lv" .. (min - 1) .. " unused " .. unused)
 					check(b:Count(row.BelowLevel.Item) >= row.BelowLevel.N, "A23-27 ... and pays its BelowLevel item instead",
 						kind .. " " .. show(b.Data.Items))

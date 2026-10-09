@@ -1310,6 +1310,14 @@ local function killRecord(rec)
 	for _, e in eligible do table.insert(paid, e.Player.UserId) end
 	table.sort(paid)
 	rec.PaidUserIds = paid
+	-- FB 6 (content_beyond_10min J): every hitter's own damage summed per side, kept for FieldBossService's defeat share
+	-- line (Halo n% · Horns n%); Neutral / no side counts nowhere
+	local sideDmg = { Halo = 0, Horns = 0 }
+	for p, d in rec._dmg do
+		local okF, f = pcall(factionOf, p)
+		if okF and sideDmg[f] ~= nil then sideDmg[f] += math.max(0, tonumber(d) or 0) end
+	end
+	rec.FactionDamage = sideDmg
 	local manualAt = type(rec._manualAt) == "table" and rec._manualAt or {}
 	rec._contributors, rec._hits, rec._dmg, rec._manualAt = {}, {}, {}, {}
 	for _, e in eligible do

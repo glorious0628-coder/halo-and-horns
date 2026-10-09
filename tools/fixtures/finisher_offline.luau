@@ -8,6 +8,8 @@
 
 local C0F = execute("Config", CONFIG_SOURCE, nativeEnv())
 local FIN = C0F.Finisher
+-- the King Slime's card (Config.Finisher.Cards[kind], 2026-10-09: per boss kind; Captain Clatter has the other)
+local CARD = FIN.Cards.SlimeKing
 
 -- the world: o.Z = Z skills on; o.Edit(cfg) before the services see Config; o.RealRules = keep the King Slime's A23-27
 -- reward rules (3 own hits, 0.5% of MaxHP): the other groups kill one-hit records, so they turn them off
@@ -150,23 +152,26 @@ end
 runGroup("config", function()
 	check(FIN.Kinds.SlimeKing == true and FIN.Kinds.BigSlime == nil, "the King Slime boss gives the card, the Slime Prince not")
 	local kinds = 0
-	for _ in FIN.Kinds do kinds += 1 end
-	check(kinds == 1, "only the King Slime (no other monster)", kinds)
+	for k in FIN.Kinds do
+		kinds += 1
+		check(type(FIN.Cards[k]) == "table", "every card kind has its Cards entry", k)
+	end
+	check(kinds == 2 and FIN.Kinds.CaptainClatter == true, "only the field bosses (King Slime, Captain Clatter)", kinds)
 	check(FIN.Seconds == 10 and FIN.Grace == 1 and FIN.Points == 1, "10 s to pick (+1 s network grace), 1 point", show({ FIN.Seconds, FIN.Grace, FIN.Points }))
-	local jelly = C0F.Loot.Items[FIN.Help.Item]
-	check(FIN.Help.Item == "Jelly" and jelly ~= nil and jelly.Kind == "Material", "Help gives Jelly (a material)")
-	check(FIN.Help.N * jelly.Sell == FIN.Tickle.Gold and FIN.Tickle.Gold > 0, "the same size: Help.N x Jelly sell == Tickle gold",
-		show({ FIN.Help.N, jelly.Sell, FIN.Tickle.Gold }))
+	local jelly = C0F.Loot.Items[CARD.Help.Item]
+	check(CARD.Help.Item == "Jelly" and jelly ~= nil and jelly.Kind == "Material", "Help gives Jelly (a material)")
+	check(CARD.Help.N * jelly.Sell == CARD.Tickle.Gold and CARD.Tickle.Gold > 0, "the same size: Help.N x Jelly sell == Tickle gold",
+		show({ CARD.Help.N, jelly.Sell, CARD.Tickle.Gold }))
 	check(C0F.ScoreBudget.PerDay == 5, "one daily cap: 5 points a KST day", C0F.ScoreBudget.PerDay)
 	local d = C0F.Data.Defaults.ScoreBudget
 	check(type(d) == "table" and d.Day == 0 and d.N == 0, "save field ScoreBudget = { Day = 0, N = 0 }", show(d))
 	check(C0F.RateLimits.FinisherPick == 0.3, "FinisherPick rate limit 0.3 s", C0F.RateLimits.FinisherPick)
-	local T = FIN.Text
-	check(type(T.Title) == "table" and T.Title.SlimeKing == "The King Slime is dizzy!" and T.Help == "Help it hop home" and T.Tickle == "Tickle out its coins",
-		"the card's words (검수 2026-10-08)", show({ T.Title and T.Title.SlimeKing, T.Help, T.Tickle }))
+	local T = CARD.Text
+	check(T.Title == "The King Slime is dizzy!" and T.Help == "Help it hop home" and T.Tickle == "Tickle out its coins",
+		"the card's words (검수 2026-10-08)", show({ T.Title, T.Help, T.Tickle }))
 	local banned = false
-	for _, text in T do
-		for _, s in type(text) == "table" and text or { text } do -- Title is per boss kind
+	for _, texts in { FIN.Text, FIN.Cards.SlimeKing.Text, FIN.Cards.CaptainClatter.Text } do
+		for _, s in texts do
 			if string.find(string.lower(s), "shake", 1, true) then banned = true end
 		end
 	end
@@ -174,6 +179,41 @@ runGroup("config", function()
 	local PB = C0F.PassBoost
 	check(PB == nil or type(PB.GoldSources) ~= "table" or PB.GoldSources.Finisher == nil,
 		"card gold is never 2x (not a PassBoost gold source)")
+end)
+
+------------------------------------------------------------------ Captain Clatter's card (J, Config.Finisher.Cards)
+runGroup("Captain Clatter's card", function()
+	local CC = FIN.Cards.CaptainClatter
+	local cap = C0F.Loot.ItemCap or 999
+	local w = finWorld()
+	-- a full scroll bag: the rest is paid at the card's Worth (a scroll has no Sell)
+	local p = w:Hero(151, { Faction = "Halo", Data = { Items = { Enh70 = cap } } })
+	local boss = w:King({ Kind = "CaptainClatter" })
+	-- A23-27: 3 own hits and the damage share (two hits and 500 damage before this swing)
+	boss._hits[p], boss._dmg[p], boss._contributors[p] = 2, 500, os.clock()
+	w:Swing(p)
+	check(boss.Alive == false, "(a manual swing finished Captain Clatter)")
+	local cards = w:Cards(p)
+	local c = cards[1]
+	check(#cards == 1 and c.Kind == "CaptainClatter" and c.Help.Item == "Enh70" and c.Help.N == 1 and c.Tickle.Gold == 300,
+		"his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold", show(c))
+	w:Pick(p, c.Id, "Help")
+	local e = w:Ends(p)[1]
+	check(e.Item == "Enh70" and e.N == 0 and e.Gold == CC.Help.Worth and (w.Data[p].BankGold or 0) == CC.Help.Worth,
+		"a full bag: the scroll paid at its Worth (300)", show(e))
+	local lines = w:NoticesFor(p)
+	check(table.concat(lines, " | "):find(CC.Text.HelpDone, 1, true) ~= nil,
+		"his own HelpDone line", table.concat(lines, " | "))
+	-- room in the bag: the scroll itself
+	local q = w:Hero(152, { Faction = "Horns" })
+	local b2 = w:King({ Kind = "CaptainClatter" })
+	b2._hits[q], b2._dmg[q], b2._contributors[q] = 2, 500, os.clock()
+	w:Swing(q)
+	local c2 = w:Cards(q)[1]
+	w:Pick(q, c2.Id, "Tickle")
+	local e2 = w:Ends(q)[1]
+	check(e2.Gold == CC.Tickle.Gold and e2.N == 0 and table.concat(w:NoticesFor(q), " | "):find(CC.Text.TickleDone, 1, true) ~= nil,
+		"Tickle: 300 bank gold and his TickleDone line", show(e2))
 end)
 
 ------------------------------------------------------------------ who gets a card (kills through the real presses)
@@ -305,8 +345,8 @@ runGroup("card payload", function()
 	local w = finWorld()
 	local halo = w:Hero(131, { Faction = "Halo" })
 	local _, c = w:Offer(halo)
-	check(c.Stat == "Honor" and c.Help.Item == "Jelly" and c.Help.N == FIN.Help.N and c.Help.Score == 1
-		and c.Tickle.Gold == FIN.Tickle.Gold and c.Tickle.Score == 0 and c.Help.Hint == nil and c.Tickle.Hint == "Zero",
+	check(c.Stat == "Honor" and c.Help.Item == "Jelly" and c.Help.N == CARD.Help.N and c.Help.Score == 1
+		and c.Tickle.Gold == CARD.Tickle.Gold and c.Tickle.Score == 0 and c.Help.Hint == nil and c.Tickle.Hint == "Zero",
 		"Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)", show(c))
 	local h3 = w:Hero(132, { Faction = "Halo", Data = { Honor = 3 } })
 	local _, c3 = w:Offer(h3)
@@ -344,7 +384,7 @@ runGroup("picks", function()
 	check(#e == 1 and e[1].Id == c.Id and e[1].Pick == "Help" and e[1].Stat == "Honor" and e[1].Score == 1 and e[1].N == 2
 		and e[1].Gold == 0, "FinisherEnd says what happened", show(e[1]))
 	local lines = w:NoticesFor(h, n0)
-	check(#lines == 1 and has(lines[1], FIN.Text.HelpDone) and has(lines[1], "Jelly") and has(lines[1], "Honor +1"),
+	check(#lines == 1 and has(lines[1], CARD.Text.HelpDone) and has(lines[1], "Jelly") and has(lines[1], "Honor +1"),
 		"one line: 'It hops home happy! · +Jelly ×2 · Honor +1'", show(lines))
 	check(w:SoundsFor(h, n0)[1] == "None", "the pick line is silent (never QuestDone; the client plays the pick)",
 		show(w:SoundsFor(h, n0)))
@@ -355,14 +395,14 @@ runGroup("picks", function()
 	local _, c2 = w:Offer(h2)
 	local bank0, g0, n2 = w.Data[h2].BankGold or 0, #w.GoldCalls, #w.Notices
 	w:Pick(h2, c2.Id, "Tickle")
-	check((w.Data[h2].BankGold or 0) - bank0 == FIN.Tickle.Gold and w.Data[h2].Honor == 4,
+	check((w.Data[h2].BankGold or 0) - bank0 == CARD.Tickle.Gold and w.Data[h2].Honor == 4,
 		"Halo Tickle: +4 bank gold, Honor 5 -> 4 (A23-58)", show({ (w.Data[h2].BankGold or 0) - bank0, w.Data[h2].Honor }))
 	check(#w.GoldCalls == g0 + 1 and w.GoldCalls[#w.GoldCalls].Source == "Finisher", "the gold's source is Finisher",
 		tostring(w.GoldCalls[#w.GoldCalls] and w.GoldCalls[#w.GoldCalls].Source))
 	local l2 = w:NoticesFor(h2, n2)
-	check(#l2 == 2 and has(l2[1], FIN.Text.TickleDone) and has(l2[1], "+4 gold") and not has(l2[1], "Honor")
+	check(#l2 == 2 and has(l2[1], CARD.Text.TickleDone) and has(l2[1], "+4 gold") and not has(l2[1], "Honor")
 		and l2[2] == string.format(C0F.StoryQuests.Text.OffSideHalo, 1), "Tickle line + the off-side line (Honor -1)", show(l2))
-	check(w:Ends(h2)[1].Score == -1 and w:Ends(h2)[1].Gold == FIN.Tickle.Gold, "FinisherEnd: Score -1, Gold 4", show(w:Ends(h2)[1]))
+	check(w:Ends(h2)[1].Score == -1 and w:Ends(h2)[1].Gold == CARD.Tickle.Gold, "FinisherEnd: Score -1, Gold 4", show(w:Ends(h2)[1]))
 	-- Halo + Tickle at Honor 0: nothing to take (never below 0), the zero line
 	local h3 = w:Hero(143, { Faction = "Halo" })
 	local _, c3 = w:Offer(h3)
@@ -566,21 +606,21 @@ runGroup("jelly full", function()
 	local _, c2 = w:Offer(b)
 	w:Pick(b, c2.Id, "Help")
 	local e2 = w:Ends(b)[1]
-	check(e2.N == 0 and e2.Gold == FIN.Tickle.Gold and (w.Data[b].BankGold or 0) == FIN.Tickle.Gold, "a full bag: all of it as gold (4)",
+	check(e2.N == 0 and e2.Gold == CARD.Tickle.Gold and (w.Data[b].BankGold or 0) == CARD.Tickle.Gold, "a full bag: all of it as gold (4)",
 		show(e2))
 	-- GrantItem throws: paid as gold, warned
 	local f = finWorld({ GrantFails = true })
 	local fp = f:Hero(203, { Faction = "Halo" })
 	local _, c3 = f:Offer(fp)
 	f:Pick(fp, c3.Id, "Help")
-	check(f:Ends(fp)[1].Gold == FIN.Tickle.Gold and #f.Warnings >= 1, "GrantItem failing: paid as gold, warned", show(f.Warnings))
+	check(f:Ends(fp)[1].Gold == CARD.Tickle.Gold and #f.Warnings >= 1, "GrantItem failing: paid as gold, warned", show(f.Warnings))
 	f.AllowWarn = "GrantItem"
 	-- A23-75 servers return what was really added (here one more, as if boosted): FinisherEnd shows that amount
 	local r = finWorld({ GoldReturns = function(n) return n + 1 end })
 	local rp = r:Hero(204, { Faction = "Horns" })
 	local _, c4 = r:Offer(rp)
 	r:Pick(rp, c4.Id, "Tickle")
-	check(r:Ends(rp)[1].Gold == FIN.Tickle.Gold + 1, "AddBankGold returning the added amount: that is shown", show(r:Ends(rp)[1]))
+	check(r:Ends(rp)[1].Gold == CARD.Tickle.Gold + 1, "AddBankGold returning the added amount: that is shown", show(r:Ends(rp)[1]))
 end)
 
 finish()

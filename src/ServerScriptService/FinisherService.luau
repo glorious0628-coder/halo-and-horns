@@ -9,7 +9,8 @@
 --        lose) | nil (the Score says it) - Config.Finisher.Text HintNeutral / HintFull / HintZero)
 --   c->s "FinisherPick" (id, "Help" | "Tickle"): only the open card, its Id, within Seconds + Grace, once
 --   s->c Fx "FinisherEnd" { Id, Pick = "Help" | "Tickle" | "None", Stat, Score, Item, N, Gold } (what really happened)
--- Help = the Good side (Jelly; a full bag pays the rest at its sell price), Tickle = the Evil side (bank gold, source
+-- Help = the Good side (Config.Finisher.Cards[kind].Help: an item; a full bag pays the rest at its Sell, else Worth),
+-- Tickle = the Evil side (Cards[kind].Tickle: bank gold, source
 -- "Finisher": not a Config.PassBoost source, so never 2x). My side's pick: +Points inside ScoreBudget (P9); the other
 -- side's: -Points (A23-58, never below 0); Neutral / no side: the gift only. Points go through AddStat only (no weekly
 -- ranking credit, like story picks). One open card a player at a time: a kill meanwhile gives none. Not picked in time
@@ -84,6 +85,7 @@ local function hintOf(stat, score, mine)
 end
 
 -- applies the pick's points; returns stat, change, mine (my own side's pick), down (an off-side drop lost a rank)
+-- TODO(Deeds, A23-86 decision 1): the daily deeds ledger (game dev 3) replaces ScoreBudget here (Deeds.Add)
 local function applyScore(player, option)
 	local f = sideOf(player)
 	if not f then return "None", 0, false end
@@ -108,10 +110,20 @@ local function applyScore(player, option)
 	return stat, -take, false, down
 end
 
--- the gift: Help = Jelly (what does not fit is paid at its sell price), Tickle = gold. Returns items, gold to pay
-local function gift(player, option)
-	if option ~= "Help" then return 0, math.max(0, math.floor(num(F.Tickle.Gold))) end
-	local id, n = F.Help.Item, math.max(0, math.floor(num(F.Help.N)))
+-- the boss kind's card (Config.Finisher.Cards[kind]: Help, Tickle, Text); data only, the same card code for every boss
+local function cardOf(kind)
+	local c = type(F.Cards) == "table" and F.Cards[kind] or nil
+	if type(c) ~= "table" then c = {} end
+	return { Help = type(c.Help) == "table" and c.Help or { Item = "Jelly", N = 0 },
+		Tickle = type(c.Tickle) == "table" and c.Tickle or { Gold = 0 }, Text = type(c.Text) == "table" and c.Text or {} }
+end
+
+-- the gift: Help = the card's item (what does not fit is paid at its sell price, else its Worth), Tickle = gold.
+-- Returns items, gold to pay
+local function gift(player, option, kind)
+	local c = cardOf(kind)
+	if option ~= "Help" then return 0, math.max(0, math.floor(num(c.Tickle.Gold))) end
+	local id, n = c.Help.Item, math.max(0, math.floor(num(c.Help.N)))
 	local given = 0
 	local ok, res = pcall(S.LootService.GrantItem, player, id, n)
 	if ok then
@@ -120,7 +132,7 @@ local function gift(player, option)
 		Util.Warn(TAG, "GrantItem: " .. tostring(res))
 	end
 	local item = Config.Loot.Items[id]
-	return given, (n - given) * math.max(0, math.floor(num(item and item.Sell)))
+	return given, (n - given) * math.max(0, math.floor(num(item and item.Sell or c.Help.Worth)))
 end
 
 local function metric(player, pick)
@@ -135,9 +147,10 @@ end
 local function finish(player, card, option)
 	if CARD.Open[player] ~= card then return end
 	CARD.Open[player] = nil
-	local out = { Id = card.Id, Pick = option or "None", Stat = "None", Score = 0, Item = F.Help.Item, N = 0, Gold = 0 }
+	local c = cardOf(card.Kind)
+	local out = { Id = card.Id, Pick = option or "None", Stat = "None", Score = 0, Item = c.Help.Item, N = 0, Gold = 0 }
 	if option then
-		local n, gold = gift(player, option)
+		local n, gold = gift(player, option, card.Kind)
 		if gold > 0 then
 			local added = S.ProgressionService.AddBankGold(player, gold, "Finisher")
 			gold = type(added) == "number" and added or gold -- A23-75 returns what was added ("Finisher": never 2x)
@@ -145,11 +158,11 @@ local function finish(player, card, option)
 		out.N, out.Gold = n, gold
 		local stat, change, mine, down = applyScore(player, option)
 		out.Stat, out.Score = stat, change
-		local parts = { option == "Help" and TXT.HelpDone or TXT.TickleDone }
-		local item = Config.Loot.Items[F.Help.Item]
+		local parts = { (option == "Help" and c.Text.HelpDone or c.Text.TickleDone) or "" }
+		local item = Config.Loot.Items[c.Help.Item]
 		if n > 0 then
-			table.insert(parts, n > 1 and string.format(Config.Loot.Text.GotN, item and item.Name or F.Help.Item, n)
-				or string.format(Config.Loot.Text.Got, item and item.Name or F.Help.Item))
+			table.insert(parts, n > 1 and string.format(Config.Loot.Text.GotN, item and item.Name or c.Help.Item, n)
+				or string.format(Config.Loot.Text.Got, item and item.Name or c.Help.Item))
 		end
 		if gold > 0 then table.insert(parts, string.format(STORY.ChoiceGold, Util.FormatNumber(gold))) end
 		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
@@ -181,11 +194,12 @@ local function offer(player, kind)
 	local seconds = math.max(1, num(F.Seconds, 10))
 	local card = { Id = id, Kind = kind, Ends = os.clock() + seconds }
 	CARD.Open[player] = card
+	local c = cardOf(kind)
 	local stat, help, helpMine = scoreOf(player, "Help")
 	local _, tickle, tickleMine = scoreOf(player, "Tickle")
 	fx(player, "FinisherCard", { Id = id, Kind = kind, Seconds = seconds, Stat = stat,
-		Help = { Item = F.Help.Item, N = F.Help.N, Score = help, Hint = hintOf(stat, help, helpMine) },
-		Tickle = { Gold = F.Tickle.Gold, Score = tickle, Hint = hintOf(stat, tickle, tickleMine) } })
+		Help = { Item = c.Help.Item, N = c.Help.N, Score = help, Hint = hintOf(stat, help, helpMine) },
+		Tickle = { Gold = c.Tickle.Gold, Score = tickle, Hint = hintOf(stat, tickle, tickleMine) } })
 	task.delay(seconds + math.max(0, num(F.Grace, 1)), function()
 		finish(player, card, nil)
 	end)

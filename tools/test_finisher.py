@@ -98,8 +98,12 @@ MUTATIONS = [
     ("the card never times out", F, "\ttask.delay(seconds + math.max(0, num(F.Grace, 1)), function()\n\t\tfinish(player, card, nil)\n\tend)\n", ""),
     ("leaving keeps the card", F, "\t\t\tlocal ok, err = pcall(finish, player, card, nil)\n", "\t\t\tlocal ok, err = true, nil\n"),
     # --- gifts
-    ("Tickle pays double", F, "return 0, math.max(0, math.floor(num(F.Tickle.Gold)))", "return 0, 2 * math.max(0, math.floor(num(F.Tickle.Gold)))"),
-    ("a full bag loses the rest", F, "return given, (n - given) * math.max(0, math.floor(num(item and item.Sell)))", "return given, 0"),
+    ("Tickle pays double", F, "return 0, math.max(0, math.floor(num(c.Tickle.Gold)))", "return 0, 2 * math.max(0, math.floor(num(c.Tickle.Gold)))"),
+    ("a full bag loses the rest", F, "return given, (n - given) * math.max(0, math.floor(num(item and item.Sell or c.Help.Worth)))", "return given, 0"),
+    ("a scroll's full bag pays nothing (no Worth)", F, "num(item and item.Sell or c.Help.Worth)", "num(item and item.Sell)"),
+    ("every boss gets the King Slime's card", F,
+     "\tlocal c = type(F.Cards) == \"table\" and F.Cards[kind] or nil\n",
+     "\tlocal c = type(F.Cards) == \"table\" and F.Cards.SlimeKing or nil\n"),
     ("a GrantItem error is not caught", F, "local ok, res = pcall(S.LootService.GrantItem, player, id, n)",
      "local ok, res = true, S.LootService.GrantItem(player, id, n)"),
     ("gold from the pocket", F, "S.ProgressionService.AddBankGold(player, gold, \"Finisher\")",
@@ -141,11 +145,11 @@ MUTATIONS = [
     # --- Config
     ("20 s to pick", C, "\tSeconds = 10,\n\tGrace = 1,\n", "\tSeconds = 20,\n\tGrace = 1,\n"),
     ("2 points a pick", C, "\tGrace = 1,\n\tPoints = 1,\n", "\tGrace = 1,\n\tPoints = 2,\n"),
-    ("3 Jelly (not the same size)", C, "Help = { Item = \"Jelly\", N = 2 }, -- (proposed)", "Help = { Item = \"Jelly\", N = 3 }, -- (proposed)"),
-    ("the Slime Prince gives a card too", C, "\tKinds = { SlimeKing = true }, -- the King Slime boss only",
-     "\tKinds = { SlimeKing = true, BigSlime = true }, -- the King Slime boss only"),
-    ("the card on the Slime Prince instead", C, "\tKinds = { SlimeKing = true }, -- the King Slime boss only",
-     "\tKinds = { BigSlime = true }, -- the King Slime boss only"),
+    ("3 Jelly (not the same size)", C, "Help = { Item = \"Jelly\", N = 2 }, Tickle = { Gold = 4 } },", "Help = { Item = \"Jelly\", N = 3 }, Tickle = { Gold = 4 } },"),
+    ("the Slime Prince gives a card too", C, "\tKinds = { SlimeKing = true, CaptainClatter = true },",
+     "\tKinds = { SlimeKing = true, CaptainClatter = true, BigSlime = true },"),
+    ("the card on the Slime Prince instead", C, "\tKinds = { SlimeKing = true, CaptainClatter = true },",
+     "\tKinds = { BigSlime = true, CaptainClatter = true },"),
     ("cap 50", C, "Config.ScoreBudget = { PerDay = 5 }", "Config.ScoreBudget = { PerDay = 50 }"),
 ]
 
