@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 39,
+  "checks": 48,
   "failedChecks": [],
   "static": [
     {
@@ -29,9 +29,9 @@
     }
   ],
   "mutations": {
-    "total": 27,
-    "applied": 27,
-    "caught": 27,
+    "total": 36,
+    "applied": 36,
+    "caught": 36,
     "results": [
       {
         "mutation": "'None' takes an argument",
@@ -258,6 +258,81 @@
         ]
       },
       {
+        "mutation": "Perf: W above F allowed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf: a missing / extra key, W > F, an unknown device, a fraction, too much memory, Q 11 are refused :: "
+        ]
+      },
+      {
+        "mutation": "Perf: an extra key allowed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf: a missing / extra key, W > F, an unknown device, a fraction, too much memory, Q 11 are refused :: "
+        ]
+      },
+      {
+        "mutation": "Perf: any device word",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf: a missing / extra key, W > F, an unknown device, a fraction, too much memory, Q 11 are refused :: "
+        ]
+      },
+      {
+        "mutation": "Perf: a short window sent",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf pack: under 60 focused s nothing :: ",
+          "CHECK_FAIL Perf: a window mostly out of focus (under 60 s played) sends nothing :: 1",
+          "CHECK_FAIL Perf: gaps over a second (the app away) never count as play :: 1"
+        ]
+      },
+      {
+        "mutation": "Perf: frames out of focus count",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf: a window mostly out of focus (under 60 s played) sends nothing :: 1"
+        ]
+      },
+      {
+        "mutation": "Perf: the app-away gap counts",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf: gaps over a second (the app away) never count as play :: 1"
+        ]
+      },
+      {
+        "mutation": "Perf: no tablets",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf device: touch + short side 390 = Phone, 700 = Tablet, a keyboard = Desktop, a gamepad only = Console :: "
+        ]
+      },
+      {
+        "mutation": "Perf: sent before my data loads",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf: nothing before my data loads :: 1",
+          "CHECK_FAIL Perf: every 120 s one sample of the window (30 fps phone, the doubles' memory and quality) :: 30 Phone"
+        ]
+      },
+      {
+        "mutation": "Perf: W is the average",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Perf pack: F = frames / s, W = the lowest full second (whole), M floored, Q kept :: 60/60"
+        ]
+      },
+      {
         "mutation": "a name there at the start counts as new",
         "applied": true,
         "caught": true,
@@ -268,11 +343,11 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/ComeBack.luau": "63a15300fc1cc680680134c7bdb8ce2577858d245dc000e382815f4e86d648df",
-    "src/ReplicatedStorage/Shared/Config.luau": "abfe817f7570b0ebfc3f8a07a4433383405e79701b0dbafd7e19e857ef314f0b",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
+    "src/StarterPlayer/StarterPlayerScripts/ComeBack.luau": "b9cde0064dce0a49a58a97ea3e972edc69d73a8086dc2b329c7da6763781edbb",
+    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "342bcc7b0eea5f666c66fff6caaa59685097441fdb30073dc682f8e2a1f5cfd0"
   },
-  "fixtureSHA256": "c0f36cdb371ac798dd3ba8aa7b54cfaa08f60f11b3c153a90f38326256816cfb",
+  "fixtureSHA256": "cdbc878ff627c585f9d8020840c9fd20697740fef1ef07b95f0f07f616a85114",
   "studioCalls": 0,
   "limitations": "Doubles instead of ExperienceNotificationService: Roblox's own opt-in window shows only in a published game for 13+ accounts (Studio cannot show it), so 'shown' needs a live check; the server's side (the asked list, the once rule) is tools/test_return.py. The Shop's PassView / PurchasePrompt calls belong to 이미지 개발's ShopUI (ComeBack.Metric is ready)."
 }
