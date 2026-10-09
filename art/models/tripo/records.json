@@ -6280,7 +6280,8 @@
    "tris": 19781,
    "note": "검수 OK 10/09 (A23-84 왕관 돌 사당, 옛 계정 때 끊긴 작업 다시)",
    "derived": [
-    "art/models/tripo/web/Kit_M_CrownShrine_HD_plain.glb (--rotz -90: front -Y, target 100000 = plain re-save; NOTE target 0 collapses to 38 tris)"
+    "art/models/tripo/web/Kit_M_CrownShrine_HD_plain.glb (--rotz -90: front -Y, target 100000 = plain re-save; NOTE target 0 collapses to 38 tris)",
+    "art/models/tripo/web/Kit_M_CrownShrine_HD_capped.glb (tools/glb_cap_crown.py: stone floor + moss patches over the open pit, 검수 10/09; used for build/import_all/5_fifth/E5_CrownShrine.glb)"
    ]
   }
  ],
