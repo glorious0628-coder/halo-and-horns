@@ -36,3 +36,10 @@
 - docs/design/system_review_round1_2026-10-09.md(단점·더할 것, 순위) — 2회차는 사용량 초기화 뒤.
 - docs/design/ui_clutter_review_2026-10-09.md, monster_zone_ideas_2026-10-09.md, content_beyond_10min_2026-10-08.md.
 - 홈페이지: https://glorious.ai.kr (docs/website/HANDOFF_homepage1_2026-10-08.md).
+
+## 5. 갱신 (10/09 12:30, 주간 93%)
+- 결정 추가: A23-91 콘솔식 따라가는 카메라(기본 켬, 규칙 8) + 공격 자동 돌기 더 세세하게(대상 유지·부드럽게·직업별 사거리·발밑 표시, 몬스터만). Slime Prince = **작은 왕관**(광석 없는 몸 메시 E8은 이미지 생성 1이 만드는 중 → 사용자 가져오기 → 메인 반영이 BigSlime 몸 교체). 진영 가입 알림·'Daily quests are open' 알림 끄기(사용자 "너무 친절해"). 토템 문 A(열린 아치). 천사·악마: 배경 A, 마스코트 빛 A + 뿔 A, 계급 B(3D 10개 약 550포인트는 사용자 OK 대기). 오프닝은 전부 로블록스 3D(영상 업로드 2,000 로벅스라 안 씀). 홈페이지: 설립 2025년 12월 + 사업자등록번호 677-45-01149(재신청함).
+- main에 병합됨: King Slime·클래터(612f8267), 땅 높이 26(6b6e40e8), King 자리(953e6a9f). **병합 대기:** dev2-a2390(mobs3+mlevel+A23-90+클래터 ③④) — 개발 2가 MonsterDanger 함수를 되살려 새 해시를 보내면 개발 3이 마지막 검증 → 검수 병합.
+- 메인 Studio: 파일 저장 12:00(place/ eddf49de), 클라우드는 서버 updated 11:48(그 뒤 사용자 저장이 반영됐는지 확인 중, games API 'updated'). 메인 창은 입력기 때문에 클릭이 자주 막힘 → 저장은 사용자에게 부탁(File → Save to Roblox / Save to File As).
+- 개발 1 큐: 퀘스트 '이야기 알림' 줄 판 밖 글자 버그(최우선) → Daily 알림 끄기 + 안내 토스트 목록 → A23-88 길 빛·이동 판 → A23-91 카메라 → 공격 자동 돌기 → 유적 구덩이 경계 밧줄·ZoneHasPvP → King·클래터 클라.
+- 이미지 개발 큐: 아래 HUD 균형(버튼 줄 폭) + 왕관전 막대 글 'Siege: 150 each' 쉬운 말 → 진영 카드 Pitch 사진 → 숲 질감 끝.

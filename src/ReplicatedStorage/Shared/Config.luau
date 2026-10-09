@@ -4453,6 +4453,13 @@ Config.Loot = {
 
 -- Roblox's own chat lines in English (A23-48; 검수 2026-10-07: the team line showed in the player's Roblox language).
 -- ChatText.luau rewrites them on the legacy chat (server), Announce.luau on TextChatService (client).
+-- 검수 2026-10-09 (user: "too kind"): the guide-style toasts / banners ("X is open!", "try ...") one switch each;
+-- false = never shown. Rewards, danger and failures are no nudges and stay. 검수 decides the rest from the list
+-- game dev 1 sent (2026-10-09)
+Config.Nudges = {
+	DailiesOpened = false, -- "Daily quests are open! ..." after the first [Claim] (HUD parseQuests)
+}
+
 Config.ChatText = {
 	Joined = "You joined the %s!", -- team name: "You joined the Horn Legion!"
 	Choosing = "Pick a side to start!", -- TextChatService only: the line for the auto-assigned "Choosing a side" team

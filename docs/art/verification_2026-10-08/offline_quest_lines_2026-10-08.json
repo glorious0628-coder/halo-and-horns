@@ -4,6 +4,18 @@
   "failedChecks": [],
   "static": [
     {
+      "check": "검수 10/09 story line: its pulse goes round the line's plate (else band), never the row (a list)",
+      "ok": true
+    },
+    {
+      "check": "검수 10/09: makeGlow never puts its frame inside a list / grid (it would be one more list item)",
+      "ok": true
+    },
+    {
+      "check": "every line kind (plain / claim / story call / Done!) has the same row: icon, words, numbers, claim pill only",
+      "ok": true
+    },
+    {
       "check": "검수 10/09: a re-fit lays the plates out again (once a frame)",
       "ok": true
     },
@@ -276,7 +288,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "9f46b958a5e5cb2c66cd4e2d5b2fcdcf7d4be3c2b5299800e3ec0d2e0c9ec69f"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "671c2dccbe5a098a6a3d88fcbc76d8b9f86e77a44246361e3c2d0ab120338f4f"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

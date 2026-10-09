@@ -234,7 +234,19 @@ def static_checks(src):
     tap = src[src.find("function L.QuestLineTap(i)"):src.find("function L.QuestBlockTap()")]
     fit = src[src.find("function L.FitQuestLine(l)"):src.find("function L.SetQuestLine(l, e, label, nums)")]
     refresh = src[src.find("refreshQuests = function()"):src.find("toggleQuests = function(open)")]
+    full = src
+    glow = full[full.find("local function makeGlow(parent, radius)"):full.find("-- the shared press feel")]
+    pulse = full[full.find("local callTarget = nil"):full.find("L.SetStoryPulse(callTarget)")]
+    # every child the builder parents to a quest row (Parent = row): only the four line parts
+    row_children = re.findall(r'Name = "(\w+)",[^\n]*\n(?:[^\n]*\n){0,8}?\s*Parent = row,', build)
     return [
+        ("검수 10/09 story line: its pulse goes round the line's plate (else band), never the row (a list)",
+         "callTarget = L.LineGlowTarget(l)" in pulse and "callTarget = l.Row" not in pulse
+         and "\treturn l.Plate or l.Band\n" in full),
+        ("검수 10/09: makeGlow never puts its frame inside a list / grid (it would be one more list item)",
+         'if typeof(parent) ~= "Instance" or parent:FindFirstChildWhichIsA("UIGridStyleLayout") then return nil end' in glow),
+        ("every line kind (plain / claim / story call / Done!) has the same row: icon, words, numbers, claim pill only",
+         sorted(row_children) == ["Claim", "Icon", "Nums", "Text"]),
         ("검수 10/09: a re-fit lays the plates out again (once a frame)", "\t\t\tL.LayoutQuestPlates()\n" in fit
          and "\tif not L.PlatesQueued then\n" in fit),
         ("the lines are built for L.QuestLines()", "local n = L.QuestLines()" in build and "for i = 1, n do" in build
