@@ -7,8 +7,8 @@ the guide (L.PinnedTap) instead of the list.
 #2 the guide's first window (Panels BUILDERS.Welcome): [I'm In!] is the one wide button (half the row), Next / Later a
 quarter each; short phone screens (height < 520) keep a 64 px guide face instead of none.
 A23-74 weapon first (dev2 dev2-weapon): TutorialStep Forge (3) beams to the anvil in the Crossroads, to the Crossroads
-from elsewhere (by the step, never BlacksmithVisited); a tap of the Forge row fires RequestTutorial and brings the beam
-back; the bag's empty weapons line says the weapon comes with the first quest.
+from elsewhere (by the step, never BlacksmithVisited; 빛 마을 점검 #16: the anvil from every walk zone); a tap of the Forge
+row brings the guide back and pops the quest marker (#20); the bag's empty weapons line says the weapon comes with the first quest.
 Static source checks (HUD.luau is too large for an offline run of refreshQuests); each check names the exact code.
 Report: docs/art/verification_2026-10-07/offline_round3_client_2026-10-07.json
 """
@@ -92,17 +92,19 @@ def main():
          'L.ForgeStep = (type(TUT.Steps) == "table" and tonumber(TUT.Steps.Forge)) or 3' in hud
          and hud.find("L.ForgeStep = ") < hud.find("local function refreshGuides()")
          and "\tlocal forge = step == L.ForgeStep\n" in guides
-         and '\t\tif guide.Tag == "forge" and (not forge or guide.From ~= zone) then\n\t\t\tHUD.ClearGuide()\n' in guides
-         and 'local target = zone == "Crossroads" and L.BlacksmithTarget() or findTravelTarget("Crossroads")' in forge_branch
-         and 'if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end' in forge_branch
+         and '\t\tif guide.Tag == "forge" and (not forge or guide.From ~= select(2, L.ForgeTarget(zone))) then\n\t\t\tHUD.ClearGuide()\n' in guides
+         and 'local target, from = L.ForgeTarget(zone)' in forge_branch
+         and 'if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = from end' in forge_branch
+         and 'L.ForgeWalk = { Crossroads = true, HaloTown = true, HornsTown = true, Outskirts = true }' in hud
+         and 'local anvil = L.ForgeWalk[zone] and L.BlacksmithTarget() or nil' in hud
          and 0 < guides.find("\tif forge then") < guides.find("\telseif L.NeedsMeadowGuide(step)")
          and "BlacksmithVisited" not in forge_branch
          and 'ForgeGuide = "First weapon",' in hud),
-        ("A23-74 weapon first: tapping the Forge row asks the server for the walk again and brings the beam back",
+        ("빛 마을 점검 #20: tapping the Forge row brings the guide back and pops the quest marker (no RequestTutorial)",
          "\telseif step == L.ForgeStep then\n" in pinned
-         and "\telseif step == L.ForgeStep then\n\t\t-- A23-74: the server walks me to the anvil again (ignored while moving "
-             "or already there); the beam comes back\n\t\tfire(\"RequestTutorial\")\n\t\tHUD.ClearGuide()\n\t\trefreshGuides()\n"
-         in pinned
+         and "\t\tHUD.ClearGuide()\n\t\trefreshGuides()\n\t\tlocal qm = C and C.QuestMarker\n"
+             "\t\tif type(qm) == \"table\" and type(qm.Pulse) == \"function\" then pcall(qm.Pulse) end\n" in pinned
+         and "RequestTutorial" not in pinned[pinned.find("elseif step == L.ForgeStep then"):pinned.find("elseif step == 1 or step == 2 then")]
          and pinned.find("if step == 0 then") < pinned.find("elseif step == L.ForgeStep then")
          < pinned.find("elseif step == 1 or step == 2 then")),
         ("A23-74: the bag's empty weapons line promises the weapon right after the first quest",

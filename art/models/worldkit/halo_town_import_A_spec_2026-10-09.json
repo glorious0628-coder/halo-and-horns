@@ -1,6 +1,6 @@
 [
-{"name":"Halo_Fountain","file":"art/models/tripo/web/Halo_Fountain_HD_LOD.glb","kind":"acc","fit":["max",16]},
-{"name":"Halo_Gate","file":"art/models/tripo/web/Halo_Gate_HD_LOD.glb","kind":"acc","fit":["h",42]},
+{"name":"Town_Halo_Fountain3","file":"art/models/tripo/web/Halo_Fountain_HD_LOD.glb","kind":"acc","fit":["max",16]},
+{"name":"Halo_Gate","file":"art/models/tripo/web/Halo_Gate_HD_LOD.glb","kind":"acc","fit":["h",50.4]},
 {"name":"Halo_Tower","file":"art/models/tripo/web/Halo_Tower_HD_LOD.glb","kind":"acc","fit":["z",36]},
 {"name":"Halo_Cathedral","file":"art/models/tripo/web/Halo_Cathedral_HD_LOD.glb","kind":"acc","fit":["h",70]},
 {"name":"Halo_DomeHouseA","file":"art/models/tripo/web/Halo_DomeHouseA_HD_LOD.glb","kind":"acc","fit":["h",12]},
