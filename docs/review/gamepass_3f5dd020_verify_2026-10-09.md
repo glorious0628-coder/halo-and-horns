@@ -22,8 +22,7 @@
 - attendance: **98/98, 변이 36/36** — 단, 이 시험은 `withLooks`로 `Config.Looks`·`GrantLook`을 **가짜로 주입**함. 병합 상태 실제 연결은 코드로 대조: `AttendanceService.grantLooks`가 `Config.Looks[id].Unlock.Attendance`(표 모양 `{Attendance = 14}`)를 읽고 `MonetizationService.GrantLook(player, id)`(새로 열면 true)를 부름 — 이름·모양·반환값 일치, 출석 룩 6개(14/50/100일 × 두 진영)가 켜짐. 실제 두 서비스를 한 세계에서 같이 올리는 시험은 아직 없음(제안: 개발 2 또는 나중에 한 줄 추가).
 - 나머지: 83개 중 **79개 통과, 4개 exit≠0**:
   - `test_costume_physics`, `test_skin_binding_studio`: 은퇴한 도구("costumes removed A23-5, must not be run") — 의도된 실패.
-  - `test_board`: **내 실수** — A23-84 Slime Prince 글 바꿈(42984947) 뒤 시험 데이터(`board_offline.luau`)에 'King Slime'이 남아 있었음. gamepass와 무관, main에서도 실패하던 것. 6e9bc706에서 고침(93/93, 변이 26/26).
-  - (네 번째는 위 목록에서 `test_a23_14` 등 처음 시험 한 줄 병렬 실행 때 꼬인 흔적이 아닌 것으로 확인: 최종 한 줄 실행에서는 위 3개 외 모두 exit 0.)
+  - `test_board`, `test_weapon_first`: **내 실수** — A23-84 Slime Prince 글 바꿈(42984947) 뒤 시험 데이터에 옛 글이 남음(`board_offline.luau`의 'King Slime' 글, `test_weapon_first.py`의 변이 자리 "The King Slimes ate…"). gamepass와 무관하고 main에서도 실패하던 것. 고침: board 6e9bc706(93/93, 변이 26/26), weapon_first 이 문서와 같은 커밋(변이 47/47).
 - 실제 Roblox에서만 알 수 있는 것(시험 불가): 구매 직후 `UserOwnsGamePassAsync` 값, 개인 서버, DataStore 실제 한도. 게시 장소에서 사 보기 필요.
 
 ## 결론
