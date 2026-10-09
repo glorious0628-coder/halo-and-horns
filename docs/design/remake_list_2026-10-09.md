@@ -45,6 +45,7 @@ Credits: no per-batch report to the user; 검수 tells the user only when a bala
 - Scroll grades: one icon per grade (Enh 70/30/10, Move 70/30/10) instead of one tinted icon.
 - Attendance ribbons Days 7/14/28/50/100: own ribbon each instead of hue shifts.
 - Pet menu button (now the Baby Slime pet icon) and the 2x XP pass tile (now the faction XP +30% icon): own icons.
+- Top bar (A23-81, fdb3b7c8) reuses old approved parts (PanelCard, LevelBadgeHalo/Horns, WarCrownPip) → its own plate + Halo badge + Horns badge, no lettering (검수 2026-10-10). 이미지 생성 2 after the Halo NPCs; 이미지 개발 uploads and swaps.
 - Speech bubbles: Captain Clatter, Flower Slime, Slingshot Goblin, Skeleton Archer get their own (now family bubbles).
 - World map pond slimes are pasted concept cutouts → goes away with the minimap/big-map tile set (A23-95, MapTilesFull).
 
