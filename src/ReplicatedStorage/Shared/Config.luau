@@ -3640,6 +3640,24 @@ Config.Visuals = {
 	HugeNumberScale = 2.5, -- release total damage number scale
 }
 
+-- the King Slime's thud (user 2026-10-09 "킹슬라임이 뛸 때는 쿵쿵 카메라 효과 있으면 좋겠어"; 검수: near players only,
+-- short, a thud + a round dust ring, off with Settings 'Screen shake'). Client only (Fx). A slime of Kinds hops slower
+-- (HopRate x a slime's walk hop pace) and higher (HopRatio of its body, at most HopMax studs) than a normal slime, and
+-- every landing - its walk hops and its attack hop (x AttackMul) - drops my camera Bump studs and lets it bounce back
+-- over BumpTime s while my character stands within Near studs of it (less and less out to Far, nothing beyond), plays
+-- the thud (Config.Audio.Sounds.KingThud: full within Near, silent from SoundFar) and spreads a round dust ring (Ring x
+-- its body height wide, RingPuffs dust clouds on its edge, no rays). 'Screen shake' off / Roblox Reduced Motion: no
+-- camera drop (the sound and the dust stay). Landings closer than Gap s make one thud.
+Config.BossThud = {
+	Kinds = { SlimeKing = true },
+	HopRate = 0.55, HopRatio = 0.2, HopMax = 2,
+	Near = 18, Far = 45, SoundFar = 70,
+	Bump = 0.6, BumpTime = 0.32, AttackMul = 1.4, BumpMax = 0.9, -- studs, s (the drop shows ~0.63 x Bump: the bounce damps)
+	Gap = 0.3,
+	Ring = 0.9, RingMin = 4, RingMax = 12, RingGrow = 0.25, RingFade = 0.5, RingPuffs = 8,
+	DustColor = Color3.fromRGB(196, 178, 140),
+}
+
 -- A23-75 / A23-77 looks (이미지 생성 2 dd217fc, 검수 OK): a worn look (player attribute LookOn = one of these ids, set by
 -- the server; Config.Looks sells / awards them under the same id) recolours the rank's own mark mesh - TextureID per
 -- rank, R1 and R2 share one 64 px palette - so the shape stays the rank's (a bought look never passes for a higher
@@ -4775,6 +4793,8 @@ Config.Audio = {
 		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
 		KaijuSiren = { File = "KaijuSiren", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B5 KaijuPhase -> 'Siren'; CountTick follows
 		KaijuStomp = { File = "KaijuStomp", Volume = 0.45, Speed = { 0.97, 1.03 }, Max = 2, Gap = 1 }, -- B4 Fx Stomp: Volume x1 within 15 studs -> 0 at 60
+		-- the King Slime's landing thud (Config.BossThud, Fx): the kaiju stomp file lower and softer until its own file
+		KingThud = { File = "KaijuStomp", Volume = 0.38, Speed = { 0.86, 0.92 }, Max = 2, Gap = 0.25 },
 		ZoneEnterPvP = { File = "ZoneEnterPvP", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B9 ZonePvP false->true, not within 3 s of a spawn / teleport, nothing on leaving
 		GoldenSpot = { File = "GoldenSpot", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B8 a golden monster first in view within 50 studs (once per monster); GoldenKill = same file
 		GoldenKill = { File = "GoldenSpot", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- a golden kill (Reward Golden): the GoldenSpot file in its own pool (the spot's 10 s gap never eats it); the coin 0.1 s later

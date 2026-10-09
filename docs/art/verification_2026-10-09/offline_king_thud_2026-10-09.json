@@ -1,0 +1,47 @@
+{
+  "checks": 20,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the drop at any distance",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the drop with 'Screen shake' off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no cap on the drop",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the attack hop no bigger",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the camera never comes back up (no damping)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every landing thuds twice (no gap)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "walk hops never thud",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a huge drop",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}
