@@ -137,6 +137,7 @@ local KIND = { -- pass 2 caps: trees A 18 / B 54 / C 6, bushes A 105 / B 60, jel
 	Kit_M_FlowerCart = { Cap = 2, Solid = true },
 	Kit_M_SignPost = { Cap = 5, Solid = true },
 	Kit_M_PuddleRim = { Cap = 4, Low = true, Small = true },
+	Kit_W_StepStones = { Cap = 8, Low = true, Small = true }, -- pass 4 (검수 10/09): path stones in front of the scene spots
 }
 local GROUPCAP = { Boulder = 54, Flowers = 130 } -- pass 2: 36 / 85 (pond stone ring, flowers along the paths)
 -- triangles per piece (검수 2026-10-08); W_Tree_* / W_Boulder_* 1450, other kinds T.TrisUnknown. Lower these after the
@@ -1011,6 +1012,14 @@ do -- Picnic by the pond (NE of the water, outside the sand rim, looking in thro
 	put("Kit_M_FlowersA", px + 22, pz - 29, { S = { 1.2, 1.4 } })
 	put("Kit_M_FlowersA", px + 44, pz - 10, { S = { 1.2, 1.4 } })
 end
+do -- pass 4 (검수 10/09): path stones in front of the scene spots (pond north opening, fairy ring road side, hill foot)
+	local put = fixed("stepStones")
+	local pc = PT.Pond
+	for i, p in { { pc.X + 6, pc.Y - 46, 0 }, { pc.X + 9, pc.Y - 60, 8 }, { 385, -26, -6 }, { 388, -40, 10 }, { PT.Hill.X, -108, 0 },
+		{ PT.Hill.X + 3, -98, 12 } } do
+		put("Kit_W_StepStones", p[1], p[2], { S = { 0.9, 1.1 }, Yaw = Vector2.new(p[1] + math.sin(math.rad(p[3])) * 10, p[2] - 10) })
+	end
+end
 local lily = {} -- pond lily pads { X, Z, Y = water top, D, Flower = { X, Z, D, Pink } | nil } (Parts, built in MODE kit)
 do -- Pond rim (pass 2, concept: grey stones right at the water's edge, big round bushes behind them, lily pads), open
 	-- to the N (road view) and NE (picnic view): bearings -105..-20 get no stone and no bush
@@ -1519,7 +1528,7 @@ do
 				local g = (b - a - T.ClumpLen * k) / (k + 1)
 				for i = 1, k do
 					local cx = a + g * i + T.ClumpLen * (i - 0.5)
-					local lead = clump(cx, side * rng:NextNumber(16.4, 17.6), rng:NextInteger(3, 5), 4, "roadClump",
+					local lead = clump(cx, side * rng:NextNumber(16.4, 17.6), rng:NextInteger(4, 5), 4, "roadClump",
 						{ Along = { 1, 0 }, Back = { 0, side }, Shift = { 0, 4, -4 } })
 					if lead then
 						scatter(FLOWERS, lead.X + rng:NextNumber(-4, 4), side * rng:NextNumber(12.6, 13.4), 4, "roadFlowers")
@@ -1546,7 +1555,15 @@ do
 					t = scatter(kind, x + p[1], side * rng:NextNumber(p[2], p[3]), 4, "roadShade")
 					if t then break end
 				end
-				if t then scatter(FLOWER, t.X + rng:NextNumber(-3, 3), side * rng:NextNumber(12.6, 13.6), 4, "roadFlowers") end
+				if t then
+					scatter(FLOWER, t.X + rng:NextNumber(-3, 3), side * rng:NextNumber(12.6, 13.6), 4, "roadFlowers")
+					-- pass 4 (검수 10/09): the shade trees stand in pairs / threes (a grove by the road, not a lone tree)
+					for _, dx in { 8.5, -8.5 } do
+						if rng:NextNumber() < 0.7 then
+							scatter(kind, t.X + dx + rng:NextNumber(-1.5, 1.5), t.Z + side * rng:NextNumber(-2.5, 2.5), 4, "roadShade")
+						end
+					end
+				end
 			end
 		end
 	end
@@ -1555,7 +1572,7 @@ do
 	-- rest a flower
 	for i, x0 in loopRuns do
 		if i % 2 == 1 then
-			clump(x0 + 6.9, lp[2] - rng:NextNumber(9.5, 10.5), 3, 4, "loopClump", { Along = { 1, 0 }, Back = { 0, -1 },
+			clump(x0 + 6.9, lp[2] - rng:NextNumber(9.5, 10.5), 4, 4, "loopClump", { Along = { 1, 0 }, Back = { 0, -1 },
 				Shift = { 0, 3, -3 } })
 		end
 	end
@@ -1564,7 +1581,7 @@ do
 		n += 1
 		local xx = x + rng:NextNumber(-3, 3)
 		if n % 2 == 1 then
-			clump(xx, lp[4] + rng:NextNumber(6.8, 7.4), n % 4 == 1 and 3 or 1, 4, "loopSouth", { Along = { 1, 0 }, Back = { 0, 1 },
+			clump(xx, lp[4] + rng:NextNumber(6.8, 7.4), 4, 4, "loopSouth", { Along = { 1, 0 }, Back = { 0, 1 },
 				Shift = { 0, 4, -4 } })
 		else
 			scatter({ Name = "Flowers", S = { 1.3, 1.6 }, One = true }, xx, lp[4] + rng:NextNumber(4, 6), 4, "loopSouth")
@@ -1604,7 +1621,7 @@ do
 		{ Name = "Boulder", W = 2.5, S = { 0.3, 0.6 } },
 	}
 	for _, p in gridPoints(T.Grid, T.Jitter, function(x, z) return bandAt(x, z) == "hedge" end) do
-		if rng:NextNumber() < 0.85 then
+		if rng:NextNumber() < 0.45 then -- pass 4 (검수 10/09): 0.85 -> 0.45, the budget goes to clumps along roads and scene spots
 			scatter(pick(HEDGE, lawnDist(p[1], p[2])), p[1], p[2], 6, "hedge")
 		end
 	end
@@ -1660,7 +1677,7 @@ do
 	end
 	shuffle(gaps)
 	for _, p in gaps do
-		if not hasNear(p[1], p[2], 9) then
+		if not hasNear(p[1], p[2], 9) and rng:NextNumber() < 0.5 then -- pass 4: half the gaps stay open
 			if rng:NextNumber() < 0.6 then
 				scatter({ Name = "Kit_M_BushA", S = { 1.8, 2.3 } }, p[1], p[2], 8, "gapFill") -- pass 2: 1.4..1.8
 			else

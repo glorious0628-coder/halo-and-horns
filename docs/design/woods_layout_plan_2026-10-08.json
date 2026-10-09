@@ -14,7 +14,7 @@
   {"name": "camp1to2", "w": 5, "mat": "Pavement", "pts": [[856, 104], [890, 122], [930, 128], [970, 126], [994, 128]], "note": "the concept's paths join the camps"},
   {"name": "toBoss", "w": 6, "mat": "Pavement", "pts": [[1060, 9], [1078, 40], [1096, 72], [1106, 100]]},
   {"name": "trailCurve", "w": 9, "mat": "Pavement", "pts": [[748, -150], [800, -132], [860, -160], [920, -140], [980, -165], [1040, -148], [1074, -150]], "note": "the old straight trail z -150 gently bent; keep trail clearance for monsters"},
-  {"name": "toGiant", "w": 5, "mat": "Pavement", "pts": [[940, -9], [948, -35], [954, -62]]}
+  {"name": "toGiant", "w": 5, "mat": "Pavement", "pts": [[940, -9], [948, -35], [954, -62], [958, -80]]}
  ],
  "creek": {
   "pts": [[1170, -238], [1140, -226], [1100, -230], [1050, -218], [1000, -224], [950, -212], [900, -220], [850, -210], [800, -218], [750, -212], [712, -214]],
