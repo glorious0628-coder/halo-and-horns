@@ -20,6 +20,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau"
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
+CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 FIXTURE = ROOT / "tools/fixtures/camera_input_offline.luau"
 FOLLOW_FIXTURE = ROOT / "tools/fixtures/camera_follow_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
@@ -76,112 +77,55 @@ HUD_MUTATIONS = [
 ]
 
 
-# A23-65 + A23-74 (user 2026-10-07): the follow turn and the recenter (tools/fixtures/camera_follow_offline.luau); each
-# must make it fail. (a) D then stop -> behind me in 1.2 s, (b) W+D then stop, (c) no recenter in the holds / Free /
-# blocked, (d) W+D arc radius, (e) backing up never turns. Review A23-74 (user 2026-10-07): (1) Roblox's keyboard /
-# trackpad camera turn is a hand turn, (2) radius >= 50 studs for a stick held 0..110 deg off, (3) phones on Classic,
-# no second walking turn under Roblox's Follow camera, (4) a 0.5 s hitch turns as if 1/20 s.
-STOP_BOOK = ("\tif walking then\n\t\tFOLLOW.StopAt = math.huge\n\telseif FOLLOW.StopAt == math.huge then\n"
-             "\t\tFOLLOW.StopAt = now\n\tend\n")
-FREE_LINE = '\tif setting("Cam", "Free") == "Free" or blocked() then return end -- default Free (user 10/08)\n'
-HOLD_LINE = ("\tif now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end\n")
+# A23-91 (user 2026-10-09 "콘솔 게임처럼"): the console-style follow (tools/fixtures/camera_follow_offline.luau); each must
+# make it fail.
 FOLLOW_MUTATIONS = [
-    # walking
-    ("(e) spins while backing up", "BackDot = -0.35,", "BackDot = -1.1,"),
-    ("sidesteps never turn again (the old A23-65 forward-only rule)", "BackDot = -0.35,", "BackDot = 0.5,"),
-    ("(d) a held side key circles tightly (side cap = forward cap)", "SideRate = math.rad(16),", "SideRate = math.rad(45),"),
-    ("(d) a linear fade (W+D circles at ~43 studs)", "(1 - t) ^ FOLLOW.Fade * (1 + FOLLOW.Fade * t)", "(1 - t)"),
-    ("(d) the old dot-based cap (full 45 deg/s up to 60 deg: 25-stud circles)",
-     "local t = math.clamp((off - FOLLOW.FullAngle) / (FOLLOW.SideAngle - FOLLOW.FullAngle), 0, 1)",
-     "local t = math.clamp((off - FOLLOW.SideAngle) / math.rad(30), 0, 1)"),
-    ("a hard switch instead of a smooth fade", "(1 - t) ^ FOLLOW.Fade * (1 + FOLLOW.Fade * t)", "(t < 0.4 and 1 or 0)"),
-    ("forward walks lose the full cap", "return side + (full - side) * (1 - t)", "return side + 0 * (1 - t)"),
-    ("'Screen shake' off ignored sideways", "slow and FOLLOW.SlowSideRate or FOLLOW.SideRate", "FOLLOW.SideRate"),
-    ("Reduced Motion ignored", "or FOLLOW.Reduced()", "or false"),
-    ("no hold after a hand turn", "if now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack",
-     "if now - FOLLOW.LastAttack"),
-    ("(c) no hold after my swing (walk and recenter)", " or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end",
-     " then return end"),
-    ("no turn-speed cap while walking", "return math.clamp(angle * math.min(1, ease * dt), -rate * dt, rate * dt)",
-     "return angle * math.min(1, ease * dt)"),
-    ("(c) Settings Free ignored (walk and recenter)", 'if setting("Cam", "Free") == "Free" or blocked() then return end',
-     "if blocked() then return end"),
-    ("(c) windows / scripted camera no longer block", 'if setting("Cam", "Free") == "Free" or blocked() then return end',
-     'if setting("Cam", "Free") == "Free" then return end'),
-    ("no camera setting yet follows (the default is Free, user 10/08)", 'if setting("Cam", "Free") == "Free" or blocked() then return end',
-     'if setting("Cam", "Follow") == "Free" or blocked() then return end'),
-    ("'Screen shake' off ignored", 'local slow = setting("Shake", true) == false', "local slow = false"),
-    ("other players' swings hold my camera", "\t\tand data.UserId == LocalPlayer.UserId then\n", "\t\tthen\n"),
-    ("the move stick holds it", "if width > 0 and input.Position.X > width * FOLLOW.CameraSide then", "if true then"),
-    ("turns the wrong way", "local angle = math.atan2(cz * mx - cx * mz, dot)", "local angle = math.atan2(cx * mz - cz * mx, dot)"),
-    ("follows in shift lock", "if UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then return end -- shift lock turns me itself",
-     "-- (shift lock check removed)"),
-    # A23-74 standing recenter
-    ("(a)(b) no recenter on the stop (f3ab1f1: a side view forever)",
-     "\t\ta = FOLLOW.CenterTurn(cx, cz, humanoid, now, dt, slow, was)\n", "\t\ta = nil\n"),
-    ("(a) the recenter turns the wrong way", "local angle = math.atan2(cz * fx - cx * fz, dot)",
-     "local angle = math.atan2(cx * fz - cz * fx, dot)"),
-    ("(a) the recenter too slow (30 deg/s)", "CenterRate = math.rad(120),", "CenterRate = math.rad(30),"),
-    ("(a) the recenter snaps round (no speed cap)", "-FOLLOW.CenterSpeed * dt, FOLLOW.CenterSpeed * dt)", "-math.huge, math.huge)"),
-    ("(a) no ease in (top speed at once)", "(was and FOLLOW.CenterSpeed or 0) +", "math.huge +"),
-    ("(a) no wait after the stop (recenters while switching keys)", "if now - FOLLOW.StopAt < FOLLOW.StopDelay\n\t\tor ",
-     "if "),
-    ("(a) never settles (stops at the dead zone edge)", "(was and FOLLOW.Settle or FOLLOW.DeadZone)", "FOLLOW.DeadZone"),
-    ("the dead zone ignored (nudges after every small body turn)", "(was and FOLLOW.Settle or FOLLOW.DeadZone)", "FOLLOW.Settle"),
-    ("(b) the recenter starts only past 50 deg (W+D stays a side view)", "(was and FOLLOW.Settle or FOLLOW.DeadZone)",
-     "(was and FOLLOW.Settle or math.rad(50))"),
-    ("(c) a hand turn no longer keeps my view after the stop", "\n\t\tor FOLLOW.LastManual >= FOLLOW.StopAt - FOLLOW.ManualHold then",
-     " then"),
-    ("a hand turn blocks the recenter for good (no new walk re-arms it)", "FOLLOW.LastManual >= FOLLOW.StopAt - FOLLOW.ManualHold",
-     "FOLLOW.LastManual > -math.huge"),
-    ("(e) the recenter spins 180 deg after backing up",
-     "if dot < FOLLOW.BackDot then return nil end -- I face the camera (a backpedal ended): no 180 deg spin", "-- (removed)"),
-    ("the recenter ignores 'Screen shake' off", "math.min(slow and FOLLOW.SlowCenterRate or FOLLOW.CenterRate,",
-     "math.min(FOLLOW.CenterRate,"),
-    ("the recenter runs for a dead character", "if not root or humanoid.Health <= 0 then return nil end",
-     "if not root then return nil end"),
-    ("(c) the stop is only counted after the hand-turn hold (a right drag before the stop is forgotten)",
-     STOP_BOOK + FREE_LINE + HOLD_LINE, FREE_LINE + HOLD_LINE + STOP_BOOK),
-    # review A23-74 (user 2026-10-07): (1) Roblox's keyboard / trackpad turn = a hand turn
-    ("(1) a held arrow / Comma / Period is no hand turn (the recenter pulls Roblox's keyboard turn back)",
-     " or FOLLOW.KeyTurn() then", " then"),
-    ("(1) the Right arrow forgotten", "Enum.KeyCode.Left, Enum.KeyCode.Right, ", "Enum.KeyCode.Left, "),
-    ("(1) a Comma / Period tap between two frames is missed",
-     "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not UserInputService:GetFocusedTextBox() then", "if false then"),
-    ("(1) a processed Comma / Period tap is ignored (Roblox's camera binds those keys itself)",
-     "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not UserInputService",
-     "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not processed and not UserInputService"),
-    ("(1) any key press counts as a hand turn", "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not",
-     "if input.KeyCode and not"),
-    ("(1) a comma held while typing in a text box counts",
-     "if UserInputService:GetFocusedTextBox() then return false end -- typing a comma in chat turns nothing", "-- (removed)"),
-    ("(1) a period pressed while typing in a text box counts",
-     "and not UserInputService:GetFocusedTextBox() then\n\t\t\tFOLLOW.LastManual", "then\n\t\t\tFOLLOW.LastManual"),
-    ("(1) a trackpad pan is no hand turn",
-     "pcall(function() UserInputService.PointerAction:Connect(FOLLOW.OnPointerAction) end)", "local _ = nil"),
-    ("(1) a wheel / pinch zoom counts as a hand turn", "if pan and pan.Magnitude > 1e-3 then", "if pan then"),
-    # (2) the arc radius >= ~50 studs at every held angle
-    ("(2) no radius cap (a stick 25 deg off circles at 38 studs)",
-     ", (tonumber(speed) or 0) * math.min(1, ml) / FOLLOW.MinRadius)", ", math.huge)"),
-    ("(2) the radius cap at 35 studs", "MinRadius = 55,", "MinRadius = 35,"),
-    ("(2) a half-pushed stick gets the full-speed cap (27-stud circles)", "* math.min(1, ml) /", "* 1 /"),
-    ("(2) the radius cap reads a fixed 20 studs/s (a slower walk circles tighter)",
-     "FOLLOW.WalkTurn(cx, cz, move, dt, slow, humanoid.WalkSpeed)", "FOLLOW.WalkTurn(cx, cz, move, dt, slow, 20)"),
-    # (3) phones: Roblox's Classic touch camera; no second walking turn under Roblox's Follow camera
-    ("(3) phones keep Roblox's Follow camera (no Classic switch)",
+    # 1 only while walking / a stop brakes
+    ("1 the stop never brakes (it coasts on)", "\tlocal k = walking and FOLLOW.Response or FOLLOW.StopResponse\n",
+     "\tlocal k = walking and FOLLOW.Response or 0.5\n"),
+    ("1 a standing body still turns it (the old recenter)", "\tlocal walking = ml >= FOLLOW.MinMove\n", "\tlocal walking = true\n"),
+    # 2 dead zone, spring, acceleration cap, no overshoot
+    ("2 a 6 deg dead zone again", "DeadZone = math.rad(15),", "DeadZone = math.rad(6),"),
+    ("2 no acceleration cap", "\tFOLLOW.Vel = math.clamp(want, FOLLOW.Vel - step, FOLLOW.Vel + step)\n", "\tFOLLOW.Vel = want\n"),
+    ("2 a frame-rate-bound ease (share per frame)", "(1 - math.exp(-k * dt))", "math.min(1, k / 60)"),
+    ("2 it may turn past the dead zone edge (overshoot)", "\tif dot >= FOLLOW.BackDot then limit = math.max(0, excess) end", "\tlocal _ = 0"),
+    ("2 turns the wrong way", "local angle = math.atan2(cz * ux - cx * uz, dot)", "local angle = math.atan2(cx * uz - cz * ux, dot)"),
+    # 3 backwards / sideways
+    ("3 spins while walking toward the camera", "BackDot = -0.3,", "BackDot = -1.1,"),
+    ("3 sideways as fast as forward", "SideMin = 0.35,", "SideMin = 1,"),
+    # 4 hand turn
+    ("4 no hold after a hand turn", "\tif now - FOLLOW.LastManual < FOLLOW.ManualHold then\n", "\tif false then\n"),
+    ("4 after the hold it snaps back (the speed kept)", "\t\tFOLLOW.Vel = 0 -- a hand turn: my own view; afterwards it builds up again from 0\n", ""),
+    ("4 a held arrow / Comma / Period is no hand turn", " or FOLLOW.KeyTurn() then", " then"),
+    ("4 the right stick is no hand turn", "elseif input.KeyCode == Enum.KeyCode.Thumbstick2 and input.Position.Magnitude > 0.25 then",
+     "elseif false then"),
+    ("4 the move stick holds it", "if width > 0 and input.Position.X > width * FOLLOW.CameraSide then", "if true then"),
+    # 5 combat
+    ("5 full follow during a fight", "if now - FOLLOW.LastAttack < FOLLOW.CombatHold then share *= FOLLOW.CombatScale end", "-- (removed)"),
+    ("5 other players' swings weaken my camera", "\t\tand data.UserId == LocalPlayer.UserId then\n", "\t\tthen\n"),
+    # 7 / 8 caps and hitches
+    ("7 no hitch clamp", "\tdt = math.clamp(dt, 0, FOLLOW.MaxDt)\n", ""),
+    ("8 no top speed cap", "\t\t\tlocal cap = math.min(slow and FOLLOW.SlowMaxRate or FOLLOW.MaxRate,\n",
+     "\t\t\tlocal cap = math.min(math.huge,\n"),
+    ("8 'Screen shake' off ignored", 'local slow = setting("Shake", true) == false', "local slow = false"),
+    ("8 Reduced Motion ignored", "or FOLLOW.Reduced()", "or false"),
+    ("8 no radius cap (tight circles)", "(tonumber(speed) or 0) * math.min(1, ml) / FOLLOW.MinRadius)", "math.huge)"),
+    # off
+    ("Settings Free ignored", 'if setting("Cam", "Follow") == "Free" or blocked() or FOLLOW.RobloxFollows()',
+     "if blocked() or FOLLOW.RobloxFollows()"),
+    ("no setting yet = no follow (the default must be Follow)", 'if setting("Cam", "Follow") == "Free"', 'if setting("Cam", "Free") == "Free"'),
+    ("windows no longer block", 'if setting("Cam", "Follow") == "Free" or blocked() or FOLLOW.RobloxFollows()',
+     'if setting("Cam", "Follow") == "Free" or FOLLOW.RobloxFollows()'),
+    ("adds to Roblox's own Follow camera (two turns)", 'or blocked() or FOLLOW.RobloxFollows()\n', "or blocked()\n"),
+    ("follows in shift lock", "\t\tor UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then -- shift lock turns me itself\n",
+     "\t\tor false then\n"),
+    ("follows in first person", "if (focus - cf.Position).Magnitude < 1 then FOLLOW.Vel = 0 return end -- first person",
+     "-- (first person check removed)"),
+    # phones: Roblox's Classic touch camera
+    ("phones keep Roblox's Follow camera (no Classic switch)",
      "then LocalPlayer.DevTouchCameraMode = modes.Classic end", "then local _ = modes.Classic end"),
-    ("(3) Start never switches the touch camera", "\tFOLLOW.TouchClassic() -- phones", "\t-- (removed) -- phones"),
-    ("(3) WalkTurn adds to Roblox's Follow camera (two turns)", "elseif not FOLLOW.RobloxFollows() then", "elseif true then"),
-    ("(3) touch Default read as Classic (it is Follow on touch)",
+    ("touch Default read as Classic (it is Follow on touch)",
      'if mode == "Default" then mode = if touch then "Follow" else "Classic" end', 'if mode == "Default" then mode = "Classic" end'),
-    ("(3) a PC reads the touch mode (a PC player's Follow choice ignored)",
-     "(if touch then LocalPlayer.DevTouchCameraMode else LocalPlayer.DevComputerCameraMode)", "(LocalPlayer.DevTouchCameraMode)"),
-    ("(3) an explicit touch mode (Orbital) is overridden too",
-     "if mode == modes.UserChoice or mode == modes.Follow then", "if true then"),
-    # (4) a hitch never jumps the camera
-    ("(4) no frame clamp (a 0.5 s hitch jumps the recenter 60 deg)",
-     "\tdt = math.min(dt, FOLLOW.MaxDt) -- A23-74 review: a hitch never jumps the camera\n", ""),
-    ("(4) the clamp at 1/2 s", "MaxDt = 1 / 20,", "MaxDt = 1 / 2,"),
 ]
 
 
@@ -244,6 +188,17 @@ def main():
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
     hud = HUD.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     static = hud_checks(hud)
+    # A23-91: Config.CameraFollow (the numbers the user's feedback changes) = FOLLOW's own names with the same values,
+    # and Start copies it over FOLLOW
+    cfg = CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    m_cfg = re.search(r"\nConfig\.CameraFollow = \{\n(.*?)\n\}\n", cfg, re.S)
+    m_fol = re.search(r"\nlocal FOLLOW = \{\n(.*?)\n\}\n", source.replace("\r\n", "\n"), re.S)
+    pairs_cfg = dict(re.findall(r"(\w+) = ([^,\n]+),", m_cfg.group(1))) if m_cfg else {}
+    pairs_fol = dict(re.findall(r"(\w+) = ([^,\n]+),", m_fol.group(1))) if m_fol else {}
+    same = bool(pairs_cfg) and all(pairs_fol.get(k) == v for k, v in pairs_cfg.items())
+    static.append(("A23-91: Config.CameraFollow = FOLLOW's names and values (" + ", ".join(sorted(pairs_cfg)) + ")", same))
+    static.append(("A23-91: Start copies Config.CameraFollow over FOLLOW",
+                   "if type(value) == \"number\" and type(FOLLOW[key]) == \"number\" then FOLLOW[key] = value end" in source))
     for name, good in static:
         print(("STATIC ok   " if good else "STATIC FAIL ") + name)
     for name, old, new in HUD_MUTATIONS:

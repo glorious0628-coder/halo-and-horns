@@ -186,9 +186,10 @@ Config.Data = {
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
 		-- Cam (A23-65): user 10/08 "카메라 뒤 따라가게 하는 거 없는 게 나을까? 좀 어색한데?" -> the default is Free (Roblox's own
 		-- camera); Follow stays in Settings for whoever wants it. Settings V3 (검수 10/09): a save from before V3 gets Cam = Free
-		-- once (SanitizeSettings); a Follow picked after that is kept
-		Settings = { V = 3, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Free", PvPCards = false },
+		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
+		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
+		Settings = { V = 4, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+			Cam = "Follow", PvPCards = false },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -3920,12 +3921,28 @@ function Config.FillKeys(text, map, en)
 end
 
 -- BB2 saved settings: value rules (defaults: Config.Data.Defaults.Settings). Text = the settings window (BB3) + toasts.
+-- A23-91 (user 2026-10-09 "콘솔 게임처럼"): the console-style camera follow (CameraFollow.luau FOLLOW, same names; Start
+-- copies these over its defaults). Change these when the user says how it feels. Angles in degrees here, radians there
+Config.CameraFollow = {
+	DeadZone = math.rad(15), -- walk vs camera look: a smaller angle is left alone
+	Gain = 2.2, -- target turn speed (rad / s) per rad beyond DeadZone
+	SideMin = 0.35, -- a sideways walk turns at this share (forward = 1)
+	BackDot = -0.3, -- walking toward the camera (walk . look below this): no turn
+	Response = 6, StopResponse = 14, -- 1 / s: the spring while walking / after a stop
+	MaxAccel = math.rad(240), -- rad / s per s
+	MaxRate = math.rad(90), SlowMaxRate = math.rad(50), -- rad / s (slow: Screen shake off / Reduced Motion)
+	MinRadius = 45, -- studs: never a tighter circle
+	ManualHold = 1.5, -- s after a hand turn
+	CombatHold = 1.5, CombatScale = 0.3, -- s after my swing / skill, and the share then
+}
+
 Config.Settings = {
 	-- Settings.V. 2 (A23-78, user 2026-10-08): key hints are off by default now; a blob saved before V2 (V < 2 or no V)
 	-- drops its old KeyBadges once (SanitizeSettings), every other value stays; from V2 on the player's own pick stays.
-	-- V3 (A23-65, 검수 2026-10-09): the camera default is Free; a blob saved before V3 gets Cam = Free once, a Follow
-	-- picked from V3 on stays
-	Version = 3,
+	-- V3 (A23-65, 검수 2026-10-09): the camera default was Free; V4 (A23-91, user 2026-10-09): the console-style Follow is
+	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
+	-- day of own Free picks is lost), a Free picked from V4 on stays
+	Version = 4,
 	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
@@ -4133,12 +4150,12 @@ function Config.SanitizeSettings(t)
 	local out = { V = ST.Version, Keys = {} }
 	-- A23-78: a blob from before settings V2 (no V, V < 2, NaN) forgets its KeyBadges once (the old default was on)
 	local before2 = not (type(src.V) == "number" and src.V == src.V and src.V >= 2)
-	-- A23-65 / settings V3: a blob from before V3 (Follow was the old default) gets the Free camera once
-	local before3 = not (type(src.V) == "number" and src.V == src.V and src.V >= 3)
+	-- A23-91 / settings V4: a blob from before V4 gets the camera default (the console-style Follow) once
+	local before4 = not (type(src.V) == "number" and src.V == src.V and src.V >= 4)
 	for key, def in ST.Defs do
 		local v, d = src[key], defaults[key]
 		if key == "KeyBadges" and before2 then v = d end
-		if key == "Cam" and before3 then v = d end
+		if key == "Cam" and before4 then v = d end
 		if def.Type == "Number" then
 			if type(v) == "number" and v == v and v > -math.huge and v < math.huge then
 				v = math.clamp(v, def.Min, def.Max)

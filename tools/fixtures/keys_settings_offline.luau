@@ -285,8 +285,8 @@ do
 end
 local NOT_ALLOWED = { "Home", "End", "Insert", "Delete", "RightControl", "RightAlt", "LeftSuper", "F13", "Keypad1", "Backspace",
 	"NumLock", "ButtonR2", "Unknown", "f", "", " F" }
-local SETTINGS_DEFAULTS = { V = 3, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-	Cam = "Free", PvPCards = false } -- Cam: A23-65 (default Free, user 10/08); PvPCards: 검수 10/09 (first PvP zone cards seen)
+local SETTINGS_DEFAULTS = { V = 4, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+	Cam = "Follow", PvPCards = false } -- Cam: A23-91 (the console-style Follow is the default again, user 10/09); PvPCards: 검수 10/09 (first PvP zone cards seen)
 local SETTINGS_DEFS = {
 	Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 	Shake = { Type = "Bool" },
@@ -828,8 +828,8 @@ runGroup("sanitize", function()
 	local out = S({ Foo = 1, Seq = 7, Version = 9, V = 5, Keys = { Nope = "X", [1] = "Y" }, Sfx = 0.5 })
 	local keys = {}
 	for k in out do keys[k] = true end
-	check(deepEq(keys, fieldSet) and out.V == 3 and out.Sfx == 0.5 and count(out.Keys) == 0,
-		"unknown top-level keys and unknown action ids are dropped (V = 3, A23-78 / A23-65)", show(out))
+	check(deepEq(keys, fieldSet) and out.V == 4 and out.Sfx == 0.5 and count(out.Keys) == 0,
+		"unknown top-level keys and unknown action ids are dropped (V = 4, A23-78 / A23-91)", show(out))
 	-- Keys
 	out = S({ Keys = { Attack = "Escape" } })
 	check(out.Keys.Attack == nil and C.KeyMap(out.Keys, nil).Attack == "F", "BB2 test value Keys.Attack = 'Escape' is rejected (Attack stays F)",
@@ -875,7 +875,7 @@ runGroup("sanitize", function()
 	check(o.Shake == false and o.KeyBadges == false, "false is kept")
 	for k, def in SETTINGS_DEFS do
 		if def.Type == "Enum" then
-			for _, opt in def.Options do check(S({ V = 3, [k] = opt })[k] == opt, "every enum option is kept (a V3 blob)", k .. "=" .. opt) end
+			for _, opt in def.Options do check(S({ V = 4, [k] = opt })[k] == opt, "every enum option is kept (a V4 blob)", k .. "=" .. opt) end
 			for _, bad in { "x", string.upper(def.Options[1]), string.rep("한", 1000), 3, true } do
 				check(S({ [k] = bad })[k] == SETTINGS_DEFAULTS[k], "values outside Options -> the default (incl. a 1000-character string)",
 					k .. "=" .. string.sub(tostring(bad), 1, 12))
@@ -890,7 +890,7 @@ runGroup("sanitize", function()
 	local keyPool = { "", "X", "F", "Q", "G", "J", "M", "One", "KeypadOne", "Escape", "W", "Home", string.rep("Y", 30), 7, false }
 	local anyPool = { 0 / 0, math.huge, -1, 0.25, 0.55, 2, "All", "Off", "Near", "ko", "en", "Grade", true, false, "x", {} }
 	for _ = 1, 300 do
-		local blob = { Keys = {}, V = rnd:NextInteger(1, 3) } -- A23-78 / A23-65: V1, V2 and V3 blobs
+		local blob = { Keys = {}, V = rnd:NextInteger(1, 4) } -- A23-78 / A23-91: V1 to V4 blobs
 		for _, id in ids do
 			if rnd:NextNumber() < 0.3 then blob.Keys[id] = keyPool[rnd:NextInteger(1, #keyPool)] end
 		end
@@ -903,7 +903,7 @@ runGroup("sanitize", function()
 		check(deepEq(blob, before), "SanitizeSettings never changes its input", show(blob))
 		local rk = {}
 		for k in r do rk[k] = true end
-		check(deepEq(rk, fieldSet) and r.V == 3, "output fields are exactly V, Keys and the seven settings", show(rk))
+		check(deepEq(rk, fieldSet) and r.V == 4, "output fields are exactly V, Keys and the seven settings", show(rk))
 		check(SFX_GRID[r.Sfx] == true, "Sfx is always on the 0.1 grid inside 0..1", tostring(r.Sfx))
 		if type(blob.Sfx) == "number" and blob.Sfx == blob.Sfx and math.abs(blob.Sfx) ~= math.huge then
 			check(math.abs(r.Sfx - math.clamp(blob.Sfx, 0, 1)) <= 0.05 + 1e-9, "Sfx = the nearest step of the clamped value", tostring(blob.Sfx))
@@ -917,8 +917,8 @@ runGroup("sanitize", function()
 				check(r[k] == (if kept then blob[k] else SETTINGS_DEFAULTS[k]),
 					"bools: a boolean is kept, anything else is the default", k .. " " .. tostring(blob[k]) .. " V" .. blob.V)
 			elseif def.Type == "Enum" then
-				-- A23-65: a V1/V2 blob's Cam is the default (Free) whatever it held
-				local valid = type(blob[k]) == "string" and table.find(def.Options, blob[k]) ~= nil and not (k == "Cam" and blob.V < 3)
+				-- A23-91: a blob before V4 gets the Cam default (Follow) whatever it held
+				local valid = type(blob[k]) == "string" and table.find(def.Options, blob[k]) ~= nil and not (k == "Cam" and blob.V < 4)
 				check(r[k] == (valid and blob[k] or SETTINGS_DEFAULTS[k]), "enums: an option is kept, anything else is the default",
 					k .. " " .. tostring(blob[k]))
 			end
@@ -942,19 +942,20 @@ end)
 -- SanitizeSettings drops it once (V < 2, no V, NaN) and keeps every other value; a V2 blob keeps the player's pick.
 runGroup("a23-78 key hints migration", function()
 	local S = CONFIG.SanitizeSettings
-	check(CONFIG.Settings.Version == 3 and CONFIG.Data.Defaults.Settings.V == 3, "settings version 3 (Config.Settings + the default blob)",
+	check(CONFIG.Settings.Version == 4 and CONFIG.Data.Defaults.Settings.V == 4, "settings version 4 (Config.Settings + the default blob)",
 		tostring(CONFIG.Settings.Version) .. " / " .. tostring(CONFIG.Data.Defaults.Settings.V))
 	local old = S({ V = 1, KeyBadges = true, Sfx = 0.4, Shake = false, Tags = "Near", Lang = "en", BagSort = "Grade",
 		Cam = "Free", DmgNum = "Off", Keys = { Map = "X" } })
-	check(old.KeyBadges == false and old.V == 3, "an old V1 save with key hints on: off once, saved as V3", show(old))
+	check(old.KeyBadges == false and old.V == 4, "an old V1 save with key hints on: off once, saved as V4", show(old))
 	check(old.Sfx == 0.4 and old.Shake == false and old.Tags == "Near" and old.Lang == "en" and old.BagSort == "Grade"
-		and old.Cam == "Free" and old.DmgNum == "Off" and old.Keys.Map == "X", "every other V1 setting stays as it was", show(old))
+		and old.Cam == "Follow" and old.DmgNum == "Off" and old.Keys.Map == "X",
+		"every other V1 setting stays as it was (Cam: the V4 default, A23-91)", show(old))
 	check(S({ KeyBadges = true }).KeyBadges == false, "no V (a blob from before BB2's V): key hints off", "")
 	check(S({ V = 0 / 0, KeyBadges = true }).KeyBadges == false and S({ V = "2", KeyBadges = true }).KeyBadges == false
 		and S({ V = 1.9, KeyBadges = true }).KeyBadges == false, "a broken V (NaN / a string / 1.9) counts as old", "")
 	check(S({ V = 2, KeyBadges = true }).KeyBadges == true, "V2: key hints the player turned on stay on", "")
 	check(S({ V = 7, KeyBadges = true }).KeyBadges == true, "a newer V keeps the pick too", "")
-	check(S(old).KeyBadges == false and S(S(old)).V == 3, "sanitizing again changes nothing (the migration runs once)", "")
+	check(S(old).KeyBadges == false and S(S(old)).V == 4, "sanitizing again changes nothing (the migration runs once)", "")
 	local back = S({ V = old.V, KeyBadges = true, Sfx = old.Sfx })
 	check(back.KeyBadges == true and back.Sfx == 0.4, "after the migration the player turns them on again: kept", show(back))
 	check(S({ V = 1, KeyBadges = false }).KeyBadges == false and S({ V = 2, KeyBadges = false }).KeyBadges == false,
@@ -970,48 +971,49 @@ runGroup("a23-78 key hints migration", function()
 				BagSort = "Default", Cam = "Follow" } },
 	})
 	local d1 = f:Load(601)
-	check(d1 ~= nil and d1.Settings.KeyBadges == false and d1.Settings.V == 3 and d1.Settings.Sfx == 0.3,
-		"load: a V1 save with key hints on -> off, V3, the rest kept", d1 and show(d1.Settings))
+	check(d1 ~= nil and d1.Settings.KeyBadges == false and d1.Settings.V == 4 and d1.Settings.Sfx == 0.3,
+		"load: a V1 save with key hints on -> off, V4, the rest kept", d1 and show(d1.Settings))
 	local d2 = f:Load(602)
-	check(d2 ~= nil and d2.Settings.KeyBadges == true and d2.Settings.V == 3, "load: a V2 save keeps key hints on",
+	check(d2 ~= nil and d2.Settings.KeyBadges == true and d2.Settings.V == 4, "load: a V2 save keeps key hints on",
 		d2 and show(d2.Settings))
 end)
 
------------------------------------------------------------------- 4c. A23-65 camera: settings V3 migration
--- user 2026-10-08: the camera default is Free. Saves from before settings V3 may hold Cam = "Follow" (the old default);
--- SanitizeSettings sets it to Free once (V < 3, no V, NaN) and keeps every other value; a V3 blob keeps the player's pick.
-runGroup("a23-65 camera migration", function()
+------------------------------------------------------------------ 4c. A23-91 camera: settings V4 migration
+-- user 2026-10-09 ("콘솔 게임처럼"): the console-style Follow is the default again. V3 (10/08-09) turned every save to Free;
+-- SanitizeSettings gives a blob from before V4 (V < 4, no V, NaN) the Follow default once and keeps every other value; a
+-- V4 blob keeps the player's pick (Free too).
+runGroup("a23-91 camera migration", function()
 	local S = CONFIG.SanitizeSettings
-	check(CONFIG.Data.Defaults.Settings.Cam == "Free", "the default camera is Free", tostring(CONFIG.Data.Defaults.Settings.Cam))
-	local old = S({ V = 2, Cam = "Follow", KeyBadges = true, Sfx = 0.4, Shake = false, Tags = "Near", Lang = "en", BagSort = "Grade",
+	check(CONFIG.Data.Defaults.Settings.Cam == "Follow", "the default camera is Follow (A23-91)", tostring(CONFIG.Data.Defaults.Settings.Cam))
+	local old = S({ V = 3, Cam = "Free", KeyBadges = true, Sfx = 0.4, Shake = false, Tags = "Near", Lang = "en", BagSort = "Grade",
 		DmgNum = "Off", Keys = { Map = "X" } })
-	check(old.Cam == "Free" and old.V == 3, "a V2 save on Follow: Free once, saved as V3", show(old))
+	check(old.Cam == "Follow" and old.V == 4, "a V3 save on Free: Follow once, saved as V4", show(old))
 	check(old.KeyBadges == true and old.Sfx == 0.4 and old.Shake == false and old.Tags == "Near" and old.Lang == "en"
-		and old.BagSort == "Grade" and old.DmgNum == "Off" and old.Keys.Map == "X", "every other V2 setting stays as it was", show(old))
-	check(S({ V = 1, Cam = "Follow" }).Cam == "Free" and S({ Cam = "Follow" }).Cam == "Free", "V1 / no V on Follow: Free", "")
-	check(S({ V = 0 / 0, Cam = "Follow" }).Cam == "Free" and S({ V = "3", Cam = "Follow" }).Cam == "Free"
-		and S({ V = 2.9, Cam = "Follow" }).Cam == "Free", "a broken V (NaN / a string / 2.9) counts as old", "")
-	check(S({ V = 3, Cam = "Follow" }).Cam == "Follow", "V3: a Follow the player picked stays", "")
-	check(S({ V = 8, Cam = "Follow" }).Cam == "Follow", "a newer V keeps the pick too", "")
-	check(S(old).Cam == "Free" and S(S(old)).V == 3, "sanitizing again changes nothing (the migration runs once)", "")
-	local back = S({ V = old.V, Cam = "Follow", Sfx = old.Sfx })
-	check(back.Cam == "Follow" and back.Sfx == 0.4, "after the migration the player picks Follow again: kept", show(back))
-	check(S({ V = 2, Cam = "Free" }).Cam == "Free" and S({ V = 3, Cam = "Free" }).Cam == "Free", "Free stays Free", "")
-	-- DataService: a V2 row on Follow loads Free; a V3 row on Follow stays Follow
+		and old.BagSort == "Grade" and old.DmgNum == "Off" and old.Keys.Map == "X", "every other V3 setting stays as it was", show(old))
+	check(S({ V = 1, Cam = "Free" }).Cam == "Follow" and S({ Cam = "Free" }).Cam == "Follow", "V1 / no V on Free: Follow", "")
+	check(S({ V = 0 / 0, Cam = "Free" }).Cam == "Follow" and S({ V = "4", Cam = "Free" }).Cam == "Follow"
+		and S({ V = 3.9, Cam = "Free" }).Cam == "Follow", "a broken V (NaN / a string / 3.9) counts as old", "")
+	check(S({ V = 4, Cam = "Free" }).Cam == "Free", "V4: a Free the player picked stays", "")
+	check(S({ V = 8, Cam = "Free" }).Cam == "Free", "a newer V keeps the pick too", "")
+	check(S(old).Cam == "Follow" and S(S(old)).V == 4, "sanitizing again changes nothing (the migration runs once)", "")
+	local back = S({ V = old.V, Cam = "Free", Sfx = old.Sfx })
+	check(back.Cam == "Free" and back.Sfx == 0.4, "after the migration the player picks Free again: kept", show(back))
+	check(S({ V = 3, Cam = "Follow" }).Cam == "Follow" and S({ V = 4, Cam = "Follow" }).Cam == "Follow", "Follow stays Follow", "")
+	-- DataService: a V3 row on Free loads Follow; a V4 row on Free stays Free
 	local k = function(id) return CONFIG.Data.KeyPrefix .. tostring(id) end
 	local f = dataWorld({
 		[k(611)] = { Version = 3, Level = 3, Faction = "Halo", ClassChosen = true, TutorialStep = 99,
-			Settings = { V = 2, Keys = {}, Sfx = 0.3, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto",
-				BagSort = "Default", Cam = "Follow" } },
+			Settings = { V = 3, Keys = {}, Sfx = 0.3, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto",
+				BagSort = "Default", Cam = "Free" } },
 		[k(612)] = { Version = 3, Level = 3, Faction = "Halo", ClassChosen = true, TutorialStep = 99,
-			Settings = { V = 3, Keys = {}, Sfx = 0.3, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto",
-				BagSort = "Default", Cam = "Follow" } },
+			Settings = { V = 4, Keys = {}, Sfx = 0.3, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto",
+				BagSort = "Default", Cam = "Free" } },
 	})
 	local d1 = f:Load(611)
-	check(d1 ~= nil and d1.Settings.Cam == "Free" and d1.Settings.V == 3 and d1.Settings.KeyBadges == true and d1.Settings.Sfx == 0.3,
-		"load: a V2 save on Follow -> Free, V3, the rest kept", d1 and show(d1.Settings))
+	check(d1 ~= nil and d1.Settings.Cam == "Follow" and d1.Settings.V == 4 and d1.Settings.KeyBadges == true and d1.Settings.Sfx == 0.3,
+		"load: a V3 save on Free -> Follow, V4, the rest kept", d1 and show(d1.Settings))
 	local d2 = f:Load(612)
-	check(d2 ~= nil and d2.Settings.Cam == "Follow" and d2.Settings.V == 3, "load: a V3 save keeps Follow", d2 and show(d2.Settings))
+	check(d2 ~= nil and d2.Settings.Cam == "Free" and d2.Settings.V == 4, "load: a V4 save keeps Free", d2 and show(d2.Settings))
 end)
 
 ------------------------------------------------------------------ 5. DataService (old saves, Version 3, round trip)
@@ -1031,8 +1033,8 @@ runGroup("dataservice-settings", function()
 		d1 and show(d1.Settings))
 	check(d1 ~= nil and d1.Version == 3, "Version stays 3", d1 and d1.Version)
 	local d2 = f:Load(502)
-	check(d2 ~= nil and deepEq(d2.Settings, { V = 3, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near",
-		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Free", PvPCards = false }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
+	check(d2 ~= nil and deepEq(d2.Settings, { V = 4, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near",
+		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Follow", PvPCards = false }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
 	local d3 = f:Load(503)
 	check(d3 ~= nil and deepEq(d3.Settings, SETTINGS_DEFAULTS), "Settings = a string -> the defaults", d3 and show(d3.Settings))
 	local d4 = f:Load(504)
@@ -1133,8 +1135,8 @@ runGroup("service-remote", function()
 	s.Clock:Advance(1.1)
 	s:Call(p, { Seq = 30, Keys = { Attack = "Escape", Map = "X", Menu = "X", Foo = "Y", Bag = string.rep("A", 1000) }, Sfx = 5,
 		Shake = "yes", DmgNum = "Near", Tags = "Near", Lang = string.rep("한", 1000), Foo = 1 })
-	local want = { V = 3, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = false,
-		Lang = "Auto", BagSort = "Default", Cam = "Free", PvPCards = false }
+	local want = { V = 4, Keys = { Map = "X", Menu = "" }, Sfx = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = false,
+		Lang = "Auto", BagSort = "Default", Cam = "Follow", PvPCards = false }
 	e = s.Sent[#s.Sent]
 	check(deepEq(s.Data[p].Settings, want), "BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
 		show(s.Data[p].Settings))
