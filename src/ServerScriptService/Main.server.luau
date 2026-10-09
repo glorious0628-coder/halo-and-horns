@@ -15,6 +15,7 @@ local INIT_ORDER = {
 	"ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
+	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -27,6 +28,7 @@ local START_ORDER = {
 	"SkillService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
+	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"PlayerService",
 }
 
@@ -62,6 +64,7 @@ end
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
 --   A23-77: AttendNext (today's attendance claim opens again)
+--   A23-86: Card (a choice card of that Config.ChoiceCard.Kinds id opens now)
 --   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
 --   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1).
 --   A23-75: Pass ("XP2:on" / "Gold2:off" / "VIP:clear" / "HaloIce:on": this session only, never saved, never on the
@@ -143,6 +146,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.MonetizationService.AddTickets(player, "Faction", value)
 		elseif key == "Absent" then
 			S.QuestService.DebugSimulateAbsence(player, value)
+		elseif key == "Card" then -- A23-86 Studio test aid: a choice card of that kind (Config.ChoiceCard.Kinds) opens now
+			return tostring(S.ChoiceCard.Offer(player, tostring(value)))
 		elseif key == "AttendNext" then -- A23-77 Studio test aid: today's attendance claim opens again
 			return S.AttendanceService.DebugNextDay(player)
 		elseif key == "Goose" then
