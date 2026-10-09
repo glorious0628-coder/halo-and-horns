@@ -2,7 +2,7 @@
   "status": "passed",
   "checks": 30,
   "failedChecks": [],
-  "clientChecks": 35,
+  "clientChecks": 37,
   "clientFailedChecks": [],
   "static": [
     {
@@ -23,9 +23,9 @@
     }
   ],
   "mutations": {
-    "total": 27,
-    "applied": 27,
-    "caught": 27,
+    "total": 28,
+    "applied": 28,
+    "caught": 28,
     "results": [
       {
         "mutation": "the team line keeps Roblox's text",
@@ -157,7 +157,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL TeamToast: the chat's team line is emptied (not drawn) :: {ClassName=TextChatMessageProperties, Text=<font color=\"#FFFF00\"><b>You joined the Knights of Light!</b></font>}"
+          "CHECK_FAIL TeamToast: the chat's team line is emptied (not drawn) :: {ClassName=TextChatMessageProperties, Text=<font color=\"#FFFF00\"><b>You joined the Knights of Light!</b></font>}",
+          "CHECK_FAIL the real Config: the chat team line stays empty :: {ClassName=TextChatMessageProperties, Text=<font color=\"#FFFF00\"><b>You joined the Knights of Light!</b></font>}"
         ]
       },
       {
@@ -175,6 +176,14 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TeamToast off: no toast :: nil"
+        ]
+      },
+      {
+        "mutation": "client: the join toast is back (user: too kind)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the real Config: no 'You joined ...!' toast for any side :: false"
         ]
       },
       {
@@ -202,7 +211,7 @@
         "failures": [
           "CHECK_FAIL LegacyChatService (auto-migrated place): Init sets TextChatService.OnIncomingMessage (before any Start) :: 0",
           "CHECK_FAIL LegacyChatService (auto-migrated place): the hook is Announce.Incoming :: nil",
-          "CHECK_FAIL LegacyChatService (auto-migrated place): Start keeps the same hook :: function: 0x000001ac31b62900"
+          "CHECK_FAIL LegacyChatService (auto-migrated place): Start keeps the same hook :: function: 0x0000029c76100080"
         ]
       },
       {
@@ -265,20 +274,20 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL a refused hookup does not break Init :: C:/Users/glori/Documents/Roblox/Game-dev3/build/team_line_offline_mut.luau:6316: TextChatService is not available",
+          "CHECK_FAIL a refused hookup does not break Init :: C:/Users/glori/Documents/Roblox/Game-wtc/build/team_line_offline_mut.luau:6507: TextChatService is not available",
           "CHECK_FAIL a refused hookup warns once :: nil"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f26d26468ca737e7201f9c2535e91c53aebef27c58e26bd1038d9f00ee479dd8",
+    "src/ReplicatedStorage/Shared/Config.luau": "973a919c205e8429eab69eb0f6f371555c9d879d16f2342d6a207bd35ee93b4f",
     "src/ServerScriptService/ChatText.luau": "f7c4ed3a83ee0ce42baa5c1a0a9e16df28d25a90f4efd431c80d9a80a8e3c853",
-    "src/ServerScriptService/Main.server.luau": "7896f1fd1e8e24df7b3368e3d618b00eff2625ac420ddd05a766c3520ff818d8",
-    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "62076faa04be7ff42c13fa9bdb61233d2e537efdba1c94eec288535694279802"
+    "src/ServerScriptService/Main.server.luau": "e5d5cfc945bca9b5964e5bef9a8dcdb9dae2dd757b0eb1be933b31c8229c25f0",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "8e8837a3d8490f9676d5284120d0596f2b6f8fb47e179aeee7104de5c0a66b37"
   },
   "fixtureSHA256": "ff3a0a3719449c77d4c72e17f332ca3a0c62fc3f7659ef0d9ecbc79d7897e9bd",
-  "clientFixtureSHA256": "57544e4c8a8e269afaf97b5f27df1fe354a30278856b6607637f5b3439ac15c1",
+  "clientFixtureSHA256": "739f26a2d8f0743d2ebcd9a360c0bd49dfa8d62fd8b989288888ee83d53a7301",
   "studioCalls": 0,
   "contract": "Roblox chat lines in English offline test (ChatText.luau, A23-48; 검수 2026-10-07: the team line showed in the\nplayer's Roblox language). The place runs the legacy chat: its server modules send keyed lines\n(\"{RBX_LOCALIZATION_KEY}key{RBX_LOCALIZATION_DEFAULT}English...\") that each client translates. ChatText keeps only the\nEnglish text; the team-change line becomes Config.ChatText.Joined (\"You joined the Horn Legion!\") in the team colour in\nthe general channel (none for the auto-assigned team); Team / System lines move to the general channel (their tag is\ntranslated too); the Team / System welcome lines are dropped; it hooks only on the legacy chat, existing and later\nchannels / speakers, and only warns when the ChatService is missing. Static: Main loads ChatText; Announce hooks the\nTextChatService team line without reading ChatVersion.\nClient (A23-74, user 2026-10-07: the Korean team line still showed): the main place reads ChatVersion =\nLegacyChatService while Chat.IsAutoMigrated = true, so Roblox runs the new chat (TextChatService) anyway. Announce.Init\n(before any module's Start) sets TextChatService.OnIncomingMessage whatever ChatVersion says; the team line (Metadata\nRoblox.Team.Success.NowInTeam) becomes Config.ChatText in the team colour, escaped, without Hangul; every other message\ncomes back nil; a refused hookup only warns.\nRuns the real ChatText.luau + Config.luau in tools/fixtures/chat_text_offline.luau and the real Announce.luau +\nConfig.luau in tools/fixtures/team_line_offline.luau.",
   "limitations": "The doubles copy the legacy chat's shapes (Studio ExtraContent ServerChat/Speaker.lua, ChatChannel.lua, ChatLocalization.lua) and a TextChatService that stores the OnIncomingMessage callback; whether Roblox's new chat calls it for its team line and what a Korean-language client finally shows is a Studio check (team pick, chat window)."

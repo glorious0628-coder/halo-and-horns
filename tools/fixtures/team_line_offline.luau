@@ -165,6 +165,8 @@ end
 
 -- 2b. 검수 10/09 (UI clutter review ②): TeamToast - no team line in the chat, one toast on the first side pick
 Config.ChatText.TeamToast = true
+local realJoinToast = Config.ChatText.JoinToast
+Config.ChatText.JoinToast = true -- the toast rule itself (the real Config has it off)
 do
 	local m2 = loadAnnounce()
 	m2.Init({})
@@ -184,6 +186,17 @@ do
 	Config.ChatText.TeamToast = true
 end
 check(Config.ChatText.TeamToast == true and type(Config.ChatText.Joined) == "string", "Config: TeamToast on by default (the real Config)")
+-- 검수 10/09 (user: "too kind"): the real Config shows no join toast at all, for either side
+Config.ChatText.JoinToast = realJoinToast
+do
+	local m3 = loadAnnounce()
+	m3.Init({})
+	check(realJoinToast == false and m3.JoinToast(choosing, knights) == nil and m3.JoinToast(choosing, odd) == nil,
+		"the real Config: no 'You joined ...!' toast for any side", tostring(realJoinToast))
+	localPlayer.Team = knights
+	local okH, props = pcall(W.Hook, { Metadata = TEAM_META, Text = KOREAN })
+	check(okH and type(props) == "table" and props.Text == "", "the real Config: the chat team line stays empty", show(props))
+end
 
 -- 3. a TextChatService that refuses the callback: Init only warns
 W.SetThrows = true

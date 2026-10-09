@@ -58,6 +58,18 @@ local function myPos()
 	return cam and cam.Focus.Position or nil
 end
 
+-- 검수 10/09 (system review ④): the shown name tag in its danger colour (Config.MonsterDanger; a golden monster keeps
+-- the server's gold)
+function S.Danger(r)
+	local model = r.Model
+	if not model or model:GetAttribute("Golden") == true then return end
+	local D = Config.MonsterDanger
+	local lp = Players.LocalPlayer
+	local myLv = lp and type(lp.GetAttribute) == "function" and lp:GetAttribute("Level") or nil
+	local color = D.Colors[D.Tier(D.LevelOf(r.Kind, model:GetAttribute("Level")), myLv)] or D.Colors.Even
+	if r.Name.TextColor3 ~= color then r.Name.TextColor3 = color end
+end
+
 local function kindOf(model)
 	local kind = model:GetAttribute("MonsterKind") or model.Name
 	return type(kind) == "string" and kind or model.Name
@@ -282,7 +294,7 @@ local function tick()
 			local d = (root.Position - me).Magnitude
 			local hurt = S.HurtAt[bb] ~= nil and now - S.HurtAt[bb] <= T.HurtSeconds
 			local kind = kindOf(model)
-			table.insert(rows, { BB = bb, Back = back, Name = bb:FindFirstChild("NameLabel"), D = d, Pos = root.Position,
+			table.insert(rows, { BB = bb, Back = back, Name = bb:FindFirstChild("NameLabel"), Model = model, D = d, Pos = root.Position,
 				Kind = kind, Hurt = hurt, Boss = isBoss(kind) })
 			B.Check(model, root, bb, me)
 		end
@@ -327,6 +339,7 @@ local function tick()
 		local show = name or bar
 		if r.BB.Enabled ~= show then r.BB.Enabled = show end
 		if r.Name and r.Name.Visible ~= name then r.Name.Visible = name end
+		if name and r.Name then S.Danger(r) end
 		if r.Back and r.Back.Visible ~= bar then r.Back.Visible = bar end
 	end
 	-- forget bars of monsters that are gone

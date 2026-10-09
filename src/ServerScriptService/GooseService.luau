@@ -696,7 +696,15 @@ end
 local function tick()
 	local now = Util.Now()
 	if not active then
-		if now >= nextAt then start() end
+		if now >= nextAt then
+			local sw = S and S.SwitchService
+			if type(sw) == "table" and type(sw.On) == "function" and not sw.On("Goose") then
+				nextAt = now + 30 -- the live switchboard: no new goose while it is off
+				setGame("GooseNextAt", nextAt)
+			else
+				start()
+			end
+		end
 		return
 	end
 	if now >= endsAt then

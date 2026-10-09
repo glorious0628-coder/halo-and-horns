@@ -79,16 +79,19 @@ local function announce(k, args)
 end
 
 ------------------------------------------------------------------ the spot
--- the first Vector3 attribute `attr` on an instance under workspace.Map
+-- the boss's marked spot under workspace.Map, the first found: a Vector3 attribute `attr` on any instance, or (검수's
+-- shrine tool, 2026-10-09) a BasePart named `attr` or with the attribute `attr` = true - its Position
 function SPOT.Marked(attr)
 	if type(attr) ~= "string" then return nil end
 	local map = workspace:FindFirstChild("Map")
 	if not map then return nil end
+	local part = nil
 	for _, d in map:GetDescendants() do
 		local v = d:GetAttribute(attr)
 		if typeof(v) == "Vector3" then return v end
+		if part == nil and d:IsA("BasePart") and (d.Name == attr or v == true) then part = d end
 	end
-	return nil
+	return part and part.Position or nil
 end
 
 -- the meadow hill top moved `step` studs toward the path foot (flat), from the meadow terrain store
@@ -225,7 +228,8 @@ local function appear(key, now)
 	end
 	local c = cfg(key)
 	local near = SPOT.Find(key)
-	local ok, rec = pcall(svc.SpawnEvent, kindOf(key), { Near = near, Radius = math.max(0, num(c.Radius, 2)) })
+	local ok, rec = pcall(svc.SpawnEvent, kindOf(key), { Near = near, Radius = math.max(0, num(c.Radius, 2)),
+		MaxY = c.MaxY }) -- MaxY: a hill-top spot (the King Slime's shrine) may stand higher than normal ground
 	if not ok or type(rec) ~= "table" then
 		if not ok then warnThrottled("spawn_" .. key, rec) end
 		return false

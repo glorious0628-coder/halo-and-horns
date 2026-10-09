@@ -52,7 +52,7 @@ end
 local function pathOf(inst)
 	local names = {}
 	local p = inst.Parent
-	while p and p ~= workspace do
+	while p and p ~= workspace and p ~= game do -- never the place name (Korean): test_place_english
 		table.insert(names, 1, p.Name)
 		p = p.Parent
 	end
@@ -147,8 +147,11 @@ if old then old:Destroy() end
 if #clash > 0 then
 	local back = backupFolder(true)
 	for _, piece in clash do
-		piece:SetAttribute("CrownShrineFrom", pathOf(piece))
-		piece.Parent = back
+		-- a small piece whose cell was stashed too has moved with it: skip it (it would record the backup path)
+		if piece:IsDescendantOf(dress) then
+			piece:SetAttribute("CrownShrineFrom", pathOf(piece))
+			piece.Parent = back
+		end
 	end
 end
 
@@ -200,7 +203,7 @@ mark.CanQuery = false
 mark.CanTouch = false
 mark.Transparency = 1
 mark.CFrame = CFrame.lookAt(Vector3.new(sx, sy + 0.1, sz), Vector3.new(sx + dirV.X, sy + 0.1, sz + dirV.Z))
-mark:SetAttribute("KingSpawn", true)
+mark:SetAttribute("KingSpawn", mark.Position) -- a Vector3 attribute: FieldBossService SPOT.Marked reads it (was true until 10/09)
 mark.Parent = root
 root.Parent = decor
 

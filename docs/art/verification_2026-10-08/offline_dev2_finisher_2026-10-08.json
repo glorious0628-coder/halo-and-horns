@@ -1,9 +1,9 @@
 {
-  "status": "passed-no-mutations",
-  "mutationsSkipped": true,
-  "checks": 136,
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 127,
   "failedChecks": 0,
-  "namedChecks": 135,
+  "namedChecks": 126,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -123,60 +123,6 @@
     },
     {
       "group": "Captain Clatter's card",
-      "check": "no service warnings (pcall-swallowed handler errors)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "Clatter: paid from 2% of his HP, below that 15%",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "(the swing finished him)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "2% and more: the full kill",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "under 2% with 3 hits: Minor, 15% XP / gold, no war points, no card",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "under the hits: nothing",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "the card goes to the paid finisher only",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "a free rider is not in PaidUserIds (no badge, no titles, no war bonus)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
-      "check": "group ran to the end without a Lua error",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "free riders",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -822,33 +768,888 @@
   "staticChecks": 23,
   "staticFailures": [],
   "mutations": {
-    "total": 69,
-    "applied": 0,
-    "caught": 0,
-    "skipped": true,
-    "results": []
+    "total": 64,
+    "applied": 64,
+    "caught": 64,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "manual hits never marked",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold",
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: manual c gets a card, auto-only d does not",
+          "manual presses :: a manual Q kill: a card",
+          "manual presses :: a manual Z kill: a card"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "auto hits marked manual",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual hits and the window :: (still paid, Manual = false)",
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: a manual hit 130 s before the (auto) kill: no card",
+          "manual hits and the window :: a refused manual hit + an auto kill: no card",
+          "manual hits and the window :: manual c gets a card, auto-only d does not",
+          "manual presses :: an auto Q kill: no card"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Manual ignores the window",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual hits and the window :: (still paid, Manual = false)",
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: a manual hit 130 s before the (auto) kill: no card"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the kill keeps the manual hits",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual hits and the window :: the kill clears the manual hits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a refused hit marked manual",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual hits and the window :: a refused manual hit + an auto kill: no card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a manual swing passes false",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold",
+          "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
+          "one card at a time :: group ran to the end without a Lua error",
+          "who gets a card :: a manual swing kill: one card (Id 1, SlimeKing, 10 s)",
+          "who gets a card :: the kill is paid as before, info.Manual = true"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "an auto swing passes true",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who gets a card :: an auto-combat-only kill: no card",
+          "who gets a card :: the auto kill is still paid (Manual = false)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Q always manual",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual presses :: an auto Q kill: no card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Q never manual",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual presses :: a manual Q kill: a card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "damageMonster drops manual",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold",
+          "manual presses :: a manual Q kill: a card",
+          "manual presses :: a manual Z kill: a card",
+          "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
+          "one card at a time :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "Z always manual",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual presses :: an auto Z kill: no card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Z never manual",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual presses :: a manual Z kill: a card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any monster gives a card",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who gets a card :: a manual Shard Slime kill: no card",
+          "who gets a card :: a manual Slime Prince kill: paid, no card"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "auto-only kills give a card",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "manual hits and the window :: a manual hit 100 s before the (auto) kill: a card",
+          "manual hits and the window :: a manual hit 130 s before the (auto) kill: no card",
+          "manual hits and the window :: a refused manual hit + an auto kill: no card",
+          "manual hits and the window :: manual c gets a card, auto-only d does not",
+          "manual presses :: an auto Q kill: no card",
+          "manual presses :: an auto Z kill: no card"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "two cards at once",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one card at a time :: DebugOffer while a card is open: false",
+          "one card at a time :: a second king kill while the card is open: no new card (both kills paid)",
+          "one card at a time :: after the pick, the next kill: a new card (next Id)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "card ids never rise",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one card at a time :: after the pick, the next kill: a new card (next Id)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any id picks",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pick validation :: a pick right after another call (0.3 s) is dropped",
+          "pick validation :: a wrong id / option / type / NaN / extra arg / no option: ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "extra args accepted",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pick validation :: a wrong id / option / type / NaN / extra arg / no option: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any option accepted",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pick validation :: a wrong id / option / type / NaN / extra arg / no option: ignored",
+          "pick validation :: picked once; a second pick is ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pick validation :: a pick right after another call (0.3 s) is dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "late picks accepted",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time :: (the timer then ends it as None)",
+          "time :: a pick past 11 s is refused even before the timer ran"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no network grace",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time :: (the timer then ends it as None)",
+          "time :: a pick 10.5 s after the card (inside the 1 s grace): taken",
+          "time :: a pick after the card ended: ignored",
+          "time :: a pick past 11 s is refused even before the timer ran",
+          "time :: metric None for the unpicked card",
+          "time :: not picked: ends at 11 s as None"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "picked twice",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaving :: the timer later does nothing more",
+          "time :: (still open at 10.5 s)",
+          "time :: (the timer then ends it as None)",
+          "time :: a pick after the card ended: ignored",
+          "time :: a pick past 11 s is refused even before the timer ran",
+          "time :: metric None for the unpicked card"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the card never times out",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time :: (the timer then ends it as None)",
+          "time :: Picked signal None",
+          "time :: a pick after the card ended: ignored",
+          "time :: a pick past 11 s is refused even before the timer ran",
+          "time :: metric None for the unpicked card",
+          "time :: not picked: ends at 11 s as None"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "leaving keeps the card",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaving :: leaving with an open card: None (metric, signal)",
+          "leaving :: the timer later does nothing more"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Tickle pays double",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: Tickle: 300 bank gold and his TickleDone line",
+          "jelly full :: AddBankGold returning the added amount: that is shown",
+          "picks :: FinisherEnd: Score -1, Gold 4",
+          "picks :: Halo Tickle: +4 bank gold, Honor 5 -> 4 (A23-58)",
+          "picks :: Tickle line + the off-side line (Honor -1)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a full bag loses the rest",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: a full bag: the scroll paid at its Worth (300)",
+          "jelly full :: GrantItem failing: paid as gold, warned",
+          "jelly full :: a full bag: all of it as gold (4)",
+          "jelly full :: one room left: 1 Jelly + the other at its sell price (2 gold)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a scroll's full bag pays nothing (no Worth)",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: a full bag: the scroll paid at its Worth (300)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every boss gets the King Slime's card",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: Tickle: 300 bank gold and his TickleDone line",
+          "Captain Clatter's card :: a full bag: the scroll paid at its Worth (300)",
+          "Captain Clatter's card :: his own HelpDone line",
+          "Captain Clatter's card :: his own card: [Let him rest] 1 Enh70, [Count the old treasure!] 300 gold"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a GrantItem error is not caught",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "jelly full :: group ran to the end without a Lua error",
+          "jelly full :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gold from the pocket",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: the gold's source is Finisher"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the shown gold ignores the return",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "jelly full :: AddBankGold returning the added amount: that is shown"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the pick's points not through Deeds",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily cap :: a Tickle still drops Honor 6 -> 5 at the cap",
+          "daily cap :: past the cap: no points line + 'No more points today'",
+          "daily cap :: past the cap: the Jelly, no point",
+          "daily cap :: six Help picks: Honor 6 (the day's cap)",
+          "daily cap :: the card and the other deed share one day of 6",
+          "daily cap :: the next card shows Help 0"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "the card's preview not from Deeds",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo with today's budget used up: Help shows 0, hint Full",
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "card payload :: Halo, Honor 3: Help +1, Tickle -1 (no hints)",
+          "card payload :: Horns, Infamy 0: Help hint Zero",
+          "card payload :: Horns, Infamy 2: Tickle +1, Help -1",
+          "daily cap :: a card after another deed: Help +1 while points are left"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "my side's pick ignores the cap",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily cap :: (another deed used 4 of 6)",
+          "daily cap :: a Tickle still drops Honor 6 -> 5 at the cap",
+          "daily cap :: past the cap: no points line + 'No more points today'",
+          "daily cap :: past the cap: the Jelly, no point",
+          "daily cap :: six Help picks: Honor 6 (the day's cap)",
+          "daily cap :: the card and the other deed share one day of 6"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "no off-side drop",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily cap :: a Tickle still drops Honor 6 -> 5 at the cap",
+          "daily cap :: the next day: Honor +1, the ledger restarts",
+          "picks :: Halo Tickle: +4 bank gold, Honor 5 -> 4 (A23-58)",
+          "picks :: Honor 10 -> 9 crosses a rank: the rank-down line",
+          "picks :: Horns Help: Infamy -1 + the off-side line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "off-side drops below 0",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: Halo Tickle at Honor 0: stays 0, the zero line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Neutral scores",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Neutral: no score on either side (hint Neutral)",
+          "picks :: Neutral Help: the Jelly only, no score"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the sides swapped",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo with today's budget used up: Help shows 0, hint Full",
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "card payload :: Halo, Honor 3: Help +1, Tickle -1 (no hints)",
+          "card payload :: Horns, Infamy 0: Help hint Zero",
+          "card payload :: Horns, Infamy 2: Tickle +1, Help -1",
+          "daily cap :: a Tickle still drops Honor 6 -> 5 at the cap"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "no rank-down line",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: Honor 10 -> 9 crosses a rank: the rank-down line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no 'points full' line",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily cap :: past the cap: no points line + 'No more points today'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no off-side line",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: Halo Tickle at Honor 0: stays 0, the zero line",
+          "picks :: Honor 10 -> 9 crosses a rank: the rank-down line",
+          "picks :: Horns Help: Infamy -1 + the off-side line",
+          "picks :: Tickle line + the off-side line (Honor -1)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the card shows points past the cap",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo with today's budget used up: Help shows 0, hint Full",
+          "daily cap :: the next card shows Help 0",
+          "daily cap :: then the card shows Help 0, hint Full"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the card shows a drop below 0",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo with today's budget used up: Help shows 0, hint Full",
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "card payload :: Horns, Infamy 0: Help hint Zero"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no FinisherEnd",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: group ran to the end without a Lua error",
+          "daily cap :: group ran to the end without a Lua error",
+          "jelly full :: group ran to the end without a Lua error",
+          "pick validation :: (and goes through after the gap)",
+          "pick validation :: a pick right after another call (0.3 s) is dropped",
+          "pick validation :: picked once; a second pick is ignored"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "no Picked signal",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaving :: group ran to the end without a Lua error",
+          "picks :: Picked signal (Help, SlimeKing)",
+          "time :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "metric sides swapped",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: Neutral metric field 2",
+          "picks :: metric FinisherPick (Halo, my faction Halo)",
+          "picks :: metrics: Tickle = Horns, Help = Halo",
+          "time :: metric None for the unpicked card"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no metric",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaving :: leaving with an open card: None (metric, signal)",
+          "leaving :: the timer later does nothing more",
+          "picks :: Neutral metric field 2",
+          "picks :: metric FinisherPick (Halo, my faction Halo)",
+          "picks :: metrics: Tickle = Horns, Help = Halo",
+          "time :: metric None for the unpicked card"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "no reward line",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Captain Clatter's card :: Tickle: 300 bank gold and his TickleDone line",
+          "Captain Clatter's card :: his own HelpDone line",
+          "daily cap :: past the cap: no points line + 'No more points today'",
+          "picks :: Halo Tickle at Honor 0: stays 0, the zero line",
+          "picks :: Honor 10 -> 9 crosses a rank: the rank-down line",
+          "picks :: Horns Help: Infamy -1 + the off-side line"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "the pick line plays QuestDone",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: the pick line is silent (never QuestDone; the client plays the pick)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the sound never reaches Notify",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: the pick line is silent (never QuestDone; the client plays the pick)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no lean after the zero line",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "picks :: Halo Tickle at Honor 0: stays 0, the zero line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hint Full and Zero swapped",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo with today's budget used up: Help shows 0, hint Full",
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "card payload :: Horns, Infamy 0: Help hint Zero",
+          "daily cap :: then the card shows Help 0, hint Full"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no Neutral hint",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Neutral: no score on either side (hint Neutral)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a hint on a scoring option",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "card payload :: Halo, Honor 3: Help +1, Tickle -1 (no hints)",
+          "card payload :: Horns, Infamy 0: Help hint Zero"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the day never resets",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily cap :: the next day the card shows Help +1 again",
+          "daily cap :: the next day: Honor +1, the ledger restarts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the cap never fills",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily cap :: a Tickle still drops Honor 6 -> 5 at the cap",
+          "daily cap :: past the cap: no points line + 'No more points today'",
+          "daily cap :: past the cap: the Jelly, no point",
+          "daily cap :: the card and the other deed share one day of 6",
+          "daily cap :: the next day: Honor +1, the ledger restarts"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Take never books",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily cap :: (another deed used 4 of 6)",
+          "daily cap :: a Tickle still drops Honor 6 -> 5 at the cap",
+          "daily cap :: past the cap: no points line + 'No more points today'",
+          "daily cap :: past the cap: the Jelly, no point",
+          "daily cap :: six Help picks: Honor 6 (the day's cap)",
+          "daily cap :: the card and the other deed share one day of 6"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "20 s to pick",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 10 s to pick (+1 s network grace), 1 point"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "2 points a pick",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "card payload :: Halo, Honor 3: Help +1, Tickle -1 (no hints)",
+          "card payload :: Horns, Infamy 2: Tickle +1, Help -1",
+          "config :: 10 s to pick (+1 s network grace), 1 point",
+          "daily cap :: a Tickle still drops Honor 6 -> 5 at the cap",
+          "daily cap :: a card after another deed: Help +1 while points are left"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "3 Jelly (not the same size)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the same size: Help.N x Jelly sell == Tickle gold",
+          "daily cap :: past the cap: the Jelly, no point",
+          "jelly full :: GrantItem failing: paid as gold, warned",
+          "jelly full :: a full bag: all of it as gold (4)",
+          "jelly full :: one room left: 1 Jelly + the other at its sell price (2 gold)",
+          "pick validation :: picked once; a second pick is ignored"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "the Slime Prince gives a card too",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: every card kind has its Cards entry",
+          "config :: only the field bosses (King Slime, Captain Clatter)",
+          "config :: the King Slime boss gives the card, the Slime Prince not",
+          "who gets a card :: a manual Slime Prince kill: paid, no card"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the card on the Slime Prince instead",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo, Honor 0: Help = Jelly x2 (+1), Tickle = 4 gold (0: nothing to lose)",
+          "config :: every card kind has its Cards entry",
+          "config :: the King Slime boss gives the card, the Slime Prince not",
+          "daily cap :: past the cap: the Jelly, no point",
+          "jelly full :: AddBankGold returning the added amount: that is shown",
+          "jelly full :: GrantItem failing: paid as gold, warned"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "cap 50",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card payload :: Halo with today's budget used up: Help shows 0, hint Full",
+          "config :: one daily cap: the deeds ledger, 6 points a KST day",
+          "daily cap :: (another deed used 4 of 6)",
+          "daily cap :: the card and the other deed share one day of 6",
+          "daily cap :: then the card shows Help 0, hint Full"
+        ],
+        "newFailingCount": 5
+      }
+    ]
   },
   "compileOk": true,
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ea1ffc4c3c3c5519ba3e180ef4aec005bb0cd7567e16db22fdaf729d4e97d556",
+    "src/ReplicatedStorage/Shared/Config.luau": "e48f9268247cdf36b2ee8027076f608f96d0d14ddc5156304c3fb4e31067233f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
-    "src/ServerScriptService/LootService.luau": "23410818091ddad4478a4ddf59de89cc3c795a6f1214c99ea77272d6ee78990c",
+    "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
     "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
-    "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
+    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
     "src/ServerScriptService/SkillService.luau": "4cf5a2e8efc95cb99cc3138db33135d6b49b5d6763cbca5a3ed880d621d16a48",
-    "src/ServerScriptService/MonsterService.luau": "c0e197c4df03f15400ce06fd4ee5914cfe1db766ba0bbffca160cda092479a7d",
+    "src/ServerScriptService/MonsterService.luau": "acfbd3a952fc111060ee024f19b28e696eb0bb6b97fd842ddc37f4fea37c89ac",
     "src/ServerScriptService/FinisherService.luau": "6a2c6db155e32149c6a9128f1af264b1ee1331a72085048243adea1107dfbc89",
     "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7"
   },
-  "fixtureSHA256": "c9a2154c8652be04a32e1e14770862d36dafa0f7013460e503dfe7ab7b47ece2",
+  "fixtureSHA256": "46d3080aabb3a89f7eafc42c7a313153cb833719ed6857b7defdda7c10aa9045",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

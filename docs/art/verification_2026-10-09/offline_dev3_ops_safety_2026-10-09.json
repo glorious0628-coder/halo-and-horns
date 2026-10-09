@@ -1,0 +1,1460 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 117,
+  "failedChecks": 0,
+  "namedChecks": 117,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "environments",
+      "check": "the dev place keeps every store name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "a Beta place: '_Beta' on every store",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "a Live place: '_Live'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "an unknown name is Dev (never a surprise suffix)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "another place's name does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "the place id decides",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "a broken place id: Dev",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "the build label is current",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "5 a minute, the last 50",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "the listed switches",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "environments",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "digit runs of 3+ become '#' (a UserId never reaches the log)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "control characters become spaces",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "trimmed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "other control characters become spaces too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "cut to the limit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "nil / numbers / tables never error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "a zero limit is one letter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error text",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "an error is logged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "ONE event 'ServerError': value 1, fields script / message / kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "a slow tick: value = ms, kind Slow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "at most 5 a minute for the server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "all are still in the record (newest first)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "the next minute logs again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "three in a row = one row x3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "(each still counts toward the minute's limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "a different message starts a new row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "the same message 2 minutes later is a new row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "Recent() is a copy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nobody online",
+      "check": "no player to log for: nothing sent",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nobody online",
+      "check": "but the record keeps it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nobody online",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nobody online",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record: ring of 50",
+      "check": "the last 50, newest first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record: ring of 50",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error record: ring of 50",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "ScriptContext.Error is recorded with the script's name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "an error with no script: '?'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "the first 30 s are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "a fast or exactly-0.5 tick is fine",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "a slow tick is recorded (the ms are the value; a number in a message is cleaned)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "and logged with the milliseconds as its value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "one close handler (the last flush)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hooks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "nothing to save yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "a flush saves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "newest first in the document",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "and nothing is saved twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "another server's flush merges (3 rows, the newest first)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "the document keeps 50",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "a failed save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "(and says so)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "the next flush saves what was pending",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "Debug text from this server and from the store",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "an empty list says so",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "broken rows are dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store: Beta",
+      "check": "a Beta server writes the '_Beta' document only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store: Beta",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store: Beta",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store: Studio and live",
+      "check": "Studio writes its own '_STUDIO' copy, never the real one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store: Studio and live",
+      "check": "('live' reads the real document, 'stored' Studio's)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store: Studio and live",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "error store: Studio and live",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "junk documents change nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "a listed Bool",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "a wrong type is ignored (the default stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "an unlisted key is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "a Number is clamped to Min..Max",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "NaN / inf / strings are not numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "no def / a number for a Bool: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: parse",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "all on by default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "an unknown key is on (nothing is blocked by a typo)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "GameState SwitchPassSales = true at the start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "the document turns two switches off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "and publishes them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "Changed fires once per change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "no change, no signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "a switch not listed any more is on again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "a failed read keeps the last answer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "(and says so)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "a garbage document = no switch set = defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "no document = defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: reading",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: environment and Studio",
+      "check": "a Live server does not read the dev place's document",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: environment and Studio",
+      "check": "it reads its own '_Live' document",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: environment and Studio",
+      "check": "Studio never reads the real switches",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: environment and Studio",
+      "check": "it reads its own '_STUDIO' copy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: environment and Studio",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: environment and Studio",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: start and interval",
+      "check": "a def whose default is off starts off and says so",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: start and interval",
+      "check": "a failed first read still publishes the defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: start and interval",
+      "check": "the loop waits Interval (60 s) between reads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: start and interval",
+      "check": "and never faster than 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: start and interval",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: start and interval",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: Halloween",
+      "check": "Halloween off: Config.Halloween.Enabled follows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: Halloween",
+      "check": "back on: the config's own value again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: Halloween",
+      "check": "off + a season the config has off: off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: Halloween",
+      "check": "the switch on never turns a season on that the config has off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: Halloween",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: Halloween",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: loop",
+      "check": "(the first read happened at the start, the store was empty then)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: loop",
+      "check": "the next read (the loop waits Interval 60 s) applies the change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: loop",
+      "check": "and the next one undoes it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: loop",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches: loop",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 27,
+  "staticFailures": [],
+  "mutations": {
+    "total": 61,
+    "applied": 61,
+    "caught": 61,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Dev gets a suffix",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: an unknown name is Dev (never a surprise suffix)",
+          "environments :: the dev place keeps every store name",
+          "switches: environment and Studio :: it reads its own '_STUDIO' copy"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Beta has no suffix",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: a Beta place: '_Beta' on every store",
+          "error store: Beta :: a Beta server writes the '_Beta' document only"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Live has no suffix",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: a Live place: '_Live'",
+          "switches: environment and Studio :: a Live server does not read the dev place's document"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any name is an environment",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: an unknown name is Dev (never a surprise suffix)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the place id is ignored",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: the place id decides"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the build label is old",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: the build label is current"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "5 errors become 50 a minute",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: 5 a minute, the last 50",
+          "error record :: at most 5 a minute for the server",
+          "error record :: the next minute logs again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a switch is added",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "environments :: the listed switches"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "digits are kept",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: ONE event 'ServerError': value 1, fields script / message / kind",
+          "error text :: digit runs of 3+ become '#' (a UserId never reaches the log)",
+          "hooks :: ScriptContext.Error is recorded with the script's name",
+          "hooks :: a slow tick is recorded (the ms are the value; a number in a message is cleaned)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "control characters are kept",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error text :: other control characters become spaces too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no trimming",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error text :: trimmed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no cut",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error text :: a zero limit is one letter",
+          "error text :: cut to the limit"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no minute limit",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: at most 5 a minute for the server",
+          "error record :: the next minute logs again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the limit never resets",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: (each still counts toward the minute's limit)",
+          "error record :: at most 5 a minute for the server",
+          "error record :: the next minute logs again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "limit off by one",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: at most 5 a minute for the server",
+          "error record :: the next minute logs again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the limit counts nothing",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: at most 5 a minute for the server",
+          "error record :: the next minute logs again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no analytics call",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: group ran to the end without a Lua error",
+          "hooks :: and logged with the milliseconds as its value"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the event has another name",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: ONE event 'ServerError': value 1, fields script / message / kind",
+          "hooks :: and logged with the milliseconds as its value"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the value is always 1",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: a slow tick: value = ms, kind Slow",
+          "hooks :: and logged with the milliseconds as its value"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "fields swapped",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: ONE event 'ServerError': value 1, fields script / message / kind",
+          "error record :: a slow tick: value = ms, kind Slow",
+          "hooks :: and logged with the milliseconds as its value"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "not cleaned",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: ONE event 'ServerError': value 1, fields script / message / kind",
+          "hooks :: ScriptContext.Error is recorded with the script's name",
+          "hooks :: a slow tick is recorded (the ms are the value; a number in a message is cleaned)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no duplicate rows",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: a different message starts a new row",
+          "error record :: three in a row = one row x3"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "duplicates forever",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: the same message 2 minutes later is a new row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the ring never trims",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record: ring of 50 :: the last 50, newest first"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "oldest first",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: Recent() is a copy",
+          "error record :: a different message starts a new row",
+          "error record :: all are still in the record (newest first)",
+          "error record :: the same message 2 minutes later is a new row",
+          "error record :: three in a row = one row x3",
+          "error record: ring of 50 :: the last 50, newest first"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Recent is the live table",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error record :: Recent() is a copy"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "script errors are not recorded",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hooks :: ScriptContext.Error is recorded with the script's name",
+          "hooks :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the script name is not used",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hooks :: ScriptContext.Error is recorded with the script's name"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "slow ticks are not recorded",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hooks :: a slow tick is recorded (the ms are the value; a number in a message is cleaned)",
+          "hooks :: and logged with the milliseconds as its value"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a half second is slow",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hooks :: a fast or exactly-0.5 tick is fine"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the start is not ignored",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hooks :: a fast or exactly-0.5 tick is fine",
+          "hooks :: the first 30 s are ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "slow value is seconds",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hooks :: and logged with the milliseconds as its value"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no last flush at the close",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hooks :: one close handler (the last flush)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Studio writes the real store",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store: Studio and live :: ('live' reads the real document, 'stored' Studio's)",
+          "error store: Studio and live :: Studio writes its own '_STUDIO' copy, never the real one"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the store ignores the environment",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store: Beta :: a Beta server writes the '_Beta' document only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a flush with nothing saves",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store :: and nothing is saved twice",
+          "error store :: nothing to save yet"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a failed save drops the pending",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store :: (and says so)",
+          "error store :: Debug text from this server and from the store",
+          "error store :: the next flush saves what was pending"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the document is replaced, not merged",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store :: another server's flush merges (3 rows, the newest first)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the merge keeps everything",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store :: the document keeps 50"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the merge puts the oldest first",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store :: Debug text from this server and from the store",
+          "error store :: another server's flush merges (3 rows, the newest first)",
+          "error store :: newest first in the document",
+          "error store :: the next flush saves what was pending"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the merge trusts junk rows",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "'live' reads Studio's copy",
+        "file": "src/ServerScriptService/ServerErrorService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "error store: Studio and live :: ('live' reads the real document, 'stored' Studio's)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any key is applied",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: parse :: a wrong type is ignored (the default stays)",
+          "switches: parse :: an unlisted key is ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a wrong type is a value",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: parse :: a wrong type is ignored (the default stays)",
+          "switches: parse :: no def / a number for a Bool: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "numbers are not clamped",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: parse :: a Number is clamped to Min..Max"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "NaN is a number",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: parse :: NaN / inf / strings are not numbers"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an unknown key is off",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: reading :: an unknown key is on (nothing is blocked by a typo)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a switch not set keeps its old value",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: loop :: and the next one undoes it",
+          "switches: reading :: a garbage document = no switch set = defaults",
+          "switches: reading :: a switch not listed any more is on again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "nothing is published",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: reading :: GameState SwitchPassSales = true at the start",
+          "switches: reading :: and publishes them",
+          "switches: start and interval :: a def whose default is off starts off and says so",
+          "switches: start and interval :: a failed first read still publishes the defaults"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no change signal",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: reading :: Changed fires once per change",
+          "switches: reading :: no change, no signal"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the signal fires every read",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: reading :: Changed fires once per change",
+          "switches: reading :: no change, no signal"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a failed read applies defaults",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: reading :: (and says so)",
+          "switches: reading :: a failed read keeps the last answer"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a failed read is silent",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: reading :: (and says so)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Halloween is not applied",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: Halloween :: Halloween off: Config.Halloween.Enabled follows"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Halloween on forces it on",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: Halloween :: the switch on never turns a season on that the config has off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the original is forgotten",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: Halloween :: the switch on never turns a season on that the config has off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the store ignores the environment (switches)",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: environment and Studio :: a Live server does not read the dev place's document"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Studio reads the real switches",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: environment and Studio :: Studio never reads the real switches"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the loop reads once",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: start and interval :: and never faster than 10 s",
+          "switches: start and interval :: the loop waits Interval (60 s) between reads"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the loop reads every second",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: start and interval :: and never faster than 10 s",
+          "switches: start and interval :: the loop waits Interval (60 s) between reads"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the defaults are not published at the start",
+        "file": "src/ServerScriptService/SwitchService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches: start and interval :: a failed first read still publishes the defaults"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "e48f9268247cdf36b2ee8027076f608f96d0d14ddc5156304c3fb4e31067233f",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/ServerErrorService.luau": "949a1c27e960cdc487fd3052516331dfa045b3add44f853221b335b177aa2e6a",
+    "src/ServerScriptService/SwitchService.luau": "1a268a27b6f5e78c8f6090fef432cccbe26be42064abb339fbe017195c889395"
+  },
+  "fixtureSHA256": "7d458378a3f00cf52523f781c9963f88c4271d3139589a2973dbffefb1f09c0b",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Environments: Config.EnvName() from the place id (Config.Env.Names; unknown = Dev), Config.StoreName(base): Dev keeps the name, Beta / Live append _Beta / _Live; DataService, Nickname, Grudge mail, the supporter list, the notification list and the ranking season use it. ServerErrorService: ScriptContext.Error and a Heartbeat over 0.5 s (not in the first 30 s) -> ONE analytics event 'ServerError' (value 1 / ms, fields script / message / kind), at most 5 a minute, digit runs cleaned, no player = record only; the last 50 kept (a run of the same finding = one row with a count) and merged into a DataStore document every 120 s and at the close; Studio's own _STUDIO copy; DebugCommand('Errors'[, 'stored' | 'live']). SwitchService: one document read every 60 s, only the listed switches (PassSales, Halloween, CrownWar, Goose), values cut to type / range, a switch not set = its default, a failed read keeps the last answer, GameState Switch<Key>, Changed signal; Halloween follows Config.Halloween.Enabled (never turns on a season the config has off), Goose starts no new goose, CrownWar counts no points and ends no round.",
+  "limitations": "WarService / GooseService / the screen's [Buy] buttons are read through SwitchService.On: their hooks are checked as source (static), not run in this world. Real DataStore limits, ScriptContext and AnalyticsService are doubles; the analytics call is TelemetryService.Custom (pcall-wrapped). Moving old saves between environments is not done (Dev keeps the existing names) - see the ops doc."
+}

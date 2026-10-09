@@ -373,10 +373,20 @@ local function endRound(mode, haloScore, hornsScore, halo, horns, curHalo, curHo
 	WarService.RoundEnded:Fire(winner, mode, snapshot)
 end
 
+-- the live switchboard (SwitchService "CrownWar" off): no points, no rounds
+local function warOff()
+	local sw = S and S.SwitchService
+	return type(sw) == "table" and type(sw.On) == "function" and not sw.On("CrownWar")
+end
+
 local function tick()
 	local halo, horns = getCounts()
 	local aH, aR = averageCounts(halo, horns) -- CR-M19
 	local haloScore, hornsScore, mode = publish(aH, aR)
+	if warOff() then
+		roundEndsAt = Util.Now() + Config.War.RoundSeconds -- the round never ends while the switch is off
+		return
+	end
 	if Util.Now() >= roundEndsAt then
 		endRound(mode, haloScore, hornsScore, aH, aR, halo, horns)
 	end
@@ -387,7 +397,7 @@ end
 -- pool: one monster killed by k same-faction contributors adds WarPoints / k each (WarShare), so the pool gets
 -- WarPoints once while every contributor still gets n personal points. Invalid / missing poolN -> n (capped at n).
 function WarService.AddPoints(player, n, poolN)
-	if not isPlayer(player) or not isValidAmount(n) then return end
+	if not isPlayer(player) or not isValidAmount(n) or warOff() then return end
 	if not (S and S.PlayerService.IsReady(player)) then return end
 	local f = getFaction(player)
 	if not WAR_FACTIONS[f] then return end -- None / Neutral never earn war points
@@ -397,7 +407,7 @@ end
 
 -- faction pool only (events: goose, kaiju)
 function WarService.AddFactionPoints(factionId, n)
-	if not WAR_FACTIONS[factionId] or not isValidAmount(n) then return end
+	if not WAR_FACTIONS[factionId] or not isValidAmount(n) or warOff() then return end
 	points[factionId] += n
 end
 

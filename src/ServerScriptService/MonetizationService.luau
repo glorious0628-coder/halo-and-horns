@@ -439,7 +439,7 @@ end
 function PASS.GetStore()
 	if PASS.Store == nil then
 		-- A23-75 review 2026-10-08 (검수 3rd look): Studio writes its own list (like RankingService's STUDIO season)
-		local name = Config.PassBoost.SupporterStore .. (RunService:IsStudio() and "_STUDIO" or "")
+		local name = Config.StoreName(Config.PassBoost.SupporterStore) .. (RunService:IsStudio() and "_STUDIO" or "")
 		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, name)
 		PASS.Store = ok and store or false
 	end

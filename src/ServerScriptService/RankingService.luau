@@ -147,7 +147,7 @@ function RankingService.EffectiveSeason()
 		memory = ok and m == true
 	end
 	if RunService:IsStudio() or memory then return "STUDIO" end
-	return R.Season
+	return Config.StoreName(R.Season) -- Beta / Live: "<season>_Beta" / "<season>_Live" (the dev place keeps the season as it is)
 end
 
 function RankingService.StoreName(board, weekId)

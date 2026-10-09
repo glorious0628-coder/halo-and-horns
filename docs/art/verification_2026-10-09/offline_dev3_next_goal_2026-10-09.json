@@ -566,9 +566,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "57945b7348d2ebda51fca4592a608190676a53caa0a85e2597290c377c9aa360",
+    "src/ReplicatedStorage/Shared/Config.luau": "e48f9268247cdf36b2ee8027076f608f96d0d14ddc5156304c3fb4e31067233f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/QuestService.luau": "199060b524e103939e72df7e50f1870f6fc5a6ff100c27361ec53a8d145adb1b",
+    "src/ServerScriptService/QuestService.luau": "7d2f7503d791275a07660a406a3b1fd3e75f6789a26bdb2d5bb9a7864602d474",
     "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308"
   },
   "fixtureSHA256": "0c2ef0c50939cf61671fc1ff80ec5d82cc4e3972dc0e149f165daf529c36aea9",

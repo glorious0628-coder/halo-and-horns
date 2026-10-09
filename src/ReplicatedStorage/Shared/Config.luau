@@ -97,7 +97,7 @@ function Config.NormalizePotionCount(value)
 end
 
 Config.Nickname = {
-	StoreName = "HaloHorns_Nicknames_v1", -- universe-wide claims; no Studio memory fallback
+	StoreName = "HaloHorns_Nicknames_v1", -- universe-wide claims; no Studio memory fallback (use Config.StoreName(StoreName))
 	MinLength = 2, MaxLength = 20, MaxBytes = 80,
 	ChangeInterval = 10,
 	-- Claimed aliases stay with their owner. Never free a name after an uncertain cross-key response.
@@ -1726,6 +1726,32 @@ Config.MonsterTypeOrder = { "Slime", "FlowerSlime", "PumpkinSlime", "BigSlime", 
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
 -- QuestAs = the kind quests count it as (Config.QuestKind); Float = studs the client hovers it above the floor (no
 -- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
+-- 검수 2026-10-09 (system review ④): a monster's name tag colour says how risky it is for me - Weak (gray, Weak or more
+-- levels below me), Even (white), Strong (yellow, Strong+ levels above), Deadly (red, Deadly+ above). Its level = the
+-- model's "Level" attribute (게임성 개발 2, later), else its zone's MinLevel (+ Boss for a boss). Pure: the client
+-- (MonsterLabels) and the offline test call Config.MonsterDanger.Tier / .LevelOf
+Config.MonsterDanger = { Weak = -5, Strong = 3, Deadly = 8, Boss = 5,
+	Colors = { Weak = Color3.fromRGB(165, 165, 170), Even = Color3.fromRGB(255, 255, 255),
+		Strong = Color3.fromRGB(255, 220, 70), Deadly = Color3.fromRGB(255, 80, 70) } }
+function Config.MonsterDanger.LevelOf(kind, attrLevel)
+	local lv = tonumber(attrLevel)
+	if lv and lv == lv and lv > 0 then return math.floor(lv) end
+	local def = type(Config.MonsterTypes) == "table" and Config.MonsterTypes[kind] or nil
+	local zone = type(def) == "table" and type(Config.Zones) == "table" and Config.Zones[def.Zone] or nil
+	local base = type(zone) == "table" and tonumber(zone.MinLevel) or nil
+	if not base then return nil end
+	return math.floor(base) + ((def.Boss == true) and Config.MonsterDanger.Boss or 0)
+end
+function Config.MonsterDanger.Tier(monsterLevel, myLevel)
+	local m, me = tonumber(monsterLevel), tonumber(myLevel)
+	if not m or not me then return "Even" end
+	local d = m - me
+	if d >= Config.MonsterDanger.Deadly then return "Deadly" end
+	if d >= Config.MonsterDanger.Strong then return "Strong" end
+	if d <= Config.MonsterDanger.Weak then return "Weak" end
+	return "Even"
+end
+
 Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
 	-- A23-84 (user 2026-10-08): the slime family - the green Shard Slime is the youngest, the Slime Prince (this id, the
@@ -3724,7 +3750,8 @@ Config.FieldBosses = {
 	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
 	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
 	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
-		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0 },
+		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0,
+		MaxY = 40 }, -- the hill-top shrine stands above normal ground (MonsterService.SpawnEvent opts.MaxY)
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): every 20 min, stays 6 min, a ruins spawn
 	-- point until 검수's tool marks ClatterSpawn. The chip shows from Lv25. On a defeat every paid contributor: +War own
 	-- side's crown-war points (WarService.AddPoints; one side online = the siege count), +1 Kills (Titles at 1 / 10 / 50),
@@ -4002,7 +4029,49 @@ Config.Settings = {
 
 -- A23-48 (user 2026-10-06 evening): the game shows English only (UIKit.Lang decides for the modules with KO / EN twins);
 -- new window texts are written in English only
-Config.BuildLabel = "beta-prep 2026.10.06" -- shown in the settings footer (bump with a release)
+Config.BuildLabel = "beta-prep 2026.10.09" -- shown in the settings footer (bump with a release)
+
+----------------------------------------------------------------- environments + ops safety (시스템 점검 1회차, 2026-10-09)
+-- Env: which copy of the game this server is. Names[<place id>] = "Beta" | "Live" is filled when those places are published
+-- (docs/design/launch_ops_checklist.md); every other place (the dev place, Studio) is "Dev". Config.StoreName(base) is the
+-- DataStore name of a store in this environment: Dev keeps the names that already exist (nothing moves), Beta and Live get
+-- "_Beta" / "_Live" appended so a test never touches the real saves, rankings or the supporter list.
+Config.Env = { Default = "Dev", Names = {} }
+
+function Config.EnvName()
+	local ok, id = pcall(function() return game.PlaceId end)
+	local name = ok and type(id) == "number" and Config.Env.Names[id] or nil
+	if name == "Beta" or name == "Live" then return name end
+	return Config.Env.Default
+end
+
+function Config.StoreName(base)
+	local env = Config.EnvName()
+	if env == "Beta" or env == "Live" then return base .. "_" .. env end
+	return base
+end
+
+-- ServerErrorService: ScriptContext.Error + a slow tick -> ONE analytics event "ServerError" (fields: script, message, kind),
+-- at most MaxPerMinute a minute for the server; the last Keep records are kept and saved (Store, every StoreSeconds and at
+-- the close) for Studio's DebugCommand("Errors"). SlowSeconds = a Heartbeat longer than this; SlowIgnoreFirst = the world
+-- builds in the first seconds.
+Config.ServerErrors = { MaxPerMinute = 5, Keep = 50, ScriptMax = 40, MessageMax = 80, SlowSeconds = 0.5, SlowIgnoreFirst = 30,
+	StoreSeconds = 120, Store = "HaloHorns_Errors_v1" }
+
+-- SwitchService: the live switchboard. One document (Store / Key) read every Interval seconds; only the switches below are
+-- applied (Type "Bool" or "Number" with Min / Max), the rest of the document is ignored. A switch that is not set keeps its
+-- Default; a failed read keeps the last answer.
+Config.Switches = {
+	Store = "HaloHorns_Switches_v1",
+	Key = "Live",
+	Interval = 60,
+	Defs = {
+		PassSales = { Type = "Bool", Default = true }, -- the screen's pass / look [Buy] buttons (a bought pass keeps working)
+		Halloween = { Type = "Bool", Default = true }, -- Config.Halloween.Enabled follows it
+		CrownWar = { Type = "Bool", Default = true }, -- war points and rounds
+		Goose = { Type = "Bool", Default = true }, -- no new goose
+	},
+}
 
 -- BB3 settings window (user 2026-10-06: class change, rebirth, opening, name hiding and vacation are settings rows;
 -- A23-48: no language row). SettingsUI.luau builds it; Sfx / Shake / KeyBadges labels come from Config.Settings.Text*En.
@@ -4385,6 +4454,9 @@ Config.ChatText = {
 	-- 검수 2026-10-09 (UI clutter review ②: the team line stayed in the chat over the phone's joystick): the chat gets no
 	-- team line (TextChatService, Announce.Incoming); the first side pick shows "You joined ...!" as one 3 s toast
 	TeamToast = true,
+	-- 검수 10/09 (user: "안 나오면 좋겠어, 너무 친절해"): no "You joined ...!" toast either (Halo and Horns); the chat line
+	-- stays empty (TeamToast). true brings the first-pick toast back (Announce.JoinToast)
+	JoinToast = false,
 }
 
 -- A23-15 server-wide chat announcements (AnnounceService -> remote "Announce" -> client Announce.luau). Server sends
@@ -6255,7 +6327,7 @@ Config.Commission = {
 	Orders = {
 		[4] = { Gold = 3000, Items = { BruteHorn = 10, GoblinTooth = 20 }, ShowLevel = 10 }, -- Lv12 (the weapon's MinLevel)
 		[5] = { Gold = 10000, Items = { KnightCrest = 12, Bone = 30 }, ShowLevel = 25 }, -- Lv20
-		[6] = { Gold = 30000, Items = { KnightCrest = 30, Bone = 60 }, ShowLevel = 25 }, -- Lv30
+		[6] = { Gold = 30000, Items = { KnightCrest = 30, Bone = 60, CaptainBadge = 1 }, ShowLevel = 25 }, -- Lv30 (the Captain's Badge: Captain Clatter's weekly gift, 검수 2026-10-09)
 	},
 	Text = {
 		Done = "Otto made your %s!",
