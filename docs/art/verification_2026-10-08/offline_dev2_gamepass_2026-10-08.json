@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 180,
+  "checks": 186,
   "failedChecks": 0,
-  "namedChecks": 180,
+  "namedChecks": 185,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -957,7 +957,13 @@
     },
     {
       "group": "review 3rd look",
-      "check": "a purchase signal asks Roblox again",
+      "check": "a purchase signal asks Roblox again; a no is asked twice more (2 s, 5 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "the rechecks wait 2 s, then 3 s more (5 s after the signal)",
       "pass": 1,
       "fail": 0
     },
@@ -970,6 +976,30 @@
     {
       "group": "review 3rd look",
       "check": "each refused purchase is warned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "a cached no then yes on recheck 2: the pass, saved yes, PassBought, no more asks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "a yes on recheck is not warned",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "a cached no then yes on recheck 3: the pass, saved yes, PassBought, no more asks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "review 3rd look",
+      "check": "left before the recheck: no more asks, no pass",
       "pass": 1,
       "fail": 0
     },
@@ -1092,9 +1122,9 @@
   "staticChecks": 25,
   "staticFailures": [],
   "mutations": {
-    "total": 82,
-    "applied": 82,
-    "caught": 82,
+    "total": 87,
+    "applied": 87,
+    "caught": 87,
     "skipped": false,
     "results": [
       {
@@ -1445,9 +1475,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "purchase :: bought: on at once (attribute too) and saved"
+          "purchase :: bought: on at once (attribute too) and saved",
+          "review 3rd look :: a cached no then yes on recheck 2: the pass, saved yes, PassBought, no more asks",
+          "review 3rd look :: a cached no then yes on recheck 3: the pass, saved yes, PassBought, no more asks"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "debug override ignored",
@@ -1640,9 +1672,11 @@
         "crashed": false,
         "newFailingChecks": [
           "purchase :: PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
-          "purchase :: the pass is already on when PassBought fires"
+          "purchase :: the pass is already on when PassBought fires",
+          "review 3rd look :: a cached no then yes on recheck 2: the pass, saved yes, PassBought, no more asks",
+          "review 3rd look :: a cached no then yes on recheck 3: the pass, saved yes, PassBought, no more asks"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "PassBought before the pass is on",
@@ -1653,9 +1687,11 @@
         "newFailingChecks": [
           "purchase :: PassBought: one per real purchase (not a closed prompt, an unknown id or a fake player)",
           "purchase :: the pass is already on when PassBought fires",
+          "review 3rd look :: a cached no then yes on recheck 2: the pass, saved yes, PassBought, no more asks",
+          "review 3rd look :: a cached no then yes on recheck 3: the pass, saved yes, PassBought, no more asks",
           "review 3rd look :: no answer: no saved yes, no PassBought"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "PassBought at the join check",
@@ -1744,13 +1780,77 @@
         "crashed": false,
         "newFailingChecks": [
           "review 3rd look :: Roblox says no: no pass, no saved yes, no board, no shared write, no PassBought",
-          "review 3rd look :: a purchase signal asks Roblox again",
+          "review 3rd look :: a cached no then yes on recheck 2: the pass, saved yes, PassBought, no more asks",
+          "review 3rd look :: a cached no then yes on recheck 3: the pass, saved yes, PassBought, no more asks",
+          "review 3rd look :: a purchase signal asks Roblox again; a no is asked twice more (2 s, 5 s)",
           "review 3rd look :: an unconfirmed VIP's hide / name changes stay on this board only",
-          "review 3rd look :: each refused purchase is warned",
-          "review 3rd look :: no answer: no saved yes, no PassBought",
-          "review 3rd look :: no answer: this server's board only (no shared write)"
+          "review 3rd look :: each refused purchase is warned"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "no recheck after a no",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boost :: group ran to the end without a Lua error",
+          "debug override :: group ran to the end without a Lua error",
+          "join window :: group ran to the end without a Lua error",
+          "kaiju survive :: group ran to the end without a Lua error",
+          "looks :: group ran to the end without a Lua error",
+          "not sold yet :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "rechecks keep asking after a yes",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: a cached no then yes on recheck 2: the pass, saved yes, PassBought, no more asks"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "one recheck only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: a cached no then yes on recheck 3: the pass, saved yes, PassBought, no more asks",
+          "review 3rd look :: a purchase signal asks Roblox again; a no is asked twice more (2 s, 5 s)",
+          "review 3rd look :: a yes on recheck is not warned",
+          "review 3rd look :: no service warnings (pcall-swallowed handler errors)",
+          "review 3rd look :: the rechecks wait 2 s, then 3 s more (5 s after the signal)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "recheck waits from zero each time",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: the rechecks wait 2 s, then 3 s more (5 s after the signal)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "recheck after the buyer left",
+        "file": "src/ServerScriptService/MonetizationService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "review 3rd look :: left before the recheck: no more asks, no pass"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "a refused purchase kept",
@@ -2139,13 +2239,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
+    "src/ReplicatedStorage/Shared/Config.luau": "a862a790145c9cc9f84bee3851614f9359183ab829b5e569d54dee5d3546a15c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13",
-    "src/ServerScriptService/MonetizationService.luau": "c4dc614faa7cc52bd7be507754103a145622326df3f67376213ff7c4202f366d",
+    "src/ServerScriptService/MonetizationService.luau": "db1579b84626b0ebcb5b6c3dd4c9761b5b655e4247b7ea38bad3852997dc8e3e",
     "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8"
   },
-  "fixtureSHA256": "2046f70928e66e57274700901fd340d6a71dbf7afafb92acd3630cbc705e463c",
+  "fixtureSHA256": "6aec4b4a547bd2aed3ff67984e95b10f3e75168d6a10a45c642b9e9036d31523",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
