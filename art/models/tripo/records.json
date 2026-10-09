@@ -6283,5 +6283,25 @@
     "art/models/tripo/web/Kit_M_CrownShrine_HD_plain.glb (--rotz -90: front -Y, target 100000 = plain re-save; NOTE target 0 collapses to 38 tris)"
    ]
   }
+ ],
+ "Mon_KingSlime_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (485-point account, nick 12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "3ec0e249-9af3-4298-b165-d8574785529b",
+   "image": "art/out/s2/king/KingSlimeMV_{front,side,back}_HQ_src.png",
+   "at": "2026-10-09 10:1x",
+   "balance_after": 375,
+   "file": "art/models/tripo/web/Mon_KingSlime_HD_src.glb",
+   "tris": 14334,
+   "note": "검수 OK 10/09 (A23-84 새 King Slime 보스, 표정 A)",
+   "derived": [
+    "art/models/tripo/web/Mon_KingSlime_HD_plain.glb (--rotz -90, front -Y)",
+    "build/import_all/5_fifth/E6_KingSlime.glb (fit max 14 studs)"
+   ]
+  }
  ]
 }
