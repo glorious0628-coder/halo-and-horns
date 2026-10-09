@@ -1,9 +1,9 @@
 [
-{"name":"Halo_Fountain","file":"art/models/tripo/web/Halo_Fountain_HD_plain.glb","kind":"acc","fit":["max",16]},
-{"name":"Halo_Gate","file":"art/models/tripo/web/Halo_Gate_HD_plain.glb","kind":"acc","fit":["z",32]},
-{"name":"Halo_Tower","file":"art/models/tripo/web/Halo_Tower_HD_plain.glb","kind":"acc","fit":["z",36]},
-{"name":"Halo_Cathedral","file":"art/models/tripo/web/Halo_Cathedral_HD_19k.glb","kind":"acc","fit":["h",70]},
-{"name":"Halo_DomeHouseA","file":"art/models/tripo/web/Halo_DomeHouseA_HD_plain.glb","kind":"acc","fit":["h",12]},
-{"name":"Halo_DomeHouseB","file":"art/models/tripo/web/Halo_DomeHouseB_HD_plain.glb","kind":"acc","fit":["h",14]},
-{"name":"Halo_Shop","file":"art/models/tripo/web/Halo_Shop_HD_plain.glb","kind":"acc","fit":["h",12]}
+{"name":"Halo_Fountain","file":"art/models/tripo/web/Halo_Fountain_HD_LOD.glb","kind":"acc","fit":["max",16]},
+{"name":"Halo_Gate","file":"art/models/tripo/web/Halo_Gate_HD_LOD.glb","kind":"acc","fit":["h",42]},
+{"name":"Halo_Tower","file":"art/models/tripo/web/Halo_Tower_HD_LOD.glb","kind":"acc","fit":["z",36]},
+{"name":"Halo_Cathedral","file":"art/models/tripo/web/Halo_Cathedral_HD_LOD.glb","kind":"acc","fit":["h",70]},
+{"name":"Halo_DomeHouseA","file":"art/models/tripo/web/Halo_DomeHouseA_HD_LOD.glb","kind":"acc","fit":["h",12]},
+{"name":"Halo_DomeHouseB","file":"art/models/tripo/web/Halo_DomeHouseB_HD_LOD.glb","kind":"acc","fit":["h",14]},
+{"name":"Halo_Shop","file":"art/models/tripo/web/Halo_Shop_HD_LOD.glb","kind":"acc","fit":["h",12]}
 ]
