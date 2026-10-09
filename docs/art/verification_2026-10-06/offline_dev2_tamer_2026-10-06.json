@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 129,
+  "checks": 163,
   "failedChecks": 0,
-  "namedChecks": 129,
+  "namedChecks": 163,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -357,7 +357,7 @@
     },
     {
       "group": "pet",
-      "check": "an owned, unequipped baby slime is equipped again (no duplicate)",
+      "check": "an owned, put-away baby slime comes out for the tamer (no duplicate)",
       "pass": 1,
       "fail": 0
     },
@@ -447,6 +447,24 @@
     },
     {
       "group": "lost baby slime",
+      "check": "the pet line waits a moment after the pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lost baby slime",
+      "check": "... Config.Pets.NoticeAfter seconds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lost baby slime",
+      "check": "then it is the newest line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lost baby slime",
       "check": "the pet line for everyone (not 'fights for you')",
       "pass": 1,
       "fail": 0
@@ -454,6 +472,12 @@
     {
       "group": "lost baby slime",
       "check": "no second pet / line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lost baby slime",
+      "check": "left before the line: no notice",
       "pass": 1,
       "fail": 0
     },
@@ -501,6 +525,12 @@
     },
     {
       "group": "pet levels and equip",
+      "check": "PET-2b: a pet line 0.5 s after (StoryQuestService replies at 0.35 s), XP-only lists at most once a second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
       "check": "14 kills: Lv1, 14 / 15",
       "pass": 1,
       "fail": 0
@@ -525,7 +555,49 @@
     },
     {
       "group": "pet levels and equip",
+      "check": "XP-only kills right after a list: none at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "... then one list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
       "check": "PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "a non-tamer may put the pet away (PetList CanPutAway)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "an XP-only kill long after the last list: sent at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "the next one within ListEvery waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "... and comes ListEvery later with the newest XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "a free rider's kill (Minor) gives no pet XP",
       "pass": 1,
       "fail": 0
     },
@@ -585,6 +657,114 @@
     },
     {
       "group": "pet levels and equip",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "put away: saved as Away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "a pick / class change in the session: still away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "a rejoin: the put-away pet stays away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "its PetList: nothing out, the pet listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "away: no pet XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "EquipPet uid: out again, Away cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "... the walk bonus is back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "... and the pet XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "a rejoin with it out: out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "the tamer: EquipPet \"\" is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "the tamer's PetList: CanPutAway false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "a class change away from the tamer: PetList CanPutAway true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "... and the pet can be put away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "the tamer again: the pet comes out, CanPutAway false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "a put-away save joining as the tamer: out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "the catch-up skips an owned baby slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "put away",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -699,6 +879,30 @@
     },
     {
       "group": "sanitize",
+      "check": "Away kept only for an owned pet with none out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "save default Away = false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Config.Pets.MaxLv 20: Lv15 kept, Lv25 -> 20; a species added to Config.Pets.Species can be out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "XPToNext follows Config.Pets.MaxLv",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -786,9 +990,9 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 59,
-    "applied": 59,
-    "caught": 59,
+    "total": 86,
+    "applied": 86,
+    "caught": 86,
     "skipped": false,
     "results": [
       {
@@ -798,12 +1002,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pet levels and equip :: ... and comes ListEvery later with the newest XP",
+          "pet levels and equip :: ... then one list",
           "pet levels and equip :: 14 kills: Lv1, 14 / 15",
           "pet levels and equip :: Lv2 needs 30",
           "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
-          "pet levels and equip :: the 15th kill: Lv2 (PetLv attribute)"
+          "pet levels and equip :: a free rider's kill (Minor) gives no pet XP"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 11
       },
       {
         "mutation": "XP needs 10 a level",
@@ -812,13 +1018,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pet levels and equip :: ... then one list",
           "pet levels and equip :: 1 pet XP a kill, Lv n -> n+1 needs 15 x n, max Lv10",
           "pet levels and equip :: 14 kills: Lv1, 14 / 15",
           "pet levels and equip :: Lv2 needs 30",
           "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
-          "pet levels and equip :: the 15th kill: Lv2 (PetLv attribute)"
+          "pet levels and equip :: XP-only kills right after a list: none at once"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 8
       },
       {
         "mutation": "the level never rises",
@@ -827,11 +1034,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pet levels and equip :: ... then one list",
           "pet levels and equip :: Lv2 needs 30",
           "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: XP-only kills right after a list: none at once",
           "pet levels and equip :: the 15th kill: Lv2 (PetLv attribute)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "a put-away pet still levels",
@@ -840,9 +1049,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pet levels and equip :: a put-away pet gets no XP"
+          "pet levels and equip :: a put-away pet gets no XP",
+          "put away :: ... and the pet XP",
+          "put away :: away: no pet XP"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "no list to the owner",
@@ -851,9 +1062,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean"
+          "pet levels and equip :: ... and comes ListEvery later with the newest XP",
+          "pet levels and equip :: ... then one list",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: a non-tamer may put the pet away (PetList CanPutAway)",
+          "pet levels and equip :: an XP-only kill long after the last list: sent at once",
+          "pet levels and equip :: the next one within ListEvery waits"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 10
       },
       {
         "mutation": "cannot put it away",
@@ -863,9 +1079,13 @@
         "crashed": false,
         "newFailingChecks": [
           "pet levels and equip :: EquipPet \"\": put away",
-          "pet levels and equip :: a put-away pet gets no XP"
+          "pet levels and equip :: a put-away pet gets no XP",
+          "put away :: ... and the pet XP",
+          "put away :: ... and the pet can be put away",
+          "put away :: a pick / class change in the session: still away",
+          "put away :: a rejoin: the put-away pet stays away"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 9
       },
       {
         "mutation": "any uid equips",
@@ -923,6 +1143,336 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "M1 a put-away pet comes back on a story pick",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: ... and the pet XP",
+          "put away :: a pick / class change in the session: still away",
+          "put away :: a rejoin: the put-away pet stays away",
+          "put away :: away: no pet XP",
+          "put away :: its PetList: nothing out, the pet listed"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "M1 Away is not kept by the repair",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: ... and the pet XP",
+          "put away :: a pick / class change in the session: still away",
+          "put away :: a rejoin: the put-away pet stays away",
+          "put away :: away: no pet XP",
+          "put away :: its PetList: nothing out, the pet listed",
+          "sanitize :: Away kept only for an owned pet with none out"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "M1 Away kept with a pet out",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Away kept only for an owned pet with none out"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M1 Away kept without a pet",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Away kept only for an owned pet with none out"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M1 Away any truthy value",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Away kept only for an owned pet with none out"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M1 putting away is not saved",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: ... and the pet XP",
+          "put away :: ... and the pet can be put away",
+          "put away :: a pick / class change in the session: still away",
+          "put away :: a rejoin: the put-away pet stays away",
+          "put away :: away: no pet XP",
+          "put away :: its PetList: nothing out, the pet listed"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "M1 bringing it out keeps Away",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: EquipPet uid: out again, Away cleared"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M1 the tamer's pet can stay away",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet :: an owned, put-away baby slime comes out for the tamer (no duplicate)",
+          "put away :: a put-away save joining as the tamer: out",
+          "put away :: the tamer again: the pet comes out, CanPutAway false"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "M1 the tamer's pet out keeps Away",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet :: an owned, put-away baby slime comes out for the tamer (no duplicate)",
+          "put away :: a put-away save joining as the tamer: out",
+          "put away :: the tamer again: the pet comes out, CanPutAway false"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "M1 the catch-up for an owned pet",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: the catch-up skips an owned baby slime"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M1 the tamer may put it away",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: the tamer's PetList: CanPutAway false",
+          "put away :: the tamer: EquipPet \"\" is ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "M1 CanPutAway always true",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: the tamer again: the pet comes out, CanPutAway false",
+          "put away :: the tamer's PetList: CanPutAway false"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "M1 no list after a class change",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "put away :: a class change away from the tamer: PetList CanPutAway true"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M1 no Away save default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: save default Away = false"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L1 a free rider's kill gives pet XP",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: a free rider's kill (Minor) gives no pet XP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L2 the level cap fixed at 10",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Config.Pets.MaxLv 20: Lv15 kept, Lv25 -> 20; a species added to Config.Pets.Species can be out"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L2 XPToNext cap fixed at 10",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: XPToNext follows Config.Pets.MaxLv"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L2 only the baby slime is known",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Config.Pets.MaxLv 20: Lv15 kept, Lv25 -> 20; a species added to Config.Pets.Species can be out"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L3 the pet line at once",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lost baby slime :: ... Config.Pets.NoticeAfter seconds",
+          "lost baby slime :: left before the line: no notice",
+          "lost baby slime :: the pet line waits a moment after the pick"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "L3 the pet line to a player who left",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lost baby slime :: left before the line: no notice"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L3 the pet line waits half as long",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: PET-2b: a pet line 0.5 s after (StoryQuestService replies at 0.35 s), XP-only lists at most once a second"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L4 a list every kill",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: ... then one list",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: XP-only kills right after a list: none at once",
+          "pet levels and equip :: the next one within ListEvery waits"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "L4 the waiting list never sent",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: ... and comes ListEvery later with the newest XP",
+          "pet levels and equip :: ... then one list",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: a non-tamer may put the pet away (PetList CanPutAway)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "L4 no list after a long quiet",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: ... and comes ListEvery later with the newest XP",
+          "pet levels and equip :: an XP-only kill long after the last list: sent at once",
+          "pet levels and equip :: the next one within ListEvery waits"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "L4 the send time not kept",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: ... then one list",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: XP-only kills right after a list: none at once",
+          "pet levels and equip :: the next one within ListEvery waits"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "L4 every kill queues another send",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: ... then one list"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "L4 ListEvery 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: PET-2b: a pet line 0.5 s after (StoryQuestService replies at 0.35 s), XP-only lists at most once a second"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "no pet from the story pick",
         "file": "src/ServerScriptService/PetService.luau",
         "applied": true,
@@ -936,7 +1486,7 @@
           "lost baby slime :: no second pet / line",
           "lost baby slime :: the pet line for everyone (not 'fights for you')"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 12
       },
       {
         "mutation": "any quest gives the pet",
@@ -975,10 +1525,10 @@
           "lost baby slime :: a tamer's own baby slime takes the lean / name",
           "lost baby slime :: no second pet / line",
           "pet :: a class change away keeps the pet",
-          "pet :: an owned, unequipped baby slime is equipped again (no duplicate)",
+          "pet :: an owned, put-away baby slime comes out for the tamer (no duplicate)",
           "pet :: coming back: still one pet"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 12
       },
       {
         "mutation": "an owned pet never takes the lean",
@@ -998,9 +1548,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "lost baby slime :: the pet line for everyone (not 'fights for you')"
+          "lost baby slime :: the pet line for everyone (not 'fights for you')",
+          "lost baby slime :: then it is the newest line"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "minion is Good",
@@ -1067,7 +1618,7 @@
           "combat :: the pet's headbutt shoves both targets at 0.3 s",
           "config :: IsTamer = the Neutral Archer only"
         ],
-        "newFailingCount": 41
+        "newFailingCount": 45
       },
       {
         "mutation": "tamer weapons keep the bow names",
@@ -1233,9 +1784,9 @@
           "legacy :: the next join: no ticket, no notice, still one pet",
           "legacy :: the next join: the pet attributes are published again (the pet follows every session)",
           "pet :: a class change away keeps the pet",
-          "pet :: an owned, unequipped baby slime is equipped again (no duplicate)"
+          "pet :: an owned, put-away baby slime comes out for the tamer (no duplicate)"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 17
       },
       {
         "mutation": "an owned pet is never re-equipped",
@@ -1244,9 +1795,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pet :: an owned, unequipped baby slime is equipped again (no duplicate)"
+          "pet :: an owned, put-away baby slime comes out for the tamer (no duplicate)",
+          "put away :: a put-away save joining as the tamer: out",
+          "put away :: the tamer again: the pet comes out, CanPutAway false"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "a new pet is not equipped",
@@ -1258,11 +1811,11 @@
           "lost baby slime :: Care: a Good Buddy baby slime, equipped",
           "pet :: attributes EquippedPet / PetLv / PetForm",
           "pet :: the pick gives one baby slime, equipped, Bound, Lv1",
-          "pet levels and equip :: 14 kills: Lv1, 14 / 15",
-          "pet levels and equip :: Lv2 needs 30",
-          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean"
+          "pet levels and equip :: ... and comes ListEvery later with the newest XP",
+          "pet levels and equip :: ... then one list",
+          "pet levels and equip :: 14 kills: Lv1, 14 / 15"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 16
       },
       {
         "mutation": "the pet attributes are not published",
@@ -1273,9 +1826,11 @@
         "newFailingChecks": [
           "lost baby slime :: Care: a Good Buddy baby slime, equipped",
           "pet :: attributes EquippedPet / PetLv / PetForm",
+          "put away :: the tamer's PetList: CanPutAway false",
+          "put away :: the tamer: EquipPet \"\" is ignored",
           "sanitize :: the baby slime gets P2 (P1 kept)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "no pet notice",
@@ -1286,9 +1841,10 @@
         "newFailingChecks": [
           "legacy :: the hunter-became-tamer notice, then the pet notice",
           "lost baby slime :: the pet line for everyone (not 'fights for you')",
+          "lost baby slime :: then it is the newest line",
           "pet :: the pet notice"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "the tamer gets no notice",
@@ -1312,11 +1868,11 @@
           "legacy :: a guild warrior's save: no notice, no ticket",
           "lost baby slime :: other quests / unknown picks give no pet",
           "lost baby slime :: the pet line for everyone (not 'fights for you')",
+          "lost baby slime :: then it is the newest line",
           "pet :: a Halo archer has no pet",
-          "pet :: joining the guild as an Archer: the pet, no ticket",
-          "pet :: no pet for a Halo Archer"
+          "pet :: joining the guild as an Archer: the pet, no ticket"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 22
       },
       {
         "mutation": "the tamer before the class pick",
@@ -1401,9 +1957,10 @@
           "legacy :: the hunter-became-tamer notice, then the pet notice",
           "legacy :: the next join: no ticket, no notice, still one pet",
           "legacy :: the next join: the pet attributes are published again (the pet follows every session)",
-          "sanitize :: the baby slime gets P2 (P1 kept)"
+          "put away :: a put-away save joining as the tamer: out",
+          "put away :: the tamer again: the pet comes out, CanPutAway false"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 9
       },
       {
         "mutation": "legacy check only for a missing flag",
@@ -1470,9 +2027,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "sanitize :: Config.Pets.MaxLv 20: Lv15 kept, Lv25 -> 20; a species added to Config.Pets.Species can be out",
           "sanitize :: a pet's fields are repaired"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "two pets equipped",
@@ -1536,7 +2094,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f00542d761a88b0524db8e5b20d98c03386f62846f1b7689104447046e14349c",
+    "src/ReplicatedStorage/Shared/Config.luau": "18984c20401ad0c29066f7b27e7bb9b590d0b4c862b0c406c2c6922508484e47",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
@@ -1546,9 +2104,9 @@
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
-    "src/ServerScriptService/PetService.luau": "5518ab4797045bc124eda52eeaeea0cc18522fa5f54dd9235044b5bfed04ee02"
+    "src/ServerScriptService/PetService.luau": "907a11a65dc26bb12e03839b8b32a63868222df701f4448ca17e2e93cd19705e"
   },
-  "fixtureSHA256": "0968f7c9ba4cad7ec49c1a6023992e170309678c87b90bd729d18e6cd81158aa",
+  "fixtureSHA256": "e789df5b3e7052bd71b7c8ef7c3dddd25301c67893f80badddf5127f0525b530",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

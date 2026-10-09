@@ -152,11 +152,13 @@ runGroup("pet", function()
 		"the pick gives one baby slime, equipped, Bound, Lv1", show(d.Pets))
 	check(p:GetAttribute("EquippedPet") == "BabySlime" and p:GetAttribute("PetLv") == 1 and p:GetAttribute("PetForm") == "",
 		"attributes EquippedPet / PetLv / PetForm", show({ p:GetAttribute("EquippedPet"), p:GetAttribute("PetLv") }))
+	w:Advance(1) -- PET-2b L3: the pet line comes Config.Pets.NoticeAfter later
 	check(indexOf(notices(w, p, n0), C0.Tamer.Text.PetGot) ~= nil, "the pet notice")
 	check(d.TamerNotice == true and #w.Tickets == 0, "a tamer picked now: the flag is set, no free-change ticket")
 	-- the same signal again: no second pet, no second notice
 	local n1 = #w.Notices
 	w.Registry.ClassService.ClassChanged:Fire(p, "Archer", "Archer")
+	w:Advance(1)
 	check(#babySlimes(d) == 1 and #notices(w, p, n1) == 0, "no second pet / notice")
 	-- leaving the tamer keeps the pet; coming back adds nothing
 	w.PS.SetStat(p, "Class", "Warrior")
@@ -165,11 +167,11 @@ runGroup("pet", function()
 	w.PS.SetStat(p, "Class", "Archer")
 	w.Registry.ClassService.ClassChanged:Fire(p, "Archer", "Warrior")
 	check(#babySlimes(d) == 1, "coming back: still one pet")
-	-- unequipped (later PET-2 'hide'): being a tamer re-equips the one it owns, never a second one
-	d.Pets.Equipped = {}
+	-- put away (a save from before the tamer, PET-2b): being a tamer brings the one it owns out, never a second one
+	d.Pets.Equipped, d.Pets.Away = {}, true
 	w.Registry.ClassService.ClassChanged:Fire(p, "Archer", "Archer")
-	check(#babySlimes(d) == 1 and d.Pets.Equipped[1] == uid and p:GetAttribute("EquippedPet") == "BabySlime",
-		"an owned, unequipped baby slime is equipped again (no duplicate)")
+	check(#babySlimes(d) == 1 and d.Pets.Equipped[1] == uid and p:GetAttribute("EquippedPet") == "BabySlime"
+		and d.Pets.Away == false, "an owned, put-away baby slime comes out for the tamer (no duplicate)", show(d.Pets))
 	-- a faction change into the guild as an Archer
 	local w2 = bareWorld()
 	local q, e = w2:Join(202, { Class = "Archer", Faction = "Halo" })
@@ -215,12 +217,27 @@ runGroup("lost baby slime", function()
 	local pet = slimes[1] and d.Pets.List[slimes[1]] or {}
 	check(#slimes == 1 and pet.Lean == "Good" and pet.Name == G.Names.Good and d.Pets.Equipped[1] == slimes[1]
 		and p:GetAttribute("EquippedPet") == "BabySlime", "Care: a Good Buddy baby slime, equipped", show(pet))
+	-- PET-2b L3: not in the pick's frame (the quest's own lines go first; an open window shows one toast at a time)
+	check(indexOf(notices(w, p, n0), G.Text.Got) == nil, "the pet line waits a moment after the pick", show(notices(w, p, n0)))
+	w:Advance(C0.Pets.NoticeAfter - 0.01)
+	check(indexOf(notices(w, p, n0), G.Text.Got) == nil, "... Config.Pets.NoticeAfter seconds")
+	w:Advance(0.02)
 	local lines = notices(w, p, n0)
+	check(lines[#lines] == G.Text.Got, "then it is the newest line", show(lines))
 	check(indexOf(lines, G.Text.Got) ~= nil and indexOf(lines, C0.Tamer.Text.PetGot) == nil, "the pet line for everyone (not 'fights for you')")
 	-- the same pick again: nothing more
 	local n1 = #w.Notices
 	w.Story.Picked:Fire(p, G.Quest, "Care")
+	w:Advance(1)
 	check(#babySlimes(d) == 1 and #notices(w, p, n1) == 0, "no second pet / line")
+	-- a player who leaves before the line: nothing is sent to them
+	local wl = bareWorld()
+	local pl = wl:Join(306, { Faction = "Halo", Class = "Warrior" })
+	local nl = #wl.Notices
+	wl.Story.Picked:Fire(pl, G.Quest, "Care")
+	wl:Remove(pl)
+	wl:Advance(1)
+	check(#notices(wl, pl, nl) == 0, "left before the line: no notice")
 	-- a Horns pick Minion: a Little Minion; a Neutral's B the same
 	local w2 = bareWorld()
 	local q, e = w2:Join(302, { Faction = "Horns", Class = "Mage" })
@@ -253,6 +270,8 @@ end)
 runGroup("pet levels and equip", function()
 	local P = C0.Pets
 	check(P.XPPerKill == 1 and P.XPPerLv == 15 and P.MaxLv == 10, "1 pet XP a kill, Lv n -> n+1 needs 15 x n, max Lv10")
+	check(P.NoticeAfter == 0.5 and P.ListEvery == 1, "PET-2b: a pet line 0.5 s after (StoryQuestService replies at 0.35 s), "
+		.. "XP-only lists at most once a second", show({ P.NoticeAfter, P.ListEvery }))
 	local w = bareWorld()
 	local p, d = w:Join(401, { Faction = "Halo", Class = "Warrior" })
 	w.Story.Picked:Fire(p, C0.PetGrant.Quest, "Care")
@@ -262,20 +281,47 @@ runGroup("pet levels and equip", function()
 	local function kill(n)
 		for _ = 1, n do w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime" }) end
 	end
+	local function lists(from)
+		local out = {}
+		for i = (from or 0) + 1, #w.Fired do
+			local f = w.Fired[i]
+			if f.Remote == "PetList" and f.Player == p then table.insert(out, f.Payload) end
+		end
+		return out
+	end
 	kill(14)
 	check(pet.Lv == 1 and pet.XP == 14, "14 kills: Lv1, 14 / 15", show(pet))
 	local speed0 = C0.PetSpeedBonus("BabySlime", 1)
 	kill(1)
 	check(pet.Lv == 2 and pet.XP == 0 and p:GetAttribute("PetLv") == 2, "the 15th kill: Lv2 (PetLv attribute)", show(pet))
 	check(C0.PetSpeedBonus("BabySlime", 2) > speed0, "a higher level walks a bit faster (+7% -> +10% by Lv10)")
+	local f0 = #w.Fired
 	kill(29)
 	check(pet.Lv == 2 and pet.XP == 29, "Lv2 needs 30", show(pet))
-	-- the owner's list (s->c PetList)
-	local last = nil
-	for _, f in w.Fired do if f.Remote == "PetList" and f.Player == p then last = f.Payload end end
+	-- the owner's list (s->c PetList). PET-2b L4: XP-only kills right after a list (the level up's) send none at once,
+	-- then one with the newest numbers Config.Pets.ListEvery later
+	check(#lists(f0) == 0, "XP-only kills right after a list: none at once", #lists(f0))
+	w:Advance(C0.Pets.ListEvery)
+	check(#lists(f0) == 1, "... then one list", #lists(f0))
+	local last = lists(f0)[1]
 	check(last and last.Equipped == uid and #last.List == 1 and last.List[1].Lv == 2 and last.List[1].XP == 29
 		and last.List[1].Need == 30 and last.List[1].Name == "Good Buddy" and last.List[1].Lean == "Good",
 		"PetList to the owner: Equipped, Lv / XP / Need / Name / Lean", show(last and last.List[1]))
+	check(last and last.CanPutAway == true, "a non-tamer may put the pet away (PetList CanPutAway)")
+	pet.XP = 0
+	w:Advance(5)
+	local f1 = #w.Fired
+	kill(1)
+	check(#lists(f1) == 1 and lists(f1)[1].List[1].XP == 1, "an XP-only kill long after the last list: sent at once",
+		#lists(f1))
+	kill(1)
+	check(#lists(f1) == 1, "the next one within ListEvery waits", #lists(f1))
+	w:Advance(C0.Pets.ListEvery)
+	local l1 = lists(f1)
+	check(#l1 == 2 and l1[2].List[1].XP == 2, "... and comes ListEvery later with the newest XP", #l1)
+	-- PET-2b L1: a free rider's share (info.Minor) is not a paid kill: no pet XP
+	w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", Minor = true })
+	check(pet.XP == 2, "a free rider's kill (Minor) gives no pet XP", pet.XP)
 	-- max level: no more XP
 	pet.Lv, pet.XP = 10, 0
 	kill(5)
@@ -314,6 +360,108 @@ runGroup("pet levels and equip", function()
 	check(petCount(f) == 0, "no catch-up without the quest done")
 end)
 
+------------------------------------------------------------------ PET-2b: a put-away pet stays away; the tamer never puts away
+local function lastList(w, p, from)
+	local last = nil
+	for i = (from or 0) + 1, #w.Fired do
+		local f = w.Fired[i]
+		if f.Remote == "PetList" and f.Player == p then last = f.Payload end
+	end
+	return last
+end
+
+runGroup("put away", function()
+	local G = C0.PetGrant
+	-- a Halo warrior with the lost baby slime puts it away
+	local w = bareWorld()
+	local p, d = w:Join(601, { Faction = "Halo", Class = "Warrior" })
+	w.Story.Picked:Fire(p, G.Quest, "Care")
+	-- the quest done with its pick, as the story service saves it (the catch-up's condition is true from now on)
+	d.Story = { Done = { [G.Quest] = true }, Pick = { [G.Quest] = "Care" } }
+	local uid = babySlimes(d)[1]
+	local equip = w.Net.Get("EquipPet").OnServerEvent
+	w:Advance(1)
+	equip:Fire(p, "")
+	check(#d.Pets.Equipped == 0 and d.Pets.Away == true and p:GetAttribute("EquippedPet") == "", "put away: saved as Away",
+		show(d.Pets))
+	-- the same session: the story pick again, a class change -> still away
+	w.Story.Picked:Fire(p, G.Quest, "Care")
+	w.PS.SetStat(p, "Class", "Mage")
+	w.Registry.ClassService.ClassChanged:Fire(p, "Mage", "Warrior")
+	check(#d.Pets.Equipped == 0 and d.Pets.Away == true and #babySlimes(d) == 1, "a pick / class change in the session: still away",
+		show(d.Pets))
+	-- M1: a rejoin with that save keeps it away (no line, no second pet)
+	local w2 = bareWorld()
+	local q, e = w2:Join(601, { Saved = jsonDecode(jsonEncode(d)) })
+	w2:Advance(1)
+	check(#e.Pets.Equipped == 0 and e.Pets.Away == true and q:GetAttribute("EquippedPet") == "" and q:GetAttribute("PetLv") == 0
+		and #babySlimes(e) == 1 and #notices(w2, q, 0) == 0, "a rejoin: the put-away pet stays away", show(e.Pets))
+	local l = lastList(w2, q)
+	check(l and l.Equipped == "" and #l.List == 1 and l.CanPutAway == true, "its PetList: nothing out, the pet listed", show(l))
+	w2.Registry.MonsterService.MonsterKilled:Fire(q, { Kind = "Slime" })
+	check(e.Pets.List[uid].XP == 0, "away: no pet XP")
+	-- bring it back: it follows, Away cleared, the walk bonus and the pet XP come back
+	local equip2 = w2.Net.Get("EquipPet").OnServerEvent
+	w2:Advance(1)
+	equip2:Fire(q, uid)
+	check(e.Pets.Equipped[1] == uid and e.Pets.Away == false and q:GetAttribute("EquippedPet") == "BabySlime"
+		and q:GetAttribute("PetLv") == 1, "EquipPet uid: out again, Away cleared", show(e.Pets))
+	check(C0.WalkSpeed("Mage", q:GetAttribute("EquippedPet"), q:GetAttribute("PetLv")) > C0.WalkSpeed("Mage", "", 0),
+		"... the walk bonus is back")
+	w2.Registry.MonsterService.MonsterKilled:Fire(q, { Kind = "Slime" })
+	check(e.Pets.List[uid].XP == 1, "... and the pet XP", e.Pets.List[uid].XP)
+	local w3 = bareWorld()
+	local r, f = w3:Join(601, { Saved = jsonDecode(jsonEncode(e)) })
+	check(f.Pets.Equipped[1] == uid and f.Pets.Away == false and r:GetAttribute("EquippedPet") == "BabySlime",
+		"a rejoin with it out: out")
+
+	-- the tamer (검수 2026-10-09: its pet is its weapon): EquipPet "" ignored, PetList CanPutAway = false
+	local wt = bareWorld()
+	local t, h = wt:Join(602, { Faction = "Neutral", Class = "Archer" })
+	local tuid = babySlimes(h)[1]
+	local tequip = wt.Net.Get("EquipPet").OnServerEvent
+	wt:Advance(1)
+	tequip:Fire(t, "")
+	check(h.Pets.Equipped[1] == tuid and h.Pets.Away == false and t:GetAttribute("EquippedPet") == "BabySlime",
+		"the tamer: EquipPet \"\" is ignored", show(h.Pets))
+	local tl = lastList(wt, t)
+	check(tl and tl.CanPutAway == false and tl.Equipped == tuid, "the tamer's PetList: CanPutAway false", show(tl))
+	-- leaving the tamer: the list says it may be put away now, and it can
+	local nf = #wt.Fired
+	wt.PS.SetStat(t, "Class", "Warrior")
+	wt.Registry.ClassService.ClassChanged:Fire(t, "Warrior", "Archer")
+	local after = lastList(wt, t, nf)
+	check(after and after.CanPutAway == true, "a class change away from the tamer: PetList CanPutAway true", show(after))
+	wt:Advance(1)
+	tequip:Fire(t, "")
+	check(#h.Pets.Equipped == 0 and h.Pets.Away == true, "... and the pet can be put away", show(h.Pets))
+	-- becoming the tamer again brings it out
+	nf = #wt.Fired
+	wt.PS.SetStat(t, "Class", "Archer")
+	wt.Registry.ClassService.ClassChanged:Fire(t, "Archer", "Warrior")
+	after = lastList(wt, t, nf)
+	check(h.Pets.Equipped[1] == tuid and h.Pets.Away == false and t:GetAttribute("EquippedPet") == "BabySlime"
+		and after and after.CanPutAway == false, "the tamer again: the pet comes out, CanPutAway false", show(h.Pets))
+	-- a put-away save that joins as the tamer: out
+	local saved = jsonDecode(jsonEncode(h))
+	saved.Pets.Equipped, saved.Pets.Away = {}, true
+	local wj = bareWorld()
+	local j, k = wj:Join(602, { Saved = saved })
+	check(k.Pets.Equipped[1] == tuid and k.Pets.Away == false and j:GetAttribute("EquippedPet") == "BabySlime",
+		"a put-away save joining as the tamer: out", show(k.Pets))
+
+	-- the catch-up leaves an owned baby slime as it is (no lean / name from the saved pick)
+	local wc = bareWorld()
+	local own = deepCopy(C0.Data.Defaults)
+	own.Faction, own.Class, own.ClassChosen, own.TamerNotice = "Horns", "Mage", true, true
+	own.Story = { Done = { [G.Quest] = true }, Pick = { [G.Quest] = "Minion" } }
+	own.Pets = { List = { P1 = { Sp = "BabySlime", Lv = 3, XP = 4, Name = "", Lean = "", Bound = true } }, Equipped = { "P1" },
+		Next = 2 }
+	local _, cd = wc:Join(603, { Saved = own })
+	check(#babySlimes(cd) == 1 and cd.Pets.List.P1.Lean == "" and cd.Pets.List.P1.Lv == 3,
+		"the catch-up skips an owned baby slime", show(cd.Pets))
+end)
+
 ------------------------------------------------------------------ 4. saves from before A23-39: the notice + one free change
 runGroup("legacy", function()
 	local w = bareWorld()
@@ -329,6 +477,7 @@ runGroup("legacy", function()
 	load(saved)
 	check(saved.TamerNotice == false and type(saved.Pets) == "table", "a pre-A23-39 save loads with TamerNotice false + empty Pets")
 	local p, d = w:Join(301, { Saved = saved })
+	w:Advance(1)
 	local list = notices(w, p, 0)
 	local iBecame, iPet = indexOf(list, C0.Tamer.Text.Became), indexOf(list, C0.Tamer.Text.PetGot)
 	check(iBecame ~= nil and iPet ~= nil and iBecame < iPet, "the hunter-became-tamer notice, then the pet notice", show(list))
@@ -338,6 +487,7 @@ runGroup("legacy", function()
 	-- the next join with that save: nothing again
 	local w2 = bareWorld()
 	local q, e = w2:Join(301, { Saved = jsonDecode(jsonEncode(d)) })
+	w2:Advance(1)
 	check(#w2.Tickets == 0 and #notices(w2, q, 0) == 0 and #babySlimes(e) == 1, "the next join: no ticket, no notice, still one pet",
 		show({ #w2.Tickets, notices(w2, q, 0) }))
 	check(q:GetAttribute("EquippedPet") == "BabySlime" and q:GetAttribute("PetLv") == 1,
@@ -347,6 +497,7 @@ runGroup("legacy", function()
 	local w7 = bareWorld()
 	local low = load({ Version = 3, Faction = "Neutral", Class = "Archer", ClassChosen = true, Level = 3, TutorialStep = 99 })
 	local lp = w7:Join(305, { Saved = low })
+	w7:Advance(1)
 	check(indexOf(notices(w7, lp, 0), C0.Tamer.Text.BecameFree) ~= nil and indexOf(notices(w7, lp, 0), C0.Tamer.Text.Became) == nil
 		and #w7.Tickets == 1, "Lv3 old hunter: the 'free change' line, still one ticket", show(notices(w7, lp, 0)))
 	-- a raw save without the field at all (nil) is the same old hunter
@@ -363,6 +514,7 @@ runGroup("legacy", function()
 	w3.Registry.ClassService.ClassChanged:Fire(r, "Archer", "Warrior")
 	local w4 = bareWorld()
 	local s = w4:Join(302, { Saved = jsonDecode(jsonEncode(f)) })
+	w4:Advance(1)
 	check(#w3.Tickets == 0 and #w4.Tickets == 0 and indexOf(notices(w4, s, 0), C0.Tamer.Text.Became) == nil,
 		"a tamer picked after A23-39 never gets the old-save ticket")
 	-- a guild Archer save whose class pick never finished (ClassChosen false): no pet, no notice yet (the picker comes first)
@@ -370,6 +522,7 @@ runGroup("legacy", function()
 	local unpicked = deepCopy(C0.Data.Defaults)
 	unpicked.Faction, unpicked.Class, unpicked.ClassChosen, unpicked.TamerNotice = "Neutral", "Archer", false, nil
 	local u, k = w6:Join(304, { Saved = unpicked })
+	w6:Advance(1)
 	check(petCount(k) == 0 and #w6.Tickets == 0 and #notices(w6, u, 0) == 0 and k.TamerNotice ~= true,
 		"class not picked yet: no pet, no notice, no ticket")
 	-- a save that is not the tamer: nothing (the flag stays unset until it becomes one)
@@ -377,6 +530,7 @@ runGroup("legacy", function()
 	local old = deepCopy(C0.Data.Defaults)
 	old.Faction, old.Class, old.ClassChosen, old.TamerNotice = "Neutral", "Warrior", true, nil
 	local t, h = w5:Join(303, { Saved = old })
+	w5:Advance(1)
 	check(#w5.Tickets == 0 and #notices(w5, t, 0) == 0 and h.TamerNotice ~= true, "a guild warrior's save: no notice, no ticket")
 end)
 
@@ -403,6 +557,28 @@ runGroup("sanitize", function()
 	local q, f = w:Join(401, { Saved = saved })
 	check(f.Pets.List.P1.Sp == "Dragon" and f.Pets.List.P2 and f.Pets.List.P2.Sp == "BabySlime" and f.Pets.Equipped[1] == "P2"
 		and q:GetAttribute("EquippedPet") == "BabySlime", "the baby slime gets P2 (P1 kept)", show(f.Pets))
+	-- PET-2b M1: Away is kept only while a pet is owned and none is out (true only)
+	local function away(pets)
+		local t = { Pets = pets }
+		Pet.Sanitize(t)
+		return t.Pets.Away
+	end
+	local a1 = away({ List = { P1 = { Sp = "BabySlime" } }, Equipped = {}, Next = 2, Away = true })
+	local a2 = away({ List = { P1 = { Sp = "BabySlime" } }, Equipped = { "P1" }, Next = 2, Away = true })
+	local a3 = away({ List = {}, Equipped = {}, Next = 1, Away = true })
+	local a4 = away({ List = { P1 = { Sp = "BabySlime" } }, Equipped = {}, Next = 2, Away = "yes" })
+	check(a1 == true and a2 == false and a3 == false and a4 == false, "Away kept only for an owned pet with none out",
+		show({ a1, a2, a3, a4 }))
+	check(C0.Data.Defaults.Pets.Away == false, "save default Away = false")
+	-- PET-2b L2: the level cap and the known species come from Config.Pets (a later raise keeps saved levels)
+	local wc = bareWorld()
+	wc.Config.Pets.MaxLv = 20
+	wc.Config.Pets.Species.Bunny = { Speed = { 0.05, 0.08 } }
+	local b = { Pets = { List = { P1 = { Sp = "BabySlime", Lv = 15 }, P2 = { Sp = "Bunny", Lv = 25 } }, Equipped = { "P2" }, Next = 3 } }
+	wc.Pet.Sanitize(b)
+	check(b.Pets.List.P1.Lv == 15 and b.Pets.List.P2.Lv == 20 and b.Pets.Equipped[1] == "P2",
+		"Config.Pets.MaxLv 20: Lv15 kept, Lv25 -> 20; a species added to Config.Pets.Species can be out", show(b.Pets))
+	check(wc.Pet.XPToNext(15) == 15 * 15 and wc.Pet.XPToNext(20) == 0, "XPToNext follows Config.Pets.MaxLv")
 end)
 
 ------------------------------------------------------------------ 6b. the pet models the clients draw (PET-3)
