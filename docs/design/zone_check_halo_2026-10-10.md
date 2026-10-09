@@ -4,6 +4,19 @@
 > 결과: 확인된 문제 71개(아래), 문제 없음 34개, 반박돼서 뺀 것 1개. 상태 = breaks_on_rebuild(새 모델·지형이 들어가면 깨짐) > bug > gap(빠짐) > unknown(직접 플레이로 확인 필요).
 > 순서: 빛 마을이 지금 구역이라 담당 세션은 이 표의 자기 줄을 큐 맨 앞에 둔다(A23-102). needs_user=Y 줄은 검수가 사용자에게 묻는다.
 
+## 검수 결정 (2026-10-10 아침)
+- **#49·#51 가게 간판:** 빛·뿔 마을 가게에 대장간·모루 간판은 안 넣는다(진짜 대장간은 교차로 오토 하나, A23-88). 물약 간판도 진짜 물약 상인이 없으면 안 넣는다. 가게 변형 4종 = 빵집·주스·꽃·장난감(꾸밈, 기능 없음). 옛 Town_Halo_Smithy는 배치하지 않는다. → 이미지 생성 2(간판 그림)·이미지 생성 1(키트 장부).
+- **#50 NPC 외형:** 재제작 P4에 브라이트(여자아이, A23-59)·Sir Gleam·빛 마을 주민 2~3명 추가. 빛 마을이 지금 구역이라 이미지 생성 2가 빛 마을 소품 다음, 뿔 마을 전에 멀티뷰(어깨·몸통·다리 가림) → 검수 → 사용자 승인(사람 캐릭터 규칙). 그 전까지 기본 HumanoidDescription.
+- **#52 이동 판:** 빛 마을 광장(문 안쪽)에 판 2개 — TravelTo = SlimeMeadow, GoblinWoods. Map.Pads 아래 `Pad_Halo_<목적지>` + 속성 TravelTo, 지형 단 높이에 맞춤(Config.Map.Pads에는 안 넣음). 새 모델·지형 apply 때 메인 반영 1(배치), 개발 1(빛 표시·미니맵).
+- **#53 TownReact:** 10/17 점검에서 주민 NPC와 함께 정함.
+- **#54 새싹 맹세(OathH):** Requires.Sprout 빼고 M3_4 뒤 Lv15 그대로, 방패 없어도 끝나는 Finish 줄, 보상 Gold=2 / XP=2(다른 숲 서브와 같게) → 개발 2.
+- **#55 쉬운 영어:** 제안대로 바꿈(Hallie 고정 대사는 그대로), 글로서리에 더함 → 개발 3.
+- **#56:** '빛 마을 표시 선택 9/9가 빛 마을 안에서 일어남'을 ③④ 통과 기준으로 둔다(브라이트 NPC·되돌아오는 단계 포함) → 개발 1·2.
+- **#57 성능 기준:** 구역마다 삼각형·그리기 수·메모리 목표를 10/17~20 PerfMem 숫자로 정한다. 그 전까지 빛 마을 소품 도구는 plan 모드에서 개수를 찍어 보고.
+- **#58 StreamingEnabled:** 빛 마을 일 동안 false 그대로. 10/17~20 PerfMem을 보고 켤지 정함(켜면 문·다리·분수·NPC·판은 ModelStreamingMode=Persistent).
+- **#71 마을 선택 보상:** B형 = HP 물약 3 + 골드 220(주문서 Enh70과 비슷한 크기, 빛·뿔 똑같음) → 개발 2(Config + test_town_quests 변이).
+- **#41 괴수(마을 안에서 바깥 괴수 때리기):** 규칙이라 사용자에게 물음(검수 추천 (b) 진영 마을 안에서는 못 때리게).
+
 | # | 구역 | 상태 | 무엇 | 고치는 법 | 담당 | 크기 | 사용자 | 검증 |
 |---|---|---|---|---|---|---|---|---|
 | 1 | B | breaks_on_rebuild | Once Bright exists, a quest-row tap away from her fails with no message, and the row has no marker to her | In HUD L.StoryTap and QuestTarget: when st.Npc is set and that tagged NPC exists, guide to it (Travel HaloTown, then a marker on the model) instead of firing Open. Optionally the server sends one line ('Find Bright in Halo Citadel') when it refuses for distance. Ship together with the NPC. | dev1 | S |  | confirmed: This is latent and appears when the NPC lands. StoryQuestService.luau:879 returns with no message when npcNear is false. HUD L.StoryTap (HUD.luau:5046-5052) always fires 'Open' for Panel rows. QuestTarget storyEntry returns nil for every Panel step (QuestTarget.luau:421), so even from the meadow a ' |

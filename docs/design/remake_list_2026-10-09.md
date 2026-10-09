@@ -36,6 +36,7 @@ Credits: no per-batch report to the user; 검수 tells the user only when a bala
 - Potion seller Fizzby: stock R15 from a HumanoidDescription → own Roblox-style NPC (modest clothing).
 - Otto (blacksmith): old chibi portrait PortraitMerchantC, no 3D → new portrait + own NPC.
 - Fountain Shard speaker uses the Crown Shard portrait → own portrait.
+- Halo town (current zone, 검수 2026-10-10, zone_check_halo #50): Bright (girl, A23-59; style anchor PTR_TownBright), Sir Gleam, 2-3 Halo townsfolk → own Roblox-style NPCs (covered shoulders/torso/legs). 이미지 생성 2 draws multiviews right after the Halo props, before Horns. Horns town NPCs (Smokey, Tiny, …) when the Horns zone starts.
 
 ## P5 — images (이미지 생성 2 draws · 이미지 개발 uploads + Config.UIArt)
 - Head icons missing: SlimeKing, CaptainClatter, FlowerSlime, SlingshotGoblin, SkeletonArcher (quest rows, minimap, boss toasts — King toasts now show the Prince head, Clatter toasts the Knight head).
