@@ -2407,12 +2407,14 @@ function L.BuildMenu(names)
 		local copy = table.clone(def)
 		copy.Text = names[def.Id]
 		local b = tileButton(copy, function()
+			if copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done
 			L.FoldTap(copy)
 		end)
 		b.Name = "Fold" .. def.Id
 		b.Parent = ui.fold
 		local entry = { Def = copy, Button = b, Row = row }
 		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
+		if def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88
 		table.insert(ui.foldTiles, entry)
 	end
 	for _, def in L.Tiles do add(def, true) end
@@ -3567,9 +3569,16 @@ function HUD.HintShown(id)
 end
 
 -- 환생 ready / 휴가 days are 설정 rows now (A23-40 정정): [메뉴] and its 설정 square glow; the scroll hint (B14) glows 가방
+-- A23-88 (검수 10/09): after the first weapon (the meadow step) [Menu] + Travel pulse until Travel was opened once
+function HUD.TravelPulse(step, seen, on)
+	return on ~= false and seen ~= true and step == TUT_GUIDE_STEP
+end
+
 local function refreshMenuGlow()
 	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
-	L.SetGlow("menu", ui.menuGlow, settings)
+	local travel = HUD.TravelPulse(num("TutorialStep", 99), L.TravelSeen, (Config.Nudges or {}).TravelPulse)
+	L.SetGlow("menu", ui.menuGlow, settings or travel)
+	L.SetGlow("travel", ui.travelGlow, travel)
 	L.SetGlow("settings", ui.settingsGlow, settings)
 	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
 end
@@ -4427,6 +4436,38 @@ function L.MeadowTarget(zone)
 	return part or findTravelTarget(TUT_GUIDE_ZONE)
 end
 
+-- A23-88 (검수 10/09, user: no lines, no words): after the first weapon (TutorialStep Guide) the meadow travel pad in
+-- the Crossroads glows softly by itself (a local Highlight on the pad, a slow breath); gone at the next step / away
+function HUD.PadGlowOn(step, zone, on)
+	return on ~= false and step == TUT_GUIDE_STEP and zone == "Crossroads"
+end
+
+L.PadGlowState = { Pad = nil, Light = nil, Tween = nil }
+function L.PadGlow(on)
+	local st = L.PadGlowState
+	local map = workspace:FindFirstChild("Map")
+	local pads = map and map:FindFirstChild("Pads")
+	local pad = on and resolvePart(pads and pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE)) or nil
+	if st.Pad == pad and (pad == nil or (st.Light and st.Light.Parent)) then return end
+	if st.Tween then st.Tween:Cancel() end
+	if st.Light then st.Light:Destroy() end
+	st.Pad, st.Light, st.Tween = pad, nil, nil
+	if not pad then return end
+	local h = Instance.new("Highlight")
+	h.Name = "HUDPadGlow"
+	h.Adornee = pad
+	h.FillColor = ac("Gold", Theme.Gold)
+	h.FillTransparency = 0.85
+	h.OutlineColor = ac("Gold", Theme.Gold)
+	h.OutlineTransparency = 0.7
+	h.DepthMode = Enum.HighlightDepthMode.Occluded
+	h.Parent = pad
+	st.Light = h
+	st.Tween = TweenService:Create(h, TweenInfo.new(1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{ FillTransparency = 0.65, OutlineTransparency = 0.45 })
+	st.Tween:Play()
+end
+
 -- step 1, or step 2 with kills left (e.g. died mid-mission and respawned in town): guide back to the meadow
 function L.NeedsMeadowGuide(step)
 	if step == TUT_GUIDE_STEP then return true end
@@ -4446,6 +4487,7 @@ local function refreshGuides()
 	if attr("DataLoaded", false) ~= true then return end
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
+	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))
 	local forge = step == L.ForgeStep
 	if guide then
 		if guide.Tag == "forge" and (not forge or guide.From ~= zone) then

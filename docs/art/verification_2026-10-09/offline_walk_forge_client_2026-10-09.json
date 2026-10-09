@@ -1,0 +1,37 @@
+{
+  "checks": 15,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the pad glows in every zone",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pad glows at the Forge step",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Travel pulse never ends",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the switch ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a press on Travel does not end it",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ground line is back",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}
