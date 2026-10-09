@@ -145,10 +145,19 @@ local function respawnZoneId(player)
 	return Config.HomeZoneId(stat(player, "Faction", "None"))
 end
 
-local function spawnCFrame(zoneId)
+-- zone_check_halo #43: while the first mission is open (TutorialStep is not Done: the spawn after the faction pick, a KO in
+-- town, ...) a town spawn faces the way out (Config.Zones[town].SpawnLook), because the Forge lies behind the town; everyone
+-- else keeps facing the town middle
+local function firstMissionOpen(player)
+	local steps = (Config.Tutorial or {}).Steps or {}
+	local step = stat(player, "TutorialStep", 0)
+	return type(steps.Done) == "number" and type(step) == "number" and step < steps.Done
+end
+
+local function spawnCFrame(zoneId, faceOut)
 	local zs = S.ZoneService
 	if zs and zs.GetSpawnCFrame then
-		local ok, cf = pcall(zs.GetSpawnCFrame, zoneId)
+		local ok, cf = pcall(zs.GetSpawnCFrame, zoneId, faceOut == true)
 		if ok and typeof(cf) == "CFrame" then return cf end
 		if not ok then Util.Warn(TAG, "GetSpawnCFrame failed: " .. tostring(cf)) end
 	end
@@ -462,7 +471,7 @@ local function onCharacterAdded(player, character)
 	applyStats(player, humanoid, true)
 	if context then humanoid.Health = math.min(context.Health, humanoid.MaxHealth) end
 	if not context then markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2) end -- CR-H2
-	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context) or spawnCFrame(respawnZoneId(player)))
+	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context) or spawnCFrame(respawnZoneId(player), firstMissionOpen(player)))
 
 	PlayerService.CharacterSpawned:Fire(player, character, humanoid, context ~= nil)
 	if context and player.Character == character and character.Parent and humanoid.Health > 0 then

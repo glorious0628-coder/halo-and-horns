@@ -1,0 +1,579 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 49,
+  "failedChecks": 0,
+  "namedChecks": 49,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "SpawnLook exists for the two towns only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Halo (0,0,-330), Horns (0,0,330): the gate at the bridge end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the spawn points are unchanged (-420 / 420)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the first mission is open below Steps.Done (99)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "Halo, faceOut: stands at (0,4,-420), looks at the gate (0,4,-330)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "Halo, no flag: looks at the town middle (0,4,-515)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "Halo, faceOut false: the town middle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "only `true` turns it on (1 is not true)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "only `true` turns it on (a string is not true)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "Horns, faceOut: (0,4,420) -> the gate (0,4,330)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "Horns, no flag: the town middle (0,4,515)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "a zone without SpawnLook keeps the middle even with the flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "the meadow: the middle with the flag too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "an unknown zone falls back to the Crossroads spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "jitter +6 / -6 moves the spawn, the look target stays the gate at spawn height",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "a look on the spawn point itself: a plain CFrame.new",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "a broken SpawnLook falls back to the town middle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "GetSpawnCFrame",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "TutorialStep 0: the first mission is open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "TutorialStep 1: the first mission is open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "TutorialStep 2: the first mission is open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "TutorialStep 3: the first mission is open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "TutorialStep 98: the first mission is open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "TutorialStep 99 (done): closed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "a step above Done: closed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "no data and no attribute: step 0, open (a brand-new player)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "no data, the mirrored attribute 99: closed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "an unreadable step is never 'open'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "Halo, new (step 0): spawn zone HaloTown, faceOut true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "Halo, at the Forge (3): spawn zone HaloTown, faceOut true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "Halo, done: spawn zone HaloTown, faceOut false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "Horns, new: spawn zone HornsTown, faceOut true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "Horns, done: spawn zone HornsTown, faceOut false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "a new Halo player spawns looking toward +Z (the gate), not the castle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "a Halo player past the first mission looks toward the town middle (-Z)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "a new Horns player looks toward the Horns gate (-Z from 420)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the first mission decides",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "no ZoneService: CFrame.new(Spawn + 4 up)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "a ZoneService error: the plain spawn and one warning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "a non-CFrame answer: the plain spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "ZoneService gets (zoneId, true)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "a non-boolean flag is passed as false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "no flag: false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PlayerService.spawnCFrame guards",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 18,
+    "applied": 18,
+    "caught": 18,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Config: Halo looks at the town middle",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: Halo, faceOut: stands at (0,4,-420), looks at the gate (0,4,-330)",
+          "GetSpawnCFrame :: jitter +6 / -6 moves the spawn, the look target stays the gate at spawn height",
+          "config :: Halo (0,0,-330), Horns (0,0,330): the gate at the bridge end",
+          "the first mission decides :: a new Halo player spawns looking toward +Z (the gate), not the castle"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Config: Halo looks the wrong way",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: Halo, faceOut: stands at (0,4,-420), looks at the gate (0,4,-330)",
+          "GetSpawnCFrame :: jitter +6 / -6 moves the spawn, the look target stays the gate at spawn height",
+          "config :: Halo (0,0,-330), Horns (0,0,330): the gate at the bridge end",
+          "the first mission decides :: a new Halo player spawns looking toward +Z (the gate), not the castle"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Config: Horns looks at the town middle",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: Horns, faceOut: (0,4,420) -> the gate (0,4,330)",
+          "config :: Halo (0,0,-330), Horns (0,0,330): the gate at the bridge end",
+          "the first mission decides :: a new Horns player looks toward the Horns gate (-Z from 420)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: Horns has no look",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: Horns, faceOut: (0,4,420) -> the gate (0,4,330)",
+          "config :: SpawnLook exists for the two towns only",
+          "config :: group ran to the end without a Lua error",
+          "the first mission decides :: a new Horns player looks toward the Horns gate (-Z from 420)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "zone: the look is never used",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: Halo, faceOut: stands at (0,4,-420), looks at the gate (0,4,-330)",
+          "GetSpawnCFrame :: Horns, faceOut: (0,4,420) -> the gate (0,4,330)",
+          "GetSpawnCFrame :: a look on the spawn point itself: a plain CFrame.new",
+          "GetSpawnCFrame :: jitter +6 / -6 moves the spawn, the look target stays the gate at spawn height",
+          "the first mission decides :: a new Halo player spawns looking toward +Z (the gate), not the castle",
+          "the first mission decides :: a new Horns player looks toward the Horns gate (-Z from 420)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "zone: the look is always used",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: Halo, faceOut false: the town middle",
+          "GetSpawnCFrame :: Halo, no flag: looks at the town middle (0,4,-515)",
+          "GetSpawnCFrame :: Horns, no flag: the town middle (0,4,515)",
+          "GetSpawnCFrame :: only `true` turns it on (1 is not true)",
+          "GetSpawnCFrame :: only `true` turns it on (a string is not true)",
+          "the first mission decides :: a Halo player past the first mission looks toward the town middle (-Z)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "zone: any truthy faceOut",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: only `true` turns it on (1 is not true)",
+          "GetSpawnCFrame :: only `true` turns it on (a string is not true)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "zone: a zone without a look breaks",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: group ran to the end without a Lua error",
+          "the first mission decides :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "zone: the look keeps its own height",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: Halo, faceOut false: the town middle",
+          "GetSpawnCFrame :: Halo, faceOut: stands at (0,4,-420), looks at the gate (0,4,-330)",
+          "GetSpawnCFrame :: Halo, no flag: looks at the town middle (0,4,-515)",
+          "GetSpawnCFrame :: Horns, faceOut: (0,4,420) -> the gate (0,4,330)",
+          "GetSpawnCFrame :: Horns, no flag: the town middle (0,4,515)",
+          "GetSpawnCFrame :: a broken SpawnLook falls back to the town middle"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "zone: no jitter",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "GetSpawnCFrame :: jitter +6 / -6 moves the spawn, the look target stays the gate at spawn height"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "player: the look is never asked for",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PlayerService.spawnCFrame guards :: ZoneService gets (zoneId, true)",
+          "the first mission decides :: a new Halo player spawns looking toward +Z (the gate), not the castle",
+          "the first mission decides :: a new Horns player looks toward the Horns gate (-Z from 420)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "player: the look is always asked for",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PlayerService.spawnCFrame guards :: a non-boolean flag is passed as false",
+          "PlayerService.spawnCFrame guards :: no flag: false",
+          "the first mission decides :: a Halo player past the first mission looks toward the town middle (-Z)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "player: a finished mission still looks out",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the first mission decides :: Halo, done: spawn zone HaloTown, faceOut false",
+          "the first mission decides :: Horns, done: spawn zone HornsTown, faceOut false",
+          "the first mission decides :: TutorialStep 99 (done): closed",
+          "the first mission decides :: a Halo player past the first mission looks toward the town middle (-Z)",
+          "the first mission decides :: no data, the mirrored attribute 99: closed"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "player: only the first step looks out",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the first mission decides :: Halo, at the Forge (3): spawn zone HaloTown, faceOut true",
+          "the first mission decides :: TutorialStep 1: the first mission is open",
+          "the first mission decides :: TutorialStep 2: the first mission is open",
+          "the first mission decides :: TutorialStep 3: the first mission is open",
+          "the first mission decides :: TutorialStep 98: the first mission is open"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "player: nobody looks out",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the first mission decides :: Halo, at the Forge (3): spawn zone HaloTown, faceOut true",
+          "the first mission decides :: Halo, new (step 0): spawn zone HaloTown, faceOut true",
+          "the first mission decides :: Horns, new: spawn zone HornsTown, faceOut true",
+          "the first mission decides :: TutorialStep 0: the first mission is open",
+          "the first mission decides :: TutorialStep 1: the first mission is open",
+          "the first mission decides :: TutorialStep 2: the first mission is open"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "player: the step is read from the wrong key",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the first mission decides :: Halo, done: spawn zone HaloTown, faceOut false",
+          "the first mission decides :: Horns, done: spawn zone HornsTown, faceOut false",
+          "the first mission decides :: TutorialStep 99 (done): closed",
+          "the first mission decides :: a Halo player past the first mission looks toward the town middle (-Z)",
+          "the first mission decides :: a step above Done: closed",
+          "the first mission decides :: an unreadable step is never 'open'"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "player: no step counts as a finished mission",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the first mission decides :: no data and no attribute: step 0, open (a brand-new player)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "player: the fallback spawn is kept for a missing zone service",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PlayerService.spawnCFrame guards :: a non-CFrame answer: the plain spawn",
+          "PlayerService.spawnCFrame guards :: no ZoneService: CFrame.new(Spawn + 4 up)"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
+    "src/ServerScriptService/ZoneService.luau": "1502a1d43ed86307c5c087fd1ddc3fd2a26b90e6690987f47b0363be2bb68098",
+    "src/ServerScriptService/PlayerService.luau": "a6899045974aedf4f8a3c6a1fc44b9c1a445282f4a4d708e52e424331e18a1f9"
+  },
+  "fixtureSHA256": "b2f3825d169422f65893b8d69c3429ea35030e3f258b0d41729c5b13340d3614",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Zone_check_halo #43: a town spawn faces Config.Zones[town].SpawnLook (HaloTown (0,0,-330), HornsTown (0,0,330): the gate at the bridge end) while TutorialStep < Done (the first mission is open: the spawn after the faction pick, a KO in town); a finished mission and a zone without SpawnLook face the zone middle; a travel spawn (ZoneService.teleport) is unchanged. The spawn point (Spawn + jitter +-6 + 4 up) is unchanged.",
+  "limitations": "CharacterAdded / PivotTo and the faction-pick flow (FactionService -> PlayerService.Respawn) are not run; the extracted functions and the one call site are checked (static)."
+}

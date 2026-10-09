@@ -380,8 +380,8 @@ for _, faction in { "Halo", "Horns", "Neutral" } do
 	local initial = saved(0, 0); initial.Faction = faction
 	local f = fixture(initial)
 	local welcome = f.Config.Tutorial.Welcome[faction]
-	-- ⑪ (lines_pack §1-3) + 3rd idea round #2: the mission card page, the catchphrase page and two story pages
-	check(type(welcome.Name) == "string" and #welcome.Lines == 4, faction .. " guide has no four-page dialogue (card + 3)")
+	-- ⑪ (lines_pack §1-3) + 3rd idea round #2: the mission card page and the catchphrase page (A23-99: two pages only)
+	check(type(welcome.Name) == "string" and #welcome.Lines == 2, faction .. " guide has no two-page dialogue (card + the catchphrase)")
 	for _, line in welcome.Lines do check(type(line) == "string" and #line > 0, faction .. " guide page missing") end
 	check(f.Panels[1] == "Welcome" and f.Data.TutorialStep == 0, faction .. " guide did not open pending")
 	local beforeGold = f.Data.BankGold
