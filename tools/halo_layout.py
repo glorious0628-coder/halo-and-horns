@@ -187,8 +187,9 @@ cat = put("Cathedral", 0, -648, SOUTH, 1.0, flat=1.5)
 # fountain on the plaza terrace
 fnt = put("Fountain", 0, -565, 0, 1.0)
 # stairs models on the three axis ramps (the collision is the terrain ramp; the model is only the look)
-for zb, yb in ((-444, 0.2), (-524, 5), (-606, 11)):  # the stair model sits at the lower foot of each ramp, the terrain ramp is the collision
-    P.append(dict(kind="Stairs", x=0, z=zb + 4, y=yb, yaw=SOUTH, s=1.4, ramp=True))
+# stairs model rise = 8.2 studs over a 20 deep run at scale 1 (measured on the LOD mesh): stretch it to the ramp (28 wide, 22 long, rise of that tier)
+for zb, yb, rise in ((-444, 0.2, 4.8), (-524, 5.0, 6.0), (-606, 11.0, 8.0)):
+    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=SOUTH, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.1], ramp=True))
 
 # hero statues (face the road axis): tier 1 pairs, one pair on tier 2
 for z in (-384, -408, -466, -492):

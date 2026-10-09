@@ -1,0 +1,325 @@
+{
+ "note": "2026-10-10 WorldKit import A+B+C (Halo Citadel new Tripo models: build/import_all/6_sixth/H1..H3). Kit model names = these names; sizes in studs [x,y(height),z]. Fountain = Town_Halo_Fountain3 (FountainFx key).",
+ "items": [
+  {
+   "name": "Halo_ArchBridge",
+   "meshId": "rbxassetid://129594548734971",
+   "textureId": "",
+   "size_studs": [
+    30.0,
+    15.26,
+    21.704
+   ],
+   "sa": {
+    "color": "rbxassetid://102829044413529",
+    "normal": "rbxassetid://78628339357201",
+    "metal": "rbxassetid://90179858176762",
+    "rough": "rbxassetid://134450093950923"
+   }
+  },
+  {
+   "name": "Halo_FarArch",
+   "meshId": "rbxassetid://119469321979527",
+   "textureId": "",
+   "size_studs": [
+    30.0,
+    19.832,
+    29.196
+   ],
+   "sa": {
+    "color": "rbxassetid://131991616970566",
+    "normal": "rbxassetid://80539883947516",
+    "metal": "rbxassetid://130029131096120",
+    "rough": "rbxassetid://105684703806393"
+   }
+  },
+  {
+   "name": "Halo_Islet",
+   "meshId": "rbxassetid://118666336389176",
+   "textureId": "",
+   "size_studs": [
+    39.528,
+    34.211,
+    40.0
+   ],
+   "sa": {
+    "color": "rbxassetid://74090535369855",
+    "normal": "rbxassetid://90039953611815",
+    "metal": "rbxassetid://119454479279394",
+    "rough": "rbxassetid://105693687459134"
+   }
+  },
+  {
+   "name": "Halo_Stairs",
+   "meshId": "rbxassetid://79819705858941",
+   "textureId": "",
+   "size_studs": [
+    19.954,
+    15.17,
+    20.0
+   ],
+   "sa": {
+    "color": "rbxassetid://101053895816557",
+    "normal": "rbxassetid://85032602541647",
+    "metal": "rbxassetid://136403989349756",
+    "rough": "rbxassetid://104168024588562"
+   }
+  },
+  {
+   "name": "Halo_Statue",
+   "meshId": "rbxassetid://122909639006988",
+   "textureId": "",
+   "size_studs": [
+    6.709,
+    13.0,
+    5.466
+   ],
+   "sa": {
+    "color": "rbxassetid://96224271442591",
+    "normal": "rbxassetid://80423158581456",
+    "metal": "rbxassetid://128827009080830",
+    "rough": "rbxassetid://81062120879024"
+   }
+  },
+  {
+   "name": "Halo_Topiary",
+   "meshId": "rbxassetid://71123557950720",
+   "textureId": "",
+   "size_studs": [
+    3.266,
+    8.0,
+    3.573
+   ],
+   "sa": {
+    "color": "rbxassetid://79548513788959",
+    "normal": "rbxassetid://83224045286025",
+    "metal": "rbxassetid://91702862140950",
+    "rough": "rbxassetid://105271993875725"
+   }
+  },
+  {
+   "name": "Halo_Balustrade",
+   "meshId": "rbxassetid://84567595468345",
+   "textureId": "",
+   "size_studs": [
+    8.0,
+    4.495,
+    1.64
+   ],
+   "sa": {
+    "color": "rbxassetid://132394755589072",
+    "normal": "rbxassetid://110099723914534",
+    "metal": "rbxassetid://82482470073936",
+    "rough": "rbxassetid://98239420203657"
+   }
+  },
+  {
+   "name": "Halo_BannerPole",
+   "meshId": "rbxassetid://95098237745136",
+   "textureId": "",
+   "size_studs": [
+    4.008,
+    12.0,
+    2.37
+   ],
+   "sa": {
+    "color": "rbxassetid://86267414910150",
+    "normal": "rbxassetid://83851118628509",
+    "metal": "rbxassetid://72604746401131",
+    "rough": "rbxassetid://120254328765258"
+   }
+  },
+  {
+   "name": "Halo_CloudBush",
+   "meshId": "rbxassetid://94298074414723",
+   "textureId": "",
+   "size_studs": [
+    5.0,
+    3.701,
+    4.906
+   ],
+   "sa": {
+    "color": "rbxassetid://121241027045188",
+    "normal": "rbxassetid://89110469677729",
+    "metal": "rbxassetid://133182915398279",
+    "rough": "rbxassetid://99413153599450"
+   }
+  },
+  {
+   "name": "Halo_Lantern",
+   "meshId": "rbxassetid://99313195066456",
+   "textureId": "",
+   "size_studs": [
+    1.276,
+    7.0,
+    1.282
+   ],
+   "sa": {
+    "color": "rbxassetid://125904437603321",
+    "normal": "rbxassetid://81049621057907",
+    "metal": "rbxassetid://108897347263785",
+    "rough": "rbxassetid://139801943096724"
+   }
+  },
+  {
+   "name": "Halo_Planter",
+   "meshId": "rbxassetid://76770092849826",
+   "textureId": "",
+   "size_studs": [
+    6.0,
+    5.761,
+    5.712
+   ],
+   "sa": {
+    "color": "rbxassetid://133399959402080",
+    "normal": "rbxassetid://107494130169343",
+    "metal": "rbxassetid://75284510085173",
+    "rough": "rbxassetid://75487490028928"
+   }
+  },
+  {
+   "name": "Halo_PotFlowers",
+   "meshId": "rbxassetid://95008833269069",
+   "textureId": "",
+   "size_studs": [
+    3.0,
+    2.995,
+    2.821
+   ],
+   "sa": {
+    "color": "rbxassetid://79990736574148",
+    "normal": "rbxassetid://120300479893818",
+    "metal": "rbxassetid://100260478865598",
+    "rough": "rbxassetid://74800105013905"
+   }
+  },
+  {
+   "name": "Halo_RoundTree",
+   "meshId": "rbxassetid://107338006696833",
+   "textureId": "",
+   "size_studs": [
+    7.886,
+    10.0,
+    6.81
+   ],
+   "sa": {
+    "color": "rbxassetid://127211722211421",
+    "normal": "rbxassetid://140341390618643",
+    "metal": "rbxassetid://70402836123631",
+    "rough": "rbxassetid://83824064421671"
+   }
+  },
+  {
+   "name": "Halo_Cathedral",
+   "meshId": "rbxassetid://90003197344128",
+   "textureId": "",
+   "size_studs": [
+    69.873,
+    53.446,
+    70.0
+   ],
+   "sa": {
+    "color": "rbxassetid://100581759564837",
+    "normal": "rbxassetid://71668304222452",
+    "metal": "rbxassetid://120363732308063",
+    "rough": "rbxassetid://70958418575589"
+   }
+  },
+  {
+   "name": "Halo_DomeHouseA",
+   "meshId": "rbxassetid://115698884040104",
+   "textureId": "",
+   "size_studs": [
+    12.0,
+    15.094,
+    11.156
+   ],
+   "sa": {
+    "color": "rbxassetid://107362374992649",
+    "normal": "rbxassetid://136966986398205",
+    "metal": "rbxassetid://84025571312073",
+    "rough": "rbxassetid://105873973132273"
+   }
+  },
+  {
+   "name": "Halo_DomeHouseB",
+   "meshId": "rbxassetid://140381709067997",
+   "textureId": "",
+   "size_studs": [
+    14.0,
+    17.313,
+    9.492
+   ],
+   "sa": {
+    "color": "rbxassetid://93991932254240",
+    "normal": "rbxassetid://102583802979597",
+    "metal": "rbxassetid://135925817140818",
+    "rough": "rbxassetid://113693293855697"
+   }
+  },
+  {
+   "name": "Halo_Gate",
+   "meshId": "rbxassetid://74616149687094",
+   "textureId": "",
+   "size_studs": [
+    50.4,
+    48.253,
+    31.476
+   ],
+   "sa": {
+    "color": "rbxassetid://74617701987411",
+    "normal": "rbxassetid://89188638292258",
+    "metal": "rbxassetid://80187317260681",
+    "rough": "rbxassetid://119300663901359"
+   }
+  },
+  {
+   "name": "Halo_Shop",
+   "meshId": "rbxassetid://127418856161812",
+   "textureId": "",
+   "size_studs": [
+    12.0,
+    14.273,
+    7.48
+   ],
+   "sa": {
+    "color": "rbxassetid://70732664132418",
+    "normal": "rbxassetid://130491112827466",
+    "metal": "rbxassetid://105568447303712",
+    "rough": "rbxassetid://95750653767144"
+   }
+  },
+  {
+   "name": "Halo_Tower",
+   "meshId": "rbxassetid://135767014476504",
+   "textureId": "",
+   "size_studs": [
+    11.473,
+    36.0,
+    11.358
+   ],
+   "sa": {
+    "color": "rbxassetid://70666432694751",
+    "normal": "rbxassetid://133875696090205",
+    "metal": "rbxassetid://139952740018873",
+    "rough": "rbxassetid://135281335033449"
+   }
+  },
+  {
+   "name": "Town_Halo_Fountain3",
+   "meshId": "rbxassetid://126070421464016",
+   "textureId": "",
+   "size_studs": [
+    15.995,
+    12.849,
+    16.0
+   ],
+   "sa": {
+    "color": "rbxassetid://131755686361688",
+    "normal": "rbxassetid://135409120058387",
+    "metal": "rbxassetid://91734379387830",
+    "rough": "rbxassetid://119762054935766"
+   }
+  }
+ ]
+}
