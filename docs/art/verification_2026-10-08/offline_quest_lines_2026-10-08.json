@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 28,
+  "checks": 36,
   "failedChecks": [],
   "static": [
     {
@@ -36,14 +36,26 @@
       "ok": true
     },
     {
+      "check": "a finished line keeps its name + Done! (SetQuestLine uses L.LineFinish / L.LineIconKeys)",
+      "ok": true
+    },
+    {
+      "check": "the ▼ sits on the head line 'Quests (N)' over the lines, not beside line 1",
+      "ok": true
+    },
+    {
+      "check": "the words get their own width (no flex shrink that squeezed a finished line's name to nothing)",
+      "ok": true
+    },
+    {
       "check": "the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
       "ok": true
     }
   ],
   "mutations": {
-    "total": 20,
-    "applied": 20,
-    "caught": 20,
+    "total": 25,
+    "applied": 25,
+    "caught": 25,
     "results": [
       {
         "mutation": "lines never capped",
@@ -157,6 +169,48 @@
         ]
       },
       {
+        "mutation": "a finished line's pill everywhere on phones",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL phones: line 2 says Done! without a pill (the block's tap claims line 1), line 1 keeps it :: "
+        ]
+      },
+      {
+        "mutation": "no pill on PC lines 2+",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL PC: a finished daily on line 2 is claimable with its pill :: "
+        ]
+      },
+      {
+        "mutation": "a line that is not finished claims",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL unfinished / a board job / no quest: not claimable :: "
+        ]
+      },
+      {
+        "mutation": "no tab icon",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a kill daily: the Daily tab icon, then the slime head, then the scroll :: IconMonSlime,IconScroll,IconScroll",
+          "CHECK_FAIL a Halo story: the Faction tab icon :: IconScroll,IconScroll",
+          "CHECK_FAIL the first mission: the Main tab icon, then its own slime icon :: IconMonSlime,IconScroll"
+        ]
+      },
+      {
+        "mutation": "the monster head before the tab icon",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a kill daily: the Daily tab icon, then the slime head, then the scroll :: IconMonSlime,QuestTabIconDaily,IconScroll,IconScroll"
+        ]
+      },
+      {
         "mutation": "saved daily words trusted",
         "applied": true,
         "caught": true,
@@ -218,7 +272,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "1908c5cce21a6040ad2ee4cc112ac793183c0aa2e27f58ae2ab83289909c5be7"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

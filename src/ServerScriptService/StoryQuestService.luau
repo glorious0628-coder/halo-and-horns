@@ -238,8 +238,25 @@ local function eventAmount(player, obj, ev)
 		if info.Personal == true then return 0 end
 		if t == "WarPoints" then return math.max(0, num(info.WarPoints)) end
 		if t ~= "Kill" and t ~= "BasicKill" and t ~= "SafeKill" and t ~= "AutoKill" then return 0 end
-		if obj.Kind and Config.QuestKind(info.Kind) ~= obj.Kind then return 0 end -- a pumpkin slime counts as a slime
-		if obj.Zone and info.ZoneId ~= obj.Zone then return 0 end
+		-- A23-86 Call of the Woods: obj.Alt = { MinLevel, Pairs = { { Kind, Zone } } } lets another kind in its own zone
+		-- fill the same step from that level on
+		local alt = false
+		local a = obj.Alt
+		if type(a) == "table" and type(a.Pairs) == "table" then -- (only kill steps get here: the types above)
+			local data = getData(player)
+			if data and num(data.Level, 1) >= num(a.MinLevel, 1) then
+				for _, pair in a.Pairs do
+					if Config.QuestKind(info.Kind) == pair.Kind and info.ZoneId == pair.Zone then
+						alt = true
+						break
+					end
+				end
+			end
+		end
+		if not alt then
+			if obj.Kind and Config.QuestKind(info.Kind) ~= obj.Kind then return 0 end -- a pumpkin slime counts as a slime
+			if obj.Zone and info.ZoneId ~= obj.Zone then return 0 end
+		end
 		if obj.Golden and info.Golden ~= true then return 0 end
 		if obj.Near then
 			local spot = SQ.Landmarks[obj.Near]
@@ -579,6 +596,11 @@ local function rowFor(player, data, id, track)
 	local step = stepOf(player, def, track.St)
 	local obj = step and step.Obj or {}
 	local text, progress, target = step and step.Text or def.Title, 0, 1
+	-- A23-86 Call of the Woods: from the Alt level the row names the other kind too
+	local template = step and step.Text
+	if step and type(step.AltText) == "string" and type(obj.Alt) == "table" and num(data.Level, 1) >= num(obj.Alt.MinLevel, 1) then
+		template = step.AltText
+	end
 	if track.Claim then
 		text = string.format(TXT.Claim, def.Title)
 		progress, target = 1, 1
@@ -599,14 +621,14 @@ local function rowFor(player, data, id, track)
 		text = string.format(step.Text, Util.FormatNumber(math.floor(num(data.CarriedGold) + num(data.BankGold))))
 	elseif obj.Count then
 		progress, target = math.floor(num(track.P)), obj.Count
-		local okF, f = pcall(string.format, step.Text, progress, target)
-		text = okF and f or step.Text
+		local okF, f = pcall(string.format, template, progress, target)
+		text = okF and f or template
 	end
 	-- 3rd idea round #1: the HUD draws a ShowProgress row's numbers itself ('King Slimes 0/2 0/2' on PC), so the text
 	-- loses its '%d/%d' (a '%d/%d s' row keeps the unit as ProgressUnit)
 	local unit = nil
 	if target > 1 and not track.Claim and step and type(step.Text) == "string" then
-		text, unit = countless(step.Text)
+		text, unit = countless(template)
 	end
 	-- A23-71: a step that needs a skill hit (or a trial list still missing one) before the first skill says when it comes
 	if not track.Claim and needsSkill(obj, track) and not Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths) then

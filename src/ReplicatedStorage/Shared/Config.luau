@@ -2223,7 +2223,8 @@ Config.StoryQuests = {
 	-- comes from quests, the crafter and monster drops
 	Subs = { "S0", "Lunch1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
-		"SK1", "SK2" }, -- SKL-3: the practice subs of a new skill
+		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
+		"WB1" }, -- A23-86 Call of the Woods: the lantern on the woods bridge
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -2426,7 +2427,13 @@ Config.StoryQuests = {
 		M2_6 = {
 			Kind = "Main", Chapter = 2, Title = "Little Footprints on the Hill", ShortName = "Hill tracks",
 			Start = "The Slime Prince dust is gone. Little footprints lead to the woods…",
-			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			-- A23-86 "Call of the Woods" (content_beyond_10min A): from Lv10 the woods can fill this step too (Alt.Pairs = a
+			-- kind AND its zone that count as well: Goblin Brutes in the Goblin Woods), so a Lv10 hunter is not tied to the
+			-- meadow. AltText is the row from that level.
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow",
+				AltText = "Slime Princes or Goblin Brutes %d/%d",
+				Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2,
+					Alt = { MinLevel = 10, Pairs = { { Kind = "GoblinBrute", Zone = "GoblinWoods" } } } } } },
 			Finish = "Goblins stole the dust!", Reward = { Gold = 1 },
 		},
 		M2_7 = {
@@ -2701,6 +2708,26 @@ Config.StoryQuests = {
 					Lines = { All = { "Pip: Look! My own lamp! It glows purple. I never knew purple!" } } },
 			},
 			Reward = { Item = "Enh70", N = 1 },
+		},
+		-- A23-86 Call of the Woods (content_beyond_10min A): the first time a Lv10 hunter stands on the woods bridge, one
+		-- small card. Same size, fixed reward: A (angel) one 70% scroll / B (devil) 3 HP potions + 1 minute of hunting gold at
+		-- Lv10 (Config.HuntValue(10, 1) = 192, a test holds it). The bridge is outside the PvP woods (WoodsGate).
+		WB1 = {
+			Kind = "Sub", Title = "The Dropped Lantern", ShortName = "Bridge lamp", Factions = { Halo = true, Horns = true, Neutral = true },
+			Requires = { Done = { "M1_4" }, Level = 10 },
+			Start = "A light flickers on the woods bridge…",
+			Steps = {
+				{ Text = "Step onto the woods bridge", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14 } },
+				{ Text = "Pick up the lantern?", Panel = true,
+					Lines = { All = { "A goblin dropped his lantern on the bridge. It is still warm." } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Hand it back", Points = 1, Reply = "A grateful grunt echoes from the trees.",
+							Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Finders keepers!", Points = 1, Reply = "The lantern glows brighter in your hands.",
+							Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Hand it back", B = "Finders keepers!" } } },
+			},
+			Finish = "The woods feel a little less dark.",
 		},
 		-- quest_volume §3-2 (A23-56, 검수 2026-10-06): 12 new subs + 6 pulled from story_depth §3 / town_npc_quests, each once,
 		-- ending in an A (angel) / B (devil) pick with the same size of reward in a different kind (A23-58 scores the pick).
