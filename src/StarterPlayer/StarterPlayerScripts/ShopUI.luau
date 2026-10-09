@@ -149,7 +149,15 @@ local function hasRemote(name)
 	return type(Net.Names) == "table" and table.find(Net.Names, name) ~= nil
 end
 
-local function prompt(id)
+-- A23-79 beta metrics (ComeBack.Metric, dev1): PassView when the cards show, PurchasePrompt before Roblox's buy window;
+-- the pass argument is the Config.Analytics.PassIds kind (XP2 / Gold2 / VIP / Look)
+local function metric(id, arg)
+	local cb = C and C.ComeBack
+	if type(cb) == "table" and type(cb.Metric) == "function" then pcall(cb.Metric, id, arg) end
+end
+
+local function prompt(id, kind)
+	metric("PurchasePrompt", kind)
 	local ok, err = pcall(MarketplaceService.PromptGamePassPurchase, MarketplaceService, player, id)
 	if not ok then Util.Warn(TAG, "PromptGamePassPurchase failed: " .. tostring(err)) end
 end
@@ -303,7 +311,7 @@ local function tapPass(kit, p)
 	if p.Info then kit.Toast(T.ServerToast, "info"); return end
 	if d.Attr and attrOf(d.Attr, false) == true then kit.Toast(T.OwnedToast, "info"); return end
 	if d.Id <= 0 then kit.Toast(T.SoonToast, "info"); return end
-	prompt(d.Id)
+	prompt(d.Id, p.Kind)
 end
 
 local function tapLook(kit, look)
@@ -315,7 +323,7 @@ local function tapLook(kit, look)
 	end
 	local passId = math.floor(tonumber(def.PassId or def.Id) or 0)
 	if passId <= 0 then kit.Toast(T.SoonToast, "info"); return end
-	prompt(passId)
+	prompt(passId, "Look")
 end
 
 local function refreshPass(kit, cell)
@@ -407,6 +415,7 @@ local function buildShop(parent, kit)
 		end)
 		refreshPass(kit, cell)
 		table.insert(passCells, cell)
+		if not p.Info then metric("PassView", p.Kind) end -- one a kind per open (ComeBack keeps its own gap)
 	end
 
 	-- looks: my side's rim tiles (nothing while no look is listed yet)
@@ -414,6 +423,7 @@ local function buildShop(parent, kit)
 	local mine = myFaction()
 	local side = (mine == "Halo" or mine == "Horns") and Config.Factions[mine] or nil
 	if #looks > 0 then
+		metric("PassView", "Look")
 		header(u, kit, parent, side and string.format(T.LooksSideF, tostring(side.Name)) or T.Looks, "IconPassLooks")
 		local tiles = grid(kit, parent, "Looks", L.LookCols, L.LookH, #looks)
 		for _, look in looks do

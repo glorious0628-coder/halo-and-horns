@@ -240,13 +240,17 @@ local function refresh()
 			local count, status, available = potionState(kind)
 			potion.Count.Text = tostring(count)
 			potion.Status.Text = status
-			potion.Status.Visible = not available
+			-- ui_clutter_review ④ (검수 10/09): no 'Buy' / 'Full' words over the button - the potion picture + its count say
+			-- it (0 = a dim potion); only the cooldown seconds stay as text. A full bar keeps the potion bright (nothing wrong)
+			local cooling = string.match(status, "^%d+s$") ~= nil
+			local dim = not available and (count <= 0 or cooling or status ~= "Full")
+			potion.Status.Visible = cooling
 			potion.Button.Active = available
 			potion.Button:SetAttribute("Disabled", not available)
 			if potion.Button:IsA("ImageButton") then
-				potion.Button.ImageColor3 = not available and Color3.fromRGB(178, 174, 166) or Color3.new(1, 1, 1)
+				potion.Button.ImageColor3 = dim and Color3.fromRGB(178, 174, 166) or Color3.new(1, 1, 1)
 			end
-			if potion.Icon then potion.Icon.ImageColor3 = available and Color3.new(1, 1, 1) or COL.Dim end
+			if potion.Icon then potion.Icon.ImageColor3 = dim and COL.Dim or Color3.new(1, 1, 1) end
 		end
 	end
 end

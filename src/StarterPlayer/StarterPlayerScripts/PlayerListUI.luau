@@ -61,6 +61,8 @@ local T = {
 	IntMaxLen = 9, -- "1,234,567"; anything longer falls back to Util.FormatNumber (K / M)
 	SortBy = { "Power", "Level" }, -- descending, then the name
 	ScrollBar = 6,
+	InviteH = IS_TOUCH and 40 or 32, -- A23-79 #3 [Invite a friend] under the list (shown while Invite.CanShow())
+	InviteW = 210,
 	CloseW = 72,
 	CloseH = IS_TOUCH and 40 or 30,
 	ZebraTransparency = 0.94, -- every second row: a faint light strip so long rows stay readable
@@ -75,6 +77,7 @@ local TXT = {
 	NameHeader = "Name",
 	Missing = "-",
 	Close = "Close",
+	Invite = "Invite a friend",
 }
 
 -- Columns = { { Id, Name, W } } from Config.Leaderstats; Rows = pooled row widgets (reused on every refresh)
@@ -416,10 +419,31 @@ local function build()
 		Parent = ui.list,
 	})
 
+	-- A23-79 #3: [Invite a friend] at the bottom (layout() gives it room while Invite.CanShow())
+	ui.listTop = listTop
+	if type(k.ArtTextButton) == "function" then
+		ui.invite = k.ArtTextButton("BtnSecondary", {
+			Name = "Invite", Text = TXT.Invite, TextSize = T.Text, AnchorPoint = Vector2.new(0.5, 1),
+			Position = UDim2.new(0.5, 0, 1, -T.Pad + 4), Size = UDim2.fromOffset(T.InviteW, T.InviteH), Visible = false,
+			ZIndex = T.Z + 2, Parent = root,
+		}, function()
+			local inv = C and C.Invite
+			if type(inv) == "table" and type(inv.Prompt) == "function" then task.spawn(inv.Prompt, "PlayerList") end
+		end)
+	end
+
 	ui.root = root
 	S.Rows = {}
 	root.Parent = gui
 	return true
+end
+
+-- A23-79 #3: the [Invite] button shows while Invite.CanShow() says so
+local function inviteOk()
+	local inv = C and C.Invite
+	if not ui.invite or type(inv) ~= "table" or type(inv.CanShow) ~= "function" then return false end
+	local ok, can = pcall(inv.CanShow)
+	return ok and can == true
 end
 
 ----------------------------------------------------------------- layout / refresh
@@ -443,7 +467,11 @@ local function layout()
 		top = m.Y + m.H + T.TopGap
 		right = math.max(0, W - (m.X + m.W))
 	end
-	local chrome = T.Pad * 2 + T.TitleH + T.Gap + T.HeaderH + T.Gap
+	local inviteOn = inviteOk()
+	local inviteRoom = inviteOn and (T.InviteH + T.Gap) or 0
+	if ui.invite and ui.invite.Visible ~= inviteOn then ui.invite.Visible = inviteOn end
+	if ui.listTop then ui.list.Size = UDim2.new(1, -T.Pad * 2, 1, -(ui.listTop + T.Pad + inviteRoom)) end
+	local chrome = T.Pad * 2 + T.TitleH + T.Gap + T.HeaderH + T.Gap + inviteRoom
 	local rim = T.MineStroke * 2 -- list padding top + bottom (room for my row's rim)
 	local contentH = n * T.RowH + math.max(0, n - 1) * T.RowGap + rim
 	local maxH = math.max(chrome + T.RowH + rim, math.min(H * T.MaxHFrac, H - top - T.BottomMargin))
@@ -507,6 +535,10 @@ function PlayerListUI.Show(on)
 	if not ok then warnThrottled("refresh error: " .. tostring(err)) end
 	if not S.Open then return false end -- refresh may close it again
 	ui.root.Visible = true
+	if ui.invite and ui.invite.Visible then -- A23-79 metrics: the [Invite] button showed
+		local inv = C and C.Invite
+		if type(inv) == "table" and type(inv.Seen) == "function" then pcall(inv.Seen, "PlayerList") end
+	end
 	task.spawn(function()
 		while S.Open and S.Token == token do
 			task.wait(T.Refresh)
