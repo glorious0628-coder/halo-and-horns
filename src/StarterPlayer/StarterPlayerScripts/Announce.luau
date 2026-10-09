@@ -171,6 +171,12 @@ function A.Incoming(message)
 		return nil
 	end
 	local props = Instance.new("TextChatMessageProperties")
+	-- 검수 10/09 (UI clutter review ②: the line stayed over the joystick on phones): with TeamToast the chat gets no team
+	-- line (empty text); A.WatchTeam shows "You joined ...!" as one 3 s toast instead
+	if Config.ChatText.TeamToast == true then
+		props.Text = ""
+		return props
+	end
 	local team = Players.LocalPlayer.Team
 	local text = Config.ChatText.Choosing
 	if team and not team.AutoAssignable then text = string.format(Config.ChatText.Joined, team.Name) end
@@ -187,6 +193,27 @@ function A.HookTeamLine()
 	if not ok then warn("[Announce] team line hookup failed: " .. tostring(err)) end
 end
 
+-- the toast for a team change (pure): only the first side pick (the auto-assigned "Choosing a side" team -> a side);
+-- the login (nil -> my side) shows nothing, a later switch has its own notice (FactionService)
+function A.JoinToast(was, team)
+	if Config.ChatText.TeamToast ~= true then return nil end
+	if not team or team.AutoAssignable or not (was and was.AutoAssignable) then return nil end
+	return string.format(Config.ChatText.Joined, team.Name)
+end
+
+function A.WatchTeam()
+	local lp = Players.LocalPlayer
+	if typeof(lp) ~= "Instance" then return end -- test doubles without a player
+	local last = lp.Team
+	lp:GetPropertyChangedSignal("Team"):Connect(function()
+		local was = last
+		last = lp.Team
+		local text = A.JoinToast(was, last)
+		local kit = C and C.UIKit
+		if text and type(kit) == "table" and type(kit.Toast) == "function" then pcall(kit.Toast, text, "good") end
+	end)
+end
+
 function Announce.Init(registry)
 	C = registry
 	A.HookTeamLine()
@@ -201,11 +228,14 @@ function Announce.Start()
 		end)
 		if not ok then warn("[Announce] hookup failed: " .. tostring(err)) end
 	end)
+	local okTeam, errTeam = pcall(A.WatchTeam)
+	if not okTeam then warn("[Announce] team toast hookup failed: " .. tostring(errTeam)) end
 	print("[Announce] started")
 end
 
 -- test aid / reuse: format a payload without showing it
 Announce.Format = A.Format
 Announce.Incoming = A.Incoming -- test aid
+Announce.JoinToast = A.JoinToast -- test aid
 
 return Announce

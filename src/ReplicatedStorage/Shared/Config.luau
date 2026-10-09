@@ -4094,6 +4094,9 @@ Config.Loot = {
 Config.ChatText = {
 	Joined = "You joined the %s!", -- team name: "You joined the Horn Legion!"
 	Choosing = "Pick a side to start!", -- TextChatService only: the line for the auto-assigned "Choosing a side" team
+	-- 검수 2026-10-09 (UI clutter review ②: the team line stayed in the chat over the phone's joystick): the chat gets no
+	-- team line (TextChatService, Announce.Incoming); the first side pick shows "You joined ...!" as one 3 s toast
+	TeamToast = true,
 }
 
 -- A23-15 server-wide chat announcements (AnnounceService -> remote "Announce" -> client Announce.luau). Server sends
