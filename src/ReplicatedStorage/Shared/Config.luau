@@ -188,7 +188,7 @@ Config.Data = {
 		-- camera); Follow stays in Settings for whoever wants it. Settings V3 (검수 10/09): a save from before V3 gets Cam = Free
 		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
 		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
-		Settings = { V = 4, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+		Settings = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 			Cam = "Follow", PvPCards = false },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
@@ -4136,9 +4136,10 @@ Config.Settings = {
 	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
 	-- day of own Free picks is lost), a Free picked from V4 on stays
 	Version = 4,
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the nine values incl. Music, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
+		Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100: the background music (Audio "Music" group)
 		Shake = { Type = "Bool" },
 		DmgNum = { Type = "Enum", Options = { "All", "Off" } },
 		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
@@ -4149,9 +4150,10 @@ Config.Settings = {
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
 	},
-	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
+	Order = { "Sfx", "Music", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
+		Music = "Music", MusicEn = "Music",
 		Shake = "Screen shake", ShakeEn = "Screen shake",
 		DmgNum = "Damage numbers", DmgNumEn = "Damage numbers",
 		Tags = "Other players' name tags", TagsEn = "Other players' name tags",
@@ -4941,6 +4943,29 @@ Config.Audio = {
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
 	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },
+}
+
+-- A23-100 배경 음악 (소리 만들기 2026-10-10, art/sfx/asset_ids.json "bgm"; mono loops, -24 LUFS): Audio.luau plays the
+-- track of the zone I stand in (Tracks[ZoneId]) in the "Music" SoundGroup at Volume (under Settings "Music"), crossfading
+-- over Fade s when my ZoneId changes; a zone without a track is quiet. The big moments (Duck.By) lower it to DuckMul.
+-- Boss[zone] = the boss layer (same length, same TimePosition, -27 LUFS) - not uploaded yet
+Config.Audio.Music = {
+	Volume = 0.5, Fade = 1.5, DuckMul = 0.5,
+	Tracks = {
+		HaloTown = "rbxassetid://108661141883977", -- 88.646 s loop
+		HornsTown = "rbxassetid://123430641290441", -- 63.264 s loop
+	},
+	Boss = {},
+}
+-- 점검표 sound 60 (소리 만들기 2026-10-10; 20 s loops, -30 LUFS): 3D water by the fountains (FountainFx -> Audio.Ambient)
+-- and the waterfalls (Map.Decor models named *Waterfall, + Spots for terrain-only falls: the Halo town's six =
+-- tools/worldkit/halo_terrain.luau FALLS x WINGS, x = +-the wing's outer edge, y = half its drop to the sea). Outside the
+-- MaxPlaying pools; the Sound effects setting scales them
+Config.Audio.Ambient = {
+	Fountain = { Id = "rbxassetid://136139057502455", Volume = 0.5, MinDistance = 6, MaxDistance = 40 },
+	Waterfall = { Id = "rbxassetid://85234404217631", Volume = 0.5, MinDistance = 8, MaxDistance = 40,
+		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
+			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
 
 Config.Combo = { ResetSeconds = 4, Milestones = { { 10, "Nice! x10" }, { 25, "Great! x25" }, { 50, "Wild! x50" }, { 100, "Legend! x100" } } }

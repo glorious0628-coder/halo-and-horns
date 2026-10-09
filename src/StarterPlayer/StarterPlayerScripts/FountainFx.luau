@@ -142,6 +142,9 @@ local function build(model, spec)
 	folder.Name = "WaterFx"
 	folder.Parent = model
 	local hub = hubPart(folder, CFrame.new(base))
+	-- 점검표 sound 60: the water sound (Config.Audio.Ambient.Fountain, 3D, ~40 studs) goes with the effects folder
+	local audio = C and C.Audio
+	if type(audio) == "table" and type(audio.Ambient) == "function" then pcall(audio.Ambient, hub, "Fountain") end
 
 	-- the jet: a short column out of the top spout, its drops falling back into the top bowl
 	if spec.Jet then
