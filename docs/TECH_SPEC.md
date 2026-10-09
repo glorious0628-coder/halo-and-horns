@@ -2743,7 +2743,7 @@ Purchases go through Roblox (`PromptProductPurchase` → `ProcessReceipt`), neve
 | `Notify` | S→C | `{ Text: string, Kind: "info"\|"good"\|"bad"\|"reward"\|"announce", Duration: number? }` | `Net.Notify/NotifyAll` | — |
 | `Fx` | S→C | `(kind: string, data: table)` — see table below | `Net.Fx` | — |
 | `OpenPanel` | S→C | `panelId: "Altar"` | FactionService | — |
-| `Quests` | S→C | `json: string` (JSON array of quest entries, §4.20) | QuestService | — (R1 CR-L50: fired to the owner only when the list changes; replaces the `QuestsJson` attribute) |
+| `Quests` | S→C | `{ Quests = { entry, … } (the quest entries, §4.20), Book = { Available = { { Id, Kind, Level?, Text? } }, Done = { "story:<id>" } } }` (A23-81, 2026-10-08; older servers sent the JSON string of the entries — clients read both) | QuestService (+ StoryQuestService.BookRows) | — (R1 CR-L50: fired to the owner only when the rows or the book change; replaces the `QuestsJson` attribute) |
 
 `Fx` kinds (sender → recipients → data):
 

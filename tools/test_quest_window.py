@@ -57,6 +57,13 @@ MUTATIONS = [
     ("BOOK", "Toggle never closes", "\t\tif current == T.Window then panels.Close(true) end\n", ""),
     ("BOOK", "the asked tab ignored", "\tif type(arg) == \"table\" and table.find(tabs(), arg.Tab) then\n", "\tif false then\n"),
     ("BOOK", "no counts on the tabs", "\t\tb.Text = n > 0 and string.format(T.Text.TabCount, name, n) or name\n", "\t\tb.Text = name\n"),
+    ("BOOK", "diary links without the diary window", "\t\tif ctx.HasDiary == true and total > 0 and (live or pages > 0) then\n",
+     "\t\tif total > 0 and (live or pages > 0) then\n"),
+    ("BOOK", "diary links after the season with no page", "\t\tif ctx.HasDiary == true and total > 0 and (live or pages > 0) then\n",
+     "\t\tif ctx.HasDiary == true and total > 0 then\n"),
+    ("BOOK", "a link counted on the tab", "\t\t\tif r.Kind ~= \"Link\" then n += 1 end -- a window link is no quest to count\n",
+     "\t\t\tn += 1\n"),
+    ("BOOK", "a link opens nothing", "\t\t\tif VIEW.Kit then VIEW.Kit.Open(row.Window, row.Arg) end -- with a back button to the quests\n", ""),
     ("CONFIG", "QuestTab ignores the id table", "\tif byId then return byId end\n", ""),
     ("CONFIG", "a Halo story counted as Side", '["story:H2"] = "Faction", ', ""),
 ]

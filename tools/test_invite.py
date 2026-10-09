@@ -38,6 +38,14 @@ MUTATIONS = [
     ("Go to friend without the UserId", "\tlocal ok = pcall(remote.FireServer, remote, player.UserId)\n",
      "\tlocal ok = pcall(remote.FireServer, remote)\n"),
     ("the plain line under the friend card too", "\tif Invite.DefaultLine ~= true then return end\n", ""),
+    ("no InvitePrompt count", "\tif ok and source ~= nil then metric(\"InvitePrompt\", source) end\n", ""),
+    ("InvitePrompt counted when nothing opened", "\tif ok and source ~= nil then metric(\"InvitePrompt\", source) end\n",
+     "\tif source ~= nil then metric(\"InvitePrompt\", source) end\n"),
+    ("InviteSeen every time", "\tS.Shown[source] = true\n", ""),
+    ("InviteSent with nobody picked", " or #recipientIds < 1 then return nil end\n", " then return nil end\n"),
+    ("someone else's invite window counted", "\tif player ~= LocalPlayer or type(recipientIds)", "\tif type(recipientIds)"),
+    ("InviteSent over 50", "\tlocal n = math.min(#recipientIds, 50)\n", "\tlocal n = #recipientIds\n"),
+    ("the closed window not watched", "\t\t\tpcall(Invite.Closed, player, recipientIds)\n", ""),
 ]
 
 

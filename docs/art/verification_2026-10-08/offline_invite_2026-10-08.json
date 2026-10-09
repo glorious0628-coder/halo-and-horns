@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 22,
+  "checks": 34,
   "failedChecks": [],
   "static": [
     {
@@ -13,9 +13,9 @@
     }
   ],
   "mutations": {
-    "total": 11,
-    "applied": 11,
-    "caught": 11,
+    "total": 18,
+    "applied": 18,
+    "caught": 18,
     "results": [
       {
         "mutation": "the invite shows while knocked out",
@@ -57,6 +57,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL Roblox says no invites (CanSendGameInviteAsync false): nothing opens :: ",
+          "CHECK_FAIL ... and nothing is counted :: InvitePrompt:Menu",
           "CHECK_FAIL knocked out: no invite button (A23-79) :: "
         ]
       },
@@ -111,14 +112,76 @@
         "failures": [
           "CHECK_FAIL DefaultLine false: FriendJoined fires, the plain line stays off :: 2"
         ]
+      },
+      {
+        "mutation": "no InvitePrompt count",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an opened invite window counts (InvitePrompt + its source) :: none",
+          "CHECK_FAIL ... and nothing is counted :: none"
+        ]
+      },
+      {
+        "mutation": "InvitePrompt counted when nothing opened",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Roblox's window failed to open: not counted :: InvitePrompt:Menu"
+        ]
+      },
+      {
+        "mutation": "InviteSeen every time",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the same source again this session: not counted twice :: ",
+          "CHECK_FAIL another source counts once too :: ",
+          "CHECK_FAIL no source: nothing :: "
+        ]
+      },
+      {
+        "mutation": "InviteSent with nobody picked",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL closed with nobody picked: nothing :: InviteSent:0",
+          "CHECK_FAIL someone else's window: nothing :: InviteSent:0"
+        ]
+      },
+      {
+        "mutation": "someone else's invite window counted",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL someone else's window: nothing :: InviteSent:1"
+        ]
+      },
+      {
+        "mutation": "InviteSent over 50",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 70 friends picked: counted as 50 (the server's 1..50) :: InviteSent:70"
+        ]
+      },
+      {
+        "mutation": "the closed window not watched",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the invite window closed with 3 friends: InviteSent 3 :: none",
+          "CHECK_FAIL closed with nobody picked: nothing :: none",
+          "CHECK_FAIL someone else's window: nothing :: none"
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/Invite.luau": "83d418f898410b66d4fa82d4cdbb305b8c5d4cb63c49b9619c90ca951b2e1daf",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
+    "src/StarterPlayer/StarterPlayerScripts/Invite.luau": "6542a2b9de2199f47ff6fba2969be9035af2e509a3c7e72c782ab09cec03d4db",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
   },
-  "fixtureSHA256": "7f75a37ba078e1333846ccfd298fd9a89b8ac2d9791bc03f3cde9716eb276827",
+  "fixtureSHA256": "b4019f9db7b0cc3a3fd07fd5674bca613f8a005473a584b68d7fb93b1bbb2643",
   "studioCalls": 0,
   "limitations": "Doubles instead of SocialService: Roblox's invite window (and whether a friend's join carries the LaunchData) is a Studio / live check with two accounts; the buttons' places are 이미지 개발's layout."
 }

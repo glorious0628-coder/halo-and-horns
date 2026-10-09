@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9658,
+  "checks": 9672,
   "failedChecks": 0,
-  "namedChecks": 338,
+  "namedChecks": 352,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -423,7 +423,7 @@
     },
     {
       "group": "sanitize",
-      "check": "unknown top-level keys and unknown action ids are dropped (V = 2, A23-78)",
+      "check": "unknown top-level keys and unknown action ids are dropped (V = 3, A23-78 / A23-65)",
       "pass": 1,
       "fail": 0
     },
@@ -513,7 +513,7 @@
     },
     {
       "group": "sanitize",
-      "check": "every enum option is kept",
+      "check": "every enum option is kept (a V3 blob)",
       "pass": 13,
       "fail": 0
     },
@@ -609,13 +609,13 @@
     },
     {
       "group": "a23-78 key hints migration",
-      "check": "settings version 2 (Config.Settings + the default blob)",
+      "check": "settings version 3 (Config.Settings + the default blob)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "a23-78 key hints migration",
-      "check": "an old V1 save with key hints on: off once, saved as V2",
+      "check": "an old V1 save with key hints on: off once, saved as V3",
       "pass": 1,
       "fail": 0
     },
@@ -669,7 +669,7 @@
     },
     {
       "group": "a23-78 key hints migration",
-      "check": "load: a V1 save with key hints on -> off, V2, the rest kept",
+      "check": "load: a V1 save with key hints on -> off, V3, the rest kept",
       "pass": 1,
       "fail": 0
     },
@@ -687,6 +687,90 @@
     },
     {
       "group": "a23-78 key hints migration",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "the default camera is Free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "a V2 save on Follow: Free once, saved as V3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "every other V2 setting stays as it was",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "V1 / no V on Follow: Free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "a broken V (NaN / a string / 2.9) counts as old",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "V3: a Follow the player picked stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "a newer V keeps the pick too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "sanitizing again changes nothing (the migration runs once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "after the migration the player picks Follow again: kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "Free stays Free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "load: a V2 save on Follow -> Free, V3, the rest kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "load: a V3 save keeps Follow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-65 camera migration",
       "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
       "pass": 1,
       "fail": 0
@@ -2045,9 +2129,9 @@
   "staticChecks": 31,
   "staticFailures": [],
   "mutations": {
-    "total": 60,
-    "applied": 60,
-    "caught": 60,
+    "total": 65,
+    "applied": 65,
+    "caught": 65,
     "results": [
       {
         "mutation": "KeyMap: an explicit key already taken is kept",
@@ -2246,7 +2330,7 @@
         "newFailingChecks": [
           "dataservice-settings :: a broken Settings blob is repaired field by field on load",
           "sanitize :: output fields are exactly V, Keys and the seven settings",
-          "sanitize :: unknown top-level keys and unknown action ids are dropped (V = 2, A23-78)",
+          "sanitize :: unknown top-level keys and unknown action ids are dropped (V = 3, A23-78 / A23-65)",
           "service-remote :: BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
           "service-remote :: a 16-key blob is accepted (junk dropped) and echoed",
           "service-remote :: the echo carries the cleaned value and the blob's Seq"
@@ -2262,8 +2346,8 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-78 key hints migration :: a broken V (NaN / a string / 1.9) counts as old",
-          "a23-78 key hints migration :: an old V1 save with key hints on: off once, saved as V2",
-          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
+          "a23-78 key hints migration :: an old V1 save with key hints on: off once, saved as V3",
+          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V3, the rest kept",
           "a23-78 key hints migration :: no V (a blob from before BB2's V): key hints off",
           "a23-78 key hints migration :: sanitizing again changes nothing (the migration runs once)",
           "sanitize :: bools: a boolean is kept, anything else is the default"
@@ -2278,13 +2362,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-65 camera migration :: every other V2 setting stays as it was",
+          "a23-65 camera migration :: load: a V2 save on Follow -> Free, V3, the rest kept",
           "a23-78 key hints migration :: V2: key hints the player turned on stay on",
           "a23-78 key hints migration :: a newer V keeps the pick too",
           "a23-78 key hints migration :: after the migration the player turns them on again: kept",
-          "a23-78 key hints migration :: load: a V2 save keeps key hints on",
-          "sanitize :: bools: a boolean is kept, anything else is the default"
+          "a23-78 key hints migration :: load: a V2 save keeps key hints on"
         ],
-        "newFailingCount": 5,
+        "newFailingCount": 7,
         "newFailingStatic": []
       },
       {
@@ -2301,20 +2386,93 @@
         "newFailingStatic": []
       },
       {
-        "mutation": "A23-78: the version stays 1",
+        "mutation": "A23-78/A23-65: the version stays 2",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "a23-78 key hints migration :: after the migration the player turns them on again: kept",
-          "a23-78 key hints migration :: an old V1 save with key hints on: off once, saved as V2",
-          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
-          "a23-78 key hints migration :: load: a V2 save keeps key hints on",
-          "a23-78 key hints migration :: sanitizing again changes nothing (the migration runs once)",
-          "a23-78 key hints migration :: settings version 2 (Config.Settings + the default blob)"
+          "a23-65 camera migration :: a V2 save on Follow: Free once, saved as V3",
+          "a23-65 camera migration :: after the migration the player picks Follow again: kept",
+          "a23-65 camera migration :: load: a V2 save on Follow -> Free, V3, the rest kept",
+          "a23-65 camera migration :: load: a V3 save keeps Follow",
+          "a23-65 camera migration :: sanitizing again changes nothing (the migration runs once)",
+          "a23-78 key hints migration :: an old V1 save with key hints on: off once, saved as V3"
         ],
-        "newFailingCount": 18,
+        "newFailingCount": 21,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-65: an old save keeps Follow",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-65 camera migration :: V1 / no V on Follow: Free",
+          "a23-65 camera migration :: a V2 save on Follow: Free once, saved as V3",
+          "a23-65 camera migration :: a broken V (NaN / a string / 2.9) counts as old",
+          "a23-65 camera migration :: load: a V2 save on Follow -> Free, V3, the rest kept",
+          "a23-65 camera migration :: sanitizing again changes nothing (the migration runs once)"
+        ],
+        "newFailingCount": 5,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-65: V3 picks are dropped too",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-65 camera migration :: V3: a Follow the player picked stays",
+          "a23-65 camera migration :: a newer V keeps the pick too",
+          "a23-65 camera migration :: after the migration the player picks Follow again: kept",
+          "a23-65 camera migration :: load: a V3 save keeps Follow",
+          "sanitize :: every enum option is kept (a V3 blob)"
+        ],
+        "newFailingCount": 5,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-65: the V2 check is reused for the camera",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-65 camera migration :: a V2 save on Follow: Free once, saved as V3",
+          "a23-65 camera migration :: a broken V (NaN / a string / 2.9) counts as old",
+          "a23-65 camera migration :: load: a V2 save on Follow -> Free, V3, the rest kept",
+          "a23-65 camera migration :: sanitizing again changes nothing (the migration runs once)"
+        ],
+        "newFailingCount": 4,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-65: a NaN V counts as new",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-65 camera migration :: V1 / no V on Follow: Free",
+          "a23-65 camera migration :: a broken V (NaN / a string / 2.9) counts as old"
+        ],
+        "newFailingCount": 2,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "A23-65: the default blob stays V2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-78 key hints migration :: settings version 3 (Config.Settings + the default blob)",
+          "config-contract :: Config.Data.Defaults.Settings = the BB2 defaults"
+        ],
+        "newFailingCount": 2,
         "newFailingStatic": []
       },
       {
@@ -2326,12 +2484,12 @@
         "newFailingChecks": [
           "a23-78 key hints migration :: after the migration the player turns them on again: kept",
           "a23-78 key hints migration :: every other V1 setting stays as it was",
-          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
+          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V3, the rest kept",
           "integration :: PlayerReady push: saved keys + settings arrive (Attack Q, Journal 없음)",
           "sanitize :: Near exists for Tags only",
           "sanitize :: Sfx = the nearest step of the clamped value"
         ],
-        "newFailingCount": 22,
+        "newFailingCount": 21,
         "newFailingStatic": []
       },
       {
@@ -2341,10 +2499,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V2, the rest kept",
+          "a23-65 camera migration :: load: a V2 save on Follow -> Free, V3, the rest kept",
+          "a23-78 key hints migration :: load: a V1 save with key hints on -> off, V3, the rest kept",
+          "a23-78 key hints migration :: load: a V2 save keeps key hints on",
           "dataservice-settings :: a broken Settings blob is repaired field by field on load"
         ],
-        "newFailingCount": 2,
+        "newFailingCount": 4,
         "newFailingStatic": []
       },
       {
@@ -2942,24 +3102,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
+    "src/ReplicatedStorage/Shared/Config.luau": "6b2165f6b61027e9dbf810ee0f77c01c6129452ad499302f7c197490697d7b4e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ReplicatedStorage/Shared/Net.luau": "52e6e3e98db370cdec8fa10fce623a7ff194e4cfd096f0a1c3603f48f8f11941",
+    "src/ReplicatedStorage/Shared/Net.luau": "a5f641ff6b031f6cdcd8a809d61fbb1efd3d5549c80fc4eba6b630556b03793e",
     "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "a960d549e93568363ca5232c8fa6449ef807eff79927d05325328398550f30d2",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d",
-    "src/ServerScriptService/Main.server.luau": "5ca37d4ad1c7c0575ff9b1757cd8f3c1950501a2ece0d5f972e75d2e1f36338e",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
-    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "6ba2f0c2cb6317475f5a28084900442c2a5ef25336a5aa1bcfc1f44d0f6353a6",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b",
+    "src/ServerScriptService/Main.server.luau": "37eb0362b0d6ab10990d78732f972d00bf5516b85d46b466b447672489992b06",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "1908c5cce21a6040ad2ee4cc112ac793183c0aa2e27f58ae2ab83289909c5be7",
+    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "6a9b438f7d69e19f94973d503e0b19db2b97cfbfbe08c9a73b51bc9dfe79a182",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
-    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "dedd3121495e9910a7bc015632ea1a43874d6c4d13575601e6f61f28debc1eab",
-    "src/ServerScriptService/StoryQuestService.luau": "be8f4d4b8c6c0145f9d51e3e7251f87fe35e5f74607cd04a5949dadf2cd6b52d",
-    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1"
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "936a0108e2848c942d78ed719849fc9241f1f13556ac4b26bcb888e067d98f29",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "35f7f06e3d6f19793053c7e67fa70e64c1e300f4ba61402c7e919dc0ab9d6f92",
+    "src/ServerScriptService/StoryQuestService.luau": "8dbe06a670edb1bf96095ac74cc4369930e88d9884af90b6c791662552484e48",
+    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "9b0b07c7474ca4cdfbfa2213644e1d143d11b4cb8cd39bfeec169f351f6ace49"
   },
-  "fixtureSHA256": "1f628f07be96774ba66b240483f5377fac3166464a1560e08232756adabe8ce6",
+  "fixtureSHA256": "6023f573a7b7d25f56c0bb3b0cc1338e0208df40bec605cd9ea2c243a868fc20",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

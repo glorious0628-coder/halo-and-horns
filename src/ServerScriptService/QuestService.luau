@@ -243,6 +243,21 @@ local function isEmptySlot(q)
 	return type(q) == "table" and q.Kind == "Empty"
 end
 
+-- the row text of template `t` for `target` (Kill / Golden: the monster `unitId`), always from today's Config. 검수
+-- 2026-10-08 (게임성 개발 3): a saved Text is never trusted - saves from before A23-48 still held Korean daily text
+local function questText(t, target, unitId)
+	local text
+	if t.Id == "Gold" then
+		text = string.format(t.Text, tostring(target)) -- CR-L31: exact number (FormatNumber rounds to "3.2K")
+	elseif t.Id == "Kill" or t.Id == "Golden" then
+		local unitDef = Config.MonsterTypes[unitId] or {}
+		text = string.format(t.Text, tostring(unitDef.Short or unitDef.Name or unitId), target) -- CR-M27: (monster, target)
+	else
+		text = string.format(t.Text, target)
+	end
+	return Config.Plural(text) -- "Join the Golden Goose tug 1 time"
+end
+
 -- others = quests in the OTHER slots (used for the PvP limit and the "different template" preference)
 local function newQuest(player, kind, others)
 	local data = S.PlayerService.GetData(player)
@@ -310,7 +325,6 @@ local function newQuest(player, kind, others)
 	local main = Config.MonsterTypes[mainId]
 	-- the monster a Kill/Golden quest counts: the zone's unit monster, or the newbie row's Monster (e.g. BigSlime)
 	local unitId = unitOf(row)
-	local unitDef = Config.MonsterTypes[unitId]
 	local target = units -- band Targets are exact (a Gold row already says gold)
 	if t.Id == "Gold" and not band then
 		target = units * main.Gold
@@ -333,15 +347,7 @@ local function newQuest(player, kind, others)
 		rewardXP = math.floor(units * main.XP * per * mult)
 	end
 
-	local text
-	if t.Id == "Gold" then
-		text = string.format(t.Text, tostring(target)) -- CR-L31: exact number (FormatNumber rounds to "3.2K")
-	elseif t.Id == "Kill" or t.Id == "Golden" then
-		text = string.format(t.Text, tostring(unitDef.Short or unitDef.Name), target) -- CR-M27: (monster name, target)
-	else
-		text = string.format(t.Text, target)
-	end
-	text = Config.Plural(text) -- "Join the Golden Goose tug 1 time"
+	local text = questText(t, target, unitId)
 
 	local progress = 0
 	if target >= 5 then
@@ -371,11 +377,11 @@ local function ensureSlots(player, data)
 		local q = old[i]
 		if isValidQuest(q) then
 			q.Progress = math.clamp(q.Progress, 0, q.Target)
-			if q.Id == "Release" then
-				q.MinStacks = nil
-				q.Text = Config.Plural(string.format(TEMPLATE_BY_ID.Release.Text, q.Target))
-			end
-			q.Text = Config.Plural(q.Text) -- saves from before 2026-10-07 said "tug 1 times"
+			if q.Id == "Release" then q.MinStacks = nil end
+			-- the text again from the template (a save from before A23-48 still said Korean; before 2026-10-07 "1 times")
+			local unit = (type(q.Unit) == "string" and Config.MonsterTypes[q.Unit] ~= nil) and q.Unit
+				or Config.ZoneMainMonster[Config.QuestZoneForLevel(getLevel(data))]
+			q.Text = questText(TEMPLATE_BY_ID[q.Id], q.Target, unit)
 			fixed[i] = q
 		end
 	end
@@ -899,7 +905,7 @@ local function publish(player)
 	local book = nil
 	if story and type(story.BookRows) == "function" then
 		local okBook, rows = pcall(story.BookRows, player, data)
-		if okBook and type(rows) == "table" then book = rows end
+		if okBook and type(rows) == "table" then book = rows elseif not okBook then loopWarn("quest book", rows) end
 	end
 	local ok, json = pcall(HttpService.JSONEncode, HttpService, list)
 	if not ok then

@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 41,
+  "checks": 53,
   "failedChecks": [],
   "static": [
     {
@@ -17,9 +17,9 @@
     }
   ],
   "mutations": {
-    "total": 20,
-    "applied": 20,
-    "caught": 20,
+    "total": 27,
+    "applied": 27,
+    "caught": 27,
     "results": [
       {
         "mutation": "a card over an open window",
@@ -143,7 +143,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL a long goal is cut at 60 with … :: Next time: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          "CHECK_FAIL a long goal is cut at 60 with … :: Next time: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "CHECK_FAIL tomorrow's line cleaned and cut at 40 :: Next time: Goal"
         ]
       },
       {
@@ -151,7 +152,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL the goal: no rich-text brackets, no line breaks :: Next time: <b>Iron</b> Sword"
+          "CHECK_FAIL the goal: no rich-text brackets, no line breaks :: Next time: <b>Iron</b> Sword",
+          "CHECK_FAIL tomorrow's line cleaned and cut at 40 :: Next time: Goal"
         ]
       },
       {
@@ -179,7 +181,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL a tip without words is refused :: ",
-          "CHECK_FAIL a tip without a window: only [OK] :: "
+          "CHECK_FAIL a tip without a window: only [OK] :: ",
+          "CHECK_FAIL the daily card: the next goal, then tomorrow's line :: Hello"
         ]
       },
       {
@@ -198,14 +201,75 @@
           "CHECK_FAIL [Open Settings] and [OK]: the same look :: ",
           "CHECK_FAIL a tip without a window: only [OK] :: "
         ]
+      },
+      {
+        "mutation": "no tomorrow line",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the daily card: the next goal, then tomorrow's line :: Next time: Hunt and get stronger!",
+          "CHECK_FAIL the King Diary page as tomorrow's line :: Next time: Goal",
+          "CHECK_FAIL tomorrow's line cleaned and cut at 40 :: Next time: Goal"
+        ]
+      },
+      {
+        "mutation": "tomorrow's line not cut",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL tomorrow's line cleaned and cut at 40 :: Next time: Goal"
+        ]
+      },
+      {
+        "mutation": "the OptIn flag ignored",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the card closed -> the opt-in moment 'Daily', once :: "
+        ]
+      },
+      {
+        "mutation": "any OptIn value counts",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL OptIn must be true (a string is not) :: OptIn:Daily",
+          "CHECK_FAIL [Go] on welcome back counts WelcomeBackGo :: OptIn:Daily,Metric:WelcomeBackGo",
+          "CHECK_FAIL [OK] on welcome back and a tip's [Go] count nothing :: OptIn:Daily,Metric:WelcomeBackGo"
+        ]
+      },
+      {
+        "mutation": "WelcomeBackGo never counted",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [Go] on welcome back counts WelcomeBackGo :: ",
+          "CHECK_FAIL [OK] on welcome back and a tip's [Go] count nothing :: "
+        ]
+      },
+      {
+        "mutation": "every [Go] counted as WelcomeBackGo",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [OK] on welcome back and a tip's [Go] count nothing :: Metric:WelcomeBackGo,Metric:WelcomeBackGo"
+        ]
+      },
+      {
+        "mutation": "Waiting always false",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a card waits behind a window: Waiting and Busy say so :: "
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/PauseCard.luau": "b619a945d121a2dd1f459afa35030e5e58a174d8d51183fb638575daf03696eb",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
+    "src/StarterPlayer/StarterPlayerScripts/PauseCard.luau": "a16f86ea5783875b17e700b944effa89db704603b8bfdcc73c20f0178863429f",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
   },
-  "fixtureSHA256": "3561dd42bb7bd526bb54d40fce2ab2c5cb6f70779d0b575326d895d533a4fd94",
+  "fixtureSHA256": "15434b3bd88bc5d22325ca07408e733bd437cbb92b04e54194a35ea6d22a97e0",
   "studioCalls": 0,
   "limitations": "Doubles instead of the engine: the card's look on PC and phone (DialogBox plate, button art) and the server's PauseCard / WelcomeBack Fx (게임성 개발 2, not built yet) are Studio checks."
 }

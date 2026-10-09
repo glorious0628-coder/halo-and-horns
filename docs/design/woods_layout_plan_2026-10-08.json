@@ -1,0 +1,35 @@
+{
+ "_note": "Goblin Woods layout plan after Concept_GoblinWoods (A23-76, 이미지 생성 1, 2026-10-08). World studs (X east, Z south, ground y = 0). For 검수 woods_terrain / woods_dress. Sheet: art/review/world/woods_layout_plan.jpg. Camps / giant / boss / arrival stay at their quest spots (woods_kit_place.luau).",
+ "land": {"MinX": 710, "MaxX": 1190, "MinZ": -260, "MaxZ": 260},
+ "keep": {"camps": [[840, 95], [1010, 130], [1090, -150]], "giant": [960, -90], "boss": [1110, 120], "arrival": [730, 0], "crown_road_z": 0},
+ "camp_clearings": [
+  {"c": [840, 95], "r": 16, "mat": "Pavement", "note": "camp 1 dirt floor, fire in the middle, 4 LogStool round the fire at r 6, Awning at the back-left beside the tent"},
+  {"c": [1010, 130], "r": 16, "mat": "Pavement", "note": "camp 2, same"},
+  {"c": [1090, -150], "r": 16, "mat": "Pavement", "note": "camp 3 (trail end), same"},
+  {"c": [1110, 120], "r": 20, "mat": "Pavement", "note": "boss clearing: dirt ring under the stump ring, middle stays grass"}
+ ],
+ "paths": [
+  {"name": "toCamp1", "w": 7, "mat": "Pavement", "pts": [[800, 9], [812, 30], [828, 52], [836, 78]], "stones": "StepStones at the road end"},
+  {"name": "toCamp2", "w": 7, "mat": "Pavement", "pts": [[975, 9], [990, 40], [1000, 75], [1008, 112]]},
+  {"name": "camp1to2", "w": 5, "mat": "Pavement", "pts": [[856, 104], [890, 122], [930, 128], [970, 126], [994, 128]], "note": "the concept's paths join the camps"},
+  {"name": "toBoss", "w": 6, "mat": "Pavement", "pts": [[1060, 9], [1078, 40], [1096, 72], [1106, 100]]},
+  {"name": "trailCurve", "w": 9, "mat": "Pavement", "pts": [[748, -150], [800, -132], [860, -160], [920, -140], [980, -165], [1040, -148], [1074, -150]], "note": "the old straight trail z -150 gently bent; keep trail clearance for monsters"},
+  {"name": "toGiant", "w": 5, "mat": "Pavement", "pts": [[940, -9], [948, -35], [954, -62]]}
+ ],
+ "creek": {
+  "pts": [[1170, -238], [1140, -226], [1100, -230], [1050, -218], [1000, -224], [950, -212], [900, -220], [850, -210], [800, -218], [750, -212], [712, -214]],
+  "w": [6, 9], "depth": 2.0, "note": "north of the trail; joins the west river; banks of W_Boulder_A_Moss + Fern; crossings = StepStones at x ~880 and ~1030 (toward the trail)"
+ },
+ "waterfall": {"c": [1172, -240], "drop": 5, "w": 8, "pool_r": 9, "face": "Tex_WaterfallFlow", "note": "NE corner ledge (rock + moss boulders on both sides), pool at the foot, the creek starts here"},
+ "mounds": [
+  {"c": [775, -95], "r": 22, "h": 3}, {"c": [905, 205], "r": 26, "h": 4}, {"c": [1062, -45], "r": 18, "h": 3},
+  {"c": [1155, 45], "r": 20, "h": 4}, {"c": [870, -190], "r": 16, "h": 2.5}, {"c": [1150, 225], "r": 24, "h": 5},
+  {"c": [740, 200], "r": 22, "h": 5}
+ ],
+ "edge_rim": {"inset": 14, "h": [4, 7], "note": "raise the outer 14 studs (not at the arrival road, the pass road or the creek mouth) so the trees stand on a rim = forest wall"},
+ "boulder_groups": [
+  [[1150, -205], 3], [[1015, -195], 2], [[905, -232], 2], [[780, -40], 2], [[880, 60], 2], [[1130, 70], 2], [[960, 190], 3], [[760, 150], 2], [[1050, 205], 2]
+ ],
+ "undergrowth": "BushA / BushB / Fern LOD everywhere on woods grass outside paths, clearings and the creek, thicker at tree feet and along path edges; MossRock + Mushrooms near boulders; counts by the phone budget (TriCap)",
+ "trees": "keep the 102 but break the grid: groups of 3-6 with gaps, thicker on the rim; W_Tree_A uses W_Tree_A_Deep"
+}

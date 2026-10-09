@@ -89,6 +89,28 @@
   - 물약 가격: 25골드.
   - 내 이름표: 나한테만 숨기기.
 
+### A23-86. 10분 뒤 콘텐츠 결정 4개 + King Slime 표정 (사용자 2026-10-09 오전, 버튼 답)
+- 근거: `docs/design/content_beyond_10min_2026-10-08.md`(검수 판정, TOP 9).
+- **King Slime(아빠) 표정 = A 거만한 한쪽 웃음**(`art/review/monsters/king_slime_grumpy_sheet.jpg`). → 이미지 생성 2 멀티뷰 고급 4장 → 이미지 생성 1 Tripo.
+- **결정 1 = A 하루 선행·장난 장부(Deeds):** 되풀이 행동(잃어버린 물건, 게시판 Kind/Sneaky, King Slime·클래터·견습생 카드, 앞으로 생기는 선택 카드)도 하루(한국 시간) 6점까지 명예·악명이 쌓인다. 6점이면 "Your shard is full for today. Come back tomorrow!" — 보상은 계속, 점수만 멈춤, 연속 기록 없음. 점수는 A23-58(+1 / 반대 −1, 0 바닥), 골드를 내는 일 자체는 0점. TOP ⑨, 10/24 전.
+- **결정 2 = A 오토의 의뢰(황금 무기 T4·T5·T6) 베타 전에:** 대장간 [Commission] 줄(골드 + 재료 + 레벨), 다 모이면 바로 만듦(미니게임은 11/25 장인 업데이트). 받을 때 견습생 카드(CC). 값(결정 2-2)은 검수가 문서 기준으로 정한다. TOP ⑤.
+- **결정 3 = Z·X 스킬 켜기는 10/20 점검에서 판단**(바뀐 것 없음).
+- **결정 4 = A 아기 슬라임 펫 걷기 속도 +7~10% 그대로**(검수 추천 B와 다름 — 사용자 선택). PvP 추격·털기 자루 45초에 영향이 있으니 베타 측정에서 펫 보유/미보유 승률·도주 성공률을 따로 본다(개발 3 측정 칸). 강아지 펫도 같은 기준.
+
+### A23-85. 가족은 여러 모양으로 (사용자 2026-10-08 "우리 게임은 가족이지만 정상 가족을 지향하지 말자. 여러 가족 형태를 추구하자")
+- 게임 속 가족(NPC, 몬스터, 대사, 일기, 퀘스트)은 '엄마+아빠+아이'를 기본으로 두지 않는다. 한부모(예: 슬라임 가족 = 아빠 King Slime이 혼자 첫째 Slime Prince·막내 Shard Slime을 키움), 할머니·할아버지가 키우는 집, 두 아빠·두 엄마, 입양·위탁, 형제끼리, 친구·길드가 가족인 '함께 사는 가족' 등을 자연스럽게 섞는다.
+- 설명하거나 가르치지 않는다(설교 없음). 그냥 그 가족이 그렇게 사는 것으로 쓴다. 쉬운 영어, 아이 친화.
+- '정상 가족' 같은 말, 한쪽 가족 모양을 놀리거나 불쌍하게 그리는 대사는 쓰지 않는다. 악마 쪽 장난 대사도 가족 모양을 놀림거리로 쓰지 않는다.
+- 적용: 새로 쓰는 대사·퀘스트·일기·NPC 소개부터(개발 2·3 글, 이미지 생성 2 NPC 그림, 촬영 편집 대본). 기존 글은 바꿀 때 함께 본다.
+
+### A23-84. 네모 King Slime 보스 + 지금 왕 슬라임은 'Slime Prince' (사용자 2026-10-08)
+- 사용자: "네모난 킹 슬라임을 하나 만들자. 지금 킹 슬라임은 좀 작잖아. 걔는 이름을 다시 지어 주자." / "저기 왕관처럼 있는 돌 성 앞에서 나오게 해 줘" / "너 말이 내 말이야".
+- **지금 BigSlime**(파란 몸 + 작은 금 왕관, A23-81)의 화면 이름 → **Slime Prince**(내부 id 그대로). 첫 10분 흐름·Lv3~5 목표는 깨지지 않게 개발 2 영향 조사 표(docs/design/king_slime_split_2026-10-08.md)로 정한다.
+- **새 King Slime(보스)**: 같은 그림체의 크고 네모난 왕 슬라임(로열 색 젤리, 큰 금 왕관, 짧은 빨강 망토, 친근한 얼굴, 아이 친화). 앞·옆·뒤 2D → Tripo(이미지 생성 2 → 1). 초원 **King Slime Hill 꼭대기의 왕관 모양 돌 사당 앞 공터**에서 가끔 나타남(한 서버 하나, 여럿이 잡는 체력, 기여자 보상).
+- 돌 사당: 콘셉트(Concept_SlimeMeadow.jpg) 언덕 위 왕관 돌 건물, 랜드마크 HD 한 개(이미지 생성 1), 배치·등장 자리 속성은 검수 도구.
+- **마무리 카드**(왕 슬라임 달래기/간질이기)는 새 King Slime에 붙인다. 초원 슬라임은 초록 Slime · Slime Prince · King Slime 3종.
+- **슬라임 가족(사용자 같은 날 "조각이가 막내, 프린스가 첫째, 킹슬라임이 아빠 하자")**: 초록 Shard Slime = 막내, Slime Prince = 첫째, King Slime = 아빠. 대사·일기·퀘스트 글은 이 가족 설정을 따른다(예: 아빠 King Slime 등장 "Who's bothering my kids?!" — 쉬운 영어, 무섭지만 장난스럽게).
+
 ### A23-83. 업데이트 박자 = 매주 수요일 05:00 UTC (사용자 2026-10-08)
 - 베타 뒤 정기 업데이트는 **매주 수요일 05:00 UTC = 한국 수요일 14:00**(미국 화요일 저녁). rpg_success_analysis 제안 6의 '토요일 11:00'을 대신한다.
 - 게임 안 News 'New this week' 칸과 쇼츠·홈페이지 공지를 이 시각에 맞춘다. 서버가 자동으로 켜는 시즌 일(핼러윈 종료 11/09 등)은 따로 그대로.
@@ -1265,9 +1287,10 @@ Config values below are the ones in Config.luau.
 - [CR-L23] The server no longer sends the LevelUp / Banked / HaloCourier Notify or NotifyAll(KaijuSiren); Fx LevelUp / Bank
   and the EventHUD siren banner announce them. The Halo courier sends Fx `Bank { Amount, Courier = true }` →
   `Config.Text.HaloCourier` toast.
-- [CR-L50] The `QuestsJson` attribute is gone. New server → client remote `Quests` (`Net.Names`):
-  `FireClient(player, json)` (same JSON array string as before) only when it changes, plus once after each
-  CharacterSpawned. HUD accepts the JSON string, an array or `{ Quests = array }`.
+- [CR-L50] The `QuestsJson` attribute is gone. New server → client remote `Quests` (`Net.Names`): fired only when it
+  changes, plus once after each CharacterSpawned. Since A23-81 (2026-10-08) the value is the table
+  `{ Quests = array of entries, Book = { Available, Done } }` (docs/design/quest_book_server_2026-10-08.md; before: the
+  JSON array string). HUD and Audio accept the JSON string, an array or `{ Quests = array }`.
 
 ### A16-11 Client / UI [CR-L15, CR-L26–L30, CR-L32, CR-L34, CR-L36–L48]
 - [CR-M24] Quest claim and reroll buttons use separate positions. After a claim, reroll input is ignored for 1.5 s;

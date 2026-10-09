@@ -1,0 +1,89 @@
+{
+ "note": "2026-10-08 검수: WorldKit import batch 4 (E1 slime back-fix mesh, E2 crown shard v2, E3 King Slime crown, E4 woods camp 3). KingCrown/Mon_SlimeCube_Backfix are used by tools/worldkit/slime_backfix_crown.luau, not placed as kit props.",
+ "items": [
+  {
+   "name": "K_CrownShard_v2",
+   "meshId": "rbxassetid://85413506362125",
+   "textureId": "",
+   "size_studs": [
+    7.0,
+    7.27,
+    3.98
+   ],
+   "sa": {
+    "color": "rbxassetid://134597153860556",
+    "normal": "rbxassetid://116616774381860",
+    "metal": "rbxassetid://71792598662749",
+    "rough": "rbxassetid://137548223291038"
+   }
+  },
+  {
+   "name": "Kit_W_Awning",
+   "meshId": "rbxassetid://127915395209215",
+   "textureId": "",
+   "size_studs": [
+    7.41,
+    7.5,
+    3.75
+   ],
+   "sa": {
+    "color": "rbxassetid://120536826419681",
+    "normal": "rbxassetid://118722829803977",
+    "metal": "rbxassetid://78798192649897",
+    "rough": "rbxassetid://123127329047399"
+   }
+  },
+  {
+   "name": "Kit_W_StepStones",
+   "meshId": "rbxassetid://79015557117233",
+   "textureId": "",
+   "size_studs": [
+    2.82,
+    0.5,
+    7.0
+   ],
+   "sa": {
+    "color": "rbxassetid://112266152750236",
+    "normal": "rbxassetid://114901633346672",
+    "metal": "rbxassetid://122264876350773",
+    "rough": "rbxassetid://131406133299471"
+   }
+  },
+  {
+   "name": "Kit_W_LogStool",
+   "meshId": "rbxassetid://124215327638714",
+   "textureId": "",
+   "size_studs": [
+    2.83,
+    1.6,
+    2.82
+   ],
+   "sa": {
+    "color": "rbxassetid://102510180165663",
+    "normal": "rbxassetid://76618797655673",
+    "metal": "rbxassetid://101678723034710",
+    "rough": "rbxassetid://119548341288902"
+   }
+  },
+  {
+   "name": "KingCrown",
+   "meshId": "rbxassetid://125576465588998",
+   "textureId": "",
+   "size_studs": [
+    0.46,
+    0.38,
+    0.46
+   ]
+  },
+  {
+   "name": "Mon_SlimeCube_Backfix",
+   "meshId": "rbxassetid://100045743344061",
+   "textureId": "rbxassetid://92659177639413",
+   "size_studs": [
+    0.71,
+    1.0,
+    0.9
+   ]
+  }
+ ]
+}

@@ -101,7 +101,7 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/SupporterBoard.luau": "7e60722dacb4834f28f23b78a05e64892a40cd43cc0ac776df6b21a7411d83a4",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
   },
   "fixtureSHA256": "34d820501d3462ce7fe3f2b2ce569d98d35d3e994723619b74e6bb2033a0246d",
   "studioCalls": 0,

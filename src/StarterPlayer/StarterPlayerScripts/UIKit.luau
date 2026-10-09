@@ -214,11 +214,14 @@ local NOTIFY = {
 	-- the measured height gets this much room per line: at small real sizes (10-12 px) the engine's rounded line
 	-- height is taller than the measurement and the last line was dropped for "..." (UiSandbox 655x340, 2026-10-06)
 	WrapSlack = 0.15,
+	WrapSlackPx = 2.5, -- the least room per line in real px (UIKit.WrapHeight)
+	WrapWidthSlackPx = 6, -- UIKit.WrapHeight measures this much narrower than the label (real px)
 	TrimQueued = false,
 	-- UI round 2 #4 (검수 2026-10-07: "창이 열려 있으면 알림은 창 위 한 줄로"): the open window's rect (MainGui du, its title
 	-- ribbon included; UIKit.SetNotifyAvoid from Panels) - toasts then show one line, one at a time, just above the window
 	-- (else just below it; else in the column as before) and big banners come as that one line
 	Avoid = nil,
+	WrapFits = setmetatable({}, { __mode = "k" }), -- [label] = its UIKit.WrapHeight fit (toasts: fit again on Avoid)
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
 	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4,
 		ThinK = 1.6, ThinDY = 4 }, -- a target up to ThinK tag heights tall wears it beside its right end (UIKit.NewTag)
@@ -229,7 +232,7 @@ local NOTIFY = {
 	PreloadArt = { "DialogBox", "PanelCard", "RibbonHeader", "BtnRound", "GlyphClose", "GlyphBack", "BtnPrimary",
 		"BtnSecondary", "BtnConfirm", "BannerGold", "SlotCommon", "IconCoin", "IconExp", "Chip", "BarkBubble",
 		"RewardPanelHalo", "RewardPanelHorns", "RewardRibbonHalo", "RewardRibbonHorns", "RewardSlot", "RewardGlow",
-		"RewardSparkle", "Toast", "BannerAlert", "GlyphCheck", "GlyphExclaim", "IconStar", "IconAnnounce" },
+		"RewardSparkle", "Toast", "BannerAlert", "GlyphCheck", "GlyphExclaim", "Star", "IconAnnounce" },
 	-- handoff queue 3 (notice art): the approved Toast capsule (navy, gold rim, a gold ring socket on the left; 9-slice
 	-- FitHeight, so the socket stays round and grows with the height) behind every toast once uploaded. The item / monster
 	-- icon (or the kind's glyph) sits in the socket (centre DiscX x the height; GlyphK / IconK x the height), the words
@@ -237,10 +240,11 @@ local NOTIFY = {
 	-- The capsule may be WidthMult x the notify column (at most ScreenFrac of the screen; it stays centred on the column):
 	-- phones have a narrow column and the socket + round end take room (UiSandbox 749x361: 2 lines cut a world toast)
 	ToastArt = { Part = "Toast", MinH = 40, MinHIcon = 46, PadY = 7, DiscX = 49 / 102, GlyphK = 0.42, IconK = 0.5,
-		CapL = 0.94, CapR = 0.42, Lines = 3, Slack = 10, -- Slack: du added to the measured words (rounding, the stroke)
+		CapL = 0.94, CapR = 0.42, Lines = 4, Slack = 10, -- Slack: du added to the measured words (rounding, the stroke)
+		-- Lines 4 (검수 2026-10-08): on a narrow window a 2-part notice needs 4 lines; the reward words must not be cut
 		WidthMult = 1.45, ScreenFrac = 0.62,
 		Glyph = { good = { "GlyphCheck", Color3.fromRGB(80, 220, 120) }, bad = { "GlyphExclaim", Color3.fromRGB(255, 96, 86) },
-			reward = { "IconStar" }, info = { "IconAnnounce" } } },
+			reward = { "Star", Color3.fromRGB(245, 197, 66) }, info = { "IconAnnounce" } } }, -- Star: white art, gold tint
 	-- the big banner's red BannerAlert ribbon (world news: war, kaiju, bounty, the Pumpkin King). Its ends keep the size of
 	-- the one-line banner (the column's banner height = "base"; SliceScale base / Base): more lines stretch only the 2 px
 	-- middle band, so the words keep their room (FitHeight grew the tails with every line: UiSandbox phone 749x361 cut a
@@ -1291,7 +1295,8 @@ end
 -- addendum U7: avatar headshot thumbnail id (no upload needed); userId defaults to the local player
 function UIKit.HeadshotImage(userId)
 	local id = tonumber(userId) or (LocalPlayer and LocalPlayer.UserId) or 0
-	return "rbxthumb://type=AvatarHeadShot&id=" .. tostring(math.floor(id)) .. "&w=150&h=150"
+	-- 검수 2026-10-08: the bust (head + shoulders) like the 3D portrait, not the face-filling head shot
+	return "rbxthumb://type=AvatarBust&id=" .. tostring(math.floor(id)) .. "&w=150&h=150"
 end
 
 -- ImageLabel for a part, or nil when the part is missing (the caller falls back). Frames (parts with Slice) use
@@ -1438,13 +1443,22 @@ function UIKit.MeasureRenderedText(text, size, fontOrFontFace, scale, width)
 	return height, measuredWidth, exact, pixelSize
 end
 
+-- UIKit.FitText passes: a label runs at most one pass a frame (Frame counts Heartbeats; a 2nd request in the same frame
+-- waits for the next one) and at most BurstPasses follow-ups within BurstSeconds (the next real change starts a new
+-- burst). Main Play 2026-10-08: 9x "Maximum re-entrancy depth (80) exceeded calling task.defer" - each pass changed
+-- TextSize, whose deferred signals deferred the next pass from inside the last one, 80 deep in one frame
+local FIT = { BurstPasses = 24, BurstSeconds = 1, Frame = 0 }
+game:GetService("RunService").Heartbeat:Connect(function() FIT.Frame += 1 end)
+function FIT.NextFrame(fn) task.delay(0, fn) end
+
 -- Designated picker labels only. Start at the layout's maximum and shrink from rendered TextBounds. A label
 -- may request whole FontFace metrics too: clipped/wrapped TextBounds can describe just the visible prefix.
 -- Only successful font-service measurements participate; fallback estimates never pin a label to its minimum.
 function UIKit.FitText(label, minSize, maxSize)
 	local fit = Art.TextFits[label]
 	if not fit then
-		fit = { Connections = {}, Queued = false, Running = false, Pending = false, Reset = false, Dead = false, Version = 0 }
+		fit = { Connections = {}, Queued = false, Running = false, Pending = false, Reset = false, Dead = false, Version = 0,
+			Burst = 0, BurstAt = -math.huge, Settle = false }
 		Art.TextFits[label] = fit
 		fit.Request = function(reset)
 			if fit.Dead then return end
@@ -1452,10 +1466,29 @@ function UIKit.FitText(label, minSize, maxSize)
 			if reset then fit.Version += 1 end
 			if fit.Queued or fit.Running then fit.Pending = true; return end
 			fit.Queued = true
-			task.defer(function()
+			-- this frame's pass already ran: the next one waits a frame (task.delay 0) instead of deferring again
+			local schedule = fit.PassFrame == FIT.Frame and FIT.NextFrame or task.defer
+			schedule(function()
 				fit.Queued = false
 				if fit.Dead or not label.Parent then return end
+				-- at most FIT.BurstPasses passes in FIT.BurstSeconds (whoever asks: a follow-up or a signal), then one more
+				-- when the burst is over, so a label whose size and box keep changing each other cannot run every frame and
+				-- is never left at a reset's maximum
+				local now = os.clock()
+				if now - fit.BurstAt > FIT.BurstSeconds then fit.BurstAt, fit.Burst = now, 0 end
+				fit.Burst += 1
+				if fit.Burst > FIT.BurstPasses then
+					if not fit.Settle then
+						fit.Settle = true
+						task.delay(FIT.BurstSeconds, function()
+							fit.Settle = false
+							fit.Request(false)
+						end)
+					end
+					return
+				end
 				fit.Running = true
+				fit.PassFrame = FIT.Frame
 				pcall(function()
 					local box = label.AbsoluteSize
 					if box.X <= 0 or box.Y <= 0 then return end
@@ -1496,6 +1529,7 @@ function UIKit.FitText(label, minSize, maxSize)
 					end
 				end)
 				fit.Running = false
+				-- the follow-up goes to the next frame (Request sees PassFrame == FIT.Frame)
 				if not fit.Dead and (fit.Pending or fit.Reset) then fit.Pending = false; fit.Request(false) end
 			end)
 		end
@@ -1621,6 +1655,13 @@ function STYLE.Refresh(label)
 	local minPx = (tonumber(label:GetAttribute("StyleMinPx")) or def.MinPx) * UIKit.PxFloor()
 	-- ceil, not floor: floor(14 / 0.75) = 18 would render 13.5 px, under the rubric's 14
 	local floorSize = math.clamp(math.ceil(minPx / scale - 0.001), 1, 100)
+	-- UiSandbox 2026-10-08 (TextBounds at 991x451): Roblox applies UITextSizeConstraint in screen px - UIScale does not
+	-- reach it - so this floor renders as floorSize real px (the approved PC 0.8 and phone 0.75 looks were judged that
+	-- way). A PC window under the 0.8 desktop scale shrinks it once more with the window, so the words shrink with the
+	-- halved boxes instead of spilling out of them (the quest line, notices, the Shop cards)
+	if not UserInputService.TouchEnabled then
+		floorSize = math.clamp(math.ceil(floorSize * UIKit.PxFloor() - 0.001), 1, 100)
+	end
 	Art.StyleFloor[label] = floorSize
 	local tc = STYLE.Constraint(label, st)
 	local fit = Art.TextFits[label]
@@ -2272,20 +2313,32 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 		state.Token += 1
 		local token = state.Token
 		task.spawn(function()
-			local width = label.AbsoluteSize.X / currentScale()
+			-- measured in real px at the size the engine draws (TextSize x UIScale, rounded): on a small PC window (UIScale
+			-- 0.5) the logical measure gave a 2-line toast 1 px too little and its 2nd line became "..." (UiSandbox 991x451
+			-- 2026-10-08, after the window closed)
+			local s = currentScale()
+			local width = label.AbsoluteSize.X
 			if width <= 1 or not label.Parent then return end
+			local px = math.max(1, math.floor(label.TextSize * s + 0.5))
 			local params = Instance.new("GetTextBoundsParams")
 			params.Text = label.Text
 			params.Font = label.FontFace
-			params.Size = label.TextSize
-			params.Width = width
+			params.Size = px
+			-- a few px narrower than the box: the engine wraps a little earlier than TextService (991x451: TextService said
+			-- 2 lines at 142 px, the label drew 3)
+			params.Width = math.max(1, width - NOTIFY.WrapWidthSlackPx)
 			local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
 			params:Destroy()
 			if token ~= state.Token or not ok or not label.Parent then return end
-			local lines = math.max(1, math.floor(bounds.Y / math.max(1, label.TextSize) + 0.5))
-			local h = math.ceil(bounds.Y + lines * label.TextSize * NOTIFY.WrapSlack)
-			if maxLines then
-				h = math.min(h, math.ceil(label.TextSize * (NOTIFY.WrapLineH + NOTIFY.WrapSlack) * maxLines))
+			local lines = math.max(1, math.floor(bounds.Y / px + 0.5))
+			-- per line at least WrapSlackPx real px more: TextService gives a 9 px line 9 px, the engine draws it 11 px
+			-- (UiSandbox 991x451 2026-10-08: two 9 px lines got 21 px and the 2nd became "...")
+			local h = math.ceil((bounds.Y + lines * math.max(px * NOTIFY.WrapSlack, NOTIFY.WrapSlackPx)) / s)
+			-- maxLines may be a function: a toast reads NOTIFY.Avoid again on every fit (one line only while a window is open)
+			local cap = type(maxLines) == "function" and maxLines() or maxLines
+			if cap then
+				local lineH = math.max(label.TextSize * NOTIFY.WrapLineH, bounds.Y / lines / s)
+				h = math.min(h, math.ceil((lineH + label.TextSize * NOTIFY.WrapSlack) * cap))
 			end
 			if minH then h = math.max(h, minH) end
 			local size = label.Size
@@ -2303,6 +2356,7 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			fit()
 		end
 	end)
+	NOTIFY.WrapFits[label] = fit -- UIKit.SetNotifyAvoid fits the live toasts again when a window opens / closes
 	fit()
 	return label
 end
@@ -2417,7 +2471,7 @@ function NOTIFY.BuildArtToast(text, kind, icon, color)
 	end)
 	frame.Parent = toastHolder
 	local t = { Frame = frame, Label = label, Art = art, Icon = img, Text = text, Token = 0, Dead = false, MinH = minH }
-	UIKit.WrapHeight(label, NOTIFY.Avoid and 1 or ta.Lines, minH - 2 * ta.PadY)
+	UIKit.WrapHeight(label, function() return NOTIFY.Avoid and 1 or ta.Lines end, minH - 2 * ta.PadY)
 	task.spawn(function()
 		local s = currentScale()
 		local col = toastHolder.AbsoluteSize.X / s
@@ -2534,7 +2588,7 @@ function UIKit.Toast(text, kind, duration, icon)
 			label.Text = (string.gsub(text, " · ", "\n"))
 		end
 	end
-	UIKit.WrapHeight(label, NOTIFY.Avoid and 1 or NOTIFY.ToastLines, img and TOAST_ICON or nil)
+	UIKit.WrapHeight(label, function() return NOTIFY.Avoid and 1 or NOTIFY.ToastLines end, img and TOAST_ICON or nil)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
@@ -2699,6 +2753,12 @@ function UIKit.SetNotifyAvoid(rect)
 	if (old == nil) == (new == nil) and (new == nil or (math.abs(old.X - new.X) < 1 and math.abs(old.Y - new.Y) < 1
 		and math.abs(old.W - new.W) < 1 and math.abs(old.H - new.H) < 1)) then return end
 	NOTIFY.Avoid = new
+	-- a toast made while a window was open keeps one line; when the window closes the live toasts get all their lines
+	-- back (main Studio 2026-10-08: "First mission: Free the..." stayed cut after the forge window closed)
+	for _, t in toasts do
+		local fit = not t.Dead and NOTIFY.WrapFits[t.Label]
+		if fit then fit() end
+	end
 	NOTIFY.PlaceToasts()
 	NOTIFY.TrimToasts()
 end
@@ -3104,6 +3164,15 @@ function UIKit.Init(registry)
 			Padding = UDim.new(0, NOTIFY.ToastGap), -- 6, also used by UIKit.PlaceNotify's fit count
 		}),
 	})
+	-- Studio-only check hook (UiSandbox captures, 2026-10-08): the local attribute NotifyAvoidPreview = "x,y,w,h" (MainGui
+	-- du) acts like an open window for the toasts, "" like its close (the same path as Panels' FRAME.TellNotify)
+	if game:GetService("RunService"):IsStudio() and LocalPlayer then
+		LocalPlayer:GetAttributeChangedSignal("NotifyAvoidPreview"):Connect(function()
+			local v = LocalPlayer:GetAttribute("NotifyAvoidPreview")
+			local x, y, w, h = string.match(type(v) == "string" and v or "", "^(%-?[%d%.]+),(%-?[%d%.]+),([%d%.]+),([%d%.]+)$")
+			UIKit.SetNotifyAvoid(x and { X = tonumber(x), Y = tonumber(y), W = tonumber(w), H = tonumber(h) } or nil)
+		end)
+	end
 
 	-- announce banner (30% screen height until UIKit.PlaceNotify moves it into the HUD v2 notify column)
 	announceFrame = UIKit.Create("Frame", {

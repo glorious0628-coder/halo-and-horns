@@ -28,6 +28,12 @@ local function check(name, ok, detail)
 	if not ok then failed += 1; print(("CHECK_FAIL %s :: %s"):format(name, tostring(detail or ""))) end
 end
 local Config = { QuestTabs = { HudLines = 3 } }
+local IS_TOUCH = false
+local QUEST_ICON = { tutorial = "IconMonSlime", Gold = "IconCoin" }
+function Config.QuestTab(id, kind)
+	if id == "story:H2" then return "Faction" end
+	return ({ Tutorial = "Main", Main = "Main", Sub = "Side", Job = "Side", Daily = "Daily", Extra = "Daily" })[kind] or "Side"
+end
 Config.Quests = { Templates = {
 	{ Id = "Kill", ShortName = "Monster hunt", Text = "Defeat %s ×%d" },
 	{ Id = "Gold", ShortName = "Earn gold", Text = "Earn %s gold by hunting" },
@@ -132,6 +138,32 @@ check("story / tutorial / job rows and unknown templates keep the server's text"
 check("a daily's short name comes from its English template", L.EnglishShortName(e("Plunder", 1, 0, 1, { ShortName = KO })) == "Rob Knights"
 	and L.EnglishShortName(e("x", nil, 0, 1, { Kind = "Job", ShortName = "Board" })) == "Board"
 	and L.EnglishShortName(e("x", nil, 0, 1, { Kind = "Job" })) == nil)
+-- 검수 10/08 (the user's photo: a finished line showed only its icon and [Claim]): a finished line = its name + Done!;
+-- the pill only where a press claims it (PC every line, phones line 1)
+local fin = e("kill", 1, 5, 5, { Kind = "Daily" })
+local c1, p1 = L.LineFinish(fin, 2)
+check("PC: a finished daily on line 2 is claimable with its pill", c1 == true and p1 == true)
+IS_TOUCH = true
+local c2, p2 = L.LineFinish(fin, 2)
+local c3, p3 = L.LineFinish(fin, 1)
+check("phones: line 2 says Done! without a pill (the block's tap claims line 1), line 1 keeps it", c2 == true and p2 == false
+	and c3 == true and p3 == true)
+IS_TOUCH = false
+check("unfinished / a board job / no quest: not claimable", not L.LineFinish(e("kill", 1, 4, 5), 1)
+	and not L.LineFinish(e("job", nil, 2, 2, { Kind = "Job" }), 1) and not L.LineFinish(nil, 1)
+	and not L.LineFinish(e("kill", 1, 5, 5, { CanClaim = false }), 1))
+check("a finished story step and the pinned first mission are claimable", L.LineFinish(e("story:S3", nil, 1, 1, { Kind = "Sub" }), 1)
+	and L.LineFinish(e("tutorial", nil, 5, 5, { Kind = "Tutorial", Pinned = true }), 1))
+-- the line icon: the quest's tab icon first, then the monster head, the row type's icon, the scroll
+local keys = L.LineIconKeys(e("kill", 1, 0, 5, { Unit = "Slime" }))
+check("a kill daily: the Daily tab icon, then the slime head, then the scroll", keys[1] == "QuestTabIconDaily" and keys[2] == "IconMonSlime"
+	and keys[#keys] == "IconScroll", table.concat(keys, ","))
+keys = L.LineIconKeys(e("story:H2", nil, 0, 1, { Kind = "Sub" }))
+check("a Halo story: the Faction tab icon", keys[1] == "QuestTabIconFaction", table.concat(keys, ","))
+keys = L.LineIconKeys(e("tutorial", nil, 0, 5, { Kind = "Tutorial" }))
+check("the first mission: the Main tab icon, then its own slime icon", keys[1] == "QuestTabIconMain" and keys[2] == "IconMonSlime",
+	table.concat(keys, ","))
+check("no quest: the star", L.LineIconKeys(nil)[1] == "IconStar")
 print(("QUEST_LINES_SUMMARY checks=%d failed=%d"):format(checks, failed))
 """
 
@@ -153,6 +185,12 @@ MUTATIONS = [
     ("a story row loses its own action", "\tif (e.Pinned or e.Story) and L.PinnedTap then\n\t\tL.PinnedTap(e)\n\t\treturn true\n\tend\n", ""),
     ("a gone quest keeps the marker", "\t\tif not e then questState.GuideKey = nil end\n", ""),
     ("[Claim] on a board job", "\t\tand (e.Pinned == true or e.Kind == \"Daily\" or e.Kind == \"Sub\")\n", "\n"),
+    ("a finished line's pill everywhere on phones", "\treturn claimable, claimable and (not IS_TOUCH or li == 1)\n", "\treturn claimable, claimable\n"),
+    ("no pill on PC lines 2+", "\treturn claimable, claimable and (not IS_TOUCH or li == 1)\n", "\treturn claimable, claimable and li == 1\n"),
+    ("a line that is not finished claims", "\t\tand e.Progress >= e.Target and e.CanClaim == true\n", "\t\tand e.CanClaim == true\n"),
+    ("no tab icon", "\tif ok and type(tab) == \"string\" then table.insert(keys, \"QuestTabIcon\" .. tab) end\n", ""),
+    ("the monster head before the tab icon", "\tif e.Unit then table.insert(keys, \"IconMon\" .. tostring(e.Unit)) end\n",
+     "\tif e.Unit then table.insert(keys, 1, \"IconMon\" .. tostring(e.Unit)) end\n"),
     ("saved daily words trusted", "\tif type(e) ~= \"table\" or (e.Kind ~= \"Daily\" and e.Kind ~= \"Extra\") then return text end\n",
      "\tif true then return text end\n"),
     ("extra slots keep saved words", "\tif type(e) ~= \"table\" or (e.Kind ~= \"Daily\" and e.Kind ~= \"Extra\") then return text end\n",
@@ -194,6 +232,7 @@ def static_checks(src):
     layout = src[src.find("function L.LayoutQuestLines(q)"):src.find("function L.FitQuestLine(l)")]
     setline = src[src.find("function L.SetQuestLine(l, e, label, nums)"):src.find("function L.QuestLineTap(i)")]
     tap = src[src.find("function L.QuestLineTap(i)"):src.find("function L.QuestBlockTap()")]
+    fit = src[src.find("function L.FitQuestLine(l)"):src.find("function L.SetQuestLine(l, e, label, nums)")]
     refresh = src[src.find("refreshQuests = function()"):src.find("toggleQuests = function(open)")]
     return [
         ("the lines are built for L.QuestLines()", "local n = L.QuestLines()" in build and "for i = 1, n do" in build
@@ -210,6 +249,15 @@ def static_checks(src):
         ("a daily / extra row's words + short name come from the English template (an old save may hold Korean)",
          "Text = L.QuestText(L.EnglishQuestText(e, tostring(e.Text or \"\")))," in src
          and "ShortName = L.EnglishShortName(e)," in src),
+        ("a finished line keeps its name + Done! (SetQuestLine uses L.LineFinish / L.LineIconKeys)",
+         "local claimable, pill = L.LineFinish(e, li)" in setline and "l.Nums.Text = claimable and TXT.QuestDone or (nums or \"\")" in setline
+         and "for _, key in L.LineIconKeys(e) do" in setline and 'QuestDone = "Done!",' in src),
+        ("the ▼ sits on the head line 'Quests (N)' over the lines, not beside line 1",
+         'QuestHead = "Quests (%d)",' in src and "Parent = headRow," in build and "Parent = ui.qline[1].Row," not in src
+         and "ui.questHead.Text.Text = string.format(TXT.QuestHead, #entries)" in refresh
+         and "block.Position = UDim2.fromOffset(q.X, q.Y + hh)" in layout),
+        ("the words get their own width (no flex shrink that squeezed a finished line's name to nothing)",
+         "UIFlexItem" not in build and "l.Text.Size = UDim2.new(0, math.max(1, math.min(math.ceil(w) + 2, math.floor(avail))), 1, 0)" in fit),
         ("the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
          "payload = data -- a JSON payload is read like a table payload below" in src
          and 'if type(payload) == "table" and type(payload.Quests) == "table" then' in src

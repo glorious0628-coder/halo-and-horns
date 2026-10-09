@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 44,
+  "checks": 51,
   "failedChecks": [],
   "static": [
     {
@@ -33,9 +33,9 @@
     }
   ],
   "mutations": {
-    "total": 26,
-    "applied": 26,
-    "caught": 26,
+    "total": 30,
+    "applied": 30,
+    "caught": 30,
     "results": [
       {
         "mutation": "every quest in every tab",
@@ -63,7 +63,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Event: no live event -> only the goose story :: "
+          "CHECK_FAIL Event: no live event -> only the goose story :: ",
+          "CHECK_FAIL Event: the diary (2/9) and the jar link to their window :: Chase the goose | Crown War: next crown in 0:00 | King Diary · 2/9 pages | Candy Jar · trade candy for a title",
+          "CHECK_FAIL no diary window: no links :: "
         ]
       },
       {
@@ -259,7 +261,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Build({ Tab = 'Faction' }) opens that tab :: button"
+          "CHECK_FAIL Build({ Tab = 'Faction' }) opens that tab :: button",
+          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them :: 0 Event",
+          "CHECK_FAIL a link opens the diary window on its tab :: "
         ]
       },
       {
@@ -269,6 +273,44 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL it opens on my 'now do' quest's tab (Main), painted gold, with counts :: Main / Daily"
+        ]
+      },
+      {
+        "mutation": "diary links without the diary window",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Event: the goose story + the live events (goose, Pumpkin King, kaiju, crown war 2:05) :: Chase the goose | The Golden Goose is here! | The Pumpkin King is here! | A kaiju is loose! | Crown War: next crown in 2:05 | King Diary · 0/9 pages | Candy Jar · trade candy for a title",
+          "CHECK_FAIL Event: no live event -> only the goose story :: ",
+          "CHECK_FAIL no diary window: no links :: "
+        ]
+      },
+      {
+        "mutation": "diary links after the season with no page",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL after the season with no page: no links :: "
+        ]
+      },
+      {
+        "mutation": "a link counted on the tab",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them :: 2 Event 2"
+        ]
+      },
+      {
+        "mutation": "a link opens nothing",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a link opens the diary window on its tab :: "
         ]
       },
       {
@@ -296,12 +338,12 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "0065c2fb6b2457359a87ea21866e43be079cb77bb0a07af75680c2141dd917f3",
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
+    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "3798fecd2d17676833f48812b5d9f47c225ca9b4a5454a93946dcc358fc11e2c",
+    "src/ReplicatedStorage/Shared/Config.luau": "32a004c288ad7861b92816e284d070d051ca3c46fb17b3af0c1b25602dfdb198",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "b7a6a51e2cbbb75744c49c652487def644143c4787b799278582c73d27b3bf9d"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
   },
-  "fixtureSHA256": "29bf8487fe54050693e0363c2479ee8db3c49e01f2f9e8a3d5dc3199ed853a21",
+  "fixtureSHA256": "625e5da9ca0b701ef387e0454007b4d169d436600cb4e2765d37a057d35b916b",
   "studioCalls": 0,
   "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows are a Studio photo check (메인 반영). The book rows follow 게임성 개발 3's contract (tools/test_quest_book.py checks the server side); before a book comes Done is what the client can tell."
 }

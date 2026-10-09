@@ -209,13 +209,13 @@ local function defOf(slot)
 end
 
 local function iconKey(slot)
-	if attr("ClassChosen", false) ~= true then return "IconSpecial" end
+	if attr("ClassChosen", false) ~= true then return "Skill_Warrior_Q" end -- 그림체 #15: was the old winged IconSpecial
 	local kit = kitOf(myClass(), myFaction())
 	local key = "Skill_" .. kit .. "_" .. slot
 	if UIKit.ArtId(key) then return key end
 	local base = REUSE[kit]
 	if base and UIKit.ArtId("Skill_" .. base .. "_" .. slot) then return "Skill_" .. base .. "_" .. slot end
-	return "IconSpecial"
+	return "Skill_Warrior_Q"
 end
 
 local function discKey()

@@ -164,6 +164,22 @@ check("Event: the goose story + the live events (goose, Pumpkin King, kaiju, cro
 	texts(s.InProgress))
 GATTR = {}
 check("Event: no live event -> only the goose story", texts(Book.Sections("Event", ctx()).InProgress) == "Chase the goose")
+-- A23-79 #4: the King Diary / candy jar links (only with the diary window, during the season or once I have a page)
+ATTR.DiaryPages = 2
+s = Book.Sections("Event", ctx({ HasDiary = true }))
+check("Event: the diary (2/9) and the jar link to their window",
+	texts(s.InProgress) == "Chase the goose | King Diary · 2/9 pages | Candy Jar · trade candy for a title"
+	and s.InProgress[2].Kind == "Link" and s.InProgress[2].Window == "Diary" and s.InProgress[2].Arg.Tab == "Diary"
+	and s.InProgress[3].Arg.Tab == "Jar", texts(s.InProgress))
+check("no diary window: no links", texts(Book.Sections("Event", ctx()).InProgress) == "Chase the goose")
+check("the links sit on the Event tab only", texts(Book.Sections("Side", ctx({ HasDiary = true })).InProgress) == "Find the lost jelly | Board job")
+ATTR.DiaryPages = 0
+check("after the season with no page: no links",
+	texts(Book.Sections("Event", ctx({ HasDiary = true, Now = Config.Halloween.EndsAt + 1 })).InProgress) == "Chase the goose")
+ATTR.DiaryPages = 3
+check("after the season with pages: the links stay (the jar stays open)",
+	#Book.Sections("Event", ctx({ HasDiary = true, Now = Config.Halloween.EndsAt + 1 })).InProgress == 3)
+ATTR.DiaryPages = nil
 ATTR.WantedStars = 3
 check("Faction: my wanted stars", texts(Book.Sections("Faction", ctx()).InProgress) == "Find Bright's lantern | Wanted stars: 3")
 ATTR.WantedStars = 0
@@ -298,6 +314,22 @@ REGISTERED.Journal.Build(P2, KIT, { Tab = "Faction" })
 local b2 = {}
 for _, c in P2:FindFirstChild("Tabs").Children do if c.Name == "Button" then table.insert(b2, c) end end
 check("Build({ Tab = 'Faction' }) opens that tab", b2[5].Bg == "gold", b2[5].Bg)
+-- A23-79 #4: the Event tab's diary links open the diary window (kit.Open: a back button to the quests); a link is no
+-- quest, so the tab shows no count for it
+local SUBS = {}
+KIT.Open = function(id, arg) table.insert(SUBS, { id, arg }) end
+ATTR.DiaryPages = 1
+Book.Init({ Panels = PANELS, HUD = HUDD, KingDiary = { IsReady = function() return true end } })
+local P3 = inst("Frame")
+REGISTERED.Journal.Build(P3, KIT, { Tab = "Event" })
+local links, b3 = {}, {}
+for _, c in P3:FindFirstChild("Body").Children do if c.Name == "Link" then table.insert(links, c) end end
+for _, c in P3:FindFirstChild("Tabs").Children do if c.Name == "Button" then table.insert(b3, c) end end
+check("Event tab: the diary and jar rows; no count on the tab for them", #links == 2 and b3[4] and b3[4].Text == "Event",
+	#links .. " " .. tostring(b3[4] and b3[4].Text))
+if links[2] then links[2].Activated:Fire() end
+check("a link opens the diary window on its tab", SUBS[1] and SUBS[1][1] == "Diary" and SUBS[1][2].Tab == "Jar")
+ATTR.DiaryPages = nil
 
 print(("QUEST_BOOK_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("QUEST_BOOK_OFFLINE_OK") end

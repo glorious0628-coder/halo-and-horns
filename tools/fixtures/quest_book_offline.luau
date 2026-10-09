@@ -10,7 +10,10 @@ local function bookWorld(o)
 	local w = dev3World(o)
 	local env = w:Env()
 	-- the goose-soon sub's visibility check looks for the GameState folder in the workspace first
-	env.workspace = { GetServerTimeNow = function() return w.Time end, FindFirstChild = function() return w.GameState end }
+	env.workspace = { GetServerTimeNow = function() return w.Time end, FindFirstChild = function()
+		if o.VisibleError then error("offline workspace failure") end
+		return w.GameState
+	end }
 	local story = execute("StoryQuestService", STORY_SOURCE, env)
 	w.Reg.StoryQuestService = story
 	story.Init(w.Reg)
@@ -39,8 +42,10 @@ end
 
 runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
-	check(C.QuestBook.DoneMax == 40 and C.QuestBook.AvailableMax == 10 and C.QuestBook.Text.OpensAt == "%s · Opens at Lv %d",
-		"DoneMax 40, AvailableMax 10, 'Opens at Lv' text", show(C.QuestBook))
+	check(C.QuestBook.DoneMax == 60 and C.QuestBook.AvailableMax == 10 and C.QuestBook.Text.OpensAt == "%s · Opens at Lv %d",
+		"DoneMax 60, AvailableMax 10, 'Opens at Lv' text", show(C.QuestBook))
+	check(#C.StoryQuests.Main + #C.StoryQuests.Subs <= C.QuestBook.DoneMax,
+		"every main + every sub fits in Done (a finished save loses none)", tostring(#C.StoryQuests.Main + #C.StoryQuests.Subs))
 end)
 
 runGroup("done", function()
@@ -55,7 +60,12 @@ runGroup("done", function()
 	for _, id in w.Config.StoryQuests.Subs do table.insert(all, id) end
 	local q, dq = hero(w, 2, { Data = { Level = 30, Story = storyOf(all) } })
 	local b2 = B(q, dq)
-	check(#b2.Done == 40 and b2.Done[1] == "story:M3_8", "a long list: the newest 40", tostring(#b2.Done) .. " " .. tostring(b2.Done[1]))
+	check(#b2.Done == #all and b2.Done[1] == "story:M3_8" and b2.Done[#b2.Done] == "story:" .. w.Config.StoryQuests.Subs[1],
+		"a finished save: every quest listed, the first sub too", tostring(#b2.Done) .. " " .. tostring(b2.Done[#b2.Done]))
+	local wCap = bookWorld({ EditConfig = function(c) c.QuestBook.DoneMax = 5 end })
+	local c, dc = hero(wCap, 9, { Data = { Level = 30, Story = storyOf(all) } })
+	local bc = wCap.Reg.StoryQuestService.BookRows(c, dc)
+	check(#bc.Done == 5 and bc.Done[1] == "story:M3_8", "DoneMax caps the list (the newest first)", tostring(#bc.Done))
 	local r, dr = hero(w, 3, { Data = { Story = storyOf({ "M1_1", "Nope" }) } })
 	check(ids(B(r, dr).Done) == "story:M1_1", "an unknown id in the save is not listed", ids(B(r, dr).Done))
 end)
@@ -104,6 +114,16 @@ runGroup("available", function()
 	local seenH = {}
 	for _, e in w3.Reg.StoryQuestService.BookRows(h, dh).Available do seenH[e.Id] = true end
 	check(not seenH["story:S3"] and seenH["story:S6"], "a hidden ready sub stays hidden (the others still show)", "")
+end)
+
+runGroup("a failing visibility check", function()
+	local w = bookWorld({ VisibleError = true })
+	local p, d = hero(w, 1, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_2", "M1_3", "M1_4", "S0" }) } })
+	local b = w.Reg.StoryQuestService.BookRows(p, d)
+	local seen = {}
+	for _, e in b.Available do seen[e.Id] = true end
+	check(not seen["story:S1"] and seen["story:S6"] and seen["story:S3"],
+		"the goose sub's check errors: that sub is left out, the book still lists the others", ids(b.Available))
 end)
 
 runGroup("faction and hidden", function()

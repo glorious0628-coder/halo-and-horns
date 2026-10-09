@@ -73,6 +73,20 @@ local WATCH = {
 	KaijuState = { "WantedGlow", "KaijuFire" },
 }
 
+-- A23-75 VIP crown before the name (이미지 개발 2026-10-08). The pass attribute is named by 게임성 개발 2
+-- (Config.GamePasses.VIP.Attr, else PassVIP); the crown is Config.UIArt IconVipCrown once drawn, else the approved Crown.
+-- The server only adds / removes it (ImageLabel VipCrown + UIPadding VipPad in Line1, hidden); every client sizes and
+-- places it from its own TextBounds (ShopUI: the server cannot measure the client's rendered name - UiSandbox
+-- 2026-10-08, the estimate put the crown over "[S")
+local CROWN = {
+	Attr = (type(Config.GamePasses) == "table" and type(Config.GamePasses.VIP) == "table"
+		and type(Config.GamePasses.VIP.Attr) == "string" and Config.GamePasses.VIP.Attr) or "PassVIP",
+	Art = { "IconVipCrown", "Crown" }, Aspect = 256 / 175,
+}
+WATCH[CROWN.Attr] = WATCH[CROWN.Attr] or { "Nametag" }
+-- A23-75 / A23-77: the worn look recolours the rank mark (Config.LookThemes)
+WATCH.LookOn = WATCH.LookOn or { "FactionMark" }
+
 -- body parts whose replacement (e.g. R15 appearance loading) requires a rebuild
 local BODY_PARTS = {
 	Head = true, RightHand = true, ["Right Arm"] = true, LeftHand = true, ["Left Arm"] = true,
@@ -251,6 +265,45 @@ local function makeLine(name, order, height, maxSize, color)
 	return l
 end
 
+-- the crown art id and its size, or nil (no art = no crown, IMG-R4)
+function CROWN.Part()
+	local parts = type(Config.UIArt) == "table" and Config.UIArt.Parts or nil
+	for _, key in CROWN.Art do
+		local def = type(parts) == "table" and parts[key] or nil
+		if type(def) == "table" and type(def.Id) == "string" and def.Id ~= "" then return def.Id, def.Size end
+	end
+	return nil
+end
+
+-- adds (hidden; the client fits it) or removes the crown in Line1; the art id follows Config, nothing else is rewritten
+-- so a client's fit is never undone by a nametag refresh
+function CROWN.Place(player, label)
+	local crown, pad = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad")
+	local id, artSize = CROWN.Part()
+	if player:GetAttribute(CROWN.Attr) ~= true or not id then
+		if crown then crown:Destroy() end
+		if pad then pad:Destroy() end
+		return
+	end
+	if not pad then
+		pad = Instance.new("UIPadding")
+		pad.Name = "VipPad"
+		pad.Parent = label
+	end
+	if not crown then
+		crown = Instance.new("ImageLabel")
+		crown.Name = "VipCrown"
+		crown.BackgroundTransparency = 1
+		crown.ScaleType = Enum.ScaleType.Fit
+		crown.AnchorPoint = Vector2.new(1, 0.5)
+		crown.Position = UDim2.new(0.5, 0, 0.5, -1)
+		crown.Visible = false
+		crown:SetAttribute("Aspect", typeof(artSize) == "Vector2" and artSize.Y > 0 and artSize.X / artSize.Y or CROWN.Aspect)
+		crown.Parent = label
+	end
+	if crown.Image ~= id then crown.Image = id end
+end
+
 local function nametagOffset(player)
 	return Vector3.new(0, 2.6 * attrNum(player, "VisualScale", 1), 0)
 end
@@ -335,6 +388,7 @@ local function updateNametag(player, bb)
 	if l1 then
 		l1.Text = esc(line1)
 		l1.TextColor3 = factionColor(f)
+		CROWN.Place(player, l1)
 	end
 	if l2 then
 		-- A23-23: a red "무법자" at the end of line 2 (RichText is on; the tag is fixed text, never player input)
@@ -432,10 +486,18 @@ local function markFloor(character, head, k)
 	return math.min(floor, top + (V.MarkModels.MaxRise or 1) * k)
 end
 
+-- A23-75 / A23-77: the worn look's Config.LookThemes entry when it belongs to my side (LookOn is written and checked by
+-- the server), else nil
+local function lookTheme(player, f)
+	local id = attrStr(player, "LookOn", "")
+	local t = id ~= "" and type(Config.LookThemes) == "table" and Config.LookThemes[id] or nil
+	return (type(t) == "table" and t.Faction == f) and t or nil
+end
+
 -- the clone on the head: x head height / HeadRef (x RankScale), its bottom HaloGap above (halo) / HornsDepth into
 -- (horns) the head top or the hat / hair on it (markFloor), turned by Yaw; halos keep the old disc's light, the top
--- rank sparkles
-local function buildMarkModel(f, rank, head, template, character)
+-- rank sparkles. A worn look (theme) swaps the mesh's TextureID for the rank's and tints the light / sparkles
+local function buildMarkModel(f, rank, head, template, character, theme)
 	local M = V.MarkModels
 	local k = math.max(0.25, head.Size.Y / (M.HeadRef or 1.2))
 	local part = template:Clone()
@@ -447,15 +509,20 @@ local function buildMarkModel(f, rank, head, template, character)
 	part.CanQuery = false
 	part.CanTouch = false
 	part.CastShadow = false
+	if theme then
+		local tex = theme[rank <= 2 and "R1R2" or ("R" .. rank)]
+		if type(tex) == "string" and tex ~= "" and part:IsA("MeshPart") then part.TextureID = tex end
+	end
 	local lift = f == "Halo" and (M.HaloGap or 0.3) * k or -(M.HornsDepth or 0.06) * k
 	part.CFrame = head.CFrame * CFrame.new(0, markFloor(character, head, k) + lift + part.Size.Y / 2, 0)
 		* CFrame.Angles(0, math.rad(M.Yaw or 0), 0)
 	if f == "Halo" and type(M.HaloLight) == "table" then
-		addLight(part, Config.Factions.Halo.Color, (M.HaloLight.Range or 8) * k, M.HaloLight.Brightness or 1.2)
+		addLight(part, theme and theme.Glow or Config.Factions.Halo.Color, (M.HaloLight.Range or 8) * k,
+			M.HaloLight.Brightness or 1.2)
 	end
 	local glow = M.Glow
 	if type(glow) == "table" and rank >= (glow.Rank or 5) then
-		sparkle(part, glow[f] or Config.Factions[f].Color, glow.Rate or 5, (glow.Size or 0.25) * k)
+		sparkle(part, theme and theme.Sparkle or glow[f] or Config.Factions[f].Color, glow.Rate or 5, (glow.Size or 0.25) * k)
 	end
 	return { part }
 end
@@ -475,7 +542,8 @@ local function buildFactionMark(player, character)
 	rank = math.max(1, rank or 1)
 	local template = markTemplate(f, rank)
 	if template then
-		mount(newPiece("FactionMark"), buildMarkModel(f, rank, head, template, character), character, head)
+		mount(newPiece("FactionMark"), buildMarkModel(f, rank, head, template, character, lookTheme(player, f)), character,
+			head)
 		return
 	end
 	local scale = 1 + V.MarkScalePerRank * (rank - 1)

@@ -6201,5 +6201,68 @@
     "build/import_D11/WorldKit_ImportD11.glb = build/import_all/3_third/D11_CrownShard.glb as K_CrownShard_v2 (fit w 7, same as old K_CrownShard); one landmark copy -> HD kept"
    ]
   }
+ ],
+ "Kit_W_Awning_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account)",
+   "site": "studio.tripo3d.ai",
+   "task": "75578a86-4bf2-4d08-b988-5d13d089459c",
+   "image": "art/out/hq/HQ_Kit_W_Awning.png",
+   "at": "2026-10-08 17:3x (3 jobs together)",
+   "balance_after": 25390,
+   "file": "art/models/tripo/web/Kit_W_Awning_HD_src.glb",
+   "note": "검수 OK 10/08 밤 (고블린 숲 A23-76, Awning 2 / StepStones 1 / LogStool B)",
+   "tris": 9165,
+   "derived": [
+    "art/models/tripo/web/Kit_W_Awning_HD_plain.glb (--rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_W_Awning_LOD.glb (glb_decimate 3000 --weld 1e-5 -> 2999)",
+    "build/import_D12/WorldKit_ImportD12.glb = build/import_all/4_fourth/E4_WoodsCamp3.glb (LOD only, name without _LOD)"
+   ]
+  }
+ ],
+ "Kit_W_StepStones_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account)",
+   "site": "studio.tripo3d.ai",
+   "task": "a96b82bd-9a47-48a8-9b7f-6141fea86c95",
+   "image": "art/out/hq/HQ_Kit_W_StepStones.png",
+   "at": "2026-10-08 17:3x (3 jobs together)",
+   "balance_after": 25335,
+   "file": "art/models/tripo/web/Kit_W_StepStones_HD_src.glb",
+   "note": "검수 OK 10/08 밤 (고블린 숲 A23-76, Awning 2 / StepStones 1 / LogStool B)",
+   "tris": 9796,
+   "derived": [
+    "art/models/tripo/web/Kit_W_StepStones_HD_plain.glb (--rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_W_StepStones_LOD.glb (glb_decimate 3000 --weld 1e-5 -> 3000)",
+    "build/import_D12/WorldKit_ImportD12.glb = build/import_all/4_fourth/E4_WoodsCamp3.glb (LOD only, name without _LOD)"
+   ]
+  }
+ ],
+ "Kit_W_LogStool_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD 최고 품질 H3.1 (ultra mesh, poly 10000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account)",
+   "site": "studio.tripo3d.ai",
+   "task": "861e8326-1257-444d-bdfa-40b967b94167",
+   "image": "art/out/hq/HQ_Kit_W_LogStool.png",
+   "at": "2026-10-08 17:3x (3 jobs together)",
+   "balance_after": 25280,
+   "file": "art/models/tripo/web/Kit_W_LogStool_HD_src.glb",
+   "note": "검수 OK 10/08 밤 (고블린 숲 A23-76, Awning 2 / StepStones 1 / LogStool B)",
+   "tris": 9510,
+   "derived": [
+    "art/models/tripo/web/Kit_W_LogStool_HD_plain.glb (--rotz -90: front -Y)",
+    "art/models/tripo/web/Kit_W_LogStool_LOD.glb (glb_decimate 3000 --weld 1e-5 -> 3000)",
+    "build/import_D12/WorldKit_ImportD12.glb = build/import_all/4_fourth/E4_WoodsCamp3.glb (LOD only, name without _LOD)"
+   ]
+  }
  ]
 }

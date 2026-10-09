@@ -15,6 +15,7 @@ The remotes and the anvil prompt are the same as tools/play_weapon_first.py (gam
 (FilmSet window + test Play, about 10 min for all) and after the doc's §0 (the day's place/ copied into build/FilmSet.rbxlx,
 src synced from the clean origin/main worktree Game-film twice = 0 files). No mouse / keyboard: camera, character and
 windows by Studio MCP code only."""
+import json
 import math
 import os
 import sys
@@ -149,6 +150,7 @@ if LUNCH == "Good" or os.environ.get("LUNCH_ONLY") == "1":
     if os.environ.get("KEEP_WEAPON") == "1":
         SKIP.add("s40_first_weapon")
 LOG = []
+FILM = []   # the Film, for rec()'s hurt log
 Z = {}
 
 
@@ -165,11 +167,22 @@ def rec(name, sec, cam=None):
             cam()
         time.sleep(max(0.0, sec - (time.time() - t0)))
         return
+    if FILM:
+        FILM[0].hurt_watch()
+        FILM[0].motion_start()
     p, out = D.start_rec(name, sec)
     time.sleep(0.5)
     if cam:
         cam()
     p.wait()
+    if FILM:   # every hit I took during the clip (검수 v7 evidence: 0 = no hurt number can be in it)
+        hurts = FILM[0].hurt_count()
+        blocked = FILM[0].lua("return tostring(_G.__filmHurtBlocked or 0)")
+        json.dump({"hits_taken": hurts, "monster_swings_blocked_total": blocked},
+                  open(os.path.join(D.RAW, name + ".hurt.json"), "w"))
+        print("hurt", name, hurts, flush=True)
+        mot = FILM[0].motion_dump()   # my position / move / attack every 0.1 s (tools/devlog_motioncheck.py)
+        json.dump(mot, open(os.path.join(D.RAW, name + ".motion.json"), "w"))
     sheet(name)
     LOG.append(name)
     print(out, flush=True)
@@ -436,28 +449,10 @@ def flow_c(f):
     return kp
 
 
-# FilmSet-only filming aid (검수 v6, user "가만히 처맞고"): monsters near me keep at most `cap` HP (server record
-# field only: no number, no reward change) so every swing visibly finishes a slime before it can hit me back
-WEAK = r"""
-local MS = require(game.ServerScriptService.MonsterService)
-_G.__filmWeak = (_G.__filmWeak or 0) + 1
-local tok, cap, kinds = _G.__filmWeak, %f, %s
-task.spawn(function()
-	while _G.__filmWeak == tok do
-		local p = game.Players:GetPlayers()[1]
-		local r = p and p.Character and p.Character:FindFirstChild('HumanoidRootPart')
-		if r then
-			for _, rec in MS.GetMonstersInRadius(r.Position, 60, p) do
-				local k = rec.Model and rec.Model:GetAttribute('MonsterKind')
-				if (kinds == nil or kinds[k]) and rec.HP and rec.HP > cap then rec.HP = cap end
-			end
-		end
-		task.wait(0.15)
-	end
-end)
-return 'weak on'
-"""
-WEAK_OFF = "_G.__filmWeak = (_G.__filmWeak or 0) + 1; return 'weak off'"
+# (v6 tried to cap nearby slime HP from execute_luau; that edits a separate copy of MonsterService and did nothing.
+# Kept as no-ops so old flows still run; v7 uses Film.no_hurt instead)
+WEAK = "return 'weak n/a' -- %s %s"
+WEAK_OFF = "return 'weak n/a'"
 
 
 def flow_v6(f):
@@ -591,10 +586,154 @@ def flow_b(f, kp=""):
     f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',false); return 'off'")
 
 
+def flow_v7(f):
+    """검수 v7 (2026-10-08, after 3 inspectors failed v6): new s42_* clips, monsters never hurt me (FilmSet-only wrap),
+    every clip a different place / angle / action, the camera never just follows a still player.
+    LUNCH=Good: only the 'Give it back' take (a second fresh Play)"""
+    good = LUNCH == "Good"
+    print(f.no_hurt(True), flush=True)
+    print(f.lua(FIRE % ("ChooseFaction", '"Halo"', "ChooseFaction"), "Client"), flush=True)
+    wait_for(f, lambda s: s.get("Faction") == "Halo", 20)
+    print(f.lua(FIRE % ("ChooseClass", '"Warrior", "M"', "ChooseClass"), "Client"), flush=True)
+    wait_for(f, lambda s: s.get("ClassChosen") == "true", 20)
+    f.look("angel", focus=8)
+    time.sleep(2.0)
+
+    def gift():   # the twig, framed low and front so it is in the hand mid-screen above the caption area
+        f.clean(("Announce", "Toasts"))
+        print(f.lua(FIRE % ("AcceptTutorial", "", "AcceptTutorial"), "Client"), flush=True)
+        wait_for(f, lambda s: s.get("TutorialStep") == "3", 6, 0.3)
+        time.sleep(2.6)
+        got = wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0"), 2.5, 0.2)
+        if got.get("WeaponTier") in (None, "nil", "0"):
+            print("anvil:", f.lua(ANVIL, "Client"), flush=True)
+            got = wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0"), 1.5, 0.2)
+        if got.get("WeaponTier") in (None, "nil", "0"):
+            print("forge key U:", f.lua(DISPATCH % "U", "Client"), flush=True)
+        f.orbit((0, 0, 0), 6.0, -0.2, -40, 25, 9.0, look_y=-0.4, target=MY_ROOT, front=True)  # low, at the hands: the twig mid-screen
+        time.sleep(3.0)
+        for k in range(2):
+            f.lua(DISPATCH % "F", "Client")
+            time.sleep(1.2)
+    rec("s42_first_weapon" if not good else "s42_skip_weapon", 13, gift)
+    print("first weapon:", wait_for(f, lambda s: s.get("WeaponTier") not in (None, "nil", "0") and s.get("Held") == "true", 10), flush=True)
+
+    wait_for(f, lambda s: s.get("ZoneId") == "SlimeMeadow", 20)
+    time.sleep(1.2)
+    f.clean(())
+    print(f.lua(WEAK % (1, "{ Slime = true }"), "Server"), flush=True)
+    if not good:
+        # the run: a camera beside the road slides slowly while I run past it (the world moves)
+        pos = f.lua("local r=" + MY_ROOT + "; return r and string.format('%.1f,%.1f,%.1f', r.Position.X, r.Position.Y, r.Position.Z) or ''", "Client")
+        x0, y0, z0 = [float(v) for v in pos.split(",")]
+        f.walk([(x0 + 45, y0, z0 + 6)], speed=22)
+        rec("s42_run", 4, lambda: f.track((x0 + 22, y0 + 2.5, z0 - 14), (x0 + 30, y0 + 3.0, z0 - 12), MY_ROOT, 3.4, look_y=1.0))
+        f.cam_reset()
+    # the twig hunt: swing -> number over the slime -> poof -> jelly; nothing hits me
+    print(f.lua(HUNT % 60, "Client"), flush=True)
+    if not good:
+        rec("s42_twig_kills", 16, lambda: f.orbit((0, 0, 0), 8, 1.4, -70, -20, 15.4, look_y=1.8, target=MY_ROOT, front=True))
+    st = wait_for(f, lambda s: num(s.get("TutorialKills")) >= 5, 60, 1.0)
+    print(f.lua(HUNT_STOP, "Client"), flush=True)
+    print(f.lua(WEAK_OFF, "Server"), flush=True)
+
+    # the lunchbox: the card big, the pick, then me with the result (afterglow + the kid's reply)
+    cx, cz = zc("Crossroads")
+    f.teleport((cx + 10, 5, cz - 28), (cx, 5, cz))
+    f.cam_reset()
+    time.sleep(5.5)
+    f.clean(("PanelsModal", "Toasts"))
+    pick = "Good" if good else "Evil"
+
+    def lunch():
+        print(f.lua(FIRE % ("ClaimQuest", '"tutorial"', "ClaimQuest"), "Client"), flush=True)
+        for i in range(10):
+            time.sleep(0.4)
+            if f.lua(MODAL, "Client") == "true":
+                break
+        else:
+            print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Open"', "StoryAction"), "Client"), flush=True)
+        time.sleep(1.6)
+        print(f.lua(FIRE % ("StoryAction", '"Lunch1", "Choose", "%s"' % pick, "StoryAction"), "Client"), flush=True)
+        time.sleep(0.15)
+        f.lua("local mg=game.Players.LocalPlayer.PlayerGui:FindFirstChild('MainGui'); local m=mg and mg:FindFirstChild('PanelsModal'); "
+              "if m then m.Visible=false end; return 'closed'", "Client")
+        f.orbit((0, 0, 0), 7, 1.2, -30, 20, 5.0, look_y=1.6, target=MY_ROOT, front=True)
+        # never standing still (검수 v7 rule): I hop and walk off with my pick while the kid's reply shows
+        f.lua("local c=game.Players.LocalPlayer.Character; local h=c and c:FindFirstChildOfClass('Humanoid'); "
+              "if h then h.Jump=true; local r=c.HumanoidRootPart; h:MoveTo(r.Position + r.CFrame.LookVector*10) end; return 'hop'", "Client")
+        time.sleep(1.2)
+        print("visible after pick:", f.lua(VISIBLE_REPLY, "Client"), flush=True)
+        f.lua("local c=game.Players.LocalPlayer.Character; local h=c and c:FindFirstChildOfClass('Humanoid'); if h then h.Jump=true end; return 'hop'", "Client")
+        time.sleep(1.0)
+        f.lua(DISPATCH % "F", "Client")
+    rec("s42_lunch_good" if good else "s42_lunch_evil", 10, lunch)
+    if good:
+        return
+
+    # the knight: Lv30, the T6 sword, auto combat with skills, in the Pumpkin Patch (pumpkin slimes)
+    for k, v in (("Level", 30), ("PlaytimeSeconds", 1500), ("WeaponTier", 6)):
+        f.debug(k, v)
+    f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatUnlocked',true); return 'ok'")
+    print(f.lua(HIDE_MODAL, "Client"), flush=True)
+    print("knight weapon:", wait_for(f, lambda s: s.get("Held") == "true" and s.get("WeaponTier") == "6", 10), flush=True)
+    f.unclean()
+    f.clean(())
+    f.look("king", focus=10)
+    pc, pcz = zc("PumpkinPatch")
+    kp = tag_nearest(f, "PumpkinSlime", (pc, pcz), "f_ps")
+    if kp:
+        x, y, z = [float(v) for v in kp.split(",")]
+        f.teleport((x - 7, 5, z - 7), (x, 5, z))
+        time.sleep(1.0)
+    print(f.lua(WEAK % (30, "nil"), "Server"), flush=True)
+    f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',true); return 'auto'")
+    rec("s42_knight_patch", 12, lambda: f.orbit((0, 0, 0), 10, 1.8, -120, -50, 11.4, look_y=2.2, target=MY_ROOT, front=True))
+    f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',false); return 'off'")
+    print(f.lua(WEAK_OFF, "Server"), flush=True)
+
+    # the sword up close (the payoff after the twig): a slow low orbit around me while I swing it twice
+    def sword():
+        f.orbit((0, 0, 0), 8.0, 0.4, 35, -15, 5.6, look_y=0.2, target=MY_ROOT, front=True)  # the whole blade in frame
+        time.sleep(1.4)
+        for k in range(2):
+            f.lua(DISPATCH % "F", "Client")
+            time.sleep(1.3)
+    rec("s42_sword", 6, sword)
+
+    # the Pumpkin King: I fight it with the sword, it never hurts me (no red number)
+    print("PumpkinKing", f.debug("PumpkinKing", True), flush=True)
+    kp2 = ""
+    for i in range(20):
+        kp2 = f.lua("local k=" + KING % "PumpkinKing" + "; return k and tostring(k:GetPivot().Position) or ''")
+        if kp2:
+            break
+        time.sleep(1)
+    if kp2:
+        x, y, z = [float(v) for v in kp2.split(",")]
+        f.teleport((x - 8, 5, z - 8), (x, 5, z))
+        time.sleep(1.5)
+        f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',true); return 'auto'")
+        rec("s42_king_fight", 14, lambda: f.orbit((0, 0, 0), 13, 2.5, -160, -95, 13.4, look_y=3.5, target=MY_ROOT, front=True))
+        f.lua("local p=game.Players:GetPlayers()[1]; p:SetAttribute('AutoCombatEnabled',false); return 'off'")
+
+
+VISIBLE_REPLY = r"""
+local out = {}
+for _, x in game.Players.LocalPlayer.PlayerGui:GetDescendants() do
+	if x:IsA('TextLabel') and x.Visible and (string.find(x.Text, 'Yum') or string.find(x.Text, 'Thank')) then
+		table.insert(out, x:GetFullName() .. '=' .. x.Text)
+	end
+end
+return table.concat(out, ' | ')
+"""
+
+
 def main():
-    groups = [g for g in sys.argv[1:] if g in ("A", "B", "C", "K", "V")] or ["A", "C", "B"]
+    groups = [g for g in sys.argv[1:] if g in ("A", "B", "C", "K", "V", "W")] or ["A", "C", "B"]
     f = D.Film()
-    fresh = "A" in groups or "V" in groups
+    FILM.append(f)
+    fresh = "A" in groups or "V" in groups or "W" in groups
     try:
         if fresh:
             print(f.lua(FRESH % ("true", "on"), "Edit"), flush=True)
@@ -611,6 +750,9 @@ def main():
         load_zones(f)
         if "V" in groups:
             flow_v6(f)
+            return
+        if "W" in groups:
+            flow_v7(f)
             return
         if "A" in groups:
             flow_a(f)

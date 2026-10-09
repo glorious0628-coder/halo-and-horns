@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "checks": 11,
+  "failedChecks": [],
+  "mutations": {
+    "total": 5,
+    "applied": 5,
+    "caught": 5,
+    "results": [
+      {
+        "mutation": "every pass deferred again in the same frame (the 80-deep error)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL feedback: the chain stays shallow :: depth 26",
+          "CHECK_FAIL feedback: quiet stretches between bursts :: longest quiet run 0 frames",
+          "CHECK_FAIL feedback: a later pass still comes after the burst :: no pass in 2 s"
+        ]
+      },
+      {
+        "mutation": "a pass never remembers its frame",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL feedback: the chain stays shallow :: depth 26",
+          "CHECK_FAIL feedback: quiet stretches between bursts :: longest quiet run 0 frames",
+          "CHECK_FAIL feedback: a later pass still comes after the burst :: no pass in 2 s"
+        ]
+      },
+      {
+        "mutation": "no burst cap (a feedback label runs every frame)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL feedback: quiet stretches between bursts :: longest quiet run 2 frames"
+        ]
+      },
+      {
+        "mutation": "no last pass after a capped burst",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL feedback: quiet stretches between bursts :: longest quiet run 2 frames",
+          "CHECK_FAIL feedback: a later pass still comes after the burst :: no pass in 2 s"
+        ]
+      },
+      {
+        "mutation": "the follow-up pass is dropped",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL normal: converges :: size 24",
+          "CHECK_FAIL feedback: quiet stretches between bursts :: longest quiet run 0 frames",
+          "CHECK_FAIL feedback: a later pass still comes after the burst :: no pass in 2 s"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/UIKit.luau": "b3a2c4965bc9dce66245ca23e94bd3d28315be83c48c2d13310e711438cfad7f"
+  },
+  "fixtureSHA256": "719cfac14eeaa144d27dbec32c4ee1ceec62ea3540fbdd406de0d79bcc9d8119",
+  "studioCalls": 0,
+  "limitations": "A scheduler double, not the engine: the real re-entrancy count and signal order are a Studio Play check (the client console after a Play)."
+}

@@ -532,6 +532,11 @@ local freeStop = stopAndWatch(3)
 check(freeStop.FirstMove == math.huge, "(c) Settings Camera = Free: no recenter after the walk", show(freeStop))
 reset()
 humanoid.MoveDirection = FWD_RIGHT
+W.Settings.Cam = nil -- a new player: no camera setting saved yet
+frame(30)
+check(still(), "no camera setting yet: the default is Free (user 10/08) - no follow")
+reset()
+humanoid.MoveDirection = FWD_RIGHT
 W.Settings.Shake = false
 frame(1)
 local slowStep = math.abs(camYaw())

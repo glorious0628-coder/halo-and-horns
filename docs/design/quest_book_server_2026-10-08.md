@@ -7,7 +7,7 @@
 `Quests` 리모트 값 = **{ Quests = 지금 줄 배열, Book = { Available, Done } }** (Lua 표). 지금 main의 HUD.onQuests·Audio.OnQuests는 표의
 `.Quests`를 이미 읽는다(옛 서버의 JSON 글자 배열도 계속 읽음). 바뀔 때만 보냄(줄 + Book을 함께 비교).
 
-- `Done` = 끝낸 이야기 퀘스트 `"story:<id>"` 목록. 메인은 최근 것부터(이야기 순서 거꾸로), 그다음 서브도 최근 것부터. 최대 40개(`Config.QuestBook.DoneMax`).
+- `Done` = 끝낸 이야기 퀘스트 `"story:<id>"` 목록. 메인은 최근 것부터(이야기 순서 거꾸로), 그다음 서브도 최근 것부터. 최대 60개(`Config.QuestBook.DoneMax`, 메인 19 + 서브 약 35가 다 들어감).
   제목은 클라가 `Config.StoryQuests.Defs[id].Title`로. (오늘 받은 일일은 받으면 줄이 바뀌어 기록이 없어서 넣지 않음.)
 - `Available` = { Id = "story:<id>", Kind = "Sub", Level?, Text? } 목록, 낮은 레벨부터, 최대 10개(`AvailableMax`).
   - **레벨만 기다리는 서브**(다른 조건 — 앞 퀘스트·진영·장인 길드 스위치 — 은 다 맞음): Level = 그 레벨,
