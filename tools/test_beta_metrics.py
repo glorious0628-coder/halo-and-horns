@@ -117,6 +117,8 @@ MUTATIONS = [
     ("a pause card never names the leave", T, "\tif T.CardAt[player] and now - T.CardAt[player] <= recent then return \"StopCard\" end\n", ""),
     ("idle never", T, ">= num(A.IdleAfter, 120) then return \"Idle\" end", ">= math.huge then return \"Idle\" end"),
     ("the Shop is just a menu", T, "return win.Id == \"Shop\" and \"Shop\" or \"Menu\"", "return \"Menu\""),
+    ("the Forge walk is not logged", T, "\tconnect(\"QuestService\", \"ForgeReached\", function(player, seconds)\n\t\tTelemetryService.Custom(player, \"ForgeWalk\", math.floor(num(seconds)))\n\tend)\n", ""),
+    ("the Forge walk logs fractions", T, "TelemetryService.Custom(player, \"ForgeWalk\", math.floor(num(seconds)))", "TelemetryService.Custom(player, \"ForgeWalk\", num(seconds))"),
     # --- economy
     ("an event per coin", T, "\t\tif s and type(source) == \"string\" and num(amount) > 0 then\n\t\t\tlocal e = econOf(player).In\n\t\t\te[source] = (e[source] or 0) + math.floor(num(amount))\n\t\tend\n",
      "\t\tif s and type(source) == \"string\" and num(amount) > 0 then\n\t\t\tlocal e = econOf(player).In\n\t\t\te[source] = (e[source] or 0) + math.floor(num(amount))\n\t\t\tflushEconomy(player)\n\t\tend\n"),

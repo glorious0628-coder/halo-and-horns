@@ -69,7 +69,7 @@ local function server(db, userId)
     function player:GetAttribute(key) return attrs[key] end
     function player:SetAttribute(key, value) attrs[key] = value end
     local fixture = { Player = player, Data = { Nickname = "UNTRUSTED_SAVED_VALUE" }, Config = {
-        Nickname = { StoreName = "Test", ChangeInterval = 0 },
+        Nickname = { StoreName = "Test", ChangeInterval = 0 }, StoreName = function(base) return base end,
     }, GUID = 0, Persistent = true }
     local remotes = {}
     local enum = { TextFilterContext = { PublicChat = "PublicChat" } }

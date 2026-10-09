@@ -157,7 +157,7 @@ local MAIL = { Store = nil, Tried = false, Pending = 0 }
 function MAIL.Get()
 	if not MAIL.Tried then
 		MAIL.Tried = true
-		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.Grudge.MailStore)
+		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.StoreName(Config.Grudge.MailStore))
 		MAIL.Store = ok and store or nil
 		if not ok then
 			Util.Warn(TAG, "grudge mail store unavailable: " .. tostring(store))

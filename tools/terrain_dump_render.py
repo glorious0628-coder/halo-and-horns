@@ -69,12 +69,29 @@ sc.camera = cam
 sc.render.resolution_x, sc.render.resolution_y = 1400, 1100
 cx, cz = (X0 + X1) / 2, (Z0 + Z1) / 2
 span = max(X1 - X0, Z1 - Z0)
+def hypso(v):  # height colour ramp for the top view: low = blue-green, high = red
+    t = max(0.0, min(1.0, (v + 3) / 28))
+    stops = [(0.0, (0.15, 0.35, 0.6)), (0.2, (0.2, 0.6, 0.3)), (0.45, (0.85, 0.85, 0.3)), (0.7, (0.9, 0.5, 0.2)), (1.0, (0.8, 0.15, 0.15))]
+    for (a, ca), (b, cb) in zip(stops, stops[1:]):
+        if t <= b:
+            u = (t - a) / (b - a)
+            return tuple(ca[i] + (cb[i] - ca[i]) * u for i in range(3))
+    return stops[-1][1]
 for name, kind in (("top", "top"), ("sw", "oblique_sw"), ("ne", "oblique_ne")):
     if kind == "top":
-        cd.type, cd.ortho_scale = "ORTHO", span * 1.05
+        sc.render.resolution_x, sc.render.resolution_y = 1100, 1200
+        sc.display.shading.light = "FLAT"
+        for f in me.polygons:
+            for li in f.loop_indices:
+                vz = me.vertices[me.loops[li].vertex_index].co.z / ZS
+                c = hypso(vz)
+                me.color_attributes[0].data[li].color = (c[0], c[1], c[2], 1)
+        cd.type, cd.ortho_scale = "ORTHO", max(X1 - X0, Z1 - Z0) * 1.04
         cam.location = (cx, cz, 400)
         cam.rotation_euler = (0, 0, 0)
     else:
+        sc.render.resolution_x, sc.render.resolution_y = 1400, 1100
+        sc.display.shading.light = "STUDIO"
         cd.type, cd.ortho_scale = "ORTHO", span * 0.95
         d = 700
         az = math.radians(225 if kind == "oblique_sw" else 45)

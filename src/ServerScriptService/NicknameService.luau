@@ -404,7 +404,7 @@ function NicknameService.Init(registry)
 end
 
 function NicknameService.Start()
-	local ok, result = pcall(DataStoreService.GetDataStore, DataStoreService, Config.Nickname.StoreName)
+	local ok, result = pcall(DataStoreService.GetDataStore, DataStoreService, Config.StoreName(Config.Nickname.StoreName))
 	if ok then store = result end
 	Net.Get("SetNickname").OnServerEvent:Connect(NicknameService.SetNickname)
 	print("[NicknameService] started")

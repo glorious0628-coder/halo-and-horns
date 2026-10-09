@@ -1,0 +1,52 @@
+{
+  "checks": 16,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "no red",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no gray",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "yellow from one level up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "dev2's band ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "dev2's MonsterLevel ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Level attribute ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "bosses as their zone",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "golden tags recoloured",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never coloured",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}

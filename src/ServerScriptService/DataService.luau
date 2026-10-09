@@ -303,7 +303,7 @@ function DataService.Start()
 	-- DataStore probe (memory mode only ever in Studio)
 	task.spawn(function()
 		local okStore, result = pcall(function()
-			return DataStoreService:GetDataStore(Config.Data.StoreName)
+			return DataStoreService:GetDataStore(Config.StoreName(Config.Data.StoreName))
 		end)
 		if okStore and result then
 			store = result

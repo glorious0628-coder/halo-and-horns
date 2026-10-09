@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 73,
+  "checks": 77,
   "failedChecks": 0,
-  "namedChecks": 73,
+  "namedChecks": 77,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -16,6 +16,12 @@
     {
       "group": "config",
       "check": "T4: 3,000 + 10 Brute Horn + 20 Goblin Tooth; T5 10,000; T6 30,000",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T6 also asks 1 Captain's Badge (Captain Clatter's weekly gift); T5 does not",
       "pass": 1,
       "fail": 0
     },
@@ -70,6 +76,12 @@
     {
       "group": "config",
       "check": "T6: the gold is the weapon's own Price",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T6: CaptainBadge is a material",
       "pass": 1,
       "fail": 0
     },
@@ -255,13 +267,25 @@
     },
     {
       "group": "T5 and T6",
-      "check": "T6: 30,000 + 30 Knight Crest + 60 Bone",
+      "check": "T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "T5 and T6",
       "check": "T6 name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "T6 without the Captain's Badge: refused, nothing taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "T5 and T6",
+      "check": "the next goal names the badge",
       "pass": 1,
       "fail": 0
     },
@@ -503,7 +527,7 @@
         "crashed": false,
         "newFailingChecks": [
           "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
-          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
           "next goal :: Lv26: Crystal weapon, Knight Crest 4/12"
         ],
         "newFailingCount": 3
@@ -701,10 +725,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "T5 and T6 :: T6 without the Captain's Badge: refused, nothing taken",
+          "T5 and T6 :: no service warnings (pcall-swallowed handler errors)",
+          "T5 and T6 :: the next goal names the badge",
           "refusals pay nothing :: no service warnings (pcall-swallowed handler errors)",
           "refusals pay nothing :: one tooth short: refused, nothing taken (gold untouched too)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       },
       {
         "mutation": "one material short is enough",
@@ -713,10 +740,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "T5 and T6 :: T6 without the Captain's Badge: refused, nothing taken",
+          "T5 and T6 :: no service warnings (pcall-swallowed handler errors)",
+          "T5 and T6 :: the next goal names the badge",
           "refusals pay nothing :: no service warnings (pcall-swallowed handler errors)",
           "refusals pay nothing :: one tooth short: refused, nothing taken (gold untouched too)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       },
       {
         "mutation": "gold not spent",
@@ -726,7 +756,7 @@
         "crashed": false,
         "newFailingChecks": [
           "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
-          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
           "an order, start to end :: 3,000 gold: the carried 1,000 first, then 2,000 of the vault",
           "an order, start to end :: one spend, reason 'Commission'",
           "an order, start to end :: the discount: 2 minutes of gold back",
@@ -753,7 +783,7 @@
         "crashed": false,
         "newFailingChecks": [
           "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
-          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
           "an order, start to end :: 10 Brute Horn and 20 Goblin Tooth taken (2 horns left)"
         ],
         "newFailingCount": 3
@@ -766,7 +796,7 @@
         "crashed": false,
         "newFailingChecks": [
           "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
-          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
           "an order, start to end :: 10 Brute Horn and 20 Goblin Tooth taken (2 horns left)"
         ],
         "newFailingCount": 3
@@ -779,7 +809,7 @@
         "crashed": false,
         "newFailingChecks": [
           "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
-          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
           "an order, start to end :: ordering it again pays nothing",
           "an order, start to end :: the golden weapon is owned and equipped"
         ],
@@ -794,7 +824,7 @@
         "newFailingChecks": [
           "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
           "T5 and T6 :: T6 name",
-          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
           "an order, start to end :: ordering it again pays nothing",
           "an order, start to end :: the golden weapon is owned and equipped"
         ],
@@ -808,7 +838,7 @@
         "crashed": false,
         "newFailingChecks": [
           "T5 and T6 :: T5: 10,000 + 12 Knight Crest + 30 Bone",
-          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone",
+          "T5 and T6 :: T6: 30,000 + 30 Knight Crest + 60 Bone + 1 Captain's Badge (one of the two kept)",
           "an order, start to end :: the golden weapon is owned and equipped"
         ],
         "newFailingCount": 3
@@ -960,12 +990,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "T5 and T6 :: the next goal names the badge",
           "next goal :: Lv26: Crystal weapon, Knight Crest 4/12",
           "next goal :: T4 owned, Lv24: the next order is not named yet (Ruins open at 25)",
           "next goal :: T5 owned: the spirit weapon",
           "next goal :: all three owned: nothing"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "next goal ignores ShowLevel",
@@ -1018,13 +1049,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3db96a33509834ef6b58378743ea2166a2e91548fccdb6d6035ead185c8fb368",
+    "src/ReplicatedStorage/Shared/Config.luau": "c9838903edfbc61c0af75fe50e54c8a54a520f0c58c5d162be1b7d0c0ce451c6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
     "src/ServerScriptService/ChoiceCard.luau": "da892aeb3fa5ae57de67bea52693e6b5bac974a0ded6ff572970a876a3a330be",
     "src/ServerScriptService/CommissionService.luau": "8bffe67db248cfef2b293e56bcd6d4a197d7a857de8fdb65e8106952119adf02"
   },
-  "fixtureSHA256": "00d69efcf6b0869d4fff1787786c6ade2a9e00042b6eccc953ded4b6456b5e21",
+  "fixtureSHA256": "74a5b0d6938402c50eb15082605fc5ad5deb77de61edc5ec3287b1528647f9a5",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9672,
+  "checks": 10005,
   "failedChecks": 0,
   "namedChecks": 352,
   "namedChecksFailing": 0,
@@ -160,7 +160,7 @@
     {
       "group": "config-contract",
       "check": "every setting has Korean + English text",
-      "pass": 8,
+      "pass": 9,
       "fail": 0
     },
     {
@@ -550,7 +550,13 @@
     {
       "group": "sanitize",
       "check": "a non-finite / non-number Sfx -> 1",
-      "pass": 257,
+      "pass": 253,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "bools: a boolean is kept, anything else is the default",
+      "pass": 900,
       "fail": 0
     },
     {
@@ -561,26 +567,20 @@
     },
     {
       "group": "sanitize",
-      "check": "bools: a boolean is kept, anything else is the default",
-      "pass": 600,
-      "fail": 0
-    },
-    {
-      "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 945,
+      "pass": 949,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 945,
+      "pass": 949,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 641,
+      "pass": 665,
       "fail": 0
     },
     {
@@ -592,7 +592,7 @@
     {
       "group": "sanitize",
       "check": "Sfx = the nearest step of the clamped value",
-      "pass": 43,
+      "pass": 47,
       "fail": 0
     },
     {
@@ -3102,24 +3102,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ccb8752506326a4e22c7844ab9e9edae2f49fc84c1a068bf37ba8f78bf71957a",
+    "src/ReplicatedStorage/Shared/Config.luau": "18083d4e90fd6f9bafe127cf23543ff4b8c93274bbad813ef5b057b9758dde5b",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ReplicatedStorage/Shared/Net.luau": "96b0d9a3b289df648386a1cc394401534f737260ed355c95420de056a8631e99",
+    "src/ReplicatedStorage/Shared/Net.luau": "390dec93230c07f615639e0ac23e7296e7221b1933e43c2691163aa93ea81d61",
     "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "a960d549e93568363ca5232c8fa6449ef807eff79927d05325328398550f30d2",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b",
-    "src/ServerScriptService/Main.server.luau": "b82b9d97a0721c31d38412e0b19f4ccdce299d61976b537777fa91927535b323",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "1908c5cce21a6040ad2ee4cc112ac793183c0aa2e27f58ae2ab83289909c5be7",
-    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "6a9b438f7d69e19f94973d503e0b19db2b97cfbfbe08c9a73b51bc9dfe79a182",
+    "src/ServerScriptService/Main.server.luau": "7896f1fd1e8e24df7b3368e3d618b00eff2625ac420ddd05a766c3520ff818d8",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "603b15f3418499c7a145dcce2d4d2b5368050f5243919ade425b9f905c9a72b5",
+    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "7cb856b79f03d50f5f439d6179d0ebb1c502035bddbdb43ed049c53ee138151e",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "936a0108e2848c942d78ed719849fc9241f1f13556ac4b26bcb888e067d98f29",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "35f7f06e3d6f19793053c7e67fa70e64c1e300f4ba61402c7e919dc0ab9d6f92",
-    "src/ServerScriptService/StoryQuestService.luau": "a48009916dca0c80b455c411856d797f6d182e2ceaf580133da7ec78979167cd",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "9ee257e0f0304207dca77a2bd541a285158cbb654b20b004a6b5225d6a9c9830",
+    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "9b0b07c7474ca4cdfbfa2213644e1d143d11b4cb8cd39bfeec169f351f6ace49"
   },
-  "fixtureSHA256": "6023f573a7b7d25f56c0bb3b0cc1338e0208df40bec605cd9ea2c243a868fc20",
+  "fixtureSHA256": "5f8a4d87e28162328592908b4f910137b2377a1d2f8f769a3779b34ef9c64179",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

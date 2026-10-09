@@ -10,6 +10,9 @@
 -- PC: visible while Tab is HELD (Tab is a Config.Keybinds Reserved key, so it is read from UserInputService directly).
 -- Phone (later): a menu row calls PlayerListUI.Toggle() and the list shows a [닫기] pill.
 -- Rows refresh at 2 Hz while shown, never while hidden. Display only; the server owns every value.
+-- 검수 2026-10-09 (system review ③ Help & Safety): a press on another player's name shows [Add friend] / [Block] over
+-- that row's numbers (Roblox's own prompts: StarterGui SetCore PromptSendFriendRequest / PromptBlockPlayer); a
+-- second press, another row or closing the list hides them. My own row has none.
 -- Public: PlayerListUI.Show(on) -> isOpen, PlayerListUI.Toggle() -> isOpen, PlayerListUI.IsOpen().
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -78,10 +81,13 @@ local TXT = {
 	Missing = "-",
 	Close = "Close",
 	Invite = "Invite a friend",
+	Friend = "Add friend",
+	Block = "Block",
 }
 
 -- Columns = { { Id, Name, W } } from Config.Leaderstats; Rows = pooled row widgets (reused on every refresh)
-local S = { Open = false, Held = false, Token = 0, Started = false, Columns = {}, Rows = {}, WarnAt = -math.huge }
+local S = { Open = false, Held = false, Token = 0, Started = false, Columns = {}, Rows = {}, WarnAt = -math.huge,
+	Pick = nil } -- Pick = the player whose row shows [Add friend] / [Block]
 local ui = {} -- root, title, close, header, headerPad, list, listPad
 
 ----------------------------------------------------------------- helpers
@@ -289,11 +295,55 @@ local function newRow(i)
 		Text = "",
 		Parent = row,
 	})
-	return { Frame = row, Stroke = stroke, Dot = dot, Name = name, Cells = cells }
+	local rec = { Frame = row, Stroke = stroke, Dot = dot, Name = name, Cells = cells }
+	-- the name is a button: [Add friend] / [Block] over the numbers (another player only)
+	rec.Pick = k.Create("TextButton", {
+		Name = "Pick", Text = "", AutoButtonColor = false, BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(0, 0), Size = UDim2.new(1, -used, 1, 0), ZIndex = 4, Parent = row,
+	})
+	rec.Actions = k.Create("Frame", {
+		Name = "Actions", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -T.CellPad, 0, 2),
+		Size = UDim2.new(0, math.max(used - T.CellPad, 120), 1, -4), BackgroundTransparency = 1, Visible = false,
+		ZIndex = 5, Parent = row,
+	}, {
+		{ "UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right,
+			Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder } },
+	})
+	local function prompt(kind)
+		local target = rec.Player
+		if typeof(target) ~= "Instance" or target == LocalPlayer or not target.Parent then return end
+		local ok, err = pcall(StarterGui.SetCore, StarterGui, kind, target)
+		if not ok then warnThrottled(kind .. " failed: " .. tostring(err)) end
+		S.Pick = nil
+		PlayerListUI.ShowPick()
+	end
+	for i, a in { { TXT.Friend, "PromptSendFriendRequest", "Good" }, { TXT.Block, "PromptBlockPlayer", "Bad" } } do
+		local b = type(k.Button) == "function" and k.Button({ Name = a[2], Text = a[1], TextSize = T.HeaderText,
+			Color = themeColor(a[3], Color3.fromRGB(60, 62, 85)), Size = UDim2.new(0.5, -3, 1, 0), LayoutOrder = i, ZIndex = 6,
+			Parent = rec.Actions }, function() prompt(a[2]) end) or nil
+		if b then b.Name = a[2] end
+	end
+	rec.Pick.Activated:Connect(function()
+		if rec.Player == nil or rec.Player == LocalPlayer then return end
+		S.Pick = (S.Pick ~= rec.Player) and rec.Player or nil
+		PlayerListUI.ShowPick()
+	end)
+	return rec
+end
+
+-- [Add friend] / [Block] only on the picked row (its numbers hide under them)
+function PlayerListUI.ShowPick()
+	for _, row in S.Rows do
+		local on = S.Pick ~= nil and row.Player == S.Pick and row.Frame.Visible
+		if row.Actions then row.Actions.Visible = on end
+		for _, cell in row.Cells do cell.Visible = not on end
+	end
 end
 
 local function fillRow(row, e, i)
 	local mine = e.Player == LocalPlayer
+	row.Player = e.Player
+	if row.Pick then row.Pick.Visible = not mine end
 	row.Frame.Visible = true
 	row.Frame.LayoutOrder = i
 	row.Frame.BackgroundTransparency = mine and T.MineTransparency or (i % 2 == 0 and T.ZebraTransparency or 1)
@@ -504,6 +554,8 @@ local function refresh()
 	for i = #list + 1, #S.Rows do
 		S.Rows[i].Frame.Visible = false
 	end
+	if S.Pick and not S.Pick.Parent then S.Pick = nil end -- the picked player left
+	PlayerListUI.ShowPick()
 	layout()
 end
 
@@ -514,6 +566,7 @@ function PlayerListUI.Show(on)
 		S.Held = false
 		if not S.Open then return false end
 		S.Open = false
+		S.Pick = nil
 		S.Token += 1 -- ends the refresh loop
 		if ui.root then ui.root.Visible = false end
 		return false

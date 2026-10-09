@@ -431,7 +431,7 @@ end
 
 local function askedStore()
 	if T.AskedStore == nil then
-		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, N.Store or "HaloHorns_NotifyAsked_v1")
+		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.StoreName(N.Store or "HaloHorns_NotifyAsked_v1"))
 		T.AskedStore = ok and store or false
 	end
 	return T.AskedStore or nil

@@ -643,10 +643,11 @@ local function applyLifesteal(player, perks, total)
 end
 
 -- CR-M10: damage a monster and return the HP it actually lost (no overkill; 0 when the hit was refused).
--- killed = DamageMonster's own result
-local function damageMonster(rec, dealt, player, crit, castId)
+-- killed = DamageMonster's own result. manual: the player's own press, not auto combat (the King Slime finisher card)
+local function damageMonster(rec, dealt, player, crit, castId, manual)
 	local hpBefore = math.max(0, tonumber(rec.HP) or 0)
-	local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit, castId) -- castId: SKL-3 one hit a cast
+	-- castId: SKL-3 one hit a cast
+	local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit, castId, manual == true)
 	local applied = math.max(0, hpBefore - math.max(0, tonumber(rec.HP) or 0))
 	if player and (killed or applied > 0) then CombatService.MonsterHit:Fire(player, rec, killed) end
 	return killed, applied
@@ -987,7 +988,7 @@ function CombatService.Swing(player, isManual)
 				local crit = Util.Random:NextNumber() < Config.Combat.CritChance
 				local d = base * (crit and Config.Combat.CritMult or 1)
 				local dealt = Util.RoundDamage(d * ((Config.BasicSkill and Config.BasicSkill.SwingImmediate) or 0.5))
-				local killed, applied = damageMonster(rec, dealt, player, crit)
+				local killed, applied = damageMonster(rec, dealt, player, crit, nil, isManual)
 				if killed or applied > 0 then -- 0 = refused by MonsterService (owner / zone rules): not a hit
 					if not killed then
 						shoveLater("Swing", c.Id, rec, pos, crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING, player, w.Style) -- A15
@@ -1142,7 +1143,7 @@ function CombatService.Release(player, isAuto)
 				-- marked before the damage: a kill made by this skill counts as a skill kill (S0 trial: basic-attack-only)
 				m.Rec._skillBy = m.Rec._skillBy or {}
 				m.Rec._skillBy[player] = true
-				local killed, applied = damageMonster(m.Rec, dealt, player, nil)
+				local killed, applied = damageMonster(m.Rec, dealt, player, nil, nil, not isAuto)
 				if killed or applied > 0 then -- 0 = refused by MonsterService (owner / zone rules): not a hit
 					if not killed then
 						-- A15: a blast pushes outward from its center; the monster at the center goes away from me

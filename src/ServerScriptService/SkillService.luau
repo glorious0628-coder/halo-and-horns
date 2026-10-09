@@ -410,7 +410,7 @@ local function resolve(ctx, plan)
 				-- before the damage: a kill by this cast is a skill kill (story S0 "basic attacks only")
 				rec._skillBy = rec._skillBy or {}
 				rec._skillBy[player] = true
-				local killed, applied = kit.HitMonster(rec, dealt, player, false, ctx.CastId)
+				local killed, applied = kit.HitMonster(rec, dealt, player, false, ctx.CastId, not ctx.Auto)
 				if killed or applied > 0 then -- 0 = refused by MonsterService (owner / zone rules): not a hit
 					table.insert(hits, { P = m.Pos, A = dealt, C = false, K = "M" })
 					total += applied
@@ -529,7 +529,7 @@ local function fieldHit(f, mult, slowSec, guardSec)
 			if rec.Alive then
 				rec._skillBy = rec._skillBy or {}
 				rec._skillBy[player] = true
-				local killed, applied = kit.HitMonster(rec, dealt, player, false, f.Ctx.CastId)
+				local killed, applied = kit.HitMonster(rec, dealt, player, false, f.Ctx.CastId, not f.Ctx.Auto)
 				if killed or applied > 0 then
 					table.insert(hits, { P = m.Pos, A = dealt, C = false, K = "M" })
 					total += applied
