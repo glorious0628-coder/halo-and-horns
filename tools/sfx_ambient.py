@@ -81,10 +81,13 @@ def cricket_track(rng, n, f0, rate, pulses=3, gain=1.0):
     pulse = np.sin(2 * np.pi * 28 * t) ** 2 * (t < 0.04 * pulses)
     tone = np.sin(2 * np.pi * f0 * t + 3 * np.sin(2 * np.pi * 9 * t) * 0.1) * pulse
     tone *= np.minimum(t / 0.004, 1.0)
-    for s in range(int(phase), n - chirp_len, period):
+    s = int(phase)
+    while s < n - chirp_len:
         y[s:s + chirp_len] += tone * gain * rng.uniform(0.7, 1.0)
+        step = period * rng.uniform(0.85, 1.15)  # 검수 10/10: the gap between chirps wobbles +-15 % (not machine-like)
         if rng.random() < 0.12:
-            s += period  # a skipped beat now and then keeps it alive
+            step += period  # a skipped beat now and then keeps it alive
+        s += int(step)
     return y
 
 
