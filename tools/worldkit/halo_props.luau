@@ -48,26 +48,29 @@ local PLAN = {
 	}, {
 		kind = "Stairs",
 		x = 0,
-		z = -440,
+		z = -444,
 		y = 0.2,
 		yaw = 180.0,
-		s = 1.4,
+		s = 1.0,
+		sv = { 1.4, 0.585, 1.1 },
 		ramp = true,
 	}, {
 		kind = "Stairs",
 		x = 0,
-		z = -520,
-		y = 5,
+		z = -524,
+		y = 5.0,
 		yaw = 180.0,
-		s = 1.4,
+		s = 1.0,
+		sv = { 1.4, 0.732, 1.1 },
 		ramp = true,
 	}, {
 		kind = "Stairs",
 		x = 0,
-		z = -602,
-		y = 11,
+		z = -606,
+		y = 11.0,
 		yaw = 180.0,
-		s = 1.4,
+		s = 1.0,
+		sv = { 1.4, 0.976, 1.1 },
 		ramp = true,
 	}, {
 		kind = "Statue",
@@ -2080,9 +2083,9 @@ local COLL = {
 	CloudBush = "post", Topiary = "post", RoundTree = "post", PotFlowers = "none", Islet = "back", FarArch = "back",
 }
 local SMALL = { Balustrade = true, Lantern = true, Planter = true, BannerPole = true, PotFlowers = true, CloudBush = true, Topiary = true, RoundTree = true } -- color map only
-local TRIS = { Gate = 10000, Cathedral = 11000, Fountain = 10000, Tower = 7000, DomeHouseA = 8000, DomeHouseB = 8000, Shop = 8000, Statue = 3000, ArchBridge = 6000,
-	Stairs = 1500, Balustrade = 600, Lantern = 600, Planter = 800, CloudBush = 400, Topiary = 700, RoundTree = 1200, PotFlowers = 400, BannerPole = 800, Islet = 2500, FarArch = 2500 }
-local OLD = { HaloTower = true, HeroStatue = true, HaloCastle = true, HaloTownTrees = true, Flower = true, ZoneSwap_halo = true }
+local TRIS = { Gate = 10000, Cathedral = 11000, Fountain = 10000, Tower = 7000, DomeHouseA = 8000, DomeHouseB = 8000, Shop = 8000, Statue = 3000, ArchBridge = 5000,
+	Stairs = 1500, Balustrade = 800, Lantern = 600, Planter = 4500, CloudBush = 1800, Topiary = 3500, RoundTree = 5000, PotFlowers = 3000, BannerPole = 800, Islet = 2500, FarArch = 2500 }
+local OLD = { HaloTower = true, HeroStatue = true, HaloCastle = true, HaloTownTrees = true, Flower = true, ZoneSwap_halo = true, Cathedral = true, Cloud = true } -- Cathedral = the old Landmarks dome, Cloud = the old cloud puffs (only inside the Halo rect)
 
 local function inRect(p)
 	return p.X >= T.Rect.MinX and p.X <= T.Rect.MaxX and p.Z >= T.Rect.MinZ and p.Z <= T.Rect.MaxZ
@@ -2172,7 +2175,7 @@ for _, parent in { decor, landmarks } do
 			local nm = i.Name
 			local protected = nm == "Bridge_Halo" or string.sub(nm, 1, 6) == "Bridge" or nm == "Roads" or nm == "HaloProps" or string.sub(nm, 1, 5) == "Gate_"
 			local p = pivotOf(i)
-			if not protected and ((OLD[nm]) or (string.sub(nm, 1, 10) == "Town_Halo_" and p and inRect(p))) then
+			if not protected and ((OLD[nm] and p and inRect(p)) or (string.sub(nm, 1, 10) == "Town_Halo_" and p and inRect(p))) then
 				stash(i)
 				stashed += 1
 			end
@@ -2256,8 +2259,17 @@ for _, e in PLAN.placements do
 	local m = src:Clone()
 	m.Name = (e.kind == "Fountain" and "Town_Halo_Fountain3") or (e.name and ("Halo_ArchBridge_" .. e.name)) or KITNAME[e.kind]
 	clean(m, SMALL[e.kind])
-	if math.abs(e.s - 1) > 1e-3 then pcall(m.ScaleTo, m, m:GetScale() * e.s) end
-	local y = e.backdrop and e.y or groundY(e.x, e.z, e.y)
+	if e.sv then -- non-uniform stretch of the single MeshPart (the stairs fit their ramp): x width, y rise, z run
+		for _, mp in m:GetDescendants() do
+			if mp:IsA("MeshPart") then
+				mp.Size = Vector3.new(mp.Size.X * e.sv[1], mp.Size.Y * e.sv[2], mp.Size.Z * e.sv[3])
+				mp.PivotOffset = CFrame.new(0, -mp.Size.Y / 2, 0)
+			end
+		end
+	elseif math.abs(e.s - 1) > 1e-3 then
+		pcall(m.ScaleTo, m, m:GetScale() * e.s)
+	end
+	local y = (e.backdrop or e.ramp) and e.y or groundY(e.x, e.z, e.y)
 	local cf
 	if e.kind == "ArchBridge" then
 		local rise = (e.y1 - e.y0)
