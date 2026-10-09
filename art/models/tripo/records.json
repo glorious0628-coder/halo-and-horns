@@ -6304,5 +6304,37 @@
     "build/import_all/5_fifth/E6_KingSlime.glb (fit max 14 studs)"
    ]
   }
+ ],
+ "Mon_SlingshotGoblin_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account; the user logged in there for the totem gate, 검수 said stop switching)",
+   "site": "studio.tripo3d.ai",
+   "task": "2aaaa8e3-b280-4cc8-bc73-dd81c78e0b96",
+   "image": "art/out/s2/mon3/hq/MON_SlingshotGoblin_HQ_src.png + _MV_side/_MV_back",
+   "at": "2026-10-09 11:0x",
+   "balance_after": 25225,
+   "file": "art/models/tripo/web/Mon_SlingshotGoblin_HD_src.glb",
+   "tris": 14646,
+   "note": "검수 승인 8ebc0ca. FAIL CHECK: a face shows on the BACK of the head in the 3D (back reference had none) -> see art/review/monsters/*_3d_compare.jpg"
+  }
+ ],
+ "Mon_SkeletonArcherB_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 15000 typed, 4K tex, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000 account; the user logged in there for the totem gate, 검수 said stop switching)",
+   "site": "studio.tripo3d.ai",
+   "task": "5eb59543-ead5-46b0-9380-29a69b8a15e4",
+   "image": "art/out/s2/mon3/hq/MON_SkeletonArcherB_HQ_src.png + _MV_side/_MV_back",
+   "at": "2026-10-09 11:0x",
+   "balance_after": 25170,
+   "file": "art/models/tripo/web/Mon_SkeletonArcherB_HD_src.glb",
+   "tris": 14664,
+   "note": "검수 승인 8ebc0ca. FAIL CHECK: a face shows on the BACK of the head in the 3D (back reference had none) -> see art/review/monsters/*_3d_compare.jpg"
+  }
  ]
 }
