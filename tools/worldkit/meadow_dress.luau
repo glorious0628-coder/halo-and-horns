@@ -1480,7 +1480,7 @@ do
 				local t = scatter({ Name = name, S = sc }, x, z, 3, "edgeTree")
 				if t then table.insert(edgeTrees, { t.X, t.Z, nx, nz, tx, tz }) end
 			end
-			if rng:NextNumber() < 0.3 then -- a rock at one end of the grove
+			if rng:NextNumber() < 0.1 then -- a rock at one end of the grove (pass 5, 검수 10/09: 0.3 -> 0.1, rocks only in meaningful clusters)
 				local sg = rng:NextNumber() < 0.5 and -1 or 1
 				local e = offs[sg < 0 and 1 or #offs] + sg * 11.5
 				scatter({ Name = "Boulder", S = { 0.4, 0.65 } }, g[1] + tx * e + nx * 2, g[2] + tz * e + nz * 2, 3, "edgeRock")
@@ -1634,7 +1634,7 @@ do
 		{ Name = "W_Tree_B", W = 5, S = { 0.42, 0.55 } },
 		{ Name = "Kit_M_Stump", W = 1.5, S = { 0.9, 1.3 } },
 		{ Name = "Kit_M_Mushrooms", W = 1.5, S = { 1.0, 1.4 } },
-		{ Name = "Boulder", W = 2.5, S = { 0.3, 0.6 } },
+		{ Name = "Boulder", W = 1.0, S = { 0.3, 0.6 } }, -- pass 5: 2.5 -> 1.0
 	}
 	for _, p in gridPoints(T.Grid, T.Jitter, function(x, z) return bandAt(x, z) == "hedge" end) do
 		if rng:NextNumber() < 0.45 then -- pass 4 (검수 10/09): 0.85 -> 0.45, the budget goes to clumps along roads and scene spots

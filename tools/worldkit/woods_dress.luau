@@ -454,8 +454,8 @@ do
 		local ang = math.rad(a)
 		boulder(wf.c[1] - math.cos(ang) * 13, wf.c[2] + math.sin(ang) * 13, { S = rng:NextNumber(1.2, 1.7), AnyGround = true })
 	end
-	for k = 0, 7 do -- creek banks, both sides, alternating
-		local t = (k + 0.5) / 8
+	for k = 0, 3 do -- creek banks: four spots, alternating sides (a frame, not a row)
+		local t = (k + 0.5) / 4
 		local x, z = creekAt(t)
 		local side = (k % 2 == 0) and 1 or -1
 		boulder(x + rng:NextNumber(-3, 3), z + side * rng:NextNumber(9, 12), { AnyGround = true })
@@ -468,16 +468,8 @@ do
 			put("Kit_W_MossRock", c[1] + math.cos(a) * rng:NextNumber(5, 8), c[2] + math.sin(a) * rng:NextNumber(5, 8), {})
 		end
 	end
-	local rimHits = 0 -- big boulders on the forest rim (edge distance 12..24), spaced
-	for k = 1, 160 do
-		if rimHits >= 8 then break end
-		local side = rng:NextInteger(1, 4)
-		local u = rng:NextNumber(0, 1)
-		local d = rng:NextNumber(12, 24)
-		local x = side == 1 and LAND.MinX + d or (side == 2 and LAND.MaxX - d or LAND.MinX + u * (LAND.MaxX - LAND.MinX))
-		local z = side == 3 and LAND.MinZ + d or (side == 4 and LAND.MaxZ - d or LAND.MinZ + u * (LAND.MaxZ - LAND.MinZ))
-		if boulder(x, z, { Gap = 1.3 }) then rimHits += 1 end
-	end
+	-- no boulders on the rim / the wall (검수 2026-10-09: rows of rocks on the grey slope looked meaningless): rocks stand only in
+	-- clusters at meaningful spots (below)
 end
 
 ------------------------------------------------------------------ tier 3: step stones where the paths meet the creek
@@ -523,6 +515,50 @@ do
 	end
 end
 
+-- rock clusters (2-4 pieces: one big moss boulder + moss rocks) only at meaningful spots: camp entrances (both sides of the gap),
+-- path corners, the lookout mounds, the creek crossings. Never along the rim or in lines.
+do
+	local function cluster(x, z, n, big)
+		local placedN = 0
+		for k = 1, n do
+			local a = rng:NextNumber(0, math.pi * 2)
+			local d = k == 1 and 0 or rng:NextNumber(3.5, 6)
+			local px, pz = x + math.cos(a) * d, z + math.sin(a) * d
+			local ok
+			if k == 1 and big then ok = boulder(px, pz, { Gap = 0.8, AnyGround = true }) else ok = put("Kit_W_MossRock", px, pz, { Gap = 0.8, AnyGround = true }) end
+			if ok then placedN += 1 end
+		end
+		return placedN
+	end
+	for i, c in CAMPS do
+		local back = -c.Road
+		local side = Vector3.new(-c.Road.Z, 0, c.Road.X)
+		for _, s2 in { 1, -1 } do
+			local p = c.Pos + back * -19 + side * (s2 * 8.5) -- flanking the entrance gap
+			cluster(p.X, p.Z, 3, true)
+		end
+	end
+	for _, pa in PLAN.paths do -- corners: where the line turns by more than 35 degrees
+		local pts = pa.pts
+		for i = 2, #pts - 1 do
+			local ax, az = pts[i][1] - pts[i - 1][1], pts[i][2] - pts[i - 1][2]
+			local bx, bz = pts[i + 1][1] - pts[i][1], pts[i + 1][2] - pts[i][2]
+			local la, lb = math.sqrt(ax * ax + az * az), math.sqrt(bx * bx + bz * bz)
+			if la > 1e-3 and lb > 1e-3 then
+				local turn = math.deg(math.acos(math.clamp((ax * bx + az * bz) / (la * lb), -1, 1)))
+				if turn > 35 then
+					local nx, nz = -(az / la + bz / lb), (ax / la + bx / lb) -- outside of the bend
+					local l = math.max(1e-3, math.sqrt(nx * nx + nz * nz))
+					cluster(pts[i][1] + nx / l * (pa.w / 2 + 5), pts[i][2] + nz / l * (pa.w / 2 + 5), 2, false)
+				end
+			end
+		end
+	end
+	for _, m in PLAN.mounds do -- lookout mounds: a frame of rocks on the top edge, the biggest three
+		if m.r >= 22 then cluster(m.c[1] + 4, m.c[2] - 3, 3, true) end
+	end
+end
+
 ------------------------------------------------------------------ tier 4: undergrowth (jittered grid, weighted)
 local function weight(x, z)
 	local e = edgeDist(x, z)
@@ -545,7 +581,6 @@ local function weight(x, z)
 end
 local LAYERS = { -- Max = pieces per layer (the phone budget, in the order of what the eye needs first)
 	{ Name = "mushroom", Kinds = { "Kit_W_Mushrooms" }, Cell = 26, Gap = 0.8, Scale = 0.5, Max = 15 },
-	{ Name = "rock", Kinds = { "Kit_W_MossRock" }, Cell = 24, Gap = 0.9, Scale = 0.6, Max = 24 },
 	{ Name = "bush", Kinds = { "Kit_W_BushA", "Kit_W_BushB" }, Cell = 15, Gap = 0.8, Max = 80 },
 	{ Name = "fern", Kinds = { "Kit_W_Fern" }, Cell = 10, Gap = 0.7, Max = 50 },
 	{ Name = "flower", Kinds = { "Kit_M_FlowersA", "Kit_M_FlowersB" }, Cell = 9, Gap = 0.6, Max = 70 },
