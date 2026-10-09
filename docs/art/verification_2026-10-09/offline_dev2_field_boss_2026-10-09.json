@@ -1,0 +1,1334 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 128,
+  "failedChecks": 0,
+  "namedChecks": 128,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "MonsterTypes.SlimeKing exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "King Slime: a meadow boss outside the regular pool",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "borrows the Slime Prince model until its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "in MonsterTypeOrder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the old King Slime (BigSlime) is now the Slime Prince",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Slime Prince's numbers are unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the finisher cards are the field bosses' only (never the Slime Prince)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the King Slime has a drop table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "announce line + event style: SlimeKingAppear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-85 no mom line: SlimeKingAppear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "announce line + event style: SlimeKingDefeat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-85 no mom line: SlimeKingDefeat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "announce line + event style: SlimeKingLeave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-85 no mom line: SlimeKingLeave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "appear line = the dad line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "toast only when it appears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "slime bubbles + dad lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "soft hit sound",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "schedule 3 min / every 8 min / stays 5 min",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Net GameState defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Main INIT_ORDER has it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Main START_ORDER has it before PlayerService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Studio DebugCommand SlimeKing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "start: next in 180 s, none here",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "nothing before the first slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "appears at the slot with a hunter in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "at the shrine's KingSpawn, radius 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "Active, leaves in 300 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "next slot 480 s from this appearance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "Appear line once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "IsActive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "only one at a time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "schedule",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "no spawn: nobody ready in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "due slot kept in the past (waiting)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "the first ready hunter in the meadow brings it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "waits for a hunter",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "no shrine: hill top moved 8 studs toward the path foot (flat)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "neither: Config.FieldBosses.SlimeKing.Spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "the shrine wins over the hill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spot fallbacks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "a kill is not removed again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Fx KingDefeat to everyone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Fx carries the paid ids (numbers only) and the spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Defeated signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Defeat line, not Leave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "Active off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "IsActive false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "defeat",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "still here at 299 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "time up: goes home (fade, leaving)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "Leave line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "no Defeated",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "the next slot comes 480 s after the last appearance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "a lost model is a Leave, not a defeat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time up / lost",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "no ground: nothing appears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "retry in 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "no Appear line without a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "the retry spawns it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "Enabled = false: never, NextAt 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "DebugSpawn now (no hunter needed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "DebugSpawn twice: already here",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "a slot while one is here is skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "NextAt moved forward past the skipped slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry / off / debug",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "each boss its own first slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "the ruins boss comes for a ruins hunter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "no Attr / Hill / Spawn: a zone spawn point (no Near), its own Radius",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "its own lines and GameState",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "the King Slime waits: nobody in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "the ruins boss leaves after 120 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "the King Slime at its shrine",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "IsActive per key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "DebugSpawn of an unknown key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "the meadow hill is the King Slime's only (Hill = true)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two bosses",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "Clatter is a field boss key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "every 20 min, stays 6 min, chip from Lv25, +20 war, own mark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "weekly badge banked up to 2, titles 1 / 10 / 50",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "Captain Clatter: a ruins boss on the knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "order, bubble family, barks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "drops: 3 crests, Enh30 20%, Enh10 5%, T5 3%, T6 0.5%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "Captain's Badge is a listed material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "announce ClatterAppear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "announce ClatterDefeat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "announce ClatterLeave",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "toast on appear only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "title ClatterStopper",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "title ClatterStopper10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "title ClatterStopper50",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "Net defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "card kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "card CaptainClatter: the same size",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "card CaptainClatter: words",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "card SlimeKing: the same size",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "card SlimeKing: words",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "Clatter's buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "DebugSpawn Clatter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "defeat Fx carries the side share",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "+20 crown-war points each (own side)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "first kill: Kills 1, Clatter Stopper",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "the week's first kill always gives the badge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "a badge line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "a second kill that week: no badge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "next week: the badge again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "skipped weeks bank up to 2: one now, one waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "the banked one comes with the next kill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "a full bag keeps the guarantee",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "the next kill gives it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "no side damage: no share line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "10 kills: Clatter Stopper 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "King Slime: kills counted, no war points / weekly item",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "broken save numbers repaired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "a broken bank is capped at Max",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter extras",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 11,
+  "staticFailures": [],
+  "mutations": {
+    "total": 42,
+    "applied": 42,
+    "caught": 42,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no hunter check",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: group ran to the end without a Lua error",
+          "retry / off / debug :: Enabled = false: never, NextAt 0",
+          "time up / lost :: the next slot comes 480 s after the last appearance",
+          "two bosses :: the King Slime waits: nobody in the meadow",
+          "waits for a hunter :: due slot kept in the past (waiting)",
+          "waits for a hunter :: no spawn: nobody ready in the meadow"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "any zone counts",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: group ran to the end without a Lua error",
+          "retry / off / debug :: Enabled = false: never, NextAt 0",
+          "time up / lost :: the next slot comes 480 s after the last appearance",
+          "two bosses :: the King Slime waits: nobody in the meadow",
+          "waits for a hunter :: due slot kept in the past (waiting)",
+          "waits for a hunter :: no spawn: nobody ready in the meadow"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "not-ready players count",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "waits for a hunter :: due slot kept in the past (waiting)",
+          "waits for a hunter :: no spawn: nobody ready in the meadow"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "marked spot ignored",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: at the shrine's KingSpawn, radius 2",
+          "spot fallbacks :: the shrine wins over the hill",
+          "two bosses :: the King Slime at its shrine"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "hill for every boss",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "two bosses :: no Attr / Hill / Spawn: a zone spawn point (no Near), its own Radius",
+          "two bosses :: the meadow hill is the King Slime's only (Hill = true)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hill step ignored",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot fallbacks :: no shrine: hill top moved 8 studs toward the path foot (flat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hill step goes away from the path",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot fallbacks :: no shrine: hill top moved 8 studs toward the path foot (flat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hill step not flat",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spot fallbacks :: no shrine: hill top moved 8 studs toward the path foot (flat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "radius lost",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: at the shrine's KingSpawn, radius 2",
+          "two bosses :: no Attr / Hill / Spawn: a zone spawn point (no Near), its own Radius"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "never leaves",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time up / lost :: Leave line",
+          "time up / lost :: a lost model is a Leave, not a defeat",
+          "time up / lost :: the next slot comes 480 s after the last appearance",
+          "time up / lost :: time up: goes home (fade, leaving)",
+          "two bosses :: IsActive per key",
+          "two bosses :: the ruins boss leaves after 120 s"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "leaving with a splat",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time up / lost :: time up: goes home (fade, leaving)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a lost model counts as a defeat",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "time up / lost :: a lost model is a Leave, not a defeat"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no defeat Fx",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: group ran to the end without a Lua error",
+          "defeat :: group ran to the end without a Lua error",
+          "retry / off / debug :: group ran to the end without a Lua error",
+          "schedule :: group ran to the end without a Lua error",
+          "spot fallbacks :: group ran to the end without a Lua error",
+          "time up / lost :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "no Defeated signal",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Defeated signal"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Defeat and Leave swapped",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Defeat line, not Leave",
+          "time up / lost :: Leave line",
+          "time up / lost :: a lost model is a Leave, not a defeat",
+          "two bosses :: the ruins boss leaves after 120 s"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no Appear line",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: Appear line once",
+          "two bosses :: its own lines and GameState"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "next slot not set",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: next slot 480 s from this appearance",
+          "two bosses :: IsActive per key",
+          "two bosses :: the King Slime at its shrine"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no retry delay",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry / off / debug :: retry in 10 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "debug spawns twice",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry / off / debug :: DebugSpawn twice: already here",
+          "retry / off / debug :: a slot while one is here is skipped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Active not published",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Active off",
+          "retry / off / debug :: no ground: nothing appears",
+          "retry / off / debug :: the retry spawns it",
+          "schedule :: Active, leaves in 300 s",
+          "schedule :: start: next in 180 s, none here",
+          "two bosses :: its own lines and GameState"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "first slot at once",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "schedule :: Active, leaves in 300 s",
+          "schedule :: next slot 480 s from this appearance",
+          "schedule :: nothing before the first slot",
+          "schedule :: start: next in 180 s, none here",
+          "two bosses :: each boss its own first slot"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "string ids in Contributors",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "defeat :: Defeated signal",
+          "defeat :: Fx carries the paid ids (numbers only) and the spot"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "card back on the Prince",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter config :: card kinds",
+          "config :: the finisher cards are the field bosses' only (never the Slime Prince)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Prince renamed back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the old King Slime (BigSlime) is now the Slime Prince"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a mom line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-85 no mom line: SlimeKingLeave"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "King in the regular pool",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: King Slime: a meadow boss outside the regular pool"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not in Main START",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Main START_ORDER has it before PlayerService"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Net default",
+        "file": "src/ReplicatedStorage/Shared/Net.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Net GameState defaults"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no extras paid",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: +20 crown-war points each (own side)",
+          "clatter extras :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no side share",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: defeat Fx carries the side share"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "share sides swapped",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: defeat Fx carries the side share"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no war points",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: +20 crown-war points each (own side)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kills never counted",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: 10 kills: Clatter Stopper 10",
+          "clatter extras :: King Slime: kills counted, no war points / weekly item",
+          "clatter extras :: a second kill that week: no badge",
+          "clatter extras :: broken save numbers repaired",
+          "clatter extras :: first kill: Kills 1, Clatter Stopper"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "titles at any count",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: 10 kills: Clatter Stopper 10"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no weekly bank",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: a full bag keeps the guarantee",
+          "clatter extras :: next week: the badge again",
+          "clatter extras :: skipped weeks bank up to 2: one now, one waits",
+          "clatter extras :: the banked one comes with the next kill"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "first kill gives nothing",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: a badge line",
+          "clatter extras :: a second kill that week: no badge",
+          "clatter extras :: next week: the badge again",
+          "clatter extras :: skipped weeks bank up to 2: one now, one waits",
+          "clatter extras :: the banked one comes with the next kill",
+          "clatter extras :: the week's first kill always gives the badge"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "a full bag loses the guarantee",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: a full bag keeps the guarantee"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "broken save banks more",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: a broken bank is capped at Max"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "badge every kill",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter extras :: a broken bank is capped at Max",
+          "clatter extras :: a full bag keeps the guarantee",
+          "clatter extras :: a second kill that week: no badge",
+          "clatter extras :: next week: the badge again",
+          "clatter extras :: skipped weeks bank up to 2: one now, one waits",
+          "clatter extras :: the banked one comes with the next kill"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "Clatter weekly 3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter config :: weekly badge banked up to 2, titles 1 / 10 / 50",
+          "clatter extras :: a broken bank is capped at Max",
+          "clatter extras :: a full bag keeps the guarantee",
+          "clatter extras :: skipped weeks bank up to 2: one now, one waits",
+          "clatter extras :: the banked one comes with the next kill",
+          "clatter extras :: the next kill gives it"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Clatter every 10 min",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter config :: every 20 min, stays 6 min, chip from Lv25, +20 war, own mark"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Clatter card not the same size",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter config :: card CaptainClatter: the same size"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "68ab8ae8bb617566f6f9bf7ac944486dd9de8d1778fa8c2d8c98310dc320539d",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Net.luau": "aa7d771dc7846724a106da98a44ff5d87ffc26cda2d3df9b9e89e40096ff9153",
+    "src/ServerScriptService/Main.server.luau": "14ed47773943dd6fd1b4cb80c1fcf4c47cca0661a1dfce89b2d29a48a5a3f468",
+    "src/ServerScriptService/FieldBossService.luau": "f25222403d7b1832eab845ca15c1bf13508047d2f7555ff6c21444398972892b"
+  },
+  "fixtureSHA256": "21aa11ad61b2cb32ddfb0ddaa851df992677024c6a2d60510a7c3aa31f195e02",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Field bosses (Config.FieldBosses; the King Slime A23-84/85, king_slime_split §3): one of each on the server, first slot FirstDelay s after start, then every Interval s from its last appearance, a due slot waits for a ready hunter in its zone, stays Lifetime s; spot Attr on workspace.Map > (Hill) HillTop + 8 toward HillPathFoot (flat) > Spawn > a zone spawn point, Radius; no ground = retry in RetryDelay s; defeat = Fx KingDefeat { Key, Kind, Pos, Contributors (numbers) } to all + <Key>Defeat + Defeated(key, kind, ids, rec); time up / lost model = RemoveEvent(fade, leaving) + <Key>Leave; GameState <Key>Active / EndsAt / NextAt. King Slime: 180 / 480 / 300 s, KingSpawn, hill. BigSlime = Slime Prince; the card is SlimeKing's.",
+  "limitations": "MonsterService (SpawnEvent ground pick, kill payout, model borrow), PlayerService, ZoneService and AnnounceService are doubles; the client (boss chip, minimap icon) and the shrine placement are not here."
+}

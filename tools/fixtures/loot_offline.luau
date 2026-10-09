@@ -985,6 +985,7 @@ runGroup("rollkill", function()
 	-- every contributor gets an own roll (MonsterService fires once per contributor)
 	local p2, d2 = f:Join(f.UserId + 100000)
 	local n = #L.Tables.Slime + 1
+	local jellyBefore = f:Count("Jelly") -- the every-kind loop above may have paid Jelly (King Slime)
 	local script = {}
 	for i = 1, n do script[i] = 0 end
 	for i = 1, n do script[n + i] = 0.999999 end
@@ -992,8 +993,8 @@ runGroup("rollkill", function()
 	f:Kill("Slime")
 	f:Kill("Slime", nil, p2)
 	check(f.Draws == 2 * n and #f.Script == 0, "two contributors = two independent rolls", f.Draws)
-	check(f:Count("Jelly") == 1 and (d2.Items.Jelly or 0) == 0, "contributor rolls are independent (own result each)",
-		show({ f:Count("Jelly"), d2.Items.Jelly }))
+	check(f:Count("Jelly") - jellyBefore == 1 and (d2.Items.Jelly or 0) == 0, "contributor rolls are independent (own result each)",
+		show({ f:Count("Jelly") - jellyBefore, d2.Items.Jelly }))
 	f.Script = {}
 
 	-- unknown / malformed kinds give nothing
@@ -1566,8 +1567,14 @@ runGroup("weapons", function()
 					local min = C.Weapons[row.Weapon].MinLevel
 					b:Set("Level", min - 1)
 					local bg, unused = b:Force(kind, { [i] = true })
+					-- every BelowLevel weapon row of this table above the killer's level skips its draw (Captain Clatter
+					-- has two: T5 and T6)
+					local skipped = 0
+					for _, r in rows do
+						if r.Weapon and type(r.BelowLevel) == "table" and C.Weapons[r.Weapon].MinLevel > min - 1 then skipped += 1 end
+					end
 					check(b.Data.WeaponOwnedMask == 1 and b:Gained(bg, "Weapon", row.Weapon) == 0 and #b.Announces == 0 and #b.GoldLog == 0
-						and unused == 1, "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
+						and unused == skipped, "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
 						kind .. " tier " .. row.Weapon .. " Lv" .. (min - 1) .. " unused " .. unused)
 					check(b:Count(row.BelowLevel.Item) >= row.BelowLevel.N, "A23-27 ... and pays its BelowLevel item instead",
 						kind .. " " .. show(b.Data.Items))

@@ -178,6 +178,9 @@ Config.Data = {
 		GraduateGraceUntil = 0, -- A23-18: os.time() when the rookie graduation grace ends (survives a rejoin)
 		BetaPioneer = false, -- A23-18 first build (legacy): migrated into Titles.BetaPioneer by TitleService
 		Titles = {}, -- BB16: { [Config.TitleDefs id] = os.time() first owned } (no stats)
+		-- FieldBossService: per boss key { Kills = paid kills, Week = Config.WeekIndex last counted, Owed = weekly item
+		-- guarantees not taken yet (<= Weekly.Max) } (J: Captain Clatter's badge)
+		FieldBoss = {},
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
@@ -1673,19 +1676,30 @@ Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDi
 
 -- seasonal kinds sit right after the base kind of their zone (drop table / UI order); they spawn only while their
 -- season is on (Config.MonsterActive / Config.EffectiveMonsterCounts)
-Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", "Goblin", "BatGoblin", "GoblinBrute",
-	"GhostMinion", "LittleGhost", "GhostKing", "Skeleton", "SkeletonKnight" }
+Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "SlimeKing", "PumpkinKing", "Goblin", "BatGoblin", "GoblinBrute",
+	"GhostMinion", "LittleGhost", "GhostKing", "Skeleton", "SkeletonKnight", "CaptainClatter" }
 -- Name = full name (nametag, lore); Short = short name for quest / HUD lines (optional: use `def.Short or def.Name`)
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
 -- QuestAs = the kind quests count it as (Config.QuestKind); Float = studs the client hovers it above the floor (no
 -- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
 Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
+	-- A23-84 (user 2026-10-08): the slime family - the green Shard Slime is the youngest, the Slime Prince (this id, the
+	-- old "King Slime": its quests, the first 70% scroll and the dailies stay) the eldest, the King Slime the dad
 	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
 	Goblin = { Name = "Shard Thief Goblin", Short = "Goblin", Zone = "GoblinWoods", Count = 10, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
 	GoblinBrute = { Name = "Goblin Brute", Short = "Goblin Brute", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
 	Skeleton = { Name = "Old Kingdom Skeleton", Short = "Skeleton", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
 	SkeletonKnight = { Name = "Skeleton Knight", Short = "Skeleton Knight", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
+	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): the ruins' field boss (FieldBossService:
+	-- every 20 min, stays 6 min), 300 years on duty with nobody to take his shift. The Skeleton Knight's model and moves x
+	-- Scale 2.2 until his own (ModelFrom / AnimFrom). HP 20000 = about 4 min for one Lv25 T3 hunter (skill MP20 / 3 s x6,
+	-- 75% uptime; measure in the test week and stretch the stay to 8 min if short). XP / Gold = 5 min of Lv25 hunting
+	-- (3,900 each), paid per eligible contributor (A23-27: 3 own hits + the damage share)
+	CaptainClatter = { Name = "Captain Clatter", Short = "Captain Clatter", Zone = "SkeletonRuins", Count = 0, Boss = true,
+		ContributorWindow = 180, RewardMinHits = 3, RewardMinDamageFrac = 0.005, ModelFrom = "SkeletonKnight",
+		AnimFrom = "SkeletonKnight", HP = 20000, Damage = 30, XP = 3900, Gold = 3900, Speed = 8, Shape = "Humanoid",
+		Scale = 2.2, Color = Color3.fromRGB(150, 140, 120) },
 	-- Halloween (Config.Halloween; provisional numbers). A23-45 (user 2026-10-06 "고블린은 고블린끼리, 호박은 호박, 유령은
 	-- 유령끼리"): one family per field. PumpkinPatch = pumpkin slimes + the pumpkin king; the bat goblins take 3 goblin
 	-- slots in the GoblinWoods (the first plan, woods numbers, counted as goblins); the HauntedHollow = the ghost family
@@ -1702,6 +1716,14 @@ Config.MonsterTypes = {
 		HP = 40, Damage = 3, XP = 13, Gold = 7, Speed = 12, Shape = "Humanoid", Scale = 0.6, Color = Color3.fromRGB(190, 220, 255), Float = 1.2 },
 	LittleGhost = { Name = "Little Ghost", Short = "Little Ghost", Zone = "HauntedHollow", Count = 4, Season = "Halloween", HP = 70, Damage = 5,
 		XP = 24, Gold = 14, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
+	-- the King Slime (A23-84 the slime family's dad; docs/design/king_slime_split_2026-10-08.md §3, 검수 OK 2026-10-08):
+	-- a boss of the meadow (FieldBossService: one on the server, every 8 min at the King Slime Hill shrine, 5 min stay),
+	-- never in the regular pool. Its own model comes later (image gen 2 -> Tripo): until then the Slime Prince's crowned
+	-- cube x Scale (2.5 = the Pumpkin King's body: 3.0 put the body past the attack ring, test_monster_spacing). HP 2500 = about 4 minutes for one Lv 5-8 hunter with a tier 1-2 weapon (~15 DPS x 0.75 uptime),
+	-- about 75 s for three (proposed, tune after play). The finisher card is its (Config.Finisher.Kinds)
+	SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true,
+		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime",
+		HP = 2500, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 2.5, Color = Color3.fromRGB(55, 120, 225) },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
 	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
 	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per
@@ -1750,8 +1772,8 @@ Config.Barks = {
 	-- family; a kind not listed uses its Config.QuestKind's family; BubbleArt = family -> the family's base monster key),
 	-- each only while its Id is uploaded (not "") and it is round (no Slice), then the round code bubble - never the
 	-- shared 9-slice BarkBubble (user "말풍선 가로로 길쭉한 거 말고": drawn small its body stays ~2.4 : 1).
-	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
-		Goblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonKnight = "Skeleton",
+	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", SlimeKing = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
+		Goblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonKnight = "Skeleton", CaptainClatter = "Skeleton",
 		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost" },
 	BubbleArt = { Slime = "BarkBubbleSlime", Pumpkin = "BarkBubblePumpkinSlime", Goblin = "BarkBubbleGoblin",
 		Skeleton = "BarkBubbleSkeleton", Ghost = "BarkBubbleGhostMinion" },
@@ -1774,7 +1796,13 @@ Config.Barks = {
 			Low = { "Squelch…", "Too squishy!" },
 			Idle = { "Thump thump~", "Hehe~" },
 		},
-		BigSlime = { -- Slime Prince (A23-84: the big brother; King Slime SlimeKing = the dad): big and royal
+		SlimeKing = { -- A23-84 the slime family's dad (A23-85: he raises the two kids alone): scary but playful
+			Spot = { "MY KIDS?!", "Dad's here!" },
+			Hit = { "OOF! BLUB!", "Daddy BOING!" },
+			Low = { "Dad nap…", "Ugh… kids…" },
+			Idle = { "Big hug~", "Hmm. Kids?" },
+		},
+		BigSlime = { -- Slime Prince (A23-84 the eldest; the old King Slime): big and royal
 			Spot = { "BLOOP!", "Bow! Blub!" },
 			Hit = { "SPLOOSH!", "Royal BOING!" },
 			Low = { "Royal nap…", "Bloop… zzz" },
@@ -1803,6 +1831,12 @@ Config.Barks = {
 			Hit = { "Clank!", "Clack!" },
 			Low = { "Clatter…" },
 			Idle = { "Rattle~", "Tuesday?" },
+		},
+		CaptainClatter = { -- J: the captain nobody relieved (300 years on duty)
+			Spot = { "HALT!!", "Who's next?" },
+			Hit = { "CLATTER!", "Bones! Ow!" },
+			Low = { "Nap time…", "Off duty?" },
+			Idle = { "300 years…", "Still here." },
 		},
 		SkeletonKnight = { -- an old knight, always on duty
 			Spot = { "Halt!", "Who goes?" },
@@ -3560,6 +3594,67 @@ Config.RateLimits = {
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
 }
 
+----------------------------------------------------------------- king finisher card (게임성 개발 2, 2026-10-08)
+-- docs/design/king_finisher_2026-10-08.md (rpg_success_analysis §4-3 #9, 검수 2026-10-08 kid-safe cut): a King Slime
+-- kill stays the same kill for everyone; each paid contributor with a manual hit in the last ContributorWindow s also
+-- gets a card only they see (FinisherService): Help (the Good side: Jelly) or Tickle (the Evil side: bank gold, never
+-- 2x), the same size (Help.N x Loot.Items[Help.Item].Sell == Tickle.Gold). Not picked within Seconds (+ Grace for the
+-- network, server only) = no gift, no points. Points: my own side's score +Points (inside Config.Deeds.PerDay) or -Points
+-- off side (A23-58, never below 0); Neutral / no side: the gift only. One open card a player at a time.
+Config.Finisher = {
+	-- the field bosses only (검수 2026-10-08: the Slime Prince has no card; J 2026-10-09: Captain Clatter)
+	Kinds = { SlimeKing = true, CaptainClatter = true },
+	Seconds = 10,
+	Grace = 1,
+	Points = 1,
+	-- per boss kind (FinisherCard .Kind): Help = the Good gift (Item x N; what does not fit is paid at the item's Sell,
+	-- else Worth), Tickle = the Evil gift (bank gold), the same size (N x (Sell or Worth) == Gold), and the card's words
+	-- (Title, Help / Tickle buttons, HelpDone / TickleDone lines). The shared words are Text below.
+	Cards = {
+		-- (the King Slime's name stays on the line with its SlimeKing key: the A23-84 Slime Prince name check)
+		SlimeKing = { Text = { Title = "The King Slime is dizzy!", Help = "Help it hop home", Tickle = "Tickle out its coins",
+				HelpDone = "It hops home happy!", TickleDone = "Coins pop out!" },
+			Help = { Item = "Jelly", N = 2 }, Tickle = { Gold = 4 } }, -- (proposed) = 2 Jelly x Sell 2
+		-- J: [Let him rest] the scroll side, [Count the old treasure!] the gold side (proposed: 1 Enh70 = 300 gold)
+		CaptainClatter = { Help = { Item = "Enh70", N = 1, Worth = 300 }, Tickle = { Gold = 300 },
+			Text = { Title = "Captain Clatter is worn out!", Help = "Let him rest", Tickle = "Count the old treasure!",
+				HelpDone = "\"Is my shift over? Nobody ever told me.\"", TickleDone = "Old coins rain down!" } },
+	},
+	Text = {
+		Score = "%s +%d", -- ("Honor" | "Infamy", points)
+		ScoreDown = "%s -%d", -- the other side's pick on the card ("Honor -1")
+		-- the card's Hint per option (FinisherCard Help / Tickle .Hint)
+		HintFull = "No more points today. Your shard still leans.",
+		HintZero = "Nothing to lose. Your shard still leans.",
+		HintNeutral = "Just the gift. No good or evil points.",
+	},
+}
+-- (the finisher's points go through the daily deeds ledger, Config.Deeds / Deeds.luau; ScoreBudget retired 2026-10-09)
+Config.RateLimits.FinisherPick = 0.3
+-- the year-round field bosses (FieldBossService; content_beyond_10min_2026-10-08 FB). Order = the boss keys (each key
+-- names its GameState <Key>Active / EndsAt / NextAt and its Announce <Key>Appear / Defeat / Leave lines). Per boss: one
+-- on the server; the first slot FirstDelay s after the start, then every Interval s from its last appearance (a due
+-- slot waits for a ready player in its zone); it stays Lifetime s. Spot: the Vector3 attribute Attr on an instance
+-- under workspace.Map, else (Hill) ServerStorage.MeadowTerrainStore HillTop moved PathStep studs toward HillPathFoot,
+-- else Spawn, else a normal spawn point of the zone. Radius = studs around the spot for ground. MinLevel = the client
+-- chip shows it from this level (the boss itself never checks it).
+Config.FieldBosses = {
+	Order = { "SlimeKing", "Clatter" },
+	Tick = 0.5,
+	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
+	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
+	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
+		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0 },
+	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): every 20 min, stays 6 min, a ruins spawn
+	-- point until 검수's tool marks ClatterSpawn. The chip shows from Lv25. On a defeat every paid contributor: +War own
+	-- side's crown-war points (WarService.AddPoints; one side online = the siege count), +1 Kills (Titles at 1 / 10 / 50),
+	-- and the Weekly item: a week's first kill always gives one, untaken weeks bank up to Max (a skipped week loses nothing)
+	Clatter = { Enabled = true, Kind = "CaptainClatter", FirstDelay = 300, Interval = 1200, Lifetime = 360, Radius = 6,
+		RetryDelay = 10, Attr = "ClatterSpawn", MinLevel = 25, War = 20,
+		Weekly = { Item = "CaptainBadge", N = 1, Max = 2 },
+		Titles = { [1] = "ClatterStopper", [10] = "ClatterStopper10", [50] = "ClatterStopper50" } },
+}
+
 ----------------------------------------------------------------- beta metrics (BB38, TelemetryService)
 -- docs/design/beta_basics_2026-10-05.md BB38 + 검수 2026-10-07 (economy, friends) + emergent_play_watch §2. Roblox
 -- AnalyticsService only; no names, UserIds or free text: every event name and field comes from these lists, zone /
@@ -3998,6 +4093,8 @@ Config.Loot = {
 		BruteHorn = { Kind = "Material", Name = "Brute Horn", Sell = 18, Color = Color3.fromRGB(200, 150, 100), Icon = "IconBruteHorn" }, -- review ui-brutehorn-contrast: readable on the row
 		Bone = { Kind = "Material", Name = "Old Bone", Sell = 14, Color = Color3.fromRGB(225, 225, 210), Icon = "IconBone" },
 		KnightCrest = { Kind = "Material", Name = "Rusty Knight Crest", Sell = 40, Color = Color3.fromRGB(150, 150, 170), Icon = "IconKnightCrest" },
+		-- J: Captain Clatter's badge (a week's first kill always gives one; the T6 commission needs it, A23-86 L)
+		CaptainBadge = { Kind = "Material", Name = "Captain's Badge", Sell = 200, Color = Color3.fromRGB(220, 190, 110), Icon = "IconCaptainBadge" },
 		Candy = { Kind = "Material", Name = "Candy", Sell = 5, Color = Color3.fromRGB(255, 140, 60), Icon = "IconCandy" }, -- Halloween kinds
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
@@ -4010,7 +4107,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest", "Candy" },
+		"Jelly", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest", "CaptainBadge", "Candy" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -4029,6 +4126,13 @@ Config.Loot = {
 			{ Item = "Enh70", P = 0.03 }, { Item = "Enh30", P = 0.008 }, { Item = "Enh10", P = 0.002 },
 			{ Item = "Move70", P = 0.01 }, { Item = "Move30", P = 0.003 }, { Item = "Move10", P = 0.0007 },
 			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
+		},
+		-- the King Slime boss (each paid contributor rolls; proposed, tune after play): more of the Prince's things
+		SlimeKing = {
+			{ Item = "SlimeCore", P = 1, N = 2 }, { Item = "Jelly", P = 1, N = 4 },
+			{ Item = "Enh70", P = 0.25 }, { Item = "Enh30", P = 0.06 }, { Item = "Enh10", P = 0.015 },
+			{ Item = "Move70", P = 0.08 }, { Item = "Move30", P = 0.02 }, { Item = "Move10", P = 0.005 },
+			{ Potion = "HP", P = 0.3 }, { Potion = "MP", P = 0.3 },
 		},
 		Goblin = {
 			{ Item = "GoblinTooth", P = 0.4 },
@@ -4050,6 +4154,15 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.008 }, { Item = "Move30", P = 0.0023 }, { Item = "Move10", P = 0.0006 },
 			{ Potion = "HP", P = 0.025 }, { Potion = "MP", P = 0.025 },
 			{ Weapon = 5, P = 0.0005 },
+		},
+		-- J Captain Clatter (each eligible contributor rolls; the weekly badge is FieldBossService's, not a row)
+		CaptainClatter = {
+			{ Item = "KnightCrest", P = 1, N = 3 },
+			{ Item = "Enh30", P = 0.2 }, { Item = "Enh10", P = 0.05 },
+			{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
+			-- below the weapon's MinLevel the row gives 2 more Knight Crests instead (A23-27)
+			{ Weapon = 5, P = 0.03, BelowLevel = { Item = "KnightCrest", N = 2 } },
+			{ Weapon = 6, P = 0.005, BelowLevel = { Item = "KnightCrest", N = 2 } },
 		},
 		SkeletonKnight = {
 			{ Item = "KnightCrest", P = 0.5 },
@@ -4191,6 +4304,20 @@ Config.Announce = {
 		GhostKingDefeatEn = "The Ghost King dropped a shower of candy!",
 		GhostKingLeave = "The Ghost King faded away. See you next time!",
 		GhostKingLeaveEn = "The Ghost King faded away. See you next time!",
+		-- J Captain Clatter (FieldBossService key Clatter)
+		ClatterAppear = "Captain Clatter is on patrol in the ruins!",
+		ClatterAppearEn = "Captain Clatter is on patrol in the ruins!",
+		ClatterDefeat = "Captain Clatter sat down at last. \"Is my shift over?\"",
+		ClatterDefeatEn = "Captain Clatter sat down at last. \"Is my shift over?\"",
+		ClatterLeave = "Captain Clatter marched off. Still on duty!",
+		ClatterLeaveEn = "Captain Clatter marched off. Still on duty!",
+		-- the King Slime boss (A23-84 the slime family's dad, A23-85 he raises the two kids alone; scary but playful)
+		SlimeKingAppear = "King Slime: \"Who's bothering my kids?!\" Go to King Slime Hill!",
+		SlimeKingAppearEn = "King Slime: \"Who's bothering my kids?!\" Go to King Slime Hill!",
+		SlimeKingDefeat = "King Slime: \"Okay, okay! Dad needs a nap!\"",
+		SlimeKingDefeatEn = "King Slime: \"Okay, okay! Dad needs a nap!\"",
+		SlimeKingLeave = "King Slime: \"Hmph! Bedtime, kids!\"",
+		SlimeKingLeaveEn = "King Slime: \"Hmph! Bedtime, kids!\"",
 		NameHidden = "Announcements and rankings now show your side's name instead of your name.",
 		NameShown = "Announcements and rankings now show your name.",
 		MenuShow = "My name in announcements and rankings: shown",
@@ -4218,6 +4345,14 @@ Config.Announce = {
 		GhostKingAppear = { Color = Color3.fromRGB(170, 160, 255), Toast = true, Icon = "IconMonGhostKing" },
 		GhostKingDefeat = { Color = Color3.fromRGB(170, 160, 255), Toast = true, Icon = "IconMonGhostKing" },
 		GhostKingLeave = { Color = Color3.fromRGB(200, 195, 255), Icon = "IconMonGhostKing" },
+		-- Captain Clatter: a toast when he appears. Icon: the Skeleton Knight's head until his own art
+		ClatterAppear = { Color = Color3.fromRGB(220, 200, 150), Toast = true, Icon = "IconMonSkeletonKnight" },
+		ClatterDefeat = { Color = Color3.fromRGB(220, 200, 150), Icon = "IconMonSkeletonKnight" },
+		ClatterLeave = { Color = Color3.fromRGB(200, 190, 170), Icon = "IconMonSkeletonKnight" },
+		-- the King Slime (every 8 min: a toast only when it appears). Icon: the Slime Prince's head until the King's art
+		SlimeKingAppear = { Color = Color3.fromRGB(90, 160, 255), Toast = true, Icon = "IconMonBigSlime" },
+		SlimeKingDefeat = { Color = Color3.fromRGB(90, 160, 255), Icon = "IconMonBigSlime" },
+		SlimeKingLeave = { Color = Color3.fromRGB(150, 195, 255), Icon = "IconMonBigSlime" },
 	},
 }
 
@@ -4233,6 +4368,11 @@ Config.TitleDefs = {
 	GrayLegend = { Name = "Gray Legend", NameEn = "Gray Legend", Color = Color3.fromRGB(190, 190, 200) },
 }
 Config.TitleOrder = { "BetaPioneer", "GrayLegend" }
+-- J: Captain Clatter paid kills 1 / 10 / 50 (FieldBossService, Config.FieldBosses.Clatter.Titles)
+Config.TitleDefs.ClatterStopper = { Name = "Clatter Stopper", NameEn = "Clatter Stopper", Color = Color3.fromRGB(220, 200, 150) }
+Config.TitleDefs.ClatterStopper10 = { Name = "Clatter Stopper 10", NameEn = "Clatter Stopper 10", Color = Color3.fromRGB(235, 210, 140) }
+Config.TitleDefs.ClatterStopper50 = { Name = "Clatter Stopper 50", NameEn = "Clatter Stopper 50", Color = Color3.fromRGB(255, 220, 120) }
+for _, id in { "ClatterStopper", "ClatterStopper10", "ClatterStopper50" } do table.insert(Config.TitleOrder, id) end
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures
 	Swing = "rbxasset://sounds/swordslash.wav",
@@ -4421,7 +4561,7 @@ Config.Audio = {
 	PunchSpeed = 1.3, -- bare hands: a short swish (volume x0.6)
 	NeutralSpeed = { Warrior = 0.85, Mage = 0.9 },
 	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else and players = heavy
-	SoftKinds = { Slime = true, BigSlime = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
+	SoftKinds = { Slime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
 	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },

@@ -474,8 +474,9 @@ runGroup("config-patch", function()
 			check(sameShallow(def.Takes or {}, TAKERS[kind] or {}), "only the bat goblin takes base slots (3 goblins)", kind)
 		end
 	end
-	for _, zone in { "SlimeMeadow", "SkeletonRuins" } do
-		check(perZone[zone] and perZone[zone].Season == 0 and perZone[zone].Base == 2,
+	-- the meadow's third base kind is the King Slime boss (A23-84), the ruins' third Captain Clatter (J; FieldBossService)
+	for zone, base in { SlimeMeadow = 3, SkeletonRuins = 3 } do
+		check(perZone[zone] and perZone[zone].Season == 0 and perZone[zone].Base == base,
 			"the meadow and the ruins have 0 Halloween kinds", zone .. " " .. show(perZone[zone]))
 	end
 	check(perZone.GoblinWoods and perZone.GoblinWoods.Base == 2 and perZone.GoblinWoods.Season == 1,
@@ -1171,7 +1172,12 @@ runGroup("loot", function()
 		"the ghost king's weapon row is the pumpkin king's (BelowLevel 3 candies)", show(ghostWeapon))
 	local others = 0
 	for kind, rows in T do
-		for _, row in rows do if row.BelowLevel ~= nil and kind ~= "PumpkinKing" and kind ~= "GhostKing" then others += 1 end end
+		for _, row in rows do
+			-- the field boss Captain Clatter (J) has his own BelowLevel weapon rows (Knight Crests), checked in test_loot
+			if row.BelowLevel ~= nil and kind ~= "PumpkinKing" and kind ~= "GhostKing" and kind ~= "CaptainClatter" then
+				others += 1
+			end
+		end
 	end
 	check(others == 0, "only the kings' weapon rows have a BelowLevel", others)
 	for kind, want in SPEC_ROWS do
@@ -2581,8 +2587,12 @@ runGroup("king-safety", function()
 	for _, kind in config.MonsterTypeOrder do
 		if config.MonsterTypes[kind].Boss then table.insert(bosses, kind) end
 	end
-	check(#bosses == 2 and bosses[1] == KING and bosses[2] == "GhostKing",
-		"the two kings are the only Boss kinds (the safety rule touches no other monster)", table.concat(bosses, ","))
+	-- + the King Slime (A23-84, year-round meadow boss): the same new-player safety rule
+	-- + Captain Clatter (J, year-round ruins boss)
+	check(#bosses == 4 and bosses[1] == "SlimeKing" and bosses[2] == KING and bosses[3] == "GhostKing"
+		and bosses[4] == "CaptainClatter",
+		"the field bosses and the two kings are the only Boss kinds (the safety rule touches no other monster)",
+		table.concat(bosses, ","))
 	local spot = HW.SpawnSpots[1]
 	local kpos = vec(spot.X, 0, spot.Z)
 	local ppos = vec(spot.X + 2, 0, spot.Z)
@@ -3790,7 +3800,8 @@ runGroup("client-wiring", function()
 		if CONFIG.Loot.Tables[kind] and CONFIG.MonsterActive(kind) then on += 1 end
 		if cOff.Loot.Tables[kind] and cOff.MonsterActive(kind) then off += 1 end
 	end
-	check(on == 12 and off == 6, "drop list kinds: 12 in season, 6 out of season", on .. "/" .. off)
+	check(on == 14 and off == 8, "drop list kinds: 14 in season, 8 out of season (+ the King Slime, Captain Clatter)",
+		on .. "/" .. off)
 	-- MonsterService pieces that are not run here
 	local mon = MONSTER_SOURCE
 	check(string.find(mon, "local kind, noRespawn = rec.Kind, rec.Owner ~= nil or rec.Event == true", 1, true) ~= nil
