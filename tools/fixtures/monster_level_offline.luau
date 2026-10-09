@@ -37,19 +37,19 @@ runGroup("spawn", function()
 	check(at ~= nil and parent ~= nil and at < parent, "spawnMonster puts Level on every model before it is parented")
 end)
 
-runGroup("danger", function()
+runGroup("danger (game dev 1's Config.MonsterDanger on these levels)", function()
 	local C = newWorld().Config
 	local D = C.MonsterDanger
-	check(D(1, 2) == "Even" and D(5, 5) == "Even" and D(5, 7) == "Even", "near the player's level: Even (white)")
-	check(D(5, 8) == "Strong" and D(1, 5) == "Strong", "3 or more above: Strong (yellow)")
-	check(D(5, 13) == "Deadly" and D(1, 12) == "Deadly", "8 or more above: Deadly (red)")
-	check(D(12, 6) == "Weak" and D(30, 2) == "Weak" and D(11, 6) == "Even", "6 or more below: Weak (gray)")
-	check(D(nil, nil) == "Even" and D("x", 4) == "Strong", "bad numbers read as Lv1")
-	-- what a new player sees in the meadow, a fresh woods player at the brute, a Lv25 at the captain
-	check(D(1, C.MonsterLevel("Slime")) == "Even" and D(1, C.MonsterLevel("BigSlime")) == "Strong",
-		"Lv1: green slimes white, the Slime Prince yellow")
-	check(D(10, C.MonsterLevel("GoblinBrute")) == "Deadly" and D(25, C.MonsterLevel("CaptainClatter")) == "Strong",
-		"Lv10 at the brute red, Lv25 at Captain Clatter yellow")
+	local L = C.MonsterLevel
+	check(type(D) == "table" and type(D.Tier) == "function" and type(D.LevelOf) == "function",
+		"one MonsterDanger: game dev 1's table (no second definition)")
+	-- Tier(monsterLevel, myLevel) with the Level attribute this server sets
+	check(D.LevelOf("Slime", L("Slime")) == L("Slime"), "LevelOf reads the Level attribute")
+	check(D.Tier(L("Slime"), 1) == "Even" and D.Tier(L("BigSlime"), 1) == "Strong" and D.Tier(L("SlimeKing"), 1) == "Strong",
+		"Lv1: green slimes white, the Slime Prince and the King Slime yellow")
+	check(D.Tier(L("GoblinBrute"), 10) == "Deadly" and D.Tier(L("Goblin"), 10) == "Even", "Lv10: the brute red, goblins white")
+	check(D.Tier(L("CaptainClatter"), 25) == "Strong" and D.Tier(L("Slime"), 25) == "Weak",
+		"Lv25: Captain Clatter yellow, a green slime gray")
 end)
 
 finish()

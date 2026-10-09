@@ -2,7 +2,7 @@
 
 Config.MonsterLevels (every kind, inside its field's band: meadow 1-9, woods 10-24, ruins 25+, the Halloween fields
 Lv1 fields; the plain kind lowest, bosses on top), Config.MonsterLevel(kind) (else the zone's MinLevel) and
-Config.MonsterDanger(myLevel, monsterLevel) = Weak (6+ below) / Even / Strong (3+ above) / Deadly (8+ above).
+game dev 1's Config.MonsterDanger.Tier / LevelOf read the Level attribute (checked on these levels).
 MonsterService puts the Level attribute on every monster model at spawn (checked as source text); the fights never
 read it. Runs the CURRENT Config on tools/fixtures/dev2_kit.luau + tools/fixtures/monster_level_offline.luau with the
 installed official Luau CLI. No Studio, network, DataStore or Roblox API calls.
@@ -33,12 +33,6 @@ MUTATIONS = [
     ("a kind without a level", C, "Skeleton = 26, SkeletonArcher = 28,", "Skeleton = 26,"),
     ("the captain under the knight", C, "SkeletonKnight = 30, CaptainClatter = 32,", "SkeletonKnight = 30, CaptainClatter = 29,"),
     ("no zone fallback", C, "\treturn zone and zone.MinLevel or 1\n", "\treturn 1\n"),
-    ("Strong from 2 above", C, "Config.MonsterDangerBands = { Weak = -6, Strong = 3, Deadly = 8 }",
-     "Config.MonsterDangerBands = { Weak = -6, Strong = 2, Deadly = 8 }"),
-    ("Deadly never", C, "\tif d >= B.Deadly then return \"Deadly\" end\n", ""),
-    ("Weak never", C, "\tif d <= B.Weak then return \"Weak\" end\n", ""),
-    ("the bands reversed", C, "\tlocal d = (tonumber(monsterLevel) or 1) - (tonumber(myLevel) or 1)\n",
-     "\tlocal d = (tonumber(myLevel) or 1) - (tonumber(monsterLevel) or 1)\n"),
     ("no Level attribute", M, "\trig.Model:SetAttribute(\"Level\", Config.MonsterLevel(kind))\n", ""),
 ]
 
@@ -67,9 +61,8 @@ SUITE = Suite(
     out=ROOT / "docs/art/verification_2026-10-09/offline_dev2_monster_level_2026-10-09.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="system_review_round1 #6: every monster model has the attribute Level = Config.MonsterLevel(kind) "
-             "(Config.MonsterLevels, else the zone's MinLevel); Config.MonsterDanger(myLevel, monsterLevel) = Weak "
-             "(6+ below, gray) / Even (white) / Strong (3+ above, yellow) / Deadly (8+ above, red) for the nametag "
-             "(game dev 1). The server's fights never read it.",
+             "(Config.MonsterLevels, else the zone's MinLevel); game dev 1's Config.MonsterDanger.Tier / LevelOf colour "
+             "the nametag from it. The server's fights never read it.",
     limitations="Config only + MonsterService as source text; the nametag colour is game dev 1's.",
 )
 

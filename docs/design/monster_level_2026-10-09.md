@@ -12,10 +12,9 @@
 
 - 목록에 없는 종류는 그 구역의 `MinLevel`이에요.
 
-## 개발 1 몫(색만, 새 그림 없음)
-- `Config.MonsterDanger(내 레벨, 몬스터 Level)` → `"Weak"`(6 이상 낮음, 회색) / `"Even"`(흰색) / `"Strong"`(3 이상 높음, 노랑) / `"Deadly"`(8 이상 높음, 빨강). 경계는 `Config.MonsterDangerBands = { Weak = -6, Strong = 3, Deadly = 8 }`.
-- 예: Lv1에게 초록 슬라임은 흰색, Slime Prince는 노랑. Lv10에게 Goblin Brute는 빨강. Lv25에게 Captain Clatter는 노랑.
-- 이름표 글에 "Lv 12"를 붙일지는 개발 1·검수가 정해요(속성은 있음).
+## 개발 1 몫
+- 이름표 색은 개발 1의 `Config.MonsterDanger`(`Tier(몬스터 Lv, 내 Lv)`, `LevelOf(kind, Level 속성)`, `Colors`)가 이 `Level` 속성을 읽어 칠해요(main에 이미 있음). 제 쪽의 같은 이름 함수는 병합 때 지웠어요(2026-10-09).
+- 경계: 개발 1 표는 Weak −5 / Strong +3 / Deadly +8이에요. 검수가 확정한 Weak는 −6이라 맞출지 검수가 정해요.
 
 ## 시험
-`py tools/test_monster_level.py` — 검사 23개(모든 종류에 레벨, 띠 안, 구역 안 순서, 위험 띠, 스폰 때 속성), 변이 10/10.
+`py tools/test_monster_level.py` — 검사 21개(모든 종류에 레벨, 띠 안, 구역 안 순서, 스폰 때 속성, 개발 1 Tier로 본 색), 변이 6/6.

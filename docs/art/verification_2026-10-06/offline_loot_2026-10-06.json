@@ -1,6 +1,6 @@
 {
-  "status": "passed-no-mutations",
-  "mutationsSkipped": true,
+  "status": "passed",
+  "mutationsSkipped": false,
   "checks": 3579,
   "failedChecks": 0,
   "namedChecks": 548,
@@ -3608,18 +3608,1506 @@
   "staticFailures": [],
   "mutations": {
     "total": 107,
-    "applied": 0,
-    "caught": 0,
-    "results": []
+    "applied": 107,
+    "caught": 107,
+    "results": [
+      {
+        "mutation": "a free rider rolls drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: info.Minor: no drop rows, no jackpot"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "enhance failure may go below +0",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: WeaponEnhance attribute follows the equipped tier",
+          "enhance :: enhancement never below +0 or above +10",
+          "enhance :: failure at +0 stays +0 without a drop roll",
+          "enhance :: success = +Plus capped at 10; failure = -1 or unchanged, +0 stays +0"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "enhance success not capped at +10",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: +9 success caps at +10",
+          "enhance :: WeaponEnhance attribute follows the equipped tier",
+          "enhance :: enhancement never below +0 or above +10",
+          "enhance :: success = +Plus capped at 10; failure = -1 or unchanged, +0 stays +0",
+          "enhance :: success adds exactly Plus (+1/+3/+5), capped at +10",
+          "firstmax :: a second weapon reaching +10 is not announced again (once per player)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "enhance failure always drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: a failure from >+0 drops one level ~50%",
+          "enhance :: failed scroll with drop roll >= 0.5 keeps the level",
+          "firstmax :: a failure at +9 is not announced"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "enhance success chance off by 10%",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: enhance success rate ~ Chance"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "scroll at +10 consumed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: EnhanceMax notice at +10",
+          "enhance :: at +10 the scroll is refused and kept"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "enhance on an unowned tier",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: unowned tier refused, scroll kept",
+          "enhance :: unowned tier refused, scroll kept (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "scroll never consumed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: UseItem accepted after the window",
+          "enhance :: UseItem rate limited (second call in the window ignored)",
+          "enhance :: UseItem still limited just before the window ends",
+          "enhance :: exactly one scroll consumed per accepted use",
+          "transfer :: exactly one transfer scroll consumed per accepted use",
+          "transfer :: failure leaves both, consumes the scroll (1 given, 1 used)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "first scroll flag not kept",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag + guide)",
+          "bully :: BullyStacks 1: the guarantee is still paid only once",
+          "rollkill :: B8 the kept guarantee pays on the next king slime once there is room",
+          "rollkill :: LootFlags and the scroll survive reload",
+          "rollkill :: LootFlags.FirstScroll is in the saved record",
+          "rollkill :: first BigSlime kill guarantees exactly one Enh70"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "golden multiplier ignored",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 0: a golden jackpot pays iff draw < Chance x GoldenMult",
+          "bully :: BullyStacks 0: a golden row drops iff draw < P x GoldenMult (capped at 1)",
+          "bully :: BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
+          "bully :: BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
+          "lootroll :: golden == true uses GoldenMult (0.3 x 3 > 0.5)",
+          "rollkill :: GoldenMult applies only for Golden == true"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "golden multiplier for any truthy Golden",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: GoldenMult applies only for Golden == true"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "jackpot for every monster kind",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 0: one draw per row (+ jackpot) per kill",
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "bully :: BullyStacks 1: one draw per row (+ jackpot) per kill",
+          "bully :: BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)",
+          "lootroll :: A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "bully penalty not applied to the jackpot",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
+          "bully :: BullyStacks 1: the jackpot pays iff draw < Chance x 0.5",
+          "bully :: BullyStacks 1: the unpenalized jackpot chance no longer pays",
+          "bully :: BullyStacks 1: the unpenalized jackpot chance x GoldenMult no longer pays",
+          "bully :: BullyStacks 3: still exactly x0.5 for the jackpot (the drop penalty does not stack)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "bully penalty DropMult never set in RollKill",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "bully :: BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
+          "bully :: BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
+          "bully :: BullyStacks 1: a row drops iff draw < P x 0.5 (capped at 1)",
+          "bully :: BullyStacks 1: the jackpot pays iff draw < Chance x 0.5",
+          "bully :: BullyStacks 1: the unpenalized chance P no longer drops"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "two rolls per kill signal",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: auto / skill / personal kills roll like any kill",
+          "rollkill :: one MonsterKilled signal = exactly one roll",
+          "rollkill :: two contributors = two independent rolls"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "item cap ignored on drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no guide",
+          "rollkill :: B8 the kept guarantee pays on the next king slime once there is room",
+          "rollkill :: ItemFull repeats at most once per item id per 5 minutes",
+          "rollkill :: after 5 minutes a partly-fitting drop (998 + 2) sends the ItemFull notice again",
+          "rollkill :: full item stays at 999 and is not reported as gained",
+          "rollkill :: full material sends the ItemFull notice (kind info, mentions the blacksmith)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "item cap ignored by sanitize",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: NaN/inf/non-string-key Items are dropped, >cap capped",
+          "sanitize :: saved row equals the sanitized tables (unknown ids preserved)",
+          "sanitize :: stored garbage Items normalize (floor, 1..999, drop <=0/non-number; unknown ids kept)",
+          "sanitize :: unknown saved ids cannot be used (kept, no roll)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "potion cap ignored",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: PotionFull is throttled like items (once per 5 minutes per potion kind)",
+          "rollkill :: PotionFull shows again after 5 minutes",
+          "rollkill :: full potion stock sends the PotionFull notice",
+          "rollkill :: potion at PotionInventoryCap is not granted"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "duplicate weapon pays no gold",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
+          "weapons :: second jackpot = duplicate gold, no second announcement"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "duplicate weapon re-announced as new",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: a duplicate weapon drop is not announced again",
+          "weapons :: duplicate is not reported as a new weapon",
+          "weapons :: duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
+          "weapons :: second jackpot = duplicate gold, no second announcement"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "transfer replaces instead of adding",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: a second transfer +10 is not announced",
+          "firstmax :: a transfer below +10 is not announced",
+          "firstmax :: a transfer reaching +10 after the first max is not announced",
+          "firstmax :: the first +10 reached by a transfer scroll is announced once (FirstMax)",
+          "firstmax :: transfer FirstMax names the target tier with its grade",
+          "firstmax :: transfer: LootFlags.FirstMax and the target +10 are saved before the announcement"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "transfer keeps the source +N (duplicates)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: a transfer below +10 is not announced",
+          "firstmax :: the first +10 reached by a transfer scroll is announced once (FirstMax)",
+          "transfer :: equipped source: attribute shows the remaining +N",
+          "transfer :: no enhancement is ever lost (source + target sum unchanged)",
+          "transfer :: success +10 onto +9 -> +9 / +10",
+          "transfer :: success +3 onto +4 -> source +0, target +7"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "transfer loses the overflow",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: the first +10 reached by a transfer scroll is announced once (FirstMax)",
+          "transfer :: equipped source: attribute shows the remaining +N",
+          "transfer :: no enhancement is ever lost (source + target sum unchanged)",
+          "transfer :: success +10 onto +9 -> +9 / +10",
+          "transfer :: success +6 onto +7 -> target +10, the 3 that do not fit stay on the source",
+          "transfer :: success adds the source +N onto the target up to +10, overflow stays; failure changes nothing"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "transfer onto +10 allowed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer :: target already +10: refused, scroll kept",
+          "transfer :: target already +10: refused, scroll kept (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "transfer from +0 allowed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer :: source +0: refused, scroll kept",
+          "transfer :: source +0: refused, scroll kept (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip ignores MinLevel for an owned weapon (old A23-14 rule)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged)",
+          "equip :: A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged) (notice)",
+          "equip :: A23-28 the refusal is Config.Text.EquipNeedLevel (kind bad), never the purchase text WeaponNeedLevel",
+          "equip :: A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused",
+          "equip :: A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused (notice)",
+          "equip :: A23-28 tier 7 at Lv1 is refused by its MinLevel 40 (before the faction check)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "equip level refusal uses the purchase text WeaponNeedLevel",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged) (notice)",
+          "equip :: A23-28 the refusal is Config.Text.EquipNeedLevel (kind bad), never the purchase text WeaponNeedLevel",
+          "equip :: A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused (notice)",
+          "equip :: A23-28 tier 7 at Lv1 is refused by its MinLevel 40 (before the faction check) (notice)",
+          "rebirth :: A23-28 reborn Lv1 player cannot equip the kept tier 5 (EquipNeedLevel 20); ownership and its +6 stay"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "WeaponUsable off by one (level > MinLevel)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: A23-28 an owned tier equips at exactly its MinLevel (tier 3 at Lv5, saved + mirrored)",
+          "equip :: A23-28 the legendary tier 8 (MinLevel 1) equips at Lv1 with its +N",
+          "equip :: RequiresFaction (tier 7) needs a faction (notice)",
+          "equip :: WeaponEnhance attribute follows the equipped tier's +N",
+          "equip :: equip notice",
+          "equip :: no level refusal once the level is reached"
+        ],
+        "newFailingCount": 43
+      },
+      {
+        "mutation": "BestUsableWeapon compares tier numbers instead of Damage",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: Config.BestUsableWeapon: an owned usable T4 (88) beats T8 (76): by Damage, not tier number",
+          "levelrule :: Config.BestUsableWeapon: everything owned at Lv100 -> T7 (1000)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "BestUsableWeapon ignores the level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)",
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
+        ],
+        "newFailingCount": 24
+      },
+      {
+        "mutation": "BestUsableWeapon ignores ownership",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)",
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "FitWeaponToLevel ignores quiet",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "FitWeaponToLevel picks the best owned weapon ignoring the level",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)",
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "FitWeaponToLevel also swaps a usable equipped weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 an equipped legendary stays at Lv1 after rebirth (no swap, no notice)",
+          "rebirth :: A23-28 an equipped legendary needs no auto-swap after rebirth (no WeaponAutoSwap notice)",
+          "rebirth :: equipped legendary +9 before rebirth"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "FitWeaponToLevel drops the unusable weapon's ownership",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 the LevelReset swap keeps ownership and +N (attribute follows tier 2)",
+          "levelrule :: A23-28 the auto-swap keeps ownership (WeaponOwnedMask untouched)",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "WeaponAutoSwap notice names the old weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice",
+          "levelrule :: A23-28 the rebirth auto-swap sends one WeaponAutoSwap notice (old MinLevel 30, new weapon name, info)",
+          "rebirth :: A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "WeaponAutoSwap notice shows the new weapon's MinLevel",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice",
+          "levelrule :: A23-28 the rebirth auto-swap sends one WeaponAutoSwap notice (old MinLevel 30, new weapon name, info)",
+          "rebirth :: A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "FitWeaponToLevel not connected to Rebirthed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped, tiers 1+3+6 owned -> tier 1 (best usable; tier 3 needs Lv5)",
+          "levelrule :: A23-28 the WeaponEnhance attribute follows the swapped-in tier"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "FitWeaponToLevel not connected to LevelReset (free class change)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 the LevelReset swap keeps ownership and +N (attribute follows tier 2)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "FitWeaponToLevel not run on PlayerReady",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: the join fit keeps ownership; +N follows tier 3"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "level-up notice repeats after the crossing (no min > before)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 no notice at unowned tiers' MinLevel (tier 4 Lv12, tier 5 Lv20)",
+          "levelrule :: A23-28 no notice on the level-up after the crossing (Lv6)",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "level-up notice also for a weaker weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 no notice when the newly usable owned weapon is weaker than the equipped one (tier 3 vs the legendary)",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "level-up notice ignores ownership",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 no notice at unowned tiers' MinLevel (tier 4 Lv12, tier 5 Lv20)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "level-up auto-equips the newly usable weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 reaching tier 6's MinLevel does not auto-equip it",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "LeveledUp never connected",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "BelowLevel branch dropped (king's T4 row rolled at any level)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+          "rollkill :: A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "BelowLevel applied without a Level (DebugSimulate)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lootroll :: A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "BelowLevel gate off by one (Lv11 rolls the T4 row)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+          "rollkill :: A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)",
+          "rollkill :: A23-27 below Lv12 the king's T4 row never drops the weapon (every draw a hit)",
+          "rollkill :: A23-27 below Lv12 the king's T4 row pays its BelowLevel 3 candies (+ the 8-candy row)",
+          "weapons :: A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "RollKill never sets info.Level",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+          "rollkill :: A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "RollKill trusts the caller's info.Level",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RollKill writes into the caller's kill info (no clone)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1: the caller's kill info is never given DropMult (cloned)",
+          "rollkill :: RollKill never writes the caller's kill info (clone)",
+          "rollkill :: the caller's kill info gets no Level field (clone)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "king T4 row without BelowLevel",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "config :: A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "king BelowLevel pays 2 candies",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "config :: A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "king scroll rows back to 0.5 / 0.15 / 0.04 / 0.15 (old)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bat goblin loses its goblin tooth row (A23-45 woods rows)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-45 BatGoblin rows = Candy 0.45 + GoblinTooth 0.2 + the goblin's scroll / transfer / potion rows + Weapon 4 0.001"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "little ghost potions back to 0.01",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-45 LittleGhost rows = candy + the goblin's scroll / potion rows"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ghost minion candy back to the little ghost's 0.45",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-45 GhostMinion rows = candy 0.3 + about half the little ghost's rows"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "shop owned re-equip below MinLevel says WeaponNeedLevel",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: A23-28 shop: owned re-equip below MinLevel -> notifyBad EquipNeedLevel (not the purchase text)",
+          "shop :: A23-28 shop: owned tier 3 at Lv4 (MinLevel - 1) still refused"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "shop re-equips an owned weapon below MinLevel (old rule)",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: A23-28 shop: an owned weapon below its MinLevel is not equipped (tier 3 at Lv1, no gold)",
+          "shop :: A23-28 shop: owned re-equip below MinLevel -> notifyBad EquipNeedLevel (not the purchase text)",
+          "shop :: A23-28 shop: owned tier 3 at Lv4 (MinLevel - 1) still refused",
+          "shop :: shop: buying below MinLevel -> WeaponNeedLevel, nothing bought"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "equip ignores combat",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: equipping the equipped tier is a no-op",
+          "equip :: refused while CombatService.IsInCombat",
+          "equip :: refused while CombatService.IsInCombat (notice)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "equip ignores a dead character",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: refused while dead (Util.IsAlive)",
+          "equip :: refused while dead (Util.IsAlive) (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "scroll usable in PvP combat",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: enhance refused while CombatService.IsInCombat, scroll kept",
+          "enhance :: enhance refused while CombatService.IsInCombat, scroll kept (notice)",
+          "transfer :: transfer refused while in PvP combat, scroll kept",
+          "transfer :: transfer refused while in PvP combat, scroll kept (notice)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "full notice not throttled",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: ItemFull repeats at most once per item id per 5 minutes",
+          "rollkill :: PotionFull is throttled like items (once per 5 minutes per potion kind)",
+          "rollkill :: PotionFull shows again after 5 minutes",
+          "rollkill :: after 5 minutes a partly-fitting drop (998 + 2) sends the ItemFull notice again"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "first scroll flag set although the stack was full",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no guide",
+          "rollkill :: B8 the kept guarantee pays on the next king slime once there is room"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "unknown saved ids deleted by sanitize",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth",
+          "sanitize :: DebugGive refuses unknown ids",
+          "sanitize :: saved row equals the sanitized tables (unknown ids preserved)",
+          "sanitize :: stored garbage Items normalize (floor, 1..999, drop <=0/non-number; unknown ids kept)",
+          "sanitize :: unknown saved ids cannot be used (kept, no roll)",
+          "sell :: unknown ids are not sold and stay saved"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "unknown ids shown in the Inventory payload",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Inventory payload Items = known ids only (unknown ids hidden)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Inventory sent to every client",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: no remote fired to all clients / no unexpected client publication",
+          "lootroll :: no remote fired to all clients / no unexpected client publication",
+          "sanitize :: Inventory payload Enhance is the 8-tier array",
+          "sanitize :: Inventory payload Items = known ids only (unknown ids hidden)",
+          "sanitize :: Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq }",
+          "sanitize :: Inventory republished after sanitize"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "LootRoll grants real drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lootroll :: A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)",
+          "lootroll :: all rows hit: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push",
+          "lootroll :: all rows hit: no save data changed",
+          "lootroll :: golden true: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push",
+          "lootroll :: golden true: no save data changed",
+          "lootroll :: king slime: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "equip ignores RequiresFaction",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: RequiresFaction (tier 7) needs a faction",
+          "equip :: RequiresFaction (tier 7) needs a faction (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "sell away from the anvil",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sell :: SellDone notice with count and gold",
+          "sell :: a second sale pays nothing",
+          "sell :: pays sum(count x Sell) exactly once",
+          "sell :: refused away from the anvil (ShopService.CanBuyWeapon false), items unchanged",
+          "sell :: refused away from the anvil (ShopService.CanBuyWeapon false), items unchanged (notice)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "sell also sells scrolls",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sell :: SellDone notice with count and gold",
+          "sell :: SellMaterials rate limited (one payment)",
+          "sell :: SellNothing notice",
+          "sell :: a second sale pays nothing",
+          "sell :: materials are removed before the gold is paid",
+          "sell :: no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "remote rate limit bypassed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: UseItem accepted after the window",
+          "enhance :: UseItem rate limited (second call in the window ignored)",
+          "enhance :: UseItem still limited just before the window ends",
+          "equip :: EquipWeapon rate limited",
+          "equip :: attribute back to tier 1's +N",
+          "transfer :: transfer rate limited"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "WeaponEnhance attribute not refreshed on equip",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: A23-28 the legendary tier 8 (MinLevel 1) equips at Lv1 with its +N",
+          "equip :: WeaponEnhance attribute follows a WeaponTier change from another service",
+          "equip :: WeaponEnhance attribute follows the equipped tier's +N",
+          "equip :: attribute back to tier 1's +N",
+          "equip :: legendary tier 8 equips with its +N",
+          "equip :: tier 7 equips with a faction at Lv40"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "first kill never marks the kind seen",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "seen :: Seen flags are in the saved record",
+          "seen :: Seen survives reload (sent with the join push)",
+          "seen :: a later no-drop kill of a seen kind sends no Inventory push",
+          "seen :: every drop-table kind killed once is listed in Seen (auto kills count)",
+          "seen :: the first kill of a kind pushes the Inventory with Seen[kind], even with no drop",
+          "seen :: the first slime kill sets LootFlags[\"Seen:Slime\"]"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "first kill of a kind not pushed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "seen :: the first kill of a kind pushes the Inventory with Seen[kind], even with no drop"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kinds without a drop table marked seen",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: malformed kills changed nothing",
+          "seen :: kinds without a drop table are never marked seen"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "payload Seen lists unknown kinds",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "seen :: payload Seen lists only real drop-table kinds flagged true (unknown / malformed keys hidden)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "jackpot not announced",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: Jackpot announce = (player, { Weapon = tier }, \"Legend\")",
+          "weapons :: a golden / auto-kill jackpot is announced the same way",
+          "weapons :: a new jackpot legendary calls AnnounceService exactly once (Jackpot, no RareWeapon line)",
+          "weapons :: an error inside AnnounceService.Announce never breaks the jackpot grant (pcall)",
+          "weapons :: jackpot: the owner's notice names the class weapon; the announce carries the tier (each client names it)",
+          "weapons :: legendary ownership is saved before the announcement"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "jackpot also announced as a RareWeapon line",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: a new jackpot legendary calls AnnounceService exactly once (Jackpot, no RareWeapon line)",
+          "weapons :: an error inside AnnounceService.Announce never breaks a rare weapon grant (pcall)",
+          "weapons :: second jackpot = duplicate gold, no second announcement"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "jackpot announced before the legendary is saved",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: legendary ownership is saved before the announcement"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "weapon drops of every grade announced",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: MinWeaponGrade 5: Epic drops are not announced",
+          "weapons :: announce follows Config.WeaponInfo grades (tier 2 as Epic, tier 4 as Fine)",
+          "weapons :: only Rare / Epic drops are announced (Common tier 2 / Fine tier 3 are not)",
+          "weapons :: the threshold is Config.Announce.MinWeaponGrade (2 = Fine and up)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "RareWeapon threshold off by one (Rare not announced)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: RareWeapon announce = (player, { Weapon = tier, Monster = kind }, the tier's grade id)",
+          "weapons :: a new Rare+ weapon drop calls AnnounceService exactly once (RareWeapon)",
+          "weapons :: an error inside AnnounceService.Announce never breaks a rare weapon grant (pcall)",
+          "weapons :: only Rare / Epic drops are announced (Common tier 2 / Fine tier 3 are not)",
+          "weapons :: the threshold is Config.Announce.MinWeaponGrade (2 = Fine and up)",
+          "weapons :: weapon ownership is saved before the RareWeapon announce"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "RareWeapon threshold ignores Config.Announce.MinWeaponGrade",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: MinWeaponGrade 5: Epic drops are not announced",
+          "weapons :: the threshold is Config.Announce.MinWeaponGrade (2 = Fine and up)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "RareWeapon announce without the monster kind",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: RareWeapon announce = (player, { Weapon = tier, Monster = kind }, the tier's grade id)",
+          "weapons :: RareWeapon announce names the monster kind that dropped it"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "announce grade always Common",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: Jackpot announce = (player, { Weapon = tier }, \"Legend\")",
+          "weapons :: RareWeapon announce = (player, { Weapon = tier, Monster = kind }, the tier's grade id)",
+          "weapons :: announce follows Config.WeaponInfo grades (tier 2 as Epic, tier 4 as Fine)",
+          "weapons :: only Rare / Epic drops are announced (Common tier 2 / Fine tier 3 are not)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "announce not protected by pcall",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: an error inside AnnounceService.Announce never breaks the enhancement (pcall)",
+          "firstmax :: no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+          "weapons :: an error inside AnnounceService.Announce never breaks a rare weapon grant (pcall)",
+          "weapons :: an error inside AnnounceService.Announce never breaks the jackpot grant (pcall)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "missing AnnounceService not skipped",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+          "firstmax :: without AnnounceService the +10 still lands (flag set, Enhanced fired)",
+          "weapons :: without AnnounceService the jackpot is still granted (announce skipped)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "FirstMax announced at every +10",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: a later legendary +10 is not announced either",
+          "firstmax :: a saved FirstMax flag blocks the announcement",
+          "firstmax :: a second transfer +10 is not announced",
+          "firstmax :: a second weapon reaching +10 is not announced again (once per player)",
+          "firstmax :: a transfer reaching +10 after the first max is not announced",
+          "firstmax :: no FirstMax after reload when it was already announced"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "FirstMax announced below +10",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: LootFlags.FirstMax and the +10 are saved before the announcement",
+          "firstmax :: a failure at +9 is not announced",
+          "firstmax :: a success below +10 is not announced and sets no flag",
+          "firstmax :: a transfer below +10 is not announced",
+          "firstmax :: transfer: LootFlags.FirstMax and the target +10 are saved before the announcement"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "FirstMax flag not kept",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: LootFlags.FirstMax and the +10 are saved before the announcement",
+          "firstmax :: LootFlags.FirstMax is in the saved record",
+          "firstmax :: LootFlags.FirstMax survives reload (sanitize keeps it)",
+          "firstmax :: a later legendary +10 is not announced either",
+          "firstmax :: a second transfer +10 is not announced",
+          "firstmax :: a second weapon reaching +10 is not announced again (once per player)"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "FirstMax flag set after the announce",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: LootFlags.FirstMax and the +10 are saved before the announcement",
+          "firstmax :: transfer: LootFlags.FirstMax and the target +10 are saved before the announcement"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "FirstMax never from an enhance scroll",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: FirstMax announce = (player, { Weapon = tier }, that tier's grade id)",
+          "firstmax :: LootFlags.FirstMax and the +10 are saved before the announcement",
+          "firstmax :: a later legendary +10 is not announced either",
+          "firstmax :: a second weapon reaching +10 is not announced again (once per player)",
+          "firstmax :: an error inside AnnounceService.Announce never breaks the enhancement (pcall)",
+          "firstmax :: the first +10 (enhance scroll) calls AnnounceService exactly once (FirstMax)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "FirstMax never from a transfer scroll",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: a second transfer +10 is not announced",
+          "firstmax :: the first +10 reached by a transfer scroll is announced once (FirstMax)",
+          "firstmax :: transfer FirstMax names the target tier with its grade",
+          "firstmax :: transfer: LootFlags.FirstMax and the target +10 are saved before the announcement"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "transfer FirstMax names the source tier",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: transfer FirstMax names the target tier with its grade",
+          "firstmax :: transfer: LootFlags.FirstMax and the target +10 are saved before the announcement"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "transfer FirstMax before the target +10 is written",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "firstmax :: transfer: LootFlags.FirstMax and the target +10 are saved before the announcement"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rebirth resets the weapons (old rule)",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 an equipped legendary stays at Lv1 after rebirth (no swap, no notice)",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 reaching tier 6's MinLevel does not auto-equip it"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "rebirth resets the gold (old rule)",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebirth :: carried and bank gold are kept",
+          "rebirth :: gold survives the reload (carried gold banked on leave)",
+          "rebirth :: rebirth with a faction switch keeps weapons / gold / enhancement; the Lv40 tier 7 is auto-swapped to tier 2"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "rebirth resets enhancement and items",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 the WeaponEnhance attribute follows the swapped-in tier",
+          "levelrule :: A23-28 the auto-swap keeps every tier's +N",
+          "rebirth :: A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows",
+          "rebirth :: A23-28 reborn Lv1 player cannot equip the kept tier 5 (EquipNeedLevel 20); ownership and its +6 stay",
+          "rebirth :: WeaponEnhance is not reset by rebirth",
+          "rebirth :: and swaps back to the legendary with its +9"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "rebirth keeps the level",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "legendary damage back to 90",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: B3 legendary damage 76 = 2 x tier 3, below tier 4",
+          "damage :: legendary base damage = 2 x the best shop tier, below tier 4",
+          "damage :: legendary power = sqrt(2) x iron (2 x damage)",
+          "levelrule :: Config.BestUsableWeapon: an owned usable T4 (88) beats T8 (76): by Damage, not tier number"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "10% scroll back to +3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: B1 expected gain per use at +1..+9 = +0.55 / +0.55 / +0.05",
+          "config :: B1: no enhance scroll loses enhancement on average (+1..+9 before the cap)",
+          "config :: enhance scroll Enh10 chance/plus",
+          "enhance :: success adds exactly Plus (+1/+3/+5), capped at +10"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "PowerOf ignores enhancement",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: +10 = x2 damage = x sqrt(2) power",
+          "damage :: JusticeService.GetPower passes the WeaponEnhance attribute (rebirth bonus included)",
+          "damage :: PowerOf uses the enhanced weapon damage"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "JusticeService power ignores WeaponEnhance",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: JusticeService.GetPower passes the WeaponEnhance attribute (rebirth bonus included)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the power formula ignores WeaponEnhance",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: JusticeService.GetCombatPower passes the WeaponEnhance attribute (no rebirth bonus)",
+          "damage :: PvPService combatPower fallback reads the WeaponEnhance attribute (not the per-tier table)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "EnhanceMult not clamped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: EnhanceMult endpoints (+10 = x2)",
+          "damage :: PowerOf: missing / NaN enhance = +0, clamped at +10, missing mult = 1",
+          "damage :: WeaponDamage sample",
+          "damage :: WeaponDamage(t, l, e) = base x (1 + 0.1 x clamp(floor(e), 0, 10)); nil/NaN/inf/non-number -> x1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "PvP power ratio not clamped",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: +10 vs +0 on the same weapon is clamped",
+          "damage :: ComputePvPHit ratio always within [PowerRatioMin, PowerRatioMax]",
+          "damage :: tier 1 +0 vs tier 8 +10 clamps at PowerRatioMin",
+          "damage :: tier 8 +10 Lv100 vs tier 1 +0 Lv1 clamps at PowerRatioMax",
+          "damage :: victim enhancement lowers the ratio (clamped)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "monster hit ignores enhancement",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: ComputeMonsterHit scales with the WeaponEnhance attribute"
+        ],
+        "newFailingCount": 1
+      }
+    ]
   },
   "compileOk": true,
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ea1ffc4c3c3c5519ba3e180ef4aec005bb0cd7567e16db22fdaf729d4e97d556",
-    "src/ReplicatedStorage/Shared/Net.luau": "542dd78b90d90cd89011c8273261106b81d10ee994f48706b9c1a1a4a2a9ae11",
+    "src/ReplicatedStorage/Shared/Config.luau": "9549ec436f7ba8ce30334a0b18066b7a2f38f25ab7b9afd6b9dd172345abaf39",
+    "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
+    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
     "src/ServerScriptService/ProgressionService.luau": "70be8c02f970f8fec9f03b859fa2db927d3215e3152c7a91dd5be429fcd39bda",
     "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",

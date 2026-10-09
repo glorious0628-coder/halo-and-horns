@@ -6363,7 +6363,7 @@ Config.KillCards = {
 
 ----------------------------------------------------------------- monster levels (게임성 개발 2, system_review_round1 #6)
 -- docs/design/system_review_round1_2026-10-09.md #6: every monster model carries a Level attribute (MonsterService)
--- so the nametag can show a danger colour (game dev 1; the server's fights never read it). Inside each field's band
+-- so the nametag can show a danger colour (game dev 1's Config.MonsterDanger; the server's fights never read it). Inside each field's band
 -- (meadow Lv1-9, woods 10-24, ruins 25+; the Halloween fields are Lv1 fields): the field's plain kind lowest, the
 -- bigger / ranged ones higher, the bosses on top. A kind not listed falls back to its zone's MinLevel.
 Config.MonsterLevels = {
@@ -6381,18 +6381,8 @@ function Config.MonsterLevel(kind)
 	return zone and zone.MinLevel or 1
 end
 
--- the nametag's danger band for a player of level `myLevel` looking at a monster of level `monsterLevel`:
--- "Weak" (gray: Weak or more levels below), "Even" (white), "Strong" (yellow: Strong or more above), "Deadly" (red:
--- Deadly or more above)
-Config.MonsterDangerBands = { Weak = -6, Strong = 3, Deadly = 8 }
-function Config.MonsterDanger(myLevel, monsterLevel)
-	local B = Config.MonsterDangerBands
-	local d = (tonumber(monsterLevel) or 1) - (tonumber(myLevel) or 1)
-	if d >= B.Deadly then return "Deadly" end
-	if d >= B.Strong then return "Strong" end
-	if d <= B.Weak then return "Weak" end
-	return "Even"
-end
+-- the nametag's danger colour is game dev 1's Config.MonsterDanger (Tier / LevelOf / Colors, near MonsterTypes): it
+-- reads this Level attribute
 
 ----------------------------------------------------------------- private servers (게임성 개발 2, A23-90)
 -- A23-90 (user 2026-10-09): in a private server (game.PrivateServerId ~= "") the golden goose, the crown-war chests
