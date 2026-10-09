@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 51,
+  "checks": 80,
   "failedChecks": [],
   "static": [
     {
@@ -33,10 +33,85 @@
     }
   ],
   "mutations": {
-    "total": 30,
-    "applied": 30,
-    "caught": 30,
+    "total": 38,
+    "applied": 38,
+    "caught": 38,
     "results": [
+      {
+        "mutation": "the preview hook outside Studio",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL outside Studio: QuestBookPreview is never read :: "
+        ]
+      },
+      {
+        "mutation": "the preview shows the real rows",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Studio: on the Daily tab with the two sample dailies :: 1",
+          "CHECK_FAIL Studio: [Claim] and a row press do nothing on samples :: "
+        ]
+      },
+      {
+        "mutation": "a sample [Claim] reaches the server",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Studio: [Claim] and a row press do nothing on samples :: "
+        ]
+      },
+      {
+        "mutation": "'' never closes the preview",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Studio: '' closes the window and the real rows come back :: "
+        ]
+      },
+      {
+        "mutation": "the open window is not redrawn",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Studio: switching to 'Faction,empty' redraws the open window empty :: "
+        ]
+      },
+      {
+        "mutation": "any mode accepted",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL ParsePreview: '' / nil / an unknown tab / mode -> off :: "
+        ]
+      },
+      {
+        "mutation": "empty mode keeps the rows",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL preview empty: every section empty (the empty words show) :: Main",
+          "CHECK_FAIL preview empty: every section empty (the empty words show) :: Side",
+          "CHECK_FAIL preview empty: every section empty (the empty words show) :: Daily"
+        ]
+      },
+      {
+        "mutation": "no rerollable sample daily",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL preview full: the Daily tab shows a [Claim] and a [New] :: 2 0"
+        ]
+      },
       {
         "mutation": "every quest in every tab",
         "source": "BOOK",
@@ -54,7 +129,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Event: the goose story + the live events (goose, Pumpkin King, kaiju, crown war 2:05) :: Chase the goose | The Pumpkin King is here! | A kaiju is loose! | Crown War: next crown in 2:05"
+          "CHECK_FAIL Event: the goose story + the live events (goose, Pumpkin King, kaiju, crown war 2:05) :: Chase the goose | The Pumpkin King is here! | A kaiju is loose! | Crown War: next crown in 2:05",
+          "CHECK_FAIL preview full: Event has the goose and the crown war lines :: "
         ]
       },
       {
@@ -74,7 +150,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Faction: my wanted stars :: "
+          "CHECK_FAIL Faction: my wanted stars :: ",
+          "CHECK_FAIL preview full: Faction shows the wanted stars :: "
         ]
       },
       {
@@ -134,7 +211,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly | First mission | The King Who Ate the Dust"
+          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly | First mission | The Prince Who Ate the Dust"
         ]
       },
       {
@@ -152,7 +229,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Main done: the first mission and the main chain before M1_3 :: First mission | Sparkly Jelly | The King Who Ate the Dust | Boom, All at Once! | Report to Your Side | The Crown in the Sky | Sparkles in the Pond | The Fountain of Balance | Supply Road Fund | The Dusty Slime Swarm | Little Footprints on the Hill | A Call From Beyond the Woods | Thief Footprints | Three Camps | The Brute's Sack | Whose Shard? | Sprout Graduation | Brute Hunt | Campfire Dust | Call of the Tombs",
+          "CHECK_FAIL Main done: the first mission and the main chain before M1_3 :: First mission | Sparkly Jelly | The Prince Who Ate the Dust | Boom, All at Once! | Report to Your Side | The Crown in the Sky | Sparkles in the Pond | The Fountain of Balance | Supply Road Fund | The Dusty Slime Swarm | Little Footprints on the Hill | A Call From Beyond the Woods | Thief Footprints | Three Camps | The Brute's Sack | Whose Shard? | Sprout Graduation | Brute Hunt | Campfire Dust | Call of the Tombs",
           "CHECK_FAIL Main body: the main quest row + 3 done rows :: 21"
         ]
       },
@@ -162,7 +239,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Main done: the first mission and the main chain before M1_3 :: Sparkly Jelly | The King Who Ate the Dust",
+          "CHECK_FAIL Main done: the first mission and the main chain before M1_3 :: Sparkly Jelly | The Prince Who Ate the Dust",
           "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly",
           "CHECK_FAIL Main body: the main quest row + 3 done rows :: 3"
         ]
@@ -173,7 +250,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Main done: nothing while the first mission runs :: First mission"
+          "CHECK_FAIL Main done: nothing while the first mission runs :: First mission",
+          "CHECK_FAIL preview empty: every section empty (the empty words show) :: Main"
         ]
       },
       {
@@ -242,7 +320,9 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL a closed window does not redraw :: "
+          "CHECK_FAIL a closed window does not redraw :: ",
+          "CHECK_FAIL Studio: QuestBookPreview = 'Daily' opens the window :: ",
+          "CHECK_FAIL Studio: '' closes the window and the real rows come back :: "
         ]
       },
       {
@@ -252,7 +332,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL Toggle closes it again :: ",
-          "CHECK_FAIL Toggle(false) while closed does nothing :: "
+          "CHECK_FAIL Toggle(false) while closed does nothing :: ",
+          "CHECK_FAIL Studio: '' closes the window and the real rows come back :: "
         ]
       },
       {
@@ -338,12 +419,12 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "3798fecd2d17676833f48812b5d9f47c225ca9b4a5454a93946dcc358fc11e2c",
-    "src/ReplicatedStorage/Shared/Config.luau": "32a004c288ad7861b92816e284d070d051ca3c46fb17b3af0c1b25602dfdb198",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
+    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "919dc10db8a679e2dd571a844d4d8a839f786950da9b9a3f3e9ab402fc14353b",
+    "src/ReplicatedStorage/Shared/Config.luau": "8532f7e84d4439cacd36ed6acf748b53c34400ca98c227b7e319116a966bce5f",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "1908c5cce21a6040ad2ee4cc112ac793183c0aa2e27f58ae2ab83289909c5be7",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
   },
-  "fixtureSHA256": "625e5da9ca0b701ef387e0454007b4d169d436600cb4e2765d37a057d35b916b",
+  "fixtureSHA256": "da76f81bfcbc4e6b53c30a7328033f6e9d92369ea09be5d3d27d401b6e4e8638",
   "studioCalls": 0,
   "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows are a Studio photo check (메인 반영). The book rows follow 게임성 개발 3's contract (tools/test_quest_book.py checks the server side); before a book comes Done is what the client can tell."
 }
