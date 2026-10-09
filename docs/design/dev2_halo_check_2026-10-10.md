@@ -19,10 +19,18 @@
 - 같은 방식으로 다른 랜드마크(예: `LavaCrack`, `MeadowArrival`)도 옮길 수 있어요. workspace 밖(ServerStorage 키트 복사본)이나 다른 Spot 값은 무시해요.
 - 게시판(BoardService)·맵 만들기(MapBuilder)는 여전히 Config 숫자를 읽어요(이번 범위 밖).
 
-## 검수가 정할 것 (이 가지에 안 넣음)
-- #34 빛 마을 물약 상인(M): 넣을지 정해 주면 ShopService·MapBuilder 쪽을 만들어요.
-- #39 선택 뒤 반짝임·주민 반응(M, A23-64 ①②): 베타 여유 일에서 앞당길지.
-- #41 마을 안에서 바깥 괴수 때리기: 사용자 답 기다림(검수 추천 (b)).
+## 다음 가지 (`dev2-halo2`, 검수 결정 2026-10-10)
+- #34 빛 마을 물약 판(PotionMerchant 태그 상인 아무나), #39 선택 뒤 여운 신호 + 주민 반응 대사 Config(A23-64 ①②), 물 구조(마을 + 둘레 40스터드 물에 8초 넘으면 가장 가까운 땅).
 
 ## 시험
-- `test_town_quests` 538개(새 묶음 halo-check-data·h2·h3·h6·landmark), `test_sprout_oath` 79개·변이 33/33, `test_protect_glow` 51개·변이 16/16. 변이·전체 결과는 커밋 메시지에.
+- `test_town_quests` 558개·변이 131/131(새 묶음 halo-check-data·h2·h3·h6·landmark + main의 send-all-subs), `test_sprout_oath` 79개·변이 33/33, `test_protect_glow` 51개·변이 16/16, 새 `test_kaiju_town`(#41) 17개·변이 5/5, `test_slime_prince` 변이 14/14(H1 글자).
+- 최신 main(b7a8f855)과 합친 트리에서 오프라인 110개 중 108개 통과. 나머지 2개(`test_finisher` 무임승차, `test_intro_seen`)는 main에서도 같은 실패 → 가지 `dev2-testfix`에서 고침.
+
+## #41 (사용자 결정 (b), 2026-10-10)
+- 빛·뿔 진영 마을 안(Config.Zones Town + Faction)에 서 있는 빛 플레이어는 바깥 괴수(Active)를 못 때려요(`PvPService.CanAttack` 괴수 예외에 `not inFactionTown(attacker)`; 마을은 안전 지역이라 'SafeZone'). 교차로(진영 없는 마을)와 마을 밖은 그대로, 괴수가 어디 서 있는지는 상관없음.
+
+## 맹세 글 (개발 3 #55와 합침)
+- 제목·단계 글은 개발 3의 'Sprout Promise' 글, 조건·보상·Start는 #54, 마무리 줄 "Promise made! Keep it close, wherever you go."(검수).
+
+## 랜드마크 표시: 서버·클라 한 규칙
+- 공용 함수 `Util.TaggedSpot(tag, key)`(태그된 workspace 표시의 자리, 없으면 nil). 서버 = `Util.TaggedSpot(Config.StoryQuests.LandmarkTag, key) or Config.StoryQuests.Landmarks[key]`. 개발 1이 QuestTarget·HUD L.StoryTap을 같은 함수로 바꾸기 전에는 표시를 놓지 않아요(놓으면 마름모와 서버 판정 자리가 달라짐).

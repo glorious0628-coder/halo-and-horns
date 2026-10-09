@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 507,
+  "checks": 558,
   "failedChecks": 0,
-  "namedChecks": 504,
+  "namedChecks": 554,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -39,7 +39,7 @@
     },
     {
       "group": "config",
-      "check": "R1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "check": "R1: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
       "pass": 1,
       "fail": 0
     },
@@ -81,7 +81,7 @@
     },
     {
       "group": "config",
-      "check": "N3: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "check": "N3: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
       "pass": 1,
       "fail": 0
     },
@@ -123,7 +123,7 @@
     },
     {
       "group": "config",
-      "check": "H1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "check": "H1: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
       "pass": 1,
       "fail": 0
     },
@@ -423,7 +423,7 @@
     },
     {
       "group": "r1-evil",
-      "check": "B: 3 HP potions + 60 gold (then the quest's 120)",
+      "check": "B: 3 HP potions + 220 gold (then the quest's 120)",
       "pass": 1,
       "fail": 0
     },
@@ -1965,7 +1965,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "S6: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "S6: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2007,7 +2007,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "XR1: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "XR1: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2055,7 +2055,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "H2: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "H2: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2103,7 +2103,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "R5: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "R5: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2680,7 +2680,7 @@
     {
       "group": "subs18-data",
       "check": "H6: spot HeroStatue exists",
-      "pass": 1,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -2877,7 +2877,7 @@
     },
     {
       "group": "subs18-flow",
-      "check": "Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold",
+      "check": "Count it twice: Infamy +1, 3 potions + 220 gold, then 120 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2907,6 +2907,306 @@
     },
     {
       "group": "subs18-flow",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#38 H1: any Slime Prince in the meadow (the row says so)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#37 H2 step 1 guides to the fountain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#18 H3 / H5 have a Start line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H6 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H6 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H2 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H2 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "OathH pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "OathH pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H5 pick 3: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H5 pick 3: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H3 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H3 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H1 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H1 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "the Halo-only picks were all looked at (H1 H2 H3 H5 H6 OathH)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#40 the oaths sit in the Faction tab",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#2 landmark marker tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "H2 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "the fountain: on to the slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "#36 5 slimes: take it home first (no pick card in the meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "the 'take it home' line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "home in Halo Citadel: the pick card opens there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "#71 Hang it in my house: 3 HP potions + 220 gold, then 120",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "an old save at the old pick step: in the meadow it waits for the way home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "... and gets the card in Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "H3 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "#36 6 slimes: back to Sir Gleam first (no card in the meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "in Halo Citadel: Sir Gleam's card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "H6 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "#35 in the woods: no statue card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "at the hero statues: the card opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "H6 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "#2 a marker outside the workspace or for another spot moves nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "... the Config spot still works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "#2 with the statue marker placed: the old spot no longer counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "... standing at the marker does",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "S6 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "#2 a kill at the old arrival spot no longer counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "... a kill at the marker does",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -3036,9 +3336,9 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 113,
-    "applied": 113,
-    "caught": 113,
+    "total": 131,
+    "applied": 131,
+    "caught": 131,
     "skipped": false,
     "results": [
       {
@@ -3597,8 +3897,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: R1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+          "config :: R1: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
+          "r1-evil :: B: 3 HP potions + 220 gold (then the quest's 120)"
         ],
         "newFailingCount": 2
       },
@@ -3654,7 +3954,7 @@
           "r1-evil :: 15 s: step 3",
           "r1-evil :: 5 slimes",
           "r1-evil :: 6 slimes: step 4",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)",
+          "r1-evil :: B: 3 HP potions + 220 gold (then the quest's 120)",
           "r1-evil :: B: Pick 'Evil', infamy +1"
         ],
         "newFailingCount": 9
@@ -3684,7 +3984,7 @@
           "ch3-horns-evil :: Into our vault: Infamy +3 and Dibs's 192 gold at once",
           "h1-good :: A: one 70% scroll (no potions)"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 12
       },
       {
         "mutation": "a Neutral A pays Evil's reward",
@@ -3718,11 +4018,12 @@
         "newFailingChecks": [
           "a23-58 :: the B reward is paid as usual",
           "h1-good :: the quest: +120 gold, +half a Lv6 bar of XP",
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120",
           "n3 :: Neutral B: recorded, no score, Evil's reward",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)",
-          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold"
+          "r1-evil :: B: 3 HP potions + 220 gold (then the quest's 120)",
+          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 220 gold, then 120 gold"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "the guild's own quests offered while off",
@@ -3747,9 +4048,9 @@
           "a23-70 lunchbox :: a Horns player can give it back too",
           "grant-item :: 3 HP potions (the attribute too)",
           "grant-item :: potions stop at the cap",
-          "n3 :: Neutral B: recorded, no score, Evil's reward"
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "GrantItem: no upper count limit",
@@ -4459,7 +4760,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold",
+          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 220 gold, then 120 gold",
           "subs18-flow :: Horns: 80 hunting gold (not sale gold) finishes step 1",
           "subs18-flow :: home: the pick"
         ],
@@ -4472,9 +4773,227 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "halo-check-data :: H6 pick 4: in Halo Citadel (Npc, or after a way home)",
           "subs18-data :: HeroStatue is in Halo Citadel, LavaCrack in Horns Den"
         ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#71 the town B pays 60 again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120",
+          "subs18-data :: H2: A = one 70% scroll, B = 3 HP potions + 220 gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#36 H2: the pick opens in the field",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H2 pick 3: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h2 :: #36 5 slimes: take it home first (no pick card in the meadow)",
+          "halo-check-h2 :: ... and gets the card in Halo Citadel",
+          "halo-check-h2 :: home in Halo Citadel: the pick card opens there",
+          "halo-check-h2 :: the 'take it home' line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "#36 H2: home is the Crossroads",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H2 pick 4: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120",
+          "halo-check-h2 :: ... and gets the card in Halo Citadel",
+          "halo-check-h2 :: home in Halo Citadel: the pick card opens there"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "#37 H2 guides to the Crossroads",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #37 H2 step 1 guides to the fountain"
+        ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "#36 H3: the pick opens in the field",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H3 pick 3: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h3 :: #36 6 slimes: back to Sir Gleam first (no card in the meadow)",
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "#18 H3 without a Start line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #18 H3 / H5 have a Start line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#18 H5 without a Start line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #18 H3 / H5 have a Start line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#35 H6: the pick opens in the woods",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H6 pick 3: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h6 :: at the hero statues: the card opens",
+          "halo-check-landmark :: ... standing at the marker does",
+          "halo-check-landmark :: ... the Config spot still works"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "#35 H6: any spot near the statues",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a marker outside the workspace or for another spot moves nothing",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#38 H1 says near the woods",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #38 H1: any Slime Prince in the meadow (the row says so)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#40 the oaths under Side",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #40 the oaths sit in the Faction tab"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 the landmark tag renamed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #2 landmark marker tag",
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "#2 Near ignores the world marker",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 kill-Near ignores the world marker",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 a marker outside the workspace counts",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a marker outside the workspace or for another spot moves nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 any marker moves any spot",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a marker outside the workspace or for another spot moves nothing",
+          "halo-check-landmark :: ... a kill at the marker does"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#2 the server skips the marker",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#2 a marker never wins over Config",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "GW7 forgets the GW1 pick",
@@ -4505,12 +5024,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Config.luau": "ed5fdc24dc03d34144f23d41730e4febe24b9a2fa1b4ce34c6cafc1335c61ae8",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "beaba43294e412e9783939f0f81f3600dada8161ff3ab44554d51d7d1e9e7137",
-    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
+    "src/ServerScriptService/StoryQuestService.luau": "d4e0a2d1b570ce92f20aef4c72a81659b3a1db2ccdc4e00bb5bf350350328a29",
+    "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
@@ -4518,10 +5037,10 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "449d1b3ba4d032d5044963799c5bdb9cb703ea5f73e6f4c58d825045a712701b",
+  "fixtureSHA256": "671fb3cf113aa0d0b11c48b9dfd569b9e4dfdf0713673503caf4c997d78b9047",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain (Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one Enh70, B = 3 HP potions + 60 gold, 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows %d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs N1 / N2 are not offered; Neutral saves keep N3. quest_volume §2-6: StoryQuests.MaxSubs = 3 sub rows (claim / waiting card > situational > started or S0 > the rest, newer first in a rank, no Rank / Order sent), so a town quest in progress stays on the list. story_depth E1: Requires.Pick { Id, Is } (Is Good / Evil = that side: Purify / A = Good, Devour / B = Evil; else the exact pick). E2: LinesBy { From, Good, Evil, A, B, Default } -> Var (exact pick, else its side, else Default) on the OpenPanel payload and row.Story.Var; every LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line).",
+  "contract": "A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain (Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one Enh70, B = 3 HP potions + 220 gold (빛 마을 점검 #71), 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows %d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs N1 / N2 are not offered; Neutral saves keep N3. quest_volume §2-6: StoryQuests.MaxSubs = 3 sub rows (claim / waiting card > situational > started or S0 > the rest, newer first in a rank, no Rank / Order sent), so a town quest in progress stays on the list. story_depth E1: Requires.Pick { Id, Is } (Is Good / Evil = that side: Purify / A = Good, Devour / B = Evil; else the exact pick). E2: LinesBy { From, Good, Evil, A, B, Default } -> Var (exact pick, else its side, else Default) on the OpenPanel payload and row.Story.Var; every LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). 빛 마을 점검 2026-10-10: every Halo-only pick happens in Halo Citadel (Npc Bright, or after a way-home step: H2 / H3 Enter HaloTown, H6 Near HeroStatue); H2 step 1 guides to the Fountain; H3 / H5 have Start lines; H1 says 'in the meadow'; OathH / OathR sit in the Faction tab; a workspace instance tagged StoryLandmark with Spot = <key> moves that landmark (Near steps and kill-Near), a marker outside the workspace or for another key moves nothing.",
   "limitations": "NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are modelled by moving the root and calling Refresh each second."
 }
