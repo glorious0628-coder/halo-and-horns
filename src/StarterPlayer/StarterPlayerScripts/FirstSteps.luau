@@ -29,7 +29,9 @@ local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", For
 -- behind my back once (same distance and height over the focus), and once more Again s later (the move may replicate late)
 local TRAVEL = { Fade = 0.4, MaxExtra = 1.5, FadeIn = 0.5, Token = 0, Gui = nil, Black = nil, Line = nil, Done = false,
 	FocusUp = 1.5, Again = 0.15 }
-local HINT = { Idle = 5, Tick = 0.25, Search = 120, MarkerGap = 0.5, NearSince = nil,
+-- MarkAfter / MeadowSince: 검수 10/09 (UI clutter review ④, "help only when stuck") - the marker comes only after MarkAfter s
+-- in the meadow during the first mission without a kill (the time keeps counting across a trip out and back)
+local HINT = { Idle = 5, Tick = 0.25, Search = 120, MarkerGap = 0.5, NearSince = nil, MarkAfter = 45, MeadowSince = nil,
 	AttackShown = false, Killed = false, MarkerAt = -math.huge, Marked = nil }
 
 local function attr(key, default)
@@ -219,6 +221,8 @@ function HINT.Step(now)
 	-- the marker over the nearest monster, in the meadow, until my first kill
 	if HINT.Killed or attr("ZoneId", "") ~= "SlimeMeadow" then
 		if HINT.Marked then HINT.Mark(nil) end
+	elseif now - (HINT.MeadowSince or now) < HINT.MarkAfter or not HINT.MeadowSince then
+		HINT.MeadowSince = HINT.MeadowSince or now -- the first moment in the meadow on the first mission
 	elseif now - HINT.MarkerAt >= HINT.MarkerGap then
 		HINT.MarkerAt = now
 		HINT.Mark((HINT.Nearest(root.Position, HINT.Search)))
