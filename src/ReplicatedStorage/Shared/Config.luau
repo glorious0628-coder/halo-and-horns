@@ -5399,7 +5399,13 @@ Config.UIArt = {
 		FactionBgA = { Id = "rbxassetid://128364866807552", Size = Vector2.new(1536, 1024) },
 		FacMascotHaloA = { Id = "rbxassetid://98817628227692", Size = Vector2.new(617, 1024) },
 		FacMascotHornsA = { Id = "rbxassetid://91053337808874", Size = Vector2.new(675, 1024) },
-		IconDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- 검수 10/08: the menu square / Diary window = the same King Diary book
+		-- Halo town shop signs (이미지 생성 2, 검수 OK 10/10; wall arm + chains + round plate, no words): the shop models' sign
+		-- SurfaceGui (메인 반영 1 / 이미지 생성 1). The potion sign only at Halo town's real potion merchant
+		HaloSignPotion = { Id = "rbxassetid://122788599616130", Size = Vector2.new(1024, 1024) },
+		HaloSignBakery = { Id = "rbxassetid://77116902671887", Size = Vector2.new(1024, 1024) },
+		HaloSignJuice = { Id = "rbxassetid://133684891699718", Size = Vector2.new(1024, 1024) },
+		HaloSignFlower = { Id = "rbxassetid://93642542767036", Size = Vector2.new(1024, 1024) },
+		IconDiary ={ Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- 검수 10/08: the menu square / Diary window = the same King Diary book
 		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
 		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]
 		IconSaved = { Id = "rbxassetid://112371750811683", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'
