@@ -321,6 +321,16 @@ function PASS.Purchased(player, passId, purchased)
 			continue
 		end
 		local answer = PASS.Ask(player.UserId, p.Id)
+		-- gamepass_3f5dd020_verify (개발 3, 2026-10-09): right after a purchase Roblox may still answer an old cached
+		-- "no"; a no is asked again at each PurchaseRecheck time (s after the signal) before it is believed
+		local waited = 0
+		for _, at in Config.PassBoost.PurchaseRecheck or {} do
+			if answer ~= false or player.Parent == nil then break end
+			task.wait(math.max(0, at - waited))
+			waited = math.max(waited, at)
+			if player.Parent == nil then return end
+			answer = PASS.Ask(player.UserId, p.Id)
+		end
 		if player.Parent == nil then return end
 		if answer == false then
 			Util.Warn(TAG, ("%s: a purchase of %s that Roblox does not confirm (ignored)"):format(player.Name, p.Key))

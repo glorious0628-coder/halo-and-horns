@@ -3232,6 +3232,9 @@ Config.PassBoost = {
 	-- last answer Roblox gave (saved, data.PassSeen) counts until the next check
 	CheckTries = 3,
 	CheckWait = 1,
+	-- a purchase signal Roblox answers "no" (maybe a cached answer from the join check): asked again this many s after
+	-- the signal; still no = ignored (gamepass_3f5dd020_verify, 2026-10-09)
+	PurchaseRecheck = { 2, 5 },
 	-- the supporter board (A23-75 VIP: "마을 후원자 게시판 이름"): VIP owners of every server, newest first, at most
 	-- MaxSupporters display names in GameState SupporterNames (one per line), read again every RefreshSeconds
 	SupporterStore = "HaloHorns_Supporters_v1",

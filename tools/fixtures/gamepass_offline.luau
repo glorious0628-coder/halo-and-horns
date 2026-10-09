@@ -84,6 +84,7 @@ local function passWorld(opts)
 	local env = w:Env()
 	env.task = setmetatable({ wait = function(t)
 		table.insert(w.Waits, t)
+		if w.OnWait then w.OnWait(t) end
 		if w.BoardCo ~= nil and coroutine.running() == w.BoardCo then coroutine.yield() end
 	end }, { __index = env.task })
 	local ms = execute("MonetizationService", MONETIZATION_SOURCE, env)
@@ -741,11 +742,15 @@ runGroup("review 3rd look", function()
 	local bought = {}
 	w.Ms.PassBought:Connect(function(_, k) table.insert(bought, k) end)
 	local p = w:Join(1001)
-	local asks = #w.Asks
+	local asks, waits = #w.Asks, #w.Waits
 	w.Market.PromptGamePassPurchaseFinished:Fire(p, 11, true)
 	w.Market.PromptGamePassPurchaseFinished:Fire(p, 13, true)
 	w:RunSpawned()
-	check(#w.Asks == asks + 2, "a purchase signal asks Roblox again", #w.Asks - asks)
+	check(#w.Asks == asks + 6, "a purchase signal asks Roblox again; a no is asked twice more (2 s, 5 s)", #w.Asks - asks)
+	local gaps = {}
+	for i = waits + 1, #w.Waits do table.insert(gaps, w.Waits[i]) end
+	check(#gaps == 4 and gaps[1] == 2 and gaps[2] == 3 and gaps[3] == 2 and gaps[4] == 3,
+		"the rechecks wait 2 s, then 3 s more (5 s after the signal)", show(gaps))
 	check(not w.Ms.HasPass(p, "XP2") and not w.Ms.HasPass(p, "VIP") and p:GetAttribute("PassXP2") == false
 		and w.Data[p].PassSeen.XP2 == false and w:Board() == "" and writes(w) == 0 and #bought == 0,
 		"Roblox says no: no pass, no saved yes, no board, no shared write, no PassBought",
@@ -754,6 +759,36 @@ runGroup("review 3rd look", function()
 	for _, text in w.Warnings do if string.find(text, "does not confirm", 1, true) then warned += 1 end end
 	check(warned == 2, "each refused purchase is warned", warned)
 	w.AllowWarn = "does not confirm"
+	-- 1b. Roblox first says no (a cached answer), then yes on a recheck: the buyer gets it this session, saved
+	for _, flipAt in { 2, 3 } do
+		local wf = passWorld({ Ids = { XP2 = 11 }, Owns = { [1003] = {} } })
+		local bf = {}
+		wf.Ms.PassBought:Connect(function(_, k) table.insert(bf, k) end)
+		local pf = wf:Join(1003)
+		local base, n = #wf.Asks, 0
+		wf.OnAsk = function(userId, passId)
+			n += 1
+			if n == flipAt then wf.Owns[userId][passId] = true end
+		end
+		wf.Market.PromptGamePassPurchaseFinished:Fire(pf, 11, true)
+		wf:RunSpawned()
+		check(#wf.Asks - base == flipAt and wf.Ms.HasPass(pf, "XP2") and pf:GetAttribute("PassXP2") == true
+			and wf.Data[pf].PassSeen.XP2 == true and #bf == 1 and bf[1] == "XP2",
+			"a cached no then yes on recheck " .. flipAt .. ": the pass, saved yes, PassBought, no more asks",
+			show({ #wf.Asks - base, attrs(pf), wf.Data[pf].PassSeen, bf }))
+		local wn = 0
+		for _, text in wf.Warnings do if string.find(text, "does not confirm", 1, true) then wn += 1 end end
+		check(wn == 0, "a yes on recheck is not warned", wn)
+	end
+	-- 1c. the buyer leaves during the recheck wait: nothing more asked, nothing kept
+	local wl = passWorld({ Ids = { XP2 = 11 }, Owns = { [1004] = {} } })
+	local pl = wl:Join(1004)
+	local lb = #wl.Asks
+	wl.OnWait = function() pl.Parent = nil end
+	wl.Market.PromptGamePassPurchaseFinished:Fire(pl, 11, true)
+	wl:RunSpawned()
+	check(#wl.Asks - lb == 1 and not wl.Ms.HasPass(pl, "XP2"), "left before the recheck: no more asks, no pass",
+		#wl.Asks - lb)
 	-- 2. Roblox does not answer the purchase check: this session only (nothing saved, this board only, no PassBought)
 	local w2 = passWorld({ Ids = { VIP = 13, XP2 = 11 }, FailAll = { [13] = true, [11] = true } })
 	local b2 = {}
