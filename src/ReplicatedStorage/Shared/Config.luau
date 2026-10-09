@@ -5879,6 +5879,10 @@ Config.Return = {
 Config.MyWay = {
 	MinPicks = 2,
 	BalanceShare = 0.2,
+	-- A23-86 (검수 2026-10-09): repeated cards (ChoiceCard picks data.Story.N[kind][side], the job board's N.Kind = good /
+	-- N.Sneaky = devil) count one story pick for every RepeatPer of them, and all of them together never weigh more than
+	-- the story picks do (so a grinder cannot out-vote the story; the story picks decide first, 2+ are still needed)
+	RepeatPer = 5,
 	Names = { TrueKnight = "True Knight", RebelAngel = "Rebel Angel", ProudRascal = "Proud Rascal",
 		SoftDevil = "Soft-Hearted Devil", BalanceWalker = "Balance Walker" },
 }

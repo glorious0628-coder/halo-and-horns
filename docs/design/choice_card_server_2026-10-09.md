@@ -28,7 +28,7 @@ SPEC A23-86 결정 1(하루 선행·장난 장부) + `content_beyond_10min_2026-
   - s→c `Fx "CardEnd"` `{ Id, Kind, Side = "Good"|"Evil"|"None", Stat, Score, Item?, N, Gold, Full }` — 실제로 일어난 일.
   - c→s `"CardAction"`(id: number, side: "Good"|"Evil") — 열린 카드의 Id만, 한 번만, 0.3초 속도 제한. 인자 수·종류가 다르면 무시.
 - 보상: 아이템은 `LootService.GrantItem`(가방이 차면 남은 만큼 판매값 골드), 골드는 `AddBankGold(..., "Choice")`(2배 패스 안 탐). 점수는 **오직 `Deeds.Add`** 로만. 한 줄 알림 "Kind choice! · +Jelly x2 · Honor +1"(Done 글은 카드마다 바꿀 수 있어요), 반대 편 선택은 A23-58 안내 줄(Hallie/Magpie), 계급이 내리면 계급 줄.
-- 기록: 고를 때마다 `data.Story.N[kind][side] += 1`. **My Way는 아직 읽지 않아요.** 무게(검수 결정 2026-10-09): 되풀이 카드 5번 = 이야기 선택 1번, 되풀이 몫 합계는 이야기 몫을 넘지 않게 상한 — 다음 덩어리.
+- 기록: 고를 때마다 `data.Story.N[kind][side] += 1`. **My Way가 읽어요**(검수 결정 2026-10-09, `ReturnService.MyWayOf(faction, picks, repeated)`): 되풀이 5번(`Config.MyWay.RepeatPer`) = 이야기 선택 1번, 되풀이 몫 합계는 이야기 몫을 넘지 않게 상한(둘 다 같은 비율로 줄임), 이야기 선택 2개 이상이 먼저 필요. 게시판의 `N.Kind`(좋은 일)·`N.Sneaky`(장난)도 같은 규칙. 카드를 고르거나 게시판 일을 끝내면 이름이 바로 다시 계산돼요(`ChoiceCard.Picked`, `ReturnService.RefreshMyWay`).
 - 신호: `ChoiceCard.Picked(player, kind, side, result)` (고름과 시간 끝 모두).
 - 저장: `data.Cards = { Serial, Pending }` (Serial은 카드 Id, 줄어들지 않음).
 - Studio 도움: `DebugCommand("Card", "<kind>")`.

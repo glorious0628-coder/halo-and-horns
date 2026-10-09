@@ -13,6 +13,7 @@ local function retWorld(o)
 	w.Pinned = {} -- [Player] = the row QuestService.PinnedRow returns
 	w.Reg.QuestService = { PinnedRow = function(p) return w.Pinned[p] end }
 	w.Reg.TelemetryService = { ClientMetric = Signal.new() }
+	w.Reg.ChoiceCard = { Picked = Signal.new() } -- A23-86: a repeated card pick refreshes My Way
 	w.Badges, w.BadgeFail, w.BadgeAnswer, w.HasBadge, w.HasAsks = {}, false, true, {}, 0
 	w.Services.BadgeService = {
 		AwardBadge = function(_, uid, id)
@@ -243,6 +244,38 @@ runGroup("My Way names", function()
 	p:SetAttribute("Faction", "Horns")
 	w.Reg.FactionService.FactionChanged:Fire(p, "Horns", "Halo", "Altar")
 	check(p:GetAttribute("MyWay") == "Proud Rascal", "a faction change re-reads it", tostring(p:GetAttribute("MyWay")))
+end)
+
+runGroup("My Way: repeated cards (A23-86)", function()
+	local w = retWorld()
+	local M = w.Reg.ReturnService.MyWayOf
+	local good2 = { Lunch1 = "GiveBack", S0 = "Purify" }
+	local evil2 = { Lunch1 = "Bite", S0 = "Devour" }
+	check(M("Halo", good2, { Lost = { Evil = 4 } }) == "TrueKnight", "4 repeated picks are not enough for a story pick", "")
+	check(M("Halo", good2, { Lost = { Evil = 5 } }) == "TrueKnight", "5 repeated = 1 story pick (2 good + 1 devil of 3: still True Knight)", M("Halo", good2, { Lost = { Evil = 5 } }))
+	check(M("Halo", good2, { Lost = { Evil = 10 } }) == "BalanceWalker", "10 repeated devil picks = 2 story picks: 2 / 2 = Balance Walker", M("Halo", good2, { Lost = { Evil = 10 } }))
+	check(M("Halo", good2, { Lost = { Evil = 100 } }) == "BalanceWalker", "100 repeated picks never weigh more than the 2 story picks together", M("Halo", good2, { Lost = { Evil = 100 } }))
+	check(M("Halo", evil2, { Kind = 10 }) == "BalanceWalker", "the job board's Kind count is a good deed (10 = 2 story picks)", M("Halo", evil2, { Kind = 10 }))
+	check(M("Halo", evil2, { Sneaky = 10 }) == "RebelAngel", "the board's Sneaky count is a devil deed", M("Halo", evil2, { Sneaky = 10 }))
+	check(M("Halo", good2, { Sneaky = 10 }) == "BalanceWalker", "10 board Sneaky jobs against 2 good picks = Balance Walker", M("Halo", good2, { Sneaky = 10 }))
+	check(M("Halo", good2, { Kind = -50 }) == "TrueKnight" and M("Halo", good2, { Lost = { Good = -50, Evil = -50 } }) == "TrueKnight", "negative counts weigh nothing", "")
+	check(M("Halo", {}, { Lost = { Good = 100 } }) == "", "repeated picks alone name nobody (2 story picks come first)", "")
+	check(M("Halo", { Lunch1 = "GiveBack" }, { Lost = { Good = 100 } }) == "", "one story pick is still not enough", "")
+	check(M("Horns", good2, { Lost = { Evil = 100 }, Other = { Evil = 100 } }) == "BalanceWalker", "several kinds add up, then the cap", M("Horns", good2, { Lost = { Evil = 100 }, Other = { Evil = 100 } }))
+	check(M("Halo", good2, { Kind = "x", Sneaky = -50, Lost = "oops", Other = { Good = -9, Evil = "y" } }) == "TrueKnight", "broken counts are ignored", "")
+	check(M("Halo", good2, nil) == "TrueKnight" and M("Halo", good2, "oops") == "TrueKnight", "no / broken repeated table", "")
+	check(M("Neutral", good2, { Kind = 100 }) == "", "Neutral still has no name", "")
+	-- the attribute follows a card pick and a board job at once
+	local p, d = hero(w, 1, { Data = { Story = { Main = { Id = "" }, Subs = {}, Done = {}, First = {}, Pick = good2 } } })
+	check(p:GetAttribute("MyWay") == "True Knight", "start: True Knight", tostring(p:GetAttribute("MyWay")))
+	d.Story.N = { Lost = { Evil = 10 } }
+	w.Reg.ChoiceCard.Picked:Fire(p, "Lost", "Evil", {})
+	check(p:GetAttribute("MyWay") == "Balance Walker", "a card pick refreshes it", tostring(p:GetAttribute("MyWay")))
+	d.Story.N = { Lost = { Evil = 10 }, Kind = 10 }
+	w.Reg.ReturnService.RefreshMyWay(p)
+	check(p:GetAttribute("MyWay") == "True Knight", "RefreshMyWay (called by the job board) re-reads it", tostring(p:GetAttribute("MyWay")))
+	w.Reg.ReturnService.RefreshMyWay(nil)
+	w.Reg.ReturnService.RefreshMyWay("oops")
 end)
 
 ------------------------------------------------------------------ #2 badges

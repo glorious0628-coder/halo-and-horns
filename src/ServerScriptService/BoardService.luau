@@ -260,6 +260,8 @@ local function finish(player, data, index)
 		if change > 0 then notify(player, string.format(T.Score or "%s +%d", stat, change), "good") end
 		pcall(S.Deeds.Say, player, deed, stat, change, mine, down, full)
 	end
+	local ret = S.ReturnService
+	if type(ret) == "table" and type(ret.RefreshMyWay) == "function" then pcall(ret.RefreshMyWay, player) end -- A23-86 My Way
 	if st.Done == num(B.BonusAt, 5) and not st.Bonus then
 		st.Bonus = true -- saved before the scroll
 		local loot = S.LootService
