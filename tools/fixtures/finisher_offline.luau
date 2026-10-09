@@ -2,7 +2,7 @@
 -- tools/test_finisher.py runs it after dev2_kit.luau and dev2_combat_world.luau: the REAL CombatService, SkillService,
 -- DamageWindow, LootService and StoryQuestService of the combat world, with MonsterService's REAL DamageMonster +
 -- killRecord (KILL_SOURCE, cut from the current MonsterService.luau) put on the world's MonsterService, and the REAL
--- ScoreBudget and FinisherService on the same registry (TelemetryService and the gold calls are recorded). A press
+-- Deeds (the daily ledger) and FinisherService on the same registry (TelemetryService and the gold calls are recorded). A press
 -- (swing / Q / Z, manual or auto) kills a King Slime record end to end; the card, the pick remote, the timer and leaving
 -- run through FinisherService's own Start() connections.
 
@@ -57,12 +57,14 @@ local function finWorld(o)
 	if o.GrantFails then
 		reg.LootService.GrantItem = function() error("offline GrantItem failure") end
 	end
-	local budget = w:Load("ScoreBudget", SCOREBUDGET_SOURCE)
+	-- the daily deeds ledger (game dev 3, A23-86): the finisher's points go through it (its day loop is never run)
+	local deeds = w:Load("Deeds", DEEDS_SOURCE)
 	local fin = w:Load("FinisherService", FINISHER_SOURCE)
-	reg.ScoreBudget, reg.FinisherService = budget, fin
-	budget.Init(reg)
+	reg.Deeds, reg.FinisherService = deeds, fin
+	w.Deeds = deeds
+	deeds.Init(reg)
 	fin.Init(reg)
-	budget.Start()
+	deeds.Start()
 	fin.Start()
 	w.Budget, w.Fin = budget, fin
 	w.PickedLog = {}
@@ -162,9 +164,8 @@ runGroup("config", function()
 	check(CARD.Help.Item == "Jelly" and jelly ~= nil and jelly.Kind == "Material", "Help gives Jelly (a material)")
 	check(CARD.Help.N * jelly.Sell == CARD.Tickle.Gold and CARD.Tickle.Gold > 0, "the same size: Help.N x Jelly sell == Tickle gold",
 		show({ CARD.Help.N, jelly.Sell, CARD.Tickle.Gold }))
-	check(C0F.ScoreBudget.PerDay == 5, "one daily cap: 5 points a KST day", C0F.ScoreBudget.PerDay)
-	local d = C0F.Data.Defaults.ScoreBudget
-	check(type(d) == "table" and d.Day == 0 and d.N == 0, "save field ScoreBudget = { Day = 0, N = 0 }", show(d))
+	check(C0F.Deeds.PerDay == 6 and C0F.ScoreBudget == nil, "one daily cap: the deeds ledger, 6 points a KST day",
+		C0F.Deeds.PerDay)
 	check(C0F.RateLimits.FinisherPick == 0.3, "FinisherPick rate limit 0.3 s", C0F.RateLimits.FinisherPick)
 	local T = CARD.Text
 	check(T.Title == "The King Slime is dizzy!" and T.Help == "Help it hop home" and T.Tickle == "Tickle out its coins",
@@ -362,7 +363,7 @@ runGroup("card payload", function()
 	local _, cn = w:Offer(neutral)
 	check(cn.Stat == "None" and cn.Help.Score == 0 and cn.Tickle.Score == 0 and cn.Help.Hint == "Neutral"
 		and cn.Tickle.Hint == "Neutral", "Neutral: no score on either side (hint Neutral)", show(cn))
-	local full = w:Hero(135, { Faction = "Halo", Data = { ScoreBudget = { Day = C0F.DayIndex(w.Time), N = 5 } } })
+	local full = w:Hero(135, { Faction = "Halo", Data = { Deeds = { Day = C0F.DayIndex(w.Time), N = 6 } } })
 	local _, cf = w:Offer(full)
 	check(cf.Help.Score == 0 and cf.Help.Hint == "Full" and cf.Tickle.Hint == "Zero",
 		"Halo with today's budget used up: Help shows 0, hint Full", show(cf))
@@ -444,28 +445,30 @@ runGroup("picks", function()
 end)
 
 runGroup("daily cap", function()
+	-- the one daily cap is the deeds ledger (A23-86 decision 1, Config.Deeds.PerDay = 6), shared with every repeated deed
 	local w = finWorld()
+	local cap = C0F.Deeds.PerDay
 	local h = w:Hero(151, { Faction = "Halo" })
-	for _ = 1, 5 do
+	for _ = 1, cap do
 		local _, c = w:Offer(h)
 		w:Pick(h, c.Id, "Help")
 	end
-	check(w.Data[h].Honor == 5 and w.Data[h].ScoreBudget.N == 5, "five Help picks: Honor 5 (the day's cap)",
-		show({ w.Data[h].Honor, w.Data[h].ScoreBudget }))
-	local _, c6 = w:Offer(h)
-	check(c6.Help.Score == 0, "the 6th card shows Help 0", c6.Help.Score)
-	local j, n6 = w:Jelly(h), #w.Notices
-	w:Pick(h, c6.Id, "Help")
-	local l6 = w:NoticesFor(h, n6)
-	check(w.Data[h].Honor == 5 and w:Jelly(h) == j + 2 and w:Ends(h)[6].Score == 0, "the 6th Help: the Jelly, no point",
+	check(w.Data[h].Honor == cap and w.Data[h].Deeds.N == cap, "six Help picks: Honor 6 (the day's cap)",
+		show({ w.Data[h].Honor, w.Data[h].Deeds }))
+	local _, cx = w:Offer(h)
+	check(cx.Help.Score == 0, "the next card shows Help 0", cx.Help.Score)
+	local j, nx = w:Jelly(h), #w.Notices
+	w:Pick(h, cx.Id, "Help")
+	local lx = w:NoticesFor(h, nx)
+	check(w.Data[h].Honor == cap and w:Jelly(h) == j + 2 and w:Ends(h)[cap + 1].Score == 0, "past the cap: the Jelly, no point",
 		show({ w.Data[h].Honor, w:Jelly(h) - j }))
-	check(#l6 == 2 and not has(l6[1], "Honor") and l6[2] == FIN.Text.HintFull, "the 6th: no points line + 'No more points today'",
-		show(l6))
+	check(#lx == 2 and not has(lx[1], "Honor") and lx[2] == FIN.Text.HintFull, "past the cap: no points line + 'No more points today'",
+		show(lx))
 	-- an off-side drop is not limited by the cap (and uses none of it)
 	local _, c7 = w:Offer(h)
 	w:Pick(h, c7.Id, "Tickle")
-	check(w.Data[h].Honor == 4 and w.Data[h].ScoreBudget.N == 5, "a Tickle still drops Honor 5 -> 4 at the cap",
-		show({ w.Data[h].Honor, w.Data[h].ScoreBudget.N }))
+	check(w.Data[h].Honor == cap - 1 and w.Data[h].Deeds.N == cap, "a Tickle still drops Honor 6 -> 5 at the cap",
+		show({ w.Data[h].Honor, w.Data[h].Deeds.N }))
 	-- the next KST day: open again
 	local day = C0F.DayIndex(w.Time)
 	w:Advance(86400)
@@ -473,20 +476,18 @@ runGroup("daily cap", function()
 	local _, c8 = w:Offer(h)
 	check(c8.Help.Score == 1, "the next day the card shows Help +1 again", c8.Help.Score)
 	w:Pick(h, c8.Id, "Help")
-	check(w.Data[h].Honor == 5 and w.Data[h].ScoreBudget.N == 1 and w.Data[h].ScoreBudget.Day == day + 1,
-		"the next day: Honor +1, the budget restarts", show(w.Data[h].ScoreBudget))
-	-- the cap is shared: ScoreBudget.Take is the one door (another source takes from the same day)
+	check(w.Data[h].Honor == cap and w.Data[h].Deeds.N == 1 and w.Data[h].Deeds.Day == day + 1,
+		"the next day: Honor +1, the ledger restarts", show(w.Data[h].Deeds))
+	-- the cap is shared: another deed (Deeds.Add from a choice card, the board, ...) takes from the same day
 	local h2 = w:Hero(152, { Faction = "Halo" })
-	check(w.Budget.Take(h2, 3) == 3 and w.Budget.Left(h2) == 2 and w.Budget.Take(h2, 4) == 2 and w.Budget.Take(h2, 1) == 0,
-		"ScoreBudget: 3 + 2 fit, then nothing", w.Budget.Left(h2))
-	check(w.Budget.Take(h2, -1) == 0 and w.Budget.Take(h2, 0 / 0) == 0, "Take of bad numbers gives 0")
+	local D = w.Deeds
+	check(select(2, D.Add(h2, "Good", 4)) == 4 and D.Left(h2) == 2, "(another deed used 4 of 6)", D.Left(h2))
 	local _, c9 = w:Offer(h2)
-	check(c9.Help.Score == 0, "a card after another source used the day's points: Help 0", c9.Help.Score)
-	-- a broken saved budget is repaired
-	local h3 = w:Hero(153, { Faction = "Horns", Data = { ScoreBudget = "broken" } })
-	check(w.Budget.Left(h3) == 5 and type(w.Data[h3].ScoreBudget) == "table", "a broken ScoreBudget save: repaired, 5 open")
-	local h4 = w:Hero(154, { Faction = "Horns", Data = { ScoreBudget = { Day = C0F.DayIndex(w.Time), N = -7 } } })
-	check(w.Budget.Left(h4) == 5, "a negative count is read as 0", w.Budget.Left(h4))
+	check(c9.Help.Score == 1, "a card after another deed: Help +1 while points are left", c9.Help.Score)
+	w:Pick(h2, c9.Id, "Help")
+	check(select(2, D.Add(h2, "Good", 3)) == 1 and D.Left(h2) == 0, "the card and the other deed share one day of 6", D.Left(h2))
+	local _, c10 = w:Offer(h2)
+	check(c10.Help.Score == 0 and c10.Help.Hint == "Full", "then the card shows Help 0, hint Full", show(c10.Help))
 end)
 
 ------------------------------------------------------------------ the remote's rules

@@ -11,7 +11,7 @@
 --   s->c Fx "FinisherEnd" { Id, Pick = "Help" | "Tickle" | "None", Stat, Score, Item, N, Gold } (what really happened)
 -- Help = the Good side (Config.Finisher.Cards[kind].Help: an item; a full bag pays the rest at its Sell, else Worth),
 -- Tickle = the Evil side (Cards[kind].Tickle: bank gold, source
--- "Finisher": not a Config.PassBoost source, so never 2x). My side's pick: +Points inside ScoreBudget (P9); the other
+-- "Finisher": not a Config.PassBoost source, so never 2x). My side's pick: +Points inside the daily Deeds (A23-86); the other
 -- side's: -Points (A23-58, never below 0); Neutral / no side: the gift only. Points go through AddStat only (no weekly
 -- ranking credit, like story picks). One open card a player at a time: a kill meanwhile gives none. Not picked in time
 -- or left = "None" (no gift, no points). Metric: FinisherPick (Halo | Horns | None, my faction).
@@ -63,17 +63,10 @@ local function points()
 	return math.max(0, math.floor(num(F.Points)))
 end
 
--- what picking `option` changes: my side = +Points (the budget left today), the other side = -Points (never below 0)
+-- what picking `option` changes (Deeds.Preview: my side = +Points inside today's deeds left, the other side =
+-- -Points, never below 0)
 local function scoreOf(player, option)
-	local f = sideOf(player)
-	if not f then return "None", 0, false end
-	local stat = f == "Halo" and "Honor" or "Infamy"
-	if (f == "Halo") == (SIDE[option] == "Good") then
-		return stat, math.min(points(), S.ScoreBudget.Left(player)), true
-	end
-	local data = S.PlayerService.GetData(player)
-	local have = math.max(0, math.floor(num(data and data[stat])))
-	return stat, -math.min(have, points()), false
+	return S.Deeds.Preview(player, SIDE[option], points())
 end
 
 -- review 2026-10-08: the card's hint for one option (Score 0 means "cap full" on my side, "nothing to lose" on the
@@ -84,30 +77,12 @@ local function hintOf(stat, score, mine)
 	return mine and "Full" or "Zero"
 end
 
--- applies the pick's points; returns stat, change, mine (my own side's pick), down (an off-side drop lost a rank)
--- TODO(Deeds, A23-86 decision 1): the daily deeds ledger (game dev 3) replaces ScoreBudget here (Deeds.Add)
+-- applies the pick's points through the one daily deeds ledger (A23-86 decision 1, game dev 3's Deeds.Add; the cap is
+-- Config.Deeds.PerDay, shared with every repeated good / evil deed); returns stat, change, mine (my own side's pick),
+-- down (an off-side drop lost a rank)
 local function applyScore(player, option)
-	local f = sideOf(player)
-	if not f then return "None", 0, false end
-	local stat = f == "Halo" and "Honor" or "Infamy"
-	if (f == "Halo") == (SIDE[option] == "Good") then
-		local got = S.ScoreBudget.Take(player, points())
-		if got > 0 then S.PlayerService.AddStat(player, stat, got) end
-		return stat, got, true
-	end
-	local data = S.PlayerService.GetData(player)
-	local have = math.max(0, math.floor(num(data and data[stat])))
-	local take = math.min(have, points())
-	local down = false
-	if take > 0 then
-		S.PlayerService.SetStat(player, stat, have - take)
-		local function rank(score)
-			local _, r = Config.GetTitle(f, f == "Halo" and score or 0, f == "Horns" and score or 0)
-			return r
-		end
-		down = rank(have - take) < rank(have)
-	end
-	return stat, -take, false, down
+	local stat, change, mine, down = S.Deeds.Add(player, SIDE[option], points())
+	return stat, change, mine, down
 end
 
 -- the boss kind's card (Config.Finisher.Cards[kind]: Help, Tickle, Text); data only, the same card code for every boss

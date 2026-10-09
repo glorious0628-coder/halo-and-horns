@@ -15,7 +15,7 @@ local INIT_ORDER = {
 	"ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
-	"ScoreBudget", "FinisherService", -- 게임성 개발 2: the King Slime finisher card + the P9 daily score cap
+	"FinisherService", -- 게임성 개발 2: the field bosses' finisher card (points: Deeds)
 	"FieldBossService", -- 게임성 개발 2: the year-round field bosses (the King Slime, ...)
 	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 }
@@ -30,7 +30,7 @@ local START_ORDER = {
 	"SkillService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
-	"ScoreBudget", "FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
+	"FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
 	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"PlayerService",
 }

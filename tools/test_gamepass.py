@@ -62,6 +62,7 @@ EXPECTED = [
     ("BoardService.luau", "AddBankGold", "Quest", True),
     ("BoardService.luau", "AddXP", None, True),
     ("FactionService.luau", "AddBankGold", "SignOn", True),
+    ("FinisherService.luau", "AddBankGold", "Finisher", True),  # the field bosses' card: shown as added, never 2x
     ("GooseService.luau", "AddBankGold", "Event", True),
     ("GooseService.luau", "AddXP", None, True),
     ("GrudgeService.luau", "AddBankGold", "Refund", False),

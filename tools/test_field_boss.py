@@ -63,8 +63,8 @@ MUTATIONS = [
     ("a mom line", C, "SlimeKingLeaveEn = \"King Slime: \\\"Hmph! Bedtime, kids!\\\"\"",
      "SlimeKingLeaveEn = \"King Slime: \\\"Hmph! Mom says bedtime!\\\"\""),
     ("King in the regular pool", C, "Zone = \"SlimeMeadow\", Count = 0, Boss = true,", "Zone = \"SlimeMeadow\", Count = 2, Boss = true,"),
-    ("not in Main START", M, "\"ScoreBudget\", \"FinisherService\", \"FieldBossService\", -- 게임성 개발 2 (before",
-     "\"ScoreBudget\", \"FinisherService\", -- 게임성 개발 2 (before"),
+    ("not in Main START", M, "\"FinisherService\", \"FieldBossService\", -- 게임성 개발 2 (before",
+     "\"FinisherService\", -- 게임성 개발 2 (before"),
     ("no Net default", N, "SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0,", ""),
     # J Captain Clatter extras
     ("no extras paid", K, "\t\tpayExtras(key, ids)\n", ""),

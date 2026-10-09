@@ -3505,7 +3505,7 @@ Config.RateLimits = {
 -- kill stays the same kill for everyone; each paid contributor with a manual hit in the last ContributorWindow s also
 -- gets a card only they see (FinisherService): Help (the Good side: Jelly) or Tickle (the Evil side: bank gold, never
 -- 2x), the same size (Help.N x Loot.Items[Help.Item].Sell == Tickle.Gold). Not picked within Seconds (+ Grace for the
--- network, server only) = no gift, no points. Points: my own side's score +Points (inside Config.ScoreBudget) or -Points
+-- network, server only) = no gift, no points. Points: my own side's score +Points (inside Config.Deeds.PerDay) or -Points
 -- off side (A23-58, never below 0); Neutral / no side: the gift only. One open card a player at a time.
 Config.Finisher = {
 	-- the field bosses only (검수 2026-10-08: the Slime Prince has no card; J 2026-10-09: Captain Clatter)
@@ -3535,10 +3535,7 @@ Config.Finisher = {
 		HintNeutral = "Just the gift. No good or evil points.",
 	},
 }
--- P9 (mmorpg_painpoints_ideas_2026-10-05): ONE daily cap (KST day) for every repeated Honor / Infamy rise
--- (ScoreBudget.luau); drops never count. The finisher card is its first user. (proposed)
-Config.ScoreBudget = { PerDay = 5 }
-Config.Data.Defaults.ScoreBudget = { Day = 0, N = 0 }
+-- (the finisher's points go through the daily deeds ledger, Config.Deeds / Deeds.luau; ScoreBudget retired 2026-10-09)
 Config.RateLimits.FinisherPick = 0.3
 -- the year-round field bosses (FieldBossService; content_beyond_10min_2026-10-08 FB). Order = the boss keys (each key
 -- names its GameState <Key>Active / EndsAt / NextAt and its Announce <Key>Appear / Defeat / Leave lines). Per boss: one

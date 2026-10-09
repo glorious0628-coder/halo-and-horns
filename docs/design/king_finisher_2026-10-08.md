@@ -36,11 +36,12 @@
     - 도덕 선택에서 돈을 낸 아이에게 한쪽이 더 이득이 되지 않게 하려는 거예요.
     - 같은 원칙으로 이야기 선택 골드(`"Choice"`)도 2배가 아니에요(`docs/design/gamepass_server_2026-10-08.md` 4절).
 - **점수는 `PlayerService.AddStat`만 써요.** 이야기 선택(D1)처럼 이번 주 랭킹 점수에는 들어가지 않아요(`GrantFame` 안 씀). 그래서 랭킹 파밍 길이 없어요.
-- **하루 공통 상한(P9, 새로 만듦):** `Config.ScoreBudget = { PerDay = 5 }`, KST 하루(`Config.DayIndex`) 기준이에요.
-  - 되풀이해서 오르는 명예·악명 **오름**만 여기서 빼 써요. 내림(A23-58 감점)은 상한과 상관없어요.
-  - 상한이 차면 고른 덤은 그대로 받아요. 점수는 0이고 "shard leaned" 한 줄만 나와요.
-  - 저장: `data.ScoreBudget = { Day, N }`. 모듈 `ScoreBudget.luau`의 `Take(player, n) → 실제로 준 수`, `Left(player)`는 앞으로 생길 다른 반복 점수원(새싹 돕기 등)도 같이 써요.
-  - 계급 숫자로 보면: 하루 5점이면 계급 2(10점)까지 이틀, 계급 3(50점)까지 열흘이에요. 이 선택만으로 그래요.
+- **하루 공통 상한 = 하루 장부 Deeds(2026-10-09부터, A23-86 결정 1):** 점수는 개발 3의 `S.Deeds.Preview`(카드 미리보기)와
+  `S.Deeds.Add(player, "Good"|"Evil", Points)`(고를 때)로만 바뀌어요. 하루(KST) 6점(`Config.Deeds.PerDay`), 다른 되풀이
+  행동(공용 선택 카드, 게시판 등)과 같은 6점을 나눠 써요. 계약: `docs/design/choice_card_server_2026-10-09.md`.
+  - 되풀이해서 오르는 명예·악명 **오름**만 상한을 써요. 내림(A23-58 감점)은 상한과 상관없어요.
+  - 상한이 차면 고른 덤은 그대로 받아요. 점수는 0이고 "No more points today" 한 줄이 나와요.
+  - 옛 `ScoreBudget`(하루 5점, `data.ScoreBudget`)은 없앴어요. 옛 저장 칸은 읽지 않아요.
 - **한 줄 알림(서버가 보냄):** 고르면 한 줄이 떠요. 예: "It hops home happy! +2 Jelly · Honor +1", "Coins pop out! +4 gold · Infamy +1".
   - 반대 편 감점 줄과 계급 내려감 줄은 이야기 선택의 글(`Config.StoryQuests.Text` OffSide*/RankDown*)을 그대로 써요.
 
@@ -105,10 +106,10 @@
 
 ## 5. Config (새 블록, 따로)
 ```lua
-Config.Finisher = { Kinds = { BigSlime = true }, Seconds = 10, Grace = 1, Points = 1,
-	Help = { Item = "Jelly", N = 2 }, Tickle = { Gold = 4 }, Text = { ... } }
-Config.ScoreBudget = { PerDay = 5 }
-Config.Data.Defaults.ScoreBudget = { Day = 0, N = 0 }
+-- 2026-10-09: per boss kind cards; the points go through Config.Deeds (6 a day, game dev 3)
+Config.Finisher = { Kinds = { SlimeKing = true, CaptainClatter = true }, Seconds = 10, Grace = 1, Points = 1,
+	Cards = { [kind] = { Help = { Item, N, Worth? }, Tickle = { Gold }, Text = { Title, Help, Tickle, HelpDone, TickleDone } } },
+	Text = { Score, ScoreDown, HintFull, HintZero, HintNeutral } }
 Config.RateLimits.FinisherPick = 0.3
 ```
 

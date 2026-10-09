@@ -5,11 +5,11 @@ kill stays the same kill for everyone; a paid contributor with an accepted MANUA
 never auto combat) within the ContributorWindow also gets a card only they see: Fx "FinisherCard", c->s "FinisherPick"
 (id, "Help" | "Tickle") - the open card, its Id, within Seconds + Grace, once - and Fx "FinisherEnd". Help = Jelly (a
 full bag pays the rest at its sell price), Tickle = bank gold "Finisher" (never 2x), the same size. My side's pick:
-+1 inside the ONE daily cap (ScoreBudget, P9); the other side's: -1 (A23-58, never below 0); Neutral: the gift only.
++1 inside the ONE daily cap (Deeds, A23-86); the other side's: -1 (A23-58, never below 0); Neutral: the gift only.
 Not picked / left = None. Metric FinisherPick (Halo | Horns | None, my faction).
 
 Runs the CURRENT Config, Util, CombatService, SkillService, DamageWindow, LootService, StoryQuestService (the combat
-world of tools/test_skills.py), MonsterService's REAL DamageMonster + killRecord (cut out), ScoreBudget and
+world of tools/test_skills.py), MonsterService's REAL DamageMonster + killRecord (cut out), Deeds and
 FinisherService on tools/fixtures/dev2_kit.luau + tools/fixtures/dev2_combat_world.luau with
 tools/fixtures/finisher_offline.luau and the installed official Luau CLI. No Studio, network, DataStore or Roblox API
 calls; mutations run on in-memory copies of the sources only.
@@ -26,15 +26,15 @@ from test_skills import FILES as SKILL_FILES, bindings as skill_bindings
 
 FILES = dict(SKILL_FILES)
 FILES["FINISHER_SOURCE"] = SSS / "FinisherService.luau"
-FILES["SCOREBUDGET_SOURCE"] = SSS / "ScoreBudget.luau"
+FILES["DEEDS_SOURCE"] = SSS / "Deeds.luau"
 C, CO, SK, M = "CONFIG_SOURCE", "COMBAT_SOURCE", "SKILL_SOURCE", "MONSTER_SOURCE"
-F, B = "FINISHER_SOURCE", "SCOREBUDGET_SOURCE"
+F, D = "FINISHER_SOURCE", "DEEDS_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     out = skill_bindings(sources)
     out["FINISHER_SOURCE"] = sources[F]
-    out["SCOREBUDGET_SOURCE"] = sources[B]
+    out["DEEDS_SOURCE"] = sources[D]
     mon = sources[M]
     # MonsterService's REAL kill: DamageMonster + killRecord, on the world's MonsterService table (helpers from H)
     out["KILL_SOURCE"] = (
@@ -110,18 +110,21 @@ MUTATIONS = [
      "S.ProgressionService.AddBankGold(player, gold, \"Monster\")"),
     ("the shown gold ignores the return", F, "gold = type(added) == \"number\" and added or gold", "gold = gold"),
     # --- points
-    ("my side's pick ignores the cap", F, "local got = S.ScoreBudget.Take(player, points())", "local got = points()"),
-    ("no off-side drop", F, "\t\tS.PlayerService.SetStat(player, stat, have - take)\n", ""),
-    ("off-side drops below 0", F, "\tlocal take = math.min(have, points())\n", "\tlocal take = points()\n"),
-    ("Neutral scores", F, "\tif f == \"Halo\" or f == \"Horns\" then return f end\n\treturn nil\n",
+    ("the pick's points not through Deeds", F, "local stat, change, mine, down = S.Deeds.Add(player, SIDE[option], points())",
+     "local stat, change, mine, down = \"None\", 0, false, false"),
+    ("the card's preview not from Deeds", F, "\treturn S.Deeds.Preview(player, SIDE[option], points())",
+     "\treturn \"None\", 0, false"),
+    ("my side's pick ignores the cap", D, "\t\tlocal got = Deeds.Take(player, n)\n", "\t\tlocal got = n\n"),
+    ("no off-side drop", D, "\t\tS.PlayerService.SetStat(player, stat, have - take)\n", ""),
+    ("off-side drops below 0", D, "\tlocal take = math.min(have, n)\n", "\tlocal take = n\n"),
+    ("Neutral scores", D, "\tif f == \"Halo\" or f == \"Horns\" then return f end\n\treturn nil\n",
      "\tif f == \"Halo\" or f == \"Horns\" then return f end\n\treturn \"Horns\"\n"),
     ("the sides swapped", F, "local SIDE = { Help = \"Good\", Tickle = \"Evil\" }", "local SIDE = { Help = \"Evil\", Tickle = \"Good\" }"),
-    ("no rank-down line", F, "\t\tdown = rank(have - take) < rank(have)\n", "\t\tdown = false\n"),
+    ("no rank-down line", D, "\t\tdown = rankOf(f, have - take) < rankOf(f, have)\n", "\t\tdown = false\n"),
     ("no 'points full' line", F, "\telseif mine and change <= 0 and points() > 0 then\n", "\telseif false then\n"),
     ("no off-side line", F, "\t\tif stat ~= \"None\" and not mine then\n", "\t\tif false then\n"),
-    ("the card shows points past the cap", F, "return stat, math.min(points(), S.ScoreBudget.Left(player)), true",
-     "return stat, points(), true"),
-    ("the card shows a drop below 0", F, "return stat, -math.min(have, points()), false", "return stat, -points(), false"),
+    ("the card shows points past the cap", D, "return stat, math.min(n, Deeds.Left(player)), true", "return stat, n, true"),
+    ("the card shows a drop below 0", D, "return stat, -math.min(ownStat(player, stat), n), false", "return stat, -n, false"),
     # --- results, signal, metric
     ("no FinisherEnd", F, "\tif player.Parent == Players then fx(player, \"FinisherEnd\", out) end\n", ""),
     ("no Picked signal", F, "\tFinisherService.Picked:Fire(player, out.Pick, card.Kind)\n", ""),
@@ -135,13 +138,10 @@ MUTATIONS = [
     ("hint Full and Zero swapped", F, "\treturn mine and \"Full\" or \"Zero\"\n", "\treturn mine and \"Zero\" or \"Full\"\n"),
     ("no Neutral hint", F, "\tif stat == \"None\" then return \"Neutral\" end\n", ""),
     ("a hint on a scoring option", F, "\tif score ~= 0 then return nil end\n", ""),
-    # --- ScoreBudget
-    ("the day never resets", B, "\tif b.Day ~= day then\n", "\tif false then\n"),
-    ("the cap never fills", B, "local give = math.min(n, math.max(0, perDay() - b.N))", "local give = n"),
-    ("Take never books", B, "\tb.N += give\n", ""),
-    ("a negative count kept", B, "\tb.N = math.max(0, math.floor(num(b.N)))\n", "\tb.N = math.floor(num(b.N))\n"),
-    ("a broken save not repaired", B, "\tif type(b) ~= \"table\" then\n\t\tb = {}\n\t\tdata.ScoreBudget = b\n\tend\n",
-     "\tif type(b) ~= \"table\" then return nil end\n"),
+    # --- the deeds ledger as the card uses it (its own suite: test_choice_card)
+    ("the day never resets", D, "\tif b.Day ~= day then b.Day, b.N = day, 0 end\n", ""),
+    ("the cap never fills", D, "local give = math.min(n, math.max(0, perDay() - b.N))", "local give = n"),
+    ("Take never books", D, "\tb.N += give\n", ""),
     # --- Config
     ("20 s to pick", C, "\tSeconds = 10,\n\tGrace = 1,\n", "\tSeconds = 20,\n\tGrace = 1,\n"),
     ("2 points a pick", C, "\tGrace = 1,\n\tPoints = 1,\n", "\tGrace = 1,\n\tPoints = 2,\n"),
@@ -150,7 +150,7 @@ MUTATIONS = [
      "\tKinds = { SlimeKing = true, CaptainClatter = true, BigSlime = true },"),
     ("the card on the Slime Prince instead", C, "\tKinds = { SlimeKing = true, CaptainClatter = true },",
      "\tKinds = { BigSlime = true, CaptainClatter = true },"),
-    ("cap 50", C, "Config.ScoreBudget = { PerDay = 5 }", "Config.ScoreBudget = { PerDay = 50 }"),
+    ("cap 50", C, "Config.Deeds = {\n\tPerDay = 6,", "Config.Deeds = {\n\tPerDay = 50,"),
 ]
 
 
@@ -165,11 +165,12 @@ def static() -> tuple[int, list[str]]:
             failures.append(message)
 
     main = read(SSS / "Main.server.luau")
-    for name in ("ScoreBudget", "FinisherService"):
+    for name in ("Deeds", "FinisherService"):
         check(main.count(f'"{name}"') == 2, f"Main lists {name} in INIT_ORDER and START_ORDER")
+    check('"ScoreBudget"' not in main and not (SSS / "ScoreBudget.luau").exists(), "ScoreBudget is retired (Deeds is the cap)")
     start = main[main.find("local START_ORDER"):]
     start = start[:start.find("\n}")]
-    check(0 <= start.find('"ScoreBudget"') < start.find('"PlayerService"')
+    check(0 <= start.find('"Deeds"') < start.find('"PlayerService"')
           and 0 <= start.find('"FinisherService"') < start.find('"PlayerService"'), "both start before PlayerService")
     check('key == "Finisher"' in main and "S.FinisherService.DebugOffer(player)" in main, "Studio DebugCommand Finisher")
     net = read(SHARED / "Net.luau")
@@ -201,7 +202,7 @@ def static() -> tuple[int, list[str]]:
     boost = re.search(r"GoldSources\s*=\s*\{([^}]*)\}", config)
     check(boost is None or "Finisher" not in boost.group(1), "Finisher is not a 2x gold source")
     doc = read(ROOT / "docs/design/king_finisher_2026-10-08.md")
-    for word in ("FinisherCard", "FinisherPick", "FinisherEnd", "ScoreBudget", "Finisher"):
+    for word in ("FinisherCard", "FinisherPick", "FinisherEnd", "Deeds", "Finisher"):
         check(word in doc, f"the contract names {word}")
     return count, failures
 
@@ -217,7 +218,7 @@ SUITE = Suite(
              "ContributorWindow gets Fx FinisherCard { Id, Kind, Seconds, Stat, Help { Item, N, Score }, Tickle { Gold, "
              "Score } }; c->s FinisherPick(id, Help | Tickle) only for the open card, its Id, within Seconds + Grace, once, "
              "0.3 s rate; Fx FinisherEnd { Id, Pick, Stat, Score, Item, N, Gold }. Help = 2 Jelly (a full bag pays the "
-             "rest at sell price), Tickle = 4 bank gold 'Finisher' (not a 2x source). My side +1 inside ScoreBudget "
+             "rest at sell price), Tickle = 4 bank gold 'Finisher' (not a 2x source). My side +1 inside Deeds "
              "(5 a KST day, the one P9 cap), the other side -1 (A23-58, floor 0, off-side / rank-down lines), Neutral "
              "the gift only; AddStat only (no weekly ranking). One open card at a time; not picked / left = None. "
              "Metric FinisherPick (Halo | Horns | None, faction). Signal Picked(player, pick, kind).",
