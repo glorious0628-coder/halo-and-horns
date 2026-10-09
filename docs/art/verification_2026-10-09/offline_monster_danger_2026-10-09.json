@@ -1,5 +1,5 @@
 {
-  "checks": 13,
+  "checks": 16,
   "failed": 0,
   "mutations": [
     {
@@ -14,6 +14,16 @@
     },
     {
       "name": "yellow from one level up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "dev2's band ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "dev2's MonsterLevel ignored",
       "applied": true,
       "caught": true
     },
