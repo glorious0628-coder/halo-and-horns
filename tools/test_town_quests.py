@@ -19,6 +19,7 @@ FILES = dict(UNARMED_FILES)
 FILES["FACTION_SOURCE"] = SSS / "FactionService.luau"
 FILES["PROGRESSION_SOURCE"] = SSS / "ProgressionService.luau"
 C, ST, L, F, PR = "CONFIG_SOURCE", "STORY_SOURCE", "LOOT_SOURCE", "FACTION_SOURCE", "PROGRESSION_SOURCE"
+U = "UTIL_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
@@ -137,7 +138,7 @@ MUTATIONS = [
     ("no clue toast", ST, "\tif def.Clue then notify(player, def.Clue, \"info\") end", "\tlocal _ = def.Clue"),
     ("the Halo bridge spot moves away", C, "Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -138)",
      "Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -100)"),
-    ("B pays no gold", C, 'Reward = { Potion = "HP", N = 3, Gold = 60 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Smokey: So who',
+    ("B pays no gold", C, 'Reward = { Potion = "HP", N = 3, Gold = 220 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Smokey: So who',
      'Reward = { Potion = "HP", N = 3 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Smokey: So who'),
     ("leaving the spot keeps the count", ST, "\t\t\t\t\t\tif mine then mine[key] = nil end\n", ""),
     ("a stay counts by ticks, not time", ST, "local held = math.min(obj.Stay, math.floor(os.clock() - mine[key]))",
@@ -217,12 +218,48 @@ MUTATIONS = [
      'Kind = "Sub", Title = "Lost & Found", ShortName = "Lost bear", Speaker = "Tiny",\n\t\t\tRequires = { Done = { "M1_1" }, Level = 1 },'),
     ("a woods-type B pays the town gold", C,
      'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },',
-     'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },'),
+     'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },'),
     ("S6 for Horns without its gold step", C,
      '\t\t\t\t\tHorns = { Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 80 } } },',
      '\t\t\t\t},'),
     ("the hero statue outside Halo Citadel", C, "Landmarks.HeroStatue = Vector3.new(0, 0, -370)",
      "Landmarks.HeroStatue = Vector3.new(0, 0, -200)"),
+    ('#71 the town B pays 60 again', C, 'Evil = { Label = "Hang it in my house", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },',
+     'Evil = { Label = "Hang it in my house", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },'),
+    ('#36 H2: the pick opens in the field', C, '\t\t\t\t{ Text = "Bring the lantern home", Guide = "HaloTown", Start = "The lantern! Take it home to Halo Citadel.",\n\t\t\t\t\tObj = { Type = "Enter", Zone = "HaloTown" } },\n',
+     ''),
+    ('#36 H2: home is the Crossroads', C, 'Start = "The lantern! Take it home to Halo Citadel.",\n\t\t\t\t\tObj = { Type = "Enter", Zone = "HaloTown" } },',
+     'Start = "The lantern! Take it home to Halo Citadel.",\n\t\t\t\t\tObj = { Type = "Enter", Zone = "Crossroads" } },'),
+    ('#37 H2 guides to the Crossroads', C, '{ Text = "Look around the fountain", Guide = "Fountain",',
+     '{ Text = "Look around the fountain", Guide = "Crossroads",'),
+    ('#36 H3: the pick opens in the field', C, '\t\t\t\t{ Text = "Back to Sir Gleam", Guide = "HaloTown", Obj = { Type = "Enter", Zone = "HaloTown" } },\n',
+     ''),
+    ('#18 H3 without a Start line', C, '\t\t\tStart = "Sir Gleam needs help in Halo Citadel!",\n',
+     ''),
+    ('#18 H5 without a Start line', C, '\t\t\tStart = "Bright needs a form signed. Find her in Halo Citadel!",\n',
+     ''),
+    ('#35 H6: the pick opens in the woods', C, '\t\t\t\t{ Text = "Back to the statues", Guide = "HeroStatue", Obj = { Type = "Near", Spot = "HeroStatue", Radius = 16 } },\n',
+     ''),
+    ('#35 H6: any spot near the statues', C, 'Obj = { Type = "Near", Spot = "HeroStatue", Radius = 16 } },\n\t\t\t\t{ Text = "The statues shine again!"',
+     'Obj = { Type = "Near", Spot = "HeroStatue", Radius = 120 } },\n\t\t\t\t{ Text = "The statues shine again!"'),
+    ('#38 H1 says near the woods', C, 'Slime Princes in the meadow %d/%d',
+     'Slime Princes near the woods %d/%d'),
+    ('#40 the oaths under Side', C, '\t\t["story:OathH"] = "Faction", ["story:OathR"] = "Faction", -- 빛 마을 점검 #40\n',
+     ''),
+    ('#2 the landmark tag renamed', C, '\tLandmarkTag = "StoryLandmark",\n',
+     '\tLandmarkTag = "StoryLandmarks",\n'),
+    ('#2 Near ignores the world marker', ST, '\t\t\t\tlocal spot = landmark(obj.Spot)',
+     '\t\t\t\tlocal spot = SQ.Landmarks[obj.Spot]'),
+    ('#2 kill-Near ignores the world marker', ST, '\t\t\tlocal spot = landmark(obj.Near)',
+     '\t\t\tlocal spot = SQ.Landmarks[obj.Near]'),
+    ('#2 a marker outside the workspace counts', U, 'if inst:GetAttribute("Spot") ~= key or not inst:IsDescendantOf(workspace) then return nil end',
+     'if inst:GetAttribute("Spot") ~= key then return nil end'),
+    ('#2 any marker moves any spot', U, 'if inst:GetAttribute("Spot") ~= key or not inst:IsDescendantOf(workspace) then return nil end',
+     'if not inst:IsDescendantOf(workspace) then return nil end'),
+    ('#2 the server skips the marker', ST, 'return Util.TaggedSpot(SQ.LandmarkTag or "StoryLandmark", id) or SQ.Landmarks[id]',
+     'return SQ.Landmarks[id]'),
+    ('#2 a marker never wins over Config', U, '\t\tif okPos and typeof(pos) == "Vector3" then return pos end\n',
+     ''),
     ("GW7 forgets the GW1 pick", C, 'LinesBy = { From = "GW1",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time',
      'LinesBy = { From = "GW7",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time'),
     ("a Neutral save gets the Halo / Horns subs", C,
@@ -268,7 +305,7 @@ SUITE = Suite(
     contract="A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to "
              "the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain "
              "(Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one "
-             "Enh70, B = 3 HP potions + 60 gold, 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half "
+             "Enh70, B = 3 HP potions + 220 gold (빛 마을 점검 #71), 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half "
              "a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows "
              "%d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need "
              "the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it "
@@ -282,7 +319,11 @@ SUITE = Suite(
              "LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / "
              "ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> "
              "TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past "
-             "step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line).",
+             "step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). 빛 마을 점검 2026-10-10: every Halo-only "
+             "pick happens in Halo Citadel (Npc Bright, or after a way-home step: H2 / H3 Enter HaloTown, H6 Near HeroStatue); "
+             "H2 step 1 guides to the Fountain; H3 / H5 have Start lines; H1 says 'in the meadow'; OathH / OathR sit in the "
+             "Faction tab; a workspace instance tagged StoryLandmark with Spot = <key> moves that landmark (Near steps and "
+             "kill-Near), a marker outside the workspace or for another key moves nothing.",
     limitations="NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag "
                 "StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are "
                 "modelled by moving the root and calling Refresh each second.",

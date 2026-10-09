@@ -5,7 +5,7 @@
 -- StoryQuestService, LootService, CombatService) + FACTION_EXTRACT and REBIRTH_EXTRACT; this file follows the world.
 
 local SQ0 = C0.StoryQuests
-local GOOD, EVIL = { Item = "Enh70", N = 1 }, { Potion = "HP", N = 3, Gold = 60 }
+local GOOD, EVIL = { Item = "Enh70", N = 1 }, { Potion = "HP", N = 3, Gold = 220 } -- 빛 마을 점검 #71: town B = 220
 
 -- a started story world: StoryQuestService.Start connects its remote + signals (the 1 s loop is never run: Refresh is
 -- called by hand), XP is recorded, the zone and the quest NPCs are scripted
@@ -27,10 +27,12 @@ local function townWorld(o)
 	local rs = w.Services.ReplicatedStorage
 	if not rs.FindFirstChild then rs.FindFirstChild = function() return nil end end
 	reg.ProgressionService.AddXP = function(p, n) table.insert(w.XP, { P = p, N = n }) end
+	w.Marks, w.WS = {}, ws
 	if o.Npcs ~= false then
 		w.Services.CollectionService = { GetTagged = function(_, tag)
 			local out = {}
 			if tag == SQ0.NpcTag then for _, n in w.Npcs do table.insert(out, n) end end
+			if tag == "StoryLandmark" then for _, m in w.Marks do table.insert(out, m) end end
 			return out
 		end }
 	end
@@ -43,6 +45,15 @@ local function townWorld(o)
 		part.Name, part.Position = "Npc" .. id, pos
 		part.Attrs.NpcId = id
 		table.insert(self.Npcs, part)
+		return part
+	end
+	-- 빛 마을 점검 #2: a landmark marker (attribute Spot), inside the workspace unless outside == true
+	function w:Mark(spot, pos, outside)
+		local part = newInstance("Part", self)
+		part.Name, part.Position = "Mark" .. spot, pos
+		part.Attrs.Spot = spot
+		part.IsDescendantOf = function(_, anc) return outside ~= true and anc == ws end
+		table.insert(self.Marks, part)
 		return part
 	end
 	function w:MoveTo(p, pos)
@@ -117,7 +128,7 @@ runGroup("config", function()
 			show(last and { last.Npc, obj and obj.Type }))
 		check(obj and obj.Good and obj.Evil and sameReward(obj.Good.Reward, GOOD) and sameReward(obj.Evil.Reward, EVIL)
 			and obj.Good.Points == 1 and obj.Evil.Points == 1,
-			id .. ": A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point", show(obj and { obj.Good, obj.Evil }))
+			id .. ": A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point", show(obj and { obj.Good, obj.Evil }))
 		local first = def and def.Steps[1]
 		check(first and first.Obj.Type == "Talk" and first.Npc == last.Npc and SQ.Speakers[first.Npc] ~= nil and def.Speaker == first.Npc,
 			id .. ": starts by talking to the same NPC (a speaker name)", show(first and first.Npc))
@@ -292,8 +303,8 @@ runGroup("r1-evil", function()
 	local bank, infamy, enh, hp = d.BankGold or 0, d.Infamy or 0, d.Items and d.Items.Enh70 or 0, d.HPPotionCount or 0
 	w:Act(p, "R1", "Choose", "Evil")
 	check(d.Story.Pick.R1 == "Evil" and (d.Infamy or 0) == infamy + 1, "B: Pick 'Evil', infamy +1", show({ d.Story.Pick.R1, d.Infamy }))
-	check((d.HPPotionCount or 0) == hp + 3 and (d.Items.Enh70 or 0) == enh and d.BankGold == bank + 60 + 120,
-		"B: 3 HP potions + 60 gold (then the quest's 120)", show({ d.HPPotionCount - hp, d.BankGold - bank }))
+	check((d.HPPotionCount or 0) == hp + 3 and (d.Items.Enh70 or 0) == enh and d.BankGold == bank + 220 + 120,
+		"B: 3 HP potions + 220 gold (then the quest's 120)", show({ d.HPPotionCount - hp, d.BankGold - bank }))
 	check(d.Story.Done.R1 == true, "R1 done")
 end)
 
@@ -325,7 +336,7 @@ runGroup("n3", function()
 	check(tq.St == #SQ0.Defs.N3.Steps and e.Story.Pick.N3 == nil, "a Neutral save cannot send Good / Evil", show(e.Story.Pick.N3))
 	w:Act(q, "N3", "Choose", "B")
 	check(e.Story.Pick.N3 == "B" and (e.Honor or 0) == honor and (e.Infamy or 0) == 0 and (e.HPPotionCount or 0) == 3
-		and e.BankGold == bank + 60 + 120, "Neutral B: recorded, no score, Evil's reward", show({ e.Story.Pick.N3, e.HPPotionCount, e.BankGold - bank }))
+		and e.BankGold == bank + 220 + 120, "Neutral B: recorded, no score, Evil's reward", show({ e.Story.Pick.N3, e.HPPotionCount, e.BankGold - bank }))
 end)
 
 ------------------------------------------------------------------ 5b. A23-58: an off-side pick lowers my own score
@@ -438,7 +449,7 @@ runGroup("a23-58", function()
 	local hp, bank = d2.HPPotionCount or 0, d2.BankGold or 0
 	w:Act(p2, "H1", "Choose", "Evil")
 	check(d2.Honor == 4 and (d2.Infamy or 0) == 0, "Halo + devil pick: Honor -1, Infamy stays 0", show({ d2.Honor, d2.Infamy }))
-	check((d2.HPPotionCount or 0) == hp + 3 and d2.BankGold == bank + 60 + 120, "the B reward is paid as usual",
+	check((d2.HPPotionCount or 0) == hp + 3 and d2.BankGold == bank + 220 + 120, "the B reward is paid as usual",
 		show({ d2.HPPotionCount - hp, d2.BankGold - bank }))
 	local l2 = lines(p2, n2)
 	check(has(l2, string.format(T.OffSideHalo, 1)) and not has(l2, T.RankDownHalo), "'Not very angel-like! Honor -1', no rank line (5 -> 4)",
@@ -1307,8 +1318,8 @@ runGroup("subs18-data", function()
 				show(pick and pick.Type))
 			local town = TOWN_TYPE[id]
 			check(sameReward(pick.Good.Reward, { Item = "Enh70", N = 1 })
-				and sameReward(pick.Evil.Reward, { Potion = "HP", N = 3, Gold = town and 60 or 192 }),
-				id .. ": A = one 70% scroll, B = 3 HP potions + " .. (town and "60" or "192") .. " gold", show({ pick.Good.Reward, pick.Evil.Reward }))
+				and sameReward(pick.Evil.Reward, { Potion = "HP", N = 3, Gold = town and 220 or 192 }),
+				id .. ": A = one 70% scroll, B = 3 HP potions + " .. (town and "220" or "192") .. " gold", show({ pick.Good.Reward, pick.Evil.Reward }))
 			check(town and sameReward(def.Reward, { GoldN = 120, XPBar = 0.5 }) or (not town and sameReward(def.Reward, { Gold = 2, XP = 2 })),
 				id .. ": " .. (town and "town-type 120 gold + half a bar" or "woods-type 2 minutes of gold + XP"), show(def.Reward))
 			check(type(def.Finish) == "string" and string.find(def.Finish, "?", 1, true) ~= nil, id .. ": ends with a question", def.Finish)
@@ -1396,8 +1407,8 @@ runGroup("subs18-flow", function()
 	check(tr.St == 3, "home: the pick", show(tr))
 	local infamy, bank = d.Infamy or 0, d.BankGold or 0
 	w:Act(p, "S6", "Choose", "Evil")
-	check(d.Story.Done.S6 and d.Story.Pick.S6 == "Evil" and (d.Infamy or 0) == infamy + 1 and (d.BankGold or 0) >= bank + 60 + 120,
-		"Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold", show({ d.Infamy, (d.BankGold or 0) - bank }))
+	check(d.Story.Done.S6 and d.Story.Pick.S6 == "Evil" and (d.Infamy or 0) == infamy + 1 and (d.BankGold or 0) >= bank + 220 + 120,
+		"Count it twice: Infamy +1, 3 potions + 220 gold, then 120 gold", show({ d.Infamy, (d.BankGold or 0) - bank }))
 	-- XR1 through Tiny (no NPC placed: anywhere), the King Slime, the pick
 	local q, e = joinDone(w, 1302, "Halo", 6, "M1_4")
 	local x = w:Track(e, "XR1")
@@ -1420,6 +1431,178 @@ runGroup("subs18-flow", function()
 	local card = panels[#panels]
 	check(card and card.Arg.Id == "GW7" and card.Arg.Var == "Evil", "GW7 at the camp: Grabbo remembers the MORE vote (Var Evil)",
 		show(card and card.Arg))
+end)
+
+------------------------------------------------------------------ 빛 마을 점검 2026-10-10 (#2, #18, #35-#38, #40, #71)
+local function halo(w, userId, level, through)
+	local p, d = joinDone(w, userId, "Halo", level, through)
+	w.ZoneOf[p] = "SlimeMeadow"
+	return p, d
+end
+local function storyPanels(panels, id)
+	local n = 0
+	for _, pn in panels do if pn.Kind == "Story" and pn.Arg and pn.Arg.Id == id then n += 1 end end
+	return n
+end
+
+runGroup("halo-check-data", function()
+	local D = SQ0.Defs
+	check(D.H1.Steps[3].Text == "Slime Princes in the meadow %d/%d", "#38 H1: any Slime Prince in the meadow (the row says so)",
+		D.H1.Steps[3].Text)
+	check(D.H2.Steps[1].Guide == "Fountain", "#37 H2 step 1 guides to the fountain", D.H2.Steps[1].Guide)
+	check(type(D.H3.Start) == "string" and D.H3.Start ~= "" and type(D.H5.Start) == "string" and D.H5.Start ~= "",
+		"#18 H3 / H5 have a Start line", show({ D.H3.Start, D.H5.Start }))
+	-- #56: every Halo-only pick happens in Halo Citadel: at Bright (Npc) or right after a step that brings you home
+	local function home(step)
+		local o = step and step.Obj
+		if not o then return false end
+		if o.Type == "Enter" then return o.Zone == "HaloTown" or o.Zone == "OwnTown" end
+		if o.Type == "Near" then
+			local spot = SQ0.Landmarks[o.Spot]
+			return spot ~= nil and C0.ZoneAt(spot).Id == "HaloTown"
+		end
+		return false
+	end
+	local seen = 0
+	for id, def in D do
+		local f = def.Factions
+		if type(f) == "table" and f.Halo == true and f.Horns == nil and f.Neutral == nil then
+			for i, step in def.Steps do
+				if step.Obj and step.Obj.Type == "Choice" then
+					seen += 1
+					check(step.Npc ~= nil or home(def.Steps[i - 1]), id .. " pick " .. i .. ": in Halo Citadel (Npc, or after a way home)",
+						show({ step.Npc, def.Steps[i - 1] and def.Steps[i - 1].Obj }))
+					check(step.Panel == true, id .. " pick " .. i .. ": a card", "")
+				end
+			end
+		end
+	end
+	check(seen >= 6, "the Halo-only picks were all looked at (H1 H2 H3 H5 H6 OathH)", seen)
+	check(C0.QuestTab("story:OathH", "Sub") == "Faction" and C0.QuestTab("story:OathR", "Sub") == "Faction",
+		"#40 the oaths sit in the Faction tab", show({ C0.QuestTab("story:OathH", "Sub"), C0.QuestTab("story:OathR", "Sub") }))
+	check(SQ0.LandmarkTag == "StoryLandmark", "#2 landmark marker tag", SQ0.LandmarkTag)
+end)
+
+runGroup("halo-check-h2", function()
+	local w = townWorld({ Npcs = false })
+	local panels = panelsOf(w)
+	local p, d = halo(w, 1401, 8, "M1_4")
+	local tr = w:Track(d, "H2")
+	check(tr and tr.St == 1, "H2 offered", show(tr))
+	w.ZoneOf[p] = "Crossroads"
+	local f = SQ0.Landmarks.Fountain
+	w:MoveTo(p, vec(f.X + 3, 0, f.Z))
+	w:Tick(p, 1)
+	check(tr.St == 2, "the fountain: on to the slimes", show(tr))
+	w.ZoneOf[p] = "SlimeMeadow"
+	local n0 = #w.Notices
+	w:Kill(p, "Slime", 5)
+	w:Tick(p, 1)
+	check(tr.St == 3 and storyPanels(panels, "H2") == 0, "#36 5 slimes: take it home first (no pick card in the meadow)",
+		show({ tr.St, storyPanels(panels, "H2") }))
+	check(indexOf(w:NoticesFor(p, n0), SQ0.Defs.H2.Steps[3].Start) ~= nil, "the 'take it home' line", show(w:NoticesFor(p, n0)))
+	w.ZoneOf[p] = "HaloTown"
+	w:Tick(p, 1)
+	check(tr.St == 4 and storyPanels(panels, "H2") == 1, "home in Halo Citadel: the pick card opens there", show({ tr.St, storyPanels(panels, "H2") }))
+	local hp, bank = d.HPPotionCount or 0, d.BankGold or 0
+	w:Act(p, "H2", "Choose", "Evil")
+	check(d.Story.Done.H2 and (d.HPPotionCount or 0) == hp + 3 and (d.BankGold or 0) == bank + 220 + 120,
+		"#71 Hang it in my house: 3 HP potions + 220 gold, then 120", show({ (d.HPPotionCount or 0) - hp, (d.BankGold or 0) - bank }))
+	-- an old save that waited at the pick (old step 3) now walks home first
+	local q, e = halo(w, 1402, 8, "M1_4")
+	local t2 = w:Track(e, "H2")
+	t2.St = 3
+	w:Tick(q, 1)
+	check(t2.St == 3, "an old save at the old pick step: in the meadow it waits for the way home", show(t2))
+	w.ZoneOf[q] = "HaloTown"
+	w:Tick(q, 1)
+	check(t2.St == 4, "... and gets the card in Halo Citadel", show(t2))
+end)
+
+runGroup("halo-check-h3", function()
+	local w = townWorld({ Npcs = false })
+	local panels = panelsOf(w)
+	local p, d = halo(w, 1411, 12)
+	local tr = w:Track(d, "H3")
+	check(tr ~= nil, "H3 offered", show(d.Story.Subs))
+	if not tr then return end
+	tr.St = 2
+	local before = storyPanels(panels, "H3")
+	w:Kill(p, "Slime", 6)
+	w:Tick(p, 1)
+	check(tr.St == 3 and storyPanels(panels, "H3") == before, "#36 6 slimes: back to Sir Gleam first (no card in the meadow)",
+		show({ tr.St, storyPanels(panels, "H3") - before }))
+	w.ZoneOf[p] = "HaloTown"
+	w:Tick(p, 1)
+	check(tr.St == 4 and storyPanels(panels, "H3") == before + 1, "in Halo Citadel: Sir Gleam's card", show({ tr.St, storyPanels(panels, "H3") }))
+end)
+
+runGroup("halo-check-h6", function()
+	local w = townWorld({ Npcs = false })
+	local panels = panelsOf(w)
+	local p, d = halo(w, 1421, 22)
+	local tr = w:Track(d, "H6")
+	check(tr ~= nil, "H6 offered", show(d.Story.Subs))
+	if not tr then return end
+	tr.St = 3 -- after the goblins
+	w.ZoneOf[p] = "GoblinWoods"
+	w:MoveTo(p, vec(400, 0, -60))
+	w:Tick(p, 1)
+	check(tr.St == 3 and storyPanels(panels, "H6") == 0, "#35 in the woods: no statue card", show({ tr.St, storyPanels(panels, "H6") }))
+	local hs = SQ0.Landmarks.HeroStatue
+	w.ZoneOf[p] = "HaloTown"
+	w:MoveTo(p, vec(hs.X + 5, 0, hs.Z))
+	w:Tick(p, 1)
+	check(tr.St == 4 and storyPanels(panels, "H6") == 1, "at the hero statues: the card opens", show({ tr.St, storyPanels(panels, "H6") }))
+end)
+
+runGroup("halo-check-landmark", function()
+	local w = townWorld()
+	local hs = SQ0.Landmarks.HeroStatue
+	local moved = vec(hs.X, 0, hs.Z - 60)
+	local p, d = halo(w, 1431, 22)
+	local tr = w:Track(d, "H6")
+	check(tr ~= nil, "H6 offered", show(d.Story.Subs))
+	if not tr then return end
+	tr.St = 3
+	w.ZoneOf[p] = "HaloTown"
+	w:Mark("HeroStatue", moved, true) -- a kit copy outside the workspace: ignored
+	w:Mark("LavaCrack", moved) -- another spot's marker: ignored
+	w:MoveTo(p, vec(moved.X + 3, 0, moved.Z))
+	w:Tick(p, 1)
+	check(tr.St == 3, "#2 a marker outside the workspace or for another spot moves nothing", show(tr))
+	w:MoveTo(p, vec(hs.X + 3, 0, hs.Z))
+	w:Tick(p, 1)
+	check(tr.St == 4, "... the Config spot still works", show(tr))
+	-- a placed marker moves the spot: the old Config place no longer counts, the marker does
+	local q, e = halo(w, 1432, 22)
+	local t2 = w:Track(e, "H6")
+	t2.St = 3
+	w.ZoneOf[q] = "HaloTown"
+	w:Mark("HeroStatue", moved)
+	w:MoveTo(q, vec(hs.X + 3, 0, hs.Z))
+	w:Tick(q, 1)
+	check(t2.St == 3, "#2 with the statue marker placed: the old spot no longer counts", show(t2))
+	w:MoveTo(q, vec(moved.X + 3, 0, moved.Z))
+	w:Tick(q, 1)
+	check(t2.St == 4, "... standing at the marker does", show(t2))
+	-- kills with Near follow a marker too (S6 Halo: slimes by the meadow arrival)
+	local r, f = halo(w, 1433, 6, "M1_4")
+	local t3 = w:Track(f, "S6")
+	check(t3 and t3.St == 1, "S6 offered", show(f.Story.Subs))
+	if not t3 then return end
+	local arrival = SQ0.Landmarks.MeadowArrival
+	local far = vec(arrival.X + 300, 0, arrival.Z + 300)
+	w:Mark("MeadowArrival", far)
+	local function slimeAt(pos)
+		w.Registry.MonsterService.MonsterKilled:Fire(r, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
+			Position = pos, WarPoints = 0 })
+		w:Flush()
+	end
+	slimeAt(arrival)
+	check(math.floor(t3.P or 0) == 0, "#2 a kill at the old arrival spot no longer counts", show(t3))
+	slimeAt(far)
+	check(math.floor(t3.P or 0) == 1, "... a kill at the marker does", show(t3))
 end)
 
 finish()
