@@ -100,6 +100,8 @@ def night(variant):
     wind = band(wind, 120, 520) * (1.0 if variant == "a" else 1.6)
     air = band(rng.standard_normal(n), 6500, 9500) * 0.04 * slow(rng, n, 0.2, 0.5)
     y = crickets * 0.30 + wind * 1.0 + air
+    # 검수 10/10: nothing above ~6 kHz that tires the ear on a long listen (a 2nd-order low-pass at 5.8 kHz + the air band halved)
+    y = lowp(y - air * 0.5, 5800, 2)
     return finish(y, -31.0)
 
 
