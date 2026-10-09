@@ -118,5 +118,38 @@
       "WindowClose": "rbxassetid://96155752903162",
       "WindowOpen": "rbxassetid://72025655652305"
     }
+  },
+  "bgm": {
+    "about": "Background music + ambient loops (A23-100). Firefly Generate Soundtrack / own synthesis. Mono 48 kHz wav, Looped=true, uploaded 2026-10-10 as Darugi_S2 (Restricted). Tracks are -24 LUFS; Boss layers (art/sfx/bgm/cand/BossLayer_*.wav, same length to the sample as their track, -27 LUFS) are not uploaded yet.",
+    "tracks": {
+      "HaloTown": {
+        "id": "rbxassetid://108661141883977",
+        "seconds": 88.646,
+        "bpm": 86.6,
+        "file": "art/sfx/bgm/HaloTown.wav",
+        "zone": "HaloTown"
+      },
+      "HornsTown": {
+        "id": "rbxassetid://123430641290441",
+        "seconds": 63.264,
+        "bpm": 121.4,
+        "file": "art/sfx/bgm/HornsTown.wav",
+        "zone": "HornsTown"
+      }
+    },
+    "ambient": {
+      "WaterFountain": {
+        "id": "rbxassetid://136139057502455",
+        "seconds": 20,
+        "lufs": -30,
+        "note": "3D, RollOffMaxDistance ~40, outside the MaxPlaying pool"
+      },
+      "WaterWaterfall": {
+        "id": "rbxassetid://85234404217631",
+        "seconds": 20,
+        "lufs": -30,
+        "note": "3D, RollOffMaxDistance ~40, outside the MaxPlaying pool"
+      }
+    }
   }
 }
