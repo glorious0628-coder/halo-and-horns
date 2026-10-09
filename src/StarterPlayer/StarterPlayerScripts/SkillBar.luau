@@ -683,7 +683,7 @@ function LEARN.Show(b, st)
 	-- A23-81: the first skill (this moment comes once per account: the slot opens while I play) brings the keys tip on
 	-- keyboards, after my first press of it, or TipLate s later if I never press
 	if slot == LEARN.TipSlot and not IS_TOUCH then
-		LEARN.TipPending = true
+		LEARN.TipPending = (Config.Nudges or {}).KeysTip ~= false -- 검수 10/09: the tip card is off (Config.Nudges.KeysTip)
 		task.delay(LEARN.TipLate, LEARN.Tip)
 	end
 end

@@ -1,9 +1,14 @@
 {
-  "checks": 21,
+  "checks": 23,
   "failed": 0,
   "mutations": [
     {
       "name": "potions from Lv1",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "potions hidden at the start again",
       "applied": true,
       "caught": true
     },

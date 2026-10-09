@@ -1388,12 +1388,15 @@ end
 -- 검수 2026-10-09 (UI clutter review ④, "show it when it is needed"): the potion pair shows once I hold a potion, my HP
 -- fell under LowHP once this session, or from Level on; the pouch line once I carry gold or from Level on
 -- (Config.HudReveal.Shows, pure: VitalsUI / HUD and the offline test call it)
-Config.HudReveal = { Level = 5, LowHP = 0.5 }
+-- 검수 10/09 (user: "물약 칸 있어야지. 퀵 슬롯!"): PotionsAlways = the potion pair shows from the start (the pouch keeps
+-- its rule)
+Config.HudReveal = { Level = 5, LowHP = 0.5, PotionsAlways = true }
 function Config.HudReveal.Shows(kind, s)
 	s = type(s) == "table" and s or {}
 	local lv = tonumber(s.Level) or 0
 	if lv >= Config.HudReveal.Level then return true end
 	if kind == "Potions" then
+		if Config.HudReveal.PotionsAlways == true then return true end
 		local hp, maxHP = tonumber(s.HP) or 0, tonumber(s.MaxHP) or 0
 		return (tonumber(s.Potions) or 0) > 0 or (maxHP > 0 and hp > 0 and hp < maxHP * Config.HudReveal.LowHP)
 	elseif kind == "Pouch" then
@@ -4372,6 +4375,17 @@ Config.Loot = {
 -- game dev 1 sent (2026-10-09)
 Config.Nudges = {
 	DailiesOpened = false, -- "Daily quests are open! ..." after the first [Claim] (HUD parseQuests)
+	-- 검수 10/09 decision (docs/design/nudge_list_2026-10-09.md): client
+	WarIntro = false, -- "Crown War: win points for your side!" when the war bar first shows (HUD.ApplyFold)
+	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
+	SackLore = false, -- "Stolen gold carries a grudge ..." at the first sack arrow (EventHUD)
+	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)
+	KeysTip = false, -- the keys tip card after the first skill (SkillBar LEARN.Tip)
+	-- server (the service owners read these keys; nil / true = shown as before)
+	GuideDone = false, -- "That's all from me! Now hunt and get stronger." (QuestService)
+	EnteredSafe = false, -- "Safe zone." on every safe-zone entry (ZoneService)
+	DailyReady = false, -- "Daily quest done! Press [Claim]." (the line already says Done! / [Claim])
+	WeaponUsableNow = false, -- "You can now use %s! ..." when a weapon's level limit opens
 }
 
 Config.ChatText = {

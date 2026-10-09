@@ -125,6 +125,7 @@ local function run(opts)
 	Config = cfn()
 	Config.Skills.Unlock = { Q = 5, Z = 15, X = 25 } -- A23-71 numbers (dev2 moves Config there)
 	Config.Skills.ZEnabled, Config.Skills.XEnabled = true, true -- every slot in play for this test
+	if opts.KeysTip ~= nil then Config.Nudges.KeysTip = opts.KeysTip end -- 검수 10/09: the tip card is off in the real Config
 	local bfn = assert(loadstring(BAR_SOURCE, "=SkillBar"))
 	setfenv(bfn, env)
 	local SB = bfn()
@@ -262,7 +263,7 @@ end
 -- 6. A23-81: the keys tip - once, on keyboards, 2.5 s after the first Q press (or 25 s after the learn moment), as a calm
 -- PauseCard tip whose [Open Settings] opens Settings on its Keys tab
 do
-	local _, W7, set7 = run({ Attr = copy(base) })
+	local _, W7, set7 = run({ Attr = copy(base), KeysTip = true })
 	local SB7 = _
 	set7("Level", 5)
 	check(#W7.Cards == 0, "no keys tip at the learn moment itself", #W7.Cards)
@@ -282,17 +283,24 @@ do
 	check(#W7.Cards == 1, "a later skill (Z) brings no tip", #W7.Cards)
 end
 do
-	local _, W8, set8 = run({ Attr = copy(base) })
+	local _, W8, set8 = run({ Attr = copy(base), KeysTip = true })
 	set8("Level", 5)
 	runDelays(W8, 20, 30)
 	check(#W8.Cards == 1 and W8.Cards[1][1] == "Tip", "no press: the tip comes 25 s after the learn moment", #W8.Cards)
 end
 do
-	local SB9, W9, set9 = run({ Attr = copy(base), Touch = true })
+	local SB9, W9, set9 = run({ Attr = copy(base), Touch = true, KeysTip = true })
 	set9("Level", 5)
 	SB9.Use("Q")
 	runDelays(W9, 0, 30)
 	check(#W9.Cards == 0, "phones: no keys tip", #W9.Cards)
+end
+do -- 검수 10/09 (user: too kind): the real Config has the keys tip card off (Config.Nudges.KeysTip = false)
+	local SB10, W10, set10 = run({ Attr = copy(base) })
+	set10("Level", 5)
+	SB10.Use("Q")
+	runDelays(W10, 0, 30)
+	check(#W10.Cards == 0, "the real Config: no keys tip card at all", #W10.Cards)
 end
 
 print(string.format("SKILL_LEARN_SUMMARY checks=%d failed=%d", checks, failed))

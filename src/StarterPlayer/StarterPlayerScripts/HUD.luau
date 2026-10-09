@@ -3273,8 +3273,8 @@ function L.ApplyFold(changed)
 	local hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)
 	if ui.war and ui.war.Visible == hideWar then
 		ui.war.Visible = not hideWar
-		if changed and not hideWar then -- it comes in during play: one short line says what it is
-			pcall(UIKit.Toast, TXT.WarIntro, "info")
+		if changed and not hideWar then -- it comes in during play: one short line says what it is (Config.Nudges.WarIntro)
+			if (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, "info") end
 			if type(UIKit.NewTag) == "function" then pcall(UIKit.NewTag, ui.war) end
 		end
 	end
@@ -4738,7 +4738,7 @@ function L.PinnedTap(e, r)
 		elseif zone ~= TUT_GUIDE_ZONE then
 			showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, "zone:" .. TUT_GUIDE_ZONE, 30)
 		else
-			UIKit.Toast(TXT.HuntSlimes, "info", 3)
+			if (Config.Nudges or {}).HuntSlimes ~= false then UIKit.Toast(TXT.HuntSlimes, "info", 3) end
 		end
 	end
 end

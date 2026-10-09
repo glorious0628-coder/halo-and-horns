@@ -31,9 +31,10 @@ STATIC = [
      ['\tlocal hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)\n',
       "\tif ui.war and ui.war.Visible == hideWar then\n\t\tui.war.Visible = not hideWar\n"]),
     ("coming in during play: one toast and a NEW! tag",
-     ["\t\tif changed and not hideWar then", "\t\t\tpcall(UIKit.Toast, TXT.WarIntro, \"info\")\n",
+     ["\t\tif changed and not hideWar then", "\t\t\tif (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, \"info\") end\n",
       "pcall(UIKit.NewTag, ui.war)"]),
     ("the line is short English", ['\tWarIntro = "Crown War: win points for your side!",']),
+    ("검수 10/09 (user: too kind): the toast is switched off in Config.Nudges", ["\tWarIntro = false, --"], "CONFIG"),
 ]
 MUTATIONS = [
     ("hidden on the way to the Forge only", "\treturn step == tonumber(steps.Kill) or step == tonumber(steps.Forge)\n",
@@ -44,7 +45,7 @@ MUTATIONS = [
      "\treturn step ~= tonumber(steps.Done)\n"),
     ("hidden while not loaded", '\tif type(step) ~= "number" or type(steps) ~= "table" then return false end\n',
      '\tif type(step) ~= "number" or type(steps) ~= "table" then return true end\n'),
-    ("no toast", "\t\t\tpcall(UIKit.Toast, TXT.WarIntro, \"info\")\n", ""),
+    ("no toast", "\t\t\tif (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, \"info\") end\n", ""),
     ("the bar never hidden", "\t\tui.war.Visible = not hideWar\n", "\t\tui.war.Visible = true\n"),
     ("a toast on every login", "\t\tif changed and not hideWar then", "\t\tif not hideWar then"),
 ]
@@ -91,8 +92,10 @@ def run(src: str, config: str) -> tuple[int, int, str]:
     out = proc.stdout + proc.stderr
     mm = re.search(r"WAR_INTRO_SUMMARY checks=(\d+) failed=(\d+)", out)
     failed = int(mm[2]) if mm else 1
-    for name, needles in STATIC:
-        ok = all(src.count(n) == 1 for n in needles)
+    for entry in STATIC:
+        name, needles = entry[0], entry[1]
+        text = config if len(entry) > 2 and entry[2] == "CONFIG" else src
+        ok = all(text.count(n) == 1 for n in needles)
         out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + name
         failed += 0 if ok else 1
     return (int(mm[1]) if mm else 0) + len(STATIC), failed, out

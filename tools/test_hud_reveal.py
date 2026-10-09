@@ -53,7 +53,8 @@ STATIC = [
         "\tlocal fits = L.PouchOn == true and need <="]),
 ]
 MUTATIONS = [
-    ("CONFIG", "potions from Lv1", "Config.HudReveal = { Level = 5, LowHP = 0.5 }", "Config.HudReveal = { Level = 1, LowHP = 0.5 }"),
+    ("CONFIG", "potions from Lv1", "Config.HudReveal = { Level = 5, LowHP = 0.5,", "Config.HudReveal = { Level = 1, LowHP = 0.5,"),
+    ("CONFIG", "potions hidden at the start again", "LowHP = 0.5, PotionsAlways = true }", "LowHP = 0.5, PotionsAlways = false }"),
     ("CONFIG", "low HP never counts", "or (maxHP > 0 and hp > 0 and hp < maxHP * Config.HudReveal.LowHP)", ""),
     ("CONFIG", "the pouch always shows", "\t\treturn (tonumber(s.Carried) or 0) > 0\n", "\t\treturn true\n"),
     ("HUD", "every fight unfolds the chips", '\tlocal keys = string.gsub(tostring(wantKey or ""), "Combat,", "")\n',
@@ -82,6 +83,11 @@ for _, src in { SHOWS_SOURCE, SIG_SOURCE } do
 	f()
 end
 local S = Config.HudReveal.Shows
+-- 검수 10/09 (user: "quick slots!"): the potion pair shows from the start
+check("PotionsAlways: the potion row from the start (Lv1, nothing held)", Config.HudReveal.PotionsAlways == true
+	and S("Potions", { Level = 1, Potions = 0, HP = 100, MaxHP = 100 }) == true and S("Potions", {}) == true)
+check("PotionsAlways leaves the pouch rule alone", S("Pouch", { Level = 1, Carried = 0 }) == false)
+Config.HudReveal.PotionsAlways = false -- the old rule below (kept for a switch back)
 check("Lv1, no potion, full HP: no potion row", S("Potions", { Level = 1, Potions = 0, HP = 100, MaxHP = 100 }) == false)
 check("a potion in the bag: the row", S("Potions", { Level = 1, Potions = 1, HP = 100, MaxHP = 100 }) == true)
 check("HP under half: the row", S("Potions", { Level = 1, Potions = 0, HP = 40, MaxHP = 100 }) == true)

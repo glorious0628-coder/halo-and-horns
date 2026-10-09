@@ -2014,7 +2014,7 @@ local function announceLevelUp(level)
 		uiCall("Announce", base .. " · " .. textOr("Unlocked", TXT_UNLOCKED_FALLBACK, table.concat(reached, ", ")))
 		-- crown-shard story one-liners, only at zone unlocks and only before the first rebirth
 		local lines = Config.StoryLines
-		if type(lines) == "table" and asNum(myAttr("Rebirths", 0), 0) == 0 then
+		if type(lines) == "table" and asNum(myAttr("Rebirths", 0), 0) == 0 and (Config.Nudges or {}).ZoneStoryLine ~= false then
 			local delayT = 1.2
 			for _, zoneId in reachedZones do
 				local line = plainLine(lines[zoneId])
