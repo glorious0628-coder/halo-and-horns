@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 128,
+  "checks": 157,
   "failedChecks": 0,
-  "namedChecks": 128,
+  "namedChecks": 157,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -249,6 +249,156 @@
     },
     {
       "group": "waits for a hunter",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "a Part named KingSpawn: its Position",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "SpawnEvent gets the boss's MaxY (the hill top stands above normal ground)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "a Part with KingSpawn = true: its Position",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "a Vector3 KingSpawn attribute first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "KingSpawn = false: not a marker (the hill / Spawn instead)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the shrine marker part",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "the meadow hill top (14.6) is walkable ground (max 26)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "30 is above normal ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "... but fine with a boss's MaxY 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "a lower MaxY never narrows the normal range",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "below GROUND_MIN_Y (the shore): never",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "no ground hit: nil, noHit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground on a hill (MonsterService.groundPoint)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "the King Slime is bigger (Scale 3.2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "HitPad = its body radius - a normal slime's (3.3 at Scale 3.2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "a player at the body's edge is reached",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "regular monsters: no pad (the Slime Prince too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "other big bosses get theirs too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "GetMonstersInRadius adds the pad",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "CombatService's target search adds the pad",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "the Flower Slime is purple (A23-92)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a big boss is hit at its body's edge (A23-92)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -662,6 +812,30 @@
       "fail": 0
     },
     {
+      "group": "clatter war pool",
+      "check": "+20 personal points each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter war pool",
+      "check": "each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter war pool",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clatter war pool",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "clatter extras",
       "check": "DebugSpawn Clatter",
       "pass": 1,
@@ -780,9 +954,9 @@
   "staticChecks": 11,
   "staticFailures": [],
   "mutations": {
-    "total": 42,
-    "applied": 42,
-    "caught": 42,
+    "total": 53,
+    "applied": 53,
+    "caught": 53,
     "skipped": false,
     "results": [
       {
@@ -838,9 +1012,12 @@
         "newFailingChecks": [
           "schedule :: at the shrine's KingSpawn, radius 2",
           "spot fallbacks :: the shrine wins over the hill",
+          "the shrine marker part :: a Part named KingSpawn: its Position",
+          "the shrine marker part :: a Part with KingSpawn = true: its Position",
+          "the shrine marker part :: a Vector3 KingSpawn attribute first",
           "two bosses :: the King Slime at its shrine"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 6
       },
       {
         "mutation": "hill for every boss",
@@ -945,13 +1122,13 @@
         "crashed": false,
         "newFailingChecks": [
           "clatter extras :: group ran to the end without a Lua error",
+          "clatter war pool :: group ran to the end without a Lua error",
           "defeat :: group ran to the end without a Lua error",
           "retry / off / debug :: group ran to the end without a Lua error",
           "schedule :: group ran to the end without a Lua error",
-          "spot fallbacks :: group ran to the end without a Lua error",
-          "time up / lost :: group ran to the end without a Lua error"
+          "spot fallbacks :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 10
       },
       {
         "mutation": "no Defeated signal",
@@ -1115,6 +1292,109 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "no marker part",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: a Part named KingSpawn: its Position",
+          "the shrine marker part :: a Part with KingSpawn = true: its Position"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any part is a marker",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: a Part named KingSpawn: its Position",
+          "the shrine marker part :: a Part with KingSpawn = true: its Position"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no MaxY to SpawnEvent",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: SpawnEvent gets the boss's MaxY (the hill top stands above normal ground)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the King without MaxY",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the shrine marker part :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no hit pad",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: HitPad = its body radius - a normal slime's (3.3 at Scale 3.2)",
+          "a big boss is hit at its body's edge (A23-92) :: a player at the body's edge is reached",
+          "a big boss is hit at its body's edge (A23-92) :: other big bosses get theirs too"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "hit pad for every monster",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: regular monsters: no pad (the Slime Prince too)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the query ignores the pad",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: GetMonstersInRadius adds the pad"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "combat ignores the pad",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: CombatService's target search adds the pad"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the King as small as before",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a big boss is hit at its body's edge (A23-92) :: the King Slime is bigger (Scale 3.2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "not in Main START",
         "file": "src/ServerScriptService/Main.server.luau",
         "applied": true,
@@ -1137,6 +1417,28 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "war pool per player (stacks)",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter war pool :: each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "sides never counted",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clatter war pool :: each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "no extras paid",
         "file": "src/ServerScriptService/FieldBossService.luau",
         "applied": true,
@@ -1144,9 +1446,11 @@
         "crashed": false,
         "newFailingChecks": [
           "clatter extras :: +20 crown-war points each (own side)",
-          "clatter extras :: group ran to the end without a Lua error"
+          "clatter extras :: group ran to the end without a Lua error",
+          "clatter war pool :: +20 personal points each",
+          "clatter war pool :: each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "no side share",
@@ -1177,9 +1481,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "clatter extras :: +20 crown-war points each (own side)"
+          "clatter extras :: +20 crown-war points each (own side)",
+          "clatter war pool :: +20 personal points each",
+          "clatter war pool :: each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "kills never counted",
@@ -1319,13 +1625,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e48f9268247cdf36b2ee8027076f608f96d0d14ddc5156304c3fb4e31067233f",
+    "src/ReplicatedStorage/Shared/Config.luau": "514b54609ee5a4c55e1f1ba2c56a8f544b7c1b8109a4460c7abaabf850c5a9b5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
-    "src/ServerScriptService/Main.server.luau": "ad3494f82e251b5f389f8304cfdcf354b2c04e5b23251aa540cf3fae03d19dea",
-    "src/ServerScriptService/FieldBossService.luau": "f25222403d7b1832eab845ca15c1bf13508047d2f7555ff6c21444398972892b"
+    "src/ServerScriptService/Main.server.luau": "c26fb8a2fd6ac56666307349b161dd8fb894f0fa93eda218962ed4a63b11fb2f",
+    "src/ServerScriptService/FieldBossService.luau": "e71028364ab6330af6c42af21c7092e7f4e32acef0ad6ceb42579c35e916f920",
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
+    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137"
   },
-  "fixtureSHA256": "21aa11ad61b2cb32ddfb0ddaa851df992677024c6a2d60510a7c3aa31f195e02",
+  "fixtureSHA256": "5ae2fdf86f288b56fad61270db3bb6c37a8859fae44a23e58e8e5bfd694dba96",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

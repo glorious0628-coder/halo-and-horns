@@ -1199,7 +1199,7 @@ function WOBBLE.track(model)
 	local float = type(def) == "table" and tonumber(def.Float) or nil
 	local st = { Joint = joint, Root = root, Mesh = mesh, Base = mesh and mesh.Size, Slime = isSlimeModel(model),
 		Float = (float and float > 0 and def.Shape ~= "Slime") and float or nil,
-		H = h, Phase = math.random() * 6.283, Active = false, HitAt = -math.huge,
+		H = h, Phase = math.random() * 6.283, Active = false, HitAt = -math.huge, Thud = MOTION.Thuds(model),
 		-- monster naturalness (2026-10-06): each monster hops / bobs at its own pace (a group never moves in step)
 		Rate = 0.88 + math.random() * 0.24,
 		-- monsters that appear while I watch pop in (not the ones already standing there when I join)
@@ -1278,13 +1278,20 @@ function WOBBLE.step(dt)
 				local moving = v.X * v.X + v.Z * v.Z > 2.25
 				if st.Slime then
 					local lastS = math.sin(st.Phase)
-					st.Phase += dt * st.Rate * math.pi * (moving and 2.6 or 1.3)
+					-- the King Slime (Config.BossThud) hops slower and higher, and every landing thuds (MOTION.Thud)
+					local TH = MOTION.THUD
+					st.Phase += dt * st.Rate * math.pi * (moving and 2.6 * (st.Thud and asNum(TH.HopRate, 1) or 1) or 1.3)
 					local s = math.sin(st.Phase)
 					local hop, sy = 0, 1 + s * 0.05 -- breathing while still
-					local hopMax = math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)
+					local hopMax = st.Thud and math.min(st.H * asNum(TH.HopRatio, 0.2), asNum(TH.HopMax, 2))
+						or math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)
 					if moving then
 						hop = math.max(0, s) * hopMax -- in the air on the upper half of the wave (low: grounded feel)
 						sy = 1 + math.max(0, s) * 0.12 - math.max(0, -s) * 0.24 -- stretch up, squash on landing
+						if st.Thud and lastS > 0 and s <= 0 and not foreign then
+							local okT, errT = pcall(MOTION.Thud, st.Root, st.H, 1)
+							if not okT then warnThrottled("king thud failed: " .. tostring(errT)) end
+						end
 						if lastS > 0 and s <= 0 and not foreign and (st.Root.Position - camPos).Magnitude <= WOBBLE.DustRange then
 							-- landing: a small puff of dust at the feet (3-5 specks, 0.3 s)
 							local fp = st.Root.Position
@@ -1408,6 +1415,13 @@ local function onMonsterAttack(model)
 	later(lungeAt, function()
 		if model.Parent then Feel.dust(root, h, rh) end
 	end)
+	if MOTION.Thuds(model) then -- the King Slime: its attack hop lands with a bigger thud (back at rest = on the floor)
+		local landAt = 0
+		for _, s in steps do landAt += s[2] end
+		later(landAt, function()
+			if model.Parent and root.Parent then MOTION.Thud(root, h, asNum(MOTION.THUD.AttackMul, 1.4)) end
+		end)
+	end
 end
 
 -- flinch of monsters my own hits landed on: tilt + push away from me (never interrupts their attack lunge), plus a
@@ -1738,6 +1752,126 @@ local function shakeStep()
 	local k = shakeMag * (1 - t / shakeDur)
 	local offset = Vector3.new(rng:NextNumber(-1, 1), rng:NextNumber(-1, 1), rng:NextNumber(-1, 1)) * k
 	cam.CFrame = cam.CFrame * CFrame.new(offset)
+end
+
+----------------------------------------------------------------- the King Slime's thud (Config.BossThud)
+-- every landing of a slime of BossThud.Kinds (its walk hops in WOBBLE.step, its attack hop in onMonsterAttack): my
+-- camera drops a little and bounces back by my distance to it (world up / down only, so the view never turns and the
+-- camera follow never sees it), the thud sound, a round dust ring
+MOTION.THUD = type(Config.BossThud) == "table" and Config.BossThud or {}
+MOTION.Bump = { Mag = 0, At = -math.huge, Dur = 0, Bound = false, LastAt = -math.huge, LastMul = 0, Bind = "HaloHornsFxThud" }
+
+-- true for a monster whose kind thuds (the King Slime)
+function MOTION.Thuds(model)
+	local kinds = MOTION.THUD.Kinds
+	local kind = model:GetAttribute("MonsterKind")
+	return type(kinds) == "table" and type(kind) == "string" and kinds[kind] == true
+end
+
+-- 1 within near studs, 0 from far on, a straight line between
+function MOTION.Falloff(d, near, far)
+	if type(d) ~= "number" or d ~= d then return 0 end
+	if d <= near then return 1 end
+	if d >= far then return 0 end
+	return (far - d) / (far - near)
+end
+
+-- what one landing d studs (flat) from my character does: { Bump = studs (0 = no camera drop), Volume = 0..1 }.
+-- d nil = I have no character; mul = 1 (a walk hop) or AttackMul; shakeOk = 'Screen shake' on and no Reduced Motion
+function MOTION.ThudPlan(d, mul, shakeOk)
+	local T = MOTION.THUD
+	local near = asNum(T.Near, 18)
+	local bump = 0
+	if shakeOk == true and d ~= nil then
+		bump = math.min(asNum(T.Bump, 0.6) * asNum(mul, 1) * MOTION.Falloff(d, near, asNum(T.Far, 45)), asNum(T.BumpMax, 0.9))
+	end
+	return { Bump = bump, Volume = d ~= nil and MOTION.Falloff(d, near, asNum(T.SoundFar, 70)) or 0 }
+end
+
+-- the camera's height offset t s into a bump of mag studs lasting dur s: a fast drop (lowest after ~0.05 s), one small
+-- bounce up, settled at dur (a damped sine, e^-3 = 5% left at the end)
+function MOTION.BumpOffset(t, mag, dur)
+	if t < 0 or t >= dur or mag <= 0 then return 0 end
+	local w = math.pi / (2 * math.min(0.05, dur * 0.2))
+	return -mag * math.sin(w * t) * math.exp(-3 * t / dur)
+end
+
+-- runs right after the camera scripts (and the shake), every frame of a bump
+function MOTION.BumpStep()
+	local b = MOTION.Bump
+	local t = os.clock() - b.At
+	if t >= b.Dur then
+		b.Bound = false
+		pcall(function() RunService:UnbindFromRenderStep(b.Bind) end)
+		return
+	end
+	local cam = workspace.CurrentCamera
+	if cam then cam.CFrame += Vector3.new(0, MOTION.BumpOffset(t, b.Mag, b.Dur), 0) end
+end
+
+-- a camera bump of mag studs over dur s (none with 'Screen shake' off / Reduced Motion); a bigger running bump wins.
+-- true = it started
+function Fx.Bump(mag, dur)
+	if not MOTION.ShakeAllowed() then return false end
+	mag = math.min(asNum(mag, 0), MAX_SHAKE)
+	dur = math.min(asNum(dur, 0), 1)
+	if mag <= 0 or dur <= 0 then return false end
+	local b = MOTION.Bump
+	local now = os.clock()
+	local t = now - b.At
+	if t < b.Dur and mag < b.Mag * (1 - t / b.Dur) then return false end
+	b.Mag, b.At, b.Dur = mag, now, dur
+	if not b.Bound then
+		b.Bound = pcall(function()
+			RunService:BindToRenderStep(b.Bind, Enum.RenderPriority.Camera.Value + 2, MOTION.BumpStep)
+		end)
+	end
+	return true
+end
+
+-- the round dust ring: the shock-ring art (a soft round ring, no rays) in dust colour growing to Ring x the body height
+-- (RingMin..RingMax studs) and RingPuffs dust clouds popping evenly on its edge (code fallback: low dust bursts)
+function MOTION.ThudRing(pos, h)
+	local T = MOTION.THUD
+	local color = typeof(T.DustColor) == "Color3" and T.DustColor or COLOR_DUST
+	local r = math.clamp(h * asNum(T.Ring, 0.9), asNum(T.RingMin, 4), asNum(T.RingMax, 12))
+	local grow, fade = asNum(T.RingGrow, 0.25), asNum(T.RingFade, 0.5)
+	ring(pos, r, color, { Grow = grow, Fade = fade, Transparency = 0.35, Thickness = 0.25, StartDiameter = r, Art = true })
+	local gy = groundY(pos)
+	local id = Feel.art("FxDust")
+	local n = math.clamp(math.floor(asNum(T.RingPuffs, 8)), 0, 16)
+	local turn = rng:NextNumber(0, 2 * math.pi)
+	for i = 1, n do
+		local a = turn + (i - 1) * 2 * math.pi / n
+		local p = Vector3.new(pos.X + math.cos(a) * r * 0.8, gy + 0.6, pos.Z + math.sin(a) * r * 0.8)
+		if id then
+			Feel.popImage(id, p, { Size0 = 1.2, Size1 = 2.6, Time = grow + 0.1, Fade = fade, FadeDelay = 0.1, Rot0 = rng:NextNumber(-30, 30) })
+		else
+			burst(p, color, 3, { Size = 0.9, EndSize = 1.6, SpeedMin = 1, SpeedMax = 3, LifeMin = 0.3, LifeMax = 0.5,
+				LightEmission = 0, StartTransparency = 0.35, Spread = Vector2.new(60, 60), Acceleration = Vector3.new(0, 1, 0), Drag = 4 })
+		end
+	end
+end
+
+-- one landing of a thudding slime (root = its root part, h = its body height, mul = 1 or AttackMul); landings closer
+-- than Gap s make one thud (a bigger one, the attack hop's, still comes through). true = it thudded
+function MOTION.Thud(root, h, mul)
+	local T = MOTION.THUD
+	local b = MOTION.Bump
+	local now = os.clock()
+	mul = asNum(mul, 1)
+	if now - b.LastAt < asNum(T.Gap, 0.3) and mul <= (b.LastMul or 0) then return false end
+	b.LastAt, b.LastMul = now, mul
+	local pos = root.Position
+	local me = getOwnRoot()
+	local plan = MOTION.ThudPlan(me and Util.FlatDistance(me.Position, pos) or nil, mul, MOTION.ShakeAllowed())
+	if plan.Bump > 0 then Fx.Bump(plan.Bump, asNum(T.BumpTime, 0.32)) end
+	local audio = C and C.Audio
+	if plan.Volume > 0 and type(audio) == "table" and type(audio.Play) == "function" then
+		pcall(audio.Play, "KingThud", { Volume = plan.Volume })
+	end
+	if nearCamera(pos) then MOTION.ThudRing(pos, h) end
+	return true
 end
 
 ----------------------------------------------------------------- screen GUI bits (hurt flash, combo)

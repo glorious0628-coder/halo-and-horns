@@ -90,7 +90,7 @@ end
 -- to Gold; everything else as written
 local function concrete(player, reward)
 	local r = type(reward) == "table" and reward or {}
-	local out = { Item = r.Item, Potion = r.Potion, N = r.N, Gold = r.Gold }
+	local out = { Item = r.Item, Potion = r.Potion, N = r.N, Gold = r.Gold, XP = r.XP } -- XP: A23-87
 	if num(r.GoldMin) > 0 then
 		local data = S.PlayerService.GetData(player)
 		local level = math.max(1, math.floor(num(data and data.Level, 1)))
@@ -106,7 +106,8 @@ local function optionView(player, d, side)
 	local stat, score, mine = S.Deeds.Preview(player, side, o.Points)
 	local hint = nil
 	if stat == "None" then hint = "Neutral" elseif score == 0 then hint = mine and "Full" or "Zero" end
-	return { Label = o.Label, Item = r.Item, Potion = r.Potion, N = r.N, Gold = r.Gold, Score = score, Hint = hint }, stat
+	return { Label = o.Label, Item = r.Item, Potion = r.Potion, N = r.N, Gold = r.Gold, XP = r.XP, Score = score, Hint = hint },
+		stat
 end
 
 local function send(player, card)
@@ -144,7 +145,19 @@ local function pay(player, reward)
 			gold = 0
 		end
 	end
-	return given, gold, id
+	-- A23-87 (게임성 개발 2, 검수 2026-10-09): Reward.XP, never doubled by the 2x XP pass (a choice's reward stays the
+	-- same size for everyone): AddXP's cap = the amount itself, applied after the pass
+	local xp = math.max(0, math.floor(num(r.XP)))
+	if xp > 0 then
+		local ok, added = pcall(S.ProgressionService.AddXP, player, xp, xp)
+		if ok then
+			xp = type(added) == "number" and added or xp
+		else
+			Util.Warn(TAG, "xp: " .. tostring(added))
+			xp = 0
+		end
+	end
+	return given, gold, id, xp
 end
 
 local function itemName(id)
@@ -165,8 +178,8 @@ local function finish(player, card, side)
 	local d = def(card.Kind)
 	if side and d and data then
 		local o = d[side]
-		local given, gold, id = pay(player, concrete(player, o.Reward))
-		out.Item, out.N, out.Gold = id, given, gold
+		local given, gold, id, xp = pay(player, concrete(player, o.Reward))
+		out.Item, out.N, out.Gold, out.XP = id, given, gold, xp
 		local stat, change, mine, down, full = S.Deeds.Add(player, side, o.Points)
 		out.Stat, out.Score, out.Full = stat, change, full
 		count(data, card.Kind, side)
@@ -176,6 +189,7 @@ local function finish(player, card, side)
 				or string.format(Config.Loot.Text.Got, itemName(id)))
 		end
 		if gold > 0 then table.insert(parts, string.format(STORY.ChoiceGold, Util.FormatNumber(gold))) end
+		if xp > 0 then table.insert(parts, string.format(TXT.XP or "+%s XP", Util.FormatNumber(xp))) end
 		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
 		notify(player, table.concat(parts, " · "), "reward", "None")
 		S.Deeds.Say(player, side, stat, change, mine, down, full) -- the other side's line, a lost rank, a full day

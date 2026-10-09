@@ -6,12 +6,12 @@
 
 | 무엇 | 값 | 어디 |
 |---|---|---|
-| 보스 종류 | `CaptainClatter` "Captain Clatter", 유적, HP 20000, 공격 30, XP·Gold 3900(기여자마다), 크기 2.2, 해골 기사 모델·동작 빌림(`ModelFrom`/`AnimFrom = "SkeletonKnight"`), 보상 자격 A23-27(직접 3번 + 피해 몫 0.5%) | `Config.MonsterTypes` |
+| 보스 종류 | `CaptainClatter` "Captain Clatter", 유적, HP 20000, 공격 30, XP·Gold 3900(기여자마다), 크기 2.2, 해골 기사 모델·동작 빌림(`ModelFrom`/`AnimFrom = "SkeletonKnight"`), 보상 자격 A23-27(직접 3번 + **피해 몫 2%**, 검수 2026-10-09). 3번 이상 때렸지만 2% 미만이면 **XP·골드 15%만**(`MinorShare`, `info.Minor`: 드롭·무기·배지·칭호·왕관전 점수·카드 없음) | `Config.MonsterTypes` |
 | 일정 | 시작 5분 뒤 첫 자리 → 나온 때부터 20분마다, 유적에 준비된 사람이 있을 때, 6분 머묾. 자리는 `ClatterSpawn` 표시(검수 도구) → 없으면 유적 보통 스폰 자리 | `Config.FieldBosses.Clatter` |
 | 드롭(기여자마다) | Knight Crest ×3(100%), Enh30 20%, Enh10 5%, HP·MP 물약 50%, 무기 T5 3%·T6 0.5%(레벨 모자라면 Crest +2) | `Config.Loot.Tables.CaptainClatter` |
 | 주간 배지 | 그 주 첫 처치에 Captain's Badge 1개. 받지 않은 주는 최대 2개까지 쌓임. 가방이 꽉 차면 다음 처치로 미룸 | `Weekly`, 저장 `data.FieldBoss.Clatter = { Kills, Week, Owed }` |
 | 칭호 | Clatter Stopper(1번) · Clatter Stopper 10 · Clatter Stopper 50 | `Titles`, `Config.TitleDefs` |
-| 왕관전 | 기여자마다 자기 편 +20(`WarService.AddPoints`; 한 편만 있으면 포위전 점수로 그대로 셈, 중립은 0) | `War = 20` |
+| 왕관전 | 기여자마다 개인 +20, **진영 풀에는 한 번 처치에 진영별 20만**(`AddPoints(p, 20, 20 / 같은 편 기여자 수)`, CR-M18 방식, 검수 2026-10-09; 한 편만 있으면 포위전 점수로 셈, 중립은 0) | `War = 20` |
 | 편별 피해 몫 | `KingDefeat` Fx에 `Share = { Halo = %, Horns = % }`(합 100, 아무 편도 안 때렸으면 없음) | MonsterService `rec.FactionDamage` |
 | 마무리 카드 | [Let him rest] Enh70 ×1(가방이 꽉 차면 Worth 300골드) / [Count the old treasure!] 300 은행 골드. 같은 크기, 점수 A23-58 | `Config.Finisher.Cards.CaptainClatter` |
 | 알림 | Appear(토스트) "Captain Clatter is on patrol in the ruins!", Defeat "Captain Clatter sat down at last. \"Is my shift over?\"", Leave "Captain Clatter marched off. Still on duty!" | `Config.Announce` |

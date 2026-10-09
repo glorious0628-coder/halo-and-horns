@@ -981,6 +981,10 @@ runGroup("rollkill", function()
 	f.Draws = 0
 	f:Kill("Slime", { Auto = true, SkillHit = true, Personal = true })
 	check(f.Draws == #L.Tables.Slime + 1, "auto / skill / personal kills roll like any kill", f.Draws)
+	-- 검수 2026-10-09: a free rider's share (MonsterService MinorShare, info.Minor) rolls nothing
+	f.Draws = 0
+	f:Kill("CaptainClatter", { Minor = true })
+	check(f.Draws == 0, "info.Minor: no drop rows, no jackpot", f.Draws)
 
 	-- every contributor gets an own roll (MonsterService fires once per contributor)
 	local p2, d2 = f:Join(f.UserId + 100000)

@@ -219,7 +219,7 @@ end
 local function rollRows(info, onHit)
 	local mult = info.Golden == true and LOOT.GoldenMult or 1
 	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows and the jackpot; not the first scroll)
-	local rowBonus = num(info.RowBonus, 1)
+	local rowBonus = num(info.RowBonus, 1) * num(info.AreaMult, 1) -- A23-90: the Crown Pit's better drops (rows only)
 	for _, row in LOOT.Tables[info.Kind] or {} do
 		if row.Weapon and type(row.BelowLevel) == "table" and info.Level ~= nil
 			and not Config.WeaponUsable(row.Weapon, info.Level) then
@@ -372,6 +372,7 @@ end
 function LootService.RollKill(player, info)
 	local data = getData(player)
 	if not data or type(info) ~= "table" or type(info.Kind) ~= "string" then return nil end
+	if info.Minor == true then return nil end -- a free rider's share (MonsterService MinorShare): XP / gold only
 	ensureTables(data)
 	-- P7: the first kill of a kind reveals its drop table in the item list
 	local seenKey = "Seen:" .. info.Kind

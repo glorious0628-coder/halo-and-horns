@@ -65,7 +65,7 @@ local function bossWorld(opts)
 		ZoneService = { GetZoneId = function(p) return w.ZoneOf[p] end },
 		AnnounceService = { Broadcast = function(k, args) table.insert(w.Broadcasts, k) end },
 		-- J extras: crown-war points, titles, the weekly item (GrantItem returns w.GrantReturn or n)
-		WarService = { AddPoints = function(p, n) table.insert(w.WarAdds, { P = p, N = n }) end },
+		WarService = { AddPoints = function(p, n, pool) table.insert(w.WarAdds, { P = p, N = n, Pool = pool }) end },
 		TitleService = { Grant = function(p, id)
 			w.TitlesOf[p] = w.TitlesOf[p] or {}
 			if w.TitlesOf[p][id] then return false end
@@ -249,6 +249,30 @@ runGroup("ground on a hill (MonsterService.groundPoint)", function()
 	check(g == nil and noHit == true, "no ground hit: nil, noHit")
 end)
 
+runGroup("a big boss is hit at its body's edge (A23-92)", function()
+	local C = newWorld().Config
+	local H = execute("HitPad", HITPAD_EXTRACT, nativeEnv(), C)
+	local king = C.MonsterTypes.SlimeKing
+	check(king.Scale >= 3.2 and king.Boss == true, "the King Slime is bigger (Scale 3.2)", king.Scale)
+	local r = H.RadiusOf(king)
+	local pad = H.HitPad({ Def = king, _radius = r })
+	check(math.abs(r - 1.5 * king.Scale) < 1e-6 and math.abs(pad - (r - 1.5)) < 1e-6,
+		"HitPad = its body radius - a normal slime's (3.3 at Scale 3.2)", show({ r, pad }))
+	-- a player standing just outside its body (r + 1) is inside the normal reach + pad (the combat reach is measured
+	-- to the monster's centre)
+	check(r + 1 <= C.Monsters.AttackRange + pad, "a player at the body's edge is reached", show({ r + 1, C.Monsters.AttackRange + pad }))
+	check(H.HitPad({ Def = C.MonsterTypes.BigSlime, _radius = H.RadiusOf(C.MonsterTypes.BigSlime) }) == 0
+		and H.HitPad({ Def = C.MonsterTypes.Slime }) == 0, "regular monsters: no pad (the Slime Prince too)")
+	check(H.HitPad({ Def = C.MonsterTypes.CaptainClatter, _radius = H.RadiusOf(C.MonsterTypes.CaptainClatter) }) > 0,
+		"other big bosses get theirs too")
+	check(string.find(MONSTER_QUERY_TEXT, "<= radius + MonsterService.HitPad(rec)", 1, true) ~= nil,
+		"GetMonstersInRadius adds the pad")
+	check(string.find(COMBAT_NEAR_TEXT, "if d <= radius + pad then", 1, true) ~= nil
+		and string.find(COMBAT_NEAR_TEXT, "S.MonsterService.HitPad(rec)", 1, true) ~= nil, "CombatService's target search adds the pad")
+	check(C.MonsterTypes.FlowerSlime.Color.X < C.MonsterTypes.FlowerSlime.Color.Z
+		and C.MonsterTypes.FlowerSlime.Color.Z > 200, "the Flower Slime is purple (A23-92)", show(C.MonsterTypes.FlowerSlime.Color))
+end)
+
 runGroup("spot fallbacks", function()
 	local w = bossWorld({ Hill = { Top = vec(430, 14.6, -170), Foot = vec(430, 5, -150) } })
 	w:Hunter(1)
@@ -413,6 +437,21 @@ runGroup("clatter config", function()
 	end
 	check(F.Cards.CaptainClatter.Text.Help == "Let him rest" and F.Cards.CaptainClatter.Text.Tickle == "Count the old treasure!",
 		"Clatter's buttons")
+end)
+
+runGroup("clatter war pool", function()
+	-- 검수 2026-10-09 (the CR-M18 way): +20 personal points each, but one kill adds 20 to a side's pool only once
+	local w = bossWorld({})
+	local a, b, c = w:Hunter(1, "SkeletonRuins"), w:Hunter(2, "SkeletonRuins"), w:Hunter(3, "SkeletonRuins")
+	a.Attrs.Faction, b.Attrs.Faction, c.Attrs.Faction = "Halo", "Halo", "Horns"
+	w:Kill("Clatter", { 1, 2, 3 }, { Halo = 50, Horns = 50 })
+	local pool, personal = { Halo = 0, Horns = 0 }, 0
+	for _, add in w.WarAdds do
+		pool[add.P.Attrs.Faction] += add.Pool or add.N
+		personal += add.N
+	end
+	check(#w.WarAdds == 3 and personal == 60, "+20 personal points each", show({ #w.WarAdds, personal }))
+	check(pool.Halo == 20 and pool.Horns == 20, "each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)", show(pool))
 end)
 
 runGroup("clatter extras", function()
