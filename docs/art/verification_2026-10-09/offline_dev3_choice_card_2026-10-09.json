@@ -1,0 +1,1476 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 117,
+  "failedChecks": 0,
+  "namedChecks": 117,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "6 points a day, a deed is 1 (A23-86)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save default Deeds { Day 0, N 0 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save default Cards { Serial 0 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "data version stays 3 (additive fields)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "CardAction 0.3 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ChoiceCard.Kinds table, Grace 1 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the full line (A23-86)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "join: DeedsToday 0 / DeedsMax 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "Halo + Good: Honor +1 (own side)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "one point used, five left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "five points in: Honor 15, one left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "the sixth point fits (not full yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "the seventh: no points, full = true, Honor stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "the attribute stops at 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "a full day: the other side still costs 1 (A23-58)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "a loss does not use the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "00:00 KST: DeedsToday back to 0, six open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "a new day pays again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the day's six points",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "Horns + Evil: Infamy +1, Honor untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "Horns + Good: Infamy -1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "Honor 0 + the other side: stays 0 (A23-58 floor)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "the first rank threshold exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "at a rank edge: -1 reports the lost rank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "a second loss inside the rank: not 'down'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "Preview: Good +1 / Evil -1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "Add changes what Preview said",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "Preview of a full day: 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "a size-4 deed twice: 4 then the 2 left (full)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "no faction: nothing moves, nothing used",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "an unknown side: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "size 0: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "a negative size: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "a negative size on the losing side: nothing (never a gain)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "a huge size is cut to the day's six",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "NaN falls back to the default size 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: sides, floor, ranks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "N above the cap is repaired to 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "negative N is repaired to 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "a broken table is replaced",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "an old day starts again at 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "a fraction is floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "NaN is repaired to 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the save",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "Offer opens a saved card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "Fx Card { Id 1, Kind, Title, no Seconds, Stat Honor }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "Good side: label, 2 Jelly, +1, no hint",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "Evil side (the other side for a Halo): 4 gold, -1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "saved: Pending { 1, LostBear }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "ChoiceCard.Pending says the kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "a second card while one is open: false 'open'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "two calls inside 0.3 s: the second is rate limited",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "wrong id / side / type / argument count: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "Fx CardEnd { Good, Honor +1, 2 Jelly }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "2 Jelly in the bag, Honor 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "the card is gone, nothing pending",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "counted: Story.N.LostBear.Good = 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "the pick used one deed point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "one line: Kind choice! … Honor +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "the same card twice: paid once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "the next card: Id 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "gold source 'Choice' (never boosted by a pass)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "off-side answer + counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "counted again: Good 2, Evil 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "unknown kind: false 'kind'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "a non-string kind: false 'kind'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "a player who is not ready: false 'notready'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "no player: false 'gone'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: offer, pick, reward",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: a full day keeps the reward",
+      "check": "the card says Full / Zero",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: a full day keeps the reward",
+      "check": "no points, the reward still comes, Full = true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: a full day keeps the reward",
+      "check": "the 'shard is full' line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: a full day keeps the reward",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: a full day keeps the reward",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: no faction, bag full",
+      "check": "no side: Neutral hints",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: no faction, bag full",
+      "check": "no side: the reward only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: no faction, bag full",
+      "check": "a full bag: 2 Jelly paid as 4 gold (sell price 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: no faction, bag full",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: no faction, bag full",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "next join: the saved card is shown again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "it is the open card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "picked: cleared, serial kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "the next card continues the serial (Id 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "left with a card open: still saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "an unknown kind is dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "a timed kind is never restored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "broken numbers / tables are repaired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "a pending Id above the serial lifts the serial (no repeated ids)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: saved across a join",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "a timed card: Seconds 10, nothing saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "10.5 s: the Grace second still counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "a pick inside the Grace is paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "the picked card's own timer ends nothing twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "time up: 'None', nothing paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "the card is closed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "a pick after the end is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "a timed card ends when the player leaves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "one card at a time across kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: timed",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: rate limit and rank",
+      "check": "two picks at once: the first counts only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: rate limit and rank",
+      "check": "a lost rank gets the rank line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: rate limit and rank",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: rate limit and rank",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: the signal",
+      "check": "Picked fires for a pick and for a time up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: the signal",
+      "check": "a player leaving with a timed card: it ends ('None')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: the signal",
+      "check": "and its timer ends nothing again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: the signal",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: the signal",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 18,
+  "staticFailures": [],
+  "mutations": {
+    "total": 58,
+    "applied": 58,
+    "caught": 58,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: 7 points a day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
+          "card: a full day keeps the reward :: the 'shard is full' line",
+          "card: a full day keeps the reward :: the card says Full / Zero",
+          "config :: 6 points a day, a deed is 1 (A23-86)",
+          "deeds: sides, floor, ranks :: Preview of a full day: 0",
+          "deeds: sides, floor, ranks :: a huge size is cut to the day's six"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "config: a deed is 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 6 points a day, a deed is 1 (A23-86)",
+          "deeds: sides, floor, ranks :: Add changes what Preview said",
+          "deeds: sides, floor, ranks :: Horns + Evil: Infamy +1, Honor untouched",
+          "deeds: sides, floor, ranks :: Horns + Good: Infamy -1",
+          "deeds: sides, floor, ranks :: NaN falls back to the default size 1",
+          "deeds: sides, floor, ranks :: Preview: Good +1 / Evil -1"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "no cap on the rise",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
+          "card: a full day keeps the reward :: the 'shard is full' line",
+          "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)",
+          "deeds: the day's six points :: a full day: the other side still costs 1 (A23-58)",
+          "deeds: the day's six points :: a new day pays again",
+          "deeds: the day's six points :: the seventh: no points, full = true, Honor stays"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the day is not checked",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the day's six points :: 00:00 KST: DeedsToday back to 0, six open",
+          "deeds: the day's six points :: a new day pays again",
+          "deeds: the save :: an old day starts again at 0"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the day line uses UTC",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the day's six points :: 00:00 KST: DeedsToday back to 0, six open",
+          "deeds: the day's six points :: a new day pays again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "N above the cap kept",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the save :: N above the cap is repaired to 6",
+          "deeds: the save :: negative N is repaired to 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "negative N kept",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the save :: negative N is repaired to 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a loss uses the cap",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: sides, floor, ranks :: size 0: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a full day blocks the loss",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the day's six points :: a full day: the other side still costs 1 (A23-58)",
+          "deeds: the day's six points :: a new day pays again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the full flag never set",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
+          "card: a full day keeps the reward :: the 'shard is full' line",
+          "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)",
+          "deeds: the day's six points :: the seventh: no points, full = true, Honor stays"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the attribute is not published",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: the pick used one deed point",
+          "deeds: the day's six points :: 00:00 KST: DeedsToday back to 0, six open",
+          "deeds: the day's six points :: join: DeedsToday 0 / DeedsMax 6",
+          "deeds: the day's six points :: one point used, five left",
+          "deeds: the day's six points :: the attribute stops at 6"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no day check for online players",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the day's six points :: 00:00 KST: DeedsToday back to 0, six open"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Take does not book",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
+          "card: a full day keeps the reward :: the 'shard is full' line",
+          "card: a full day keeps the reward :: the card says Full / Zero",
+          "card: offer, pick, reward :: the pick used one deed point",
+          "deeds: sides, floor, ranks :: Preview of a full day: 0",
+          "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "the sides are swapped",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
+          "card: a full day keeps the reward :: the 'shard is full' line",
+          "card: offer, pick, reward :: 2 Jelly in the bag, Honor 6",
+          "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
+          "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
+          "card: offer, pick, reward :: one line: Kind choice! … Honor +1"
+        ],
+        "newFailingCount": 29
+      },
+      {
+        "mutation": "Honor and Infamy swapped",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: 2 Jelly in the bag, Honor 6",
+          "card: offer, pick, reward :: Evil side (the other side for a Halo): 4 gold, -1",
+          "card: offer, pick, reward :: Fx Card { Id 1, Kind, Title, no Seconds, Stat Honor }",
+          "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
+          "card: offer, pick, reward :: one line: Kind choice! … Honor +1",
+          "card: offer, pick, reward :: the same card twice: paid once"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "a loss can go below 0",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: sides, floor, ranks :: Honor 0 + the other side: stays 0 (A23-58 floor)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the lost rank is never reported",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: rate limit and rank :: a lost rank gets the rank line",
+          "deeds: sides, floor, ranks :: at a rank edge: -1 reports the lost rank"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no side still moves a stat",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: sides, floor, ranks :: no faction: nothing moves, nothing used"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an unknown side counts as Good",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: sides, floor, ranks :: an unknown side: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "size not clamped",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: sides, floor, ranks :: a huge size is cut to the day's six"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "NaN is not repaired",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: the signal :: group ran to the end without a Lua error",
+          "card: timed :: group ran to the end without a Lua error",
+          "deeds: sides, floor, ranks :: group ran to the end without a Lua error",
+          "deeds: the day's six points :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Preview ignores the day",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: the card says Full / Zero",
+          "deeds: sides, floor, ranks :: Preview of a full day: 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "two cards at once",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
+          "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
+          "card: offer, pick, reward :: a second card while one is open: false 'open'",
+          "card: offer, pick, reward :: counted again: Good 2, Evil 1",
+          "card: offer, pick, reward :: gold source 'Choice' (never boosted by a pass)",
+          "card: offer, pick, reward :: off-side answer + counted"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "the card is not saved",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: saved: Pending { 1, LostBear }",
+          "card: saved across a join :: left with a card open: still saved"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the saved card is not shown at join",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: saved across a join :: a pending Id above the serial lifts the serial (no repeated ids)",
+          "card: saved across a join :: next join: the saved card is shown again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a timed card is saved",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: the signal :: Picked fires for a pick and for a time up",
+          "card: the signal :: a player leaving with a timed card: it ends ('None')",
+          "card: the signal :: and its timer ends nothing again",
+          "card: timed :: a pick after the end is ignored",
+          "card: timed :: a timed card: Seconds 10, nothing saved",
+          "card: timed :: the card is closed"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "a timed card comes back from the save",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: saved across a join :: a timed kind is never restored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an unknown pending kind kept",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: saved across a join :: a timed kind is never restored",
+          "card: saved across a join :: an unknown kind is dropped",
+          "card: saved across a join :: broken numbers / tables are repaired",
+          "card: saved across a join :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the serial is not lifted",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: saved across a join :: a pending Id above the serial lifts the serial (no repeated ids)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the serial does not move",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: group ran to the end without a Lua error",
+          "card: no faction, bag full :: group ran to the end without a Lua error",
+          "card: no faction, bag full :: no side: the reward only",
+          "card: offer, pick, reward :: 2 Jelly in the bag, Honor 6",
+          "card: offer, pick, reward :: Fx Card { Id 1, Kind, Title, no Seconds, Stat Honor }",
+          "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "pending cleared after paying",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: the card is gone, nothing pending",
+          "card: saved across a join :: picked: cleared, serial kept"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "closing twice pays twice",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: the signal :: and its timer ends nothing again",
+          "card: timed :: the picked card's own timer ends nothing twice"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any argument count",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: wrong id / side / type / argument count: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any side string",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: 2 Jelly in the bag, Honor 6",
+          "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
+          "card: offer, pick, reward :: group ran to the end without a Lua error",
+          "card: offer, pick, reward :: no service warnings (pcall-swallowed handler errors)",
+          "card: offer, pick, reward :: wrong id / side / type / argument count: ignored"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the id is not checked",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: two calls inside 0.3 s: the second is rate limited",
+          "card: offer, pick, reward :: wrong id / side / type / argument count: ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: two calls inside 0.3 s: the second is rate limited",
+          "card: offer, pick, reward :: wrong id / side / type / argument count: ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Grace second",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: timed :: 10.5 s: the Grace second still counts",
+          "card: timed :: a pick after the end is ignored",
+          "card: timed :: a pick inside the Grace is paid",
+          "card: timed :: time up: 'None', nothing paid"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a timed card never ends",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: the signal :: Picked fires for a pick and for a time up",
+          "card: the signal :: a player leaving with a timed card: it ends ('None')",
+          "card: the signal :: and its timer ends nothing again",
+          "card: timed :: the card is closed",
+          "card: timed :: time up: 'None', nothing paid"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a leaving timed card stays open",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: the signal :: a player leaving with a timed card: it ends ('None')",
+          "card: the signal :: and its timer ends nothing again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a leaving saved card is deleted",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: saved across a join :: left with a card open: still saved"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gold tagged as a quest",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: gold source 'Choice' (never boosted by a pass)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the bag overflow is lost",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: no faction, bag full :: a full bag: 2 Jelly paid as 4 gold (sell price 2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "points skip the ledger",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
+          "card: a full day keeps the reward :: the 'shard is full' line",
+          "card: no faction, bag full :: no side: the reward only",
+          "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
+          "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
+          "card: offer, pick, reward :: off-side answer + counted"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "the pick is not counted",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the count resets",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: counted again: Good 2, Evil 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a time up pays",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: timed :: a pick after the end is ignored",
+          "card: timed :: time up: 'None', nothing paid"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the Evil option pays the Good reward",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: no faction, bag full :: no side: the reward only",
+          "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
+          "card: offer, pick, reward :: gold source 'Choice' (never boosted by a pass)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the full-day line is missing",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: the 'shard is full' line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no off-side line",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: rate limit and rank :: a lost rank gets the rank line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no rank line",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: rate limit and rank :: a lost rank gets the rank line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the end is not sent",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: a full day keeps the reward :: group ran to the end without a Lua error",
+          "card: no faction, bag full :: group ran to the end without a Lua error",
+          "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
+          "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
+          "card: offer, pick, reward :: the same card twice: paid once",
+          "card: rate limit and rank :: two picks at once: the first counts only"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the signal never fires",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: the signal :: Picked fires for a pick and for a time up",
+          "card: the signal :: a player leaving with a timed card: it ends ('None')",
+          "card: the signal :: and its timer ends nothing again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the card shows no preview score",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: Evil side (the other side for a Halo): 4 gold, -1",
+          "card: offer, pick, reward :: Good side: label, 2 Jelly, +1, no hint"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no Neutral hint",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: no faction, bag full :: no side: Neutral hints"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a not-ready player gets a card",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: a player who is not ready: false 'notready'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any kind",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the cap line is different",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the full line (A23-86)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: no card rate limit",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: CardAction 0.3 s"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "ccb8752506326a4e22c7844ab9e9edae2f49fc84c1a068bf37ba8f78bf71957a",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/Deeds.luau": "2592b6c99f5f0579e4d66ce2f9167fbf15fe15e1f81830eb038e88038a5fd69e",
+    "src/ServerScriptService/ChoiceCard.luau": "3c0a1e20260b78091e4b2b7b0664eae558a98e0b66a607a7172caa721fba04e6"
+  },
+  "fixtureSHA256": "c58dd0dd7d96139da626e9ba3815bc299e1fbf3a4f14aba3518c2ef6e7153f54",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-86: Deeds = one cap a KST day (6 points) for every repeated Honor / Infamy change, +1 own side / -1 other side with a 0 floor, a lost rank reported, a full day keeps the reward, DeedsToday / DeedsMax attributes, back to 0 at 00:00 KST, repaired save data.Deeds { Day, N }; ChoiceCard = a card only the player sees (Config.ChoiceCard.Kinds), Good and Evil of the same size with a FIXED reward, one open card a player, saved cards wait with no limit and come back at the next join (data.Cards { Serial, Pending }), timed cards are not saved (time up = None), c->s CardAction(id, side) validated and rate limited, gold source 'Choice', overflow items paid at the sell price, points only through Deeds.Add, every pick counted in data.Story.N[kind][side], Fx Card / CardEnd, signal Picked.",
+  "limitations": "The card screen is client work (game dev 1). The real card kinds (lost items, apprentice, clatter) and the Finisher migration come with their content; the test kinds are injected. My Way does not read Story.N yet (the weight is decided: 5 repeated picks = 1 story pick, capped)."
+}

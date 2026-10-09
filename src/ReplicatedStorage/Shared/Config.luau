@@ -5848,4 +5848,31 @@ Config.QuestBook = {
 	Text = { OpensAt = "%s · Opens at Lv %d" }, -- (quest Title, level)
 }
 
+----------------------------------------------------------------- A23-86 Deeds + shared choice card (게임성 개발 3, 2026-10-09)
+-- Deeds.luau: ONE cap a KST day for every REPEATED Honor / Infamy change (user 2026-10-09, decision 1 = A): PerDay = 6
+-- points, +Points on my own side / -Points on the other side (A23-58, never below 0). Gold paid for something is never
+-- a deed. Additive save field (Version stays 3): Deeds = { Day = Config.DayIndex, N = points used today }.
+Config.Data.Defaults.Deeds = { Day = 0, N = 0 }
+Config.Deeds = {
+	PerDay = 6,
+	Points = 1, -- a deed's default size
+	CheckInterval = 60, -- seconds between the day checks of online players (DeedsToday goes back to 0 at 00:00 KST)
+}
+-- ChoiceCard.luau (contract docs/design/choice_card_server_2026-10-09.md): a card only the player sees, Good and Evil of
+-- the same size, a FIXED reward. Kinds[kind] = { Title, Seconds? (timed, not saved), Good / Evil = { Label, Done?,
+-- Reward = { Item | Potion, N, Gold }, Points? (default Deeds.Points) } }. The kinds come with the content that opens
+-- them (the lost items, the apprentice card, the clatter card, ...). Additive save field: Cards = { Serial, Pending }.
+Config.Data.Defaults.Cards = { Serial = 0 }
+Config.ChoiceCard = {
+	Grace = 1, -- seconds after a timed card's Seconds in which a pick still counts (the network)
+	Kinds = {},
+	Text = {
+		GoodDone = "Kind choice!",
+		EvilDone = "Sneaky choice!",
+		Score = "%s +%d", -- ("Honor" | "Infamy", points)
+		Full = "Your shard is full for today. Come back tomorrow!",
+	},
+}
+Config.RateLimits.CardAction = 0.3
+
 return Config

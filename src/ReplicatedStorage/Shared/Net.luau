@@ -44,6 +44,7 @@ Net.Names = {
 	"ClientMetric", -- A23-79: (id: Config.Analytics.ClientMetrics, arg?) what only the client sees (TelemetryService, metrics)
 	"GoToFriend", -- A23-79 #3: (userId) travel to a Roblox friend on this server (InviteService; the travel rules apply)
 	"CandyTrade", -- A23-79 #4: (jar id: Config.CandyJar.Trades[].Id) candy for a stat-free title (DiaryService)
+	"CardAction", -- A23-86 CC: (card id: number, "Good" | "Evil") the open choice card (ChoiceCard)
 }
 
 Net.GameStateDefaults = {

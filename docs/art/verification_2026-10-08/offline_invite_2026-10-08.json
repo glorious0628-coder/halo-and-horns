@@ -179,9 +179,9 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/Invite.luau": "6542a2b9de2199f47ff6fba2969be9035af2e509a3c7e72c782ab09cec03d4db",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
   },
-  "fixtureSHA256": "b4019f9db7b0cc3a3fd07fd5674bca613f8a005473a584b68d7fb93b1bbb2643",
+  "fixtureSHA256": "50a5285b4bb9910a1f64e7d759d36e3fe73e2c4c493ce4ce03ca0e583bf17095",
   "studioCalls": 0,
   "limitations": "Doubles instead of SocialService: Roblox's invite window (and whether a friend's join carries the LaunchData) is a Studio / live check with two accounts; the buttons' places are 이미지 개발's layout."
 }

@@ -646,6 +646,33 @@ local function placeEdge(cam, origin, s, W, H, lifted)
 	labelAbove(dy > 0.6) -- the arrow points down: the distance goes above the icon
 end
 
+-- an on-screen target behind a HUD block (hud = S.hud, the blocks inflated by the footprint): keep its column and rise
+-- just above that block; 검수 10/09 (phone 09a / 10_crossroads: "23m" cut off above the screen's top edge over the
+-- crown war bar) - a block with no room above it under the Roblox top bar (topY) sends the marker just below it
+-- (kept above bottomY); once it went down it keeps going down past the next block, so two stacked blocks never send it
+-- back and forth. Pure: the offline test runs it.
+function QuestMarker.ClearOfHud(lx, ly, hud, topY, bottomY)
+	hud = hud or {}
+	local down = false
+	for _ = 1, #hud + 1 do
+		local hit = nil
+		for _, b in hud do
+			if lx > b[1] and lx < b[3] and ly > b[2] and ly < b[4] then
+				hit = b
+				break
+			end
+		end
+		if not hit then break end
+		if not down and hit[2] >= topY then
+			ly = hit[2]
+		else
+			down = true
+			ly = math.min(hit[4], bottomY)
+		end
+	end
+	return ly
+end
+
 -- every frame after the camera: visibility, distance, fade, colour, on-screen spot or edge indicator
 local function moveStep()
 	local root = myRoot()
@@ -684,11 +711,7 @@ local function moveStep()
 		-- 2026-10-08 (main Studio phone: the marker and "19m" sat on "Lv 1 · 245"): a target behind a HUD block keeps its
 		-- column but rises just above that block (S.hud = the HUD blocks inflated by the indicator's footprint)
 		readAvoid(W, H)
-		for _ = 1, 2 do
-			for _, b in S.hud or {} do
-				if lx > b[1] and lx < b[3] and ly > b[2] and ly < b[4] then ly = b[2] end
-			end
-		end
+		ly = QuestMarker.ClearOfHud(lx, ly, S.hud, T.TopBar + T.HalfY, H - T.HalfY)
 		moveTo(lx, ly)
 		labelAbove(false)
 	else
