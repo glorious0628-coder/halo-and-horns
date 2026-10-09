@@ -45,7 +45,7 @@ MUTATIONS = [
     ("the row never names the woods", ST, "\t\ttemplate = step.AltText\n", ""),
     ("the row names the woods for everyone", ST, "type(obj.Alt) == \"table\" and num(data.Level, 1) >= num(obj.Alt.MinLevel, 1) then", "type(obj.Alt) == \"table\" then"),
     # --- WB1
-    ("WB1 is not listed", C, "\t\t\"WB1\" }, -- A23-86 Call of the Woods: the lantern on the woods bridge", "\t\t}, -- A23-86 Call of the Woods: the lantern on the woods bridge"),
+    ("WB1 is not listed", C, "		\"WB1\", -- A23-86 Call of the Woods: the lantern on the woods bridge", "		-- A23-86 Call of the Woods: the lantern on the woods bridge"),
     ("WB1 at Lv5", C, "Requires = { Done = { \"M1_4\" }, Level = 10 },\n\t\t\tStart = \"A light flickers", "Requires = { Done = { \"M1_4\" }, Level = 5 },\n\t\t\tStart = \"A light flickers"),
     ("WB1 without M1_4", C, "Requires = { Done = { \"M1_4\" }, Level = 10 },\n\t\t\tStart = \"A light flickers", "Requires = { Level = 10 },\n\t\t\tStart = \"A light flickers"),
     ("WB1 not for Neutral", C, "Factions = { Halo = true, Horns = true, Neutral = true },\n\t\t\tRequires = { Done = { \"M1_4\" }, Level = 10 },", "Factions = { Halo = true, Horns = true },\n\t\t\tRequires = { Done = { \"M1_4\" }, Level = 10 },"),

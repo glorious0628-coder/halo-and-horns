@@ -161,8 +161,10 @@ MUTATIONS = [
     ("level-up notice ignores ownership", "LOOT_SOURCE",
      "bit32.band(mask, bit32.lshift(1, t - 1)) ~= 0 and min > before", "true and min > before"),
     ("level-up auto-equips the newly usable weapon", "LOOT_SOURCE",
-     "if best then notify(player, string.format(Config.Text.WeaponUsableNow",
-     "if best then S.PlayerService.SetStat(player, \"WeaponTier\", best); notify(player, string.format(Config.Text.WeaponUsableNow"),
+     "if best and (Config.Nudges or {}).WeaponUsableNow ~= false then notify(player, string.format(Config.Text.WeaponUsableNow",
+     "if best and (Config.Nudges or {}).WeaponUsableNow ~= false then S.PlayerService.SetStat(player, \"WeaponTier\", best); notify(player, string.format(Config.Text.WeaponUsableNow"),
+    ("the usable-weapon line ignores Nudges", "LOOT_SOURCE",
+     "if best and (Config.Nudges or {}).WeaponUsableNow ~= false then notify(", "if best then notify("),
     ("LeveledUp never connected", "LOOT_SOURCE",
      "if prog and type(prog.LeveledUp) == \"table\" then", "if false then"),
     # A23-27 BelowLevel weapon rows (the king's T4 row: 3 candies below Lv12)

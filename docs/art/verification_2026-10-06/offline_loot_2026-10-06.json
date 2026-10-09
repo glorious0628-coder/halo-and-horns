@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3290,
+  "checks": 3292,
   "failedChecks": 0,
-  "namedChecks": 547,
+  "namedChecks": 549,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -2829,6 +2829,18 @@
     },
     {
       "group": "levelrule",
+      "check": "Nudges.WeaponUsableNow is off in the real Config",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Nudges.WeaponUsableNow off: Lv1 -> Lv40 with tier 6 owned sends no notice and still no auto-equip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
       "check": "A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
       "pass": 1,
       "fail": 0
@@ -3601,9 +3613,9 @@
   "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 106,
-    "applied": 106,
-    "caught": 106,
+    "total": 107,
+    "applied": 107,
+    "caught": 107,
     "results": [
       {
         "mutation": "enhance failure may go below +0",
@@ -3991,7 +4003,7 @@
           "equip :: equip notice",
           "equip :: no level refusal once the level is reached"
         ],
-        "newFailingCount": 43
+        "newFailingCount": 44
       },
       {
         "mutation": "BestUsableWeapon compares tier numbers instead of Damage",
@@ -4218,6 +4230,17 @@
           "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
         ],
         "newFailingCount": 4
+      },
+      {
+        "mutation": "the usable-weapon line ignores Nudges",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: Nudges.WeaponUsableNow off: Lv1 -> Lv40 with tier 6 owned sends no notice and still no auto-equip"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "LeveledUp never connected",
@@ -5087,19 +5110,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db",
-    "src/ReplicatedStorage/Shared/Net.luau": "6aff546bb035074da3e3a904e7af59cec304a17ca6732ed425bea01c77907660",
+    "src/ReplicatedStorage/Shared/Config.luau": "78c6f833935ffa89934b2c01271749a3b96332434b49d21fedf206be38116875",
+    "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
-    "src/ServerScriptService/ProgressionService.luau": "227961d963eb15c19e96eda039fc662a2220110a7020274397ed1ab69e078b94",
+    "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13",
     "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
-    "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
+    "src/ServerScriptService/LootService.luau": "6008f3eb363dd8f505bf47b5ac05c61bf348b00490fbd0317b7f4d9e852929b5",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
+    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6"
   },
-  "fixtureSHA256": "8ad92351d2dc9082feb73567d1757572ecadcd1502fd4a33ab23c71dcd87c44f",
+  "fixtureSHA256": "160c73e73a94634e38559b9fa53cf8421677d8cfb0592cfaa46428cf038b8daa",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

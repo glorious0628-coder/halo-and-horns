@@ -2258,12 +2258,14 @@ runGroup("levelrule", function()
 		check(got == case[3], "Config.BestUsableWeapon: " .. case[4], "got " .. tostring(got))
 	end
 
-	local function mk(level, tier, owned, enh)
+	local function mk(level, tier, owned, enh, nudgeOff)
 		local saved = deepCopy(DEFAULT_ROW)
 		saved.Level, saved.WeaponTier, saved.WeaponOwnedMask = level, tier, owned
 		saved.WeaponEnhance = enh or { 1, 2, 3, 4, 5, 6, 7, 8 }
 		local x = fixture({ Saved = saved })
 		x.Data.LootFlags.FirstScroll = true
+		-- the real Config has the "You can now use ..." line off (Nudges.WeaponUsableNow, 검수 10/09): these checks look at the rule, so turn it on
+		if not nudgeOff then x.Config.Nudges.WeaponUsableNow = true end
 		return x
 	end
 	local function name(x, t) return C.WeaponName(t, x.Player:GetAttribute("Class") or "Warrior", x.Player:GetAttribute("Faction") or "None") end
@@ -2354,6 +2356,14 @@ runGroup("levelrule", function()
 	local nowD = weaponNotices(d, "WeaponUsableNow")
 	check(d.Data.Level == 40 and #nowD == 1 and nowD[1].Tier == 6 and d.Data.WeaponTier == 2,
 		"A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip", show({ d.Data.Level, nowD }))
+
+	-- 검수 10/09 (user: too kind): with the real Config the "You can now use ..." line is off; the rule (no auto-equip) is the same
+	local q = mk(1, 2, tierMask(1, 2, 6), enhD, true)
+	check(q.Config.Nudges.WeaponUsableNow == false, "Nudges.WeaponUsableNow is off in the real Config", tostring(q.Config.Nudges.WeaponUsableNow))
+	q.Notices = {}
+	q.Prog.AddXP(q.Player, xp)
+	check(q.Data.Level == 40 and #weaponNotices(q, "WeaponUsableNow") == 0 and q.Data.WeaponTier == 2,
+		"Nudges.WeaponUsableNow off: Lv1 -> Lv40 with tier 6 owned sends no notice and still no auto-equip", show({ q.Data.Level, weaponNotices(q, "WeaponUsableNow") }))
 
 	-- (e) a save from before the rule (Lv10, tier 6 equipped, tiers 1+3+6): PlayerReady fits it -> tier 3 + notice
 	local e = mk(10, 6, tierMask(1, 3, 6), enhA)

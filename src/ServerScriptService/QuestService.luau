@@ -819,7 +819,7 @@ local function publish(player)
 	end
 	-- the guide chain just ran out (iron weapon owned and Lv10 reached): say so once, then the row disappears
 	local hasGoal = tutorial ~= nil and (tutorial.NextGoal == true or tutorial.Story ~= nil)
-	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE then
+	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE and (Config.Nudges or {}).GuideDone ~= false then
 		Net.Notify(player, TUT_MESSAGES.GuideDone or "That's all from me! Now hunt and get stronger.", "good")
 	end
 	hadNextGoal[player] = hasGoal or nil
@@ -925,7 +925,7 @@ local function completeQuest(player, data, index, q)
 		if not quiet then
 			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(gotGold)), "reward", nil, "QuestDone")
 		end
-	elseif not quiet then
+	elseif not quiet and (Config.Nudges or {}).DailyReady ~= false then
 		-- dailies stay in their slot until claimed
 		Net.Notify(player, string.format(Config.Text.DailyReady), "good")
 	end

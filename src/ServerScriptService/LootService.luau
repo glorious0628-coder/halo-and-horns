@@ -619,7 +619,7 @@ local function onLeveledUp(player, level)
 			best, bestDamage = t, num(def.Damage)
 		end
 	end
-	if best then notify(player, string.format(Config.Text.WeaponUsableNow, weaponName(player, best)), "good") end
+	if best and (Config.Nudges or {}).WeaponUsableNow ~= false then notify(player, string.format(Config.Text.WeaponUsableNow, weaponName(player, best)), "good") end
 end
 
 ------------------------------------------------------------------ lifecycle
