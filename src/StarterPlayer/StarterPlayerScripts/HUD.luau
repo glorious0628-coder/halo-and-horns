@@ -4318,52 +4318,56 @@ local function showGuide(target, text, tag, seconds)
 	beam.Parent = part
 	g.Beam = beam
 
-	-- 검수 2026-10-08 (user: "이거 별로야"): a small white Chip (navy rim) with a down arrow and one short navy line,
-	-- about half the old 220 x 64 gold words; it hides within L.GuideHide studs (the pad glow and the gold line stay)
-	local G = L.GuideLabel
-	local words = tostring(text or TUT_GUIDE_TEXT)
-	local _, textW = UIKit.MeasureText(words, G.TextPx, Enum.Font.GothamBold, 10000)
-	local w = math.ceil((tonumber(textW) or #words * G.TextPx * 0.6) + G.H + G.PadX * 2)
-	local bb = Instance.new("BillboardGui")
-	bb.Name = "HUDGuideLabel"
-	bb.Adornee = part
-	bb.AlwaysOnTop = true
-	bb.LightInfluence = 0
-	bb.MaxDistance = 100000
-	bb.Size = UDim2.fromOffset(w, G.H)
-	bb.StudsOffset = Vector3.new(0, part.Size.Y / 2 + G.Lift, 0)
-	local plate = UIKit.ArtFrame("Chip", { Name = "Plate", Size = UDim2.fromScale(1, 1), Parent = bb },
-		{ Color = Color3.new(1, 1, 1), CornerRadius = UDim.new(0.5, 0), StrokeColor = ac("Navy", Theme.Bg), StrokeThickness = 2 })
-	local arrow = UIKit.ArtImage("IconQuestMarkerArrow", {
-		Name = "Arrow", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, G.PadX - 2, 0.5, 0),
-		Size = UDim2.fromOffset(G.H - 8, G.H - 8), Rotation = 180, ImageColor3 = ac("StarGold", Theme.Gold), ZIndex = 2,
-		Parent = plate,
-	})
-	local left = arrow and (G.PadX - 2 + G.H - 8 + 3) or G.PadX
-	UIKit.Create("TextLabel", {
-		Name = "Text",
-		Position = UDim2.fromOffset(left, 0),
-		Size = UDim2.new(1, -left - G.PadX, 1, 0),
-		BackgroundTransparency = 1,
-		Font = Enum.Font.GothamBold,
-		TextSize = G.TextPx,
-		TextColor3 = ac("Ink", COL.Dark),
-		Text = words,
-		ZIndex = 2,
-		Parent = plate,
-	})
-	bb.Parent = part
-	g.Billboard = bb
-	g.Near = game:GetService("RunService").Heartbeat:Connect(function()
-		local char = LocalPlayer.Character
-		local root = char and char:FindFirstChild("HumanoidRootPart")
-		local far = not (root and root:IsA("BasePart")) or (root.Position - part.Position).Magnitude > L.GuideHide
-		if bb.Enabled ~= far then bb.Enabled = far end
-	end)
-	g.Tween = TweenService:Create(bb, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-		StudsOffset = bb.StudsOffset + Vector3.new(0, 1.5, 0),
-	})
-	g.Tween:Play()
+	-- 검수 10/09 (user: "이런 거 없어도 된다니까"): the floating name chip ("First weapon", "Squishy Meadow") is off
+	-- (Config.Nudges.GuideLabel); the gold line and QuestMarker's diamond + distance still show the way
+	if (Config.Nudges or {}).GuideLabel ~= false then
+		-- 검수 2026-10-08 (user: "이거 별로야"): a small white Chip (navy rim) with a down arrow and one short navy line,
+		-- about half the old 220 x 64 gold words; it hides within L.GuideHide studs (the pad glow and the gold line stay)
+		local G = L.GuideLabel
+		local words = tostring(text or TUT_GUIDE_TEXT)
+		local _, textW = UIKit.MeasureText(words, G.TextPx, Enum.Font.GothamBold, 10000)
+		local w = math.ceil((tonumber(textW) or #words * G.TextPx * 0.6) + G.H + G.PadX * 2)
+		local bb = Instance.new("BillboardGui")
+		bb.Name = "HUDGuideLabel"
+		bb.Adornee = part
+		bb.AlwaysOnTop = true
+		bb.LightInfluence = 0
+		bb.MaxDistance = 100000
+		bb.Size = UDim2.fromOffset(w, G.H)
+		bb.StudsOffset = Vector3.new(0, part.Size.Y / 2 + G.Lift, 0)
+		local plate = UIKit.ArtFrame("Chip", { Name = "Plate", Size = UDim2.fromScale(1, 1), Parent = bb },
+			{ Color = Color3.new(1, 1, 1), CornerRadius = UDim.new(0.5, 0), StrokeColor = ac("Navy", Theme.Bg), StrokeThickness = 2 })
+		local arrow = UIKit.ArtImage("IconQuestMarkerArrow", {
+			Name = "Arrow", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, G.PadX - 2, 0.5, 0),
+			Size = UDim2.fromOffset(G.H - 8, G.H - 8), Rotation = 180, ImageColor3 = ac("StarGold", Theme.Gold), ZIndex = 2,
+			Parent = plate,
+		})
+		local left = arrow and (G.PadX - 2 + G.H - 8 + 3) or G.PadX
+		UIKit.Create("TextLabel", {
+			Name = "Text",
+			Position = UDim2.fromOffset(left, 0),
+			Size = UDim2.new(1, -left - G.PadX, 1, 0),
+			BackgroundTransparency = 1,
+			Font = Enum.Font.GothamBold,
+			TextSize = G.TextPx,
+			TextColor3 = ac("Ink", COL.Dark),
+			Text = words,
+			ZIndex = 2,
+			Parent = plate,
+		})
+		bb.Parent = part
+		g.Billboard = bb
+		g.Near = game:GetService("RunService").Heartbeat:Connect(function()
+			local char = LocalPlayer.Character
+			local root = char and char:FindFirstChild("HumanoidRootPart")
+			local far = not (root and root:IsA("BasePart")) or (root.Position - part.Position).Magnitude > L.GuideHide
+			if bb.Enabled ~= far then bb.Enabled = far end
+		end)
+		g.Tween = TweenService:Create(bb, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+			StudsOffset = bb.StudsOffset + Vector3.new(0, 1.5, 0),
+		})
+		g.Tween:Play()
+	end
 
 	guide = g
 	attachGuideToCharacter()
