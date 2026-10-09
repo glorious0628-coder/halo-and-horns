@@ -3294,6 +3294,73 @@ Config.StoryQuests.Landmarks.WoodsBoard = Config.StoryQuests.Landmarks.WoodsGate
 Config.StoryQuests.Landmarks.HeroStatue = Vector3.new(0, 0, -370)
 Config.StoryQuests.Landmarks.LavaCrack = Vector3.new(48, 0, 410)
 
+-- story_depth (나) the beta Easter eggs EG01 / EG02 / EG03 / EG04 / EG14 (검수 2026-10-10: only what needs no new model; A23-52
+-- grown-ups' jokes, never a real brand / person). Hidden subs of the Crossroads: they start for everybody after M2_3 (no start
+-- toast, no row, no marker); walking to the spot finds one (its dialogue opens by itself and the row shows from then on). A
+-- found egg pays a stat-free title only. Spots (the props are the world tools' job: a sign / scroll Part with a SurfaceGui):
+--   TermsScroll = behind the Altar of Fate (Config.Map.AltarPosition (0,0,45)), PatchNote = the slip in front of the Wanted
+--   Board (BoardPosition (-55,0,0), it faces +X), GooseNest = the Golden Goose perch (Config.Goose.Position), the fountain
+--   (Fountain) and the kids' bench (KidsBench) already exist.
+-- (literals: some offline Vector3 doubles have no arithmetic)
+Config.StoryQuests.Landmarks.TermsScroll = Vector3.new(0, 0, 51)
+Config.StoryQuests.Landmarks.PatchNote = Vector3.new(-52, 0, 0)
+Config.StoryQuests.Landmarks.GooseNest = Vector3.new(-30, 0, 30)
+Config.StoryQuests.Defs.EG01 = {
+	Kind = "Sub", Title = "Terms of Fate", ShortName = "Terms of Fate", Hidden = true, Requires = { Done = { "M2_3" } },
+	Steps = {
+		{ Text = "Read the scroll", Obj = { Type = "Near", Spot = "TermsScroll", Radius = 6 } },
+		{ Text = "TERMS OF FATE", Panel = true, Lines = { All = { "TERMS OF FATE (page 1 of 4,000)" } },
+			Obj = { Type = "Choice", Good = { Label = "Read it all", Points = 0 }, Evil = { Label = "I agree", Points = 0 },
+				Neutral = { A = "Read it all", B = "I agree" } } },
+		{ Text = "The fine print", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Thanks! You agreed to… something. Not even Fate knows what." } },
+			LinesBy = { From = "EG01",
+				Good = { All = { "Rule 1: No slimes on the altar. Rule 2: See Rule 1.", "…You're still reading? Nobody reads this far.",
+					"Page 4,000: Be kind. That was the whole thing." } },
+				Evil = { All = { "Thanks! You agreed to… something. Not even Fate knows what." } },
+				Default = { All = { "Thanks! You agreed to… something. Not even Fate knows what." } } } },
+	},
+	Reward = { TitleBy = { Good = "ActuallyReadIt", Evil = "DidntReadIt" } },
+}
+Config.StoryQuests.Defs.EG02 = {
+	Kind = "Sub", Title = "Patch Note", ShortName = "Patch Note", Hidden = true, Requires = { Done = { "M2_3" } },
+	Steps = {
+		{ Text = "Read the note", Obj = { Type = "Near", Spot = "PatchNote", Radius = 6 } },
+		{ Text = "Patch Note", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Patch 0.0.1: The crown is broken.", "Known issue. We are looking into it." } } },
+	},
+	Reward = { Title = "BugReporter" },
+}
+Config.StoryQuests.Defs.EG03 = {
+	Kind = "Sub", Title = "Goose Fan", ShortName = "Goose Fan", Hidden = true, Requires = { Done = { "M2_3" } },
+	Steps = {
+		{ Text = "Visit the goose", Obj = { Type = "Near", Spot = "GooseNest", Radius = 6 } },
+		{ Text = "Goose Fan", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "The Golden Goose has 0 followers. She has never been happier.",
+				"Also, she saw who broke the Crown. Honk." } } },
+	},
+	Reward = { Title = "GooseFan" },
+}
+Config.StoryQuests.Defs.EG04 = {
+	Kind = "Sub", Title = "Sky Watcher", ShortName = "Sky Watcher", Hidden = true, Requires = { Done = { "M2_3" } },
+	Steps = {
+		{ Text = "Look up %d/%d s", Obj = { Type = "Near", Spot = "Fountain", Radius = 12, Stay = 30 } },
+		{ Text = "Sky Watcher", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Sky Crown: Stop staring. I'm broken, not famous." } } },
+	},
+	Reward = { Title = "SkyWatcher" },
+}
+Config.StoryQuests.Defs.EG14 = {
+	Kind = "Sub", Title = "Bench Detective", ShortName = "Bench clue", Hidden = true, Requires = { Done = { "M2_3" } },
+	Steps = {
+		{ Text = "Look under the bench", Obj = { Type = "Near", Spot = "KidsBench", Radius = 6 } },
+		{ Text = "Bench Detective", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Under the bench: two small handprints in old paint.", "One gold. One purple. Side by side." } } },
+	},
+	Reward = { Title = "BenchDetective" },
+}
+for _, id in { "EG01", "EG02", "EG03", "EG04", "EG14" } do table.insert(Config.StoryQuests.Subs, id) end
+
 -- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
 -- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that
 -- role. A card is taken as [Kind] or [Sneaky]: only the side is counted (data.Story.N), no honor / infamy / ranking.
@@ -6076,6 +6143,49 @@ Config.Death = {
 	},
 }
 
+-- EG05 Fun Tips (story_depth (나), 검수 2026-10-10; A23-52 jokes for the grown-ups, no real brand or person): about one KO in
+-- `Every` shows one of these instead of the situation tip; the first `SkipFirst` KOs of an account never do (a new player
+-- reads the real tip first). CombatService counts the KOs (data.KOs, saved) and sends the line in the KO fx as `Tip`; the
+-- client's KO screen shows `Tip` when it is there (game dev 1). FunTip is pure: koCount = this KO counted, roll / pick in [0, 1).
+Config.Data.Defaults.KOs = 0
+Config.Death.Fun = {
+	Every = 15,
+	SkipFirst = 3,
+	Lines = {
+		"Tip: Slimes are 90% jelly and 10% attitude.",
+		"Tip: Skeletons can't jump. Please don't tell them.",
+		"Tip: Reading tips gives no XP. We checked.",
+		"Tip: The goblins had a meeting about this tip. Same plan as last time.",
+	},
+}
+function Config.FunTip(koCount, roll, pick)
+	local F = Config.Death.Fun
+	if type(koCount) ~= "number" or koCount ~= koCount or koCount <= F.SkipFirst then return nil end
+	if type(roll) ~= "number" or roll ~= roll or roll < 0 or roll >= 1 / F.Every then return nil end
+	local n = #F.Lines
+	if n == 0 then return nil end
+	local i = 1 + math.floor(math.clamp(type(pick) == "number" and pick == pick and pick or 0, 0, 0.999999) * n)
+	return F.Lines[i]
+end
+
+-- EG06 Goblin Notes (story_depth (나)): one line under the News window, in its own colour, new every week (the KST week of
+-- Config.DayIndex; the client shows Config.GoblinNote(Config.DayIndex(os.time())) - game dev 1). Patch-note jokes.
+Config.GoblinNotes = {
+	Title = "Goblin Notes",
+	Lines = {
+		"Fixed: goblins stealing dust. (Not fixed.)",
+		"Known issue: slimes are squishy. Working as intended.",
+		"Goblins now steal 0% more. Same as before.",
+	},
+}
+function Config.GoblinNote(dayIndex)
+	local lines = Config.GoblinNotes.Lines
+	if type(dayIndex) ~= "number" or dayIndex ~= dayIndex or dayIndex == math.huge or dayIndex == -math.huge or #lines == 0 then
+		return lines[1]
+	end
+	return lines[1 + math.floor(dayIndex / 7) % #lines]
+end
+
 -- A23-32 bag sort '얻은 순' (the most recent first): data.ItemSeq[key] / data.WeaponSeq[tier] = a number from the ONE
 -- counter data.ItemSeqNext (bigger = gained more recently; 0 / missing = before this existed, an old save). Keys: the
 -- Config.Loot item ids and the potion keys of Config.ItemSeqPotions. Numbers only, unknown keys dropped: a small save.
@@ -6515,6 +6625,17 @@ Config.ChoiceCard.Kinds.ApprenticeScratch = {
 Config.TitleDefs.GuardianCadet = { Name = "Guardian Cadet", NameEn = "Guardian Cadet", Color = Color3.fromRGB(255, 225, 120) }
 Config.TitleDefs.RascalCadet = { Name = "Rascal Cadet", NameEn = "Rascal Cadet", Color = Color3.fromRGB(190, 120, 235) }
 for _, id in { "GuardianCadet", "RascalCadet" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
+
+-- the egg titles (stat-free; the picker order follows)
+Config.TitleDefs.ActuallyReadIt = { Name = "Actually Read It", NameEn = "Actually Read It", Color = Color3.fromRGB(130, 205, 255) }
+Config.TitleDefs.DidntReadIt = { Name = "Didn't Read It", NameEn = "Didn't Read It", Color = Color3.fromRGB(190, 170, 140) }
+Config.TitleDefs.BugReporter = { Name = "Bug Reporter", NameEn = "Bug Reporter", Color = Color3.fromRGB(150, 230, 170) }
+Config.TitleDefs.GooseFan = { Name = "Goose Fan", NameEn = "Goose Fan", Color = Color3.fromRGB(255, 225, 120) }
+Config.TitleDefs.SkyWatcher = { Name = "Sky Watcher", NameEn = "Sky Watcher", Color = Color3.fromRGB(150, 190, 255) }
+Config.TitleDefs.BenchDetective = { Name = "Bench Detective", NameEn = "Bench Detective", Color = Color3.fromRGB(200, 150, 235) }
+for _, id in { "ActuallyReadIt", "DidntReadIt", "BugReporter", "GooseFan", "SkyWatcher", "BenchDetective" } do
 	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
 end
 

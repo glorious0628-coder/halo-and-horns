@@ -178,4 +178,45 @@ runGroup("players", function()
 	check(lastKO(w8, v8).By == "Player" and lastKO(w8, v8).Name == "P208", "a recent monster hit never hides the PvP killer", show(lastKO(w8, v8)))
 end)
 
+------------------------------------------------------------------ EG05 Fun Tips (story_depth (나), 검수 2026-10-10)
+-- about one KO in 15 carries a joke tip (fx field Tip), never one of the first 3 of an account; every KO is counted (data.KOs)
+runGroup("fun tips (EG05)", function()
+	local F = D0.Fun
+	check(F.Every == 15 and F.SkipFirst == 3 and #F.Lines == 4 and C0.Data.Defaults.KOs == 0, "Config.Death.Fun: 1 in 15, not the first 3, 4 lines; the save counts KOs from 0", show(F))
+	for i, line in F.Lines do check(string.sub(line, 1, 5) == "Tip: " and #line <= 80, "fun line " .. i .. " starts with 'Tip: ' and is short", line) end
+	-- the pure picker
+	check(C0.FunTip(1, 0, 0) == nil and C0.FunTip(3, 0, 0) == nil, "the first 3 KOs never get one", tostring(C0.FunTip(3, 0, 0)))
+	check(C0.FunTip(4, 0, 0) == F.Lines[1], "the 4th KO can (roll 0, pick 0 = line 1)", tostring(C0.FunTip(4, 0, 0)))
+	check(C0.FunTip(4, 0.06, 0.26) == F.Lines[2] and C0.FunTip(4, 0.06, 0.5) == F.Lines[3] and C0.FunTip(4, 0.06, 0.99) == F.Lines[4], "the pick chooses the line (quarters)", "")
+	check(C0.FunTip(4, 1 / 15, 0) == nil and C0.FunTip(4, 0.5, 0) == nil and C0.FunTip(4, 0.999, 0) == nil, "a roll of 1/15 or more: none", "")
+	check(C0.FunTip(4, -0.1, 0) == nil and C0.FunTip(4, 0 / 0, 0) == nil and C0.FunTip(4, nil, 0) == nil and C0.FunTip("4", 0, 0) == nil and C0.FunTip(0 / 0, 0, 0) == nil
+		and C0.FunTip(nil, 0, 0) == nil, "bad numbers: none", "")
+	check(C0.FunTip(4, 0, 5) == F.Lines[4] and C0.FunTip(4, 0, -1) == F.Lines[1] and C0.FunTip(4, 0, 0 / 0) == F.Lines[1] and C0.FunTip(4, 0, nil) == F.Lines[1],
+		"a bad pick is clamped", "")
+	-- through the death pipeline: the count and the payload
+	local w = rankWorld()
+	local p = w:Join(301, "Halo")
+	for i = 1, 3 do
+		w.Script = { 0, 0.5 }
+		w:Die(p)
+		w.Script = nil
+		check(lastKO(w, p).Tip == nil, "KO " .. i .. ": no joke tip (one of the first 3)", tostring(lastKO(w, p).Tip))
+	end
+	w.Script = { 0.01, 0.5 }
+	w:Die(p)
+	w.Script = nil
+	check(lastKO(w, p).Tip == F.Lines[3] and lastKO(w, p).By == "Other", "KO 4 with a lucky roll: line 3 in the KO fx, the rest of the payload as before", show(lastKO(w, p)))
+	w.Script = { 0.9, 0.5 }
+	w:Die(p)
+	w.Script = nil
+	check(lastKO(w, p).Tip == nil, "KO 5 with an unlucky roll: no tip", tostring(lastKO(w, p).Tip))
+	check(#kos(w, p) == 5, "five payloads for five deaths", tostring(#kos(w, p)))
+	-- the count is the account's own (another player starts at 0)
+	local q = w:Join(302, "Horns")
+	w.Script = { 0, 0 }
+	w:Die(q)
+	w.Script = nil
+	check(lastKO(w, q).Tip == nil, "another player's first KO: no tip", tostring(lastKO(w, q).Tip))
+end)
+
 finish()

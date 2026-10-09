@@ -1,0 +1,381 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 29,
+  "failedChecks": 0,
+  "namedChecks": 29,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "the notes",
+      "check": "Config.GoblinNotes: 'Goblin Notes', 3 lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the notes",
+      "check": "the three jokes of the design table (story_depth EG06)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the notes",
+      "check": "note 1 is one short line (<= 70 letters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the notes",
+      "check": "note 2 is one short line (<= 70 letters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the notes",
+      "check": "note 3 is one short line (<= 70 letters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the notes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the notes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 0 -> note 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 6 -> note 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 6.9 -> note 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 7 -> note 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 13 -> note 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 14 -> note 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 20 -> note 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 21 -> note 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 28 -> note 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 35 -> note 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 2100 -> note 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 2107 -> note 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day 20000 -> note 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day -1 -> note 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day -7 -> note 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "day -8 -> note 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "a broken day index: the first note, never an error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "the same day, the same note",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "7 days the same, then the next note",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "three weeks later the first note again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the weekly pick",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 2,
+  "staticFailures": [],
+  "mutations": {
+    "total": 13,
+    "applied": 13,
+    "caught": 13,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "a week is 6 days",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: 7 days the same, then the next note",
+          "the weekly pick :: day -7 -> note 3",
+          "the weekly pick :: day 13 -> note 2",
+          "the weekly pick :: day 20 -> note 3",
+          "the weekly pick :: day 20000 -> note 2",
+          "the weekly pick :: day 2100 -> note 1"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "a week is 8 days",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: 7 days the same, then the next note",
+          "the weekly pick :: day -8 -> note 2",
+          "the weekly pick :: day 14 -> note 3",
+          "the weekly pick :: day 21 -> note 1",
+          "the weekly pick :: day 2100 -> note 1",
+          "the weekly pick :: day 2107 -> note 2"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "the note changes every day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: day 20000 -> note 2"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the note never changes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: 7 days the same, then the next note",
+          "the weekly pick :: day -1 -> note 3",
+          "the weekly pick :: day -7 -> note 3",
+          "the weekly pick :: day -8 -> note 2",
+          "the weekly pick :: day 13 -> note 2",
+          "the weekly pick :: day 14 -> note 3"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "the list never wraps",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: 7 days the same, then the next note",
+          "the weekly pick :: day -1 -> note 3",
+          "the weekly pick :: day -7 -> note 3",
+          "the weekly pick :: day -8 -> note 2",
+          "the weekly pick :: day 20000 -> note 2",
+          "the weekly pick :: day 21 -> note 1"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "the first line is skipped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: day -1 -> note 3",
+          "the weekly pick :: day -7 -> note 3",
+          "the weekly pick :: day -8 -> note 2",
+          "the weekly pick :: day 0 -> note 1",
+          "the weekly pick :: day 13 -> note 2",
+          "the weekly pick :: day 14 -> note 3"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "a broken day index errors",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "NaN passes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: a broken day index: the first note, never an error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "infinity passes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the weekly pick :: a broken day index: the first note, never an error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the title is changed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the notes :: Config.GoblinNotes: 'Goblin Notes', 3 lines"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a note is missing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the notes :: Config.GoblinNotes: 'Goblin Notes', 3 lines",
+          "the notes :: the three jokes of the design table (story_depth EG06)",
+          "the weekly pick :: day -1 -> note 3",
+          "the weekly pick :: day -7 -> note 3",
+          "the weekly pick :: day -8 -> note 2",
+          "the weekly pick :: day 14 -> note 3"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "the first note changed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the notes :: the three jokes of the design table (story_depth EG06)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the third note changed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the notes :: the three jokes of the design table (story_depth EG06)"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "9da8fdd8dabc691bcc7ea7d8b1a8916556812e81a5aa3023b4617911e90c0086"
+  },
+  "fixtureSHA256": "945f18c7b833f39f7483ef5ec80ac57194923004a847dc1a7968cdf8a104630a",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Config.GoblinNotes = { Title = 'Goblin Notes', Lines = 3 patch-note jokes }; Config.GoblinNote(dayIndex) = the line of the KST week (floor(day / 7) mod 3, day 0..6 = line 1), a broken number = line 1, a negative day wraps. The News window shows it (game dev 1).",
+  "limitations": "Text and the picker only: the News window's bottom line is game dev 1's client work."
+}
