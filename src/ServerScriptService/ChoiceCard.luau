@@ -86,10 +86,23 @@ local function count(data, kind, side)
 end
 
 ------------------------------------------------------------------ the card
+-- the reward as it is paid now: GoldMin = that many minutes of hunting gold at the player's level (Config.HuntValue), added
+-- to Gold; everything else as written
+local function concrete(player, reward)
+	local r = type(reward) == "table" and reward or {}
+	local out = { Item = r.Item, Potion = r.Potion, N = r.N, Gold = r.Gold }
+	if num(r.GoldMin) > 0 then
+		local data = S.PlayerService.GetData(player)
+		local level = math.max(1, math.floor(num(data and data.Level, 1)))
+		out.Gold = math.max(0, math.floor(num(r.Gold))) + select(1, Config.HuntValue(level, num(r.GoldMin)))
+	end
+	return out
+end
+
 -- one option as the screen shows it
 local function optionView(player, d, side)
 	local o = d[side]
-	local r = type(o.Reward) == "table" and o.Reward or {}
+	local r = concrete(player, o.Reward)
 	local stat, score, mine = S.Deeds.Preview(player, side, o.Points)
 	local hint = nil
 	if stat == "None" then hint = "Neutral" elseif score == 0 then hint = mine and "Full" or "Zero" end
@@ -152,7 +165,7 @@ local function finish(player, card, side)
 	local d = def(card.Kind)
 	if side and d and data then
 		local o = d[side]
-		local given, gold, id = pay(player, o.Reward)
+		local given, gold, id = pay(player, concrete(player, o.Reward))
 		out.Item, out.N, out.Gold = id, given, gold
 		local stat, change, mine, down, full = S.Deeds.Add(player, side, o.Points)
 		out.Stat, out.Score, out.Full = stat, change, full

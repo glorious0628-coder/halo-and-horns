@@ -779,8 +779,8 @@ local function nextGoalText(data, player)
 	for _, row in ladder.Hooks or {} do
 		local svc = S and S[row.Service]
 		if type(svc) == "table" and type(svc.NextGoal) == "function" and (row.Feature == nil or Config.FeatureOn(row.Feature)) then
-			local ok, text = pcall(svc.NextGoal, player, data)
-			if ok and type(text) == "string" and text ~= "" then return text, row.Kind, nil end
+			local ok, text, kind = pcall(svc.NextGoal, player, data)
+			if ok and type(text) == "string" and text ~= "" then return text, type(kind) == "string" and kind or row.Kind, nil end
 		end
 	end
 	local rb = ladder.Rebirth

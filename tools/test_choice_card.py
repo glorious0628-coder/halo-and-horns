@@ -85,7 +85,7 @@ MUTATIONS = [
     ("the pick is not counted", K, "\t\tcount(data, card.Kind, side)\n", ""),
     ("the count resets", K, "\tst.N[kind][side] = math.min(1000000, math.max(0, math.floor(num(st.N[kind][side]))) + 1)\n", "\tst.N[kind][side] = 1\n"),
     ("a time up pays", K, "\tif side and d and data then\n", "\tif d and data then\n\t\tside = side or \"Good\"\n"),
-    ("the Evil option pays the Good reward", K, "\t\tlocal given, gold, id = pay(player, o.Reward)\n", "\t\tlocal given, gold, id = pay(player, d.Good.Reward)\n"),
+    ("the Evil option pays the Good reward", K, "\t\tlocal given, gold, id = pay(player, concrete(player, o.Reward))\n", "\t\tlocal given, gold, id = pay(player, concrete(player, d.Good.Reward))\n"),
     ("the full-day line is missing", K, "\t\telseif mine and full then\n\t\t\tnotify(player, TXT.Full, \"info\")\n", "\t\telseif false then\n"),
     ("no off-side line", K, "\t\tif stat ~= \"None\" and not mine then\n", "\t\tif false then\n"),
     ("no rank line", K, "\t\t\tif down then notify(player, f == \"Halo\" and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n", ""),

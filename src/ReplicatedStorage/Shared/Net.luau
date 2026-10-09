@@ -45,6 +45,7 @@ Net.Names = {
 	"GoToFriend", -- A23-79 #3: (userId) travel to a Roblox friend on this server (InviteService; the travel rules apply)
 	"CandyTrade", -- A23-79 #4: (jar id: Config.CandyJar.Trades[].Id) candy for a stat-free title (DiaryService)
 	"CardAction", -- A23-86 CC: (card id: number, "Good" | "Evil") the open choice card (ChoiceCard)
+	"Commission", -- A23-86 H: (tier: integer) order the golden / crystal / spirit weapon at the Forge (CommissionService)
 }
 
 Net.GameStateDefaults = {

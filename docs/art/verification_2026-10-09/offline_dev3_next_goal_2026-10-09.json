@@ -423,9 +423,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the pause card leads a rebirth goal to the Crossroads"
+          "config :: group ran to the end without a Lua error",
+          "feature hooks :: group ran to the end without a Lua error",
+          "the early goals and the story keep their place :: group ran to the end without a Lua error",
+          "the rebirth rung :: group ran to the end without a Lua error",
+          "which levels show what :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 5
       },
       {
         "mutation": "hooks ignore their switch",
@@ -562,12 +566,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "65b499c73fe5fc0f21733b48f68d3d76184dfb63b0faf7d79a83bac119b11b9c",
+    "src/ReplicatedStorage/Shared/Config.luau": "57945b7348d2ebda51fca4592a608190676a53caa0a85e2597290c377c9aa360",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/QuestService.luau": "9dcc19a7e766857c4d9a33b1becf564440ac71d4dccf43a826bf9eed0535d6f8",
+    "src/ServerScriptService/QuestService.luau": "199060b524e103939e72df7e50f1870f6fc5a6ff100c27361ec53a8d145adb1b",
     "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308"
   },
-  "fixtureSHA256": "0c25ff38f9b84f8b46ee9ad75a3046d9c0e8213bfd2ef460dba6b770f9b749c7",
+  "fixtureSHA256": "0c2ef0c50939cf61671fc1ff80ec5d82cc4e3972dc0e149f165daf529c36aea9",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
