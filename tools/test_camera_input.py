@@ -58,8 +58,9 @@ def hud_checks(hud: str):
     m_fn = re.search(r"\nfunction L\.SwingFaced\(\)\n(.*?)\nend\n", hud, re.S)
     m_hold = re.search(r"\nlocal function startHold\(source\)\n(.*?)\nend\n", hud, re.S)
     return [
-        ("L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",
-         m_fn is not None and [ln.strip() for ln in m_fn.group(1).strip().splitlines()][-2:] == ['L.FaceTarget("Swing")', 'fire("Swing")']
+        ("L.SwingFaced faces my target, then swings at once with it (no delay: the server aims itself, bd3d6bd)",
+         m_fn is not None and [ln.strip() for ln in m_fn.group(1).strip().splitlines()][-2:]
+         == ['local _, target = L.FaceTarget("Swing")', 'fire("Swing", target)']
          and "task.delay" not in m_fn.group(1)),
         ("the F key / attack button (startHold) swing through L.SwingFaced",
          m_hold is not None and "L.SwingFaced()" in m_hold.group(1) and 'fire("Swing")' not in m_hold.group(1)),
@@ -71,9 +72,9 @@ def hud_checks(hud: str):
 HUD_MUTATIONS = [
     ("a world click skips FaceTarget (fires Swing at once)", "if inputAllowed() then L.SwingFaced() end",
      'if inputAllowed() then fire("Swing") end'),
-    ("SwingFaced never turns first", 'L.FaceTarget("Swing")\n\tfire("Swing")', 'fire("Swing")'),
-    ("SwingFaced waits for the turn again", 'L.FaceTarget("Swing")\n\tfire("Swing")',
-     'L.FaceTarget("Swing")\n\ttask.delay(0.08, function() fire("Swing") end)'),
+    ("SwingFaced never turns first", 'local _, target = L.FaceTarget("Swing")\n\tfire("Swing", target)', 'fire("Swing")'),
+    ("SwingFaced waits for the turn again", 'local _, target = L.FaceTarget("Swing")\n\tfire("Swing", target)',
+     'local _, target = L.FaceTarget("Swing")\n\ttask.delay(0.08, function() fire("Swing", target) end)'),
 ]
 
 

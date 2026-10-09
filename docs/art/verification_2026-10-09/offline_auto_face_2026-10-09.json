@@ -1,0 +1,139 @@
+{
+  "checks": 62,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "server rule: the nearest anywhere (the front half ignored)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "ServerHint ignored (score without the server)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no keeping the target",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a kept target stays beyond Range",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "new picks to the very edge (no Inside)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "monsters behind me far are picked",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the monster hitting me is not first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no screen-centre weight",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "attacker = any windup at any distance",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a snap again (no ease)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "turns even when almost facing it",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "walking: the body never walks on",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "walking: the body is not held on the target",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "hidden ambushers are targeted",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "someone else's monsters are targeted",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "dead monsters are targeted",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "auto combat shows the ring / keeps targets",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "auto combat turns away from my kept target",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the basic attack uses the class row (bare hands reach 10+)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ring stays on a dead target",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ring stays forever",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ring keeps its first size",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ring floats at the root",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Swing goes without my pick",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "ServerHint on while the server takes no pick",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a slow turn",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "A23-91 보강 (user 2026-10-09 \"공격할 때 몬스터 쪽으로 몸 돌리기 … 조금 더 세세하게\"): the turn toward a monster when I\nattack, offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau (Config.AutoFace, AttackProfile, class rows) and the CURRENT\nHUD.PickTarget / L.AIM.ShowRing / L.AIM.TurnTo / L.FaceTarget (cut out of HUD.luau) in\ntools/fixtures/auto_face_offline.luau: a fake clock, RenderStepped and task.delay, a character, a camera and a Monsters\nfolder. Checks: with ServerHint false the pick copies CombatService.Swing's own aim (A23-61: the nearest inside the\nfront half, else the nearest within Range) so the turn, the ring and the hit agree; the attack's own Range (bare hands 7,\nWarrior 10, Archer 30); monsters only (no hidden ambusher, no one else's monster, no dead one); a short eased turn\n(TurnTime), none within SkipDeg; walking holds the body on the target for TurnTime + SwingHold; the ring = the approved\nround FxShockRing art sized to the body on the floor, gone when the target dies or RingShow s after my last attack; auto\ncombat's standing facing keeps the server's aim, shows no ring and waits while my attacks keep a target; Swing / Release\ncarry my pick (arg 1). With ServerHint true: the kept target (until it dies / leaves Range), score (closeness within\nInside x Range, front, screen centre, a monster winding up at me within AttackerReach first), nothing behind me farther\nthan BackNear. Static: the call sites; ServerHint stays false while CombatService.Swing takes no pick.\nMutations: each must be caught.",
+  "studioCalls": 0
+}

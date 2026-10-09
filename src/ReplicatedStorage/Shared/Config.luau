@@ -3634,6 +3634,28 @@ function Config.SanitizeLooks(looks, seen)
 end
 
 ----------------------------------------------------------------- visuals
+-- A23-91 보강 (user 2026-10-09 "조금 더 세세하게"): turning toward a monster when I attack (HUD L.FaceTarget /
+-- HUD.PickTarget). Monsters only (never players; hidden ambushers and monsters owned by someone else are skipped), within
+-- the attack's own Range (Config.AttackProfile: bare hands 7, class weapons their row). The turn takes TurnTime s (ease
+-- out) and is skipped within SkipDeg of where I face; while I walk the body stays on the target for SwingHold s, then
+-- walks on. A small ring (the approved round FxShockRing art, RingColor; no rays) under the target while I attack,
+-- RingPad x its width within RingSize..RingMax studs, gone RingShow s after my last attack.
+-- ServerHint = false: CombatService.Swing still aims by itself (A23-61: the nearest monster inside the front half, else
+-- the nearest within Range), so the pick copies that rule and the turn, the ring and the hit agree. The client already
+-- sends its pick (Swing / Release arg 1 = the monster Model); once the server takes it (game dev 2) set true: then the
+-- target stays for KeepFor s after each attack (until it dies / leaves Range) and a new one is picked by score: WDist x
+-- closeness (within Inside x Range) + WFront x in front of me + WScreen x near the screen centre + WAttacker if it wound
+-- up an attack (WindupAt, server time) within AttackerFor s and stands within AttackerReach studs; a monster behind me
+-- (look . dir < BackDot) farther than BackNear studs is never picked
+Config.AutoFace = {
+	ServerHint = false,
+	KeepFor = 1.5, Inside = 0.95, BackDot = -0.2, BackNear = 6,
+	WDist = 1, WFront = 0.8, WScreen = 0.5, WAttacker = 1.5, AttackerReach = 9, AttackerFor = 2,
+	SkipDeg = 10, TurnTime = 0.08, SwingHold = 0.35,
+	RingSize = 3.2, RingMax = 12, RingPad = 1.1, RingShow = 1.5, RingTransparency = 0.2,
+	RingColor = Color3.fromRGB(255, 236, 170),
+}
+
 Config.Visuals = {
 	MarkScalePerRank = 0.15, -- halo/horn scale = 1 + 0.15 * (rank - 1)
 	SackThresholdsPerLevel = { 10, 40, 120, 300, 800 }, -- sack tier = count of thresholds t with gold >= t * level
@@ -4056,7 +4078,7 @@ Config.Settings = {
 		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
-		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: Follow = the camera turns behind me while I walk (default Free, user 10/08)
+		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-91: Follow = the console-style camera turns behind me while I walk (the default again since user 10/09; Free = Roblox's own)
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
 	},
