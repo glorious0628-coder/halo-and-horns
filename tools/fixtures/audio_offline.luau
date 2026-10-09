@@ -1045,6 +1045,83 @@ do
 	check(h, "after the first [Claim] the alarm rings again", last() == "KaijuSiren", tostring(last()))
 	GAMESTATE:SetAttribute("KaijuPhase", "Active")
 	Audio.Play = real
+
+	-- A23-100 music + 점검표 sound 60 water (게임성 개발 1 2026-10-10)
+	local m = "music"
+	local M, AM = A.Music, A.Ambient
+	check(m, "Config: the Halo / Horns town tracks, quieter than the effects, a 1.5 s crossfade",
+		M.Tracks.HaloTown == "rbxassetid://108661141883977" and M.Tracks.HornsTown == "rbxassetid://123430641290441"
+		and M.Volume > 0 and M.Volume <= 0.6 and M.Fade == 1.5 and M.DuckMul < 1, encode(M))
+	check(m, "Config: the water loops, 3D within 40 studs, six Halo waterfall spots",
+		AM.Fountain.Id ~= "" and AM.Waterfall.Id ~= "" and AM.Fountain.MaxDistance == 40 and AM.Waterfall.MaxDistance == 40
+		and #AM.Waterfall.Spots == 6, encode(AM))
+	local SD = Config.Settings
+	check(m, "Settings: a Music volume row (0..1 by 0.1, default 1, right after Sound effects)",
+		SD.Defs.Music and SD.Defs.Music.Min == 0 and SD.Defs.Music.Max == 1 and SD.Defs.Music.Step == 0.1
+		and Config.Data.Defaults.Settings.Music == 1 and SD.Order[2] == "Music" and SD.Text.MusicEn == "Music"
+		and Config.SanitizeSettings({ Music = 0.34 }).Music == 0.3 and Config.SanitizeSettings({}).Music == 1)
+	check(m, "MusicTrack: the zone's id, nothing where a zone has none", Audio.MusicTrack("HaloTown") == M.Tracks.HaloTown
+		and Audio.MusicTrack("Crossroads") == nil and Audio.MusicTrack(nil) == nil)
+	local function musicSounds(id)
+		local out = {}
+		for _, so in SOUNDS_MADE do
+			if so.Name == "Music" and (id == nil or so.SoundId == id) and not so.Destroyed then table.insert(out, so) end
+		end
+		return out
+	end
+	settings.Music, settings.Sfx = 1, 1
+	PLAYER:SetAttribute("ZoneId", "Crossroads")
+	PLAYER:SetAttribute("ZoneId", "HaloTown")
+	local halo = musicSounds(M.Tracks.HaloTown)[1]
+	check(m, "entering the Halo town starts its track: looped, in the Music group, from silence", halo ~= nil and halo.IsPlaying
+		and halo.Looped == true and halo.Volume == 0 and halo.SoundGroup and halo.SoundGroup.Name == "Music",
+		halo and encode({ V = halo.Volume, L = halo.Looped }) or "nil")
+	local function beat(sec) for _ = 1, math.floor(sec / 0.25 + 0.5) do HEART:Fire(0.25) end end
+	beat(0.75)
+	check(m, "... fading in (half way at half the fade)", halo and near(halo.Volume, M.Volume / 2), halo and halo.Volume)
+	beat(1)
+	check(m, "... and holds the music volume", halo and near(halo.Volume, M.Volume), halo and halo.Volume)
+	check(m, "the same zone again: no second track", Audio.SetZoneMusic("HaloTown") == false and #musicSounds() == 1, #musicSounds())
+	PLAYER:SetAttribute("ZoneId", "HornsTown")
+	local horns = musicSounds(M.Tracks.HornsTown)[1]
+	beat(0.75)
+	check(m, "into the Horns town: a crossfade (the old down, the new up)", horns and halo and near(horns.Volume, M.Volume / 2)
+		and near(halo.Volume, M.Volume / 2), horns and halo and (horns.Volume .. "/" .. halo.Volume) or "nil")
+	beat(1)
+	check(m, "... the old track stops and goes", halo.IsPlaying == false and halo.Destroyed == true and near(horns.Volume, M.Volume))
+	PLAYER:SetAttribute("ZoneId", "SlimeMeadow")
+	beat(2)
+	check(m, "a zone without a track: quiet (the last one faded out)", horns.IsPlaying == false and #musicSounds() == 0, #musicSounds())
+	PLAYER:SetAttribute("ZoneId", "HaloTown")
+	local again = musicSounds(M.Tracks.HaloTown)[1]
+	local group = again and again.SoundGroup
+	settings.Music = 0.3
+	endAll()
+	waitClock(3.1) -- GooseArrive's Gap (earlier tests dropped their duck ends with table.clear(DELAYS))
+	Audio.Play("GooseArrive")
+	check(m, "a big moment (Duck.By) dips the music too", group and near(group.Volume, 0.3 * M.DuckMul), group and group.Volume)
+	runDelays(100)
+	check(m, "... and it comes back to the Music setting", group and near(group.Volume, 0.3), group and group.Volume)
+	settings.Music = 0.7
+	Audio.RefreshVolumes()
+	check(m, "the Music setting is the group's volume", group and near(group.Volume, 0.7), group and group.Volume)
+	settings.Music = 1
+	Audio.RefreshVolumes()
+	-- water
+	local spots = 0
+	for _, so in SOUNDS_MADE do
+		if so.Name == "AmbientWaterfall" and so.Looped and so.Parent and so.Parent.Name == "WaterfallSound" then spots += 1 end
+	end
+	check(m, "a waterfall sound at each of the six Halo spots", spots >= 6, spots)
+	local hub = newInstance("Part")
+	local w = Audio.Ambient(hub, "Fountain")
+	check(m, "a fountain's water: looped, 3D 40 studs, at its volume x Sound effects", w and w.Looped and w.Parent == hub
+		and w.RollOffMaxDistance == 40 and near(w.Volume, AM.Fountain.Volume), w and w.Volume)
+	settings.Sfx = 0.5
+	Audio.RefreshVolumes()
+	check(m, "... the Sound effects setting turns it down", w and near(w.Volume, AM.Fountain.Volume * 0.5), w and w.Volume)
+	settings.Sfx = 1
+	check(m, "no part / no kind: nothing", Audio.Ambient(nil, "Fountain") == nil and Audio.Ambient(hub, "Nope") == nil)
 end
 
 local list = {}

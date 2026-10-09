@@ -1,4 +1,4 @@
-"""Writes art/prompts/HaloSign_<Kind>_front.txt (4 shop signs, High) and art/prompts/NPC_Halo<Name>_A.txt (5 Halo town NPC full-body candidates, Medium).
+"""Writes art/prompts/HaloSign_<Kind>_front.txt (4 shop signs (Bakery, Juice, Flower, Potion; the Toy sign was dropped by 검수 10/10), High) and art/prompts/NPC_Halo<Name>_A.txt (5 Halo town NPC full-body candidates, Medium).
 Signs: style ref = HaloProp_Shop_front. NPCs: Bright's ref = PTR_TownBright_HQ_src (the approved anchor); the others take Bright only as the art-style reference.
 Run: py tools/_halo_npc_sign_prompts.py  (also build/img2_halo_mv/halo_npc_sign.json)
 """
@@ -17,7 +17,7 @@ SIGNS = {
     "Bakery": "the board shows a big golden-brown round loaf of bread with three cut lines and a wheat ear beside it.",
     "Juice": "the board shows a tall glass of orange juice with a straw and a round orange slice on the rim.",
     "Flower": "the board shows one big white flower with a gold center and two green leaves, with a small pale-blue flower beside it.",
-    "Toy": "the board shows a colorful spinning top beside a stack of two toy blocks, one pale blue and one gold.",
+    "Potion": "the board shows one round glass potion bottle with a cork stopper filled with bright red liquid, and a small gold star shine beside it.",
 }
 
 NPC_HEAD = "Use the attached image for the art style only. "

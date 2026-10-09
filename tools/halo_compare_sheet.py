@@ -6,10 +6,18 @@ import sys
 from PIL import Image
 c, lab = sys.argv[1], sys.argv[2]
 R = 'art/review/world/halo_new/'
-srcs = [f'art/out/s2/halo/HaloProp_{c}_{v}_HQ_src.png' for v in ('front', 'left', 'back')] + [f'{R}{lab}_{v}.png' for v in ('front34', 'back34', 'game')]
+import os
+views2d = [f'art/out/s2/halo/HaloProp_{c}_{v}_HQ_src.png' for v in ('front', 'front_v2', 'left', 'back')]
+views2d = [p for p in views2d if os.path.exists(p)][:3]  # singles have only the front (v2 where redone)
+if 'front_v2' in ' '.join(views2d):
+    views2d = [p for p in views2d if not p.endswith('_front_HQ_src.png')]
+views2d = (views2d + [None] * 3)[:3]
+srcs = views2d + [f'{R}{lab}_{v}.png' for v in ('front34', 'back34', 'game')]
 T = 480
 sh = Image.new('RGB', (T * 3, T * 2), (110, 110, 110))
 for i, p in enumerate(srcs):
+    if p is None:
+        continue
     im = Image.open(p)
     if im.mode == 'RGBA':
         bg = Image.new('RGB', im.size, (90, 90, 90)); bg.paste(im, mask=im.split()[3]); im = bg

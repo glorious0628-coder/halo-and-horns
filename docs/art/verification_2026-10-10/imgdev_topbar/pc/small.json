@@ -1,0 +1,715 @@
+{
+ "bar": {
+  "Tiles": [
+   {
+    "Square": [
+     585,
+     343,
+     33,
+     33
+    ],
+    "Label": [
+     600,
+     359,
+     24,
+     18
+    ],
+    "Button": "HPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     622,
+     343,
+     33,
+     33
+    ],
+    "Label": [
+     636,
+     359,
+     24,
+     18
+    ],
+    "Button": "MPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     9,
+     149,
+     250,
+     72
+    ],
+    "Label": [
+     9,
+     180,
+     250,
+     17
+    ],
+    "Button": "QuestTracker",
+    "Text": "Tap here: first quest from Hallie.",
+    "Fits": true,
+    "Bounds": [
+     226.5,
+     17
+    ]
+   },
+   {
+    "Square": [
+     932,
+     330,
+     50,
+     50
+    ],
+    "Label": [
+     942,
+     363,
+     31,
+     10
+    ],
+    "Button": "Attack",
+    "Text": "Attack",
+    "Fits": true,
+    "Bounds": [
+     13.5,
+     6
+    ]
+   },
+   {
+    "Square": [
+     935,
+     -46,
+     44,
+     44
+    ],
+    "Label": [
+     936,
+     -17,
+     41,
+     13
+    ],
+    "Button": "TileMenu",
+    "Text": "Menu",
+    "Fits": true,
+    "Bounds": [
+     18.5,
+     7
+    ]
+   }
+  ],
+  "UIScale": 0.5011110901832581,
+  "War": [
+   405,
+   -45,
+   180,
+   42
+  ],
+  "WarParts": [
+   {
+    "Class": "ImageLabel",
+    "Name": "Plate",
+    "Rect": [
+     405,
+     -47,
+     180,
+     45
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Bar",
+    "Rect": [
+     425,
+     -41,
+     140,
+     11
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "Inner",
+    "Rect": [
+     427,
+     -39,
+     135,
+     5
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HaloFill",
+    "Rect": [
+     427,
+     -39,
+     68,
+     5
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HornsFill",
+    "Rect": [
+     495,
+     -39,
+     68,
+     5
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Crown",
+    "Rect": [
+     485,
+     -51,
+     20,
+     20
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHalo",
+    "Rect": [
+     403,
+     -49,
+     26,
+     26
+    ]
+   },
+   {
+    "Rect": [
+     409,
+     -41,
+     13,
+     13
+    ],
+    "Name": "HaloScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     4,
+     7
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHorns",
+    "Rect": [
+     561,
+     -49,
+     26,
+     26
+    ]
+   },
+   {
+    "Rect": [
+     566,
+     -44,
+     17,
+     16
+    ],
+    "Name": "HornsScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     4,
+     7
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "Frame",
+    "Name": "Info",
+    "Rect": [
+     425,
+     -29,
+     140,
+     11
+    ]
+   },
+   {
+    "Rect": [
+     425,
+     -29,
+     140,
+     11
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     133,
+     11
+    ],
+    "Text": "<font color=\"#ff9628\">Crown War</font> · 9:36 · My pts 0"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "NewTag",
+    "Rect": [
+     567,
+     -27,
+     26,
+     11
+    ]
+   },
+   {
+    "Rect": [
+     569,
+     -26,
+     22,
+     9
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     18,
+     10
+    ],
+    "Text": "NEW!"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "NewTag",
+    "Rect": [
+     563,
+     -51,
+     26,
+     11
+    ]
+   },
+   {
+    "Rect": [
+     565,
+     -50,
+     22,
+     9
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     18,
+     10
+    ],
+    "Text": "NEW!"
+   }
+  ],
+  "Inset": 58,
+  "Viewport": [
+   991,
+   451
+  ]
+ },
+ "menu": {
+  "Tiles": [
+   {
+    "Square": [
+     585,
+     343,
+     33,
+     33
+    ],
+    "Label": [
+     600,
+     359,
+     24,
+     18
+    ],
+    "Button": "HPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     622,
+     343,
+     33,
+     33
+    ],
+    "Label": [
+     636,
+     359,
+     24,
+     18
+    ],
+    "Button": "MPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     9,
+     149,
+     250,
+     72
+    ],
+    "Label": [
+     9,
+     180,
+     250,
+     17
+    ],
+    "Button": "QuestTracker",
+    "Text": "Tap here: first quest from Hallie.",
+    "Fits": true,
+    "Bounds": [
+     226.5,
+     17
+    ]
+   },
+   {
+    "Square": [
+     932,
+     330,
+     50,
+     50
+    ],
+    "Label": [
+     942,
+     363,
+     31,
+     10
+    ],
+    "Button": "Attack",
+    "Text": "Attack",
+    "Fits": true,
+    "Bounds": [
+     13.5,
+     6
+    ]
+   },
+   {
+    "Square": [
+     933,
+     -48,
+     47,
+     47
+    ],
+    "Label": [
+     935,
+     -17,
+     44,
+     14
+    ],
+    "Button": "TileMenu",
+    "Text": "Menu",
+    "Fits": true,
+    "Bounds": [
+     21,
+     8
+    ]
+   },
+   {
+    "Square": [
+     609,
+     -47,
+     44,
+     44
+    ],
+    "Label": [
+     611,
+     -18,
+     41,
+     13
+    ],
+    "Button": "FoldShop",
+    "Text": "Shop",
+    "Fits": true,
+    "Bounds": [
+     16.5,
+     7
+    ]
+   },
+   {
+    "Square": [
+     656,
+     -47,
+     44,
+     44
+    ],
+    "Label": [
+     657,
+     -18,
+     41,
+     13
+    ],
+    "Button": "FoldInvite",
+    "Text": "Invite",
+    "Fits": true,
+    "Bounds": [
+     18,
+     7
+    ]
+   },
+   {
+    "Square": [
+     702,
+     -47,
+     44,
+     44
+    ],
+    "Label": [
+     704,
+     -18,
+     41,
+     13
+    ],
+    "Button": "FoldNews",
+    "Text": "News",
+    "Fits": true,
+    "Bounds": [
+     18,
+     7
+    ]
+   },
+   {
+    "Square": [
+     749,
+     -47,
+     44,
+     44
+    ],
+    "Label": [
+     750,
+     -18,
+     41,
+     13
+    ],
+    "Button": "FoldDiary",
+    "Text": "Diary",
+    "Fits": true,
+    "Bounds": [
+     17,
+     7
+    ]
+   },
+   {
+    "Square": [
+     796,
+     -47,
+     44,
+     44
+    ],
+    "Label": [
+     797,
+     -18,
+     41,
+     13
+    ],
+    "Button": "FoldTravel",
+    "Text": "Travel",
+    "Fits": true,
+    "Bounds": [
+     19,
+     7
+    ]
+   },
+   {
+    "Square": [
+     842,
+     -47,
+     44,
+     44
+    ],
+    "Label": [
+     843,
+     -18,
+     41,
+     13
+    ],
+    "Button": "FoldHelp",
+    "Text": "Help",
+    "Fits": true,
+    "Bounds": [
+     15,
+     7
+    ]
+   },
+   {
+    "Square": [
+     888,
+     -47,
+     44,
+     44
+    ],
+    "Label": [
+     890,
+     -18,
+     41,
+     13
+    ],
+    "Button": "FoldSettings",
+    "Text": "Settings",
+    "Fits": true,
+    "Bounds": [
+     27.5,
+     7
+    ]
+   }
+  ],
+  "UIScale": 0.5011110901832581,
+  "War": [
+   405,
+   -45,
+   180,
+   42
+  ],
+  "WarParts": [
+   {
+    "Class": "ImageLabel",
+    "Name": "Plate",
+    "Rect": [
+     405,
+     -47,
+     180,
+     45
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Bar",
+    "Rect": [
+     425,
+     -41,
+     140,
+     11
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "Inner",
+    "Rect": [
+     427,
+     -39,
+     135,
+     5
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HaloFill",
+    "Rect": [
+     427,
+     -39,
+     68,
+     5
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HornsFill",
+    "Rect": [
+     495,
+     -39,
+     68,
+     5
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Crown",
+    "Rect": [
+     485,
+     -51,
+     20,
+     20
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHalo",
+    "Rect": [
+     403,
+     -49,
+     26,
+     26
+    ]
+   },
+   {
+    "Rect": [
+     409,
+     -41,
+     13,
+     13
+    ],
+    "Name": "HaloScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     4,
+     7
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHorns",
+    "Rect": [
+     561,
+     -49,
+     26,
+     26
+    ]
+   },
+   {
+    "Rect": [
+     566,
+     -44,
+     17,
+     16
+    ],
+    "Name": "HornsScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     4,
+     7
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "Frame",
+    "Name": "Info",
+    "Rect": [
+     425,
+     -29,
+     140,
+     11
+    ]
+   },
+   {
+    "Rect": [
+     425,
+     -29,
+     140,
+     11
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     130.5,
+     11
+    ],
+    "Text": "<font color=\"#ff9628\">Crown War</font> · 9:31 · My pts 0"
+   }
+  ],
+  "Inset": 58,
+  "Viewport": [
+   991,
+   451
+  ]
+ }
+}

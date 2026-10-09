@@ -41,11 +41,20 @@
 -- is silent. An event whose file id is "" never plays, so nothing changes before the uploads. Fx's old defaults
 -- (Config.Sounds Swing / Release / Coin) are muted on this client once our files exist; Click becomes our Tap.
 --
+-- A23-100 music: the zone's track (Config.Audio.Music.Tracks[my ZoneId]) loops in the "Music" SoundGroup; a ZoneId change
+-- crossfades over Music.Fade s (the old track fades out and stops, the new one fades in from 0, on Heartbeat); a zone
+-- without a track is quiet. The group = Settings "Music" (0..1) x Music.DuckMul while a big moment ducks the combat
+-- sounds. Water ambience (점검표 sound 60): Audio.Ambient(part, kind) puts a 3D looping Config.Audio.Ambient sound on a
+-- part (FountainFx: each fountain; here: Map.Decor models named *Waterfall and Ambient.Waterfall.Spots), scaled by the
+-- Sound effects setting, outside the MaxPlaying pools.
+--
 -- Public API: Audio.Init(C), Audio.Start(), Audio.Play(event, opts?) -> bool (opts { File, Speed, SpeedMul, Volume,
 --   Auto, Others }), Audio.Talk(speaker?) -> bool (typewriter blips, quality ②), Audio.Plan(kind, data, ctx) -> list of
 --   { Event, At, File?, SpeedMul?, Speed?, Volume, Auto?, Others? } (pure: what one Fx packet plays; the offline test
 --   drives it), Audio.OnFx(kind, data), Audio.StompVolume(studs) -> 0..1, Audio.TickAt(prevLeft, left) -> CountTick speed?,
 --   Audio.AnnounceSound(payload) -> event? (pure helpers of the world sounds). "No" (SkillBar) is an alias of Deny.
+--   Audio.MusicTrack(zoneId) -> id? (pure), Audio.SetZoneMusic(zoneId) -> bool (changed), Audio.MusicStep(dt),
+--   Audio.RefreshVolumes(), Audio.Ambient(part, kind) -> Sound?
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -529,12 +538,138 @@ function Audio.Play(event, opts)
 		S.DuckToken += 1
 		local token = S.DuckToken
 		S.Groups.Combat.Volume = num(T.Duck.Mul, 0.5)
+		S.MusicDuck = true -- A23-100: the music dips with them
+		Audio.RefreshVolumes()
 		local hold = type(T.Duck.SecondsBy) == "table" and num(T.Duck.SecondsBy[event], nil) or nil
 		task.delay(hold or num(T.Duck.Seconds, 1.2), function()
-			if S.DuckToken == token and S.Groups.Combat then S.Groups.Combat.Volume = 1 end
+			if S.DuckToken == token and S.Groups.Combat then
+				S.Groups.Combat.Volume = 1
+				S.MusicDuck = false
+				Audio.RefreshVolumes()
+			end
 		end)
 	end
 	return true
+end
+
+----------------------------------------------------------------- music (A23-100) + water ambience (점검표 sound 60)
+local MUSIC = { Id = nil, Current = nil, Fading = {}, Ambient = {} } -- Ambient: { Sound, Base }
+
+-- the track of a zone (pure)
+function Audio.MusicTrack(zoneId)
+	local M = type(A.Music) == "table" and A.Music or {}
+	local id = type(M.Tracks) == "table" and type(zoneId) == "string" and M.Tracks[zoneId] or nil
+	return (type(id) == "string" and id ~= "") and id or nil
+end
+
+local function musicSetting()
+	local st = C and C.Settings
+	if type(st) == "table" and type(st.Get) == "function" then
+		local ok, v = pcall(st.Get, "Music")
+		if ok and type(v) == "number" and v == v then return math.clamp(v, 0, 1) end
+	end
+	return 1
+end
+
+-- the Music group (the setting, ducked with the combat sounds) and the water ambience (the Sound effects setting)
+function Audio.RefreshVolumes()
+	local M = type(A.Music) == "table" and A.Music or {}
+	if S.Groups.Music then S.Groups.Music.Volume = musicSetting() * (S.MusicDuck and num(M.DuckMul, 0.5) or 1) end
+	local mult = sfxMult()
+	for i = #MUSIC.Ambient, 1, -1 do
+		local a = MUSIC.Ambient[i]
+		if a.Sound.Parent == nil then table.remove(MUSIC.Ambient, i) else a.Sound.Volume = a.Base * mult end
+	end
+end
+
+-- my zone's track: a new one starts at 0 (MusicStep fades it in), the old one fades out; nil = quiet. True = changed
+function Audio.SetZoneMusic(zoneId)
+	local id = Audio.MusicTrack(zoneId)
+	if id == MUSIC.Id then return false end
+	MUSIC.Id = id
+	if MUSIC.Current then table.insert(MUSIC.Fading, MUSIC.Current) end
+	MUSIC.Current = nil
+	if id and S.Folder then
+		local s = Instance.new("Sound")
+		s.Name = "Music"
+		s.SoundId = id
+		s.Looped = true
+		s.Volume = 0
+		s.SoundGroup = S.Groups.Music
+		s.Parent = S.Folder
+		pcall(function() s:Play() end)
+		MUSIC.Current = s
+	end
+	return true
+end
+
+-- one Heartbeat: the current track toward Music.Volume, the fading ones toward 0 (then stopped and gone), at
+-- Volume / Fade per second (frame-rate free; a hitch counts at most half a second)
+function Audio.MusicStep(dt)
+	local M = type(A.Music) == "table" and A.Music or {}
+	local full = num(M.Volume, 0.5)
+	local d = full / math.max(0.05, num(M.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)
+	local cur = MUSIC.Current
+	if cur then cur.Volume = cur.Volume < full and math.min(full, cur.Volume + d) or full end
+	for i = #MUSIC.Fading, 1, -1 do
+		local f = MUSIC.Fading[i]
+		f.Volume = math.max(0, f.Volume - d)
+		if f.Volume <= 0 then
+			pcall(function()
+				f:Stop()
+				f:Destroy()
+			end)
+			table.remove(MUSIC.Fading, i)
+		end
+	end
+end
+
+-- a 3D looping water sound (Config.Audio.Ambient[kind]) on part; nil without an id or a part
+function Audio.Ambient(part, kind)
+	local def = type(A.Ambient) == "table" and A.Ambient[kind] or nil
+	if type(def) ~= "table" or type(def.Id) ~= "string" or def.Id == "" or typeof(part) ~= "Instance" then return nil end
+	local s = Instance.new("Sound")
+	s.Name = "Ambient" .. tostring(kind)
+	s.SoundId = def.Id
+	s.Looped = true
+	pcall(function() s.RollOffMode = Enum.RollOffMode.InverseTapered end)
+	s.RollOffMinDistance = num(def.MinDistance, 6)
+	s.RollOffMaxDistance = num(def.MaxDistance, 40)
+	s.Volume = num(def.Volume, 0.5) * sfxMult()
+	s.SoundGroup = S.Groups.Sfx
+	s.Parent = part
+	pcall(function() s:Play() end)
+	table.insert(MUSIC.Ambient, { Sound = s, Base = num(def.Volume, 0.5) })
+	return s
+end
+
+-- the waterfalls: one sound at the centre of each Map.Decor model named *Waterfall, one at each Ambient.Waterfall spot
+local function waterfalls()
+	local folder = Instance.new("Folder")
+	folder.Name = "AudioAmbient"
+	folder.Parent = workspace
+	local function anchor(pos)
+		local p = Instance.new("Part")
+		p.Name = "WaterfallSound"
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+		p.Transparency = 1
+		p.Size = Vector3.new(1, 1, 1)
+		p.CFrame = CFrame.new(pos)
+		p.Parent = folder
+		Audio.Ambient(p, "Waterfall")
+	end
+	local def = type(A.Ambient) == "table" and A.Ambient.Waterfall or nil
+	for _, pos in (type(def) == "table" and type(def.Spots) == "table") and def.Spots or {} do
+		if typeof(pos) == "Vector3" then anchor(pos) end
+	end
+	local map = workspace:FindFirstChild("Map")
+	local decor = map and map:FindFirstChild("Decor")
+	for _, m in decor and decor:GetChildren() or {} do
+		if m:IsA("Model") and string.sub(m.Name, -9) == "Waterfall" then
+			local ok, cf = pcall(function() return (m:GetBoundingBox()) end)
+			if ok and cf then anchor(cf.Position) end
+		end
+	end
 end
 
 -- typewriter blips (quality ②): Config.Audio.Talk[speaker] = blip speed (the shard high, the Horns guide low)
@@ -867,7 +1002,7 @@ function Audio.Start()
 	folder.Name = "AudioSfx"
 	folder.Parent = SoundService
 	S.Folder = folder
-	for key, name in { Sfx = "Sfx", Combat = "SfxCombat" } do
+	for key, name in { Sfx = "Sfx", Combat = "SfxCombat", Music = "Music" } do
 		local group = Instance.new("SoundGroup")
 		group.Name = name
 		group.Volume = 1
@@ -908,7 +1043,22 @@ function Audio.Start()
 		end)
 	end
 	task.spawn(watchGame)
-	RunService.Heartbeat:Connect(function()
+	-- A23-100: my zone's music (the ZoneId attribute), the volumes with the settings, the water ambience
+	Audio.RefreshVolumes()
+	if LocalPlayer then
+		Audio.SetZoneMusic(LocalPlayer:GetAttribute("ZoneId"))
+		watch(LocalPlayer, "ZoneId", function(_, zone) Audio.SetZoneMusic(zone) end)
+	end
+	local st = C and C.Settings
+	if type(st) == "table" and type(st.Changed) == "table" and type(st.Changed.Connect) == "function" then
+		st.Changed:Connect(function() pcall(Audio.RefreshVolumes) end)
+	end
+	task.spawn(function()
+		local ok, err = pcall(waterfalls)
+		if not ok then warnThrottled("ambient", "waterfall sounds failed: " .. tostring(err)) end
+	end)
+	RunService.Heartbeat:Connect(function(dt)
+		pcall(Audio.MusicStep, dt)
 		local ok, err = pcall(pollWindows)
 		if not ok then warnThrottled("windows", "window watch failed: " .. tostring(err)) end
 		ok, err = pcall(pollWorld)

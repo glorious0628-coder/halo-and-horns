@@ -12,9 +12,11 @@
 1. `halo_materials.luau` (apply) — GE_HaloPave Concrete.
 2. `halo_terrain.luau` (apply) — 척추 단 Y 0.2·5·11·19, 날개 단 4쌍, 운하, 폭포 6곳.
 3. 새 모델 배치(이미지 생성 1의 props 도구) — 아래 규칙 지키며.
-4. 이동 판 2개 (#52): 광장(문 안쪽)에 `Map.Pads.Pad_Halo_SlimeMeadow`, `Pad_Halo_GoblinWoods`, 속성 `TravelTo` = SlimeMeadow / GoblinWoods, 지형 단 높이에 맞춤. `Config.Map.Pads`에는 안 넣음(개발 1이 빛 표시·미니맵).
+4. 이동 판 2개 (#52): 광장(문 안쪽)에 `Map.Pads.Pad_Halo_SlimeMeadow`, `Pad_Halo_GoblinWoods`, 속성 `TravelTo` = SlimeMeadow / GoblinWoods, 지형 단 높이에 맞춤. `Config.Map.Pads`에는 안 넣음(개발 1이 빛 표시·미니맵). **판은 Model이 아니라 Part(BasePart, CanTouch 켬)로** 만든다 — 서버 ZoneService가 BasePart만 연결한다(검수 확인 10/10). 속성 `TravelTo`만 달면 안내·반짝임·지도 ▣는 개발 1 클라가 붙인다.
 5. 충돌 (#48): `decor_collision` 다시 실행(또는 T.Tree에 Topiary 추가). 종류별: Gate·Cathedral·Towers·Houses·Shops·Stairs·ArchBridges = 보통 충돌 + CanQuery; Balustrade·Lantern·Planter·BannerPole·KnightStatue = DecorPlayerOnly; Topiary·RoundTree = 줄기 기둥; CloudBush = BlockPost; PotFlowers = 통과.
 6. 동상 줄 가운데에 `Config.StoryQuests.Landmarks.HeroStatue` 맞추기(#29, 평면 거리라 단 높이 무관; 개발 1이 코드 쪽 먼저).
+
+6. 가게 간판(#49·#51): 이미지 개발이 올린 4종 — HaloSignBakery `rbxassetid://77116902671887`, HaloSignJuice `133684891699718`, HaloSignFlower `93642542767036`, HaloSignPotion `122788599616130`(빛 마을 진짜 물약 상인 자리에만). 1024×1024 투명, 글자 없음. 가게 모델 간판 SurfaceGui의 ImageLabel(ScaleType Fit, 배경 투명)에 넣고, 대장간·모루 간판은 안 넣는다(`Config.UIArt.Parts` id와 같은지 확인).
 
 ## 2. 절대 규칙
 - **`Map.Decor.Bridge_Halo`는 치우지 않는다** (#3·#8): zone_swap에 Bridge_* 건너뛰기 규칙이 들어가기 전에는 `zone_swap`을 빛 마을에 다시 돌리지 않는다. 새 다리 모양은 같은 모델 안에 넣거나 손으로 교체(상판 Y 0.2, 폭 22, z -150..-330, Precise 충돌, 이름 Bridge_Halo 그대로, 교차로 쪽 끝 (0,0,-150) 근처).

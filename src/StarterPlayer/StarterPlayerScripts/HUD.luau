@@ -1137,6 +1137,8 @@ local function buildWar(root)
 				ZIndex = 4,
 				Parent = badge,
 			})
+			-- 검수 10/10 (UiSandbox: the score was 11 px at 1280x720, 7 px at 991x451): real px ScoreMinPx..ScoreMaxPx
+			L.FitText(ui[s[4]], TB.ScoreMaxPx, true, TB.ScoreMinPx, true)
 		else
 			L.WarNumOnly = false
 			ui[s[4]] = artLabel(false, {
@@ -1185,18 +1187,42 @@ end
 function L.SizeWarPlate()
 	local plate, TB = ui.warPlate, L.WarTop
 	if not plate then return end
+	local k = L.WarK or 1
+	plate.Position = UDim2.fromOffset(0, -TB.PlateUp * k)
 	if ui.warInfo and ui.warInfo.Visible then
-		plate.Size = UDim2.new(1, 0, 1, TB.PlateUp + TB.PlateDown)
+		plate.Size = UDim2.new(1, 0, 1, (TB.PlateUp + TB.PlateDown) * k)
 	else
-		plate.Size = UDim2.new(1, 0, 0, TB.PlateUp + 8 + 22 + TB.PlateFold)
+		plate.Size = UDim2.new(1, 0, 0, (TB.PlateUp + 8 + 22 + TB.PlateFold) * k)
 	end
 end
 
+-- 이미지 개발 10/10 (UiSandbox 991x451: the meter keeps ~42 real px in Roblox's bar, so at UIScale 0.5 its 84 du held a
+-- 26 px badge with a 7 px score, an 11 px bar, a 20 px crown and an empty band under the line): past L.WarTop.DesignH du
+-- the bar, the badges, the crown and the gaps grow with the meter's height (k, at most KMax; PCs at 0.8 and phones keep
+-- k = 1); a grown badge moves out so it covers the bar's end no more than before
 function L.LayoutWar(h)
 	L.WarH = h
-	local info = math.clamp(h - 8 - 22 - 3, 14, 22)
-	ui.warInfo.Position = UDim2.fromOffset(L.WarTop.BarIn, 8 + 22 + 3)
-	ui.warInfo.Size = UDim2.new(1, -2 * L.WarTop.BarIn, 0, info)
+	local TB = L.WarTop
+	local k = math.clamp(h / TB.DesignH, 1, TB.KMax)
+	L.WarK = k
+	local barY, barH, gap = 8 * k, 22 * k, 3 * k
+	if ui.warBar then
+		ui.warBar.Position = UDim2.fromOffset(TB.BarIn, barY)
+		ui.warBar.Size = UDim2.new(1, -2 * TB.BarIn, 0, barH)
+	end
+	local badge = TB.Badge * k
+	local out = TB.BadgeOut + (badge - TB.Badge) -- the badge's inner edge stays where it was on the bar
+	for i, b in { ui.warBadgeHalo, ui.warBadgeHorns } do
+		if b then
+			b.Size = UDim2.fromOffset(badge, badge)
+			b.Position = UDim2.new(i == 1 and 0 or 1, i == 1 and -out or out, 0, barY + barH / 2)
+		end
+	end
+	if ui.warCrown then ui.warCrown.Size = UDim2.fromOffset(TB.Crown * k, TB.Crown * k) end
+	local info = math.clamp(h - barY - barH - gap, 14, 22 * k)
+	ui.warInfo.Position = UDim2.fromOffset(TB.BarIn, barY + barH + gap)
+	ui.warInfo.Size = UDim2.new(1, -2 * TB.BarIn, 0, info)
+	L.SizeWarPlate()
 	-- the band hugs the text: as wide as the line plus a margin that fades out
 	local tb = ui.warLine.TextBounds.X
 	if ui.warBand and tb > 0 then
@@ -2134,51 +2160,66 @@ function L.LayoutTracker(q)
 end
 
 -- the goal sentence at GoalMax du, or the largest size down to GoalMin that keeps it within GoalLines lines of the
--- tracker's width (measured by L.TextLines; while a size is being measured the line keeps its current size)
+-- tracker's width (measured by L.TextLines). The box gets the measured lines' height itself: 이미지 개발 10/10 (main
+-- Studio 991x451, UIScale 0.5: AutomaticSize gave the box one line while the words wrapped to two - "...in the" and the
+-- rest cut off). A size under the style's real-px floor is measured at the floor (that is what renders); while a size is
+-- being measured the line keeps AutomaticSize
 function L.FitGoal()
 	local t, T = ui.tracker, L.Tracker
 	if not (t and T.Rect and T.GoalMax) then return end
-	local text, font, width = t.Goal.Text, t.Goal.FontFace, T.Rect.W
-	local size, pending = T.GoalMax, false
-	while size > T.GoalMin do
-		local lines = L.TextLines(text, font, size, width)
-		if lines == nil then
+	local goal = t.Goal
+	local text, font, width = goal.Text, goal.FontFace, T.Rect.W - 2 -- 2 du spare: never wrap later than the render
+	local tc = goal:FindFirstChildOfClass("UITextSizeConstraint")
+	local floorDu = tc and math.ceil(tc.MinTextSize / math.max(0.05, currentScale())) or 0
+	local size, lines, lineH, pending = T.GoalMax, nil, nil, false
+	while true do
+		local n, h = L.TextLines(text, font, math.max(size, floorDu), width)
+		if n == nil then
 			pending = true
 			break
 		end
-		if lines <= T.GoalLines then break end
+		lines, lineH = n, h
+		if n <= T.GoalLines or size <= T.GoalMin then break end
 		size -= 1
 	end
 	if pending then
-		if t.Goal.TextSize > T.GoalMax or t.Goal.TextSize < T.GoalMin then t.Goal.TextSize = T.GoalMax end
-	elseif t.Goal.TextSize ~= size then
-		t.Goal.TextSize = size
+		if goal.TextSize > T.GoalMax or goal.TextSize < T.GoalMin then goal.TextSize = T.GoalMax end
+		if goal.AutomaticSize ~= Enum.AutomaticSize.Y then goal.AutomaticSize = Enum.AutomaticSize.Y end
+		return
 	end
+	if goal.TextSize ~= size then goal.TextSize = size end
+	local boxH = math.ceil(lines * lineH) + 2
+	if goal.AutomaticSize ~= Enum.AutomaticSize.None then goal.AutomaticSize = Enum.AutomaticSize.None end
+	if goal.Size.Y.Offset ~= boxH or goal.Size.X.Scale ~= 1 then goal.Size = UDim2.new(1, 0, 0, boxH) end
 end
 
--- lines `text` wraps to at `size` du in `width` du (TextService, cached); nil while it is measured (L.FitGoal runs again
--- when the answer comes)
+-- lines `text` wraps to at `size` du in `width` du and one line's height in du (TextService, cached); nil while it is
+-- measured (L.FitGoal runs again when the answer comes)
 function L.TextLines(text, font, size, width)
-	if text == "" then return 1 end
+	if text == "" then return 1, size end
 	local cache = L.LineCache
 	local key = string.format("%s|%d|%d|%s|%s", text, size, math.floor(width), tostring(font.Family), tostring(font.Weight))
 	local v = cache.Lines[key]
-	if v ~= nil then return v or nil end
+	if v ~= nil then
+		if v then return v[1], v[2] end
+		return nil
+	end
 	cache.N += 1
 	if cache.N > 300 then cache.Lines, cache.N = {}, 1 end
 	cache.Lines[key] = false
 	task.spawn(function()
-		local ok, lines = pcall(function()
+		local ok, res = pcall(function()
 			local ts = game:GetService("TextService")
 			local p = Instance.new("GetTextBoundsParams")
 			p.Text, p.Font, p.Size, p.Width = text, font, size, width
 			local wrapped = ts:GetTextBoundsAsync(p)
 			p.Width = 100000
 			local one = ts:GetTextBoundsAsync(p)
-			return math.max(1, math.floor(wrapped.Y / math.max(1, one.Y) + 0.5))
+			local h = math.max(1, one.Y)
+			return { math.max(1, math.floor(wrapped.Y / h + 0.5)), h }
 		end)
-		if not ok then warnThrottled("goal lines failed: " .. tostring(lines)) end
-		cache.Lines[key] = ok and lines or 1
+		if not ok then warnThrottled("goal lines failed: " .. tostring(res)) end
+		cache.Lines[key] = ok and res or { 1, size }
 		local fine, err = pcall(L.FitGoal)
 		if not fine then warnThrottled("goal fit failed: " .. tostring(err)) end
 	end)
@@ -3918,6 +3959,8 @@ local function parseQuests()
 				ProgressUnit = (type(e.ProgressUnit) == "string" and #e.ProgressUnit > 0 and #e.ProgressUnit <= 3)
 					and e.ProgressUnit or nil,
 				Folded = e.Folded == true, -- A23-68 #4: the server folds every row but the first mission (dev2)
+				-- 빛 마을 점검 #19 (dev3, Config.StoryQuests.SendAllSubs): a sub past MaxSubs - the quest window only
+				More = e.More == true,
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
 			entry.Goal = HUD.QuestGoal(entry.Text, type(e.Goal) == "string" and L.QuestText(e.Goal) or nil) -- A23-94
@@ -4274,8 +4317,14 @@ end
 
 refreshQuests = function()
 	if not ui.quests then return end -- Init stopped before buildQuests (CR-L50 binds the remote earlier)
-	local entries = parseQuests()
-	L.TrackDone(questState.Rows, entries) -- A23-81: the quest window's 'Done' this session
+	local all = parseQuests()
+	L.TrackDone(questState.All or questState.Rows, all) -- A23-81: the quest window's 'Done' this session
+	-- 빛 마을 점검 #19: rows marked More (the subs past Config.StoryQuests.MaxSubs) are for the quest window only; the
+	-- HUD lines and the list draw the rest (questState.All keeps every row for HUD.QuestEntries)
+	local entries = {}
+	for _, e in all do
+		if not e.More then table.insert(entries, e) end
+	end
 	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing)
 	local call = L.StoryPending()
 	questState.StoryKey = call and (call.Id .. "|" .. tostring(call.St)) or ""
@@ -4489,6 +4538,7 @@ refreshQuests = function()
 	end
 	L.SetStoryPulse(callTarget)
 	questState.Rows = entries -- HUD.QuestTarget (QuestMarker) reads the 'now do' row
+	questState.All = all -- + the More rows (HUD.QuestEntries: the quest window)
 	questState.Shown = shown
 	refreshRerollTimers()
 	pcall(function() HUD.QuestsChanged:Fire() end) -- A23-81: the quest window redraws
@@ -5631,8 +5681,10 @@ L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
 -- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
 -- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du
 -- (their centres BadgeOut du outside the meter's ends... negative = inside), the bar and the info line BarIn du in from
--- each end, the crown Crown du
-L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40 }
+-- each end, the crown Crown du; DesignH = the meter height those sizes are for (PC 0.8), KMax = how much they may grow
+-- on a taller meter (small PC windows, L.LayoutWar)
+L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40,
+	DesignH = 52.5, KMax = 1.8, ScoreMinPx = 12, ScoreMaxPx = 18 } -- the badge scores in real px (검수 10/10: >= 12)
 L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
@@ -5865,7 +5917,7 @@ end
 -- the HUD's quest rows as the window reads them (the same tables, so a press finds its row)
 function HUD.QuestEntries()
 	local out = {}
-	for i, e in questState.Rows or {} do out[i] = e end
+	for i, e in questState.All or questState.Rows or {} do out[i] = e end
 	return out
 end
 
@@ -5897,6 +5949,12 @@ function HUD.QuestClaim(e)
 			onClaim(r)
 			return true
 		end
+	end
+	-- 빛 마을 점검 #19: a More row (a sub past MaxSubs) has no HUD row: the window claims it directly ("story:<id>")
+	if e.More and e.Story and type(e.Id) == "string" and not throttled("claim", 0.35) then
+		fire("ClaimQuest", e.Id)
+		questState.ClaimAt = os.clock()
+		return true
 	end
 	return false
 end

@@ -1,0 +1,403 @@
+{
+ "bar": {
+  "Tiles": [
+   {
+    "Square": [
+     585,
+     343,
+     33,
+     33
+    ],
+    "Label": [
+     600,
+     359,
+     24,
+     18
+    ],
+    "Button": "HPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     622,
+     343,
+     33,
+     33
+    ],
+    "Label": [
+     636,
+     359,
+     24,
+     18
+    ],
+    "Button": "MPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     9,
+     241,
+     250,
+     12
+    ],
+    "Label": [
+     9,
+     241,
+     49,
+     12
+    ],
+    "Button": "QuestHead",
+    "Text": "Quests (1)",
+    "Fits": true,
+    "Bounds": [
+     48.5,
+     12
+    ]
+   },
+   {
+    "Square": [
+     9,
+     149,
+     250,
+     90
+    ],
+    "Label": [
+     9,
+     180,
+     250,
+     35
+    ],
+    "Button": "QuestTracker",
+    "Text": "Go to Otto's Forge in the Crossroads.",
+    "Fits": false,
+    "Bounds": [
+     176,
+     34
+    ]
+   },
+   {
+    "Square": [
+     932,
+     330,
+     50,
+     50
+    ],
+    "Label": [
+     942,
+     363,
+     31,
+     10
+    ],
+    "Button": "Attack",
+    "Text": "Attack",
+    "Fits": true,
+    "Bounds": [
+     13.5,
+     6
+    ]
+   },
+   {
+    "Square": [
+     935,
+     -46,
+     44,
+     44
+    ],
+    "Label": [
+     936,
+     -17,
+     41,
+     13
+    ],
+    "Button": "TileMenu",
+    "Text": "Menu",
+    "Fits": true,
+    "Bounds": [
+     18.5,
+     7
+    ]
+   }
+  ],
+  "UIScale": 0.5011110901832581,
+  "War": [
+   405,
+   -45,
+   180,
+   42
+  ],
+  "WarParts": [
+   {
+    "Class": "ImageLabel",
+    "Name": "Plate",
+    "Rect": [
+     405,
+     -48,
+     180,
+     47
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Bar",
+    "Rect": [
+     425,
+     -39,
+     140,
+     18
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "Inner",
+    "Rect": [
+     427,
+     -35,
+     135,
+     9
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HaloFill",
+    "Rect": [
+     427,
+     -35,
+     68,
+     9
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HornsFill",
+    "Rect": [
+     495,
+     -35,
+     68,
+     9
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Crown",
+    "Rect": [
+     479,
+     -54,
+     32,
+     32
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHalo",
+    "Rect": [
+     387,
+     -51,
+     42,
+     42
+    ]
+   },
+   {
+    "Rect": [
+     397,
+     -39,
+     21,
+     20
+    ],
+    "Name": "HaloScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     10,
+     17
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHorns",
+    "Rect": [
+     561,
+     -51,
+     42,
+     42
+    ]
+   },
+   {
+    "Rect": [
+     569,
+     -43,
+     27,
+     25
+    ],
+    "Name": "HornsScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     10,
+     17
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "Frame",
+    "Name": "Info",
+    "Rect": [
+     425,
+     -19,
+     140,
+     16
+    ]
+   },
+   {
+    "Rect": [
+     425,
+     -19,
+     140,
+     16
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     132.5,
+     11
+    ],
+    "Text": "<font color=\"#ff9628\">Crown War</font> · 9:32 · My pts 0"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "NewTag",
+    "Rect": [
+     567,
+     -15,
+     26,
+     11
+    ]
+   },
+   {
+    "Rect": [
+     569,
+     -14,
+     22,
+     9
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     18,
+     10
+    ],
+    "Text": "NEW!"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "NewTag",
+    "Rect": [
+     563,
+     -51,
+     26,
+     11
+    ]
+   },
+   {
+    "Rect": [
+     565,
+     -50,
+     22,
+     9
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     18,
+     10
+    ],
+    "Text": "NEW!"
+   }
+  ],
+  "Inset": 58,
+  "Viewport": [
+   991,
+   451
+  ],
+  "Goal": {
+   "Tracker": [
+    249.55332946777344,
+    89.69888305664062
+   ],
+   "Title": {
+    "Auto": "Enum.AutomaticSize.None",
+    "Truncate": "Enum.TextTruncate.AtEnd",
+    "Abs": [
+     218.9855499267578,
+     29.565553665161133
+    ],
+    "Text": "To the Forge",
+    "Min": 13,
+    "Bounds": [
+     101,
+     23
+    ],
+    "Max": 100,
+    "Scaled": false,
+    "Fits": true,
+    "Wrapped": false,
+    "TextSize": 47,
+    "Size": "{1, -61}, {1, 0}"
+   },
+   "UIScale": 0.5011110901832581,
+   "Viewport": [
+    991,
+    451
+   ],
+   "Nums": {
+    "Auto": "Enum.AutomaticSize.X",
+    "Truncate": "Enum.TextTruncate.None",
+    "Abs": [
+     9,
+     23.051109313964844
+    ],
+    "Text": "()",
+    "Min": 10,
+    "Bounds": [
+     9,
+     17
+    ],
+    "Max": 100,
+    "Scaled": false,
+    "Fits": true,
+    "Wrapped": false,
+    "TextSize": 34,
+    "Size": "{0, 0}, {1, 0}"
+   },
+   "Step": 3,
+   "Goal": {
+    "Auto": "Enum.AutomaticSize.None",
+    "Truncate": "Enum.TextTruncate.None",
+    "Abs": [
+     249.55332946777344,
+     35.07777786254883
+    ],
+    "Text": "Go to Otto's Forge in the Crossroads.",
+    "Min": 12,
+    "Bounds": [
+     176,
+     34
+    ],
+    "Max": 100,
+    "Scaled": false,
+    "Fits": false,
+    "Wrapped": true,
+    "TextSize": 34,
+    "Size": "{1, 0}, {0, 70}"
+   }
+  }
+ }
+}
