@@ -164,6 +164,7 @@ local S = {
 	posX = nil, posY = nil, rot = nil, labelUp = nil,
 	layoutRef = nil, layoutW = nil, layoutH = nil, qbRef = nil, -- the HUD.Layout the avoid boxes were built from
 	avoid = {}, -- HUD block unions { { x0, y0, x1, y1 } } in du, inflated by the indicator's footprint
+	edgeAvoid = {}, -- placeEdge's list: avoid + my character's box (refilled every frame)
 	raw = {}, -- the single HUD rects (+ thumbstick zone), not inflated
 	targetAcc = 0,
 	lastWarnAt = -math.huge,
@@ -539,8 +540,9 @@ local function pushOut(px, py, box, avoid)
 	return px, py
 end
 
--- du^2 of HUD the indicator would cover with its icon centre at (px, py) (the single rects, not inflated)
-local function overlap(px, py)
+-- du^2 of HUD the indicator would cover with its icon centre at (px, py) (the single rects, not inflated; `me` = my
+-- character's raw box, counted like a HUD block)
+local function overlap(px, py, me)
 	local fx, fy = T.HalfX - T.Pad, T.HalfY - T.Pad
 	local sum = 0
 	for _, b in S.raw do
@@ -548,21 +550,28 @@ local function overlap(px, py)
 		local h = math.min(py + fy, b[4]) - math.max(py - fy, b[2])
 		if w > 0 and h > 0 then sum += w * h * (b[5] or 1) end
 	end
+	if me then
+		local w = math.min(px + fx, me[3]) - math.max(px - fx, me[1])
+		local h = math.min(py + fy, me[4]) - math.max(py - fy, me[2])
+		if w > 0 and h > 0 then sum += w * h end
+	end
 	return sum
 end
 
 -- where the edge indicator goes for the ray (cx, cy) + (dx, dy) * t (t = the track-box edge):
--- 1. the edge point pushed out of the HUD blocks; 2. crowded (phone) screens: the spot on the ray, from the edge in
--- to T.MinRing from the centre, that covers the least HUD (the outermost one on a tie: a clear spot ends the walk)
-local function edgeSpot(cx, cy, dx, dy, t, box)
-	local px, py = pushOut(cx + dx * t, cy + dy * t, box, S.avoid)
-	if not hitAny(px, py, S.avoid) then return px, py end
+-- 1. the edge point pushed out of the HUD blocks (`avoid`, default S.avoid); 2. crowded (phone) screens: the spot on the
+-- ray, from the edge in to T.MinRing from the centre, that covers the least HUD (the outermost one on a tie: a clear
+-- spot ends the walk); `me` = my character's raw box (검수 10/10: a goal behind me sat on my body at the bottom centre)
+local function edgeSpot(cx, cy, dx, dy, t, box, avoid, me)
+	avoid = avoid or S.avoid
+	local px, py = pushOut(cx + dx * t, cy + dy * t, box, avoid)
+	if not hitAny(px, py, avoid) then return px, py end
 	local minR = math.min(t, T.MinRing)
 	local bx, by, best = cx + dx * t, cy + dy * t, math.huge
 	for k = 0, T.WalkSteps do
 		local tk = t - (t - minR) * k / T.WalkSteps
 		local qx, qy = cx + dx * tk, cy + dy * tk
-		local a = overlap(qx, qy)
+		local a = overlap(qx, qy, me)
 		if a < best - 1 then bx, by, best = qx, qy, a end
 		if a <= 0 then break end
 	end
@@ -632,8 +641,8 @@ local function targetPoint()
 end
 
 -- 검수 10/09 (user photo: a 49m goal straight ahead drew its diamond on my halo): my character's box on screen (T.Self:
--- head, body, halo / horns), inflated by the indicator's footprint, { x0, y0, x1, y1 } du; nil in first person or when
--- a corner is behind the camera
+-- head, body, halo / horns), inflated by the indicator's footprint, { x0, y0, x1, y1 } du, and the same box not inflated;
+-- nil in first person or when a corner is behind the camera
 local function selfBox(cam, root, origin, s)
 	local me = T.Self
 	if (cam.CFrame.Position - root.Position).Magnitude < me.MinCam then return nil end
@@ -647,7 +656,7 @@ local function selfBox(cam, root, origin, s)
 		local x, y = (sp.X - origin.X) / s, (sp.Y - origin.Y) / s
 		x0, y0, x1, y1 = math.min(x0, x), math.min(y0, y), math.max(x1, x), math.max(y1, y)
 	end
-	return { x0 - T.HalfX, y0 - T.HalfY, x1 + T.HalfX, y1 + T.HalfY }
+	return { x0 - T.HalfX, y0 - T.HalfY, x1 + T.HalfX, y1 + T.HalfY }, { x0, y0, x1, y1 }
 end
 
 local function moveTo(px, py)
@@ -667,7 +676,7 @@ end
 
 -- edge indicator: from the screen centre toward the target (camera space, so behind the camera works too), on the
 -- track box, out of the HUD blocks; the arrow beside the icon points the way, the distance sits on the other side
-local function placeEdge(cam, origin, s, W, H, lifted)
+local function placeEdge(cam, origin, s, W, H, lifted, root)
 	local centre3 = cam:WorldToScreenPoint(cam.CFrame.Position + cam.CFrame.LookVector * 10)
 	local cx, cy = (centre3.X - origin.X) / s, (centre3.Y - origin.Y) / s
 	local rel = cam.CFrame:PointToObjectSpace(lifted)
@@ -688,7 +697,17 @@ local function placeEdge(cam, origin, s, W, H, lifted)
 	local ty = dy > 0 and (box[4] - cy) / dy or (dy < 0 and (box[2] - cy) / dy or math.huge)
 	local t = math.max(0, math.min(tx, ty))
 	readAvoid(W, H)
-	local px, py = edgeSpot(cx, cy, dx, dy, t, box)
+	-- 검수 10/10 (UiSandbox 991x451: a goal behind me put the indicator on my body at the bottom centre): my character's
+	-- box joins the HUD blocks here too (S.edgeAvoid: S.avoid + it, refilled each frame)
+	local me, meRaw = selfBox(cam, root, origin, s)
+	local avoid = S.avoid
+	if me then
+		avoid = S.edgeAvoid
+		table.clear(avoid)
+		table.move(S.avoid, 1, #S.avoid, 1, avoid)
+		table.insert(avoid, me)
+	end
+	local px, py = edgeSpot(cx, cy, dx, dy, t, box, avoid, meRaw)
 	moveTo(px, py)
 	local rot = math.deg(math.atan2(dx, -dy)) -- the arrow points up at Rotation 0; GUI rotation is clockwise
 	if not S.rot or math.abs(rot - S.rot) >= T.MinTurn then
@@ -775,7 +794,7 @@ local function moveStep()
 		moveTo(lx, ly)
 		labelAbove(false)
 	else
-		placeEdge(cam, origin, s, W, H, lifted)
+		placeEdge(cam, origin, s, W, H, lifted, root)
 	end
 	if not ui.holder.Visible then ui.holder.Visible = true end
 	S.shown = true
