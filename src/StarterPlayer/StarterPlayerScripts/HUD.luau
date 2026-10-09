@@ -1815,7 +1815,9 @@ function L.BuildQuestLines(root)
 	-- phones: the 12 px name-tag floor (the block is 150 px wide); PC: body text
 	local style = IS_TOUCH and "NameTag" or "Body"
 	-- 검수 2026-10-08: each line on the cream ListRow plate (L.QuestPlate), its words navy (light-plate text)
-	local onPlate = UIKit.ArtId("ListRow") ~= nil
+	-- 검수 10/09 (user on the cream plates: "이거 왜 이래"): back to the soft dark band + white outlined words; the plate
+	-- path stays behind L.QuestPlate.On
+	local onPlate = L.QuestPlate.On == true and UIKit.ArtId("ListRow") ~= nil
 	ui.questOnPlate = onPlate
 	-- 검수 10/08 (user "퀘스트 창도 이상해": the ▼ beside line 1 did not say what it opens): a head line "Quests (3) ▼" over
 	-- the lines; a press opens the quest window (Q) / the list. The lines sit right under it (LayoutQuestLines)
@@ -1850,8 +1852,15 @@ function L.BuildQuestLines(root)
 	}, style, onPlate)
 	-- 검수 10/09 (5c1756fb 머리 줄 판): the head line sits on its own small plate too
 	local headPlate = onPlate and UIKit.ArtFrame("ListRow", { Name = "HeadPlate", ZIndex = 2, Visible = false, Parent = root }) or nil
+	-- no plate: the head line gets the same soft band as the lines (same left end, same width rule; LayoutQuestLines)
+	local headBand = nil
+	if not onPlate then
+		headBand = L.SoftBand(root, "Right")
+		headBand.Name = "HeadBand"
+		headBand.Visible = false
+	end
 	if onPlate then UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = headRow }) end
-	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate }
+	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate, Band = headBand }
 	-- the head plate lives beside the head line (not inside it): follow its showing / hiding at once (검수 10/09)
 	headRow:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.LayoutQuestPlates) end)
 	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
@@ -1983,6 +1992,11 @@ function L.LayoutQuestLines(q)
 		ui.questHead.Frame.Position = UDim2.fromOffset(q.X, q.Y)
 		ui.questHead.Frame.Size = UDim2.fromOffset(q.W, hh)
 		ui.questHead.Text.TextSize = math.max(12, math.floor(lh * 0.5))
+		-- the lines' band rule (BuildQuestLines: 8 du left of the text, 64 du past the block's right end)
+		if ui.questHead.Band then
+			ui.questHead.Band.Position = UDim2.fromOffset(q.X - 8, q.Y - 1)
+			ui.questHead.Band.Size = UDim2.fromOffset(q.W + 64, hh + 2)
+		end
 	end
 	block.Position = UDim2.fromOffset(q.X, q.Y + hh)
 	block.Size = UDim2.fromOffset(q.W, lh * L.QuestLines())
@@ -2027,8 +2041,9 @@ function L.LayoutQuestPlates()
 			if plate.Visible ~= shown then plate.Visible = shown end
 		end
 	end
-	-- the head line "Quests (3) ▼" on its own plate (same pads, sits where the head frame is)
+	-- the head line "Quests (3) ▼" on its own plate (same pads, sits where the head frame is); or its band
 	local head = ui.questHead
+	if head and head.Band and head.Band.Visible ~= head.Frame.Visible then head.Band.Visible = head.Frame.Visible end
 	if head and head.Plate then
 		local list = head.Frame:FindFirstChildOfClass("UIListLayout")
 		local w = list and list.AbsoluteContentSize.X / s or 0
@@ -5058,7 +5073,7 @@ function L.LayoutTiles(tr)
 end
 L.TileLabelMinPx = 40
 -- the quest lines' plates (검수 2026-10-08): du of plate left / right of a line's content, the gap between two lines
-L.QuestPlate = { PadL = 6, PadR = 10, Gap = 4 }
+L.QuestPlate = { On = false, PadL = 6, PadR = 10, Gap = 4 }
 L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
 -- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
 -- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would
