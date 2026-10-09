@@ -185,7 +185,7 @@ Config.Data = {
 		-- camera); Follow stays in Settings for whoever wants it. Settings V3 (검수 10/09): a save from before V3 gets Cam = Free
 		-- once (SanitizeSettings); a Follow picked after that is kept
 		Settings = { V = 3, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Free" },
+			Cam = "Free", PvPCards = false },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -3806,6 +3806,8 @@ Config.Settings = {
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
 		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: Follow = the camera turns behind me while I walk (default Free, user 10/08)
+		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
+		PvPCards = { Type = "Bool" },
 	},
 	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
@@ -3817,6 +3819,7 @@ Config.Settings = {
 		Lang = "Language", LangEn = "Language",
 		BagSort = "Bag order", BagSortEn = "Bag order",
 		Cam = "Camera", CamEn = "Camera",
+		PvPCards = "PvP zone cards seen", PvPCardsEn = "PvP zone cards seen", -- not a row in the window (Order)
 		Options = {
 			All = "All", AllEn = "All", Off = "Off", OffEn = "Off", Near = "Nearby only", NearEn = "Nearby only",
 			Auto = "Auto", AutoEn = "Auto", ko = "한국어", koEn = "한국어", en = "English", enEn = "English",
