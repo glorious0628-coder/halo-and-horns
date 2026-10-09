@@ -1,0 +1,79 @@
+{
+  "checks": 29,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the tamer can put its weapon away",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the server's CanPutAway ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "[Put away] sends the uid",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "double presses go through",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an unknown species can follow",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the story name ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no MAX at the top level",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the follower not first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every PetList redraws",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "redraws while closed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fallback before the first PetList",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no speed line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the species has no name",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the window is never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "PET-5 펫 창 (게임성 개발 1, 2026-10-09; server = PET-2 PetService \"PetList\" / \"EquipPet\", contract\ndocs/design/pet4_lost_baby_slime_2026-10-09.md), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and PetWindow.luau in tools/fixtures/pet_window_offline.luau\n(Players / Remotes / Panels / UIKit doubles). Checks: the window \"Pet\" is registered (the HUD's Pet tile opens it) and\nlistens to PetList; no pet = one quiet line; a row = the approved pet icon, the story name (else the species name),\nLv + the walk speed it gives (Config.PetSpeedBonus), the XP bar (XP / Need, MAX at the top level); the follower says so\nand has [Put away] -> EquipPet(\"\"), a resting pet [Follow me] -> EquipPet(uid), one press per Gap s; a tamer never sees\n[Put away] (M1, docs/review/pet2_verify_2026-10-09.md), nor anyone when the server sends CanPutAway = false; an unknown\nspecies cannot follow; the follower first; before the first PetList the follower comes from EquippedPet / PetLv; the\nopen window redraws only when what it shows changed. Static: ClientMain loads PetWindow after Panels; Config.Pets\nspecies have a Name and Icon. Mutations: each must be caught.",
+  "studioCalls": 0
+}

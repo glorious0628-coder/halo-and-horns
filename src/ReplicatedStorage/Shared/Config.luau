@@ -6168,7 +6168,8 @@ Config.Pets = {
 	XPPerKill = 1,
 	XPPerLv = 15,
 	Species = {
-		BabySlime = { Speed = { 0.07, 0.10 } },
+		-- Name / Icon: the pet window (PetWindow.luau) when the pet has no story name
+		BabySlime = { Speed = { 0.07, 0.10 }, Name = "Baby Slime", Icon = "IconPetBabySlime" },
 	},
 }
 
