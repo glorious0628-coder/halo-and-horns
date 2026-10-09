@@ -4,8 +4,8 @@
 -- ServerStorage.WorldKit3D, on top of tools/worldkit/woods_terrain.luau (mounds, rim, creek, waterfall, dirt paths) and
 -- tools/worldkit/woods_kit_place.luau (Map.Decor.WoodsKit: giant tree, camps, trees in groves). Pipeline:
 --   woods_terrain -> woods_kit_place (kit) -> woods_dress -> decor_collision -> ground settle.
--- What it adds (the 6 concept items, 검수 2026-10-09): (1) dense wooden stake fences round the 3 camps (plain wood ends:
--- orange = PvP border colour, kit_woods.md; the entrance gap stays open toward the road), log stools round every fire, a
+-- What it adds (the 6 concept items, 검수 2026-10-09): (1) dense stake fences round the 3 camps (post tips painted orange
+-- like the concept via T.FenceTex; the PvP border stakes must stop using orange; the entrance gap stays open toward the road), log stools round every fire, a
 -- stone-ring campfire under the temporary fire, an awning, two banners, four lantern posts; (2) big moss boulders (the
 -- W_Boulder_*_Moss textures) along the forest rim, the creek banks and both sides of the waterfall; (3) dense knee-to-
 -- head-high undergrowth (BushA / BushB / Fern / Mushrooms / MossRock), thicker on the rim, at tree feet, along the dirt
@@ -169,6 +169,7 @@ local T = {
 	CellSize = 64, PlayerOnlyGroup = "DecorPlayerOnly",
 	Moss = { W_Boulder_A = "rbxassetid://72194618881890", W_Boulder_B = "rbxassetid://94297883456395" },
 	TreeDeep = "rbxassetid://139945359959750",
+	FenceTex = "rbxassetid://110674198235051", -- Kit_W_CampFence texture with orange-painted post tips (art/models/tripo/Kit_W_CampFence_raw.glb, tools/glb_texture_patch.py style paint, 검수 2026-10-09 "시안처럼 주황 끝 말뚝")
 	EyeColor = Color3.fromRGB(255, 196, 70),
 }
 -- trunk radius of the WoodsKit trees (model pivot space at scale 1, measured by woods_kit_place) and big-piece reserve
@@ -254,10 +255,34 @@ local function eyes(color)
 	return n
 end
 
+-- arrival landmark (검수 2026-10-09): the face-less W_Totem from woods_kit_place grows 1.5x (pivot = bottom centre, so it
+-- stays on the ground); "old" shrinks it back. W_Gate (the primitive Gate_GoblinWoods swap) is a gates job: T.Gate stays false.
+local TOTEM_SCALE = 1.5
+local function totem(grow)
+	local wk = decor:FindFirstChild("WoodsKit")
+	local n = 0
+	if not wk then return 0 end
+	for _, m in wk:GetChildren() do
+		if m.Name == "W_Totem" and m:IsA("Model") then
+			local done = m:GetAttribute("WoodsDressGrown") == true
+			if grow and not done then
+				m:ScaleTo(m:GetScale() * TOTEM_SCALE)
+				m:SetAttribute("WoodsDressGrown", true)
+				n += 1
+			elseif not grow and done then
+				m:ScaleTo(m:GetScale() / TOTEM_SCALE)
+				m:SetAttribute("WoodsDressGrown", nil)
+				n += 1
+			end
+		end
+	end
+	return n
+end
+
 if MODE == "old" then
 	local old = decor:FindFirstChild("WoodsDress")
 	if old then old:Destroy() end
-	return "WoodsDress removed | eyes restored: " .. eyes(nil)
+	return "WoodsDress removed | eyes restored: " .. eyes(nil) .. " | totem shrunk: " .. totem(false)
 end
 
 ------------------------------------------------------------------ ground
@@ -459,6 +484,39 @@ for _, x in { 880, 1030 } do
 	end
 end
 
+-- option A (검수 2026-10-09): camps 1 and 2 read as one cluster: stones on the camp1to2 dirt path, moss rocks along it
+do
+	local path
+	for _, p in PLAN.paths do if p.name == "camp1to2" then path = p.pts end end
+	if path then
+		local pts = {}
+		local total = 0
+		for i = 1, #path - 1 do total += math.sqrt((path[i + 1][1] - path[i][1]) ^ 2 + (path[i + 1][2] - path[i][2]) ^ 2) end
+		local function along(f)
+			local want, acc = f * total, 0
+			for i = 1, #path - 1 do
+				local d = math.sqrt((path[i + 1][1] - path[i][1]) ^ 2 + (path[i + 1][2] - path[i][2]) ^ 2)
+				if acc + d >= want then
+					local t = (want - acc) / d
+					return path[i][1] + (path[i + 1][1] - path[i][1]) * t, path[i][2] + (path[i + 1][2] - path[i][2]) * t, path[i + 1][1] - path[i][1], path[i + 1][2] - path[i][2]
+				end
+				acc += d
+			end
+			return path[#path][1], path[#path][2], 1, 0
+		end
+		for k = 1, 8 do
+			local x, z, dx, dz = along((k - 0.5) / 8)
+			local len = math.max(1e-3, math.sqrt(dx * dx + dz * dz))
+			local nx, nz = -dz / len, dx / len
+			local side = (k % 2 == 0) and 1 or -1
+			if k % 3 == 1 then
+				put("Kit_W_StepStones", x, z, { Paths = true, AnyGround = true, Gap = 0.3, S = 1.15, Yaw = math.deg(math.atan2(-dx, -dz)) })
+			end
+			put("Kit_W_MossRock", x + nx * side * 5.5, z + nz * side * 5.5, { Gap = 0.8 })
+		end
+	end
+end
+
 ------------------------------------------------------------------ tier 4: undergrowth (jittered grid, weighted)
 local function weight(x, z)
 	local e = edgeDist(x, z)
@@ -570,6 +628,11 @@ for _, e in plan do
 			if sa:IsA("SurfaceAppearance") then sa.ColorMap = T.Moss[e.Name] end
 		end
 	end
+	if e.Name == "Kit_W_CampFence" then
+		for _, mp in m:GetDescendants() do
+			if mp:IsA("MeshPart") then mp.TextureID = T.FenceTex end
+		end
+	end
 	if math.abs(e.S - 1) > 1e-3 then pcall(m.ScaleTo, m, m:GetScale() * e.S) end
 	m:PivotTo(CFrame.new(e.X, e.Y, e.Z) * CFrame.Angles(0, math.rad(e.Yaw), 0))
 	sit(m, e.Y - 0.05)
@@ -605,6 +668,14 @@ root.Parent = decor
 local reskinned = 0
 if woodsKit then
 	for _, m in woodsKit:GetChildren() do
+		if m.Name == "Kit_W_CampFence" then
+			for _, mp in m:GetDescendants() do
+				if mp:IsA("MeshPart") then
+					mp.TextureID = T.FenceTex
+					reskinned += 1
+				end
+			end
+		end
 		local id = (m.Name == "W_Tree_A" and T.TreeDeep) or T.Moss[m.Name]
 		if id then
 			for _, sa in m:GetDescendants() do
@@ -617,5 +688,6 @@ if woodsKit then
 	end
 end
 local nEyes = eyes(T.EyeColor)
-return string.format("WoodsDress built | %s | reskinned %d surfaces | amber eyes %d | collision group %s", summary, reskinned, nEyes,
+local nTotem = totem(true)
+return string.format("WoodsDress built | %s | reskinned %d surfaces | amber eyes %d | totem grown %d | collision group %s", summary, reskinned, nEyes, nTotem,
 	groupOk and T.PlayerOnlyGroup or "NOT registered (solids block everyone)")
