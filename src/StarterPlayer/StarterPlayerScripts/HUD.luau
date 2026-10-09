@@ -157,6 +157,7 @@ local TXT = {
 	Wanted = "Wanted %s", -- danger chip (Horns): the wanted stars
 	WantedBounty = " · %s",
 	WarTime = "Crown in %s", -- short: the phone meter is 240 px (UiSandbox 2026-10-06: 'My points' was cut)
+	LuckTap = "Rare drops come a bit more often today!", -- 검수 10/09: a press on the Lucky chip
 	WarIntro = "Crown War: win points for your side!", -- 검수 10/09: the one line when the war bar first shows
 	Siege = "Siege: %d each",
 	MyWar = "My pts %s",
@@ -707,7 +708,7 @@ function L.CheckPouch()
 	end
 	local gap = ui.powerRow.List.Padding.Offset
 	local need = (ui.power.AbsoluteSize.X + ui.pouch.AbsoluteSize.X) / s + gap
-	local fits = need <= R.power_line.W - (ui.pouch.Visible and 0 or 2)
+	local fits = L.PouchOn == true and need <= R.power_line.W - (ui.pouch.Visible and 0 or 2)
 	if ui.pouch.Visible ~= fits then ui.pouch.Visible = fits end
 end
 
@@ -1370,6 +1371,15 @@ local function buildChips(root)
 	end
 	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
 	L.BuildChipFold()
+	-- 검수 10/09: a press on the Lucky chip says what it means (one toast)
+	local luckChip = ui.chip.Luck and ui.chip.Luck.Frame
+	if luckChip then
+		luckChip.Active = true
+		luckChip.InputBegan:Connect(function(input)
+			local t = input.UserInputType
+			if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(UIKit.Toast, TXT.LuckTap, "info") end
+		end)
+	end
 	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
 end
@@ -2942,6 +2952,8 @@ local function refreshStats()
 	L.PowerSet(L.Pow.Shown or L.PowerValue())
 	local carried = math.max(0, num("CarriedGold", 0))
 	ui.pouch.Text = string.format(TXT.Pouch, TXT.CarriedTag, fmtNum(carried))
+	-- 검수 10/09 (UI clutter review ④): the pouch line once I carry gold (or from Config.HudReveal.Level), then for good
+	L.PouchOn = L.PouchOn or Config.HudReveal.Shows("Pouch", { Level = num("Level", 0), Carried = carried })
 	ui.pouch.TextColor3 = carried > 0 and (Theme.Sack or ac("GoldText", Theme.Gold)) or ac("LightSub", Theme.SubText)
 	L.CheckPouch()
 	if ui.chip then refreshChips() end -- the wanted chip follows stars / bounty
@@ -3055,7 +3067,39 @@ refreshChips = function()
 		end
 	end
 	setChip(ui.chipMore, folded > 0, string.format(TXT.MoreChips, folded), Theme.SubText)
+	L.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))
 	L.ApplyChipFold()
+end
+
+-- the chips' "what changed" key (pure): the chip set without In Combat, the zone kind, the luck words
+function HUD.ChipFoldSig(wantKey, town, pvp, luck)
+	local keys = string.gsub(tostring(wantKey or ""), "Combat,", "")
+	return keys .. "|" .. (town and "T" or (pvp and "P" or "W")) .. "|" .. tostring(luck or "")
+end
+L.ChipFoldSig = HUD.ChipFoldSig
+
+-- a new key unfolds the chips now and folds them ShowSeconds later (a newer change or a press restarts the wait)
+function L.WatchChipFold(sig)
+	local cf = L.ChipFold
+	if not cf.Auto or sig == cf.Sig then return end
+	cf.Sig = sig
+	cf.Folded = false -- refreshChips applies it right after
+	L.FoldLater(cf.ShowSeconds)
+end
+
+function L.FoldLater(seconds)
+	local cf = L.ChipFold
+	cf.Token += 1
+	local token = cf.Token
+	task.delay(seconds, function()
+		if cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end
+	end)
+end
+
+-- the fold chip's press: show them TapSeconds, then fold again
+function L.ChipFoldTap()
+	HUD.SetChipsFolded(false)
+	L.FoldLater(L.ChipFold.TapSeconds)
 end
 
 -- ui_clutter_review ③: fold / unfold the status chips (개발 1 decides when; 3 s after a change -> fold, press -> unfold)
@@ -4964,6 +5008,11 @@ L.TileLabelMinPx = 40
 -- the quest lines' plates (검수 2026-10-08): du of plate left / right of a line's content, the gap between two lines
 L.QuestPlate = { PadL = 6, PadR = 10, Gap = 4 }
 L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
+-- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
+-- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would
+-- unfold them), the zone kind or the luck words (L.ChipFoldSig). Auto = the rule is on
+L.ChipFold.Auto, L.ChipFold.ShowSeconds, L.ChipFold.TapSeconds, L.ChipFold.Token = true, 3, 5, 0
+L.ChipFold.OnTap = L.ChipFoldTap -- defined above (the chips section); HUD.OnChipsFoldTap may replace it
 -- the guide label (showGuide): px tall, its words' px, side room, studs above the target; hidden within GuideHide studs
 L.GuideLabel = { H = 28, TextPx = 15, PadX = 10, Lift = 4.5 }
 L.GuideHide = 15

@@ -1382,6 +1382,23 @@ end
 -- A23-18 "오늘의 운" (replaces the per-server "단골 운" minutes): golden-goose / kaiju events I took part in TODAY
 -- (KST day, saved with the day so a server hop or a dropped phone keeps it). 3 events = 11%, 4 events = the 12.5% cap
 -- ("15~30분 동안 이벤트 3~4번이면 거의 최대").
+-- 검수 2026-10-09 (UI clutter review ④, "show it when it is needed"): the potion pair shows once I hold a potion, my HP
+-- fell under LowHP once this session, or from Level on; the pouch line once I carry gold or from Level on
+-- (Config.HudReveal.Shows, pure: VitalsUI / HUD and the offline test call it)
+Config.HudReveal = { Level = 5, LowHP = 0.5 }
+function Config.HudReveal.Shows(kind, s)
+	s = type(s) == "table" and s or {}
+	local lv = tonumber(s.Level) or 0
+	if lv >= Config.HudReveal.Level then return true end
+	if kind == "Potions" then
+		local hp, maxHP = tonumber(s.HP) or 0, tonumber(s.MaxHP) or 0
+		return (tonumber(s.Potions) or 0) > 0 or (maxHP > 0 and hp > 0 and hp < maxHP * Config.HudReveal.LowHP)
+	elseif kind == "Pouch" then
+		return (tonumber(s.Carried) or 0) > 0
+	end
+	return true
+end
+
 Config.Luck = {
 	BaseRare = 0.05,
 	PerEvent = 0.02, -- +2 percentage points per event today
