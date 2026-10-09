@@ -1137,6 +1137,8 @@ local function buildWar(root)
 				ZIndex = 4,
 				Parent = badge,
 			})
+			-- 검수 10/10 (UiSandbox: the score was 11 px at 1280x720, 7 px at 991x451): real px ScoreMinPx..ScoreMaxPx
+			L.FitText(ui[s[4]], TB.ScoreMaxPx, true, TB.ScoreMinPx, true)
 		else
 			L.WarNumOnly = false
 			ui[s[4]] = artLabel(false, {
@@ -2158,51 +2160,66 @@ function L.LayoutTracker(q)
 end
 
 -- the goal sentence at GoalMax du, or the largest size down to GoalMin that keeps it within GoalLines lines of the
--- tracker's width (measured by L.TextLines; while a size is being measured the line keeps its current size)
+-- tracker's width (measured by L.TextLines). The box gets the measured lines' height itself: 이미지 개발 10/10 (main
+-- Studio 991x451, UIScale 0.5: AutomaticSize gave the box one line while the words wrapped to two - "...in the" and the
+-- rest cut off). A size under the style's real-px floor is measured at the floor (that is what renders); while a size is
+-- being measured the line keeps AutomaticSize
 function L.FitGoal()
 	local t, T = ui.tracker, L.Tracker
 	if not (t and T.Rect and T.GoalMax) then return end
-	local text, font, width = t.Goal.Text, t.Goal.FontFace, T.Rect.W
-	local size, pending = T.GoalMax, false
-	while size > T.GoalMin do
-		local lines = L.TextLines(text, font, size, width)
-		if lines == nil then
+	local goal = t.Goal
+	local text, font, width = goal.Text, goal.FontFace, T.Rect.W - 2 -- 2 du spare: never wrap later than the render
+	local tc = goal:FindFirstChildOfClass("UITextSizeConstraint")
+	local floorDu = tc and math.ceil(tc.MinTextSize / math.max(0.05, currentScale())) or 0
+	local size, lines, lineH, pending = T.GoalMax, nil, nil, false
+	while true do
+		local n, h = L.TextLines(text, font, math.max(size, floorDu), width)
+		if n == nil then
 			pending = true
 			break
 		end
-		if lines <= T.GoalLines then break end
+		lines, lineH = n, h
+		if n <= T.GoalLines or size <= T.GoalMin then break end
 		size -= 1
 	end
 	if pending then
-		if t.Goal.TextSize > T.GoalMax or t.Goal.TextSize < T.GoalMin then t.Goal.TextSize = T.GoalMax end
-	elseif t.Goal.TextSize ~= size then
-		t.Goal.TextSize = size
+		if goal.TextSize > T.GoalMax or goal.TextSize < T.GoalMin then goal.TextSize = T.GoalMax end
+		if goal.AutomaticSize ~= Enum.AutomaticSize.Y then goal.AutomaticSize = Enum.AutomaticSize.Y end
+		return
 	end
+	if goal.TextSize ~= size then goal.TextSize = size end
+	local boxH = math.ceil(lines * lineH) + 2
+	if goal.AutomaticSize ~= Enum.AutomaticSize.None then goal.AutomaticSize = Enum.AutomaticSize.None end
+	if goal.Size.Y.Offset ~= boxH or goal.Size.X.Scale ~= 1 then goal.Size = UDim2.new(1, 0, 0, boxH) end
 end
 
--- lines `text` wraps to at `size` du in `width` du (TextService, cached); nil while it is measured (L.FitGoal runs again
--- when the answer comes)
+-- lines `text` wraps to at `size` du in `width` du and one line's height in du (TextService, cached); nil while it is
+-- measured (L.FitGoal runs again when the answer comes)
 function L.TextLines(text, font, size, width)
-	if text == "" then return 1 end
+	if text == "" then return 1, size end
 	local cache = L.LineCache
 	local key = string.format("%s|%d|%d|%s|%s", text, size, math.floor(width), tostring(font.Family), tostring(font.Weight))
 	local v = cache.Lines[key]
-	if v ~= nil then return v or nil end
+	if v ~= nil then
+		if v then return v[1], v[2] end
+		return nil
+	end
 	cache.N += 1
 	if cache.N > 300 then cache.Lines, cache.N = {}, 1 end
 	cache.Lines[key] = false
 	task.spawn(function()
-		local ok, lines = pcall(function()
+		local ok, res = pcall(function()
 			local ts = game:GetService("TextService")
 			local p = Instance.new("GetTextBoundsParams")
 			p.Text, p.Font, p.Size, p.Width = text, font, size, width
 			local wrapped = ts:GetTextBoundsAsync(p)
 			p.Width = 100000
 			local one = ts:GetTextBoundsAsync(p)
-			return math.max(1, math.floor(wrapped.Y / math.max(1, one.Y) + 0.5))
+			local h = math.max(1, one.Y)
+			return { math.max(1, math.floor(wrapped.Y / h + 0.5)), h }
 		end)
-		if not ok then warnThrottled("goal lines failed: " .. tostring(lines)) end
-		cache.Lines[key] = ok and lines or 1
+		if not ok then warnThrottled("goal lines failed: " .. tostring(res)) end
+		cache.Lines[key] = ok and res or { 1, size }
 		local fine, err = pcall(L.FitGoal)
 		if not fine then warnThrottled("goal fit failed: " .. tostring(err)) end
 	end)
@@ -5667,7 +5684,7 @@ L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
 -- each end, the crown Crown du; DesignH = the meter height those sizes are for (PC 0.8), KMax = how much they may grow
 -- on a taller meter (small PC windows, L.LayoutWar)
 L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40,
-	DesignH = 52.5, KMax = 1.8 }
+	DesignH = 52.5, KMax = 1.8, ScoreMinPx = 12, ScoreMaxPx = 18 } -- the badge scores in real px (검수 10/10: >= 12)
 L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
