@@ -2079,7 +2079,21 @@ Config.Tutorial = {
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
-		Skill = "Skill at Lv %d" },
+		Skill = "Skill at Lv %d", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
+		Commission = "Golden weapon", Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
+	-- A23-86 F (content_beyond_10min): the next-goal ladder once the early goals (iron weapon, first skills, the woods) are
+	-- done and no story row is pinned. Hooks, in order: a feature row asks its service for its line (S[Service].NextGoal(
+	-- player, data) -> text or nil) and only while Config.Features[Feature] is on (the features are not built yet, so the
+	-- rows wait switched off); then the rebirth line from Warn levels below the rebirth level. No clock, no minute numbers,
+	-- no purchase or 2x button near it (A23-79).
+	Ladder = {
+		Hooks = {
+			{ Kind = "Commission", Service = "CommissionService", Feature = "Commission" },
+			{ Kind = "Clatter", Service = "ClatterService", Feature = "Clatter" },
+			{ Kind = "Crystal", Service = "CrystalService", Feature = "Crystal" },
+		},
+		Rebirth = { Warn = 5 },
+	},
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
@@ -2167,6 +2181,11 @@ Config.Tutorial = {
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
+		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)
+		NextRebirth = "Next goal · Lv%d: Rebirth, choose your side again (now Lv%d)",
+		NextRebirthReady = "Next goal · Rebirth is open! Choose your side again",
+		RebirthNoteHalo = "Stay a knight, or not?", -- a second line under the rebirth goal, by side
+		RebirthNoteHorns = "Stay a rascal, or not?",
 		GuideDone = "That's all from me! Now hunt and get stronger.",
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
@@ -2570,6 +2589,7 @@ Config.StoryQuests = {
 				} },
 			},
 			Reward = { Gold = 2, XP = 2 },
+			Finish = "Chapter 4 is coming!", -- A23-86 F: one closing line, no date, no clock
 		},
 		S1 = {
 			Kind = "Sub", Title = "The Golden Goose With a Shard", ShortName = "Golden Goose", Factions = { Halo = true, Horns = true },
@@ -5841,6 +5861,8 @@ Config.Return = {
 	-- quest guide spots that are not zones / landmarks ("Home" = the player's own town)
 	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home",
 		Goose = "Crossroads" },
+	-- A23-86 F: the zone a next-goal ladder row (QuestService GoalKind) leads to; other kinds use the level's hunting zone
+	GoalZones = { Rebirth = "Crossroads", RebirthReady = "Crossroads", Commission = "Crossroads", Crystal = "Crossroads" },
 	Text = {
 		NextHunt = "Hunt and get stronger!", -- nothing pinned
 		TomorrowDaily = "New dailies", -- the daily card's tomorrow line (the King Diary's page while one waits)

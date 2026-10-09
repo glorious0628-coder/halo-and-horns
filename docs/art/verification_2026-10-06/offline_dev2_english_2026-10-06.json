@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3824 strings)",
+      "check": "the walk reached the player strings (3848 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -740,7 +740,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "bbd5d3b62baa26e730b55579aead9f6f2e3dc0e15975d211175de09d4ffaf7c2",
+    "src/ReplicatedStorage/Shared/Config.luau": "65b499c73fe5fc0f21733b48f68d3d76184dfb63b0faf7d79a83bac119b11b9c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/AttendanceService.luau": "60a7e6745f24b36a2e3763b76d0f1cc9ee641890f5a5639f3acff8955e669595",
@@ -772,9 +772,9 @@
     "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
     "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
-    "src/ServerScriptService/QuestService.luau": "c6e6298c97d3e79c72f74139d8acf3d360815f6ad0e7e1ed57ac866f9d0a2432",
+    "src/ServerScriptService/QuestService.luau": "9dcc19a7e766857c4d9a33b1becf564440ac71d4dccf43a826bf9eed0535d6f8",
     "src/ServerScriptService/RankingService.luau": "863d034d30426213b5cb97be6b39457892acd5d65a97cc4abede2857290d213f",
-    "src/ServerScriptService/ReturnService.luau": "c03f201c8263cd941a09360cb9b4a63f93985486cd6ac19e69c8d21f2a225c2e",
+    "src/ServerScriptService/ReturnService.luau": "7cefaa1e7af818fdad86f026315e00703dc177dfd95a7ba68d6ea15ca9a469b4",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/SkillService.luau": "3a11db855624b8f07a2c1cd36693e3e914e766228c6fcce0cfebaad10a8ffdf6",

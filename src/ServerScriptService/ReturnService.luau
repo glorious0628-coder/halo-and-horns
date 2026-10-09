@@ -155,7 +155,8 @@ local function nextGoal(player, data)
 	local zone = zoneOfGuide(guide)
 	if zone == nil then
 		local kind = row.GoalKind
-		zone = (kind == "Zone" and (R.NextZone or "GoblinWoods")) or (kind == "IronGold" and "Crossroads") or hunt
+		zone = (kind == "Zone" and (R.NextZone or "GoblinWoods")) or (kind == "IronGold" and "Crossroads")
+			or (R.GoalZones or {})[kind] or hunt
 	end
 	return text, travelZone(player, zone)
 end

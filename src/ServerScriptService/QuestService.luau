@@ -733,7 +733,7 @@ end
 local IRON_TIER = 3
 local NEXT_ZONE = "GoblinWoods"
 local hadNextGoal = {} -- [Player] = true while the pinned row shows a next goal (GuideDone toast on its end)
-local function nextGoalText(data)
+local function nextGoalText(data, player)
 	local level = getLevel(data)
 	local iron = Config.Weapons[IRON_TIER]
 	local owned = math.floor(num(data.WeaponOwnedMask, 1))
@@ -772,6 +772,25 @@ local function nextGoalText(data)
 	end
 	if zoneAt then
 		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level), "Zone", zone.MinLevel
+	end
+	-- A23-86 F: the ladder (feature hooks, then the rebirth line); the story row, when there is one, is pinned instead
+	local ladder = TUT_CFG.Ladder
+	if type(ladder) ~= "table" then return nil end
+	for _, row in ladder.Hooks or {} do
+		local svc = S and S[row.Service]
+		if type(svc) == "table" and type(svc.NextGoal) == "function" and (row.Feature == nil or Config.FeatureOn(row.Feature)) then
+			local ok, text = pcall(svc.NextGoal, player, data)
+			if ok and type(text) == "string" and text ~= "" then return text, row.Kind, nil end
+		end
+	end
+	local rb = ladder.Rebirth
+	if type(rb) == "table" then
+		local need = Config.RebirthLevel(math.max(0, math.floor(num(data.Rebirths))))
+		if level >= need then
+			return TUT_MESSAGES.NextRebirthReady, "RebirthReady", need
+		elseif level >= need - math.max(0, math.floor(num(rb.Warn))) then
+			return string.format(TUT_MESSAGES.NextRebirth, need, level), "Rebirth", need
+		end
 	end
 	return nil
 end
@@ -816,13 +835,19 @@ local function tutorialEntry(player, data)
 				or "Check the weapons · Crossroads Forge"
 			entry.ShortName = TUT_SHORT.Forge
 		else
-			local text, kind, need = nextGoalText(data)
+			local text, kind, need = nextGoalText(data, player)
 			if not text then return nil end
 			entry.Text = text
+			-- A23-86 F: the rebirth rows carry the side's own question as a second line
+			if kind == "Rebirth" or kind == "RebirthReady" then
+				local f = getFaction(player)
+				entry.GoalNote = f == "Halo" and TUT_MESSAGES.RebirthNoteHalo or f == "Horns" and TUT_MESSAGES.RebirthNoteHorns or nil
+			end
 			entry.ShortName = goalShort(kind, need)
 			entry.NextGoal = true
 			-- A23-48: which next goal this is ("SkillIron" (A23-71 S16) | "IronLevel" | "IronGold" | "Skill" (SKL-3) |
-			-- "Zone"), so clients never search the (now English) text for a word
+			-- "Zone" | A23-86 F: "Commission" | "Clatter" | "Crystal" | "Rebirth" | "RebirthReady"), so clients never
+			-- search the (now English) text for a word
 			entry.GoalKind = kind
 		end
 	else
