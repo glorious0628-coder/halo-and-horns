@@ -54,7 +54,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 MUTATIONS = [
     ("no cap", C, "\treturn math.min(raw, base * Config.Speed.Cap)\n", "\treturn raw\n"),
     ("cap 1.5", C, "Config.Speed = { Cap = 1.35 }", "Config.Speed = { Cap = 1.5 }"),
-    ("Lv1 bonus 8%", C, "BabySlime = { Speed = { 0.07, 0.10 } }", "BabySlime = { Speed = { 0.08, 0.10 } }"),
+    ("Lv1 bonus 8%", C, "BabySlime = { Speed = { 0.07, 0.10 }", "BabySlime = { Speed = { 0.08, 0.10 }"),
     ("pet level not clamped", C, "\tlv = math.clamp(math.floor(lv), 1, P.MaxLv)\n", "\tlv = math.floor(lv)\n"),
     ("the pet bonus is never added", C, "local pet = kaiju == true and 0 or Config.PetSpeedBonus(petSpecies, petLv)",
      "local pet = 0"),
