@@ -210,6 +210,10 @@ Config.Data = {
 		-- picked by hand, in order ("HAHA...", at most Config.Stats.MaxPoints). No balance is kept: the points come from
 		-- the level (Config.StatPoints), so a level reset shrinks the build and leveling up again rebuilds it
 		Stats = { Auto = true, Order = "" },
+		-- A23-75 (additive, Version stays 3): faction looks unlocked without a pass (attendance) + the worn one, and the
+		-- last ownership answer Roblox gave per pass / look (used only when the check at join fails)
+		Looks = { Owned = {}, On = "" },
+		PassSeen = {},
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -1278,10 +1282,10 @@ Config.Sky = {
 -- Up / Dn; seen from above Ft 0, Rt 90, Bk 180, Lf 270 degrees clockwise; Up has Ft at its bottom - turn Up by 90 if its
 -- seam is off, swap Lf / Rt if the sides run backwards; Dn = FogColor 150, 205, 228). No rays; the sun stays Sky_Sun.
 -- WarService puts them on Lighting.Sky at Start (an empty / missing face keeps what the place has); the war skies never
--- touch the faces
+-- touch the faces. Lf / Rt swapped (메인 반영 33a77cb8 compare "B": no seam; 검수 10/09 saw the seam in the meadow photo)
 Config.Sky.Faces = {
-	Ft = "rbxassetid://86737469798577", Bk = "rbxassetid://106230772458054", Lf = "rbxassetid://113124022425103",
-	Rt = "rbxassetid://80981399991828", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
+	Ft = "rbxassetid://86737469798577", Bk = "rbxassetid://106230772458054", Lf = "rbxassetid://80981399991828",
+	Rt = "rbxassetid://113124022425103", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
 }
 
 -- addendum A9-2: client hit feel (Fx only). White flash of monsters within FlashRadius of my own Swing/Release hit
@@ -1578,6 +1582,19 @@ Config.Map = {
 		{ Name = "RoadRuinsSouth", MinX = 1300, MaxX = 1700, MinZ = 145, MaxZ = 155 },
 		{ Name = "RoadPumpkin", MinX = 529, MaxX = 541, MinZ = 9, MaxZ = 330, Season = "Halloween" },
 		{ Name = "RoadHollow", MinX = 330, MaxX = 535, MinZ = 335, MaxZ = 345, Season = "Halloween" },
+	},
+	-- 검수 10/09 (main photo: a dark red-brown band in front of the Crossroads fountain): the town road parts
+	-- (Decor.Roads, CanCollide off) are not drawn inside the plaza (PlazaRadius around the fountain: MapBuilder cuts the
+	-- part back to the plaza edge, a part fully inside is hidden) and get a light earthy color that the GE_Slate tile
+	-- multiplies into a dirt-road look (the old 70,45,45 turned near black-red). Roads above stays the map/minimap data.
+	RoadLook = {
+		PlazaRadius = 60,
+		Parts = {
+			RoadSouth = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
+			RoadSouthIsland = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
+			RoadNorth = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
+			RoadNorthIsland = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
+		},
 	},
 	-- A23-30 / A23-45 on map v2 (MapBuilder PATCH / HOLLOW, QuestTarget): the pumpkin path along x = PathX from the meadow
 	-- road to the patch's north gate (PatchGateZ), the patch's west gate into the HauntedHollow, the road sign at the
@@ -3257,6 +3274,104 @@ function Config.ProductByKind(kind)
 	return nil
 end
 
+----------------------------------------------------------------- A23-75 game passes (Robux, user 2026-10-08)
+-- docs/design/gamepass_server_2026-10-08.md. Prices are the user's ("추천 가격대로"). Id 0 = the pass is not created
+-- yet: the shop shows "Coming soon" and the server never asks Roblox about it. After publishing, the user creates the
+-- passes on create.roblox.com (the game > Monetization > Passes) and pastes their ids here (launch_ops_checklist).
+-- Attr = the Player attribute (true / false) the server keeps while the player owns it. No stat is ever sold (A23-75):
+-- 2x XP / 2x Gold double what is EARNED, and that counts for the level cap and the rankings as it is.
+Config.GamePasses = {
+	XP2 = { Id = 0, Price = 199, Name = "2x XP", Attr = "PassXP2" },
+	Gold2 = { Id = 0, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
+	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
+}
+-- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
+-- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
+-- hunt reward, the underdog sign-on, attendance). Never: Sale, Refund, Plunder, KaijuBank / KaijuTransfer (gold that was
+-- already someone's), KaijuBonus (the survive bonus: made from a pouch that already holds the pass, only its cap
+-- doubles; A23-75 review 2026-10-08), Penalty, Other (test gold).
+Config.PassBoost = {
+	Mult = 2,
+	GoldSources = { Monster = true, Quest = true, Event = true, Bounty = true, War = true, Loot = true, Kaiju = true,
+		SignOn = true, Attendance = true },
+	-- the ownership check when a player joins: tries, first wait between them (doubling); when every try fails, the
+	-- last answer Roblox gave (saved, data.PassSeen) counts until the next check
+	CheckTries = 3,
+	CheckWait = 1,
+	-- a purchase signal Roblox answers "no" (maybe a cached answer from the join check): asked again this many s after
+	-- the signal; still no = ignored (gamepass_3f5dd020_verify, 2026-10-09)
+	PurchaseRecheck = { 2, 5 },
+	-- the supporter board (A23-75 VIP: "마을 후원자 게시판 이름"): VIP owners of every server, newest first, at most
+	-- MaxSupporters display names in GameState SupporterNames (one per line), read again every RefreshSeconds
+	SupporterStore = "HaloHorns_Supporters_v1",
+	SupporterKey = "List",
+	MaxSupporters = 30,
+	RefreshSeconds = 300,
+	-- A23-75 review 2026-10-08: the shared list is written at most once per player per WriteGap seconds (a hide on / off
+	-- spam cannot use up the server's DataStore budget; the write then carries the latest choice)
+	WriteGap = 10,
+	-- a failed write of the shared list is tried again this many times (each after WriteGap), unless a newer choice
+	-- is queued by then
+	WriteRetries = 3,
+}
+-- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
+-- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
+-- (the shop slot); Icon = a Config.UIArt key; Order = the shop order. Owned looks: Player attribute LooksOwned (ids,
+-- comma-separated, in Order); worn: LookOn (an id of the player's own faction, or "").
+Config.Looks = {
+	HaloIce = { Faction = "Halo", PassId = 0, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
+	HaloGold = { Faction = "Halo", PassId = 0, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
+	HornsLava = { Faction = "Horns", PassId = 0, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
+	HornsShadow = { Faction = "Horns", PassId = 0, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
+	HaloSprout = { Faction = "Halo", Unlock = { Attendance = 14 }, Name = "Sprout Halo", Icon = "LookHaloSprout", Order = 5 },
+	HornsSprout = { Faction = "Horns", Unlock = { Attendance = 14 }, Name = "Sprout Horns", Icon = "LookHornsSprout", Order = 6 },
+	HaloStarlight = { Faction = "Halo", Unlock = { Attendance = 50 }, Name = "Star Halo", Icon = "LookHaloStarlight", Order = 7 },
+	HornsStarlight = { Faction = "Horns", Unlock = { Attendance = 50 }, Name = "Star Horns", Icon = "LookHornsStarlight",
+		Order = 8 },
+	HaloPlatinum = { Faction = "Halo", Unlock = { Attendance = 100 }, Name = "Plat Halo", Icon = "LookHaloPlatinum", Order = 9 },
+	HornsPlatinum = { Faction = "Horns", Unlock = { Attendance = 100 }, Name = "Plat Horns", Icon = "LookHornsPlatinum",
+		Order = 10 },
+}
+
+-- the look ids in shop order
+function Config.LookOrder()
+	local ids = {}
+	for id in Config.Looks do table.insert(ids, id) end
+	table.sort(ids, function(a, b)
+		local oa, ob = tonumber(Config.Looks[a].Order) or 0, tonumber(Config.Looks[b].Order) or 0
+		if oa ~= ob then return oa < ob end
+		return a < b
+	end)
+	return ids
+end
+
+-- A23-75 save fields (additive, Version stays 3): Looks = { Owned = { [look id] = os.time() unlocked without a pass
+-- (attendance) }, On = the worn id or "" }; PassSeen = { [pass kind or look id] = the last ownership answer from
+-- Roblox (true / false) }. Unknown ids and broken values are dropped; returns the repaired Looks and PassSeen.
+function Config.SanitizeLooks(looks, seen)
+	local out = { Owned = {}, On = "" }
+	if type(looks) == "table" then
+		if type(looks.Owned) == "table" then
+			for id, t in looks.Owned do
+				if type(id) == "string" and Config.Looks[id] and type(t) == "number" and t == t and t >= 0
+					and t ~= math.huge then
+					out.Owned[id] = math.floor(t)
+				end
+			end
+		end
+		if type(looks.On) == "string" and (looks.On == "" or Config.Looks[looks.On]) then out.On = looks.On end
+	end
+	local passSeen = {}
+	if type(seen) == "table" then
+		for id, v in seen do
+			if type(id) == "string" and type(v) == "boolean" and (Config.GamePasses[id] or Config.Looks[id]) then
+				passSeen[id] = v
+			end
+		end
+	end
+	return out, passSeen
+end
+
 ----------------------------------------------------------------- visuals
 Config.Visuals = {
 	MarkScalePerRank = 0.15, -- halo/horn scale = 1 + 0.15 * (rank - 1)
@@ -3345,7 +3460,7 @@ Config.RateLimits = {
 	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, BoardAction = 0.3, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
-	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
+	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, SetLook = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)

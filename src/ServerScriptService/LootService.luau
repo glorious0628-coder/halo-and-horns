@@ -272,7 +272,7 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 	if owns(data, tier) then
 		local gold = LOOT.DuplicateWeaponGold[tier] or 0
 		if gold > 0 then
-			S.ProgressionService.AddCarriedGold(player, gold, "Loot")
+			gold = S.ProgressionService.AddCarriedGold(player, gold, "Loot") or gold -- A23-75: as added (2x Gold)
 			notify(player, string.format(TXT.DuplicateWeapon, weaponName(player, tier), Util.FormatNumber and Util.FormatNumber(gold) or tostring(gold)), "reward", "GoldPickup")
 		end
 		return

@@ -451,6 +451,76 @@ do
 		and near(P.GOOSE_NEST.X, C.Goose.Position.X) and near(P.GOOSE_NEST.Z, C.Goose.Position.Z))
 end
 
+-- 검수 10/09: the town road parts stop at the Crossroads plaza edge and get a light earthy color (Config.Map.RoadLook,
+-- MapBuilder.FitRoads run on stub parts; Config.Map.Roads stays the map data)
+do
+	local g = "roads"
+	local look = C.Map.RoadLook
+	check(g, "Config.Map.RoadLook: a plaza radius and the four town road parts", type(look) == "table" and near(look.PlazaRadius, 60)
+		and look.Parts.RoadSouth and look.Parts.RoadSouthIsland and look.Parts.RoadNorth and look.Parts.RoadNorthIsland)
+	local function dark(c) return c.R * 255 < 120 and c.G * 255 < 100 end
+	for name, want in look.Parts do
+		check(g, "a look part is a Config road", (function() for _, r in C.Map.Roads do if r.Name == name then return true end end return false end)(), name)
+		check(g, "the look colors are light (not the old near-black 70,45,45)", not dark(want.Color) and want.Color.R * 255 >= 140, name)
+		local q = nil
+		for _, r in P.ROADS do if r.Name == name then q = r end end
+		check(g, "preview_map builds the part with the look's color and material", q ~= nil and near(q.Color.R, want.Color.R)
+			and near(q.Color.G, want.Color.G) and near(q.Color.B, want.Color.B) and q.Material == want.Material, name)
+	end
+	check(g, "Config.Map.Roads keeps the full strips (the minimap / world map data)", (function()
+		for _, r in C.Map.Roads do
+			if r.Name == "RoadSouth" then return near(r.MinZ, 10) and near(r.MaxZ, 150) end
+		end
+		return false
+	end)())
+	-- FitRoads on stub parts
+	local function part(name, cx, cz, sx, sz)
+		return { Name = name, Position = vec(cx, 0.08, cz), Size = vec(sx, 0.2, sz), Color = rgb(70, 45, 45), Material = "Enum.Material.Slate",
+			Transparency = 0, IsA = function(_, k) return k == "BasePart" end }
+	end
+	local parts = {
+		RoadSouth = part("RoadSouth", 0, 80, 16, 140), RoadNorth = part("RoadNorth", 0, -80, 16, 140),
+		RoadSouthIsland = part("RoadSouthIsland", 0, 465, 16, 270), RoadNorthIsland = part("RoadNorthIsland", 0, -465, 16, 270),
+		RoadWest = part("RoadWest", -28, 0, 30, 18),
+	}
+	local roads = { FindFirstChild = function(_, n) return parts[n] end }
+	local decor = { FindFirstChild = function(_, n) return if n == "Roads" then roads else nil end }
+	local env = envFor(1790000000)
+	env.Config = C
+	env.CFrame = { new = function(x, y, z) return { X = x, Y = y, Z = z, __kind = "CFrame" } end }
+	local MB = {}
+	env.MapBuilder = MB
+	execute("FitRoads", FITROADS_SOURCE, env)
+	local function apply()
+		for _, p in parts do
+			if p.CFrame then p.Position = vec(p.CFrame.X, p.CFrame.Y, p.CFrame.Z); p.CFrame = nil end
+		end
+	end
+	local n = MB.FitRoads(decor)
+	apply()
+	check(g, "FitRoads touches the four look parts", n == 4, n)
+	local s, nn = parts.RoadSouth, parts.RoadNorth
+	check(g, "RoadSouth now runs from the plaza edge (z 60) to the bridge (z 150)", near(s.Position.Z - s.Size.Z / 2, 60)
+		and near(s.Position.Z + s.Size.Z / 2, 150) and near(s.Position.X, 0) and near(s.Size.X, 16) and s.Transparency == 0,
+		s.Position.Z .. " " .. s.Size.Z)
+	check(g, "RoadNorth now runs from the bridge (z -150) to the plaza edge (z -60)", near(nn.Position.Z - nn.Size.Z / 2, -150)
+		and near(nn.Position.Z + nn.Size.Z / 2, -60) and nn.Transparency == 0, nn.Position.Z .. " " .. nn.Size.Z)
+	check(g, "the island roads keep their strips", near(parts.RoadSouthIsland.Size.Z, 270) and near(parts.RoadSouthIsland.Position.Z, 465)
+		and near(parts.RoadNorthIsland.Size.Z, 270))
+	check(g, "the parts get the look's colors", near(s.Color.R, look.Parts.RoadSouth.Color.R) and near(nn.Color.G, look.Parts.RoadNorth.Color.G)
+		and s.Material == look.Parts.RoadSouth.Material)
+	check(g, "a road not in the look is left alone", near(parts.RoadWest.Size.Z, 18) and near(parts.RoadWest.Color.R * 255, 70))
+	MB.FitRoads(decor)
+	apply()
+	check(g, "running it again changes nothing (idempotent)", near(s.Position.Z - s.Size.Z / 2, 60) and near(s.Size.Z, 90)
+		and near(nn.Size.Z, 90))
+	local inside = part("RoadSouth", 0, 30, 16, 40)
+	parts.RoadSouth = inside
+	MB.FitRoads(decor)
+	check(g, "a part fully inside the plaza is hidden", inside.Transparency == 1 and near(inside.Size.Z, 40))
+	check(g, "no Decor.Roads: nothing to do", MB.FitRoads({ FindFirstChild = function() return nil end }) == 0)
+end
+
 local named = {}
 for _, key in order do table.insert(named, Named[key]) end
 print("MAPV2_VALUES_JSON " .. encode({ SlimePond = { C.StoryQuests.Landmarks.SlimePond.X, C.StoryQuests.Landmarks.SlimePond.Y, C.StoryQuests.Landmarks.SlimePond.Z },

@@ -64,6 +64,8 @@ end
 --   A23-77: AttendNext (today's attendance claim opens again)
 --   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
 --   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1).
+--   A23-75: Pass ("XP2:on" / "Gold2:off" / "VIP:clear" / "HaloIce:on": this session only, never saved, never on the
+--   shared supporter board), LookGrant ("HaloSprout": an attendance look, saved like a real unlock)
 if game:GetService("RunService"):IsStudio() then
 	local debugFn = Instance.new("BindableFunction")
 	debugFn.Name = "DebugCommand"
@@ -131,6 +133,11 @@ if game:GetService("RunService"):IsStudio() then
 			S.PvPService.DebugSetStars(player, value)
 		elseif key == "Bully" then
 			for _ = 1, value do S.JusticeService.AddBullyStack(player) end
+		elseif key == "Pass" then -- A23-75 Studio test aid: a game pass on / off / back to Roblox's answer
+			local k, mode = string.match(tostring(value), "^(%w+):?(%a*)$")
+			return S.MonetizationService.DebugSetPass(player, k, mode ~= "" and mode or "on")
+		elseif key == "LookGrant" then -- A23-75 Studio test aid: unlock an attendance look (A23-77)
+			return tostring(S.MonetizationService.GrantLook(player, tostring(value)))
 		elseif key == "Tickets" then
 			S.MonetizationService.AddTickets(player, "Class", value)
 			S.MonetizationService.AddTickets(player, "Faction", value)

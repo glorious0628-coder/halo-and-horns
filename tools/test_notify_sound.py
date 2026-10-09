@@ -24,8 +24,8 @@ REPORT = ROOT / "docs/art/verification_2026-10-07/offline_dev2_notify_sound_2026
 
 # (file, a unique piece of the notify statement, the Sound it must carry)
 ROUTES = [
-    ("QuestService.luau", "string.format(text, Util.FormatNumber(TUT_GOLD)), \"reward\"", "QuestDone"),
-    ("QuestService.luau", "Config.Text.QuestDone, Util.FormatNumber(q.RewardGold)", "QuestDone"),
+    ("QuestService.luau", "string.format(text, Util.FormatNumber(gotGold)), \"reward\"", "QuestDone"),
+    ("QuestService.luau", "Config.Text.QuestDone, Util.FormatNumber(gotGold)", "QuestDone"),
     ("QuestService.luau", "Config.Text.DailyAutoPaid", "QuestDone"),
     ("QuestService.luau", "Config.Text.DailyClaimed", "QuestDone"),
     ("QuestService.luau", "Config.Text.DailyChest,", "GoldPickup"),

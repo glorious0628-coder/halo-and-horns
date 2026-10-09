@@ -68,10 +68,10 @@ local ROADS = { -- = Config.Map.Roads (the Ground roads get the painted GE_DirtP
 	{ Name = "RoadWoods", MinX = 710, MaxX = 1190, MinZ = -9, MaxZ = 9, Color = DIRT, Material = Enum.Material.Ground },
 	{ Name = "RoadPass", MinX = 1190, MaxX = 1260, MinZ = -9, MaxZ = 9, Color = PASS_ROCK, Material = Enum.Material.Slate },
 	{ Name = "RoadRuins", MinX = 1260, MaxX = 1684, MinZ = -9, MaxZ = 9, Color = RUIN_STONE, Material = Enum.Material.Slate },
-	{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10, Color = RGB(215, 205, 185), Material = SP },
-	{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330, Color = RGB(215, 205, 185), Material = SP },
-	{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150, Color = RGB(70, 45, 45), Material = Enum.Material.Slate },
-	{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600, Color = RGB(70, 45, 45), Material = Enum.Material.Slate },
+	{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },
+	{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },
+	{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150, Color = RGB(150, 115, 105), Material = Enum.Material.Slate },
+	{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600, Color = RGB(150, 115, 105), Material = Enum.Material.Slate },
 	{ Name = "RoadMeadowLoop", MinX = 260, MaxX = 600, MinZ = -125, MaxZ = -115, Color = DIRT, Material = Enum.Material.Ground },
 	{ Name = "RoadWoodsTrail", MinX = 760, MaxX = 1120, MinZ = -155, MaxZ = -145, Color = DIRT, Material = Enum.Material.Ground },
 	{ Name = "RoadRuinsSouth", MinX = 1300, MaxX = 1700, MinZ = 145, MaxZ = 155, Color = RUIN_STONE, Material = Enum.Material.Slate },
@@ -670,9 +670,15 @@ end
 local oldRoads = folders.Decor:FindFirstChild("Roads")
 if oldRoads then stash(oldRoads) end
 local roads = model("Roads", folders.Decor)
+local ROAD_PLAZA_R = 60 -- = Config.Map.RoadLook.PlazaRadius: the town roads stop at the Crossroads plaza edge (검수 10/09)
 for _, r in ROADS do
 	if not r.Season then
-		prop({ Name = r.Name, Size = Vector3.new(r.MaxX - r.MinX, 0.2, r.MaxZ - r.MinZ), Position = Vector3.new((r.MinX + r.MaxX) / 2, 0.08, (r.MinZ + r.MaxZ) / 2),
+		local minZ, maxZ = r.MinZ, r.MaxZ
+		if math.abs(r.MinX + r.MaxX) / 2 < ROAD_PLAZA_R then
+			if minZ >= 0 and minZ < ROAD_PLAZA_R then minZ = ROAD_PLAZA_R end
+			if maxZ <= 0 and maxZ > -ROAD_PLAZA_R then maxZ = -ROAD_PLAZA_R end
+		end
+		prop({ Name = r.Name, Size = Vector3.new(r.MaxX - r.MinX, 0.2, maxZ - minZ), Position = Vector3.new((r.MinX + r.MaxX) / 2, 0.08, (minZ + maxZ) / 2),
 			Color = r.Color, Material = r.Material }, roads)
 	end
 end

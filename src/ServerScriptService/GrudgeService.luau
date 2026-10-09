@@ -382,8 +382,8 @@ local function avenge(thief, sack, killer)
 
 	-- "복수 대행" bonus, once per AVENGER per PairRewardCooldown whatever the thief (CR-L6; avenger's save, CR-M4)
 	if pairReady(killer, 0, "avenge", Config.PvP.PairRewardCooldown) then
-		S.ProgressionService.AddBankGold(killer, G.AvengerBonus, "Bounty")
-		notify(killer, fmt("AvengerBonus", Util.FormatNumber(G.AvengerBonus)), "reward", "GoldPickup")
+		local got = S.ProgressionService.AddBankGold(killer, G.AvengerBonus, "Bounty") or G.AvengerBonus -- A23-75: as added
+		notify(killer, fmt("AvengerBonus", Util.FormatNumber(got)), "reward", "GoldPickup")
 	end
 
 	Net.NotifyAll(fmt("GrudgeAvengedAll", publicName(killer, true), publicName(thief, true)), "info")
