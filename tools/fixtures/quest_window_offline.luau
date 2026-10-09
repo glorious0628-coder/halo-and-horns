@@ -74,8 +74,18 @@ local function descendants(root, out)
 end
 
 local NOW = 5000
+-- the Studio preview hook (RunService:IsStudio() + the local attribute QuestBookPreview)
+local STUDIO = false
+local LPATTR, LPSIG = {}, {}
+local LP = {
+	GetAttribute = function(_, n) return LPATTR[n] end,
+	SetAttribute = function(_, n, v) LPATTR[n] = v if LPSIG[n] then LPSIG[n]:Fire() end end,
+	GetAttributeChangedSignal = function(_, n) LPSIG[n] = LPSIG[n] or signal() return LPSIG[n] end,
+}
 local env = setmetatable({
 	game = { GetService = function(_, n)
+		if n == "RunService" then return { IsStudio = function() return STUDIO end } end
+		if n == "Players" then return { LocalPlayer = LP } end
 		if n == "ReplicatedStorage" then
 			return { WaitForChild = function() return { WaitForChild = function(_, m) return { __module = m } end } end }
 		end
@@ -330,6 +340,76 @@ check("Event tab: the diary and jar rows; no count on the tab for them", #links 
 if links[2] then links[2].Activated:Fire() end
 check("a link opens the diary window on its tab", SUBS[1] and SUBS[1][1] == "Diary" and SUBS[1][2].Tab == "Jar")
 ATTR.DiaryPages = nil
+
+-- 검수 10/09: the Studio-only preview hook (이미지 개발's photos of every tab)
+check("ParsePreview: a tab, full by default", select(2, Book.ParsePreview("Daily")) == "full" and Book.ParsePreview("Daily") == "Daily")
+check("ParsePreview: a tab and a mode", select(2, Book.ParsePreview(" Side , long ")) == "long" and select(2, Book.ParsePreview("Main,EMPTY")) == "empty")
+check("ParsePreview: '' / nil / an unknown tab / mode -> off", Book.ParsePreview("") == nil and Book.ParsePreview(nil) == nil
+	and Book.ParsePreview("Shop") == nil and Book.ParsePreview("Main,huge") == nil and Book.ParsePreview(5) == nil)
+local full = Book.PreviewContext("full", NOW)
+for _, tab in Config.QuestTabs.Order do
+	local sec = Book.Sections(tab, full)
+	local quests = 0
+	for _, r in sec.InProgress do if r.Kind == "Quest" then quests += 1 end end
+	check("preview full: every tab has a quest row and something done", quests >= 1 and #sec.Done >= 1, tab .. " " .. quests .. " " .. #sec.Done)
+	if tab ~= "Main" then check("preview full: Available filled where the tab has it", #sec.Available >= 1 or tab == "Daily" or tab == "Event", tab) end
+end
+local daily = Book.Sections("Daily", full).InProgress
+local cl, rr = 0, 0
+for _, r in daily do
+	if r.CanClaim then cl += 1 end
+	if r.CanReroll then rr += 1 end
+end
+check("preview full: the Daily tab shows a [Claim] and a [New]", cl == 1 and rr == 1, cl .. " " .. rr)
+check("preview full: Event has the goose and the crown war lines", string.find(texts(Book.Sections("Event", full).InProgress), "Golden Goose is here", 1, true) ~= nil
+	and string.find(texts(Book.Sections("Event", full).InProgress), "Crown War: next crown in 2:05", 1, true) ~= nil)
+check("preview full: Faction shows the wanted stars", string.find(texts(Book.Sections("Faction", full).InProgress), "Wanted stars: 2", 1, true) ~= nil)
+local emp = Book.PreviewContext("empty", NOW)
+for _, tab in Config.QuestTabs.Order do
+	local sec = Book.Sections(tab, emp)
+	check("preview empty: every section empty (the empty words show)", #sec.InProgress == 0 and #sec.Available == 0 and #sec.Done == 0, tab)
+end
+local long = Book.Sections("Main", Book.PreviewContext("long", NOW)).InProgress[1]
+check("preview long: the words get the long tail", long ~= nil and #long.Text > 60 and string.find(long.Text, "Slime Mayor", 1, true) ~= nil)
+check("the sample words are English (no Hangul)", not string.find(texts(Book.Sections("Side", full).Available) .. texts(Book.Sections("Main", full).Done), "[\234-\237]"))
+check("the preview leaves the samples alone", Book.PreviewContext("long", NOW).Entries[1].Text ~= Book.PreviewContext("long", NOW).Entries[1].Text .. "x"
+	and not string.find(Book.PreviewContext("full", NOW).Entries[1].Text, "fountain", 1, true))
+-- outside Studio the attribute does nothing (the Event window above is closed first, like Panels does)
+REGISTERED.Journal.Cleanup()
+OPENED, CLOSED, CURRENT = {}, 0, nil
+Book.Init({ Panels = PANELS, HUD = HUDD })
+Book.Start()
+LP:SetAttribute("QuestBookPreview", "Daily")
+check("outside Studio: QuestBookPreview is never read", #OPENED == 0)
+-- in Studio: open on the tab with the samples, buttons do nothing, '' closes
+STUDIO = true
+LPSIG = {}
+Book.Init({ Panels = PANELS, HUD = HUDD })
+Book.Start()
+LP:SetAttribute("QuestBookPreview", "Daily")
+check("Studio: QuestBookPreview = 'Daily' opens the window", #OPENED == 1 and OPENED[1][1] == "Journal")
+local P5 = inst("Frame")
+ORDER = 0
+REGISTERED.Journal.Build(P5, KIT, nil)
+local b5, q5 = {}, {}
+for _, c in P5:FindFirstChild("Tabs").Children do if c.Name == "Button" then table.insert(b5, c) end end
+for _, c in P5:FindFirstChild("Body").Children do if c.Name == "Quest" then table.insert(q5, c) end end
+check("Studio: on the Daily tab with the two sample dailies", b5[3] and b5[3].Bg == "gold" and #q5 == 2, #q5)
+local calls0 = #CALLS
+local claimBtn = nil
+for _, d in descendants(P5) do if d.Name == "Button" and d.Text == "Claim" then claimBtn = d end end
+if claimBtn then claimBtn.OnClick() end
+if q5[1] then q5[1].Activated:Fire() end
+check("Studio: [Claim] and a row press do nothing on samples", claimBtn ~= nil and #CALLS == calls0)
+LP:SetAttribute("QuestBookPreview", "Faction,empty")
+local qn = 0
+for _, c in P5:FindFirstChild("Body").Children do if c.Name == "Quest" then qn += 1 end end
+check("Studio: switching to 'Faction,empty' redraws the open window empty", qn == 0 and b5[5].Bg == "gold")
+local closed0 = CLOSED
+LP:SetAttribute("QuestBookPreview", "")
+check("Studio: '' closes the window and the real rows come back", CLOSED == closed0 + 1)
+REGISTERED.Journal.Cleanup()
+STUDIO = false
 
 print(("QUEST_BOOK_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("QUEST_BOOK_OFFLINE_OK") end
