@@ -1185,18 +1185,42 @@ end
 function L.SizeWarPlate()
 	local plate, TB = ui.warPlate, L.WarTop
 	if not plate then return end
+	local k = L.WarK or 1
+	plate.Position = UDim2.fromOffset(0, -TB.PlateUp * k)
 	if ui.warInfo and ui.warInfo.Visible then
-		plate.Size = UDim2.new(1, 0, 1, TB.PlateUp + TB.PlateDown)
+		plate.Size = UDim2.new(1, 0, 1, (TB.PlateUp + TB.PlateDown) * k)
 	else
-		plate.Size = UDim2.new(1, 0, 0, TB.PlateUp + 8 + 22 + TB.PlateFold)
+		plate.Size = UDim2.new(1, 0, 0, (TB.PlateUp + 8 + 22 + TB.PlateFold) * k)
 	end
 end
 
+-- 이미지 개발 10/10 (UiSandbox 991x451: the meter keeps ~42 real px in Roblox's bar, so at UIScale 0.5 its 84 du held a
+-- 26 px badge with a 7 px score, an 11 px bar, a 20 px crown and an empty band under the line): past L.WarTop.DesignH du
+-- the bar, the badges, the crown and the gaps grow with the meter's height (k, at most KMax; PCs at 0.8 and phones keep
+-- k = 1); a grown badge moves out so it covers the bar's end no more than before
 function L.LayoutWar(h)
 	L.WarH = h
-	local info = math.clamp(h - 8 - 22 - 3, 14, 22)
-	ui.warInfo.Position = UDim2.fromOffset(L.WarTop.BarIn, 8 + 22 + 3)
-	ui.warInfo.Size = UDim2.new(1, -2 * L.WarTop.BarIn, 0, info)
+	local TB = L.WarTop
+	local k = math.clamp(h / TB.DesignH, 1, TB.KMax)
+	L.WarK = k
+	local barY, barH, gap = 8 * k, 22 * k, 3 * k
+	if ui.warBar then
+		ui.warBar.Position = UDim2.fromOffset(TB.BarIn, barY)
+		ui.warBar.Size = UDim2.new(1, -2 * TB.BarIn, 0, barH)
+	end
+	local badge = TB.Badge * k
+	local out = TB.BadgeOut + (badge - TB.Badge) -- the badge's inner edge stays where it was on the bar
+	for i, b in { ui.warBadgeHalo, ui.warBadgeHorns } do
+		if b then
+			b.Size = UDim2.fromOffset(badge, badge)
+			b.Position = UDim2.new(i == 1 and 0 or 1, i == 1 and -out or out, 0, barY + barH / 2)
+		end
+	end
+	if ui.warCrown then ui.warCrown.Size = UDim2.fromOffset(TB.Crown * k, TB.Crown * k) end
+	local info = math.clamp(h - barY - barH - gap, 14, 22 * k)
+	ui.warInfo.Position = UDim2.fromOffset(TB.BarIn, barY + barH + gap)
+	ui.warInfo.Size = UDim2.new(1, -2 * TB.BarIn, 0, info)
+	L.SizeWarPlate()
 	-- the band hugs the text: as wide as the line plus a margin that fades out
 	local tb = ui.warLine.TextBounds.X
 	if ui.warBand and tb > 0 then
@@ -5640,8 +5664,10 @@ L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
 -- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
 -- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du
 -- (their centres BadgeOut du outside the meter's ends... negative = inside), the bar and the info line BarIn du in from
--- each end, the crown Crown du
-L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40 }
+-- each end, the crown Crown du; DesignH = the meter height those sizes are for (PC 0.8), KMax = how much they may grow
+-- on a taller meter (small PC windows, L.LayoutWar)
+L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40,
+	DesignH = 52.5, KMax = 1.8 }
 L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
