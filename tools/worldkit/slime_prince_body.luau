@@ -1,12 +1,15 @@
--- slime_prince_body.luau (이미지 생성 1, 2026-10-09; 사용자 "결정석(광석) 없애고 왕관만", SPEC A23-84 / king_slime_crown)
+-- slime_prince_body.luau (이미지 생성 1, 2026-10-09; 사용자 "결정석 없애고 왕관만" + "슬라임 얼굴 주름", SPEC A23-84 / A23-92)
 -- Studio MCP execute_luau, MAIN place, Edit mode only (메인 반영 runs it; the runner replaces "__MODE__").
--- Slime Prince (BigSlime) gets the ore-free body: every MeshPart under ServerStorage.CustomModels.BigSlime that uses the slime cube
--- mesh (old 101084943554251 or the back-fixed 100045743344061) gets the no-ore mesh (art/models/tripo/MonsterSlimeCube_noore.glb,
--- WorldKit import E8 "SlimePrinceBody3", same axes / bounding box as the back-fixed one) by MeshPart:ApplyMesh. Size, CFrame and
--- TextureID stay (ApplyMesh clears TextureID: put back); the old id is kept in the attribute PrinceBodyWas.
--- The small Shard Slime ("Slime") and PetBabySlime keep their ore: only the model named T.Model is touched.
--- The small crown on the Prince is slime_backfix_crown.luau's job (ADD_CROWN) / 메인 반영; this tool never adds or removes a crown.
--- MODE: "plan" = count only, "apply" (default), "restore" = put the old mesh back from PrinceBodyWas. Idempotent.
+-- Gives the slime bodies in ServerStorage.CustomModels the smooth-shaded meshes (tools/blender_slime_smooth.py: no creases round the
+-- eyes / cheeks; same silhouette, size and UVs as the back-fixed cube) by MeshPart:ApplyMesh:
+--   * BigSlime (the Slime Prince): E8 "SlimePrinceBody4" = NO ore + smooth + the patched blue texture (the new top uses a texture
+--     block the old texture has not painted, so the texture changes with the mesh);
+--   * Slime (the small Shard Slime): E10 "SlimeBodySmooth" = ore kept + smooth, TextureID unchanged.
+-- Only the MeshParts that still use the slime cube mesh (old 101084943554251 or back-fixed 100045743344061) are swapped (the crown,
+-- other monsters and PetBabySlime stay). Size, CFrame and TextureID stay (ApplyMesh clears TextureID: put back); the old values are
+-- kept in attributes BodyWas / BodyTexWas. This tool never adds or removes a crown (the small crown on the Prince, 0.7x, centred on
+-- the head, is slime_backfix_crown.luau's / 메인 반영's job).
+-- MODE: "plan" = count only, "apply" (default), "restore" = put the old mesh / texture back. Idempotent.
 
 local MODE = "__MODE__"
 if MODE ~= "plan" and MODE ~= "restore" then MODE = "apply" end
@@ -14,20 +17,19 @@ if game:GetService("RunService"):IsRunning() then error("Edit 모드에서만 �
 local AssetService = game:GetService("AssetService")
 
 local T = {
-	Model = "BigSlime",
-	-- the E8 import's mesh id (MeshPart SlimePrinceBody2 in the WorldKit place): filled in by the id ledger
-	NewMesh = "rbxassetid://__NEWMESH__",
 	Cube = { "101084943554251", "100045743344061" },
-	-- the Prince's patched blue texture (art/models/tripo/BigSlimeCube_tex_blue_colorfix_noore.png, uploaded by 이미지 개발): the new
-	-- mesh's top uses a texture block the old texture does not have painted, so the texture must change with the mesh. Fill in.
-	NewTexture = "rbxassetid://101248064145914", -- BigSlimeCube_tex_blue_colorfix_noore.png (이미지 개발 upload, asset_ids.json)
+	Targets = {
+		{ Model = "BigSlime", Mesh = "rbxassetid://__PRINCEMESH__", Texture = "rbxassetid://101248064145914" }, -- 이미지 개발 upload (asset_ids.json)
+		{ Model = "Slime", Mesh = "rbxassetid://__SMALLMESH__", Texture = nil },
+	},
 }
-assert(not string.find(T.NewMesh, "__NEWMESH__", 1, true), "T.NewMesh is not filled in yet: import E8_SlimePrinceBody.glb, then set the mesh id")
-assert(not string.find(T.NewTexture, "__NEWTEX__", 1, true), "T.NewTexture is not filled in yet: upload BigSlimeCube_tex_blue_colorfix_noore.png")
+local function filled(id) return not string.find(id, "__", 1, true) end
+for _, tg in T.Targets do
+	if MODE ~= "restore" then assert(filled(tg.Mesh), tg.Model .. ": mesh id not filled in yet (import the E8 / E10 glb, then set it)") end
+end
 
 local root = game:GetService("ServerStorage"):FindFirstChild("CustomModels")
-local model = root and root:FindFirstChild(T.Model)
-if not model then return "no ServerStorage.CustomModels." .. T.Model end
+if not root then return "no ServerStorage.CustomModels" end
 
 local function makeMesh(id)
 	local ok, mp = pcall(function() return AssetService:CreateMeshPartAsync(Content.fromUri(id)) end)
@@ -41,50 +43,60 @@ local function isCube(meshId)
 	return false
 end
 
-local parts = {}
-if model:IsA("MeshPart") then table.insert(parts, model) end
-for _, d in model:GetDescendants() do
-	if d:IsA("MeshPart") then table.insert(parts, d) end
-end
-
 local swapped, skipped, restored, failed, names = 0, 0, 0, {}, {}
-local newMesh, err
-for _, d in parts do
-	local was = d:GetAttribute("PrinceBodyWas")
-	if MODE == "restore" then
-		if type(was) == "string" then
-			local oldMp = makeMesh(was)
-			if oldMp then
-				local size, cf, tex = d.Size, d.CFrame, d.TextureID
-				d:ApplyMesh(oldMp)
-				d.Size, d.CFrame, d.TextureID = size, cf, tex
-				local texWas = d:GetAttribute("PrinceTexWas")
-				if type(texWas) == "string" then d.TextureID = texWas end
-				d:SetAttribute("PrinceBodyWas", nil)
-				d:SetAttribute("PrinceTexWas", nil)
-				restored += 1
-			end
-		end
+for _, tg in T.Targets do
+	local model = root:FindFirstChild(tg.Model)
+	if not model then
+		table.insert(failed, "no CustomModels." .. tg.Model)
 		continue
 	end
-	if was then skipped += 1 continue end
-	if not isCube(d.MeshId) then continue end -- the crown mesh and anything else stay
-	if MODE == "plan" then swapped += 1 table.insert(names, d:GetFullName()) continue end
-	if not newMesh then
-		newMesh, err = makeMesh(T.NewMesh)
-		if not newMesh then table.insert(failed, "new mesh: " .. tostring(err)) break end
+	local parts = {}
+	if model:IsA("MeshPart") then table.insert(parts, model) end
+	for _, d in model:GetDescendants() do
+		if d:IsA("MeshPart") then table.insert(parts, d) end
 	end
-	local size, cf, oldId, tex = d.Size, d.CFrame, d.MeshId, d.TextureID
-	local ok, e = pcall(function() d:ApplyMesh(newMesh) end)
-	if ok then
-		d.Size, d.CFrame, d.TextureID = size, cf, T.NewTexture
-		d:SetAttribute("PrinceTexWas", tex)
-		d:SetAttribute("PrinceBodyWas", oldId)
-		swapped += 1
-		table.insert(names, d:GetFullName())
-	else
-		table.insert(failed, d:GetFullName() .. ": " .. tostring(e))
+	local newMesh, err
+	for _, d in parts do
+		local was = d:GetAttribute("BodyWas")
+		if MODE == "restore" then
+			if type(was) == "string" then
+				local oldMp = makeMesh(was)
+				if oldMp then
+					local size, cf, tex = d.Size, d.CFrame, d.TextureID
+					d:ApplyMesh(oldMp)
+					local texWas = d:GetAttribute("BodyTexWas")
+					d.Size, d.CFrame = size, cf
+					d.TextureID = type(texWas) == "string" and texWas or tex
+					d:SetAttribute("BodyWas", nil)
+					d:SetAttribute("BodyTexWas", nil)
+					restored += 1
+				end
+			end
+			continue
+		end
+		if was then skipped += 1 continue end
+		if not isCube(d.MeshId) then continue end
+		if MODE == "plan" then swapped += 1 table.insert(names, d:GetFullName()) continue end
+		if not newMesh then
+			newMesh, err = makeMesh(tg.Mesh)
+			if not newMesh then
+				table.insert(failed, tg.Model .. " new mesh: " .. tostring(err))
+				break
+			end
+		end
+		local size, cf, oldId, tex = d.Size, d.CFrame, d.MeshId, d.TextureID
+		local ok, e = pcall(function() d:ApplyMesh(newMesh) end)
+		if ok then
+			d.Size, d.CFrame = size, cf
+			d.TextureID = tg.Texture or tex
+			d:SetAttribute("BodyWas", oldId)
+			d:SetAttribute("BodyTexWas", tex)
+			swapped += 1
+			table.insert(names, d:GetFullName())
+		else
+			table.insert(failed, d:GetFullName() .. ": " .. tostring(e))
+		end
 	end
 end
-return string.format("slime_prince_body %s: swapped %d, skipped %d, restored %d, failed %d %s | %s", MODE, swapped, skipped, restored,
+return string.format("slime bodies %s: swapped %d, skipped %d, restored %d, failed %d %s | %s", MODE, swapped, skipped, restored,
 	#failed, table.concat(failed, "; "), table.concat(names, ", "))
