@@ -550,7 +550,11 @@ local function setDim(obj, dim, normalT)
 end
 
 -- gold ring just outside a button (affordable pulse / menu hint), hidden until used; returns its UIStroke
+-- 검수 10/09 (main PC: the story line's words outside an empty wide plate): never inside a list / grid - the glow frame
+-- would be one more list item and push the row's icon and words aside. Such a parent gets no glow (the caller passes
+-- the line's plate instead)
 local function makeGlow(parent, radius)
+	if typeof(parent) ~= "Instance" or parent:FindFirstChildWhichIsA("UIGridStyleLayout") then return nil end
 	local frame = UIKit.Create("Frame", {
 		Name = "Glow",
 		AnchorPoint = Vector2.new(0.5, 0.5),
@@ -3915,6 +3919,13 @@ function L.StoryPending()
 	return nil
 end
 
+-- the frame a quest line's glow goes round: its plate (the whole line), else its soft band - never the row itself
+-- (a horizontal list: a glow inside it is one more item, 검수 10/09)
+function L.LineGlowTarget(l)
+	if type(l) ~= "table" then return nil end
+	return l.Plate or l.Band
+end
+
 -- B15: one gentle gold pulse (a glow stroke) on `target` (a quest row, or the touch header line); nil stops it
 function L.SetStoryPulse(target)
 	local p = questState.Pulse
@@ -4149,7 +4160,7 @@ refreshQuests = function()
 	if callIndex then
 		callTarget = IS_TOUCH and ui.questLines or nil
 		for _, l in ui.qline or {} do
-			if not IS_TOUCH and l.Entry == entries[callIndex] and l.Row.Visible then callTarget = l.Row end
+			if not IS_TOUCH and l.Entry == entries[callIndex] and l.Row.Visible then callTarget = L.LineGlowTarget(l) end
 		end
 		if not callTarget then callTarget = callRow and callRow.Frame or nil end
 	end
