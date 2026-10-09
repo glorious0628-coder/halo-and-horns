@@ -169,7 +169,7 @@ check(#W.Toasts == 1, "that toast is not spammed", #W.Toasts)
 set("Level", 5)
 check(holder("Q").Visible == true, "Lv5: the Q button appears", tostring(holder("Q").Visible))
 check(#W.Announced == 1 and string.find(W.Announced[1], "^New skill! ") ~= nil, "a 'New skill! <name>' banner", W.Announced[1])
-check(#W.Hints == 1 and W.Hints[1][1] == "Q" and W.Hints[1][2] == "Press Q", "one line on the new button: 'Press Q'", W.Hints[1] and W.Hints[1][2])
+check(#W.Hints == 0, "검수 10/09: no line on the new button at once", #W.Hints)
 check(#W.Played == 0, "the learn sound waits for the level-up chime", table.concat(W.Played, ","))
 check(runDelays(W, 1.0, 1.2) == 1, "the learn sound comes about 1.1 s after the level up (sound_gaps A9)", #W.Delays)
 check(W.Played[1] == "SkillLearn" and W.Played[2] == "PowerUp", "the SkillLearn sound (PowerUp until its file exists)", table.concat(W.Played, ","))
@@ -178,10 +178,13 @@ for _, t in W.Tweens do
 	if t.Inst.Name == "LearnPop" and not t.Inst.Destroyed and type(t.Before) == "number" and t.Before < 0.5 and t.Goal.Scale == 1 then popped = true end
 end
 check(popped, "the button pops in (small -> full size)", #W.Tweens)
+check(runDelays(W, 44, 46) == 1, "the learn line waits 45 s", #W.Delays)
+check(#W.Hints == 1 and W.Hints[1][1] == "Q" and W.Hints[1][2] == "Press Q", "45 s later, still unused: one line 'Press Q'", W.Hints[1] and W.Hints[1][2])
 set("Level", 6)
 check(#W.Announced == 1 and #W.Hints == 1, "the moment shows once", #W.Announced)
 check(holder("Z").Visible == false, "Z still hidden at Lv6", "")
 set("Level", 15)
+runDelays(W, 44, 46)
 check(holder("Z").Visible == true and #W.Announced == 2 and W.Hints[2][1] == "Z", "Lv15: Z learned the same way", W.Hints[2] and W.Hints[2][1])
 
 -- 3. a save loading past the level: nothing
@@ -205,6 +208,9 @@ local SB5, W5, set5, holder5 = run({ Attr = b5 })
 set5("SkillSlots", 1)
 check(holder5("Q").Visible == true and #W5.Announced == 1 and holder5("Z").Visible == false,
 	"the server opening slot 1 (SkillSlots 1) shows Q with the learn moment, Z stays hidden", #W5.Announced)
+pcall(SB5.Use, "Q")
+runDelays(W5, 44, 46)
+check(#W5.Hints == 0, "검수 10/09: Q used within 45 s -> the learn line never comes", #W5.Hints)
 
 -- 3c. sound_gaps A10: a cooldown ending plays SkillReady (Fx's Click only while SkillReady has no file)
 do
@@ -232,6 +238,7 @@ end
 -- 4. phones: 'Tap the new button'; reduced motion: no pop
 local SB3, W3, set3, holder3 = run({ Attr = copy(base), Touch = true, Reduced = true })
 set3("Level", 5)
+runDelays(W3, 44, 46)
 check(W3.Hints[1] and W3.Hints[1][2] == "Tap the new button", "phones: 'Tap the new button'", W3.Hints[1] and W3.Hints[1][2])
 check(holder3("Q"):FindFirstChild("LearnPop") == nil, "reduced motion: no pop", "")
 
