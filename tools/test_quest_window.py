@@ -135,6 +135,14 @@ def main():
          "if L.HasQuestBook() then\n\t\tlocal ok = pcall(C.QuestBook.Toggle, open)" in hud),
         ("the HUD offers the window's API", all(f"function HUD.{fn}(" in hud for fn in
          ("QuestEntries", "QuestBook", "QuestDoneSession", "QuestCanClaim", "QuestCanReroll", "QuestClaim", "QuestReroll", "QuestGo"))),
+        # 빛 마을 점검 #19 (dev3: Config.StoryQuests.SendAllSubs): More rows = the quest window only
+        ("#19: the HUD keeps a row's More flag, draws only the rows without it, and the window lists every row",
+         "\t\t\t\tMore = e.More == true,\n" in hud
+         and "\tlocal entries = {}\n\tfor _, e in all do\n\t\tif not e.More then table.insert(entries, e) end\n\tend\n" in hud
+         and "\tquestState.All = all -- + the More rows (HUD.QuestEntries: the quest window)\n" in hud
+         and "\tfor i, e in questState.All or questState.Rows or {} do out[i] = e end\n" in hud),
+        ("#19: a More row (no HUD row) is claimed straight from the window",
+         "\tif e.More and e.Story and type(e.Id) == \"string\" and not throttled(\"claim\", 0.35) then\n\t\tfire(\"ClaimQuest\", e.Id)\n" in hud),
         ("the HUD tells the window when its quests change", "pcall(function() HUD.QuestsChanged:Fire() end)" in hud
          and "HUD.QuestsChanged = Util.Signal.new()" in hud),
         ("Help shows the keys tip again (the controls topic + a Key settings button -> Settings / Keys)",

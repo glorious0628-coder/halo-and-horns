@@ -3918,6 +3918,8 @@ local function parseQuests()
 				ProgressUnit = (type(e.ProgressUnit) == "string" and #e.ProgressUnit > 0 and #e.ProgressUnit <= 3)
 					and e.ProgressUnit or nil,
 				Folded = e.Folded == true, -- A23-68 #4: the server folds every row but the first mission (dev2)
+				-- 빛 마을 점검 #19 (dev3, Config.StoryQuests.SendAllSubs): a sub past MaxSubs - the quest window only
+				More = e.More == true,
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
 			entry.Goal = HUD.QuestGoal(entry.Text, type(e.Goal) == "string" and L.QuestText(e.Goal) or nil) -- A23-94
@@ -4274,8 +4276,14 @@ end
 
 refreshQuests = function()
 	if not ui.quests then return end -- Init stopped before buildQuests (CR-L50 binds the remote earlier)
-	local entries = parseQuests()
-	L.TrackDone(questState.Rows, entries) -- A23-81: the quest window's 'Done' this session
+	local all = parseQuests()
+	L.TrackDone(questState.All or questState.Rows, all) -- A23-81: the quest window's 'Done' this session
+	-- 빛 마을 점검 #19: rows marked More (the subs past Config.StoryQuests.MaxSubs) are for the quest window only; the
+	-- HUD lines and the list draw the rest (questState.All keeps every row for HUD.QuestEntries)
+	local entries = {}
+	for _, e in all do
+		if not e.More then table.insert(entries, e) end
+	end
 	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing)
 	local call = L.StoryPending()
 	questState.StoryKey = call and (call.Id .. "|" .. tostring(call.St)) or ""
@@ -4489,6 +4497,7 @@ refreshQuests = function()
 	end
 	L.SetStoryPulse(callTarget)
 	questState.Rows = entries -- HUD.QuestTarget (QuestMarker) reads the 'now do' row
+	questState.All = all -- + the More rows (HUD.QuestEntries: the quest window)
 	questState.Shown = shown
 	refreshRerollTimers()
 	pcall(function() HUD.QuestsChanged:Fire() end) -- A23-81: the quest window redraws
@@ -5865,7 +5874,7 @@ end
 -- the HUD's quest rows as the window reads them (the same tables, so a press finds its row)
 function HUD.QuestEntries()
 	local out = {}
-	for i, e in questState.Rows or {} do out[i] = e end
+	for i, e in questState.All or questState.Rows or {} do out[i] = e end
 	return out
 end
 
@@ -5897,6 +5906,12 @@ function HUD.QuestClaim(e)
 			onClaim(r)
 			return true
 		end
+	end
+	-- 빛 마을 점검 #19: a More row (a sub past MaxSubs) has no HUD row: the window claims it directly ("story:<id>")
+	if e.More and e.Story and type(e.Id) == "string" and not throttled("claim", 0.35) then
+		fire("ClaimQuest", e.Id)
+		questState.ClaimAt = os.clock()
+		return true
 	end
 	return false
 end

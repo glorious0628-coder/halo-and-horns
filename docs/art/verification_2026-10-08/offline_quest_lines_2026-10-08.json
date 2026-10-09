@@ -44,7 +44,7 @@
       "ok": true
     },
     {
-      "check": "the 'Done this session' list follows every redraw",
+      "check": "the 'Done this session' list follows every redraw (every row, the window's More rows too: #19)",
       "ok": true
     },
     {
@@ -288,7 +288,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "3bc75a787587be59e1a53719f4076081cf3ed31b86cbaa05a5b2fdf2384cb2f3"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "2f8581f332c545b697ac6f10d7a0ab0974ce68e0335df4e124a3f042b96739f9"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

@@ -259,7 +259,8 @@ def static_checks(src):
         ("no 'Daily Quests 0/3' filler on lines 2+", "if li == 1 and not label then label = head end" in refresh
          and "L.SetQuestLine(ui.qline[2], e2, l2 or head, n2)" not in refresh),
         ("a HUD line that is no claim / guide / story row asks HUD.QuestGo", "elseif HUD.QuestGo then\n\t\tHUD.QuestGo(e)" in tap),
-        ("the 'Done this session' list follows every redraw", "L.TrackDone(questState.Rows, entries)" in refresh),
+        ("the 'Done this session' list follows every redraw (every row, the window's More rows too: #19)",
+         "L.TrackDone(questState.All or questState.Rows, all)" in refresh),
         ("a daily / extra row's words + short name come from the English template (an old save may hold Korean)",
          "Text = L.QuestText(L.EnglishQuestText(e, tostring(e.Text or \"\")))," in src
          and "ShortName = L.EnglishShortName(e)," in src),
