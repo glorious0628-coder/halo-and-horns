@@ -6517,5 +6517,354 @@
     "art/models/tripo/web/Halo_Shop_HD_plain.glb (--rotz -90)"
    ]
   }
+ ],
+ "Halo_Statue_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left+right+back, H3.1 (ultra mesh, poly 8000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8eca2aed-a9dd-4f99-9af1-754b8811f452",
+   "image": "art/out/s2/halo/HaloProp_Statue_{front,left,right,back}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24565,
+   "file": "art/models/tripo/web/Halo_Statue_HD_src.glb",
+   "tris": 7048,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/Statue_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_Statue_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_ArchBridge_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+back, H3.1 (ultra mesh, poly 6000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "3ddb6d5c-6b2b-4c63-9a24-93a209dcd919",
+   "image": "art/out/s2/halo/HaloProp_ArchBridge_{front,back}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24510,
+   "file": "art/models/tripo/web/Halo_ArchBridge_HD_src.glb",
+   "tris": 4964,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/ArchBridge_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_ArchBridge_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Balustrade_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 3000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "2b141e71-4d78-4c37-b9fc-4ecae40f6bd7",
+   "image": "art/out/s2/halo/HaloProp_Balustrade_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24455,
+   "file": "art/models/tripo/web/Halo_Balustrade_HD_src.glb",
+   "tris": 2578,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/Balustrade_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_Balustrade_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_BannerPole_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 3000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d0a87019-d079-4ef1-ab17-576c5eb897bd",
+   "image": "art/out/s2/halo/HaloProp_BannerPole_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24400,
+   "file": "art/models/tripo/web/Halo_BannerPole_HD_src.glb",
+   "tris": 2684,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/BannerPole_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_BannerPole_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_CloudBush_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 2500 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "ecbedcfa-52e1-4d69-9a7e-86d50dd83abe",
+   "image": "art/out/s2/halo/HaloProp_CloudBush_{front_v2}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24345,
+   "file": "art/models/tripo/web/Halo_CloudBush_HD_src.glb",
+   "tris": 2288,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/CloudBush_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_CloudBush_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Lantern_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 3000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "7680d280-b933-4eea-aadd-8135eba6882f",
+   "image": "art/out/s2/halo/HaloProp_Lantern_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24290,
+   "file": "art/models/tripo/web/Halo_Lantern_HD_src.glb",
+   "tris": 2528,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/Lantern_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_Lantern_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Planter_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 3000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "ab6d5ef3-8a36-48d0-a733-904715875017",
+   "image": "art/out/s2/halo/HaloProp_Planter_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24235,
+   "file": "art/models/tripo/web/Halo_Planter_HD_src.glb",
+   "tris": 2625,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/Planter_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_Planter_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_PotFlowers_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 2500 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "288fa41e-3161-43bf-9fdd-d3f034abf18d",
+   "image": "art/out/s2/halo/HaloProp_PotFlowers_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24180,
+   "file": "art/models/tripo/web/Halo_PotFlowers_HD_src.glb",
+   "tris": 2179,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/PotFlowers_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_PotFlowers_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Topiary_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 3000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "711ec6ab-87fe-486f-852c-a4d19fa83f9a",
+   "image": "art/out/s2/halo/HaloProp_Topiary_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24125,
+   "file": "art/models/tripo/web/Halo_Topiary_HD_src.glb",
+   "tris": 2966,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/Topiary_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_Topiary_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Stairs_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 4000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "cdcd9e91-08c6-48da-9807-b20f26f0f461",
+   "image": "art/out/s2/halo/HaloProp_Stairs_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24070,
+   "file": "art/models/tripo/web/Halo_Stairs_HD_src.glb",
+   "tris": 3360,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/Stairs_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_Stairs_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_RoundTree_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 4000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "7076a907-c07f-44fb-b132-af6f62147456",
+   "image": "art/out/s2/halo/HaloProp_RoundTree_{front_v2}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 24015,
+   "file": "art/models/tripo/web/Halo_RoundTree_HD_src.glb",
+   "tris": 3686,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/RoundTree_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_RoundTree_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_FarArch_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 5000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "7eaea645-eec7-4745-989e-77229b18c8bb",
+   "image": "art/out/s2/halo/HaloProp_FarArch_{front_v2}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 23960,
+   "file": "art/models/tripo/web/Halo_FarArch_HD_src.glb",
+   "tris": 4770,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/FarArch_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_FarArch_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Islet_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 5000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "665964fb-ca82-4dc8-985f-6ddee053636e",
+   "image": "art/out/s2/halo/HaloProp_Islet_{front}_HQ_src.png",
+   "at": "2026-10-10 08~09",
+   "balance_after": 23905,
+   "file": "art/models/tripo/web/Halo_Islet_HD_src.glb",
+   "tris": 4725,
+   "note": "빛 마을 새 모델(A23-96). 점검표 #10 면 수에 맞춰 _HD_LOD.glb로 줄임(tools/halo_lod2.sh). 비교 시트 art/review/world/halo_new/Islet_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/Halo_Islet_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Statue_v2_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+back, H3.1 (ultra mesh, poly 8000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "74db55c8-3451-4718-b7f4-ba18e095c71b",
+   "at": "2026-10-10 08~09",
+   "balance_after": 23850,
+   "file": "art/models/tripo/web/Halo_Statue_v2_HD_src.glb",
+   "note": "재시도: 두 번째 창이 생긴 4면판 대신 앞+뒤 2면",
+   "derived": [
+    "art/models/tripo/web/Halo_Statue_v2_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Planter_v2_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d419c692-394b-44e2-b330-c6a3b4ad0bae",
+   "at": "2026-10-10 08~09",
+   "balance_after": 23850,
+   "file": "art/models/tripo/web/Halo_Planter_v2_HD_src.glb",
+   "note": "재시도: 첫 판(poly 2.5~4k)이 줄이기 전부터 부서져서 poly 15000으로 다시 — 잎·덩굴·꽃 있는 것은 처음부터 15000+ (메모리 tripo-poly-high-then-decimate)",
+   "derived": [
+    "art/models/tripo/web/Halo_Planter_v2_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_PotFlowers_v2_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "77ad1dd6-e9f2-4978-b89c-c4e46f5d633f",
+   "at": "2026-10-10 08~09",
+   "balance_after": null,
+   "file": "art/models/tripo/web/Halo_PotFlowers_v2_HD_src.glb",
+   "note": "재시도: 첫 판(poly 2.5~4k)이 줄이기 전부터 부서져서 poly 15000으로 다시 — 잎·덩굴·꽃 있는 것은 처음부터 15000+ (메모리 tripo-poly-high-then-decimate)",
+   "derived": [
+    "art/models/tripo/web/Halo_PotFlowers_v2_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Topiary_v2_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "807ded43-2995-42fe-8bc3-b80a59b870a4",
+   "at": "2026-10-10 08~09",
+   "balance_after": null,
+   "file": "art/models/tripo/web/Halo_Topiary_v2_HD_src.glb",
+   "note": "재시도: 첫 판(poly 2.5~4k)이 줄이기 전부터 부서져서 poly 15000으로 다시 — 잎·덩굴·꽃 있는 것은 처음부터 15000+ (메모리 tripo-poly-high-then-decimate)",
+   "derived": [
+    "art/models/tripo/web/Halo_Topiary_v2_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_CloudBush_v2_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8ff8dae9-2607-45e7-a514-3a091f24b869",
+   "at": "2026-10-10 08~09",
+   "balance_after": null,
+   "file": "art/models/tripo/web/Halo_CloudBush_v2_HD_src.glb",
+   "note": "재시도: 첫 판(poly 2.5~4k)이 줄이기 전부터 부서져서 poly 15000으로 다시 — 잎·덩굴·꽃 있는 것은 처음부터 15000+ (메모리 tripo-poly-high-then-decimate)",
+   "derived": [
+    "art/models/tripo/web/Halo_CloudBush_v2_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_RoundTree_v2_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image, H3.1 (ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "84322d01-9321-4e64-931a-eb28e2a86799",
+   "at": "2026-10-10 08~09",
+   "balance_after": 23575,
+   "file": "art/models/tripo/web/Halo_RoundTree_v2_HD_src.glb",
+   "note": "재시도: 첫 판(poly 2.5~4k)이 줄이기 전부터 부서져서 poly 15000으로 다시 — 잎·덩굴·꽃 있는 것은 처음부터 15000+ (메모리 tripo-poly-high-then-decimate)",
+   "derived": [
+    "art/models/tripo/web/Halo_RoundTree_v2_HD_LOD.glb"
+   ]
+  }
  ]
 }

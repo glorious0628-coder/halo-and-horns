@@ -1,0 +1,10 @@
+[
+{"name":"Halo_Balustrade","file":"art/models/tripo/web/Halo_Balustrade_HD_LOD.glb","kind":"acc","fit":["h",8],"tex":512},
+{"name":"Halo_Lantern","file":"art/models/tripo/web/Halo_Lantern_HD_LOD.glb","kind":"acc","fit":["z",7],"tex":512},
+{"name":"Halo_Planter","file":"art/models/tripo/web/Halo_Planter_v2_HD_LOD.glb","kind":"acc","fit":["h",6],"tex":512},
+{"name":"Halo_CloudBush","file":"art/models/tripo/web/Halo_CloudBush_v2_HD_LOD.glb","kind":"acc","fit":["h",5],"tex":512},
+{"name":"Halo_Topiary","file":"art/models/tripo/web/Halo_Topiary_v2_HD_LOD.glb","kind":"acc","fit":["z",8],"tex":512},
+{"name":"Halo_RoundTree","file":"art/models/tripo/web/Halo_RoundTree_v2_HD_LOD.glb","kind":"acc","fit":["z",10],"tex":512},
+{"name":"Halo_PotFlowers","file":"art/models/tripo/web/Halo_PotFlowers_v2_HD_LOD.glb","kind":"acc","fit":["h",3],"tex":512},
+{"name":"Halo_BannerPole","file":"art/models/tripo/web/Halo_BannerPole_HD_LOD.glb","kind":"acc","fit":["z",12],"tex":512}
+]

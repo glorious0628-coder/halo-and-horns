@@ -1,0 +1,7 @@
+[
+{"name":"Halo_Statue","file":"art/models/tripo/web/Halo_Statue_v2_HD_LOD.glb","kind":"acc","fit":["z",13]},
+{"name":"Halo_ArchBridge","file":"art/models/tripo/web/Halo_ArchBridge_HD_LOD.glb","kind":"acc","fit":["h",30]},
+{"name":"Halo_Stairs","file":"art/models/tripo/web/Halo_Stairs_HD_LOD.glb","kind":"acc","fit":["h",20]},
+{"name":"Halo_Islet","file":"art/models/tripo/web/Halo_Islet_HD_LOD.glb","kind":"acc","fit":["h",40],"tex":512},
+{"name":"Halo_FarArch","file":"art/models/tripo/web/Halo_FarArch_HD_LOD.glb","kind":"acc","fit":["h",30],"tex":512}
+]
