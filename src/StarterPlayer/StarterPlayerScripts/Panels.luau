@@ -103,7 +103,7 @@ local T = {
 	WelcomeNext = "Next",
 	WelcomeFirst = "From the Start",
 	WelcomeAccept = "I'm In!",
-	WelcomeLater = "Later",
+	WelcomeMore = "▶", -- 검수 10/09: the small next-page button (Skip ▶ uses the same glyph)
 	WelcomePending = "Checking...",
 	WelcomeRetry = "We couldn't confirm that. Please tap again.",
 	WelcomeUnavailable = "Pick a class first, then talk to the Guide again.",
@@ -1508,15 +1508,17 @@ BUILDERS.Welcome = function(parent)
 	local status = addText(parent, "", { Name = "WelcomeStatus", Size = 16, Color = theme.SubText,
 		Align = Enum.TextXAlignment.Center })
 	local actions = addRow(parent, 64, 10)
-	local readMore, nextButton, later, update
-	-- 함께할게요 is there from page 1 (no forced reading); 다음 still pages through the lines; closing never accepts
-	-- round 3 #2: [I'm In!] is the one wide main button; Next / Later stay small beside it
-	readMore = makeButton(actions, T.WelcomeNext, PALETTE.Button, UDim2.new(0.25, -8, 0, 60), function()
+	local readMore, nextButton, update
+	-- 함께할게요 is there from page 1 (no forced reading); ▶ still pages through the lines; closing never accepts
+	-- 검수 2026-10-09 (UI clutter review ⑤): one big [I'm In!] + a small ▶ (the next page, back to page 1 after the
+	-- last); 'Later' is gone - the window's X does the same (closing never accepts)
+	readMore = makeButton(actions, T.WelcomeMore, PALETTE.Button, UDim2.new(0, 64, 0, 60), function()
 		if pending or TYPE.Finish(typing) then return end
 		page = (page % #def.Lines) + 1; status.Text = ""; update()
 	end)
 	readMore.Name = "WelcomeReadMore"
-	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(0.5, -4, 0, 60), function()
+	readMore.LayoutOrder = 2
+	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(1, -74, 0, 60), function()
 		if pending or currentId ~= "Welcome" or faction ~= myFaction() then return end
 		if WELCOME.Ready() then
 			pending, sentAt = true, os.clock()
@@ -1525,10 +1527,7 @@ BUILDERS.Welcome = function(parent)
 		end
 	end)
 	nextButton.Name = "WelcomeNext"
-	later = makeButton(actions, T.WelcomeLater, PALETTE.Button, UDim2.new(0.25, -8, 0, 60), function()
-		if not pending then Panels.Close() end -- closing is never acceptance
-	end)
-	later.Name = "WelcomeLater"
+	nextButton.LayoutOrder = 1
 	update = function()
 		if currentId ~= "Welcome" or not line.Parent then return end
 		if num("TutorialStep") ~= 0 then Panels.Close(); return end
@@ -1538,10 +1537,8 @@ BUILDERS.Welcome = function(parent)
 		TYPE.Show(typing, line, tostring(def.Lines[page]), faction == "Neutral" and "Guild" or faction, page)
 		pageLabel.Text = string.format("%d / %d", page, #def.Lines)
 		nextButton.Text = pending and T.WelcomePending or T.WelcomeAccept
-		readMore.Text = page < #def.Lines and T.WelcomeNext or T.WelcomeFirst
 		setEnabled(readMore, not pending and #def.Lines > 1)
 		setEnabled(nextButton, not pending and faction == myFaction() and WELCOME.Ready())
-		setEnabled(later, not pending)
 		if not pending and isDead() then status.Text = T.WaitRespawn
 		elseif status.Text == T.WaitRespawn then status.Text = "" end
 	end

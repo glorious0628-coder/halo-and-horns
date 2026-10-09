@@ -1569,6 +1569,8 @@ local function build()
 		if cards[id] and cards[id].Art then anyArt = true end
 	end
 	if anyArt then root.BackgroundTransparency = LAY.DimArt end
+	-- the dim over the whole screen, phone side edges included (UIKit.FullScreenDim)
+	if type(UIKit.FullScreenDim) == "function" then LAY.ShowDim = UIKit.FullScreenDim(root, "FactionPickerDim") end
 
 	-- altar note at the bottom (bundle 2 navy capsule: white text)
 	local navyFooter = artId(PANEL.Footer) ~= nil
@@ -1634,6 +1636,7 @@ local function refresh()
 	visible = open
 	root.Visible = open
 	setBlur(open)
+	if LAY.ShowDim then LAY.ShowDim(open) end
 	-- user 10/09: no thumbstick / jump button over the cards (put back as they were when the picker closes)
 	if open then
 		local ok, was = pcall(function() return GuiService.TouchControlsEnabled end)

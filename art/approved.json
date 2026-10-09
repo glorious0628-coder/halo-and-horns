@@ -6239,7 +6239,7 @@
   "note": "새 몬스터 Slingshot Goblin(깃털 모자 + 새총). 콘셉트/3D 참조용. 기존 Goblin 뼈대 재사용 + 모자·새총·돌주머니. 옆·뒤 시안 art/out/s2/mon3/MON_SlingshotGoblin_MV_*_src.png."
  },
  "MonSkeletonArcher": {
-  "status": "approved",
+  "status": "superseded (사용자가 B로 바꿈 2026-10-09 → MonSkeletonArcherB)",
   "date": "2026-10-09",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
   "prompt": "art/prompts/MON_SkeletonArcher_HQ.txt",
@@ -6250,6 +6250,19 @@
   "preview": "art/review/s2/mon3_SkeletonArcher_check.jpg, art/review/monsters/new_monsters3_hq_sheet.jpg",
   "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
   "note": "새 몬스터 Skeleton Archer(활 + 허리 화살통). 콘셉트/3D 참조용. 기존 Skeleton 뼈대 재사용 + 활·화살통. 활 시위가 얇은 선이라 3D는 굵게. 옆·뒤 시안 art/out/s2/mon3/MON_SkeletonArcher_MV_*_src.png."
+ },
+ "MonSkeletonArcherB": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/MON_SkeletonArcherB_HQ.txt",
+  "original": "art/out/s2/mon3/hq/MON_SkeletonArcherB_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/mon3/MON_SkeletonArcher_B_src.png (사용자 고름 2026-10-09, 검수 중계)",
+  "file": "art/out/s2/mon3/hq/MON_SkeletonArcherB_HQ_cut.png",
+  "size": "530x795 RGBA",
+  "preview": "art/review/s2/mon3_SkeletonArcherB_check.jpg, 멀티뷰 art/review/monsters/skeleton_archer_b_mv_sheet.jpg (옆·뒤 중간 시안 art/out/s2/mon3/MON_SkeletonArcherB_MV_{side,back}_src.png)",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
+  "note": "Skeleton Archer 최종(사용자 선택 B): 활 + 등에 딱 붙은 둥근 화살통(굵고 짧은 화살 3개) + 투구 초록 깃털. 콘셉트/3D 참조용. 활 시위는 3D에서 굵게. 기존 Skeleton 뼈대 재사용."
  },
  "BarkBubblePumpkinSlime": {
   "status": "approved",
