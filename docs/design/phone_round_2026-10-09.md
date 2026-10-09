@@ -4,7 +4,7 @@ A23-98: UI는 PC 먼저 끝내고, 폰은 그다음 따로 한 번에 손본다(
 
 | # | 무엇 | 근거 | 고칠 안 | 담당 |
 |---|---|---|---|---|
-| 1 | 맨 위 글자 띠가 화면 밖으로 잘림('ZO…', 왕관전 막대 위) | `docs/art/verification_2026-10-09/main_checklist_0900/phone/09a_story_pop.png`, `10_crossroads.png` (ui_clutter_review ①) | 구역 이름·행사 띠를 Roblox 위쪽 버튼 줄 아래로 | 이미지 개발(HUD 배치) + 개발 1(띠 동작) |
+| 1 | ~~맨 위 글자 띠가 화면 밖으로 잘림('ZO…', 왕관전 막대 위)~~ → 확대해 보니 퀘스트 마름모의 거리 '23m'(PC 사진에도 있음). **고침 878f5815**(QuestMarker.ClearOfHud: 맨 위 칸 뒤 목표는 칸 아래로) | `docs/art/verification_2026-10-09/main_checklist_0900/phone/09a_story_pop.png`, `10_crossroads.png` (ui_clutter_review ①) | 폰 라운드 첫 사진에서 다시 안 잘리는지만 확인 | 이미지 개발 |
 | 2 | 설정에 '버튼 크기' 슬라이더(공격·스킬·물약 버튼) | `docs/design/roblox_teardown_2026-10-10.md` §4 #5 (Slayers 2 방식) | 슬라이더 하나로 폰 전투 버튼 묶음 크기만. 버튼 옮기기 편집 모드는 베타 뒤 | 개발 1(설정) + 이미지 개발(버튼 크기·겹침) |
 | 3 | 누름 영역 넓히기, 손 떨림 문턱 | `docs/design/ai_techstudio_review_2026-10-09.md` §3 #9 (i418, i425) | 작은 버튼은 그림보다 넓은 누름 칸, 누르는 동안 조금 미끄러져도 누름으로 | 이미지 개발 |
 | 4 | 화면 안 퀘스트 마름모('114m')가 HP·MP 막대 위에 겹침 | `docs/art/verification_2026-10-09/main_sync_612f_quest/phone/05_after_10s.png` | 화면 안 마름모도 아래 묶음(초상화·막대·Bag·Map) 위로 비켜 가기 | 이미지 개발(QuestMarker) |
