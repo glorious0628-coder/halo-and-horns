@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3290,
+  "checks": 3578,
   "failedChecks": 0,
   "namedChecks": 547,
   "namedChecksFailing": 0,
@@ -184,25 +184,25 @@
     {
       "group": "config",
       "check": "item kinds are Material/Enhance/Transfer",
-      "pass": 14,
+      "pass": 15,
       "fail": 0
     },
     {
       "group": "config",
       "check": "items have a Korean display name",
-      "pass": 14,
+      "pass": 15,
       "fail": 0
     },
     {
       "group": "config",
       "check": "every item id is in Loot.Order",
-      "pass": 14,
+      "pass": 15,
       "fail": 0
     },
     {
       "group": "config",
       "check": "materials have a positive integer Sell price",
-      "pass": 8,
+      "pass": 9,
       "fail": 0
     },
     {
@@ -346,31 +346,31 @@
     {
       "group": "config",
       "check": "drop table kinds are real monster kinds",
-      "pass": 14,
+      "pass": 17,
       "fail": 0
     },
     {
       "group": "config",
       "check": "each drop row is exactly one of Item / Potion / Weapon",
-      "pass": 132,
+      "pass": 148,
       "fail": 0
     },
     {
       "group": "config",
       "check": "drop chances are in (0, 1]",
-      "pass": 132,
+      "pass": 148,
       "fail": 0
     },
     {
       "group": "config",
       "check": "drop rows name real item ids",
-      "pass": 94,
+      "pass": 105,
       "fail": 0
     },
     {
       "group": "config",
       "check": "potion rows name HP/MP",
-      "pass": 28,
+      "pass": 33,
       "fail": 0
     },
     {
@@ -682,13 +682,13 @@
     {
       "group": "rollkill",
       "check": "one RollKill = one draw per row (+ jackpot draw; a BelowLevel row below its MinLevel draws nothing)",
-      "pass": 28,
+      "pass": 34,
       "fail": 0
     },
     {
       "group": "rollkill",
       "check": "RollKill returns the gained list",
-      "pass": 28,
+      "pass": 34,
       "fail": 0
     },
     {
@@ -1012,7 +1012,7 @@
     {
       "group": "rollkill",
       "check": "no jackpot roll for non-slime kinds",
-      "pass": 12,
+      "pass": 15,
       "fail": 0
     },
     {
@@ -1072,31 +1072,31 @@
     {
       "group": "bully",
       "check": "BullyStacks 1: a row drops iff draw < P x 0.5 (capped at 1)",
-      "pass": 264,
+      "pass": 296,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: one draw per row (+ jackpot) per kill",
-      "pass": 259,
+      "pass": 291,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: the unpenalized chance P no longer drops",
-      "pass": 132,
+      "pass": 148,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
-      "pass": 259,
+      "pass": 291,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: the unpenalized chance P x GoldenMult no longer drops",
-      "pass": 127,
+      "pass": 143,
       "fail": 0
     },
     {
@@ -1144,19 +1144,19 @@
     {
       "group": "bully",
       "check": "BullyStacks 0: a row drops iff draw < P (capped at 1)",
-      "pass": 259,
-      "fail": 0
-    },
-    {
-      "group": "bully",
-      "check": "BullyStacks 0: one draw per row (+ jackpot) per kill",
-      "pass": 239,
+      "pass": 291,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 0: a golden row drops iff draw < P x GoldenMult (capped at 1)",
-      "pass": 244,
+      "pass": 273,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 0: one draw per row (+ jackpot) per kill",
+      "pass": 268,
       "fail": 0
     },
     {
@@ -1479,18 +1479,6 @@
     },
     {
       "group": "weapons",
-      "check": "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
-      "pass": 4,
-      "fail": 0
-    },
-    {
-      "group": "weapons",
-      "check": "A23-27 ... and pays its BelowLevel item instead",
-      "pass": 4,
-      "fail": 0
-    },
-    {
-      "group": "weapons",
       "check": "unowned weapon drop sets its mask bit (saved + mirrored)",
       "pass": 10,
       "fail": 0
@@ -1559,6 +1547,18 @@
       "group": "weapons",
       "check": "a duplicate weapon drop is not announced again",
       "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "A23-27 ... and pays its BelowLevel item instead",
+      "pass": 4,
       "fail": 0
     },
     {
@@ -5087,16 +5087,16 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db",
-    "src/ReplicatedStorage/Shared/Net.luau": "6aff546bb035074da3e3a904e7af59cec304a17ca6732ed425bea01c77907660",
+    "src/ReplicatedStorage/Shared/Config.luau": "6a10d97987ed0601e030d8cff0a06c991588dd03aaf3aaca1e59b33c394c705b",
+    "src/ReplicatedStorage/Shared/Net.luau": "aa7d771dc7846724a106da98a44ff5d87ffc26cda2d3df9b9e89e40096ff9153",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
+    "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
     "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
-    "src/ServerScriptService/ProgressionService.luau": "227961d963eb15c19e96eda039fc662a2220110a7020274397ed1ab69e078b94",
+    "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13",
     "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
-    "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
+    "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
+    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6"
   },
   "fixtureSHA256": "8ad92351d2dc9082feb73567d1757572ecadcd1502fd4a33ab23c71dcd87c44f",

@@ -474,13 +474,14 @@ runGroup("config-patch", function()
 			check(sameShallow(def.Takes or {}, TAKERS[kind] or {}), "only the bat goblin takes base slots (3 goblins)", kind)
 		end
 	end
-	-- the meadow's third base kind is the King Slime boss (A23-84), the ruins' third Captain Clatter (J; FieldBossService)
-	for zone, base in { SlimeMeadow = 3, SkeletonRuins = 3 } do
+	-- the meadow's third base kind is the King Slime boss (A23-84), the ruins' third Captain Clatter (J; FieldBossService);
+	-- A23-87 adds one year-round kind to each field (Flower Slime / Slingshot Goblin / Skeleton Archer)
+	for zone, base in { SlimeMeadow = 4, SkeletonRuins = 4 } do
 		check(perZone[zone] and perZone[zone].Season == 0 and perZone[zone].Base == base,
 			"the meadow and the ruins have 0 Halloween kinds", zone .. " " .. show(perZone[zone]))
 	end
-	check(perZone.GoblinWoods and perZone.GoblinWoods.Base == 2 and perZone.GoblinWoods.Season == 1,
-		"the woods: goblins + the bat goblin only", show(perZone.GoblinWoods))
+	check(perZone.GoblinWoods and perZone.GoblinWoods.Base == 3 and perZone.GoblinWoods.Season == 1,
+		"the woods: goblins (+ the slingshot goblin, A23-87) + the bat goblin only", show(perZone.GoblinWoods))
 	check(perZone[PATCH] and perZone[PATCH].Base == 0 and perZone[PATCH].Season == 2,
 		"PumpkinPatch: only the pumpkin family (slime + king)", show(perZone[PATCH]))
 	check(perZone[HOLLOW] and perZone[HOLLOW].Base == 0 and perZone[HOLLOW].Season == 3,
@@ -637,10 +638,13 @@ end)
 -- A23-45: the meadow / woods / ruins keep their year-round totals in the season (the 3 bat goblins take 3 goblin
 -- slots); the pumpkin slimes and the ghosts add their own Count in their own field (outside the GlobalCap); the kings
 -- are never in the regular pool
-local EXPECT_ON = { Slime = 12, PumpkinSlime = 10, BigSlime = 4, PumpkinKing = 0, Goblin = 7, BatGoblin = 3, GoblinBrute = 4,
-	GhostMinion = 8, LittleGhost = 4, GhostKing = 0, Skeleton = 8, SkeletonKnight = 4 }
-local EXPECT_OFF = { Slime = 12, PumpkinSlime = 0, BigSlime = 4, PumpkinKing = 0, Goblin = 10, BatGoblin = 0, GoblinBrute = 4,
-	GhostMinion = 0, LittleGhost = 0, GhostKing = 0, Skeleton = 8, SkeletonKnight = 4 }
+-- A23-87: Slingshot Goblins take 3 goblin slots, Skeleton Archers 3 skeleton slots, + 2 Flower Slimes in the meadow
+local EXPECT_ON = { Slime = 12, FlowerSlime = 2, PumpkinSlime = 10, BigSlime = 4, PumpkinKing = 0, Goblin = 4,
+	SlingshotGoblin = 3, BatGoblin = 3, GoblinBrute = 4, GhostMinion = 8, LittleGhost = 4, GhostKing = 0, Skeleton = 5,
+	SkeletonArcher = 3, SkeletonKnight = 4 }
+local EXPECT_OFF = { Slime = 12, FlowerSlime = 2, PumpkinSlime = 0, BigSlime = 4, PumpkinKing = 0, Goblin = 7,
+	SlingshotGoblin = 3, BatGoblin = 0, GoblinBrute = 4, GhostMinion = 0, LittleGhost = 0, GhostKing = 0, Skeleton = 5,
+	SkeletonArcher = 3, SkeletonKnight = 4 }
 local FIELDS = { "SlimeMeadow", "GoblinWoods", "SkeletonRuins" }
 
 runGroup("counts", function()
@@ -657,7 +661,8 @@ runGroup("counts", function()
 		check(zoneSum(C, on, zone) == zoneSum(C, off, zone), "meadow / woods / ruins counts are exactly the same with the season on and off",
 			zone .. " " .. zoneSum(C, on, zone) .. " vs " .. zoneSum(C, off, zone))
 	end
-	check(zoneSum(C, on, "SlimeMeadow") == 16 and zoneSum(C, on, "GoblinWoods") == 14, "meadow 16, woods 14 (year-round numbers)",
+	-- A23-87: + 2 hidden Flower Slimes in the meadow; the woods' Slingshot Goblins take 3 goblin slots (still 14)
+	check(zoneSum(C, on, "SlimeMeadow") == 18 and zoneSum(C, on, "GoblinWoods") == 14, "meadow 18, woods 14 (year-round numbers)",
 		zoneSum(C, on, "SlimeMeadow") .. "/" .. zoneSum(C, on, "GoblinWoods"))
 	check(zoneSum(C, on, PATCH) == 10 and zoneSum(C, off, PATCH) == 0, "PumpkinPatch: 10 pumpkin slimes in season, empty out of season",
 		zoneSum(C, on, PATCH) .. "/" .. zoneSum(C, off, PATCH))
@@ -752,10 +757,10 @@ runGroup("counts-density", function()
 		-- zones grow independently: a busy meadow leaves the patch at its Counts, a busy patch leaves the meadow alone
 		local mixed = C.MonsterTargets({ SlimeMeadow = 6 }, true)
 		check(near(mixed.Slime, grow(12, 6)) and mixed.PumpkinSlime == 10 and mixed.LittleGhost == 4 and mixed.GhostMinion == 8
-			and mixed.BatGoblin + mixed.Goblin == 10, "a busy meadow grows only the meadow", variant[1] .. " " .. show(mixed))
+			and mixed.BatGoblin + mixed.Goblin == 7, "a busy meadow grows only the meadow", variant[1] .. " " .. show(mixed))
 		local busyPatch = C.MonsterTargets({ PumpkinPatch = 6 }, true)
 		check(near(busyPatch.PumpkinSlime, grow(10, 6)) and busyPatch.LittleGhost == 4 and busyPatch.GhostMinion == 8
-			and busyPatch.Slime == 12 and busyPatch.Goblin + busyPatch.BatGoblin == 10, "a busy patch grows only the pumpkin slimes",
+			and busyPatch.Slime == 12 and busyPatch.Goblin + busyPatch.BatGoblin == 7, "a busy patch grows only the pumpkin slimes",
 			variant[1] .. " " .. show(busyPatch))
 		local busyHollow = C.MonsterTargets({ HauntedHollow = 6 }, true)
 		check(near(busyHollow.GhostMinion, grow(8, 6)) and near(busyHollow.LittleGhost, grow(4, 6)) and busyHollow.PumpkinSlime == 10
@@ -942,8 +947,8 @@ runGroup("monster-cap-season", function()
 	local zc = { SlimeMeadow = 7, GoblinWoods = 6, SkeletonRuins = 3, PumpkinPatch = 4, HauntedHollow = 3 }
 	local zOn, zOff = zoneTotals(on, pOn.P.cappedTargets(zc)), zoneTotals(off, pOff.P.cappedTargets(zc))
 	check(zOn.SlimeMeadow == zOff.SlimeMeadow and zOn.GoblinWoods == zOff.GoblinWoods and zOn.SkeletonRuins == zOff.SkeletonRuins
-		and zOff.SlimeMeadow + zOff.GoblinWoods + zOff.SkeletonRuins == 72,
-		"a full server: meadow / woods / ruins keep their capped totals with the season on (cap 72 reached)", show({ zOn, zOff }))
+		and zOff.SlimeMeadow + zOff.GoblinWoods + zOff.SkeletonRuins == CONFIG.MonsterDensity.GlobalCap,
+		"a full server: meadow / woods / ruins keep their capped totals with the season on (the cap reached)", show({ zOn, zOff }))
 	-- a full cap: the regular pool stops at 72, the Halloween kinds still reach their targets and do not count toward it
 	local f = poolWorld(on)
 	f.P.startSpawn()
@@ -955,14 +960,14 @@ runGroup("monster-cap-season", function()
 		if not on.MonsterOutsideCap(kind) then regular += n end
 	end
 	local want = on.MonsterTargets(zc)
-	check(regular == 72 and f.P.totalNonPersonal() == 72, "full server: the regular pool is exactly at the cap", show({ regular, f.P.totalNonPersonal() }))
+	check(regular == CONFIG.MonsterDensity.GlobalCap and f.P.totalNonPersonal() == CONFIG.MonsterDensity.GlobalCap, "full server: the regular pool is exactly at the cap", show({ regular, f.P.totalNonPersonal() }))
 	check((alive.PumpkinSlime or 0) == want.PumpkinSlime and (alive.LittleGhost or 0) == want.LittleGhost and (alive.GhostMinion or 0) == want.GhostMinion
 		and want.PumpkinSlime == 16 and want.LittleGhost == 8 and want.GhostMinion == 12,
 		"full server: the add-on Halloween kinds still fill their own targets (16 / 12 / 8 with 4 in the patch, 3 in the hollow)", show(alive))
 	f.Records[8888] = { Id = 8888, Kind = "GhostMinion", Alive = true }
 	f.Pending.LittleGhost = 2
 	f.Pending.PumpkinSlime = 1
-	check(f.P.totalNonPersonal() == 72, "alive / pending Halloween kinds are not counted toward the cap", f.P.totalNonPersonal())
+	check(f.P.totalNonPersonal() == CONFIG.MonsterDensity.GlobalCap, "alive / pending Halloween kinds are not counted toward the cap", f.P.totalNonPersonal())
 	f.Pending.LittleGhost, f.Pending.PumpkinSlime = 0, 0
 	f.Records[8888] = nil
 	-- Halloween monsters die while the regular pool is at the cap: they come back anyway (their slots are outside the cap)
@@ -976,7 +981,7 @@ runGroup("monster-cap-season", function()
 	f.P.reevaluate()
 	alive = f:Alive()
 	check(killed.PumpkinSlime == 2 and killed.LittleGhost == 2 and killed.GhostMinion == 2 and (alive.PumpkinSlime or 0) == 16
-		and (alive.LittleGhost or 0) == 8 and (alive.GhostMinion or 0) == 12 and f.P.totalNonPersonal() == 72,
+		and (alive.LittleGhost or 0) == 8 and (alive.GhostMinion or 0) == 12 and f.P.totalNonPersonal() == CONFIG.MonsterDensity.GlobalCap,
 		"full cap: dead Halloween monsters respawn to their targets without waiting for room under the cap", show({ alive, f.P.totalNonPersonal() }))
 end)
 
@@ -2391,7 +2396,7 @@ runGroup("season-end-config", function()
 			check(counts[kind] == want and (case[2] or targets[kind] == 0), "EffectiveMonsterCounts / MonsterTargets give Halloween kinds 0 after the end",
 				tag .. " " .. kind .. " " .. tostring(counts[kind]) .. "/" .. tostring(targets[kind]))
 		end
-		check(counts.Slime == 12 and counts.Goblin == (case[2] and 7 or 10) and targets.Slime == CONFIG.MonsterTargets({ SlimeMeadow = 3 }).Slime,
+		check(counts.Slime == 12 and counts.Goblin == (case[2] and 4 or 7) and targets.Slime == CONFIG.MonsterTargets({ SlimeMeadow = 3 }).Slime,
 			"base counts / targets: the slimes never change, the goblins get the bat goblins' 3 slots back at the end", tag)
 	end
 	-- the os.time fallback outside a running place (no workspace / GetServerTimeNow throws)
@@ -3800,7 +3805,7 @@ runGroup("client-wiring", function()
 		if CONFIG.Loot.Tables[kind] and CONFIG.MonsterActive(kind) then on += 1 end
 		if cOff.Loot.Tables[kind] and cOff.MonsterActive(kind) then off += 1 end
 	end
-	check(on == 14 and off == 8, "drop list kinds: 14 in season, 8 out of season (+ the King Slime, Captain Clatter)",
+	check(on == 17 and off == 11, "drop list kinds: 17 in season, 11 out of season (+ the field bosses, A23-87 three)",
 		on .. "/" .. off)
 	-- MonsterService pieces that are not run here
 	local mon = MONSTER_SOURCE

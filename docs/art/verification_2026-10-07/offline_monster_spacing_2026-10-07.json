@@ -3311,8 +3311,8 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db",
-    "src/ServerScriptService/MonsterService.luau": "c502f7ed18d6bc72967f0eb2976bc790273307a355427c466c06e93305c02614"
+    "src/ReplicatedStorage/Shared/Config.luau": "6a10d97987ed0601e030d8cff0a06c991588dd03aaf3aaca1e59b33c394c705b",
+    "src/ServerScriptService/MonsterService.luau": "d390cff17dd90a30cfd6bff4daa898298c9b8205dba5d6a3bc9f6e496237e48c"
   },
   "fixtureSHA256": "a1ee92e0b89c75d933b94197773cb53bbdfabf73898e973d87f695e8f8e33418",
   "sourcesChangedDuringRun": [],

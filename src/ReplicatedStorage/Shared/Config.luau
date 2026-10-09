@@ -1662,7 +1662,9 @@ Config.Monsters = {
 -- Re-evaluated every ReevalInterval s. Lowering the target never despawns living monsters (it only skips respawns).
 -- Personal (tutorial) monsters are excluded from these counts, and so are event monsters (the Pumpkin King) and add-on
 -- seasonal kinds (Config.MonsterOutsideCap: the little ghosts, at most Count x MaxZoneMult = 6 on top while on).
-Config.MonsterDensity ={ ExtraPerPlayer = 2, MaxZoneMult = 2, GlobalCap = 72, ReevalInterval = 5 }
+-- GlobalCap 72 -> 76 (A23-87, 2026-10-09): room for the meadow's hidden Flower Slimes (2, at most 4 with players); the
+-- woods' and the ruins' new kinds take base slots instead
+Config.MonsterDensity ={ ExtraPerPlayer = 2, MaxZoneMult = 2, GlobalCap = 76, ReevalInterval = 5 }
 
 -- addendum A7-1: on each (re)spawn of a non-personal monster, prefer a point 18-28 studs from a "starved" player in
 -- def.Zone (fewer than StarvedThreshold monsters within 30 studs; a Rookie first, then the lowest level, then the fewest).
@@ -1676,8 +1678,9 @@ Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDi
 
 -- seasonal kinds sit right after the base kind of their zone (drop table / UI order); they spawn only while their
 -- season is on (Config.MonsterActive / Config.EffectiveMonsterCounts)
-Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "SlimeKing", "PumpkinKing", "Goblin", "BatGoblin", "GoblinBrute",
-	"GhostMinion", "LittleGhost", "GhostKing", "Skeleton", "SkeletonKnight", "CaptainClatter" }
+Config.MonsterTypeOrder = { "Slime", "FlowerSlime", "PumpkinSlime", "BigSlime", "SlimeKing", "PumpkinKing", "Goblin",
+	"SlingshotGoblin", "BatGoblin", "GoblinBrute", "GhostMinion", "LittleGhost", "GhostKing", "Skeleton", "SkeletonArcher",
+	"SkeletonKnight", "CaptainClatter" }
 -- Name = full name (nametag, lore); Short = short name for quest / HUD lines (optional: use `def.Short or def.Name`)
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
 -- QuestAs = the kind quests count it as (Config.QuestKind); Float = studs the client hovers it above the floor (no
@@ -1687,9 +1690,31 @@ Config.MonsterTypes = {
 	-- A23-84 (user 2026-10-08): the slime family - the green Shard Slime is the youngest, the Slime Prince (this id, the
 	-- old "King Slime": its quests, the first 70% scroll and the dailies stay) the eldest, the King Slime the dad
 	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
-	Goblin = { Name = "Shard Thief Goblin", Short = "Goblin", Zone = "GoblinWoods", Count = 10, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
+	-- A23-87: 3 of the 10 woods goblin slots are Slingshot Goblins, 3 of the 8 ruins skeleton slots Skeleton Archers (the
+	-- zone totals stay); the meadow keeps its 12 green slimes (the first 10 minutes) and adds 2 hidden Flower Slimes
+	-- (Config.MonsterDensity.GlobalCap + 4 for them)
+	Goblin = { Name = "Shard Thief Goblin", Short = "Goblin", Zone = "GoblinWoods", Count = 7, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
 	GoblinBrute = { Name = "Goblin Brute", Short = "Goblin Brute", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
-	Skeleton = { Name = "Old Kingdom Skeleton", Short = "Skeleton", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
+	Skeleton = { Name = "Old Kingdom Skeleton", Short = "Skeleton", Zone = "SkeletonRuins", Count = 5, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
+	-- A23-87 (user 2026-10-09 "넣자!", 검수 plan OK): three new year-round kinds, each on its family's model and moves
+	-- (ModelFrom / AnimFrom) in its own colour until its own art. Ranged = { Range (shoots within), Stand (keeps this far
+	-- from its target), Windup (s, telegraphed), Speed (studs/s: slow, kid-dodgeable), Radius (studs around the landing
+	-- point that still hit: big, seen on a phone), Cooldown (s) } (MonsterService MOB3: the shot flies to where the
+	-- target stood at the release; stepping aside dodges it; only the target can be hit). Damage stays under the zone's
+	-- melee kind. Ambush = { Material (terrain under its spawn: the meadow flower patches), Tries, Pop (studs) }: hidden
+	-- until a player it may chase comes within Pop or it is hit. PartnerOf = spawns beside a living one of that kind
+	-- that has no partner of this kind yet (else anywhere in the zone).
+	FlowerSlime = { Name = "Flower Slime", Short = "Flower Slime", Zone = "SlimeMeadow", Count = 2, HP = 14, Damage = 2,
+		XP = 7, Gold = 4, Speed = 10, Shape = "Slime", Scale = 0.9, Color = Color3.fromRGB(255, 150, 200), ModelFrom = "Slime",
+		QuestAs = "Slime", Ambush = { Material = "Salt", Tries = 12, Pop = 8 } },
+	SlingshotGoblin = { Name = "Slingshot Goblin", Short = "Slingshot Goblin", Zone = "GoblinWoods", Count = 3, HP = 70,
+		Damage = 4, XP = 26, Gold = 15, Speed = 11, Shape = "Humanoid", Scale = 0.9, Color = Color3.fromRGB(150, 175, 70),
+		ModelFrom = "Goblin", AnimFrom = "Goblin", QuestAs = "Goblin",
+		Ranged = { Range = 22, Stand = 17, Windup = 0.9, Speed = 18, Radius = 3, Cooldown = 3 } },
+	SkeletonArcher = { Name = "Skeleton Archer", Short = "Skeleton Archer", Zone = "SkeletonRuins", Count = 3, HP = 380,
+		Damage = 10, XP = 60, Gold = 60, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(215, 205, 170),
+		ModelFrom = "Skeleton", AnimFrom = "Skeleton", QuestAs = "Skeleton", PartnerOf = "SkeletonKnight",
+		Ranged = { Range = 26, Stand = 20, Windup = 1, Speed = 20, Radius = 3, Cooldown = 3.2 } },
 	SkeletonKnight = { Name = "Skeleton Knight", Short = "Skeleton Knight", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): the ruins' field boss (FieldBossService:
 	-- every 20 min, stays 6 min), 300 years on duty with nobody to take his shift. The Skeleton Knight's model and moves x
@@ -1772,8 +1797,8 @@ Config.Barks = {
 	-- family; a kind not listed uses its Config.QuestKind's family; BubbleArt = family -> the family's base monster key),
 	-- each only while its Id is uploaded (not "") and it is round (no Slice), then the round code bubble - never the
 	-- shared 9-slice BarkBubble (user "말풍선 가로로 길쭉한 거 말고": drawn small its body stays ~2.4 : 1).
-	BubbleFamily = { Slime = "Slime", BigSlime = "Slime", SlimeKing = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
-		Goblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonKnight = "Skeleton", CaptainClatter = "Skeleton",
+	BubbleFamily = { Slime = "Slime", FlowerSlime = "Slime", BigSlime = "Slime", SlimeKing = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
+		Goblin = "Goblin", SlingshotGoblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonArcher = "Skeleton", SkeletonKnight = "Skeleton", CaptainClatter = "Skeleton",
 		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost" },
 	BubbleArt = { Slime = "BarkBubbleSlime", Pumpkin = "BarkBubblePumpkinSlime", Goblin = "BarkBubbleGoblin",
 		Skeleton = "BarkBubbleSkeleton", Ghost = "BarkBubbleGhostMinion" },
@@ -1784,6 +1809,12 @@ Config.Barks = {
 	Priority = { "Low", "Spot", "Hit", "Idle" }, -- same moment: only the first one speaks
 	-- A23-74: sound words (Spot = it sees you, Hit = it is hit, Low = HP below LowAt, Idle = just hanging around)
 	Lines = {
+		FlowerSlime = { -- A23-87: hides in the flowers, pops out giggling
+			Spot = { "Peekaboo!", "Surprise!" },
+			Hit = { "Petal-ow!", "Bloom-boing!" },
+			Low = { "Wilting…", "Petals off…" },
+			Idle = { "Shh… hiding.", "Sniff sniff~" },
+		},
 		Slime = { -- a happy jelly
 			Spot = { "Blub?", "Boing!" },
 			Hit = { "Squish!", "Plop!" },
@@ -1808,6 +1839,12 @@ Config.Barks = {
 			Low = { "Royal nap…", "Bloop… zzz" },
 			Idle = { "Ahem. BLOOP.", "Big blub~" },
 		},
+		SlingshotGoblin = { -- A23-87: the first one that shoots from afar
+			Spot = { "Ready… aim!", "Pew pew!" },
+			Hit = { "Missed me!", "Ow! Pebble!" },
+			Low = { "No rocks!", "Run away!" },
+			Idle = { "Pebble time~", "Plink." },
+		},
 		Goblin = { -- Grab Club: wants everything shiny
 			Spot = { "Heh!", "Mine!", "Ooh, shiny!" },
 			Hit = { "Hey! Mine!", "Oof!" },
@@ -1825,6 +1862,12 @@ Config.Barks = {
 			Hit = { "Hmph!", "Ugh! Sack!" },
 			Low = { "Heavy sack…" },
 			Idle = { "Big sack~", "Grumble~" },
+		},
+		SkeletonArcher = { -- A23-87: the knight's partner, shooting from the back
+			Spot = { "Target!", "Draw!" },
+			Hit = { "Clink!", "Bad shot!" },
+			Low = { "No arrows…", "Retreat!" },
+			Idle = { "Aim… wait.", "Twang~" },
 		},
 		Skeleton = { -- a bony guard who lost track of the days
 			Spot = { "Rattle!", "Clack clack!" },
@@ -3994,6 +4037,8 @@ Config.Loot = {
 	-- rest stays on the source; failure keeps both — no enhancement is ever lost)
 	Items = {
 		Jelly = { Kind = "Material", Name = "Jelly", Sell = 2, Color = Color3.fromRGB(110, 210, 110), Icon = "IconJelly" },
+		-- A23-87: the Flower Slime's petals (a sell material; the FlowerPatch card's Evil gift)
+		Petal = { Kind = "Material", Name = "Flower Petal", Sell = 3, Color = Color3.fromRGB(255, 160, 205), Icon = "IconPetal" },
 		SlimeCore = { Kind = "Material", Name = "Slime Core", Sell = 8, Color = Color3.fromRGB(80, 160, 235), Icon = "IconSlimeCore" },
 		GoblinTooth = { Kind = "Material", Name = "Goblin Tooth", Sell = 6, Color = Color3.fromRGB(235, 225, 190), Icon = "IconGoblinTooth" },
 		BruteHorn = { Kind = "Material", Name = "Brute Horn", Sell = 18, Color = Color3.fromRGB(200, 150, 100), Icon = "IconBruteHorn" }, -- review ui-brutehorn-contrast: readable on the row
@@ -4013,7 +4058,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest", "CaptainBadge", "Candy" },
+		"Jelly", "Petal", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest", "CaptainBadge", "Candy" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -4021,6 +4066,12 @@ Config.Loot = {
 	-- move the same amount as Move70 with lower odds, so they are a rare free retry, never a better pick.
 	-- Review B13: potion chances are about half of the first values (≈ 8-14 potions per hour of manual hunting).
 	Tables = {
+		-- A23-87 Flower Slime: petals (a sell material) + the meadow's scroll rows
+		FlowerSlime = {
+			{ Item = "Petal", P = 0.5 },
+			{ Item = "Enh70", P = 0.01 }, { Item = "Enh30", P = 0.003 },
+			{ Potion = "HP", P = 0.03 },
+		},
 		Slime = {
 			{ Item = "Jelly", P = 0.30 },
 			{ Item = "Enh70", P = 0.003 }, { Item = "Enh30", P = 0.0008 }, { Item = "Enh10", P = 0.0002 },
@@ -4040,6 +4091,11 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.08 }, { Item = "Move30", P = 0.02 }, { Item = "Move10", P = 0.005 },
 			{ Potion = "HP", P = 0.3 }, { Potion = "MP", P = 0.3 },
 		},
+		SlingshotGoblin = { -- A23-87: the goblin's rows
+			{ Item = "GoblinTooth", P = 0.4 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Potion = "HP", P = 0.04 }, { Potion = "MP", P = 0.04 },
+		},
 		Goblin = {
 			{ Item = "GoblinTooth", P = 0.4 },
 			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
@@ -4053,6 +4109,11 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.017 }, { Item = "Move30", P = 0.0047 }, { Item = "Move10", P = 0.0012 },
 			{ Potion = "HP", P = 0.04 }, { Potion = "MP", P = 0.04 },
 			{ Weapon = 4, P = 0.005 },
+		},
+		SkeletonArcher = { -- A23-87: the skeleton's rows
+			{ Item = "Bone", P = 0.45 },
+			{ Item = "Enh70", P = 0.05 }, { Item = "Enh30", P = 0.014 }, { Item = "Enh10", P = 0.004 },
+			{ Potion = "HP", P = 0.05 }, { Potion = "MP", P = 0.05 },
 		},
 		Skeleton = {
 			{ Item = "Bone", P = 0.4 },
@@ -4464,7 +4525,7 @@ Config.Audio = {
 	PunchSpeed = 1.3, -- bare hands: a short swish (volume x0.6)
 	NeutralSpeed = { Warrior = 0.85, Mage = 0.9 },
 	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else and players = heavy
-	SoftKinds = { Slime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
+	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
 	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },
@@ -5999,14 +6060,28 @@ Config.Deeds = {
 Config.Data.Defaults.Cards = { Serial = 0 }
 Config.ChoiceCard = {
 	Grace = 1, -- seconds after a timed card's Seconds in which a pick still counts (the network)
-	Kinds = {},
+	Kinds = {
+		-- A23-87 (검수 2026-10-09): a Flower Slime kill sometimes squishes a flower (KillCards.FlowerPatch). Good = a little
+		-- XP (Reward.XP: ChoiceCard pays it never 2x), Evil = 2 petals (a sell material)
+		FlowerPatch = { Title = "A flower got squished!",
+			Good = { Label = "Replant it", Reward = { XP = 6 } },
+			Evil = { Label = "Pick the petals", Reward = { Item = "Petal", N = 2 } } },
+	},
 	Text = {
 		GoodDone = "Kind choice!",
 		EvilDone = "Sneaky choice!",
 		Score = "%s +%d", -- ("Honor" | "Infamy", points)
+		XP = "+%s XP", -- A23-87: a Reward.XP (never 2x)
 		Full = "Your shard is full for today. Come back tomorrow!",
 	},
 }
 Config.RateLimits.CardAction = 0.3
+
+----------------------------------------------------------------- kill cards (게임성 개발 2, A23-87)
+-- KillCardService: a kill of one of Kinds (by a paid contributor) offers that ChoiceCard kind with chance Chance, at
+-- most once per Cooldown s per player (server memory; a rejoin starts fresh). The card itself is ChoiceCard's.
+Config.KillCards = {
+	FlowerPatch = { Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 600 },
+}
 
 return Config

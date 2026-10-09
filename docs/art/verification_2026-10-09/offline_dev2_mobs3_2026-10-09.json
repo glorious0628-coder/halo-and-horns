@@ -1,0 +1,782 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 65,
+  "failedChecks": 0,
+  "namedChecks": 65,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "three new kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "meadow / woods / ruins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "on their families' models and moves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "quests count them as the family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "regular pool kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "damage under the zone's melee kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SlingshotGoblin: shoots from afar, stands inside its range",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SlingshotGoblin: slow, big, telegraphed, not often (kid-dodgeable)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SkeletonArcher: shoots from afar, stands inside its range",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SkeletonArcher: slow, big, telegraphed, not often (kid-dodgeable)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the archer pairs with the knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the flower slime hides in Salt patches",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "FlowerSlime: order, drops, barks, bubble family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SlingshotGoblin: order, drops, barks, bubble family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SkeletonArcher: order, drops, barks, bubble family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Petal is a listed sell material",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the FlowerPatch card (saved, no timer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a Flower Slime kill may offer it, at most once in 10 min a player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "in range: a wind-up (WindupAt), the cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "it stands still facing the target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "one wind-up at a time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "a second wind-up never starts during one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "nothing flies during the wind-up (the telegraph)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "Fx MonsterShot to everyone: From, To (where it stood), Speed, Radius, Travel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "AttackSeq bumped at the release",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "the target still within Radius: hit for the kind's damage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranged shot",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "stepping aside (Radius + 0.5) dodges it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "only the target can be hit (a bystander on the spot is not)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "out of range at the release: no shot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "a target that reached a town is not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "dead before the release: no shot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "a shot already flying when it died still lands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "a dead target is not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "StandGoal: Stand studs from the target, on its own side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dodge and rules",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "hidden (Hidden attribute)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "a player outside Pop: still hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "a player it may not chase (a town) never wakes it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "close: pops out (Hidden off, PopAt for the sparkle)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "its Spot bark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "showing twice does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flower ambush",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "Ambush: the first spawn point standing on Salt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "looked down at the ground under each point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "no Salt in Tries draws: nil (a normal spot)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "PartnerOf: 4-8 studs from a lone knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "a knight that has its archer: none (a normal spot)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "no knight alive: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn spots",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "a Flower Slime kill (lucky roll): the card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "at most once per 10 min a player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "after the cooldown: again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "an unlucky roll: no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "a green slime never squishes a flower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "a refused offer (a card open) keeps the next chance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "a player who left gets nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 9,
+  "staticFailures": [],
+  "mutations": {
+    "total": 30,
+    "applied": 30,
+    "caught": 30,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "a shot at once (no wind-up)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: nothing flies during the wind-up (the telegraph)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no cooldown",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: in range: a wind-up (WindupAt), the cooldown"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "two wind-ups at once",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: a second wind-up never starts during one"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no WindupAt telegraph",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: in range: a wind-up (WindupAt), the cooldown"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "it walks while shooting",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: it stands still facing the target"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a shot at any range",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dodge and rules :: out of range at the release: no shot"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a dead monster shoots",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dodge and rules :: a dead target is not hit",
+          "dodge and rules :: a shot already flying when it died still lands",
+          "dodge and rules :: dead before the release: no shot"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no shot Fx",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: Fx MonsterShot to everyone: From, To (where it stood), Speed, Radius, Travel"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an instant shot",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: Fx MonsterShot to everyone: From, To (where it stood), Speed, Radius, Travel"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no dodge (homing)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dodge and rules :: a dead target is not hit",
+          "dodge and rules :: a shot already flying when it died still lands",
+          "dodge and rules :: a target that reached a town is not hit",
+          "dodge and rules :: only the target can be hit (a bystander on the spot is not)",
+          "dodge and rules :: stepping aside (Radius + 0.5) dodges it"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a tiny hit radius",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: the target still within Radius: hit for the kind's damage"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no town rule on landing",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dodge and rules :: a dead target is not hit",
+          "dodge and rules :: a shot already flying when it died still lands",
+          "dodge and rules :: a target that reached a town is not hit"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a dead target hit",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dodge and rules :: a dead target is not hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no AttackSeq",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranged shot :: AttackSeq bumped at the release"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "stand goal on the far side",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dodge and rules :: StandGoal: Stand studs from the target, on its own side"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not hidden",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flower ambush :: a player outside Pop: still hidden",
+          "flower ambush :: close: pops out (Hidden off, PopAt for the sparkle)",
+          "flower ambush :: hidden (Hidden attribute)",
+          "flower ambush :: its Spot bark",
+          "flower ambush :: showing twice does nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "wakes at any distance",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flower ambush :: a player outside Pop: still hidden"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a town player wakes it",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flower ambush :: a player it may not chase (a town) never wakes it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no PopAt",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flower ambush :: close: pops out (Hidden off, PopAt for the sparkle)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no pop bark",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flower ambush :: its Spot bark",
+          "flower ambush :: showing twice does nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any ground is a flower patch",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn spots :: Ambush: the first spawn point standing on Salt",
+          "spawn spots :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "partners stack on one knight",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn spots :: a knight that has its archer: none (a normal spot)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every kill offers",
+        "file": "src/ServerScriptService/KillCardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kill cards :: a green slime never squishes a flower",
+          "kill cards :: a player who left gets nothing",
+          "kill cards :: a refused offer (a card open) keeps the next chance",
+          "kill cards :: an unlucky roll: no card"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no cooldown on cards",
+        "file": "src/ServerScriptService/KillCardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kill cards :: a green slime never squishes a flower",
+          "kill cards :: a player who left gets nothing",
+          "kill cards :: a refused offer (a card open) keeps the next chance",
+          "kill cards :: after the cooldown: again",
+          "kill cards :: an unlucky roll: no card",
+          "kill cards :: at most once per 10 min a player"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "a refused offer starts the cooldown",
+        "file": "src/ServerScriptService/KillCardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kill cards :: a player who left gets nothing",
+          "kill cards :: a refused offer (a card open) keeps the next chance"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any kind offers",
+        "file": "src/ServerScriptService/KillCardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kill cards :: a green slime never squishes a flower",
+          "kill cards :: a player who left gets nothing",
+          "kill cards :: a refused offer (a card open) keeps the next chance"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a fast shot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SlingshotGoblin: slow, big, telegraphed, not often (kid-dodgeable)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a thin shot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SkeletonArcher: slow, big, telegraphed, not often (kid-dodgeable)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "cards every minute",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a Flower Slime kill may offer it, at most once in 10 min a player"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "archer hits as hard as a skeleton",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: damage under the zone's melee kind"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "6a10d97987ed0601e030d8cff0a06c991588dd03aaf3aaca1e59b33c394c705b",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/MonsterService.luau": "d390cff17dd90a30cfd6bff4daa898298c9b8205dba5d6a3bc9f6e496237e48c",
+    "src/ServerScriptService/KillCardService.luau": "df9277fdd83947a86d91dc337e23362dfb28f35d42df2a324fab7c508fa99acb"
+  },
+  "fixtureSHA256": "464fef92f70c2c9a432fbd4260aa042907061f82546c7092587f40aee9415bf8",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-87: FlowerSlime (meadow, Ambush Salt / Pop 8: Hidden attribute until a player it may chase is within Pop or it is hit, then Hidden false + PopAt + a Spot bark), SlingshotGoblin (woods) and SkeletonArcher (ruins, PartnerOf SkeletonKnight: 4-8 studs from a knight without an archer) with Ranged { Range, Stand, Windup, Speed, Radius, Cooldown }: in range it stands, faces and winds up (WindupAt), then Fx MonsterShot { Id, Kind, From, To, Speed, Radius, Travel } to all; after Travel s the target only is hit when still within Radius of To (Y within 6) and still a valid target; out of range at the release = no shot. Damage under the zone's melee kind. KillCards.FlowerPatch: a Flower Slime kill offers ChoiceCard FlowerPatch with Chance, at most once per 600 s a player (only an opened card starts the cooldown).",
+  "limitations": "MonsterService's aiStep / spawnMonster / DamageMonster hooks are checked as source text; the AI loop, ground rays, CombatService and ChoiceCard are doubles; the client (shot drawing, pop sparkle, hidden nametag) is game dev 1's."
+}

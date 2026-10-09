@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7274,
+  "checks": 7313,
   "failedChecks": 0,
   "namedChecks": 608,
   "namedChecksFailing": 0,
@@ -58,7 +58,7 @@
     {
       "group": "config-kinds",
       "check": "MonsterTypeOrder lists a kind once",
-      "pass": 14,
+      "pass": 17,
       "fail": 0
     },
     {
@@ -70,7 +70,7 @@
     {
       "group": "config-kinds",
       "check": "every kind is in MonsterTypeOrder",
-      "pass": 14,
+      "pass": 17,
       "fail": 0
     },
     {
@@ -207,7 +207,7 @@
     },
     {
       "group": "config-patch",
-      "check": "the woods: goblins + the bat goblin only",
+      "check": "the woods: goblins (+ the slingshot goblin, A23-87) + the bat goblin only",
       "pass": 1,
       "fail": 0
     },
@@ -466,19 +466,19 @@
     {
       "group": "counts",
       "check": "season on: regular pool count per kind",
-      "pass": 12,
+      "pass": 15,
       "fail": 0
     },
     {
       "group": "counts",
       "check": "season off: regular pool count per kind (no seasonal kind)",
-      "pass": 12,
+      "pass": 15,
       "fail": 0
     },
     {
       "group": "counts",
       "check": "EffectiveMonsterCounts() follows Config.Halloween (on, before EndsAt)",
-      "pass": 12,
+      "pass": 15,
       "fail": 0
     },
     {
@@ -495,7 +495,7 @@
     },
     {
       "group": "counts",
-      "check": "meadow 16, woods 14 (year-round numbers)",
+      "check": "meadow 18, woods 14 (year-round numbers)",
       "pass": 1,
       "fail": 0
     },
@@ -532,7 +532,7 @@
     {
       "group": "counts",
       "check": "Enabled = false: EffectiveMonsterCounts() = the year-round pool",
-      "pass": 12,
+      "pass": 15,
       "fail": 0
     },
     {
@@ -694,7 +694,7 @@
     {
       "group": "monster-pool",
       "check": "MonsterService.Start spawns EffectiveMonsterCounts per kind",
-      "pass": 24,
+      "pass": 30,
       "fail": 0
     },
     {
@@ -712,7 +712,7 @@
     {
       "group": "monster-pool",
       "check": "reevaluate fills every kind to its capped target",
-      "pass": 28,
+      "pass": 34,
       "fail": 0
     },
     {
@@ -730,7 +730,7 @@
     {
       "group": "monster-pool",
       "check": "room under the cap: capped targets = Config.MonsterTargets",
-      "pass": 28,
+      "pass": 34,
       "fail": 0
     },
     {
@@ -837,7 +837,7 @@
     },
     {
       "group": "monster-cap-season",
-      "check": "a full server: meadow / woods / ruins keep their capped totals with the season on (cap 72 reached)",
+      "check": "a full server: meadow / woods / ruins keep their capped totals with the season on (the cap reached)",
       "pass": 1,
       "fail": 0
     },
@@ -2518,7 +2518,7 @@
     {
       "group": "king-safety",
       "check": "a normal (non-boss) monster still targets a Lv1 / 0 s player",
-      "pass": 10,
+      "pass": 13,
       "fail": 0
     },
     {
@@ -3609,7 +3609,7 @@
     },
     {
       "group": "client-wiring",
-      "check": "drop list kinds: 14 in season, 8 out of season (+ the King Slime, Captain Clatter)",
+      "check": "drop list kinds: 17 in season, 11 out of season (+ the field bosses, A23-87 three)",
       "pass": 1,
       "fail": 0
     },
@@ -3754,7 +3754,7 @@
           "config-kinds :: table field = design value",
           "config-patch :: only the bat goblin takes base slots (3 goblins)",
           "counts :: meadow / woods / ruins counts are exactly the same with the season on and off",
-          "counts :: meadow 16, woods 14 (year-round numbers)",
+          "counts :: meadow 18, woods 14 (year-round numbers)",
           "counts :: season on: regular pool count per kind",
           "counts :: the bat goblin takes goblin slots: inside the cap, in the goblin's cap group"
         ],
@@ -3857,7 +3857,7 @@
         "crashed": false,
         "newFailingChecks": [
           "counts :: every add-on Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)",
-          "monster-cap-season :: a full server: meadow / woods / ruins keep their capped totals with the season on (cap 72 reached)",
+          "monster-cap-season :: a full server: meadow / woods / ruins keep their capped totals with the season on (the cap reached)",
           "monster-cap-season :: alive / pending Halloween kinds are not counted toward the cap",
           "monster-cap-season :: each add-on Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off",
           "monster-cap-season :: every base kind's capped target (with its taker) is the same with the season on and off",
@@ -3877,9 +3877,9 @@
           "counts-density :: every base kind keeps min(Count + Extra x (n - 1), Count x MaxZoneMult) in and out of season (with its taker)",
           "counts-density :: meadow / woods / ruins targets identical with the season on / off",
           "counts-takes-generic :: taker + base targets = the season-off base target (the zone total is unchanged)",
-          "monster-cap-season :: a full server: meadow / woods / ruins keep their capped totals with the season on (cap 72 reached)"
+          "monster-cap-season :: a full server: meadow / woods / ruins keep their capped totals with the season on (the cap reached)"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 10
       },
       {
         "mutation": "generic Takes: takers get their own cap share",
@@ -3919,7 +3919,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "client-wiring :: drop list kinds: 14 in season, 8 out of season (+ the King Slime, Captain Clatter)",
+          "client-wiring :: drop list kinds: 17 in season, 11 out of season (+ the field bosses, A23-87 three)",
           "config-patch :: ZoneAt: the same point is Outskirts with Enabled = false",
           "counts :: Enabled = false: EffectiveMonsterCounts() = the year-round pool",
           "counts :: MonsterActive(seasonal kind) follows Enabled",
@@ -5348,17 +5348,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b3df2fe955bcf714f4aea180709ccdb920fa0826bec4ca6f8271b29318ab97db",
-    "src/ReplicatedStorage/Shared/Net.luau": "6aff546bb035074da3e3a904e7af59cec304a17ca6732ed425bea01c77907660",
+    "src/ReplicatedStorage/Shared/Config.luau": "6a10d97987ed0601e030d8cff0a06c991588dd03aaf3aaca1e59b33c394c705b",
+    "src/ReplicatedStorage/Shared/Net.luau": "aa7d771dc7846724a106da98a44ff5d87ffc26cda2d3df9b9e89e40096ff9153",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/QuestService.luau": "31db12ace1c3eaf4d3f72d79703e7f3d858b7afa9a23f34664c899d16a559d18",
-    "src/ServerScriptService/StoryQuestService.luau": "8dbe06a670edb1bf96095ac74cc4369930e88d9884af90b6c791662552484e48",
-    "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
+    "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
+    "src/ServerScriptService/QuestService.luau": "c6e6298c97d3e79c72f74139d8acf3d360815f6ad0e7e1ed57ac866f9d0a2432",
+    "src/ServerScriptService/StoryQuestService.luau": "a48009916dca0c80b455c411856d797f6d182e2ceaf580133da7ec78979167cd",
+    "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "28a85b9f636fde698c971e484b51ade893b02dad1c0dd0e3990047ae319a8e34",
-    "src/ServerScriptService/Main.server.luau": "b8a675aa27f7903fae2defa972720e8801f0d16b65fba8089983268edbf430a1",
-    "src/ServerScriptService/MonsterService.luau": "c502f7ed18d6bc72967f0eb2976bc790273307a355427c466c06e93305c02614",
+    "src/ServerScriptService/Main.server.luau": "49c77dde6d06a5c063b171ab34c6cfb5a90142928e99e534dca0d20817449e01",
+    "src/ServerScriptService/MonsterService.luau": "d390cff17dd90a30cfd6bff4daa898298c9b8205dba5d6a3bc9f6e496237e48c",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "de0638c1776386bd94646570f166825a73aa9ba95b4daaa76c250ba4ec99586d",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "783fd751267b50e6247b64a2c3e20cfa2f1805af65ae9bb020e692ae73c2ebce",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d",
@@ -5374,7 +5374,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "ee4cbeffb83b493e99b50761660f23a17f644e8d6cd70739ddb2843aa1d7ef40",
+  "fixtureSHA256": "fbfc802fa6a49833d5a77ad2f3a187d7f72ac78dc290671877056a4f9ff16ed8",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

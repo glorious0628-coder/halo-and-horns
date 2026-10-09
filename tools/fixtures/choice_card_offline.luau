@@ -17,6 +17,12 @@ local KINDS = {
 		Good = { Label = "Help", Reward = { Item = "Jelly", N = 2 } },
 		Evil = { Label = "Tickle", Reward = { Gold = 4 } },
 	},
+	-- A23-87 (게임성 개발 2): an XP reward (the FlowerPatch card's [Replant it])
+	Plant = {
+		Title = "A flower got squished!",
+		Good = { Label = "Replant it", Reward = { XP = 6 } },
+		Evil = { Label = "Pick the petals", Reward = { Item = "Jelly", N = 2 } },
+	},
 }
 
 local function cardWorld(o)
@@ -164,6 +170,30 @@ runGroup("deeds: the save", function()
 	check(D.Used(f) == 2, "a fraction is floored", D.Used(f))
 	local g, gd = hero(w, 13, "Halo", { Deeds = { Day = day, N = 0 / 0 } })
 	check(D.Used(g) == 0, "NaN is repaired to 0", D.Used(g))
+end)
+
+runGroup("card: an XP reward, never 2x (A23-87)", function()
+	local w = cardWorld()
+	local p = hero(w, 70, "Halo")
+	local CCS = w.Reg.ChoiceCard
+	w.XPMult = 2 -- the 2x XP pass
+	check(CCS.Offer(p, "Plant") == true, "(the card opens)")
+	local card = lastFx(w, "Card", p)
+	check(card and card.Good.XP == 6 and card.Good.Label == "Replant it", "the card shows Good XP 6", show(card and card.Good))
+	local n0 = #w.Notices
+	pick(w, p, card.Id, "Good")
+	local xp = w.XPs[#w.XPs]
+	check(xp and xp.P == p and xp.N == 6 and xp.Got == 6, "AddXP(6, cap 6): the 2x pass never doubles a card's XP",
+		show(xp and { xp.N, xp.Got }))
+	local e = lastFx(w, "CardEnd", p)
+	check(e and e.Side == "Good" and e.XP == 6 and e.Gold == 0 and e.N == 0, "CardEnd says XP 6", show(e))
+	local lines = {}
+	for i = n0 + 1, #w.Notices do table.insert(lines, w.Notices[i].Text) end
+	check(lines[1] and string.find(lines[1], "+6 XP", 1, true) ~= nil, "the reward line names the XP", show(lines))
+	-- the real Config's FlowerPatch card
+	local FP = execute("Config", CONFIG_SOURCE, nativeEnv()).ChoiceCard.Kinds.FlowerPatch
+	check(FP and FP.Good.Reward.XP > 0 and FP.Evil.Reward.Item == "Petal" and FP.Evil.Reward.N == 2,
+		"Config.ChoiceCard.Kinds.FlowerPatch: Replant = XP, Pick = 2 petals", show(FP))
 end)
 
 runGroup("card: offer, pick, reward", function()
