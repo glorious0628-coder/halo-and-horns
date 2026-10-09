@@ -120,7 +120,7 @@
     }
   },
   "bgm": {
-    "about": "Background music + ambient loops (A23-100). Firefly Generate Soundtrack / own synthesis. Mono 48 kHz wav, Looped=true, uploaded 2026-10-10 as Darugi_S2 (Restricted). Tracks are -24 LUFS; Boss layers (art/sfx/bgm/cand/BossLayer_*.wav, same length to the sample as their track, -27 LUFS) are not uploaded yet.",
+    "about": "Background music + ambient loops (A23-100). Firefly Generate Soundtrack / own synthesis. Mono 48 kHz wav, Looped=true, uploaded 2026-10-10 as Darugi_S2 (Restricted). Tracks are -24 LUFS;",
     "tracks": {
       "HaloTown": {
         "id": "rbxassetid://108661141883977",
@@ -135,6 +135,48 @@
         "bpm": 121.4,
         "file": "art/sfx/bgm/HornsTown.wav",
         "zone": "HornsTown"
+      },
+      "Crossroads": {
+        "id": "rbxassetid://89489494811803",
+        "seconds": 82.244,
+        "bpm": 93.4,
+        "file": "art/sfx/bgm/Crossroads.wav (git 밖)",
+        "zone": "Crossroads"
+      },
+      "Meadow": {
+        "id": "rbxassetid://107428223386912",
+        "seconds": 69.634,
+        "bpm": 110.3,
+        "file": "art/sfx/bgm/Meadow.wav (git 밖)",
+        "zone": "SlimeMeadow"
+      },
+      "Pumpkin": {
+        "id": "rbxassetid://97391238692429",
+        "seconds": 68.961,
+        "bpm": 111.4,
+        "file": "art/sfx/bgm/Pumpkin.wav (git 밖)",
+        "zone": "PumpkinPatch"
+      },
+      "Haunted": {
+        "id": "rbxassetid://103556459915929",
+        "seconds": 69.017,
+        "bpm": 111.3,
+        "file": "art/sfx/bgm/Haunted.wav (git 밖)",
+        "zone": "HauntedHollow"
+      },
+      "Woods": {
+        "id": "rbxassetid://114854716063832",
+        "seconds": 77.515,
+        "bpm": 99.1,
+        "file": "art/sfx/bgm/Woods.wav (git 밖)",
+        "zone": "GoblinWoods"
+      },
+      "Ruins": {
+        "id": "rbxassetid://70596551890083",
+        "seconds": 64.779,
+        "bpm": 118.6,
+        "file": "art/sfx/bgm/Ruins.wav (git 밖)",
+        "zone": "SkeletonRuins"
       }
     },
     "ambient": {
@@ -149,6 +191,33 @@
         "seconds": 20,
         "lufs": -30,
         "note": "3D, RollOffMaxDistance ~40, outside the MaxPlaying pool"
+      }
+    },
+    "boss": {
+      "about": "Boss layers (own synthesis: kick/wood tap/eighth-note bass + tom fills), exactly the same length as their zone track to the sample, mono, -27 LUFS. Play with the zone track at the same TimePosition, Looped = true, start/stop at the boss spawn/death. Only zones with a boss have one.",
+      "SlimeMeadow": {
+        "id": "rbxassetid://98188790457804",
+        "seconds": 69.634,
+        "boss": "SlimeKing",
+        "pairsWith": "Meadow"
+      },
+      "PumpkinPatch": {
+        "id": "rbxassetid://113774483516470",
+        "seconds": 68.961,
+        "boss": "PumpkinKing",
+        "pairsWith": "Pumpkin"
+      },
+      "HauntedHollow": {
+        "id": "rbxassetid://97981769754135",
+        "seconds": 69.017,
+        "boss": "GhostKing",
+        "pairsWith": "Haunted"
+      },
+      "SkeletonRuins": {
+        "id": "rbxassetid://88486401685380",
+        "seconds": 64.779,
+        "boss": "CaptainClatter",
+        "pairsWith": "Ruins"
       }
     }
   }
