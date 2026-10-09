@@ -162,7 +162,7 @@ runGroup("config", function()
 		check(string.find(line, "First, get a weapon", 1, true) == 1 and string.find(line, "5 slimes", 1, true) ~= nil
 			and not string.find(line, "fists", 1, true), side .. ": page 1 = the weapon first, then 5 slimes", line)
 	end
-	check(TC.Text.Forge == "Go to Otto's Forge" and TC.ShortNames.Forge == "To the Forge" and #TC.ShortNames.Forge <= 14,
+	check(TC.Text.Forge == "Go to Otto's Forge in the Crossroads" and TC.ShortNames.Forge == "To the Forge" and #TC.ShortNames.Forge <= 14,
 		"the Forge row: text + phone ShortName", show({ TC.Text.Forge, TC.ShortNames.Forge }))
 	check(TC.Text.Travel == "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)" and TC.ShortNames.Travel == "To the meadow"
 		and #TC.ShortNames.Travel <= 14, "the travel row (A23-88): the pad or the map, phone ShortName", show({ TC.Text.Travel, TC.ShortNames.Travel }))

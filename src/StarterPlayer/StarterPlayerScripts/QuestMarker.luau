@@ -5,13 +5,15 @@
 --   colour  : in progress white, done and waiting for [Claim] light gold (검수 2026-10-06 "하늘색/흰색, 받기 금";
 --             Config.UIArt.Colors MarkerGo / MarkerClaim tint the white IconQuestMarker art). White + the art's navy
 --             rim keep >= 3:1 on every zone floor and sky (rubric 4); sky blue fell to 2.2:1 on dark meadow grass.
---   size    : the icon is never under 48 real px (검수 2026-10-06), the distance 15 px (rubric >= 14 px); du = px / the
+--   size    : the icon is 48 real px up to T.NearM metres, then smaller with the distance down to 32 px from T.FarM on
+--             (검수 2026-10-06 48 px; 10/09: far looks far), the distance always 15 px (rubric >= 14 px); du = px / the
 --             HUD's UIScale (T.Fit)
 --   drawn   : in its own ScreenGui "QuestMarkerGui" just under MainGui (same inset / safe-area settings and UIScale, one
 --             DisplayOrder lower), so it is always in front of the 3D world (never hidden behind a wall or a hill) and
 --             the HUD stays on top of it. Placed every frame after the camera (BindToRenderStep).
---   on screen : the icon at the point above the target (part top + T.Lift studs), the distance "Nm" under it
---             (metres = studs / 3.5, rounded)
+--   on screen : the icon at the point above the target (part top + T.LiftFor(metres) studs: higher for far goals), the
+--             distance "Nm" under it (metres = studs / 3.5, rounded); never on my character (head, body, halo / horns:
+--             it rises just above them) or on a HUD block
 --   off screen / behind the camera: the same icon + the arrow turned toward the target + the distance at the screen
 --             edge, kept inside the screen minus T.Margin and pushed out of the HUD blocks of C.HUD.Layout.Rects (minimap
 --             + quest lines, the plate + icon tiles, the top centre column, the combat cluster, [Menu]) and, on touch,
@@ -35,7 +37,7 @@
 -- opening), when the monster is gone or dead, and while it is off screen.
 --
 -- Public API: QuestMarker.Init(C), QuestMarker.Start(), QuestMarker.Refresh(), QuestMarker.IsShown(),
--- QuestMarker.Focus(model | nil)
+-- QuestMarker.Focus(model | nil), QuestMarker.Pulse() -> bool
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -57,12 +59,24 @@ local IS_TOUCH = UserInputService.TouchEnabled
 local T = {
 	TargetDt = 1 / 2, -- ask HUD for the target
 	StudsPerMeter = 3.5, -- A23-36: metres = studs / 3.5, rounded
+	PulseFrom = 1.7, PulseTime = 0.45, -- 빛 마을 점검 #20: a row tap pops the icon from this size back to 1 (s)
 	FadeM = 10, -- starts fading inside this many metres...
 	HideM = 6, -- ...and is gone inside this many
-	Lift = 3, -- studs above the target part's top (or above a bare position)
+	Lift = 3, -- studs above the target part's top (or above a bare position)...
+	-- 검수 10/09 (user photo: a 49m goal straight ahead floated on my halo, "too close"): ...plus LiftPerM studs per
+	-- metre past NearM (at most LiftMax), so a far goal floats over the horizon
+	LiftPerM = 0.15,
+	LiftMax = 12,
 	-- sizes in REAL screen px; du = px / UIScale (T.Fit)
-	IconPx = 48, -- 검수 2026-10-06: the marker is at least 48 px
-	ArrowPx = 24,
+	IconPx = 48, -- 검수 2026-10-06: 48 px - up to NearM metres away...
+	IconFarPx = 32, -- ...then smaller with the distance, down to this from FarM metres on (검수 10/09: far looks far)
+	NearM = 20,
+	FarM = 60,
+	ArrowPx = 24, -- the edge arrow at the 48 px icon (smaller with it, never under ArrowMinPx)
+	ArrowMinPx = 18,
+	-- my character on screen (studs around the HumanoidRootPart: half width, up to the halo / horns, down to the feet):
+	-- the on-screen marker never sits on it (검수 10/09); skipped when the camera is this close (first person)
+	Self = { HalfW = 1.8, Up = 4.6, Down = 3.2, MinCam = 3 },
 	TextPx = 15, -- rubric: text over the 3D world >= 14 px
 	TextWPx = 64, -- "123m" never clips
 	HaloPx = 3, -- the dark halo is this much larger than the art (about 1.5 px on each side)
@@ -87,11 +101,13 @@ local T = {
 	Step = "QuestMarker", -- BindToRenderStep name (after the camera)
 	WarnEvery = 10,
 }
--- the indicator in du for the HUD's UIScale s: icon, arrow, label, the footprint half-size around the icon centre
--- (icon + arrow beside it + label under it) and the ring it never enters around the screen centre (my character)
-function T.Fit(s)
-	T.Icon = math.ceil(T.IconPx / s)
-	T.Arrow = math.ceil(T.ArrowPx / s)
+-- the indicator in du for the HUD's UIScale s and the icon's real px (T.IconPxFor; default IconPx): icon, arrow, label,
+-- the footprint half-size around the icon centre (icon + arrow beside it + label under it) and the ring it never enters
+-- around the screen centre (my character)
+function T.Fit(s, px)
+	px = px or T.IconPx
+	T.Icon = math.ceil(px / s)
+	T.Arrow = math.ceil(math.max(T.ArrowMinPx, T.ArrowPx * px / T.IconPx) / s)
 	T.Text = math.ceil(T.TextPx / s)
 	T.TextW = math.ceil(T.TextWPx / s)
 	T.Halo = T.HaloPx / s
@@ -100,6 +116,16 @@ function T.Fit(s)
 	T.MinRing = T.Icon + T.Arrow + 8
 end
 T.Fit(1)
+
+-- the icon's real px for a goal `m` metres away (2 px steps, so a walk does not re-fit every frame) and the lift (studs)
+function T.IconPxFor(m)
+	local k = math.clamp((m - T.NearM) / math.max(1, T.FarM - T.NearM), 0, 1)
+	return math.floor((T.IconPx + (T.IconFarPx - T.IconPx) * k) / 2 + 0.5) * 2
+end
+
+function T.LiftFor(m)
+	return math.min(T.LiftMax, T.Lift + T.LiftPerM * math.max(0, m - T.NearM))
+end
 
 -- HUD layout B blocks the edge indicator stays out of (C.HUD.Layout.Rects ids, each group = one union box)
 local AVOID = {
@@ -132,12 +158,14 @@ local S = {
 	target = nil, -- { Part, Position, Tag, Claim } from the last retarget
 	claim = nil, -- the colour last written (true = gold)
 	scale = nil, -- the UIScale T.Fit last sized the marker for
+	iconPx = nil, -- ...and the icon's real px (T.IconPxFor)
 	meters = nil, -- last written distance
 	alpha = nil, -- last written fade (0..1)
 	onScreen = nil,
 	posX = nil, posY = nil, rot = nil, labelUp = nil,
-	layoutRef = nil, layoutW = nil, layoutH = nil, -- the HUD.Layout the avoid boxes were built from
+	layoutRef = nil, layoutW = nil, layoutH = nil, qbRef = nil, -- the HUD.Layout the avoid boxes were built from
 	avoid = {}, -- HUD block unions { { x0, y0, x1, y1 } } in du, inflated by the indicator's footprint
+	edgeAvoid = {}, -- placeEdge's list: avoid + my character's box (refilled every frame)
 	raw = {}, -- the single HUD rects (+ thumbstick zone), not inflated
 	targetAcc = 0,
 	lastWarnAt = -math.huge,
@@ -436,8 +464,11 @@ end
 local function readAvoid(W, H)
 	local hud = C and C.HUD
 	local layout = type(hud) == "table" and hud.Layout or nil -- a NEW table every HUD layout pass: never cached
-	if layout == S.layoutRef and W == S.layoutW and H == S.layoutH then return end
-	S.layoutRef, S.layoutW, S.layoutH = layout, W, H
+	-- 이미지 개발 10/09 (main PC photo: the edge diamond sat on 'Quests (1) ▼'): the drawn quest tracker + head line
+	-- (HUD.QuestBlock, a new table when it moves) runs lower than Rects.quest
+	local qb = type(hud) == "table" and type(hud.QuestBlock) == "table" and hud.QuestBlock or nil
+	if layout == S.layoutRef and W == S.layoutW and H == S.layoutH and qb == S.qbRef then return end
+	S.layoutRef, S.layoutW, S.layoutH, S.qbRef = layout, W, H, qb
 	local boxes, raw = {}, {}
 	local rects = type(layout) == "table" and type(layout.Rects) == "table" and layout.Rects or nil
 	if rects then
@@ -459,6 +490,12 @@ local function readAvoid(W, H)
 		-- before HUD v2: only the bottom-right button cluster is published
 		table.insert(boxes, { layout.ClusterLeft, layout.ClusterTop, W, H })
 		table.insert(raw, { layout.ClusterLeft, layout.ClusterTop, W, H })
+	end
+	local qx, qy, qw, qh = nil, nil, nil, nil
+	if qb then qx, qy, qw, qh = num(qb.X), num(qb.Y), num(qb.W), num(qb.H) end
+	if qx and qy and qw and qh and qw > 0 and qh > 0 then
+		table.insert(boxes, { qx, qy, qx + qw, qy + qh })
+		table.insert(raw, { qx, qy, qx + qw, qy + qh, T.Weight.quest or 1 })
 	end
 	local hudCount = #boxes -- the HUD blocks only (the on-screen marker rises above them; not above the thumbstick zone)
 	if IS_TOUCH then
@@ -504,8 +541,9 @@ local function pushOut(px, py, box, avoid)
 	return px, py
 end
 
--- du^2 of HUD the indicator would cover with its icon centre at (px, py) (the single rects, not inflated)
-local function overlap(px, py)
+-- du^2 of HUD the indicator would cover with its icon centre at (px, py) (the single rects, not inflated; `me` = my
+-- character's raw box, counted like a HUD block)
+local function overlap(px, py, me)
 	local fx, fy = T.HalfX - T.Pad, T.HalfY - T.Pad
 	local sum = 0
 	for _, b in S.raw do
@@ -513,21 +551,28 @@ local function overlap(px, py)
 		local h = math.min(py + fy, b[4]) - math.max(py - fy, b[2])
 		if w > 0 and h > 0 then sum += w * h * (b[5] or 1) end
 	end
+	if me then
+		local w = math.min(px + fx, me[3]) - math.max(px - fx, me[1])
+		local h = math.min(py + fy, me[4]) - math.max(py - fy, me[2])
+		if w > 0 and h > 0 then sum += w * h end
+	end
 	return sum
 end
 
 -- where the edge indicator goes for the ray (cx, cy) + (dx, dy) * t (t = the track-box edge):
--- 1. the edge point pushed out of the HUD blocks; 2. crowded (phone) screens: the spot on the ray, from the edge in
--- to T.MinRing from the centre, that covers the least HUD (the outermost one on a tie: a clear spot ends the walk)
-local function edgeSpot(cx, cy, dx, dy, t, box)
-	local px, py = pushOut(cx + dx * t, cy + dy * t, box, S.avoid)
-	if not hitAny(px, py, S.avoid) then return px, py end
+-- 1. the edge point pushed out of the HUD blocks (`avoid`, default S.avoid); 2. crowded (phone) screens: the spot on the
+-- ray, from the edge in to T.MinRing from the centre, that covers the least HUD (the outermost one on a tie: a clear
+-- spot ends the walk); `me` = my character's raw box (검수 10/10: a goal behind me sat on my body at the bottom centre)
+local function edgeSpot(cx, cy, dx, dy, t, box, avoid, me)
+	avoid = avoid or S.avoid
+	local px, py = pushOut(cx + dx * t, cy + dy * t, box, avoid)
+	if not hitAny(px, py, avoid) then return px, py end
 	local minR = math.min(t, T.MinRing)
 	local bx, by, best = cx + dx * t, cy + dy * t, math.huge
 	for k = 0, T.WalkSteps do
 		local tk = t - (t - minR) * k / T.WalkSteps
 		local qx, qy = cx + dx * tk, cy + dy * tk
-		local a = overlap(qx, qy)
+		local a = overlap(qx, qy, me)
 		if a < best - 1 then bx, by, best = qx, qy, a end
 		if a <= 0 then break end
 	end
@@ -535,12 +580,13 @@ local function edgeSpot(cx, cy, dx, dy, t, box)
 end
 
 ----------------------------------------------------------------- placing
--- the marker's du for the HUD's UIScale s (48 px icon on every screen); a new size rebuilds the avoid boxes and
--- rewrites every position
-local function fitScale(s)
-	if s == S.scale then return end
-	S.scale = s
-	T.Fit(s)
+-- the marker's du for the HUD's UIScale s and the icon's real px (default: the last one); a new size rebuilds the avoid
+-- boxes and rewrites every position
+local function fitScale(s, px)
+	px = px or S.iconPx or T.IconPx
+	if s == S.scale and px == S.iconPx then return end
+	S.scale, S.iconPx = s, px
+	T.Fit(s, px)
 	ui.scale.Scale = s
 	ui.iconBox.Size = UDim2.fromOffset(T.Icon, T.Icon)
 	if ui.iconHalo then ui.iconHalo.Size = UDim2.new(1, T.Halo, 1, T.Halo) end
@@ -581,17 +627,37 @@ local function hideAll()
 	S.shown, S.onScreen = false, nil
 end
 
--- world point the marker floats at (live part position, so a moving target is followed)
+-- the target and the top the marker floats over (live part position, so a moving target is followed); moveStep adds
+-- the lift (T.LiftFor: it grows with the distance)
 local function targetPoint()
 	local t = S.target
 	if not t then return nil, nil end
 	local part = t.Part
 	if part and part.Parent and part:IsA("BasePart") then
 		local p = part.Position
-		return p, p + Vector3.new(0, part.Size.Y / 2 + T.Lift, 0)
+		return p, p + Vector3.new(0, part.Size.Y / 2, 0)
 	end
 	local p = t.Position
-	return p, p + Vector3.new(0, T.Lift, 0)
+	return p, p
+end
+
+-- 검수 10/09 (user photo: a 49m goal straight ahead drew its diamond on my halo): my character's box on screen (T.Self:
+-- head, body, halo / horns), inflated by the indicator's footprint, { x0, y0, x1, y1 } du, and the same box not inflated;
+-- nil in first person or when a corner is behind the camera
+local function selfBox(cam, root, origin, s)
+	local me = T.Self
+	if (cam.CFrame.Position - root.Position).Magnitude < me.MinCam then return nil end
+	local up = root.Position + Vector3.new(0, me.Up, 0)
+	local down = root.Position - Vector3.new(0, me.Down, 0)
+	local side = cam.CFrame.RightVector * me.HalfW
+	local x0, y0, x1, y1 = math.huge, math.huge, -math.huge, -math.huge
+	for _, p in { up + side, up - side, down + side, down - side } do
+		local sp = cam:WorldToScreenPoint(p)
+		if sp.Z <= 0 then return nil end
+		local x, y = (sp.X - origin.X) / s, (sp.Y - origin.Y) / s
+		x0, y0, x1, y1 = math.min(x0, x), math.min(y0, y), math.max(x1, x), math.max(y1, y)
+	end
+	return { x0 - T.HalfX, y0 - T.HalfY, x1 + T.HalfX, y1 + T.HalfY }, { x0, y0, x1, y1 }
 end
 
 local function moveTo(px, py)
@@ -611,7 +677,7 @@ end
 
 -- edge indicator: from the screen centre toward the target (camera space, so behind the camera works too), on the
 -- track box, out of the HUD blocks; the arrow beside the icon points the way, the distance sits on the other side
-local function placeEdge(cam, origin, s, W, H, lifted)
+local function placeEdge(cam, origin, s, W, H, lifted, root)
 	local centre3 = cam:WorldToScreenPoint(cam.CFrame.Position + cam.CFrame.LookVector * 10)
 	local cx, cy = (centre3.X - origin.X) / s, (centre3.Y - origin.Y) / s
 	local rel = cam.CFrame:PointToObjectSpace(lifted)
@@ -632,7 +698,17 @@ local function placeEdge(cam, origin, s, W, H, lifted)
 	local ty = dy > 0 and (box[4] - cy) / dy or (dy < 0 and (box[2] - cy) / dy or math.huge)
 	local t = math.max(0, math.min(tx, ty))
 	readAvoid(W, H)
-	local px, py = edgeSpot(cx, cy, dx, dy, t, box)
+	-- 검수 10/10 (UiSandbox 991x451: a goal behind me put the indicator on my body at the bottom centre): my character's
+	-- box joins the HUD blocks here too (S.edgeAvoid: S.avoid + it, refilled each frame)
+	local me, meRaw = selfBox(cam, root, origin, s)
+	local avoid = S.avoid
+	if me then
+		avoid = S.edgeAvoid
+		table.clear(avoid)
+		table.move(S.avoid, 1, #S.avoid, 1, avoid)
+		table.insert(avoid, me)
+	end
+	local px, py = edgeSpot(cx, cy, dx, dy, t, box, avoid, meRaw)
 	moveTo(px, py)
 	local rot = math.deg(math.atan2(dx, -dy)) -- the arrow points up at Rotation 0; GUI rotation is clockwise
 	if not S.rot or math.abs(rot - S.rot) >= T.MinTurn then
@@ -678,7 +754,7 @@ local function moveStep()
 	local root = myRoot()
 	local cam = workspace.CurrentCamera
 	local gui = ui.gui
-	local base, lifted = targetPoint()
+	local base, top = targetPoint()
 	if not (root and cam and gui and gui.Parent and base) or not hudShowing() or moduleOpen("WorldMap")
 		or moduleOpen("Panels") or moduleOpen("Intro") then
 		hideAll()
@@ -694,7 +770,8 @@ local function moveStep()
 	setTint(S.target ~= nil and S.target.Claim == true)
 
 	local s = guiScale()
-	fitScale(s)
+	fitScale(s, T.IconPxFor(meters)) -- far goals draw a smaller icon (검수 10/09)
+	local lifted = top + Vector3.new(0, T.LiftFor(meters), 0)
 	local origin, size = gui.AbsolutePosition, gui.AbsoluteSize
 	local W, H = size.X / s, size.Y / s
 	-- on screen = in front of the camera and inside the gui box
@@ -711,11 +788,14 @@ local function moveStep()
 		-- 2026-10-08 (main Studio phone: the marker and "19m" sat on "Lv 1 · 245"): a target behind a HUD block keeps its
 		-- column but rises just above that block (S.hud = the HUD blocks inflated by the indicator's footprint)
 		readAvoid(W, H)
+		-- 검수 10/09: off my character first (same column, just above my halo / horns), then off the HUD blocks
+		local me = selfBox(cam, root, origin, s)
+		if me then ly = QuestMarker.ClearOfHud(lx, ly, { me }, T.TopBar + T.HalfY, H - T.HalfY) end
 		ly = QuestMarker.ClearOfHud(lx, ly, S.hud, T.TopBar + T.HalfY, H - T.HalfY)
 		moveTo(lx, ly)
 		labelAbove(false)
 	else
-		placeEdge(cam, origin, s, W, H, lifted)
+		placeEdge(cam, origin, s, W, H, lifted, root)
 	end
 	if not ui.holder.Visible then ui.holder.Visible = true end
 	S.shown = true
@@ -912,6 +992,20 @@ function QuestMarker.Focus(target)
 		if bb and bb:IsA("BillboardGui") then S.focusBar = bb end
 	end
 	if target == nil and ui.focus then ui.focus.Visible = false end
+end
+
+-- 빛 마을 점검 #20 (2026-10-10): a tap on the pinned row whose place is already marked pops the icon once (grows,
+-- then settles with a small overshoot; no text, nothing new on screen). ReducedMotion: no pop. False when the marker
+-- is not shown
+function QuestMarker.Pulse()
+	if not (S.shown and ui.iconBox and ui.iconBox.Parent) then return false end
+	if UIKit.ReducedMotion() then return true end
+	local sc = ui.iconBox:FindFirstChild("PulseScale")
+	if not sc then sc = UIKit.Create("UIScale", { Name = "PulseScale", Scale = 1, Parent = ui.iconBox }) end
+	sc.Scale = T.PulseFrom
+	game:GetService("TweenService"):Create(sc, TweenInfo.new(T.PulseTime, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+		{ Scale = 1 }):Play()
+	return true
 end
 
 return QuestMarker

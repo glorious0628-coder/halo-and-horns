@@ -107,13 +107,14 @@ local SIZE3 = vec(16, 12.85, 16)
 local base = vec(10, 0, 20)
 
 -- 1. the 3-tier fountain, told by its mesh name
-local m3 = model("Town_Halo_Fountain", SIZE3, { Mesh = "Halo_Fountain" })
+local m3 = model("Town_Halo_Fountain3", SIZE3, { Mesh = "Town_Halo_Fountain3" })
 local spec, key = Fx.SpecFor(m3)
-check(key == "Town_Halo_Fountain3", "a Town_Halo_Fountain with a Halo_Fountain mesh = the 3-tier spec", key)
+check(key == "Town_Halo_Fountain3", "the kit Model Town_Halo_Fountain3 = the 3-tier spec (its own name, 검수 10/10)", key)
 check(Fx.BuildOn(m3), "builds")
 check(#inFx(m3, "Part", "HaloGlow") == 0 and #inFx(m3, "PointLight") == 0, "no halo ring glow, no light (the new one has no ring)")
 local jet = inFx(m3, "Attachment", "Jet")[1]
-check(jet and near(jet.WorldPosition.Y, 0.80 * 12.85 + 0.2), "the jet at the gold ball (Y 0.80)", jet and jet.WorldPosition.Y)
+check(jet and near(jet.WorldPosition.Y, 1.0 * 12.85 + 0.2), "the jet off the spike tip (Y 1.0: inside the ball it never shows)",
+	jet and jet.WorldPosition.Y)
 check(#inFx(m3, "Attachment", "Rim1_") == 8 and #inFx(m3, "Attachment", "Rim2_") == 12,
 	"8 streams from the top bowl, 12 from the middle rim", #inFx(m3, "Attachment", "Rim1_") .. "/" .. #inFx(m3, "Attachment", "Rim2_"))
 local rim1 = inFx(m3, "Attachment", "Rim1_")[1]
@@ -136,10 +137,10 @@ local sp = inFx(m3, "ParticleEmitter", "Sparkle")[1]
 check(sp.Rate == 8 and sp.Color.A.B > sp.Color.A.R + 100, "more twinkles, in a deeper blue", tostring(sp.Rate))
 
 -- 2. the attribute mark works too; the cloud fountain keeps its own spec
-local ma = model("Town_Halo_Fountain", SIZE3, { Attrs = { FountainSpec = "Town_Halo_Fountain3" } })
-check(select(2, Fx.SpecFor(ma)) == "Town_Halo_Fountain3", "FountainSpec = Town_Halo_Fountain3 marks it as well")
+local ma = model("Town_Halo_Fountain", SIZE3, { Mesh = "Halo_Fountain", Attrs = { FountainSpec = "Town_Halo_Fountain3" } })
+check(select(2, Fx.SpecFor(ma)) == "Town_Halo_Fountain", "no mark guessing: a Town_Halo_Fountain stays the cloud fountain whatever is inside")
 local mOld = model("Town_Halo_Fountain", vec(16, 12.4, 16), { Mesh = "Town_Halo_Fountain_HD" })
-check(select(2, Fx.SpecFor(mOld)) == "Town_Halo_Fountain", "the cloud fountain (no mark) keeps the cloud spec")
+check(select(2, Fx.SpecFor(mOld)) == "Town_Halo_Fountain", "the cloud fountain (the Crossroads plaza one) keeps the cloud spec")
 Fx.BuildOn(mOld)
 check(#inFx(mOld, "Part", "HaloGlow") == 1 and #inFx(mOld, "PointLight") == 1, "... with its halo ring glow and one light")
 local mK = model("K_Fountain", vec(21, 20.4, 21))

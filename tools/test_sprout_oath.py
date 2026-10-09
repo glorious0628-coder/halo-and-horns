@@ -55,18 +55,18 @@ MUTATIONS = [
     ("Sprout inverted", ST, 'if req.Sprout and stateTrue(player, "Graduated") then return false end', 'if req.Sprout and not stateTrue(player, "Graduated") then return false end'),
     # --- the training
     ("config: the bridge guard 5 s", C, "Radius = 14, Stay = 15 } },\n\t\t\t\t{ Text = \"Goblin Brute %d/%d\"", "Radius = 14, Stay = 5 } },\n\t\t\t\t{ Text = \"Goblin Brute %d/%d\""),
-    ("config: Halo kills a plain goblin", C, 'Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your oath to Bright"', 'Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your oath to Bright"'),
+    ("config: Halo kills a plain goblin", C, 'Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your promise to Bright"', 'Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 1 } },\n\t\t\t\t{ Text = "Make your promise to Bright"'),
     ("config: Horns may use skills", C, 'Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 }', 'Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 }'),
     ("config: Horns skip a camp", C, '{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },\n', ''),
     # --- the oath
-    ("config: Halo oath A scores 1", C, 'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 2 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR',
-     'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 1 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
-    ("config: the titles are swapped", C, 'TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'TitleBy = { Good = "RascalCadet", Evil = "GuardianCadet" } },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
-    ("config: the oath gives no titles", C, 'Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Reward = { Gold = 2, XP = 2 },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
-    ("config: the town-sub gold for the oath", C, 'Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
+    ("config: Halo oath A scores 1", C, 'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 2 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR',
+     'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 1 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
+    ("config: the titles are swapped", C, 'TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'TitleBy = { Good = "RascalCadet", Evil = "GuardianCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
+    ("config: the oath gives no titles", C, 'Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Reward = { Gold = 2, XP = 2 },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
+    ("config: the town-sub gold for the oath", C, 'Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
     ("config: no Rascal Cadet title", C, 'Config.TitleDefs.RascalCadet = { Name = "Rascal Cadet", NameEn = "Rascal Cadet", Color = Color3.fromRGB(190, 120, 235) }\n', ''),
     ("config: Guardian Cadet not pickable", C, 'for _, id in { "GuardianCadet", "RascalCadet" } do', 'for _, id in { "RascalCadet" } do'),
-    ("config: the closing line changed", C, 'Finish = "Oath sworn! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Finish = "Done.",\n\t\t},\n\t\tOathR'),
+    ("config: the closing line changed", C, 'Finish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Finish = "Done.",\n\t\t},\n\t\tOathR'),
     ("config: no sprout oath for Horns in the list", C, '"M3_5", "OathH", "OathR" }', '"M3_5", "OathH" }'),
 ]
 
@@ -108,7 +108,7 @@ SUITE = Suite(
              "after M3_4 with or without the shield (#54), once, not for Neutral / below Lv15; Halo: talk, guard the woods bridge "
              "15 s, one Goblin Brute in the woods, the oath; Horns: talk, goblin camp 1, camp 2, one Goblin Brute with basic "
              "hits only, the oath; the oath card 2 points each way (A23-58 floor), Reward TitleBy (Good Guardian Cadet / "
-             "Evil Rascal Cadet), the woods-sub reward Gold 2 / XP 2, 'Oath sworn! Keep it close, wherever you go.'; no line says "
+             "Evil Rascal Cadet), the woods-sub reward Gold 2 / XP 2, 'Promise made! Keep it close, wherever you go.'; no line says "
              "the shield is still on.",
     limitations="Walking steps (Near) are the existing engine's 1 s loop and are not simulated; the fixture sets the track to "
                 "the step it tests. No 'Playtime' objective type was added: the shield clock is the existing State "

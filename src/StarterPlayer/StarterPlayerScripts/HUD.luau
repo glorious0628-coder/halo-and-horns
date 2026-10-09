@@ -13,7 +13,8 @@
 --   HUD.Layout = { W, H, Scale, Rects = HudLayout rects (event = the next-event line, tiles = the icon row), ChipsBottom,
 --   ClusterTop, ClusterLeft, TopCenterX, TopCenterW, LeftX, RightX }. After each pass HUD calls EventHUD.Relayout,
 --   MiniMap.Relayout and UIKit.PlaceNotify (pcall'd; any of them may be missing). HUD.TopCenterX / TopCenterW = the war
---   meter column.
+--   meter column. HUD.QuestBlock = { X, Y, W, H } of the drawn quest tracker + 'Quests (n)' head line (a new table when
+--   it moves, nil while hidden; QuestMarker avoids it).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
@@ -1862,7 +1863,10 @@ function L.BuildQuestLines(root)
 	if onPlate then UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = headRow }) end
 	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate, Band = headBand }
 	-- the head plate lives beside the head line (not inside it): follow its showing / hiding at once (검수 10/09)
-	headRow:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.LayoutQuestPlates) end)
+	headRow:GetPropertyChangedSignal("Visible"):Connect(function()
+		task.defer(L.LayoutQuestPlates)
+		task.defer(L.PlaceTrackerHead) -- HUD.QuestBlock follows the head line too (이미지 개발 10/09)
+	end)
 	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
 	for i = 1, n do
 		-- one row = [icon][text][3/5 | 받기][▼ on line 1, PC]: a horizontal list; the text keeps its own width (shrinks and
@@ -2054,6 +2058,8 @@ function L.BuildTracker(root)
 		title:SetAttribute("StyleMinPx", 13)
 	end
 	frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() L.PlaceTrackerHead() end)
+	-- showing / hiding changes no size: HUD.QuestBlock still has to follow it (이미지 개발 10/09)
+	frame:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.PlaceTrackerHead) end)
 	ui.tracker = { Frame = frame, Band = band, Icon = icon, Title = title, Goal = goal, Nums = nums, Claim = claim,
 		ClaimText = claimText }
 end
@@ -2070,6 +2076,7 @@ function L.SetTracker(e, label, nums)
 	t.Title.Text = title
 	t.Goal.Text = goal
 	t.Goal.Visible = goal ~= title
+	L.FitGoal() -- a new sentence may need a smaller size to stay within two lines
 	local claimable, pill = L.LineFinish(e, 1)
 	t.Claim.Visible = pill
 	t.Nums.Visible = claimable or nums ~= nil
@@ -2114,14 +2121,68 @@ function L.LayoutTracker(q)
 	if t.Icon then t.Icon.Size = UDim2.fromOffset(iconS, iconS) end
 	t.Title.Size = UDim2.new(1, -iconS - 6, 1, 0)
 	t.Title.TextSize = titleSize
-	t.Goal.TextSize = bodySize
+	T.GoalMax = bodySize
+	T.GoalMin = math.min(bodySize, IS_TOUCH and bodySize or math.max(12, math.floor(lh * T.BodyMinK)))
 	t.Nums.TextSize = bodySize
 	local prog = t.Nums.Parent
 	if prog then prog.Size = UDim2.new(1, 0, 0, math.ceil(bodySize * 1.35)) end
 	t.Claim.Size = UDim2.fromOffset(math.floor(bodySize * 4.2), math.ceil(bodySize * 1.3))
 	t.ClaimText.TextSize = math.max(12, math.floor(bodySize * 0.85))
 	T.Rect = q
+	L.FitGoal()
 	task.defer(L.PlaceTrackerHead)
+end
+
+-- the goal sentence at GoalMax du, or the largest size down to GoalMin that keeps it within GoalLines lines of the
+-- tracker's width (measured by L.TextLines; while a size is being measured the line keeps its current size)
+function L.FitGoal()
+	local t, T = ui.tracker, L.Tracker
+	if not (t and T.Rect and T.GoalMax) then return end
+	local text, font, width = t.Goal.Text, t.Goal.FontFace, T.Rect.W
+	local size, pending = T.GoalMax, false
+	while size > T.GoalMin do
+		local lines = L.TextLines(text, font, size, width)
+		if lines == nil then
+			pending = true
+			break
+		end
+		if lines <= T.GoalLines then break end
+		size -= 1
+	end
+	if pending then
+		if t.Goal.TextSize > T.GoalMax or t.Goal.TextSize < T.GoalMin then t.Goal.TextSize = T.GoalMax end
+	elseif t.Goal.TextSize ~= size then
+		t.Goal.TextSize = size
+	end
+end
+
+-- lines `text` wraps to at `size` du in `width` du (TextService, cached); nil while it is measured (L.FitGoal runs again
+-- when the answer comes)
+function L.TextLines(text, font, size, width)
+	if text == "" then return 1 end
+	local cache = L.LineCache
+	local key = string.format("%s|%d|%d|%s|%s", text, size, math.floor(width), tostring(font.Family), tostring(font.Weight))
+	local v = cache.Lines[key]
+	if v ~= nil then return v or nil end
+	cache.N += 1
+	if cache.N > 300 then cache.Lines, cache.N = {}, 1 end
+	cache.Lines[key] = false
+	task.spawn(function()
+		local ok, lines = pcall(function()
+			local ts = game:GetService("TextService")
+			local p = Instance.new("GetTextBoundsParams")
+			p.Text, p.Font, p.Size, p.Width = text, font, size, width
+			local wrapped = ts:GetTextBoundsAsync(p)
+			p.Width = 100000
+			local one = ts:GetTextBoundsAsync(p)
+			return math.max(1, math.floor(wrapped.Y / math.max(1, one.Y) + 0.5))
+		end)
+		if not ok then warnThrottled("goal lines failed: " .. tostring(lines)) end
+		cache.Lines[key] = ok and lines or 1
+		local fine, err = pcall(L.FitGoal)
+		if not fine then warnThrottled("goal fit failed: " .. tostring(err)) end
+	end)
+	return nil
 end
 
 -- the head line 'Quests (n) ▼' (and its band) right under the tracker; L.QuestBottom = where the list / overlay start
@@ -2138,6 +2199,17 @@ function L.PlaceTrackerHead()
 	if ui.quests then ui.quests.Position = UDim2.fromOffset(q.X, L.QuestBottom + 4) end
 	if ui.questOverlay and ui.questOverlay.Position.Y.Offset ~= L.QuestBottom + 4 then
 		ui.questOverlay.Position = UDim2.fromOffset(ui.questOverlay.Position.X.Offset, L.QuestBottom + 4)
+	end
+	-- 이미지 개발 10/09 (main PC photo: the edge diamond sat on 'Quests (1) ▼'): Rects.quest is only the sheet's two lines,
+	-- the tracker + head line run lower - publish the drawn block (a NEW table when it changes, nil while nothing shows)
+	-- so QuestMarker keeps its indicator off it
+	local top = th > 0 and q.Y or y
+	local bottom = ui.questHead.Frame.Visible and L.QuestBottom or (th > 0 and q.Y + th or top)
+	local old = HUD.QuestBlock
+	if bottom - top < 1 then
+		HUD.QuestBlock = nil
+	elseif not (old and old.X == q.X - 8 and old.Y == top and old.W == q.W + 8 and old.H == bottom - top) then
+		HUD.QuestBlock = { X = q.X - 8, Y = top, W = q.W + 8, H = bottom - top }
 	end
 end
 
@@ -4479,6 +4551,13 @@ end
 
 -- Crossroads travel pad of the zone, else its gate, else a local anchor at the zone spawn
 local function findTravelTarget(zoneId)
+	-- 빛 마을 점검 #52: a pad in the town I stand in that goes there (QuestTarget.TownPad) comes first
+	local here = attr("ZoneId", "")
+	local qt = C and C.QuestTarget
+	if here ~= "Crossroads" and type(qt) == "table" and type(qt.TownPad) == "function" then
+		local ok, townPad = pcall(qt.TownPad, here, zoneId)
+		if ok and townPad then return townPad end
+	end
 	local map = workspace:FindFirstChild("Map")
 	local pads = map and map:FindFirstChild("Pads")
 	local part = resolvePart(pads and pads:FindFirstChild("Pad_" .. zoneId))
@@ -4630,10 +4709,22 @@ function L.BlacksmithTarget()
 	return anvil and anvil:IsA("BasePart") and anvil or nil
 end
 
+-- 빛 마을 점검 #16 (2026-10-10): the Forge step's guide. From a zone that walks to the forge (QuestTarget K.SmithWalk:
+-- the Crossroads, both towns, the outskirts) the anvil itself, else a trip to the Crossroads. Returns the target and
+-- the guide's From key (one key for every walk zone: crossing a bridge keeps the same guide, no flicker)
+L.ForgeWalk = { Crossroads = true, HaloTown = true, HornsTown = true, Outskirts = true }
+function L.ForgeTarget(zone)
+	local anvil = L.ForgeWalk[zone] and L.BlacksmithTarget() or nil
+	if anvil then return anvil, "walk" end
+	return findTravelTarget("Crossroads"), zone
+end
+
 -- the meadow beam from a faction town first points at that island's bridge (a straight line crossed the water);
 -- from the Crossroads it points at the meadow pad
 local HOME_BRIDGE = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }
 function L.MeadowTarget(zone)
+	local townPad = L.PadIn(zone)
+	if townPad then return townPad end -- 빛 마을 점검 #52: the town's own meadow pad first
 	local bridge = HOME_BRIDGE[zone]
 	local map = workspace:FindFirstChild("Map")
 	local decor = map and map:FindFirstChild("Decor")
@@ -4644,15 +4735,27 @@ end
 -- A23-88 (검수 10/09, user: no lines, no words): after the first weapon (TutorialStep Guide) the meadow travel pad in
 -- the Crossroads glows softly by itself (a local Highlight on the pad, a slow breath); gone at the next step / away
 function HUD.PadGlowOn(step, zone, on)
-	return on ~= false and step == TUT_GUIDE_STEP and zone == "Crossroads"
+	return on ~= false and step == TUT_GUIDE_STEP and (zone == "Crossroads" or zone == "HaloTown" or zone == "HornsTown")
+end
+
+-- the meadow pad that glows in `zone`: the Crossroads' Pad_<meadow>, or (빛 마을 점검 #52) the town's own pad to the
+-- meadow (QuestTarget.TownPad; none until the world tool places it)
+function L.PadIn(zone)
+	if zone == "Crossroads" then
+		local map = workspace:FindFirstChild("Map")
+		local pads = map and map:FindFirstChild("Pads")
+		return resolvePart(pads and pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE))
+	end
+	local qt = C and C.QuestTarget
+	if type(qt) ~= "table" or type(qt.TownPad) ~= "function" then return nil end
+	local ok, pad = pcall(qt.TownPad, zone, TUT_GUIDE_ZONE)
+	return ok and pad or nil
 end
 
 L.PadGlowState = { Pad = nil, Light = nil, Tween = nil }
-function L.PadGlow(on)
+function L.PadGlow(on, zone)
 	local st = L.PadGlowState
-	local map = workspace:FindFirstChild("Map")
-	local pads = map and map:FindFirstChild("Pads")
-	local pad = on and resolvePart(pads and pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE)) or nil
+	local pad = on and L.PadIn(zone or "Crossroads") or nil
 	if st.Pad == pad and (pad == nil or (st.Light and st.Light.Parent)) then return end
 	if st.Tween then st.Tween:Cancel() end
 	if st.Light then st.Light:Destroy() end
@@ -4692,10 +4795,10 @@ local function refreshGuides()
 	if attr("DataLoaded", false) ~= true then return end
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
-	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))
+	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow), zone)
 	local forge = step == L.ForgeStep
 	if guide then
-		if guide.Tag == "forge" and (not forge or guide.From ~= zone) then
+		if guide.Tag == "forge" and (not forge or guide.From ~= select(2, L.ForgeTarget(zone))) then
 			HUD.ClearGuide()
 		elseif guide.Tag == "tutorial" and (not L.NeedsMeadowGuide(step) or zone == TUT_GUIDE_ZONE or guide.From ~= zone) then
 			HUD.ClearGuide()
@@ -4709,8 +4812,8 @@ local function refreshGuides()
 	end
 	if forge then
 		if not (guide and guide.Tag == "forge") then
-			local target = zone == "Crossroads" and L.BlacksmithTarget() or findTravelTarget("Crossroads")
-			if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end
+			local target, from = L.ForgeTarget(zone)
+			if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = from end
 		end
 	elseif L.NeedsMeadowGuide(step) and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
 		if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "tutorial", nil) and guide then guide.From = zone end
@@ -5060,6 +5163,12 @@ function L.StoryTap(st, zone, panels)
 	if g == "OwnTown" then target = Config.HomeZoneId(getFaction()) end
 	if g == "SlimePond" then target = "SlimeMeadow" end
 	if g == "Fountain" or g == "Goose" then target = "Crossroads" end
+	-- 빛 마을 점검 #17 / #21 / #29: a Config.StoryQuests.Landmarks spot (HeroStatue, WoodsGate, GoblinCamp1, ...): its
+	-- zone (Config.ZoneAt), then the spot itself (QuestTarget.Story does the same for the marker)
+	local lms = Config.StoryQuests and Config.StoryQuests.Landmarks
+	local spot = not Config.Zones[target] and type(lms) == "table" and lms[g] or nil
+	if typeof(spot) ~= "Vector3" then spot = nil end
+	if spot then target = Config.ZoneAt(spot).Id end
 	if Config.Zones[target] and zone ~= target then
 		if panels and panels.Open then panels.Open("Travel") end
 		if target == TUT_GUIDE_ZONE then
@@ -5067,6 +5176,14 @@ function L.StoryTap(st, zone, panels)
 		else
 			showGuide(findTravelTarget(target), tostring(Config.Zones[target].Name), "zone:" .. target, 30)
 		end
+		return
+	end
+	if spot then
+		local a = Instance.new("Part")
+		a.Name, a.Anchored, a.CanCollide, a.CanQuery, a.CanTouch, a.Transparency = "HUDStoryAnchor", true, false, false, false, 1
+		a.Size, a.Position, a.Parent = Vector3.new(1, 1, 1), spot + Vector3.new(0, 3, 0), workspace
+		game:GetService("Debris"):AddItem(a, 35)
+		showGuide(a, tostring(Config.Zones[target] and Config.Zones[target].Name or g), "story", 30)
 		return
 	end
 	if g == "SlimePond" then
@@ -5153,10 +5270,13 @@ function L.PinnedTap(e, r)
 	if step == 0 then
 		fire("RequestTutorial")
 	elseif step == L.ForgeStep then
-		-- A23-74: the server walks me to the anvil again (ignored while moving or already there); the beam comes back
-		fire("RequestTutorial")
+		-- 빛 마을 점검 #20 (2026-10-10): since A23-88 I walk to the forge myself (the server ignores a tutorial request after
+		-- the welcome, so none is sent): the guide comes back and the quest marker pops once over the forge - the tap
+		-- shows where to go without a word
 		HUD.ClearGuide()
 		refreshGuides()
+		local qm = C and C.QuestMarker
+		if type(qm) == "table" and type(qm.Pulse) == "function" then pcall(qm.Pulse) end
 	elseif step == 1 or step == 2 then
 		if zone ~= TUT_GUIDE_ZONE then
 			if panels and panels.Open then panels.Open("Travel") end
@@ -5489,8 +5609,13 @@ L.TileLabelMinPx = 40
 L.QuestPlate = { On = false, PadL = 6, PadR = 10, Gap = 4 }
 -- A23-94 quest tracker (L.BuildTracker): On = the big left-middle 'now do' quest instead of the lines; du gap between its
 -- lines, build heights, title / body size per quest-rect line height, the in-progress (p/t) colour
-L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = IS_TOUCH and 1.05 or 1.45, BodyK = IS_TOUCH and 0.66 or 0.8,
+-- 검수 10/09 (user: "the goal line is too small"): on PCs the goal sentence and (p/t) are about 72% of the title
+-- (BodyK); a goal longer than GoalLines lines steps down to BodyMinK (the old size) to fit, never cut with '...'
+-- (L.FitGoal; GoalMax / GoalMin = its du range from L.LayoutTracker)
+L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = IS_TOUCH and 1.05 or 1.45, BodyK = IS_TOUCH and 0.66 or 1.05,
+	BodyMinK = IS_TOUCH and 0.66 or 0.8, GoalLines = 2, GoalMax = nil, GoalMin = nil,
 	ProgColor = Color3.fromRGB(255, 96, 72), Rect = nil }
+L.LineCache = { Lines = {}, N = 0 } -- L.TextLines: "text|size|width|font" -> lines (false = measuring)
 L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
 -- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
 -- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would

@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 38,
-  "namedChecks": 38,
+  "checks": 55,
+  "namedChecks": 55,
   "failing": [],
   "mutations": {
-    "total": 14,
-    "caught": 14,
+    "total": 23,
+    "caught": 23,
     "results": [
       {
         "mutation": "claim ignores CanClaim",
@@ -95,7 +95,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "plain zones :: meadow from the Halo town -> the bridge"
+          "plain zones :: meadow from the Halo town -> the bridge",
+          "town pads :: no town pad yet: the meadow from the Halo town -> its bridge as before"
         ]
       },
       {
@@ -105,6 +106,9 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: ... 20 studs away -> the mark again",
+          "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from HornsTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from Outskirts -> the mark over the anvil, no trip",
           "rows :: Forge step from the meadow -> a trip to the Crossroads",
           "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)"
         ]
@@ -116,9 +120,11 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: ... 20 studs away -> the mark again",
+          "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from HornsTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from Outskirts -> the mark over the anvil, no trip",
           "rows :: Forge step from the meadow -> a trip to the Crossroads",
-          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)",
-          "rows :: step 1 from the Crossroads -> meadow pad"
+          "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)"
         ]
       },
       {
@@ -128,6 +134,9 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: ... 20 studs away -> the mark again",
+          "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from HornsTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from Outskirts -> the mark over the anvil, no trip",
           "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)",
           "rows :: blacksmith step -> the mark over the anvil (its label clears the pad signs)"
         ]
@@ -149,6 +158,100 @@
         "newFailingChecks": [
           "rows :: Forge step in the Crossroads -> the mark 9 studs over the anvil (BlacksmithVisited ignored)"
         ]
+      },
+      {
+        "mutation": "the towns route to the Crossroads plaza again",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: ... and the distance only goes down",
+          "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from HornsTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from Outskirts -> the mark over the anvil, no trip",
+          "rows :: walking from the Halo spawn to the anvil: the same mark all the way"
+        ]
+      },
+      {
+        "mutation": "the Halo town is not a walk zone",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: ... and the distance only goes down",
+          "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
+          "rows :: walking from the Halo spawn to the anvil: the same mark all the way"
+        ]
+      },
+      {
+        "mutation": "a walk-zone mark still says it is a trip",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from HornsTown -> the mark over the anvil, no trip",
+          "rows :: Forge step from Outskirts -> the mark over the anvil, no trip"
+        ]
+      },
+      {
+        "mutation": "a walk zone without an anvil points nowhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: no anvil (not built yet) -> the Crossroads trip as before"
+        ]
+      },
+      {
+        "mutation": "a landmark guide has no zone again",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: GoblinCamp1 from the Crossroads -> a trip to the goblin woods",
+          "rows :: HeroStatue from the Crossroads -> a trip to its town",
+          "rows :: HeroStatue inside the town -> the anchor over the statue spot",
+          "rows :: WoodsGate in its zone -> the anchor over the woods' edge"
+        ]
+      },
+      {
+        "mutation": "a landmark inside its zone points nowhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: HeroStatue inside the town -> the anchor over the statue spot",
+          "rows :: WoodsGate in its zone -> the anchor over the woods' edge"
+        ]
+      },
+      {
+        "mutation": "the town pad is skipped",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "town pads :: with the Halo plaza pad: the meadow -> that pad (no bridge walk)"
+        ]
+      },
+      {
+        "mutation": "a pad in another zone counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "town pads :: TownPad finds it for the Halo town only"
+        ]
+      },
+      {
+        "mutation": "any pad counts, whatever it goes to",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "town pads :: TownPad finds it for the Halo town only",
+          "town pads :: a zone the town pads do not go to -> the usual route"
+        ]
       }
     ]
   },
@@ -156,9 +259,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6ded4912845255bcae9b68c6f7ebb22448bf43aadb58948b504bae7e1c59602f",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a3ccb455977324f2c001e87247eaaa73aaa99a6dd2e19e8117bebb63f7f2e337",
-    "tools/fixtures/quest_target_offline.luau": "b12b552550c4496bea2c0f7c997dfbbc84cb9fe9a97ff541babc716d78428cc3"
+    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "87b58ecb538c4ed7a75e392126bc525ee35a8a93f9a596ce0e7bc3861749afda",
+    "tools/fixtures/quest_target_offline.luau": "f0570afe0fa328a04875112083a6967544371ede66038af39f7d2f1992e1d2c1"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

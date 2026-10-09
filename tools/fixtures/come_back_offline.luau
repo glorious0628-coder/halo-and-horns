@@ -26,6 +26,7 @@ local function signal()
 end
 
 local NOW = 1000
+local UIS = nil -- set before the env below is used (UserInputService double, Perf device)
 local HOOK = nil -- runs on every task.wait (the world moving on while the client waits)
 local cfgEnv = setmetatable({
 	game = { GetService = function() return setmetatable({}, { __index = function() return function() return nil end end }) end },
@@ -94,6 +95,8 @@ local env = setmetatable({
 		if n == "Players" then return { LocalPlayer = LP } end
 		if n == "MarketplaceService" then return MPS end
 		if n == "ExperienceNotificationService" then return ENS end
+		if n == "UserInputService" then return UIS end
+		if n == "Stats" then return { GetTotalMemoryUsageMb = function() return 812.7 end } end
 		if n == "ReplicatedStorage" then
 			return {
 				WaitForChild = function() return { WaitForChild = function(_, m) return { __module = m } end } end,
@@ -103,6 +106,9 @@ local env = setmetatable({
 		return {}
 	end },
 	os = { clock = function() return NOW end, time = os.time },
+	workspace = { CurrentCamera = { ViewportSize = { X = 844, Y = 390 } } },
+	UserSettings = function() return { GameSettings = { SavedQualityLevel = { Value = 5 } } } end,
+	Vector2 = { new = function(x, y) return { X = x, Y = y } end },
 	task = {
 		spawn = function(f, ...) f(...) end,
 		defer = function(f, ...) f(...) end,
@@ -114,6 +120,11 @@ local env = setmetatable({
 		return { Signal = { new = signal }, Warn = function() end }
 	end,
 }, { __index = getfenv() })
+
+UIS = { TouchEnabled = true, KeyboardEnabled = false, GamepadEnabled = false, WindowFocused = signal(), WindowFocusReleased = signal() }
+local function UIS_FOCUS(on)
+	if on then UIS.WindowFocused:Fire() else UIS.WindowFocusReleased:Fire() end
+end
 
 local function load()
 	local fn = assert(loadstring(COMEBACK_SOURCE, "=ComeBack"))
@@ -261,6 +272,45 @@ ATTR.MyWay = nil
 CB = fresh()
 setAttr("MyWay", "Soft-Hearted Devil")
 check("a name as the first value (the join) is quiet", #TOASTS == 0)
+
+-- 빛 마을 점검 #32 (2026-10-10): the phone frame / memory sample (docs/design/phone_perf_server_2026-10-09.md)
+CB = fresh()
+local good = { D = "Phone", F = 42, W = 18, M = 812, Q = 5 }
+check("Perf: a good sample passes the server's rule", CB.ArgOk("Perf", good) == true)
+local function with(k, v) local t = table.clone(good) t[k] = v return t end
+check("Perf: a missing / extra key, W > F, an unknown device, a fraction, too much memory, Q 11 are refused",
+	not CB.ArgOk("Perf", with("Q", nil)) and not CB.ArgOk("Perf", with("X", 1)) and not CB.ArgOk("Perf", with("W", 43))
+	and not CB.ArgOk("Perf", with("D", "Fridge")) and not CB.ArgOk("Perf", with("F", 41.5))
+	and not CB.ArgOk("Perf", with("M", 20000)) and not CB.ArgOk("Perf", with("Q", 11)) and not CB.ArgOk("Perf", "42"))
+check("Perf device: touch + short side 390 = Phone, 700 = Tablet, a keyboard = Desktop, a gamepad only = Console",
+	CB.PerfDevice(true, false, false, 390) == "Phone" and CB.PerfDevice(true, false, false, 700) == "Tablet"
+	and CB.PerfDevice(true, true, false, 390) == "Desktop" and CB.PerfDevice(false, false, true, 0) == "Console")
+check("Perf pack: under 60 focused s nothing", CB.PerfPack("Phone", 1770, 59, {}, 800, 5) == nil)
+local pk = CB.PerfPack("Phone", 3600, 60, { 58, 42.6, 61 }, 812.7, 5)
+check("Perf pack: F = frames / s, W = the lowest full second (whole), M floored, Q kept",
+	pk and pk.F == 60 and pk.W == 42 and pk.M == 812 and pk.Q == 5 and pk.D == "Phone", pk and (pk.F .. "/" .. pk.W) or "nil")
+SENT = {}
+ATTR.DataLoaded = nil
+for _ = 1, 30 * 130 do NOW += 1 / 30 CB.PerfFrame(1 / 30) end
+check("Perf: nothing before my data loads", #SENT == 0, #SENT)
+ATTR.DataLoaded = true
+for _ = 1, 30 * 121 do NOW += 1 / 30 CB.PerfFrame(1 / 30) end
+local last = SENT[#SENT]
+check("Perf: every 120 s one sample of the window (30 fps phone, the doubles' memory and quality)", #SENT == 1 and last[1] == "Perf"
+	and type(last[2]) == "table" and last[2].D == "Phone" and last[2].F == 30 and last[2].W <= 30 and last[2].M == 812 and last[2].Q == 5,
+	last and last[2] and (tostring(last[2].F) .. " " .. tostring(last[2].D)) or "nil")
+SENT = {}
+for i = 1, 30 * 121 do
+	NOW += 1 / 30
+	if i == 30 * 10 then UIS_FOCUS(false) end
+	CB.PerfFrame(1 / 30)
+end
+UIS_FOCUS(true)
+check("Perf: a window mostly out of focus (under 60 s played) sends nothing", #SENT == 0, #SENT)
+SENT = {}
+for i = 1, 121 do NOW += 1 CB.PerfFrame(i % 2 == 0 and 5 or 1 / 30) end
+check("Perf: gaps over a second (the app away) never count as play", #SENT == 0, #SENT)
+ATTR.DataLoaded = nil
 
 print(("COME_BACK_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("COME_BACK_OFFLINE_OK") end

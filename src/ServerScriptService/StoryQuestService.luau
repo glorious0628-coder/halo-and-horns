@@ -736,6 +736,10 @@ end
 -- or with progress) or S0, 3 = a new offer waiting at its first card, 4 = the rest; within a rank the newer quest
 -- (later in StoryQuests.Subs) first. With A23-56's many subs a sub in progress is never pushed off by new offers or
 -- older background subs, and the order index keeps the rows from swapping between refreshes (table.sort is not stable).
+-- zone_check_halo #19: a faction town-NPC offer (a sub with Factions whose step waits at its Npc) counts as rank 2, so the
+-- new Halo / Horns town quest is not pushed out by the other offers. With Config.StoryQuests.SendAllSubs the rows past
+-- MaxSubs are sent too, each marked More = true: the HUD draws only the rows without More (the top MaxSubs), the quest window
+-- (QuestBook 'In progress') lists all of them, so no active sub is missing from both. Off = exactly MaxSubs rows, as before.
 function StoryQuestService.SubRows(player, data)
 	local st = story(data)
 	local rows = {}
@@ -751,8 +755,9 @@ function StoryQuestService.SubRows(player, data)
 				local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
 				local waiting = step ~= nil and step.Panel == true -- a Talk / Choice card waits
 				local started = num(tr.St, 1) > 1 or num(tr.P) > 0 or (type(tr.T) == "table" and next(tr.T) ~= nil)
-				row.Rank = ((tr.Claim or (waiting and started)) and 0) or (def.Show and 1) or ((started or id == "S0") and 2)
-					or (waiting and 3) or 4
+				local townOffer = waiting and type(def.Factions) == "table" and step.Npc ~= nil
+				row.Rank = ((tr.Claim or (waiting and started)) and 0) or (def.Show and 1)
+					or ((started or id == "S0" or townOffer) and 2) or (waiting and 3) or 4
 				row.Order = order
 				table.insert(rows, row)
 			end
@@ -763,8 +768,10 @@ function StoryQuestService.SubRows(player, data)
 		return a.Order > b.Order
 	end)
 	local out = {}
-	for i = 1, math.min(#rows, SQ.MaxSubs or 3) do
+	local cap = math.max(0, math.floor(num(SQ.MaxSubs, 3)))
+	for i = 1, SQ.SendAllSubs == true and #rows or math.min(#rows, cap) do
 		rows[i].Rank, rows[i].Order = nil, nil
+		if i > cap then rows[i].More = true end -- past the HUD's rows: the quest window only
 		table.insert(out, rows[i])
 	end
 	return out

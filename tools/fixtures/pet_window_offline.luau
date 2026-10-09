@@ -99,9 +99,10 @@ local UIKit = {
 		return o
 	end,
 	Bar = function(props)
-		local b = { ClassName = "Frame", Name = props.Name, Text = props.Text, Fill = nil }
+		local label = { ClassName = "TextLabel", Text = props.Text, TextSize = props.TextSize }
+		local b = { ClassName = "Frame", Name = props.Name, Text = props.Text, Fill = nil, Label = label, TextSize = props.TextSize }
 		table.insert(bars, b)
-		return b, function(f) b.Fill = f end, nil
+		return b, function(f) b.Fill = f end, label
 	end,
 }
 PetWindow.Init({ Panels = panels, UIKit = UIKit })
@@ -151,6 +152,7 @@ local t = texts()
 check(has(t, "Good Buddy"), "the story name", table.concat(t, ","))
 local speed3 = math.floor(Config.PetSpeedBonus("BabySlime", 3) * 100 + 0.5)
 check(has(t, "Lv 3 · Walk speed +" .. speed3 .. "%"), "Lv and the walk speed it gives", table.concat(t, ","))
+check(bars[1] and bars[1].TextSize >= 15, "the XP numbers are at least 15 px (검수 10/10)", bars[1] and bars[1].TextSize)
 check(#bars == 1 and bars[1].Text == "12/" .. need3 .. " XP" and math.abs(bars[1].Fill - 12 / need3) < 1e-9,
 	"the XP bar (XP / Need)", bars[1] and bars[1].Text)
 check(has(t, "Following you"), "the follower says so")
@@ -173,6 +175,8 @@ listeners.PetList({ Equipped = "", List = payload.List })
 open()
 check(btn("Follow me") ~= nil and btn("Put away") == nil and not has(texts(), "Following you"),
 	"a resting pet has [Follow me]", #buttons)
+check(has(texts(), "Lv 3 · Follow: +" .. speed3 .. "% speed"), "... and says what following would give (검수 10/10)",
+	table.concat(texts(), ","))
 table.clear(sent)
 NOW += 1
 btn("Follow me").OnClick()
@@ -222,11 +226,16 @@ open()
 rebuilt = 0
 listeners.PetList(payload)
 check(rebuilt == 0, "the same list again: no redraw", rebuilt)
+local bar0 = bars[1]
 listeners.PetList({ Equipped = "P1", List = { { Uid = "P1", Sp = "BabySlime", Lv = 3, XP = 13, Need = need3, Name = "Good Buddy" } } })
-check(rebuilt == 1, "a kill's pet XP: one redraw", rebuilt)
+check(rebuilt == 0 and bar0.Label.Text == "13/" .. need3 .. " XP" and math.abs(bar0.Fill - 13 / need3) < 1e-9,
+	"검수 10/10: a kill's pet XP moves the bar in place (no rebuild: a press in progress keeps its button)",
+	tostring(rebuilt) .. " " .. tostring(bar0.Label.Text))
+listeners.PetList({ Equipped = "P1", List = { { Uid = "P1", Sp = "BabySlime", Lv = 4, XP = 0, Need = 60, Name = "Good Buddy" } } })
+check(rebuilt == 1, "a level up (the row changes): one redraw", rebuilt)
 current = nil
-listeners.PetList({ Equipped = "P1", List = { { Uid = "P1", Sp = "BabySlime", Lv = 3, XP = 14, Need = need3, Name = "Good Buddy" } } })
-check(rebuilt == 1, "closed: no redraw", rebuilt)
+listeners.PetList({ Equipped = "P1", List = { { Uid = "P1", Sp = "BabySlime", Lv = 5, XP = 0, Need = 75, Name = "Good Buddy" } } })
+check(rebuilt == 1, "closed: no redraw (even for a level up)", rebuilt)
 check(PetWindow.OnList("junk") == false and PetWindow.OnList({}) == false, "a bad payload is ignored")
 
 print(("PET_WINDOW_SUMMARY checks=%d failed=%d"):format(checks, failed))

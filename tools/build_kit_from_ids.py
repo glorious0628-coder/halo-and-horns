@@ -27,7 +27,8 @@ prefixes = [p for p in a.only.split(",") if p]
 if prefixes:
     items = [it for it in items if any(it["name"].startswith(p) for p in prefixes)]
 PRECISE = ("Gate", "Bridge", "Wall", "Spawn", "Fountain", "GuildHall", "PadBase", "SpawnPlaza", "Castle",
-           "Arch", "NoticeBoard", "Stairs")  # 2026-10-08 검수: walk-through arch, board face ray, steps you climb
+           "Arch", "NoticeBoard", "Stairs",
+           "Shop", "Cathedral", "DomeHouse")  # 2026-10-08 검수: walk-through arch, board face ray, steps you climb; 2026-10-10 zone_check_halo #12: shop counters, cathedral steps, house porches (a Hull would wall them off)
 
 
 def fidelity(name):

@@ -267,11 +267,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "available :: a sub that needs a quest not done yet (M2_7): not listed",
           "available :: another side's sub (artisan N1, Horns R5): not listed",
           "faction and hidden :: a faction-only sub is listed for its own side only"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 2
       },
       {
         "mutation": "the level view writes the save",
@@ -349,11 +348,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "57945b7348d2ebda51fca4592a608190676a53caa0a85e2597290c377c9aa360",
+    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308"
+    "src/ServerScriptService/StoryQuestService.luau": "beaba43294e412e9783939f0f81f3600dada8161ff3ab44554d51d7d1e9e7137"
   },
-  "fixtureSHA256": "710796d27fb7ac9fd151a64c9db9e47f1e1fdec4f40b36b71899b6c79dd61054",
+  "fixtureSHA256": "287ccb827ac06c2d225bb4a4e5e91bd1bf016a29de261f90d749b1db2aa23c41",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

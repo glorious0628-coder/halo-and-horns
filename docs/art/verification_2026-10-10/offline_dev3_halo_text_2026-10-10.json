@@ -1,0 +1,507 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 51,
+  "failedChecks": 0,
+  "namedChecks": 48,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "#44 the Forge row",
+      "check": "the first-mission row says where the Forge is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#44 the Forge row",
+      "check": "the phone name stays short",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#44 the Forge row",
+      "check": "the row stays one short line (<= 40 letters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#44 the Forge row",
+      "check": "Otto's line is unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#44 the Forge row",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#44 the Forge row",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathH: title + phone name say 'promise'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathH: the last step is 'Make your promise to Bright'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathH: Bright's line asks for the promise",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathH: no 'oath' in the title, steps, lines or start (except the closing line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathH: still Halo's, spoken by Bright",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathH: the two cadet titles are unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathR: title + phone name say 'promise'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathR: the last step is 'Make your promise to Smokey'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathR: Smokey's line asks for the promise",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathR: no 'oath' in the title, steps, lines or start (except the closing line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathR: still Horns's, spoken by Smokey",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "OathR: the two cadet titles are unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 the Sprout Promise",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 Dusty Heroes",
+      "check": "H6 step 1 says where the statues are",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 Dusty Heroes",
+      "check": "H6's start line and spot are unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 Dusty Heroes",
+      "check": "the row still formats (%d/%d s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 Dusty Heroes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "#55 Dusty Heroes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Hallie's catchphrase stays",
+      "check": "Hallie opens page 2 of her welcome",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Hallie's catchphrase stays",
+      "check": "the M1_4 report keeps the catchphrase as its first line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Hallie's catchphrase stays",
+      "check": "its payoff line in M3_5 is still there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Hallie's catchphrase stays",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Hallie's catchphrase stays",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Halo: two pages (the mission card, the catchphrase)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Halo: page 1 = the mission card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Halo: page 2 = one short catchphrase line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Halo: a page is at most 100 letters",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Halo: no 'oath' in the welcome",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Horns: two pages (the mission card, the catchphrase)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Horns: page 1 = the mission card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Horns: page 2 = one short catchphrase line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Horns: a page is at most 100 letters",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Horns: no 'oath' in the welcome",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Neutral: two pages (the mission card, the catchphrase)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Neutral: page 1 = the mission card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Neutral: page 2 = one short catchphrase line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Neutral: a page is at most 100 letters",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Neutral: no 'oath' in the welcome",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "Magpie's and Kit's catchphrases are unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two-page welcome",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 2,
+  "staticFailures": [],
+  "mutations": {
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Forge row forgets the Crossroads",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#44 the Forge row :: the first-mission row says where the Forge is"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Forge row says Smithy",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#44 the Forge row :: the first-mission row says where the Forge is"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Halo oath title is back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathH: no 'oath' in the title, steps, lines or start (except the closing line)",
+          "#55 the Sprout Promise :: OathH: title + phone name say 'promise'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Horns oath title is back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathR: no 'oath' in the title, steps, lines or start (except the closing line)",
+          "#55 the Sprout Promise :: OathR: title + phone name say 'promise'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Halo oath phone name is back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathH: no 'oath' in the title, steps, lines or start (except the closing line)",
+          "#55 the Sprout Promise :: OathH: title + phone name say 'promise'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Horns oath phone name is back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathR: no 'oath' in the title, steps, lines or start (except the closing line)",
+          "#55 the Sprout Promise :: OathR: title + phone name say 'promise'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Halo oath step is back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathH: no 'oath' in the title, steps, lines or start (except the closing line)",
+          "#55 the Sprout Promise :: OathH: the last step is 'Make your promise to Bright'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Horns oath step is back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathR: no 'oath' in the title, steps, lines or start (except the closing line)",
+          "#55 the Sprout Promise :: OathR: the last step is 'Make your promise to Smokey'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Bright says oath",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathH: Bright's line asks for the promise",
+          "#55 the Sprout Promise :: OathH: no 'oath' in the title, steps, lines or start (except the closing line)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Smokey says oath",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 the Sprout Promise :: OathR: Smokey's line asks for the promise",
+          "#55 the Sprout Promise :: OathR: no 'oath' in the title, steps, lines or start (except the closing line)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "H6 forgets the town",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "#55 Dusty Heroes :: H6 step 1 says where the statues are",
+          "#55 Dusty Heroes :: the row still formats (%d/%d s)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Hallie's catchphrase is replaced",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Hallie's catchphrase stays :: the M1_4 report keeps the catchphrase as its first line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Halo welcome has a third page",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "two-page welcome :: Halo: two pages (the mission card, the catchphrase)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Horns welcome has a third page",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "two-page welcome :: Horns: two pages (the mission card, the catchphrase)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Guild welcome has a third page",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "two-page welcome :: Neutral: two pages (the mission card, the catchphrase)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the mission card is gone from page 1 (Halo)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "two-page welcome :: Halo: page 1 = the mission card"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f"
+  },
+  "fixtureSHA256": "92de0f77656a24f75908a2624548a35d29155c43b1f90f165af8901eac76b8f7",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "#44 Text.Forge 'Go to Otto's Forge in the Crossroads' (ShortName 'To the Forge'); #55 OathH / OathR title 'The Sprout Promise', phone name 'Sprout promise', steps 'Make your promise to Bright / Smokey', 'Make your promise.' in the guides' lines (no 'oath' in the player-facing text but the closing line, which game dev 2 rewrites in #54); H6 step 'Look at the hero statues in Halo Citadel'; Hallie's catchphrase stays page 2 of her welcome and opens the M1_4 report; every guide's welcome has two pages (the mission card, the catchphrase).",
+  "limitations": "Text only: where the client draws the welcome (page buttons) is game dev 1's window; the Halo / Horns welcome counts are also asserted by test_onboarding / test_english."
+}

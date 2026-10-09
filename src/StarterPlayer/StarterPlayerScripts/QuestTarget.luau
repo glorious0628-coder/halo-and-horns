@@ -71,6 +71,10 @@ local K = {
 	-- the anvil from outside the Crossroads: true = route to the Crossroads (Travel); false = nil like HUD's beam,
 	-- which only shows inside the Crossroads (refreshGuides)
 	SmithFromAfar = true,
+	-- 빛 마을 점검 #16 (2026-10-10): the zones that WALK to the Crossroads forge (the town bridges, the roads) get the
+	-- mark over the anvil straight away; a trip to the Crossroads pointed at its spawn plaza and the distance jumped up
+	-- at the bridge end. Other zones (the meadow, the woods, ...) still route to the Crossroads first
+	SmithWalk = { Crossroads = true, HaloTown = true, HornsTown = true, Outskirts = true },
 	-- A23-30 PumpkinPatch: = MapBuilder PATCH (the path x PathX, its sign, the north gate at PatchGateZ)
 	Pumpkin = {
 		Zone = "PumpkinPatch",
@@ -183,6 +187,24 @@ local function mapChild(folder, name)
 	return f and f:FindFirstChild(name) or nil
 end
 
+-- 빛 마을 점검 #52 (2026-10-10): a travel pad standing in `zone` that goes to `dest` (a Map.Pads child with attribute
+-- TravelTo = dest - ZoneService hooks any such pad; the Halo plaza pads Pad_Halo_<dest> are placed by the world tool, not
+-- by Config.Map.Pads), else nil. HUD (guides, pad glow) and the maps use it too
+function QuestTarget.TownPad(zone, dest)
+	if type(zone) ~= "string" or zone == "" or type(dest) ~= "string" or type(Config.ZoneAt) ~= "function" then return nil end
+	local map = workspace:FindFirstChild("Map")
+	local pads = map and map:FindFirstChild("Pads")
+	if not pads then return nil end
+	for _, p in pads:GetChildren() do
+		if p:GetAttribute("TravelTo") == dest then
+			local part = resolvePart(p)
+			local z = part and Config.ZoneAt(part.Position)
+			if type(z) == "table" and z.Id == zone then return part end
+		end
+	end
+	return nil
+end
+
 ----------------------------------------------------------------- anchors
 -- local-only invisible anchor (HUD localAnchor): reuses HUD's part of the same name, else makes it once
 function QuestTarget.Anchor(key, position)
@@ -273,6 +295,11 @@ function QuestTarget.Travel(zoneId, fromZone, pos)
 	if zoneId == K.Pumpkin.Zone then return pumpkinRoute(fromZone, pos or myPos()) end
 	if zoneId == K.Hollow.Zone then return hollowRoute(fromZone, pos or myPos()) end
 	if fromZone == zoneId then return nil end
+	-- #52: a pad in the town I stand in that goes there (no bridge walk)
+	if fromZone ~= K.Town then
+		local townPad = QuestTarget.TownPad(fromZone, zoneId)
+		if townPad then return townPad end
+	end
 	-- L.MeadowTarget: from a faction town the meadow beam first points at that island's bridge
 	local bridge = zoneId == K.GuideZone and K.HomeBridge[fromZone] or nil
 	if bridge then
@@ -330,6 +357,16 @@ local function pondSpot()
 	return typeof(spot) == "Vector3" and (spot + K.Lift) or Vector3.new(290, 3, 150)
 end
 
+-- 빛 마을 점검 #17 / #21 / #29 (2026-10-10): a story Guide that is a Config.StoryQuests.Landmarks spot (WoodsGate,
+-- HeroStatue, GoblinCamp1-3, LavaCrack, HaloBridge, ...; never a zone id; not one of the special guides) -> its spot
+local function landmarkSpot(guide)
+	if guide == "SlimePond" or guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" or guide == "OwnTown" then
+		return nil
+	end
+	local spot = STORY_SPOTS[guide]
+	return typeof(spot) == "Vector3" and spot or nil
+end
+
 -- the zone a story Guide happens in (L.StoryTap's target mapping)
 local function guideZone(guide, faction)
 	if guide == "OwnTown" then
@@ -337,6 +374,11 @@ local function guideZone(guide, faction)
 	end
 	if guide == "SlimePond" then return K.GuideZone end
 	if guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" then return K.Town end
+	local spot = landmarkSpot(guide)
+	if spot and type(Config.ZoneAt) == "function" then
+		local z = Config.ZoneAt(spot)
+		return type(z) == "table" and z.Id or guide
+	end
 	return guide
 end
 
@@ -349,8 +391,13 @@ function QuestTarget.BlacksmithMark()
 	return a
 end
 
+-- true when the anvil is a walk away from fromZone (K.SmithWalk): its mark, no trip
+local function smithWalk(fromZone)
+	return (fromZone == K.Town or K.SmithWalk[fromZone] == true) and QuestTarget.Blacksmith() ~= nil
+end
+
 local function smithFrom(fromZone, pos)
-	if fromZone == K.Town then
+	if fromZone == K.Town or smithWalk(fromZone) then
 		local anvil = QuestTarget.Blacksmith()
 		if anvil and typeof(pos) == "Vector3" then
 			local dx, dz = pos.X - anvil.Position.X, pos.Z - anvil.Position.Z
@@ -374,6 +421,12 @@ function QuestTarget.Story(guide, fromZone, pos, faction)
 	if guide == "SlimePond" then return pondSpot() end
 	if guide == "Fountain" then return fountainTarget() end
 	if guide == "Goose" then return gooseTarget() end
+	local spot = landmarkSpot(guide)
+	if spot then -- a landmark spot in this zone: an anchor over it (K.Lift)
+		local a = QuestTarget.Anchor("Spot_" .. guide, spot + K.Lift)
+		a.Position = spot + K.Lift
+		return a
+	end
 	return nil -- a plain zone guide: I am already there
 end
 
@@ -449,7 +502,7 @@ local function placeFor(entry, myZone, faction, pos)
 	-- A23-74 weapon first: the Forge step points at the anvil (the Crossroads from elsewhere), whatever
 	-- BlacksmithVisited says (an early visit before [Accept] already set it)
 	if step == K.ForgeStep then
-		return pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, myZone ~= K.Town)
+		return pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, not smithWalk(myZone))
 	end
 	if step == K.GuideStep or step == K.QuestStep then
 		if not needsMeadow(step, entry) or myZone == K.GuideZone then return nil end
@@ -466,7 +519,7 @@ local function placeFor(entry, myZone, faction, pos)
 		and (string.find(text, "골드", 1, true) ~= nil or string.find(string.lower(text), "gold", 1, true) ~= nil)
 	if entry.NextGoal ~= true or ironGold then
 		if entry.NextGoal ~= true and attr("BlacksmithVisited", false) == true then return nil end
-		return pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, myZone ~= K.Town)
+		return pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, not smithWalk(myZone))
 	end
 	-- level goals: the zone I level up in (QuestZoneForLevel = the meadow below Lv10, like L.PinnedTap)
 	local zone = type(Config.QuestZoneForLevel) == "function" and Config.QuestZoneForLevel(level) or K.GuideZone

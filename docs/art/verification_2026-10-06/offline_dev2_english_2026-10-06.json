@@ -1,15 +1,15 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 89,
+  "checks": 84,
   "failedChecks": 0,
-  "namedChecks": 80,
+  "namedChecks": 81,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3873 strings)",
+      "check": "the walk reached the player strings (4140 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -39,7 +39,7 @@
     },
     {
       "group": "X / XEn twins hold the same English",
-      "check": "twins found (172)",
+      "check": "twins found (182)",
       "pass": 1,
       "fail": 0
     },
@@ -159,7 +159,7 @@
     },
     {
       "group": "glossary names",
-      "check": "monster SkeletonKnight = Skeleton Knight",
+      "check": "monster SlimeKing = King Slime",
       "pass": 1,
       "fail": 0
     },
@@ -196,6 +196,12 @@
     {
       "group": "glossary names",
       "check": "monster LittleGhost = Little Ghost",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster SkeletonKnight = Skeleton Knight",
       "pass": 1,
       "fail": 0
     },
@@ -321,7 +327,7 @@
     },
     {
       "group": "the five names",
-      "check": "Halo: the catchphrase is the welcome's page 2",
+      "check": "Halo: the catchphrase is the welcome's page 2, and the last (two pages only)",
       "pass": 1,
       "fail": 0
     },
@@ -340,7 +346,7 @@
     {
       "group": "the five names",
       "check": "Halo: no 'Noted' (Tiny's) or 'Captain'",
-      "pass": 4,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -351,7 +357,7 @@
     },
     {
       "group": "the five names",
-      "check": "Horns: the catchphrase is the welcome's page 2",
+      "check": "Horns: the catchphrase is the welcome's page 2, and the last (two pages only)",
       "pass": 1,
       "fail": 0
     },
@@ -370,7 +376,7 @@
     {
       "group": "the five names",
       "check": "Horns: no 'Noted' (Tiny's) or 'Captain'",
-      "pass": 4,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -381,7 +387,7 @@
     },
     {
       "group": "the five names",
-      "check": "Neutral: the catchphrase is the welcome's page 2",
+      "check": "Neutral: the catchphrase is the welcome's page 2, and the last (two pages only)",
       "pass": 1,
       "fail": 0
     },
@@ -400,7 +406,7 @@
     {
       "group": "the five names",
       "check": "Neutral: no 'Noted' (Tiny's) or 'Captain'",
-      "pass": 4,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -465,7 +471,7 @@
     },
     {
       "group": "server scripts send English",
-      "check": "every server script was scanned (44 files)",
+      "check": "every server script was scanned (50 files)",
       "pass": 1,
       "fail": 0
     },
@@ -697,7 +703,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the five names :: Horns: the catchphrase is the welcome's page 2"
+          "the five names :: Horns: the catchphrase is the welcome's page 2, and the last (two pages only)"
         ],
         "newFailingCount": 1
       },
@@ -740,7 +746,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6ded4912845255bcae9b68c6f7ebb22448bf43aadb58948b504bae7e1c59602f",
+    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/AttendanceService.luau": "60a7e6745f24b36a2e3763b76d0f1cc9ee641890f5a5639f3acff8955e669595",
@@ -748,46 +754,52 @@
     "src/ServerScriptService/BoardService.luau": "c38b299c2ae7e375a45a427d1ca6b566a4cdf45f4db488015b0da296643f7cd9",
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
     "src/ServerScriptService/ChatText.luau": "f7c4ed3a83ee0ce42baa5c1a0a9e16df28d25a90f4efd431c80d9a80a8e3c853",
-    "src/ServerScriptService/ChoiceCard.luau": "da892aeb3fa5ae57de67bea52693e6b5bac974a0ded6ff572970a876a3a330be",
+    "src/ServerScriptService/ChoiceCard.luau": "f9ddcd5f99a235d8db91c420ea535131d2c0b62d8384df961568573c854fcc3f",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005",
-    "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
+    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
     "src/ServerScriptService/CommissionService.luau": "8bffe67db248cfef2b293e56bcd6d4a197d7a857de8fdb65e8106952119adf02",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
+    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
     "src/ServerScriptService/DiaryService.luau": "fd9f53510f32d93ad79d0377db2aa813bc298c7536428a6ffb34504bddb297e7",
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
-    "src/ServerScriptService/GooseService.luau": "2f7113ab6134829bc743f77534d7022dbda246fbcb96ee72d2c4b895ea73de6c",
-    "src/ServerScriptService/GrudgeService.luau": "0ee62612248f1226217cef9647b9c80ff88bb05b67d4606443d913c2528ba701",
+    "src/ServerScriptService/FieldBossService.luau": "e71028364ab6330af6c42af21c7092e7f4e32acef0ad6ceb42579c35e916f920",
+    "src/ServerScriptService/FinisherService.luau": "6a2c6db155e32149c6a9128f1af264b1ee1331a72085048243adea1107dfbc89",
+    "src/ServerScriptService/GooseService.luau": "a256d44b3346a44f1e058de0f6ee6e55d582b7462fc9cfe74643883eb450a585",
+    "src/ServerScriptService/GrudgeService.luau": "b42981e97f8dcc8f4ff263a7bdea0712095cd7b090e8510e9c07be065360e6e3",
     "src/ServerScriptService/HalloweenService.luau": "28a85b9f636fde698c971e484b51ade893b02dad1c0dd0e3990047ae319a8e34",
+    "src/ServerScriptService/HealthService.luau": "ad2e18db9559659eb59d6fe421dc06cbe5069e23347334c6a2afeb8662eadaeb",
     "src/ServerScriptService/InviteService.luau": "5078c549ea94977105df673faba86c6735ecc99fff50a028f151bd58ec6c01fe",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8",
+    "src/ServerScriptService/KillCardService.luau": "f1e2ee3ff23fbd1db4d4fd09a428fdeb99c74a4ab385ab393762956d2bef46ee",
     "src/ServerScriptService/KillLog.luau": "0c517d98afbe72b6db265add7a78644b2bf2ba5a2486df18d6a16f516de967a0",
-    "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
-    "src/ServerScriptService/Main.server.luau": "7896f1fd1e8e24df7b3368e3d618b00eff2625ac420ddd05a766c3520ff818d8",
-    "src/ServerScriptService/MapBuilder.luau": "526d152ed793a329426929f39de063ea8cdf74c16795be1df7f1d5771bc403ae",
-    "src/ServerScriptService/MonetizationService.luau": "db1579b84626b0ebcb5b6c3dd4c9761b5b655e4247b7ea38bad3852997dc8e3e",
-    "src/ServerScriptService/MonsterService.luau": "de5514f3f337753ef8a9cd38ac1c97bc86813a8083410367da5333020c63a037",
-    "src/ServerScriptService/NicknameService.luau": "bca3dc61198f467488a4bcc1f4ead32504642a566dc3c4870df933c1cf7de939",
-    "src/ServerScriptService/PetService.luau": "3682a4cacd6463e70c8e26b3c94d7919d22ee92add4c1db3b6e9fea9ac1e9170",
-    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
-    "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13",
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
+    "src/ServerScriptService/Main.server.luau": "9c7d6de331a34a82c6220ba87a608f85420c868eb18348465ef0476aaab0bc7d",
+    "src/ServerScriptService/MapBuilder.luau": "c0e579b665baa747ee28153585e060a8e6fccc5614ee5c8f72db0515dca2cea8",
+    "src/ServerScriptService/MonetizationService.luau": "7918534f8721e876179035a0863a54a2faa40704aab7fa8ba035fe06306b7c11",
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
+    "src/ServerScriptService/NicknameService.luau": "8ddd039253ee1b164154d91320b0977df162b67ab5c6e1490d4b96336494a4fe",
+    "src/ServerScriptService/PetService.luau": "907a11a65dc26bb12e03839b8b32a63868222df701f4448ca17e2e93cd19705e",
+    "src/ServerScriptService/PlayerService.luau": "a6899045974aedf4f8a3c6a1fc44b9c1a445282f4a4d708e52e424331e18a1f9",
+    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
-    "src/ServerScriptService/QuestService.luau": "7d2f7503d791275a07660a406a3b1fd3e75f6789a26bdb2d5bb9a7864602d474",
-    "src/ServerScriptService/RankingService.luau": "863d034d30426213b5cb97be6b39457892acd5d65a97cc4abede2857290d213f",
-    "src/ServerScriptService/ReturnService.luau": "31a94a1a92ecd4d4ac843d8f464388fc08a9e591e9c21a9b822ea6d0a8294350",
+    "src/ServerScriptService/QuestService.luau": "ae446675bd824b5750eb5198827e97becced66388ee5187b83bbc41e25d28fcf",
+    "src/ServerScriptService/RankingService.luau": "6f626bec812ec8edec524152ce42d0086b66709e6a5657fee97376ad55f70f6e",
+    "src/ServerScriptService/ReturnService.luau": "b54dce085a0400497f7ad4b0af7bef604987a6f2609d47850760111d199e81ce",
+    "src/ServerScriptService/ServerErrorService.luau": "949a1c27e960cdc487fd3052516331dfa045b3add44f853221b335b177aa2e6a",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
-    "src/ServerScriptService/SkillService.luau": "3a11db855624b8f07a2c1cd36693e3e914e766228c6fcce0cfebaad10a8ffdf6",
-    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
-    "src/ServerScriptService/TelemetryService.luau": "308eed5b3a0dbf8f66c5ec5966a90d420610888602451cdecf92349b3d297012",
+    "src/ServerScriptService/SkillService.luau": "4cf5a2e8efc95cb99cc3138db33135d6b49b5d6763cbca5a3ed880d621d16a48",
+    "src/ServerScriptService/StoryQuestService.luau": "beaba43294e412e9783939f0f81f3600dada8161ff3ab44554d51d7d1e9e7137",
+    "src/ServerScriptService/SwitchService.luau": "1a268a27b6f5e78c8f6090fef432cccbe26be42064abb339fbe017195c889395",
+    "src/ServerScriptService/TelemetryService.luau": "448e3d04958d632156feb886479aa6393b68159db327c9e404c5f0c6b8158671",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",
-    "src/ServerScriptService/WarService.luau": "b7ffa62afc9059c57f4ba50e3db79fcce6f483a435555eefb2336233c33ac68b",
-    "src/ServerScriptService/ZoneService.luau": "a48dc0e0395518962081690f147bba2337755f027a7181ba3dcd6698288d45f0"
+    "src/ServerScriptService/WarService.luau": "2d333c18991d9a119b26aa4dc06d6f2221b652adad760c91ed0b7726bf53d3e2",
+    "src/ServerScriptService/ZoneService.luau": "1502a1d43ed86307c5c087fd1ddc3fd2a26b90e6690987f47b0363be2bb68098"
   },
-  "fixtureSHA256": "8e7bcec6c1c6832d4a19de8abce0015edf5516593c3cd86752cceefb01da0705",
+  "fixtureSHA256": "aaae17b1df904184e1edca49702b474eca1297f2482c2cb351a8741d3af0c4ff",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

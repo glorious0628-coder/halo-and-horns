@@ -56,7 +56,7 @@ MUTATIONS = [
      "local bridge = nil"),
     # A23-74 weapon first
     ("the Forge step points nowhere",
-     '\tif step == K.ForgeStep then\n\t\treturn pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, myZone ~= K.Town)\n\tend\n',
+     '\tif step == K.ForgeStep then\n\t\treturn pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, not smithWalk(myZone))\n\tend\n',
      ""),
     ("the Forge step is the meadow step", "ForgeStep = TUT_STEPS.Forge or 3,", "ForgeStep = TUT_STEPS.Guide or 1,"),
     # 검수 2026-10-08: the 'Forge' label covered the pads' signs
@@ -65,6 +65,26 @@ MUTATIONS = [
     # 10/08 Play photo: at the anvil the mark lined up with the Goblin Woods pad sign
     ("the marker shows right at the anvil", "\t\t\tif dx * dx + dz * dz <= K.SmithNear * K.SmithNear then return nil end\n", ""),
     ("the mark hugs the anvil", "SmithMarkLift = Vector3.new(0, 9, 0),", "SmithMarkLift = Vector3.new(0, 0, 0),"),
+    # 빛 마을 점검 #16 (2026-10-10): the town zones walk to the forge
+    ("the towns route to the Crossroads plaza again", "\tif fromZone == K.Town or smithWalk(fromZone) then\n",
+     "\tif fromZone == K.Town then\n"),
+    ("the Halo town is not a walk zone", "SmithWalk = { Crossroads = true, HaloTown = true,", "SmithWalk = { Crossroads = true,"),
+    ("a walk-zone mark still says it is a trip",
+     'K.Town, not smithWalk(myZone))\n\tend\n\tif step == K.GuideStep',
+     'K.Town, myZone ~= K.Town)\n\tend\n\tif step == K.GuideStep'),
+    ("a walk zone without an anvil points nowhere",
+     "\treturn (fromZone == K.Town or K.SmithWalk[fromZone] == true) and QuestTarget.Blacksmith() ~= nil\n",
+     "\treturn fromZone == K.Town or K.SmithWalk[fromZone] == true\n"),
+    # 빛 마을 점검 #17 / #21 / #29: story landmark spots
+    ("a landmark guide has no zone again", "\tlocal spot = landmarkSpot(guide)\n\tif spot and type(Config.ZoneAt) == \"function\" then\n",
+     "\tlocal spot = nil\n\tif spot and type(Config.ZoneAt) == \"function\" then\n"),
+    ("a landmark inside its zone points nowhere", "\tif spot then -- a landmark spot in this zone: an anchor over it (K.Lift)\n",
+     "\tif false then -- a landmark spot in this zone: an anchor over it (K.Lift)\n"),
+    # 빛 마을 점검 #52: town pads
+    ("the town pad is skipped", "\t\tif townPad then return townPad end\n\tend\n\t-- L.MeadowTarget", "\tend\n\t-- L.MeadowTarget"),
+    ("a pad in another zone counts", "\t\t\tif type(z) == \"table\" and z.Id == zone then return part end\n",
+     "\t\t\tif type(z) == \"table\" then return part end\n"),
+    ("any pad counts, whatever it goes to", "\t\tif p:GetAttribute(\"TravelTo\") == dest then\n", "\t\tif true then\n"),
 ]
 
 

@@ -1485,10 +1485,12 @@ Config.Zones = {
 	-- the towns: land x -200..200, z -700..-330 / 330..700; the gate at the bridge end, the castle at the far end (z -+630)
 	HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(0, 0, -515), Size = Vector3.new(400, 0, 370),
 		MinLevel = 1, PvP = false, Town = true, Faction = "Halo",
-		FloorColor = Color3.fromRGB(228, 218, 190), FloorMaterial = Enum.Material.Marble, Spawn = Vector3.new(0, 0, -420) },
+		FloorColor = Color3.fromRGB(228, 218, 190), FloorMaterial = Enum.Material.Marble, Spawn = Vector3.new(0, 0, -420),
+		SpawnLook = Vector3.new(0, 0, -330) }, -- the gate at the bridge end: the first mission's spawn faces the way out (zone_check_halo #43)
 	HornsTown = { Id = "HornsTown", Name = "Horns Den", Center = Vector3.new(0, 0, 515), Size = Vector3.new(400, 0, 370),
 		MinLevel = 1, PvP = false, Town = true, Faction = "Horns",
-		FloorColor = Color3.fromRGB(70, 40, 45), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(0, 0, 420) },
+		FloorColor = Color3.fromRGB(70, 40, 45), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(0, 0, 420),
+		SpawnLook = Vector3.new(0, 0, 330) }, -- same for Horns Den (the gate at the bridge end)
 	SlimeMeadow = { Id = "SlimeMeadow", Name = "Squishy Meadow", Center = Vector3.new(430, 0, 0), Size = Vector3.new(440, 0, 480),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(115, 195, 95), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(230, 0, 0) },
@@ -2272,11 +2274,9 @@ Config.Tutorial = {
 	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
-			Lines = { -- 3rd idea round #2: page 1 = the mission card (검수 2026-10-07), then the catchphrase
+			Lines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)
 				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Hallie here! Now you know my name. Welcome to the Knights!",
-				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
-				"The Crown of Balance broke. Its shards drew slimes onto the Squishy Meadow road.",
 			},
 		},
 		Horns = {
@@ -2284,8 +2284,6 @@ Config.Tutorial = {
 			Lines = {
 				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
-				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
-				"Slimes chasing Crown Shards took the Squishy Meadow road. No food gets through!",
 			},
 		},
 		Neutral = {
@@ -2293,8 +2291,6 @@ Config.Tutorial = {
 			Lines = {
 				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
-				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
-				"Slimes drawn to the Crown Shards have blocked the supply road in the Squishy Meadow.",
 			},
 		},
 	},
@@ -2308,7 +2304,7 @@ Config.Tutorial = {
 		QuestReady = "Supply road mission done! Press [Claim].",
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
-		Forge = "Go to Otto's Forge", -- A23-88: walking; Otto hands over the first weapon
+		Forge = "Go to Otto's Forge in the Crossroads", -- A23-88: walking; Otto hands over the first weapon (zone_check_halo #44: the Forge is outside the town)
 		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next.",
 		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
 		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
@@ -2371,6 +2367,9 @@ Config.Tutorial = {
 -- [Claim]); a Choice with Points = 0 leans the shard (LeanGood / LeanEvil) instead of a score line.
 Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
+	-- zone_check_halo #19: true = every active sub is sent, the ones past MaxSubs marked More = true (the HUD must draw only the
+	-- rows without More; the quest window lists all). Off until game dev 1's HUD skips More rows (then: true).
+	SendAllSubs = false,
 	-- map v2: the slime pond in the meadow's south-west (kit_meadow M_Pond, 50 wide)
 	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
@@ -2910,7 +2909,7 @@ Config.StoryQuests = {
 		-- oath. Same steps count and walking for both sides' rewards: a stat-free title, 2 points (A23-58: the other side -2)
 		-- and the woods-type reward (2 minutes of hunting gold + XP, like the other woods subs).
 		OathH = {
-			Kind = "Sub", Title = "The Sprout Oath", ShortName = "Sprout oath", Speaker = "Bright", Factions = { Halo = true },
+			Kind = "Sub", Title = "The Sprout Promise", ShortName = "Sprout promise", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M3_4" }, Level = 15 },
 			Start = "Bright has one more lesson for you.",
 			Steps = {
@@ -2919,16 +2918,16 @@ Config.StoryQuests = {
 						"Bright: First, guard the woods bridge. Then face a Goblin Brute!" } } },
 				{ Text = "Guard the woods bridge %d/%d s", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 15 } },
 				{ Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
-				{ Text = "Make your oath to Bright", Guide = "HaloTown", Npc = "Bright", Panel = true,
-					Lines = { All = { "Bright: You did it! Say your oath. What kind of Halo are you?" } },
+				{ Text = "Make your promise to Bright", Guide = "HaloTown", Npc = "Bright", Panel = true,
+					Lines = { All = { "Bright: You did it! Make your promise. What kind of Halo are you?" } },
 					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
 						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
 			},
 			Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
-			Finish = "Oath sworn! Keep it close, wherever you go.",
+			Finish = "Promise made! Keep it close, wherever you go.",
 		},
 		OathR = {
-			Kind = "Sub", Title = "The Sprout Oath", ShortName = "Sprout oath", Speaker = "Smokey", Factions = { Horns = true },
+			Kind = "Sub", Title = "The Sprout Promise", ShortName = "Sprout promise", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M3_4" }, Level = 15 },
 			Start = "Smokey has one more lesson for you.",
 			Steps = {
@@ -2939,13 +2938,13 @@ Config.StoryQuests = {
 				{ Text = "Find the first goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
 				{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },
 				{ Text = "Basic hits on a Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
-				{ Text = "Make your oath to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
-					Lines = { All = { "Smokey: Not bad, rascal! Say your oath. What kind of Horn are you?" } },
+				{ Text = "Make your promise to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "Smokey: Not bad, rascal! Make your promise. What kind of Horn are you?" } },
 					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
 						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
 			},
 			Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
-			Finish = "Oath sworn! Keep it close, wherever you go.",
+			Finish = "Promise made! Keep it close, wherever you go.",
 		},
 		-- A23-86 Call of the Woods (content_beyond_10min A): the first time a Lv10 hunter stands on the woods bridge, one
 		-- small card. Same size, fixed reward: A (angel) one 70% scroll / B (devil) 3 HP potions + 1 minute of hunting gold at
@@ -3229,7 +3228,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 22 },
 			Start = "Bright: The hero statues are dusty. Who were they, really?",
 			Steps = {
-				{ Text = "Look at the hero statues %d/%d s", Guide = "HeroStatue",
+				{ Text = "Look at the hero statues in Halo Citadel %d/%d s", Guide = "HeroStatue",
 					Obj = { Type = "Near", Spot = "HeroStatue", Radius = 16, Stay = 10 } },
 				{ Text = "Goblins %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 8 } },
 				{ Text = "Back to the statues", Guide = "HeroStatue", Obj = { Type = "Near", Spot = "HeroStatue", Radius = 16 } },

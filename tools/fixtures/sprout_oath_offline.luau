@@ -78,7 +78,7 @@ runGroup("config", function()
 		check(d.Reward.TitleBy.Good == "GuardianCadet" and d.Reward.TitleBy.Evil == "RascalCadet" and d.Reward.Gold == 2
 			and d.Reward.XP == 2 and d.Reward.GoldN == nil and d.Reward.XPBar == nil,
 			id .. ": stat-free titles by the pick, the woods-sub reward (2 minutes of hunting gold + XP, #54)", show(d.Reward))
-		check(d.Finish == "Oath sworn! Keep it close, wherever you go.", id .. ": the closing line", d.Finish)
+		check(d.Finish == "Promise made! Keep it close, wherever you go.", id .. ": the closing line", d.Finish)
 		local said = d.Start .. " " .. d.Finish
 		for _, step in d.Steps do
 			for _, line in (step.Lines and step.Lines.All) or {} do said ..= " " .. line end

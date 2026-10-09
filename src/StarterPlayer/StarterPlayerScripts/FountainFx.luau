@@ -38,7 +38,8 @@ local SPECS = {
 		},
 		Pool = { Y = 0.13, R = 0.42 },
 	},
-	-- Halo town (Tripo 3b HD, two cloud tiers + a floating halo ring): first guess, tuned when the model is in the place
+	-- the cloud fountain (Tripo 3b HD, two cloud tiers + a floating halo ring): since the Crossroads 3D swap it stands in
+	-- the Crossroads plaza (Map.Decor.Crossroads3D) under this name - never the Halo town's new fountain (A23-96)
 	Town_Halo_Fountain = {
 		Jet = { Y = 0.86, Up = 11 },
 		Curtains = {
@@ -47,13 +48,15 @@ local SPECS = {
 		Pool = { Y = 0.17, R = 0.4 },
 		Halo = { Y = 1.02, R = 0.18 },
 	},
-	-- Halo town, the 3-tier fountain (이미지 생성 1, 2026-10-09 night, Halo_Fountain_HD_plain measured: 16 x 16 x 12.85,
-	-- pivot at the bottom centre, three bowls, no halo ring; docs/design/halo_town_plan_2026-10-09.md last section):
-	-- pool water y 0.165 (inner rim 0.455), middle bowl water 0.53 (rim 0.25), top bowl water 0.75 (rim 0.15), the gold
-	-- ball 0.80-0.90. 4 x 2 streams from the top bowl into the middle one, 12 from the middle rim into the pool (first
-	-- guess: tuned from photos once it is in the place). Pool.Rate / Deep: more twinkles in the concept's deeper blue
+	-- the Halo town's own 3-tier fountain (이미지 생성 1 + 검수 2026-10-10: its kit Model and mesh are named
+	-- Town_Halo_Fountain3; Halo_Fountain_HD_plain measured 16 x 16 x 12.85, pivot at the bottom centre, three bowls, no
+	-- halo ring; docs/design/halo_town_plan_2026-10-09.md last section): pool water y 0.165 (inner rim 0.455), middle bowl
+	-- water 0.53 (rim 0.25), top bowl water 0.75 (rim 0.15), the gold ball 0.80-0.90, the spike tip 1.0. A small jet off
+	-- the tip (inside the ball it would never show; 검수 10/10) falls into the top bowl; 4 x 2 streams from the top bowl
+	-- into the middle one, 12 from the middle rim into the pool (first guess: tuned from photos once it is in the place).
+	-- Pool.Rate / Deep: more twinkles in the concept's deeper blue
 	Town_Halo_Fountain3 = {
-		Jet = { Y = 0.80, Up = 8 },
+		Jet = { Y = 1.0, Up = 5 },
 		Curtains = {
 			{ FromY = 0.76, FromR = 0.145, ToY = 0.54, ToR = 0.19, Count = 8, Width = 1.6 },
 			{ FromY = 0.55, FromR = 0.25, ToY = 0.17, ToR = 0.31, Count = 12, Width = 2.2, Ripples = true },
@@ -61,10 +64,6 @@ local SPECS = {
 		Pool = { Y = 0.165, R = 0.45, Rate = 8, Deep = true },
 	},
 }
--- the 3-tier fountain comes in under the cloud one's model name (Town_Halo_Fountain, the kit ledger's --replace); until
--- the main place has it both work: the new one is told by its mesh "Halo_Fountain" (the import name in the contract)
--- or a model attribute FountainSpec = "Town_Halo_Fountain3"; anything else keeps the cloud spec
-local VARIANT = { Town_Halo_Fountain = { Spec = "Town_Halo_Fountain3", Mesh = "Halo_Fountain" } }
 local S = { Started = false, Built = setmetatable({}, { __mode = "k" }), Emitters = {} } -- Emitters: { Emitter, Rate, Kind }
 
 local function lowFx()
@@ -246,20 +245,14 @@ local function build(model, spec)
 	applyRates()
 end
 
--- the spec for a fountain model: its name's, or the variant's when the model carries the variant's mark
+-- the spec for a fountain model: by its Model name (each fountain has its own kit name)
 function FountainFx.SpecFor(model)
-	local v = VARIANT[model.Name]
-	if v and (model:GetAttribute("FountainSpec") == v.Spec or model:FindFirstChild(v.Mesh, true) ~= nil) then
-		return SPECS[v.Spec], v.Spec
-	end
 	return SPECS[model.Name], model.Name
 end
 
 local function consider(inst)
 	if not SPECS[inst.Name] or not inst:IsA("Model") then return end
 	task.defer(function()
-		-- a variant's mark (a child mesh) may replicate after the model itself: wait a moment before choosing
-		if VARIANT[inst.Name] and not inst:FindFirstChild(VARIANT[inst.Name].Mesh, true) then task.wait(1.5) end
 		if inst.Parent then
 			local ok, err = pcall(build, inst, (FountainFx.SpecFor(inst)))
 			if not ok then warn("[" .. TAG .. "] build failed for " .. inst:GetFullName() .. ": " .. tostring(err)) end

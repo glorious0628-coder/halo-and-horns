@@ -1,5 +1,5 @@
 {
-  "checks": 29,
+  "checks": 32,
   "failed": 0,
   "mutations": [
     {
@@ -43,7 +43,22 @@
       "caught": true
     },
     {
-      "name": "every PetList redraws",
+      "name": "an XP-only change rebuilds the window (a press in progress is lost)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the bar text stays old",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the resting pet says 'Walk speed'",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "small XP numbers again",
       "applied": true,
       "caught": true
     },

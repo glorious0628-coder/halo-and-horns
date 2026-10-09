@@ -10,12 +10,20 @@
 --   then ExperienceNotificationService:CanPromptOptInAsync() (Roblox decides 13+, an earlier answer, its own pause) ->
 --   PromptOptIn() -> OptInPromptClosed -> ClientMetric("OptIn", "shown"); Roblox said no -> ClientMetric("OptIn",
 --   "cannot"). The server keeps the asked list and the "never again" rule.
+--   Perf (빛 마을 점검 #32; docs/design/phone_perf_server_2026-10-09.md "개발 1에게"): every Config.Analytics.Perf.Every
+--   s after my data loads, ClientMetric("Perf", { D, F, W, M, Q }) for the window just gone - D the device (touch only:
+--   Phone when the screen's short side is under T.TabletPx, else Tablet; a keyboard: Desktop; a gamepad only: Console),
+--   F its average FPS, W the lowest full second (never above F), M Stats memory MB, Q the saved graphics level (0 =
+--   auto). Only frames while the game window had focus count, frame gaps over a second (the app away) never; under
+--   T.PerfActive s of such play in a window -> nothing sent. Nothing on screen changes.
 --   My Way (#2): the MyWay attribute (ReturnService: the name from my own story picks, "" = none yet) changing after its
 --   first value -> one 2 s line. No judging, no stats.
 -- Presentation + the prompt only; the server owns every rule and record.
 -- Public API: ComeBack.Init(C), ComeBack.Start(), ComeBack.Metric(id, arg?), ComeBack.ArgOk(rule, arg),
 -- ComeBack.OptIn(why), ComeBack.Calm() -> bool, ComeBack.OnFx(kind, data), ComeBack.OnMyWay(value) -> the line shown or nil,
--- ComeBack.Bought() (a purchase window was used: the calm clock; Passes / ShopUI may call it too).
+-- ComeBack.Bought() (a purchase window was used: the calm clock; Passes / ShopUI may call it too),
+-- ComeBack.PerfDevice(touch, keyboard, gamepad, shortSide) -> D, ComeBack.PerfPack(d, frames, active, seconds, mem, q) -> arg | nil,
+-- ComeBack.PerfFrame(dt) (one frame of the Perf window).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
@@ -38,11 +46,15 @@ local T = {
 	Poll = 0.5,
 	PromptMax = 300, -- s waiting for Roblox's opt-in window to close
 	MyWaySeconds = 2,
+	TabletPx = 600, -- a touch screen whose short side is this many px or more is a tablet
+	PerfActive = 60, -- s of focused play a Perf window needs (the contract)
 	-- game text: English only (A23-48), short and easy
 	Text = { MyWay = "Your way: %s" },
 }
 local S = { SentAt = {}, OptInAsked = false, KOAt = -math.huge, FailAt = -math.huge, BuyAt = -math.huge,
-	MyWay = nil, MyWaySeen = false }
+	MyWay = nil, MyWaySeen = false,
+	-- the Perf window: frames / active s counted, the current second's frames + time, the full seconds' FPS list
+	Perf = { Frames = 0, Active = 0, SecFrames = 0, SecTime = 0, Seconds = {}, Focused = true, Started = 0 } }
 
 local function cfg(name, default)
 	local n = Config.Notify
@@ -61,8 +73,41 @@ function ComeBack.ArgOk(rule, arg)
 			or (type(Config.GamePasses) == "table" and Config.GamePasses[arg] ~= nil)
 			or (type(Config.Looks) == "table" and Config.Looks[arg] ~= nil))
 	end
+	if rule == "Perf" then -- TelemetryService perfOk: exactly D F W M Q, whole numbers in range, W <= F
+		if type(arg) ~= "table" then return false end
+		local P = A.Perf or {}
+		for k in arg do
+			if k ~= "D" and k ~= "F" and k ~= "W" and k ~= "M" and k ~= "Q" then return false end
+		end
+		local function whole(v, lo, hi) return type(v) == "number" and v == math.floor(v) and v >= lo and v <= hi end
+		return type(arg.D) == "string" and table.find(A.PerfDevices or {}, arg.D) ~= nil
+			and whole(arg.F, 0, tonumber(P.MaxFps) or 240) and whole(arg.W, 0, arg.F)
+			and whole(arg.M, 0, tonumber(P.MaxMem) or 16384) and whole(arg.Q, 0, tonumber(P.MaxQuality) or 10)
+	end
 	if type(rule) == "table" then return type(arg) == "string" and table.find(rule, arg) ~= nil end
 	return false
+end
+
+-- the Perf device word (pure)
+function ComeBack.PerfDevice(touch, keyboard, gamepad, shortSide)
+	if keyboard then return "Desktop" end
+	if touch then return (tonumber(shortSide) or 0) >= T.TabletPx and "Tablet" or "Phone" end
+	if gamepad then return "Console" end
+	return "Desktop"
+end
+
+-- the Perf argument of one window (pure): frames over active focused s, the full seconds' FPS (lowest = W, never above
+-- F), memory MB, quality level; nil under T.PerfActive s
+function ComeBack.PerfPack(d, frames, active, seconds, mem, q)
+	if type(active) ~= "number" or active < T.PerfActive or type(frames) ~= "number" then return nil end
+	local P = (Config.Analytics and Config.Analytics.Perf) or {}
+	local f = math.clamp(math.floor(frames / active + 0.5), 0, tonumber(P.MaxFps) or 240)
+	local w = f
+	for _, v in type(seconds) == "table" and seconds or {} do
+		if type(v) == "number" then w = math.min(w, math.max(0, math.floor(v))) end
+	end
+	return { D = d, F = f, W = math.min(w, f), M = math.clamp(math.floor(tonumber(mem) or 0), 0, tonumber(P.MaxMem) or 16384),
+		Q = math.clamp(math.floor(tonumber(q) or 0), 0, tonumber(P.MaxQuality) or 10) }
 end
 
 function ComeBack.Metric(id, arg)
@@ -194,8 +239,56 @@ function ComeBack.Init(registry)
 	C = registry
 end
 
+-- the window just gone -> ClientMetric "Perf" (when it had T.PerfActive focused s)
+local function perfSend()
+	local P = S.Perf
+	local UIS = game:GetService("UserInputService")
+	local cam = workspace.CurrentCamera
+	local vp = cam and cam.ViewportSize or Vector2.new(1280, 720)
+	local mem, q = 0, 0
+	pcall(function() mem = game:GetService("Stats"):GetTotalMemoryUsageMb() end)
+	pcall(function() q = UserSettings().GameSettings.SavedQualityLevel.Value end)
+	local arg = ComeBack.PerfPack(ComeBack.PerfDevice(UIS.TouchEnabled, UIS.KeyboardEnabled, UIS.GamepadEnabled,
+		math.min(vp.X, vp.Y)), P.Frames, P.Active, P.Seconds, mem, q)
+	if arg then return ComeBack.Metric("Perf", arg) end
+	return false
+end
+
+-- one frame (RenderStepped dt): the window starts when my data has loaded; frames count only while the game window
+-- has focus and never a gap over a second (the app away); every Perf.Every s the window is sent and a new one starts
+function ComeBack.PerfFrame(dt)
+	local P = S.Perf
+	local now = os.clock()
+	if LocalPlayer:GetAttribute("DataLoaded") ~= true then
+		P.Started = now
+		return
+	end
+	if P.Focused and type(dt) == "number" and dt > 0 and dt <= 1 then
+		P.Frames += 1
+		P.Active += dt
+		P.SecFrames += 1
+		P.SecTime += dt
+		if P.SecTime >= 1 then
+			table.insert(P.Seconds, P.SecFrames / P.SecTime)
+			P.SecFrames, P.SecTime = 0, 0
+		end
+	end
+	local every = tonumber(Config.Analytics and Config.Analytics.Perf and Config.Analytics.Perf.Every) or 120
+	if now - P.Started >= every then
+		perfSend()
+		P.Frames, P.Active, P.SecFrames, P.SecTime, P.Seconds, P.Started = 0, 0, 0, 0, {}, now
+	end
+end
+
 function ComeBack.Start()
 	if not LocalPlayer then return end
+	S.Perf.Started = os.clock()
+	pcall(function()
+		local UIS = game:GetService("UserInputService")
+		UIS.WindowFocused:Connect(function() S.Perf.Focused = true end)
+		UIS.WindowFocusReleased:Connect(function() S.Perf.Focused = false end)
+		game:GetService("RunService").RenderStepped:Connect(function(dt) pcall(ComeBack.PerfFrame, dt) end)
+	end)
 	LocalPlayer.CharacterAdded:Connect(function(char) task.spawn(watchKO, char) end)
 	if LocalPlayer.Character then task.spawn(watchKO, LocalPlayer.Character) end
 	if LocalPlayer:GetAttribute("MyWay") ~= nil then ComeBack.OnMyWay(LocalPlayer:GetAttribute("MyWay")) end
