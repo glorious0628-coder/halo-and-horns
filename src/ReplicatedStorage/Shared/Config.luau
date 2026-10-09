@@ -5302,6 +5302,7 @@ Config.UIArt = {
 -- tools/minimap_capture.py: square tiles, image right = +X east, image up = -Z north). Each tile covers X0..X1 x Z0..Z1
 -- studs; MiniMap lays them on its turning canvas over the old code-drawn lands. Trial set (4 tiles, 2026-10-09); the
 -- whole map follows when the dressing is done
+Config.UIArt.MapTilesFull = false -- true when MapTiles cover the whole world: then the big map (M) draws them too
 Config.UIArt.MapTiles = {
 	{ Id = "rbxassetid://115502330444601", X0 = -80, X1 = 80, Z0 = -80, Z1 = 80 }, -- crossroads
 	{ Id = "rbxassetid://133694892661834", X0 = 180, X1 = 340, Z0 = -80, Z1 = 80 }, -- meadow arrival

@@ -860,7 +860,8 @@ local function drawWorld()
 
 	-- A23-95: the top-down world shots (Config.UIArt.MapTiles, north up like this map) over the drawn shapes, under
 	-- the landmarks
-	local tiles = type(Config.UIArt) == "table" and Config.UIArt.MapTiles or nil
+	-- only once the whole map is shot (MapTilesFull): a few trial squares on the painted map looked like patches
+	local tiles = type(Config.UIArt) == "table" and Config.UIArt.MapTilesFull == true and Config.UIArt.MapTiles or nil
 	for i, tl in (type(tiles) == "table" and tiles or {}) do
 		if type(tl) == "table" and type(tl.Id) == "string" and tl.Id ~= "" and tonumber(tl.X0) and tonumber(tl.X1)
 			and tonumber(tl.Z0) and tonumber(tl.Z1) then

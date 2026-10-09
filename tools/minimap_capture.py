@@ -3,6 +3,9 @@
   py tools/minimap_capture.py trial [--set NAME]                 4 trial tiles (crossroads, meadow arrival, woods camp, pond)
   py tools/minimap_capture.py grid --x0 -300 --x1 1400 --z0 -500 --z1 500 [--set NAME] [--tile 160] [--overlap 12]
   py tools/minimap_capture.py at X Z [X Z ...] [--set NAME]      the tiles centred on these world points
+  --solid-parasols   (검수 10/09, no ray-burst rule) while shooting, parasol / umbrella / canopy / Kit_X_Stall* lose their striped
+                     look (mesh TextureID, Decal / Texture, SurfaceAppearance moved aside) and take one plain colour; all
+                     put back by the restore step
 
 Edit mode only, MCP only (no clicks, no Play, no window handling): the Studio Edit camera is put straight down very high
 with a narrow field of view (default 15 degrees, nearly flat), one capture per tile, the centre square of the viewport is
@@ -63,8 +66,72 @@ end
 cam.FieldOfView = %f
 return "setup ok, hid " .. hid .. " sky parts"
 '''
+SOLID = r'''
+-- parasol covers -> one plain colour for the shot (no radial stripes from above); everything kept to put back
+local hold = game:GetService("ServerStorage"):FindFirstChild("MapCapHold") or Instance.new("Folder")
+hold.Name = "MapCapHold"
+hold.Parent = game:GetService("ServerStorage")
+local function striped(name)
+	name = string.lower(name)
+	return string.find(name, "parasol", 1, true) or string.find(name, "umbrella", 1, true) or string.find(name, "canopy", 1, true)
+		or string.find(name, "kit_x_stall", 1, true) -- the Crossroads market stalls' striped roofs (main 2026-10-09)
+end
+local PLAIN = { red = Color3.fromRGB(196, 72, 62), blue = Color3.fromRGB(70, 118, 196), green = Color3.fromRGB(78, 156, 92) }
+local function plainFor(name)
+	name = string.lower(name)
+	for k, col in PLAIN do
+		if string.find(name, k, 1, true) then return col end
+	end
+	return nil
+end
+local n = 0
+for _, d in workspace:GetDescendants() do
+	if d:IsA("BasePart") and (striped(d.Name) or (d.Parent and striped(d.Parent.Name))) then
+		n += 1
+		d:SetAttribute("MapCapColor", d.Color)
+		local _, sat, v = d.Color:ToHSV()
+		local plain = plainFor(d.Name) or (d.Parent and plainFor(d.Parent.Name))
+		if plain then d.Color = plain
+		elseif v > 0.9 and sat < 0.12 then d.Color = Color3.fromRGB(226, 196, 150) end -- a white base would come out white
+		if d:IsA("MeshPart") and d.TextureID ~= "" then
+			d:SetAttribute("MapCapTex", d.TextureID)
+			d.TextureID = ""
+		end
+		for _, k in d:GetChildren() do
+			if k:IsA("Decal") or k:IsA("Texture") then
+				k:SetAttribute("MapCapDecalT", k.Transparency)
+				k.Transparency = 1
+			elseif k:IsA("SurfaceAppearance") then
+				local ref = Instance.new("ObjectValue")
+				ref.Name = "Ref"
+				ref.Value = d
+				ref.Parent = k
+				k.Parent = hold
+			end
+		end
+	end
+end
+return "solid parasols: " .. n
+'''
 RESTORE = r'''
 local HttpService = game:GetService("HttpService")
+local hold = game:GetService("ServerStorage"):FindFirstChild("MapCapHold")
+if hold then
+	for _, k in hold:GetChildren() do
+		local ref = k:FindFirstChild("Ref")
+		if ref and ref.Value then k.Parent = ref.Value end
+		if ref then ref:Destroy() end
+	end
+	if #hold:GetChildren() == 0 then hold:Destroy() end
+end
+for _, d in workspace:GetDescendants() do
+	local col = d:GetAttribute("MapCapColor")
+	if col ~= nil and d:IsA("BasePart") then d.Color = col d:SetAttribute("MapCapColor", nil) end
+	local tex = d:GetAttribute("MapCapTex")
+	if tex ~= nil and d:IsA("MeshPart") then d.TextureID = tex d:SetAttribute("MapCapTex", nil) end
+	local dt = d:GetAttribute("MapCapDecalT")
+	if dt ~= nil and (d:IsA("Decal") or d:IsA("Texture")) then d.Transparency = dt d:SetAttribute("MapCapDecalT", nil) end
+end
 local raw = workspace:GetAttribute("MinimapCapPrev")
 if not raw then return "nothing to restore" end
 local prev = HttpService:JSONDecode(raw)
@@ -158,6 +225,8 @@ def main():
         if "Current Studio Mode: Edit" not in state:
             sys.exit("not in Edit: " + state)
         print(text_of(c.call("execute_luau", {"code": SETUP % (sky_y, fov), "datamodel_type": "Edit"})))
+        if "--solid-parasols" in sys.argv:
+            print(text_of(c.call("execute_luau", {"code": SOLID, "datamodel_type": "Edit"})))
         for i, (tid, cx, cz) in enumerate(centres):
             c.call("execute_luau", {"code": CAM % (cx, cam_h, cz), "datamodel_type": "Edit"})
             time.sleep(1.8)
