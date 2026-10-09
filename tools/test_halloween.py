@@ -313,7 +313,7 @@ MUTATIONS = [
     ("puddle shrinks while the slime is already gone", "FX_SOURCE",
      "if not mesh.Parent or not joint.Parent then return end", ""),
     ("slime hop not capped at HopMax", "FX_SOURCE",
-     "local hopMax = math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)", "local hopMax = st.H * WOBBLE.HopRatio"),
+     "or math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)", "or st.H * WOBBLE.HopRatio"),
     ("slime sits on the ground surface (no Sink)", "FX_SOURCE",
      "-(hop + (sy - 1) * half) + WOBBLE.Sink, 0)", "-(hop + (sy - 1) * half), 0)"),
     ("slime shadow does not shrink in the air", "FX_SOURCE",

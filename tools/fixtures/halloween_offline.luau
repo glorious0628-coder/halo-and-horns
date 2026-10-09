@@ -3330,7 +3330,7 @@ local function wobbleWorld(config)
 	local folder = { GetChildren = function() return f.Models end }
 	local ws = { CurrentCamera = { CFrame = { Position = vec(0, 0, 0) } },
 		FindFirstChild = function(_, n) if n == "Monsters" then return folder end return nil end }
-	local H = { C = { MonsterMotion = { IsRigged = function(m) return m.Rigged == true end } }, MOTION = { HURT_SEQ_ATTR = "HurtSeq" },
+	local H = { C = { MonsterMotion = { IsRigged = function(m) return m.Rigged == true end } }, MOTION = { HURT_SEQ_ATTR = "HurtSeq", THUD = {}, Thuds = function() return false end, Thud = function() end }, -- 7d2a7b1a: no King Slime here
 		TweenService = { Create = function(_, inst, info, goal)
 			local tw = { Inst = inst, Info = info, Goal = goal, Played = false }
 			table.insert(f.Tweens, tw)

@@ -5348,7 +5348,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "514b54609ee5a4c55e1f1ba2c56a8f544b7c1b8109a4460c7abaabf850c5a9b5",
+    "src/ReplicatedStorage/Shared/Config.luau": "0d8f6f0f4975585445e65c6a4ed3563848202854d53f0e4b64dc4a0b8d52488d",
     "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
@@ -5361,7 +5361,7 @@
     "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "8e8837a3d8490f9676d5284120d0596f2b6f8fb47e179aeee7104de5c0a66b37",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "e754c50e7c85d342cd9155a07047904efe5dd5fa58c0e5e91176ede5f6581a03",
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "f8f9a7448f80811619a7f02170fd6868571ac7153595a35fe5b90b9dea47c425",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "240fefee01e64eb7b9fed839f1cfebbc94775768dd3b264758a0ccef2c96cd7d",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "9ee257e0f0304207dca77a2bd541a285158cbb654b20b004a6b5225d6a9c9830",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
@@ -5374,7 +5374,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "b6fff1b60cb58240705be398926a5c28e211ec6853fb34c7412e6d48494d8b89",
+  "fixtureSHA256": "38b43f55e6bd44973d7c6f0a773b981f9686d588bfdabb23e12488ecc04b241b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
