@@ -3,467 +3,278 @@
   "checks": 32,
   "failed": 0,
   "follow": {
-    "checks": 131,
+    "checks": 43,
     "ok": true,
     "failure": "",
-    "fixtureSHA256": "cf522c83c3444a3d66b30ed3b683cd01fe6b97a9c0da4d7ad7f0c531c6da1e3c"
+    "fixtureSHA256": "20d3aa1e0b2e8260ab0a105b2fc60f3bea97901cc96fec7b590ad36a65a979e7"
   },
   "mutations": {
-    "total": 69,
-    "applied": 69,
-    "caught": 69,
+    "total": 42,
+    "applied": 42,
+    "caught": 42,
     "results": [
       {
         "mutation": "attack on the release instead of the press",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:394: a left press attacks on the press (before the release)"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:361: a left press attacks on the press (before the release)"
       },
       {
         "mutation": "a press on a GUI attacks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:394: a press on a GUI (processed) never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:361: a press on a GUI (processed) never attacks"
       },
       {
         "mutation": "open windows / loading no longer block",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:394: FactionPicker open: a left press never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:361: FactionPicker open: a left press never attacks"
       },
       {
         "mutation": "the right button attacks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:394: a left press attacks on the press (before the release)"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:361: a left press attacks on the press (before the release)"
       },
       {
         "mutation": "holding the left button repeats the attack",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:395: a left drag attacks once (the press) and never repeats while held"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:362: a left drag attacks once (the press) and never repeats while held"
       },
       {
         "mutation": "a left drag turns the camera again",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:395: a left drag never turns the camera"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:362: a left drag never turns the camera"
       },
       {
         "mutation": "a render step drives the camera again",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:395: one render step only: the A23-65 follow turn (after the camera); no left-mouse camera step"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:362: one render step only: the A23-65 follow turn (after the camera); no left-mouse camera step"
       },
       {
         "mutation": "an open Panels window no longer blocks",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:394: Panels open: a left press never attacks"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:361: Panels open: a left press never attacks"
       },
       {
         "mutation": "the humanoid never becomes the subject",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:394: initial subject attaches"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:361: initial subject attaches"
       },
       {
         "mutation": "a scripted camera loses its subject",
         "applied": true,
         "caught": true,
-        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:394: a scripted camera keeps its own subject"
+        "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:361: a scripted camera keeps its own subject"
       },
       {
-        "mutation": "(e) spins while backing up",
+        "mutation": "1 the stop never brakes (it coasts on)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL walking toward the camera (backing up): never spins :: -16.000000000000053"
+        "failure": "CHECK_FAIL 1 after a stop it turns < 3 deg more :: 24.910073186548875"
       },
       {
-        "mutation": "sidesteps never turn again (the old A23-65 forward-only rule)",
+        "mutation": "1 a standing body still turns it (the old recenter)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL a sidestep right turns the camera right, at most 16 deg/s :: -0"
+        "failure": "CHECK_FAIL 1 after a stop it turns < 3 deg more :: 5.024816048203844"
       },
       {
-        "mutation": "(d) a held side key circles tightly (side cap = forward cap)",
+        "mutation": "2 a 6 deg dead zone again",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL a sidestep right turns the camera right, at most 16 deg/s :: -0.3472471485641352"
+        "failure": "CHECK_FAIL 2 a walk 12 deg off the look (inside 15 deg): no turn :: 0.14972277477169613"
       },
       {
-        "mutation": "(d) a linear fade (W+D circles at ~43 studs)",
+        "mutation": "2 no acceleration cap",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL the cap: <= 21 deg/s at 37 deg, <= 18 at 45, the 16 deg/s side cap from 60 deg to the backpedal limit :: {1=32.675000000000004, 2=26.874999999999996, 3=16, 4=16}"
+        "failure": "CHECK_FAIL 2 a fast diagonal walk: at most 240 deg/s per s (the acceleration cap) :: 314.34501229007674"
       },
       {
-        "mutation": "(d) the old dot-based cap (full 45 deg/s up to 60 deg: 25-stud circles)",
+        "mutation": "2 a frame-rate-bound ease (share per frame)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL the cap: <= 21 deg/s at 37 deg, <= 18 at 45, the 16 deg/s side cap from 60 deg to the backpedal limit :: {1=45, 2=45, 3=45, 4=16}"
+        "failure": "CHECK_FAIL 7 30 / 60 / 144 fps turn the same (within 1 deg) :: 19.46294811430228 / 22.659800290886594 / 24.851671950482515"
       },
       {
-        "mutation": "a hard switch instead of a smooth fade",
+        "mutation": "2 it may turn past the dead zone edge (overshoot)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL the cap falls smoothly (never rises, no step bigger than 2.5 deg/s per deg) :: {1=true, 2=29}"
+        "failure": "CHECK_FAIL 2 a fast diagonal walk stops exactly at the dead zone edge (45 deg) :: 45.32032531436838"
       },
       {
-        "mutation": "forward walks lose the full cap",
+        "mutation": "2 turns the wrong way",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL a walk 20 deg off the look: above the 16 deg/s side cap, at most speed / 55 studs (20.8 deg/s) :: 16.00000000000001"
+        "failure": "CHECK_FAIL 3 a walk 60 deg left turns the camera left :: -44.16192662943271"
       },
       {
-        "mutation": "'Screen shake' off ignored sideways",
+        "mutation": "3 spins while walking toward the camera",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL 'Screen shake' off: the follow turns slower :: {1=0.28646510639668427, 2=0.33046163913005705}"
+        "failure": "CHECK_FAIL 3 walking toward the camera (160 deg) never turns it :: 0.14854370086280821"
       },
       {
-        "mutation": "Reduced Motion ignored",
+        "mutation": "3 sideways as fast as forward",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL Roblox Reduced Motion: the slow recenter too :: {DistDrift=1.2434497875801753e-14, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=0.905661139163044, Overshoot=false, Start=89.73333333333335, TiltDrift="
+        "failure": "CHECK_FAIL 3 a sideways walk turns slower than a diagonal one :: 26.644369328176506 vs 23.840661074311328"
       },
       {
-        "mutation": "no hold after a hand turn",
+        "mutation": "4 no hold after a hand turn",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL while the right button is down: no follow (Roblox's right drag owns the camera) :: nil"
+        "failure": "CHECK_FAIL 4 a right drag: no follow for 1.5 s :: 0.360136061647556"
       },
       {
-        "mutation": "(c) no hold after my swing (walk and recenter)",
+        "mutation": "4 after the hold it snaps back (the speed kept)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL 0.4 s after my swing: no follow (FaceTarget never whips the camera) :: nil"
+        "failure": "CHECK_FAIL 4 after a hand turn mid-turn it starts again from 0 :: 0.5037401964800765"
       },
       {
-        "mutation": "no turn-speed cap while walking",
+        "mutation": "4 a held arrow / Comma / Period is no hand turn",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL a sidestep right turns the camera right, at most 16 deg/s :: -1.8"
+        "failure": "CHECK_FAIL 4 Roblox's keyboard turn (Left arrow) is a hand turn too :: nil"
       },
       {
-        "mutation": "(c) Settings Free ignored (walk and recenter)",
+        "mutation": "4 the right stick is no hand turn",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 4 the right stick is a hand turn :: nil"
+      },
+      {
+        "mutation": "4 the move stick holds it",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL phone: the move stick's touch never counts as a hand turn :: nil"
+      },
+      {
+        "mutation": "5 full follow during a fight",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 5 after my swing: much weaker (30%) :: 11.007514880657258 vs 11.007514880657258"
+      },
+      {
+        "mutation": "5 other players' swings weaken my camera",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 5 another player's swing changes nothing :: 3.3019969543822536"
+      },
+      {
+        "mutation": "7 no hitch clamp",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 7 a 0.5 s hitch counts as 1/20 s :: 14.965853673206139"
+      },
+      {
+        "mutation": "8 no top speed cap",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 8 'Screen shake' off: at most 50 deg/s :: 65.48895958210346"
+      },
+      {
+        "mutation": "8 'Screen shake' off ignored",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 8 'Screen shake' off: at most 50 deg/s :: 58.96604419622318"
+      },
+      {
+        "mutation": "8 Reduced Motion ignored",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 8 Roblox's Reduced Motion: at most 50 deg/s :: 58.96604419622318"
+      },
+      {
+        "mutation": "8 no radius cap (tight circles)",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL 8 a held 40 deg stick: <= speed / 45 studs (no tight circle) :: 46.636088839722056"
+      },
+      {
+        "mutation": "Settings Free ignored",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
         "failure": "CHECK_FAIL Settings Camera = Free: no follow :: nil"
       },
       {
-        "mutation": "(c) windows / scripted camera no longer block",
+        "mutation": "no setting yet = no follow (the default must be Follow)",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL no camera setting yet: it follows (the default is Follow, A23-91) :: nil"
+      },
+      {
+        "mutation": "windows no longer block",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
         "failure": "CHECK_FAIL a window open: no follow :: nil"
       },
       {
-        "mutation": "no camera setting yet follows (the default is Free, user 10/08)",
+        "mutation": "adds to Roblox's own Follow camera (two turns)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL no camera setting yet: the default is Free (user 10/08) - no follow :: nil"
-      },
-      {
-        "mutation": "'Screen shake' off ignored",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL 'Screen shake' off: the recenter is slower (<= 60 deg/s) but still ends behind me :: {DistDrift=1.2434497875801753e-14, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=0.905661139163044, OffAt=1.8522741"
-      },
-      {
-        "mutation": "other players' swings hold my camera",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL another player's swing does not hold my camera :: nil"
-      },
-      {
-        "mutation": "the move stick holds it",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL a finger on the move stick (left side) does not hold the follow :: -0"
-      },
-      {
-        "mutation": "turns the wrong way",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL walking forward-right turns the camera right, within the 45 deg/s cap :: {1=-0, 2=0.33046163913005705}"
+        "failure": "CHECK_FAIL Roblox's own Follow camera active: ours stays off (never two turns) :: nil"
       },
       {
         "mutation": "follows in shift lock",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL shift lock: no follow (it turns me itself) :: nil"
+        "failure": "CHECK_FAIL shift lock: no follow :: nil"
       },
       {
-        "mutation": "(a)(b) no recenter on the stop (f3ab1f1: a side view forever)",
+        "mutation": "follows in first person",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL phone: letting go of the thumbstick brings the camera behind me :: {DistDrift=0, FirstMove=inf, FirstStep=0, MaxStep=0, Off=89.73333333333335, Overshoot=false, Start=89.73333333333335, TiltDrift=6.106226635438361e-16}"
+        "failure": "CHECK_FAIL first person: no follow :: nil"
       },
       {
-        "mutation": "(a) the recenter turns the wrong way",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL phone: letting go of the thumbstick brings the camera behind me :: {DistDrift=8.881784197001252e-15, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=111.73333333333335, Overshoot=false, Start=89.7333333"
-      },
-      {
-        "mutation": "(a) the recenter too slow (30 deg/s)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL phone: letting go of the thumbstick brings the camera behind me :: {DistDrift=1.4210854715202004e-14, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=0.5, Off=62.066666666666606, Overshoot=false, Start=89.7333"
-      },
-      {
-        "mutation": "(a) the recenter snaps round (no speed cap)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (a) eased: at most 120 deg/s, and it starts slow (ease in) :: {DistDrift=3.552713678800501e-15, FirstMove=0.2833333333333333, FirstStep=11.964444444444439, MaxStep=11.964444444444439, Off=0.9209176251408735, OffAt=0.9209176251408"
-      },
-      {
-        "mutation": "(a) no ease in (top speed at once)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (a) eased: at most 120 deg/s, and it starts slow (ease in) :: {DistDrift=1.5987211554602254e-14, FirstMove=0.2833333333333333, FirstStep=2, MaxStep=2, Off=0.905661139163044, OffAt=1.0449936221111784, Overshoot=false, Start=89.733"
-      },
-      {
-        "mutation": "(a) no wait after the stop (recenters while switching keys)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (a) it waits 0.25 s after the stop, then starts :: 0.016666666666666666"
-      },
-      {
-        "mutation": "(a) never settles (stops at the dead zone edge)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (a) it ends behind me (within 1 deg) without overshoot :: {DistDrift=1.2434497875801753e-14, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=5.819538166986717, OffAt=5.819538166986717, Overshoot=false, "
-      },
-      {
-        "mutation": "the dead zone ignored (nudges after every small body turn)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL the dead zone: a 4 deg turn of my body while standing leaves it still :: {1=-124.85504750334451, 2=-125.73333333333308}"
-      },
-      {
-        "mutation": "(b) the recenter starts only past 50 deg (W+D stays a side view)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL beyond the dead zone (my body turned 15 deg more) it comes round again :: {1=-120.82767219417003, 2=-140.73333333333306}"
-      },
-      {
-        "mutation": "(c) a hand turn no longer keeps my view after the stop",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (c) a right drag right after the stop: no recenter, during the hold or after it :: {DistDrift=1.2434497875801753e-14, FirstMove=1.8, FirstStep=0.2222222222221717, MaxStep=2, Off=0.905661139163044, Overshoot=false, Start=89.733333"
-      },
-      {
-        "mutation": "a hand turn blocks the recenter for good (no new walk re-arms it)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL the next walk and stop recenters again :: {1=7.999999999999545, 2=89.73333333333335}"
-      },
-      {
-        "mutation": "(e) the recenter spins 180 deg after backing up",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (e) after backing up and stopping: no 180 deg spin to my back :: {1=0.26666666666666666, 2=-114.93441295503288, 3=-115.84761022059625}"
-      },
-      {
-        "mutation": "the recenter ignores 'Screen shake' off",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL 'Screen shake' off: the recenter is slower (<= 60 deg/s) but still ends behind me :: {DistDrift=1.5987211554602254e-14, FirstMove=0.2833333333333333, FirstStep=0.11111111111108585, MaxStep=2, Off=0.9776604925390302, OffAt=8.89224"
-      },
-      {
-        "mutation": "the recenter runs for a dead character",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL dead: no recenter :: {DistDrift=1.2434497875801753e-14, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=0.905661139163044, Overshoot=false, Start=89.73333333333335, TiltDrift=1.1657341758564144e-15}"
-      },
-      {
-        "mutation": "(c) the stop is only counted after the hand-turn hold (a right drag before the stop is forgotten)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (c) a right drag within 1.5 s before the stop: no recenter (my own view) :: {DistDrift=1.9539925233402755e-14, FirstMove=1.7833333333333332, FirstStep=0.2222222222221717, MaxStep=2, Off=0.9232467923507102, Overshoot=false, Start="
-      },
-      {
-        "mutation": "(1) a held arrow / Comma / Period is no hand turn (the recenter pulls Roblox's keyboard turn back)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) the Right arrow held 0.5 s while standing: Roblox's keyboard turn goes the full 60 deg, never pulled back :: {ours=45.999999999999886, yaw=-13.99999999999995}"
-      },
-      {
-        "mutation": "(1) the Right arrow forgotten",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) the Right arrow held 0.5 s while standing: Roblox's keyboard turn goes the full 60 deg, never pulled back :: {ours=45.999999999999886, yaw=-13.99999999999995}"
-      },
-      {
-        "mutation": "(1) a Comma / Period tap between two frames is missed",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) a Comma tap between frames (processed false) right after the stop: my own view, no recenter :: {DistDrift=5.329070518200751e-15, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=0.9716073386166499, O"
-      },
-      {
-        "mutation": "(1) a processed Comma / Period tap is ignored (Roblox's camera binds those keys itself)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) a Period tap between frames (processed true) right after the stop: my own view, no recenter :: {DistDrift=5.329070518200751e-15, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=0.9716073386166499, O"
-      },
-      {
-        "mutation": "(1) any key press counts as a hand turn",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) other keys (E right after the stop) are no hand turn :: {DistDrift=0, FirstMove=inf, FirstStep=0, MaxStep=0, Off=89.73333333333335, OffAt=89.73333333333335, Overshoot=false, Start=89.73333333333335, TiltDrift=7.21644966006351"
-      },
-      {
-        "mutation": "(1) a comma held while typing in a text box counts",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) typing ',' / '.' in a text box is no hand turn: the recenter runs after :: {DistDrift=0, FirstMove=inf, FirstStep=0, MaxStep=0, Off=89.73333333333335, OffAt=89.73333333333335, Overshoot=false, Start=89.73333333333335, TiltDri"
-      },
-      {
-        "mutation": "(1) a period pressed while typing in a text box counts",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) typing ',' / '.' in a text box is no hand turn: the recenter runs after :: {DistDrift=0, FirstMove=inf, FirstStep=0, MaxStep=0, Off=89.73333333333335, OffAt=89.73333333333335, Overshoot=false, Start=89.73333333333335, TiltDri"
-      },
-      {
-        "mutation": "(1) a trackpad pan is no hand turn",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) a trackpad pan right after the stop: my own view, no recenter :: {DistDrift=8.881784197001252e-15, FirstMove=0.2833333333333333, FirstStep=0.2222222222221717, MaxStep=2, Off=0.9496252721321525, Overshoot=false, Start=89.73333"
-      },
-      {
-        "mutation": "(1) a wheel / pinch zoom counts as a hand turn",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (1) a wheel / pinch zoom (no pan) is not a hand turn: the recenter runs :: {DistDrift=0, FirstMove=inf, FirstStep=0, MaxStep=0, Off=89.73333333333335, OffAt=89.73333333333335, Overshoot=false, Start=89.73333333333335, TiltDrift=7"
-      },
-      {
-        "mutation": "(2) no radius cap (a stick 25 deg off circles at 38 studs)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL a walk 20 deg off the look: above the 16 deg/s side cap, at most speed / 55 studs (20.8 deg/s) :: 23.999999999999982"
-      },
-      {
-        "mutation": "(2) the radius cap at 35 studs",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL a walk 20 deg off the look: above the 16 deg/s side cap, at most speed / 55 studs (20.8 deg/s) :: 23.999999999999982"
-      },
-      {
-        "mutation": "(2) a half-pushed stick gets the full-speed cap (27-stud circles)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (2) a half-pushed stick 25 deg off: radius >= 50 studs too :: {radius=27.499999999998554, turned=62.504486741547794}"
-      },
-      {
-        "mutation": "(2) the radius cap reads a fixed 20 studs/s (a slower walk circles tighter)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (2) a slower walk (WalkSpeed 12) 25 deg off: radius >= 50 studs :: {radius=32.99999999999815, turned=62.504486741547794}"
-      },
-      {
-        "mutation": "(3) phones keep Roblox's Follow camera (no Classic switch)",
+        "mutation": "phones keep Roblox's Follow camera (no Classic switch)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
         "failure": "CHECK_FAIL (3) Start switches my touch camera to Classic (Roblox's Follow camera would turn on the walk too); the PC choice stays :: {pc=UserChoice, touch=UserChoice}"
       },
       {
-        "mutation": "(3) Start never switches the touch camera",
+        "mutation": "touch Default read as Classic (it is Follow on touch)",
         "fixture": "camera_follow",
         "applied": true,
         "caught": true,
-        "failure": "CHECK_FAIL (3) Start switches my touch camera to Classic (Roblox's Follow camera would turn on the walk too); the PC choice stays :: {pc=UserChoice, touch=UserChoice}"
-      },
-      {
-        "mutation": "(3) WalkTurn adds to Roblox's Follow camera (two turns)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (3) a phone on Roblox's Follow camera: no second walking turn :: nil"
-      },
-      {
-        "mutation": "(3) touch Default read as Classic (it is Follow on touch)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (3) a phone on UserChoice with Roblox's Default (= Follow on touch): no second walking turn :: nil"
-      },
-      {
-        "mutation": "(3) a PC reads the touch mode (a PC player's Follow choice ignored)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (3) a PC player who picked Roblox's Follow camera: no second walking turn :: nil"
-      },
-      {
-        "mutation": "(3) an explicit touch mode (Orbital) is overridden too",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (3) only UserChoice / Follow are switched (another explicit mode is left alone) :: Classic"
-      },
-      {
-        "mutation": "(4) no frame clamp (a 0.5 s hitch jumps the recenter 60 deg)",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (4) a 0.5 s hitch during the recenter turns at most 6 deg (1/20 s at 120 deg/s), not 60 :: 60"
-      },
-      {
-        "mutation": "(4) the clamp at 1/2 s",
-        "fixture": "camera_follow",
-        "applied": true,
-        "caught": true,
-        "failure": "CHECK_FAIL (4) a 0.5 s hitch during the recenter turns at most 6 deg (1/20 s at 120 deg/s), not 60 :: 60"
+        "failure": "CHECK_FAIL phone on Roblox's default (Follow) touch camera: ours stays off :: nil"
       },
       {
         "mutation": "a world click skips FaceTarget (fires Swing at once)",
@@ -488,8 +299,8 @@
       }
     ]
   },
-  "sourceSHA256": "9ca115f9074bc2397cab92750c05a54fb8ecc95d13faaadf0191e782b95b0a99",
-  "hudSHA256": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
+  "sourceSHA256": "69bbdb7888a5fff77a2d429b8bd7745d02b849e68e5ba18ead94158250477ad2",
+  "hudSHA256": "3bc75a787587be59e1a53719f4076081cf3ed31b86cbaa05a5b2fdf2384cb2f3",
   "hudStatic": [
     {
       "check": "L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",
@@ -501,6 +312,14 @@
     },
     {
       "check": "a world click (PrimaryClick) swings through L.SwingFaced too",
+      "ok": true
+    },
+    {
+      "check": "A23-91: Config.CameraFollow = FOLLOW's names and values (BackDot, CombatHold, CombatScale, DeadZone, Gain, ManualHold, MaxAccel, MaxRate, MinRadius, Response, SideMin, SlowMaxRate, StopResponse)",
+      "ok": true
+    },
+    {
+      "check": "A23-91: Start copies Config.CameraFollow over FOLLOW",
       "ok": true
     }
   ],
