@@ -97,7 +97,7 @@ function Config.NormalizePotionCount(value)
 end
 
 Config.Nickname = {
-	StoreName = "HaloHorns_Nicknames_v1", -- universe-wide claims; no Studio memory fallback
+	StoreName = "HaloHorns_Nicknames_v1", -- universe-wide claims; no Studio memory fallback (use Config.StoreName(StoreName))
 	MinLength = 2, MaxLength = 20, MaxBytes = 80,
 	ChangeInterval = 10,
 	-- Claimed aliases stay with their owner. Never free a name after an uncertain cross-key response.
@@ -3836,7 +3836,49 @@ Config.Settings = {
 
 -- A23-48 (user 2026-10-06 evening): the game shows English only (UIKit.Lang decides for the modules with KO / EN twins);
 -- new window texts are written in English only
-Config.BuildLabel = "beta-prep 2026.10.06" -- shown in the settings footer (bump with a release)
+Config.BuildLabel = "beta-prep 2026.10.09" -- shown in the settings footer (bump with a release)
+
+----------------------------------------------------------------- environments + ops safety (시스템 점검 1회차, 2026-10-09)
+-- Env: which copy of the game this server is. Names[<place id>] = "Beta" | "Live" is filled when those places are published
+-- (docs/design/launch_ops_checklist.md); every other place (the dev place, Studio) is "Dev". Config.StoreName(base) is the
+-- DataStore name of a store in this environment: Dev keeps the names that already exist (nothing moves), Beta and Live get
+-- "_Beta" / "_Live" appended so a test never touches the real saves, rankings or the supporter list.
+Config.Env = { Default = "Dev", Names = {} }
+
+function Config.EnvName()
+	local ok, id = pcall(function() return game.PlaceId end)
+	local name = ok and type(id) == "number" and Config.Env.Names[id] or nil
+	if name == "Beta" or name == "Live" then return name end
+	return Config.Env.Default
+end
+
+function Config.StoreName(base)
+	local env = Config.EnvName()
+	if env == "Beta" or env == "Live" then return base .. "_" .. env end
+	return base
+end
+
+-- ServerErrorService: ScriptContext.Error + a slow tick -> ONE analytics event "ServerError" (fields: script, message, kind),
+-- at most MaxPerMinute a minute for the server; the last Keep records are kept and saved (Store, every StoreSeconds and at
+-- the close) for Studio's DebugCommand("Errors"). SlowSeconds = a Heartbeat longer than this; SlowIgnoreFirst = the world
+-- builds in the first seconds.
+Config.ServerErrors = { MaxPerMinute = 5, Keep = 50, ScriptMax = 40, MessageMax = 80, SlowSeconds = 0.5, SlowIgnoreFirst = 30,
+	StoreSeconds = 120, Store = "HaloHorns_Errors_v1" }
+
+-- SwitchService: the live switchboard. One document (Store / Key) read every Interval seconds; only the switches below are
+-- applied (Type "Bool" or "Number" with Min / Max), the rest of the document is ignored. A switch that is not set keeps its
+-- Default; a failed read keeps the last answer.
+Config.Switches = {
+	Store = "HaloHorns_Switches_v1",
+	Key = "Live",
+	Interval = 60,
+	Defs = {
+		PassSales = { Type = "Bool", Default = true }, -- the screen's pass / look [Buy] buttons (a bought pass keeps working)
+		Halloween = { Type = "Bool", Default = true }, -- Config.Halloween.Enabled follows it
+		CrownWar = { Type = "Bool", Default = true }, -- war points and rounds
+		Goose = { Type = "Bool", Default = true }, -- no new goose
+	},
+}
 
 -- BB3 settings window (user 2026-10-06: class change, rebirth, opening, name hiding and vacation are settings rows;
 -- A23-48: no language row). SettingsUI.luau builds it; Sfx / Shake / KeyBadges labels come from Config.Settings.Text*En.

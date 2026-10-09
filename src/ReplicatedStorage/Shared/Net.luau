@@ -55,6 +55,8 @@ Net.GameStateDefaults = {
 	HaloCount = 0, HornsCount = 0,
 	-- A23-75 MonetizationService: VIP owners' display names (every server), newest first, one per line
 	SupporterNames = "",
+	-- A: SwitchService (the live switchboard): true = on; the screen hides what is off (PassSales: the [Buy] buttons)
+	SwitchPassSales = true, SwitchHalloween = true, SwitchCrownWar = true, SwitchGoose = true,
 	-- CR-L7: FactionService.GetUnderdogCounts (no rookies, no 120 s idlers) for the rebirth underdog bonus + preview
 	UnderdogHalo = 0, UnderdogHorns = 0,
 	-- JusticeService
