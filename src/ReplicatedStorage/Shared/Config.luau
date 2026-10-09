@@ -1579,6 +1579,19 @@ Config.Map = {
 		{ Name = "RoadPumpkin", MinX = 529, MaxX = 541, MinZ = 9, MaxZ = 330, Season = "Halloween" },
 		{ Name = "RoadHollow", MinX = 330, MaxX = 535, MinZ = 335, MaxZ = 345, Season = "Halloween" },
 	},
+	-- 검수 10/09 (main photo: a dark red-brown band in front of the Crossroads fountain): the town road parts
+	-- (Decor.Roads, CanCollide off) are not drawn inside the plaza (PlazaRadius around the fountain: MapBuilder cuts the
+	-- part back to the plaza edge, a part fully inside is hidden) and get a light earthy color that the GE_Slate tile
+	-- multiplies into a dirt-road look (the old 70,45,45 turned near black-red). Roads above stays the map/minimap data.
+	RoadLook = {
+		PlazaRadius = 60,
+		Parts = {
+			RoadSouth = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
+			RoadSouthIsland = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
+			RoadNorth = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
+			RoadNorthIsland = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
+		},
+	},
 	-- A23-30 / A23-45 on map v2 (MapBuilder PATCH / HOLLOW, QuestTarget): the pumpkin path along x = PathX from the meadow
 	-- road to the patch's north gate (PatchGateZ), the patch's west gate into the HauntedHollow, the road sign at the
 	-- path's meadow end (HalloweenService shows it only in season)

@@ -1259,6 +1259,36 @@ function HOLLOW.ensure(ctx, folders)
 	HOLLOW.decor(ctx, l, folders.Decor)
 end
 
+-- 검수 10/09: the town road parts (Decor.Roads, built by tools/preview_map.lua) get Config.Map.RoadLook's color /
+-- material, and the end inside the Crossroads plaza (|z| < PlazaRadius on a north-south road) is cut back to the plaza
+-- edge; a part fully inside is hidden (Transparency 1). Idempotent: a part already cut is left as it is.
+function MapBuilder.FitRoads(decor)
+	local look = Config.Map.RoadLook
+	local roads = look and decor and decor:FindFirstChild("Roads")
+	if not roads then return 0 end
+	local r = look.PlazaRadius or 0
+	local n = 0
+	for name, want in look.Parts or {} do
+		local p = roads:FindFirstChild(name)
+		if not (p and p:IsA("BasePart")) then continue end
+		if want.Color then p.Color = want.Color end
+		if want.Material then p.Material = want.Material end
+		local c, half = p.Position, p.Size.Z / 2
+		local near, far = math.min(math.abs(c.Z - half), math.abs(c.Z + half)), math.max(math.abs(c.Z - half), math.abs(c.Z + half))
+		if math.abs(c.X) < r and near < r and (c.Z - half) * (c.Z + half) >= 0 then
+			if far <= r then
+				p.Transparency = 1
+			else
+				local s = if c.Z >= 0 then 1 else -1
+				p.Size = Vector3.new(p.Size.X, p.Size.Y, far - r)
+				p.CFrame = CFrame.new(c.X, c.Y, s * (r + far) / 2)
+			end
+		end
+		n += 1
+	end
+	return n
+end
+
 function MapBuilder.Build()
 	local ctx = newCtx()
 	local map = workspace:FindFirstChild("Map")
@@ -1286,6 +1316,8 @@ function MapBuilder.Build()
 	ensureLandmarks(ctx, folders.Landmarks)
 	ensureJobBoards(ctx, folders.Landmarks)
 	ensurePotionMerchant(ctx, folders.NPCs)
+	local okRoads, errRoads = pcall(MapBuilder.FitRoads, folders.Decor) -- 검수 10/09 (Config.Map.RoadLook)
+	if not okRoads then Util.Warn(TAG, "RoadLook: " .. tostring(errRoads)) end
 	local okPatch, errPatch = pcall(PATCH.ensure, ctx, folders) -- A23-30
 	if not okPatch then Util.Warn(TAG, "PumpkinPatch: " .. tostring(errPatch)) end
 	local okHollow, errHollow = pcall(HOLLOW.ensure, ctx, folders) -- A23-45
