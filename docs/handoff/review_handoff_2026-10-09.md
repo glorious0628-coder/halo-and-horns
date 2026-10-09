@@ -58,3 +58,23 @@
 - To sync next: 개발 1 camera c3be8e44 (A23-91), King pink smooth SurfaceAppearance (Color 128274585331361, Normal 93520326212789). Then user saves (Save to Roblox + Ctrl+S) → 메인 반영 copies build→place/ and pushes.
 - 이미지 개발: faction bg/mascots on imgdev-facbg (unpushed to main), UiSandbox photo pending. Minimap A23-95 UI done (rotation proven).
 - Weekly usage 98% at 14:00; user switching the desktop app to Console API billing (Developer Mode → Third-Party Inference → Anthropic API).
+
+## 8. 16:15 — 10/08 계정으로 옮김 (검수 = local_2d0d02e0-5f88-4010-8d14-3b57167f5f94)
+- 10/09 구독 계정은 16:11 KST에 주간 한도에 닿았어요(10/12 21:00 초기화). 이 계정은 주간 96%예요(10/13 16:00 초기화).
+- 이 계정 세션은 10/08 대화가 남아 있는 옛 세션 9개예요. **/clear 뒤** 아래 한 줄로 다시 시작해요(/clear 하면 id가 바뀔 수 있음 → 검수가 list_sessions로 다시 찾음).
+- 모델·노력(16:15 검수가 설정): Opus xhigh = 게임성 개발 1·2·이미지 개발 1 (개발 2는 사용자가 막대를 Ultracode로), Sonnet xhigh = 게임성 개발 3, Sonnet high = 메인 반영 1·이미지 생성 1·2·촬영 편집 1·소리 생성 1.
+- 마지막 대화(16:11까지): `build/handoff_2026-10-09b/<역할>_tail.md` (review, dev1, dev2, dev3, imgdev(API 모드 15:15까지), img1, img2, mainapply).
+- **메인:** 사용자 16:11 파일 저장(.rbxlx) = place/ 595cff6, 안의 코드 = main 7d2a7b1a 전부(스크립트 대조 0 차이). 클라우드 16:07 저장. Studio 닫혀 있음.
+
+| 세션 | 다음 |
+|---|---|
+| 게임성 개발 1 | 19a69905(할로윈 시험) 끝. 공격 자동 돌기 보강(A23-91: `L.FaceTarget`, `WindupAt` 서버 시각) → 펫 창(PetList·EquipPet, dev2-pet4 병합 뒤, 계약 docs/design/pet4_lost_baby_slime_2026-10-09.md) → 유적·숲 PvP 경계 밧줄 → King/Clatter 클라 |
+| 게임성 개발 2 | origin/dev2-pet4 = 0a51026d(PET-4, 개발 3 통과) + 323b1994(PET-2 펫 XP, 검증 전). 다음: IDEA-TITLE 칭호 쌍 초안(2단어 이내 천사·악마) → 검수 |
+| 게임성 개발 3 | 323b1994(PET-2) 검증 → "통과 <hash>" 한 줄 → 검수가 dev2-pet4 병합 |
+| 이미지 개발 1 | ui_clutter_review_2026-10-09.md 남은 PC 항목을 main과 대조해 목록을 검수에 → 승인 뒤 시작. P5 아이콘은 이미지 생성 2 그림 뒤 |
+| 이미지 생성 1 | 뿔 마을 계획(0c04cb5c) 끝. 빛 마을 Tripo 20개: 분수는 앞면만으로 먼저, 건물은 이미지 생성 2 멀티뷰 오는 대로(25,000 계정, Smart Mesh) |
+| 이미지 생성 2 | 빛 마을 건물 앞면 고급 9장(2e840fc) 끝. 뒤·좌·우 24장(프롬프트 1f6d6bc3) 참조 등록하다 끊김 → 이어서 → 세트마다 이미지 생성 1 |
+| 메인 반영 1 | 16:11 저장 push는 검수가 함. 다음: 빛 마을 halo_materials → halo_terrain apply(새 모델과 함께), 카메라 A23-91 확인 ③ |
+| 소리·촬영 | 쉼 |
+
+한 줄 프롬프트: `너는 '<세션 이름>'이야. docs/handoff/review_handoff_2026-10-09.md §8의 네 줄과 build/handoff_2026-10-09b/<역할>_tail.md를 읽고 이어서 해. 보고는 검수(local_2d0d02e0)에게 덩어리마다 한 번.`
