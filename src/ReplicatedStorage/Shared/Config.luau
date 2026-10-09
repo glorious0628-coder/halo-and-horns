@@ -4382,6 +4382,7 @@ Config.Nudges = {
 	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)
 	KeysTip = false, -- the keys tip card after the first skill (SkillBar LEARN.Tip)
 	GuideLabel = false, -- 검수 10/09: the floating name chip over the guide target / pad ("First weapon"; HUD showGuide)
+	GuideBeam = false, -- 검수 10/09 (user): the gold line on the ground to the target (HUD showGuide); A23-88 too
 	-- server (the service owners read these keys; nil / true = shown as before)
 	GuideDone = false, -- "That's all from me! Now hunt and get stronger." (QuestService)
 	EnteredSafe = false, -- "Safe zone." on every safe-zone entry (ZoneService)

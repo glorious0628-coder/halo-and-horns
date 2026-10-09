@@ -3,6 +3,16 @@
   "failed": 0,
   "mutations": [
     {
+      "name": "the ground line is back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "GuideBeam switched on",
+      "applied": true,
+      "caught": true
+    },
+    {
       "name": "the guide name chip is back",
       "applied": true,
       "caught": true

@@ -4318,23 +4318,27 @@ local function showGuide(target, text, tag, seconds)
 	a1.Parent = part
 	g.Att1 = a1
 
-	local beam = Instance.new("Beam") -- no texture asset: the default renders a solid band
-	beam.Name = "HUDGuideBeam"
-	beam.Attachment1 = a1
-	beam.Color = ColorSequence.new(Theme.Gold)
-	-- 2026-10-06 photos (검수): the 1.2-stud glowing band crossed the whole meadow and fought the quest marker; a thin,
-	-- softer line still shows the way
-	beam.Transparency = NumberSequence.new(0.35)
-	beam.Width0 = 0.35
-	beam.Width1 = 0.35
-	beam.FaceCamera = true
-	beam.LightEmission = 0.45
-	beam.LightInfluence = 0
-	beam.Parent = part
-	g.Beam = beam
+	-- 검수 10/09 (user: "목적지까지 이거 없으면 좋겠어"): no gold line on the ground any more (Config.Nudges.GuideBeam);
+	-- the way = the quest line + QuestMarker's diamond + distance + the minimap
+	if (Config.Nudges or {}).GuideBeam ~= false then
+		local beam = Instance.new("Beam") -- no texture asset: the default renders a solid band
+		beam.Name = "HUDGuideBeam"
+		beam.Attachment1 = a1
+		beam.Color = ColorSequence.new(Theme.Gold)
+		-- 2026-10-06 photos (검수): the 1.2-stud glowing band crossed the whole meadow and fought the quest marker; a thin,
+		-- softer line still shows the way
+		beam.Transparency = NumberSequence.new(0.35)
+		beam.Width0 = 0.35
+		beam.Width1 = 0.35
+		beam.FaceCamera = true
+		beam.LightEmission = 0.45
+		beam.LightInfluence = 0
+		beam.Parent = part
+		g.Beam = beam
+	end
 
 	-- 검수 10/09 (user: "이런 거 없어도 된다니까"): the floating name chip ("First weapon", "Squishy Meadow") is off
-	-- (Config.Nudges.GuideLabel); the gold line and QuestMarker's diamond + distance still show the way
+	-- (Config.Nudges.GuideLabel); QuestMarker's diamond + distance still show the way
 	if (Config.Nudges or {}).GuideLabel ~= false then
 		-- 검수 2026-10-08 (user: "이거 별로야"): a small white Chip (navy rim) with a down arrow and one short navy line,
 		-- about half the old 220 x 64 gold words; it hides within L.GuideHide studs (the pad glow and the gold line stay)
