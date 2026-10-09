@@ -45,7 +45,7 @@ local FRAME = {
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
-		Story = "IconNews" },
+		Story = "IconNews", Diary = "IconDiary" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
 }
 local BODY_FONT = Enum.Font.GothamMedium

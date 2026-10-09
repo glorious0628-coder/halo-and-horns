@@ -2072,7 +2072,7 @@ Config.Tutorial = {
 	SpawnDistance = 8, -- studs in front of the player's spawn
 	Lifetime = 120, -- personal monster despawns after this many seconds (then the tutorial advances to step 1)
 	GuideZone = "SlimeMeadow",
-	GuideText = "Squishy Meadow · Step on the glowing pad", -- plain
+	GuideText = "Squishy Meadow", -- the guide label: one short line on a small chip (검수 2026-10-08)
 	QuestId = "tutorial",
 	QuestKills = 5,
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
@@ -4413,7 +4413,7 @@ Config.UIArt = {
 		IconWantedStar = { Id = "rbxassetid://110523293522605", Size = Vector2.new(512, 512) }, -- Horns wanted star
 		-- emblems
 		ShieldHalo = { Id = "rbxassetid://73353334079892", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: no rays (halo + gem)
-		ShieldHorns = { Id = "rbxassetid://134547958841068", Size = Vector2.new(497, 512) },
+		ShieldHorns = { Id = "rbxassetid://100359282407005", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw (horn shield, gem)
 		Crown = { Id = "rbxassetid://87428837580998", Size = Vector2.new(256, 175) },
 		-- icons
 		IconCoin = { Id = "rbxassetid://86252987066467", Size = Vector2.new(512, 512) }, -- Firefly (bundle 8)
@@ -4470,6 +4470,11 @@ Config.UIArt = {
 		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 61, 388, 63), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (425,48)-(489,80)
 		AutoRingOn = { Id = "rbxassetid://82348810388598", Size = Vector2.new(512, 512) }, -- turns around the auto button while ON
 		GlyphQuest = { Id = "rbxassetid://85735330851016", Size = Vector2.new(512, 512) },
+		QuestTabIconMain = { Id = "rbxassetid://89637504554244", Size = Vector2.new(512, 512) }, -- quest window tabs + HUD line icons (Config.QuestTabs; 이미지 생성 2, 2026-10-08): crown book
+		QuestTabIconSide = { Id = "rbxassetid://98437304116587", Size = Vector2.new(512, 512) }, -- ribbon scroll
+		QuestTabIconDaily = { Id = "rbxassetid://103609446225386", Size = Vector2.new(512, 512) }, -- calendar + check
+		QuestTabIconEvent = { Id = "rbxassetid://123628411800049", Size = Vector2.new(512, 512) }, -- pumpkin + bow
+		QuestTabIconFaction = { Id = "rbxassetid://111149297376842", Size = Vector2.new(512, 512) }, -- halo | horns shield
 		GlyphAuto = { Id = "rbxassetid://125607651991448", Size = Vector2.new(512, 512) },
 		NameTag = { Id = "rbxassetid://101536515759381", Size = Vector2.new(512, 153), Slice = Rect.new(80, 75, 432, 77), FitHeight = true, Tone = "Navy" },
 		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 85, 448, 87), FitHeight = true, Tone = "Gold" }, -- b: deep gold
@@ -4773,6 +4778,7 @@ Config.UIArt = {
 		RibbonDays50 = { Id = "rbxassetid://127528019933746", Size = Vector2.new(512, 512) },
 		RibbonDays100 = { Id = "rbxassetid://104467679017156", Size = Vector2.new(512, 512) },
 		IconKingDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- [King Diary] book
+		IconDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- 검수 10/08: the menu square / Diary window = the same King Diary book
 		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
 		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]
 		IconSaved = { Id = "rbxassetid://112371750811683", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'

@@ -95,7 +95,7 @@ def main():
          and 'if showGuide(target, TXT.ForgeGuide, "forge", nil) and guide then guide.From = zone end' in forge_branch
          and 0 < guides.find("\tif forge then") < guides.find("\telseif L.NeedsMeadowGuide(step)")
          and "BlacksmithVisited" not in forge_branch
-         and 'ForgeGuide = "Your first weapon · the anvil",' in hud),
+         and 'ForgeGuide = "First weapon",' in hud),
         ("A23-74 weapon first: tapping the Forge row asks the server for the walk again and brings the beam back",
          "\telseif step == L.ForgeStep then\n" in pinned
          and "\telseif step == L.ForgeStep then\n\t\t-- A23-74: the server walks me to the anvil again (ignored while moving "
