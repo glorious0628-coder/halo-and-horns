@@ -197,9 +197,10 @@ for z in (-384, -408, -466, -492):
         put("Statue", sx * (26 if z > -440 else 28), z, face(-sx, 0), 1.0)
 
 # shops on the plaza terrace: four, facing the fountain axis (bakery / juice / flowers / toys, decor only: 검수 #49 #51)
+SHOPKIND = {(-1, -546): "Bakery", (1, -546): "Juice", (-1, -584): "Flower", (1, -584): "Potion"}  # Potion = the real potion merchant (검수 #34); signs = HaloSign* (이미지 개발)
 for z in (-546, -584):
     for sx in (-1, 1):
-        put("Shop", sx * 44, z, face(-sx, 0), 1.0)
+        put("Shop", sx * 44, z, face(-sx, 0), 1.9, shopkind=SHOPKIND[(sx, z)])
 
 # towers: plaza terrace corners and cathedral terrace corners
 for sx in (-1, 1):
@@ -210,8 +211,8 @@ for sx in (-1, 1):
 HOUSES = [("WA", -392, 106, 150), ("WB", -494, 112, 156), ("WC", -582, 124, 168)]
 for name, z, xa, xb in HOUSES:
     for sx in (-1, 1):
-        put("DomeHouseA", sx * xa, z, face(-sx, 0), 1.0)
-        put("DomeHouseB", sx * xb, z, face(-sx, 0), 1.0)
+        put("DomeHouseA", sx * xa, z, face(-sx, 0), 1.9)  # x1.9: the door (3.2 studs at scale 1) becomes avatar size
+        put("DomeHouseB", sx * xb, z, face(-sx, 0), 2.0)
 
 # ---------------------------------------------------------------- bridges
 # (name, centre x, centre z, axis "x" = span along x, deck Y at the low / high end)

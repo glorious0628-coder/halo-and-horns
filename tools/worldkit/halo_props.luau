@@ -134,28 +134,32 @@ local PLAN = {
 		z = -546,
 		y = 11.0,
 		yaw = 270.0,
-		s = 1.0,
+		s = 1.9,
+		shopkind = "Bakery",
 	}, {
 		kind = "Shop",
 		x = 44,
 		z = -546,
 		y = 11.0,
 		yaw = 90.0,
-		s = 1.0,
+		s = 1.9,
+		shopkind = "Juice",
 	}, {
 		kind = "Shop",
 		x = -44,
 		z = -584,
 		y = 11.0,
 		yaw = 270.0,
-		s = 1.0,
+		s = 1.9,
+		shopkind = "Flower",
 	}, {
 		kind = "Shop",
 		x = 44,
 		z = -584,
 		y = 11.0,
 		yaw = 90.0,
-		s = 1.0,
+		s = 1.9,
+		shopkind = "Potion",
 	}, {
 		kind = "Tower",
 		x = -66,
@@ -218,84 +222,84 @@ local PLAN = {
 		z = -392,
 		y = 1.2,
 		yaw = 270.0,
-		s = 1.0,
+		s = 1.9,
 	}, {
 		kind = "DomeHouseB",
 		x = -150,
 		z = -392,
 		y = 1.2,
 		yaw = 270.0,
-		s = 1.0,
+		s = 2.0,
 	}, {
 		kind = "DomeHouseA",
 		x = 106,
 		z = -392,
 		y = 1.2,
 		yaw = 90.0,
-		s = 1.0,
+		s = 1.9,
 	}, {
 		kind = "DomeHouseB",
 		x = 150,
 		z = -392,
 		y = 1.2,
 		yaw = 90.0,
-		s = 1.0,
+		s = 2.0,
 	}, {
 		kind = "DomeHouseA",
 		x = -112,
 		z = -494,
 		y = 7.0,
 		yaw = 270.0,
-		s = 1.0,
+		s = 1.9,
 	}, {
 		kind = "DomeHouseB",
 		x = -156,
 		z = -494,
 		y = 7.0,
 		yaw = 270.0,
-		s = 1.0,
+		s = 2.0,
 	}, {
 		kind = "DomeHouseA",
 		x = 112,
 		z = -494,
 		y = 7.0,
 		yaw = 90.0,
-		s = 1.0,
+		s = 1.9,
 	}, {
 		kind = "DomeHouseB",
 		x = 156,
 		z = -494,
 		y = 7.0,
 		yaw = 90.0,
-		s = 1.0,
+		s = 2.0,
 	}, {
 		kind = "DomeHouseA",
 		x = -124,
 		z = -582,
 		y = 14.0,
 		yaw = 270.0,
-		s = 1.0,
+		s = 1.9,
 	}, {
 		kind = "DomeHouseB",
 		x = -168,
 		z = -582,
 		y = 14.0,
 		yaw = 270.0,
-		s = 1.0,
+		s = 2.0,
 	}, {
 		kind = "DomeHouseA",
 		x = 124,
 		z = -582,
 		y = 14.0,
 		yaw = 90.0,
-		s = 1.0,
+		s = 1.9,
 	}, {
 		kind = "DomeHouseB",
 		x = 168,
 		z = -582,
 		y = 14.0,
 		yaw = 90.0,
-		s = 1.0,
+		s = 2.0,
 	}, {
 		kind = "ArchBridge",
 		x = -51.0,
@@ -1242,13 +1246,6 @@ local PLAN = {
 		yaw = 20.8,
 		s = 1.003,
 	}, {
-		kind = "PotFlowers",
-		x = -166.06,
-		z = -500.79,
-		y = 7.0,
-		yaw = 196.6,
-		s = 1.0,
-	}, {
 		kind = "RoundTree",
 		x = 160.51,
 		z = -470.54,
@@ -1290,13 +1287,6 @@ local PLAN = {
 		y = 7.0,
 		yaw = 11.0,
 		s = 0.918,
-	}, {
-		kind = "RoundTree",
-		x = -144.93,
-		z = -510.8,
-		y = 7.0,
-		yaw = 52.3,
-		s = 0.901,
 	}, {
 		kind = "PotFlowers",
 		x = -158.79,
@@ -1410,13 +1400,6 @@ local PLAN = {
 		yaw = 355.0,
 		s = 1.0,
 	}, {
-		kind = "RoundTree",
-		x = -165.5,
-		z = -599.3,
-		y = 14.0,
-		yaw = 298.0,
-		s = 1.027,
-	}, {
 		kind = "CloudBush",
 		x = -152.73,
 		z = -640.83,
@@ -1429,13 +1412,6 @@ local PLAN = {
 		z = -563.05,
 		y = 14.0,
 		yaw = 281.5,
-		s = 1.0,
-	}, {
-		kind = "PotFlowers",
-		x = 159.66,
-		z = -400.65,
-		y = 1.2,
-		yaw = 85.3,
 		s = 1.0,
 	}, {
 		kind = "PotFlowers",
@@ -1529,13 +1505,6 @@ local PLAN = {
 		yaw = 102.5,
 		s = 1.101,
 	}, {
-		kind = "CloudBush",
-		x = -107.68,
-		z = -508.01,
-		y = 7.0,
-		yaw = 45.2,
-		s = 1.242,
-	}, {
 		kind = "RoundTree",
 		x = 111.61,
 		z = -419.01,
@@ -1556,13 +1525,6 @@ local PLAN = {
 		y = 7.0,
 		yaw = 40.7,
 		s = 1.211,
-	}, {
-		kind = "CloudBush",
-		x = -110.13,
-		z = -482.04,
-		y = 7.0,
-		yaw = 325.3,
-		s = 1.124,
 	}, {
 		kind = "CloudBush",
 		x = 174.76,
@@ -1605,6 +1567,13 @@ local PLAN = {
 		y = 22.0,
 		yaw = 214.1,
 		s = 1.082,
+	}, {
+		kind = "PotFlowers",
+		x = -159.91,
+		z = -599.29,
+		y = 14.0,
+		yaw = 134.2,
+		s = 1.0,
 	}, {
 		kind = "RoundTree",
 		x = -150.64,
@@ -1676,13 +1645,6 @@ local PLAN = {
 		yaw = 115.1,
 		s = 0.926,
 	}, {
-		kind = "Topiary",
-		x = 134.45,
-		z = -577.81,
-		y = 14.0,
-		yaw = 355.8,
-		s = 0.95,
-	}, {
 		kind = "PotFlowers",
 		x = -179.41,
 		z = -389.21,
@@ -1726,165 +1688,179 @@ local PLAN = {
 		s = 1.213,
 	}, {
 		kind = "PotFlowers",
-		x = 138.28,
-		z = -471.17,
-		y = 7.0,
-		yaw = 252.0,
+		x = -88.72,
+		z = -366.62,
+		y = 1.2,
+		yaw = 230.2,
 		s = 1.0,
 	}, {
-		kind = "CloudBush",
-		x = 87.72,
-		z = -474.62,
-		y = 7.0,
-		yaw = 250.1,
-		s = 1.142,
-	}, {
 		kind = "PotFlowers",
-		x = 137.19,
-		z = -529.72,
-		y = 7.0,
-		yaw = 309.7,
+		x = 138.34,
+		z = -659.55,
+		y = 22.0,
+		yaw = 276.6,
 		s = 1.0,
 	}, {
 		kind = "Topiary",
-		x = -172.3,
-		z = -365.25,
-		y = 1.2,
+		x = -84.89,
+		z = -505.85,
+		y = 7.0,
 		yaw = 173.4,
 		s = 0.952,
 	}, {
-		kind = "PotFlowers",
+		kind = "CloudBush",
 		x = 117.3,
 		z = -372.11,
 		y = 1.2,
-		yaw = 24.7,
-		s = 1.0,
+		yaw = 266.3,
+		s = 0.924,
 	}, {
-		kind = "PotFlowers",
+		kind = "CloudBush",
 		x = -138.28,
 		z = -508.86,
 		y = 7.0,
-		yaw = 228.3,
-		s = 1.0,
+		yaw = 95.9,
+		s = 1.122,
 	}, {
-		kind = "PotFlowers",
-		x = -136.41,
-		z = -461.66,
-		y = 7.0,
-		yaw = 96.5,
-		s = 1.0,
+		kind = "RoundTree",
+		x = 90.19,
+		z = -355.98,
+		y = 1.2,
+		yaw = 263.4,
+		s = 1.148,
 	}, {
-		kind = "Topiary",
-		x = 167.05,
-		z = -504.9,
-		y = 7.0,
-		yaw = 58.5,
-		s = 1.124,
-	}, {
-		kind = "Topiary",
-		x = 171.32,
-		z = -560.28,
-		y = 14.0,
-		yaw = 59.7,
-		s = 1.156,
-	}, {
-		kind = "Topiary",
-		x = -92.33,
-		z = -400.13,
+		kind = "RoundTree",
+		x = -79.44,
+		z = -381.44,
 		y = 1.2,
 		yaw = 111.7,
 		s = 0.932,
 	}, {
 		kind = "PotFlowers",
-		x = 95.37,
-		z = -356.86,
-		y = 1.2,
-		yaw = 40.7,
-		s = 1.0,
-	}, {
-		kind = "Topiary",
-		x = 71.45,
-		z = -348.29,
-		y = 1.2,
-		yaw = 231.9,
-		s = 1.226,
-	}, {
-		kind = "Topiary",
-		x = -142.45,
-		z = -417.88,
-		y = 1.2,
-		yaw = 304.6,
-		s = 1.157,
-	}, {
-		kind = "Topiary",
-		x = -124.7,
-		z = -504.96,
+		x = -171.7,
+		z = -525.36,
 		y = 7.0,
-		yaw = 66.9,
-		s = 0.913,
-	}, {
-		kind = "PotFlowers",
-		x = 145.57,
-		z = -464.02,
-		y = 7.0,
-		yaw = 58.6,
+		yaw = 333.7,
 		s = 1.0,
 	}, {
 		kind = "PotFlowers",
-		x = 165.9,
-		z = -349.97,
-		y = 1.2,
-		yaw = 222.6,
-		s = 1.0,
-	}, {
-		kind = "PotFlowers",
-		x = -158.91,
-		z = -676.96,
+		x = -180.36,
+		z = -652.51,
 		y = 22.0,
-		yaw = 155.6,
+		yaw = 33.9,
 		s = 1.0,
 	}, {
 		kind = "PotFlowers",
-		x = 85.05,
-		z = -526.36,
+		x = 177.2,
+		z = -514.52,
 		y = 7.0,
-		yaw = 98.2,
+		yaw = 121.9,
 		s = 1.0,
 	}, {
 		kind = "PotFlowers",
-		x = -155.67,
-		z = -504.95,
-		y = 7.0,
-		yaw = 166.1,
+		x = 141.5,
+		z = -570.74,
+		y = 14.0,
+		yaw = 82.3,
 		s = 1.0,
 	}, {
-		kind = "CloudBush",
-		x = 183.36,
-		z = -417.44,
-		y = 1.2,
-		yaw = 36.2,
-		s = 1.296,
+		kind = "Topiary",
+		x = 175.46,
+		z = -558.38,
+		y = 14.0,
+		yaw = 107.0,
+		s = 0.952,
 	}, {
-		kind = "CloudBush",
-		x = 182.69,
-		z = -405.49,
-		y = 1.2,
-		yaw = 230.9,
-		s = 1.213,
-	}, {
-		kind = "CloudBush",
-		x = 186.22,
-		z = -672.23,
+		kind = "PotFlowers",
+		x = -167.34,
+		z = -666.96,
 		y = 22.0,
-		yaw = 144.4,
-		s = 1.006,
+		yaw = 106.8,
+		s = 1.0,
 	}, {
 		kind = "CloudBush",
-		x = 182.66,
-		z = -371.54,
+		x = -151.07,
+		z = -667.19,
+		y = 22.0,
+		yaw = 136.1,
+		s = 0.924,
+	}, {
+		kind = "PotFlowers",
+		x = 148.08,
+		z = -680.84,
+		y = 22.0,
+		yaw = 141.6,
+		s = 1.0,
+	}, {
+		kind = "PotFlowers",
+		x = 168.56,
+		z = -664.28,
+		y = 22.0,
+		yaw = 43.2,
+		s = 1.0,
+	}, {
+		kind = "Topiary",
+		x = -140.88,
+		z = -584.5,
+		y = 14.0,
+		yaw = 172.0,
+		s = 1.166,
+	}, {
+		kind = "Topiary",
+		x = 68.58,
+		z = -410.38,
 		y = 1.2,
-		yaw = 243.5,
-		s = 1.182,
+		yaw = 227.6,
+		s = 0.939,
+	}, {
+		kind = "PotFlowers",
+		x = 82.51,
+		z = -494.2,
+		y = 7.0,
+		yaw = 157.9,
+		s = 1.0,
+	}, {
+		kind = "PotFlowers",
+		x = 180.15,
+		z = -594.24,
+		y = 14.0,
+		yaw = 264.1,
+		s = 1.0,
+	}, {
+		kind = "Topiary",
+		x = -151.02,
+		z = -678.28,
+		y = 22.0,
+		yaw = 8.2,
+		s = 0.931,
+	}, {
+		kind = "PotFlowers",
+		x = 153.32,
+		z = -664.07,
+		y = 22.0,
+		yaw = 239.2,
+		s = 1.0,
+	}, {
+		kind = "Topiary",
+		x = 156.78,
+		z = -363.28,
+		y = 1.2,
+		yaw = 43.5,
+		s = 0.99,
+	}, {
+		kind = "Topiary",
+		x = -137.1,
+		z = -459.32,
+		y = 7.0,
+		yaw = 300.7,
+		s = 1.028,
+	}, {
+		kind = "Topiary",
+		x = -124.34,
+		z = -521.11,
+		y = 7.0,
+		yaw = 70.1,
+		s = 1.171,
 	}, {
 		kind = "CloudBush",
 		x = -183.05,
@@ -1901,11 +1877,25 @@ local PLAN = {
 		s = 1.006,
 	}, {
 		kind = "CloudBush",
+		x = 182.18,
+		z = -409.63,
+		y = 1.2,
+		yaw = 100.0,
+		s = 1.004,
+	}, {
+		kind = "CloudBush",
 		x = -183.5,
 		z = -502.93,
 		y = 7.0,
 		yaw = 311.8,
 		s = 1.124,
+	}, {
+		kind = "CloudBush",
+		x = 182.95,
+		z = -417.65,
+		y = 1.2,
+		yaw = 11.7,
+		s = 1.091,
 	}, {
 		kind = "CloudBush",
 		x = -184.36,
@@ -1915,11 +1905,25 @@ local PLAN = {
 		s = 1.074,
 	}, {
 		kind = "CloudBush",
+		x = 184.3,
+		z = -673.92,
+		y = 22.0,
+		yaw = 255.4,
+		s = 1.027,
+	}, {
+		kind = "CloudBush",
 		x = 182.51,
 		z = -387.94,
 		y = 1.2,
 		yaw = 354.0,
 		s = 1.244,
+	}, {
+		kind = "CloudBush",
+		x = 184.65,
+		z = -373.13,
+		y = 1.2,
+		yaw = 0.7,
+		s = 1.215,
 	}, {
 		kind = "CloudBush",
 		x = -185.86,
@@ -1957,24 +1961,24 @@ local PLAN = {
 		s = 1.284,
 	}, {
 		kind = "CloudBush",
-		x = 182.55,
-		z = -362.66,
+		x = 183.36,
+		z = -366.2,
 		y = 1.2,
-		yaw = 189.4,
-		s = 1.164,
+		yaw = 269.5,
+		s = 1.339,
 	}, {
 		kind = "CloudBush",
-		x = 182.77,
-		z = -514.31,
-		y = 7.0,
-		yaw = 332.1,
-		s = 1.203,
+		x = 184.23,
+		z = -651.08,
+		y = 22.0,
+		yaw = 179.1,
+		s = 1.151,
 	}, {
 		kind = "Islet",
 		x = -250,
 		z = -420,
 		y = -1.2,
-		yaw = 270.8331689301552,
+		yaw = 289.94036104545086,
 		s = 1.0,
 		backdrop = true,
 	}, {
@@ -1982,7 +1986,7 @@ local PLAN = {
 		x = 262,
 		z = -470,
 		y = -1.2,
-		yaw = 210.1747514523335,
+		yaw = 142.1284890022659,
 		s = 1.2,
 		backdrop = true,
 	}, {
@@ -1990,7 +1994,7 @@ local PLAN = {
 		x = -238,
 		z = -600,
 		y = -1.2,
-		yaw = 72.20343989642153,
+		yaw = 119.24724823668312,
 		s = 0.9,
 		backdrop = true,
 	}, {
@@ -1998,7 +2002,7 @@ local PLAN = {
 		x = 248,
 		z = -650,
 		y = -1.2,
-		yaw = 275.3894351231596,
+		yaw = 195.21690477636298,
 		s = 1.1,
 		backdrop = true,
 	}, {
@@ -2006,7 +2010,7 @@ local PLAN = {
 		x = -300,
 		z = -540,
 		y = -1.2,
-		yaw = 23.291290262338393,
+		yaw = 257.47992425720014,
 		s = 1.0,
 		backdrop = true,
 	}, {
@@ -2014,7 +2018,7 @@ local PLAN = {
 		x = 290,
 		z = -380,
 		y = -1.2,
-		yaw = 106.03158282208362,
+		yaw = 351.0293744274714,
 		s = 1.1,
 		backdrop = true,
 	}, {
@@ -2022,7 +2026,7 @@ local PLAN = {
 		x = 0,
 		z = -760,
 		y = -1.2,
-		yaw = 352.7288094736497,
+		yaw = 155.5256164177232,
 		s = 1.4,
 		backdrop = true,
 	} },
@@ -2044,8 +2048,8 @@ local PLAN = {
 		Planter = 28,
 		CloudBush = 40,
 		Topiary = 20,
-		PotFlowers = 24,
 		RoundTree = 16,
+		PotFlowers = 24,
 		Islet = 4,
 		FarArch = 3,
 	},
@@ -2085,6 +2089,16 @@ local COLL = {
 local SMALL = { Balustrade = true, Lantern = true, Planter = true, BannerPole = true, PotFlowers = true, CloudBush = true, Topiary = true, RoundTree = true } -- color map only
 local TRIS = { Gate = 10000, Cathedral = 11000, Fountain = 10000, Tower = 7000, DomeHouseA = 8000, DomeHouseB = 8000, Shop = 8000, Statue = 3000, ArchBridge = 5000,
 	Stairs = 1500, Balustrade = 800, Lantern = 600, Planter = 4500, CloudBush = 1800, Topiary = 3500, RoundTree = 5000, PotFlowers = 3000, BannerPole = 800, Islet = 2500, FarArch = 2500 }
+-- real doors (A23-106: interiors later by walking through the door): size at scale 1 in studs, sill height above the model base; measured on the 2D fronts
+-- (studs per pixel of each fit). Tower's is too small for an avatar -> flagged DoorTooSmall (the tower gets redrawn with a proper door).
+local DOOR = {
+	Cathedral = { 7.5, 8.2, 10.0 }, DomeHouseA = { 1.9, 3.2, 0.8 }, DomeHouseB = { 2.1, 2.7, 1.0 }, Shop = { 3.4, 3.4, 0.6 }, Tower = { 1.6, 1.6, 0.3, true },
+}
+local SIGN = { -- shop sign boards: SurfaceGui images by 이미지 개발 (Config.UIArt.Parts HaloSign*), the model stays one shared shape
+	Potion = "rbxassetid://122788599616130", Bakery = "rbxassetid://77116902671887", Juice = "rbxassetid://133684891699718", Flower = "rbxassetid://93642542767036",
+}
+local NOSHADOW = { PotFlowers = true } -- A23-105 (ShadowMap): everything casts a shadow except the tiny flat ones
+local LAMP = { Lantern = Vector3.new(0, 6.3, 0) } -- local offset of the lamp glass: a PointLight goes here at night (attribute LampLight, 개발 1 lights it)
 local OLD = { HaloTower = true, HeroStatue = true, HaloCastle = true, HaloTownTrees = true, Flower = true, ZoneSwap_halo = true, Cathedral = true, Cloud = true } -- Cathedral = the old Landmarks dome, Cloud = the old cloud puffs (only inside the Halo rect)
 
 local function inRect(p)
@@ -2269,6 +2283,7 @@ for _, e in PLAN.placements do
 	elseif math.abs(e.s - 1) > 1e-3 then
 		pcall(m.ScaleTo, m, m:GetScale() * e.s)
 	end
+	local _, sz0 = m:GetBoundingBox() -- model-local extents (the clone still sits unrotated at the origin): X width, Y height, Z depth, front = -Z
 	local y = (e.backdrop or e.ramp) and e.y or groundY(e.x, e.z, e.y)
 	local cf
 	if e.kind == "ArchBridge" then
@@ -2283,13 +2298,47 @@ for _, e in PLAN.placements do
 	end
 	m:PivotTo(cf)
 	setColl(m, COLL[e.kind] or "solid")
-	local _, sz = m:GetBoundingBox()
+	local sz = sz0
 	if COLL[e.kind] == "post" then
 		if e.kind == "CloudBush" then
 			post(m, sz.X * 0.6, sz.Y * 0.6, sz.Z * 0.6, Vector3.zero)
 		else
 			post(m, 1.6, sz.Y * 0.7, 1.6, Vector3.zero)
 		end
+	end
+	local dd = DOOR[e.kind]
+	if dd then
+		m:SetAttribute("Door", true)
+		m:SetAttribute("DoorSize", Vector2.new(dd[1] * e.s, dd[2] * e.s))
+		m:SetAttribute("DoorFront", Vector3.new(0, dd[3] * e.s, -(sz.Z / 2) - 1.5)) -- a point 1.5 studs in front of the door, model-local (pivot = bottom centre, front = -Z)
+		if dd[4] then m:SetAttribute("DoorTooSmall", true) end
+	end
+	if LAMP[e.kind] then m:SetAttribute("LampLight", LAMP[e.kind] * e.s) end
+	if NOSHADOW[e.kind] then
+		for _, p in m:GetDescendants() do
+			if p:IsA("BasePart") then p.CastShadow = false end
+		end
+	end
+	if e.shopkind and SIGN[e.shopkind] then
+		m:SetAttribute("ShopKind", e.shopkind)
+		local board = Instance.new("Part")
+		board.Name = "SignBoard"
+		board.Size = Vector3.new(7, 7, 0.2) * e.s / 1.9
+		board.Transparency = 1
+		board.Anchored, board.CanCollide, board.CanQuery, board.CanTouch, board.CastShadow = true, false, false, false, false
+		board.CFrame = m:GetPivot() * CFrame.new(sz.X / 2 - 1.2, sz.Y * 0.40, -(sz.Z / 2) - 0.4)
+		local gui = Instance.new("SurfaceGui")
+		gui.Face = Enum.NormalId.Front
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 60
+		gui.LightInfluence = 0
+		gui.Parent = board
+		local img = Instance.new("ImageLabel")
+		img.BackgroundTransparency = 1
+		img.Size = UDim2.fromScale(1, 1)
+		img.Image = SIGN[e.shopkind]
+		img.Parent = gui
+		board.Parent = m
 	end
 	if e.backdrop then m:SetAttribute("Backdrop", true) end
 	if SMALL[e.kind] or e.backdrop then m:SetAttribute("DecorTier", "lite") end -- a phone lite pass may hide these (zone_check #33)
