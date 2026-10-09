@@ -6184,6 +6184,28 @@
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
   "note": "몬스터 말풍선 왕 슬라임(파란 젤리 + 노란 조각 왕관, 흘러내림): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleBigSlime = Id + Size 512x445 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.995."
  },
+ "BarkBubbleSlimeKing": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleSlimeKing_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleSlimeKing_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkBubbleSlimeKing_B_src.png (prompt art/prompts/UIP_BarkBubbleSlimeKing_B.txt, 검수 고름 B 2026-10-09)",
+  "file": "art/ui/BarkBubbleSlimeKing.png",
+  "size": "512x473 RGBA",
+  "layout": {
+   "TextRect": [
+    0.248,
+    0.393,
+    0.506,
+    0.355
+   ],
+   "TextRect_note": "tools/img2/bark_textrect.py best_rect, 게임 104px(104x96), 상자 약 53x34px. Slime Prince 대사+Golden 대사 모두 12px 이상(SPLOOSH! 12px). 새 대사는 두 줄 이내(예: 'Who's bothering' + 'my kids?!'은 12px로 맞고, 한 줄 'Who's bothering my kids?!'는 12px에서도 넘침 → 줄바꿈 넣기)."
+  },
+  "preview": "art/review/s2/bark_king_hq_check.jpg (시안 art/review/s2/bark_king_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
+  "note": "King Slime 보스 말풍선(로열 블루 젤리 + 빨간 보석 금관 + 흰 털 빨강 망토): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleSlimeKing = Id + Size 512x473 + TextRect(분수). 없으면 기본 BarkBubble. 업로드·연결은 이미지 개발."
+ },
  "BarkBubblePumpkinSlime": {
   "status": "approved",
   "date": "2026-10-07",

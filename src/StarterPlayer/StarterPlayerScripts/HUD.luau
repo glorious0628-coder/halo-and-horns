@@ -1829,6 +1829,8 @@ function L.BuildQuestLines(root)
 	local headPlate = onPlate and UIKit.ArtFrame("ListRow", { Name = "HeadPlate", ZIndex = 2, Visible = false, Parent = root }) or nil
 	if onPlate then UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = headRow }) end
 	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate }
+	-- the head plate lives beside the head line (not inside it): follow its showing / hiding at once (검수 10/09)
+	headRow:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.LayoutQuestPlates) end)
 	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
 	for i = 1, n do
 		-- one row = [icon][text][3/5 | 받기][▼ on line 1, PC]: a horizontal list; the text keeps its own width (shrinks and
