@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "name": "Help: a Safety topic right after Controls",
+      "ok": true
+    },
+    {
+      "name": "Safety: at most 4 lines, English only",
+      "ok": true
+    },
+    {
+      "name": "Safety: block / report, PvP zones, ask a parent before Robux",
+      "ok": true
+    },
+    {
+      "name": "Tab list: Add friend / Block call Roblox's own prompts for the picked player",
+      "ok": true
+    },
+    {
+      "name": "never my own row",
+      "ok": true
+    },
+    {
+      "name": "a second press / closing / leaving drops the pick",
+      "ok": true
+    },
+    {
+      "name": "only the picked row shows the buttons",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "no Safety topic",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no parent line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "my own row gets the buttons",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pick stays after closing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Block sends a friend request",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every row shows the buttons",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}

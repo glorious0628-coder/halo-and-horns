@@ -3982,6 +3982,13 @@ Config.Help = {
 	},
 	Topics = {
 		{ Id = "Controls", Title = "Controls", Lines = {} },
+		-- 검수 2026-10-09 (system review ③ Help & Safety): right after Controls, so kids and parents find it
+		{ Id = "Safety", Title = "Safety", Lines = {
+			"Block or report someone: open the Roblox menu (Esc), then Players.",
+			"Player list (Tab): press a name for Add friend or Block.",
+			"PvP zones (orange and red on the map): other players can fight you there.",
+			"Ask a parent before using Robux. Never share your password.",
+		} },
 		{ Id = "Combat", Title = "Combat & Auto Battle", Lines = {
 			"One press = one attack. Holding it down won't repeat it.",
 			"Your first skill comes at Lv 5. It costs 20 MP; wait 3 s to use it again.", -- A23-71 D6 / S14
