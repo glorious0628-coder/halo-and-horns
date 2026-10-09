@@ -1,0 +1,21 @@
+{
+ "tileStuds": 160.0,
+ "overlapStuds": 12.0,
+ "strideStuds": 148.0,
+ "fovDeg": 15.0,
+ "camHeight": 607.6603290180121,
+ "axes": "image right = +X (east), image up = -Z (north)",
+ "tiles": [
+  {
+   "id": "p0",
+   "cx": 0.0,
+   "cz": 0.0,
+   "x0": -80.0,
+   "x1": 80.0,
+   "z0": -80.0,
+   "z1": 80.0,
+   "file": "tile_p0.png"
+  }
+ ],
+ "px": 680
+}
