@@ -194,6 +194,24 @@
         "seconds": 20,
         "lufs": -30,
         "note": "3D, RollOffMaxDistance ~40, outside the MaxPlaying pool"
+      },
+      "Rain": {
+        "id": "rbxassetid://126445007194331",
+        "seconds": 25,
+        "lufs": -28,
+        "note": "global weather ambience, Volume 0.35, 1.5 s fade on weather change; Rain_b"
+      },
+      "Night": {
+        "id": "rbxassetid://99972569683856",
+        "seconds": 25,
+        "lufs": -31,
+        "note": "global night ambience, Volume 0.3, 1.5 s fade; Night_b crickets gap +-15 %"
+      },
+      "WinterWind": {
+        "id": "rbxassetid://113002054407080",
+        "seconds": 25,
+        "lufs": -29,
+        "note": "global snow-time wind (December), Volume 0.35, 1.5 s fade; WinterWind_a"
       }
     },
     "boss": {
