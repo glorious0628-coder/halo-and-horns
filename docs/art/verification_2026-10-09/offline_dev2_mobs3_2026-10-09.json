@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 65,
+  "checks": 69,
   "failedChecks": 0,
-  "namedChecks": 65,
+  "namedChecks": 69,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -34,6 +34,18 @@
     {
       "group": "config",
       "check": "regular pool kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ranged kinds off for now: Count 0, goblins 10, skeletons 8",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WindupTime = Ranged.Windup (the client's telegraph)",
       "pass": 1,
       "fail": 0
     },
@@ -106,6 +118,12 @@
     {
       "group": "config",
       "check": "the FlowerPatch card (saved, no timer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the FlowerPatch card is off until the client's card window exists (검수 10/09)",
       "pass": 1,
       "fail": 0
     },
@@ -345,6 +363,12 @@
     },
     {
       "group": "kill cards",
+      "check": "Enabled = false: no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kill cards",
       "check": "a Flower Slime kill (lucky roll): the card",
       "pass": 1,
       "fail": 0
@@ -402,9 +426,9 @@
   "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 30,
-    "applied": 30,
-    "caught": 30,
+    "total": 32,
+    "applied": 32,
+    "caught": 32,
     "skipped": false,
     "results": [
       {
@@ -719,6 +743,28 @@
         "newFailingCount": 3
       },
       {
+        "mutation": "the card switch ignored",
+        "file": "src/ServerScriptService/KillCardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kill cards :: Enabled = false: no card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ranged kinds on before the client",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ranged kinds off for now: Count 0, goblins 10, skeletons 8"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "a fast shot",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
@@ -768,12 +814,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9549ec436f7ba8ce30334a0b18066b7a2f38f25ab7b9afd6b9dd172345abaf39",
+    "src/ReplicatedStorage/Shared/Config.luau": "9492f8f83187cf53fdc435e117a478d81721ce94846d765772680514385a51f1",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/MonsterService.luau": "c012841ec257dbd7d4a895d666b7806a176d58b54effc3b39f80d85f1bbf839d",
-    "src/ServerScriptService/KillCardService.luau": "df9277fdd83947a86d91dc337e23362dfb28f35d42df2a324fab7c508fa99acb"
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
+    "src/ServerScriptService/KillCardService.luau": "f1e2ee3ff23fbd1db4d4fd09a428fdeb99c74a4ab385ab393762956d2bef46ee"
   },
-  "fixtureSHA256": "464fef92f70c2c9a432fbd4260aa042907061f82546c7092587f40aee9415bf8",
+  "fixtureSHA256": "2e8b1898735e84a0ac593be0701cf6782c8076486ea26f429feeec9b34901ba1",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

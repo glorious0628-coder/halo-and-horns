@@ -3879,7 +3879,7 @@
           "counts-takes-generic :: taker + base targets = the season-off base target (the zone total is unchanged)",
           "monster-cap-season :: a full server: meadow / woods / ruins keep their capped totals with the season on (the cap reached)"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 9
       },
       {
         "mutation": "generic Takes: takers get their own cap share",
@@ -5348,7 +5348,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9549ec436f7ba8ce30334a0b18066b7a2f38f25ab7b9afd6b9dd172345abaf39",
+    "src/ReplicatedStorage/Shared/Config.luau": "9492f8f83187cf53fdc435e117a478d81721ce94846d765772680514385a51f1",
     "src/ReplicatedStorage/Shared/Net.luau": "6192308e2112a3905cc02a9d93b7964763d573c439fb22cf524b93ff677d9372",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
@@ -5358,7 +5358,7 @@
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "28a85b9f636fde698c971e484b51ade893b02dad1c0dd0e3990047ae319a8e34",
     "src/ServerScriptService/Main.server.luau": "c26fb8a2fd6ac56666307349b161dd8fb894f0fa93eda218962ed4a63b11fb2f",
-    "src/ServerScriptService/MonsterService.luau": "c012841ec257dbd7d4a895d666b7806a176d58b54effc3b39f80d85f1bbf839d",
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "8e8837a3d8490f9676d5284120d0596f2b6f8fb47e179aeee7104de5c0a66b37",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "6ecb5504ab945867f484223e86bbafe2fa10ac9a4c4b82f3166ef341c12a2540",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d",
@@ -5374,7 +5374,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "8f5ec27cb250d30cea36c4d3f792ad8dd2471c20e23606e24f872b1f6d4370cb",
+  "fixtureSHA256": "b6fff1b60cb58240705be398926a5c28e211ec6853fb34c7412e6d48494d8b89",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

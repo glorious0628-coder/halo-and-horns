@@ -28,7 +28,8 @@ local function onKilled(player, info)
 	if type(info) ~= "table" or type(info.Kind) ~= "string" then return end
 	local kinds = Config.ChoiceCard and Config.ChoiceCard.Kinds or {}
 	for cardKind, c in K do
-		if type(c) == "table" and type(c.Kinds) == "table" and c.Kinds[info.Kind] == true and kinds[cardKind] then
+		if type(c) == "table" and c.Enabled ~= false and type(c.Kinds) == "table" and c.Kinds[info.Kind] == true
+			and kinds[cardKind] then
 			local mine = LAST[player] or {}
 			local now = os.clock()
 			if now - (mine[cardKind] or -math.huge) >= math.max(0, num(c.Cooldown, 600))

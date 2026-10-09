@@ -36,6 +36,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         "local Config, H = ...\n"
         "local zoneIds, pvpNow, notify, fmt, getFaction = H.zoneIds, H.pvpNow, H.notify, H.fmt, H.getFaction\n"
         "local ZoneService = H.ZoneService\n"
+        "local pvpNoteAt, PVP_NOTE_GAP = H.pvpNoteAt, 20\n"
         "local DEFAULT_ZONE = \"Crossroads\"\n"
         + function_block(sources[Z], "local function applyZone(")
         + function_block(sources[Z], "function ZoneService.IsPvPZone(")
@@ -62,9 +63,11 @@ MUTATIONS = [
     ("no change inside a zone", Z, "	if zone.Id == old and pvp == wasPvP then return end\n", "	if zone.Id == old then return end\n"),
     ("no PvP line", Z, "			notify(player, fmt(\"EnteredPvP\"), \"bad\", \"None\") -- happens to me: no Deny\n", ""),
     ("no safe line even when wanted", Z, "\t\tnotify(player, fmt(\"EnteredSafe\"), \"good\") -- off by default", "\t\tlocal _ = nil -- off by default"),
-    ("the safe line ignores Nudges", Z, "\telseif not pvp and wasPvP and (Config.Nudges or {}).SafeZone ~= false then\n",
+    ("the safe line ignores Nudges", Z, "\telseif not pvp and wasPvP and (Config.Nudges or {}).EnteredSafe ~= false then\n",
      "\telseif not pvp and wasPvP then\n"),
-    ("the safe line back on by default", C, "\tSafeZone = false,\n}", "\tSafeZone = true,\n}"),
+    ("the safe line back on by default", C, "\tEnteredSafe = false,\n}", "\tEnteredSafe = true,\n}"),
+    ("the PvP line on every crossing", Z, "\tif pvp and not wasPvP and os.clock() - (pvpNoteAt[player] or -math.huge) >= PVP_NOTE_GAP then\n",
+     "\tif pvp and not wasPvP then\n"),
     ("ZoneChanged inside a zone", Z, "	if zone.Id ~= old then ZoneService.ZoneChanged:Fire(player, zone.Id, old) end\n",
      "	ZoneService.ZoneChanged:Fire(player, zone.Id, old)\n"),
     ("ZonePvP not set", Z, "	player:SetAttribute(\"ZonePvP\", pvp)\n", ""),

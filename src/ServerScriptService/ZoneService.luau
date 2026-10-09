@@ -38,6 +38,8 @@ local KAIJU_TOWN_FALLBACK = "A Kaiju can't enter towns!" -- TODO(config): Config
 local S = nil
 local zoneIds = {} -- [Player] = cached zone id
 local pvpNow = {} -- [Player] = PvP where the player stood at the last zone sample (A23-90: zone PvP or a PvP area)
+local pvpNoteAt = {} -- [Player] = os.clock() of the last entered-PvP line (검수 10/09: the pit's edge is crossed often)
+local PVP_NOTE_GAP = 20
 local lastGateNotify = {} -- [Player] = os.clock() of the last bounce toast
 local lastPadTouch = {} -- [Player] = os.clock() of the last handled pad touch
 local hookedPads = setmetatable({}, { __mode = "k" }) -- [BasePart] = true
@@ -313,14 +315,15 @@ local function applyZone(player, zone, pos)
 	end
 	pvpNow[player] = pvp
 	player:SetAttribute("ZonePvP", pvp)
-	if pvp and not wasPvP then
+	if pvp and not wasPvP and os.clock() - (pvpNoteAt[player] or -math.huge) >= PVP_NOTE_GAP then
+		pvpNoteAt[player] = os.clock()
 		if getFaction(player) == "Neutral" then
 			notify(player, fmt("EnteredPvPNeutral"), "info") -- CR-L24: 장인 길드 is immune to PvP
 		else
 			notify(player, fmt("EnteredPvP"), "bad", "None") -- happens to me: no Deny
 		end
-	elseif not pvp and wasPvP and (Config.Nudges or {}).SafeZone ~= false then
-		notify(player, fmt("EnteredSafe"), "good") -- off by default (Config.Nudges.SafeZone, 검수 10/09)
+	elseif not pvp and wasPvP and (Config.Nudges or {}).EnteredSafe ~= false then
+		notify(player, fmt("EnteredSafe"), "good") -- off by default (Config.Nudges.EnteredSafe, 검수 10/09)
 	end
 	if zone.Id ~= old then ZoneService.ZoneChanged:Fire(player, zone.Id, old) end
 end
@@ -363,6 +366,7 @@ end
 local function cleanup(player)
 	zoneIds[player] = nil
 	pvpNow[player] = nil -- A23-90
+	pvpNoteAt[player] = nil
 	lastGateNotify[player] = nil
 	lastPadTouch[player] = nil
 	channels[player] = nil -- CR-L18

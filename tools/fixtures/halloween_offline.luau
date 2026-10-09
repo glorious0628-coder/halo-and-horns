@@ -639,12 +639,14 @@ end)
 -- slots); the pumpkin slimes and the ghosts add their own Count in their own field (outside the GlobalCap); the kings
 -- are never in the regular pool
 -- A23-87: Slingshot Goblins take 3 goblin slots, Skeleton Archers 3 skeleton slots, + 2 Flower Slimes in the meadow
-local EXPECT_ON = { Slime = 12, FlowerSlime = 2, PumpkinSlime = 10, BigSlime = 4, PumpkinKing = 0, Goblin = 4,
-	SlingshotGoblin = 3, BatGoblin = 3, GoblinBrute = 4, GhostMinion = 8, LittleGhost = 4, GhostKing = 0, Skeleton = 5,
-	SkeletonArcher = 3, SkeletonKnight = 4 }
-local EXPECT_OFF = { Slime = 12, FlowerSlime = 2, PumpkinSlime = 0, BigSlime = 4, PumpkinKing = 0, Goblin = 7,
-	SlingshotGoblin = 3, BatGoblin = 0, GoblinBrute = 4, GhostMinion = 0, LittleGhost = 0, GhostKing = 0, Skeleton = 5,
-	SkeletonArcher = 3, SkeletonKnight = 4 }
+-- (검수 10/09: the ranged kinds are off until the client draws their shots - Config.Mobs3Ranged - so the goblins /
+-- skeletons keep their slots)
+local EXPECT_ON = { Slime = 12, FlowerSlime = 2, PumpkinSlime = 10, BigSlime = 4, PumpkinKing = 0, Goblin = 7,
+	SlingshotGoblin = 0, BatGoblin = 3, GoblinBrute = 4, GhostMinion = 8, LittleGhost = 4, GhostKing = 0, Skeleton = 8,
+	SkeletonArcher = 0, SkeletonKnight = 4 }
+local EXPECT_OFF = { Slime = 12, FlowerSlime = 2, PumpkinSlime = 0, BigSlime = 4, PumpkinKing = 0, Goblin = 10,
+	SlingshotGoblin = 0, BatGoblin = 0, GoblinBrute = 4, GhostMinion = 0, LittleGhost = 0, GhostKing = 0, Skeleton = 8,
+	SkeletonArcher = 0, SkeletonKnight = 4 }
 local FIELDS = { "SlimeMeadow", "GoblinWoods", "SkeletonRuins" }
 
 runGroup("counts", function()
@@ -757,10 +759,10 @@ runGroup("counts-density", function()
 		-- zones grow independently: a busy meadow leaves the patch at its Counts, a busy patch leaves the meadow alone
 		local mixed = C.MonsterTargets({ SlimeMeadow = 6 }, true)
 		check(near(mixed.Slime, grow(12, 6)) and mixed.PumpkinSlime == 10 and mixed.LittleGhost == 4 and mixed.GhostMinion == 8
-			and mixed.BatGoblin + mixed.Goblin == 7, "a busy meadow grows only the meadow", variant[1] .. " " .. show(mixed))
+			and mixed.BatGoblin + mixed.Goblin == 10, "a busy meadow grows only the meadow", variant[1] .. " " .. show(mixed))
 		local busyPatch = C.MonsterTargets({ PumpkinPatch = 6 }, true)
 		check(near(busyPatch.PumpkinSlime, grow(10, 6)) and busyPatch.LittleGhost == 4 and busyPatch.GhostMinion == 8
-			and busyPatch.Slime == 12 and busyPatch.Goblin + busyPatch.BatGoblin == 7, "a busy patch grows only the pumpkin slimes",
+			and busyPatch.Slime == 12 and busyPatch.Goblin + busyPatch.BatGoblin == 10, "a busy patch grows only the pumpkin slimes",
 			variant[1] .. " " .. show(busyPatch))
 		local busyHollow = C.MonsterTargets({ HauntedHollow = 6 }, true)
 		check(near(busyHollow.GhostMinion, grow(8, 6)) and near(busyHollow.LittleGhost, grow(4, 6)) and busyHollow.PumpkinSlime == 10
@@ -2396,7 +2398,7 @@ runGroup("season-end-config", function()
 			check(counts[kind] == want and (case[2] or targets[kind] == 0), "EffectiveMonsterCounts / MonsterTargets give Halloween kinds 0 after the end",
 				tag .. " " .. kind .. " " .. tostring(counts[kind]) .. "/" .. tostring(targets[kind]))
 		end
-		check(counts.Slime == 12 and counts.Goblin == (case[2] and 4 or 7) and targets.Slime == CONFIG.MonsterTargets({ SlimeMeadow = 3 }).Slime,
+		check(counts.Slime == 12 and counts.Goblin == (case[2] and 7 or 10) and targets.Slime == CONFIG.MonsterTargets({ SlimeMeadow = 3 }).Slime,
 			"base counts / targets: the slimes never change, the goblins get the bat goblins' 3 slots back at the end", tag)
 	end
 	-- the os.time fallback outside a running place (no workspace / GetServerTimeNow throws)

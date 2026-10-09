@@ -1782,11 +1782,11 @@ Config.MonsterTypes = {
 	SlingshotGoblin = { Name = "Slingshot Goblin", Short = "Slingshot Goblin", Zone = "GoblinWoods", Count = 3, HP = 70,
 		Damage = 4, XP = 26, Gold = 15, Speed = 11, Shape = "Humanoid", Scale = 0.9, Color = Color3.fromRGB(150, 175, 70),
 		ModelFrom = "Goblin", AnimFrom = "Goblin", QuestAs = "Goblin",
-		Ranged = { Range = 22, Stand = 17, Windup = 0.9, Speed = 18, Radius = 3, Cooldown = 3 } },
+		Ranged = { Range = 22, Stand = 17, Windup = 0.9, Speed = 18, Radius = 3, Cooldown = 3 }, WindupTime = 0.9 },
 	SkeletonArcher = { Name = "Skeleton Archer", Short = "Skeleton Archer", Zone = "SkeletonRuins", Count = 3, HP = 380,
 		Damage = 10, XP = 60, Gold = 60, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(215, 205, 170),
 		ModelFrom = "Skeleton", AnimFrom = "Skeleton", QuestAs = "Skeleton", PartnerOf = "SkeletonKnight",
-		Ranged = { Range = 26, Stand = 20, Windup = 1, Speed = 20, Radius = 3, Cooldown = 3.2 } },
+		Ranged = { Range = 26, Stand = 20, Windup = 1, Speed = 20, Radius = 3, Cooldown = 3.2 }, WindupTime = 1 },
 	SkeletonKnight = { Name = "Skeleton Knight", Short = "Skeleton Knight", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): the ruins' field boss (FieldBossService:
 	-- every 20 min, stays 6 min), 300 years on duty with nobody to take his shift. The Skeleton Knight's model and moves x
@@ -4462,7 +4462,7 @@ Config.Nudges = {
 	DailiesOpened = false, -- "Daily quests are open! ..." after the first [Claim] (HUD parseQuests)
 	-- 게임성 개발 2 (검수 10/09, nudge_list C: user "너무 친절해"): "Safe zone." each time a player walks out of PvP
 	-- (ZoneService); the PvP warning on the way in stays
-	SafeZone = false,
+	EnteredSafe = false,
 }
 
 Config.ChatText = {
@@ -6375,7 +6375,8 @@ end
 -- KillCardService: a kill of one of Kinds (by a paid contributor) offers that ChoiceCard kind with chance Chance, at
 -- most once per Cooldown s per player (server memory; a rejoin starts fresh). The card itself is ChoiceCard's.
 Config.KillCards = {
-	FlowerPatch = { Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 600 },
+	-- 검수 10/09: off until the client's choice-card window exists (otherwise saved cards only pile up)
+	FlowerPatch = { Enabled = false, Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 600 },
 }
 
 ----------------------------------------------------------------- monster levels (게임성 개발 2, system_review_round1 #6)
@@ -6422,5 +6423,16 @@ Config.PrivateServer = {
 	HalfSources = { Event = true, War = true, Bounty = true },
 	Text = "Rewards are halved in private servers",
 }
+
+----------------------------------------------------------------- A23-87 ranged kinds switch (검수 10/09)
+-- The Slingshot Goblin and the Skeleton Archer need the client's shot drawing (Fx MonsterShot) and AnimFrom moves
+-- (game dev 1): until those land they do not spawn (Count 0) and the goblins / skeletons get their slots back.
+Config.Mobs3Ranged = false
+if not Config.Mobs3Ranged then
+	local MT = Config.MonsterTypes
+	MT.Goblin.Count += MT.SlingshotGoblin.Count
+	MT.Skeleton.Count += MT.SkeletonArcher.Count
+	MT.SlingshotGoblin.Count, MT.SkeletonArcher.Count = 0, 0
+end
 
 return Config

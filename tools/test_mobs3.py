@@ -93,13 +93,15 @@ MUTATIONS = [
     ("no cooldown on cards", K, "\t\t\tif now - (mine[cardKind] or -math.huge) >= math.max(0, num(c.Cooldown, 600))\n",
      "\t\t\tif true\n"),
     ("a refused offer starts the cooldown", K, "\t\t\t\telseif opened == true then\n", "\t\t\t\telse\n"),
-    ("any kind offers", K, "c.Kinds[info.Kind] == true and kinds[cardKind]", "kinds[cardKind]"),
+    ("any kind offers", K, "type(c.Kinds) == \"table\" and c.Kinds[info.Kind] == true\n", "type(c.Kinds) == \"table\"\n"),
+    ("the card switch ignored", K, "if type(c) == \"table\" and c.Enabled ~= false and type(c.Kinds)", "if type(c) == \"table\" and type(c.Kinds)"),
+    ("ranged kinds on before the client", C, "Config.Mobs3Ranged = false\n", "Config.Mobs3Ranged = true\n"),
     # config
     ("a fast shot", C, "Ranged = { Range = 22, Stand = 17, Windup = 0.9, Speed = 18,", "Ranged = { Range = 22, Stand = 17, Windup = 0.9, Speed = 40,"),
     ("archer hits as hard as a skeleton", C, "ZONE_ARCHER_DMG", "ZONE_ARCHER_DMG"),
     ("a thin shot", C, "Speed = 20, Radius = 3, Cooldown = 3.2 }", "Speed = 20, Radius = 1, Cooldown = 3.2 }"),
-    ("cards every minute", C, "FlowerPatch = { Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 600 },",
-     "FlowerPatch = { Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 60 },"),
+    ("cards every minute", C, "Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 600 },",
+     "Kinds = { FlowerSlime = true }, Chance = 0.25, Cooldown = 60 },"),
 ]
 # a placeholder entry above is replaced with a real one (kept the list readable)
 MUTATIONS = [m for m in MUTATIONS if m[2] != "ZONE_ARCHER_DMG"] + [

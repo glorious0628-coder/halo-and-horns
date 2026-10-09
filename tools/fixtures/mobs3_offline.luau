@@ -95,7 +95,12 @@ runGroup("config", function()
 	check(fl.ModelFrom == "Slime" and sg.ModelFrom == "Goblin" and sg.AnimFrom == "Goblin" and sa.ModelFrom == "Skeleton"
 		and sa.AnimFrom == "Skeleton", "on their families' models and moves")
 	check(fl.QuestAs == "Slime" and sg.QuestAs == "Goblin" and sa.QuestAs == "Skeleton", "quests count them as the family")
-	check(not fl.Boss and not sg.Boss and not sa.Boss and fl.Count > 0 and sg.Count > 0 and sa.Count > 0, "regular pool kinds")
+	check(not fl.Boss and not sg.Boss and not sa.Boss and fl.Count > 0, "regular pool kinds")
+	-- 검수 10/09: the two ranged kinds wait for the client's shot drawing (Config.Mobs3Ranged false): no spawns, the
+	-- goblins / skeletons keep their 10 / 8 slots; the client wind-up time = the server's
+	check(C.Mobs3Ranged == false and sg.Count == 0 and sa.Count == 0 and MT.Goblin.Count == 10 and MT.Skeleton.Count == 8,
+		"ranged kinds off for now: Count 0, goblins 10, skeletons 8", show({ sg.Count, sa.Count, MT.Goblin.Count, MT.Skeleton.Count }))
+	check(sg.WindupTime == sg.Ranged.Windup and sa.WindupTime == sa.Ranged.Windup, "WindupTime = Ranged.Windup (the client's telegraph)")
 	check(sg.Damage < MT.Goblin.Damage and sa.Damage < MT.Skeleton.Damage and fl.Damage <= MT.Slime.Damage,
 		"damage under the zone's melee kind", show({ sg.Damage, sa.Damage, fl.Damage }))
 	for _, k in { "SlingshotGoblin", "SkeletonArcher" } do
@@ -118,6 +123,7 @@ runGroup("config", function()
 		and FP.Evil.Reward.Item == "Petal" and FP.Evil.Reward.N == 2 and type(FP.Good.Reward.XP) == "number"
 		and FP.Seconds == nil, "the FlowerPatch card (saved, no timer)", show(FP))
 	local KC = C.KillCards.FlowerPatch
+	check(KC and KC.Enabled == false, "the FlowerPatch card is off until the client's card window exists (검수 10/09)")
 	check(KC and KC.Kinds.FlowerSlime == true and KC.Cooldown == 600 and KC.Chance > 0 and KC.Chance <= 1,
 		"a Flower Slime kill may offer it, at most once in 10 min a player", show(KC))
 end)
@@ -274,7 +280,19 @@ runGroup("spawn spots", function()
 end)
 
 runGroup("kill cards", function()
-	local w = newWorld()
+	-- switched off: nothing even on a lucky roll
+	local off = newWorld()
+	local offOffers = 0
+	local offKilled = rbxSignal(off.Warnings)
+	local offSvc = off:Load("KillCardService", KILLCARD_SOURCE)
+	offSvc.Init({ MonsterService = { MonsterKilled = offKilled }, ChoiceCard = { Offer = function() offOffers += 1; return true end } })
+	offSvc.Start()
+	local op = off:NewPlayer(5)
+	off.Script = { 0 }
+	offKilled:Fire(op, { Kind = "FlowerSlime" })
+	check(offOffers == 0, "Enabled = false: no card")
+	-- switched on (the rules below)
+	local w = newWorld({ EditConfig = function(c) c.KillCards.FlowerPatch.Enabled = true end })
 	local offers, open = {}, { Value = true }
 	local monsterKilled = rbxSignal(w.Warnings)
 	local reg = { MonsterService = { MonsterKilled = monsterKilled },
