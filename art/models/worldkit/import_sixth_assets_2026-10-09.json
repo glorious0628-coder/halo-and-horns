@@ -1,0 +1,37 @@
+{
+ "note": "2026-10-09 WorldKit import batch 6 (E7 new monsters, v2 front+back input: Slingshot Goblin + Skeleton Archer B). Named by monster id (Config.MonsterTypes SlingshotGoblin / SkeletonArcher) -> ServerStorage.CustomModels (MonsterService.getCustomTemplate), not kit props. E8 first import 'SlimePrinceBody' (0.9,1.0,0.711) was turned 90 deg vs the old slime mesh (0.711,1.0,0.9): NOT used; re-imported as SlimePrinceBody2 (raw orientation).",
+ "items": [
+  {
+   "name": "SlingshotGoblin",
+   "meshId": "rbxassetid://114693432465009",
+   "textureId": "",
+   "size_studs": [
+    7.758,
+    10.0,
+    3.769
+   ],
+   "sa": {
+    "color": "rbxassetid://95551503182727",
+    "normal": "rbxassetid://106102072471817",
+    "metal": "rbxassetid://91750337187098",
+    "rough": "rbxassetid://76849090113304"
+   }
+  },
+  {
+   "name": "SkeletonArcher",
+   "meshId": "rbxassetid://115194868357958",
+   "textureId": "",
+   "size_studs": [
+    6.822,
+    10.0,
+    5.095
+   ],
+   "sa": {
+    "color": "rbxassetid://124907603818540",
+    "normal": "rbxassetid://104687798760977",
+    "metal": "rbxassetid://139428159824638",
+    "rough": "rbxassetid://139971452215876"
+   }
+  }
+ ]
+}
