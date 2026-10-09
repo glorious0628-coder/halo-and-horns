@@ -3611,7 +3611,7 @@ local function parseQuests()
 		if not (fold or e.Folded) then table.insert(shown, e) end
 	end
 	local folded = #shown < #normal
-	if questState.Folded == true and not folded and #normal > 0 then
+	if questState.Folded == true and not folded and #normal > 0 and (Config.Nudges or {}).DailiesOpened ~= false then
 		UIKit.Toast((type(TUT.Text) == "table" and TUT.Text.DailiesOpened) or TXT.DailiesOpened, "good", 4)
 	end
 	questState.Folded = folded
