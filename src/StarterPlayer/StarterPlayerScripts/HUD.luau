@@ -2095,6 +2095,17 @@ function L.LayoutTracker(q)
 	local titleSize = math.max(14, math.floor(lh * T.TitleK))
 	local bodySize = math.max(12, math.floor(lh * T.BodyK))
 	if IS_TOUCH then bodySize = math.max(12, math.ceil(11 / currentScale())) end
+	-- small PC windows: the tracker (taller than the rect: up to two goal lines + the head line) moves up so it ends
+	-- above the bottom group (portrait / power line), never above the minimap's bottom
+	local y = q.Y
+	local R = L.Rects
+	if not IS_TOUCH and R and R.power_line and R.minimap then
+		local need = math.ceil(titleSize * 1.25) + math.ceil(bodySize * 1.2) * 2 + math.ceil(bodySize * 1.35) + T.Gap * 4
+			+ math.floor(lh * 0.75) + 8
+		local floorY = math.min(R.power_line.Y, (R.portrait and R.portrait.Y) or R.power_line.Y) - 6
+		y = math.max(R.minimap.Y + R.minimap.H + 6, math.min(q.Y, floorY - need))
+	end
+	q = { X = q.X, Y = y, W = q.W, H = q.H }
 	t.Frame.Position = UDim2.fromOffset(q.X, q.Y)
 	t.Frame.Size = UDim2.fromOffset(q.W, 0)
 	local iconS = math.ceil(titleSize * 1.15)
