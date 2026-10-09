@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 490,
+  "checks": 487,
   "failedChecks": 0,
-  "namedChecks": 487,
+  "namedChecks": 484,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1611,24 +1611,6 @@
     },
     {
       "group": "ch3-data",
-      "check": "M3_5 follows in StoryQuests.Main",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "ch3-data",
-      "check": "M3_5: a chapter 3 main",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "ch3-data",
-      "check": "M3_5: G1 (Gold 1)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "ch3-data",
       "check": "M3_6 follows in StoryQuests.Main",
       "pass": 1,
       "fail": 0
@@ -1821,7 +1803,7 @@
     },
     {
       "group": "ch3-halo-good",
-      "check": "M3_5 waits for graduation",
+      "check": "M3_5 waits for graduation beside M3_6",
       "pass": 1,
       "fail": 0
     },
@@ -4020,7 +4002,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ch3-halo-good :: M3_5 waits for graduation"
+          "ch3-halo-good :: M3_5 waits for graduation beside M3_6"
         ],
         "newFailingCount": 1
       },
@@ -4031,14 +4013,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ch3-halo-good :: Lv18: the Brute hunt starts, Pip1 is offered (Lv15+ and Good)",
-          "ch3-halo-good :: Lv25 + the ruins: the tombs talk",
           "ch3-halo-good :: M3_5 done",
-          "ch3-halo-good :: M3_6 done, M3_7 next",
-          "ch3-halo-good :: M3_6: Lv18 first",
-          "ch3-halo-good :: M3_8 claimed: chapter 3 is over (no chapter 4 in the beta)"
+          "ch3-halo-good :: graduated: the Guide's talk opens"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 2
       },
       {
         "mutation": "Reward.Item never given",
@@ -4099,11 +4077,11 @@
           "ch3-data :: M3_2 follows in StoryQuests.Main",
           "ch3-data :: M3_3 follows in StoryQuests.Main",
           "ch3-data :: M3_4 follows in StoryQuests.Main",
-          "ch3-data :: M3_5 follows in StoryQuests.Main",
           "ch3-data :: M3_6 follows in StoryQuests.Main",
-          "ch3-data :: M3_7 follows in StoryQuests.Main"
+          "ch3-data :: M3_7 follows in StoryQuests.Main",
+          "ch3-data :: M3_8 follows in StoryQuests.Main"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 9
       },
       {
         "mutation": "no Lines fallback on the reaction page",
@@ -4215,11 +4193,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3af6d7c98c282d16a48e24b8ae51be7a44cbe59172d4c73a7791c8f44be7ae8b",
+    "src/ReplicatedStorage/Shared/Config.luau": "7983a3702c0816fd88972fd29dc9a4e164db639e1839ea7ef3523d2989609463",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
-    "src/ServerScriptService/StoryQuestService.luau": "f61024e13cebf1cc7680e687c79acea32aec5f68b8d6be731ebeec3a29f05309",
+    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
@@ -4228,7 +4206,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "4e31c9ffa1bd0d738bc0734eb395013fd7c902273cf13e2ab72935a7e93a5d13"
   },
-  "fixtureSHA256": "45570efebae32595da93e184ccec0d6ae115823c33dbb14747d7accb3e900465",
+  "fixtureSHA256": "9c9fa242d24783b6fa23382f61c32461b7ec4fc9bef66d90d0af48a794e69cdc",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

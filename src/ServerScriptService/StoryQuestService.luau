@@ -101,6 +101,11 @@ local function sanitize(data)
 		return tr
 	end
 	if st.Main.Id ~= "" then
+		local moved = DEFS[st.Main.Id]
+		-- A23-86: a main quest that became a side line (M3_5) keeps its track as a sub
+		if moved and moved.Kind == "Sub" and not st.Done[st.Main.Id] and st.Subs[st.Main.Id] == nil then
+			st.Subs[st.Main.Id] = { St = st.Main.St, P = st.Main.P, T = st.Main.T, Claim = st.Main.Claim }
+		end
 		if not DEFS[st.Main.Id] or DEFS[st.Main.Id].Kind ~= "Main" or st.Done[st.Main.Id] then
 			st.Main = { Id = "" }
 		else
@@ -452,6 +457,8 @@ local function requirementsMet(player, data, def)
 		if st.Done[gone] then return false end
 	end
 	if req.Level and num(data.Level, 1) < req.Level then return false end
+	-- A23-86 Sprout Oath: Sprout = the Sprout Shield is still on (PvPService.IsRookie; unknown = still a sprout)
+	if req.Sprout and stateTrue(player, "Graduated") then return false end
 	-- SKL-3: Skill = "Q" / "Z" / "X" learned (its switch on and the saved slot open)
 	if req.Skill then
 		local skills = Config.Skills or {}
@@ -489,6 +496,11 @@ local function refresh(player)
 		for _, id in SQ.Main do
 			local def = DEFS[id]
 			if def and num(def.Chapter) <= upTo then st.Done[id] = true end
+		end
+		for _, row in SQ.SkipChapters or {} do -- A23-86: a side line of a skipped chapter (M3_5) is skipped too
+			if num(data.Level, 1) >= row.Level then
+				for _, sid in row.Subs or {} do st.Done[sid] = true end
+			end
 		end
 		changed = true
 	end

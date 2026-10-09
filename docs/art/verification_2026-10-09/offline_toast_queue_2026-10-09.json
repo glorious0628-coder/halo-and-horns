@@ -1,0 +1,62 @@
+{
+  "checks": [
+    {
+      "name": "one toast at a time, 3 s, at most 3 waiting",
+      "ok": true
+    },
+    {
+      "name": "a toast is shown for at most ShowSeconds",
+      "ok": true
+    },
+    {
+      "name": "while one shows, new words wait (the same words once), the oldest waiting one dropped past QueueMax",
+      "ok": true
+    },
+    {
+      "name": "the same words on screen are refreshed before queueing",
+      "ok": true
+    },
+    {
+      "name": "a removed toast brings the next waiting one",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "stacked again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "long toasts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no cap on the waiting line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the next one never shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the same words wait twice",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the newest waiting one dropped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the duration cap gone",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}

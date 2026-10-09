@@ -2216,15 +2216,16 @@ Config.StoryQuests = {
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
 	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
-		"M3_1", "M3_2", "M3_3", "M3_4", "M3_5", "M3_6", "M3_7", "M3_8" },
+		"M3_1", "M3_2", "M3_3", "M3_4", "M3_6", "M3_7", "M3_8" }, -- A23-86: M3_5 (graduation) is a side line now
 	-- story_depth E0: an old save that reaches the story at Level >= Level skips the main chapters <= UpTo (once)
-	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },
+	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
 	Subs = { "S0", "Lunch1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
 		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
-		"WB1" }, -- A23-86 Call of the Woods: the lantern on the woods bridge
+		"WB1", -- A23-86 Call of the Woods: the lantern on the woods bridge
+		"M3_5", "OathH", "OathR" }, -- A23-86 Sprout Oath: the graduation side line + one oath a side
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -2518,10 +2519,13 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 2, XP = 2 },
 		},
+		-- A23-86 (content_beyond_10min G): the graduation clock is a side line, not a wall in the main chain. The row says
+		-- what ends the shield, with no minute numbers (no clock, A23-68 / A23-79). Saved in-progress tracks move here.
 		M3_5 = {
-			Kind = "Main", Chapter = 3, Title = "Sprout Graduation", ShortName = "Graduation",
+			Kind = "Sub", Chapter = 3, Title = "Sprout Graduation", ShortName = "Graduation",
+			Requires = { Done = { "M3_4" } },
 			Steps = {
-				{ Text = "Sprout Shield ends · Lv15 + 1 hour of play", Obj = { Type = "State", Key = "Graduated" } },
+				{ Text = "Sprout Shield on · ends at Lv15 + 1 hour of play", Obj = { Type = "State", Key = "Graduated" } },
 				{ Text = "Talk with the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
 					Halo = { "No more Sprout Shield. Now you can catch Wanted villains!",
 						"When the crown broke, I was lost. A stranger gave me their lamp.\nI never knew their name. So now I give mine.",
@@ -2708,6 +2712,47 @@ Config.StoryQuests = {
 					Lines = { All = { "Pip: Look! My own lamp! It glows purple. I never knew purple!" } } },
 			},
 			Reward = { Item = "Enh70", N = 1 },
+		},
+		-- A23-86 Sprout Oath (content_beyond_10min G): while the Sprout Shield is still on (Requires.Sprout) at Lv15 after M3_4,
+		-- a small training that shows the player's graduation role (Halo: guard + catch, Horns: raid) and ends with an oath.
+		-- Same steps count and walking for both sides' rewards: a stat-free title and 2 points (A23-58: the other side -2).
+		OathH = {
+			Kind = "Sub", Title = "The Sprout Oath", ShortName = "Sprout oath", Speaker = "Bright", Factions = { Halo = true },
+			Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },
+			Start = "Bright has a last lesson before your Sprout Shield ends.",
+			Steps = {
+				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Bright: Almost a graduate! Soon you can catch Wanted villains.",
+						"Bright: First, guard the woods bridge. Then face a Goblin Brute!" } } },
+				{ Text = "Guard the woods bridge %d/%d s", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 15 } },
+				{ Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
+				{ Text = "Make your oath to Bright", Guide = "HaloTown", Npc = "Bright", Panel = true,
+					Lines = { All = { "Bright: You did it! Say your oath. What kind of Halo are you?" } },
+					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
+						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
+			Finish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",
+		},
+		OathR = {
+			Kind = "Sub", Title = "The Sprout Oath", ShortName = "Sprout oath", Speaker = "Smokey", Factions = { Horns = true },
+			Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },
+			Start = "Smokey has a last lesson before your Sprout Shield ends.",
+			Steps = {
+				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Smokey: Almost a graduate! When the shield ends, you can raid knights.",
+						"Smokey: Hold the sack for 45 seconds and it's yours!",
+						"Smokey: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only!" } } },
+				{ Text = "Find the first goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
+				{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },
+				{ Text = "Basic hits on a Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
+				{ Text = "Make your oath to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "Smokey: Not bad, rascal! Say your oath. What kind of Horn are you?" } },
+					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
+						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
+			Finish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",
 		},
 		-- A23-86 Call of the Woods (content_beyond_10min A): the first time a Lv10 hunter stands on the woods bridge, one
 		-- small card. Same size, fixed reward: A (angel) one 70% scroll / B (devil) 3 HP potions + 1 minute of hunting gold at
@@ -4094,6 +4139,9 @@ Config.Loot = {
 Config.ChatText = {
 	Joined = "You joined the %s!", -- team name: "You joined the Horn Legion!"
 	Choosing = "Pick a side to start!", -- TextChatService only: the line for the auto-assigned "Choosing a side" team
+	-- 검수 2026-10-09 (UI clutter review ②: the team line stayed in the chat over the phone's joystick): the chat gets no
+	-- team line (TextChatService, Announce.Incoming); the first side pick shows "You joined ...!" as one 3 s toast
+	TeamToast = true,
 }
 
 -- A23-15 server-wide chat announcements (AnnounceService -> remote "Announce" -> client Announce.luau). Server sends
@@ -5901,5 +5949,11 @@ Config.ChoiceCard = {
 	},
 }
 Config.RateLimits.CardAction = 0.3
+-- A23-86 Sprout Oath titles (stat-free; the oath's pick decides which: Good = Guardian Cadet, Evil = Rascal Cadet)
+Config.TitleDefs.GuardianCadet = { Name = "Guardian Cadet", NameEn = "Guardian Cadet", Color = Color3.fromRGB(255, 225, 120) }
+Config.TitleDefs.RascalCadet = { Name = "Rascal Cadet", NameEn = "Rascal Cadet", Color = Color3.fromRGB(190, 120, 235) }
+for _, id in { "GuardianCadet", "RascalCadet" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
 
 return Config

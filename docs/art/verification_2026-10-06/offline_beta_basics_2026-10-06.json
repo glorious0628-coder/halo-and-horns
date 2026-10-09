@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 299,
+  "checks": 307,
   "failedChecks": 0,
   "namedChecks": 225,
   "namedChecksFailing": 0,
@@ -730,7 +730,7 @@
     {
       "group": "title-config",
       "check": "every TitleOrder id has a TitleDefs entry",
-      "pass": 17,
+      "pass": 19,
       "fail": 0
     },
     {
@@ -742,19 +742,19 @@
     {
       "group": "title-config",
       "check": "every TitleDefs id is in TitleOrder (picker)",
-      "pass": 17,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "title-config",
       "check": "TitleDefs entry has Name / NameEn / Color",
-      "pass": 17,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "title-config",
       "check": "title ids fit the 32-char SetTitle limit",
-      "pass": 17,
+      "pass": 19,
       "fail": 0
     },
     {
@@ -1801,7 +1801,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3af6d7c98c282d16a48e24b8ae51be7a44cbe59172d4c73a7791c8f44be7ae8b",
+    "src/ReplicatedStorage/Shared/Config.luau": "bbd5d3b62baa26e730b55579aead9f6f2e3dc0e15975d211175de09d4ffaf7c2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
