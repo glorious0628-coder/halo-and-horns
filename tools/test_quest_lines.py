@@ -235,6 +235,8 @@ def static_checks(src):
     fit = src[src.find("function L.FitQuestLine(l)"):src.find("function L.SetQuestLine(l, e, label, nums)")]
     refresh = src[src.find("refreshQuests = function()"):src.find("toggleQuests = function(open)")]
     return [
+        ("검수 10/09: a re-fit lays the plates out again (once a frame)", "\t\t\tL.LayoutQuestPlates()\n" in fit
+         and "\tif not L.PlatesQueued then\n" in fit),
         ("the lines are built for L.QuestLines()", "local n = L.QuestLines()" in build and "for i = 1, n do" in build
          and "Size = UDim2.new(1, 0, 1 / n, 0)," in build),
         ("the block grows one line height per extra line", "block.Size = UDim2.fromOffset(q.W, lh * L.QuestLines())" in layout),

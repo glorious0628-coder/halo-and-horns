@@ -4,6 +4,10 @@
   "failedChecks": [],
   "static": [
     {
+      "check": "검수 10/09: a re-fit lays the plates out again (once a frame)",
+      "ok": true
+    },
+    {
       "check": "the lines are built for L.QuestLines()",
       "ok": true
     },
@@ -272,7 +276,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "0e02278a9388fe41b69fbfb00c5e337f1f6e1fc9730d708c7df57bdcba3587e5"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "9f46b958a5e5cb2c66cd4e2d5b2fcdcf7d4be3c2b5299800e3ec0d2e0c9ec69f"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."
