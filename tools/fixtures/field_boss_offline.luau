@@ -57,7 +57,7 @@ local function bossWorld(opts)
 		ZoneService = { GetZoneId = function(p) return w.ZoneOf[p] end },
 		AnnounceService = { Broadcast = function(k, args) table.insert(w.Broadcasts, k) end },
 		-- J extras: crown-war points, titles, the weekly item (GrantItem returns w.GrantReturn or n)
-		WarService = { AddPoints = function(p, n) table.insert(w.WarAdds, { P = p, N = n }) end },
+		WarService = { AddPoints = function(p, n, pool) table.insert(w.WarAdds, { P = p, N = n, Pool = pool }) end },
 		TitleService = { Grant = function(p, id)
 			w.TitlesOf[p] = w.TitlesOf[p] or {}
 			if w.TitlesOf[p][id] then return false end
@@ -364,6 +364,21 @@ runGroup("clatter config", function()
 	end
 	check(F.Cards.CaptainClatter.Text.Help == "Let him rest" and F.Cards.CaptainClatter.Text.Tickle == "Count the old treasure!",
 		"Clatter's buttons")
+end)
+
+runGroup("clatter war pool", function()
+	-- 검수 2026-10-09 (the CR-M18 way): +20 personal points each, but one kill adds 20 to a side's pool only once
+	local w = bossWorld({})
+	local a, b, c = w:Hunter(1, "SkeletonRuins"), w:Hunter(2, "SkeletonRuins"), w:Hunter(3, "SkeletonRuins")
+	a.Attrs.Faction, b.Attrs.Faction, c.Attrs.Faction = "Halo", "Halo", "Horns"
+	w:Kill("Clatter", { 1, 2, 3 }, { Halo = 50, Horns = 50 })
+	local pool, personal = { Halo = 0, Horns = 0 }, 0
+	for _, add in w.WarAdds do
+		pool[add.P.Attrs.Faction] += add.Pool or add.N
+		personal += add.N
+	end
+	check(#w.WarAdds == 3 and personal == 60, "+20 personal points each", show({ #w.WarAdds, personal }))
+	check(pool.Halo == 20 and pool.Horns == 20, "each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)", show(pool))
 end)
 
 runGroup("clatter extras", function()

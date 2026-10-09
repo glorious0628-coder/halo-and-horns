@@ -1763,7 +1763,8 @@ Config.MonsterTypes = {
 	-- 75% uptime; measure in the test week and stretch the stay to 8 min if short). XP / Gold = 5 min of Lv25 hunting
 	-- (3,900 each), paid per eligible contributor (A23-27: 3 own hits + the damage share)
 	CaptainClatter = { Name = "Captain Clatter", Short = "Captain Clatter", Zone = "SkeletonRuins", Count = 0, Boss = true,
-		ContributorWindow = 180, RewardMinHits = 3, RewardMinDamageFrac = 0.005, ModelFrom = "SkeletonKnight",
+		-- 검수 2026-10-09: paid only with 2% of his HP dealt; 3 hits but less = MinorShare (15%) of XP / gold, nothing else
+		ContributorWindow = 180, RewardMinHits = 3, RewardMinDamageFrac = 0.02, MinorShare = 0.15, ModelFrom = "SkeletonKnight",
 		AnimFrom = "SkeletonKnight", HP = 20000, Damage = 30, XP = 3900, Gold = 3900, Speed = 8, Shape = "Humanoid",
 		Scale = 2.2, Color = Color3.fromRGB(150, 140, 120) },
 	-- Halloween (Config.Halloween; provisional numbers). A23-45 (user 2026-10-06 "고블린은 고블린끼리, 호박은 호박, 유령은

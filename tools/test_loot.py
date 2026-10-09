@@ -62,6 +62,8 @@ JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained,
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
+    # 검수 2026-10-09: a free rider's share (info.Minor) rolls nothing
+    ("a free rider rolls drops", "LOOT_SOURCE", "\tif info.Minor == true then return nil end -- a free rider's share", "\tdo end -- a free rider's share"),
     ("enhance failure may go below +0", "LOOT_SOURCE",
      "elseif before > 0 and rng:NextNumber() < LOOT.FailDropChance then", "elseif rng:NextNumber() < LOOT.FailDropChance then"),
     ("enhance success not capped at +10", "LOOT_SOURCE",
@@ -406,9 +408,12 @@ def static_checks(sources: dict[str, str]) -> tuple[int, list[str]]:
 
     monster = STATIC_ONLY["MONSTER"].read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     loop = re.search(r"for _, e in eligible do\n(.*?)\n\tend\n", monster, re.S)
+    # 검수 2026-10-09: + one Minor fire per free rider (info.Minor: RollKill rolls nothing for it)
+    minor = re.search(r"for _, p in minors do\n(.*?)\n\tend\n", monster, re.S)
     check(loop is not None and "MonsterService.MonsterKilled:Fire(e.Player, i)" in loop.group(1)
-          and monster.count("MonsterKilled:Fire(") == 1,
-          "MonsterService must fire MonsterKilled once per eligible contributor (one loot roll each)")
+          and minor is not None and "i.Minor = true" in minor.group(1) and "MonsterKilled:Fire(p, i)" in minor.group(1)
+          and monster.count("MonsterKilled:Fire(") == 2,
+          "MonsterService must fire MonsterKilled once per eligible contributor (one loot roll each) + Minor riders")
     main = STATIC_ONLY["MAIN"].read_text(encoding="utf-8-sig")
     check(main.count('"LootService"') >= 2, "Main.server.luau must list LootService in the load and start lists")
     writers = []

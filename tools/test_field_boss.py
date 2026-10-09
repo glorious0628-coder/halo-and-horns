@@ -67,6 +67,9 @@ MUTATIONS = [
      "\"FinisherService\", -- 게임성 개발 2 (before"),
     ("no Net default", N, "SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0,", ""),
     # J Captain Clatter extras
+    ("war pool per player (stacks)", K, "local ok, err = pcall(S.WarService.AddPoints, player, war, war / n)",
+     "local ok, err = pcall(S.WarService.AddPoints, player, war, war)"),
+    ("sides never counted", K, "\t\t\tif type(f) == \"string\" then sides[f] = (sides[f] or 0) + 1 end\n", ""),
     ("no extras paid", K, "\t\tpayExtras(key, ids)\n", ""),
     ("no side share", K, "\t\t\tShare = shareOf(rec) })", "\t\t\tShare = nil })"),
     ("share sides swapped", K, "return { Halo = hp, Horns = 100 - hp }", "return { Halo = 100 - hp, Horns = hp }"),

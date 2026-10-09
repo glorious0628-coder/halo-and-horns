@@ -217,6 +217,36 @@ runGroup("Captain Clatter's card", function()
 		"Tickle: 300 bank gold and his TickleDone line", show(e2))
 end)
 
+------------------------------------------------------------------ Captain Clatter's free riders (검수 2026-10-09)
+runGroup("free riders", function()
+	local w = finWorld()
+	local def = C0F.MonsterTypes.CaptainClatter
+	check(def.RewardMinDamageFrac == 0.02 and def.MinorShare == 0.15, "Clatter: paid from 2% of his HP, below that 15%",
+		show({ def.RewardMinDamageFrac, def.MinorShare }))
+	local p = w:Hero(171, { Faction = "Halo" })
+	local q = w:Hero(172, { Faction = "Horns" })
+	local r = w:Hero(173, { Faction = "Horns" })
+	local boss = w:King({ Kind = "CaptainClatter" })
+	local need = def.RewardMinDamageFrac * boss.MaxHP
+	boss._hits[p], boss._dmg[p], boss._contributors[p] = 2, need + 100, os.clock() -- the finisher (2% and more)
+	boss._hits[q], boss._dmg[q], boss._contributors[q] = 3, need - 1, os.clock() -- 3 hits, just under 2%
+	boss._hits[r], boss._dmg[r], boss._contributors[r] = 2, 50, os.clock() -- 2 hits only: nothing
+	w:Swing(p)
+	check(boss.Alive == false, "(the swing finished him)")
+	local byP = {}
+	for _, k in w.Kills do byP[k.P] = k.Info end
+	check(byP[p] and byP[p].Minor == nil and byP[p].XP == def.XP and byP[p].WarPoints ~= nil,
+		"2% and more: the full kill", show(byP[p] and { byP[p].XP, byP[p].Minor }))
+	check(byP[q] and byP[q].Minor == true and math.abs(byP[q].XP - def.XP * 0.15) < 1e-6 and math.abs(byP[q].Gold - def.Gold * 0.15) < 1e-6
+		and byP[q].WarPoints == 0 and byP[q].WarShare == 0 and byP[q].Manual == false,
+		"under 2% with 3 hits: Minor, 15% XP / gold, no war points, no card", show(byP[q] and { byP[q].XP, byP[q].Gold, byP[q].Minor }))
+	check(byP[r] == nil, "under the hits: nothing")
+	check(#w:Cards(q) == 0 and #w:Cards(p) == 1, "the card goes to the paid finisher only")
+	local paidQ = false
+	for _, id in boss.PaidUserIds or {} do if id == q.UserId then paidQ = true end end
+	check(not paidQ, "a free rider is not in PaidUserIds (no badge, no titles, no war bonus)")
+end)
+
 ------------------------------------------------------------------ who gets a card (kills through the real presses)
 runGroup("who gets a card", function()
 	-- a manual swing kills it: a card, and the kill itself is paid as before (Manual on the info)

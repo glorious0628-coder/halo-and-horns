@@ -1300,16 +1300,23 @@ local function killRecord(rec)
 	-- CR-M18: every contributor keeps the full personal WarPoints, but one kill adds WarPoints to a faction pool only
 	-- once: WarShare = WarPoints / (contributors of that faction) (WarService.AddPoints(player, n, poolN))
 	local now = os.clock()
-	local eligible, perFaction = {}, {}
+	local eligible, perFaction, minors = {}, {}, {}
 	local window = tonumber(def.ContributorWindow) or MC.ContributorWindow -- a miniboss fight is longer
 	local minHits = tonumber(def.RewardMinHits) or 0
 	local minDamage = (tonumber(def.RewardMinDamageFrac) or 0) * rec.MaxHP
+	-- 검수 2026-10-09 (Captain Clatter free riders): def.MinorShare > 0 = a contributor with the hits but under the
+	-- damage share still gets MinorShare of the XP / gold (info.Minor: no drops, no card, no war points, not paid)
+	local minorShare = math.clamp(tonumber(def.MinorShare) or 0, 0, 1)
 	for p, t in rec._contributors do
-		if p.Parent and now - t <= window and (rec._hits[p] or 0) >= minHits and (rec._dmg[p] or 0) >= minDamage then
-			local okF, f = pcall(factionOf, p)
-			if not okF or type(f) ~= "string" then f = "None" end
-			table.insert(eligible, { Player = p, Faction = f })
-			perFaction[f] = (perFaction[f] or 0) + 1
+		if p.Parent and now - t <= window and (rec._hits[p] or 0) >= minHits then
+			if (rec._dmg[p] or 0) >= minDamage then
+				local okF, f = pcall(factionOf, p)
+				if not okF or type(f) ~= "string" then f = "None" end
+				table.insert(eligible, { Player = p, Faction = f })
+				perFaction[f] = (perFaction[f] or 0) + 1
+			elseif minorShare > 0 and (rec._dmg[p] or 0) > 0 then
+				table.insert(minors, p)
+			end
 		end
 	end
 	-- sound_gaps B11 (검수 2026-10-07): the UserIds this kill pays, kept on the record (sorted) for HalloweenService's
@@ -1340,6 +1347,16 @@ local function killRecord(rec)
 			if o.Player ~= e.Player then table.insert(i.Others, o.Player) end
 		end
 		MonsterService.MonsterKilled:Fire(e.Player, i)
+	end
+	-- the free riders' small share (MinorShare of XP / gold only; LootService rolls nothing for info.Minor)
+	for _, p in minors do
+		local i = table.clone(info)
+		i.Minor = true
+		i.XP, i.Gold = info.XP * minorShare, info.Gold * minorShare
+		i.WarPoints, i.WarShare = 0, 0
+		i.Manual, i.SkillHit = false, false
+		i.Party, i.Others = #eligible, {}
+		MonsterService.MonsterKilled:Fire(p, i)
 	end
 
 	deathPop(rec, true)

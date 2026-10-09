@@ -3816,7 +3816,9 @@ runGroup("client-wiring", function()
 		"the name bar is raised by Float for hovering kinds")
 	check(string.find(mon, "Event = opts.Event == true or nil", 1, true) ~= nil, "spawnMonster marks SpawnEvent records (Event = true)")
 	local _, fires = string.gsub(mon, "MonsterKilled:Fire%(", "")
-	check(fires == 1, "MonsterKilled is fired in one place only (the per-contributor loop)", fires)
+	-- + 검수 2026-10-09: the free riders' Minor share loop (info.Minor, XP / gold only)
+	check(fires == 2 and string.find(mon, "i.Minor = true", 1, true) ~= nil,
+		"MonsterKilled is fired in the per-contributor loop and the Minor riders' loop only", fires)
 	-- the Net defaults HalloweenService publishes (real Net.CreateAll in the king worlds)
 	local net = execute("Net", NET_SOURCE, nativeEnv({ game = { GetService = function() return { IsServer = function() return true end } end } }))
 	local dflt = net.GameStateDefaults

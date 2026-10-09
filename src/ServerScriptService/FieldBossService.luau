@@ -142,9 +142,13 @@ end
 -- one paid contributor's extras (Config.FieldBosses[key]): War points for the own side (WarService.AddPoints: None /
 -- Neutral get none), Kills +1 and the Titles it reaches, the Weekly item (data.FieldBoss[key] = { Kills, Week, Owed }:
 -- the first kill opens a week's guarantee, every later week adds one, banked up to Max; a kill takes one)
-local function extraOne(key, c, player)
+-- sides = { [faction] = paid contributors of that side here }: War is each one's personal points, but one kill adds
+-- War to a side's pool only once (CR-M18: poolN = War / that side's contributors; 검수 2026-10-09)
+local function extraOne(key, c, player, sides)
 	if num(c.War) > 0 and S.WarService and type(S.WarService.AddPoints) == "function" then
-		local ok, err = pcall(S.WarService.AddPoints, player, math.floor(num(c.War)))
+		local war = math.floor(num(c.War))
+		local n = math.max(1, (sides or {})[player:GetAttribute("Faction")] or 1)
+		local ok, err = pcall(S.WarService.AddPoints, player, war, war / n)
 		if not ok then warnThrottled("war", err) end
 	end
 	local data = S.PlayerService.GetData(player)
@@ -194,12 +198,18 @@ end
 
 local function payExtras(key, ids)
 	local c = cfg(key)
+	local present, sides = {}, {}
 	for _, id in ids do
 		local p = Players:GetPlayerByUserId(id)
 		if p then
-			local ok, err = pcall(extraOne, key, c, p)
-			if not ok then warnThrottled("extra_" .. key, err) end
+			table.insert(present, p)
+			local f = p:GetAttribute("Faction")
+			if type(f) == "string" then sides[f] = (sides[f] or 0) + 1 end
 		end
+	end
+	for _, p in present do
+		local ok, err = pcall(extraOne, key, c, p, sides)
+		if not ok then warnThrottled("extra_" .. key, err) end
 	end
 end
 

@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7313,
+  "checks": 7311,
   "failedChecks": 0,
   "namedChecks": 608,
   "namedChecksFailing": 0,
@@ -100,7 +100,7 @@
     {
       "group": "config-kinds",
       "check": "story objectives never name a seasonal kind",
-      "pass": 33,
+      "pass": 31,
       "fail": 0
     },
     {
@@ -3633,7 +3633,7 @@
     },
     {
       "group": "client-wiring",
-      "check": "MonsterKilled is fired in one place only (the per-contributor loop)",
+      "check": "MonsterKilled is fired in the per-contributor loop and the Minor riders' loop only",
       "pass": 1,
       "fail": 0
     },
@@ -5348,21 +5348,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6a10d97987ed0601e030d8cff0a06c991588dd03aaf3aaca1e59b33c394c705b",
-    "src/ReplicatedStorage/Shared/Net.luau": "aa7d771dc7846724a106da98a44ff5d87ffc26cda2d3df9b9e89e40096ff9153",
+    "src/ReplicatedStorage/Shared/Config.luau": "ea1ffc4c3c3c5519ba3e180ef4aec005bb0cd7567e16db22fdaf729d4e97d556",
+    "src/ReplicatedStorage/Shared/Net.luau": "542dd78b90d90cd89011c8273261106b81d10ee994f48706b9c1a1a4a2a9ae11",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
-    "src/ServerScriptService/QuestService.luau": "c6e6298c97d3e79c72f74139d8acf3d360815f6ad0e7e1ed57ac866f9d0a2432",
-    "src/ServerScriptService/StoryQuestService.luau": "a48009916dca0c80b455c411856d797f6d182e2ceaf580133da7ec78979167cd",
-    "src/ServerScriptService/LootService.luau": "9ed3f02b51335e0815eeae1c9537b1bcca92f0564fe6351c5e66673236ae70bd",
+    "src/ServerScriptService/QuestService.luau": "7d2f7503d791275a07660a406a3b1fd3e75f6789a26bdb2d5bb9a7864602d474",
+    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
+    "src/ServerScriptService/LootService.luau": "23410818091ddad4478a4ddf59de89cc3c795a6f1214c99ea77272d6ee78990c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "28a85b9f636fde698c971e484b51ade893b02dad1c0dd0e3990047ae319a8e34",
-    "src/ServerScriptService/Main.server.luau": "49c77dde6d06a5c063b171ab34c6cfb5a90142928e99e534dca0d20817449e01",
-    "src/ServerScriptService/MonsterService.luau": "d390cff17dd90a30cfd6bff4daa898298c9b8205dba5d6a3bc9f6e496237e48c",
-    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "de0638c1776386bd94646570f166825a73aa9ba95b4daaa76c250ba4ec99586d",
-    "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "783fd751267b50e6247b64a2c3e20cfa2f1805af65ae9bb020e692ae73c2ebce",
+    "src/ServerScriptService/Main.server.luau": "33361d37c75344e2043580fe33e30f3b231b7daa66e2073808c714fe59a40210",
+    "src/ServerScriptService/MonsterService.luau": "c0e197c4df03f15400ce06fd4ee5914cfe1db766ba0bbffca160cda092479a7d",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "62076faa04be7ff42c13fa9bdb61233d2e537efdba1c94eec288535694279802",
+    "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "6ecb5504ab945867f484223e86bbafe2fa10ac9a4c4b82f3166ef341c12a2540",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "d76d7cc6e0b31bbf1591d88cc9eee06f5f28d378ed64a1d6e6ffe971aef1963d",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "35f7f06e3d6f19793053c7e67fa70e64c1e300f4ba61402c7e919dc0ab9d6f92",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "9ee257e0f0304207dca77a2bd541a285158cbb654b20b004a6b5225d6a9c9830",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "a2c2b18fcaf4a0f1024c57da5dd4b28a47c16ae57ddf61a9815114641c73baaa",
@@ -5374,7 +5374,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "fbfc802fa6a49833d5a77ad2f3a187d7f72ac78dc290671877056a4f9ff16ed8",
+  "fixtureSHA256": "8f5ec27cb250d30cea36c4d3f792ad8dd2471c20e23606e24f872b1f6d4370cb",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
