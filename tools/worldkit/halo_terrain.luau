@@ -58,6 +58,11 @@ local BRIDGES = {
 }
 local PAVE = { Rim = 8, Wing = 10, Mat = "Concrete" } -- grass rim width on the spine / wing tops; Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
 local CLIFF = { Skirt = 5, Jag = 4.2, JagScale = 27, Jag2 = 1.6, Jag2Scale = 9 }
+-- waterfalls (mirrored, one per side): a small spring basin on the wing top spills over its outer cliff into the sea
+-- (art/review/s2/place_HaloTown_sheet.jpg, shot 5). Terrain water does not flow, so the sheet of water standing against the
+-- cliff is the base; the props tool adds foam / mist on top. { wing, centre z }; Half = half width of the channel.
+local FALLS = { { "WB", -493 }, { "WC", -582 }, { "WD", -660 } }
+local FALL = { Half = 4, Basin = 9, Drop = 0.4, Dip = 1.5 }
 -- sea stacks / rock pillars in the canals and off the coast (not walkable; give the sea silhouette rocks): { x, z, radius, top V }
 local STACKS = {} -- none yet: the canals are only 12..22 studs wide (the far sea stacks are a backdrop prop, not terrain)
 
@@ -149,6 +154,19 @@ local function column(x, z)
 	local h, sdf, kind = pieces(x, z)
 	if h == nil then return G.Bed, G.WaterTop, "Sand", "bed", e end
 	local ax = math.abs(x)
+	local wf
+	if string.sub(kind, 1, 5) == "wing:" then
+		for _, f in FALLS do
+			if "wing:" .. f[1] == kind and math.abs(z - f[2]) <= FALL.Half then wf = f end
+		end
+	end
+	if wf then
+		if sdf > -2.5 and sdf < CLIFF.Skirt - 0.5 then -- the water sheet down the cliff to the sea
+			return G.Bed, h - FALL.Drop, "Sand", "fall", e
+		elseif sdf <= -2.5 and sdf >= -FALL.Basin then -- spring basin, a little below the rim
+			return h - FALL.Dip, h - FALL.Drop, "Sand", "basin", e
+		end
+	end
 	if sdf > 0 then -- cliff skirt: drops from the top to the bed over the skirt
 		local t = smooth(sdf / CLIFF.Skirt)
 		local v = lerp(h, G.Bed, t)
@@ -190,7 +208,7 @@ local function plan(base)
 			else
 				if tag == "bed" then v = math.min(v, base.S[idx] + G.Lift) end -- never shallower than the baseline's coast
 				V[idx], W[idx], Top[idx], Tag[idx], E[idx] = v, w, mat, tag, e
-				Body[idx] = (tag == "bed") and "Sand" or "Limestone"
+				Body[idx] = (tag == "bed" or tag == "fall") and "Sand" or "Limestone"
 			end
 		end
 	end
@@ -433,7 +451,7 @@ if MODE == "restore" then
 		task.wait()
 	end
 	if store then
-		for _, a in { "Bridges", "AppliedAt", "Tiers" } do store:SetAttribute(a, nil) end
+		for _, a in { "Bridges", "Waterfalls", "AppliedAt", "Tiers" } do store:SetAttribute(a, nil) end
 	end
 	return string.format("halo terrain restore: %d chunks back to the baseline", wrote)
 end
@@ -461,6 +479,15 @@ for _, b in BRIDGES do
 	table.insert(spots, string.format("%s,%d,%d,%s,%.1f,%.1f", b[1], b[2], b[3], b[4], b[5], b[6]))
 end
 st:SetAttribute("Bridges", table.concat(spots, ";"))
+local falls = {}
+for _, f in FALLS do
+	for _, sgn in { -1, 1 } do
+		local w
+		for _, ww in WINGS do if ww.Name == f[1] then w = ww end end
+		table.insert(falls, string.format("%s%s,%d,%d,%.1f", f[1], sgn < 0 and "W" or "E", sgn * w.ax1, f[2], w.H))
+	end
+end
+st:SetAttribute("Waterfalls", table.concat(falls, ";")) -- name, x of the wing outer edge, z, top Y
 local tiers = {}
 for _, t in SPINE.Tiers do table.insert(tiers, string.format("%d,%.1f,%d", t[1], t[2], t[3])) end
 st:SetAttribute("Tiers", table.concat(tiers, ";"))
