@@ -717,7 +717,8 @@ function claimTutorial(player, auto)
 	S.PlayerService.SetStat(player, "BlacksmithVisited", false)
 	setStep(player, TUT_DONE) -- first, so it can never be paid twice
 	TUT_READY_AT[player] = nil
-	S.ProgressionService.AddBankGold(player, TUT_GOLD, "Quest")
+	-- A23-75: the line shows what was added (the 2x Gold pass doubles the 150)
+	local gotGold = S.ProgressionService.AddBankGold(player, TUT_GOLD, "Quest") or TUT_GOLD
 	if TUT_XP > 0 then
 		S.ProgressionService.AddXP(player, TUT_XP)
 	end
@@ -725,7 +726,7 @@ function claimTutorial(player, auto)
 	if armed then
 		text = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)
 	end
-	Net.Notify(player, string.format(text, Util.FormatNumber(TUT_GOLD)), "reward", auto and 6 or nil, "QuestDone")
+	Net.Notify(player, string.format(text, Util.FormatNumber(gotGold)), "reward", auto and 6 or nil, "QuestDone")
 end
 
 -- A23-3: one fixed next-goal line after the blacksmith visit, from existing state only (no new reward).
@@ -929,13 +930,15 @@ local function publish(player)
 end
 
 ------------------------------------------------------------------ progress & completion
+-- A23-75: returns the gold and XP really added (the 2x passes), for the lines the callers show
 local function payReward(player, gold, xp)
 	if gold > 0 then
-		S.ProgressionService.AddBankGold(player, gold, "Quest")
+		gold = S.ProgressionService.AddBankGold(player, gold, "Quest") or gold
 	end
 	if xp > 0 then
-		S.ProgressionService.AddXP(player, xp)
+		xp = S.ProgressionService.AddXP(player, xp) or xp
 	end
+	return math.max(0, gold), math.max(0, xp)
 end
 
 -- bonus chest for the full set of dailies (claimed by hand, or completed by the midnight auto-pay: CR-M21).
@@ -944,7 +947,7 @@ local function payChest(player, data, genLevel)
 	if genLevel == nil then genLevel = data.DailyLevel end
 	local cg, cx = chestReward(getLevel(data), genLevel)
 	cg, cx = math.floor(num(cg)), math.floor(num(cx))
-	payReward(player, cg, cx)
+	cg, cx = payReward(player, cg, cx)
 	Net.Notify(player, string.format(Config.Text.DailyChest, Util.FormatNumber(cg), Util.FormatNumber(cx)), "reward", nil,
 		"GoldPickup")
 	if Util.Random:NextNumber() < Config.Daily.ChestTicketChance then
@@ -965,9 +968,9 @@ local function completeQuest(player, data, index, q)
 	if q.Kind == "Extra" then
 		-- replace first so the finished quest can never be paid twice (E11 boards on: the slot stays empty)
 		data.Quests[index] = boardOn() and { Kind = "Empty" } or newQuest(player, "Extra", othersExcept(data.Quests, index))
-		payReward(player, math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP)))
+		local gotGold = payReward(player, math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP)))
 		if not quiet then
-			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(q.RewardGold)), "reward", nil, "QuestDone")
+			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(gotGold)), "reward", nil, "QuestDone")
 		end
 	elseif not quiet then
 		-- dailies stay in their slot until claimed
@@ -1094,8 +1097,7 @@ local function runDayCheck(player)
 	local paidGold = 0
 	for _, q in toPay do
 		local g, x = capTo(math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP)), capG, capX)
-		paidGold += g
-		payReward(player, g, x)
+		paidGold += (payReward(player, g, x))
 	end
 	if paidGold > 0 then
 		Net.Notify(player, string.format(Config.Text.DailyAutoPaid, Util.FormatNumber(paidGold)), "reward", nil, "QuestDone")
@@ -1135,7 +1137,7 @@ local function onClaimQuest(player, slot)
 
 	local g, x = math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP))
 	g, x = capTo(g, x, Config.DailyQuestReward(getLevel(data))) -- CR-M6
-	payReward(player, g, x)
+	g, x = payReward(player, g, x)
 	Net.Notify(player, string.format(Config.Text.DailyClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward", nil,
 		"QuestDone")
 
@@ -1188,7 +1190,7 @@ local function onClaimVacation(player)
 	S.PlayerService.SetStat(player, "VacationDays", 0)
 	S.PlayerService.SetStat(player, "VacationGold", 0)
 	S.PlayerService.SetStat(player, "VacationXP", 0)
-	payReward(player, g, x)
+	g, x = payReward(player, g, x)
 	Net.Notify(player, string.format(Config.Text.VacationClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward", nil,
 		"GoldPickup")
 end

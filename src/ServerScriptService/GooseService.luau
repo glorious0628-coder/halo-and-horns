@@ -574,8 +574,9 @@ local function rewardPlayer(p, result, f, share)
 
 	local level = math.max(1, math.floor(getNum(p, "Level")))
 	local gold, xp = Config.GooseReward(level, f, won, rare, share)
-	if gold > 0 then call("ProgressionService", "AddBankGold", p, gold, "Event") end
-	if xp > 0 then call("ProgressionService", "AddXP", p, xp) end
+	-- A23-75: what was really added (the 2x passes) is what the lines below show
+	if gold > 0 then gold = tonumber(call("ProgressionService", "AddBankGold", p, gold, "Event")) or gold end
+	if xp > 0 then xp = tonumber(call("ProgressionService", "AddXP", p, xp)) or xp end
 	local msg = (share ~= nil) and txt("CoopReward", f, Util.FormatNumber(gold), Util.FormatNumber(xp)) or nil
 	Net.Notify(p, msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp)), "reward", nil,
 		"GoldPickup")

@@ -240,8 +240,9 @@ local function finish(player, data, index)
 	if stays[player] then stays[player][h.Id .. ":" .. h.Board] = nil end
 	local g, x = reward(h.Board, st.Done)
 	st.Done += 1
-	S.ProgressionService.AddBankGold(player, g, "Quest")
-	S.ProgressionService.AddXP(player, x)
+	-- A23-75: what was really added (the 2x passes) is what the line below shows
+	g = S.ProgressionService.AddBankGold(player, g, "Quest") or g
+	x = S.ProgressionService.AddXP(player, x) or x
 	local story = type(data.Story) == "table" and data.Story or {}
 	data.Story = story
 	if type(story.N) ~= "table" then story.N = {} end

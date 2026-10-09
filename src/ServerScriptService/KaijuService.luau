@@ -425,20 +425,25 @@ local function survive(p)
 		local level = math.max(1, math.floor(getNum(p, "Level")))
 		local okCap, capGold = pcall(Config.HuntValue, level, SURVIVE_BONUS_MINUTES)
 		capGold = (okCap and tonumber(capGold)) or 0
+		-- A23-75 review 2026-10-08: the pouch already holds the 2x Gold pass (its kills paid x2), so the bonus made from
+		-- it is never doubled again; only its cap is (a pass owner at the cap still gets 2x)
+		local passMult = math.max(1, tonumber(call("ProgressionService", "PassMult", p, "Gold2")) or 1)
 		local carried = math.max(0, math.floor(getNum(p, "CarriedGold")))
 		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", p, carried, "Kaiju")) or 0))
 		local fullBonus = math.max(0, math.floor(taken * Config.Kaiju.SurviveBankMult) - taken) -- minted part
-		local bonus = opposed and math.min(fullBonus, math.max(0, math.floor(capGold))) or 0
+		local bonus = opposed and math.min(fullBonus, math.max(0, math.floor(capGold * passMult))) or 0
+		local capped = bonus < fullBonus
+		-- A23-75: the carried gold banked is the player's own ("KaijuBank", never 2x); the minted bonus is "KaijuBonus"
+		-- (never 2x either: see passMult above). The line shows what was added.
+		if taken > 0 then call("ProgressionService", "AddBankGold", p, taken, "KaijuBank") end
+		if bonus > 0 then bonus = tonumber(call("ProgressionService", "AddBankGold", p, bonus, "KaijuBonus")) or bonus end
 		local amount = taken + bonus
-		if amount > 0 then
-			call("ProgressionService", "AddBankGold", p, amount, "Kaiju")
-		end
 		p:SetAttribute("SessionTitle", Config.Story.SurviveTitle) -- session only
 		call("WarService", "AddFactionPoints", "Horns", Config.Kaiju.HornsWarPoints)
 		local text = Config.Text.KaijuSurviveReward
 		if not opposed then
 			text = TXT_SURVIVE_UNCONTESTED
-		elseif bonus < fullBonus then
+		elseif capped then
 			text = TXT_SURVIVE_CAPPED
 		end
 		Net.Notify(p, string.format(text, Util.FormatNumber(amount)), "reward", nil, "GoldPickup")
@@ -760,14 +765,17 @@ function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 				if totalDmg > 0 then
 					frac = Config.Kaiju.DamageShare * (dmg[p] or 0) / totalDmg + (1 - Config.Kaiju.DamageShare) / n
 				end
-				local share = math.floor(taken * frac) -- carried gold: a transfer, always paid
+				local moved = math.floor(taken * frac) -- carried gold: a transfer, always paid
 				-- minted part: once per participant/kaiju pair per Kaiju.PairRewardCooldown, saved in PairCD (CR-M4)
 				local mintShare = math.floor(mint * frac)
-				if mintShare > 0 and pairReady(p, victim.UserId, cooldown) then
-					share += mintShare
+				if not (mintShare > 0 and pairReady(p, victim.UserId, cooldown)) then mintShare = 0 end
+				-- A23-75: the transfer was the kaiju's gold ("KaijuTransfer", never 2x); the minted part is earned ("Kaiju")
+				if moved > 0 then call("ProgressionService", "AddBankGold", p, moved, "KaijuTransfer") end
+				if mintShare > 0 then
+					mintShare = tonumber(call("ProgressionService", "AddBankGold", p, mintShare, "Kaiju")) or mintShare
 				end
+				local share = moved + mintShare
 				if share > 0 then
-					call("ProgressionService", "AddBankGold", p, share, "Kaiju")
 					paid += share
 					Net.Notify(p, string.format(Config.Text.KaijuReward, Util.FormatNumber(share)), "reward", nil, "GoldPickup")
 				end

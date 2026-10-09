@@ -7,7 +7,7 @@
     "caught": 64,
     "results": [
       {
-        "mutation": "QuestService.luau: no QuestDone on 'string.format(text, Util.FormatNumber(TU'",
+        "mutation": "QuestService.luau: no QuestDone on 'string.format(text, Util.FormatNumber(go'",
         "caught": true
       },
       {
