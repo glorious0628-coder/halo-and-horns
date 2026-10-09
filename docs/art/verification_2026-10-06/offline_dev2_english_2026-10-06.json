@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (3748 strings)",
+      "check": "the walk reached the player strings (3824 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -39,7 +39,7 @@
     },
     {
       "group": "X / XEn twins hold the same English",
-      "check": "twins found (170)",
+      "check": "twins found (172)",
       "pass": 1,
       "fail": 0
     },
@@ -740,7 +740,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "13804af4af1536b064552dc054f0580fd8831d0b8e525b57180adc3d99dc158d",
+    "src/ReplicatedStorage/Shared/Config.luau": "bbd5d3b62baa26e730b55579aead9f6f2e3dc0e15975d211175de09d4ffaf7c2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/AttendanceService.luau": "60a7e6745f24b36a2e3763b76d0f1cc9ee641890f5a5639f3acff8955e669595",
@@ -778,7 +778,7 @@
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/SkillService.luau": "3a11db855624b8f07a2c1cd36693e3e914e766228c6fcce0cfebaad10a8ffdf6",
-    "src/ServerScriptService/StoryQuestService.luau": "f61024e13cebf1cc7680e687c79acea32aec5f68b8d6be731ebeec3a29f05309",
+    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
     "src/ServerScriptService/TelemetryService.luau": "28c07feba0a8e647a8caa665febbae89ce6acd7fd56177d94c3280588af062a7",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",

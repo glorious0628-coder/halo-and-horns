@@ -3,7 +3,7 @@
   "checks": 877,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3af6d7c98c282d16a48e24b8ae51be7a44cbe59172d4c73a7791c8f44be7ae8b",
+    "src/ReplicatedStorage/Shared/Config.luau": "7983a3702c0816fd88972fd29dc9a4e164db639e1839ea7ef3523d2989609463",
     "src/ServerScriptService/DataService.luau": "583fb51419213d61c7bc97f4d57d4c94d2aaf85f2a03de6854fe01a21fb425b3",
     "src/ServerScriptService/QuestService.luau": "c6e6298c97d3e79c72f74139d8acf3d360815f6ad0e7e1ed57ac866f9d0a2432",
     "src/ReplicatedStorage/Shared/Net.luau": "96b0d9a3b289df648386a1cc394401534f737260ed355c95420de056a8631e99",
