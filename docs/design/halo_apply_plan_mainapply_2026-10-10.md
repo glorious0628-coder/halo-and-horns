@@ -12,7 +12,7 @@
 1. `halo_materials.luau` (apply) — GE_HaloPave Concrete.
 2. `halo_terrain.luau` (apply) — 척추 단 Y 0.2·5·11·19, 날개 단 4쌍, 운하, 폭포 6곳.
 3. 새 모델 배치(이미지 생성 1의 props 도구) — 아래 규칙 지키며.
-4. 이동 판 2개 (#52): 광장(문 안쪽)에 `Map.Pads.Pad_Halo_SlimeMeadow`, `Pad_Halo_GoblinWoods`, 속성 `TravelTo` = SlimeMeadow / GoblinWoods, 지형 단 높이에 맞춤. `Config.Map.Pads`에는 안 넣음(개발 1이 빛 표시·미니맵).
+4. 이동 판 2개 (#52): 광장(문 안쪽)에 `Map.Pads.Pad_Halo_SlimeMeadow`, `Pad_Halo_GoblinWoods`, 속성 `TravelTo` = SlimeMeadow / GoblinWoods, 지형 단 높이에 맞춤. `Config.Map.Pads`에는 안 넣음(개발 1이 빛 표시·미니맵). **판은 Model이 아니라 Part(BasePart, CanTouch 켬)로** 만든다 — 서버 ZoneService가 BasePart만 연결한다(검수 확인 10/10). 속성 `TravelTo`만 달면 안내·반짝임·지도 ▣는 개발 1 클라가 붙인다.
 5. 충돌 (#48): `decor_collision` 다시 실행(또는 T.Tree에 Topiary 추가). 종류별: Gate·Cathedral·Towers·Houses·Shops·Stairs·ArchBridges = 보통 충돌 + CanQuery; Balustrade·Lantern·Planter·BannerPole·KnightStatue = DecorPlayerOnly; Topiary·RoundTree = 줄기 기둥; CloudBush = BlockPost; PotFlowers = 통과.
 6. 동상 줄 가운데에 `Config.StoryQuests.Landmarks.HeroStatue` 맞추기(#29, 평면 거리라 단 높이 무관; 개발 1이 코드 쪽 먼저).
 
