@@ -5,5 +5,5 @@
 먼저 읽어: AGENTS.md, 메모리 MEMORY.md, docs/handoff/review_handoff_2026-10-09.md(맨 아래 §8이 지금 기준), build/handoff_2026-10-09b/review_tail.md(옛 검수 마지막 대화), docs/handoff/role_prompts/README.md.
 역할 프롬프트는 docs/handoff/role_prompts/ 폴더가 네 몫이야: 세션 역할·큐·규칙이 바뀌면 그 세션 파일을 고치고 py tools/push_paths.py로 올려. 사용자가 새 세션을 만들 때는 이 폴더 파일을 쓰라고 알려 줘(채팅에 긴 프롬프트를 붙이지 않음).
 세션이 새로 생기면 list_sessions로 id를 찾아 메모리 reviewer-session-role에 적고, 모델·노력을 README 표대로 맞추고(set_session_model / set_session_effort, Ultracode 칸은 사용자가 막대를 끌어야 함), 각자 §8 표의 다음 일을 보내.
-네 첫 일: 개발 3의 PET-2(323b1994) 검증 결과를 받아 dev2-pet4를 main에 병합(검증 통과 브랜치 병합은 사용자 상시 OK). 사용자에게는 결과와 할 일만 한국어로 짧게.
+네 첫 일: list_sessions로 살아 있는 세션을 찾아 id·모델·노력을 맞추고, 각자 다음 일을 보내(dev2-pet4는 10/09 16:40 main ae1fa582로 병합 끝, 고칠 것 docs/review/pet2_verify_2026-10-09.md). 검증 통과 브랜치 병합은 사용자 상시 OK. 사용자에게는 결과와 할 일만 한국어로 짧게.
 ```

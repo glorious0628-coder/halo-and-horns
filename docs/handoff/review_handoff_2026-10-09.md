@@ -78,3 +78,9 @@
 | 소리·촬영 | 쉼 |
 
 한 줄 프롬프트: `너는 '<세션 이름>'이야. docs/handoff/review_handoff_2026-10-09.md §8의 네 줄과 build/handoff_2026-10-09b/<역할>_tail.md를 읽고 이어서 해. 보고는 '모든 것 검수' 세션에게(id는 list_sessions로 찾기) 덩어리마다 한 번.`
+
+## 9. 16:40 — 새 검수(local_310fb869) 시작
+- dev2-pet4(PET-4 + PET-2 323b1994)를 검수 워크플로로 검증(시험 15번 모두 통과, 막는 문제 없음) → **main ae1fa582 병합**. 기록 docs/review/pet2_verify_2026-10-09.md.
+- 고칠 것 PET-2b(개발 2 → 개발 3 검증 → 검수 병합): M1 넣어 둔 펫이 다시 접속하면 다시 나옴(테이머는 넣어 두기 불가로 결정), L1 무임승차 펫 XP, L2 MaxLv·종 하드코딩, L3 펫 알림 밀림, L4 PetList 처치마다, L5 'Baby Slime' 대소문자, L6 문서 낡은 줄.
+- 개발 1 펫 창은 이제 시작 가능(main에 PetList·EquipPet 있음). 역할 프롬프트 00·02·03·04 갱신.
+- 16:25 기준 이 계정 세션은 검수만 있음 → 사용자가 role_prompts 파일로 만드는 중.
