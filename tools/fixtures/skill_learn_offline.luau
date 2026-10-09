@@ -58,7 +58,7 @@ end
 
 local function run(opts)
 	local W = { Announced = {}, Hints = {}, Played = {}, Toasts = {}, Attr = {}, AttrFns = {}, Now = 100, Reduced = opts.Reduced == true,
-		Tweens = {}, Delays = {}, FxSounds = {}, SkillReadyOk = true, Settings = { KeyBadges = opts.Badges },
+		Tweens = {}, Delays = {}, FxSounds = {}, SkillReadyOk = true, Settings = { KeyBadges = opts.Badges }, Cards = {},
 		SettingsChanged = signal(), KeysChanged = signal() }
 	local player = { UserId = 7, GetAttribute = function(_, k) return W.Attr[k] end }
 	local gui = inst("ScreenGui", { Name = "MainGui" })
@@ -84,10 +84,12 @@ local function run(opts)
 		Keybinds = { Label = function(action) return ({ SkillQ = "Q", SkillZ = "Z", SkillX = "X" })[action] end,
 			IsLive = function() return true end, ShowsKeys = function() return opts.ShowKeys == true end, Changed = W.KeysChanged },
 		Settings = { Get = function(k) return W.Settings[k] end, Changed = W.SettingsChanged },
+		PauseCard = { Show = function(kind, data) table.insert(W.Cards, { kind, data }) return true end },
 	}
 	local services = {
 		Players = { LocalPlayer = player },
-		ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function(_, n) return { __module = n } end } end },
+		ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function(_, n) return { __module = n } end } end,
+			FindFirstChild = function() return nil end }, -- no Remotes folder: a cast goes nowhere
 		RunService = { Heartbeat = signal(), IsStudio = function() return false end },
 		TweenService = { Create = function(_, i, _, goal)
 			table.insert(W.Tweens, { Inst = i, Before = rawget(i, "Scale"), Goal = goal })
@@ -248,6 +250,42 @@ do
 	W7.Settings.KeyBadges = false
 	W7.KeysChanged:Fire()
 	check(key ~= nil and key.Visible == false, "Key hints off again: hidden (also redrawn on a key change)", key and tostring(key.Visible))
+end
+
+-- 6. A23-81: the keys tip - once, on keyboards, 2.5 s after the first Q press (or 25 s after the learn moment), as a calm
+-- PauseCard tip whose [Open Settings] opens Settings on its Keys tab
+do
+	local _, W7, set7 = run({ Attr = copy(base) })
+	local SB7 = _
+	set7("Level", 5)
+	check(#W7.Cards == 0, "no keys tip at the learn moment itself", #W7.Cards)
+	SB7.Use("Q")
+	check(#W7.Cards == 0, "...nor at the press itself", #W7.Cards)
+	runDelays(W7, 2, 3)
+	local c = W7.Cards[1]
+	check(#W7.Cards == 1 and c[1] == "Tip" and c[2].Text == "Tip: You can change your keys in Settings!" and c[2].Go.Text == "Open Settings"
+		and c[2].Go.Window == "Settings" and c[2].Go.Arg.Tab == "Keys", "2.5 s after the first Q press: the keys tip -> Settings / Keys",
+		#W7.Cards)
+	runDelays(W7, 20, 30)
+	SB7.Use("Q")
+	runDelays(W7, 2, 3)
+	check(#W7.Cards == 1, "the tip shows once (not again at 25 s, not on the next press)", #W7.Cards)
+	set7("Level", 15)
+	runDelays(W7, 0, 30)
+	check(#W7.Cards == 1, "a later skill (Z) brings no tip", #W7.Cards)
+end
+do
+	local _, W8, set8 = run({ Attr = copy(base) })
+	set8("Level", 5)
+	runDelays(W8, 20, 30)
+	check(#W8.Cards == 1 and W8.Cards[1][1] == "Tip", "no press: the tip comes 25 s after the learn moment", #W8.Cards)
+end
+do
+	local SB9, W9, set9 = run({ Attr = copy(base), Touch = true })
+	set9("Level", 5)
+	SB9.Use("Q")
+	runDelays(W9, 0, 30)
+	check(#W9.Cards == 0, "phones: no keys tip", #W9.Cards)
 end
 
 print(string.format("SKILL_LEARN_SUMMARY checks=%d failed=%d", checks, failed))

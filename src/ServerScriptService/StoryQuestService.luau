@@ -666,7 +666,9 @@ function StoryQuestService.BookRows(player, data)
 	local level = num(data.Level, 1)
 	for _, id in SQ.Subs do
 		local def = DEFS[id]
-		if def and not def.Hidden and not st.Done[id] and not st.Subs[id] and visible(player, def) then
+		-- a situational sub's check (the goose) that fails counts as not shown: one quest never empties the book
+		local okVis, shown = pcall(visible, player, def)
+		if def and not def.Hidden and not st.Done[id] and not st.Subs[id] and okVis and shown then
 			local need = math.floor(num(type(def.Requires) == "table" and def.Requires.Level))
 			if need > level then
 				-- the same requirements at the level it waits for (a read-only view of the save)

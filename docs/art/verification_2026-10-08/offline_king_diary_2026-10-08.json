@@ -1,0 +1,216 @@
+{
+  "status": "passed",
+  "checks": 34,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "ClientMain loads KingDiary after Panels and PauseCard",
+      "ok": true
+    },
+    {
+      "check": "the words are English (A23-48)",
+      "ok": true
+    },
+    {
+      "check": "nothing is sold in it (A23-79: candy -> titles only)",
+      "ok": true
+    },
+    {
+      "check": "the quest window's Event tab links the diary and the jar",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 21,
+    "applied": 21,
+    "caught": 21,
+    "results": [
+      {
+        "mutation": "the server's %d sentence kept",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL page 9's server number is left out :: Ghost King: \"Truce! Kings beaten on this server: %d. Fine, you're all invited!\"",
+          "CHECK_FAIL every open page has no %d :: 18"
+        ]
+      },
+      {
+        "mutation": "the day counted from 0",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 11/02: page 3 :: ",
+          "CHECK_FAIL a day already here: beat a king together :: Beat a king together to open this page!"
+        ]
+      },
+      {
+        "mutation": "before day one every page is today's",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL before 10/31: page 1 is today's :: "
+        ]
+      },
+      {
+        "mutation": "a closed page shown open",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL page 2 open, page 3 closed :: ",
+          "CHECK_FAIL a day already here: beat a king together :: ",
+          "CHECK_FAIL after the season: the closed pages stay closed :: "
+        ]
+      },
+      {
+        "mutation": "a page still to come says 'beat a king'",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a day still to come: when it opens :: Beat a king together to open this page!"
+        ]
+      },
+      {
+        "mutation": "after the season still 'beat a king'",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL after the season: the closed pages stay closed :: Beat a king together to open this page!"
+        ]
+      },
+      {
+        "mutation": "the date in UTC, not Korea",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL page 1: its date and both kings' lines :: Page 1 · Oct 30",
+          "CHECK_FAIL a day still to come: when it opens :: Opens on Nov 4."
+        ]
+      },
+      {
+        "mutation": "an owned title tradeable",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an owned title cannot be traded again :: "
+        ]
+      },
+      {
+        "mutation": "too little candy tradeable",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL too little candy: no trade :: ",
+          "CHECK_FAIL an owned title shows 'Owned', the other a [Trade] that is off (33 < 200) :: 1"
+        ]
+      },
+      {
+        "mutation": "TitlesOwned not read",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an owned title cannot be traded again :: ",
+          "CHECK_FAIL an owned title shows 'Owned', the other a [Trade] that is off (33 < 200) :: 2"
+        ]
+      },
+      {
+        "mutation": "the card loses its page",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
+      {
+        "mutation": "no card for a new page",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a new page: a calm card 'Page 3 is open!' [Read] -> the book on page 3 :: ",
+          "CHECK_FAIL no page number: no card :: "
+        ]
+      },
+      {
+        "mutation": "a card without a page number",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no page number: no card :: "
+        ]
+      },
+      {
+        "mutation": "the done popup without the title",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the whole book: the reward popup with the new title :: "
+        ]
+      },
+      {
+        "mutation": "trade spam",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a second press at once is dropped :: ",
+          "CHECK_FAIL ... and sent after the gap :: "
+        ]
+      },
+      {
+        "mutation": "my candy never updates",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL my own Inventory payload redraws the jar: 240 candy, [Trade] on :: Your candy: 33",
+          "CHECK_FAIL after my own payload the cache is not read again :: Your candy: 33"
+        ]
+      },
+      {
+        "mutation": "no candy before my own payload",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the jar: my candy (Panels' cache), the note, both titles :: Your candy: 0"
+        ]
+      },
+      {
+        "mutation": "the cache read over my own payload",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL my own Inventory payload redraws the jar: 240 candy, [Trade] on :: Your candy: 33",
+          "CHECK_FAIL after my own payload the cache is not read again :: Your candy: 5"
+        ]
+      },
+      {
+        "mutation": "[Trade] on whatever the candy",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an owned title shows 'Owned', the other a [Trade] that is off (33 < 200) :: 1",
+          "CHECK_FAIL my own Inventory payload redraws the jar: 240 candy, [Trade] on :: Your candy: 240"
+        ]
+      },
+      {
+        "mutation": "no rebuild on a new page",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Init registers 'Diary' (rebuilt on new pages / titles) :: "
+        ]
+      },
+      {
+        "mutation": "the asked page not marked",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the asked page is marked :: "
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/KingDiary.luau": "7da57a6ed1f107c571850e7ca70864c6ce84787699471735b1d166520aec8c52",
+    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
+  },
+  "fixtureSHA256": "ccd83a2e1161146e43c43a129dccb1b0c665c25b3e29db61e95f53e22a7741ac",
+  "studioCalls": 0,
+  "limitations": "Doubles instead of Panels / UIKit: how the book and the jar look on PC and phone is a Studio photo check (메인 반영); pages open only when a king is beaten together (DiaryService, tools/test_return.py); a menu square for the diary needs 이미지 개발's icon."
+}

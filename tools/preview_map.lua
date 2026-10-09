@@ -68,10 +68,10 @@ local ROADS = { -- = Config.Map.Roads (the Ground roads get the painted GE_DirtP
 	{ Name = "RoadWoods", MinX = 710, MaxX = 1190, MinZ = -9, MaxZ = 9, Color = DIRT, Material = Enum.Material.Ground },
 	{ Name = "RoadPass", MinX = 1190, MaxX = 1260, MinZ = -9, MaxZ = 9, Color = PASS_ROCK, Material = Enum.Material.Slate },
 	{ Name = "RoadRuins", MinX = 1260, MaxX = 1684, MinZ = -9, MaxZ = 9, Color = RUIN_STONE, Material = Enum.Material.Slate },
-	{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10, Color = RGB(215, 205, 185), Material = SP },
-	{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330, Color = RGB(215, 205, 185), Material = SP },
-	{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150, Color = RGB(70, 45, 45), Material = Enum.Material.Slate },
-	{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600, Color = RGB(70, 45, 45), Material = Enum.Material.Slate },
+	{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },
+	{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },
+	{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150, Color = RGB(150, 115, 105), Material = Enum.Material.Slate },
+	{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600, Color = RGB(150, 115, 105), Material = Enum.Material.Slate },
 	{ Name = "RoadMeadowLoop", MinX = 260, MaxX = 600, MinZ = -125, MaxZ = -115, Color = DIRT, Material = Enum.Material.Ground },
 	{ Name = "RoadWoodsTrail", MinX = 760, MaxX = 1120, MinZ = -155, MaxZ = -145, Color = DIRT, Material = Enum.Material.Ground },
 	{ Name = "RoadRuinsSouth", MinX = 1300, MaxX = 1700, MinZ = 145, MaxZ = 155, Color = RUIN_STONE, Material = Enum.Material.Slate },
@@ -670,9 +670,15 @@ end
 local oldRoads = folders.Decor:FindFirstChild("Roads")
 if oldRoads then stash(oldRoads) end
 local roads = model("Roads", folders.Decor)
+local ROAD_PLAZA_R = 60 -- = Config.Map.RoadLook.PlazaRadius: the town roads stop at the Crossroads plaza edge (검수 10/09)
 for _, r in ROADS do
 	if not r.Season then
-		prop({ Name = r.Name, Size = Vector3.new(r.MaxX - r.MinX, 0.2, r.MaxZ - r.MinZ), Position = Vector3.new((r.MinX + r.MaxX) / 2, 0.08, (r.MinZ + r.MaxZ) / 2),
+		local minZ, maxZ = r.MinZ, r.MaxZ
+		if math.abs(r.MinX + r.MaxX) / 2 < ROAD_PLAZA_R then
+			if minZ >= 0 and minZ < ROAD_PLAZA_R then minZ = ROAD_PLAZA_R end
+			if maxZ <= 0 and maxZ > -ROAD_PLAZA_R then maxZ = -ROAD_PLAZA_R end
+		end
+		prop({ Name = r.Name, Size = Vector3.new(r.MaxX - r.MinX, 0.2, maxZ - minZ), Position = Vector3.new((r.MinX + r.MaxX) / 2, 0.08, (minZ + maxZ) / 2),
 			Color = r.Color, Material = r.Material }, roads)
 	end
 end
@@ -1045,16 +1051,19 @@ map.Parent = workspace
 local Lighting = game:GetService("Lighting")
 local atm = Lighting:FindFirstChildOfClass("Atmosphere")
 if atm then atm:Destroy() end -- A9-3
--- A23-29/30 사용자 선택 E(밝은 장난감 한낮 B + 새 땅 그림): Config.Sky.Neutral·WarService와 같은 값
-Lighting.ClockTime = 14.2
-Lighting.Brightness = 2.0
-Lighting.Ambient = RGB(110, 108, 106)
-Lighting.OutdoorAmbient = RGB(128, 126, 124)
-Lighting.FogColor = RGB(205, 215, 230)
-Lighting.FogStart = 250
-Lighting.FogEnd = 1100
-pcall(function() Lighting.EnvironmentDiffuseScale = 1.0 end)
+-- Config.Sky.Neutral·WarService와 같은 값(2026-10-08 깊이: 낮은 해, 어두운 그늘, 가까운 안개, 또렷한 그림자)
+Lighting.ClockTime = 15.3
+Lighting.Brightness = 2
+Lighting.Ambient = RGB(72, 76, 86)
+Lighting.OutdoorAmbient = RGB(95, 104, 118)
+Lighting.FogColor = RGB(150, 205, 228)
+Lighting.FogStart = 150
+Lighting.FogEnd = 950
+Lighting.ExposureCompensation = -0.25
+pcall(function() Lighting.EnvironmentDiffuseScale = 0.5 end)
 pcall(function() Lighting.EnvironmentSpecularScale = 0.6 end)
+pcall(function() Lighting.ShadowSoftness = 0.15 end)
+pcall(function() Lighting.LightingStyle = Enum.LightingStyle.Realistic end)
 Lighting.GlobalShadows = true
 
 return string.format("map v2 full mode: parts %d, lights %d; %s", count, lights, table.concat(report, "; "))

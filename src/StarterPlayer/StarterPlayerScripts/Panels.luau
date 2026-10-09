@@ -44,8 +44,8 @@ local FRAME = {
 	Bottom = 16, -- du: under the content
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
-		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconScroll",
-		Story = "IconScroll" },
+		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
+		Story = "IconNews" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
 }
 local BODY_FONT = Enum.Font.GothamMedium
@@ -1289,7 +1289,8 @@ function NICK.Layout(w, h, top, s)
 	local bodyWidth = math.max(1, width - gutter * 2)
 	local textWidth = math.max(1, bodyWidth - 6) -- leave room for the touch overflow scrollbar
 	local titleWidth = math.max(1, math.min(width * 0.66, width - 116))
-	local titleHeight = titleWidth / (256 / 63)
+	local rs = ((Config.UIArt.Parts or {}).TitleRibbon or {}).Size -- the ribbon art's aspect (512 x 135)
+	local titleHeight = titleWidth / ((typeof(rs) == "Vector2" and rs.Y > 0) and rs.X / rs.Y or 256 / 63)
 	local bodyTop = math.max(68, titleHeight + 10)
 	local currentText = "Current name: " .. Util.PlayerDisplayName(player)
 	local noteText = u.Note.Text
@@ -1411,12 +1412,14 @@ function NICK.Build()
 		NICK.Draft = player:GetAttribute("NicknameVerified") == true and Util.PlayerDisplayName(player) or ""
 	end
 	local u = {}
-	u.Frame = UIKit.ArtFrame("PanelParchment", { Name = "NicknameWindow", Parent = root,
+	u.Frame = UIKit.ArtFrame("PanelMain", { Name = "NicknameWindow", Parent = root,
 		AnchorPoint = Vector2.new(0.5, 0.5), Active = true, ZIndex = ZINDEX + 1 })
 	u.TitleArt = UIKit.ArtFrame("TitleRibbon", { Name = "TitleRibbon", Parent = u.Frame,
 		AnchorPoint = Vector2.new(0.5, 0), ZIndex = ZINDEX + 2 })
+	local rect = ((Config.UIArt.Parts or {}).TitleRibbon or {}).TextRect -- the words inside the ribbon's front band
+	rect = type(rect) == "table" and rect or { 0.17, 0.18, 0.66, 0.63 }
 	u.Title = UIKit.InkText({ Name = "Title", Parent = u.TitleArt, Text = T.Titles.Nickname,
-		Position = UDim2.fromScale(0.17, 0.18), Size = UDim2.fromScale(0.66, 0.63), Outline = false })
+		Position = UDim2.fromScale(rect[1], rect[2]), Size = UDim2.fromScale(rect[3], rect[4]), Outline = false })
 	u.Close, u.CloseLabel = UIKit.ArtButton("BtnSpecial", { Name = "Close", Parent = u.Frame,
 		Text = "X", TextStyle = "ink", AnchorPoint = Vector2.new(1, 0), ZIndex = ZINDEX + 3 }, function()
 		if os.clock() >= inputGuardUntil then Panels.Close() end
@@ -1429,7 +1432,7 @@ function NICK.Build()
 	u.Body = UIKit.Create("Frame", { Name = "Body", Parent = u.Scroll, BackgroundTransparency = 1 })
 	u.Current = UIKit.InkText({ Name = "CurrentName", Parent = u.Body,
 		Text = "Current name: " .. Util.PlayerDisplayName(player), Outline = false })
-	u.InputArt = UIKit.ArtFrame("PanelParchment", { Name = "InputFrame", Parent = u.Body })
+	u.InputArt = UIKit.ArtFrame("InputField", { Name = "InputFrame", Parent = u.Body })
 	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt,
 		BackgroundTransparency = 1, BorderSizePixel = 0, ClearTextOnFocus = false, MultiLine = false,
 		Text = NICK.Draft, PlaceholderText = "StarKnight", RichText = false,
@@ -2279,6 +2282,12 @@ function ITEMS.OnInventory(payload)
 	ITEMS.Version += 1
 	ITEMS.CheckPending()
 	if currentId == "Items" then ITEMS.Rebuild(true) end -- the blacksmith polls ITEMS.Data in its update
+end
+
+-- A23-79: another window's look at the cached "Inventory" payload (KingDiary's candy jar): the count of one item id
+function Panels.ItemCount(id)
+	local n = ITEMS.Data and ITEMS.Data.Items and ITEMS.Data.Items[id]
+	return type(n) == "number" and n or 0
 end
 
 -- binds the owner-only remote early (Init) so the first payload after PlayerReady is never missed; an old server
@@ -3538,6 +3547,8 @@ function Panels.Open(id, arg)
 	REG.Arg = arg -- BB13: a registered window's Build gets it (e.g. Settings { Tab = "Keys" })
 	currentId = id
 	Panels.Metric(id)
+	-- A23-79 beta metrics: every Shop opening starts / keeps a shop visit (ClientMetric "ShopOpen", ComeBack.luau)
+	if id == "Shop" and C and type(C.ComeBack) == "table" then pcall(C.ComeBack.Metric, "ShopOpen") end
 	-- The nickname result is displayed in its own panel; transient game tips stay behind it.
 	root.ZIndex = id == "Nickname" and 96 or ZINDEX
 	root.Visible = true

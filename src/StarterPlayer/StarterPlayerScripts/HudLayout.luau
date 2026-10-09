@@ -38,10 +38,12 @@ local ITEMS = {
 	-- TB = in the Roblox top bar: x like TC, centred on the bar's middle, its height in REAL px (Roblox's buttons do not
 	-- follow our UIScale); the sheet's y = on the middle line of Roblox's buttons (34 px)
 	war_meter = { "TB", { 496, 13, 288, 42 }, { 255, 15, 240, 38 } },
-	chips = { "TC", { 516, 62, 248, 22 }, { 255, 62, 240, 17 } },
+	-- 검수 2026-10-08 (A23-75 2x chip): the PC chip row as wide as the war meter, so Safe Zone · Rare · 2x XP and '+N' fit
+	-- in town (248 px folded the 2x chip into '+2'); the next-event line keeps the chip row's width (A23-63)
+	chips = { "TC", { 496, 62, 288, 22 }, { 255, 62, 240, 17 } },
 	-- A23-63 (2026-10-07): as wide as the chip row on PC and the whole column on phones - Montserrat runs wider and the
 	-- king pill ("Pumpkin King is here! 4:54 left") was squeezed to 150 x 16 px with its words spilling out
-	event = { "TC", { 516, 88, 248, 22 }, { 255, 81, 240, 18 } },
+	event = { "TC", { 496, 88, 288, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
 	portrait = { "BC", { 387, 586, 50, 50 }, { 225, 248, 45, 45 } },
 	power_line = { "BC", { 445, 578, 449, 16 }, { 275, 250, 140, 14 } },
@@ -111,6 +113,11 @@ local RING_BUTTONS = { "potion_hp", "potion_mp", "q", "z", "x" } -- the buttons 
 local BARS = { "power_line", "hp_bar", "mp_bar", "xp_bar" } -- touch: they run from the face to the tile row's right end
 local BAR_GAP = 5 -- real px between the face and the bars, and between HP and MP, on the phone sheet
 local ROW_MAX = 6 -- touch: the bottom group grows up to this many tiles wide where the room allows (the icon row's windows)
+-- small PC windows (main Studio 2026-10-08, 991x451 -> UIScale 0.5): real-px floors for the quest lines' width, the
+-- HP / MP bars' height ("Get your first wea...", bar numbers ~6 px) and the notify column's width: as wide as on the
+-- 1280x720 sheet (a two-line notice kept one cut line, "First mission: Free the...": its words never go under 11 real px,
+-- Config.UI.MinTextSize); the centre column's room still clamps it on the narrowest windows
+local PC_FLOOR = { QuestW = 250, Bar = 14, NotifyW = 288 }
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
 -- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
 -- While open it may run over the centre column's info rows (chips / next event / notify), but never over the war meter,
@@ -209,6 +216,28 @@ function HudLayout.Compute(env)
 		out[id] = rect(X, Y, w, h)
 	end
 	local tileGap = TILE_GAP * k
+
+	-- PC floors (PC_FLOOR): the quest lines widen to the right; the HP / MP bars grow upwards with the power line and the
+	-- face, so the XP bar and the tile row keep their places
+	if not sheet then
+		-- the quest lines widen only up to a GAP before an item level with them (the combo line on short windows)
+		local q = out.quest
+		local qw = math.max(q.W, PC_FLOOR.QuestW / s)
+		for oid, o in out do
+			if oid ~= "quest" and oid ~= "minimap" and o.X > q.X and o.Y < q.Y + q.H and o.Y + o.H > q.Y then
+				qw = math.min(qw, o.X - GAP - q.X)
+			end
+		end
+		q.W = math.max(q.W, qw)
+		local hb, mb = out.hp_bar, out.mp_bar
+		local d = PC_FLOOR.Bar / s - hb.H
+		if d > 0 then
+			hb.Y, hb.H = hb.Y - d, hb.H + d
+			mb.Y, mb.H = mb.Y - d, mb.H + d
+			out.power_line.Y -= d
+			out.portrait.Y -= d
+		end
+	end
 
 	if touch then
 		-- quest lines: one MIN_TAP target (two text lines), grown downward
@@ -354,6 +383,22 @@ function HudLayout.Compute(env)
 	for _, id in CENTER do
 		local r = out[id]
 		r.X = cx - r.W / 2
+	end
+	-- small PC windows (UiSandbox 2026-10-08): that shared room is the top bar's (Roblox's buttons .. [메뉴]'s fold); the
+	-- notify column sits lower, so it widens back to PC_FLOOR.NotifyW around the same centre over its own row's room
+	if not sheet then
+		local n = out.notify
+		local want = PC_FLOOR.NotifyW / s
+		if n.W < want then
+			local l, r = 0, W
+			for oid, o in out do
+				if oid ~= "notify" and not hidden[oid] and o.Y < n.Y + n.H and o.Y + o.H > n.Y then
+					if o.X + o.W / 2 < cx then l = math.max(l, o.X + o.W + GAP) else r = math.min(r, o.X - GAP) end
+				end
+			end
+			local half = math.min(want / 2, cx - l, r - cx)
+			if half * 2 > n.W then n.X, n.W = cx - half, half * 2 end
+		end
 	end
 
 	-- everything stays on screen and below the top bar (big tablets / very short windows); the top bar items stay in it

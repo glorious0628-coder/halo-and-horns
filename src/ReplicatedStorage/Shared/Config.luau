@@ -168,7 +168,7 @@ Config.Data = {
 		-- story quests (StoryQuestService): active main + subs, finished ids, choices, one-time firsts
 		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = {} },
 		-- A23-12 drops (LootService): item id -> count, scroll enhancement per weapon tier (array, kept through
-		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first king-slime scroll)
+		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first Slime Prince scroll)
 		Items = {},
 		WeaponEnhance = {},
 		LootFlags = {},
@@ -181,8 +181,11 @@ Config.Data = {
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
-		Settings = { V = 2, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Follow" },
+		-- Cam (A23-65): user 10/08 "카메라 뒤 따라가게 하는 거 없는 게 나을까? 좀 어색한데?" -> the default is Free (Roblox's own
+		-- camera); Follow stays in Settings for whoever wants it. Settings V3 (검수 10/09): a save from before V3 gets Cam = Free
+		-- once (SanitizeSettings); a Follow picked after that is kept
+		Settings = { V = 3, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+			Cam = "Free" },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -1094,7 +1097,7 @@ Config.Bully = {
 	BountyMult = 2, -- bounty for KOing a bully is doubled
 	-- A23-22 penalty while BullyStacks >= 1 (ends when every stack decayed): no auto combat, XP and drop rows x0.5.
 	-- Combat power and stats are NOT touched by it (the existing PerStack size / damage cut stays as it was).
-	-- DropMult halves the drop rows AND the slime jackpot (A23-22 has no exception); the first king-slime scroll stays.
+	-- DropMult halves the drop rows AND the slime jackpot (A23-22 has no exception); the first Slime Prince scroll stays.
 	Penalty = { NoAuto = true, XPMult = 0.5, DropMult = 0.5 },
 }
 
@@ -1257,11 +1260,32 @@ Config.War = {
 -- Optional keys (WarService applies them only if present): FogStart, ExposureCompensation, BloomIntensity (otherwise
 -- WarService SKY_EXTRAS). 2026-10-08 (검수 style drift #18): Neutral's fog = the sky's horizon colour in the photos
 -- (~150, 206, 226 - the old pale 205, 215, 230 drew a grey band where the sea ends) and a slightly warm day tint.
+-- 2026-10-08 later (user on the meadow photo: "입체적이지 않아"; 검수: the darkest 10% of our picture was 0.69-0.74 bright vs
+-- the concept's 0.41): depth for Neutral - the sun lower (15.3: longer shadows), a darker, cooler shade (Ambient /
+-- OutdoorAmbient: the sky fill no longer lights the shadow side flat), a little more sun (Brightness 2.2, exposure
+-- -0.05) so the lit side stays bright, the haze closer (FogStart 150, FogEnd 950: far hills fade into the horizon
+-- colour). WarService pairs it with sharper shadows (ShadowSoftness 0.15), less sky diffuse, contrast +0.12 and a
+-- touch less saturation. Still no Atmosphere (A9-3): it would replace FogColor / FogStart / FogEnd and break the war
+-- skies' fog and ZoneLook's zone fog; the closer classic fog does the far haze.
+-- user 10/08 (the cloud main's Play) "조명이 전체적으로 밝아" -> one step darker: Neutral exposure -0.05 -> -0.25, Brightness
+-- 2.2 -> 2.0, OutdoorAmbient 110,120,135 -> 95,104,118 (shadows and Contrast 0.12 kept). The crown-war skies take the same
+-- step (Dawn: -0.2 exposure, Brightness -0.2, OutdoorAmbient x0.87; the Eclipse night only half of it so monsters stay
+-- visible); their exposures are now in the presets (WarService / ZoneLook read the preset first). The Halloween fields'
+-- moods are ZoneLook factors on this base, so they follow by themselves.
 Config.Sky = {
 	TweenTime = 3,
-	Neutral = { ClockTime = 14.2, Brightness = 2.0, Ambient = Color3.fromRGB(110, 108, 106), OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.2, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
-	Dawn = { ClockTime = 7.2, Brightness = 2.1, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(150, 130, 104), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 240, 200) },
-	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(115, 76, 92), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 200, 200) },
+	Neutral = { ClockTime = 15.3, Brightness = 2, Ambient = Color3.fromRGB(72, 76, 86), OutdoorAmbient = Color3.fromRGB(95, 104, 118), FogColor = Color3.fromRGB(150, 205, 228), FogStart = 150, FogEnd = 950, ExposureCompensation = -0.25, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 245, 230) },
+	Dawn = { ClockTime = 7.2, Brightness = 1.9, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(130, 113, 90), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, ExposureCompensation = -0.35, Tint = Color3.fromRGB(255, 240, 200) },
+	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(104, 68, 83), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, ExposureCompensation = 0.35, Tint = Color3.fromRGB(255, 200, 200) },
+}
+-- 2026-10-08 (이미지 생성 1 a333f3f, 검수 OK): the painted day sky's six faces for Lighting.Sky (SkyboxFt / Bk / Lf / Rt /
+-- Up / Dn; seen from above Ft 0, Rt 90, Bk 180, Lf 270 degrees clockwise; Up has Ft at its bottom - turn Up by 90 if its
+-- seam is off, swap Lf / Rt if the sides run backwards; Dn = FogColor 150, 205, 228). No rays; the sun stays Sky_Sun.
+-- WarService puts them on Lighting.Sky at Start (an empty / missing face keeps what the place has); the war skies never
+-- touch the faces
+Config.Sky.Faces = {
+	Ft = "rbxassetid://86737469798577", Bk = "rbxassetid://106230772458054", Lf = "rbxassetid://113124022425103",
+	Rt = "rbxassetid://80981399991828", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
 }
 
 -- addendum A9-2: client hit feel (Fx only). White flash of monsters within FlashRadius of my own Swing/Release hit
@@ -1559,6 +1583,19 @@ Config.Map = {
 		{ Name = "RoadPumpkin", MinX = 529, MaxX = 541, MinZ = 9, MaxZ = 330, Season = "Halloween" },
 		{ Name = "RoadHollow", MinX = 330, MaxX = 535, MinZ = 335, MaxZ = 345, Season = "Halloween" },
 	},
+	-- 검수 10/09 (main photo: a dark red-brown band in front of the Crossroads fountain): the town road parts
+	-- (Decor.Roads, CanCollide off) are not drawn inside the plaza (PlazaRadius around the fountain: MapBuilder cuts the
+	-- part back to the plaza edge, a part fully inside is hidden) and get a light earthy color that the GE_Slate tile
+	-- multiplies into a dirt-road look (the old 70,45,45 turned near black-red). Roads above stays the map/minimap data.
+	RoadLook = {
+		PlazaRadius = 60,
+		Parts = {
+			RoadSouth = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
+			RoadSouthIsland = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
+			RoadNorth = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
+			RoadNorthIsland = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
+		},
+	},
 	-- A23-30 / A23-45 on map v2 (MapBuilder PATCH / HOLLOW, QuestTarget): the pumpkin path along x = PathX from the meadow
 	-- road to the patch's north gate (PatchGateZ), the patch's west gate into the HauntedHollow, the road sign at the
 	-- path's meadow end (HalloweenService shows it only in season)
@@ -1644,7 +1681,7 @@ Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", 
 -- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
 Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
-	BigSlime = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
+	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
 	Goblin = { Name = "Shard Thief Goblin", Short = "Goblin", Zone = "GoblinWoods", Count = 10, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
 	GoblinBrute = { Name = "Goblin Brute", Short = "Goblin Brute", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
 	Skeleton = { Name = "Old Kingdom Skeleton", Short = "Skeleton", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
@@ -1737,7 +1774,7 @@ Config.Barks = {
 			Low = { "Squelch…", "Too squishy!" },
 			Idle = { "Thump thump~", "Hehe~" },
 		},
-		BigSlime = { -- King Slime: big and royal
+		BigSlime = { -- Slime Prince (A23-84: the big brother; King Slime SlimeKing = the dad): big and royal
 			Spot = { "BLOOP!", "Bow! Blub!" },
 			Hit = { "SPLOOSH!", "Royal BOING!" },
 			Low = { "Royal nap…", "Bloop… zzz" },
@@ -2225,12 +2262,12 @@ Config.StoryQuests = {
 		SkillLater = "%s · Skills come at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
 	},
 	Defs = {
-		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
+		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a Slime Prince (A23-84)
 		S0 = {
 			Kind = "Sub", Title = "The Shard That Learns to Fight", ShortName = "Learn to fight", Speaker = "Shard", Requires = { ClassChosen = true },
 			Steps = {
-				{ Text = "Beat a King Slime and find the shard %d/%d", Guide = "SlimeMeadow",
-					Start = "A King Slime swallowed a shard! Beat it to free the shard.",
+				{ Text = "Beat a Slime Prince and find the shard %d/%d", Guide = "SlimeMeadow",
+					Start = "A Slime Prince swallowed a shard! Beat it to free the shard.",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "The shard's test %d/3", Guide = "SlimeMeadow", Start = "Shard: Show me how you fight!",
 					Obj = { Type = "Trials", List = {
@@ -2294,13 +2331,13 @@ Config.StoryQuests = {
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
-			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The King Slimes ate the most of it.",
+			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!",
 			Reward = { Gold = 1 },
 		},
 		M1_2 = {
-			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust", ShortName = "King Slimes",
-			Start = "King Slimes full of shard dust roam the meadow.",
-			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Kind = "Main", Chapter = 1, Title = "The Prince Who Ate the Dust", ShortName = "Slime Princes",
+			Start = "Slime Princes full of shard dust guard their little brothers and sisters.",
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
@@ -2388,8 +2425,8 @@ Config.StoryQuests = {
 		},
 		M2_6 = {
 			Kind = "Main", Chapter = 2, Title = "Little Footprints on the Hill", ShortName = "Hill tracks",
-			Start = "The King Slime dust is gone. Little footprints lead to the woods…",
-			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Start = "The Slime Prince dust is gone. Little footprints lead to the woods…",
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
 			Finish = "Goblins stole the dust!", Reward = { Gold = 1 },
 		},
 		M2_7 = {
@@ -2586,8 +2623,8 @@ Config.StoryQuests = {
 						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
 				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
-				{ Text = "King Slimes near the woods %d/%d", Guide = "SlimeMeadow",
-					Start = "A sack fell open… and King Slimes gobbled what was inside!",
+				{ Text = "Slime Princes near the woods %d/%d", Guide = "SlimeMeadow",
+					Start = "A sack fell open… and Slime Princes gobbled what was inside!",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } },
 				{ Text = "Tell Bright what you found", Guide = "HaloTown", Npc = "Bright", Panel = true,
 					Lines = { All = { "Sticky… sweet… is this jelly?",
@@ -2694,8 +2731,8 @@ Config.StoryQuests = {
 			Requires = { Done = { "M1_4" }, Level = 5 },
 			Steps = {
 				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Tiny: A King Slime swallowed a teddy bear!", "Tiny: Noted. Teddy bear: very loved. Very lost." } } },
-				{ Text = "King Slime %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
+					Lines = { All = { "Tiny: A Slime Prince swallowed a teddy bear!", "Tiny: Noted. Teddy bear: very loved. Very lost." } } },
+				{ Text = "Slime Prince %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
 				{ Text = "Bring the bear to Tiny", Guide = "Crossroads", Npc = "Tiny", Panel = true,
 					Lines = { All = { "Tiny: A bit sticky. Still very soft.", "Tiny: So. What now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Return it to its owner", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -2725,10 +2762,10 @@ Config.StoryQuests = {
 		R5 = {
 			Kind = "Sub", Title = "Smokey's Hat Problem", ShortName = "Smokey's hat", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M1_4" }, Level = 8 },
-			Start = "Smokey: A King Slime is wearing my sack as a hat!",
+			Start = "Smokey: A Slime Prince is wearing my sack as a crown!",
 			Steps = {
 				{ Text = "Find the slime by the pond", Guide = "SlimePond", Obj = { Type = "Near", Spot = "SlimePond", Radius = 30 } },
-				{ Text = "King Slime %d/%d", Guide = "SlimePond", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
+				{ Text = "Slime Prince %d/%d", Guide = "SlimePond", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
 				{ Text = "The sack is free!", Panel = true,
 					Lines = { All = { "A sack! A bit slimy. Smokey's name is on it.", "So whose sack is it now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Give it back to Smokey", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -3060,6 +3097,35 @@ Config.Board = {
 	},
 }
 
+----------------------------------------------------------------- the quest window's tabs (A23-81)
+-- A23-81 (user 2026-10-08 15:05): Q opens the whole quest window, five tabs by kind of quest. One table decides the tab
+-- of a quest: ById (the "Quests" row Id - "story:<id>", "job:<n>", a daily template id, Config.Tutorial.QuestId) wins,
+-- then ByKind (the row's Kind), then Default. Faction = the Halo / Horns / guild stories (deeds of a side); Event = the
+-- goose and crown war stories (and later event quests); every daily / extra slot is Daily. HudLines = the HUD's quest
+-- lines on the left (only quests in progress, main first).
+Config.QuestTabs = {
+	Order = { "Main", "Side", "Daily", "Event", "Faction" },
+	Names = { Main = "Main", Side = "Side", Daily = "Daily", Event = "Event", Faction = "Faction" }, -- game text: English only
+	ByKind = { Tutorial = "Main", Main = "Main", Sub = "Side", Job = "Side", Daily = "Daily", Extra = "Daily", Weekly = "Daily",
+		Event = "Event", Faction = "Faction", Bounty = "Faction" },
+	ById = {
+		["story:S1"] = "Event", ["story:S2"] = "Event", ["story:GW4"] = "Event", ["story:GW5"] = "Event",
+		["story:H1"] = "Faction", ["story:H2"] = "Faction", ["story:H3"] = "Faction", ["story:H5"] = "Faction",
+		["story:H6"] = "Faction", ["story:R1"] = "Faction", ["story:R3"] = "Faction", ["story:R5"] = "Faction",
+		["story:R6"] = "Faction", ["story:R7"] = "Faction", ["story:N1"] = "Faction", ["story:N2"] = "Faction",
+	},
+	Default = "Side",
+	HudLines = 3,
+}
+
+-- the quest window tab of a "Quests" row (id, kind): ById, else ByKind, else Default
+function Config.QuestTab(id, kind)
+	local qt = Config.QuestTabs
+	local byId = type(id) == "string" and qt.ById[id] or nil
+	if byId then return byId end
+	return (type(kind) == "string" and qt.ByKind[kind]) or qt.Default
+end
+
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {
 	Slots = 3,
@@ -3109,7 +3175,7 @@ Config.Quests = {
 		RewardMinutes = 2,
 		ChestMinutes = 4,
 		Dailies = {
-			{ Id = "Kill", Weight = 3, Monster = "BigSlime", Strict = true, Targets = { 3 } }, -- 왕 슬라임 3마리
+			{ Id = "Kill", Weight = 3, Monster = "BigSlime", Strict = true, Targets = { 3 } }, -- Slime Prince x3
 			{ Id = "Kill", Weight = 1, Monster = "Slime", Targets = { 12, 15 } }, -- sometimes / on reroll: 슬라임 12~15마리
 			{ Id = "Release", Weight = 3, Targets = { 3, 4, 5 } }, -- 몬스터에게 스킬 3~5번 맞히기
 			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
@@ -3327,6 +3393,33 @@ Config.Visuals = {
 	ShakeNearRelease = 0.25, -- other players' releases within ShakeNearDistance
 	ShakeNearDistance = 40,
 	HugeNumberScale = 2.5, -- release total damage number scale
+}
+
+-- A23-75 / A23-77 looks (이미지 생성 2 dd217fc, 검수 OK): a worn look (player attribute LookOn = one of these ids, set by
+-- the server; Config.Looks sells / awards them under the same id) recolours the rank's own mark mesh - TextureID per
+-- rank, R1 and R2 share one 64 px palette - so the shape stays the rank's (a bought look never passes for a higher
+-- rank). Glow = the halo's light, Sparkle = the top rank's sparkles (round, no rays). Ids: UiSandbox upload (이미지 개발)
+Config.LookThemes = {
+	HaloIce = { Faction = "Halo", R1R2 = "rbxassetid://137659488563185", R3 = "rbxassetid://108650983430092", R4 = "rbxassetid://76422994410695", R5 = "rbxassetid://130485697124157",
+		Glow = Color3.fromRGB(170, 225, 255), Sparkle = Color3.fromRGB(225, 245, 255) }, -- shop
+	HaloGold = { Faction = "Halo", R1R2 = "rbxassetid://124557820913278", R3 = "rbxassetid://124870710556969", R4 = "rbxassetid://104125803475842", R5 = "rbxassetid://121454866183175",
+		Glow = Color3.fromRGB(255, 170, 110), Sparkle = Color3.fromRGB(255, 120, 130) }, -- shop
+	HornsLava = { Faction = "Horns", R1R2 = "rbxassetid://80238307725390", R3 = "rbxassetid://82767525442280", R4 = "rbxassetid://78943828071190", R5 = "rbxassetid://85082048989349",
+		Glow = Color3.fromRGB(255, 120, 40), Sparkle = Color3.fromRGB(255, 190, 90) }, -- shop
+	HornsShadow = { Faction = "Horns", R1R2 = "rbxassetid://77090857785800", R3 = "rbxassetid://134445622258892", R4 = "rbxassetid://97761533502616", R5 = "rbxassetid://112202207856048",
+		Glow = Color3.fromRGB(160, 100, 255), Sparkle = Color3.fromRGB(215, 190, 255) }, -- shop
+	HaloSprout = { Faction = "Halo", R1R2 = "rbxassetid://86617186225584", R3 = "rbxassetid://126112718924134", R4 = "rbxassetid://70457193636840", R5 = "rbxassetid://84485205872223",
+		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
+	HornsSprout = { Faction = "Horns", R1R2 = "rbxassetid://98729066506053", R3 = "rbxassetid://111198088905000", R4 = "rbxassetid://92425781835056", R5 = "rbxassetid://88143987545459",
+		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
+	HaloStarlight = { Faction = "Halo", R1R2 = "rbxassetid://79900622177360", R3 = "rbxassetid://106125508143560", R4 = "rbxassetid://120783323880170", R5 = "rbxassetid://112919940044810",
+		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
+	HornsStarlight = { Faction = "Horns", R1R2 = "rbxassetid://87973276568961", R3 = "rbxassetid://120704216649593", R4 = "rbxassetid://77284887873440", R5 = "rbxassetid://114837008556596",
+		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
+	HaloPlatinum = { Faction = "Halo", R1R2 = "rbxassetid://129286691726526", R3 = "rbxassetid://125145984859168", R4 = "rbxassetid://116074292544544", R5 = "rbxassetid://73047553511936",
+		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
+	HornsPlatinum = { Faction = "Horns", R1R2 = "rbxassetid://118578097813756", R3 = "rbxassetid://98158447043587", R4 = "rbxassetid://88887895520232", R5 = "rbxassetid://127877205287600",
+		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
 }
 
 -- 계급 장식 3D (이미지 생성 1 45b6220, user OK "좋아, 넣어"): the rank's own halo / horns model replaces the drawn mark
@@ -3593,8 +3686,10 @@ end
 -- BB2 saved settings: value rules (defaults: Config.Data.Defaults.Settings). Text = the settings window (BB3) + toasts.
 Config.Settings = {
 	-- Settings.V. 2 (A23-78, user 2026-10-08): key hints are off by default now; a blob saved before V2 (V < 2 or no V)
-	-- drops its old KeyBadges once (SanitizeSettings), every other value stays; from V2 on the player's own pick stays
-	Version = 2,
+	-- drops its old KeyBadges once (SanitizeSettings), every other value stays; from V2 on the player's own pick stays.
+	-- V3 (A23-65, 검수 2026-10-09): the camera default is Free; a blob saved before V3 gets Cam = Free once, a Follow
+	-- picked from V3 on stays
+	Version = 3,
 	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
@@ -3604,7 +3699,7 @@ Config.Settings = {
 		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
-		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: the camera turns behind me while I walk
+		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65: Follow = the camera turns behind me while I walk (default Free, user 10/08)
 	},
 	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
@@ -3675,6 +3770,8 @@ Config.Help = {
 	Title = "Help", NewsTitle = "News",
 	GuideAgain = "Meet the Guide Again", BackToHelp = "< Help", TalkToGuide = "Talk to the Guide",
 	CameraLine = "Hold the right mouse button and drag to turn the camera.", -- A23-51: right drag only
+	-- A23-81 (user 2026-10-08): the keys tip again (the Lv5 card shows it once): a line under the keys + a button
+	KeysTip = "Tip: You can change your keys in Settings!", KeysButton = "Key settings",
 	TouchLines = {
 		"Tap the buttons on the screen to attack, use skills and drink potions.",
 		"Drag with one finger to turn the camera.",
@@ -3748,9 +3845,12 @@ function Config.SanitizeSettings(t)
 	local out = { V = ST.Version, Keys = {} }
 	-- A23-78: a blob from before settings V2 (no V, V < 2, NaN) forgets its KeyBadges once (the old default was on)
 	local before2 = not (type(src.V) == "number" and src.V == src.V and src.V >= 2)
+	-- A23-65 / settings V3: a blob from before V3 (Follow was the old default) gets the Free camera once
+	local before3 = not (type(src.V) == "number" and src.V == src.V and src.V >= 3)
 	for key, def in ST.Defs do
 		local v, d = src[key], defaults[key]
 		if key == "KeyBadges" and before2 then v = d end
+		if key == "Cam" and before3 then v = d end
 		if def.Type == "Number" then
 			if type(v) == "number" and v == v and v > -math.huge and v < math.huge then
 				v = math.clamp(v, def.Min, def.Max)
@@ -3910,7 +4010,7 @@ Config.Loot = {
 	-- slimes are level-1 slimes of the PumpkinPatch (A23-30, on top of the meadow's), so they carry the same jackpot;
 	-- the chance per kill is unchanged.
 	Jackpot = { Monsters = { Slime = true, PumpkinSlime = true }, Chance = 1 / 20000, Tier = 8 },
-	-- the first king slime a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
+	-- the first Slime Prince (BigSlime) a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
 	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
 	FirstScroll = { Monster = "BigSlime", Item = "Enh70", NoticeSeconds = 6 },
 	-- a weapon drop the player already owns turns into gold
@@ -4312,7 +4412,7 @@ Config.UIArt = {
 		Star = { Id = "rbxassetid://121090596161898", Size = Vector2.new(512, 512) }, -- white star: filled = gold 245,197,66, empty = 70,78,110
 		IconWantedStar = { Id = "rbxassetid://110523293522605", Size = Vector2.new(512, 512) }, -- Horns wanted star
 		-- emblems
-		ShieldHalo = { Id = "rbxassetid://137212311874878", Size = Vector2.new(490, 512) },
+		ShieldHalo = { Id = "rbxassetid://73353334079892", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: no rays (halo + gem)
 		ShieldHorns = { Id = "rbxassetid://134547958841068", Size = Vector2.new(497, 512) },
 		Crown = { Id = "rbxassetid://87428837580998", Size = Vector2.new(256, 175) },
 		-- icons
@@ -4375,8 +4475,8 @@ Config.UIArt = {
 		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 85, 448, 87), FitHeight = true, Tone = "Gold" }, -- b: deep gold
 		Toast = { Id = "rbxassetid://92139413642355", Size = Vector2.new(512, 102), Slice = Rect.new(100, 50, 460, 52), FitHeight = true, Tone = "Navy" }, -- icon disc centre (49,51) r~37
 		-- 2026-10-06 uploads (bundles 12/13 rest, 15/16 tamer staffs, 17, 18, map markers 9a8b47a, skill Q ae9a7ea; sheets in
-		-- art/review/s2/): new keys. EmoOuch (now a blank burst for an '아야!' TextLabel) and TitleRibbon (slice [118,40,394,95])
-		-- wait for their screens (Fx text overlay, faction / class screens)
+		-- art/review/s2/): new keys. EmoOuch (now a blank burst for an '아야!' TextLabel) waits for its screen (Fx text
+		-- overlay); TitleRibbon is in use since 2026-10-08 (the nickname window)
 		Weapon_Tamer_T1 = { Id = "rbxassetid://71978061313848", Size = Vector2.new(512, 512) }, -- A23-39 pet tamer staff (Artisan Archer)
 		Weapon_Tamer_T2 = { Id = "rbxassetid://121246970163140", Size = Vector2.new(512, 512) },
 		Weapon_Tamer_T3 = { Id = "rbxassetid://127142057835154", Size = Vector2.new(512, 512) },
@@ -4510,8 +4610,8 @@ Config.UIArt = {
 		BadgeHaloR1 = { Id = "rbxassetid://127364191131841", Size = Vector2.new(512, 512) },
 		BadgeHaloR2 = { Id = "rbxassetid://137484666307607", Size = Vector2.new(512, 512) },
 		BadgeHaloR3 = { Id = "rbxassetid://129437049523618", Size = Vector2.new(512, 512) },
-		BadgeHaloR4 = { Id = "rbxassetid://124991404420192", Size = Vector2.new(512, 512) },
-		BadgeHaloR5 = { Id = "rbxassetid://94247608535976", Size = Vector2.new(512, 512) },
+		BadgeHaloR4 = { Id = "rbxassetid://118999354181738", Size = Vector2.new(512, 512) },
+		BadgeHaloR5 = { Id = "rbxassetid://74618033435632", Size = Vector2.new(512, 512) },
 		BadgeHornsR1 = { Id = "rbxassetid://99890678318399", Size = Vector2.new(512, 512) },
 		BadgeHornsR2 = { Id = "rbxassetid://136024745343474", Size = Vector2.new(512, 512) },
 		BadgeHornsR3 = { Id = "rbxassetid://89904764899716", Size = Vector2.new(512, 512) },
@@ -4530,7 +4630,7 @@ Config.UIArt = {
 		MapZonePumpkinField = { Id = "rbxassetid://137146546854171", Size = Vector2.new(512, 512) },
 		MapZoneHauntedHollow = { Id = "rbxassetid://126361608809712", Size = Vector2.new(512, 512) },
 		MapKaiju = { Id = "rbxassetid://105547922444119", Size = Vector2.new(512, 512) },
-		MapGrudgeSack = { Id = "rbxassetid://93012481707250", Size = Vector2.new(512, 512) },
+		MapGrudgeSack = { Id = "rbxassetid://84005598517360", Size = Vector2.new(512, 512) },
 		MapPvP = { Id = "rbxassetid://118074682518530", Size = Vector2.new(512, 512) },
 		IconChipPumpkinKing = { Id = "rbxassetid://137587017958008", Size = Vector2.new(512, 512) }, -- event chip heads (left of '호박 대왕까지 m:ss' / the ghost king's chip)
 		IconChipGhostKing = { Id = "rbxassetid://139986664903918", Size = Vector2.new(512, 512) },
@@ -4540,7 +4640,7 @@ Config.UIArt = {
 		PortraitFrame = { Id = "rbxassetid://128161442754384", Size = Vector2.new(512, 498) }, -- dialogue NPC portrait frame: the portrait sits on Window (0.107, 0.116, 0.783, 0.759)
 		-- A23-46 / A23-59 town quest NPC portraits (이미지 생성 2, user OK 2026-10-06: 91cc2c9 · 309c692), transparent, no
 		-- lettering: UIKit.Portrait draws one on PortraitFrame's window (bottom-aligned, centred, rounded corners)
-		PTR_TownBright = { Id = "rbxassetid://86154525392813", Size = Vector2.new(509, 512) }, -- Halo town guard trainee
+		PTR_TownBright = { Id = "rbxassetid://121040553911308", Size = Vector2.new(512, 512) }, -- Halo town guard trainee (chest star, 2026-10-08)
 		PTR_TownSmokey = { Id = "rbxassetid://91810571998991", Size = Vector2.new(400, 512) }, -- Horns den lookout
 		PTR_TownTiny = { Id = "rbxassetid://107434856525614", Size = Vector2.new(445, 512) }, -- Crossroads artisan trainee
 		PTR_CrownShard = { Id = "rbxassetid://131966294834604", Size = Vector2.new(443, 512) }, -- the Crown Shard speaker (Speakers.Shard / Fountain; High, d9aec52)
@@ -4576,19 +4676,6 @@ Config.UIArt = {
 		IconRankArtisan = { Id = "rbxassetid://96372902638765", Size = Vector2.new(512, 512) },
 		IconRankPvP = { Id = "rbxassetid://118972460416266", Size = Vector2.new(512, 512) }, -- redrawn 2026-10-06 (blades cross in an X)
 		-- User-approved E sprites; shared legacy keys remain unchanged.
-		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
-		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
-		FactionCardNeutralE = { Id = "rbxassetid://78748710982730", Size = Vector2.new(380, 636) },
-		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
-		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
-		FactionPremiseFreshTyped = { Id = "rbxassetid://105024415024705", Size = Vector2.new(1024, 174) },
-		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
-		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },
-		FactionCardNeutralFreshTyped = { Id = "rbxassetid://127475794518664", Size = Vector2.new(570, 954) },
-		FactionTitleFreshTypedBalanced = { Id = "rbxassetid://81044633324158", Size = Vector2.new(1024, 210) },
-		FactionTitleFreshTyped = { Id = "rbxassetid://111239293270560", Size = Vector2.new(1024, 210) },
-		FactionFooterFreshTyped = { Id = "rbxassetid://128423642459976", Size = Vector2.new(1024, 126) },
-		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
 		-- pick screens: bundle 2 (5d16034, Firefly, wordless) text-free card backgrounds, regions in CardLayout; A23-48 the
 		-- game writes every word on them in English (the baked Korean FactionE cards are off)
 		CardHalo = { Id = "rbxassetid://116448859963324", Size = Vector2.new(622, 1024) },
@@ -4604,26 +4691,30 @@ Config.UIArt = {
 		-- (CardHalo / ClassCardHalo ...) meanwhile (IMG-R4). The 12 class pictures are already cut to the card's window
 		-- (eyes at 20 %, feet at 92 %): drawn exactly on ClassPick*'s Portrait region, by the player's chosen gender.
 		FactionPickTitle = { Id = "rbxassetid://109240387368574", Size = Vector2.new(1024, 373), TextRect = { 0.148, 0.41, 0.704, 0.343 } }, -- HQ redraw 4ceaabf: the band sits a little higher
-		FactionPickHalo = { Id = "rbxassetid://105227426103706", Size = Vector2.new(624, 1024) },
-		FactionPickHorns = { Id = "rbxassetid://111143659498431", Size = Vector2.new(624, 1024) },
+		FactionPickHalo = { Id = "rbxassetid://78441813872022", Size = Vector2.new(624, 1024) },
+		FactionPickHorns = { Id = "rbxassetid://92021424719072", Size = Vector2.new(624, 1024) },
 		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
 		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
-		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://83476661743336", Size = Vector2.new(460, 550) },
-		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://88805775159569", Size = Vector2.new(460, 550) },
-		CLS_HaloMage_M_Card = { Id = "rbxassetid://126336881237120", Size = Vector2.new(460, 550) },
-		CLS_HaloMage_F_Card = { Id = "rbxassetid://123314243302195", Size = Vector2.new(460, 550) },
+		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://113804016014809", Size = Vector2.new(460, 550) },
+		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://129768786563436", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_M_Card = { Id = "rbxassetid://118225411450017", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_F_Card = { Id = "rbxassetid://113800216565552", Size = Vector2.new(460, 550) },
 		CLS_HaloArcher_M_Card = { Id = "rbxassetid://115817198015355", Size = Vector2.new(460, 550) },
 		CLS_HaloArcher_F_Card = { Id = "rbxassetid://126666354590986", Size = Vector2.new(460, 550) },
-		CLS_HornsWarrior_M_Card = { Id = "rbxassetid://91103879889186", Size = Vector2.new(460, 550) },
-		CLS_HornsWarrior_F_Card = { Id = "rbxassetid://94079237131593", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_M_Card = { Id = "rbxassetid://74863399200858", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_F_Card = { Id = "rbxassetid://74943559632831", Size = Vector2.new(460, 550) },
 		CLS_HornsMage_M_Card = { Id = "rbxassetid://87840664026840", Size = Vector2.new(460, 550) },
 		CLS_HornsMage_F_Card = { Id = "rbxassetid://136362714347322", Size = Vector2.new(460, 550) },
-		CLS_HornsArcher_M_Card = { Id = "rbxassetid://81732631379103", Size = Vector2.new(460, 550) },
-		CLS_HornsArcher_F_Card = { Id = "rbxassetid://100853653295965", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_M_Card = { Id = "rbxassetid://75310398708603", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_F_Card = { Id = "rbxassetid://71626258615966", Size = Vector2.new(460, 550) },
 		FactionPremise = { Id = "rbxassetid://75757875574311", Size = Vector2.new(1024, 434), Slice = Rect.new(120, 120, 904, 314), SliceScale = 0.22, Tone = "Navy" },
 		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 70, 924, 72), FitHeight = true, Tone = "Navy" },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
-		TitleRibbon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
+		-- empty cream title ribbon (Firefly, 2026-10-06; 그림체 #44 2026-10-08 put it in: the nickname window). Only the
+		-- middle stretches (FitHeight): the folded tails x 75-110 / 402-437 stay out of the stretched band. TextRect = the
+		-- words' box inside the front band (fractions of the ribbon)
+		TitleRibbon = { Id = "rbxassetid://80637744024215", Size = Vector2.new(512, 135), Slice = Rect.new(118, 40, 394, 95),
+			FitHeight = true, Tone = "Parchment", TextRect = { 0.19, 0.13, 0.62, 0.55 } },
 		-- class characters (Firefly blocky toy style, bundles 10 / 19, 50bf8ea + af64891 clean + 2975f24, user OK):
 		-- Char<Faction><Class><M|F>. The Artisan Archer slot is the pet tamer (A23-39: same class id, Artisan look).
 		CharHaloWarriorM = { Id = "rbxassetid://99834593537592", Size = Vector2.new(476, 663) },
@@ -4653,6 +4744,38 @@ Config.UIArt = {
 		IconBloodSword = { Id = "rbxassetid://80973759611362", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconGauge = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 70) },
 		IconDemon = { Id = "rbxassetid://101305375688321", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		-- A23-75 round pass badges (user pick "B", 이미지 생성 2 2096b5f, 512 round alpha): the Shop cards show them alone
+		IconPassXP2 = { Id = "rbxassetid://84663066597118", Size = Vector2.new(512, 512) }, -- PassIconExp2.png
+		IconPassGold2 = { Id = "rbxassetid://100341080284667", Size = Vector2.new(512, 512) }, -- PassIconGold2.png
+		IconPassVIP = { Id = "rbxassetid://98036294458431", Size = Vector2.new(512, 512) }, -- PassIconVIP.png
+		IconPassLooks = { Id = "rbxassetid://136373208143894", Size = Vector2.new(512, 512) }, -- PassIconBundle.png (the Looks header)
+		-- A23-75 / A23-77 look icons (이미지 생성 2 5cd9d28 / 565e19f, 검수 OK): 'Look' .. the Config.LookThemes id; the
+		-- shop's Looks tiles and the attendance board draw them (R3 shape render, navy rim)
+		LookHaloIce = { Id = "rbxassetid://131721415854040", Size = Vector2.new(512, 512) },
+		LookHaloGold = { Id = "rbxassetid://90123867490784", Size = Vector2.new(512, 512) },
+		LookHornsLava = { Id = "rbxassetid://110647559507483", Size = Vector2.new(512, 512) },
+		LookHornsShadow = { Id = "rbxassetid://135507968189284", Size = Vector2.new(512, 512) },
+		LookHaloSprout = { Id = "rbxassetid://83263248829283", Size = Vector2.new(512, 512) },
+		LookHornsSprout = { Id = "rbxassetid://116226794293707", Size = Vector2.new(512, 512) },
+		LookHaloStarlight = { Id = "rbxassetid://132781328122100", Size = Vector2.new(512, 512) },
+		LookHornsStarlight = { Id = "rbxassetid://140058187507403", Size = Vector2.new(512, 512) },
+		LookHaloPlatinum = { Id = "rbxassetid://78646024449809", Size = Vector2.new(512, 512) },
+		LookHornsPlatinum = { Id = "rbxassetid://123042000375413", Size = Vector2.new(512, 512) },
+		IconPrivateServer = { Id = "rbxassetid://95789432053642", Size = Vector2.new(512, 512) }, -- PassIconPrivate.png (이미지 생성 2 c5150fa, 검수 고름 A23-79)
+		-- A23-77 attendance board / A23-79 come-back art (이미지 생성 2 514737f, 검수 OK; 512, no letters - numbers are TextLabels)
+		IconWeeklyBox = { Id = "rbxassetid://134725206012544", Size = Vector2.new(512, 512) }, -- the 7th slot's weekly box
+		StampClaimed = { Id = "rbxassetid://133963492491506", Size = Vector2.new(512, 512) }, -- laid over a claimed slot
+		-- collected-days ribbons: the number sits in the empty cream disc - centre (0.497, 0.407), size 0.432 x 0.412 of the
+		-- picture (이미지 생성 2 measured all five); keep the digits inside ~70 % of it so they never touch the rim
+		RibbonDays7 = { Id = "rbxassetid://74039691524147", Size = Vector2.new(512, 512) },
+		RibbonDays14 = { Id = "rbxassetid://128474383322866", Size = Vector2.new(512, 512) },
+		RibbonDays28 = { Id = "rbxassetid://105857078981391", Size = Vector2.new(512, 512) },
+		RibbonDays50 = { Id = "rbxassetid://127528019933746", Size = Vector2.new(512, 512) },
+		RibbonDays100 = { Id = "rbxassetid://104467679017156", Size = Vector2.new(512, 512) },
+		IconKingDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- [King Diary] book
+		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
+		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]
+		IconSaved = { Id = "rbxassetid://112371750811683", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'
 		IconNoBuff = { Id = "rbxassetid://125613826056625", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06, re-cut 3f1716b (faction perk row)
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
@@ -4661,20 +4784,21 @@ Config.UIArt = {
 		IconBoot = { Id = "rbxassetid://121630849275556", Size = Vector2.new(512, 512) }, -- Firefly winged boot (bundle 5): class speed / pet speed
 		-- A15 hit/pain art; empty IDs retain the code fallback.
 		FxSlash = { Id = "rbxassetid://99494789057875", Size = Vector2.new(256, 251) },
-		FxHitSpark = { Id = "rbxassetid://76401646477744", Size = Vector2.new(254, 256) },
+		FxHitSpark = { Id = "rbxassetid://122673635344930", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: a puff + stars, no rays
 		FxShockRing = { Id = "rbxassetid://135827777163619", Size = Vector2.new(256, 252) },
-		FxMagicBurst = { Id = "rbxassetid://92519617657939", Size = Vector2.new(256, 256) },
+		FxMagicBurst = { Id = "rbxassetid://124326448818980", Size = Vector2.new(512, 512) }, -- 2026-10-08 redraw: a round cloud
 		FxDust = { Id = "rbxassetid://108076168454993", Size = Vector2.new(222, 256) },
 		-- 검수 2026-10-08 (user: "아야 영어로"): 72032537654477 has a Korean "아야!" drawn in and a spiky burst rim (ray rule) -
 		-- off until 이미지 생성 2's round English bubble; empty = Fx's code "Ouch!" bubble (EMO_FALLBACK)
-		EmoOuch = { Id = "", Size = Vector2.new(256, 175) },
+		-- 2026-10-08: a blank round bubble; Fx draws "Ouch!" in TextRect (x, y, w, h of the art, 0..1)
+		EmoOuch = { Id = "rbxassetid://114387365320855", Size = Vector2.new(512, 512), TextRect = { 0.17, 0.26, 0.66, 0.42 } },
 		EmoTears = { Id = "rbxassetid://113193582610345", Size = Vector2.new(512, 512) },
 		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
-		EmoAngry = { Id = "rbxassetid://91062043264397", Size = Vector2.new(512, 512) },
-		EmoStress = { Id = "rbxassetid://108308024766302", Size = Vector2.new(512, 512) },
+		EmoAngry = { Id = "rbxassetid://79994000943963", Size = Vector2.new(512, 512) },
+		EmoStress = { Id = "rbxassetid://132610409379166", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T1 = { Id = "rbxassetid://128452607217223", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T2 = { Id = "rbxassetid://115882263046090", Size = Vector2.new(512, 512) },
-		Weapon_Warrior_T3 = { Id = "rbxassetid://118676171420516", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T3 = { Id = "rbxassetid://99916196093265", Size = Vector2.new(512, 512) }, -- 그림체 #28: the approved b1 master (navy rim, blue grip)
 		Weapon_Warrior_T4 = { Id = "rbxassetid://104179222312415", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T5 = { Id = "rbxassetid://94672890742115", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T6 = { Id = "rbxassetid://90778236753102", Size = Vector2.new(512, 512) },
@@ -4702,7 +4826,13 @@ Config.UIArt = {
 		Weapon_Warrior_T8 = { Id = "rbxassetid://73318746668169", Size = Vector2.new(512, 512) }, -- jelly-crown legendary (bundle 9)
 		Weapon_Mage_T8 = { Id = "rbxassetid://109033955946235", Size = Vector2.new(512, 512) },
 		Weapon_Archer_T8 = { Id = "rbxassetid://118154781260735", Size = Vector2.new(512, 512) },
-		Tex_Grass = { Id = "rbxassetid://72716790388998", Size = Vector2.new(1024, 1024) }, -- A23-30 E: Firefly painted meadow (Tex_Grass_FF)
+		-- 2026-10-08 meadow terrain v3 (이미지 생성 1, 검수 OK; user: "너무 초록, 입체적이지 않아"): Tex_Grass_FF3 on Grass and three
+		-- new meadow tiles on base materials no part uses (Salt / Sandstone / Pavement, 검수 checked the main save);
+		-- tools/apply_surface_materials.lua pairs them (Organic, 22 / 16 studs a tile)
+		Tex_Grass = { Id = "rbxassetid://116841810719907", Size = Vector2.new(1024, 1024) }, -- Tex_Grass_FF3 (was FF2)
+		Tex_MeadowFlowers = { Id = "rbxassetid://112552326538919", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowFlowers_FF3 -> Salt (GE_MeadowFlowers)
+		Tex_MeadowShade = { Id = "rbxassetid://100025729953105", Size = Vector2.new(1024, 1024) }, -- Tex_GrassShade_FF3 -> Sandstone (GE_MeadowShade)
+		Tex_MeadowDirt = { Id = "rbxassetid://111724093383818", Size = Vector2.new(1024, 1024) }, -- Tex_MeadowDirt_FF3code -> Pavement (GE_MeadowDirt)
 		Tex_LeafyGrass = { Id = "rbxassetid://99820027824650", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
 		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
 		Tex_Ground = { Id = "rbxassetid://140158008208812", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins dirt (Tex_Ground_FF)
@@ -4721,6 +4851,7 @@ Config.UIArt = {
 		Tex_TreeLeaves = { Id = "rbxassetid://139379724133324", Size = Vector2.new(1024, 1024) }, -- tree leaf balls (neutral: the part Color tints it)
 		Tex_TreeBark = { Id = "rbxassetid://85265884740870", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
 		Tex_HauntedFloor = { Id = "rbxassetid://78580688016455", Size = Vector2.new(1024, 1024) }, -- A23-45 유령 숲 floor (Tex_HauntedFloor_FF): Asphalt slot GE_HauntedFloor
+		Tex_WaterfallFlow = { Id = "rbxassetid://86909517913668", Size = Vector2.new(1024, 1024) }, -- A23-76 waterfall face (이미지 생성 1 ca0dfea, Tex_WaterfallFlow_FF2): streams run top -> bottom (V down)
 		-- sky sun / moon (black = transparent, additive): WarService Sky.SunTextureId / MoonTextureId per war sky
 		Sky_Sun = { Id = "rbxassetid://104329382887122", Size = Vector2.new(512, 512) }, -- Neutral sun
 		Sky_SunDawn = { Id = "rbxassetid://134904669662412", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun
@@ -4732,12 +4863,14 @@ Config.UIArt = {
 	-- picked from the mockup (UI_HUD_Final.png) and the part images
 	Colors = {
 		-- text
-		Ink = Color3.fromRGB(66, 40, 18), -- brown ink text on parchment
-		InkSoft = Color3.fromRGB(122, 84, 46), -- secondary text on parchment (3/5, hints)
+		-- 그림체 #44 (검수 2026-10-08): the words, rims and outlines are navy like the Firefly frames (UIKit STYLE.Navy);
+		-- they were the old GPT art's brown (66,40,18 / 110,66,24 / 34,20,10)
+		Ink = Color3.fromRGB(27, 33, 64), -- navy words on light plates (parchment, cream rows, chips)
+		InkSoft = Color3.fromRGB(70, 78, 110), -- secondary words on light plates (3/5, hints)
 		InkOutline = Color3.fromRGB(255, 247, 228), -- light halo around ink text
 		Light = Color3.fromRGB(255, 255, 255), -- white text on navy / red / ribbon
 		LightSub = Color3.fromRGB(226, 222, 206), -- labels on navy (금고, 주머니)
-		TextOutline = Color3.fromRGB(34, 20, 10), -- dark outline for white / gold text
+		TextOutline = Color3.fromRGB(27, 33, 64), -- navy outline for white / gold text
 		GoldText = Color3.fromRGB(255, 228, 100), -- numbers on navy (금고 1,250 / Lv)
 		GoldInk = Color3.fromRGB(236, 164, 16), -- gold numbers on parchment (150G, +120); use with TextOutline
 		GoodInk = Color3.fromRGB(40, 140, 60), -- done / 받기 on parchment
@@ -4746,10 +4879,13 @@ Config.UIArt = {
 		Parchment = Color3.fromRGB(242, 221, 178),
 		ParchmentDark = Color3.fromRGB(214, 182, 128), -- dividers / empty slots on parchment
 		Ribbon = Color3.fromRGB(241, 207, 132),
-		Rim = Color3.fromRGB(110, 66, 24), -- hand-inked brown outline (fallback stroke)
+		Rim = Color3.fromRGB(27, 33, 64), -- navy outline (fallback stroke)
 		Navy = Color3.fromRGB(26, 40, 79),
 		NavyDeep = Color3.fromRGB(19, 31, 56), -- bar track interior
 		Gold = Color3.fromRGB(240, 190, 60), -- gold trim
+		-- 그림체 #14: the white Firefly 'Star' part tinted (ImageColor3): a filled star / an empty star
+		StarGold = Color3.fromRGB(245, 197, 66),
+		StarEmpty = Color3.fromRGB(70, 78, 110),
 		Red = Color3.fromRGB(225, 40, 36), -- attack button face (pre-Firefly)
 		Orange = Color3.fromRGB(246, 130, 32), -- Firefly attack disc face (bundle 6)
 		Confirm = Color3.fromRGB(76, 175, 60), -- Firefly green capsule (BtnConfirm)
@@ -4848,53 +4984,6 @@ Config.UIArt.FactionPerks = {
 
 -- E approval: 2026-10-04. Fixed Korean glyphs preserve the approved illustration.
 -- English/localized sprites are a separate release item; live fallbacks stay available.
-Config.UIArt.FactionE = {
-    -- A23-48 (English only): off. These cards carry baked Korean letters; the bundle 2 wordless cards (CardLayout)
-    -- show the game's English text instead
-    Enabled = false,
-    Locale = "ko",
-    BakedText = true,
-    BakedPerkIcons = true,
-    BakedFooterIcon = true,
-    CardAspect = 380 / 636,
-    Parts = {
-        Halo = "FactionCardHaloFreshTyped", Horns = "FactionCardHornsFreshTyped", Neutral = "FactionCardNeutralFreshTyped",
-        Title = "FactionTitleFreshTypedBalanced", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterFreshTyped",
-    },
-    ButtonRects = {
-		Halo = { 0.24793872, 0.80211072, 0.50513279, 0.07605582 },
-		Horns = { 0.20268785, 0.78690554, 0.59458409, 0.07466372 },
-		Neutral = { 0.17223303, 0.81271190, 0.65554510, 0.07833555 },
-    },
-    -- Last benefit glyph bottom + 6px in each 570x954 export; enlarged touch hitboxes stay below it.
-    ButtonHitTop = { Halo = 0.76277029, Horns = 0.75550551, Neutral = 0.77759915 },
-    MinBakedWidth = { Premise = 460 },
-    Layout = {
-        ReferenceSize = Vector2.new(1584, 1050),
-        Title = { 514/1584, 5/1050, 557/1584, 111/1050 },
-        Premise = { 240/1584, 124/1050, 1100/1584, 187/1050 },
-        Cards = { 238/1584, 318/1050, 1102/1584, 627/1050 },
-        Footer = { 326/1584, 929/1050, 929/1584, 116/1050 },
-    },
-    SemanticText = {
-        Title = "어느 편에 설래요?",
-        Premise = {
-            "세상을 지키던 균형의 왕관이 부서졌다.",
-            "조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.",
-            "조각을 더 많이 모으는 쪽이 세상을 다시 만든다.",
-        },
-        Footer = "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
-        Cards = {
-            Halo = {Name="빛의 기사단",Desc="후광을 얻은 자들.",Motto="지키고, 치유하고, 되찾아 줘라!",Button="이 편으로!",
-                Perks={"경험치 +30%","체력 +20%, 계속 회복","스킬로 동료 치유","주머니 골드 자동 저금"}},
-            Horns = {Name="뿔 군단",Desc="뿔을 얻은 자들.",Motto="털고, 버티고, 괴수가 되어라!",Button="이 편으로!",
-                Perks={"골드 +25%","공격력 +15%, 체력 흡수","약탈한 골드 지켜내기","별 5개면 괴수 변신!"}},
-            Neutral = {Name="장인 길드",Desc="조각을 다듬는 자들.",Motto="줍지 말고, 다듬고, 만들어라!",Button="이 편으로!",
-                Perks={"싸움 버프 없음","PvP 없음 (안전)","약탈·현상수배 걱정 없음","제작 특화 (곧 추가)"}},
-        },
-    },
-}
-
 -- addendum A1: optional custom visual models in ServerStorage[FolderName] named by monster id or GooseId
 Config.CustomModels = {
 	FolderName = "CustomModels",
@@ -5748,7 +5837,7 @@ Config.RateLimits.CandyTrade = 1
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
 Config.QuestBook = {
-	DoneMax = 40,
+	DoneMax = 60, -- every main (19) + every sub (~35) of a finished save still fits (검수 2026-10-08)
 	AvailableMax = 10,
 	Text = { OpensAt = "%s · Opens at Lv %d" }, -- (quest Title, level)
 }

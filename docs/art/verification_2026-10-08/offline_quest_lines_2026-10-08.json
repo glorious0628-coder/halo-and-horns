@@ -1,0 +1,225 @@
+{
+  "status": "passed",
+  "checks": 28,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "the lines are built for L.QuestLines()",
+      "ok": true
+    },
+    {
+      "check": "the block grows one line height per extra line",
+      "ok": true
+    },
+    {
+      "check": "every device shows the server's short name (no cut words)",
+      "ok": true
+    },
+    {
+      "check": "refreshQuests orders the lines with L.QuestLineOrder (main first)",
+      "ok": true
+    },
+    {
+      "check": "no 'Daily Quests 0/3' filler on lines 2+",
+      "ok": true
+    },
+    {
+      "check": "a HUD line that is no claim / guide / story row asks HUD.QuestGo",
+      "ok": true
+    },
+    {
+      "check": "the 'Done this session' list follows every redraw",
+      "ok": true
+    },
+    {
+      "check": "a daily / extra row's words + short name come from the English template (an old save may hold Korean)",
+      "ok": true
+    },
+    {
+      "check": "the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 20,
+    "applied": 20,
+    "caught": 20,
+    "results": [
+      {
+        "mutation": "lines never capped",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL never more than five :: "
+        ]
+      },
+      {
+        "mutation": "the 'now do' row not first",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL first the 'now do' row, then the preferred ones, then the rest in order (no repeats) :: 4,2,1,3,5"
+        ]
+      },
+      {
+        "mutation": "repeats allowed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL first the 'now do' row, then the preferred ones, then the rest in order (no repeats) :: 1,4,4,2,1,2,3,4,5",
+          "CHECK_FAIL a missing or repeated preferred index is skipped :: 3,3,1,2,3,4,5"
+        ]
+      },
+      {
+        "mutation": "unfinished quests counted done",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a claimable quest that left the list is done; a rerolled unfinished one is not; a next-goal row never :: kill,story:S3,plunder",
+          "CHECK_FAIL the same quest is not listed twice :: 3"
+        ]
+      },
+      {
+        "mutation": "next-goal rows counted done",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a claimable quest that left the list is done; a rerolled unfinished one is not; a next-goal row never :: kill,story:S3,tip",
+          "CHECK_FAIL the same quest is not listed twice :: 3"
+        ]
+      },
+      {
+        "mutation": "done listed twice",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the same quest is not listed twice :: 4"
+        ]
+      },
+      {
+        "mutation": "the session list grows forever",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the session list keeps the newest 40 :: 47",
+          "CHECK_FAIL no previous list: nothing happens :: "
+        ]
+      },
+      {
+        "mutation": "a slot keeps its key when its template changes",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a slot's key changes with its template :: ",
+          "CHECK_FAIL a claimable quest that left the list is done; a rerolled unfinished one is not; a next-goal row never :: story:S3",
+          "CHECK_FAIL the same quest is not listed twice :: 1"
+        ]
+      },
+      {
+        "mutation": "the window counted ready before it registered",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a window that did not register: false :: "
+        ]
+      },
+      {
+        "mutation": "a pressed quest never leads",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL any other quest becomes the marker's quest :: "
+        ]
+      },
+      {
+        "mutation": "a story row loses its own action",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a story / guide row runs its own action (L.PinnedTap), not the marker :: ",
+          "CHECK_FAIL any other quest becomes the marker's quest :: "
+        ]
+      },
+      {
+        "mutation": "a gone quest keeps the marker",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL when that quest leaves the list the marker goes back to the 'now do' row :: "
+        ]
+      },
+      {
+        "mutation": "[Claim] on a board job",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [Claim]: finished daily / sub / pinned only :: "
+        ]
+      },
+      {
+        "mutation": "saved daily words trusted",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an old Korean Plunder daily is shown in English (count, then Config.Plural) :: 빛의 기사단 1명 털기",
+          "CHECK_FAIL a Kill row names its monster by its short name (else its name) :: 빛의 기사단 1명 털기",
+          "CHECK_FAIL a Gold row shows the plain number :: 빛의 기사단 1명 털기"
+        ]
+      },
+      {
+        "mutation": "extra slots keep saved words",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an extra slot is written again too :: "
+        ]
+      },
+      {
+        "mutation": "every row written again",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL story / tutorial / job rows and unknown templates keep the server's text :: "
+        ]
+      },
+      {
+        "mutation": "Kill shows the long name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Kill row names its monster by its short name (else its name) :: Defeat Green Slime ×50"
+        ]
+      },
+      {
+        "mutation": "no Config.Plural",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL an old Korean Plunder daily is shown in English (count, then Config.Plural) :: Rob 1 Knights of Light"
+        ]
+      },
+      {
+        "mutation": "Gold shows 60.0",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Gold row shows the plain number :: Earn 60.0 gold by hunting",
+          "CHECK_FAIL an extra slot is written again too :: "
+        ]
+      },
+      {
+        "mutation": "short name from the saved row",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a daily's short name comes from its English template :: "
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31"
+  },
+  "studioCalls": 0,
+  "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."
+}

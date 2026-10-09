@@ -20,11 +20,11 @@
   },
   "failure": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
+    "src/ReplicatedStorage/Shared/Config.luau": "ff8f5decaa4fe971c8f539c5bf5d817f2a5b1bd22db54f92f99f7f1ad3a4a55e",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8"
+    "src/ServerScriptService/KaijuService.luau": "c34d693e33c283026fa15495d1e8b4f065475dafa3775819f4862a531a2331e8"
   },
   "fixtureSHA256": "aab666418329d2b3d017c8a57b50795f98f21c4f3e59aa4d71baf6ff998321c1",
   "sourcesChangedDuringRun": [],

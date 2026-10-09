@@ -402,7 +402,11 @@ KO = {"SwingArcher": "활 두 발 파일(선택) · '슉슉'", "SwingArrow": "�
       "SkillLearn": "새 스킬 배움 '뽁! 샤라락 티잉~' (Lv5·15·25)",
       "Loot": "내 드롭 · 주문서·무기 '톡-톡-톡 티링~'",
       "SwingWarrior": "전사 휘두름 '휙!'", "KillPop": "처치 '뽕!'", "ComboMilestone": "콤보 x10·25·50·100 '띠리링!'",
-      "LevelUp": "레벨업 '빠-바-밤~ 반짝!'", "Tap": "모든 버튼 '톡'", "WindowOpen": "창 열기 '뾰롱↑'"}
+      "LevelUp": "레벨업 '빠-바-밤~ 반짝!'", "Tap": "모든 버튼 '톡'", "WindowOpen": "창 열기 '뾰롱↑'",
+      "QuestOpen": "퀘스트 창 열기 '스르륵'", "QuestTab": "퀘스트 탭 넘기기 '팔랑'", "StampPress": "출석 도장 '쿵-착'",
+      "Chest7Open": "7일 상자 열기 '딸깍 끼익 짠!'", "WelcomeBack": "Welcome back '띠리링~'", "DiaryPage": "왕의 일기 책장 '촤락'",
+      "CandyPlop": "사탕 단지 '퐁·딸랑'", "KingHelpHome": "왕 슬라임 [Help it hop home] '뽀용 뽀용 반짝'",
+      "KingTickleCoins": "왕 슬라임 [Tickle out its coins] '삑! 짤랑짤랑'", "TipDing": "키 설정 안내 '띵'"}
 ORDER = ["SwingArrow", "SwingMageHalo", "SwingMageHorns", "HitHeavy", "HitCrit", "ComboCoin", "HitSoft", "SwingArcher",
          "GoldPickup", "QuestNew", "QuestDone", "WindowClose", "Deny", "RankDown", "ScrollFail", "SkillHalo", "SkillHorns", "Purify", "Devour",
          "Potion", "AutoOn", "AutoOff", "TalkBlip", "Equip", "SkillReady", "HurtBig", "PowerUp", "Jump",
@@ -423,11 +427,16 @@ ORDER += ORDER6
 ORDER7 = ["SwingWarrior", "KillPop", "ComboMilestone", "LevelUp", "Tap", "WindowOpen"]
 BATCH.update({k: 7 for k in ORDER7})
 ORDER += ORDER7
+ORDER8 = ["QuestOpen", "QuestTab", "StampPress", "Chest7Open", "WelcomeBack", "DiaryPage", "CandyPlop", "KingHelpHome",
+          "KingTickleCoins", "TipDing"]
+BATCH.update({k: 8 for k in ORDER8})
+ORDER += ORDER8
 BATCH_TITLE = {1: "1번 묶음 · 전투 (지난번과 같은 후보)", 2: "2번 묶음 · UI·스킬·선택·새 소리", 3: "3번 묶음 · 할로윈 P0",
                4: "4번 묶음 · 왕관·왕·전쟁 → 거위·괴수·PvP·황금 → 강화·돈·등급·KO",
                5: "5번 묶음 · 새 스킬 배움 (A23-71)",
                6: "6번 묶음 · 내 드롭 (설계서 §5 P0 Loot)",
-               7: "7번 묶음 · 아직 옛 파일이던 6개 새로 (사용자 '그대로 두는 것도 다시 다')"}
+               7: "7번 묶음 · 아직 옛 파일이던 6개 새로 (사용자 '그대로 두는 것도 다시 다')",
+               8: "8번 묶음 · 오늘 새 화면(퀘스트 창·출석·Welcome back·일기·사탕 단지·왕 슬라임 카드·키 안내)"}
 SCENE_OF = {"SwingArrow": "archer", "SwingMageHalo": "mage_halo", "SwingMageHorns": "mage_horns", "HitHeavy": "warrior_goblin",
             "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime", "SkillLearn": "lv5", "Loot": "killloot",
             "SwingWarrior": "warrior7", "KillPop": "warrior7"}
@@ -498,6 +507,17 @@ PICK = {  # 소리 만들기 추천 (검수가 고른다)
     "Tap": ("Tap_kA", "설계서 레시피: select_002 몸통 + click_003 -10 dB, 33 ms. 경고는 짧아서 크기가 작게 재지는 것뿐(설계서: 귀로 맞춤). "
                     "TalkBlip보다 +3 LU 커야 해서 게임 볼륨은 0.46 정도(설계서 범위 0.42~0.50)."),
     "WindowOpen": ("WindowOpen_sA", "둥근 음 1080 → 1730 Hz 0.21 s, 새 창 닫기(1550 → 1000 Hz)의 거울이라 둘이 짝이 맞아요."),
+    # batch 8
+    "QuestOpen": ("QuestOpen_sA", "두루마리가 펼쳐지는 '스르륵'(1.5 → 4.2 kHz 바람 + 종이 두 번) 0.3 s. 창 열기와 구별돼요."),
+    "QuestTab": ("QuestTab_sA", "종이 한 장 '팔랑' 0.09 s, 버튼 '톡'과 구별."),
+    "StampPress": ("StampPress_sA", "고무 도장 '쿵' + 종이 '착' 0.2 s, 폰에서도 들리게 900 Hz 몸통."),
+    "Chest7Open": ("Chest7Open_sA", "걸쇠 '딸깍' → '끼익' → 유리 반짝 3알 → '짠' 0.94 s, 강화 성공·드롭과 구별."),
+    "WelcomeBack": ("WelcomeBack_sA", "따뜻한 퉁김 A5-C#6-E6 올라감 0.6 s. sB는 퀘스트 완료와 너무 비슷해서(짝 0.63) 빼요."),
+    "DiaryPage": ("DiaryPage_sA", "큰 책장 '촤락'(4.2 → 1.5 kHz) + 종이 '툭' 0.3 s."),
+    "CandyPlop": ("CandyPlop_sA", "사탕 '퐁' + 유리 단지 '딸랑' 0.3 s, 동전과 구별."),
+    "KingHelpHome": ("KingHelpHome_sA", "젤리 '뽀용' 세 번이 점점 멀어지고 반짝 0.75 s, 점프·부활과 구별."),
+    "KingTickleCoins": ("KingTickleCoins_sA", "장난감 '삑!' + 우리 동전 8개 '짤랑짤랑' 0.6 s, 골드 받기·뺏김과 구별."),
+    "TipDing": ("TipDing_sA", "부드러운 '띵' G6 0.3 s, 스킬 준비 '삥'·새 퀘스트와 구별."),
 }
 
 
@@ -678,6 +698,9 @@ PowerUp(첫 무기)·LevelUp·QuestDone과 다르게 들리도록 설계표 짝 
 사용자 규칙 "그대로 두는 것도 다시 다"에 따라, 설계서가 '유지'로 둔 소리도 설계서의 고칠 점(레벨업 폰 몸통, 콤보 끝음 5 kHz 아래, 버튼 클릭층)대로 다시 만들었어요.
 짝 검사는 이미 고른 게임 파일 51개와 함께 돌렸어요(85/87 통과). 남은 2개는 버튼 '톡'이 TalkBlip보다 +3 LU 커야 하는 규칙인데, 게임 볼륨을 0.46으로 올리면 맞아요.
 '장면 20초'는 전사가 슬라임 셋을 치는 실제 타이밍에 새 '휙'·'뽕'과 이미 고른 게임 파일을 겹친 소리예요. 판정은 설계서 검사기. sA·sB = 우리 합성, kA·kB = Kenney CC0 + 우리 손질. Firefly 0크레딧.</p>""", ""),
+    8: ("""<p class="lead">검수용 8번 묶음: 오늘 새로 생긴 화면 소리 10개예요(퀘스트 창·탭, 출석 도장·7일 상자, Welcome back, 왕의 일기 책장,
+사탕 단지, 왕 슬라임 마무리 카드 두 가지, 키 설정 안내). 키마다 하나를 골라 주세요. 지금 판은 모두 우리 합성(크레딧 0)이고,
+Firefly 후보는 브라우저 창이 보이면 더할게요. 판정은 설계서 검사기, 짝 규칙 15개를 새로 넣었어요(목소리·웃음 없음).</p>""", ""),
 }
 
 

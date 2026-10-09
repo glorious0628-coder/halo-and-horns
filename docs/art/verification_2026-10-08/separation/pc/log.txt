@@ -1,0 +1,25 @@
+[   0.2] device before Play: default
+[   0.3] fresh on
+[   5.3] loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 Level=1 CarriedGold=0 BankGold=0 Honor=0 Infamy=0 AutoCombatUnlocked=false AutoCombatEnabled=false ZoneId=Crossroads ZonePvP=false HPPotionCount=0 MPPotionCount=0 pos=-3,4,-30 anvilDist=86.1
+[  29.4] fired ChooseFaction
+[  29.6] fired ChooseClass
+[  32.8] closed
+[  32.8] level: ok hp 452
+[  32.9] meadow minX 210 slimes 16: [{"Y": 6.297811985015869, "Kind": "BigSlime", "X": 275.04095458984375, "Z": 61.808876037597656}, {"Y": 6.983583450317383, "Kind": "Slime", "X": 343.8135681152344, "Z": 138.7610626220703}, {"Y": 5.359568119049072, "Kind": "Slime", "X": 354.92449951171875, "Z": 17.52275276184082}, {"Y": 4.1328911781311035, "Kind": "Slime", "X": 383.01531982421875, "Z": 59.015235900878906}, {"Y": 3.2888669967651367, "Kind": "Slime", "X": 387.09356689453125, "Z": -34.7004280090332}, {"Y": 1.6558282375335693, "Kind": "Slime", "X": 390.87506103515625, "Z": -149.25100708007812}]
+[  33.0] brought 3: BigSlime moved 0 studs, Slime moved 91 studs, Slime moved 103 studs
+[  34.0] stand y=6.6 on Terrain
+[  38.9] saved docs\art\verification_2026-10-08\separation\pc\01_beside_slimes.png (white 0%)
+[  45.1] walked to 212,62: left 4.4 studs after 6.1 s
+[  56.2] saved docs\art\verification_2026-10-08\separation\pc\02_at_the_edge.png (white 0%)
+[  56.2] samples: [{"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}, {"N": 1, "MinRatio": -1, "Pair": "", "Past": 0}]
+[  56.3] camera set
+[  58.2] saved docs\art\verification_2026-10-08\separation\pc\03_horizon_sea.png (white 0%)
+[  58.3] camera set
+[  60.5] saved docs\art\verification_2026-10-08\separation\pc\04_high_view.png (white 0%)
+[  60.6] camera back
+[  60.6] console: 
+[  61.8] play stopped
+[  63.8] fresh off
+[  63.9] device: default
+[  63.9] FAIL at least two slimes followed me to the edge
+[  63.9] OK   no MonsterService error in the console

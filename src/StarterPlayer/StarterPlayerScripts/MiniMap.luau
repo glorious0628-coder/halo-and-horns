@@ -526,8 +526,8 @@ local function build()
 
 	-- marks: landmarks (6) < monsters (7) < players (8) < quest diamond (9) on the canvas; chevron and my arrow above it.
 	-- Icons on the turning canvas are kept upright (S.upright, counter-turned in moveStep)
-	ui.potion = npcMark("PotionMerchant", "IconPotionHP", COL.Potion)
-	ui.smith = npcMark("Blacksmith", "IconSword", COL.Smith)
+	ui.potion = npcMark("PotionMerchant", "MapPotionShop", COL.Potion) -- 그림체 #15: the shop map discs
+	ui.smith = npcMark("Blacksmith", "MapBlacksmith", COL.Smith)
 	-- A23-36: the quest target is the marker diamond (IconQuestMarker, tinted), the edge chevron its arrow art
 	ui.star = UIKit.ArtImage("IconQuestMarker", {
 		Name = "Quest", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.Star, T.Star),

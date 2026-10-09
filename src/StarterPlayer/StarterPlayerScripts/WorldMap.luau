@@ -91,6 +91,8 @@ local BLACK = Color3.new(0, 0, 0)
 local COL = {
 	SeaTop = Color3.fromRGB(52, 112, 158),
 	SeaBottom = Color3.fromRGB(22, 56, 96),
+	PaintSeaTop = Color3.fromRGB(10, 184, 228), -- the painted map's own sea (WorldMapV2 edges), around it when zoomed out
+	PaintSeaBottom = Color3.fromRGB(2, 194, 236),
 	Shallow = Color3.fromRGB(110, 175, 205),
 	Land = Color3.fromRGB(104, 142, 82),
 	LandDark = Color3.fromRGB(78, 58, 60), -- Horns island basalt
@@ -738,8 +740,32 @@ local function makeMarker(name, glyph, color, size)
 end
 
 local function drawWorld()
+	-- 그림체 #29 (검수 2026-10-08): the approved painted map (Config.UIArt.Parts.WorldMapV2) lies under everything, placed
+	-- in world studs by its Map transform (image px = X0 + (x + OffX) * K, (z + OffZ) * K). It already shows the sea, the
+	-- lands, the zones' ground, the roads, the pass and the bridges, so those code shapes are drawn only without it; the
+	-- marks, icons and captions stay. Returns true when the picture is drawn
+	local painted = false
+	local parts = type(Config.UIArt) == "table" and type(Config.UIArt.Parts) == "table" and Config.UIArt.Parts or {}
+	local pic = type(parts.WorldMapV2) == "table" and parts.WorldMapV2 or nil
+	local m = pic and type(pic.Map) == "table" and pic.Map or nil
+	local mk = kit()
+	if m and typeof(pic.Size) == "Vector2" and num(m.K, 0) > 0 and mk and type(mk.ArtImage) == "function" then
+		local K = num(m.K, 1)
+		local x0, z0 = -num(m.OffX, 0) - num(m.X0, 0) / K, -num(m.OffZ, 0)
+		local ok, img = pcall(mk.ArtImage, "WorldMapV2", {
+			Name = "Painted",
+			Position = UDim2.fromScale((x0 - W.MinX) / worldW, (z0 - W.MinZ) / worldH),
+			Size = UDim2.fromScale(pic.Size.X / K / worldW, pic.Size.Y / K / worldH),
+			ScaleType = Enum.ScaleType.Stretch,
+			Active = false,
+			ZIndex = 1,
+			Parent = canvas,
+		})
+		painted = ok and typeof(img) == "Instance"
+	end
+
 	-- shallow water rings, then lands (rivers and sea are the gaps between them)
-	for _, l in landsData do
+	for _, l in (painted and {} or landsData) do
 		rect(l.MinX - SHALLOW, l.MaxX + SHALLOW, l.MinZ - SHALLOW, l.MaxZ + SHALLOW, {
 			Name = "Shallow_" .. l.Name,
 			BackgroundColor3 = COL.Shallow,
@@ -747,7 +773,7 @@ local function drawWorld()
 			ZIndex = 1,
 		}, { corner(0.14, 0) })
 	end
-	for _, l in landsData do
+	for _, l in (painted and {} or landsData) do
 		local dark = string.find(l.Name, "Horns", 1, true) ~= nil
 		rect(l.MinX, l.MaxX, l.MinZ, l.MaxZ, {
 			Name = "Land_" .. l.Name,
@@ -757,7 +783,7 @@ local function drawWorld()
 	end
 
 	-- zones: floor colour fill + danger-colour border (ART_DIRECTION 2.4)
-	for _, z in zonesData do
+	for _, z in (painted and {} or zonesData) do
 		local col = danger(z)
 		rect(z.Center.X - z.Size.X / 2, z.Center.X + z.Size.X / 2, z.Center.Z - z.Size.Z / 2, z.Center.Z + z.Size.Z / 2, {
 			Name = "Zone_" .. z.Id,
@@ -767,8 +793,8 @@ local function drawWorld()
 		}, { corner(0.08, 0), stroke(col, 2.5, 0.05) })
 	end
 
-	-- roads, mountain pass, bridges
-	for i, r in roadsData do
+	-- roads, mountain pass, bridges (the pass label stays on the picture)
+	for i, r in (painted and {} or roadsData) do
 		rect(r.MinX, r.MaxX, r.MinZ, r.MaxZ, {
 			Name = "Road" .. i,
 			BackgroundColor3 = COL.Road,
@@ -787,8 +813,10 @@ local function drawWorld()
 						ZIndex = 5,
 					}, { corner(0.5, 0), stroke(BLACK, 1, 0.6) })
 				end
-				rock(l.MinZ + 6, -PASS_CORRIDOR, "PassRidgeNorth")
-				rock(PASS_CORRIDOR, l.MaxZ - 6, "PassRidgeSouth")
+				if not painted then
+					rock(l.MinZ + 6, -PASS_CORRIDOR, "PassRidgeNorth")
+					rock(PASS_CORRIDOR, l.MaxZ - 6, "PassRidgeSouth")
+				end
 				local passLabel = label({
 					Name = "PassLabel",
 					Text = TXT.Pass,
@@ -805,7 +833,7 @@ local function drawWorld()
 			end
 		end
 	end
-	for i, br in bridgesData do
+	for i, br in (painted and {} or bridgesData) do
 		local f, t, w = br.From, br.To, br.Width
 		local dx, dz = t.X - f.X, t.Z - f.Z
 		local props = {
@@ -1022,6 +1050,7 @@ local function drawWorld()
 		ZIndex = 3,
 		Parent = me,
 	}, 20)
+	return painted
 end
 
 ----------------------------------------------------------------- view (pan / zoom)
@@ -1426,20 +1455,6 @@ local function build()
 		new("UIGradient", { Color = ColorSequence.new(COL.SeaTop, COL.SeaBottom), Rotation = 90 }),
 	})
 
-	do
-		local k = kit()
-		if k and type(k.ArtImage) == "function" then
-			pcall(k.ArtImage, "MapParchment", {
-				Name = "Parchment",
-				Size = UDim2.fromScale(1, 1),
-				ScaleType = Enum.ScaleType.Crop,
-				Active = false,
-				ZIndex = 0,
-				Parent = viewport,
-			})
-		end
-	end
-
 	canvas = new("Frame", {
 		Name = "Canvas",
 		BackgroundTransparency = 1,
@@ -1447,7 +1462,11 @@ local function build()
 		ZIndex = 1,
 		Parent = viewport,
 	})
-	drawWorld()
+	if drawWorld() then
+		-- 그림체 #29: the painted map's open sea around it (zoomed out / panned past its edge), not the dark code sea
+		local sea = viewport:FindFirstChildOfClass("UIGradient")
+		if sea then sea.Color = ColorSequence.new(COL.PaintSeaTop, COL.PaintSeaBottom) end
+	end
 
 	-- title pill (top-left): "세계 지도" + current location
 	local titlePill = new("Frame", {

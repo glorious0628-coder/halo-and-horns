@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 490,
-  "namedChecks": 86,
+  "checks": 513,
+  "namedChecks": 100,
   "failing": [],
   "static": [
     {
@@ -53,14 +53,18 @@
       "ok": true
     },
     {
+      "check": "검수 10/09 roads: MapBuilder.Build runs FitRoads (pcall); preview_map cuts the town roads at the same plaza radius",
+      "ok": true
+    },
+    {
       "check": "A23-74 no ray bursts: WarService turns the SunRaysEffect off and every sky's SunRays is 0",
       "ok": true
     }
   ],
   "mutations": {
-    "total": 28,
-    "applied": 28,
-    "caught": 28,
+    "total": 36,
+    "applied": 36,
+    "caught": 36,
     "results": [
       {
         "mutation": "HaloTown centre back to v1",
@@ -371,6 +375,93 @@
           "links :: no road runs through a kit landmark",
           "preview :: every Config road is a preview road with the same strip and season"
         ]
+      },
+      {
+        "mutation": "RoadSouth back to near-black red",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "roads :: preview_map builds the part with the look's color and material",
+          "roads :: the look colors are light (not the old near-black 70,45,45)"
+        ]
+      },
+      {
+        "mutation": "preview RoadNorth keeps the old flat color",
+        "file": "preview",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "roads :: preview_map builds the part with the look's color and material"
+        ]
+      },
+      {
+        "mutation": "FitRoads no longer cuts at the plaza",
+        "file": "mapbuilder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "roads :: RoadNorth now runs from the bridge (z -150) to the plaza edge (z -60)",
+          "roads :: RoadSouth now runs from the plaza edge (z 60) to the bridge (z 150)",
+          "roads :: a part fully inside the plaza is hidden",
+          "roads :: running it again changes nothing (idempotent)"
+        ]
+      },
+      {
+        "mutation": "FitRoads cuts the far end",
+        "file": "mapbuilder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "roads :: RoadNorth now runs from the bridge (z -150) to the plaza edge (z -60)",
+          "roads :: RoadSouth now runs from the plaza edge (z 60) to the bridge (z 150)",
+          "roads :: running it again changes nothing (idempotent)"
+        ]
+      },
+      {
+        "mutation": "FitRoads does not hide a part fully inside",
+        "file": "mapbuilder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "roads :: a part fully inside the plaza is hidden"
+        ]
+      },
+      {
+        "mutation": "Build never runs FitRoads",
+        "file": "mapbuilder",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "검수 10/09 roads: MapBuilder.Build runs FitRoads (pcall); preview_map cuts the town roads at the same plaza radius"
+        ]
+      },
+      {
+        "mutation": "preview stops cutting the south road",
+        "file": "preview",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "검수 10/09 roads: MapBuilder.Build runs FitRoads (pcall); preview_map cuts the town roads at the same plaza radius"
+        ]
+      },
+      {
+        "mutation": "Config.Map.Roads cut instead of the parts",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "preview :: every Config road is a preview road with the same strip and season",
+          "roads :: Config.Map.Roads keeps the full strips (the minimap / world map data)"
+        ]
       }
     ]
   },
@@ -378,17 +469,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "01a3af6adbbda5995303046824304e25e1ccc4503a4b570ddbbe52d26431e632",
-    "src/ServerScriptService/MapBuilder.luau": "9744a900fb69b0d5580740238a027a841e3c5e6a624541d08c37964cdf00caac",
+    "src/ReplicatedStorage/Shared/Config.luau": "d1f805b2cd838a82b58de56ff2766ff7198fda95e0307640e54b08677a11cd66",
+    "src/ServerScriptService/MapBuilder.luau": "526d152ed793a329426929f39de063ea8cdf74c16795be1df7f1d5771bc403ae",
     "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a3ccb455977324f2c001e87247eaaa73aaa99a6dd2e19e8117bebb63f7f2e337",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "73d39a075505b7c5224d3533f55b6342772b9ad2d2ad4eec753d81586ad40abd",
-    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "580ad76ff12cf0c87d88c7749add06b7afb856cc4c29c3052ece56361abfedd1",
-    "tools/preview_map.lua": "868c52806f697d928c85452a8b5ce80792b869591cccf54d982fb6a16bb105f9",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "1908c5cce21a6040ad2ee4cc112ac793183c0aa2e27f58ae2ab83289909c5be7",
+    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "9b0b07c7474ca4cdfbfa2213644e1d143d11b4cb8cd39bfeec169f351f6ace49",
+    "tools/preview_map.lua": "6ea6e58ef38f09e101bb0db99aa589ccf032a811f6fd3dc2090ca0d37d9e17f8",
     "tools/map_v2_move.lua": "12d1ead5ada6e5a75380efef7fb31d5585cd40c6b17b55abcf88adfde39e1183",
     "tools/map_v2_apply.py": "2b5e5ac141356e0ab8d9725465070638378ed5af852ed53648cc4fcd3c648362",
-    "src/ServerScriptService/WarService.luau": "6967135944de85742c4fcc33ebcdf621449af0b47b9ee26745ba305c942aa268",
+    "src/ServerScriptService/WarService.luau": "1519e7af51e1a554377d70be3b1d7b7fe639bbdbe9a5713c9830790dcba19c05",
     "docs/design/world_map_v2_2026-10-06.json": "d5e196575a82adcac70a771866899a9bfa146a66868b8ec6b2996664381cbe2f",
-    "tools/fixtures/map_v2_offline.luau": "a57200280c8db9f45a6145e2715ed219fe3c2b4fabfdea3731b5ab5448c8446f"
+    "tools/fixtures/map_v2_offline.luau": "360d896b9567293ab0ea065dd9065645cc050475d5e031e943b46d80e0d00384"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

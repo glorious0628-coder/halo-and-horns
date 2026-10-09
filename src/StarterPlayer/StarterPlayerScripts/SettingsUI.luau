@@ -252,10 +252,10 @@ local function buildMain(kit, frame)
 	-- A23-65: Camera Follow (turns behind me while I walk) / Free; one button switches
 	local _, hc = row(kit, frame, ST.CamEn or ST.Cam)
 	local cb = button(kit, hc, "", nil, function()
-		settingsSet("Cam", settingsGet("Cam", "Follow") == "Free" and "Follow" or "Free")
+		settingsSet("Cam", settingsGet("Cam", "Free") == "Free" and "Follow" or "Free")
 	end)
 	table.insert(refresh, function()
-		local v = settingsGet("Cam", "Follow") == "Free" and "Free" or "Follow"
+		local v = settingsGet("Cam", "Free") == "Free" and "Free" or "Follow"
 		cb.Text = ST.Options[v .. "En"] or ST.Options[v] or v
 	end)
 
@@ -431,6 +431,7 @@ function H.ControlLines()
 		if #parts > 0 then table.insert(lines, table.concat(parts, " · ")) end
 	end
 	table.insert(lines, help.CameraLine)
+	if type(help.KeysTip) == "string" then table.insert(lines, help.KeysTip) end -- A23-81: the Lv5 tip again
 	return lines
 end
 
@@ -492,6 +493,10 @@ function H.BuildHelp(parent, kit)
 		S.Guide = true
 		kit.Rebuild()
 	end)
+	-- A23-81: the keys tip's button again (keyboards): the Settings window on its Keys tab
+	if UserInputService.KeyboardEnabled and type(help.KeysButton) == "string" then
+		button(kit, row1, help.KeysButton, 200, function() kit.Open("Settings", { Tab = "Keys" }) end)
+	end
 	return nil
 end
 

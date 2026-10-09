@@ -69,6 +69,12 @@ assert(map and map:FindFirstChild("Decor"), "workspace.Map.Decor missing")
 local decor = map.Decor
 local kit = SS:FindFirstChild("WorldKit3D")
 assert(kit, "ServerStorage.WorldKit3D missing: run tools/build_kit_from_ids.py first")
+-- 검수 2026-10-08: repeated props use their LOD twin when the kit has one (phone budget; 이미지 생성 1 40d9c53, WorldKit
+-- import 3_third D10). The clone keeps the plain name so other tools (decor_collision) read the kind as before.
+local LOD_TRIS = { Kit_M_FlowersA = 596, Kit_M_FlowersB = 598 }
+local function kitModel(name)
+	return (LOD_TRIS[name] and kit:FindFirstChild(name .. "_LOD")) or kit:FindFirstChild(name)
+end
 local gate = map:FindFirstChild("Gates") and map.Gates:FindFirstChild("Gate_SlimeMeadow")
 
 local T = {
@@ -97,7 +103,9 @@ local T = {
 	Cell = 64,
 	Total = 560, Posts = 115, TallBoulders = 20, JobBoard = 1, -- pass 2: 490 / 78 (the triangle cap binds first)
 	CapScale = 1, -- every kind cap and the totals x this; layout Phase 2 (6 most-repeated meshes decimated): 1.25
-	Ground = { Grass = true, LeafyGrass = true },
+	-- 검수 10/08 pass 3: meadow_terrain paints flower patches (Salt) and shade (Sandstone) on grass; props stand there too
+	-- (Pavement = roads / hill path stays prop-free)
+	Ground = { Grass = true, LeafyGrass = true, Salt = true, Sandstone = true },
 	Rocky = { Rock = true, Slate = true, Basalt = true, Limestone = true }, -- never Ground: the hill ramp / path fallback
 	-- MaxY: decor may stand on the sculpted edge knolls and the NE plateau (top 26); monsters never use ground above 6
 	MinY = -0.5, MinYSand = -1.6, MaxY = 30, MaxYHill = 40,
@@ -135,6 +143,9 @@ local GROUPCAP = { Boulder = 54, Flowers = 130 } -- pass 2: 36 / 85 (pond stone 
 -- layout Phase 2 decimation, never raise T.TriCap for it
 local TRIS = { Kit_M_BushA = 2800, Kit_M_BushB = 2800, Kit_M_FlowersA = 2800, Kit_M_FlowersB = 2800, Kit_M_Mushrooms = 2900,
 	Kit_M_Stump = 2800, Kit_M_Fence = 2800 }
+for n, t in LOD_TRIS do
+	if kit:FindFirstChild(n .. "_LOD") then TRIS[n] = t end
+end
 local function trisOf(name)
 	local n = TRIS[name]
 	if n then return n end
@@ -357,7 +368,7 @@ local SIZE, PARTS, missing = {}, {}, {}
 local function info(name)
 	local s = SIZE[name]
 	if s ~= nil then return s end
-	local src = kit:FindFirstChild(name)
+	local src = kitModel(name)
 	if not (src and src:IsA("Model")) then
 		missing[name] = true
 		SIZE[name] = false
@@ -1814,7 +1825,8 @@ local function sit(m, y) -- bottom on y
 	m:PivotTo(m:GetPivot() + Vector3.new(0, y - (cf.Position.Y - size.Y / 2), 0))
 end
 for _, c in placed do
-	local m = kit:FindFirstChild(c.Name):Clone()
+	local m = kitModel(c.Name):Clone()
+	m.Name = c.Name
 	for _, d in m:GetDescendants() do
 		if d:IsA("LuaSourceContainer") then d:Destroy() end -- A23-33: kit models never carry scripts
 	end

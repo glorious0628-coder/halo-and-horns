@@ -1,0 +1,349 @@
+{
+  "status": "passed",
+  "checks": 51,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "ClientMain loads QuestBook after Panels and HUD",
+      "ok": true
+    },
+    {
+      "check": "the window's words are English (A23-48)",
+      "ok": true
+    },
+    {
+      "check": "the Main tab draws no Available section (검수 10/08)",
+      "ok": true
+    },
+    {
+      "check": "the HUD's quest list opens the window (toggleQuests -> QuestBook.Toggle)",
+      "ok": true
+    },
+    {
+      "check": "the HUD offers the window's API",
+      "ok": true
+    },
+    {
+      "check": "the HUD tells the window when its quests change",
+      "ok": true
+    },
+    {
+      "check": "Help shows the keys tip again (the controls topic + a Key settings button -> Settings / Keys)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 30,
+    "applied": 30,
+    "caught": 30,
+    "results": [
+      {
+        "mutation": "every quest in every tab",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Main: the main quest in progress :: Talk to the fountain | Find the lost jelly | Find Bright's lantern | Chase the goose | Defeat slimes | Earn gold | Board job",
+          "CHECK_FAIL Daily: both daily slots, 3/5 shown :: Talk to the fountain | Find the lost jelly | Find Bright's lantern | Chase the goose | Defeat slimes | Earn gold | Board job",
+          "CHECK_FAIL Daily: [New] on an unfinished slot, [Claim] on a finished one :: "
+        ]
+      },
+      {
+        "mutation": "no goose info line",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Event: the goose story + the live events (goose, Pumpkin King, kaiju, crown war 2:05) :: Chase the goose | The Pumpkin King is here! | A kaiju is loose! | Crown War: next crown in 2:05"
+        ]
+      },
+      {
+        "mutation": "the crown war line without a round",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Event: no live event -> only the goose story :: ",
+          "CHECK_FAIL Event: the diary (2/9) and the jar link to their window :: Chase the goose | Crown War: next crown in 0:00 | King Diary · 2/9 pages | Candy Jar · trade candy for a title",
+          "CHECK_FAIL no diary window: no links :: "
+        ]
+      },
+      {
+        "mutation": "wanted stars ignored",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Faction: my wanted stars :: "
+        ]
+      },
+      {
+        "mutation": "the server's book ignored",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side available = the server's 'Opens at Lv' words, else the story title :: ",
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: Golden Jelly",
+          "CHECK_FAIL book: Faction available = the Halo story :: "
+        ]
+      },
+      {
+        "mutation": "the book's rows in every tab",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: Sparkly Jelly | The Shard That Learns to Fight | First Crown War Chest",
+          "CHECK_FAIL book: Event done = the goose story :: ",
+          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly | The Shard That Learns to Fight | First Crown War Chest | First mission"
+        ]
+      },
+      {
+        "mutation": "the book's Available rows in every tab",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side available = the server's 'Opens at Lv' words, else the story title :: Lost thing · Opens at Lv 8 | The Shard Fights for You | Lantern · Opens at Lv 12 | Report to Your Side",
+          "CHECK_FAIL book: Faction available = the Halo story :: "
+        ]
+      },
+      {
+        "mutation": "the Main tab lists Available",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: the Main tab has no Available (the chain has no level gate) :: Report to Your Side"
+        ]
+      },
+      {
+        "mutation": "the book's words replaced by the title",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side available = the server's 'Opens at Lv' words, else the story title :: Keep the Path Safe | The Shard Fights for You",
+          "CHECK_FAIL book: Faction available = the Halo story :: "
+        ]
+      },
+      {
+        "mutation": "with a book the main chain is still guessed",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly | First mission | The King Who Ate the Dust"
+        ]
+      },
+      {
+        "mutation": "session stories listed next to the book",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: The Shard That Learns to Fight | Golden Jelly"
+        ]
+      },
+      {
+        "mutation": "the whole main chain counted done",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Main done: the first mission and the main chain before M1_3 :: First mission | Sparkly Jelly | The King Who Ate the Dust | Boom, All at Once! | Report to Your Side | The Crown in the Sky | Sparkles in the Pond | The Fountain of Balance | Supply Road Fund | The Dusty Slime Swarm | Little Footprints on the Hill | A Call From Beyond the Woods | Thief Footprints | Three Camps | The Brute's Sack | Whose Shard? | Sprout Graduation | Brute Hunt | Campfire Dust | Call of the Tombs",
+          "CHECK_FAIL Main body: the main quest row + 3 done rows :: 21"
+        ]
+      },
+      {
+        "mutation": "the first mission never done",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Main done: the first mission and the main chain before M1_3 :: Sparkly Jelly | The King Who Ate the Dust",
+          "CHECK_FAIL book: Main done = the book's mains, then the first mission (no guessed chain) :: Sparkly Jelly",
+          "CHECK_FAIL Main body: the main quest row + 3 done rows :: 3"
+        ]
+      },
+      {
+        "mutation": "the first mission done while it runs",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Main done: nothing while the first mission runs :: First mission"
+        ]
+      },
+      {
+        "mutation": "this session's finished quests in every tab",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Side done: a story finished this session, by its title (not the daily) :: The Shard Fights for You | Slimes 5/5",
+          "CHECK_FAIL book: Side done = the book's stories only (a story finished this session is in the book, no guesses) :: The Shard That Learns to Fight | Slimes 5/5"
+        ]
+      },
+      {
+        "mutation": "no daily count",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Daily done: today's count :: ",
+          "CHECK_FAIL book: Daily done = today's count + the dailies finished this session :: Slimes 5/5",
+          "CHECK_FAIL Daily tab: two quest rows + today's count :: 2"
+        ]
+      },
+      {
+        "mutation": "a row press does not close the window",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a press on a row guides there (HUD.QuestGo) and closes the window :: "
+        ]
+      },
+      {
+        "mutation": "[Claim] does nothing",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [New] asks HUD.QuestReroll, [Claim] HUD.QuestClaim for that quest :: ",
+          "CHECK_FAIL a press on a row guides there (HUD.QuestGo) and closes the window :: "
+        ]
+      },
+      {
+        "mutation": "[New] claims instead",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL [New] asks HUD.QuestReroll, [Claim] HUD.QuestClaim for that quest :: "
+        ]
+      },
+      {
+        "mutation": "no redraw when the quests change",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the quest list changes -> the open window redraws (Daily: only today's count left) :: 3",
+          "CHECK_FAIL an unknown tab id changes nothing :: ",
+          "CHECK_FAIL a closed window does not redraw :: "
+        ]
+      },
+      {
+        "mutation": "a closed window still redraws",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a closed window does not redraw :: "
+        ]
+      },
+      {
+        "mutation": "Toggle never closes",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Toggle closes it again :: ",
+          "CHECK_FAIL Toggle(false) while closed does nothing :: "
+        ]
+      },
+      {
+        "mutation": "the asked tab ignored",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Build({ Tab = 'Faction' }) opens that tab :: button",
+          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them :: 0 Event",
+          "CHECK_FAIL a link opens the diary window on its tab :: "
+        ]
+      },
+      {
+        "mutation": "no counts on the tabs",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL it opens on my 'now do' quest's tab (Main), painted gold, with counts :: Main / Daily"
+        ]
+      },
+      {
+        "mutation": "diary links without the diary window",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Event: the goose story + the live events (goose, Pumpkin King, kaiju, crown war 2:05) :: Chase the goose | The Golden Goose is here! | The Pumpkin King is here! | A kaiju is loose! | Crown War: next crown in 2:05 | King Diary · 0/9 pages | Candy Jar · trade candy for a title",
+          "CHECK_FAIL Event: no live event -> only the goose story :: ",
+          "CHECK_FAIL no diary window: no links :: "
+        ]
+      },
+      {
+        "mutation": "diary links after the season with no page",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL after the season with no page: no links :: "
+        ]
+      },
+      {
+        "mutation": "a link counted on the tab",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them :: 2 Event 2"
+        ]
+      },
+      {
+        "mutation": "a link opens nothing",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a link opens the diary window on its tab :: "
+        ]
+      },
+      {
+        "mutation": "QuestTab ignores the id table",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Halo / Horns / guild stories -> Faction :: ",
+          "CHECK_FAIL goose / crown war stories -> Event :: ",
+          "CHECK_FAIL Side: the side story and the board job (not the Halo or goose stories) :: Find the lost jelly | Find Bright's lantern | Chase the goose | Board job"
+        ]
+      },
+      {
+        "mutation": "a Halo story counted as Side",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Halo / Horns / guild stories -> Faction :: ",
+          "CHECK_FAIL Side: the side story and the board job (not the Halo or goose stories) :: Find the lost jelly | Find Bright's lantern | Board job",
+          "CHECK_FAIL Faction: the Halo story :: "
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "3798fecd2d17676833f48812b5d9f47c225ca9b4a5454a93946dcc358fc11e2c",
+    "src/ReplicatedStorage/Shared/Config.luau": "32a004c288ad7861b92816e284d070d051ca3c46fb17b3af0c1b25602dfdb198",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
+  },
+  "fixtureSHA256": "625e5da9ca0b701ef387e0454007b4d169d436600cb4e2765d37a057d35b916b",
+  "studioCalls": 0,
+  "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows are a Studio photo check (메인 반영). The book rows follow 게임성 개발 3's contract (tools/test_quest_book.py checks the server side); before a book comes Done is what the client can tell."
+}

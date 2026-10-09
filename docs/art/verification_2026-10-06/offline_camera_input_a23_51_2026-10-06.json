@@ -3,15 +3,15 @@
   "checks": 32,
   "failed": 0,
   "follow": {
-    "checks": 130,
+    "checks": 131,
     "ok": true,
     "failure": "",
-    "fixtureSHA256": "83b48e3e4045cda4f23caccff73d455478b7c176e0a851d77d0ac19a60bdd069"
+    "fixtureSHA256": "cf522c83c3444a3d66b30ed3b683cd01fe6b97a9c0da4d7ad7f0c531c6da1e3c"
   },
   "mutations": {
-    "total": 68,
-    "applied": 68,
-    "caught": 68,
+    "total": 69,
+    "applied": 69,
+    "caught": 69,
     "results": [
       {
         "mutation": "attack on the release instead of the press",
@@ -170,6 +170,13 @@
         "applied": true,
         "caught": true,
         "failure": "CHECK_FAIL a window open: no follow :: nil"
+      },
+      {
+        "mutation": "no camera setting yet follows (the default is Free, user 10/08)",
+        "fixture": "camera_follow",
+        "applied": true,
+        "caught": true,
+        "failure": "CHECK_FAIL no camera setting yet: the default is Free (user 10/08) - no follow :: nil"
       },
       {
         "mutation": "'Screen shake' off ignored",
@@ -481,8 +488,8 @@
       }
     ]
   },
-  "sourceSHA256": "d79b9994409e189a2a0d210a465d47afd8cb2c23d40625b9622efb64ecbe83c5",
-  "hudSHA256": "73d39a075505b7c5224d3533f55b6342772b9ad2d2ad4eec753d81586ad40abd",
+  "sourceSHA256": "9ca115f9074bc2397cab92750c05a54fb8ecc95d13faaadf0191e782b95b0a99",
+  "hudSHA256": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31",
   "hudStatic": [
     {
       "check": "L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",

@@ -1,0 +1,10 @@
+hid 8 face parts
+Gate_GoblinWoods: TotemEyes
+Gate_HornsTown: Eye, Eye
+Gate_SkeletonRuins: Jaw, Skull, SkullEye, SkullEye
+Gate_SlimeMeadow: SlimeStatue
+saved gates/Gate_SlimeMeadow.png (white 0%)
+saved gates/Gate_GoblinWoods.png (white 0%)
+saved gates/Gate_SkeletonRuins.png (white 0%)
+saved gates/Gate_HaloTown.png (white 1%)
+saved gates/Gate_HornsTown.png (white 0%)

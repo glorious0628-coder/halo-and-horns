@@ -226,7 +226,7 @@ function FOLLOW.Step(dt)
 	elseif FOLLOW.StopAt == math.huge then
 		FOLLOW.StopAt = now
 	end
-	if setting("Cam", "Follow") == "Free" or blocked() then return end
+	if setting("Cam", "Free") == "Free" or blocked() then return end -- default Free (user 10/08)
 	if now - FOLLOW.LastManual < FOLLOW.ManualHold or now - FOLLOW.LastAttack < FOLLOW.AttackHold then return end
 	if UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then return end -- shift lock turns me itself
 	local camera = workspace.CurrentCamera

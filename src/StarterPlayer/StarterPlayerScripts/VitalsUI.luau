@@ -98,7 +98,7 @@ function VitalsUI.BuildStats(parent, touch)
 			Size = UDim2.fromOffset(touch and 200 or 262, (touch and 18 or 22) - (i - 1) * 3), Color = COL[kind],
 			TextSize = touch and 15 or 12 })
 		text.TextWrapped = false
-		C.HUD.FitText(text, 11)
+		C.HUD.FitText(text, 11, nil, nil, true) -- 2026-10-08: real 11 px on small PC windows too (HudLayout's bar floor)
 		ui[kind] = { Frame = frame, Set = set, Text = text }
 	end
 end

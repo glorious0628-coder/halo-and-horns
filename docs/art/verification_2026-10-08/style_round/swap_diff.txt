@@ -1,0 +1,7 @@
+swap run 1: kept X_SupporterBoard | board face x -57.33, part 11.52 x 6.49 at y 7.41 (model centre x -57.50, box 16.0 x 7.0) | Kit_X_Brazier x2 | Kit_X_Forge x1 | Kit_X_Bench x4 | Kit_X_Curb x16 | X_NoticeBoard x1 | Town_Halo_Fountain x1 | Kit_X_StallGreen x1 | X_PadBase x3 | Kit_X_StallRed x2 | Kit_X_PotionCart x1 | Kit_M_SignPost x3 | Kit_X_Anvil x1 | Kit_X_BannerHalo x2 | Kit_X_StallBlue x1 | X_MarketArch x1 | Kit_X_Lamp x8 | X_Altar x1 | X_GooseNest x1 | X_GuildHall x1 | Kit_X_BannerHorns x2 | lights 5, pads 3, board 1, old stored 51, old K_ left 2
+swap run 2: kept X_SupporterBoard | board face x -57.33, part 11.52 x 6.49 at y 7.41 (model centre x -57.50, box 16.0 x 7.0) | Kit_X_Brazier x2 | Kit_X_Forge x1 | Kit_X_Bench x4 | Kit_X_Curb x16 | X_NoticeBoard x1 | Town_Halo_Fountain x1 | Kit_X_StallGreen x1 | X_PadBase x3 | Kit_X_StallRed x2 | Kit_X_PotionCart x1 | Kit_M_SignPost x3 | Kit_X_Anvil x1 | Kit_X_BannerHalo x2 | Kit_X_StallBlue x1 | X_MarketArch x1 | Kit_X_Lamp x8 | X_Altar x1 | X_GooseNest x1 | X_GuildHall x1 | Kit_X_BannerHorns x2 | lights 5, pads 3, board 1, old stored 51, old K_ left 2
+--- before -> after run 1:
+Bounty changed: {"CanCollide": false, "CFrame": [-57, 7.41, 0, 0, 0, 0], "Transparency": 1, "Size": [0.2, 6.49, 11.52]} -> {"CanCollide": false, "CFrame": [-57.38, 7.41, 0, 0, 0, 0], "Transparency": 1, "Size": [0.2, 6.49, 11.52]}
+--- run 1 -> run 2:
+no difference
+X_SupporterBoard + SupporterFace kept the same: True; MostWantedBoard the same: False

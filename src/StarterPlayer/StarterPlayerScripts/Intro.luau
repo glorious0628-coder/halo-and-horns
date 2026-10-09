@@ -158,7 +158,7 @@ local function buildGui()
 		if os.clock() - state.OpenedAt >= SKIP_GRACE then Intro.Finish() end
 	end
 	if UIKit and type(UIKit.ArtButton) == "function" then
-		local ok, b = pcall(UIKit.ArtButton, "Pill", {
+		local ok, b = pcall(UIKit.ArtButton, "Chip", {
 			Name = "Skip", AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -16, 1, -12),
 			Size = UDim2.fromOffset(170, 48), Text = Intro.SkipText(), TextSize = 18,
 			TextStyle = "ink", ZIndex = 5, Parent = gui,

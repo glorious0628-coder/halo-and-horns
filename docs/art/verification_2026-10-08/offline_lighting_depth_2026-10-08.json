@@ -1,0 +1,191 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "check": "a lower afternoon sun (ClockTime 15-16.5: longer shadows)",
+      "ok": true
+    },
+    {
+      "check": "a shade the sky does not flatten (OutdoorAmbient every channel <= 140)",
+      "ok": true
+    },
+    {
+      "check": "a darker indoor / cave shade (Ambient every channel <= 100)",
+      "ok": true
+    },
+    {
+      "check": "the shade a little cool (OutdoorAmbient blue > red)",
+      "ok": true
+    },
+    {
+      "check": "one step darker than 10/08 noon (user 'too bright'): Brightness 1.8-2.1, exposure -0.4..-0.15, OutdoorAmbient <= 120",
+      "ok": true
+    },
+    {
+      "check": "a closer haze (FogStart <= 200, FogEnd <= 1000) in the horizon colour 150, 205, 228",
+      "ok": true
+    },
+    {
+      "check": "sharper sun shadows (ShadowSoftness <= 0.2)",
+      "ok": true
+    },
+    {
+      "check": "less flat sky fill (EnvironmentDiffuseScale <= 0.6)",
+      "ok": true
+    },
+    {
+      "check": "more contrast (>= 0.1) and calmer greens (saturation <= 0)",
+      "ok": true
+    },
+    {
+      "check": "the Realistic lighting style",
+      "ok": true
+    },
+    {
+      "check": "preview_map bakes Config's Neutral and WarService's values",
+      "ok": true
+    },
+    {
+      "check": "no Atmosphere is made anywhere (A9-3)",
+      "ok": true
+    },
+    {
+      "check": "the crown-war dawn takes the same step (Brightness <= 2.0, OutdoorAmbient <= 135, its own exposure <= -0.25)",
+      "ok": true
+    },
+    {
+      "check": "the eclipse night keeps its light (its own exposure 0.2..0.45)",
+      "ok": true
+    },
+    {
+      "check": "Lighting.Sky gets Config.Sky.Faces' six faces at Start (an empty face keeps the place's)",
+      "ok": true
+    },
+    {
+      "check": "the war skies never touch the faces (applySky has no Skybox)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 18,
+    "applied": 18,
+    "caught": 18,
+    "results": [
+      {
+        "mutation": "the noon sun back",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the bright flat shade back",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the far haze back",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the too-bright day back (user 10/08)",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the bright sun back",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "a war dawn brighter than the day's step",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "a war dawn without its own exposure",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the sky faces never set",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "an empty face blanks the place's sky",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the eclipse night as dark as the day's step",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "a war sky paints over the faces",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "soft shadows back",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "full sky fill back",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "low contrast back",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "neon saturation back",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the soft lighting style back",
+        "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "Edit bakes the old noon",
+        "source": "PREVIEW",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "Edit bakes the old fog colour",
+        "source": "PREVIEW",
+        "applied": true,
+        "caught": true
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "32a004c288ad7861b92816e284d070d051ca3c46fb17b3af0c1b25602dfdb198",
+    "src/ServerScriptService/WarService.luau": "1519e7af51e1a554377d70be3b1d7b7fe639bbdbe9a5713c9830790dcba19c05",
+    "tools/preview_map.lua": "72aee66fceebac56bdf94da4a52062bd6f0ab1135ea47f39cc41e47610d2112f"
+  },
+  "studioCalls": 0,
+  "limitations": "Numbers only: whether the meadow now reads deep (hills, path, waterfall; PC and phone) is the main-Studio before / after photo check (메인 반영); Lighting.Technology is a place setting set in Edit."
+}

@@ -28,10 +28,11 @@ MUTATIONS = [
     ("Done oldest first", ST, "\t\tfor i = #list, 1, -1 do\n\t\t\tif #done >= maxDone then break end\n",
      "\t\tfor i = 1, #list do\n\t\t\tif #done >= maxDone then break end\n"),
     ("Done without a cap", ST, "\t\t\tif #done >= maxDone then break end\n", ""),
-    ("hidden subs listed", ST, "\t\tif def and not def.Hidden and not st.Done[id] and not st.Subs[id] and visible(player, def) then\n",
-     "\t\tif def and not st.Done[id] and not st.Subs[id] and visible(player, def) then\n"),
-    ("started subs listed", ST, "\t\tif def and not def.Hidden and not st.Done[id] and not st.Subs[id] and visible(player, def) then\n",
-     "\t\tif def and not def.Hidden and not st.Done[id] and visible(player, def) then\n"),
+    ("hidden subs listed", ST, "\t\tif def and not def.Hidden and not st.Done[id] and not st.Subs[id] and okVis and shown then\n",
+     "\t\tif def and not st.Done[id] and not st.Subs[id] and okVis and shown then\n"),
+    ("started subs listed", ST, "\t\tif def and not def.Hidden and not st.Done[id] and not st.Subs[id] and okVis and shown then\n",
+     "\t\tif def and not def.Hidden and not st.Done[id] and okVis and shown then\n"),
+    ("a failed visibility check shows the sub", ST, "and not st.Subs[id] and okVis and shown then", "and not st.Subs[id] and (not okVis or shown) then"),
     ("level-waiting subs ignore the other requirements", ST,
      "\t\t\t\tif requirementsMet(player, setmetatable({ Level = need }, { __index = data }), def) then\n", "\t\t\t\tif true then\n"),
     ("the level view writes the save", ST, "setmetatable({ Level = need }, { __index = data })", "(function() data.Level = need; return data end)()"),
@@ -41,7 +42,7 @@ MUTATIONS = [
      "\t\t\telseif false then\n\t\t\t\ttable.insert(avail, { Id = \"story:\" .. id, Kind = \"Sub\" })\n"),
     ("highest level first", ST, "return (a.Level or 0) < (b.Level or 0) end", "return (a.Level or 0) > (b.Level or 0) end"),
     ("no AvailableMax", ST, "\tfor i = #avail, math.floor(num(QB.AvailableMax, 10)) + 1, -1 do avail[i] = nil end\n", ""),
-    ("Config: Done keeps 10", C, "\tDoneMax = 40,\n", "\tDoneMax = 10,\n"),
+    ("Config: Done keeps 10", C, "\tDoneMax = 60,", "\tDoneMax = 10,"),
 ]
 
 
@@ -77,7 +78,7 @@ SUITE = Suite(
     out=ROOT / "docs/art/verification_2026-10-08/offline_dev3_quest_book_2026-10-08.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-81: Quests remote payload { Quests = rows, Book = { Available, Done } }. Done = finished story quests as "
-             "'story:<id>', mains newest first then subs newest first, known ids only, at most 40. Available = subs that "
+             "'story:<id>', mains newest first then subs newest first, known ids only, at most 60. Available = subs that "
              "only wait for a level ({ Id, Kind = 'Sub', Level, Text = 'Title · Opens at Lv N' }, the other requirements "
              "checked on a read-only level view) + ready subs not started yet, never hidden / started / done / other "
              "faction, lowest level first, at most 10; no main (the chain has no level gate).",

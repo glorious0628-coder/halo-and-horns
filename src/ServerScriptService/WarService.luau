@@ -24,11 +24,16 @@ local WARN_INTERVAL = 10
 -- A23-29/30 (user pick 'E' = 'B' bright toy light + the new ground tiles, docs/design/world_blend_2026-10-06.md):
 -- sky light reaches the monsters (EnvironmentDiffuse 1.0, Specular 0.6, ShadowSoftness 0.5), softer bloom and tint.
 -- tools/preview_map.lua bakes the same Neutral values so Edit and the server start look alike.
+-- 2026-10-08 (user: "입체적이지 않아", 검수 depth pass): sharper sun shadows (ShadowSoftness 0.15), half the sky's flat
+-- diffuse fill so the shadow side reads, contrast +0.12 and saturation -0.05 (the neon green calmer). LIGHT_STYLE:
+-- Realistic shades by the sun more than Soft. Lighting.Technology is a place setting (not scriptable): ShadowMap -
+-- sun shadows are what gives the depth, and Future's per-pixel shadows of local lights cost phones for our few lamps.
 local LIGHTING_FIXED = {
-	GlobalShadows = true, ShadowSoftness = 0.5, GeographicLatitude = 35,
-	EnvironmentDiffuseScale = 1.0, EnvironmentSpecularScale = 0.6,
+	GlobalShadows = true, ShadowSoftness = 0.15, GeographicLatitude = 35,
+	EnvironmentDiffuseScale = 0.5, EnvironmentSpecularScale = 0.6,
 }
-local TINT_FIXED = { Brightness = 0, Contrast = 0.05, Saturation = 0.1 } -- only TintColor is tweened
+local LIGHT_STYLE = "Realistic"
+local TINT_FIXED = { Brightness = 0, Contrast = 0.12, Saturation = -0.05 } -- only TintColor is tweened
 local SKY_FIXED = { SunAngularSize = 14, MoonAngularSize = 18, StarCount = 3000 }
 local BLOOM_FIXED = { Size = 24, Threshold = 2.2 }
 -- A23-74 (검수 2026-10-07): no sun rays at all - rays fanning out of the sun break the no-ray-burst rule
@@ -37,9 +42,9 @@ local SUNRAYS_FIXED = { Spread = 0.4, Intensity = 0, Enabled = false }
 -- for everything it carries: FogStart / ExposureCompensation / BloomIntensity are read from the preset first).
 -- Exposures = the client ZoneLook base light (SKY table there) so a war-sky change never flickers between the two.
 local SKY_EXTRAS = {
-	Neutral = { Exposure = -0.2, Bloom = 0.2, SunRays = 0, Clouds = Color3.fromRGB(255, 255, 255) },
-	Dawn = { Exposure = -0.15, Bloom = 0.6, SunRays = 0, Clouds = Color3.fromRGB(255, 225, 190) },
-	Eclipse = { Exposure = 0.45, Bloom = 0.5, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
+	Neutral = { Exposure = -0.25, Bloom = 0.2, SunRays = 0, Clouds = Color3.fromRGB(255, 255, 255) },
+	Dawn = { Exposure = -0.35, Bloom = 0.6, SunRays = 0, Clouds = Color3.fromRGB(255, 225, 190) },
+	Eclipse = { Exposure = 0.35, Bloom = 0.5, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
 }
 
 local S = nil
@@ -135,14 +140,22 @@ end
 -- ART_DIRECTION 3.1, once in Start
 local function bootstrapLighting()
 	pcall(function()
-		Lighting.LightingStyle = Enum.LightingStyle.Soft
+		Lighting.LightingStyle = Enum.LightingStyle[LIGHT_STYLE]
 	end)
 	pcall(function()
 		Lighting.PrioritizeLightingQuality = true
 	end)
 	setProps(Lighting, LIGHTING_FIXED)
 	setProps(ensureTint(), TINT_FIXED)
-	setProps(findOrCreate(Lighting, "Sky"), SKY_FIXED)
+	local sky = findOrCreate(Lighting, "Sky")
+	setProps(sky, SKY_FIXED)
+	-- the painted day sky's six faces (Config.Sky.Faces, 이미지 생성 1); a face left empty keeps what the place has. Only
+	-- here: the war skies (applySky) change light, fog and tint, never these faces
+	local faces = type(Config.Sky.Faces) == "table" and Config.Sky.Faces or {}
+	for _, side in { "Ft", "Bk", "Lf", "Rt", "Up", "Dn" } do
+		local id = faces[side]
+		if type(id) == "string" and id ~= "" then setProps(sky, { ["Skybox" .. side] = id }) end
+	end
 	setProps(findOrCreate(Lighting, "BloomEffect"), BLOOM_FIXED)
 	setProps(findOrCreate(Lighting, "SunRaysEffect"), SUNRAYS_FIXED)
 	if Lighting:FindFirstChildOfClass("Atmosphere") then
