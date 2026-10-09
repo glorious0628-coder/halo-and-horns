@@ -4551,6 +4551,13 @@ end
 
 -- Crossroads travel pad of the zone, else its gate, else a local anchor at the zone spawn
 local function findTravelTarget(zoneId)
+	-- 빛 마을 점검 #52: a pad in the town I stand in that goes there (QuestTarget.TownPad) comes first
+	local here = attr("ZoneId", "")
+	local qt = C and C.QuestTarget
+	if here ~= "Crossroads" and type(qt) == "table" and type(qt.TownPad) == "function" then
+		local ok, townPad = pcall(qt.TownPad, here, zoneId)
+		if ok and townPad then return townPad end
+	end
 	local map = workspace:FindFirstChild("Map")
 	local pads = map and map:FindFirstChild("Pads")
 	local part = resolvePart(pads and pads:FindFirstChild("Pad_" .. zoneId))
@@ -4716,6 +4723,8 @@ end
 -- from the Crossroads it points at the meadow pad
 local HOME_BRIDGE = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }
 function L.MeadowTarget(zone)
+	local townPad = L.PadIn(zone)
+	if townPad then return townPad end -- 빛 마을 점검 #52: the town's own meadow pad first
 	local bridge = HOME_BRIDGE[zone]
 	local map = workspace:FindFirstChild("Map")
 	local decor = map and map:FindFirstChild("Decor")
@@ -4726,15 +4735,27 @@ end
 -- A23-88 (검수 10/09, user: no lines, no words): after the first weapon (TutorialStep Guide) the meadow travel pad in
 -- the Crossroads glows softly by itself (a local Highlight on the pad, a slow breath); gone at the next step / away
 function HUD.PadGlowOn(step, zone, on)
-	return on ~= false and step == TUT_GUIDE_STEP and zone == "Crossroads"
+	return on ~= false and step == TUT_GUIDE_STEP and (zone == "Crossroads" or zone == "HaloTown" or zone == "HornsTown")
+end
+
+-- the meadow pad that glows in `zone`: the Crossroads' Pad_<meadow>, or (빛 마을 점검 #52) the town's own pad to the
+-- meadow (QuestTarget.TownPad; none until the world tool places it)
+function L.PadIn(zone)
+	if zone == "Crossroads" then
+		local map = workspace:FindFirstChild("Map")
+		local pads = map and map:FindFirstChild("Pads")
+		return resolvePart(pads and pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE))
+	end
+	local qt = C and C.QuestTarget
+	if type(qt) ~= "table" or type(qt.TownPad) ~= "function" then return nil end
+	local ok, pad = pcall(qt.TownPad, zone, TUT_GUIDE_ZONE)
+	return ok and pad or nil
 end
 
 L.PadGlowState = { Pad = nil, Light = nil, Tween = nil }
-function L.PadGlow(on)
+function L.PadGlow(on, zone)
 	local st = L.PadGlowState
-	local map = workspace:FindFirstChild("Map")
-	local pads = map and map:FindFirstChild("Pads")
-	local pad = on and resolvePart(pads and pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE)) or nil
+	local pad = on and L.PadIn(zone or "Crossroads") or nil
 	if st.Pad == pad and (pad == nil or (st.Light and st.Light.Parent)) then return end
 	if st.Tween then st.Tween:Cancel() end
 	if st.Light then st.Light:Destroy() end
@@ -4774,7 +4795,7 @@ local function refreshGuides()
 	if attr("DataLoaded", false) ~= true then return end
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
-	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))
+	L.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow), zone)
 	local forge = step == L.ForgeStep
 	if guide then
 		if guide.Tag == "forge" and (not forge or guide.From ~= select(2, L.ForgeTarget(zone))) then

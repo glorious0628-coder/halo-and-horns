@@ -89,6 +89,8 @@ imt.__index = {
 		end
 		return nil
 	end,
+	GetChildren = function(self) return table.clone(self.Children) end,
+	GetAttribute = function(self, k) return rawget(self, "Attrs") and self.Attrs[k] or nil end,
 	FindFirstChildWhichIsA = function(self, c, recursive)
 		for _, ch in self.Children do
 			if ch:IsA(c) then return ch end
@@ -240,6 +242,24 @@ do
 	check(g, "hollow -> nil from the patch", QT.Travel("HauntedHollow", "PumpkinPatch", vec(535, 3, 335)) == nil, "not nil")
 	check(g, "patch -> nil", QT.Travel("PumpkinPatch", "SlimeMeadow", vec(330, 3, 0)) == nil, "not nil")
 end
+do
+	-- 빛 마을 점검 #52 (2026-10-10): a town's own travel pad (Map.Pads child with TravelTo, standing in the town)
+	local g = "town pads"
+	local QT, Config = load(true)
+	local t = QT.Travel("SlimeMeadow", "HaloTown", vec(0, 3, -420))
+	check(g, "no town pad yet: the meadow from the Halo town -> its bridge as before", isNamed(t, "Bridge_Halo"), where(t))
+	local pads = WORKSPACE:FindFirstChild("Map"):FindFirstChild("Pads")
+	local pad = add(pads, inst("Part", "Pad_Halo_SlimeMeadow", { Position = vec(-20, 1, -500), Attrs = { TravelTo = "SlimeMeadow" } }))
+	t = QT.Travel("SlimeMeadow", "HaloTown", vec(0, 3, -420))
+	check(g, "with the Halo plaza pad: the meadow -> that pad (no bridge walk)", t == pad, where(t))
+	check(g, "TownPad finds it for the Halo town only", QT.TownPad("HaloTown", "SlimeMeadow") == pad
+		and QT.TownPad("HornsTown", "SlimeMeadow") == nil and QT.TownPad("HaloTown", "GoblinWoods") == nil)
+	t = QT.Travel("GoblinWoods", "HaloTown", vec(0, 3, -420))
+	check(g, "a zone the town pads do not go to -> the usual route", t ~= pad, where(t))
+	t = QT.Travel("SlimeMeadow", "Crossroads", vec(0, 3, 0))
+	check(g, "from the Crossroads the Crossroads pad stays", isNamed(t, "Pad_SlimeMeadow"), where(t))
+end
+
 do
 	local g = "plain zones"
 	local QT = load(true)

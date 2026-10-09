@@ -187,6 +187,24 @@ local function mapChild(folder, name)
 	return f and f:FindFirstChild(name) or nil
 end
 
+-- 빛 마을 점검 #52 (2026-10-10): a travel pad standing in `zone` that goes to `dest` (a Map.Pads child with attribute
+-- TravelTo = dest - ZoneService hooks any such pad; the Halo plaza pads Pad_Halo_<dest> are placed by the world tool, not
+-- by Config.Map.Pads), else nil. HUD (guides, pad glow) and the maps use it too
+function QuestTarget.TownPad(zone, dest)
+	if type(zone) ~= "string" or zone == "" or type(dest) ~= "string" or type(Config.ZoneAt) ~= "function" then return nil end
+	local map = workspace:FindFirstChild("Map")
+	local pads = map and map:FindFirstChild("Pads")
+	if not pads then return nil end
+	for _, p in pads:GetChildren() do
+		if p:GetAttribute("TravelTo") == dest then
+			local part = resolvePart(p)
+			local z = part and Config.ZoneAt(part.Position)
+			if type(z) == "table" and z.Id == zone then return part end
+		end
+	end
+	return nil
+end
+
 ----------------------------------------------------------------- anchors
 -- local-only invisible anchor (HUD localAnchor): reuses HUD's part of the same name, else makes it once
 function QuestTarget.Anchor(key, position)
@@ -277,6 +295,11 @@ function QuestTarget.Travel(zoneId, fromZone, pos)
 	if zoneId == K.Pumpkin.Zone then return pumpkinRoute(fromZone, pos or myPos()) end
 	if zoneId == K.Hollow.Zone then return hollowRoute(fromZone, pos or myPos()) end
 	if fromZone == zoneId then return nil end
+	-- #52: a pad in the town I stand in that goes there (no bridge walk)
+	if fromZone ~= K.Town then
+		local townPad = QuestTarget.TownPad(fromZone, zoneId)
+		if townPad then return townPad end
+	end
 	-- L.MeadowTarget: from a faction town the meadow beam first points at that island's bridge
 	local bridge = zoneId == K.GuideZone and K.HomeBridge[fromZone] or nil
 	if bridge then

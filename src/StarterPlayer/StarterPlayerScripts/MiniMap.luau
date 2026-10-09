@@ -90,6 +90,7 @@ local T = {
 	PassCorridor = 20, -- road corridor |z| < 20 through the mountain pass (A10)
 	ExtremeLevel = 25, -- PvP zones from this level use the extreme colour (WorldMap / MapBuilder)
 	WarnEvery = 10, -- seconds between warnings
+	MaxPads = 6, PadGlyph = IS_TOUCH and 12 or 13, -- 빛 마을 점검 #52: town pad marks (the world map's ▣)
 }
 
 ----------------------------------------------------------------- colours (WorldMap terrain palette, ART_DIRECTION 2.1 / 2.4)
@@ -115,6 +116,7 @@ local COL = {
 	MonRim = Color3.fromRGB(27, 33, 64), -- its navy rim and the count badge
 	Golden = Color3.fromRGB(255, 200, 30),
 	Quest = Color3.fromRGB(255, 210, 60), -- the "★" fallback text and the player dots
+	Pad = Color3.fromRGB(80, 200, 255), -- = WorldMap COL.Pad
 	-- the quest diamond / edge chevron like the screen marker (QuestMarker): in progress white, waiting for [Claim] light
 	-- gold (Config.UIArt.Colors MarkerGo / MarkerClaim, copied in at build)
 	QuestGo = Color3.fromRGB(255, 255, 255),
@@ -133,6 +135,7 @@ local TXT = {
 	Quest = "★", -- quest target inside the view (fallback when the marker diamond art is missing)
 	Edge = "▲", -- quest target outside: chevron on the view edge, turned toward it
 	North = "N", -- the north marker on the ring
+	Pad = "▣", -- 빛 마을 점검 #52: a town's travel pad (= WorldMap GLYPH.Pad)
 }
 
 ----------------------------------------------------------------- state
@@ -1083,9 +1086,35 @@ local function meFx(dt)
 end
 
 -- 1 Hz: box, potion merchant, anvil
+-- 빛 마을 점검 #52 (2026-10-10): the town plazas' own travel pads (Map.Pads children with TravelTo outside the
+-- Crossroads - the Crossroads pads sit by the spawn with their signs) as the world map's pad glyph, kept upright
+local function townPads()
+	local map = workspace:FindFirstChild("Map")
+	local pads = map and map:FindFirstChild("Pads")
+	S.padMarks = S.padMarks or {}
+	local used = 0
+	for _, p in (pads and pads:GetChildren() or {}) do
+		local part = p:IsA("BasePart") and p or (p:IsA("Model") and (p.PrimaryPart or p:FindFirstChildWhichIsA("BasePart", true))) or nil
+		local zone = part and type(p:GetAttribute("TravelTo")) == "string" and Config.ZoneAt(part.Position) or nil
+		if zone and zone.Id ~= "Crossroads" and used < T.MaxPads then
+			used += 1
+			local mark = S.padMarks[used]
+			if not mark then
+				mark = textMark("TownPad" .. used, TXT.Pad, T.PadGlyph, COL.Pad, 6, ui.canvas)
+				S.padMarks[used] = mark
+				if S.upright then table.insert(S.upright, mark) end
+			end
+			mark.Position = toScale(part.Position)
+			setVisible(mark, true)
+		end
+	end
+	for i = used + 1, #S.padMarks do setVisible(S.padMarks[i], false) end
+end
+
 local function slowStep()
 	relayout()
 	if not S.rectOk then return end
+	townPads()
 	local mp = merchantPos()
 	if mp then ui.potion.Position = toScale(mp) end
 	setVisible(ui.potion, mp ~= nil)

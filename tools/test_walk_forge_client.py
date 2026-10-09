@@ -22,7 +22,8 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
-FILES = {"HUD": SPS / "HUD.luau", "QT": SPS / "QuestTarget.luau", "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau"}
+FILES = {"HUD": SPS / "HUD.luau", "QT": SPS / "QuestTarget.luau", "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
+         "WM": SPS / "WorldMap.luau", "MM": SPS / "MiniMap.luau"}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -32,7 +33,9 @@ STATIC = [
     ("the Forge step points at the anvil (QuestTarget)", "QT",
      ['\tif step == K.ForgeStep then\n\t\treturn pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, not smithWalk(myZone))\n']),
     ("refreshGuides drives the pad glow", "HUD",
-     ['\tL.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow))\n']),
+     ['\tL.PadGlow(HUD.PadGlowOn(step, zone, (Config.Nudges or {}).PadGlow), zone)\n',
+      '\tlocal pad = on and L.PadIn(zone or "Crossroads") or nil\n',
+      '\tlocal ok, pad = pcall(qt.TownPad, zone, TUT_GUIDE_ZONE)\n']),
     ("the pad glow is a soft local Highlight on the meadow pad (no line, no words)", "HUD",
      ['\tlocal h = Instance.new("Highlight")\n', '\th.Adornee = pad\n', '\th.FillTransparency = 0.85\n',
       'pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE)']),
@@ -40,14 +43,28 @@ STATIC = [
      ['\tL.SetGlow("menu", ui.menuGlow, settings or travel)\n', '\tL.SetGlow("travel", ui.travelGlow, travel)\n',
       '\t\t\tif copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done\n',
       '\t\tif def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88\n']),
+    # 빛 마을 점검 #52 (2026-10-10): the town plazas' own pads on the big map and the minimap (the pad glyph)
+    ("the big map marks the town pads (TravelTo outside the Crossroads) with the pad glyph", "WM",
+     ['\t\tif zone and zone.Id ~= "Crossroads" then landmark("TownPad" .. i, GLYPH.Pad, COL.Pad, part.Position, nil, 15) end\n']),
+    ("the minimap marks the town pads too, upright, at most MaxPads", "MM",
+     ['\t\tif zone and zone.Id ~= "Crossroads" and used < T.MaxPads then\n',
+      '\t\t\t\tmark = textMark("TownPad" .. used, TXT.Pad, T.PadGlyph, COL.Pad, 6, ui.canvas)\n',
+      '\t\t\t\tif S.upright then table.insert(S.upright, mark) end\n', '\ttownPads()\n']),
     ("Config: no ground line / name chip, pad glow and Travel pulse on", "CONFIG",
      ["\tGuideBeam = false, --", "\tGuideLabel = false, --", "\tPadGlow = true,\n", "\tTravelPulse = true,\n"]),
 ]
 MUTATIONS = [
-    ("HUD", "the pad glows in every zone", '\treturn on ~= false and step == TUT_GUIDE_STEP and zone == "Crossroads"\n',
+    ("HUD", "the pad glows in every zone",
+     '\treturn on ~= false and step == TUT_GUIDE_STEP and (zone == "Crossroads" or zone == "HaloTown" or zone == "HornsTown")\n',
      "\treturn on ~= false and step == TUT_GUIDE_STEP\n"),
-    ("HUD", "the pad glows at the Forge step", '\treturn on ~= false and step == TUT_GUIDE_STEP and zone == "Crossroads"\n',
-     '\treturn on ~= false and (step == TUT_GUIDE_STEP or step == 3) and zone == "Crossroads"\n'),
+    ("HUD", "the pad glows at the Forge step", '\treturn on ~= false and step == TUT_GUIDE_STEP and (zone == "Crossroads"',
+     '\treturn on ~= false and (step == TUT_GUIDE_STEP or step == 3) and (zone == "Crossroads"'),
+    # 빛 마을 점검 #52 (2026-10-10): the towns' own meadow pads glow too (L.PadIn finds them)
+    ("HUD", "the town pads never glow",
+     'step == TUT_GUIDE_STEP and (zone == "Crossroads" or zone == "HaloTown" or zone == "HornsTown")\n',
+     'step == TUT_GUIDE_STEP and zone == "Crossroads"\n'),
+    ("HUD", "the town glow takes the Crossroads pad", "\tlocal pad = on and L.PadIn(zone or \"Crossroads\") or nil\n",
+     "\tlocal pad = on and L.PadIn(\"Crossroads\") or nil\n"),
     ("HUD", "the Travel pulse never ends", "\treturn on ~= false and seen ~= true and step == TUT_GUIDE_STEP\n",
      "\treturn on ~= false and step == TUT_GUIDE_STEP\n"),
     ("HUD", "the switch ignored", "\treturn on ~= false and seen ~= true and step == TUT_GUIDE_STEP\n",
@@ -71,7 +88,9 @@ end
 local P, T = HUD.PadGlowOn, HUD.TravelPulse
 check("after the first weapon, in the Crossroads: the pad glows", P(1, "Crossroads", true) == true)
 check("default switch (nil) counts as on", P(1, "Crossroads", nil) == true)
-check("in my home town: no pad glow (the pads are in the Crossroads)", P(1, "HaloTown", true) == false)
+check("빛 마을 점검 #52: in my home town its own meadow pad may glow (none placed = nothing to light)",
+	P(1, "HaloTown", true) == true and P(1, "HornsTown", true) == true)
+check("... never in the meadow or the woods", P(1, "SlimeMeadow", true) == false and P(1, "GoblinWoods", true) == false)
 check("the Forge step (3): no pad glow", P(3, "Crossroads", true) == false)
 check("hunting (2) / done (99): no pad glow", P(2, "Crossroads", true) == false and P(99, "Crossroads", true) == false)
 check("switch off: no pad glow", P(1, "Crossroads", false) == false)
