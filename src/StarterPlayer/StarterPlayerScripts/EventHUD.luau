@@ -1056,6 +1056,10 @@ function KING.need(text)
 	if label and type(kit) == "table" and type(kit.MeasureText) == "function" then
 		local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
 		local size = math.max(15, tc and tc.MinTextSize or 0)
+		-- 검수 10/09 (the quest lines' 'To the F…', e0f9836f): under UIScale the screen-px floor draws the words bigger than
+		-- the logical size - measure at the size actually drawn (one-line TextBounds height, back in logical units)
+		local drawn = label.TextBounds.Y / currentScale()
+		if drawn > size and drawn < size * 3 then size = math.ceil(drawn) end
 		local ok, _, w = pcall(kit.MeasureText, tostring(text or ""), size, label.FontFace, 100000)
 		if ok and type(w) == "number" and w > 0 then return math.ceil(w + 26) end
 	end
