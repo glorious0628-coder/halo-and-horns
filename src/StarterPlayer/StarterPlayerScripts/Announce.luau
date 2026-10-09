@@ -196,7 +196,7 @@ end
 -- the toast for a team change (pure): only the first side pick (the auto-assigned "Choosing a side" team -> a side);
 -- the login (nil -> my side) shows nothing, a later switch has its own notice (FactionService)
 function A.JoinToast(was, team)
-	if Config.ChatText.TeamToast ~= true then return nil end
+	if Config.ChatText.TeamToast ~= true or Config.ChatText.JoinToast ~= true then return nil end
 	if not team or team.AutoAssignable or not (was and was.AutoAssignable) then return nil end
 	return string.format(Config.ChatText.Joined, team.Name)
 end

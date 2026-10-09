@@ -4367,6 +4367,9 @@ Config.ChatText = {
 	-- 검수 2026-10-09 (UI clutter review ②: the team line stayed in the chat over the phone's joystick): the chat gets no
 	-- team line (TextChatService, Announce.Incoming); the first side pick shows "You joined ...!" as one 3 s toast
 	TeamToast = true,
+	-- 검수 10/09 (user: "안 나오면 좋겠어, 너무 친절해"): no "You joined ...!" toast either (Halo and Horns); the chat line
+	-- stays empty (TeamToast). true brings the first-pick toast back (Announce.JoinToast)
+	JoinToast = false,
 }
 
 -- A23-15 server-wide chat announcements (AnnounceService -> remote "Announce" -> client Announce.luau). Server sends
