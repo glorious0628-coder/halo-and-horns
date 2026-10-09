@@ -1,4 +1,4 @@
--- PetService.luau : pets (A23-39 now; PET-2 later adds levels / XP / EquipPet / the pet list remote).
+-- PetService.luau : pets (A23-39; PET-2 levels / XP / EquipPet / the owner's pet list; PET-4 the lost baby slime).
 -- Server-authoritative. Save (Config.Data.Defaults.Pets): List[uid] = { Sp, Lv, XP, Name, Lean, Bound },
 -- Equipped = { uid } (one pet in the beta), Next = the next uid number. Every client sees only the attributes
 -- EquippedPet (species id, "" = none), PetLv and PetForm ("" = the base look); the pet follows its owner on the clients
@@ -80,7 +80,28 @@ local function refreshSpeed(player)
 	end
 end
 
--- the attributes every client reads (EquippedPet / PetLv / PetForm), then the walk speed
+-- PET-2: the pet XP a pet of level lv needs for the next level (Config.Pets.XPPerLv x lv; 0 at MaxLv)
+function PetService.XPToNext(lv)
+	local P = Config.Pets or {}
+	lv = math.floor(num(lv, 1))
+	if lv >= num(P.MaxLv, LIMIT.MaxLv) then return 0 end
+	return math.max(1, math.floor(num(P.XPPerLv, 15))) * math.max(1, lv)
+end
+
+-- PET-2: the owner's pet list (remote "PetList", owner only)
+local function sendList(player, pets)
+	local list = {}
+	for uid, p in pets.List do
+		table.insert(list, { Uid = uid, Sp = p.Sp, Lv = p.Lv, XP = p.XP, Need = PetService.XPToNext(p.Lv), Name = p.Name,
+			Lean = p.Lean })
+	end
+	table.sort(list, function(a, b) return a.Uid < b.Uid end)
+	pcall(function()
+		Net.Get("PetList"):FireClient(player, { Equipped = pets.Equipped[1] or "", List = list })
+	end)
+end
+
+-- the attributes every client reads (EquippedPet / PetLv / PetForm), then the walk speed, then the owner's list
 local function publish(player, data)
 	local pets = data.Pets
 	local uid = type(pets) == "table" and type(pets.Equipped) == "table" and pets.Equipped[1] or nil
@@ -89,6 +110,7 @@ local function publish(player, data)
 	player:SetAttribute("PetLv", p and p.Lv or 0)
 	player:SetAttribute("PetForm", "")
 	refreshSpeed(player)
+	if type(pets) == "table" and type(pets.List) == "table" then sendList(player, pets) end
 end
 
 local function findSpecies(pets, species)
@@ -99,18 +121,26 @@ local function findSpecies(pets, species)
 end
 
 ------------------------------------------------------------------ A23-39 pet tamer
--- the tamer's baby slime: added once (an owned baby slime is never duplicated), equipped when nothing is. quiet = no
--- notice. Returns the new uid, or nil when the player already had one.
-function PetService.GiveTamerPet(player, quiet)
+-- PET-4: a pet of `species` added once (an owned one is never duplicated; an owned one without a Lean / Name takes
+-- these), equipped when nothing is. lean = "Good" | "Evil" | "" (the story pick), name = the label over my pet ("" =
+-- none), text = the notice (nil = none). Returns the new uid, or nil when the player already had one.
+function PetService.GrantPet(player, species, lean, name, text)
 	local data = getData(player)
-	if not data then return nil end
+	if not data or not KNOWN[species] then return nil end
 	local pets = PetService.Sanitize(data)
-	local have = findSpecies(pets, TAMER.Pet)
+	lean = (lean == "Good" or lean == "Evil") and lean or ""
+	name = type(name) == "string" and string.sub(name, 1, LIMIT.NameLen) or ""
+	local have = findSpecies(pets, species)
 	if have then
+		local p = pets.List[have]
+		local changed = false
+		if p.Lean == "" and lean ~= "" then p.Lean, changed = lean, true end
+		if p.Name == "" and name ~= "" then p.Name, changed = name, true end
 		if #pets.Equipped == 0 then
 			pets.Equipped = { have }
-			publish(player, data)
+			changed = true
 		end
+		if changed then publish(player, data) end
 		return nil
 	end
 	local uid
@@ -118,12 +148,89 @@ function PetService.GiveTamerPet(player, quiet)
 		uid = "P" .. tostring(pets.Next)
 		pets.Next += 1
 	until pets.List[uid] == nil
-	pets.List[uid] = { Sp = TAMER.Pet, Lv = 1, XP = 0, Name = "", Lean = "", Bound = true }
+	pets.List[uid] = { Sp = species, Lv = 1, XP = 0, Name = name, Lean = lean, Bound = true }
 	if #pets.Equipped == 0 then pets.Equipped = { uid } end
 	publish(player, data)
-	if not quiet then notify(player, TXT.PetGot, "reward", "None") end -- sound_gaps C1: no pet sound yet, never QuestDone
-	PetService.PetGranted:Fire(player, uid, TAMER.Pet)
+	if type(text) == "string" then
+		notify(player, text, "reward", "None") -- sound_gaps C1: no pet sound yet, never QuestDone
+	end
+	PetService.PetGranted:Fire(player, uid, species)
 	return uid
+end
+
+-- the tamer's baby slime (A23-39): GrantPet with the tamer's notice. quiet = no notice.
+function PetService.GiveTamerPet(player, quiet)
+	return PetService.GrantPet(player, TAMER.Pet, "", "", not quiet and TXT.PetGot or nil)
+end
+
+-- PET-2 c->s "EquipPet"(uid): an owned pet of a known species is the one that follows; "" puts it away
+local function onEquip(player, ...)
+	if select("#", ...) ~= 1 then return end
+	local uid = ...
+	if type(uid) ~= "string" or #uid > LIMIT.UidLen then return end
+	if not S.PlayerService.IsReady(player) or not Util.RateLimit(player, "EquipPet", num(Config.RateLimits.EquipPet, 0.5)) then
+		return
+	end
+	local data = getData(player)
+	if not data then return end
+	local pets = PetService.Sanitize(data)
+	if uid == "" then
+		pets.Equipped = {}
+	else
+		local p = pets.List[uid]
+		if not p or not KNOWN[p.Sp] then return end
+		pets.Equipped = { uid }
+	end
+	publish(player, data)
+end
+
+-- PET-2: every kill its owner is paid for (MonsterKilled, auto combat too) gives the equipped pet XPPerKill pet XP;
+-- a level up refreshes the walk speed (Config.PetSpeedBonus follows the level)
+local function onKilled(player, info)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(info) ~= "table" then return end
+	local data = getData(player)
+	if not data or type(data.Pets) ~= "table" then return end
+	local pets = data.Pets -- sanitized at join / grant / equip; a kill never rebuilds it
+	if type(pets.List) ~= "table" or type(pets.Equipped) ~= "table" then pets = PetService.Sanitize(data) end
+	local uid = pets.Equipped[1]
+	local p = uid and pets.List[uid] or nil
+	if not p then return end
+	local need = PetService.XPToNext(p.Lv)
+	if need <= 0 then return end -- MaxLv
+	p.XP += math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1)))
+	local leveled = false
+	while need > 0 and p.XP >= need do
+		p.XP -= need
+		p.Lv += 1
+		leveled = true
+		need = PetService.XPToNext(p.Lv)
+	end
+	if need <= 0 then p.XP = 0 end
+	if leveled then
+		publish(player, data)
+	else
+		sendList(player, pets)
+	end
+end
+
+-- PET-2 catch-up: a save whose lost-baby-slime quest is done (a pick saved) but has no baby slime gets it, quietly
+local function catchUp(player, data)
+	local G = Config.PetGrant
+	local st = type(data.Story) == "table" and data.Story or nil
+	if type(G) ~= "table" or not st or type(st.Done) ~= "table" or st.Done[G.Quest] ~= true then return end
+	local pick = type(st.Pick) == "table" and st.Pick[G.Quest] or nil
+	local lean = type(G.Picks) == "table" and G.Picks[pick] or nil
+	if lean ~= "Good" and lean ~= "Evil" then return end
+	PetService.GrantPet(player, G.Species, lean, (G.Names or {})[lean] or "", nil)
+end
+
+-- PET-4: the lost baby slime's story pick (Config.PetGrant.Quest) makes it my pet, either side
+local function onStoryPicked(player, questId, pick)
+	local G = Config.PetGrant
+	if type(G) ~= "table" or questId ~= G.Quest then return end
+	local lean = type(G.Picks) == "table" and G.Picks[pick] or nil
+	if lean ~= "Good" and lean ~= "Evil" then return end
+	PetService.GrantPet(player, G.Species, lean, (G.Names or {})[lean] or "", (G.Text or {}).Got)
 end
 
 local function isTamer(player, data)
@@ -136,6 +243,8 @@ local function onPlayerReady(player, data)
 	data = type(data) == "table" and data or getData(player)
 	if not data then return end
 	PetService.Sanitize(data)
+	local okC, errC = pcall(catchUp, player, data) -- PET-2 (also for non-tamers)
+	if not okC then Util.Warn(TAG, "catch-up: " .. tostring(errC)) end
 	publish(player, data)
 	if not isTamer(player, data) then return end
 	if data.TamerNotice ~= true then
@@ -215,6 +324,12 @@ function PetService.Start()
 	connect("PlayerService", "PlayerReady", onPlayerReady)
 	connect("ClassService", "ClassChanged", function(player) onBecame(player) end)
 	connect("FactionService", "FactionChanged", function(player) onBecame(player) end)
+	if S.StoryQuestService then connect("StoryQuestService", "Picked", onStoryPicked) end -- PET-4
+	if S.MonsterService then connect("MonsterService", "MonsterKilled", onKilled) end -- PET-2 pet XP
+	Net.Get("EquipPet").OnServerEvent:Connect(function(player, ...) -- PET-2
+		local ok, err = pcall(onEquip, player, ...)
+		if not ok then Util.Warn(TAG, "EquipPet: " .. tostring(err)) end
+	end)
 	print("[PetService] started")
 end
 

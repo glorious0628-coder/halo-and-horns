@@ -171,7 +171,7 @@
         "caught": true
       },
       {
-        "mutation": "PetService.luau: no None on 'notify(player, TXT.PetGot'",
+        "mutation": "PetService.luau: no None on 'notify(player, text, \"reward\"'",
         "caught": true
       },
       {

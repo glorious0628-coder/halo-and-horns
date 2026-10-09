@@ -23,6 +23,7 @@ Net.Names = {
 	"UseSkill", -- SKL-2 (slot: "Q" | "Z" | "X") one press = one cast (SkillService; Q also stays on "Release")
 	"UiMetric", -- BB38 (windowId: Config.Analytics.UiIds) a window the client opened (TelemetryService, metrics only)
 	"SetLook", -- A23-75 (id: an owned Config.Looks id of the player's faction, or "" = none) MonetizationService
+	"EquipPet", -- PET-2 (uid: an owned pet uid of a known species, or "" = put it away) PetService
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request
@@ -39,6 +40,9 @@ Net.Names = {
 	-- E11: { Board, Cards = { { Slot, Id, Kind, Sneaky, Goal, Target, RewardGold, RewardXP } }, Held, Hold, Done,
 	-- FullPerDay, Kind, Sneaky, RerollAt } owner only, the answer to BoardAction (Open / Take / Reroll)
 	"Board",
+	-- PET-2: { Equipped = uid | "", List = { { Uid, Sp, Lv, XP, Need, Name, Lean } } } owner only, PetService on
+	-- PlayerReady and after every change (grant, equip, pet XP)
+	"PetList",
 	-- 게임성 개발 3 (2026-10-08), client -> server:
 	"ClaimAttendance", -- A23-77: no arguments; today's attendance slot (AttendanceService)
 	"ClientMetric", -- A23-79: (id: Config.Analytics.ClientMetrics, arg?) what only the client sees (TelemetryService, metrics)
