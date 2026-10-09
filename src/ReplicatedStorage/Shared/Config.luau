@@ -1278,10 +1278,10 @@ Config.Sky = {
 -- Up / Dn; seen from above Ft 0, Rt 90, Bk 180, Lf 270 degrees clockwise; Up has Ft at its bottom - turn Up by 90 if its
 -- seam is off, swap Lf / Rt if the sides run backwards; Dn = FogColor 150, 205, 228). No rays; the sun stays Sky_Sun.
 -- WarService puts them on Lighting.Sky at Start (an empty / missing face keeps what the place has); the war skies never
--- touch the faces
+-- touch the faces. Lf / Rt swapped (메인 반영 33a77cb8 compare "B": no seam; 검수 10/09 saw the seam in the meadow photo)
 Config.Sky.Faces = {
-	Ft = "rbxassetid://86737469798577", Bk = "rbxassetid://106230772458054", Lf = "rbxassetid://113124022425103",
-	Rt = "rbxassetid://80981399991828", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
+	Ft = "rbxassetid://86737469798577", Bk = "rbxassetid://106230772458054", Lf = "rbxassetid://80981399991828",
+	Rt = "rbxassetid://113124022425103", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
 }
 
 -- addendum A9-2: client hit feel (Fx only). White flash of monsters within FlashRadius of my own Swing/Release hit
