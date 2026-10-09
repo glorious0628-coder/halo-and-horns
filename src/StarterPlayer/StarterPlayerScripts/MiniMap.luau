@@ -432,6 +432,26 @@ local function drawWorld()
 				{ corner(0, 2), stroke(COL.BridgeEdge, 1, 0.1) })
 		end
 	end
+	-- A23-95: the top-down world shots (Config.UIArt.MapTiles) over the drawn shapes where they exist; under the marks
+	-- (landmarks 6+). They turn with the canvas like everything else
+	local tiles = type(Config.UIArt) == "table" and Config.UIArt.MapTiles or nil
+	if type(tiles) == "table" then
+		for i, tl in tiles do
+			if type(tl) == "table" and type(tl.Id) == "string" and tl.Id ~= "" and tonumber(tl.X0) and tonumber(tl.X1)
+				and tonumber(tl.Z0) and tonumber(tl.Z1) then
+				local img = Instance.new("ImageLabel")
+				img.Name = "Tile" .. i
+				img.BackgroundTransparency = 1
+				img.Image = tl.Id
+				img.ScaleType = Enum.ScaleType.Stretch
+				img.Position = toScale(Vector3.new(tl.X0, 0, tl.Z0))
+				img.Size = UDim2.fromScale((tl.X1 - tl.X0) / W.Wd, (tl.Z1 - tl.Z0) / W.Ht)
+				img.ZIndex = 5
+				img.Active = false
+				img.Parent = ui.canvas
+			end
+		end
+	end
 end
 
 local function build()
