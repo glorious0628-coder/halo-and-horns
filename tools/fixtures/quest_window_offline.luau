@@ -411,5 +411,23 @@ check("Studio: '' closes the window and the real rows come back", CLOSED == clos
 REGISTERED.Journal.Cleanup()
 STUDIO = false
 
+-- 검수 10/09 (user OK): each tab shows its QuestTabIcon<tab> left of the word; no art = the word alone
+do
+	REGISTERED.Journal.Cleanup()
+	local ART = { QuestTabIconMain = "rbxassetid://1", QuestTabIconDaily = "rbxassetid://3" }
+	Book.Init({ Panels = PANELS, HUD = HUDD, UIKit = { ArtId = function(k) return ART[k] end } })
+	local P6 = inst("Frame")
+	REGISTERED.Journal.Build(P6, KIT, { Tab = "Main" })
+	local tabsById = {}
+	for _, c in P6:FindFirstChild("Tabs").Children do if c.Name == "Button" then table.insert(tabsById, c) end end
+	local mainIcon = tabsById[1] and tabsById[1]:FindFirstChild("TabIcon")
+	check("the Main tab shows its icon", mainIcon ~= nil and mainIcon.Image == "rbxassetid://1", tostring(mainIcon))
+	check("the Daily tab shows its icon", tabsById[3] and tabsById[3]:FindFirstChild("TabIcon") ~= nil)
+	check("a tab without art: no icon, no padding", tabsById[2] and tabsById[2]:FindFirstChild("TabIcon") == nil
+		and tabsById[2]:FindFirstChild("UIPadding") == nil)
+	check("the word moves right of the icon (padding)", tabsById[1] and tabsById[1]:FindFirstChild("UIPadding") ~= nil)
+	REGISTERED.Journal.Cleanup()
+end
+
 print(("QUEST_BOOK_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("QUEST_BOOK_OFFLINE_OK") end
