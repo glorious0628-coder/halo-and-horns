@@ -4980,16 +4980,29 @@ Config.Audio = {
 }
 
 -- A23-100 배경 음악 (소리 만들기 2026-10-10, art/sfx/asset_ids.json "bgm"; mono loops, -24 LUFS): Audio.luau plays the
--- track of the zone I stand in (Tracks[ZoneId]) in the "Music" SoundGroup at Volume (under Settings "Music"), crossfading
--- over Fade s when my ZoneId changes; a zone without a track is quiet. The big moments (Duck.By) lower it to DuckMul.
--- Boss[zone] = the boss layer (same length, same TimePosition, -27 LUFS) - not uploaded yet
+-- track of the zone I stand in (Tracks[ZoneId], from TimePosition 0) in the "Music" SoundGroup at Volume (under Settings
+-- "Music"), crossfading over Fade s when my ZoneId changes; a zone without a track (Outskirts, the sea, the bridges) is
+-- quiet. The big moments (Duck.By) lower it to DuckMul. Boss[zone] = the boss layer (sample-for-sample the zone track's
+-- length, -27 LUFS): while GameState[Active] is true and I am in that zone it plays with the track at the track's
+-- TimePosition (fading in / out with the same Fade)
 Config.Audio.Music = {
 	Volume = 0.5, Fade = 1.5, DuckMul = 0.5,
 	Tracks = {
 		HaloTown = "rbxassetid://108661141883977", -- 88.646 s loop
 		HornsTown = "rbxassetid://123430641290441", -- 63.264 s loop
+		Crossroads = "rbxassetid://89489494811803", -- 82.244 s
+		SlimeMeadow = "rbxassetid://107428223386912", -- 69.634 s
+		GoblinWoods = "rbxassetid://114854716063832", -- 77.515 s
+		SkeletonRuins = "rbxassetid://70596551890083", -- 64.779 s
+		PumpkinPatch = "rbxassetid://97391238692429", -- 68.961 s
+		HauntedHollow = "rbxassetid://103556459915929", -- 69.017 s
 	},
-	Boss = {},
+	Boss = {
+		SlimeMeadow = { Id = "rbxassetid://98188790457804", Active = "SlimeKingActive" }, -- King Slime
+		PumpkinPatch = { Id = "rbxassetid://113774483516470", Active = "PumpkinKingActive" }, -- Pumpkin King
+		HauntedHollow = { Id = "rbxassetid://97981769754135", Active = "GhostKingActive" }, -- Ghost King
+		SkeletonRuins = { Id = "rbxassetid://88486401685380", Active = "ClatterActive" }, -- Captain Clatter
+	},
 }
 -- 점검표 sound 60 (소리 만들기 2026-10-10; 20 s loops, -30 LUFS): 3D water by the fountains (FountainFx -> Audio.Ambient)
 -- and the waterfalls (Map.Decor models named *Waterfall, + Spots for terrain-only falls: the Halo town's six =

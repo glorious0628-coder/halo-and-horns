@@ -53,7 +53,8 @@
 --   { Event, At, File?, SpeedMul?, Speed?, Volume, Auto?, Others? } (pure: what one Fx packet plays; the offline test
 --   drives it), Audio.OnFx(kind, data), Audio.StompVolume(studs) -> 0..1, Audio.TickAt(prevLeft, left) -> CountTick speed?,
 --   Audio.AnnounceSound(payload) -> event? (pure helpers of the world sounds). "No" (SkillBar) is an alias of Deny.
---   Audio.MusicTrack(zoneId) -> id? (pure), Audio.SetZoneMusic(zoneId) -> bool (changed), Audio.MusicStep(dt),
+--   Audio.MusicTrack(zoneId) -> id? (pure), Audio.BossLayer(zoneId, gs) -> id? (pure), Audio.RefreshBossLayer() -> bool,
+--   Audio.SetZoneMusic(zoneId) -> bool (changed), Audio.MusicStep(dt),
 --   Audio.RefreshVolumes(), Audio.Ambient(part, kind) -> Sound?
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -553,7 +554,7 @@ function Audio.Play(event, opts)
 end
 
 ----------------------------------------------------------------- music (A23-100) + water ambience (점검표 sound 60)
-local MUSIC = { Id = nil, Current = nil, Fading = {}, Ambient = {} } -- Ambient: { Sound, Base }
+local MUSIC = { Id = nil, Zone = nil, Current = nil, Layer = nil, Fading = {}, Ambient = {} } -- Ambient: { Sound, Base }
 
 -- the track of a zone (pure)
 function Audio.MusicTrack(zoneId)
@@ -582,24 +583,61 @@ function Audio.RefreshVolumes()
 	end
 end
 
--- my zone's track: a new one starts at 0 (MusicStep fades it in), the old one fades out; nil = quiet. True = changed
+local function musicSound(name, id)
+	local s = Instance.new("Sound")
+	s.Name = name
+	s.SoundId = id
+	s.Looped = true
+	s.Volume = 0
+	s.SoundGroup = S.Groups.Music
+	s.Parent = S.Folder
+	return s
+end
+
+-- the boss layer of a zone while its boss is out (pure: gs = GameState or nil) -> id or nil
+function Audio.BossLayer(zoneId, gs)
+	local M = type(A.Music) == "table" and A.Music or {}
+	local def = type(M.Boss) == "table" and type(zoneId) == "string" and M.Boss[zoneId] or nil
+	if type(def) ~= "table" or type(def.Id) ~= "string" or def.Id == "" or type(def.Active) ~= "string" or not gs then return nil end
+	local ok, on = pcall(function() return gs:GetAttribute(def.Active) end)
+	return (ok and on == true) and def.Id or nil
+end
+
+-- the layer follows the boss and my zone: it starts at the track's TimePosition (fading in), or fades out
+function Audio.RefreshBossLayer()
+	local id = MUSIC.Current and Audio.BossLayer(MUSIC.Zone, S.GameState) or nil
+	if MUSIC.Layer and MUSIC.Layer.SoundId == id then return false end
+	if MUSIC.Layer then table.insert(MUSIC.Fading, MUSIC.Layer) end
+	MUSIC.Layer = nil
+	if id and S.Folder then
+		local s = musicSound("MusicBoss", id)
+		pcall(function()
+			s.TimePosition = MUSIC.Current.TimePosition
+			s:Play()
+		end)
+		MUSIC.Layer = s
+	end
+	return true
+end
+
+-- my zone's track: a new one starts at 0 (MusicStep fades it in), the old one (and its boss layer) fades out; nil =
+-- quiet. True = changed
 function Audio.SetZoneMusic(zoneId)
+	MUSIC.Zone = zoneId
 	local id = Audio.MusicTrack(zoneId)
-	if id == MUSIC.Id then return false end
+	if id == MUSIC.Id then
+		Audio.RefreshBossLayer()
+		return false
+	end
 	MUSIC.Id = id
 	if MUSIC.Current then table.insert(MUSIC.Fading, MUSIC.Current) end
 	MUSIC.Current = nil
 	if id and S.Folder then
-		local s = Instance.new("Sound")
-		s.Name = "Music"
-		s.SoundId = id
-		s.Looped = true
-		s.Volume = 0
-		s.SoundGroup = S.Groups.Music
-		s.Parent = S.Folder
+		local s = musicSound("Music", id)
 		pcall(function() s:Play() end)
 		MUSIC.Current = s
 	end
+	Audio.RefreshBossLayer()
 	return true
 end
 
@@ -609,8 +647,9 @@ function Audio.MusicStep(dt)
 	local M = type(A.Music) == "table" and A.Music or {}
 	local full = num(M.Volume, 0.5)
 	local d = full / math.max(0.05, num(M.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)
-	local cur = MUSIC.Current
-	if cur then cur.Volume = cur.Volume < full and math.min(full, cur.Volume + d) or full end
+	for _, cur in { MUSIC.Current, MUSIC.Layer } do
+		cur.Volume = cur.Volume < full and math.min(full, cur.Volume + d) or full
+	end
 	for i = #MUSIC.Fading, 1, -1 do
 		local f = MUSIC.Fading[i]
 		f.Volume = math.max(0, f.Volume - d)
@@ -860,11 +899,19 @@ local function watchGame()
 		if v == true and prev ~= true and fresh() and not Audio.Held() and not Audio.Play("GooseArrive") then Audio.Play("GooseHonk") end
 		if v ~= true then S.GooseHit = false end
 	end)
+	-- A23-100: the boss layers (Config.Audio.Music.Boss[zone].Active)
+	local M = type(A.Music) == "table" and A.Music or {}
+	for _, def in type(M.Boss) == "table" and M.Boss or {} do
+		if type(def) == "table" and type(def.Active) == "string" then
+			watch(gs, def.Active, function() Audio.RefreshBossLayer() end)
+		end
+	end
 	watch(gs, "KaijuPhase", function(prev, v)
 		-- B5: the kaiju alarm (its 3-2-1 comes from pollWorld)
 		if v == "Siren" and prev ~= "Siren" and fresh() and not Audio.Held() then Audio.Play("KaijuSiren") end
 	end)
 	S.GameState = gs
+	Audio.RefreshBossLayer() -- a boss already out when I join
 end
 
 -- sound_gaps A11 (user): my own jumps (the moment the humanoid leaves the ground by a jump)
