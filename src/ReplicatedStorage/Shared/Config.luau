@@ -788,7 +788,7 @@ Config.Factions = {
 			"Half your pouch gold goes to the vault",
 			"Catch Grudge Sack thieves to win gold back",
 		},
-		Pitch = "Guard, heal, and take it back!",
+		Pitch = "Heal friends and catch thieves!", -- 검수 10/09 (system review ①): the card's one big easy line
 	},
 	Horns = {
 		Id = "Horns", Name = "Horn Legion", Short = "Horn Legion", Emblem = "H",
@@ -810,7 +810,7 @@ Config.Factions = {
 			"Rob the Knights and guard the Grudge Sack",
 			"5 Wanted stars = turn into a Kaiju!",
 		},
-		Pitch = "Steal, hold on, and become a Kaiju!",
+		Pitch = "Sneaky tricks and grab gold in PvP zones!", -- 검수 10/09 (system review ①)
 	},
 	-- addendum A6: third playable faction "장인 길드". No combat/economy perks, PvP-immune both ways, no plunder,
 	-- sacks, stars, bounty, bully stacks, revenge or kaiju; excluded from war points, blessing, power sums and ratios
