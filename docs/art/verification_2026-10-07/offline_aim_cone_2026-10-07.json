@@ -8,7 +8,7 @@
       "ok": true
     },
     {
-      "check": "client FaceTarget does not turn me while a monster is inside that cone",
+      "check": "client FaceTarget marks a monster inside that cone (on top of me counts, as inAim)",
       "ok": true
     }
   ],
@@ -84,12 +84,12 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
-    "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31"
+    "src/ReplicatedStorage/Shared/Config.luau": "44a31fa30daf3ffc21b330ff0ce72cf8b6a5ce66c0b491942a28c8def2586de9",
+    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "21d44dc7b858985f44081c4ad5b2ce10c0c5066fa708dac35b39c5e98bbc0248"
   },
   "fixtureSHA256": "24e31f74fce43e19e28881d242631fc480a6f2de00d18534c07281a415263aa9",
   "studioCalls": 0,
-  "contract": "A23-61 offline test (user 2026-10-06 night): the basic attack hits the whole front half.\n\nAimCone is a half-angle (CombatService.inAim: dot(look, dir) >= cos(AimCone); 180+ = everything), so the SPEC's\n\"front semicircle, 90 deg left / right, nothing behind\" is AimCone = 90 on every class row and on bare hands; the SKL\nskill cones (Config.Skills.Defs) are not part of it. Runs the real Config.luau and the inAim function cut out of\nCombatService.luau in tools/fixtures/aim_cone_offline.luau (installed Luau CLI); static check: the client's\nFaceTarget turns me only when no monster is inside the same cone (HUD.luau). Mutations must each be caught.",
+  "contract": "A23-61 offline test (user 2026-10-06 night): the basic attack hits the whole front half.\n\nAimCone is a half-angle (CombatService.inAim: dot(look, dir) >= cos(AimCone); 180+ = everything), so the SPEC's\n\"front semicircle, 90 deg left / right, nothing behind\" is AimCone = 90 on every class row and on bare hands; the SKL\nskill cones (Config.Skills.Defs) are not part of it. Runs the real Config.luau and the inAim function cut out of\nCombatService.luau in tools/fixtures/aim_cone_offline.luau (installed Luau CLI); static check: the client's\nFaceTarget uses the same cone for its front half (HUD.luau; the pick itself: tools/test_auto_face.py). Mutations must each be caught.",
   "limitations": "The feel in a real Play (SPEC: tune 120-180 deg total = AimCone 60-90 by playing) is a Studio check."
 }

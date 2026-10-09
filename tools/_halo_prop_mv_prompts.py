@@ -71,6 +71,8 @@ def build(name: str, what: str, back: str, side: str, view: str) -> str:
         note = "The view from the other end along the road: the tiled road coming down from the arch, balustrade on both sides, the two gold lantern posts at this end."
     if name == "ArchBridge" and view == "left":
         note = side
+    if name in ("DomeHouseA", "DomeHouseB", "Shop"):
+        note += " The striped awning stays a flat piece on the front wall only and never wraps around the round wall." + ("" if name == "Shop" else " No awning stripes on the other walls.")
     head = f"[reference: art/out/s2/halo/HaloProp_{name}_front_HQ_src.png (the finished front view), High]\n"
     body = (
         f"Redraw the attached reference object as the same object from another camera angle: {what}. "

@@ -1,0 +1,59 @@
+{
+  "checks": 18,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the new model gets the cloud spec (no mesh mark)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the attribute mark ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every Town_Halo_Fountain is the new one",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the jet at the old height",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the top bowl streams from the wrong rim",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pool at the old height",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the twinkles spill over the rim",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the twinkles stay pale",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no more twinkles",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the new one keeps a halo ring",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "FountainFx: the 3-tier Halo fountain (검수 2026-10-09 night; 이미지 생성 1's measurements of Halo_Fountain_HD_plain,\ndocs/design/halo_town_plan_2026-10-09.md last section), offline.\n\nRuns, in the official Luau CLI, the CURRENT FountainFx.luau in tools/fixtures/fountain_fx_offline.luau. Checks: a\nTown_Halo_Fountain marked as the new model (its mesh \"Halo_Fountain\", or attribute FountainSpec =\n\"Town_Halo_Fountain3\") gets the 3-tier spec: the jet at the gold ball (Y 0.80), 8 streams from the top bowl rim\n(Y 0.76, R 0.145) into the middle bowl (Y 0.54), 12 from the middle rim (Y 0.55, R 0.25) into the pool with ripples,\npool twinkles on the water (Y 0.165) inside the round pool, more of them in a deeper blue, and no halo ring glow / light;\nan unmarked Town_Halo_Fountain (the cloud model still in the main place) keeps the cloud spec with its ring glow; the\nCrossroads K_Fountain is unchanged. Mutations: each must be caught.",
+  "studioCalls": 0
+}

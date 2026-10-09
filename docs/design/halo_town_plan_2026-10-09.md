@@ -51,3 +51,13 @@ HaloTower(4)·HeroStatue(6)·Flower(8)·HaloTownTrees·HaloCastle(옛 모델)·G
 2) 나: 땅 계획 도구 + 시안과 같은 각도 비교(Firefly 없이 시작).
 3) Tripo(받은 2D 순서대로, 건물 먼저) → WorldKit 가져오기 → kit_args → 메인 반영.
 4) 메인 시안 6장과 같은 각도 사진 PC+폰 → 검수.
+
+## 새 분수 = FountainFx 이름·자리 (이미지 생성 1, 2026-10-09 밤, 모델 `Halo_Fountain_HD_plain.glb` 측정)
+- **이름 계약:** `FountainFx.luau`는 태그가 아니라 **Model 이름**(`SPECS[inst.Name]`)으로 붙는다 → 가져오기 메시 이름은 `Halo_Fountain`이지만, 키트 장부(`build_kit_from_ids.py` list)의 최종 Model 이름은 **`Town_Halo_Fountain`**(옛 것과 같게 --replace). 피벗 = 밑면 가운데(옛 분수와 같음), 크기 16×16×12.85(폭×폭×높이).
+- **SPECS 숫자는 새 모양에 맞게 고쳐야 한다(개발 1, `Town_Halo_Fountain` 항목 — 옛 값은 구름 2단+후광 고리 가정):** 새 분수는 3단 수반 + 후광 고리 없음(`Halo` 줄 지움). 높이 비율 Y, 반지름 비율 R(폭 16 기준, 중심에서):
+  - 바닥 물웅덩이: `Pool = { Y = 0.165, R = 0.45 }` (물 표면 y≈2.1, 돌 테두리 안쪽 반지름 0.455, 모서리 금공 기둥 윗면 y≈0.35)
+  - 가운데 큰 수반: 물 표면 y≈0.53, 테두리 반지름 ≈0.25(테두리 위 y≈0.55)
+  - 위 작은 수반: 물 표면 y≈0.75, 테두리 반지름 ≈0.15(테두리 위 y≈0.77)
+  - 맨 위 금 구슬 y≈0.80~0.90, 끝 뾰족 y 1.0 → `Jet = { Y = 0.80, Up = 8 }`
+  - 물줄기(시안: 위 수반에서 4개 → 가운데 수반, 가운데 수반 가장자리 4개 → 웅덩이): `Curtains = { {FromY=0.76,FromR=0.145,ToY=0.54,ToR=0.19,Count=8,Width=1.6}, {FromY=0.55,FromR=0.25,ToY=0.17,ToR=0.31,Count=12,Width=2.2,Ripples=true} }` (첫 추정, 모델이 들어간 뒤 사진으로 다듬기)
+- 시안 물은 더 진한 파랑 + 물결 빛 → 모델 물은 연함 → FountainFx 반짝이(`PoolSparkle`)를 웅덩이 R 0.45 안에서 늘리고 색을 `COL.Water` 쪽으로 진하게(개발 1 몫, 검수 정정 10/09).

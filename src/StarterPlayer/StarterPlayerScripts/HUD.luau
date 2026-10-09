@@ -4791,10 +4791,11 @@ local function doRelease()
 		if not throttled("skillMana", 1.5) then UIKit.Toast(TXT.NoMana, "bad", 1.5) end
 		return
 	end
-	if L.FaceTarget("Release") then
-		task.delay(0.08, function() fire("Release") end)
+	local turned, target = L.FaceTarget("Release") -- the skill waits for the turn (TurnTime)
+	if turned then
+		task.delay(tonumber(Config.AutoFace and Config.AutoFace.TurnTime) or 0.08, function() fire("Release", target) end)
 	else
-		fire("Release")
+		fire("Release", target)
 	end
 end
 
@@ -4835,10 +4836,146 @@ doUpgrade = function()
 	UIKit.Toast(L.Smith.Walk, "info", 4)
 end
 
--- ranged classes (AimCone): face the nearest living monster in range unless one is already in front of me.
--- Returns true when the character was turned. Shift lock keeps its own facing (the camera turns the body).
--- A23-34: the basic attack ("Swing") uses Config.AttackProfile (bare hands = a 7-stud punch with a 75-degree cone for
--- every class); skill Q ("Release") keeps the class row
+-- A23-91 보강 (user 2026-10-09 "공격할 때 몬스터 쪽으로 몸 돌리기 … 조금 더 세세하게"; numbers Config.AutoFace):
+-- which monster my attack turns me to. cands = { { Key, D (flat studs), Range, Front (inside the attack's AimCone), Dot
+-- (my look . dir), CamDot (camera look . dir), Attacker (bool) } }; current = the kept target's Key, keep = my last
+-- attack was within KeepFor s. cfg.Score false = the server's own aim (CombatService.Swing, A23-61): the nearest inside
+-- the front half, else the nearest within Range, so the turn, the ring and the hit agree. cfg.Score true
+-- (Config.AutoFace.ServerHint: the server takes my pick): the kept target while it lives within Range, else the best
+-- score among those within Inside x Range that are not behind me farther than BackNear. Pure: tools/test_auto_face.py
+-- runs it. Returns the Key or nil
+function HUD.PickTarget(cands, current, keep, cfg)
+	if not cfg.Score then
+		local front, frontD, near, nearD = nil, math.huge, nil, math.huge
+		for _, c in cands do
+			if c.D <= c.Range then
+				if c.Front and c.D < frontD then front, frontD = c.Key, c.D end
+				if c.D < nearD then near, nearD = c.Key, c.D end
+			end
+		end
+		return front or near
+	end
+	if keep and current ~= nil then
+		for _, c in cands do
+			if c.Key == current and c.D <= c.Range then return current end -- the same target while I keep attacking
+		end
+	end
+	local best, bestScore = nil, -math.huge
+	for _, c in cands do
+		if c.D <= c.Range * cfg.Inside and not (c.Dot < cfg.BackDot and c.D > cfg.BackNear) then
+			local score = cfg.WDist * (1 - c.D / math.max(1, c.Range)) + cfg.WFront * math.max(0, c.Dot)
+				+ cfg.WScreen * math.max(0, c.CamDot) + (c.Attacker and cfg.WAttacker or 0)
+			if score > bestScore then best, bestScore = c.Key, score end
+		end
+	end
+	return best
+end
+
+L.AIM = { Target = nil, LastAttack = -math.huge, Turn = nil, Hold = nil, Ring = nil, RingConn = nil, RingFor = nil }
+
+-- the small ring under my target while I attack: the approved soft round FxShockRing art tinted RingColor (no rays;
+-- code fallback a flat disc), RingPad x the body's width within RingSize..RingMax studs, on the floor (RootHeight).
+-- Hidden when the target dies or hides (an ambusher), or RingShow s after my last attack
+function L.AIM.ShowRing()
+	local A = Config.AutoFace or {}
+	local ring = L.AIM.Ring
+	if not ring then
+		ring = Instance.new("Part")
+		ring.Name = "HUDTargetRing"
+		ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch, ring.CastShadow = true, false, false, false, false
+		ring.Material = Enum.Material.SmoothPlastic
+		ring.Color = typeof(A.RingColor) == "Color3" and A.RingColor or Color3.new(1, 1, 1)
+		local okArt, art = pcall(UIKit.ArtId, "FxShockRing")
+		if okArt and type(art) == "string" and art ~= "" then
+			ring.Transparency = 1
+			local sg = Instance.new("SurfaceGui")
+			sg.Face = Enum.NormalId.Top
+			sg.LightInfluence = 0
+			sg.SizingMode = Enum.SurfaceGuiSizingMode.FixedSize
+			sg.CanvasSize = Vector2.new(256, 256)
+			local img = Instance.new("ImageLabel")
+			img.BackgroundTransparency = 1
+			img.Size = UDim2.fromScale(1, 1)
+			img.Image = art
+			img.ImageColor3 = ring.Color
+			img.ImageTransparency = tonumber(A.RingTransparency) or 0.2
+			img.Parent = sg
+			sg.Parent = ring
+		else
+			ring.Shape = Enum.PartType.Cylinder
+			ring.Transparency = math.max(0.45, tonumber(A.RingTransparency) or 0.2)
+		end
+		L.AIM.Ring = ring
+	end
+	ring.Parent = workspace
+	if L.AIM.RingConn then return end
+	L.AIM.RingConn = game:GetService("RunService").RenderStepped:Connect(function()
+		local t = L.AIM.Target
+		local m = t and t.Parent
+		local mh = m and m:FindFirstChildOfClass("Humanoid")
+		if not m or (mh and mh.Health <= 0) or m:GetAttribute("Hidden") == true
+			or os.clock() - L.AIM.LastAttack >= (tonumber(A.RingShow) or 1.5) then
+			ring.Parent = nil
+			L.AIM.RingFor = nil
+			L.AIM.RingConn:Disconnect()
+			L.AIM.RingConn = nil
+			return
+		end
+		if L.AIM.RingFor ~= t then -- a new target: size to its body
+			L.AIM.RingFor = t
+			local okSize, ext = pcall(function() return m:GetExtentsSize() end)
+			local width = okSize and math.max(ext.X, ext.Z) or t.Size.X
+			local d = math.clamp(width * (tonumber(A.RingPad) or 1.1), tonumber(A.RingSize) or 3.2, tonumber(A.RingMax) or 12)
+			ring.Size = ring.Shape == Enum.PartType.Cylinder and Vector3.new(0.12, d, d) or Vector3.new(d, 0.05, d)
+		end
+		local up = tonumber(m:GetAttribute("RootHeight")) or (t.Size.Y / 2 + (mh and mh.HipHeight or 0))
+		local at = CFrame.new(t.Position.X, t.Position.Y - up + 0.1, t.Position.Z)
+		ring.CFrame = ring.Shape == Enum.PartType.Cylinder and at * CFrame.Angles(0, 0, math.pi / 2) or at
+	end)
+end
+
+-- turn my body to `pos` over TurnTime s with an ease-out (skipped within SkipDeg of where I face); while I walk the
+-- Humanoid's AutoRotate waits TurnTime + SwingHold s (the body stays on the target, then walks on). True = it turns
+function L.AIM.TurnTo(root, hum, pos)
+	local A = Config.AutoFace or {}
+	local look = root.CFrame.LookVector * Vector3.new(1, 0, 1)
+	local dir = (pos - root.Position) * Vector3.new(1, 0, 1)
+	if dir.Magnitude < 1 or look.Magnitude < 0.01 then return false end
+	local from = math.atan2(-look.X, -look.Z)
+	local to = math.atan2(-dir.X, -dir.Z)
+	local delta = (to - from + math.pi) % (2 * math.pi) - math.pi
+	if math.abs(delta) < math.rad(tonumber(A.SkipDeg) or 10) then return false end
+	if L.AIM.Turn then L.AIM.Turn:Disconnect() end
+	local dur = math.max(0.01, tonumber(A.TurnTime) or 0.08)
+	if hum.MoveDirection.Magnitude > 0.1 then
+		hum.AutoRotate = false
+		local token = {}
+		L.AIM.Hold = token
+		task.delay(dur + (tonumber(A.SwingHold) or 0.35), function()
+			if L.AIM.Hold == token and hum.Parent then hum.AutoRotate = true end
+		end)
+	end
+	local start = os.clock()
+	L.AIM.Turn = game:GetService("RunService").RenderStepped:Connect(function()
+		local k = math.clamp((os.clock() - start) / dur, 0, 1)
+		k = 1 - (1 - k) * (1 - k) -- ease out
+		if root.Parent then
+			root.CFrame = CFrame.new(root.Position) * CFrame.Angles(0, from + delta * k, 0)
+		end
+		if k >= 1 then
+			L.AIM.Turn:Disconnect()
+			L.AIM.Turn = nil
+		end
+	end)
+	return true
+end
+
+-- my attack: pick the monster (HUD.PickTarget) and turn to it smoothly. Returns (turned, the monster Model or nil); the
+-- Model goes to the server with the Swing / Release (ignored until CombatService takes it - Config.AutoFace.ServerHint).
+-- Monsters only: never another player; skips hidden ambushers and monsters that belong to someone else. Shift lock keeps
+-- its own facing (the camera turns the body). A23-34: the basic attack ("Swing") uses Config.AttackProfile (its Range
+-- and AimCone, bare hands = 7 studs); skill Q ("Release") keeps the class row. which = nil: the auto-combat facing while
+-- I stand (always the server's aim, no ring; it waits while my own attacks keep a target)
 function L.FaceTarget(which)
 	local def = which == "Swing" and Config.AttackProfile(getClass(), math.floor(num("WeaponTier", 0)), getFaction())
 		or Config.Classes[getClass()]
@@ -4849,33 +4986,58 @@ function L.FaceTarget(which)
 	local hum = char and char:FindFirstChildOfClass("Humanoid")
 	local folder = workspace:FindFirstChild("Monsters")
 	if not root or not hum or hum.Health <= 0 or not folder then return false end
+	local A = Config.AutoFace or {}
+	local manual = which ~= nil
+	local now = os.clock()
+	local keep = now - L.AIM.LastAttack < (tonumber(A.KeepFor) or 1.5)
+	if not manual and keep then return false end
 	local look = root.CFrame.LookVector * Vector3.new(1, 0, 1)
-	local cosCone = math.cos(math.rad(def.AimCone))
-	local best, bestDist = nil, (def.Range or 30)
+	look = look.Magnitude > 0.01 and look.Unit or Vector3.new(0, 0, -1)
+	local cam = workspace.CurrentCamera
+	local camLook = cam and cam.CFrame.LookVector * Vector3.new(1, 0, 1) or look
+	camLook = camLook.Magnitude > 0.01 and camLook.Unit or look
+	local range = tonumber(def.Range) or 30
+	local frontDot = def.AimCone >= 180 and -2 or math.cos(math.rad(def.AimCone)) -- CombatService.inAim
+	local serverNow, me = Util.Now(), LocalPlayer.UserId
+	local attackerFor, attackerReach = tonumber(A.AttackerFor) or 2, tonumber(A.AttackerReach) or 9
+	local cands = {}
 	for _, m in folder:GetChildren() do
 		local r = m:FindFirstChild("HumanoidRootPart")
 		local mh = m:FindFirstChildOfClass("Humanoid")
-		if r and r:IsA("BasePart") and not r.Anchored and (not mh or mh.Health > 0) then
+		local owner = m:GetAttribute("OwnerUserId")
+		if r and r:IsA("BasePart") and not r.Anchored and (not mh or mh.Health > 0) and m:GetAttribute("Hidden") ~= true
+			and (owner == nil or owner == me) then
 			local dir = (r.Position - root.Position) * Vector3.new(1, 0, 1)
 			local d = dir.Magnitude
-			if d <= (def.Range or 30) then
-				if d > 1 and look.Magnitude > 0.01 and look.Unit:Dot(dir.Unit) >= cosCone then return false end
-				if d < bestDist then best, bestDist = r, d end
+			if d <= range then
+				local u = d > 0.01 and dir.Unit or look
+				local dot = look:Dot(u)
+				local windup = tonumber(m:GetAttribute("WindupAt")) or -math.huge
+				table.insert(cands, { Key = r, D = d, Range = range, Front = d < 1 or dot >= frontDot, Dot = dot,
+					CamDot = camLook:Dot(u), Attacker = serverNow - windup < attackerFor and d <= attackerReach })
 			end
 		end
 	end
-	if not best or bestDist < 1 then return false end
-	root.CFrame = CFrame.lookAt(root.Position, Vector3.new(best.Position.X, root.Position.Y, best.Position.Z))
-	return true
+	local cfg = { Score = manual and A.ServerHint == true, Inside = tonumber(A.Inside) or 0.95,
+		BackDot = tonumber(A.BackDot) or -0.2, BackNear = tonumber(A.BackNear) or 6, WDist = tonumber(A.WDist) or 1,
+		WFront = tonumber(A.WFront) or 0.8, WScreen = tonumber(A.WScreen) or 0.5, WAttacker = tonumber(A.WAttacker) or 1.5 }
+	local best = HUD.PickTarget(cands, L.AIM.Target, keep, cfg)
+	if manual then
+		L.AIM.LastAttack = now
+		L.AIM.Target = best
+		if best then L.AIM.ShowRing() end
+	end
+	if not best then return false end
+	return L.AIM.TurnTo(root, hum, best.Position), best.Parent
 end
 
 -- one Swing for one press (F key, attack button or a world click, A23-51; review 2026-10-06: the click skipped this):
--- the nearest monster outside my aim cone turns me (the look), and the swing goes at once: the server aims the same
--- way itself (dev2 bd3d6bd: no target in the front half -> the nearest monster in Range, and it turns my root), so it
--- never waits for my turn to replicate (0.27-0.43 s in Studio, measured 2026-10-07)
+-- turn to my target (L.FaceTarget) and swing at once with it: the server aims the same way itself (dev2 bd3d6bd: no
+-- target in the front half -> the nearest monster in Range, and it turns my root), so it never waits for my turn to
+-- replicate (0.27-0.43 s in Studio, measured 2026-10-07)
 function L.SwingFaced()
-	L.FaceTarget("Swing")
-	fire("Swing")
+	local _, target = L.FaceTarget("Swing")
+	fire("Swing", target)
 end
 
 -- story rows: a talk / choice step reopens its dialogue; otherwise travel + the guide beam to where it happens

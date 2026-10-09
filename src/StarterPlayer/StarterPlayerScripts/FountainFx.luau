@@ -1,8 +1,8 @@
 -- FountainFx.luau : flowing water on the plaza fountains, drawn by every client (user 2026-10-07: "물줄기도 나오게 해야지
 -- 로블록스 이펙트 사용해서!"). Free Creator Store effect textures only (A23-62: texture ids, no imported scripts; sources in
 -- docs/design/skill_vfx_sources.md): a jet from the top spout, thin water streams (Beams with a flowing texture) falling from
--- each bowl rim, droplet splashes + ripples where they land, a few sparkles on the pool, and for the Halo fountain a
--- golden halo ring with one warm light. Specs per fountain model name, as fractions of the model's bounding box (a
+-- each bowl rim, droplet splashes + ripples where they land, a few sparkles on the pool, and for the cloud Halo fountain
+-- a golden halo ring with one warm light (the 3-tier one has no ring). Specs per fountain model name, as fractions of the model's bounding box (a
 -- rescaled model still fits). Phones and "Screen Shake: Off" (or Roblox Reduced Motion) get fewer particles.
 -- Everything is client-side (Anchored, no collision / queries / touch) in a "WaterFx" folder inside the model.
 local Players = game:GetService("Players")
@@ -24,6 +24,7 @@ local COL = {
 	Foam = Color3.fromRGB(240, 251, 255),
 	Gold = Color3.fromRGB(255, 226, 140),
 	Halo = Color3.fromRGB(255, 214, 90),
+	Deep = Color3.fromRGB(70, 150, 235), -- the 3-tier Halo pool's twinkles: the concept's deeper blue water (검수 10/09)
 }
 -- Y / R are fractions of the bounding box (height / the wider of X and Z); R is measured from the centre
 local SPECS = {
@@ -46,7 +47,24 @@ local SPECS = {
 		Pool = { Y = 0.17, R = 0.4 },
 		Halo = { Y = 1.02, R = 0.18 },
 	},
+	-- Halo town, the 3-tier fountain (이미지 생성 1, 2026-10-09 night, Halo_Fountain_HD_plain measured: 16 x 16 x 12.85,
+	-- pivot at the bottom centre, three bowls, no halo ring; docs/design/halo_town_plan_2026-10-09.md last section):
+	-- pool water y 0.165 (inner rim 0.455), middle bowl water 0.53 (rim 0.25), top bowl water 0.75 (rim 0.15), the gold
+	-- ball 0.80-0.90. 4 x 2 streams from the top bowl into the middle one, 12 from the middle rim into the pool (first
+	-- guess: tuned from photos once it is in the place). Pool.Rate / Deep: more twinkles in the concept's deeper blue
+	Town_Halo_Fountain3 = {
+		Jet = { Y = 0.80, Up = 8 },
+		Curtains = {
+			{ FromY = 0.76, FromR = 0.145, ToY = 0.54, ToR = 0.19, Count = 8, Width = 1.6 },
+			{ FromY = 0.55, FromR = 0.25, ToY = 0.17, ToR = 0.31, Count = 12, Width = 2.2, Ripples = true },
+		},
+		Pool = { Y = 0.165, R = 0.45, Rate = 8, Deep = true },
+	},
 }
+-- the 3-tier fountain comes in under the cloud one's model name (Town_Halo_Fountain, the kit ledger's --replace); until
+-- the main place has it both work: the new one is told by its mesh "Halo_Fountain" (the import name in the contract)
+-- or a model attribute FountainSpec = "Town_Halo_Fountain3"; anything else keeps the cloud spec
+local VARIANT = { Town_Halo_Fountain = { Spec = "Town_Halo_Fountain3", Mesh = "Halo_Fountain" } }
 local S = { Started = false, Built = setmetatable({}, { __mode = "k" }), Emitters = {} } -- Emitters: { Emitter, Rate, Kind }
 
 local function lowFx()
@@ -182,20 +200,22 @@ local function build(model, spec)
 		end
 	end
 
-	-- a few twinkles on the pool surface
+	-- a few twinkles on the pool surface (Deep: a square that stays inside the round pool, the concept's deeper blue)
 	if spec.Pool then
 		local r = spec.Pool.R * W
+		local side = spec.Pool.Deep and r * 1.4 or r * 1.6
 		local pad = Instance.new("Part")
 		pad.Name = "PoolSparkle"
 		pad.Anchored, pad.CanCollide, pad.CanQuery, pad.CanTouch, pad.CastShadow = true, false, false, false, false
 		pad.Transparency = 1
-		pad.Size = Vector3.new(r * 1.6, 0.1, r * 1.6)
+		pad.Size = Vector3.new(side, 0.1, side)
 		pad.CFrame = CFrame.new(base + Vector3.new(0, spec.Pool.Y * H + 0.15, 0))
 		pad.Parent = folder
 		emitter(pad, "Sparkle", {
-			Texture = TEX.Sparkle, Rate = 4, Speed = NumberRange.new(0), Lifetime = NumberRange.new(0.8, 1.2),
+			Texture = TEX.Sparkle, Rate = spec.Pool.Rate or 4, Speed = NumberRange.new(0), Lifetime = NumberRange.new(0.8, 1.2),
 			Size = seq({ { 0, 0 }, { 0.25, 0.5 }, { 1, 0 } }), Transparency = seq({ { 0, 0.1 }, { 1, 0.4 } }),
-			Color = ColorSequence.new(COL.Foam, COL.Gold), LightEmission = 1, ZOffset = 0.5,
+			Color = spec.Pool.Deep and ColorSequence.new(COL.Deep, COL.Water) or ColorSequence.new(COL.Foam, COL.Gold),
+			LightEmission = spec.Pool.Deep and 0.6 or 1, ZOffset = 0.5,
 			Rotation = NumberRange.new(0, 360), RotSpeed = NumberRange.new(-60, 60),
 		})
 	end
@@ -226,12 +246,22 @@ local function build(model, spec)
 	applyRates()
 end
 
+-- the spec for a fountain model: its name's, or the variant's when the model carries the variant's mark
+function FountainFx.SpecFor(model)
+	local v = VARIANT[model.Name]
+	if v and (model:GetAttribute("FountainSpec") == v.Spec or model:FindFirstChild(v.Mesh, true) ~= nil) then
+		return SPECS[v.Spec], v.Spec
+	end
+	return SPECS[model.Name], model.Name
+end
+
 local function consider(inst)
-	local spec = SPECS[inst.Name]
-	if not spec or not inst:IsA("Model") then return end
+	if not SPECS[inst.Name] or not inst:IsA("Model") then return end
 	task.defer(function()
+		-- a variant's mark (a child mesh) may replicate after the model itself: wait a moment before choosing
+		if VARIANT[inst.Name] and not inst:FindFirstChild(VARIANT[inst.Name].Mesh, true) then task.wait(1.5) end
 		if inst.Parent then
-			local ok, err = pcall(build, inst, spec)
+			local ok, err = pcall(build, inst, (FountainFx.SpecFor(inst)))
 			if not ok then warn("[" .. TAG .. "] build failed for " .. inst:GetFullName() .. ": " .. tostring(err)) end
 		end
 	end)
@@ -257,7 +287,7 @@ end
 -- test aid (Studio Edit preview through require): build on one model now, no listeners; the caller removes the
 -- model's "WaterFx" folder afterwards
 function FountainFx.BuildOn(model)
-	local spec = typeof(model) == "Instance" and SPECS[model.Name]
+	local spec = typeof(model) == "Instance" and FountainFx.SpecFor(model)
 	if not spec then return false end
 	S.Built[model] = nil
 	build(model, spec)

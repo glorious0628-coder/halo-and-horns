@@ -300,10 +300,10 @@
     ]
   },
   "sourceSHA256": "69bbdb7888a5fff77a2d429b8bd7745d02b849e68e5ba18ead94158250477ad2",
-  "hudSHA256": "3bc75a787587be59e1a53719f4076081cf3ed31b86cbaa05a5b2fdf2384cb2f3",
+  "hudSHA256": "21d44dc7b858985f44081c4ad5b2ce10c0c5066fa708dac35b39c5e98bbc0248",
   "hudStatic": [
     {
-      "check": "L.SwingFaced faces the nearest monster, then swings at once (no delay: the server aims itself, bd3d6bd)",
+      "check": "L.SwingFaced faces my target, then swings at once with it (no delay: the server aims itself, bd3d6bd)",
       "ok": true
     },
     {

@@ -4,7 +4,7 @@ AimCone is a half-angle (CombatService.inAim: dot(look, dir) >= cos(AimCone); 18
 "front semicircle, 90 deg left / right, nothing behind" is AimCone = 90 on every class row and on bare hands; the SKL
 skill cones (Config.Skills.Defs) are not part of it. Runs the real Config.luau and the inAim function cut out of
 CombatService.luau in tools/fixtures/aim_cone_offline.luau (installed Luau CLI); static check: the client's
-FaceTarget turns me only when no monster is inside the same cone (HUD.luau). Mutations must each be caught.
+FaceTarget uses the same cone for its front half (HUD.luau; the pick itself: tools/test_auto_face.py). Mutations must each be caught.
 Status "passed" only when the fixture and the static checks pass AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-07/offline_aim_cone_2026-10-07.json
 """
@@ -58,9 +58,12 @@ def static_checks(hud: str):
     body = m.group(1) if m else ""
     return [
         ("client FaceTarget reads the swing profile's AimCone (Config.AttackProfile) as the same half-angle",
-         'which == "Swing" and Config.AttackProfile(' in body and "local cosCone = math.cos(math.rad(def.AimCone))" in body),
-        ("client FaceTarget does not turn me while a monster is inside that cone",
-         "look.Unit:Dot(dir.Unit) >= cosCone then return false end" in body),
+         'which == "Swing" and Config.AttackProfile(' in body
+         and "local frontDot = def.AimCone >= 180 and -2 or math.cos(math.rad(def.AimCone)) -- CombatService.inAim" in body),
+        # A23-91 보강 (2026-10-09): the client now turns smoothly to the server's own pick (tools/test_auto_face.py):
+        # a monster inside that cone is picked before a nearer one outside it (no server turn, the same target)
+        ("client FaceTarget marks a monster inside that cone (on top of me counts, as inAim)",
+         "Front = d < 1 or dot >= frontDot" in body),
     ]
 
 
