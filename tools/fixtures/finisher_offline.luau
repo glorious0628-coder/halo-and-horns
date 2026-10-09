@@ -162,11 +162,13 @@ runGroup("config", function()
 	check(type(d) == "table" and d.Day == 0 and d.N == 0, "save field ScoreBudget = { Day = 0, N = 0 }", show(d))
 	check(C0F.RateLimits.FinisherPick == 0.3, "FinisherPick rate limit 0.3 s", C0F.RateLimits.FinisherPick)
 	local T = FIN.Text
-	check(T.Title == "The King Slime is dizzy!" and T.Help == "Help it hop home" and T.Tickle == "Tickle out its coins",
-		"the card's words (검수 2026-10-08)", show({ T.Title, T.Help, T.Tickle }))
+	check(type(T.Title) == "table" and T.Title.SlimeKing == "The King Slime is dizzy!" and T.Help == "Help it hop home" and T.Tickle == "Tickle out its coins",
+		"the card's words (검수 2026-10-08)", show({ T.Title and T.Title.SlimeKing, T.Help, T.Tickle }))
 	local banned = false
 	for _, text in T do
-		if string.find(string.lower(text), "shake", 1, true) then banned = true end
+		for _, s in type(text) == "table" and text or { text } do -- Title is per boss kind
+			if string.find(string.lower(s), "shake", 1, true) then banned = true end
+		end
 	end
 	check(not banned, "no 'Shake it down' anywhere in the card text")
 	local PB = C0F.PassBoost

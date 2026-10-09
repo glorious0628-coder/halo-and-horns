@@ -3382,7 +3382,7 @@ Config.Finisher = {
 	Help = { Item = "Jelly", N = 2 }, -- (proposed)
 	Tickle = { Gold = 4 }, -- (proposed) = 2 Jelly x Sell 2
 	Text = {
-		Title = "The King Slime is dizzy!",
+		Title = { SlimeKing = "The King Slime is dizzy!" }, -- per boss kind (FinisherCard .Kind; 2026-10-09)
 		Help = "Help it hop home",
 		Tickle = "Tickle out its coins",
 		HelpDone = "It hops home happy!",

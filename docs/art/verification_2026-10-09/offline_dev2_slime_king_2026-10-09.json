@@ -787,11 +787,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "30b04a70bcd7c91a0567e73c6eedfcfe27b321b12f4869f0d30cff68f72d4ce0",
+    "src/ReplicatedStorage/Shared/Config.luau": "f8f8edd90eb574c1ccf3c2dd83559aab6061817cb78f9872f7002a983017ae35",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "8bb6de74e8185a1b0d59a351ff6ec2d9dfbb5237f310183101ba5fae014df8a0",
     "src/ServerScriptService/Main.server.luau": "9af3c70551026daff36a374b1b225f2a88bc77a75fbb8cd8431144128855643f",
-    "src/ServerScriptService/SlimeKingService.luau": "6e414acd2573a40eac3fa773d1a18f2fd000075306bf7cbc6d786402a9cf48d9"
+    "src/ServerScriptService/SlimeKingService.luau": "55908fdd294bd51b96320266bb0203716ae63faf4c4030fbe0ca0ded269a0c9a"
   },
   "fixtureSHA256": "5e562b49bc867a0083a0a355ec8de299fae392b84b964cff5f93d60b97306614",
   "sourcesChangedDuringRun": [],

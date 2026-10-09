@@ -211,7 +211,7 @@ end
 
 function SlimeKingService.Start()
 	if type(Config.MonsterTypes[kind()]) ~= "table" then
-		Util.Warn(TAG, "Config.MonsterTypes." .. kind() .. " missing: no King Slime")
+		Util.Warn(TAG, "Config.MonsterTypes." .. kind() .. " missing: no boss")
 		return
 	end
 	B.NextAt = C.Enabled ~= false and (Util.Now() + math.max(0, num(C.FirstDelay, 180))) or 0
