@@ -4458,6 +4458,9 @@ Config.Loot = {
 -- game dev 1 sent (2026-10-09)
 Config.Nudges = {
 	DailiesOpened = false, -- "Daily quests are open! ..." after the first [Claim] (HUD parseQuests)
+	-- 게임성 개발 2 (검수 10/09, nudge_list C: user "너무 친절해"): "Safe zone." each time a player walks out of PvP
+	-- (ZoneService); the PvP warning on the way in stays
+	SafeZone = false,
 }
 
 Config.ChatText = {

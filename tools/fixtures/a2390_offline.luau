@@ -38,8 +38,8 @@ runGroup("config", function()
 end)
 
 -- ZoneService's real applyZone with doubles
-local function zoneWorld()
-	local w = newWorld()
+local function zoneWorld(opts)
+	local w = newWorld(opts)
 	local H = { zoneIds = {}, pvpNow = {}, notes = {}, changed = {}, faction = {} }
 	H.notify = function(p, text, kind, sound) table.insert(H.notes, { P = p, Text = text, Kind = kind, Sound = sound }) end
 	H.fmt = function(key) return key end
@@ -69,14 +69,22 @@ runGroup("zone PvP follows the position", function()
 	w:Step(p, 1710, 10)
 	check(#H.notes == 1, "moving inside the pit: nothing new")
 	w:Step(p, 1300, 0)
-	check(p.Attrs.ZonePvP == false and H.notes[2] and H.notes[2].Text == "EnteredSafe" and H.notes[2].Kind == "good",
-		"back to the ring: the safe line", #H.notes)
+	-- 검수 10/09 (nudge_list C, "너무 친절해"): no "Safe zone." line by default (Config.Nudges.SafeZone = false)
+	check(p.Attrs.ZonePvP == false and #H.notes == 1, "back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges)", #H.notes)
 	check(H.ZoneService.IsPvPZone(p) == false and #H.changed == 1, "IsPvPZone: the ring; still one ZoneChanged")
 	-- a Neutral gets its own line
 	local n = w:NewPlayer(2)
 	H.faction[n] = "Neutral"
 	w:Step(n, 1700, 0)
-	check(H.notes[3] and H.notes[3].P == n and H.notes[3].Text == "EnteredPvPNeutral", "a Neutral entering the pit: the immune line")
+	check(H.notes[2] and H.notes[2].P == n and H.notes[2].Text == "EnteredPvPNeutral", "a Neutral entering the pit: the immune line")
+	-- Config.Nudges.SafeZone = true brings the line back
+	local s = zoneWorld({ EditConfig = function(c) c.Nudges.SafeZone = true end })
+	local sp = s:NewPlayer(9)
+	s:Step(sp, 1700, 0)
+	s:Step(sp, 1300, 0)
+	check(s.H.notes[2] and s.H.notes[2].Text == "EnteredSafe" and s.H.notes[2].Kind == "good", "Nudges.SafeZone = true: the safe line",
+		#s.H.notes)
+	check(s.Config.Nudges.SafeZone == true and newWorld().Config.Nudges.SafeZone == false, "SafeZone is off by default")
 	-- the woods (a PvP zone) still work as before
 	local q = w:NewPlayer(3)
 	w:Step(q, 950, 0)
