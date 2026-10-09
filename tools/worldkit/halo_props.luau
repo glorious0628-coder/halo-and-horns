@@ -2,11 +2,11 @@
 -- layout tools/halo_layout.py -> docs/design/halo_layout_plan_2026-10-10.json, check docs/design/zone_check_halo_2026-10-10.md #3-12 #46-48 #64 #65)
 -- Studio MCP execute_luau, MAIN place, Edit mode only (메인 반영 runs it; the runner replaces "__MODE__").
 -- Dresses the Halo Citadel (terrain: tools/worldkit/halo_terrain.luau must be applied first) with OUR OWN Tripo models from
--- ServerStorage.WorldKit3D (Halo_Gate, Halo_Cathedral, Halo_Fountain, Halo_Tower, Halo_DomeHouseA/B, Halo_Shop, Halo_Statue, Halo_ArchBridge, Halo_Stairs,
+-- ServerStorage.WorldKit3D (Halo_Gate, Halo_Cathedral, Town_Halo_Fountain3, Halo_Tower, Halo_DomeHouseA/B, Halo_Shop, Halo_Statue, Halo_ArchBridge, Halo_Stairs,
 -- Halo_Balustrade, Halo_Lantern, Halo_Planter, Halo_CloudBush, Halo_Topiary, Halo_RoundTree, Halo_PotFlowers, Halo_BannerPole, Halo_Islet, Halo_FarArch).
 -- Contracts kept (zone_check_halo): Bridge_Halo is NEVER touched (the only walking way out of the town); Gate_HaloTown = a Model in Map.Gates whose
 -- PrimaryPart is an invisible non-colliding "Lintel" at the front edge (0, 19, -330), the arch mesh does not collide, two invisible tower blocks do (the
--- arch opening stays free); the new fountain keeps the model name Halo_Fountain (FountainFx key, never Town_Halo_Fountain); nothing solid on the spawn
+-- arch opening stays free); the new fountain is the kit model Town_Halo_Fountain3 (FountainFx SPECS key; Town_Halo_Fountain stays the Crossroads cloud fountain, never --replace it); nothing solid on the spawn
 -- corridor (the layout planner refuses it); decor collision per kind (solid / DecorPlayerOnly / trunk post / walk-through); small repeated props drop their
 -- normal + roughness maps (phone memory); backdrop islets / arches (beyond the land) never collide and never answer queries.
 -- Old placeholders (HaloTower, HeroStatue, HaloCastle, HaloTownTrees, Flower, ZoneSwap_halo, Town_Halo_* clones, the old gate) move to
@@ -2795,7 +2795,7 @@ local T = {
 	TriCap = 900000, PartCap = 1700,
 }
 local KITNAME = {
-	Gate = "Halo_Gate", Cathedral = "Halo_Cathedral", Fountain = "Halo_Fountain", Tower = "Halo_Tower", DomeHouseA = "Halo_DomeHouseA",
+	Gate = "Halo_Gate", Cathedral = "Halo_Cathedral", Fountain = "Town_Halo_Fountain3", Tower = "Halo_Tower", DomeHouseA = "Halo_DomeHouseA",
 	DomeHouseB = "Halo_DomeHouseB", Shop = "Halo_Shop", Statue = "Halo_Statue", ArchBridge = "Halo_ArchBridge", Stairs = "Halo_Stairs",
 	Balustrade = "Halo_Balustrade", Lantern = "Halo_Lantern", Planter = "Halo_Planter", CloudBush = "Halo_CloudBush", Topiary = "Halo_Topiary",
 	RoundTree = "Halo_RoundTree", PotFlowers = "Halo_PotFlowers", BannerPole = "Halo_BannerPole", Islet = "Halo_Islet", FarArch = "Halo_FarArch",
@@ -2982,7 +2982,7 @@ for _, e in PLAN.placements do
 	if e.kind == "Gate" then continue end
 	local src = kit:FindFirstChild(KITNAME[e.kind])
 	local m = src:Clone()
-	m.Name = (e.kind == "Fountain" and "Halo_Fountain") or (e.name and ("Halo_ArchBridge_" .. e.name)) or KITNAME[e.kind]
+	m.Name = (e.kind == "Fountain" and "Town_Halo_Fountain3") or (e.name and ("Halo_ArchBridge_" .. e.name)) or KITNAME[e.kind]
 	clean(m, SMALL[e.kind])
 	if math.abs(e.s - 1) > 1e-3 then pcall(m.ScaleTo, m, m:GetScale() * e.s) end
 	local y = e.backdrop and e.y or groundY(e.x, e.z, e.y)

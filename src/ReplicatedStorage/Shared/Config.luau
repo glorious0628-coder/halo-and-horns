@@ -2367,6 +2367,9 @@ Config.Tutorial = {
 -- [Claim]); a Choice with Points = 0 leans the shard (LeanGood / LeanEvil) instead of a score line.
 Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
+	-- zone_check_halo #19: true = every active sub is sent, the ones past MaxSubs marked More = true (the HUD must draw only the
+	-- rows without More; the quest window lists all). Off until game dev 1's HUD skips More rows (then: true).
+	SendAllSubs = false,
 	-- map v2: the slime pond in the meadow's south-west (kit_meadow M_Pond, 50 wide)
 	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪

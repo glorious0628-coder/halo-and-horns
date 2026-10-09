@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 487,
+  "checks": 507,
   "failedChecks": 0,
-  "namedChecks": 484,
+  "namedChecks": 504,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -2910,15 +2910,135 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "SendAllSubs is off until the HUD skips More rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "H1 waits at Bright (its first card)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "SendAllSubs: all five active subs, the 4th and 5th marked More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the H1 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the T1 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the T2 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the T3 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the W1 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "row 1 (the HUD's) has no More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "row 2 (the HUD's) has no More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "row 3 (the HUD's) has no More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the first three rows are the same with the flag on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "MaxSubs 2: the rows past 2 are More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "MaxSubs 0: every row is More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "SendAllSubs = 1 is not true: three rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the flag off again: three rows, none More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "a Horns player never gets Bright's offer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 100,
-    "applied": 100,
-    "caught": 100,
+    "total": 113,
+    "applied": 113,
+    "caught": 113,
     "skipped": false,
     "results": [
       {
@@ -3706,9 +3826,10 @@
           "max-subs :: XR1's new offer joins after the subs in progress",
           "max-subs :: both town quests wait at their NPC: on the list",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer"
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 9
       },
       {
         "mutation": "a started sub ranks like an untouched one",
@@ -3720,9 +3841,193 @@
           "max-subs :: XR1's new offer joins after the subs in progress",
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "a town offer waits behind the subs in progress",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "every waiting card is a town offer",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: XR1's new offer joins after the subs in progress",
+          "max-subs :: a pick card waiting mid-quest comes first",
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "an offer without a faction is a town offer",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: XR1's new offer joins after the subs in progress",
+          "max-subs :: a pick card waiting mid-quest comes first",
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer"
         ],
         "newFailingCount": 4
+      },
+      {
+        "mutation": "an offer without an NPC is a town offer",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "SendAllSubs sends everything always",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: both town quests wait at their NPC: on the list",
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "send-all-subs :: SendAllSubs = 1 is not true: three rows",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+          "send-all-subs :: the first three rows are the same with the flag on"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "SendAllSubs sends nothing more",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: MaxSubs 0: every row is More",
+          "send-all-subs :: MaxSubs 2: the rows past 2 are More",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SendAllSubs any truthy value",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: SendAllSubs = 1 is not true: three rows"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the rows past MaxSubs are not marked",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: MaxSubs 0: every row is More",
+          "send-all-subs :: MaxSubs 2: the rows past 2 are More",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "every row is marked More",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: MaxSubs 2: the rows past 2 are More",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+          "send-all-subs :: row 1 (the HUD's) has no More",
+          "send-all-subs :: row 2 (the HUD's) has no More",
+          "send-all-subs :: row 3 (the HUD's) has no More"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "More starts one row early",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: MaxSubs 2: the rows past 2 are More",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+          "send-all-subs :: row 3 (the HUD's) has no More",
+          "send-all-subs :: the flag off again: three rows, none More"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "More starts one row late",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: MaxSubs 0: every row is More",
+          "send-all-subs :: MaxSubs 2: the rows past 2 are More",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "MaxSubs is not read",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "e2-lines-by :: Halo {M2_3=Good}: Var Good on the row",
+          "e2-lines-by :: Halo {}: Var Default on the row",
+          "e2-lines-by :: Horns {M2_3=Evil}: Var Evil on the row",
+          "send-all-subs :: MaxSubs 0: every row is More",
+          "send-all-subs :: MaxSubs 2: the rows past 2 are More"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: SendAllSubs is on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: both town quests wait at their NPC: on the list",
+          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "send-all-subs :: SendAllSubs is off until the HUD skips More rows",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+          "send-all-subs :: the first three rows are the same with the flag on"
+        ],
+        "newFailingCount": 6
       },
       {
         "mutation": "a new offer outranks the subs in progress",
@@ -3734,9 +4039,11 @@
           "max-subs :: XR1's new offer joins after the subs in progress",
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer"
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "older quests first within a rank",
@@ -3748,9 +4055,11 @@
           "max-subs :: XR1's new offer joins after the subs in progress",
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer"
+          "max-subs :: the goose gone: H1, S0, then N3's offer",
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
+          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "the sort fields reach the client",
@@ -3761,9 +4070,12 @@
         "newFailingChecks": [
           "max-subs :: the H1 row sends no Rank / Order",
           "max-subs :: the S0 row sends no Rank / Order",
-          "max-subs :: the XR1 row sends no Rank / Order"
+          "max-subs :: the XR1 row sends no Rank / Order",
+          "send-all-subs :: the H1 row sends no Rank / Order",
+          "send-all-subs :: the T1 row sends no Rank / Order",
+          "send-all-subs :: the T2 row sends no Rank / Order"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 8
       },
       {
         "mutation": "E1: Requires.Pick ignored",
@@ -4193,11 +4505,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
+    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "0a00f634e31d9f38700bd1e3f0b2c11e62dbe424079a48972de1ad85d1d0bacc",
+    "src/ServerScriptService/StoryQuestService.luau": "beaba43294e412e9783939f0f81f3600dada8161ff3ab44554d51d7d1e9e7137",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
@@ -4206,7 +4518,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "9c9fa242d24783b6fa23382f61c32461b7ec4fc9bef66d90d0af48a794e69cdc",
+  "fixtureSHA256": "449d1b3ba4d032d5044963799c5bdb9cb703ea5f73e6f4c58d825045a712701b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
