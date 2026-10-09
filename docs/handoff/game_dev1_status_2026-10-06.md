@@ -1,5 +1,7 @@
 # 게임성 개발(1) 인계 — 2026-10-06 멈춤 시점
 
+> 기록용(2026-10-09 검수): 10/06 기록이에요. 이때는 개발 1이 메인 Studio 주인이었고 공유 폴더에서 `git pull --rebase`·`git commit`을 썼어요. 지금은 메인 Studio = '메인 반영 1', 공유 폴더는 `py tools/push_paths.py`만(AGENTS 하드 룰 5)이고, 할 일은 `docs/handoff/role_prompts/02_dev1.md`예요.
+
 - **최신(2026-10-06 밤 2, 사용자 "내일 하자"로 멈춤):** 오늘 밤 main에 올린 것 = **b1b8fda**(검수 저녁 ①②③: 월드 클릭도 L.SwingFaced = FaceTarget → 0.08초 뒤 Swing, 몬스터 FACE.MaxExtra 0.3 ≤ Fx TELE_GRACE, 펫 돌아올 때 P.Back 동안 달려오기, BatGoblin Idle·Walk 변환기 최신판 재생성, 새 test_pet_follow) · **d59f2a2**(개발 2 2b3447b까지 병합: H1·R1·N3, E1·E2·E3·E5, 3장 Grab Club, 대왕 9일 Banter·다섯 이름, 보호막 테두리, 계급 장식 3D) · **2985a5c**(클라 몫: Announce Banter 같은 색 채팅 줄, 상점 맨 위 ForgeGreeting/PotionGreeting, Panels STORY.Lines(LinesBy[Var] → Default → Lines)·Var 보관·STORY.Hint(ChoiceHintHalo/Horns, 0점 'leans' 줄), ClientMain ORDER 끝 "Audio", 새 test_story_client 76·변이 17/17) · **291c9f0**(SKL-1: Config.Skills 21개·플래그 꺼짐·Unlock Q1/Z5/X8·SkillKit/SkillDef/SkillNumbers·Keybinds SkillX(X, ButtonR3), 새 test_skill_kit 93·변이 10/10). 각 묶음 깨끗한 트리(Game-wtc)에서 오프라인 검사 통과.
   - **공용 Game 폴더:** 로컬 main이 origin/main과 갈라져 있음(검수 dbbb529 = 올린 2b24941). **내일 첫 일: `git pull --rebase`**(dbbb529은 저절로 빠짐) → 291c9f0 이상. 내 미완성 파일은 디스크에 없음(SKL-1 초안은 291c9f0으로 올라감).
   - **메인 Studio:** Edit 모드(밤 확인). **오늘 커밋들은 아직 Studio에 동기화 안 함** — 내일 검수 "전달함, 시작" 받고 `py tools/sync_to_studio.py`.

@@ -1,5 +1,7 @@
 # 배경·몬스터 어울림 시안 (이미지 개발, 2026-10-06)
 
+> 기록용(10/06 당시 시안 값). 지금과 다른 점: 햇살(SunRays)은 모든 하늘에서 0 — 빛살 금지(사용자 10/07, `WarService`); 실제 조명 값은 코드(WarService·ZoneLook)가 기준이고, 땅·소품은 구역마다 시안 묶음대로 다시 함(최신: SPEC A23-93·A23-97). 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 사용자 신고: "배경이랑 몹들이 융화가 안 돼요." 검수 요청으로 연습 Studio(UiSandbox)에서만 시안을 찍었다.
 코드·장소 파일은 바꾸지 않았다(Play 중에만 속성을 바꾸고 Play를 멈추면 원래대로). 고른 값은 게임성 개발이 WarService·Config.Sky에 넣는다(코드 소유).
 

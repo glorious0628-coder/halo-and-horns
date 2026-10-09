@@ -2,6 +2,8 @@
 
 > **2026-10-05 갱신(이 문서의 아래 내용보다 우선):** ① 그림은 이제 승인 이미지 ID를 `Config.UIArt`로 쓴다 — 아래 "에셋 ID 금지·이미지 없음"은 초기 규칙이다. ② 새 그림은 **Adobe Firefly**로 만들고 사용자 승인 뒤에만 쓴다(`AGENTS.md` Art workflow). ③ 캐릭터는 **로블록스 스타일**(치비 아님)로 다시 그린다. 치비 3D 직업 코스튬은 게임에서 뺐다. ④ 아래의 AUTO 버튼·충전 링·PERFECT·"다음 해금" UI 설명은 과거 설계다 — 지금은 수동 전투 + 왕관 조각 퀘스트로 얻는 자동 전투 켜기/끄기(`SPEC_ADDENDUM.md` A23). ⑤ "리드가 승인"은 사용자 승인으로 읽는다.
 
+> **2026-10-09 검수 갱신(위 2026-10-05 갱신과 함께 우선):** ⑥ 게임 화면 글자는 영어만이고(A23-48), 글꼴은 제목·버튼·숫자 = Denk One, 본문 = Montserrat(A23-63, `Config.Fonts`) — 아래 Gotham·FredokaOne·한글 라벨·"공격"·"자동 ON" 같은 한국어 글자 설명은 낡음. ⑦ 빛살 금지: 가운데에서 부채처럼 퍼지는 빛줄기·줄무늬는 그림·UI·효과 어디에도 쓰지 않는다. 빛은 둥근 후광·반짝이·별(사용자 10/07). ⑧ 3D 소품·건물·몬스터는 아래 Part 레시피 대신 2D 시안 → (큰 것은 앞·옆·뒤) → Tripo로 만든다(A23-47·80), 빌린·재활용 모델은 새로(A23-96). 장소는 시안 묶음대로, 납작한 땅 금지, 한 번에 한 구역(A23-76·93·97). ⑨ 그림은 시안 Medium, 최종 High(A23-47 보강 3). ⑩ HUD 배치는 아래 7장 대신 A23-74·81·94·98(PC 먼저). ⑪ 장인 길드(Neutral) 진영은 베타에 없다 — 아래 장인 색·톱니 표식은 장인 업데이트 때 쓴다(A23-57).
+
 구현자용 아트 규칙. Part / ScreenGui / Lighting 만으로 바로 만들 수 있는 숫자만 적는다. 에셋 ID 금지(TECH_SPEC 1.1), 따라서 이미지·데칼·스카이박스 텍스처 없음.
 좌표계는 `tools/preview_map.lua` 와 `Config.Zones` 기준이다. 지면 Y=0, 북쪽 = −Z(빛의 성채), 남쪽 = +Z(뿔 소굴), 동쪽 = +X(사냥터).
 `[SPEC]` 표시는 TECH_SPEC/Config 를 고쳐야 하는 항목이다. 리드가 승인한 뒤 적용한다.
@@ -54,25 +56,26 @@
 - 추가 값: `Panel` 35,35,48 @0.1 · `Stroke` 0,0,0 (두께 2) · `BtnPrimary` 255,200,60 + 글자 40,30,10 · `BtnSecondary` 70,75,95 · `Disabled` 90,90,95 @0.3.
 - 바 색: 플레이어 HP 80,210,90 (30% 미만은 230,60,60) · 몬스터 HP 235,70,60 · 잔상 255,210,40 · XP 90,170,255 · 바 배경 30,30,30 @0.2.
 - 등급 테두리(UIStroke 3, 이후 아이템/펫용): 일반 200,200,200 · 고급 90,200,90 · 희귀 70,140,255 · 영웅 170,90,230 · 전설 255,160,40 (전설에만 UIGradient 반짝임).
-- 글꼴: 한글 라벨은 GothamBlack/GothamBold(한글은 폴백 글꼴로 나옴). 숫자·Lv·타이머는 `Enum.Font.FredokaOne`. 모든 글자에 UIStroke(검정, 두께 2)를 붙이거나 Bg 알약 위에 올린다.
+- 글꼴: ~~한글 라벨은 GothamBlack/GothamBold(한글은 폴백 글꼴로 나옴). 숫자·Lv·타이머는 `Enum.Font.FredokaOne`.~~ → 글자는 영어만(A23-48). 제목·버튼·숫자 = Denk One, 본문 = Montserrat(A23-63, `Config.Fonts`, UIKit 한곳). 모든 글자에 UIStroke(검정, 두께 2)를 붙이거나 Bg 알약 위에 올린다.
 
 ### 2.4 위험 / PvP 신호 (한 사다리로 전 화면 통일)
 | 단계 | 색 | 문구 | 적용 존 |
 |---|---|---|---|
 | 안전 | 80,220,120 | 🛡 안전 지역 | 교차로·빛의 성채·뿔 소굴·말랑 초원 |
 | PvP | 255,150,40 | ⚔ PvP · 위험 | 고블린 숲 |
-| PvP 극한 | 255,60,60 | ☠ PvP · 극한 | 해골 유적 |
+| PvP 극한 | 255,60,60 | ☠ PvP · 극한 | 해골 유적 안쪽 왕관 구덩이만(바깥 사냥 고리는 PvP 없음 = 안전, A23-90) |
 | 수배·괴수 | 255,40,40 (Highlight) | — | WantedGlow·KaijuFire (기존) |
 
 같은 색을 상태 칩, 존 이름 알약, 관문 간판 글자, PvP 경계 말뚝 Neon 끝에 그대로 쓴다.
 
 ## 3. 조명 프리셋
+> 2026-10-09 검수: 실제 값은 코드가 기준이다(`WarService` LIGHTING_FIXED·BLOOM_FIXED·SKY_EXTRAS, `Config.Sky`) — 지금 LightingStyle Realistic, Bloom Threshold 2.2, **SunRays 끔**(빛살 금지, 검수 10/07), 하늘은 그린 스카이박스(`Config.Sky.Faces`), 사냥터별 분위기 허용(A23-29·30). 아래 숫자는 처음 설계값.
 
 ### 3.1 고정값 (WarService.Start 에서 한 번 적용. 이 스크립트가 Lighting 의 주인)
 - `Lighting`: `LightingStyle = Enum.LightingStyle.Soft`, `PrioritizeLightingQuality = true` (예전 ShadowMap과 같음. Technology는 스크립트로 못 바꾼다), `GlobalShadows = true`, `ShadowSoftness = 0.15`, `GeographicLatitude = 35`, `EnvironmentDiffuseScale = 0.3`, `EnvironmentSpecularScale = 0.3`.
 - `Sky` (Instance.new, 텍스처는 건드리지 않음): `SunAngularSize = 14`, `MoonAngularSize = 18`, `StarCount = 3000`.
 - `BloomEffect`: `Size = 24`, `Threshold = 1.25` (흰 대리석은 번지지 않고 Neon만 빛난다). Intensity는 프리셋 값을 따른다.
-- `SunRaysEffect`: `Spread = 0.35`, Intensity는 프리셋 값. `DepthOfField` 는 쓰지 않는다. 메뉴가 열려 있을 때만 `BlurEffect` Size 10.
+- ~~`SunRaysEffect`: `Spread = 0.35`, Intensity는 프리셋 값.~~ → SunRays는 끈다(Intensity 0, Enabled false — 빛살 금지). `DepthOfField` 는 쓰지 않는다. 메뉴가 열려 있을 때만 `BlurEffect` Size 10.
 - `WarTint` (ColorCorrection, 기존): `Brightness = 0.02`, `Contrast = 0.1`, `Saturation = 0.2` 는 고정하고 TintColor만 Tween 한다.
 - **`Atmosphere` 는 넣지 않는다**(SPEC_ADDENDUM A9-3): Atmosphere 가 있으면 `FogColor`/`FogEnd` 가 무시돼서 WarService 의 하늘 Tween 이 소리 없이 깨진다. 미리보기 맵의 Atmosphere 는 제거했다. `workspace.Terrain` 의 `Clouds`(Cover 0.45, Density 0.35)는 써도 된다.
 
@@ -91,10 +94,11 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 | Atmosphere Glare / Haze | 0.15 / 1 | 0.5 / 1.8 | 0 / 2.5 |
 | WarTint.TintColor | 255,250,240 | 255,240,200 | 255,185,185 |
 | Bloom.Intensity | 0.5 | 0.6 | 0.7 (용암·눈 강조) |
-| SunRays.Intensity | 0.06 | 0.12 | 0 |
+| SunRays.Intensity | ~~0.06~~ 0 | ~~0.12~~ 0 | 0 |
 | Clouds.Color | 255,255,255 | 255,225,190 | 110,40,50 |
 
 ### 3.3 존 분위기 — **보류** (SPEC_ADDENDUM A9-3: 존별 ColorCorrection 금지, WarTint 를 흐리게 함)
+> 2026-10-09 검수: 보류는 풀렸다 — A23-30이 A9-3의 '존별 ColorCorrection 금지'를 대체해, 사냥터마다 바닥·조명 분위기를 1~2초에 부드럽게 바꾼다(몬스터가 잘 보이게, Atmosphere 금지는 그대로).
 존 구분은 바닥 색/재질과 소품으로만 한다. 아래 표는 나중에 전쟁 틴트와의 겹침을 검증한 뒤에만 쓴다.
 
 | ZoneId | TintColor | Saturation | Contrast | Brightness |
@@ -107,6 +111,7 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 | SkeletonRuins | 222,220,248 | −0.25 | 0.1 | −0.03 |
 
 ## 4. 형태 언어 + 파츠 레시피
+> 2026-10-09 검수: Part 레시피는 처음 임시판이다. 지금 건물·소품은 시안 → Tripo 3D 모델(A23-33·47·80, 재활용 금지 A23-96)이고, 형태 언어(빛 = 원·금, 뿔 = 삼각·가시, 중립 = 상자·톱니)만 참고한다.
 공통 규칙:
 - 벽 두께 2–3, 문 높이 10 이상(R15 아바타의 약 2배), 길과 관문 폭 16 이상, 5-stud 격자 위에 짓는다.
 - 지붕은 벽보다 1.3배 넓게, 처마는 2–4 내민다.
@@ -138,6 +143,7 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 - 기둥 6개에 진홍 깃발을 단다.
 
 ## 5. 교차로 마을 레이아웃 개선안 (160×160, 중심 0,0,0)
+> 2026-10-09 검수: 이 절은 낡음 — 지금 크기·배치는 세계 지도 v2(교차로 약 300×300, A23-53)와 교차로 시안 묶음(A23-93)을 따르고, 교차로는 구역 순서 ③에 다시 꾸민다(A23-97).
 
 ```
                  N 관문 (0,-80)  흰·금 길 → 빛의 성채        [빛 주머니 z-60, x±12]
@@ -170,6 +176,7 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 시선 확인: 스폰과 분수 어디에서 봐도 왕관 빛기둥, 서쪽 첨탑, 길드 톱니, 남·북 관문 탑이 겹치지 않고 보여야 한다. 반경 24 안에는 높이 3 넘는 물체를 두지 않는다.
 
 ## 6. 존별 비주얼 진행 (따뜻함 → 초록 그늘 → 차가운 보라)
+> 2026-10-09 검수: 좌표·소품 개수·Part 소품은 낡음 — 지금은 세계 지도 v2(A23-53), 장소마다 시안 묶음대로 언덕·물·폭포·빽빽한 가장자리(A23-76·93), 사냥터마다 한 가족·한 분위기(A23-30), 해골 유적 PvP는 안쪽 왕관 구덩이만(A23-90). 호박밭·유령 숲(핼러윈)도 있다(A23-30·45).
 
 | | 말랑 초원 (x 80–340) | 고블린 숲 (x 340–640) | 해골 유적 (x 640–980) |
 |---|---|---|---|
@@ -186,6 +193,7 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 - PvP 존 안에 있는 동안: 화면 네 가장자리에 Frame 을 둔다(짧은 변의 6% 두께, 255,40,40). UIGradient Transparency 를 0.82(가장자리) → 1(안쪽)로 준다. 이미지 없이 만드는 비네트다. 입력은 막지 않는다.
 
 ## 7. HUD 레이아웃 (모바일 가로 우선, 기준 1280×720, UIScale 1)
+> 2026-10-09 검수: 이 절의 배치·발사 버튼·충전 링·AUTO 문구는 낡음 — 지금 배치는 PC·폰 같은 틀(A23-74: 왼쪽 위 둥근 미니맵, 아래 가운데 Lv·바·아이콘 줄, 오른쪽 위 [메뉴], 오른쪽 전투 묶음), 퀘스트는 왼쪽 가운데에 지금 퀘스트 하나 크게(A23-94), UI는 PC 먼저(A23-98). 자동 전투 버튼은 해금 전엔 안 보이고 '다음 해금' 예고 글도 없음(A23-1, 해금은 Lv5 첫 스킬 뒤 A23-71), 스킬 버튼은 Lv5 전엔 없음(A23-71), 스킬 버튼에 MP 숫자 안 띄움(A23-60).
 - `Y0 = max(64, GuiService:GetGuiInset().Y + 8)` (H4). 위쪽에 붙는 블록은 모두 Y0 아래에서 시작한다.
 - 버튼 묶음은 점프 버튼 J 를 기준으로 놓는다(H5). J 는 `TouchGui.TouchControlFrame.JumpButton` 의 AbsolutePosition/Size 다. TouchGui.IgnoreGuiInset 이 false 이면 Y 에 inset.Y 를 더하고, 그 값을 MainGui 의 `UIScale.Scale` 로 나눠 가상 좌표로 바꾼다.
 - 왼쪽 아래 x 0–480, y 440–720 은 썸스틱 자리이므로 아무것도 두지 않는다.
@@ -281,6 +289,7 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 - 둥지 테두리 Neon 링 (255,215,90)을 0.8 s 주기로 Transparency 0↔0.5 펄스.
 
 ## 9. 성능 예산 (모바일, 2–3 GB 안드로이드 · 그래픽 품질 1 기준)
+> 2026-10-09 검수: 장식 충돌은 A23-81로 바뀜 — 나무 줄기·덤불·바위·그루터기·울타리 등은 **플레이어만** 막는 충돌 그룹(DecorPlayerOnly, 몬스터·펫은 통과), 무릎보다 낮은 꽃·풀(약 1.5 스터드 미만)만 통과. Tripo 면 수 한도는 건물 1만·소품 3천·바닥 덮개 5백(A23-47).
 - `[SPEC]` `Config.Map.MaxParts` 450 → **1600**. 지금 preview 는 약 250개.
   - 존별 배분: 교차로 380 · 빛의 성채 260 · 뿔 소굴 260 · 초원 220 · 숲 250 · 유적 200 · 공용(바닥·벽·길·관문) 30.
   - 앵커된 SmoothPlastic 파츠는 인스턴싱으로 묶여서 부담이 작다.
@@ -298,6 +307,7 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 - 목표: Ctrl+F2 에서 그리기 호출 ≤ 400, 삼각형 ≤ 300k, 폰에서 30 FPS 이상. StreamingEnabled 는 MVP 동안 false (TECH_SPEC 1.2).
 
 ## 10. 바로 적용할 TOP 10 (싼 것 → 비싼 것)
+> 2026-10-09 검수: 이 목록은 처음(10/02 무렵) 계획 기록이다. 지금 순서는 RELEASE_PLAN 상단(한 구역씩 A23-97, UI는 PC 먼저 A23-98).
 1. **[S] 조명 부트스트랩:** LightingStyle Soft + PrioritizeLightingQuality, Bloom (0.5 / 24 / 1.25), WarTint 채도 0.2, Sky 해·달 크기 (3.1).
 2. ~~Config.Sky 의 Fog → Atmosphere 교체~~ → **취소**: Atmosphere 를 아예 쓰지 않고 Fog 트윈을 유지한다 (A9-3, 3.1).
 3. **[S] 재질·색 정리:** Brick, Concrete, Glass 를 SmoothPlastic 으로 바꾸고 2장 팔레트를 적용. 장식 CastShadow/CanQuery 를 정리하고 RoadEast 를 3색으로 나눈다.
@@ -315,5 +325,5 @@ Config.Sky 의 `FogColor`/`FogEnd` 를 그대로 쓴다(스펙 변경 없음). �
 - 타격감: 흰 플래시 0.06 s, 치명타·내 발사 숫자만 1.4→1.0 팝, 같은 자리 0.25 s 안 숫자 합치기, 남의 숫자는 치명타만(A9-2). 히트스톱(0.1 s 넘는 멈춤)은 렉으로 오해받으니 넣지 않는다.
 - 페이즈2 메모(지금 구현 X):
   - 거래소: 등록 즉시 에스크로, 체결 결과는 별도 키 `M_<UserId>` 에 UpdateAsync 로 쌓기(세션 잠금 본 데이터에 다른 서버가 쓰지 않게). 체결 세금 8% 소각. 가격 범위 NPC 판매가의 1~20배(부계정 송금 우회 방지) + 최소 10골드. 해금 = 진영 선택 + Lv15 + 1시간. 숫자는 축약 없이 "12,500 골드 (NPC가의 3배)" + 확인창.
-  - 같은 서버 친구 보너스 +5%/명(최대 20%), 연패 보정(처음엔 ×1.0), 예약 이벤트/좋아요 코드, 해골왕 HP = Base×(1+0.25×(참가자−1)).
+  - ~~같은 서버 친구 보너스 +5%/명(최대 20%)~~ (친구 수만큼 보상은 하지 않음, A23-68·79), 연패 보정(처음엔 ×1.0), 예약 이벤트/좋아요 코드, 해골왕 HP = Base×(1+0.25×(참가자−1)).
   - 업데이트 약속 대신 Config 에 이벤트를 미리 예약해 두기.

@@ -1,5 +1,7 @@
 # 소리 빠진 사건 대조 — 2026-10-07 밤 (소리 만들기, 읽기만)
 
+> 기록용(10/07 당시). 지금과 다른 점: 여기 적힌 소리 키 다수(SwingArrow·HitCrit·Jump·Equip·Spend·RankUp·SkillLearn·SkillReady·KingDefeat·Loot 등)는 그 뒤 `Config.Audio`에 연결됨(ab708339, 남은 이벤트 10개 f78959ce) — 남은 것은 `sound_play_check_2026-10-07.md`로 Play에서 확인(10/08 결과 `docs/art/verification_2026-10-08/sound_play/sound_play_table_2026-10-08.md`)(최신: SPEC A23-67). 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 검수 요청: 설계서 `docs/design/sound_spec_2026-10-07.md` §4-2·§5와 코드(`Audio.luau`, `Config.Audio`, 서버 `Net.Fx`·`Net.Notify` 호출)를 대어 보고 소리가 없거나 틀린 사건을 모은다. 코드는 origin/main(1f7113e 무렵)을 읽기만 했다. `src/`는 고치지 않았다. 고칠 사람: 개발 1(클라이언트 Audio·Config.Audio), 개발 2(서버 필드).
 
 ## A. 파일은 생겼는데 게임에 연결이 안 된 것 (업로드 id가 오면 개발 1)

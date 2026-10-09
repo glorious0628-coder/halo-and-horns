@@ -1,5 +1,7 @@
 # 왕 슬라임 금 왕관 붙이기 (style drift #25, 검수 OK 10/08)
 
+> 기록용(10/08 당시 붙이는 법; Prince 왕관은 10/09 메인 저장에 들어감, d82722bc). 지금과 다른 점: BigSlime 화면 이름은 Slime Prince(A23-84), 결정석 없는 파란 몸 + 작은 금 왕관(A23-92), 옛 메시 고쳐 쓰기 대신 새 Tripo 모델로 다시 만들 차례(초원 차례 ④, 최신: SPEC A23-96·A23-97, `remake_list_2026-10-09.md` P1 #1). 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 - 어느 모델: `ServerStorage.CustomModels.BigSlime`(왕 슬라임)만. 일반 Slime에는 붙이지 않음. 메시 = `art/models/tripo/KingSlimeCrown.glb`(단색 금, 텍스처 없음 → MeshPart Color (255,153,15) · Material Metal 또는 SmoothPlastic), 몸 메시 = `MonsterSlimeCube_backfix.glb`(뒷면 자국 지운 판).
 - 위치·크기: 두 GLB는 같은 좌표에서 만들어짐. 몸 MeshPart 높이를 H(스터드)라 하면 왕관 MeshPart Size = (0.458, 0.379, 0.457)·H, 왕관 중심 = 몸 MeshPart 중심 + 몸의 로컬 축으로 (-0.036, +0.384, -0.147)·H (가져온 그대로의 X·Y·Z, 몸에 회전을 따로 줬으면 같은 회전을 왕관에도).
 - 붙이는 법: 왕관 Anchored=false, CanCollide=false, CanQuery/CanTouch=false, Massless=true → WeldConstraint(Part0 = 몸 MeshPart, Part1 = 왕관)로 용접, 모델 안에 넣어 애니메이션·피격 흔들림을 같이 따라가게. 크기 바꾸는 효과(ScaleTo)가 있으면 모델 단위로 함께 바뀜.

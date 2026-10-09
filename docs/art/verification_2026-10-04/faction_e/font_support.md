@@ -1,5 +1,7 @@
 # 승인 E 한글 글씨 지원 조사
 
+> 기록용(2026-10-09 검수): 2026-10-04 조사 기록이다. 그 뒤 게임 글은 영어만(SPEC A23-48, 글꼴 Denk One + Montserrat — A23-63)이고 E 카드는 꺼졌다. 한국어 버전은 나중에 따로 낸다(A23-89).
+
 2026-10-04. 읽기 전용 조사이며 게임 코드·폰트 파일·PNG를 변경하지 않았다. Studio 호출·폰트 다운로드·유료 호출 0. 원자료와 SHA는 [font_support.json](font_support.json)에 저장했다.
 
 | 후보 | Google 공식 메타데이터 | Roblox 공개 FontFamily 검색 |

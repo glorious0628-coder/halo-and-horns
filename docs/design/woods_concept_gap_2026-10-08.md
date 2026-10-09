@@ -1,5 +1,7 @@
 # 고블린 숲 — 시안 대 지금 (A23-76 다음 구역, 이미지 생성 1, 2026-10-08 밤)
 
+> 기록용(2026-10-08 당시). 지금과 다른 점: 키우기·색만 바꾸기·다른 구역 소품 빌려 쓰기(W_Boulder 확대, W_Tree_A_Deep, Kit_X_Barrel 등) 대신 숲 전용 새 모델(최신: SPEC A23-96, `remake_list_2026-10-09.md`); 숲은 ⑤번째 구역이라 앞 구역이 끝난 뒤(A23-97), 기준은 새 시안 묶음(A23-93). 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 - 시트: `art/review/world/woods_concept_vs_now.jpg` (시안 | 지금 야영지 길 | 지금 위에서)
 - 지금 사진은 10/08 낮 메인 Edit(`docs/art/verification_2026-10-08/zones_gap/woods_*.jpeg`)이에요. D8 숲 6종(BushA·BushB·Fern·MossRock·Mushrooms·Banner)은 만들었지만 아직 배치 전이에요. 메인 반영 뒤 같은 자리 사진은 검수가 다시 찍어요.
 

@@ -1,5 +1,7 @@
 # 이미지 생성 1 인계 (2026-10-07, 계정 정리 — 다음 계정이 이어서)
 
+> 기록용(2026-10-09 검수): 10/07 계정 정리 기록이에요. 읽는 순서·큐·잔액은 그날 것이고(3b·유적 HD는 그 뒤 10/07~08에 이어서 함, `art/models/tripo/records.json`), 지금 할 일은 `docs/handoff/role_prompts/06_img1.md`(Tripo 웹 25,000 계정 HD, SPEC A23-96)예요.
+
 읽는 순서: `AGENTS.md` → `docs/handoff/review_handoff_2026-10-07.md`(검수 인계) → 이 파일 → `docs/handoff/image_gen_status_2026-10-07.md`(오늘 상세).
 **지금 도는 작업 없음**(Firefly·Tripo 모두 끝남). 새 유료 작업은 검수 지시 뒤에.
 

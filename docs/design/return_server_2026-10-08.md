@@ -22,6 +22,7 @@
   - 선택 2개 미만 → "". |착한 수 − 나쁜 수| ≤ 전체의 1/5(내림) → **Balance Walker**. 빛: 착한 쪽이 많으면 **True Knight**, 나쁜 쪽이면 **Rebel Angel**.
     뿔: 나쁜 쪽 **Proud Rascal**, 착한 쪽 **Soft-Hearted Devil**. 장인 길드·진영 없음 → "". 판단·설교·능력치 없음.
   - 선택할 때(StoryQuestService.Picked)와 진영이 바뀔 때 바로 다시 계산.
+  - → 2026-10-09(A23-86): 되풀이 선택 카드와 게시판 Kind/Sneaky도 센다 — 5번(`Config.MyWay.RepeatPer`) = 이야기 선택 1번, 합계는 이야기 몫을 넘지 않음, `ChoiceCard.Picked` 때도 다시 계산(`docs/design/choice_card_server_2026-10-09.md`).
 - 배지(BadgeService:AwardBadge, pcall): ChoseSide(진영 고름) · FirstSlime(첫 처치) · LostLunchbox(Lunch1 끝) · Stronger(2티어 이상 무기
   보유 — 첫 무료 무기는 아님) · FirstSkill(첫 스킬 배움) · ShardChoice(S0 끝) · Rank2(진영 계급 2) · Halloween2026(2026 시즌에 사탕을
   얻거나 대왕을 함께 잡음). `Config.Badges.Ids`가 0이면 묻지 않음 → **게시 때 사용자가 배지 8개를 만들고 id를 붙여 넣으면** 다음

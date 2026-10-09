@@ -1,4 +1,6 @@
 # Glorious Studio 홈페이지 — 인계 (2026-10-08, 검수 → 다른 계정)
+> 기록용(10/08 첫 인계, HTML 쓰기 전). 지금과 다른 점: 사이트는 공개됨(https://glorious.ai.kr, GitHub Pages), 아래 '남은 일'은 끝났거나 `HANDOFF_homepage1_2026-10-08.md`의 '남은 일'로 넘어갔고, 홈페이지 세션은 지워짐.
+> 지금 기준: `docs/website/HANDOFF_homepage1_2026-10-08.md`(고치는 방법 = `index.html` → `build_site.py`) · AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
 
 사용자: "스타트업 지원(Claude) 받고 싶은데 웹사이트를 하나 만들어야겠어, 간단하게." 사용자가 주간 한도 때문에 다른 계정에서 이어 하기로 함. **아직 HTML은 한 줄도 안 씀.** 조사·사실·사진까지 끝남.
 

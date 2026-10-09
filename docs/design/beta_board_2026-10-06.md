@@ -1,4 +1,6 @@
 # 베타 진행판 (검수 세션, 2026-10-06)
+> 2026-10-09 검수: 이 판은 10/07 15:34 뒤로 고치지 않음 — '한눈에'·'일할 수 있는 양'·날짜별 할 일·개발2·질문 절은 낡음, 맨 아래 '항목 상태' 표도 10/07 기준(예: BB3·BB10·BB13·BB15는 main에 있음, PET-2·PET-4는 10/09 main ae1fa582 병합)(세션 10개 `docs/handoff/role_prompts/README.md`, 메인 Studio = 메인 반영 1, 게임은 영어만 A23-48, 스킬 Lv5·15·25 A23-71, 비공개 게시 시험 10/17~20 A23-90).
+> 지금 할 일·일정: `docs/handoff/review_handoff_2026-10-09.md` §8·§9, `docs/RELEASE_PLAN.md`('자를 순서표'), `docs/design/system_review_round1_2026-10-09.md`, `docs/design/remake_list_2026-10-09.md`.
 
 원자료: `docs/design/beta_board_2026-10-06.json` (항목 194개, 코드·커밋·증거로 상태 확인). 10/12·10/17·10/20 점검 때 이 판을 새로 고친다.
 

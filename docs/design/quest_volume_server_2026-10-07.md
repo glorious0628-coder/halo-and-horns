@@ -23,10 +23,10 @@
 
 ## 2. E11 사냥터 게시판 (BoardService, 검수 OK 2026-10-07)
 - **스위치:** `Config.Board.Enabled = false`(기본). 꺼져 있으면 게시판 원격은 아무것도 안 하고 QuestService는 지금처럼 '추가' 퀘스트를 만든다(검사로 지킴). **게임성 개발 1 게시판 화면이 들어오는 날 true로** — 그때부터 받은 일일 칸은 비고(`{ Kind = "Empty" }`, 목록에 안 나옴, 바꾸기 안 됨, 다음 날 일일로 다시 참), 게시판이 그 역할을 한다.
-- **게시판 2곳:** `Config.Board.Boards` — Meadow(`Landmarks.MeadowBoard` = 초원 도착 지점 옆 (220,0,10), Lv1 값) / Woods(`Landmarks.WoodsBoard` = WoodsGate (474,0,0), PvP 밖, Lv10 값). 서버는 플레이어가 그 자리에서 `Range` 14칸 안일 때만 받는다(자리를 옮기면 Landmarks만 고치면 됨).
+- **게시판 2곳:** `Config.Board.Boards` — Meadow(`Landmarks.MeadowBoard` = 초원 도착 지점 옆 ~~(220,0,10)~~ → (230,0,12), Lv1 값) / Woods(`Landmarks.WoodsBoard` = WoodsGate ~~(474,0,0)~~ → (636,0,0), PvP 밖, Lv10 값). 서버는 플레이어가 그 자리에서 `Range` 14칸 안일 때만 받는다(자리를 옮기면 Landmarks만 고치면 됨).
 - **카드:** 플레이어마다 게시판마다 4장, J1~J10 틀(목표 `Obj`는 이야기 단계와 같은 판정 = `StoryQuestService.EventAmount`). J7(자동 전투)은 자동 전투를 연 뒤에만. 숲 게시판은 늘 J6(골드)이나 J10(입구 지키기 15초) 중 하나가 있음(PvP 밖에서 되는 카드). 받거나 바꾼 자리에는 지금 판에 없고 최근 두 틀도 아닌 새 카드. 바꾸기 60초에 한 번.
-- **들고 다니기 3개.** 다 하면 **바로 지급**: `HuntValue(게시판 Level, 1)`(초원 36골드+60XP, 숲 192+336), 그날(KST) 10개 뒤는 절반, 그날 5번째 의뢰는 30% 주문서 1장 더(하루 한 번). 고른 쪽은 `data.Story.N.Kind / Sneaky`에만 셈(명예·악명·랭킹 0). 토스트 "Job done! +36 gold · +60 XP" + "Your shard leaned to the light./dark.". 시간 제한·실패 없음.
-- **목록:** `BoardService.JobRows` → QuestService 목록에 `Kind = "Job"` 줄(Id "job:N", Text = 목표 줄 예 "King Slime 0/2", Progress/Target, CanClaim false, `Job = { Board, Side, Card, Guide = 그 사냥터 zone }`). M1_4 뒤 첫 의뢰 전까지 "Job Board · tap for directions" 줄 하나(Id "job:board", `Job.Guide = "MeadowBoard"`).
+- **들고 다니기 3개.** 다 하면 **바로 지급**: `HuntValue(게시판 Level, 1)`(초원 36골드+60XP, 숲 192+336), 그날(KST) 10개 뒤는 절반, 그날 5번째 의뢰는 30% 주문서 1장 더(하루 한 번). 고른 쪽은 `data.Story.N.Kind / Sneaky`에만 셈(명예·악명·랭킹 0). (→ A23-86 결정 1: 이제 하루 장부 `Deeds.Add`로 명예·악명 +1 / 반대 −1, 하루 6점까지. 랭킹 점수는 여전히 0, BoardService.) 토스트 "Job done! +36 gold · +60 XP" + "Your shard leaned to the light./dark.". 시간 제한·실패 없음.
+- **목록:** `BoardService.JobRows` → QuestService 목록에 `Kind = "Job"` 줄(Id "job:N", Text = 목표 줄 예 ~~"King Slime 0/2"~~ → "Slime Prince 0/2"(BigSlime 화면 이름, A23-84), Progress/Target, CanClaim false, `Job = { Board, Side, Card, Guide = 그 사냥터 zone }`). M1_4 뒤 첫 의뢰 전까지 "Job Board · tap for directions" 줄 하나(Id "job:board", `Job.Guide = "MeadowBoard"`).
 - **원격 계약(게임성 개발 1):**
   - c→s `BoardAction(boardId, action, slot?, side?)`: `"Open"`(창 열기, 게시판 ProximityPrompt에서) / `"Take", slot 1~4, "Kind" | "Sneaky"` / `"Reroll", slot`. 인자 더 있으면 무시, 속도 제한 `RateLimits.BoardAction` 0.3초.
   - s→c `Board`(그 플레이어만): `{ Board, Cards = { { Slot, Id, Kind = 왼쪽 버튼 글, Sneaky = 오른쪽 버튼 글, Goal = 목표 줄, Target, RewardGold, RewardXP } ×4 }, Held, Hold, Done(오늘 한 수), FullPerDay, Kind, Sneaky(지금까지 고른 수), RerollAt(os.time, 바꾸기 가능 시각) }` — Open·Take·Reroll 뒤마다 보냄.
@@ -40,9 +40,10 @@
   - 진영: H·R은 빛/뿔만, S6·GW4·GW5는 빛·뿔(S6은 진영별 단계: 빛 = 초원 도착 지점 슬라임 5 / 뿔 = 사냥 골드 80 → 우리 마을), 나머지는 모두(장인 저장은 Neutral A/B 이름).
   - 말하는 이: Tiny(XR1, NPC 말 걸기), Bright(H2·H5·H6, H5만 NPC), Smokey(R5·R6·R7, R6만 NPC), Grabbo(GW1·GW7), Sir Gleam(H3)·Rascal Rex(R3)(Speakers `Gleam`·`Rex`, 베타는 이름만), Fountain Shard(GW5), 안내자(이름 없는 줄 = 내 진영 안내자).
   - 대사: quest_volume 표의 한 줄 + A/B 그대로, story_depth §3·§5 ⑤(GW1 회의) 그대로, 모자란 1~2쪽은 같은 말투로 채움(검수 ⑭ 검사기로 훑음). H2 등불 안 줄은 lines_pack 1-5 ③ 고친 줄("a tiny 'B.' scratched in"). GW1 끝에 그로보 반응(LinesBy 자기 Pick), GW7 1쪽은 GW1에서 고른 쪽 기억(LinesBy From=GW1).
-- 새 랜드마크: `HeroStatue` (0,0,−360) 빛의 성채 영웅의 길, `LavaCrack` (48,0,400) 뿔 소굴 용암 수로(지도 v2 때 개발 1 확인). 마커 Guide 키로도 씀.
+- 새 랜드마크: `HeroStatue` ~~(0,0,−360)~~ → (0,0,−370) 빛의 성채 영웅의 길, `LavaCrack` ~~(48,0,400)~~ → (48,0,410) 뿔 소굴 용암 수로(지도 v2 때 개발 1 확인, 지금 Config 값). 마커 Guide 키로도 씀.
 - **목록 순위 고침(서브가 많아져서):** 0 = 받기·**진행 중** 대화/선택 카드, 1 = 상황(거위), 2 = 시작한 서브·S0, **3 = 새로 열린 제안(첫 대화 카드)**, 4 = 나머지, 같은 순위는 새 퀘스트 먼저. 새 제안이 진행 중인 마을 퀘스트를 밀어내지 않는다(검사).
 - 검사: test_town_quests subs18-data·subs18-offered·subs18-flow + max-subs 갱신 — 431검사, 변이 69/69.
 
 ## 4. 다음
+> 2026-10-09 검수: 이 절은 낡음 — ③ 몬스터 한마디(BarkService)는 main에 있고, PET-2·PET-4도 main에 들어감(ae1fa582). 게시판은 개발 1 창이 아직 없어 `Config.Board.Enabled = false` 그대로. 지금 일 순서는 `docs/handoff/review_handoff_2026-10-09.md` §8·§9.
 - ③ 몬스터 한마디(lines_pack §2, BarkService 따로 + MonsterService 신호 한두 줄, Main ORDER와 같은 커밋) → BB38 이벤트 → PET-2·4 …

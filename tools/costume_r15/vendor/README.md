@@ -1,3 +1,5 @@
+> **RETIRED 2026-10-06: costumes removed, A23-5.** 치비 3D 코스튬 도구(`tools/costume_r15`)와 함께 은퇴. 아래 설치(`install_animate.py --apply`)는 하지 않는다. 기록용으로만 남긴다.
+
 # 기본 R15 Animate 보존 기록
 
 2026-10-03 GoodEvil의 Play 서버에서 로블록스가 기본 생성한 R15 캐릭터의 `Animate`를 직접 읽어 보존했다. 코스튬/원복 표시가 없었으며 `StarterCharacter`와 `StarterCharacterScripts.Animate` 사용자 정의도 없었다. 기본 Animate를 사용자 정의 LocalScript로 교체하는 규칙은 [Roblox 공식 문서](https://create.roblox.com/docs/reference/engine/classes/StarterCharacterScripts)에 있다.

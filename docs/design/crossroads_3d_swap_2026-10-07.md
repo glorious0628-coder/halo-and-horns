@@ -1,5 +1,7 @@
 # 교차로 3D 바꾸기 자리 표 (이미지 생성 1, 2026-10-07 밤)
 
+> 기록용(10/07 당시). 지금과 다른 점: 교차로는 구역 순서 ③ — 시안 묶음(전체 1 + 부분 5)대로 다시 배치하고, 다른 구역 키트(Kit_M_SignPost 등)는 빌려 쓰지 않고, 색만 바꾼 가판대(StallBlue/Green)도 제 모델로·가판대 지붕은 단색(`remake_list_2026-10-09.md` P2·③); 메인 Studio 배치는 메인 반영 1(10/08부터; 최신: SPEC A23-93·A23-96·A23-97). 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 검수 요청(10/07 21:3x): "교차로 소품 표지판(Kit_M_SignPost)·가로등(Kit_X_Lamp, 가져오기 후) 배치 자리 표 — 메인 Studio는 건드리지 않음, 개발 1이 넣음".
 
 - **자리 출처:** 커밋된 장소 `place/GoodEvil.rbxlx`(ce27afa, 10/07 14:06)의 `Workspace.Map.Decor.CrossroadsKit` 37개(옛 21종 키트 K_*, `tools/worldkit/crossroads_kit_main.luau`가 놓은 것). 메인은 그 뒤에 바뀌었을 수 있으니 **이름으로 찾아서** 그 자리를 쓰세요(표의 좌표는 확인용).

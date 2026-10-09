@@ -1,15 +1,28 @@
 # TECH_SPEC — Halo & Horns (선악 키우기) MVP v2
 
+> **2026-10-09 검수 — 이 문서는 10/02 MVP v2의 원래 계약이다(일부만 고쳐 둠).** 지금 계약은 `SPEC_ADDENDUM.md`
+> (A23 안에서는 번호가 클수록 최신, 10/09 기준 A23-99까지)와 `src/` 코드다. 이 문서와 다르면 그쪽이 맞다. 크게 바뀐 곳:
+> - 전투: 충전·발사·PERFECT 없음 → 수동 한 번 = 공격 한 번 + 자동 전투 켜기/끄기(왕관 조각 퀘스트로 해금, Lv5 첫 스킬 뒤, 몬스터만; A22·A23-1·A23-71).
+>   스킬 = 직업마다 3칸, Lv5·15·25에 배움(`Config.Skills.Unlock` Q=5·Z=15·X=25 — Q·Z·X는 내부 칸 이름이고 기본 키는 Z·X·C, A23-78; 원격 `UseSkill`; A23-49·A23-71). 단 Z·X 칸은 10/20 점검에서 켤지 정한다 — 지금 `Config.Skills.ZEnabled`·`XEnabled` = false(A23-86 결정 3). 기본 공격 = 앞쪽 반원(A23-61).
+>   맨손으로 시작하고 첫 무기는 대장간에서 받는다(A23-34·A23-74), 대장간까지 걸어간다(A23-88).
+> - 글: 게임 화면은 영어만(A23-48). 아래의 한국어 문구·`Config.Text` 예시는 옛 것이다.
+> - 저장 `Config.Data.Version = 3`, 새 필드가 많다(§6.1 메모). 원격은 52개(§4.2·§5 메모). 서버 서비스 48개, 클라이언트 모듈 37개(§2·§7 메모).
+> - 대장간 = 사고팔기(`UpgradeWeapon(tier)`·`SellWeapon`, A23-4). 무기 8단계(T8 = 전설 드랍, A23-12). 강화 주문서(A23-11·A23-12). 환생 = 레벨만 초기화(A23-14).
+> - 돈: 베타 전 게임 패스(2배 경험치 199·2배 골드 149·VIP 249·후광/뿔 치장 99) + 개인 서버 100(A23-75). 변경권은 베타에서 안 판다(A23-28). 능력치는 절대 안 판다.
+> - 진영 `Neutral`(장인 길드)은 코드에 있지만 베타에서 새로 못 고른다(A6·A23-57). 플레이어 = 본인 Roblox 아바타 + 직업 무기 + 후광/뿔, 베타는 R15만(A23-5·A23-28).
+> - 화면 배치·키는 A23-40·A23-74·A23-78·A23-94·A23-98(PC 먼저)이 정한다. 아래 §4.23의 HUD 표·키는 옛 것이다.
+> - 작업 방식: G1~G12 병렬 구현과 "copy verbatim" 규칙은 10/02 기록이다. 지금 세션(10개)·역할은 `docs/handoff/role_prompts/README.md`, Studio·커밋 규칙은 `AGENTS.md`가 정한다(메인 Studio sync·Play·저장 = 메인 반영 1, `01_mainapply.md`).
+>
 > **2026-10-05 최신 사용자 변경:** `SPEC_ADDENDUM.md` **A23**이 이 문서보다 우선한다 — 수동 전투 + 왕관 조각 선택 퀘스트로
 > 얻는 자동 전투 켜기/끄기(자동은 몬스터만), 대장간 선택 구매/판매 계약(옛 "UpgradeWeapon = 다음 티어 자동 장착" 대체),
-> 환생 시 보유 무기 초기화, 치비 3D 코스튬 제거, Firefly 그림. 아래 §1.1의 "No asset IDs"(지금은 승인 이미지 ID를 `Config.UIArt`로 사용)와
-> "Do NOT run sync_to_studio/playtest/build_place — the lead does integration"(지금은 작업 세션이 통합·플레이 테스트를 한다;
+> ~~환생 시 보유 무기 초기화~~ → 환생은 레벨만 초기화, 골드·무기 유지(A23-14), 치비 3D 코스튬 제거, Firefly 그림. 아래 §1.1의 "No asset IDs"(지금은 승인 이미지 ID를 `Config.UIArt`로 사용)와
+> "Do NOT run sync_to_studio/playtest/build_place — the lead does integration"(사용자 10/08부터 메인 Studio sync·Play·저장은 메인 반영 1 세션만 한다;
 > `build_place.py`는 여전히 실행 금지)은 과거 규칙이다. 규칙 순서는 `AGENTS.md` "Which rule wins".
 >
 > **2026-10-04 사용자 변경:** 사용자가 자동 전투 방향에서 마음을 바꿔 수동 전투를 선택했다.
 > `SPEC_ADDENDUM.md` **A22**와 `GDD.md` **§0-2**가 이 문서의 자동 공격·충전 게이지·PERFECT·자동 발사·스택 조건,
 > 다음 해금 예고 및 옛 튜토리얼 계약보다 우선한다. 아래 v2 코드 예제·피해 계산·검사 목록의 해당 부분은 과거 기준이다.
-> 현재 스킬은 MP·재사용 시간으로 동작하며 기본 구현값은 MP20·3초다. 과거 기능을 복구하지 않는다.
+> 현재 스킬은 MP·재사용 시간으로 동작하며 기본 구현값은 MP20·3초다(→ 지금 스킬 규칙은 위 10/09 메모). 과거 기능을 복구하지 않는다.
 > 현재 소스 반영과 실제 Studio 통합 검증 완료는 구분한다. 새 실행 검증은 2026-10-06 작업 재개 후 진행한다.
 
 Audience: implementer agents writing files **in parallel without talking to each other**. Every cross-file contract
@@ -18,17 +31,19 @@ is defined here. **If something is not in this document, do not invent a public 
 inside your own file. If this spec and your intuition disagree, follow the spec.
 
 Companion design doc (Korean, for the human): `docs/GDD.md`. This spec implements GDD Milestones A + B + C **plus** the v2
-systems: Size Justice (덩치 저울), Grudge Bag (원한 돈자루), Charge & Release (자동은 장전, 손은 발사), Wanted Kaiju
-(수배범 괴수화), Golden Goose Tug (황금 거위 줄다리기) + Regular's Luck, Turncoat Rebirth (전향 환생), Daily quests +
-Vacation bonus, Classes (직업), Light story (세계관 문구), Robux change tickets (변경권). All of it is in the MVP build.
+systems: Size Justice (덩치 저울), Grudge Bag (원한 돈자루), ~~Charge & Release (자동은 장전, 손은 발사)~~ (removed: A22, A23-1), Wanted Kaiju
+(수배범 괴수화), Golden Goose Tug (황금 거위 줄다리기) + Regular's Luck (→ Today's Luck, A23-18), Turncoat Rebirth (전향 환생), Daily quests +
+Vacation bonus, Classes (직업), Light story (세계관 문구), Robux change tickets (변경권; not sold in the beta, A23-28). All of it is in the MVP build.
 
 v2 removed these v1 contracts — do not implement or reference them: faction skills (`UseSkill` remote, `SkillReadyAt`,
-`SkillUsed`, Fx `Skill`, `Config.Factions.*.Skill`), the percentage underdog bonus (`Config.Underdog`, `GetUnderdog`,
+`SkillUsed`, Fx `Skill`, `Config.Factions.*.Skill`) (2026-10-09: a NEW `UseSkill(slot)` remote for the 3 class skills came back
+with SKL-2, A23-49 / A23-71, and the attributes `SkillReadyAt` / `SkillReadyAtZ` / `SkillReadyAtX` are the class-skill
+cooldowns — the old faction-skill contract stays removed), the percentage underdog bonus (`Config.Underdog`, `GetUnderdog`,
 GameState `UnderdogFaction`/`UnderdogTier`), the 10-level-gap rule, the "2 KOs in 10 min" anti-camp immunity, the 50%
 justice refund (`JusticeRefundRate`, `stolenThisLife`), the "first switch free + 30 min" rule, and everything named
 `Sword*` (now `Weapon*`).
 
-> **Later changes:** `docs/SPEC_ADDENDUM.md` (A1–A23, newest first) overrides this document where they conflict. Code review R1
+> **Later changes:** `docs/SPEC_ADDENDUM.md` (A1–A23, newest first; inside A23 the higher number is newer) overrides this document where they conflict. Code review R1
 > (2026-10-03) changed many contracts below; they are marked "R1 / CR-xx" here and listed in full in **A16**.
 
 ---
@@ -36,14 +51,22 @@ justice refund (`JusticeRefundRate`, `stolenThisLife`), the "first switch free +
 ## 1. Overview & architecture
 
 ### 1.1 Hard rules (apply to every file)
-- Single Roblox place. Source in `C:/Users/glori/Documents/Game/src`, Rojo-style layout, built by `tools/build_place.py`
-  into `build/GoodEvil.rbxlx`. `*.server.luau` = Script, `*.client.luau` = LocalScript, `*.luau` = ModuleScript,
-  directories = Folder. No `init.*` files are used in this project. No `.rbxm`/model files.
-- **No asset IDs** of any kind (no `rbxassetid://`, no `http://www.roblox.com/asset`). Allowed: Parts, Materials, Colors,
+- Single Roblox place. Source in `C:/Users/glori/Documents/Roblox/Game/src`, Rojo-style layout (no Rojo installed).
+  ~~built by `tools/build_place.py` into `build/GoodEvil.rbxlx`~~ → 2026-10-09: the 메인 반영 1 session runs `py tools/sync_to_studio.py`
+  (only from code equal to origin/main, AGENTS.md Hard rule 5) to push `src/` into the open main Studio (cloud place
+  81671223175574); it is saved with File > Save to File As `build/GoodEvil.rbxlx` and copied
+  to `place/`. Never run `tools/build_place.py` without arguments (AGENTS.md). `*.server.luau` = Script, `*.client.luau` = LocalScript, `*.luau` = ModuleScript,
+  directories = Folder. No `init.*` files are used in this project. No `.rbxm`/model files in `src/` (2026-10-09: 3D models
+  are imported into the place itself — monsters, goose and pets in `ServerStorage.CustomModels`, A1 / A23-47).
+- ~~**No asset IDs** of any kind (no `rbxassetid://`, no `http://www.roblox.com/asset`).~~ → approved image / sound ids
+  are used through `Config.UIArt` and `Config.Audio` (A17, A23-7, A23-67); a few free Creator Store / Roblox ids stay in
+  the module that uses them (e.g. `FountainFx` particle textures, `Fx` tool animations); `Config.CustomModels` only names the
+  `ServerStorage.CustomModels` folder (A1). Still allowed: Parts, Materials, Colors,
   BillboardGui/SurfaceGui, ParticleEmitter (default texture), Highlight, PointLight, ForceField, built-in
   `rbxasset://sounds/*.wav` files listed in `Config.Sounds` (optional; failure to load must be silently ignored).
 - The map is generated by `MapBuilder` (or reused if a pre-baked `workspace.Map` exists, §4.6). All UI is built at
-  runtime by client modules. All player-facing text is **Korean** and lives in `Config.Text` / `Config.Story` (or other
+  runtime by client modules. All player-facing text is ~~**Korean**~~ **English only** (A23-48, easy English for kids,
+  `docs/design/glossary_en_2026-10-06.md`) and lives in `Config.Text` / `Config.Story` (or other
   Config tables). Code comments/identifiers in English.
 - Server-authoritative: damage, gold, XP, level, bounty, stars, charge stacks, sacks, events, tickets, purchases, quests
   are computed on the server only. Clients send **intents** through RemoteEvents; every handler validates (ready check,
@@ -55,7 +78,8 @@ justice refund (`JusticeRefundRate`, `stolenThisLife`), the "first switch free +
   (exposed as `Util.Now()`) for any timestamp sent to clients through attributes; `os.time()` only for persisted
   timestamps and day math (`LastSwitchTime`, `FirstJoinTime`, `LastLogoutTime`, `Config.DayIndex`, session lock).
   `Util.Now()` and `os.time()` are both Unix seconds, so the client may compare `LastSwitchTime` with `Util.Now()`.
-- Faction ids are exactly `"Halo"`, `"Horns"`, `"None"`. Class ids are exactly `"Warrior"`, `"Mage"`, `"Archer"`.
+- Faction ids are exactly `"Halo"`, `"Horns"`, `"None"` (+ `"Neutral"`, the artisan guild, A6; no new Neutral pick while
+  `Config.Features.NeutralFaction = false`, A23-57). Class ids are exactly `"Warrior"`, `"Mage"`, `"Archer"` (Neutral `"Archer"` is shown as the Pet Tamer, A23-39).
   Zone ids exactly as in `Config.ZoneOrder` plus `"Outskirts"`.
 - **Logging (console must be diagnosable — the lead tests live in Studio via MCP and reads the Output):**
   every server service prints exactly one line `[<ServiceName>] started` as the **last statement of its `Start()`**
@@ -63,10 +87,13 @@ justice refund (`JusticeRefundRate`, `stolenThisLife`), the "first switch free +
   `Start()`. Every `warn` starts with `[<ServiceName>] ` (use `Util.Warn(tag, msg)`). No other per-frame/per-swing prints.
 - **Syntax check before you finish:** `py tools/luau_check.py <paths under src/>` (e.g.
   `py tools/luau_check.py ServerScriptService/CombatService.luau`). It compiles your files with the real Roblox compiler
-  (loadstring in the open Studio, nothing is executed). Fix every error it reports. **Do NOT run
-  `tools/sync_to_studio.py`, `tools/playtest.py` or `tools/build_place.py`** — the lead does integration and play tests.
-- Robux: only `MonetizationService` touches `MarketplaceService` on the server (it owns `ProcessReceipt`). The only
-  client use is `MarketplaceService:PromptProductPurchase` in `Panels` when the product id is not 0.
+  (loadstring in the open Studio, nothing is executed). Fix every error it reports. ~~**Do NOT run
+  `tools/sync_to_studio.py`, `tools/playtest.py` or `tools/build_place.py`** — the lead does integration and play tests.~~
+  → since 2026-10-08 (user): only the 메인 반영 1 session syncs, plays and saves the main Studio (`docs/handoff/role_prompts/01_mainapply.md`); `tools/build_place.py` is still never run.
+- Robux: only `MonetizationService` touches `MarketplaceService` on the server (it owns `ProcessReceipt` and the A23-75
+  game-pass checks `UserOwnsGamePassAsync` / `PromptGamePassPurchaseFinished`). Client prompts: `PromptGamePassPurchase` in
+  `ShopUI` (A23-75 passes / looks) and `PromptProductPurchase` in `Panels` / `ShopUI` (change tickets, not sold in the beta, A23-28),
+  only when the id is not 0.
 - Character size: only `JusticeService` calls `Model:ScaleTo` on characters (always through `Util.SafeScaleTo`).
   Everyone who builds parts on a character multiplies sizes/offsets by `character:GetScale()` at build time.
 
@@ -74,13 +101,19 @@ justice refund (`JusticeRefundRate`, `stolenThisLife`), the "first switch free +
 - Game Settings > Security: **Enable Studio Access to API Services** (to test saving; game still runs without it).
 - Max players per server: **20** (Game Settings > Places after publishing). `Config.Game.MaxPlayers` documents it.
 - Avatar: R6 or R15 both supported (all code must handle both rigs: look for `RightHand` then `Right Arm`,
-  `UpperTorso` then `Torso`).
-- Workspace.StreamingEnabled: leave **false** for the MVP.
-- Developer Products (after publishing): create **two** consumable Developer Products on create.roblox.com
+  `UpperTorso` then `Torso`). 2026-10-09: the beta place is **R15 only**; R6 is allowed again at the full launch (A23-28).
+- Workspace.StreamingEnabled: leave **false** for the MVP. (2026-10-09: still `false` in `place/GoodEvil.rbxlx`; A23-47 /
+  A23-53 list StreamingEnabled for phone performance, not turned on yet.)
+- ~~Developer Products (after publishing): create **two** consumable Developer Products on create.roblox.com
   (직업 변경권 ≈ 49 R$, 진영 변경권 ≈ 79 R$) and paste their ids into `Config.Products.*.Id`. While an id is 0 the buy
-  buttons show "상품 준비 중" and nothing can be bought.
+  buttons show "상품 준비 중" and nothing can be bought.~~ → 2026-10-09: change tickets are not sold in the beta (A23-28).
+  At publish the user creates the A23-75 game passes (2x XP 199, 2x Gold 149, VIP 249, faction looks 99 each) and turns on
+  private servers (100 R$ / month), then pastes the ids into `Config.GamePasses` / `Config.Looks`; while an id is 0 the
+  shop shows "Coming soon" (`docs/design/launch_ops_checklist.md`).
 
 ### 1.3 Architecture diagram
+
+> 2026-10-09 검수: 이 그림은 낡음(10/02의 서비스 19개·클라이언트 7개·원격 16개). 지금은 서버 서비스 48개(`Main.server.luau`의 INIT_ORDER), 클라이언트 모듈 37개(`ClientMain.client.luau`의 ORDER), 원격 52개(`Net.Names`)이고, 충전·발사 칸은 없어졌다(A22·A23-1). 구조(Init(S)/Start, S·C 레지스트리)는 그대로다.
 
 ```
                          ReplicatedStorage
@@ -132,9 +165,11 @@ Every server ModuleScript in `ServerScriptService` (except `Main`) returns a tab
   initialized by then). Where order matters, this spec uses **direct calls** instead of signals (e.g. the death pipeline).
 
 Client modules follow the same pattern with registry `C` (`C.UIKit`, `C.Fx`, `C.HUD`, `C.EventHUD`, `C.Panels`,
-`C.FactionPicker`, `C.ClassPicker`).
+`C.FactionPicker`, `C.ClassPicker`; 2026-10-09: 37 modules, see `ClientMain.client.luau`).
 
 ### 1.5 v2 systems → owners (read the referenced sections)
+
+> 2026-10-09 검수: 이 표는 10/02 것이다. "Charge & Release" 줄은 낡음(충전 게이지 없음, `Release` 원격은 이제 첫 스킬 칸, A22·A23-1·A23-49), "Regular's Luck"는 오늘의 운(A23-18), 변경권은 베타에서 안 판다(A23-28). 그 뒤 생긴 시스템은 SPEC_ADDENDUM에서 본다: 스킬 SkillService(A23-49·A23-71), 드랍·주문서 LootService(A23-11·A23-12), 이야기 퀘스트 StoryQuestService, 랭킹 RankingService(A23-23·A23-24), 출석 AttendanceService(A23-77), 펫 PetService(A23-39·PET-2), 게임 패스·치장 MonetizationService(A23-75), 다시 오기 묶음 Return/Invite/DiaryService(A23-79), 선행 장부·선택 카드·의뢰 Deeds/ChoiceCard/CommissionService(A23-86).
 
 | System | Owner(s) | Key contracts |
 |---|---|---|
@@ -154,6 +189,8 @@ Client modules follow the same pattern with registry `C` (`C.UIKit`, `C.Fx`, `C.
 ---
 
 ## 2. File list & implementer groups
+
+> 2026-10-09 검수: 이 절은 낡음 — G1~G12 병렬 구현 그룹·줄 수 목표는 10/02 첫 구현 기록이다. 지금 파일 목록은 `src/`(10/09: 서버 `ServerScriptService` 49파일 = Main + 서비스 48, 클라이언트 `StarterPlayerScripts` 39파일 = ClientMain + ORDER 모듈 37 + HUD가 require하는 `HudLayout`)이고, 누가 무엇을 맡는지는 `docs/handoff/role_prompts/README.md`(세션 10개)가 정한다. ShopService는 사고팔기(A23-4), Panels의 Shop 칸은 변경권 대신 게임 패스(ShopUI, A23-75)다.
 
 Twelve groups. Each file is owned by exactly one group. Line budgets are targets (±30%). New logic ≈ 8,400 lines in
 G2–G12 (no group above ~850); G1 copies ≈ 1,240 lines of Shared code **verbatim** from this document.
@@ -215,6 +252,8 @@ Exact content of `Health.server.luau`:
 
 ---
 ## 3. Shared Config — `src/ReplicatedStorage/Shared/Config.luau` (G1, copy verbatim)
+
+> 2026-10-09 검수: 아래 코드는 10/02 첫 Config(약 930줄)의 사본이라 낡음 — "copy verbatim"은 하지 않는다. 지금 Config는 `src/ReplicatedStorage/Shared/Config.luau`(약 6,500줄)가 정답이다. 크게 다른 것: `Config.Game.Name = "Halo & Horns"`, 모든 글 영어(A23-48), `Config.Data.Version = 3`·`Defaults.WeaponTier = 0`(맨손, A23-34), `Config.Weapons` 8단계(T8 전설, A23-12)·`Config.WeaponShop.MaxSoldTier = 3`(A23-4), `Config.FactionOrder`에 Neutral(A6·A23-57), 구역 8개(PumpkinPatch·HauntedHollow 추가, A23-30·A23-45), 몬스터 17종(A23-84·A23-87), `Config.Skills`·`Config.Loot`·`Config.GamePasses`·`Config.Looks`·`Config.Keybinds`·`Config.Attendance` 등 새 표, `Config.Charge`(충전) 표는 남아 있지만 서비스가 쓰지 않는다(충전 게이지 없음, A22). 변경권 상품 이름은 영어, 베타에서 안 판다(A23-28).
 
 Require path everywhere: `local Config = require(game:GetService("ReplicatedStorage").Shared.Config)`.
 Nobody else hard-codes a gameplay number or a player-facing sentence. If a number you need is missing, add a **private**
@@ -1160,6 +1199,8 @@ Config.Text = {
 return Config
 ```
 
+> 2026-10-09 검수: 아래 밸런스 메모는 충전·발사 기준이라 낡음(A22·A23-1).
+
 **Balance notes (read-only, for reviewers):** Warrior baseline = `WeaponDamage` per 1.0 s swing. Idle (auto swings
 +1 stack, auto-release at cap 150 with ×1.5): `0.5 + (0.5 × 150 × 1.5) / 150 = 1.25×` baseline. Auto swings + PERFECT
 release: `0.5 + 0.5 × 150 × 4 / 150 = 2.5×`. Manual swings (+2 stacks) + PERFECT reach ≈ 4.5× (decided numbers; tune
@@ -1176,8 +1217,12 @@ local Util   = require(ReplicatedStorage.Shared.Util)
 local Net    = require(ReplicatedStorage.Shared.Net)
 ```
 Server services are reached only through the registry `S` passed to `Init(S)`; client modules through `C`.
+(2026-10-09, exceptions in code: `HUD.luau` requires the pure module `HudLayout`, which is not in ClientMain's ORDER, and
+`Intro.luau` requires Roblox's `PlayerModule` for `GetControls()`.)
 
 ### 4.1 `Shared/Util.luau` (G1, copy verbatim)
+
+> 2026-10-09 검수: 아래 코드는 10/02 사본이다. 지금 Util은 `src/ReplicatedStorage/Shared/Util.luau`가 정답이고 함수가 더 있다(예: `GlyphSafe`, `ValidateNickname`, `NicknameCanonical`, `PlayerDisplayName`). 베끼지 않는다.
 
 ```lua
 -- Util.luau : small helpers shared by server and client.
@@ -1406,6 +1451,8 @@ return Util
 
 ### 4.2 `Shared/Net.luau` (G1, copy verbatim)
 
+> 2026-10-09 검수: 아래 코드는 10/02 사본이라 낡음. 지금 `src/ReplicatedStorage/Shared/Net.luau`의 `Net.Names`는 원격 52개다(새로 생긴 것 예: `SellWeapon`·`UseItem`·`EquipWeapon`(A23-4·A23-12), `UseSkill`(SKL-2, A23-49), `IntroSeen`(A23-9), `StoryAction`, `SetSettings`·`Settings`, `RequestRankings`·`Rankings`, `Inventory`, `SetLook`(A23-75), `EquipPet`·`PetList`(PET-2), `ClaimAttendance`(A23-77), `GoToFriend`·`CandyTrade`(A23-79), `FinisherPick`(King Slime 마무리 카드, A23-84), `CardAction`·`Commission`(A23-86)). `Net.Notify`/`NotifyAll`에는 마지막 인자 `sound`(Config.Audio 키, 선택)가 붙었고, `GameStateDefaults`도 늘었다(호박 대왕·유령 왕·필드 보스·랭킹 주·스위치 등).
+
 ```lua
 -- Net.luau : remote names, creation (server), lookup (both), and send helpers (server).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -1550,6 +1597,9 @@ Behavior:
   end
   ```
   All other new keys come from the defaults fill. `print("[DataService] migrated v1 -> v2 for " .. player.Name)` once per migration.
+  2026-10-09: there is a second step **v2 → v3** (B4 / A23-12: weapon tier 8 and `Items` / `WeaponEnhance` / `LootFlags`;
+  older records keep weapon tier 1 owned, A23-34). `Config.Data.Version = 3`; later fields (`Stats`, `Looks`, `Attendance`,
+  `Pets`, …) are additive and keep version 3. `LoadRetryDelay` is now 6 s (A23-48 batch). The code in `DataService.luau` is the contract.
 - **Save**: deep-copy the session table, set `copy.SessionLock = release and nil or { JobId = game.JobId, Time = os.time() }`,
   `UpdateAsync` with transform: if stored lock exists and its `JobId ~= game.JobId` → abort (`return nil`, warn, return false,
   no retry — another server owns the data). Else `return copy`. Retry `SaveRetries` times with waits 1, 2, 4 s on errors.
@@ -1560,6 +1610,9 @@ Behavior:
   `Version > Config.Data.Version` (write and lock cancelled, nil → LoadFailed) [CR-L3].
 
 ### 4.5 PlayerService (G2) — `ServerScriptService/PlayerService.luau`
+
+> 2026-10-09 검수: 공개 함수가 아래보다 많다(예: `GrantFame`, `SpawnCharacter`, `ReplaceCharacter`, `RestoreOwnerCharacter`, `ComputeWalkSpeed`, `RefreshSpeed`, `GetLastOwnActive`, `GetLuckEvents`·`AddLuckEvent`). 단골 분(`RegularMinutes`)과 그 루프는 없어졌고(A23-18), `MarkActive(player, kind)`는 이제 쉬는 중 판정(`GetLastActive`·`GetLastOwnActive`)에만 쓴다. 실제 계약은 `PlayerService.luau`.
+
 ```
 Signals (top level):
 PlayerService.PlayerReady       : Signal(player, data)              -- data loaded, attributes + leaderstats set
@@ -1576,7 +1629,7 @@ PlayerService.AddStat(player, key, delta) -> newValue      -- numeric convenienc
 PlayerService.Respawn(player)                              -- task.spawn(player.LoadCharacter, player) if ready
 PlayerService.RefreshCharacter(player, fullHeal: boolean)  -- recompute MaxHealth + WalkSpeed (formula below)
 PlayerService.FinalizeLeave(player)                        -- idempotent: if ready -> PlayerLeaving:Fire + DataService.Release; always Util.ClearPlayer; ready = false
-PlayerService.MarkActive(player)                           -- "had input/combat now" (feeds Regular's Luck)
+PlayerService.MarkActive(player)                           -- "had input/combat now"; 2026-10-09: feeds only the idle checks (GetLastActive), no longer the luck (A23-18)
 PlayerService.GetRegularMinutes(player) -> number          -- REMOVED (A23-18): use GetLuckEvents(player) -> number (events joined today, saved)
 PlayerService.GetLastActive(player) -> number              -- R1 CR-M20: os.clock() of the last MarkActive, 0 = never
 PlayerService.IsShuttingDown() -> boolean                  -- R1 CR-M2: true once BindToClose started
@@ -1603,9 +1656,11 @@ Flow:
   owns A10), and server teleports call `ZoneService.MarkTeleported` first (A16-1).
 - `onJoin(player)`: `data = S.DataService.Load(player)`; if `player.Parent == nil` → return; if `data == nil` →
   `player:Kick(Config.Text.LoadFailed)` and return. Then: mirror every key of `Config.Data.Mirrored` to attributes;
-  attribute `RegularMinutes = 0`; create `leaderstats` Folder with IntValues **"레벨"** (Level), **"골드"** (BankGold +
-  CarriedGold), **"환생"** (Rebirths), **"명성"** (Honor if Faction == "Halo", Infamy if "Horns", else 0), kept in sync via
-  `GetAttributeChangedSignal` on Level, BankGold, CarriedGold, Rebirths, Honor, Infamy, Faction. Mark ready,
+  attribute `RegularMinutes = 0` (→ removed, A23-18 Today's Luck); create `leaderstats` Folder with IntValues ~~**"레벨"** (Level), **"골드"** (BankGold +
+  CarriedGold), **"환생"** (Rebirths), **"명성"** (Honor if Faction == "Halo", Infamy if "Horns", else 0)~~ → 2026-10-09:
+  `Config.Leaderstats.Columns` = **Power, Level, Rebirths, Fame** (English; Fame = Honor / Infamy / this week's artisan fame;
+  gold is no longer listed — BB12, A23-21, A23-24, A23-48), kept in sync via
+  `GetAttributeChangedSignal` on the attributes they read. Mark ready,
   `player:SetAttribute("DataLoaded", true)`, `PlayerReady:Fire(player, data)`, connect `CharacterAdded`, then
   `player:LoadCharacter()`.
 - `CharacterAdded(character)`: `WaitForChild` Humanoid and HumanoidRootPart (5 s; abort if missing);
@@ -1614,12 +1669,15 @@ Flow:
   `humanoid.Died:Once(...)` → `CharacterDied:Fire(player, character)` then `task.delay(Config.Player.RespawnTime, ...)` →
   `player:LoadCharacter()` only if `player.Parent` and `player.Character == character`. Finally `CharacterSpawned:Fire(player, character, humanoid)`.
 - Playtime loop: every `Config.Player.PlaytimeTick` s → `AddStat(p, "PlaytimeSeconds", tick)` for ready players.
-- Regular minutes: `MarkActive(p)` stores `lastActive[p] = os.clock()`. Loop every `Config.Luck.MinuteSeconds` s: for each
+- Regular minutes (→ replaced by Today's Luck `AddLuckEvent` / `GetLuckEvents`, A23-18; the next lines are history): `MarkActive(p)` stores `lastActive[p] = os.clock()`. Loop every `Config.Luck.MinuteSeconds` s: for each
   ready player with `lastActive[p]` and `os.clock() - lastActive[p] <= Config.Luck.MinuteSeconds` → attribute
   `RegularMinutes += 1`. Cleared on leave (resets when leaving the server). Callers of `MarkActive`: CombatService (every
   accepted `Swing`/`Release` remote, every swing that hits ≥ 1 target incl. the goose, and the victim of any damage).
 
 ### 4.6 MapBuilder (G3) — `ServerScriptService/MapBuilder.luau`
+
+> 2026-10-09 검수: 아래 "작은 평평한 맵·장식은 Part로" 부분은 낡음. 진짜 세계는 메인 Studio에 저장된 Terrain 세계(`tools/preview_map.lua`, A8·A10·A11, 지도 v2 A23-53)이고, 소품은 Tripo 3D 키트(A23-47·A23-96), 장식은 플레이어만 막는 충돌 그룹 `DecorPlayerOnly`(A23-81)다. MapBuilder는 그 맵을 그대로 쓰고 기능 부품(패드·제단·게시판·구역 표시 등)만 보장한다(파일 머리말). 큰 3D 장소 글씨는 없앴고(A23-36), 땅은 납작하지 않게 구역마다 시안대로, 한 번에 한 구역씩 꾸민다(A23-76·A23-93·A23-97).
+
 ```
 MapBuilder.Init(S) ; MapBuilder.Start()      -- Start calls Build() synchronously
 MapBuilder.Build()                           -- ENSURE: reuse workspace.Map if present, create only what is missing
@@ -1706,6 +1764,9 @@ ZoneService.MarkTeleported(player, seconds: number?)      -- R1 CR-H2: call righ
   `CharacterSpawned` → recompute that player's zone immediately (same code as the loop body).
 
 ### 4.8 MonsterService (G5) — `ServerScriptService/MonsterService.luau`
+
+> 2026-10-09 검수: 아래 "Rig construction (no animations, no assets)"와 몬스터 6종은 낡음. 지금 몬스터는 `Config.MonsterTypeOrder`의 17종(슬라임 가족·고블린·해골·핼러윈·유령, A23-30·A23-45·A23-84·A23-87; 새총 고블린·해골 궁수는 `Config.Mobs3Ranged = false`인 동안 나오지 않음)이고, 보이는 모습은 `ServerStorage.CustomModels`의 Tripo 3D 모델(폴더 이름 `Config.CustomModels.FolderName`, A1·A23-47; 모델이 없으면 코드로 만든 모양)이고, 리그가 있는 몬스터는 클라이언트 `MonsterMotion`이 `ReplicatedStorage.MonsterAnims`의 동작을 재생한다(파일 머리말). 세계는 Terrain이라 스폰 점은 땅에 레이캐스트한다(파일 머리말). 필드 보스·호박 대왕·유령 왕은 FieldBossService·HalloweenService가 맡는다.
+
 ```
 MonsterService.MonsterKilled : Signal(player, info)   -- fired once PER CONTRIBUTOR
   info = { Kind: string, ZoneId: string, Golden: boolean, Position: Vector3,
@@ -1759,6 +1820,9 @@ AI loop every `AIInterval` s over all alive records:
 (v2: nobody calls ApplyKnockback in the MVP; keep it for later.)
 
 ### 4.9 CombatService (G4) — `ServerScriptService/CombatService.luau`
+
+> 2026-10-09 검수: 이 절의 충전·발사 계약(`Charge`·`ChargeCap`·`PerfectUntil` 속성, 50% 즉시 피해, 자동 발사, 충전 감시 루프, `Release` = 충전 발사)은 낡음 — 충전 게이지는 없다(`GetCharge`는 늘 0). 지금: 입력 한 번 = 공격 한 번(A22), 기본 공격은 바라보는 쪽 앞쪽 반원 `AimCone = 90`(A23-61), `Release` 원격은 첫 스킬 칸과 같은 길이고 스킬은 SkillService `UseSkill(slot)`(MP·재사용, A23-49·A23-71). `SetAutoAttack`은 레벨이 아니라 `AutoCombatUnlocked`(왕관 조각 퀘스트, Lv5 첫 스킬 뒤)를 보고 `AutoCombatEnabled`를 저장한다(A23-1·A23-2·A23-71). 자동은 몬스터만 때리고, 깡패·무법자는 자동 전투를 못 쓴다(A23-22·A23-23). 실제 계약은 `CombatService.luau`·`SkillService.luau`.
+
 ```
 CombatService.Released : Signal(player, info)
   info = { Stacks: number, Auto: boolean, Perfect: boolean, Center: Vector3, Radius: number,
@@ -1963,7 +2027,8 @@ ClassService.GetClassDef(player) -> table                           -- Config.Cl
   `ClassChosen == true` (silent) → `classId ~= GetClass` (`ClassSame`) → alive (silent) → `S.ZoneService.IsPvPZone(player)`
   → `ClassNeedSafe` → `S.GrudgeService.HasSack` → `BlockedSack` →
   `kstate(player) ~= "None"` → `BlockedKaiju` → if useTicket and `not S.MonetizationService.UseTicket(player, "Class")` →
-  `NoTicket` (`TicketSaving` when UseTicket returns `"Pending"`, R1 CR-L25). **Free**: `S.ProgressionService.ResetLevel(player)`
+  `NoTicket` (`TicketSaving` when UseTicket returns `"Pending"`, R1 CR-L25). **Free** (2026-10-09: below Lv 5 the free change
+  keeps the level, `Config.ClassChange.FreeKeepLevelBelow = 5`, A23-14; tickets are not sold in the beta, A23-28): `S.ProgressionService.ResetLevel(player)`
   (Level 1, XP 0; gold, bank, weapon tier, rebirth bonus, marks, tickets, quests are kept — but unclaimed daily / vacation
   rewards are capped to the level at claim time and Extras are remade on `LevelReset`, R1 CR-M6). **Ticket**: level/XP kept. Then `SetStat Class`, `RefreshCharacter(player, true)`,
   `ClassChanged:Fire`, notify `ClassChangedFree` / `ClassChangedTicket` (`Config.ClassName(classId, faction)`, "good").
@@ -1974,7 +2039,7 @@ ClassService.GetClassDef(player) -> table                           -- Config.Cl
 ```
 JusticeService.Init(S) ; JusticeService.Start()
 JusticeService.GetPower(player) -> number            -- Config.PowerOf(Level, WeaponTier, 1 + RebirthBonus)
-JusticeService.GetCombatPower(player) -> number      -- R1 CR-L5: Config.PowerOf(Level, WeaponTier, 1) (bully weak-victim test); 2026-10-05 (beta_basics BB4): now includes the weapon enhance (+N scroll level, WeaponEnhance) and will return the integer Config.CombatPower(level, tier, enhance) (no rebirth); sets player attribute CombatPower. GetPower stays the faction-scale value ("진영 힘", with rebirth).
+JusticeService.GetCombatPower(player) -> number      -- R1 CR-L5: Config.PowerOf(Level, WeaponTier, 1) (bully weak-victim test); 2026-10-05 (beta_basics BB4): now includes the weapon enhance (+N scroll level, WeaponEnhance) and will return the integer Config.CombatPower(level, tier, enhance) (no rebirth); sets player attribute CombatPower. GetPower stays the faction-scale value ("진영 힘", with rebirth). 2026-10-09: it returns `Config.CombatPowerOf(player)`, the one power formula incl. stat points (A23-69; they count only while `Config.Features.StatPoints` is on, off now); 0 at Lv 1 bare-handed (A23-34).
 JusticeService.GetFactionScale(factionId) -> number  -- current S of that faction (1 for "None")
 JusticeService.GetWeakerFaction() -> "Halo" | "Horns" | "None"
 JusticeService.GetDamageMult(player) -> number       -- GetFactionScale(faction) * Config.BullyMult(BullyStacks)
@@ -2008,6 +2073,9 @@ JusticeService.Recompute()                           -- recompute faction sums /
 - `PlayerReady` → attributes `SizeMult = 1`, `BullyStacks = 0`, `VisualScale = 1`, then request a recompute.
 
 ### 4.13 PvPService (G7) — `ServerScriptService/PvPService.luau`
+
+> 2026-10-09 검수: 뼈대는 그대로지만 더해진 규칙이 있다 — 해골 유적은 바깥 사냥 고리 PvP 끔, 안쪽 왕관 구덩이만 PvP(`zone.PvPArea`, A23-90), 개인 서버에서는 거위·포위 상자·현상금 보상 절반(`Config.PrivateServer`, A23-90), 주간 PvP 판·무법자 벌칙(RankingService, A23-22·A23-23), 자동 전투는 사람을 때리지 않음(A23-1), 스킬 Z·X의 사람 피해는 `Config.Skills.PvPZX` 스위치(A23-49). 게시판 글은 영어(A23-48).
+
 ```
 PvPService.PlayerKO : Signal(killer, victim, info)
   info = { Kind: "Plunder" | "Bounty" | "Honor" | "Bully" | "Defense" (R1 CR-M14), Bully: boolean, VictimStars: number,
@@ -2222,6 +2290,9 @@ One kaiju per server; others wait in a FIFO queue. Player attribute `KaijuState`
   `FactionChanged` of the current kaiju (defensive; normally blocked) → `finish(p, "Cancelled")`.
 
 ### 4.16 GooseService (G9) — `ServerScriptService/GooseService.luau`
+
+> 2026-10-09 검수: 바뀐 곳 — 상대 진영이 서버에 없으면 "함께 구조" 모드(GameState `GooseMode`·`GooseCoop*`, 보상은 이긴 편의 70%, 전쟁 점수 없음), 직접 3번 이상 때린 사람만 보상(A23-14). 희귀 확률은 단골 분이 아니라 오늘의 운(`GetLuckEvents`, A23-18). 개인 서버에서는 보상 절반(A23-90).
+
 ```
 GooseService.GooseFinished : Signal(result: "Halo" | "Horns" | "Tie", counts: { [Player]: number })
 
@@ -2323,6 +2394,10 @@ XPMult   = 1 + perks.XPBonus
              + (S.WarService.HasBlessing(p) and Config.War.BlessingXP or 0)
              + RebirthBonus + RedeemMarks * Config.Rebirth.RedeemXPPer
 ```
+2026-10-09: on top of these, the A23-75 2x XP / 2x Gold passes multiply every XP grant and the earned gold sources in
+`Config.PassBoost.GoldSources` by `Config.PassBoost.Mult` (once per grant, never inside `GetXPMult` / `GetGoldMult`).
+In a private server `AddBankGold` first multiplies gold from `Config.PrivateServer.HalfSources` (Event, War, Bounty) by
+`Config.PrivateServer.RewardMult` (0.5), before the pass (A23-90).
 - `MonsterKilled(p, info)` → `gold = math.floor(info.Gold * GoldMult + 0.5)`, `xp = math.floor(info.XP * XPMult + 0.5)`;
   `AddCarriedGold(p, gold, "Monster")`; `AddXP(p, xp)`; `AddStat(p, "TotalKills", 1)`;
   `Net.Fx(p, "Reward", { Pos = info.Position, Gold = gold, XP = xp, Golden = info.Golden })`.
@@ -2351,7 +2426,8 @@ XPMult   = 1 + perks.XPBonus
      only when counted; the Rebirth remote calls `MarkActive` first.)
   3. Mark: `old == "Halo" and factionId == "Horns"` → `"Fall"` (`FallMarks = math.min(MarkMax, FallMarks + 1)`);
      `old == "Horns" and factionId == "Halo"` → `"Redeem"` (`RedeemMarks` likewise); else `"None"`.
-  4. Reset `Level = 1, XP = 0, BankGold = 0, CarriedGold = 0, WeaponTier = 1`; `Rebirths += 1`;
+  4. Reset `Level = 1, XP = 0`~~`, BankGold = 0, CarriedGold = 0, WeaponTier = 1`~~ (2026-10-09: gold, owned weapons,
+     enhancements and items are KEPT, A23-14; an equipped weapon whose MinLevel is above the new level is swapped to the best usable one, A23-28); `Rebirths += 1`;
      `RebirthBonus = math.floor((RebirthBonus + bonus) * 100 + 0.5) / 100`. Keeps Class, Honor, Infamy (both),
      tickets, marks, quests (QuestService regenerates extras on `Rebirthed`; unclaimed daily / vacation rewards are capped
      to the level at claim time and grudge refunds skip a rebirthed victim, R1 CR-M6). Free, no tickets, no altar cooldown.
@@ -2362,6 +2438,9 @@ XPMult   = 1 + perks.XPBonus
      `Net.NotifyAll(RebirthAnnounce)`; `Rebirthed:Fire(p, Rebirths, { From = old, To = factionId, Bonus = bonus, Mark = mark })`.
 
 ### 4.19 ShopService (G8) — `ServerScriptService/ShopService.luau`
+
+> 2026-10-09 검수: 아래 "UpgradeWeapon() = 다음 티어 자동 구매·장착"은 낡음 — A23-4가 대체: `UpgradeWeapon(tier)`(tier 1..`Config.WeaponShop.MaxSoldTier` = 3, 미보유는 구매+장착, 보유는 무료 재장착), `SellWeapon(tier)`(가격의 10%), `WeaponOwnedMask`, `BlacksmithVisited`, 대장간 12스터드 안. 첫 무기(T1)는 대장간에서 무료로 받는다(A23-34·A23-74). 황금 무기 T4~T6 의뢰는 CommissionService `Commission(tier)`(A23-86 결정 2).
+
 ```
 ShopService.Init(S) ; ShopService.Start()
 ```
@@ -2372,6 +2451,9 @@ and faction "None" → `NeedFaction`; `not S.ProgressionService.SpendGold(p, nex
 `Net.Fx(p, "Upgrade", { Tier = tier + 1 })`. (CharacterVisuals rebuilds the weapon from the attribute change.)
 
 ### 4.20 QuestService (G8) — `ServerScriptService/QuestService.luau`
+
+> 2026-10-09 검수: 일일·추가 퀘스트 뼈대는 그대로지만 바뀐 곳이 있다. `Release` 템플릿은 이제 "Skill hits" = 몬스터를 1마리 이상 맞힌 스킬만 센다(게이지 조건 없음, A23-1), Lv5 전에는 스킬 퀘스트를 주지 않는다(A23-71). 새싹(Lv1~9) 일일은 짧은 목표 3개(A23-14, `Config.Quests.Newbie`). 이야기·마을·게시판 퀘스트는 StoryQuestService·BoardService(A23-46·A23-56), Q 창 탭 5개(A23-81), HUD에는 지금 퀘스트 하나만 크게(A23-94). `Quests` 원격 내용은 §5 표 참고.
+
 ```
 QuestService.Init(S) ; QuestService.Start()
 QuestService.GetQuests(player) -> { Quest }     -- data.Quests (array of Config.Quests.Slots entries)
@@ -2438,6 +2520,9 @@ QuestService.DebugSimulateAbsence(player, days)  -- Studio hook: DailyDay = toda
   Data: `data.Quests` is mutated directly.
 
 ### 4.21 MonetizationService (G2) — `ServerScriptService/MonetizationService.luau`
+
+> 2026-10-09 검수: 변경권(아래 계약)은 코드에 남아 있지만 베타에서 팔지 않는다(A23-28). 베타 전 상품은 A23-75 게임 패스다: `Config.GamePasses`(XP2 199·Gold2 149·VIP 249, 속성 `PassXP2`/`PassGold2`/`PassVIP`), 진영 치장 `Config.Looks`(99, `SetLook` 원격, 출석 전용 치장 포함, A23-77), 개인 서버 100(게시 때 사용자), VIP 후원자 게시판(GameState `SupporterNames`). 소유 확인은 접속 때 `UserOwnsGamePassAsync` + `PromptGamePassPurchaseFinished`. ID 0이면 "Coming soon". 능력치는 안 판다. 설계: `docs/design/gamepass_server_2026-10-08.md`. 아래의 한국어 안내 문구("상품 준비 중")는 옛 것.
+
 ```
 MonetizationService.Init(S) ; MonetizationService.Start()
 MonetizationService.GetTickets(player, kind: "Class" | "Faction") -> number
@@ -2462,6 +2547,9 @@ MonetizationService.UseTicket(player, kind) -> (boolean, reason: "Pending" | "No
   6. If not already → notify `ClassTicketGot` / `FactionTicketGot` ("reward"). Return `PurchaseGranted`.
 
 ### 4.22 CharacterVisuals (G5) — `ServerScriptService/CharacterVisuals.luau`
+
+> 2026-10-09 검수: 아래 모양(노란 원판 후광·쐐기 뿔, 한국어 이름표 글)은 낡음. 지금 플레이어는 본인 Roblox 아바타 + 직업 무기 + 후광/뿔이고 치비 코스튬은 없다(A23-5). 후광·뿔은 계급 R1~R5 모양(A23-54)에 A23-75 치장 색(`LookOn`)을 입히고, 이름표 글은 영어(A23-48)·글꼴 `Config.Fonts`(A23-63)다. 무기는 아직 코드가 Part로 만든다 — 맨손(WeaponTier 0)이면 없음(A23-34), 활은 왼손, 펫 조련사는 지휘봉(A23-39); 직업×단계마다 새 Tripo 무기로 바꾸는 일은 A23-96 목록 P3. 실제 계약은 `CharacterVisuals.luau`.
+
 ```
 CharacterVisuals.Init(S) ; CharacterVisuals.Start()
 CharacterVisuals.Refresh(player)     -- rebuild everything on the current character
@@ -2509,6 +2597,9 @@ player at `PlayerReady`; handlers re-check the current character).
   PointLight in HumanoidRootPart; destroyed otherwise.
 
 ### 4.23 Client modules (G10–G12) — `StarterPlayer/StarterPlayerScripts/`
+
+> 2026-10-09 검수: 아래 화면 자리 표, HUD 5버튼(공격·발사·자동·업그레이드·메뉴)·충전 고리, 키, 한국어 문구는 낡음. 지금 화면: 왼쪽 위 둥근 미니맵(카메라 쪽이 위, A23-66; 코드로 그린 땅 위에 위에서 찍은 실제 세상 사진 칸을 까는 중 — 지금 시험 4칸 `Config.UIArt.MapTiles`, A23-95), 왼쪽 가운데 '지금 퀘스트 하나' 큰 글씨(A23-94; PC — 폰은 아직 미니맵 옆, `HudLayout`), 아래 가운데 Lv·경험치·HP/MP·아이콘 줄, 오른쪽 위 [Menu]가 왼쪽으로 펼침(A23-38·A23-40·A23-74), 오른쪽 아래 공격·스킬(Lv5부터 보임)·자동·물약(물약 칸은 늘 보임) 묶음(A23-74·A23-71·A23-99). PC를 먼저 끝내고 폰은 따로(A23-98). 기본 키(A23-78, `Config.Keybinds`, 설정에서 바꿀 수 있음): 공격 F, 스킬 Z·X·C(X·C는 Z·X 스킬을 켤 때만, A23-86 결정 3), 자동 R, 유령 붙잡기 T, 물약 1·2, 상호작용 G, 다음 무기 U, 가방 I, 영웅 E, 스킬 K, 퀘스트 목록 Q, 지도 M, 랭킹 L, 도움말 H, 메뉴 B. 카메라는 콘솔식 따라가기가 기본(Settings에서 Free, A23-91), 오른쪽 드래그로 돌리고 왼쪽 드래그는 안 돈다(A23-51). 글꼴 Denk One + Montserrat(A23-63). 모듈 목록은 `ClientMain.client.luau`(37개), 그림은 `Config.UIArt` + UIKit.
+
 Each module returns a table with `Init(C)` and `Start()` (last line of `Start`: `print("[<ModuleName>] started")`).
 Client code reads state only from player attributes (LocalPlayer and, for arrows/markers, other players),
 `Net.GameState()` attributes and the Fx/Notify/OpenPanel remotes. Required by `ClientMain` via
@@ -2588,8 +2679,11 @@ UIKit.GameAttr(name, default) -> any ; UIKit.OnGameAttr(names, fn)   -- same for
   `HUD.TopCenterW` (war-meter column: width clamped to 200..380 between the stats card and the luck corner) and
   `HUD.Layout = { W, H, Scale, ClusterTop, ClusterLeft, TopCenterX, TopCenterW }` (ClusterTop/Left = top / left edge of the
   bottom-right button cluster). Status chips wrap onto a second row instead of overflowing.
-- Keys (ignore when `gameProcessedEvent`): MouseButton1 / F = attack (hold repeats), Q or E = release, R = auto toggle,
-  U = upgrade, M = menu.
+- Keys (ignore when `gameProcessedEvent`): ~~MouseButton1 / F = attack (hold repeats), Q or E = release, R = auto toggle,
+  U = upgrade, M = menu.~~ → 2026-10-09: one press = one attack, holding never repeats (A22); default keys in `Config.Keybinds`
+  (A23-78): F or left click attack, Z / X / C skills (X / C only while `Config.Skills.ZEnabled` / `XEnabled` are on; off until
+  the 10/20 check, A23-86), R auto, T ghost hold, 1 / 2 potions, G interact, U next weapon, I bag, E hero, K skills,
+  Q quest list, M map, L ranking, H help, B menu.
 - Timers refresh in a 0.2 s loop; everything else is attribute-driven (`UIKit.OnAttr` / `OnGameAttr`).
 - Hide everything except toasts while `C.FactionPicker.IsOpen()` or `C.ClassPicker.IsOpen()`.
 
@@ -2659,6 +2753,9 @@ EventHUD.Init(C) ; EventHUD.Start()     -- no other public functions
 - Hidden while `C.FactionPicker.IsOpen()` or `C.ClassPicker.IsOpen()`.
 
 **Panels** (`Panels.luau`, G12)
+
+> 2026-10-09 검수: 아래 Menu·Shop 칸 목록은 낡음. [Menu]는 오른쪽 위에서 칸이 펼쳐지고(A23-38·A23-40), 직업 바꾸기·환생·오프닝 다시 보기·이름 숨기기·휴가·키 설정은 설정 창 안에 있다(A23-46). "Shop"은 ShopUI의 게임 패스 창이다(A23-75). 다른 창은 `Panels.Register(id, opts)`로 붙는다(BB13).
+
 ```
 Panels.Open(id: "Menu" | "Travel" | "Rebirth" | "Altar" | "Class" | "Shop" | "Vacation") ; Panels.Close() ; Panels.IsOpen() -> boolean
 ```
@@ -2674,7 +2771,8 @@ Every irreversible choice goes through `UIKit.Confirm`.
   `HaloCount`/`HornsCount`; two big buttons **[빛의 기사단] [뿔 군단]**, each showing its bonus from
   `Config.RebirthBonusFor(countOthers, totalOthers)` (counts minus 1 for my current faction): `"+25%"` or
   `"+40%! (인원이 적은 편)"`; on the side that differs from my faction the mark preview (`Config.Story.Fall` when Halo →
-  Horns, `Config.Story.Redeem` when Horns → Halo, via `string.format`); lines `"초기화: 레벨, 골드, 무기"`,
+  Horns, `Config.Story.Redeem` when Horns → Halo, via `string.format`); lines ~~`"초기화: 레벨, 골드, 무기"`~~ (→ only the level
+  resets; gold, weapons and items stay, A23-14; English text, A23-48),
   `"유지: 직업, 명예·악명, 환생 보너스, 표식, 변경권"`. Enabled when Level is enough → Confirm → `Rebirth:FireServer(factionId)`.
 - **Altar** (faction change): current → other faction (other's `Perks` + `FactionLore`). Two option cards side by side:
   **[무료]** `"<명예|악명> N → 0 (배신의 대가)"` (the score of the faction being LEFT: Honor when leaving Halo, Infamy when
@@ -2698,6 +2796,9 @@ Every irreversible choice goes through `UIKit.Confirm`.
   from attributes (the server toast confirms the purchase).
 
 **FactionPicker** (`FactionPicker.luau`, G12)
+
+> 2026-10-09 검수: 진영을 고르기 전에 3D 오프닝 `Intro.luau`(자체 `IsOpen()`, 처음 한 번, 건너뛰기, A23-9)가 먼저 나온다. 카드는 빛·뿔 2장(A23-57), 글은 영어(A23-48)다. 직업을 고른 뒤 옛 `Config.Story.Intro` 토스트는 비어 있고 서버가 `Config.Tutorial.Welcome`을 연다; 그 뒤 대장간까지 걸어가 첫 무기를 받는다(A23-34·A23-74·A23-88).
+
 ```
 FactionPicker.IsOpen() -> boolean
 ```
@@ -2721,6 +2822,8 @@ Intro: when `ClassChosen` flips false → true during this session and `Level <=
 ---
 
 ## 5. Remotes (all `RemoteEvent`, in `ReplicatedStorage.Remotes`, created by `Net.CreateAll()`)
+
+> 2026-10-09 검수: 아래 표는 10/02의 16개(+ R1의 `Quests`)만 담아서 낡음 — 지금은 52개이고 목록과 인자 설명은 `src/ReplicatedStorage/Shared/Net.luau`의 `Net.Names` 주석이 정답이다(아직 RemoteFunction은 없다). 바뀐 줄: `Release` = 첫 스킬 칸(충전 조건 없음, A22·A23-49), `SetAutoAttack` = `AutoCombatUnlocked` 필요(레벨 조건 아님, A23-1·A23-71), `UpgradeWeapon(tier)`·`SellWeapon(tier)`(A23-4), `ChooseFaction`은 `NeutralFaction` 스위치가 켜질 때만 "Neutral"도 받는다(A23-57). 게임 패스 구매는 `PromptGamePassPurchase` → 서버 소유 확인(A23-75). Fx 종류도 늘었다(코드의 `Net.Fx` 호출 참고).
 
 There are **no RemoteFunctions**. Clients never send numbers that the server trusts (only ids, booleans and a slot index).
 Purchases go through Roblox (`PromptProductPurchase` → `ProcessReceipt`), never through a remote.
@@ -2766,16 +2869,18 @@ Purchases go through Roblox (`PromptProductPurchase` → `ProcessReceipt`), neve
 
 ## 6. Player data schema & attributes
 
-### 6.1 Persisted data (DataStore `HaloHorns_Player_v1`, key `P_<UserId>`, `Version = 2`)
+### 6.1 Persisted data (DataStore `HaloHorns_Player_v1`, key `P_<UserId>`, ~~`Version = 2`~~ `Version = 3`)
+
+> 2026-10-09 검수: 아래 표는 10/02 필드만 있다. 지금 기본값 전체는 `Config.Data.Defaults`(Config.luau의 `Config.Data` 표 + 뒤쪽에서 덧붙이는 `Config.Data.Defaults.<키>`)가 정답이다. 새 필드 예: `WeaponOwnedMask`·`BlacksmithVisited`(A23-4), `Items`·`WeaponEnhance`·`LootFlags`(A23-12), `ItemSeq`·`WeaponSeq`(A23-32 가방 정렬), `HPPotionCount`·`MPPotionCount`(A18), `Nickname`(A21), `TutorialStep`·`TutorialKills`(A4), `IntroSeen`(A23-9), `AutoCombatUnlocked`·`AutoCombatEnabled`(A23-1), `Story`(이야기 퀘스트), `LuckDay`·`LuckEvents`(A23-18), `Titles`·`TitleSel`(BB16), `Settings`(BB2, V4), `Telemetry`, `Rank`·`RankReward`·`Outlaw`(A23-23·A23-24), `SkillSlots`·`SkillsA71`(A23-49·A23-71), `Stats`(A23-69), `Looks`·`PassSeen`(A23-75), `Pets`·`TamerNotice`(A23-39·PET-2), `Attendance`(A23-77), `Return`·`Diary`·`Invite`(A23-79), `Deeds`·`Cards`(A23-86), `FieldBoss`, `KillLog`.
 
 | Key | Type | Default | Written by (through PlayerService.SetStat/AddStat unless noted) |
 |---|---|---|---|
-| `Version` | number | 2 | DataService (migration v1 → v2, §4.4) |
+| `Version` | number | ~~2~~ 3 | DataService (migration v1 → v2 → v3, §4.4) |
 | `Level` | number | 1 | ProgressionService (AddXP, ResetLevel, rebirth) |
 | `XP` | number | 0 | ProgressionService |
 | `BankGold` | number | 0 | ProgressionService |
 | `CarriedGold` | number | 0 | ProgressionService (banked on join and on leave) |
-| `WeaponTier` | number 1..7 | 1 | ShopService, ProgressionService (rebirth reset). **v1 name `SwordTier`** (migrated) |
+| `WeaponTier` | number ~~1..7~~ 0..8 (0 = bare hands) | ~~1~~ 0 (A23-34) | ShopService, LootService (equip / first weapon / level fix), CommissionService; ~~ProgressionService (rebirth reset)~~ kept through rebirth (A23-14). **v1 name `SwordTier`** (migrated) |
 | `Faction` | "Halo"/"Horns"/"None" | "None" | FactionService.SetFaction only |
 | `Class` | "Warrior"/"Mage"/"Archer" | "Warrior" | ClassService |
 | `ClassChosen` | boolean | false (also false after migration) | ClassService |
@@ -2808,6 +2913,8 @@ cooldowns, protection, regular minutes, goose counts, kaiju state and session ti
 now survive a rejoin through `SavedBully` / `SavedStars`, minus the decay while away; pair cooldowns are saved in `PairCD`.)
 
 ### 6.2 Player attributes (server writes, client reads)
+
+> 2026-10-09 검수: 이 표는 10/02 것이다. `RegularMinutes`는 없어졌다(A23-18). `Charge`·`ChargeCap`·`PerfectUntil`은 호환용으로 늘 0이고 `AutoAttack`은 늘 false인 옛 속성이다 — 자동 전투 상태는 저장 미러 `AutoCombatUnlocked`·`AutoCombatEnabled`(A23-1). 새 속성 예: `CombatPower`(BB4), `SkillSlots`(A23-49), `PassXP2`·`PassGold2`·`PassVIP`·`LooksOwned`·`LookOn`(A23-75), `Outlaw`(A23-23), `SaveLoading`(A23-48 묶음). 코드가 정답이다.
 
 | Attribute | Type | Writer | Meaning |
 |---|---|---|---|
@@ -2845,6 +2952,8 @@ now survive a rejoin through `SavedBully` / `SavedStars`, minus the decay while 
 
 ### 6.3 GameState attributes (`ReplicatedStorage.GameState`)
 
+> 2026-10-09 검수: 이 표 뒤로 더 생겼다 — `Net.GameStateDefaults`가 정답이다(예: `SupporterNames`(A23-75), `Switch*`(SwitchService), `GooseMode`·`GooseCoop*`(A23-14 함께 구조), `PumpkinKing*`·`GhostKing*`(HalloweenService), `SlimeKing*`·`Clatter*`(FieldBossService), `RankWeekId`·`RankWeekEndsAt`(A23-23), `SaveOK`).
+
 | Attribute | Type | Writer | Meaning |
 |---|---|---|---|
 | `WarHaloScore`, `WarHornsScore` | number | WarService | per-capita round score (0.1 precision; R1 CR-M19: divided by the round-average head count) |
@@ -2879,6 +2988,8 @@ now survive a rejoin through `SavedBully` / `SavedStars`, minus the decay while 
 ---
 
 ## 7. Startup / initialization order
+
+> 2026-10-09 검수: §7.1·§7.2의 "exact code"는 10/02 사본이라 낡음 — 서비스 19개·모듈 7개 목록이 아니라 지금은 `Main.server.luau`의 INIT_ORDER/START_ORDER(서비스 48개, PlayerService가 맨 끝에 Start)와 `ClientMain.client.luau`의 ORDER(37개, 맨 앞에서 모든 GUI의 AutoLocalize를 끔 — 영어만, A23-48)가 정답이다. 모듈을 지울 때는 이 목록과 모든 require에서 먼저 뺀다(AGENTS.md). DebugCommand 키도 늘었다(Main 주석). 흐름(§7.3)은 그대로지만 진영 고르기 전 3D 오프닝(A23-9)과 대장간까지 걷기(A23-88)가 들어갔다.
 
 ### 7.1 Server — `ServerScriptService/Main.server.luau` (G2, exact code)
 ```lua
@@ -2994,18 +3105,21 @@ Client `Init` may only create instances/state; cross-module calls (`C.Panels.Ope
 `C.FactionPicker.IsOpen`, `C.ClassPicker.IsOpen`) are allowed only from `Start` onward or from event handlers.
 
 ### 7.3 Join timeline (what happens for one player)
-1. `PlayerAdded` → `DataService.Load` (yields; memory mode in Studio without API access; v1 data migrated to v2).
+1. `PlayerAdded` → `DataService.Load` (yields; memory mode in Studio without API access; v1 data migrated to v2, then v3).
 2. Attributes mirrored, `leaderstats` created, `DataLoaded = true`, `PlayerReady` fired → Faction / Class / Justice /
    Zone / Progression / Combat / PvP / War / Quest (day check → dailies or vacation) / Monetization / Visuals initialize
    their per-player state and attributes; Justice schedules a recompute.
 3. `LoadCharacter` → `CharacterAdded`: MaxHealth/WalkSpeed applied, pivot to the home town (Crossroads if no faction) →
    `CharacterSpawned` → spawn protection (PvP), accessories (Visuals), scale snap (Justice), zone recompute (Zone).
-4. Client: FactionPicker opens if `Faction == "None"` → `ChooseFaction` → team set, respawn in the faction town →
-   ClassPicker opens if `ClassChosen == false` → `ChooseClass` → intro toasts (new players) → Vacation popup if pending.
+4. Client: (first time only: the 3D opening `Intro`, A23-9) → FactionPicker opens if `Faction == "None"` → `ChooseFaction` → team set, respawn in the faction town →
+   ClassPicker opens if `ClassChosen == false` → `ChooseClass` → ~~intro toasts (new players)~~ the guide's Welcome dialogue
+   (`Config.Tutorial.Welcome`), then the player walks to Otto's Forge for the first weapon (A23-34, A23-74, A23-88) → Vacation popup if pending.
 
 ---
 
 ## 8. Test checklist (Studio)
+
+> 2026-10-09 검수: 이 목록은 10/02 MVP 기준이라 많이 낡음 — 서비스 19/모듈 7/원격 16 개수, 충전·발사·PERFECT·자동 발사, Lv5 자동 해금, "업그레이드 = 다음 티어", 한국어 목록 이름("레벨/골드/환생/명성"), 변경권 구매 확인, 단골 운은 지금과 다르다(A22·A23-1·A23-4·A23-18·A23-28·A23-48). 지금 "끝"의 기준은 메인 Studio Play 사진(UI는 PC 먼저, A23-74·A23-98)이고, sync·Play는 메인 반영 1이 한다(`docs/handoff/role_prompts/01_mainapply.md`). 오프라인 시험은 `py tools/luau_check.py`와 각 기능의 시험 도구로 본다. 아래 항목 중 PvP·원한 자루·괴수·거위·전쟁 같은 남은 시스템 확인은 참고로 쓸 수 있다.
 
 The lead builds and syncs (implementers only run `py tools/luau_check.py <their files>`). Single-player tests with
 **Play**; PvP tests with **Test > Start Server + 2 Players**. Watch the Output: no errors at startup.

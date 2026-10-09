@@ -1,5 +1,7 @@
 # Skin Runtime Schema2 실제 증거
 
+> 기록용(2026-10-09 검수): 2026-10-04 기록이다. '현재 게임용 2/18종'은 당시 숫자이고, 치비 코스튬은 그 뒤 게임에서 빠졌다(SPEC A23-5).
+
 ## 최신 MouthRestored 실제 승격·생산 확인
 
 현재 게임용 **2/18종**: 성기사 남 기존 강체+빛 궁수 남 BindingSchema1/23Bone/3표면. 새 MouthRestored SHA `17972af9…`는 원래438면/Body/UV/JW/Bone/PNG를 보존하고 승인된 입71개 P/N만 별도 strict manifest/ledger로 복원했다. 일반 exact P/N gate는 유지한다.

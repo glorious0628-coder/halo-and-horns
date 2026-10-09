@@ -2,6 +2,7 @@
 
 정한 것(사용자, 검수 경유): 무료 **GitHub Pages**. 도메인은 **가비아**. 메일은 손대지 않음.
 로그인·DNS 입력은 사용자가 직접 합니다. 세션은 대신하지 않습니다.
+> 2026-10-09 검수: 아래 '순서' 1~5는 10/08에 끝남 — 사이트 공개됨(https://glorious.ai.kr, `HANDOFF_homepage1_2026-10-08.md`). 지금 쓰는 것은 '파일 다시 만들기'와 신청 체크리스트.
 
 ## 순서
 1. **(검수)** 새 **공개** 저장소를 만들고 `docs/website/site/` 안의 파일만 올림. 게임 저장소는 비공개 그대로.
@@ -58,5 +59,5 @@ py docs/website/build_site.py <글꼴 폴더>
 ## Claude Startups 신청 체크리스트 (인계 §6-4)
 - Claude Console 계정(platform.claude.com) → https://platform.claude.com/offers/startups-application
 - 회사 메일: jian@glorious.ai.kr / 사이트: https://glorious.ai.kr
-- 짧은 설명 예: "Glorious Studio is a one-person game studio in South Korea. We are building Halo & Horns, a Roblox action RPG, with a team of nine Claude Code sessions directed by the founder. Beta opens 31 Oct 2026."
-- 설립 시점, 사업자등록 여부: 신청할 때 사용자에게 묻기.
+- 짧은 설명 예: "Glorious Studio is a one-person game studio in South Korea. We are building Halo & Horns, a Roblox action RPG, with a team of Claude Code sessions directed by the founder. Beta opens 31 Oct 2026."
+- 설립 시점, 사업자등록 여부: ~~신청할 때 사용자에게 묻기.~~ → 사용자가 10/09에 알려 줘 사이트에 있음(설립 2025년 12월 + 사업자등록번호, 7f92fce3; `docs/handoff/review_handoff_2026-10-09.md` §5).

@@ -26,7 +26,7 @@
 - **게임성 개발 1에게:**
   1. 대장간 창(WeaponShop) 맨 위에 `Config.Text.ForgeGreeting` "Otto: Clang, clang… done. Cocoa time.", 물약 창(PotionShop) 맨 위에 `Config.Text.PotionGreeting` "Fizzby: Glug, glug, feel better!" 한 줄(재촉하는 말 없음).
   2. 안내자 창 제목은 지금처럼 `Welcome[f].Name`(이제 이름). 이름표 둘째 줄이 필요하면 `Welcome[f].Title`(역할).
-- 아직 안 한 것(검수 몫): glossary_en 추가 줄, story_depth M5_7·H2 줄(정식).
+- 아직 안 한 것(검수 몫): ~~glossary_en 추가 줄~~(들어감: Hallie·Magpie·Kit·Otto·Fizzby), story_depth M5_7·H2 줄(정식).
 
 ## 3. ③ 몬스터 한마디 (lines_pack §2)
 - `Config.Barks` = lines_pack §2-2 코드 블록 그대로(머리 주석만 "BarkService가 고름"으로). 거위 줄(`Lines.Goose`)은 들어 있지만 **아직 안 씀**(선택 일, GooseService).
@@ -40,5 +40,5 @@
   - 줄: 황금 몬스터는 모든 순간에 `Golden` 먼저 → 자기 종류 → `Config.QuestKind` 종류. 종류·순간마다 같은 줄 연달아 없음.
   - Idle: 10초마다 플레이어 40칸 안, 그 플레이어가 때릴 수 있는 몬스터(`GetMonstersInRadius(pos, 40, player)`) 중 목표 없는 몬스터가 틱마다 한 번 굴림.
   - 점수·보상·채팅 없음. 몬스터 모델 속성 **`Bark`(줄) 다음 `BarkAt`(서버 시각)**만 씀.
-- **게임성 개발 1에게(MonsterLabels, 약 0.15일):** 몬스터 모델의 `BarkAt`이 바뀌면(같은 줄이 다시 와도 바뀜) `Bark`를 머리 위 말풍선(BillboardGui)으로 `Config.Barks.Show`(3)초, `MaxDistance`(60)칸 안에서만. 플레이어 이름 없음, 채팅 꺼 둔 아이도 봄. 글자는 Builder Sans/Fredoka One(A23-48), 8단어 이하.
+- **게임성 개발 1에게(MonsterLabels, 약 0.15일):** 몬스터 모델의 `BarkAt`이 바뀌면(같은 줄이 다시 와도 바뀜) `Bark`를 머리 위 말풍선(BillboardGui)으로 `Config.Barks.Show`(3)초, `MaxDistance`(60)칸 안에서만. 플레이어 이름 없음, 채팅 꺼 둔 아이도 봄. 글자는 ~~Builder Sans/Fredoka One(A23-48)~~ → Denk One + Montserrat(A23-63, UIKit 테마 표), 8단어 이하. 풍선 그림은 몬스터마다 `BarkBubble<Kind>` → 없으면 그 가족 것(`Config.Barks.BubbleArt`) → 없으면 둥근 코드 풍선(공용 9-slice `BarkBubble`은 안 씀, A23-74, `MonsterLabels.luau`).
 - 검사: `py tools/test_barks.py`(128검사, 정적 11, 변이 31/31) — 쿨다운·확률 경계·Low 한 번/다시 시도·황금·QuestKind·연달아 없음·Idle 거리/목표/한 번·끔, 진짜 DamageMonster 조각(Hit만, 죽음·거절 없음), aiStep/personalStep 줄, Main 목록.

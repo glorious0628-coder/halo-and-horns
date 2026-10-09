@@ -4,6 +4,7 @@
 > 베타는 빛·뿔만(A23-57). 날짜: 기능 마감 10/24, 베타 10/31, 정식 12/19. 화면 글은 쉬운 영어(A23-48, `glossary_en_2026-10-06.md`).
 > 이어 쓰는 문서: `quest_chain_2026-10-06.md`(메인·S 서브), `story_depth_2026-10-06.md`(3~5장, E0~E10), `town_npc_quests_2026-10-06.md`(H/R/N).
 > 코드 기준: main 59c2585 + `Game-dev2` 작업 트리(아직 커밋 전, H1·R1·N3·E4·E6).
+> 2026-10-09 검수: 서버는 들어감 — 실제 값·바뀐 좌표는 `quest_volume_server_2026-10-07.md`. 게시판은 개발 1 창이 아직 없어 꺼져 있음(`Config.Board.Enabled = false`). 아래 날짜·'작업 중' 표는 10/06 계획.
 
 ## 0. 한눈에
 1. **지금 빈 곳은 Lv10부터다.** M2_7을 받으면 메인이 끝나고, 서브는 Lv8쯤 거의 다 끝난다. Lv10~25(혼자 수동 약 3시간)에는 일일 3개와 끝없는 '추가'(고블린 25~40마리)만 남는다.
@@ -70,14 +71,14 @@
 2. **노가다는 줄이되 없애지 않는다.** 한 목표는 2~5분이고 처치 수는 1~15마리다. 같은 숫자만 커지는 사슬은 없다. 동사를 바꾼다(처치·장소·스킬 몰이·기본 공격만·체력 지키기·골드·이벤트·선택).
 3. **기울기를 준다.**
    - 서브: 마지막 A(천사)/B(악마) 선택. H1 데이터와 같은 모양(Points 1, Pick 기록, E6 보상)으로 한다.
-   - 게시판: [Kind]/[Sneaky]를 세기만 하고 명예·악명은 0이다. 반복 의뢰로 주간 랭킹을 올리지 못하게 하려는 것이다(A23-23 D1).
+   - 게시판: [Kind]/[Sneaky]를 세기만 하고 명예·악명은 0이다. 반복 의뢰로 주간 랭킹을 올리지 못하게 하려는 것이다(A23-23 D1). → **10/09 바뀜(A23-86 결정 1):** 게시판 선택도 하루 장부 Deeds로 명예·악명 +1 / 반대 −1, 하루 6점까지. 주간 랭킹 점수는 여전히 0(BoardService).
    - 일일: 원래대로 둔다. 거위·Hunt·Plunder가 이미 진영 맛을 낸다.
 4. **보상**
    - 서브 Lv5~10은 '마을형': 120골드 + 레벨 칸 0.5 + A 70% 주문서 / B HP 물약 3 + 60골드.
    - 서브 Lv10+는 '숲형': `Reward{Gold=2, XP=2}`(HuntValue 분, Lv10~24 = 384골드 + 672XP) + 같은 A/B 아이템. 단 B의 골드는 HuntValue 1분(192)이다.
    - 크기는 같고 종류만 다르다.
-5. **첫 10분은 그대로 둔다.** 새 서브와 게시판은 M1_4 뒤, Lv5 이상에서 열린다.
-6. **서브 줄을 늘린다.** `MaxSubs` 2 → 3. HUD 2줄은 그대로 두고, 펼친 목록에서 다 보인다(HUD.luau questFold).
+5. **첫 10분은 그대로 둔다.** 새 서브와 게시판은 M1_4 뒤, Lv5 이상에서 열린다. (예외: 첫 [Claim] 뒤 '잃어버린 도시락' 카드는 이 규칙보다 먼저, A23-70.)
+6. **서브 줄을 늘린다.** `MaxSubs` 2 → 3. HUD 2줄은 그대로 두고, 펼친 목록에서 다 보인다(HUD.luau questFold). (→ HUD 퀘스트 표시는 A23-94로 '왼쪽 가운데 큰 글씨, 지금 퀘스트 하나 + Quests (n) ▼'로 바뀜.)
 
 ---
 
@@ -99,9 +100,9 @@ story_depth 베타 몫(M3_1, M3_3, M3_4, Pip1)과 합치면 **메인 줄이 Lv25
 | Id | 종류 | 열림 | 말하는 이 | 목표 사슬 | 한 줄 (EN) | A (천사) / B (악마) | 보상 | 엔진 |
 |---|---|---|---|---|---|---|---|---|
 | S6 (당김) | Sub | Lv5, M1_4 뒤, 진영별 단계 | Guide | 빛: Kill Slime Near MeadowArrival ×5 / 뿔: EarnGold 80 → Enter OwnTown | "New kids walk this path. Keep it safe!" / "A Horn Legion pouch must be FAT!" | Help them find the slimes / Make them say "Thanks, boss!" · Share snacks with the den / Count it twice. Mine! | 마을형 | 랜드마크 1 |
-| XR1 (당김) | Sub | Lv5, 모두 | Tiny | Talk → Kill BigSlime 1 → Talk → Choice | "A King Slime swallowed a teddy bear!" | Return it to its owner / Sell it at the counter | 마을형 | – |
+| XR1 (당김) | Sub | Lv5, 모두 | Tiny | Talk → Kill BigSlime 1 → Talk → Choice | "A ~~King Slime~~ Slime Prince swallowed a teddy bear!" (A23-84) | Return it to its owner / Sell it at the counter | 마을형 | – |
 | H2 (당김) | Sub | Lv8, 빛 | Bright | Near Fountain R22 → Kill Slime 5 → Choice | "The town lantern is gone! Did a slime eat it?" | Give it back to the town / Hang it in my house | 마을형 | – |
-| **R5** | Sub | Lv8, 뿔 | Smokey | Near SlimePond R30 → Kill BigSlime 1 → Choice | "A King Slime is wearing Smokey's sack as a hat!" | Give it back to Smokey / Finders keepers! | 마을형 | – |
+| **R5** | Sub | Lv8, 뿔 | Smokey | Near SlimePond R30 → Kill BigSlime 1 → Choice | "A ~~King Slime~~ Slime Prince is wearing Smokey's sack as a hat!" (A23-84) | Give it back to Smokey / Finders keepers! | 마을형 | – |
 | **GW2** | Sub | Lv11, 모두 | Guide | Near WoodsGate Stay 10 → Kill Goblin Near WoodsArrival ×4 → Choice | "The woods path is so dark. Kids are scared to walk it." | Put up a lamp for everyone / Put up a KEEP OUT sign | 숲형 | E4 |
 | H3 (당김) | Sub | Lv12, 빛 | Sir Gleam | Talk → Kill Slime 6 → Talk → Choice | "Day 40: Cat in tree. Again!" | Let the cat be. Help someone new. / Put it back up. More hearts! | 숲형 | – |
 | R3 (당김) | Sub | Lv12, 뿔 | Rascal Rex | Talk → EarnGold 60 → Talk → Choice | "Prank number 200! Same as 199?" | Plan a surprise party instead / Do prank 201. The same one! | 숲형 | – |
@@ -202,7 +203,7 @@ story_depth 베타 몫(M3_1, M3_3, M3_4, Pip1)과 합치면 **메인 줄이 Lv25
   - **E11이 켜지면 '추가' 생성은 끈다.** 받은 일일 칸은 비우고, 게시판이 그 역할을 한다.
 - **기울기:** 고른 쪽을 `data.Story.N.Kind` / `.Sneaky`에 센다. 토스트는 "Your shard leaned to the light." / "…to the dark."이다.
   - 게시판에 "Kind 12 · Sneaky 3"을 보여 준다.
-  - 명예·악명·랭킹 점수는 0이다. 칭호 10·50개는 정식에서 E3로 준다.
+  - ~~명예·악명·랭킹 점수는 0이다.~~ → 명예·악명은 하루 장부 Deeds(+1 / 반대 −1, 하루 6점, A23-86 결정 1), 랭킹 점수는 0. 칭호 10·50개는 정식에서 E3로 준다.
 - **아이 친화:** 시간 제한·실패·사라짐이 없다. 지역을 나가도 의뢰가 유지된다. 연속 출석 압박이 없다. 자동 전투 아이도 J7처럼 할 수 있는 카드가 늘 있다.
   - 숲 게시판의 J2(야영지)는 PvP 지역 안이다. Lv15·1시간 새싹 보호를 그대로 믿되, 숲 카드 4장 중 PvP 지역 밖에서 되는 카드(J6, J10)가 늘 1장 이상 있게 한다.
 
@@ -248,7 +249,7 @@ story_depth 베타 몫(M3_1, M3_3, M3_4, Pip1)과 합치면 **메인 줄이 Lv25
 
 **검수 판정 (2026-10-06 저녁)**
 - **이 설계로 간다.** 우선순위는 '끝까지 지킬 것' 줄(E0 → 메인 Lv25까지 → E12 → 게시판 최소판 → 레벨대마다 서브 1개 이상)을 먼저 끝내고, 나머지 서브는 위 '늦으면 빼는 순서'의 반대 순으로 채운다.
-- **게시판 점수 = 0(A23-58 예외):** 게시판은 하루 10개씩 되풀이되는 의뢰라 명예·악명을 주면 계급 칭호(10·50·200·1000)를 농사로 올릴 수 있다. 그래서 [Kind]/[Sneaky]는 기울기 기록·토스트만 하고 점수는 양쪽 모두 0이다. 한 번만 하는 서브·메인·마을 퀘스트 선택은 A23-58대로 점수가 오르거나 깎인다.
+- **게시판 점수 = 0(A23-58 예외):** 게시판은 하루 10개씩 되풀이되는 의뢰라 명예·악명을 주면 계급 칭호(10·50·200·1000)를 농사로 올릴 수 있다. 그래서 [Kind]/[Sneaky]는 기울기 기록·토스트만 하고 점수는 양쪽 모두 0이다. 한 번만 하는 서브·메인·마을 퀘스트 선택은 A23-58대로 점수가 오르거나 깎인다. (→ A23-86 결정 1, 10/09: 지금은 하루 장부 Deeds 6점 안에서 명예·악명이 움직이고, 계급 농사는 하루 상한이 막음. 랭킹 점수는 여전히 0.)
 - **'Sneaky' 그대로:** 8~12살이 흔히 쓰는 말이고 '나쁜 짓'보다 장난 느낌이라 맞다.
 - **보상 수치:** 문서 기본값(초원 36골드+60XP, 숲 192+336, 하루 10개 전액 뒤 절반, 다섯 번째 30% 주문서 1장, 숲형 서브 B 192골드)으로 넣고 실측(A23-12 방식)으로 고친다. 숲 일일 RewardMinutes 3·ChestMinutes 6도 같은 방식.
 - **N3:** A23-57대로 Factions를 빼고 빛·뿔 누구나 받게 한다(개발 2에 전달함).

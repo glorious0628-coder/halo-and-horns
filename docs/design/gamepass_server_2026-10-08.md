@@ -63,7 +63,7 @@
 
 **2배가 되는 출처(번 것):** `Monster`(처치), `Quest`(퀘스트·일일·일일 상자·휴가·게시판·스토리), `Event`(거위), `Bounty`(현상금·복수 대행), `War`(전쟁 상자), `Loot`(겹친 무기 골드), `Kaiju`(괴수 처치 보상 중 새로 생기는 몫), `SignOn`(약한 진영 가입 보너스), `Attendance`(A23-77 출석).
 
-**절대 2배가 아닌 출처:** `Sale`(팔기), `Refund`(복수 환불), `Plunder`(뺏기), `KaijuBank`(괴수 생존 때 자기 들고 있던 골드를 은행에 넣는 몫), `KaijuTransfer`(괴수 처치 때 넘겨받는 몫), `KaijuBonus`(괴수 생존 +50% 보너스), `Penalty`, `Other`(테스트 골드), `Choice`(이야기 선택의 골드), `Finisher`(왕 슬라임 마무리 카드 골드, 브랜치 dev2-kingfinish).
+**절대 2배가 아닌 출처:** `Sale`(팔기), `Refund`(복수 환불), `Plunder`(뺏기), `KaijuBank`(괴수 생존 때 자기 들고 있던 골드를 은행에 넣는 몫), `KaijuTransfer`(괴수 처치 때 넘겨받는 몫), `KaijuBonus`(괴수 생존 +50% 보너스), `Penalty`, `Other`(테스트 골드), `Choice`(이야기 선택의 골드), `Finisher`(~~왕 슬라임 마무리 카드 골드, 브랜치 dev2-kingfinish~~ → 새 King Slime·Captain Clatter 마무리 카드 골드, 지금 main의 FinisherService, A23-84).
 
 - **선택 골드는 2배가 아니에요(검수 2026-10-08, 3차).**
   - 이야기 선택(StoryQuestService `payChoice`)과 마무리 카드의 골드는 2배가 아니에요.
@@ -72,6 +72,7 @@
 
 - **괴수 생존 보너스(검수 2026-10-08):** 보너스는 주머니 골드의 절반이에요. 주머니는 처치할 때 이미 2배로 받았어요. 그래서 보너스는 다시 곱하지 않고(`KaijuBonus`), **상한만** 2배예요(`HuntValue(레벨, 20분) × PassMult`). 같은 사냥이면 패스가 있는 사람이 보너스를 2배 받아요(4배가 아니에요). 상한에 닿아도 2배예요.
 
+- (A23-90, 10/09) 개인 서버에서는 `AddBankGold`가 `Event`·`War`·`Bounty` 골드를 **2배보다 먼저** 절반으로 해요(`Config.PrivateServer`, `a2390_server_2026-10-09.md`). 거위 경험치도 절반이에요.
 - `GetXPMult` / `GetGoldMult`에는 패스가 없어요. 그래서 두 번 곱해지는 일이 없어요.
 - 2배로 얻은 레벨·골드는 레벨 상한과 랭킹에 그대로 들어가요(사용자: "그래야 사지").
 - **보상 줄은 실제로 더한 양을 보여 줘요.** 처치 Fx `Reward`(Gold·XP), 퀘스트·일일·상자·휴가·게시판·스토리·거위·현상금·전쟁·괴수·가입 보너스 알림 모두 그래요.

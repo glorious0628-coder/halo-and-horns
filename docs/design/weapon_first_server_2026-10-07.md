@@ -26,6 +26,7 @@
 - 단계 3에서 쓰러지면 집에서 다시 시작해요(초원 부활은 단계 1·2만).
 
 ## 2. 서버가 하는 일 (원격·Fx·줄·알림)
+> 2026-10-09 검수: 아래의 '대장간 이동'(수락 뒤 Travel, 줄 탭 이동, 선물 3초 뒤 초원 이동)은 없어짐 — 서버는 플레이어를 저절로 옮기지 않는다. 단계 3 줄 = "Go to Otto's Forge"(걸어감), 첫 무기 뒤 단계 1 줄 = "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)"(A23-88). `Config.Tutorial.Forge`는 `{ Near = 24 }`만 남음(걸어서 닿은 시간 = 지표 ForgeWalk). 단계 순서(0 → 3 → 1 → 2 → 99)·선물·옛 저장 규칙은 그대로.
 
 **[Accept] (`AcceptTutorial`, 인자 없음)**
 - 단계 3 + 대장간 이동을 해요. 이동 방식은 A23-68 #1과 같아요.
@@ -41,21 +42,21 @@
   - 이동 전에 캐릭터가 바뀌었거나(쓰러짐), 구역 규칙이 이동을 거절하면 옮기지 않아요. 이때도 TravelDone은 보내요.
 
 **단계 3 퀘스트 줄** (`Quests` 원격의 첫 줄)
-- `{ Id = "tutorial", Kind = "Tutorial", Pinned = true, TutorialStep = 3, Text = "Get your first weapon · Crossroads Forge", ShortName = "To the Forge", CanClaim = false, ShowProgress = false }`
+- `{ Id = "tutorial", Kind = "Tutorial", Pinned = true, TutorialStep = 3, Text = "Get your first weapon · Crossroads Forge", ShortName = "To the Forge", CanClaim = false, ShowProgress = false }` (지금 Text = `Config.Tutorial.Text.Forge` "Go to Otto's Forge", A23-88)
 - 다른 줄은 첫 [Claim] 전까지 `Folded`예요(지금과 같음).
 
 **줄 탭 = `RequestTutorial` (인자 없음)**
-- 단계 3이면 대장간 이동을 다시 해요. 다시 접속해서 집에 있을 때 쓰는 길이에요.
+- ~~단계 3이면 대장간 이동을 다시 해요. 다시 접속해서 집에 있을 때 쓰는 길이에요.~~ → 단계 3에서는 아무것도 안 해요(안내자 창은 단계 0만, A23-88).
 - 이동 중(잠금이 앞)이거나 모루 근처면 무시해요. 다른 단계에서는 예전 그대로(단계 0 = 안내자 창)예요.
 
 **모루 프롬프트 (`HHC_BlacksmithPrompt`)**
 - 단계 3이면 `ShopService` → `QuestService.ForgeGift(player)` 순서로 가요.
-  1. Notify(info) `"Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road."`
+  1. Notify(info) ~~`"Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road."`~~ → `"Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next."`(지금 `Text.ForgeGift`)
   2. `LootService.GrantFirstWeapon(player, 1)`: T1을 가지고 들어요. "You got your first weapon, [X]! Power 0 → N" 알림이 떠요. WeaponTier가 0 → 1이 되니 클라 Stronger! 순간도 그대로 떠요.
   3. 단계 1로 가요. 초원에 서 있으면 바로 2예요.
 - 이때는 WeaponShop 창을 **열지 않아요**.
-- `Forge.TravelDelay` 3초 뒤 초원 이동이에요. A23-68과 같은 Fx로 `To = "SlimeMeadow"`예요.
-  - 그사이 초원에 걸어 들어갔거나(사냥 시작), 다른 이동이 진행 중이거나, 나갔으면 이동하지 않아요.
+- ~~`Forge.TravelDelay` 3초 뒤 초원 이동이에요. A23-68과 같은 Fx로 `To = "SlimeMeadow"`예요.~~ → 저절로 옮기지 않아요. 단계 1 줄이 이동 판(또는 Map → Travel)을 가르쳐요(A23-88).
+  - ~~그사이 초원에 걸어 들어갔거나(사냥 시작), 다른 이동이 진행 중이거나, 나갔으면 이동하지 않아요.~~
 - 단계 3이 아닐 때(0·1·2·99)는 예전 그대로예요: 방문 기록 → M1_1 확인 → 상점 창.
 
 **[Claim] (첫 임무 받기)**
@@ -84,7 +85,7 @@
 
 **설정 (`Config.Tutorial`)**
 - `Steps.Forge = 3`
-- `Forge = { Landing = "Anvil", Back = 8, Lift = 4, Near = 24, TravelDelay = 3 }`
+- ~~`Forge = { Landing = "Anvil", Back = 8, Lift = 4, Near = 24, TravelDelay = 3 }`~~ → `Forge = { Near = 24 }`(A23-88)
 - 안내자 1쪽 `"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road."`(세 진영)
 - `Text.Forge`, `Text.ForgeGift`, `Claimed` / `AutoClaimed`(+ En)
 - 함께 고친 문구
@@ -112,18 +113,19 @@
 
 ## 4. 클라 계약 (게임성 개발 1 몫, 2026-10-07 메시지로 보냄)
 
-a. `HUD L.PinnedTap`: step 3이면 `fire("RequestTutorial")`(step 0과 같게)
-b. `HUD refreshGuides`: step 3이면 교차로에서는 모루(`L.BlacksmithTarget`)로 빔, 교차로 밖에서는 교차로 쪽 안내
+a. ~~`HUD L.PinnedTap`: step 3이면 `fire("RequestTutorial")`(step 0과 같게)~~ (A23-88: 서버가 단계 3 탭으로 옮기지 않음)
+b. `HUD refreshGuides`: step 3이면 교차로에서는 모루(`L.BlacksmithTarget`)로 빔, 교차로 밖에서는 교차로 쪽 안내 (10/09: 땅 위 금빛 길 줄은 꺼짐 — `Config.Nudges.GuideBeam = false`, 검수·사용자 10/09)
    - 정할 때 `BlacksmithVisited`가 아니라 `TutorialStep`으로 정해요. 수락 전에 모루를 눌러 본 사람은 이미 true예요.
 c. `QuestTarget.placeFor`: step 3이면 모루가 목표(step 99 대장간 줄과 같은 표시)
 d. `FirstSteps` 이동 화면: `Spot == "Forge"`면 "the Forge"라고 보여 주면 좋아요(선택). 지금은 Zones.Crossroads.Name이 나와요.
 e. `Panels` NoWeapons 문구 "...after your first mission."은 이제 틀려요. 예: "Bare hands for now. Accept the Guide's first quest and Otto gives you your first weapon."
 f. 첫 쪽 임무 카드에 주먹·첫 무기 약속 같은 따로 그린 표시가 있으면 '무기 먼저'로 맞춰요.
 g. `HUD L.RookieFold`의 예전 서버 대비 목록(0/1/2)에 3을 더해요(선택).
-h. **Studio 확인**: 모루 앞 착지 자리가 실제 지도에서 이상하면(벽 안, 소품 위) `Config.Tutorial.Forge.Landing = "Spawn"`으로 바꿔요. 그러면 교차로 스폰에 내리고 빔을 따라 걸어요. 개발 2에 말하면 개발 2가 바꿔요.
+h. ~~**Studio 확인**: 모루 앞 착지 자리가 실제 지도에서 이상하면(벽 안, 소품 위) `Config.Tutorial.Forge.Landing = "Spawn"`으로 바꿔요. 그러면 교차로 스폰에 내리고 빔을 따라 걸어요. 개발 2에 말하면 개발 2가 바꿔요.~~ (A23-88: 착지 없음, 처음부터 걸어감)
 - Stronger! 순간(HUD `L.First`)은 손대지 않아요. WeaponTier 0 → 1이 대장간에서 일어나요.
 
 ## 5. 시험 (오프라인, Studio 없음)
+> 2026-10-09 검수: A23-88 뒤 `test_weapon_first.py`는 이동·착지 대신 걷기·도착 지표(ForgeWalk)·옛 이동 없음을 봐요 — 지금 내용은 `walk_to_forge_server_2026-10-09.md` 시험 줄.
 
 - `tools/test_weapon_first.py`(새로 만듦): 105개 검사, 변이 41/41
   - 처음 3분 전체: 수락 → 대장간 이동·착지 자리·잠금 → 선물·알림 순서·상점 창 없음 → 3초 뒤 초원 → 5마리 → 받기 → M1_1 → T2 구매

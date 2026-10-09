@@ -1,8 +1,10 @@
 # 빛의 성채·뿔 소굴 키트 목록 (A23-47, 이미지 생성 1 초안 2026-10-06)
 
-순서: 장면 시안(`art/prompts/Scene_HaloTown.txt`, `Scene_HornsTown.txt`) + 건물별 개성 시안(`art/prompts/Town_<Halo|Horns>_*.txt`, `Spawn_*.txt`) → 검수 100% → 사용자 → 고른 시안의 물건을 **한 장에 하나씩** 2D(3/4 앞모습, 전체가 그림 안, 단색 회색 배경, 글자 없음) → 누끼 → Tripo(중요 건물 multiview) → Blender 정면 렌더 비교 → WorldKit → 게임성 개발 1.
+> 2026-10-09 검수: 지금 기준은 구역별 계획 — 빛 마을 `halo_town_plan_2026-10-09.md`(지금 구역 ①), 뿔 마을 `horns_town_plan_2026-10-09.md`(②). 시안 묶음(전체 1 + 부분 5, A23-93)대로 새 Tripo 모델(Halo_*·Horns_*)을 만든다 — 옛 Town_Halo_*는 시안과 안 맞아 임시로만 놓였고(zone_swap), 옛 Town_Horns_*는 시안과 대조해 쓸지 정함. 다른 구역 키트는 빌려 쓰지 않음(A23-96·97). 아래 표는 첫 초안.
+
+순서: 장면 시안(`art/prompts/Scene_HaloTown.txt`, `Scene_HornsTown.txt`) + 건물별 개성 시안(`art/prompts/Town_<Halo|Horns>_*.txt`, `Spawn_*.txt`) → 검수 100% → 사용자 → 고른 시안의 물건을 **한 장에 하나씩** 2D(3/4 앞모습, 전체가 그림 안, 단색 회색 배경, 글자 없음) → 누끼 → Tripo(중요 건물 multiview) → Blender 정면 렌더 비교 → WorldKit → ~~게임성 개발 1~~ 메인 반영 1(메인 Studio, 10/08부터).
 지금 WorldKit의 무료 생성 마을(`manifest.json` towns + towns_fill_placeholder)은 **자리 표시**다.
-스타일: `docs/design/world_style_rules_2026-10-06.md`(왕관 조각 크리스털 + 빛 = 후광 고리·구름 받침·날개 처마·흰 돌+금 / 뿔 = 뿔처럼 휜 지붕 끝·주황 틈빛·흑요석·붉은 천, 과장된 둥근 문·창).
+스타일: `docs/design/world_style_rules_2026-10-06.md`(왕관 조각 크리스털 + 빛 = 후광 고리·구름 받침·날개 처마·흰 돌+금 / 뿔 = 뿔처럼 휜 지붕 끝·주황 틈빛·흑요석·붉은 천, 과장된 둥근 문·창). (→ 빛 마을 시안은 흰 대리석 + 금 돔 + 후광 링 + 하늘색 천, 건물 받침 구름·날개 장식 없음: `halo_town_plan_2026-10-09.md`. 뿔 마을은 `horns_town_plan_2026-10-09.md`.)
 크기 제한 없음(A23-47) — 넓히는 만큼 채운다. 마을 안 20×20보다 큰 빈 땅 없음, 길 가운데는 비움, 입구에서 보이는 랜드마크 = 뒤쪽 성채.
 
 ## 큰 것 (이미지 생성 1) — 빛·뿔 각각

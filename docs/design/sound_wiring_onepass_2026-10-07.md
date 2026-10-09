@@ -1,4 +1,5 @@
 # 소리 연결 한 번에 — Config.Audio 붙여 넣기 (2026-10-07, 소리 만들기 → 게임성 개발 1)
+> 기록용(10/07 당시). 지금과 다른 점: 이 조각은 이미 `Config.Audio`에 들어갔고(ab708339) 옛 ogg 30개 정리도 끝남(55fe9a11) — 맨 아래 줄대로 `art/sfx/*.ogg`를 지우지 말 것: 남은 `SwingMage.ogg`·`SwingTamer.ogg`는 지금도 씀(`asset_ids.json` "kept"). 다시 붙여 넣지 말 것 — 지금 값은 `Config.Audio`(src/ReplicatedStorage/Shared/Config.luau)를 볼 것.
 
 `py tools/sfx_wiring_check.py --ref origin/main` 결과(옛 id 8 · 빈 칸 4 · 새 이벤트 15)를 한 번에 넣는 조각이에요. 값은 `art/sfx/asset_ids.json` "ids"(새 57개)·"kept"(SwingMage·SwingTamer)와 설계표 `tools/sfx_spec.json` 볼륨에서 뽑았어요. `src/`는 소리 만들기가 고치지 않아요 — 아래를 개발 1이 넣고, 넣은 뒤 `py tools/sfx_wiring_check.py`가 '옛 id 0 · 빈 칸 0'이면 끝이에요.
 

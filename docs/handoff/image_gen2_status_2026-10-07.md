@@ -1,5 +1,7 @@
 # 이미지 생성 2 상태 (2026-10-07)
 
+> 기록용(2026-10-09 검수): 10/07 기록이에요. 여기 적힌 git 순서(`reset --keep` → `git commit` → push)는 옛것 — 지금 공유 폴더는 `git commit` 없이 `py tools/push_paths.py`만(AGENTS 하드 룰 5)이고, 할 일은 `docs/handoff/role_prompts/07_img2.md`예요.
+
 이전 기록: `docs/handoff/image_gen2_status_2026-10-06.md`. 크레딧: 오늘 **0**(Firefly GPT Image 2.5 Sunburst, 중간만).
 
 ## 오전

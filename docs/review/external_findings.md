@@ -1,3 +1,5 @@
+> Record (2026-10-09 review): fix list for an old implementation round (groups G1-G11, 2026-10-02). It is not a current work list; current rules are docs/SPEC_ADDENDUM.md A23 (higher number = newer), e.g. Neutral is off in the beta (A23-57).
+
 Apply these SPEC_ADDENDUM post-implementation items (they are authoritative; read docs/SPEC_ADDENDUM.md sections A9 and A10 for full text):
 - [G1] A9-1 Config.Factions.Neutral.Color = (40,200,190), TeamColor = BrickColor.new(Color3.fromRGB(40,200,190)) (Neutral and None currently share Medium stone grey — fix). A9-2 Config.HitFeel. A9-4 Config.Sky.Neutral darker/golden values (see A11 below, which supersedes A9-4 numbers). A10 world layout v3: Config.Zones centers/spawns, Outskirts, Config.Map.Bounds, Config.Map.Gates, Config.Map.WaterTop, PassX, Lands, Bridges.
 - [G1] Config keys invented by G1 (Config.Tutorial, Config.UI, Config.NextGoal, Config.CustomModels, new Config.Text keys, Combat.ManualPriority/AutoPvPHintCooldown, Monsters.ReaggroDelay, Player.CollisionGroup): every OTHER group fixer must grep its own files for private constants / TODO(config) that duplicate these and switch to the Config keys.

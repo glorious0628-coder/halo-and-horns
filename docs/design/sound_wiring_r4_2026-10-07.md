@@ -1,5 +1,7 @@
 # 소리 연결표 — 4차 51개 (2026-10-07, 소리 만들기 → 게임성 개발 1)
 
+> 기록용(10/07 당시). 지금과 다른 점: 이 표의 id는 이미 `Config.Audio`에 연결됨(ab708339, 남은 이벤트 10개 f78959ce), 10/08 Play 확인(`docs/art/verification_2026-10-08/sound_play/`) 뒤 옛 "old" id·ogg 30개 정리도 끝남(55fe9a11) — 남은 `SwingMage.ogg`·`SwingTamer.ogg`는 지금도 씀(`asset_ids.json` "kept"), 지우지 않음. 지금 값은 `Config.Audio`. 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 Creator Hub 업로드 끝(Darugi_S2, 비공개, 이름 'HH SFX <키>'). id 원본은 `art/sfx/asset_ids.json` "ids", 출처·sha256·볼륨은 `art/sfx/picks_r4.json`. 볼륨은 설계표(`tools/sfx_spec.json`) 값이고 파일은 모두 K가중 −17 LUFS로 맞춰 둠. 옛 id("old")와 `art/sfx/*.ogg`는 새 id를 연결하고 Play로 확인한 뒤에 지움(소리 만들기가 지움). 어디서 틀지는 `docs/design/sound_gaps_2026-10-07.md`(A·B·C 표)와 같은 번호.
 
 | 키 | id | 볼륨 | 언제 / 바꾸는 것 |

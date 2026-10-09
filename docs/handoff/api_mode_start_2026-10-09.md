@@ -1,5 +1,7 @@
 # API mode start (2026-10-09, 검수)
 
+> Record (검수, 2026-10-09): API mode was dropped the same afternoon — at 16:15 the work moved to another account (`docs/handoff/review_handoff_2026-10-09.md` §8); do not suggest API mode / third-party inference again. The ids, prompts, queues and 'Studio closed' state below are from 15:10; today's source is `docs/handoff/README.md` → `docs/handoff/role_prompts/` and `docs/handoff/review_handoff_2026-10-09.md` §8·§9.
+
 Why: weekly plan usage hit 98% (resets 2026-10-12 21:00 KST). The user moved the desktop app to Console API billing ($200 credits). In that mode the old sessions are not listed, so new sessions continue from files. Project memory (`MEMORY.md`) and `AGENTS.md` load by themselves in this folder.
 
 ## Budget rule in API mode (user 2026-10-09, updated)

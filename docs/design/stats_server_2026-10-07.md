@@ -31,6 +31,7 @@
 ## 2. 클라 (게임성 개발 1)
 
 - HUD 전투력 칩의 대체식(`HUD.L.PowerValue`, 서버 속성이 오기 전)을 `Config.CombatPowerOf(Players.LocalPlayer)`로 바꿔 주세요. 지금은 스위치가 꺼져 있어서 값은 같지만, 켜지면 스탯이 빠진 숫자가 잠깐 보일 수 있다. (`tools/test_beta_basics.py`의 HUD 정적 검사 문구도 같이.)
+  - → 2026-10-09 검수: 아직 안 바뀜(main HUD `L.PowerValue`는 `Config.CombatPower` 대체식 그대로). 스위치를 켜기 전에 바꿀 것.
 - [Stats] 탭·빨간 점·레벨업 줄은 2단계와 함께(설계 §4, §6).
 
 ## 3. 검사
@@ -39,5 +40,6 @@
 - 저장 쪽 기존 시험: onboarding(Stats는 기본값만 붙음, 찍은 빌드가 저장·복구됨, v4 기록은 v3 서버가 거부), keys_settings, ranking, tamer, unarmed_start, beta_basics(PvP 대체식 = CombatPowerOf), loot·names_columns 변이 문구.
 
 ## 4. 2단계 (10/16–17 예정)
+> 2026-10-09 검수: 2단계는 10/07에 `origin/dev2-stats2`(91a7dd8d + 증거 4cc19dbe)로 만들어 둠 — 검수 '보관만', main에 병합 안 함(`docs/handoff/dev2_2026-10-07_evening.md`). Hero 창(E)은 아직 'Coming soon'.
 
 StatService(원격 `StatAction`: add/add5/reset/auto, 막기 3종, 레벨업 자동 배치, 속성 StatAtk·StatHp·StatFree·AutoStat), 피해(`ComputeMonsterHit` × atkMult), PvP(비율 안에서, 0.8–1.5 상한 그대로), 최대 HP(`Config.StatMaxHealth`), 미끼 기준, 처음 한 줄 안내. 그다음 10/20 점검에서 스위치 켜기.

@@ -16,6 +16,7 @@
   - 설명 최대 3줄(Body, 최소 크기 StyleMinPx 11 → 폰 15 px·720p PC 14 px; Body 기본 바닥은 폰에서 19 px라 4줄로 넘침) — "Level up twice as fast!", "Get twice the gold!", "Crown name tag, VIP chat and emote.", "Play with just your friends."
   - 아래 캡슐 버튼(40 du, 글자 22 du = 폰 16.5 px): 금 "199 R$" = 사기 / 초록 "Owned" / 흐린 "Coming soon"(패스 Id 0인 동안) / 개인 서버는 파랑 "100 R$ / mo".
 - 누르면: 사기 → Roblox 구매 창(MarketplaceService:PromptGamePassPurchase, 확인은 Roblox 창이 함). 가졌으면 "You already have this!". Id 0이면 "Not on sale yet. Check back soon!". 개인 서버는 게임 안에서 살 수 없어서 "Get a private server on the game page: open Servers, then Create."
+- (2026-10-09 더함, A23-90) 개인 서버 카드에 `Config.PrivateServer.Text` "Rewards are halved in private servers" 한 줄(거위·왕관전 상자·현상금 보상 절반). 10/09 기준 ShopUI에는 아직 없음.
 - 창이 막 열린 0.35 s 동안은 카드 누름을 무시(메뉴 칸 두 번 누름이 카드에 떨어지지 않게).
 - **치장(Looks)**: Config.Looks에 하나라도 있으면 "Looks for <진영 이름>" 제목(왼쪽에 치장 묶음 배지 `IconPassLooks`, 올라오면) + 칸 4개씩(패스 카드와 같은 너비, 테두리 `SlotEpic` 84 du, 이름 한 줄, 캡슐 "99 R$" / "Wear" / "Wearing"). 다시 누르면 벗기. 없으면 칸 자체가 안 보인다. 사용자 고름(10/08): 후광 **Ice Halo · Gold Halo**, 뿔 **Lava Horns · Shadow Horns**(모양은 계급 그대로, 색만). 이름은 12자 이하.
 - 바꾸기 표(직업·진영) 줄: 표 상품 Id가 생기면 맨 아래에 나온다(10/07 결정 그대로).
@@ -40,6 +41,7 @@
 - 화면이 쓰는 이름은 Config에서 읽고, 없으면 위 제안 이름을 쓴다.
 
 ## 6. 필요한 그림 (이미지 생성 2, 검수 통해) — 생기기 전에는 괄호 안 그림을 대신 씀
+(2026-10-09 검수: `IconPassXP2`·`IconPassGold2`·`IconPassVIP`·`IconPassLooks`·`IconPrivateServer`는 `Config.UIArt`에 들어감. `IconShop`·`IconVipCrown`은 아직 없음.)
 | 키 | 어디 | 크기·주의 |
 |---|---|---|
 | `IconShop` | [Menu] Shop 칸, 창 제목 띠 | 512, 메뉴 칸 안 60 %에서 읽혀야 함 (`IconCoin`) |
@@ -47,7 +49,7 @@
 | `IconPassGold2` | 2x Gold 카드 | 고른 '골드 2배 B' 512 (`IconGoldPile`) |
 | `IconPassVIP` | VIP 카드 | 고른 'VIP 왕관 B' 512 (`Crown`) |
 | `IconPassLooks` | Looks 칸 제목 왼쪽 | 고른 '치장 묶음 B' 512 (없으면 글자만) |
-| `IconPrivateServer` | 개인 서버 카드 | **새로 필요**: 같은 둥근 배지 틀, 친구끼리 노는 느낌(초록이나 하늘색 바탕) (`IconTravel`) |
+| `IconPrivateServer` | 개인 서버 카드 | ~~**새로 필요**~~ → 있음(`Config.UIArt.IconPrivateServer`, 이미지 생성 2 c5150fa): 같은 둥근 배지 틀, 친구끼리 노는 느낌(초록이나 하늘색 바탕) (`IconTravel`) |
 | `IconVipCrown` | 이름표 왕관 | 256, **18 px 높이에서도 읽히게** 굵은 테두리·단순한 모양, 가로로 넓은 비율 OK (`Crown`) |
 | 치장 아이콘 | Looks 칸 | 512, 진영별 후광·뿔 그림(사용자가 고른 뒤) |
 

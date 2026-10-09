@@ -1,4 +1,6 @@
 # 지금 게임에 쓰이는 옛 그림 목록 (이미지 개발, 2026-10-06)
+> 기록용(10/06 당시). 지금과 다른 점: 그 뒤 많은 키가 Firefly 그림으로 바뀜 — 지금 상태는 `Config.UIArt`·`art/ui/asset_ids.json`을 볼 것. 메인 Studio 반영은 메인 반영 1 몫(10/08부터), 빌린 그림·아이콘도 제 그림을 새로 그린다(A23-96 `remake_list_2026-10-09.md`).
+> 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
 
 새 Firefly 그림이 승인·업로드되고 Studio에 들어가면 지울 옛 그림 목록이다. 읽기만 해서 만들었다.
 - 확인한 것: `Config.luau`(작업 트리), `art/ui/asset_ids.json`, `art/approved.json`, `docs/art/art_cleanup_2026-10-06*.json`, `src/` 사용처.

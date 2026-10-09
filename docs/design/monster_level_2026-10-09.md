@@ -1,6 +1,6 @@
 # 몬스터 레벨 속성 — 서버 계약 (게임성 개발 2, 2026-10-09)
 
-근거: `docs/design/system_review_round1_2026-10-09.md` #6(이름표 위험 색). 가지 `dev2-mlevel`(dev2-mobs3 위).
+근거: `docs/design/system_review_round1_2026-10-09.md` #6(이름표 위험 색). 가지 `dev2-mlevel`(dev2-mobs3 위) → main 병합 c87215c7.
 
 ## 서버(끝)
 - 모든 몬스터 모델(일반·개인·이벤트·보스)에 속성 **`Level`** = `Config.MonsterLevel(kind)`. 스폰할 때 한 번 달아요. 싸움 판정은 이 값을 읽지 않아요.

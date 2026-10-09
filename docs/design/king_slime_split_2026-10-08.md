@@ -37,13 +37,13 @@
 | 15 | 몬스터 말 `Barks.BigSlime` (Config:1751) | "Bow! Blub!", "Royal BOING!", "Royal nap…" (왕 말투) | 왕자 말투로 바꿔요. A23-74 규칙(2단어·12글자, 다른 종류와 겹치지 않기)을 지켜요. 예: "Prince BOING!", "Hmph! Blub!". 왕 말투는 새 King에 줘요 | 검수(문구) → 개발 2(Config) |
 | 16 | `BubbleFamily.BigSlime = "Slime"`, `Audio.SoftKinds.BigSlime` (Config:1727, 4171) | 슬라임 말풍선·부드러운 맞는 소리 | 그대로. 새 King에도 `SlimeKing = "Slime"` / `SoftKinds.SlimeKing = true` | 개발 2 / 소리 |
 | 17 | `IconMonBigSlime`, `BarkBubbleBigSlime` (Config:4494, 4363) | 왕관 쓴 왕 슬라임 그림 | 지금 그림을 Slime Prince 것으로 써요(작은 왕관이면 그대로 OK). 새 King 아이콘·말풍선은 새로 그려요 | 이미지 생성 2 → 이미지 개발 |
-| 18 | 3D `CustomModels.BigSlime` + 금 왕관 (`docs/design/king_slime_crown_2026-10-08.md`, `tools/worldkit/slime_backfix_crown.luau`) | 왕관 붙은 몸 | 왕자는 작은 왕관이나 티아라로 할지 이미지 개발이 정해요. 큰 금 왕관은 새 King에 옮기는 게 자연스러워요 | 이미지 개발 1 / 검수 |
+| 18 | 3D `CustomModels.BigSlime` + 금 왕관 (`docs/design/king_slime_crown_2026-10-08.md`, `tools/worldkit/slime_backfix_crown.luau`) | 왕관 붙은 몸 | 왕자는 작은 왕관이나 티아라로 할지 이미지 개발이 정해요. 큰 금 왕관은 새 King에 옮기는 게 자연스러워요 → 정해짐: 왕자 = 파랑 + 결정석 없이 작은 금 왕관(A23-92), 몸은 새 Tripo(E8 취소, A23-96 `remake_list_2026-10-09.md`) | 이미지 개발 1 / 검수 |
 | 19 | 펫 조련사 X "Big Boing" `Craft = "BigSlime"` (Config:634, SkillService:465) | 스킬 소품으로 BigSlime 모델 | 그대로(소품 이름에는 글이 없어요) | — |
 | 20 | 주석: MonsterService:133·327, QuestService:256·278·311, StoryQuestService:565·604, Config:1566 | "King Slime(s)" | 다음에 손댈 때 "Slime Prince"로(동작과 상관없음) | 각 파일 담당 |
 | 21 | 지도 `KingSlimeHill`(장식 이름), `meadow_terrain` HillTop, `meadow_dress` 언덕 왕관 | 언덕 이름 | **그대로.** 새 King이 그 언덕에 나오니 이름이 맞아요 | — |
 | 22 | 측정 | Steps·퍼널에 종류 이름 없음. S0·M1_3는 퀘스트 id로만 셈(TelemetryService:388, 664-670) | 그대로. 새 King은 §3 #8 | — |
 | 23 | 일기(Config.Diary)·도움말(Help)·News | King Slime 언급 없음(일기는 호박 대왕) | 그대로. News 'New this week'에 새 King 소식 한 줄 | 검수(News) |
-| 24 | 마무리 카드 `Config.Finisher.Kinds` (dev2-kingfinish, 아직 미병합) | `{ BigSlime = true }` | **`{ SlimeKing = true }`**(Slime Prince는 카드 없음). 시험의 King 기록을 SlimeKing으로 바꿔요 | 개발 2 |
+| 24 | 마무리 카드 `Config.Finisher.Kinds` (dev2-kingfinish, ~~아직 미병합~~ → main, 지금 `{ SlimeKing, CaptainClatter }`) | `{ BigSlime = true }` | **`{ SlimeKing = true }`**(Slime Prince는 카드 없음). 시험의 King 기록을 SlimeKing으로 바꿔요 | 개발 2 |
 
 ## 2. 손으로 바꿀 글 모음 (개발 3에게, 목표 종류는 그대로)
 - S0: 1단계 Text·Start (2개)
@@ -88,9 +88,9 @@
 
 ### 3-2. 구현 계약 (개발 2, 2026-10-09) — 위 제안과 달라진 점 포함
 
-- 서버: `SlimeKingService.luau`(새), `Config.SlimeKing`, `Config.MonsterTypes.SlimeKing`, `Net` GameState 3개, `Main` 목록(PlayerService 앞), Studio 명령 `DebugCommand:Invoke("Player1", "SlimeKing")`.
+- 서버: `SlimeKingService.luau`(새), `Config.SlimeKing`(→ 1d44b1b2부터 보스 목록 `FieldBossService.luau` + `Config.FieldBosses.SlimeKing`, 계절 없음), `Config.MonsterTypes.SlimeKing`, `Net` GameState 3개, `Main` 목록(PlayerService 앞), Studio 명령 `DebugCommand:Invoke("Player1", "SlimeKing")`.
 - 시계: 시작 180초 뒤 첫 자리 → 나온 때부터 480초마다. 자리가 왔는데 초원에 준비된 사람이 없으면 기다려요(NextAt이 과거 = 대기). 300초 머물러요. 바닥을 못 찾으면 10초 뒤 다시.
-- **크기 2.5**(제안 3.2 → 3.0 → 2.5): 3.0이면 몸 반지름 4.5라 공격 거리 5.5 안의 자리에 선 플레이어가 몸에 묻혀요(`test_monster_spacing` 실패). 호박 대왕과 같은 몸이고 Slime Prince(1.8)보다 커요.
+- ~~**크기 2.5**(제안 3.2 → 3.0 → 2.5): 3.0이면 몸 반지름 4.5라 공격 거리 5.5 안의 자리에 선 플레이어가 몸에 묻혀요(`test_monster_spacing` 실패). 호박 대왕과 같은 몸이고 Slime Prince(1.8)보다 커요.~~ → **크기 3.2 + 분홍 몸**(A23-92, 10/09): 큰 보스는 몸 가장자리에서 맞게(`MonsterService.HitPad`).
 - 알림은 서버 전체 채팅 줄 + 나올 때만 토스트(호박 대왕 틀, `AnnounceService.Broadcast`). 제안 §3-4의 "초원만"은 쓰지 않았어요(다른 곳 사람도 오게).
 - 쓰러짐: `Fx "KingDefeat" { Key = "SlimeKing", Kind, Pos, Contributors }` 모두에게 + 마무리 카드(FinisherService) + `Defeated` 신호. 시간 끝·모델 잃음: 떠남(흐려짐, 터짐 없음), 보상 없음.
 - 새싹 보호: 보스 공통 규칙 그대로(Lv5 미만 또는 10분 미만은 안 때림, 시즌과 무관).

@@ -2,6 +2,8 @@
 
 # A23-71 스킬 해금 변경: 고칠 곳 목록 (2026-10-07)
 
+> 기록용(10/07 당시, 반영 끝: `Config.Skills.Unlock = { Q = 5, Z = 15, X = 25 }`, SkillSlots 기본 0). 지금과 다른 점: 스킬 키는 Z·X·C(Q·Z·X는 내부 id), 'Press Q' 안내는 지금 키 이름으로 나옴(최신: SPEC A23-78). SkillLearn 소리는 소리 만들기 세션 몫으로 들어감(ab708339), 메인 Studio 동기화·Play는 이제 메인 반영 1(10/09 역할). 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 **기준**
 - **코드 기준:** origin/main `eecc7b3`(13:08, 이미지 개발이 방금 올림)에서 줄 번호를 하나씩 확인했다.
   - dev2 `c15b67b`의 서버 파일은 main과 같다.

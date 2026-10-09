@@ -1,4 +1,7 @@
 # 소리 만들기 — 2026-10-07 밤 인계 (23:00 컴퓨터 끄기 전)
+
+> 기록용(2026-10-09 검수): 10/07 밤 기록이에요. 남은 일(개발 1 연결·Play 확인·옛 ogg 정리)은 10/08에 끝났어요(55fe9a1, `docs/handoff/sound_2026-10-08_restart.md`). 지금 할 일은 `docs/handoff/role_prompts/09_sound.md`예요.
+
 - **업로드 다 끝:** 새 효과음 57개(1~4번 49 + SkillLearn + Loot + 7번 6개), Darugi_S2 비공개 'HH SFX <키>'. id = `art/sfx/asset_ids.json` "ids"(pending 없음), 계속 쓰는 옛 소리 = "kept"(SwingMage·SwingTamer), 바뀐 옛 소리 = "old" 30개.
 - **확인:** 메인 Studio(Edit)·WorldKit에서 `py tools/sfx_loadcheck.py` 59개 불러오기 실패 0·길이 이상 0, 임시 폴더 지움(nil).
 - **개발 1 몫(대기):** 한 번에 붙여 넣기 `docs/design/sound_wiring_onepass_2026-10-07.md`(Files 59줄 + 새 Sounds 15줄 + Tap 0.46·GooseHonk 0.40·Duck.By 3개). 가상 붙여 넣기로 `py tools/sfx_wiring_check.py --file <사본>` 57개 맞음·옛 id 0·빈 칸 0. 서버 몫(Plunder 피해자 id·Crown·KingDefeat·reward→QuestDone 기본값)은 개발 2.

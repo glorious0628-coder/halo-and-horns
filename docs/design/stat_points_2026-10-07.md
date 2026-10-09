@@ -2,6 +2,7 @@
 
 > 근거 코드: origin/main 277ed95. 줄 번호는 그 커밋 기준입니다. dev2 브랜치는 이 영역을 바꾸지 않습니다.
 > 이 문서는 SPEC A23-69가 가리키는 `docs/design/stat_points_2026-10-07.md`의 본문입니다. 앞선 설계안 3개(simple / depth / fair)와 그 비평을 합친 최종판입니다. **기본은 fair**이고, PvP 계산과 연결 구조는 simple에서, 줄마다 보이는 결과 숫자는 depth에서 가져왔습니다.
+> 2026-10-09 검수(지금 상태): 1단계(`Config.Stats`·`CombatPowerOf`·저장 필드 Stats)는 main에 있고 `Config.Features.StatPoints = false`예요. 2단계 `StatService`는 `origin/dev2-stats2`(4cc19dbe)에 보관만 — main 아님(검수 10/07 '보관만', `docs/handoff/dev2_2026-10-07_evening.md`). Hero 창(E)은 아직 'Coming soon'이라 [Stats] 탭이 없어요. 아래 §7-3 날짜는 10/07 계획이에요.
 
 ---
 
@@ -203,7 +204,7 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 
 ### 4-1. 어디에
 
-- BB8 **Hero 창**(`CharacterUI.luau`, `Panels.Register("Character")`, 메뉴 이름 "Hero", C키, Config L2986)의 **[Stats] 탭 맨 위**에 둡니다.
+- BB8 **Hero 창**(`CharacterUI.luau`, `Panels.Register("Character")`, 메뉴 이름 "Hero", ~~C키~~ → E키(A23-78), Config L2986)의 **[Stats] 탭 맨 위**에 둡니다.
 - 화면은 새 모듈 `StatUI.luau`가 만들고(`StatUI.BuildTab(frame)`), CharacterUI가 부릅니다. HUD·Panels에 지역 변수를 하나도 더하지 않습니다(각 약 137줄).
 - BB8에 있던 읽기 전용 상세 줄(HP·MP·속도·1회 피해…)은 이 블록 아래 접힌 [Details ▾]로 옮깁니다.
 - **HUD 전투력 칩을 누르면**(`L.PowerOpen` L590-593) Hero 창이 [Stats] 탭으로 열립니다. 메뉴 타일(HUD L79)은 마지막으로 연 탭을 엽니다.
@@ -346,9 +347,9 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 | 담당 | 베타 최소판 | 정식 추가 |
 |---|---|---|
 | 게임성 개발 2 (서버, Game-dev2) | **3.0**: Config.Stats·도우미 0.5 / 저장 필드 Stats(더하기만, 1단계는 버전 3 그대로)·정리 0.5 / StatService 1.0 / 6곳·피해·PvP·HP·Justice 연결 0.5 / 오프라인 검사 0.5 | 1.5: Crit 0.5 / 몬스터 HP 조정 0.5 / PvP 상한 변경(결정되면) 0.5 |
-| 게임성 개발 1 (클라·메인 Studio) | **2.0**: StatUI 탭 1.0 / 레벨업 줄·빨간 점·안내 0.5 / 병합·동기화·플레이·폰 749×361·2클라 PvP 0.5 | 0.25: Crit 줄 |
+| 게임성 개발 1 (클라·~~메인 Studio~~) | **2.0**: StatUI 탭 1.0 / 레벨업 줄·빨간 점·안내 0.5 / 병합·동기화·플레이·폰 749×361·2클라 PvP 0.5 (10/09부터 메인 Studio 동기화·Play 사진은 메인 반영 1) | 0.25: Crit 줄 |
 | 이미지 개발 | **0.5**: UIKit 대체 모양·빨간 점 위치 (UiSandbox) | 0.25: 아이콘 업로드·UIArt |
-| 이미지 생성 2 | 0 | 0.5: 아이콘 3장 (Medium 무제한, High 쓸 때만 장당 5크레딧, 먼저 알림) |
+| 이미지 생성 2 | 0 | 0.5: 아이콘 3장 (~~Medium 무제한, High 쓸 때만 장당 5크레딧, 먼저 알림~~ → 후보 Medium 0, 고른 최종은 High 5크레딧, A23-47 보강 3) |
 | 검수 | **1.0**: 설계서·커밋 리뷰·증거 재확인·10/12 질문 | 1.0: QC·PvP 실측 판단 |
 | **합계** | **약 6.5 사람·일** | **약 3.5 사람·일** |
 
@@ -357,7 +358,7 @@ base  = Config.StatMaxHealth(vLevel, vFaction, vClass, vH) · 0.10
 | 날짜 | 담당 | 할 일 |
 |---|---|---|
 | 10/11–12 | 개발 2 | SKL-2(10/08–10)와 SKL-3(10/13–15) 사이에 `Config.Stats` + 저장 필드 Stats(더하기만, 버전 3 그대로) + `CombatPowerOf` + 6곳 통일을 **플래그 OFF**로 넣음. 꺼져 있으면 동작이 지금과 같음. 보드상 같은 날의 A23-23 정산·BB14 서버와 겹치므로 점검 1에서 조정 |
-| 10/12 점검 1 | 검수 → 사용자 | **"베타 = 2스탯(플래그), 정식 = 전체로 할까요?"** (A23-69가 정한 질문) |
+| 10/12 점검 1 | 검수 → 사용자 | ~~**"베타 = 2스탯(플래그), 정식 = 전체로 할까요?"** (A23-69가 정한 질문)~~ → 이미 답함: 베타에 넣는다, 끌 수 있게(A23-69 일정 결정, 사용자 10/07) |
 | 10/16–17 | 개발 2 | StatService + 피해·PvP·HP 연결 + 검사. 보드의 PET-4·6, WPN-3, GOOSE-Q가 약 2일 밀림. A23-18 검사는 같이 돌림 |
 | 10/17 점검 2 | — | 서버 병합 확인 |
 | 10/18–19 | 개발 1 | [Stats] 탭. BB8(10/13–14)이 먼저 들어와 있어야 함 |

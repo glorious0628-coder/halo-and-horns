@@ -22,4 +22,4 @@ game:GetService("DataStoreService"):GetDataStore("HaloHorns_Switches_v1" .. ENV)
 
 - 허용된 키(PassSales, Halloween, CrownWar, Goose)와 true/false 말고는 서버가 무시해요(철자가 틀리면 아무 일도 안 일어남).
 - 읽기가 실패한 서버는 마지막 값을 유지해요. 끈 것이 풀리려면 `VALUE = true`로 쓰거나 문서를 비워요.
-- 서버 오류 보기: 게임을 Play한 Studio에서 `game.ServerScriptService.DebugCommand:Invoke("Player1", "Errors", "live")`.
+- 서버 오류 보기: 게임을 Play한 Studio에서 `game.ServerScriptService.DebugCommand:Invoke(game.Players:GetPlayers()[1].Name, "Errors", "live")`(첫 인자는 Play 중인 플레이어 이름 — 메인 Studio에서는 "Player1"이 아니라 사용자 계정 이름).

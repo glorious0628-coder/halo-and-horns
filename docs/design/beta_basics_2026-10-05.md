@@ -1,10 +1,15 @@
 # 베타 기본 RPG 시스템 계약 (2026-10-05, A23-19)
 
+> 2026-10-09 검수(코드 기준): 서버 쪽(BB4 전투력·BB2 설정 저장·BB10 랭킹·BB16 칭호·BB38 지표)과 BB1 키 지도·BB3 설정 창·BB15 도움말은 main에 있다. BB7 가방(지금은 옛 Items 창이 열림)·BB8 내 캐릭터·BB9 스킬·BB11 랭킹 창은 아직 없다(캐릭터·스킬 칸과 E·K 키는 'Coming soon!', 랭킹 칸·L 키는 Tab 목록을 연다). 지금과 다른 점(코드와 새 A23이 이긴다):
+> - 화면 글은 영어만이다. 아래 한국어 `Name=`·`Label=` 문구 예시와 `*En` 짝은 옛 모양이고, 글은 Config 글 표 한곳에 쓴다(A23-48·A23-89).
+> - PC 기본 키 = 공격 F · 스킬 Z/X/C · 자동 R · 물약 1/2 · 상호작용 G · 가방 I · 내 캐릭터 E · 스킬 창 K · 퀘스트 목록 Q · 지도 M · 랭킹 L · 도움말 H · 메뉴 B. 버튼 옆 키 표시는 기본 끔(A23-78). 왼쪽 드래그 카메라 회전은 없다(A23-51).
+> - HUD 배치는 A23-40·A23-74·A23-94를 따른다(아래의 '왼쪽 위 상태판'·'오른쪽 위 [가방] 줄'은 옛 배치). 스킬은 Lv5·15·25에 배운다(A23-49·A23-71).
+
 사용자 결정(A23-19): "스킬창, 인벤토리, 장비창, 캐릭터 전투력, 랭킹 시스템, 키세팅(원하는 대로) + 그 밖에 기본적인 것도 md에 넣어서 베타 전까지"
 
 - 만든 과정: 영역 5개 코드 감사 + 외부 조사 → 계약 작성 → 비평 3개(빠진 것, 실현성·충돌, 안전·공정) → 최종본. 원자료: `beta_basics_2026-10-05.json`.
 - **우선순위:** 이 문서는 SPEC_ADDENDUM A23-19의 세부 계약이다. A23의 다른 결정과 부딪히면 A23이 먼저다.
-- **사용자 확인 대기:** 아래 §4의 질문(일정·키 범위·Tab 열·랭킹 규칙)에 답이 오면 이 문서와 A23에 적는다. 그 전에는 해당 부분을 추천안으로 만들지 말고, 답에 영향받지 않는 항목부터 한다.
+- ~~**사용자 확인 대기:** 아래 §4의 질문(일정·키 범위·Tab 열·랭킹 규칙)에 답이 오면 이 문서와 A23에 적는다. 그 전에는 해당 부분을 추천안으로 만들지 말고, 답에 영향받지 않는 항목부터 한다.~~ → §4 질문은 답을 받았다(A23-21·A23-22·A23-23).
 
 ## 1. 요약
 
@@ -14,7 +19,7 @@
 - BB17(자리 비움 자동 쉼)을 뺐다. A23-20 '계속 사냥'(SPEC_ADDENDUM.md:91-96, Config.luau:394 AutoIdleRest=false)과 부딪힌다. 대신 Roblox 20분 무입력 퇴장 예고(BB39)를 넣었다.
 - BB27(원한 골드 우편)을 뺐다. 커밋 735419e에서 GrudgeService MAIL로 이미 들어갔다.
 - 키 설정:
-  - G 키가 겹치던 문제를 풀었다. 커밋된 GrudgeGhost.luau:79가 G를 고정으로 쓰고 있었다. 이제 가방은 G, 유령 붙잡기는 T이고, 모든 키를 Keybinds 한곳에서 다룬다.
+  - G 키가 겹치던 문제를 풀었다. 커밋된 GrudgeGhost.luau:79가 G를 고정으로 쓰고 있었다. 이제 가방은 G, 유령 붙잡기는 T이고, 모든 키를 Keybinds 한곳에서 다룬다. (→ 10/08부터 가방 I, G는 상호작용, A23-78)
   - 키 비우기, F1~F8·숫자패드·기호·Ctrl·Alt를 쓸 수 있다.
   - 창 키를 다시 누르면 그 창이 닫힌다.
   - 새 기본 키가 내 키와 겹쳐도 내 키는 지워지지 않는다.
@@ -36,6 +41,7 @@
 일정: 필수만 명목 약 16일이다. 펫·Z·핼러윈과 합치면 남은 19일에 다 들어가지 않는다. 그래서 지금 순서와 빼는 순서를 정하고, 점검일을 10/12·10/17·10/20으로 앞당겼다. 사용자에게는 일정·범위·PvP 공정성·보상 다섯 가지만 묻는다.
 
 ## 2. 순서와 일정
+> 2026-10-09 검수: 10/05 계획 기록이다. 스킬은 3개(A23-49·A23-50), Z·X 켜기는 10/20 점검에서 정한다(A23-86 결정 3). 지금 작업 순서는 `RELEASE_PLAN.md` 맨 위.
 
 **만드는 순서:** BB0 → BB16 → BB4 → BB5 → BB1 → BB2 → BB13 → BB3 → BB6 → BB7 → BB9 → BB8 → BB37 → BB10 → BB11 → BB12 → BB14 → BB15 → BB38 → BB39 → BB3b → BB24 → BB21 → BB18 → BB19 → BB20 → BB25 → BB8b → BB41 → BB40 → BB26 → BB28 → BB23 → BB29 → BB22 → BB30 → BB31 → BB32 → BB33 → BB34 → BB35 → BB36
 
@@ -82,7 +88,7 @@
 - 10/20: 최종으로 뺄 것을 정한다.
 
 [늦으면 빼는 순서 제안 — 사용자 질문 1]
-- ① 영어 → 정식 ② Z 플래그 끄기 ③ 핼러윈 몬스터 수 줄이기: 이미 정한 것이다(RELEASE_PLAN.md:55).
+- ① ~~영어 → 정식~~(A23-48로 없어짐: 게임은 영어만) ② Z 플래그 끄기 ③ 핼러윈 몬스터 수 줄이기: 이미 정한 것이다(RELEASE_PLAN.md:55).
 - ④ 못 끝낸 권장 기본 기능 → 정식.
 - ⑤ 전체 랭킹을 '이 서버 랭킹 + 마을 게시판'으로 줄이기. 약 1.5일을 아낀다.
 - 사용자가 직접 말한 6개(스킬창·가방·장비창·전투력·랭킹·키 설정)는 줄인 모양으로라도 반드시 남긴다.
@@ -248,6 +254,7 @@ Schedule: grant and display ship now with the A23-18 bundle. Only the picker row
 - 가지지 않은 칭호 id를 보내면 무시되고, 능력치는 변하지 않는다.
 
 ### BB4. 전투력 숫자 하나 (서버 계산) (beta-must, S)
+> 2026-10-09 검수: 맨손(무기 없음)은 0부터다(A23-34, 새 플레이어는 맨손 시작). 스탯 점수(A23-69)가 켜지면 그 점수도 들어간다 — 지금은 `Config.Features.StatPoints = false`. 지금 공식은 `Config.CombatPower(level, tier, enhance, alloc)`·`Config.CombatPowerOf(player)`.
 
 **플레이어가 보는 것:** '전투력'은 숫자 하나다. 레벨과 무기(강화 포함)로 정해지고, 같은 레벨에 같은 무기면 누구나 같은 숫자다. 예: Lv1 시작 무기 283, Lv5 철 무기 758, Lv10 철 무기 +3 1,052, Lv20 5티어 2,829. 무기는 등급 번호가 아니라 공격력 순서대로 센다. 그래서 전설 젤리 무기(공격력 76)는 4티어(88)보다 전투력이 조금 낮게, 있는 그대로 나온다.
 
@@ -296,6 +303,7 @@ Client: read the attribute, and fall back to Config.CombatPower(attrs) before th
 - 깡패 50%와 대담함 80%·120% 경계 사례에서, 화면 숫자로 계산한 결과가 서버 판정과 같다.
 
 ### BB5. HUD 전투력 표시와 상승 알림 (beta-must, S)
+> 2026-10-09 검수: 자리가 바뀌었다 — 'Lv · 전투력' 줄은 아래 가운데 묶음에 있다(A23-40·A23-74). 첫 무기 때는 "Stronger!" + 숫자가 차르르 오르는 연출(A23-68 #3). 속성·+N 규칙은 그대로다.
 
 **플레이어가 보는 것:** 왼쪽 위 상태판에 '전투력 1,052'가 늘 보인다.
 
@@ -344,8 +352,8 @@ The step-6 HUD redesign keeps a power slot.
 
 **플레이어가 보는 것:** PC의 모든 키가 한곳에서 정해진다. 화면의 키 표시(F, Q, 1, 2 …)와 안내 문구('{자동} 키')는 항상 지금 키를 보여 준다.
 
-- 새 창 키가 생긴다: 가방 G, 내 캐릭터 C, 스킬 K, 랭킹 L, 도움말 H.
-- 원한 유령 붙잡기는 T로 옮긴다. G는 가방만 연다.
+- 새 창 키가 생긴다: 가방 ~~G~~ I, 내 캐릭터 ~~C~~ E, 스킬 K, 랭킹 L, 도움말 H, 퀘스트 목록 Q(A23-78).
+- 원한 유령 붙잡기는 T로 옮긴다. ~~G는 가방만 연다.~~ → G는 상호작용(A23-78).
 - 창 키를 다시 누르면 그 창이 닫힌다.
 - 다른 창이 열려 있을 때 창 키를 누르면 그 창으로 바뀐다.
 
@@ -365,29 +373,30 @@ The step-6 HUD redesign keeps a power slot.
 
 Config.Keybinds.Actions: an ordered list of { Id, Group ('Combat'|'Potion'|'Window'|'Other'), Key (KeyCode name or '' = unbound), Pad, Label, LabelEn, Flag?, Window? }.
 
-Defaults:
+Defaults (2026-10-09 검수: 키는 A23-78대로 고침 — 지금 `Config.Keybinds.Actions`):
 - Attack F / ButtonR2
-- SkillQ Q / ButtonL2
-- SkillZ Z / ButtonL1 (Flag: Config.Skills.ZEnabled)
+- SkillQ ~~Q~~ Z / ButtonL2
+- SkillZ ~~Z~~ X / ButtonL1 (Flag: Config.Skills.ZEnabled)
+- SkillX C / ButtonR3 (Flag: Config.Skills.XEnabled)
 - Auto R / ButtonR1
 - GhostHold T / DPadRight
 - PotionHP One / DPadUp
 - PotionMP Two / DPadDown
-- Interact E / ButtonX
+- Interact ~~E~~ G / ButtonX
 - Upgrade U
-- Bag G
-- Character C
+- Bag ~~G~~ I
+- Character ~~C~~ E
 - Skills K
 - Ranking L
 - Help H
-- Journal J
+- Journal ~~J~~ Q (퀘스트 목록)
 - Map M / DPadLeft
 - Menu B / ButtonY
 
 Live rule: an action is live when its Flag is on and, for the Window group, its Panels id is registered. Non-live actions hold no key and take no part in swaps.
 
 Key sets:
-- Reserved = {Escape, Slash, Tab, Backquote, Return, KeypadEnter, Space, LeftShift, RightShift, W, A, S, D, I, O, Comma, Period, PageUp, PageDown, Up, Down, Left, Right, F9, F10, F11, F12}. The Roblox camera uses I/O, Comma/Period, the arrows and PageUp/PageDown.
+- Reserved = {Escape, Slash, Tab, Backquote, Return, KeypadEnter, Space, LeftShift, RightShift, W, A, S, D, ~~I,~~ O, Comma, Period, PageUp, PageDown, Up, Down, Left, Right, F9, F10, F11, F12}. The Roblox camera uses I/O, Comma/Period, the arrows and PageUp/PageDown. (2026-10-09 검수: I는 10/08부터 가방 키라 Reserved에서 빠짐, Roblox I 확대는 막음 — A23-78)
 - Allowed = A–Z, Zero–Nine, F1–F8, Keypad0–Keypad9, Minus, Equals, LeftBracket, RightBracket, Semicolon, Quote, BackSlash, LeftControl, LeftAlt, CapsLock, minus Reserved.
 - Check each non-letter key once in a Studio Play. Any key Roblox swallows moves to Reserved.
 
@@ -409,7 +418,7 @@ Rewire:
 - GrudgeGhost uses ActionFor('GhostHold'). GhostButton becomes '유령으로 붙잡기 ({GhostHold})'.
 - Interact: ProximityPromptService.PromptShown sets prompt.KeyboardKeyCode = Get('Interact'), re-applied on Changed. If Studio shows prompts ignore this, show the row as '고정 E' and add E to Reserved at runtime.
 
-Unchanged: short left-click attack, left-drag camera, Intro Return/KeypadEnter/ButtonA, WorldMap ButtonB/Escape close.
+Unchanged: short left-click attack, ~~left-drag camera~~ (left-drag no longer turns the camera, right-drag does: A23-51), Intro Return/KeypadEnter/ButtonA, WorldMap ButtonB/Escape close.
 
 Text tokens:
 - '{Auto}', '{GhostHold}' and '{Map}' in Config texts.
@@ -423,8 +432,8 @@ No remote in this item.
 **먼저 필요한 것:** 없음 (BB2와 함께 쓰면 저장된다)
 
 **합격 확인:**
-- 기본 키 F·Q·R·B·M·U·1·2·E가 지금과 똑같이 동작한다(회귀 0). 털린 뒤 T로 유령 붙잡기가 되고, G는 가방만 연다.
-- G를 두 번 누르면 가방이 열렸다 닫힌다. 가방이 열린 상태에서 C를 누르면 캐릭터 창으로 바뀐다.
+- 기본 키 F·Q·R·B·M·U·1·2·E가 지금과 똑같이 동작한다(회귀 0). 털린 뒤 T로 유령 붙잡기가 되고, ~~G는 가방만 연다~~. (A23-78 뒤 기준: 스킬 Z·X·C, 상호작용 G, 가방 I, 캐릭터 E, 퀘스트 목록 Q)
+- ~~G~~ I를 두 번 누르면 가방이 열렸다 닫힌다. 가방이 열린 상태에서 ~~C~~ E를 누르면 캐릭터 창으로 바뀐다.
 - 아직 없는 창의 키를 눌러도 아무 일이 없다(오류 0).
 - 채팅이나 닉네임 입력 중에는 어떤 게임 키도 동작하지 않는다.
 - src/StarterPlayer에서 'Enum.KeyCode.'를 grep하면 Keybinds.luau, Intro.luau(Return/KeypadEnter/ButtonA), WorldMap.luau(ButtonB/Escape 닫기)에서만 나온다.
@@ -452,7 +461,7 @@ Config.Settings.Defs:
 - DmgNum: Enum All / Off
 - Tags: Enum All / Near / Off
 - KeyBadges: Bool
-- Lang: Enum Auto / ko / en
+- Lang: Enum Auto / ko / en (A23-48: 설정에 언어 줄은 없고 화면은 늘 영어 — `UIKit.Lang()`는 'en', 저장 칸만 남음)
 - BagSort: Enum Default / Grade / Count
 - Text table (KO + EN).
 
@@ -491,10 +500,11 @@ Client:
 - 키와 효과음을 바꾸고 나갔다 들어오면 그대로다(DataStore가 켜진 비공개 장소에서 확인).
 - 잘못된 값을 보내면 서버가 정리한 값만 저장하고 되돌려 준다. 시험 값: Keys.Attack='Escape', Sfx=5, 모르는 키, 1000자 문자열, 두 동작에 같은 키.
 - 키를 바꾸고 0.3초 뒤 창을 닫아도 마지막 변경이 되돌아가지 않는다. 연타해도 서버 처리는 1초에 1번이다.
-- Keys={Attack='J'}인 저장을 Journal=J가 추가된 뒤 불러오면, Attack은 J 그대로이고 Journal은 '없음'이 되며 안내가 1번 뜬다.
+- Keys={Attack='J'}인 저장을 Journal=J가 추가된 뒤 불러오면, Attack은 J 그대로이고 Journal은 '없음'이 되며 안내가 1번 뜬다. (지금 Journal 기본 키는 Q — 같은 규칙을 Q로 시험, A23-78)
 - Settings가 없는 옛 저장도 오류 없이 기본값으로 들어오고, Version은 3 그대로다.
 
 ### BB13. 메뉴 정리 + 새 창 등록 통로 (Panels.Register) (beta-must, M)
+> 2026-10-09 검수: 메뉴 모양은 바뀌었다 — 오른쪽 위 [메뉴]를 누르면 칸이 왼쪽으로 가로로 펼쳐진다(A23-38·A23-40). 지금 칸 = Shop · Invite · News · Diary · Travel · Help · Settings(HUD `Fold`). 직업 바꾸기·환생·오프닝 다시 보기·이름 숨기기·휴가·키 설정은 설정 창, 닉네임은 내 캐릭터 창(A23-46; 그 창이 생길 때까지는 설정 창 줄 — `SettingsUI.luau`). 아래 섹션 목록은 옛 안이고, Panels.Register 계약은 그대로다.
 
 **플레이어가 보는 것:** 메뉴가 묶음으로 정리된다:
 - [내 캐릭터 · 가방 · 스킬]
@@ -683,7 +693,7 @@ Config.Loot.Items gains (additive, no server change except BB7):
 
 ### BB7. 가방 창 + HUD [가방] 버튼 + 골라 팔기 (beta-must, L)
 
-**플레이어가 보는 것:** 오른쪽 위 [가방] 버튼이나 PC G키로 연다.
+**플레이어가 보는 것:** ~~오른쪽 위 [가방] 버튼이나 PC G키로~~ 아래 가운데 아이콘 줄의 [가방] 버튼이나 PC I키로 연다(A23-74·A23-78).
 
 - 탭: [장비][소모품][주문서][재료]. 탭마다 새 아이템 수가 붙는다.
 - 칸마다 그림, 개수(×N), 강화(+N), '장착' 표시, 새 아이템 점이 있다.
@@ -750,9 +760,9 @@ HUD:
 
 Text: Config.Bag.Text (KO + EN).
 
-**키·폰:** PC: G키 또는 오른쪽 위 [가방]. 칸은 클릭으로 고르고, 끌어 옮기기는 쓰지 않는다. 폰: [가방] 버튼(누르는 범위 60 이상). 상세는 화면을 바꿔 열린다. 패드: 메뉴 → 가방으로 열고, Roblox UI 선택으로 칸을 옮기며, B로 닫는다.
+**키·폰:** PC: ~~G키 또는 오른쪽 위 [가방]~~ I키 또는 아래 가운데 [가방](A23-74·A23-78). 칸은 클릭으로 고르고, 끌어 옮기기는 쓰지 않는다. 폰: [가방] 버튼(누르는 범위 60 이상). 상세는 화면을 바꿔 열린다. 패드: 메뉴 → 가방으로 열고, Roblox UI 선택으로 칸을 옮기며, B로 닫는다.
 
-**먼저 필요한 것:** BB6, BB13, BB1(G키)
+**먼저 필요한 것:** BB6, BB13, BB1(~~G키~~ 가방 키 I)
 
 **합격 확인:**
 - 슬라임에게서 젤리를 얻으면 [재료] 탭에 새 아이템 점과 개수가 생긴다. 그 탭을 보면 점이 사라진다.
@@ -764,6 +774,7 @@ Text: Config.Bag.Text (KO + EN).
 - PvP 전투 중에는 장착·주문서·팔기 버튼이 '전투 중'으로 바뀐다.
 
 ### BB9. 스킬 정의 + 스킬창 (beta-must, M)
+> 2026-10-09 검수: 스킬 계약은 바뀌었다 — 직업마다 3개(내부 id Q·Z·X)를 Lv5·15·25에 저절로 배운다(선생님·골드 없음), 키는 Z·X·C, 배우기 전 칸은 안 보인다, 버튼에 MP 숫자 없음(A23-49·A23-60·A23-71·A23-78). 설계는 `skill_kit_beta_2026-10-06.md`. 아래의 'Z = Lv5 · 교차로 스킬 선생님 · 100골드', 'X is never shown', Order = {'Q','Z'}는 옛 안이다.
 
 **플레이어가 보는 것:** '스킬' 창은 PC K키나 메뉴로 연다.
 
@@ -823,7 +834,7 @@ No remote here.
 
 ### BB8. 내 캐릭터·장비창 (무기 칸, 펫 칸, 칭호, 능력치) (beta-must, M)
 
-**플레이어가 보는 것:** '내 캐릭터' 창은 PC C키, 상태판 얼굴이나 전투력 누르기, 메뉴로 연다.
+**플레이어가 보는 것:** '내 캐릭터' 창은 PC ~~C키~~ E키(A23-78), 상태판 얼굴이나 전투력 누르기, 메뉴로 연다.
 
 [장비] 탭:
 - 왼쪽에 내 로블록스 얼굴 사진과 큰 전투력 숫자가 있다.
@@ -880,12 +891,12 @@ No placeholder armor or accessory slots (A23-1 '다음 해금 예고 금지'; us
 
 Text: Config.Equip.Text.
 
-**키·폰:** PC: C키, 상태판 얼굴·전투력 클릭, 메뉴. 폰: 얼굴을 누르거나 메뉴로 연다. 패드: 메뉴 → 내 캐릭터, B로 닫기.
+**키·폰:** PC: ~~C키~~ E키(A23-78), 상태판 얼굴·전투력 클릭, 메뉴. 폰: 얼굴을 누르거나 메뉴로 연다. 패드: 메뉴 → 내 캐릭터, B로 닫기.
 
 **먼저 필요한 것:** BB4, BB6, BB13 (펫 칸은 펫 작업, 칭호는 BB16)
 
 **합격 확인:**
-- C키, 얼굴 누르기, 메뉴 세 가지로 모두 열린다.
+- ~~C키~~ E키, 얼굴 누르기, 메뉴 세 가지로 모두 열린다.
 - 무기 목록의 '전투력 +N'이 장착한 뒤 HUD 숫자 변화와 같다. 8티어처럼 낮아지는 경우는 '전투력 −N'으로 나온다.
 - 능력치 탭의 최대 HP가 실제 Humanoid.MaxHealth와 같다(직업·진영이 다른 3명으로 확인).
 - 펫이 없으면 펫 칸이 안 보이고, 빈 장비 칸(갑옷 등)도 없다.
@@ -1120,7 +1131,7 @@ Text: Config.Ranking.Text.
 - 맨 아래에는 내 줄이 고정된다('12위' 또는 '50위 밖 · 내 점수 1,052').
 - 맨 위에는 진영 현황 1줄이 있다.
 
-교차로 게시판에는 기사단 명예 TOP3 옆에 뿔 군단 악명 TOP3가 생기고, 게시판에서 E를 누르면 랭킹 창이 열린다.
+교차로 게시판에는 기사단 명예 TOP3 옆에 뿔 군단 악명 TOP3가 생기고, 게시판에서 ~~E~~ G(상호작용, A23-78)를 누르면 랭킹 창이 열린다.
 
 **지금 상태:** 랭킹 창이 없다. 게시판에는 기사단 명예만 있고 악명이 없다. 이름 숨기기도 지키지 않는다. 게시판 문구는 PvPService 안 상수다. 진영 합계는 GameState에 이미 있다(WarHaloScore/WarHornsScore, HaloCount/HornsCount).
 
@@ -1139,7 +1150,7 @@ Town board (PvPService.updateBoard):
 - Move the board strings into Config.Ranking.Text.Board.
 - Add a ProximityPrompt '랭킹 보기'. The server fires the existing s→c OpenPanel 'Ranking'.
 
-**키·폰:** PC: L키, 메뉴 → 랭킹, 게시판에서 E(또는 바꾼 상호작용 키). 폰: 메뉴 → 랭킹, 게시판 버튼. 탭은 두 줄이고 누르는 범위는 60 이상이다. 패드: 메뉴 → 랭킹, 게시판에서 X, B로 닫기.
+**키·폰:** PC: L키, 메뉴 → 랭킹, 게시판에서 ~~E~~ G(또는 바꾼 상호작용 키, A23-78). 폰: 메뉴 → 랭킹, 게시판 버튼. 탭은 두 줄이고 누르는 범위는 60 이상이다. 패드: 메뉴 → 랭킹, 게시판에서 X, B로 닫기.
 
 **먼저 필요한 것:** BB10, BB13, BB37
 
@@ -1147,7 +1158,7 @@ Town board (PvPService.updateBoard):
 - 탭 5개와 범위 2개, 모두 10개 조합이 열린다. 빈 판은 '아직 기록이 없어요'를 보여 준다.
 - [전체]를 10번 빠르게 눌러도 서버 요청은 1초에 1번이고, RankingService.Stats.Reads는 늘지 않는다.
 - 내가 50위 안이면 순위가 나오고, 밖이면 '50위 밖 · 내 점수'가 나온다.
-- 게시판에 기사단 명예 TOP3와 뿔 군단 악명 TOP3가 나란히 보이고, 게시판에서 E를 누르면 랭킹 창이 열린다.
+- 게시판에 기사단 명예 TOP3와 뿔 군단 악명 TOP3가 나란히 보이고, 게시판에서 ~~E~~ G를 누르면 랭킹 창이 열린다.
 - 749×361에서 탭 두 줄, 목록, 내 줄이 겹치지 않는다.
 
 ### BB12. 플레이어 목록(Tab) 열 정리 (beta-must, S)
@@ -1159,7 +1170,7 @@ Town board (PvPService.updateBoard):
 **계약:**
 
 Config.Leaderstats.Columns is an ordered list of column ids.
-- Until the user answers: {'Level','Gold','Rebirths','Fame'} (current).
+- ~~Until the user answers: {'Level','Gold','Rebirths','Fame'} (current).~~ → 사용자 답 ⓑ(A23-21): {'Power','Level','Rebirths','Fame'}, 골드 숨김 — 지금 코드.
 - Options from user question 3:
   - ⓑ recommended: {'Power','Level','Rebirths','Fame'}
   - ⓒ: {'Level','Rebirths','Fame'}
@@ -1290,7 +1301,7 @@ Metrics.luau: new server module.
 - Metrics.Event(player, name, value) = pcall LogCustomEvent.
 - Config.Analytics.Debug = RunService:IsStudio() prints each call.
 
-Config.Analytics.Steps:
+Config.Analytics.Steps (2026-10-09 검수: 지금은 13단계 — IntroDone, Faction, Class, FirstMissionAccept, ForgeArrive, FirstWeapon, MeadowArrive, FirstHit, FirstKill, FirstMissionDone, FirstSkillHit, AutoUnlocked, Level10 (A23-68 #5·A23-74). 아래 8단계는 옛 목록):
 1. IntroDone
 2. Faction
 3. Class
@@ -1325,6 +1336,7 @@ No names, UserIds or free text in event names or values.
 - UiMetric을 10번 연타해도 서버 처리는 2초에 1번이고, 같은 창은 세션에 1번만 센다.
 
 ### BB39. Roblox 20분 무입력 퇴장 예고 (beta-should, S)
+> 2026-10-09 검수: 이 절은 정식(12/19)으로 미뤄짐 — 스킬 3개 일정 때문(A23-50).
 
 **플레이어가 보는 것:** 자동 전투를 켜 놓고 17분 동안 아무 입력이 없으면 '3분 뒤 로블록스가 자리 비움으로 연결을 끊어요. 아무 키나 눌러 주세요'(폰은 '화면을 한 번 눌러 주세요')가 한 번 뜬다. 다시 움직이면 예고가 초기화된다.
 
@@ -1432,6 +1444,7 @@ No pad remapping UI in beta (user question 2).
 - 실제 패드로 같은 동작을 확인한다(사용자 실기기 확인).
 
 ### BB18. 퀘스트 일지 (beta-should, S)
+> 2026-10-09 검수: 이 자리는 Q 키 '전체 퀘스트 창'이 맡는다 — 탭 Main·Side·Daily·Event·Faction × 진행 중/받을 수 있음/끝남(A23-78·A23-81, 서버 `quest_book_server_2026-10-08.md`). 아래 'J키'·탭 3개는 옛 안이다.
 
 **플레이어가 보는 것:** PC J키나 퀘스트 판 제목을 눌러 연다. 탭은 셋이다.
 - [진행 중]: 지금 장과 단계, 서브 퀘스트, 일일 n/3, 자정까지 남은 시간.
@@ -1504,6 +1517,7 @@ No new remote.
 - [차단]을 누르면 Roblox 차단 확인 창이 뜬다(사용자 실기기 확인).
 
 ### BB25. 친구 초대 버튼 (beta-should, S)
+> 2026-10-09 검수: A23-79 #3으로 만들었다 — `Invite.luau`·`InviteService`(LaunchData = 초대한 사람, "Your friend joined! [Go to friend]", 초대 보상 0, KO·강화 실패·구매 창 근처엔 버튼 없음). 메뉴 칸 Invite.
 
 **플레이어가 보는 것:** 메뉴의 '친구 초대'를 누르면 Roblox 초대 창이 뜬다.
 
@@ -1604,6 +1618,7 @@ Given a UserId, the tool removes:
 - 시험 계정으로 dry run하면 지울 키 목록이 나온다. 실제 실행 뒤 그 키들이 모두 없다.
 
 ### BB26. 명예의 전당 게시판 (교차로·성채·소굴) (beta-should, M)
+> 2026-10-09 검수: 판 목록은 A23-23·A23-24(명예·악명·장인·PvP)로 바뀌어 전투력·성장·사냥 판은 없다. 상호작용 키는 G(A23-78).
 
 **플레이어가 보는 것:** 랭킹 게시판이 세 곳에 생긴다. 판 앞에서 E를 누르면 랭킹 창이 열린다.
 - 교차로 '명예의 전당': 이번 시즌 전투력 TOP5, 성장 TOP5, 이번 주 사냥 TOP5.
@@ -1659,6 +1674,7 @@ Until the user answers question 4, build only the gold marker.
 - 부활 15초 안의 상대를 30% 아래로 깎으면 경고가 1번 뜨고, 60초 안에는 다시 뜨지 않는다.
 
 ### BB23. 배경 음악 + 효과음 묶음 (beta-should, M)
+> 2026-10-09 검수: 효과음은 '소리 만들기' 세션이 만들고(Firefly 먼저, 검수가 고름) 게임성 개발 1이 `Audio.luau`·`Config.Audio`에 연결한다(A23-67). 배경 음악은 아직 없다.
 
 **플레이어가 보는 것:** 마을, 사냥터, PvP, 거위, 괴수마다 배경 음악이 나온다(핼러윈 곡 포함). 레벨업, 맞음, 쓰러짐, 물약, 강화 성공/실패, 퀘스트 완료에 소리가 난다. 설정에서 음악과 효과음을 따로 줄인다.
 
@@ -1683,6 +1699,7 @@ Settings: add Music to the Defs. The row shows only once a track exists.
 - 지역을 옮기면 곡이 2초 안에 바뀐다. 음악 0%면 효과음만 들린다.
 
 ### BB29. 언어 선택 줄 (자동/한국어/English) (beta-should, S)
+> 2026-10-09 검수: 이 절은 낡음 — 게임은 영어만이라 언어 줄을 만들지 않는다(A23-48). 한국어판은 글로벌 정식 뒤 따로 낸다(A23-89).
 
 **플레이어가 보는 것:** 설정에서 언어를 고른다. 처음에는 Roblox 언어를 따른다.
 
@@ -1750,6 +1767,7 @@ The server grants the reward through AddBankGold or potion stock. Reward sizes a
 - 같은 코드는 한 번만 받는다. 만료된 코드는 거절된다.
 
 ### BB31. Roblox 배지 (launch, S)
+> 2026-10-09 검수: 베타 전으로 당겨졌다 — 배지 8개 Chose a Side · First Slime · Lost Lunchbox · Stronger! · First Skill · Shard Choice · Rank 2 · Halloween 2026(A23-79 #2, `Config.Badges`, id는 게시 때 사용자가 만들고 0이면 꺼짐). 아래 배지 목록은 옛 안이다.
 
 **플레이어가 보는 것:** 진영 선택, 첫 무기, Lv10, 첫 환생, 거위 참여 때 Roblox 배지를 받는다.
 
@@ -1769,6 +1787,7 @@ Config.Badges ids stay 0 (off) until the user creates the badges on the Creator 
 - id가 0이면 아무 일도 없고, id를 넣으면 배지가 1번 지급된다.
 
 ### BB32. 출석 달력 (launch, S)
+> 2026-10-09 검수: 베타 전으로 당겨졌고 연속(Streak)은 없다 — 7일 출석판 + 평생 모은 날 수, 저장 `Attendance = { Days, LastDay, Slot }`, 보상 크기도 정해짐(A23-77, `Config.Attendance`).
 
 **플레이어가 보는 것:** 7일 출석 달력이 있다. 하루 빠져도 손해는 없다.
 
@@ -1835,7 +1854,7 @@ If the user answers 'no' to question 2, move UiScale and the left-hand mirror to
 
 ### BB35. 지도 목표·친구 표시 (launch, S)
 
-**플레이어가 보는 것:** 큰 지도에 지금 목표('여기로!')와 친구 위치가 보인다. 미니맵은 만들지 않는다(A12).
+**플레이어가 보는 것:** 큰 지도에 지금 목표('여기로!')와 친구 위치가 보인다. ~~미니맵은 만들지 않는다(A12).~~ → 왼쪽 위 둥근 미니맵이 있다(A23-26·A23-66; 실제 세상을 위에서 찍은 그림으로 바꾸기로 함, A23-95).
 
 **지금 상태:** 지도에는 거위, 괴수, 자루 표시만 있다(WorldMap). 목표 안내는 빔으로 한다.
 
@@ -1881,7 +1900,7 @@ Announce with PublicName (BB37). Give the hero the RoundHeroUntil attribute.
 
 1. Init/Start에서 기다리지(yield) 않는다. 원격은 `FindFirstChild`로 바로 묶고, 아직 없으면 `task.spawn`으로 `WaitForChild(이름, 30)`을 기다렸다 묶는다(`ITEMS.Bind`와 같은 방식).
 2. 새 상태는 표(table)에 넣는다. HUD, Fx, WorldMap, Panels는 각자 최상위 local이 200개를 넘지 않게 한다.
-3. 한국어 글자는 `Config.*.Text`에 두고, 영어는 `*En` 키로 짝을 맞춘다.
+3. ~~한국어 글자는 `Config.*.Text`에 두고, 영어는 `*En` 키로 짝을 맞춘다.~~ → 화면 글은 영어만, `Config.*.Text` 글 표 한곳에 쓰고 코드에 박지 않는다(A23-48·A23-89).
 4. 이미 있는 UIArt 부품과 UIKit 코드 대체(fallback)만 쓴다. 새 모양은 승인된 그림이 있어야 만든다.
 5. 새 모듈 파일은 Studio에 먼저 넣고, 그다음에 ORDER/INIT 목록에 올린다. 지울 때는 목록에서 먼저 빼고 나서 파일을 지운다.
 6. 모든 합격 확인에는 'MCP 확인' 또는 '사용자 실기기 확인' 중 하나를 적는다.
@@ -1894,13 +1913,14 @@ Announce with PublicName (BB37). Give the hero the RoundHeroUntil attribute.
 - 1:1 거래: 사기·부계정 문제 때문에 금지를 그대로 둔다. 대신 경매장이 정식(12/19)에 열린다(A23-13).
 - 갑옷·장신구 칸: 아직 설계가 없다(사용자 질문 2). 장비창은 무기·펫·칭호 칸으로 시작한다.
 - 스킬 레벨·포인트: 아직 설계가 없다. 베타 스킬은 직업별로 정해진 것을 그대로 쓴다.
-- 미니맵: A12에서 큰 지도만 두기로 했다. 작은 폰 화면을 가리지 않으려는 결정이다(BB35는 큰 지도에 목표를 표시한다).
+- ~~미니맵: A12에서 큰 지도만 두기로 했다. 작은 폰 화면을 가리지 않으려는 결정이다(BB35는 큰 지도에 목표를 표시한다).~~ → 미니맵은 베타에 있다(A23-26·A23-66·A23-95).
 - 진영 채팅: Roblox 기본 팀 채팅(/t)이 이미 동작한다. BB15 도움말에 한 줄만 적는다.
 - 그림 도감: 아직 그림이 없다. P7의 글자 표(몬스터별 '주는 것')가 대신한다(가방 재료 탭, BB7).
 - 폰 버튼 배치와 패드 키 바꾸기: 정식 이후로 미룬다(BB34, BB21, 사용자 질문 2). 폰 버튼 크기·왼손 배치는 사용자 답에 따라 BB34에서 정한다.
 - 스킬별 자동 끄기: BB22. A23-1의 자동 전투 계약(스킬도 자동으로 쓴다)을 바꾸는 일이라 정식까지 기다린다.
 
 ## 4. 사용자에게 묻는 것 (답 오면 A23에 기록)
+> 2026-10-09 검수: 모두 답을 받았다 — 일정·빼는 순서·키 범위(PC 키보드만)·Tab 열 ⓑ = A23-21, 주간 랭킹 보상과 공정 점수 = A23-22, 판 3개(→ 장인 더해 4개) = A23-23·A23-24. 아래는 물었던 기록이다.
 
 - (일정) 기본 기능 필수분만 약 16일(작업 1개 기준)이라, 10/24까지 펫·Z 스킬·핼러윈 몬스터를 모두 넣기는 어렵습니다. 기본 기능을 Z 스킬보다 먼저 하고, 늦으면 다음 순서로 빼도 될까요? 직접 말씀하신 6개(스킬창·가방·장비창·전투력·랭킹·키 설정)는 줄인 모양으로라도 꼭 넣습니다.
   ① 영어 → 정식

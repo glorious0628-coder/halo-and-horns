@@ -18,7 +18,7 @@ SPEC A23-86 결정 1(하루 선행·장난 장부) + `content_beyond_10min_2026-
 
 ## 2. 공용 선택 카드 `ChoiceCard` (src/ServerScriptService/ChoiceCard.luau)
 - 나만 보는 카드. **좋은 쪽(Good)과 나쁜 쪽(Evil) 보상 크기는 같고 고정**(뽑기 없음). 카드 근처에 구매 버튼을 두지 않아요(A23-79).
-- 카드 종류는 데이터: `Config.ChoiceCard.Kinds[kind] = { Title, Seconds?, Good = { Label, Done?, Reward = { Item|Potion, N, Gold }, Points? }, Evil = {…} }`. 지금은 비어 있고, 잃어버린 물건·견습생·클래터 같은 카드는 그 내용과 함께 들어와요.
+- 카드 종류는 데이터: `Config.ChoiceCard.Kinds[kind] = { Title, Seconds?, Good = { Label, Done?, Reward = { Item|Potion, N, Gold, GoldMin?, XP? }, Points? }, Evil = {…} }`(GoldMin = 내 레벨 사냥 골드 n분어치, 견습생 카드; XP는 A23-87에 더해짐, 2배 패스 안 탐). ~~지금은 비어 있고,~~ 지금은 두 장: 꽃 슬라임 카드 `FlowerPatch`(A23-87, `Config.KillCards.FlowerPatch.Enabled = false`로 꺼짐)와 견습생 카드 `ApprenticeScratch`(오토의 의뢰, `Config.Features.Commission = false`로 꺼짐, `commission_server_2026-10-09.md`). 잃어버린 물건·클래터 같은 카드는 그 내용과 함께 들어와요.
 - 두 가지 모양:
   - **저장 카드**(`Seconds` 없음): 시간 제한 없음, 한 장 대기, `data.Cards.Pending = { Id, Kind, Ctx }`, 접속하면 다시 떠요.
   - **시간 카드**(`Seconds`, 예: King Slime 마무리): 저장 안 함, 시간이 지나면 `None`(보상·점수 없음), 서버만 쓰는 `Grace` 1초.
@@ -39,7 +39,7 @@ SPEC A23-86 결정 1(하루 선행·장난 장부) + `content_beyond_10min_2026-
 
 ## 3. 개발 2 마무리 카드와 합치기 (순서)
 1. 지금은 따로: `FinisherService`의 Net 이름(`FinisherCard/FinisherPick/FinisherEnd`, `Help`/`Tickle`)을 안 바꿔요. 개발 1 화면이 그걸 써요.
-2. King Slime이 main에 들어간 뒤: `FinisherService`의 점수 부분(`ScoreBudget`)을 `Deeds`(`Take`/`Add`)로 바꿔 하루 상한이 하나가 되게 해요. ScoreBudget `PerDay = 5`(proposed)는 장부 6점으로 합쳐져요.
+2. ~~King Slime이 main에 들어간 뒤: `FinisherService`의 점수 부분(`ScoreBudget`)을 `Deeds`(`Take`/`Add`)로 바꿔 하루 상한이 하나가 되게 해요. ScoreBudget `PerDay = 5`(proposed)는 장부 6점으로 합쳐져요.~~ → 끝남(10/09): FinisherService 점수는 `Deeds`(Preview/Add)로 가고 ScoreBudget은 없어졌어요.
 3. 그다음 열기/고르기/기록을 `ChoiceCard.Offer`로 옮겨요(`Help`→`Good`, `Tickle`→`Evil` 이름만 매핑, 시간 카드, 옛 Fx 이름은 한 판 호환). finisher 시험이 그대로 통과해야 해요.
 
 ## 4. 시험

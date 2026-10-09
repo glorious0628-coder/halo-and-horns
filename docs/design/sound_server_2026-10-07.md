@@ -29,7 +29,7 @@ C3: 괴롭힘·무법자로 자동 전투가 강제로 꺼질 때의 'bad' 알�
 
 ## 4. B11 — 왕을 쓰러뜨림
 
-`Net.Fx(nil, "KingDefeat", { Key = "PumpkinKing" | "GhostKing"(HalloweenService의 Key), Kind, Pos(몸이 없으면 nil), Contributors = { 보상 받은 사람 UserId… } })` — 모두에게, **쓰러뜨렸을 때만**(그냥 떠나면 안 옴). 클라: Contributors에 내가 있으면 0.65 볼륨 + 내 KillPop·동전 0.25초 뒤, 아니면 0.45.
+`Net.Fx(nil, "KingDefeat", { Key = "PumpkinKing" | "GhostKing"(HalloweenService의 Key; 지금은 필드 보스 `"SlimeKing"`·`"Clatter"`도 FieldBossService가 같은 Fx로 보냄 + `Share`, A23-84·`captain_clatter_2026-10-09.md`), Kind, Pos(몸이 없으면 nil), Contributors = { 보상 받은 사람 UserId… } })` — 모두에게, **쓰러뜨렸을 때만**(그냥 떠나면 안 옴). 클라: Contributors에 내가 있으면 0.65 볼륨 + 내 KillPop·동전 0.25초 뒤, 아니면 0.45.
 - Contributors = 이번 처치가 보상을 준 사람(MonsterService의 eligible: 120초 안, 3번 이상, 0.5% 이상)의 UserId, 작은 순서.
 - 검수 2026-10-07 고침: MonsterService가 기여 표를 비운 **뒤에** HalloweenService가 읽어서 늘 빈 목록이었어요. 이제 처치할 때 기록에 `PaidUserIds`로 남기고, HalloweenService는 그것을 읽어요. 시험: `tools/test_halloween.py` king-rewards(Mid·Ace·Bo 세 명).
 

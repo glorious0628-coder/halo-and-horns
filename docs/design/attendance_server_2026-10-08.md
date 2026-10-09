@@ -12,7 +12,7 @@
 - 모은 날 수(평생): 7 칭호 Regular · 14 (출석 치장) · 28 이름표 테두리(`Border = "Days28"`) · 50 칭호 Super Regular · 100 칭호 Mega Regular. 문구는 임시 — 검수가 정한다.
   - 출석 전용 후광·뿔은 개발 2의 `Config.Looks`(A23-75 틀, `Unlock = { Attendance = 14 / 50 / 100 }`)를 그대로 쓴다. 날 수가 닿으면 **두 진영 것 모두** `MonetizationService.GrantLook`으로 열어 준다(진영을 바꿔도 있음). 알림 줄은 내 진영 것만.
   - 접속할 때 이미 닿은 이정표는 조용히 채운다(나중에 추가된 칭호·치장도 받음).
-- A23-75 2배 패스: 골드는 `AddBankGold(…, "Attendance")`, 경험치는 `AddXP` — 2배는 개발 2의 ProgressionService 안에서. 알림·Fx에는 **실제로 들어온 양**을 쓴다(개발 2 판은 들어온 양을 돌려줌, 지금 main은 아무것도 안 돌려주므로 요청한 양).
+- A23-75 2배 패스: 골드는 `AddBankGold(…, "Attendance")`, 경험치는 `AddXP` — 2배는 개발 2의 ProgressionService 안에서. 알림·Fx에는 **실제로 들어온 양**을 쓴다(~~개발 2 판은 들어온 양을 돌려줌, 지금 main은 아무것도 안 돌려주므로 요청한 양~~ → 지금 main의 `AddBankGold`·`AddXP`가 들어온 양을 돌려줌, A23-75 병합 뒤).
 
 ## 원격·속성·신호 (화면 = 게임성 개발 1·이미지 개발)
 | 무엇 | 이름 | 내용 |
@@ -23,7 +23,7 @@
 | 모은 날 수 | 속성 `AttendDays` | 평생 모은 날 수. 이름표 테두리는 `Config.Attendance.Milestones`에서 Border가 있는 가장 높은 칸 ≤ AttendDays. |
 | 받은 뒤 | Fx `Attendance` { Slot, Days, Gold, XP, Items = { { Id, N } }, Box } | 주인에게만. 도장 찍기·상자 열기 연출용(Box = 7칸). Items의 Id는 `Config.Loot.Items` id 또는 "HP"/"MP". |
 | 알림 줄 | Notify | "Day 3 reward! +Enhance Scroll 70%", "7 days collected!", "New title: Regular!", "New look: Sprout Halo!", "New name frame!" |
-| 기록용 | `AttendanceService.Claimed(player, slot, days)` | TelemetryService가 DailyVisit 퍼널 AttendanceClaim에 쓴다. |
+| 기록용 | `AttendanceService.Claimed(player, slot, days)` | TelemetryService가 ~~DailyVisit 퍼널 AttendanceClaim에 쓴다~~ → Custom 이벤트 `Attendance`(값 = 모은 날 수, 칸1 칸 번호)에 쓴다 — 퍼널 단계 아님(`beta_metrics_server_2026-10-08.md`). |
 
 - 창 여는 때(제안): 첫 임무를 받은 뒤(TutorialStep 99), `AttendReady`가 true면 한 번 연다. 첫 10분·KO·구매 창 근처에는 안 연다. 판에 시계 숫자("다음 칸까지 3시간") 없음.
 - 저장: `data.Attendance = { Days, LastDay, Slot }` (기본값 `Config.Data.Defaults.Attendance`, 버전 3 그대로). 깨진 값은 서비스가 접속 때 고침(음수·소수·NaN·먼 미래 LastDay·범위 밖 Slot).
@@ -36,5 +36,5 @@
 
 ## 기본값으로 정한 것 (검수가 바꾸면 Config 한 줄)
 1. 1·5칸 물약 = HP 물약.
-2. 7칸 주문서 = `Enh30`(코드에서는 A23-14대로 성공하면 +3; A23-77 글의 "+2"와 다름).
+2. 7칸 주문서 = `Enh30`(코드에서는 A23-14대로 성공하면 +3; ~~A23-77 글의 "+2"와 다름~~ → SPEC A23-77도 이제 "효과는 A23-14 기준"으로 맞춤).
 3. 50·100일 칭호 이름 = Super Regular · Mega Regular (임시).

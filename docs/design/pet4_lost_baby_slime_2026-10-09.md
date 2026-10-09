@@ -11,12 +11,12 @@
 - `GiveTamerPet`은 이제 `GrantPet`을 불러요(조련사 문구 그대로).
 
 ## 개발 1 몫(클라)
-1. 이름표 `Good Buddy` / `Little Minion`은 **내 펫에만**(PetFollow). 이름은 `data.Pets.List[uid].Name`(지금 공개 속성은 EquippedPet/PetLv/PetForm뿐이라, 이름이 필요하면 서버가 `PetName` 속성을 더할게요 — 말해 주세요).
+1. 이름표 `Good Buddy` / `Little Minion`은 **내 펫에만**(PetFollow). 이름은 `data.Pets.List[uid].Name`(지금 공개 속성은 EquippedPet/PetLv/PetForm뿐이라, 이름이 필요하면 서버가 `PetName` 속성을 더할게요 — 말해 주세요). → 내 펫 이름은 이제 PET-2 `PetList`의 `Name`으로 받을 수 있음(아래).
 2. 폰: 남의 펫은 가까운 6마리, Range 80까지만 그리기.
 3. Lean 모습(은고리 / 작은 뿔)은 그림이 오면.
 
 ## 아직 아님
-- 펫 끄기(EquipPet 원격·숨기기, PET-5)는 다음.
+- ~~펫 끄기(EquipPet 원격·숨기기, PET-5)는 다음.~~ → EquipPet 원격(`""` = 넣어 두기)은 아래 PET-2로 끝남(main ae1fa582). 남은 건 PET-5 펫 창(장착·넣어 두기 버튼) = 개발 1.
 
 ## 시험
 `py tools/test_tamer.py` — "lost baby slime" 묶음 13개 포함 113개, 변이 48/48.
@@ -28,5 +28,6 @@
 - s→c `PetList`(주인만): `{ Equipped, List = { { Uid, Sp, Lv, XP, Need, Name, Lean } } }` — 접속·지급·장착·XP 때.
 - 따라잡기: Pet1을 끝내고 선택이 저장됐는데 펫이 없으면(옛 저장·끊김) 접속 때 조용히 지급.
 - 개발 1 몫: 펫 창(목록·장착/넣어 두기 버튼)과 Lv·XP 막대는 `PetList`·`EquipPet`로.
+  - → 검수 10/09: 펫 창의 넣어 두기 버튼 전에 PET-2b(개발 2 → 개발 3 검증 → 검수 병합)가 먼저예요 — 넣어 둔 펫이 다시 접속하면 다시 나오는 것(M1) 고침, **테이머는 넣어 두기 불가**(PetList 표시로 버튼 숨김). 근거 `docs/review/pet2_verify_2026-10-09.md`.
 
 시험: `py tools/test_tamer.py` — "pet levels and equip" 묶음 포함 129개, 변이 59/59.

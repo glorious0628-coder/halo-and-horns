@@ -1,5 +1,7 @@
 # Codex 작업 지시서 — HaloArcherM 3D 재제작 R2 (승인 2D와 똑같이)
 
+> 기록용(2026-10-09 검수): 2026-10-04 Codex 지시서 기록이다. Codex·GPT는 해지됐고(SPEC A23-7) 치비 코스튬은 게임에서 빠졌으며(A23-5) 아바타 Tripo 작업은 하지 않는다(A23-47 보강 4). 아래 유료 호출·G1~G3 절차는 지금 권한이 아니다.
+
 지난 라운드에 95 크레딧을 썼다. 레시피를 어겼고(`pbr:true`), Tripo 썸네일만 보고 끝냈다. 이번에는 **숫자로 증명**한다.
 - 시작 조건: 지금 하던 다른 작업(얼굴 감사 `tools/face_runtime_*.py`·`docs/art/verification_2026-10-04/face_*`, 아바타 F/E 시안, `approved.json`·`Config.luau`·`HUD.luau`·`studio_mcp.py` 수정)을 먼저 끝내고 커밋한다. 이번 작업에서 그 파일을 고치지 않고 커밋에도 섞지 않는다.
 - 기준 그림은 하나다: `art/out/APose_HaloArcherM_Sharp_D.png` (1254², sha256 649ce86f…). 판정은 Tripo `preview.png`가 아니라 §3 측정으로만 한다.

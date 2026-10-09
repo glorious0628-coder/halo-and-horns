@@ -4,6 +4,7 @@
 서버 몫은 #1 수락 → 초원, #4 한 번에 목표 하나, #5 첫 3분 기록. 손잡이는 모두 `Config.Tutorial` / `Config.Analytics`.
 
 ## #1 수락하면 바로 초원
+> 2026-10-09 검수: 이 절의 자동 이동은 낡음 — 지금은 [I'm In!] 뒤 저절로 옮기지 않는다. 맨손이면 step 3 "Go to Otto's Forge"로 걸어가 무기를 받고, 그다음 이동 판/지도로 초원(A23-74·A23-88, `walk_to_forge_server_2026-10-09.md`). `AcceptTravelSeconds`·Fx `Travel`/`TravelDone`·첫 임무 이동 잠금은 없어짐. 첫 임무(step 1·2) 중 KO → 초원 입구 부활은 그대로.
 - 안내자 [Accept](`AcceptTutorial`) → 단계 1(Guide). `Config.Tutorial.AcceptTravelSeconds`(3초) 뒤 서버가 초원 입구로 옮긴다:
   `ZoneService.Travel(player, GuideZone, true)`(즉시 이동 — 레벨·괴수·자루·현상수배 별·전투 규칙은 그대로 거절할 수 있고,
   그때는 지금처럼 HUD 안내 빛줄기로 걸어간다). 도착하면 ZoneChanged → 단계 2(사냥).
@@ -18,6 +19,8 @@
   (TutorialStep으로 판단해도 결과가 같다).
 
 ## #5 첫 3분 기록 (퍼널 13단계, 계정마다 한 번씩)
+> 2026-10-09 검수: 순서가 바뀜(무기 먼저 A23-74, 스킬 Lv5 A23-71) — 지금 `Config.Analytics.Steps` = IntroDone · Faction · Class · FirstMissionAccept · ForgeArrive · FirstWeapon · MeadowArrive · FirstHit · FirstKill · FirstMissionDone · FirstSkillHit · AutoUnlocked · Level10. 걸어서 대장간까지 걸린 초는 Custom 이벤트 `ForgeWalk`(A23-88). 아래 옛 순서는 기록용.
+
 1 IntroDone · 2 Faction · 3 Class · 4 FirstMissionAccept · **5 MeadowArrive** · **6 FirstHit** · **7 FirstKill** ·
 **8 FirstSkillHit** · 9 FirstMissionDone · **10 ForgeArrive** · 11 FirstWeapon · 12 AutoUnlocked · 13 Level10
 (공개 전이라 번호를 다시 매겼다).
@@ -31,7 +34,7 @@
 - idea_backlog의 '친구와 함께하면 +10%'를 뺐다(친구 수만큼 보상 없음). 진영 화면의 친구 진영 표시는 남김.
 
 ## 검사
-- `tools/test_onboarding.py`: 수락 → Fx Travel{UserId, To, T=3}·MoveLockUntil → 3초 뒤 즉시 Travel → TravelDone·잠금 풂 → 단계 2,
+- (10/09 A23-88 뒤 아래 '수락 → 이동' 검사는 '옛 이동 없음' 검사로 바뀜 — `tools/test_onboarding.py`, 변이는 `tools/test_weapon_first.py`.) `tools/test_onboarding.py`: 수락 → Fx Travel{UserId, To, T=3}·MoveLockUntil → 3초 뒤 즉시 Travel → TravelDone·잠금 풂 → 단계 2,
   접힘(첫 임무 말고 모두, [Claim] 뒤 없음), 바뀐 캐릭터·거절된 이동·초원에서 수락, respawnZoneId(단계 0·1·2·99, 손잡이 끔). 손 변이 11/11.
 - `tools/test_swing_aim.py`: 잠금 동안 휘두르기가 아무것도 안 맞히고, 풀린 뒤 맞힘 + 변이 1(12/12).
 - `tools/test_metrics.py`: 13단계 순서, 순간마다 한 번, 자동 스킬·빈 스킬 제외, 초원 걸어 들어가기, 옛 저장 따라잡기,

@@ -1,5 +1,7 @@
 # 소리 Play 확인 결과 (2026-10-08, 게임성 개발 1)
 
+> 기록용(2026-10-09 검수): 2026-10-08 Play 기록이다. 3절 할 일 1·2·5는 f78959ce에서 했고, 스킬·상호작용·창 키는 그 뒤 A23-78(스킬 Z·X·C, 상호작용 G, 가방 I)로 바뀌었다.
+
 메인 Studio(build/GoodEvil.rbxlx, main c54e0a5 sync), 내 테스트 Play 3번: PC 두 번(`pc_run1` = 서버 명령 이름 오류로 뒤 절반 못 띄움, `pc` = 다시), 폰 흉내 한 번(`phone`, 749x361). 새 저장(StudioFreshSave, 진짜 저장 안 건드림).
 도구: `tools/play_sound_check.py pc|phone` — 클라이언트에서 SoundService 아래 모든 Sound의 `Played`를 걸어 이름(`Sfx_<키>_<n>` / `Fx_<이름>`)·id·Volume·PlaybackSpeed·SoundGroup 볼륨(낮춤)을 시간과 함께 적고, 장면마다 표시 줄을 넣는다. 마우스·키보드 없음(리모트·Keybinds.Dispatch·ProximityPrompt·DebugCommand).
 원자료: `pc/sounds.json`, `phone/sounds.json`, `*/log.txt`, 사진 `*/0N_*.png`. 볼륨 = Config 값 × 설정(1) 그대로 찍힌 값.

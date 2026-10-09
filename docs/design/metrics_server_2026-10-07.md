@@ -3,7 +3,7 @@
 설계: `docs/design/beta_basics_2026-10-05.md` BB38(P6 퍼널), 검수 2026-10-07(경제·친구 지표 — quality_ideas #60), `docs/design/emergent_play_watch_2026-10-06.md` §2(스스로 만든 목표 신호). Roblox AnalyticsService만 쓰고, **이름·UserId·자유 글은 이벤트 이름에도 칸(field)에도 넣지 않는다** — 모든 이름과 칸 값은 고정 목록(`Config.Analytics`, 지역 id, 몬스터 종류, 골드 출처)에서만 온다. Studio에서는 모든 호출을 `[Metrics] …`로 출력한다(`Config.Analytics.Debug`, 기본 = Studio만).
 
 ## 1. 퍼널 (계정마다 한 번, 순서대로 번호)
-`Config.Analytics.Steps` = 1 IntroDone · 2 Faction · 3 Class · 4 FirstMissionAccept · 5 FirstMissionDone · 6 FirstWeapon · 7 AutoUnlocked · 8 **Level10**. 저장은 `data.Telemetry.Funnel = { [이름] = true }`(Version 그대로). 옛 저장은 접속 때 이미 지난 단계를 한 번에 따라잡는다. (옛 `Steps`/`Onb` 기록은 시험 데이터라 읽지 않음.)
+`Config.Analytics.Steps` = ~~1 IntroDone · 2 Faction · 3 Class · 4 FirstMissionAccept · 5 FirstMissionDone · 6 FirstWeapon · 7 AutoUnlocked · 8 **Level10**.~~ → 지금 13단계: IntroDone · Faction · Class · FirstMissionAccept · ForgeArrive · FirstWeapon · MeadowArrive · FirstHit · FirstKill · FirstMissionDone · FirstSkillHit · AutoUnlocked · Level10 (A23-68 #5·A23-71·A23-74). 다른 퍼널 5개(LongRoad·DailyVisit·Social·KingDiary·PassShop)는 `Config.Analytics.Funnels`(`beta_metrics_server_2026-10-08.md`, A23-79). 저장은 `data.Telemetry.Funnel = { [이름] = true }`(Version 그대로). 옛 저장은 접속 때 이미 지난 단계를 한 번에 따라잡는다. (옛 `Steps`/`Onb` 기록은 시험 데이터라 읽지 않음.)
 
 ## 2. 바로 보내는 이벤트
 | 이벤트 | 값 / 칸 | 언제 |
@@ -41,6 +41,7 @@
 - Net `UiMetric`, `RateLimits.UiMetric = 2`, `Config.Analytics`.
 
 ## 5. 게임성 개발 1에게 (클라, 약 0.1일)
+> 2026-10-09 검수: 붙음(Panels가 `UiMetric`을 보냄, main).
 - 창이 열릴 때 `Net.Get("UiMetric"):FireServer(id)` — id는 Panels의 창 id 그대로(`Config.Analytics.UiIds`: Menu·Items·Bag·Skills·Character·Ranking·Journal·Board·Settings·Help·News·Travel·WorldMap·WeaponShop·PotionShop·Shop·Rebirth·Altar·Class·PlayerList·Feedback). Tab 목록은 "PlayerList". 목록에 없는 id는 서버가 무시(새 창은 이 목록에 한 줄 더하기). 같은 창을 여러 번 보내도 세션에 1번만 센다.
 
 ## 6. 검사

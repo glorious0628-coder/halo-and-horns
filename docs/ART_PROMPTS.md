@@ -1,5 +1,8 @@
 # 몬스터 / 보스 이미지 프롬프트 (GPT 이미지 → Tripo 3D용)
 
+> 기록용(2026-10-02 무렵 GPT·Codex 그림 시절). 지금과 다른 점: 그림은 Adobe Firefly(시안 Medium, 최종 High), 큰 것은 앞·옆·뒤 그림 → Tripo, 재활용 금지, 빛살 금지('light rays' 쓰지 않음), 지형 텍스처도 Firefly 타일, BigSlime = 지금 Slime Prince·King Slime은 새 보스, 장인 길드는 베타에 없음 (최신: SPEC A23-7·47·57·80·84·96).
+> 지금 기준: AGENTS.md(Art workflow) · SPEC_ADDENDUM A23 · RELEASE_PLAN. 프롬프트는 `art/prompts/<id>.txt`에 쓴다.
+
 Tripo 3D가 잘 만들려면: **캐릭터 1명, 전신, 정면, 흰 배경, 그림자 없음, 팔 벌린 자세(A-포즈)**.
 모든 프롬프트 앞에 아래 **공통 스타일**을 붙여서 돌리면 그림체가 통일돼요.
 

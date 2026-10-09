@@ -26,6 +26,7 @@
 크기: 내레이션보다 약 -18~-11 dB(`SFX_GAIN`), 전체는 -14 LUFS / -1.5 dBTP로 맞춘다. 크레딧은 의무가 아니지만 설명란에 "Sound effects: Kenney (kenney.nl, CC0)" 한 줄을 넣는다.
 
 ## 게임 효과음 (이미지 개발, 품질 ①, 2026-10-06 · 검수 효과음 표 lines_pack_2026-10-06 §6)
+> 2026-10-09 검수: 이 절과 아래 '올린 기록'·'3차 후보' 절은 옛 판(기록용) — 지금 게임 소리는 아래 '4차 — Firefly 생성' 절과 `art/sfx/picks_r4.json`·`art/sfx/asset_ids.json`이 기준이고, 파일은 `art/sfx/<키>.wav`(A23-67, 모든 소리 다시 만들기로 함). 예외: 4차 파일이 아직 없는 SwingMage·SwingTamer 두 줄(아래 표)은 지금도 이 절의 소리(`art/sfx/*.ogg`, `asset_ids.json` "kept")를 쓴다.
 
 게임 소리 32개는 위의 Kenney 두 팩(CC0)과 우리가 직접 합성한 소리만 쓴다. Roblox 라이브러리 소리는 없어서 개발 일지 영상에도 그대로 쓸 수 있다.
 - 파일: `art/sfx/<이름>.ogg` (48 kHz 모노, 가장 큰 100 ms가 RMS -18 dBFS, 최고점 -3 dBFS 아래, 전투 소리는 150 Hz 아래를 덜어 냄). 만든 도구: `tools/sfx_game.py final`.
@@ -73,7 +74,7 @@
 - 업로드마다 "오디오 업로드 라이선스 계약" 동의 칸 체크: 사용자 허락("응, 대신 체크해도 돼", 검수 전달 2026-10-07).
 - 공개 범위: 제한(본인·허락된 체험만). 크리에이터 상점 배포는 안 함.
 - id: `art/sfx/asset_ids.json`, 게임 코드 `Config.Audio.Files`. Studio(UiSandbox)에서 32개 모두 불러오기 성공(PreloadAsync Success, 길이 0.04~1.5초).
-- 이후 소리(새로 만들기·올리기·Audio.luau·크기 조절)는 게임성 개발 1 몫(사용자 결정 2026-10-07).
+- 이후 소리(새로 만들기·올리기·Audio.luau·크기 조절)는 ~~게임성 개발 1 몫(사용자 결정 2026-10-07)~~ → 만들기·고르기·올리기 = **소리 만들기**, `Config.Audio`·Audio.luau 연결·크기 = 게임성 개발 1(A23-67, 같은 날 더 나중 결정).
 
 ## 3차 후보 (게임성 개발 2, 2026-10-07 — 사용자: 마법 쏘기·활 쏘기·퍽·치명타 '별로', 활은 "팅 말고 슉")
 
@@ -133,4 +134,4 @@
   LevelUp·WindowOpen = 우리 합성, Tap = Kenney Interface `select_002` + `click_003`(CC0, 설계서 레시피). Firefly 0크레딧.
 - **업로드:** 4차 51개 끝(Creator Hub Darugi_S2, 비공개, 'HH SFX <키>', 상점 배포 안 함; id = `art/sfx/asset_ids.json` "ids").
   7번 묶음 6개도 올림(id = asset_ids.json "ids", 연결표 `docs/design/sound_wiring_r4_2026-10-07.md` 7번 절). 개발 1이 연결하고
-  Play로 확인하면 옛 id("old")와 옛 `art/sfx/*.ogg`를 지운다.
+  Play로 확인하면 옛 id("old")와 옛 `art/sfx/*.ogg`를 지운다. (→ 10/08 끝남: 옛 .ogg 30개는 55fe9a11에서 지웠고, "old" id는 기록으로만 남김. 남은 SwingMage·SwingTamer .ogg는 지금도 쓰는 "kept"라 지우지 않는다.)

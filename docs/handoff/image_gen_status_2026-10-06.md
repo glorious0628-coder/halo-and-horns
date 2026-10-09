@@ -1,5 +1,7 @@
 # 이미지 생성 인계 상태 (2026-10-06 12:40 KST, 사용자 지시로 중지 — 계정 이동)
 
+> 기록용(2026-10-09 검수): 10/06 기록이에요. 3D 순서(Creator Store → Roblox 생성 → Tripo)와 '메인 배치는 개발 1'은 옛것 — 지금은 2D 시안 → 물건별 2D → Tripo(SPEC A23-47), 메인 넣기는 '메인 반영 1'이고, 할 일은 `docs/handoff/role_prompts/06_img1.md`예요.
+
 - **최신 (17:40, 이미지 생성 1):** MAP-CONCEPT2 끝 — 넓힌 세계 배치 v2(땅 약 2.1배, 마을 약 3배, 지금 순서 그대로) `docs/design/world_map_v2_2026-10-06.md`(+ .json, 도구 `tools/worldmap_layout.py`) · Firefly 시안 시트 `art/review/worldmap/worldmap_v2_sheet.jpg`(위에서 본 지도 A2_2, 디오라마 C_2 고름; 원본 `art/out/worldmap/` 미추적). 0크레딧. 검수에 보냄 → 사용자 확인 대기. 다음: 빛·뿔·교차로 큰 물건 2D 목록 + Tripo 묶음 제안(검수에 먼저, 답 전 Tripo 없음) → 10/12 오프닝 콘티 6장 + 왕관·조각 3D.
 
 - **역할(A23-31·A23-33):** 이 세션 = 세계·굵직한 그림 + **세계 디자인 이끎**(지형 타일, 하늘, 나무 재질, 깃발, 사냥터 콘셉트, 3D 소품 키트, 게임 아이콘·썸네일 11b, 출시 장식 18). 작은 그림은 '이미지 생성 2'. `cutout_flat.py`·`band_mask.py`·`make_tileable.py`는 이 세션만 고친다. approved.json은 고치기 직전에 다시 읽고 내 키만 고친 뒤 바로 경로 지정 커밋.

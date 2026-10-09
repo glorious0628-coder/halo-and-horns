@@ -1,5 +1,7 @@
 # HUD 실제 3D 아바타 초상화
 
+> 기록용(2026-10-09 검수): 2026-10-04 기록이다. 치비 코스튬은 게임에서 빠졌고(SPEC A23-5) HUD 초상은 본인 아바타의 3D 모습이다(크기는 머리+어깨, A23-81).
+
 최신 사용자 정정은 **프로필도 실제 3D여야 한다**이다. 아래 2D 크롭 자료는 이전 구현의 증거로만 보존하며 생산 HUD에는 사용하지 않는다. `Config.UIArt.Parts`에 임시로 추가했던 18종 `PortraitRect`와 전용 `PortraitHaloArcherM` 항목은 제거했다. 이미 업로드한 F 이미지의 ID와 이력은 별도 에셋 장부에 보존한다.
 
 현재 HUD 소스는 기존 금색 링 안에 `AvatarPortrait3D` ViewportFrame과 WorldModel을 배치한다. 현재 실제 Character를 복제하므로 코스튬 ON/OFF 모두 화면 속 아바타와 같은 모델을 사용한다. Scripts·GUI·효과·물리힘은 복제본을 부모에 넣기 전에 제거하고 Bone/Motor6D Transform 및 스킨 내부 Weld·ObjectValue 연결은 보존한다. 움직일 때마다 복제하지 않으며 외형 변경·리스폰·선택·성장 시에만 짧게 모아서 다시 만든다. 실제 얼굴 TextureID와 SurfaceAppearance는 변경 신호로 복사한다.

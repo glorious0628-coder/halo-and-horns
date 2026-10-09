@@ -1,5 +1,7 @@
 # 메인 Studio 적용 확인 (2026-10-07, 읽기 전용)
 
+> 기록용(2026-10-09 검수): 2026-10-07 저장 파일(17:55) 기준 기록입니다. 6절 '게임성 개발 1 할 일'은 당시 순서이고, 메인 Studio 저장·sync·place/ 일은 지금 '메인 반영 1' 몫입니다(docs/handoff/role_prompts/01_mainapply.md).
+
 **확인 기준:** `build/GoodEvil.rbxlx`(사용자가 17:55:54에 저장, 21,395,764 B), `place/GoodEvil.rbxlx`(14:06, ce27afa), origin/main `src/`. Studio와 MCP는 쓰지 않았습니다. 17:55 뒤에 한 작업은 틀렸다고 하지 않고 "저장 파일에 아직 없음(⏳)"으로 적었습니다.
 
 **요약**

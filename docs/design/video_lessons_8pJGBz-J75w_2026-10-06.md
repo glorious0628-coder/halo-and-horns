@@ -1,5 +1,7 @@
 # 영상 참고: Develuper "Make Your UI Feel 10x Times Better With ANIMATIONS" (`8pJGBz-J75w`, 6:59, 2026-09-21) — 2026-10-06
 
+> 기록용(2026-10-06 당시). 지금과 다른 점: 글꼴은 Fredoka One이 아니라 Denk One(제목·버튼·숫자) + Montserrat(본문)(#6, 최신: SPEC A23-63). 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 증거 범위: 영어 자동 자막(189줄)만 읽었다. 화면은 보지 않았다. 사용자 공유("오 이것도 한 번 봐봐").
 
 ## 우리에게 쓸모 있는 것 → 할 일

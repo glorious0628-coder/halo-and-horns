@@ -1,5 +1,7 @@
 # 계정 전환 인계 (2026-10-08 21:00 KST, 컴퓨터 끄기 전) — 검수 작성
 
+> 기록용(2026-10-09 검수): 10/08 21:00 계정 전환 기록이에요. 아래 '지금 기준'·세션 표·시작 프롬프트·메인 저장 상태·'컴퓨터 꺼 줘'는 그날 것이라 오늘 일을 허락하지 않아요. 지금 기준은 `docs/handoff/README.md` → `docs/handoff/role_prompts/`와 `docs/handoff/review_handoff_2026-10-09.md` §8·§9예요.
+
 **이 문서가 지금 기준이에요.** 사용자: "다른 아이디에서 하게 정리해주고, 정리 다 하면 컴퓨터도 꺼줭".
 - 이유: 이 계정의 주간 사용량이 96%예요(10/13 16:00 KST에 초기화).
 - 같은 PC, 같은 폴더예요. 파일, worktree, 메모리(`C:\Users\glori\.claude\projects\C--Users-glori-Documents-Roblox-Game\memory\`)는 그대로 남아요.

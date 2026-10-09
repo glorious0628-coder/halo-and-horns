@@ -1,5 +1,7 @@
 # 유튜브·RPG·MMORPG 참고 자료 → 우리 게임 적용 목록 (2026-10-05)
 
+> 기록용(2026-10-09 검수): 2026-10-05 기록이다. 그 뒤 바뀐 것: 주문서는 성공률 10/30/70%·실패 때 유지 또는 한 단계 하락(SPEC A23-11·A23-12, #15의 '항상 성공' 대체), 베타 전 게임 패스·개인 서버도 판다(A23-75, '변경권만' 대체). 지금 할 일은 docs/handoff/role_prompts/에 있다.
+
 - **읽은 것:** `docs/art/video_reference_notes_2026-10-04.md`(전체), `video_reference_6Mo0ZJyRnQM_2026-10-04.md`, `game_reference_untitled_rpg_2026-10-04.md`, `tutorial_openings_2026-10-04*.md`(3편), `onboarding_story_review`·`skills_progression`, `docs/art/verification_2026-10-04/video_references/`와 `untitled_rpg/`의 증거 JSON·스토리보드 41장·프레임. 5개 분야로 나눠 읽고 교훈 191개를 뽑았다. 그것을 18개 실행 항목으로 합친 뒤 반박 검토를 거쳤다. 2026-10-05 결정(A23)에 맞춰 다시 정리했다.
 - **원문:** `docs/review/reference_lessons_2026-10-05.json`(교훈 191개, 출처 줄, 증거 강도, 코드 상태 포함).
 - **증거 강도:**

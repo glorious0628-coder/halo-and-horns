@@ -10,6 +10,8 @@ SPEC A23-88(사용자 2026-10-09 "처음에 순간이동 안 시키면 좋겠어
 - **퍼널(측정)**: 걸어서 모루 24 studs 안에 처음 선 순간(그 접속에서 [I'm In!]을 누른 사람만) `QuestService.ForgeReached(player, 초)` → `TelemetryService`의 Custom 이벤트 `ForgeWalk`(값 = 걸린 초, 정수). 기존 퍼널 단계(`ForgeArrive` = 오토를 만남, `FirstWeapon`, `MeadowArrive`)는 그대로예요. 이벤트 이름 한도(100)는 지켜요.
 
 ## 개발 1에게 (클라 계약)
+> 2026-10-09 검수: 클라는 main에 들어갔어요(33020175, 1c8e56c4). 사용자 결정(A23-99)으로 땅 위 길 빛·이름표·말풍선·한 줄은 쓰지 않아요(`Config.Nudges.GuideBeam`·`GuideLabel` = false) — 길잡이는 퀘스트 줄·마름모·거리·미니맵이고, 무기 뒤에는 교차로의 초원 이동 판만 은은하게 빛나고 [Menu]·Travel 칸은 Travel을 한 번 열 때까지 반짝여요(`PadGlow`·`TravelPulse`). 아래 1·2·4의 길 빛·말풍선·한 줄은 옛 계약이에요.
+
 1. **길 빛 + 미니맵 표시**: `TutorialStep == 3`일 때 내 위치에서 모루(`ShopService.Anvil`, 교차로)까지 땅 위 길 빛, 미니맵 점. 줄을 눌러도 같은 안내(이동은 없음). 마을 안전 구역이라 싸움 없음. 걸어서 약 20~40초(집 마을 ~ 교차로 약 330~410 studs, 걷기 속도로 20~26초) — 길이 막히지 않고 빛이 끊기지 않는지 메인 Play에서 확인.
 2. **이동 판 빛**: `TutorialStep == 1`일 때 가까운 `TravelTo` 판을 빛나게 하고, **처음 한 번만** 짧은 말풍선. 판을 밟거나 지도 → Travel로 초원에 가면 서버가 step 2로 넘겨요(걸어가도 끝은 같음). 판이 없는 곳이면 줄의 "(or Map → Travel)"이 길잡이.
 3. 더 이상 안 오는 것: `Fx "Travel"`/`"TravelDone"`(첫 임무용). `FirstSteps.luau`의 가림막(fade)과 `Audio`의 `TravelDone` 소리 연결은 첫 임무에서는 쓰이지 않아요(지도 이동 등 다른 Travel Fx가 있다면 그대로).

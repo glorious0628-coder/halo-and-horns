@@ -1,4 +1,5 @@
 # 옛 효과음 정리 미리 보기 (2026-10-07, 소리 만들기 — 아직 지우지 않음)
+> 기록용(10/07 당시). 지금과 다른 점: 정리는 끝남 — 옛 ogg 30개는 55fe9a11에서 지웠고 `art/sfx/`에는 SwingMage·SwingTamer.ogg 2개만 남음. 아래 목록대로 다시 지울 것 없음. 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
 
 **지우는 때:** 게임성 개발 1이 `sound_wiring_onepass_2026-10-07.md`를 넣고 → `py tools/sfx_wiring_check.py`가 '옛 id 아직 쓰는 것 0' → `sound_play_check_2026-10-07.md` Play 확인(PC + 폰 흉내) 통과한 **뒤에만** 소리 만들기가 지운다. 지금은 목록만.
 

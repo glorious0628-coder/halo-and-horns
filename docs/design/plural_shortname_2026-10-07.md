@@ -13,6 +13,8 @@
   고침), 첫 임무 문장, 이야기 퀘스트 줄(StoryQuestService), 괴롭힘 규칙 문장(Config가 불러올 때 만드는 줄).
 
 ### 게임성 개발 1에게 (클라, 5곳 — 한 줄씩 씌우기)
+> 2026-10-09 검수: 5곳 모두 씌움(main, 아래 줄 번호는 그 뒤 바뀜).
+
 | 파일:줄 | 지금 | 바꿀 것 |
 |---|---|---|
 | HUD.luau:3049 | `string.format(TXT.QuestTouchClaim, claimable)` | `Config.Plural(string.format(...))` ("Claim 1 quest!") |
@@ -33,7 +35,7 @@
     Gold "Earn gold", Release "Skill hits", Goose "Goose tug", Hunt "Catch Wanted", Plunder "Rob Knights").
     몬스터는 줄의 아이콘(Unit)이 보여 준다.
   - 게시판 일 10개 `Config.Board.Jobs[].ShortName` + 안내 줄 `Config.Board.Text.HintShort = "Job Board"`.
-  - 첫 임무 줄 `Config.Tutorial.ShortNames` (Welcome "Meet the Guide", Travel·Quest "Supply road", Forge
+  - 첫 임무 줄 `Config.Tutorial.ShortNames` (Welcome ~~"Meet the Guide"~~ → "Meet %s"(안내자 이름), Travel ~~"Supply road"~~ → "To the meadow", Quest "Supply road", Forge
     "To the Forge", IronLevel·Zone "Reach Lv %d"(그 목표에 필요한 레벨), IronGold "Iron weapon").
 - 서버는 퀘스트 목록(`Quests` 리모트 JSON)의 줄마다 `ShortName`을 같이 보낸다(QuestService 첫 임무·일일·추가,
   StoryQuestService 이야기 줄, BoardService 게시판 줄). 없는 줄은 `ShortName`이 비어 있고, 클라는 지금처럼 자른다.

@@ -2,6 +2,8 @@
 
 사용자 결정 A23-39: 장인 길드의 3번째 직업 '사냥꾼(궁수)'을 **펫 조련사**로 바꾼다. 내부 직업 id는 그대로 `Archer`, 장인 길드(`Neutral`)일 때만 이름·모습·공격 연출이 바뀐다. 수치는 궁수 표 그대로(균형 변화 없음). 오프라인 검사: `py tools/test_tamer.py`(93검사, 변이 36/36, 자체 검토 확인 4건 반영), 맨손 시작 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`)를 쓴다.
 
+> 2026-10-09 검수: 베타에선 장인 길드 진영이 꺼져 있어(`Config.Features.NeutralFaction = false`, A23-57) 새 플레이어는 조련사를 고를 수 없다. 아기 슬라임 펫은 누구나 이야기 서브 'The Lost Baby Slime'(`Pet1`, PET-4, main ae1fa582)로 받는다. 게임 글은 영어만(A23-48).
+
 ## 1. 판정
 - `Config.IsTamer(classId, factionId)` = `Archer` + `Neutral`일 때만 true. 설정은 `Config.Tamer`(Config 끝 블록).
 - 평타·스킬 Q·자동 전투: 궁수와 똑같은 사거리·간격·대상 수·피해·MP·재사용(빛 궁수와 피해가 같은 것을 검사). 맨손이면 A23-34 주먹 규칙(사거리 7, 1마리, 2 피해).
@@ -9,8 +11,8 @@
 - 펫은 서버 물체가 아니므로 무엇의 대상도 아니다(클라이언트가 만드는 펫 모델은 몬스터·플레이어 대상 폴더에 넣지 않는다).
 
 ## 2. 이름·무기
-- `Config.Classes.Archer.Names.Neutral = "펫 조련사"`.
-- 무기 줄: `Config.WeaponNames.Tamer`(나뭇가지 지휘봉 … 젤리 왕관 지휘봉, EN `WeaponNamesEn.Tamer`). `Config.WeaponName(tier, "Archer", "Neutral")`이 자동으로 이 줄을 쓴다(모든 서버 알림·대장간·전체 알림 같은 길).
+- `Config.Classes.Archer.Names.Neutral` = ~~"펫 조련사"~~ → "Pet Tamer"(A23-48 영어만).
+- 무기 줄: `Config.WeaponNames.Tamer`(~~나뭇가지 지휘봉 … 젤리 왕관 지휘봉~~ → "Twig Baton" … 영어 이름, `WeaponNamesEn`은 이제 같은 표, A23-48). `Config.WeaponName(tier, "Archer", "Neutral")`이 자동으로 이 줄을 쓴다(모든 서버 알림·대장간·전체 알림 같은 길).
 - 아이콘: `Config.WeaponArtKey(1~6, "Archer", "Neutral")` = `Weapon_Tamer_T1`~`T6`(이미지 생성 2 묶음 15·16, approved). T7·T8은 그림이 생길 때까지 궁수 키. **이미지 개발: Weapon_Tamer_T1~T6을 Config.UIArt에 올려 주세요**(키가 없으면 지금처럼 대체 그림).
 - 직업 카드 글: `Config.ClassCard(classId, factionId)` → 조련사면 `Config.Tamer.Card`({Desc, DescEn, PickLine, PickLineEn, Stats, StatsEn}), 아니면 직업 행의 Desc/PickLine/Stats.
 - 손: CharacterVisuals가 조련사에게는 활 대신 오른손 짧은 지휘봉(코드 모양, WeaponModel `Class = "Archer"`, AttackMuzzle = 지휘봉 끝)을 만든다. 맨손이면 아무것도 없다.
@@ -28,4 +30,4 @@
 3. 펫 따라다니기(PET-3): 모든 플레이어의 `EquippedPet`·`PetLv`·`PetForm` 속성을 읽어 `CustomModels.PetBabySlime`(0.35배)을 따라다니게. 대상 폴더 밖에.
 4. 직업 카드·내 캐릭터 창: `Config.ClassName(class, faction)`과 `Config.ClassCard(class, faction)`을 쓰기(장인 궁수 = 펫 조련사 글). 무기 이름·아이콘은 `Config.WeaponName/WeaponArtKey(tier, class, faction)` 그대로(진영을 꼭 넘기기).
 5. 무료 변경권: 베타는 변경권 상품을 팔지 않지만(A23-28), 이 1장은 Lv5 이상에서 직업 변경 창의 '변경권 쓰기'로 레벨을 유지하며 바꿀 수 있어야 한다(Lv5 미만은 원래 무료 변경이 레벨을 유지하므로 알림도 BecameFree '무료로 바꿀 수 있어요')(`ClassTickets` 속성 ≥ 1이면 그 선택지가 보임 — Panels 1608·1691이 이미 이 속성을 읽음, 베타에서 숨긴 상점과 별개인지 확인).
-6. 알림 문구(서버가 보냄, KO/EN): `Config.Tamer.Text.PetGot`, `Became`.
+6. 알림 문구(서버가 보냄, ~~KO/EN~~ 영어만 A23-48): `Config.Tamer.Text.PetGot`, `Became`.

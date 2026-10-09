@@ -6,7 +6,7 @@
 - `StoryQuestService.rowFor`: ShowProgress가 켜진 줄(목표 > 1, [Claim] 아님)은 Text에서 '%d/%d'를 뺀다
   ('King Slimes 0/2 0/2' → Text 'King Slimes' + HUD가 Progress/Target). '%d/%d s'(초) 줄은 단위를 `ProgressUnit = "s"`로 보낸다
   → **개발 1: HUD가 숫자 뒤에 ProgressUnit을 붙이면 '5/10 s'.**
-- S0 1단계 Start 줄: "A King Slime swallowed a shard! Beat it to free the shard."('I' 없음).
+- S0 1단계 Start 줄: ~~"A King Slime swallowed a shard! Beat it to free the shard."~~ → "A Slime Prince swallowed a shard! Beat it to free the shard."('I' 없음, 이름은 A23-84).
 
 ## #5 0점이어도 대답하는 선택
 - 반대 편을 골랐는데 깎을 점수가 없으면(A23-58 바닥 0 그대로) 숫자 없는 한 줄 + 기울기 줄:
@@ -30,7 +30,7 @@
   | 그 밖의 거절('bad') | (필드 없음 → Deny) |
 
 ## #2 안내자 1쪽 = 할 일 카드
-- `Config.Tutorial.Welcome[진영].Lines[1]` = "Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!"
+- `Config.Tutorial.Welcome[진영].Lines[1]` = ~~"Slimes blocked the road! Beat 5. No weapon yet, so use your fists!\nThen the Blacksmith gives you your first weapon!"~~ → 지금 "First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road."(A23-74 무기 먼저)
   (검수 문구 그대로, 두 문장 두 줄). 말버릇 줄은 2쪽, 옛 4쪽(할 일)은 1쪽과 같아서 뺐다(4쪽 그대로).
 
 ## #3 'Guide' 대신 안내자 이름
@@ -43,7 +43,7 @@
 - 슬라임(Tutorial.Monster)이 새로 생길 때(`pickSpawnPoint`):
   - 근처 30스터드에 몬스터가 3마리 미만인 사냥꾼을 먼저 고른다. 동점이면 Rookie, 그다음 낮은 레벨, 그다음 근처 몬스터가 적은 사람.
   - 사냥꾼이면 10~18스터드 거리, 초원 가운데를 향한 반원에 놓는다. 시도는 12번이다.
-    - 이유: 도착 지점 Spawn (220,0,0)이 생성 가능 구역(SpawnInset 25 → X ≥ 225) 경계 바로 밖이다. 원 전체로 놓으면 시도의 반 이상이 버려졌다.
+    - 이유: 도착 지점 Spawn (220,0,0)이 생성 가능 구역(SpawnInset 25 → X ≥ 225) 경계 바로 밖이다(지도 v2: Spawn (230,0,0), X ≥ 235 — 같은 사정). 원 전체로 놓으면 시도의 반 이상이 버려졌다.
     - 아이도 도착하면 가운데를 본다(GetSpawnCFrame lookAt).
   - 다른 사람·다른 몬스터(왕 슬라임 포함)는 A7-1 그대로다(2마리 미만, 18~28, 6번). 고르는 순서만 위와 같다.
 - 목표 수(`wantedTargets` → targetCount·cappedTargets):

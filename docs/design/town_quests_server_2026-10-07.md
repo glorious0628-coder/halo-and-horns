@@ -5,14 +5,14 @@
 ## 1. 퀘스트 (Config.StoryQuests.Defs, Subs 끝에 H1·R1·N3)
 | id | 누구 | NPC | 단계 | 마지막 고르기 |
 |---|---|---|---|---|
-| H1 The Horns Are Up to Something | 빛 | Bright (빛의 성채) | Talk → Near WoodsGate **10초** → 왕 슬라임 2(초원) → Choice | 생일 젤리 반전: A "Tell everyone the truth" / B "Keep the rumor going. It's more fun!" |
+| H1 The Horns Are Up to Something | 빛 | Bright (빛의 성채) | Talk → Near WoodsGate **10초** → 왕 슬라임 2(초원; `BigSlime` = 지금 화면 이름 Slime Prince, A23-84) → Choice | 생일 젤리 반전: A "Tell everyone the truth" / B "Keep the rumor going. It's more fun!" |
 | R1 The Halos Are Up to Something | 뿔 | Smokey (뿔 소굴) | Talk → Near Fountain(교차로) **15초** → 슬라임 6 → Choice | 불꽃 쇼 반전: A/B는 H1과 같음 |
 | N3 Both Sides Are Suspicious | 모두(Factions 없음, A23-57) | Tiny (교차로) | Talk → Near HaloBridge → Near HornsBridge → 사냥 골드 30 → Choice | A "Send both sides a peace letter" / B "Sell more spy glasses to both!" |
 
 - 열림: `Requires.Done = { "M2_3" }` + 진영. 한 번만(Done). 주간 랭킹 점수 없음(A23-23 D1).
 - 보상: 끝에 **120골드 + 지금 레벨 XP 칸의 절반**(`Reward = { GoldN = 120, XPBar = 0.5 }`). 고른 쪽 보상: **A = 70% 강화 주문서 1**, **B = HP 물약 3 + 골드 60**. 선택 점수 1은 A23-58 규칙(4절), 장인 저장은 A/B 기록만(A6).
 - 끝 줄은 질문(`Finish`): "So who started the rumor? …Does anyone remember?" 등.
-- 장소(`Config.StoryQuests.Landmarks`): `WoodsGate` (474,0,0) = 고블린 다리 초원 끝 14칸 뒤(PvP 밖·레벨 문 밖), `HaloBridge` (0,0,-161) / `HornsBridge` (0,0,161) = 교차로 쪽 다리 끝. 다리(`Config.Map.Bridges`)를 옮기면 같이 옮긴다 — 검사가 20칸 넘게 떨어지면 실패.
+- 장소(`Config.StoryQuests.Landmarks`): `WoodsGate` (474,0,0) = 고블린 다리 초원 끝 14칸 뒤(PvP 밖·레벨 문 밖), `HaloBridge` (0,0,-161) / `HornsBridge` (0,0,161) = 교차로 쪽 다리 끝. 다리(`Config.Map.Bridges`)를 옮기면 같이 옮긴다 — 검사가 20칸 넘게 떨어지면 실패. (→ 지도 v2 뒤 지금 Config: `WoodsGate` (636,0,0), `HaloBridge` (0,0,-138), `HornsBridge` (0,0,138).)
 
 ## 2. 엔진 (StoryQuestService)
 - **E4 `Near.Stay = 초`**: 1초 반복에서 반경 안이면 그때부터 잰 시간(`os.clock`, 세션 안에서만, 저장 안 함), 벗어나면 0부터. 줄은 Progress/Target = 초("Spy by the woods' edge 5/10 s"). 다른 때 부르는 Refresh(지역 바뀜·레벨 업)가 겹쳐도 두 번 세지 않는다.
@@ -24,7 +24,7 @@
 1. **NPC 모델**: id `Bright`(빛의 성채 경비) · `Smokey`(뿔 소굴 망보는 꼬마) · `Tiny`(교차로 장인 길드 견습생). 이름은 `Config.StoryQuests.Speakers[id]`. 모델에 **CollectionService 태그 `StoryNpc`**(`StoryQuests.NpcTag`) + **속성 `NpcId` = id**. 서버는 모델 피벗(파트면 Position)에서 **16칸**(`NpcRange`) 안일 때만 Talk/Choose/Open을 받는다. 그 id의 NPC가 세계에 없으면 어디서든 된다(배치 전에도 퀘스트가 막히지 않게).
 2. **대화**: NPC 프롬프트 → 그 NPC가 걸린 퀘스트 줄(`row.Story.Npc == id`)의 `StoryAction(questId, "Open")` → 서버가 `OpenPanel "Story" { Id, St }` → 지금 Story 창 그대로(단계 `Lines`·`def.Speaker`, Talk 단계는 확인 → `"Talk"`, 마지막은 Choice → `"Choose"` + `"Good"`/`"Evil"`, 장인 저장은 `"A"`/`"B"`). **Npc 단계는 저절로 뜨지 않는다**(앞 단계가 끝나도 창이 안 열림 — NPC에게 가야 함).
 3. **퀘스트 줄**: `row.Story.Npc` = 지금 말 걸 NPC(그 NPC 머리 위 '!'), `row.Story.Guide` = 그 마을 zone id(`HaloTown`·`HornsTown`·`Crossroads`). 새 Guide 키 `WoodsGate`·`HaloBridge`·`HornsBridge`(+기존 `Fountain`)는 `Config.StoryQuests.Landmarks` 좌표 — 마커 길 안내(QuestTarget)에 추가해 주세요. 머물기 줄은 `ShowProgress` + 초 단위 Progress/Target.
-4. **서브 줄 3개**(quest_volume §2 규칙 6, 검수): `StoryQuests.MaxSubs = 3` — HUD는 2줄 그대로, 펼친 목록에 3줄 다. 서버 순위: 받기·대화/선택 카드 대기 0 > 상황(Show, 거위) 1 > **시작한 서브**(2단계 이상·진행 수·Trials 칸 있음)와 S0 2 > 나머지 3, 같은 순위는 새 퀘스트(`Subs` 뒤쪽) 먼저 — 진행 중인 마을 퀘스트가 오래된 S2·S3에 밀려 사라지지 않고, 새로고침마다 줄 순서가 바뀌지 않는다(`table.sort`는 안정 정렬이 아님). 줄에 `Rank`·`Order`는 안 실린다.
+4. **서브 줄 3개**(quest_volume §2 규칙 6, 검수): `StoryQuests.MaxSubs = 3` — HUD는 2줄 그대로, 펼친 목록에 3줄 다(→ HUD 퀘스트 표시는 A23-94로 '왼쪽 가운데 큰 글씨, 지금 퀘스트 하나 + Quests (n) ▼ 펼침'으로 바뀜, 개발 1·이미지 개발). 서버 순위: 받기·대화/선택 카드 대기 0 > 상황(Show, 거위) 1 > **시작한 서브**(2단계 이상·진행 수·Trials 칸 있음)와 S0 2 > 나머지 3, 같은 순위는 새 퀘스트(`Subs` 뒤쪽) 먼저 — 진행 중인 마을 퀘스트가 오래된 S2·S3에 밀려 사라지지 않고, 새로고침마다 줄 순서가 바뀌지 않는다(`table.sort`는 안정 정렬이 아님). 줄에 `Rank`·`Order`는 안 실린다.
 5. 브라이트는 여자아이(A23-59): H1 시작 줄 "Bright, the young guard, needs help. Find her in Halo Citadel!". 다른 서버 문구에는 Bright 대명사가 없다.
 
 ## 4. A23-58 자기 편답지 않은 선택은 내 점수 깎기 (모든 선악 선택)
@@ -57,12 +57,12 @@
 - **E3 `Reward.Title = id` / `Reward.TitleBy = { Good = id, Evil = id }`:** 끝날 때 `TitleService.Grant`(능력치 없음), 새로 얻었을 때만 "New title: %s!". TitleBy는 이 퀘스트에서 고른 쪽(장인 A = Good). id는 `Config.TitleDefs`에 있어야 함(데이터 넣을 때 같이 추가: Bench Detective, Actually Read It / Didn't Read It, Bug Reporter, Goose Fan, Sky Watcher, Third Band …).
 - **E5 `Hidden = true`(서브):** 열려도 Start 토스트 없음, **찾기 전에는 줄 없음**(찾음 = 1단계를 지남 또는 받기 대기). 한 단계짜리 숨은 서브(EG04 Near Stay 30)는 줄 없이 끝난다. 선택 `Points = 0`이면 점수 줄 대신 `LeanGood` "Your shard leaned to the light." / `LeanEvil` "Your shard leaned to the dark.".
 - 검사: test_town_quests 그룹 e1-pick-gate·e2-lines-by·e2-changed-mind·e3-titles·e5-hidden(시험용 퀘스트를 그 세계 Config에만 넣음), 191검사·변이 51/51.
-- **아직 데이터 없음:** M3_1·M3_3·M3_4·Pip1·Dibs 메아리, EG01~EG06·EG14, 두 겹 대사(가)는 영어 대사 확정 뒤 다음 묶음(story_depth 6-2 일정 10/17~18).
+- **아직 데이터 없음:** M3_1·M3_3·M3_4·Pip1·Dibs 메아리, EG01~EG06·EG14, 두 겹 대사(가)는 영어 대사 확정 뒤 다음 묶음(story_depth 6-2 일정 10/17~18). (→ 3장·Pip1·Dibs는 아래 9절로 들어감. EG01~06·EG14는 10/09에도 아직 없음.)
 
 ## 9. 3장 「Grab Club」 메인 전체 (A23-56 메인 앞당김 + story_depth 베타, 2026-10-07)
-- `StoryQuests.Main` 끝에 **M3_1~M3_8**(Chapter 3). 보상: G1 = `{ Gold = 1 }`, 장 끝 M3_4·M3_8 = `{ Gold = 2, XP = 2 }` + [받기]. 레벨 문: M3_5 졸업(E7), M3_6 Lv18, M3_7 Lv21, M3_8 Lv25(그 전에는 "(now LvN)" 줄).
+- `StoryQuests.Main` 끝에 **M3_1~M3_8**(Chapter 3; → M3_5 졸업은 A23-86 G로 옆 줄(서브)로 빠짐, e5362e22). 보상: G1 = `{ Gold = 1 }`, 장 끝 M3_4·M3_8 = `{ Gold = 2, XP = 2 }` + [받기]. 레벨 문: M3_5 졸업(E7), M3_6 Lv18, M3_7 Lv21, M3_8 Lv25(그 전에는 "(now LvN)" 줄).
   - M3_1 Thief Footprints: 숲 고블린 5 → "A note: 'IOU 1 dust. Will pay back. Maybe.'"
-  - M3_2 Three Camps: Trials 야영지 3곳(`Landmarks.GoblinCamp1~3` = preview_map (660,-60)·(750,50)·(820,-40), 반경 40) 고블린 각 1, 곳마다 한 줄(**Trials 칸 `Say`**, 새 엔진 조각).
+  - M3_2 Three Camps: Trials 야영지 3곳(`Landmarks.GoblinCamp1~3` = preview_map (660,-60)·(750,50)·(820,-40) → 지도 v2 지금 (840,0,95)·(1010,0,130)·(1090,0,-150), 반경 40) 고블린 각 1, 곳마다 한 줄(**Trials 칸 `Say`**, 새 엔진 조각).
   - M3_3 The Brute's Sack: 고블린 우두머리 1(같이 잡아도 인정) → Brute 줄 + 크레용 단서(`Clue`).
   - M3_4 Whose Shard? (선택 ③ +3): 우리 마을 → 선택 카드(1쪽 `LinesBy From=M2_3`, 2~3쪽 Pip) → 안내자 반응(`LinesBy From=M3_4`: 빛 Good "A little light for them. Not bad." / 뿔 Evil "Ha! Finders keepers!" + Dibs / 반대쪽·장인 줄은 검수 OK) → [받기]. **Evil·B = Dibs 192골드 바로**(숲형 B 골드), Good·A = 나중에 Pip1. LinesBy 칸마다 옛 클라이언트용 `Lines`(= Default)도 있음.
   - M3_5 Sprout Graduation: **E7 `State Graduated`**(`PvPService.IsRookie` false, pcall) → 안내자 셋의 진짜 이유 + "And you? Why are you here?".

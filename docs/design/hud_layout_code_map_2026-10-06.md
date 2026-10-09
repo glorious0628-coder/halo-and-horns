@@ -1,4 +1,6 @@
 # HUD 배치 코드 지도 (이미지 개발, 2026-10-06)
+> 기록용(10/06 당시). 지금과 다른 점: HUD 배치는 A23-74(PC·폰 같은 틀)·A23-81·A23-94(퀘스트 = 왼쪽 가운데 큰 글씨, 지금 퀘스트 하나)·A23-98(UI는 PC 먼저)로 바뀌었고, 아래 줄 번호·크기 값·§6 계획은 낡음 — 지금 `HUD.luau`·`UIKit.luau`를 볼 것.
+> 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
 
 회색 상자 배치 승인본이 오면 바로 `HUD.luau`로 옮기기 위한 메모. 읽기만 해서 만든 지도이고 코드는 아직 안 바꿨다.
 측정: 연습 Studio(`build/UiSandbox.rbxlx`)에서 `py tools/device_view.py pc phone`(아래 "도구").

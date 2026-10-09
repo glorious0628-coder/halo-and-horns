@@ -1,4 +1,6 @@
 # 메인 게임에 넣을 3D 표 (이미지 생성 1, 2026-10-07)
+> 기록용(10/07~08 당시). 지금과 다른 점: 메인 Studio 배치는 메인 반영 1이 `tools/worldkit/*.luau` 도구로 함(10/08부터; 아래 `tools/place_kit_main.lua`는 만들어지지 않음). 색만 바꾼·빌린 모델(StallBlue/Green 등)은 제 모델로 새로 만들 차례(A23-96, `remake_list_2026-10-09.md`). 배치는 한 구역씩 시안 묶음대로 — 빛 마을부터(A23-93·A23-97). 업로드·배치 상태는 지금 장부(`art/models/worldkit/`)를 볼 것.
+> 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
 
 검수 요청(사용자 화남: 초원 장식·성·교차로 분수). **메인 Studio는 안 건드림** — 아래 id로 검수가 `tools/place_kit_main.lua`로 넣는다.
 모든 '업로드됨'은 새 계정, WorldKit 3D 가져오기로 올린 MeshPart 1개(+텍스처 1장, TextureID = 색만). 크기 = 스터드(X 폭, Y 높이, Z 깊이), 앞 = Roblox -Z, 피벗 = 밑면 가운데.

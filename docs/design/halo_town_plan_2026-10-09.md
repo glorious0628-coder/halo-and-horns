@@ -39,11 +39,12 @@
 - 좌우: x ±70..±190에 낮은 단 섬(높이 8~22)과 절벽, 섬 사이 바다 수로 폭 14 + 아치 다리, 수로가 절벽 가장자리로 이어져 폭포(WoodsWaterfall 방식).
 - 절벽: Terrain 흰 석회(Limestone) + 이끼 반점, 위는 잔디 한 줄 + 덤불.
 - 바깥은 바다(Water) + 먼 섬 4 + 먼 아치 3.
-- 도구: `tools/worldkit/halo_terrain.luau`(숲/초원 도구와 같은 plan/apply/restore, 기존 바닥 저장) — 지형 계획부터 `tools/halo_plan_check.py`로 시안과 같은 각도 비교 후.
+- (→ 만든 도구 값, 2026-10-09 검수: f04e51cc·341da8dd `halo_terrain.luau` 머리말) 위 단 높이는 바뀜 — 문 끝·스폰 길은 Y 0.2 그대로(계약), 척추 단 Y 0.2·5·11·19(경계 z -444·-524·-606), 날개 단 4쌍 Y 1.2·7·14·22, 폭포 6곳. 메인 적용은 `halo_materials.luau` → `halo_terrain.luau` 순서(메인 반영 1).
+- 도구: `tools/worldkit/halo_terrain.luau`(숲/초원 도구와 같은 plan/apply/restore, 기존 바닥 저장) — 지형 계획부터 ~~`tools/halo_plan_check.py`~~(안 만듦) → `tools/terrain_dump_render.py`로 그린 계획 시트 `art/review/world/halo_terrain_plan_2026-10-09.jpg`(f04e51cc)로 시안과 같은 각도 비교 후.
 - 걷는 길 규칙: 사람이 다니는 곳 경사 ≤ 25°, 계단은 램프 + 보이는 계단 모델(충돌은 램프 파트).
 
 ## 자리표시 빼기
-HaloTower(4)·HeroStatue(6)·Flower(8)·HaloTownTrees·HaloCastle(옛 모델)·Gate_HaloTown 옛 파트·Bridge_Halo 옛 파트 → 새 모델이 들어갈 때 `zone_swap`(ZoneSwapOld로 보관)으로 빼고, 이름 계약(Gate_HaloTown / Bridge_Halo / HaloCastle 위치)은 유지.
+HaloTower(4)·HeroStatue(6)·Flower(8)·HaloTownTrees·HaloCastle(옛 모델)·Gate_HaloTown 옛 파트·Bridge_Halo 옛 파트 → 새 모델이 들어갈 때 `zone_swap`(ZoneSwapOld로 보관)으로 빼고(10/09 옛 Town_Halo_* 임시 모델로 한 번 적용됨 — 새 모델이 오면 다시, 검수 인계 §7), 이름 계약(Gate_HaloTown / Bridge_Halo / HaloCastle 위치)은 유지.
 
 ## 순서
 1) 이미지 생성 2: 위 표 2D(멀티뷰 먼저: 문·탑·대성당·돔집A/B·가게·동상·분수·아치다리).

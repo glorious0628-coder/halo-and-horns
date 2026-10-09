@@ -21,7 +21,7 @@
 - 그 밖에: Net `UseSkill`(끝에 한 줄), `RateLimits.UseSkill = 0.1`, `Data.Defaults.SkillSlots = 1`(A23-71: 0) + Mirrored, Main INIT/START에 `DamageWindow`·`SkillService`(PlayerService 앞).
 
 ## 2. 클라 계약 (게임성 개발 1 · 이미지 개발)
-- **보내기:** `Net.Get("UseSkill"):FireServer(slot)` — slot = `"Q"` | `"Z"` | `"X"`, 다른 인자 없음. 한 번 누름 = 한 번(길게 눌러 반복 없음). 옛 Q 버튼의 `Release`도 그대로 동작.
+- **보내기:** `Net.Get("UseSkill"):FireServer(slot)` — slot = `"Q"` | `"Z"` | `"X"`(내부 칸 id; 기본 키는 Z·X·C, A23-78), 다른 인자 없음. 한 번 누름 = 한 번(길게 눌러 반복 없음). 옛 Q 버튼의 `Release`도 그대로 동작.
 - **받기 (Net.Fx):**
   - `"SkillPress"` `{ Slot, Result }` — 누른 사람에게만. Result: `"Queued"`(0.5초 흰 테), `"Cooldown"`(흔들기), `"NoMP"`(흔들기 + `Config.Skills.Text.NoMP`), `"NoTarget"`(흔들기 + `Text.NoTarget`), `"Locked"`(흔들기; 보통 버튼이 안 보여서 안 옴).
   - `"Skill"` `{ UserId, Character, Class, Kit, Faction, Slot, Shape, From, Center, Dir, Len, Width, Radius, Points, Life = 0.3, Auto, Total, Hits = { { P, A, C = false, K = "M" | "P", V? } }, Statuses = {} }` — 시전자 + 근처 사람에게(CR-L49 거리). Line: `From`(시전자 자리)·`Dir`(단위 벡터)·`Len`·`Width`·`Center`(띠 가운데). Chain: `Points`(맞은 순서대로 자리)·`Radius`(Jump). `Life` 동안 바닥 표시(§6-2). `Statuses`는 SKL-3(Guard·Taunt·Slow·MP).
@@ -52,9 +52,9 @@
   - 이야기 M1_3·M2_5: 앞에 'Lv5 · Learn your first skill (now Lv%d)' 단계가 있다. 이미 Lv5 이상이면 바로 지나간다.
   - N1(장인): `Requires.Level = 5`.
   - 그 밖에 스킬 맞히기 단계, 또는 스킬 시험이 남은 Trials(S0 시험 b)는 칸이 0인 동안 줄 끝에 ' · Skills come at Lv5'가 붙는다.
-    - S0은 (A)안이다: 시험 b는 그대로 두고, Lv5에 첫 스킬을 쓰면 끝난다. 검수 답을 기다리는 중이다.
+    - S0은 (A)안이다: 시험 b는 그대로 두고, Lv5에 첫 스킬을 쓰면 끝난다. ~~검수 답을 기다리는 중이다.~~ → 사용자 확정(A23-71 "5가 맞는 것 같음").
 - 클라(개발 1):
-  - SkillBar는 지금 레벨만 보고 잠근다. 서버 기준은 `SkillSlots` 속성(환생 3, 레벨 초기화해도 안 줄어듦)이니 그것으로 맞춰 달라고 했다.
+  - SkillBar는 지금 레벨만 보고 잠근다. 서버 기준은 `SkillSlots` 속성(환생 3, 레벨 초기화해도 안 줄어듦)이니 그것으로 맞춰 달라고 했다. → 맞춤(SkillBar가 `SkillSlots`도 봄, main).
 
 ## 3-2. SKL-3 X 스킬 서버 (게임성 개발 2, 2026-10-07 밤)
 

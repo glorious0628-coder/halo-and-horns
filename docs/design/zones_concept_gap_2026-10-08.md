@@ -1,5 +1,7 @@
 # 호박밭 · 유령 숲 · 고블린 숲 — 시안 대 지금 게임 (SPEC A23-76, 이미지 생성 1, 2026-10-08)
 
+> 기록용(2026-10-08 당시). 지금과 다른 점: "있는 3D 다시 쓰기·색만 바꾸기 = 0" 대신 구역마다 새 모델(최신: SPEC A23-96, `remake_list_2026-10-09.md`); 순서는 한 구역씩 ① 빛 ② 뿔 ③ 교차로 ④ 초원 ⑤ 숲 ⑤-2 유적 ⑥ 호박밭 ⑦ 유령 숲(A23-97), 기준은 새 시안 묶음(A23-93); 포인트 잔액은 낡음. 지금 기준: AGENTS.md · SPEC_ADDENDUM A23 · RELEASE_PLAN.
+
 검수 요청(10/08): 시안에 있는데 게임에 없는 것(땅 모양·물·큰 볼거리·소품)을 구역마다 — 3D 이미 있는 것 / 새로 필요한 것(범위·포인트).
 
 - **기준 그림:** `art/review/concept/Concept_PumpkinPatch.jpg`, `art/out/concept/Concept_HauntedHollow_2.png`(A23-45 기준, 호박 없음), `art/review/concept/Concept_GoblinWoods.jpg`.

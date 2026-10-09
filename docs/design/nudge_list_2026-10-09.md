@@ -4,6 +4,8 @@
 검수가 고르면 `Config.Nudges.<Id> = false`로 하나씩 끌 수 있게 만들게요(클라 것은 개발 1, 서버 것은 그 파일 주인).
 **보상·위험·실패 알림은 이 목록에 넣지 않았어요**: 골드·전리품·레벨 업, 'Not enough MP', 'No potions left', 이동 막힘, PvP 경고, 벌칙 같은 것.
 
+> 2026-10-09 검수: 결정 끝, `Config.Nudges`에 들어감 — 끔: WarIntro·ZoneStoryLine·SackLore·HuntSlimes·KeysTip·GuideLabel·GuideBeam(땅 위 금빛 길 줄), 서버 GuideDone·EnteredSafe·DailyReady·WeaponUsableNow. 켬: PadGlow·TravelPulse(A23-88). 나머지 '남기기'·'판단 필요' 줄은 그대로.
+
 ## A. 이미 끈 것
 | Id | 글 | 언제 | 파일 |
 |---|---|---|---|

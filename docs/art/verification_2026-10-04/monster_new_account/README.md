@@ -1,5 +1,7 @@
 # 몬스터 새 계정 실제 등록·승격 증거
 
+> 기록용(2026-10-09 검수): 2026-10-04 기록이다. 지금은 옛 메시·빌려 쓴 몬스터·보스 3D를 전부 새로 만든다(SPEC A23-96, docs/design/remake_list_2026-10-09.md P1).
+
 Goblin과 GoblinBrute는 실제 Native Import→원본/PBR 검사→CustomModels 승격→새 계정 ID 기록을 마쳤다. Source와 옛 CustomModels/ID는 보존했다. 단순 준비 metadata가 아니며, 승격과 최종 게임 외형 확인을 구분한다.
 
 - Goblin: 원래 초록 몸·의상·PBR·불투명 Native 확인, 실제 일반 MonsterService spawn 높이5와 새 ID 확인, 정상 게임 Native 외형도 루트가 확인했다.

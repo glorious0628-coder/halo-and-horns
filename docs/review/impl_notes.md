@@ -1,3 +1,5 @@
+> Record (2026-10-09 review): implementation notes from the first build round and the R1 fixes (2026-10-02/03). Much is superseded (charge / Release / auto attack -> A22 and A23-1; Neutral is off in the beta -> A23-57; game text is English only -> A23-48). Current rules: docs/SPEC_ADDENDUM.md A23 (higher number = newer).
+
 ### Config.luau, Util.luau, Net.luau
 DEVIATIONS:
 - Util.luau and Net.luau are exact copies of the §4.1 and §4.2 code blocks. A script pulled them straight out of TECH_SPEC.md and they compile, so no fixes were needed.
