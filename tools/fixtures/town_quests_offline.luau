@@ -1422,4 +1422,82 @@ runGroup("subs18-flow", function()
 		show(card and card.Arg))
 end)
 
+------------------------------------------------------------------ 13. zone_check_halo #19: every active sub is sent (SendAllSubs) + town offers
+-- a new faction town-NPC offer ranks with the subs in progress (newer first); with SendAllSubs the rows past MaxSubs come too,
+-- marked More = true (the HUD skips them, the quest window lists all)
+runGroup("send-all-subs", function()
+	check(SQ0.SendAllSubs == false, "SendAllSubs is off until the HUD skips More rows", tostring(SQ0.SendAllSubs))
+	local w = townWorld()
+	w:Npc("Bright", vec(0, 0, -400))
+	local p, d = joinAfterM23(w, 702, "Halo", { Pos = vec(2, 0, -398) })
+	-- only H1 (Bright's offer) stays active; three older subs are in progress
+	w.Story.Refresh(p)
+	for _, id in w.Config.StoryQuests.Subs do
+		if id ~= "H1" then
+			d.Story.Subs[id] = nil
+			d.Story.Done[id] = true -- finished: never started again
+		end
+	end
+	local function oldSub(id)
+		w.Config.StoryQuests.Defs[id] = { Kind = "Sub", Title = id, Steps = {
+			{ Text = "Slimes %d/%d", Obj = { Type = "Kill", Kind = "Slime", Count = 5 } },
+			{ Text = "More slimes %d/%d", Obj = { Type = "Kill", Kind = "Slime", Count = 5 } } } }
+		table.insert(w.Config.StoryQuests.Subs, 1, id) -- OLDER than H1: first in the list (each next one before it)
+		d.Story.Done[id] = nil
+		d.Story.Subs[id] = { St = 2, P = 0, T = {}, Claim = false } -- in progress
+	end
+	for _, id in { "T1", "T2", "T3" } do oldSub(id) end
+	-- W1: a Halo-only card with no NPC to talk to (newest in the list): a plain offer, NOT a town-NPC offer
+	w.Config.StoryQuests.Defs.W1 = { Kind = "Sub", Title = "W1", Factions = { Halo = true }, Steps = {
+		{ Text = "Listen", Panel = true, Lines = { All = { "Hello." } }, Obj = { Type = "Talk" } } } }
+	table.insert(w.Config.StoryQuests.Subs, "W1")
+	d.Story.Done.W1 = nil
+	d.Story.Subs.W1 = { St = 1, P = 0, T = {}, Claim = false }
+	w.Story.Refresh(p)
+	local function ids(list)
+		local out = {}
+		for _, r in list do table.insert(out, r.Story and r.Story.Id or "?") end
+		return out
+	end
+	local function more(list)
+		local out = {}
+		for _, r in list do table.insert(out, r.More == true and "M" or "-") end
+		return table.concat(out)
+	end
+	check(d.Story.Subs.H1 and d.Story.Subs.H1.St == 1, "H1 waits at Bright (its first card)", show(d.Story.Subs.H1))
+	local off = w.Story.SubRows(p, d)
+	check(table.concat(ids(off), ",") == "H1,T1,T2" and more(off) == "---",
+		"a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits", table.concat(ids(off), ",") .. " " .. more(off))
+	-- SendAllSubs: the fourth active sub is sent too, marked More
+	w.Config.StoryQuests.SendAllSubs = true
+	local all = w.Story.SubRows(p, d)
+	check(table.concat(ids(all), ",") == "H1,T1,T2,T3,W1" and more(all) == "---MM", "SendAllSubs: all five active subs, the 4th and 5th marked More",
+		table.concat(ids(all), ",") .. " " .. more(all))
+	for _, r in all do
+		check(r.Rank == nil and r.Order == nil, "the " .. tostring(r.Story and r.Story.Id) .. " row sends no Rank / Order", show({ r.Rank, r.Order }))
+	end
+	for i = 1, 3 do check(all[i].More == nil, "row " .. i .. " (the HUD's) has no More", tostring(all[i].More)) end
+	-- the same first three as with the flag off (the HUD sees no change)
+	check(table.concat({ ids(all)[1], ids(all)[2], ids(all)[3] }, ",") == table.concat(ids(off), ","), "the first three rows are the same with the flag on", "")
+	-- MaxSubs still decides which rows are the HUD's
+	w.Config.StoryQuests.MaxSubs = 2
+	local two = w.Story.SubRows(p, d)
+	check(more(two) == "--MMM" and #two == 5, "MaxSubs 2: the rows past 2 are More", more(two))
+	w.Config.StoryQuests.MaxSubs = 0
+	check(more(w.Story.SubRows(p, d)) == "MMMMM", "MaxSubs 0: every row is More", "")
+	w.Config.StoryQuests.MaxSubs = 3
+	-- only `true` turns it on
+	w.Config.StoryQuests.SendAllSubs = 1
+	check(#w.Story.SubRows(p, d) == 3, "SendAllSubs = 1 is not true: three rows", tostring(#w.Story.SubRows(p, d)))
+	-- flag back off: three rows, none More
+	w.Config.StoryQuests.SendAllSubs = false
+	local back = w.Story.SubRows(p, d)
+	check(#back == 3 and more(back) == "---", "the flag off again: three rows, none More", more(back))
+	-- a town offer of another faction never shows
+	local h, hd = joinAfterM23(w, 703, "Horns", { Pos = vec(2, 0, 398) })
+	local hid = {}
+	for _, r in w.Story.SubRows(h, hd) do hid[r.Story and r.Story.Id or "?"] = true end
+	check(not hid.H1, "a Horns player never gets Bright's offer", show(hid))
+end)
+
 finish()
