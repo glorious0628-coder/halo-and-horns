@@ -57,7 +57,7 @@ runGroup("config", function()
 	check(#ladder.Hooks == 3 and ladder.Hooks[1].Kind == "Commission" and ladder.Hooks[2].Kind == "Clatter" and ladder.Hooks[3].Kind == "Crystal",
 		"hooks in order: golden weapon, Captain Clatter, crystal weapon", show(ladder.Hooks))
 	for _, h in ladder.Hooks do
-		check(C.Features[h.Feature] == nil and not C.FeatureOn(h.Feature), h.Kind .. ": switched off until its feature exists", tostring(C.Features[h.Feature]))
+		check(not C.FeatureOn(h.Feature), h.Kind .. ": switched off until its feature exists", tostring(C.Features[h.Feature]))
 		check(type(T.ShortNames[h.Kind]) == "string" and #T.ShortNames[h.Kind] <= 14, h.Kind .. ": a short name <= 14", tostring(T.ShortNames[h.Kind]))
 	end
 	check(ladder.Rebirth.Warn == 5, "the rebirth line starts 5 levels before", show(ladder.Rebirth))
@@ -152,7 +152,7 @@ runGroup("feature hooks", function()
 	w.Reg.ClatterService = { NextGoal = function() return "Next goal · Captain Clatter: a Badge is waiting" end }
 	check(Q.PinnedRow(p).GoalKind == "Clatter", "Clatter comes before the crystal weapon", show(Q.PinnedRow(p).GoalKind))
 	w.Reg.CommissionService = { NextGoal = function() return "Next goal · Golden weapon: Brute Horns 6/10" end }
-	check(Q.PinnedRow(p).GoalKind == "Commission" and Q.PinnedRow(p).ShortName == "Golden weapon", "the golden weapon comes first", show(Q.PinnedRow(p).GoalKind))
+	check(Q.PinnedRow(p).GoalKind == "Commission" and Q.PinnedRow(p).ShortName == "Weapon order", "the golden weapon comes first", show(Q.PinnedRow(p).GoalKind))
 	w.Reg.CommissionService.NextGoal = function() return nil end
 	check(Q.PinnedRow(p).GoalKind == "Clatter", "a service with nothing to say is skipped", "")
 	w.Reg.ClatterService.NextGoal = function() error("offline service failure") end

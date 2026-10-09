@@ -299,9 +299,9 @@ Config.WeaponInfo = {
 	{ Grade = "Common", Source = "Your first weapon, a gift from the Blacksmith", SourceEn = "Your first weapon, a gift from the Blacksmith" }, -- A23-34
 	{ Grade = "Common", Source = "Sold at the Forge" },
 	{ Grade = "Fine", Source = "Sold at the Forge (from Lv5)" },
-	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes" },
-	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights" },
-	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights" },
+	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes, or a Forge commission" },
+	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights, or a Forge commission" },
+	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
 	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
 }
@@ -2080,7 +2080,8 @@ Config.Tutorial = {
 	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
 		Skill = "Skill at Lv %d", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
-		Commission = "Golden weapon", Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
+		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
+		Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
 	-- A23-86 F (content_beyond_10min): the next-goal ladder once the early goals (iron weapon, first skills, the woods) are
 	-- done and no story row is pinned. Hooks, in order: a feature row asks its service for its line (S[Service].NextGoal(
 	-- player, data) -> text or nil) and only while Config.Features[Feature] is on (the features are not built yet, so the
@@ -5865,7 +5866,8 @@ Config.Return = {
 	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home",
 		Goose = "Crossroads" },
 	-- A23-86 F: the zone a next-goal ladder row (QuestService GoalKind) leads to; other kinds use the level's hunting zone
-	GoalZones = { Rebirth = "Crossroads", RebirthReady = "Crossroads", Commission = "Crossroads", Crystal = "Crossroads" },
+	GoalZones = { Rebirth = "Crossroads", RebirthReady = "Crossroads", Commission = "Crossroads", Commission4 = "Crossroads",
+		Commission5 = "Crossroads", Commission6 = "Crossroads", Crystal = "Crossroads" },
 	Text = {
 		NextHunt = "Hunt and get stronger!", -- nothing pinned
 		TomorrowDaily = "New dailies", -- the daily card's tomorrow line (the King Diary's page while one waits)
@@ -5974,6 +5976,40 @@ Config.ChoiceCard = {
 	},
 }
 Config.RateLimits.CardAction = 0.3
+-- A23-86 decision 2 = A (user 2026-10-09): Otto's commissions (CommissionService, content_beyond_10min H). The golden / crystal
+-- / spirit weapons (T4-T6) can be ordered at the Forge: gold (the weapon's own Price) + materials + the weapon's MinLevel.
+-- The numbers below are PROPOSED (decision 2-2 is 검수's): T4 as designed (3,000 gold + 10 Brute Horn + 20 Goblin Tooth), T5 /
+-- T6 from the Skeleton Ruins drops (Bone P 0.4, Knight Crest P 0.5; about 20 kills a minute in a zone => T5 ~6 min of bones
+-- + 2 of crests, T6 ~13 + 5). The gold is far below a first day's stack, so the door is materials and level (A23 H).
+-- Switched by Config.Features.Commission (OFF until the Forge window shows its [Commission] row: the client is game dev 1's).
+-- ShowLevel = from which level the next-goal ladder names the order. Card = the ChoiceCard kind that opens after the order.
+Config.Features.Commission = false
+Config.Commission = {
+	Card = "ApprenticeScratch",
+	CardDelay = 1.5, -- seconds after the equip line
+	Orders = {
+		[4] = { Gold = 3000, Items = { BruteHorn = 10, GoblinTooth = 20 }, ShowLevel = 10 }, -- Lv12 (the weapon's MinLevel)
+		[5] = { Gold = 10000, Items = { KnightCrest = 12, Bone = 30 }, ShowLevel = 25 }, -- Lv20
+		[6] = { Gold = 30000, Items = { KnightCrest = 30, Bone = 60 }, ShowLevel = 25 }, -- Lv30
+	},
+	Text = {
+		Done = "Otto made your %s!",
+		NeedLevel = "Otto says: come back at Lv %d!",
+		NeedMaterials = "Otto needs more materials for this one.",
+		Owned = "You already have this weapon.",
+		GoalLabel = { [4] = "Golden weapon", [5] = "Crystal weapon", [6] = "Spirit weapon" },
+		GoalMaterial = "Next goal · %s: %s %d/%d · %s/%s gold",
+		GoalGold = "Next goal · %s: %s/%s gold",
+		GoalLevel = "Next goal · %s: Lv%d (now Lv%d)",
+		GoalReady = "Next goal · %s is ready at the Forge!",
+	},
+}
+Config.RateLimits.Commission = 1
+Config.ChoiceCard.Kinds.ApprenticeScratch = {
+	Title = "The apprentice scratched the hilt a little.",
+	Good = { Label = "It's fine. Thank you!", Reward = { Item = "Enh70", N = 1 }, Points = 1, Done = "Otto's apprentice beams." },
+	Evil = { Label = "Fix it AND give me a discount!", Reward = { GoldMin = 2 }, Points = 1, Done = "A discount, just for you." },
+}
 -- A23-86 Sprout Oath titles (stat-free; the oath's pick decides which: Good = Guardian Cadet, Evil = Rascal Cadet)
 Config.TitleDefs.GuardianCadet = { Name = "Guardian Cadet", NameEn = "Guardian Cadet", Color = Color3.fromRGB(255, 225, 120) }
 Config.TitleDefs.RascalCadet = { Name = "Rascal Cadet", NameEn = "Rascal Cadet", Color = Color3.fromRGB(190, 120, 235) }
