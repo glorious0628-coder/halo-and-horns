@@ -202,8 +202,9 @@ Config.Data = {
 		SavedStars = 0,
 		SavedStarsAt = 0,
 		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound }, Equipped = { uid }, Next = the
-		-- next uid number. TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
-		Pets = { List = {}, Equipped = {}, Next = 1 },
+		-- next uid number, Away = put away by the player (PET-2b: stays away after a rejoin; never the tamer).
+		-- TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
+		Pets = { List = {}, Equipped = {}, Next = 1, Away = false },
 		TamerNotice = false,
 		-- SKL-2 (A23-49): skill slots opened so far (0 = none yet, 1 = Q, 2 = +Z, 3 = +X at Config.Skills.Unlock; all after
 		-- a rebirth). The most ever reached is kept through rebirths, class / faction changes and level resets (SkillService)
@@ -2460,12 +2461,12 @@ Config.StoryQuests = {
 		-- makes it my pet (PetService, Config.PetGrant): Halo's own side = [Take care of it] (Honor +1), Horns' = [Make it
 		-- my minion] (Infamy +1), the other side's pick -1 (A23-58); the pick is its Lean (Good Buddy / Little Minion)
 		Pet1 = {
-			Kind = "Sub", Title = "The Lost Baby Slime", ShortName = "Baby slime", Requires = { Done = { "M1_1" } },
+			Kind = "Sub", Title = "The Lost Baby Slime", ShortName = "Baby Slime", Requires = { Done = { "M1_1" } },
 			Steps = {
 				{ Text = "Beat meadow slimes %d/%d", Guide = "SlimeMeadow",
 					Start = "Something small is crying in the meadow...",
 					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 8 } },
-				{ Text = "A lost baby slime! What will you do?", Panel = true,
+				{ Text = "A lost Baby Slime! What will you do?", Panel = true,
 					Lines = { All = { "A tiny lost slime hops up to you.", "It wants to come with you!" } },
 					Obj = { Type = "Choice", Good = { Label = "Take care of it", Points = 1, Pick = "Care" },
 						Evil = { Label = "Make it my minion", Points = 1, Pick = "Minion" },
@@ -6135,7 +6136,7 @@ end
 -- sends Style SwingStyle / SkillStyle in the Swing / Release Fx, PetService grants the pet and the one-time notice.
 Config.Tamer = {
 	Faction = "Neutral", Class = "Archer",
-	Pet = "BabySlime", -- the species granted (Config.Data.Defaults.Pets; PET-2 adds levels / XP later)
+	Pet = "BabySlime", -- the species granted (Config.Pets.Species; its levels / XP: Config.Pets)
 	SwingStyle = "PetHeadbutt", -- basic attack Fx: the pet runs to the target, headbutts, comes back
 	SkillStyle = "PetDash", -- skill Q Fx: the pet dashes into the target area
 	Text = {
@@ -6182,11 +6183,16 @@ end
 -- states need no recompute; a later rule adds its input here and its trigger next to it.
 Config.Speed = { Cap = 1.35 }
 -- pets by species: Speed = { bonus at pet Lv1, bonus at MaxLv }, a straight line between (design §2: +7% -> +10%)
--- PET-2: XPPerKill = pet XP for every kill its owner is paid for (auto combat too), Lv n -> n+1 needs XPPerLv x n
+-- PET-2: XPPerKill = pet XP for every kill its owner is paid for (auto combat too), Lv n -> n+1 needs XPPerLv x n.
+-- Species = the species the game knows (PetService equips only these; a saved unknown one is kept). PET-2b: an
+-- XP-only PetList goes at most once every ListEvery seconds (a level change at once); a pet line waits NoticeAfter
+-- seconds so it comes after the quest's own lines (with a window open the toasts show one line at a time)
 Config.Pets = {
 	MaxLv = 10,
 	XPPerKill = 1,
 	XPPerLv = 15,
+	ListEvery = 1,
+	NoticeAfter = 0.5,
 	Species = {
 		-- Name / Icon: the pet window (PetWindow.luau) when the pet has no story name
 		BabySlime = { Speed = { 0.07, 0.10 }, Name = "Baby Slime", Icon = "IconPetBabySlime" },
@@ -6585,7 +6591,7 @@ Config.PetGrant = {
 	Quest = "Pet1", Species = "BabySlime",
 	Picks = { Care = "Good", Minion = "Evil", A = "Good", B = "Evil" },
 	Names = { Good = "Good Buddy", Evil = "Little Minion" },
-	Text = { Got = "A baby slime joined you! It hops along behind you." },
+	Text = { Got = "A Baby Slime joined you! It hops along behind you." },
 }
 
 return Config
