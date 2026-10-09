@@ -22,6 +22,10 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-07/offline_skill_learn_2026-10-07.json"
 
 MUTATIONS = [
+    # 검수 10/09: the learn line only when the new skill is still unused 45 s later
+    ("the learn line at once (5 s)", "\tHintAfter = 45, HintWait = {} }\n", "\tHintAfter = 5, HintWait = {} }\n"),
+    ("a press does not cancel the learn line", "\tLEARN.HintWait[slot] = nil -- used before the learn line came: it never comes\n", ""),
+    ("the learn line never waits", "\tif not line then return end\n\tLEARN.HintWait[slot] = nil\n", "\tLEARN.HintWait[slot] = nil\n"),
     ("locked slots show again", "\tlocal visible = st.On and not st.Locked -- A23-71", "\tlocal visible = st.On --"),
     ("a save load shows the moment", "\tif visible and b.Live and b.WasLocked == true then LEARN.Show(b, st) end\n",
      "\tif visible and b.WasLocked == true then LEARN.Show(b, st) end\n"),

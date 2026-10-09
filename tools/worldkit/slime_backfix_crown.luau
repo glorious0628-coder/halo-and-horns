@@ -10,6 +10,7 @@
 -- Idempotent: parts already swapped (BackfixWas) and an existing KingCrown are skipped.
 
 local MODE = "__MODE__"
+local ADD_CROWN = false -- 2026-10-09 user: the Slime Prince (BigSlime) wears a crown OR ore, not both: ore only; the real King Slime has its own 3D
 if MODE ~= "plan" and MODE ~= "restore" then MODE = "apply" end
 if game:GetService("RunService"):IsRunning() then error("Edit 모드에서만 실행하세요.") end
 local AssetService = game:GetService("AssetService")
@@ -43,8 +44,10 @@ for _, d in root:GetDescendants() do
 			local oldMp = makeMesh(was)
 			if oldMp then
 				local size, cf = d.Size, d.CFrame
+				local texId = d.TextureID
 				d:ApplyMesh(oldMp)
 				d.Size, d.CFrame = size, cf
+				d.TextureID = texId
 				d:SetAttribute("BackfixWas", nil)
 				restored += 1
 			end
@@ -59,9 +62,12 @@ for _, d in root:GetDescendants() do
 		if not newMesh then table.insert(failed, "new mesh: " .. tostring(err)) break end
 	end
 	local size, cf, oldId = d.Size, d.CFrame, d.MeshId
+	-- 2026-10-09 fix: MeshPart:ApplyMesh clears TextureID (the slimes went colourless in Play): keep it and put it back
+	local texId = d.TextureID
 	local ok, e = pcall(function() d:ApplyMesh(newMesh) end)
 	if ok then
 		d.Size, d.CFrame = size, cf
+		d.TextureID = texId
 		d:SetAttribute("BackfixWas", oldId)
 		swapped += 1
 		table.insert(out, d:GetFullName())
@@ -77,6 +83,8 @@ if king then
 	local existing = king:FindFirstChild("KingCrown", true)
 	if MODE == "restore" then
 		if existing then existing:Destroy() crownNote = "crown removed" else crownNote = "no crown" end
+	elseif not ADD_CROWN then
+		crownNote = existing and "crown left (ADD_CROWN off; remove by hand)" or "no crown (ADD_CROWN off)"
 	elseif existing then
 		crownNote = "crown already there"
 	else

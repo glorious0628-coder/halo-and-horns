@@ -6195,16 +6195,61 @@
   "size": "512x473 RGBA",
   "layout": {
    "TextRect": [
+    0.15,
+    0.4,
+    0.7,
+    0.33
+   ],
+   "TextRect_v1": [
     0.248,
     0.393,
     0.506,
     0.355
    ],
-   "TextRect_note": "tools/img2/bark_textrect.py best_rect, 게임 104px(104x96), 상자 약 53x34px. Slime Prince 대사+Golden 대사 모두 12px 이상(SPLOOSH! 12px). 새 대사는 두 줄 이내(예: 'Who's bothering' + 'my kids?!'은 12px로 맞고, 한 줄 'Who's bothering my kids?!'는 12px에서도 넘침 → 줄바꿈 넣기)."
+   "TextRect_note": "2026-10-09 이미지 개발이 흰 안쪽을 다시 재서 넓힘(가운데 높이에서 흰 칸 0.07~0.92). 게임 104px에서 글자 칸 약 73x32px. 업로드 id 98179139339766. v1은 이미지 생성 2의 bark_textrect best_rect 값(53x34px)."
   },
   "preview": "art/review/s2/bark_king_hq_check.jpg (시안 art/review/s2/bark_king_sheet.jpg)",
   "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
   "note": "King Slime 보스 말풍선(로열 블루 젤리 + 빨간 보석 금관 + 흰 털 빨강 망토): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleSlimeKing = Id + Size 512x473 + TextRect(분수). 없으면 기본 BarkBubble. 업로드·연결은 이미지 개발."
+ },
+ "MonFlowerSlime": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/MON_FlowerSlime_HQ.txt",
+  "original": "art/out/s2/mon3/hq/MON_FlowerSlime_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/mon3/MON_FlowerSlime_A_src.png (검수 고름 2026-10-09, 시트 art/review/monsters/new_monsters3_sheet.jpg)",
+  "file": "art/out/s2/mon3/hq/MON_FlowerSlime_HQ_cut.png",
+  "size": "666x721 RGBA",
+  "preview": "art/review/s2/mon3_FlowerSlime_check.jpg, art/review/monsters/new_monsters3_hq_sheet.jpg",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
+  "note": "새 몬스터 Flower Slime(분홍 큐브 젤리 + 꽃 다발). 콘셉트/3D 참조용 — 게임 UI 아님. 기존 슬라임 몸 재사용 + 꽃·색 텍스처. 3D 소품(꽃)은 이미지 생성 1 판단."
+ },
+ "MonSlingshotGoblin": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/MON_SlingshotGoblin_HQ.txt",
+  "original": "art/out/s2/mon3/hq/MON_SlingshotGoblin_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/mon3/MON_SlingshotGoblin_B_src.png (검수 고름 2026-10-09, 시트 art/review/monsters/new_monsters3_sheet.jpg)",
+  "file": "art/out/s2/mon3/hq/MON_SlingshotGoblin_HQ_cut.png",
+  "size": "694x897 RGBA",
+  "preview": "art/review/s2/mon3_SlingshotGoblin_check.jpg, art/review/monsters/new_monsters3_hq_sheet.jpg",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
+  "note": "새 몬스터 Slingshot Goblin(깃털 모자 + 새총). 콘셉트/3D 참조용. 기존 Goblin 뼈대 재사용 + 모자·새총·돌주머니. 옆·뒤 시안 art/out/s2/mon3/MON_SlingshotGoblin_MV_*_src.png."
+ },
+ "MonSkeletonArcher": {
+  "status": "approved",
+  "date": "2026-10-09",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/MON_SkeletonArcher_HQ.txt",
+  "original": "art/out/s2/mon3/hq/MON_SkeletonArcher_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/mon3/MON_SkeletonArcher_A_src.png (검수 고름 2026-10-09, 시트 art/review/monsters/new_monsters3_sheet.jpg)",
+  "file": "art/out/s2/mon3/hq/MON_SkeletonArcher_HQ_cut.png",
+  "size": "625x820 RGBA",
+  "preview": "art/review/s2/mon3_SkeletonArcher_check.jpg, art/review/monsters/new_monsters3_hq_sheet.jpg",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; 밝은·남색·자홍·초록 바탕 확인",
+  "note": "새 몬스터 Skeleton Archer(활 + 허리 화살통). 콘셉트/3D 참조용. 기존 Skeleton 뼈대 재사용 + 활·화살통. 활 시위가 얇은 선이라 3D는 굵게. 옆·뒤 시안 art/out/s2/mon3/MON_SkeletonArcher_MV_*_src.png."
  },
  "BarkBubblePumpkinSlime": {
   "status": "approved",
