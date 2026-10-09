@@ -590,5 +590,15 @@
   "LookHornsPlatinum": "rbxassetid://123042000375413",
   "FxHitSpark": "rbxassetid://122673635344930",
   "FxMagicBurst": "rbxassetid://124326448818980",
-  "ShieldHalo": "rbxassetid://73353334079892"
+  "ShieldHalo": "rbxassetid://73353334079892",
+  "QuestTabIconDaily": "rbxassetid://103609446225386",
+  "QuestTabIconEvent": "rbxassetid://123628411800049",
+  "QuestTabIconFaction": "rbxassetid://111149297376842",
+  "QuestTabIconMain": "rbxassetid://89637504554244",
+  "QuestTabIconSide": "rbxassetid://98437304116587",
+  "ShieldHorns": "rbxassetid://100359282407005",
+  "Tex_LeafyGrass_FF3": "rbxassetid://96379070214723",
+  "W_Boulder_A_Moss_tex": "rbxassetid://72194618881890",
+  "W_Boulder_B_Moss_tex": "rbxassetid://94297883456395",
+  "W_Tree_A_Deep_tex": "rbxassetid://139945359959750"
 }
