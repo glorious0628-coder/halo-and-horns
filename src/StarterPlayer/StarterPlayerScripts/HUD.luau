@@ -215,6 +215,8 @@ local TXT = {
 	QuestLineSummary = "Daily Quests %d/%d",
 	QuestOpenList = "▼",
 	QuestCloseList = "▲",
+	QuestHead = "Quests (%d)", -- 검수 10/08: the head line over the quest lines (the ▼ lives here)
+	QuestDone = "Done!", -- a finished line: its name + Done! (+ the Claim pill where a press claims it)
 	MoreChips = "+%d",
 	TravelLeft = "%s %.1fs",
 	ZoneGuide = "To %s!",
@@ -1600,6 +1602,29 @@ function L.EnglishShortName(e)
 	return (type(e) == "table" and type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or nil
 end
 
+-- 검수 10/08 (the user's photo: a finished line showed only its icon and [Claim], the name was gone): a finished line keeps
+-- its name and says Done!; the Claim pill shows only where a press claims it (PC: every line; phones: line 1 - the block's
+-- tap claims line 1). Returns claimable, pill.
+function L.LineFinish(e, li)
+	local claimable = type(e) == "table" and type(e.Progress) == "number" and type(e.Target) == "number"
+		and e.Progress >= e.Target and e.CanClaim == true
+		and (e.Pinned == true or e.Kind == "Daily" or e.Kind == "Sub") -- the list rows' 받기 rule (refreshQuests)
+	return claimable, claimable and (not IS_TOUCH or li == 1)
+end
+
+-- the line icon's art keys, first found wins: the quest's tab icon (Config.QuestTabs, 이미지 생성 2's QuestTabIcon<tab>:
+-- the kind at a glance), then the monster head of a kill quest, the row type's icon, the scroll; no quest -> the star
+function L.LineIconKeys(e)
+	if type(e) ~= "table" then return { "IconStar" } end
+	local keys = {}
+	local ok, tab = pcall(Config.QuestTab, e.Id, e.Kind)
+	if ok and type(tab) == "string" then table.insert(keys, "QuestTabIcon" .. tab) end
+	if e.Unit then table.insert(keys, "IconMon" .. tostring(e.Unit)) end
+	table.insert(keys, QUEST_ICON[e.Id] or "IconScroll")
+	table.insert(keys, "IconScroll")
+	return keys
+end
+
 -- one quest's identity across redraws (a daily slot gets a new template id when it is claimed)
 function L.EntryKey(e)
 	return tostring(e.Id) .. "|" .. tostring(e.Slot)
@@ -1666,6 +1691,38 @@ function L.BuildQuestLines(root)
 	ui.qline = {}
 	-- phones: the 12 px name-tag floor (the block is 150 px wide); PC: body text
 	local style = IS_TOUCH and "NameTag" or "Body"
+	-- 검수 10/08 (user "퀘스트 창도 이상해": the ▼ beside line 1 did not say what it opens): a head line "Quests (3) ▼" over
+	-- the lines; a press opens the quest window (Q) / the list. The lines sit right under it (LayoutQuestLines)
+	local headRow = UIKit.Create("TextButton", {
+		Name = "QuestHead",
+		Text = "",
+		AutoButtonColor = false,
+		BackgroundTransparency = 1,
+		Size = UDim2.fromOffset(300, 20),
+		Visible = false,
+		ZIndex = 3,
+		Parent = root,
+	}, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 4),
+		}),
+	})
+	headRow.Activated:Connect(function()
+		if toggleQuests then toggleQuests() end
+	end)
+	local headText = UIKit.StyledLabel({
+		Name = "Text",
+		LayoutOrder = 1,
+		Size = UDim2.new(0, 0, 1, 0),
+		AutomaticSize = Enum.AutomaticSize.X,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 4,
+		Parent = headRow,
+	}, style)
+	ui.questHead = { Frame = headRow, Text = headText }
 	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
 	for i = 1, n do
 		-- one row = [icon][text][3/5 | 받기][▼ on line 1, PC]: a horizontal list; the text keeps its own width (shrinks and
@@ -1716,9 +1773,9 @@ function L.BuildQuestLines(root)
 			-- regular weight: bold "Free the supply road" ran 4 px past the room at 11 px
 			if type(UIKit.ApplyFont) == "function" then UIKit.ApplyFont(text, Enum.FontWeight.Regular, "Body") end
 		end
-		-- cut inside a word when it must ('AtEnd' drops whole words: "Free the…" left half the row empty)
+		-- cut inside a word when it must ('AtEnd' drops whole words: "Free the…" left half the row empty). No flex shrink:
+		-- L.FitQuestLine gives the words their width (검수 10/08: shrink squeezed a finished line's name to nothing)
 		text.TextTruncate = Enum.TextTruncate.SplitWord
-		UIKit.Create("UIFlexItem", { FlexMode = Enum.UIFlexMode.Shrink, Parent = text })
 		local nums = UIKit.StyledLabel({
 			Name = "Nums",
 			LayoutOrder = 3,
@@ -1753,25 +1810,23 @@ function L.BuildQuestLines(root)
 		ui.qline[i] = { Row = row, Icon = icon, Text = text, Nums = nums, Claim = claim, ClaimText = claimText, Entry = nil,
 			Band = band }
 	end
-	-- PC: a small ▼ / ▲ button right after line 1 folds the full list (the parchment rows) out under the lines
-	if not IS_TOUCH then
-		local fold = UIKit.Create("TextButton", {
-			Name = "Fold",
-			LayoutOrder = 5,
-			Size = UDim2.new(0, 0, 1, 0),
-			AutomaticSize = Enum.AutomaticSize.X,
-			BackgroundTransparency = 1,
-			AutoButtonColor = false,
-			Text = TXT.QuestOpenList,
-			ZIndex = 5,
-			Parent = ui.qline[1].Row,
-		}, { UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }) })
-		if type(UIKit.StyleText) == "function" then UIKit.StyleText(fold, "Number") end
-		fold.Activated:Connect(function()
-			if toggleQuests then toggleQuests() end
-		end)
-		ui.questFold = fold
-	end
+	-- the ▼ / ▲ on the head line (every device): the quest window, or the old fold-out list without it
+	local fold = UIKit.Create("TextButton", {
+		Name = "Fold",
+		LayoutOrder = 2,
+		Size = UDim2.new(0, 0, 1, 0),
+		AutomaticSize = Enum.AutomaticSize.X,
+		BackgroundTransparency = 1,
+		AutoButtonColor = false,
+		Text = TXT.QuestOpenList,
+		ZIndex = 5,
+		Parent = headRow,
+	}, { UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }) })
+	if type(UIKit.StyleText) == "function" then UIKit.StyleText(fold, "Number") end
+	fold.Activated:Connect(function()
+		if toggleQuests then toggleQuests() end
+	end)
+	ui.questFold = fold
 end
 
 -- line metrics follow the rect (logical units): icon about the line height, text size from it (the style floors keep
@@ -1779,8 +1834,14 @@ end
 function L.LayoutQuestLines(q)
 	local block = ui.questLines
 	if not block then return end
-	block.Position = UDim2.fromOffset(q.X, q.Y)
 	local lh = q.H / 2 -- the layout's quest rect holds two lines; a third one hangs under it (A23-81)
+	local hh = ui.questHead and math.floor(lh * 0.75) or 0 -- 검수 10/08: the head line "Quests (3) ▼" on top
+	if ui.questHead then
+		ui.questHead.Frame.Position = UDim2.fromOffset(q.X, q.Y)
+		ui.questHead.Frame.Size = UDim2.fromOffset(q.W, hh)
+		ui.questHead.Text.TextSize = math.max(12, math.floor(lh * 0.5))
+	end
+	block.Position = UDim2.fromOffset(q.X, q.Y + hh)
 	block.Size = UDim2.fromOffset(q.W, lh * L.QuestLines())
 	local iconS = math.floor(lh * 0.9)
 	local textSize = math.max(12, math.floor(lh * 0.6))
@@ -1813,17 +1874,30 @@ function L.FitQuestLine(l)
 	local used = (l.Icon and l.Icon.Visible) and (l.Icon.AbsoluteSize.X / s + 4) or 0
 	if l.Nums.Visible then used += l.Nums.AbsoluteSize.X / s + 4 end
 	if l.Claim.Visible then used += l.Claim.AbsoluteSize.X / s + 4 end
-	if ui.questFold and ui.questFold.Parent == l.Row then used += ui.questFold.AbsoluteSize.X / s + 4 end
 	local tc = l.Text:FindFirstChildOfClass("UITextSizeConstraint")
 	local size = math.max(l.Text.TextSize, tc and tc.MinTextSize or 0)
 	local text = full
 	local short = string.match(full, "^(.-)%s+·%s")
 	local avail = math.max(10, rowW - used)
-	if short and short ~= "" and type(UIKit.MeasureText) == "function" then
-		local ok, _, w = pcall(UIKit.MeasureText, full, size, l.Text.FontFace, 100000)
-		if ok and type(w) == "number" and w > avail then text = short end
+	local w = nil
+	if type(UIKit.MeasureText) == "function" then
+		local ok, _, mw = pcall(UIKit.MeasureText, full, size, l.Text.FontFace, 100000)
+		if ok and type(mw) == "number" then
+			w = mw
+			if short and short ~= "" and mw > avail then
+				text = short
+				local ok2, _, sw = pcall(UIKit.MeasureText, short, size, l.Text.FontFace, 100000)
+				w = (ok2 and type(sw) == "number") and sw or mw
+			end
+		end
 	end
 	if l.Text.Text ~= text then l.Text.Text = text end
+	-- 검수 10/08: the words' own width = what they need, at most what the row has left (SplitWord cuts the rest); never
+	-- squeezed to nothing by the numbers / Done! / the pill
+	if w then
+		l.Text.AutomaticSize = Enum.AutomaticSize.None
+		l.Text.Size = UDim2.new(0, math.max(1, math.min(math.ceil(w) + 2, math.floor(avail))), 1, 0)
+	end
 end
 
 -- one line: icon (monster head / row type), text, progress or 받기 (CR-M27 / CR-L31 numbers)
@@ -1837,16 +1911,19 @@ function L.SetQuestLine(l, e, label, nums)
 	if e and e.ShortName and label == e.Text then label = e.ShortName end
 	l.FullText = label
 	l.Text.Text = label
-	local claimable = e ~= nil and e.Progress >= e.Target and e.CanClaim
-		and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") -- the list rows' 받기 rule (refreshQuests)
-	l.Claim.Visible = claimable
-	l.Nums.Visible = not claimable and nums ~= nil
-	l.Nums.Text = nums or ""
+	local li = table.find(ui.qline, l) or 0
+	local claimable, pill = L.LineFinish(e, li)
+	l.Claim.Visible = pill
+	l.Nums.Visible = claimable or nums ~= nil
+	l.Nums.Text = claimable and TXT.QuestDone or (nums or "")
 	if l.Icon then
-		local head = e and e.Unit and UIKit.ArtId("IconMon" .. e.Unit)
-		local key = e and (QUEST_ICON[e.Id] or "GlyphQuest") or "Star"
-		l.Icon.Image = head or UIKit.ArtId(key) or UIKit.ArtId("GlyphQuest") or l.Icon.Image
-		l.Icon.ImageColor3 = (not head and key == "Star") and ac("StarGold", Theme.Gold) or COL.White
+		local img = nil
+		for _, key in L.LineIconKeys(e) do
+			img = UIKit.ArtId(key)
+			if img then break end
+		end
+		l.Icon.Image = img or l.Icon.Image
+		l.Icon.ImageColor3 = COL.White -- the art keys are colored (the old "Star" key needed a gold tint)
 	end
 	task.defer(L.FitQuestLine, l) -- after the row's list layout placed the numbers / 받기
 end
@@ -3720,6 +3797,11 @@ refreshQuests = function()
 			L.SetQuestLine(l, e, label, nums)
 		end
 		if ui.questFold then ui.questFold.Text = (questExpanded and not L.HasQuestBook()) and TXT.QuestCloseList or TXT.QuestOpenList end
+		if ui.questHead then
+			-- the head line: how many quests there are (before the first mission is accepted, only that one line shows)
+			ui.questHead.Frame.Visible = #entries > 0 and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
+			ui.questHead.Text.Text = string.format(TXT.QuestHead, #entries)
+		end
 		questState.ShownEntry = entries[shown]
 	end
 
