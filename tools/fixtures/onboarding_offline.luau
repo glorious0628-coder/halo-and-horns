@@ -103,6 +103,7 @@ local function fixture(saved, opts)
 		GetRoot = function() return nil end,
 		FlatDistance = function(a, b) return math.sqrt((a.X - b.X) ^ 2 + (a.Z - b.Z) ^ 2) end,
 		RateLimit = function() return f.RateAllowed end,
+		Signal = { new = signal }, -- A23-88: QuestService.ForgeReached
 		Random = { NextNumber = function(_, a, b) return a and (a + b) / 2 or 0.5 end, NextInteger = function(_, a) return a end } }
 	local net = { Get = function(name)
 		if not f.Remote[name] then f.Remote[name] = { OnServerEvent = signal(), FireClient = function(_, p, payload)
@@ -243,12 +244,9 @@ do
 	check(f.Data.TutorialStep == 3 and f.LastList[1].TutorialStep == 3 and f.LastList[1].Text == TT.Forge
 		and f.LastList[1].ShortName == SN.Forge and f.LastList[1].CanClaim == false and f.LastList[1].ShowProgress == false,
 		"A23-74: a bare-handed accept pins the Forge row (step 3, 'To the Forge', not claimable)")
-	check(f.FxLog[#f.FxLog].Kind == "Travel" and f.FxLog[#f.FxLog].Data.To == "Crossroads" and f.FxLog[#f.FxLog].Data.Spot == "Forge",
-		"A23-74: the forge trip's Fx Travel { To = Crossroads, Spot = Forge }")
+	check(#f.FxLog == 0 and #f.Travels == 0, "A23-88: a bare-handed accept starts no trip (no Fx Travel, nobody moved)")
 	f:Claim(); check(f.Data.BankGold == 0 and f.Data.TutorialStep == 3, "A23-74: the Forge row pays nothing")
-	table.remove(f.Delayed)(); f:Publish()
-	check(#f.Travels == 1 and f.Travels[1].Dest == "Crossroads" and f.Travels[1].Instant == true and f.Data.TutorialStep == 3,
-		"A23-74: the delayed forge move is an instant Travel to the Crossroads (still step 3)")
+	check(#f.Travels == 0 and f.Data.TutorialStep == 3, "A23-88: nobody moved, still step 3")
 	f:ZoneTo("SlimeMeadow"); f:Kill()
 	check(f.Data.TutorialStep == 3 and f.Data.TutorialKills == 0, "A23-74: the meadow before the Forge credits no kill")
 	check(f.Quest.ForgeGift(f.Player) == true and f.Data.TutorialStep == 2,
@@ -425,11 +423,10 @@ for _, step in { 1, 2, 3, 99 } do
 	local f = fixture(saved(step, 4)); f:Request(); f:Accept(); f:Publish()
 	check(f.Data.TutorialStep == step and f.Data.TutorialKills == 4 and #f.Panels == 0,
 		"existing accepted/completed save was reopened or reset")
-	-- A23-74: at the Forge step the request is the forge trip again (the row's tap after a rejoin at home)
+	-- A23-88: no step asks for a trip any more (the row's tap at the Forge step is the client's path light)
 	local trips = 0
-	for _, fx in f.FxLog do if fx.Kind == "Travel" and fx.Data.Spot == "Forge" then trips += 1 end end
-	check(trips == (step == 3 and 1 or 0), "A23-74: RequestTutorial asks for the forge trip at the Forge step only (step "
-		.. step .. ": " .. trips .. ")")
+	for _, fx in f.FxLog do if fx.Kind == "Travel" then trips += 1 end end
+	check(trips == 0, "A23-88: RequestTutorial asks for no trip at any step (step " .. step .. ": " .. trips .. ")")
 end
 do
 	local f = fixture(saved(99, 5)); f:Publish(); check(f.LastList[1].CanClaim == false, "post-reward hint is claimable")
@@ -890,20 +887,20 @@ do
 			"F10-4 the safety net never pays outside step 2 (step " .. step .. ")" .. state(g))
 	end
 end
--- A23-68 #1: [Accept] -> AcceptTravelSeconds -> an instant Travel to the meadow entrance (the client fades on Fx
--- "MeadowTravel"); #4: until the first [Claim] every other quest row is folded
+-- A23-88 (replaces A23-68 #1 / A23-74's trips): nothing moves the player; #4: until the first [Claim] every other quest
+-- row is folded
 do
 	local f = fixture(); f:Choose(); f:Publish(); f:Arm() -- A23-74: the first weapon in hand (no Forge step)
 	local T = f.Config.Tutorial
-	check(T.AcceptTravelSeconds == 3 and T.RespawnInMeadow == true and T.FoldOthers == true,
-		"A23-68 Config.Tutorial: travel 3 s, respawn in the meadow, fold the other rows")
+	check(T.AcceptTravelSeconds == nil and T.RespawnInMeadow == true and T.FoldOthers == true and T.Forge.TravelDelay == nil,
+		"A23-88 Config.Tutorial: no accept trip, respawn in the meadow, fold the other rows")
 	local before = #f.Delayed
 	f:Accept(); f:Publish()
-	check(f.Data.TutorialStep == 1 and #f.Travels == 0, "A23-68 accept: step 1, nobody moved yet")
-	check(#f.FxLog == 1 and f.FxLog[1].Kind == "Travel" and f.FxLog[1].Data.To == "SlimeMeadow" and f.FxLog[1].Data.T == 3
-		and f.FxLog[1].Data.UserId == f.Player.UserId, "A23-68 accept: Fx Travel { UserId, To = SlimeMeadow, T = 3 } (client fade)")
-	check(f.Player:GetAttribute("MoveLockUntil") == 100 + 3 + 1.5, "A23-68 accept: MoveLockUntil = now + T + 1.5 (no swing / skill)")
-	check(#f.Delayed == before + 1, "A23-68 accept: one delayed move")
+	check(f.Data.TutorialStep == 1 and #f.Travels == 0, "A23-88 accept: step 1, nobody moved")
+	check(#f.FxLog == 0 and f.Player:GetAttribute("MoveLockUntil") == nil and #f.Delayed == before,
+		"A23-88 accept: no Fx Travel, no lock, nothing delayed (the pad / the map is the lesson)")
+	check(f.LastList[1].Text == T.Text.Travel and f.LastList[1].ShortName == T.ShortNames.Travel, "A23-88: the row says 'Travel to Squishy Meadow - the glowing pad (or Map)'",
+		tostring(f.LastList[1].Text))
 	local folded, open = 0, 0
 	for _, row in f.LastList do
 		if row.Id == "tutorial" then
@@ -915,50 +912,32 @@ do
 		end
 	end
 	check(folded == f.Config.Quests.Slots and open == 0, "A23-68 #4: before the first claim every other row is folded")
-	local job = table.remove(f.Delayed); job(); f:Publish()
-	check(#f.Travels == 1 and f.Travels[1].Dest == "SlimeMeadow" and f.Travels[1].Instant == true,
-		"A23-68: the delayed move is an instant Travel to the meadow")
-	check(#f.FxLog == 2 and f.FxLog[2].Kind == "TravelDone" and f.FxLog[2].Data.UserId == f.Player.UserId
-		and f.Player:GetAttribute("MoveLockUntil") == 0, "A23-68: after the move Fx TravelDone and the lock is lifted")
-	check(f.Data.TutorialStep == 2 and f.LastList[1].Target == 5, "A23-68: arriving starts the first mission's hunt (step 2)")
+	f:ZoneTo("SlimeMeadow") -- the player's own travel (the pad, Map -> Travel) or a walk lands in the meadow
+	check(f.Data.TutorialStep == 2 and f.LastList[1].Target == 5, "A23-88: arriving in the meadow starts the first mission's hunt (step 2)")
 	for _ = 1, 5 do f:Kill() end
 	f:Claim()
 	check(f.Data.TutorialStep == 99, "A23-68: the first mission is claimed")
 	local stillFolded = 0
 	for _, row in f.LastList do if row.Folded ~= nil then stillFolded += 1 end end
 	check(stillFolded == 0, "A23-68 #4: after the first claim nothing is folded")
-	-- a new character before the move (a KO), a move the zone rules refuse, accepting in the meadow: no move
-	local g = fixture(); g:Choose(); g:Publish(); g:Arm(); g:Accept()
-	g.Character = { Name = "Body2" }
-	table.remove(g.Delayed)()
-	check(#g.Travels == 0 and g.Data.TutorialStep == 1, "A23-68: a respawned character is not moved (the guide beam stays)")
-	check(g.FxLog[#g.FxLog].Kind == "TravelDone" and g.Player:GetAttribute("MoveLockUntil") == 0,
-		"A23-68: no move still ends the fade (TravelDone) and lifts the lock")
-	local h = fixture(); h:Choose(); h:Publish(); h:Arm(); h.TravelOk = false; h:Accept()
-	table.remove(h.Delayed)()
-	check(#h.Travels == 1 and h.Data.TutorialStep == 1, "A23-68: a refused Travel keeps step 1 (walk with the guide beam)")
 	local m = fixture(); m:Choose(); m.Zone = "SlimeMeadow"; m:Publish(); m:Arm()
 	local mBefore = #m.Delayed
 	m:Accept(); m:Publish()
 	check(m.Data.TutorialStep == 2 and #m.Delayed == mBefore and #m.FxLog == 0 and m.Player:GetAttribute("MoveLockUntil") == nil,
 		"A23-68: accepting in the meadow moves nobody (no fade, no lock)")
-	-- A23-74: bare-handed: [Accept] -> the forge trip -> the gift -> Forge.TravelDelay later the meadow trip -> the hunt
+	-- A23-74 / A23-88: bare-handed: [Accept] -> walk to the Forge -> the gift -> travel to the meadow -> the hunt
 	local w = fixture(); w:Choose(); w:Publish()
 	local wBefore = #w.Delayed
 	w:Accept(); w:Publish()
-	check(w.Data.TutorialStep == 3 and #w.Delayed == wBefore + 1 and w.FxLog[1].Data.To == "Crossroads" and w.FxLog[1].Data.T == 3
-		and w.Player:GetAttribute("MoveLockUntil") == 100 + 3 + 1.5, "A23-74: the forge trip uses the same 3 s fade and lock")
-	table.remove(w.Delayed)(); w:Publish()
-	check(w.Zone == "Crossroads" and w.FxLog[2].Kind == "TravelDone" and w.Player:GetAttribute("MoveLockUntil") == 0,
-		"A23-74: at the Crossroads, the fade ends and the lock is lifted")
-	check(w.Quest.ForgeGift(w.Player) == true and w.Data.TutorialStep == 1 and #w.FxLog == 2 and #w.Delayed == wBefore + 1,
-		"A23-74: the gift: step 1, the meadow trip waits Forge.TravelDelay (the Stronger! moment first)")
-	table.remove(w.Delayed)(); w:Publish()
-	check(#w.FxLog == 3 and w.FxLog[3].Kind == "Travel" and w.FxLog[3].Data.To == "SlimeMeadow" and w.FxLog[3].Data.Spot == nil
-		and #w.Delayed == wBefore + 1, "A23-74: then the usual meadow trip (Fx Travel To = SlimeMeadow)")
-	table.remove(w.Delayed)(); w:Publish()
+	check(w.Data.TutorialStep == 3 and #w.Delayed == wBefore and #w.FxLog == 0 and w.Player:GetAttribute("MoveLockUntil") == nil
+		and w.LastList[1].Text == T.Text.Forge, "A23-88: the Forge step: 'Go to Otto's Forge', no trip, no lock")
+	check(w.Quest.ForgeGift(w.Player) == true and w.Data.TutorialStep == 1 and #w.FxLog == 0 and #w.Delayed == wBefore,
+		"A23-88: the gift: step 1, no meadow trip (the Stronger! moment, then the pad lesson)")
+	w:Publish()
+	check(w.LastList[1].Text == T.Text.Travel and w.Data.TutorialStep == 1, "A23-88: the row now teaches the travel pad", tostring(w.LastList[1].Text))
+	w:ZoneTo("SlimeMeadow")
 	check(w.Zone == "SlimeMeadow" and w.Data.TutorialStep == 2 and w.LastList[1].Target == 5,
-		"A23-74: arriving after the gift starts the hunt (step 2)")
+		"A23-88: arriving in the meadow by the pad / the map / a walk starts the hunt (step 2)")
 	-- PlayerService.respawnZoneId: the meadow entrance while the first mission runs, else home
 	local function cut(source, header)
 		local a = assert(string.find(source, header, 1, true), header)

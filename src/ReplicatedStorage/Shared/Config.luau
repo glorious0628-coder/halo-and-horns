@@ -2077,7 +2077,7 @@ Config.Tutorial = {
 	QuestKills = 5,
 	QuestText = "Free the supply road · %d slimes", -- string.format(QuestText, QuestKills)
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
-	ShortNames = { Welcome = "Meet %s", Travel = "Supply road", Quest = "Supply road", Forge = "To the Forge",
+	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
 		Skill = "Skill at Lv %d", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
@@ -2100,20 +2100,15 @@ Config.Tutorial = {
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
 	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
 	AutoClaimSeconds = 60,
-	-- A23-68 (user 2026-10-07, early churn): #1 the guide's [Accept] moves the player to the meadow entrance (GuideZone
-	-- spawn) after AcceptTravelSeconds (the client fades; Fx "MeadowTravel" { In }), 0 / nil = off; RespawnInMeadow:
-	-- while the first mission runs (accepted, not claimed) a KO respawns at the meadow entrance; #4 FoldOthers: until the
-	-- first [Claim] every other quest-list row is sent with Folded = true (kept, only its line is folded)
-	AcceptTravelSeconds = 3,
+	-- A23-68 (user 2026-10-07, early churn): RespawnInMeadow: while the first mission runs (accepted, not claimed) a KO
+	-- respawns at the meadow entrance; #4 FoldOthers: until the first [Claim] every other quest-list row is sent with
+	-- Folded = true (kept, only its line is folded). A23-88 (user 2026-10-09): the server never moves the player by itself
+	-- any more (the old [Accept] -> Forge / meadow trips are gone); walking to the Forge and the travel pad are the lessons.
 	RespawnInMeadow = true,
 	FoldOthers = true,
-	-- A23-74: the Forge step's trips (the same AcceptTravelSeconds countdown and Fx "Travel" / "TravelDone" contract).
-	-- Landing "Anvil" = Back studs in front of the Crossroads anvil (toward the Crossroads spawn), Lift studs above the
-	-- anvil's bottom, facing it, so its prompt (12 studs) is up at once; "Spawn" = the Crossroads spawn only (game dev 1
-	-- can switch if the landing looks wrong in the live map). Near = a player this close to the anvil is not moved.
-	-- TravelDelay = seconds after the gift before the meadow trip starts (the "Stronger!" moment plays first);
-	-- nil / negative = no automatic meadow trip (the step 1 row and beam still lead there)
-	Forge = { Landing = "Anvil", Back = 8, Lift = 4, Near = 24, TravelDelay = 3 },
+	-- A23-88: Near = how close to the Crossroads anvil counts as "arrived" (the walked_to_forge metric: Custom event
+	-- ForgeWalk, the seconds since [I'm In!]); the step itself ends when the blacksmith hands over the first weapon.
+	Forge = { Near = 24 },
 	WelcomeRate = 0.5,
 	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
 	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
@@ -2151,13 +2146,13 @@ Config.Tutorial = {
 		-- A23-40: the guide is met by tapping this quest line (the menu moved to the top-right fold)
 		-- 3rd idea round #3: %s = the faction guide's name (Welcome[faction].Name), there is no guide NPC to look for
 		Welcome = "Tap here: first quest from %s", WelcomeEn = "Tap here: first quest from %s",
-		Travel = "Free the supply road · Menu > Travel > Squishy Meadow",
+		Travel = "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)", -- A23-88
 		QuestStart = "First mission: %s! (Reward: %s gold)",
 		QuestReady = "Supply road mission done! Press [Claim].",
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
-		Forge = "Get your first weapon · Crossroads Forge",
-		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! Now go free the supply road.",
+		Forge = "Go to Otto's Forge", -- A23-88: walking; Otto hands over the first weapon
+		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next.",
 		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
 		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
 		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
