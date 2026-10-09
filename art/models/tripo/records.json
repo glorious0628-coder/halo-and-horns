@@ -6385,5 +6385,23 @@
     "build/import_all/5_fifth/E9_GoblinGateOpen.glb (fit max 48)"
    ]
   }
+ ],
+ "Halo_Fountain_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD single image (front only), H3.1 (ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8cfd830f-c22b-433e-84ca-480c540bafd4",
+   "image": "art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png",
+   "at": "2026-10-09 21:0x",
+   "balance_after": 24950,
+   "file": "art/models/tripo/web/Halo_Fountain_HD_src.glb",
+   "note": "빛 마을 3단 분수 (halo_town_plan). 시안과 앞·뒤·게임 시점 나란히 비교 art/review/world/halo_new/Fountain_compare.jpg: 형태·금띠·금공·물 모두 시안과 맞음. 이미지는 로컬 서버→window.name으로 Tripo 탭에 넘김(Adobe 없이).",
+   "derived": [
+    "art/models/tripo/web/Halo_Fountain_HD_plain.glb (--rotz -90)"
+   ]
+  }
  ]
 }
