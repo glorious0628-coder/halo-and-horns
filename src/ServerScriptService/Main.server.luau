@@ -15,6 +15,8 @@ local INIT_ORDER = {
 	"ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
+	"FinisherService", -- 게임성 개발 2: the field bosses' finisher card (points: Deeds)
+	"FieldBossService", -- 게임성 개발 2: the year-round field bosses (the King Slime, ...)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (the error record, the live switchboard)
 }
@@ -29,6 +31,7 @@ local START_ORDER = {
 	"SkillService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
+	"FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (before PlayerService too)
 	"PlayerService",
@@ -65,6 +68,7 @@ end
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Level", 20)
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
+--   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill); SlimeKing / any Config.FieldBosses key (that boss now)
 --   A23-77: AttendNext (today's attendance claim opens again)
 --   A23-86: Card (a choice card of that Config.ChoiceCard.Kinds id opens now)
 --   ops: Errors (the last server errors; value "stored" / "live" reads the saved document)
@@ -149,6 +153,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.MonetizationService.AddTickets(player, "Faction", value)
 		elseif key == "Absent" then
 			S.QuestService.DebugSimulateAbsence(player, value)
+		elseif key == "Finisher" then -- Studio test aid: a King Slime finisher card without a kill (FinisherService)
+			return S.FinisherService.DebugOffer(player) and "ok" or "a card is open"
 		elseif key == "Errors" then -- ops: the last server errors (value nil = this server, "stored" = the saved document, "live" = the real game's)
 			return S.ServerErrorService.Debug(value ~= nil and tostring(value) or nil)
 		elseif key == "Card" then -- A23-86 Studio test aid: a choice card of that kind (Config.ChoiceCard.Kinds) opens now
@@ -157,6 +163,8 @@ if game:GetService("RunService"):IsStudio() then
 			return S.AttendanceService.DebugNextDay(player)
 		elseif key == "Goose" then
 			S.GooseService.DebugStart()
+		elseif type(Config.FieldBosses) == "table" and type(Config.FieldBosses[key]) == "table" and key ~= "Order" then
+			return S.FieldBossService.DebugSpawn(key) -- Studio test aid: that field boss appears now (SlimeKing, ...)
 		elseif key == "PumpkinKing" or key == "GhostKing" then -- Studio test aid: that Halloween miniboss appears now
 			return S.HalloweenService.DebugSpawn(key)
 		elseif key == "Faction" then

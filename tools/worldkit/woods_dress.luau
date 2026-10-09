@@ -165,7 +165,7 @@ local T = {
 	Inset = 6, -- nothing closer than this to the zone edge (the PvP border sits there)
 	RoadHalf = 15, -- crown road z +-9: plants keep this clear
 	PathPad = 1.5, GiantClear = 30, BossClear = 24, ArrivalClear = 20,
-	MinY = -1.2, MaxY = 8, MaxSlope = 0.62, -- ground normal Y at least this (about 52 deg)
+	MinY = -1.2, MaxY = 22, MaxSlope = 0.62, -- ground normal Y at least this (about 52 deg)
 	CellSize = 64, PlayerOnlyGroup = "DecorPlayerOnly",
 	Moss = { W_Boulder_A = "rbxassetid://72194618881890", W_Boulder_B = "rbxassetid://94297883456395" },
 	TreeDeep = "rbxassetid://139945359959750",
@@ -189,14 +189,20 @@ local KIND = {
 	Kit_W_CampFence = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.2, Coll = "player" },
 	Kit_W_LogStool = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.1 },
 	Kit_W_Campfire = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0 },
+	-- the campfire from the picked concept HQ_Woods_Campfire_FB2 (stone ring + logs + a baked flame, 4.0 x 3.9 x 3.3): it is the
+	-- kit's campfire (batch E); the Roblox Fire / light on top stay woods_kit_place's CampfireTemp
+	Kit_W_Campfire_Fire = { Tris = 6000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0 },
 	Kit_W_Awning = { Tris = 3000, S = { 1.1, 1.1 }, Ground = GRASS, Tilt = 0.1, Coll = "player" },
 	Kit_W_Banner = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.1 },
 	Kit_W_LanternPost = { Tris = 3000, S = { 1.0, 1.0 }, Ground = GRASS, Tilt = 0.1, Coll = "player" },
+	Kit_M_FlowersA = { Tris = 600, S = { 1.2, 1.7 }, Ground = GRASS, Tilt = 0.6 },
+	Kit_M_FlowersB = { Tris = 600, S = { 1.2, 1.7 }, Ground = GRASS, Tilt = 0.6 },
 	Kit_W_StepStones = { Tris = 3000, S = { 1.1, 1.3 }, Ground = ROCKY, Tilt = 0.7 },
 }
 
 ------------------------------------------------------------------ helpers
-local function kitModel(name) return kitFolder:FindFirstChild(name) end
+local LOD = { Kit_M_FlowersA = true, Kit_M_FlowersB = true } -- cheap meadow flower tufts (about 600 triangles) live as <name>_LOD
+local function kitModel(name) return (LOD[name] and kitFolder:FindFirstChild(name .. "_LOD")) or kitFolder:FindFirstChild(name) end
 local SIZE = {}
 local function info(name) -- { radius at scale 1, parts }
 	local s = SIZE[name]
@@ -414,7 +420,7 @@ for i, c in CAMPS do
 		local p = c.Pos + Vector3.new(math.cos(a) * 6.2, 0, math.sin(a) * 6.2)
 		put("Kit_W_LogStool", p.X, p.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0.4, Yaw = yawToward(p, c.Pos) + rng:NextNumber(-12, 12), S = 1 })
 	end
-	put("Kit_W_Campfire", c.Pos.X, c.Pos.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0, Yaw = i * 40, S = 1, NoSpace = true, NoReserve = true })
+	put(kitModel("Kit_W_Campfire_Fire") and "Kit_W_Campfire_Fire" or "Kit_W_Campfire", c.Pos.X, c.Pos.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0, Yaw = i * 40, S = 1, NoSpace = true, NoReserve = true })
 	local aw = at(10, -9.5)
 	put("Kit_W_Awning", aw.X, aw.Z, { Camp = true, AnyGround = true, Paths = true, Road = true, Gap = 0.3, Yaw = yawToward(aw, c.Pos), S = 1.1 })
 	for _, s in { 1, -1 } do
@@ -520,15 +526,17 @@ end
 ------------------------------------------------------------------ tier 4: undergrowth (jittered grid, weighted)
 local function weight(x, z)
 	local e = edgeDist(x, z)
-	local w = 0.28
-	if e < 60 then w += 0.62 * (1 - e / 60) end -- thicker on the rim: the forest wall
+	local w = 0.05 -- the fighting ground stays open: the undergrowth is pushed to the rim, the paths, the camps and the water
+	if e < 60 then w += 0.65 * (1 - e / 60) end -- thicker on the rim: the forest wall
 	local dp = math.huge
 	for _, p in PATHS do dp = math.min(dp, polyDist(p.Pts, x, z) - p.W / 2) end
-	if dp < 16 then w += 0.30 * (1 - dp / 16) end -- along the dirt paths
+	if dp < 18 then w += 0.55 * (1 - dp / 18) end -- along the dirt paths
 	for _, c in PLAN.camp_clearings do
 		local d = flat({ X = x, Z = z }, { X = c.c[1], Z = c.c[2] }) - c.r
-		if d > 0 and d < 14 then w += 0.35 * (1 - d / 14) end -- round the camps
+		if d > 0 and d < 18 then w += 0.55 * (1 - d / 18) end -- round the camps
 	end
+	local dc = polyDist(CREEK, x, z)
+	if dc < 26 then w += 0.55 * (1 - dc / 26) end -- the creek and the falls
 	for _, q in trees do
 		local d = flat({ X = x, Z = z }, { X = q[1], Z = q[2] }) - q[3]
 		if d > 0 and d < 8 then w += 0.30 * (1 - d / 8) end -- at tree feet
@@ -540,6 +548,7 @@ local LAYERS = { -- Max = pieces per layer (the phone budget, in the order of wh
 	{ Name = "rock", Kinds = { "Kit_W_MossRock" }, Cell = 24, Gap = 0.9, Scale = 0.6, Max = 24 },
 	{ Name = "bush", Kinds = { "Kit_W_BushA", "Kit_W_BushB" }, Cell = 15, Gap = 0.8, Max = 80 },
 	{ Name = "fern", Kinds = { "Kit_W_Fern" }, Cell = 10, Gap = 0.7, Max = 50 },
+	{ Name = "flower", Kinds = { "Kit_M_FlowersA", "Kit_M_FlowersB" }, Cell = 9, Gap = 0.6, Max = 70 },
 }
 for _, L in LAYERS do
 	local cand = {}
@@ -561,6 +570,24 @@ for _, L in LAYERS do
 	for _, c in cand do
 		if n >= L.Max then break end
 		if put(c[3], c[1], c[2], { Gap = L.Gap }) then n += 1 end
+	end
+end
+
+-- glowing eyes in the undergrowth (the concept's yellow eyes): up to 8 BushB between 18 and 90 studs from the crown road turn
+-- toward the road and get two small amber Neon eyes in the build (no new light). Props never get a face of their own: these
+-- are the same kind of eyes as the existing DarkBush / RedEye bushes.
+do
+	local eligible = {}
+	for _, e in plan do
+		local dz = math.abs(e.Z - KEEP.crown_road_z)
+		if e.Name == "Kit_W_BushB" and dz > 18 and dz < 90 then table.insert(eligible, e) end
+	end
+	local step = math.max(1, #eligible // 8)
+	for i = 1, #eligible, step do
+		local e = eligible[i]
+		if i // step >= 8 then break end
+		e.Eyes = true
+		e.Yaw = yawToward(Vector3.new(e.X, 0, e.Z), Vector3.new(e.X, 0, KEEP.crown_road_z))
 	end
 end
 
@@ -660,6 +687,20 @@ for _, e in plan do
 		end
 	end
 	if hard then m:SetAttribute("DecorPlayerOnly", true) end
+	if e.Eyes then
+		local inf = info(e.Name)
+		for _, sd in { -1, 1 } do
+			local eye = Instance.new("Part")
+			eye.Name = "GlowEye"
+			eye.Shape = Enum.PartType.Ball
+			eye.Size = Vector3.new(0.8, 0.8, 0.8) * math.max(1, e.S * 0.6)
+			eye.Color = T.EyeColor
+			eye.Material = Enum.Material.Neon
+			eye.Anchored, eye.CanCollide, eye.CanQuery, eye.CanTouch, eye.CastShadow = true, false, false, false, false
+			eye.CFrame = m:GetPivot() * CFrame.new(sd * 0.5 * e.S, inf.H * 0.5 * e.S, -inf.R * 0.7 * e.S)
+			eye.Parent = m
+		end
+	end
 	m.Parent = cell(e.X, e.Z)
 end
 root.Parent = decor

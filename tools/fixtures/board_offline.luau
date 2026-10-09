@@ -211,7 +211,7 @@ runGroup("take and finish", function()
 		show(after))
 	local rows = w.Board.JobRows(p, d)
 	check(#rows == 1 and rows[1].Kind == "Job" and rows[1].Text == "Slime Prince 0/2" and rows[1].CanClaim == false and rows[1].Job.Side == "Kind",
-		"the quest list row: 'Slime Prince 0/2', Kind Job, no [Claim]", show(rows[1]))
+		"the quest list row: 'Slime Prince 0/2' (A23-84), Kind Job, no [Claim]", show(rows[1]))
 	local j3short = nil
 	for _, j in B0.Jobs do if j.Id == "J3" then j3short = j.ShortName end end
 	check(type(j3short) == "string" and #j3short <= 14 and rows[1].ShortName == j3short,

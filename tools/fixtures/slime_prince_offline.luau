@@ -61,6 +61,10 @@ runGroup("no King Slime left", function()
 		local low = string.gsub(string.lower(e.Text), "king slime hill", "")
 		if string.find(low, "king slime", 1, true) or string.find(low, "the king who ate", 1, true) then
 			local allowed = string.find(e.Path, "SlimeKing", 1, true) ~= nil
+			-- the finisher card is the King Slime boss's only (Config.Finisher.Kinds = { SlimeKing }, 게임성 개발 2)
+			if string.find(e.Path, "Finisher.Text.", 1, true) and C.Finisher.Kinds.SlimeKing and not C.Finisher.Kinds.BigSlime then
+				allowed = true
+			end
 			for id in kingQuests do
 				if string.find(e.Path, ".Defs." .. id .. ".", 1, true) then allowed = true end
 			end

@@ -153,7 +153,7 @@ local G = {
 	R = 4, Lift = 2, WaterTop = -1.2,
 	X0 = 706, X1 = 1194, Z0 = -264, Z1 = 264, Y0 = -28, Y1 = 44, Chunk = 16,
 	EdgeFlat = 8, -- the outer studs of the zone stay as they are (PvP border stakes / ditch)
-	Inset = 25, GroundMin = -2, GroundMax = 6, -- MonsterService SpawnInset, GROUND_MIN_Y / GROUND_MAX_Y
+	Inset = 25, GroundMin = -2, GroundMax = 26, -- (tiers: was 6) MonsterService SpawnInset, GROUND_MIN_Y / GROUND_MAX_Y
 	RockSlope = 35, -- degrees: steeper ground shows Rock
 	Base = "LeafyGrass",
 }
@@ -163,12 +163,19 @@ G.CX, G.CZ = math.ceil(G.NX / G.Chunk), math.ceil(G.NZ / G.Chunk)
 local LAND = PLAN.land
 local KEEP = PLAN.keep
 local ROLL = { Amp = 1.3, Scale = 42 }
-local RIM = { H0 = 3.0, H1 = 4.5, Flat = 8, Peak = 2, Fade = 8 } -- edge distance: flat until EdgeFlat, up over Flat, top to Peak, down over Fade
-local CAP = 5.8 -- soft cap of the hunting ground (MonsterService GROUND_MAX_Y 6)
+local RIM = { H0 = 4.5, H1 = 6.5, Flat = 10, Peak = 2, Fade = 10 } -- wall on top of the terrace: down by e 32 so the hunting ground (e >= 25) keeps p95 15 deg, max 44 (monster limit 46)
+local CAP = 5.8 -- soft cap of the relief on top of a terrace (the terraces add TIERS rise)
 local FALLS = { Lh = 5.5, P0 = { 1170, -238 }, N = { -0.7225, 0.6914 }, Width = 8, Half = 14, Fade = 8, Cliff = 4, PoolA = 12, PoolR = 9,
 	PoolDepth = 2.4, Sheet = 1.8 }
 local CREEK = { Sand = 2.0, Bank = 7 }
 local PAINT = { Path = "Pavement", Water = "Sand" }
+-- terraces (검수 2026-10-09 "숲도 계단 층"): offset by |z| from the crown road, like tools/worldkit/meadow_terrain.luau pass 4.
+-- Bands sit between the quest spots, so every camp / clearing / the giant tree / the boss ring stands flat on a terrace:
+-- corridor (0) -> +5 over |z| 14..50 (camps 1, 2, boss, giant, camp 3's trail) -> +5 more south of z 160..200 / north of -185..-220.
+-- They fade at the arrival, the PvP edge, and away from the creek / plunge pool (the water keeps its shape; the land climbs
+-- away from it, a deeper valley). TIERS.On = false = the flat woods.
+local TIERS = { On = true, A = { From = 14, Len = 36, Rise = 5 }, BS = { From = 160, Len = 40, Rise = 5 }, BN = { From = 185, Len = 35, Rise = 5 },
+	Edge = { 8, 16 }, Creek = { 8, 34 }, Arrival = { 40, 95 } }
 
 ------------------------------------------------------------------ math helpers
 local function clamp01(t) return t < 0 and 0 or (t > 1 and 1 or t) end
@@ -252,6 +259,23 @@ local function flatMask(x, z) -- 0 = exactly flat (road / spots / paths / creek 
 	return m
 end
 
+local function ease(t) t = clamp01(t) return 0.5 * t + 0.5 * smooth(t) end
+local function tierOf(x, z, e) -- the terrace offset (0 in the corridor, at the arrival, on the edge and at the water)
+	if not TIERS.On then return 0 end
+	local az = math.abs(z)
+	local B = z < 0 and TIERS.BN or TIERS.BS
+	local t = TIERS.A.Rise * ease((az - TIERS.A.From) / TIERS.A.Len) + B.Rise * ease((az - B.From) / B.Len)
+	if t <= 0 then return 0 end
+	t *= smooth((e - TIERS.Edge[1]) / TIERS.Edge[2])
+	local ra = math.sqrt((x - KEEP.arrival[1]) ^ 2 + (z - KEEP.arrival[2]) ^ 2)
+	t *= smooth((ra - TIERS.Arrival[1]) / (TIERS.Arrival[2] - TIERS.Arrival[1]))
+	local dc, u = nearest(CREEKL, x, z)
+	t *= smooth((dc - lerp(CW0, CW1, u) - TIERS.Creek[1]) / TIERS.Creek[2])
+	local pcx, pcz = FALLS.P0[1] + FN.x * FALLS.PoolA, FALLS.P0[2] + FN.z * FALLS.PoolA
+	t *= smooth((math.sqrt((x - pcx) ^ 2 + (z - pcz) ^ 2) - FALLS.PoolR - TIERS.Creek[1]) / TIERS.Creek[2])
+	return t
+end
+
 local function relief(x, z, e) -- free relief before the mask: rolling + mounds + rim
 	local r = ROLL.Amp * (0.5 + 0.5 * math.noise(x / ROLL.Scale + 0.31, z / ROLL.Scale + 0.77, 3.7))
 	r += 0.35 * math.noise(x / 17 + 0.13, z / 17 + 0.41, 9.1)
@@ -298,7 +322,7 @@ local function column(x, z)
 	local inZone = x >= LAND.MinX and x <= LAND.MaxX and z >= LAND.MinZ and z <= LAND.MaxZ
 	if not inZone then return nil end
 	local e = math.min(x - LAND.MinX, LAND.MaxX - x, z - LAND.MinZ, LAND.MaxZ - z)
-	local V = relief(x, z, e) * flatMask(x, z)
+	local V = relief(x, z, e) * flatMask(x, z) + tierOf(x, z, e)
 	local lh = ledge(x, z)
 	local tag = nil
 	if lh > V then V, tag = lh, (lh > 0.5 and "rocky" or nil) end
@@ -428,7 +452,7 @@ if not STUDIO then
 		for i = 1, G.NX do
 			for k = 1, G.NZ do
 				local idx = colIdx(i, k)
-				print(string.format("C,%d,%d,%.2f,%s,%s", colX(i), colZ(k), P.V[idx], P.M[idx], tostring(P.Tag[idx])))
+				print(string.format("C,%d,%d,%.2f,%s,%s,%s", colX(i), colZ(k), P.V[idx], P.W[idx] and string.format("%.1f", P.W[idx]) or "-", P.M[idx], tostring(P.Tag[idx])))
 			end
 		end
 	end

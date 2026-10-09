@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 38,
+  "checks": 50,
   "failedChecks": [],
   "static": [
     {
@@ -13,9 +13,9 @@
     }
   ],
   "mutations": {
-    "total": 21,
-    "applied": 21,
-    "caught": 21,
+    "total": 25,
+    "applied": 25,
+    "caught": 25,
     "results": [
       {
         "mutation": "other players' Travel shows",
@@ -23,7 +23,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL another player's Travel shows nothing :: ",
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000017f083db080 closed 2"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x0000023cf3944c50 closed 2"
         ]
       },
       {
@@ -31,7 +31,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x000001d273e23030 closed 0"
+          "CHECK_FAIL my Travel builds the fade and closes the guide window :: table: 0x00000267325a2cc0 closed 0"
         ]
       },
       {
@@ -50,7 +50,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL TravelDone lifts the black at once :: 0",
-          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000002d1e25e7640",
+          "CHECK_FAIL the fade gui goes after the lift :: table: 0x000001ea82ef6c90",
           "CHECK_FAIL TravelDone turns the camera behind my back (same distance and height) :: nil"
         ]
       },
@@ -161,6 +161,43 @@
         ]
       },
       {
+        "mutation": "PvP cards for the Artisan Guild too",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the Artisan Guild (can't be attacked): no cards :: 4"
+        ]
+      },
+      {
+        "mutation": "PvP cards every visit",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a later visit (saved flag): no cards :: 4",
+          "CHECK_FAIL the Artisan Guild (can't be attacked): no cards :: 4"
+        ]
+      },
+      {
+        "mutation": "PvP cards: the flag never saved",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the last card closed -> PvPCards saved :: 0",
+          "CHECK_FAIL done: nothing more :: 3",
+          "CHECK_FAIL a later visit (saved flag): no cards :: 4"
+        ]
+      },
+      {
+        "mutation": "PvP cards: only the first",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL card 1 closed -> card 2 :: 1",
+          "CHECK_FAIL card 2 closed -> card 3 (the bank) :: 1",
+          "CHECK_FAIL the last card closed -> PvPCards saved :: 0"
+        ]
+      },
+      {
         "mutation": "the marker at once (검수 10/09: only after 45 s)",
         "applied": true,
         "caught": true,
@@ -191,7 +228,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x000002576a8a3a60"
+          "CHECK_FAIL leaving the meadow clears the marker :: table: 0x000001b05ec2e6f0"
         ]
       },
       {
@@ -199,17 +236,17 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL my first kill clears the marker :: table: 0x000002afe2990a70"
+          "CHECK_FAIL my first kill clears the marker :: table: 0x000001c00ed50670"
         ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "8e21d34ce37dd634eef966ec3989b86990e498a04ba852739b304a26c3ea938e",
-    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "8939cd1b4445306009091a7ab402b7613382c19161c477e6d7b3ae21a17f46c7",
+    "src/ReplicatedStorage/Shared/Config.luau": "18083d4e90fd6f9bafe127cf23543ff4b8c93274bbad813ef5b057b9758dde5b",
+    "src/StarterPlayer/StarterPlayerScripts/FirstSteps.luau": "dfdfc1d806c804a78378c3c91d632a0d756636226a80371b48318995a8326d73",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
   },
-  "fixtureSHA256": "95bf3566b51ab26dc79eddfc5d95d78ba541c6c09ae82577f9d1dadba6100238",
+  "fixtureSHA256": "8cc1734abe2a5790c9bb795772570be7a55b0a47965662acf52b96765fde9e6e",
   "studioCalls": 0,
   "contract": "A23-68 first-minutes helpers offline test (FirstSteps.luau; user 2026-10-07 \"ㅇㅇ 모두 좋다 구현하자\").\n#1 travel fade (dev2 324055a contract: Fx \"Travel\" { UserId, To, T } -> the server moves me T s later -> always\nFx \"TravelDone\" { UserId }): only my Travel counts; the guide window closes; 'Off to Squishy Meadow!  3' / 2 / 1;\nblack from T - Fade; TravelDone lifts it at once, else T + MaxExtra; the gui goes afterwards; a newer Travel keeps its\nown timing. #2 hints in place during the first mission (TutorialStep 1..98): Idle s within my reach of a monster\nwithout a swing of mine -> C.HUD.Hint(\"Attack\") once (my swing restarts the wait, others' swings do not); in the meadow\nbefore my first kill a marker over the nearest monster (my own slime first) via C.QuestMarker.Focus, not re-sent while\nunchanged, cleared outside the meadow; my first kill (Reward) clears it (the Q hint moved to the Lv5 learn moment,\nA23-71: no hint after the kill); nothing before / after the first mission. Static: ClientMain loads FirstSteps before SkillBar / Audio.\nRuns the real FirstSteps.luau + Config.luau in tools/fixtures/first_steps_offline.luau.",
   "limitations": "The hint looks (HUD.Hint, QuestMarker.Focus) are image dev's; how the fade and the hints feel with the real server move is a Studio check (accept -> meadow)."

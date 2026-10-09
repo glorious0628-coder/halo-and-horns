@@ -2072,6 +2072,15 @@ function L.FitQuestLine(l)
 		l.Text.AutomaticSize = Enum.AutomaticSize.None
 		l.Text.Size = UDim2.new(0, math.max(1, math.min(math.ceil(w) + 2, math.floor(avail))), 1, 0)
 	end
+	-- 검수 10/09 (the user's PC capture: wide plates with the words cut): a re-fit (the TextFits signal, a font that loaded
+	-- late) changes the words' width after the plates were laid out - lay them out again on the next frame
+	if not L.PlatesQueued then
+		L.PlatesQueued = true
+		task.delay(0, function()
+			L.PlatesQueued = false
+			L.LayoutQuestPlates()
+		end)
+	end
 end
 
 -- one line: icon (monster head / row type), text, progress or 받기 (CR-M27 / CR-L31 numbers)

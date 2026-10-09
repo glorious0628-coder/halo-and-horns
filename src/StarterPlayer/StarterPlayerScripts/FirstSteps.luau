@@ -252,7 +252,49 @@ function FirstSteps.Init(registry)
 	C = registry
 end
 
+----------------------------------------------------------------- 검수 10/09 (system review ②) the first PvP zone
+-- the first time I walk into a PvP zone (not the Artisan Guild: nobody can fight it), three calm cards one after the
+-- other (PauseCard "Tip", each waits for a calm screen); after the last one the Settings flag PvPCards (saved with my
+-- account) keeps them from coming again. Shown only from the place: no button sends me anywhere
+local PVP = { Title = "PvP zone", Why = "PvPIntro", Step = 0, Cards = {
+	"Other players can fight you here.",
+	"If you get knocked out, you can lose some pocket gold.",
+	"Keep gold safe in the bank! Walk into any town and your pocket gold is saved.",
+} }
+
+function PVP.Check()
+	if PVP.Step > 0 or attr("ZonePvP", false) ~= true or attr("Faction", "") == "Neutral" then return end
+	local st = C and C.Settings
+	if type(st) ~= "table" or type(st.Get) ~= "function" or (type(st.Loaded) == "function" and not st.Loaded()) then return end
+	local ok, seen = pcall(st.Get, "PvPCards")
+	if not ok or seen == true then return end
+	PVP.Step = 1
+	PVP.Show()
+end
+
+function PVP.Show()
+	call("PauseCard", "Show", "Tip", { Title = PVP.Title, Text = PVP.Cards[PVP.Step], Why = PVP.Why })
+end
+
+-- a card of mine was closed (PauseCard.Shown: kind, button, why): the next one, or the flag after the last
+function PVP.OnShown(_kind, _button, why)
+	if why ~= PVP.Why or PVP.Step < 1 or PVP.Step > #PVP.Cards then return end
+	if PVP.Step < #PVP.Cards then
+		PVP.Step += 1
+		PVP.Show()
+	else
+		PVP.Step = #PVP.Cards + 1
+		call("Settings", "Set", "PvPCards", true)
+	end
+end
+
 function FirstSteps.Start()
+	local okPvp, errPvp = pcall(function()
+		LocalPlayer:GetAttributeChangedSignal("ZonePvP"):Connect(PVP.Check)
+		local card = C and C.PauseCard
+		if type(card) == "table" and type(card.Shown) == "table" then card.Shown:Connect(PVP.OnShown) end
+	end)
+	if not okPvp then warn("[FirstSteps] PvP cards hookup failed: " .. tostring(errPvp)) end
 	task.spawn(function()
 		local ok, err = pcall(function() Net.Get("Fx").OnClientEvent:Connect(FirstSteps.OnFx) end)
 		if not ok then warn("[FirstSteps] Fx hookup failed: " .. tostring(err)) end
@@ -267,6 +309,6 @@ function FirstSteps.Start()
 end
 
 -- test aids
-FirstSteps.Travel, FirstSteps.Hint, FirstSteps.Text = TRAVEL, HINT, TXT
+FirstSteps.Travel, FirstSteps.Hint, FirstSteps.Text, FirstSteps.PvP = TRAVEL, HINT, TXT, PVP
 
 return FirstSteps

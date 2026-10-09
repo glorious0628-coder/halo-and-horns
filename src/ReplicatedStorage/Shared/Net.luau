@@ -44,6 +44,8 @@ Net.Names = {
 	"ClientMetric", -- A23-79: (id: Config.Analytics.ClientMetrics, arg?) what only the client sees (TelemetryService, metrics)
 	"GoToFriend", -- A23-79 #3: (userId) travel to a Roblox friend on this server (InviteService; the travel rules apply)
 	"CandyTrade", -- A23-79 #4: (jar id: Config.CandyJar.Trades[].Id) candy for a stat-free title (DiaryService)
+	-- 게임성 개발 2 (2026-10-08), client -> server:
+	"FinisherPick", -- (card id: number, "Help" | "Tickle") the King Slime finisher card (FinisherService)
 	"CardAction", -- A23-86 CC: (card id: number, "Good" | "Evil") the open choice card (ChoiceCard)
 	"Commission", -- A23-86 H: (tier: integer) order the golden / crystal / spirit weapon at the Forge (CommissionService)
 }
@@ -70,6 +72,10 @@ Net.GameStateDefaults = {
 	-- HalloweenService (Config.Halloween): server time (Util.Now) of the next Pumpkin King, 0 = season off / none
 	PumpkinKingNextAt = 0, PumpkinKingActive = false, PumpkinKingEndsAt = 0,
 	GhostKingNextAt = 0, GhostKingActive = false, GhostKingEndsAt = 0, -- A23-45: the HauntedHollow miniboss
+	-- FieldBossService (게임성 개발 2): per Config.FieldBosses key; the King Slime boss of the meadow (NextAt in the past = due, waiting for
+	-- a hunter in the meadow; 0 = off)
+	SlimeKingNextAt = 0, SlimeKingActive = false, SlimeKingEndsAt = 0,
+	ClatterNextAt = 0, ClatterActive = false, ClatterEndsAt = 0, -- J Captain Clatter (the ruins)
 	-- RankingService (BB10): the current ranking week (Config.WeekIndex) and when it ends (Monday 00:00 KST, os.time)
 	RankWeekId = 0, RankWeekEndsAt = 0,
 	-- SettingsService (BB3 footer): false while this server runs without a DataStore (DataService memory mode)
