@@ -577,15 +577,17 @@ end
 -- toward the road and get two small amber Neon eyes in the build (no new light). Props never get a face of their own: these
 -- are the same kind of eyes as the existing DarkBush / RedEye bushes.
 do
-	local n = 0
+	local eligible = {}
 	for _, e in plan do
-		if n >= 8 then break end
 		local dz = math.abs(e.Z - KEEP.crown_road_z)
-		if e.Name == "Kit_W_BushB" and dz > 18 and dz < 90 and (n * 7 + math.floor(e.X)) % 3 == 0 then
-			e.Eyes = true
-			e.Yaw = yawToward(Vector3.new(e.X, 0, e.Z), Vector3.new(e.X, 0, KEEP.crown_road_z))
-			n += 1
-		end
+		if e.Name == "Kit_W_BushB" and dz > 18 and dz < 90 then table.insert(eligible, e) end
+	end
+	local step = math.max(1, #eligible // 8)
+	for i = 1, #eligible, step do
+		local e = eligible[i]
+		if i // step >= 8 then break end
+		e.Eyes = true
+		e.Yaw = yawToward(Vector3.new(e.X, 0, e.Z), Vector3.new(e.X, 0, KEEP.crown_road_z))
 	end
 end
 
