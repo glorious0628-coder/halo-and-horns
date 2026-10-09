@@ -139,3 +139,5 @@
 ## 배경 음악 (A23-100, 소리 만들기)
 - 2026-10-09 빛 마을 1차 시험: Firefly 음악 만들기(앱 브라우저, 사용자 Adobe 로그인), 1회 20크레딧(1:00, 후보 4개 동시). 태그: bright / peaceful / magical · orchestral fantasy / harp and celesta / flute and soft bells no vocals · fantasy game town · 낮은 에너지 · 중간 템포. 잔액 7790 → 7770. 원본 wav는 art/sfx/bgm/cand/(git 밖 큰 파일), 확인 그림 docs/review/bgm_HaloTown_t1_sheet_2026-10-09.png.
 - 2026-10-09 빛 마을 2차 시험: 같은 태그, 템포만 '느리게'(낮은 에너지, 1:00), 20크레딧(후보 4개). 잔액 7770 → 7750. 확인 그림 docs/review/bgm_HaloTown_t2_sheet_2026-10-09.png. 도구: tools/bgm_tools.py, tools/bgm_eval.py.
+- 2026-10-09 빛 마을 3차 시험: 같은 태그(보통 템포, 낮은 에너지), 길이 2:00, 40크레딧(후보 4개). 잔액 7750 → 7710. 3번(loop 88.6초, 크기 변화 6.0 dB, 이음새 0.0001)이 가장 고름 → 빛 마을 곡 후보 1순위. 그림 docs/review/bgm_HaloTown_t3_sheet_2026-10-09.png.
+- 2026-10-09 뿔 마을 1차 시험: 태그 playful·warm·cheeky / pizzicato strings and marimba · soft bells and light drums / fantasy game town, 보통 에너지·보통 템포, 2:00, 40크레딧. 잔액 7710 → 7670. (분석 그림은 내일)
