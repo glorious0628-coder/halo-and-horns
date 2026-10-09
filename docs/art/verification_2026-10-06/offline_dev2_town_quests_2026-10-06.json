@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 558,
+  "checks": 660,
   "failedChecks": 0,
-  "namedChecks": 554,
+  "namedChecks": 655,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1282,6 +1282,12 @@
     {
       "group": "e2-lines-by",
       "check": "M3_4 step 3: LinesBy has a Default and a real From",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e2-lines-by",
+      "check": "EG01 step 3: LinesBy has a Default and a real From",
       "pass": 1,
       "fail": 0
     },
@@ -3330,15 +3336,615 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: a hidden sub for everyone after M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: step 1 = go near TermsScroll (no NPC, no start line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "TermsScroll is in the Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: ends with a dialogue that opens by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: the reward is a title only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: a hidden sub for everyone after M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: step 1 = go near PatchNote (no NPC, no start line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "PatchNote is in the Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: ends with a dialogue that opens by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: the reward is a title only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: title BugReporter exists and is in the picker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: a hidden sub for everyone after M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: step 1 = go near GooseNest (no NPC, no start line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "GooseNest is in the Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: ends with a dialogue that opens by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: the reward is a title only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: title GooseFan exists and is in the picker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: a hidden sub for everyone after M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: step 1 = go near Fountain (no NPC, no start line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "Fountain is in the Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: ends with a dialogue that opens by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: the reward is a title only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: title SkyWatcher exists and is in the picker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: a hidden sub for everyone after M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: step 1 = go near KidsBench (no NPC, no start line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "KidsBench is in the Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: ends with a dialogue that opens by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: the reward is a title only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: title BenchDetective exists and is in the picker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: Read it all = Actually Read It, I agree = Didn't Read It",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: the card's labels (a Neutral save too), 0 points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: not started before M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: not started before M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: not started before M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: not started before M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: not started before M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: started after M2_3 (step 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: no quest row before it is found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: started after M2_3 (step 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: no quest row before it is found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: started after M2_3 (step 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: no quest row before it is found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: started after M2_3 (step 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: no quest row before it is found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: started after M2_3 (step 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: no quest row before it is found",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "no start toast for any egg",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "the quest book does not list an unfound egg",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: 80 studs away: still hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: 10 studs away is still too far (radius 6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: 3 studs away: found, the dialogue opens by itself, the row shows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: talked: done, title BugReporter, 'New title: ...!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: no points, no gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG02: never again (not restarted, no second title)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: 80 studs away: still hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: 10 studs away is still too far (radius 6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: 3 studs away: found, the dialogue opens by itself, the row shows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: talked: done, title GooseFan, 'New title: ...!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: no points, no gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG03: never again (not restarted, no second title)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: 80 studs away: still hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: 10 studs away is still too far (radius 6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: 3 studs away: found, the dialogue opens by itself, the row shows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: talked: done, title BenchDetective, 'New title: ...!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: no points, no gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG14: never again (not restarted, no second title)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: 29 s at the fountain: not yet, still hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: leaving the fountain starts the 30 s again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: 30 s in one go: found, the Sky Crown speaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: title Sky Watcher",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Halo): the scroll's choice opens by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Halo Good): the fine print for that pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Halo Good): a 0-point pick, no score",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Halo Good): title ActuallyReadIt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Horns): the scroll's choice opens by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Horns Evil): the fine print for that pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Horns Evil): a 0-point pick, no score",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Horns Evil): title DidntReadIt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Neutral): the scroll's choice opens by itself",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Neutral A): the fine print for that pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Neutral A): a 0-point pick, no score",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Neutral A): title ActuallyReadIt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Neutral B): the fine print for that pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Neutral B): a 0-point pick, no score",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01 (Neutral B): title DidntReadIt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG01: three pages for 'Read it all', one for 'I agree', a Lines fallback",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "a found egg is listed in the quest book's Done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 131,
-    "applied": 131,
-    "caught": 131,
+    "total": 154,
+    "applied": 154,
+    "caught": 154,
     "skipped": false,
     "results": [
       {
@@ -3528,10 +4134,13 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-70 lunchbox :: a player past the Forge (M1_1 done) never gets it",
+          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
+          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
+          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
           "h1-good :: Open from far away: no window",
           "h1-good :: Open next to Bright: the talk window"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 6
       },
       {
         "mutation": "the card waits in the list",
@@ -3909,9 +4518,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "easter-eggs :: EG04: 30 s in one go: found, the Sky Crown speaks",
+          "easter-eggs :: EG04: leaving the fountain starts the 30 s again",
           "h1-good :: 9 s is not enough"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "a stay counts by ticks, not time",
@@ -3920,12 +4531,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "easter-eggs :: EG04: 29 s at the fountain: not yet, still hidden",
+          "easter-eggs :: EG04: 30 s in one go: found, the Sky Crown speaks",
+          "easter-eggs :: EG04: leaving the fountain starts the 30 s again",
           "h1-good :: 9 s is not enough",
           "h1-good :: stepping away resets the count",
-          "h1-good :: the count is time, not refreshes (6 ticks, 4 extra refreshes: 5 s)",
-          "h1-good :: the row counts the seconds: Progress / Target + unit 's', no '%d/%d s' in the text (3rd round #1)"
+          "h1-good :: the count is time, not refreshes (6 ticks, 4 extra refreshes: 5 s)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 7
       },
       {
         "mutation": "quest NPCs reachable from anywhere",
@@ -4379,6 +4992,290 @@
         "newFailingCount": 8
       },
       {
+        "mutation": "egg: the scroll is in front of the Altar",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the slip is behind the Wanted Board",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the goose nest is not the perch",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: Patch Note is not hidden",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG02: 80 studs away: still hidden",
+          "easter-eggs :: EG02: a hidden sub for everyone after M2_3",
+          "easter-eggs :: EG02: no quest row before it is found"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "egg: Goose Fan opens after M1_4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG03: a hidden sub for everyone after M2_3"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: Goose Fan is Halo only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG03: a hidden sub for everyone after M2_3"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the bench radius is 60",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
+          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
+          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
+          "easter-eggs :: EG14: 10 studs away is still too far (radius 6)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "egg: the nest radius is 6 -> 60",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "e5-hidden :: the pick card opens",
+          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
+          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
+          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
+          "easter-eggs :: EG02: 3 studs away: found, the dialogue opens by itself, the row shows",
+          "easter-eggs :: EG03: 10 studs away is still too far (radius 6)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "egg: the sky takes 3 seconds",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG04: 29 s at the fountain: not yet, still hidden",
+          "easter-eggs :: EG04: 30 s in one go: found, the Sky Crown speaks",
+          "easter-eggs :: EG04: leaving the fountain starts the 30 s again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "egg: the fountain radius is 100",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG04: 30 s in one go: found, the Sky Crown speaks",
+          "easter-eggs :: EG04: leaving the fountain starts the 30 s again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: the fine print is the same for both",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01: three pages for 'Read it all', one for 'I agree', a Lines fallback"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the scroll titles are swapped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01 (Halo Good): title ActuallyReadIt",
+          "easter-eggs :: EG01 (Horns Evil): title DidntReadIt",
+          "easter-eggs :: EG01 (Neutral A): title ActuallyReadIt",
+          "easter-eggs :: EG01 (Neutral B): title DidntReadIt",
+          "easter-eggs :: EG01: Read it all = Actually Read It, I agree = Didn't Read It"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "egg: reading it all scores a point",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01 (Halo Good): a 0-point pick, no score",
+          "easter-eggs :: EG01: the card's labels (a Neutral save too), 0 points"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: agreeing scores a point",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01 (Horns Evil): a 0-point pick, no score",
+          "easter-eggs :: EG01: the card's labels (a Neutral save too), 0 points"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: a Neutral save has no labels",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: Bug Reporter pays gold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG02: no points, no gold",
+          "easter-eggs :: EG02: the reward is a title only"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: Goose Fan pays a title it lacks",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG03: never again (not restarted, no second title)",
+          "easter-eggs :: EG03: talked: done, title GooseFan, 'New title: ...!'",
+          "easter-eggs :: EG03: title GooseFan exists and is in the picker"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "egg: the titles are not in the picker",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01: Read it all = Actually Read It, I agree = Didn't Read It",
+          "easter-eggs :: EG02: title BugReporter exists and is in the picker",
+          "easter-eggs :: EG03: title GooseFan exists and is in the picker",
+          "easter-eggs :: EG04: title SkyWatcher exists and is in the picker",
+          "easter-eggs :: EG14: title BenchDetective exists and is in the picker"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "egg: Bench Detective has no title def",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG14: never again (not restarted, no second title)",
+          "easter-eggs :: EG14: talked: done, title BenchDetective, 'New title: ...!'",
+          "easter-eggs :: EG14: title BenchDetective exists and is in the picker"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "egg: the bench dialogue needs an NPC",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG14: 3 studs away: found, the dialogue opens by itself, the row shows",
+          "easter-eggs :: EG14: ends with a dialogue that opens by itself"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: Sky Watcher is not in the sub list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG04 is in StoryQuests.Subs",
+          "easter-eggs :: EG04: started after M2_3 (step 1)",
+          "easter-eggs :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "egg: the bench's phone name is too long",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG14: a phone name of at most 14 letters"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: a start toast",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG02: step 1 = go near PatchNote (no NPC, no start line)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "E1: Requires.Pick ignored",
         "file": "src/ServerScriptService/StoryQuestService.luau",
         "applied": true,
@@ -4421,7 +5318,7 @@
           "e2-lines-by :: Halo {M2_3=Good}: the window opens with Var Good",
           "e2-lines-by :: Halo {}: the window opens with Var Default"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 15
       },
       {
         "mutation": "E2: the row gets no Var",
@@ -4525,7 +5422,7 @@
           "e3-titles :: an unknown title id: nothing granted, the quest still ends",
           "e3-titles :: no service warnings (pcall-swallowed handler errors)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 18
       },
       {
         "mutation": "E3: TitleBy ignores the pick",
@@ -4534,9 +5431,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "e3-titles :: Reward.TitleBy: the Evil pick gets the Evil title"
+          "e3-titles :: Reward.TitleBy: the Evil pick gets the Evil title",
+          "easter-eggs :: EG01 (Horns Evil): title DidntReadIt",
+          "easter-eggs :: EG01 (Neutral B): title DidntReadIt"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "E3: 'New title' for one already owned",
@@ -4580,9 +5479,13 @@
         "crashed": false,
         "newFailingChecks": [
           "e5-hidden :: a one-step egg counting its seconds stays hidden",
-          "e5-hidden :: …and no row before it is found"
+          "e5-hidden :: …and no row before it is found",
+          "easter-eggs :: EG01: no quest row before it is found",
+          "easter-eggs :: EG02: 80 studs away: still hidden",
+          "easter-eggs :: EG02: no quest row before it is found",
+          "easter-eggs :: EG03: 80 studs away: still hidden"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 11
       },
       {
         "mutation": "E5: found from the start",
@@ -4592,9 +5495,13 @@
         "crashed": false,
         "newFailingChecks": [
           "e5-hidden :: a one-step egg counting its seconds stays hidden",
-          "e5-hidden :: …and no row before it is found"
+          "e5-hidden :: …and no row before it is found",
+          "easter-eggs :: EG01: no quest row before it is found",
+          "easter-eggs :: EG02: 80 studs away: still hidden",
+          "easter-eggs :: EG02: no quest row before it is found",
+          "easter-eggs :: EG03: 80 studs away: still hidden"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 11
       },
       {
         "mutation": "Trials parts say nothing",
@@ -5024,9 +5931,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ed5fdc24dc03d34144f23d41730e4febe24b9a2fa1b4ce34c6cafc1335c61ae8",
+    "src/ReplicatedStorage/Shared/Config.luau": "7fed57245142b7cf3f14b425225c710aad79a6ad69c755f891b913cb38049f46",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
+    "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
     "src/ServerScriptService/StoryQuestService.luau": "d4e0a2d1b570ce92f20aef4c72a81659b3a1db2ccdc4e00bb5bf350350328a29",
     "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
@@ -5037,7 +5944,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "671fb3cf113aa0d0b11c48b9dfd569b9e4dfdf0713673503caf4c997d78b9047",
+  "fixtureSHA256": "0d798a356e694826c4eaae3798b3654ba13084d150870866689467000911d176",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

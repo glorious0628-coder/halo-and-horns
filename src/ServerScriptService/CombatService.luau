@@ -1277,8 +1277,15 @@ local function sendKO(victim, killer, ctx, carriedBefore, died)
 		by = "Fall" -- falling, the body already gone (the void) or far below its zone's floor
 	end
 	local lost = math.max(0, math.floor(carriedBefore - numAttr(victim, "CarriedGold", 0)))
+	-- EG05 (Config.Death.Fun): this KO is counted (data.KOs, saved); about one in Every, never the first SkipFirst, carries a joke tip
+	local tip = nil
+	local okKO, koCount = pcall(S.PlayerService.AddStat, victim, "KOs", 1)
+	if okKO and type(koCount) == "number" then
+		local okTip, line = pcall(Config.FunTip, koCount, Util.Random:NextNumber(), Util.Random:NextNumber())
+		if okTip then tip = line end
+	end
 	Net.Fx(victim, "KO", { By = by, Name = name, Faction = killerFaction, Lost = lost, Sack = ctx.HadSack == true,
-		RespawnIn = Config.Player.RespawnTime })
+		RespawnIn = Config.Player.RespawnTime, Tip = tip })
 	CombatService.KnockedOut:Fire(victim, by)
 end
 

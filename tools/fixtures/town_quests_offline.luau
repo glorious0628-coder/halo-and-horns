@@ -1683,4 +1683,148 @@ runGroup("send-all-subs", function()
 	check(not hid.H1, "a Horns player never gets Bright's offer", show(hid))
 end)
 
+------------------------------------------------------------------ 14. story_depth (나) the beta Easter eggs EG01 / EG02 / EG03 / EG04 / EG14
+-- hidden Crossroads subs after M2_3: no toast, no row, no marker; walking to the spot finds one (its dialogue opens by itself);
+-- a found egg pays a stat-free title only
+runGroup("easter-eggs", function()
+	local EGGS = { "EG01", "EG02", "EG03", "EG04", "EG14" }
+	local SPOT = { EG01 = "TermsScroll", EG02 = "PatchNote", EG03 = "GooseNest", EG04 = "Fountain", EG14 = "KidsBench" }
+	local TITLE = { EG02 = "BugReporter", EG03 = "GooseFan", EG04 = "SkyWatcher", EG14 = "BenchDetective" }
+	local w = townWorld()
+	local panels = panelsOf(w)
+	local owned, grants = {}, {}
+	w.Registry.TitleService = { Grant = function(p, id)
+		table.insert(grants, id)
+		if owned[id] then return false end
+		owned[id] = true
+		return true
+	end }
+	-- data
+	for _, id in EGGS do
+		local def = SQ0.Defs[id]
+		check(def and def.Kind == "Sub" and def.Hidden == true and def.Factions == nil and table.concat(def.Requires.Done, ",") == "M2_3",
+			id .. ": a hidden sub for everyone after M2_3", show(def and { def.Kind, def.Hidden, def.Factions, def.Requires }))
+		check(table.find(SQ0.Subs, id) ~= nil, id .. " is in StoryQuests.Subs", "")
+		check(type(def.ShortName) == "string" and #def.ShortName <= 14 and #def.Title > 0, id .. ": a phone name of at most 14 letters", tostring(def.ShortName))
+		local first = def.Steps[1]
+		check(first.Obj.Type == "Near" and first.Obj.Spot == SPOT[id] and first.Panel ~= true and first.Npc == nil and first.Start == nil,
+			id .. ": step 1 = go near " .. SPOT[id] .. " (no NPC, no start line)", show(first))
+		check(SQ0.Landmarks[SPOT[id]] ~= nil and C0.ZoneAt(SQ0.Landmarks[SPOT[id]]).Id == "Crossroads", SPOT[id] .. " is in the Crossroads", "")
+		local last = def.Steps[#def.Steps]
+		check(last.Panel == true and last.Npc == nil and (last.Obj.Type == "Talk"), id .. ": ends with a dialogue that opens by itself", show(last.Obj))
+		local r = def.Reward
+		check(r.Gold == nil and r.XP == nil and r.GoldN == nil and r.XPBar == nil and r.Item == nil and r.Potion == nil,
+			id .. ": the reward is a title only", show(r))
+		if TITLE[id] then
+			check(r.Title == TITLE[id] and C0.TitleDefs[TITLE[id]] ~= nil and table.find(C0.TitleOrder, TITLE[id]) ~= nil,
+				id .. ": title " .. TITLE[id] .. " exists and is in the picker", show(r))
+		end
+	end
+	check(SQ0.Defs.EG01.Reward.TitleBy.Good == "ActuallyReadIt" and SQ0.Defs.EG01.Reward.TitleBy.Evil == "DidntReadIt"
+		and C0.TitleDefs.ActuallyReadIt and C0.TitleDefs.DidntReadIt and table.find(C0.TitleOrder, "ActuallyReadIt") and table.find(C0.TitleOrder, "DidntReadIt"),
+		"EG01: Read it all = Actually Read It, I agree = Didn't Read It", show(SQ0.Defs.EG01.Reward))
+	local pick = SQ0.Defs.EG01.Steps[2].Obj
+	check(pick.Type == "Choice" and pick.Good.Label == "Read it all" and pick.Evil.Label == "I agree" and pick.Neutral.A == "Read it all"
+		and pick.Neutral.B == "I agree" and pick.Good.Points == 0 and pick.Evil.Points == 0, "EG01: the card's labels (a Neutral save too), 0 points", show(pick))
+	check(SQ0.Landmarks.TermsScroll.Z > C0.Map.AltarPosition.Z and SQ0.Landmarks.PatchNote.X > C0.Map.BoardPosition.X
+		and SQ0.Landmarks.GooseNest.X == C0.Goose.Position.X and SQ0.Landmarks.GooseNest.Z == C0.Goose.Position.Z,
+		"the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch", "")
+	-- before M2_3 nothing starts; after it all five are hidden
+	local early, ed = joinAfterM23(w, 901, "Halo", { Before = true })
+	for _, id in EGGS do check(w:Track(ed, id) == nil, id .. ": not started before M2_3", "") end
+	local n0 = #w.Notices
+	local p, d = joinAfterM23(w, 902, "Halo", { Pos = vec(300, 0, 300) })
+	local ids = {}
+	for _, r in w.Story.SubRows(p, d) do ids[r.Story and r.Story.Id or "?"] = true end
+	for _, id in EGGS do
+		check(w:Track(d, id) and w:Track(d, id).St == 1, id .. ": started after M2_3 (step 1)", show(w:Track(d, id)))
+		check(rowOf(w, p, d, id) == nil and not ids[id], id .. ": no quest row before it is found", "")
+	end
+	local toast = false
+	for _, t in w:NoticesFor(p, n0) do
+		if string.find(t, "Terms of Fate", 1, true) or string.find(t, "Patch Note", 1, true) or string.find(t, "Goose Fan", 1, true)
+			or string.find(t, "Sky Watcher", 1, true) or string.find(t, "Bench Detective", 1, true) then toast = true end
+	end
+	check(not toast, "no start toast for any egg", show(w:NoticesFor(p, n0)))
+	local listed = false
+	for _, e in w.Story.BookRows(p, d).Available do
+		if string.find(e.Id, "story:EG", 1, true) == 1 then listed = true end
+	end
+	check(not listed, "the quest book does not list an unfound egg", show(w.Story.BookRows(p, d).Available))
+	-- the three one-card eggs: walk there, the card opens by itself, [Talk] ends it with a title
+	local uid = 910
+	for _, id in { "EG02", "EG03", "EG14" } do
+		uid += 1
+		local spot = SQ0.Landmarks[SPOT[id]]
+		local q, qd = joinAfterM23(w, uid, "Halo", { Pos = vec(spot.X + 80, 0, spot.Z) })
+		w:Tick(q, 1)
+		check(w:Track(qd, id).St == 1 and rowOf(w, q, qd, id) == nil, id .. ": 80 studs away: still hidden", show(w:Track(qd, id)))
+		local before = #panels
+		w:MoveTo(q, vec(spot.X + 10, 0, spot.Z))
+		w:Tick(q, 1)
+		check(w:Track(qd, id).St == 1, id .. ": 10 studs away is still too far (radius 6)", show(w:Track(qd, id)))
+		w:MoveTo(q, vec(spot.X + 3, 0, spot.Z))
+		w:Tick(q, 1)
+		local card = panels[#panels]
+		check(w:Track(qd, id).St == 2 and #panels == before + 1 and card.Arg.Id == id and card.Arg.St == 2 and rowOf(w, q, qd, id) ~= nil,
+			id .. ": 3 studs away: found, the dialogue opens by itself, the row shows", show({ w:Track(qd, id), card and card.Arg }))
+		local n1 = #w.Notices
+		w:Act(q, id, "Talk")
+		check(qd.Story.Done[id] == true and w:Track(qd, id) == nil and grants[#grants] == TITLE[id]
+			and said(w, q, n1, string.format(SQ0.Text.NewTitle, C0.TitleDefs[TITLE[id]].Name)),
+			id .. ": talked: done, title " .. TITLE[id] .. ", 'New title: ...!'", show({ grants, w:NoticesFor(q, n1) }))
+		check((qd.Honor or 0) == 0 and (qd.Infamy or 0) == 0 and (qd.BankGold or 0) == 0, id .. ": no points, no gold", show({ qd.Honor, qd.BankGold }))
+		w:Act(q, id, "Talk")
+		w.Story.Refresh(q)
+		local count = 0
+		for _, g in grants do if g == TITLE[id] then count += 1 end end
+		check(count == 1 and w:Track(qd, id) == nil, id .. ": never again (not restarted, no second title)", tostring(count))
+	end
+	-- EG04: 30 seconds at the fountain in one go (leaving resets)
+	local fountain = SQ0.Landmarks.Fountain
+	local f, fd = joinAfterM23(w, 950, "Horns", { Pos = vec(fountain.X + 5, 0, fountain.Z) })
+	w:Tick(f, 29)
+	check(w:Track(fd, "EG04").St == 1 and rowOf(w, f, fd, "EG04") == nil, "EG04: 29 s at the fountain: not yet, still hidden", show(w:Track(fd, "EG04")))
+	w:MoveTo(f, vec(fountain.X + 60, 0, fountain.Z))
+	w:Tick(f, 1)
+	w:MoveTo(f, vec(fountain.X + 5, 0, fountain.Z))
+	w:Tick(f, 29)
+	check(w:Track(fd, "EG04").St == 1, "EG04: leaving the fountain starts the 30 s again", show(w:Track(fd, "EG04")))
+	local b4 = #panels
+	w:Tick(f, 2)
+	local card4 = panels[#panels]
+	check(w:Track(fd, "EG04").St == 2 and #panels == b4 + 1 and card4.Arg.Id == "EG04", "EG04: 30 s in one go: found, the Sky Crown speaks", show({ w:Track(fd, "EG04"), card4 and card4.Arg }))
+	w:Act(f, "EG04", "Talk")
+	check(fd.Story.Done.EG04 and grants[#grants] == "SkyWatcher", "EG04: title Sky Watcher", show(grants))
+	-- EG01: the scroll's choice card; Read it all / I agree; a 0-point pick (no score)
+	local scroll = SQ0.Landmarks.TermsScroll
+	for _, case in { { "Halo", "Good", "ActuallyReadIt", 960 }, { "Horns", "Evil", "DidntReadIt", 961 }, { "Neutral", "A", "ActuallyReadIt", 962 },
+		{ "Neutral", "B", "DidntReadIt", 963 } } do
+		local side, option, title, userId = case[1], case[2], case[3], case[4]
+		local before = #panels
+		local q, qd = joinAfterM23(w, userId, side, { Pos = vec(scroll.X + 2, 0, scroll.Z) })
+		w:Tick(q, 1)
+		local card = panels[#panels]
+		check(w:Track(qd, "EG01").St == 2 and #panels == before + 1 and card.Arg.Id == "EG01" and card.Arg.St == 2, "EG01 (" .. side .. "): the scroll's choice opens by itself", show(card and card.Arg))
+		w:Act(q, "EG01", "Choose", option)
+		local after = panels[#panels]
+		local expectVar = (option == "Good" or option == "A") and "Good" or "Evil"
+		check(w:Track(qd, "EG01").St == 3 and after.Arg.Id == "EG01" and after.Arg.St == 3 and (after.Arg.Var == expectVar or after.Arg.Var == option),
+			"EG01 (" .. side .. " " .. option .. "): the fine print for that pick", show(after and after.Arg))
+		check((qd.Honor or 0) == 0 and (qd.Infamy or 0) == 0, "EG01 (" .. side .. " " .. option .. "): a 0-point pick, no score", show({ qd.Honor, qd.Infamy }))
+		w:Act(q, "EG01", "Talk")
+		check(qd.Story.Done.EG01 == true and grants[#grants] == title, "EG01 (" .. side .. " " .. option .. "): title " .. title, show(grants))
+	end
+	-- the fine print differs by pick (LinesBy its own pick), and a finished egg lands in the book's Done list
+	local ln = SQ0.Defs.EG01.Steps[3].LinesBy
+	check(#ln.Good.All == 3 and #ln.Evil.All == 1 and #ln.Default.All == 1 and type(SQ0.Defs.EG01.Steps[3].Lines) == "table",
+		"EG01: three pages for 'Read it all', one for 'I agree', a Lines fallback", show({ #ln.Good.All, #ln.Evil.All }))
+	local pp, pd = joinAfterM23(w, 970, "Halo", { Pos = vec(SQ0.Landmarks.PatchNote.X + 1, 0, SQ0.Landmarks.PatchNote.Z) })
+	w:Tick(pp, 1)
+	w:Act(pp, "EG02", "Talk")
+	local inDone = false
+	for _, id in w.Story.BookRows(pp, pd).Done do if id == "story:EG02" then inDone = true end end
+	check(inDone, "a found egg is listed in the quest book's Done", show(w.Story.BookRows(pp, pd).Done))
+end)
+
 finish()
