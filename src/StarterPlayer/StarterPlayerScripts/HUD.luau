@@ -160,6 +160,7 @@ local TXT = {
 	LuckTap = "Rare drops come a bit more often today!", -- 검수 10/09: a press on the Lucky chip
 	WarIntro = "Crown War: win points for your side!", -- 검수 10/09: the one line when the war bar first shows
 	Siege = "Siege: %d each",
+	WarSiege = "Crown War", -- 검수 10/09 (user: 'Siege: 150 each' was hard for kids): the war line while WarMode = Siege
 	MyWar = "My pts %s",
 	WarSep = " · ",
 	Blessing = "%s Crown Blessing +%d%%",
@@ -931,6 +932,12 @@ local function buildStats(root)
 	ui.xpText = xpText
 	xpText.Visible = false
 	ui.potions = C.VitalsUI.BuildPotions(root, IS_TOUCH)
+	-- the icon row re-centres when the potions first show / hide (L.LayoutTiles, Config.HudReveal)
+	if ui.potions then
+		ui.potions:GetPropertyChangedSignal("Visible"):Connect(function()
+			if L.Rects and L.Rects.tiles then L.LayoutTiles(L.Rects.tiles) end
+		end)
+	end
 end
 
 -- faction-shaped level badge (bundle 6): Halo ivory centre with a dark number, Horns / Artisan / none navy with light
@@ -1111,6 +1118,7 @@ local function buildWar(root)
 			ZIndex = 3,
 			Parent = w,
 		})
+		ui[s[2] == 0 and "warBadgeHalo" or "warBadgeHorns"] = badge
 		local def = badge and UIKit.ArtPart(s[1]) or nil
 		local inner = def and typeof(def.Inner) == "Rect" and typeof(def.Size) == "Vector2" and def.Inner or nil
 		if inner then
@@ -1202,7 +1210,7 @@ function L.WarLine(parts)
 	if parts.Siege then
 		-- orange (Theme.Revenge), not ink red: the line sits over the world (UiSandbox 2026-10-06: red on the dark gate
 		-- could not be read)
-		table.insert(list, string.format('<font color="#%s">%s</font>', Theme.Revenge:ToHex(), parts.Siege))
+		table.insert(list, string.format('<font color="#%s">%s</font>', Theme.Revenge:ToHex(), TXT.WarSiege))
 		table.insert(list, parts.Clock)
 	else
 		table.insert(list, parts.Time)
@@ -3129,6 +3137,20 @@ local function fmtScore(v)
 end
 
 L.WarParts = { Time = "", Clock = "", Siege = nil, Points = nil }
+
+-- 검수 10/09: near 0 : all or all : 0 the crown ran under a faction badge; it stops where its side meets the badge's
+-- inner edge (the split line itself still shows the true share)
+function L.WarCrownFrac(frac)
+	local crown, a, b = ui.warCrown, ui.warBadgeHalo, ui.warBadgeHorns
+	local bar = crown and crown.Parent
+	if not (bar and a and b) or bar.AbsoluteSize.X < 1 then return frac end
+	local half = crown.AbsoluteSize.X / 2
+	local x0, w = bar.AbsolutePosition.X, bar.AbsoluteSize.X
+	local lo = (a.AbsolutePosition.X + a.AbsoluteSize.X * 0.8 + half - x0) / w
+	local hi = (b.AbsolutePosition.X + b.AbsoluteSize.X * 0.2 - half - x0) / w
+	if lo >= hi then return 0.5 end
+	return math.clamp(frac, lo, hi)
+end
 local function refreshWarTime()
 	local endsAt = tonumber(UIKit.GameAttr("WarRoundEndsAt", 0)) or 0
 	local clock = endsAt <= 0 and "-:--" or Util.FormatTime(endsAt - Util.Now())
@@ -3146,7 +3168,7 @@ local function refreshWar()
 	ui.haloFill.Visible = frac > 0.001
 	ui.hornsFill.Visible = frac < 0.999
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
-	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(frac, 0.5) end
+	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(L.WarCrownFrac(frac), 0.5) end
 	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or string.format(TXT.WarHalo, fmtScore(h))
 	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or string.format(TXT.WarHorns, fmtScore(r))
 
@@ -4995,6 +5017,12 @@ function L.LayoutTiles(tr)
 	local size, gap = tr.Size or tr.H, tr.Gap or 4
 	local total = n * size + (n - 1) * gap
 	local x0 = IS_TOUCH and (tr.X + tr.W - total) or (tr.X + (tr.W - total) / 2)
+	-- 검수 10/09 (user: the row ended short under the wide bars): on PC with the potions still hidden (Config.HudReveal)
+	-- the row centres under the bars' full width instead of its own box left of the potions
+	local xp = L.Rects and L.Rects.xp_bar
+	if not IS_TOUCH and xp and not (ui.potions and ui.potions.Visible) then
+		x0 = xp.X + (xp.W - total) / 2
+	end
 	-- small PC windows (main Studio 2026-10-08: 991x451 -> UIScale 0.5, 33 px tiles): a name no longer fits under its icon
 	-- and ran under the next tile ("Map?ankin("); below L.TileLabelMinPx real px the tiles show their icons only
 	local named = size * currentScale() >= L.TileLabelMinPx

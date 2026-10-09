@@ -76,8 +76,10 @@ local LAY = {
 	-- A23-48: English only (glossary names); Short / Tiny = the fallbacks for narrow cards
 	LoreShort = { Halo = "Those who took the Halo.", Horns = "Those who took the Horns.", Neutral = "Those who shape the shards." },
 	LoreTiny = { Horns = { "They took the Horns.", "Took the Horns." }, Neutral = "Shard crafters." },
-	MottoShort = { Halo = "Guard, heal, take it back!", Horns = "Steal, hold on, go Kaiju!", Neutral = "Don't grab it, craft it!" },
-	MottoTiny = { Halo = "Guard & heal!", Horns = "Steal & go Kaiju!", Neutral = "Craft it!" },
+	-- the Pitch line's shorter wordings for narrow cards (Config.Factions.*.Pitch, 개발 1 8475c8de)
+	MottoShort = { Halo = "Heal & catch thieves!", Horns = "Tricks & PvP gold!", Neutral = "Don't grab it, craft it!" },
+	MottoTiny = { Halo = "Heal & catch!", Horns = "PvP gold!", Neutral = "Craft it!" },
+	PitchFrac = 0.36, -- the A23-57 cards: the Pitch line's share of the perk panel (up to two lines)
 	PerkTiny = {
 		Halo = { "XP +30%", "HP +20% · Regen", "Heal allies", "Auto gold" },
 		Horns = { "Gold +25%", { "ATK +15% · Lifesteal", "ATK +15% Lifesteal", "ATK+15% Lifesteal" }, "Guard loot gold", "5★ = Kaiju" },
@@ -802,7 +804,9 @@ local function buildArtCard(c, id, lay, img, imageId)
 	motto.Text = tostring(def.Pitch or "")
 	motto.TextWrapped = false
 	styleText(motto, style.Motto, 1.5)
-	desc.Visible, motto.Visible = lay.Desc ~= nil, lay.Motto ~= nil
+	-- 검수 10/09 (system review ①): the A23-57 cards show the faction's one easy line (def.Pitch) big at the top of the perk
+	-- panel, the number lines smaller under it (layoutPerks)
+	desc.Visible, motto.Visible = lay.Desc ~= nil, lay.Motto ~= nil or (lay.Desc == nil and motto.Text ~= "")
 
 	-- perk panel: icon + one line per perk
 	local perks = {}
@@ -1066,6 +1070,19 @@ local function layoutPerks(c, W, H, minT, scale)
 	local px, py, pw, ph = region(c.Layout.Perks, W, H)
 	local inset = (c.NewArt and LAY.PerkInsetNew) or LAY.PerkInset[c.Id] or LAY.PerkInset.Horns
 	px, pw = px + W * inset[1], pw - W * inset[1] * 2
+	-- A23-57 cards: the Pitch line on top of the panel (big, wraps to two lines; shorter wording when even two lines
+	-- at the floor cannot hold it), the perk rows share the rest
+	if c.NewArt and c.Motto and c.Motto.Visible then
+		local pitchH = ph * LAY.PitchFrac
+		local lineH = pitchH / 2
+		c.Motto.Text = cardText(c.Motto, c.FullMotto, LAY.MottoShort[c.Id], LAY.MottoTiny[c.Id], pw * 2 * scale * 0.9,
+			lineH * scale, scale)
+		c.Motto.TextWrapped = true
+		c.Motto.TextXAlignment = Enum.TextXAlignment.Center
+		place(c.Motto, px, py + ph * 0.02, pw, pitchH)
+		setTextRange(c.Motto, minT, math.max(minT, lineH * 0.82))
+		py, ph = py + pitchH, ph - pitchH
+	end
 	local count = math.max(LAY.PerkRows, #c.Perks)
 	-- Reduce only the empty inset, staying inside the original bitmap perk panel. Keep a real 11px line
 	-- plus rounding/stroke room; a 9.6px clipping frame cannot display even the shortest text.
