@@ -448,6 +448,141 @@ runGroup("economy dashboard", function()
 	local _ = d
 end)
 
+runGroup("phone performance (ClientMetric Perf)", function()
+	local w = metricsWorld()
+	local C = w.Config
+	local A = C.Analytics
+	check(A.ClientMetrics.Perf == "Perf" and table.concat(A.PerfDevices, ",") == "Phone,Tablet,Desktop,Console"
+		and A.Perf.Every == 120 and A.Perf.MinGap == 60 and A.Perf.Low == 20 and A.Perf.MaxFps == 240 and A.Perf.MaxMem == 16384
+		and A.Perf.MaxQuality == 10, "config: Perf rule, 4 devices, every 120 s / gap 60 s / low 20 / 240 fps / 16384 MB / Q10", "")
+	local p = hero(w, 1)
+	local seen = {}
+	w.Tel.ClientMetric:Connect(function(pl, id, arg) if id == "Perf" then table.insert(seen, arg) end end)
+	local function good(o)
+		local t = { D = "Phone", F = 42, W = 31, M = 900, Q = 5 }
+		for k, v in o or {} do t[k] = v end
+		return t
+	end
+	local function perf(pl) return #w:Named("PerfFps", pl) + #w:Named("PerfFpsLow", pl) + #w:Named("PerfMem", pl) end
+	w.Gap = 61
+	p:SetAttribute("ZoneId", "SlimeMeadow")
+	local sent = good()
+	w:Metric(p, "Perf", sent)
+	local fps, mem = w:Named("PerfFps", p)[1], w:Named("PerfMem", p)[1]
+	check(fps and fps.Value == 42 and field(fps, 1) == "Phone" and field(fps, 2) == "SlimeMeadow" and field(fps, 3) == "Q5",
+		"PerfFps: value = the average, fields = device, zone, Q<quality>", show(fps and { fps.Value, fps.F }))
+	check(mem and mem.Value == 900 and field(mem, 1) == "Phone" and field(mem, 2) == "SlimeMeadow" and field(mem, 3) == "Q5",
+		"PerfMem: value = MB, the same fields", show(mem and { mem.Value, mem.F }))
+	check(#w:Named("PerfFpsLow", p) == 0, "the lowest second is fine (31 >= 20): no PerfFpsLow", "")
+	check(#seen == 1 and seen[1] ~= sent and seen[1].F == 42 and seen[1].D == "Phone" and seen[1].M == 900,
+		"the ClientMetric signal gets a clean copy of the sample", show(seen[1]))
+	-- the lowest second under Low: PerfFpsLow (value W); exactly Low is fine
+	w:Metric(p, "Perf", good({ F = 25, W = 8, M = 1500, Q = 0, D = "Tablet" }))
+	local low = w:Named("PerfFpsLow", p)[1]
+	check(low and low.Value == 8 and field(low, 1) == "Tablet" and field(low, 3) == "Q0" and #w:Named("PerfFps", p) == 2,
+		"W 8 < 20: PerfFpsLow (value W) next to PerfFps", show(low and { low.Value, low.F }))
+	w:Metric(p, "Perf", good({ W = 20 }))
+	check(#w:Named("PerfFpsLow", p) == 1 and #w:Named("PerfFps", p) == 3, "W = 20 is not low", #w:Named("PerfFpsLow", p))
+	w:Metric(p, "Perf", good({ W = 19 }))
+	check(#w:Named("PerfFpsLow", p) == 2, "W = 19 is low", #w:Named("PerfFpsLow", p))
+	-- the zone: unknown / unset -> Other (a fixed list only: nothing the client or the world makes up goes into a field)
+	p:SetAttribute("ZoneId", "Nowhere")
+	w:Metric(p, "Perf", good())
+	check(field(w:Named("PerfFps", p)[5], 2) == "Other", "an unknown zone id: Other", show(w:Named("PerfFps", p)[5] and w:Named("PerfFps", p)[5].F))
+	p:SetAttribute("ZoneId", nil)
+	w:Metric(p, "Perf", good())
+	check(field(w:Named("PerfFps", p)[6], 2) == "Other", "no zone: Other", "")
+	-- the range edges are fine
+	local n0 = #w:Named("PerfFps", p)
+	w:Metric(p, "Perf", { D = "Console", F = 0, W = 0, M = 0, Q = 0 })
+	w:Metric(p, "Perf", { D = "Desktop", F = 240, W = 240, M = 16384, Q = 10 })
+	check(#w:Named("PerfFps", p) == n0 + 2, "0 and the maxima are accepted", #w:Named("PerfFps", p) - n0)
+	-- every bad call is ignored: nothing logged, no signal, whatever the spacing
+	local before, sigBefore = perf(p), #seen
+	local bad = {
+		{ "a missing key", { D = "Phone", F = 42, W = 31, M = 900 } },
+		{ "an extra key", good({ X = 1 }) },
+		{ "an unknown device", good({ D = "Toaster" }) },
+		{ "a device that is no string", good({ D = 5 }) },
+		{ "a negative fps", good({ F = -1 }) },
+		{ "an fps over 240", good({ F = 241 }) },
+		{ "a fractional fps", good({ F = 40.5 }) },
+		{ "an fps as text", good({ F = "40" }) },
+		{ "a NaN fps", good({ F = 0 / 0 }) },
+		{ "an infinite fps", good({ F = math.huge }) },
+		{ "a lowest second above the average", good({ F = 30, W = 31 }) },
+		{ "a negative lowest second", good({ W = -1 }) },
+		{ "memory over 16384", good({ M = 16385 }) },
+		{ "negative memory", good({ M = -1 }) },
+		{ "fractional memory", good({ M = 900.5 }) },
+		{ "quality 11", good({ Q = 11 }) },
+		{ "fractional quality", good({ Q = 1.5 }) },
+		{ "a nested value", good({ D = { "Phone" } }) },
+		{ "an array", { 1, 2, 3, 4, 5 } },
+		{ "an empty table", {} },
+		{ "a string", "Phone" },
+		{ "a number", 60 },
+	}
+	for _, b in bad do
+		w:Metric(p, "Perf", b[2])
+		check(perf(p) == before and #seen == sigBefore, "ignored: " .. b[1], show({ perf(p), before }))
+	end
+	w:Metric(p, "Perf")
+	w:Metric(p, "Perf", good(), "extra")
+	check(perf(p) == before and #seen == sigBefore, "ignored: no argument / a second argument", "")
+	-- one sample a minute: a faster one is dropped (the other ids keep their 0.5 s)
+	local q = hero(w, 2)
+	w.Gap = 30
+	w:Metric(q, "Perf", good())
+	w:Metric(q, "Perf", good())
+	check(#w:Named("PerfFps", q) == 1, "30 s later: dropped (one sample a minute)", #w:Named("PerfFps", q))
+	w:Metric(q, "Perf", good())
+	check(#w:Named("PerfFps", q) == 2, "60 s after the logged one: accepted", #w:Named("PerfFps", q))
+	-- a bad table does not use the minute up (the next good sample goes through)
+	local r = hero(w, 3)
+	w.Gap = 61
+	w:Metric(r, "Perf", good({ D = "Toaster" }))
+	w:Metric(r, "Perf", good())
+	check(#w:Named("PerfFps", r) == 1, "a refused sample does not start the minute", #w:Named("PerfFps", r))
+	-- the shared minute budget is neither used by Perf nor needed by it
+	local t = hero(w, 4)
+	w.Gap = 0.6
+	for _ = 1, 10 do w:Metric(t, "InviteSent", 2) end
+	w:Metric(t, "Perf", good())
+	check(#w:Named("InviteSent", t) == 10 and #w:Named("PerfFps", t) == 1,
+		"a full minute budget does not hold Perf back", show({ #w:Named("InviteSent", t), #w:Named("PerfFps", t) }))
+	local u = hero(w, 5)
+	w:Metric(u, "Perf", good())
+	for _ = 1, 10 do w:Metric(u, "InviteSent", 2) end
+	check(#w:Named("InviteSent", u) == 10, "Perf does not use the shared budget up (10 other metrics still logged)",
+		#w:Named("InviteSent", u))
+	-- not ready: ignored
+	local v = hero(w, 6)
+	w.Ready[v] = nil
+	w.Gap = 61
+	w:Metric(v, "Perf", good())
+	check(perf(v) == 0, "not ready: ignored", perf(v))
+	-- no AnalyticsService: nothing logged, nothing breaks, the signal still fires
+	local w2 = metricsWorld({ NoAnalytics = true })
+	local x = hero(w2, 1)
+	local got = 0
+	w2.Tel.ClientMetric:Connect(function(_, id) if id == "Perf" then got += 1 end end)
+	w2.Gap = 61
+	w2:Metric(x, "Perf", good())
+	check(got == 1 and #w2.Custom == 0, "no AnalyticsService: the signal fires, nothing is logged, nothing breaks", got)
+	-- no UserId, name or free text in any field of a Perf event
+	local clean = true
+	for _, c in w.Custom do
+		if string.sub(c.Name, 1, 4) == "Perf" then
+			for _, f in c.F or {} do
+				if f ~= "Phone" and f ~= "Tablet" and f ~= "Desktop" and f ~= "Console" and f ~= "Other" and not C.Zones[f]
+					and not string.match(f, "^Q%d+$") then clean = false end
+			end
+		end
+	end
+	check(clean, "Perf fields: a device, a zone from the list (or Other) and Q<number> only", "")
+end)
+
 runGroup("no AnalyticsService (Studio)", function()
 	local w = metricsWorld({ NoAnalytics = true })
 	local p = hero(w, 1)

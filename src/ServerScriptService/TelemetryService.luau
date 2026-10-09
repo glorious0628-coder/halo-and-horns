@@ -24,6 +24,9 @@
 --   FriendJoin / GoToFriend, DiaryPage / CandyTrade, NotifyOptIn, InviteSent / WelcomeBackGo (c->s "ClientMetric"),
 --   PromptNearKO, and at leave KOLeave60 + LeaveContext. Gold goes to the economy dashboard too (LogEconomyEvent,
 --   currency "Gold", the sums per source / sink every Config.Analytics.EconomyFlush s and at the leave).
+--   Phone / PC performance (게임성 개발 3, 2026-10-09; docs/design/phone_perf_server_2026-10-09.md): c->s ClientMetric "Perf"
+--   { D device, F average fps, W lowest second, M memory MB, Q quality } every Config.Analytics.Perf.Every s -> PerfFps /
+--   PerfFpsLow (W under Perf.Low) / PerfMem with fields device, zone, Q<level>; its own limit (MinGap s), not the shared budget.
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -558,6 +561,25 @@ end
 
 -- A23-79: c->s "ClientMetric"(id, arg?) = what only the client sees (Config.Analytics.ClientMetrics: the id and the
 -- rule for its one argument). Ready, rate limited per id; anything off the list is ignored.
+-- ClientMetric "Perf" (Config.Analytics.Perf): exactly { D, F, W, M, Q } (a missing key fails its range check, an extra
+-- one the key list), whole numbers in range, D from PerfDevices and the lowest second never above the average. Anything
+-- else is not a frame sample (a tampered or half-built table is dropped).
+local PERF_KEYS = { D = true, F = true, W = true, M = true, Q = true }
+local function whole(v, lo, hi)
+	return type(v) == "number" and v == math.floor(v) and v >= lo and v <= hi
+end
+
+local function perfOk(arg)
+	if type(arg) ~= "table" then return false end
+	local P = A.Perf or {}
+	for k in arg do
+		if not PERF_KEYS[k] then return false end -- an extra key (or an array slot) is no frame sample
+	end
+	return type(arg.D) == "string" and table.find(A.PerfDevices or {}, arg.D) ~= nil
+		and whole(arg.F, 0, num(P.MaxFps, 240)) and whole(arg.W, 0, arg.F)
+		and whole(arg.M, 0, num(P.MaxMem, 16384)) and whole(arg.Q, 0, num(P.MaxQuality, 10))
+end
+
 local function argOk(rule, arg)
 	if rule == "None" then return arg == nil end
 	if rule == "Count" then return type(arg) == "number" and arg == math.floor(arg) and arg >= 1 and arg <= 50 end
@@ -567,6 +589,7 @@ local function argOk(rule, arg)
 			or (type(Config.GamePasses) == "table" and Config.GamePasses[arg] ~= nil)
 			or (type(Config.Looks) == "table" and Config.Looks[arg] ~= nil))
 	end
+	if rule == "Perf" then return perfOk(arg) end
 	if type(rule) == "table" then return type(arg) == "string" and table.find(rule, arg) ~= nil end
 	return false
 end
@@ -616,6 +639,22 @@ local function logClientMetric(player, s, id, arg)
 	end
 end
 
+-- one accepted Perf sample: PerfFps (the average), PerfFpsLow (the lowest second, only under Config.Analytics.Perf.Low),
+-- PerfMem (MB); fields = device, the zone now, "Q<quality>". Its own limit (MinGap s per player), not the shared minute
+-- budget: a phone sampled every Every s costs 3 events per sample, far under Roblox's 20 per player per minute.
+local function perfSample(player, arg)
+	local P = A.Perf or {}
+	if not Util.RateLimit(player, "Perf", num(P.MinGap, 60)) then return end
+	local zone = player:GetAttribute("ZoneId")
+	if type(zone) ~= "string" or not Config.Zones[zone] then zone = "Other" end
+	local quality = "Q" .. arg.Q
+	local Custom = TelemetryService.Custom
+	Custom(player, "PerfFps", arg.F, arg.D, zone, quality)
+	if arg.W < num(P.Low, 20) then Custom(player, "PerfFpsLow", arg.W, arg.D, zone, quality) end
+	Custom(player, "PerfMem", arg.M, arg.D, zone, quality)
+	T.ClientMetric:Fire(player, "Perf", { D = arg.D, F = arg.F, W = arg.W, M = arg.M, Q = arg.Q })
+end
+
 local function onClientMetric(player, ...)
 	local n = select("#", ...)
 	if n < 1 or n > 2 then return end
@@ -625,6 +664,11 @@ local function onClientMetric(player, ...)
 	if rule == nil or not argOk(rule, arg) then return end
 	if not S.PlayerService.IsReady(player) then return end
 	if not Util.RateLimit(player, "ClientMetric:" .. id, num(Config.RateLimits.ClientMetric, 0.5)) then return end
+	if id == "Perf" then
+		local okPerf, errPerf = pcall(perfSample, player, arg)
+		if not okPerf then Util.Warn("TelemetryService", "Perf: " .. tostring(errPerf)) end
+		return
+	end
 	local s = session(player)
 	if s and clientBudget(s, id) then
 		local okLog, errLog = pcall(logClientMetric, player, s, id, arg)

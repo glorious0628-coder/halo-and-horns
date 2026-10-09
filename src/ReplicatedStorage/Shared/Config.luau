@@ -6252,6 +6252,7 @@ Config.Analytics.ClientMetrics = {
 	PurchasePrompt = "Pass", -- Roblox's buy window opened for a pass
 	OptIn = { "shown", "cannot" }, -- the notification prompt was shown / could not be (CanPromptOptInAsync false)
 	WelcomeBackGo = "None", -- [Go] on the welcome-back card
+	Perf = "Perf", -- the phone / PC frame + memory summary of the last window (Config.Analytics.Perf, system_review 더하기 7)
 }
 Config.Analytics.InviteSources = { "Menu", "PlayerList", "GooseWin", "WarWin" }
 Config.Analytics.PassIds = { "XP2", "Gold2", "VIP", "Look" } -- "Pass" args besides Config.GamePasses / Config.Looks ids
@@ -6259,6 +6260,13 @@ Config.Analytics.PassIds = { "XP2", "Gold2", "VIP", "Look" } -- "Pass" args besi
 -- player, and the ids logged once a session; every accepted call still fires TelemetryService.ClientMetric (no limit)
 Config.Analytics.ClientMetricPerMinute = 10
 Config.Analytics.ClientMetricOnce = { "OptIn", "WelcomeBackGo" }
+-- ClientMetric "Perf" (검수 2026-10-09, system_review_round1 더하기 7; docs/design/phone_perf_server_2026-10-09.md): the one argument
+-- is a table { D = device, F = average fps, W = lowest second's fps, M = memory MB, Q = graphics quality level } of the last
+-- window (all whole numbers; D one of PerfDevices; W <= F). Logged (own limit, not the shared minute budget) as PerfFps (value F),
+-- PerfFpsLow (value W, only when W < Low) and PerfMem (value M); fields = device, the zone now ("Other" outside the zone list),
+-- "Q<level>". Every = the seconds between two samples the client sends; MinGap = the seconds the server needs between two.
+Config.Analytics.PerfDevices = { "Phone", "Tablet", "Desktop", "Console" }
+Config.Analytics.Perf = { Every = 120, MinGap = 60, Low = 20, MaxFps = 240, MaxMem = 16384, MaxQuality = 10 }
 Config.Analytics.ShopVisitGap = 30 -- s: a shop open within this of the visit's start keeps the visit
 Config.Analytics.ShopVisitMax = 600 -- s: a visit older than this is over
 Config.Analytics.KOLeave = 60 -- s after a KO a leave counts as KOLeave60 (and LeaveContext "KO")

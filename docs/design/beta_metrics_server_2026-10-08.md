@@ -48,6 +48,7 @@ TimedReward, Sale·Refund = Shop(들어옴), Weapon·Potion·LookChange = Shop(�
 | PurchasePrompt | 같은 id | Roblox 구매 창을 열 때 |
 | OptIn | "shown" / "cannot" | 알림 동의: `CanPromptOptInAsync`가 true면 `PromptOptIn` 뒤 OptInPromptClosed에서 "shown", false면 "cannot" |
 | WelcomeBackGo | (없음) | Welcome back 카드의 [Go] (PauseCard.Shown의 button "Go") |
+| Perf | 표 `{ D, F, W, M, Q }` | **10/09 추가** — 폰 프레임·메모리(`docs/design/phone_perf_server_2026-10-09.md`): 120초마다, 60초에 한 번만 받음, 공용 한도 안 씀 |
 - 같은 id는 0.5초에 한 번. **기록**은 한 사람이 1분에 10번까지만 남긴다(한 사람이 게임 전체 기록 한도를 못 채우게), OptIn·WelcomeBackGo 기록은
   판마다 한 번(한도에 걸려 안 남긴 건 다음에 남김). 한도와 상관없이 받아들인 호출은 모두 `TelemetryService.ClientMetric` 신호로 넘긴다
   (ReturnService가 OptIn 결과·구매 창 시각을 놓치지 않게, 검수 검토 10/08).

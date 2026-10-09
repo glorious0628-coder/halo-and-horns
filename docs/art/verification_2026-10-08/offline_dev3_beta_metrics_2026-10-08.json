@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 134,
+  "checks": 178,
   "failedChecks": 0,
-  "namedChecks": 110,
+  "namedChecks": 154,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -650,6 +650,270 @@
       "fail": 0
     },
     {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "config: Perf rule, 4 devices, every 120 s / gap 60 s / low 20 / 240 fps / 16384 MB / Q10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "PerfFps: value = the average, fields = device, zone, Q<quality>",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "PerfMem: value = MB, the same fields",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "the lowest second is fine (31 >= 20): no PerfFpsLow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "the ClientMetric signal gets a clean copy of the sample",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "W 8 < 20: PerfFpsLow (value W) next to PerfFps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "W = 20 is not low",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "W = 19 is low",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "an unknown zone id: Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "no zone: Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "0 and the maxima are accepted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a missing key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: an extra key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: an unknown device",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a device that is no string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a negative fps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: an fps over 240",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a fractional fps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: an fps as text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a NaN fps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: an infinite fps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a lowest second above the average",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a negative lowest second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: memory over 16384",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: negative memory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: fractional memory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: quality 11",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: fractional quality",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a nested value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: an array",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: an empty table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: a number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "ignored: no argument / a second argument",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "30 s later: dropped (one sample a minute)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "60 s after the logged one: accepted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "a refused sample does not start the minute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "a full minute budget does not hold Perf back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "Perf does not use the shared budget up (10 other metrics still logged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "not ready: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "no AnalyticsService: the signal fires, nothing is logged, nothing breaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "Perf fields: a device, a zone from the list (or Other) and Q<number> only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "phone performance (ClientMetric Perf)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "no AnalyticsService (Studio)",
       "check": "nothing logged, nothing breaks",
       "pass": 1,
@@ -672,9 +936,9 @@
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 66,
-    "applied": 66,
-    "caught": 66,
+    "total": 90,
+    "applied": 90,
+    "caught": 90,
     "skipped": false,
     "results": [
       {
@@ -1091,9 +1355,10 @@
           "ClientMetric rules :: every bad call is ignored",
           "ClientMetric rules :: good calls pass on (ReturnService listens)",
           "ClientMetric rules :: rate limited per id (0.5 s): no signal either",
-          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)"
+          "ClientMetric rules :: the signal still fires for every accepted call (ReturnService's state)",
+          "phone performance (ClientMetric Perf) :: ignored: no argument / a second argument"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "any count",
@@ -1240,9 +1505,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ClientMetric rules :: not ready: ignored (no signal)"
+          "ClientMetric rules :: not ready: ignored (no signal)",
+          "phone performance (ClientMetric Perf) :: not ready: ignored"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "ClientMetric not passed on",
@@ -1281,6 +1547,332 @@
           "PassShop :: right after a failed scroll: EnhanceFail"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "Perf: any extra key",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: ignored: a NaN fps",
+          "phone performance (ClientMetric Perf) :: ignored: a device that is no string",
+          "phone performance (ClientMetric Perf) :: ignored: a fractional fps",
+          "phone performance (ClientMetric Perf) :: ignored: a lowest second above the average",
+          "phone performance (ClientMetric Perf) :: ignored: a negative fps",
+          "phone performance (ClientMetric Perf) :: ignored: a negative lowest second"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "Perf: any device",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: Perf fields: a device, a zone from the list (or Other) and Q<number> only",
+          "phone performance (ClientMetric Perf) :: a refused sample does not start the minute",
+          "phone performance (ClientMetric Perf) :: ignored: a NaN fps",
+          "phone performance (ClientMetric Perf) :: ignored: a device that is no string",
+          "phone performance (ClientMetric Perf) :: ignored: a fractional fps",
+          "phone performance (ClientMetric Perf) :: ignored: a lowest second above the average"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "Perf: fractions",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: Perf fields: a device, a zone from the list (or Other) and Q<number> only",
+          "phone performance (ClientMetric Perf) :: ignored: a NaN fps",
+          "phone performance (ClientMetric Perf) :: ignored: a fractional fps",
+          "phone performance (ClientMetric Perf) :: ignored: a lowest second above the average",
+          "phone performance (ClientMetric Perf) :: ignored: a negative lowest second",
+          "phone performance (ClientMetric Perf) :: ignored: a nested value"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "Perf: no fps ceiling",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: ignored: a NaN fps",
+          "phone performance (ClientMetric Perf) :: ignored: a fractional fps",
+          "phone performance (ClientMetric Perf) :: ignored: a lowest second above the average",
+          "phone performance (ClientMetric Perf) :: ignored: a negative lowest second",
+          "phone performance (ClientMetric Perf) :: ignored: a nested value",
+          "phone performance (ClientMetric Perf) :: ignored: a number"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "Perf: the lowest second above the average",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: ignored: a lowest second above the average",
+          "phone performance (ClientMetric Perf) :: ignored: a negative lowest second",
+          "phone performance (ClientMetric Perf) :: ignored: a nested value",
+          "phone performance (ClientMetric Perf) :: ignored: a number",
+          "phone performance (ClientMetric Perf) :: ignored: a string",
+          "phone performance (ClientMetric Perf) :: ignored: an array"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "Perf: unbounded memory",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: ignored: a nested value",
+          "phone performance (ClientMetric Perf) :: ignored: a number",
+          "phone performance (ClientMetric Perf) :: ignored: a string",
+          "phone performance (ClientMetric Perf) :: ignored: an array",
+          "phone performance (ClientMetric Perf) :: ignored: an empty table",
+          "phone performance (ClientMetric Perf) :: ignored: fractional memory"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "Perf: unbounded quality",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: ignored: a nested value",
+          "phone performance (ClientMetric Perf) :: ignored: a number",
+          "phone performance (ClientMetric Perf) :: ignored: a string",
+          "phone performance (ClientMetric Perf) :: ignored: an array",
+          "phone performance (ClientMetric Perf) :: ignored: an empty table",
+          "phone performance (ClientMetric Perf) :: ignored: fractional quality"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "Perf: the rule accepts anything",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: Perf fields: a device, a zone from the list (or Other) and Q<number> only",
+          "phone performance (ClientMetric Perf) :: a refused sample does not start the minute",
+          "phone performance (ClientMetric Perf) :: ignored: a NaN fps",
+          "phone performance (ClientMetric Perf) :: ignored: a device that is no string",
+          "phone performance (ClientMetric Perf) :: ignored: a fractional fps",
+          "phone performance (ClientMetric Perf) :: ignored: a lowest second above the average"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "Perf: PerfFpsLow for every sample",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: W 8 < 20: PerfFpsLow (value W) next to PerfFps",
+          "phone performance (ClientMetric Perf) :: W = 19 is low",
+          "phone performance (ClientMetric Perf) :: W = 20 is not low",
+          "phone performance (ClientMetric Perf) :: the lowest second is fine (31 >= 20): no PerfFpsLow"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Perf: Low counts the limit too",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: W = 19 is low",
+          "phone performance (ClientMetric Perf) :: W = 20 is not low"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Perf: no PerfFpsLow at all",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: W 8 < 20: PerfFpsLow (value W) next to PerfFps",
+          "phone performance (ClientMetric Perf) :: W = 19 is low",
+          "phone performance (ClientMetric Perf) :: W = 20 is not low"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Perf: the average is the low value",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: W 8 < 20: PerfFpsLow (value W) next to PerfFps"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Perf: an unknown zone goes into the field",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: Perf fields: a device, a zone from the list (or Other) and Q<number> only",
+          "phone performance (ClientMetric Perf) :: an unknown zone id: Other"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Perf: no device field",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: PerfFps: value = the average, fields = device, zone, Q<quality>"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Perf: no quality field",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: PerfMem: value = MB, the same fields"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Perf: memory logged as frames",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: PerfMem: value = MB, the same fields"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Perf: no minute between samples",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: 30 s later: dropped (one sample a minute)",
+          "phone performance (ClientMetric Perf) :: 60 s after the logged one: accepted"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Perf: shares the minute budget",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: Perf does not use the shared budget up (10 other metrics still logged)",
+          "phone performance (ClientMetric Perf) :: no AnalyticsService: the signal fires, nothing is logged, nothing breaks",
+          "phone performance (ClientMetric Perf) :: the ClientMetric signal gets a clean copy of the sample"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Perf: the client's own table goes on",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: the ClientMetric signal gets a clean copy of the sample"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Perf: no signal",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: no AnalyticsService: the signal fires, nothing is logged, nothing breaks",
+          "phone performance (ClientMetric Perf) :: the ClientMetric signal gets a clean copy of the sample"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: no Perf rule",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: 0 and the maxima are accepted",
+          "phone performance (ClientMetric Perf) :: 30 s later: dropped (one sample a minute)",
+          "phone performance (ClientMetric Perf) :: 60 s after the logged one: accepted",
+          "phone performance (ClientMetric Perf) :: PerfFps: value = the average, fields = device, zone, Q<quality>",
+          "phone performance (ClientMetric Perf) :: PerfMem: value = MB, the same fields",
+          "phone performance (ClientMetric Perf) :: W 8 < 20: PerfFpsLow (value W) next to PerfFps"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "Config: no Console",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: 0 and the maxima are accepted",
+          "phone performance (ClientMetric Perf) :: config: Perf rule, 4 devices, every 120 s / gap 60 s / low 20 / 240 fps / 16384 MB / Q10"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: Low 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: W 8 < 20: PerfFpsLow (value W) next to PerfFps",
+          "phone performance (ClientMetric Perf) :: W = 19 is low",
+          "phone performance (ClientMetric Perf) :: W = 20 is not low",
+          "phone performance (ClientMetric Perf) :: config: Perf rule, 4 devices, every 120 s / gap 60 s / low 20 / 240 fps / 16384 MB / Q10"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Config: MinGap 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone performance (ClientMetric Perf) :: 30 s later: dropped (one sample a minute)",
+          "phone performance (ClientMetric Perf) :: 60 s after the logged one: accepted",
+          "phone performance (ClientMetric Perf) :: config: Perf rule, 4 devices, every 120 s / gap 60 s / low 20 / 240 fps / 16384 MB / Q10"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "KOLeave60 at any time",
@@ -1485,11 +2077,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "be96c0704be9d1cd595c08adc376bfa690fbc557f20de3f9a8af70dccbea77b7",
+    "src/ReplicatedStorage/Shared/Config.luau": "abfe817f7570b0ebfc3f8a07a4433383405e79701b0dbafd7e19e857ef314f0b",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/TelemetryService.luau": "308eed5b3a0dbf8f66c5ec5966a90d420610888602451cdecf92349b3d297012"
+    "src/ServerScriptService/TelemetryService.luau": "448e3d04958d632156feb886479aa6393b68159db327c9e404c5f0c6b8158671"
   },
-  "fixtureSHA256": "c7d2c5648df1f3e1a3f80fbf23c045da48df5a8d6171ce597cb918bc991145f3",
+  "fixtureSHA256": "fe9a1ab982c1b6f8dfdc9946763ac0cc06dbb0705c8a5b96ba2bcf88f0ad776a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

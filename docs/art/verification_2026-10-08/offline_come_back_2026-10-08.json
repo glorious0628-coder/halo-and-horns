@@ -269,10 +269,10 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/ComeBack.luau": "63a15300fc1cc680680134c7bdb8ce2577858d245dc000e382815f4e86d648df",
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
+    "src/ReplicatedStorage/Shared/Config.luau": "abfe817f7570b0ebfc3f8a07a4433383405e79701b0dbafd7e19e857ef314f0b",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
   },
-  "fixtureSHA256": "a7614ebff4b63b287e1f92b573c2a4acaf02ce24ff2f5d63877ef0889a944bfd",
+  "fixtureSHA256": "c0f36cdb371ac798dd3ba8aa7b54cfaa08f60f11b3c153a90f38326256816cfb",
   "studioCalls": 0,
   "limitations": "Doubles instead of ExperienceNotificationService: Roblox's own opt-in window shows only in a published game for 13+ accounts (Studio cannot show it), so 'shown' needs a live check; the server's side (the asked list, the once rule) is tools/test_return.py. The Shop's PassView / PurchasePrompt calls belong to 이미지 개발's ShopUI (ComeBack.Metric is ready)."
 }

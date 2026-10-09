@@ -109,6 +109,37 @@ MUTATIONS = [
     ("PromptNearKO at any time", T, "\t\tif ko and not ko.Prompted and os.clock() - ko.At <= near then\n", "\t\tif ko and not ko.Prompted then\n"),
     ("no PromptNearKO after a failed scroll", T, "\t\telseif fail and s.FailPrompted ~= fail and os.clock() - fail <= near then\n",
      "\t\telseif false then\n"),
+    # --- phone performance (ClientMetric Perf)
+    ("Perf: any extra key", T, "\t\tif not PERF_KEYS[k] then return false end -- an extra key (or an array slot) is no frame sample\n", ""),
+    ("Perf: any device", T, "return type(arg.D) == \"string\" and table.find(A.PerfDevices or {}, arg.D) ~= nil\n",
+     "return type(arg.D) == \"string\"\n"),
+    ("Perf: fractions", T, "\treturn type(v) == \"number\" and v == math.floor(v) and v >= lo and v <= hi\n",
+     "\treturn type(v) == \"number\" and v >= lo and v <= hi\n"),
+    ("Perf: no fps ceiling", T, "and whole(arg.F, 0, num(P.MaxFps, 240))", "and whole(arg.F, 0, math.huge)"),
+    ("Perf: the lowest second above the average", T, "and whole(arg.W, 0, arg.F)", "and whole(arg.W, 0, num(P.MaxFps, 240))"),
+    ("Perf: unbounded memory", T, "and whole(arg.M, 0, num(P.MaxMem, 16384))", "and whole(arg.M, 0, math.huge)"),
+    ("Perf: unbounded quality", T, "and whole(arg.Q, 0, num(P.MaxQuality, 10))", "and whole(arg.Q, 0, math.huge)"),
+    ("Perf: the rule accepts anything", T, "\tif rule == \"Perf\" then return perfOk(arg) end\n", "\tif rule == \"Perf\" then return true end\n"),
+    ("Perf: PerfFpsLow for every sample", T, "\tif arg.W < num(P.Low, 20) then Custom(", "\tif true then Custom("),
+    ("Perf: Low counts the limit too", T, "\tif arg.W < num(P.Low, 20) then Custom(", "\tif arg.W <= num(P.Low, 20) then Custom("),
+    ("Perf: no PerfFpsLow at all", T, "\tif arg.W < num(P.Low, 20) then Custom(", "\tif false then Custom("),
+    ("Perf: the average is the low value", T, "Custom(player, \"PerfFpsLow\", arg.W,", "Custom(player, \"PerfFpsLow\", arg.F,"),
+    ("Perf: an unknown zone goes into the field", T, "if type(zone) ~= \"string\" or not Config.Zones[zone] then zone = \"Other\" end\n\tlocal quality",
+     "if type(zone) ~= \"string\" then zone = \"Other\" end\n\tlocal quality"),
+    ("Perf: no device field", T, "Custom(player, \"PerfFps\", arg.F, arg.D, zone, quality)", "Custom(player, \"PerfFps\", arg.F, nil, zone, quality)"),
+    ("Perf: no quality field", T, "Custom(player, \"PerfMem\", arg.M, arg.D, zone, quality)", "Custom(player, \"PerfMem\", arg.M, arg.D, zone)"),
+    ("Perf: memory logged as frames", T, "Custom(player, \"PerfMem\", arg.M,", "Custom(player, \"PerfMem\", arg.F,"),
+    ("Perf: no minute between samples", T, "\tif not Util.RateLimit(player, \"Perf\", num(P.MinGap, 60)) then return end\n", ""),
+    ("Perf: shares the minute budget", T, "if not okPerf then Util.Warn(\"TelemetryService\", \"Perf: \" .. tostring(errPerf)) end\n\t\treturn\n",
+     "if not okPerf then Util.Warn(\"TelemetryService\", \"Perf: \" .. tostring(errPerf)) end\n"),
+    ("Perf: the client's own table goes on", T, "T.ClientMetric:Fire(player, \"Perf\", { D = arg.D, F = arg.F, W = arg.W, M = arg.M, Q = arg.Q })",
+     "T.ClientMetric:Fire(player, \"Perf\", arg)"),
+    ("Perf: no signal", T, "\tT.ClientMetric:Fire(player, \"Perf\", { D = arg.D", "\tlocal _ = ({ D = arg.D"),
+    ("Config: no Perf rule", C, "\tPerf = \"Perf\", -- the phone", "\tPerfX = \"Perf\", -- the phone"),
+    ("Config: no Console", C, "Config.Analytics.PerfDevices = { \"Phone\", \"Tablet\", \"Desktop\", \"Console\" }",
+     "Config.Analytics.PerfDevices = { \"Phone\", \"Tablet\", \"Desktop\" }"),
+    ("Config: Low 0", C, "Config.Analytics.Perf = { Every = 120, MinGap = 60, Low = 20,", "Config.Analytics.Perf = { Every = 120, MinGap = 60, Low = 0,"),
+    ("Config: MinGap 1", C, "Config.Analytics.Perf = { Every = 120, MinGap = 60,", "Config.Analytics.Perf = { Every = 120, MinGap = 1,"),
     # --- leave
     ("KOLeave60 at any time", T, "\t\tif ko and os.clock() - ko.At <= num(A.KOLeave, 60) then Custom(player, \"KOLeave60\"",
      "\t\tif ko then Custom(player, \"KOLeave60\""),
@@ -158,8 +189,9 @@ def static() -> tuple[int, list[str]]:
     check(total <= 100, f"custom event names {total} <= 100 (Roblox limit)")
     check({"DaysPlayed", "ReturnGap", "PauseCard", "WelcomeBack", "Attendance", "FriendJoin", "GoToFriend", "DiaryPage",
            "CandyTrade", "NotifyOptIn", "InviteSent", "WelcomeBackGo", "PromptNearKO", "KOLeave60", "LeaveContext",
-           "ChapterEnd", "RuinsDaily"} <= names,
-          "every A23-79 event name is logged somewhere")
+           "ChapterEnd", "RuinsDaily", "PerfFps", "PerfFpsLow", "PerfMem"} <= names,
+          "every A23-79 event name (and the three Perf ones) is logged somewhere")
+    print(f"custom event names: {len(names)} + {len(ui_ids)} UI + {CAUSES} + {PLUNDER} = {total}")
     check(code.count("LogFunnelStepEvent") == 1 and code.count("LogEconomyEvent") == 1, "one funnel and one economy call site")
     net = read(SHARED / "Net.luau")
     check(net.count('"ClientMetric"') == 1, "Net.Names has ClientMetric once")
