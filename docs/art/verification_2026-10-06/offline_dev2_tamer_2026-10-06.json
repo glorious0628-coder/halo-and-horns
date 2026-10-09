@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 113,
+  "checks": 129,
   "failedChecks": 0,
-  "namedChecks": 113,
+  "namedChecks": 129,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -494,6 +494,102 @@
       "fail": 0
     },
     {
+      "group": "pet levels and equip",
+      "check": "1 pet XP a kill, Lv n -> n+1 needs 15 x n, max Lv10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "14 kills: Lv1, 14 / 15",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "the 15th kill: Lv2 (PetLv attribute)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "a higher level walks a bit faster (+7% -> +10% by Lv10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "Lv2 needs 30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "Lv10 is the top",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "EquipPet \"\": put away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "a put-away pet gets no XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "EquipPet uid: it follows again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "an unknown uid / a number / extra arguments: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "too fast (rate limit): ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "catch-up: the pet from the saved pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "no catch-up without the quest done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet levels and equip",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "legacy",
       "check": "a pre-A23-39 save loads with TamerNotice false + empty Pets",
       "pass": 1,
@@ -690,11 +786,142 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 48,
-    "applied": 48,
-    "caught": 48,
+    "total": 59,
+    "applied": 59,
+    "caught": 59,
     "skipped": false,
     "results": [
+      {
+        "mutation": "no pet XP",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: 14 kills: Lv1, 14 / 15",
+          "pet levels and equip :: Lv2 needs 30",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: the 15th kill: Lv2 (PetLv attribute)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "XP needs 10 a level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: 1 pet XP a kill, Lv n -> n+1 needs 15 x n, max Lv10",
+          "pet levels and equip :: 14 kills: Lv1, 14 / 15",
+          "pet levels and equip :: Lv2 needs 30",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: the 15th kill: Lv2 (PetLv attribute)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the level never rises",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: Lv2 needs 30",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: the 15th kill: Lv2 (PetLv attribute)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a put-away pet still levels",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: a put-away pet gets no XP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no list to the owner",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "cannot put it away",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: EquipPet \"\": put away",
+          "pet levels and equip :: a put-away pet gets no XP"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any uid equips",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: an unknown uid / a number / extra arguments: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: too fast (rate limit): ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "extra arguments allowed",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: an unknown uid / a number / extra arguments: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no catch-up",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: catch-up: the pet from the saved pick"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "catch-up without the quest",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet levels and equip :: no catch-up without the quest done"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "no pet from the story pick",
         "file": "src/ServerScriptService/PetService.luau",
@@ -709,7 +936,7 @@
           "lost baby slime :: no second pet / line",
           "lost baby slime :: the pet line for everyone (not 'fights for you')"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "any quest gives the pet",
@@ -731,9 +958,11 @@
         "newFailingChecks": [
           "lost baby slime :: Care: a Good Buddy baby slime, equipped",
           "lost baby slime :: Minion: a Little Minion",
-          "lost baby slime :: a Neutral's B: Evil lean"
+          "lost baby slime :: a Neutral's B: Evil lean",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean",
+          "pet levels and equip :: catch-up: the pet from the saved pick"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "a second baby slime",
@@ -781,9 +1010,10 @@
         "crashed": false,
         "newFailingChecks": [
           "lost baby slime :: Minion: a Little Minion",
-          "lost baby slime :: the pick: care (Good) / minion (Evil), 1 point, Neutral A / B"
+          "lost baby slime :: the pick: care (Good) / minion (Evil), 1 point, Neutral A / B",
+          "pet levels and equip :: catch-up: the pet from the saved pick"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "12 slimes",
@@ -1028,9 +1258,11 @@
           "lost baby slime :: Care: a Good Buddy baby slime, equipped",
           "pet :: attributes EquippedPet / PetLv / PetForm",
           "pet :: the pick gives one baby slime, equipped, Bound, Lv1",
-          "sanitize :: the baby slime gets P2 (P1 kept)"
+          "pet levels and equip :: 14 kills: Lv1, 14 / 15",
+          "pet levels and equip :: Lv2 needs 30",
+          "pet levels and equip :: PetList to the owner: Equipped, Lv / XP / Need / Name / Lean"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 8
       },
       {
         "mutation": "the pet attributes are not published",
@@ -1084,7 +1316,7 @@
           "pet :: joining the guild as an Archer: the pet, no ticket",
           "pet :: no pet for a Halo Archer"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 10
       },
       {
         "mutation": "the tamer before the class pick",
@@ -1304,19 +1536,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "11f2516ea82259ed21f2b6a58c9c6f284825ebb0845b9e1c922cf50deedb4ef1",
+    "src/ReplicatedStorage/Shared/Config.luau": "f00542d761a88b0524db8e5b20d98c03386f62846f1b7689104447046e14349c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
-    "src/ServerScriptService/LootService.luau": "6008f3eb363dd8f505bf47b5ac05c61bf348b00490fbd0317b7f4d9e852929b5",
+    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
     "src/ServerScriptService/StoryQuestService.luau": "0a00f634e31d9f38700bd1e3f0b2c11e62dbe424079a48972de1ad85d1d0bacc",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
-    "src/ServerScriptService/PetService.luau": "64c2a930cf93c6e498a76b0cb118e7f52ecf13210d2d607546604e1e3bea84e4"
+    "src/ServerScriptService/PetService.luau": "5518ab4797045bc124eda52eeaeea0cc18522fa5f54dd9235044b5bfed04ee02"
   },
-  "fixtureSHA256": "b3781e1f15973ddc247fbc288b7da8ec2ef9cbc7c8180ba800a792a607c833eb",
+  "fixtureSHA256": "0968f7c9ba4cad7ec49c1a6023992e170309678c87b90bd729d18e6cd81158aa",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

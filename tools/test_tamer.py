@@ -13,6 +13,8 @@ Report: docs/art/verification_2026-10-06/offline_dev2_tamer_2026-10-06.json
 """
 from __future__ import annotations
 
+import re
+
 from dev2_offline import ROOT, SHARED, SSS, Suite, read, run, strip_comments
 from test_unarmed_start import FILES as UNARMED_FILES, bindings as unarmed_bindings
 
@@ -29,6 +31,19 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 C, CO, PE, V = "CONFIG_SOURCE", "COMBAT_SOURCE", "PET_SOURCE", "VISUALS_SOURCE"
 
 MUTATIONS = [
+    # --- PET-2: pet XP, EquipPet, the owner's list, catch-up
+    ("no pet XP", PE, "\tif S.MonsterService then connect(\"MonsterService\", \"MonsterKilled\", onKilled) end -- PET-2 pet XP\n", ""),
+    ("XP needs 10 a level", C, "\tXPPerLv = 15,\n", "\tXPPerLv = 10,\n"),
+    ("the level never rises", PE, "\t\tp.Lv += 1\n", ""),
+    ("a put-away pet still levels", PE, "\tlocal uid = pets.Equipped[1]\n\tlocal p = uid and pets.List[uid] or nil\n\tif not p then return end\n\tlocal need",
+     "\tlocal uid = next(pets.List)\n\tlocal p = uid and pets.List[uid] or nil\n\tif not p then return end\n\tlocal need"),
+    ("no list to the owner", PE, "\t\tNet.Get(\"PetList\"):FireClient(player, { Equipped = pets.Equipped[1] or \"\", List = list })\n", ""),
+    ("cannot put it away", PE, "\tif uid == \"\" then\n\t\tpets.Equipped = {}\n", "\tif uid == \"\" then\n\t\treturn\n"),
+    ("any uid equips", PE, "\t\tif not p or not KNOWN[p.Sp] then return end\n\t\tpets.Equipped = { uid }", "\t\tpets.Equipped = { uid }"),
+    ("no rate limit", PE, "or not Util.RateLimit(player, \"EquipPet\", num(Config.RateLimits.EquipPet, 0.5)) then", "then"),
+    ("extra arguments allowed", PE, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal uid = ...", "\tlocal uid = ..."),
+    ("no catch-up", PE, "\tlocal okC, errC = pcall(catchUp, player, data) -- PET-2", "\tlocal okC, errC = true, nil -- PET-2"),
+    ("catch-up without the quest", PE, "or type(st.Done) ~= \"table\" or st.Done[G.Quest] ~= true then return end", "then return end"),
     # --- PET-4: the lost baby slime for everyone
     ("no pet from the story pick", PE, "\tif S.StoryQuestService then connect(\"StoryQuestService\", \"Picked\", onStoryPicked) end -- PET-4\n", ""),
     ("any quest gives the pet", PE, "\tif type(G) ~= \"table\" or questId ~= G.Quest then return end\n", "\tif type(G) ~= \"table\" then return end\n"),
@@ -124,7 +139,10 @@ def static() -> tuple[int, list[str]]:
           "PetService starts before PlayerService (its PlayerReady handler is connected before the first join)")
     check((SSS / "PetService.luau").is_file(), "the PetService module exists (the lists never name a missing module)")
     pet = strip_comments(read(SSS / "PetService.luau"))
-    check("Net.Get(" not in pet and "OnServerEvent" not in pet, "no new remote yet (PET-2 adds the pet list remote)")
+    # PET-2: exactly the owner's list (s->c PetList) and EquipPet (c->s), both named in Net
+    net = read(SHARED / "Net.luau")
+    check(set(re.findall(r'Net\.Get\("(\w+)"\)', pet)) == {"PetList", "EquipPet"} and pet.count("OnServerEvent") == 1
+          and '"EquipPet"' in net and '"PetList"' in net, "PET-2 remotes: PetList (owner) + EquipPet, named in Net")
     config = read(SHARED / "Config.luau")
     check("Pets = { List = {}, Equipped = {}, Next = 1 }," in config and "TamerNotice = false," in config,
           "save defaults: Pets + TamerNotice (additive, Version stays 3)")

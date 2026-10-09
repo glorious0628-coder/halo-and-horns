@@ -3739,7 +3739,7 @@ Config.RateLimits = {
 	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, BoardAction = 0.3, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
-	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, SetLook = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
+	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, SetLook = 0.5, EquipPet = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
@@ -6140,8 +6140,11 @@ end
 -- states need no recompute; a later rule adds its input here and its trigger next to it.
 Config.Speed = { Cap = 1.35 }
 -- pets by species: Speed = { bonus at pet Lv1, bonus at MaxLv }, a straight line between (design §2: +7% -> +10%)
+-- PET-2: XPPerKill = pet XP for every kill its owner is paid for (auto combat too), Lv n -> n+1 needs XPPerLv x n
 Config.Pets = {
 	MaxLv = 10,
+	XPPerKill = 1,
+	XPPerLv = 15,
 	Species = {
 		BabySlime = { Speed = { 0.07, 0.10 } },
 	},

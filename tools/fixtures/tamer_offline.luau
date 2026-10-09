@@ -249,6 +249,71 @@ runGroup("lost baby slime", function()
 	check(#babySlimes(h) == 1 and tp.Lean == "Good" and tp.Name == G.Names.Good, "a tamer's own baby slime takes the lean / name", show(tp))
 end)
 
+------------------------------------------------------------------ PET-2: pet XP, EquipPet, the owner's list, catch-up
+runGroup("pet levels and equip", function()
+	local P = C0.Pets
+	check(P.XPPerKill == 1 and P.XPPerLv == 15 and P.MaxLv == 10, "1 pet XP a kill, Lv n -> n+1 needs 15 x n, max Lv10")
+	local w = bareWorld()
+	local p, d = w:Join(401, { Faction = "Halo", Class = "Warrior" })
+	w.Story.Picked:Fire(p, C0.PetGrant.Quest, "Care")
+	local uid = babySlimes(d)[1]
+	local function petOf() return d.Pets.List[uid] end
+	local pet = petOf()
+	local function kill(n)
+		for _ = 1, n do w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime" }) end
+	end
+	kill(14)
+	check(pet.Lv == 1 and pet.XP == 14, "14 kills: Lv1, 14 / 15", show(pet))
+	local speed0 = C0.PetSpeedBonus("BabySlime", 1)
+	kill(1)
+	check(pet.Lv == 2 and pet.XP == 0 and p:GetAttribute("PetLv") == 2, "the 15th kill: Lv2 (PetLv attribute)", show(pet))
+	check(C0.PetSpeedBonus("BabySlime", 2) > speed0, "a higher level walks a bit faster (+7% -> +10% by Lv10)")
+	kill(29)
+	check(pet.Lv == 2 and pet.XP == 29, "Lv2 needs 30", show(pet))
+	-- the owner's list (s->c PetList)
+	local last = nil
+	for _, f in w.Fired do if f.Remote == "PetList" and f.Player == p then last = f.Payload end end
+	check(last and last.Equipped == uid and #last.List == 1 and last.List[1].Lv == 2 and last.List[1].XP == 29
+		and last.List[1].Need == 30 and last.List[1].Name == "Good Buddy" and last.List[1].Lean == "Good",
+		"PetList to the owner: Equipped, Lv / XP / Need / Name / Lean", show(last and last.List[1]))
+	-- max level: no more XP
+	pet.Lv, pet.XP = 10, 0
+	kill(5)
+	check(pet.Lv == 10 and pet.XP == 0, "Lv10 is the top")
+	-- EquipPet: "" puts it away, the uid brings it back; others ignored
+	local equip = w.Net.Get("EquipPet").OnServerEvent
+	w:Advance(1)
+	equip:Fire(p, "")
+	check(#d.Pets.Equipped == 0 and p:GetAttribute("EquippedPet") == "", "EquipPet \"\": put away")
+	petOf().Lv, petOf().XP = 1, 0
+	kill(3)
+	check(petOf().XP == 0, "a put-away pet gets no XP")
+	w:Advance(1)
+	equip:Fire(p, uid)
+	check(d.Pets.Equipped[1] == uid and p:GetAttribute("EquippedPet") == "BabySlime", "EquipPet uid: it follows again")
+	w:Advance(1)
+	equip:Fire(p, "P999")
+	w:Advance(1)
+	equip:Fire(p, 5)
+	w:Advance(1)
+	equip:Fire(p, "", "extra")
+	check(d.Pets.Equipped[1] == uid, "an unknown uid / a number / extra arguments: ignored")
+	w:Advance(1)
+	equip:Fire(p, uid)
+	equip:Fire(p, "")
+	check(d.Pets.Equipped[1] == uid, "too fast (rate limit): ignored")
+	-- catch-up: the quest is done with a pick but the pet is missing (an old save, a crash)
+	local w2 = bareWorld()
+	local q, e = w2:Join(402, { Faction = "Horns", Class = "Mage",
+		Data = { Story = { Done = { [C0.PetGrant.Quest] = true }, Pick = { [C0.PetGrant.Quest] = "Minion" } } } })
+	local qp = e.Pets.List[babySlimes(e)[1] or ""] or {}
+	check(#babySlimes(e) == 1 and qp.Lean == "Evil" and qp.Name == "Little Minion", "catch-up: the pet from the saved pick", show(qp))
+	local w3 = bareWorld()
+	local r, f = w3:Join(403, { Faction = "Halo", Class = "Mage",
+		Data = { Story = { Done = {}, Pick = { [C0.PetGrant.Quest] = "Care" } } } })
+	check(petCount(f) == 0, "no catch-up without the quest done")
+end)
+
 ------------------------------------------------------------------ 4. saves from before A23-39: the notice + one free change
 runGroup("legacy", function()
 	local w = bareWorld()
