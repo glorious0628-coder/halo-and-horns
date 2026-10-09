@@ -64,12 +64,16 @@
     {
       "check": "the war skies never touch the faces (applySky has no Skybox)",
       "ok": true
+    },
+    {
+      "check": "Config.Sky.Faces is the seamless order (Ft 86737469798577, Bk 106230772458054, Lf 80981399991828, Rt 113124022425103, Up 139860275275280, Dn 111194337613180)",
+      "ok": true
     }
   ],
   "mutations": {
-    "total": 18,
-    "applied": 18,
-    "caught": 18,
+    "total": 19,
+    "applied": 19,
+    "caught": 19,
     "results": [
       {
         "mutation": "the noon sun back",
@@ -168,6 +172,12 @@
         "caught": true
       },
       {
+        "mutation": "the sky sides back in the seam order",
+        "source": "CONFIG",
+        "applied": true,
+        "caught": true
+      },
+      {
         "mutation": "Edit bakes the old noon",
         "source": "PREVIEW",
         "applied": true,
@@ -182,9 +192,9 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "32a004c288ad7861b92816e284d070d051ca3c46fb17b3af0c1b25602dfdb198",
+    "src/ReplicatedStorage/Shared/Config.luau": "00b98c421ec53b17a8bd3158b6d972da3502210e5ee5e980523aab32f3d19845",
     "src/ServerScriptService/WarService.luau": "1519e7af51e1a554377d70be3b1d7b7fe639bbdbe9a5713c9830790dcba19c05",
-    "tools/preview_map.lua": "72aee66fceebac56bdf94da4a52062bd6f0ab1135ea47f39cc41e47610d2112f"
+    "tools/preview_map.lua": "6ea6e58ef38f09e101bb0db99aa589ccf032a811f6fd3dc2090ca0d37d9e17f8"
   },
   "studioCalls": 0,
   "limitations": "Numbers only: whether the meadow now reads deep (hills, path, waterfall; PC and phone) is the main-Studio before / after photo check (메인 반영); Lighting.Technology is a place setting set in Edit."

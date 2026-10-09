@@ -22,6 +22,7 @@ Net.Names = {
 	"BoardAction", -- E11 (boardId, "Open" | "Take" | "Reroll", slot?, "Kind" | "Sneaky"?) at a job board (BoardService)
 	"UseSkill", -- SKL-2 (slot: "Q" | "Z" | "X") one press = one cast (SkillService; Q also stays on "Release")
 	"UiMetric", -- BB38 (windowId: Config.Analytics.UiIds) a window the client opened (TelemetryService, metrics only)
+	"SetLook", -- A23-75 (id: an owned Config.Looks id of the player's faction, or "" = none) MonetizationService
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request
@@ -45,6 +46,7 @@ Net.Names = {
 	"CandyTrade", -- A23-79 #4: (jar id: Config.CandyJar.Trades[].Id) candy for a stat-free title (DiaryService)
 	-- 게임성 개발 2 (2026-10-08), client -> server:
 	"FinisherPick", -- (card id: number, "Help" | "Tickle") the King Slime finisher card (FinisherService)
+	"CardAction", -- A23-86 CC: (card id: number, "Good" | "Evil") the open choice card (ChoiceCard)
 }
 
 Net.GameStateDefaults = {
@@ -52,6 +54,8 @@ Net.GameStateDefaults = {
 	WarHaloScore = 0, WarHornsScore = 0, WarRoundEndsAt = 0, WarMode = "Idle", WarBlessing = "None",
 	-- FactionService
 	HaloCount = 0, HornsCount = 0,
+	-- A23-75 MonetizationService: VIP owners' display names (every server), newest first, one per line
+	SupporterNames = "",
 	-- CR-L7: FactionService.GetUnderdogCounts (no rookies, no 120 s idlers) for the rebirth underdog bonus + preview
 	UnderdogHalo = 0, UnderdogHorns = 0,
 	-- JusticeService

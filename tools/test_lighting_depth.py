@@ -38,6 +38,8 @@ MUTATIONS = [
     ("WAR", "low contrast back", "Contrast = 0.12, Saturation = -0.05", "Contrast = 0.05, Saturation = -0.05"),
     ("WAR", "neon saturation back", "Contrast = 0.12, Saturation = -0.05", "Contrast = 0.12, Saturation = 0.1"),
     ("WAR", "the soft lighting style back", 'local LIGHT_STYLE = "Realistic"', 'local LIGHT_STYLE = "Soft"'),
+    ("CONFIG", "the sky sides back in the seam order", 'Lf = "rbxassetid://80981399991828",\n\tRt = "rbxassetid://113124022425103",',
+     'Lf = "rbxassetid://113124022425103",\n\tRt = "rbxassetid://80981399991828",'),
     ("PREVIEW", "Edit bakes the old noon", "Lighting.ClockTime = 15.3\n", "Lighting.ClockTime = 14.2\n"),
     ("PREVIEW", "Edit bakes the old fog colour", "Lighting.FogColor = RGB(150, 205, 228)\n", "Lighting.FogColor = RGB(205, 215, 230)\n"),
 ]
@@ -103,8 +105,24 @@ def checks_for(config, war, preview):
          and 'for _, side in { "Ft", "Bk", "Lf", "Rt", "Up", "Dn" } do' in war
          and 'if type(id) == "string" and id ~= "" then setProps(sky, { ["Skybox" .. side] = id }) end' in war),
         ("the war skies never touch the faces (applySky has no Skybox)", bool(apply) and "Skybox" not in apply),
+        # 메인 반영 33a77cb8: the seamless order is "B" (Lf / Rt swapped from the first sheet); 검수 10/09 saw the seam again
+        ("Config.Sky.Faces is the seamless order (Ft 86737469798577, Bk 106230772458054, Lf 80981399991828, "
+         "Rt 113124022425103, Up 139860275275280, Dn 111194337613180)",
+         faces_ok(config)),
     ]
     return out
+
+
+SKY_FACES = {"Ft": "86737469798577", "Bk": "106230772458054", "Lf": "80981399991828", "Rt": "113124022425103",
+             "Up": "139860275275280", "Dn": "111194337613180"}
+
+
+def faces_ok(config):
+    m = re.search(r"\nConfig\.Sky\.Faces = \{\n(.*?)\n\}", config, re.S)
+    if not m:
+        return False
+    got = dict(re.findall(r"(Ft|Bk|Lf|Rt|Up|Dn) = \"rbxassetid://(\d+)\"", m.group(1)))
+    return got == SKY_FACES
 
 
 def main():

@@ -17,6 +17,7 @@ local INIT_ORDER = {
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
 	"ScoreBudget", "FinisherService", -- 게임성 개발 2: the King Slime finisher card + the P9 daily score cap
 	"FieldBossService", -- 게임성 개발 2: the year-round field bosses (the King Slime, ...)
+	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -30,6 +31,7 @@ local START_ORDER = {
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
 	"ScoreBudget", "FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
+	"Deeds", "ChoiceCard", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"PlayerService",
 }
 
@@ -65,8 +67,12 @@ end
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
 --   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill); SlimeKing / any Config.FieldBosses key (that boss now)
+--   A23-77: AttendNext (today's attendance claim opens again)
+--   A23-86: Card (a choice card of that Config.ChoiceCard.Kinds id opens now)
 --   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
 --   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1).
+--   A23-75: Pass ("XP2:on" / "Gold2:off" / "VIP:clear" / "HaloIce:on": this session only, never saved, never on the
+--   shared supporter board), LookGrant ("HaloSprout": an attendance look, saved like a real unlock)
 if game:GetService("RunService"):IsStudio() then
 	local debugFn = Instance.new("BindableFunction")
 	debugFn.Name = "DebugCommand"
@@ -134,6 +140,11 @@ if game:GetService("RunService"):IsStudio() then
 			S.PvPService.DebugSetStars(player, value)
 		elseif key == "Bully" then
 			for _ = 1, value do S.JusticeService.AddBullyStack(player) end
+		elseif key == "Pass" then -- A23-75 Studio test aid: a game pass on / off / back to Roblox's answer
+			local k, mode = string.match(tostring(value), "^(%w+):?(%a*)$")
+			return S.MonetizationService.DebugSetPass(player, k, mode ~= "" and mode or "on")
+		elseif key == "LookGrant" then -- A23-75 Studio test aid: unlock an attendance look (A23-77)
+			return tostring(S.MonetizationService.GrantLook(player, tostring(value)))
 		elseif key == "Tickets" then
 			S.MonetizationService.AddTickets(player, "Class", value)
 			S.MonetizationService.AddTickets(player, "Faction", value)
@@ -141,6 +152,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.QuestService.DebugSimulateAbsence(player, value)
 		elseif key == "Finisher" then -- Studio test aid: a King Slime finisher card without a kill (FinisherService)
 			return S.FinisherService.DebugOffer(player) and "ok" or "a card is open"
+		elseif key == "Card" then -- A23-86 Studio test aid: a choice card of that kind (Config.ChoiceCard.Kinds) opens now
+			return tostring(S.ChoiceCard.Offer(player, tostring(value)))
 		elseif key == "AttendNext" then -- A23-77 Studio test aid: today's attendance claim opens again
 			return S.AttendanceService.DebugNextDay(player)
 		elseif key == "Goose" then

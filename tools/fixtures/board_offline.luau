@@ -199,10 +199,10 @@ end)
 runGroup("take and finish", function()
 	local w = boardWorld()
 	local p, d = atBoard(w, 501, { "J3", "J6", "J1", "J4" })
-	w:Act(p, "Meadow", "Take", 1, "Kind") -- J3: King Slime x2
+	w:Act(p, "Meadow", "Take", 1, "Kind") -- J3: Slime Prince x2
 	local st = d.Board
 	check(#st.Held == 1 and st.Held[1].Id == "J3" and st.Held[1].Side == "Kind" and st.Held[1].Target == 2,
-		"took J3 on the Kind side (2 King Slimes)", show(st.Held))
+		"took J3 on the Kind side (2 Slime Princes)", show(st.Held))
 	local after = cardIds(w:LastBoard(p))
 	check(after[1] ~= "J3" and after[2] == "J6" and after[3] == "J1" and after[4] == "J4", "the taken card's slot gets a new card",
 		show(after))
@@ -215,11 +215,11 @@ runGroup("take and finish", function()
 		"the job row carries the job's ShortName (검수 2026-10-07: the phone quest row)", show({ rows[1].ShortName, j3short }))
 	local bank, honor, infamy, n0 = d.BankGold or 0, d.Honor or 0, d.Infamy or 0, #w.Notices
 	w:KillAt(p, "Slime")
-	check(st.Held[1].P == 0, "a slime is not a King Slime", st.Held[1].P)
+	check(st.Held[1].P == 0, "a slime is not a Slime Prince", st.Held[1].P)
 	w:KillAt(p, "BigSlime")
 	w:KillAt(p, "BigSlime")
 	check(#st.Held == 0 and (d.BankGold or 0) == bank + 36 and #w.XP >= 1 and w.XP[#w.XP].N == 60,
-		"2 King Slimes: paid at once (36 gold + 60 XP), the job leaves", show({ st.Held, (d.BankGold or 0) - bank }))
+		"2 Slime Princes: paid at once (36 gold + 60 XP), the job leaves", show({ st.Held, (d.BankGold or 0) - bank }))
 	check(said(w, p, n0, string.format(B0.Text.Done, "36", "60")) and said(w, p, n0, B0.Text.LeanKind),
 		"lines: 'Job done! +36 gold · +60 XP' and 'Your shard leaned to the light.'", show(w:NoticesFor(p, n0)))
 	check(d.Story.N.Kind == 1 and (d.Honor or 0) == honor and (d.Infamy or 0) == infamy and st.Done == 1,

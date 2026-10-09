@@ -106,6 +106,20 @@ MUTATIONS = [
      '\t\t\tif fitWall(wall, specs[name]) then Util.Log(TAG, "moved " .. name .. " onto Config.Map.Bounds") end\n', ""),
     ("the ruins road runs into the crown altar", "config", '{ Name = "RoadRuins", MinX = 1260, MaxX = 1684,',
      '{ Name = "RoadRuins", MinX = 1260, MaxX = 1760,'),
+    # 검수 10/09 roads
+    ("RoadSouth back to near-black red", "config", "RoadSouth = { Color = Color3.fromRGB(150, 115, 105)",
+     "RoadSouth = { Color = Color3.fromRGB(70, 45, 45)"),
+    ("preview RoadNorth keeps the old flat color", "preview", "MaxZ = -10, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },",
+     "MaxZ = -10, Color = RGB(215, 205, 185), Material = SP },"),
+    ("FitRoads no longer cuts at the plaza", "mapbuilder", "\t\tif math.abs(c.X) < r and near < r and (c.Z - half) * (c.Z + half) >= 0 then\n",
+     "\t\tif false then\n"),
+    ("FitRoads cuts the far end", "mapbuilder", "\t\t\t\tp.CFrame = CFrame.new(c.X, c.Y, s * (r + far) / 2)\n",
+     "\t\t\t\tp.CFrame = CFrame.new(c.X, c.Y, s * (r + near) / 2)\n"),
+    ("FitRoads does not hide a part fully inside", "mapbuilder", "\t\t\t\tp.Transparency = 1\n", ""),
+    ("Build never runs FitRoads", "mapbuilder", "pcall(MapBuilder.FitRoads, folders.Decor)", "pcall(function() end)"),
+    ("preview stops cutting the south road", "preview", "if minZ >= 0 and minZ < ROAD_PLAZA_R then minZ = ROAD_PLAZA_R end", ""),
+    ("Config.Map.Roads cut instead of the parts", "config", '{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150 },',
+     '{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 60, MaxZ = 150 },'),
 ]
 
 
@@ -159,6 +173,13 @@ def hollow_uv(mapbuilder: str) -> str:
     if not pairs:
         raise ValueError("MapBuilder.luau: HOLLOW.Props has no (U, V) entries")
     return "{ " + ", ".join(f"{{ {u}, {v} }}" for u, v in pairs) + " }"
+
+
+def fitroads_source(mapbuilder: str) -> str:
+    m = re.search(r"\nfunction MapBuilder\.FitRoads\(decor\)\n.*?\nend\n", mapbuilder, re.S)
+    if not m:
+        raise ValueError("MapBuilder.luau: MapBuilder.FitRoads is missing; update the extractor")
+    return m.group(0)
 
 
 def vec_of(text: str, pattern: str):
@@ -260,6 +281,12 @@ def static_checks(src: dict[str, str], values: dict | None) -> list[tuple[str, b
                 'local off = inst:GetAttribute("MapV2Ground")' in ap and 'inst:SetAttribute("MapV2Settled", true)' in ap
                 and "if math.abs(dy) > 60 then" in ap and "hit.Material == Enum.Material.Water then" in ap
                 and '"settle", "build", "kits"' in ap))
+    plaza = re.search(r"local ROAD_PLAZA_R = (\d+)", pv)
+    cfg_plaza = re.search(r"\tRoadLook = \{\n\t\tPlazaRadius = (\d+),", src["config"])
+    out.append(("검수 10/09 roads: MapBuilder.Build runs FitRoads (pcall); preview_map cuts the town roads at the same plaza radius",
+                "pcall(MapBuilder.FitRoads, folders.Decor)" in mb and plaza is not None and cfg_plaza is not None
+                and plaza[1] == cfg_plaza[1] and "if minZ >= 0 and minZ < ROAD_PLAZA_R then minZ = ROAD_PLAZA_R end" in pv
+                and "if maxZ <= 0 and maxZ > -ROAD_PLAZA_R then maxZ = -ROAD_PLAZA_R end" in pv))
     war = src["war"]
     out.append(("A23-74 no ray bursts: WarService turns the SunRaysEffect off and every sky's SunRays is 0",
                 "local SUNRAYS_FIXED = { Spread = 0.4, Intensity = 0, Enabled = false }" in war
@@ -273,6 +300,7 @@ def run(src: dict[str, str], layout: dict, directory: Path, name: str) -> dict:
             f"local PREVIEW_SOURCE = {lua_long(preview_source(src['preview']))}\n"
             f"local LAYOUT = {layout_lua(layout)}\n"
             f"local HOLLOW_UV = {hollow_uv(src['mapbuilder'])}\n"
+            f"local FITROADS_SOURCE = {lua_long(fitroads_source(src['mapbuilder']))}\n"
             + FIXTURE.read_text(encoding="utf-8"))
     path = directory / name
     path.write_text(text, encoding="utf-8")

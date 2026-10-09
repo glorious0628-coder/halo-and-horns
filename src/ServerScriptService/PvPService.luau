@@ -712,7 +712,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 				bullyBounty = Config.Bounty(vLevel, 0, bountyBully)
 				if bullyBounty > 0 then
 					claimBullyBounty(victim) -- claimed: no bully bounty on this victim for any killer for a while
-					Progression.AddBankGold(killer, bullyBounty, "Bounty")
+					bullyBounty = Progression.AddBankGold(killer, bullyBounty, "Bounty") or bullyBounty -- A23-75: as added
 					notify(killer, fmt("BullyBountyGain", Util.FormatNumber(bullyBounty)), "reward", "GoldPickup")
 				end
 			end
@@ -737,7 +737,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 				if bountyBully > 0 then
 					claimBullyBounty(victim) -- claimed: no bully bounty on this victim for any killer for a while
 				end
-				Progression.AddBankGold(killer, bounty, "Bounty")
+				bounty = Progression.AddBankGold(killer, bounty, "Bounty") or bounty -- A23-75: as added (2x Gold)
 			end
 			local honor = pairOk and PvPService.ScalePoints(math.max(1, starsBefore), bold) or 0 -- A23-18 boldness
 			if honor > 0 then
@@ -963,7 +963,7 @@ local function payLeaveBounty(player)
 		if bully > 0 then
 			claimBullyBounty(player)
 		end
-		S.ProgressionService.AddBankGold(a, bounty, "Bounty")
+		bounty = S.ProgressionService.AddBankGold(a, bounty, "Bounty") or bounty -- A23-75: as added (2x Gold)
 	end
 	if honor > 0 then grantFame(a, "Honor", honor, verdict, player) end
 	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward", "GoldPickup")

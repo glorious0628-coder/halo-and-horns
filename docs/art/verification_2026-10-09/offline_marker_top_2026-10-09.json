@@ -1,0 +1,37 @@
+{
+  "checks": 9,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "always rise above the block (the old rule)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "always drop below the block",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "below without the bottom limit",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "one pass only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "going down may turn back up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "moveStep ignores the top bar",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed"
+}

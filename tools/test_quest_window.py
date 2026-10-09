@@ -27,6 +27,18 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-08/offline_quest_window_2026-10-08.json"
 
 MUTATIONS = [
+    # 검수 10/09: the Studio-only preview hook
+    ("BOOK", "the preview hook outside Studio", "\tif RunService:IsStudio() then\n\t\tlocal lp = Players.LocalPlayer\n",
+     "\tif true then\n\t\tlocal lp = Players.LocalPlayer\n"),
+    ("BOOK", "the preview shows the real rows", "\tif S.Preview then return QuestBook.PreviewContext(S.Preview, Util.Now()) end\n", ""),
+    ("BOOK", "a sample [Claim] reaches the server", "\t\t\tif S.Preview then return end -- sample rows: nothing to claim\n", ""),
+    ("BOOK", "'' never closes the preview", "\t\tS.Preview = nil\n\t\tQuestBook.Toggle(false)\n", "\t\tS.Preview = nil\n"),
+    ("BOOK", "the open window is not redrawn", "\t\tif VIEW.Body then drawBody() else QuestBook.Toggle(true) end\n",
+     "\t\tQuestBook.Toggle(true)\n"),
+    ("BOOK", "any mode accepted", "\tif not T.Preview.Modes[mode] then return nil end\n", ""),
+    ("BOOK", "empty mode keeps the rows", "\t\tif empty then return out end\n", ""),
+    ("BOOK", "no rerollable sample daily", '{ Id = "Gold", Kind = "Daily", Slot = 2, Text = "Collect 60 gold", Progress = 20, Target = 60 },',
+     '{ Id = "Gold", Kind = "Daily", Slot = 2, Text = "Collect 60 gold", Progress = 60, Target = 60 },'),
     ("BOOK", "every quest in every tab", "\t\t\tif QuestBook.TabOf(e) == tab then\n", "\t\t\tif true then\n"),
     ("BOOK", "no goose info line", '\t\tif gattr("GooseActive") == true then table.insert(out.InProgress, { Kind = "Info", Text = T.Text.Goose }) end\n', ""),
     ("BOOK", "the crown war line without a round", "\t\tif warEnds > now then\n", "\t\tif true then\n"),

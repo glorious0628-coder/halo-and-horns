@@ -17,7 +17,13 @@
 -- Public API: QuestBook.Init(C), QuestBook.Start(), QuestBook.IsReady(), QuestBook.Toggle(open?), QuestBook.ShowTab(id),
 -- QuestBook.TabOf(entry), QuestBook.Sections(tab, ctx) -> { InProgress, Available, Done } (pure: ctx = { Entries, Book,
 -- DoneSession, Attr = fn(name), GameAttr = fn(name), Now }; the offline test drives it).
+-- Studio-only check hook (이미지 개발's photos, 검수 10/09): the local attribute QuestBookPreview = "<Tab>" or
+-- "<Tab>,<mode>" (full | empty | long; full by default) opens the window on that tab with sample rows
+-- (QuestBook.PreviewContext; [Claim] / [New] / a row press do nothing then); "" closes it and the real rows come
+-- back. Never read outside Studio.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -59,7 +65,35 @@ local T = {
 	},
 }
 T.NoAvailable = { Main = true } -- tabs without an Available section (the main chain is never waiting to be picked up)
-local S = { Ready = false, Tab = "Main", Conn = nil }
+-- the Studio preview's sample rows (QuestBook.PreviewContext): one or more per tab, a claimable and a rerollable daily
+T.Preview = {
+	Modes = { full = true, empty = true, long = true },
+	Long = " and then come back to the fountain in the Crossroads to tell everyone",
+	Entries = {
+		{ Id = "story:M1_3", Kind = "Main", Story = { Id = "M1_3" }, Text = "Help the Slime Mayor", Progress = 2, Target = 3 },
+		{ Id = "job:1", Kind = "Job", Text = "Bring jelly drops to the board", Progress = 1, Target = 3 },
+		{ Id = "Kill", Kind = "Daily", Slot = 1, Text = "Defeat Slime ×5", Progress = 5, Target = 5 },
+		{ Id = "Gold", Kind = "Daily", Slot = 2, Text = "Collect 60 gold", Progress = 20, Target = 60 },
+		{ Id = "story:S1", Kind = "Sub", Text = "Find the Golden Goose", Progress = 0, Target = 1 },
+		{ Id = "story:H1", Kind = "Sub", Text = "Light the hero's lantern", Progress = 1, Target = 2 },
+	},
+	Available = {
+		{ Id = "story:PreviewSide", Kind = "Sub", Text = "The lost lamb · Opens at Lv 8" },
+		{ Id = "story:PreviewSide2", Kind = "Sub", Text = "Fix the old bridge" },
+		{ Id = "story:R1", Kind = "Sub", Text = "The red flag · Opens at Lv 12" },
+	},
+	Done = {
+		{ Id = "story:M1_1", Kind = "Main", Text = "Meet the guide" },
+		{ Id = "story:M1_2", Kind = "Main", Text = "Your first weapon" },
+		{ Id = "story:PreviewSideDone", Kind = "Sub", Text = "Help the farmer" },
+		{ Id = "story:S2", Kind = "Sub", Text = "Feed the goose" },
+		{ Id = "story:H2", Kind = "Sub", Text = "A gift for the castle" },
+	},
+	Attr = { TutorialStep = 99, DailyClaims = 1, WantedStars = 2 },
+	GameAttr = { GooseActive = true },
+	WarIn = 125,
+}
+local S = { Ready = false, Tab = "Main", Conn = nil, Preview = nil }
 local VIEW = { Parent = nil, Kit = nil, Tabs = nil, Body = nil } -- the open window's parts (nil while closed)
 
 local function tabs() return Config.QuestTabs.Order end
@@ -204,6 +238,47 @@ function QuestBook.Sections(tab, ctx)
 	return out
 end
 
+----------------------------------------------------------------- the Studio preview (pure parts)
+-- "<Tab>" / "<Tab>,<mode>" -> tab, mode (nil for "" / an unknown tab / an unknown mode)
+function QuestBook.ParsePreview(v)
+	if type(v) ~= "string" then return nil end
+	local tab, mode = string.match(v, "^%s*(%a+)%s*,?%s*(%a*)%s*$")
+	if not tab or not table.find(tabs(), tab) then return nil end
+	mode = (mode == nil or mode == "") and "full" or string.lower(mode)
+	if not T.Preview.Modes[mode] then return nil end
+	return tab, mode
+end
+
+-- the sample context for QuestBook.Sections (mode full | empty | long; now = the clock for the crown war line)
+function QuestBook.PreviewContext(mode, now)
+	local P = T.Preview
+	local empty = mode == "empty"
+	local function copy(list)
+		local out = {}
+		if empty then return out end
+		for _, r in list do
+			local c = table.clone(r)
+			if mode == "long" then c.Text = c.Text .. P.Long end
+			table.insert(out, c)
+		end
+		return out
+	end
+	local gattr = empty and {} or table.clone(P.GameAttr)
+	if not empty then gattr.WarRoundEndsAt = (tonumber(now) or 0) + P.WarIn end
+	local attr = empty and {} or P.Attr
+	return {
+		Entries = copy(P.Entries),
+		Book = { Available = copy(P.Available), Done = copy(P.Done) },
+		DoneSession = {},
+		HasDiary = false,
+		Attr = function(name) return attr[name] end,
+		GameAttr = function(name) return gattr[name] end,
+		Now = tonumber(now) or 0,
+		CanClaim = function(e) return e.Progress >= e.Target end,
+		CanReroll = function(e) return e.Kind == "Daily" and e.Progress < e.Target end,
+	}
+end
+
 ----------------------------------------------------------------- the window
 local function hudCall(name, ...)
 	local hud = C and C.HUD
@@ -216,6 +291,7 @@ local function hudCall(name, ...)
 end
 
 local function context()
+	if S.Preview then return QuestBook.PreviewContext(S.Preview, Util.Now()) end
 	local kit = VIEW.Kit
 	return {
 		Entries = hudCall("QuestEntries") or {},
@@ -282,18 +358,21 @@ local function drawRow(kit, parent, row)
 	end
 	if row.CanClaim then
 		local b = kit.Button(f, T.Text.Claim, kit.Theme.Good, UDim2.fromOffset(T.BtnW, T.BtnH), function()
+			if S.Preview then return end -- sample rows: nothing to claim
 			hudCall("QuestClaim", row.Entry)
 		end)
 		b.LayoutOrder = 3
 	end
 	if row.CanReroll then
 		local b = kit.Button(f, T.Text.Reroll, kit.Palette.Button, UDim2.fromOffset(T.BtnW, T.BtnH), function()
+			if S.Preview then return end
 			hudCall("QuestReroll", row.Entry)
 		end)
 		b.LayoutOrder = 4
 	end
 	if row.Kind == "Quest" then
 		f.Activated:Connect(function()
+			if S.Preview then return end
 			if hudCall("QuestGo", row.Entry) and VIEW.Kit then VIEW.Kit.Close() end
 		end)
 	elseif row.Kind == "Link" then
@@ -444,6 +523,18 @@ function QuestBook.Init(registry)
 	}) == true
 end
 
+-- the Studio hook: QuestBookPreview changed
+local function applyPreview(v)
+	local tab, mode = QuestBook.ParsePreview(v)
+	if tab then
+		S.Preview, S.Tab, S.Opened = mode, tab, true
+		if VIEW.Body then drawBody() else QuestBook.Toggle(true) end
+	elseif S.Preview then
+		S.Preview = nil
+		QuestBook.Toggle(false)
+	end
+end
+
 function QuestBook.Start()
 	local hud = C and C.HUD
 	if type(hud) == "table" and type(hud.QuestsChanged) == "table" and type(hud.QuestsChanged.Connect) == "function" then
@@ -453,6 +544,15 @@ function QuestBook.Start()
 				if not ok then Util.Warn(TAG, "redraw failed: " .. tostring(err)) end
 			end
 		end)
+	end
+	if RunService:IsStudio() then
+		local lp = Players.LocalPlayer
+		if lp then
+			lp:GetAttributeChangedSignal("QuestBookPreview"):Connect(function()
+				local ok, err = pcall(applyPreview, lp:GetAttribute("QuestBookPreview"))
+				if not ok then Util.Warn(TAG, "preview failed: " .. tostring(err)) end
+			end)
+		end
 	end
 end
 

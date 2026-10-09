@@ -39,7 +39,7 @@ MUTATIONS = [
      "\t\tClaimed = \"Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!\",",
      "\t\tClaimed = \"Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.\","),
     ("Config: M1_1 pays nothing", C,
-     "The King Slimes ate the most of it.\",\n\t\t\tReward = { Gold = 1 },", "The King Slimes ate the most of it.\","),
+     "Big brothers always grab the biggest bite!\",\n\t\t\tReward = { Gold = 1 },", "Big brothers always grab the biggest bite!\","),
     # --- [Accept]: the Forge first for a bare-handed player
     ("accept: never the Forge", Q, "\tif STEP_FORGE and needsFirstWeapon(getData(player)) then\n", "\tif false then\n"),
     ("accept: the Forge even with the first weapon", Q, "\tif STEP_FORGE and needsFirstWeapon(getData(player)) then\n",

@@ -207,10 +207,10 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/KingDiary.luau": "7da57a6ed1f107c571850e7ca70864c6ce84787699471735b1d166520aec8c52",
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "eb49ab3e5b44f1c9b407634b9df213d3fad24e7ccb3715c7d4cd05b0cf292abb"
+    "src/ReplicatedStorage/Shared/Config.luau": "d15222613df576289436fad84b59cab196ca1d5a2068b06447db9766bc2a3da7",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
   },
-  "fixtureSHA256": "ccd83a2e1161146e43c43a129dccb1b0c665c25b3e29db61e95f53e22a7741ac",
+  "fixtureSHA256": "69cfeeb204363b128f31700e25d959d888d01c03a906fa35af195bf6e5b7f48d",
   "studioCalls": 0,
   "limitations": "Doubles instead of Panels / UIKit: how the book and the jar look on PC and phone is a Studio photo check (메인 반영); pages open only when a king is beaten together (DiaryService, tools/test_return.py); a menu square for the diary needs 이미지 개발's icon."
 }
