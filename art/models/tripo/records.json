@@ -6264,5 +6264,24 @@
     "build/import_D12/WorldKit_ImportD12.glb = build/import_all/4_fourth/E4_WoodsCamp3.glb (LOD only, name without _LOD)"
    ]
   }
+ ],
+ "Kit_M_CrownShrine_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multiview front+left(side)+back, H3.1 (ultra mesh, poly 20000 typed, 4K tex, PBR, triangles, remove-lighting OFF)",
+   "points": 55,
+   "account": "web ① (485-point account, nick 12516812)",
+   "site": "studio.tripo3d.ai",
+   "task": "614173e1-4e9e-4835-9ce0-18624f28ac86",
+   "image": "art/out/hq/HQ_M_CrownShrine_{front,side,back}.png",
+   "at": "2026-10-09 10:0x",
+   "balance_after": 430,
+   "file": "art/models/tripo/web/Kit_M_CrownShrine_HD_src.glb",
+   "tris": 19781,
+   "note": "검수 OK 10/09 (A23-84 왕관 돌 사당, 옛 계정 때 끊긴 작업 다시)",
+   "derived": [
+    "art/models/tripo/web/Kit_M_CrownShrine_HD_plain.glb (--rotz -90: front -Y, target 100000 = plain re-save; NOTE target 0 collapses to 38 tris)"
+   ]
+  }
  ]
 }
