@@ -36,7 +36,7 @@ local stays = {}
 -- Config.StoryQuests has its side here (검수 2026-10-07: SKL-3 SK2's Guard / Take were missing, so that pick never
 -- counted as a change of mind; A23-70 Lunch1's GiveBack / Bite too)
 local SIDE = { Good = "Good", Purify = "Good", A = "Good", Evil = "Evil", Devour = "Evil", B = "Evil", Guard = "Good",
-	Take = "Evil", GiveBack = "Good", Bite = "Evil" }
+	Take = "Evil", GiveBack = "Good", Bite = "Evil", Care = "Good", Minion = "Evil" } -- Care / Minion: PET-4 Pet1
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end

@@ -99,18 +99,26 @@ local function findSpecies(pets, species)
 end
 
 ------------------------------------------------------------------ A23-39 pet tamer
--- the tamer's baby slime: added once (an owned baby slime is never duplicated), equipped when nothing is. quiet = no
--- notice. Returns the new uid, or nil when the player already had one.
-function PetService.GiveTamerPet(player, quiet)
+-- PET-4: a pet of `species` added once (an owned one is never duplicated; an owned one without a Lean / Name takes
+-- these), equipped when nothing is. lean = "Good" | "Evil" | "" (the story pick), name = the label over my pet ("" =
+-- none), text = the notice (nil = none). Returns the new uid, or nil when the player already had one.
+function PetService.GrantPet(player, species, lean, name, text)
 	local data = getData(player)
-	if not data then return nil end
+	if not data or not KNOWN[species] then return nil end
 	local pets = PetService.Sanitize(data)
-	local have = findSpecies(pets, TAMER.Pet)
+	lean = (lean == "Good" or lean == "Evil") and lean or ""
+	name = type(name) == "string" and string.sub(name, 1, LIMIT.NameLen) or ""
+	local have = findSpecies(pets, species)
 	if have then
+		local p = pets.List[have]
+		local changed = false
+		if p.Lean == "" and lean ~= "" then p.Lean, changed = lean, true end
+		if p.Name == "" and name ~= "" then p.Name, changed = name, true end
 		if #pets.Equipped == 0 then
 			pets.Equipped = { have }
-			publish(player, data)
+			changed = true
 		end
+		if changed then publish(player, data) end
 		return nil
 	end
 	local uid
@@ -118,12 +126,28 @@ function PetService.GiveTamerPet(player, quiet)
 		uid = "P" .. tostring(pets.Next)
 		pets.Next += 1
 	until pets.List[uid] == nil
-	pets.List[uid] = { Sp = TAMER.Pet, Lv = 1, XP = 0, Name = "", Lean = "", Bound = true }
+	pets.List[uid] = { Sp = species, Lv = 1, XP = 0, Name = name, Lean = lean, Bound = true }
 	if #pets.Equipped == 0 then pets.Equipped = { uid } end
 	publish(player, data)
-	if not quiet then notify(player, TXT.PetGot, "reward", "None") end -- sound_gaps C1: no pet sound yet, never QuestDone
-	PetService.PetGranted:Fire(player, uid, TAMER.Pet)
+	if type(text) == "string" then
+		notify(player, text, "reward", "None") -- sound_gaps C1: no pet sound yet, never QuestDone
+	end
+	PetService.PetGranted:Fire(player, uid, species)
 	return uid
+end
+
+-- the tamer's baby slime (A23-39): GrantPet with the tamer's notice. quiet = no notice.
+function PetService.GiveTamerPet(player, quiet)
+	return PetService.GrantPet(player, TAMER.Pet, "", "", not quiet and TXT.PetGot or nil)
+end
+
+-- PET-4: the lost baby slime's story pick (Config.PetGrant.Quest) makes it my pet, either side
+local function onStoryPicked(player, questId, pick)
+	local G = Config.PetGrant
+	if type(G) ~= "table" or questId ~= G.Quest then return end
+	local lean = type(G.Picks) == "table" and G.Picks[pick] or nil
+	if lean ~= "Good" and lean ~= "Evil" then return end
+	PetService.GrantPet(player, G.Species, lean, (G.Names or {})[lean] or "", (G.Text or {}).Got)
 end
 
 local function isTamer(player, data)
@@ -215,6 +239,7 @@ function PetService.Start()
 	connect("PlayerService", "PlayerReady", onPlayerReady)
 	connect("ClassService", "ClassChanged", function(player) onBecame(player) end)
 	connect("FactionService", "FactionChanged", function(player) onBecame(player) end)
+	if S.StoryQuestService then connect("StoryQuestService", "Picked", onStoryPicked) end -- PET-4
 	print("[PetService] started")
 end
 

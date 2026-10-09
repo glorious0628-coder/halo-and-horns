@@ -194,6 +194,61 @@ runGroup("pet", function()
 	check(petCount(g) == 0, "not ready: no pet")
 end)
 
+------------------------------------------------------------------ PET-4: the lost baby slime for everyone (게임성 개발 2)
+runGroup("lost baby slime", function()
+	local G = C0.PetGrant
+	local def = C0.StoryQuests.Defs[G.Quest]
+	check(def and def.Requires.Done[1] == "M1_1" and table.find(C0.StoryQuests.Subs, G.Quest) ~= nil,
+		"a sub quest after M1_1", G.Quest)
+	local kill, pick = def.Steps[1].Obj, def.Steps[2].Obj
+	check(kill.Type == "Kill" and kill.Kind == "Slime" and kill.Zone == "SlimeMeadow" and kill.Count == 8, "8 meadow slimes first")
+	check(pick.Type == "Choice" and pick.Good.Label == "Take care of it" and pick.Evil.Label == "Make it my minion"
+		and pick.Good.Points == 1 and pick.Evil.Points == 1 and G.Picks[pick.Good.Pick] == "Good" and G.Picks[pick.Evil.Pick] == "Evil"
+		and G.Picks.A == "Good" and G.Picks.B == "Evil", "the pick: care (Good) / minion (Evil), 1 point, Neutral A / B")
+	check(G.Species == C0.Tamer.Pet and C0.PetSpeedBonus(G.Species, 1) > 0, "the same baby slime, its walk bonus kept (A23-86 decision 4)")
+	-- a Halo warrior picks Care: a Good Buddy, equipped, the friendly line (not the tamer's)
+	local w = bareWorld()
+	local p, d = w:Join(301, { Faction = "Halo", Class = "Warrior" })
+	local n0 = #w.Notices
+	w.Story.Picked:Fire(p, G.Quest, "Care")
+	local slimes = babySlimes(d)
+	local pet = slimes[1] and d.Pets.List[slimes[1]] or {}
+	check(#slimes == 1 and pet.Lean == "Good" and pet.Name == G.Names.Good and d.Pets.Equipped[1] == slimes[1]
+		and p:GetAttribute("EquippedPet") == "BabySlime", "Care: a Good Buddy baby slime, equipped", show(pet))
+	local lines = notices(w, p, n0)
+	check(indexOf(lines, G.Text.Got) ~= nil and indexOf(lines, C0.Tamer.Text.PetGot) == nil, "the pet line for everyone (not 'fights for you')")
+	-- the same pick again: nothing more
+	local n1 = #w.Notices
+	w.Story.Picked:Fire(p, G.Quest, "Care")
+	check(#babySlimes(d) == 1 and #notices(w, p, n1) == 0, "no second pet / line")
+	-- a Horns pick Minion: a Little Minion; a Neutral's B the same
+	local w2 = bareWorld()
+	local q, e = w2:Join(302, { Faction = "Horns", Class = "Mage" })
+	w2.Story.Picked:Fire(q, G.Quest, "Minion")
+	local qp = e.Pets.List[babySlimes(e)[1] or ""] or {}
+	check(qp.Lean == "Evil" and qp.Name == G.Names.Evil, "Minion: a Little Minion", show(qp))
+	local w3 = bareWorld()
+	local r, f = w3:Join(303, { Faction = "Neutral", Class = "Warrior" })
+	w3.Story.Picked:Fire(r, G.Quest, "B")
+	local rp = f.Pets.List[babySlimes(f)[1] or ""] or {}
+	check(rp.Lean == "Evil", "a Neutral's B: Evil lean", show(rp))
+	-- another quest's pick, an unknown pick: nothing
+	local w4 = bareWorld()
+	local s, g = w4:Join(304, { Faction = "Halo", Class = "Warrior" })
+	w4.Story.Picked:Fire(s, "Lunch1", "Care") -- a pick name the pet quest uses, on another quest
+	w4.Story.Picked:Fire(s, G.Quest, "Nope")
+	check(petCount(g) == 0, "other quests / unknown picks give no pet")
+	-- a tamer who already has the baby slime: no duplicate, it takes the lean and the name
+	local w5 = bareWorld()
+	local t, h = w5:Join(305, { Faction = "Neutral", Data = { ClassChosen = false, Class = "Warrior" } })
+	w5.PS.SetStat(t, "Class", "Archer")
+	w5.PS.SetStat(t, "ClassChosen", true)
+	w5.Registry.ClassService.ClassChanged:Fire(t, "Archer", "Warrior")
+	w5.Story.Picked:Fire(t, G.Quest, "A")
+	local tp = h.Pets.List[babySlimes(h)[1] or ""] or {}
+	check(#babySlimes(h) == 1 and tp.Lean == "Good" and tp.Name == G.Names.Good, "a tamer's own baby slime takes the lean / name", show(tp))
+end)
+
 ------------------------------------------------------------------ 4. saves from before A23-39: the notice + one free change
 runGroup("legacy", function()
 	local w = bareWorld()

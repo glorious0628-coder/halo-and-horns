@@ -29,6 +29,18 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 C, CO, PE, V = "CONFIG_SOURCE", "COMBAT_SOURCE", "PET_SOURCE", "VISUALS_SOURCE"
 
 MUTATIONS = [
+    # --- PET-4: the lost baby slime for everyone
+    ("no pet from the story pick", PE, "\tif S.StoryQuestService then connect(\"StoryQuestService\", \"Picked\", onStoryPicked) end -- PET-4\n", ""),
+    ("any quest gives the pet", PE, "\tif type(G) ~= \"table\" or questId ~= G.Quest then return end\n", "\tif type(G) ~= \"table\" then return end\n"),
+    ("the lean ignored", PE, "\tpets.List[uid] = { Sp = species, Lv = 1, XP = 0, Name = name, Lean = lean, Bound = true }",
+     "\tpets.List[uid] = { Sp = species, Lv = 1, XP = 0, Name = name, Lean = \"\", Bound = true }"),
+    ("a second baby slime", PE, "\tlocal have = findSpecies(pets, species)\n\tif have then\n", "\tlocal have = nil\n\tif have then\n"),
+    ("an owned pet never takes the lean", PE, "\t\tif p.Lean == \"\" and lean ~= \"\" then p.Lean, changed = lean, true end\n", ""),
+    ("the tamer line for everyone", PE, "(G.Text or {}).Got)", "TXT.PetGot)"),
+    ("minion is Good", C, "Picks = { Care = \"Good\", Minion = \"Evil\", A = \"Good\", B = \"Evil\" },",
+     "Picks = { Care = \"Good\", Minion = \"Good\", A = \"Good\", B = \"Evil\" },"),
+    ("12 slimes", C, "Obj = { Type = \"Kill\", Kind = \"Slime\", Zone = \"SlimeMeadow\", Count = 8 } },\n\t\t\t\t{ Text = \"A lost baby slime!",
+     "Obj = { Type = \"Kill\", Kind = \"Slime\", Zone = \"SlimeMeadow\", Count = 12 } },\n\t\t\t\t{ Text = \"A lost baby slime!"),
     # --- Config: names, the tamer test, weapons, the attack profile, the class card
     ("the artisan Archer is still the hunter", C, 'Neutral = "Pet Tamer", None = "Archer" },', 'Neutral = "Hunter", None = "Archer" },'),
     ("IsTamer ignores the faction", C, "return T ~= nil and classId == T.Class and factionId == T.Faction",
@@ -55,11 +67,12 @@ MUTATIONS = [
     ("no pet headbutt contact time", CO, "\t\t\tPetHeadbutt = { Contact = 0.3 }, -- A23-39 pet tamer: the pet reaches its target and bonks it\n", ""),
     ("tamer skill shove at the class time", CO, "REACT.SHOVE_RELEASE, player, style)", "REACT.SHOVE_RELEASE, player)"),
     # --- PetService
-    ("the pet is given twice", PE, "local have = findSpecies(pets, TAMER.Pet)", "local have = nil"),
+    ("the tamer's pet is another species", PE, "return PetService.GrantPet(player, TAMER.Pet,", "return PetService.GrantPet(player, \"Nope\","),
     ("an owned pet is never re-equipped", PE, "\t\tif #pets.Equipped == 0 then\n\t\t\tpets.Equipped = { have }", "\t\tif false then\n\t\t\tpets.Equipped = { have }"),
     ("a new pet is not equipped", PE, "\tif #pets.Equipped == 0 then pets.Equipped = { uid } end\n", ""),
-    ("the pet attributes are not published", PE, "\tpublish(player, data)\n\tif not quiet then notify(player, TXT.PetGot", "\tif not quiet then notify(player, TXT.PetGot"),
-    ("no pet notice", PE, "\tif not quiet then notify(player, TXT.PetGot, \"reward\", \"None\") end", ""),
+    ("the pet attributes are not published", PE, "\tpublish(player, data)\n\tif type(text) == \"string\" then\n", "\tif type(text) == \"string\" then\n"),
+    ("no pet notice", PE, "\t\tnotify(player, text, \"reward\", \"None\") -- sound_gaps C1", "\t\tlocal _ = nil -- sound_gaps C1"),
+    ("the tamer gets no notice", PE, "not quiet and TXT.PetGot or nil)", "nil)"),
     ("a non-tamer gets the pet", PE, "return data.ClassChosen == true and Config.IsTamer(data.Class, data.Faction)",
      "return data.ClassChosen == true"),
     ("the tamer before the class pick", PE, "return data.ClassChosen == true and Config.IsTamer(data.Class, data.Faction)",
