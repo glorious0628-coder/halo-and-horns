@@ -3175,7 +3175,7 @@ function UIKit.FullScreenDim(root, name)
 	return function(open)
 		local g = frame.Parent
 		if g and g:IsA("ScreenGui") then g.Enabled = open == true end
-	end
+	end, frame
 end
 
 ----------------------------------------------------------------- lifecycle

@@ -5144,6 +5144,11 @@ Config.UIArt = {
 		RibbonDays50 = { Id = "rbxassetid://127528019933746", Size = Vector2.new(512, 512) },
 		RibbonDays100 = { Id = "rbxassetid://104467679017156", Size = Vector2.new(512, 512) },
 		IconKingDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- [King Diary] book
+		-- the faction pick screen (이미지 생성 2 b3ed558, 검수 OK 10/09): the sky behind the cards (gold left, red dusk right,
+		-- the middle / bottom third left calm) and the two mascots beside the cards
+		FactionBgA = { Id = "rbxassetid://128364866807552", Size = Vector2.new(1536, 1024) },
+		FacMascotHaloA = { Id = "rbxassetid://98817628227692", Size = Vector2.new(617, 1024) },
+		FacMascotHornsA = { Id = "rbxassetid://91053337808874", Size = Vector2.new(675, 1024) },
 		IconDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- 검수 10/08: the menu square / Diary window = the same King Diary book
 		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
 		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]

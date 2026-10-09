@@ -79,6 +79,7 @@ local LAY = {
 	-- the Pitch line's shorter wordings for narrow cards (Config.Factions.*.Pitch, 개발 1 8475c8de)
 	MottoShort = { Halo = "Heal & catch thieves!", Horns = "Tricks & PvP gold!", Neutral = "Don't grab it, craft it!" },
 	MottoTiny = { Halo = "Heal & catch!", Horns = "PvP gold!", Neutral = "Craft it!" },
+	MascotH = 0.95, MascotMinFit = 0.6, -- the mascots: height / the card row's, the least share of that size still shown
 	PitchFrac = 0.36, -- the A23-57 cards: the Pitch line's share of the perk panel (up to two lines)
 	PerkTiny = {
 		Halo = { "XP +30%", "HP +20% · Regen", "Heal allies", "Auto gold" },
@@ -1414,6 +1415,28 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 	LAY.PerkShared = nil
 end
 
+-- the two mascots left / right of the card row, feet on the cards' bottom, about the cards' height; hidden where the
+-- side room is too narrow for most of a mascot (phones: the cards take the width)
+local function placeMascots(w)
+	local list = LAY.Mascots
+	if not list or #list == 0 then return end
+	local cx, cy = cardsRow.Position.X.Offset, cardsRow.Position.Y.Offset
+	local cw, ch = cardsRow.Size.X.Offset, cardsRow.Size.Y.Offset
+	local h = math.floor(ch * LAY.MascotH)
+	for i, m in list do
+		local mw = math.floor(h * m.Aspect)
+		local room = i == 1 and (cx - 8) or (w - (cx + cw) - 8)
+		local scale = math.min(1, room / math.max(1, mw))
+		local fits = scale >= LAY.MascotMinFit
+		m.Image.Visible = fits
+		if fits then
+			local hh, ww = math.floor(h * scale), math.floor(mw * scale)
+			local x = i == 1 and (cx - ww - 4) or (cx + cw + 4)
+			place(m.Image, x, cy + ch - hh, ww, hh)
+		end
+	end
+end
+
 local function layoutNow()
 	if not root then return end
 	local w, h, top, s = canvas(root.Parent)
@@ -1456,6 +1479,7 @@ local function layoutNow()
 		local cardsTop = math.max(0, titleY + tH - slack)
 		local cardsBottom = bottom - noteH + slack
 		placeCards(g, cardsTop, w - g * 2, math.max(1, cardsBottom - cardsTop), 0, minT, s)
+		placeMascots(w)
 		return
 	end
 	noteSideLook(false)
@@ -1483,6 +1507,7 @@ local function layoutNow()
 	local noteH = placeFooter(w / 2, bottom - (artId(PANEL.Footer) and 6 or 0), w - g * 2, size, s, compact)
 	local areaH = bottom - noteH - 6 - y
 	placeCards(g, y, w - g * 2, math.max(areaH, 1), needH, minT, s)
+	placeMascots(w)
 end
 
 -- FontFace bounds can yield while loading. Serialize layout passes so a resize never lets an older pass win.
@@ -1587,7 +1612,36 @@ local function build()
 	end
 	if anyArt then root.BackgroundTransparency = LAY.DimArt end
 	-- the dim over the whole screen, phone side edges included (UIKit.FullScreenDim)
-	if type(UIKit.FullScreenDim) == "function" then LAY.ShowDim = UIKit.FullScreenDim(root, "FactionPickerDim") end
+	if type(UIKit.FullScreenDim) == "function" then
+		local dim = nil
+		LAY.ShowDim, dim = UIKit.FullScreenDim(root, "FactionPickerDim")
+		-- review 10/09: the faction sky over the whole screen on that layer (cropped to fill), the mascots beside the cards
+		local bg = artId("FactionBgA")
+		if bg and dim then
+			local sky = Instance.new("ImageLabel")
+			sky.Name = "Sky"
+			sky.BackgroundTransparency = 1
+			sky.Image = bg
+			sky.ScaleType = Enum.ScaleType.Crop
+			sky.Size = UDim2.fromScale(1, 1)
+			sky.ZIndex = 2
+			sky.Parent = dim
+		end
+	end
+	LAY.Mascots = {}
+	for _, key in { "FacMascotHaloA", "FacMascotHornsA" } do
+		local id = artId(key)
+		if id then
+			local img = newImage(root, key, 1)
+			img.Image = id
+			img.ScaleType = Enum.ScaleType.Fit
+			img.Visible = false
+			table.insert(LAY.Mascots, { Image = img, Aspect = (function()
+				local sz = partSize(key)
+				return (typeof(sz) == "Vector2" and sz.Y > 0) and sz.X / sz.Y or 0.62
+			end)() })
+		end
+	end
 
 	-- altar note at the bottom (bundle 2 navy capsule: white text)
 	local navyFooter = artId(PANEL.Footer) ~= nil
