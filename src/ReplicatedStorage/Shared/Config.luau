@@ -182,8 +182,9 @@ Config.Data = {
 		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
 		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
 		-- Cam (A23-65): user 10/08 "카메라 뒤 따라가게 하는 거 없는 게 나을까? 좀 어색한데?" -> the default is Free (Roblox's own
-		-- camera); Follow stays in Settings for whoever wants it (only test accounts had saves: no migration)
-		Settings = { V = 2, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+		-- camera); Follow stays in Settings for whoever wants it. Settings V3 (검수 10/09): a save from before V3 gets Cam = Free
+		-- once (SanitizeSettings); a Follow picked after that is kept
+		Settings = { V = 3, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 			Cam = "Free" },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
@@ -3570,8 +3571,10 @@ end
 -- BB2 saved settings: value rules (defaults: Config.Data.Defaults.Settings). Text = the settings window (BB3) + toasts.
 Config.Settings = {
 	-- Settings.V. 2 (A23-78, user 2026-10-08): key hints are off by default now; a blob saved before V2 (V < 2 or no V)
-	-- drops its old KeyBadges once (SanitizeSettings), every other value stays; from V2 on the player's own pick stays
-	Version = 2,
+	-- drops its old KeyBadges once (SanitizeSettings), every other value stays; from V2 on the player's own pick stays.
+	-- V3 (A23-65, 검수 2026-10-09): the camera default is Free; a blob saved before V3 gets Cam = Free once, a Follow
+	-- picked from V3 on stays
+	Version = 3,
 	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
@@ -3727,9 +3730,12 @@ function Config.SanitizeSettings(t)
 	local out = { V = ST.Version, Keys = {} }
 	-- A23-78: a blob from before settings V2 (no V, V < 2, NaN) forgets its KeyBadges once (the old default was on)
 	local before2 = not (type(src.V) == "number" and src.V == src.V and src.V >= 2)
+	-- A23-65 / settings V3: a blob from before V3 (Follow was the old default) gets the Free camera once
+	local before3 = not (type(src.V) == "number" and src.V == src.V and src.V >= 3)
 	for key, def in ST.Defs do
 		local v, d = src[key], defaults[key]
 		if key == "KeyBadges" and before2 then v = d end
+		if key == "Cam" and before3 then v = d end
 		if def.Type == "Number" then
 			if type(v) == "number" and v == v and v > -math.huge and v < math.huge then
 				v = math.clamp(v, def.Min, def.Max)
