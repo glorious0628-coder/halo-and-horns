@@ -68,14 +68,13 @@
     "StampPress": "rbxassetid://76569480136584",
     "Chest7Open": "rbxassetid://137266411071976",
     "WelcomeBack": "rbxassetid://86644525324244",
-    "DiaryPage": "rbxassetid://75472701527108"
+    "DiaryPage": "rbxassetid://75472701527108",
+    "CandyPlop": "rbxassetid://71630733199634",
+    "KingHelpHome": "rbxassetid://129647790058754",
+    "KingTickleCoins": "rbxassetid://90219483742298",
+    "TipDing": "rbxassetid://111120758241059"
   },
-  "pending": [
-    "CandyPlop",
-    "KingHelpHome",
-    "KingTickleCoins",
-    "TipDing"
-  ],
+  "pending": [],
   "kept": {
     "about": "round-3 sounds that have no round-4 file yet; still current in Config.Audio.Files (do not retire)",
     "ids": {
