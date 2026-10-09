@@ -61,17 +61,17 @@ KIND = {
     "DomeHouseA": dict(w=12, d=11.2, h=15.1, coll="solid"),
     "DomeHouseB": dict(w=14, d=9.5, h=17.3, coll="solid"),
     "Shop": dict(w=12, d=7.5, h=14.3, coll="solid"),
-    "Statue": dict(w=5, d=5, h=13, coll="player"),
-    "ArchBridge": dict(w=11, d=30, h=7, coll="solid"),  # w = deck width, d = span length (set per bridge by scale)
-    "Stairs": dict(w=20, d=14, h=6, coll="solid"),
-    "Balustrade": dict(w=8, d=1.6, h=2.5, coll="player"),
-    "Lantern": dict(w=1.6, d=1.6, h=7, coll="player"),
-    "Planter": dict(w=6, d=6, h=3.5, coll="player"),
-    "CloudBush": dict(w=5, d=5, h=4, coll="post"),
-    "Topiary": dict(w=3.2, d=3.2, h=8, coll="post"),
-    "RoundTree": dict(w=6, d=6, h=10, coll="post"),
-    "PotFlowers": dict(w=3, d=3, h=3, coll="none"),
-    "BannerPole": dict(w=3, d=1.5, h=12, coll="player"),
+    "Statue": dict(w=6.7, d=5.5, h=13, coll="player"),
+    "ArchBridge": dict(w=21.7, d=30, h=14.9, coll="solid"),  # measured on Halo_ArchBridge_HD_LOD (fit h 30): width 21.7 incl. lantern posts, deck top at 0.59 of the height
+    "Stairs": dict(w=20, d=20, h=15.2, coll="solid"),
+    "Balustrade": dict(w=8, d=1.64, h=4.5, coll="player"),
+    "Lantern": dict(w=1.3, d=1.3, h=7, coll="player"),
+    "Planter": dict(w=6, d=5.7, h=5.8, coll="player"),
+    "CloudBush": dict(w=5, d=4.9, h=3.7, coll="post"),
+    "Topiary": dict(w=3.3, d=3.6, h=8, coll="post"),
+    "RoundTree": dict(w=7.9, d=6.8, h=10, coll="post"),
+    "PotFlowers": dict(w=3, d=2.8, h=3, coll="none"),
+    "BannerPole": dict(w=4, d=2.4, h=12, coll="player"),
 }
 SOLID = ("Cathedral", "Fountain", "Tower", "DomeHouseA", "DomeHouseB", "Shop", "Statue", "Stairs", "Gate")
 P = []  # placements
@@ -314,7 +314,8 @@ for name, za, zb, hw in TIERS:
         z -= 16
 # wing gardens: topiary + trees + bushes + pots on every wing top (random within, off the footprints)
 WINGS = [("WA", 60, 188, -434, -336), ("WB", 74, 188, -536, -450), ("WC", 100, 190, -612, -552), ("WD", 124, 190, -692, -628)]
-target = {"Topiary": 40, "RoundTree": 30, "CloudBush": 40, "PotFlowers": 40, "Planter": 30}
+# counts follow the real triangle budget (Planter 4.5k, Topiary 3.5k, RoundTree 5k, CloudBush 1.8k, PotFlowers 3k; Roblox automatic LOD cuts the far ones)
+target = {"Topiary": 20, "RoundTree": 16, "CloudBush": 24, "PotFlowers": 24, "Planter": 8}
 have = {}
 for e in P:
     have[e["kind"]] = have.get(e["kind"], 0) + 1
@@ -333,7 +334,7 @@ while any(need_more.values()) and tries < 60000:
     if put(kind, sx * ax, z, yaw, s, pad=1.5 if kind in ("RoundTree", "Topiary") else 0.6):
         need_more[kind] -= 1
 # cliff-edge cloud bushes: along the wing outer edge + the spine edge shoulders
-edge_target = 30
+edge_target = 16
 tries = 0
 while edge_target > 0 and tries < 20000:
     tries += 1
