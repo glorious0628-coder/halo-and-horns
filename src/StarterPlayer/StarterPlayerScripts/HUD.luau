@@ -1358,6 +1358,7 @@ local function buildChips(root)
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
 	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
 		Boost = "IconExp" }
+	L.ChipIcons = icons
 	ui.chip = {}
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
 	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
@@ -1367,8 +1368,101 @@ local function buildChips(root)
 		ui.chip[key] = makeChip(key, i, icons[key])
 	end
 	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
+	L.BuildChipFold()
 	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
+end
+
+-- ui_clutter_review ③ (검수 10/09; look = 이미지 개발, when = 개발 1): folded, the chip row is one small round candy chip
+-- with the icons of the chips that want to show (at most L.ChipFold.MaxIcons, then '+N'); a press calls
+-- L.ChipFold.OnTap (개발 1's rule, HUD.OnChipsFoldTap) or unfolds. HUD.SetChipsFolded(true/false) switches it
+function L.BuildChipFold()
+	local frame = UIKit.Create("TextButton", {
+		Name = "Fold",
+		Text = "",
+		AutoButtonColor = false,
+		LayoutOrder = 0,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.fromOffset(0, L.ChipH),
+		BackgroundColor3 = ac("ChipSafe", Theme.Good):Lerp(COL.White, 0.55),
+		Visible = false,
+		Parent = ui.chips,
+	}, {
+		corner(UDim.new(0.5, 0)),
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 2),
+		}),
+		UIKit.Create("UIStroke", { Thickness = 2, Color = Theme.SubText, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		UIKit.Create("UIGradient", { Rotation = 90, Color = ColorSequence.new(COL.White, Color3.fromRGB(222, 222, 222)) }),
+		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 4), PaddingRight = UDim.new(0, 4) }),
+	})
+	local fold = { Frame = frame, Icons = {} }
+	for i = 1, L.ChipFold.MaxIcons do
+		fold.Icons[i] = UIKit.ArtImage("IconSafe", {
+			Name = "Icon" .. i,
+			LayoutOrder = i,
+			Size = UDim2.fromOffset(L.ChipH - 4, L.ChipH - 4),
+			Visible = false,
+			Parent = frame,
+		})
+	end
+	fold.More = artLabel(true, {
+		Name = "More",
+		LayoutOrder = 10,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.new(0, 0, 1, 0),
+		TextSize = 12,
+		Outline = false,
+		TextColor3 = COL.Dark,
+		Visible = false,
+		Parent = frame,
+	})
+	frame.Activated:Connect(function()
+		local fn = L.ChipFold.OnTap
+		if type(fn) == "function" then
+			local ok, err = pcall(fn)
+			if not ok then warnThrottled("chip fold tap failed: " .. tostring(err)) end
+		else
+			HUD.SetChipsFolded(false)
+		end
+	end)
+	ui.chipFold = fold
+end
+
+-- folded: hide the chips (after refreshChips decided which want to show) and show their icons on the fold chip
+function L.ApplyChipFold()
+	local fold = ui.chipFold
+	if not fold then return end
+	local want = {}
+	if L.ChipFold.Folded then
+		for _, key in L.ChipOrder do
+			local chip = ui.chip[key]
+			if chip and chip.Frame.Visible then
+				table.insert(want, key)
+				chip.Frame.Visible = false
+			end
+		end
+		if ui.chipMore then ui.chipMore.Frame.Visible = false end
+	end
+	-- the icons: the chips' own art; a chip without one (In Combat, Bully, ...) shows the warning star
+	local shown = 0
+	for i, img in fold.Icons do
+		local key = want[i]
+		img.Visible = key ~= nil
+		if key then
+			shown += 1
+			local id = UIKit.ArtId(L.ChipIcons[key] or "Star")
+			if id then img.Image = id end
+			img.ImageColor3 = (L.ChipIcons[key] == nil or key == "Wanted") and ac("StarGold", Theme.Gold) or COL.White
+		end
+	end
+	local extra = #want - shown
+	fold.More.Visible = extra > 0
+	fold.More.Text = extra > 0 and string.format(TXT.MoreChips, extra) or ""
+	fold.Frame.Visible = #want > 0
 end
 
 -- A23-40: the row is too wide for its rect -> one chip fewer (the '+N' chip takes it); refreshChips starts again from
@@ -2947,6 +3041,27 @@ refreshChips = function()
 		end
 	end
 	setChip(ui.chipMore, folded > 0, string.format(TXT.MoreChips, folded), Theme.SubText)
+	L.ApplyChipFold()
+end
+
+-- ui_clutter_review ③: fold / unfold the status chips (개발 1 decides when; 3 s after a change -> fold, press -> unfold)
+function HUD.SetChipsFolded(folded)
+	folded = folded == true
+	if L.ChipFold.Folded == folded then return end
+	L.ChipFold.Folded = folded
+	if ui.chip then
+		local ok, err = pcall(refreshChips)
+		if not ok then warnThrottled("chip fold failed: " .. tostring(err)) end
+	end
+end
+
+function HUD.ChipsFolded()
+	return L.ChipFold.Folded
+end
+
+-- the fold chip's press (nil = just unfold)
+function HUD.OnChipsFoldTap(fn)
+	L.ChipFold.OnTap = type(fn) == "function" and fn or nil
 end
 
 ----------------------------------------------------------------- refresh: war meter
@@ -4817,6 +4932,7 @@ end
 L.TileLabelMinPx = 40
 -- the quest lines' plates (검수 2026-10-08): du of plate left / right of a line's content, the gap between two lines
 L.QuestPlate = { PadL = 6, PadR = 10, Gap = 4 }
+L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
 -- the guide label (showGuide): px tall, its words' px, side room, studs above the target; hidden within GuideHide studs
 L.GuideLabel = { H = 28, TextPx = 15, PadX = 10, Lift = 4.5 }
 L.GuideHide = 15
@@ -5241,6 +5357,10 @@ function HUD.Start()
 		LocalPlayer:GetAttributeChangedSignal("HintPreview"):Connect(function()
 			local v = LocalPlayer:GetAttribute("HintPreview")
 			if v == "Attack" or v == "Q" or v == "Z" or v == "X" then HUD.Hint(v) else HUD.ClearHint(nil) end
+		end)
+		-- ChipsFoldPreview = true / false folds / unfolds the status chips (이미지 개발 photos, ui_clutter_review ③)
+		LocalPlayer:GetAttributeChangedSignal("ChipsFoldPreview"):Connect(function()
+			HUD.SetChipsFolded(LocalPlayer:GetAttribute("ChipsFoldPreview") == true)
 		end)
 	end
 
