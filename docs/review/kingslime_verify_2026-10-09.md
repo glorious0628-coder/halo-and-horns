@@ -24,3 +24,26 @@
 
 ## 결론
 병합 전에 개발 2(또는 병합하는 쪽)가 할 것: 위 1번(시험 목록 한 줄), 2번(충돌 이웃 줄 양쪽 남기기). 3번은 병합 뒤 순서대로. 보스·카드 자체는 규칙 위반을 못 찾았어요.
+
+## 추가 — origin/dev2-clatter bc9a49da 가 2de1d1e4 위에 더한 차이 (게임성 개발 3, 2026-10-09)
+방법: 더한 커밋만(1d44b1b2 필드 보스 엔진, d985a907 클래터 대장, bc9a49da 마무리 카드 → 하루 장부) 코드를 읽고, 임시 worktree(`Game-gpverify`)에서 origin/main 10c2b899 위에 `dev2-clatter`를 병합해 관련 시험 23개를 돌림. 고치지 않음.
+
+### real 문제
+1. **(낮음) 병합 시험 2개가 실패**
+   - `test_gamepass` 정적 검사: 이번엔 **내** 쪽(`CommissionService`의 `AddBankGold(…, "Refund")` 되돌림)이 목록에 없어서였어요 → 54ceb04d에서 목록에 한 줄 추가해 main에 올렸어요(통과 185/186·변이 87/87). dev2-clatter의 `Finisher` 줄은 이미 목록에 있어 문제 없음.
+   - `test_monster_bark`: `as uploaded: every monster kind draws its own bubble first … SlimeKing` — King Slime 몬스터가 생겼는데 `PENDING_ART`(그림 아직 안 올린 종류 목록)에도, 올린 말풍선 id에도 없어요. `art/review/monsters`의 King Slime 말풍선(189998dc)은 아직 업로드 id가 없음. 고칠 곳: 이미지 개발이 올려 `Config.UIArt` id를 넣거나, 그 전까지 시험 목록(`PENDING_ART`)에 `SlimeKing` 추가.
+2. **(중간·설계) 클래터는 3번만 쳐도 전부 받아요** — `CaptainClatter` `RewardMinHits = 3`, `RewardMinDamageFrac = 0.005`(체력 20000의 0.5% = 100 피해)인데 XP·골드가 각 3,900(호박 대왕 300/150의 13배)이에요. 지나가며 3번 때리고 떠난 사람도 XP 3,900 + 골드 3,900(2배 패스면 7,800) + 확률 무기(T5 3%·T6 0.5%) + 왕관전 +20 + 주간 배지를 받아요. 다른 필드 보스와 같은 A23-27 규칙이지만 몫이 커서 무임승차 값이 커졌어요. 제안(개발 2): 클래터만 `RewardMinDamageFrac`을 0.02~0.03으로(체력의 2~3% = 같이 때린 사람 ~30명까지 허용).
+3. **(낮음·설계) 왕관전 +20이 사람 수만큼 쌓여요** — `extraOne`이 `WarService.AddPoints(player, 20)`을 `poolN` 없이 불러서, 한 편 30명이 잡으면 그 편 점수통에 600점이 들어가요. 일반 몬스터는 `WarShare`/`poolN`(CR-M18, 한 번의 처치는 점수통에 한 번)으로 막아 둔 것과 달라요. 의도(편별 피해 몫을 따르는 큰 보상)라면 상한이 필요: `poolN = 20`이면 처치당 한 편 +20.
+4. **(낮음) Captain's Badge 쓸 곳이 아직 없어요** — 설계 주석은 "T6 의뢰가 배지를 요구한다(A23-86 L)"인데 확정된 T6 주문(Knight Crest 30 + Bone 60, 검수 확정)에는 배지가 없어서 지금은 팔기(200골드)밖에 못 해요. 둘 중 하나로 정리 필요.
+
+### 반박됨
+- **마무리 카드 → 하루 장부**: `scoreOf`는 `Deeds.Preview(player, SIDE[option], points())`, `applyScore`는 `Deeds.Add`로 바뀌어 상한이 하나(6점)예요. `ScoreBudget.luau`·`Config.ScoreBudget`·기본값 삭제(옛 저장의 `data.ScoreBudget` 칸은 남지만 아무도 안 읽어서 해가 없음). 반대 편 −1·0 바닥·계급 하락 안내는 `Deeds`와 같은 규칙(finisher 시험 126/127·변이 64/64).
+- **필드 보스 엔진 일반화**: 보스마다 `B[key]`, 한 종류에 한 마리(`Rec`), 일정은 보스별(`FirstDelay`·`Interval`·`Lifetime`), 사람 있을 때만(`hunterHere(key)`는 그 몬스터 구역), 시간 되면 떠남, 잃은 모델은 처치가 아님, 계절 없음 — King Slime 때 확인한 규칙이 그대로 키별로 돌아가요(`test_field_boss` 128/128·변이 42/42).
+- **클래터 대장**: 나타남/사라짐/처치 말(아빠 가족 규칙과 무관, 엄마·가족 언급 없음, 설교 없음), 보스별 카드 글(`Cards[kind]`: Help = Enh70 1장(가방이 차면 값 300), Tickle = 300골드 — 같은 값), 편별 피해 몫 `Share`(두 편 합 100), 주간 보급(첫 처치 1개, 안 받은 주는 `Max` 2까지 쌓임, 가방이 차면 다음 처치로 미룸), 칭호 1/10/50(`Grant`는 한 번만), 드롭표(Knight Crest 3 고정 + 주문서·물약·무기 확률) 모두 코드와 시험이 맞아요.
+- **서버 권위**: 새로 늘어난 리모트 없음(`FinisherPick`만, 이전과 같은 검증). Studio 도움 명령은 `IsStudio()` 안.
+
+### 시험 (origin/main 10c2b899 + dev2-clatter bc9a49da, Main.server.luau 목록은 양쪽 다 남겨 해결)
+통과: field_boss 128 · finisher 126 · choice_card 117 · commission 73 · board 95 · return 178 · attendance 98 · next_goal 52 · kill_log 28 · slime_prince 33 · english · story_text · weapon_first · halloween 608 · loot 547 · map_v2 · quest_window · notify_sound · ranking · beta_metrics · metrics (모두 변이 전부 잡음). 실패: gamepass(위 1번, 고침), monster_bark(위 1번).
+
+### 결론
+병합해도 규칙 위반은 없어요. 병합하는 쪽이 할 것: `Main.server.luau` 목록 양쪽 남기기, `monster_bark`의 King Slime 말풍선(그림 id 또는 `PENDING_ART`). 위 2번(클래터 무임승차)은 숫자만 정하면 되는 한 줄이라 병합 전에 개발 2와 정하는 걸 권해요.
