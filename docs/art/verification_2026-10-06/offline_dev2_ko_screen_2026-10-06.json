@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 32,
+  "checks": 52,
   "failedChecks": 0,
-  "namedChecks": 32,
+  "namedChecks": 52,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -198,15 +198,135 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "Config.Death.Fun: 1 in 15, not the first 3, 4 lines; the save counts KOs from 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "fun line 1 starts with 'Tip: ' and is short",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "fun line 2 starts with 'Tip: ' and is short",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "fun line 3 starts with 'Tip: ' and is short",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "fun line 4 starts with 'Tip: ' and is short",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "the first 3 KOs never get one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "the 4th KO can (roll 0, pick 0 = line 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "the pick chooses the line (quarters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "a roll of 1/15 or more: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "bad numbers: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "a bad pick is clamped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "KO 1: no joke tip (one of the first 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "KO 2: no joke tip (one of the first 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "KO 3: no joke tip (one of the first 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "KO 4 with a lucky roll: line 3 in the KO fx, the rest of the payload as before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "KO 5 with an unlucky roll: no tip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "five payloads for five deaths",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "another player's first KO: no tip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fun tips (EG05)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 16,
-    "applied": 16,
-    "caught": 16,
+    "total": 30,
+    "applied": 30,
+    "caught": 30,
     "skipped": false,
     "results": [
       {
@@ -337,6 +457,177 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "the KO is never counted",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 4 with a lucky roll: line 3 in the KO fx, the rest of the payload as before"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the KO counts two",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 2: no joke tip (one of the first 3)",
+          "fun tips (EG05) :: KO 3: no joke tip (one of the first 3)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the tip is never sent",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 4 with a lucky roll: line 3 in the KO fx, the rest of the payload as before"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the roll is the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 4 with a lucky roll: line 3 in the KO fx, the rest of the payload as before"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the count is not passed",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 1: no joke tip (one of the first 3)",
+          "fun tips (EG05) :: KO 2: no joke tip (one of the first 3)",
+          "fun tips (EG05) :: KO 3: no joke tip (one of the first 3)",
+          "fun tips (EG05) :: another player's first KO: no tip"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a tip every KO",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 5 with an unlucky roll: no tip",
+          "fun tips (EG05) :: a roll of 1/15 or more: none"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the first KO can get one",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 1: no joke tip (one of the first 3)",
+          "fun tips (EG05) :: KO 2: no joke tip (one of the first 3)",
+          "fun tips (EG05) :: KO 3: no joke tip (one of the first 3)",
+          "fun tips (EG05) :: another player's first KO: no tip",
+          "fun tips (EG05) :: the first 3 KOs never get one"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the 4th KO cannot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 4 with a lucky roll: line 3 in the KO fx, the rest of the payload as before",
+          "fun tips (EG05) :: a bad pick is clamped",
+          "fun tips (EG05) :: the 4th KO can (roll 0, pick 0 = line 1)",
+          "fun tips (EG05) :: the pick chooses the line (quarters)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "one in 20",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: Config.Death.Fun: 1 in 15, not the first 3, 4 lines; the save counts KOs from 0",
+          "fun tips (EG05) :: the pick chooses the line (quarters)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "always the first line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: KO 4 with a lucky roll: line 3 in the KO fx, the rest of the payload as before",
+          "fun tips (EG05) :: a bad pick is clamped",
+          "fun tips (EG05) :: the pick chooses the line (quarters)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the pick can run off the list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: a bad pick is clamped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the save does not count KOs",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: Config.Death.Fun: 1 in 15, not the first 3, 4 lines; the save counts KOs from 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a joke line without 'Tip:'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: fun line 3 starts with 'Tip: ' and is short"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a fifth line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fun tips (EG05) :: Config.Death.Fun: 1 in 15, not the first 3, 4 lines; the save counts KOs from 0",
+          "fun tips (EG05) :: a bad pick is clamped",
+          "fun tips (EG05) :: the pick chooses the line (quarters)"
+        ],
+        "newFailingCount": 3
+      },
+      {
         "mutation": "the payload goes to everyone",
         "file": "src/ServerScriptService/CombatService.luau",
         "applied": true,
@@ -347,10 +638,10 @@
           "causes :: group ran to the end without a Lua error",
           "causes :: one KO payload per death",
           "causes :: the payload goes to the victim only (never all clients)",
-          "players :: a PvP KO: By Player, PublicName, the killer's faction",
-          "players :: group ran to the end without a Lua error"
+          "fun tips (EG05) :: group ran to the end without a Lua error",
+          "players :: a PvP KO: By Player, PublicName, the killer's faction"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "the killer's raw name",
@@ -384,10 +675,11 @@
           "causes :: a slime KO: By Monster, the monster's name, nothing lost, RespawnIn",
           "causes :: group ran to the end without a Lua error",
           "causes :: one KO payload per death",
+          "fun tips (EG05) :: group ran to the end without a Lua error",
           "players :: a PvP KO: By Player, PublicName, the killer's faction",
           "players :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "RespawnIn missing",
@@ -406,21 +698,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
+    "src/ReplicatedStorage/Shared/Config.luau": "9da8fdd8dabc691bcc7ea7d8b1a8916556812e81a5aa3023b4617911e90c0086",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/RankingService.luau": "863d034d30426213b5cb97be6b39457892acd5d65a97cc4abede2857290d213f",
+    "src/ServerScriptService/RankingService.luau": "6f626bec812ec8edec524152ce42d0086b66709e6a5657fee97376ad55f70f6e",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
-    "src/ServerScriptService/GrudgeService.luau": "c4b055e8466eeb2f275b294fd0611c45d5a892711ad2bf9d6f88f545471ff531",
+    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
+    "src/ServerScriptService/GrudgeService.luau": "b42981e97f8dcc8f4ff263a7bdea0712095cd7b090e8510e9c07be065360e6e3",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
-    "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
-    "src/ServerScriptService/CombatService.luau": "b0ac9799e6673c9515d6b3e631e5a7e0f964618ab5468d4654b7d0ee45670608",
-    "src/ServerScriptService/ProgressionService.luau": "227961d963eb15c19e96eda039fc662a2220110a7020274397ed1ab69e078b94",
-    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
-    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
-    "src/ServerScriptService/KaijuService.luau": "c34d693e33c283026fa15495d1e8b4f065475dafa3775819f4862a531a2331e8"
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
+    "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
+    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
+    "src/ServerScriptService/PlayerService.luau": "a6899045974aedf4f8a3c6a1fc44b9c1a445282f4a4d708e52e424331e18a1f9",
+    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
+    "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8"
   },
-  "fixtureSHA256": "fb6be7065e9cf9b83008d2f9a8096a9879b2f0593f925bcb7319880c66c7fb95",
+  "fixtureSHA256": "4c16b42dd310454a87b7cc3cea772f8a08ba5a4c1998302a26e380cb8e00c2cf",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
