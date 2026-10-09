@@ -1,4 +1,9 @@
 -- meadow_dress.luau (2026-10-08; user 10/08 "세계관 디자인 자체가 이상해, 너무 휑하지 않아?", SPEC A23-76)
+-- PIPELINE ORDER (검수 2026-10-09, 메인 반영): after ANY run of this tool (MODE "kit") run, in this order:
+--   1. tools/worldkit/meadow_bush_scale.luau   (bushes x1.6, kept off lawns / roads / other pieces)
+--   2. tools/worldkit/decor_collision.luau     (solid / player-only collision)
+--   3. tools/worldkit/decor_ground.luau        (re-ground on the terrain: py runner string "apply|Map.Decor.MeadowDress,Map.Decor.MeadowKit|all")
+-- a new dress run rebuilds MeadowDress from scratch, so steps 1-3 are lost until they are run again.
 -- Studio MCP execute_luau, MAIN place, Edit mode (검수 runs it, like tools/worldkit/woods_kit_place.luau).
 -- Dresses the Slime Meadow (Config LandMeadow x 210..650, z -240..240; +X east, -Z north) toward the concept
 -- art/review/concept/Concept_SlimeMeadow.jpg with the uploaded kit in ServerStorage.WorldKit3D (tools/build_kit_from_ids.py;
