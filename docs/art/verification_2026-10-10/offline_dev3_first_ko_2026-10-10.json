@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 214,
+  "checks": 225,
   "failedChecks": 0,
-  "namedChecks": 214,
+  "namedChecks": 225,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1290,15 +1290,81 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "KO1 asks for the King (Requires.KingOn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "no FirstKOKing table: the quest is offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "King off: a new player is not offered the quest (no row, no toast)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "King on again: offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "row 2 reached",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "King off: the started quest leaves (it is not done, no reward)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "... and stays away while the King is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "King on again: the quest starts again at row 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "a table without Enabled: on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the personal King switch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 16,
   "staticFailures": [],
   "mutations": {
-    "total": 83,
-    "applied": 83,
-    "caught": 83,
+    "total": 88,
+    "applied": 88,
+    "caught": 88,
     "skipped": false,
     "results": [
       {
@@ -1340,6 +1406,75 @@
         "newFailingCount": 3
       },
       {
+        "mutation": "KO1 does not need the King",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the personal King switch :: ... and stays away while the King is off",
+          "the personal King switch :: KO1 asks for the King (Requires.KingOn)",
+          "the personal King switch :: King off: a new player is not offered the quest (no row, no toast)",
+          "the personal King switch :: King off: the started quest leaves (it is not done, no reward)",
+          "the personal King switch :: King on again: the quest starts again at row 1"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "KingOn ignored",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the personal King switch :: ... and stays away while the King is off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a started quest stays when the King goes off",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the personal King switch :: ... and stays away while the King is off",
+          "the personal King switch :: King off: the started quest leaves (it is not done, no reward)",
+          "the personal King switch :: King on again: the quest starts again at row 1"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the King is never off",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the personal King switch :: ... and stays away while the King is off",
+          "the personal King switch :: King off: a new player is not offered the quest (no row, no toast)",
+          "the personal King switch :: King off: the started quest leaves (it is not done, no reward)",
+          "the personal King switch :: King on again: the quest starts again at row 1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a missing King table counts as off",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: group ran to the end without a Lua error",
+          "a brand-new Studio save keeps the slot step :: the new player (M1_2 done, Lv4, no potions) gets KO1",
+          "ahead :: an old KO does not pass step 1: the quest waits for its own KO",
+          "ahead :: group ran to the end without a Lua error",
+          "debug aids :: DebugSub KO1 step 3: the quest starts at 'Put the potion in a quick slot'",
+          "debug aids :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 33
+      },
+      {
         "mutation": "KO1 is offered to players with potions",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
@@ -1350,9 +1485,10 @@
           "offered :: a potion bought once (and used): not offered",
           "offered :: a potion drunk once: not offered",
           "offered :: an HP potion in the bag: not offered",
-          "offered :: an MP potion in the bag: not offered"
+          "offered :: an MP potion in the bag: not offered",
+          "the personal King switch :: ... and stays away while the King is off"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 10
       },
       {
         "mutation": "KO1 step 1 passes on an old KO",
@@ -1362,9 +1498,10 @@
         "crashed": false,
         "newFailingChecks": [
           "ahead :: an old KO does not pass step 1: the quest waits for its own KO",
-          "config :: step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one)"
+          "config :: step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one)",
+          "the personal King switch :: King on again: the quest starts again at row 1"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "KO1 step 2 never passes early",
@@ -1706,7 +1843,7 @@
           "config :: KO1 is in StoryQuests.Subs exactly once",
           "flow :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 31
+        "newFailingCount": 36
       },
       {
         "mutation": "KO1 the rematch step moved",
@@ -1896,9 +2033,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: an old KO does not pass step 1: the quest waits for its own KO"
+          "ahead :: an old KO does not pass step 1: the quest waits for its own KO",
+          "the personal King switch :: King on again: the quest starts again at row 1"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "Held ignored (a filled slot does not pass the step)",
@@ -2125,7 +2263,7 @@
           "a brand-new Studio save keeps the slot step :: the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'",
           "ahead :: a drink before the KO does not skip the purchase"
         ],
-        "newFailingCount": 102
+        "newFailingCount": 103
       },
       {
         "mutation": "Event never refreshes the next step",
@@ -2168,7 +2306,7 @@
           "flow :: Horns: FirstKO moves step 1 to 2 and is remembered",
           "flow :: Horns: PotionBought moves step 2 to 3"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 13
       },
       {
         "mutation": "Wants is always true",
@@ -2469,20 +2607,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7a057592afed2986d5775033df83a4863b1c813ef9b98b169e62c0a32a63ecc3",
+    "src/ReplicatedStorage/Shared/Config.luau": "20583460da2a9314f88b3d234c8a05e0aefac2df335a2cb48e81d434da3cd733",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "c4ce85921d5e052885ce5c05a7d61ae1a1758a373cf60205701c26b7bfbad84b",
+    "src/ServerScriptService/StoryQuestService.luau": "fe2772848aec297272d7ca49a2a31dc5aacfcd15c8d5ae0e6530c6b2aa20e62a",
     "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
     "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
     "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/CharacterVisuals.luau": "6c87145e91fe67aebd043eabed71d6f01c7d51b68f9df8b5638c0c54881e7f5e",
+    "src/ServerScriptService/CharacterVisuals.luau": "68a7a28592a695fc76a37ac8728238361ae8a0f5b595282b5a5149978adf8479",
     "src/ServerScriptService/VitalsService.luau": "4e1962bfdbee5c313db1953c82e9a0caab21b8e1361c0d0d608d79dbee257808",
     "src/ServerScriptService/QuickSlotService.luau": "0e42f52f39ed689757e16e3600e981a7a6c8508df00845a37cdedbfed8ddaa20"
   },
-  "fixtureSHA256": "f91b400954ed4ed52a30f96cac27f6a0119b33c344f339a399c316b2eed2d68e",
+  "fixtureSHA256": "ceb110e82506562dfbdd54372e13f1c94e16423659d35a1d9340147fcfbe2550",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

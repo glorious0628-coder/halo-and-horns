@@ -557,6 +557,12 @@ local function metNow(player, data, rule)
 	return false
 end
 
+-- A23-110: the personal King Slime (FirstKOService, Config.FirstKOKing.Enabled = false) is switched off
+local function kingOff()
+	local k = Config.FirstKOKing
+	return type(k) == "table" and k.Enabled == false
+end
+
 local function requirementsMet(player, data, def)
 	local req = def.Requires or {}
 	local st = story(data)
@@ -575,6 +581,9 @@ local function requirementsMet(player, data, def)
 	-- A23-110: MaxLevel = only up to this level; NoPotionYet = no potion bought, drunk or held yet
 	if req.MaxLevel and num(data.Level, 1) > req.MaxLevel then return false end
 	if req.NoPotionYet and not noPotionYet(data) then return false end
+	-- A23-110: KingOn = the personal King Slime of FirstKOService is switched on (Config.FirstKOKing.Enabled ~= false); without
+	-- it the rematch row could never be finished, so the whole quest waits
+	if req.KingOn and kingOff() then return false end
 	-- A23-113: Seen = a first meeting (Config.StoryQuests.Meetings, or a happening of Events) is saved in st.First: a quest line for
 	-- something the player has just met
 	if req.Seen and st.First[req.Seen] ~= true then return false end
@@ -655,6 +664,9 @@ local function refresh(player)
 			changed = true
 		elseif st.Subs[id] and def.Factions and not def.Factions[faction(player)] then
 			st.Subs[id] = nil -- faction changed: the faction-only sub leaves (A6 / design 6-3)
+			changed = true
+		elseif st.Subs[id] and type(def.Requires) == "table" and def.Requires.KingOn and kingOff() then
+			st.Subs[id] = nil -- the personal King was switched off: the quest that needs it leaves (it starts again when it is back)
 			changed = true
 		end
 	end

@@ -3615,7 +3615,7 @@ Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet 
 Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
 Config.StoryQuests.Defs.KO1 = {
 	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
-	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },
+	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },
 	Steps = {
 		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },
 		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop", TopUpGold = 50,

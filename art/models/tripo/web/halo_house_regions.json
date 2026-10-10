@@ -1,0 +1,355 @@
+{
+ "HaloDomeHouse_01": {
+  "sil_px": [
+   187,
+   141,
+   862,
+   880
+  ],
+  "door": [
+   0.34074074074074073,
+   0.05412719891745599,
+   0.6444444444444445,
+   0.4952638700947226
+  ],
+  "awning": [
+   [
+    0.24,
+    0.46,
+    0.72,
+    0.64
+   ]
+  ],
+  "front2d": "art/out/s2/halo/roofs/HaloDomeHouse_01_roof_v2.png"
+ },
+ "HaloDomeHouse_02": {
+  "sil_px": [
+   175,
+   57,
+   846,
+   942
+  ],
+  "door": [
+   0.36959761549925485,
+   0.10734463276836159,
+   0.6363636363636364,
+   0.39209039548022595
+  ],
+  "awning": [
+   [
+    0.27,
+    0.38,
+    0.73,
+    0.53
+   ]
+  ],
+  "front2d": "art/out/s2/halo/houses/HaloDomeHouse_02_front_HQ_recolor.png"
+ },
+ "HaloDomeHouse_03": {
+  "sil_px": [
+   190,
+   24,
+   832,
+   969
+  ],
+  "door": [
+   0.3644859813084112,
+   0.0010582010582010914,
+   0.6931464174454829,
+   0.3671957671957672
+  ],
+  "awning": [
+   [
+    0.27,
+    0.33,
+    0.71,
+    0.47
+   ]
+  ],
+  "front2d": "art/out/s2/halo/houses/HaloDomeHouse_03_front_HQ_src.png"
+ },
+ "HaloDomeHouse_04": {
+  "sil_px": [
+   220,
+   31,
+   798,
+   929
+  ],
+  "door": [
+   0.3373702422145329,
+   0.07015590200445432,
+   0.6660899653979239,
+   0.3819599109131403
+  ],
+  "awning": [],
+  "front2d": "art/out/s2/halo/houses/HaloDomeHouse_04_front_HQ_src.png"
+ },
+ "HaloDomeHouse_05": {
+  "sil_px": [
+   77,
+   211,
+   946,
+   830
+  ],
+  "door": [
+   0.3924050632911392,
+   0.11631663974151862,
+   0.5834292289988493,
+   0.5751211631663975
+  ],
+  "awning": [
+   [
+    0.31,
+    0.51,
+    0.7,
+    0.71
+   ]
+  ],
+  "front2d": "art/out/s2/halo/roofs/HaloDomeHouse_05_roof_v2.png"
+ },
+ "HaloDomeHouse_06": {
+  "sil_px": [
+   256,
+   17,
+   764,
+   960
+  ],
+  "door": [
+   0.3405511811023622,
+   0.08165429480381758,
+   0.6771653543307087,
+   0.3457051961823966
+  ],
+  "awning": [
+   [
+    0.23,
+    0.33,
+    0.76,
+    0.45
+   ]
+  ],
+  "front2d": "art/out/s2/halo/houses/HaloDomeHouse_06_front_HQ_recolor.png"
+ },
+ "HaloDomeHouse_07": {
+  "sil_px": [
+   136,
+   86,
+   868,
+   899
+  ],
+  "door": [
+   0.35382513661202186,
+   0.008610086100861003,
+   0.7158469945355191,
+   0.49446494464944646
+  ],
+  "awning": [
+   [
+    0.29,
+    0.39,
+    0.71,
+    0.53
+   ]
+  ],
+  "front2d": "art/out/s2/halo/roofs/HaloDomeHouse_07_roof_v2.png"
+ },
+ "HaloDomeHouse_08": {
+  "sil_px": [
+   175,
+   17,
+   845,
+   954
+  ],
+  "door": [
+   0.4059701492537313,
+   0.1013874066168623,
+   0.7149253731343284,
+   0.3735325506937033
+  ],
+  "awning": [],
+  "front2d": "art/out/s2/halo/houses/HaloDomeHouse_08_front_HQ_src.png"
+ },
+ "HaloDomeHouse_09": {
+  "sil_px": [
+   157,
+   36,
+   867,
+   947
+  ],
+  "door": [
+   0.3464788732394366,
+   0.05049396267837536,
+   0.6704225352112676,
+   0.44237102085620195
+  ],
+  "awning": [
+   [
+    0.28,
+    0.41,
+    0.72,
+    0.54
+   ]
+  ],
+  "front2d": "art/out/s2/halo/houses/HaloDomeHouse_09_front_HQ_src.png"
+ },
+ "HaloDomeHouse_10": {
+  "sil_px": [
+   271,
+   17,
+   749,
+   972
+  ],
+  "door": [
+   0.3493723849372385,
+   0.06596858638743452,
+   0.6485355648535565,
+   0.3392670157068063
+  ],
+  "awning": [
+   [
+    0.27,
+    0.31,
+    0.74,
+    0.43
+   ]
+  ],
+  "front2d": "art/out/s2/halo/houses/HaloDomeHouse_10_front_HQ_recolor.png"
+ },
+ "HaloDomeHouse_11": {
+  "sil_px": [
+   49,
+   135,
+   967,
+   839
+  ],
+  "door": [
+   0.4,
+   0.1,
+   0.62,
+   0.55
+  ],
+  "awning": [],
+  "front2d": "art/out/s2/halo/roofs/HaloDomeHouse_11_roof_v2.png"
+ },
+ "HaloDomeHouse_12": {
+  "sil_px": [
+   188,
+   84,
+   832,
+   947
+  ],
+  "door": [
+   0.38975155279503104,
+   0.07995365005793742,
+   0.639751552795031,
+   0.3348783314020858
+  ],
+  "awning": [
+   [
+    0.23,
+    0.29,
+    0.76,
+    0.43
+   ]
+  ],
+  "front2d": "art/out/s2/halo/roofs/HaloDomeHouse_12_roof_v2.png"
+ },
+ "HaloShop_Bakery": {
+  "sil_px": [
+   121,
+   45,
+   907,
+   952
+  ],
+  "door": [
+   0.58,
+   0.03,
+   0.77,
+   0.42
+  ],
+  "awning": [
+   [
+    0.16,
+    0.37,
+    0.8,
+    0.55
+   ]
+  ],
+  "front2d": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png"
+ },
+ "HaloShop_Flower": {
+  "sil_px": [
+   106,
+   93,
+   916,
+   916
+  ],
+  "door": [
+   0.408641975308642,
+   0.04131227217496958,
+   0.5876543209876544,
+   0.4520048602673147
+  ],
+  "awning": [
+   [
+    0.19,
+    0.43,
+    0.81,
+    0.6
+   ]
+  ],
+  "front2d": "art/out/s2/halo/roofs/HaloShop_Flower_roof_v2.png"
+ },
+ "HaloShop_Juice": {
+  "sil_px": [
+   112,
+   34,
+   905,
+   955
+  ],
+  "door": [
+   0.15762925598991173,
+   0.05103148751357223,
+   0.28247162673392184,
+   0.39630836047774154
+  ],
+  "awning": [
+   [
+    0.27,
+    0.35,
+    0.8,
+    0.5
+   ],
+   [
+    0.2,
+    0.77,
+    0.81,
+    0.92
+   ]
+  ],
+  "front2d": "art/out/s2/halo/roofs/HaloShop_Juice_roof_v2.png"
+ },
+ "HaloShop_Potion": {
+  "sil_px": [
+   86,
+   19,
+   937,
+   962
+  ],
+  "door": [
+   0.5593419506462984,
+   0.028632025450689325,
+   0.7802585193889542,
+   0.457051961823966
+  ],
+  "awning": [
+   [
+    0.17,
+    0.36,
+    0.55,
+    0.51
+   ]
+  ],
+  "front2d": "art/out/s2/halo/shops/HaloShop_Potion_front_HQ_src.png"
+ }
+}

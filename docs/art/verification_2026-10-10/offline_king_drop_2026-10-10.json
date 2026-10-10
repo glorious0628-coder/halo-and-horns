@@ -1,0 +1,48 @@
+{
+  "checks": 11,
+  "failed": 0,
+  "static": [
+    {
+      "check": "the slime joint adds the drop height",
+      "ok": true
+    },
+    {
+      "check": "the attack-hop thud skips another player's own King",
+      "ok": true
+    },
+    {
+      "check": "LandShadow draws the circle from DropAt / DropTime",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "falls at an even speed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "thuds every frame",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "old drops thud at the join",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "foreign Kings thud",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a small thud",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "First-KO King drop (게임성 개발 1, SPEC A23-110 + 개발 2 FirstKOService), offline.\n\nRuns, in the official Luau CLI, the CURRENT Fx.luau WOBBLE.dropLift cut out of Fx.luau with doubles: a monster with\nDropAt (server time) / DropTime is drawn DROP_HEIGHT studs up at DropAt and falls faster and faster\n(height x (1 - u^2)) to the ground at DropAt + DropTime; it lands with the big thud (AttackMul) exactly once; a drop\nalready long over at the join (u >= 1.5) lands silently; another player's own King (Feel.isForeign) never thuds; no\nDropAt / DropTime = on the ground. Static: the slime joint adds the drop height; the King's attack-hop thud skips\nanother player's own King; LandShadow draws the circle from the same attributes. Mutations: each must be caught.",
+  "studioCalls": 0
+}
