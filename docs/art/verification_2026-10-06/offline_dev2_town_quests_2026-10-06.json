@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 936,
+  "checks": 941,
   "failedChecks": 0,
-  "namedChecks": 862,
+  "namedChecks": 867,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -4179,6 +4179,36 @@
     },
     {
       "group": "npc-talk",
+      "check": "H3: both cards (the talk and the choice) are Sir Gleam's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "talking to Sir Gleam opens H3's first card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "... not by talking to Bright",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H3's choice card (step 4) opens at Sir Gleam too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "... and never at Bright",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
       "check": "an NPC id nobody waits at: nothing",
       "pass": 1,
       "fail": 0
@@ -5184,9 +5214,9 @@
   "staticChecks": 8,
   "staticFailures": [],
   "mutations": {
-    "total": 228,
-    "applied": 228,
-    "caught": 228,
+    "total": 230,
+    "applied": 230,
+    "caught": 230,
     "skipped": false,
     "results": [
       {
@@ -6618,12 +6648,12 @@
         "newFailingChecks": [
           "npc-talk :: (the same player with a class: H1 opens)",
           "npc-talk :: H1 moved on (no more card at Bright): nothing opens",
+          "npc-talk :: H3's choice card (step 4) opens at Sir Gleam too",
           "npc-talk :: a quest waiting for [Claim] is skipped",
           "npc-talk :: an NPC id nobody waits at: nothing",
-          "npc-talk :: another NPC, a bad id or a bad player: nothing",
-          "npc-talk :: talking to Bright opens H1's card"
+          "npc-talk :: another NPC, a bad id or a bad player: nothing"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "npc talk: a quest waiting for [Claim]",
@@ -6679,6 +6709,34 @@
           "npc-talk :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: H3 is not Sir Gleam's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-h3 :: H3's talks are at Sir Gleam",
+          "npc-talk :: H3: both cards (the talk and the choice) are Sir Gleam's",
+          "npc-talk :: talking to Sir Gleam opens H3's first card"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "npc talk: H3's choice card is nobody's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-h3 :: H3's talks are at Sir Gleam",
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk",
+          "halo-check-h3 :: talking to him opens the card (no Gleam body here: anywhere)",
+          "npc-talk :: H3's choice card (step 4) opens at Sir Gleam too",
+          "npc-talk :: H3: both cards (the talk and the choice) are Sir Gleam's"
+        ],
+        "newFailingCount": 5
       },
       {
         "mutation": "npc talk: any prompt",
@@ -7380,9 +7438,10 @@
         "crashed": false,
         "newFailingChecks": [
           "halo-check-h3 :: group ran to the end without a Lua error",
-          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk"
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk",
+          "npc-talk :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "#18 H3 without a Start line",
@@ -7545,9 +7604,11 @@
         "newFailingChecks": [
           "halo-check-h3 :: H3's talks are at Sir Gleam",
           "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk",
-          "halo-check-h3 :: talking to him opens the card (no Gleam body here: anywhere)"
+          "halo-check-h3 :: talking to him opens the card (no Gleam body here: anywhere)",
+          "npc-talk :: H3's choice card (step 4) opens at Sir Gleam too",
+          "npc-talk :: H3: both cards (the talk and the choice) are Sir Gleam's"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "GW7 forgets the GW1 pick",
@@ -8081,7 +8142,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ea80e46bc16759b5c25dcc2b3a3ce998ea894c34ef27f77f2eb62a57e906686d",
+    "src/ReplicatedStorage/Shared/Config.luau": "a6b573b35838861ed570a58a2fbfdfb1d1c61bcb28e6fb3f0905fc71796771eb",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
@@ -8094,7 +8155,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "41495f3923aae5d9854af2ba7f175f45f5f1f978aa7040c10e51b1bfda1805da",
+  "fixtureSHA256": "14ab47f32c8ba8eb4160e4d6e417d154c548f729a7b3cbdb88b84afb03ea0e0b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

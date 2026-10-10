@@ -241,6 +241,7 @@ runGroup("config", function()
 	end
 	check(storyIds.Bright and named.Bright, "Bright is named by quest steps and has a body", show(named))
 	check(storyIds.Gleam and named.Gleam, "Sir Gleam is named by a quest step (H3's first card) and has a body", show(named))
+	check(C0.StoryQuests.Defs.H3.Steps[1].Npc == "Gleam", "H3's first card is talked through Sir Gleam", tostring(C0.StoryQuests.Defs.H3.Steps[1].Npc))
 	for _, e in T.List do
 		if e.Merchant then check(e.Enabled == false, "the Halo potion seller stays off until ShopService accepts more than one seller", tostring(e.Enabled)) end
 	end
