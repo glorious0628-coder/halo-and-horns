@@ -99,3 +99,8 @@
 - 집 12·가게 4 뒤·좌·우 48장(고급): `art/out/s2/halo/houses_mv/<건물>_{back,left,right}.png`, 4면 시트 halo_houses_mv_sheet_1·2.jpg, halo_shops_mv_sheet.jpg. 기준 앞면 = 지붕 v2(01·05·07·11·12, 주스·꽃집) + 차양 색 바꾼 판(02·06·10·12). 뒤 = 창 2개·문 없음, 옆 = 큰 아치창 1개.
 - 뿔 마스코트 새 후보 5(중간, 빛 C 그림체) `art/out/s2/fac/horns2/` — 검수 선택 대기.
 - 부품 분해(몸통·지붕·문·창 유리·차양)는 각 건물 4면 + 지붕 v2 앞면으로 이미지 생성 1이 Tripo 때 나눔(별도 부품 그림 필요하면 요청).
+
+## 10/10 밤 추가 12
+- 뿔 마스코트 D 고급+누끼(approved FacMascotHornsD) → 이미지 개발에 교체 요청. 빛 C·뿔 D 둘 다 높이 1024 기준.
+- 스킬 Q 아이콘 6 후보 12(중간, A23-116): `art/out/s2/skills/SkillQ_<HaloSlam|CraterSmash|StarFall|PurplePop|FeatherRain|SparkShower>_{A,B}.png`, 시트 `art/review/s2/skill_q_icon_candidates.jpg` — 검수 선택 대기(빛 = 크림~하늘색+금 테 배지, 뿔 = 자두색+진홍 테 배지, 글자·빛줄기 없음).
+- 뿔 스킬 Z·X·빛 Z·X 12개 아이콘은 Q 승인 뒤.
