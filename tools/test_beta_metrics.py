@@ -31,6 +31,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # --- window ids (the pet window and the King's Diary are reported like the others)
+    ("the Pet window is not a UiMetric id", C, "\"Feedback\", \"Pet\",\n\t\t\"Diary\" },", "\"Feedback\", \"Diary\" },"),
+    ("the Diary window is not a UiMetric id", C, "\"Feedback\", \"Pet\",\n\t\t\"Diary\" },", "\"Feedback\", \"Pet\" },"),
     # --- funnel sessions
     ("Once funnels logged again on every call", T, "\tif done[name] then return false end\n\tdone[name] = true\n", "\tdone[name] = true\n"),
     ("DailyVisit session = UTC day", T, "\treturn Config.DayIndex(os.time())\nend\n\n-- the DailyVisit session",

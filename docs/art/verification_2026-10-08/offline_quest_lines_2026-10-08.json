@@ -60,6 +60,10 @@
       "ok": true
     },
     {
+      "check": "A23-99: the head line 'Quests (N) ▼' is gone (Config.Nudges.QuestHead = false) and leaves no gap",
+      "ok": true
+    },
+    {
       "check": "the words get their own width (no flex shrink that squeezed a finished line's name to nothing)",
       "ok": true
     },
@@ -69,10 +73,22 @@
     }
   ],
   "mutations": {
-    "total": 25,
-    "applied": 25,
-    "caught": 25,
+    "total": 27,
+    "applied": 27,
+    "caught": 27,
     "results": [
+      {
+        "mutation": "the head line shows again",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
+      {
+        "mutation": "the lines keep a gap for the gone head line",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      },
       {
         "mutation": "lines never capped",
         "applied": true,
@@ -288,7 +304,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "2f8581f332c545b697ac6f10d7a0ab0974ce68e0335df4e124a3f042b96739f9"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

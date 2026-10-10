@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 147,
+  "checks": 158,
   "failedChecks": 0,
-  "namedChecks": 147,
+  "namedChecks": 158,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -105,7 +105,13 @@
     },
     {
       "group": "recorders",
-      "check": "pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+      "check": "pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recorders",
+      "check": "looks: a look id (bought or reported) is the one 'Look' row of the funnel",
       "pass": 1,
       "fail": 0
     },
@@ -165,6 +171,66 @@
     },
     {
       "group": "level bands and key cleaning",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "one person calling PassView 50 times: one view",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "another person counts as well",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "a prompt and another pass are their own once-an-hour slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "a call with no player is not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "3599 s later: the same slot, not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "an hour after the counted one: counted again, once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "each person has their own clock",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "purchases are counted every time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a pass metric counts once an hour per person",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -891,12 +957,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 31,
+  "staticChecks": 36,
   "staticFailures": [],
   "mutations": {
-    "total": 121,
-    "applied": 121,
-    "caught": 121,
+    "total": 129,
+    "applied": 129,
+    "caught": 129,
     "skipped": false,
     "results": [
       {
@@ -1356,11 +1422,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "level bands and key cleaning :: 45 pass ids: 40 + Other, no view lost",
-          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
-          "report (end to end) :: pass funnel"
+          "a pass metric counts once an hour per person :: 3599 s later: the same slot, not counted",
+          "a pass metric counts once an hour per person :: a call with no player is not counted",
+          "a pass metric counts once an hour per person :: a prompt and another pass are their own once-an-hour slots",
+          "a pass metric counts once an hour per person :: an hour after the counted one: counted again, once",
+          "a pass metric counts once an hour per person :: another person counts as well",
+          "a pass metric counts once an hour per person :: each person has their own clock"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 11
       },
       {
         "mutation": "pass: no prompts",
@@ -1369,8 +1438,120 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+          "a pass metric counts once an hour per person :: a prompt and another pass are their own once-an-hour slots",
+          "recorders :: looks: a look id (bought or reported) is the one 'Look' row of the funnel",
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)",
           "report (end to end) :: pass funnel"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pass: a metric counts every call",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a pass metric counts once an hour per person :: 3599 s later: the same slot, not counted",
+          "a pass metric counts once an hour per person :: a call with no player is not counted",
+          "a pass metric counts once an hour per person :: a prompt and another pass are their own once-an-hour slots",
+          "a pass metric counts once an hour per person :: an hour after the counted one: counted again, once",
+          "a pass metric counts once an hour per person :: another person counts as well",
+          "a pass metric counts once an hour per person :: each person has their own clock"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "pass: the slot is shared by everyone",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a pass metric counts once an hour per person :: 3599 s later: the same slot, not counted",
+          "a pass metric counts once an hour per person :: a call with no player is not counted",
+          "a pass metric counts once an hour per person :: a prompt and another pass are their own once-an-hour slots",
+          "a pass metric counts once an hour per person :: an hour after the counted one: counted again, once",
+          "a pass metric counts once an hour per person :: another person counts as well",
+          "a pass metric counts once an hour per person :: each person has their own clock"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "pass: the slot ignores the pass",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a pass metric counts once an hour per person :: a prompt and another pass are their own once-an-hour slots",
+          "level bands and key cleaning :: 45 pass ids: 40 + Other, no view lost",
+          "recorders :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "pass: the slot ignores the step",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a pass metric counts once an hour per person :: a prompt and another pass are their own once-an-hour slots",
+          "recorders :: looks: a look id (bought or reported) is the one 'Look' row of the funnel",
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)",
+          "report (end to end) :: pass funnel"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pass: the gap is a day",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a pass metric counts once an hour per person :: an hour after the counted one: counted again, once",
+          "a pass metric counts once an hour per person :: each person has their own clock"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pass: the hour is never over",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a pass metric counts once an hour per person :: an hour after the counted one: counted again, once",
+          "a pass metric counts once an hour per person :: each person has their own clock"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pass: a caller with no player counts",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a pass metric counts once an hour per person :: 3599 s later: the same slot, not counted",
+          "a pass metric counts once an hour per person :: a call with no player is not counted",
+          "a pass metric counts once an hour per person :: an hour after the counted one: counted again, once",
+          "a pass metric counts once an hour per person :: each person has their own clock",
+          "a pass metric counts once an hour per person :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "pass: a look id is its own row",
+        "file": "src/ServerScriptService/HealthService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recorders :: looks: a look id (bought or reported) is the one 'Look' row of the funnel",
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)"
         ],
         "newFailingCount": 2
       },
@@ -1381,7 +1562,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)"
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)"
         ],
         "newFailingCount": 1
       },
@@ -1392,7 +1573,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)"
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)"
         ],
         "newFailingCount": 1
       },
@@ -2115,11 +2296,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "level bands and key cleaning :: group ran to the end without a Lua error",
-          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
-          "report (end to end) :: pass funnel"
+          "a pass metric counts once an hour per person :: 3599 s later: the same slot, not counted",
+          "a pass metric counts once an hour per person :: a call with no player is not counted",
+          "a pass metric counts once an hour per person :: a prompt and another pass are their own once-an-hour slots",
+          "a pass metric counts once an hour per person :: an hour after the counted one: counted again, once",
+          "a pass metric counts once an hour per person :: another person counts as well",
+          "a pass metric counts once an hour per person :: each person has their own clock"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 11
       },
       {
         "mutation": "start: no bought passes",
@@ -2128,10 +2312,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)",
+          "a pass metric counts once an hour per person :: purchases are counted every time",
+          "recorders :: looks: a look id (bought or reported) is the one 'Look' row of the funnel",
+          "recorders :: pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)",
           "report (end to end) :: pass funnel"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "start: no minute loop",
@@ -2393,12 +2579,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6d46d070aec1ac9b2ef1b65d002a3c0fe8b5aebf027c9f4be26fbd1f7f3735bf",
+    "src/ReplicatedStorage/Shared/Config.luau": "70a05e28d6e1e2d2a5d15e98d46a6e6fa6345245f9377966d98b8114516807e6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/HealthService.luau": "ad2e18db9559659eb59d6fe421dc06cbe5069e23347334c6a2afeb8662eadaeb",
+    "src/ServerScriptService/HealthService.luau": "3ed1bef7dcce8465d6f2895fe66ed339d2b5e4123064580e087a1c493d596947",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "da1946ba1c92b5b137af907b89f9a39cc976c4f4f2114fdea091571cd8680a08",
+  "fixtureSHA256": "f2e113af6f4e4d0cba11a9eda59142ffe97c530556f6408c7d30782bfa719d66",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
