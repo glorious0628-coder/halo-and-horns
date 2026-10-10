@@ -4,6 +4,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ProximityPromptService = game:GetService("ProximityPromptService")
+local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
@@ -239,36 +240,74 @@ local function onBlacksmithPrompt(prompt, player)
 	Net.Get("OpenPanel"):FireClient(player, "WeaponShop")
 end
 
-function M.CanBuyPotions(player)
-	if Config.Vitals.MerchantEnabled ~= true or typeof(player) ~= "Instance" or not player:IsA("Player") then return false end
-	if player.Parent ~= Players or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return false end
-	local map = workspace:FindFirstChild("Map")
-	if not map or map.Parent ~= workspace or (not map:IsA("Folder") and not map:IsA("Model")) then return false end
-	local npcs = map:FindFirstChild("NPCs")
-	if not npcs or not npcs:IsA("Folder") or npcs.Parent ~= map then return false end
-	local merchant = npcs:FindFirstChild(Config.Vitals.PotionMerchantName)
-	local part = merchant and merchant:IsA("Model") and merchant:GetAttribute("HHC_PotionMerchant") == true and merchant.PrimaryPart
-	local root = Util.GetRoot(player)
-	if not merchant or merchant.Parent ~= npcs or not part or not part:IsA("BasePart")
-		or not part:IsDescendantOf(merchant) or not root or not root:IsA("BasePart")
-		or not finitePosition(part.Position) or not finitePosition(root.Position) then return false end
+-- zone_check_halo #34 (검수 2026-10-10): a potion seller counts only while it is server-made: a Model inside workspace with
+-- the HHC_PotionMerchant attribute, an ANCHORED PrimaryPart inside it, and on that part the enabled server prompt (the first
+-- child of that name). Tags, attributes and instances made on a client never replicate, and a client cannot move an
+-- anchored part, so nothing a client makes or moves passes. Returns the part and its prompt, else nil.
+local function potionSeller(merchant)
+	if typeof(merchant) ~= "Instance" or not merchant:IsA("Model") or not merchant:IsDescendantOf(workspace)
+		or merchant:GetAttribute("HHC_PotionMerchant") ~= true then return nil end
+	local part = merchant.PrimaryPart
+	if not part or not part:IsA("BasePart") or not part:IsDescendantOf(merchant) or part.Anchored ~= true
+		or not finitePosition(part.Position) then return nil end
 	local prompt = part:FindFirstChild(Config.Vitals.PotionMerchantPrompt)
 	-- Direct BuyPotion calls require the same live server prompt as opening the shop, including its enabled state.
-	if not prompt or not prompt:IsA("ProximityPrompt") or prompt.Parent ~= part or not prompt.Enabled then return false end
+	if not prompt or not prompt:IsA("ProximityPrompt") or prompt.Parent ~= part or not prompt.Enabled then return nil end
+	return part, prompt
+end
+
+-- #34: every live seller once: the Crossroads one by its old path (workspace.Map.NPCs.<PotionMerchantName>; it still
+-- sells while MapBuilder has not tagged it yet) and every Model tagged Config.Vitals.PotionMerchantTag
+local function potionSellers()
+	local list, seen = {}, {}
+	local function add(merchant)
+		if seen[merchant] then return end
+		seen[merchant] = true
+		local part, prompt = potionSeller(merchant)
+		if part then table.insert(list, { Part = part, Prompt = prompt }) end
+	end
+	local map = workspace:FindFirstChild("Map")
+	local npcs = map and map.Parent == workspace and (map:IsA("Folder") or map:IsA("Model")) and map:FindFirstChild("NPCs")
+	if npcs and npcs:IsA("Folder") and npcs.Parent == map then
+		local legacy = npcs:FindFirstChild(Config.Vitals.PotionMerchantName)
+		if legacy and legacy.Parent == npcs then add(legacy) end
+	end
+	local tag = Config.Vitals.PotionMerchantTag
+	if type(tag) == "string" and tag ~= "" then
+		local ok, tagged = pcall(CollectionService.GetTagged, CollectionService, tag)
+		if ok and type(tagged) == "table" then
+			for _, merchant in tagged do add(merchant) end
+		end
+	end
+	return list
+end
+
+-- #34: the nearest live seller within PotionMerchantDistance of a ready, living player, else nil. With `prompt` only the
+-- seller holding exactly that prompt counts (a clone, or another seller's prompt, never opens the shop).
+local function sellerNear(player, prompt)
+	if Config.Vitals.MerchantEnabled ~= true or typeof(player) ~= "Instance" or not player:IsA("Player") then return nil end
+	if player.Parent ~= Players or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return nil end
+	local root = Util.GetRoot(player)
+	if not root or not root:IsA("BasePart") or not finitePosition(root.Position) then return nil end
 	local limit = Config.Vitals.PotionMerchantDistance
-	if not finite(limit) or limit <= 0 then return false end
-	local distance = (root.Position - part.Position).Magnitude
-	return finite(distance) and distance <= limit
+	if not finite(limit) or limit <= 0 then return nil end
+	local best, bestDistance = nil, limit
+	for _, seller in potionSellers() do
+		if prompt == nil or seller.Prompt == prompt then
+			local distance = (root.Position - seller.Part.Position).Magnitude
+			if finite(distance) and distance <= bestDistance then best, bestDistance = seller, distance end
+		end
+	end
+	return best
+end
+
+function M.CanBuyPotions(player)
+	return sellerNear(player, nil) ~= nil
 end
 
 local function onPotionPrompt(prompt, player)
 	if typeof(prompt) ~= "Instance" or not prompt:IsA("ProximityPrompt") or not prompt.Enabled then return end
-	if prompt.Name ~= Config.Vitals.PotionMerchantPrompt or not M.CanBuyPotions(player) then return end
-	local map = workspace:FindFirstChild("Map")
-	local npcs = map and map:FindFirstChild("NPCs")
-	local merchant = npcs and npcs:FindFirstChild(Config.Vitals.PotionMerchantName)
-	local part = merchant and merchant.PrimaryPart
-	if not part or prompt.Parent ~= part or part:FindFirstChild(Config.Vitals.PotionMerchantPrompt) ~= prompt then return end
+	if prompt.Name ~= Config.Vitals.PotionMerchantPrompt or not sellerNear(player, prompt) then return end
 	if not Util.RateLimit(player, "PotionMerchantPrompt", Config.Vitals.PotionMerchantPromptRate) then return end
 	Net.Get("OpenPanel"):FireClient(player, "PotionShop")
 end

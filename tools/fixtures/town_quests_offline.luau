@@ -38,6 +38,7 @@ local function townWorld(o)
 	end
 	-- zone_check_halo #22 / #25 / #30: the NPCs' "Talk" prompts come through the ProximityPromptService (only when asked for)
 	if o.Prompts then w.Services.ProximityPromptService = { PromptTriggered = Signal.new() } end
+	if o.Hooks then o.Hooks(w, reg) end -- A23-64 ②: services Start listens to (ChoiceCard / FinisherService doubles)
 	w.Story.Start()
 	w.Spawned = {}
 	-- the client's OpenPanel "Story" pops (a quest NPC step must never pop by itself)
@@ -1921,6 +1922,338 @@ runGroup("npc-talk", function()
 	-- no talker present in the world at all: the old fallback (anywhere) is kept for NPC ids that have no body
 	w:Npc("Tiny", vec(0, 0, 0))
 	check(w.Story.TalkToNpc(c, "Smokey") == nil, "an NPC id nobody waits at: nothing", "")
+end)
+
+------------------------------------------------------------------ 16. A23-64 ② afterglow + ① townsfolk lines (zone_check_halo #39)
+-- player p's Afterglow Fx since index `from`, in order
+local function glowsOf(w, p, from)
+	local out = {}
+	for i = (from or 0) + 1, #w.Fx do
+		local f = w.Fx[i]
+		if f.Kind == "Afterglow" and type(f.Data) == "table" and f.Data.UserId == p.UserId then table.insert(out, f) end
+	end
+	return out
+end
+
+-- printable: { Side, Seconds, Private, To = "all" | the receiver's UserId } (a Player double is never printed)
+local function glowShow(list)
+	local out = {}
+	for _, f in list do
+		table.insert(out, { Side = f.Data.Side, Seconds = f.Data.Seconds, Private = f.Data.Private,
+			To = f.Player == nil and "all" or f.Player.UserId })
+	end
+	return show(out)
+end
+
+runGroup("a23-64 afterglow", function()
+	local cards, finisher = nil, nil
+	local w = townWorld({ Npcs = false, Hooks = function(world, reg)
+		cards, finisher = { Picked = world.Util.Signal.new() }, { Picked = world.Util.Signal.new() }
+		reg.ChoiceCard, reg.FinisherService = cards, finisher
+	end })
+	local A = w.Config.Afterglow
+	check(type(A) == "table" and A.Enabled == true and A.Seconds == 60 and type(A.From) == "table" and A.From.Story == true
+		and A.From.Card == true and A.From.Finisher == true, "Config.Afterglow: on, 60 s, story + card + finisher picks", show(A))
+	local pvp = {}
+	w.Registry.ZoneService.IsPvPZone = function(p) return pvp[p] == true end
+	local function fresh(id, faction)
+		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 2,
+			Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
+		w.Story.Refresh(p)
+		w:Flush()
+		return p, d
+	end
+	-- a 0-point story pick (A23-70 Lunch1) in a safe place: one afterglow to every client
+	local p, d = fresh(6401, "Halo")
+	local fx0 = #w.Fx
+	w:Act(p, "Lunch1", "Choose", "Good")
+	local g = glowsOf(w, p, fx0)
+	check(#g == 1 and g[1].Player == nil and g[1].Data.Side == "Good" and g[1].Data.Seconds == 60 and g[1].Data.Private == false,
+		"[Give it back] (0 points): one Afterglow Good 60 s to every client", glowShow(g))
+	local choices = 0
+	for i = fx0 + 1, #w.Fx do
+		if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p then choices += 1 end
+	end
+	check(choices == 1 and d.Story.Pick.Lunch1 == "GiveBack", "the Choice sound Fx still goes to the chooser only, once", choices)
+	-- in a PvP area: only the chooser
+	local q = fresh(6402, "Halo")
+	pvp[q] = true
+	fx0 = #w.Fx
+	w:Act(q, "Lunch1", "Choose", "Evil")
+	g = glowsOf(w, q, fx0)
+	check(#g == 1 and g[1].Player == q and g[1].Data.Side == "Evil" and g[1].Data.Private == true,
+		"[One bite!] in a PvP area: Afterglow Evil to the chooser only (Private)", glowShow(g))
+	-- the zone check fails: counted as PvP
+	local r = fresh(6403, "Horns")
+	w.Registry.ZoneService.IsPvPZone = function() error("offline: no zone sample yet") end
+	fx0 = #w.Fx
+	w:Act(r, "Lunch1", "Choose", "Good")
+	g = glowsOf(w, r, fx0)
+	check(#g == 1 and g[1].Player == r and g[1].Data.Private == true, "an unknown zone counts as PvP: the chooser only", glowShow(g))
+	w.Registry.ZoneService.IsPvPZone = function(pl) return pvp[pl] == true end
+	-- the artisan guild: A = Good, B = Evil (like the Choice sound)
+	local n, nd = fresh(6404, "Neutral")
+	check(w:Track(nd, "Lunch1") ~= nil, "a Neutral save gets the lunchbox card too (no Factions)", show(nd.Story.Subs))
+	fx0 = #w.Fx
+	w:Act(n, "Lunch1", "Choose", "B")
+	g = glowsOf(w, n, fx0)
+	check(#g == 1 and g[1].Data.Side == "Evil" and nd.Story.Pick.Lunch1 == "B", "a Neutral B pick glows purple (Evil)", glowShow(g))
+	-- Seconds comes from Config; the switches
+	w.Config.Afterglow.Seconds = 45
+	local s1 = fresh(6405, "Halo")
+	fx0 = #w.Fx
+	w:Act(s1, "Lunch1", "Choose", "Good")
+	g = glowsOf(w, s1, fx0)
+	check(#g == 1 and g[1].Data.Seconds == 45, "Seconds follows Config.Afterglow.Seconds", glowShow(g))
+	w.Config.Afterglow.Seconds = 60
+	w.Config.Afterglow.From.Story = false
+	local s2, s2d = fresh(6406, "Halo")
+	fx0 = #w.Fx
+	w:Act(s2, "Lunch1", "Choose", "Good")
+	check(#glowsOf(w, s2, fx0) == 0 and s2d.Story.Done.Lunch1 == true, "From.Story = false: the pick works, no glow",
+		#glowsOf(w, s2, fx0))
+	w.Config.Afterglow.From.Story = true
+	w.Config.Afterglow.Enabled = false
+	local s3 = fresh(6407, "Halo")
+	fx0 = #w.Fx
+	w:Act(s3, "Lunch1", "Choose", "Evil")
+	check(#glowsOf(w, s3, fx0) == 0, "Enabled = false: no afterglow", #glowsOf(w, s3, fx0))
+	w.Config.Afterglow.Enabled = true
+	-- a choice card (ChoiceCard.Picked) and the King Slime finisher card (FinisherService.Picked)
+	fx0 = #w.Fx
+	cards.Picked:Fire(p, "FlowerPatch", "Evil", {})
+	cards.Picked:Fire(p, "FlowerPatch", "None", {})
+	g = glowsOf(w, p, fx0)
+	check(#g == 1 and g[1].Data.Side == "Evil" and g[1].Player == nil, "a choice card's Evil pick glows; a time-up 'None' does not",
+		glowShow(g))
+	fx0 = #w.Fx
+	finisher.Picked:Fire(p, "Help", "SlimeKing")
+	finisher.Picked:Fire(p, "Tickle", "SlimeKing")
+	finisher.Picked:Fire(p, "None", "SlimeKing")
+	g = glowsOf(w, p, fx0)
+	check(#g == 2 and g[1].Data.Side == "Good" and g[2].Data.Side == "Evil",
+		"the finisher card: Help = Good, Tickle = Evil, None = no glow", glowShow(g))
+	w.Config.Afterglow.From.Card = false
+	fx0 = #w.Fx
+	cards.Picked:Fire(p, "FlowerPatch", "Good", {})
+	check(#glowsOf(w, p, fx0) == 0, "From.Card = false: a card does not glow", "")
+	w.Config.Afterglow.From.Card = true
+	-- a player who left gets nothing
+	w:Remove(q)
+	fx0 = #w.Fx
+	cards.Picked:Fire(q, "FlowerPatch", "Good", {})
+	check(#glowsOf(w, q, fx0) == 0, "a player who left: no afterglow", "")
+end)
+
+runGroup("a23-64 town pick", function()
+	local w = townWorld({ Npcs = false })
+	local function joinAt(id, faction, level, subs, done)
+		return w:Join(id, { Faction = faction, Class = "Warrior", Level = level, Data = { Story = { Main = { Id = "" },
+			Subs = subs, Done = done, Pick = {}, First = { Migrated = true } } } })
+	end
+	local base = { M1_1 = true, M1_2 = true, M1_3 = true, M1_4 = true, Lunch1 = true }
+	-- a Halo player at H2's card (the lantern is back): the pick sets TownPick and the save
+	local p, d = joinAt(6411, "Halo", 9, { H2 = { St = 3, P = 0, T = {}, Claim = false } }, table.clone(base))
+	check(p:GetAttribute("TownPick") == "", "no town pick yet: TownPick = ''", tostring(p:GetAttribute("TownPick")))
+	w:Act(p, "H2", "Choose", "Good")
+	check(d.Story.Pick.H2 == "Good" and d.Story.TownLast == "H2" and p:GetAttribute("TownPick") == "H2:Good",
+		"the lantern back: TownPick 'H2:Good', saved as Story.TownLast", show({ d.Story.TownLast, p:GetAttribute("TownPick") }))
+	-- a pick that is not a town pick (XR1: Tiny at the Crossroads) leaves it as it is
+	d.Story.Subs.XR1 = { St = 3, P = 0, T = {}, Claim = false }
+	w:Act(p, "XR1", "Choose", "Evil")
+	check(d.Story.Pick.XR1 == "Evil" and p:GetAttribute("TownPick") == "H2:Good" and d.Story.TownLast == "H2",
+		"a Crossroads pick (XR1) does not change TownPick", show({ d.Story.Pick.XR1, p:GetAttribute("TownPick") }))
+	-- S6 (both towns, the guide's card) later: the newest town pick wins
+	d.Story.Subs.S6 = { St = 3, P = 0, T = {}, Claim = false }
+	w:Act(p, "S6", "Choose", "Evil")
+	check(p:GetAttribute("TownPick") == "S6:Evil" and d.Story.TownLast == "S6", "S6 later: TownPick 'S6:Evil' (the newest)",
+		tostring(p:GetAttribute("TownPick")))
+	-- a Horns R5; an artisan's GW8 A (its side, never the letter)
+	local h = joinAt(6412, "Horns", 9, { R5 = { St = 3, P = 0, T = {}, Claim = false } }, table.clone(base))
+	w:Act(h, "R5", "Choose", "Evil")
+	check(h:GetAttribute("TownPick") == "R5:Evil", "Horns R5 'Finders keepers!': 'R5:Evil'", tostring(h:GetAttribute("TownPick")))
+	local done = table.clone(base)
+	done.M2_7 = true
+	local n, nd = joinAt(6413, "Neutral", 24, { GW8 = { St = 3, P = 0, T = {}, Claim = false } }, done)
+	w:Act(n, "GW8", "Choose", "A")
+	check(nd.Story.Pick.GW8 == "A" and n:GetAttribute("TownPick") == "GW8:Good", "an artisan's A: 'GW8:Good' (the side, not the letter)",
+		show({ nd.Story.Pick.GW8, n:GetAttribute("TownPick") }))
+	-- join: the saved TownLast, else (an old save) the last of TownReact.Order with a saved pick
+	local function joinWith(id, faction, st)
+		st.Main, st.Subs, st.Done, st.First = { Id = "" }, {}, {}, { Migrated = true }
+		return w:Join(id, { Faction = faction, Level = 25, Data = { Story = st } })
+	end
+	local a, ad = joinWith(6414, "Halo", { Pick = { H2 = "Good", H5 = "Evil", XR1 = "Good" } })
+	check(a:GetAttribute("TownPick") == "H5:Evil" and ad.Story.TownLast == "H5", "an old save: the last town pick in Order (H5 after H2)",
+		show({ a:GetAttribute("TownPick"), ad.Story.TownLast }))
+	local b = joinWith(6415, "Halo", { Pick = { H2 = "Good", H5 = "Evil" }, TownLast = "H2" })
+	check(b:GetAttribute("TownPick") == "H2:Good", "a saved TownLast wins over the Order", tostring(b:GetAttribute("TownPick")))
+	local c, cd = joinWith(6416, "Halo", { Pick = { H3 = "Evil" }, TownLast = "Nope" })
+	check(c:GetAttribute("TownPick") == "H3:Evil" and cd.Story.TownLast == "H3", "an unknown TownLast is replaced",
+		show({ c:GetAttribute("TownPick"), cd.Story.TownLast }))
+	local e, ed = joinWith(6417, "Halo", { Pick = { H6 = "Good" }, TownLast = "H2" })
+	check(e:GetAttribute("TownPick") == "H6:Good" and ed.Story.TownLast == "H6", "a TownLast without its pick is replaced",
+		show({ e:GetAttribute("TownPick"), ed.Story.TownLast }))
+	local z, zd = joinWith(6418, "Halo", { Pick = { XR1 = "Good", Lunch1 = "Bite" } })
+	check(z:GetAttribute("TownPick") == "" and zd.Story.TownLast == nil, "no town pick at all: '' and nothing saved",
+		show({ z:GetAttribute("TownPick"), zd.Story.TownLast }))
+	local m = joinWith(6419, "Horns", { Pick = { M3_4 = "Evil", R3 = "Good" } })
+	check(m:GetAttribute("TownPick") == "M3_4:Evil", "Order: M3_4 comes after R3", tostring(m:GetAttribute("TownPick")))
+	-- review 10/10: a town pick belongs to the faction that made it (Story.TownFaction)
+	check(d.Story.TownFaction == "Halo", "the pick saves the faction that made it", tostring(d.Story.TownFaction))
+	local fc = w.Registry.FactionService.FactionChanged
+	p:SetAttribute("Faction", "Horns")
+	d.Faction = "Horns"
+	fc:Fire(p, "Horns", "Halo", "Altar")
+	check(p:GetAttribute("TownPick") == "", "switched to Horns at the Altar: the Halo S6 pick goes quiet (no other town's line)",
+		tostring(p:GetAttribute("TownPick")))
+	p:SetAttribute("Faction", "Halo")
+	d.Faction = "Halo"
+	fc:Fire(p, "Halo", "Horns", "Altar")
+	check(p:GetAttribute("TownPick") == "S6:Evil", "back to Halo: it is voiced again", tostring(p:GetAttribute("TownPick")))
+	-- an old save (no TownFaction) that is Horns now: only a pick a Horn can have (H5 is Halo-only)
+	local q = joinWith(6420, "Horns", { Pick = { R3 = "Good", H5 = "Evil" } })
+	check(q:GetAttribute("TownPick") == "R3:Good", "an old Horns save: its Horns pick, never the Halo-only H5",
+		tostring(q:GetAttribute("TownPick")))
+	local r = joinWith(6421, "Horns", { Pick = { H5 = "Evil" }, TownLast = "H5", TownFaction = "Halo" })
+	check(r:GetAttribute("TownPick") == "", "a Halo pick saved by a Halo save that is Horns now: quiet", tostring(r:GetAttribute("TownPick")))
+end)
+
+runGroup("a23-64 town react lines", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local R = C.TownReact
+	local T = type(R) == "table" and R.Text or nil
+	check(type(R) == "table" and R.Enabled == true and R.Every == 30 and R.Tag == "TownFolk" and type(T) == "table"
+		and type(C.TownReactLines) == "function", "Config.TownReact: on, one line every 30 s a person, tag TownFolk, lines in Text",
+		show(R and { R.Every, R.Tag }))
+	-- the town people's bodies (Config.TownNpcs Folk entries, TownNpcs tags them TownFolk) stand in a town, so the client's
+	-- Town fallback (Config.ZoneAt(the pivot position).Id) is a home zone id (Config.HomeZoneId)
+	local homes = { [C.HomeZoneId("Halo")] = true, [C.HomeZoneId("Horns")] = true, [C.HomeZoneId("Neutral")] = true }
+	local folk = 0
+	for _, e in C.TownNpcs and C.TownNpcs.List or {} do
+		if e.Folk then
+			folk += 1
+			local zone = C.ZoneAt(e.At)
+			check(zone ~= nil and homes[zone.Id] == true, "town person " .. tostring(e.Folk) .. " stands in a town zone",
+				zone and zone.Id)
+		end
+	end
+	check(folk >= 1, "Config.TownNpcs has town people (Folk) to speak", folk)
+	-- every line: short easy English for kids (12 words at most), no format tokens, nothing scary; Bright and Smokey are
+	-- she / her (A23-59)
+	local BAD = { kill = true, die = true, dead = true, blood = true, hate = true, stupid = true, scary = true }
+	local HE = { he = true, him = true, his = true }
+	local all = {}
+	for f, rows in T.Rank do
+		for i, row in rows do
+			check(type(row) == "table" and #row >= 1, "Rank." .. f .. "[" .. i .. "] has lines", show(row))
+			for _, line in row do table.insert(all, line) end
+		end
+	end
+	check(#T.Rank.Halo == #C.Titles.Halo and #T.Rank.Horns == #C.Titles.Horns, "one Rank row per faction rank (5 each)",
+		show({ #T.Rank.Halo, #T.Rank.Horns }))
+	for id in C.MyWay.Names do
+		check(type(T.Lean[id]) == "table" and #T.Lean[id] >= 1, "a lean line for My Way " .. id, show(T.Lean[id]))
+		for _, line in T.Lean[id] or {} do table.insert(all, line) end
+	end
+	local inOrder = {}
+	for _, id in R.Order do inOrder[id] = true end
+	for _, id in R.Order do
+		local def = C.StoryQuests.Defs[id]
+		local choice = false
+		for _, step in def and def.Steps or {} do
+			if type(step.Obj) == "table" and step.Obj.Type == "Choice" then choice = true end
+		end
+		check(choice, id .. ": a story quest with a pick", id)
+		check(type(T.Good[id]) == "string" and type(T.Evil[id]) == "string", id .. ": a Good and an Evil line",
+			show({ T.Good[id], T.Evil[id] }))
+	end
+	for _, side in { "Good", "Evil" } do
+		for id, line in T[side] do
+			check(inOrder[id] == true, side .. "." .. tostring(id) .. ": in TownReact.Order (no orphan line)", id)
+			table.insert(all, line)
+		end
+	end
+	for f, bySide in T.FactionPick or {} do
+		for side, lines in bySide do
+			for id, line in lines do
+				local def = C.StoryQuests.Defs[id]
+				check(inOrder[id] == true and (side == "Good" or side == "Evil") and type(def) == "table"
+					and (def.Factions == nil or (type(def.Factions) == "table" and def.Factions[f] == true)),
+					"FactionPick." .. tostring(f) .. "." .. tostring(side) .. "." .. tostring(id) .. ": a town pick of that faction",
+					show(def and def.Factions))
+				table.insert(all, line)
+			end
+		end
+	end
+	-- zone_check_halo #56: the nine Halo-town picks and their Horns twins
+	for _, id in { "H1", "H2", "H3", "H5", "H6", "OathH", "S6", "M3_4", "GW8", "R1", "R3", "R5", "R6", "R7", "OathR" } do
+		check(inOrder[id] == true, id .. " is a town pick (in TownReact.Order)", id)
+	end
+	for _, line in all do
+		local words, bad, he = 0, nil, nil
+		for _ in string.gmatch(line, "%S+") do words += 1 end
+		for word in string.gmatch(string.lower(line), "%a+") do
+			if BAD[word] then bad = word end
+			if HE[word] then he = word end
+		end
+		check(words >= 1 and words <= 12 and not string.find(line, "%", 1, true) and bad == nil,
+			"every line: 1-12 words, no format token, nothing scary", line)
+		if string.find(line, "Bright", 1, true) or string.find(line, "Smokey", 1, true) then
+			check(he == nil, "a line naming Bright or Smokey never says he / him / his (both are she)", line)
+		end
+	end
+	-- Config.TownReactLines (Town = the town person's Config.Zones id)
+	local function has(list, text)
+		for _, t in list do
+			if t == text then return true end
+		end
+		return false
+	end
+	local l1, k1 = C.TownReactLines({ Faction = "Halo", Honor = 0, Infamy = 0, MyWay = "", TownPick = "", Town = "HaloTown" })
+	check(#l1 == #T.Rank.Halo[1] and has(l1, T.Rank.Halo[1][1]) and has(l1, T.Rank.Halo[1][2]) and k1 == nil,
+		"a new Halo in Halo Citadel: the 2 Squire lines only", show(l1))
+	local l3 = C.TownReactLines({ Faction = "Halo", Honor = 60, Infamy = 999, MyWay = "", TownPick = "", Town = "Crossroads" })
+	check(#l3 == #T.Rank.Halo[3] and has(l3, T.Rank.Halo[3][1]) and not has(l3, T.Rank.Halo[1][1]) and not has(l3, T.Rank.Horns[5][1]),
+		"Honor 60 = rank 3 (Paladin) lines only; Infamy never counts for a Halo", show(l3))
+	local l5 = C.TownReactLines({ Faction = "Horns", Honor = 0, Infamy = 1000, MyWay = C.MyWay.Names.SoftDevil, TownPick = "",
+		Town = "HornsTown" })
+	check(#l5 == #T.Rank.Horns[5] + #T.Lean.SoftDevil and has(l5, T.Rank.Horns[5][1]) and has(l5, T.Lean.SoftDevil[1])
+		and not has(l5, T.Lean.TrueKnight[1]), "Infamy 1000 = the Demon King lines + the Soft-Hearted Devil lean", show(l5))
+	local lp, kp = C.TownReactLines({ Faction = "Halo", Honor = 12, MyWay = "", TownPick = "H2:Good", Town = "HaloTown" })
+	check(kp == T.Good.H2 and has(lp, kp) and has(lp, T.Rank.Halo[2][1]),
+		"'H2:Good' in Halo Citadel: 'You brought the lantern back!' + the Knight lines", show({ kp, lp }))
+	local _, kx = C.TownReactLines({ Faction = "Halo", Honor = 12, TownPick = "H2:Good", Town = "Crossroads" })
+	check(kx == nil, "the town pick is said only in the player's own town (not at the Crossroads)", tostring(kx))
+	local _, ks = C.TownReactLines({ Faction = "Horns", Infamy = 0, TownPick = "H2:Good", Town = "HornsTown" })
+	check(ks == nil, "a past Halo pick is never said in Horns Den (H2 Factions = Halo, after a switch)", tostring(ks))
+	local _, k6 = C.TownReactLines({ Faction = "Horns", Infamy = 0, TownPick = "S6:Evil", Town = "HornsTown" })
+	check(k6 == T.FactionPick.Horns.Evil.S6 and k6 ~= T.Evil.S6, "S6 in Horns Den: the Horns line", tostring(k6))
+	local _, n34 = C.TownReactLines({ Faction = "Neutral", Honor = 0, Infamy = 0, TownPick = "M3_4:Evil", Town = "Crossroads" })
+	check(n34 == T.FactionPick.Neutral.Evil.M3_4 and n34 ~= T.Evil.M3_4, "an artisan's M3_4 B (sell the dust back): its own line",
+		tostring(n34))
+	local _, k7 = C.TownReactLines({ Faction = "Halo", Honor = 0, TownPick = "S6:Good", Town = "HaloTown" })
+	check(k7 == T.Good.S6, "S6 in Halo Citadel: the Halo line", tostring(k7))
+	local _, km = C.TownReactLines({ Faction = "Horns", Infamy = 0, TownPick = "M3_4:Good", Town = "HornsTown" })
+	check(km == T.Good.M3_4, "a quest of both towns (M3_4) in Horns Den", tostring(km))
+	-- the artisan guild's own town is the Crossroads (Config.HomeZoneId("Neutral"))
+	local _, kn = C.TownReactLines({ Faction = "Neutral", TownPick = "GW8:Good", Town = "Crossroads" })
+	check(kn == T.Good.GW8, "a Neutral 'GW8:Good' is said at the Crossroads (the guild's town)", tostring(kn))
+	local _, kn2 = C.TownReactLines({ Faction = "Neutral", TownPick = "GW8:Good", Town = "HaloTown" })
+	check(kn2 == nil, "a Neutral pick is not said in Halo Citadel", tostring(kn2))
+	local _, kh = C.TownReactLines({ Faction = "Halo", Honor = 0, TownPick = "GW8:Evil", Town = "Crossroads" })
+	check(kh == nil, "a Halo pick is not said at the Crossroads", tostring(kh))
+	for _, bad in { "H2", "H2:Maybe", "Nope:Good", "H2:Good:x", "", 5, "XR1:Good" } do
+		local _, kb = C.TownReactLines({ Faction = "Halo", Honor = 0, TownPick = bad, Town = "HaloTown" })
+		check(kb == nil, "a bad TownPick says nothing: " .. tostring(bad), tostring(kb))
+	end
+	local ln = C.TownReactLines({ Faction = "None", Honor = 999, MyWay = C.MyWay.Names.TrueKnight, TownPick = "H2:Good", Town = "HaloTown" })
+	check(#ln == 0, "no faction yet: quiet", show(ln))
+	local lg, kg = C.TownReactLines({ Faction = "Neutral", TownPick = "", Town = "Crossroads" })
+	check(#lg == #T.Rank.Neutral[1] and has(lg, T.Rank.Neutral[1][1]) and kg == nil, "the artisan guild has its own 2 lines",
+		show(lg))
+	R.Enabled = false
+	check(#C.TownReactLines({ Faction = "Halo", Honor = 0, Town = "HaloTown" }) == 0, "Enabled = false: quiet", "")
 end)
 
 finish()

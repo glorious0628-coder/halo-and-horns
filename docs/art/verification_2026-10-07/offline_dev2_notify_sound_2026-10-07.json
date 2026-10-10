@@ -1,10 +1,10 @@
 {
   "status": "passed",
-  "checks": 73,
+  "checks": 74,
   "failures": [],
   "mutations": {
-    "total": 64,
-    "caught": 64,
+    "total": 65,
+    "caught": 65,
     "results": [
       {
         "mutation": "QuestService.luau: no QuestDone on 'string.format(text, Util.FormatNumber(go'",
@@ -116,6 +116,10 @@
       },
       {
         "mutation": "ZoneService.luau: no None on '\tnotify(player, fmt(\"TravelCancelled\"), '",
+        "caught": true
+      },
+      {
+        "mutation": "ZoneService.luau: no None on 'fmt(\"WaterRescue\")'",
         "caught": true
       },
       {

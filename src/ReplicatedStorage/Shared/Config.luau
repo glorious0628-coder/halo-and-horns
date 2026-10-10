@@ -80,6 +80,10 @@ Config.Vitals = {
 	PotionMerchantColors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(46, 120, 92), Legs = Color3.fromRGB(70, 55, 45) },
 	PotionMerchantPrompt = "PotionShopPrompt",
 	PotionMerchantPromptRate = 0.5,
+	-- zone_check_halo #34 (검수 2026-10-10): the CollectionService tag of EVERY potion seller Model besides the Crossroads one
+	-- above (TownNpcs tags the Halo stall seller, Config.TownNpcs). ShopService sells at the nearest live seller (same prices,
+	-- prompt and distance). Client contract (게임성 개발 1, pending): MiniMap / [Show me the way] point at the nearest seller.
+	PotionMerchantTag = "PotionMerchant",
 	PotionMerchantOffset = { X = 12, Z = -9 }, -- beside the Crossroads spawn, off the north road/pads
 }
 
@@ -1685,6 +1689,28 @@ Config.AntiCheat = {
 	SpawnGrace = 2,
 	PadSlack = 4,
 	LogCooldown = 10,
+}
+
+-- zone_check_halo_2026-10-10 #11 / #62 / #63 (검수 2026-10-10): the water rescue (ZoneService waterTick). A live player whose
+-- root stays in Terrain water for Seconds in a row inside a town zone (Zones[*].Town) or within Margin studs of a town rect
+-- is moved to the nearest dry land (rings of downward rays: nearest ring first, then the lowest climb); nothing found ->
+-- the home spawn (an Active kaiju: Crossroads). No invisible edge walls (too many parts).
+Config.WaterRescue = {
+	Enabled = true,
+	Seconds = 8, -- in water this long in a row (counted from the first wet sample)
+	Margin = 40, -- studs around each town rect: the Halo canals + sea strip, the Crossroads river and sea edges
+	CheckEvery = 0.5, -- s between two water samples of one player (one 3-voxel Terrain read; the zone loop runs every 0.2 s)
+	RootSlack = 1, -- in water = the Terrain water surface is at most this far below the root (a swimmer floats at the surface)
+	DryReset = 1.5, -- a dry spell shorter than this (a swim jump at a canal wall) keeps the count
+	Rings = { 6, 10, 16, 24, 34, 46, 60, 80 }, -- search radii (studs), nearest first
+	RaysPerRing = 12,
+	RayTop = 60, -- rays start this far above the root / water (Halo tiers and wings reach Y 33; tall props fail the body box)
+	DryAbove = 0.5, -- a landing spot is at least this far above the water surface by the player ...
+	MaxRise = 42, -- ... and at most this far (Halo top tier / wings Y 33 + the 1.2 to the water + mounds; review 10/10)
+	MaxSlope = 40, -- degrees; players walk up to 46 (PlayerService MAX_SLOPE_ANGLE)
+	Lift = 4, -- the root is put at least this far above the landing spot (like a zone spawn)
+	AvoidMaterials = { "CrackedLava" }, -- Horns Den's painted lava strips are floor, never a landing spot
+	Toast = true, -- Text.WaterRescue after the move (false = silent)
 }
 
 ----------------------------------------------------------------- monsters
@@ -6013,6 +6039,7 @@ Config.Text = {
 	-- addendum A3 (review fixes)
 	AutoUnderAttack = "You're under attack! Hit back with the Attack button", -- M3: auto ON + took PvP damage (once per 60 s)
 	EnemyTown = "You can't enter the other side's town!", -- L1: bounced to Crossroads (also Neutral in either town)
+	WaterRescue = "Splash! Back on dry land.", -- zone_check_halo #62: ZoneService water rescue (Config.WaterRescue.Toast)
 	-- addendum A7-3 (next goal, client)
 	Unlocked = "Unlocked! %s", -- (unlockText)
 	KillsToAfford = "%s: %d more!", -- (monsterName, kills)
@@ -6633,6 +6660,145 @@ Config.MyWay = {
 	Names = { TrueKnight = "True Knight", RebelAngel = "Rebel Angel", ProudRascal = "Proud Rascal",
 		SoftDevil = "Soft-Hearted Devil", BalanceWalker = "Balance Walker" },
 }
+-- A23-64 ② choice afterglow (zone_check_halo #39, 검수 2026-10-10): after a good / evil pick StoryQuestService sends Fx
+-- "Afterglow" { UserId, Side = "Good" | "Evil", Seconds, Private }; game dev 1 draws round gold sparkles (Good) or soft
+-- purple smoke puffs (Evil) at that player's feet for Seconds (a round soft glow only: user 10/07). In a PvP area only
+-- the chooser gets it (Private = true). From = which picks glow: story picks, choice cards, the finisher card.
+Config.Afterglow = {
+	Enabled = true, -- A23-64 ②: the afterglow switch
+	Seconds = 60, -- A23-64 ②: how long it stays at the feet
+	From = { Story = true, Card = true, Finisher = true },
+}
+-- A23-64 ① townsfolk notice you (zone_check_halo #39, 검수 2026-10-10). The town people are Models tagged Tag (TownNpcs:
+-- Config.TownNpcs Folk entries, attribute FolkId); a town person's Town = the Config.Zones id it stands in: its attribute
+-- Town when set, else Config.ZoneAt(its pivot position).Id ("HaloTown" | "HornsTown" | "Crossroads"). Game dev 1's
+-- TownReact shows one line over one of them while the local player is within Range: once every Every s a person, Show s
+-- long, never while a shop or story window is open. Config.TownReactLines picks the lines: the player's faction rank
+-- (Config.GetTitle), lean (My Way: attribute MyWay) and, in the player's own town only (Town == Config.HomeZoneId(faction):
+-- the artisan guild's is the Crossroads), the last town pick (attribute TownPick "<quest id>:Good|Evil",
+-- StoryQuestService), said only to the quest's own factions (StoryQuests.Defs[id].Factions). Lines never change a score.
+-- Easy kid English, 12 words at most, nothing scary.
+Config.TownReact = {
+	Enabled = true,
+	Tag = "TownFolk",
+	Every = 30, -- s between two lines of one town person (A23-64 ①)
+	Range = 30, -- studs: a town person speaks only to a player this close
+	Show = 4, -- s the bubble stays up
+	PickFirst = 600, -- s: a new TownPick is said first (once) for this long; after that it is one of the random lines
+	-- the town picks in the order they open: only these quests' picks are remembered (StoryQuestService saves the last
+	-- one as Story.TownLast); an old save's TownPick = the last of these with a saved pick
+	Order = { "S6", "H1", "R1", "H2", "R5", "H3", "R3", "M3_4", "H5", "R6", "OathH", "OathR", "H6", "R7", "GW8" },
+	-- every line the town people say (a table named Text: tools/test_story_text.py checks it too)
+	Text = {
+		-- by faction rank 1..5 (Config.Titles: Squire .. Archangel / Rascal .. Demon King); Neutral = the artisan guild
+		Rank = {
+			Halo = {
+				{ "Welcome, little Squire!", "A new Halo! Hello there!" },
+				{ "Oh! A real Knight! Shiny!", "Hi, Knight! Thanks for your help." },
+				{ "A Paladin! The kids love you!", "Paladin! Our town feels so safe." },
+				{ "A Saint is here! Everyone, wave!", "A Saint! My grandma will not believe this!" },
+				{ "The Archangel! I can't believe it!", "Archangel! The whole town is cheering!" },
+			},
+			Horns = {
+				{ "A little Rascal! Hide the cookies!", "Hey, Rascal! No pranks today, okay?" },
+				{ "A Raider! I'm watching you…", "Raider! Hands off my snacks!" },
+				{ "A Warlord? Gulp. Hello there!", "Warlord! Please don't take my lunch!" },
+				{ "The Dread Lord! I'll be good, I promise!", "Dread Lord! Have a free muffin!" },
+				{ "The Demon King! Everyone, bow!", "Demon King! Take my snacks. All of them!" },
+			},
+			Neutral = { { "A guild crafter! Can you fix my cart?", "Hi, crafter! Busy day?" } },
+		},
+		-- by lean: Config.MyWay.Names ids (2+ story picks; the player attribute MyWay holds the name)
+		Lean = {
+			TrueKnight = { "You always help. Thank you!", "A true knight! Always so kind." },
+			RebelAngel = { "A Halo with a sneaky grin? Hmm!", "Halos don't do that… do they?" },
+			ProudRascal = { "Trouble again? Classic you!", "Lock the cookie jar! Here comes trouble!" },
+			SoftDevil = { "Huh? A NICE devil? …Suspicious.", "You helped again? You ARE a Horn, right?" },
+			BalanceWalker = { "Kind one day, sneaky the next!", "Which side are you on today?" },
+		},
+		-- the last town pick's line by quest id (one per Order id); said only to the quest's own factions
+		-- (StoryQuests.Defs[id].Factions)
+		Good = {
+			S6 = "The new kids say you helped them. Thank you!",
+			H1 = "You told the truth! It was just birthday jelly!",
+			R1 = "A fireworks show? Thanks for telling us!",
+			H2 = "You brought the lantern back! The plaza glows again!",
+			R5 = "You gave Smokey her sack back? How nice…",
+			H3 = "You helped someone new! Sir Gleam is proud.",
+			R3 = "A surprise party? You are full of surprises!",
+			M3_4 = "Pip's lamp glows in the woods. That was you!",
+			H5 = "No forms, just help! Bright says thanks!",
+			R6 = "A brand-new plan? Smokey can't stop talking about it!",
+			OathH = "You guard the small ones. We feel safe!",
+			OathR = "A Horn who guards little ones? Huh. Nice!",
+			H6 = "A sprout statue! Small heroes count too!",
+			R7 = "Best lava party ever! Thanks for inviting everyone!",
+			GW8 = "Thanks for the town fund! New benches for everyone!",
+		},
+		Evil = {
+			S6 = "The new kids keep calling you boss. Hmm…",
+			H1 = "Did you hear? The Horns are up to something!",
+			R1 = "The Halos have a secret plan! Everyone says so!",
+			H2 = "Is that our town lantern in your window?",
+			R5 = "Finders keepers! Smokey is still looking, you know.",
+			H3 = "The cat is up the tree again. Was that you?",
+			R3 = "Prank 201! Same as 200! Classic!",
+			M3_4 = "Our vault shines! The goblins look a bit sad.",
+			H5 = "Three more forms? Bright is still filling them in!",
+			R6 = "Plan B again? We heard it. LOUDLY.",
+			OathH = "Bow to no one? Bold words for a Halo!",
+			OathR = "Rascals bow to no one! That's the spirit!",
+			H6 = "Our statue got SO big! Is it yours?",
+			R7 = "VIP only? I wasn't invited… sniff.",
+			GW8 = "A bigger vault? It's bigger than my house!",
+		},
+		-- a faction's own pick line where both towns share a quest (S6: the Horns card is about the den's gold)
+		FactionPick = {
+			Horns = {
+				Good = { S6 = "You shared snacks with the den? Yum, thanks!" },
+				Evil = { S6 = "Still counting your gold? Twice?" },
+			},
+			-- the artisan guild's own M3_4 card: A = a real lamp, B = sell the dust back (not the vault)
+			Neutral = {
+				Good = { M3_4 = "A real lamp for the goblins? So kind!" },
+				Evil = { M3_4 = "Sold the dust back? Business is business!" },
+			},
+		},
+	},
+}
+
+-- A23-64 ①: what one town person may say to the local player now (game dev 1's TownReact). p = { Faction, Honor, Infamy,
+-- MyWay (the player attribute), TownPick (the player attribute), Town (the town person's Config.Zones id) }. Returns the
+-- lines to pick from (rank + lean + the town pick; empty = stay quiet) and the town pick's own line (nil = none) so a new
+-- pick can be said first. The town pick is said only in the player's own town (Town == Config.HomeZoneId(Faction)) and
+-- only to its quest's factions (StoryQuests.Defs[id].Factions; no Factions = everyone).
+function Config.TownReactLines(p)
+	local R = Config.TownReact
+	local out = {}
+	if type(R) ~= "table" or R.Enabled ~= true or type(R.Text) ~= "table" or type(p) ~= "table" then return out, nil end
+	local T = R.Text
+	local f = p.Faction
+	if f ~= "Halo" and f ~= "Horns" and f ~= "Neutral" then return out, nil end
+	local _, rank = Config.GetTitle(f, tonumber(p.Honor) or 0, tonumber(p.Infamy) or 0)
+	local byRank = type(T.Rank) == "table" and T.Rank[f] or nil
+	if type(byRank) == "table" and #byRank > 0 then
+		for _, line in byRank[math.clamp(rank, 1, #byRank)] or {} do table.insert(out, line) end
+	end
+	for id, name in type(Config.MyWay) == "table" and Config.MyWay.Names or {} do
+		if name == p.MyWay and type(T.Lean) == "table" then
+			for _, line in T.Lean[id] or {} do table.insert(out, line) end
+		end
+	end
+	local id, side = string.match(type(p.TownPick) == "string" and p.TownPick or "", "^([%w_]+):(%a+)$")
+	if not id or (side ~= "Good" and side ~= "Evil") or p.Town ~= Config.HomeZoneId(f) then return out, nil end
+	local def = type(Config.StoryQuests) == "table" and Config.StoryQuests.Defs[id] or nil
+	if type(def) ~= "table" or (type(def.Factions) == "table" and not def.Factions[f]) then return out, nil end
+	local own = type(T.FactionPick) == "table" and type(T.FactionPick[f]) == "table" and T.FactionPick[f][side] or nil
+	local line = (type(own) == "table" and own[id]) or (type(T[side]) == "table" and T[side][id]) or nil
+	if type(line) ~= "string" then return out, nil end
+	table.insert(out, line)
+	return out, line
+end
 -- #2 the 8 Roblox badges (one badge for the angel and the devil path alike). Ids = the badge ids the user creates on
 -- create.roblox.com at publishing (5 free a day: two days; launch_ops_checklist). 0 = not made yet: never asked, awarded
 -- at a later join once the id is set. Stronger = a weapon above the first tier owned; FirstSkill = the first skill

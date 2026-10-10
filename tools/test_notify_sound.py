@@ -52,6 +52,7 @@ ROUTES = [
     ("GrudgeService.luau", "fmt(\"GhostHeld\")", "None"),
     ("ZoneService.luau", "fmt(\"EnteredPvP\")", "None"),
     ("ZoneService.luau", "\tnotify(player, fmt(\"TravelCancelled\"), \"bad\", \"None\")", "None"),
+    ("ZoneService.luau", "fmt(\"WaterRescue\")", "None"),
     ("ShopService.luau", "alreadyOwned and equipFmt or Config.Text.WeaponBought", "Equip"),
     ("ShopService.luau", "Config.Text.PotionBought", "Spend"),
     ("LootService.luau", "TXT.EnhanceOk", "ScrollSuccess"),
