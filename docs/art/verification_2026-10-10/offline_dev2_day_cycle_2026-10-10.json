@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 52090,
+  "checks": 52088,
   "failedChecks": 0,
-  "namedChecks": 177,
+  "namedChecks": 175,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1047,18 +1047,6 @@
     },
     {
       "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
-      "check": "gate self-test C1: the pre-C1 ZoneLook fails it, a NightLevel version of it passes",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
-      "check": "gate self-test C2: the current hollow clock fails it (the 6:00 jump), an 'always the dusk clock' version passes",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -1073,15 +1061,19 @@
   "findings": [
     {
       "Group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
-      "Text": "Config.DayCycle.Enabled = false (merge gate): ZoneLook C1 missing {EclipseKeyedNightLines={1=Bright = sky == \"Eclipse\" and math.max(z.Bright, T.NightBright) or z.Bright,,2=Exp = z.Exp + (sky == \"Eclipse\" and (z.NightExp or 0) or 0),},FactorsForKeyedOnEclipse=true,ReadsNightLevel=false}; C2 missing - biggest hollow clock step 11.09 h at base 6.00 over 2880 ticks (limit 0.25 h). The session that lands C1 + C2 sets Enabled = true; this group then requires both."
+      "Text": "gate self-test C1 skipped: ZoneLook no longer has the pre-C1 Eclipse-keyed night lift text"
+    },
+    {
+      "Group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "Text": "gate self-test C2 skipped: ZoneLook's duskOver no longer has the pre-C2 '6:00 .. dusk' condition or could not be evaluated (nil)"
     }
   ],
   "staticChecks": 31,
   "staticFailures": [],
   "mutations": {
-    "total": 74,
-    "applied": 74,
-    "caught": 74,
+    "total": 75,
+    "applied": 75,
+    "caught": 75,
     "skipped": false,
     "results": [
       {
@@ -1160,16 +1152,26 @@
         "newFailingCount": 5
       },
       {
-        "mutation": "Enabled = true without ZoneLook C1/C2",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "mutation": "Enabled = true without ZoneLook C1 (the night lift back on the Eclipse name)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled) :: Enabled = true only with ZoneLook C1: the night lift and the NightBright floor by GameState NightLevel, not sky == \"Eclipse\"",
+          "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled) :: Enabled = true only with ZoneLook C1: the night lift and the NightBright floor by GameState NightLevel, not sky == \"Eclipse\""
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Enabled = true without ZoneLook C2 (the 6:00 jump back)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
           "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled) :: Enabled = true only with ZoneLook C2: the haunted hollow's clock never jumps over a day of the cycle (<= 0.25 h a tick)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "ClockForwardMax 16: Dawn -> Eclipse runs backwards",
@@ -2085,13 +2087,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "782323937cfbc021af59dc6c16be48095d30a225ab72149d192b28edfd9ecee9",
+    "src/ReplicatedStorage/Shared/Config.luau": "3b51b942a4686f4bd8707c15eb4c689f3c0e6242401579169ed8a36a4ba70425",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ReplicatedStorage/Shared/Net.luau": "dc429ca01e323ba51224c3e9f3e6ccb274ee3f5a8bb3fa8ab52e2f4bf0454e72",
-    "src/ServerScriptService/Main.server.luau": "a60641b5238c5b4bf2f50afe431ae47f9b4a9332fdb6f0eb14e11b9b2ad2461d",
+    "src/ReplicatedStorage/Shared/Net.luau": "7cf8e277fe2267425e3f51e200aca951f0ada9900137e3c7fab4b78396dc81b0",
+    "src/ServerScriptService/Main.server.luau": "d7e211437e629ad249de9e5c9518edbdae20d50e2891c21fbd83cb7df8aa5c27",
     "src/ServerScriptService/DayCycleService.luau": "385b70fa7891a0670d3fcb4e8e83c968ffdbc5c4dbd90eaf9ca70664effd2647",
     "src/ServerScriptService/WarService.luau": "94cb2a6aee9b5a450b9a2694d2f9f6d109d2d1c1503f8e1e342827312a317cca",
-    "src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau": "52fb8e4acc7553134a61b4cd4e162a15d6bafa46c164938d0b15bf2addf7bf87"
+    "src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau": "964c09d8308a2b4c6482822a96ee7b56445727f23781a37fec085fce781f9481"
   },
   "fixtureSHA256": "c62001eecc39decc0641efee2b88c99b463bfcaf76108c0c2a5332d0ed16e9a4",
   "sourcesChangedDuringRun": [],
