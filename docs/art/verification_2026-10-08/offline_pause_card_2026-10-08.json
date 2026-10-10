@@ -167,7 +167,7 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/PauseCard.luau": "c3f470b40196f48c84b0e80058b6218e9fe74e4386036b742684e15277edfcf5",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0d11b0ff0efdbba6ff3e82331a33d821b4ccc43948ba45c6d23f985f53022641"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "0a09fea33e253607bd7c98c70ce9b8200e896535947d3bb1d9431846865002b8"
   },
   "fixtureSHA256": "0fab76ab3857acc6c9b2275fe2366d76b2ad5e9bfe770181066237ba442b86fa",
   "studioCalls": 0,

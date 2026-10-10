@@ -1,11 +1,19 @@
 {
-  "status": "passed",
+  "status": "failed",
   "mutationsSkipped": false,
-  "checks": 486,
-  "failedChecks": 0,
-  "namedChecks": 478,
-  "namedChecksFailing": 0,
-  "failing": [],
+  "checks": 482,
+  "failedChecks": 1,
+  "namedChecks": 474,
+  "namedChecksFailing": 1,
+  "failing": [
+    {
+      "group": "nametag",
+      "check": "group ran to the end without a Lua error",
+      "failures": 1,
+      "passes": 0,
+      "firstFailure": "CharacterVisuals.updateNametag:95: attempt to index nil with 'Place'\nC:/Users/glori/AppData/Local/Temp/ranking_qd0gbvu1/main.luau:13073\nCharacterVisuals.updateNametag:95 function updateNametag\nC:/Users/glori/AppData/Local/Temp/ranking_qd0gbvu1/main.luau:15905 function tagged\nC:/Users/glori/AppData/Local/Temp/ranking_qd0gbvu1/main.luau:15909\nC:/Users/glori/AppData/Local/Temp/ranking_qd0gbvu1/main.luau:13073 function runGroup\nC:/Users/glori/AppData/Local/Temp/ranking_qd0gbvu1/main.luau:15895\n"
+    }
+  ],
   "named": [
     {
       "group": "config",
@@ -2841,33 +2849,9 @@
     },
     {
       "group": "nametag",
-      "check": "an outlaw's nametag line 2 ends with a red '무법자'",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "nametag",
-      "check": "the tag is shown even with the name hidden (BB37 hides chat lines only)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "nametag",
-      "check": "not an outlaw: no tag",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "nametag",
-      "check": "only the fixed tag is markup (player text stays escaped)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "nametag",
       "check": "group ran to the end without a Lua error",
-      "pass": 1,
-      "fail": 0
+      "pass": 0,
+      "fail": 1
     },
     {
       "group": "nametag",
@@ -2882,7 +2866,7 @@
   "mutations": {
     "total": 186,
     "applied": 186,
-    "caught": 186,
+    "caught": 184,
     "skipped": false,
     "results": [
       {
@@ -5206,25 +5190,19 @@
         "mutation": "no outlaw tag",
         "file": "src/ServerScriptService/CharacterVisuals.luau",
         "applied": true,
-        "caught": true,
+        "caught": false,
         "crashed": false,
-        "newFailingChecks": [
-          "nametag :: an outlaw's nametag line 2 ends with a red '무법자'",
-          "nametag :: only the fixed tag is markup (player text stays escaped)",
-          "nametag :: the tag is shown even with the name hidden (BB37 hides chat lines only)"
-        ],
-        "newFailingCount": 3
+        "newFailingChecks": [],
+        "newFailingCount": 0
       },
       {
         "mutation": "tag hidden with the name",
         "file": "src/ServerScriptService/CharacterVisuals.luau",
         "applied": true,
-        "caught": true,
+        "caught": false,
         "crashed": false,
-        "newFailingChecks": [
-          "nametag :: the tag is shown even with the name hidden (BB37 hides chat lines only)"
-        ],
-        "newFailingCount": 1
+        "newFailingChecks": [],
+        "newFailingCount": 0
       }
     ]
   },
@@ -5232,18 +5210,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b",
+    "src/ReplicatedStorage/Shared/Config.luau": "164ca51a4d07192dfd8beec2ae6780afc7b3fd6bf209ef4e67b93076a3e0b5f6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/RankingService.luau": "863d034d30426213b5cb97be6b39457892acd5d65a97cc4abede2857290d213f",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
     "src/ServerScriptService/GrudgeService.luau": "c4b055e8466eeb2f275b294fd0611c45d5a892711ad2bf9d6f88f545471ff531",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
-    "src/ServerScriptService/LootService.luau": "0f6d8a33b1e40367c620e5ec0723fac11538d0495e426c66319984ec03daf5e1",
+    "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8",
     "src/ServerScriptService/CombatService.luau": "969ebea75afb013547ede41d82090d9d80cd36b6a0581fca505400bf6373a177",
     "src/ServerScriptService/ProgressionService.luau": "227961d963eb15c19e96eda039fc662a2220110a7020274397ed1ab69e078b94",
-    "src/ServerScriptService/PlayerService.luau": "4dc3b106e1b843ce8e7ec5468b85a98d99d61aaa00366e6a3c91c2f7a05a0360",
-    "src/ServerScriptService/CharacterVisuals.luau": "26a8fce1d26329d7b8ed4a764b57877c4217fe8558a5d30704a76d6ba3244b2e",
+    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
+    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
     "src/ServerScriptService/KaijuService.luau": "c34d693e33c283026fa15495d1e8b4f065475dafa3775819f4862a531a2331e8"
   },
   "fixtureSHA256": "ac90ea1a7d90cf0629d7697aeec5f4b63188ebe86429106850217622a82c2d64",

@@ -267,6 +267,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -484,9 +485,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
           "runtime :: the first quest list is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "runtime :: the same list again is quiet"
         ]
       },
@@ -532,9 +531,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: points going up are quiet (Purify / Devour come with the Choice Fx)",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "runtime :: points going up are quiet (Purify / Devour come with the Choice Fx)"
         ]
       },
       {
@@ -618,12 +615,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: the same event inside its cooldown is skipped",
           "world :: TickAt: crossing 3 / 2 / 1 s left = 1.0 / 1.12 / 1.26 (B7)",
           "world :: TickAt: no crossing, no first value, no tick after 0",
           "world listeners :: 1 s left -> CountTick at 1.26x",
           "world listeners :: 2 s left -> CountTick at 1.12x",
-          "world listeners :: a goose hitter hears its 3-2-1"
+          "world listeners :: a goose hitter hears its 3-2-1",
+          "world listeners :: no faction: no WarFinal30"
         ]
       },
       {
@@ -998,7 +995,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d75e051f82964774f70c5fe8b15e8dd7836d902a040d3bcc2d03bb67ac14cc3b",
+    "src/ReplicatedStorage/Shared/Config.luau": "164ca51a4d07192dfd8beec2ae6780afc7b3fd6bf209ef4e67b93076a3e0b5f6",
     "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "56d1e3f422ded33b89a2fd41e495bd9891d80c606bc71ffb8f36f64ae91ac430",
     "tools/fixtures/audio_offline.luau": "6d5601d786ec6fb7bff9e352d6f76e358b322fb998794ce1f2e6f7464b2c088d"
   },

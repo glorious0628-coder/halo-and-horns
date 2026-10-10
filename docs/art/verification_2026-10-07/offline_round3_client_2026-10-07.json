@@ -75,8 +75,8 @@
     }
   ],
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "73d39a075505b7c5224d3533f55b6342772b9ad2d2ad4eec753d81586ad40abd",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "dedd3121495e9910a7bc015632ea1a43874d6c4d13575601e6f61f28debc1eab"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "9b3643ecdad0cbcd8fa9ada315efb880a6a7f829e4639e0e8762eb6a59023e91",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "e35b55933d57cef54b6d36e30aad59b292e5c3f3e2b2ac129ea48ccf5f99f30e"
   },
   "studioCalls": 0,
   "contract": "Round 3 'first 10 minutes' client pieces in HUD.luau (docs/design/ideas_first10_2026-10-07.md §3-4, game dev 1):\n#1 line 2 after the pinned row = the waiting story -> a claim -> the S0 shard story (until auto combat is unlocked) ->\nthe first daily, in both the phone header line and the two quest lines; the PC list has no daily header before the\nfirst mission is accepted (step 0); a seconds row's ProgressUnit follows the target ('5/10 s', dev2 2c5e84e).\n#3 one tap on the phone quest block whose line 1 is the step-0 pinned row ('Tap here: first quest from Hallie') opens\nthe guide (L.PinnedTap) instead of the list.\n#2 the guide's first window (Panels BUILDERS.Welcome): [I'm In!] is the one wide button (half the row), Next / Later a\nquarter each; short phone screens (height < 520) keep a 64 px guide face instead of none.\nA23-74 weapon first (dev2 dev2-weapon): TutorialStep Forge (3) beams to the anvil in the Crossroads, to the Crossroads\nfrom elsewhere (by the step, never BlacksmithVisited); a tap of the Forge row fires RequestTutorial and brings the beam\nback; the bag's empty weapons line says the weapon comes with the first quest.",
