@@ -39,8 +39,10 @@ local function color(c, fallback)
 end
 
 -- the ground height under (x, z): a ray from RayTop straight down that ignores the NPC folder and every player's character;
--- only a floor-like hit counts (a slope or a wall under the point is "no ground")
-function TownNpcs.GroundY(x, z, ignore)
+-- only a floor-like hit counts (a slope or a wall under the point is "no ground"). With expectY (an entry's Y) a floor-like
+-- hit within YTol of it is the ground; any other hit (a roof, a pedestal top, a balcony, a wall) is looked under: the ray
+-- goes on from just below it, at most RayTries casts, and a hit already lower than expectY - YTol ends the search.
+function TownNpcs.GroundY(x, z, ignore, expectY)
 	local C = Config.TownNpcs
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Exclude
@@ -53,13 +55,26 @@ function TownNpcs.GroundY(x, z, ignore)
 		end
 	end
 	params.FilterDescendantsInstances = list
-	local top = num(C.RayTop, 150)
-	local ok, hit = pcall(function()
-		return workspace:Raycast(Vector3.new(x, top, z), Vector3.new(0, -(top + num(C.RayDepth, 60)), 0), params)
-	end)
-	if not ok or not hit then return nil end
-	if typeof(hit.Normal) ~= "Vector3" or hit.Normal.Y < 0.7 then return nil end
-	return hit.Position.Y
+	local depth = num(C.RayDepth, 60)
+	local wantY = finite(expectY) and expectY or nil
+	local tol = math.max(0.5, num(C.YTol, 4))
+	local from = num(C.RayTop, 150)
+	for _ = 1, math.max(1, math.floor(num(C.RayTries, 8))) do
+		local ok, hit = pcall(function()
+			return workspace:Raycast(Vector3.new(x, from, z), Vector3.new(0, -(from + depth), 0), params)
+		end)
+		if not ok or not hit or typeof(hit.Position) ~= "Vector3" then return nil end
+		local floorLike = typeof(hit.Normal) == "Vector3" and hit.Normal.Y >= 0.7
+		if wantY == nil then
+			if not floorLike then return nil end
+			return hit.Position.Y
+		end
+		if floorLike and math.abs(hit.Position.Y - wantY) <= tol then return hit.Position.Y end
+		if hit.Position.Y < wantY - tol then return nil end -- already under the place it should be
+		from = hit.Position.Y - 0.5
+		if from <= -depth then return nil end
+	end
+	return nil
 end
 
 -- the Crossroads anvil part (the same lookup as ShopService), or nil
@@ -149,7 +164,7 @@ local function mark(npc, entry, C)
 		CollectionService:AddTag(npc, Config.StoryQuests.NpcTag or "StoryNpc")
 		npc:SetAttribute("NpcId", entry.Story)
 	elseif entry.Merchant == true then
-		CollectionService:AddTag(npc, "PotionMerchant")
+		CollectionService:AddTag(npc, (Config.Vitals and Config.Vitals.PotionMerchantTag) or "PotionMerchant") -- ShopService sells at every tagged seller
 		npc:SetAttribute("HHC_PotionMerchant", true)
 	elseif entry.Folk then
 		CollectionService:AddTag(npc, "TownFolk")
@@ -161,7 +176,7 @@ end
 local function place(npc, entry, folder)
 	local spot = TownNpcs.Spot(entry)
 	if not spot then return false, "no spot" end
-	local ground = TownNpcs.GroundY(spot.X, spot.Z, { folder })
+	local ground = TownNpcs.GroundY(spot.X, spot.Z, { folder }, entry.Y)
 	if not ground then return false, "no ground under the spot" end
 	local pivot = npc:GetPivot()
 	local bounds, size = npc:GetBoundingBox()
@@ -201,7 +216,7 @@ local function buildOne(entry, folder, C, vitals)
 	end
 	if entry.Enabled == false then return end
 	local spot = TownNpcs.Spot(entry)
-	local ground = spot and TownNpcs.GroundY(spot.X, spot.Z, { folder })
+	local ground = spot and TownNpcs.GroundY(spot.X, spot.Z, { folder }, entry.Y)
 	if not ground then
 		Util.Warn(TAG, entry.Name .. " skipped: no ground under its spot (the map is not built here)")
 		return
@@ -211,7 +226,7 @@ local function buildOne(entry, folder, C, vitals)
 	end)
 	if not made or not npc then
 		Util.Warn(TAG, entry.Name .. " body failed: " .. tostring(npc))
-		return
+		return "retry"
 	end
 	if folder:FindFirstChild(entry.Name) then npc:Destroy(); return end -- built meanwhile
 	local prepared, why = pcall(function()
@@ -239,6 +254,7 @@ local function buildOne(entry, folder, C, vitals)
 	if not prepared then
 		npc:Destroy()
 		Util.Warn(TAG, entry.Name .. " preparation failed: " .. tostring(why))
+		return "retry"
 	end
 end
 
@@ -278,10 +294,24 @@ function TownNpcs.Ensure(ctx, folder)
 	end
 	if #queue == 0 then return 0 end
 	task.spawn(function()
-		for _, entry in queue do
-			local ok, err = pcall(buildOne, entry, folder, C, vitals)
-			if not ok then Util.Warn(TAG, tostring(entry.Name) .. ": " .. tostring(err)) end
+		-- a body whose avatar call (or preparation) failed is made again a few seconds later, Retries times in all
+		local pending = queue
+		local tries = math.max(1, math.floor(num(C.Retries, 3)))
+		for attempt = 1, tries do
+			local again = {}
+			for _, entry in pending do
+				local ok, res = pcall(buildOne, entry, folder, C, vitals)
+				if not ok then
+					Util.Warn(TAG, tostring(entry.Name) .. ": " .. tostring(res))
+				elseif res == "retry" then
+					table.insert(again, entry)
+				end
+			end
+			if #again == 0 then return end
+			pending = again
+			if attempt < tries then task.wait(math.max(0.5, num(C.RetryDelay, 5))) end
 		end
+		for _, entry in pending do Util.Warn(TAG, tostring(entry.Name) .. " given up after " .. tries .. " tries") end
 	end)
 	return #queue
 end

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 122,
+  "checks": 167,
   "failedChecks": 0,
-  "namedChecks": 90,
+  "namedChecks": 132,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -111,6 +111,96 @@
     },
     {
       "group": "config",
+      "check": "juice man east (34,-546), flower girl west (-34,-584), baker west (-34,-546), the potion seller east (34,-584)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk1 is on the plaza terrace: Y 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk2 is on the plaza terrace: Y 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk3 is on the plaza terrace: Y 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk4 is on the plaza terrace: Y 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PotionHalo is on the plaza terrace: Y 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Bright and Sir Gleam have no expected Y (a ramp / the gate road)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Bright has a spot of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Gleam has a spot of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk1 has a spot of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk2 has a spot of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk3 has a spot of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk4 has a spot of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PotionHalo has a spot of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "retries 3 x 5 s, ground tolerance 4, 8 casts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
       "check": "the ids the plan names",
       "pass": 1,
       "fail": 0
@@ -118,6 +208,12 @@
     {
       "group": "config",
       "check": "Bright is named by quest steps and has a body",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Sir Gleam is named by a quest step (H3's first card) and has a body",
       "pass": 1,
       "fail": 0
     },
@@ -177,7 +273,7 @@
     },
     {
       "group": "build",
-      "check": "Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
+      "check": "Bright stands at (18, -452) with her feet on the ground (Y 9 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -237,7 +333,7 @@
     },
     {
       "group": "build",
-      "check": "Folk1: feet on the ground",
+      "check": "Folk1: feet on the plaza terrace (Y 20 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -249,7 +345,7 @@
     },
     {
       "group": "build",
-      "check": "Folk2: feet on the ground",
+      "check": "Folk2: feet on the plaza terrace (Y 20 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -261,7 +357,7 @@
     },
     {
       "group": "build",
-      "check": "Folk3: feet on the ground",
+      "check": "Folk3: feet on the plaza terrace (Y 20 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -273,7 +369,7 @@
     },
     {
       "group": "build",
-      "check": "Folk4: feet on the ground",
+      "check": "Folk4: feet on the plaza terrace (Y 20 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -339,13 +435,19 @@
     },
     {
       "group": "the potion seller (switched on)",
-      "check": "at the potion stall (-34, -546), feet on the ground",
+      "check": "in front of the potion shop (34, -584), feet on the plaza terrace",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "the potion seller (switched on)",
       "check": "facing the plaza axis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "the tag ShopService sells at (Config.Vitals.PotionMerchantTag when it exists)",
       "pass": 1,
       "fail": 0
     },
@@ -434,6 +536,138 @@
       "fail": 0
     },
     {
+      "group": "retries",
+      "check": "two avatar calls failed: after one 5 s wait both are made, nothing else is made twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "the two that failed have their bodies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "no ground: no avatar call, no retry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "a name taken by something else: skipped, no retry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "Retries = 1: one try each, no wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "Retries = 2, RetryDelay = 0: one wait of 0.5 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "7 bodies, 8 avatar calls (one failed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retries",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "Bright (no expected Y) takes the ground the ray finds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "a later cast starts 0.5 below the hit it passes",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "a steep face at 24 over the floor: the floor is the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "only a roof over the spot: no body (a warning each), the others are built",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "a floor at 5 where the terrace should be 20 (+-4): no body",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "20 + 3.9 is inside the tolerance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "20 + 4.1 is a roof: the ray goes on to the floor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "RayTries = 3: five things over the floor are too many casts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "an entry without Y: the first floor-like hit is the ground (as before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the expected ground (roofs, balconies, walls)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "failures",
       "check": "no ground: no body, a warning",
       "pass": 1,
@@ -453,7 +687,7 @@
     },
     {
       "group": "failures",
-      "check": "each body takes its own terrace height (0.2 / 5 / 11)",
+      "check": "each body takes its own terrace height (0.2 / 7 / 22; Y 20 +- 4 accepts the plaza)",
       "pass": 1,
       "fail": 0
     },
@@ -465,7 +699,25 @@
     },
     {
       "group": "failures",
+      "check": "... every body is tried 3 times, 5 s apart (2 waits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "... and each says it gave up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
       "check": "a body without a root part is thrown away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a body that cannot be prepared is retried too (3 tries)",
       "pass": 1,
       "fail": 0
     },
@@ -549,12 +801,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 7,
+  "staticChecks": 15,
   "staticFailures": [],
   "mutations": {
-    "total": 74,
-    "applied": 74,
-    "caught": 74,
+    "total": 105,
+    "applied": 105,
+    "caught": 105,
     "skipped": false,
     "results": [
       {
@@ -593,11 +845,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "build :: Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
+          "build :: Bright stands at (18, -452) with her feet on the ground (Y 9 + 2.6)",
           "config :: Bright stands inside Halo Citadel",
-          "failures :: each body takes its own terrace height (0.2 / 5 / 11)"
+          "failures :: each body takes its own terrace height (0.2 / 7 / 22; Y 20 +- 4 accepts the plaza)",
+          "the expected ground (roofs, balconies, walls) :: Bright (no expected Y) takes the ground the ray finds"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "Config: the prompt range is 40",
@@ -623,9 +876,9 @@
           "build :: ctx.pieces counts the 7 new bodies",
           "build :: no body for the switched-off seller",
           "config :: the Halo potion seller stays off until ShopService accepts more than one seller",
-          "failures :: Build only queues the work (bodies come after it returns)"
+          "failures :: ... and each says it gave up"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 18
       },
       {
         "mutation": "Config: a fifth townsperson",
@@ -638,10 +891,10 @@
           "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
           "build :: ctx.pieces counts the 7 new bodies",
           "config :: Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto",
-          "failures :: Build only queues the work (bodies come after it returns)",
-          "failures :: a model that appeared meanwhile is kept; the new body is dropped (never two under one name)"
+          "failures :: ... and each says it gave up",
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 18
       },
       {
         "mutation": "Config: a duplicate model name",
@@ -657,7 +910,7 @@
           "build :: ctx.pieces counts the 7 new bodies",
           "build :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 16
+        "newFailingCount": 23
       },
       {
         "mutation": "Config: Otto is not behind the anvil",
@@ -684,7 +937,130 @@
           "build :: ctx.pieces counts the 7 new bodies",
           "build :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "Config: the seller back at the bakery",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: PotionHalo has a spot of its own",
+          "config :: juice man east (34,-546), flower girl west (-34,-584), baker west (-34,-546), the potion seller east (34,-584)",
+          "the potion seller (switched on) :: in front of the potion shop (34, -584), feet on the plaza terrace"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: Folk3 on the seller's spot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: PotionHalo has a spot of its own",
+          "config :: juice man east (34,-546), flower girl west (-34,-584), baker west (-34,-546), the potion seller east (34,-584)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: Folk1 has no expected Y",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Folk1 is on the plaza terrace: Y 20",
+          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
+          "the expected ground (roofs, balconies, walls) :: RayTries = 3: five things over the floor are too many casts",
+          "the expected ground (roofs, balconies, walls) :: a floor at 5 where the terrace should be 20 (+-4): no body",
+          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "Config: Folk4 on the terrace below",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a failing body is a warning; the next ones are still repaired / moved",
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
+          "build :: Folk4: a townsperson, tagged TownFolk, no prompt",
+          "build :: group ran to the end without a Lua error",
+          "config :: Folk4 is on the plaza terrace: Y 20"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "Config: no retries",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: retries 3 x 5 s, ground tolerance 4, 8 casts",
+          "failures :: ... and each says it gave up",
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "failures :: a body that cannot be prepared is retried too (3 tries)",
+          "retries :: 7 bodies, 8 avatar calls (one failed)",
+          "retries :: the two that failed have their bodies"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "Config: retry every second",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: retries 3 x 5 s, ground tolerance 4, 8 casts",
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "retries :: two avatar calls failed: after one 5 s wait both are made, nothing else is made twice"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: the tolerance is 10",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: retries 3 x 5 s, ground tolerance 4, 8 casts",
+          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
+          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Config: two casts",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: retries 3 x 5 s, ground tolerance 4, 8 casts",
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: H3's first card is not Sir Gleam's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Sir Gleam is named by a quest step (H3's first card) and has a body"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "Config: the ray is shorter",
@@ -693,9 +1069,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "build :: the ray starts 150 up and goes 210 down"
+          "build :: the ray starts 150 up and goes 210 down",
+          "the expected ground (roofs, balconies, walls) :: a later cast starts 0.5 below the hit it passes"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "ground: any surface is ground",
@@ -704,9 +1081,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "failures :: a steep surface under a spot is not ground"
+          "failures :: a steep surface under a spot is not ground",
+          "the expected ground (roofs, balconies, walls) :: a steep face at 24 over the floor: the floor is the ground"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "ground: only a flat surface",
@@ -727,7 +1105,110 @@
         "crashed": false,
         "newFailingChecks": [
           "failures :: no ground at the placing: the made body is destroyed, a warning each",
-          "failures :: no ground: no body, a warning"
+          "failures :: no ground: no body, a warning",
+          "retries :: no ground: no avatar call, no retry",
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "ground: the expected height is ignored",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error",
+          "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "ground: any height is within the tolerance",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
+          "the expected ground (roofs, balconies, walls) :: RayTries = 3: five things over the floor are too many casts",
+          "the expected ground (roofs, balconies, walls) :: a floor at 5 where the terrace should be 20 (+-4): no body",
+          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built",
+          "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "ground: the tolerance is 40",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
+          "the expected ground (roofs, balconies, walls) :: RayTries = 3: five things over the floor are too many casts",
+          "the expected ground (roofs, balconies, walls) :: a floor at 5 where the terrace should be 20 (+-4): no body",
+          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built",
+          "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "ground: a roof ends the search",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: the next cast starts on the roof",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: one cast only",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: endless casts",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: RayTries = 3: five things over the floor are too many casts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: a wall is the floor when a height is expected",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a steep surface under a spot is not ground",
+          "the expected ground (roofs, balconies, walls) :: a steep face at 24 over the floor: the floor is the ground"
         ],
         "newFailingCount": 2
       },
@@ -761,9 +1242,23 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "build :: the ray starts 150 up and goes 210 down"
+          "build :: the ray starts 150 up and goes 210 down",
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ground: a body is placed without its Y",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error",
+          "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "spot: a NaN spot passes",
@@ -931,12 +1426,12 @@
         "newFailingChecks": [
           "a second build :: a rebuild changes nothing: no second body, no new pieces",
           "a second build :: group ran to the end without a Lua error",
+          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
           "build :: Bright: a model with its root as PrimaryPart",
           "build :: group ran to the end without a Lua error",
-          "failures :: a slope of exactly 0.7 is still ground",
-          "failures :: group ran to the end without a Lua error"
+          "failures :: a slope of exactly 0.7 is still ground"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 15
       },
       {
         "mutation": "body: another rig",
@@ -956,14 +1451,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "build :: Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
-          "build :: Folk1: feet on the ground",
-          "build :: Folk2: feet on the ground",
-          "build :: Folk3: feet on the ground",
-          "build :: Folk4: feet on the ground",
+          "build :: Bright stands at (18, -452) with her feet on the ground (Y 9 + 2.6)",
+          "build :: Folk1: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk2: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk3: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk4: feet on the plaza terrace (Y 20 + 2.6)",
           "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 14
       },
       {
         "mutation": "place: feet offset forgotten the wrong way",
@@ -972,14 +1467,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "build :: Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
-          "build :: Folk1: feet on the ground",
-          "build :: Folk2: feet on the ground",
-          "build :: Folk3: feet on the ground",
-          "build :: Folk4: feet on the ground",
+          "build :: Bright stands at (18, -452) with her feet on the ground (Y 9 + 2.6)",
+          "build :: Folk1: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk2: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk3: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk4: feet on the plaza terrace (Y 20 + 2.6)",
           "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 14
       },
       {
         "mutation": "place: no facing",
@@ -1074,9 +1569,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the potion seller (switched on) :: tagged PotionMerchant like the Crossroads seller, not a story NPC"
+          "the potion seller (switched on) :: tagged PotionMerchant like the Crossroads seller, not a story NPC",
+          "the potion seller (switched on) :: the tag ShopService sells at (Config.Vitals.PotionMerchantTag when it exists)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "mark: the seller without its marker",
@@ -1243,11 +1739,11 @@
           "a second build :: a rebuild changes nothing: no second body, no new pieces",
           "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
           "build :: no body for the switched-off seller",
-          "failures :: a model that appeared meanwhile is kept; the new body is dropped (never two under one name)",
-          "failures :: a slope of exactly 0.7 is still ground",
-          "failures :: duplicate ids, nameless and junk rows are dropped; NaN / huge / infinite / missing spots are refused at build (a warning each)"
+          "failures :: ... and each says it gave up",
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "failures :: a body that cannot be prepared is retried too (3 tries)"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 15
       },
       {
         "mutation": "build: a foreign model is taken over",
@@ -1329,7 +1825,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "failures :: the avatar call failing: nothing left half-built, a warning each"
+          "retries :: two avatar calls failed: after one 5 s wait both are made, nothing else is made twice"
         ],
         "newFailingCount": 1
       },
@@ -1379,9 +1875,11 @@
           "a second build :: group ran to the end without a Lua error",
           "build :: group ran to the end without a Lua error",
           "failures :: group ran to the end without a Lua error",
+          "retries :: group ran to the end without a Lua error",
+          "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error",
           "the potion seller (switched on) :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "ensure: a bad row stops the others",
@@ -1393,6 +1891,170 @@
           "a second build :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "retry: never again",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: ... and each says it gave up",
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "failures :: a body that cannot be prepared is retried too (3 tries)",
+          "retries :: 7 bodies, 8 avatar calls (one failed)",
+          "retries :: Retries = 2, RetryDelay = 0: one wait of 0.5 s",
+          "retries :: the two that failed have their bodies"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "retry: never stops",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "failures :: a body that cannot be prepared is retried too (3 tries)",
+          "retries :: Retries = 1: one try each, no wait",
+          "retries :: Retries = 2, RetryDelay = 0: one wait of 0.5 s"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "retry: no wait",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "failures :: a body that cannot be prepared is retried too (3 tries)",
+          "retries :: Retries = 2, RetryDelay = 0: one wait of 0.5 s",
+          "retries :: two avatar calls failed: after one 5 s wait both are made, nothing else is made twice"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "retry: a wait after the last try",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "failures :: a body that cannot be prepared is retried too (3 tries)",
+          "retries :: Retries = 1: one try each, no wait",
+          "retries :: Retries = 2, RetryDelay = 0: one wait of 0.5 s"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "retry: the delay is not read",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retries :: Retries = 2, RetryDelay = 0: one wait of 0.5 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry: the tries are not read",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retries :: Retries = 1: one try each, no wait",
+          "retries :: Retries = 2, RetryDelay = 0: one wait of 0.5 s"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "retry: a missing ground is retried",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retries :: no ground: no avatar call, no retry"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry: a failed avatar call is not retried",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: ... and each says it gave up",
+          "failures :: ... every body is tried 3 times, 5 s apart (2 waits)",
+          "retries :: 7 bodies, 8 avatar calls (one failed)",
+          "retries :: Retries = 2, RetryDelay = 0: one wait of 0.5 s",
+          "retries :: the two that failed have their bodies",
+          "retries :: two avatar calls failed: after one 5 s wait both are made, nothing else is made twice"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "retry: a failed preparation is not retried",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a body that cannot be prepared is retried too (3 tries)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry: a foreign model is retried",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retries :: a name taken by something else: skipped, no retry"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry: no give-up line",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: ... and each says it gave up"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry: everything again",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: ... and each says it gave up"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tag: the seller is not tagged for the shop",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the potion seller (switched on) :: tagged PotionMerchant like the Crossroads seller, not a story NPC",
+          "the potion seller (switched on) :: the tag ShopService sells at (Config.Vitals.PotionMerchantTag when it exists)"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "ensure: the switch is ignored",
@@ -1466,10 +2128,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "736fb66ff61e70946105c3c6506e4154c3ca30277b67684ae9e7d71a5c351cc8",
-    "src/ServerScriptService/TownNpcs.luau": "84e9d2f9722493b776de99119a8a6c6bba1c7912fcf84bdd8ebb48a644691c62"
+    "src/ReplicatedStorage/Shared/Config.luau": "9f7d765172a4ed9edc00e6c9c108e2c9ff853fd00bd7f4fb24294e419d59037a",
+    "src/ServerScriptService/TownNpcs.luau": "4ff53bc75659ccd39cd7974b8062daa1714f458feac8605fd1dc7be5471f106d"
   },
-  "fixtureSHA256": "0e7f6f48f2f83b02b0c3f06107fdf9a3bc266f31b5003ad871ee3e1c496406d9",
+  "fixtureSHA256": "3e3056483013a01110853bd08db3497c40466b2d37b0f7518d1754b305d115e2",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

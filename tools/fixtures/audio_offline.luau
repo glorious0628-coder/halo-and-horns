@@ -550,9 +550,24 @@ do
 			and d.Volume <= 0.6 and (d.Max or 0) >= 1 and (d.Gap or -1) >= 0 and type(d.Speed) == "table" and d.Speed[1] <= d.Speed[2]
 			and not d.Combat, e)
 	end
-	check(g, "the pet's level up is a small, higher LevelUp", A.Sounds.PetLevelUp.File == "LevelUp"
-		and A.Sounds.PetLevelUp.Volume < A.Sounds.LevelUp.Volume and A.Sounds.PetLevelUp.Speed[1] > 1, "")
-	check(g, "the marker's tick is a quiet Tap", A.Sounds.MarkerMove.File == "Tap" and A.Sounds.MarkerMove.Volume <= 0.2, "")
+	check(g, "13차: the pet's level up has its own file, smaller than mine", A.Sounds.PetLevelUp.File == "PetLevel"
+		and A.Sounds.PetLevelUp.Volume < A.Sounds.LevelUp.Volume, "")
+	check(g, "A23-105 Settings: a 'Weather effects' toggle, on by default, kept by SanitizeSettings",
+		Config.Settings.Defs.Weather and Config.Settings.Defs.Weather.Type == "Bool" and table.find(Config.Settings.Order, "Weather") ~= nil
+		and Config.Settings.Text.WeatherEn == "Weather effects" and Config.Data.Defaults.Settings.Weather == true
+		and Config.SanitizeSettings({ V = 4, Weather = false }).Weather == false and Config.SanitizeSettings({}).Weather == true, "")
+	check(g, "13차: the marker's tick is the quiet DiamondTick", A.Sounds.MarkerMove.File == "DiamondTick"
+		and A.Sounds.MarkerMove.Volume <= 0.25, "")
+	for _, e in { "PetCall", "PetStow", "LanternOn" } do
+		local d = A.Sounds[e]
+		check(g, "13차: each new event has its uploaded file", type(d) == "table" and type(A.Files[d.File]) == "string"
+			and string.find(A.Files[d.File], "^rbxassetid://%d+$") ~= nil and d.Volume <= 0.6, e)
+	end
+	local WL = A.Weather and A.Weather.Loops
+	check(g, "A23-105 weather air: Rain / RainRoof / Night / WinterWind ids, quiet, a 1.5 s fade", WL and A.Weather.Fade == 1.5
+		and WL.Rain.Id == "rbxassetid://126445007194331" and WL.RainRoof.Id == "rbxassetid://76655204420103"
+		and WL.Night.Id == "rbxassetid://99972569683856" and WL.WinterWind.Id == "rbxassetid://113002054407080"
+		and WL.Rain.Volume <= 0.4 and WL.RainRoof.Volume < WL.Rain.Volume, encode(A.Weather))
 	check(g, "blips: Bright and Sir Gleam by story Speaker", A.Blips.Bright == "BlipBright" and A.Blips.Gleam == "BlipGleam", "")
 	local Z = A.ZoneAmbient
 	check(g, "the towns' air: HaloDay / HornsDen at 0.25 with a 1.5 s fade", Z and Z.Volume == 0.25 and Z.Fade == 1.5
@@ -583,6 +598,22 @@ do
 	check(g, "IsWarp: a long fall (100 studs in a half-second hitch at 200 studs/s) is not a warp",
 		Audio.IsWarp(100, 200, 0.5) == false, "")
 	check(g, "IsWarp: 100 studs at a run in one frame = a warp", Audio.IsWarp(100, 16, 0.016) == true, "")
+	local function loops(st)
+		local t = {}
+		for k in Audio.WeatherLoops(st) do table.insert(t, k) end
+		table.sort(t)
+		return table.concat(t, ",")
+	end
+	check(g, "WeatherLoops: rain in the open = Rain", loops({ Weather = "Rain", Phase = "Day", Enabled = true }) == "Rain", "")
+	check(g, "WeatherLoops: rain under a roof = RainRoof", loops({ Weather = "Rain", Phase = "Day", Enabled = true,
+		Covered = true }) == "RainRoof", "")
+	check(g, "WeatherLoops: snow = WinterWind", loops({ Weather = "Snow", Phase = "Day", Enabled = true }) == "WinterWind", "")
+	check(g, "WeatherLoops: a clear night = Night (crickets)", loops({ Weather = "Clear", Phase = "Night", Enabled = true }) == "Night", "")
+	check(g, "WeatherLoops: a rainy night = the rain only", loops({ Weather = "Rain", Phase = "Night", Enabled = true }) == "Rain", "")
+	check(g, "WeatherLoops: weather effects off = no rain / wind (a snowy night keeps its crickets)",
+		loops({ Weather = "Rain", Phase = "Day", Enabled = false }) == "" and loops({ Weather = "Snow", Phase = "Night",
+		Enabled = false }) == "Night", "")
+	check(g, "WeatherLoops: no state yet = quiet", loops(nil) == "" and loops({}) == "", "")
 end
 
 ----------------------------------------------------------------- runtime
@@ -1314,12 +1345,15 @@ do
 	check(q, "my pet's level up = PetLevelUp", last2() == "PetLevelUp" and #asked2 == 1, encode(asked2))
 	clear2()
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3 } } })
-	check(q, "the follower put away = Equip", last2() == "Equip" and #asked2 == 1, encode(asked2))
+	check(q, "the follower put away = PetStow", last2() == "PetStow" and #asked2 == 1, encode(asked2))
 	clear2()
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3, XP = 9 } } })
 	check(q, "a list with no follower before or now is quiet", #asked2 == 0, encode(asked2))
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p2", List = { { Uid = "p1", Lv = 3 }, { Uid = "p2", Sp = "BabySlime", Lv = 1 } } })
-	check(q, "a new pet following (and its first Lv) is quiet", #asked2 == 0, encode(asked2))
+	check(q, "a pet starting to follow = PetCall (its first Lv is quiet)", last2() == "PetCall" and #asked2 == 1, encode(asked2))
+	clear2()
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p2", List = { { Uid = "p1", Lv = 3 }, { Uid = "p2", Sp = "BabySlime", Lv = 1, XP = 3 } } })
+	check(q, "the same follower again is quiet", #asked2 == 0, encode(asked2))
 	-- the quest marker's goal
 	local mk = { Tag = "zone:SlimeMeadow", Shown = true }
 	C.QuestMarker = { TargetTag = function() return mk.Tag, mk.Shown end }
@@ -1375,6 +1409,58 @@ do
 	PLAYER:SetAttribute("ZoneId", "Crossroads")
 	beat(2)
 	check(q, "a zone without air: quiet again", #airs() == 0 and den.Destroyed == true, #airs())
+	-- 13차 dusk lamps
+	clear2()
+	GAMESTATE:SetAttribute("DayPhase", "Day")
+	check(q, "the first DayPhase (with the join) is quiet", #asked2 == 0, encode(asked2))
+	GAMESTATE:SetAttribute("DayPhase", "Dusk")
+	check(q, "dusk: the lamps come on = LanternOn", last2() == "LanternOn" and #asked2 == 1, encode(asked2))
+	GAMESTATE:SetAttribute("DayPhase", "Night")
+	check(q, "night after dusk is quiet", #asked2 == 1, encode(asked2))
+	GAMESTATE:SetAttribute("DayPhase", nil)
+	GAMESTATE:SetAttribute("DayPhase", "Dusk")
+	check(q, "a dusk with no phase before it (a fresh server value) is quiet", #asked2 == 1, encode(asked2))
+	-- A23-105 weather air
+	local wx = { Weather = "Rain", Phase = "Day", Enabled = true, Covered = false }
+	C.WeatherFx = { State = function() return wx end }
+	local function wloop(key)
+		for _, so in SOUNDS_MADE do
+			if so.Name == "Weather" .. key and not so.Destroyed then return so end
+		end
+		return nil
+	end
+	local WL = A.Weather.Loops
+	beat(0.75)
+	local rain = wloop("Rain")
+	check(q, "rain starts its loop from silence in the Sound effects group, fading in", rain and rain.Looped and rain.IsPlaying
+		and rain.SoundGroup and rain.SoundGroup.Name == "Sfx" and near(rain.Volume, WL.Rain.Volume * 0.5),
+		rain and rain.Volume)
+	beat(1)
+	check(q, "... to its volume", rain and near(rain.Volume, WL.Rain.Volume), rain and rain.Volume)
+	wx.Covered = true
+	beat(2)
+	local roof = wloop("RainRoof")
+	check(q, "under a roof: RainRoof in, the open rain out and gone", roof and near(roof.Volume, WL.RainRoof.Volume)
+		and rain.Destroyed == true and wloop("Rain") == nil, roof and roof.Volume)
+	settings.Sfx = 0.5
+	beat(1)
+	check(q, "the weather air follows the Sound effects setting", roof and near(roof.Volume, WL.RainRoof.Volume * 0.5), roof and roof.Volume)
+	settings.Sfx = 1
+	wx.Weather, wx.Phase, wx.Covered = "Clear", "Night", false
+	beat(2)
+	local night = wloop("Night")
+	check(q, "a clear night: crickets, the rain gone", night and near(night.Volume, WL.Night.Volume) and roof.Destroyed == true, night and night.Volume)
+	wx.Phase = "Day"
+	beat(2)
+	check(q, "morning: quiet again", wloop("Night") == nil and night.Destroyed == true, "")
+	wx.Weather = "Rain"
+	beat(0.5)
+	local rain2 = wloop("Rain")
+	check(q, "rain coming back starts a new live loop", rain2 ~= nil and rain2 ~= rain and rain2.IsPlaying and rain2.Volume > 0,
+		rain2 and rain2.Volume)
+	wx.Weather = "Clear"
+	beat(2)
+	C.WeatherFx = nil
 	-- a warp (the server moving me far at once)
 	clear2()
 	table.clear(DELAYS)

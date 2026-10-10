@@ -230,7 +230,11 @@ local NOTIFY = {
 	WrapFits = setmetatable({}, { __mode = "k" }), -- [label] = its UIKit.WrapHeight fit (toasts: fit again on Avoid)
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
 	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4,
-		ThinK = 1.6, ThinDY = 4 }, -- a target up to ThinK tag heights tall wears it beside its right end (UIKit.NewTag)
+		ThinK = 1.6, ThinDY = 4, -- a target up to ThinK tag heights tall wears it beside its right end (UIKit.NewTag)
+		Gap = 0.4 }, -- s between one tag going and the next waiting one (NOTIFY.NewQ)
+	-- 검수 10/10 (the war bar, its info line and the goose chip all wore NEW! at once): one tag at a time. Active = the
+	-- tagged part until Until; Queue = { { Target, Text } } waiting their turn; Draining = a turn is scheduled
+	NewQ = { Active = nil, Until = 0, Queue = {}, Draining = false },
 	-- 창 꾸미기 ③ the reward popup (UIKit.RewardPopup), du: plate width, banner (BannerGold 512 x 178, text box
 	-- 0.254 / 0.225 / 0.492 / 0.365), slots, the glow and sparkles, the count-up time
 	-- 창 꾸미기: the parts the windows / popups use, loaded once at start (UIKit.Start) so the first confirm box or reward
@@ -3470,11 +3474,57 @@ function UIKit.ShouldHoldBanners()
 	return false
 end
 
+-- 검수 10/10 (user photo: the war bar + its info line + the goose chip wore NEW! at once): one NEW! at a time. A part
+-- inside or around the part that wears the tag (or waits for it) is the same thing and gets none; a different part waits
+-- its turn (NOTIFY.NewQ) and gets its tag when the one before goes (+ Gap s; a part gone or hidden by then is skipped).
+-- The same part again restarts its tag. Returns the tag, or nil (queued / the same thing / not a GuiObject)
+function UIKit.NewTag(target, text)
+	if typeof(target) ~= "Instance" or not target:IsA("GuiObject") then return nil end
+	local q, cfg = NOTIFY.NewQ, NOTIFY.NewTag
+	local function same(a, b) return a == b or a:IsDescendantOf(b) or b:IsDescendantOf(a) end
+	local now = os.clock()
+	local act = q.Active
+	local busy = act ~= nil and act.Parent ~= nil and now < q.Until
+	if busy and act ~= target and same(act, target) then return nil end
+	for _, w in q.Queue do
+		if same(w.Target, target) then return nil end
+	end
+	if busy and act ~= target then
+		table.insert(q.Queue, { Target = target, Text = text })
+		if not q.Draining then
+			q.Draining = true
+			task.delay(math.max(0, q.Until - now), UIKit.NextNewTag)
+		end
+		return nil
+	end
+	q.Active, q.Until = target, now + (tonumber(cfg.Seconds) or 6) + (tonumber(cfg.Gap) or 0.4)
+	return UIKit.ShowNewTag(target, text)
+end
+
+-- the next waiting NEW! (its part still there and shown), then the one after it when that one goes
+function UIKit.NextNewTag()
+	local q, cfg = NOTIFY.NewQ, NOTIFY.NewTag
+	q.Draining = false
+	while #q.Queue > 0 do
+		local w = table.remove(q.Queue, 1)
+		local t = w.Target
+		if t.Parent ~= nil and t.Visible then
+			q.Active, q.Until = t, os.clock() + (tonumber(cfg.Seconds) or 6) + (tonumber(cfg.Gap) or 0.4)
+			UIKit.ShowNewTag(t, w.Text)
+			break
+		end
+	end
+	if #q.Queue > 0 then
+		q.Draining = true
+		task.delay(math.max(0, q.Until - os.clock()), UIKit.NextNewTag)
+	end
+end
+
 -- A23-68 #4 / quality ⑨ (user 2026-10-07): a HUD part that shows for the first time (the first [Claim] unfolds the quest
 -- lines, the war meter's info line and the next-event line) pops in and wears a small gold "NEW!" tag on its top-right
 -- corner for NOTIFY.NewTag.Seconds. No pop with ReducedMotion, nor on a part that already has its own UIScale (a press /
--- pop scale of its own). Calling it again restarts the tag. Returns the tag
-function UIKit.NewTag(target, text)
+-- pop scale of its own). Calling it again restarts the tag. Returns the tag (callers go through UIKit.NewTag: one at a time)
+function UIKit.ShowNewTag(target, text)
 	if typeof(target) ~= "Instance" or not target:IsA("GuiObject") then return nil end
 	local cfg = NOTIFY.NewTag
 	local old = target:FindFirstChild("NewTag")

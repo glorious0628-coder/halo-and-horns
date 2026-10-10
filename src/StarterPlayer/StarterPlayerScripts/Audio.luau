@@ -59,7 +59,10 @@
 -- Equip. A move of more than Warp.Jump studs in one frame that my speed cannot explain (Audio.IsWarp; not within
 -- SpawnCalm s of a spawn) -> Warp, WarpIn WarpInAfter s later. The quest marker's goal (QuestMarker.TargetTag) changing
 -- while the marker is on screen -> MarkerMove (a small Tap; not within MarkerQuiet s of QuestDone / QuestNew). QuestBook
--- plays QuestTab on its tab buttons.
+-- plays QuestTab on its tab buttons. 13차: a pet starting to follow -> PetCall, put away -> PetStow, its level up ->
+-- PetLevel's file; GameState DayPhase -> "Dusk" (the lamps come on, not at the join) -> LanternOn. A23-105 weather air
+-- (Config.Audio.Weather, Audio.WeatherLoops(WeatherFx.State())): Rain / RainRoof (under a roof) / WinterWind while the
+-- weather effects are on, Night at night unless it rains; each loop fades in / out on Heartbeat (Audio.WeatherStep).
 --
 -- Public API: Audio.Init(C), Audio.Start(), Audio.Play(event, opts?) -> bool (opts { File, Speed, SpeedMul, Volume,
 --   Auto, Others }), Audio.Talk(speaker?) -> bool (typewriter blips, quality ②), Audio.Plan(kind, data, ctx) -> list of
@@ -70,7 +73,8 @@
 --   Audio.SetZoneMusic(zoneId) -> bool (changed), Audio.MusicStep(dt),
 --   Audio.RefreshVolumes(), Audio.Ambient(part, kind) -> Sound?, Audio.AirTrack(zoneId) -> id? (pure),
 --   Audio.SetZoneAir(zoneId) -> bool (changed), Audio.OpenSound(name) -> event, Audio.OnPetList(payload),
---   Audio.IsWarp(studs, speed, dt) -> bool (pure), Audio.Has(event) -> bool (its file is uploaded)
+--   Audio.IsWarp(studs, speed, dt) -> bool (pure), Audio.Has(event) -> bool (its file is uploaded),
+--   Audio.WeatherLoops(state) -> { [loop] = true } (pure), Audio.WeatherStep(dt)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -610,7 +614,8 @@ end
 
 ----------------------------------------------------------------- music (A23-100) + water ambience (점검표 sound 60)
 local MUSIC = { Id = nil, Zone = nil, Current = nil, Layer = nil, Fading = {}, Ambient = {}, -- Ambient: { Sound, Base }
-	AirId = nil, Air = nil, AirFading = {} } -- the zone's air (Config.Audio.ZoneAmbient)
+	AirId = nil, Air = nil, AirFading = {}, -- the zone's air (Config.Audio.ZoneAmbient)
+	Weather = {} } -- [loop] = its Sound while it plays or fades (Config.Audio.Weather)
 
 -- true when the event's file is uploaded (its def's File / Files)
 function Audio.Has(event)
@@ -764,6 +769,57 @@ function Audio.MusicStep(dt)
 	local air, target = MUSIC.Air, zv * sfxMult()
 	if air then air.Volume = air.Volume < target and math.min(target, air.Volume + zd) or math.max(target, air.Volume - zd) end
 	fadeOut(MUSIC.AirFading, zd)
+end
+
+-- the weather loops that should play now (pure): state = WeatherFx.State() { Weather, Phase, Enabled, Covered }
+function Audio.WeatherLoops(state)
+	local out = {}
+	if type(state) ~= "table" then return out end
+	local fx = state.Enabled ~= false
+	if fx and state.Weather == "Rain" then
+		out[state.Covered == true and "RainRoof" or "Rain"] = true
+	elseif fx and state.Weather == "Snow" then
+		out.WinterWind = true
+	end
+	if state.Phase == "Night" and state.Weather ~= "Rain" then out.Night = true end
+	return out
+end
+
+-- one Heartbeat of the weather air: each wanted loop toward its Volume x the Sound effects setting, the others toward 0
+-- (then stopped and gone), at Volume / Fade per second
+function Audio.WeatherStep(dt)
+	local W = type(A.Weather) == "table" and A.Weather or {}
+	local loops = type(W.Loops) == "table" and W.Loops or {}
+	local wx = C and C.WeatherFx
+	local state = nil
+	if type(wx) == "table" and type(wx.State) == "function" then
+		local ok, st = pcall(wx.State)
+		if ok then state = st end
+	end
+	local want = Audio.WeatherLoops(state)
+	local mult, step = sfxMult(), math.clamp(num(dt, 0), 0, 0.5) / math.max(0.05, num(W.Fade, 1.5))
+	for key, def in loops do
+		local s = MUSIC.Weather[key]
+		local on = want[key] == true and type(def) == "table" and type(def.Id) == "string" and def.Id ~= ""
+		if on and not s and S.Folder then
+			s = musicSound("Weather" .. key, def.Id)
+			s.SoundGroup = S.Groups.Sfx
+			pcall(function() s:Play() end)
+			MUSIC.Weather[key] = s
+		end
+		if s then
+			local full = num(type(def) == "table" and def.Volume, 0.3)
+			local target, d = on and full * mult or 0, full * step
+			s.Volume = s.Volume < target and math.min(target, s.Volume + d) or math.max(target, s.Volume - d)
+			if not on and s.Volume <= 0 then
+				pcall(function()
+					s:Stop()
+					s:Destroy()
+				end)
+				MUSIC.Weather[key] = nil
+			end
+		end
+	end
 end
 
 -- a 3D looping water sound (Config.Audio.Ambient[kind]) on part; nil without an id or a part
@@ -1009,6 +1065,10 @@ local function watchGame()
 			watch(gs, def.Active, function() Audio.RefreshBossLayer() end)
 		end
 	end
+	watch(gs, "DayPhase", function(prev, v)
+		-- 13차: dusk, the lamps come on (WeatherFx switches the LampLight lights; not the phase that came with the join)
+		if v == "Dusk" and prev ~= nil and prev ~= "Dusk" and fresh() then Audio.Play("LanternOn") end
+	end)
 	watch(gs, "KaijuPhase", function(prev, v)
 		-- B5: the kaiju alarm (its 3-2-1 comes from pollWorld)
 		if v == "Siren" and prev ~= "Siren" and fresh() and not Audio.Held() then Audio.Play("KaijuSiren") end
@@ -1129,7 +1189,7 @@ local function pollWindows()
 end
 
 -- my pets ("PetList", owner only, at join / grant / equip / pet XP): a pet's Lv going up -> PetLevelUp, the follower put
--- away (Equipped uid -> "") -> Equip; the first list is quiet
+-- away (Equipped uid -> "") -> PetStow, a pet starting to follow (Equipped -> another uid) -> PetCall; the first list is quiet
 function Audio.OnPetList(payload)
 	if type(payload) ~= "table" or type(payload.List) ~= "table" then return end
 	local lv, up = {}, false
@@ -1144,9 +1204,11 @@ function Audio.OnPetList(payload)
 	local eq = payload.Equipped
 	eq = (eq == nil or eq == "") and "" or tostring(eq)
 	local stowed = S.PetEq ~= nil and S.PetEq ~= "" and eq == ""
+	local called = S.PetEq ~= nil and eq ~= "" and eq ~= S.PetEq -- 13차: a pet starts following me
 	S.PetLv, S.PetEq = lv, eq
 	if up then Audio.Play("PetLevelUp") end
-	if stowed then Audio.Play("Equip") end
+	if stowed then Audio.Play("PetStow") end
+	if called then Audio.Play("PetCall") end
 end
 
 -- the quest marker's goal (QuestMarker.TargetTag -> tag, shown): a new goal while the marker is on screen -> MarkerMove;
@@ -1311,6 +1373,8 @@ function Audio.Start()
 		if not ok then warnThrottled("marker", "marker watch failed: " .. tostring(err)) end
 		ok, err = pcall(warpStep, dt)
 		if not ok then warnThrottled("warp", "warp watch failed: " .. tostring(err)) end
+		ok, err = pcall(Audio.WeatherStep, dt)
+		if not ok then warnThrottled("weather", "weather air failed: " .. tostring(err)) end
 	end)
 	-- the remotes normally exist already; never block the other client modules' Start on them
 	task.spawn(function()

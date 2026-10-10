@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9885,
+  "checks": 10232,
   "failedChecks": 0,
   "namedChecks": 352,
   "namedChecksFailing": 0,
@@ -160,7 +160,7 @@
     {
       "group": "config-contract",
       "check": "every setting has Korean + English text",
-      "pass": 10,
+      "pass": 11,
       "fail": 0
     },
     {
@@ -550,13 +550,13 @@
     {
       "group": "sanitize",
       "check": "a non-finite / non-number Sfx -> 1",
-      "pass": 254,
+      "pass": 256,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "bools: a boolean is kept, anything else is the default",
-      "pass": 900,
+      "pass": 1200,
       "fail": 0
     },
     {
@@ -568,19 +568,19 @@
     {
       "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 904,
+      "pass": 935,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 904,
+      "pass": 935,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 634,
+      "pass": 618,
       "fail": 0
     },
     {
@@ -592,7 +592,7 @@
     {
       "group": "sanitize",
       "check": "Sfx = the nearest step of the clamped value",
-      "pass": 46,
+      "pass": 44,
       "fail": 0
     },
     {
@@ -3120,24 +3120,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Config.luau": "7869686a3836ea5ecc4d750db23ce8b3df8b3a61c117752250021cb1f176dac6",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "a960d549e93568363ca5232c8fa6449ef807eff79927d05325328398550f30d2",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "62fa5ad2c1a5425358be61b0b9c9c4f99a7729108a43027f8d7216ee10be8b86",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "8dddc7e955a942baa171d8b1473e57ddfba905fa46cff828077c4b973c8007f8",
     "src/ServerScriptService/Main.server.luau": "227c6e2113928573021f30e12fe0b8d033b421ae56144b11905008d48eb58478",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "03e9f5b3fee22d7eb5aa710a372f4ad0e21a05fa3f0e53090d9bbdaa50158cd9",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "e28e3f298c8cf1c772c403a7d6593d7fad809c05dbb763cd9a79802130a5dfd2",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "eada45d07d7ce9c0878105794de748a156c40b704ebd573743cfd21e9698279d",
-    "src/ServerScriptService/StoryQuestService.luau": "710e864a0c2c4541d8d65958560c8df97020b24a355c63a99acd0969dc7c81b3",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "8b63f60ac23bea210ad8adac4b9863c095854e99ccde3d4f94cfba4f130edb39",
+    "src/ServerScriptService/StoryQuestService.luau": "dc0a8450b7202f75db01928f4ff797a239d98d56cac555e68da9fccaaa145228",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "9b0b07c7474ca4cdfbfa2213644e1d143d11b4cb8cd39bfeec169f351f6ace49"
   },
-  "fixtureSHA256": "6ac17782c8b84e2104857d979564db242b11fe8944621c977e4597e9d0386415",
+  "fixtureSHA256": "30866bd0f859b2f5577c53f39a6b9dc0880b4ad2ddf33b7c38c4fc1b15e00e31",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

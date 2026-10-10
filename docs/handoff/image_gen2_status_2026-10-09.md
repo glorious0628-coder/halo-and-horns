@@ -36,3 +36,8 @@
 - 납작한 장식(빛 마을) 고급 + 투명 PNG: 세로 깃발 2종·금 방패·둥근 창·문 위 후광 장식·차양 → `art/out/s2/halo/deco/HaloDecoHQ_<이름>_{src,cut}.png`, 확인 시트 `art/review/s2/halo_deco_cut_check.jpg`(후보 시트 halo_deco_candidates_sheet.jpg, 방패 재시도 halo_shield2_sheet.jpg). 방패 문장 첫 판은 깃발꼴이라 금 방패로 다시.
 - 왕관 부품(금 반쪽·붉은 반쪽·루비·사파이어·후광 고리·금 간 자국) 앞 6 + 뒤·옆 9 → `art/out/s2/crown/`, 시트 `crown_parts_front_sheet.jpg`·`crown_parts_mv_sheet.jpg`.
 - 남은 큐: 빛 마을 문·대성당·탑 부품(이미지 생성 1과 접합 기준 맞춤 대기) → StallSnack → 실내 시안 → 뿔 성채 부품·붉은 깃발·황소 문장.
+
+## 10/10 오후 추가 (A23-107 부품별)
+- 빛 마을 부품 2D(고급, 재사용 없이 새로, `docs/design/halo_parts_plan_2026-10-10.md` 기준): `art/out/s2/halo/parts/HaloPart_<부품>_{front,back,left,right}_HQ_src.png`, 시트 `halo_parts_{gate,cath,tower}_{front,mv}.jpg`. 입체 부품은 4면, 평면(문짝·창)은 앞 + 뒤. 도구 `tools/_halo_parts_prompts.py`, `tools/_img2_parts_sheet.py`.
+- 뿔 마을 StallSnack(뜨거운 간식 노점) 4면(StallSmith 대체), 장식 6종 투명 PNG, 왕관 부품 15장(`art/out/s2/crown/`).
+- 남은 큐: 빛 마을 반복 소품 종류별 새로(이미지 생성 1 목록 대기), 실내 시안(24장 중간 재시도), 뿔 마을 성채 부품·붉은 깃발·황소 문장.
