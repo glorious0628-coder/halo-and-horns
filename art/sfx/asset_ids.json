@@ -90,7 +90,10 @@
     "HitMagicCrit": "rbxassetid://123083371421263",
     "HitArrowSoft": "rbxassetid://71567543920934",
     "HitArrowHeavy": "rbxassetid://111127770916206",
-    "HitArrowCrit": "rbxassetid://83876322718434"
+    "HitArrowCrit": "rbxassetid://83876322718434",
+    "DieSlime": "rbxassetid://105660948835844",
+    "DieBigSlime": "rbxassetid://135159844685749",
+    "DieFlowerSlime": "rbxassetid://108731319971001"
   },
   "pending": [],
   "kept": {
@@ -295,6 +298,14 @@
         "Warrior": "HitBlade",
         "Mage": "HitMagic",
         "Archer": "HitArrow"
+      }
+    },
+    "die_by_kind": {
+      "about": "Monster death sounds by Config.Monsters Kind (replaces KillPop for that kind; same Volume 0.40 / Speed 0.95-1.12 / Max 3 / Gap 0.05 / Auto / Combat). Slimes first; goblin, skeleton, pumpkin, ghost follow in their zone turns.",
+      "map": {
+        "Slime": "DieSlime",
+        "BigSlime": "DieBigSlime",
+        "FlowerSlime": "DieFlowerSlime"
       }
     }
   }
