@@ -322,6 +322,44 @@ local MOTION = {
 			{ 0.3, "InOut", { Waist = { -20, -62, 0 }, Neck = { 8, 62, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
+		-- A23-116 Z (off until the 10/20 check): the Berserker's Fire Rake - the blade dragged low behind on the right,
+		-- a big upward cut to the left on the contact, then both arms haul it back over the right shoulder
+		BerserkerZ = { Len = 0.75, Keys = {
+			{ 0, "Out", {} },
+			{ 0.14, "Out", { Waist = { 0, 25, 0 }, RightShoulder = { 20, 0, 40 }, RightElbow = { 10, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 20, 0, 30 }, LeftElbow = { 30, 0, 0 } } },
+			{ 0.24, "In", { Waist = { 0, -30, 0 }, RightShoulder = { 120, 0, -30 }, RightElbow = { 10, 0, 0 }, RightWrist = { -40, 0, 0 }, LeftShoulder = { 110, 0, -10 }, LeftElbow = { 20, 0, 0 } } },
+			{ 0.48, "Out", { Waist = { 0, -10, 0 }, RightShoulder = { 150, 0, 20 }, RightElbow = { 90, 0, 0 }, LeftShoulder = { 130, 0, 10 }, LeftElbow = { 80, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
+		-- the Dark Mage's Flappy Zigzag: the crooked staff pulled back right, a quick side swing to the left (the bat
+		-- leaves), the left fingers wiggling 'go'
+		DarkMageZ = { Len = 0.68, Keys = {
+			{ 0, "Out", {} },
+			{ 0.12, "Out", { Waist = { 0, 20, 0 }, RightShoulder = { 40, 0, 40 }, RightElbow = { 40, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 20, 0, -10 } } },
+			{ 0.24, "In", { Waist = { 0, -25, 0 }, RightShoulder = { 70, 0, -40 }, RightElbow = { 10, 0, 0 }, RightWrist = { -60, 0, 0 }, LeftShoulder = { 60, 0, -20 }, LeftElbow = { 20, 0, 0 }, LeftWrist = { -30, 0, 0 } } },
+			{ 0.4, "Out", { Waist = { 0, -15, 0 }, RightShoulder = { 50, 0, -20 }, RightElbow = { 20, 0, 0 }, LeftShoulder = { 50, 0, -16 }, LeftElbow = { 30, 0, 0 }, LeftWrist = { -50, 0, 0 } } },
+			{ 0.68, "InOut", {} },
+		} },
+		-- the Ranger's Comet Arrow: a flat full draw leaning a little in, a small kick back after the shot (waist / neck)
+		RangerZ = { Len = 0.44, Keys = {
+			{ 0, "Out", {} },
+			{ 0.08, "Out", { Waist = { -6, -60, 0 }, Neck = { 0, 60, 0 } } },
+			{ 0.16, "InOut", { Waist = { -8, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.18, "In", { Waist = { -8, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.26, "Out", { Waist = { 4, -62, 0 }, Neck = { -2, 62, 0 } } },
+			{ 0.36, "Out", { Waist = { -4, -62, 0 }, Neck = { 0, 62, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
+		-- the Shadow Hunter's Moon Shot: crouched 30 deep, the head up on the target, a sharp shoulder kick after the shot
+		ShadowHunterZ = { Len = 0.44, Keys = {
+			{ 0, "Out", {} },
+			{ 0.12, "Out", { Waist = { -30, -60, 0 }, Neck = { 14, 60, 0 } } },
+			{ 0.16, "InOut", { Waist = { -30, -62, 0 }, Neck = { 14, 62, 0 } } },
+			{ 0.18, "In", { Waist = { -30, -62, 0 }, Neck = { 14, 62, 0 } } },
+			{ 0.26, "Out", { Waist = { -20, -62, 0 }, Neck = { 10, 62, 0 } } },
+			{ 0.36, "Out", { Waist = { -26, -60, 0 }, Neck = { 12, 60, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
 		ArcherRelease = { Len = 0.44, Keys = { -- same hand/string solve, pointed toward the existing volley
 			{ 0, "Out", {} },
 			{ 0.08, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
@@ -434,11 +472,11 @@ local MOTION = {
 	SIDE_CLIPS = {
 		Warrior_Halo = { Swing = "PaladinSwing", Release = "PaladinRelease", Z = "PaladinZ", X = "PaladinX" },
 		Mage_Halo = { Swing = "LightMageSwing", Release = "LightMageRelease", Z = "LightMageZ", X = "LightMageX" },
-		Archer_Halo = { Release = "RangerRelease", Z = "ArcherSwing" }, -- Pierce Shot: the long solved draw (Light Step's hop moves the body itself)
-		-- A23-116 Q: the Horns side's own moves (Z / X come with their stage)
-		Warrior_Horns = { Release = "BerserkerRelease" },
-		Mage_Horns = { Release = "DarkMageRelease" },
-		Archer_Horns = { Release = "ShadowHunterRelease" },
+		Archer_Halo = { Release = "RangerRelease", Z = "RangerZ" }, -- (Light Step's hop moves the body itself)
+		-- A23-116 Q / Z: the Horns side's own moves (X comes with its stage)
+		Warrior_Horns = { Release = "BerserkerRelease", Z = "BerserkerZ" },
+		Mage_Horns = { Release = "DarkMageRelease", Z = "DarkMageZ" },
+		Archer_Horns = { Release = "ShadowHunterRelease", Z = "ShadowHunterZ" },
 	},
 	CLASS_CLIPS = {
 		Warrior = { Swing = "WarriorSwing", Release = "WarriorRelease" },
@@ -4053,6 +4091,16 @@ handlers.Skill = function(data)
 	if not isOwn(data) and not (ctx.Char.PrimaryPart and Feel.near(ctx.Char.PrimaryPart.Position, MOTION.PROC_DIST)) then return end
 	local ok, err = pcall(Feel.playAttack, ctx.Char, classId, slot, Feel.attackTime(classId, "Release", nil), data)
 	if not ok then warnThrottled("skill move failed: " .. tostring(err)) end
+	-- A23-116: the class x side's own Z art (SkillFx.luau; X comes with its stage)
+	local sfx = C and C.SkillFx
+	local at = asVec(data.Center) or asVec(data.From)
+	if slot == "Z" and type(sfx) == "table" and type(sfx.Z) == "function" and at and nearCamera(at) then
+		local okZ, errZ = pcall(sfx.Z, data, isOwn(data), {
+			Muzzle = function() return Feel.muzzle(ctx, nil) end,
+			After = function(seconds, fn) Feel.after(ctx, seconds, fn) end,
+		})
+		if not okZ then warnThrottled("skill art failed: " .. tostring(errZ)) end
+	end
 end
 
 handlers.Hurt = function(data)

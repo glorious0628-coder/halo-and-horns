@@ -1,5 +1,5 @@
 {
-  "checks": 54,
+  "checks": 84,
   "failed": 0,
   "static": [
     {
@@ -32,6 +32,10 @@
     },
     {
       "check": "고침 4: the Spark Shower's second draw / release",
+      "ok": true
+    },
+    {
+      "check": "Fx's Skill hands the Z art to SkillFx.Z (near the camera)",
       "ok": true
     },
     {
@@ -92,6 +96,21 @@
     },
     {
       "name": "all rain dots on SMALL",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no arc in hops",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "SMALL fire rake with rims",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Z for the artisan guild",
       "applied": true,
       "caught": true
     }

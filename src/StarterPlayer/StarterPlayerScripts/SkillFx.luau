@@ -526,6 +526,359 @@ end
 
 SkillFx.Kits = Q
 
+----------------------------------------------------------------- the six Z (A23-116 Z stage; ZEnabled stays off until 10/20)
+local Z = {}
+
+-- runs fn(elapsed) every frame for life s (bird / bat flights, a rope, a glow on the bow)
+function SkillFx.Follow(life, fn)
+	local t0 = os.clock()
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		local t = os.clock() - t0
+		if t > life then conn:Disconnect() return end
+		local ok = pcall(fn, t)
+		if not ok then conn:Disconnect() end
+	end)
+	return conn
+end
+
+-- pure: where a flier is at time t on points[i] reached at times[i] (arc = studs up mid-hop, 0 = straight dashes)
+function SkillFx.PathAt(points, times, t, arc)
+	if #points == 0 then return nil end
+	if t <= times[1] then return points[1] end
+	for i = 2, #points do
+		if t <= times[i] then
+			local u = (t - times[i - 1]) / math.max(0.001, times[i] - times[i - 1])
+			local p = points[i - 1]:Lerp(points[i], u)
+			return p + Vector3.new(0, (arc or 0) * math.sin(math.pi * u), 0)
+		end
+	end
+	return points[#points]
+end
+
+-- the faint ground band of a Line skill: 3 pieces along dir, each on its own ground height
+function SkillFx.Band(from, dir, len, width, color, alpha, life)
+	local seg = len / 3
+	for i = 1, 3 do
+		local mid = from + dir * (seg * (i - 0.5))
+		local at = SkillFx.Ground(mid)
+		local p = SkillFx.Get("Block", life + 0.05)
+		p.Size = Vector3.new(width, 0.1, seg)
+		p.Color = color
+		p.Material = Enum.Material.Neon
+		p.Transparency = alpha
+		p.CFrame = CFrame.lookAt(at + Vector3.new(0, T.Lift, 0), at + Vector3.new(0, T.Lift, 0) + dir)
+		tween(p, life * 0.5, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, life * 0.5)
+	end
+end
+
+-- a little round flier (the Light Mage's bird / the Dark Mage's bat): body, 2 flapping wings, 2 dot eyes, a beak / rim.
+-- Returns its parts; place(cf, t) puts them on the body frame cf (wings flap with t)
+local function flier(life, bird)
+	local body = SkillFx.Ball(Vector3.zero, 2.5, bird and COL.Gold or COL.Purple, life, 0)
+	local parts = { body }
+	local wings = {}
+	for _ = 1, 2 do
+		local w = SkillFx.Get("Block", life)
+		w.Size = Vector3.new(1.6, 0.15, 0.9)
+		w.Color = bird and COL.White or COL.Purple
+		w.Material = Enum.Material.Neon
+		w.Transparency = 0
+		table.insert(wings, w)
+		table.insert(parts, w)
+	end
+	local eyes = {}
+	for _ = 1, 2 do
+		local e = SkillFx.Ball(Vector3.zero, bird and 0.3 or 0.45, Color3.fromRGB(30, 24, 40), life, 0)
+		e.Material = Enum.Material.SmoothPlastic
+		table.insert(eyes, e)
+		table.insert(parts, e)
+	end
+	-- the bird's orange beak / the bat's bright pink rim (so it never reads as a monster)
+	local extra = bird and SkillFx.Ball(Vector3.zero, 0.45, COL.Ember, life, 0) or SkillFx.Ball(Vector3.zero, 2.9, COL.Pink, life, 0.65)
+	table.insert(parts, extra)
+	local function place(cf, t)
+		body.CFrame = cf
+		local flap = math.rad(40) * math.sin(t * 30)
+		wings[1].CFrame = cf * CFrame.new(1.4, 0.3, 0) * CFrame.Angles(0, 0, flap)
+		wings[2].CFrame = cf * CFrame.new(-1.4, 0.3, 0) * CFrame.Angles(0, 0, -flap)
+		eyes[1].CFrame = cf * CFrame.new(0.45, 0.35, -1.1)
+		eyes[2].CFrame = cf * CFrame.new(-0.45, 0.35, -1.1)
+		extra.CFrame = bird and (cf * CFrame.new(0, 0.05, -1.3)) or cf
+	end
+	return parts, place, body
+end
+
+-- Glow Lasso: a straight gold rope from the sword tip to a flat cream oval loop that slides 22 ahead, is hauled back
+-- with the pulled monsters (manual casts only) and breaks into sparkles
+function Z.Warrior_Halo(c)
+	c.Env.After(c.Contact, function()
+		local far = SkillFx.Ground(c.From + c.Dir * (c.Len * 0.8))
+		local near = SkillFx.Ground(c.From + c.Dir * 3)
+		local loop = SkillFx.Get("Ring", 0.8)
+		loop.Size = Vector3.new(c.Width, 0.05, math.max(3, c.Width * 0.6))
+		local fr = loop.Face.Round
+		fr.BackgroundTransparency = 1
+		fr.Line.Color, fr.Line.Thickness, fr.Line.Transparency = COL.Cream, 0.7 * T.PixelsPerStud, 0.05
+		fr.Inner.Visible = false
+		local lift = Vector3.new(0, T.Lift, 0)
+		loop.CFrame = CFrame.lookAt(near + lift, near + lift + c.Dir)
+		tween(loop, 0.15, { CFrame = CFrame.lookAt(far + lift, far + lift + c.Dir) })
+		local rope = SkillFx.Get("Block", 0.8)
+		rope.Color, rope.Material, rope.Transparency = COL.Gold, Enum.Material.Neon, 0
+		SkillFx.Follow(0.5, function()
+			local tip = c.Env.Muzzle() or (c.From + Vector3.new(0, 2, 0))
+			local to = loop.Position
+			local d = (to - tip).Magnitude
+			rope.Size = Vector3.new(0.25, 0.25, math.max(0.1, d))
+			rope.CFrame = CFrame.lookAt((tip + to) / 2, to)
+		end)
+		if not c.Auto then
+			task.delay(0.16, function()
+				local back = SkillFx.Ground(far - c.Dir * 5) + lift
+				tween(loop, 0.2, { CFrame = CFrame.lookAt(back, back + c.Dir) })
+				SkillFx.Dots(back, c.Big and 4 or 2, { Color = COL.Cream, Size = 0.8, EndSize = 1.2, Speed = 2, Life = 0.5, Up = 1, Glow = 0.2 })
+			end)
+		end
+		task.delay(0.46, function()
+			SkillFx.Dots(loop.Position + Vector3.new(0, 0.5, 0), c.Big and 8 or 4, { Color = COL.Gold, Size = 0.45, Speed = 5, Life = 0.6,
+				Spread = Vector2.new(180, 180), Up = -4 })
+			tween(fr.Line, 0.1, { Transparency = 1 })
+			tween(rope, 0.1, { Transparency = 1 })
+		end)
+		SkillFx.Pops(c.Data.Hits, COL.Gold, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- Fire Rake: two sparks off the scraping blade, then one straight orange fire line (crimson rim) running 22 ahead in
+-- 3 ground pieces, round ember bubbles rising and turning purple, plum stones rolling ahead; the line cools to purple
+function Z.Warrior_Horns(c)
+	c.Env.After(0.05, function()
+		local tip = c.Env.Muzzle()
+		if tip then SkillFx.Dots(tip, c.Big and 2 or 1, { Color = COL.Ember, Size = 0.4, Speed = 4, Life = 0.4 }) end
+	end)
+	c.Env.After(c.Contact, function()
+		local seg = c.Len / 3
+		local lines = {}
+		for i = 1, 3 do
+			local mid = SkillFx.Ground(c.From + c.Dir * (seg * (i - 0.5))) + Vector3.new(0, T.Lift, 0)
+			local cf = CFrame.lookAt(mid, mid + c.Dir)
+			task.delay((i - 1) * 0.066, function()
+				local line = SkillFx.Get("Block", 0.85)
+				line.Size, line.Color, line.Material, line.Transparency = Vector3.new(1.2, 0.12, seg), COL.Ember, Enum.Material.Neon, 0
+				line.CFrame = cf
+				table.insert(lines, line)
+				if c.Big then
+					local rim = SkillFx.Get("Block", 0.85)
+					rim.Size, rim.Color, rim.Material, rim.Transparency = Vector3.new(1.8, 0.08, seg), COL.Crimson, Enum.Material.Neon, 0.35
+					rim.CFrame = cf * CFrame.new(0, -0.03, 0)
+					tween(rim, 0.3, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0.45)
+				end
+				SkillFx.Dots(mid, c.Big and (i == 2 and 4 or 3) or (i == 2 and 1 or 2), { Color = ColorSequence.new(COL.Ember, COL.Purple),
+					Size = 0.5, Speed = 2, SpeedMin = 1, Life = 0.8, Up = 3 })
+				tween(line, 0.2, { Color = COL.Purple }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0.55 - (i - 1) * 0.066)
+				tween(line, 0.2, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0.62 - (i - 1) * 0.066)
+			end)
+		end
+		for i = 1, (c.Big and 6 or 3) do
+			local from = SkillFx.Ground(c.From + c.Dir * (2 + i * 1.5)) + Vector3.new(0, 0.5, 0)
+			local p = SkillFx.Fly(from, from + c.Dir * (3 + math.random() * 2), 0.45, 0.7 + math.random() * 0.3, COL.Plum, { Arc = 1.5, Linger = 0.2 })
+			p.Material = Enum.Material.SmoothPlastic
+		end
+		SkillFx.Pops(c.Data.Hits, COL.Ember, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- the chain fliers' points: the staff tip, then each linked target (1.5 up), first hit at Hit s, one every Gap s
+local function chainPath(c, startAt, hitAt, gap)
+	local pts, times = {}, {}
+	table.insert(pts, c.Env.Muzzle() or (c.From + Vector3.new(0, 3, 0)))
+	table.insert(times, 0)
+	for i, p in c.Points do
+		table.insert(pts, p + Vector3.new(0, 1.5, 0))
+		table.insert(times, (hitAt - startAt) + (i - 1) * gap)
+	end
+	return pts, times
+end
+
+-- Birdie Bounce: a round gold bird (white wings, dot eyes, orange beak) hops monster to monster in 3-stud arcs with a
+-- gold ribbon, a white pop and two feathers at each hit, then flutters up into sparkles
+function Z.Mage_Halo(c)
+	if #c.Points == 0 then return end
+	c.Env.After(c.Contact, function()
+		local pts, times = chainPath(c, c.Contact, c.Hit, 0.1)
+		local last = times[#times]
+		table.insert(pts, pts[#pts] + Vector3.new(0, 6, 0))
+		table.insert(times, last + 0.2)
+		local life = last + 0.3
+		local parts, place, body = flier(life + 0.1, true)
+		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+		a0.Position, a1.Position = Vector3.new(0, 0.4, 0), Vector3.new(0, -0.4, 0)
+		a0.Parent, a1.Parent = body, body
+		local tr = Instance.new("Trail")
+		tr.Attachment0, tr.Attachment1, tr.Lifetime, tr.LightEmission = a0, a1, 0.4, 1
+		tr.Color, tr.Transparency = ColorSequence.new(COL.Gold), NumberSequence.new(0.2, 1)
+		tr.Parent = body
+		local prev = pts[1]
+		SkillFx.Follow(life, function(t)
+			local p = SkillFx.PathAt(pts, times, t, 3)
+			local face = (p - prev).Magnitude > 0.01 and (p - prev) or Vector3.new(0, 0, -1)
+			prev = p
+			place(CFrame.lookAt(p, p + face), t)
+		end)
+		for i = 2, #times - 1 do
+			task.delay(times[i], function()
+				SkillFx.Dots(pts[i], c.Budget.PopEach, { Color = COL.White, Size = 0.9, EndSize = 0.2, Speed = 3, Life = 0.35, Up = 0, Spread = Vector2.new(180, 180) })
+				if c.Big then SkillFx.Dots(pts[i], 2, { Color = COL.White, Size = 0.35, Speed = 1, Life = 0.8, Up = -2, Glow = 0.2 }) end
+			end)
+		end
+		task.delay(life, function()
+			SkillFx.Dots(pts[#pts], 4, { Color = COL.Gold, Size = 0.45, Speed = 4, Life = 0.5, Spread = Vector2.new(180, 180) })
+			for _, p in parts do p.Transparency = 1 end
+		end)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- Flappy Zigzag: a round purple bat (pink rim, big dot eyes, no fangs) dashes monster to monster in straight
+-- zigzags with a purple-pink ribbon, plum smoke at each hit, then flies home to me (carrying a heart on a real steal)
+function Z.Mage_Horns(c)
+	if #c.Points == 0 then return end
+	c.Env.After(c.Contact, function()
+		local pts, times = chainPath(c, c.Contact, c.Hit, 0.1)
+		local last = times[#times]
+		local root = c.Data.Character and typeof(c.Data.Character) == "Instance" and c.Data.Character:FindFirstChild("UpperTorso")
+		local home = root and root.Position or (c.From + Vector3.new(0, 2, 0))
+		table.insert(pts, home)
+		table.insert(times, last + 0.3)
+		local life = last + 0.3
+		local parts, place, body = flier(life + 0.1, false)
+		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+		a0.Position, a1.Position = Vector3.new(0, 0.4, 0), Vector3.new(0, -0.4, 0)
+		a0.Parent, a1.Parent = body, body
+		local tr = Instance.new("Trail")
+		tr.Attachment0, tr.Attachment1, tr.Lifetime, tr.LightEmission = a0, a1, 0.4, 0.8
+		tr.Color, tr.Transparency = ColorSequence.new(COL.Purple, COL.Pink), NumberSequence.new(0.2, 1)
+		tr.Parent = body
+		local heart = (c.Own and num(c.Data.Stole, 0) > 0) and SkillFx.Ball(home, 0.5, COL.Pink, life + 0.1, 0) or nil
+		local prev = pts[1]
+		SkillFx.Follow(life, function(t)
+			local p = SkillFx.PathAt(pts, times, t, 0)
+			local face = (p - prev).Magnitude > 0.01 and (p - prev) or Vector3.new(0, 0, -1)
+			prev = p
+			place(CFrame.lookAt(p, p + face), t)
+			if heart and t >= last then heart.CFrame = CFrame.new(p + Vector3.new(0, 1.6, 0)) end
+		end)
+		for i = 2, #times - 1 do
+			task.delay(times[i], function()
+				SkillFx.Dots(pts[i], c.Budget.PopEach, { Color = COL.Plum, Size = 1.2, EndSize = 1.6, Speed = 2, Life = 0.4, Up = 0, Glow = 0,
+					Spread = Vector2.new(180, 180) })
+				SkillFx.Dots(pts[i], 1, { Color = COL.Ember, Size = 0.4, Speed = 2, Life = 0.4, Up = 2 })
+			end)
+		end
+		task.delay(life, function()
+			if c.Big then SkillFx.Dots(home, 4, { Color = COL.Plum, Size = 1, EndSize = 1.4, Speed = 2, Life = 0.4, Up = 0, Glow = 0,
+				Spread = Vector2.new(180, 180) }) end
+			for _, p in parts do p.Transparency = 1 end
+		end)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- the big line arrow of Comet Arrow / Moon Shot: a glow on the bow while drawing, a faint ground band, the arrow
+-- flying the whole line with one straight ribbon tail, dots along its way, a round puff where it ends
+local function lineArrow(c, look)
+	if c.Big then
+		c.Env.After(0, function()
+			local glow = SkillFx.Ball(c.From, 0.2, look.Glow, c.Launch + 0.05, 0.1)
+			SkillFx.Follow(c.Launch, function(t)
+				local m = c.Env.Muzzle()
+				if m then
+					local s = 0.2 + 0.6 * math.clamp(t / math.max(0.05, c.Launch), 0, 1)
+					glow.Size = Vector3.new(s, s, s)
+					glow.CFrame = CFrame.new(m)
+				end
+			end)
+		end)
+	end
+	c.Env.After(c.Launch, function()
+		SkillFx.Band(c.From, c.Dir, c.Len, c.Width, look.Band, 0.7, 0.3)
+		local start = c.Env.Muzzle() or (c.From + Vector3.new(0, 2, 0))
+		local stop = c.From + c.Dir * c.Len + Vector3.new(0, start.Y - c.From.Y, 0)
+		local arrow = SkillFx.Arrow(start, stop, 0.15, look.Arrow, 5)
+		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+		a0.Position, a1.Position = Vector3.new(0.6, 0, 2.4), Vector3.new(-0.6, 0, 2.4)
+		a0.Parent, a1.Parent = arrow, arrow
+		local tr = Instance.new("Trail")
+		tr.Attachment0, tr.Attachment1, tr.Lifetime, tr.LightEmission = a0, a1, 0.4, 1
+		tr.Color = look.Trail
+		tr.Transparency = NumberSequence.new(0.1, 1)
+		tr.WidthScale = NumberSequence.new(1, 0)
+		tr.Parent = arrow
+		if look.Tip then
+			local tip = SkillFx.Fly(start + (stop - start).Unit * 2.6, stop + (stop - start).Unit * 2.6, 0.15, 0.8, look.Tip, { Linger = 0.2 })
+			tip.Material = Enum.Material.Neon
+		end
+		for i = 1, 3 do
+			local at = start:Lerp(stop, i / 4)
+			task.delay(0.15 * i / 4, function()
+				SkillFx.Dots(at, c.Big and (i == 2 and 2 or 3) or (i == 2 and 2 or 1), { Color = look.Dots, Size = 0.4, Speed = 2, Life = 0.6,
+					Up = look.DotsUp, Spread = Vector2.new(180, 180) })
+			end)
+		end
+		task.delay(0.15, function()
+			local puff = SkillFx.Ball(stop, 1, look.Glow, 0.35, 0.3)
+			tween(puff, 0.3, { Size = Vector3.new(3, 3, 3), Transparency = 1 })
+		end)
+		task.delay(0.08, function() SkillFx.Pops(c.Data.Hits, look.Pop, c.Budget) end)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- Comet Arrow: a big white-gold arrow with one straight gold tail across the whole line
+function Z.Archer_Halo(c)
+	lineArrow(c, { Glow = COL.Gold, Band = COL.Gold, Arrow = COL.White, Trail = ColorSequence.new(COL.Gold, COL.Cream),
+		Dots = COL.White, DotsUp = 0, Pop = COL.Gold })
+end
+
+-- Moon Shot: a dark plum arrow with a glowing purple tip and a purple ribbon (ember edge), ember dots falling
+function Z.Archer_Horns(c)
+	lineArrow(c, { Glow = COL.Pink, Band = COL.Purple, Arrow = COL.Plum, Trail = ColorSequence.new(COL.Purple, COL.Ember),
+		Tip = COL.Purple, Dots = COL.Ember, DotsUp = -10, Pop = COL.Purple })
+end
+
+SkillFx.ZKits = Z
+
+-- Fx "Skill" with Slot Z -> true when drawn. env = { Muzzle(), After(s, fn) }. Times from the press: Contact = the hit
+-- (packet ContactDelay, else the class's), Hit = a chain's first hit, Launch = an arrow's release
+function SkillFx.Z(data, own, env)
+	local key = type(data.Class) == "string" and type(data.Faction) == "string" and (data.Class .. "_" .. data.Faction) or nil
+	local kit = key and Z[key]
+	local from = typeof(data.From) == "Vector3" and data.From or nil
+	if not kit or not from or type(env) ~= "table" then return false end
+	local dir = typeof(data.Dir) == "Vector3" and Vector3.new(data.Dir.X, 0, data.Dir.Z) or nil
+	if not dir or dir.Magnitude < 0.01 then
+		local center = typeof(data.Center) == "Vector3" and data.Center or (from + Vector3.new(0, 0, -1))
+		dir = Vector3.new(center.X - from.X, 0, center.Z - from.Z)
+		if dir.Magnitude < 0.01 then dir = Vector3.new(0, 0, -1) end
+	end
+	local points = {}
+	for _, p in type(data.Points) == "table" and data.Points or {} do
+		if typeof(p) == "Vector3" and #points < 6 then table.insert(points, p) end
+	end
+	local big = own and data.Auto ~= true and not UserInputService.TouchEnabled
+	local class = data.Class
+	local c = { Data = data, From = from, Dir = dir.Unit, Len = math.clamp(num(data.Len, 22), 2, 60), Width = math.clamp(num(data.Width, 4), 1, 20),
+		Points = points, Own = own, Auto = data.Auto == true, Big = big, Budget = big and T.Budget.Big or T.Budget.Small, Env = env,
+		Contact = math.clamp(num(data.ContactDelay, class == "Archer" and 0.18 or 0.24), 0, 1),
+		Hit = math.clamp(num(data.HitDelay, 0.35), 0, 1),
+		Launch = math.clamp(num(data.LaunchDelay, 0.18), 0, 1) }
+	kit(c)
+	return true
+end
+
 -- Fx "Release" -> true when this kit's Q art was drawn (Fx then skips its old art). env = { Muzzle(), After(s, fn) }
 function SkillFx.Q(data, pos, radius, impact, own, env)
 	local key = type(data.Class) == "string" and type(data.Faction) == "string" and (data.Class .. "_" .. data.Faction) or nil
