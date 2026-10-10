@@ -19,7 +19,7 @@ from mathutils import Matrix, Vector
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 OUT, RDIR = os.path.abspath(argv[0]), os.path.abspath(argv[1])
-opt = {"res": 700.0}
+opt = {"res": 700.0, "body-depth": 34.0}
 i = 2
 while i < len(argv):
     opt[argv[i][2:]] = float(argv[i + 1])
@@ -83,11 +83,56 @@ base = part("CathStairs", (66, 66, 10), "x")  # the oval platform + front stairs
 lo_b, hi_b = bbox(base)
 top = hi_b.z
 body = part("CathBody", (56, 50, 26), "x")
+REAL_BODY = not body.name.endswith("PLACEHOLDER")
+if REAL_BODY:  # the Tripo body is a deep facade (about 13 deep): stretch it front-to-back into a real hall (like the gate arch)
+    lo_, hi_ = bbox(body)
+    body.data.transform(Matrix.Diagonal((1.0, opt["body-depth"] / (hi_.y - lo_.y), 1.0, 1.0)))
+    body.data.update()
+    bpy.context.view_layer.update()
 body.location = (0, 0, top)
 P += [base, body]
 bpy.context.view_layer.update()
 lo, hi = bbox(body)
 dome = part("CathDome", (30, 30, 22), "x")
+
+
+def metal_from_color(ob):
+    """이미지 생성 3: the Tripo dome's metallic map came out rainbow -> metal / roughness from the colour (gold = metal 0.9 rough 0.28,
+    the rest 0 / 0.62; the pbr_from_color.py gold mask), fed to the Principled inputs so the glTF export packs them"""
+    import numpy as np
+    for slot in ob.material_slots:
+        m = slot.material
+        if not m or not m.use_nodes:
+            continue
+        nt = m.node_tree
+        bsdf = next((n for n in nt.nodes if n.type == "BSDF_PRINCIPLED"), None)
+        col = next((l.from_node for l in bsdf.inputs["Base Color"].links), None) if bsdf else None
+        if not col or col.type != "TEX_IMAGE":
+            continue
+        img = col.image
+        w, h = img.size
+        px = np.empty(w * h * 4, dtype=np.float32)
+        img.pixels.foreach_get(px)
+        rgb = px.reshape(-1, 4)[:, :3]
+        mx, mn = rgb.max(1), rgb.min(1)
+        sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0)
+        r, g, b = rgb[:, 0], rgb[:, 1], rgb[:, 2]
+        hue = np.degrees(np.arctan2(np.sqrt(3) * (g - b), 2 * r - g - b)) % 360
+        gold = ((hue >= 20) & (hue <= 58) & (sat >= 0.4) & (mx >= 0.5)).astype(np.float32)  # linear values: 0.5 ~ sRGB 0.73
+        for nm, val in (("metal", gold * 0.9), ("rough", gold * 0.28 + (1 - gold) * 0.62)):
+            out = bpy.data.images.new(ob.name + "_" + nm, w, h, alpha=False, is_data=True)
+            out.pixels.foreach_set(np.repeat(val[:, None], 4, axis=1).ravel())
+            t = nt.nodes.new("ShaderNodeTexImage")
+            t.image = out
+            t.image.colorspace_settings.name = "Non-Color"
+            for l in list(bsdf.inputs["Metallic" if nm == "metal" else "Roughness"].links):
+                nt.links.remove(l)
+            nt.links.new(t.outputs["Color"], bsdf.inputs["Metallic" if nm == "metal" else "Roughness"])
+        print("[cath] %s: metal / roughness rebuilt from the colour (gold %.0f %%)" % (ob.name, 100 * gold.mean()), flush=True)
+
+
+if not dome.name.endswith("PLACEHOLDER"):
+    metal_from_color(dome)
 dome.location = (0, (lo.y + hi.y) / 2, hi.z - 0.3)
 P.append(dome)
 # corner towers, A and B crossed so left and right differ
@@ -107,8 +152,8 @@ for side in (-1, 1):
     leaf.location = (side * lw / 2, lo.y + 0.2, top + 0.2)
     leaf.name = "Cath_DoorLeaf" + ("L" if side < 0 else "R")
     P.append(leaf)
-# arched windows on the front, two each side of the door, at different heights (no strict row)
-for k, (wx, wz) in enumerate(((-18, 8.5), (-11, 9.5), (11, 9.0), (18, 8.0))):
+# arched windows on the front (only on the placeholder body: the real body has its own windows and rose window)
+for k, (wx, wz) in enumerate((() if REAL_BODY else ((-18, 8.5), (-11, 9.5), (11, 9.0), (18, 8.0)))):
     w = part("CathWindow", (4, 1, 8), "z")
     w.location = (wx, lo.y - 0.1, top + wz)
     w.name = "Cath_Window%d" % (k + 1)
