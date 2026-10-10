@@ -240,6 +240,17 @@ local function boardOn()
 	return type(Config.Board) == "table" and Config.Board.Enabled == true
 end
 
+-- A23-104 (user 2026-10-10: "daily quests should be told as a quest, not just thrown at the player"): the daily jobs open when
+-- the player has heard about them (the intro sub Config.Daily.IntroQuest after the first chapter; StoryQuestService.QuestDone ->
+-- M.OpenDailies). Until then no daily quest is made, shown or counted and the Quests payload says DailyLocked. A save that
+-- already ran its dailies (DailyDay > 0) is open. Config.Daily.IntroGate = false: always open (the old rule).
+local function dailiesOpen(data)
+	if type(data) ~= "table" then return false end
+	local D = Config.Daily
+	if type(D) ~= "table" or D.IntroGate ~= true then return true end
+	return data.DailyIntro == true or num(data.DailyDay) > 0
+end
+
 local function isEmptySlot(q)
 	return type(q) == "table" and q.Kind == "Empty"
 end
@@ -831,7 +842,8 @@ local function publish(player)
 		Net.Notify(player, TUT_MESSAGES.GuideDone or "That's all from me! Now hunt and get stronger.", "good")
 	end
 	hadNextGoal[player] = hasGoal or nil
-	if type(data.Quests) == "table" then
+	local locked = not dailiesOpen(data)
+	if not locked and type(data.Quests) == "table" then
 		-- CR-M6: dailies show what a claim pays now (stored reward capped to the current level; stored value kept)
 		local capG, capX = Config.DailyQuestReward(getLevel(data))
 		for i, q in ipairs(data.Quests) do
@@ -881,7 +893,8 @@ local function publish(player)
 	-- string of the bare rows is the older payload clients still accept)
 	if lastSent[player] == sentKey then return end
 	local okF, err = pcall(function()
-		Net.Get("Quests"):FireClient(player, { Quests = list, Book = book })
+		-- A23-104: DailyLocked = true while the daily jobs are not open yet (game dev 1: the Q window's Daily tab is locked)
+		Net.Get("Quests"):FireClient(player, { Quests = list, Book = book, DailyLocked = locked or nil })
 	end)
 	if okF then
 		lastSent[player] = sentKey
@@ -967,7 +980,7 @@ local function addProgress(player, questId, amount, accept)
 		if amount <= 0 then return end
 	end
 	local data = getData(player)
-	if not data or type(data.Quests) ~= "table" then return end
+	if not data or not dailiesOpen(data) or type(data.Quests) ~= "table" then return end
 	local quests = data.Quests
 	for i = 1, #quests do
 		local q = quests[i]
@@ -992,7 +1005,7 @@ end
 ------------------------------------------------------------------ day check / vacation
 local function runDayCheck(player)
 	local data = getData(player)
-	if not data then return end
+	if not data or not dailiesOpen(data) then return end
 	local today = Config.DayIndex(os.time())
 	local dailyDay = math.floor(num(data.DailyDay))
 	if dailyDay == today then return end
@@ -1117,7 +1130,7 @@ local function onRerollQuest(player, slot)
 	if not isSlotIndex(slot) then return end
 	if not Util.RateLimit(player, "RerollQuest", Config.RateLimits.RerollQuest) then return end
 	local data = getData(player)
-	if not data or type(data.Quests) ~= "table" then return end
+	if not data or not dailiesOpen(data) or type(data.Quests) ~= "table" then return end -- A23-104: no jobs to reroll yet
 
 	local now = Util.Now()
 	if now < (rerollReadyAt[player] or 0) then return end
@@ -1171,9 +1184,15 @@ local function onPlayerReady(player, data)
 	end
 	-- Never reset the saved TutorialKills here: a reconnect can have an unclaimed completed quest.
 
-	ensureSlots(player, data)
-	remakeUnfit(player, data, getFaction(player)) -- A23-71: a skill daily kept from before the Lv5 rule
-	runDayCheck(player)
+	if dailiesOpen(data) then
+		-- a save that already runs its dailies never gets the intro quest (A23-104)
+		local intro = Config.Daily and Config.Daily.IntroQuest
+		local done = type(data.Story) == "table" and type(data.Story.Done) == "table" and data.Story.Done or nil
+		if done and type(intro) == "string" then done[intro] = true end
+		ensureSlots(player, data)
+		remakeUnfit(player, data, getFaction(player)) -- A23-71: a skill daily kept from before the Lv5 rule
+		runDayCheck(player)
+	end
 	tryTutorial(player) -- pending dialogue opens once when choices and a living character are ready
 	publish(player)
 end
@@ -1300,7 +1319,7 @@ local function onRebirthed(player)
 	if cx ~= num(data.VacationXP) then
 		S.PlayerService.SetStat(player, "VacationXP", cx)
 	end
-	if type(data.Quests) ~= "table" then return end
+	if not dailiesOpen(data) or type(data.Quests) ~= "table" then return end
 	local quests = data.Quests
 	for i = 1, Config.Quests.Slots do
 		local q = quests[i]
@@ -1317,15 +1336,37 @@ local function onLeveledUp(player)
 end
 
 ------------------------------------------------------------------ public API
+-- A23-104: are this player's daily jobs open (true) or still to be told by the intro quest (false)?
+function M.DailiesOpen(player)
+	return dailiesOpen(getData(player))
+end
+
+-- A23-104: the intro quest is done: the daily jobs open now (the first set is made at once). true = they just opened
+function M.OpenDailies(player)
+	local data = getData(player)
+	if not data or dailiesOpen(data) then return false end
+	S.PlayerService.SetStat(player, "DailyIntro", true)
+	ensureSlots(player, data)
+	runDayCheck(player)
+	publish(player) -- at once: the Quests window must not wait for the publish loop to drop its lock
+	return true
+end
+
 function M.GetQuests(player)
 	local data = getData(player)
 	if not data or type(data.Quests) ~= "table" then return {} end
 	return data.Quests
 end
 
+-- the day check of one player now (the 30 s day loop's body; A23-104: a player whose daily jobs are not open yet gets none)
+function M.DayCheck(player)
+	runDayCheck(player)
+	publish(player)
+end
+
 -- Studio hook: pretend the player was away for `days` whole days, then run the day check
 function M.DebugSimulateAbsence(player, days)
-	if not getData(player) then return end
+	if not dailiesOpen(getData(player)) then return end -- A23-104: no daily jobs yet, nothing to be away from
 	days = math.max(0, math.floor(num(tonumber(days), 1)))
 	local today = Config.DayIndex(os.time())
 	S.PlayerService.SetStat(player, "DailyDay", today - (days + 1))
@@ -1350,6 +1391,11 @@ function M.Init(registry)
 	connectSignal("KaijuService", "KaijuEnded", onKaijuEnded)
 	connectSignal("FactionService", "FactionChanged", onFactionChanged)
 	connectSignal("ClassService", "ClassChanged", onClassChanged)
+	connectSignal("StoryQuestService", "QuestDone", function(player, id)
+		if id ~= (Config.Daily and Config.Daily.IntroQuest) then return end
+		local ok, err = pcall(M.OpenDailies, player)
+		if not ok then Util.Warn(TAG, "OpenDailies: " .. tostring(err)) end
+	end)
 	connectSignal("ZoneService", "ZoneChanged", onZoneChanged)
 end
 

@@ -42,8 +42,8 @@ end
 
 runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
-	check(C.QuestBook.DoneMax == 60 and C.QuestBook.AvailableMax == 10 and C.QuestBook.Text.OpensAt == "%s · Opens at Lv %d",
-		"DoneMax 60, AvailableMax 10, 'Opens at Lv' text", show(C.QuestBook))
+	check(C.QuestBook.DoneMax == 80 and C.QuestBook.AvailableMax == 10 and C.QuestBook.Text.OpensAt == "%s · Opens at Lv %d",
+		"DoneMax 80, AvailableMax 10, 'Opens at Lv' text", show(C.QuestBook))
 	check(#C.StoryQuests.Main + #C.StoryQuests.Subs <= C.QuestBook.DoneMax,
 		"every main + every sub fits in Done (a finished save loses none)", tostring(#C.StoryQuests.Main + #C.StoryQuests.Subs))
 end)

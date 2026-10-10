@@ -725,11 +725,13 @@ end
 
 -- sub rows, best first, at most Config.StoryQuests.MaxSubs (quest_volume §2-6: 3; the HUD shows 2, the open list all):
 -- 0 = a claim or a Talk / Choice card waiting mid-quest (past step 1), 1 = situational (Show), 2 = started (past step 1
--- or with progress) or S0, 3 = a new offer waiting at its first card, 4 = the rest; within a rank the newer quest
+-- or with progress) or S0, 2.5 = a faction town-NPC offer (below the subs in progress, above the other offers), 3 = a new
+-- offer waiting at its first card, 4 = the rest; within a rank the newer quest
 -- (later in StoryQuests.Subs) first. With A23-56's many subs a sub in progress is never pushed off by new offers or
 -- older background subs, and the order index keeps the rows from swapping between refreshes (table.sort is not stable).
--- zone_check_halo #19: a faction town-NPC offer (a sub with Factions whose step waits at its Npc) counts as rank 2, so the
--- new Halo / Horns town quest is not pushed out by the other offers. With Config.StoryQuests.SendAllSubs the rows past
+-- zone_check_halo #19: a faction town-NPC offer (a sub with Factions whose step waits at its Npc) counts as rank 2.5, so the
+-- new Halo / Horns town quest is not pushed out by the other offers, yet never pushes out a sub the player already started
+-- (검수 3a2111a0: an offer not yet taken must not push a sub in progress out of the three rows). With Config.StoryQuests.SendAllSubs the rows past
 -- MaxSubs are sent too, each marked More = true: the HUD draws only the rows without More (the top MaxSubs), the quest window
 -- (QuestBook 'In progress') lists all of them, so no active sub is missing from both. Off = exactly MaxSubs rows, as before.
 function StoryQuestService.SubRows(player, data)
@@ -749,7 +751,7 @@ function StoryQuestService.SubRows(player, data)
 				local started = num(tr.St, 1) > 1 or num(tr.P) > 0 or (type(tr.T) == "table" and next(tr.T) ~= nil)
 				local townOffer = waiting and type(def.Factions) == "table" and step.Npc ~= nil
 				row.Rank = ((tr.Claim or (waiting and started)) and 0) or (def.Show and 1)
-					or ((started or id == "S0" or townOffer) and 2) or (waiting and 3) or 4
+					or ((started or id == "S0") and 2) or (townOffer and 2.5) or (waiting and 3) or 4
 				row.Order = order
 				table.insert(rows, row)
 			end

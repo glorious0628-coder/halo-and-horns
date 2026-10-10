@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 632,
+  "checks": 650,
   "failedChecks": 0,
-  "namedChecks": 628,
+  "namedChecks": 646,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -2931,19 +2931,13 @@
     },
     {
       "group": "send-all-subs",
-      "check": "a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+      "check": "a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "send-all-subs",
-      "check": "SendAllSubs: all five active subs, the 4th and 5th marked More",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "send-all-subs",
-      "check": "the H1 row sends no Rank / Order",
+      "check": "SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
       "pass": 1,
       "fail": 0
     },
@@ -2962,6 +2956,12 @@
     {
       "group": "send-all-subs",
       "check": "the T3 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the H1 row sends no Rank / Order",
       "pass": 1,
       "fail": 0
     },
@@ -3021,6 +3021,18 @@
     },
     {
       "group": "send-all-subs",
+      "check": "T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "and with SendAllSubs the plain offers follow (newer first), marked More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
       "check": "a Horns player never gets Bright's offer",
       "pass": 1,
       "fail": 0
@@ -3033,6 +3045,102 @@
     },
     {
       "group": "send-all-subs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "D0 is not offered before M1_4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: tapped: its dialogue opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: tapped: its dialogue opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: tapped: its dialogue opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -3780,9 +3888,9 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 154,
-    "applied": 154,
-    "caught": 154,
+    "total": 163,
+    "applied": 163,
+    "caught": 163,
     "skipped": false,
     "results": [
       {
@@ -3972,13 +4080,13 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-70 lunchbox :: a player past the Forge (M1_1 done) never gets it",
-          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
-          "h1-good :: Open from far away: no window",
-          "h1-good :: Open next to Bright: the talk window"
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 12
       },
       {
         "mutation": "the card waits in the list",
@@ -4578,7 +4686,7 @@
           "max-subs :: both town quests wait at their NPC: on the list",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)"
         ],
         "newFailingCount": 9
       },
@@ -4593,22 +4701,50 @@
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
-        "mutation": "a town offer waits behind the subs in progress",
+        "mutation": "a town offer ranks with the subs in progress",
         "file": "src/ServerScriptService/StoryQuestService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a town offer is no better than a plain offer",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a town offer ranks below the plain offers",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "every waiting card is a town offer",
@@ -4617,14 +4753,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "max-subs :: XR1's new offer joins after the subs in progress",
-          "max-subs :: a pick card waiting mid-quest comes first",
-          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 3
       },
       {
         "mutation": "an offer without a faction is a town offer",
@@ -4633,12 +4766,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "max-subs :: XR1's new offer joins after the subs in progress",
-          "max-subs :: a pick card waiting mid-quest comes first",
-          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer"
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 2
       },
       {
         "mutation": "an offer without an NPC is a town offer",
@@ -4647,10 +4778,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "SendAllSubs sends everything always",
@@ -4663,10 +4795,10 @@
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
           "send-all-subs :: SendAllSubs = 1 is not true: three rows",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
-          "send-all-subs :: the first three rows are the same with the flag on"
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "SendAllSubs sends nothing more",
@@ -4677,9 +4809,10 @@
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 0: every row is More",
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "SendAllSubs any truthy value",
@@ -4701,9 +4834,10 @@
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 0: every row is More",
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "every row is marked More",
@@ -4713,13 +4847,13 @@
         "crashed": false,
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
-          "send-all-subs :: row 1 (the HUD's) has no More",
-          "send-all-subs :: row 2 (the HUD's) has no More",
-          "send-all-subs :: row 3 (the HUD's) has no More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More",
+          "send-all-subs :: row 1 (the HUD's) has no More"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "More starts one row early",
@@ -4729,12 +4863,13 @@
         "crashed": false,
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
-          "send-all-subs :: row 3 (the HUD's) has no More",
-          "send-all-subs :: the flag off again: three rows, none More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More",
+          "send-all-subs :: row 3 (the HUD's) has no More"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 7
       },
       {
         "mutation": "More starts one row late",
@@ -4745,9 +4880,10 @@
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 0: every row is More",
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "MaxSubs is not read",
@@ -4775,7 +4911,7 @@
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
           "send-all-subs :: SendAllSubs is off until the HUD skips More rows",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
           "send-all-subs :: the first three rows are the same with the flag on"
         ],
         "newFailingCount": 6
@@ -4791,10 +4927,10 @@
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "older quests first within a rank",
@@ -4807,10 +4943,10 @@
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "the sort fields reach the client",
@@ -4884,6 +5020,106 @@
           "easter-eggs :: EG03: a hidden sub for everyone after M2_3"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "daily intro: offered at once",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: D0 is not offered before M1_4"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily intro: only for Halo",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: never again",
+          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: never again"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "daily intro: no closing line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "daily intro: pays nothing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily intro: not in the sub list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: never again",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: never again"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "daily intro: it pops up by itself",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: tapped: its dialogue opens"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "daily intro: not a dialogue",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: never again",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: never again"
+        ],
+        "newFailingCount": 12
       },
       {
         "mutation": "egg: the scroll speaks as the guide",
@@ -5003,12 +5239,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
-          "easter-eggs :: EG14: 10 studs away is still too far (radius 6)"
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: tapped: its dialogue opens"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 10
       },
       {
         "mutation": "egg: the nest radius is 6 -> 60",
@@ -5017,14 +5255,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "e5-hidden :: the pick card opens",
-          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
-          "easter-eggs :: EG02: 3 studs away: found, the dialogue opens by itself, the row shows",
-          "easter-eggs :: EG03: 10 studs away is still too far (radius 6)"
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: tapped: its dialogue opens"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 13
       },
       {
         "mutation": "egg: the sky takes 3 seconds",
@@ -5756,11 +5994,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0c285f2bbbe601ba5855b6e9e5f9bbda87039cc90076f6af0ca506cbe558eedf",
+    "src/ReplicatedStorage/Shared/Config.luau": "f6b36db4cfe51f9aeb9e112bc8d66295fed04588f82fe32b36e0eb4db68e4926",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "710e864a0c2c4541d8d65958560c8df97020b24a355c63a99acd0969dc7c81b3",
+    "src/ServerScriptService/StoryQuestService.luau": "382e4af4b504f26b0dea84a39c2344f55d530f3eed07696e47bea4849c327777",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
@@ -5769,7 +6007,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "70ea0a870b0f90f2a67654c433689e3b96452cc87d88f7dab270bec34a06bc21",
+  "fixtureSHA256": "f9646ec98c28f9008372a7e864737b85fa3e16faeb5c53a58fc578c9a62b9b96",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

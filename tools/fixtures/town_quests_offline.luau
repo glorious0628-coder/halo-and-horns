@@ -14,6 +14,12 @@ local function townWorld(o)
 	local w = bareWorld({})
 	local reg = w.Registry
 	local Signal = w.Util.Signal
+	-- A23-104: the intro of the daily jobs (D0) starts for everybody past M1_4; only its own group wants it among the subs
+	if o.D0 ~= true then
+		local subs = w.Config.StoryQuests.Subs
+		local at = table.find(subs, "D0")
+		if at then table.remove(subs, at) end
+	end
 	reg.ZoneService.ZoneChanged = Signal.new()
 	reg.ZoneService.GetZoneId = function(p) return (w.ZoneOf and w.ZoneOf[p]) or "SlimeMeadow" end
 	reg.GooseService.GooseFinished = Signal.new()
@@ -1468,12 +1474,12 @@ runGroup("send-all-subs", function()
 	end
 	check(d.Story.Subs.H1 and d.Story.Subs.H1.St == 1, "H1 waits at Bright (its first card)", show(d.Story.Subs.H1))
 	local off = w.Story.SubRows(p, d)
-	check(table.concat(ids(off), ",") == "H1,T1,T2" and more(off) == "---",
-		"a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits", table.concat(ids(off), ",") .. " " .. more(off))
+	check(table.concat(ids(off), ",") == "T1,T2,T3" and more(off) == "---",
+		"a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row", table.concat(ids(off), ",") .. " " .. more(off))
 	-- SendAllSubs: the fourth active sub is sent too, marked More
 	w.Config.StoryQuests.SendAllSubs = true
 	local all = w.Story.SubRows(p, d)
-	check(table.concat(ids(all), ",") == "H1,T1,T2,T3,W1" and more(all) == "---MM", "SendAllSubs: all five active subs, the 4th and 5th marked More",
+	check(table.concat(ids(all), ",") == "T1,T2,T3,H1,W1" and more(all) == "---MM", "SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
 		table.concat(ids(all), ",") .. " " .. more(all))
 	for _, r in all do
 		check(r.Rank == nil and r.Order == nil, "the " .. tostring(r.Story and r.Story.Id) .. " row sends no Rank / Order", show({ r.Rank, r.Order }))
@@ -1495,11 +1501,63 @@ runGroup("send-all-subs", function()
 	w.Config.StoryQuests.SendAllSubs = false
 	local back = w.Story.SubRows(p, d)
 	check(#back == 3 and more(back) == "---", "the flag off again: three rows, none More", more(back))
+	-- a free row: the town offer takes it before the plain offer (rank 2.5 < 3), after the subs in progress
+	d.Story.Subs.T3, d.Story.Done.T3 = nil, true
+	-- W2: an NPC card of nobody's faction (no Factions): a plain offer too, not a town offer (it must not outrank H1)
+	w.Config.StoryQuests.Defs.W2 = { Kind = "Sub", Title = "W2", Steps = {
+		{ Text = "Hello", Panel = true, Npc = "Bright", Lines = { All = { "Hi." } }, Obj = { Type = "Talk" } } } }
+	table.insert(w.Config.StoryQuests.Subs, "W2")
+	d.Story.Done.W2 = nil
+	w.Story.Refresh(p)
+	local free = w.Story.SubRows(p, d)
+	check(table.concat(ids(free), ",") == "T1,T2,H1" and more(free) == "---", "T3 done: a row is free, the town offer H1 takes it (W1 waits)", table.concat(ids(free), ",") .. " " .. more(free))
+	w.Config.StoryQuests.SendAllSubs = true
+	local freeAll = w.Story.SubRows(p, d)
+	check(table.concat(ids(freeAll), ",") == "T1,T2,H1,W2,W1" and more(freeAll) == "---MM", "and with SendAllSubs the plain offers follow (newer first), marked More", table.concat(ids(freeAll), ",") .. " " .. more(freeAll))
+	w.Config.StoryQuests.SendAllSubs = false
 	-- a town offer of another faction never shows
 	local h, hd = joinAfterM23(w, 703, "Horns", { Pos = vec(2, 0, 398) })
 	local hid = {}
 	for _, r in w.Story.SubRows(h, hd) do hid[r.Story and r.Story.Id or "?"] = true end
 	check(not hid.H1, "a Horns player never gets Bright's offer", show(hid))
+end)
+
+------------------------------------------------------------------ A23-104: the intro quest of the daily jobs (QuestService opens them when it ends)
+runGroup("daily intro quest (A23-104)", function()
+	local w = townWorld({ D0 = true })
+	local panels = panelsOf(w)
+	local done = {}
+	w.Story.QuestDone:Connect(function(_, id) table.insert(done, id) end)
+	local def = SQ0.Defs.D0
+	check(def.Reward.Gold == 1 and def.Reward.XP == 1 and def.Finish == "Daily jobs are open!" and def.Steps[1].Lines.All[1] ~= nil
+		and C0.Daily.IntroQuest == "D0", "D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)", show(def.Reward))
+	-- before the first chapter is over: nothing is offered
+	local e, ed = joinAfterM23(w, 970, "Halo", { Before = true })
+	w.Story.Refresh(e)
+	check(w:Track(ed, "D0") == nil, "D0 is not offered before M1_4", show(w:Track(ed, "D0")))
+	local uid = 970
+	for _, faction in { "Halo", "Horns", "Neutral" } do
+		uid += 1
+		local before = #panels
+		local p, d = joinAfterM23(w, uid, faction)
+		local tr = w:Track(d, "D0")
+		local row = rowOf(w, p, d, "D0")
+		check(tr ~= nil and tr.St == 1 and #panels == before and row ~= nil and row.Story.Panel == true and row.Text == "Hear about the daily jobs" and row.CanClaim == false,
+			faction .. ": after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move", show({ tr, row and row.Text, #panels - before }))
+		w:Act(p, "D0", "Open")
+		local card = panels[#panels]
+		check(#panels == before + 1 and card.P == p and card.Arg.Id == "D0" and card.Arg.St == 1, faction .. ": tapped: its dialogue opens", show(card and card.Arg))
+		local n0 = #w.Notices
+		local gold0 = d.BankGold or 0
+		w:Act(p, "D0", "Talk")
+		check(d.Story.Done.D0 == true and w:Track(d, "D0") == nil and done[#done] == "D0" and (d.BankGold or 0) > gold0
+			and said(w, p, n0, "Daily jobs are open!"), faction .. ": talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'", show({ done, d.BankGold }))
+		w.Story.Refresh(p)
+		w:Act(p, "D0", "Talk")
+		local count = 0
+		for _, id in done do if id == "D0" then count += 1 end end
+		check(count == uid - 970 and w:Track(d, "D0") == nil, faction .. ": never again", tostring(count))
+	end
 end)
 
 ------------------------------------------------------------------ 14. story_depth (나) the beta Easter eggs EG01 / EG02 / EG03 / EG04 / EG14
