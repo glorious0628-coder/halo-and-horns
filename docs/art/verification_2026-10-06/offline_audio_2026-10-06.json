@@ -1,12 +1,94 @@
 {
   "status": "passed",
-  "checks": 415,
-  "namedChecks": 330,
+  "checks": 425,
+  "namedChecks": 340,
   "failing": [],
   "mutations": {
-    "total": 153,
-    "caught": 153,
+    "total": 161,
+    "caught": 161,
     "results": [
+      {
+        "mutation": "boss layer: never put back on the beat",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: both loaded and 17 s apart: the layer goes to the track's TimePosition"
+        ]
+      },
+      {
+        "mutation": "boss layer: put back while still loading",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a layer still loading is left alone"
+        ]
+      },
+      {
+        "mutation": "drift: a loop wrap counts the long way",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: LayerDrift: the short way round a loop"
+        ]
+      },
+      {
+        "mutation": "A-B-A: a second copy of the track",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... back to the music volume, the Horns track gone",
+          "sound_gaps 10/10 :: A -> B -> A: the Halo track still fading comes back (one copy, the same Sound)"
+        ]
+      },
+      {
+        "mutation": "A-B-A: a second boss layer",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)"
+        ]
+      },
+      {
+        "mutation": "A-B-A: a second town air",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... the town's air too"
+        ]
+      },
+      {
+        "mutation": "waterfalls: the late ones stay silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a waterfall model added later gets its water sound (once; other models none)"
+        ]
+      },
+      {
+        "mutation": "waterfalls: one model twice",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a waterfall model added later gets its water sound (once; other models none)"
+        ]
+      },
+      {
+        "mutation": "preload: no music",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: 검수 10/10: the music tracks, boss layers, town air and weather loops are preloaded too"
+        ]
+      },
       {
         "mutation": "attendance: no stamp",
         "applied": true,
@@ -54,20 +136,13 @@
         ]
       },
       {
-        "mutation": "KO: the fun tip silent",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "sound_gaps 10/10 plan :: a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later"
-        ]
-      },
-      {
         "mutation": "replace: never stops the old sound",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: StampPress stops the QuestDone that just started"
         ]
       },
@@ -178,7 +253,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)"
+          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)",
+          "sound_gaps 10/10 :: the join list only PetWindow saw: the follow right after it = PetCall"
         ]
       },
       {
@@ -209,6 +285,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet"
         ]
       },
@@ -355,6 +433,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "sound_gaps 10/10 :: ... the town's air too",
           "sound_gaps 10/10 :: ... under the Sound effects setting",
           "sound_gaps 10/10 :: a zone without air: quiet again",
           "sound_gaps 10/10 :: into the Horns town: HornsDen in, the Halo air out and gone",
@@ -394,7 +473,10 @@
         "crashed": false,
         "newFailingChecks": [
           "music :: ... fading in (half way at half the fade)",
-          "music :: into the Horns town: a crossfade (the old down, the new up)"
+          "music :: into the Horns town: a crossfade (the old down, the new up)",
+          "sound_gaps 10/10 :: ... back to the music volume, the Horns track gone",
+          "sound_gaps 10/10 :: A -> B -> A: the Halo track still fading comes back (one copy, the same Sound)",
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)"
         ]
       },
       {
@@ -406,7 +488,9 @@
           "music :: ... the old track stops and goes",
           "music :: a zone without a track (the outskirts): quiet (the last one faded out)",
           "music :: into the Horns town: a crossfade (the old down, the new up)",
-          "music :: leaving the meadow during the boss: track and layer both fade out"
+          "music :: leaving the meadow during the boss: track and layer both fade out",
+          "sound_gaps 10/10 :: ... back to the music volume, the Horns track gone",
+          "sound_gaps 10/10 :: A -> B -> A: the Halo track still fading comes back (one copy, the same Sound)"
         ]
       },
       {
@@ -479,7 +563,9 @@
         "crashed": false,
         "newFailingChecks": [
           "music :: King Slime gone: the layer fades out and stops, the track stays",
-          "music :: leaving the meadow during the boss: track and layer both fade out"
+          "music :: leaving the meadow during the boss: track and layer both fade out",
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)",
+          "sound_gaps 10/10 :: both loaded and 17 s apart: the layer goes to the track's TimePosition"
         ]
       },
       {
@@ -500,7 +586,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "music :: ... fading in to the music volume"
+          "music :: ... fading in to the music volume",
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)"
         ]
       },
       {
@@ -529,9 +616,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rewards :: a weapon drop = one Loot at 0.92x",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "rewards :: a weapon drop = one Loot at 0.92x"
         ]
       },
       {
@@ -776,6 +861,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -1071,7 +1157,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "sound_gaps 10/10 plan :: a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later",
+          "sound_gaps 10/10 plan :: a KO with the server's fun tip: still KO only (the screen shows no tip, 검수 10/10)",
           "sound_gaps 10/10 plan :: a KO without one: KO only",
           "world :: my KO = KO (B1)",
           "world listeners :: knocked out -> KO (B1)"
@@ -1573,9 +1659,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7869686a3836ea5ecc4d750db23ce8b3df8b3a61c117752250021cb1f176dac6",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "91e405791c69b2e51f03471f0418c219d9d7e1302ae9c890a91b36fd773fdc1f",
-    "tools/fixtures/audio_offline.luau": "0ea02aed610f7706e840f726cbdd45e577bb0e598b8b6fc0d2429a5dfac0a1da"
+    "src/ReplicatedStorage/Shared/Config.luau": "637c004230ba2bba72f96ab96c1ed0562fe2bcfba7d49460328ae85c98680de7",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "dcf2ae9b62e62edea9aaa4fabb6ac55b56de054daa609f60d669f73fb1c18819",
+    "tools/fixtures/audio_offline.luau": "dd1573a2d8ddd9b0358c287b4d30c921187080fa77b2c8f8983245b56b655faa"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 10232,
+  "checks": 10422,
   "failedChecks": 0,
   "namedChecks": 352,
   "namedChecksFailing": 0,
@@ -15,68 +15,68 @@
     },
     {
       "group": "config-contract",
-      "check": "18 actions (BB1 table + SKL-1 SkillX)",
+      "check": "19 actions (BB1 table + SKL-1 SkillX + A23-109 QuickSlot3)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "Actions order = the BB1 defaults table",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "default PC key = BB1 table",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "fixed gamepad button = BB1 table (A23-21)",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "Group is Combat / Potion / Window / Other",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "the six window actions (Group Window, Window = Panels id) and only them",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
-      "check": "potion actions are the Potion group",
-      "pass": 18,
+      "check": "potion / quick slot actions are the Potion group",
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "every action has Label + LabelEn",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "every action has a touch name (Button + ButtonEn, A23-21)",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "only SkillZ / SkillX have a Flag (Config.Skills.ZEnabled / XEnabled)",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "default key and pad names are real Enum.KeyCode names",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
@@ -190,7 +190,7 @@
     {
       "group": "config-contract",
       "check": "KeyMap({}) = the BB1 defaults (SkillZ / SkillX have no key while their Flags are off)",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
@@ -322,7 +322,7 @@
     {
       "group": "keymap-rules",
       "check": "non-live actions hold no key (fuzz)",
-      "pass": 1166,
+      "pass": 1237,
       "fail": 0
     },
     {
@@ -549,8 +549,8 @@
     },
     {
       "group": "sanitize",
-      "check": "a non-finite / non-number Sfx -> 1",
-      "pass": 256,
+      "check": "Sfx = the nearest step of the clamped value",
+      "pass": 60,
       "fail": 0
     },
     {
@@ -568,19 +568,19 @@
     {
       "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 935,
+      "pass": 966,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 935,
+      "pass": 966,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 618,
+      "pass": 663,
       "fail": 0
     },
     {
@@ -591,8 +591,8 @@
     },
     {
       "group": "sanitize",
-      "check": "Sfx = the nearest step of the clamped value",
-      "pass": 44,
+      "check": "a non-finite / non-number Sfx -> 1",
+      "pass": 240,
       "fail": 0
     },
     {
@@ -1066,7 +1066,7 @@
     {
       "group": "keybinds-core",
       "check": "touch-only: Label = the button name",
-      "pass": 18,
+      "pass": 19,
       "fail": 0
     },
     {
@@ -3120,24 +3120,24 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7869686a3836ea5ecc4d750db23ce8b3df8b3a61c117752250021cb1f176dac6",
+    "src/ReplicatedStorage/Shared/Config.luau": "28be05ca955ba9b556e00d16ea6457890e4bc525a863413f59ba75cbe5ae4e29",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/SettingsService.luau": "5e150f3399a129b51d31229d1ce4c462b88ccf3ebf3295261099eb18d314f65d",
     "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "a960d549e93568363ca5232c8fa6449ef807eff79927d05325328398550f30d2",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "8dddc7e955a942baa171d8b1473e57ddfba905fa46cff828077c4b973c8007f8",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "58535a5fbbef31a0548c0284dd4e1f2831cea87a7c99fe27034e6adffea623d8",
     "src/ServerScriptService/Main.server.luau": "227c6e2113928573021f30e12fe0b8d033b421ae56144b11905008d48eb58478",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b",
-    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "03e9f5b3fee22d7eb5aa710a372f4ad0e21a05fa3f0e53090d9bbdaa50158cd9",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "6e69ee7cde1c08f9629d8215b11f7b43c17e3ca60b15e0adb343aee5dc809de2",
+    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "3560825c55fad40d94e593397052d84568441703ed0bf5d3915d2dbba5df3586",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "e28e3f298c8cf1c772c403a7d6593d7fad809c05dbb763cd9a79802130a5dfd2",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "8b63f60ac23bea210ad8adac4b9863c095854e99ccde3d4f94cfba4f130edb39",
-    "src/ServerScriptService/StoryQuestService.luau": "dc0a8450b7202f75db01928f4ff797a239d98d56cac555e68da9fccaaa145228",
+    "src/ServerScriptService/StoryQuestService.luau": "767f08c57c8c3b63b29e78770c8fbc9e42f07c5a48d59fc75c2f05667525ab7b",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "9b0b07c7474ca4cdfbfa2213644e1d143d11b4cb8cd39bfeec169f351f6ace49"
   },
-  "fixtureSHA256": "30866bd0f859b2f5577c53f39a6b9dc0880b4ad2ddf33b7c38c4fc1b15e00e31",
+  "fixtureSHA256": "2313c1bce1b89012faef6268c5b5d74a713d9b0dd881466a42add20eee5e1911",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

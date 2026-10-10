@@ -12,10 +12,10 @@
 3. **지형:** `py tools/run_worldkit_tool.py tools/worldkit/halo_terrain.luau apply` (첫 실행은 평평한 기준 저장, 문 끝·스폰 길은 Y 0.2 그대로).
 4. **소품:** `py tools/run_worldkit_tool.py tools/worldkit/halo_props.luau plan` → 숫자 확인(274개, `missing kit: none`) → `... apply`. 한 번 더 `apply`해도 같은 결과(먼저 자기 것을 지우고 옛것을 되돌린 뒤 다시 보관). 되돌리기 = `restore`.
    - 하는 일: 낡은 HaloTower·HeroStatue·Cathedral(옛 랜드마크 돔)·Cloud·Town_Halo_* 복사본·옛 Gate_HaloTown·갈색 길 RoadNorthIsland를 `ServerStorage.HaloPropsOld`로 보관(지우지 않음). **`Bridge_*`·`Roads`·`Gate_*`(새 것 제외)·Pads는 절대 안 건드림.**
-   - 문: `Map.Gates.Gate_HaloTown` = 모델, PrimaryPart `Lintel`(보이지 않음, 충돌 없음, 앞 가장자리 (0,19,-330)), 아치 메시는 충돌 끔, 탑 쪽 보이지 않는 블록 2개만 충돌 → 통로 약 14스터드. 서버 시작 때 `MapBuilder.placeGate`가 안 밀게 이 구조 유지(Play 두 번 재시작해서 문이 안 움직이는지 확인).
+   - 문: `Map.Gates.Gate_HaloTown` = 모델, PrimaryPart `Lintel`(보이지 않음, 충돌 없음, 앞 가장자리 (0,19,-330)), 문 메시(조각 9개) 자체가 정밀 충돌(PreciseConvexDecomposition) — 통로 바닥 언덕(최고 7.6)·등불 받침·낮은 벽이 막히고 아치 통로(높이 9~18)는 열림(10/10 실측), 보이지 않는 탑 블록은 없앰. 서버 시작 때 `MapBuilder.placeGate`가 안 밀게 이 구조 유지(Play 두 번 재시작해서 문이 안 움직이는지 확인).
    - 충돌 그룹 `DecorPlayerOnly`가 등록돼 있어야 해요(없으면 요약 끝에 `NOT registered`가 찍힘 → 등록 후 다시 apply).
    - **`decor_collision.luau`를 이 뒤에 돌리지 마세요**(HaloProps는 종류별로 이미 충돌을 정했어요).
-5. **이동 판 2개(점검표 #52):** `Map.Pads.Pad_Halo_SlimeMeadow`·`Pad_Halo_GoblinWoods`(속성 `TravelTo` = SlimeMeadow / GoblinWoods), 자리 제안 (-26, 0.2, -372)·(26, 0.2, -372)(1단 큰길 옆, 스폰 길 |x|≤12 밖, 문 안쪽). 모양은 MapBuilder `ensurePads`와 같은 파랑 판. 개발 1이 빛 표시·미니맵.
+5. **이동 판 2개(점검표 #52):** `Map.Pads.Pad_Halo_SlimeMeadow`·`Pad_Halo_GoblinWoods`(속성 `TravelTo` = SlimeMeadow / GoblinWoods), 자리 (-24, 0.2, -357)·(24, 0.2, -357) — 1단 잔디, 문 바로 안쪽 양옆, 평평(±5스터드 높이차 0.3 이하)하고 배치 도구가 이 12×12 칸을 비워 둠(halo_layout.py PADS, 10/10 검수 ③: 옛 제안 ±26,-372는 풀 둔덕 + 깃대). 스폰 길 |x|≤12 밖. 모양은 MapBuilder `ensurePads`와 같은 파랑 판. 개발 1이 빛 표시·미니맵.
 6. **확인(PC 사진 + 걷기):** 스폰(0,-420) → 큰길 → 문 → 다리(Bridge_Halo) → 교차로 걸어서 되는지 / 문 통로를 지나가는지 / 계단 3곳 오르기 / 다리 14개 중 4개 건너기 / 분수 FountainFx 물줄기(개발 1이 SPECS `Town_Halo_Fountain3` 숫자 맞춤) / 가게 간판 4종 위치 / 밤 등불(`LampLight`) / 그림자. 시안과 같은 각도: 문 앞, 큰길, 광장, 날개 정원, 폭포, 다리(`art/review/s2/place_HaloTown_sheet.jpg`).
 7. **알려진 것:**
    - 대성당·돔집 A 질감이 에셋 심사로 회색일 수 있음(10~30분, 새로 올린 직후 흔함). 계속 회색이면 이미지 생성 1이 새 이름으로 다시 올림.

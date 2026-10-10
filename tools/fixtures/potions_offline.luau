@@ -79,13 +79,14 @@ local function fixture(saved, missingMerchant)
 	local merchant = node("Model", npcs)
 	merchant:SetAttribute("HHC_PotionMerchant",true)
 	local merchantPart = node("BasePart", merchant, vector(0,0,0)); merchant.PrimaryPart = merchantPart
+	merchantPart.Anchored = true -- #34: a seller's root is server-anchored (a client cannot move it)
 	local prompt=node("ProximityPrompt",merchantPart);prompt.Name=config.Vitals.PotionMerchantPrompt;prompt.Enabled=true
 	merchantPart.Children[prompt.Name]=prompt
 	if not missingMerchant then npcs.Children.PotionMerchant = merchant end
 	local rootPart = node("BasePart", world, vector(3,0,0))
 	local hum = { Health=50, MaxHealth=100 }
 	local f = { Config=config, Player=player, Attrs=attrs, Now=100, Root=rootPart, Humanoid=hum,
-		World=world, Merchant=merchant, MerchantPart=merchantPart, Prompt=prompt, Ready=true, Blocks={}, Tasks={}, Notices={},Opened={} }
+		World=world, Merchant=merchant, MerchantPart=merchantPart, Prompt=prompt, Ready=true, Blocks={}, Tasks={}, Notices={},Opened={}, Tagged={} }
 	function world:GetServerTimeNow() return f.Now end
 	local rows = {}
 	if saved then rows["P_"..serial] = copy(saved) end
@@ -110,6 +111,8 @@ local function fixture(saved, missingMerchant)
 		GetHumanoid=function() return f.Humanoid end, GetRoot=function() return f.Root end }
 	local services = { Players=players, ReplicatedStorage={ Shared={ Config="Config", Net="Net", Util="Util" } },
 		ProximityPromptService={PromptTriggered=signal()},
+		-- #34: server-side tags only (a client's tags never replicate); f.Tagged[tag] = { models }
+		CollectionService={GetTagged=function(_,tag) return table.clone(f.Tagged[tag] or {}) end},
 		RunService={ IsStudio=function() return true end }, HttpService={ GenerateGUID=function() return "token"..serial end },
 		DataStoreService={ GetDataStore=function() return db end } }
 	local env = { print=function() end, game={ JobId="offline", GetService=function(_, name) return assert(services[name], name) end },
@@ -149,6 +152,23 @@ local function fixture(saved, missingMerchant)
 	function f:Unchanged(before)
 		local after=self:Snapshot()
 		for i=1,8 do check(after[i] == before[i], "rejected transaction changed field "..i) end
+	end
+	-- #34: a second seller, shaped like TownNpcs' Halo stall seller (Config.TownNpcs PotionHalo): a server-made Model in
+	-- Map.NPCs under its own name, anchored root at `position` with the server prompt, tagged Config.Vitals.PotionMerchantTag
+	-- (or the given tags)
+	function f:Stall(position, tags)
+		local folder = self.World.Children.Map.Children.NPCs
+		local model = node("Model", folder); model:SetAttribute("HHC_PotionMerchant", true)
+		local part = node("BasePart", model, position); part.Anchored = true; model.PrimaryPart = part
+		local stallPrompt = node("ProximityPrompt", part)
+		stallPrompt.Name = self.Config.Vitals.PotionMerchantPrompt; stallPrompt.Enabled = true
+		part.Children[stallPrompt.Name] = stallPrompt
+		folder.Children.PotionMerchant_Halo = model
+		for _, tag in tags or { self.Config.Vitals.PotionMerchantTag } do
+			self.Tagged[tag] = self.Tagged[tag] or {}
+			table.insert(self.Tagged[tag], model)
+		end
+		return model, part, stallPrompt
 	end
 	return f
 end
@@ -212,6 +232,79 @@ for _,mutate in {
 	check(f:Buy("HP",1)==false and f:Buy("MP",5)==false,"direct purchase bypassed exact NPC/prompt enabled/path validation")
 	f:Unchanged(before);f:Open(f.Prompt)
 	check(#f.Opened==0,"invalid server NPC/prompt opened shop")
+end
+
+-- zone_check_halo #34 (검수 2026-10-10): every server-made seller tagged Config.Vitals.PotionMerchantTag sells with the one
+-- price table; the nearest live seller within PotionMerchantDistance decides; a prompt opens the shop only at its own seller.
+do
+	local prod=execute(CONFIG_SOURCE,CONFIG_ENV).Vitals
+	check(prod.PotionMerchantTag=="PotionMerchant","#34 seller tag is not \"PotionMerchant\" (TownNpcs / MiniMap / VitalsUI contract)")
+end
+do
+	-- far from the Crossroads seller (0,0,0), 10 studs from the Halo stall: opening, buying and the one price work there
+	local f=fixture();local _,_,stallPrompt=f:Stall(vector(-34,11,-546));f.Root.Position=vector(-34,11,-536);f:Gold(200,0)
+	f:Open(f.Prompt);check(#f.Opened==0,"#34 the far Crossroads prompt opened the shop at the Halo stall")
+	f:Open(stallPrompt)
+	check(#f.Opened==1 and f.Opened[1].Id=="PotionShop" and f.Opened[1].Player==f.Player,"#34 Halo stall prompt did not open the shop")
+	local price=f.Config.Vitals.PotionPrices
+	check(f:Buy("HP",1)==true and f.Data.HPPotionCount==1 and f.Data.CarriedGold==200-price.HP,"#34 Halo stall HP sale failed / other price")
+	check(f:Buy("MP",5)==true and f.Data.MPPotionCount==5 and f.Data.CarriedGold==200-price.HP-5*price.MP,"#34 Halo stall MP x5 sale failed")
+	-- the boundary: exactly PotionMerchantDistance from the stall sells and opens, 12.01 does neither
+	local edge=fixture();local _,_,edgePrompt=edge:Stall(vector(-34,11,-546));edge.Root.Position=vector(-34,11,-534);edge:Gold(100,0)
+	check(edge:Buy("HP",1)==true,"#34 exact 12-stud stall boundary refused a sale")
+	edge:Open(edgePrompt);check(#edge.Opened==1,"#34 exact 12-stud stall boundary refused the prompt")
+	local far=fixture();local _,_,farPrompt=far:Stall(vector(-34,11,-546));far.Root.Position=vector(-34,11,-533.99);far:Gold(100,0)
+	local before=far:Snapshot();check(far:Buy("HP",1)==false,"#34 stall sold at 12.01 studs");far:Unchanged(before)
+	far:Open(farPrompt);check(#far.Opened==0,"#34 stall prompt opened at 12.01 studs")
+	-- at the Crossroads with a stall in the world: the far Halo prompt stays shut, the Crossroads seller still works
+	local home=fixture();local _,_,haloPrompt=home:Stall(vector(-34,11,-546));home:Gold(100,0)
+	home:Open(haloPrompt);check(#home.Opened==0,"#34 the far Halo prompt opened the shop at the Crossroads")
+	home:Open(home.Prompt);check(#home.Opened==1 and home:Buy("HP",1)==true,"#34 the Crossroads seller stopped working beside a stall")
+	-- MapBuilder tags the Crossroads seller too: found by name AND by tag, it still sells
+	local both=fixture();both.Tagged[both.Config.Vitals.PotionMerchantTag]={both.Merchant};both:Gold(100,0)
+	both:Open(both.Prompt);check(#both.Opened==1 and both:Buy("HP",1)==true,"#34 the tagged Crossroads seller stopped working")
+	-- a tagged seller outside Map.NPCs (e.g. built inside a stall prop) is still a seller
+	local decor=fixture();local stall,_,decorPrompt=decor:Stall(vector(-34,11,-546));stall.Parent=decor.World
+	decor.Root.Position=vector(-34,11,-536);decor:Gold(100,0)
+	decor:Open(decorPrompt);check(#decor.Opened==1 and decor:Buy("HP",1)==true,"#34 a tagged seller outside Map.NPCs was refused")
+	-- the nearest LIVE seller decides: a disabled nearer stall does not hide the live Crossroads seller in range
+	local near=fixture();local _,_,nearPrompt=near:Stall(vector(4,0,0));nearPrompt.Enabled=false
+	near.Root.Position=vector(3,0,0);near:Gold(100,0)
+	check(near:Buy("HP",1)==true,"#34 a disabled nearer stall blocked the live seller in range")
+	near:Open(nearPrompt);check(#near.Opened==0,"#34 a disabled stall prompt opened the shop")
+	-- a same-name clone of the stall prompt never opens the shop
+	local twin=fixture();local _,stallPart,twinPrompt=twin:Stall(vector(-34,11,-546));twin.Root.Position=vector(-34,11,-536)
+	local clone=node("ProximityPrompt",stallPart);clone.Name=twinPrompt.Name;clone.Enabled=true;twin:Open(clone)
+	check(#twin.Opened==0,"#34 same-name cloned stall prompt bypassed exact identity")
+end
+-- Nothing a client can create or move, and no half-made / disabled / template seller, can sell or open the shop.
+for label,mutate in {
+	Untagged=function(f) f.Tagged[f.Config.Vitals.PotionMerchantTag]=nil end,
+	OnlyNpcTag=function(f,m) f.Tagged[f.Config.Vitals.PotionMerchantTag]=nil;f.Tagged.NPC={m} end,
+	NoTagInConfig=function(f) f.Config.Vitals.PotionMerchantTag=nil end,
+	NoAttribute=function(_,m) m:SetAttribute("HHC_PotionMerchant",nil) end,
+	TextAttribute=function(_,m) m:SetAttribute("HHC_PotionMerchant","true") end,
+	NotAModel=function(f,m,part)
+		local fake=node("Folder",m.Parent);fake.Attrs=m.Attrs;fake.PrimaryPart=part;part.Parent=fake
+		f.Tagged[f.Config.Vitals.PotionMerchantTag]={fake}
+	end,
+	TemplateOutsideWorkspace=function(_,m) m.Parent=node("Folder") end,
+	Unparented=function(_,m) m.Parent=nil end,
+	UnanchoredRoot=function(_,_,part) part.Anchored=false end,
+	NoPrimaryPart=function(_,m) m.PrimaryPart=nil end,
+	RootOutsideModel=function(f,_,part) part.Parent=f.World end,
+	RootNaN=function(_,_,part) part.Position=vector(0/0,11,-546) end,
+	PromptDisabled=function(_,_,_,p) p.Enabled=false end,
+	PromptMissing=function(_,_,part,p) part.Children[p.Name]=nil end,
+	PromptWrongClass=function(_,_,part,p) part.Children[p.Name]=node("BasePart",part) end,
+	PromptMovedAway=function(f,_,_,p) p.Parent=f.World end,
+	PromptShadowed=function(_,_,part,p) part.Children[p.Name]=node("ProximityPrompt",part) end,
+	MerchantOff=function(f) f.Config.Vitals.MerchantEnabled=false end,
+} do
+	local f=fixture();local m,part,p=f:Stall(vector(-34,11,-546));f.Root.Position=vector(-34,11,-536);f:Gold(100,100)
+	mutate(f,m,part,p);local before=f:Snapshot()
+	check(f:Buy("HP",1)==false and f:Buy("MP",5)==false,"#34 "..label.." seller still sold");f:Unchanged(before)
+	f:Open(p);check(#f.Opened==0,"#34 "..label.." seller prompt opened the shop")
 end
 
 -- New/legacy data: zero free stock; corrupt fractions/NaN/infinity reset; valid stock and the cap persist.
@@ -354,7 +447,7 @@ do
 			game={GetService=function(_,name) assert(name=="Players","merchant asked for "..tostring(name));return players end},
 			task={spawn=function(fn) if t.Defer then table.insert(t.Queue,fn) else fn() end end},
 			typeof=function(v) return type(v)=="table" and v.__kind or type(v) end}
-		local build=execute(MAP_MERCHANT_SOURCE,env,cfg,{AddTag=function(_,obj,tag) t.Tags[obj]=tag end},
+		local build=execute(MAP_MERCHANT_SOURCE,env,cfg,{AddTag=function(_,obj,tag) t.Tags[obj]=t.Tags[obj] or {};t.Tags[obj][tag]=true end},
 			{Warn=function(_,msg) table.insert(t.Warnings,msg) end},"MapBuilder",function(inst,suffix) inst.Name..=suffix end)
 		function t.Build() build(t.Ctx,npcs) end
 		function t.Flush() local q=t.Queue;t.Queue={};for _,fn in q do fn() end end
@@ -378,7 +471,7 @@ do
 	check(made.Desc.HeadColor==colors.Head and made.Desc.LeftArmColor==colors.Head and made.Desc.RightArmColor==colors.Head
 		and made.Desc.TorsoColor==colors.Torso and made.Desc.LeftLegColor==colors.Legs and made.Desc.RightLegColor==colors.Legs,
 		"HumanoidDescription colors do not come from Config.Vitals.PotionMerchantColors")
-	check(f.Tags[npc]=="NPC" and npc:GetAttribute("HHC_PotionMerchant")==true and npc:GetAttribute("HHC_MerchantLook")=="DefaultNPC",
+	check(f.Tags[npc]~=nil and f.Tags[npc].NPC==true and npc:GetAttribute("HHC_PotionMerchant")==true and npc:GetAttribute("HHC_MerchantLook")=="DefaultNPC",
 		"merchant NPC tag/ownership/temporary-look markers missing")
 	check(npc.PrimaryPart==npc:FindFirstChild("HumanoidRootPart"),"merchant PrimaryPart is not the root")
 	local prompt=npc.PrimaryPart:FindFirstChild(f.Config.Vitals.PotionMerchantPrompt)

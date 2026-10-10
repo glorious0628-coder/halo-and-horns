@@ -39,14 +39,32 @@ MUTATIONS = [
     ("Config: a duplicate model name", C, 'Id = "Folk2", Name = "Npc_Folk2",', 'Id = "Folk2", Name = "Npc_Folk1",'),
     ("Config: Otto is not behind the anvil", C, 'Anvil = true, Behind = 4,', 'Anvil = true, Behind = -4,'),
     ("Config: off", C, "Config.TownNpcs = {\n\tEnabled = true,", "Config.TownNpcs = {\n\tEnabled = false,"),
+    ("Config: the seller back at the bakery", C, "Y = 20,\n\t\t\tAt = Vector3.new(34, 0, -584), Look = Vector3.new(0, 0, -584) },", "Y = 20,\n\t\t\tAt = Vector3.new(-34, 0, -546), Look = Vector3.new(0, 0, -584) },"),
+    ("Config: Folk3 on the seller's spot", C, "At = Vector3.new(-34, 0, -546), Look = Vector3.new(-44, 0, -546), Y = 20,", "At = Vector3.new(34, 0, -584), Look = Vector3.new(-44, 0, -546), Y = 20,"),
+    ("Config: Folk1 has no expected Y", C, "Look = Vector3.new(44, 0, -546), Y = 20,", "Look = Vector3.new(44, 0, -546),"),
+    ("Config: Folk4 on the terrace below", C, "Look = Vector3.new(0, 0, -565), Y = 20,", "Look = Vector3.new(0, 0, -565), Y = 9,"),
+    ("Config: no retries", C, "\tRetries = 3,", "\tRetries = 1,"),
+    ("Config: retry every second", C, "\tRetryDelay = 5,", "\tRetryDelay = 1,"),
+    ("Config: the tolerance is 10", C, "\tYTol = 4,", "\tYTol = 10,"),
+    ("Config: two casts", C, "\tRayTries = 8,", "\tRayTries = 2,"),
+    ("Config: H3's first card is not Sir Gleam's", C, "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Npc = \"Gleam\", Panel = true,", "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Panel = true,"),
     ("Config: the ray is shorter", C, "\tRayTop = 150, -- the ground ray", "\tRayTop = 50, -- the ground ray"),
     # --- TownNpcs
-    ("ground: any surface is ground", T, "if typeof(hit.Normal) ~= \"Vector3\" or hit.Normal.Y < 0.7 then return nil end", "if typeof(hit.Normal) ~= \"Vector3\" then return nil end"),
-    ("ground: only a flat surface", T, "hit.Normal.Y < 0.7 then return nil end", "hit.Normal.Y < 0.9 then return nil end"),
-    ("ground: a miss is the zone's height", T, "if not ok or not hit then return nil end", "if not ok or not hit then return 0 end"),
+    ("ground: any surface is ground", T, "local floorLike = typeof(hit.Normal) == \"Vector3\" and hit.Normal.Y >= 0.7", "local floorLike = typeof(hit.Normal) == \"Vector3\""),
+    ("ground: only a flat surface", T, "hit.Normal.Y >= 0.7", "hit.Normal.Y >= 0.9"),
+    ("ground: a miss is the zone's height", T, "if not ok or not hit or typeof(hit.Position) ~= \"Vector3\" then return nil end", "if not ok or not hit or typeof(hit.Position) ~= \"Vector3\" then return 0 end"),
+    ("ground: the expected height is ignored", T, "local wantY = finite(expectY) and expectY or nil", "local wantY = nil"),
+    ("ground: any height is within the tolerance", T, "if floorLike and math.abs(hit.Position.Y - wantY) <= tol then return hit.Position.Y end", "if floorLike then return hit.Position.Y end"),
+    ("ground: the tolerance is 40", T, "local tol = math.max(0.5, num(C.YTol, 4))", "local tol = 40"),
+    ("ground: a roof ends the search", T, "\t\tfrom = hit.Position.Y - 0.5\n\t\tif from <= -depth then return nil end\n", "\t\treturn nil\n"),
+    ("ground: the next cast starts on the roof", T, "from = hit.Position.Y - 0.5", "from = hit.Position.Y + 0.5"),
+    ("ground: one cast only", T, "for _ = 1, math.max(1, math.floor(num(C.RayTries, 8))) do", "for _ = 1, 1 do"),
+    ("ground: endless casts", T, "for _ = 1, math.max(1, math.floor(num(C.RayTries, 8))) do", "for _ = 1, 100 do"),
+    ("ground: a wall is the floor when a height is expected", T, "if floorLike and math.abs(hit.Position.Y - wantY) <= tol then return hit.Position.Y end", "if math.abs(hit.Position.Y - wantY) <= tol then return hit.Position.Y end"),
     ("ground: characters are not excluded", T, "\t\t\tif p.Character then table.insert(list, p.Character) end\n", ""),
     ("ground: the folder is not excluded", T, "\tfor _, inst in ignore or {} do table.insert(list, inst) end\n", ""),
-    ("ground: the ray points up", T, "Vector3.new(0, -(top + num(C.RayDepth, 60)), 0)", "Vector3.new(0, (top + num(C.RayDepth, 60)), 0)"),
+    ("ground: the ray points up", T, "Vector3.new(0, -(from + depth), 0)", "Vector3.new(0, (from + depth), 0)"),
+    ("ground: a body is placed without its Y", T, "TownNpcs.GroundY(spot.X, spot.Z, { folder }, entry.Y)\n\tif not ground then return false", "TownNpcs.GroundY(spot.X, spot.Z, { folder })\n\tif not ground then return false"),
     ("spot: a NaN spot passes", T, "if typeof(at) ~= \"Vector3\" or not finite(at.X) or not finite(at.Z) or", "if typeof(at) ~= \"Vector3\" or"),
     ("spot: a far spot passes", T, " or math.abs(at.X) > num(C.MaxCoord, 3000) or math.abs(at.Z) > num(C.MaxCoord, 3000) then", " then"),
     ("spot: Otto in front of the anvil", T, "return { X = anvil.Position.X + dx / len * back, Z = anvil.Position.Z + dz / len * back,", "return { X = anvil.Position.X - dx / len * back, Z = anvil.Position.Z - dz / len * back,"),
@@ -72,7 +90,7 @@ MUTATIONS = [
     ("mark: a story NPC without the tag", T, "\t\tCollectionService:AddTag(npc, Config.StoryQuests.NpcTag or \"StoryNpc\")\n", ""),
     ("mark: no NpcId", T, "\t\tnpc:SetAttribute(\"NpcId\", entry.Story)\n", ""),
     ("mark: the townsfolk are story NPCs too", T, "\telseif entry.Folk then\n\t\tCollectionService:AddTag(npc, \"TownFolk\")", "\telseif entry.Folk then\n\t\tCollectionService:AddTag(npc, \"StoryNpc\")\n\t\tCollectionService:AddTag(npc, \"TownFolk\")"),
-    ("mark: the seller without its tag", T, "\t\tCollectionService:AddTag(npc, \"PotionMerchant\")\n", ""),
+    ("mark: the seller without its tag", T, "\t\tCollectionService:AddTag(npc, (Config.Vitals and Config.Vitals.PotionMerchantTag) or \"PotionMerchant\") -- ShopService sells at every tagged seller\n", ""),
     ("mark: the seller without its marker", T, "\t\tnpc:SetAttribute(\"HHC_PotionMerchant\", true)\n", ""),
     ("mark: no ownership", T, "\tnpc:SetAttribute(\"HHC_TownNpc\", entry.Id)\n", ""),
     ("prompt: the wrong key", T, "prompt.KeyboardKeyCode = Enum.KeyCode.G", "prompt.KeyboardKeyCode = Enum.KeyCode.E"),
@@ -97,8 +115,22 @@ MUTATIONS = [
     ("build: a placed body without ground", T, "\t\tassert(placed, reason)\n", ""),
     ("ensure: pieces not counted", T, "\t\t\tif not existing and entry.Enabled ~= false then ctx.pieces += 1 end\n", ""),
     ("ensure: pieces counted for every entry", T, "\t\t\tif not existing and entry.Enabled ~= false then ctx.pieces += 1 end\n", "\t\t\tctx.pieces += 1\n"),
-    ("ensure: built while Build runs", T, "\ttask.spawn(function()\n\t\tfor _, entry in queue do", "\tdo\n\t\tfor _, entry in queue do"),
-    ("ensure: a bad row stops the others", T, "\t\t\tlocal ok, err = pcall(buildOne, entry, folder, C, vitals)\n\t\t\tif not ok then Util.Warn(TAG, tostring(entry.Name) .. \": \" .. tostring(err)) end\n", "\t\t\tbuildOne(entry, folder, C, vitals)\n"),
+    ("ensure: built while Build runs", T, "\ttask.spawn(function()\n\t\t-- a body whose avatar call", "\ttask.defer(function()\n\t\t-- a body whose avatar call"),
+    ("ensure: a bad row stops the others", T, "local ok, res = pcall(buildOne, entry, folder, C, vitals)", "local ok, res = true, buildOne(entry, folder, C, vitals)"),
+    # --- retries
+    ("retry: never again", T, "\t\t\tif #again == 0 then return end\n", "\t\t\tif true then return end\n"),
+    ("retry: never stops", T, "for attempt = 1, tries do", "for attempt = 1, tries * 10 do"),
+    ("retry: no wait", T, "if attempt < tries then task.wait(", "if false then task.wait("),
+    ("retry: a wait after the last try", T, "if attempt < tries then task.wait(", "if true then task.wait("),
+    ("retry: the delay is not read", T, "task.wait(math.max(0.5, num(C.RetryDelay, 5)))", "task.wait(5)"),
+    ("retry: the tries are not read", T, "local tries = math.max(1, math.floor(num(C.Retries, 3)))", "local tries = 3"),
+    ("retry: a missing ground is retried", T, "(the map is not built here)\")\n\t\treturn\n", "(the map is not built here)\")\n\t\treturn \"retry\"\n"),
+    ("retry: a failed avatar call is not retried", T, "\" body failed: \" .. tostring(npc))\n\t\treturn \"retry\"", "\" body failed: \" .. tostring(npc))\n\t\treturn"),
+    ("retry: a failed preparation is not retried", T, "\" preparation failed: \" .. tostring(why))\n\t\treturn \"retry\"", "\" preparation failed: \" .. tostring(why))\n\t\treturn"),
+    ("retry: a foreign model is retried", T, "is occupied by unrelated content; skipped\")\n\t\treturn\n", "is occupied by unrelated content; skipped\")\n\t\treturn \"retry\"\n"),
+    ("retry: no give-up line", T, "\t\tfor _, entry in pending do Util.Warn(TAG, tostring(entry.Name) .. \" given up after \" .. tries .. \" tries\") end\n", ""),
+    ("retry: everything again", T, "\t\t\tpending = again\n", ""),
+    ("tag: the seller is not tagged for the shop", T, "CollectionService:AddTag(npc, (Config.Vitals and Config.Vitals.PotionMerchantTag) or \"PotionMerchant\")", "CollectionService:AddTag(npc, \"PotionSeller\")"),
     ("ensure: the switch is ignored", T, "\t\tif C.Enabled ~= true then\n\t\t\t-- switched off", "\t\tif false then\n\t\t\t-- switched off"),
     ("ensure: prompts stay on when switched off", T, "\t\t\t\t\tif d:IsA(\"ProximityPrompt\") then d.Enabled = false end\n", ""),
     ("entries: duplicate ids pass", T, "and not seenId[entry.Id] and not seenName[entry.Name] then", "and not seenName[entry.Name] then"),
@@ -129,7 +161,30 @@ def static() -> tuple[int, list[str]]:
     src = strip_comments(read(SSS / "TownNpcs.luau"))
     check(not re.search(r"[가-힣]", src), "TownNpcs: no Hangul outside comments")
     check("MarketplaceService" not in src and "AddBankGold" not in src and "AddStat" not in src and "GrantItem" not in src, "TownNpcs: nothing sold, nothing paid")
-    check("task.wait" not in src and ":WaitForChild" not in src, "TownNpcs never waits (Build never yields)")
+    check(src.count("task.wait") == 1 and "task.wait" not in src.split("task.spawn(function()")[0] and ":WaitForChild" not in src,
+          "TownNpcs waits only inside the spawned task (Build never yields)")
+    # the shop people stand in front of their shop in the Halo layout plan (docs/design/halo_layout_plan_2026-10-10.json)
+    import json
+    plan = json.loads(read(ROOT / "docs/design/halo_layout_plan_2026-10-10.json"))
+    shops = {p["shopkind"]: p for p in plan["placements"] if p["kind"] == "Shop"}
+    cfg = read(SHARED / "Config.luau")
+    block = cfg[cfg.find("Config.TownNpcs = {"):]
+    block = block[: block.find("\n}\n")]
+
+    def entry_at(entry_id):
+        m = re.search(r'Id = "%s",.*?At = Vector3\.new\((-?[\d.]+), 0, (-?[\d.]+)\)' % entry_id, block, re.S)
+        return (float(m.group(1)), float(m.group(2))) if m else None
+
+    for shop_kind, entry_id in (("Juice", "Folk1"), ("Flower", "Folk2"), ("Bakery", "Folk3"), ("Potion", "PotionHalo")):
+        shop, at = shops.get(shop_kind), entry_at(entry_id)
+        check(shop is not None and at is not None, f"the plan has a {shop_kind} shop and Config an entry {entry_id}")
+        if shop and at:
+            side = 1 if shop["x"] > 0 else -1
+            depth = 7.5 * shop["s"] / 2  # the kit shop is 7.5 deep (halo_layout.py), x its scale
+            front = shop["x"] - side * depth
+            gap = (front - at[0]) * side  # studs in front of the shop's face, towards the street
+            check(2 <= gap <= 8 and abs(at[1] - shop["z"]) <= 4 and abs(shop["y"] - 20) < 1,
+                  f"{entry_id} stands 2..8 studs in front of the {shop_kind} shop ({shop['x']}, {shop['z']}): gap {gap:.1f}, dz {abs(at[1] - shop['z']):.1f}")
     check(src.count("CreateHumanoidModelFromDescription") == 1 and "ServerStorage" not in src and "CustomModels" not in src, "the body comes from a HumanoidDescription only (A23-6): no costume rig, no template")
     return count, failures
 

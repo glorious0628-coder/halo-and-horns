@@ -114,7 +114,7 @@ local function fixture()
         and config.Data.Defaults.BlacksmithVisited==false,"production trade defaults differ")
     check(table.find(config.Data.Mirrored,"WeaponOwnedMask")~=nil and table.find(config.Data.Mirrored,"BlacksmithVisited")~=nil,"trade attributes are not mirrored")
     local services={Players=players,ReplicatedStorage={Shared={Config="Config",Util="Util",Net="Net"}},
-        ProximityPromptService=events}
+        ProximityPromptService=events,CollectionService={GetTagged=function() return {} end}}
     env.game={GetService=function(_,name) return assert(services[name],name) end}
     local util=execute(UTIL_SOURCE,env)
     env.require=function(name)

@@ -193,10 +193,10 @@ MUTATIONS = [
     ("daily intro: offered at once", C, "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Requires = { Done = { \"M1_4\" } },",
      "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Requires = { Done = { \"M1_1\" } },"),
     ("daily intro: only for Halo", C, "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Requires", "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Factions = { Halo = true }, Requires"),
-    ("daily intro: no closing line", C, "\tFinish = \"Daily jobs are open!\",\n", ""),
-    ("daily intro: pays nothing", C, "\tReward = { Gold = 1, XP = 1 },\n\tFinish = \"Daily jobs are open!\",", "\tFinish = \"Daily jobs are open!\","),
+    ("daily intro: a closing toast again", C, "\tReward = { Gold = 1, XP = 1 }, -- no Finish line", "\tFinish = \"Daily jobs are open!\",\n\tReward = { Gold = 1, XP = 1 }, -- no Finish line"),
+    ("daily intro: pays nothing", C, "\tReward = { Gold = 1, XP = 1 }, -- no Finish line", "\t-- no Finish line"),
     ("daily intro: not in the sub list", C, "table.insert(Config.StoryQuests.Subs, \"D0\")\n", ""),
-    ("daily intro: it pops up by itself", C, "\tReward = { Gold = 1, XP = 1 },\n\tFinish = \"Daily jobs are open!\",", "\tReward = { Gold = 1, XP = 1 },\n\tPop = true,\n\tFinish = \"Daily jobs are open!\","),
+    ("daily intro: it pops up by itself", C, "\tReward = { Gold = 1, XP = 1 }, -- no Finish line", "\tReward = { Gold = 1, XP = 1 },\n\tPop = true, -- no Finish line"),
     ("daily intro: not a dialogue", C, "{ Text = \"Hear about the daily jobs\", Panel = true, Obj = { Type = \"Talk\" },", "{ Text = \"Hear about the daily jobs\", Obj = { Type = \"Talk\" },"),
     ("egg: the scroll speaks as the guide", C, "Hidden = true, Speaker = \"Scroll\",", "Hidden = true,"),
     ("egg: the patch note speaks as the guide", C, "ShortName = \"Patch Note\", Hidden = true, Speaker = \"Notice\",", "ShortName = \"Patch Note\", Hidden = true,"),
@@ -223,6 +223,8 @@ MUTATIONS = [
     ("npc talk: a player without a class", ST, "if not S.PlayerService.IsReady(player) or player:GetAttribute(\"ClassChosen\") ~= true then return nil end", "if not S.PlayerService.IsReady(player) then return nil end"),
     ("npc talk: a non-string id", ST, "if typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") or type(npcId) ~= \"string\" then return nil end", "if typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") then return nil end"),
     ("npc talk: the prompt is never heard", ST, "\t\tprompts.PromptTriggered:Connect(function(prompt, player)", "\t\tprompts.Unused:Connect(function(prompt, player)"),
+    ("npc talk: H3 is not Sir Gleam's", C, "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Npc = \"Gleam\", Panel = true,", "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Panel = true,"),
+    ("npc talk: H3's choice card names Gleam", C, "{ Text = \"Talk with Sir Gleam\", Guide = \"HaloTown\", Panel = true,", "{ Text = \"Talk with Sir Gleam\", Guide = \"HaloTown\", Npc = \"Gleam\", Panel = true,"),
     ("npc talk: any prompt", ST, "if type(npcId) ~= \"string\" or typeof(player) ~= \"Instance\" then return end", "if typeof(player) ~= \"Instance\" then return end\n\t\t\tnpcId = npcId or \"Bright\""),
     ("npc talk: no rate limit", ST, "\t\t\tif not Util.RateLimit(player, \"StoryNpcTalk\", (Config.RateLimits and Config.RateLimits.StoryAction) or 0.4) then return end\n", ""),
     ("egg: the scroll titles are swapped", C, "TitleBy = { Good = \"ActuallyReadIt\", Evil = \"DidntReadIt\" } }", "TitleBy = { Good = \"DidntReadIt\", Evil = \"ActuallyReadIt\" } }"),
@@ -296,6 +298,16 @@ MUTATIONS = [
      '\t\t\t\t},'),
     ("the hero statue outside Halo Citadel", C, "Landmarks.HeroStatue = Vector3.new(0, 0, -370)",
      "Landmarks.HeroStatue = Vector3.new(0, 0, -200)"),
+    ('A23-64 review: the pick does not save its faction', ST, 'st.TownLast, st.TownFaction = id, faction(player) -- A23-64',
+     'st.TownLast, st.TownFaction = id, nil -- A23-64'),
+    ("A23-64 review: another faction's pick is voiced", ST, 'if not side or (st.TownFaction ~= nil and st.TownFaction ~= f) then return "" end',
+     'if not side then return "" end'),
+    ('A23-64 review: no TownPick update on a faction switch', ST, '\t\t\t\tif data then publishTownPick(player, story(data)) end\n\t\t\tend)',
+     '\t\t\t\tlocal _ = data\n\t\t\tend)'),
+    ("A23-64 review: the backfill ignores the save's faction", ST, '(type(fs) ~= "table" or fs[data.Faction] == true) then st.TownLast = id end',
+     'true then st.TownLast = id end'),
+    ("A23-64 review: the artisan's M3_4 B gets the vault line", C, '\t\t\t\tEvil = { M3_4 = "Sold the dust back? Business is business!" },\n',
+     ''),
     ('#71 the town B pays 60 again', C, 'Evil = { Label = "Hang it in my house", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },',
      'Evil = { Label = "Hang it in my house", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },'),
     ('#36 H2: the pick opens in the field', C, '\t\t\t\t{ Text = "Bring the lantern home", Guide = "HaloTown", Start = "The lantern! Take it home to Halo Citadel.",\n\t\t\t\t\tObj = { Type = "Enter", Zone = "HaloTown" } },\n',
@@ -334,6 +346,77 @@ MUTATIONS = [
      ''),
     ("GW7 forgets the GW1 pick", C, 'LinesBy = { From = "GW1",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time',
      'LinesBy = { From = "GW7",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time'),
+    # A23-64 ② the afterglow (zone_check_halo #39)
+    ("A23-64: a story pick never glows", ST,
+     "\tafterglow(player, option, \"Story\") -- A23-64 ②: every story pick, a 0-point one too (A23-70 Lunch1)\n", ""),
+    ("A23-64: the afterglow goes to everyone in a PvP area", ST, "local private = not okZ or pvp ~= false", "local private = false"),
+    ("A23-64: an unknown zone counts as safe", ST, "local private = not okZ or pvp ~= false", "local private = okZ and pvp == true"),
+    ("A23-64: the afterglow goes only to the chooser everywhere", ST,
+     "pcall(Net.Fx, private and player or nil, \"Afterglow\", payload)", "pcall(Net.Fx, player, \"Afterglow\", payload)"),
+    ("A23-64: Private is not sent", ST, "Seconds = math.max(1, num(A.Seconds, 60)), Private = private }",
+     "Seconds = math.max(1, num(A.Seconds, 60)) }"),
+    ("A23-64: Seconds not read from Config", ST, "Seconds = math.max(1, num(A.Seconds, 60))", "Seconds = 60"),
+    ("A23-64: the switch is ignored", ST,
+     "if type(A) ~= \"table\" or A.Enabled ~= true or (side ~= \"Good\" and side ~= \"Evil\") then return end",
+     "if type(A) ~= \"table\" or (side ~= \"Good\" and side ~= \"Evil\") then return end"),
+    ("A23-64: a time-up card glows", ST, "or (side ~= \"Good\" and side ~= \"Evil\") then return end", "or side == nil then return end"),
+    ("A23-64: From is ignored", ST, "\tif type(A.From) == \"table\" and A.From[from] ~= true then return end\n", ""),
+    ("A23-64: a Neutral B glows gold", ST, "choiceFx(player, option == \"A\" and \"Good\" or \"Evil\")",
+     "choiceFx(player, option == \"B\" and \"Good\" or \"Evil\")"),
+    ("A23-64: choice cards never glow", ST,
+     "\t\tcards.Picked:Connect(function(player, _, side) afterglow(player, side, \"Card\") end)\n", ""),
+    ("A23-64: the finisher card never glows", ST, "\t\tfinisher.Picked:Connect(function(player, pick)\n",
+     "\t\tlocal _ = (function(player, pick)\n"),
+    ("A23-64: Tickle glows gold", ST, "(pick == \"Tickle\" and \"Evil\")", "(pick == \"Tickle\" and \"Good\")"),
+    ("A23-64: a player who left still glows", ST,
+     " or not player:IsA(\"Player\") or player.Parent ~= Players then return end", " or not player:IsA(\"Player\") then return end"),
+    ("Config: the afterglow lasts 30 s", C, "\tSeconds = 60, -- A23-64 ②: how long it stays at the feet",
+     "\tSeconds = 30, -- A23-64 ②: how long it stays at the feet"),
+    ("Config: the afterglow is off", C, "\tEnabled = true, -- A23-64 ②: the afterglow switch",
+     "\tEnabled = false, -- A23-64 ②: the afterglow switch"),
+    ("Config: the finisher card does not glow", C, "From = { Story = true, Card = true, Finisher = true },",
+     "From = { Story = true, Card = true },"),
+    # A23-64 ① the last town pick (attribute TownPick, data.Story.TownLast; town picks = Config.TownReact.Order)
+    ("A23-64: a town pick is not saved", ST,
+     "\t\t\tst.TownLast, st.TownFaction = id, faction(player) -- A23-64 ①: the townsfolk remember this town pick (saved; its side = SIDE[st.Pick[id]])\n", ""),
+    ("A23-64: every pick is a town pick at the pick", ST, "\t\tif isTownPick(id) then\n", "\t\tif true then\n"),
+    ("A23-64: every quest counts as a town quest", ST,
+     "return type(id) == \"string\" and type(R) == \"table\" and type(R.Order) == \"table\" and table.find(R.Order, id) ~= nil",
+     "return type(id) == \"string\""),
+    ("A23-64: TownPick not sent at the pick", ST, "\t\t\tpublishTownPick(player, st)\n", ""),
+    ("A23-64: no TownPick at join", ST,
+     "\t\t\tpublishTownPick(player, story(data)) -- A23-64 ①: TownPick from the save (sanitize backfilled it)\n", ""),
+    ("A23-64: no backfill at join", ST, "\t\t\tif SIDE[st.Pick[id]] ~= nil and (type(fs) ~= \"table\" or fs[data.Faction] == true) then st.TownLast = id end\n", ""),
+    ("A23-64: the backfill keeps the first, not the last", ST, "fs[data.Faction] == true) then st.TownLast = id end",
+     "fs[data.Faction] == true) and st.TownLast == nil then st.TownLast = id end"),
+    ("A23-64: a saved TownLast is thrown away at join", ST, "\tif townPickOf(st, st.TownFaction or data.Faction) == \"\" then\n", "\tif true then\n"),
+    ("A23-64: a bad saved TownLast is kept", ST, "\tif townPickOf(st, st.TownFaction or data.Faction) == \"\" then\n", "\tif st.TownLast == nil then\n"),
+    ("A23-64: TownPick holds the raw pick", ST, "local side = isTownPick(id) and SIDE[st.Pick[id]] or nil",
+     "local side = isTownPick(id) and st.Pick[id] or nil"),
+    # A23-64 ① Config.TownReact (lines in Config.TownReact.Text) / Config.TownReactLines
+    ("Config: TownReact talks every 10 s", C, "\tEvery = 30, -- s between two lines of one town person (A23-64 ①)",
+     "\tEvery = 10, -- s between two lines of one town person (A23-64 ①)"),
+    ("Config: H2 left out of the Order", C, "\"S6\", \"H1\", \"R1\", \"H2\", \"R5\",", "\"S6\", \"H1\", \"R1\", \"R5\","),
+    ("Config: a 14-word line", C, "\"Prank 201! Same as 200! Classic!\"",
+     "\"Prank 201! Same as 200! Classic! We love pranks so much, you know, really!\""),
+    ("Config: a mean word", C, "\"Hey, Rascal! No pranks today, okay?\"", "\"Hey, Rascal! I hate pranks today, okay?\""),
+    ("Config: Smokey is a he again", C, "\"You gave Smokey her sack back? How nice…\"",
+     "\"You gave Smokey his sack back? How nice…\""),
+    ("TownReactLines: the pick said in any town", C, " or p.Town ~= Config.HomeZoneId(f) then return out, nil end",
+     " then return out, nil end"),
+    ("TownReactLines: the own town compared with the faction name", C, "p.Town ~= Config.HomeZoneId(f)", "p.Town ~= f"),
+    ("TownReactLines: a Halo-only pick said in Horns Den", C, "(type(def.Factions) == \"table\" and not def.Factions[f])", "false"),
+    ("TownReactLines: no lean lines", C, "\t\t\tfor _, line in T.Lean[id] or {} do table.insert(out, line) end\n", ""),
+    ("TownReactLines: one rank too high", C, "byRank[math.clamp(rank, 1, #byRank)]", "byRank[math.clamp(rank + 1, 1, #byRank)]"),
+    ("TownReactLines: the faction's own lines ignored", C, "local line = (type(own) == \"table\" and own[id]) or",
+     "local line = (false) or"),
+    ("TownReactLines: Infamy counts for a Halo", C, "Config.GetTitle(f, tonumber(p.Honor) or 0, tonumber(p.Infamy) or 0)",
+     "Config.GetTitle(f, tonumber(p.Infamy) or 0, tonumber(p.Infamy) or 0)"),
+    ("TownReactLines: the switch is ignored", C,
+     "if type(R) ~= \"table\" or R.Enabled ~= true or type(R.Text) ~= \"table\" or type(p) ~= \"table\" then return out, nil end",
+     "if type(R) ~= \"table\" or type(R.Text) ~= \"table\" or type(p) ~= \"table\" then return out, nil end"),
+    ("TownReactLines: a player without a side gets lines", C,
+     "if f ~= \"Halo\" and f ~= \"Horns\" and f ~= \"Neutral\" then return out, nil end", "if f == nil then return out, nil end"),
     ("a Neutral save gets the Halo / Horns subs", C,
      'Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War", Factions = { Halo = true, Horns = true },',
      'Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War",'),
@@ -365,6 +448,15 @@ def static() -> tuple[int, list[str]]:
     picks = set(re.findall(r'Pick = "(\w+)"', config))
     check(bool(picks) and picks <= side_keys,
           f"every Pick in Config.StoryQuests has a side in SIDE (missing: {sorted(picks - side_keys)})")
+    # A23-64: the afterglow leaves from one place (afterglow, through Net.Fx) and TownPick is set in one place
+    check(story.count('"Afterglow", payload') == 1, "StoryQuestService sends Fx Afterglow from one place (afterglow)")
+    check(story.count('SetAttribute("TownPick"') == 1, "the TownPick attribute is set in one place (publishTownPick)")
+    # A23-64 ①: game dev 1's TownReact looks up the bodies TownNpcs tags for the town people (Folk entries)
+    town_npcs = read(SSS / "TownNpcs.luau")
+    folk_tag = re.search(r'elseif entry\.Folk then\s+CollectionService:AddTag\(npc, "(\w+)"\)', town_npcs)
+    react_tag = re.search(r'^Config\.TownReact = \{.*?^\tTag = "(\w+)",', config, re.S | re.M)
+    check(bool(folk_tag and react_tag) and folk_tag.group(1) == react_tag.group(1),
+          "Config.TownReact.Tag = the tag TownNpcs gives the town people (Folk)")
     return count, failures
 
 
@@ -391,7 +483,18 @@ SUITE = Suite(
              "LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / "
              "ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> "
              "TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past "
-             "step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). 빛 마을 점검 2026-10-10: every Halo-only "
+             "step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). A23-64 ② (zone_check_halo #39): every "
+             "story pick (0-point and Neutral A / B too), a ChoiceCard Good / Evil pick and a finisher Help / Tickle "
+             "send one Fx Afterglow { UserId, Side, Seconds = Config.Afterglow.Seconds (60), Private } to every client, "
+             "or only to the chooser in a PvP area (an unknown zone counts as PvP); None / Enabled off / From off = none. "
+             "A23-64 ①: a Config.TownReact.Order quest's pick saves Story.TownLast and sets the attribute TownPick "
+             "'<id>:Good|Evil' (Neutral A / B = their side); a join backfills it (bad / missing = the last of "
+             "TownReact.Order with a saved pick). Config.TownReactLines: rank + lean + the town pick; the town pick is "
+             "said only in the player's own town (npc Town == Config.HomeZoneId(faction), zone ids) and only to the "
+             "quest's own factions (Defs[id].Factions); lines live in Config.TownReact.Text (Good / Evil by quest id, "
+             "FactionPick overrides); every line <= 12 words, no format tokens, no scary words, Bright / Smokey = she. "
+             "Config.TownReact.Tag = the tag TownNpcs gives its Folk bodies, which stand in a town zone. "
+             "빛 마을 점검 2026-10-10: every Halo-only "
              "pick happens in Halo Citadel (Npc Bright, or after a way-home step: H2 / H3 Enter HaloTown, H6 Near HeroStatue); "
              "H2 step 1 guides to the Fountain; H3 / H5 have Start lines; H1 says 'in the meadow'; OathH / OathR sit in the "
              "Faction tab; a workspace instance tagged StoryLandmark with Spot = <key> moves that landmark (Near steps and "

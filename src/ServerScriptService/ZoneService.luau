@@ -13,6 +13,9 @@
 -- movement-checked before the pad teleport clears the track. The A10 rescue first checks the drop against free fall.
 -- CR-L18: a Travel channel carries a token; the zone loop cancels it at once (damage / combat / sack / kaiju / stars /
 -- death) and a stale channel timer never finishes a newer channel.
+-- zone_check_halo #11 / #62 / #63 (검수 2026-10-10): a live player whose root stays in Terrain water for
+-- Config.WaterRescue.Seconds in a row in a town zone or within Margin studs of a town rect is moved to the nearest dry
+-- land (waterTick, after the gates); nothing dry nearby -> the A10 home spawn.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -328,6 +331,254 @@ local function applyZone(player, zone, pos)
 	if zone.Id ~= old then ZoneService.ZoneChanged:Fire(player, zone.Id, old) end
 end
 
+------------------------------------------------------------------ water rescue (zone_check_halo #11 / #62 / #63)
+-- 검수 2026-10-10: a live player whose root stays in Terrain water for Config.WaterRescue.Seconds in a row inside a town
+-- zone (Zones[*].Town: Crossroads, Halo Citadel, Horns Den) or within Margin studs of a town rect is moved to the nearest
+-- dry land (the Halo canal walls are too steep to climb out of; the A10 rescue only fires below Y -20).
+-- "In water" is read from the Terrain, never from the client's Humanoid state: the water surface of the root's voxel
+-- column is at most RootSlack studs below the root (a swimmer floats at the surface; a foot-deep spring basin stays under
+-- the root). A dry spell shorter than DryReset s (a swim jump at a wall) keeps the count; a longer one, leaving the town
+-- area, a new character or a rescue restarts it. Dry land = rings of rays straight down (Terrain + workspace.Map only, so
+-- characters, monsters and pets are never hit; water NOT ignored, so a wet spot answers Water; non-colliding parts
+-- ignored) whose hit is Terrain / Map.Ground / a Map.Decor "Bridge_*" deck, DryAbove..MaxRise above the water, at most
+-- MaxSlope steep, not an AvoidMaterials floor, with no collidable Map part in the body box above it, in a zone the player
+-- may stand in (level gate, enemy town, Active kaiju). Nearest ring first, then the lowest climb. None -> the A10 home
+-- spawn (an Active kaiju: Crossroads). waterProbe.Surface / Ground / Clear are the only engine calls (the offline test
+-- swaps them).
+local water = {} -- [Player] = { Char = Model, Since = os.clock() of the first wet sample | nil, DrySince = number | nil, NextAt }
+local waterProbe = { Params = nil, Overlap = nil, ParamsAt = -math.huge }
+
+local function wrNum(key, default)
+	local v = (Config.WaterRescue or {})[key]
+	return (type(v) == "number" and v == v) and v or default
+end
+
+-- the town zone whose XZ rect grown by Margin holds pos, else nil (a seasonal zone counts only in season, like ZoneAt)
+local function nearTown(pos)
+	local margin = wrNum("Margin", 40)
+	for _, id in Config.ZoneOrder do
+		local z = Config.Zones[id]
+		if z and z.Town == true and (z.Season == nil or Config.SeasonOn(z.Season))
+			and math.abs(pos.X - z.Center.X) <= z.Size.X / 2 + margin
+			and math.abs(pos.Z - z.Center.Z) <= z.Size.Z / 2 + margin then
+			return z
+		end
+	end
+	return nil
+end
+
+-- one value of a 1 x 3 x 1 voxel array ([x][y][z], as ReadVoxelChannels / ReadVoxels return them), or nil
+local function voxel(a, j)
+	return type(a) == "table" and type(a[1]) == "table" and type(a[1][j]) == "table" and a[1][j][1] or nil
+end
+
+-- the Terrain water surface Y in the 4-stud voxel column at pos (the root's voxel, one below, one above), or nil when
+-- none of them holds water: the highest wet voxel's bottom + 4 x its water occupancy (how tools/worldkit/halo_terrain.luau
+-- writes WaterTop). Water = LiquidOccupancy (shorelines), or SolidMaterial Water with its SolidOccupancy (shorelines off,
+-- like halo_terrain's readSummary); ReadVoxels is the fallback. An engine error reads as "no water".
+function waterProbe.Surface(pos)
+	local terrain = workspace.Terrain
+	if not terrain then return nil end
+	local r = 4
+	local x0, y0, z0 = math.floor(pos.X / r) * r, math.floor(pos.Y / r) * r - r, math.floor(pos.Z / r) * r
+	local region = Region3.new(Vector3.new(x0, y0, z0), Vector3.new(x0 + r, y0 + 3 * r, z0 + r))
+	local liquid, mats, occs = nil, nil, nil
+	local okC, ch = pcall(function()
+		return terrain:ReadVoxelChannels(region, r, { "SolidMaterial", "SolidOccupancy", "LiquidOccupancy" })
+	end)
+	if okC and type(ch) == "table" and type(ch.LiquidOccupancy) == "table" then
+		liquid, mats, occs = ch.LiquidOccupancy, ch.SolidMaterial, ch.SolidOccupancy
+	else
+		local okV, m, o = pcall(function()
+			return terrain:ReadVoxels(region, r)
+		end)
+		if not okV or type(m) ~= "table" or type(o) ~= "table" then return nil end
+		mats, occs = m, o
+	end
+	local top = nil
+	for j = 1, 3 do
+		local occ = tonumber(voxel(liquid, j)) or 0
+		if voxel(mats, j) == Enum.Material.Water then occ = math.max(occ, tonumber(voxel(occs, j)) or 0) end
+		if occ > 0.02 then top = y0 + (j - 1) * r + r * math.min(occ, 1) end
+	end
+	return top
+end
+
+-- the ray / overlap params (Terrain + workspace.Map; water NOT ignored; non-colliding parts ignored), rebuilt every 5 s so
+-- a MapBuilder.Rebuild() (a new workspace.Map) is picked up, like MonsterService's ground params
+local function waterParams()
+	local now = os.clock()
+	if waterProbe.Params and now - waterProbe.ParamsAt < 5 then return waterProbe.Params, waterProbe.Overlap end
+	local map = workspace:FindFirstChild("Map")
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = map and { workspace.Terrain, map } or { workspace.Terrain }
+	params.IgnoreWater = false
+	pcall(function() params.RespectCanCollide = true end)
+	local overlap = OverlapParams.new()
+	overlap.FilterType = Enum.RaycastFilterType.Include
+	overlap.FilterDescendantsInstances = map and { map } or {}
+	pcall(function() overlap.RespectCanCollide = true end)
+	-- query as a PLAYER: A23-81 decor (balustrades, lanterns, statues, tree posts) is in Config.Player.DecorGroup, which
+	-- does not collide with Default, so a Default-group ray / box would look straight through it
+	local group = (Config.Player or {}).CollisionGroup or "Players"
+	local okG, registered = pcall(function()
+		return game:GetService("PhysicsService"):IsCollisionGroupRegistered(group)
+	end)
+	if okG and registered == true then
+		pcall(function() params.CollisionGroup = group end)
+		pcall(function() overlap.CollisionGroup = group end)
+	end
+	waterProbe.Params, waterProbe.Overlap, waterProbe.ParamsAt = params, overlap, now
+	return params, overlap
+end
+
+-- true when a ray hit is walkable map ground: Terrain, a part under workspace.Map.Ground or under a Map.Decor "Bridge_*"
+-- model (MonsterService's ground set). Roofs, props, walls and travel pads are never landing spots.
+local function walkableHit(inst)
+	if typeof(inst) ~= "Instance" then return false end
+	if inst:IsA("Terrain") then return true end
+	local node = inst
+	while node.Parent and node.Parent ~= workspace do
+		local parent = node.Parent
+		if (node.Name == "Ground" and parent.Name == "Map" and parent.Parent == workspace)
+			or (parent.Name == "Decor" and string.sub(node.Name, 1, 7) == "Bridge_") then
+			return true
+		end
+		node = parent
+	end
+	return false
+end
+
+-- the first hit straight down from origin: { Position, NormalY, Material, Walkable } or nil (nothing / an engine error)
+function waterProbe.Ground(origin, length)
+	local params = waterParams()
+	local ok, hit = pcall(function()
+		return workspace:Raycast(origin, Vector3.new(0, -length, 0), params)
+	end)
+	if not ok or not hit then return nil end
+	return { Position = hit.Position, NormalY = hit.Normal.Y, Material = hit.Material, Walkable = walkableHit(hit.Instance) }
+end
+
+-- true when no collidable workspace.Map part's bounding box overlaps the body box (size) centred at center
+function waterProbe.Clear(center, size)
+	local _, overlap = waterParams()
+	local ok, parts = pcall(function()
+		return workspace:GetPartBoundsInBox(CFrame.new(center), size, overlap)
+	end)
+	return ok and type(parts) == "table" and #parts == 0
+end
+
+-- true for a floor the rescue never lands on (Config.WaterRescue.AvoidMaterials, e.g. the Horns lava strips)
+local function avoidFloor(material)
+	for _, name in (Config.WaterRescue or {}).AvoidMaterials or {} do
+		local ok, m = pcall(function() return Enum.Material[name] end)
+		if ok and m == material then return true end
+	end
+	return false
+end
+
+-- a landing spot the zone loop would not bounce the player out of again (level gate, enemy town, Active kaiju in a town)
+local function allowedAt(player, spot)
+	local zone = Config.ZoneAt(spot)
+	return getLevel(player) >= zone.MinLevel and forbiddenTownText(player, zone) == nil
+end
+
+-- the nearest dry ground point around pos for a body whose root stands `stand` studs above its feet, or nil
+local function findDryLand(player, pos, surface, stand, width)
+	local WR = Config.WaterRescue
+	local top = math.max(pos.Y, surface) + wrNum("RayTop", 60)
+	local length = top - surface + 4 -- down past the water surface (a wet spot answers Water)
+	local minY, maxY = surface + wrNum("DryAbove", 0.5), surface + wrNum("MaxRise", 30)
+	local minNormal = math.cos(math.rad(wrNum("MaxSlope", 40)))
+	local n = math.clamp(math.floor(wrNum("RaysPerRing", 12)), 4, 32)
+	local box = Vector3.new(width, stand * 2, width)
+	for _, radius in (type(WR.Rings) == "table" and WR.Rings or { 8, 16, 32, 64 }) do
+		local best, bestRise = nil, math.huge
+		for i = 0, n - 1 do
+			local a = 2 * math.pi * i / n
+			local hit = waterProbe.Ground(Vector3.new(pos.X + radius * math.cos(a), top, pos.Z + radius * math.sin(a)), length)
+			local y = hit and hit.Position.Y
+			if hit and hit.Walkable == true
+				and hit.Material ~= Enum.Material.Water
+				and y >= minY
+				and y <= maxY
+				and hit.NormalY >= minNormal
+				and y - surface < bestRise
+				and not avoidFloor(hit.Material)
+				and allowedAt(player, hit.Position)
+				and waterProbe.Clear(hit.Position + Vector3.new(0, 0.5 + stand, 0), box) then
+				best, bestRise = hit.Position, y - surface
+			end
+		end
+		if best then return best end
+	end
+	return nil
+end
+
+-- out of the water: onto the nearest dry land facing inland (CR-H2 grace first), else the A10 home spawn
+-- nothing dry nearby: the spawn of the town whose area the swimmer is in when the player may stand there, else the
+-- Crossroads (the other side's town, an Active kaiju): never a free trip to a far home town
+local function fallbackZone(player, pos)
+	local town = nearTown(pos)
+	if town and getLevel(player) >= town.MinLevel and forbiddenTownText(player, town) == nil then return town.Id end
+	return DEFAULT_ZONE
+end
+
+local function rescueFromWater(player, root, surface)
+	local character = Util.GetCharacter(player)
+	if not character then return end
+	local hum = Util.GetHumanoid(player)
+	local size = typeof(root.Size) == "Vector3" and root.Size or Vector3.new(2, 2, 1)
+	local stand = (hum and tonumber(hum.HipHeight) or 2) + size.Y / 2
+	if hum and hum.RigType == Enum.HumanoidRigType.R6 then -- R6: HipHeight 0, the legs carry the root (PlayerService standingHeight)
+		local leg = character:FindFirstChild("Left Leg")
+		stand += (leg and leg:IsA("BasePart")) and leg.Size.Y or 2
+	end
+	stand = math.max(stand, 1)
+	local pos = root.Position
+	local spot = findDryLand(player, pos, surface, stand, math.max(size.X * 1.5, 3))
+	if spot then
+		local at = spot + Vector3.new(0, math.max(stand + 0.5, wrNum("Lift", 4)), 0)
+		local away = Vector3.new(spot.X - pos.X, 0, spot.Z - pos.Z)
+		markTeleported(player) -- CR-H2: the move to the shore is not a suspicious move
+		character:PivotTo(away.Magnitude > 0.5 and CFrame.lookAt(at, at + away) or CFrame.new(at))
+		root.AssemblyLinearVelocity = Vector3.zero
+	else
+		teleport(player, fallbackZone(player, pos))
+	end
+	if Config.WaterRescue.Toast ~= false then
+		notify(player, fmt("WaterRescue"), "info", "None") -- happens to me: no sound
+	end
+end
+
+-- the zone-loop part (after the gates): samples the water every CheckEvery s and rescues after Seconds in a row
+local function waterTick(player, root)
+	local WR = Config.WaterRescue
+	if type(WR) ~= "table" or WR.Enabled == false then return end
+	local now, char = os.clock(), player.Character
+	local st = water[player]
+	if not st or st.Char ~= char then
+		st = { Char = char, NextAt = now }
+		water[player] = st
+	end
+	if now < st.NextAt then return end
+	st.NextAt = now + wrNum("CheckEvery", 0.5)
+	local pos = root.Position
+	local surface = nearTown(pos) and waterProbe.Surface(pos) or nil
+	if type(surface) ~= "number" or surface < pos.Y - wrNum("RootSlack", 1) then
+		-- dry here (or away from the towns): a short dry spell keeps the count, a longer one restarts it
+		if st.Since and not st.DrySince then st.DrySince = now end
+		if st.DrySince and now - st.DrySince >= wrNum("DryReset", 1.5) then st.Since, st.DrySince = nil, nil end
+		return
+	end
+	st.DrySince = nil
+	st.Since = st.Since or now
+	if now - st.Since < wrNum("Seconds", 8) then return end
+	st.Since = nil
+	rescueFromWater(player, root, surface)
+end
+
 -- the zone-loop body (also run on CharacterSpawned and right after a teleport)
 local function updateZone(player)
 	if not S.PlayerService.IsReady(player) then return end
@@ -361,6 +612,9 @@ local function updateZone(player)
 	end
 
 	applyZone(player, zone, root.Position)
+	-- zone_check_halo #62: the water rescue in its own pcall (a probe error never stops the zone loop)
+	local okW, errW = pcall(waterTick, player, root)
+	if not okW then warnThrottled("water", "water rescue error: " .. tostring(errW)) end
 end
 
 local function cleanup(player)
@@ -370,6 +624,7 @@ local function cleanup(player)
 	lastGateNotify[player] = nil
 	lastPadTouch[player] = nil
 	channels[player] = nil -- CR-L18
+	water[player] = nil -- water rescue (zone_check_halo #62)
 	move.lastGood[player] = nil -- CR-H2
 	move.graceUntil[player] = nil
 	move.lastLog[player] = nil

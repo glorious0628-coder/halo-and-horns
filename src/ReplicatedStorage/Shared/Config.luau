@@ -80,6 +80,10 @@ Config.Vitals = {
 	PotionMerchantColors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(46, 120, 92), Legs = Color3.fromRGB(70, 55, 45) },
 	PotionMerchantPrompt = "PotionShopPrompt",
 	PotionMerchantPromptRate = 0.5,
+	-- zone_check_halo #34 (검수 2026-10-10): the CollectionService tag of EVERY potion seller Model besides the Crossroads one
+	-- above (TownNpcs tags the Halo stall seller, Config.TownNpcs). ShopService sells at the nearest live seller (same prices,
+	-- prompt and distance). Client contract (게임성 개발 1, pending): MiniMap / [Show me the way] point at the nearest seller.
+	PotionMerchantTag = "PotionMerchant",
 	PotionMerchantOffset = { X = 12, Z = -9 }, -- beside the Crossroads spawn, off the north road/pads
 }
 
@@ -1789,6 +1793,28 @@ Config.AntiCheat = {
 	LogCooldown = 10,
 }
 
+-- zone_check_halo_2026-10-10 #11 / #62 / #63 (검수 2026-10-10): the water rescue (ZoneService waterTick). A live player whose
+-- root stays in Terrain water for Seconds in a row inside a town zone (Zones[*].Town) or within Margin studs of a town rect
+-- is moved to the nearest dry land (rings of downward rays: nearest ring first, then the lowest climb); nothing found ->
+-- the home spawn (an Active kaiju: Crossroads). No invisible edge walls (too many parts).
+Config.WaterRescue = {
+	Enabled = true,
+	Seconds = 8, -- in water this long in a row (counted from the first wet sample)
+	Margin = 40, -- studs around each town rect: the Halo canals + sea strip, the Crossroads river and sea edges
+	CheckEvery = 0.5, -- s between two water samples of one player (one 3-voxel Terrain read; the zone loop runs every 0.2 s)
+	RootSlack = 1, -- in water = the Terrain water surface is at most this far below the root (a swimmer floats at the surface)
+	DryReset = 1.5, -- a dry spell shorter than this (a swim jump at a canal wall) keeps the count
+	Rings = { 6, 10, 16, 24, 34, 46, 60, 80 }, -- search radii (studs), nearest first
+	RaysPerRing = 12,
+	RayTop = 60, -- rays start this far above the root / water (Halo tiers and wings reach Y 33; tall props fail the body box)
+	DryAbove = 0.5, -- a landing spot is at least this far above the water surface by the player ...
+	MaxRise = 42, -- ... and at most this far (Halo top tier / wings Y 33 + the 1.2 to the water + mounds; review 10/10)
+	MaxSlope = 40, -- degrees; players walk up to 46 (PlayerService MAX_SLOPE_ANGLE)
+	Lift = 4, -- the root is put at least this far above the landing spot (like a zone spawn)
+	AvoidMaterials = { "CrackedLava" }, -- Horns Den's painted lava strips are floor, never a landing spot
+	Toast = true, -- Text.WaterRescue after the move (false = silent)
+}
+
 ----------------------------------------------------------------- monsters
 Config.Monsters = {
 	AIInterval = 0.25,
@@ -3170,7 +3196,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 12 },
 			Start = "Sir Gleam needs help in Halo Citadel!",
 			Steps = {
-				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Panel = true, Obj = { Type = "Talk" },
+				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Npc = "Gleam", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Sir Gleam: Day 40: Cat in tree. Again!", "Sir Gleam: Each rescue is a heart. 10,001 hearts!\nClear the slimes so I can reach it." } } },
 				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
 				{ Text = "Back to Sir Gleam", Guide = "HaloTown", Obj = { Type = "Enter", Zone = "HaloTown" } },
@@ -3485,8 +3511,7 @@ Config.StoryQuests.Defs.D0 = {
 			Lines = { All = { "Every day I have 3 small jobs for you. Do all 3 for a daily chest!",
 				"Look in your Quests window. New jobs come every morning." } } },
 	},
-	Reward = { Gold = 1, XP = 1 },
-	Finish = "Daily jobs are open!",
+	Reward = { Gold = 1, XP = 1 }, -- no Finish line: the usual quest-done line, then the Daily tab opens (A23-99: no "daily quests are open" toast)
 }
 table.insert(Config.StoryQuests.Subs, "D0")
 
@@ -3496,29 +3521,37 @@ table.insert(Config.StoryQuests.Subs, "D0")
 --   Story = a quest NPC (tag StoryNpc, NpcId, a "Talk" prompt); Folk = a townsperson who only stands there (tag TownFolk);
 --   Merchant = a potion stall seller (tag PotionMerchant; Enabled = false until ShopService accepts more than the one named
 --   seller: game dev 2); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
--- Halo Citadel spots (halo_layout.py: the spine's tier 2 starts at z -444 (Y 5), the plaza terrace is z -524..-606, the fountain
--- (0,-565), the shop stalls x +-44, z -546 / -584): Bright at the foot of the plaza stairs, Sir Gleam beside the gate road.
+-- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json: the plaza terrace is Y 20 at z -524..-606, the fountain
+-- (0,-565), the four shops x +-44 facing the street: bakery (-44,-546), juice (44,-546), flowers (-44,-584), potions
+-- (44,-584); a shop is 22.8 x 14.3 studs, so its front is at x +-37): Bright at the foot of the plaza stairs, Sir Gleam beside
+-- the gate road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller 3 studs in front of their
+-- shop. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
+-- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
 Config.TownNpcs = {
 	Enabled = true,
 	PromptDistance = 10, -- studs (< Config.StoryQuests.NpcRange 16: a trigger is always near enough for the story's own check)
 	RayTop = 150, -- the ground ray starts this high and goes RayTop + RayDepth down
 	RayDepth = 60,
+	RayTries = 8, -- casts under one spot (a roof, then a floor below it ...)
+	YTol = 4, -- studs: a ground hit this far from an entry's Y is a roof / pedestal, not the ground
+	Retries = 3, -- tries to make a body (the avatar service can fail for a moment)
+	RetryDelay = 5, -- seconds between tries
 	MaxCoord = 3000,
 	List = {
 		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
 		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546),
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546), Y = 20,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584),
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584), Y = 20,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(34, 0, -584), Look = Vector3.new(44, 0, -584),
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-34, 0, -546), Look = Vector3.new(-44, 0, -546), Y = 20,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
-		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565),
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565), Y = 20,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
-		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false,
-			At = Vector3.new(-34, 0, -546), Look = Vector3.new(0, 0, -546) },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false, Y = 20,
+			At = Vector3.new(34, 0, -584), Look = Vector3.new(0, 0, -584) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
@@ -4119,6 +4152,8 @@ Config.Keybinds = {
 		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "Ghost hold", LabelEn = "Ghost hold", Button = "Ghost button", ButtonEn = "Ghost button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP potion", LabelEn = "HP potion", Button = "HP potion button", ButtonEn = "HP potion button" },
 		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP potion", LabelEn = "MP potion", Button = "MP potion button", ButtonEn = "MP potion button" },
+		-- A23-109 quick slots: the keys 1 / 2 above use slots 1 / 2 (QuickSlots.luau), this one slot 3
+		{ Id = "QuickSlot3", Group = "Potion", Key = "Three", Pad = "", Label = "Quick slot 3", LabelEn = "Quick slot 3", Button = "Quick slot 3", ButtonEn = "Quick slot 3" },
 		-- KeySet "Prompt" + NoClear: the default ProximityPrompt UI must be able to draw the key (review of 27246d1)
 		{ Id = "Interact", Group = "Other", Key = "G", Pad = "ButtonX", Label = "Interact", LabelEn = "Interact", Button = "Interact button", ButtonEn = "Interact button",
 			KeySet = "Prompt", NoClear = true },
@@ -5139,7 +5174,7 @@ Config.Audio = {
 		StampPress = { File = "StampPress", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- Fx Attendance (the claim's QuestDone line gives way)
 		Chest7Open = { File = "Chest7Open", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the 7-day box (Attendance Box), BoxAfter s after the stamp
 		WelcomeBack = { File = "WelcomeBack", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the "Welcome back!" card opening (PauseCard "Back")
-		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip"); the KO screen's fun tip (EG05)
+		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip")
 		DiaryPage = { File = "DiaryPage", Volume = 0.45, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.3 }, -- the King Diary opening on a page ([Read])
 		CandyPlop = { File = "CandyPlop", Volume = 0.35, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.12 }, -- my drop with candy (Fx Loot)
 		KingHelpHome = { File = "KingHelpHome", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- Fx FinisherEnd Pick "Help"
@@ -5174,7 +5209,6 @@ Config.Audio = {
 	-- a townsperson who talks)
 	Blips = { Bright = "BlipBright", Gleam = "BlipGleam" },
 	BoxAfter = 0.35, -- s after StampPress: the 7-day box opens
-	KOTipAfter = 0.9, -- s after KO: the fun tip's ding (EG05)
 	WarpInAfter = 0.45, -- s after Warp: WarpIn
 	-- a move of more than Jump studs in one frame that my speed cannot explain (+ Slack studs) = a warp
 	Warp = { Jump = 40, Slack = 10 },
@@ -5238,6 +5272,69 @@ Config.Audio.Ambient = {
 		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
+
+-- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
+-- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's
+-- attribute Attr = "HP,MP," (three entries, "" = empty), c->s Remote(slot 1..3, item key or ""): known keys only, the same
+-- item in another slot swaps. Items[key] = { Name, Icon (Config.UIArt part), Use = "Potion" (VitalsUI's UsePotion), Kind,
+-- Stock / ReadyAt (the owner's attributes), Cooldown (s) }; Order = the bag's quick items rows
+Config.QuickSlots = {
+	Count = 3,
+	-- 검수 10/10 (user: "물약 사서 슬롯에 장착하는 퀘스트"): a new player starts with empty slots (the quest row says what to
+	-- do); an old save gets HP / MP from the server
+	Default = { "", "", "" },
+	Attr = "QuickSlots",
+	Remote = "SetQuickSlot",
+	Order = { "HP", "MP" },
+	Items = {
+		HP = { Name = "HP Potion", Icon = "IconPotionHP", Use = "Potion", Kind = "HP", Stock = "HPPotionCount", ReadyAt = "HPPotionReadyAt",
+			Cooldown = Config.Vitals.PotionCooldown },
+		MP = { Name = "MP Potion", Icon = "IconPotionMP", Use = "Potion", Kind = "MP", Stock = "MPPotionCount", ReadyAt = "MPPotionReadyAt",
+			Cooldown = Config.Vitals.PotionCooldown },
+	},
+}
+
+-- A23-108 (user 2026-10-10 "직업별로 무기 쥐는 법 이런 것도 다 해야 된다"; docs/design/class_grips_a23_108_2026-10-10.md):
+-- each class x faction holds its weapon its own way. Key = Config.ClassGripKey(class, faction) ("Warrior_Halo" ... ,
+-- a class alone without a side). Weapon = what the hand holds (CharacterVisuals proposal, game dev 3 checks); Hold =
+-- the standing pose WeaponPose.luau adds over Roblox's idle / walk while the weapon is out and no attack plays
+-- (degrees in joint space like Fx MOTION.CLIPS: +rx raises an arm forward / leans back, +rz swings an arm to the
+-- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows)
+Config.ClassGrips = {
+	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 22, 0, 8 }, RightElbow = { 38, 0, 0 },
+		RightWrist = { -30, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
+	-- Berserker: the great sword rests on the right shoulder, a low stance
+	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 72, 0, 26 },
+		RightElbow = { 112, 0, 0 }, RightWrist = { -18, 0, 0 }, LeftShoulder = { 12, 0, -8 } } },
+	-- Blacksmith: the hammer on the right shoulder, the left hand on the hip
+	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 62, 0, 20 }, RightElbow = { 104, 0, 0 },
+		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
+	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 12, 0, 10 }, RightElbow = { 22, 0, 0 },
+		LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -20, 0, 0 } } },
+	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
+	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
+		RightShoulder = { 32, 0, 6 }, RightElbow = { 26, 0, 0 }, RightWrist = { -36, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
+	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
+	-- handed), the left hand on the hip
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 42, 0, 10 }, RightElbow = { 82, 0, 0 },
+		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } } },
+	-- Ranger: the long bow upright in the left hand at the side
+	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 20, 0, -10 }, LeftElbow = { 26, 0, 0 },
+		RightShoulder = { 6, 0, 6 } } },
+	-- Shadow Hunter: low and quiet, the short bow hanging down
+	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },
+		LeftShoulder = { 6, 0, -8 }, RightShoulder = { 10, 0, 6 } } },
+	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
+	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
+		RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 }, LeftElbow = { 46, 0, 0 } } },
+}
+function Config.ClassGripKey(classId, faction)
+	if type(classId) ~= "string" then return nil end
+	if faction == "Halo" or faction == "Horns" or faction == "Neutral" then return classId .. "_" .. faction end
+	return classId
+end
 
 Config.Combo = { ResetSeconds = 4, Milestones = { { 10, "Nice! x10" }, { 25, "Great! x25" }, { 50, "Wild! x50" }, { 100, "Legend! x100" } } }
 
@@ -6161,6 +6258,7 @@ Config.Text = {
 	-- addendum A3 (review fixes)
 	AutoUnderAttack = "You're under attack! Hit back with the Attack button", -- M3: auto ON + took PvP damage (once per 60 s)
 	EnemyTown = "You can't enter the other side's town!", -- L1: bounced to Crossroads (also Neutral in either town)
+	WaterRescue = "Splash! Back on dry land.", -- zone_check_halo #62: ZoneService water rescue (Config.WaterRescue.Toast)
 	-- addendum A7-3 (next goal, client)
 	Unlocked = "Unlocked! %s", -- (unlockText)
 	KillsToAfford = "%s: %d more!", -- (monsterName, kills)
@@ -6781,6 +6879,145 @@ Config.MyWay = {
 	Names = { TrueKnight = "True Knight", RebelAngel = "Rebel Angel", ProudRascal = "Proud Rascal",
 		SoftDevil = "Soft-Hearted Devil", BalanceWalker = "Balance Walker" },
 }
+-- A23-64 ② choice afterglow (zone_check_halo #39, 검수 2026-10-10): after a good / evil pick StoryQuestService sends Fx
+-- "Afterglow" { UserId, Side = "Good" | "Evil", Seconds, Private }; game dev 1 draws round gold sparkles (Good) or soft
+-- purple smoke puffs (Evil) at that player's feet for Seconds (a round soft glow only: user 10/07). In a PvP area only
+-- the chooser gets it (Private = true). From = which picks glow: story picks, choice cards, the finisher card.
+Config.Afterglow = {
+	Enabled = true, -- A23-64 ②: the afterglow switch
+	Seconds = 60, -- A23-64 ②: how long it stays at the feet
+	From = { Story = true, Card = true, Finisher = true },
+}
+-- A23-64 ① townsfolk notice you (zone_check_halo #39, 검수 2026-10-10). The town people are Models tagged Tag (TownNpcs:
+-- Config.TownNpcs Folk entries, attribute FolkId); a town person's Town = the Config.Zones id it stands in: its attribute
+-- Town when set, else Config.ZoneAt(its pivot position).Id ("HaloTown" | "HornsTown" | "Crossroads"). Game dev 1's
+-- TownReact shows one line over one of them while the local player is within Range: once every Every s a person, Show s
+-- long, never while a shop or story window is open. Config.TownReactLines picks the lines: the player's faction rank
+-- (Config.GetTitle), lean (My Way: attribute MyWay) and, in the player's own town only (Town == Config.HomeZoneId(faction):
+-- the artisan guild's is the Crossroads), the last town pick (attribute TownPick "<quest id>:Good|Evil",
+-- StoryQuestService), said only to the quest's own factions (StoryQuests.Defs[id].Factions). Lines never change a score.
+-- Easy kid English, 12 words at most, nothing scary.
+Config.TownReact = {
+	Enabled = true,
+	Tag = "TownFolk",
+	Every = 30, -- s between two lines of one town person (A23-64 ①)
+	Range = 30, -- studs: a town person speaks only to a player this close
+	Show = 4, -- s the bubble stays up
+	PickFirst = 600, -- s: a new TownPick is said first (once) for this long; after that it is one of the random lines
+	-- the town picks in the order they open: only these quests' picks are remembered (StoryQuestService saves the last
+	-- one as Story.TownLast); an old save's TownPick = the last of these with a saved pick
+	Order = { "S6", "H1", "R1", "H2", "R5", "H3", "R3", "M3_4", "H5", "R6", "OathH", "OathR", "H6", "R7", "GW8" },
+	-- every line the town people say (a table named Text: tools/test_story_text.py checks it too)
+	Text = {
+		-- by faction rank 1..5 (Config.Titles: Squire .. Archangel / Rascal .. Demon King); Neutral = the artisan guild
+		Rank = {
+			Halo = {
+				{ "Welcome, little Squire!", "A new Halo! Hello there!" },
+				{ "Oh! A real Knight! Shiny!", "Hi, Knight! Thanks for your help." },
+				{ "A Paladin! The kids love you!", "Paladin! Our town feels so safe." },
+				{ "A Saint is here! Everyone, wave!", "A Saint! My grandma will not believe this!" },
+				{ "The Archangel! I can't believe it!", "Archangel! The whole town is cheering!" },
+			},
+			Horns = {
+				{ "A little Rascal! Hide the cookies!", "Hey, Rascal! No pranks today, okay?" },
+				{ "A Raider! I'm watching you…", "Raider! Hands off my snacks!" },
+				{ "A Warlord? Gulp. Hello there!", "Warlord! Please don't take my lunch!" },
+				{ "The Dread Lord! I'll be good, I promise!", "Dread Lord! Have a free muffin!" },
+				{ "The Demon King! Everyone, bow!", "Demon King! Take my snacks. All of them!" },
+			},
+			Neutral = { { "A guild crafter! Can you fix my cart?", "Hi, crafter! Busy day?" } },
+		},
+		-- by lean: Config.MyWay.Names ids (2+ story picks; the player attribute MyWay holds the name)
+		Lean = {
+			TrueKnight = { "You always help. Thank you!", "A true knight! Always so kind." },
+			RebelAngel = { "A Halo with a sneaky grin? Hmm!", "Halos don't do that… do they?" },
+			ProudRascal = { "Trouble again? Classic you!", "Lock the cookie jar! Here comes trouble!" },
+			SoftDevil = { "Huh? A NICE devil? …Suspicious.", "You helped again? You ARE a Horn, right?" },
+			BalanceWalker = { "Kind one day, sneaky the next!", "Which side are you on today?" },
+		},
+		-- the last town pick's line by quest id (one per Order id); said only to the quest's own factions
+		-- (StoryQuests.Defs[id].Factions)
+		Good = {
+			S6 = "The new kids say you helped them. Thank you!",
+			H1 = "You told the truth! It was just birthday jelly!",
+			R1 = "A fireworks show? Thanks for telling us!",
+			H2 = "You brought the lantern back! The plaza glows again!",
+			R5 = "You gave Smokey her sack back? How nice…",
+			H3 = "You helped someone new! Sir Gleam is proud.",
+			R3 = "A surprise party? You are full of surprises!",
+			M3_4 = "Pip's lamp glows in the woods. That was you!",
+			H5 = "No forms, just help! Bright says thanks!",
+			R6 = "A brand-new plan? Smokey can't stop talking about it!",
+			OathH = "You guard the small ones. We feel safe!",
+			OathR = "A Horn who guards little ones? Huh. Nice!",
+			H6 = "A sprout statue! Small heroes count too!",
+			R7 = "Best lava party ever! Thanks for inviting everyone!",
+			GW8 = "Thanks for the town fund! New benches for everyone!",
+		},
+		Evil = {
+			S6 = "The new kids keep calling you boss. Hmm…",
+			H1 = "Did you hear? The Horns are up to something!",
+			R1 = "The Halos have a secret plan! Everyone says so!",
+			H2 = "Is that our town lantern in your window?",
+			R5 = "Finders keepers! Smokey is still looking, you know.",
+			H3 = "The cat is up the tree again. Was that you?",
+			R3 = "Prank 201! Same as 200! Classic!",
+			M3_4 = "Our vault shines! The goblins look a bit sad.",
+			H5 = "Three more forms? Bright is still filling them in!",
+			R6 = "Plan B again? We heard it. LOUDLY.",
+			OathH = "Bow to no one? Bold words for a Halo!",
+			OathR = "Rascals bow to no one! That's the spirit!",
+			H6 = "Our statue got SO big! Is it yours?",
+			R7 = "VIP only? I wasn't invited… sniff.",
+			GW8 = "A bigger vault? It's bigger than my house!",
+		},
+		-- a faction's own pick line where both towns share a quest (S6: the Horns card is about the den's gold)
+		FactionPick = {
+			Horns = {
+				Good = { S6 = "You shared snacks with the den? Yum, thanks!" },
+				Evil = { S6 = "Still counting your gold? Twice?" },
+			},
+			-- the artisan guild's own M3_4 card: A = a real lamp, B = sell the dust back (not the vault)
+			Neutral = {
+				Good = { M3_4 = "A real lamp for the goblins? So kind!" },
+				Evil = { M3_4 = "Sold the dust back? Business is business!" },
+			},
+		},
+	},
+}
+
+-- A23-64 ①: what one town person may say to the local player now (game dev 1's TownReact). p = { Faction, Honor, Infamy,
+-- MyWay (the player attribute), TownPick (the player attribute), Town (the town person's Config.Zones id) }. Returns the
+-- lines to pick from (rank + lean + the town pick; empty = stay quiet) and the town pick's own line (nil = none) so a new
+-- pick can be said first. The town pick is said only in the player's own town (Town == Config.HomeZoneId(Faction)) and
+-- only to its quest's factions (StoryQuests.Defs[id].Factions; no Factions = everyone).
+function Config.TownReactLines(p)
+	local R = Config.TownReact
+	local out = {}
+	if type(R) ~= "table" or R.Enabled ~= true or type(R.Text) ~= "table" or type(p) ~= "table" then return out, nil end
+	local T = R.Text
+	local f = p.Faction
+	if f ~= "Halo" and f ~= "Horns" and f ~= "Neutral" then return out, nil end
+	local _, rank = Config.GetTitle(f, tonumber(p.Honor) or 0, tonumber(p.Infamy) or 0)
+	local byRank = type(T.Rank) == "table" and T.Rank[f] or nil
+	if type(byRank) == "table" and #byRank > 0 then
+		for _, line in byRank[math.clamp(rank, 1, #byRank)] or {} do table.insert(out, line) end
+	end
+	for id, name in type(Config.MyWay) == "table" and Config.MyWay.Names or {} do
+		if name == p.MyWay and type(T.Lean) == "table" then
+			for _, line in T.Lean[id] or {} do table.insert(out, line) end
+		end
+	end
+	local id, side = string.match(type(p.TownPick) == "string" and p.TownPick or "", "^([%w_]+):(%a+)$")
+	if not id or (side ~= "Good" and side ~= "Evil") or p.Town ~= Config.HomeZoneId(f) then return out, nil end
+	local def = type(Config.StoryQuests) == "table" and Config.StoryQuests.Defs[id] or nil
+	if type(def) ~= "table" or (type(def.Factions) == "table" and not def.Factions[f]) then return out, nil end
+	local own = type(T.FactionPick) == "table" and type(T.FactionPick[f]) == "table" and T.FactionPick[f][side] or nil
+	local line = (type(own) == "table" and own[id]) or (type(T[side]) == "table" and T[side][id]) or nil
+	if type(line) ~= "string" then return out, nil end
+	table.insert(out, line)
+	return out, line
+end
 -- #2 the 8 Roblox badges (one badge for the angel and the devil path alike). Ids = the badge ids the user creates on
 -- create.roblox.com at publishing (5 free a day: two days; launch_ops_checklist). 0 = not made yet: never asked, awarded
 -- at a later join once the id is set. Stronger = a weapon above the first tier owned; FirstSkill = the first skill

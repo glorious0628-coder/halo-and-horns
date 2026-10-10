@@ -34,10 +34,14 @@ MUTATIONS = [
     ("NPC", "the '!' always shows", "\t\t\tif bb then bb.Enabled = on end\n", "\t\t\tif bb then bb.Enabled = true end\n"),
     ("NPC", "the Talk prompt never hides", " and d.Enabled ~= on then d.Enabled = on end", " and false then d.Enabled = on end"),
     ("NPC", "every prompt is toggled", "d:IsA(\"ProximityPrompt\") and d:GetAttribute(\"StoryNpcId\") ~= nil", "d:IsA(\"ProximityPrompt\")"),
-    ("NPC", "a new '!' every pass", "\tif bb then return bb end\n", ""),
+    ("NPC", "a new '!' every pass", "\tif bb then\n\t\t-- 검수 10/10 (API review", "\tif false then\n\t\t-- 검수 10/10 (API review"),
+    ("NPC", "the '!' stays on the old head", "if head and bb.Adornee ~= head then bb.Adornee = head end", "local _ = head"),
     ("NPC", "extra '!' copies stay", "if bb then ch:Destroy() else bb = ch end", "if not bb then bb = ch end"),
     ("NPC", "rows without an NPC count", "type(st.Npc) == \"string\" and st.Npc ~= \"\"", "type(st.Npc) == \"string\""),
     ("NPC", "the '!' on the feet", "\tbb.StudsOffsetWorldSpace = Vector3.new(0, T.MarkLift, 0)\n", ""),
+    ("NPC", "a Talk press does not open at once", "\tpcall(panels.ExpectStory, tostring(id))\n", ""),
+    ("NPC", "every prompt expects a page", 'local id = typeof(prompt) == "Instance" and prompt:GetAttribute("StoryNpcId") or nil',
+     'local id = typeof(prompt) == "Instance" and "x" or nil'),
     ("MAIN", "the module is never loaded", "\"QuestMarker\", \"StoryNpcs\",", "\"QuestMarker\","),
 ]
 

@@ -51,7 +51,7 @@
 --
 -- sound_gaps 2026-10-10 (소리 만들기 batch 8 + B / C): Fx Attendance -> StampPress (the claim's QuestDone line gives way:
 -- Replace) + Chest7Open BoxAfter s later for the 7-day box; Fx FinisherEnd Pick Help / Tickle -> KingHelpHome /
--- KingTickleCoins; Fx Loot with candy -> CandyPlop; Fx KO with a fun Tip (EG05) -> TipDing KOTipAfter s later. A window
+-- KingTickleCoins; Fx Loot with candy -> CandyPlop; Fx KO -> KO only (the screen shows no tip). A window
 -- opening (Audio.OpenSound): the quest window "Journal" -> QuestOpen, the King Diary on a page ([Read]) -> DiaryPage, a
 -- story page whose Speaker has a blip (Config.Audio.Blips) -> that blip, PauseCard "Back" -> WelcomeBack, "Tip" ->
 -- TipDing, else WindowOpen (PauseCard now counts as a window). A hidden quest's row first showing (an easter egg found)
@@ -130,11 +130,11 @@ local T = {
 	Blips = type(A.Blips) == "table" and A.Blips or {}, -- story Speaker -> blip event
 	StoryDefs = type(Config.StoryQuests) == "table" and type(Config.StoryQuests.Defs) == "table" and Config.StoryQuests.Defs or {},
 	BoxAfter = tonumber(A.BoxAfter) or 0.35,
-	KOTipAfter = tonumber(A.KOTipAfter) or 0.9,
 	WarpInAfter = tonumber(A.WarpInAfter) or 0.45,
 	Warp = type(A.Warp) == "table" and A.Warp or { Jump = 40, Slack = 10 },
 	ReplaceWithin = tonumber(A.ReplaceWithin) or 0.3,
 	MarkerQuiet = 1.0, -- s after QuestDone / QuestNew: no MarkerMove (the quest's own sound says it)
+	SyncTol = 0.04, -- s: 검수 10/10 - a boss layer this far off its track (both loaded) is put back on the beat
 	Kings = { PumpkinKingActive = "PumpkinKing", GhostKingActive = "GhostKing" },
 	QuietStart = 3, -- s after Start: GameState flags that flip now came with the join
 	FactionCalm = 3, -- s after a faction change: points falling to 0 are not a RankDown
@@ -416,9 +416,7 @@ function Audio.Plan(kind, data, ctx)
 			end
 		end
 	elseif kind == "KO" then -- sound_gaps B1 (BB14: the server sends it to the one knocked out only)
-		add(out, "KO", 0)
-		-- EG05 (dev3 easter eggs): a fun tip on the KO screen dings a moment after the fall
-		if type(data.Tip) == "string" and data.Tip ~= "" then add(out, "TipDing", T.KOTipAfter) end
+		add(out, "KO", 0) -- (검수 10/10, A23-110: the KO screen shows no tip, so no tip ding either)
 	elseif kind == "GooseEnd" then -- B3 { Pos, Winner, Coop } to everyone: heard near the goose only
 		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
 		if d ~= nil and d <= T.GooseEndRange then add(out, "GooseEnd", 0) end
@@ -668,6 +666,29 @@ local function musicSound(name, id)
 	return s
 end
 
+-- 검수 10/10 (A -> B -> A within the fade): a loop of the same id still fading out comes back (taken out of the list and
+-- faded up again) instead of a second copy starting out of step
+local function revive(list, id, name)
+	for i, f in list do
+		if f.SoundId == id and f.Name == name and f.Parent ~= nil then
+			table.remove(list, i)
+			return f
+		end
+	end
+	return nil
+end
+
+-- how far apart two positions of the same loop are (pure; a wrap at len counts the short way round)
+function Audio.LayerDrift(a, b, len)
+	local d = math.abs(num(a, 0) - num(b, 0))
+	len = num(len, 0)
+	if len > 0 then
+		d = d % len
+		d = math.min(d, len - d)
+	end
+	return d
+end
+
 -- the boss layer of a zone while its boss is out (pure: gs = GameState or nil) -> id or nil
 function Audio.BossLayer(zoneId, gs)
 	local M = type(A.Music) == "table" and A.Music or {}
@@ -684,10 +705,10 @@ function Audio.RefreshBossLayer()
 	if MUSIC.Layer then table.insert(MUSIC.Fading, MUSIC.Layer) end
 	MUSIC.Layer = nil
 	if id and S.Folder then
-		local s = musicSound("MusicBoss", id)
+		local s = revive(MUSIC.Fading, id, "MusicBoss") or musicSound("MusicBoss", id)
 		pcall(function()
 			s.TimePosition = MUSIC.Current.TimePosition
-			s:Play()
+			if not s.IsPlaying then s:Play() end
 		end)
 		MUSIC.Layer = s
 	end
@@ -709,9 +730,12 @@ function Audio.SetZoneAir(zoneId)
 	if MUSIC.Air then table.insert(MUSIC.AirFading, MUSIC.Air) end
 	MUSIC.Air = nil
 	if id and S.Folder then
-		local s = musicSound("ZoneAir", id)
-		s.SoundGroup = S.Groups.Sfx
-		pcall(function() s:Play() end)
+		local s = revive(MUSIC.AirFading, id, "ZoneAir")
+		if not s then
+			s = musicSound("ZoneAir", id)
+			s.SoundGroup = S.Groups.Sfx
+			pcall(function() s:Play() end)
+		end
 		MUSIC.Air = s
 	end
 	return true
@@ -731,8 +755,11 @@ function Audio.SetZoneMusic(zoneId)
 	if MUSIC.Current then table.insert(MUSIC.Fading, MUSIC.Current) end
 	MUSIC.Current = nil
 	if id and S.Folder then
-		local s = musicSound("Music", id)
-		pcall(function() s:Play() end)
+		local s = revive(MUSIC.Fading, id, "Music")
+		if not s then
+			s = musicSound("Music", id)
+			pcall(function() s:Play() end)
+		end
 		MUSIC.Current = s
 	end
 	Audio.RefreshBossLayer()
@@ -747,6 +774,13 @@ function Audio.MusicStep(dt)
 	local d = full / math.max(0.05, num(M.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)
 	for _, cur in { MUSIC.Current, MUSIC.Layer } do
 		cur.Volume = cur.Volume < full and math.min(full, cur.Volume + d) or full
+	end
+	-- 검수 10/10: the boss layer on the track's beat - once both are loaded (an id that loads late starts at 0), a drift
+	-- over SyncTol s puts the layer back on the track's TimePosition
+	local cur, lay = MUSIC.Current, MUSIC.Layer
+	if cur and lay and cur.IsLoaded == true and lay.IsLoaded == true
+		and Audio.LayerDrift(cur.TimePosition, lay.TimePosition, cur.TimeLength) > T.SyncTol then
+		lay.TimePosition = cur.TimePosition
 	end
 	local function fadeOut(list, by)
 		for i = #list, 1, -1 do
@@ -860,14 +894,24 @@ local function waterfalls()
 	for _, pos in (type(def) == "table" and type(def.Spots) == "table") and def.Spots or {} do
 		if typeof(pos) == "Vector3" then anchor(pos) end
 	end
-	local map = workspace:FindFirstChild("Map")
-	local decor = map and map:FindFirstChild("Decor")
-	for _, m in decor and decor:GetChildren() or {} do
-		if m:IsA("Model") and string.sub(m.Name, -9) == "Waterfall" then
-			local ok, cf = pcall(function() return (m:GetBoundingBox()) end)
-			if ok and cf then anchor(cf.Position) end
+	-- the Decor waterfall models, also the ones that come later (검수 10/10: the world kits stream in after Start)
+	local done = {}
+	local function fall(m)
+		if done[m] or not (typeof(m) == "Instance" and m:IsA("Model") and string.sub(m.Name, -9) == "Waterfall") then return end
+		local ok, cf = pcall(function() return (m:GetBoundingBox()) end)
+		if ok and cf then
+			done[m] = true
+			anchor(cf.Position)
 		end
 	end
+	local map = workspace:FindFirstChild("Map")
+	if not map and type(workspace.WaitForChild) == "function" then map = workspace:WaitForChild("Map", 60) end
+	local decor = map and (map:FindFirstChild("Decor") or (type(map.WaitForChild) == "function" and map:WaitForChild("Decor", 60)))
+	if not decor then return end
+	for _, m in decor:GetChildren() do fall(m) end
+	decor.ChildAdded:Connect(function(m)
+		task.defer(function() pcall(fall, m) end) -- its parts arrive right after it
+	end)
 end
 
 -- typewriter blips (quality ②): Config.Audio.Talk[speaker] = blip speed (the shard high, the Horns guide low)
@@ -1190,8 +1234,34 @@ end
 
 -- my pets ("PetList", owner only, at join / grant / equip / pet XP): a pet's Lv going up -> PetLevelUp, the follower put
 -- away (Equipped uid -> "") -> PetStow, a pet starting to follow (Equipped -> another uid) -> PetCall; the first list is quiet
+local function petSig(p)
+	if type(p) ~= "table" or type(p.List) ~= "table" then return nil end
+	local parts = { tostring(p.Equipped or "") }
+	for _, e in p.List do
+		if type(e) == "table" then table.insert(parts, tostring(e.Uid) .. ":" .. tostring(e.Lv)) end
+	end
+	table.sort(parts)
+	return table.concat(parts, "|")
+end
+
 function Audio.OnPetList(payload)
 	if type(payload) ~= "table" or type(payload.List) ~= "table" then return end
+	-- 메인 반영 10/10 (no PetCall after joining): the join list reached only PetWindow (a remote fired before a second
+	-- listener connects goes to the first one) - the first list this module sees starts from PetWindow's older one
+	local pw = C and C.PetWindow
+	if S.PetEq == nil and type(pw) == "table" and type(pw.Lists) == "function" then
+		local okL, last, prev = pcall(pw.Lists)
+		local mine = petSig(payload)
+		local older = okL and ((last ~= payload and petSig(last) ~= mine) and last or prev) or nil
+		if type(older) == "table" and older ~= payload and petSig(older) ~= mine then
+			S.PetLv, S.PetEq = {}, ""
+			for _, e in type(older.List) == "table" and older.List or {} do
+				if type(e) == "table" and e.Uid ~= nil then S.PetLv[tostring(e.Uid)] = num(e.Lv, 0) end
+			end
+			local q = older.Equipped
+			S.PetEq = (q == nil or q == "") and "" or tostring(q)
+		end
+	end
 	local lv, up = {}, false
 	for _, p in payload.List do
 		if type(p) == "table" and p.Uid ~= nil then
@@ -1320,8 +1390,19 @@ function Audio.Start()
 	-- preload every uploaded file so the first swing is never silent
 	task.spawn(function()
 		local list = {}
-		for _, id in FILES do
-			if type(id) == "string" and id ~= "" then
+		-- 검수 10/10: the music, the boss layers, the towns' air and the weather loops too (a late load put the boss
+		-- layer off the beat)
+		local ids = {}
+		for _, id in FILES do table.insert(ids, id) end
+		local M, Z, W = A.Music or {}, A.ZoneAmbient or {}, A.Weather or {}
+		for _, id in type(M.Tracks) == "table" and M.Tracks or {} do table.insert(ids, id) end
+		for _, b in type(M.Boss) == "table" and M.Boss or {} do table.insert(ids, type(b) == "table" and b.Id or nil) end
+		for _, id in type(Z.Tracks) == "table" and Z.Tracks or {} do table.insert(ids, id) end
+		for _, l in type(W.Loops) == "table" and W.Loops or {} do table.insert(ids, type(l) == "table" and l.Id or nil) end
+		local seen = {}
+		for _, id in ids do
+			if type(id) == "string" and id ~= "" and not seen[id] then
+				seen[id] = true
 				local s = Instance.new("Sound")
 				s.SoundId = id
 				table.insert(list, s)

@@ -528,7 +528,8 @@ end
 
 ----------------------------------------------------------------- ground height (rings sit on the floor)
 -- addendum A11-R1: ground raycasts include ONLY Terrain, workspace.Map.Ground and the bridge models
--- (workspace.Map.Decor children named "Bridge_*"); zone floor parts are invisible and non-queryable.
+-- (workspace.Map.Decor children named "Bridge_*", and in a Decor "*Props" kit folder the cells' models named "*Bridge*",
+-- e.g. HaloProps.Cell_*.Halo_ArchBridge_*); zone floor parts are invisible and non-queryable.
 local rayParams = RaycastParams.new()
 rayParams.FilterType = Enum.RaycastFilterType.Include
 local rayMap = nil
@@ -542,7 +543,17 @@ local function refreshRayFilter(map)
 		local decor = map:FindFirstChild("Decor")
 		if decor then
 			for _, d in decor:GetChildren() do
-				if string.sub(d.Name, 1, 7) == "Bridge_" then table.insert(list, d) end
+				if string.sub(d.Name, 1, 7) == "Bridge_" then
+					table.insert(list, d)
+				elseif string.sub(d.Name, -5) == "Props" then
+					-- 검수 10/10: the world kits' bridges (Decor.HaloProps.Cell_*.Halo_ArchBridge_*) carry the rings too
+					for _, cell in d:GetChildren() do
+						for _, m in cell:GetChildren() do
+							if string.find(m.Name, "Bridge", 1, true) then table.insert(list, m) end
+						end
+						if string.find(cell.Name, "Bridge", 1, true) then table.insert(list, cell) end
+					end
+				end
 			end
 		end
 	end
@@ -4148,6 +4159,12 @@ handlers.GooseEnd = function(data)
 end
 
 ----------------------------------------------------------------- public API
+-- A23-108 (WeaponPose.luau): true while an attack / hurt clip plays on that character (its weapon pose steps aside)
+function Fx.Animating(char)
+	local st = typeof(char) == "Instance" and Feel.Chars[char] or nil
+	return st ~= nil and Feel.Active[st] == true
+end
+
 function Fx.Init(registry)
 	C = registry
 end
