@@ -561,7 +561,8 @@ end
 
 -- f = the side the player's counts were made for, re-verified against the current faction by finish()
 -- share = A23-14 co-op success multiplier (Config.Goose.CoopWinShare) or nil for the normal won/lost split
-local function rewardPlayer(p, result, f, share)
+-- judged = "Versus" | "Coop" (what the round was judged as: a failed co-op has no share but is still Coop)
+local function rewardPlayer(p, result, f, share, judged)
 	if not isTugFaction(f) then return end -- A6: Neutral (and None) get no tug rewards
 	local won = (result == f)
 
@@ -600,7 +601,7 @@ local function rewardPlayer(p, result, f, share)
 		Net.Notify(p, string.format(Config.Text.GooseCheer, math.floor(cheer)), "info")
 	end
 	GooseService.GooseRewarded:Fire(p, { Won = won, Rare = rare == true, Gold = gold, XP = xp, Level = level,
-		Mode = share ~= nil and "Coop" or "Versus" })
+		Mode = judged == "Coop" and "Coop" or "Versus" })
 end
 
 local function finish()
@@ -650,7 +651,7 @@ local function finish()
 			if isTugFaction(f) and finalSide[p] == f and (judged ~= "Coop" or f == side) then
 				if (finalManual[p] or 0) >= MIN_MANUAL_HITS then
 					rewarded[p] = n
-					local ok, err = pcall(rewardPlayer, p, result, f, share)
+					local ok, err = pcall(rewardPlayer, p, result, f, share, judged)
 					if not ok then warnThrottled("reward", "goose reward failed for " .. p.Name .. ": " .. tostring(err)) end
 				else
 					local msg = txt("NeedManual", nil, MIN_MANUAL_HITS)

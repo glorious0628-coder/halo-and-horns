@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 178,
+  "checks": 179,
   "failedChecks": 0,
-  "namedChecks": 154,
+  "namedChecks": 155,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -46,6 +46,12 @@
     {
       "group": "config",
       "check": "the Shop window is a UiMetric id (it opens a PassShop visit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Pet and Diary windows are UiMetric ids",
       "pass": 1,
       "fail": 0
     },
@@ -936,11 +942,33 @@
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 90,
-    "applied": 90,
-    "caught": 90,
+    "total": 92,
+    "applied": 92,
+    "caught": 92,
     "skipped": false,
     "results": [
+      {
+        "mutation": "the Pet window is not a UiMetric id",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the Pet and Diary windows are UiMetric ids"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the Diary window is not a UiMetric id",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the Pet and Diary windows are UiMetric ids"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "Once funnels logged again on every call",
         "file": "src/ServerScriptService/TelemetryService.luau",
@@ -2077,11 +2105,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6d46d070aec1ac9b2ef1b65d002a3c0fe8b5aebf027c9f4be26fbd1f7f3735bf",
+    "src/ReplicatedStorage/Shared/Config.luau": "70a05e28d6e1e2d2a5d15e98d46a6e6fa6345245f9377966d98b8114516807e6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/TelemetryService.luau": "448e3d04958d632156feb886479aa6393b68159db327c9e404c5f0c6b8158671"
   },
-  "fixtureSHA256": "fe9a1ab982c1b6f8dfdc9946763ac0cc06dbb0705c8a5b96ba2bcf88f0ad776a",
+  "fixtureSHA256": "bd765ea087c0eb3c9bd6e4a786644d35a38c75d4e0f404cb2ada99d420de3839",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

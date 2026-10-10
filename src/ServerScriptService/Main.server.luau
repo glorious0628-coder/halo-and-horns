@@ -78,18 +78,20 @@ end
 --   ops: Errors (the last server errors; value "stored" / "live" reads the saved document)
 --   ops: Health (this server's unsaved hourly sums + alerts; value "stored" / "live" or "live:48" reads the saved hours)
 --   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
---   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1).
+--   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1),
+--   except the read-only ones (Errors, Health, StoryDump, DataDump, LootRoll: they only read or count).
 --   A23-75: Pass ("XP2:on" / "Gold2:off" / "VIP:clear" / "HaloIce:on": this session only, never saved, never on the
 --   shared supporter board), LookGrant ("HaloSprout": an attendance look, saved like a real unlock)
 if game:GetService("RunService"):IsStudio() then
 	local debugFn = Instance.new("BindableFunction")
 	debugFn.Name = "DebugCommand"
+	local READ_ONLY = { Errors = true, Health = true, StoryDump = true, DataDump = true, LootRoll = true } -- these change nothing saved
 	debugFn.OnInvoke = function(playerName, key, value)
 		local player = game:GetService("Players"):FindFirstChild(playerName)
 		if not player or not S.PlayerService.IsReady(player) then return "no such ready player" end
 		local okData, tainted = pcall(function() return S.PlayerService.GetData(player) end)
 		tainted = okData and type(tainted) == "table" and tainted or nil
-		if tainted then tainted.DebugTainted = true end -- BB10: a debugged save never reaches PRE / B1 boards
+		if tainted and not READ_ONLY[key] then tainted.DebugTainted = true end -- BB10: a debugged save never reaches PRE / B1 boards (a read-only command is no debugging)
 		if key == "RankSettle" then
 			return S.RankingService.DebugSettle()
 		elseif key == "RankWrite" then

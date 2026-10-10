@@ -211,19 +211,37 @@ function HealthService.OnSack(_thief, outcome, total)
 end
 
 -- the shop funnel of a pass: PassView / PurchasePrompt (the client's ClientMetric, TelemetryService's signal) and Bought
+-- (a look is one row "Look": the client reports the kind "Look", a purchase carries the look's own id)
+local function passRow(id)
+	if type(Config.Looks) == "table" and type(Config.Looks[id]) == "table" then return "Look" end
+	return cleanKey(id)
+end
+
 function HealthService.OnPass(kind, id)
 	if type(id) ~= "string" or (kind ~= "View" and kind ~= "Prompt" and kind ~= "Bought") then return end
 	local passes = sub(delta(), "Pass")
-	local row = sub(passes, cleanKey(id))
+	local row = sub(passes, passRow(id))
 	row[kind] = (row[kind] or 0) + 1
 end
 
-function HealthService.OnClientMetric(_player, id, arg)
-	if id == "PassView" then
-		HealthService.OnPass("View", arg)
-	elseif id == "PurchasePrompt" then
-		HealthService.OnPass("Prompt", arg)
+-- a client metric counts once an hour per person and funnel step (a client that repeats the call, or reopens the shop all
+-- evening, is one view / one prompt of that hour, not a hundred); purchases are server facts and are never limited
+local METRIC_SEEN = setmetatable({}, { __mode = "k" }) -- [Player] = { [step .. ":" .. row] = os.time() of the counted one }
+local METRIC_GAP = 3600
+
+function HealthService.OnClientMetric(player, id, arg)
+	local kind = id == "PassView" and "View" or id == "PurchasePrompt" and "Prompt" or nil
+	if not kind or type(arg) ~= "string" or typeof(player) ~= "Instance" then return end
+	local seen = METRIC_SEEN[player]
+	if not seen then
+		seen = {}
+		METRIC_SEEN[player] = seen
 	end
+	local key = kind .. ":" .. passRow(arg)
+	local now = os.time()
+	if seen[key] and now - seen[key] < METRIC_GAP then return end
+	seen[key] = now
+	HealthService.OnPass(kind, arg)
 end
 
 ------------------------------------------------------------------ the document

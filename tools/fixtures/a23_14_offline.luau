@@ -1032,6 +1032,9 @@ runGroup("goose-coop-rules", function()
 	check(fin.Result == "Tie" and fin.Info.Mode == "Coop" and fin.Info.Success == false, "gauge not full -> result Tie, co-op failed",
 		show(fin.Info))
 	check(t.Gold[t.H1] == lg and t.Gold[t.H2] == lg and t.XP[t.H1] == lx, "failed co-op pays the tie share (40%)", show({ t.Gold[t.H1], lg }))
+	local tm = {}
+	for _, row in t.Paid do table.insert(tm, row.Info.Mode) end
+	check(#tm == 2 and tm[1] == "Coop" and tm[2] == "Coop", "a failed co-op round still pays with Mode Coop (HealthService counts it as co-op)", show(tm))
 	check(t.H1.Data.CheerStars == 1 and t.H2.Data.CheerStars == 1, "failed co-op gives +1 cheer star each")
 	check(fin.Rewarded[t.H1] == 10 and fin.Rewarded[t.H2] == 8, "both still get goose quest credit (GooseFinished rewarded)", show(fin.Rewarded))
 	check(t:AllText(GT.CoopFail) == 1 and #t.War == 0, "co-op fail line, no war points")
