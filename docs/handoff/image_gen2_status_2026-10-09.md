@@ -78,3 +78,24 @@
 - 지붕 다시 7: `art/out/s2/halo/roofs/`. 왕관 A 앞(와인빛, 고급) `art/out/s2/redo2/CrownA_front_v2_HQ_src.png`, 뿔 깃대(천 없음)·뿔 한 쌍 문장 천·연금술사 병 하나 v4(`redo2/`).
 - 큐: 왕관 A 3면 + 부품 6(금 반구·와인 반구·가운데 아치·꼭대기 구슬·사파이어·가넷).
 - 남음: 반복 소품 13장 깃발·금돔 빼기, 집·가게 뒤·옆(부품 분해), 뿔 성채는 A23-112 대칭 콘셉트 뒤.
+
+## 10/10 밤 추가 8
+- 왕관 A(와인빛) 4면 + 부품 7(금 반구·와인 반구·가운데 아치 v2·꼭대기 구슬·사파이어·가넷): `art/out/s2/crown/A/`, 시트 crown_A_mv_parts_sheet.jpg.
+- 반복 소품 13장 깃발·파란 판·금돔 뺀 판(난간 4·등불 4·플랜터 2·꽃 화분 3): `art/out/s2/halo/variants4/HaloVar4_*`, 시트 halo_variants4_sheet.jpg — 옛 HaloVar_Balustrade/Lantern/Planter_A,D/PotFlowers_A,C,D 대체.
+- 대기: 마스코트 머리카락 선택, 집·가게 뒤·옆, 뿔 성채(대칭 콘셉트 뒤).
+
+## 10/10 밤 추가 9
+- 빛 기사 마스코트 C 고급+누끼: `art/out/s2/fac/hq2/`(approved 키 FacMascotHaloC) → 이미지 개발에 교체 요청.
+- 장인 길드 Coming soon 카드 후보 3(중간): `art/out/s2/fac/artisan/Fac_ArtisanCard_{A,B,C}_src.png`, 시트 `art/review/s2/fac_artisan_card_candidates.jpg` — 검수 선택 대기(망치·모루 문장, 자물쇠, 글자 없음).
+- 뿔 깃대 v4(L자 팔·걸이, 십자가 모양 아님): `art/out/s2/redo2/HornsProp_BannerPole_v4_front_HQ_src.png`.
+- 남음: 뿔 천 뒷면, 집·가게 뒤·옆(부품 분해: 몸통·지붕·문·창 유리·차양 따로).
+
+## 10/10 밤 추가 10
+- 장인 카드 B 고급+누끼: `art/out/s2/fac/artisan/Fac_ArtisanCard_B_HQ_{src,cut}.png`, approved 키 FactionPickSoon → 이미지 개발.
+- 뿔 깃대 v5(갈고리 뺌, 팔 끝 창끝 장식 + 짧은 쇠띠 둘) `redo2/HornsProp_BannerPole_v5_front_HQ_src.png`, 뿔 천 뒷면 `redo2/HornsBannerCloth_back_HQ_src.png`.
+- 남음: 집·가게 뒤·옆(부품 분해).
+
+## 10/10 밤 추가 11
+- 집 12·가게 4 뒤·좌·우 48장(고급): `art/out/s2/halo/houses_mv/<건물>_{back,left,right}.png`, 4면 시트 halo_houses_mv_sheet_1·2.jpg, halo_shops_mv_sheet.jpg. 기준 앞면 = 지붕 v2(01·05·07·11·12, 주스·꽃집) + 차양 색 바꾼 판(02·06·10·12). 뒤 = 창 2개·문 없음, 옆 = 큰 아치창 1개.
+- 뿔 마스코트 새 후보 5(중간, 빛 C 그림체) `art/out/s2/fac/horns2/` — 검수 선택 대기.
+- 부품 분해(몸통·지붕·문·창 유리·차양)는 각 건물 4면 + 지붕 v2 앞면으로 이미지 생성 1이 Tripo 때 나눔(별도 부품 그림 필요하면 요청).

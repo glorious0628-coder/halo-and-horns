@@ -89,6 +89,52 @@ if MODE == "bundle":
             json.dump(rows, f, ensure_ascii=False, indent=1)
         print(f"[bundle] {os.path.basename(out)} {os.path.getsize(out) / 1e6:.1f}MB models {len(g)} meshes {len(rows)}: {', '.join(g)}", flush=True)
 
+elif MODE == "retile":
+    # the split GLB's tiles take the per-tile maps of 이미지 생성 1's recipe: <tile>_pbr_color / _pbr_normal / _pbr_mr (G rough,
+    # B metal) from <tiles dir>; the GLB is written again in place
+    path, tiles = argv[1], argv[2]
+    clear()
+    objs = [o for o in import_glb(path) if o.type == "MESH"]
+
+    def img(p, non_color):
+        im = bpy.data.images.load(p)
+        if non_color:
+            im.colorspace_settings.name = "Non-Color"
+        return im
+
+    done = 0
+    for o in objs:
+        base = o.data.materials[0].name if o.data.materials else o.name
+        cp = os.path.join(tiles, base + "_pbr_color.png")
+        if not os.path.isfile(cp):
+            print(f"[retile] no maps for {base}", flush=True)
+            continue
+        m = bpy.data.materials.new(base)
+        m.use_nodes = True
+        nt = m.node_tree
+        bsdf = nt.nodes["Principled BSDF"]
+        tc = nt.nodes.new("ShaderNodeTexImage")
+        tc.image = img(cp, False)
+        nt.links.new(tc.outputs["Color"], bsdf.inputs["Base Color"])
+        tm = nt.nodes.new("ShaderNodeTexImage")
+        tm.image = img(os.path.join(tiles, base + "_pbr_mr.png"), True)
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(tm.outputs["Color"], sep.inputs["Color"])
+        nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+        nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+        tn = nt.nodes.new("ShaderNodeTexImage")
+        tn.image = img(os.path.join(tiles, base + "_pbr_normal.png"), True)
+        nm = nt.nodes.new("ShaderNodeNormalMap")
+        nt.links.new(tn.outputs["Color"], nm.inputs["Color"])
+        nt.links.new(nm.outputs["Normal"], bsdf.inputs["Normal"])
+        o.data.materials.clear()
+        o.data.materials.append(m)
+        done += 1
+    bpy.ops.object.select_all(action="SELECT")
+    bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=True, export_image_format="AUTO",
+                              export_animations=False, export_skins=False)
+    print(f"[retile] {os.path.basename(path)} tiles {done}/{len(objs)}", flush=True)
+
 elif MODE == "shots":
     zone, work, shots, spec = argv[1], argv[2], argv[3], argv[4]
 

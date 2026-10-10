@@ -1513,13 +1513,25 @@ function Config.HudReveal.Shows(kind, s)
 	return true
 end
 
--- A23-113 ③ (user 2026-10-10 "마감 전 넣자"): the bottom menu tiles show when they are needed - the bag and the map
--- from the start, the hero (stats) after the first level up, the skills at the first skill (Config.Skills.Unlock.Q),
--- the pet once I have a pet, the ranking once the first chapter's main quests are done (FirstChapterLast). A tile that
--- comes in during play pops in once (no pop with reduced motion), never with a text notice. The quick slots always
--- show (not a tile). Pure: s = { Level, SkillSlots, HasPet, ChapterDone }
+-- A23-113 ③ (user 2026-10-10 "마감 전 넣자", 고침 same day "처음부터 다 보이고, 그 자물쇠 해놓자"): every bottom menu
+-- tile shows from the start; one not open yet is LOCKED (UIKit.TileLock: dark + lock + the small word TileWords[id];
+-- a press only wiggles it, no window, no notice). The bag and the map are always open; the hero opens at the first level
+-- up, the skills at the first skill (Config.Skills.Unlock.Q), the pet once I have a pet, the ranking once the first
+-- chapter's main quests are done (FirstChapterLast). The lock pops away when it opens (no pop with reduced motion). The
+-- quick slots always show (not a tile). Pure: s = { Level, SkillSlots, HasPet, ChapterDone }
 Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet", Ranking = "Chapter" }
 Config.HudReveal.FirstChapterLast = "M1_4"
+-- the locked tile's word (short, under the icon; %d = the level)
+Config.HudReveal.TileWords = { Character = "Lv 2", Skills = "Lv %d", Pet = "Get pet", Ranking = "Story 1" }
+function Config.HudReveal.TileWord(id)
+	local w = Config.HudReveal.TileWords[id]
+	if type(w) ~= "string" then return "" end
+	if string.find(w, "%%d") then
+		local q = type(Config.Skills) == "table" and type(Config.Skills.Unlock) == "table" and tonumber(Config.Skills.Unlock.Q) or 5
+		return string.format(w, q)
+	end
+	return w
+end
 function Config.HudReveal.TileShows(id, s)
 	s = type(s) == "table" and s or {}
 	local rule = Config.HudReveal.Tiles[id]
@@ -4023,6 +4035,22 @@ Config.Visuals = {
 -- the thud (Config.Audio.Sounds.KingThud: full within Near, silent from SoundFar) and spreads a round dust ring (Ring x
 -- its body height wide, RingPuffs dust clouds on its edge, no rays). 'Screen shake' off / Roblox Reduced Motion: no
 -- camera drop (the sound and the dust stay). Landings closer than Gap s make one thud.
+-- A23-113 ① (user 2026-10-10 "마감 전 넣자", LandShadow.luau): about a second before a big landing a round soft shadow on
+-- the ground where it lands - outside the circle = not hit; no text, no rays. Server contract (게임성 개발 2): monster model
+-- attributes DropAt (server time the warning starts; a new value = a new circle), DropTime (s to the landing), optional
+-- DropRadius (studs) and DropPos (Vector3; else the ground under the model). Radius = studs by MonsterKind when the server
+-- sends none (Default for any other); MaxTime clamps DropTime; StartAlpha -> EndAlpha = the disc's transparency from the
+-- warning to the landing (darker as it comes); Linger + Fade = s it stays, then fades, after the landing.
+Config.LandShadow = {
+	Radius = { Default = 10, SlimeKing = 10, PumpkinKing = 12, CaptainClatter = 12 },
+	MinRadius = 3, MaxRadius = 40,
+	MaxTime = 3, MaxDistance = 160,
+	StartAlpha = 0.82, EndAlpha = 0.45,
+	Linger = 0.15, Fade = 0.25,
+	Height = 0.08,
+	Color = Color3.fromRGB(46, 24, 34),
+}
+
 Config.BossThud = {
 	Kinds = { SlimeKing = true },
 	HopRate = 0.55, HopRatio = 0.2, HopMax = 2,
@@ -5090,6 +5118,20 @@ Config.Audio = {
 		HitSoft = "rbxassetid://96440842663562",
 		HitHeavy = "rbxassetid://95463530376920",
 		HitCrit = "rbxassetid://78018534821425",
+		-- A23-113 ④ class hits (소리 14차 b09de5e7: Blade a, Magic a, Arrow b)
+		HitBladeSoft = "rbxassetid://79062799855673",
+		HitBladeHeavy = "rbxassetid://82160983185355",
+		HitBladeCrit = "rbxassetid://96794463009444",
+		HitMagicSoft = "rbxassetid://113932787040275",
+		HitMagicHeavy = "rbxassetid://103466521988666",
+		HitMagicCrit = "rbxassetid://123083371421263",
+		HitArrowSoft = "rbxassetid://71567543920934",
+		HitArrowHeavy = "rbxassetid://111127770916206",
+		HitArrowCrit = "rbxassetid://83876322718434",
+		-- 검수 10/10: monster death sounds by kind (소리 15차 86cd4a69, slimes first)
+		DieSlime = "rbxassetid://105660948835844",
+		DieBigSlime = "rbxassetid://135159844685749",
+		DieFlowerSlime = "rbxassetid://108731319971001",
 		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
@@ -5177,7 +5219,21 @@ Config.Audio = {
 		HitHeavy = { File = "HitHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
 		-- §4-2 6: a layer over the material hit when the first target is a critical hit
 		HitCrit = { File = "HitCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
+		-- A23-113 ④: the class's own hits take the places of HitSoft / HitHeavy / HitCrit (Audio, Config.Audio.HitByClass)
+		HitBladeSoft = { File = "HitBladeSoft", Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitBladeHeavy = { File = "HitBladeHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		HitBladeCrit = { File = "HitBladeCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
+		HitMagicSoft = { File = "HitMagicSoft", Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitMagicHeavy = { File = "HitMagicHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		HitMagicCrit = { File = "HitMagicCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
+		HitArrowSoft = { File = "HitArrowSoft", Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitArrowHeavy = { File = "HitArrowHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		HitArrowCrit = { File = "HitArrowCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		-- 검수 10/10: a monster kind's own death sound takes KillPop's place (Config.Audio.DeathByKind; same caps)
+		DieSlime = { File = "DieSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		DieBigSlime = { File = "DieBigSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		DieFlowerSlime = { File = "DieFlowerSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
@@ -5270,6 +5326,12 @@ Config.Audio = {
 	PunchSpeed = 1.3, -- bare hands: a short swish (volume x0.6)
 	NeutralSpeed = { Warrior = 0.85, Mage = 0.9 },
 	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else and players = heavy
+	-- A23-113 ④ (user 2026-10-10): the attacker's class picks its hit family (<family>Soft / Heavy / Crit, once uploaded);
+	-- bare hands, the pet and a class not listed keep the material hits
+	HitByClass = { Warrior = "HitBlade", Mage = "HitMagic", Archer = "HitArrow" },
+	-- 검수 10/10: my kill's sound by the monster kind (the Reward packet's Kind, else the monster at its Pos); a kind not
+	-- listed or not uploaded keeps KillPop (goblin, skeleton, pumpkin, ghost follow in their zone turns)
+	DeathByKind = { Slime = "DieSlime", BigSlime = "DieBigSlime", FlowerSlime = "DieFlowerSlime" },
 	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
@@ -5775,6 +5837,7 @@ Config.UIArt = {
 		-- (eyes at 20 %, feet at 92 %): drawn exactly on ClassPick*'s Portrait region, by the player's chosen gender.
 		FactionPickTitle = { Id = "rbxassetid://109240387368574", Size = Vector2.new(1024, 373), TextRect = { 0.148, 0.41, 0.704, 0.343 } }, -- HQ redraw 4ceaabf: the band sits a little higher
 		FactionPickHalo = { Id = "rbxassetid://78441813872022", Size = Vector2.new(624, 1024) },
+		FactionPickSoon = { Id = "rbxassetid://73776589039158", Size = Vector2.new(619, 1024) }, -- A23-114 locked Artisan Guild card (이미지 생성 2, 검수 pick B)
 		FactionPickHorns = { Id = "rbxassetid://92021424719072", Size = Vector2.new(624, 1024) },
 		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
 		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
@@ -5859,8 +5922,8 @@ Config.UIArt = {
 		-- the faction pick screen (이미지 생성 2 b3ed558, 검수 OK 10/09): the sky behind the cards (gold left, red dusk right,
 		-- the middle / bottom third left calm) and the two mascots beside the cards
 		FactionBgA = { Id = "rbxassetid://128364866807552", Size = Vector2.new(1536, 1024) },
-		FacMascotHaloA = { Id = "rbxassetid://98817628227692", Size = Vector2.new(617, 1024) },
-		FacMascotHornsA = { Id = "rbxassetid://91053337808874", Size = Vector2.new(675, 1024) },
+		FacMascotHaloA = { Id = "rbxassetid://118792983602547", Size = Vector2.new(612, 1024) }, -- C (hair, user pick 10/10; was 98817628227692)
+		FacMascotHornsA = { Id = "rbxassetid://106604703369405", Size = Vector2.new(680, 1024) }, -- D (bat wings, user pick 10/10; was 91053337808874)
 		-- Halo town shop signs (이미지 생성 2, 검수 OK 10/10; wall arm + chains + round plate, no words): the shop models' sign
 		-- SurfaceGui (메인 반영 1 / 이미지 생성 1). The potion sign only at Halo town's real potion merchant
 		HaloSignPotion = { Id = "rbxassetid://122788599616130", Size = Vector2.new(1024, 1024) },
@@ -6037,6 +6100,10 @@ Config.UIArt.MapTiles = {
 Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
 	-- A23-57 redraw: the faction cards' Name ribbon (Title), Panel (Perks) and Button - no Desc / Motto strips; the class
 	-- card frames' Portrait window (the CLS_* picture fills it), Name, Body and Button
+	-- A23-114 locked Artisan card: name on the brass ribbon, "Coming soon" + "Crafting update" on the parchment (the dark oval
+	-- plate was too small for the second line at the 11 px floor, UiSandbox 10/10)
+	FactionPickSoon = { Title = { 0.25, 0.332, 0.5, 0.05 }, Soon = { 0.18, 0.47, 0.64, 0.09 }, Sub = { 0.2, 0.585, 0.6, 0.05 },
+		SubStyle = "ink" },
 	FactionPickHalo = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },
 		Button = { 0.224, 0.859, 0.548, 0.061 } },
 	FactionPickHorns = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },

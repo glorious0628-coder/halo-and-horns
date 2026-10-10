@@ -1,0 +1,299 @@
+{
+ "note": "이미지 개발 2026-10-10 A23-107 maps mode (crossroads): four new 1024 SurfaceAppearance maps per model on the game's own MeshPart (same UV). tools/apply_sa_maps.py writes the Studio Luau.",
+ "items": [
+  {
+   "name": "Kit_X_Lamp",
+   "meshId": "rbxassetid://74540086750787",
+   "match": {
+    "tex": "rbxassetid://99653204264812"
+   },
+   "sa": {
+    "normal": "rbxassetid://126997233447442",
+    "metal": "rbxassetid://105575821632900",
+    "rough": "rbxassetid://90512324192543",
+    "color": "rbxassetid://99653204264812"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "X_PadBase",
+   "meshId": "rbxassetid://76623876473099",
+   "match": {
+    "tex": "rbxassetid://75972090020120"
+   },
+   "sa": {
+    "normal": "rbxassetid://97193476235421",
+    "metal": "rbxassetid://115342359446361",
+    "rough": "rbxassetid://71412891731013",
+    "color": "rbxassetid://75972090020120"
+   },
+   "record": "import40_assets_2026-10-06.json"
+  },
+  {
+   "name": "Kit_X_PotionCart",
+   "meshId": "rbxassetid://72221369981039",
+   "match": {
+    "tex": "rbxassetid://132814538685236"
+   },
+   "sa": {
+    "normal": "rbxassetid://127613233298520",
+    "metal": "rbxassetid://79073367490655",
+    "rough": "rbxassetid://98666877002196",
+    "color": "rbxassetid://132814538685236"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Forge",
+   "meshId": "rbxassetid://84215251380453",
+   "match": {
+    "tex": "rbxassetid://98483885925645"
+   },
+   "sa": {
+    "normal": "rbxassetid://99073996862906",
+    "metal": "rbxassetid://80571332264700",
+    "rough": "rbxassetid://95680252511371",
+    "color": "rbxassetid://98483885925645"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Bench",
+   "meshId": "rbxassetid://112067323172333",
+   "match": {
+    "tex": "rbxassetid://101368982752494"
+   },
+   "sa": {
+    "normal": "rbxassetid://109229877686522",
+    "metal": "rbxassetid://132270358525572",
+    "rough": "rbxassetid://135012965642328",
+    "color": "rbxassetid://101368982752494"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Curb",
+   "meshId": "rbxassetid://86115190561763",
+   "match": {
+    "tex": "rbxassetid://125239963201677"
+   },
+   "sa": {
+    "normal": "rbxassetid://93324211324533",
+    "metal": "rbxassetid://102225092948823",
+    "rough": "rbxassetid://71988102341304",
+    "color": "rbxassetid://125239963201677"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Anvil",
+   "meshId": "rbxassetid://122740703468344",
+   "match": {
+    "tex": "rbxassetid://97131803573058"
+   },
+   "sa": {
+    "normal": "rbxassetid://98534729200462",
+    "metal": "rbxassetid://92348194832317",
+    "rough": "rbxassetid://97603962037835",
+    "color": "rbxassetid://97131803573058"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Brazier",
+   "meshId": "rbxassetid://105101832472696",
+   "match": {
+    "tex": "rbxassetid://74083025215265"
+   },
+   "sa": {
+    "normal": "rbxassetid://98174582368382",
+    "metal": "rbxassetid://104721758416438",
+    "rough": "rbxassetid://99005747904091",
+    "color": "rbxassetid://74083025215265"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Town_Halo_Fountain",
+   "meshId": "rbxassetid://80450386554208",
+   "match": {
+    "color": "rbxassetid://81147547648492"
+   },
+   "sa": {
+    "normal": "rbxassetid://73878777248230",
+    "metal": "rbxassetid://121310592277819",
+    "rough": "rbxassetid://129322207680433",
+    "color": "rbxassetid://81147547648492"
+   },
+   "record": "import_first_assets_2026-10-08.json"
+  },
+  {
+   "name": "X_NoticeBoard",
+   "meshId": "rbxassetid://79816636314086",
+   "match": {
+    "color": "rbxassetid://127690556564237"
+   },
+   "sa": {
+    "normal": "rbxassetid://121894562758493",
+    "metal": "rbxassetid://134456745779953",
+    "rough": "rbxassetid://135005208618579",
+    "color": "rbxassetid://127690556564237"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "X_GooseNest",
+   "meshId": "rbxassetid://93125144948936",
+   "match": {
+    "color": "rbxassetid://131006906260646"
+   },
+   "sa": {
+    "normal": "rbxassetid://111284046748823",
+    "metal": "rbxassetid://120119748319040",
+    "rough": "rbxassetid://110369216681512",
+    "color": "rbxassetid://131006906260646"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "X_MarketArch",
+   "meshId": "rbxassetid://94935342771594",
+   "match": {
+    "color": "rbxassetid://127378039117064"
+   },
+   "sa": {
+    "normal": "rbxassetid://134042844538564",
+    "metal": "rbxassetid://91445624820871",
+    "rough": "rbxassetid://103216505866438",
+    "color": "rbxassetid://127378039117064"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "X_Altar",
+   "meshId": "rbxassetid://114809330257656",
+   "match": {
+    "color": "rbxassetid://125831667355206"
+   },
+   "sa": {
+    "normal": "rbxassetid://77583304221536",
+    "metal": "rbxassetid://112518401623620",
+    "rough": "rbxassetid://76012571669616",
+    "color": "rbxassetid://125831667355206"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_FruitCart",
+   "meshId": "rbxassetid://106238847865025",
+   "match": {
+    "tex": "rbxassetid://81513445116506"
+   },
+   "sa": {
+    "normal": "rbxassetid://136419530633989",
+    "metal": "rbxassetid://105300255858897",
+    "rough": "rbxassetid://104517022493948",
+    "color": "rbxassetid://81513445116506"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Barrel",
+   "meshId": "rbxassetid://135330751212432",
+   "match": {
+    "tex": "rbxassetid://101526241842952"
+   },
+   "sa": {
+    "normal": "rbxassetid://135188915827645",
+    "metal": "rbxassetid://92116055242398",
+    "rough": "rbxassetid://70827675992698",
+    "color": "rbxassetid://101526241842952"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Crate",
+   "meshId": "rbxassetid://85688993407461",
+   "match": {
+    "tex": "rbxassetid://97735926646948"
+   },
+   "sa": {
+    "normal": "rbxassetid://89989434411781",
+    "metal": "rbxassetid://135397651600763",
+    "rough": "rbxassetid://126032688465863",
+    "color": "rbxassetid://97735926646948"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Fence",
+   "meshId": "rbxassetid://94142969546944",
+   "match": {
+    "tex": "rbxassetid://109654423532257"
+   },
+   "sa": {
+    "normal": "rbxassetid://90652448656872",
+    "metal": "rbxassetid://94072701205247",
+    "rough": "rbxassetid://130159236201937",
+    "color": "rbxassetid://109654423532257"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_FlowerPot",
+   "meshId": "rbxassetid://105916681994387",
+   "match": {
+    "tex": "rbxassetid://94152432383901"
+   },
+   "sa": {
+    "normal": "rbxassetid://100503889533261",
+    "metal": "rbxassetid://87489921567476",
+    "rough": "rbxassetid://114212131507789",
+    "color": "rbxassetid://94152432383901"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "Kit_X_Bush",
+   "meshId": "rbxassetid://96362638027695",
+   "match": {
+    "tex": "rbxassetid://109568056695965"
+   },
+   "sa": {
+    "normal": "rbxassetid://122782384240969",
+    "metal": "rbxassetid://75953612649736",
+    "rough": "rbxassetid://93036849636809",
+    "color": "rbxassetid://109568056695965"
+   },
+   "record": "import_second_assets_2026-10-08.json"
+  },
+  {
+   "name": "X_TreeA",
+   "meshId": "rbxassetid://109261586232949",
+   "match": {
+    "tex": "rbxassetid://118159526635991"
+   },
+   "sa": {
+    "normal": "rbxassetid://110103669074844",
+    "metal": "rbxassetid://101889241014416",
+    "rough": "rbxassetid://100700016874872",
+    "color": "rbxassetid://118159526635991"
+   },
+   "record": "import40_assets_2026-10-06.json"
+  },
+  {
+   "name": "X_SpawnPlaza",
+   "meshId": "rbxassetid://127606624492271",
+   "match": {
+    "tex": "rbxassetid://135478238767068"
+   },
+   "sa": {
+    "normal": "rbxassetid://96158904096450",
+    "metal": "rbxassetid://95956545916788",
+    "rough": "rbxassetid://86887560176657",
+    "color": "rbxassetid://135478238767068"
+   },
+   "record": "import40_assets_2026-10-06.json"
+  }
+ ]
+}

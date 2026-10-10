@@ -18,3 +18,4 @@
 | 07_img2.md | 이미지 생성 2 | Sonnet | high |
 | 08_film.md | 촬영 편집 1 | Sonnet | high |
 | 09_sound.md | 소리 만들기 | Sonnet | medium (10/10 오후) |
+| 10_img3.md | 이미지 생성 3 | Opus | high (10/10 저녁 새로: 3D 제작 전담 — Tripo·재질·비교 시트) |

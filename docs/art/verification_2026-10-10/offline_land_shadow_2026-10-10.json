@@ -1,0 +1,87 @@
+{
+  "checks": 24,
+  "failed": 0,
+  "static": [
+    {
+      "check": "ClientMain loads LandShadow",
+      "ok": true
+    },
+    {
+      "check": "watches DropAt on workspace.Monsters",
+      "ok": true
+    },
+    {
+      "check": "no text, no rays (no Beam / Billboard / TextLabel / ParticleEmitter / Decal)",
+      "ok": true
+    },
+    {
+      "check": "a round disc (Cylinder), steps every frame",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "no darkening",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the inner disc never grows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never removed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "draws twice",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "others' personal monsters drawn",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "late warnings drawn",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no MaxDistance",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "DropRadius ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "DropPos ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no clamp",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "collides",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fade",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Big landing ground shadow (게임성 개발 1, SPEC A23-113 ①), offline.\n\nRuns, in the official Luau CLI, the CURRENT LandShadow.luau (Plan / Look / Check / Step) with the CURRENT Config.luau and\nfake Roblox objects: a monster's DropAt + DropTime draws one round disc (a Cylinder Part, Anchored, no collision /\nquery / touch / shadow) of DropRadius (else Config.LandShadow.Radius by MonsterKind, else Default) at DropPos (else the\nground under the root); it darkens from StartAlpha to EndAlpha up to the landing while the inner disc grows to the rim,\nthen fades and is removed; the same DropAt never draws twice, a new DropAt draws again; another player's personal\nmonster, a warning already over and one beyond MaxDistance draw nothing; DropTime is clamped to MaxTime. Static: ClientMain\nloads it; it watches DropAt on workspace.Monsters; no text, no rays (no Beam / Billboard / TextLabel / ParticleEmitter).\nMutations: each must be caught.",
+  "studioCalls": 0
+}

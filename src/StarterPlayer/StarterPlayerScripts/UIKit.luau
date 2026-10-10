@@ -1331,6 +1331,72 @@ function UIKit.ArtImage(name, props)
 	return img
 end
 
+-- A23-113 ③ (user 10/10): all six menu tiles show from the start; one that is not open yet is LOCKED - its icon at
+-- half strength under a dark veil, the lock (GlyphLock, the skill bar's) as a badge on its upper right and a small gold
+-- condition word ("Lv 2") on the name's own line (same size floors as the name). Look only; the HUD decides when
+-- (게임성 개발 1):  local lock = UIKit.TileLock(btn, icon, label)   lock.Set(true, "Lv 2")   lock.Set(false)
+-- No GlyphLock art = a code lock (white body + shackle ring, IMG-R4).
+UIKit.TileLockLook = {
+	Veil = 0.55, -- transparency of the black veil (the tile's own corners)
+	IconFade = 0.3, -- icon ImageTransparency while locked (half seen: what the tile is still reads, 검수 10/10)
+	IconTint = Color3.fromRGB(190, 190, 200),
+	-- lock centre x, y and size (fractions of the tile): a badge on the icon's upper right, so the icon stays readable
+	-- (centred at 44 % it hid the icon, UiSandbox 10/10)
+	Lock = { 0.76, 0.24, 0.36 },
+	Word = Color3.fromRGB(255, 214, 110),
+}
+
+function UIKit.TileLock(btn, icon, label)
+	local look = UIKit.TileLockLook
+	local rim = btn:FindFirstChildOfClass("UICorner")
+	local veil = UIKit.Create("Frame", {
+		Name = "LockVeil", BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = look.Veil, BorderSizePixel = 0,
+		Size = UDim2.fromScale(1, 1), ZIndex = 5, Active = false, Visible = false, Parent = btn,
+	}, { UIKit.Create("UICorner", { CornerRadius = rim and rim.CornerRadius or UDim.new(0, 10) }) })
+	local at = {
+		Name = "LockGlyph", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(look.Lock[1], look.Lock[2]),
+		Size = UDim2.fromScale(look.Lock[3], look.Lock[3]), ZIndex = 6, Visible = false, Active = false, Parent = btn,
+	}
+	local glyph = UIKit.ArtImage("GlyphLock", at)
+	if not glyph then
+		at.BackgroundTransparency = 1
+		glyph = UIKit.Create("Frame", at, {
+			UIKit.Create("Frame", {
+				Name = "Shackle", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.02),
+				Size = UDim2.fromScale(0.56, 0.62), BackgroundTransparency = 1, ZIndex = 6, Active = false,
+			}, {
+				UIKit.Create("UICorner", { CornerRadius = UDim.new(0.5, 0) }),
+				UIKit.Create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+			}),
+			UIKit.Create("Frame", {
+				Name = "Body", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1),
+				Size = UDim2.fromScale(0.86, 0.6), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 7, Active = false,
+			}, { UIKit.Create("UICorner", { CornerRadius = UDim.new(0.18, 0) }) }),
+		})
+	end
+	local was = {
+		Text = label and label.Text, Color = label and label.TextColor3, Z = label and label.ZIndex,
+		Fade = icon and icon.ImageTransparency or 0, Tint = icon and icon.ImageColor3 or Color3.new(1, 1, 1),
+	}
+	local o = { Locked = false, Veil = veil, Glyph = glyph }
+	function o.Set(on, word)
+		on = on == true
+		veil.Visible, glyph.Visible = on, on
+		if icon then
+			icon.ImageTransparency = on and math.max(was.Fade, look.IconFade) or was.Fade
+			icon.ImageColor3 = on and look.IconTint or was.Tint
+		end
+		if label then
+			if on and not o.Locked then was.Text, was.Color = label.Text, label.TextColor3 end
+			label.Text = on and tostring(word or "") or was.Text
+			label.TextColor3 = on and look.Word or was.Color
+			label.ZIndex = on and 7 or was.Z -- over the veil
+		end
+		o.Locked = on
+	end
+	return o
+end
+
 -- "내 캐릭터" icon part (BB13 menu, …): attribute CharacterGender "F" -> IconCharacterF, else IconCharacter.
 -- Falls back to IconCharacter while IconCharacterF has no id; nil when neither can be drawn (the caller falls back).
 function UIKit.CharacterIconKey(player)

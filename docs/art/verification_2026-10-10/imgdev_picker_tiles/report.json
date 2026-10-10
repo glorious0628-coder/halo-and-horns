@@ -1,0 +1,358 @@
+{
+ "pc": {
+  "picker": {
+   "Cards": {
+    "Card_Soon": {
+     "Body": [
+      548.4800415039062,
+      280.1199951171875,
+      181.4399871826172,
+      297.3599853515625
+     ],
+     "Slot": [
+      538.4000244140625,
+      263.5999755859375,
+      201.60000610351562,
+      330.3999938964844
+     ]
+    },
+    "Card_Halo": {
+     "Body": [
+      327.20001220703125,
+      263.5999755859375,
+      201.60000610351562,
+      330.3999938964844
+     ],
+     "Slot": [
+      327.20001220703125,
+      263.5999755859375,
+      201.60000610351562,
+      330.3999938964844
+     ]
+    },
+    "Card_Horns": {
+     "Body": [
+      749.5999755859375,
+      263.5999755859375,
+      201.60000610351562,
+      330.3999938964844
+     ],
+     "Slot": [
+      749.5999755859375,
+      263.5999755859375,
+      201.60000610351562,
+      330.3999938964844
+     ]
+    }
+   },
+   "Hit": "LocalPlayer.PlayerGui.MainGui.FactionPicker.Cards.Card_Soon.Body.Hit",
+   "Open": true,
+   "Texts": [
+    {
+     "Px": 28,
+     "Text": "Artisan Guild",
+     "Name": "FactionName",
+     "Fits": true
+    },
+    {
+     "Px": 26,
+     "Text": "Coming soon",
+     "Name": "Soon",
+     "Fits": true
+    },
+    {
+     "Px": 19,
+     "Text": "Crafting update",
+     "Name": "Sub",
+     "Fits": true
+    }
+   ]
+  },
+  "press": {
+   "shakes": 1,
+   "open": true,
+   "faction": "None"
+  },
+  "lv1": [
+   {
+    "Y": 575,
+    "X": 481,
+    "Name": "TileBag",
+    "Label": [
+     "Bag",
+     true,
+     12
+    ],
+    "W": 60
+   },
+   {
+    "Y": 575,
+    "X": 544,
+    "Name": "TileMap",
+    "Label": [
+     "Map",
+     true,
+     12
+    ],
+    "W": 60
+   },
+   {
+    "Y": -46,
+    "X": 1224,
+    "Name": "TileMenu",
+    "Label": [
+     "Menu",
+     true,
+     12
+    ],
+    "W": 43
+   }
+  ],
+  "lv6pet": [
+   {
+    "Y": 575,
+    "X": 481,
+    "Name": "TileCharacter",
+    "Label": [
+     "Hero",
+     true,
+     12
+    ],
+    "W": 60
+   },
+   {
+    "Y": 575,
+    "X": 544,
+    "Name": "TileBag",
+    "Label": [
+     "Bag",
+     true,
+     12
+    ],
+    "W": 60
+   },
+   {
+    "Y": 575,
+    "X": 606,
+    "Name": "TileSkills",
+    "Label": [
+     "Skills",
+     true,
+     12
+    ],
+    "W": 60
+   },
+   {
+    "Y": 575,
+    "X": 670,
+    "Name": "TileMap",
+    "Label": [
+     "Map",
+     true,
+     12
+    ],
+    "W": 60
+   },
+   {
+    "Y": 575,
+    "X": 733,
+    "Name": "TilePet",
+    "Label": [
+     "Pet",
+     true,
+     12
+    ],
+    "W": 60
+   },
+   {
+    "Y": -46,
+    "X": 1224,
+    "Name": "TileMenu",
+    "Label": [
+     "Menu",
+     true,
+     12
+    ],
+    "W": 43
+   }
+  ]
+ },
+ "small": {
+  "picker": {
+   "Cards": {
+    "Card_Soon": {
+     "Body": [
+      396.32879638671875,
+      27.138763427734375,
+      197.53799438476562,
+      323.8179931640625
+     ],
+     "Slot": [
+      385.35443115234375,
+      9.148880004882812,
+      219.48666381835938,
+      359.7977600097656
+     ]
+    },
+    "Card_Halo": {
+     "Body": [
+      159.8544464111328,
+      9.148880004882812,
+      219.48666381835938,
+      359.7977600097656
+     ],
+     "Slot": [
+      159.8544464111328,
+      9.148880004882812,
+      219.48666381835938,
+      359.7977600097656
+     ]
+    },
+    "Card_Horns": {
+     "Body": [
+      610.8544311523438,
+      9.148880004882812,
+      219.48666381835938,
+      359.7977600097656
+     ],
+     "Slot": [
+      610.8544311523438,
+      9.148880004882812,
+      219.48666381835938,
+      359.7977600097656
+     ]
+    }
+   },
+   "Hit": "LocalPlayer.PlayerGui.MainGui.FactionPicker.Cards.Card_Soon.Body.Hit",
+   "Open": true,
+   "Texts": [
+    {
+     "Px": 30,
+     "Text": "Artisan Guild",
+     "Name": "FactionName",
+     "Fits": true
+    },
+    {
+     "Px": 28,
+     "Text": "Coming soon",
+     "Name": "Soon",
+     "Fits": true
+    },
+    {
+     "Px": 21,
+     "Text": "Crafting update",
+     "Name": "Sub",
+     "Fits": true
+    }
+   ]
+  },
+  "press": {
+   "shakes": 1,
+   "open": true,
+   "faction": "None"
+  },
+  "lv1": [
+   {
+    "Y": 330,
+    "X": 371,
+    "Name": "TileBag",
+    "Label": [
+     "Bag",
+     true,
+     12
+    ],
+    "W": 45
+   },
+   {
+    "Y": 330,
+    "X": 418,
+    "Name": "TileMap",
+    "Label": [
+     "Map",
+     true,
+     12
+    ],
+    "W": 45
+   },
+   {
+    "Y": -47,
+    "X": 934,
+    "Name": "TileMenu",
+    "Label": [
+     "Menu",
+     true,
+     12
+    ],
+    "W": 43
+   }
+  ],
+  "lv6pet": [
+   {
+    "Y": 330,
+    "X": 371,
+    "Name": "TileCharacter",
+    "Label": [
+     "Hero",
+     true,
+     12
+    ],
+    "W": 45
+   },
+   {
+    "Y": 330,
+    "X": 418,
+    "Name": "TileBag",
+    "Label": [
+     "Bag",
+     true,
+     12
+    ],
+    "W": 45
+   },
+   {
+    "Y": 330,
+    "X": 466,
+    "Name": "TileSkills",
+    "Label": [
+     "Skills",
+     true,
+     12
+    ],
+    "W": 45
+   },
+   {
+    "Y": 330,
+    "X": 514,
+    "Name": "TileMap",
+    "Label": [
+     "Map",
+     true,
+     12
+    ],
+    "W": 45
+   },
+   {
+    "Y": 330,
+    "X": 562,
+    "Name": "TilePet",
+    "Label": [
+     "Pet",
+     true,
+     12
+    ],
+    "W": 45
+   },
+   {
+    "Y": -47,
+    "X": 934,
+    "Name": "TileMenu",
+    "Label": [
+     "Menu",
+     true,
+     12
+    ],
+    "W": 43
+   }
+  ]
+ }
+}
