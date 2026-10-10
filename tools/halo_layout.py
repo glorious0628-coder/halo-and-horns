@@ -183,13 +183,13 @@ SOUTH = 180.0  # front toward +Z (the gate / Crossroads side)
 # gate: its front edge stands on z -330 (the bridge end / island edge), centre z -345.8; the invisible Lintel PrimaryPart sits at the front edge (0, 19, -330) so MapBuilder.placeGate does not slide it; the arch opening is ~14 wide at scale 1.2 (Halo_Gate fit h 50.4)
 P.append(dict(kind="Gate", x=0, z=-345.8, y=0.2, yaw=SOUTH, s=1.0, lintel=[0, 19, -330], towers=[[-16.15, 22, -1.7], [16.15, 22, -1.7]], tower_size=[18.2, 44, 17.0]))
 # cathedral on the far terrace, front toward the road
-cat = put("Cathedral", 0, -648, SOUTH, 1.0, flat=1.5)
+cat = put("Cathedral", 0, -655.5, SOUTH, 0.9, flat=1.5)  # 63 x 63: the tier-4 ramp ends at z -621 and the terrace at -692
 # fountain on the plaza terrace
 fnt = put("Fountain", 0, -565, 0, 1.0)
 # stairs models on the three axis ramps (the collision is the terrain ramp; the model is only the look)
 # stairs model rise = 8.2 studs over a 20 deep run at scale 1 (measured on the LOD mesh): stretch it to the ramp (28 wide, 22 long, rise of that tier)
-for zb, yb, rise in ((-444, 0.2, 4.8), (-524, 5.0, 6.0), (-606, 11.0, 8.0)):
-    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=SOUTH, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.1], ramp=True))
+for zb, yb, rise in ((-444, 0.2, 8.8), (-524, 9.0, 11.0), (-606, 20.0, 13.0)):  # ramps are 30 long now (halo_terrain RampLen)
+    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=SOUTH, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.5], ramp=True))
 
 # hero statues (face the road axis): tier 1 pairs, one pair on tier 2
 for z in (-384, -408, -466, -492):
@@ -216,8 +216,8 @@ for name, z, xa, xb in HOUSES:
 
 # ---------------------------------------------------------------- bridges
 # (name, centre x, centre z, axis "x" = span along x, deck Y at the low / high end)
-BR = [("BA", 0, -385, "x", 0.2, 1.2), ("BB", 0, -492, "x", 5, 7), ("BC", 0, -582, "x", 11, 14), ("BD", 0, -662, "x", 19, 22),
-      ("BAB", 130, -442, "z", 1.2, 7), ("BBC", 150, -544, "z", 7, 14), ("BCD", 150, -620, "z", 14, 22)]
+BR = [("BA", 0, -385, "x", 0.2, 3), ("BB", 0, -492, "x", 9, 12), ("BC", 0, -582, "x", 20, 22), ("BD", 0, -662, "x", 33, 33),
+      ("BAB", 130, -442, "z", 3, 12), ("BBC", 150, -544, "z", 12, 22), ("BCD", 150, -620, "z", 22, 33)]
 BRIDGES = []
 
 
