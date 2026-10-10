@@ -59,3 +59,8 @@
 - 직업 무기(A23-108) 앞 10(+연금술사 v2)·뒤·옆 18: `art/out/s2/weapons/Weapon_<진영_직업>_{front,back,edge}_HQ_src.png`, 시트 `weapons_front_sheet.jpg`·`weapons_mv_sheet.jpg`(연금술사는 병+막대 두 점이라 앞면만), 도구 `tools/_weapon_prompts.py`.
 - 부품 앞면 v2 8장은 검수 통과 대기 → 통과하면 뒤·좌·우. 실내는 베타 뒤(중간 24장 보관).
 - Firefly 참조 링크(at.adobe.com)는 몇 시간 뒤 만료: `build/img2_halo_mv/refs3.json`(10/10 04:40 UTC 업로드). 재업로드는 asset_initialize → curl PUT → asset_finalize.
+
+## 10/10 오후 추가 5 (뿔 마을 성채·문 부품)
+- 앞면 17장 + 재작업 3(본관 v2·문짝 L·R v2: 아치 윗면): `art/out/s2/horns/parts/HornsPart_<이름>[_v2]_front_HQ_src.png`, 시트 `art/review/s2/horns_parts_front_sheet.jpg`·`horns_parts_fix_sheet.jpg`, 도구 `tools/_horns_parts_prompts.py`. 깃발·등불·불꽃·후광·용암빛 안 구움. 황소 방패는 밖으로 뿔이 붙은 모양.
+- 남은 큐(검수 통과 후): 입체 부품 4면 — 빛 마을 부품 v2 8개(뒤·좌·우), 뿔 부품 12개(본관·탑 L·R·성벽 A·B·문틀·계단·뿔 L·R·기둥 L·R·상인방), 납작(깃발 2·문짝 2·방패)은 앞·뒤. 왕관 3안 선택 후 4면+부품.
+- 이 세션은 한 사용자 턴에 피어 메시지 10건 한도에 걸림 → 사용자 메시지가 와야 다시 보낼 수 있음. 검수는 이 문서와 최종 보고로 확인.
