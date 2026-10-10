@@ -147,7 +147,7 @@
     },
     {
       "group": "config",
-      "check": "Bright has no expected Y (a ramp); Sir Gleam stands on the training yard: Y 5",
+      "check": "Bright and Sir Gleam have no expected Y (a ramp / the gate road)",
       "pass": 1,
       "fail": 0
     },
@@ -693,7 +693,7 @@
     },
     {
       "group": "failures",
-      "check": "each body takes its own terrace height (0.2 / 7 on the street / 22 on the plaza / 6 on the training yard; Y 9 / 20 / 5 +- 4 accept them)",
+      "check": "each body takes its own terrace height (0.2 / 7 on the street / 22 on the plaza; Y 9 / 20 +- 4 accept them)",
       "pass": 1,
       "fail": 0
     },
@@ -807,12 +807,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 16,
+  "staticChecks": 15,
   "staticFailures": [],
   "mutations": {
-    "total": 108,
-    "applied": 108,
-    "caught": 108,
+    "total": 105,
+    "applied": 105,
+    "caught": 105,
     "skipped": false,
     "results": [
       {
@@ -1050,44 +1050,6 @@
           "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 2
-      },
-      {
-        "mutation": "Config: Sir Gleam back at the gate",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "a second build :: a rebuild changes nothing: no second body, no new pieces",
-          "a second build :: group ran to the end without a Lua error",
-          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
-          "build :: group ran to the end without a Lua error",
-          "failures :: a slope of exactly 0.7 is still ground",
-          "failures :: group ran to the end without a Lua error"
-        ],
-        "newFailingCount": 14
-      },
-      {
-        "mutation": "Config: Sir Gleam without his Y",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: Bright has no expected Y (a ramp); Sir Gleam stands on the training yard: Y 5"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "Config: Sir Gleam on the shop street's Y",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: Bright has no expected Y (a ramp); Sir Gleam stands on the training yard: Y 5"
-        ],
-        "newFailingCount": 1
       },
       {
         "mutation": "Config: H3's first card is not Sir Gleam's",
@@ -2167,10 +2129,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "2bca2715fa549581a24c9385348e4b545c1605b310086187ec964ecc19c37d5c",
+    "src/ReplicatedStorage/Shared/Config.luau": "67dc9d354aa66487fcbdd470a54b042ff205afabc6c8e80fdc8c0a521ea338ae",
     "src/ServerScriptService/TownNpcs.luau": "4ff53bc75659ccd39cd7974b8062daa1714f458feac8605fd1dc7be5471f106d"
   },
-  "fixtureSHA256": "a50ba4a0fc190e9085b407d15d5f12a2f4fb1d11d44cc335fba47fafd0ab5a33",
+  "fixtureSHA256": "077f932752a6c9bbcafa8a21c8ff7f12f84ad38bd8c2e073d5ae4748a141d779",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

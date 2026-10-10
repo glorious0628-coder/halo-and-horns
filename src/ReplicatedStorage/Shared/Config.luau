@@ -3643,8 +3643,8 @@ Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSi
 --   tagged seller); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
 -- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json, A23-112 asymmetric layout: the plaza terrace is Y 20 at z
 -- -524..-606, the fountain (34.55,-566) 16 x 16, the four shops each at its own angle (a shop is 22.8 x 14.3 studs, its front
--- = kit -Z turned by its yaw): Bright at the foot of the first plaza stairs (z -424, on the grass right of them, not on them), Sir Gleam on the knights' training yard (the east island, Y 5, over the bridge BAE; 검수 10/10: the district's reason),
---  the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller about 5 studs in front of their shop's
+-- = kit -Z turned by its yaw): Bright at the foot of the first plaza stairs (z -424, on the grass right of them, not on them), Sir Gleam beside the gate
+-- road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller about 5 studs in front of their shop's
 -- face, Folk4 beside the fountain. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
 -- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
 Config.TownNpcs = {
@@ -3660,7 +3660,7 @@ Config.TownNpcs = {
 	List = {
 		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -424), Look = Vector3.new(18, 0, -380),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
-		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(110, 0, -400), Look = Vector3.new(122, 0, -392), Y = 5,
+		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
 		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(38.42, 0, -499.19), Look = Vector3.new(49.53, 0, -496), Y = 9,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },

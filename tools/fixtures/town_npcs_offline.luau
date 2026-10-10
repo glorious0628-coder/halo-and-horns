@@ -99,7 +99,6 @@ local function townWorld(o)
 	end
 	-- the ground: the Halo terraces (halo_layout_plan: 0.2 at the gate, 9, the plaza 20, the cathedral 33), unless the scenario says otherwise
 	function t.Ground(x, z)
-		if x > 78 and z > -440 and z < -340 then return 5 end -- the knights' training yard, the east island (Y 5)
 		if z > -444 then return 0.2 end
 		if z > -524 then return 9 end
 		if z > -606 then return 20 end
@@ -227,7 +226,7 @@ runGroup("config", function()
 		check(spot[id].Y == 9, id .. " is on the shop street terrace: Y 9", tostring(spot[id].Y))
 	end
 	check(spot.Folk4.Y == 20, "Folk4 is on the fountain plaza: Y 20", tostring(spot.Folk4.Y))
-	check(spot.Bright.Y == nil and spot.Gleam.Y == 5, "Bright has no expected Y (a ramp); Sir Gleam stands on the training yard: Y 5", show({ spot.Bright.Y, spot.Gleam.Y }))
+	check(spot.Bright.Y == nil and spot.Gleam.Y == nil, "Bright and Sir Gleam have no expected Y (a ramp / the gate road)", "")
 	local taken = {}
 	for _, e in T.List do
 		if e.At then
@@ -524,15 +523,15 @@ runGroup("failures", function()
 	s.Ensure()
 	check(#s.NPCs:GetChildren() == 0, "a steep surface under a spot is not ground", tostring(#s.NPCs:GetChildren()))
 	local flat = townWorld()
-	function flat.Ground(x, z) return { Y = (x > 78 and z > -440 and z < -340) and 5 or (z <= -440 and z >= -524) and 9 or 20, NormalY = 0.7 } end
+	function flat.Ground(x, z) return { Y = (z <= -440 and z >= -524) and 9 or 20, NormalY = 0.7 } end
 	flat.Ensure()
 	check(#flat.NPCs:GetChildren() == 7, "a slope of exactly 0.7 is still ground", tostring(#flat.NPCs:GetChildren()))
 	-- the heights follow the ground (a stepped terrace)
 	local st = townWorld()
-	function st.Ground(x, z) if x > 78 and z > -440 and z < -340 then return 6 end if z <= -524 then return 22 end if z <= -444 then return 7 end return 0.2 end -- the street 7, the plaza 22, the yard 6
+	function st.Ground(x, z) if z <= -524 then return 22 end if z <= -444 then return 7 end return 0.2 end -- the street 7, the plaza 22
 	st.Ensure()
-	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 7 + 2.6) and near(st.Npc("Npc_Folk4"):GetPivot().Position.Y, 22 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 6 + 2.6),
-		"each body takes its own terrace height (0.2 / 7 on the street / 22 on the plaza / 6 on the training yard; Y 9 / 20 / 5 +- 4 accept them)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
+	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 7 + 2.6) and near(st.Npc("Npc_Folk4"):GetPivot().Position.Y, 22 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 0.2 + 2.6),
+		"each body takes its own terrace height (0.2 / 7 on the street / 22 on the plaza; Y 9 / 20 +- 4 accept them)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
 	-- the avatar service failing
 	local e = townWorld()
 	e.CreateError = true
@@ -553,7 +552,6 @@ runGroup("failures", function()
 	function mid.Ground(x, z)
 		calls += 1
 		if calls % 2 == 0 then return nil end
-		if x > 78 and z > -440 and z < -340 then return 5 end
 		return z > -524 and 9 or 20
 	end
 	mid.Ensure()
