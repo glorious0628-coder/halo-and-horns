@@ -1,0 +1,101 @@
+{
+  "checks": 26,
+  "failed": 0,
+  "static": [
+    {
+      "check": "ClientMain loads QuickSlots after HUD and VitalsUI",
+      "ok": true
+    },
+    {
+      "check": "VitalsUI leaves its potion keys to the quick slots",
+      "ok": true
+    },
+    {
+      "check": "VitalsUI.Request(kind) = the potion button's request",
+      "ok": true
+    },
+    {
+      "check": "the bag (Items, no scroll chosen) shows the quick items rows",
+      "ok": true
+    },
+    {
+      "check": "Config: QuickSlot3 on key Three (Potion group)",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "no default slots",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "unknown items kept",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty slot still uses (an HP potion)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the HUD presses never hooked",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "keys go to the wrong slot",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a game-taken key still uses",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no swap",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the server never told",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the server's answer ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "cooldown never shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty slot keeps the old icon",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the lit slot cannot be emptied",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "keys used twice (VitalsUI too)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Quick slots 1 / 2 / 3 (게임성 개발 1, SPEC A23-109, user 2026-10-10), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and QuickSlots.luau in tools/fixtures/quick_slots_offline.luau.\nChecks: the saved attribute \"QuickSlots\" (default 1 HP, 2 MP, 3 empty; unknown entries empty), what a slot shows (count,\ncooldown left of Config.Vitals.PotionCooldown, ready), using a slot (VitalsUI.Request; an empty slot nothing), the HUD's\npress hook (HUD.OnQuickSlot), keys 1 / 2 / 3 (Keybinds PotionHP / PotionMP / QuickSlot3), the slot parts filled (icon,\ncount, cooldown from the bottom, key badge; empty = blank), putting an item in a slot (swap; SetQuickSlot when the server\nhas it, else this session) and the bag's quick items rows. Static: VitalsUI leaves its potion keys to the quick slots,\nVitalsUI.Request exists, ClientMain loads QuickSlots after HUD and VitalsUI, Config has QuickSlot3 on key Three.\nMutations: each must be caught.",
+  "studioCalls": 0
+}

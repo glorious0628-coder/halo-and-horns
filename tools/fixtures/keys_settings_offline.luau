@@ -243,7 +243,8 @@ end
 local CONTRACT_ACTIONS = {
 	{ "Attack", "F", "ButtonR2" }, { "SkillQ", "Z", "ButtonL2" }, { "SkillZ", "X", "ButtonL1" }, { "SkillX", "C", "ButtonR3" },
 	{ "Auto", "R", "ButtonR1" },
-	{ "GhostHold", "T", "DPadRight" }, { "PotionHP", "One", "DPadUp" }, { "PotionMP", "Two", "DPadDown" },
+	{ "GhostHold", "T", "DPadRight" }, { "PotionHP", "One", "DPadUp" }, { "PotionMP", "Two", "DPadDown" }, { "QuickSlot3", "Three", "" }, -- A23-109 quick slot 3
+	
 	{ "Interact", "G", "ButtonX" }, { "Upgrade", "U", "" }, { "Bag", "I", "" }, { "Character", "E", "" }, { "Skills", "K", "" },
 	{ "Ranking", "L", "" }, { "Help", "H", "" }, { "Journal", "Q", "" }, { "Map", "M", "DPadLeft" }, { "Menu", "B", "ButtonY" },
 }
@@ -603,7 +604,7 @@ end
 runGroup("config-contract", function()
 	local KB = CONFIG.Keybinds
 	check(type(KB) == "table" and type(KB.Actions) == "table", "Config.Keybinds.Actions exists")
-	check(#KB.Actions == #CONTRACT_ACTIONS, "18 actions (BB1 table + SKL-1 SkillX)", #KB.Actions)
+	check(#KB.Actions == #CONTRACT_ACTIONS, "19 actions (BB1 table + SKL-1 SkillX + A23-109 QuickSlot3)", #KB.Actions)
 	local validGroups = { Combat = true, Potion = true, Window = true, Other = true }
 	for i, want in CONTRACT_ACTIONS do
 		local a = KB.Actions[i] or {}
@@ -614,7 +615,7 @@ runGroup("config-contract", function()
 		check(validGroups[a.Group] == true, "Group is Combat / Potion / Window / Other", id .. " " .. tostring(a.Group))
 		check((a.Group == "Window") == (WINDOWS[id] == true) and (not WINDOWS[id] or a.Window == id),
 			"the six window actions (Group Window, Window = Panels id) and only them", id .. " " .. show({ a.Group, a.Window }))
-		check((id == "PotionHP" or id == "PotionMP") == (a.Group == "Potion"), "potion actions are the Potion group", id)
+		check((id == "PotionHP" or id == "PotionMP" or id == "QuickSlot3") == (a.Group == "Potion"), "potion / quick slot actions are the Potion group", id)
 		check(type(a.Label) == "string" and a.Label ~= "" and type(a.LabelEn) == "string" and a.LabelEn ~= "",
 			"every action has Label + LabelEn", id)
 		check(type(a.Button) == "string" and a.Button ~= "" and type(a.ButtonEn) == "string" and a.ButtonEn ~= "",
@@ -705,7 +706,8 @@ runGroup("keymap-rules", function()
 	-- non-live actions hold no key and take no part
 	local noBag = liveAll(C, { Bag = true })
 	map, col = C.KeyMap({ Bag = "X" }, noBag)
-	check(map.Bag == "" and boundCount(map) == 15 and #col == 0, "a non-live window holds no key even with a saved key", show({ map.Bag, col }))
+	-- 16 bound: + QuickSlot3 (A23-109)
+	check(map.Bag == "" and boundCount(map) == 16 and #col == 0, "a non-live window holds no key even with a saved key", show({ map.Bag, col }))
 	map, col = C.KeyMap({ Map = "I" }, noBag)
 	check(map.Map == "I" and map.Bag == "" and #col == 0, "a non-live window's default key blocks nothing (no collision)", show({ map.Map, col }))
 	map, col = C.KeyMap({ Map = "I" }, live)
@@ -744,7 +746,8 @@ runGroup("keymap-rules", function()
 		"every action saved on one key: the first live action keeps it, Interact keeps G (never all blank)",
 		show(map))
 	map = C.KeyMap({ Attack = "Z" }, live)
-	check(boundCount(map) == 15 and map.SkillQ == "", "one changed key costs at most the one colliding default", boundCount(map))
+	check(boundCount(map) == 16 and map.SkillQ == "", -- 16: + QuickSlot3 (A23-109)
+		 "one changed key costs at most the one colliding default", boundCount(map))
 	-- fuzz against the contract rule
 	local rnd = seededRandom(424242)
 	local pool = { "", "X", "V", "N", "F", "Q", "G", "J", "M", "B", "One", "KeypadOne", "LeftControl", "Escape", "W", "Home",

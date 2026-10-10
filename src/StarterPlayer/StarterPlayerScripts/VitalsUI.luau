@@ -314,6 +314,13 @@ function VitalsUI.Init(registry)
 	C, UIKit = registry, registry.UIKit
 end
 
+-- A23-109: a quick slot's potion (QuickSlots.Use) - the same request as the potion button (the server checks)
+function VitalsUI.Request(kind)
+	if kind ~= "HP" and kind ~= "MP" then return false end
+	requestPotion(kind)
+	return true
+end
+
 function VitalsUI.Start()
 	if ui.Started then return end
 	ui.Started = true
@@ -326,6 +333,9 @@ function VitalsUI.Start()
 	local began = type(keys) == "table" and type(keys.Began) == "table" and keys.Began or UserInputService.InputBegan
 	began:Connect(function(input, processed)
 		if processed or UserInputService:GetFocusedTextBox() or type(keys) ~= "table" or keys.IsCapturing() then return end
+		-- A23-109: with the quick slots running, keys 1 / 2 use slots 1 / 2 (QuickSlots.luau) - not here twice
+		local quick = C.QuickSlots
+		if type(quick) == "table" and type(quick.OwnsKeys) == "function" and quick.OwnsKeys() then return end
 		local action = keys.ActionFor(input)
 		if action == "PotionHP" then requestPotion("HP") end
 		if action == "PotionMP" then requestPotion("MP") end

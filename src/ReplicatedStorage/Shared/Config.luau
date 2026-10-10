@@ -4050,6 +4050,8 @@ Config.Keybinds = {
 		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "Ghost hold", LabelEn = "Ghost hold", Button = "Ghost button", ButtonEn = "Ghost button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP potion", LabelEn = "HP potion", Button = "HP potion button", ButtonEn = "HP potion button" },
 		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP potion", LabelEn = "MP potion", Button = "MP potion button", ButtonEn = "MP potion button" },
+		-- A23-109 quick slots: the keys 1 / 2 above use slots 1 / 2 (QuickSlots.luau), this one slot 3
+		{ Id = "QuickSlot3", Group = "Potion", Key = "Three", Pad = "", Label = "Quick slot 3", LabelEn = "Quick slot 3", Button = "Quick slot 3", ButtonEn = "Quick slot 3" },
 		-- KeySet "Prompt" + NoClear: the default ProximityPrompt UI must be able to draw the key (review of 27246d1)
 		{ Id = "Interact", Group = "Other", Key = "G", Pad = "ButtonX", Label = "Interact", LabelEn = "Interact", Button = "Interact button", ButtonEn = "Interact button",
 			KeySet = "Prompt", NoClear = true },
@@ -5168,6 +5170,25 @@ Config.Audio.Ambient = {
 	Waterfall = { Id = "rbxassetid://85234404217631", Volume = 0.5, MinDistance = 8, MaxDistance = 40,
 		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
+}
+
+-- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
+-- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's
+-- attribute Attr = "HP,MP," (three entries, "" = empty), c->s Remote(slot 1..3, item key or ""): known keys only, the same
+-- item in another slot swaps. Items[key] = { Name, Icon (Config.UIArt part), Use = "Potion" (VitalsUI's UsePotion), Kind,
+-- Stock / ReadyAt (the owner's attributes), Cooldown (s) }; Order = the bag's quick items rows
+Config.QuickSlots = {
+	Count = 3,
+	Default = { "HP", "MP", "" },
+	Attr = "QuickSlots",
+	Remote = "SetQuickSlot",
+	Order = { "HP", "MP" },
+	Items = {
+		HP = { Name = "HP Potion", Icon = "IconPotionHP", Use = "Potion", Kind = "HP", Stock = "HPPotionCount", ReadyAt = "HPPotionReadyAt",
+			Cooldown = Config.Vitals.PotionCooldown },
+		MP = { Name = "MP Potion", Icon = "IconPotionMP", Use = "Potion", Kind = "MP", Stock = "MPPotionCount", ReadyAt = "MPPotionReadyAt",
+			Cooldown = Config.Vitals.PotionCooldown },
+	},
 }
 
 Config.Combo = { ResetSeconds = 4, Milestones = { { 10, "Nice! x10" }, { 25, "Great! x25" }, { 50, "Wild! x50" }, { 100, "Legend! x100" } } }
