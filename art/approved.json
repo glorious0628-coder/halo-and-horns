@@ -8166,52 +8166,52 @@
   "note": "검수 통과 2026-10-10 (이미지 개발 업로드 c6e3dc83)"
  },
  "HaloDeco_BannerPlain": {
-  "status": "pending-review",
+  "status": "approved",
   "date": "2026-10-10",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
   "original": "art/out/s2/halo/deco/HaloDecoHQ_BannerPlain_src.png",
   "file": "art/out/s2/halo/deco/HaloDecoHQ_BannerPlain_cut.png",
-  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기 / 검수 승인 2026-10-10, 이미지 개발 업로드 art/ui/HaloDeco_BannerPlain.png → rbxassetid://126853811322145"
  },
  "HaloDeco_BannerEmblem": {
-  "status": "pending-review",
+  "status": "approved",
   "date": "2026-10-10",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
   "original": "art/out/s2/halo/deco/HaloDecoHQ_BannerEmblem_src.png",
   "file": "art/out/s2/halo/deco/HaloDecoHQ_BannerEmblem_cut.png",
-  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기 / 검수 승인 2026-10-10, 이미지 개발 업로드 art/ui/HaloDeco_BannerEmblem.png → rbxassetid://92952369591884"
  },
  "HaloDeco_ShieldEmblem": {
-  "status": "pending-review",
+  "status": "approved",
   "date": "2026-10-10",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
   "original": "art/out/s2/halo/deco/HaloDecoHQ_ShieldEmblem_src.png",
   "file": "art/out/s2/halo/deco/HaloDecoHQ_ShieldEmblem_cut.png",
-  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기 / 검수 승인 2026-10-10, 이미지 개발 업로드 art/ui/HaloDeco_ShieldEmblem.png → rbxassetid://106986923513948"
  },
  "HaloDeco_RoundWindow": {
-  "status": "pending-review",
+  "status": "approved",
   "date": "2026-10-10",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
   "original": "art/out/s2/halo/deco/HaloDecoHQ_RoundWindow_src.png",
   "file": "art/out/s2/halo/deco/HaloDecoHQ_RoundWindow_cut.png",
-  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기 / 검수 승인 2026-10-10, 이미지 개발 업로드 art/ui/HaloDeco_RoundWindow.png → rbxassetid://117536729915032"
  },
  "HaloDeco_DoorHalo": {
-  "status": "pending-review",
+  "status": "approved",
   "date": "2026-10-10",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
   "original": "art/out/s2/halo/deco/HaloDecoHQ_DoorHalo_src.png",
   "file": "art/out/s2/halo/deco/HaloDecoHQ_DoorHalo_cut.png",
-  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기 / 검수 승인 2026-10-10, 이미지 개발 업로드 art/ui/HaloDeco_DoorHalo.png → rbxassetid://100137589613851"
  },
  "HaloDeco_AwningStripes": {
-  "status": "pending-review",
+  "status": "approved",
   "date": "2026-10-10",
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
   "original": "art/out/s2/halo/deco/HaloDecoHQ_AwningStripes_src.png",
   "file": "art/out/s2/halo/deco/HaloDecoHQ_AwningStripes_cut.png",
-  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기 / 검수 승인 2026-10-10, 이미지 개발 업로드 art/ui/HaloDeco_AwningStripes.png → rbxassetid://80217811387157"
  },
  "Crown_GoldHalf": {
   "status": "pending-review",

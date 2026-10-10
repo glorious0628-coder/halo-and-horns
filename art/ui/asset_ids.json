@@ -618,5 +618,11 @@
   "HaloSignJuice": "rbxassetid://133684891699718",
   "HaloSignFlower": "rbxassetid://93642542767036",
   "Fx_RainStreak": "rbxassetid://77226041980480",
-  "Fx_SnowFlake": "rbxassetid://117774040305599"
+  "Fx_SnowFlake": "rbxassetid://117774040305599",
+  "HaloDeco_BannerPlain": "rbxassetid://126853811322145",
+  "HaloDeco_BannerEmblem": "rbxassetid://92952369591884",
+  "HaloDeco_ShieldEmblem": "rbxassetid://106986923513948",
+  "HaloDeco_RoundWindow": "rbxassetid://117536729915032",
+  "HaloDeco_DoorHalo": "rbxassetid://100137589613851",
+  "HaloDeco_AwningStripes": "rbxassetid://80217811387157"
 }
