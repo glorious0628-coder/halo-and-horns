@@ -91,3 +91,7 @@
   - FitText: 정해진 크기 단계에서 칸에 맞는 가장 큰 크기를 고르고, 줄 높이는 ko 1.22입니다.
   - API: TextLabel처럼 Text·크기·스타일·정렬·줄바꿈 폭을 받아 Frame 하나를 돌려줍니다. 영어 모드는 지금 TextLabel 그대로 두고, 언어 장치(개발 1 L10n)가 ko일 때만 이 모듈을 씁니다.
 - **고정 큰 글(③)과의 관계:** 비트맵 글꼴로 창 제목·버튼까지 같은 모양을 낼 수 있습니다. 그래서 GPT 글자 그림은 로고("선악 키우기")와 큰 배너 몇 개처럼 특별한 장식 글자만으로 줄일 수 있습니다(검수 결정).
+
+### 월드 안 글자 (이미지 생성 1, 10/10)
+- 빛 마을 배치(halo_props)는 월드에 글자를 넣지 않습니다. 가게 간판 4종(HaloSign*)은 글자 없는 그림이고, 메달리온은 데칼, 문(Gate_HaloTown)에는 BillboardGui가 없습니다.
+- 월드에 글이 남는 곳은 다른 도구 쪽입니다: MapBuilder 이동 판 `Pad_*` BillboardGui, `Gate_*` Lintel 빌보드, Landmarks의 MarketSign·Altar·GoosePerch·ArtisanGuild BillboardGui. 한국어 모드 때 이것들도 언어별로 바꿉니다(클라가 바꿔 끼움, A23-111).
