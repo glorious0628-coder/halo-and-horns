@@ -223,6 +223,8 @@ MUTATIONS = [
     ("npc talk: a player without a class", ST, "if not S.PlayerService.IsReady(player) or player:GetAttribute(\"ClassChosen\") ~= true then return nil end", "if not S.PlayerService.IsReady(player) then return nil end"),
     ("npc talk: a non-string id", ST, "if typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") or type(npcId) ~= \"string\" then return nil end", "if typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") then return nil end"),
     ("npc talk: the prompt is never heard", ST, "\t\tprompts.PromptTriggered:Connect(function(prompt, player)", "\t\tprompts.Unused:Connect(function(prompt, player)"),
+    ("npc talk: H3 is not Sir Gleam's", C, "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Npc = \"Gleam\", Panel = true,", "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Panel = true,"),
+    ("npc talk: H3's choice card names Gleam", C, "{ Text = \"Talk with Sir Gleam\", Guide = \"HaloTown\", Panel = true,", "{ Text = \"Talk with Sir Gleam\", Guide = \"HaloTown\", Npc = \"Gleam\", Panel = true,"),
     ("npc talk: any prompt", ST, "if type(npcId) ~= \"string\" or typeof(player) ~= \"Instance\" then return end", "if typeof(player) ~= \"Instance\" then return end\n\t\t\tnpcId = npcId or \"Bright\""),
     ("npc talk: no rate limit", ST, "\t\t\tif not Util.RateLimit(player, \"StoryNpcTalk\", (Config.RateLimits and Config.RateLimits.StoryAction) or 0.4) then return end\n", ""),
     ("egg: the scroll titles are swapped", C, "TitleBy = { Good = \"ActuallyReadIt\", Evil = \"DidntReadIt\" } }", "TitleBy = { Good = \"DidntReadIt\", Evil = \"ActuallyReadIt\" } }"),

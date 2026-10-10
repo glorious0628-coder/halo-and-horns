@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 391,
-  "namedChecks": 308,
+  "checks": 415,
+  "namedChecks": 330,
   "failing": [],
   "mutations": {
-    "total": 142,
-    "caught": 142,
+    "total": 153,
+    "caught": 153,
     "results": [
       {
         "mutation": "attendance: no stamp",
@@ -105,8 +105,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: Bright's story page opens with her blip"
         ]
       },
@@ -171,9 +169,108 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
-          "sound_gaps 10/10 :: the follower put away = Equip"
+          "sound_gaps 10/10 :: the follower put away = PetStow"
+        ]
+      },
+      {
+        "mutation": "pets: no call",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)"
+        ]
+      },
+      {
+        "mutation": "pets: the same follower again calls",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: my pet's level up = PetLevelUp",
+          "sound_gaps 10/10 :: pet XP alone is quiet",
+          "sound_gaps 10/10 :: the same follower again is quiet"
+        ]
+      },
+      {
+        "mutation": "lantern: never",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet",
+          "sound_gaps 10/10 :: dusk: the lamps come on = LanternOn",
+          "sound_gaps 10/10 :: night after dusk is quiet"
+        ]
+      },
+      {
+        "mutation": "lantern: at the join",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet"
+        ]
+      },
+      {
+        "mutation": "weather: rain under a roof is the open rain",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "newFailingChecks": []
+      },
+      {
+        "mutation": "weather: on with the effects off",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: WeatherLoops: weather effects off = no rain / wind (a snowy night keeps its crickets)"
+        ]
+      },
+      {
+        "mutation": "weather: crickets in the rain",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: WeatherLoops: a rainy night = the rain only"
+        ]
+      },
+      {
+        "mutation": "weather: no snow wind",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: WeatherLoops: snow = WinterWind"
+        ]
+      },
+      {
+        "mutation": "weather: a loop never goes",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: rain coming back starts a new live loop"
+        ]
+      },
+      {
+        "mutation": "weather: not under the Sound effects setting",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: the weather air follows the Sound effects setting"
+        ]
+      },
+      {
+        "mutation": "weather: no fade (a jump)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: rain starts its loop from silence in the Sound effects group, fading in"
         ]
       },
       {
@@ -183,7 +280,7 @@
         "crashed": false,
         "newFailingChecks": [
           "sound_gaps 10/10 :: a list with no follower before or now is quiet",
-          "sound_gaps 10/10 :: a new pet following (and its first Lv) is quiet"
+          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)"
         ]
       },
       {
@@ -432,7 +529,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rewards :: a weapon drop = one Loot at 0.92x"
+          "rewards :: a weapon drop = one Loot at 0.92x",
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
         ]
       },
       {
@@ -677,7 +776,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -687,9 +785,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
       {
@@ -1434,7 +1530,7 @@
     },
     {
       "file": "PetWindow.luau",
-      "check": "[Put away] has no Click (Equip on PetList)",
+      "check": "the pet buttons have no Click (PetCall / PetStow on PetList)",
       "ok": true
     },
     {
@@ -1456,15 +1552,30 @@
       "file": "QuestMarker.luau",
       "check": "QuestMarker.TargetTag",
       "ok": true
+    },
+    {
+      "file": "SettingsUI.luau",
+      "check": "the Settings window has a 'Weather effects' toggle",
+      "ok": true
+    },
+    {
+      "file": "SettingsUI.luau",
+      "check": "its value drives WeatherFx.SetEnabled",
+      "ok": true
+    },
+    {
+      "file": "SettingsUI.luau",
+      "check": "... on every change and the server's value",
+      "ok": true
     }
   ],
   "compileOk": true,
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "14443eb188be9f0b857c7e9fe214e74e57387e1811ef124c1da0006864c9432e",
-    "tools/fixtures/audio_offline.luau": "73270d4757d3d3d707ebc1916ffeb4a7ca5afb76074ca482bf35164df2e15a0a"
+    "src/ReplicatedStorage/Shared/Config.luau": "7869686a3836ea5ecc4d750db23ce8b3df8b3a61c117752250021cb1f176dac6",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "91e405791c69b2e51f03471f0418c219d9d7e1302ae9c890a91b36fd773fdc1f",
+    "tools/fixtures/audio_offline.luau": "0ea02aed610f7706e840f726cbdd45e577bb0e598b8b6fc0d2429a5dfac0a1da"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

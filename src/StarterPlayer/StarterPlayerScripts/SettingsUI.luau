@@ -253,6 +253,11 @@ local function buildMain(kit, frame)
 	local sb = button(kit, hk, W.On, nil, function() settingsSet("Shake", settingsGet("Shake", true) == false) end)
 	table.insert(refresh, function() paintToggle(kit, sb, settingsGet("Shake", true) ~= false) end)
 
+	-- A23-105: rain / snow on or off (WeatherFx; the evening lamps stay - they are light, not an effect)
+	local _, hw = row(kit, frame, ST.WeatherEn or ST.Weather)
+	local wb = button(kit, hw, W.On, nil, function() settingsSet("Weather", settingsGet("Weather", true) == false) end)
+	table.insert(refresh, function() paintToggle(kit, wb, settingsGet("Weather", true) ~= false) end)
+
 	-- A23-65: Camera Follow (turns behind me while I walk) / Free; one button switches
 	local _, hc = row(kit, frame, ST.CamEn or ST.Cam)
 	local cb = button(kit, hc, "", nil, function()
@@ -504,11 +509,23 @@ function H.BuildHelp(parent, kit)
 	return nil
 end
 
+-- EG06 Goblin Notes (dev3 easter eggs, 검수 10/10 "News 줄만"): one line under the news, small and in its own colour,
+-- new every KST week (Config.GoblinNote(Config.DayIndex(now))); no marker, no '!'
+function H.GoblinLine(now)
+	local notes, pick, day = Config.GoblinNotes, Config.GoblinNote, Config.DayIndex
+	if type(notes) ~= "table" or type(pick) ~= "function" or type(day) ~= "function" then return nil end
+	local ok, line = pcall(function() return pick(day(now)) end)
+	if not ok or type(line) ~= "string" or line == "" then return nil end
+	return (type(notes.Title) == "string" and notes.Title ~= "" and (notes.Title .. ": ") or "") .. line
+end
+
 function H.BuildNews(parent, kit)
 	local help = Config.Help
 	for _, block in help.News do
 		H.Topic(kit, parent, block.Title, block.Lines)
 	end
+	local goblin = H.GoblinLine(os.time())
+	if goblin then kit.Text(parent, goblin, { Name = "GoblinNote", Size = L.NoteSize, Color = kit.Theme.Gold or kit.Theme.SubText }) end
 	return nil
 end
 
@@ -541,7 +558,23 @@ function SettingsUI.Init(registry)
 	end
 end
 
+-- A23-105: the saved 'Weather effects' value drives WeatherFx (now, and on every change / the server's first value)
+function SettingsUI.ApplyWeather()
+	local st, wx = C and C.Settings, C and C.WeatherFx
+	if type(st) ~= "table" or type(st.Get) ~= "function" or type(wx) ~= "table" or type(wx.SetEnabled) ~= "function" then
+		return false
+	end
+	local ok, v = pcall(st.Get, "Weather")
+	pcall(wx.SetEnabled, not (ok and v == false))
+	return true
+end
+
 function SettingsUI.Start()
+	SettingsUI.ApplyWeather()
+	local st = C and C.Settings
+	if type(st) == "table" and type(st.Changed) == "table" and type(st.Changed.Connect) == "function" then
+		st.Changed:Connect(function() SettingsUI.ApplyWeather() end)
+	end
 	print("[SettingsUI] started")
 end
 

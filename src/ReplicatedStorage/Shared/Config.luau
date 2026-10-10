@@ -193,7 +193,7 @@ Config.Data = {
 		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
 		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
 		Settings = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Follow", PvPCards = false },
+			Cam = "Follow", PvPCards = false, Weather = true },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -3094,7 +3094,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 12 },
 			Start = "Sir Gleam needs help in Halo Citadel!",
 			Steps = {
-				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Panel = true, Obj = { Type = "Talk" },
+				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Npc = "Gleam", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Sir Gleam: Day 40: Cat in tree. Again!", "Sir Gleam: Each rescue is a heart. 10,001 hearts!\nClear the slimes so I can reach it." } } },
 				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
 				{ Text = "Back to Sir Gleam", Guide = "HaloTown", Obj = { Type = "Enter", Zone = "HaloTown" } },
@@ -3420,29 +3420,37 @@ table.insert(Config.StoryQuests.Subs, "D0")
 --   Story = a quest NPC (tag StoryNpc, NpcId, a "Talk" prompt); Folk = a townsperson who only stands there (tag TownFolk);
 --   Merchant = a potion stall seller (tag PotionMerchant; Enabled = false until ShopService accepts more than the one named
 --   seller: game dev 2); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
--- Halo Citadel spots (halo_layout.py: the spine's tier 2 starts at z -444 (Y 5), the plaza terrace is z -524..-606, the fountain
--- (0,-565), the shop stalls x +-44, z -546 / -584): Bright at the foot of the plaza stairs, Sir Gleam beside the gate road.
+-- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json: the plaza terrace is Y 20 at z -524..-606, the fountain
+-- (0,-565), the four shops x +-44 facing the street: bakery (-44,-546), juice (44,-546), flowers (-44,-584), potions
+-- (44,-584); a shop is 22.8 x 14.3 studs, so its front is at x +-37): Bright at the foot of the plaza stairs, Sir Gleam beside
+-- the gate road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller 3 studs in front of their
+-- shop. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
+-- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
 Config.TownNpcs = {
 	Enabled = true,
 	PromptDistance = 10, -- studs (< Config.StoryQuests.NpcRange 16: a trigger is always near enough for the story's own check)
 	RayTop = 150, -- the ground ray starts this high and goes RayTop + RayDepth down
 	RayDepth = 60,
+	RayTries = 8, -- casts under one spot (a roof, then a floor below it ...)
+	YTol = 4, -- studs: a ground hit this far from an entry's Y is a roof / pedestal, not the ground
+	Retries = 3, -- tries to make a body (the avatar service can fail for a moment)
+	RetryDelay = 5, -- seconds between tries
 	MaxCoord = 3000,
 	List = {
 		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
 		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546),
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546), Y = 20,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584),
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584), Y = 20,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(34, 0, -584), Look = Vector3.new(44, 0, -584),
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-34, 0, -546), Look = Vector3.new(-44, 0, -546), Y = 20,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
-		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565),
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565), Y = 20,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
-		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false,
-			At = Vector3.new(-34, 0, -546), Look = Vector3.new(0, 0, -546) },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false, Y = 20,
+			At = Vector3.new(34, 0, -584), Look = Vector3.new(0, 0, -584) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
@@ -4232,11 +4240,13 @@ Config.Settings = {
 	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
 	-- day of own Free picks is lost), a Free picked from V4 on stays
 	Version = 4,
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the nine values incl. Music, Seq)
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eleven values incl. Music / Weather, Seq = 14)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 		Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100: the background music (Audio "Music" group)
 		Shake = { Type = "Bool" },
+		-- A23-105 (game dev 1): rain / snow and the weather's tint and sound (WeatherFx.SetEnabled; the evening lamps stay)
+		Weather = { Type = "Bool" },
 		DmgNum = { Type = "Enum", Options = { "All", "Off" } },
 		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
 		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
@@ -4246,11 +4256,12 @@ Config.Settings = {
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
 	},
-	Order = { "Sfx", "Music", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
+	Order = { "Sfx", "Music", "Shake", "Weather", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
 		Music = "Music", MusicEn = "Music",
 		Shake = "Screen shake", ShakeEn = "Screen shake",
+		Weather = "Weather effects", WeatherEn = "Weather effects",
 		DmgNum = "Damage numbers", DmgNumEn = "Damage numbers",
 		Tags = "Other players' name tags", TagsEn = "Other players' name tags",
 		KeyBadges = "Key hints", KeyBadgesEn = "Key hints",
@@ -4976,6 +4987,12 @@ Config.Audio = {
 		BlipBright = "rbxassetid://126796215784360",
 		BlipGleam = "rbxassetid://103851146620116",
 		BlipFolk = "rbxassetid://98476528780032",
+		-- 13차 (소리 만들기 2026-10-10, own synthesis tools/sfx_r13.py; DoorOpen is kept for later)
+		LanternOn = "rbxassetid://94311196771631",
+		PetCall = "rbxassetid://139309639843969",
+		PetStow = "rbxassetid://109542349885083",
+		PetLevel = "rbxassetid://128227928372563",
+		DiamondTick = "rbxassetid://89172108649325",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
@@ -5063,8 +5080,11 @@ Config.Audio = {
 		Warp = { File = "Warp", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- I am moved far at once (pad, map travel, [Go]; not a respawn)
 		WarpIn = { File = "WarpIn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- ... and land: WarpInAfter s later
 		SecretFound = { File = "SecretFound", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- a hidden quest's row first shows (an easter egg found; instead of QuestNew)
-		PetLevelUp = { File = "LevelUp", Volume = 0.42, Speed = { 1.2, 1.2 }, Max = 1, Gap = 2 }, -- one of my pets' Lv going up (PetList): a small, higher LevelUp
-		MarkerMove = { File = "Tap", Volume = 0.20, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- the quest marker's goal changing while it is on screen
+		PetLevelUp = { File = "PetLevel", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- one of my pets' Lv going up (PetList; 13차 its own file)
+		PetCall = { File = "PetCall", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- a pet starts following me (PetList Equipped "" / other -> uid)
+		PetStow = { File = "PetStow", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- my follower put away (Equipped uid -> "")
+		MarkerMove = { File = "DiamondTick", Volume = 0.25, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- the quest marker's goal changing while it is on screen (13차 wood tick)
+		LanternOn = { File = "LanternOn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- dusk: the lamps come on (GameState DayPhase -> "Dusk")
 		-- NPC blips (asset_ids 'blips'): the story page of a speaker in Blips opens with that speaker's blip (instead of WindowOpen)
 		BlipBright = { File = "BlipBright", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
 		BlipGleam = { File = "BlipGleam", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
@@ -5129,6 +5149,19 @@ Config.Audio.ZoneAmbient = {
 	Tracks = {
 		HaloTown = "rbxassetid://76688623617177", -- birds + a tiny wind chime
 		HornsTown = "rbxassetid://112972652651947", -- lava bubbling + campfire crackle
+	},
+}
+-- A23-105 weather air (소리 만들기 2026-10-10 'ambience', 25 s loops): from WeatherFx.State() (GameState Weather / DayPhase,
+-- the roof check, the 'Weather effects' setting): Rain (RainRoof instead under a roof) and WinterWind (snow) while the
+-- weather effects are on; Night (crickets) at night unless it rains. 2D, each fading in / out over Fade s, at Volume x
+-- the Sound effects setting
+Config.Audio.Weather = {
+	Fade = 1.5,
+	Loops = {
+		Rain = { Id = "rbxassetid://126445007194331", Volume = 0.35 },
+		RainRoof = { Id = "rbxassetid://76655204420103", Volume = 0.25 },
+		Night = { Id = "rbxassetid://99972569683856", Volume = 0.30 },
+		WinterWind = { Id = "rbxassetid://113002054407080", Volume = 0.35 },
 	},
 }
 Config.Audio.Ambient = {

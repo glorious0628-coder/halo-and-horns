@@ -456,9 +456,9 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "ab88e56b555b0e4fdd4eb38542348a367f8564faf5344eb60fa58c09745e7723",
-    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
+    "src/ReplicatedStorage/Shared/Config.luau": "7869686a3836ea5ecc4d750db23ce8b3df8b3a61c117752250021cb1f176dac6",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "62fa5ad2c1a5425358be61b0b9c9c4f99a7729108a43027f8d7216ee10be8b86"
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "8dddc7e955a942baa171d8b1473e57ddfba905fa46cff828077c4b973c8007f8"
   },
   "fixtureSHA256": "f53d518aff0ec2395a218c71e7c1533c795a5b634132ee270df2f6ca131f1821",
   "studioCalls": 0,
