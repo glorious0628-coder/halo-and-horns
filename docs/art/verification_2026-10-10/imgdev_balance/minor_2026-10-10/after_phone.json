@@ -1,0 +1,29 @@
+{
+ "Box": [
+  132,
+  79,
+  390,
+  174
+ ],
+ "Lines": [
+  {
+   "Bounds": [
+    261,
+    19
+   ],
+   "Abs": [
+    340,
+    19
+   ],
+   "Text": "You were away 1 day. That's okay!",
+   "Fits": true,
+   "Pos": [
+    157,
+    106
+   ]
+  }
+ ],
+ "Inset": 58,
+ "UIScale": 0.75,
+ "PadChangesWhileOpening": 0
+}
