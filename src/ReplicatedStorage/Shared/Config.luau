@@ -5764,6 +5764,7 @@ Config.UIArt = {
 		-- (eyes at 20 %, feet at 92 %): drawn exactly on ClassPick*'s Portrait region, by the player's chosen gender.
 		FactionPickTitle = { Id = "rbxassetid://109240387368574", Size = Vector2.new(1024, 373), TextRect = { 0.148, 0.41, 0.704, 0.343 } }, -- HQ redraw 4ceaabf: the band sits a little higher
 		FactionPickHalo = { Id = "rbxassetid://78441813872022", Size = Vector2.new(624, 1024) },
+		FactionPickSoon = { Id = "rbxassetid://73776589039158", Size = Vector2.new(619, 1024) }, -- A23-114 locked Artisan Guild card (이미지 생성 2, 검수 pick B)
 		FactionPickHorns = { Id = "rbxassetid://92021424719072", Size = Vector2.new(624, 1024) },
 		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
 		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
@@ -6026,6 +6027,10 @@ Config.UIArt.MapTiles = {
 Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
 	-- A23-57 redraw: the faction cards' Name ribbon (Title), Panel (Perks) and Button - no Desc / Motto strips; the class
 	-- card frames' Portrait window (the CLS_* picture fills it), Name, Body and Button
+	-- A23-114 locked Artisan card: name on the brass ribbon, "Coming soon" + "Crafting update" on the parchment (the dark oval
+	-- plate was too small for the second line at the 11 px floor, UiSandbox 10/10)
+	FactionPickSoon = { Title = { 0.25, 0.332, 0.5, 0.05 }, Soon = { 0.18, 0.47, 0.64, 0.09 }, Sub = { 0.2, 0.585, 0.6, 0.05 },
+		SubStyle = "ink" },
 	FactionPickHalo = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },
 		Button = { 0.224, 0.859, 0.548, 0.061 } },
 	FactionPickHorns = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },

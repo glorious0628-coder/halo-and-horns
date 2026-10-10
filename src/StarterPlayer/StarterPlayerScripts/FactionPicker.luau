@@ -1082,7 +1082,7 @@ local function buildSoonCard(order)
 	local c = { Id = SOON_ID, Slot = slot, Body = body, Scale = scale, Soon = true, Art = false, Aspect = LAY.OldAspect }
 
 	local imageId, size = artId("FactionPickSoon"), partSize("FactionPickSoon")
-	local lay = type(Art.Layout.FactionPickSoon) == "table" and Art.Layout.FactionPickSoon or LAY.SoonRegions
+	local lay = (imageId and size and type(Art.Layout.FactionPickSoon) == "table") and Art.Layout.FactionPickSoon or LAY.SoonRegions
 	local ink, dim = LAY.SoonInk, LAY.SoonDim
 	if imageId and size then
 		c.ArtAspect = size.X / size.Y
@@ -1152,9 +1152,9 @@ local function buildSoonCard(order)
 		hole.Parent = block
 	end
 	local words = {
-		{ "FactionName", T.SoonName, lay.Title or LAY.SoonRegions.Title, ink, artFont("Title", Enum.Font.GothamBlack), 40 },
-		{ "Soon", T.Soon, lay.Soon or LAY.SoonRegions.Soon, ink, artFont("Title", Enum.Font.GothamBlack), 34 },
-		{ "Sub", T.SoonSub, lay.Sub or LAY.SoonRegions.Sub, dim, theme.Font, 22 },
+		{ "FactionName", T.SoonName, lay.Title or LAY.SoonRegions.Title, ink, artFont("Title", Enum.Font.GothamBlack), 40, "light" },
+		{ "Soon", T.Soon, lay.Soon or LAY.SoonRegions.Soon, ink, artFont("Title", Enum.Font.GothamBlack), 34, "ink" },
+		{ "Sub", T.SoonSub, lay.Sub or LAY.SoonRegions.Sub, dim, theme.Font, 22, lay.SubStyle or "light" },
 	}
 	for _, w in words do
 		local r = w[3]
@@ -1169,7 +1169,8 @@ local function buildSoonCard(order)
 			Font = w[5],
 			ZIndex = 6,
 		}, w[6])
-		if c.ArtAspect then styleText(l, "light", 1) end
+		-- on the FactionPickSoon art: white on the brass ribbon, ink on the parchment (CardLayout SubStyle)
+		if c.ArtAspect then styleText(l, w[7], 1) end
 	end
 	-- the whole card is the hit area (a press = the shake); not selectable, so a gamepad skips it
 	local hit = Instance.new("TextButton")
