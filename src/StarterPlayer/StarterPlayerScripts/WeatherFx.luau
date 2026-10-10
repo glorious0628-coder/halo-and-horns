@@ -15,8 +15,7 @@
 --           off (이미지 생성 1 marks the kit's lamps). A light without the mark is never touched.
 --   off   : WeatherFx.SetEnabled(false) (Settings 'Weather effects', 게임성 개발 1) stops the rain / snow and the tint; the
 --           lamps still follow the time of day (a light, not an effect).
---   Drops and flakes only - no rays (AGENTS). Textures: free Creator Store particles, ids only (A23-62,
---   docs/design/skill_vfx_sources.md).
+--   Drops and flakes only - no rays (AGENTS). Textures: our own (TEX), not borrowed store assets.
 -- API: WeatherFx.Init(C), WeatherFx.Start(), WeatherFx.SetEnabled(on), WeatherFx.IsEnabled(), WeatherFx.Refresh(),
 --      WeatherFx.State() -> { Weather, Phase, Enabled, Covered, Plan },
 --      pure (the offline test): WeatherFx.Plan(weather, phase, enabled, covered, touch) -> { Rain, Snow, Tint, Lamps },
@@ -46,8 +45,9 @@ local T = {
 	LampTag = "LampLight",
 	Step = "WeatherFx", -- BindToRenderStep name (after the camera)
 	WarnEvery = 10,
-	Rain = { Rate = 420, Life = 0.75, Speed = 85, Size = 1.6 },
-	Snow = { Rate = 110, Life = 7, Speed = 7, Size = 0.45 },
+	-- sizes: a streak as long as Size studs (UiSandbox 10/10: 1.6 with a tall texture was not seen), flakes Size studs
+	Rain = { Rate = 420, Life = 0.75, Speed = 85, Size = 2.4 },
+	Snow = { Rate = 110, Life = 7, Speed = 7, Size = 0.85 },
 	Tint = {
 		-- rain: a wet, grey-blue day; snow: cold and a little brighter
 		Rain = { TintColor = Color3.fromRGB(226, 234, 246), Saturation = -0.16, Contrast = -0.04, Brightness = -0.03 },
@@ -56,9 +56,11 @@ local T = {
 	},
 }
 WeatherFx.T = T
+-- our own textures (검수 10/10, A23-96: not borrowed - a taken-down store asset would leave empty particles), made with
+-- PIL: art/ui/Fx_RainStreak.png (128 square - particles are square - thin white line, soft sides, fading tail), art/ui/Fx_SnowFlake.png (128 soft dot)
 local TEX = {
-	Rain = "rbxassetid://241868005", -- the rain streak of "Rain (Particle)" (Casmik, 483675631)
-	Snow = "rbxassetid://99851851", -- the flake of "Snow Particles (Realistic)" (jbjgang2, 243533538)
+	Rain = "rbxassetid://77226041980480",
+	Snow = "rbxassetid://117774040305599",
 }
 local COL = {
 	Rain = Color3.fromRGB(196, 214, 236),
@@ -145,8 +147,8 @@ local function emitter(name, def, tex, col, slow)
 	else
 		-- rain: streaks along their fall, a little see-through
 		e.Size = NumberSequence.new(def.Size)
-		e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.08, 0.35),
-			NumberSequenceKeypoint.new(1, 0.45) })
+		e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.08, 0.2),
+			NumberSequenceKeypoint.new(1, 0.35) })
 		e.SpreadAngle = Vector2.new(4, 4)
 		e.Orientation = Enum.ParticleOrientation.VelocityParallel
 	end

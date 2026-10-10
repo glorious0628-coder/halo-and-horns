@@ -616,5 +616,7 @@
   "HaloSignPotion": "rbxassetid://122788599616130",
   "HaloSignBakery": "rbxassetid://77116902671887",
   "HaloSignJuice": "rbxassetid://133684891699718",
-  "HaloSignFlower": "rbxassetid://93642542767036"
+  "HaloSignFlower": "rbxassetid://93642542767036",
+  "Fx_RainStreak": "rbxassetid://77226041980480",
+  "Fx_SnowFlake": "rbxassetid://117774040305599"
 }

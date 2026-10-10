@@ -199,8 +199,8 @@ local rain = part and part:FindFirstChild("Rain")
 local snow = part and part:FindFirstChild("Snow")
 check(rain and rain.Rate == 420 and rain.Enabled == true and snow and snow.Enabled == false, "night rain: the rain emitter runs, snow off",
 	rain and rain.Rate)
-check(rain and rain.Texture == "rbxassetid://241868005" and snow and snow.Texture == "rbxassetid://99851851",
-	"the recorded free textures (Casmik rain, jbjgang2 snow)", rain and rain.Texture)
+check(rain and rain.Texture == "rbxassetid://77226041980480" and snow and snow.Texture == "rbxassetid://117774040305599",
+	"our own textures (Fx_RainStreak, Fx_SnowFlake)", rain and rain.Texture)
 local tint = lighting:FindFirstChild("WeatherTint")
 check(tint ~= nil and tint.ClassName == "ColorCorrectionEffect", "a client ColorCorrection WeatherTint for the wet look", tint)
 check(lampLight.Enabled == true and lanternLight.Enabled == true, "night: the tagged lamp and the marked lantern light are on",
