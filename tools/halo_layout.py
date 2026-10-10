@@ -177,6 +177,8 @@ def put(kind, x, z, yaw, s=1.0, need=WALK, flat=FLAT, pad=0.4, noreserve=False, 
         return None
     ty, v = tagv(x, z)
     e = dict(kind=kind, x=round(x, 2), z=round(z, 2), y=round(v, 2), yaw=round(yaw % 360, 1), s=round(s, 3), why=why, zone=zone_of(x, z), **extra)
+    if kind in ("PotFlowers", "Planter"):  # rule 9: 2-3 flower colours per district, set in clumps (the colour variants swap in by this)
+        e["flower"] = flower_pick(e["zone"], x, z)
     P.append(e)
     return e
 
@@ -220,7 +222,7 @@ TIER_Z = [0, -444, -524, -606]
 TIER_H = [0.2, 9, 20, 33]
 WAVE = {2: (6, 23, 0.4), 3: (7, 31, 2.1), 4: (5, 19, 4.0)}
 RAMPS = {2: [(0, 12)], 3: [(6, 9), (-54, 5)], 4: [(-4, 16)]}
-PAVEHALF = [(0, 13, 13), (-444, 17, 13), (-524, 34, 42), (-606, 26, 20)]
+PAVEHALF = [(0, 13, 13), (-444, 21, 17), (-524, 34, 42), (-606, 26, 20)]
 WINGS = [("WA", -190, -62, -432, -338), ("WB", -170, -80, -538, -462), ("WC", -152, -110, -604, -570), ("WD", -192, -116, -690, -640),
          ("EA", 62, 172, -424, -352), ("EB", 104, 196, -520, -446), ("EC", 122, 196, -624, -554), ("ED", 96, 152, -694, -638)]  # rects before the turn
 WING_H = {"WA": 3, "WB": 12, "WC": 22, "WD": 26, "EA": 5, "EB": 15, "EC": 26, "ED": 30}
@@ -278,6 +280,19 @@ ZONES = {
     "training": ("기사 훈련장", (200, 60, 60)),  # wing EA: statues, dummies, shield rack, Sir Gleam
     "garden": ("꽃 정원·전망대", (120, 220, 120)),  # WC, WD, ED + every cliff edge: flowers, lookouts, photo spots, gather bushes
 }
+FLOWERS = {"gate": ("white", "gold", "sky"), "shops": ("orange", "white"), "plaza": ("white", "gold"), "cathedral": ("white", "lilac"),
+           "homes": ("pink", "white"), "training": ("white", "sky"), "garden": ("pink", "white", "gold")}
+WILD = (-180, -664, 30)  # the one wildflower slope (mixed colours): round the west lookout (rule 9)
+
+
+def flower_pick(zone, x, z):
+    if math.hypot(x - WILD[0], z - WILD[1]) < WILD[2]:
+        return "mixed"
+    pal = FLOWERS.get(zone, ("white",))
+    # clumps: the colour follows a coarse grid cell, so neighbours share it (5-12 flowers per clump, rule 9)
+    return pal[(int(math.floor(x / 18)) * 7 + int(math.floor(z / 18)) * 13) % len(pal)]
+
+
 WING_ZONE = {"WA": "homes", "WB": "homes", "EB": "homes", "EC": "homes", "EA": "training", "WC": "garden", "WD": "garden", "ED": "garden"}
 
 
@@ -302,10 +317,10 @@ SPOTS = {
     # lookouts on the high ground (rule 12): edge 8 studs kept low, view over the lower tiers to the sea / islets
     "lookout": [dict(x=-180, z=-664, r=7, look=[-250, -610]), dict(x=134, z=-688, r=6, look=[30, -770])],
     # small scenes (rule 12): seat + light + flowers under a tree, facing something to see, 8-20 studs off the road
-    "scene": [dict(x=-160, z=-506, r=5, look=[-190, -500], what="cascade pool bench"), dict(x=-114, z=-598, r=4, look=[-60, -560], what="small island tea table"),
-              dict(x=162, z=-628, r=5, look=[172, -650], what="cascade side bench"), dict(x=-96, z=-396, r=5, look=[-48, -394], what="canal view bench"),
-              dict(x=176, z=-400, r=5, look=[230, -400], what="sea balcony"), dict(x=-90, z=-626, r=4, look=[-160, -610], what="top-tier west edge, sea view"),
-              dict(x=84, z=-470, r=4, look=[60, -440], what="angel niche")],
+    "scene": [dict(x=-160, z=-506, r=5, look=[-190, -500], what="cascade pool bench"), dict(x=-140, z=-580, r=4, look=[-60, -560], what="small island tea table"),
+              dict(x=160, z=-610, r=4, look=[172, -650], what="cascade side bench"), dict(x=-96, z=-396, r=5, look=[-48, -394], what="canal view bench"),
+              dict(x=158, z=-392, r=4, look=[230, -400], what="sea balcony"), dict(x=-90, z=-626, r=4, look=[-160, -610], what="top-tier west edge, sea view"),
+              dict(x=118, z=-474, r=4, look=[60, -440], what="angel niche")],
     # photo spots (게임에 가져올 것 2): small gold discs, no lettering, no ray pattern
     "photo": [dict(x=-4, z=-616, r=2), dict(x=-48, z=-394, r=2), dict(x=168, z=-640, r=2), dict(x=-182, z=-664, r=2), dict(x=6, z=-452, r=2), dict(x=140, z=-632, r=2)],
     # gather bushes (게임에 가져올 것 1): 4-6 garden bushes, 2-3 of them give something each day
@@ -476,6 +491,10 @@ for x, z, sc in ((122, -392, 1.15), (102, -414, 0.95), (140, -404, 1.0)):
         if put("Statue", x + dx, z + dz, face_to(x + dx, z + dz, 112, -386), sc, flat=1.5, why="기사 훈련장 동상: 훈련하는 기사의 본보기"):
             break
 
+# ---- 상점 거리 fork (4th pass, rule 6): a statue on the grass island in the middle of the street; the road splits round it
+for dx, dz in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)):
+    if put("Statue", 19 + dx, -486 + dz, face_to(19, -486, 19, -440), 1.05, flat=1.5, why="상점 거리 갈림길 가운데 동상: 길이 둘로 갈렸다 다시 만나는 표지(규칙 6)"):
+        break
 # ---- 상점 거리 (tier 2): the four shops along ONE street, staggered sides, each facing the street at its own angle; the potion
 # merchant first (in sight from the gate, rule 7)
 SHOPKIND = {}
@@ -483,7 +502,7 @@ for kindname, z, side, gap, tilt, sc, why in (("Potion", -462, 1, 4, -10, 2.0, "
                                               ("Bakery", -470, -1, 6, 12, 1.9, "빵집: 마을 사람들 아침 빵"),
                                               ("Juice", -500, 1, 8, -16, 1.75, "주스 가게: 광장 가는 길 목 축이기"),
                                               ("Flower", -506, -1, 5, 18, 1.8, "꽃집: 집 마당·성당 꽃을 대는 곳")):
-    for dz, dg in [(0, 0)] + [(d_, g_) for d_ in (-4, 4, -8, 8, -12, 12, -16, 16, -20) for g_ in (2, -3, 6, -6, 10, 14, -9)]:
+    for dz, dg in [(0, 0)] + [(d_, g_) for d_ in (-4, 4, -8, 8, -12, 12, -16, 16, -20, 20, -24) for g_ in (2, -3, 6, -6, 10, 14, -9, 18, -12)]:
         x = CX(z + dz) + side * (pave_half(z + dz, side) + 9 + gap + dg)
         yaw = face_to(x, z + dz, CX(z + dz), z + dz) + tilt
         if not ok_ground("Shop", x, z + dz, yaw, sc + 0.6, need=WALK + ("stair",), flat=40):  # walkable ground all round (no pockets behind)
@@ -618,13 +637,18 @@ for zone_, zr, why in (("gate", (-352, -372), "성문 깃발: 빛 진영 마을 
             break
 # gate forecourt edge beds (검수 10/10: the front of the gate photo was one third bare paving): low flower beds along both road
 # edges, irregular, out of the spawn corridor (|x| > 13), off the travel pads
-for _ in range(220):
+gate_beds = []
+for _ in range(400):
+    if len(gate_beds) >= 9:
+        break
     z = rng.uniform(-360, -438)
     side = rng.choice((-1, 1))
-    x = CX(z) + side * (pave_half(z, side) + rng.uniform(1.2, 4.5))
-    if abs(x) < 13.5:
+    x = CX(z) + side * (pave_half(z, side) + rng.uniform(1.5, 8.0))
+    if abs(x) < 13.5 or any(math.hypot(b[0] - x, b[1] - z) < 7 for b in gate_beds):
         continue
-    put_v("Planter", x, z, face_to(x, z, CX(z), z) + rng.uniform(-15, 15), vs(), pad=0.5, why="성문 길 화단: 들어오는 길 꾸밈")
+    kind_ = rng.choice(("Planter", "Planter", "PotFlowers"))
+    if put_v(kind_, x, z, face_to(x, z, CX(z), z) + rng.uniform(-25, 25), vs(), pad=0.5, why="성문 길 화단: 들어오는 길 꾸밈(흩어 심음)"):
+        gate_beds.append((x, z))
 # shop fronts: a pot / planter beside each door (the stall / cart / crate comes as a new reason prop)
 SHOP_STALL = {"Bakery": "bread basket stand", "Juice": "fruit crate stall", "Flower": "flower cart", "Potion": "bottle crates + sign"}
 SPOTS["stall"] = []
@@ -890,7 +914,7 @@ print("refused:", {f"{k[0]}:{k[1]}": v for k, v in sorted(WHY.items()) if k[0] i
 print("bridges:", [(b["name"], b["span"]) for b in BRIDGES])
 print(f"walkable columns {len(cells)}, reachable from the spawn {len(seen)}, unreachable {len(unreach)} {by_wing}")
 print("   unreachable at:", sorted({(X0 + c[0] * R, Z0 + c[1] * R) for c in unreach})[:20])
-want = {"Statue": 6, "Shop": 4, "Tower": 6, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
+want = {"Statue": 7, "Shop": 4, "Tower": 6, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
 for k, v in want.items():
     if count.get(k, 0) != v:
         print(f"!! {k}: placed {count.get(k, 0)} of {v}")

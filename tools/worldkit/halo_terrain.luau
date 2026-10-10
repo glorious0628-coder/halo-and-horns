@@ -95,11 +95,25 @@ local BRIDGES = { -- 2nd pass (rule 4): about one per island, same-tier pairs >=
 -- stepping stones (rule 3/4: short crossings): small flat stones 1 column each, 1 stud higher each, touching (no jump): { x, z, top V }
 local STONES = { { 146, -626, 26.8 }, { 142, -630, 27.6 }, { 142, -634, 28.4 }, { 138, -638, 29.2 } } -- EC (26) -> ED (30): one column each, < 1 stud up per stone
 -- grass islands inside the paved plazas (rule 5: plazas are not plain slabs): { x, z, radius }
-local LAWNS = { { 12, -560, 7 }, { 54, -584, 6 }, { 26, -538, 5 }, { -22, -636, 8 }, { -8, -668, 6 }, { 8, -476, 4 } }
+local LAWNS = { { 12, -560, 7 }, { 54, -584, 6 }, { 26, -538, 5 }, { -22, -636, 8 }, { -8, -668, 6 },
+	{ 19, -486, 6 } } -- the last one: the shop-street fork (4th pass, rule 6): the road splits round a statue island and meets again
+-- garden paths (4th pass, rule 6 "곁길"): narrow paved paths from the road / a court out to a small scene or a lookout: { x0, z0, x1, z1 }
+local PATHS = { { -160, -506, -146, -502 }, { 160, -610, 158, -602 }, { -90, -626, -58, -646 }, { 118, -474, 126, -474 }, { -180, -664, -166, -666 }, { 134, -688, 130, -670 } }
+local PATH_HALF = 3.2
+local function onPath(x, z)
+	for _, p in PATHS do
+		local dx, dz = p[3] - p[1], p[4] - p[2]
+		local L2 = dx * dx + dz * dz
+		local t = L2 > 0 and math.clamp(((x - p[1]) * dx + (z - p[2]) * dz) / L2, 0, 1) or 0
+		local qx, qz = p[1] + dx * t - x, p[2] + dz * t - z
+		if qx * qx + qz * qz <= PATH_HALF * PATH_HALF then return true end
+	end
+	return false
+end
 local PAVE = { Rim = 8, Wing = 22, Mat = "Concrete" } -- grass rim width on the wing tops (2026-10-10: 16 so the wings are gardens round a paved forecourt; the spine road is PAVEHALF below); Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
 -- 2026-10-10 (검수: the road was 76 wide and read as an empty beige slab): the PAVED part of the spine is narrow like the concept (road about
 -- one house wide), the rest of the terrace is grass garden for the props tool (balustrade, planters, topiary rows). { boundary z (north of it), paved half-width }
-local PAVEHALF = { { 0, 13, 13 }, { -444, 17, 13 }, { -524, 34, 42 }, { -606, 26, 20 } } -- { boundary z, west, east } (A23-112: uneven; 2nd pass rule 5: paved <= 35 %)
+local PAVEHALF = { { 0, 13, 13 }, { -444, 21, 17 }, { -524, 34, 42 }, { -606, 26, 20 } } -- { boundary z, west, east } (A23-112: uneven; 2nd pass rule 5: paved <= 35 %)
 local function paveHalf(z, u)
 	local h = PAVEHALF[1]
 	for i = 2, #PAVEHALF do
@@ -332,6 +346,7 @@ local function column(x, z)
 		local wob = 9 * math.noise(x / 37 + 0.7, z / 37 + 0.2, 4.4)
 		if inner >= PAVE.Wing + wob and inner >= 3 then mat, tag = PAVE.Mat, "plaza" end
 	end
+	if tag == "top" and inner >= 3 and onPath(x, z) then mat, tag = PAVE.Mat, "plaza" end -- garden path
 	if inner < 3 then mat = "Grass" end
 	if tag == "top" and inner >= 4 then h += moundHeight(x, z) end -- grass mounds
 	return h, nil, mat, tag, e
