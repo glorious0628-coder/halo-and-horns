@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 941,
+  "checks": 1223,
   "failedChecks": 0,
-  "namedChecks": 867,
+  "namedChecks": 1035,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -5208,15 +5208,1023 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "an own-lines person is one of the five (Bright, Gleam, juice man, baker, potion seller)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "five people have lines of their own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright is a Config.TownNpcs entry (its body's attribute HHC_TownNpc)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: has Rank and Lean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: one line per Halo rank, per Horns rank, and the guild",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: 1-12 words, no format token, nothing scary",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright's lines never say he / him / his (she)",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Halo rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Halo rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Halo rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Halo rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Halo rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Horns rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Horns rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Horns rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Horns rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its Horns rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: a lean line for SoftDevil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: a lean line for RebelAngel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: a lean line for TrueKnight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: a lean line for BalanceWalker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: a lean line for ProudRascal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: Lean.SoftDevil is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: its lean line is its own",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: Lean.RebelAngel is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: Lean.TrueKnight is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: Lean.BalanceWalker is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: Lean.ProudRascal is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam is a Config.TownNpcs entry (its body's attribute HHC_TownNpc)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: has Rank and Lean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: one line per Halo rank, per Horns rank, and the guild",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: 1-12 words, no format token, nothing scary",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Halo rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Halo rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Halo rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Halo rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Halo rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Horns rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Horns rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Horns rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Horns rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its Horns rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: a lean line for SoftDevil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: a lean line for RebelAngel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: a lean line for TrueKnight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: a lean line for BalanceWalker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: a lean line for ProudRascal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: Lean.SoftDevil is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: its lean line is its own",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: Lean.RebelAngel is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: Lean.TrueKnight is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: Lean.BalanceWalker is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: Lean.ProudRascal is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1 is a Config.TownNpcs entry (its body's attribute HHC_TownNpc)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: has Rank and Lean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: one line per Halo rank, per Horns rank, and the guild",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: 1-12 words, no format token, nothing scary",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Halo rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Halo rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Halo rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Halo rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Halo rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Horns rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Horns rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Horns rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Horns rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its Horns rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: a lean line for SoftDevil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: a lean line for RebelAngel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: a lean line for TrueKnight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: a lean line for BalanceWalker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: a lean line for ProudRascal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: Lean.SoftDevil is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: its lean line is its own",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: Lean.RebelAngel is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: Lean.TrueKnight is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: Lean.BalanceWalker is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: Lean.ProudRascal is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3 is a Config.TownNpcs entry (its body's attribute HHC_TownNpc)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: has Rank and Lean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: one line per Halo rank, per Horns rank, and the guild",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: 1-12 words, no format token, nothing scary",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Halo rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Halo rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Halo rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Halo rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Halo rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Horns rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Horns rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Horns rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Horns rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its Horns rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: a lean line for SoftDevil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: a lean line for RebelAngel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: a lean line for TrueKnight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: a lean line for BalanceWalker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: a lean line for ProudRascal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: Lean.SoftDevil is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: its lean line is its own",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: Lean.RebelAngel is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: Lean.TrueKnight is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: Lean.BalanceWalker is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: Lean.ProudRascal is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo is a Config.TownNpcs entry (its body's attribute HHC_TownNpc)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: has Rank and Lean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: one line per Halo rank, per Horns rank, and the guild",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: 1-12 words, no format token, nothing scary",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Halo rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Halo rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Halo rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Halo rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Halo rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Horns rank 1 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Horns rank 2 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Horns rank 3 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Horns rank 4 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its Horns rank 5 line is its own, not a shared one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: a lean line for SoftDevil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: a lean line for RebelAngel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: a lean line for TrueKnight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: a lean line for BalanceWalker",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: a lean line for ProudRascal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: Lean.SoftDevil is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: its lean line is its own",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: Lean.RebelAngel is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: Lean.TrueKnight is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: Lean.BalanceWalker is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: Lean.ProudRascal is a My Way name (no orphan)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: a new Halo hears the person's own Squire line only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: Honor 12 = the own Knight line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: a Horns visitor with Infamy 1000: the own Demon King line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: the guild: the own line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: rank line + own lean line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Bright: the town pick line stays the shared quest line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: a new Halo hears the person's own Squire line only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: Honor 12 = the own Knight line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: a Horns visitor with Infamy 1000: the own Demon King line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: the guild: the own line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: rank line + own lean line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Gleam: the town pick line stays the shared quest line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: a new Halo hears the person's own Squire line only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: Honor 12 = the own Knight line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: a Horns visitor with Infamy 1000: the own Demon King line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: the guild: the own line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: rank line + own lean line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk1: the town pick line stays the shared quest line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: a new Halo hears the person's own Squire line only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: Honor 12 = the own Knight line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: a Horns visitor with Infamy 1000: the own Demon King line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: the guild: the own line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: rank line + own lean line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "Folk3: the town pick line stays the shared quest line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: a new Halo hears the person's own Squire line only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: Honor 12 = the own Knight line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: a Horns visitor with Infamy 1000: the own Demon King line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: the guild: the own line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: rank line + own lean line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "PotionHalo: the town pick line stays the shared quest line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "no Npc: the shared lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "an Npc without own lines (Folk2): the shared lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "an Npc without own lines (Folk4): the shared lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "an Npc without own lines (Nope): the shared lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "an Npc without own lines (): the shared lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "an Npc without own lines (5): the shared lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "no own lean table: the shared lean lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "no own Halo rank lines: the shared ones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-113 the five Halo people's own reaction lines",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 8,
   "staticFailures": [],
   "mutations": {
-    "total": 230,
-    "applied": 230,
-    "caught": 230,
+    "total": 244,
+    "applied": 244,
+    "caught": 244,
     "skipped": false,
     "results": [
       {
@@ -8031,14 +9039,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "a23-64 town react lines :: 'H2:Good' in Halo Citadel: 'You brought the lantern back!' + the Knight lines",
-          "a23-64 town react lines :: S6 in Halo Citadel: the Halo line",
-          "a23-64 town react lines :: S6 in Horns Den: the Horns line",
-          "a23-64 town react lines :: a Neutral 'GW8:Good' is said at the Crossroads (the guild's town)",
-          "a23-64 town react lines :: a quest of both towns (M3_4) in Horns Den",
-          "a23-64 town react lines :: an artisan's M3_4 B (sell the dust back): its own line"
+          "a23-113 the five Halo people's own reaction lines :: Bright: the town pick line stays the shared quest line",
+          "a23-113 the five Halo people's own reaction lines :: Folk1: the town pick line stays the shared quest line",
+          "a23-113 the five Halo people's own reaction lines :: Folk3: the town pick line stays the shared quest line",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: the town pick line stays the shared quest line",
+          "a23-113 the five Halo people's own reaction lines :: PotionHalo: the town pick line stays the shared quest line",
+          "a23-64 town react lines :: 'H2:Good' in Halo Citadel: 'You brought the lantern back!' + the Knight lines"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 11
       },
       {
         "mutation": "TownReactLines: a Halo-only pick said in Horns Den",
@@ -8058,9 +9066,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: no own lean table: the shared lean lines",
           "a23-64 town react lines :: Infamy 1000 = the Demon King lines + the Soft-Hearted Devil lean"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "TownReactLines: one rank too high",
@@ -8069,11 +9078,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "a23-64 town react lines :: 'H2:Good' in Halo Citadel: 'You brought the lantern back!' + the Knight lines",
-          "a23-64 town react lines :: Honor 60 = rank 3 (Paladin) lines only; Infamy never counts for a Halo",
-          "a23-64 town react lines :: a new Halo in Halo Citadel: the 2 Squire lines only"
+          "a23-113 the five Halo people's own reaction lines :: an Npc without own lines (): the shared lines",
+          "a23-113 the five Halo people's own reaction lines :: an Npc without own lines (5): the shared lines",
+          "a23-113 the five Halo people's own reaction lines :: an Npc without own lines (Folk2): the shared lines",
+          "a23-113 the five Halo people's own reaction lines :: an Npc without own lines (Folk4): the shared lines",
+          "a23-113 the five Halo people's own reaction lines :: an Npc without own lines (Nope): the shared lines",
+          "a23-113 the five Halo people's own reaction lines :: no Npc: the shared lines"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 10
       },
       {
         "mutation": "TownReactLines: the faction's own lines ignored",
@@ -8094,10 +9106,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "a23-64 town react lines :: 'H2:Good' in Halo Citadel: 'You brought the lantern back!' + the Knight lines",
-          "a23-64 town react lines :: Honor 60 = rank 3 (Paladin) lines only; Infamy never counts for a Halo"
+          "a23-113 the five Halo people's own reaction lines :: Bright: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Folk1: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Folk3: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: PotionHalo: Honor 12 = the own Knight line",
+          "a23-64 town react lines :: 'H2:Good' in Halo Citadel: 'You brought the lantern back!' + the Knight lines"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 7
       },
       {
         "mutation": "TownReactLines: the switch is ignored",
@@ -8132,6 +9148,191 @@
           "subs18-offered :: a Neutral save: everyone's subs only"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "own lines: Npc never read",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: a Horns visitor with Infamy 1000: the own Demon King line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: a new Halo hears the person's own Squire line only",
+          "a23-113 the five Halo people's own reaction lines :: Bright: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: the guild: the own line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: the town pick line stays the shared quest line"
+        ],
+        "newFailingCount": 31
+      },
+      {
+        "mutation": "own lines: the shared rank lines are mixed in",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: a Horns visitor with Infamy 1000: the own Demon King line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: a new Halo hears the person's own Squire line only",
+          "a23-113 the five Halo people's own reaction lines :: Bright: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: the guild: the own line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: the town pick line stays the shared quest line"
+        ],
+        "newFailingCount": 31
+      },
+      {
+        "mutation": "own lines: the own rank line is never used",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: a Horns visitor with Infamy 1000: the own Demon King line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: a new Halo hears the person's own Squire line only",
+          "a23-113 the five Halo people's own reaction lines :: Bright: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: the guild: the own line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: the town pick line stays the shared quest line"
+        ],
+        "newFailingCount": 31
+      },
+      {
+        "mutation": "own lines: the own lean line is never used",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: Folk1: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: Folk3: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: PotionHalo: rank line + own lean line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "own lines: the lean falls back never",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: no own lean table: the shared lean lines",
+          "a23-64 town react lines :: Infamy 1000 = the Demon King lines + the Soft-Hearted Devil lean"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "own lines: the rank index ignores the rank",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Bright: a Horns visitor with Infamy 1000: the own Demon King line",
+          "a23-113 the five Halo people's own reaction lines :: Folk1: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Folk1: a Horns visitor with Infamy 1000: the own Demon King line",
+          "a23-113 the five Halo people's own reaction lines :: Folk3: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Folk3: a Horns visitor with Infamy 1000: the own Demon King line"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "own lines: Gleam is not a town person",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Gleam: Honor 12 = the own Knight line",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: a Horns visitor with Infamy 1000: the own Demon King line",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: a new Halo hears the person's own Squire line only",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: has Rank and Lean",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: rank line + own lean line",
+          "a23-113 the five Halo people's own reaction lines :: Gleam: the guild: the own line"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "own lines: a Bright line is too long",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright: 1-12 words, no format token, nothing scary"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "own lines: Bright says he",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright's lines never say he / him / his (she)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "own lines: a line is a shared one",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Bright: its Halo rank 1 line is its own, not a shared one"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "own lines: the baker has no guild line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Folk3: one line per Halo rank, per Horns rank, and the guild",
+          "a23-113 the five Halo people's own reaction lines :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "own lines: the juice man has no lean line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Folk1: a lean line for BalanceWalker"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "own lines: a lean line of no My Way name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: Folk1: Lean.Nobody is a My Way name (no orphan)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "own lines: a scary word",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-113 the five Halo people's own reaction lines :: PotionHalo: 1-12 words, no format token, nothing scary"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -8139,20 +9340,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4830f77ebe4a7fc6093aeb17fc6ac02a7ea25cb277d44889b8b190d7097f019c",
+    "src/ReplicatedStorage/Shared/Config.luau": "7a057592afed2986d5775033df83a4863b1c813ef9b98b169e62c0a32a63ecc3",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "fa5b75d0dc29005b9ad65010b4cfcdbb27150a54aeda176d75275be84be761fd",
+    "src/ServerScriptService/StoryQuestService.luau": "c4ce85921d5e052885ce5c05a7d61ae1a1758a373cf60205701c26b7bfbad84b",
     "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
     "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
-    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
+    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
+    "src/ServerScriptService/CharacterVisuals.luau": "6c87145e91fe67aebd043eabed71d6f01c7d51b68f9df8b5638c0c54881e7f5e",
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "0a8e8de5c3e4c5741678b714f574d012378ac3b2f10fbfe918017ecfa9b11fca",
+  "fixtureSHA256": "45f2fe5d0f0999357040e10ff76d53841d9b760e82e7b61452b42f2ec6a36be8",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

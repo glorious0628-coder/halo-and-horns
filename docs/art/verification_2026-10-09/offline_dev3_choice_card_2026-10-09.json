@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 117,
+  "checks": 133,
   "failedChecks": 0,
-  "namedChecks": 117,
+  "namedChecks": 133,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -135,6 +135,54 @@
     },
     {
       "group": "deeds: the day's six points",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
+      "check": "Halo + Good: Booked (Good, +1, mine)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
+      "check": "a full day's pick is still a deed (change 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
+      "check": "the other side: Booked (Evil, -1, not mine)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
+      "check": "a naughty pick with no points to lose is still a deed (change 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
+      "check": "no side / a bad side / no points: nothing is announced",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
+      "check": "a player with no side makes no deed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "deeds: the Booked signal",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -297,6 +345,54 @@
     },
     {
       "group": "deeds: the save",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
+      "check": "(the card opens)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
+      "check": "the card shows Good XP 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
+      "check": "AddXP(6, cap 6): the 2x pass never doubles a card's XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
+      "check": "CardEnd says XP 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
+      "check": "the reward line names the XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
+      "check": "Config.ChoiceCard.Kinds.FlowerPatch: Replant = XP, Pick = 2 petals",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card: an XP reward, never 2x (A23-87)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -714,11 +810,68 @@
   "staticChecks": 18,
   "staticFailures": [],
   "mutations": {
-    "total": 58,
-    "applied": 58,
-    "caught": 58,
+    "total": 68,
+    "applied": 68,
+    "caught": 68,
     "skipped": false,
     "results": [
+      {
+        "mutation": "card XP doubled by the pass",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: an XP reward, never 2x (A23-87) :: AddXP(6, cap 6): the 2x pass never doubles a card's XP",
+          "card: an XP reward, never 2x (A23-87) :: CardEnd says XP 6",
+          "card: an XP reward, never 2x (A23-87) :: the reward line names the XP"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "card XP never paid",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: an XP reward, never 2x (A23-87) :: AddXP(6, cap 6): the 2x pass never doubles a card's XP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no XP on the card",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: an XP reward, never 2x (A23-87) :: the card shows Good XP 6"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no XP in CardEnd",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: an XP reward, never 2x (A23-87) :: CardEnd says XP 6"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no XP in the line",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: an XP reward, never 2x (A23-87) :: the reward line names the XP"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "config: 7 points a day",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
@@ -733,7 +886,7 @@
           "deeds: sides, floor, ranks :: Preview of a full day: 0",
           "deeds: sides, floor, ranks :: a huge size is cut to the day's six"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 20
       },
       {
         "mutation": "config: a deed is 2",
@@ -749,7 +902,7 @@
           "deeds: sides, floor, ranks :: NaN falls back to the default size 1",
           "deeds: sides, floor, ranks :: Preview: Good +1 / Evil -1"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 15
       },
       {
         "mutation": "no cap on the rise",
@@ -761,11 +914,11 @@
           "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
           "card: a full day keeps the reward :: the 'shard is full' line",
           "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)",
+          "deeds: the Booked signal :: a full day's pick is still a deed (change 0)",
           "deeds: the day's six points :: a full day: the other side still costs 1 (A23-58)",
-          "deeds: the day's six points :: a new day pays again",
-          "deeds: the day's six points :: the seventh: no points, full = true, Honor stays"
+          "deeds: the day's six points :: a new day pays again"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "the day is not checked",
@@ -833,10 +986,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "deeds: the Booked signal :: a naughty pick with no points to lose is still a deed (change 0)",
+          "deeds: the Booked signal :: the other side: Booked (Evil, -1, not mine)",
           "deeds: the day's six points :: a full day: the other side still costs 1 (A23-58)",
           "deeds: the day's six points :: a new day pays again"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "the full flag never set",
@@ -892,7 +1047,7 @@
           "deeds: sides, floor, ranks :: Preview of a full day: 0",
           "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)"
         ],
-        "newFailingCount": 14
+        "newFailingCount": 15
       },
       {
         "mutation": "the sides are swapped",
@@ -908,7 +1063,7 @@
           "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
           "card: offer, pick, reward :: one line: Kind choice! … Honor +1"
         ],
-        "newFailingCount": 29
+        "newFailingCount": 33
       },
       {
         "mutation": "Honor and Infamy swapped",
@@ -933,9 +1088,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "deeds: sides, floor, ranks :: Honor 0 + the other side: stays 0 (A23-58 floor)"
+          "deeds: sides, floor, ranks :: Honor 0 + the other side: stays 0 (A23-58 floor)",
+          "deeds: the Booked signal :: a naughty pick with no points to lose is still a deed (change 0)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "the lost rank is never reported",
@@ -956,9 +1112,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "deeds: sides, floor, ranks :: no faction: nothing moves, nothing used"
+          "deeds: sides, floor, ranks :: no faction: nothing moves, nothing used",
+          "deeds: the Booked signal :: a player with no side makes no deed"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "an unknown side counts as Good",
@@ -967,9 +1124,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "deeds: sides, floor, ranks :: an unknown side: nothing"
+          "deeds: sides, floor, ranks :: an unknown side: nothing",
+          "deeds: the Booked signal :: a player with no side makes no deed",
+          "deeds: the Booked signal :: no side / a bad side / no points: nothing is announced"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "size not clamped",
@@ -989,12 +1148,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "card: an XP reward, never 2x (A23-87) :: group ran to the end without a Lua error",
           "card: the signal :: group ran to the end without a Lua error",
           "card: timed :: group ran to the end without a Lua error",
           "deeds: sides, floor, ranks :: group ran to the end without a Lua error",
+          "deeds: the Booked signal :: group ran to the end without a Lua error",
           "deeds: the day's six points :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "Preview ignores the day",
@@ -1368,13 +1529,13 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: group ran to the end without a Lua error",
+          "card: an XP reward, never 2x (A23-87) :: CardEnd says XP 6",
           "card: no faction, bag full :: group ran to the end without a Lua error",
           "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
           "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
-          "card: offer, pick, reward :: the same card twice: paid once",
-          "card: rate limit and rank :: two picks at once: the first counts only"
+          "card: offer, pick, reward :: the same card twice: paid once"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "the signal never fires",
@@ -1455,6 +1616,67 @@
           "config :: CardAction 0.3 s"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "Booked never fires for my own side",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the Booked signal :: Halo + Good: Booked (Good, +1, mine)",
+          "deeds: the Booked signal :: a full day's pick is still a deed (change 0)",
+          "deeds: the Booked signal :: a naughty pick with no points to lose is still a deed (change 0)",
+          "deeds: the Booked signal :: the other side: Booked (Evil, -1, not mine)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Booked never fires for the other side",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the Booked signal :: a naughty pick with no points to lose is still a deed (change 0)",
+          "deeds: the Booked signal :: the other side: Booked (Evil, -1, not mine)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Booked only when points moved (own side)",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the Booked signal :: a full day's pick is still a deed (change 0)",
+          "deeds: the Booked signal :: a naughty pick with no points to lose is still a deed (change 0)",
+          "deeds: the Booked signal :: the other side: Booked (Evil, -1, not mine)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Booked only when points moved (other side)",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the Booked signal :: a naughty pick with no points to lose is still a deed (change 0)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Booked reports the wrong side",
+        "file": "src/ServerScriptService/Deeds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "deeds: the Booked signal :: the other side: Booked (Evil, -1, not mine)"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -1462,12 +1684,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e48f9268247cdf36b2ee8027076f608f96d0d14ddc5156304c3fb4e31067233f",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
-    "src/ServerScriptService/ChoiceCard.luau": "da892aeb3fa5ae57de67bea52693e6b5bac974a0ded6ff572970a876a3a330be"
+    "src/ReplicatedStorage/Shared/Config.luau": "7a057592afed2986d5775033df83a4863b1c813ef9b98b169e62c0a32a63ecc3",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/Deeds.luau": "ef54e177229e0155e119ea7d8c54da813ad50561251410e46e00c120665384eb",
+    "src/ServerScriptService/ChoiceCard.luau": "f9ddcd5f99a235d8db91c420ea535131d2c0b62d8384df961568573c854fcc3f"
   },
-  "fixtureSHA256": "c58dd0dd7d96139da626e9ba3815bc299e1fbf3a4f14aba3518c2ef6e7153f54",
+  "fixtureSHA256": "23bf9b0e9a9f9f25e483b4c7d1761c91ade6ea6b3578b8cff946ae37857da47e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

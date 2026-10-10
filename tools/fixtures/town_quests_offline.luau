@@ -2332,4 +2332,99 @@ runGroup("a23-64 town react lines", function()
 	check(#C.TownReactLines({ Faction = "Halo", Honor = 0, Town = "HaloTown" }) == 0, "Enabled = false: quiet", "")
 end)
 
+runGroup("a23-113 the five Halo people's own reaction lines", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local T = C.TownReact.Text
+	local N = T.Npc
+	local WHO = { "Bright", "Gleam", "Folk1", "Folk3", "PotionHalo" }
+	local want = {}
+	for _, id in WHO do want[id] = true end
+	local ids = {}
+	for id in N do
+		table.insert(ids, id)
+		check(want[id] == true, "an own-lines person is one of the five (Bright, Gleam, juice man, baker, potion seller)", id)
+	end
+	check(#ids == 5, "five people have lines of their own", show(ids))
+	local entry = {}
+	for _, e in C.TownNpcs.List do entry[e.Id] = e end
+	local BAD = { kill = true, die = true, dead = true, blood = true, hate = true, stupid = true, scary = true }
+	local HE = { he = true, him = true, his = true }
+	local function lineOk(line, who)
+		local words, bad, he = 0, nil, nil
+		for _ in string.gmatch(line, "%S+") do words += 1 end
+		for word in string.gmatch(string.lower(line), "%a+") do
+			if BAD[word] then bad = word end
+			if HE[word] then he = word end
+		end
+		check(type(line) == "string" and words >= 1 and words <= 12 and not string.find(line, "%", 1, true) and bad == nil,
+			who .. ": 1-12 words, no format token, nothing scary", tostring(line))
+		if who == "Bright" then check(he == nil, "Bright's lines never say he / him / his (she)", line) end
+	end
+	local generic = {}
+	for _, rows in T.Rank do for _, row in rows do for _, line in row do generic[line] = true end end end
+	for _, lines in T.Lean do for _, line in lines do generic[line] = true end end
+	for _, id in WHO do
+		local npc = N[id]
+		check(entry[id] ~= nil, id .. " is a Config.TownNpcs entry (its body's attribute HHC_TownNpc)", id)
+		check(type(npc) == "table" and type(npc.Rank) == "table" and type(npc.Lean) == "table", id .. ": has Rank and Lean", show(npc))
+		if type(npc) == "table" then
+			check(#npc.Rank.Halo == #C.Titles.Halo and #npc.Rank.Horns == #C.Titles.Horns and type(npc.Rank.Neutral) == "string",
+				id .. ": one line per Halo rank, per Horns rank, and the guild", show({ #npc.Rank.Halo, #npc.Rank.Horns }))
+			for _, f in { "Halo", "Horns" } do
+				for i, line in npc.Rank[f] do
+					lineOk(line, id)
+					check(not generic[line], id .. ": its " .. f .. " rank " .. i .. " line is its own, not a shared one", line)
+				end
+			end
+			lineOk(npc.Rank.Neutral, id)
+			for name in C.MyWay.Names do
+				check(type(npc.Lean[name]) == "string", id .. ": a lean line for " .. tostring(name), tostring(npc.Lean[name]))
+			end
+			for name, line in npc.Lean do
+				check(C.MyWay.Names[name] ~= nil, id .. ": Lean." .. name .. " is a My Way name (no orphan)", name)
+				lineOk(line, id)
+				check(not generic[line], id .. ": its lean line is its own", line)
+			end
+		end
+	end
+	-- Config.TownReactLines with p.Npc: that person's own line of each group, never mixed with the shared lines
+	local function lines(extra)
+		local p = { Faction = "Halo", Honor = 0, Infamy = 0, MyWay = "", TownPick = "", Town = "HaloTown" }
+		for k, v in extra do p[k] = v end
+		return C.TownReactLines(p)
+	end
+	for _, id in WHO do
+		local out = lines({ Npc = id })
+		check(#out == 1 and out[1] == N[id].Rank.Halo[1], id .. ": a new Halo hears the person's own Squire line only", show(out))
+		local knight = lines({ Npc = id, Honor = 12 })
+		check(#knight == 1 and knight[1] == N[id].Rank.Halo[2], id .. ": Honor 12 = the own Knight line", show(knight))
+		local horns = lines({ Npc = id, Faction = "Horns", Infamy = 1000, Town = "HornsTown" })
+		check(#horns == 1 and horns[1] == N[id].Rank.Horns[5], id .. ": a Horns visitor with Infamy 1000: the own Demon King line", show(horns))
+		local guild = lines({ Npc = id, Faction = "Neutral", Town = "Crossroads" })
+		check(#guild == 1 and guild[1] == N[id].Rank.Neutral, id .. ": the guild: the own line", show(guild))
+		local lean = lines({ Npc = id, MyWay = C.MyWay.Names.TrueKnight })
+		check(#lean == 2 and lean[1] == N[id].Rank.Halo[1] and lean[2] == N[id].Lean.TrueKnight, id .. ": rank line + own lean line", show(lean))
+		local out2, pick = lines({ Npc = id, Honor = 12, TownPick = "H2:Good" })
+		check(pick == T.Good.H2 and #out2 == 2 and out2[2] == pick, id .. ": the town pick line stays the shared quest line", show({ out2, pick }))
+	end
+	-- no Npc / an unknown person / a person without lines = the shared lines, as before
+	local plain = lines({})
+	check(#plain == #T.Rank.Halo[1] and plain[1] == T.Rank.Halo[1][1], "no Npc: the shared lines", show(plain))
+	for _, who in { "Folk2", "Folk4", "Nope", "", 5 } do
+		local out = lines({ Npc = who })
+		check(#out == #T.Rank.Halo[1] and out[1] == T.Rank.Halo[1][1], "an Npc without own lines (" .. tostring(who) .. "): the shared lines", show(out))
+	end
+	-- a group without an own line falls back (a person with only Rank, or only one faction)
+	local saved = N.Bright.Lean
+	N.Bright.Lean = nil
+	local fb = lines({ Npc = "Bright", MyWay = C.MyWay.Names.TrueKnight })
+	check(#fb == 1 + #T.Lean.TrueKnight and fb[1] == N.Bright.Rank.Halo[1] and fb[2] == T.Lean.TrueKnight[1], "no own lean table: the shared lean lines", show(fb))
+	N.Bright.Lean = saved
+	local savedRank = N.Bright.Rank.Halo
+	N.Bright.Rank.Halo = nil
+	local fr = lines({ Npc = "Bright" })
+	check(#fr == #T.Rank.Halo[1] and fr[1] == T.Rank.Halo[1][1], "no own Halo rank lines: the shared ones", show(fr))
+	N.Bright.Rank.Halo = savedRank
+end)
+
 finish()

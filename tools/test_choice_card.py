@@ -105,6 +105,12 @@ MUTATIONS = [
     # --- config
     ("config: the cap line is different", C, 'Text = { Full = "Your shard is full for today. Come back tomorrow!" },', 'Text = { Full = "You are done." },'),
     ("config: no card rate limit", C, "Config.RateLimits.CardAction = 0.3\n", ""),
+    # --- A23-113 #8: Deeds.Booked (the daily 'Choice' counts every deed)
+    ("Booked never fires for my own side", D, "\t\tDeeds.Booked:Fire(player, side, got, true)\n", ""),
+    ("Booked never fires for the other side", D, "\tDeeds.Booked:Fire(player, side, -take, false)\n", ""),
+    ("Booked only when points moved (own side)", D, "\t\tDeeds.Booked:Fire(player, side, got, true)\n", "\t\tif got > 0 then Deeds.Booked:Fire(player, side, got, true) end\n"),
+    ("Booked only when points moved (other side)", D, "\tDeeds.Booked:Fire(player, side, -take, false)\n", "\tif take > 0 then Deeds.Booked:Fire(player, side, -take, false) end\n"),
+    ("Booked reports the wrong side", D, "\tDeeds.Booked:Fire(player, side, -take, false)\n", "\tDeeds.Booked:Fire(player, \"Good\", -take, false)\n"),
 ]
 
 

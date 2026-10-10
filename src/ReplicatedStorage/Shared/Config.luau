@@ -3729,13 +3729,23 @@ Config.Quests = {
 			Text = "Earn %s gold by hunting" },
 		{ Id = "Release", ShortName = "Skill hits", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8,
 			Text = "Hit monsters with skills %d times" },
-		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20,
+		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Join the Golden Goose tug %d times" },
-		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true,
+		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
 			Text = "Catch %d Wanted players (Kaiju count)" },
-		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true,
+		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
 			Text = "Rob %d Knights of Light" },
+		-- A23-113 #8 (user "마감 전 넣자"; docs/design/player_reactions_research_2026-10-10.md §9): a daily that is not hunting: make one
+		-- good or naughty choice (a choice card, the King's finisher, a job board Kind / Sneaky job - every one of them is a deed of
+		-- the daily ledger, Deeds.Add; Deeds.Booked counts it). It is made only while one of those sources is on (a Board /
+		-- LostFound / KillCards switch in Config), else the slot is another kind.
+		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
+			Text = "Make a kind or sneaky choice" },
 	},
+	-- A23-113 #8: from Lv10 at least one of the three dailies is not hunting (a template with NonHunt: Goose, Hunt / Plunder, Choice):
+	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
+	-- fits: unchanged). Lv1-9 (the meadow set of 3) is not touched.
+	NonHuntFrom = 10,
 	-- A23-14 (user 2026-10-05 "짧고 다양하게"): DAILIES generated at Lv1..Newbie.MaxLevel (meadow levels; Goblin Woods
 	-- opens at Lv10) come from Newbie.Dailies instead of Templates[].DailyUnits. The "different template" rule picks one
 	-- row per Id, so the 3 slots are always 3 different goals (kill / skill / gold). Extras and Lv10+ dailies unchanged.
@@ -3780,6 +3790,7 @@ Config.Quests = {
 			{ Id = "Goose", Weight = 1, Targets = { 1 } }, -- the Golden Goose tug (Halo / Horns)
 			{ Id = "Hunt", Weight = 1, Targets = { 1 } }, -- PvP, Halo
 			{ Id = "Plunder", Weight = 1, Targets = { 1 } }, -- PvP, Horns
+			{ Id = "Choice", Weight = 2, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
 		},
 	},
 }
@@ -7054,11 +7065,99 @@ Config.TownReact = {
 				Evil = { M3_4 = "Sold the dust back? Business is business!" },
 			},
 		},
+		-- A23-113 #6 (게임성 개발 3, 2026-10-10; the town people know my lean): the five Halo Citadel people say these in their OWN
+		-- voice instead of the shared lines above (Config.TownReactLines(p) with p.Npc = the body's attribute HHC_TownNpc = the
+		-- Config.TownNpcs entry id). Rank.Halo / Rank.Horns = one line per faction rank 1..5, Rank.Neutral = the guild; Lean = one
+		-- line per Config.MyWay.Names id. No entry for an id (or no line in a group) = the shared lines. Bright is she (A23-59).
+		Npc = {
+			Bright = { -- the town guide: warm and bubbly
+				Rank = {
+					Halo = { "Welcome, Squire! I'm Bright. Stay shiny!", "Knight! Your halo is glowing today!",
+						"Paladin! I told everyone you'd do it!", "A Saint! May I stand next to you?", "Archangel! I'm too happy to talk!" },
+					Horns = { "A Rascal in our town? Behave, okay?", "Raider! You may visit. Just don't grab!",
+						"Warlord! Please wipe your boots first.", "Dread Lord! Welcome! Please be gentle with the flowers.",
+						"Demon King! Hello! The tea is warm." },
+					Neutral = "A guild crafter! Our lamps need fixing!",
+				},
+				Lean = {
+					TrueKnight = "You always help. I tell everyone about you!",
+					RebelAngel = "A halo with a wink? I won't tell. Maybe.",
+					ProudRascal = "Trouble again? I'll count the cookies!",
+					SoftDevil = "A kind Horn? Come in, friend!",
+					BalanceWalker = "Kind today, sneaky tomorrow? I'll keep guessing!",
+				},
+			},
+			Gleam = { -- the town knight: polite, a little stiff, proud of his armor
+				Rank = {
+					Halo = { "Welcome, Squire. Stand tall!", "Knight! Your armor shines. Well done.", "Paladin! It is an honor.",
+						"A Saint! I must polish my armor.", "Archangel! Sir Gleam salutes you!" },
+					Horns = { "A Rascal! Halt. Hmm. Hello.", "Raider! Keep your hands to yourself.", "Warlord! I do not bow. Quite.",
+						"Dread Lord! I shall stay polite. Barely.", "Demon King! A knight stays calm. Gulp." },
+					Neutral = "A crafter! My armor needs a dent fixed.",
+				},
+				Lean = {
+					TrueKnight = "A true knight's heart. Well done!",
+					RebelAngel = "A halo with a wink? Not very knightly!",
+					ProudRascal = "Trouble follows you. I follow too.",
+					SoftDevil = "A gentle Horn? A knight respects that.",
+					BalanceWalker = "Light or dark? I can't tell today.",
+				},
+			},
+			Folk3 = { -- the baker granny: warm, always offering a bun
+				Rank = {
+					Halo = { "Welcome, dear Squire! Have a bun.", "Knight! Come in, the buns are warm!", "Paladin! A fresh loaf for you!",
+						"A Saint in my shop! Take two!", "Archangel! My best cake is yours!" },
+					Horns = { "A Rascal! Eyes off the cookies, dear.", "Raider! Pay for the buns, please!", "Warlord! One bun each. No more!",
+						"Dread Lord! Even you want a muffin?", "Demon King! Sit. Eat. Be nice." },
+					Neutral = "A crafter! Can you fix my oven?",
+				},
+				Lean = {
+					TrueKnight = "Such a kind child. Here, a bun!",
+					RebelAngel = "A halo with a grin? Eat your crust.",
+					ProudRascal = "Trouble again? Sit and eat first.",
+					SoftDevil = "A nice Horn? Take extra jam!",
+					BalanceWalker = "Kind or naughty? Both like cake!",
+				},
+			},
+			Folk1 = { -- the juice man: jolly, fresh-squeezed puns
+				Rank = {
+					Halo = { "Squire! Fresh juice for the new face!", "Knight! Orange or berry?", "Paladin! Squeezed this morning, just for you!",
+						"A Saint! This one is on the house!", "Archangel! Best juice, best day!" },
+					Horns = { "A Rascal! No pouring it on heads!", "Raider! Pay first, then sip!", "Warlord! Easy on the cups, please!",
+						"Dread Lord! Berry juice looks great on you!", "Demon King! One juice, extra sweet!" },
+					Neutral = "A crafter! My juicer squeaks. Help?",
+				},
+				Lean = {
+					TrueKnight = "Always helping! Have a free sip!",
+					RebelAngel = "A halo and a grin? Fun mix!",
+					ProudRascal = "Trouble again? Juice first!",
+					SoftDevil = "A sweet devil! Mango for you!",
+					BalanceWalker = "Kind or sneaky? Mixed juice for you!",
+				},
+			},
+			PotionHalo = { -- the Halo potion seller: shiny bottles, careful with them
+				Rank = {
+					Halo = { "Welcome, Squire! Bottles are cheap today.", "Knight! Stay healthy out there!", "Paladin! You almost never need me!",
+						"A Saint! Even you drink water, right?", "Archangel! Please don't sneeze on my bottles!" },
+					Horns = { "A Rascal! No tasting the blue one!", "Raider! Pay for each bottle, please!", "Warlord! Don't squeeze my bottles!",
+						"Dread Lord! Red is for HP. Be gentle.", "Demon King! One potion, one coin. Fair?" },
+					Neutral = "A crafter! Want to swap recipes?",
+				},
+				Lean = {
+					TrueKnight = "A kind one! Take a sip of luck!",
+					RebelAngel = "A halo that winks? Hmm!",
+					ProudRascal = "Trouble again? Careful with the glass!",
+					SoftDevil = "A nice Horn! Rare, like my gold bottle.",
+					BalanceWalker = "Kind, sneaky, kind… keep it up!",
+				},
+			},
+		},
 	},
 }
 
 -- A23-64 ①: what one town person may say to the local player now (game dev 1's TownReact). p = { Faction, Honor, Infamy,
--- MyWay (the player attribute), TownPick (the player attribute), Town (the town person's Config.Zones id) }. Returns the
+-- MyWay (the player attribute), TownPick (the player attribute), Town (the town person's Config.Zones id), Npc (A23-113: the
+-- body's attribute HHC_TownNpc = its Config.TownNpcs entry id; the five Halo people have lines of their own, Text.Npc) }. Returns the
 -- lines to pick from (rank + lean + the town pick; empty = stay quiet) and the town pick's own line (nil = none) so a new
 -- pick can be said first. The town pick is said only in the player's own town (Town == Config.HomeZoneId(Faction)) and
 -- only to its quest's factions (StoryQuests.Defs[id].Factions; no Factions = everyone).
@@ -7070,13 +7169,32 @@ function Config.TownReactLines(p)
 	local f = p.Faction
 	if f ~= "Halo" and f ~= "Horns" and f ~= "Neutral" then return out, nil end
 	local _, rank = Config.GetTitle(f, tonumber(p.Honor) or 0, tonumber(p.Infamy) or 0)
-	local byRank = type(T.Rank) == "table" and T.Rank[f] or nil
-	if type(byRank) == "table" and #byRank > 0 then
-		for _, line in byRank[math.clamp(rank, 1, #byRank)] or {} do table.insert(out, line) end
+	-- A23-113 #6: a town person with lines of his / her own (T.Npc[p.Npc]: the five Halo Citadel people) says that one line of a
+	-- group instead of the shared ones; a group without an own line falls back to the shared lines
+	local own = type(p.Npc) == "string" and type(T.Npc) == "table" and type(T.Npc[p.Npc]) == "table" and T.Npc[p.Npc] or nil
+	local ownRank = own and type(own.Rank) == "table" and own.Rank[f] or nil
+	local ownLine = nil
+	if type(ownRank) == "string" then
+		ownLine = ownRank
+	elseif type(ownRank) == "table" and #ownRank > 0 then
+		ownLine = ownRank[math.clamp(rank, 1, #ownRank)]
+	end
+	if type(ownLine) == "string" then
+		table.insert(out, ownLine)
+	else
+		local byRank = type(T.Rank) == "table" and T.Rank[f] or nil
+		if type(byRank) == "table" and #byRank > 0 then
+			for _, line in byRank[math.clamp(rank, 1, #byRank)] or {} do table.insert(out, line) end
+		end
 	end
 	for id, name in type(Config.MyWay) == "table" and Config.MyWay.Names or {} do
-		if name == p.MyWay and type(T.Lean) == "table" then
-			for _, line in T.Lean[id] or {} do table.insert(out, line) end
+		if name == p.MyWay then
+			local ownLean = own and type(own.Lean) == "table" and own.Lean[id] or nil
+			if type(ownLean) == "string" then
+				table.insert(out, ownLean)
+			elseif type(T.Lean) == "table" then
+				for _, line in T.Lean[id] or {} do table.insert(out, line) end
+			end
 		end
 	end
 	local id, side = string.match(type(p.TownPick) == "string" and p.TownPick or "", "^([%w_]+):(%a+)$")

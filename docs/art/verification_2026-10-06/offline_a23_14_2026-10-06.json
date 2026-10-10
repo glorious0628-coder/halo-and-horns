@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3975,
+  "checks": 5926,
   "failedChecks": 0,
-  "namedChecks": 231,
+  "namedChecks": 275,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -214,7 +214,7 @@
     {
       "group": "dailies-generate",
       "check": "Lv25 kill daily = 50-60 skeletons (old sizes)",
-      "pass": 9,
+      "pass": 8,
       "fail": 0
     },
     {
@@ -550,7 +550,7 @@
     {
       "group": "dailies-woods",
       "check": "every woods row reuses a template Id with exact Targets",
-      "pass": 8,
+      "pass": 9,
       "fail": 0
     },
     {
@@ -574,7 +574,13 @@
     {
       "group": "dailies-woods",
       "check": "kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)",
-      "pass": 94,
+      "pass": 86,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "no goose daily for the guild",
+      "pass": 48,
       "fail": 0
     },
     {
@@ -585,20 +591,14 @@
     },
     {
       "group": "dailies-woods",
-      "check": "no goose daily for the guild",
-      "pass": 20,
-      "fail": 0
-    },
-    {
-      "group": "dailies-woods",
       "check": "Hunt: Halo, Lv15+ (no Sprout Shield) only",
-      "pass": 9,
+      "pass": 12,
       "fail": 0
     },
     {
       "group": "dailies-woods",
       "check": "Plunder: Horns, Lv15+ (no Sprout Shield) only",
-      "pass": 9,
+      "pass": 12,
       "fail": 0
     },
     {
@@ -669,6 +669,270 @@
     },
     {
       "group": "dailies-woods",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "the guarantee starts at Lv10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Goose is a non-hunting template",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Hunt is a non-hunting template",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Plunder is a non-hunting template",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Choice is a non-hunting template",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Kill is hunting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Golden is hunting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Gold is hunting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Release is hunting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Choice: one choice, its text, a short name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "the woods band has a Choice row (target 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv10 Halo: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "no choice source on: no Choice daily",
+      "pass": 900,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "... and the three goals still differ",
+      "pass": 300,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv17 Halo: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv24 Halo: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv30 Halo: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv60 Halo: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv10 Horns: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv17 Horns: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv24 Horns: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv30 Horns: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv60 Horns: at least one of the 3 is not hunting",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "the first slot is not forced to be non-hunting (5 of 60)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "a set with a non-hunting slot among the first two does not always get a third (18 of 128)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Neutral with no choice source: all hunting, unchanged",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv1: the meadow set of 3 is unchanged (all hunting)",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv5: the meadow set of 3 is unchanged (all hunting)",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv9: the meadow set of 3 is unchanged (all hunting)",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv12: the Choice daily is one choice, paid like any daily of its band",
+      "pass": 80,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "(and the Choice slot is the non-hunting one)",
+      "pass": 160,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv40: the Choice daily is one choice, paid like any daily of its band",
+      "pass": 80,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "with a choice source on the Choice daily shows up (Lv12 and Lv40; the guild has no other non-hunting kind)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "LostFound on: the Choice daily can be made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "KillCard on: the Choice daily can be made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Board on: the Choice daily can be made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "a Lv12 world with a Choice daily",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "a bad player does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "a deed fills the Choice daily (even a pick that moved no points)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "a finished Choice stays at its target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "the Choice daily can be claimed and pays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "the source went off: the unfinished Choice daily is remade as another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -1403,9 +1667,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 72,
-    "applied": 72,
-    "caught": 72,
+    "total": 87,
+    "applied": 87,
+    "caught": 87,
     "results": [
       {
         "mutation": "A23-71: a skill daily before the first skill",
@@ -1432,9 +1696,10 @@
         "newFailingChecks": [
           "a23-71 skill dailies :: an unfinished skill daily without a skill: remade at join, the reward kept",
           "a23-71 skill dailies :: the remade daily is the King Slime row (S9: slimes and gold are taken)",
-          "a23-71 skill dailies :: the remade daily is what the list shows"
+          "a23-71 skill dailies :: the remade daily is what the list shows",
+          "dailies-nonhunt (A23-113 #8) :: the source went off: the unfinished Choice daily is remade as another kind"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "A23-71: a remade daily loses its reward",
@@ -1552,12 +1817,13 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-day-change :: the new day is generated in the current (Lv10, woods) band",
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting",
           "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
           "dailies-woods :: a woods daily pays HuntValue(level, 3)",
-          "dailies-woods :: kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)",
-          "dailies-woods :: the target comes from a woods row"
+          "dailies-woods :: kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 7
       },
       {
         "mutation": "strict king-slime row counts slimes as fractions",
@@ -1613,10 +1879,10 @@
           "a23-71 skill dailies :: Lv5: kill / skill / gold again",
           "a23-71 skill dailies :: a Lv3 who kept Q: kill / skill / gold",
           "dailies-generate :: Lv1-9: three different dailies (kill / skill / gold)",
-          "dailies-progress :: group ran to the end without a Lua error",
-          "dailies-woods :: Lv10-24: three different dailies"
+          "dailies-nonhunt (A23-113 #8) :: ... and the three goals still differ",
+          "dailies-progress :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "S9: the third rookie row may repeat the King Slime",
@@ -1698,10 +1964,10 @@
           "board-switch :: group ran to the end without a Lua error",
           "dailies-day-change :: group ran to the end without a Lua error",
           "dailies-generate :: group ran to the end without a Lua error",
-          "dailies-progress :: group ran to the end without a Lua error",
-          "dailies-reroll-band :: group ran to the end without a Lua error"
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-progress :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "daily gate: the intro flag does not open them",
@@ -1717,7 +1983,7 @@
           "board-switch :: group ran to the end without a Lua error",
           "dailies-generate :: DailyLevel / DailyDay record the generation band"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 24
       },
       {
         "mutation": "daily gate: an old save is locked",
@@ -1889,10 +2155,10 @@
           "board-switch :: no service warnings (pcall-swallowed handler errors)",
           "dailies-day-change :: no service warnings (pcall-swallowed handler errors)",
           "dailies-generate :: no service warnings (pcall-swallowed handler errors)",
-          "dailies-progress :: no service warnings (pcall-swallowed handler errors)",
-          "dailies-reroll-band :: no service warnings (pcall-swallowed handler errors)"
+          "dailies-nonhunt (A23-113 #8) :: no service warnings (pcall-swallowed handler errors)",
+          "dailies-progress :: no service warnings (pcall-swallowed handler errors)"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 12
       },
       {
         "mutation": "daily gate: any quest opens them",
@@ -2197,13 +2463,13 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-day-change :: the new day is generated in the current (Lv10, woods) band",
+          "dailies-nonhunt (A23-113 #8) :: Lv12: the Choice daily is one choice, paid like any daily of its band",
           "dailies-woods :: a Goblin Brute daily shows up",
           "dailies-woods :: a Lv24 set claimed at Lv25: the woods chest",
           "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
-          "dailies-woods :: a rerolled woods daily stays a woods daily",
-          "dailies-woods :: a woods daily pays HuntValue(level, 3)"
+          "dailies-woods :: a rerolled woods daily stays a woods daily"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "the woods band reaches Lv25",
@@ -2225,12 +2491,13 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-day-change :: the new day is generated in the current (Lv10, woods) band",
+          "dailies-nonhunt (A23-113 #8) :: Lv12: the Choice daily is one choice, paid like any daily of its band",
           "dailies-woods :: a Lv24 set claimed at Lv25: the woods chest",
           "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
           "dailies-woods :: a rerolled woods daily stays a woods daily",
           "dailies-woods :: a woods daily pays HuntValue(level, 3)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "the woods chest pays the Lv25 chest",
@@ -2365,6 +2632,204 @@
           "board-switch :: on: a rebirth keeps the empty slots empty"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "A23-113: no non-hunting daily guarantee",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv17 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv17 Horns: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv24 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv24 Horns: at least one of the 3 is not hunting"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "A23-113: the guarantee only from Lv20",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv17 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv17 Horns: at least one of the 3 is not hunting",
+          "dailies-woods :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "A23-113: the guarantee on the first slot too",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: the first slot is not forced to be non-hunting (60 of 60)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "A23-113: another non-hunting slot is forced anyway",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: a set with a non-hunting slot among the first two does not always get a third (122 of 128)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "A23-113: a Choice daily with no source on",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Neutral with no choice source: all hunting, unchanged",
+          "dailies-nonhunt (A23-113 #8) :: no choice source on: no Choice daily",
+          "dailies-nonhunt (A23-113 #8) :: the source went off: the unfinished Choice daily is remade as another kind"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "A23-113: the job board is no choice source",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Board on: the Choice daily can be made"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "A23-113: the lost things are no choice source",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: LostFound on: the Choice daily can be made",
+          "dailies-nonhunt (A23-113 #8) :: a Lv12 world with a Choice daily",
+          "dailies-nonhunt (A23-113 #8) :: with a choice source on the Choice daily shows up (Lv12 and Lv40; the guild has no other non-hunting kind)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "A23-113: kill cards are no choice source",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: KillCard on: the Choice daily can be made"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "A23-113: a deed never fills the Choice daily",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: a deed fills the Choice daily (even a pick that moved no points)",
+          "dailies-nonhunt (A23-113 #8) :: a finished Choice stays at its target",
+          "dailies-nonhunt (A23-113 #8) :: the Choice daily can be claimed and pays"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "A23-113: a deed fills the goose daily",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: a deed fills the Choice daily (even a pick that moved no points)",
+          "dailies-nonhunt (A23-113 #8) :: a finished Choice stays at its target",
+          "dailies-nonhunt (A23-113 #8) :: the Choice daily can be claimed and pays"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "A23-113 config: Goose is hunting",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Goose is a non-hunting template",
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "A23-113 config: Choice is hunting",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: (and the Choice slot is the non-hunting one)",
+          "dailies-nonhunt (A23-113 #8) :: Choice is a non-hunting template"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "A23-113 config: the guarantee from Lv30",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv17 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv17 Horns: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv24 Halo: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: Lv24 Horns: at least one of the 3 is not hunting"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "A23-113 config: the woods have no Choice row",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Board on: the Choice daily can be made",
+          "dailies-nonhunt (A23-113 #8) :: KillCard on: the Choice daily can be made",
+          "dailies-nonhunt (A23-113 #8) :: LostFound on: the Choice daily can be made",
+          "dailies-nonhunt (A23-113 #8) :: a Lv12 world with a Choice daily",
+          "dailies-nonhunt (A23-113 #8) :: the woods band has a Choice row (target 1)",
+          "dailies-nonhunt (A23-113 #8) :: with a choice source on the Choice daily shows up (Lv12 and Lv40; the guild has no other non-hunting kind)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "A23-113 config: the Choice daily needs two choices",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-nonhunt (A23-113 #8) :: Lv12: the Choice daily is one choice, paid like any daily of its band",
+          "dailies-nonhunt (A23-113 #8) :: a deed fills the Choice daily (even a pick that moved no points)",
+          "dailies-nonhunt (A23-113 #8) :: a finished Choice stays at its target",
+          "dailies-nonhunt (A23-113 #8) :: the woods band has a Choice row (target 1)"
+        ],
+        "newFailingCount": 4
       }
     ]
   },
@@ -2372,14 +2837,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "33c86e616147b90247bfa72159552b8e02419d29d88363fc071ac4c0213d134f",
-    "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
-    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
-    "src/ServerScriptService/QuestService.luau": "79230111318f47d572419b94a7aa253e286429c0d275948536b9655ff86320c2",
+    "src/ReplicatedStorage/Shared/Config.luau": "7a057592afed2986d5775033df83a4863b1c813ef9b98b169e62c0a32a63ecc3",
+    "src/ReplicatedStorage/Shared/Net.luau": "7cf8e277fe2267425e3f51e200aca951f0ada9900137e3c7fab4b78396dc81b0",
+    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
+    "src/ServerScriptService/QuestService.luau": "21e758c5696b07f1ce6c8c5b2e135ea5dfc6a151b452034253772d0d0b53e9e2",
     "src/ServerScriptService/GooseService.luau": "4f7593b4c7e070e23ad97f74647a6cdd29029a7752267452b35bf6e17eb8465f",
     "src/ServerScriptService/ClassService.luau": "6d4735d865cdcd48702a083b4ac84eb4374ee4c7377ee0f494d0075698222448"
   },
-  "fixtureSHA256": "5b35ec15ce63de8868698be1af35f25a68fc9f7353160f5d17fa26fa618d16c3",
+  "fixtureSHA256": "bf996072102e8515ac45b56fb15b60e8c86837e7ce760b516a029daff6073589",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
