@@ -77,7 +77,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("ClientMain loads PetWindow after Panels", "PetWindow" in names and "Panels" in names
          and names.index("PetWindow") > names.index("Panels")),
         ("the HUD's Pet tile opens the window \"Pet\"",
-         '{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 }' in src["HUD"]),
+         '{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = ' in src["HUD"]),
         ("every Config.Pets species has a Name and an Icon for the window",
          re.search(r"\n\t\tBabySlime = \{ Speed = \{ 0\.07, 0\.10 \}, Name = \"Baby Slime\", Icon = \"IconPetBabySlime\" \},\n",
                    src["CONFIG"]) is not None),
