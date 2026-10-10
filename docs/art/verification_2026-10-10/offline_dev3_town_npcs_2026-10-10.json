@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 167,
+  "checks": 168,
   "failedChecks": 0,
-  "namedChecks": 132,
+  "namedChecks": 133,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -214,6 +214,12 @@
     {
       "group": "config",
       "check": "Sir Gleam is named by a quest step (H3's first card) and has a body",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H3's first card is talked through Sir Gleam",
       "pass": 1,
       "fail": 0
     },
@@ -1058,7 +1064,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: Sir Gleam is named by a quest step (H3's first card) and has a body"
+          "config :: H3's first card is talked through Sir Gleam"
         ],
         "newFailingCount": 1
       },
@@ -2128,10 +2134,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3a608a778fcbfc747f3d5ff97dfff0e621a133d5e6aa32a5101ffb8d600d0199",
+    "src/ReplicatedStorage/Shared/Config.luau": "0846ca3d06216654d23f43393e4252a0a9d2dc68e020bbc1cdfa81670ee26f2b",
     "src/ServerScriptService/TownNpcs.luau": "4ff53bc75659ccd39cd7974b8062daa1714f458feac8605fd1dc7be5471f106d"
   },
-  "fixtureSHA256": "3e3056483013a01110853bd08db3497c40466b2d37b0f7518d1754b305d115e2",
+  "fixtureSHA256": "addd76e5970580221af881ec91bdb4a1c3393c87b2ee3489ebebcc6ff4337fbb",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

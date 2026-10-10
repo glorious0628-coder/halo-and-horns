@@ -290,6 +290,48 @@ local MOTION = {
 			{ 0.29, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
+		-- A23-108 (docs/design/class_grips_a23_108_2026-10-10.md, Halo first - the town now): the Paladin's straight
+		-- downward cut - the sword up over the right shoulder, the shield arm forward the whole time, a clean vertical
+		-- strike at the same contact time as WarriorSwing (SLASH_CONTACT 0.23), a short settle
+		PaladinSwing = { Len = 0.68, Keys = {
+			{ 0, "Out", {} },
+			{ 0.1, "Out", { Waist = { 6, -8, 0 }, Neck = { -3, 6, 0 }, RightShoulder = { 128, -6, 14 }, RightElbow = { 70, 0, 0 }, RightWrist = { -55, 0, 6 }, LeftShoulder = { 52, 0, -12 }, LeftElbow = { 68, 0, 0 } } },
+			{ 0.17, "InOut", { Waist = { 10, -12, 0 }, Neck = { -4, 8, 0 }, RightShoulder = { 158, -6, 12 }, RightElbow = { 84, 0, 0 }, RightWrist = { -70, 0, 6 }, LeftShoulder = { 58, 0, -12 }, LeftElbow = { 70, 0, 0 } } },
+			{ 0.23, "In", { Waist = { -12, 6, 0 }, Neck = { 6, -4, 0 }, RightShoulder = { 46, 0, -6 }, RightElbow = { 6, 0, 0 }, RightWrist = { -72, 0, 0 }, LeftShoulder = { 56, 0, -10 }, LeftElbow = { 66, 0, 0 } } },
+			{ 0.32, "Out", { Waist = { -14, 6, 0 }, Neck = { 7, -4, 0 }, RightShoulder = { 24, 0, -10 }, RightElbow = { 14, 0, 0 }, RightWrist = { -50, 0, 0 }, LeftShoulder = { 52, 0, -10 }, LeftElbow = { 64, 0, 0 } } },
+			{ 0.48, "InOut", { Waist = { -4, 2, 0 }, RightShoulder = { 22, 0, 0 }, RightElbow = { 30, 0, 0 }, LeftShoulder = { 34, 0, -10 }, LeftElbow = { 56, 0, 0 } } },
+			{ 0.68, "InOut", {} },
+		} },
+		-- A23-108: the Light Mage's cast - the left palm pushes the light forward while the staff tip points (the right
+		-- wrist is still solved onto the target by Feel.staffPose); the same cast time as MageSwing (CAST_DELAY 0.24)
+		LightMageSwing = { Len = 0.68, Keys = {
+			{ 0, "Out", {} },
+			{ 0.1, "Out", { Waist = { 6, -10, 0 }, Neck = { -2, 6, 0 }, RightShoulder = { 30, -6, 12 }, RightElbow = { 36, 0, 0 }, RightWrist = { -62, 0, 6 }, LeftShoulder = { 48, 6, -26 }, LeftElbow = { 92, 0, 0 }, LeftWrist = { -40, 0, -10 } } },
+			{ 0.19, "InOut", { Waist = { 10, -14, 0 }, Neck = { -3, 9, 0 }, RightShoulder = { 34, -6, 12 }, RightElbow = { 38, 0, 0 }, RightWrist = { -72, 0, 6 }, LeftShoulder = { 56, 6, -30 }, LeftElbow = { 100, 0, 0 }, LeftWrist = { -55, 0, -10 } } },
+			{ 0.24, "In", { Waist = { -8, 8, 0 }, Neck = { 4, -5, 0 }, RightShoulder = { 40, 0, -6 }, RightElbow = { 6, 0, 0 }, RightWrist = { -122, 0, -4 }, LeftShoulder = { 88, 0, -8 }, LeftElbow = { 8, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.36, "Out", { Waist = { -6, 6, 0 }, Neck = { 3, -3, 0 }, RightShoulder = { 36, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -112, 0, -2 }, LeftShoulder = { 80, 0, -8 }, LeftElbow = { 14, 0, 0 }, LeftWrist = { -70, 0, 0 } } },
+			{ 0.5, "InOut", { Waist = { 0, 2, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { -35, 0, 0 }, LeftShoulder = { 30, 0, -12 }, LeftElbow = { 50, 0, 0 } } },
+			{ 0.68, "InOut", {} },
+		} },
+		-- A23-108 ⑤ Q (Shockwave) for the Paladin: both hands on the hilt, the sword raised high over the head, then
+		-- driven down into the ground in front (the light ring) on RELEASE_CONTACT.Warrior (0.24)
+		PaladinRelease = { Len = 0.7, Keys = {
+			{ 0, "Out", {} },
+			{ 0.16, "Out", { Waist = { 16, 0, 0 }, Neck = { -10, 0, 0 }, RightShoulder = { 170, 0, 6 }, RightElbow = { 70, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 168, 0, -6 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.24, "In", { Waist = { -34, 0, 0 }, Neck = { 16, 0, 0 }, RightShoulder = { 62, 0, -14 }, RightElbow = { 8, 0, 0 }, RightWrist = { -88, 0, 0 }, LeftShoulder = { 60, 0, 14 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -88, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -28, 0, 0 }, Neck = { 14, 0, 0 }, RightShoulder = { 54, 0, -12 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 52, 0, 12 }, LeftElbow = { 12, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.7, "InOut", {} },
+		} },
+		-- A23-108 ⑤ Q (Meteor) for the Light Mage: the staff lifted to the sky (calling the light), then brought down
+		-- toward the target on RELEASE_CONTACT.Mage / RELEASE_LAUNCH.Mage (0.35); the left palm opens up then forward
+		LightMageRelease = { Len = 0.75, Keys = {
+			{ 0, "Out", {} },
+			{ 0.15, "Out", { Waist = { 14, -6, 0 }, Neck = { 18, 4, 0 }, RightShoulder = { 150, -6, 18 }, RightElbow = { 30, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 70, 0, -30 }, LeftElbow = { 60, 0, 0 }, LeftWrist = { -60, 0, -10 } } },
+			{ 0.33, "InOut", { Waist = { 18, -8, 0 }, Neck = { 22, 6, 0 }, RightShoulder = { 168, -6, 16 }, RightElbow = { 18, 0, 0 }, RightWrist = { -24, 0, 0 }, LeftShoulder = { 96, 0, -26 }, LeftElbow = { 40, 0, 0 }, LeftWrist = { -70, 0, -10 } } },
+			{ 0.35, "In", { Waist = { -18, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 44, 0, 6 }, RightElbow = { 4, 0, 0 }, RightWrist = { -120, 0, 0 }, LeftShoulder = { 84, 0, -8 }, LeftElbow = { 6, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.55, "Out", { Waist = { -14, 0, 0 }, Neck = { 5, 0, 0 }, RightShoulder = { 60, 0, 6 }, RightElbow = { 6, 0, 0 }, LeftShoulder = { 64, 0, -8 }, LeftElbow = { 8, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
 		-- A23-34 bare hands: guard up, a straight right jab with the torso turning into it, back to rest (~0.45 s)
 		PunchSwing = { Len = 0.45, Keys = {
 			{ 0, "Out", {} },
@@ -312,6 +354,13 @@ local MOTION = {
 			{ 0.5, "InOut", {} },
 		} },
 	},
+	-- A23-108: a class x side's own clips (Config.ClassGripKey of the attacker's class and Faction attribute) over
+	-- CLASS_CLIPS; a move it has none for stays the class's. Halo first (the town now): the Ranger keeps the upright
+	-- ArcherSwing draw (its bow solve), the others follow in their zones' turns
+	SIDE_CLIPS = {
+		Warrior_Halo = { Swing = "PaladinSwing", Release = "PaladinRelease" },
+		Mage_Halo = { Swing = "LightMageSwing", Release = "LightMageRelease" },
+	},
 	CLASS_CLIPS = {
 		Warrior = { Swing = "WarriorSwing", Release = "WarriorRelease" },
 		Mage = { Swing = "MageSwing", Release = "MageRelease" },
@@ -326,6 +375,17 @@ local MOTION = {
 		PetDash = { Release = "MageRelease" },
 	},
 }
+
+-- A23-108: the clips of a character's class x side (MOTION.SIDE_CLIPS over CLASS_CLIPS), nil without a row
+function MOTION.SideClips(char, classId)
+	local ok, p = pcall(function() return typeof(char) == "Instance" and Players:GetPlayerFromCharacter(char) or nil end)
+	p = ok and p or nil
+	local key = p and type(Config.ClassGripKey) == "function" and Config.ClassGripKey(classId, p:GetAttribute("Faction")) or nil
+	local row = key and MOTION.SIDE_CLIPS[key] or nil
+	if type(row) ~= "table" then return nil end
+	local base = MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior
+	return { Swing = row.Swing or base.Swing, Release = row.Release or base.Release }
+end
 
 -- A14-4 combat feel: functions and state live in this one table (Luau's 200-locals limit); defined further below
 local Feel = {
@@ -2932,6 +2992,7 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	local style = type(data.Style) == "string" and MOTION.STYLE_CLIPS[data.Style] and data.Style or nil
 	local names = style and MOTION.STYLE_CLIPS[style] or MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior
 	if style == "PetHeadbutt" and MOTION.PetDrawn(data) then names = MOTION.STYLE_CLIPS.PetCommand end
+	if not style then names = MOTION.SideClips(char, classId) or names end -- A23-108: the class x side's own moves
 	local name = names[which] or (MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior)[which]
 	local clip = name and Feel.Clips[name]
 	if not clip then return false end

@@ -139,6 +139,9 @@ def statics(src: dict) -> list[dict]:
          and "return st ~= nil and Feel.Active[st] == true" in src["FX"]},
         {"check": "the pose steps aside while Fx animates", "ok": "if animating(char) then" in src["WP"]},
         {"check": "it writes in PreSimulation (after the Animator, like Fx's clips)", "ok": "sig = RunService.PreSimulation" in src["WP"]},
+        {"check": "메인 반영 10/10: upgraded avatar joints (AnimationConstraint) are found, preferred over a Motor6D", "ok":
+         'if d:IsA("AnimationConstraint") then' in src["WP"] and "a1.Parent == part and a0.Parent == parent" in src["WP"]
+         and 'if d:IsA("AnimationConstraint") then return d end' in src["WP"]},
         {"check": "ClientMain loads WeaponPose after Fx", "ok": "WeaponPose" in names and "Fx" in names
          and names.index("WeaponPose") > names.index("Fx")},
     ]

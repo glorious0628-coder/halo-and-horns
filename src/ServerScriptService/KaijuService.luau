@@ -206,13 +206,22 @@ local function isEligible(p)
 	return isReady(p) and factionOf(p) == "Horns" and starsOf(p) >= Config.Kaiju.StarsNeeded
 end
 
+-- 빛 마을 점검 #41 / A23-103 (검수 2026-10-10): a Halo player standing in a faction town cannot hit the kaiju
+-- (PvPService.CanAttack), so it does not raise the kaiju's HP either (the Crossroads still counts)
+local function inFactionTown(v)
+	local pvp = S and S.PvPService
+	if type(pvp) ~= "table" or type(pvp.InFactionTown) ~= "function" then return false end
+	local ok, inTown = pcall(pvp.InFactionTown, v)
+	return ok and inTown == true
+end
+
 local function countNearbyHalo(p)
 	local root = Util.GetRoot(p)
 	if not root then return 0 end
 	local pos = root.Position
 	local n = 0
 	for _, v in readyPlayers() do
-		if v ~= p and factionOf(v) == "Halo" and Util.IsAlive(v) then
+		if v ~= p and factionOf(v) == "Halo" and Util.IsAlive(v) and not inFactionTown(v) then
 			local r = Util.GetRoot(v)
 			if r and Util.FlatDistance(r.Position, pos) <= Config.Kaiju.NearbyRadius then
 				n += 1

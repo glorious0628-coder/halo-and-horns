@@ -341,6 +341,12 @@ function M.BuyPotion(player, kind, amount)
 	S.PlayerService.SetStat(player, key, count + amount)
 	S.PlayerService.MarkActive(player)
 	Net.Notify(player, string.format(Config.Text.PotionBought, kind, amount), "good", nil, "Spend")
+	-- A23-110: the King's Hop quest waits for the first purchase (a failed buy never gets here)
+	local story = S.StoryQuestService
+	if type(story) == "table" and type(story.Event) == "function" then
+		local okEvent, errEvent = pcall(story.Event, player, "PotionBought", { Kind = kind, N = amount })
+		if not okEvent then Util.Warn("ShopService", "PotionBought event: " .. tostring(errEvent)) end
+	end
 	return true, "Bought"
 end
 

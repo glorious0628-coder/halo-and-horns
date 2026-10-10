@@ -7002,5 +7002,243 @@
     "art/models/tripo/web/Halo_Tower_v2_HD_LOD.glb"
    ]
   }
+ ],
+ "HaloPart_GateTowerL_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f759047e-2a0c-4a30-8efd-c414e4233d46",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 23080,
+   "file": "art/models/tripo/web/HaloPart_GateTowerL_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts). 4 views, slots mixed (front got the left image, back empty) — cylinder, result fine",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateTowerL_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_GateTowerR_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "31734b72-af35-4326-adf7-7d37a3bc45ff",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 23025,
+   "file": "art/models/tripo/web/HaloPart_GateTowerR_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts).",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateTowerR_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_GateDomeL_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "5e841bf8-1258-4d39-b20e-9f2d571fab78",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22970,
+   "file": "art/models/tripo/web/HaloPart_GateDomeL_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts).",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateDomeL_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_GateDomeR_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f0be08ea-e9e1-4964-8803-c22c48b729b0",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22915,
+   "file": "art/models/tripo/web/HaloPart_GateDomeR_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts).",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateDomeR_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_GateArch_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f8a98433-bd07-4f9c-a667-c4e51d99a333",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22860,
+   "file": "art/models/tripo/web/HaloPart_GateArch_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts).",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateArch_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_GateDoorLeafL_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "68152f48-6f41-46eb-bd2f-ca4dc601d0b4",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22805,
+   "file": "art/models/tripo/web/HaloPart_GateDoorLeafL_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts). front+back",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateDoorLeafL_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_GateDoorLeafR_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "c031dcb0-620f-4bf3-8539-35049d3d8d19",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22750,
+   "file": "art/models/tripo/web/HaloPart_GateDoorLeafR_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts). front+back",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateDoorLeafR_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_CathStairs_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f547ac1b-3f42-4fc2-a359-5508ce545a8b",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22695,
+   "file": "art/models/tripo/web/HaloPart_CathStairs_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts).",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathStairs_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_CathDoorFrame_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "ad00f34e-8d67-4572-8255-5e23cb75a612",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22640,
+   "file": "art/models/tripo/web/HaloPart_CathDoorFrame_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts).",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathDoorFrame_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_CathDoorLeaf_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "9584a75d-9adf-4e24-bf47-4bcc71cf0eeb",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22585,
+   "file": "art/models/tripo/web/HaloPart_CathDoorLeaf_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts). front+back",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathDoorLeaf_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_CathWindow_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "01863273-d7fc-4b1c-8eb5-d401a18df88e",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22530,
+   "file": "art/models/tripo/web/HaloPart_CathWindow_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts). front+back",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathWindow_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_TowerBody_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "683042f6-6a3d-4dbd-9621-c5fe0de11182",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22475,
+   "file": "art/models/tripo/web/HaloPart_TowerBody_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts).",
+   "derived": [
+    "art/models/tripo/web/HaloPart_TowerBody_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_TowerDoorLeaf_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "222048b9-667d-4274-be33-fdcf693abff7",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22420,
+   "file": "art/models/tripo/web/HaloPart_TowerDoorLeaf_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts). front+back",
+   "derived": [
+    "art/models/tripo/web/HaloPart_TowerDoorLeaf_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_TowerWindow_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "dd044a91-0bec-4a9b-b25c-993c5c2ca127",
+   "at": "2026-10-10 13:20~14:45",
+   "balance_after": 22365,
+   "file": "art/models/tripo/web/HaloPart_TowerWindow_HD_src.glb",
+   "note": "빛 마을 부품별 새로 만들기(A23-107 보강, 이미지 생성 2 부품 2D art/out/s2/halo/parts). front+back",
+   "derived": [
+    "art/models/tripo/web/HaloPart_TowerWindow_HD_LOD.glb"
+   ]
+  }
  ]
 }

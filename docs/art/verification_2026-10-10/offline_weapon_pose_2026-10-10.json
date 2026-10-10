@@ -15,6 +15,10 @@
       "ok": true
     },
     {
+      "check": "메인 반영 10/10: upgraded avatar joints (AnimationConstraint) are found, preferred over a Motor6D",
+      "ok": true
+    },
+    {
       "check": "ClientMain loads WeaponPose after Fx",
       "ok": true
     }

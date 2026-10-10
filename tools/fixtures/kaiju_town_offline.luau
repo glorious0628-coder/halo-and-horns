@@ -70,4 +70,24 @@ runGroup("rookies and others", function()
 	check(w.PvP.CanAttack(r, hk) ~= true, "a Horns player in the Crossroads vs an Active Halo body: no exception (Halo only)")
 end)
 
+------------------------------------------------------------------ 4. the kaiju's HP: only Halo players who can fight it count
+runGroup("kaiju HP count", function()
+	local w = rankWorld()
+	local count = execute("KaijuService.countNearbyHalo", KAIJU_COUNT_EXTRACT, w:Env(), w.Config, w.Util, w.Registry,
+		function() return w.PS.GetReadyPlayers() end, function(p) return p:GetAttribute("Faction") or "None" end)
+	local k = w:Join(301, "Horns")
+	k:SetAttribute("KaijuState", "Active")
+	place(w, k, "SlimeMeadow")
+	local a, b, c = w:Join(302, "Halo"), w:Join(303, "Halo"), w:Join(304, "Halo") -- every body stands at the origin
+	place(w, a, "SlimeMeadow")
+	place(w, b, "Crossroads")
+	place(w, c, "HaloTown")
+	check(count(k) == 2, "Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+		count(k))
+	place(w, c, "SlimeMeadow")
+	check(count(k) == 3, "the same player out of town counts again", count(k))
+	place(w, a, "HornsTown")
+	check(count(k) == 2, "a Halo player standing in Horns Den does not count either", count(k))
+end)
+
 finish()
