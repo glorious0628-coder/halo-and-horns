@@ -373,6 +373,7 @@ function LootService.RollKill(player, info)
 	local data = getData(player)
 	if not data or type(info) ~= "table" or type(info.Kind) ~= "string" then return nil end
 	if info.Minor == true then return nil end -- a free rider's share (MonsterService MinorShare): XP / gold only
+	if info.Practice == true then return nil end -- A23-110: the retry King (a practice King): no boss drops (the quest pays)
 	ensureTables(data)
 	-- P7: the first kill of a kind reveals its drop table in the item list
 	local seenKey = "Seen:" .. info.Kind

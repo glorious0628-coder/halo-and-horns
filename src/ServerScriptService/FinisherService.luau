@@ -183,6 +183,7 @@ end
 
 local function onKilled(player, info)
 	if type(info) ~= "table" or info.Manual ~= true then return end
+	if info.Practice == true then return end -- A23-110: the retry King (a practice personal King) is no field boss
 	if type(info.Kind) ~= "string" or type(F.Kinds) ~= "table" or F.Kinds[info.Kind] ~= true then return end
 	if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
 	offer(player, info.Kind)

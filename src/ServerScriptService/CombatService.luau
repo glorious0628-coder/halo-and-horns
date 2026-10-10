@@ -1289,10 +1289,45 @@ local function sendKO(victim, killer, ctx, carriedBefore, died)
 	CombatService.KnockedOut:Fire(victim, by)
 end
 
+-- A23-110: the lossless first KO (FirstKOService.ClaimKO: the King Slime's one hit on the quest step, once per account,
+-- only when nothing is at stake)
+-- -> { RespawnIn = s } or nil
+local function claimFirstKO(victim, diedAt)
+	local svc = S.FirstKOService
+	if type(svc) ~= "table" or type(svc.ClaimKO) ~= "function" then return nil end
+	local ok, first = pcall(svc.ClaimKO, victim, diedAt)
+	if not ok then
+		loopWarn("FirstKO", first)
+		return nil
+	end
+	return type(first) == "table" and first or nil
+end
+
+-- A23-110: the short KO screen of the first KO (owner only): the King's name, nothing lost, no tip, First = true. The KO
+-- is not counted (data.KOs) and nothing else of the pipeline runs (no sack, bounty, PvP KO or ranking)
+local function sendFirstKO(victim, first)
+	local src = lastSource[victim]
+	local def = src and Config.MonsterTypes[src.Kind]
+	local fx = { By = def and "Monster" or "Other", Name = def and def.Name or "", Faction = "", Lost = 0, Sack = false,
+		RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true }
+	Net.Fx(victim, "KO", fx)
+	CombatService.KnockedOut:Fire(victim, def and "Monster" or "Other")
+end
+
 local function runDeathPipeline(victim, diedAt, died)
 	if victim.Parent == nil then
 		-- the victim already left: leave flows (GrudgeService / ProgressionService) handle it
 		lastPvPAttacker[victim] = nil
+		return
+	end
+
+	-- A23-110: the first KO loses nothing: only its KO screen, then the attacker / source are forgotten
+	local first = claimFirstKO(victim, diedAt)
+	if first then
+		pipelineCall("CombatService.sendFirstKO", sendFirstKO, victim, first)
+		resetLegacyCharge(victim)
+		lastPvPAttacker[victim] = nil
+		lastSource[victim] = nil
 		return
 	end
 

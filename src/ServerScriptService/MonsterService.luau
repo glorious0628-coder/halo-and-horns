@@ -1118,6 +1118,16 @@ local function spawnMonster(kind, opts)
 		Alive = true,
 		Owner = owner,
 		Event = opts.Event == true or nil, -- spawned by SpawnEvent: outside the regular pool, never respawns
+		-- A23-110 (FirstKOService): a quiet personal monster's kill fires no MonsterKilled (no XP, gold, drops, cards, quest
+		-- kills or boss counts); _onKilled(rec) tells its service of the kill (instead of MonsterKilled when quiet, after it
+		-- otherwise); _strike(rec, target) deals its landed hits instead of Def.Damage
+		Quiet = (owner ~= nil and opts.Quiet == true) or nil,
+		_strike = (owner ~= nil and type(opts.Strike) == "function") and opts.Strike or nil,
+		_onKilled = (owner ~= nil and type(opts.OnKilled) == "function") and opts.OnKilled or nil,
+		-- A23-110: a practice personal monster (FirstKOService's retry King): its kill carries info.Practice = true (no
+		-- finisher card, no drops) and pays the XP / gold of the kind opts.Practice names (else its own kind's)
+		Practice = (owner ~= nil and opts.Practice ~= nil and opts.Practice ~= false)
+			and ((type(opts.Practice) == "string" and Config.MonsterTypes[opts.Practice] ~= nil) and opts.Practice or kind) or nil,
 		-- private
 		_fill = rig.Fill,
 		_scale = rig.Scale,
@@ -1287,6 +1297,18 @@ local function killRecord(rec)
 	rec.HP = 0
 	records[rec.Id] = nil
 	updateBar(rec)
+	if rec.Quiet == true then
+		-- A23-110: a quiet personal monster (FirstKOService's King) pays nothing and counts nowhere; its service hears it
+		rec._contributors, rec._hits, rec._dmg = {}, {}, {}
+		rec._manualAt = nil
+		deathPop(rec, true)
+		removePersonalRef(rec)
+		if rec._onKilled then
+			local ok, err = pcall(rec._onKilled, rec)
+			if not ok then warnThrottled("onKilled", err) end
+		end
+		return
+	end
 
 	local def = rec.Def
 	local pos = (rec.Root and rec.Root.Parent) and rec.Root.Position or rec.Home
@@ -1307,6 +1329,13 @@ local function killRecord(rec)
 		-- A23-90: a kill inside a PvP area (the ruins' Crown Pit) rolls its drop rows x the area's LootMult
 		AreaMult = typeof(pos) == "Vector3" and (Config.PvPAreaAt(pos) or {}).LootMult or nil,
 	}
+	if rec.Practice then
+		-- A23-110: a practice monster (the retry King) pays the XP / gold of its Practice kind and says so: info.Practice =
+		-- no finisher card (FinisherService), no drops (LootService), no daily job (QuestService); a story quest's Kill row
+		-- (StoryQuestService: Kind / ZoneId / Personal) still counts it as its own kind
+		local pay = Config.MonsterTypes[rec.Practice] or def
+		info.XP, info.Gold, info.Practice = pay.XP, pay.Gold, true
+	end
 
 	-- CR-M18: every contributor keeps the full personal WarPoints, but one kill adds WarPoints to a faction pool only
 	-- once: WarShare = WarPoints / (contributors of that faction) (WarService.AddPoints(player, n, poolN))
@@ -1314,6 +1343,7 @@ local function killRecord(rec)
 	local eligible, perFaction, minors = {}, {}, {}
 	local window = tonumber(def.ContributorWindow) or MC.ContributorWindow -- a miniboss fight is longer
 	local minHits = tonumber(def.RewardMinHits) or 0
+	if isPersonal then minHits = 0 end -- A23-110: only its owner hits a personal monster (no free riders: 2 skill hits count)
 	local minDamage = (tonumber(def.RewardMinDamageFrac) or 0) * rec.MaxHP
 	-- 검수 2026-10-09 (Captain Clatter free riders): def.MinorShare > 0 = a contributor with the hits but under the
 	-- damage share still gets MinorShare of the XP / gold (info.Minor: no drops, no card, no war points, not paid)
@@ -1373,6 +1403,10 @@ local function killRecord(rec)
 	deathPop(rec, true)
 	if isPersonal then
 		removePersonalRef(rec)
+		if rec._onKilled then -- A23-110: its service hears it after the kill (FirstKOService's rematch King)
+			local okK, errK = pcall(rec._onKilled, rec)
+			if not okK then warnThrottled("onKilled", errK) end
+		end
 	elseif not rec.Event then
 		scheduleRespawn(rec.Kind)
 	end
@@ -1695,21 +1729,39 @@ function MonsterService.RemoveEvent(rec, fade, leaving)
 	return true
 end
 
+-- A23-110: removes a living personal monster without rewards, like RemoveEvent (FirstKOService: the King leaves after
+-- the first KO, or when its quest step is over); true when it was removed
+function MonsterService.RemovePersonal(rec, fade, leaving)
+	if type(rec) ~= "table" or rec.Owner == nil or not rec.Alive then return false end
+	despawn(rec, fade ~= false, leaving == true)
+	return true
+end
+
+-- A23-110: walkable ground under (x, z) as the monsters see it (groundPoint): the point, or nil + true when nothing is
+-- hit there (a bare test place: flat ground), nil + false for water / a ridge / solid decor
+function MonsterService.GroundAt(x, z)
+	if type(x) ~= "number" or type(z) ~= "number" or x ~= x or z ~= z then return nil, false end
+	return groundPoint(x, z)
+end
+
 ------------------------------------------------------------------ personal monsters (A4 / A5-C2..C4)
 function MonsterService.SpawnPersonal(player, monsterId, opts)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent == nil then return nil end
 	if type(monsterId) ~= "string" or Config.MonsterTypes[monsterId] == nil then return nil end
 	if type(opts) ~= "table" then opts = {} end
 
-	-- one living personal monster of a kind per player: reuse it
+	-- one living personal monster of a kind per player: reuse it (A23-110: the record is the second result)
 	local set = personal[player]
 	if set then
 		for rec in set do
 			if rec.Alive and rec.Kind == monsterId and rec.Model and rec.Model.Parent then
-				return rec.Model
+				return rec.Model, rec
 			end
 		end
 	end
+	-- A23-110: opts.Distance = studs in front of the player (default PERSONAL_DISTANCE)
+	local dist = tonumber(opts.Distance)
+	if not dist or dist ~= dist or dist < 2 or dist > 40 then dist = PERSONAL_DISTANCE end
 
 	-- ~8 studs in front of the player on walkable ground (then the sides / behind); fallback: the home-zone spawn
 	local pos, faceTo
@@ -1722,7 +1774,7 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 		for _, ang in { 0, math.pi / 2, -math.pi / 2, math.pi } do
 			local c, s = math.cos(ang), math.sin(ang)
 			local dir = Vector3.new(flat.X * c - flat.Z * s, 0, flat.X * s + flat.Z * c)
-			local p = base + dir * PERSONAL_DISTANCE
+			local p = base + dir * dist
 			local g, noHit = groundPoint(p.X, p.Z)
 			if g then
 				pos = g
@@ -1733,6 +1785,7 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 		end
 		faceTo = base
 	end
+	if not pos and opts.Near == true then return nil end -- A23-110: by the player or not at all (no home-zone spot)
 	if not pos then
 		local faction = player:GetAttribute("Faction")
 		local zone = Config.Zones[Config.HomeZoneId(type(faction) == "string" and faction or "None")] or Config.Zones.Crossroads
@@ -1748,6 +1801,10 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 		HP = tonumber(opts.HP),
 		Position = pos,
 		FaceTo = faceTo,
+		Quiet = opts.Quiet == true, -- A23-110 (see spawnMonster)
+		Strike = opts.Strike,
+		OnKilled = opts.OnKilled,
+		Practice = opts.Practice,
 	})
 	if not ok then
 		warnThrottled("personal", rec)
@@ -1757,11 +1814,14 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 
 	personal[player] = personal[player] or {}
 	personal[player][rec] = true
+	-- A23-110: opts.Hold = s before its first swing (FirstKOService: the King drops from the sky first)
+	local hold = tonumber(opts.Hold)
+	if hold and hold == hold and hold > 0 then rec._nextAttackAt = os.clock() + math.min(hold, 10) end
 
 	task.delay(PERSONAL_LIFETIME, function()
-		if rec.Alive then despawn(rec, true) end
+		if rec.Alive then despawn(rec, true, rec.Quiet == true) end -- A23-110: a quiet King goes home (no splat)
 	end)
-	return rec.Model
+	return rec.Model, rec
 end
 
 local function onOwnerLeaving(player)
@@ -1962,7 +2022,11 @@ local function landAttack(rec, token, target, waited)
 	rec._windup = nil
 	local seq = model:GetAttribute(ATTACK_SEQ_ATTR)
 	model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
-	if S and S.CombatService then
+	if rec._strike then
+		-- A23-110: its service deals the hit (FirstKOService: the King Slime's one hit on the quest step, the retry King)
+		local ok, err = pcall(rec._strike, rec, target)
+		if not ok then warnThrottled("strike", err) end
+	elseif S and S.CombatService then
 		S.CombatService.DamagePlayer(target, rec.Def.Damage, nil, false, rec.Kind) -- BB14: the KO screen names the monster
 	end
 end
