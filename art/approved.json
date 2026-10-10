@@ -6294,6 +6294,16 @@
   "size": "1024x1536",
   "note": "빛 마스코트 머리카락 새로 그림(금발+정수리 곱슬, 후광은 머리카락 위, 부분 수정 아님). 대체: FacMascotHaloA(대머리 같다는 사용자 지적). 컷아웃 art/out/s2/fac/hq2/Fac_MascotHalo_C_HQ_cut.png (612x1024, tools/cutout_flat.cutout tol66 soft24 holes tol48), 확인 art/review/s2/fac_mascot_halo_C_cut_check.jpg / fac_mascot_halo_C_cut_crops.jpg. 업로드·교체는 이미지 개발."
  },
+ "FactionPickSoon": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate B",
+  "prompt": "art/prompts/Fac_ArtisanCard_B_HQ.txt",
+  "original": "art/out/s2/fac/artisan/Fac_ArtisanCard_B_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/fac/artisan/Fac_ArtisanCard_B_src.png (검수 고름 2026-10-10)",
+  "size": "1024x1536",
+  "note": "진영 고르기 세 번째 카드 '장인 길드 — Coming soon'(잠김, A23-114). 은회색 돌+황동 테·리벳, 망치·모루 메달, 자물쇠, 글 자리 = 황동 리본·양피지 판·아래 타원 판(글자는 게임 글). 컷아웃 art/out/s2/fac/artisan/Fac_ArtisanCard_B_HQ_cut.png (619x1024, cutout_flat.cutout tol48 soft10 holes), 확인 art/review/s2/fac_artisan_card_B_cut_check.jpg / fac_artisan_card_B_cut_crops.jpg. 업로드·적용은 이미지 개발."
+ },
  "FacMascotHornsA": {
   "status": "approved",
   "date": "2026-10-09",

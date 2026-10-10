@@ -89,3 +89,8 @@
 - 장인 길드 Coming soon 카드 후보 3(중간): `art/out/s2/fac/artisan/Fac_ArtisanCard_{A,B,C}_src.png`, 시트 `art/review/s2/fac_artisan_card_candidates.jpg` — 검수 선택 대기(망치·모루 문장, 자물쇠, 글자 없음).
 - 뿔 깃대 v4(L자 팔·걸이, 십자가 모양 아님): `art/out/s2/redo2/HornsProp_BannerPole_v4_front_HQ_src.png`.
 - 남음: 뿔 천 뒷면, 집·가게 뒤·옆(부품 분해: 몸통·지붕·문·창 유리·차양 따로).
+
+## 10/10 밤 추가 10
+- 장인 카드 B 고급+누끼: `art/out/s2/fac/artisan/Fac_ArtisanCard_B_HQ_{src,cut}.png`, approved 키 FactionPickSoon → 이미지 개발.
+- 뿔 깃대 v5(갈고리 뺌, 팔 끝 창끝 장식 + 짧은 쇠띠 둘) `redo2/HornsProp_BannerPole_v5_front_HQ_src.png`, 뿔 천 뒷면 `redo2/HornsBannerCloth_back_HQ_src.png`.
+- 남음: 집·가게 뒤·옆(부품 분해).
