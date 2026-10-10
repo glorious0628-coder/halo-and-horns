@@ -208,12 +208,12 @@ local T = {
 	WeaponByeEquip = "That one fits your hand. Stay safe out there!",
 	WeaponByePending = "Check how the trade went. Come back soon!",
 	-- vacation
-	VacationHeaderF = "Vacation Bonus! You were away for %d days, and that's okay.",
+	VacationHeaderF = "Vacation Bonus! You were away %d days. That's okay!", -- 검수 10/10: shorter (Config.Plural: 1 day)
 	VacationRewardF = "+%s gold · +%s XP",
 	VacationNoteF = "Even on breaks you get %d%% of a day's rewards. Playing gives 100%%!",
 	VacationClaim = "Claim",
 	VacationNone = "No vacation bonus to claim.",
-	VacationAwayF = "You were away for %d days, and that's okay.", -- the reward popup's first line (창 꾸미기 ③)
+	VacationAwayF = "You were away %d days. That's okay!", -- the reward popup's first line (창 꾸미기 ③; 검수 10/10: shorter)
 	VacationLater = "Later",
 	-- fallbacks for Config.Text keys added in review R1
 	WaitRespawn = "You can do this after you respawn.", -- CR-L30
@@ -560,6 +560,10 @@ local function addText(parent, text, opts)
 	l.LayoutOrder = nextOrder()
 	if l.TextScaled then constrainText(l) end -- CR-L40: the constraint only matters for scaled text
 	l.Parent = parent
+	-- 이미지 개발 10/10 (검수: no word alone on a line): centred text keeps its lines even (UIKit.BalanceLines)
+	if l.TextXAlignment == Enum.TextXAlignment.Center and UIKit and type(UIKit.BalanceLines) == "function" then
+		UIKit.BalanceLines(l)
+	end
 	return l
 end
 

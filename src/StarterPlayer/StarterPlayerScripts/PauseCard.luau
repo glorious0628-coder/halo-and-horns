@@ -186,7 +186,7 @@ function PauseCard.Build(parent, info)
 		Text = tostring(info.Title or ""),
 		Parent = box,
 	}, "Title", boxArt)
-	kit.StyledLabel({
+	local body = kit.StyledLabel({
 		Name = "Body",
 		LayoutOrder = 2,
 		Size = UDim2.new(1, 0, 0, 0),
@@ -196,6 +196,7 @@ function PauseCard.Build(parent, info)
 		Text = tostring(info.Body or ""),
 		Parent = box,
 	}, "Body", boxArt)
+	if type(kit.BalanceLines) == "function" then kit.BalanceLines(body) end -- 이미지 개발 10/10: no word alone on a line
 	local row = kit.Create("Frame", {
 		Name = "Buttons",
 		LayoutOrder = 3,

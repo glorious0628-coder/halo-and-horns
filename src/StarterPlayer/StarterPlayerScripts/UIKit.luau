@@ -2375,6 +2375,101 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 	return label
 end
 
+-- 검수 2026-10-10 (user, the Vacation card: "균형이 안 맞아" - 'You were away for 1 day, and that's / okay.', one word
+-- alone on the last line): UIKit.BalanceLines(label) keeps a centred wrapped label's lines about even. It measures the
+-- text with TextService in real px at the size the engine draws (TextSize x UIScale, at least the style floor), counts
+-- the lines n it needs at the label's width, finds the narrowest width that still gives n lines (UIKit.BalanceWidth)
+-- and pads the label inside by the difference (a UIPadding "LineBalance", left = right), so the text wraps there. The
+-- label's own size and place never change (UIKit.WrapHeight's height stays right: same n lines). One line, left / right
+-- aligned text and a label with its own UIPadding are left alone. Again whenever the text, size, face or width changes.
+local BAL = { Steps = 8, SlackPx = 6, Fits = setmetatable({}, { __mode = "k" }) }
+UIKit.LineBalance = BAL
+
+-- pure: the narrowest width (real px) at which linesAt(width) still needs no more lines than at `full`, between
+-- oneLine / n and full (linesAt never rises with the width); returns that width and n
+function UIKit.BalanceWidth(linesAt, full, oneLine)
+	local n = linesAt(full)
+	if n <= 1 then return full, n end
+	local lo, hi = math.max(1, oneLine / n), full
+	for _ = 1, BAL.Steps do
+		local mid = (lo + hi) / 2
+		if linesAt(mid) <= n then hi = mid else lo = mid end
+	end
+	return math.min(full, math.ceil(hi)), n
+end
+
+function UIKit.BalanceLines(label)
+	if typeof(label) ~= "Instance" or not label:IsA("TextLabel") then return label end
+	if BAL.Fits[label] then
+		BAL.Fits[label]()
+		return label
+	end
+	local state = { Token = 0, W = -1 }
+	local function balance(token)
+		local pad = label:FindFirstChild("LineBalance")
+		local own = label:FindFirstChildOfClass("UIPadding")
+		if own and own ~= pad then return end -- the label's own padding: leave it alone
+		local full = label.AbsoluteSize.X
+		local function clear()
+			if pad then pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 0), UDim.new(0, 0) end
+		end
+		if label.TextXAlignment ~= Enum.TextXAlignment.Center or not label.TextWrapped or label.Text == ""
+			or full <= 1 or not label.Parent then
+			clear()
+			return
+		end
+		local s = currentScale()
+		local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
+		local px = math.max(1, math.floor(label.TextSize * s + 0.5), tc and tc.MinTextSize or 0)
+		local params = Instance.new("GetTextBoundsParams")
+		params.Text, params.Font, params.Size = label.Text, label.FontFace, px
+		pcall(function() params.RichText = label.RichText end)
+		local function linesAt(w)
+			params.Width = math.max(1, w - BAL.SlackPx)
+			local b = TextService:GetTextBoundsAsync(params)
+			return math.max(1, math.floor(b.Y / px + 0.5))
+		end
+		params.Width = 100000
+		local one = TextService:GetTextBoundsAsync(params).X
+		local w, n = UIKit.BalanceWidth(linesAt, full, one + BAL.SlackPx)
+		params:Destroy()
+		if token ~= state.Token or not label.Parent then return end
+		local side = n > 1 and math.max(0, math.floor((full - w) / 2)) or 0
+		if side <= 0 then
+			clear()
+			return
+		end
+		if not pad then
+			pad = Instance.new("UIPadding")
+			pad.Name = "LineBalance"
+			pad.Parent = label
+		end
+		local du = side / math.max(0.05, s)
+		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, du), UDim.new(0, du)
+	end
+	local function fit()
+		state.Token += 1
+		local token = state.Token
+		task.spawn(function()
+			local ok, err = pcall(balance, token)
+			if not ok then warn("[UIKit] line balance: " .. tostring(err)) end
+		end)
+	end
+	for _, property in { "Text", "TextSize", "FontFace", "TextXAlignment" } do
+		label:GetPropertyChangedSignal(property):Connect(fit)
+	end
+	label:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		local w = math.floor(label.AbsoluteSize.X + 0.5)
+		if w ~= state.W then
+			state.W = w
+			fit()
+		end
+	end)
+	BAL.Fits[label] = fit
+	fit()
+	return label
+end
+
 function NOTIFY.ToastCap()
 	if NOTIFY.Avoid then return 1 end -- a window is open: the newest line only
 	local rect = NOTIFY.Rect
@@ -2486,6 +2581,7 @@ function NOTIFY.BuildArtToast(text, kind, icon, color)
 	frame.Parent = toastHolder
 	local t = { Frame = frame, Label = label, Art = art, Icon = img, Text = text, Token = 0, Dead = false, MinH = minH }
 	UIKit.WrapHeight(label, function() return NOTIFY.Avoid and 1 or ta.Lines end, minH - 2 * ta.PadY)
+	UIKit.BalanceLines(label) -- 검수 10/10: no word alone on a line (centred text only)
 	task.spawn(function()
 		local s = currentScale()
 		local col = toastHolder.AbsoluteSize.X / s
@@ -2613,6 +2709,7 @@ function UIKit.Toast(text, kind, duration, icon)
 		end
 	end
 	UIKit.WrapHeight(label, function() return NOTIFY.Avoid and 1 or NOTIFY.ToastLines end, img and TOAST_ICON or nil)
+	UIKit.BalanceLines(label) -- 검수 10/10: no word alone on a line (centred text only)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
@@ -2997,7 +3094,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 		Parent = box,
 	}, "Title", boxArt)
 	if body ~= nil and tostring(body) ~= "" then
-		UIKit.StyledLabel({
+		local bodyLabel = UIKit.StyledLabel({
 			Name = "Body",
 			LayoutOrder = 2,
 			Size = UDim2.new(1, 0, 0, 0),
@@ -3007,6 +3104,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 			Text = tostring(body),
 			Parent = box,
 		}, "Body", boxArt)
+		UIKit.BalanceLines(bodyLabel) -- 검수 10/10: no word alone on a line
 	end
 	local row = UIKit.Create("Frame", {
 		Name = "Buttons",
@@ -3286,6 +3384,7 @@ function UIKit.Init(registry)
 		announceLabel.TextStrokeColor3 = NOTIFY.AlertArt.Stroke
 	end
 	UIKit.WrapHeight(announceLabel, NOTIFY.BannerLines, nil, NOTIFY.FitAnnounce)
+	UIKit.BalanceLines(announceLabel) -- 검수 10/10: no word alone on a line
 
 	gui.Parent = playerGui
 
@@ -3539,10 +3638,14 @@ function UIKit.RewardPopup(opts)
 		lines = table.move(lines, 1, math.min(#lines, math.max(1, tonumber(opts.CompactLines) or 1)), 1, {})
 	end
 	for _, line in lines do
-		UIKit.StyledLabel({ Name = "Line", Text = tostring(line), Size = UDim2.new(1, 0, 0, 0),
+		local label = UIKit.StyledLabel({ Name = "Line", Text = tostring(line), Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextSize = compact and cfg.LineCompact or cfg.LineSize,
 			LayoutOrder = nextOrder(),
 			ZIndex = body.ZIndex + 1, Parent = body }, "Body", plateLight)
+		-- 검수 10/10 (the Vacation card: one word alone on the 2nd line): the measured height (AutomaticSize may give a
+		-- wrapped line one line on small windows) and even lines
+		UIKit.WrapHeight(label)
+		UIKit.BalanceLines(label)
 	end
 	local counters = {}
 	local rewards = type(opts.Rewards) == "table" and opts.Rewards or {}
