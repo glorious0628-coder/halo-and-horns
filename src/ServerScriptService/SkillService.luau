@@ -29,8 +29,10 @@
 --   A23-116 (docs/design/skills18_2026-10-10.md §0): the Fx "Skill" carries ContactDelay / LaunchDelay (s from the
 --   press, CombatService Kit.Motion: the slot's row of TUNE.MOTION; the pet tamer = Config.Tamer.SkillStyle); a pull /
 --   push starts at ContactDelay (the damage stays at the press; skipped for a monster that died / was removed or a
---   caster who left). Fx "Skill" and "SkillTick" carry Healed (the UserIds whose HP the cast's heal really raised, the
---   caster too, the nearest 5 first; {} = nobody) and Stole (the HP the Horns life steal really gave; 0 = none).
+--   caster who left; a pull goes toward where the caster stands then, none after a KO / a new character; a push goes
+--   away from the spot of the press). Fx "Skill" and "SkillTick" carry Healed (the UserIds whose HP the cast's heal
+--   really raised, the caster too, the nearest 5 first; {} = nobody) and Stole (the HP the Horns life steal really
+--   gave; 0 = none).
 --   Slots (saved SkillSlots 0..3, mirrored, never lowered): none at the start, Q at Unlock.Q (Lv5), Z at Unlock.Z
 --   (Lv15), X at Unlock.X (Lv25) (A23-71), all three after a rebirth (Config.SkillSlotsFor); an old save catches up at
 --   PlayerReady. Z / X work only while Config.Skills.ZEnabled / XEnabled (Studio tests until the 10/20 decision); a
@@ -388,10 +390,20 @@ local function move(ctx, rec)
 	end
 	if not mode then return end
 	local player, from = ctx.Player, ctx.Pos
+	local character = mode == "Pull" and Util.GetCharacter(player) or nil
 	local function go()
 		-- the monster died / was removed or the caster left meanwhile: no slide
 		if player.Parent == nil or not rec.Alive or not (rec.Root and rec.Root.Parent) then return end
-		local ok, err = pcall(ms.Displace, rec, mode, from, studs, player)
+		local at = from -- a push: away from the spot of the press (a hop's wind pushes from the takeoff spot)
+		if mode == "Pull" then
+			-- a pull: toward where the caster stands at the contact (a Warrior who walked on is never pulled into); a
+			-- KO or a new character meanwhile: no pull
+			if not Util.IsAlive(player) or Util.GetCharacter(player) ~= character then return end
+			local root = Util.GetRoot(player)
+			if not root then return end
+			at = root.Position
+		end
+		local ok, err = pcall(ms.Displace, rec, mode, at, studs, player)
 		if not ok then Util.Warn(TAG, "displace: " .. tostring(err)) end
 	end
 	-- A23-116: the slide starts when the rope / arrow / wind reaches the monster (the slot's ContactDelay, the same for

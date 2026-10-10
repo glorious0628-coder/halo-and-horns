@@ -54,18 +54,33 @@ MUTATIONS = [
     ("a caster who left still pulls", SK,
      "if player.Parent == nil or not rec.Alive or not (rec.Root and rec.Root.Parent) then return end",
      "if not rec.Alive or not (rec.Root and rec.Root.Parent) then return end"),
-    ("a Displace error escapes", SK, "local ok, err = pcall(ms.Displace, rec, mode, from, studs, player)",
-     "local ok, err = true, ms.Displace(rec, mode, from, studs, player)"),
+    ("a Displace error escapes", SK, "local ok, err = pcall(ms.Displace, rec, mode, at, studs, player)",
+     "local ok, err = true, ms.Displace(rec, mode, at, studs, player)"),
     ("the push one stud longer", SK, "mode, studs = \"Push\", num(def.Push)", "mode, studs = \"Push\", num(def.Push) + 1"),
+    ("an auto push at once", SK, "local wait = math.clamp(num(ctx.Contact), 0, 1)",
+     "local wait = ctx.Auto and 0 or math.clamp(num(ctx.Contact), 0, 1)"),
+    # --- the origin: a pull toward the caster's spot at the contact, a push from the spot of the press
+    ("a pull toward the press spot", SK, "\t\t\tat = root.Position\n", "\t\t\tat = from\n"),
+    ("a push from the live spot", SK, "\t\tif mode == \"Pull\" then\n", "\t\tif true then\n"),
+    ("a knocked-out caster still pulls", SK,
+     "if not Util.IsAlive(player) or Util.GetCharacter(player) ~= character then return end",
+     "if Util.GetCharacter(player) ~= character then return end"),
+    ("a new character still pulls", SK,
+     "if not Util.IsAlive(player) or Util.GetCharacter(player) ~= character then return end",
+     "if not Util.IsAlive(player) then return end"),
     # --- the Skill packet's times
     ("no ContactDelay on Fx Skill", SK, "\t\tContactDelay = ctx.Contact, -- A23-116: s from the press (CombatService Kit.Motion)\n", ""),
     ("no LaunchDelay on Fx Skill", SK, "\t\tLaunchDelay = ctx.Launch,\n", ""),
     ("the field's Fx Skill without times", SK, "\t\tContactDelay = ctx.Contact, LaunchDelay = ctx.Launch, -- A23-116: like a Z / X resolve\n", ""),
     ("the pet tamer on the archer times", SK,
      "kit.Motion(slot, c.Id, Config.IsTamer(c.Id, fac) and Config.Tamer.SkillStyle or nil)", "kit.Motion(slot, c.Id, nil)"),
+    ("auto casts without times", SK, "\tif type(kit.Motion) == \"function\" then\n",
+     "\tif type(kit.Motion) == \"function\" and not isAuto then\n"),
     # --- the signals on Fx Skill / SkillTick
     ("no Healed on Fx Skill", SK, "\t\tHealed = healedIds, -- A23-116: UserIds whose HP really went up (the caster too, nearest 5 first)\n", ""),
     ("no Stole on Fx Skill", SK, "\t\tStole = stole, -- A23-116: HP the Horns life steal really gave the caster (0 = none)\n", ""),
+    ("Fx Skill Stole always 0", SK, "\t\tStole = stole, -- A23-116: HP the Horns life steal really gave the caster (0 = none)\n",
+     "\t\tStole = 0,\n"),
     ("no Healed on Fx SkillTick", SK, "\t\t\tHealed = sig.Healed, Stole = sig.Stole }) -- A23-116 signals of this tick",
      "\t\t\tStole = sig.Stole })"),
     ("no Stole on Fx SkillTick", SK, "\t\t\tHealed = sig.Healed, Stole = sig.Stole }) -- A23-116 signals of this tick",
@@ -77,11 +92,15 @@ MUTATIONS = [
     ("a field tick one more", SK, "Util.RoundDamage(CS.ComputeMonsterHit(player, false) * mult)\n\t\tfor _, m in mons do",
      "Util.RoundDamage(CS.ComputeMonsterHit(player, false) * mult + 1)\n\t\tfor _, m in mons do"),
     ("Q damage one more", CO, "local dealt = Util.RoundDamage(D * releaseMult)", "local dealt = Util.RoundDamage(D * releaseMult + 1)"),
+    ("life steal x1.5", CO, "local want = SKILL.Fit(total * rate, room)", "local want = SKILL.Fit(total * rate * 1.5, room)"),
+    ("Halo heal x1.5", CO, "local want = SKILL.Fit((skill.HaloHealPct or 0.10) * total, room)",
+     "local want = SKILL.Fit((skill.HaloHealPct or 0.10) * 1.5 * total, room)"),
     # --- SKILL.Heal's Healed list (CombatService)
     ("Healed lists a full-HP ally", CO, "if amount > 0 then table.insert(got, ", "if want > 0 then table.insert(got, "),
     ("Healed without the caster", CO, "if amount > 0 then table.insert(got, ", "if a ~= player and amount > 0 then table.insert(got, "),
     ("Healed farthest first", CO, "table.sort(got, function(x, y) return x.D < y.D or (x.D == y.D and x.Id < y.Id) end)",
      "table.sort(got, function(x, y) return x.D > y.D or (x.D == y.D and x.Id > y.Id) end)"),
+    ("the tie goes to the higher id", CO, "(x.D == y.D and x.Id < y.Id)", "(x.D == y.D and x.Id > y.Id)"),
     ("Healed in join order", CO, "\ttable.sort(got, function(x, y) return x.D < y.D or (x.D == y.D and x.Id < y.Id) end)\n", ""),
     ("Healed keeps everyone", CO, "HEALED_MAX = 5,", "HEALED_MAX = 99,"),
     ("Healed keeps 4", CO, "HEALED_MAX = 5,", "HEALED_MAX = 4,"),
@@ -153,9 +172,12 @@ SUITE = Suite(
              "ContactDelay / LaunchDelay from CombatService TUNE.MOTION.Z / .X (Kit.Motion(slot, class, style); for now "
              "the Q values: Warrior 0.24 / -, Mage 0.35 / 0.35, Archer 0.4 / 0.18, the pet tamer PetDash 0.35 / -). A "
              "pull / push (MonsterService.Displace) starts at that ContactDelay (task.delay; the damage, Released and "
-             "the Fx stay at the press), skipped for a monster that died / was removed or a caster who left, errors "
-             "pcall + warn. Damage, heal, steal, MP, MP steal, pull / push distance, taunt, slow and Guard numbers are "
-             f"identical to the sources at {BASE} (9 kits, manual + auto, PvP on).",
+             "the Fx stay at the press; auto casts too), skipped for a monster that died / was removed or a caster who "
+             "left, errors pcall + warn; a pull goes toward the caster's root at the contact (none after a KO / a new "
+             "character), a push away from the spot of the press (a hop's takeoff). Damage, every heal / steal asked and "
+             "given, MP, MP steal, pull / push distance, taunt, slow and Guard numbers are identical to the sources at "
+             f"{BASE} (9 kits + the 6 Halo / Horns kits with big HP so no cap binds; manual + auto, PvP on). Healed "
+             "ties at the same distance go to the lower UserId.",
     limitations="The client side (SkillFx hearts / sparkles, the clip times) is game dev 1's; the real slide (Displace's "
                 "CFrame loop) and the monster's walk during the 0.24-0.4 s wait are not run offline. The 'same numbers' "
                 f"baseline is pinned at {BASE} (git show): re-pin BASE when that code changes on purpose.",

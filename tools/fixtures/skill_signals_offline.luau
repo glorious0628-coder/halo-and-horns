@@ -155,6 +155,19 @@ runGroup("healed on Q", function()
 		"7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
 		show(rel2 and rel2.Healed))
 	check(#(w2:Last("Q").Healed or {}) == 7, "Released.Healed still lists all 7 others (no cap there)", #(w2:Last("Q").Healed or {}))
+	-- a tie across the 5th / 6th place: two allies 5 away (26 joined before 25): the lower UserId keeps the 5th place
+	local w3 = sigWorld()
+	local t = w3:Hero(1, { Class = "Warrior", Faction = "Halo" })
+	for id = 21, 24 do w3:Hero(id, { Class = "Mage", Faction = "Halo", Pos = vec(0, 0, id - 20), HP = 40 }) end
+	w3:Hero(26, { Class = "Mage", Faction = "Halo", Pos = vec(5, 0, 0), HP = 40 })
+	w3:Hero(25, { Class = "Mage", Faction = "Halo", Pos = vec(0, 0, 5), HP = 40 })
+	for i = 1, 5 do w3:Monster("Slime", 1 + i, 0, 99999) end
+	local b3, t0 = snapshot(w3), #w3.Fx
+	w3:Use(t, "Q")
+	local rel3 = w3:FxTo("Release", t, t0)[1]
+	check(rel3 ~= nil and same(rel3.Healed, { 21, 22, 23, 24, 25 }) and #rose(w3, b3, ORIGIN, 99) == 6,
+		"6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
+		show(rel3 and rel3.Healed))
 end)
 
 ------------------------------------------------------------------ Healed on Z / X (Fx "Skill" / "SkillTick")
@@ -225,6 +238,30 @@ runGroup("stole", function()
 	local sk = w:FxTo("Skill", p, g0)[1]
 	check(sk ~= nil and sk.Slot == "Z" and #sk.Hits > 0 and sk.Stole == 0 and w:Hum(p).Health == h1,
 		"Z 0.5 s later, inside the 3 s cap: Stole 0 and nothing gained", show(sk and { sk.Stole, #sk.Hits }))
+	-- outside the 3 s window, below max HP: the Z / X packet's Stole = the HP really gained (> 0)
+	w:Advance(3.1)
+	local h2, x0 = w:Hum(p).Health, #w.Fx
+	w:Use(p, "X")
+	local skx = w:FxTo("Skill", p, x0)[1]
+	check(skx ~= nil and skx.Slot == "X" and skx.Shape == "Roar" and skx.Stole > 0 and skx.Stole == w:Hum(p).Health - h2
+		and h2 < 100, "Horns X (Rage Roar) after the window: Fx Skill Stole = the HP gained (> 0)",
+		show(skx and { skx.Stole, w:Hum(p).Health - h2 }))
+	local z = sigWorld()
+	local zp = z:Hero(1, { Class = "Warrior", Faction = "Horns", HP = 50 })
+	for i = 0, 3 do z:Monster("Slime", 6 + i * 3, 0, 99999) end
+	local hz, z0 = z:Hum(zp).Health, #z.Fx
+	z:Use(zp, "Z")
+	local skz = z:FxTo("Skill", zp, z0)[1]
+	check(skz ~= nil and skz.Slot == "Z" and skz.Stole > 0 and skz.Stole == z:Hum(zp).Health - hz,
+		"Horns Z (Fire Rake) in a fresh window: Fx Skill Stole = the HP gained (> 0)", show(skz and { skz.Stole, z:Hum(zp).Health - hz }))
+	local hop = sigWorld()
+	local hp = hop:Hero(1, { Class = "Archer", Faction = "Horns", HP = 50 })
+	for _, dz in { 2, 4, 6 } do hop:Monster("Slime", dz, 0, 99999) end
+	local hh, k0 = hop:Hum(hp).Health, #hop.Fx
+	hop:Use(hp, "X")
+	local skh = hop:FxTo("Skill", hp, k0)[1]
+	check(skh ~= nil and skh.Shape == "Hop" and skh.Stole > 0 and skh.Stole == hop:Hum(hp).Health - hh,
+		"Horns X (Shadow Step) in a fresh window: Fx Skill Stole = the HP gained (> 0)", show(skh and { skh.Stole, hop:Hum(hp).Health - hh }))
 	local function oneQ(hp, fac, cls)
 		local x = sigWorld()
 		local c = x:Hero(1, { Class = cls or "Warrior", Faction = fac or "Horns", HP = hp })
@@ -341,6 +378,25 @@ runGroup("timing on the skill packet", function()
 			name .. ": Z / X carry the same times as its Q (Fx Release) for now",
 			show({ rel and rel.ContactDelay, rel and rel.LaunchDelay }))
 	end
+	-- auto casts carry the same times (auto combat on: SkillService.Cast(p, slot, true))
+	local AUTO = { AutoCombatUnlocked = true, AutoCombatEnabled = true }
+	local a = sigWorld()
+	local ap = a:Hero(1, { Class = "Archer", Faction = "Horns", Attrs = AUTO })
+	a:Monster("Slime", 12, 0, 99999)
+	local a0 = #a.Fx
+	local wentZ = a.Skills.Cast(ap, "Z", true)
+	local az = a:FxTo("Skill", ap, a0)[1]
+	check(wentZ == true and az ~= nil and az.Auto == true and az.ContactDelay == 0.4 and az.LaunchDelay == 0.18,
+		"an auto Moon Shot: Fx Skill ContactDelay 0.4 / LaunchDelay 0.18", show(az and { az.Auto, az.ContactDelay, az.LaunchDelay }))
+	local f = sigWorld()
+	local fp = f:Hero(1, { Class = "Mage", Faction = "Halo", Attrs = AUTO })
+	f:Monster("Slime", 20, 0, 99999)
+	f:Monster("Slime", 22, 0, 99999)
+	local f1 = #f.Fx
+	local wentX = f.Skills.Cast(fp, "X", true)
+	local ax = f:FxTo("Skill", fp, f1)[1]
+	check(wentX == true and ax ~= nil and ax.Auto == true and ax.Shape == "Field" and ax.ContactDelay == 0.35 and ax.LaunchDelay == 0.35,
+		"an auto Sun Circle: Fx Skill ContactDelay 0.35 / LaunchDelay 0.35", show(ax and { ax.Auto, ax.ContactDelay, ax.LaunchDelay }))
 end)
 
 ------------------------------------------------------------------ a pull / push starts at the slot's ContactDelay
@@ -384,6 +440,53 @@ runGroup("displace at contact", function()
 	t:Advance(0.06)
 	check(early == 0 and #t.Displaced == 1 and t.Displaced[1].Mode == "Push", "the pet tamer's Slime Roll pushes at 0.35 s (PetDash)",
 		show({ early, #t.Displaced }))
+	-- an auto cast waits too: an auto Moon Shot pushes at 0.4 s, not at once
+	local au = sigWorld()
+	local aup = au:Hero(1, { Class = "Archer", Faction = "Horns", Attrs = { AutoCombatUnlocked = true, AutoCombatEnabled = true } })
+	au:Monster("Slime", 12, 0, 99999)
+	local wentA = au.Skills.Cast(aup, "Z", true)
+	local atOnce = #au.Displaced
+	au:Advance(0.35)
+	local before04 = #au.Displaced
+	au:Advance(0.06)
+	check(wentA == true and atOnce == 0 and before04 == 0 and #au.Displaced == 1 and au.Displaced[1].Mode == "Push"
+		and au.Displaced[1].Studs == 3, "an auto Moon Shot: no push at the cast or at 0.35 s, one push (3) at 0.41 s",
+		show({ wentA, atOnce, before04, #au.Displaced }))
+	-- the origin: a pull goes toward where I stand at the contact (I walked on), a push from where I pressed (a hop
+	-- pushes from the takeoff spot, the landing is 10 back)
+	local o1 = sigWorld()
+	local wp = o1:Hero(1, { Class = "Warrior", Faction = "Halo" })
+	o1:Monster("Slime", 10, 0, 99999)
+	o1:Use(wp, "Z")
+	wp.Character:FindFirstChild("HumanoidRootPart").Position = vec(3, 0, -4)
+	o1:Advance(0.3)
+	local od = o1.Displaced[1]
+	check(#o1.Displaced == 1 and od.Mode == "Pull" and od.From.X == 3 and od.From.Z == -4,
+		"a pull goes toward where I stand at the contact (3, -4), not where I pressed (0, 0)", show(od and { od.From.X, od.From.Z }))
+	local o2 = sigWorld()
+	local hp2 = o2:Hero(1, { Class = "Archer", Faction = "Horns" })
+	o2:Monster("Slime", 3, 0, 99999)
+	o2:Use(hp2, "X")
+	hp2.Character:FindFirstChild("HumanoidRootPart").Position = vec(0, 0, 10) -- the hop landed
+	o2:Advance(0.45)
+	local pd = o2.Displaced[1]
+	check(#o2.Displaced == 1 and pd.Mode == "Push" and pd.From.X == 0 and pd.From.Z == 0,
+		"Shadow Step's wind pushes from the takeoff spot (0, 0), not the landing (0, 10)", show(pd and { pd.From.X, pd.From.Z }))
+	-- a KO or a new character before the contact: no pull
+	local o3 = sigWorld()
+	local ko = o3:Hero(1, { Class = "Warrior", Faction = "Horns" })
+	o3:Monster("Slime", 8, 0, 99999)
+	o3:Use(ko, "Z")
+	o3:Hum(ko).Health = 0
+	o3:Advance(0.3)
+	check(#o3.Displaced == 0, "the caster was knocked out before the contact: no pull", #o3.Displaced)
+	local o4 = sigWorld()
+	local re = o4:Hero(1, { Class = "Warrior", Faction = "Halo" })
+	o4:Monster("Slime", 8, 0, 99999)
+	o4:Use(re, "Z")
+	o4:Body(re) -- a new character (respawn) before the contact
+	o4:Advance(0.3)
+	check(#o4.Displaced == 0, "a new character before the contact: no pull", #o4.Displaced)
 	-- a monster that died or was removed meanwhile is skipped; the other one still slides
 	local w = sigWorld()
 	local p = w:Hero(1, { Class = "Warrior", Faction = "Halo" })
@@ -429,33 +532,65 @@ end)
 ------------------------------------------------------------------ every number the same as before A23-116
 -- one scripted fight per kit (manual Q / Z / X, auto Q / Z / X, PvP on, a friend, a foe, monsters near and far, one that
 -- dies at the first hit) with the sources before A23-116 and with the current ones: the damage, Released, the Fx hits /
--- totals / statuses, every HP, MP, MP steal, pull / push, taunt, slow and Guard must match
-local function scene(base, cls, fac)
+-- totals / statuses, every heal (asked / given, CombatService.HealPlayer), every HP after each step, MP, MP steal,
+-- pull / push, taunt, slow and Guard must match. big = the caster and the friend at 10000 / 20000 HP: no heal / steal cap
+-- binds, so a changed heal or steal rate shows (with 100 HP every Horns cast hits the 3% cap)
+local function scene(base, cls, fac, big)
 	return withSources(base, function()
 		local w = sigWorld({ Hit = true, PvP = true })
+		local heals, L = {}, {}
+		local realHeal = w.Combat.HealPlayer
+		w.Combat.HealPlayer = function(pl, amount)
+			local got = realHeal(pl, amount)
+			table.insert(heals, got)
+			table.insert(L, string.format("heal %s asked %s got %s at %.2f", tostring(pl and pl.UserId),
+				type(amount) == "number" and string.format("%.4f", amount) or tostring(amount), tostring(got), w.Clock))
+			return got
+		end
 		local p = w:Hero(1, { Class = cls, Faction = fac, HP = 50, Attrs = { AutoCombatUnlocked = true, AutoCombatEnabled = true } })
-		w:Hero(2, { Class = "Mage", Faction = fac, Pos = vec(0, 0, 4), HP = 40 })
+		local friend = w:Hero(2, { Class = "Mage", Faction = fac, Pos = vec(0, 0, 4), HP = 40 })
+		if big then
+			for _, pl in { p, friend } do w:Hum(pl).MaxHealth, w:Hum(pl).Health = 20000, 10000 end
+		end
 		local foe = w:Hero(3, { Class = "Warrior", Faction = fac == "Halo" and "Horns" or "Halo", Pos = vec(2, 0, -5) })
 		w:Hum(foe).MaxHealth, w:Hum(foe).Health = 5000, 5000
 		for _, at in { { 3, 0 }, { 6, 0.5 }, { 9, 1 }, { 14, -1 }, { 20, 0 }, { 26, 2 } } do w:Monster("Slime", at[1], at[2], 99999) end
 		w:Monster("Slime", 5, -0.5, 1) -- dies at the first hit
 		w:Monster("BigSlime", 12, 3, 99999)
+		local function stamp(label)
+			local hp = {}
+			for _, pl in w.PlayerList do table.insert(hp, pl.UserId .. "=" .. tostring(w:Hum(pl).Health)) end
+			table.insert(L, "after " .. label .. ": " .. table.concat(hp, " "))
+		end
 		w:Use(p, "Q")
+		stamp("Q")
 		w:Advance(3.1)
 		w:Use(p, "Z")
+		stamp("Z")
 		w:Advance(3.1)
 		w:Use(p, "X")
-		for _ = 1, 5 do w:Advance(1) end
+		stamp("X")
+		for i = 1, 5 do
+			w:Advance(1)
+			stamp("tick " .. i)
+		end
 		w:Advance(3.1)
 		w.Skills.Cast(p, "Q", true)
+		stamp("auto Q")
 		w:Advance(3.1)
 		w.Skills.Cast(p, "Z", true)
+		stamp("auto Z")
 		w:Advance(16)
 		w.Skills.Cast(p, "X", true)
-		for _ = 1, 6 do w:Advance(1) end
+		stamp("auto X")
+		for i = 1, 6 do
+			w:Advance(1)
+			stamp("auto tick " .. i)
+		end
 		w:Use(p, "Z")
+		stamp("Z again")
 		w:Advance(2)
-		local L, moves = {}, {}
+		local moves = {}
 		local function idx(rec) return table.find(w.Monsters, rec) or 0 end
 		local function xz(v) return typeofDouble(v) == "Vector3" and string.format("%.3f,%.3f", v.X, v.Z) or "-" end
 		for _, d in w.Damage do
@@ -491,7 +626,11 @@ local function scene(base, cls, fac)
 		end
 		table.sort(moves) -- the order of equal contact times is not part of the rule
 		for _, mv in moves do table.insert(L, mv) end
-		return { Lines = L, Damage = #w.Damage, Moves = #moves, Rel = #w.Rel }
+		local given = 0
+		for _, n in heals do
+			if type(n) == "number" and n > 0 then given += 1 end
+		end
+		return { Lines = L, Damage = #w.Damage, Moves = #moves, Rel = #w.Rel, Heals = given }
 	end)
 end
 
@@ -502,9 +641,14 @@ runGroup("same numbers as before", function()
 		show({ type(old), type(new) }))
 	local kits = { { "Warrior", "Halo" }, { "Warrior", "Horns" }, { "Mage", "Halo" }, { "Mage", "Horns" }, { "Archer", "Halo" },
 		{ "Archer", "Horns" }, { "Warrior", "Neutral" }, { "Mage", "Neutral" }, { "Archer", "Neutral" } }
+	-- the Halo / Horns kits once more with big HP (no cap binds)
+	for i = 1, 6 do table.insert(kits, { kits[i][1], kits[i][2], true }) end
 	for _, k in kits do
-		local before, now = scene(true, k[1], k[2]), scene(false, k[1], k[2])
-		local name = k[1] .. " " .. k[2]
+		local before, now = scene(true, k[1], k[2], k[3]), scene(false, k[1], k[2], k[3])
+		local name = k[1] .. " " .. k[2] .. (k[3] and " (big HP, no cap)" or "")
+		if k[2] ~= "Neutral" then
+			check(now.Heals >= 3, name .. ": the scene really heals / steals (3+ heals given)", now.Heals)
+		end
 		local diff = nil
 		for i = 1, math.max(#before.Lines, #now.Lines) do
 			if before.Lines[i] ~= now.Lines[i] then

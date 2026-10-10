@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 88,
+  "checks": 123,
   "failedChecks": 0,
-  "namedChecks": 88,
+  "namedChecks": 123,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -40,6 +40,12 @@
     {
       "group": "healed on Q",
       "check": "Released.Healed still lists all 7 others (no cap there)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
       "pass": 1,
       "fail": 0
     },
@@ -112,6 +118,24 @@
     {
       "group": "stole",
       "check": "Z 0.5 s later, inside the 3 s cap: Stole 0 and nothing gained",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "Horns X (Rage Roar) after the window: Fx Skill Stole = the HP gained (> 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "Horns Z (Fire Rake) in a fresh window: Fx Skill Stole = the HP gained (> 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "Horns X (Shadow Step) in a fresh window: Fx Skill Stole = the HP gained (> 0)",
       "pass": 1,
       "fail": 0
     },
@@ -309,6 +333,18 @@
     },
     {
       "group": "timing on the skill packet",
+      "check": "an auto Moon Shot: Fx Skill ContactDelay 0.4 / LaunchDelay 0.18",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "an auto Sun Circle: Fx Skill ContactDelay 0.35 / LaunchDelay 0.35",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -375,6 +411,36 @@
     },
     {
       "group": "displace at contact",
+      "check": "an auto Moon Shot: no push at the cast or at 0.35 s, one push (3) at 0.41 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "a pull goes toward where I stand at the contact (3, -4), not where I pressed (0, 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Shadow Step's wind pushes from the takeoff spot (0, 0), not the landing (0, 10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "the caster was knocked out before the contact: no pull",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "a new character before the contact: no pull",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
       "check": "a monster that died / was removed before the contact: no pull (the living one: yes)",
       "pass": 1,
       "fail": 0
@@ -417,6 +483,12 @@
     },
     {
       "group": "same numbers as before",
+      "check": "Warrior Halo: the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
       "check": "Warrior Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
       "pass": 1,
       "fail": 0
@@ -424,6 +496,12 @@
     {
       "group": "same numbers as before",
       "check": "Warrior Halo: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Horns: the scene really heals / steals (3+ heals given)",
       "pass": 1,
       "fail": 0
     },
@@ -441,6 +519,12 @@
     },
     {
       "group": "same numbers as before",
+      "check": "Mage Halo: the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
       "check": "Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
       "pass": 1,
       "fail": 0
@@ -448,6 +532,12 @@
     {
       "group": "same numbers as before",
       "check": "Mage Halo: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Horns: the scene really heals / steals (3+ heals given)",
       "pass": 1,
       "fail": 0
     },
@@ -465,6 +555,12 @@
     },
     {
       "group": "same numbers as before",
+      "check": "Archer Halo: the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
       "check": "Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
       "pass": 1,
       "fail": 0
@@ -472,6 +568,12 @@
     {
       "group": "same numbers as before",
       "check": "Archer Halo: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Horns: the scene really heals / steals (3+ heals given)",
       "pass": 1,
       "fail": 0
     },
@@ -525,6 +627,114 @@
     },
     {
       "group": "same numbers as before",
+      "check": "Warrior Halo (big HP, no cap): the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Halo (big HP, no cap): the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Horns (big HP, no cap): the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Horns (big HP, no cap): the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Halo (big HP, no cap): the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Halo (big HP, no cap): the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Horns (big HP, no cap): the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Horns (big HP, no cap): the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Halo (big HP, no cap): the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Halo (big HP, no cap): the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Horns (big HP, no cap): the scene really heals / steals (3+ heals given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Horns (big HP, no cap): the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -540,9 +750,9 @@
   "staticChecks": 12,
   "staticFailures": [],
   "mutations": {
-    "total": 36,
-    "applied": 36,
-    "caught": 36,
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
     "skipped": false,
     "results": [
       {
@@ -559,7 +769,7 @@
           "displace at contact :: Horns Z: no pull 0.2 s after the press (ContactDelay 0.24)",
           "displace at contact :: Horns Z: the damage and Released at the press, no pull yet"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 13
       },
       {
         "mutation": "the slide waits a fixed 0.24 s",
@@ -570,9 +780,10 @@
         "newFailingChecks": [
           "displace at contact :: Archer X: the push waits for 0.4 s (none at 0.35, one at 0.41)",
           "displace at contact :: Archer Z: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: an auto Moon Shot: no push at the cast or at 0.35 s, one push (3) at 0.41 s",
           "displace at contact :: the pet tamer's Slime Roll pushes at 0.35 s (PetDash)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "a dead monster still slides",
@@ -627,11 +838,72 @@
         "newFailingChecks": [
           "displace at contact :: Archer X: the push waits for 0.4 s (none at 0.35, one at 0.41)",
           "displace at contact :: Archer Z: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: an auto Moon Shot: no push at the cast or at 0.35 s, one push (3) at 0.41 s",
+          "same numbers as before :: Archer Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Archer Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Archer Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+          "same numbers as before :: Archer Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "an auto push at once",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: an auto Moon Shot: no push at the cast or at 0.35 s, one push (3) at 0.41 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a pull toward the press spot",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: a pull goes toward where I stand at the contact (3, -4), not where I pressed (0, 0)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a push from the live spot",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: Archer X: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: Archer Z: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: Shadow Step's wind pushes from the takeoff spot (0, 0), not the landing (0, 10)",
+          "displace at contact :: a Displace error at the contact time is caught and warned",
+          "displace at contact :: an auto Moon Shot: no push at the cast or at 0.35 s, one push (3) at 0.41 s",
+          "displace at contact :: the pet tamer's Slime Roll pushes at 0.35 s (PetDash)"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "a knocked-out caster still pulls",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: the caster was knocked out before the contact: no pull"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a new character still pulls",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: a new character before the contact: no pull"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "no ContactDelay on Fx Skill",
@@ -647,7 +919,7 @@
           "timing on the skill packet :: Archer Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
           "timing on the skill packet :: Archer Neutral: Z / X carry the same times as its Q (Fx Release) for now"
         ],
-        "newFailingCount": 18
+        "newFailingCount": 19
       },
       {
         "mutation": "no LaunchDelay on Fx Skill",
@@ -663,7 +935,7 @@
           "timing on the skill packet :: Mage Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
           "timing on the skill packet :: Mage Halo: Z / X carry the same times as its Q (Fx Release) for now"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 11
       },
       {
         "mutation": "the field's Fx Skill without times",
@@ -679,7 +951,7 @@
           "timing on the skill packet :: Mage Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
           "timing on the skill packet :: Mage Neutral: Z / X carry the same times as its Q (Fx Release) for now"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "the pet tamer on the archer times",
@@ -691,6 +963,19 @@
           "displace at contact :: the pet tamer's Slime Roll pushes at 0.35 s (PetDash)",
           "timing on the skill packet :: Archer Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
           "timing on the skill packet :: Archer Neutral: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "auto casts without times",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: an auto Moon Shot: no push at the cast or at 0.35 s, one push (3) at 0.41 s",
+          "timing on the skill packet :: an auto Moon Shot: Fx Skill ContactDelay 0.4 / LaunchDelay 0.18",
+          "timing on the skill packet :: an auto Sun Circle: Fx Skill ContactDelay 0.35 / LaunchDelay 0.35"
         ],
         "newFailingCount": 3
       },
@@ -719,9 +1004,23 @@
           "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
           "healed on Z and X :: Halo X (Guardian Roar): Fx Skill Healed = who really got HP",
           "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
-          "stole :: Z 0.5 s later, inside the 3 s cap: Stole 0 and nothing gained"
+          "stole :: Z 0.5 s later, inside the 3 s cap: Stole 0 and nothing gained",
+          "stole :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Fx Skill Stole always 0",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stole :: Horns X (Rage Roar) after the window: Fx Skill Stole = the HP gained (> 0)",
+          "stole :: Horns X (Shadow Step) in a fresh window: Fx Skill Stole = the HP gained (> 0)",
+          "stole :: Horns Z (Fire Rake) in a fresh window: Fx Skill Stole = the HP gained (> 0)"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "no Healed on Fx SkillTick",
@@ -769,14 +1068,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "same numbers as before :: Archer Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Archer Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Archer Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Mage Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Mage Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+          "same numbers as before :: Mage Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 15
       },
       {
         "mutation": "a field tick one more",
@@ -785,11 +1084,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "same numbers as before :: Mage Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Mage Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Mage Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "Q damage one more",
@@ -798,14 +1099,43 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "same numbers as before :: Archer Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Archer Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
           "same numbers as before :: Archer Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Mage Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
-          "same numbers as before :: Mage Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+          "same numbers as before :: Mage Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "life steal x1.5",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "same numbers as before :: Archer Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Warrior Horns (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Halo heal x1.5",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "same numbers as before :: Archer Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Warrior Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Warrior Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+        ],
+        "newFailingCount": 6
       },
       {
         "mutation": "Healed lists a full-HP ally",
@@ -814,10 +1144,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "healed on Q :: 6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
           "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
           "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "Healed without the caster",
@@ -841,14 +1172,25 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "healed on Q :: 6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
           "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
           "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first",
           "healed on Z and X :: Halo X (Guardian Roar): Fx Skill Healed = who really got HP",
           "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
-          "healed on Z and X :: Sun Circle's first tick (Fx Skill): Healed = me + the friend 5 away (the friend in the circle 22 away: no)",
-          "healed on Z and X :: every SkillTick: Healed = exactly who really got HP that tick (some tick heals)"
+          "healed on Z and X :: Sun Circle's first tick (Fx Skill): Healed = me + the friend 5 away (the friend in the circle 22 away: no)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the tie goes to the higher id",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: 6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "Healed in join order",
@@ -857,9 +1199,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "healed on Q :: 6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
           "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "Healed keeps everyone",
@@ -868,9 +1211,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "healed on Q :: 6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
           "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "Healed keeps 4",
@@ -879,9 +1223,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "healed on Q :: 6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
           "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "the heal for any side",
@@ -895,9 +1240,9 @@
           "healed on Q :: a full-HP ally, a Horn, a Neutral and an ally 20 away get nothing (so they are not listed)",
           "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
           "healed on Z and X :: an ally 13 away and a Horn 5 away: not healed, not listed",
-          "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+          "same numbers as before :: Archer Halo (big HP, no cap): damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 11
       },
       {
         "mutation": "Released.Healed gets the UserIds",
@@ -921,12 +1266,12 @@
         "newFailingChecks": [
           "fields on every packet :: a whiffed Q: Healed {}, Stole 0",
           "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Q :: 6 healed with a tie at 5 studs (ids 25 and 26): Healed = 21, 22, 23, 24, 25 (the lower id wins the tie)",
           "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
           "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first",
-          "stole :: a Horns cast heals nobody: Healed {}",
-          "stole :: the artisan: Healed {}, Stole 0"
+          "stole :: a Horns cast heals nobody: Healed {}"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "no Stole on Fx Release",
@@ -992,7 +1337,7 @@
           "timing on the skill packet :: Kit.Motion(Q): the Release row (Warrior 0.24, Mage 0.35 / 0.35, Archer 0.4 / 0.18, PetDash 0.35)",
           "timing on the skill packet :: Mage Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 13
       },
       {
         "mutation": "the Z row's archer contact 0.37",
@@ -1004,9 +1349,10 @@
           "timing on the skill packet :: Archer Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
           "timing on the skill packet :: Archer Halo: Z / X carry the same times as its Q (Fx Release) for now",
           "timing on the skill packet :: Archer Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
-          "timing on the skill packet :: Archer Horns: Z / X carry the same times as its Q (Fx Release) for now"
+          "timing on the skill packet :: Archer Horns: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: an auto Moon Shot: Fx Skill ContactDelay 0.4 / LaunchDelay 0.18"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "the X row's mage launch 0.24",
@@ -1022,7 +1368,7 @@
           "timing on the skill packet :: Mage Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
           "timing on the skill packet :: Mage Neutral: Z / X carry the same times as its Q (Fx Release) for now"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "the X row without the pet",
@@ -1053,13 +1399,13 @@
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "68a7a28592a695fc76a37ac8728238361ae8a0f5b595282b5a5149978adf8479",
     "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
-    "src/ServerScriptService/SkillService.luau": "58ec9a26625efaeed4a0bf5d995dde2e93c17939c8c09fa74fc3ddea623f5fc2",
+    "src/ServerScriptService/SkillService.luau": "f5f1c7688787d5151112190d77ebe5c234247c40310499b41dd198c581406e1c",
     "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391"
   },
-  "fixtureSHA256": "51505f1b0721e3ea162f24bb29005b753461a02456acfa635c80520959da01b1",
+  "fixtureSHA256": "0f3f749e37adbbd425482714268f7da820c5b270fb78bf27404d0fba16336c07",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-116 server part (skills18 §0, game dev 2): Fx Release (Q), Fx Skill (Z / X, also a field's first tick) and Fx SkillTick carry Healed = { UserId } (the Halo players whose HP this cast's heal really raised, the caster too, the nearest 5 to the heal centre first, ties by the lower id; {} = nobody) and Stole = number (the HP SKILL.Steal really gave the Horns caster; 0 at full HP, at the 3 s cap, for Halo / Neutral). Released.Healed is unchanged (the OTHER players healed, Player objects, no cap). Fx Skill carries ContactDelay / LaunchDelay from CombatService TUNE.MOTION.Z / .X (Kit.Motion(slot, class, style); for now the Q values: Warrior 0.24 / -, Mage 0.35 / 0.35, Archer 0.4 / 0.18, the pet tamer PetDash 0.35 / -). A pull / push (MonsterService.Displace) starts at that ContactDelay (task.delay; the damage, Released and the Fx stay at the press), skipped for a monster that died / was removed or a caster who left, errors pcall + warn. Damage, heal, steal, MP, MP steal, pull / push distance, taunt, slow and Guard numbers are identical to the sources at a1a74b45 (9 kits, manual + auto, PvP on).",
+  "contract": "A23-116 server part (skills18 §0, game dev 2): Fx Release (Q), Fx Skill (Z / X, also a field's first tick) and Fx SkillTick carry Healed = { UserId } (the Halo players whose HP this cast's heal really raised, the caster too, the nearest 5 to the heal centre first, ties by the lower id; {} = nobody) and Stole = number (the HP SKILL.Steal really gave the Horns caster; 0 at full HP, at the 3 s cap, for Halo / Neutral). Released.Healed is unchanged (the OTHER players healed, Player objects, no cap). Fx Skill carries ContactDelay / LaunchDelay from CombatService TUNE.MOTION.Z / .X (Kit.Motion(slot, class, style); for now the Q values: Warrior 0.24 / -, Mage 0.35 / 0.35, Archer 0.4 / 0.18, the pet tamer PetDash 0.35 / -). A pull / push (MonsterService.Displace) starts at that ContactDelay (task.delay; the damage, Released and the Fx stay at the press; auto casts too), skipped for a monster that died / was removed or a caster who left, errors pcall + warn; a pull goes toward the caster's root at the contact (none after a KO / a new character), a push away from the spot of the press (a hop's takeoff). Damage, every heal / steal asked and given, MP, MP steal, pull / push distance, taunt, slow and Guard numbers are identical to the sources at a1a74b45 (9 kits + the 6 Halo / Horns kits with big HP so no cap binds; manual + auto, PvP on). Healed ties at the same distance go to the lower UserId.",
   "limitations": "The client side (SkillFx hearts / sparkles, the clip times) is game dev 1's; the real slide (Displace's CFrame loop) and the monster's walk during the 0.24-0.4 s wait are not run offline. The 'same numbers' baseline is pinned at a1a74b45 (git show): re-pin BASE when that code changes on purpose."
 }
