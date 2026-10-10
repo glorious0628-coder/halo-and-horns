@@ -144,6 +144,90 @@ def tools_checks(base, repo):
         t, e = G.call("git_readonly", {"args": args})
         check(f"git blocked: {args}", e, t)
     check("git --output wrote nothing", not os.path.exists(os.path.join(A.ROOT, "x.txt")))
+    # 검수 API review 10/10 blocker: git diff with paths outside the repository reads any file (it acts like --no-index)
+    win = os.path.join(os.environ.get("SystemRoot", r"C:\Windows"), "win.ini")
+    outside = os.path.join(base, "outside.txt")
+    for args in [["diff", win, outside], ["diff", "C:/Windows/win.ini", "C:/Windows/system.ini"], ["diff", "--", win],
+                 ["diff", "HEAD", "--", "../outside.txt"], ["diff", "--", "C:/Windows/win.ini"], ["show", "HEAD:../x.txt"],
+                 ["show", "C:/Windows/win.ini"], ["diff", "-Ofile.txt"], ["diff", "-O", "file.txt"], ["log", "-n", "C:/x"],
+                 ["log", "--format=../x"], ["diff", "no_such_rev_zz9"], ["log", "--", ".envrc"], ["diff", "--git-dir=.."],
+                 ["diff", "../outside.txt", "a.txt"], ["log", "--", "tools/../../x"]]:
+        t, e = G.call("git_readonly", {"args": args})
+        check(f"git outside blocked: {args}", e and "[fonts]" not in t.lower(), t)
+    for args in [["log", "--format=%h", "-n", "2"], ["diff", "HEAD~1", "HEAD", "--stat"], ["show", "HEAD:tools/api_agent.py"],
+                 ["diff", "HEAD~1..HEAD", "--", "tools/api_agent.py"], ["log", "-3", "--oneline", "--", "tools"],
+                 ["rev-parse", "HEAD"]]:
+        t, e = G.call("git_readonly", {"args": args})
+        check(f"git allowed: {args}", not e and t.startswith("exit 0"), t[:200])
+
+    # secrets by name and links out of the repository (junction on Windows, symlink elsewhere)
+    for rel, body in [("secret.pem", "PEMDATA"), ("id_rsa", "RSADATA"), (".envrc", "ENVRC"), ("keys/server.key", "KEYDATA"),
+                      (".git-credentials", "CREDDATA")]:
+        os.makedirs(os.path.dirname(os.path.join(repo, rel)) or repo, exist_ok=True)
+        open(os.path.join(repo, rel), "w").write(body + " SECRET_WORD\n")
+        t, e = call("read_file", {"path": rel})
+        check(f"read blocked by name: {rel}", e and body not in t, t)
+    t, e = call("grep", {"pattern": "PEMDATA|RSADATA|ENVRC|KEYDATA|CREDDATA"})
+    check("grep skips secret names", "DATA" not in t and "ENVRC" not in t, t)
+    out_dir = os.path.join(base, "outside_dir")
+    os.makedirs(out_dir, exist_ok=True)
+    open(os.path.join(out_dir, "far.txt"), "w").write("FARAWAY SECRET\n")
+    link = os.path.join(repo, "linked")
+    try:
+        import _winapi
+        _winapi.CreateJunction(out_dir, link)
+    except (ImportError, OSError):
+        os.symlink(out_dir, link, target_is_directory=True)
+    t, e = call("grep", {"pattern": "FARAWAY"})
+    check("grep does not follow a junction out", "FARAWAY" not in t, t)
+    t, e = call("glob", {"pattern": "**/far.txt"})
+    check("glob does not list through a junction", "far.txt" not in t, t)
+    t, e = call("read_file", {"path": "linked/far.txt"})
+    check("read through a junction blocked", e and "FARAWAY" not in t, t)
+    t, e = call("list_dir", {"path": "."})
+    check("list_dir hides the junction out", "linked" not in t, t)
+
+    # temporary worktree: the Luau CLI is copied in, and it is removed again (also when the run fails early)
+    src = os.path.join(base, "wtsrc")
+    os.makedirs(os.path.join(src, "build", "luau_cli_0_741"))
+    open(os.path.join(src, "build", "luau_cli_0_741", "luau.exe"), "w").write("x")
+    open(os.path.join(src, ".gitignore"), "w").write("build/\n")
+    open(os.path.join(src, "f.txt"), "w").write("hello\n")
+    g = lambda *a: subprocess.run(["git", "-C", src, *a], capture_output=True, text=True)  # noqa: E731
+    g("init", "-q")
+    g("add", "f.txt", ".gitignore")
+    g("-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "-m", "init")
+    old_wt = A.WORKTREE_ROOT
+    A.WORKTREE_ROOT = os.path.join(base, "wt")
+    try:
+        p = os.path.join(A.WORKTREE_ROOT, "j1")
+        made = A.prepare_worktree(src, "HEAD", p)
+        check("worktree made + Luau CLI copied", os.path.isfile(os.path.join(made, "build", "luau_cli_0_741", "luau.exe"))
+              and os.path.isfile(os.path.join(made, "f.txt")))
+        ok, msg = A.drop_worktree(src, p)
+        check("worktree dropped", ok and not os.path.exists(p) and "j1" not in g("worktree", "list").stdout, msg)
+
+        class Boom:
+            class messages:
+                @staticmethod
+                def stream(**kw):
+                    raise RuntimeError("early failure")
+        pf = os.path.join(base, "wt_prompt.md")
+        open(pf, "w", encoding="utf-8").write("x")
+        a = A.parser().parse_args(["run", "--prompt-file", pf, "--out", os.path.join(A.JOBS_ROOT, "wtfail"), "--repo-dir", src,
+                                   "--make-worktree", "HEAD"])
+        try:
+            A.run_job(a, client=Boom(), key=FAKE_KEY)
+            raised = False
+        except RuntimeError:
+            raised = True
+        wt = os.path.join(A.WORKTREE_ROOT, "wtfail")
+        check("failed run removes its worktree", raised and not os.path.exists(wt) and "wtfail" not in g("worktree", "list").stdout,
+              g("worktree", "list").stdout)
+        u = json.load(open(os.path.join(A.JOBS_ROOT, "wtfail", "usage.json"), encoding="utf-8"))
+        check("usage.json records the worktree removal", u.get("worktree_removed") is True, u)
+    finally:
+        A.WORKTREE_ROOT = old_wt
 
     R = A.Tools(repo, out, True, red)
     os.environ["ANTHROPIC_API_KEY_TEST_PROBE"] = "x"

@@ -56,11 +56,18 @@ LIMITS = {
     "test_seconds": 600,
     "test_tail_chars": 20_000,
 }
-DENY_PARTS = {".git", ".tripo"}
+DENY_PARTS = {".git", ".tripo", ".ssh", ".aws"}
+# 검수 API review 10/10: secrets by name anywhere in the tree (".env*" prefix, keys, certificates, credentials)
+DENY_NAME_RE = re.compile(r"^(\.env.*|.*\.(pem|key|pfx|p12|crt|keystore|jks)|id_(rsa|dsa|ecdsa|ed25519)(\.pub)?|"
+                          r"\.netrc|\.npmrc|\.pypirc|\.git-credentials|credentials(\.json)?)$", re.I)
 PRUNE_DIRS = {".git", ".tripo", "node_modules", "__pycache__"}
 RESERVED_OUT = {"usage.json", "transcript.jsonl", "result.md"}
 GIT_ALLOWED = {"show", "diff", "log", "rev-parse"}
-GIT_BLOCKED_PREFIX = ("--output", "--ext-diff", "--textconv", "--no-index", "--open-files-in-pager", "-O")
+# case-sensitive option prefixes (git options are; "-O<file>" is diff's orderfile reader)
+GIT_BLOCKED_PREFIX = ("--output", "--ext-diff", "--textconv", "--no-index", "--open-files-in-pager", "-O", "--orderfile",
+                      "--git-dir", "--work-tree", "--exec-path", "--namespace", "--super-prefix", "--contents",
+                      "--follow-symlinks")
+LUAU_CLI = os.path.join("build", "luau_cli_0_741")  # git-ignored: copied into a temporary worktree for run_test
 TEST_RE = re.compile(r"^tools/test_[A-Za-z0-9_]+\.py$")
 TEST_ARG_RE = re.compile(r"^[A-Za-z0-9_.=:/,+-]{1,100}$")
 TEST_BLOCKED_SOURCE = ("studio_mcp", "device_view", "playtest", "sync_to_studio", "update_gameplay_place")
@@ -140,7 +147,7 @@ def main_tree_of(path):
     """The shared (main) checkout that owns `path`'s git repository, or None."""
     try:
         common = subprocess.run(["git", "-C", path, "rev-parse", "--path-format=absolute", "--git-common-dir"],
-                                capture_output=True, text=True, timeout=30).stdout.strip()
+                                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30).stdout.strip()
     except (OSError, subprocess.SubprocessError):
         return None
     return os.path.dirname(common) if common else None
@@ -223,8 +230,18 @@ class Tools:
         relp = os.path.relpath(full, self.repo)
         parts = [p.lower() for p in re.split(r"[\\/]", relp) if p not in ("", ".")]
         for p in parts:
-            if p in DENY_PARTS or p == ".env" or p.startswith(".env."):
+            if p in DENY_PARTS or DENY_NAME_RE.match(p):
                 raise ToolError(f"access denied: {relp}")
+
+    def is_link(self, path):
+        """symlinks and Windows junctions (os.walk would follow a junction out of the repository)"""
+        isj = getattr(os.path, "isjunction", None)
+        return os.path.islink(path) or (isj is not None and isj(path))
+
+    def safe(self, path):
+        """inside the repository after resolving every link, and not a secret"""
+        real = os.path.realpath(path)
+        return inside(real, self.repo) and not self.denied(real) and not self.denied(path)
 
     def denied(self, full):
         try:
@@ -258,7 +275,7 @@ class Tools:
         rows = []
         for name in sorted(os.listdir(full)):
             p = os.path.join(full, name)
-            if self.denied(p):
+            if not self.safe(p):
                 continue
             rows.append(f"{name}/" if os.path.isdir(p) else f"{name}\t{os.path.getsize(p)}")
             if len(rows) >= LIMITS["list_max"]:
@@ -286,11 +303,12 @@ class Tools:
         if os.path.isfile(full):
             yield full
             return
-        for d, dirs, files in os.walk(full):
-            dirs[:] = sorted(x for x in dirs if x.lower() not in PRUNE_DIRS and not self.denied(os.path.join(d, x)))
+        for d, dirs, files in os.walk(full, followlinks=False):
+            dirs[:] = sorted(x for x in dirs if x.lower() not in PRUNE_DIRS and not self.is_link(os.path.join(d, x))
+                             and self.safe(os.path.join(d, x)))
             for name in sorted(files):
                 p = os.path.join(d, name)
-                if not self.denied(p):
+                if self.safe(p):
                     yield p
 
     def grep(self, pattern, path=".", file_glob=None, ignore_case=False, max_results=None):
@@ -324,6 +342,44 @@ class Tools:
                         return "\n".join(out) + f"\n... (cut at {cap} matches)"
         return ("\n".join(out) or "(no match)") + cut
 
+    # 검수 API review 10/10 (blocker): git reads files outside a repository for path arguments that are not in it (it then
+    # acts like --no-index). Before '--' only options, their values and revisions this repository resolves; after '--' only
+    # repository-relative paths; git runs with --literal-pathspecs (no ':(top)' / glob magic)
+    GIT_VALUE_OPTS = {"-n", "--max-count", "--skip", "--author", "--committer", "--grep", "--since", "--until", "--after",
+                      "--before", "--format", "--pretty", "--date", "-U", "--unified", "--stat-width", "-L"}
+
+    @staticmethod
+    def pathish(v):
+        return (os.path.isabs(v) or re.match(r"^[A-Za-z]:", v) is not None or v.startswith(("/", "\\"))
+                or ".." in re.split(r"[\\/]", v))
+
+    def git_path_ok(self, p):
+        if not p or ":" in p or self.pathish(p):
+            return False
+        full = os.path.realpath(os.path.join(self.repo, p))
+        return inside(full, self.repo) and not self.denied(full) and not self.denied(os.path.join(self.repo, p))
+
+    def git_rev_ok(self, rev):
+        if rev.startswith("-") or "\x00" in rev:
+            return False
+        if ":" in rev:
+            r, _, path = rev.partition(":")
+            if not r or not self.git_path_ok(path):
+                return False
+            revs = [r]
+        else:
+            revs = [x for x in re.split(r"\.\.\.?", rev) if x != ""]
+            if not revs:
+                return False
+        for r in revs:
+            if not re.match(r"^[A-Za-z0-9_./~^@{}+-]+$", r):
+                return False
+            ok = subprocess.run(["git", "-C", self.repo, "rev-parse", "--verify", "--quiet", "--end-of-options", r + "^{object}"],
+                                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30)
+            if ok.returncode != 0:
+                return False
+        return True
+
     def git_readonly(self, args):
         if not isinstance(args, list) or not args or len(args) > 30 or not all(isinstance(a, str) for a in args):
             raise ToolError("args must be a non-empty list of strings")
@@ -333,15 +389,38 @@ class Tools:
             low = a.lower()
             if "\x00" in a or len(a) > 300:
                 raise ToolError("bad argument")
-            if low.startswith(GIT_BLOCKED_PREFIX):
+            if a.startswith(GIT_BLOCKED_PREFIX):  # case-sensitive: "-O" is not "-o"
                 raise ToolError(f"argument not allowed: {a}")
             if ".env" in low or ".tripo" in low:
                 raise ToolError(f"argument not allowed: {a}")
-        cmd = ["git", "--no-pager", "-C", self.repo, args[0]]
-        if args[0] in ("show", "diff", "log"):
+        sub, rest = args[0], args[1:]
+        paths = None
+        if "--" in rest:
+            k = rest.index("--")
+            rest, paths = rest[:k], rest[k + 1:]
+        i = 0
+        while i < len(rest):
+            a = rest[i]
+            if a.startswith("-"):
+                name, eq, val = a.partition("=")
+                if eq and self.pathish(val):
+                    raise ToolError(f"option value not allowed: {a}")
+                if not eq and name in self.GIT_VALUE_OPTS and i + 1 < len(rest):
+                    if self.pathish(rest[i + 1]):
+                        raise ToolError(f"option value not allowed: {rest[i + 1]}")
+                    i += 2
+                    continue
+            elif not re.fullmatch(r"\d{1,6}", a) and not self.git_rev_ok(a):
+                raise ToolError(f"not a revision of this repository: {a} (put paths after '--', relative to the repo)")
+            i += 1
+        for p in paths or []:
+            if not self.git_path_ok(p):
+                raise ToolError(f"path not allowed: {p} (repository-relative, no '..', no drive or ':')")
+        cmd = ["git", "--no-pager", "--literal-pathspecs", "-C", self.repo, sub]
+        if sub in ("show", "diff", "log"):
             cmd += ["--no-ext-diff", "--no-textconv"]
-        cmd += args[1:]
-        env = dict(os.environ, GIT_PAGER="cat", GIT_TERMINAL_PROMPT="0")
+        cmd += rest + (["--", *paths] if paths is not None else [])
+        env = dict(os.environ, GIT_PAGER="cat", GIT_TERMINAL_PROMPT="0", GIT_LITERAL_PATHSPECS="1")
         env.pop("GIT_EXTERNAL_DIFF", None)
         r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, timeout=60)
         text = r.stdout + (f"\n[stderr]\n{r.stderr}" if r.stderr.strip() else "")
@@ -467,29 +546,68 @@ def run_job(args, client=None, key=None):
     job_name = os.path.basename(out)
 
     worktree = None
-    repo = os.path.realpath(args.repo_dir or ROOT)
+    src_repo = repo = os.path.realpath(args.repo_dir or ROOT)
     allow_tests = False
     if args.make_worktree:
         worktree = os.path.join(WORKTREE_ROOT, job_name)
         if os.path.exists(worktree):
             raise SystemExit(f"temporary worktree already exists: {worktree}")
-        os.makedirs(WORKTREE_ROOT, exist_ok=True)
-        r = subprocess.run(["git", "-C", repo, "worktree", "add", "--detach", worktree, args.make_worktree],
-                           capture_output=True, text=True)
-        if r.returncode != 0:
-            raise SystemExit(f"git worktree add failed: {r.stderr.strip()}")
-        repo, allow_tests = os.path.realpath(worktree), True
     elif args.allow_tests:
         main = main_tree_of(repo)
         if main is None or norm(main) == norm(repo):
             raise SystemExit("--allow-tests is refused on the shared main tree; use --make-worktree <ref>")
         allow_tests = True
-
+    # everything that can fail early (the key, the SDK) comes before the temporary worktree exists (검수 API review)
     if key is None:
         key = load_key()
     redact = Redactor([key])
     if client is None:
         client = make_client(key)
+    try:
+        if worktree:
+            repo, allow_tests = prepare_worktree(src_repo, args.make_worktree, worktree), True
+        return loop(args, client, redact, out, prompt, model, job_name, repo, worktree, allow_tests)
+    finally:
+        if worktree:
+            ok, msg = drop_worktree(src_repo, worktree)
+            done = os.path.join(out, "usage.json")
+            if os.path.isfile(done):  # record whether the temporary worktree is gone
+                with open(done, encoding="utf-8") as f:
+                    m = json.load(f)
+                m["worktree_removed"], m["worktree_note"] = ok, msg
+                Job(out, m, redact).save()
+            if not ok:
+                print(f"WARNING temporary worktree not removed: {msg}", file=sys.stderr)
+
+
+def prepare_worktree(src_repo, ref, path):
+    """A detached worktree at ref + a copy of the git-ignored Luau CLI the offline tests use (build/ is not in git)."""
+    import shutil
+    os.makedirs(WORKTREE_ROOT, exist_ok=True)
+    r = subprocess.run(["git", "-C", src_repo, "worktree", "add", "--detach", path, ref], capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode != 0:
+        raise SystemExit(f"git worktree add failed: {r.stderr.strip()}")
+    for base in (main_tree_of(src_repo), ROOT):
+        cli = os.path.join(base or "", LUAU_CLI)
+        if base and os.path.isdir(cli):
+            shutil.copytree(cli, os.path.join(path, LUAU_CLI))
+            break
+    return os.path.realpath(path)
+
+
+def drop_worktree(src_repo, path):
+    """git worktree remove (from the repository that added it), checked; leftovers inside WORKTREE_ROOT are deleted."""
+    import shutil
+    r = subprocess.run(["git", "-C", src_repo, "worktree", "remove", "--force", path], capture_output=True, text=True, encoding="utf-8", errors="replace")
+    msg = r.stderr.strip() or "removed"
+    if os.path.exists(path) and inside(path, WORKTREE_ROOT) and norm(path) != norm(WORKTREE_ROOT):
+        shutil.rmtree(path, ignore_errors=True)  # only our own copy (no links are made inside it)
+        subprocess.run(["git", "-C", src_repo, "worktree", "prune"], capture_output=True)
+        msg += " (leftover folder deleted)"
+    return not os.path.exists(path), msg
+
+
+def loop(args, client, redact, out, prompt, model, job_name, repo, worktree, allow_tests):
     tools = Tools(repo, out, allow_tests, redact)
     meta = {"job": job_name, "model": model, "status": "running", "stop_reason": None, "turns": 0,
             "max_turns": args.max_turns, "max_usd": args.max_usd, "cost_usd": 0.0,
@@ -574,8 +692,6 @@ def run_job(args, client=None, key=None):
         meta["ended"] = now()
         write_result(out, meta, final, texts)
         job.save()
-        if worktree:
-            subprocess.run(["git", "-C", ROOT, "worktree", "remove", "--force", worktree], capture_output=True)
     return meta
 
 
