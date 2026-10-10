@@ -230,6 +230,12 @@ runGroup("My Way names", function()
 		"4 good / 1 devil: True Knight", "")
 	check(M("Halo", { Lunch1 = "A", S0 = "A" }) == "TrueKnight", "A / B picks count as the good / devil side", "")
 	check(M("Halo", { Nope = "Good", Lunch1 = "GiveBack", S0 = "Weird" }) == "", "unknown quests / picks do not count", "")
+	-- the Terms of Fate egg ('I agree' / 'Read it all' score 0 and are a joke): saved for its lines and title, never a My Way pick
+	check(M("Halo", { Lunch1 = "GiveBack", EG01 = "Evil" }) == "", "one real pick + the joke pick = still no name", M("Halo", { Lunch1 = "GiveBack", EG01 = "Evil" }))
+	check(M("Halo", { Lunch1 = "GiveBack", S0 = "Purify", EG01 = "Evil" }) == "TrueKnight", "2 good picks + 'I agree': still True Knight (the joke leans nothing)",
+		M("Halo", { Lunch1 = "GiveBack", S0 = "Purify", EG01 = "Evil" }))
+	check(M("Halo", { Lunch1 = "Bite", S0 = "Devour", EG01 = "Good" }) == "RebelAngel", "2 devil picks + 'Read it all': still Rebel Angel", M("Halo", { Lunch1 = "Bite", S0 = "Devour", EG01 = "Good" }))
+	check(M("Halo", { Lunch1 = "GiveBack", EG01 = "B" }) == "", "a Neutral-era 'B' of the joke does not count either", M("Halo", { Lunch1 = "GiveBack", EG01 = "B" }))
 	-- the attribute follows the picks and the faction
 	local p, d = hero(w, 1, { Data = { Story = { Main = { Id = "" }, Subs = {}, Done = {}, First = {},
 		Pick = { Lunch1 = "GiveBack", S0 = "Purify" } } } })

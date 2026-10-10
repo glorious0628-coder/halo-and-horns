@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 178,
+  "checks": 182,
   "failedChecks": 0,
-  "namedChecks": 178,
+  "namedChecks": 182,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -382,6 +382,30 @@
     {
       "group": "My Way names",
       "check": "unknown quests / picks do not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "one real pick + the joke pick = still no name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "2 good picks + 'I agree': still True Knight (the joke leans nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "2 devil picks + 'Read it all': still Rebel Angel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "My Way names",
+      "check": "a Neutral-era 'B' of the joke does not count either",
       "pass": 1,
       "fail": 0
     },
@@ -1080,9 +1104,9 @@
   "staticChecks": 19,
   "staticFailures": [],
   "mutations": {
-    "total": 83,
-    "applied": 83,
-    "caught": 83,
+    "total": 86,
+    "applied": 86,
+    "caught": 86,
     "skipped": false,
     "results": [
       {
@@ -1334,18 +1358,55 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "My Way counts the joke pick",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: a Neutral-era 'B' of the joke does not count either",
+          "My Way names :: one real pick + the joke pick = still no name"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "My Way: the A / B shortcut comes before the joke check",
+        "file": "src/ServerScriptService/ReturnService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: a Neutral-era 'B' of the joke does not count either"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the joke pick is a real pick again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "My Way names :: a Neutral-era 'B' of the joke does not count either",
+          "My Way names :: one real pick + the joke pick = still no name"
+        ],
+        "newFailingCount": 2
+      },
+      {
         "mutation": "My Way from one pick",
         "file": "src/ServerScriptService/ReturnService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "My Way names :: a Neutral-era 'B' of the joke does not count either",
           "My Way names :: one pick: no name yet",
+          "My Way names :: one real pick + the joke pick = still no name",
           "My Way names :: unknown quests / picks do not count",
           "My Way: repeated cards (A23-86) :: one story pick is still not enough",
           "My Way: repeated cards (A23-86) :: repeated picks alone name nobody (2 story picks come first)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "no Balance Walker",
@@ -1383,14 +1444,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "My Way names :: 2 good picks + 'I agree': still True Knight (the joke leans nothing)",
           "My Way names :: 3 good / 2 devil of 5: within a fifth = Balance Walker",
           "My Way names :: 4 good / 1 devil: True Knight",
           "My Way names :: Halo + good picks = True Knight",
           "My Way names :: Horns + good picks = Soft-Hearted Devil",
-          "My Way names :: a new pick changes it at once",
-          "My Way names :: one each = Balance Walker"
+          "My Way names :: a new pick changes it at once"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 20
       },
       {
         "mutation": "a Neutral name",
@@ -1542,12 +1603,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "My Way names :: a Neutral-era 'B' of the joke does not count either",
           "My Way names :: one pick: no name yet",
+          "My Way names :: one real pick + the joke pick = still no name",
           "My Way names :: unknown quests / picks do not count",
           "My Way: repeated cards (A23-86) :: one story pick is still not enough",
           "My Way: repeated cards (A23-86) :: repeated picks alone name nobody (2 story picks come first)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "badge id 0 asked anyway",
@@ -2096,14 +2159,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0742b53aedb434aa3c1a5e61323913391929b5e4c76d065ac31f2fb980fa73d3",
+    "src/ReplicatedStorage/Shared/Config.luau": "0c285f2bbbe601ba5855b6e9e5f9bbda87039cc90076f6af0ca506cbe558eedf",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/ReturnService.luau": "b54dce085a0400497f7ad4b0af7bef604987a6f2609d47850760111d199e81ce",
+    "src/ServerScriptService/ReturnService.luau": "e1ff3044f26bdfe211c57225b8418bf51daa55964d6d56db88b3de4cd85234b0",
     "src/ServerScriptService/InviteService.luau": "5078c549ea94977105df673faba86c6735ecc99fff50a028f151bd58ec6c01fe",
     "src/ServerScriptService/DiaryService.luau": "fd9f53510f32d93ad79d0377db2aa813bc298c7536428a6ffb34504bddb297e7",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257"
   },
-  "fixtureSHA256": "364644f7009147fbb6d05362371f4f3bbfa2992a54e151daf74b4116fea7ba54",
+  "fixtureSHA256": "69954ec4209ff59a208489d96cb8da1ac9afd85906c13d3dd9213a1bdd48282f",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
