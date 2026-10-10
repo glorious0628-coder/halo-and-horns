@@ -10,6 +10,10 @@ if MODE ~= "restore" then MODE = "apply" end
 local MS = game:GetService("MaterialService")
 local Terrain = workspace.Terrain
 local NAME = "GE_HaloPave"
+-- 2026-10-10: own white-marble paving (Firefly High, art/out/s2/halo_floor/Marble_B_high.png: 2x2 slabs with gold inlay borders, seamless) replaces the
+-- beige GE_HaloTiles look on the Halo paving; 16 studs per texture = 8-stud slabs. Empty PAVE_COLOR = keep the cloned GE_HaloTiles maps.
+local PAVE_COLOR = "rbxassetid://90183036072881"
+local PAVE_STUDS = 16
 local old = MS:FindFirstChild(NAME)
 if MODE == "restore" then
 	pcall(function() MS:SetBaseMaterialOverride(Enum.Material.Concrete, "") end)
@@ -28,12 +32,19 @@ if old then old:Destroy() end
 local v = src:Clone()
 v.Name = NAME
 v.BaseMaterial = Enum.Material.Concrete
+if PAVE_COLOR ~= "" then
+	v.ColorMap = PAVE_COLOR
+	v.NormalMap = ""
+	v.RoughnessMap = ""
+	v.MetalnessMap = ""
+	v.StudsPerTile = PAVE_STUDS
+end
 v.Parent = MS
 MS:SetBaseMaterialOverride(Enum.Material.Concrete, NAME)
 if Terrain:GetAttribute("ConcreteColorWas") == nil then
 	Terrain:SetAttribute("ConcreteColorWas", Terrain:GetMaterialColor(Enum.Material.Concrete))
 end
-Terrain:SetMaterialColor(Enum.Material.Concrete, Color3.fromRGB(235, 235, 235))
+Terrain:SetMaterialColor(Enum.Material.Concrete, Color3.fromRGB(250, 248, 244))
 -- 2026-10-10: the cliffs read WHITE limestone in the concept (the default tan made the island look like a sand slab)
 if Terrain:GetAttribute("LimestoneColorWas") == nil then
 	Terrain:SetAttribute("LimestoneColorWas", Terrain:GetMaterialColor(Enum.Material.Limestone))
