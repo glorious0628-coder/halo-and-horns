@@ -78,3 +78,8 @@
 - 지붕 다시 7: `art/out/s2/halo/roofs/`. 왕관 A 앞(와인빛, 고급) `art/out/s2/redo2/CrownA_front_v2_HQ_src.png`, 뿔 깃대(천 없음)·뿔 한 쌍 문장 천·연금술사 병 하나 v4(`redo2/`).
 - 큐: 왕관 A 3면 + 부품 6(금 반구·와인 반구·가운데 아치·꼭대기 구슬·사파이어·가넷).
 - 남음: 반복 소품 13장 깃발·금돔 빼기, 집·가게 뒤·옆(부품 분해), 뿔 성채는 A23-112 대칭 콘셉트 뒤.
+
+## 10/10 밤 추가 8
+- 왕관 A(와인빛) 4면 + 부품 7(금 반구·와인 반구·가운데 아치 v2·꼭대기 구슬·사파이어·가넷): `art/out/s2/crown/A/`, 시트 crown_A_mv_parts_sheet.jpg.
+- 반복 소품 13장 깃발·파란 판·금돔 뺀 판(난간 4·등불 4·플랜터 2·꽃 화분 3): `art/out/s2/halo/variants4/HaloVar4_*`, 시트 halo_variants4_sheet.jpg — 옛 HaloVar_Balustrade/Lantern/Planter_A,D/PotFlowers_A,C,D 대체.
+- 대기: 마스코트 머리카락 선택, 집·가게 뒤·옆, 뿔 성채(대칭 콘셉트 뒤).
