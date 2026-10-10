@@ -4,8 +4,8 @@
   "namedChecks": 340,
   "failing": [],
   "mutations": {
-    "total": 162,
-    "caught": 162,
+    "total": 161,
+    "caught": 161,
     "results": [
       {
         "mutation": "boss layer: never put back on the beat",
@@ -133,15 +133,6 @@
         "crashed": false,
         "newFailingChecks": [
           "sound_gaps 10/10 plan :: my drop with candy = CandyPlop"
-        ]
-      },
-      {
-        "mutation": "KO: the fun tip silent",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "sound_gaps 10/10 plan :: a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later"
         ]
       },
       {
@@ -1161,7 +1152,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "sound_gaps 10/10 plan :: a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later",
+          "sound_gaps 10/10 plan :: a KO with the server's fun tip: still KO only (the screen shows no tip, 검수 10/10)",
           "sound_gaps 10/10 plan :: a KO without one: KO only",
           "world :: my KO = KO (B1)",
           "world listeners :: knocked out -> KO (B1)"
@@ -1370,8 +1361,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world listeners :: a PvP place reached by a teleport (300 studs at once) is quiet"
         ]
       },
@@ -1421,8 +1410,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world listeners :: no faction: no WarFinal30"
         ]
       },
@@ -1667,9 +1654,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "36e17fae7aed6abdf16af9e8eaa3cd18a98e4febf1109e1b47350eff3cf299aa",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "66bc20585e4d101a6257528f71a5ff54777a02d7e1c9c8927beac0a7ae072a8f",
-    "tools/fixtures/audio_offline.luau": "c4e4e6dfdc1f50cdb1c2a6297d36cc2da581e1bdce162e67c4285ea1c8992040"
+    "src/ReplicatedStorage/Shared/Config.luau": "61fde1043688d17756317afa4ce2c040ad17f8c03e21fdd65fbdcebed7d45ac7",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "c30203953cfba2ea68908670648603e2f0e2ed234ef07e84513bdd4e5eac4634",
+    "tools/fixtures/audio_offline.luau": "dc651eed279ea0e54449c1fcf1a3e85ab10d316edff53254da12e86deb929dea"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

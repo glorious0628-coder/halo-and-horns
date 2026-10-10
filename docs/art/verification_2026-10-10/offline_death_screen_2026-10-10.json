@@ -1,0 +1,49 @@
+{
+  "checks": 15,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the fun tip shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "nothing lost still says so",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no name for a monster",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the countdown never ends",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "everyone's KO shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never closes on the new character",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "modal (blocks input)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "KO screen (게임성 개발 1, BB14 client + SPEC A23-110 \"짧게: KO!·쓰러뜨린 것·3-2-1, 팁 없음\"), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and DeathScreen.luau on doubles (UIKit.Gui, Instance.new, the\nFx remote, CharacterAdded). Checks: the lines (KO!, \"Knocked out by King Slime\" / \"You fell\" / \"You were knocked out\",\npouch gold lost or the Grudge Sack - no line when nothing was lost, \"Back in 3 s\" counting, never the server's fun tip),\nthe screen drawn on UIKit.Gui (not modal, dim, under the opening), my own KO only, closed by my next character.\nStatic: ClientMain loads DeathScreen after EventHUD. Mutations: each must be caught.",
+  "studioCalls": 0
+}

@@ -1,0 +1,199 @@
+-- WeaponPose.luau (게임성 개발 1, SPEC A23-108 ③ "서기·걷기 때 무기 든 자세"; docs/design/class_grips_a23_108_2026-10-10.md):
+-- a character holding a weapon (the server's WeaponModel, attribute Class) stands the way its class x faction holds it
+-- (Config.ClassGrips[Config.ClassGripKey(class, faction)].Hold) - added on top of Roblox's idle / walk animation, on this
+-- client, for the nearest MaxChars characters within Dist studs of the camera (phones: MaxTouch). While Fx plays an
+-- attack / hurt clip on a character (Fx.Animating) the pose steps aside (the joints handed back) and eases back in
+-- over FadeIn s after it. Walking keeps only Walk of the shoulders' forward raise (the walk swing still shows). The
+-- joint writing follows Fx's procedural clips (PreSimulation, the Animator's pose of this frame as the base; a joint
+-- the Animator left alone keeps the base it had). Bare hands (no WeaponModel) = no pose. Presentation only: Transform
+-- never replicates, every client poses the characters it sees.
+-- Public API: WeaponPose.Init(C), WeaponPose.Start(), WeaponPose.HoldFor(classId, faction) -> def? (pure),
+-- WeaponPose.Angles(def, joint, weight, moving) -> { rx, ry, rz } in degrees (pure), WeaponPose.Step(dt).
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Config = require(Shared:WaitForChild("Config"))
+local Util = require(Shared:WaitForChild("Util"))
+
+local WeaponPose = {}
+local C = nil
+local TAG = "WeaponPose"
+
+local T = {
+	Dist = 120, -- studs from the camera
+	MaxChars = 12, MaxTouch = 6,
+	Pick = 0.5, -- s between picking the characters
+	FadeIn = 0.15, -- s: the pose eases in (after an attack, a new weapon)
+	MoveSpeed = 2, -- studs / s of flat speed = walking
+	Model = "WeaponModel",
+	-- R15 joint -> its child part and parent part (the same pairs as Fx MOTION.JOINT_PARTS / JOINT_PARENTS)
+	Parts = { Waist = { "UpperTorso", "LowerTorso" }, Neck = { "Head", "UpperTorso" },
+		RightShoulder = { "RightUpperArm", "UpperTorso" }, RightElbow = { "RightLowerArm", "RightUpperArm" },
+		RightWrist = { "RightHand", "RightLowerArm" }, LeftShoulder = { "LeftUpperArm", "UpperTorso" },
+		LeftElbow = { "LeftLowerArm", "LeftUpperArm" }, LeftWrist = { "LeftHand", "LeftLowerArm" } },
+	Shoulders = { RightShoulder = true, LeftShoulder = true },
+}
+local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
+
+-- the hold of a class x faction (pure): its own row, else the class's (a side not chosen)
+function WeaponPose.HoldFor(classId, faction)
+	local grips = type(Config.ClassGrips) == "table" and Config.ClassGrips or {}
+	local key = type(Config.ClassGripKey) == "function" and Config.ClassGripKey(classId, faction) or nil
+	local def = key and grips[key] or nil
+	if type(def) ~= "table" and type(classId) == "string" then def = grips[classId .. "_Halo"] end
+	return (type(def) == "table" and type(def.Hold) == "table") and def or nil
+end
+
+-- one joint's offset (pure, degrees): the hold x weight, the shoulders' forward raise x Walk while moving
+function WeaponPose.Angles(def, joint, weight, moving)
+	local a = type(def) == "table" and type(def.Hold) == "table" and def.Hold[joint] or nil
+	if type(a) ~= "table" then return nil end
+	local w = math.clamp(tonumber(weight) or 0, 0, 1)
+	local rx = (tonumber(a[1]) or 0) * ((moving and T.Shoulders[joint]) and math.clamp(tonumber(def.Walk) or 1, 0, 1) or 1)
+	return { rx * w, (tonumber(a[2]) or 0) * w, (tonumber(a[3]) or 0) * w }
+end
+
+local function same(a, b)
+	return typeof(a) == "CFrame" and typeof(b) == "CFrame" and a.Position:FuzzyEq(b.Position, 1e-4)
+		and a.LookVector:FuzzyEq(b.LookVector, 1e-4) and a.UpVector:FuzzyEq(b.UpVector, 1e-4)
+end
+
+local function findJoint(char, joint)
+	local pair = T.Parts[joint]
+	local part, parent = char:FindFirstChild(pair[1]), char:FindFirstChild(pair[2])
+	if not (part and parent) then return nil end
+	for _, d in part:GetChildren() do
+		if d:IsA("Motor6D") and d.Part1 == part and d.Part0 == parent then return d end
+	end
+	for _, d in parent:GetChildren() do
+		if d:IsA("Motor6D") and d.Part1 == part and d.Part0 == parent then return d end
+	end
+	return nil
+end
+
+-- hands every joint this module still holds back to the pose under it
+local function release(st)
+	for joint, m in st.Joints do
+		local last, base = st.Last[joint], st.Base[joint]
+		if m.Parent and last and base and same(m.Transform, last) then pcall(function() m.Transform = base end) end
+	end
+	table.clear(st.Last)
+	table.clear(st.Base)
+end
+
+local function animating(char)
+	local fx = C and C.Fx
+	if type(fx) ~= "table" or type(fx.Animating) ~= "function" then return false end
+	local ok, busy = pcall(fx.Animating, char)
+	return ok and busy == true
+end
+
+-- the characters to pose now: holding a weapon, near the camera, the nearest first (mine always)
+local function pick()
+	local cam = workspace.CurrentCamera
+	local at = cam and cam.CFrame.Position
+	local me = Players.LocalPlayer and Players.LocalPlayer.Character
+	local list = {}
+	for _, p in Players:GetPlayers() do
+		local char = p.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		if root and char:FindFirstChild(T.Model) then
+			local d = at and (root.Position - at).Magnitude or 0
+			if char == me or d <= T.Dist then table.insert(list, { Char = char, D = char == me and -1 or d, Player = p }) end
+		end
+	end
+	table.sort(list, function(a, b) return a.D < b.D end)
+	local max = UserInputService.TouchEnabled and T.MaxTouch or T.MaxChars
+	local set = {}
+	for i = 1, math.min(max, #list) do set[list[i].Char] = list[i].Player end
+	for char, st in S.Chars do
+		if not set[char] then
+			release(st)
+			S.Chars[char] = nil
+		end
+	end
+	S.Set = set
+end
+
+local function poseChar(char, player, dt)
+	local st = S.Chars[char]
+	if not st then
+		st = { Joints = {}, Base = {}, Last = {}, W = 0 }
+		S.Chars[char] = st
+	end
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	local model = char:FindFirstChild(T.Model)
+	if not char.Parent or not model or not hum or hum.Health <= 0 or hum.RigType ~= Enum.HumanoidRigType.R15 then
+		release(st)
+		st.W = 0
+		return
+	end
+	if animating(char) then -- Fx's attack / hurt clip owns the joints now
+		release(st)
+		st.W = 0
+		return
+	end
+	local def = WeaponPose.HoldFor(model:GetAttribute("Class") or player:GetAttribute("Class"), player:GetAttribute("Faction"))
+	if not def then
+		release(st)
+		return
+	end
+	st.W = math.min(1, st.W + dt / T.FadeIn)
+	local root = char:FindFirstChild("HumanoidRootPart")
+	local v = root and root.AssemblyLinearVelocity or Vector3.zero
+	local moving = Vector3.new(v.X, 0, v.Z).Magnitude > T.MoveSpeed
+	for joint in def.Hold do
+		local m = st.Joints[joint]
+		if not (m and m.Parent) then
+			m = findJoint(char, joint)
+			st.Joints[joint] = m
+			st.Base[joint], st.Last[joint] = nil, nil
+		end
+		local a = m and WeaponPose.Angles(def, joint, st.W, moving)
+		if a then
+			local cur = m.Transform
+			local last = st.Last[joint]
+			local base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur
+			local out = CFrame.Angles(math.rad(a[1]), math.rad(a[2]), math.rad(a[3])) * base
+			m.Transform = out
+			st.Base[joint], st.Last[joint] = base, out
+		end
+	end
+end
+
+function WeaponPose.Step(dt)
+	local now = os.clock()
+	if now - S.PickAt >= T.Pick then
+		S.PickAt = now
+		pick()
+	end
+	for char, player in S.Set do
+		local ok, err = pcall(poseChar, char, player, math.clamp(tonumber(dt) or 0, 0, 0.1))
+		if not ok then
+			Util.Warn(TAG, "pose failed: " .. tostring(err))
+			S.Set[char] = nil
+		end
+	end
+end
+
+function WeaponPose.Init(registry)
+	C = registry
+end
+
+function WeaponPose.Start()
+	if S.Started then return end
+	S.Started = true
+	local sig = nil
+	pcall(function() sig = RunService.PreSimulation end) -- right after the Animator, like Fx's clips
+	sig = sig or RunService.Stepped
+	sig:Connect(function(a, b)
+		local dt = type(b) == "number" and b or a
+		local ok, err = pcall(WeaponPose.Step, dt)
+		if not ok then Util.Warn(TAG, tostring(err)) end
+	end)
+end
+
+return WeaponPose

@@ -602,8 +602,7 @@ do
 	p = Audio.Plan("Loot", { Items = { { Item = "Jelly", N = 1 } } }, ctx)
 	check(g, "a drop without candy stays as before (materials quiet)", #p == 0, encode(p))
 	p = Audio.Plan("KO", { By = 222, Tip = "Tip: slimes cannot read. You can." }, ctx)
-	check(g, "a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later", events(p) == "KO,TipDing"
-		and near(p[2].At, A.KOTipAfter), encode(p))
+	check(g, "a KO with the server's fun tip: still KO only (the screen shows no tip, 검수 10/10)", events(p) == "KO", encode(p))
 	check(g, "a KO without one: KO only", events(Audio.Plan("KO", { By = 222 }, ctx)) == "KO", "")
 	check(g, "IsWarp: 300 studs in one frame standing still = a warp", Audio.IsWarp(300, 0, 0.016) == true, "")
 	check(g, "IsWarp: 30 studs is a step, not a warp", Audio.IsWarp(30, 0, 0.016) == false, "")
