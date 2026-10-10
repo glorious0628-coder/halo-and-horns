@@ -5912,7 +5912,7 @@ Config.UIArt = {
 		-- the middle / bottom third left calm) and the two mascots beside the cards
 		FactionBgA = { Id = "rbxassetid://128364866807552", Size = Vector2.new(1536, 1024) },
 		FacMascotHaloA = { Id = "rbxassetid://118792983602547", Size = Vector2.new(612, 1024) }, -- C (hair, user pick 10/10; was 98817628227692)
-		FacMascotHornsA = { Id = "rbxassetid://91053337808874", Size = Vector2.new(675, 1024) },
+		FacMascotHornsA = { Id = "rbxassetid://106604703369405", Size = Vector2.new(680, 1024) }, -- D (bat wings, user pick 10/10; was 91053337808874)
 		-- Halo town shop signs (이미지 생성 2, 검수 OK 10/10; wall arm + chains + round plate, no words): the shop models' sign
 		-- SurfaceGui (메인 반영 1 / 이미지 생성 1). The potion sign only at Halo town's real potion merchant
 		HaloSignPotion = { Id = "rbxassetid://122788599616130", Size = Vector2.new(1024, 1024) },

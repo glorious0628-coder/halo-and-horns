@@ -140,6 +140,12 @@ def collect(zone):
             continue
         rec = recs.get(name)
         sa = {keys[t]: ids[f"SA_{name}_{t}"] for t in "CNMR" if f"SA_{name}_{t}" in ids}
+        # decision (a), 이미지 생성 1 + 검수 10/10: no new colour map (a new one greys the SA while it waits for moderation) -
+        # the colour stays the game's own (its SurfaceAppearance ColorMap, else the MeshPart TextureID)
+        if rec and "color" not in sa and "normal" in sa:
+            own = (rec.get("sa") or {}).get("color") or rec.get("textureId")
+            if own:
+                sa["color"] = own
         if not rec or "color" not in sa:
             missing.append(name + (" (no import record)" if not rec else " (not uploaded)"))
             continue

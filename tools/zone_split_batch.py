@@ -44,6 +44,10 @@ ZONES = {
         # 이미지 생성 1 + 검수 10/10: the crossroads kits' bright orange wood / fruit / fire read as gold at hue 20-30
         "gold_hue_min": 34.0,
         "gold_v_min": 0.55,  # 이미지 생성 1 10/10: the API kit's darker gold (value 0.56-0.70)
+        # 검수 10/10: yellow petals / straw have the gold's colour - no metal there. None = the whole model, a path = a UV
+        # mask (white = no metal) of the faces to clear (the goose nest keeps its golden egg and base rings; the mask comes
+        # from the mesh: gold faces in the straw band outside the egg, scratch tool goose_faces / masks/README)
+        "no_gold": {"Kit_X_FlowerPot": None, "X_GooseNest": "masks/X_GooseNest_nogold.png"},
         "models": {
             # split: 4096 sources (all on the remake list too - this is the interim sharpness step)
             "X_GuildHall": (T + "X_GuildHall_raw.glb", "tripo", 24.0, 3, "split", "tex"),
@@ -242,6 +246,22 @@ def img1_maps(work, n, own_normal, gold_boost, hue_min=20.0, v_min=0.72):
             "R": os.path.join(d, n + "_rough.png")}, r.stdout.strip().splitlines()[-1] if r.stdout.strip() else ""
 
 
+def clear_gold(files, mask_path, rough=0.8):
+    """No metal where the mask is white (None = everywhere); those pixels take a matte roughness instead of gold's 0.28."""
+    import numpy as np
+    m = np.asarray(Image.open(files["M"]).convert("L")).astype(np.float32) / 255.0
+    r = np.asarray(Image.open(files["R"]).convert("L")).astype(np.float32) / 255.0
+    if mask_path is None:
+        k = np.ones_like(m)
+    else:
+        k = np.asarray(Image.open(mask_path).convert("L").resize(m.shape[::-1], Image.LANCZOS)).astype(np.float32) / 255.0
+    w = k * np.clip(m / 0.9, 0, 1)  # how much gold each pixel had
+    r = r * (1 - w) + rough * w
+    m = m * (1 - k)
+    Image.fromarray((m * 255).clip(0, 255).astype(np.uint8), "L").save(files["M"])
+    Image.fromarray((r * 255).clip(0, 255).astype(np.uint8), "L").save(files["R"])
+
+
 def tile_pbr(tiles, tn, gold_boost, hue_min=20.0, v_min=0.72):
     """one 1024 tile of a split model: pbr_from_color on <tn>.png (+ <tn>_n.png or flat) -> <tn>_pbr_{color,normal,mr}.png"""
     d = os.path.join(tiles, "pbr")
@@ -356,6 +376,10 @@ def main():
                 r["log"] = log.splitlines()[-1] if log else ""
             elif a.recipe == "img1":
                 files, log = img1_maps(work, n, own_n, a.gold_boost, hue_min, v_min)
+                if n in z.get("no_gold", {}):
+                    mk = z["no_gold"][n]
+                    clear_gold(files, os.path.join(work, mk) if mk else None)
+                    log = (log + " | " if log else "") + ("no gold: " + (mk or "whole model"))
                 r["sa_files"] = save_sa_files(files, n, a.zone)
                 r["recipe"] = f"img1 pbr_from_color gold-boost {a.gold_boost}, gold hue >= {hue_min}, value >= {v_min}"
                 r["normal"] = ("own (Tripo)" if own_n else "flat") + " + per-material detail (img1 recipe)"
